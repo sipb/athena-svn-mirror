@@ -1,3 +1,4 @@
+# translation of gnome-applets.HEAD.po to Azerbaijani
 # translation of gnome-applets.HEAD.az.po to Azerbaijani Turkish
 # Copyright (C) 2000,2003, 2004 Free Software Foundation, Inc.
 # Vasif Ismailoglu <azerb_linux@hotmail.com>, 2001.
@@ -7,15 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:10+0800\n"
-"PO-Revision-Date: 2004-02-22 19:46+0200\n"
+"POT-Creation-Date: 2004-12-06 18:51+0800\n"
+"PO-Revision-Date: 2004-09-13 21:13+0300\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
-"Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
-"net>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"net>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: accessx-status/GNOME_AccessxApplet.xml.h:1
 #: battstat/GNOME_BattstatApplet.xml.h:1 cdplayer/GNOME_CDPlayerApplet.xml.h:1
@@ -30,9 +32,8 @@ msgstr ""
 #: multiload/GNOME_MultiloadApplet.xml.h:1
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:1
 #: wireless/GNOME_WirelessApplet.xml.h:1
-#, fuzzy
 msgid "_About"
-msgstr "_Haqqında..."
+msgstr "_Haqqında"
 
 #: accessx-status/GNOME_AccessxApplet.xml.h:2
 #: battstat/GNOME_BattstatApplet.xml.h:2 cdplayer/GNOME_CDPlayerApplet.xml.h:2
@@ -73,12 +74,12 @@ msgstr "Klaviatura yetişmə qabiliyyəti vəziyyətini göstər"
 
 #: accessx-status/applet.c:136 battstat/battstat_applet.c:1064
 #: cdplayer/cdplayer.c:596 charpick/charpick.c:564 drivemount/drivemount.c:552
-#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:608
+#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:599
 #: gtik/gtik.c:723 gweather/gweather-about.c:47 mailcheck/mailcheck.c:2467
-#: mini-commander/src/about.c:50 mixer/mixer.c:1349
+#: mini-commander/src/about.c:50 mixer/mixer.c:1392
 #: modemlights/modemlights.c:118 multiload/main.c:58
 #: stickynotes/stickynotes_applet_callbacks.c:261
-#: wireless/wireless-applet.c:572
+#: wireless/wireless-applet.c:574
 msgid "translator_credits"
 msgstr ""
 "Vasif İsmailoğlu <linuxaz@azerimail.net>\n"
@@ -123,17 +124,16 @@ msgstr ""
 
 #: accessx-status/applet.c:1027
 msgid "XKB Extension is not enabled"
-msgstr ""
+msgstr "XKB Əlavəsi fəal deyil"
 
 #: accessx-status/applet.c:1032
-#, fuzzy
 msgid "Unknown error"
-msgstr "Namə'lum Klaviatura"
+msgstr "Namə'lum xəta"
 
 #: accessx-status/applet.c:1040
-#, fuzzy, c-format
+#, c-format
 msgid "Error: %s"
-msgstr "Xəta"
+msgstr "Xəta: %s"
 
 #: accessx-status/applet.c:1337
 msgid "Displays current state of keyboard accessibility features"
@@ -167,9 +167,8 @@ msgstr "Laptopun qalan elektrik gücünü izləyin"
 #: multiload/GNOME_MultiloadApplet.xml.h:4
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:6
 #: wireless/GNOME_WirelessApplet.xml.h:3
-#, fuzzy
 msgid "_Preferences"
-msgstr "_Seçimlər..."
+msgstr "_Seçimlər"
 
 #: battstat/GNOME_BattstatApplet.xml.h:4
 msgid "_Suspend Computer..."
@@ -270,63 +269,62 @@ msgid "The applet will not work properly (if at all).\n"
 msgstr "Bu aplet düzgün işləməyəcək (hələ işləsə).\n"
 
 #: battstat/battstat_applet.c:382
-#, fuzzy, c-format
+#, c-format
 msgid "Battery charged (%d%%)"
-msgstr "Batareya tamamilə dolduruldu"
+msgstr "Batareya doludur (%d%%)"
 
 #: battstat/battstat_applet.c:384
 #, c-format
 msgid "Unknown time (%d%%) remaining"
-msgstr ""
+msgstr "Qalan vaxt bilinmir (%d%%)"
 
 #: battstat/battstat_applet.c:386
 #, c-format
 msgid "Unknown time (%d%%) till charged"
-msgstr ""
+msgstr "Dolmağa qalan vaxt bilinmir (%d%%)"
 
 #: battstat/battstat_applet.c:391
 #, c-format
 msgid "%d minute (%d%%) remaining"
 msgid_plural "%d minutes (%d%%) remaining"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d dəqiqə (%d%%) qalıb"
+msgstr[1] "%d dəqiqə (%d%%) qalıb"
 
 #: battstat/battstat_applet.c:396
 #, c-format
 msgid "%d minute till charged (%d%%)"
 msgid_plural "%d minutes till charged (%d%%)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dolmağa %d dəqiqə qalıb (%d%%)"
+msgstr[1] "Dolmağa %d dəqiqə qalıb (%d%%)"
 
 #: battstat/battstat_applet.c:402
 #, c-format
 msgid "%d hour (%d%%) remaining"
 msgid_plural "%d hours (%d%%) remaining"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d saat (%d%%) qalıb"
+msgstr[1] "%d saat (%d%%) qalıb"
 
 #: battstat/battstat_applet.c:407
 #, c-format
 msgid "%d hour (%d%%) till charged (%d%%)"
 msgid_plural "%d hours (%d%%) till charged (%d%%)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "dolmağa %d saat (%d%%) qalıb (%d%%)"
+msgstr[1] "dolmağa %d saat (%d%%) qalıb (%d%%)"
 
 #. TRANSLATOR: "%d %s %d %s" are "%d hours %d minutes"
 #. * Swap order with "%2$s %2$d %1$s %1$d if needed
 #: battstat/battstat_applet.c:414
 #, c-format
 msgid "%d %s %d %s (%d%%) remaining"
-msgstr ""
+msgstr "%d %s %d %s (%d%%) qalıb"
 
 #: battstat/battstat_applet.c:415 battstat/battstat_applet.c:422
 msgid "hour"
 msgid_plural "hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "saat"
+msgstr[1] "saat"
 
 #: battstat/battstat_applet.c:416 battstat/battstat_applet.c:423
-#, fuzzy
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "dəqiqə"
@@ -337,25 +335,25 @@ msgstr[1] "dəqiqə"
 #: battstat/battstat_applet.c:421
 #, c-format
 msgid "%d %s %d %s till charged (%d%%)"
-msgstr ""
+msgstr "dolmağa %d %s %d %s var (%d%%)"
 
 #: battstat/battstat_applet.c:536
 msgid "Your battery is running low"
-msgstr ""
+msgstr "Batareyanızın gücü zəyifləyir"
 
 #: battstat/battstat_applet.c:538
 msgid "To avoid losing work please power off, suspend or plug your laptop in."
 msgstr ""
+"İtkilərin baş verməməsi üçün xahiş edirik kompüterinizi söndürün, gözləmə "
+"vəziyyətinə gətirin ya da cərəyana bağlayın."
 
 #: battstat/battstat_applet.c:541 battstat/battstat_applet.c:594
-#, fuzzy
 msgid "Battery Notice"
-msgstr "Batareya: Mövcud deyil"
+msgstr "Batareya Bildirişi"
 
 #: battstat/battstat_applet.c:614
-#, fuzzy
 msgid "Your battery is now fully recharged"
-msgstr "İndi batareya tamamilə dolduruldu!"
+msgstr "İndi batareyanız tamamilə dolduruldu"
 
 #: battstat/battstat_applet.c:693 wireless/wireless-applet.c:146
 #: wireless/wireless-applet.c:147
@@ -363,16 +361,14 @@ msgid "N/A"
 msgstr "M/D"
 
 #: battstat/battstat_applet.c:835
-#, fuzzy
 msgid "Battery status unknown"
-msgstr "Batareya Vəziyyəti Tə'minatı"
+msgstr "Batareya vəziyyəti naməlumdur"
 
 #. Displayed as a tooltip over the battery meter when no
 #. battery is present.
 #: battstat/battstat_applet.c:842 battstat/battstat_applet.c:854
-#, fuzzy
 msgid "No battery present"
-msgstr "Batareya: Mövcud deyil"
+msgstr "Batareya mövcud deyil"
 
 #. Displayed if the APM device couldn't be opened. (Used under *BSD)
 #: battstat/battstat_applet.c:954
@@ -431,9 +427,8 @@ msgid "Jorgen Pehrson <jp@spektr.eu.org>"
 msgstr "Jorgen Pehrson <jp@spektr.eu.org>"
 
 #: battstat/battstat_applet.c:1087
-#, fuzzy
 msgid "(C) 2000 The Gnulix Society, (C) 2002-2004 Free Software Foundation"
-msgstr "(C) 2000 The Gnulix Society, (C) 2002 Free Software Foundation"
+msgstr "(C) 2000 The Gnulix Society, (C) 2002-2004 Free Software Foundation"
 
 #: battstat/battstat_applet.c:1088
 msgid "This utility shows the status of your laptop battery."
@@ -494,7 +489,7 @@ msgid "Battery Charge Monitor Preferences"
 msgstr "Batareya Dolma İzləyicisi Qurğuları"
 
 #: battstat/battstat_applet.glade.h:13 drivemount/properties.c:358
-#: gweather/gweather-pref.c:1049 mailcheck/mailcheck.c:2053
+#: gweather/gweather-pref.c:1052 mailcheck/mailcheck.c:2053
 #: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:563
 msgid "General"
 msgstr "Ümumi"
@@ -554,22 +549,20 @@ msgstr "_Sarı:"
 #: battstat/properties.c:291 drivemount/drivemount.c:509
 #: drivemount/properties.c:604 mailcheck/mailcheck.c:2320
 #: mailcheck/mailcheck.c:2614 mini-commander/src/preferences.c:364
-#: mixer/mixer.c:1462 stickynotes/stickynotes_applet_callbacks.c:238
+#: mixer/mixer.c:1505 stickynotes/stickynotes_applet_callbacks.c:238
 #: stickynotes/stickynotes_applet_callbacks.c:402
-#: wireless/wireless-applet.c:542 wireless/wireless-applet.c:626
+#: wireless/wireless-applet.c:544 wireless/wireless-applet.c:628
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Yardımın göstərilməsi sırasında xəta oldu: %s"
 
 #: battstat/properties.c:494
-#, fuzzy
 msgid "Progress Bar Direction Moves towards top"
-msgstr "<b>İrəliləmə Çubuğu İstiqaməti</b>"
+msgstr "İrəliləmə çubuğu yuxarı istiqamətləndirilsin"
 
 #: battstat/properties.c:504
-#, fuzzy
 msgid "Progress Bar Direction Moves towards bottom"
-msgstr "<b>İrəliləmə Çubuğu İstiqaməti</b>"
+msgstr "İrəliləmə çubuğu aşağı istiqamətləndirilsin"
 
 #: battstat/sounds/battstat_applet.soundlist.in.h:1
 msgid "Battery Status Utility"
@@ -628,7 +621,7 @@ msgstr "Sonrakı Mahnı"
 msgid "You do not have permission to use the CD player."
 msgstr "CD Çalğıcısını işlətmək üçün lazımi səlahiyyətləriniz yoxdur."
 
-#: cdplayer/cdplayer.c:378 mixer/mixer.c:1316 multiload/main.c:142
+#: cdplayer/cdplayer.c:378 mixer/mixer.c:1359 multiload/main.c:142
 #, c-format
 msgid "There was an error executing '%s': %s"
 msgstr "'%s' icra edilirkən xəta oldu: %s"
@@ -685,7 +678,7 @@ msgstr ""
 
 #: cdplayer/cdplayer.c:1002
 msgid "No Device Found or Illegal Format"
-msgstr ""
+msgstr "Avadanlıq Tapılmadı ya da Səhv Format"
 
 #: cdplayer/cdplayer.c:1106
 msgid "Click this button to Stop playing the CD"
@@ -725,9 +718,9 @@ msgid "Available palettes"
 msgstr "Mövcud palitralar"
 
 #: charpick/charpick.c:455
-#, fuzzy, c-format
+#, c-format
 msgid "insert special character %s"
-msgstr "Xusüsi hərflər daxil et"
+msgstr "xüsusi %s hərfini daxil et"
 
 #: charpick/charpick.c:460
 msgid "Insert special characters"
@@ -783,7 +776,7 @@ msgstr ""
 
 #: charpick/properties.c:24
 msgid "_Edit"
-msgstr ""
+msgstr "_Düzəlt"
 
 #: charpick/properties.c:113
 msgid "_Palette:"
@@ -810,9 +803,8 @@ msgid "Palettes list"
 msgstr "Palitra siyahısı"
 
 #: charpick/properties.c:454
-#, fuzzy
 msgid "_Palettes:"
-msgstr "_Palitra:"
+msgstr "_Palitralar:"
 
 #: charpick/properties.c:470
 msgid "Add button"
@@ -860,9 +852,8 @@ msgid "Mount local disks and devices"
 msgstr "Yerli disk və avadanlıqları bağla"
 
 #: drivemount/GNOME_DriveMountApplet.xml.h:2
-#, fuzzy
 msgid "_Browse"
-msgstr "Gəz"
+msgstr "_Gəz"
 
 #: drivemount/GNOME_DriveMountApplet.xml.h:3
 msgid "_Eject"
@@ -953,12 +944,11 @@ msgstr "Floppy"
 
 #: drivemount/properties.c:457
 msgid "CD-ROM"
-msgstr ""
+msgstr "CD-ROM"
 
 #: drivemount/properties.c:460
-#, fuzzy
 msgid "CD Recorder"
-msgstr "Cd Yazıcısı"
+msgstr "CD Yazıcı"
 
 #: drivemount/properties.c:463
 msgid "Zip Drive"
@@ -1001,12 +991,10 @@ msgid "_Scale size to panel"
 msgstr "Panelə görə ölçüsünü _dəyişdir"
 
 #: drivemount/properties.c:552
-#, fuzzy
 msgid "_Eject disk when unmounted"
-msgstr "Sürücünü ayırandan sonra çı_xart"
+msgstr "Sürücünü ayırıldıqdan sonra çı_xart"
 
 #: drivemount/properties.c:562
-#, fuzzy
 msgid "Use _automount-friendly status test"
 msgstr "_automount dostu vəziyyət sınaması işlət"
 
@@ -1236,17 +1224,14 @@ msgid "Arabic keymap"
 msgstr "Ərəb Dili düzülüşü"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:1
-#, fuzzy
 msgid "Azerbaidjan"
 msgstr "Azərbaycan"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Azerbaidjani Turkic"
 msgstr "Azərbaycan Türkçəsi"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Azerbaidjani Turkic xkb keymap"
 msgstr "Azəri Türkçəsi xkb düzülüşü"
 
@@ -1327,15 +1312,13 @@ msgstr "Belarusiya"
 
 #: gkb-new/descs/BY_Belarussian.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:15 gkb-new/descs.sun/presets.xml.in.h:8
-#, fuzzy
 msgid "Belarusian"
-msgstr "Belarus Dili"
+msgstr "Belarusca"
 
 #: gkb-new/descs/BY_Belarussian.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:16
-#, fuzzy
 msgid "Belarusian xkb keymap"
-msgstr "Belarus Dili xkb düzülüşü"
+msgstr "Belarusca xkb düzülüşü"
 
 #: gkb-new/descs/Basque.keyprop.desktop.in.h:1
 #: gkb-new/descs/presets.xml.in.h:13
@@ -1365,7 +1348,7 @@ msgstr "Fransız Dili"
 
 #: gkb-new/descs/Belgian.keyprop.desktop.in.h:5
 msgid "Wallon"
-msgstr ""
+msgstr "Valunca"
 
 #: gkb-new/descs/BulgarianCyril.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:24
@@ -1443,9 +1426,8 @@ msgid "Czech qwertz xkb keymap"
 msgstr "Çex Dili qwertz xkb düzülüşü"
 
 #: gkb-new/descs/CZ_Czech.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Former Czechoslovakia Czech Republic"
-msgstr "Köhnə Çexoslovakiya"
+msgstr "Köhnə Çexoslovakiya Çex Respublikası"
 
 #: gkb-new/descs/CZ_Czech_Slovak.keyprop.desktop.in.h:2
 #: gkb-new/descs/CZ_Czech_x.keyprop.desktop.in.h:2
@@ -1516,12 +1498,11 @@ msgstr "Danimarka"
 msgid "Danish keymap"
 msgstr "Daniya Dili düzülüşü"
 
-#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:848
-#: gweather/gweather-pref.c:868 gweather/gweather-pref.c:892
-#: gweather/gweather-pref.c:918
-#, fuzzy
+#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:871 gweather/gweather-pref.c:895
+#: gweather/gweather-pref.c:921
 msgid "Default"
-msgstr "Əsası İş_lət"
+msgstr "Ön Qurğulu"
 
 #: gkb-new/descs/Default.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:80 gkb-new/descs.sun/presets.xml.in.h:48
@@ -1879,19 +1860,16 @@ msgid "Japanese keymap"
 msgstr "Yapon Dili düzülüşü"
 
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:1
-#, fuzzy
 msgid "Korean"
-msgstr "İordaniya"
+msgstr "Koreyaca"
 
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Korean 106 keyboard"
-msgstr "Fransız Dili PC/AT 101 klaviaturası"
+msgstr "Koreyaca 106 klaviatura"
 
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "South Korea"
-msgstr "Cənubi Şərq"
+msgstr "Cənubi Koreya"
 
 #: gkb-new/descs/LA_Lao_x.keyprop.desktop.in.h:1
 #: gkb-new/descs/presets.xml.in.h:114
@@ -1901,7 +1879,7 @@ msgstr "Lao"
 #: gkb-new/descs/LA_Lao_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:115
 msgid "Lao keymap"
-msgstr "Lao Dili düzülüşü"
+msgstr "Lao düzülüşü"
 
 #: gkb-new/descs/LA_Lao_x.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:116
@@ -1922,12 +1900,12 @@ msgstr "Litva"
 #: gkb-new/descs/LT_Standard.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:120 gkb-new/descs.sun/presets.xml.in.h:73
 msgid "Lithuanian"
-msgstr "Litva Dili"
+msgstr "Litovca"
 
 #: gkb-new/descs/LT_Lithuanian.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:123
 msgid "Lithuanian qwerty xkb keymap"
-msgstr "Litva Dili qwerty xkb düzülüşü"
+msgstr "Litovca qwerty xkb düzülüşü"
 
 #: gkb-new/descs/LT_Lithuanian_x.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:121
@@ -1978,9 +1956,8 @@ msgid "Mongolian"
 msgstr "Monqol Dili"
 
 #: gkb-new/descs/MN_Mongolian.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Mongolian keyboard"
-msgstr "Monqol Dili düzülüşü"
+msgstr "Monqolca klaviatura"
 
 #: gkb-new/descs/MN_Mongolian_x.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:132
@@ -1988,19 +1965,17 @@ msgid "Mongolian keymap"
 msgstr "Monqol Dili düzülüşü"
 
 #: gkb-new/descs/MN_Mongolian_x_rev.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Plain Mongolian keymap"
-msgstr "Monqol Dili düzülüşü"
+msgstr "Monqolca sadə düzülüş"
 
 #: gkb-new/descs/MN_Mongolian_x_uni.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Unicode Mongolian Keymap"
-msgstr "Monqol Dili düzülüşü"
+msgstr "Monqol yunikod düzülüş"
 
 #: gkb-new/descs/NL_Dutch_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:44
 msgid "Dutch keymap"
-msgstr "Niderland Dili düzülüşü"
+msgstr "Niderlanca düzülüş"
 
 #: gkb-new/descs/NL_Dutch_x.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:135
@@ -2189,14 +2164,12 @@ msgid "Serbia and Montenegro"
 msgstr "Serbiya və Montenegro"
 
 #: gkb-new/descs/SR_Dutch.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Serbian standard xkb keymap"
-msgstr "Serb Dili standart xkb düzülüşü"
+msgstr "Serbcə standart xkb düzülüşü"
 
 #: gkb-new/descs/SK__x.keyprop.desktop.in.h:1
-#, fuzzy
 msgid " keymap"
-msgstr "Lao Dili düzülüşü"
+msgstr " düzülüş"
 
 #: gkb-new/descs/Syriac.keyprop.desktop.in.h:1
 #: gkb-new/descs/Syriac_Phonetic.keyprop.desktop.in.h:1
@@ -2205,14 +2178,12 @@ msgid "Syriac"
 msgstr "Syriac"
 
 #: gkb-new/descs/Syriac.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Syriac xkb keymap"
-msgstr "Ərəb Dili xkb düzülüşü"
+msgstr "Syriac xkb düzülüşü"
 
 #: gkb-new/descs/Syriac_Phonetic.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Syriac Phonetic xkb keymap"
-msgstr "Syriac Dili Fonetik"
+msgstr "Syriac Fonetik xkb düzülüşü"
 
 #: gkb-new/descs/TH_Thai.keyprop.desktop.in.h:1
 #: gkb-new/descs/TH_Thai_x.keyprop.desktop.in.h:1
@@ -2429,9 +2400,8 @@ msgstr "Vyetnam Dili xkb düzülüşü"
 #: gkb-new/descs/YU_Serb_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/YU_Serbo-Croatian_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/Yugoslav.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Serb keymap"
-msgstr "Serb düzülüşü"
+msgstr "Serbcə düzülüş"
 
 #: gkb-new/descs/presets.xml.in.h:9 gkb-new/descs.sun/presets.xml.in.h:4
 msgid "Azerbaijan"
@@ -2490,9 +2460,8 @@ msgid "Azerbaijani Turkish Sun keymap"
 msgstr "Azərbaycan Türkçəsi Sun düzülüşü"
 
 #: gkb-new/descs.sun/presets.xml.in.h:9
-#, fuzzy
 msgid "Belarusian Sun keymap"
-msgstr "Belarus Dili düzülüşü"
+msgstr "Belarusca düzülüş"
 
 #: gkb-new/descs.sun/presets.xml.in.h:12
 msgid "Brazil Portuguese Sun USB keymap"
@@ -2766,24 +2735,20 @@ msgstr ""
 "Xüsusiyyətlər dialoqundan seçilə bilər"
 
 #: gkb-new/gkb.c:353
-#, fuzzy
 msgid "US 105 key keyboard"
-msgstr "US 101-düyməli klaviatura"
+msgstr "US 105 düyməli klaviatura"
 
 #: gkb-new/gkb.c:353
-#, fuzzy
 msgid "Gnome Keyboard Default"
-msgstr "Gnome Klaviatura əsası"
+msgstr "Ön Qurğulu Gnome Klaviaturası"
 
 #: gkb-new/gkb.c:357
-#, fuzzy
 msgid "default"
-msgstr "Əsası İş_lət"
+msgstr "ön qurğulu"
 
 #: gkb-new/gkb.c:361
-#, fuzzy
 msgid "Gnome Keyboard"
-msgstr "Gnome Klaviatura əsası"
+msgstr "Gnome Klaviaturası"
 
 #: gkb-new/gkb.schemas.in.h:1
 msgid "Appearance mode of the applet"
@@ -2818,14 +2783,12 @@ msgid "The country of the keyboard layout"
 msgstr "Klaviatura düzülüşünün ölkəsi"
 
 #: gkb-new/gkb.schemas.in.h:9
-#, fuzzy
 msgid "The default keymap"
-msgstr "Tay Dili düzülüşü"
+msgstr "Ön qurğulu düzülüş"
 
 #: gkb-new/gkb.schemas.in.h:10
-#, fuzzy
 msgid "The default keymap for the applet"
-msgstr "Appletin ön qurğulu tıqlama davranışı"
+msgstr "Appletin ön qurğulu düzülüşü"
 
 #: gkb-new/gkb.schemas.in.h:11
 msgid "The label of the keyboard layout"
@@ -2936,7 +2899,7 @@ msgstr "Etiket"
 msgid "Flag and Label"
 msgstr "Bayraq və Etiket"
 
-#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1034
+#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1037
 #: modemlights/properties.c:444
 msgid "Display"
 msgstr "Göstər"
@@ -3013,9 +2976,8 @@ msgstr ""
 "Əmr belə idi: %s"
 
 #: gswitchit/GNOME_GSwitchItApplet.xml.h:1
-#, fuzzy
 msgid "Pl_ugins"
-msgstr "Ə_lavələr..."
+msgstr "Ə_lavələr"
 
 #: gswitchit/GNOME_GSwitchItApplet.xml.h:3
 msgid "_Groups"
@@ -3034,7 +2996,7 @@ msgid "GNOME keyboard layout indicator"
 msgstr "GNOME klaviatura düzülüşü seçicisi"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:3
-#: gswitchit/gswitchit-applet.c:613
+#: gswitchit/gswitchit-applet.c:604
 msgid "Keyboard Indicator"
 msgstr "Klaviatura Göstəricisi"
 
@@ -3047,20 +3009,19 @@ msgstr "Klaviatura applet e'malatxanası"
 msgid "Keyboard Indicator (%s)"
 msgstr "Klaviatura Göstəricisi (%s)"
 
-#: gswitchit/gswitchit-applet.c:616
-#, fuzzy
+#: gswitchit/gswitchit-applet.c:607
 msgid "Copyright (c) Sergey V. Udaltsov 1999-2004"
 msgstr "Müəllif Hüququ (c) Sergey V. Oudaltsov 1999-2004"
 
-#: gswitchit/gswitchit-applet.c:618
+#: gswitchit/gswitchit-applet.c:609
 msgid "Keyboard layout indicator applet for GNOME"
 msgstr "GNOME üçün klaviatura düzülüşü göstəricisi"
 
-#: gswitchit/gswitchit-applet.c:772
+#: gswitchit/gswitchit-applet.c:763
 msgid "XKB initialization error"
 msgstr "XKB hazırlanma xətası"
 
-#: gswitchit/gswitchit-applet.c:780
+#: gswitchit/gswitchit-applet.c:771
 msgid "Error loading XKB configuration registry"
 msgstr "XKB qurğu mə'lumatları yüklənəndə xəta yarandı."
 
@@ -3072,11 +3033,11 @@ msgstr ""
 "Düzülüşün sadəcə olaraq applet popup menyusundan yetişilməsini fəallaşdır.\n"
 "Klaviatura işlədərək bu düzülüşə keçmək mümkün deyil."
 
-#: gswitchit/gswitchit-capplet.c:265
+#: gswitchit/gswitchit-capplet.c:262
 msgid "_Exclude from keyboard switching"
 msgstr "Klaviatura keçişlərindən _xaric tut"
 
-#: gswitchit/gswitchit-capplet.c:296
+#: gswitchit/gswitchit-capplet.c:293
 msgid "Not used"
 msgstr "İstifadədə deyil"
 
@@ -3239,13 +3200,12 @@ msgid "Could not retrieve the stock data."
 msgstr "Fond mə'lumatları alına bilmədi."
 
 #: gtik/gtik.c:280
-#, fuzzy
 msgid "No stock list"
-msgstr "Keçmiş siyahısı"
+msgstr "Fond siyahısı yoxdur"
 
 #: gtik/gtik.c:313 gweather/gweather-applet.c:476
 msgid "Updating..."
-msgstr "Güncəllə ..."
+msgstr "Yenilənir..."
 
 #: gtik/gtik.c:748
 msgid ""
@@ -3287,7 +3247,7 @@ msgstr "Simvollar"
 msgid "Behavior"
 msgstr "Davranış"
 
-#: gtik/gtik.c:1434 gweather/gweather-pref.c:994
+#: gtik/gtik.c:1434 gweather/gweather-pref.c:997
 msgid "Update"
 msgstr "Yenilə"
 
@@ -3295,7 +3255,7 @@ msgstr "Yenilə"
 msgid "Stock update fre_quency:"
 msgstr "Fond təzələmə _sıxlığı:"
 
-#: gtik/gtik.c:1450 gweather/gweather-pref.c:1018 mailcheck/mailcheck.c:2101
+#: gtik/gtik.c:1450 gweather/gweather-pref.c:1021 mailcheck/mailcheck.c:2101
 #: mailcheck/mailcheck.c:2107
 msgid "minutes"
 msgstr "dəqiqə"
@@ -3390,9 +3350,8 @@ msgstr ""
 #. * "(No Change)". FIXME: string composition is bad.
 #.
 #: gtik/gtik.c:2029
-#, fuzzy
 msgid "(No Change"
-msgstr "Dəyişdir "
+msgstr "(Dəyişilməyib"
 
 #: gtik/gtik.schemas.in.h:1
 msgid "Applet scrolls right to left when this key is set to true."
@@ -3537,7 +3496,7 @@ msgstr "yazı növü 2 - artıq istifadə edilmir"
 
 #: gweather/GNOME_GWeatherApplet.xml.h:2
 msgid "_Details"
-msgstr ""
+msgstr "_Təfərruatlar"
 
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:1
 msgid "Factory for creating the weather applet."
@@ -3575,9 +3534,8 @@ msgid "GNOME Weather"
 msgstr "GNOME Hava"
 
 #: gweather/gweather-dialog.c:83
-#, fuzzy
 msgid "Details"
-msgstr "Daniya Dili"
+msgstr "Təfərruatlar"
 
 #: gweather/gweather-dialog.c:123
 msgid "City:"
@@ -3601,15 +3559,15 @@ msgstr "İstilik:"
 
 #: gweather/gweather-dialog.c:163
 msgid "Feels like:"
-msgstr ""
+msgstr "Hissedilən:"
 
 #: gweather/gweather-dialog.c:171
 msgid "Dew point:"
-msgstr "Dew nöqtəsi:"
+msgstr "Nəm nöqtəsi:"
 
 #: gweather/gweather-dialog.c:179
 msgid "Relative humidity:"
-msgstr ""
+msgstr "Nisbi nəm:"
 
 #: gweather/gweather-dialog.c:187
 msgid "Wind:"
@@ -3648,9 +3606,8 @@ msgid "_Visit Weather.com"
 msgstr "_Weather.com'u ziyarət et"
 
 #: gweather/gweather-dialog.c:376
-#, fuzzy
 msgid "Visit Weather.com"
-msgstr "_Weather.com'u ziyarət et"
+msgstr "Weather.com-u ziyarət et"
 
 #: gweather/gweather-dialog.c:376
 msgid "Click to Enter Weather.com"
@@ -3658,7 +3615,7 @@ msgstr "Weather.com'u ziyarət etmək üçün tıqlayın"
 
 #: gweather/gweather-dialog.c:465
 msgid "Forecast not currently available for this location."
-msgstr ""
+msgstr "Bu mövqe üçün hazırda hava təxmini mövcud deyil."
 
 #. Accessible Name and Description for the components in Preference Dialog
 #: gweather/gweather-pref.c:191
@@ -3687,158 +3644,149 @@ msgstr "URL'ni daxil edin"
 
 #. TRANSLATOR: This is the default unit to use for temperature measurements.
 #. Valid values are: "K" (Kelvin), "C" (Celsius) and "F" (Fahrenheit)
-#: gweather/gweather-pref.c:400 gweather/gweather-pref.c:409
+#: gweather/gweather-pref.c:403 gweather/gweather-pref.c:412
 msgid "DEFAULT_TEMP_UNIT"
-msgstr ""
+msgstr "DEFAULT_TEMP_UNIT"
 
 #. TRANSLATOR: This is the default unit to use for wind speed.
 #. Valid values are: "m/s" (meters per second), "km/h" (kilometers per hour),
 #. "mph" (miles per hour) and "knots"
-#: gweather/gweather-pref.c:435 gweather/gweather-pref.c:445
+#: gweather/gweather-pref.c:438 gweather/gweather-pref.c:448
 msgid "DEFAULT_SPEED_UNIT"
-msgstr ""
+msgstr "km/s"
 
 #. TRANSLATOR: This is the default unit to use for atmospheric pressure.
 #. Valid values are: "kPa" (kiloPascals), "hPa" (hectoPascals),
 #. "mb" (millibars), "mmHg" (millimeters of mercury) and
 #. "inHg" (inches of mercury)
-#: gweather/gweather-pref.c:473 gweather/gweather-pref.c:484
+#: gweather/gweather-pref.c:476 gweather/gweather-pref.c:487
 msgid "DEFAULT_PRESSURE_UNIT"
-msgstr ""
+msgstr "kPa"
 
 #. TRANSLATOR: This is the default unit to use for visibility distance.
 #. Valid values are: "m" (meters), "km" (kilometers) and "mi" (miles)
-#: gweather/gweather-pref.c:510 gweather/gweather-pref.c:519
+#: gweather/gweather-pref.c:513 gweather/gweather-pref.c:522
 msgid "DEFAULT_DISTANCE_UNIT"
-msgstr ""
+msgstr "km"
 
-#: gweather/gweather-pref.c:797
+#: gweather/gweather-pref.c:800
 msgid "Weather Preferences"
 msgstr "Hava Qurğuları"
 
-#: gweather/gweather-pref.c:830 gweather/gweather-pref.c:998
+#: gweather/gweather-pref.c:833 gweather/gweather-pref.c:1001
 msgid "_Automatically update every:"
 msgstr "_Avtomatik yeniləmə aralığı:"
 
 #. Temperature Unit
-#: gweather/gweather-pref.c:839
-#, fuzzy
+#: gweather/gweather-pref.c:842
 msgid "_Temperature Unit:"
-msgstr "İstilik:"
-
-#: gweather/gweather-pref.c:849
-#, fuzzy
-msgid "Kelvin"
-msgstr "Belgiya Dili"
-
-#. TRANSLATORS: Celsius is sometimes referred Centigrade
-#: gweather/gweather-pref.c:851
-msgid "Celsius"
-msgstr ""
+msgstr "_İstilik Vahidi: "
 
 #: gweather/gweather-pref.c:852
-#, fuzzy
+msgid "Kelvin"
+msgstr "Kelvin"
+
+#. TRANSLATORS: Celsius is sometimes referred Centigrade
+#: gweather/gweather-pref.c:854
+msgid "Celsius"
+msgstr "Celsius"
+
+#: gweather/gweather-pref.c:855
 msgid "Fahrenheit"
-msgstr "Fransız Dili"
+msgstr "Fahrenheit"
 
 #. Speed Unit
-#: gweather/gweather-pref.c:859
+#: gweather/gweather-pref.c:862
 msgid "_Wind Speed Unit:"
-msgstr ""
+msgstr "_Küləyin Sürət Vahidi:"
 
 #. TRANSLATOR: The wind speed unit "meters per second"
-#: gweather/gweather-pref.c:870
+#: gweather/gweather-pref.c:873
 msgid "m/s"
-msgstr ""
+msgstr "m/s"
 
 #. TRANSLATOR: The wind speed unit "kilometers per hour"
-#: gweather/gweather-pref.c:872
+#: gweather/gweather-pref.c:875
 msgid "km/h"
-msgstr ""
+msgstr "km/h"
 
 #. TRANSLATOR: The wind speed unit "miles per hour"
-#: gweather/gweather-pref.c:874
-#, fuzzy
+#: gweather/gweather-pref.c:877
 msgid "mph"
-msgstr "kph"
+msgstr "mph"
 
 #. TRANSLATOR: The wind speed unit "knots"
-#: gweather/gweather-pref.c:876
+#: gweather/gweather-pref.c:879
 msgid "knots"
 msgstr "knots"
 
 #. Pressure Unit
-#: gweather/gweather-pref.c:883
-#, fuzzy
+#: gweather/gweather-pref.c:886
 msgid "_Pressure Unit:"
-msgstr "Təzyiq:"
+msgstr "_Təzyiq Vahidi:"
 
 #. TRANSLATOR: The pressure unit "kiloPascals"
-#: gweather/gweather-pref.c:894
-#, fuzzy
+#: gweather/gweather-pref.c:897
 msgid "kPa"
-msgstr "hPa"
+msgstr "kPa"
 
 #. TRANSLATOR: The pressure unit "hectoPascals"
-#: gweather/gweather-pref.c:896
+#: gweather/gweather-pref.c:899
 msgid "hPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "millibars"
-#: gweather/gweather-pref.c:898
+#: gweather/gweather-pref.c:901
 msgid "mb"
-msgstr ""
+msgstr "mb"
 
 #. TRANSLATOR: The pressure unit "millibars of mercury"
-#: gweather/gweather-pref.c:900
+#: gweather/gweather-pref.c:903
 msgid "mmHg"
-msgstr ""
+msgstr "mmHg"
 
 #. TRANSLATOR: The pressure unit "inches of mercury"
-#: gweather/gweather-pref.c:902
+#: gweather/gweather-pref.c:905
 msgid "inHg"
 msgstr "inHg"
 
 #. Distance Unit
-#: gweather/gweather-pref.c:909
-#, fuzzy
+#: gweather/gweather-pref.c:912
 msgid "_Visibility Unit:"
-msgstr "Görünüş:"
+msgstr "_Görünüş Vahidi:"
 
 #. TRANSLATOR: The distance unit "meters"
-#: gweather/gweather-pref.c:920
-#, fuzzy
+#: gweather/gweather-pref.c:923
 msgid "meters"
-msgstr "kilometr"
+msgstr "metr"
 
 #. TRANSLATOR: The distance unit "kilometers"
-#: gweather/gweather-pref.c:922
+#: gweather/gweather-pref.c:925
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATOR: The distance unit "miles"
-#: gweather/gweather-pref.c:924
+#: gweather/gweather-pref.c:927
 msgid "miles"
 msgstr "mil"
 
-#: gweather/gweather-pref.c:949
+#: gweather/gweather-pref.c:952
 msgid "Enable _radar map"
 msgstr "Radar _xəritəsini fəallaşdır"
 
-#: gweather/gweather-pref.c:963
-#, fuzzy
+#: gweather/gweather-pref.c:966
 msgid "Use _custom address for radar map"
-msgstr "Radar xəritəsi üçün xüsusi ü_nvan işlət"
+msgstr "Radar xəritəsi üçün _xüsusi ünvan işlət"
 
-#: gweather/gweather-pref.c:980
+#: gweather/gweather-pref.c:983
 msgid "A_ddress:"
 msgstr "Ü_nvan:"
 
-#: gweather/gweather-pref.c:1062
+#: gweather/gweather-pref.c:1065
 msgid "_Select a location:"
 msgstr "_Mövqeyi seç:"
 
-#: gweather/gweather-pref.c:1092
+#: gweather/gweather-pref.c:1095
 msgid "Location"
 msgstr "Yer"
 
@@ -3849,7 +3797,7 @@ msgstr "Yer"
 #: gweather/gweather.schemas.in.h:1 gweather/weather.c:136
 #: gweather/weather.c:141
 msgid "DEFAULT_CODE"
-msgstr ""
+msgstr "KJFK"
 
 #. TRANSLATOR: Change this to the default location name (1st parameter) in the
 #. gweather/Locations file
@@ -3858,7 +3806,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:2 gweather/weather.c:115
 #: gweather/weather.c:120 gweather/weather.c:121
 msgid "DEFAULT_LOCATION"
-msgstr ""
+msgstr "New York-JFK Arpt"
 
 #. Translators: Change this to the default location radar (4th parameter) in the
 #. gweather/Locations file
@@ -3867,7 +3815,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:3 gweather/weather.c:167
 #: gweather/weather.c:172
 msgid "DEFAULT_RADAR"
-msgstr ""
+msgstr "nyc"
 
 #. TRANSLATOR: Change this to the default location zone (3rd parameter) in the
 #. gweather/Locations file
@@ -3876,7 +3824,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:4 gweather/weather.c:152
 #: gweather/weather.c:157
 msgid "DEFAULT_ZONE"
-msgstr ""
+msgstr "NYZ076"
 
 #: gweather/gweather.schemas.in.h:5
 msgid ""
@@ -3889,9 +3837,8 @@ msgid "Display radar map"
 msgstr "Radar xəritəsini göstər"
 
 #: gweather/gweather.schemas.in.h:7
-#, fuzzy
 msgid "Distance units"
-msgstr "Metrik sistem vahidllərini işlət"
+msgstr "Uzaqlıq vahidləri"
 
 #: gweather/gweather.schemas.in.h:8
 msgid "Fetch a radar map on each update."
@@ -3911,18 +3858,16 @@ msgid "Not used anymore"
 msgstr "Artıq istifadə edilmir"
 
 #: gweather/gweather.schemas.in.h:11
-#, fuzzy
 msgid "Pressure units"
-msgstr "Təzyiq:"
+msgstr "Təzyiq vahidləri"
 
 #: gweather/gweather.schemas.in.h:12
 msgid "Speed units"
-msgstr ""
+msgstr "Sürət vahidləri"
 
 #: gweather/gweather.schemas.in.h:13
-#, fuzzy
 msgid "Temperature units"
-msgstr "İstilik:"
+msgstr "İstilik vahidləri"
 
 #: gweather/gweather.schemas.in.h:14
 msgid "The custom url from where to retrieve a radar map."
@@ -3934,19 +3879,19 @@ msgstr "Avtomatik yeniləmələr arasındakı saniyə olaraq aralıq."
 
 #: gweather/gweather.schemas.in.h:16
 msgid "The temperature units to use."
-msgstr ""
+msgstr "İşlədiləcək istilik vahidi."
 
 #: gweather/gweather.schemas.in.h:17
 msgid "The unit to use for pressure."
-msgstr ""
+msgstr "İşlədiləcək təzyiq vahidi."
 
 #: gweather/gweather.schemas.in.h:18
 msgid "The unit to use for visibility."
-msgstr ""
+msgstr "İşlədiləcək görünüş vahidi."
 
 #: gweather/gweather.schemas.in.h:19
 msgid "The unit to use for wind speed."
-msgstr ""
+msgstr "İşlədiləcək külək sürəti vahidi."
 
 #: gweather/gweather.schemas.in.h:21
 msgid "Update the data automatically"
@@ -3974,7 +3919,7 @@ msgstr "hava mövqeyi mə'lumatı."
 
 #: gweather/weather.c:128
 msgid "Pittsburgh"
-msgstr ""
+msgstr "Pittsburgh"
 
 #: gweather/weather.c:222
 msgid "Variable"
@@ -4387,70 +4332,70 @@ msgstr "Namə'lum müşahidə vaxtıı"
 #: gweather/weather.c:2150 gweather/weather.c:2153
 #, c-format
 msgid "%.1f F"
-msgstr ""
+msgstr "%.1f F"
 
 #. TRANSLATOR: This is the temperature in degrees fahrenheit, use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2158 gweather/weather.c:2161
 #, c-format
 msgid "%dF"
-msgstr ""
+msgstr "%dF"
 
 #. TRANSLATOR: This is the temperature in degrees centigrade , use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2169 gweather/weather.c:2172
 #, c-format
 msgid "%.1f C"
-msgstr ""
+msgstr "%.1f C"
 
 #. TRANSLATOR: This is the temperature in degrees centigrade , use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2177 gweather/weather.c:2180
 #, c-format
 msgid "%dC"
-msgstr ""
+msgstr "%dC"
 
 #. TRANSLATOR: This is the temperature in Kelvin
 #: gweather/weather.c:2189
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #. TRANSLATOR: This is the temperature in Kelvin
 #: gweather/weather.c:2192
 #, c-format
 msgid "%dK"
-msgstr ""
+msgstr "%dK"
 
 #. TRANSLATOR: This is the humidity in percent
 #: gweather/weather.c:2244
 #, c-format
 msgid "%.f%%"
-msgstr ""
+msgstr "%.f%%"
 
 #. TRANSLATOR: This is the wind speed in knots
 #: gweather/weather.c:2269
-#, fuzzy, c-format
+#, c-format
 msgid "%0.1f knots"
-msgstr "knots"
+msgstr "%0.1f knot"
 
 #. TRANSLATOR: This is the wind speed in miles per hour
 #: gweather/weather.c:2273
 #, c-format
 msgid "%.1f mph"
-msgstr ""
+msgstr "%.1f mph"
 
 #. TRANSLATOR: This is the wind speed in kilometers per hour
 #: gweather/weather.c:2277
 #, c-format
 msgid "%.1f km/h"
-msgstr ""
+msgstr "%.1f km/s"
 
 #. TRANSLATOR: This is the wind speed in meters per second
 #: gweather/weather.c:2281
 #, c-format
 msgid "%.1f m/s"
-msgstr ""
+msgstr "%.1f m/s"
 
 #: gweather/weather.c:2302
 msgid "Calm"
@@ -4458,57 +4403,57 @@ msgstr "Sakit"
 
 #. TRANSLATOR: This is 'wind direction' / 'wind speed'
 #: gweather/weather.c:2306
-#, fuzzy, c-format
+#, c-format
 msgid "%s / %s"
-msgstr "%s/%s"
+msgstr "%s / %s"
 
 #. TRANSLATOR: This is pressure in inches of mercury
 #: gweather/weather.c:2324
-#, fuzzy, c-format
+#, c-format
 msgid "%.2f inHg"
-msgstr "inHg"
+msgstr "%.2f inHg"
 
 #. TRANSLATOR: This is pressure in millimeters of mercury
 #: gweather/weather.c:2328
 #, c-format
 msgid "%.1f mmHg"
-msgstr ""
+msgstr "%.1f mmHg"
 
 #. TRANSLATOR: This is pressure in kiloPascals
 #: gweather/weather.c:2332
 #, c-format
 msgid "%.2f kPa"
-msgstr ""
+msgstr "%.2f kPa"
 
 #. TRANSLATOR: This is pressure in hectoPascals
 #: gweather/weather.c:2336
 #, c-format
 msgid "%.2f hPa"
-msgstr ""
+msgstr "%.2f hPa"
 
 #. TRANSLATOR: This is pressure in millibars
 #: gweather/weather.c:2340
 #, c-format
 msgid "%.2f mb"
-msgstr ""
+msgstr "%.2f mb"
 
 #. TRANSLATOR: This is the visibility in miles
 #: gweather/weather.c:2365
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f miles"
-msgstr "mil"
+msgstr "%.1f mil"
 
 #. TRANSLATOR: This is the visibility in kilometers
 #: gweather/weather.c:2369
 #, c-format
 msgid "%.1f km"
-msgstr ""
+msgstr "%.1f km"
 
 #. TRANSLATOR: This is the visibility in meters
 #: gweather/weather.c:2373
 #, c-format
 msgid "%.0fm"
-msgstr ""
+msgstr "%.0fm"
 
 #: gweather/weather.c:2414
 msgid "Retrieval failed"
@@ -4690,9 +4635,8 @@ msgstr "Yeni məktub gələndə _səs çal"
 
 #. l = gtk_check_button_new_with_mnemonic (_("Set the number of unread mails to _zero when clicked"));
 #: mailcheck/mailcheck.c:2151
-#, fuzzy
 msgid "Sto_p animation when clicked"
-msgstr "Cüt tıqlananda animasiyanı _dayandır"
+msgstr "Tıqlananda animasiyanı _dayandır"
 
 #: mailcheck/mailcheck.c:2164
 msgid "Select a_nimation:"
@@ -4719,9 +4663,8 @@ msgid "Command to execute when new mail arrives"
 msgstr "Yeni məktub gələndə icra ediləcək əmr"
 
 #: mailcheck/mailcheck.c:2267
-#, fuzzy
 msgid "When clicke_d:"
-msgstr "Cüt _tıqlananda:"
+msgstr "_Tıqlananda:"
 
 #: mailcheck/mailcheck.c:2282
 msgid "Command to execute when clicked"
@@ -4895,7 +4838,6 @@ msgid "MiniCommander Applet Factory"
 msgstr "Kiçik-Əmr Appleti E'malatxanası"
 
 #: mini-commander/src/about.c:72
-#, fuzzy
 msgid ""
 "This GNOME applet adds a command line to the panel. It features command "
 "completion, command history, and changeable macros.\n"
@@ -5195,8 +5137,8 @@ msgstr "Əmr"
 msgid "Adjust the sound volume"
 msgstr "Səs səviyyəsini dəyişdir"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:199
-#: mixer/mixer.c:1363
+#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:210
+#: mixer/mixer.c:1406
 msgid "Volume Control"
 msgstr "Səs Səviyyəsi"
 
@@ -5208,115 +5150,115 @@ msgstr "_Səssiz"
 msgid "_Open Volume Control"
 msgstr "_Səs Səviyyəsi İdarəçisini Aç"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Main Volume"
 msgstr "Əsas Səs"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Bass"
 msgstr "Bas"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Treble"
 msgstr "Treble"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Synth"
 msgstr "Synth"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Pcm"
 msgstr "Pcm"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Speaker"
 msgstr "Spiker"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Line"
 msgstr "Giriş"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Microphone"
 msgstr "Mikrofon"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "CD"
 msgstr "CD"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Mix"
 msgstr "Mix"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Pcm2"
 msgstr "Pcm2"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Recording Level"
 msgstr "Qeyd Səviyyəsi"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Input Gain"
 msgstr "Giriş Artması"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Output Gain"
 msgstr "Çıxış Artması"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line1"
 msgstr "1ci Giriş"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line2"
 msgstr "2ci Giriş"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line3"
 msgstr "3cü Giriş"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Digital1"
 msgstr "Digital1"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital2"
 msgstr "Digital2"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital3"
 msgstr "Digital3"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Input"
 msgstr "Qulaqlıq Girişi"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Output"
 msgstr "Qulaqlıq Çıxışı"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Video"
 msgstr "Video"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Radio"
 msgstr "Radio"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Monitor"
 msgstr "Ekran"
 
-#: mixer/mixer.c:200
+#: mixer/mixer.c:211
 msgid "Volume Control (muted)"
 msgstr "Səs Səviyyəsi (səssiz)"
 
-#: mixer/mixer.c:201
+#: mixer/mixer.c:212
 msgid "No audio device"
 msgstr "Audio avadanlıq yoxdur"
 
-#: mixer/mixer.c:518
+#: mixer/mixer.c:546
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -5325,16 +5267,16 @@ msgstr ""
 "yoxlandı\n"
 " .\n"
 
-#: mixer/mixer.c:893
+#: mixer/mixer.c:936
 #, c-format
 msgid "Couldn't open mixer device %s\n"
 msgstr "%s mikser avadanlığı açıla bilmədı\n"
 
-#: mixer/mixer.c:1062
+#: mixer/mixer.c:1105
 msgid "Volume Controller"
 msgstr "Səs Səviyyəsi"
 
-#: mixer/mixer.c:1063
+#: mixer/mixer.c:1106
 msgid "Use Up/Down arrow keys to change volume"
 msgstr ""
 "Səs səviyyəsini dəyişdirmək üçün Yuxarı/Aşağı ox düymələrindən istifadə edin"
@@ -5343,37 +5285,37 @@ msgstr ""
 #  ** I don't know if there are sensible alternatives in other languages
 #. Translators - The + and - refer to increasing and decreasing the volume.
 #. ** I don't know if there are sensible alternatives in other languages
-#: mixer/mixer.c:1087
+#: mixer/mixer.c:1130
 msgid "+"
 msgstr "+"
 
-#: mixer/mixer.c:1088
+#: mixer/mixer.c:1131
 msgid "-"
 msgstr "-"
 
-#: mixer/mixer.c:1364
+#: mixer/mixer.c:1407
 msgid "(C) 2001 Richard Hult"
 msgstr "(C) 2001 Richard Hult"
 
-#: mixer/mixer.c:1365
+#: mixer/mixer.c:1408
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr ""
 "Səs səviyyəsi idarəsi sizə masa üstünüzdəki səsin səviyyəsini dəyişmə imkanı "
 "yaradır."
 
-#: mixer/mixer.c:1512
+#: mixer/mixer.c:1555
 msgid "Volume Control Preferences"
 msgstr "Səs Səviyyəsi Qurğuları"
 
-#: mixer/mixer.c:1536
+#: mixer/mixer.c:1579
 msgid "Audio Channels"
 msgstr "Audio Kanallar"
 
-#: mixer/mixer.c:1552
+#: mixer/mixer.c:1595
 msgid "_Select channel to control:"
 msgstr "Kontrol ediləcək _kanalı seç:"
 
-#: mixer/mixer.c:1888
+#: mixer/mixer.c:1936
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr ""
 "Səs səviyyəsi idarəsi sizə masa üstünüzdəki səsin səviyyəsini dəyişmə imkanı "
@@ -5647,7 +5589,7 @@ msgstr "_Bağlı:"
 
 #: modemlights/properties.c:603
 msgid "Disconnec_ted:"
-msgstr "_Ayrı:"
+msgstr "_Bağlı deyil:"
 
 #: modemlights/properties.c:606
 msgid "C_onnecting:"
@@ -5655,7 +5597,7 @@ msgstr "Bağ_lanır:"
 
 #: modemlights/properties.c:609
 msgid "Text"
-msgstr "Mətn :"
+msgstr "Mətn"
 
 #: modemlights/properties.c:617
 msgid "For_eground:"
@@ -5666,9 +5608,8 @@ msgid "Bac_kground:"
 msgstr "Ar_xa plan: "
 
 #: modemlights/properties.c:621
-#, fuzzy
 msgid "O_utline:"
-msgstr "X_arici"
+msgstr "X_arici:"
 
 #: modemlights/properties.c:624 multiload/properties.c:535
 msgid "Colors"
@@ -5759,6 +5700,9 @@ msgid ""
 "%d%% in use of which\n"
 "%d%% is cache"
 msgstr ""
+"%s:\n"
+"%d%% istifadədə, bunun\n"
+"%d%% qismi ara yaddaşdır"
 
 #: multiload/main.c:364
 #, c-format
@@ -6017,9 +5961,8 @@ msgid "Sticky Notes Applet Factory"
 msgstr "Yapışqan Qeydlər Aplet E'malatxanası"
 
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:2
-#, fuzzy
 msgid "_Delete Notes"
-msgstr "Qeydləri _Sil..."
+msgstr "Qeydləri _Sil"
 
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:4
 msgid "_Lock Notes"
@@ -6047,13 +5990,12 @@ msgid "<b>Default Note Properties</b>"
 msgstr "<b>Ön Qurğulu Qeyd Xassələri</b>"
 
 #: stickynotes/stickynotes.glade.h:5
-#, fuzzy
 msgid ""
 "<b>Delete all sticky notes?</b>\n"
 "\n"
 "Changes will be saved instantly."
 msgstr ""
-"<b>BÜTÜN yapışqan qeydlər silinsin?</b>\n"
+"<b>Bütün yapışqan qeydlər silinsin?</b>\n"
 "\n"
 "Dəyişiklik anında qeyd ediləcəkdir."
 
@@ -6092,9 +6034,8 @@ msgid "Choose a font to use for all sticky notes"
 msgstr "Bütün yapışqan qeydlər üçün istifadə ediləcək yazı növünü seç"
 
 #: stickynotes/stickynotes.glade.h:17
-#, fuzzy
 msgid "Choose if notes are visible on all workspaces"
-msgstr "Qeydlərin BÜTÜN iş sahələrində görsənməsi"
+msgstr "Qeydlərin bütün iş sahələrində göstərilməsi"
 
 #: stickynotes/stickynotes.glade.h:18
 msgid "Choose if the default style is forced on all notes"
@@ -6109,9 +6050,8 @@ msgid "Close note"
 msgstr "Qeydi bağla"
 
 #: stickynotes/stickynotes.glade.h:21
-#, fuzzy
 msgid "Create a new note"
-msgstr "yeni qeyd _yarat"
+msgstr "Yeni qeyd _yarat"
 
 #: stickynotes/stickynotes.glade.h:22
 msgid "Force _default color and font on notes"
@@ -6122,9 +6062,8 @@ msgid "H_eight:"
 msgstr "_Hündürlük:"
 
 #: stickynotes/stickynotes.glade.h:24
-#, fuzzy
 msgid "Lock/Unlock all notes"
-msgstr "bütün qeydləri _qıfılla/qıfılını aç"
+msgstr "Bütün qeydləri _qıfılla/qıfılını aç"
 
 #: stickynotes/stickynotes.glade.h:25
 msgid "Lock/Unlock note"
@@ -6151,7 +6090,6 @@ msgid "Resize note"
 msgstr "Qeydi ölçüləndir"
 
 #: stickynotes/stickynotes.glade.h:31
-#, fuzzy
 msgid "Show/Hide all notes"
 msgstr "Bütün qeydləri _göstər/gizlət"
 
@@ -6200,7 +6138,6 @@ msgid "_Color:"
 msgstr "_Rəng:"
 
 #: stickynotes/stickynotes.glade.h:43
-#, fuzzy
 msgid "_Delete All"
 msgstr "Hamısını _Sil"
 
@@ -6213,9 +6150,8 @@ msgid "_Lock Note"
 msgstr "Qeydi _Qıfılla"
 
 #: stickynotes/stickynotes.glade.h:48
-#, fuzzy
 msgid "_Properties"
-msgstr "_Xassələr..."
+msgstr "_Xassələr"
 
 #: stickynotes/stickynotes.glade.h:49
 msgid "_Put notes on all workspaces"
@@ -6407,38 +6343,38 @@ msgid "Monitor the quality of a wireless network link"
 msgstr "Kabelsiz şəbəkə bağının keyfiyyətini izlə"
 
 #: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
-#: wireless/wireless-applet.c:588 wireless/wireless-applet.c:840
+#: wireless/wireless-applet.c:590 wireless/wireless-applet.c:842
 msgid "Wireless Link Monitor"
 msgstr "Kabelsiz Bağ İzləyicisi"
 
 #: wireless/wireless-applet.c:144
 #, c-format
 msgid "Link Strength: %2.0d%%"
-msgstr ""
+msgstr "Siqnal Gücü: %2.0d%%"
 
-#: wireless/wireless-applet.c:367
+#: wireless/wireless-applet.c:369
 msgid ""
 "There doesn't seem to be any wireless devices configured on your system.\n"
 "Please verify your configuration if you think this is incorrect."
 msgstr ""
-"Sisteminizdə quraşdırılmış kabelsiz bağ avadanlıqları tapıla bilmədi.\n"
+"Sisteminizdə quraşdırılmış naqilsiz bağ avadanlıqları tapıla bilmədi.\n"
 "Bunun düz olmadığını fikirləşirsinizsə xahiş edirik, quraşdırmanızı yoxlayın."
 
-#: wireless/wireless-applet.c:502 wireless/wireless-applet.c:829
+#: wireless/wireless-applet.c:504 wireless/wireless-applet.c:831
 msgid "No Wireless Devices"
-msgstr "Kabelsiz Avadanlıq Yoxdur"
+msgstr "Naqilsiz Avadanlıq Yoxdur"
 
-#: wireless/wireless-applet.c:590
+#: wireless/wireless-applet.c:592
 msgid "(C) 2001, 2002 Free Software Foundation "
 msgstr "(C) 2001, 2002 Free Software Foundation "
 
-#: wireless/wireless-applet.c:591
+#: wireless/wireless-applet.c:593
 msgid "This utility shows the status of a wireless link."
-msgstr "Bu tə'minat kabelsiz bağın vəziyyətini göstərir. "
+msgstr "Bu tə'minat naqilsiz bağın vəziyyətini göstərir. "
 
-#: wireless/wireless-applet.c:841
+#: wireless/wireless-applet.c:843
 msgid "This utility shows the status of a wireless link"
-msgstr "Bu tə'minat kabelsiz bağın vəziyyətini göstərir"
+msgstr "Bu tə'minat naqilsiz bağın vəziyyətini göstərir"
 
 #: wireless/wireless-applet.glade.h:1
 msgid "Show signal strength in _percentage"
@@ -6446,127 +6382,8 @@ msgstr "Siqnalın gücünü _faiz olaraq göstər"
 
 #: wireless/wireless-applet.glade.h:2
 msgid "Wireless Link Monitor Preferences"
-msgstr "Kabelsiz Bağ İzləyicisi Seçimləri"
+msgstr "Naqilsiz Bağ İzləyicisi Seçimləri"
 
 #: wireless/wireless-applet.glade.h:3
 msgid "_Monitored device:"
 msgstr "_İzlənən avadanlıq:"
-
-#~ msgid "Utility"
-#~ msgstr "Vasitə"
-
-#~ msgid "High"
-#~ msgstr "Yüksək"
-
-#~ msgid "Low"
-#~ msgstr "Alçaq"
-
-#~ msgid "Critical"
-#~ msgstr "Kritik"
-
-#~ msgid "Charging"
-#~ msgstr "Dolur"
-
-#~ msgid "Battery low (%d%%) and AC is offline"
-#~ msgstr "Batareya səviyyəsi alçaqdır (%d%%) və cərəyan bağlı deyil"
-
-#~ msgid ""
-#~ "System is running on battery power\n"
-#~ "Battery: %d%% (%s)"
-#~ msgstr ""
-#~ "Sistem batareya ilə işləyir\n"
-#~ "Batateya: %d%% (%s)"
-
-#~ msgid ""
-#~ "System is running on AC power\n"
-#~ "Battery: %d%% (%s)"
-#~ msgstr ""
-#~ "Sistem cərəyan ilə işləyir\n"
-#~ "Batareya: %d%% (%s)"
-
-#~ msgid "System is running on battery power. Battery: %d%% (%s)"
-#~ msgstr "Sistem batareya ilə işləyir. Batareya: %d%% (%s)"
-
-#~ msgid "System is running on AC power. Battery: %d%% (%s)"
-#~ msgstr "Sistem cərəyan ilə işləyir. Batareya: %d%% (%s)"
-
-#~ msgid "System is running on battery power. Battery: Not present"
-#~ msgstr "Sistem batareya ilə işləyir. Batareya: Mövcud deyil"
-
-#~ msgid "System is running on AC power. Battery: Not present"
-#~ msgstr "Sistem cərəyan ilə işləyir. Batareya: Mövcud deyil"
-
-#~ msgid "Battery: %d%% (%s)"
-#~ msgstr "Batareya: %d%% (%s)"
-
-#~ msgid "Multimedia"
-#~ msgstr "Multimedya"
-
-#~ msgid "Path to the device"
-#~ msgstr "Avadanlığın yolu"
-
-#~ msgid ""
-#~ "This is the full path of the device that will be used to play cd's from "
-#~ "this applet"
-#~ msgstr ""
-#~ "Bu appletlə CDləri çalmaq üçün istifadə ediləcək avadanlığın tam yolu"
-
-#~ msgid "Pal_ettes:"
-#~ msgstr "Pa_litralar:"
-
-#~ msgid "_Browse..."
-#~ msgstr "_Gəz..."
-
-#~ msgid "Cdrom"
-#~ msgstr "Cdrom"
-
-#~ msgid "Amusements"
-#~ msgstr "Əyləncə"
-
-#~ msgid "Accessories"
-#~ msgstr "Donatılar"
-
-#~ msgid "(No"
-#~ msgstr "(Xeyir"
-
-#~ msgid "_Forecast"
-#~ msgstr "_Hava Təxmini"
-
-#~ msgid "Humidity:"
-#~ msgstr "Nəm nisbəti:"
-
-#~ msgid "URL link Button"
-#~ msgstr "URL körpü Düyməsi"
-
-#~ msgid ""
-#~ "Detailed forecast not available for this location.\n"
-#~ "Please try the state forecast; note that IWIN forecasts are available "
-#~ "only for US cities."
-#~ msgstr ""
-#~ "Bu mövqe üçün ətraflı hava təxmini mövcud deyil.\n"
-#~ "Xahiş edirik dövlət hava təxminini sınayın; qeyd edək ki IWIN hava "
-#~ "təxminləri ancaq ABŞ şəhərləri üçündür."
-
-#~ msgid ""
-#~ "State forecast not available for this location.\n"
-#~ "Please try the detailed forecast; note that IWIN forecasts are available "
-#~ "only for US cities."
-#~ msgstr ""
-#~ "Bu mövqe üçün dövlət hava təxmini mövcud deyil.\n"
-#~ "Xahiş edirik ətraflı hava təxminini sınayın; qeyd edək ki IWIN hava "
-#~ "təxminləri ancaq ABŞ şəhərləri üçündür."
-
-#~ msgid "Use _metric system units"
-#~ msgstr "_Metrik sistem vahidlləri istifadə et"
-
-#~ msgid "Internet"
-#~ msgstr "İnternet"
-
-#~ msgid "<b>Appearance</b>"
-#~ msgstr "<b>Görünüş</b>"
-
-#~ msgid "Show fram_e"
-#~ msgstr "Çərçivəni gö_stər"
-
-#~ msgid "Show han_dle"
-#~ msgstr "Qulpu _göstər"

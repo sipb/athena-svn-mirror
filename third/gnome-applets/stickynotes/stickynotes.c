@@ -173,7 +173,7 @@ static void
 response_cb (GtkWidget *dialog, gint id, gpointer data)
 {
         if (id == GTK_RESPONSE_HELP)
-                gnome_help_display ("stickynotes_applet", "stickynotes-introduction", NULL);
+                gnome_help_display ("stickynotes_applet", "stickynotes-settings-individual", NULL);
         else
                 gtk_widget_hide (dialog);
 }
@@ -600,6 +600,9 @@ void stickynotes_load(GdkScreen *screen)
 				gchar *visible = xmlGetProp(node, "visible");
 				if (visible)
 					stickynote_set_visible(note, strcmp(visible, "true") == 0);
+				else
+					stickynote_set_visible(note, FALSE);
+				    
 				g_free(visible);
 			}
 		}

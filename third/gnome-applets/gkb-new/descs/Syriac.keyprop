@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Syriac xkb keymap
+Name[ar]=لوحة مفاتيح xkb للسرياك
+Name[az]=Syriac xkb düzülüşü
 Name[bg]=Сирийска клавиатура xkb
 Name[bs]=sirijski xkb raspored
+Name[ca]=Mapa de teclat sirià xkb
 Name[cs]=Syrská mapa kláves xkb
 Name[cy]=Bysellfap XKB Syrieg
 Name[da]=Syrisk xkb-tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Syyrialainen xkb-näppäinkartta
 Name[fr]=Mappage clavier xkb syrien
 Name[gu]=સિરીયાક xkb કીમૅપ
 Name[hu]=Szír xkb-billentyűzetkiosztás
+Name[it]=Mappatura xkb siriaca
 Name[ja]=シリア語 xkb キーマップ
 Name[ko]=시리아어 XKB 키맵
+Name[lt]=Sirijos xkb išdėstymas
 Name[ms]=Keymap xkb Syria
 Name[nb]=Syriac xkb-tastaturkart
 Name[nl]=Syrisch xkb toetsenbord

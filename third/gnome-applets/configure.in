@@ -1,6 +1,6 @@
 AC_INIT(drivemount/drivemount.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-applets, 2.8.0)
+AM_INIT_AUTOMAKE(gnome-applets, 2.8.2)
 
 AM_MAINTAINER_MODE
 
@@ -280,7 +280,8 @@ if test "x$P_MIXER" = "x"; then
           AC_CHECK_HEADERS(sys/audioio.h, [P_MIXER=mixer],[
             AC_CHECK_HEADERS(sys/audio.io.h, [P_MIXER=mixer],[
               AC_CHECK_HEADERS(sun/audioio.h, [P_MIXER=mixer],[
-	        AC_CHECK_HEADERS(dmedia/audio.h, [P_MIXER=mixer]),]) ]) ]) ]) ]) ]) ])
+	        AC_CHECK_HEADERS(dmedia/audio.h, [P_MIXER=mixer],[
+                  AC_CHECK_HEADERS(sys/audio.h, [P_MIXER=mixer]),]),]) ]) ]) ]) ]) ]) ])
 fi
 
 AC_SUBST(MIXER_CFLAGS)

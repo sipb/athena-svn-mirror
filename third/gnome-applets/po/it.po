@@ -1,15 +1,17 @@
 # SOME DESCRIPTIVE TITLE: file po delle applet del pannello di GNOME
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Christopher R. Gabriel, <cgabriel@pluto.linux.it> 2000
+# Christopher R. Gabriel, <cgabriel@pluto.linux.it> 2000.
 # Francesco Marletta <francesco.marletta@tiscali.it>, 2003.
+# Leandro Noferini <lnoferin@cybervalley.org>, 2002,2003.
+# Luca Ferretti <elle.uca@infinito.it>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets 2.3.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:10+0800\n"
-"PO-Revision-Date: 2004-03-19 07:46+0100\n"
-"Last-Translator: Leandro Noferini <lnoferin@cybervalley.org>\n"
+"POT-Creation-Date: 2004-12-06 18:51+0800\n"
+"PO-Revision-Date: 2004-10-10 14:36+0200\n"
+"Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +31,6 @@ msgstr ""
 #: multiload/GNOME_MultiloadApplet.xml.h:1
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:1
 #: wireless/GNOME_WirelessApplet.xml.h:1
-#, fuzzy
 msgid "_About"
 msgstr "I_nformazioni"
 
@@ -72,12 +73,12 @@ msgstr "Mostra lo stato delle caratteristiche di accessibilità della tastiera"
 
 #: accessx-status/applet.c:136 battstat/battstat_applet.c:1064
 #: cdplayer/cdplayer.c:596 charpick/charpick.c:564 drivemount/drivemount.c:552
-#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:608
+#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:599
 #: gtik/gtik.c:723 gweather/gweather-about.c:47 mailcheck/mailcheck.c:2467
-#: mini-commander/src/about.c:50 mixer/mixer.c:1349
+#: mini-commander/src/about.c:50 mixer/mixer.c:1392
 #: modemlights/modemlights.c:118 multiload/main.c:58
 #: stickynotes/stickynotes_applet_callbacks.c:261
-#: wireless/wireless-applet.c:572
+#: wireless/wireless-applet.c:574
 msgid "translator_credits"
 msgstr ""
 "Mantenuto da:\n"
@@ -97,11 +98,12 @@ msgstr "Stato AccessX"
 msgid "Copyright (C) 2003 Sun Microsystems"
 msgstr "Copyright © 2003 Sun Microsystems"
 
+# quel latched andrebbe cambiato in originale...
 #: accessx-status/applet.c:159
 msgid "Shows the state of AccessX features such as latched modifiers"
 msgstr ""
-"Mostrare lo stato delle caratteristiche di AccessX come modificatori a "
-"serratura"
+"Mostra lo stato delle caratteristiche di AccessX come modificatori a due "
+"stati"
 
 #: accessx-status/applet.c:195
 #, c-format
@@ -111,7 +113,7 @@ msgstr "Si è verificato un errore nell'avviare il visualizzatore d'aiuto: %s"
 #: accessx-status/applet.c:234
 #, c-format
 msgid "There was an error launching the keyboard capplet : %s"
-msgstr "Si è verificato un errore avviando la capplet della tastiera: %s"
+msgstr "Si è verificato un errore nell'avviare la capplet della tastiera: %s"
 
 #. Note to translators: the first letter of the alphabet, not the indefinite article
 #: accessx-status/applet.c:483 accessx-status/applet.c:521
@@ -126,17 +128,16 @@ msgstr ""
 
 #: accessx-status/applet.c:1027
 msgid "XKB Extension is not enabled"
-msgstr ""
+msgstr "L'estensioe XKB non è abilitata"
 
 #: accessx-status/applet.c:1032
-#, fuzzy
 msgid "Unknown error"
-msgstr "Mappatura sconosciuta"
+msgstr "Errore sconosciuto"
 
 #: accessx-status/applet.c:1040
-#, fuzzy, c-format
+#, c-format
 msgid "Error: %s"
-msgstr "Errore"
+msgstr "Errore: %s"
 
 #: accessx-status/applet.c:1337
 msgid "Displays current state of keyboard accessibility features"
@@ -156,7 +157,7 @@ msgstr "Fabbrica Battstat"
 #: battstat/GNOME_BattstatApplet.server.in.in.h:3
 #: battstat/battstat_applet.c:1832
 msgid "Monitor a laptop's remaining power"
-msgstr "Controlla della carica rimasta del portatile"
+msgstr "Controlla la carica rimasta ad un portatile"
 
 #: battstat/GNOME_BattstatApplet.xml.h:3 cdplayer/GNOME_CDPlayerApplet.xml.h:4
 #: charpick/GNOME_CharpickerApplet.xml.h:3
@@ -170,7 +171,6 @@ msgstr "Controlla della carica rimasta del portatile"
 #: multiload/GNOME_MultiloadApplet.xml.h:4
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:6
 #: wireless/GNOME_WirelessApplet.xml.h:3
-#, fuzzy
 msgid "_Preferences"
 msgstr "Preferen_ze"
 
@@ -279,66 +279,65 @@ msgid "The applet will not work properly (if at all).\n"
 msgstr "L'applet non funzionerà correttamente ammesso che funzioni.\n"
 
 #: battstat/battstat_applet.c:382
-#, fuzzy, c-format
+#, c-format
 msgid "Battery charged (%d%%)"
-msgstr "Batteria completamente ri-caricata"
+msgstr "Batteria caricata (%d%%)"
 
 #: battstat/battstat_applet.c:384
 #, c-format
 msgid "Unknown time (%d%%) remaining"
-msgstr ""
+msgstr "Tempo rimanente (%d%%) sconosciuto"
 
 #: battstat/battstat_applet.c:386
 #, c-format
 msgid "Unknown time (%d%%) till charged"
-msgstr ""
+msgstr "Tempo sconosciuto (%d%%) fino alla carica"
 
 #: battstat/battstat_applet.c:391
 #, c-format
 msgid "%d minute (%d%%) remaining"
 msgid_plural "%d minutes (%d%%) remaining"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minuto (%d%%) rimanente"
+msgstr[1] "%d minuti (%d%%) rimanenti"
 
 #: battstat/battstat_applet.c:396
 #, c-format
 msgid "%d minute till charged (%d%%)"
 msgid_plural "%d minutes till charged (%d%%)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minuto alla carica (%d%%)"
+msgstr[1] "%d minuti alla carica (%d%%)"
 
 #: battstat/battstat_applet.c:402
 #, c-format
 msgid "%d hour (%d%%) remaining"
 msgid_plural "%d hours (%d%%) remaining"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ora (%d%%) rimanente"
+msgstr[1] "%d ore (%d%%) rimanenti"
 
 #: battstat/battstat_applet.c:407
 #, c-format
 msgid "%d hour (%d%%) till charged (%d%%)"
 msgid_plural "%d hours (%d%%) till charged (%d%%)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ora (%d%%) alla carica (%d%%)"
+msgstr[1] "%d ore (%d%%) alla carica (%d%%)"
 
 #. TRANSLATOR: "%d %s %d %s" are "%d hours %d minutes"
 #. * Swap order with "%2$s %2$d %1$s %1$d if needed
 #: battstat/battstat_applet.c:414
 #, c-format
 msgid "%d %s %d %s (%d%%) remaining"
-msgstr ""
+msgstr "%d %s e %d %s (%d%%) rimanenti"
 
 #: battstat/battstat_applet.c:415 battstat/battstat_applet.c:422
 msgid "hour"
 msgid_plural "hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ora"
+msgstr[1] "ore"
 
 #: battstat/battstat_applet.c:416 battstat/battstat_applet.c:423
-#, fuzzy
 msgid "minute"
 msgid_plural "minutes"
-msgstr[0] "minuti"
+msgstr[0] "minuto"
 msgstr[1] "minuti"
 
 #. TRANSLATOR: "%d %s %d %s" are "%d hours %d minutes"
@@ -346,25 +345,25 @@ msgstr[1] "minuti"
 #: battstat/battstat_applet.c:421
 #, c-format
 msgid "%d %s %d %s till charged (%d%%)"
-msgstr ""
+msgstr "%d %s e %d %s alla carica (%d%%)"
 
 #: battstat/battstat_applet.c:536
 msgid "Your battery is running low"
-msgstr ""
+msgstr "La batteria si sta esaurendo"
 
 #: battstat/battstat_applet.c:538
 msgid "To avoid losing work please power off, suspend or plug your laptop in."
 msgstr ""
+"Per evitare di perdere il proprio lavoro spegnere o sospendere il portatile "
+"oppure o iniziare la ricarica."
 
 #: battstat/battstat_applet.c:541 battstat/battstat_applet.c:594
-#, fuzzy
 msgid "Battery Notice"
-msgstr "Batteria: non presente"
+msgstr "Avviso batteria"
 
 #: battstat/battstat_applet.c:614
-#, fuzzy
 msgid "Your battery is now fully recharged"
-msgstr "La batteria è completamente ri-caricata!"
+msgstr "La batteria è ora completamente ricaricata!"
 
 #: battstat/battstat_applet.c:693 wireless/wireless-applet.c:146
 #: wireless/wireless-applet.c:147
@@ -372,16 +371,14 @@ msgid "N/A"
 msgstr "N/D"
 
 #: battstat/battstat_applet.c:835
-#, fuzzy
 msgid "Battery status unknown"
-msgstr "Utilità stato batteria"
+msgstr "Stato della batteria sconosciuto"
 
 #. Displayed as a tooltip over the battery meter when no
 #. battery is present.
 #: battstat/battstat_applet.c:842 battstat/battstat_applet.c:854
-#, fuzzy
 msgid "No battery present"
-msgstr "Batteria: non presente"
+msgstr "Nessuna batteria presente"
 
 #. Displayed if the APM device couldn't be opened. (Used under *BSD)
 #: battstat/battstat_applet.c:954
@@ -441,9 +438,8 @@ msgid "Jorgen Pehrson <jp@spektr.eu.org>"
 msgstr "Jörgen Pehrson <jp@spektr.eu.org>"
 
 #: battstat/battstat_applet.c:1087
-#, fuzzy
 msgid "(C) 2000 The Gnulix Society, (C) 2002-2004 Free Software Foundation"
-msgstr "© 2000 The Gnulix Society, © 2002 Free Software Foundation"
+msgstr "© 2000 The Gnulix Society, © 2002-2004 Free Software Foundation"
 
 #: battstat/battstat_applet.c:1088
 msgid "This utility shows the status of your laptop battery."
@@ -504,7 +500,7 @@ msgid "Battery Charge Monitor Preferences"
 msgstr "Preferenze di Monitor carica batteria"
 
 #: battstat/battstat_applet.glade.h:13 drivemount/properties.c:358
-#: gweather/gweather-pref.c:1049 mailcheck/mailcheck.c:2053
+#: gweather/gweather-pref.c:1052 mailcheck/mailcheck.c:2053
 #: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:563
 msgid "General"
 msgstr "Generali"
@@ -564,22 +560,20 @@ msgstr "_Giallo:"
 #: battstat/properties.c:291 drivemount/drivemount.c:509
 #: drivemount/properties.c:604 mailcheck/mailcheck.c:2320
 #: mailcheck/mailcheck.c:2614 mini-commander/src/preferences.c:364
-#: mixer/mixer.c:1462 stickynotes/stickynotes_applet_callbacks.c:238
+#: mixer/mixer.c:1505 stickynotes/stickynotes_applet_callbacks.c:238
 #: stickynotes/stickynotes_applet_callbacks.c:402
-#: wireless/wireless-applet.c:542 wireless/wireless-applet.c:626
+#: wireless/wireless-applet.c:544 wireless/wireless-applet.c:628
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Si è verificato un errore nel mostrare l'aiuto. %s"
 
 #: battstat/properties.c:494
-#, fuzzy
 msgid "Progress Bar Direction Moves towards top"
-msgstr "<b>Direzione barra avanzamento</b>"
+msgstr "Direzione della barra d'avanzamento verso l'alto"
 
 #: battstat/properties.c:504
-#, fuzzy
 msgid "Progress Bar Direction Moves towards bottom"
-msgstr "<b>Direzione barra avanzamento</b>"
+msgstr "Direzione della barra d'avanzamento verso il basso"
 
 #: battstat/sounds/battstat_applet.soundlist.in.h:1
 msgid "Battery Status Utility"
@@ -638,7 +632,7 @@ msgstr "Traccia successiva"
 msgid "You do not have permission to use the CD player."
 msgstr "Permessi non sufficienti per usare il lettore CD."
 
-#: cdplayer/cdplayer.c:378 mixer/mixer.c:1316 multiload/main.c:142
+#: cdplayer/cdplayer.c:378 mixer/mixer.c:1359 multiload/main.c:142
 #, c-format
 msgid "There was an error executing '%s': %s"
 msgstr "Si è verificato un errore nell'eseguire «%s»: %s"
@@ -694,7 +688,7 @@ msgstr "Il dispositivo audio è occupato o usato da un'altra applicazione"
 
 #: cdplayer/cdplayer.c:1002
 msgid "No Device Found or Illegal Format"
-msgstr ""
+msgstr "Nessun dispositivo trovato o formato illegale"
 
 #: cdplayer/cdplayer.c:1106
 msgid "Click this button to Stop playing the CD"
@@ -736,9 +730,9 @@ msgid "Available palettes"
 msgstr "Tavolozze disponibili"
 
 #: charpick/charpick.c:455
-#, fuzzy, c-format
+#, c-format
 msgid "insert special character %s"
-msgstr "Inserisce caratteri speciali"
+msgstr "inserisce il carattere speciale %s"
 
 #: charpick/charpick.c:460
 msgid "Insert special characters"
@@ -792,7 +786,7 @@ msgstr ""
 
 #: charpick/properties.c:24
 msgid "_Edit"
-msgstr ""
+msgstr "_Modifica"
 
 #: charpick/properties.c:113
 msgid "_Palette:"
@@ -819,9 +813,8 @@ msgid "Palettes list"
 msgstr "Lista delle tavolozze"
 
 #: charpick/properties.c:454
-#, fuzzy
 msgid "_Palettes:"
-msgstr "_Tavolozza:"
+msgstr "_Tavolozze:"
 
 #: charpick/properties.c:470
 msgid "Add button"
@@ -869,9 +862,8 @@ msgid "Mount local disks and devices"
 msgstr "Monta dischi e dispositivi locali"
 
 #: drivemount/GNOME_DriveMountApplet.xml.h:2
-#, fuzzy
 msgid "_Browse"
-msgstr "Sfoglia"
+msgstr "S_foglia"
 
 #: drivemount/GNOME_DriveMountApplet.xml.h:3
 msgid "_Eject"
@@ -962,10 +954,9 @@ msgstr "Floppy"
 
 #: drivemount/properties.c:457
 msgid "CD-ROM"
-msgstr ""
+msgstr "CD-ROM"
 
 #: drivemount/properties.c:460
-#, fuzzy
 msgid "CD Recorder"
 msgstr "Masterizzatore"
 
@@ -1010,12 +1001,10 @@ msgid "_Scale size to panel"
 msgstr "_Ridimensiona in base al pannello"
 
 #: drivemount/properties.c:552
-#, fuzzy
 msgid "_Eject disk when unmounted"
-msgstr "_Espellere dopo aver smontato"
+msgstr "_Espellere il disco dopo averlo smontato"
 
 #: drivemount/properties.c:562
-#, fuzzy
 msgid "Use _automount-friendly status test"
 msgstr "Controllare compatibilità con _automount"
 
@@ -1246,19 +1235,16 @@ msgid "Arabic keymap"
 msgstr "Mappatura araba"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:1
-#, fuzzy
 msgid "Azerbaidjan"
-msgstr "Azerbaijan"
+msgstr "Azerbaigian"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Azerbaidjani Turkic"
-msgstr "Turca azera"
+msgstr "Turco azerbaigiano"
 
 #: gkb-new/descs/AZ_Azerbaidjani_Turkic.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Azerbaidjani Turkic xkb keymap"
-msgstr "Mappatura xkb turco azera"
+msgstr "Mappatura xkb turca azerbaigiana"
 
 #: gkb-new/descs/BE_Dutch.keyprop.desktop.in.h:1
 #: gkb-new/descs/Belgian.keyprop.desktop.in.h:2
@@ -1337,13 +1323,11 @@ msgstr "Bielorussia"
 
 #: gkb-new/descs/BY_Belarussian.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:15 gkb-new/descs.sun/presets.xml.in.h:8
-#, fuzzy
 msgid "Belarusian"
 msgstr "Bielorussa"
 
 #: gkb-new/descs/BY_Belarussian.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:16
-#, fuzzy
 msgid "Belarusian xkb keymap"
 msgstr "Mappatura xkb bielorussa"
 
@@ -1375,7 +1359,7 @@ msgstr "Francese"
 
 #: gkb-new/descs/Belgian.keyprop.desktop.in.h:5
 msgid "Wallon"
-msgstr ""
+msgstr "Vallone"
 
 #: gkb-new/descs/BulgarianCyril.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:24
@@ -1453,9 +1437,8 @@ msgid "Czech qwertz xkb keymap"
 msgstr "Mappatura qwertz xkb ceca"
 
 #: gkb-new/descs/CZ_Czech.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Former Czechoslovakia Czech Republic"
-msgstr "Ex Cecoslovacchia"
+msgstr "Repubblica Ceca - Ex Cecoslovacchia"
 
 #: gkb-new/descs/CZ_Czech_Slovak.keyprop.desktop.in.h:2
 #: gkb-new/descs/CZ_Czech_x.keyprop.desktop.in.h:2
@@ -1526,12 +1509,11 @@ msgstr "Danimarca"
 msgid "Danish keymap"
 msgstr "Mappatura danese"
 
-#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:848
-#: gweather/gweather-pref.c:868 gweather/gweather-pref.c:892
-#: gweather/gweather-pref.c:918
-#, fuzzy
+#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:871 gweather/gweather-pref.c:895
+#: gweather/gweather-pref.c:921
 msgid "Default"
-msgstr "Usare il pre_definito"
+msgstr "Predefinita"
 
 #: gkb-new/descs/Default.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:80 gkb-new/descs.sun/presets.xml.in.h:48
@@ -1889,19 +1871,17 @@ msgid "Japanese keymap"
 msgstr "Mappatura giapponese"
 
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:1
-#, fuzzy
 msgid "Korean"
-msgstr "Giordania"
+msgstr "Coreana"
 
+# magari aggiungere "tasti"?
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Korean 106 keyboard"
-msgstr "Mappatura PC/AT 101 francese"
+msgstr "Tastiera 106 tasti coreana"
 
 #: gkb-new/descs/KR_Korean.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "South Korea"
-msgstr "SudEst"
+msgstr "Corea del Sud"
 
 #: gkb-new/descs/LA_Lao_x.keyprop.desktop.in.h:1
 #: gkb-new/descs/presets.xml.in.h:114
@@ -1988,9 +1968,8 @@ msgid "Mongolian"
 msgstr "Mongola"
 
 #: gkb-new/descs/MN_Mongolian.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Mongolian keyboard"
-msgstr "Mappatura mongola"
+msgstr "Tastiera mongola"
 
 #: gkb-new/descs/MN_Mongolian_x.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:132
@@ -1998,14 +1977,12 @@ msgid "Mongolian keymap"
 msgstr "Mappatura mongola"
 
 #: gkb-new/descs/MN_Mongolian_x_rev.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Plain Mongolian keymap"
-msgstr "Mappatura mongola"
+msgstr "Mappatura mongola semplice"
 
 #: gkb-new/descs/MN_Mongolian_x_uni.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Unicode Mongolian Keymap"
-msgstr "Mappatura mongola"
+msgstr "Mappatura mongola Unicode"
 
 #: gkb-new/descs/NL_Dutch_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/presets.xml.in.h:44
@@ -2074,12 +2051,12 @@ msgstr "Mappatura portoghese"
 #: gkb-new/descs/PolishDeadkeys.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:144
 msgid "Polish deadkeys"
-msgstr "Polacca con tasti inutilizzati"
+msgstr "Deadkey polacco"
 
 #: gkb-new/descs/PortugalDeadkeys.keyprop.desktop.in.h:3
 #: gkb-new/descs/presets.xml.in.h:147
 msgid "Portugal Deadkeys"
-msgstr "Portoghese con tasti inutilizzati"
+msgstr "Deadkey portoghese"
 
 #: gkb-new/descs/RO_Romanian.keyprop.desktop.in.h:1
 #: gkb-new/descs/presets.xml.in.h:152 gkb-new/descs.sun/presets.xml.in.h:88
@@ -2199,14 +2176,12 @@ msgid "Serbia and Montenegro"
 msgstr "Serbia e Montenegro"
 
 #: gkb-new/descs/SR_Dutch.keyprop.desktop.in.h:3
-#, fuzzy
 msgid "Serbian standard xkb keymap"
 msgstr "Mappatura xkb standard serba"
 
 #: gkb-new/descs/SK__x.keyprop.desktop.in.h:1
-#, fuzzy
 msgid " keymap"
-msgstr "Mappatura laotiana"
+msgstr " mappatura"
 
 #: gkb-new/descs/Syriac.keyprop.desktop.in.h:1
 #: gkb-new/descs/Syriac_Phonetic.keyprop.desktop.in.h:1
@@ -2215,14 +2190,12 @@ msgid "Syriac"
 msgstr "Siriana"
 
 #: gkb-new/descs/Syriac.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Syriac xkb keymap"
-msgstr "Mappatura xkb araba"
+msgstr "Mappatura xkb siriaca"
 
 #: gkb-new/descs/Syriac_Phonetic.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Syriac Phonetic xkb keymap"
-msgstr "Sirianan fonetica"
+msgstr "Mappatura xkb siriaca fonetica"
 
 #: gkb-new/descs/TH_Thai.keyprop.desktop.in.h:1
 #: gkb-new/descs/TH_Thai_x.keyprop.desktop.in.h:1
@@ -2439,7 +2412,6 @@ msgstr "Mappatura xkb vietnamita"
 #: gkb-new/descs/YU_Serb_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/YU_Serbo-Croatian_x.keyprop.desktop.in.h:2
 #: gkb-new/descs/Yugoslav.keyprop.desktop.in.h:2
-#, fuzzy
 msgid "Serb keymap"
 msgstr "Mappatura serba"
 
@@ -2461,7 +2433,7 @@ msgstr "Ex Cecoslovacchia"
 
 #: gkb-new/descs/presets.xml.in.h:131
 msgid "Mongolian alt keymap"
-msgstr "Mappatura alt mongola"
+msgstr "Mappatura alternativa mongola"
 
 #: gkb-new/descs/presets.xml.in.h:133
 msgid "Mongolian phonetic keymap"
@@ -2500,7 +2472,6 @@ msgid "Azerbaijani Turkish Sun keymap"
 msgstr "Mappatura Sun azero turca"
 
 #: gkb-new/descs.sun/presets.xml.in.h:9
-#, fuzzy
 msgid "Belarusian Sun keymap"
 msgstr "Mappatura Sun bielorussa"
 
@@ -2777,24 +2748,20 @@ msgstr ""
 "il tasto nella finestra di dialogo Preferenze"
 
 #: gkb-new/gkb.c:353
-#, fuzzy
 msgid "US 105 key keyboard"
-msgstr "Mappatura 101 tasti statunitense"
+msgstr "Tastiera 105 tasti statunitense"
 
 #: gkb-new/gkb.c:353
-#, fuzzy
 msgid "Gnome Keyboard Default"
 msgstr "Tastiera predefinita di GNOME"
 
 #: gkb-new/gkb.c:357
-#, fuzzy
 msgid "default"
-msgstr "Usare il pre_definito"
+msgstr "predefinita"
 
 #: gkb-new/gkb.c:361
-#, fuzzy
 msgid "Gnome Keyboard"
-msgstr "Tastiera predefinita di GNOME"
+msgstr "Tastiera di GNOME"
 
 #: gkb-new/gkb.schemas.in.h:1
 msgid "Appearance mode of the applet"
@@ -2829,14 +2796,12 @@ msgid "The country of the keyboard layout"
 msgstr "Il paese di questa configurazione"
 
 #: gkb-new/gkb.schemas.in.h:9
-#, fuzzy
 msgid "The default keymap"
-msgstr "Mappatura tailandese"
+msgstr "La mappatura predefinita"
 
 #: gkb-new/gkb.schemas.in.h:10
-#, fuzzy
 msgid "The default keymap for the applet"
-msgstr "Comportamento predefinito al clic"
+msgstr "La mappatura predefinita per l'applet"
 
 #: gkb-new/gkb.schemas.in.h:11
 msgid "The label of the keyboard layout"
@@ -2898,7 +2863,7 @@ msgstr "Mappatura (seleziona e premete aggiungi)"
 #: gkb-new/prop-add.c:229
 #, c-format
 msgid "Keymap `%s' for the country %s already exists"
-msgstr "La mappatura '%s' è già esistente per il paese %s"
+msgstr "La mappatura «%s» è già esistente per il paese %s"
 
 #: gkb-new/prop-add.c:328
 msgid "Select Keyboard"
@@ -2948,7 +2913,7 @@ msgstr "Etichetta"
 msgid "Flag and Label"
 msgstr "Bandiera ed etichetta"
 
-#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1034
+#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1037
 #: modemlights/properties.c:444
 msgid "Display"
 msgstr "Visualizzazione"
@@ -2968,7 +2933,7 @@ msgstr "Camb_ia layout:"
 
 #: gkb-new/prop.c:326
 msgid "_Grab keys"
-msgstr "_Definire le scorciatoie"
+msgstr "Cattura _tasti"
 
 #: gkb-new/prop.c:406
 msgid "Keyboard Layout Switcher Preferences"
@@ -3002,7 +2967,7 @@ msgid ""
 msgstr ""
 "Si è verificato un errore.\n"
 "\n"
-"La mappatura `%s' non è supportata da questo sistema. Scegliete un'altra "
+"La mappatura «%s» non è supportata da questo sistema. Scegliete un'altra "
 "mappatura.\n"
 "\n"
 "Il comando era: %s"
@@ -3019,16 +2984,15 @@ msgid ""
 msgstr ""
 "Si è verificato un errore.\n"
 "\n"
-"Impossibile caricare la mappatura `%s' probabilmente perché il comando "
-"`xmodmap' non\n"
-"si trova nel vostro PATH.\n"
+"Impossibile caricare la mappatura «%s» probabilmente perché il comando "
+"\"xmodmap\" non\n"
+"si trova nel PATH.\n"
 "\n"
 "Il comando era: %s"
 
 #: gswitchit/GNOME_GSwitchItApplet.xml.h:1
-#, fuzzy
 msgid "Pl_ugins"
-msgstr "Pl_ugin..."
+msgstr "Pl_ugin"
 
 #: gswitchit/GNOME_GSwitchItApplet.xml.h:3
 msgid "_Groups"
@@ -3036,7 +3000,7 @@ msgstr "_Gruppi"
 
 #: gswitchit/GNOME_GSwitchItApplet.xml.h:5
 msgid "_Open Keyboard Preferences"
-msgstr "_Apri Preferenze tastiera"
+msgstr "_Apri «Preferenze tastiera»"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:1
 msgid "GNOME keyboard applet factory"
@@ -3047,7 +3011,7 @@ msgid "GNOME keyboard layout indicator"
 msgstr "Indicatore dello schema della tastiera di GNOME"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:3
-#: gswitchit/gswitchit-applet.c:613
+#: gswitchit/gswitchit-applet.c:604
 msgid "Keyboard Indicator"
 msgstr "Indicatore tastiera"
 
@@ -3060,20 +3024,19 @@ msgstr "Fabbrica applet Tastiera"
 msgid "Keyboard Indicator (%s)"
 msgstr "Indicatore tastiera (%s)"
 
-#: gswitchit/gswitchit-applet.c:616
-#, fuzzy
+#: gswitchit/gswitchit-applet.c:607
 msgid "Copyright (c) Sergey V. Udaltsov 1999-2004"
 msgstr "Copyright © Sergey V. Udaltsov 1999-2004"
 
-#: gswitchit/gswitchit-applet.c:618
+#: gswitchit/gswitchit-applet.c:609
 msgid "Keyboard layout indicator applet for GNOME"
 msgstr "Applet per l'indicatore del layout della tastiera per GNOME"
 
-#: gswitchit/gswitchit-applet.c:772
+#: gswitchit/gswitchit-applet.c:763
 msgid "XKB initialization error"
 msgstr "Errore di inizializzazione di XKB"
 
-#: gswitchit/gswitchit-applet.c:780
+#: gswitchit/gswitchit-applet.c:771
 msgid "Error loading XKB configuration registry"
 msgstr "Errore nel caricare il registro di configurazione di XKB"
 
@@ -3085,11 +3048,11 @@ msgstr ""
 "Rende lo schema accessibile SOLO dal menù popup dell'applet.\n"
 "Non ci sarà modo di passare a questo schema usando la tastiera."
 
-#: gswitchit/gswitchit-capplet.c:265
+#: gswitchit/gswitchit-capplet.c:262
 msgid "_Exclude from keyboard switching"
 msgstr "_Escludere dal cambio di tastiera"
 
-#: gswitchit/gswitchit-capplet.c:296
+#: gswitchit/gswitchit-capplet.c:293
 msgid "Not used"
 msgstr "Non usato"
 
@@ -3248,16 +3211,15 @@ msgstr "Ticker azionario"
 #: gtik/GNOME_GtikApplet.xml.h:4 gweather/GNOME_GWeatherApplet.xml.h:5
 #: gweather/gweather-dialog.c:85 mailcheck/GNOME_MailCheckApplet.xml.h:4
 msgid "_Update"
-msgstr "_Aggiorna"
+msgstr "A_ggiorna"
 
 #: gtik/gtik.c:260
 msgid "Could not retrieve the stock data."
-msgstr "Impossibile scaricare i dati delle azioni."
+msgstr "Impossibile scaricare i dati dei titoli."
 
 #: gtik/gtik.c:280
-#, fuzzy
 msgid "No stock list"
-msgstr "Elenco cronologia"
+msgstr "Nessun elenco di titoli"
 
 #: gtik/gtik.c:313 gweather/gweather-applet.c:476
 msgid "Updating..."
@@ -3271,10 +3233,10 @@ msgid ""
 "investment decisions; it is for informational purposes only."
 msgstr ""
 "Questo programma si connette ad un sito conosciuto e scarica il valore "
-"corrente delle azioni. Il ticker azionario di GNOME è un programma libero "
-"basato su Internet. Viene distribuito SENZA ALCUNA GARANZIA. Non usate il "
-"ticker azionario per prendere decisioni su investimenti e consideratelo solo "
-"come una fonte di informazioni."
+"corrente delle titoli azionari. Il ticker azionario di GNOME è un programma "
+"libero basato su Internet. Viene distribuito SENZA ALCUNA GARANZIA. Non "
+"usate il ticker azionario per prendere decisioni su investimenti e "
+"consideratelo solo come una fonte di informazioni."
 
 #: gtik/gtik.c:1270
 msgid "Current _stocks:"
@@ -3290,7 +3252,7 @@ msgstr "A_ggiungi"
 
 #: gtik/gtik.c:1296
 msgid "_Remove"
-msgstr "Eli_mina"
+msgstr "_Rimuovi"
 
 #: gtik/gtik.c:1402
 msgid "Stock Ticker Preferences"
@@ -3304,7 +3266,7 @@ msgstr "Simboli"
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: gtik/gtik.c:1434 gweather/gweather-pref.c:994
+#: gtik/gtik.c:1434 gweather/gweather-pref.c:997
 msgid "Update"
 msgstr "Aggiorna"
 
@@ -3312,7 +3274,7 @@ msgstr "Aggiorna"
 msgid "Stock update fre_quency:"
 msgstr "Fre_quenza di aggiornamento:"
 
-#: gtik/gtik.c:1450 gweather/gweather-pref.c:1018 mailcheck/mailcheck.c:2101
+#: gtik/gtik.c:1450 gweather/gweather-pref.c:1021 mailcheck/mailcheck.c:2101
 #: mailcheck/mailcheck.c:2107
 msgid "minutes"
 msgstr "minuti"
@@ -3373,15 +3335,15 @@ msgstr "_Tipo di carattere:"
 
 #: gtik/gtik.c:1607
 msgid "Stock _raised:"
-msgstr "Azione in _rialzo:"
+msgstr "Titolo in _rialzo:"
 
 #: gtik/gtik.c:1626
 msgid "Stock _lowered:"
-msgstr "Azione in ri_basso:"
+msgstr "Titolo in ri_basso:"
 
 #: gtik/gtik.c:1645
 msgid "Stock _unchanged:"
-msgstr "Azione _stabile:"
+msgstr "Titolo _stabile:"
 
 #: gtik/gtik.c:1664 modemlights/properties.c:580
 msgid "_Background:"
@@ -3407,9 +3369,8 @@ msgstr ""
 #. * "(No Change)". FIXME: string composition is bad.
 #.
 #: gtik/gtik.c:2029
-#, fuzzy
 msgid "(No Change"
-msgstr "Cambia "
+msgstr "(nessuna modifica"
 
 #: gtik/gtik.schemas.in.h:1
 msgid "Applet scrolls right to left when this key is set to true."
@@ -3425,7 +3386,7 @@ msgid ""
 "Display only stock symbols along with their value. Do not diplay changes in "
 "value."
 msgstr ""
-"Mostrare solo i simboli delle azioni accanto al loro valore. Non mostrare i "
+"Mostrare solo i simboli dei titoli accanto al loro valore. Non mostrare i "
 "cambiamenti del valore."
 
 #: gtik/gtik.schemas.in.h:4
@@ -3441,7 +3402,7 @@ msgid ""
 "List containing the stocks to be displayed. Consists of the stock id "
 "separated by \"+\""
 msgstr ""
-"Elenco contenente le azioni da mostrare. Consiste degli id delle azioni "
+"Elenco contenente i titoli da mostrare. Consiste degli id delle azioni "
 "separati da \"+\""
 
 #: gtik/gtik.schemas.in.h:7
@@ -3558,7 +3519,7 @@ msgstr "font 2 - non più usato"
 
 #: gweather/GNOME_GWeatherApplet.xml.h:2
 msgid "_Details"
-msgstr ""
+msgstr "_Dettagli"
 
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:1
 msgid "Factory for creating the weather applet."
@@ -3596,9 +3557,8 @@ msgid "GNOME Weather"
 msgstr "Previsioni di GNOME"
 
 #: gweather/gweather-dialog.c:83
-#, fuzzy
 msgid "Details"
-msgstr "Danese"
+msgstr "Dettagli"
 
 #: gweather/gweather-dialog.c:123
 msgid "City:"
@@ -3620,9 +3580,10 @@ msgstr "Cielo:"
 msgid "Temperature:"
 msgstr "Temperatura:"
 
+# è una temperatura, credo quella percepita.
 #: gweather/gweather-dialog.c:163
 msgid "Feels like:"
-msgstr ""
+msgstr "Percepita:"
 
 #: gweather/gweather-dialog.c:171
 msgid "Dew point:"
@@ -3630,7 +3591,7 @@ msgstr "Punto di rugiada:"
 
 #: gweather/gweather-dialog.c:179
 msgid "Relative humidity:"
-msgstr ""
+msgstr "Umidità relativa:"
 
 #: gweather/gweather-dialog.c:187
 msgid "Wind:"
@@ -3669,9 +3630,8 @@ msgid "_Visit Weather.com"
 msgstr "_Visita Weather.com"
 
 #: gweather/gweather-dialog.c:376
-#, fuzzy
 msgid "Visit Weather.com"
-msgstr "_Visita Weather.com"
+msgstr "Visita Weather.com"
 
 #: gweather/gweather-dialog.c:376
 msgid "Click to Enter Weather.com"
@@ -3679,7 +3639,7 @@ msgstr "Fare clic per visitare Weather.com"
 
 #: gweather/gweather-dialog.c:465
 msgid "Forecast not currently available for this location."
-msgstr ""
+msgstr "Previsione non disponibile per questa località, al momento."
 
 #. Accessible Name and Description for the components in Preference Dialog
 #: gweather/gweather-pref.c:191
@@ -3708,158 +3668,149 @@ msgstr "Immetti l'URL"
 
 #. TRANSLATOR: This is the default unit to use for temperature measurements.
 #. Valid values are: "K" (Kelvin), "C" (Celsius) and "F" (Fahrenheit)
-#: gweather/gweather-pref.c:400 gweather/gweather-pref.c:409
+#: gweather/gweather-pref.c:403 gweather/gweather-pref.c:412
 msgid "DEFAULT_TEMP_UNIT"
-msgstr ""
+msgstr "C"
 
 #. TRANSLATOR: This is the default unit to use for wind speed.
 #. Valid values are: "m/s" (meters per second), "km/h" (kilometers per hour),
 #. "mph" (miles per hour) and "knots"
-#: gweather/gweather-pref.c:435 gweather/gweather-pref.c:445
+#: gweather/gweather-pref.c:438 gweather/gweather-pref.c:448
 msgid "DEFAULT_SPEED_UNIT"
-msgstr ""
+msgstr "km/h"
 
 #. TRANSLATOR: This is the default unit to use for atmospheric pressure.
 #. Valid values are: "kPa" (kiloPascals), "hPa" (hectoPascals),
 #. "mb" (millibars), "mmHg" (millimeters of mercury) and
 #. "inHg" (inches of mercury)
-#: gweather/gweather-pref.c:473 gweather/gweather-pref.c:484
+#: gweather/gweather-pref.c:476 gweather/gweather-pref.c:487
 msgid "DEFAULT_PRESSURE_UNIT"
-msgstr ""
+msgstr "mb"
 
 #. TRANSLATOR: This is the default unit to use for visibility distance.
 #. Valid values are: "m" (meters), "km" (kilometers) and "mi" (miles)
-#: gweather/gweather-pref.c:510 gweather/gweather-pref.c:519
+#: gweather/gweather-pref.c:513 gweather/gweather-pref.c:522
 msgid "DEFAULT_DISTANCE_UNIT"
-msgstr ""
+msgstr "m"
 
-#: gweather/gweather-pref.c:797
+#: gweather/gweather-pref.c:800
 msgid "Weather Preferences"
-msgstr "Proprietà GNOME Meteo"
+msgstr "Preferenze di Meteo"
 
-#: gweather/gweather-pref.c:830 gweather/gweather-pref.c:998
+#: gweather/gweather-pref.c:833 gweather/gweather-pref.c:1001
 msgid "_Automatically update every:"
 msgstr "_Aggiornare automaticamente ogni:"
 
 #. Temperature Unit
-#: gweather/gweather-pref.c:839
-#, fuzzy
+#: gweather/gweather-pref.c:842
 msgid "_Temperature Unit:"
-msgstr "Temperatura:"
-
-#: gweather/gweather-pref.c:849
-#, fuzzy
-msgid "Kelvin"
-msgstr "Belga"
-
-#. TRANSLATORS: Celsius is sometimes referred Centigrade
-#: gweather/gweather-pref.c:851
-msgid "Celsius"
-msgstr ""
+msgstr "Misura della _temperatura:"
 
 #: gweather/gweather-pref.c:852
-#, fuzzy
+msgid "Kelvin"
+msgstr "Kelvin"
+
+#. TRANSLATORS: Celsius is sometimes referred Centigrade
+#: gweather/gweather-pref.c:854
+msgid "Celsius"
+msgstr "Celsius"
+
+#: gweather/gweather-pref.c:855
 msgid "Fahrenheit"
-msgstr "Francese"
+msgstr "Fahrenheit"
 
 #. Speed Unit
-#: gweather/gweather-pref.c:859
+#: gweather/gweather-pref.c:862
 msgid "_Wind Speed Unit:"
-msgstr ""
+msgstr "Misura della velocità del _vento:"
 
 #. TRANSLATOR: The wind speed unit "meters per second"
-#: gweather/gweather-pref.c:870
+#: gweather/gweather-pref.c:873
 msgid "m/s"
-msgstr ""
+msgstr "metri al secondo"
 
 #. TRANSLATOR: The wind speed unit "kilometers per hour"
-#: gweather/gweather-pref.c:872
+#: gweather/gweather-pref.c:875
 msgid "km/h"
-msgstr ""
+msgstr "kilometri all'ora"
 
 #. TRANSLATOR: The wind speed unit "miles per hour"
-#: gweather/gweather-pref.c:874
-#, fuzzy
+#: gweather/gweather-pref.c:877
 msgid "mph"
-msgstr "km/h"
+msgstr "miglia all'ora"
 
 #. TRANSLATOR: The wind speed unit "knots"
-#: gweather/gweather-pref.c:876
+#: gweather/gweather-pref.c:879
 msgid "knots"
 msgstr "nodi"
 
 #. Pressure Unit
-#: gweather/gweather-pref.c:883
-#, fuzzy
+#: gweather/gweather-pref.c:886
 msgid "_Pressure Unit:"
-msgstr "Pressione:"
+msgstr "Misura della _pressione:"
 
 #. TRANSLATOR: The pressure unit "kiloPascals"
-#: gweather/gweather-pref.c:894
-#, fuzzy
+#: gweather/gweather-pref.c:897
 msgid "kPa"
-msgstr "hPa"
+msgstr "kiloPascal"
 
 #. TRANSLATOR: The pressure unit "hectoPascals"
-#: gweather/gweather-pref.c:896
+#: gweather/gweather-pref.c:899
 msgid "hPa"
-msgstr "hPa"
+msgstr "ettoPascal"
 
 #. TRANSLATOR: The pressure unit "millibars"
-#: gweather/gweather-pref.c:898
+#: gweather/gweather-pref.c:901
 msgid "mb"
-msgstr ""
+msgstr "millibar"
 
 #. TRANSLATOR: The pressure unit "millibars of mercury"
-#: gweather/gweather-pref.c:900
+#: gweather/gweather-pref.c:903
 msgid "mmHg"
-msgstr ""
+msgstr "millimetri di mercurio"
 
 #. TRANSLATOR: The pressure unit "inches of mercury"
-#: gweather/gweather-pref.c:902
+#: gweather/gweather-pref.c:905
 msgid "inHg"
-msgstr "inHg"
+msgstr "pollici di mercurio"
 
 #. Distance Unit
-#: gweather/gweather-pref.c:909
-#, fuzzy
+#: gweather/gweather-pref.c:912
 msgid "_Visibility Unit:"
-msgstr "Visibilità:"
+msgstr "Misura della v_isibilità:"
 
 #. TRANSLATOR: The distance unit "meters"
-#: gweather/gweather-pref.c:920
-#, fuzzy
+#: gweather/gweather-pref.c:923
 msgid "meters"
-msgstr "chilometri"
+msgstr "metri"
 
 #. TRANSLATOR: The distance unit "kilometers"
-#: gweather/gweather-pref.c:922
+#: gweather/gweather-pref.c:925
 msgid "km"
-msgstr ""
+msgstr "kilometri"
 
 #. TRANSLATOR: The distance unit "miles"
-#: gweather/gweather-pref.c:924
+#: gweather/gweather-pref.c:927
 msgid "miles"
 msgstr "miglia"
 
-#: gweather/gweather-pref.c:949
+#: gweather/gweather-pref.c:952
 msgid "Enable _radar map"
 msgstr "A_bilitare le mappe radar"
 
-#: gweather/gweather-pref.c:963
-#, fuzzy
+#: gweather/gweather-pref.c:966
 msgid "Use _custom address for radar map"
-msgstr "U_sare un indirizzo specifico per le mappe radar"
+msgstr "Usare un indirizzo _personalizzato per le mappe radar"
 
-#: gweather/gweather-pref.c:980
+#: gweather/gweather-pref.c:983
 msgid "A_ddress:"
 msgstr "In_dirizzo:"
 
-#: gweather/gweather-pref.c:1062
+#: gweather/gweather-pref.c:1065
 msgid "_Select a location:"
 msgstr "_Selezionare una località:"
 
-#: gweather/gweather-pref.c:1092
+#: gweather/gweather-pref.c:1095
 msgid "Location"
 msgstr "Località"
 
@@ -3870,7 +3821,7 @@ msgstr "Località"
 #: gweather/gweather.schemas.in.h:1 gweather/weather.c:136
 #: gweather/weather.c:141
 msgid "DEFAULT_CODE"
-msgstr ""
+msgstr "LIRU"
 
 #. TRANSLATOR: Change this to the default location name (1st parameter) in the
 #. gweather/Locations file
@@ -3879,7 +3830,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:2 gweather/weather.c:115
 #: gweather/weather.c:120 gweather/weather.c:121
 msgid "DEFAULT_LOCATION"
-msgstr ""
+msgstr "Roma/Urbe"
 
 #. Translators: Change this to the default location radar (4th parameter) in the
 #. gweather/Locations file
@@ -3888,7 +3839,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:3 gweather/weather.c:167
 #: gweather/weather.c:172
 msgid "DEFAULT_RADAR"
-msgstr ""
+msgstr "---"
 
 #. TRANSLATOR: Change this to the default location zone (3rd parameter) in the
 #. gweather/Locations file
@@ -3897,7 +3848,7 @@ msgstr ""
 #: gweather/gweather.schemas.in.h:4 gweather/weather.c:152
 #: gweather/weather.c:157
 msgid "DEFAULT_ZONE"
-msgstr ""
+msgstr "------"
 
 #: gweather/gweather.schemas.in.h:5
 msgid ""
@@ -3912,9 +3863,8 @@ msgid "Display radar map"
 msgstr "Mostrare la mappa radar"
 
 #: gweather/gweather.schemas.in.h:7
-#, fuzzy
 msgid "Distance units"
-msgstr "Usare il sistema metrico decimale"
+msgstr "Unità di distanza"
 
 #: gweather/gweather.schemas.in.h:8
 msgid "Fetch a radar map on each update."
@@ -3934,18 +3884,16 @@ msgid "Not used anymore"
 msgstr "Non più usato"
 
 #: gweather/gweather.schemas.in.h:11
-#, fuzzy
 msgid "Pressure units"
-msgstr "Pressione:"
+msgstr "Unità di pressione"
 
 #: gweather/gweather.schemas.in.h:12
 msgid "Speed units"
-msgstr ""
+msgstr "Unità di velocità"
 
 #: gweather/gweather.schemas.in.h:13
-#, fuzzy
 msgid "Temperature units"
-msgstr "Temperatura:"
+msgstr "Unità di temperatura"
 
 #: gweather/gweather.schemas.in.h:14
 msgid "The custom url from where to retrieve a radar map."
@@ -3957,19 +3905,19 @@ msgstr "L'intervallo in secondi fra ogni aggiornamento automatico."
 
 #: gweather/gweather.schemas.in.h:16
 msgid "The temperature units to use."
-msgstr ""
+msgstr "L'unità di misura da usare per la temperatura."
 
 #: gweather/gweather.schemas.in.h:17
 msgid "The unit to use for pressure."
-msgstr ""
+msgstr "L'unità di misura da usare per la pressione."
 
 #: gweather/gweather.schemas.in.h:18
 msgid "The unit to use for visibility."
-msgstr ""
+msgstr "L'unità di misura da usare per la visibilità."
 
 #: gweather/gweather.schemas.in.h:19
 msgid "The unit to use for wind speed."
-msgstr ""
+msgstr "L'unità di misura da usare per la velocità del vento."
 
 #: gweather/gweather.schemas.in.h:21
 msgid "Update the data automatically"
@@ -3997,7 +3945,7 @@ msgstr "informazioni meteo per la località."
 
 #: gweather/weather.c:128
 msgid "Pittsburgh"
-msgstr ""
+msgstr "Roma/Urbe"
 
 #: gweather/weather.c:222
 msgid "Variable"
@@ -4411,70 +4359,70 @@ msgstr "Precipitazione sconosciuta"
 #: gweather/weather.c:2150 gweather/weather.c:2153
 #, c-format
 msgid "%.1f F"
-msgstr ""
+msgstr "%.1f° F"
 
 #. TRANSLATOR: This is the temperature in degrees fahrenheit, use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2158 gweather/weather.c:2161
 #, c-format
 msgid "%dF"
-msgstr ""
+msgstr "%d°F"
 
 #. TRANSLATOR: This is the temperature in degrees centigrade , use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2169 gweather/weather.c:2172
 #, c-format
 msgid "%.1f C"
-msgstr ""
+msgstr "%.1f° C"
 
 #. TRANSLATOR: This is the temperature in degrees centigrade , use the degree
 #. symbol Unicode 00B0 if possible
 #: gweather/weather.c:2177 gweather/weather.c:2180
 #, c-format
 msgid "%dC"
-msgstr ""
+msgstr "%d°C"
 
 #. TRANSLATOR: This is the temperature in Kelvin
 #: gweather/weather.c:2189
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #. TRANSLATOR: This is the temperature in Kelvin
 #: gweather/weather.c:2192
 #, c-format
 msgid "%dK"
-msgstr ""
+msgstr "%dK"
 
 #. TRANSLATOR: This is the humidity in percent
 #: gweather/weather.c:2244
 #, c-format
 msgid "%.f%%"
-msgstr ""
+msgstr "%.f%%"
 
 #. TRANSLATOR: This is the wind speed in knots
 #: gweather/weather.c:2269
-#, fuzzy, c-format
+#, c-format
 msgid "%0.1f knots"
-msgstr "nodi"
+msgstr "%0.1f nodi"
 
 #. TRANSLATOR: This is the wind speed in miles per hour
 #: gweather/weather.c:2273
 #, c-format
 msgid "%.1f mph"
-msgstr ""
+msgstr "%.1f mp/h"
 
 #. TRANSLATOR: This is the wind speed in kilometers per hour
 #: gweather/weather.c:2277
 #, c-format
 msgid "%.1f km/h"
-msgstr ""
+msgstr "%.1f km/h"
 
 #. TRANSLATOR: This is the wind speed in meters per second
 #: gweather/weather.c:2281
 #, c-format
 msgid "%.1f m/s"
-msgstr ""
+msgstr "%.1f m/s"
 
 #: gweather/weather.c:2302
 msgid "Calm"
@@ -4482,57 +4430,57 @@ msgstr "Calma"
 
 #. TRANSLATOR: This is 'wind direction' / 'wind speed'
 #: gweather/weather.c:2306
-#, fuzzy, c-format
+#, c-format
 msgid "%s / %s"
-msgstr "%s/%s"
+msgstr "%s / %s"
 
 #. TRANSLATOR: This is pressure in inches of mercury
 #: gweather/weather.c:2324
-#, fuzzy, c-format
+#, c-format
 msgid "%.2f inHg"
-msgstr "inHg"
+msgstr "%.2f inHg"
 
 #. TRANSLATOR: This is pressure in millimeters of mercury
 #: gweather/weather.c:2328
 #, c-format
 msgid "%.1f mmHg"
-msgstr ""
+msgstr "%.1f mmHg"
 
 #. TRANSLATOR: This is pressure in kiloPascals
 #: gweather/weather.c:2332
 #, c-format
 msgid "%.2f kPa"
-msgstr ""
+msgstr "%.2f kPa"
 
 #. TRANSLATOR: This is pressure in hectoPascals
 #: gweather/weather.c:2336
 #, c-format
 msgid "%.2f hPa"
-msgstr ""
+msgstr "%.2f hPa"
 
 #. TRANSLATOR: This is pressure in millibars
 #: gweather/weather.c:2340
 #, c-format
 msgid "%.2f mb"
-msgstr ""
+msgstr "%.2f mb"
 
 #. TRANSLATOR: This is the visibility in miles
 #: gweather/weather.c:2365
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f miles"
-msgstr "miglia"
+msgstr "%.1f miglia"
 
 #. TRANSLATOR: This is the visibility in kilometers
 #: gweather/weather.c:2369
 #, c-format
 msgid "%.1f km"
-msgstr ""
+msgstr "%.1f km"
 
 #. TRANSLATOR: This is the visibility in meters
 #: gweather/weather.c:2373
 #, c-format
 msgid "%.0fm"
-msgstr ""
+msgstr "%.0f m"
 
 #: gweather/weather.c:2414
 msgid "Retrieval failed"
@@ -4557,7 +4505,7 @@ msgstr "Fabbrica del controllo della posta"
 
 #: mailcheck/mailcheck.c:666
 msgid "Error checking mail"
-msgstr "Errore controllando la posta"
+msgstr "Errore nel controllare la posta"
 
 #: mailcheck/mailcheck.c:809
 msgid ""
@@ -4714,9 +4662,8 @@ msgstr "Emettere un _suono quando arriva nuova posta"
 
 #. l = gtk_check_button_new_with_mnemonic (_("Set the number of unread mails to _zero when clicked"));
 #: mailcheck/mailcheck.c:2151
-#, fuzzy
 msgid "Sto_p animation when clicked"
-msgstr "Fermare l'anima_zione con un doppio click"
+msgstr "Fermare l'anima_zione al clic"
 
 #: mailcheck/mailcheck.c:2164
 msgid "Select a_nimation:"
@@ -4743,9 +4690,8 @@ msgid "Command to execute when new mail arrives"
 msgstr "Comando da eseguire quando arriva nuova posta"
 
 #: mailcheck/mailcheck.c:2267
-#, fuzzy
 msgid "When clicke_d:"
-msgstr "Con _doppio click sull'applet:"
+msgstr "Quando si _fa clic:"
 
 #: mailcheck/mailcheck.c:2282
 msgid "Command to execute when clicked"
@@ -4924,7 +4870,6 @@ msgid "MiniCommander Applet Factory"
 msgstr "Fabbrica Applet MiniCommander"
 
 #: mini-commander/src/about.c:72
-#, fuzzy
 msgid ""
 "This GNOME applet adds a command line to the panel. It features command "
 "completion, command history, and changeable macros.\n"
@@ -4934,7 +4879,7 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Questa applet GNOME aggiunge una riga di comando al pannello.  Ha il "
+"Questa applet GNOME aggiunge una riga di comando al pannello.  Consente il "
 "completamento dei comandi, la cronologia dei comandi e macro modificabili.\n"
 "\n"
 "Questo programma è software libero; può essere ridistribuito e/o modificato "
@@ -4989,12 +4934,12 @@ msgstr "La variabile d'ambiente GCONF_CONFIG_SOURCE deve essere impostata\n"
 #: mini-commander/src/mc-install-default-macros.c:142
 #, c-format
 msgid "Failed to access configuration source(s): %s\n"
-msgstr "Impossibile accedere alla sorgente della configurazione :%s\n"
+msgstr "Accesso alla sorgente della configurazione fallito:%s\n"
 
 #: mini-commander/src/mc-install-default-macros.c:154
 #, c-format
 msgid "Error syncing config data: %s"
-msgstr "Errore nella sincronizzazione dei dati di configurazione: %s"
+msgstr "Errore nel sincronizzare i dati di configurazione: %s"
 
 #: mini-commander/src/mini-commander.glade.h:3
 msgid "<b>Auto Completion</b>"
@@ -5229,8 +5174,8 @@ msgstr "Comando"
 msgid "Adjust the sound volume"
 msgstr "Regola il volume dell'audio"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:199
-#: mixer/mixer.c:1363
+#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:210
+#: mixer/mixer.c:1406
 msgid "Volume Control"
 msgstr "Controllo volume"
 
@@ -5242,115 +5187,115 @@ msgstr "_Escludi audio"
 msgid "_Open Volume Control"
 msgstr "_Apri «Controllo volume»"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Main Volume"
 msgstr "Volume principale"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Bass"
 msgstr "Bassi"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Treble"
 msgstr "Alti"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Synth"
 msgstr "Synth"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Pcm"
 msgstr "Pcm"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Speaker"
 msgstr "Altoparlante"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Line"
 msgstr "Linea"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Microphone"
 msgstr "Microfono"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "CD"
 msgstr "CD"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Mix"
 msgstr "Mix"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Pcm2"
 msgstr "Pcm2"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Recording Level"
 msgstr "Livello in registrazione"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Input Gain"
 msgstr "Guadagno in ingresso"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Output Gain"
 msgstr "Guadagno in uscita"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line1"
 msgstr "Linea1"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line2"
 msgstr "Linea2"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line3"
 msgstr "Linea3"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Digital1"
 msgstr "Digitale1"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital2"
 msgstr "Digitale2"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital3"
 msgstr "Digitale3"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Input"
 msgstr "Ingresso microfono"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Output"
 msgstr "Uscita microfono"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Video"
 msgstr "VIdeo"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Radio"
 msgstr "Radio"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Monitor"
 msgstr "Monitor"
 
-#: mixer/mixer.c:200
+#: mixer/mixer.c:211
 msgid "Volume Control (muted)"
 msgstr "Controllo volume (escluso)"
 
-#: mixer/mixer.c:201
+#: mixer/mixer.c:212
 msgid "No audio device"
 msgstr "Nessun dispositivo audio"
 
-#: mixer/mixer.c:518
+#: mixer/mixer.c:546
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -5359,52 +5304,52 @@ msgstr ""
 "versione di\n"
 "soundcard.h.\n"
 
-#: mixer/mixer.c:893
+#: mixer/mixer.c:936
 #, c-format
 msgid "Couldn't open mixer device %s\n"
 msgstr "Impossibile aprire il dispositivo mixer %s\n"
 
-#: mixer/mixer.c:1062
+#: mixer/mixer.c:1105
 msgid "Volume Controller"
 msgstr "Controllo volume"
 
-#: mixer/mixer.c:1063
+#: mixer/mixer.c:1106
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "Usare i tasti freccia su/giù per cambiare il volume"
 
 #. Translators - The + and - refer to increasing and decreasing the volume.
 #. ** I don't know if there are sensible alternatives in other languages
-#: mixer/mixer.c:1087
+#: mixer/mixer.c:1130
 msgid "+"
 msgstr "+"
 
-#: mixer/mixer.c:1088
+#: mixer/mixer.c:1131
 msgid "-"
 msgstr "-"
 
-#: mixer/mixer.c:1364
+#: mixer/mixer.c:1407
 msgid "(C) 2001 Richard Hult"
 msgstr "© 2001 Richard Hult"
 
-#: mixer/mixer.c:1365
+#: mixer/mixer.c:1408
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr ""
-"Il controllo del volume permette di controllare il volume del prorpio "
+"Il controllo del volume permette di controllare il volume del proprio "
 "desktop."
 
-#: mixer/mixer.c:1512
+#: mixer/mixer.c:1555
 msgid "Volume Control Preferences"
 msgstr "Preferenze di Controllo volume"
 
-#: mixer/mixer.c:1536
+#: mixer/mixer.c:1579
 msgid "Audio Channels"
 msgstr "Canali audio"
 
-#: mixer/mixer.c:1552
+#: mixer/mixer.c:1595
 msgid "_Select channel to control:"
 msgstr "_Selezionare il canale da controllare:"
 
-#: mixer/mixer.c:1888
+#: mixer/mixer.c:1936
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr ""
 "Il controllo del volume permette di controllare il volume del proprio desktop"
@@ -5699,9 +5644,8 @@ msgid "Bac_kground:"
 msgstr "Sfon_do:"
 
 #: modemlights/properties.c:621
-#, fuzzy
 msgid "O_utline:"
-msgstr "_Contornato"
+msgstr "C_ontorno:"
 
 #: modemlights/properties.c:624 multiload/properties.c:535
 msgid "Colors"
@@ -5793,6 +5737,9 @@ msgid ""
 "%d%% in use of which\n"
 "%d%% is cache"
 msgstr ""
+"%s:\n"
+"%d%% in uso di cui\n"
+"%d%% nella cache"
 
 #: multiload/main.c:364
 #, c-format
@@ -6051,9 +5998,8 @@ msgid "Sticky Notes Applet Factory"
 msgstr "Fabbrica applet Note adesive"
 
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:2
-#, fuzzy
 msgid "_Delete Notes"
-msgstr "Eli_mina nota..."
+msgstr "Eli_mina note"
 
 #: stickynotes/GNOME_StickyNotesApplet.xml.h:4
 msgid "_Lock Notes"
@@ -6081,13 +6027,12 @@ msgid "<b>Default Note Properties</b>"
 msgstr "<b>Proprietà predefinite</b>"
 
 #: stickynotes/stickynotes.glade.h:5
-#, fuzzy
 msgid ""
 "<b>Delete all sticky notes?</b>\n"
 "\n"
 "Changes will be saved instantly."
 msgstr ""
-"<b>Eliminare TUTTE le note adesive?</b>\n"
+"<b>Eliminare tutte le note adesive?</b>\n"
 "\n"
 "I cambiamenti verranno salvati subito."
 
@@ -6126,9 +6071,8 @@ msgid "Choose a font to use for all sticky notes"
 msgstr "Scegliere un tipo di carattere per tutte le note"
 
 #: stickynotes/stickynotes.glade.h:17
-#, fuzzy
 msgid "Choose if notes are visible on all workspaces"
-msgstr "Scegliere se le note devono essere visibili su tutte le aree"
+msgstr "Scegliere se le note devono essere visibili su tutte le aree di lavoro"
 
 #: stickynotes/stickynotes.glade.h:18
 msgid "Choose if the default style is forced on all notes"
@@ -6143,9 +6087,8 @@ msgid "Close note"
 msgstr "Chiudere la nota"
 
 #: stickynotes/stickynotes.glade.h:21
-#, fuzzy
 msgid "Create a new note"
-msgstr "creare una _nuova nota"
+msgstr "Crea una nuova nota"
 
 #: stickynotes/stickynotes.glade.h:22
 msgid "Force _default color and font on notes"
@@ -6156,9 +6099,8 @@ msgid "H_eight:"
 msgstr "Alt_ezza:"
 
 #: stickynotes/stickynotes.glade.h:24
-#, fuzzy
 msgid "Lock/Unlock all notes"
-msgstr "b_loccare/sbloccare tutte le note"
+msgstr "Bloccare/Sbloccare tutte le note"
 
 #: stickynotes/stickynotes.glade.h:25
 msgid "Lock/Unlock note"
@@ -6185,9 +6127,8 @@ msgid "Resize note"
 msgstr "Ridimensionare la nota"
 
 #: stickynotes/stickynotes.glade.h:31
-#, fuzzy
 msgid "Show/Hide all notes"
-msgstr "mostrare/na_scondere tutte le note"
+msgstr "Mostrare/Nascondere tutte le note"
 
 #: stickynotes/stickynotes.glade.h:32
 msgid "Specify a title for the note"
@@ -6234,9 +6175,8 @@ msgid "_Color:"
 msgstr "_Colore:"
 
 #: stickynotes/stickynotes.glade.h:43
-#, fuzzy
 msgid "_Delete All"
-msgstr "Eli_mina TUTTE"
+msgstr "Eli_mina tutte"
 
 #: stickynotes/stickynotes.glade.h:44
 msgid "_Delete Note..."
@@ -6247,9 +6187,8 @@ msgid "_Lock Note"
 msgstr "B_locca la nota"
 
 #: stickynotes/stickynotes.glade.h:48
-#, fuzzy
 msgid "_Properties"
-msgstr "Pr_oprietà..."
+msgstr "Pr_oprietà"
 
 #: stickynotes/stickynotes.glade.h:49
 msgid "_Put notes on all workspaces"
@@ -6439,37 +6378,37 @@ msgid "Monitor the quality of a wireless network link"
 msgstr "Controlla la qualità di un collegamento wireless"
 
 #: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
-#: wireless/wireless-applet.c:588 wireless/wireless-applet.c:840
+#: wireless/wireless-applet.c:590 wireless/wireless-applet.c:842
 msgid "Wireless Link Monitor"
 msgstr "Monitor collegamento wireless"
 
 #: wireless/wireless-applet.c:144
 #, c-format
 msgid "Link Strength: %2.0d%%"
-msgstr ""
+msgstr "Potenza del segnale: %2.0d%%"
 
-#: wireless/wireless-applet.c:367
+#: wireless/wireless-applet.c:369
 msgid ""
 "There doesn't seem to be any wireless devices configured on your system.\n"
 "Please verify your configuration if you think this is incorrect."
 msgstr ""
 "Non sembra essere presente alcun dispositivo wireless sul sistema.\n"
-"Verificare la configurazione."
+"Verificare la configurazione se ciò non è corretto."
 
 # o interfaccia?
-#: wireless/wireless-applet.c:502 wireless/wireless-applet.c:829
+#: wireless/wireless-applet.c:504 wireless/wireless-applet.c:831
 msgid "No Wireless Devices"
 msgstr "Nessun dispositivo wireless"
 
-#: wireless/wireless-applet.c:590
+#: wireless/wireless-applet.c:592
 msgid "(C) 2001, 2002 Free Software Foundation "
 msgstr "© 2001, 2002 Free Software Foundation "
 
-#: wireless/wireless-applet.c:591
+#: wireless/wireless-applet.c:593
 msgid "This utility shows the status of a wireless link."
 msgstr "Questa utilità mostra lo stato di un collegamento wireless."
 
-#: wireless/wireless-applet.c:841
+#: wireless/wireless-applet.c:843
 msgid "This utility shows the status of a wireless link"
 msgstr "Questa utilità mostra lo stato di un collegamento wireless"
 
@@ -6485,126 +6424,3 @@ msgstr "Preferenze di Monitor collegamento wireless"
 #: wireless/wireless-applet.glade.h:3
 msgid "_Monitored device:"
 msgstr "_Dispositivo controllato:"
-
-#~ msgid "Utility"
-#~ msgstr "Utilità"
-
-#~ msgid "High"
-#~ msgstr "Carica"
-
-#~ msgid "Low"
-#~ msgstr "Quasi scarica"
-
-#~ msgid "Critical"
-#~ msgstr "Critico"
-
-#~ msgid "Charging"
-#~ msgstr "In ricarica"
-
-#~ msgid "Battery low (%d%%) and AC is offline"
-#~ msgstr "Batteria quasi scarica (%d%%) e alimentazione staccata"
-
-#~ msgid ""
-#~ "System is running on battery power\n"
-#~ "Battery: %d%% (%s)"
-#~ msgstr ""
-#~ "Il computer sta funzionando con la batteria\n"
-#~ "Batteria: %d%% (%s)"
-
-#~ msgid ""
-#~ "System is running on AC power\n"
-#~ "Battery: %d%% (%s)"
-#~ msgstr ""
-#~ "Il computer sta funzionando con l'alimentazione\n"
-#~ "Batteria: %d%% (%s)"
-
-#~ msgid "System is running on battery power. Battery: %d%% (%s)"
-#~ msgstr "Il computer sta funzionando con la batteria. Batteria: %d%% (%s)"
-
-#~ msgid "System is running on AC power. Battery: %d%% (%s)"
-#~ msgstr ""
-#~ "Il computer sta funzionando con l'alimentazione. Batteria: %d%% (%s)"
-
-#~ msgid "System is running on battery power. Battery: Not present"
-#~ msgstr "Il computer sta funzionando con la batteria. Batteria: non presente"
-
-#~ msgid "System is running on AC power. Battery: Not present"
-#~ msgstr ""
-#~ "Il computer sta funzionando con l'alimentazione. Batteria: non presente"
-
-#~ msgid "Battery: %d%% (%s)"
-#~ msgstr "Batteria: %d%% (%s)"
-
-#~ msgid "Multimedia"
-#~ msgstr "Multimedia"
-
-#~ msgid "Path to the device"
-#~ msgstr "Percorso del device"
-
-#~ msgid ""
-#~ "This is the full path of the device that will be used to play cd's from "
-#~ "this applet"
-#~ msgstr ""
-#~ "Questo è il percorso completo del device usato per ascoltare i CD "
-#~ "musicali da questa applet"
-
-#~ msgid "Pal_ettes:"
-#~ msgstr "Ta_volozze:"
-
-# apre il file manager, quindi direi esplora...
-#~ msgid "_Browse..."
-#~ msgstr "Es_plora..."
-
-#~ msgid "Cdrom"
-#~ msgstr "CD ROM"
-
-#~ msgid "Amusements"
-#~ msgstr "Passatempi"
-
-#~ msgid "Accessories"
-#~ msgstr "Accessori"
-
-#~ msgid "(No"
-#~ msgstr "(No"
-
-#~ msgid "_Forecast"
-#~ msgstr "_Previsione"
-
-#~ msgid "Humidity:"
-#~ msgstr "Umidità:"
-
-#~ msgid "URL link Button"
-#~ msgstr "Pulsante per il collegamento URL"
-
-#~ msgid ""
-#~ "Detailed forecast not available for this location.\n"
-#~ "Please try the state forecast; note that IWIN forecasts are available "
-#~ "only for US cities."
-#~ msgstr ""
-#~ "Le previsioni dettagliate non sono disponibili per questa località.\n"
-#~ "Provare le previsioni per lo stato: notare che le previsioni IWIN sono "
-#~ "disponibili solo per le città statunitensi."
-
-#~ msgid ""
-#~ "State forecast not available for this location.\n"
-#~ "Please try the detailed forecast; note that IWIN forecasts are available "
-#~ "only for US cities."
-#~ msgstr ""
-#~ "Le previsioni sulle condizioni non sono disponibili per questa località.\n"
-#~ "Provare le previsioni dettagliate: nota che le previsioni IWIN sono "
-#~ "disponibili solo per le città statunitensi."
-
-#~ msgid "Use _metric system units"
-#~ msgstr "Usare il sistema _metrico decimale"
-
-#~ msgid "Internet"
-#~ msgstr "Internet"
-
-#~ msgid "<b>Appearance</b>"
-#~ msgstr "<b>Aspetto</b>"
-
-#~ msgid "Show fram_e"
-#~ msgstr "Mostrare cornic_e"
-
-#~ msgid "Show han_dle"
-#~ msgstr "_Mostrare gestore"

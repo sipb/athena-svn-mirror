@@ -20,7 +20,7 @@
         <name xml:lang="eu">xkb tekla-mapa armeniarra</name>
         <name xml:lang="fi">Armenialainen xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb arménien</name>
-        <name xml:lang="gu">અાર્મેનિયન xkb કીમૅપ</name>
+        <name xml:lang="gu">અર્મેનિયન xkb કીમૅપ</name>
         <name xml:lang="hi">आर्मेनियाई एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Armeski xkb raspored</name>
         <name xml:lang="hu">Örmény xkb-billentyűzetkiosztás</name>
@@ -364,7 +364,7 @@
             <name xml:lang="fi">Bahrain</name>
             <name xml:lang="fr">Bahreïn</name>
             <name xml:lang="ga">Bairéin</name>
-            <name xml:lang="gu">બેહરેન</name>
+            <name xml:lang="gu">બહેરીન</name>
             <name xml:lang="hi">बहरीन</name>
             <name xml:lang="hr">Bahrain</name>
             <name xml:lang="hu">Bahrein</name>
@@ -853,7 +853,7 @@
             <name xml:lang="ar">المغرب</name>
             <name xml:lang="az">Marokko</name>
             <name xml:lang="be">Марока</name>
-            <name xml:lang="bg">Мароко</name>
+            <name xml:lang="bg">Марокански</name>
             <name xml:lang="bn">মরোক্কো</name>
             <name xml:lang="bs">Maroko</name>
             <name xml:lang="ca">Marroc</name>
@@ -924,7 +924,7 @@
             <name xml:lang="fi">Oman</name>
             <name xml:lang="fr">Oman</name>
             <name xml:lang="ga">Oman</name>
-            <name xml:lang="gu">અોમાન</name>
+            <name xml:lang="gu">ઓમાન</name>
             <name xml:lang="hi">ओमान</name>
             <name xml:lang="hr">Oman</name>
             <name xml:lang="hu">Oman</name>
@@ -1372,7 +1372,7 @@
             <name xml:lang="fi">Arabiemiirikuntien liitto</name>
             <name xml:lang="fr">Émirats arabes unis</name>
             <name xml:lang="ga">Aontas na nÉimíríochtaí Arabacha</name>
-            <name xml:lang="gu">યુનાઈટેડ અારબ અમીરાત</name>
+            <name xml:lang="gu">યુનાઈટેડ આરબ અમીરાત</name>
             <name xml:lang="hi">संयुक्त अरब अमीरात</name>
             <name xml:lang="hr">Ujedinjeni Arapski Emirati</name>
             <name xml:lang="hu">Egyesült Arab Emirátusok</name>
@@ -1656,7 +1656,7 @@
             <name xml:lang="fi">Bahrain</name>
             <name xml:lang="fr">Bahreïn</name>
             <name xml:lang="ga">Bairéin</name>
-            <name xml:lang="gu">બેહરેન</name>
+            <name xml:lang="gu">બહેરીન</name>
             <name xml:lang="hi">बहरीन</name>
             <name xml:lang="hr">Bahrain</name>
             <name xml:lang="hu">Bahrein</name>
@@ -2217,7 +2217,7 @@
             <name xml:lang="fi">Oman</name>
             <name xml:lang="fr">Oman</name>
             <name xml:lang="ga">Oman</name>
-            <name xml:lang="gu">અોમાન</name>
+            <name xml:lang="gu">ઓમાન</name>
             <name xml:lang="hi">ओमान</name>
             <name xml:lang="hr">Oman</name>
             <name xml:lang="hu">Oman</name>
@@ -2665,7 +2665,7 @@
             <name xml:lang="fi">Arabiemiirikuntien liitto</name>
             <name xml:lang="fr">Émirats arabes unis</name>
             <name xml:lang="ga">Aontas na nÉimíríochtaí Arabacha</name>
-            <name xml:lang="gu">યુનાઈટેડ અારબ અમીરાત</name>
+            <name xml:lang="gu">યુનાઈટેડ આરબ અમીરાત</name>
             <name xml:lang="hi">संयुक्त अरब अमीरात</name>
             <name xml:lang="hr">Ujedinjeni Arapski Emirati</name>
             <name xml:lang="hu">Egyesült Arab Emirátusok</name>
@@ -2943,7 +2943,7 @@
         <name xml:lang="ar">لوحة مفاتيح xkb للتركية الأذربيجانية</name>
         <name xml:lang="az">Azəri Türkçəsi xkb düzülüşü</name>
         <name xml:lang="be">Азарбайданцкая турэцкая xkb раскладка</name>
-        <name xml:lang="bg">Азербейджанска Турска клавиатура xkb</name>
+        <name xml:lang="bg">Азербейджанска турска клавиатура xkb</name>
         <name xml:lang="bn">আজেরবইজান তুর্কী এক্স-কে-বী কী-বিন্যাস</name>
         <name xml:lang="bs">azerbejdžanski turski xkb raspored</name>
         <name xml:lang="ca">Mapa de teclat azerbaitjanès turc xkb</name>
@@ -2993,7 +2993,7 @@
         <language xml:lang="ar">تركية أذربيجانية</language>
         <language xml:lang="az">Azərbaycan Türkçəsi</language>
         <language xml:lang="be">Азарбаданцкая турэцкая</language>
-        <language xml:lang="bg">Азербейджански Турски</language>
+        <language xml:lang="bg">Азербейджански турски</language>
         <language xml:lang="bn">আজেরবৈজানী তুর্কী</language>
         <language xml:lang="bs">azerbejdžanski turski</language>
         <language xml:lang="ca">Azerbaitjanès turc</language>
@@ -3519,7 +3519,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -4439,7 +4439,7 @@
         <name xml:lang="ar">السريالية البلغارية</name>
         <name xml:lang="az">Bolqar Kirili</name>
         <name xml:lang="be">Баўгарская кірылічная</name>
-        <name xml:lang="bg">Българска Кирилица</name>
+        <name xml:lang="bg">Българска кирилица</name>
         <name xml:lang="bn">বুলগেরীয় সিরিলিক</name>
         <name xml:lang="bs">bugarski ćirilićni</name>
         <name xml:lang="ca">Bùlgar ciríl·lic</name>
@@ -4610,8 +4610,11 @@
     </keymap>
     <keymap>
         <name>Belarusian xkb keymap</name>
+        <name xml:lang="ar">لوحة مفاتيح xkb للبلاروسية</name>
+        <name xml:lang="az">Belarusca xkb düzülüşü</name>
         <name xml:lang="bg">Белоруска клавиатура xkb</name>
         <name xml:lang="bs">bjeloruski xkb raspored</name>
+        <name xml:lang="ca">Mapa de teclat bielorús xkb</name>
         <name xml:lang="cs">Běloruská mapa kláves xkb</name>
         <name xml:lang="cy">Bysellfap XKB Belarwsieg</name>
         <name xml:lang="da">Hviderussisk xkb-tastaturlayout</name>
@@ -4625,6 +4628,7 @@
         <name xml:lang="gu">બેલારશિયન xkb કીમૅપ</name>
         <name xml:lang="hi">बेलारूसी एक्सकेबी कीमैप</name>
         <name xml:lang="hu">Fehérorosz xkb-billentyűzetkiosztás</name>
+        <name xml:lang="it">Mappatura xkb bielorussa</name>
         <name xml:lang="ja">ベラルーシ語 xkb キーマップ</name>
         <name xml:lang="ko">벨라루스어 XKB 키맵</name>
         <name xml:lang="lt">Baltarusių xkb išdėstymas</name>
@@ -4650,8 +4654,11 @@
         <name xml:lang="zh_TW">白俄羅斯 xkb 鍵盤對應表</name>
         <command>setxkbmap by</command>
         <language>Belarusian</language>
+        <language xml:lang="ar">بلاروسية</language>
+        <language xml:lang="az">Belarusca</language>
         <language xml:lang="bg">Белоруски</language>
         <language xml:lang="bs">bjeloruski</language>
+        <language xml:lang="ca">Bielorús</language>
         <language xml:lang="cs">Běloruská</language>
         <language xml:lang="cy">Belarwsieg</language>
         <language xml:lang="da">Hviderussisk</language>
@@ -4665,6 +4672,7 @@
         <language xml:lang="gu">બેલારશિયન</language>
         <language xml:lang="hi">बेलारूसी</language>
         <language xml:lang="hu">Fehérorosz</language>
+        <language xml:lang="it">Bielorussa</language>
         <language xml:lang="ja">ベラルーシ語</language>
         <language xml:lang="ko">벨라루스어</language>
         <language xml:lang="lt">Baltarusių</language>
@@ -5512,7 +5520,7 @@
         <name xml:lang="eu">qwertz xkb tekla-mapa txekiarra</name>
         <name xml:lang="fi">Tsekkiläinen qwertz xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb qwertz tchèque</name>
-        <name xml:lang="gu">ચેક કવૅર્ટ્ઝ xkb કીમૅપ</name>
+        <name xml:lang="gu">ચેક qwertz xkb કીમૅપ</name>
         <name xml:lang="hi">चेक qwertz एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Češki qwertz xkb raspored</name>
         <name xml:lang="hu">Cseh qwertz xkb-billentyűzetkiosztás</name>
@@ -5622,7 +5630,7 @@
             <name xml:lang="eu">Lehengo Txekoslovakia</name>
             <name xml:lang="fi">Entinen Tekkoslovakia</name>
             <name xml:lang="fr">Tchécoslovaquie</name>
-            <name xml:lang="gu">પુર્વ ચેકોસ્લોવેકીઅા</name>
+            <name xml:lang="gu">પુર્વ ચેકોસ્લોવેકીઆ</name>
             <name xml:lang="hi">पूर्व चेकस्लोवाकिया</name>
             <name xml:lang="hr">Bivša Čehoslovačka</name>
             <name xml:lang="hu">Korábbi Csehszlovákia</name>
@@ -5732,7 +5740,7 @@
         <language xml:lang="fi">Kansainvälinen</language>
         <language xml:lang="fr">International</language>
         <language xml:lang="ga">Idirnaisiúnta</language>
-        <language xml:lang="gu">અાંતરરાષ્ટ્રીય</language>
+        <language xml:lang="gu">આંતરરાષ્ટ્રીય</language>
         <language xml:lang="hi">अंतर्राष्ट्रीय</language>
         <language xml:lang="hr">Međunarodno</language>
         <language xml:lang="hu">Nemzetközi</language>
@@ -5788,7 +5796,7 @@
             <name xml:lang="fi">Kansainvälinen</name>
             <name xml:lang="fr">International</name>
             <name xml:lang="ga">Idirnaisiúnta</name>
-            <name xml:lang="gu">અાંતરરાષ્ટ્રીય</name>
+            <name xml:lang="gu">આંતરરાષ્ટ્રીય</name>
             <name xml:lang="hi">अंतर्राष्ट्रीय</name>
             <name xml:lang="hr">Međunarodno</name>
             <name xml:lang="hu">Nemzetközi</name>
@@ -6582,7 +6590,7 @@
         <language xml:lang="fi">Kansainvälinen</language>
         <language xml:lang="fr">International</language>
         <language xml:lang="ga">Idirnaisiúnta</language>
-        <language xml:lang="gu">અાંતરરાષ્ટ્રીય</language>
+        <language xml:lang="gu">આંતરરાષ્ટ્રીય</language>
         <language xml:lang="hi">अंतर्राष्ट्रीय</language>
         <language xml:lang="hr">Međunarodno</language>
         <language xml:lang="hu">Nemzetközi</language>
@@ -6638,7 +6646,7 @@
             <name xml:lang="fi">Kansainvälinen</name>
             <name xml:lang="fr">International</name>
             <name xml:lang="ga">Idirnaisiúnta</name>
-            <name xml:lang="gu">અાંતરરાષ્ટ્રીય</name>
+            <name xml:lang="gu">આંતરરાષ્ટ્રીય</name>
             <name xml:lang="hi">अंतर्राष्ट्रीय</name>
             <name xml:lang="hr">Međunarodno</name>
             <name xml:lang="hu">Nemzetközi</name>
@@ -7879,7 +7887,7 @@
         <name xml:lang="eu">Suitzako frantsesa</name>
         <name xml:lang="fi">Ranskan sveitsiläinen</name>
         <name xml:lang="fr">Français suisse</name>
-        <name xml:lang="gu">ફ઼ેંચ સ્વિઝ</name>
+        <name xml:lang="gu">ફ્રેંચ સ્વિઝ</name>
         <name xml:lang="hi">फ्रांसीसी स्विस</name>
         <name xml:lang="hr">Francuski za Švicarsku</name>
         <name xml:lang="hu">Svájci francia</name>
@@ -7936,7 +7944,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8039,7 +8047,7 @@
         <name xml:lang="ar">105 مفاتيح فرنسية كندية</name>
         <name xml:lang="az">Kanada Fransız Dili 105-düymə</name>
         <name xml:lang="be">Француска-Канацкая, 105 клявішаў</name>
-        <name xml:lang="bg">Френска Канадска клавиатура 105-key</name>
+        <name xml:lang="bg">Френска канадска клавиатура 105-key</name>
         <name xml:lang="bn">ফরাসী-কানাডীয় ১০৫-কী</name>
         <name xml:lang="bs">francusko-kanadski 105-tipki</name>
         <name xml:lang="ca">Francès canadenc de 105 tecles</name>
@@ -8054,7 +8062,7 @@
         <name xml:lang="eu">Kanadako 105 teklako frantsesa</name>
         <name xml:lang="fi">Ranskalais-kanadalainen 105-näppäiminen</name>
         <name xml:lang="fr">105 touches français canadien</name>
-        <name xml:lang="gu">ફ઼ેંચ-કેનેડીઅન ૧૦૫-કી</name>
+        <name xml:lang="gu">ફ્રેંચ-કેનેડીઅન ૧૦૫-કી</name>
         <name xml:lang="hi">फ्रांसीसी-कनाडाई 105-कुंजी</name>
         <name xml:lang="hr">Francuski raspored od 105 tipaka za Kanadu</name>
         <name xml:lang="hu">Kanadai francia 105 gombos</name>
@@ -8111,7 +8119,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8214,7 +8222,7 @@
         <name xml:lang="ar">لوحة مفاتيح الفرنسية السويسرية</name>
         <name xml:lang="az">Fransız Dilli İsveçrə düzülüşü</name>
         <name xml:lang="be">Француская раскладка для Швайцарыі</name>
-        <name xml:lang="bg">Френска Швейцарска клавиатура</name>
+        <name xml:lang="bg">Френска швейцарска клавиатура</name>
         <name xml:lang="bn">ফরাসী সুইস কী-বিন্যাস</name>
         <name xml:lang="bs">francuski švicarski raspored</name>
         <name xml:lang="ca">Mapa de teclat francès suís</name>
@@ -8229,7 +8237,7 @@
         <name xml:lang="eu">Suitzako teklatu frantsesa</name>
         <name xml:lang="fi">Ranskan sveitsiläinen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier français suisse</name>
-        <name xml:lang="gu">ફ઼ેંચ સ્વિઝ કીમૅપ</name>
+        <name xml:lang="gu">ફ્રેંચ સ્વિઝ કીમૅપ</name>
         <name xml:lang="hi">फ्रांसीसी स्विस कीमैप</name>
         <name xml:lang="hr">Francuski raspored za Švicarsku</name>
         <name xml:lang="hu">Svájci francia billentyűzetkiosztás</name>
@@ -8286,7 +8294,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8404,7 +8412,7 @@
         <name xml:lang="eu">xkb teklatu frantsesa</name>
         <name xml:lang="fi">Ranskalainen xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb français</name>
-        <name xml:lang="gu">ફ઼ેંચ સ્વિઝ xkb કીમૅપ</name>
+        <name xml:lang="gu">ફ્રેંચ સ્વિઝ xkb કીમૅપ</name>
         <name xml:lang="hi">फ्रांसीसी एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Francuski xkb raspored</name>
         <name xml:lang="hu">Francia xkb-billentyűzetkiosztás</name>
@@ -8461,7 +8469,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8579,7 +8587,7 @@
         <name xml:lang="eu">PC/AT 101 teklatu frantsesa</name>
         <name xml:lang="fi">Ranskalainen PC/AT 101 -näppäimistö</name>
         <name xml:lang="fr">Clavier PC/AT 101 français</name>
-        <name xml:lang="gu">ફ઼ેંચ PC/AT ૧૦૧ કીબોર્ડ</name>
+        <name xml:lang="gu">ફ્રેંચ PC/AT ૧૦૧ કીબોર્ડ</name>
         <name xml:lang="hi">फ्रांसीसी पीसी/एटी 101 कीबोर्ड</name>
         <name xml:lang="hr">Francuska PC/AT 101 tipkovnica</name>
         <name xml:lang="hu">Francia PC/AT 101 gombos billentyűzet</name>
@@ -8636,7 +8644,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8754,7 +8762,7 @@
         <name xml:lang="eu">teklatu frantsesa</name>
         <name xml:lang="fi">Ranskalainen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier français</name>
-        <name xml:lang="gu">ફ઼ેંચ કીમૅપ</name>
+        <name xml:lang="gu">ફ્રેંચ કીમૅપ</name>
         <name xml:lang="hi">फ्रांसीसी कीमैप</name>
         <name xml:lang="hr">Francuski raspored</name>
         <name xml:lang="hu">Francia billentyűzetkiosztás</name>
@@ -8812,7 +8820,7 @@
         <language xml:lang="fr">Français</language>
         <language xml:lang="ga">Francach</language>
         <language xml:lang="gl">Francés</language>
-        <language xml:lang="gu">ફ઼ેંચ</language>
+        <language xml:lang="gu">ફ્રેંચ</language>
         <language xml:lang="he">צרפתית</language>
         <language xml:lang="hi">फ्रांसीसी</language>
         <language xml:lang="hr">Francuski</language>
@@ -8915,7 +8923,7 @@
         <name xml:lang="ar">102 مفتاح البريطانية</name>
         <name xml:lang="az">GB 102-düymə</name>
         <name xml:lang="be">Брытанская, 102 клявішы</name>
-        <name xml:lang="bg">Обединено Кралство·102-key</name>
+        <name xml:lang="bg">Великобританска 102-key</name>
         <name xml:lang="bn">জিবি ১০২-কী</name>
         <name xml:lang="bs">GB 102-tipke</name>
         <name xml:lang="ca">Gran Bretanya de 102 tecles</name>
@@ -9439,7 +9447,7 @@
         <name xml:lang="ar">105 مفاتيح البريطانية</name>
         <name xml:lang="az">GB 105-düymə</name>
         <name xml:lang="be">Брытанская, 105 клявішаў</name>
-        <name xml:lang="bg">Обединено Кралство·105-key</name>
+        <name xml:lang="bg">Обединено Кралство 105-key</name>
         <name xml:lang="bn">জিবি ১০৫-কী</name>
         <name xml:lang="bs">GB 105-tipki</name>
         <name xml:lang="ca">Gran Bretanya de 105 tecles</name>
@@ -9786,7 +9794,7 @@
         <name xml:lang="ar">اللاتينية الجورجية</name>
         <name xml:lang="az">Gürcü Dili Latın</name>
         <name xml:lang="be">Грузынская лацінская</name>
-        <name xml:lang="bg">Грузинска Латиница</name>
+        <name xml:lang="bg">Грузинска латиница</name>
         <name xml:lang="bn">জর্জিয়ান ল্যাটিন</name>
         <name xml:lang="bs">gruzijski latinični</name>
         <name xml:lang="ca">Georgià llatí</name>
@@ -9958,7 +9966,7 @@
         <name xml:lang="ar">تصميم الجورجية الروسية</name>
         <name xml:lang="az">Gürcü Dili Rus düzülüşü</name>
         <name xml:lang="be">Грузынская Расейская раскладка</name>
-        <name xml:lang="bg">Грузински Руска подредба</name>
+        <name xml:lang="bg">Грузински руска подредба</name>
         <name xml:lang="bn">জর্জিয়ান রাশিয়ান বিন্যাস</name>
         <name xml:lang="bs">gruzijski ruski raspored</name>
         <name xml:lang="ca">Disposició rusa georgiana</name>
@@ -10330,7 +10338,7 @@
             <name xml:lang="fr">Autriche</name>
             <name xml:lang="ga">An Ostair</name>
             <name xml:lang="gl">Austria</name>
-            <name xml:lang="gu">ઑસ્ટ઼િયા</name>
+            <name xml:lang="gu">ઑસ્ટ્રિયા</name>
             <name xml:lang="he">אוסטריה</name>
             <name xml:lang="hi">ऑस्ट्रिया</name>
             <name xml:lang="hr">Austrija</name>
@@ -10609,7 +10617,7 @@
         <name xml:lang="ar">لوحة مفاتيح xkb للإغريقية</name>
         <name xml:lang="az">Yunan Dili xkb düzülüşü</name>
         <name xml:lang="be">Грэцкая xkb раскладка</name>
-        <name xml:lang="bg">Гръцка·клавиатура xkb</name>
+        <name xml:lang="bg">Гръцка клавиатура xkb</name>
         <name xml:lang="bn">গ্রীক এক্স-কে-বী কী-বিন্যাস</name>
         <name xml:lang="bs">grčki xkb raspored</name>
         <name xml:lang="ca">Mapa de teclat grec xkb</name>
@@ -10974,7 +10982,7 @@
         <name xml:lang="eu">tekla-mapa kroaziarra</name>
         <name xml:lang="fi">Kroatialainen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier croate</name>
-        <name xml:lang="gu">ક્રોઅેશિયન કીમૅપ</name>
+        <name xml:lang="gu">ક્રોએશિયન કીમૅપ</name>
         <name xml:lang="hi">क्रोएशियाई कीमैप</name>
         <name xml:lang="hr">Hrvatski raspored</name>
         <name xml:lang="hu">Horvát billentyűzetkiosztás</name>
@@ -11027,7 +11035,7 @@
         <language xml:lang="eu">kroaziera</language>
         <language xml:lang="fi">Kroatialainen</language>
         <language xml:lang="fr">Croate</language>
-        <language xml:lang="gu">ક્રોઅેશિયન</language>
+        <language xml:lang="gu">ક્રોએશિયન</language>
         <language xml:lang="hi">क्रोएशियाई</language>
         <language xml:lang="hr">Hrvatski</language>
         <language xml:lang="hu">Horvát</language>
@@ -11082,7 +11090,7 @@
             <name xml:lang="eu">Kroazia</name>
             <name xml:lang="fi">Kroatia</name>
             <name xml:lang="fr">Croatie</name>
-            <name xml:lang="gu">ક્રોઅેશિયા</name>
+            <name xml:lang="gu">ક્રોએશિયા</name>
             <name xml:lang="hi">क्रोएशिया</name>
             <name xml:lang="hr">Hrvatska</name>
             <name xml:lang="hu">Horvátország</name>
@@ -11472,7 +11480,7 @@
         <name xml:lang="ar">هنغارية لاتيني 1</name>
         <name xml:lang="az">Macar Dili latın 1</name>
         <name xml:lang="be">Вугорская, лацінка-1</name>
-        <name xml:lang="bg">Унгарска Латиница</name>
+        <name xml:lang="bg">Унгарска латиница</name>
         <name xml:lang="bn">হাঙ্গেরীয় ল্যাটিন১</name>
         <name xml:lang="bs">mađarski latin1</name>
         <name xml:lang="ca">Hongarès latin1</name>
@@ -12687,7 +12695,7 @@
         <name xml:lang="ar">لوحة مفاتيح العبرية</name>
         <name xml:lang="az">Yəhudi Dili düzülüşü</name>
         <name xml:lang="be">Габрэйская раскалдка</name>
-        <name xml:lang="bg">Иврит клавиатура</name>
+        <name xml:lang="bg">Израелска клавиатура</name>
         <name xml:lang="bn">হিব্রু কী-বিন্যাস</name>
         <name xml:lang="bs">hebrejski raspored</name>
         <name xml:lang="ca">Mapa de teclat hebreu</name>
@@ -12870,7 +12878,7 @@
         <name xml:lang="eu">xkb tekla-mapa islandiarra</name>
         <name xml:lang="fi">Islantilainen xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb islandais</name>
-        <name xml:lang="gu">અાઈસલૅન્ડિક xkb કીમૅપ</name>
+        <name xml:lang="gu">આઈસલૅન્ડિક xkb કીમૅપ</name>
         <name xml:lang="hi">आइसलेण्डिक एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Islandski xkb raspored</name>
         <name xml:lang="hu">Izlandi xkb-billentyűzetkiosztás</name>
@@ -12925,7 +12933,7 @@
         <language xml:lang="fi">Islantilainen</language>
         <language xml:lang="fr">Islandais</language>
         <language xml:lang="ga">Íoslainnis</language>
-        <language xml:lang="gu">અાઈસલેન્ડિક</language>
+        <language xml:lang="gu">આઈસલેન્ડિક</language>
         <language xml:lang="hi">आइसलैण्डिक</language>
         <language xml:lang="hr">Islandski</language>
         <language xml:lang="hu">Izlandi</language>
@@ -12982,7 +12990,7 @@
             <name xml:lang="fi">Islanti</name>
             <name xml:lang="fr">Islande</name>
             <name xml:lang="ga">An Íoslainn</name>
-            <name xml:lang="gu">અાઈસલેન્ડ</name>
+            <name xml:lang="gu">આઈસલેન્ડ</name>
             <name xml:lang="hi">आइसलैण्ड</name>
             <name xml:lang="hr">Island</name>
             <name xml:lang="hu">Izland</name>
@@ -13038,7 +13046,7 @@
         <name xml:lang="eu">tekla-mapa islandiarra</name>
         <name xml:lang="fi">Islantilainen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier islandais</name>
-        <name xml:lang="gu">અાઈસલૅન્ડિક કીમૅપ</name>
+        <name xml:lang="gu">આઈસલૅન્ડિક કીમૅપ</name>
         <name xml:lang="hi">आइसलेण्डिक कीमैप</name>
         <name xml:lang="hr">Islandski raspored</name>
         <name xml:lang="hu">Izlandi billentyűzetkiosztás</name>
@@ -13093,7 +13101,7 @@
         <language xml:lang="fi">Islantilainen</language>
         <language xml:lang="fr">Islandais</language>
         <language xml:lang="ga">Íoslainnis</language>
-        <language xml:lang="gu">અાઈસલેન્ડિક</language>
+        <language xml:lang="gu">આઈસલેન્ડિક</language>
         <language xml:lang="hi">आइसलैण्डिक</language>
         <language xml:lang="hr">Islandski</language>
         <language xml:lang="hu">Izlandi</language>
@@ -13150,7 +13158,7 @@
             <name xml:lang="fi">Islanti</name>
             <name xml:lang="fr">Islande</name>
             <name xml:lang="ga">An Íoslainn</name>
-            <name xml:lang="gu">અાઈસલેન્ડ</name>
+            <name xml:lang="gu">આઈસલેન્ડ</name>
             <name xml:lang="hi">आइसलैण्ड</name>
             <name xml:lang="hr">Island</name>
             <name xml:lang="hu">Izland</name>
@@ -13861,9 +13869,9 @@
     <keymap>
         <name>Lao keymap</name>
         <name xml:lang="ar">لوحة مفاتيح اللاوسية</name>
-        <name xml:lang="az">Lao Dili düzülüşü</name>
+        <name xml:lang="az">Lao düzülüşü</name>
         <name xml:lang="be">Лавоская раскладка</name>
-        <name xml:lang="bg">Клавиатура на Лао</name>
+        <name xml:lang="bg">Лаоска клавиатура</name>
         <name xml:lang="bn">লাও কী-বিন্যাস</name>
         <name xml:lang="bs">lao raspored</name>
         <name xml:lang="ca">Mapa de teclat laosià</name>
@@ -13878,7 +13886,7 @@
         <name xml:lang="eu">tekla-mapa laostarra</name>
         <name xml:lang="fi">Laolainen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier laotien</name>
-        <name xml:lang="gu">લાઅો કીમૅપ</name>
+        <name xml:lang="gu">લાઓ કીમૅપ</name>
         <name xml:lang="hi">लाओ कीमैप</name>
         <name xml:lang="hr">Lao raspored</name>
         <name xml:lang="hu">Lao billentyűzetkiosztás</name>
@@ -13916,7 +13924,7 @@
         <language xml:lang="ar">اللاوسية</language>
         <language xml:lang="az">Lao</language>
         <language xml:lang="be">Лавоская</language>
-        <language xml:lang="bg">Лао</language>
+        <language xml:lang="bg">Лаоски</language>
         <language xml:lang="bn">লাও</language>
         <language xml:lang="bs">Lao</language>
         <language xml:lang="ca">Laos</language>
@@ -13931,7 +13939,7 @@
         <language xml:lang="eu">laosera</language>
         <language xml:lang="fi">Lao</language>
         <language xml:lang="fr">Lao</language>
-        <language xml:lang="gu">લાઅો</language>
+        <language xml:lang="gu">લાઓ</language>
         <language xml:lang="hi">लाओ</language>
         <language xml:lang="hr">Laoski</language>
         <language xml:lang="hu">Lao</language>
@@ -13987,7 +13995,7 @@
             <name xml:lang="fi">Laos</name>
             <name xml:lang="fr">Laos</name>
             <name xml:lang="ga">Laos</name>
-            <name xml:lang="gu">લાઅોસ</name>
+            <name xml:lang="gu">લાઓસ</name>
             <name xml:lang="hi">लाओस</name>
             <name xml:lang="hr">Laos</name>
             <name xml:lang="hu">Laosz</name>
@@ -14026,7 +14034,7 @@
     <keymap>
         <name>Lithuanian qwerty xkb keymap</name>
         <name xml:lang="ar">لوحة مفاتيح xkb qwerty للتوانية</name>
-        <name xml:lang="az">Litva Dili qwerty xkb düzülüşü</name>
+        <name xml:lang="az">Litovca qwerty xkb düzülüşü</name>
         <name xml:lang="be">Жамойцкая qwerty xkb раскладка</name>
         <name xml:lang="bg">Литовска клавиатура xkb (qwerty)</name>
         <name xml:lang="bn">লিথুনিয়ান qwerty এক্স-কে-বী কী-বিন্যাস</name>
@@ -14043,7 +14051,7 @@
         <name xml:lang="eu">qwerty xkb tekla-mapa lituaniarra</name>
         <name xml:lang="fi">Liettualainen qwerty xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb qwertz lituanien</name>
-        <name xml:lang="gu">લિથુઅાનિઅન qwerty xkb કીમૅપ</name>
+        <name xml:lang="gu">લિથુઆનિઅન qwerty xkb કીમૅપ</name>
         <name xml:lang="hi">लिथुआनियाई qwerty एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Litvanski qwerty xkb raspored</name>
         <name xml:lang="hu">Litván qwerty xkb-billentyűzetkiosztás</name>
@@ -14078,7 +14086,7 @@
         <command>setxkbmap lt</command>
         <language>Lithuanian</language>
         <language xml:lang="ar">اللتوانية</language>
-        <language xml:lang="az">Litva Dili</language>
+        <language xml:lang="az">Litovca</language>
         <language xml:lang="be">Жамойцкая</language>
         <language xml:lang="bg">Литовски</language>
         <language xml:lang="bn">লিথুনীয়</language>
@@ -14097,7 +14105,7 @@
         <language xml:lang="fi">Liettualainen</language>
         <language xml:lang="fr">Lituanien</language>
         <language xml:lang="ga">Liotuánach</language>
-        <language xml:lang="gu">લિથુઅાનિઅન</language>
+        <language xml:lang="gu">લિથુઆનિઅન</language>
         <language xml:lang="hi">लिथुआनियाई</language>
         <language xml:lang="hr">Litvanski</language>
         <language xml:lang="hu">Litván</language>
@@ -14154,7 +14162,7 @@
             <name xml:lang="fi">Liettua</name>
             <name xml:lang="fr">Lituanie</name>
             <name xml:lang="ga">An Liotuáin</name>
-            <name xml:lang="gu">લિથુઅાનિઅા</name>
+            <name xml:lang="gu">લિથુઆનિઆ</name>
             <name xml:lang="hi">लिथुआनियाई</name>
             <name xml:lang="hr">Litva</name>
             <name xml:lang="hu">Litvánia</name>
@@ -14210,7 +14218,7 @@
         <name xml:lang="eu">tekla-mapa lituaniarra</name>
         <name xml:lang="fi">Liettualainen näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier lituanien</name>
-        <name xml:lang="gu">લિથુઅાનિઅન કીમૅપ</name>
+        <name xml:lang="gu">લિથુઆનિઅન કીમૅપ</name>
         <name xml:lang="hi">लिथुआनियाई कीमैप</name>
         <name xml:lang="hr">Litvanski raspored</name>
         <name xml:lang="hu">Litván billentyűzetkiosztás</name>
@@ -14245,7 +14253,7 @@
         <command>gkb_xmmap lt</command>
         <language>Lithuanian</language>
         <language xml:lang="ar">اللتوانية</language>
-        <language xml:lang="az">Litva Dili</language>
+        <language xml:lang="az">Litovca</language>
         <language xml:lang="be">Жамойцкая</language>
         <language xml:lang="bg">Литовски</language>
         <language xml:lang="bn">লিথুনীয়</language>
@@ -14264,7 +14272,7 @@
         <language xml:lang="fi">Liettualainen</language>
         <language xml:lang="fr">Lituanien</language>
         <language xml:lang="ga">Liotuánach</language>
-        <language xml:lang="gu">લિથુઅાનિઅન</language>
+        <language xml:lang="gu">લિથુઆનિઅન</language>
         <language xml:lang="hi">लिथुआनियाई</language>
         <language xml:lang="hr">Litvanski</language>
         <language xml:lang="hu">Litván</language>
@@ -14321,7 +14329,7 @@
             <name xml:lang="fi">Liettua</name>
             <name xml:lang="fr">Lituanie</name>
             <name xml:lang="ga">An Liotuáin</name>
-            <name xml:lang="gu">લિથુઅાનિઅા</name>
+            <name xml:lang="gu">લિથુઆનિઆ</name>
             <name xml:lang="hi">लिथुआनियाई</name>
             <name xml:lang="hr">Litva</name>
             <name xml:lang="hu">Litvánia</name>
@@ -14377,7 +14385,7 @@
         <name xml:lang="eu">programatzaileentzako xkb tekla-mapa lituaniarra</name>
         <name xml:lang="fi">Liettualainen ohjelmoijien xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb lituanien programmeurs</name>
-        <name xml:lang="gu">લિથુઅાનિઅન xkb કીમૅપ</name>
+        <name xml:lang="gu">લિથુઆનિઅન xkb કીમૅપ</name>
         <name xml:lang="hi">लिथुआनियाई प्रोग्रामर एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Litvanski xkb raspored za programere</name>
         <name xml:lang="hu">Litván programozói xkb-billentyűzetkiosztás</name>
@@ -14411,7 +14419,7 @@
         <command>setxkbmap lt_p</command>
         <language>Lithuanian</language>
         <language xml:lang="ar">اللتوانية</language>
-        <language xml:lang="az">Litva Dili</language>
+        <language xml:lang="az">Litovca</language>
         <language xml:lang="be">Жамойцкая</language>
         <language xml:lang="bg">Литовски</language>
         <language xml:lang="bn">লিথুনীয়</language>
@@ -14430,7 +14438,7 @@
         <language xml:lang="fi">Liettualainen</language>
         <language xml:lang="fr">Lituanien</language>
         <language xml:lang="ga">Liotuánach</language>
-        <language xml:lang="gu">લિથુઅાનિઅન</language>
+        <language xml:lang="gu">લિથુઆનિઅન</language>
         <language xml:lang="hi">लिथुआनियाई</language>
         <language xml:lang="hr">Litvanski</language>
         <language xml:lang="hu">Litván</language>
@@ -14487,7 +14495,7 @@
             <name xml:lang="fi">Liettua</name>
             <name xml:lang="fr">Lituanie</name>
             <name xml:lang="ga">An Liotuáin</name>
-            <name xml:lang="gu">લિથુઅાનિઅા</name>
+            <name xml:lang="gu">લિથુઆનિઆ</name>
             <name xml:lang="hi">लिथुआनियाई</name>
             <name xml:lang="hr">Litva</name>
             <name xml:lang="hu">Litvánia</name>
@@ -14543,7 +14551,7 @@
         <name xml:lang="eu">xkb tekla-mapa estandar lituaniarra</name>
         <name xml:lang="fi">Liettualainen standardi xkb-näppäinkartta</name>
         <name xml:lang="fr">Mappage clavier xkb standard lituanien</name>
-        <name xml:lang="gu">લિથુઅાનિઅન પ્રમાણભૂત xkb કીમૅપ</name>
+        <name xml:lang="gu">લિથુઆનિઅન પ્રમાણભૂત xkb કીમૅપ</name>
         <name xml:lang="hi">लिथुआनियाई मानक एक्सकेबी कीमैप</name>
         <name xml:lang="hr">Litvanski standardni xkb raspored</name>
         <name xml:lang="hu">Litván szabványos xkb-billentyűzetkiosztás</name>
@@ -14577,7 +14585,7 @@
         <command>setxkbmap lt_std</command>
         <language>Lithuanian</language>
         <language xml:lang="ar">اللتوانية</language>
-        <language xml:lang="az">Litva Dili</language>
+        <language xml:lang="az">Litovca</language>
         <language xml:lang="be">Жамойцкая</language>
         <language xml:lang="bg">Литовски</language>
         <language xml:lang="bn">লিথুনীয়</language>
@@ -14596,7 +14604,7 @@
         <language xml:lang="fi">Liettualainen</language>
         <language xml:lang="fr">Lituanien</language>
         <language xml:lang="ga">Liotuánach</language>
-        <language xml:lang="gu">લિથુઅાનિઅન</language>
+        <language xml:lang="gu">લિથુઆનિઅન</language>
         <language xml:lang="hi">लिथुआनियाई</language>
         <language xml:lang="hr">Litvanski</language>
         <language xml:lang="hu">Litván</language>
@@ -14653,7 +14661,7 @@
             <name xml:lang="fi">Liettua</name>
             <name xml:lang="fr">Lituanie</name>
             <name xml:lang="ga">An Liotuáin</name>
-            <name xml:lang="gu">લિથુઅાનિઅા</name>
+            <name xml:lang="gu">લિથુઆનિઆ</name>
             <name xml:lang="hi">लिथुआनियाई</name>
             <name xml:lang="hr">Litva</name>
             <name xml:lang="hu">Litvánia</name>
@@ -14824,7 +14832,7 @@
             <name xml:lang="fi">Makedonia</name>
             <name xml:lang="fr">Macédoine</name>
             <name xml:lang="ga">An Mhacadóin</name>
-            <name xml:lang="gu">મેસેડોનિઅા</name>
+            <name xml:lang="gu">મેસેડોનિઆ</name>
             <name xml:lang="hi">मकदूनियाई</name>
             <name xml:lang="hr">Makedonija</name>
             <name xml:lang="hu">Macedónia</name>
@@ -14992,7 +15000,7 @@
             <name xml:lang="fi">Makedonia</name>
             <name xml:lang="fr">Macédoine</name>
             <name xml:lang="ga">An Mhacadóin</name>
-            <name xml:lang="gu">મેસેડોનિઅા</name>
+            <name xml:lang="gu">મેસેડોનિઆ</name>
             <name xml:lang="hi">मकदूनियाई</name>
             <name xml:lang="hr">Makedonija</name>
             <name xml:lang="hu">Macedónia</name>
@@ -15031,7 +15039,7 @@
     <keymap>
         <name>Dutch keymap</name>
         <name xml:lang="ar">لوحة مفاتيح الهولندية</name>
-        <name xml:lang="az">Niderland Dili düzülüşü</name>
+        <name xml:lang="az">Niderlanca düzülüş</name>
         <name xml:lang="be">Галянская раскладка</name>
         <name xml:lang="bg">Холандска клавиатура</name>
         <name xml:lang="bn">ওলন্দাজ কী-বিন্যাস</name>
@@ -15757,7 +15765,7 @@
         <name xml:lang="hu">Lengyel holt billentyűk</name>
         <name xml:lang="id">Deadkey Polandia</name>
         <name xml:lang="is">Pólskir deadkeys</name>
-        <name xml:lang="it">Polacca con tasti inutilizzati</name>
+        <name xml:lang="it">Deadkey polacco</name>
         <name xml:lang="ja">ポーランド語 DeadKeys</name>
         <name xml:lang="ko">폴란드어 부동키</name>
         <name xml:lang="lt">Lenkų deadkeys</name>
@@ -16114,7 +16122,7 @@
         <name xml:lang="hu">Portugál holt gombok</name>
         <name xml:lang="id">Deadkey Portugal</name>
         <name xml:lang="is">Portúgalskir deadkeys</name>
-        <name xml:lang="it">Portoghese con tasti inutilizzati</name>
+        <name xml:lang="it">Deadkey portoghese</name>
         <name xml:lang="ja">ポルトガル語 DeadKeys</name>
         <name xml:lang="ko">포르투갈어 부동키</name>
         <name xml:lang="lt">Portugalų Deadkeys</name>
@@ -17048,7 +17056,7 @@
             <name xml:lang="fi">Romania</name>
             <name xml:lang="fr">Roumanie</name>
             <name xml:lang="ga">An Rómáin</name>
-            <name xml:lang="gu">રોમાનિઅા</name>
+            <name xml:lang="gu">રોમાનિઆ</name>
             <name xml:lang="hi">रोमानिया</name>
             <name xml:lang="hr">Rumunjska</name>
             <name xml:lang="hu">Románia</name>
@@ -17438,7 +17446,7 @@
         <name xml:lang="ar">لوحة مفاتيح الروسية البسيطة</name>
         <name xml:lang="az">Sadə Rus Dili düzülüşü</name>
         <name xml:lang="be">Голая расейская раскладка</name>
-        <name xml:lang="bg">Проста Руска клавиатура</name>
+        <name xml:lang="bg">Обикновена руска клавиатура</name>
         <name xml:lang="bn">প্লেন রুশ কী-বিন্যাস</name>
         <name xml:lang="bs">obični ruski raspored</name>
         <name xml:lang="ca">Mapa de teclat rus pla</name>
@@ -17612,7 +17620,7 @@
         <name xml:lang="ar">الروسية السريالية</name>
         <name xml:lang="az">Kril Rus Dili</name>
         <name xml:lang="be">Расейская кірылічная</name>
-        <name xml:lang="bg">Руска Кирилица</name>
+        <name xml:lang="bg">Руска кирилица</name>
         <name xml:lang="bn">রুশ সিরিলিক</name>
         <name xml:lang="bs">ruski ćirilićni</name>
         <name xml:lang="ca">Rus ciríl·lic</name>
@@ -19854,7 +19862,7 @@
         <name xml:lang="ar">لوحة مفاتيح xkb للتايلندية</name>
         <name xml:lang="az">Tay Dili xkb düzülüşü</name>
         <name xml:lang="be">Тайская xkb раскладка</name>
-        <name xml:lang="bg">Тайванска·клавиатура xkb</name>
+        <name xml:lang="bg">Тайванска·клавиатура</name>
         <name xml:lang="bn">থাই এক্স-কে-বী কী-বিন্যাস</name>
         <name xml:lang="bs">tajlandski xkb raspored</name>
         <name xml:lang="ca">Mapa de teclat tailandès xkb</name>
@@ -22478,7 +22486,7 @@
         <name xml:lang="ar">لوحة مفاتيح xkb عالمية للولايات المتحدة</name>
         <name xml:lang="az">Beynəlmilləl US xkb düzülüşü</name>
         <name xml:lang="be">ЗША, міжнародная xkb раскладка</name>
-        <name xml:lang="bg">Американска·Международна клавиатура xkb</name>
+        <name xml:lang="bg">Американска·международна клавиатура</name>
         <name xml:lang="bn">ইউ-এস আন্তর্জাতিক এক্স-কে-বী কী-বিন্যাস</name>
         <name xml:lang="bs">US internacionalni xkb raspored</name>
         <name xml:lang="ca">Mapa de teclat nordamericà internacional xkb</name>
@@ -22653,7 +22661,7 @@
         <name xml:lang="ar">الولايات المتحدة عالمي</name>
         <name xml:lang="az">US Beynəlmilləl</name>
         <name xml:lang="be">ЗША, міжнародная</name>
-        <name xml:lang="bg">Американска Международна</name>
+        <name xml:lang="bg">Американска международна</name>
         <name xml:lang="bn">ইউ-এস আন্তর্জাতিক</name>
         <name xml:lang="bs">US internacionalni</name>
         <name xml:lang="ca">Nordamericà internacional</name>
@@ -22845,7 +22853,7 @@
         <name xml:lang="eu">101 teklako teklatu estatubatuarra (Windows teklekin)</name>
         <name xml:lang="fi">Yhdysvaltalainen 105-näppäiminen (windows-näppäimillä)</name>
         <name xml:lang="fr">Clavier 105 touches US (avec touches windows)</name>
-        <name xml:lang="gu">US ૧૦૫-કી કીબોર્ડ (વિન્ડોસ કી સાથે)</name>
+        <name xml:lang="gu">US ૧૦૫-કી કીબોર્ડ (વિન્ડોઝ કી સાથે)</name>
         <name xml:lang="hi">यूएस 105-कुंजी कुंजीपटल (विंडोज़ कुंजी सहित)</name>
         <name xml:lang="hr">Američka tipkovnica sa 105 tastera (sa Windows tipkama)</name>
         <name xml:lang="hu">Egyesült Államok 105 gombos ("ablakok" gombokkal)</name>
@@ -23197,7 +23205,7 @@
         <name xml:lang="eu">Silicon Graphics 101 teklako estatubatuarra</name>
         <name xml:lang="fi">Yhdysvaltalainen Silicon Graphics 101-näppäimistö</name>
         <name xml:lang="fr">101 touches Silicon Graphics US</name>
-        <name xml:lang="gu">US સિલીકોન ગા઼ફીક્સ ૧૦૧-કી</name>
+        <name xml:lang="gu">US સિલીકોન ગ્રાફિક્સ ૧૦૧-કી</name>
         <name xml:lang="hi">यूएस सिलिकॉन ग्रॉफ़िक्स 101-कुंजी</name>
         <name xml:lang="hr">Američka Silicon Graphics 101 tipkovnica</name>
         <name xml:lang="hu">US Silicon Graphics 101 gombos</name>
@@ -24031,7 +24039,7 @@
         <name xml:lang="hu">Mongol alt-billentyűzetkiosztás</name>
         <name xml:lang="id">Keymap alt Mongolia</name>
         <name xml:lang="is">Mongólskt alt keymap</name>
-        <name xml:lang="it">Mappatura alt mongola</name>
+        <name xml:lang="it">Mappatura alternativa mongola</name>
         <name xml:lang="ja">モンゴル語 alt キーマップ</name>
         <name xml:lang="ko">몽골어 alt 키맵</name>
         <name xml:lang="lt">Mongolų alt išdėstymas</name>

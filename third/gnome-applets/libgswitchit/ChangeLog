@@ -1,3 +1,7 @@
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
 2004-06-29  Jody Goldberg <jody@gnome.org>
 
 	* gswitchit_config.c (GSwitchItXkbConfigInit) : s/g_error/g_warning/

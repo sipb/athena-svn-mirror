@@ -1,4 +1,4 @@
-/* $Id: gweather-pref.c,v 1.1.1.3 2004-10-04 03:07:52 ghudson Exp $ */
+/* $Id: gweather-pref.c,v 1.1.1.4 2005-03-10 19:44:36 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -343,7 +343,8 @@ static void load_locations (GWeatherApplet *gw_applet)
 {
     GtkTreeView *tree = GTK_TREE_VIEW(gw_applet->pref_tree);
     GtkTreeViewColumn *column;
-    GtkCellRenderer *cell_renderer;	
+    GtkCellRenderer *cell_renderer;
+    WeatherLocation *current_location;
         
     /* Add a colum for the locations */
     cell_renderer = gtk_cell_renderer_text_new ();
@@ -353,7 +354,9 @@ static void load_locations (GWeatherApplet *gw_applet)
     gtk_tree_view_set_expander_column (GTK_TREE_VIEW (tree), column);
     
     /* load locations from xml file */
-    gweather_xml_load_locations(tree, gw_applet->gweather_pref.location);
+    current_location = weather_location_clone (gw_applet->gweather_pref.location);
+    gweather_xml_load_locations(tree, current_location);
+    weather_location_free (current_location);
 }
 
 static void

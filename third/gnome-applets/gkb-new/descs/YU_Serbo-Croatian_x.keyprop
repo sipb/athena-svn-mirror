@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Serb keymap
+Name[ar]=لوحة مفاتيح الصربية
+Name[az]=Serbcə düzülüş
 Name[bg]=Сръбска клавиатура
 Name[bs]=srpski raspored
+Name[ca]=Mapa de teclat serbi
 Name[cs]=Srbská mapa kláves
 Name[cy]=Bysellfap Serbeg
 Name[da]=Serbisk tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Serbialainen näppäinkartta
 Name[fr]=Mappage clavier serbe
 Name[gu]=સર્બ કીમૅપ
 Name[hu]=Szerb billentyűzetkiosztás
+Name[it]=Mappatura serba
 Name[ja]=セルビア語キーマップ
 Name[ko]=세르비아 키맵
+Name[lt]=Serbų išdėstymas
 Name[ms]=Keymap Serb
 Name[nb]=Serbisk tastaturkart
 Name[nl]=Servisch toetsenbord

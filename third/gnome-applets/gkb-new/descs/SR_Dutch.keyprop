@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Serbian standard xkb keymap
+Name[ar]=لوحة مفاتيح xkb القياسية للصربية
+Name[az]=Serbcə standart xkb düzülüşü
 Name[bg]=Сръбска стандартна клавиатура xkb
 Name[bs]=srbijanski standardni xkb raspored
+Name[ca]=Mapa de teclat serbi stàndard xkb
 Name[cs]=Srbská standardní mapa kláves xkb
 Name[cy]=Bysellfap XKB safonnol Serbeg
 Name[da]=Serbisk standard xkb-tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Serbialainen standardi xkb-näppäinkartta
 Name[fr]=Mappage clavier xkb standard serbe
 Name[gu]=સર્બિયન પ્રમાણભૂત xkb કીમૅપ
 Name[hu]=Szerb szabványos xkb-billentyűzetkiosztás
+Name[it]=Mappatura xkb standard serba
 Name[ja]=セルビア語標準 xkb キーマップ
 Name[ko]=세르비아 표준 XKB 키맵
+Name[lt]=Standartinis serbų xkb išdėstymas
 Name[ms]=Keymap Serb xkb piawai
 Name[nb]=Serbisk standard xkb-tastaturkart
 Name[nl]=Servisch standaard xkb toetsenbord

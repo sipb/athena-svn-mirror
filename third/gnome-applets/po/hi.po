@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:10+0800\n"
+"POT-Creation-Date: 2004-12-06 18:51+0800\n"
 "PO-Revision-Date: 2004-07-03 12:45+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -71,12 +71,12 @@ msgstr "कुंजीपटल एक्सेसिबिलिटी वि�
 
 #: accessx-status/applet.c:136 battstat/battstat_applet.c:1064
 #: cdplayer/cdplayer.c:596 charpick/charpick.c:564 drivemount/drivemount.c:552
-#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:608
+#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:599
 #: gtik/gtik.c:723 gweather/gweather-about.c:47 mailcheck/mailcheck.c:2467
-#: mini-commander/src/about.c:50 mixer/mixer.c:1349
+#: mini-commander/src/about.c:50 mixer/mixer.c:1392
 #: modemlights/modemlights.c:118 multiload/main.c:58
 #: stickynotes/stickynotes_applet_callbacks.c:261
-#: wireless/wireless-applet.c:572
+#: wireless/wireless-applet.c:574
 msgid "translator_credits"
 msgstr "रविशंकर श्रीवास्तव <raviratlami@yahoo.com>"
 
@@ -499,7 +499,7 @@ msgid "Battery Charge Monitor Preferences"
 msgstr "बैटरी चार्ज मॉनीटर वरीयताएँ"
 
 #: battstat/battstat_applet.glade.h:13 drivemount/properties.c:358
-#: gweather/gweather-pref.c:1049 mailcheck/mailcheck.c:2053
+#: gweather/gweather-pref.c:1052 mailcheck/mailcheck.c:2053
 #: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:563
 msgid "General"
 msgstr "सामान्य"
@@ -559,9 +559,9 @@ msgstr "पीला (_Y):"
 #: battstat/properties.c:291 drivemount/drivemount.c:509
 #: drivemount/properties.c:604 mailcheck/mailcheck.c:2320
 #: mailcheck/mailcheck.c:2614 mini-commander/src/preferences.c:364
-#: mixer/mixer.c:1462 stickynotes/stickynotes_applet_callbacks.c:238
+#: mixer/mixer.c:1505 stickynotes/stickynotes_applet_callbacks.c:238
 #: stickynotes/stickynotes_applet_callbacks.c:402
-#: wireless/wireless-applet.c:542 wireless/wireless-applet.c:626
+#: wireless/wireless-applet.c:544 wireless/wireless-applet.c:628
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "मदद दिखाने मे त्रुटि थी: %s"
@@ -633,7 +633,7 @@ msgstr "अगला ट्रैक"
 msgid "You do not have permission to use the CD player."
 msgstr "आपको सीडी प्लेयर का उपयोग करने की अनुमति नहीं है."
 
-#: cdplayer/cdplayer.c:378 mixer/mixer.c:1316 multiload/main.c:142
+#: cdplayer/cdplayer.c:378 mixer/mixer.c:1359 multiload/main.c:142
 #, c-format
 msgid "There was an error executing '%s': %s"
 msgstr "कार्य निष्पादन में त्रुटि आई '%s': %s"
@@ -1517,9 +1517,9 @@ msgstr "डेनमार्क"
 msgid "Danish keymap"
 msgstr "दानिश कीमैप"
 
-#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:848
-#: gweather/gweather-pref.c:868 gweather/gweather-pref.c:892
-#: gweather/gweather-pref.c:918
+#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:871 gweather/gweather-pref.c:895
+#: gweather/gweather-pref.c:921
 #, fuzzy
 msgid "Default"
 msgstr "डिफ़ॉल्ट उपयोग करें (_D)"
@@ -2937,7 +2937,7 @@ msgstr "लेबल "
 msgid "Flag and Label"
 msgstr "ध्वज तथा लेबल"
 
-#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1034
+#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1037
 #: modemlights/properties.c:444
 msgid "Display"
 msgstr "प्रदर्शक"
@@ -3034,7 +3034,7 @@ msgid "GNOME keyboard layout indicator"
 msgstr "गनोम कुंजीपटल अभिन्यास सूचक"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:3
-#: gswitchit/gswitchit-applet.c:613
+#: gswitchit/gswitchit-applet.c:604
 msgid "Keyboard Indicator"
 msgstr "कुंजीपटल सूचक"
 
@@ -3047,20 +3047,20 @@ msgstr "कुंजीपटल एप्लेट फैक्ट्री"
 msgid "Keyboard Indicator (%s)"
 msgstr "कुंजीपटल सूचक (%s)"
 
-#: gswitchit/gswitchit-applet.c:616
+#: gswitchit/gswitchit-applet.c:607
 #, fuzzy
 msgid "Copyright (c) Sergey V. Udaltsov 1999-2004"
 msgstr "सर्वाधिकार (c) सेर्गेई वी आउदाल्सतॉव 1999-2004"
 
-#: gswitchit/gswitchit-applet.c:618
+#: gswitchit/gswitchit-applet.c:609
 msgid "Keyboard layout indicator applet for GNOME"
 msgstr "गनोम हेतु कुंजीपटल अभिन्यास सूचक एप्लेट"
 
-#: gswitchit/gswitchit-applet.c:772
+#: gswitchit/gswitchit-applet.c:763
 msgid "XKB initialization error"
 msgstr "एक्सकेबी प्रारंभ करने में त्रुटि"
 
-#: gswitchit/gswitchit-applet.c:780
+#: gswitchit/gswitchit-applet.c:771
 msgid "Error loading XKB configuration registry"
 msgstr "एक्सकेबी कॉन्फ़िगरेशन रजिस्ट्री लोड करने में त्रुटि"
 
@@ -3070,11 +3070,11 @@ msgid ""
 "No way to switch to this layout using the keyboard."
 msgstr ""
 
-#: gswitchit/gswitchit-capplet.c:265
+#: gswitchit/gswitchit-capplet.c:262
 msgid "_Exclude from keyboard switching"
 msgstr "कुंजीपटल स्विचिंग से बाहर रखें (_E)"
 
-#: gswitchit/gswitchit-capplet.c:296
+#: gswitchit/gswitchit-capplet.c:293
 msgid "Not used"
 msgstr "उपयोग नहीं किया गया"
 
@@ -3284,7 +3284,7 @@ msgstr "संकेत"
 msgid "Behavior"
 msgstr "व्यवहार"
 
-#: gtik/gtik.c:1434 gweather/gweather-pref.c:994
+#: gtik/gtik.c:1434 gweather/gweather-pref.c:997
 msgid "Update"
 msgstr "अद्यतन"
 
@@ -3292,7 +3292,7 @@ msgstr "अद्यतन"
 msgid "Stock update fre_quency:"
 msgstr "स्टाक अद्यतन की आवृत्ति (_q):"
 
-#: gtik/gtik.c:1450 gweather/gweather-pref.c:1018 mailcheck/mailcheck.c:2101
+#: gtik/gtik.c:1450 gweather/gweather-pref.c:1021 mailcheck/mailcheck.c:2101
 #: mailcheck/mailcheck.c:2107
 msgid "minutes"
 msgstr "मिनट्स"
@@ -3672,7 +3672,7 @@ msgstr "यूआरएल प्रविष्ठ करें"
 #  so this should be translated as "KJFK"
 #. TRANSLATOR: This is the default unit to use for temperature measurements.
 #. Valid values are: "K" (Kelvin), "C" (Celsius) and "F" (Fahrenheit)
-#: gweather/gweather-pref.c:400 gweather/gweather-pref.c:409
+#: gweather/gweather-pref.c:403 gweather/gweather-pref.c:412
 #, fuzzy
 msgid "DEFAULT_TEMP_UNIT"
 msgstr "डिफ़ॉल्ट कोड"
@@ -3684,7 +3684,7 @@ msgstr "डिफ़ॉल्ट कोड"
 #. TRANSLATOR: This is the default unit to use for wind speed.
 #. Valid values are: "m/s" (meters per second), "km/h" (kilometers per hour),
 #. "mph" (miles per hour) and "knots"
-#: gweather/gweather-pref.c:435 gweather/gweather-pref.c:445
+#: gweather/gweather-pref.c:438 gweather/gweather-pref.c:448
 #, fuzzy
 msgid "DEFAULT_SPEED_UNIT"
 msgstr "डिफ़ॉल्ट ज़ोन (_Z)"
@@ -3693,7 +3693,7 @@ msgstr "डिफ़ॉल्ट ज़ोन (_Z)"
 #. Valid values are: "kPa" (kiloPascals), "hPa" (hectoPascals),
 #. "mb" (millibars), "mmHg" (millimeters of mercury) and
 #. "inHg" (inches of mercury)
-#: gweather/gweather-pref.c:473 gweather/gweather-pref.c:484
+#: gweather/gweather-pref.c:476 gweather/gweather-pref.c:487
 msgid "DEFAULT_PRESSURE_UNIT"
 msgstr ""
 
@@ -3703,138 +3703,138 @@ msgstr ""
 #  so this should be translated as "KJFK"
 #. TRANSLATOR: This is the default unit to use for visibility distance.
 #. Valid values are: "m" (meters), "km" (kilometers) and "mi" (miles)
-#: gweather/gweather-pref.c:510 gweather/gweather-pref.c:519
+#: gweather/gweather-pref.c:513 gweather/gweather-pref.c:522
 #, fuzzy
 msgid "DEFAULT_DISTANCE_UNIT"
 msgstr "डिफ़ॉल्ट कोड"
 
-#: gweather/gweather-pref.c:797
+#: gweather/gweather-pref.c:800
 msgid "Weather Preferences"
 msgstr "मौसम वरीयताएँ"
 
-#: gweather/gweather-pref.c:830 gweather/gweather-pref.c:998
+#: gweather/gweather-pref.c:833 gweather/gweather-pref.c:1001
 msgid "_Automatically update every:"
 msgstr "अद्यतन स्वचालित करें प्रत्येक (_A):"
 
 #. Temperature Unit
-#: gweather/gweather-pref.c:839
+#: gweather/gweather-pref.c:842
 #, fuzzy
 msgid "_Temperature Unit:"
 msgstr "तापमानः"
 
-#: gweather/gweather-pref.c:849
+#: gweather/gweather-pref.c:852
 #, fuzzy
 msgid "Kelvin"
 msgstr "बेल्जियाई"
 
 #. TRANSLATORS: Celsius is sometimes referred Centigrade
-#: gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:854
 msgid "Celsius"
 msgstr ""
 
-#: gweather/gweather-pref.c:852
+#: gweather/gweather-pref.c:855
 #, fuzzy
 msgid "Fahrenheit"
 msgstr "फ्रांसीसी"
 
 #. Speed Unit
-#: gweather/gweather-pref.c:859
+#: gweather/gweather-pref.c:862
 msgid "_Wind Speed Unit:"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "meters per second"
-#: gweather/gweather-pref.c:870
+#: gweather/gweather-pref.c:873
 msgid "m/s"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "kilometers per hour"
-#: gweather/gweather-pref.c:872
+#: gweather/gweather-pref.c:875
 msgid "km/h"
 msgstr "किमी/घं"
 
 #. TRANSLATOR: The wind speed unit "miles per hour"
-#: gweather/gweather-pref.c:874
+#: gweather/gweather-pref.c:877
 msgid "mph"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "knots"
-#: gweather/gweather-pref.c:876
+#: gweather/gweather-pref.c:879
 msgid "knots"
 msgstr "नॉट्स"
 
 #. Pressure Unit
-#: gweather/gweather-pref.c:883
+#: gweather/gweather-pref.c:886
 #, fuzzy
 msgid "_Pressure Unit:"
 msgstr "दबावः"
 
 #. TRANSLATOR: The pressure unit "kiloPascals"
-#: gweather/gweather-pref.c:894
+#: gweather/gweather-pref.c:897
 #, fuzzy
 msgid "kPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "hectoPascals"
-#: gweather/gweather-pref.c:896
+#: gweather/gweather-pref.c:899
 msgid "hPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "millibars"
-#: gweather/gweather-pref.c:898
+#: gweather/gweather-pref.c:901
 msgid "mb"
 msgstr ""
 
 #. TRANSLATOR: The pressure unit "millibars of mercury"
-#: gweather/gweather-pref.c:900
+#: gweather/gweather-pref.c:903
 msgid "mmHg"
 msgstr ""
 
 #. TRANSLATOR: The pressure unit "inches of mercury"
-#: gweather/gweather-pref.c:902
+#: gweather/gweather-pref.c:905
 msgid "inHg"
 msgstr "inHg"
 
 #. Distance Unit
-#: gweather/gweather-pref.c:909
+#: gweather/gweather-pref.c:912
 #, fuzzy
 msgid "_Visibility Unit:"
 msgstr "दृश्यताः"
 
 #. TRANSLATOR: The distance unit "meters"
-#: gweather/gweather-pref.c:920
+#: gweather/gweather-pref.c:923
 #, fuzzy
 msgid "meters"
 msgstr "किलोमीटर"
 
 #. TRANSLATOR: The distance unit "kilometers"
-#: gweather/gweather-pref.c:922
+#: gweather/gweather-pref.c:925
 #, fuzzy
 msgid "km"
 msgstr "किमी/घं"
 
 #. TRANSLATOR: The distance unit "miles"
-#: gweather/gweather-pref.c:924
+#: gweather/gweather-pref.c:927
 msgid "miles"
 msgstr "मील"
 
-#: gweather/gweather-pref.c:949
+#: gweather/gweather-pref.c:952
 msgid "Enable _radar map"
 msgstr "रेडार नक्शा सक्षम करें (_r)"
 
-#: gweather/gweather-pref.c:963
+#: gweather/gweather-pref.c:966
 #, fuzzy
 msgid "Use _custom address for radar map"
 msgstr "रेडार नक्शा हेतु अनुकूलित पता उपयोग करें (_t)"
 
-#: gweather/gweather-pref.c:980
+#: gweather/gweather-pref.c:983
 msgid "A_ddress:"
 msgstr "पता (_d):"
 
-#: gweather/gweather-pref.c:1062
+#: gweather/gweather-pref.c:1065
 msgid "_Select a location:"
 msgstr "एक स्थान चुनें (_S):"
 
-#: gweather/gweather-pref.c:1092
+#: gweather/gweather-pref.c:1095
 msgid "Location"
 msgstr "स्थान"
 
@@ -5216,8 +5216,8 @@ msgstr "कमांड"
 msgid "Adjust the sound volume"
 msgstr "ध्वनि व्यवस्थित करें"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:199
-#: mixer/mixer.c:1363
+#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:210
+#: mixer/mixer.c:1406
 msgid "Volume Control"
 msgstr "आवाज निर्धारक"
 
@@ -5229,115 +5229,115 @@ msgstr "मौन (_M)"
 msgid "_Open Volume Control"
 msgstr "आवाज़ निर्धारक खोलें (_O)"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Main Volume"
 msgstr "मुख्य आवाज निर्धारक"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Bass"
 msgstr "बास"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Treble"
 msgstr "ट्रेबल"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Synth"
 msgstr "सिंथ"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Pcm"
 msgstr "पीसीएम"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Speaker"
 msgstr "स्पीकर"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Line"
 msgstr "लाइन"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Microphone"
 msgstr "माइक्रोफोन"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "CD"
 msgstr "सीडी"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Mix"
 msgstr "मिक्स"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Pcm2"
 msgstr "पीसीएम2"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Recording Level"
 msgstr "रेकॉर्डिंग स्तर"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Input Gain"
 msgstr "इनपुट गेन"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Output Gain"
 msgstr "आउटपुट गेन"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line1"
 msgstr "लाइन1"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line2"
 msgstr "लाइन2"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line3"
 msgstr "लाइन3"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Digital1"
 msgstr "डिज़िटल1"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital2"
 msgstr "डिज़िटल2"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital3"
 msgstr "डिज़िटल3"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Input"
 msgstr "फोन इनपुट"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Output"
 msgstr "फोन आउटपुट"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Video"
 msgstr "वीडियो"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Radio"
 msgstr "रेडियो"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Monitor"
 msgstr "मॉनीटर"
 
-#: mixer/mixer.c:200
+#: mixer/mixer.c:211
 msgid "Volume Control (muted)"
 msgstr "आवाज़ निर्धारक (मौन)"
 
-#: mixer/mixer.c:201
+#: mixer/mixer.c:212
 msgid "No audio device"
 msgstr "कोई ध्वनि उपकरण नहीं"
 
-#: mixer/mixer.c:518
+#: mixer/mixer.c:546
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -5345,50 +5345,50 @@ msgstr ""
 "चेतावनीः जीमिक्स का यह संस्करण दूसरे संस्करण के\n"
 " साउंड कार्ड हेतु कम्पाइल है.\n"
 
-#: mixer/mixer.c:893
+#: mixer/mixer.c:936
 #, c-format
 msgid "Couldn't open mixer device %s\n"
 msgstr "मिक्सर उपकरण खोल नहीं सका %s\n"
 
-#: mixer/mixer.c:1062
+#: mixer/mixer.c:1105
 msgid "Volume Controller"
 msgstr "आवाज़ निर्धारक"
 
-#: mixer/mixer.c:1063
+#: mixer/mixer.c:1106
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "आवाज को नियंत्रित करने हेतु ऊपर नीचे की तीर कुंजियों का प्रयोग करें"
 
 #. Translators - The + and - refer to increasing and decreasing the volume.
 #. ** I don't know if there are sensible alternatives in other languages
-#: mixer/mixer.c:1087
+#: mixer/mixer.c:1130
 msgid "+"
 msgstr "+"
 
-#: mixer/mixer.c:1088
+#: mixer/mixer.c:1131
 msgid "-"
 msgstr "-"
 
-#: mixer/mixer.c:1364
+#: mixer/mixer.c:1407
 msgid "(C) 2001 Richard Hult"
 msgstr "(C) 2001 रिचर्ड हल्ट"
 
-#: mixer/mixer.c:1365
+#: mixer/mixer.c:1408
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr "आवाज़ निर्धारक से आप अपने डेस्कटॉप के आवाज़ को नियंत्रित कर सकते हैं."
 
-#: mixer/mixer.c:1512
+#: mixer/mixer.c:1555
 msgid "Volume Control Preferences"
 msgstr "आवाज़ निर्धारक वरीयताएँ"
 
-#: mixer/mixer.c:1536
+#: mixer/mixer.c:1579
 msgid "Audio Channels"
 msgstr "ऑडियो चैनल्स"
 
-#: mixer/mixer.c:1552
+#: mixer/mixer.c:1595
 msgid "_Select channel to control:"
 msgstr "चैनल नियंत्रण करने हेतु चुनें: (_S)"
 
-#: mixer/mixer.c:1888
+#: mixer/mixer.c:1936
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr "आवाज़ नियंत्रक से आप अपने डेस्कटॉप के आवाज़ को नियंत्रित कर सकते हैं."
 
@@ -6406,7 +6406,7 @@ msgid "Monitor the quality of a wireless network link"
 msgstr "वायरलेस नेटवर्क लिंक की क्वालिटी पर नजर रखें"
 
 #: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
-#: wireless/wireless-applet.c:588 wireless/wireless-applet.c:840
+#: wireless/wireless-applet.c:590 wireless/wireless-applet.c:842
 msgid "Wireless Link Monitor"
 msgstr "वायरलेस लिंक मॉनीटर"
 
@@ -6415,7 +6415,7 @@ msgstr "वायरलेस लिंक मॉनीटर"
 msgid "Link Strength: %2.0d%%"
 msgstr "लिंक सामर्थ्य: %2.0d%%"
 
-#: wireless/wireless-applet.c:367
+#: wireless/wireless-applet.c:369
 msgid ""
 "There doesn't seem to be any wireless devices configured on your system.\n"
 "Please verify your configuration if you think this is incorrect."
@@ -6423,19 +6423,19 @@ msgstr ""
 "प्रतीत होता है कि आपके तंत्र में वायरलेस उपकरण कॉन्फ़िगर नहीं है.\n"
 "कृपया अपने तंत्र का कॉन्फ़िगर जाँचें यदि आपको लगता है कि यह गलत है."
 
-#: wireless/wireless-applet.c:502 wireless/wireless-applet.c:829
+#: wireless/wireless-applet.c:504 wireless/wireless-applet.c:831
 msgid "No Wireless Devices"
 msgstr "कोई वायरलेस उपकण नहीं"
 
-#: wireless/wireless-applet.c:590
+#: wireless/wireless-applet.c:592
 msgid "(C) 2001, 2002 Free Software Foundation "
 msgstr "(C) 2001,2002  मुफ्त सॉफ्टवेयर संस्थान"
 
-#: wireless/wireless-applet.c:591
+#: wireless/wireless-applet.c:593
 msgid "This utility shows the status of a wireless link."
 msgstr "यह यूटिलिटी वायरलेस लिंक की स्थिति दर्शाती है."
 
-#: wireless/wireless-applet.c:841
+#: wireless/wireless-applet.c:843
 msgid "This utility shows the status of a wireless link"
 msgstr "यह यूटिलिटी वायरलेस लिंक की स्थिति दर्शाती है"
 

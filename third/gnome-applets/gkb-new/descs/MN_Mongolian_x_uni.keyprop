@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Unicode Mongolian Keymap
-Name[bg]=Монголска уникод клавиатура
+Name[ar]=لوحة مفاتيح يونيكود للماغولية
+Name[az]=Monqol yunikod düzülüş
+Name[bg]=Монголска клавиатура по уникод
 Name[bs]=mongolski raspored za unicode
+Name[ca]=Teclat mongol Unicode
 Name[cs]=Mongolská mapa kláves Unicode
 Name[cy]=Bysellfap Mongoleg Unicode
 Name[da]=Unicode mongolsk tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Mongolialainen unicode-näppäinkartta
 Name[fr]=Mappage clavier mongolien unicode
 Name[gu]=યુનિકોડ મોંગોલિયાઈ કીમૅપ
 Name[hu]=Unicode mongol billentyűzetkiosztás
+Name[it]=Mappatura mongola Unicode
 Name[ja]=モンゴル語キーマップ (Unicode)
 Name[ko]=유니코드 몽골어 키맵
+Name[lt]=Unikodinis Mongolų išdėstymas
 Name[ms]=Keymap Mongolia Unicode
 Name[nb]=Unicode-basert mongolsk tastaturkart
 Name[nl]=Unicode Mongools toetsenbord

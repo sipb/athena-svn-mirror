@@ -118,6 +118,9 @@
 /* Define to 1 if you have the <sys/audioio.h> header file. */
 #undef HAVE_SYS_AUDIOIO_H
 
+/* Define to 1 if you have the <sys/audio.h> header file. */
+#undef HAVE_SYS_AUDIO_H
+
 /* Define to 1 if you have the <sys/audio.io.h> header file. */
 #undef HAVE_SYS_AUDIO_IO_H
 

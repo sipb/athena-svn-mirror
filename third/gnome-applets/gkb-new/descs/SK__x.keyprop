@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name= keymap
+Name[ar]= لوحة مفاتيح
+Name[az]= düzülüş
 Name[bg]= клавиатура
 Name[bs]= raspored
+Name[ca]= mapa de teclat
 Name[cs]= mapa kláves
 Name[cy]= bysellfap
 Name[da]= tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]= näppäinkartta
 Name[fr]=mappage
 Name[gu]= કીમૅપ
 Name[hu]= billentyűzetkiosztás
+Name[it]= mappatura
 Name[ja]= キーマップ
 Name[ko]=키맵
+Name[lt]= išdėstymas
 Name[ms]= Keymap
 Name[nb]= tastaturkart
 Name[nl]= toetsenbord

@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Mongolian keyboard
+Name[ar]=لوحة مفاتيح الماغولية
+Name[az]=Monqolca klaviatura
 Name[bg]=Монголска клавиатура
 Name[bs]=mongolska tastatura
+Name[ca]=Teclat mongol
 Name[cs]=Mongolská klávesnice
 Name[cy]=Bysellfwrdd Mongoleg
 Name[da]=Mongolsk tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Mongolialainen näppäimistö
 Name[fr]=Clavier mongolien
 Name[gu]=મોંગોલિયાઈ કીબોર્ડ
 Name[hu]=Mongol billentyűzet
+Name[it]=Tastiera mongola
 Name[ja]=モンゴル語キーマップ
 Name[ko]=몽골어 키보드
+Name[lt]=Mongolų klaviatūra
 Name[ms]=Papan Kekunci Mongolia
 Name[nb]=Mongolsk tastatur
 Name[nl]=Mongools toetsenbord
