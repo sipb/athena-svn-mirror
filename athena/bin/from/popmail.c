@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.7 1997-10-02 18:57:57 ghudson Exp $
+ * $Id: popmail.c,v 1.8 1997-11-22 19:23:21 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
  * $Author: ghudson $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.7 1997-10-02 18:57:57 ghudson Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.8 1997-11-22 19:23:21 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -52,7 +52,6 @@ char *host;
     long authopts;
     char *hostname;
 #endif
-    char *get_errmsg();
 
     hp = gethostbyname(host);
     if (hp == NULL) {
@@ -83,12 +82,12 @@ char *host;
     s = rresvport(&lport);
 #endif
     if (s < 0) {
-	(void) sprintf(Errmsg, "error creating socket: %s", get_errmsg());
+	(void) sprintf(Errmsg, "error creating socket: %s", strerror(errno));
 	return(NOTOK);
     }
 
     if (connect(s, (struct sockaddr *)&sin, sizeof sin) < 0) {
-	(void) sprintf(Errmsg, "error during connect: %s", get_errmsg());
+	(void) sprintf(Errmsg, "error during connect: %s", strerror(errno));
 	(void) close(s);
 	return(NOTOK);
     }
@@ -240,17 +239,3 @@ FILE *f;
     }
     return(OK);
 }
-
-char *get_errmsg()
-{
-    extern int errno, sys_nerr;
-    extern char *sys_errlist[];
-    char *s;
-
-    if (errno < sys_nerr)
-      s = sys_errlist[errno];
-    else
-      s = "unknown error";
-    return(s);
-}
-
