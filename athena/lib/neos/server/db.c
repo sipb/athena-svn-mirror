@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.3 1996-09-20 04:40:22 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.4 1997-11-14 22:29:56 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.3 1996-09-20 04:40:22 ghudson Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.4 1997-11-14 22:29:56 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -500,7 +500,7 @@ db_store(contents)
       if (servers[i].cl) {
 	DebugMulti(("Calling server_store for server %s\n",
 		    servers[i].name));
-	res = (long *)_server_store_1(contents, servers[i].cl);
+	res = server_store_1(contents, servers[i].cl);
 	/* XXX */
 	if (!res)
 	  multi_conn_dropped(i);
@@ -577,7 +577,7 @@ db_delete(contents)
       if (servers[i].cl) {
 	DebugMulti(("Calling server_store for server %s\n",
 		    servers[i].name));
-	res = (long *)_server_delete_1(contents, servers[i].cl);
+	res = server_delete_1(contents, servers[i].cl);
 	/* XXX */
 	if (!res)
 	  multi_conn_dropped(i);
