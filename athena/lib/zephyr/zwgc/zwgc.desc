@@ -5,7 +5,7 @@
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
 #	$Author: jtkohl $
-#	$Id: zwgc.desc,v 1.2 1989-11-15 23:00:54 jtkohl Exp $
+#	$Id: zwgc.desc,v 1.3 1989-11-15 23:25:56 jtkohl Exp $
 #
 #
 # Default WindowGram description file
@@ -46,12 +46,7 @@ endcase
 
 case $class
 match "WG_CTL_CLASS"
-        if ($opcode == "WG_STARTUP") then
-                print "@large(Zwgc mark II version "+$version+" now running...\n)"
-                put
-	endif
 	exit
-
 #  
 # MAIL NOTIFICATION
 #
