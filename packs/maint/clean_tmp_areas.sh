@@ -5,7 +5,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
 #	$Author: cfields $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.6 1996-05-09 18:23:15 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.7 1996-08-10 21:47:03 cfields Exp $
 #
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
@@ -33,7 +33,7 @@ switch($hosttype)
 		set exceptions = "$exceptions ! -type p ! -name ps_data"
 		breaksw
 	case sgi:
-		set exceptions = "$exceptions ! -user root"
+		set exceptions = "$exceptions ! -type p ! -type s ! -user root"
 #			! -type s ! -name .ps_data ! -name .cadmin*
 #			set noglob (for .cadmin*)
 		breaksw
