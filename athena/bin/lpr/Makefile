@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.13 1990-07-05 13:49:45 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.14 1990-07-14 12:32:56 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -167,8 +167,8 @@ install:
 #	install -c -s -o root -g ${OP_GID} -m 6754 o_lprm ${DESTDIR}/usr/etc/
 	install -c -s -g ${SPGRP} -m 2755 lpc ${DESTDIR}/usr/etc/
 #	install -c -s -o root -g ${OP_GID} -m 6754 o_lpc ${DESTDIR}/usr/etc/
-	install -s lptest ${DESTDIR}/${BINDIR}/lptest
-	install -s pac ${DESTDIR}/usr/etc/pac
+	install -c -s lptest ${DESTDIR}/${BINDIR}/lptest
+	install -c -s pac ${DESTDIR}/usr/etc/pac
 	install -c print.sh ${DESTDIR}/usr/ucb/print
 	install -c -m 755 makespools ${DESTDIR}/etc
 
