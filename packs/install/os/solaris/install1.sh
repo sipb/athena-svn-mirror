@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.30 2004-06-18 13:18:05 rbasch Exp $
+### $Id: install1.sh,v 1.31 2004-07-16 20:18:30 rbasch Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin:/usr/athena/bin
@@ -20,7 +20,7 @@ format < /dev/null | awk '/^[ 	]*[0-9]\./ { print; }' > /tmp/disks
 
 ndrives=`wc -l /tmp/disks`
 case `uname -m`,`uname -i` in
-sun4u,SUNW,Sun-Fire-280R)
+sun4u,SUNW,Sun-Fire-280R|sun4u,SUNW,Sun-Fire-V440)
 	defaultdrive=c1t0d0;
 	;;
 sun4u,*)
