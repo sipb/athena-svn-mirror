@@ -53,12 +53,12 @@ evolution_addressbook_LDADD =						\
 	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a	\
 	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a	\
 	select-names/libeselectnames.la					\
-	$(top_builddir)/libversit/libversit.la				\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a 			\
 	$(top_builddir)/addressbook/printing/libecontactprint.a		\
 	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.a	\
 	$(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
+	$(top_builddir)/libversit/libversit.la				\
 	$(top_builddir)/filter/libfilter.la				\
 	$(top_builddir)/shell/libeshell.la				\
 	$(top_builddir)/e-util/libeutil.la				\
