@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.7 1986-01-29 14:45:27 treese Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.8 1986-02-09 16:41:17 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -37,11 +37,11 @@ main(argc, argv)
      char *argv[];
 {
   check_consultant();
+  init_display();
   init_globals();
   parse_args(argc, argv);
   set_current_dir(Current_Dir);
   make_abbrev_table();
-  init_display();
   make_display();
   command_loop();
 }
