@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.7 1999-05-24 18:34:56 danw Exp $
+ * $Id: lp.h,v 1.8 1999-10-27 22:31:41 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -78,6 +78,7 @@ struct line_list;
 
 extern char *Copyright[];	/* Copyright info */
 EXTERN int Is_server;		/* LPD sets to non-zero */
+EXTERN int Doing_cleanup;	/* process exiting */
 EXTERN int Verbose;		/* LPD sets to non-zero */
 EXTERN int Warnings;		/* set for warnings and not fatal - used with checkcp */
 EXTERN int Errorcode;		/* Exit code for an error */
@@ -97,7 +98,7 @@ void setmessage( struct job *job, const char *header, char *fmt, ... );
 void setstatus( va_alist );
 void setmessage( va_alist );
 #endif
-void send_to_logger( struct job *job, const char *header, char *msg );
+void send_to_logger( int sfd, int mfd, struct job *job, const char *header, char *msg );
 
 /***************************************************************************
  * ACKs from the remote host on job transfers
@@ -244,6 +245,7 @@ EXTERN char* Accounting_file_DYN; /* name of accounting file (see also la, ar) *
 EXTERN int Accounting_remote_DYN; /* write remote transfer accounting (if af is set) */
 EXTERN char* Accounting_start_DYN;/* accounting at start (see also af, la, ar) */
 EXTERN int Allow_duplicate_args_DYN;	/* Legacy requirement */
+EXTERN char* Allow_user_setting_DYN;	/* allow users to set job submitter */
 EXTERN int Allow_getenv_DYN;
 EXTERN int Allow_user_logging_DYN; /* allow users to get log info */
 EXTERN int Always_banner_DYN; /* always print banner, ignore lpr -h option */
@@ -293,6 +295,7 @@ EXTERN char* Default_remote_host_DYN;
 EXTERN char* Default_tmp_dir_DYN;	/* default temporary file directory */
 EXTERN char* Destinations_DYN; /* printers that a route filter may return and we should query */
 EXTERN char* Env_names_DYN; /* environment information from config file */
+EXTERN int Exit_linger_timeout_DYN;	/* we set this timeout on all of the sockets */
 EXTERN int Extended_notification_DYN;
 EXTERN int FF_on_close_DYN; /* print a form feed when device is closed */
 EXTERN int FF_on_open_DYN; /* print a form feed when device is opened */
@@ -309,10 +312,12 @@ EXTERN char* Force_queuename_DYN; /* force the use of this queue name */
 EXTERN char* Form_feed_DYN; /* string to send for a form feed */
 EXTERN char* Formats_allowed_DYN; /* valid output filter formats */
 EXTERN int Full_time_DYN; /* full or complete time format in messages */
+EXTERN int Generate_banner_DYN; /* generate a banner when not a bounce queue */
 EXTERN char* IF_Filter_DYN; /* filter command, run on a per-file basis */
 EXTERN int IPV6Protocol_DYN;	/* IPV4 or IPV6 protocol */
 EXTERN int Ignore_requested_user_priority_DYN;	 /* ignore requested user priority */
 EXTERN int KA_DYN;
+EXTERN int Keepalive_DYN;	/* TCP keepalive enabled */
 EXTERN char* Kerberos_keytab_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_dest_id_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_life_DYN;	/* kerberos lifetime */
@@ -366,8 +371,8 @@ EXTERN int Page_x_DYN; /* page width in pixels (horizontal) */
 EXTERN int Page_y_DYN; /* page length in pixels (vertical) */
 EXTERN char* Pass_env_DYN;		/* pass these environment variables */
 EXTERN char* Pgp_path_DYN;		/* pathname of PGP program */
-EXTERN char* Pgp_passphrase_DYN;	/* pathname of PGP passphrase */
-EXTERN char* Pgp_server_key_DYN;	/* pathname of file with server PGP key */
+EXTERN char* Pgp_passphrasefile_DYN;	/* pathname of PGP passphrase */
+EXTERN char* Pgp_server_passphrasefile_DYN;	/* pathname of file with server PGP passphrase */
 EXTERN int Poll_time_DYN; /* force polling job queues */
 EXTERN char* Pr_program_DYN; /* pr program for p format */
 EXTERN char* Printcap_path_DYN;
@@ -375,15 +380,21 @@ EXTERN char* Printer_DYN;		/* Printe r name for logging */
 EXTERN char* Printer_DYN;	/* printer name */
 EXTERN char* Printer_perms_path_DYN;
 EXTERN char* Queue_name_DYN;	/* Queue name used for spooling */
+EXTERN char* Queue_control_file_DYN; /* Queue control file name */
+EXTERN char* Queue_lock_file_DYN; /* Queue lock file name */
+EXTERN char* Queue_status_file_DYN; /* Queue status file name */
+EXTERN char* Queue_unspooler_file_DYN; /* Unspooler PID status file name */
 EXTERN int Read_write_DYN; /* open the printer for reading and writing */
 EXTERN char* RemoteHost_DYN; /* remote-queue machine (hostname) (with rm) */
 EXTERN char* RemotePrinter_DYN; /* remote-queue printer name (with rp) */
 EXTERN char* Remote_support_DYN; /* Operations allowed to remote system */
 EXTERN char* Report_server_as_DYN; /* report server name as this value */
+EXTERN int Require_configfiles_DYN; /* require lpd.conf, printcap, lpd.perms files */
 EXTERN int Retry_ECONNREFUSED_DYN; /* retry on ECONNREFUSED  */
 EXTERN int Retry_NOLINK_DYN; /* retry on link connection failure */
 EXTERN char* Return_short_status_DYN;	/* return short status */
 EXTERN int Reuse_addr_DYN; /* set SO_REUSEADDR on outgoing ports */
+EXTERN int Reverse_priority_order_DYN; /* priority z-aZ-A order */
 EXTERN char* Reverse_lpq_status_DYN;	/* change lpq format when from host */
 EXTERN char* Routing_filter_DYN; /* filter to determine routing of jobs */
 EXTERN char* Safe_chars_DYN; /* safe characters in control file */
@@ -401,6 +412,7 @@ EXTERN char* Server_queue_name_DYN; /* name of queue that server serves (with sv
 EXTERN char* Server_tmp_dir_DYN;	/* default temporary file directory */
 EXTERN char* Shell_DYN;
 EXTERN int Short_banner_DYN; /* short banner (one line only) */
+EXTERN int Short_status_date_DYN; /* short date in status information */
 EXTERN int Short_status_length_DYN;	/* short status length */
 EXTERN int Socket_linger_DYN;	/* set SO_linger for connections to remote hosts */
 EXTERN char* Spool_dir_DYN; /* spool directory (only ONE printer per directory!) */
@@ -420,6 +432,7 @@ EXTERN int Use_info_cache_DYN;
 EXTERN int Use_queuename_DYN;	/* put queuename in control file */
 EXTERN int Use_queuename_flag_DYN;	/* Specified with the -Q option */
 EXTERN int Use_shorthost_DYN;	/* Use short hostname in control file information */
+EXTERN int Wait_for_eof_DYN;	/* Wait for eof on device before closing */
 EXTERN char* Xlate_format_DYN;	/* translate format ids */
 EXTERN char* Zwrite_DYN;
 

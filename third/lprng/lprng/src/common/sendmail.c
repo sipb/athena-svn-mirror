@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.6 1999-09-12 02:05:18 danw Exp $";
+"$Id: sendmail.c,v 1.7 1999-10-27 22:31:38 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -29,7 +29,7 @@ void Sendmail_to_user( int retval, struct job *job )
 {
 	char buffer[LARGEBUFFER];
 	int in[2], out[2], pid, n, len, longoutput = 1;
-	char *id, *mailname, *path, *s, *process;
+	char *id, *mailname, *s, *process;
 	plp_status_t status;
 	struct line_list files;
 
@@ -165,21 +165,9 @@ void Sendmail_to_user( int retval, struct job *job )
 		/*
 		 * get the last status of the spooler
 		 */
-		path = safestrdup2( "status.", Printer_DYN, __FILE__,__LINE__ );
-		if( (s = Get_file_image( Spool_dir_DYN, path,
-			Max_status_size_DYN )) ){
+		if( (s = Get_file_image( Spool_dir_DYN, Queue_status_file_DYN, Max_status_size_DYN )) ){
 			len = strlen(buffer);
-			plp_snprintf(buffer+len,sizeof(buffer)-len,
-				     "\nStatus:\n\n%s", s);
-			if(s) free(s); s = 0;
-		}
-		if(path) free(path); path = 0;
-
-		if( Status_file_DYN && (s = Get_file_image( Spool_dir_DYN,
-			Status_file_DYN, Max_status_size_DYN )) ){
-			len = strlen(buffer);
-			plp_snprintf(buffer+len,sizeof(buffer)-len,
-				     "\nFilter Status:\n\n%s", s);
+			plp_snprintf(buffer+len,sizeof(buffer)-len, "\nStatus:\n\n%s", s);
 			if(s) free(s); s = 0;
 		}
 	}
@@ -191,7 +179,7 @@ void Sendmail_to_user( int retval, struct job *job )
 	while( len < sizeof(buffer)-1
 		&& (n = read(out[0],buffer+len,sizeof(buffer)-len-1)) >0 ){
 		buffer[n+len] = 0;
-		while( (s = strchr(buffer,'\n')) ){
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
 			setstatus(job,"mail: %s", buffer );
 			memmove(buffer,s,strlen(s)+1);

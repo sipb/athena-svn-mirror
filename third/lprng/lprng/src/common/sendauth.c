@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendauth.c,v 1.3 1999-06-22 18:59:19 mwhitson Exp $";
+"$Id: sendauth.c,v 1.4 1999-10-27 22:31:38 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -25,7 +25,7 @@
 
 void Put_in_auth( int tempfd, const char *key, char *value )
 {
-	char *v = Escape(value,0);
+	char *v = Escape(value,0,1);
 	char *s = safestrdup4(key,"=",v,"\n",__FILE__,__LINE__);
 	DEBUG1("Put_in_auth: fd %d, '%s'",tempfd, s );
 	if( Write_fd_str(tempfd,s) < 0 ){
@@ -43,6 +43,7 @@ void Setup_auth_info( int tempfd, char *cmd )
 #if defined(HAVE_KRB5_H)
 	if( safestrcasecmp( Auth_DYN, KERBEROS5 ) == 0
 		|| safestrcasecmp( Auth_DYN, KERBEROS ) == 0 ){
+	        DEBUG2("Setup_auth_info: cmd = '%s'", cmd);
 		if(cmd) {
 			if( Write_fd_str(tempfd,cmd) < 0 ||
 				Write_fd_str(tempfd,"\n") < 0 ){
@@ -74,7 +75,7 @@ void Setup_auth_info( int tempfd, char *cmd )
 	Put_in_auth(tempfd,CLIENT,Auth_client_id_DYN);
 
 	if( cmd ){
-		if( (s = strrchr(cmd,'\n')) ) *s = 0;
+		if( (s = safestrrchr(cmd,'\n')) ) *s = 0;
 		Put_in_auth(tempfd,INPUT,cmd);
 	}
 	if( Write_fd_str(tempfd,"\n") < 0 ){
@@ -125,7 +126,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 
 	DEBUGF(DRECV1)(
 		"Send_auth_transfer: auth '%s', auth_id '%s' pgp(path '%s',key '%s')",
-		Auth_DYN, Auth_id_DYN, Pgp_path_DYN, Pgp_server_key_DYN );
+		Auth_DYN, Auth_id_DYN, Pgp_path_DYN, Pgp_server_passphrasefile_DYN );
 
 	errno = 0;
 	if( !Auth_DYN ){
@@ -151,14 +152,14 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 	}
 #endif
 
-	if( (strcasecmp( Auth_DYN,PGP ) == 0) ){
+	if( (safestrcasecmp( Auth_DYN,PGP ) == 0) ){
 		found = 1;
 		errno = 0;
 		if( Is_server
-			&& (!Pgp_server_key_DYN
-				|| stat(Pgp_server_key_DYN,&statb) == -1) ){
+			&& (!Pgp_server_passphrasefile_DYN
+				|| stat(Pgp_server_passphrasefile_DYN,&statb) == -1) ){
 			logerr( LOG_INFO, "bad pgp_server_key '%s' file",
-				Pgp_server_key_DYN);
+				Pgp_server_passphrasefile_DYN);
 			goto error;
 		}
 		if( !Pgp_path_DYN || stat(Pgp_path_DYN,&statb) == -1 ){
@@ -185,7 +186,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 			logerr(LOG_INFO, "stat '%s' failed", tempfile);
 			goto error;
 		}
-		plp_snprintf( size,sizeof(size)," %ld",(long)(statb.st_size) );
+		plp_snprintf( size,sizeof(size)," %0.0f",(double)(statb.st_size) );
 	}
 
 	DEBUG3("Send_auth_transfer: size '%s'", size );
@@ -199,7 +200,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 		tempbuf, strlen(tempbuf), &ack );
 	DEBUG3("Send_auth_transfer: status '%s'", Link_err_str(status) );
 	if( status ){
-		if( (s = strchr(tempbuf,'\n')) ) *s = 0;
+		if( (s = safestrchr(tempbuf,'\n')) ) *s = 0;
 		logerr( LOG_INFO, "error '%s' sending '%s' to %s@%s",
 		Link_err_str(status), tempbuf, RemotePrinter_DYN, RemoteHost_DYN );
 		len = 0;
@@ -207,7 +208,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 		while( len < sizeof(tempbuf)-1
 			&& (n = read(*sock,tempbuf+len,sizeof(tempbuf)-1-len)) > 0 ){
 			tempbuf[len+n] = 0;
-			while( (s = strchr(tempbuf,'\n')) ){
+			while( (s = safestrchr(tempbuf,'\n')) ){
 				*s++ = 0;
 				logerr( LOG_INFO, "error msg '%s'", tempbuf );
 				memmove(tempbuf,s,strlen(s)+1);
@@ -225,10 +226,18 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 	 */
 
 #if defined(HAVE_KRB5_H)
-	if( strcasecmp( Auth_DYN, KERBEROS ) == 0
-		|| strcasecmp( Auth_DYN, KERBEROS5 ) == 0 ){
+	if( safestrcasecmp( Auth_DYN, KERBEROS ) == 0
+		|| safestrcasecmp( Auth_DYN, KERBEROS5 ) == 0 ){
 		tempbuf[0] = 0;
 		DEBUG1("Send_auth_transfer: starting kerberos authentication" );
+		/* DANGER DANGER - we are doing this because client_krb5_auth
+		 * uses RUID
+		 */
+		if( To_ruid_user() ){
+			Errorcode = JABORT;
+			logerr_die( LOG_INFO,
+			"Send_auth_transfer: kerberos required setruid failed" );
+		}
 		status= client_krb5_auth( keyfile, Kerberos_service_DYN,
 			RemoteHost_DYN, /* remote host */
 			Kerberos_dest_id_DYN,	/* principle name of the remote server */
@@ -236,7 +245,10 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 			Kerberos_life_DYN,	/* lifetime of server ticket */
 			Kerberos_renew_DYN,	/* renewable time of server ticket */
 			*sock, tempbuf, sizeof(tempbuf), tempfile );
+		To_user();
 		if( status ){
+			/* don;t talk to the server any more - ignore errors... :-) */
+			shutdown( *sock, 1);
 			logmsg(LOG_INFO, "authentication failed '%s'", tempbuf);
 			shutdown(*sock, 1);
 		}
@@ -244,7 +256,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 	}
 #endif
 
-	if( (strcasecmp( Auth_DYN,PGP ) == 0) ){
+	if( (safestrcasecmp( Auth_DYN,PGP ) == 0) ){
 		DEBUG1("Send_auth_transfer: starting pgp authentication" );
 		status = Pgp_send( sock, transfer_timeout, tempfile );
 		goto error;
@@ -313,6 +325,7 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 	status = 0;
 
  error:
+	if( pipe_fd[0] >= 0 ) close(pipe_fd[0]); pipe_fd[0] = -1;
 	if( pipe_fd[1] >= 0 ) close(pipe_fd[1]); pipe_fd[1] = -1;
 	if( error_fd[0] >= 0 ) close(error_fd[0]); error_fd[0] = -1;
 	if( error_fd[1] >= 0 ) close(error_fd[1]); error_fd[1] = -1;
@@ -328,62 +341,64 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 	int status = 1;
 	struct line_list passfd, env;
 	char buffer[SMALLBUFFER], *s;
-	char *pgpfile, *path;
+	char *pgpfile, *path = 0;
 	struct stat statb;
 	plp_status_t procstatus;
 	int pgppassfd = -1;
-	long jobsize;
+	double jobsize;
 	struct line_list info;
 
 	Init_line_list(&env);
 	Init_line_list(&passfd);
 	Init_line_list(&info);
-	DEBUG1("Pgp_send: starting, passphrase '%s'", Pgp_passphrase_DYN);
-	if( !Is_server ){
-		if( (s = getenv("PGPPASSFD")) ){
-			DEBUG1("Pgp_send: PGPPASSFD '%s'", s);
+	s = getenv("PGPPASS");
+	DEBUG1("Pgp_send: starting, passphrasefile '%s', PGPASS '%s'",
+		Pgp_passphrasefile_DYN, s );
+	if( !Is_server && s == 0 ){
+		s = getenv("PGPPASSFD");
+		DEBUG1("Pgp_send: PGPPASSFD '%s'", s);
+		if( s ){
 			pgppassfd = atoi(s);
-			if( pgppassfd && fstat(pgppassfd, &statb ) ){
-				DEBUG1("Pgp_send: PGPPASSFD not file" );
-				pgppassfd = -1;
-			}
-		}
-		if( pgppassfd < 0 && Pgp_passphrase_DYN ){
-			if( (s = getenv("PGPPASS")) ){
-				path = Make_pathname( s, Pgp_passphrase_DYN);
-				pgppassfd = Checkread( path, &statb );
-				DEBUG1("Pgp_send: PGPPASSFD file '%s', size %ld, fd %d",
-					path, (long)statb.st_size, pgppassfd );
-				if( Verbose ){
-					plp_snprintf(buffer,sizeof(buffer),"phrasefile '%s' %s\n",
-						path, pgppassfd>0?"opened":"not opened");
-				}
-				if( path ) free(path); path = 0;
-			}
-			if( pgppassfd < 0 && (s = getenv("HOME")) ){
-				s = safestrdup2(s,"/.pgp",__FILE__,__LINE__);
-				path = Make_pathname( s, Pgp_passphrase_DYN);
-				if( s ) free(s); s = 0;
-				pgppassfd = Checkread( path, &statb );
-				DEBUG1("Pgp_send: PGPPASSFD file '%s', size %ld, fd %d",
-					path, (long)statb.st_size, pgppassfd );
-				if( Verbose ){
-					plp_snprintf(buffer,sizeof(buffer),"phrasefile '%s' %s\n",
-						path, pgppassfd>0?"opened":"not opened");
-				}
-				if( path ) free(path); path = 0;
+			if( pgppassfd <= 0 || fstat(pgppassfd, &statb ) ){
+				Errorcode = JFAIL;
+				Diemsg("PGPASSFD '%s' not file", s);
 			}
 		}
 		if( pgppassfd < 0 ){
-			Errorcode = JFAIL;
-			Diemsg("PGPASSFD not set and PGPPASS/%s not readable - cannot get pgp passphrase",
-				Pgp_passphrase_DYN);
+			if( (s = getenv("PGPPASSFILE")) ){
+				path = Make_pathname( 0, s );
+				pgppassfd = Checkread( path, &statb );
+				DEBUG1("Pgp_send: PGPPASSFD file '%s', size %0.0f, fd %d",
+					path, (double)statb.st_size, pgppassfd );
+				if( Verbose ){
+					plp_snprintf(buffer,sizeof(buffer),"phrasefile '%s' %s\n",
+						path, pgppassfd>0?"opened":"not opened");
+				}
+			} else {
+				s = getenv("HOME");
+				if( s ) s = safestrdup2(s,"/.pgp",__FILE__,__LINE__);
+				path = Make_pathname( s, Pgp_passphrasefile_DYN);
+				if( s ) free(s); s = 0;
+				pgppassfd = Checkread( path, &statb );
+				DEBUG1("Pgp_send: PGPPASSFD file '%s', size %0.0f, fd %d",
+					path, (double)statb.st_size, pgppassfd );
+				if( pgppassfd < 0 ){
+					Errorcode = JFAIL;
+					Diemsg("PGPASSFD not set and passphrase file %s not readable",
+						Pgp_passphrasefile_DYN);
+				}
+				if( Verbose ){
+					plp_snprintf(buffer,sizeof(buffer),"phrasefile '%s' %s\n",
+						path, pgppassfd>0?"opened":"not opened");
+				}
+				if( path ) free(path); path = 0;
+			}
 		}
 	}
 	pipe_fd[0] = pipe_fd[1] = error_fd[0] = error_fd[1] = -1;
 	pgpfile = safestrdup2(tempfile,".pgp",__FILE__,__LINE__);
 	Check_max(&Tempfiles,1);
-	Tempfiles.list[Tempfiles.count] = pgpfile;
+	if( !Debug ) Tempfiles.list[Tempfiles.count] = pgpfile;
 
 	if( pipe(error_fd) <  0 ){
 		logerr( LOG_INFO, "Send_auth_transfer: pipe failed" );
@@ -396,10 +411,10 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 	passfd.list[passfd.count++] = Cast_int_to_voidstar(error_fd[1]);
 
 	if( Is_server ){
-		if( (tempfd = Checkread(Pgp_server_key_DYN,&statb)) < 0 ){
+		if( (tempfd = Checkread(Pgp_server_passphrasefile_DYN,&statb)) < 0 ){
 			logerr(LOG_INFO,"Pgp_send: cannot open '%s'", Errormsg(errno));
 			goto error;
-		}   
+		}
 		Set_decimal_value(&env,"PGPPASSFD",passfd.count);
 		passfd.list[passfd.count++] = Cast_int_to_voidstar(tempfd);  
 	} else {
@@ -415,6 +430,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
         "%s +armorlines=0 +verbose=0 +force +batch -se %s $%%%s -u $%%%s",
         Pgp_path_DYN, tempfile, esc_Auth_id_DYN, esc_Auth_sender_id_DYN);
 	DEBUG2("Pgp_send: cmd '%s'", buffer );
+	Add_line_list(&info,buffer,0,0,0);
     if( (pid = Make_passthrough(buffer, 0, &passfd, 0, &env )) < 0 ){
         logerr(LOG_INFO,"Pgp_send: '%s' failed", buffer);
         goto error;
@@ -428,14 +444,15 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 	while( n < sizeof(buffer)-1
 		&& (len = read( error_fd[0], buffer+n, sizeof(buffer)-1-n )) > 0 ){
 		buffer[n+len] = 0;
-		while( (s = strchr(buffer,'\n')) ){
+		while( (s = safestrchr(buffer,'\n')) ){
 			*s++ = 0;
-			DEBUG4("Pgp_send: error '%s'", buffer );
+			DEBUG1("Pgp_send: error '%s'", buffer );
 			if( buffer[0] ) Add_line_list(&info,buffer,0,0,0);
 			memmove(buffer,s,strlen(s)+1);
 		}
 	}
 	close(error_fd[0]); error_fd[0] = -1;
+	DEBUG1("Pgp_send: EOF on error fd" );
 
 	while( (n = plp_waitpid(pid,&procstatus,0)) != pid );
     DEBUG1("Ppg_send: pid %d, exit status '%s'", pid,
@@ -451,7 +468,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 		status = JFAIL;
 		goto error;
 	}
-	if( !Is_server && Verbose ){
+	if( !Is_server && (Verbose || Debug) ){
 		for( i = 0; i < info.count; ++i ){
 			if( Write_fd_str(1,info.list[i]) < 0
 				|| Write_fd_str(1,"\n") < 0 ) cleanup(0);
@@ -464,27 +481,27 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 		goto error;
 	}
 	jobsize = statb.st_size;
-	plp_snprintf(buffer,sizeof(buffer),"%ld\n",jobsize);
-	DEBUG2("Pgp_send: file size '%ld'", jobsize );
+	plp_snprintf(buffer,sizeof(buffer),"%0.0f\n",jobsize);
+	DEBUG2("Pgp_send: sending file size '%s'", buffer );
 	if( Write_fd_str(*sock,buffer) < 0 ){
 		logerr(LOG_INFO,"Pgp_send: write to sock failed" );
 		goto error;
 	}
 	errno = 0;
-	while( n > 0 ){
-		len = n;
-		if( len > sizeof(buffer)-1 ) len = sizeof(buffer)-1;
+	while( jobsize > 0 ){
+		len = sizeof(buffer)-1;
+		if( len > jobsize ) len = jobsize;
 		if( read( tempfd, buffer, len) != len ){
 			logerr(LOG_INFO,"Pgp_send: read from '%s' failed", tempfile );
 			goto error;
 		}
 		buffer[len] = 0;
-		DEBUG2("Pgp_send: file '%s'", buffer );
+		DEBUG2("Pgp_send: file information '%s'", buffer );
 		if( write( *sock, buffer, len) != len ){
 			logerr(LOG_INFO,"Pgp_send: write to sock failed" );
 			goto error;
 		}
-		n -= len;
+		jobsize -= len;
 	}
 	DEBUG2("Pgp_send: sent file" );
 	close(tempfd); tempfd = -1;
@@ -498,6 +515,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 	len = 0;
 	while( (n = read(*sock,buffer,sizeof(buffer)-1)) > 0 ){
 		buffer[n] = 0;
+		DEBUG2("Send_auth_transfer: read '%s'", buffer);
 		if( write(tempfd,buffer,n) != n ){
 			logerr( LOG_INFO, "Send_auth_transfer: write '%s' failed",
 				tempfile );
@@ -519,7 +537,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 		passfd.list[passfd.count++] = Cast_int_to_voidstar(error_fd[1]);
 		passfd.list[passfd.count++] = Cast_int_to_voidstar(error_fd[1]);
 		if( Is_server ){
-			if( (tempfd = Checkread(Pgp_server_key_DYN,&statb)) < 0 ){
+			if( (tempfd = Checkread(Pgp_server_passphrasefile_DYN,&statb)) < 0 ){
 				logerr(LOG_INFO,"Pgp_send: cannot open '%s'", Errormsg(errno));
 				goto error;
 			}   
@@ -555,7 +573,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 		while( n < sizeof(buffer)-1
 			&& (len = read( error_fd[0], buffer+n, sizeof(buffer)-1-n )) > 0 ){
 			buffer[n+len] = 0;
-			while( (s = strchr(buffer,'\n')) ){
+			while( (s = safestrchr(buffer,'\n')) ){
 				*s++ = 0;
 				DEBUG4("Pgp_send: error '%s'", buffer );
 				if( buffer[0] ) Add_line_list(&info,buffer,0,0,0);
@@ -589,7 +607,7 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 		goto error;
 	}
 	jobsize = statb.st_size;
-	DEBUG2("Pgp_send: %ld bytes status, duping %d to %d", jobsize, tempfd, *sock );
+	DEBUG2("Pgp_send: %0.0f bytes status, duping %d to %d", (double)jobsize, tempfd, *sock );
 	if( dup2( tempfd, *sock ) == -1 ){
 		logerr(LOG_INFO,"Pgp_send: dup2(%d,%d)", tempfd, *sock );
 		goto error;
@@ -600,8 +618,6 @@ int Pgp_send( int *sock, int transfer_timeout, char *tempfile )
 
  error:
 	if( status && info.count > 0 ){
-		Diemsg("PGPASSFD may not be set or PGPPASS/%s not be readable",
-				Pgp_passphrase_DYN);
 		for( i = 0; i < info.count; ++i ){
 			logmsg(LOG_INFO,"error '%s'", info.list[i] );
 		}
@@ -725,10 +741,10 @@ int Send_krb4_auth(int *sock, struct job *job, int transfer_timeout )
 
 	status = 0;
 	host = RemoteHost_DYN;
-	if( !strcasecmp( host, LOCALHOST ) ){
+	if( !safestrcasecmp( host, LOCALHOST ) ){
 		host = FQDNHost_FQDN;
 	}
-	if( !strchr( host, '.' ) ){
+	if( !safestrchr( host, '.' ) ){
 		if( !(host = Find_fqdn(&LookupHost_IP, host)) ){
 			setstatus(job, "cannot find FQDN for '%s'", host );
 			return JFAIL;

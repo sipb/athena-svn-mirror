@@ -1,4 +1,4 @@
-.ds VE LPRng-3.6.1
+.ds VE LPRng-3.6.11
 .TH LPRM 1 \*(VE "LPRng"
 .ig
 lprm.1,v 3.39 1998/03/29 18:37:49 papowell Exp
@@ -21,6 +21,9 @@ lprm \- remove jobs from the line printer spooling queue
 ]
 [
 .B \-V
+]
+[
+.BI \-U user
 ]
 .ti +5n
 [
@@ -130,6 +133,13 @@ value of the PRINTER environment variable,
 or the first printer in the
 .I printcap
 database if it is not defined.
+.IP "\fB\-U\fIuser\fR" 5
+Explicitly provide a userid for doing the removal to the LPD server.
+This can be done only by ROOT or userids listed in the
+.I allow_user_setting
+configuration or printcap option.
+This facility is provided to allow printing front end systems such
+as SAMBA to submit job removal requests on behalf of users.
 .IP "\fB\-D\fIdebugopts\fR" 5
 Debugging is controlled using the
 .B \-D
@@ -187,16 +197,11 @@ The debugging information will
 help you to pinpoint the exact cause of failure.
 .fi
 .SH "HISTORY"
-.LP
 LPRng is a enhanced printer spooler system
 with functionality similar to the Berkeley LPR software.
-The LPRng mailing list is plp@iona.ie;
-subscribe by sending mail to plp-request@iona.ie with
+The LPRng mailing list is lprng@lprng.com;
+subscribe by sending mail to lprng-request@lprng.com with
 the word subscribe in the body.
 The software is available from ftp://ftp.astart.com/pub/LPRng.
-.LP
-LPRng is distributed under the GNU software license for non-commercial
-use,
-the Artistic License for limited commercial use. 
-Commerical support and licensing is available through
+.SH "AUTHOR"
 Patrick Powell <papowell@astart.com>.
