@@ -17,12 +17,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.18 1990-04-17 13:50:38 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.19 1990-04-26 13:00:40 vanharen Exp $";
 #endif
 
 
@@ -723,6 +723,12 @@ olc_cancel(fd, request, auth)
        (owns_question(target))) &&
      !(is_allowed(requester->user, GRESOLVE_ACL)))
     return(send_response(fd,PERMISSION_DENIED));
+
+  if(is_option(request->options,VERIFY))
+    if (has_question(target))
+      return(send_response(fd, OK));
+    else
+      return(send_response(fd, NO_QUESTION));
 
   if(!is_connected(target) && !has_question(target))
     return(send_response(fd, NOT_CONNECTED));
@@ -1859,7 +1865,10 @@ olc_list(fd, request,auth)
       status =  send_list(fd,request,&list[i]);
       if(status == ERROR)
 	{
-	  log_error("Error in sending list");
+	  sprintf(mesg,
+		  "Error in sending list to %s@%s.  %d of %d packets sent.",
+		  requester->user->username, requester->user->machine, i, n);
+	  log_error(mesg);
 	  break;
 	}
     }
@@ -2194,13 +2203,13 @@ olc_mail(fd, request,auth)
   if(!has_question(target))
     return(send_response(fd, NO_QUESTION));
 
+  if(requester == target)
+    target = requester->connected;
+
   if(is_me(requester,target) && 
      !owns_question(target) && 
      !is_connected(target))
     return(send_response(fd,NOT_CONNECTED));
-
-  if(requester == target)
-    target = requester->connected;
 
   if (!(is_option(request->options, VERIFY)))
     {
