@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-12-27 21:38:28 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-04-02 02:54:44 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -24,15 +24,15 @@ check:
 # build system rules.  It needs to wait until after everything is put
 # in place on the packs, including the other things we install.
 install:
+	cd platform/${HOSTTYPE} && ${MAKE} $@
+	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	rm -f ${DESTDIR}/patch
 	. ../version; \
 		vers="$$major.$$minor"; \
 		ln -s /afs/athena.mit.edu/system/patch-$$vers/${ATHENA_SYS} \
 			 ${DESTDIR}/patch
 	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
-	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	./fix_owners ${DESTDIR}
-	cd platform/${HOSTTYPE} && ${MAKE} $@
 	${DESTDIR}${ATHETCDIR}/track -w -F${DESTDIR} -W${DESTDIR}${ATHLIBDIR} \
 		-s stats/sys_rvd slists/sys_rvd
 	chown 0 ${DESTDIR}${ATHLIBDIR}/stats/*
