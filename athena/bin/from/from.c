@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.14 1994-03-29 12:28:42 miki Exp $
+ * $Id: from.c,v 1.15 1994-06-24 10:33:27 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: miki $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.14 1994-03-29 12:28:42 miki Exp $";
+static char *rcsid = "$Id: from.c,v 1.15 1994-06-24 10:33:27 miki Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -415,15 +415,6 @@ int list_compare(s,list)
       char *retval;
 
       while (*list!=NULL) {
-#ifdef SOLARIS
-       retval=compile(*list++, NULL, NULL);
-            if (regerrno) {
-                    fprintf(stderr,"%s: %d - %s\n",progname,regerrno,*(--list));
-                     exit(1);
-                    }
-            if (step(s, retval))
-                    return(1);
-#else
 	      retval=re_comp(*list++);
 	      if (retval) {
 		      fprintf(stderr,"%s: %s - %s\n",progname,retval,*(--list));
@@ -431,7 +422,6 @@ int list_compare(s,list)
 		      }
 	      if (re_exec(s))
 		      return(1);
-#endif
       }
       return(0);
 }
