@@ -10,12 +10,12 @@ void putstrings(char **strs)
 int main(int argc, char **argv, char **env)
 {
   int ret;
-  char **args, **newenv;
+  char **args, **newenv, *tty;
 
-  ret = nanny_loginUser(&newenv, &args);
+  ret = nanny_loginUser(&newenv, &args, &tty);
   if (ret)
     {
-      fprintf(stderr, "setupUser failed.\n");
+      fprintf(stderr, "loginUser failed.\n");
       exit(1);
     }
 
@@ -23,6 +23,7 @@ int main(int argc, char **argv, char **env)
   putstrings(newenv);
   printf("\nArgs:\n");
   putstrings(args);
+  printf("\ntty: %s\n", tty);
 
   exit(0);
 }
