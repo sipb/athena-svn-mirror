@@ -2,4 +2,5 @@
 
 exec ./configure --disable-strip --with-printcap_path=/etc/printcap \
     --with-lpd_conf_path=/etc/lpd.conf --with-lpd_perms_path=/etc/lpd.perms \
-    --with-lpd_printcap_path=/etc/lpd_printcap "$@"
+    --with-lpd_printcap_path=/etc/lpd_printcap \
+    --disable-require_configfiles "$@"
