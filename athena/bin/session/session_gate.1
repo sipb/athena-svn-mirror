@@ -1,23 +1,26 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v 1.1 1990-11-30 17:57:29 probe Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v 1.2 1990-11-30 17:58:32 probe Exp $
 .\"	$Author: probe $
 .\"
-.TH SESSION_GATE 1 "5 August 1989"
+.TH SESSION_GATE 1 "30 November 1990"
 .ds ]W MIT Project Athena
 .SH NAME
 session_gate, end_session \- control lifetime of a session
 
 .SH SYNOPSIS
 .nf
-session_gate
+session_gate [-logout]
 end_session [ -force | -f ]
 .fi
 .SH DESCRIPTION
 
-\fISession_gate\fR is a process that has the sole purpose of preventing a
-session file from exiting.  Normally, \fIsession_gate\fR appears at or near
-the end of a session file used by \fIxlogin\fR(1).  When used in this
-fashion, \fIsession_gate\fR should not be run in the background.
+\fISession_gate\fR is a process that waits for a user's session to
+end, and then optionally executes their logout script.  Normally,
+\fIsession_gate\fR appears at or near the end of a session file used
+by \fIxlogin\fR(1).  When used in this fashion, \fIsession_gate\fR
+should not be run in the background.  If invoked with the
+\fI-logout\fR option, it will run a \fI/bin/csh\fR on the file
+\fI\&.logout\fR in the directory it was started in.
 
 \fIEnd_session\fR is a command that attempts to send a hangup signal to
 each \fIsession_gate\fR process that is running.  Normally, the user
@@ -30,6 +33,11 @@ process by reading the file /tmp/session_gate_pid.\fIuid\fR, where
 \fIuid\fR is the user's uid number.  If the \fI-force\fR or \fI-f\fR option
 is specified, then a combination of \fIps\fR(1) and \fIawk\fR(1) is used
 for determining the process id's.
+
+Note that at Athena, the environment variable \fBXSESSION\fR is
+usually set to the process ID of the \fIsession_gate\fR so that logout
+is just aliased to 'kill -HUP $XSESSION' and \fIend_session\fR is now
+obsolete.
 
 .SH DIAGNOSTICS
 
