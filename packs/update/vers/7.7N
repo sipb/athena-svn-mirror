@@ -1,0 +1,14 @@
+#!/bin/sh -
+# Version-specific update script for 7.7N
+
+case ${MACH} in
+DS*)
+	;;
+RSAIX)
+	;;
+SUN*)
+	if [ ! -f /etc/group.local ]; then
+	  cp -p /srvd/etc/group /etc/group.local
+	fi
+	;;
+esac
