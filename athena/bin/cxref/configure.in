@@ -5,4 +5,6 @@ AC_PROG_CC
 AC_PROG_LEX
 AC_PROG_INSTALL
 
+AC_CHECK_FUNC(basename, :, AC_CHECK_LIB(gen, basename))
+
 AC_OUTPUT(Makefile)
