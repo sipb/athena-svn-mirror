@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.7 1990-12-04 17:31:07 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.8 1990-12-05 12:35:12 mar Exp $
  */
 
 #include <stdio.h>
@@ -230,17 +230,20 @@ char *display;
 	}
     }
 
-    glist = hes_resolve(user, "grplist");
-    if (glist && glist[0]) {
-	/* add_to_group() will corrupt the list, so was save a copy first */
-	strcpy(errbuf, glist[0]);
-	if (msg = add_to_group(user, glist[0])) {
-	    cleanup(pwd);
-	    return(msg);
-	}
-	strcpy(glist[0], errbuf);
-    } else
-      fprintf(stderr, "Warning: could not get any groups for you from Hesiod.\n");
+    if (!nocreate) {
+	glist = hes_resolve(user, "grplist");
+	if (glist && glist[0]) {
+	    /* add_to_group() will corrupt the list, so was save a copy first */
+	    strcpy(errbuf, glist[0]);
+	    if (msg = add_to_group(user, glist[0])) {
+		cleanup(pwd);
+		return(msg);
+	    }
+	    strcpy(glist[0], errbuf);
+	} else
+	  fprintf(stderr,
+		  "Warning: could not get any groups for you from Hesiod.\n");
+    }
 
     environment = (char **) malloc(MAXENVIRON * sizeof(char *));
     if (environment == NULL)
@@ -282,22 +285,8 @@ char *display;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
 
-    if (glist && glist[0]) {
-	cp = glist[0];
-	for (i = 0; i < NGROUPS; i++) {
-	    cp = index(cp, ':');
-	    if (cp == NULL) break;
-	    gids[i] = atoi(++cp);
-	    cp = index(cp, ':');
-	    if (cp++ == NULL) break;
-	}
-	i++;
-	if (setgroups(i, gids))
-	  prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
-    } else {
-	gids[0] = pwd->pw_gid;
-	setgroups(1, gids);
-    }
+    if (initgroups(user, pwd->pw_gid) < 0)
+      prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
     if (setreuid(pwd->pw_uid, pwd->pw_uid))
       return(lose("Unable to set your user ID.\n"));
@@ -415,7 +404,7 @@ struct passwd *pwd;
 	      sigpause(0);
 	}
     }
-    if (added_to_passwd)
+    if (pwd && added_to_passwd)
       remove_from_passwd(pwd);
 }
 
