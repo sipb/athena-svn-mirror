@@ -6,7 +6,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
  *	$Author: jtkohl $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
@@ -15,14 +15,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.24 1988-02-06 00:11:28 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.25 1988-02-28 13:20:29 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 2.5";
+char version[] = "Zephyr Server (DEBUG) 2.6;
 #else
-char version[] = "Zephyr Server 2.5";
+char version[] = "Zephyr Server 2.6";
 #endif DEBUG
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
@@ -66,6 +66,7 @@ char concurrent[] = "no brain-dump concurrency";
 					   <sys/file.h>
 					   <syslog.h>
 					   <strings.h>
+					   <signal.h>
 					   timer.h
 					   zsrv_err.h
 					 */
@@ -74,7 +75,6 @@ char concurrent[] = "no brain-dump concurrency";
 #include <sys/socket.h>
 #include <sys/param.h>
 #include <sys/ioctl.h>
-#include <signal.h>
 #include <sys/resource.h>
 
 #define	EVER		(;;)		/* don't stop looping */
@@ -82,7 +82,7 @@ char concurrent[] = "no brain-dump concurrency";
 static int do_net_setup(), initialize();
 static void usage();
 static int bye();
-static void dbug_on(), dbug_off();
+static void dbug_on(), dbug_off(), dump_db();
 #ifndef DEBUG
 static void detach();
 #endif DEBUG
@@ -211,6 +211,7 @@ char **argv;
 #endif DEBUG
 	(void) signal(SIGUSR1, dbug_on);
 	(void) signal(SIGUSR2, dbug_off);
+	(void) signal(SIGFPE, dump_db);
 
 	/* GO! */
 	uptime = NOW;
@@ -405,6 +406,27 @@ dbug_off()
 {
 	syslog(LOG_DEBUG, "debugging turned off");
 	zdebug = 0;
+}
+
+static void
+dump_db()
+{
+	/* dump the in-core database to human-readable form on disk */
+	FILE *fp;
+
+	if ((fp = fopen("/usr/tmp/zephyr.db", "w")) == (FILE *)0) {
+		syslog(LOG_ERR, "can't open dump database");
+		return;
+	}
+	syslog(LOG_INFO, "dumping to disk");
+	server_dump_servers(fp);
+	uloc_dump_locs(fp);
+	hostm_dump_hosts(fp);
+	syslog(LOG_INFO, "dump done");
+	if (fclose(fp) == EOF) {
+		syslog(LOG_ERR, "can't close dump db");
+	}
+	return;
 }
 
 #ifndef DEBUG
