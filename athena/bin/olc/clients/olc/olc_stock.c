@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.17 1991-09-10 13:41:57 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.18 1992-02-04 21:24:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.17 1991-09-10 13:41:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.18 1992-02-04 21:24:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -66,7 +66,12 @@ do_olc_stock(arguments)
 
   if (stat(MAGIC, &statbuf) < 0) 
     {
+#ifdef ATHENA
       call_program("/bin/athena/attach","olc-stock");
+#else
+      /* Do whatever's appropriate on your system to mount the stock */
+      /* answers.. */
+#endif
       if (stat(MAGIC, &statbuf) < 0)
 	{
 	  fprintf(stderr,"Unable to attach olc-stock file system.\n");
