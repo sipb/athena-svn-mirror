@@ -9536,8 +9536,8 @@ echo "${ECHO_T}$LINGUAS" >&6
 
 
 
-echo "$as_me:$LINENO: checking for pspell" >&5
-echo $ECHO_N "checking for pspell... $ECHO_C" >&6
+echo "$as_me:$LINENO: checking for aspell/pspell" >&5
+echo $ECHO_N "checking for aspell/pspell... $ECHO_C" >&6
 if pspell-config version > /dev/null 2>&1; then
 	pspell_ver=`pspell-config version`
 	pspell_num=`echo ${pspell_ver} | awk 'BEGIN {FS="."}{printf $1*10000 + $2*100 + $3;}'`
@@ -9547,6 +9547,7 @@ echo "${ECHO_T}pspell version .12 or later required, you have ${pspell_ver} inst
 	else
 		echo "$as_me:$LINENO: result: found ($pspell_ver)" >&5
 echo "${ECHO_T}found ($pspell_ver)" >&6
+
 		if test "${ac_cv_header_pspell_pspell_h+set}" = set; then
   echo "$as_me:$LINENO: checking for pspell/pspell.h" >&5
 echo $ECHO_N "checking for pspell/pspell.h... $ECHO_C" >&6
@@ -9677,21 +9678,9 @@ echo "${ECHO_T}$ac_cv_header_pspell_pspell_h" >&6
 
 fi
 if test $ac_cv_header_pspell_pspell_h = yes; then
-  PSPELL_LIBS="-lpspell"
-			SPELL_PLUGIN_DIR="spell"
-
-fi
-
-
-	fi
-else
-	echo "$as_me:$LINENO: result: not found" >&5
-echo "${ECHO_T}not found" >&6
-fi
-
-echo "$as_me:$LINENO: checking for main in -laspell" >&5
-echo $ECHO_N "checking for main in -laspell... $ECHO_C" >&6
-if test "${ac_cv_lib_aspell_main+set}" = set; then
+  echo "$as_me:$LINENO: checking for new_aspell_speller in -laspell" >&5
+echo $ECHO_N "checking for new_aspell_speller in -laspell... $ECHO_C" >&6
+if test "${ac_cv_lib_aspell_new_aspell_speller+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -9704,11 +9693,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char new_aspell_speller ();
 int
 main ()
 {
-main ();
+new_aspell_speller ();
   ;
   return 0;
 }
@@ -9725,26 +9720,28 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_aspell_main=yes
+  ac_cv_lib_aspell_new_aspell_speller=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_aspell_main=no
+ac_cv_lib_aspell_new_aspell_speller=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_aspell_main" >&5
-echo "${ECHO_T}$ac_cv_lib_aspell_main" >&6
-if test $ac_cv_lib_aspell_main = yes; then
-  echo "$as_me:$LINENO: checking for main in -lpspell_aspell" >&5
-echo $ECHO_N "checking for main in -lpspell_aspell... $ECHO_C" >&6
-if test "${ac_cv_lib_pspell_aspell_main+set}" = set; then
+echo "$as_me:$LINENO: result: $ac_cv_lib_aspell_new_aspell_speller" >&5
+echo "${ECHO_T}$ac_cv_lib_aspell_new_aspell_speller" >&6
+if test $ac_cv_lib_aspell_new_aspell_speller = yes; then
+  PSPELL_LIBS="-laspell" SPELL_PLUGIN_DIR="spell"
+else
+  echo "$as_me:$LINENO: checking for new_pspell_manager in -lpspell" >&5
+echo $ECHO_N "checking for new_pspell_manager in -lpspell... $ECHO_C" >&6
+if test "${ac_cv_lib_pspell_new_pspell_manager+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpspell_aspell -laspell $PSPELL_LIBS $LIBS"
+LIBS="-lpspell  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -9753,11 +9750,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char new_pspell_manager ();
 int
 main ()
 {
-main ();
+new_pspell_manager ();
   ;
   return 0;
 }
@@ -9774,86 +9777,41 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_pspell_aspell_main=yes
+  ac_cv_lib_pspell_new_pspell_manager=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_pspell_aspell_main=no
+ac_cv_lib_pspell_new_pspell_manager=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_pspell_aspell_main" >&5
-echo "${ECHO_T}$ac_cv_lib_pspell_aspell_main" >&6
-if test $ac_cv_lib_pspell_aspell_main = yes; then
-  PSPELL_LIBS="$PSPELL_LIBS -lpspell_aspell -laspell"
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_ASPELL_MODULE
-_ACEOF
-
-fi
-
-fi
-
-echo "$as_me:$LINENO: checking for main in -lpspell_ispell" >&5
-echo $ECHO_N "checking for main in -lpspell_ispell... $ECHO_C" >&6
-if test "${ac_cv_lib_pspell_ispell_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
+echo "$as_me:$LINENO: result: $ac_cv_lib_pspell_new_pspell_manager" >&5
+echo "${ECHO_T}$ac_cv_lib_pspell_new_pspell_manager" >&6
+if test $ac_cv_lib_pspell_new_pspell_manager = yes; then
+  PSPELL_LIBS="-lpspell" SPELL_PLUGIN_DIR="spell"
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpspell_ispell $PSPELL_LIBS $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
+  { echo "$as_me:$LINENO: WARNING: You must have the aspell or pspell dev packages to build the spell plugin." >&5
+echo "$as_me: WARNING: You must have the aspell or pspell dev packages to build the spell plugin." >&2;}
+
+fi
 
 
-int
-main ()
-{
-main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_pspell_ispell_main=yes
+fi
+
 else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_pspell_ispell_main=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_pspell_ispell_main" >&5
-echo "${ECHO_T}$ac_cv_lib_pspell_ispell_main" >&6
-if test $ac_cv_lib_pspell_ispell_main = yes; then
-  PSPELL_LIBS="$PSPELL_LIBS -lpspell_ispell"
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_ISPELL_MODULE
-_ACEOF
+  { echo "$as_me:$LINENO: WARNING: You must have the aspell or pspell dev packages to build the spell plugin." >&5
+echo "$as_me: WARNING: You must have the aspell or pspell dev packages to build the spell plugin." >&2;}
 
 fi
 
+
+	fi
+else
+	echo "$as_me:$LINENO: result: not found" >&5
+echo "${ECHO_T}not found" >&6
+fi
 
 
 
