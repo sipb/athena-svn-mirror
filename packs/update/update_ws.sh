@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.63 2003-05-13 22:05:46 ghudson Exp $
+# $Id: update_ws.sh,v 1.63.2.1 2003-07-15 06:01:39 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -263,7 +263,7 @@ sun4)
     # Single-partition Sun.
     reqrootsize=2097152	# 2GB partition; measured use 1021038K
     requsrsize=0
-    reqrootspace=614400	# 600MB; measured space increase 531949K
+    reqrootspace=819200	# 800MB; measured space increase 708325K
     requsrspace=0
   fi
 
@@ -291,6 +291,18 @@ sun4)
       failupdate
     fi
     ;;
+  9.2.?)
+    # 9.2.10 introduced 172MB of new data on srvd.big machines.
+    if [ -h /usr/athena ]; then
+      rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
+      if [ 204800 -gt "$rootspace" ]; then
+        echo "The / partition must have ${reqrootspace}K free for this update."
+        echo "Please clean local files off the disk."
+        logger -t "$HOST" -p user.notice / too full to take update
+        failupdate
+      fi
+    fi
+    ;;
   esac
 
   # Ultras with old enough OBP versions aren't able to boot the 64 bit
@@ -315,58 +327,6 @@ sun4)
   if [ sun4m = `uname -m` ]; then
     echo "This machine is no longer supported and is too old for this update."
     logger -t "$HOST" -p user.notice sun4m hardware unable to take update
-    failupdate
-  fi
-  ;;
-esac
-
-# Ensure that we have enough disk space on the IRIX root partition
-# for an upgrade to 9.1.
-# We also require a minimum of 64MB of memory on all SGI's.
-case $HOSTTYPE in
-sgi)
-  case `uname -r` in
-  6.2)
-    rootneeded=150
-    ;;
-  6.3)
-    rootneeded=90
-    ;;
-  6.5)
-    case "`uname -R | awk '{ print $2; }'`" in
-    6.5.3m)
-      rootneeded=50
-      ;;
-    *)
-      case $version in
-      9.1.*)
-	rootneeded=0
-	;;
-      *)
-	rootneeded=20
-	;;
-      esac
-      ;;
-    esac
-    ;;
-  *)
-    rootneeded=0
-    ;;
-  esac
-
-  rootfree=`df -k / | awk '$NF == "/" { print int($5 / 1024); }'`
-  if [ "$rootfree" -lt "$rootneeded" ]; then
-    echo "Root partition low on space (less than ${rootneeded}MB); not"
-    echo "performing update.  Please reinstall or clean local files off root"
-    echo "partition."
-    logger -t "$HOST" -p user.notice / too full to take update
-    failupdate
-  fi
-
-  if [ 64 -gt "`hinv -t memory | awk '{ print $4; }'`" ]; then
-    echo "Insufficient memory (less than 64MB); not performing update.  Please"
-    echo "add more memory or reinstall."
-    logger -t "$HOST" -p user.notice insufficient memory to take update
     failupdate
   fi
   ;;
@@ -399,9 +359,6 @@ if [ Auto = "$method" -a reactivate = "$why" ]; then
   fi
 
   sleep 2
-  if [ sgi = "$HOSTTYPE" ]; then
-   exec 1>/dev/tport 2>&1
-  fi
 fi
 
 # Everything is all set; do the actual update.
