@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.11 1990-02-15 18:14:52 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.12 1990-04-25 16:55:43 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -47,8 +47,10 @@ t_personal_status(Request,chart)
       if(isme(Request))
 	printf("You are not doing anything in OLC.\n");
       else
-	printf("%s [%d] is not doing anything in OLC.\n",
-	       Request->target.username, Request->target.instance);
+	printf("%s %s [%d] (%s@%s) is not doing anything in OLC.\n",
+	       cap(Request->target.title), Request->target.realname, 
+	       Request->target.instance, Request->target.username,
+	       Request->target.machine);
       break;
 
     case ERROR:
@@ -97,18 +99,25 @@ t_display_personal_status(Request,list,chart)
 	      if(isme(Request))
 		printf("You are ");
 	      else
-		printf("%s %s is ",list->user.title, list->user.username);
+		printf("%s %s [%d] (%s@%s) is ",
+		       cap(list->user.title), list->user.realname, 
+		       list->user.instance, list->user.username,
+		       list->user.machine);
 
-	      printf("currently connected to %s %s (%s@%s)\n",
-		   list->connected.title,list->connected.realname,
-		     list->connected.username,list->connected.machine);
+	      printf("currently connected to %s %s [%d] (%s@%s).\n",
+		     list->connected.title, list->connected.realname,
+		     list->connected.instance,
+		     list->connected.username, list->connected.machine);
 	    }		
 	  else
 	    {
 	      if(isme(Request))
 		printf("You currently have ");
 	      else
-		printf("%s %s has ",list->user.title, list->user.username);
+		printf("%s %s [%d] (%s@%s) has ",
+		       cap(list->user.title), list->user.realname, 
+		       list->user.instance, list->user.username,
+		       list->user.machine);
 
 	      printf("%s \"%s\" question in the queue.\n",
 		   article(list->topic),list->topic);
@@ -123,18 +132,26 @@ t_display_personal_status(Request,list,chart)
 	      if(isme(Request))
 		printf("You are ");
 	      else
-		printf("%s is ",list->user.username);
+		printf("%s %s [%d] (%s@%s) is ",
+		       cap(list->user.title), list->user.realname, 
+		       list->user.instance, list->user.username,
+		       list->user.machine);
 	      
-	      printf("connected to %s %s (%s@%s)\n",
-		     list->connected.title,list->connected.realname,
-		     list->connected.username,list->connected.machine);
+	      printf("connected to %s %s [%d] (%s@%s).\n",
+		     list->connected.title, list->connected.realname,
+		     list->connected.instance,
+		     list->connected.username, list->connected.machine);
 	    }
 	  else
 	    {
 	      if(isme(Request))
 		printf("You are ");
 	      else
-		printf("%s is ",list->user.username);
+		printf("%s %s [%d] (%s@%s) is ",
+		       cap(list->user.title), list->user.realname, 
+		       list->user.instance, list->user.username,
+		       list->user.machine);
+
 	      printf("signed on to OLC!\n");
 	    }
 	}
@@ -146,10 +163,12 @@ t_display_personal_status(Request,list,chart)
       printf("   Instance   NM     Status     Connected to        Topic\n");
       for(l=list; l->ustatus != END_OF_LIST; ++l)
 	{
-	  if(Request->requester.instance == l->user.instance)
+	  if(isme(Request)
+	     && (Request->requester.instance == l->user.instance))
 	    printf("-> ");
 	  else 
 	    printf("   ");
+
 	  if((l->nseen >=0) && (l->connected.uid >= 0))
 	    {
 	      OGetStatusString(l->ukstatus,cbuf);
@@ -204,9 +223,9 @@ t_who(Request)
       if(string_eq(Request->requester.username,list.user.username))
 	{
 	  if(list.connected.uid >= 0)
-	    printf("You are currently connected to %s %s (%s@%s)\n",
-                   list.connected.title,
-		   list.connected.realname, list.connected.username,
+	    printf("You are currently connected to %s %s [%d] (%s@%s).\n",
+                   list.connected.title, list.connected.realname,
+		   list.connected.instance, list.connected.username,
 		   list.connected.machine);
 	  else
 	    {
@@ -220,25 +239,24 @@ t_who(Request)
 	{
 	  if(list.connected.uid > 0)
 	    printf("%s %s [%d] (%s@%s) is currently connected to %s %s [%d] (%s@%s).\n",
-		   cap(list.user.title), list.user.realname, 
-		   list.user.instance,list.user.username,
+		   cap(list.user.title), list.user.realname,
+		   list.user.instance, list.user.username,
 		   list.user.machine, list.connected.title,
-		   list.connected.realname,list.connected.instance,
-		   list.connected.username,list.connected.machine);
+		   list.connected.realname, list.connected.instance,
+		   list.connected.username, list.connected.machine);
 	  else
 	    {
 	      if(list.nseen >=0)
-		printf("%s %s [%d] (%s@%s) currently has %s %s in the queue.\n",
-		       list.user.title,
-		       list.user.realname, list.user.instance,
-		       list.user.username,
+		printf("%s %s [%d] (%s@%s) currently has %s \"%s\" question in the queue.\n",
+		       cap(list.user.title), list.user.realname,
+		       list.user.instance, list.user.username,
 		       list.user.machine, article(list.topic),
 		       list.topic);
 	      else
-		printf("%s %s [%d] (%s@%s) is just hanging out.\n%s\n",
-		       list.user.title,list.user.realname,
-		       list.user.instance,list.user.username,
-		       list.user.machine,happy_message());
+		printf("%s %s [%d] (%s@%s) is just hanging out.\n%s.\n",
+		       cap(list.user.title), list.user.realname,
+		       list.user.instance, list.user.username,
+		       list.user.machine, happy_message());
 	    }
 	}
       status = SUCCESS; 
@@ -258,7 +276,6 @@ t_input_status(Request,string)
      char *string;
 {
   char buf[BUF_SIZE];
-  int status = 0;
   int state = 0;
 
   if(string != (char *) NULL)
@@ -266,29 +283,22 @@ t_input_status(Request,string)
   else 
     buf[0] = '\0';
 
-  while(!status)
+  while(1)
     {
       if(buf != '\0')
 	{
-	  if(string_equiv(buf,
-		       "pit",max(strlen(buf),2)))
+	  if(string_equiv(buf, "pit", max(strlen(buf), 2)))
 	    state = STATUS_PICKUP;
-	  else
-	    if(string_equiv(buf,
-			 "referred",max(strlen(buf),2)))
-	      state = STATUS_REFERRED;
-	    else
-	      if(string_equiv(buf,
-			   "active",max(strlen(buf),2)))
-		state = STATUS_ACTIVE;
-	      else
-		if(string_equiv(buf,
-			     "pickup",max(strlen(buf),2)))
-		  state = STATUS_PICKUP;
-		else
-		  if(string_equiv(buf,
-			       "pending",max(strlen(buf),2)))
-		    state = STATUS_ACTIVE;
+	  else if(string_equiv(buf, "referred", max(strlen(buf), 1)))
+	    state = STATUS_REFERRED;
+	  else if(string_equiv(buf, "active", max(strlen(buf), 1)))
+	    state = STATUS_ACTIVE;
+	  else if(string_equiv(buf, "pickup", max(strlen(buf), 2)))
+	    state = STATUS_PICKUP;
+	  else if(string_equiv(buf, "pending", max(strlen(buf), 2)))
+	    state = STATUS_PENDING;
+	  else if(string_equiv(buf, "unseen", max(strlen(buf), 1)))
+	    state = STATUS_UNSEEN;
 	}
       if(state)
 	{
