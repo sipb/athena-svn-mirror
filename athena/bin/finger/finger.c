@@ -5,15 +5,20 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: ambar $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.4 1987-08-21 18:22:05 ambar Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.5 1987-08-25 18:31:49 ambar Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.4  87/08/21  18:22:05  ambar
+ * hesiodization works; but zephyrisation doesn't.  Still accomplishes
+ * the point (access to finger information when the user is not logged
+ * in).
+ * 
  * Revision 1.3  87/08/20  16:03:29  ambar
  * hesiodization doesn't work yet.  Needs to be gone over carefully...
  * 
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.4 1987-08-21 18:22:05 ambar Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.5 1987-08-25 18:31:49 ambar Exp $";
 #endif lint
 
 /*
@@ -147,7 +152,7 @@ int unquick = 1;		/* -q option default */
 int small = 0;			/* -s option default */
 int wide = 1;			/* -w option default */
 
-int numloc = 1;			/* number of locations from zgetlocations	 */
+int numloc = 1;			/* number of locations from zgetlocations */
 ZLocations_t *location;		/* holds Zephyr locations */
 int znloc = NULL;		/* number of locations returned via a Zephyr
 				 * lookup */
@@ -222,22 +227,28 @@ main(argc, argv)
     if (unquick || idle)
 	(void) time(&tloc);
     /*
-     * *argv == 0 means no names given 
-     *
-     * this procedure should not (and doesn't) use zephyr at all, because finger
-     * [no args] should NOT give you every logged-in person... 
+     * *argv == 0 means no names given
+     * 
+     * this procedure should not (and doesn't) use zephyr at all,
+     * because finger [no args] should NOT give you every logged-in
+     * person...
      */
     if (*argv == 0)
 	doall();
     else
 	donames(argv);
-    if (person1)
-	printf("\nLocal:\n");
-    print(person1);
-    if (person2)
-	printf("\nAthena-wide:\n");
+    if (person1) {
+	    printf("\nLocal:\n");
+	    print(person1);
+    } 
+    if (person2) {
+	    printf("\nAthena-wide:\n");
+	    print(person2);
+    } 
+    /*
     for (q = person2; q != 0; q = q->link)
 	personprint(q);
+     */
     exit(0);
 }
 
@@ -366,7 +377,7 @@ donames(argv)
 			p->pwd = pwdcopy(pw);
 		    }
 		    else {
-			struct person *new, *new2;
+			struct person *new;
 
 			/*
 			 * handle multiple login names, insert new
@@ -382,57 +393,15 @@ donames(argv)
 			p->original = 0;
 			p->link = new;
 			p = new;
-			/*
-			 * add one to the hesiod chain as well. 
-			 */
-			new2 = (struct person *)
-			    malloc(sizeof *new2);
-			new2->pwd = pwdcopy(pw);
-			new2->name = q->name;
-			new2->original = 1;
-			new2->loggedin = 0;
-			new2->link = q->link;
-			q->original = 0;
-			q->link = new2;
-			q = new2;
-
-		    }
 		}
-	    }
+	    } 
+	} 
 	/* now do the hesiod chain */
-	for (q = person2; q != 0; q = q->link) {
-	    pw = hesgetpwnam(q->name);
-	    if (!q->original)
-		continue;
-	    if (strcmp(q->name, pw->pw_name) != 0 &&
-		!matchcmp(pw->pw_gecos, pw->pw_name, q->name))
-		continue;
-	    if (q->pwd == 0)
-		q->pwd = pwdcopy(pw);
-/* we won't handle multiple returns from
- * hesiod just yet -- in theory, since we're
- * only matching against login names (and not
- * the name in the gcos field), we won't get
- * any -- but this may change in the future.
- *			else {
- *				struct person *new;
- *
- *				new2 = (struct person *)
- *					malloc(sizeof *new2);
- *				new2->pwd = pwdcopy(pw);
- *				new2->name = q->name;
- *				new2->original = 1;
- *				new2->loggedin = 0;
- *				new2->link = q->link;
- *				q->original = 0;
- *				q->link = new2;
- *				q = new2;
- *			} 
- *
- */
-	}
+	for (q = person2; q != 0; q = q->link)
+		if (pw = hesgetpwnam(q->name))
+			q->pwd = pwdcopy(pw);
 	endpwent();
-    }
+    } 
     /* Now get login information */
     if ((uf = open(USERLOG, 0)) < 0) {
 	fprintf(stderr, "finger: error opening %s\n", USERLOG);
