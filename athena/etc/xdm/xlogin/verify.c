@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.16 1991-06-28 20:27:29 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.17 1991-07-19 15:38:27 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -326,6 +326,9 @@ char *display;
 #endif
 #if defined(_AIX) && defined(_IBMR2)
     environment[i++] = "hosttype=rsaix";
+#endif
+#if defined(ultrix) && defined(mips)
+    environment[i++] = "hosttype=decmips";
 #endif
     msg = getenv("TZ");
     if (msg) {                /* Pass along timezone */
@@ -843,7 +846,11 @@ int homedirOK(dir)
 char *dir;
 {
     DIR *dp;
+#ifdef POSIX
+    struct dirent *temp;
+#else
     struct direct *temp;
+#endif
     int count;
 
     if ((dp = opendir(dir)) == NULL)
