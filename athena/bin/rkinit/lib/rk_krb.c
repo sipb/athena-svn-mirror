@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_krb.c,v 1.7 1996-06-12 07:16:26 ghudson Exp $
+ * $Id: rk_krb.c,v 1.8 1996-09-20 03:15:04 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
  * $Author: ghudson $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.7 1996-06-12 07:16:26 ghudson Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.8 1996-09-20 03:15:04 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -250,11 +250,7 @@ int rki_get_tickets(version, host, r_krealm, info)
     }
 
     /* Exctract the session key and make the schedule */
-#ifdef POSIX
-    memmove(key, cred.session,  sizeof(key));
-#else
-    bcopy(cred.session, key, sizeof(key));
-#endif
+    memcpy(key, cred.session, sizeof(key));
     if (status = des_key_sched(key, sched)) {
 	sprintf(errbuf, "des_key_sched: %s", krb_err_txt[status]);
 	rkinit_errmsg(errbuf);

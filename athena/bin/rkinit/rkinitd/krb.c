@@ -1,13 +1,13 @@
 /* 
- * $Id: krb.c,v 1.10 1994-05-26 15:13:59 cfields Exp $
+ * $Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
- * $Author: cfields $
+ * $Author: ghudson $
  *
  * This file contains all of the kerberos part of rkinitd.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.10 1994-05-26 15:13:59 cfields Exp $";
+static char *rcsid = "$Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -20,7 +20,7 @@ static char *rcsid = "$Id: krb.c,v 1.10 1994-05-26 15:13:59 cfields Exp $";
 #include <netdb.h>
 #endif
 #ifdef sun
-#include <strings.h>
+#include <string.h>
 #endif
 #include <pwd.h>
 #include <krb.h>
@@ -228,7 +228,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	longjmp(rii->env, status);
     }
 
-    bcopy(auth_dat.session, key, sizeof(key));
+    memcpy(key, auth_dat.session, sizeof(key));
     if (des_key_sched(key, sched)) {
 	sprintf(errbuf, "Error in des_key_sched");
 	rkinit_errmsg(errbuf);
@@ -240,7 +240,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	 krb_rd_priv((u_char *)scip.app_data, scip.app_length, 
 		     sched, key, &caddr, &saddr, &msg_data)) == KSUCCESS) {
 	cip->length = msg_data.app_length;
-	bcopy(msg_data.app_data, cip->dat, msg_data.app_length);
+	memcpy(cip->dat, msg_data.app_data, msg_data.app_length);
 	cip->dat[cip->length] = 0;
     } 
     else {

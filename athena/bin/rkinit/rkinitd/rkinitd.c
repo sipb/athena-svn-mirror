@@ -1,13 +1,13 @@
 /* 
- * $Id: rkinitd.c,v 1.3 1990-08-01 11:56:13 qjb Exp $
+ * $Id: rkinitd.c,v 1.4 1996-09-20 03:16:55 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v $
- * $Author: qjb $
+ * $Author: ghudson $
  *
  * This is the main source file for rkinit
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinitd.c,v 1.3 1990-08-01 11:56:13 qjb Exp $";
+static char *rcsid = "$Id: rkinitd.c,v 1.4 1996-09-20 03:16:55 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -18,7 +18,7 @@ static char *rcsid = "$Id: rkinitd.c,v 1.3 1990-08-01 11:56:13 qjb Exp $";
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <pwd.h>

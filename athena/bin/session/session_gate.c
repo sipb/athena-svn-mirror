@@ -2,15 +2,13 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.12 1995-05-25 22:17:31 cfields Exp $
- *	$Author: cfields $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.13 1996-09-20 03:19:29 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <signal.h>
-#ifndef SOLARIS
-#include <strings.h>
-#else
-#include <strings.h>
+#include <string.h>
+#ifdef SOLARIS
 #include <sys/fcntl.h>
 #endif
 #include <sys/types.h>
@@ -451,7 +449,7 @@ int pid;
 	    {
 		buf[count-1] = '\0';
 		start = buf;
-		while ((end = index(start, '\n')) != 0)
+		while ((end = strchr(start, '\n')) != 0)
 		  {
 		      *end = '\0';
 		      if (atoi(start) == pid)

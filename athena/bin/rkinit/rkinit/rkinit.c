@@ -1,17 +1,17 @@
 /* 
- * $Id: rkinit.c,v 1.6 1994-07-20 12:03:59 miki Exp $
+ * $Id: rkinit.c,v 1.7 1996-09-20 03:15:45 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
- * $Author: miki $
+ * $Author: ghudson $
  *
  * This is an rkinit client
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.6 1994-07-20 12:03:59 miki Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.7 1996-09-20 03:15:45 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <netdb.h>
 #include <pwd.h>
@@ -73,13 +73,13 @@ main(argc, argv)
 
     int i;
 
-    bzero(principal, sizeof(principal));
-    bzero(aname, sizeof(aname));
-    bzero(inst, sizeof(inst));
-    bzero(realm, sizeof(realm));
-    bzero(r_krealm, sizeof(r_krealm));
+    memset(principal, 0, sizeof(principal));
+    memset(aname, 0, sizeof(aname));
+    memset(inst, 0, sizeof(inst));
+    memset(realm, 0, sizeof(realm));
+    memset(r_krealm, 0, sizeof(r_krealm));
     /* Parse commandline arguements. */
-    if ((whoami = rindex(argv[0], '/')) == 0)
+    if ((whoami = strrchr(argv[0], '/')) == 0)
 	whoami = argv[0];
     else
 	whoami++;
@@ -189,7 +189,7 @@ main(argc, argv)
 	}
     }
 
-    bzero((char *)&info, sizeof(info));
+    memset(&info, 0, sizeof(info));
     
     strcpy(info.aname, aname);
     strcpy(info.inst, inst);
