@@ -9,7 +9,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h".
  *
- *	$Id: Imakefile,v 1.1 1991-03-21 21:49:35 mar Exp $
+ *	$Id: Imakefile,v 1.2 1991-03-21 21:49:50 mar Exp $
  */
 
 POSTSRC=   postmaster.c
@@ -32,9 +32,9 @@ GDBLIB= -lgdb
 HESLIB= -lhesiod
 
 SimpleProgram(postit,${POSTOBJ} ${SHAREDOBJS} ${OTHEROBJ},\
-	${GDBLIB} ${HESLIB},$(ATHBIDIR))
+	${GDBLIB} ${HESLIB},$(ATHBINDIR))
 SimpleProgram(bulkpost,${BULKOBJ} ${SHAREDOBJS} ${OTHEROBJ},\
-	${GDBLIB} ${HESLIB},$(ATHBIDIR))
+	${GDBLIB} ${HESLIB},$(ATHBINDIR))
 
 lint::
 	lint -huv ${LINTFLAGS} ${POSTSRC} ${SHAREDSRCS} ${OTHERSRC} | \
