@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.12 1991-03-01 11:52:20 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.13 1991-06-28 13:18:11 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.12 1991-03-01 11:52:20 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.13 1991-06-28 13:18:11 epeisach Exp $";
 #endif lint
 
 /*
@@ -718,11 +718,10 @@ cleanup()
 test(file)
 	char *file;
 {
-#if !defined(_AUX_SOURCE) && !defined(LP_COFF_DEFINES)
-	struct exec execb;
-#endif
 #if defined(LP_COFF_DEFINES)
 	struct filehdr execb;
+#else
+	struct exec execb;
 #endif
 	register int fd;
 	register char *cp;
@@ -749,7 +748,7 @@ test(file)
 		printf("%s: cannot open %s\n", name, file);
 		return(-1);
 	}
-#if !defined(_AUX_SOURCE)
+
 	if (read(fd, &execb, sizeof(execb)) == sizeof(execb))
 #ifndef LP_COFF_DEFINES
 		switch((int) execb.a_magic) {
@@ -775,7 +774,6 @@ test(file)
 			goto error1;
 		}
 #endif /* coff */
-#endif /* AUX */
 	(void) close(fd);
 	if (rflag) {
 		if ((cp = rindex(file, '/')) == NULL) {
