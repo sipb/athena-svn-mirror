@@ -1,4 +1,4 @@
-# $Id: athena,v 1.7 1999-04-01 21:06:04 ghudson Exp $
+# $Id: athena,v 1.8 1999-04-03 16:18:41 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -184,7 +184,6 @@ if [ "$SENDMAIL" = false ]; then
 fi
 
 # Start standard daemons
-$ECHO ""
 $ECHO "Starting Athena daemons: \c"
 
 if [ "$KRBSRV" != false -a -f /.k ]; then
