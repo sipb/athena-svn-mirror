@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.16 1987-11-15 23:48:57 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.17 1987-11-16 21:44:56 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -728,7 +728,8 @@ struct sockaddr_in *who;
 	responses[2] = upt;
 
 	num_resp = NUM_FIXED;
-	for (i = 0; i < nservers ; i++) {
+	/* start at 1 and ignore limbo */
+	for (i = 1; i < nservers ; i++) {
 		(void) sprintf(buf, "%s/%s",
 			       inet_ntoa(otherservers[i].zs_addr.sin_addr),
 			       srv_states[(int) otherservers[i].zs_state]);
