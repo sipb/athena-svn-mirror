@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.63 1994-12-22 05:22:14 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.64 1994-12-30 04:52:55 cfields Exp $
  */
 
 #include <stdio.h>
@@ -97,6 +97,9 @@
 #endif
 #ifndef NOATTACH
 #define NOATTACH "/etc/noattach"
+#endif
+#ifndef NOCRACK
+#define NOCRACK "/etc/nocrack"
 #endif
 #define MOTD "/etc/motd"
 #define UTMP "/etc/utmp"
@@ -807,7 +810,11 @@ int exists;
 #endif
     fprintf(etc_passwd, "%s:%s:%d:%d:%s:%s:%s\n",
 	    p->pw_name,
+#ifdef SOLARIS
 	    p->pw_passwd,
+#else
+	    file_exists(NOCRACK) ? "*" : p->pw_passwd,
+#endif
 	    p->pw_uid,
 	    p->pw_gid,
 	    p->pw_gecos,
