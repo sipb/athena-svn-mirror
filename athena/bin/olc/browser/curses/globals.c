@@ -88,6 +88,7 @@ int Previous_Index;			/* Upper level CREF entry. */
 ENTRY Entry_Table[MAX_ENTRIES];		/* Table of CREF entries. */
 int Entry_Count;			/* Number of entries. */
 int Index_Start;			/* Current top of index. */
+int Prev_Index_Start;			/* Upper level top of index. */
 int Command_Count;			/* Number of CREF commands. */
 char Save_File[FILENAME_SIZE];		/* Default save file. */
 char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
