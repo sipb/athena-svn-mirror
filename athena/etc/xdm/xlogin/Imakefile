@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.28 1994-06-23 16:15:01 cfields Exp $
+# $Id: Imakefile,v 1.29 1995-05-25 22:11:05 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -6,25 +6,26 @@ MACHLIBS = -lodm -lcfg -ls
 #ifdef SOLARIS
 LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
 #endif
-#ifdef SOLARIS
-AFSLIBS = $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
-#else
-AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
-#endif
 #ifdef ultrix
 MACHLIBS = -lnsyslog
 #endif
-DEFINES = $(MACHDEFS)
+
+KRB5_DEFS = -DKRB5 -I$(KRB5DIR)/include
+KRB5_LIBS = -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err
+
+DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
+AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
+	$(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 
 SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
 OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
 #ifndef SOLARIS
 LIBS = -lXaw  ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	 $(AFSLIBS) $(MACHLIBS) -lm
+	$(MACHLIBS) $(KRB5_LIBS) $(AFSLIBS) -lm
 #else
 LIBS = /usr/athena/lib/libXaw.a  ../wcl/libWc.a \
-      /usr/athena/lib/libXmu.a -lXt -lXext -lX11 -lkrb\
-        -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
+	/usr/athena/lib/libXmu.a -lXt -lXext -lX11 \
+	$(KRB5_LIBS) -lkrb -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
 #endif
 
 #ifdef _IBMR2
