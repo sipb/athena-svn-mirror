@@ -96,21 +96,32 @@ char *getfile(list)
     return NULL;
 }
 
-int baduid(uid)
-     uid_t uid;
+void newownership(file, relative, name, newuid, newgid)
+     struct stat *file;
+     char *relative, *name;
+     uid_t *newuid;
+     gid_t *newgid;
 {
-  if (uid == 1047 || uid == 3433 || uid == 3622 ||
-      uid == 16453 || uid == 19558 || uid > 32767)
-    return 1;
-  return 0;
-}
+  struct stat osfile;
+  char ospath[PATH_MAX];
 
-int badgid(gid)
-     gid_t gid;
-{
-  if (gid == 101)
-    return 1;
-  return 0;
+  *newuid = file->st_uid;
+  *newgid = file->st_gid;
+
+  if (file->st_uid == 1047 || file->st_uid == 3433 || file->st_uid == 3622 ||
+      file->st_uid == 16453 || file->st_uid == 19558 || file->st_uid > 32767)
+    *newuid = 0;
+
+  if (file->st_gid == 101)
+    *newgid = 101;
+
+  sprintf(ospath, "/os/%s/%s", relative, name);
+  if (S_ISDIR(file->st_mode) && lstat(ospath, &osfile) == 0
+      && S_ISDIR(osfile.st_mode))
+    {
+      *newuid = osfile.st_uid;
+      *newgid = osfile.st_gid;
+    }
 }
 
 void process(absolute, relative, fangs)
@@ -124,7 +135,8 @@ void process(absolute, relative, fangs)
   struct dirent *curent;
   struct stat info;
   filelist dirlist;
-  int bu, bg, newuid, newgid;
+  uid_t newuid;
+  gid_t newgid;
 
   if (chdir(absolute))
     {
@@ -153,37 +165,26 @@ void process(absolute, relative, fangs)
 	      exit(1);
 	    }
 
-	  if ((info.st_mode & S_IFMT) == S_IFDIR)
+	  if (S_ISDIR(info.st_mode))
 	    savefile(&dirlist, curent->d_name);
 
-	  bu = baduid(info.st_uid);
-	  bg = badgid(info.st_gid);
+	  newownership(&info, relative, curent->d_name, &newuid, &newgid);
 
-	  if (bu && (info.st_mode & S_ISUID))
+	  if (info.st_uid != newuid && (info.st_mode & S_ISUID))
 	    {
 	      fprintf(stderr, "%s: warning: preserving owner %d on %s/%s because it is setuid\n",
 		      progname, info.st_uid, absolute, curent->d_name);
-	      bu = 0;
+	      newuid = info.st_uid;
 	    }
 
-	  if (bg && (info.st_mode & S_ISGID))
+	  if (info.st_gid != newgid && (info.st_mode & S_ISGID))
 	    {
 	      fprintf(stderr, "%s: warning: preserving group %d on %s/%s because it is setgid\n",
 		      progname, info.st_gid, absolute, curent->d_name);
-	      bg = 0;
+	      newgid = info.st_gid;
 	    }
 
-	  if (bu)
-	    newuid = 0;
-	  else
-	    newuid = info.st_uid;
-
-	  if (bg)
-	    newgid = 0;
-	  else
-	    newgid = info.st_gid;
-
-	  if (bu || bg)
+	  if (info.st_uid != newuid || info.st_gid != newgid)
 	    {
 	      if (fangs)
 		lchown(curent->d_name, newuid, newgid);
