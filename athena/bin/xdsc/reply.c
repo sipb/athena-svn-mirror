@@ -11,7 +11,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.10 1991-03-12 16:34:52 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.11 1991-04-09 14:28:04 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -46,9 +46,10 @@ static void	DeleteCB();
 void		TriggerDelete();
 
 static Widget	warningPopupW = 0;
-void		PopdownCB(), DieCB();
+void		DieCB();
 void		TriggerPopdown();
 void		TriggerFocusMove();
+int		PopdownCB();
 
 static Widget	helpPopupW = 0;
 
@@ -1008,22 +1009,26 @@ XtPointer	call_data;
 	exit (-1);
 }
 
-void
 PopdownCB(w, client_data, call_data)
 Widget	w;
 XtPointer	client_data;
 XtPointer	call_data;
 {
+	int	didsomething = 0;
+
 	if (warningPopupW) {
 		XtDestroyWidget(warningPopupW);
 		warningPopupW = 0;
+		didsomething = 1;
 	}
 
 	if (helpPopupW) {
 		XtDestroyWidget(helpPopupW);
 		helpPopupW = 0;
+		didsomething = 1;
 	}
 	XtSetKeyboardFocus(topW, topW);
+	return (didsomething);
 }
 
 
