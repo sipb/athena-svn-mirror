@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.6 1999-06-17 21:54:42 ghudson Exp $
+# $Id: cshrc,v 1.7 1999-06-23 23:04:36 danw Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -35,6 +35,10 @@ if ($?tcsh) then
 	bindkey "^W" backward-delete-word
 	bindkey "^Z" complete-word
 	bindkey " " magic-space
+
+	if ($tcsh:r:e > 7 || $tcsh:r:r > 6) then
+		alias bind 'echo The \"bind\" command is no longer supported in tcsh 6.08. Use the; echo \"bindkey\" command instead. See the tcsh man page for more information.; ( echo \!* > /dev/null )'
+	endif
 endif
 
 # Set up standard system/user environment configuration (including setup of
