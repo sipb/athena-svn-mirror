@@ -71,10 +71,12 @@ if PUBLIC is set to true on the workstation. If PUBLIC is false,
 .I reactivate
 will simply exit. The purpose of this option is to provide
 .I xlogin
-a facility for making sure a PUBLIC workstation is as clean as
-it ought to be before a new user logs in. Specifically, this means
-making sure that no other users are logged on or have running
-processes, and that remote access is turned off.
+a facility for making sure a PUBLIC workstation is as clean as it
+ought to be before a new user logs in. Specifically, this means making
+sure that no other users are logged on or have running processes, and
+that remote access is turned off. A full invocation of the script
+isn't used for this purpose in order to minimize time a user has to
+wait to log in after the previous user has logged out.
 
 In the absence of this option,
 .I reactivate
