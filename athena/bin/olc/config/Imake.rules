@@ -1,6 +1,6 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $XConsortium: Imake.rules,v 1.61 89/10/09 16:53:11 jim Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.8 1991-04-15 15:54:27 lwvanels Exp $
 
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
