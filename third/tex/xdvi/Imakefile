@@ -59,7 +59,14 @@ config:
 Makefile.cfg: Imakefile mkconfig
 	./mkconfig imake $(DEFS)
 
-include Makefile.cfg
+VARSRCS= pk.c
+VAROBJS= pk.o
+VARLIBS=
+VARDEPLIBS=
+VARLINT=
+LOCAL_LIBRARIES=$(LOCAL_LIBRARIES_TOOL)
+DEPLIBS=$(DEPLIBS_TOOL)
+LINTLIBS=$(LINTLIBS_TOOL)
 
 SRCS=xdvi.c events.c dvi_init.c dvi_draw.c special.c font_open.c filefind.c \
   vf.c util.c $(VARSRCS)
