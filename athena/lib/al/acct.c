@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.10 1998-04-25 23:14:57 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.11 1998-06-10 22:27:34 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -89,7 +89,7 @@ int al_acct_create(const char *username, const char *cryptpw,
 		   pid_t sessionpid, int havecred, int tmphomedir,
 		   int **warnings)
 {
-  int retval = AL_SUCCESS, nwarns = 0, warns[6], i;
+  int retval = AL_SUCCESS, nwarns = 0, warns[6], i, existed;
   struct al_record record;
 
   /* If the caller wants warnings, initialize them to NULL so that
@@ -104,36 +104,31 @@ int al_acct_create(const char *username, const char *cryptpw,
   retval = al__get_session_record(username, &record);
   if (AL_ISWARNING(retval))
     warns[nwarns++] = retval;
-  else
+  else if (retval != AL_SUCCESS)
+    return retval;
+
+  /* Make sure user added to passwd file can be cleaned up later. */
+  existed = record.exists;
+  record.exists = 1;
+
+  /* Add the user to the passwd file if necessary.  Do this even if
+   * the record already existed, in case the user was removed from the
+   * passwd file since the last login.
+   */
+  retval = al__add_to_passwd(username, &record, cryptpw);
+  if (AL_ISWARNING(retval))
+    warns[nwarns++] = retval;
+  else if (retval != AL_SUCCESS)
+    goto cleanup;
+
+  if (!existed)			/* We're first interested in this user. */
     {
-      if (retval != AL_SUCCESS)
-	return retval;
-    }
-
-  if (!record.exists)		/* We're first interested in this user. */
-    {
-      /* Add the user to the passwd file if necessary. */
-      retval = al__add_to_passwd(username, &record, cryptpw);
-      if (AL_ISWARNING(retval))
-	warns[nwarns++] = retval;
-      else
-	{
-	  if (retval != AL_SUCCESS)
-	    goto cleanup;
-	}
-
-      /* Make sure user added to passwd file can be cleaned up later. */
-      record.exists = 1;
-
       /* Add the user's groups to the group file if not already there. */
       retval = al__add_to_group(username, &record);
       if (AL_ISWARNING(retval))
 	warns[nwarns++] = retval;
-      else
-	{
-	  if (retval != AL_SUCCESS)
-	    goto cleanup;
-	}
+      else if (retval != AL_SUCCESS)
+	goto cleanup;
 
       record.pids = malloc(sizeof(pid_t));
       if (!record.pids)
@@ -163,11 +158,8 @@ int al_acct_create(const char *username, const char *cryptpw,
   retval = al__setup_homedir(username, &record, havecred, tmphomedir);
   if (AL_ISWARNING(retval))
     warns[nwarns++] = retval;
-  else
-    {
-      if (retval != AL_SUCCESS)
-	goto cleanup;
-    }
+  else if (retval != AL_SUCCESS)
+    goto cleanup;
 
   /* Set warnings. */
   if (nwarns > 0)
