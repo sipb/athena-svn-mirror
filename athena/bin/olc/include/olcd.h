@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.35 1991-06-29 18:12:51 lwvanels Exp $
+ *	$Id: olcd.h,v 1.36 1991-06-30 11:05:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -49,9 +49,9 @@
 
 /* Important files. */
 
-#define DATABASE_FILE 		"/usr/lib/olc/database"
-#define SPECIALTY_DIR 		"/usr/lib/olc/specialties"
-#define ACL_DIR 		"/usr/lib/olc/acls"
+#define DATABASE_FILE 		"/usr/athena/lib/olc/database"
+#define SPECIALTY_DIR 		"/usr/athena/lib/olc/specialties"
+#define ACL_DIR 		"/usr/athena/lib/olc/acls"
 #define LOG_DIR 		"/usr/spool/olc"
 #define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
 #define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
@@ -61,19 +61,19 @@
 #define STATUS_LOG 		"/usr/adm/olc/status"
 #define ADMIN_LOG 		"/usr/adm/olc/admin"
 #define STDERR_LOG 		"/usr/adm/olc/errors"
-#define TOPIC_FILE 		"/usr/lib/olc/topics"
-#define MOTD_FILE 		"/usr/lib/olc/motd"
-#define MOTD_TIMEOUT_FILE	"/usr/lib/olc/motd_timeout"
-#define MOTD_HOLD_FILE 		"/usr/lib/olc/motd_hold"
-#define MACH_TRANS_FILE 	"/usr/lib/olc/translations"
+#define TOPIC_FILE 		"/usr/athena/lib/olc/topics"
+#define MOTD_FILE 		"/usr/athena/lib/olc/motd"
+#define MOTD_TIMEOUT_FILE	"/usr/athena/lib/olc/motd_timeout"
+#define MOTD_HOLD_FILE 		"/usr/athena/lib/olc/motd_hold"
+#define MACH_TRANS_FILE 	"/usr/athena/lib/olc/translations"
 #define LIST_FILE_NAME 		"/usr/spool/olc/qlist_-1.log"
 #define LIST_TMP_NAME 		"/usr/spool/olc/queue.tmp"
-#define HOURS_FILE		"/usr/lib/olc/hours"
+#define HOURS_FILE		"/usr/athena/lib/olc/hours"
 #define LUMBERJACK_LOC		"/usr/local/lumberjack"
 
 #ifdef KERBEROS
 #define TICKET_FILE		"/usr/spool/olc/tkt.olc"
-#define SRVTAB_FILE		"/usr/lib/olc/srvtab"
+#define SRVTAB_FILE		"/usr/athena/lib/olc/srvtab"
 #endif /* KERBEROS */
 
 /* Use by the acl checking code, so you need it even if you don't have
