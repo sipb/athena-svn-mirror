@@ -26,6 +26,16 @@
 /* We still need more? Or lib's? */
 #endif
 
+#if defined(_IBMR2) && !defined(OMAGIC)
+#define LP_COFF_DEFINES
+#define ISCOFF(x) (((x) == U802WRMAGIC) || ((x) == U802ROMAGIC) || ((x) == U802TOCMAGIC))
+#endif
+
+#if defined(ultrix) && defined(mips)
+#define LP_COFF_DEFINES
+#endif
+
+
 #ifndef A_MAGIC1	/* must be a VM/UNIX system */
 #	define A_MAGIC1	OMAGIC
 #	define A_MAGIC2	NMAGIC
