@@ -1,3 +1,0 @@
-# $Id: configure.athena,v 1.2 2001-01-10 22:06:07 ghudson Exp $
-LDFLAGS=-L$ATHTOOLROOT/usr/athena/lib ./configure --with-x-toolkit \
-	--sharedstatedir=/var/tmp --with-pop --with-hesiod --with-kerberos
