@@ -2,13 +2,13 @@
 # Copyright (C) 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.4 2004-09-27 20:58:09 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2005-03-10 23:47:05 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libwnck\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 14:27+0100\n"
+"POT-Creation-Date: 2004-09-28 16:25+0100\n"
 "PO-Revision-Date: 2004-01-12 19:07+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -104,11 +104,11 @@ msgstr "%s"
 msgid "untitled window"
 msgstr "namnlöst fönster"
 
-#: libwnck/tasklist.c:507
+#: libwnck/tasklist.c:518
 msgid "Window List"
 msgstr "Fönsterlista"
 
-#: libwnck/tasklist.c:508
+#: libwnck/tasklist.c:519
 msgid "Tool to switch between visible windows"
 msgstr "Verktyg för att växla mellan synliga fönster"
 

@@ -162,7 +162,8 @@ const <link linkend="char">char</link>* <link linkend="wnck-window-get-session-i
   WNCK_WINDOW_ACTION_MINIMIZE                = 1 &lt;&lt; 12,
   WNCK_WINDOW_ACTION_UNMINIMIZE              = 1 &lt;&lt; 13,
   WNCK_WINDOW_ACTION_MAXIMIZE                = 1 &lt;&lt; 14,
-  WNCK_WINDOW_ACTION_UNMAXIMIZE              = 1 &lt;&lt; 15
+  WNCK_WINDOW_ACTION_UNMAXIMIZE              = 1 &lt;&lt; 15,
+  WNCK_WINDOW_ACTION_FULLSCREEN              = 1 &lt;&lt; 16
 } WnckWindowActions;
 </programlisting>
 <para>
