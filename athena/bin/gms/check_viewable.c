@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.2 1988-09-28 22:42:55 eichin Exp $";
+static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.3 1988-09-28 23:39:39 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -18,9 +18,10 @@ static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #include <sys/file.h>
 #include <pwd.h>
 
-Code_t check_viewable(message, checktime)
+Code_t check_viewable(message, checktime, updateuser)
      char *message;
-     int checktime;
+     int checktime;		/* should we check the timestamp at all? */
+     int updateuser;		/* should we update the user timestamp file? */
 {
   char *ptr, *usertfile;
   time_t ftime, utime;
@@ -87,21 +88,25 @@ Code_t check_viewable(message, checktime)
       free(usertfile);
     }
   }
-  
-  /* now, reopen/create the file to write new timestamp */
-  ufd = open(usertfilename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
-  free(usertfilename);
-  if(ufd != -1) {
-    char *msg = &message[GMS_VERSION_STRING_LEN];
+
+  /* only write out the new time stamp if they want it. */
+  if(updateuser) {
+    /* now, reopen/create the file to write new timestamp */
+    ufd = open(usertfilename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+    if(ufd != -1) {
+      char *msg = &message[GMS_VERSION_STRING_LEN];
     
-    /* write out the version number */
-    write(ufd, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN);
+      /* write out the version number */
+      write(ufd, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN);
     
-    /* write out the timestring from the message file */
-    ptr = index(message, '\n')+1;
-    write(ufd, msg, ptr - msg);
-    close(ufd);
+      /* write out the timestring from the message file */
+      ptr = index(message, '\n')+1;
+      write(ufd, msg, ptr - msg);
+      close(ufd);
+    }
   }
+  /* filename no longer needed... */
+  free(usertfilename);
   /* if we tried to write, we want to print... */
   return(0);
 }
