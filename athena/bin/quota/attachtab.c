@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.6 1992-07-15 18:32:43 mar Exp $
+ * $Id: attachtab.c,v 1.7 1993-07-25 01:24:47 probe Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,10 +7,11 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.6 1992-07-15 18:32:43 mar Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.7 1993-07-25 01:24:47 probe Exp $";
 #endif lint
 
 #include "attach.h"
+#include <fcntl.h>
 #include <sys/file.h>
 #include <pwd.h>
 #include <string.h>
@@ -36,8 +37,12 @@ void lock_attachtab()
 {
     register char *lockfn;
     register FILE *fp;
+    register int status;
     static char buf[512];
     static int initd = 0;
+#ifdef POSIX
+    struct flock fl;
+#endif
 
     if (!initd) {
 	if (fp = fopen("/etc/athena/attach.conf","r")) {
@@ -76,7 +81,17 @@ void lock_attachtab()
 		exit(ERR_FATAL);
 	    }
 	}
-	if (flock(attach_lock_fd, LOCK_EX) < 0) {
+#ifdef POSIX
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	fl.l_pid = getpid();
+	status = fcntl(attach_lock_fd, F_SETLKW, &fl);
+#else
+	status = flock(attach_lock_fd, LOCK_EX);
+#endif
+	if (status == -1) {
 	    fprintf(stderr, "Unable to lock attachtab: %s\n",
 		    sys_errlist[errno]);
 	    fprintf(stderr, abort_msg);
