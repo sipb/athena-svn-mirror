@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.5 1991-01-22 13:23:49 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.6 1991-01-22 15:03:22 epeisach Exp $
 #
 
 DESTDIR=
@@ -20,5 +20,5 @@ SimpleProgram(gettime,gettime.o,,/etc/athena/)
 
 install::
 	for i in ${SCRIPT}; do \
-		$(INSTALL) InstPgmFlags $$i.sh ${DESTDIR}/etc/athena/$$i; \
+		$(INSTALL) -m 0755 $$i.sh ${DESTDIR}/etc/athena/$$i; \
 		done
