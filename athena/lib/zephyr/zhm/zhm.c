@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.37 1988-10-03 16:05:58 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.38 1988-10-25 14:08:34 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -95,7 +95,7 @@ char *argv[];
      }
 
      /* Override server argument? */
-     if (optind <= argc) {
+     if (optind < argc) {
 	  (void)strcpy(prim_serv, argv[optind]);
 	  if ((hp = gethostbyname(prim_serv)) == NULL) {
 	       printf("Unknown server name: %s\n", prim_serv);
