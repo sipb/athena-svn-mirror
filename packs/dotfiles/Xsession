@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.5 2004-05-20 22:12:10 rbasch Exp $
+# $Id: Xsession,v 1.6 2004-06-07 19:10:49 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -72,6 +72,9 @@ if [ $status != 0 ]; then
 		sleep 10
 		exit 1
 fi
+
+# Kill mozilla before destroying tokens so that it removes its lock file.
+$initlib/xkill-mozilla
 
 # Make gconfd flush settings to disk before destroying credentials.
 gconftool-2 --shutdown

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 2003-04-22 15:34:28 ghudson Exp $
+# $Id: Makefile,v 1.18 2004-06-07 19:10:42 rbasch Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -49,6 +49,7 @@ install:
 	install -c -m 0644 temp.mh_profile ${DESTDIR}${PROTOTMP}/.mh_profile
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
+	install -c -m 0755 xkill-mozilla.sh ${DESTDIR}${SYSTEM}/xkill-mozilla
 	install -c -m 0755 xsession ${DESTDIR}${SYSTEM}
 	cd os/${OS} && ${MAKE} $@
 	cd gnome && ${MAKE} $@
