@@ -90,6 +90,7 @@ for failure in $failures; do
     # These are managed by other parts of the system which work to make
     # sure they are correct.
     /etc/motd | \
+    /usr/vice/etc/CellServDB | \
     /usr/lib/umb-scheme/slibcat | \
     /etc/sysconfig/afs |\
     /usr/vice/etc/cacheinfo |\
@@ -100,6 +101,7 @@ for failure in $failures; do
     # These are all files that we simply tolerate changes in without
     # comment.  They probably shouldn't be generating conflicts, but
     # it's easier to just ignore theme here than to fix their rpms.
+    /etc/X11/fs | \
     /dev/* | \
     /var/log/* | \
     /var/state/* | \
@@ -133,11 +135,13 @@ done
 
 cp $config/prefdm /etc/X11/prefdm
 cp $config/X11fsconfig /etc/X11/fs/config
-cp $config/XTerm /usr/X11R6/lib/X11/app-defaults-XTerm
+cp $config/XTerm /usr/X11R6/lib/X11/app-defaults/XTerm
 
-sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
-    -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
-    -e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
-    -e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
-    -e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
-  $config/rc.conf > /etc/athena/rc.conf
+if [ -r $config/rc.conf ]; then
+  sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
+      -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
+      -e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
+      -e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
+      -e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
+    $config/rc.conf > /etc/athena/rc.conf
+fi
