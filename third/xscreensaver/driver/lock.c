@@ -963,7 +963,7 @@ passwd_event_loop (saver_info *si)
 	draw_passwd_window (si);
       else if (event.xany.type == KeyPress)
 	handle_passwd_key (si, &event.xkey);
-      else if (event.xany.type == ConfigureNotify)
+      else if (event.xany.type == VisibilityNotify)
         {
           int i;
           
