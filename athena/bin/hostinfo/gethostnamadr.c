@@ -37,7 +37,8 @@ static char sccsid[] = "@(#)gethostnamadr.c	6.36 (Berkeley) 10/7/88";
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
-
+#include <string.h>
+    
 #define	MAXALIASES	35
 #define	MAXADDRS	35
 
@@ -242,11 +243,10 @@ struct hostent *
 gethostbyname(name)
 	char *name;
 {
-	querybuf buf;
+	static querybuf buf;
 	register char *cp;
 	int n;
 	extern struct hostent *_gethtbyname();
-	char *d;
 
 	/*
 	 * disallow names consisting only of digits/dots, unless
@@ -284,7 +284,7 @@ gethostbyaddr(addr, len, type)
 	int len, type;
 {
 	int n;
-	querybuf buf;
+	static querybuf buf;
 	register struct hostent *hp;
 	char qbuf[MAXDNAME];
 	extern struct hostent *_gethtbyaddr();
@@ -324,7 +324,7 @@ char *
 gethinfobyname(name)
 	char *name;
 {
-	querybuf buf;
+	static querybuf buf;
 	register char *cp;
 	int n;
 	extern struct hostent *_gethtbyname();
@@ -367,7 +367,7 @@ char *
 getmxbyname(name)
 	char *name;
 {
-	querybuf buf;
+	static querybuf buf;
 	register char *cp;
 	int n;
 	extern struct hostent *_gethtbyname();
