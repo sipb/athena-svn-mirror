@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-02-10 15:26:37 rbasch Exp $
+# $Id: Makefile,v 1.5 1999-02-23 20:50:41 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -60,8 +60,8 @@ install:
 	install -c -m 0644 miser ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 netwr_client ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0644 ns_fasttrack ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 nsd.options ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 nss_fasttrack ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 pcnfsd ${DESTDIR}${SGICONFIG}
@@ -69,6 +69,7 @@ install:
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 routed ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 samba ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 services ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shutdownreason ${DESTDIR}${AMCONFIGDIR}

@@ -65,7 +65,7 @@ Menu Find dynamic
 
 Menu Help
 {
-    "Info Search"	f.checkexec.sh.le "/usr/sbin/infosearch"
+    "InfoSearch"	f.checkexec.sh.le "/usr/lib/desktop/runInfosearch"
     "Quick Answers" 	f.checkexec.sh.le "/usr/sbin/desktophelp"
     no-label            f.separator
     "Hints & Shortcuts" f.checkexec.sh.le "/usr/lib/desktop/openHintsShortcuts"
