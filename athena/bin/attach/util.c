@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.11 1991-06-02 23:36:40 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.12 1991-06-24 15:09:27 epeisach Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -1003,7 +1003,9 @@ int e;
     return "Unknown error";
 }
 
+#ifndef ultrix
 #include <sys/socket.h>	/* AF_INET */
+#endif
 #include <arpa/inet.h>
 
 char *inaddr_to_name(addr)
