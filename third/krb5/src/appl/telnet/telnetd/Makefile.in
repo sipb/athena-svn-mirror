@@ -25,7 +25,7 @@ BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 #
 
 EXTRALIBS=@EXTRALIBS@
-LOCAL_LIBRARIES=-lpty -L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
+LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 AUTH_DEF=-DAUTHENTICATION -DENCRYPTION -DKRB5 -DFORWARD -UNO_LOGIN_F -ULOGIN_CAP_F -DLOGIN_PROGRAM=\"$(LOGINDIR)/login\"
 OTHERDEFS=-DKLUDGELINEMODE -DDIAGNOSTICS -DENV_HACK -DOLD_ENVIRON
 LOCALINCLUDES=-I.. -I$(srcdir)/.. -I$(ATHTOOLROOT)/usr/athena/include
@@ -61,7 +61,7 @@ OBJS=	telnetd.o \
 all:: telnetd
 
 telnetd: $(OBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS) ../libtelnet/libtelnet.a
-	$(CC_LINK) -o $@ $(OBJS) ../libtelnet/libtelnet.a $(PTY_LIB) $(KRB4COMPAT_LIBS) $(AL_LIBS)
+	$(CC_LINK) -o $@ $(OBJS) ../libtelnet/libtelnet.a $(PTY_LIB) $(LOCAL_LIBRARIES) $(KRB4COMPAT_LIBS)
 
 clean::
 	$(RM) telnetd
