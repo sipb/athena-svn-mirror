@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.9 1996-09-19 22:23:23 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.10 1997-02-25 19:08:25 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -67,6 +67,8 @@ static XjResource resources[] = {
       offset(dClock.update), XjRString, "1" },
   { XjNblinkColons, XjCBlink, XjRBoolean, sizeof(Boolean),
       offset(dClock.blink_colons), XjRBoolean, (caddr_t) False },
+  { XjNtimeOffset, XjCTimeOffset, XjRInt, sizeof(int),
+      offset(dClock.timeOffset), XjRString, "0" },
 };
 
 #undef offset
@@ -367,6 +369,8 @@ static char *get_label(me)
   caddr_t f[MAX_FMTS];
 
   gettimeofday(&tv, &tz);
+  tv.tv_sec += me->dClock.timeOffset;
+
   tp = localtime((time_t *) &tv.tv_sec);
 
   for (i=0; i < MAX_FMTS; i++)

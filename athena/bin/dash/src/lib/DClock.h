@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.h,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -47,6 +47,7 @@ typedef struct {
   int current_fmt;
   Boolean blink_colons;
   Boolean colons_on;
+  int timeOffset;
 } DClockPart;
 
 typedef struct _DClockRec {
@@ -66,5 +67,7 @@ typedef struct _DClockClassRec *DClockJetClass;
 #define XjNinterval "interval"
 #define XjCBlink "Blink"
 #define XjNblinkColons "blinkColons"
+#define XjCTimeOffset "TimeOffset"
+#define XjNtimeOffset "timeOffset"
 
 #endif /* _Xj_DClock_h */
