@@ -180,6 +180,9 @@ shlib_check ()
 #endif
 
 #if defined (HIDDEN_UNDEF_TEST) || defined (PROTECTED_UNDEF_TEST)
+#ifdef WEAK_TEST
+#pragma weak visibility
+#endif
 extern int visibility ();
 #else
 int
@@ -243,6 +246,9 @@ visibility_funptr ()
 }
 
 #if defined (HIDDEN_UNDEF_TEST) || defined (PROTECTED_UNDEF_TEST)
+#ifdef WEAK_TEST
+#pragma weak visibility_var
+#endif
 extern int visibility_var;
 #else
 int visibility_var = 2;
@@ -318,7 +324,84 @@ asm (".protected visibility_var");
 #endif
 #endif
 
-#ifdef WEAK_TEST
-asm (".weak visibility");
-asm (".weak visibility_var");
+#ifdef HIDDEN_NORMAL_TEST
+int shlib_visibility_com;
+asm (".hidden shlib_visibility_com");
+
+int
+shlib_visibility_checkcom ()
+{
+  return shlib_visibility_com == 0;
+}
+
+int
+shlib_visibility_checkweak ()
+{
+  return 1;
+}
+#elif defined (HIDDEN_WEAK_TEST)
+#pragma weak shlib_visibility_undef_var_weak
+extern int shlib_visibility_undef_var_weak;
+asm (".hidden shlib_visibility_undef_var_weak");
+
+#pragma weak shlib_visibility_undef_func_weak
+extern int shlib_visibility_undef_func_weak ();
+asm (".hidden shlib_visibility_undef_func_weak");
+
+#pragma weak shlib_visibility_var_weak
+extern int shlib_visibility_var_weak;
+asm (".hidden shlib_visibility_var_weak");
+
+#pragma weak shlib_visibility_func_weak
+extern int shlib_visibility_func_weak ();
+asm (".hidden shlib_visibility_func_weak");
+
+int
+shlib_visibility_checkcom ()
+{
+  return 1;
+}
+
+int
+shlib_visibility_checkweak ()
+{
+  return &shlib_visibility_undef_var_weak == NULL
+	 && &shlib_visibility_undef_func_weak == NULL
+	 && &shlib_visibility_func_weak == NULL
+	 && &shlib_visibility_var_weak == NULL;
+}
+#else
+int
+shlib_visibility_checkcom ()
+{
+  return 1;
+}
+
+int
+shlib_visibility_checkweak ()
+{
+  return 1;
+}
+#endif
+
+#ifdef PROTECTED_TEST
+int shared_data = 100;
+ 
+int *
+shared_data_p ()
+{
+  return &shared_data;
+}
+ 
+int
+shared_func ()
+{
+  return 100;
+}
+ 
+void *
+shared_func_p ()
+{
+  return shared_func;
+}
 #endif

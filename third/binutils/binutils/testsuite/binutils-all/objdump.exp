@@ -36,11 +36,12 @@ set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -i"]
 
 set cpus_expected [list]
 lappend cpus_expected a29k alliant alpha arc arm convex 
-lappend cpus_expected d10v d30v fr30 h8 hppa i386 i860 i960
+lappend cpus_expected d10v d30v fr30 fr500 fr550 h8 hppa i386 i860 i960 ip2022
 lappend cpus_expected m32r m68hc11 m68hc12 m68k m88k MCore
-lappend cpus_expected mips mn10200 mn10300 ns32k pj powerpc pyramid
-lappend cpus_expected romp rs6000 sh sparc tahoe tic54x tms320c54x v850
-lappend cpus_expected vax we32k z8k z8001 z8002
+lappend cpus_expected mips mn10200 mn10300 msp ns32k pj powerpc pyramid
+lappend cpus_expected romp rs6000 s390 sh sparc
+lappend cpus_expected tahoe tic54x tic80 tms320c30 tms320c4x tms320c54x v850
+lappend cpus_expected vax we32k x86-64 xscale z8k z8001 z8002
 
 # Make sure the target CPU shows up in the list.
 lappend cpus_expected ${target_cpu}
@@ -95,6 +96,11 @@ if ![regexp $want $got all text_name text_size data_name data_size] then {
     verbose "data name is $data_name size is $data_size"
     set ets 8
     set eds 4
+    # The [ti]c4x target has the property sizeof(char)=sizeof(long)=1
+    if [istarget *c4x*-*-*] then {
+        set ets 2
+        set eds 1
+    }
     # c54x section sizes are in bytes, not octets; adjust accordingly
     if [istarget *c54x*-*-*] then {
 	set ets 4

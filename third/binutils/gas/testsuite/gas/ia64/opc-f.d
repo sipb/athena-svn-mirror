@@ -5,7 +5,7 @@
 
 Disassembly of section \.text:
 
-0000000000000000 <_start>:
+0+000 <_start>:
        0:	1c 00 00 00 01 00 	\[MFB\]       nop\.m 0x0
        6:	40 38 14 0c 40 00 	            fma\.s0 f4=f5,f6,f7
        c:	00 00 00 20       	            nop\.b 0x0
@@ -1560,3 +1560,12 @@ Disassembly of section \.text:
     2050:	1d 00 00 00 01 00 	\[MFB\]       nop\.m 0x0
     2056:	00 00 00 02 00 00 	            nop\.f 0x0
     205c:	00 00 00 20       	            nop\.b 0x0;;
+    2060:	1c 00 00 00 01 00 	\[MFB\]       nop\.m 0x0
+    2066:	00 00 00 03 00 00 	            hint\.f 0x0
+    206c:	00 00 00 20       	            nop\.b 0x0
+    2070:	1c 00 00 00 01 00 	\[MFB\]       nop\.m 0x0
+    2076:	00 00 00 03 00 00 	            hint\.f 0x0
+    207c:	00 00 00 20       	            nop\.b 0x0
+    2080:	1d 00 00 00 01 00 	\[MFB\]       nop\.m 0x0
+    2086:	f0 ff 1f 03 00 00 	            hint\.f 0x1ffff
+    208c:	00 00 00 20       	            nop\.b 0x0;;

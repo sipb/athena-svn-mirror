@@ -1,6 +1,6 @@
 /* CGEN generic assembler support code.
 
-   Copyright 1996, 1997, 1998, 1999, 2000 Free Software Foundation, Inc.
+   Copyright 1996, 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils and GDB, the GNU debugger.
 
@@ -20,20 +20,22 @@
 
 #include "sysdep.h"
 #include <stdio.h>
-#include <ctype.h>
 #include "ansidecl.h"
 #include "libiberty.h"
+#include "safe-ctype.h"
 #include "bfd.h"
 #include "symcat.h"
 #include "opcode/cgen.h"
 #include "opintl.h"
 
+static CGEN_INSN_LIST *  hash_insn_array      (CGEN_CPU_DESC, const CGEN_INSN *, int, int, CGEN_INSN_LIST **, CGEN_INSN_LIST *);
+static CGEN_INSN_LIST *  hash_insn_list       (CGEN_CPU_DESC, const CGEN_INSN_LIST *, CGEN_INSN_LIST **, CGEN_INSN_LIST *);
+static void              build_asm_hash_table (CGEN_CPU_DESC);
+
 /* Set the cgen_parse_operand_fn callback.  */
 
 void
-cgen_set_parse_operand_fn (cd, fn)
-     CGEN_CPU_DESC cd;
-     cgen_parse_operand_fn fn;
+cgen_set_parse_operand_fn (CGEN_CPU_DESC cd, cgen_parse_operand_fn fn)
 {
   cd->parse_operand_fn = fn;
 }
@@ -41,8 +43,7 @@ cgen_set_parse_operand_fn (cd, fn)
 /* Called whenever starting to parse an insn.  */
 
 void
-cgen_init_parse_operand (cd)
-     CGEN_CPU_DESC cd;
+cgen_init_parse_operand (CGEN_CPU_DESC cd)
 {
   /* This tells the callback to re-initialize.  */
   (void) (* cd->parse_operand_fn)
@@ -62,13 +63,12 @@ cgen_init_parse_operand (cd)
    list and we want earlier ones to be prefered.  */
 
 static CGEN_INSN_LIST *
-hash_insn_array (cd, insns, count, entsize, htable, hentbuf)
-     CGEN_CPU_DESC cd;
-     const CGEN_INSN *insns;
-     int count;
-     int entsize ATTRIBUTE_UNUSED;
-     CGEN_INSN_LIST **htable;
-     CGEN_INSN_LIST *hentbuf;
+hash_insn_array (CGEN_CPU_DESC cd,
+		 const CGEN_INSN *insns,
+		 int count,
+		 int entsize ATTRIBUTE_UNUSED,
+		 CGEN_INSN_LIST **htable,
+		 CGEN_INSN_LIST *hentbuf)
 {
   int i;
 
@@ -93,11 +93,10 @@ hash_insn_array (cd, insns, count, entsize, htable, hentbuf)
    in a list.  */
 
 static CGEN_INSN_LIST *
-hash_insn_list (cd, insns, htable, hentbuf)
-     CGEN_CPU_DESC cd;
-     const CGEN_INSN_LIST *insns;
-     CGEN_INSN_LIST **htable;
-     CGEN_INSN_LIST *hentbuf;
+hash_insn_list (CGEN_CPU_DESC cd,
+		const CGEN_INSN_LIST *insns,
+		CGEN_INSN_LIST **htable,
+		CGEN_INSN_LIST *hentbuf)
 {
   const CGEN_INSN_LIST *ilist;
 
@@ -119,8 +118,7 @@ hash_insn_list (cd, insns, htable, hentbuf)
 /* Build the assembler instruction hash table.  */
 
 static void
-build_asm_hash_table (cd)
-     CGEN_CPU_DESC cd;
+build_asm_hash_table (CGEN_CPU_DESC cd)
 {
   int count = cgen_insn_count (cd) + cgen_macro_insn_count (cd);
   CGEN_INSN_TABLE *insn_table = &cd->insn_table;
@@ -175,9 +173,7 @@ build_asm_hash_table (cd)
 /* Return the first entry in the hash list for INSN.  */
 
 CGEN_INSN_LIST *
-cgen_asm_lookup_insn (cd, insn)
-     CGEN_CPU_DESC cd;
-     const char *insn;
+cgen_asm_lookup_insn (CGEN_CPU_DESC cd, const char *insn)
 {
   unsigned int hash;
 
@@ -197,34 +193,45 @@ cgen_asm_lookup_insn (cd, insn)
    recording something in the keyword table].  */
 
 const char *
-cgen_parse_keyword (cd, strp, keyword_table, valuep)
-     CGEN_CPU_DESC cd ATTRIBUTE_UNUSED;
-     const char **strp;
-     CGEN_KEYWORD *keyword_table;
-     long *valuep;
+cgen_parse_keyword (CGEN_CPU_DESC cd ATTRIBUTE_UNUSED,
+		    const char **strp,
+		    CGEN_KEYWORD *keyword_table,
+		    long *valuep)
 {
   const CGEN_KEYWORD_ENTRY *ke;
   char buf[256];
   const char *p,*start;
 
+  if (keyword_table->name_hash_table == NULL)
+    (void) cgen_keyword_search_init (keyword_table, NULL);
+
   p = start = *strp;
 
-  /* Allow any first character.
-     Note that this allows recognizing ",a" for the annul flag in sparc
-     even though "," is subsequently not a valid keyword char.  */
+  /* Allow any first character.  This is to make life easier for
+     the fairly common case of suffixes, eg. 'ld.b.w', where the first
+     character of the suffix ('.') is special.  */
   if (*p)
     ++p;
-
-  /* Now allow letters, digits, and _.  */
+  
+  /* Allow letters, digits, and any special characters.  */
   while (((p - start) < (int) sizeof (buf))
-	 && (isalnum ((unsigned char) *p) || *p == '_'))
+	 && *p
+	 && (ISALNUM (*p)
+	     || *p == '_'
+	     || strchr (keyword_table->nonalpha_chars, *p)))
     ++p;
 
   if (p - start >= (int) sizeof (buf))
-    return _("unrecognized keyword/register name");
-
-  memcpy (buf, start, p - start);
-  buf[p - start] = 0;
+    {
+      /* All non-empty CGEN keywords can fit into BUF.  The only thing
+	 we can match here is the empty keyword.  */
+      buf[0] = 0;
+    }
+  else
+    {
+      memcpy (buf, start, p - start);
+      buf[p - start] = 0;
+    }
 
   ke = cgen_keyword_lookup_name (keyword_table, buf);
 
@@ -246,11 +253,10 @@ cgen_parse_keyword (cd, strp, keyword_table, valuep)
    cgen_parse_address.  */
 
 const char *
-cgen_parse_signed_integer (cd, strp, opindex, valuep)
-     CGEN_CPU_DESC cd;
-     const char **strp;
-     int opindex;
-     long *valuep;
+cgen_parse_signed_integer (CGEN_CPU_DESC cd,
+			   const char **strp,
+			   int opindex,
+			   long *valuep)
 {
   bfd_vma value;
   enum cgen_parse_operand_result result;
@@ -271,11 +277,10 @@ cgen_parse_signed_integer (cd, strp, opindex, valuep)
    cgen_parse_address.  */
 
 const char *
-cgen_parse_unsigned_integer (cd, strp, opindex, valuep)
-     CGEN_CPU_DESC cd;
-     const char **strp;
-     int opindex;
-     unsigned long *valuep;
+cgen_parse_unsigned_integer (CGEN_CPU_DESC cd,
+			     const char **strp,
+			     int opindex,
+			     unsigned long *valuep)
 {
   bfd_vma value;
   enum cgen_parse_operand_result result;
@@ -293,13 +298,12 @@ cgen_parse_unsigned_integer (cd, strp, opindex, valuep)
 /* Address parser.  */
 
 const char *
-cgen_parse_address (cd, strp, opindex, opinfo, resultp, valuep)
-     CGEN_CPU_DESC cd;
-     const char **strp;
-     int opindex;
-     int opinfo;
-     enum cgen_parse_operand_result *resultp;
-     bfd_vma *valuep;
+cgen_parse_address (CGEN_CPU_DESC cd,
+		    const char **strp,
+		    int opindex,
+		    int opinfo,
+		    enum cgen_parse_operand_result *resultp,
+		    bfd_vma *valuep)
 {
   bfd_vma value;
   enum cgen_parse_operand_result result_type;
@@ -321,8 +325,7 @@ cgen_parse_address (cd, strp, opindex, opinfo, resultp, valuep)
 /* Signed integer validation routine.  */
 
 const char *
-cgen_validate_signed_integer (value, min, max)
-     long value, min, max;
+cgen_validate_signed_integer (long value, long min, long max)
 {
   if (value < min || value > max)
     {
@@ -342,8 +345,9 @@ cgen_validate_signed_integer (value, min, max)
    cases where min != 0 (and max > LONG_MAX).  */
 
 const char *
-cgen_validate_unsigned_integer (value, min, max)
-     unsigned long value, min, max;
+cgen_validate_unsigned_integer (unsigned long value,
+				unsigned long min,
+				unsigned long max)
 {
   if (value < min || value > max)
     {

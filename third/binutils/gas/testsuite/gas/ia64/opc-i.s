@@ -206,3 +206,17 @@ _start:
 .space 240
 .L6:
 
+	# instructions added by SDM2.1:
+
+	hint @pause
+	hint.i 0
+	hint.i @pause
+	hint.i 0x1fffff
+(p7)	hint @pause
+(p7)	hint.i 0
+(p7)	hint.i @pause
+(p7)	hint.i 0x1fffff
+ (p7)	hint @pause
+ (p7)	hint.i 0
+ (p7)	hint.i @pause
+ (p7)	hint.i 0x1fffff

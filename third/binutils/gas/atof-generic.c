@@ -1,5 +1,5 @@
 /* atof_generic.c - turn a string of digits into a Flonum
-   Copyright 1987, 1990, 1991, 1992, 1993, 1994, 1995, 1998, 1999, 2000
+   Copyright 1987, 1990, 1991, 1992, 1993, 1994, 1995, 1998, 1999, 2000, 2001
    Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -19,10 +19,10 @@
    Software Foundation, 59 Temple Place - Suite 330, Boston, MA
    02111-1307, USA.  */
 
-#include <ctype.h>
 #include <string.h>
 
 #include "as.h"
+#include "safe-ctype.h"
 
 #ifndef FALSE
 #define FALSE (0)
@@ -32,7 +32,7 @@
 #endif
 
 #ifdef TRACE
-static void flonum_print PARAMS ((const FLONUM_TYPE *));
+static void flonum_print (const FLONUM_TYPE *);
 #endif
 
 #define ASSUME_DECIMAL_MARK_IS_DOT
@@ -75,16 +75,12 @@ static void flonum_print PARAMS ((const FLONUM_TYPE *));
   */
 
 int
-atof_generic (address_of_string_pointer,
-	      string_of_decimal_marks,
-	      string_of_decimal_exponent_marks,
-	      address_of_generic_floating_point_number)
-     /* return pointer to just AFTER number we read.  */
-     char **address_of_string_pointer;
-     /* At most one per number.  */
-     const char *string_of_decimal_marks;
-     const char *string_of_decimal_exponent_marks;
-     FLONUM_TYPE *address_of_generic_floating_point_number;
+atof_generic (/* return pointer to just AFTER number we read.  */
+	      char **address_of_string_pointer,
+	      /* At most one per number.  */
+	      const char *string_of_decimal_marks,
+	      const char *string_of_decimal_exponent_marks,
+	      FLONUM_TYPE *address_of_generic_floating_point_number)
 {
   int return_value;		/* 0 means OK.  */
   char *first_digit;
@@ -171,7 +167,7 @@ atof_generic (address_of_string_pointer,
 	&& (!c || !strchr (string_of_decimal_exponent_marks, c)));
        p++)
     {
-      if (isdigit ((unsigned char) c))
+      if (ISDIGIT (c))
 	{
 	  if (seen_significant_digit || c > '0')
 	    {
@@ -200,7 +196,7 @@ atof_generic (address_of_string_pointer,
     {
       unsigned int zeros = 0;	/* Length of current string of zeros */
 
-      for (p++; (c = *p) && isdigit ((unsigned char) c); p++)
+      for (p++; (c = *p) && ISDIGIT (c); p++)
 	{
 	  if (c == '0')
 	    {
@@ -221,7 +217,7 @@ atof_generic (address_of_string_pointer,
 	    && (!c || !strchr (string_of_decimal_exponent_marks, c)));
 	   p++)
 	{
-	  if (isdigit ((unsigned char) c))
+	  if (ISDIGIT (c))
 	    {
 	      /* This may be retracted below.  */
 	      number_of_digits_after_decimal++;
@@ -275,7 +271,7 @@ atof_generic (address_of_string_pointer,
 
       for (; (c); c = *++p)
 	{
-	  if (isdigit ((unsigned char) c))
+	  if (ISDIGIT (c))
 	    {
 	      decimal_exponent = decimal_exponent * 10 + c - '0';
 	      /*
@@ -400,7 +396,7 @@ atof_generic (address_of_string_pointer,
       for (p = first_digit, count = number_of_digits_to_use; count; p++, --count)
 	{
 	  c = *p;
-	  if (isdigit ((unsigned char) c))
+	  if (ISDIGIT (c))
 	    {
 	      /*
 	       * Multiply by 10. Assume can never overflow.
@@ -434,7 +430,7 @@ atof_generic (address_of_string_pointer,
 		   * We have a GROSS internal error.
 		   * This should never happen.
 		   */
-		  as_fatal (_("failed sanity check."));
+		  as_fatal (_("failed sanity check"));
 		}
 	    }
 	  else
@@ -472,7 +468,7 @@ atof_generic (address_of_string_pointer,
       {
 	/*
 	 * Compute the mantssa (& exponent) of the power of 10.
-	 * If sucessful, then multiply the power of 10 by the digits
+	 * If successful, then multiply the power of 10 by the digits
 	 * giving return_binary_mantissa and return_binary_exponent.
 	 */
 

@@ -1,6 +1,6 @@
 /* hash.c -- gas hash table code
    Copyright 1987, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999,
-   2000
+   2000, 2001, 2002
    Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -23,13 +23,14 @@
 /* This version of the hash table code is a wholescale replacement of
    the old hash table code, which was fairly bad.  This is based on
    the hash table code in BFD, but optimized slightly for the
-   asssembler.  The assembler does not need to derive structures that
+   assembler.  The assembler does not need to derive structures that
    are stored in the hash table.  Instead, it always stores a pointer.
    The assembler uses the hash table mostly to store symbols, and we
    don't need to confuse the symbol structure with a hash table
    structure.  */
 
 #include "as.h"
+#include "safe-ctype.h"
 #include "obstack.h"
 
 /* The default number of entries to use when creating a hash table.  */
@@ -74,7 +75,7 @@ struct hash_control {
 /* Create a hash table.  This return a control block.  */
 
 struct hash_control *
-hash_new ()
+hash_new (void)
 {
   unsigned int size;
   struct hash_control *ret;
@@ -104,8 +105,7 @@ hash_new ()
 /* Delete a hash table, freeing all allocated memory.  */
 
 void
-hash_die (table)
-     struct hash_control *table;
+hash_die (struct hash_control *table)
 {
   obstack_free (&table->memory, 0);
   free (table);
@@ -120,17 +120,14 @@ hash_die (table)
    Each time we look up a string, we move it to the start of the list
    for its hash code, to take advantage of referential locality.  */
 
-static struct hash_entry *hash_lookup PARAMS ((struct hash_control *,
-					       const char *,
-					       struct hash_entry ***,
-					       unsigned long *));
+static struct hash_entry *hash_lookup (struct hash_control *,
+				       const char *,
+				       struct hash_entry ***,
+				       unsigned long *);
 
 static struct hash_entry *
-hash_lookup (table, key, plist, phash)
-     struct hash_control *table;
-     const char *key;
-     struct hash_entry ***plist;
-     unsigned long *phash;
+hash_lookup (struct hash_control *table, const char *key,
+	     struct hash_entry ***plist, unsigned long *phash)
 {
   register unsigned long hash;
   unsigned int len;
@@ -204,10 +201,7 @@ hash_lookup (table, key, plist, phash)
    hash table.  */
 
 const char *
-hash_insert (table, key, value)
-     struct hash_control *table;
-     const char *key;
-     PTR value;
+hash_insert (struct hash_control *table, const char *key, PTR value)
 {
   struct hash_entry *p;
   struct hash_entry **list;
@@ -237,10 +231,7 @@ hash_insert (table, key, value)
    error.  If an entry already exists, its value is replaced.  */
 
 const char *
-hash_jam (table, key, value)
-     struct hash_control *table;
-     const char *key;
-     PTR value;
+hash_jam (struct hash_control *table, const char *key, PTR value)
 {
   struct hash_entry *p;
   struct hash_entry **list;
@@ -278,10 +269,7 @@ hash_jam (table, key, value)
    table, this does nothing and returns NULL.  */
 
 PTR
-hash_replace (table, key, value)
-     struct hash_control *table;
-     const char *key;
-     PTR value;
+hash_replace (struct hash_control *table, const char *key, PTR value)
 {
   struct hash_entry *p;
   PTR ret;
@@ -305,9 +293,7 @@ hash_replace (table, key, value)
    if the entry is not found.  */
 
 PTR
-hash_find (table, key)
-     struct hash_control *table;
-     const char *key;
+hash_find (struct hash_control *table, const char *key)
 {
   struct hash_entry *p;
 
@@ -322,9 +308,7 @@ hash_find (table, key)
    for that entry, or NULL if there is no such entry.  */
 
 PTR
-hash_delete (table, key)
-     struct hash_control *table;
-     const char *key;
+hash_delete (struct hash_control *table, const char *key)
 {
   struct hash_entry *p;
   struct hash_entry **list;
@@ -353,9 +337,8 @@ hash_delete (table, key)
    hash table.  */
 
 void
-hash_traverse (table, pfn)
-     struct hash_control *table;
-     void (*pfn) PARAMS ((const char *key, PTR value));
+hash_traverse (struct hash_control *table,
+	       void (*pfn) (const char *key, PTR value))
 {
   unsigned int i;
 
@@ -372,10 +355,9 @@ hash_traverse (table, pfn)
    name of the hash table, used for printing a header.  */
 
 void
-hash_print_statistics (f, name, table)
-     FILE *f ATTRIBUTE_UNUSED;
-     const char *name ATTRIBUTE_UNUSED;
-     struct hash_control *table ATTRIBUTE_UNUSED;
+hash_print_statistics (FILE *f ATTRIBUTE_UNUSED,
+		       const char *name ATTRIBUTE_UNUSED,
+		       struct hash_control *table ATTRIBUTE_UNUSED)
 {
 #ifdef HASH_STATISTICS
   unsigned int i;
@@ -429,7 +411,7 @@ char answer[100];
 /* We test many hash tables at once.  */
 char *hashtable[TABLES];
 
-/* Points to curent hash_control.  */
+/* Points to current hash_control.  */
 char *h;
 char **pp;
 char *p;
@@ -458,8 +440,7 @@ main ()
       printf ("hash_test command: ");
       gets (answer);
       command = answer[0];
-      if (isupper (command))
-	command = tolower (command);	/* Ecch!  */
+      command = TOLOWER (command);	/* Ecch!  */
       switch (command)
 	{
 	case '#':
@@ -546,19 +527,9 @@ char *
 what (description)
      char *description;
 {
-  char *retval;
-  char *malloc ();
-
   printf ("   %s : ", description);
   gets (answer);
-  /* Will one day clean up answer here.  */
-  retval = malloc (strlen (answer) + 1);
-  if (!retval)
-    {
-      error ("room");
-    }
-  (void) strcpy (retval, answer);
-  return (retval);
+  return xstrdup (answer);
 }
 
 void

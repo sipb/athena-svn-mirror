@@ -1,6 +1,6 @@
 #objdump: -rst -mips16
 #name: MIPS16 reloc
-#as: -mips16
+#as: -32 -mips16
 #source: mips16-e.s
 
 # Check MIPS16 reloc processing
@@ -20,7 +20,7 @@ SYMBOL TABLE:
 
 
 RELOCATION RECORDS FOR \[foo\]:
-OFFSET           TYPE              VALUE 
+OFFSET [ ]+ TYPE              VALUE 
 0+0000000 R_MIPS_32         l1
 0+0000004 R_MIPS_32         l1
 0+0000008 R_MIPS_32         L1.1
@@ -31,12 +31,9 @@ OFFSET           TYPE              VALUE
 
 Contents of section \.text:
  0000 65006500 65006500 65006500 65006500  .*
-Contents of section \.data:
 Contents of section \.reginfo:
  0000 00000001 00000000 00000000 00000000  .*
  0010 00000000 00000000                    .*
-Contents of section \.(mdebug|pdr):
-#...
 Contents of section foo:
  0000 00000000 00000008 00000000 00000003  .*
  0010 00000000 00000008 00000000 00000000  .*

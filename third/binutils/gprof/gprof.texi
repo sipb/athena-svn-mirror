@@ -1,6 +1,6 @@
 \input texinfo @c -*-texinfo-*-
 @setfilename gprof.info
-@c Copyright 1988, 1992, 1993, 1998, 1999, 2000, 2001
+@c Copyright 1988, 1992, 1993, 1998, 1999, 2000, 2001, 2003
 @c Free Software Foundation, Inc.
 @settitle GNU gprof
 @setchapternewpage odd
@@ -18,14 +18,17 @@ END-INFO-DIR-ENTRY
 @ifinfo
 This file documents the gprof profiler of the GNU system.
 
-Copyright (C) 1988, 92, 97, 98, 99, 2000 Free Software Foundation, Inc.
+@c man begin COPYRIGHT
+Copyright (C) 1988, 92, 97, 98, 99, 2000, 2001, 2003 Free Software Foundation, Inc.
 
-      Permission is granted to copy, distribute and/or modify this document
-      under the terms of the GNU Free Documentation License, Version 1.1
-      or any later version published by the Free Software Foundation;
-      with no Invariant Sections, with no Front-Cover Texts, and with no
-      Back-Cover Texts.  A copy of the license is included in the
-      section entitled "GNU Free Documentation License".
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, with no Front-Cover Texts, and with no
+Back-Cover Texts.  A copy of the license is included in the
+section entitled "GNU Free Documentation License".
+
+@c man end
 
 @ignore
 Permission is granted to process this file through Tex and print the
@@ -50,9 +53,10 @@ This manual describes the @sc{gnu} profiler, @code{gprof}, and how you
 can use it to determine which parts of a program are taking most of the
 execution time.  We assume that you know how to write, compile, and
 execute programs.  @sc{gnu} @code{gprof} was written by Jay Fenlason.
+Eric S. Raymond made some minor corrections and additions in 2003.
 
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1988, 92, 97, 98, 99, 2000 Free Software Foundation, Inc.
+Copyright @copyright{} 1988, 92, 97, 98, 99, 2000, 2003 Free Software Foundation, Inc.
 
       Permission is granted to copy, distribute and/or modify this document
       under the terms of the GNU Free Documentation License, Version 1.1
@@ -63,7 +67,7 @@ Copyright @copyright{} 1988, 92, 97, 98, 99, 2000 Free Software Foundation, Inc.
 
 @end titlepage
 
-@ifinfo
+@ifnottex
 @node Top
 @top Profiling a Program: Where Does It Spend Its Time?
 
@@ -91,10 +95,106 @@ section entitled "GNU Free Documentation License".
 * Details::             Details of how profiling is done
 * GNU Free Documentation License::  GNU Free Documentation License
 @end menu
-@end ifinfo
+@end ifnottex
 
 @node Introduction
 @chapter Introduction to Profiling
+
+@ifset man
+@c man title gprof display call graph profile data
+
+@smallexample
+@c man begin SYNOPSIS
+gprof [ -[abcDhilLsTvwxyz] ] [ -[ACeEfFJnNOpPqQZ][@var{name}] ] 
+ [ -I @var{dirs} ] [ -d[@var{num}] ] [ -k @var{from/to} ]
+ [ -m @var{min-count} ] [ -t @var{table-length} ]
+ [ --[no-]annotated-source[=@var{name}] ] 
+ [ --[no-]exec-counts[=@var{name}] ]
+ [ --[no-]flat-profile[=@var{name}] ] [ --[no-]graph[=@var{name}] ]
+ [ --[no-]time=@var{name}] [ --all-lines ] [ --brief ] 
+ [ --debug[=@var{level}] ] [ --function-ordering ] 
+ [ --file-ordering ] [ --directory-path=@var{dirs} ]
+ [ --display-unused-functions ] [ --file-format=@var{name} ]
+ [ --file-info ] [ --help ] [ --line ] [ --min-count=@var{n} ]
+ [ --no-static ] [ --print-path ] [ --separate-files ]
+ [ --static-call-graph ] [ --sum ] [ --table-length=@var{len} ]
+ [ --traditional ] [ --version ] [ --width=@var{n} ]
+ [ --ignore-non-functions ] [ --demangle[=@var{STYLE}] ]
+ [ --no-demangle ] [ @var{image-file} ] [ @var{profile-file} @dots{} ]
+@c man end
+@end smallexample
+
+@c man begin DESCRIPTION
+@code{gprof} produces an execution profile of C, Pascal, or Fortran77 
+programs.  The effect of called routines is incorporated in the profile 
+of each caller.  The profile data is taken from the call graph profile file
+(@file{gmon.out} default) which is created by programs
+that are compiled with the @samp{-pg} option of
+@code{cc}, @code{pc}, and @code{f77}.
+The @samp{-pg} option also links in versions of the library routines
+that are compiled for profiling.  @code{Gprof} reads the given object 
+file (the default is @code{a.out}) and establishes the relation between
+its symbol table and the call graph profile from @file{gmon.out}.
+If more than one profile file is specified, the @code{gprof}
+output shows the sum of the profile information in the given profile files.
+
+@code{Gprof} calculates the amount of time spent in each routine.
+Next, these times are propagated along the edges of the call graph.
+Cycles are discovered, and calls into a cycle are made to share the time
+of the cycle.
+
+@c man end
+
+@c man begin BUGS
+The granularity of the sampling is shown, but remains
+statistical at best.
+We assume that the time for each execution of a function
+can be expressed by the total time for the function divided
+by the number of times the function is called.
+Thus the time propagated along the call graph arcs to the function's
+parents is directly proportional to the number of times that
+arc is traversed.
+
+Parents that are not themselves profiled will have the time of
+their profiled children propagated to them, but they will appear
+to be spontaneously invoked in the call graph listing, and will
+not have their time propagated further.
+Similarly, signal catchers, even though profiled, will appear
+to be spontaneous (although for more obscure reasons).
+Any profiled children of signal catchers should have their times
+propagated properly, unless the signal catcher was invoked during
+the execution of the profiling routine, in which case all is lost.
+
+The profiled program must call @code{exit}(2)
+or return normally for the profiling information to be saved
+in the @file{gmon.out} file.
+@c man end
+
+@c man begin FILES
+@table @code
+@item @file{a.out}
+the namelist and text space.
+@item @file{gmon.out}
+dynamic call graph and profile.
+@item @file{gmon.sum}
+summarized dynamic call graph and profile.  
+@end table
+@c man end
+
+@c man begin SEEALSO
+monitor(3), profil(2), cc(1), prof(1), and the Info entry for @file{gprof}.
+
+``An Execution Profiler for Modular Programs'',
+by S. Graham, P. Kessler, M. McKusick;
+Software - Practice and Experience,
+Vol. 13, pp. 671-685, 1983.
+
+``gprof: A Call Graph Execution Profiler'',
+by S. Graham, P. Kessler, M. McKusick;
+Proceedings of the SIGPLAN '82 Symposium on Compiler Construction,
+SIGPLAN Notices, Vol. 17, No  6, pp. 120-126, June 1982.
+@c man end
+@end ifset
 
 Profiling allows you to learn where your program spent its time and which
 functions called which other functions while it was executing.  This
@@ -129,6 +229,8 @@ You must run @code{gprof} to analyze the profile data.
 
 The next three chapters explain these steps in greater detail.
 
+@c man begin DESCRIPTION
+
 Several forms of output are available from the analysis.
 
 The @dfn{flat profile} shows how much time your program spent in each function,
@@ -145,6 +247,7 @@ lot of time.  @xref{Call Graph}.
 The @dfn{annotated source} listing is a copy of the program's
 source code, labeled with the number of times each line of the
 program was executed.  @xref{Annotated Source}.
+@c man end
 
 To better understand how profiling works, you may wish to read
 a description of its implementation.
@@ -176,6 +279,31 @@ The @samp{-pg} option also works with a command that both compiles and links:
 cc -o myprog myprog.c utils.c -g -pg
 @end example
 
+Note: The @samp{-pg} option must be part of your compilation options
+as well as your link options.  If it is not then no call-graph data
+will be gathered and when you run @code{gprof} you will get an error
+message like this:
+
+@example
+gprof: gmon.out file is missing call-graph data
+@end example
+
+If you add the @samp{-Q} switch to suppress the printing of the call
+graph data you will still be able to see the time samples:
+
+@example
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 44.12      0.07     0.07                             zazLoop
+ 35.29      0.14     0.06                             main
+ 20.59      0.17     0.04                             bazMillion
+
+ %         the percentage of the total running time of the
+@end example
+
 If you run the linker @code{ld} directly instead of through a compiler
 such as @code{cc}, you may have to specify a profiling startup file
 @file{gcrt0.o} as the first input file instead of the usual startup
@@ -205,14 +333,27 @@ instructing the compiler to insert debugging symbols into the program
 that match program addresses to source code lines.
 @xref{Line-by-line}.
 
-In addition to the @samp{-pg} and @samp{-g} options,
-you may also wish to specify the @samp{-a} option when compiling.
-This will instrument
-the program to perform basic-block counting.  As the program runs,
+In addition to the @samp{-pg} and @samp{-g} options, older versions of
+GCC required you to specify the @samp{-a} option when compiling in
+order to instrument it to perform basic-block counting.  Newer
+versions do not require this option and will not accept it;
+basic-block counting is always enabled when @samp{-pg} is on.
+
+When basic-block counting is enabled, as the program runs
 it will count how many times it executed each branch of each @samp{if}
 statement, each iteration of each @samp{do} loop, etc.  This will
 enable @code{gprof} to construct an annotated source code
 listing showing how many times each line of code was executed.
+
+It also worth noting that GCC supports a different profiling method
+which is enabled by the @samp{-fprofile-arcs}, @samp{-ftest-coverage}
+and @samp{-fprofile-values} switches. These switches do not produce
+data which is useful to @code{gprof} however, so they are not
+discussed further here.  There is also the
+@samp{-finstrument-functions} switch which will cause GCC to insert
+calls to special user supplied instrumentation routines at the entry
+and exit of every function in their program.  This can be used to
+implement an alternative profiling scheme.
 
 @node Executing
 @chapter Executing the Program
@@ -235,7 +376,7 @@ Your program will write the profile data into a file called @file{gmon.out}
 just before exiting.  If there is already a file called @file{gmon.out},
 its contents are overwritten.  There is currently no way to tell the
 program to write the profile data under a different name, but you can rename
-the file afterward if you are concerned that it may be overwritten.
+the file afterwards if you are concerned that it may be overwritten.
 
 In order to write the @file{gmon.out} file properly, your program must exit
 normally: by returning from @code{main} or by calling @code{exit}.  Calling
@@ -255,7 +396,21 @@ appearance of a human-readable @file{bb.out} means the basic-block
 counts didn't get written into @file{gmon.out}.
 The Perl script @code{bbconv.pl}, included with the @code{gprof}
 source distribution, will convert a @file{bb.out} file into
-a format readable by @code{gprof}.
+a format readable by @code{gprof}.  Invoke it like this:
+
+@smallexample
+bbconv.pl < bb.out > @var{bh-data}
+@end smallexample
+
+This translates the information in @file{bb.out} into a form that
+@code{gprof} can understand.  But you still need to tell @code{gprof}
+about the existence of this translated information.  To do that, include
+@var{bb-data} on the @code{gprof} command line, @emph{along with
+@file{gmon.out}}, like this:
+
+@smallexample
+gprof @var{options} @var{executable-file} gmon.out @var{bb-data} [@var{yet-more-profile-data-files}@dots{}] [> @var{outfile}]
+@end smallexample
 
 @node Invoking
 @chapter @code{gprof} Command Summary
@@ -297,6 +452,7 @@ The order of these options does not matter.
 @node Output Options,Analysis Options,,Invoking
 @section Output Options
 
+@c man begin OPTIONS
 These options specify which of several output formats
 @code{gprof} should produce.
 
@@ -634,6 +790,8 @@ may be given; only one @var{function_name} may be indicated with each
 @samp{-F} option.  The @samp{-F} option overrides the @samp{-E} option.
 
 @end table
+
+@c man end
 
 Note that only one function can be specified with each @code{-e},
 @code{-E}, @code{-f} or @code{-F} option.  To specify more than one
@@ -1477,7 +1635,7 @@ gprof @var{executable-file} gmon.sum > @var{output-file}
 @section Estimating @code{children} Times
 
 Some of the figures in the call graph are estimates---for example, the
-@code{children} time values and all the the time figures in caller and
+@code{children} time values and all the time figures in caller and
 subroutine lines.
 
 There is no direct information about these measurements in the profile
@@ -1508,6 +1666,17 @@ nonce, the estimated figures are usually more useful than misleading.
 @chapter Answers to Common Questions
 
 @table @asis
+@item How can I get more exact information about hot spots in my program?
+
+Looking at the per-line call counts only tells part of the story.
+Because @code{gprof} can only report call times and counts by function,
+the best way to get finer-grained information on where the program
+is spending its time is to re-factor large functions into sequences
+of calls to smaller ones.  Beware however that this can introduce
+artifical hot spots since compiling with @samp{-pg} adds a significant
+overhead to function calls.  An alternative solution is to use a
+non-intrusive profiler, e.g.@: oprofile.
+
 @item How do I find which lines in my program were executed the most times?
 
 Compile your program with basic-block counting enabled, run it, then
@@ -1731,9 +1900,9 @@ format.
 The new file format is defined in header file @file{gmon_out.h}.  It
 consists of a header containing the magic cookie and a version number,
 as well as some spare bytes available for future extensions.  All data
-in a profile data file is in the native format of the host on which
-the profile was collected.  @sc{gnu} @code{gprof} adapts automatically to the
-byte-order in use.
+in a profile data file is in the native format of the target for which
+the profile was collected.  @sc{gnu} @code{gprof} adapts automatically
+to the byte-order in use.
 
 In the new file format, the header is followed by a sequence of
 records.  Currently, there are three different record types: histogram

@@ -25,6 +25,10 @@ if test "${RELOCATING}"; then
     SORT(*)(.idata$6)
     SORT(*)(.idata$7)'
   R_CRT='*(SORT(.CRT$*))'
+  R_TLS='
+    *(.tls)
+    *(.tls$)
+    *(SORT(.tls$*))'
   R_RSRC='*(SORT(.rsrc$*))'
 else
   R_TEXT=
@@ -54,13 +58,13 @@ SECTIONS
     *(.glue_7t)
     *(.glue_7)
     ${CONSTRUCTING+ ___CTOR_LIST__ = .; __CTOR_LIST__ = . ; 
-			LONG (-1); *(.ctors); *(.ctor); LONG (0); }
+			LONG (-1); *(SORT(.ctors.*)); *(.ctors); *(.ctor); LONG (0); }
     ${CONSTRUCTING+ ___DTOR_LIST__ = .; __DTOR_LIST__ = . ; 
-			LONG (-1); *(.dtors); *(.dtor);  LONG (0); }
+			LONG (-1); *(SORT(.dtors.*)); *(.dtors); *(.dtor);  LONG (0); }
     ${RELOCATING+ *(.fini)}
     /* ??? Why is .gcc_exc here?  */
     ${RELOCATING+ *(.gcc_exc)}
-    ${RELOCATING+ etext = .;}
+    ${RELOCATING+PROVIDE (etext = .);}
     *(.gcc_except_table)
   }
 
@@ -85,6 +89,11 @@ SECTIONS
     *(.rdata)
     ${R_RDATA}
     *(.eh_frame)
+    ${RELOCATING+___RUNTIME_PSEUDO_RELOC_LIST__ = .;}
+    ${RELOCATING+__RUNTIME_PSEUDO_RELOC_LIST__ = .;}
+    *(.rdata_runtime_pseudo_reloc)
+    ${RELOCATING+___RUNTIME_PSEUDO_RELOC_LIST_END__ = .;}
+    ${RELOCATING+__RUNTIME_PSEUDO_RELOC_LIST_END__ = .;}
   }
 
   .pdata ${RELOCATING+BLOCK(__section_alignment__)} :
@@ -124,11 +133,16 @@ SECTIONS
     ${R_CRT}
   }
 
+  .tls ${RELOCATING+BLOCK(__section_alignment__)} :
+  { 					
+    ${R_TLS}
+  }
+
   .endjunk ${RELOCATING+BLOCK(__section_alignment__)} :
   {
     /* end is deprecated, don't use it */
-    ${RELOCATING+ end = .;}
-    ${RELOCATING+ _end = .;}
+    ${RELOCATING+PROVIDE (end = .);}
+    ${RELOCATING+PROVIDE ( _end = .);}
     ${RELOCATING+ __end__ = .;}
   }
 

@@ -1,6 +1,6 @@
 #objdump: -dr --prefix-addresses --show-raw-insn
 #name: ARM basic instructions
-#as: -marm2 -EL
+#as: -mcpu=arm7m -EL
 
 # Test the standard ARM instructions:
 
@@ -126,7 +126,7 @@ Disassembly of section .text:
 0+1d0 <[^>]*> 14954006 ?	ldrne	r4, \[r5\], #6
 0+1d4 <[^>]*> e6b21003 ?	ldrt	r1, \[r2\], r3
 0+1d8 <[^>]*> e6942425 ?	ldr	r2, \[r4\], r5, lsr #8
-0+1dc <[^>]*> e51f0008 ?	ldr	r0, \[pc, #fffffff8\]	; 0+1dc <[^>]*>
+0+1dc <[^>]*> e51f0008 ?	ldr	r0, \[pc, #-8\]	; 0+1dc <[^>]*>
 0+1e0 <[^>]*> e5d43000 ?	ldrb	r3, \[r4\]
 0+1e4 <[^>]*> 14f85000 ?	ldrnebt	r5, \[r8\]
 0+1e8 <[^>]*> e5810000 ?	str	r0, \[r1\]
@@ -138,7 +138,7 @@ Disassembly of section .text:
 0+200 <[^>]*> 14854006 ?	strne	r4, \[r5\], #6
 0+204 <[^>]*> e6821003 ?	str	r1, \[r2\], r3
 0+208 <[^>]*> e6a42425 ?	strt	r2, \[r4\], r5, lsr #8
-0+20c <[^>]*> e50f1004 ?	str	r1, \[pc, #fffffffc\]	; 0+210 <[^>]*>
+0+20c <[^>]*> e50f1004 ?	str	r1, \[pc, #-4\]	; 0+210 <[^>]*>
 0+210 <[^>]*> e5c71000 ?	strb	r1, \[r7\]
 0+214 <[^>]*> e4e02000 ?	strbt	r2, \[r0\]
 0+218 <[^>]*> e8900002 ?	ldmia	r0, {r1}
@@ -148,24 +148,24 @@ Disassembly of section .text:
 0+228 <[^>]*> e99100f7 ?	ldmib	r1, {r0, r1, r2, r4, r5, r6, r7}
 0+22c <[^>]*> e89201f8 ?	ldmia	r2, {r3, r4, r5, r6, r7, r8}
 0+230 <[^>]*> e9130003 ?	ldmdb	r3, {r0, r1}
-0+234 <[^>]*> e8740300 ?	ldmda	r4!, {r8, r9}\^
+0+234 <[^>]*> e8540300 ?	ldmda	r4, {r8, r9}\^
 0+238 <[^>]*> e8800002 ?	stmia	r0, {r1}
 0+23c <[^>]*> 09820038 ?	stmeqib	r2, {r3, r4, r5}
 0+240 <[^>]*> e843ffff ?	stmda	r3, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr, pc}\^
-0+244 <[^>]*> e92a05ff ?	stmdb	sl!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, sl}
+0+244 <[^>]*> e92b05ff ?	stmdb	fp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, sl}
 0+248 <[^>]*> e8010007 ?	stmda	r1, {r0, r1, r2}
 0+24c <[^>]*> e9020018 ?	stmdb	r2, {r3, r4}
 0+250 <[^>]*> e8830003 ?	stmia	r3, {r0, r1}
-0+254 <[^>]*> e9e40300 ?	stmib	r4!, {r8, r9}\^
+0+254 <[^>]*> e9c40300 ?	stmib	r4, {r8, r9}\^
 0+258 <[^>]*> ef123456 ?	swi	0x00123456
 0+25c <[^>]*> 2f000033 ?	swics	0x00000033
-0+260 <[^>]*> ebfffffe ?	bl	0+0 <[^>]*>
+0+260 <[^>]*> ebfffffe ?	bl	0+260 <[^>]*>
 [		]*260:.*_wombat.*
-0+264 <[^>]*> 5bfffffe ?	blpl	0+0 <[^>]*>
+0+264 <[^>]*> 5bfffffe ?	blpl	0+264 <[^>]*>
 [		]*264:.*ARM.*hohum
-0+268 <[^>]*> eafffffe ?	b	0+0 <[^>]*>
+0+268 <[^>]*> eafffffe ?	b	0+268 <[^>]*>
 [		]*268:.*_wibble.*
-0+26c <[^>]*> dafffffe ?	ble	0+0 <[^>]*>
+0+26c <[^>]*> dafffffe ?	ble	0+26c <[^>]*>
 [		]*26c:.*testerfunc.*
 0+270 <[^>]*> e1a01102 ?	mov	r1, r2, lsl #2
 0+274 <[^>]*> e1a01002 ?	mov	r1, r2

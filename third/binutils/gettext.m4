@@ -11,7 +11,7 @@
 
 # serial 3
 
-AC_DEFUN(CY_WITH_NLS,
+AC_DEFUN([CY_WITH_NLS],
   [AC_MSG_CHECKING([whether NLS is requested])
     dnl Default is enabled NLS
     AC_ARG_ENABLE(nls,
@@ -158,7 +158,7 @@ AC_DEFUN(CY_WITH_NLS,
     AC_SUBST(POSUB)
   ])
 
-AC_DEFUN(CY_GNU_GETTEXT,
+AC_DEFUN([CY_GNU_GETTEXT],
   [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
    AC_REQUIRE([AC_PROG_CC])dnl
    AC_REQUIRE([AC_PROG_RANLIB])dnl
@@ -256,8 +256,8 @@ __argz_count __argz_stringify __argz_next])
 
    dnl Generate list of files to be processed by xgettext which will
    dnl be included in po/Makefile.  But only do this if the po directory
-   dnl exists in srcdir.
-   if test -d $srcdir/po; then
+   dnl exists in srcdir and contains POTFILES.in.
+   if test -f $srcdir/po/POTFILES.in; then
       test -d po || mkdir po
       if test "x$srcdir" != "x."; then
 	 if test "x`echo $srcdir | sed 's@/.*@@'`" = "x"; then
@@ -286,7 +286,7 @@ __argz_count __argz_stringify __argz_next])
 
 dnl AM_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-AC_DEFUN(AM_PATH_PROG_WITH_TEST,
+AC_DEFUN([AM_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -332,7 +332,7 @@ AC_SUBST($1)dnl
 
 # serial 1
 
-AC_DEFUN(AM_LC_MESSAGES,
+AC_DEFUN([AM_LC_MESSAGES],
   [if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
       [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],

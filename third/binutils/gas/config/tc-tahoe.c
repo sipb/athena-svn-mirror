@@ -1,6 +1,6 @@
 /* This file is tc-tahoe.c
 
-   Copyright 1987, 1988, 1989, 1990, 1991, 1992, 1995, 2000
+   Copyright 1987, 1988, 1989, 1990, 1991, 1992, 1995, 2000, 2001, 2002
    Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -20,6 +20,7 @@
    Software Foundation, 59 Temple Place - Suite 330, Boston, MA
    02111-1307, USA.  */
 #include "as.h"
+#include "safe-ctype.h"
 #include "obstack.h"
 
 /* This bit glommed from tahoe-inst.h.  */
@@ -40,7 +41,7 @@ struct top			/* tahoe instruction operand */
     byte top_mode;		/* Addressing mode byte. This byte, defines
 				   which of the 11 modes opcode is.  */
 
-    char top_access;		/* Access type wanted for this opperand
+    char top_access;		/* Access type wanted for this operand
 				   'b'branch ' 'no-instruction 'amrvw' */
     char top_width;		/* Operand width expected, one of "bwlq?-:!" */
 
@@ -54,8 +55,8 @@ struct top			/* tahoe instruction operand */
 				   can figure it out */
   };
 
-/* The addressing modes for an operand. These numbers are the acutal values
-   for certain modes, so be carefull if you screw with them.  */
+/* The addressing modes for an operand. These numbers are the actual values
+   for certain modes, so be careful if you screw with them.  */
 #define TAHOE_DIRECT_REG (0x50)
 #define TAHOE_REG_DEFERRED (0x60)
 
@@ -74,7 +75,7 @@ struct top			/* tahoe instruction operand */
 #define TAHOE_AUTO_DEC (0x7E)
 #define TAHOE_AUTO_INC (0x8E)
 #define TAHOE_AUTO_INC_DEFERRED (0x9E)
-/* INDEXED_REG is decided by the existance or lack of a [reg].  */
+/* INDEXED_REG is decided by the existence or lack of a [reg].  */
 
 /* These are encoded into top_width when top_access=='b'
    and it's a psuedo op.  */
@@ -129,7 +130,7 @@ const char EXP_CHARS[] = "eE";
    as in 0f123.456
    or    0d1.234E-12 (see exp chars above)
    Note: The Tahoe port doesn't support floating point constants. This is
-         consistant with 'as' If it's needed, I can always add it later.  */
+         consistent with 'as' If it's needed, I can always add it later.  */
 const char FLT_CHARS[] = "df";
 
 /* Also be aware that MAXIMUM_NUMBER_OF_CHARS_FOR_FLOAT may have to be
@@ -305,7 +306,7 @@ const relax_typeS md_relax_table[] =
   {
     1, 1, 0, 0
   },				/* unused	    2,3 */
-/* Another type of reversable branch. But this only has a word
+/* Another type of reversible branch. But this only has a word
      displacement.  */
   {
     1, 1, 0, 0
@@ -319,7 +320,7 @@ const relax_typeS md_relax_table[] =
   {
     1, 1, 0, 0
   },				/* unused	    3,3 */
-/* These are the non reversable branches, all of which have a word
+/* These are the non reversible branches, all of which have a word
      displacement. If I can't reach, branch over a byte branch, to a
      jump that will reach. The jumped branch jumps over the reaching
      branch, to continue with the flow of the program. It's like playing
@@ -385,7 +386,7 @@ md_begin ()
     as_fatal (errorval);
 }
 
-CONST char *md_shortopts = "ad:STt:V";
+const char *md_shortopts = "ad:STt:V";
 struct option md_longopts[] = {
   {NULL, no_argument, NULL, 0}
 };
@@ -469,11 +470,12 @@ md_number_to_imm (con, value, nbytes)
 #endif /* comment */
 
 void
-tc_apply_fix (fixP, val)
-     fixS *fixP;
-     long val;
+md_apply_fix3 (fixP, valP, seg)
+     fixS *fixP ATTRIBUTE_UNUSED;
+     valueT * valP ATTRIBUTE_UNUSED;
+     segT seg ATTRIBUTE_UNUSED:
 {
-  /* should never be called */
+  /* Should never be called.  */
   know (0);
 }
 
@@ -885,11 +887,11 @@ tahoe_reg_parse (start)
 				   R or r, and then a number.  */
     case 'R':
     case 'r':
-      if (isdigit (*regpoint))
+      if (ISDIGIT (*regpoint))
 	{
 	  /* Got the first digit.  */
 	  regnum = *regpoint++ - '0';
-	  if ((regnum == 1) && isdigit (*regpoint))
+	  if ((regnum == 1) && ISDIGIT (*regpoint))
 	    {
 	      /* Its a two digit number.  */
 	      regnum = 10 + (*regpoint++ - '0');
@@ -945,8 +947,8 @@ tahoe_reg_parse (start)
  * make the command look cute. ie: * foo ( r1 ) [  r0 ]
  * If you like doing a lot of typing, try COBOL!
  * Actually, this parser is a little weak all around. It's designed to be
- * used with compliers, so I emphisise correct decoding of valid code quickly
- * rather that catching every possable error.
+ * used with compliers, so I emphasize correct decoding of valid code quickly
+ * rather that catching every possible error.
  * Note: This uses the expression function, so save input_line_pointer before
  * calling.
  *
@@ -969,9 +971,9 @@ tahoe_reg_parse (start)
  *     l         longword
  *     q         quadword (Even regs < 14 allowed) (if 12, you get a warning)
  *     -	 unconditional synthetic jbr operand
- *     ?	 simple synthetic reversable branch operand
- *     !	 complex synthetic reversable branch operand
- *     :	 complex synthetic non-reversable branch operand
+ *     ?	 simple synthetic reversible branch operand
+ *     !	 complex synthetic reversible branch operand
+ *     :	 complex synthetic non-reversible branch operand
  *
  * The '-?!:' letter 2's are not for external consumption. They are used
  * by GAS for psuedo ops relaxing code.
@@ -982,12 +984,12 @@ tahoe_reg_parse (start)
  *   top_reg:        -1, or register number. eg 7 = R7 or (R7)
  *   top_mode:       The addressing mode byte. This byte, defines which of
  *                   the 11 modes opcode is.
- *   top_access:     Access type wanted for this opperand 'b'branch ' '
+ *   top_access:     Access type wanted for this operand 'b'branch ' '
  *                   no-instruction 'amrvw'
  *   top_width:      Operand width expected, one of "bwlq?-:!"
  *   exp_of_operand: The expression as parsed by expression()
  *   top_dispsize:   Number of bytes in the displacement if we can figure it
- *                   out and it's relavent.
+ *                   out and it's relevant.
  *
  * Need syntax checks built.
  */
@@ -1011,7 +1013,7 @@ tip_op (optex, topP)
 				   auto-decremented '-' or neither ' '.  */
   int immediate = 0;		/* 1 if '$' immediate mode */
   int call_width = 0;		/* If the caller casts the displacement */
-  int abs_width = 0;		/* The width of the absolute displacment */
+  int abs_width = 0;		/* The width of the absolute displacement */
   int com_width = 0;		/* Displacement width required by branch */
   int deferred = 0;		/* 1 if '*' deferral is used */
   byte disp_size = 0;		/* How big is this operand. 0 == don't know */
@@ -1043,7 +1045,7 @@ tip_op (optex, topP)
   /* Force words into a certain mode */
   /* Bitch, Bitch, Bitch! */
   /*
-   * Using the ^ operator is ambigous. If I have an absolute label
+   * Using the ^ operator is ambiguous. If I have an absolute label
    * called 'w' set to, say 2, and I have the expression 'w^1', do I get
    * 1, forced to be in word displacement mode, or do I get the value of
    * 'w' or'ed with 1 (3 in this case).
@@ -1064,7 +1066,7 @@ tip_op (optex, topP)
 	  as_warn (_("Casting a branch displacement is bad form, and is ignored."));
 	else
 	  {
-	    c = (isupper (*point) ? tolower (*point) : *point);
+	    c = TOLOWER (*point);
 	    call_width = ((c == 'b') ? 1 :
 			  ((c == 'w') ? 2 : 4));
 	  }
@@ -1226,7 +1228,7 @@ tip_op (optex, topP)
 	  expP->X_add_number = 0;
 	  really_none = 1;
 	case O_constant:
-	  /* for SEG_ABSOLUTE, we shouldnt need to set X_op_symbol,
+	  /* for SEG_ABSOLUTE, we shouldn't need to set X_op_symbol,
 	     X_add_symbol to any particular value.  */
 	  /* But, we will program defensively. Since this situation occurs
 	     rarely so it costs us little to do so.  */
@@ -1244,10 +1246,10 @@ tip_op (optex, topP)
 
 	default:
 	  /*
-	   * Major bug. We can't handle the case of a operator
+	   * Major bug. We can't handle the case of an operator
 	   * expression in a synthetic opcode variable-length
 	   * instruction.  We don't have a frag type that is smart
-	   * enough to relax a operator, and so we just force all
+	   * enough to relax an operator, and so we just force all
 	   * operators to behave like SEG_PASS1s.  Clearly, if there is
 	   * a demand we can invent a new or modified frag type and
 	   * then coding up a frag for this case will be easy.
@@ -1516,7 +1518,7 @@ tip (titP, instring)
 	  /*
        * We found a match! So let's pick up as many operands as the
        * instruction wants, and even gripe if there are too many.
-       * We expect comma to seperate each operand.
+       * We expect comma to separate each operand.
        * We let instring track the text, while p tracks a part of the
        * struct tot.
        */
@@ -1655,10 +1657,10 @@ md_assemble (instruction_string)
 		to_seg == SEG_TEXT || \
 		to_seg == SEG_BSS);
 	  is_undefined = (to_seg == SEG_UNKNOWN);
-	  /* Do we know how big this opperand is? */
+	  /* Do we know how big this operand is? */
 	  dispsize = operandP->top_dispsize;
 	  pc_rel = 0;
-	  /* Deal with the branch possabilities. (Note, this doesn't include
+	  /* Deal with the branch possibilities. (Note, this doesn't include
 	 jumps.)*/
 	  if (operandP->top_access == 'b')
 	    {
@@ -1730,7 +1732,7 @@ md_assemble (instruction_string)
 	     branches to jumps, and let GAS fix them.  */
 
 		  /* These are "branches" what will always be branches around a jump
-	     to the correct addresss in real life.
+	     to the correct address in real life.
 	     If to_seg is SEG_ABSOLUTE, just encode the branch in,
 	     else let GAS fix the address.  */
 
@@ -1738,7 +1740,7 @@ md_assemble (instruction_string)
 		    {
 		      /* The theory:
 	       For SEG_ABSOLUTE, then mode is ABSOLUTE_ADDR, jump
-	       to that addresss (not pc_rel).
+	       to that address (not pc_rel).
 	       For other segs, address is a long word PC rel jump.  */
 		    case TAHOE_WIDTH_CONDITIONAL_JUMP:
 		      /* b<cond> */
@@ -1863,7 +1865,7 @@ md_assemble (instruction_string)
 		    }
 		  else
 		    {
-		      /* It's a integer, and I know it's size.  */
+		      /* It's an integer, and I know it's size.  */
 		      if ((unsigned) this_add_number < 0x40)
 			{
 			  /* Will it fit in a literal? */
@@ -1914,7 +1916,7 @@ md_assemble (instruction_string)
 		  /* Is this a value out of this segment?
 	     The first part of this conditional is a cludge to make gas
 	     produce the same output as 'as' when there is a lable, in
-	     the current segment, displaceing a register. It's strange,
+	     the current segment, displacing a register. It's strange,
 	     and no one in their right mind would do it, but it's easy
 	     to cludge.  */
 		  if ((dispsize == 0 && !pc_rel) ||

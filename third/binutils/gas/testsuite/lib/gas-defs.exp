@@ -1,22 +1,22 @@
-# Copyright (C) 1993, 1994, 1997, 1998, 1999, 2000, 2001 Free Software
-# Foundation, Inc.
+# Copyright (C) 1993, 1994, 1997, 1998, 1999, 2000, 2001, 2002, 2003
+# Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 # Please email any bugs, comments, and/or additions to this file to:
-# DejaGnu@cygnus.com
+# dejagnu@gnu.org
 
 # This file was written by Ken Raeburn (raeburn@cygnus.com).
 
@@ -41,7 +41,7 @@ proc gas_run { prog as_opts redir } {
     global subdir
     global host_triplet
 
-    verbose "Executing $srcdir/lib/run $AS $ASFLAGS $as_opts $srcdir/$subdir/$prog $redir"
+    verbose -log "Executing $srcdir/lib/run $AS $ASFLAGS $as_opts $srcdir/$subdir/$prog $redir"
     catch "exec $srcdir/lib/run $AS $ASFLAGS $as_opts $srcdir/$subdir/$prog $redir" comp_output
     set comp_output [prune_warnings $comp_output]
     verbose "output was $comp_output"
@@ -60,7 +60,7 @@ proc gas_start { prog as_opts } {
     global subdir
     global spawn_id
 
-    verbose "Starting $AS $ASFLAGS $as_opts $prog" 2
+    verbose -log "Starting $AS $ASFLAGS $as_opts $prog" 2
     catch {
 	spawn -noecho -nottycopy $srcdir/lib/run $AS $ASFLAGS $as_opts $srcdir/$subdir/$prog
     } foo
@@ -168,7 +168,7 @@ proc gas_init { args } {
 
     case "$target_cpu" in {
 	"m68???"		{ set target_cpu_family m68k }
-	"i[34]86"		{ set target_cpu_family i386 }
+	"i[3-7]86"		{ set target_cpu_family i386 }
 	default			{ set target_cpu_family $target_cpu }
     }
 
@@ -182,11 +182,49 @@ proc gas_init { args } {
     return
 }
 
+#
+# is_elf_format
+#	true if the object format is known to be ELF
+#
+proc is_elf_format {} {
+    if { ![istarget *-*-sysv4*] \
+	 && ![istarget *-*-unixware*] \
+	 && ![istarget *-*-elf*] \
+	 && ![istarget *-*-eabi*] \
+	 && ![istarget hppa*64*-*-hpux*] \
+	 && ![istarget *-*-linux*] \
+	 && ![istarget frv-*-uclinux*] \
+	 && ![istarget *-*-irix5*] \
+	 && ![istarget *-*-irix6*] \
+	 && ![istarget *-*-netbsd*] \
+	 && ![istarget *-*-solaris2*] } {
+	return 0
+    }
 
-# run_dump_test FILE 
+    if { [istarget *-*-linux*aout*] \
+	 || [istarget *-*-linux*oldld*] } {
+	return 0
+    }
+
+    if { ![istarget *-*-netbsdelf*] \
+	 && ([istarget *-*-netbsd*aout*] \
+	     || [istarget *-*-netbsdpe*] \
+	     || [istarget arm*-*-netbsd*] \
+	     || [istarget sparc-*-netbsd*] \
+	     || [istarget i*86-*-netbsd*] \
+	     || [istarget m68*-*-netbsd*] \
+	     || [istarget vax-*-netbsd*] \
+	     || [istarget ns32k-*-netbsd*]) } {
+    	return 0
+    }
+    return 1
+}
+
+
+# run_dump_test FILE (optional:) EXTRA_OPTIONS
 #
 # Assemble a .s file, then run some utility on it and check the output.
-# 
+#
 # There should be an assembly language file named FILE.s in the test
 # suite directory, and a pattern file called FILE.d.  `run_dump_test'
 # will assemble FILE.s, run some tool like `objdump', `objcopy', or
@@ -198,40 +236,53 @@ proc gas_init { args } {
 # flags to pass to the assembler, the program to run to dump the
 # assembler's output, and the options it wants.  The option lines have
 # the syntax:
-# 
+#
 #         # OPTION: VALUE
-# 
+#
 # OPTION is the name of some option, like "name" or "objdump", and
 # VALUE is OPTION's value.  The valid options are described below.
 # Whitespace is ignored everywhere, except within VALUE.  The option
 # list ends with the first line that doesn't match the above syntax
 # (hmm, not great for error detection).
 #
+# The optional EXTRA_OPTIONS argument to `run_dump_test' is a list of
+# two-element lists.  The first element of each is an option name, and
+# the second additional arguments to be added on to the end of the
+# option list as given in FILE.d.  (If omitted, no additional options
+# are added.)
+#
 # The interesting options are:
-# 
+#
 #   name: TEST-NAME
 #	The name of this test, passed to DejaGNU's `pass' and `fail'
 #       commands.  If omitted, this defaults to FILE, the root of the
 #       .s and .d files' names.
-# 
+#
 #   as: FLAGS
 #	When assembling FILE.s, pass FLAGS to the assembler.
-# 
+#
 #   PROG: PROGRAM-NAME
 #       The name of the program to run to analyze the .o file produced
 #       by the assembler.  This can be omitted; run_dump_test will guess
 #       which program to run by seeing which of the flags options below
 #	is present.
-# 
+#
 #   objdump: FLAGS
 #   nm: FLAGS
 #   objcopy: FLAGS
 #	Use the specified program to analyze the .o file, and pass it
-#	FLAGS, in addition to the .o file name.
+#	FLAGS, in addition to the .o file name.  Note that they are run
+#	with LC_ALL=C in the environment to give consistent sorting
+#	of symbols.
 #
 #   source: SOURCE
 #	Assemble the file SOURCE.s.  If omitted, this defaults to FILE.s.
 #       This is useful if several .d files want to share a .s file.
+#
+#   error: REGEX
+#	An error with message matching REGEX must be emitted for the test
+#	to pass.  The PROG, objdump, nm and objcopy options have no
+#	meaning and need not supplied if this is present.
 #
 # Each option may occur at most once.
 #
@@ -240,11 +291,12 @@ proc gas_init { args } {
 # regexps in FILE.d.  `regexp_diff' is defined later in this file; see
 # further comments there.
 
-proc run_dump_test { name } {
+proc run_dump_test { name {extra_options {}} } {
     global subdir srcdir
     global OBJDUMP NM AS OBJCOPY READELF
     global OBJDUMPFLAGS NMFLAGS ASFLAGS OBJCOPYFLAGS READELFFLAGS
     global host_triplet
+    global env
 
     if [string match "*/*" $name] {
 	set file $name
@@ -266,6 +318,8 @@ proc run_dump_test { name } {
     set opts(name) {}
     set opts(PROG) {}
     set opts(source) {}
+    set opts(stderr) {}
+    set opts(error) {}
 
     foreach i $opt_array {
 	set opt_name [lindex $i 0]
@@ -283,6 +337,22 @@ proc run_dump_test { name } {
 	set opts($opt_name) $opt_val
     }
 
+    foreach i $extra_options {
+	set opt_name [lindex $i 0]
+	set opt_val [lindex $i 1]
+	if ![info exists opts($opt_name)] {
+	    perror "unknown option $opt_name given in extra_opts"
+	    unresolved $subdir/$name
+	    return
+	}
+	# add extra option to end of existing option, adding space
+	# if necessary.
+	if [string length $opts($opt_name)] {
+	    append opts($opt_name) " "
+	}
+	append opts($opt_name) $opt_val
+    }
+
     if {$opts(PROG) != ""} {
 	switch -- $opts(PROG) {
 	    objdump
@@ -298,6 +368,10 @@ proc run_dump_test { name } {
 		  unresolved $subdir/$name
 		  return }
 	}
+    } elseif { $opts(error) != "" } {
+	# It's meaningless to require an output-testing method when we
+	# expect an error.  For simplicity, we fake an arbitrary method.
+	set program "nm"
     } else {
 	# Guess which program to run, by seeing which option was specified.
 	set program ""
@@ -338,11 +412,46 @@ proc run_dump_test { name } {
     catch "exec $srcdir/lib/run $AS $ASFLAGS $opts(as) -o dump.o $sourcefile" comp_output
     set comp_output [prune_warnings $comp_output]
 
-    if ![string match "" $comp_output] then {
-	send_log "$comp_output\n"
-	verbose "$comp_output" 3
-	fail $testname
-	return
+    if { ![string match "" $comp_output] || $opts(stderr) != "" } then {
+	if { $opts(stderr) == "" }  then {
+	    send_log "$comp_output\n"
+	    verbose "$comp_output" 3
+
+	    if { $opts(error) != "" } {
+		verbose -log "failed with: <$comp_output>, expected: <$opts(error)>"
+		if [regexp $opts(error) $comp_output] {
+		    pass $testname
+		    return
+		}
+	    }
+	    fail $testname
+	    return
+	} else {
+	    catch {write_file dump.stderr "$comp_output"} write_output
+	    if ![string match "" $write_output] then {
+		send_log "error writing dump.stderr: $write_output\n"
+		verbose "error writing dump.stderr: $write_output" 3
+		send_log "$comp_output\n"
+		verbose "$comp_output" 3
+		fail $testname
+		return
+	    }
+	    set stderrfile $srcdir/$subdir/$opts(stderr)
+	    send_log "wrote pruned stderr to dump.stderr\n"
+	    verbose "wrote pruned stderr to dump.stderr" 3
+	    if { [regexp_diff "dump.stderr" "$stderrfile"] } then {
+		if { $opts(error) != "" } {
+		    verbose -log "failed with: <$comp_output>, expected: <$opts(error)>"
+		    if [regexp $opts(error) $comp_output] {
+			pass $testname
+			return
+		    }
+		}
+		fail $testname
+		verbose "pruned stderr is [file_contents "dump.stderr"]" 2
+		return
+	    }
+	}
     }
 
     if { [which $binary] == 0 } {
@@ -355,24 +464,28 @@ proc run_dump_test { name } {
 
     # Objcopy, unlike the other two, won't send its output to stdout,
     # so we have to run it specially.
+    set cmd "$binary $progopts $progopts1 dump.o > dump.out"
     if { $program == "objcopy" } {
-	send_log "$binary $progopts $progopts1 dump.o dump.out\n"
-	catch "exec $binary $progopts $progopts1 dump.o dump.out" comp_output
-	set comp_output [prune_warnings $comp_output]
-	if ![string match "" $comp_output] then {
-	    send_log "$comp_output\n"
-	    fail $testname
-	    return
-	}
+	set cmd "$binary $progopts $progopts1 dump.o dump.out"
+    }
+
+    # Ensure consistent sorting of symbols
+    if {[info exists env(LC_ALL)]} {
+	set old_lc_all $env(LC_ALL)
+    }
+    set env(LC_ALL) "C"
+    send_log "$cmd\n"
+    catch "exec $cmd" comp_output
+    if {[info exists old_lc_all]} {
+	set env(LC_ALL) $old_lc_all
     } else {
-	send_log "$binary $progopts $progopts1 dump.o > dump.out\n"
-	catch "exec $binary $progopts $progopts1 dump.o > dump.out" comp_output
-	set comp_output [prune_warnings $comp_output]
-	if ![string match "" $comp_output] then {
-	    send_log "$comp_output\n"
-	    fail $testname
-	    return
-	}
+	unset env(LC_ALL)
+    }
+    set comp_output [prune_warnings $comp_output]
+    if ![string match "" $comp_output] then {
+	send_log "$comp_output\n"
+	fail $testname
+	return
     }
 
     verbose_eval {[file_contents "dump.out"]} 3
@@ -471,14 +584,14 @@ proc regexp_diff { file_1 file_2 } {
     if [file exists $file_1] then {
 	set file_a [open $file_1 r]
     } else {
-	warning "$file_1 doesn't exist"
+	perror "$file_1 doesn't exist"
 	return 1
     }
 
     if [file exists $file_2] then {
 	set file_b [open $file_2 r]
     } else {
-	fail "$file_2 doesn't exist"
+	perror "$file_2 doesn't exist"
 	close $file_a
 	return 1
     }
@@ -520,9 +633,9 @@ proc regexp_diff { file_1 file_2 } {
 	    }
 	}
 
-        if { $diff_pass } { 
-            break 
-        } elseif { $end_1 && $end_2 } { 
+        if { $diff_pass } {
+            break
+        } elseif { $end_1 && $end_2 } {
             break
         } elseif { $end_1 } {
             send_log "extra regexps in $file_2 starting with \"^$line_b$\"\nEOF from $file_1\n"
@@ -539,6 +652,7 @@ proc regexp_diff { file_1 file_2 } {
             if ![regexp "^$line_b$" "$line_a"] {
 		send_log "regexp_diff match failure\n"
 		send_log "regexp \"^$line_b$\"\nline   \"$line_a\"\n"
+		verbose "regexp_diff match failure\n" 3
 		set differences 1
             }
         }
@@ -561,6 +675,12 @@ proc file_contents { filename } {
     set contents [read $file]
     close $file
     return $contents
+}
+
+proc write_file { filename contents } {
+    set file [open $filename w]
+    puts $file "$contents"
+    close $file
 }
 
 proc verbose_eval { expr { level 1 } } {

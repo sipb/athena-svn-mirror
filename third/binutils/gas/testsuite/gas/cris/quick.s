@@ -6,6 +6,7 @@
  .set mtwenty2, -22
 
  .text
+ .syntax no_register_prefix
 start:
 
 ;;;;;;;;;;;;;;;;;
@@ -48,4 +49,3 @@ signed6:		; s6
  @OC@	-1,r13			; s6
  @OC@	-twenty2+21,r12		; s6
 end:
-

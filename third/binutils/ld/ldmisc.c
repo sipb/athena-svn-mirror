@@ -1,48 +1,40 @@
 /* ldmisc.c
-   Copyright 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000
+   Copyright 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+   2000, 2002, 2003
    Free Software Foundation, Inc.
    Written by Steve Chamberlain of Cygnus Support.
 
-This file is part of GLD, the Gnu Linker.
+   This file is part of GLD, the Gnu Linker.
 
-GLD is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+   GLD is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
-GLD is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+   GLD is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with GLD; see the file COPYING.  If not, write to the Free
-Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-02111-1307, USA.  */
+   You should have received a copy of the GNU General Public License
+   along with GLD; see the file COPYING.  If not, write to the Free
+   Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+   02111-1307, USA.  */
 
 #include "bfd.h"
+#include "bfdlink.h"
 #include "sysdep.h"
 #include "libiberty.h"
 #include "demangle.h"
-
-#ifdef ANSI_PROTOTYPES
 #include <stdarg.h>
-#define USE_STDARG 1
-#else
-#include <varargs.h>
-#define USE_STDARG 0
-#endif
-
 #include "ld.h"
 #include "ldmisc.h"
 #include "ldexp.h"
 #include "ldlang.h"
-#include "ldgram.h"
+#include <ldgram.h>
 #include "ldlex.h"
 #include "ldmain.h"
 #include "ldfile.h"
-
-static void vfinfo PARAMS ((FILE *, const char *, va_list));
 
 /*
  %% literal %
@@ -66,33 +58,10 @@ static void vfinfo PARAMS ((FILE *, const char *, va_list));
  %u integer, like printf
 */
 
-char *
-demangle (string)
-     const char *string;
-{
-  char *res;
-
-  if (output_bfd != NULL
-      && bfd_get_symbol_leading_char (output_bfd) == string[0])
-    ++string;
-
-  /* This is a hack for better error reporting on XCOFF, or the MS PE
-     format.  Xcoff has a single '.', while the NT PE for PPC has
-     '..'.  So we remove all of them.  */
-  while (string[0] == '.')
-    ++string;
-
-  res = cplus_demangle (string, DMGL_ANSI | DMGL_PARAMS);
-  return res ? res : xstrdup (string);
-}
-
 static void
-vfinfo (fp, fmt, arg)
-     FILE *fp;
-     const char *fmt;
-     va_list arg;
+vfinfo (FILE *fp, const char *fmt, va_list arg)
 {
-  boolean fatal = false;
+  bfd_boolean fatal = FALSE;
 
   while (*fmt != '\0')
     {
@@ -118,7 +87,7 @@ vfinfo (fp, fmt, arg)
 
 	    case 'X':
 	      /* no object output, fail return */
-	      config.make_executable = false;
+	      config.make_executable = FALSE;
 	      break;
 
 	    case 'V':
@@ -146,7 +115,7 @@ vfinfo (fp, fmt, arg)
 
 	    case 'W':
 	      /* hex bfd_vma with 0x with no leading zeroes taking up
-                 8 spaces.  */
+		 8 spaces.  */
 	      {
 		char buf[100];
 		bfd_vma value;
@@ -174,7 +143,7 @@ vfinfo (fp, fmt, arg)
 	      {
 		const char *name = va_arg (arg, const char *);
 
-		if (name == (const char *) NULL || *name == 0)
+		if (name == NULL || *name == 0)
 		  fprintf (fp, _("no symbol"));
 		else if (! demangling)
 		  fprintf (fp, "%s", name);
@@ -203,7 +172,7 @@ vfinfo (fp, fmt, arg)
 
 	    case 'F':
 	      /* Error is fatal.  */
-	      fatal = true;
+	      fatal = TRUE;
 	      break;
 
 	    case 'P':
@@ -257,9 +226,8 @@ vfinfo (fp, fmt, arg)
 	    case 'C':
 	    case 'D':
 	    case 'G':
-	      /* Clever filename:linenumber with function name if possible,
-		 or section name as a last resort.  The arguments are a BFD,
-		 a section, and an offset.  */
+	      /* Clever filename:linenumber with function name if possible.
+		 The arguments are a BFD, a section, and an offset.  */
 	      {
 		static bfd *last_bfd;
 		static char *last_file = NULL;
@@ -272,7 +240,7 @@ vfinfo (fp, fmt, arg)
 		const char *filename;
 		const char *functionname;
 		unsigned int linenumber;
-		boolean discard_last;
+		bfd_boolean discard_last;
 
 		abfd = va_arg (arg, bfd *);
 		section = va_arg (arg, asection *);
@@ -290,7 +258,7 @@ vfinfo (fp, fmt, arg)
 		    symsize = bfd_get_symtab_upper_bound (abfd);
 		    if (symsize < 0)
 		      einfo (_("%B%F: could not read symbols\n"), abfd);
-		    asymbols = (asymbol **) xmalloc (symsize);
+		    asymbols = xmalloc (symsize);
 		    symbol_count = bfd_canonicalize_symtab (abfd, asymbols);
 		    if (symbol_count < 0)
 		      einfo (_("%B%F: could not read symbols\n"), abfd);
@@ -301,68 +269,57 @@ vfinfo (fp, fmt, arg)
 		      }
 		  }
 
-		discard_last = true;
+		lfinfo (fp, "%B(%s+0x%v)", abfd, section->name, offset);
+
+		discard_last = TRUE;
 		if (bfd_find_nearest_line (abfd, section, asymbols, offset,
 					   &filename, &functionname,
 					   &linenumber))
 		  {
-		    if (functionname != NULL && fmt[-1] == 'G')
-		      {
-			lfinfo (fp, "%B:", abfd);
-			if (filename != NULL
-			    && strcmp (filename, bfd_get_filename (abfd)) != 0)
-			  fprintf (fp, "%s:", filename);
-			lfinfo (fp, "%T", functionname);
-		      }
-		    else if (functionname != NULL && fmt[-1] == 'C')
-		      {
-			if (filename == (char *) NULL)
-			  filename = abfd->filename;
+		    bfd_boolean need_colon = TRUE;
 
+		    if (functionname != NULL && fmt[-1] == 'C')
+		      {
 			if (last_bfd == NULL
 			    || last_file == NULL
 			    || last_function == NULL
 			    || last_bfd != abfd
-			    || strcmp (last_file, filename) != 0
+			    || (filename != NULL
+				&& strcmp (last_file, filename) != 0)
 			    || strcmp (last_function, functionname) != 0)
 			  {
-			    /* We use abfd->filename in this initial line,
-			       in case filename is a .h file or something
-			       similarly unhelpful.  */
-			    lfinfo (fp, _("%B: In function `%T':\n"),
-				    abfd, functionname);
+			    lfinfo (fp, _(": In function `%T':\n"),
+				    functionname);
+			    need_colon = FALSE;
 
 			    last_bfd = abfd;
 			    if (last_file != NULL)
 			      free (last_file);
-			    last_file = xstrdup (filename);
+			    last_file = NULL;
+			    if (filename)
+			      last_file = xstrdup (filename);
 			    if (last_function != NULL)
 			      free (last_function);
 			    last_function = xstrdup (functionname);
 			  }
-			discard_last = false;
-			if (linenumber != 0)
-			  fprintf (fp, "%s:%u", filename, linenumber);
-			else
-			  lfinfo (fp, "%s(%s+0x%v)", filename, section->name,
-				  offset);
+			discard_last = FALSE;
 		      }
-		    else if (filename == NULL
-			     || strcmp (filename, abfd->filename) == 0)
+
+		    if (filename != NULL)
 		      {
-			lfinfo (fp, "%B(%s+0x%v)", abfd, section->name,
-				offset);
-			if (linenumber != 0)
-			  lfinfo (fp, ":%u", linenumber);
+			if (need_colon)
+			  putc (':', fp);
+			fputs (filename, fp);
 		      }
-		    else if (linenumber != 0)
-		      lfinfo (fp, "%B:%s:%u", abfd, filename, linenumber);
-		    else
-		      lfinfo (fp, "%B(%s+0x%v):%s", abfd, section->name,
-			      offset, filename);
+
+		    if (functionname != NULL && fmt[-1] == 'G')
+		      lfinfo (fp, ":%T", functionname);
+		    else if (filename != NULL && linenumber != 0)
+		      fprintf (fp, ":%u", linenumber);
 		  }
-		else
-		  lfinfo (fp, "%B(%s+0x%v)", abfd, section->name, offset);
+
+		if (asymbols != NULL && entry == NULL)
+		  free (asymbols);
 
 		if (discard_last)
 		  {
@@ -399,34 +356,66 @@ vfinfo (fp, fmt, arg)
 	}
     }
 
-  if (fatal == true)
+  if (config.fatal_warnings)
+    config.make_executable = FALSE;
+
+  if (fatal)
     xexit (1);
+}
+
+/* Wrapper around cplus_demangle.  Strips leading underscores and
+   other such chars that would otherwise confuse the demangler.  */
+
+char *
+demangle (const char *name)
+{
+  char *res;
+  const char *p;
+
+  if (output_bfd != NULL
+      && bfd_get_symbol_leading_char (output_bfd) == name[0])
+    ++name;
+
+  /* This is a hack for better error reporting on XCOFF, PowerPC64-ELF
+     or the MS PE format.  These formats have a number of leading '.'s
+     on at least some symbols, so we remove all dots to avoid
+     confusing the demangler.  */
+  p = name;
+  while (*p == '.')
+    ++p;
+
+  res = cplus_demangle (p, DMGL_ANSI | DMGL_PARAMS);
+  if (res)
+    {
+      size_t dots = p - name;
+
+      /* Now put back any stripped dots.  */
+      if (dots != 0)
+	{
+	  size_t len = strlen (res) + 1;
+	  char *add_dots = xmalloc (len + dots);
+
+	  memcpy (add_dots, name, dots);
+	  memcpy (add_dots + dots, res, len);
+	  free (res);
+	  res = add_dots;
+	}
+      return res;
+    }
+  return xstrdup (name);
 }
 
 /* Format info message and print on stdout.  */
 
 /* (You would think this should be called just "info", but then you
-   would hosed by LynxOS, which defines that name in its libc.)  */
+   would be hosed by LynxOS, which defines that name in its libc.)  */
 
 void
-#if USE_STDARG
 info_msg (const char *fmt, ...)
-#else
-info_msg (va_alist)
-     va_dcl
-#endif
 {
   va_list arg;
 
-#if ! USE_STDARG
-  const char *fmt;
-
-  va_start (arg);
-  fmt = va_arg (arg, const char *);
-#else
   va_start (arg, fmt);
-#endif
-
   vfinfo (stdout, fmt, arg);
   va_end (arg);
 }
@@ -434,32 +423,17 @@ info_msg (va_alist)
 /* ('e' for error.) Format info message and print on stderr.  */
 
 void
-#if USE_STDARG
 einfo (const char *fmt, ...)
-#else
-einfo (va_alist)
-     va_dcl
-#endif
 {
   va_list arg;
 
-#if ! USE_STDARG
-  const char *fmt;
-
-  va_start (arg);
-  fmt = va_arg (arg, const char *);
-#else
   va_start (arg, fmt);
-#endif
-
   vfinfo (stderr, fmt, arg);
   va_end (arg);
 }
 
 void
-info_assert (file, line)
-     const char *file;
-     unsigned int line;
+info_assert (const char *file, unsigned int line)
 {
   einfo (_("%F%P: internal error %s %d\n"), file, line);
 }
@@ -467,48 +441,21 @@ info_assert (file, line)
 /* ('m' for map) Format info message and print on map.  */
 
 void
-#if USE_STDARG
 minfo (const char *fmt, ...)
-#else
-minfo (va_alist)
-     va_dcl
-#endif
 {
   va_list arg;
 
-#if ! USE_STDARG
-  const char *fmt;
-  va_start (arg);
-  fmt = va_arg (arg, const char *);
-#else
   va_start (arg, fmt);
-#endif
-
   vfinfo (config.map_file, fmt, arg);
   va_end (arg);
 }
 
 void
-#if USE_STDARG
 lfinfo (FILE *file, const char *fmt, ...)
-#else
-lfinfo (va_alist)
-     va_dcl
-#endif
 {
   va_list arg;
 
-#if ! USE_STDARG
-  FILE *file;
-  const char *fmt;
-
-  va_start (arg);
-  file = va_arg (arg, FILE *);
-  fmt = va_arg (arg, const char *);
-#else
   va_start (arg, fmt);
-#endif
-
   vfinfo (file, fmt, arg);
   va_end (arg);
 }
@@ -516,13 +463,13 @@ lfinfo (va_alist)
 /* Functions to print the link map.  */
 
 void
-print_space ()
+print_space (void)
 {
   fprintf (config.map_file, " ");
 }
 
 void
-print_nl ()
+print_nl (void)
 {
   fprintf (config.map_file, "\n");
 }
@@ -531,10 +478,7 @@ print_nl ()
    call this function.  */
 
 void
-ld_abort (file, line, fn)
-     const char *file;
-     int line;
-     const char *fn;
+ld_abort (const char *file, int line, const char *fn)
 {
   if (fn != NULL)
     einfo (_("%P: internal error: aborting at %s line %d in %s\n"),
@@ -544,4 +488,65 @@ ld_abort (file, line, fn)
 	   file, line);
   einfo (_("%P%F: please report this bug\n"));
   xexit (1);
+}
+
+bfd_boolean
+error_handler (int id, const char *fmt, ...)
+{
+  va_list arg;
+
+  va_start (arg, fmt);
+
+  switch (id)
+    {
+    default:
+      break;
+
+    /* We can be called with
+
+	error_handler (-LD_DEFINITION_IN_DISCARDED_SECTION, "", 0);
+
+	to make this error non-fatal and
+
+	error_handler (-LD_DEFINITION_IN_DISCARDED_SECTION, "", 1);
+
+	to make this error fatal.  */
+    case -LD_DEFINITION_IN_DISCARDED_SECTION:
+    case LD_DEFINITION_IN_DISCARDED_SECTION:
+      {
+	static struct bfd_hash_table *hash;
+	static int fatal = 1;
+	const char *name;
+
+	if (id == -LD_DEFINITION_IN_DISCARDED_SECTION)
+	  {
+	    fatal = va_arg (arg, int);
+	    goto out;
+	  }
+
+	name = va_arg (arg, const char *);
+	/* Only warn once about a particular undefined symbol.  */
+	if (hash == NULL)
+	  {
+	    hash = xmalloc (sizeof (struct bfd_hash_table));
+	    if (! bfd_hash_table_init (hash, bfd_hash_newfunc))
+	      einfo (_("%F%P: bfd_hash_table_init failed: %E\n"));
+	  }
+
+	if (bfd_hash_lookup (hash, name, FALSE, FALSE) != NULL)
+	  goto out;
+
+	if (bfd_hash_lookup (hash, name, TRUE, TRUE) == NULL)
+	  einfo (_("%F%P: bfd_hash_lookup failed: %E\n"));
+
+	if (fatal)
+	  config.make_executable = FALSE;
+      }
+      break;
+    }
+  vfinfo (stderr, fmt, arg);
+
+out:
+  va_end (arg);
+  return TRUE;
 }

@@ -1,5 +1,6 @@
 %{/* nlmheader.y - parse NLM header specification keywords.
-     Copyright 1993, 1994, 1995, 1997, 1998 Free Software Foundation, Inc.
+     Copyright 1993, 1994, 1995, 1997, 1998, 2001, 2002, 2003
+     Free Software Foundation, Inc.
 
 This file is part of GNU Binutils.
 
@@ -26,9 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
    This implementation is based on the description in the NetWare Tool
    Maker Specification manual, edition 1.0.  */
 
-#include <ansidecl.h>
+#include "ansidecl.h"
 #include <stdio.h>
-#include <ctype.h>
+#include "safe-ctype.h"
 #include "bfd.h"
 #include "bucomm.h"
 #include "nlm/common.h"
@@ -49,7 +50,7 @@ char *check_procedure;
 /* File named by CUSTOM.  */
 char *custom_file;
 /* Whether to generate debugging information (DEBUG).  */
-boolean debug_info;
+bfd_boolean debug_info;
 /* Procedure named by EXIT.  */
 char *exit_procedure;
 /* Exported symbols (EXPORT).  */
@@ -59,7 +60,7 @@ struct string_list *input_files;
 /* Map file name (MAP, FULLMAP).  */
 char *map_file;
 /* Whether a full map has been requested (FULLMAP).  */
-boolean full_map;
+bfd_boolean full_map;
 /* File named by HELP.  */
 char *help_file;
 /* Imported symbols (IMPORT).  */
@@ -75,7 +76,7 @@ char *sharelib_file;
 /* Start procedure name (START).  */
 char *start_procedure;
 /* VERBOSE.  */
-boolean verbose;
+bfd_boolean verbose;
 /* RPC description file (XDCDATA).  */
 char *rpc_file;
 
@@ -90,22 +91,21 @@ static char *symbol_prefix;
 #define yyerror(msg) nlmheader_error (msg);
 
 /* Local functions.  */
-static int yylex PARAMS ((void));
-static void nlmlex_file_push PARAMS ((const char *));
-static boolean nlmlex_file_open PARAMS ((const char *));
-static int nlmlex_buf_init PARAMS ((void));
-static char nlmlex_buf_add PARAMS ((int));
-static long nlmlex_get_number PARAMS ((const char *));
-static void nlmheader_identify PARAMS ((void));
-static void nlmheader_warn PARAMS ((const char *, int));
-static void nlmheader_error PARAMS ((const char *));
-static struct string_list * string_list_cons PARAMS ((char *,
-						      struct string_list *));
-static struct string_list * string_list_append PARAMS ((struct string_list *,
-							struct string_list *));
-static struct string_list * string_list_append1 PARAMS ((struct string_list *,
-							 char *));
-static char *xstrdup PARAMS ((const char *));
+static int yylex (void);
+static void nlmlex_file_push (const char *);
+static bfd_boolean nlmlex_file_open (const char *);
+static int nlmlex_buf_init (void);
+static char nlmlex_buf_add (int);
+static long nlmlex_get_number (const char *);
+static void nlmheader_identify (void);
+static void nlmheader_warn (const char *, int);
+static void nlmheader_error (const char *);
+static struct string_list * string_list_cons (char *, struct string_list *);
+static struct string_list * string_list_append (struct string_list *,
+						struct string_list *);
+static struct string_list * string_list_append1 (struct string_list *,
+						 char *);
+static char *xstrdup (const char *);
 
 %}
 
@@ -140,7 +140,7 @@ static char *xstrdup PARAMS ((const char *));
 
 /* The entire file is just a list of commands.  */
 
-file:	
+file:
 	  commands
 	;
 
@@ -204,7 +204,7 @@ command:
 	  }
 	| DEBUG
 	  {
-	    debug_info = true;
+	    debug_info = TRUE;
 	  }
 	| DESCRIPTION QUOTED_STRING
 	  {
@@ -247,12 +247,12 @@ command:
 	| FULLMAP
 	  {
 	    map_file = "";
-	    full_map = true;
+	    full_map = TRUE;
 	  }
 	| FULLMAP STRING
 	  {
 	    map_file = $2;
-	    full_map = true;
+	    full_map = TRUE;
 	  }
 	| HELP STRING
 	  {
@@ -365,7 +365,7 @@ command:
 	  }
 	| VERBOSE
 	  {
-	    verbose = true;
+	    verbose = TRUE;
 	  }
 	| VERSIONK STRING STRING STRING
 	  {
@@ -494,7 +494,7 @@ string_list:
 /* If strerror is just a macro, we want to use the one from libiberty
    since it will handle undefined values.  */
 #undef strerror
-extern char *strerror ();
+extern char *strerror PARAMS ((int));
 
 /* The lexer is simple, too simple for flex.  Keywords are only
    recognized at the start of lines.  Everything else must be an
@@ -535,9 +535,8 @@ static struct input current;
 
 /* Start the lexer going on the main input file.  */
 
-boolean
-nlmlex_file (name)
-     const char *name;
+bfd_boolean
+nlmlex_file (const char *name)
 {
   current.next = NULL;
   return nlmlex_file_open (name);
@@ -546,8 +545,7 @@ nlmlex_file (name)
 /* Start the lexer going on a subsidiary input file.  */
 
 static void
-nlmlex_file_push (name)
-     const char *name;
+nlmlex_file_push (const char *name)
 {
   struct input *push;
 
@@ -564,21 +562,20 @@ nlmlex_file_push (name)
 
 /* Start lexing from a file.  */
 
-static boolean
-nlmlex_file_open (name)
-     const char *name;
+static bfd_boolean
+nlmlex_file_open (const char *name)
 {
   current.file = fopen (name, "r");
   if (current.file == NULL)
     {
       fprintf (stderr, "%s:%s: %s\n", program_name, name, strerror (errno));
       ++parse_errors;
-      return false;
+      return FALSE;
     }
   current.name = xstrdup (name);
   current.lineno = 1;
   current.state = BEGINNING_OF_LINE;
-  return true;
+  return TRUE;
 }
 
 /* Table used to turn keywords into tokens.  */
@@ -639,7 +636,7 @@ static int lex_pos;
   ((void) (lex_buf != NULL ? lex_pos = 0 : nlmlex_buf_init ()))
 
 static int
-nlmlex_buf_init ()
+nlmlex_buf_init (void)
 {
   lex_size = 10;
   lex_buf = xmalloc (lex_size + 1);
@@ -657,8 +654,7 @@ nlmlex_buf_init ()
 	   : nlmlex_buf_add (c)))
 
 static char
-nlmlex_buf_add (c)
-     int c;
+nlmlex_buf_add (int c)
 {
   if (lex_pos >= lex_size)
     {
@@ -673,7 +669,7 @@ nlmlex_buf_add (c)
    code.  */
 
 static int
-yylex ()
+yylex (void)
 {
   int c;
 
@@ -682,7 +678,7 @@ tail_recurse:
   c = getc (current.file);
 
   /* Commas are treated as whitespace characters.  */
-  while (isspace ((unsigned char) c) || c == ',')
+  while (ISSPACE (c) || c == ',')
     {
       current.state = IN_LINE;
       if (c == '\n')
@@ -735,9 +731,9 @@ tail_recurse:
 	  if (c == '\n')
 	    ++current.lineno;
 	}
-      while (isspace ((unsigned char) c));
+      while (ISSPACE (c));
       BUF_INIT ();
-      while (! isspace ((unsigned char) c) && c != EOF)
+      while (! ISSPACE (c) && c != EOF)
 	{
 	  BUF_ADD (c);
 	  c = getc (current.file);
@@ -745,7 +741,7 @@ tail_recurse:
       BUF_FINISH ();
 
       ungetc (c, current.file);
-      
+
       nlmlex_file_push (lex_buf);
       goto tail_recurse;
     }
@@ -755,17 +751,14 @@ tail_recurse:
   if (current.state == BEGINNING_OF_LINE)
     {
       BUF_INIT ();
-      while (isalnum ((unsigned char) c) || c == '_')
+      while (ISALNUM (c) || c == '_')
 	{
-	  if (islower ((unsigned char) c))
-	    BUF_ADD (toupper ((unsigned char) c));
-	  else
-	    BUF_ADD (c);
+	  BUF_ADD (TOUPPER (c));
 	  c = getc (current.file);
 	}
       BUF_FINISH ();
 
-      if (c != EOF && ! isspace ((unsigned char) c) && c != ',')
+      if (c != EOF && ! ISSPACE (c) && c != ',')
 	{
 	  nlmheader_identify ();
 	  fprintf (stderr, _("%s:%d: illegal character in keyword: %c\n"),
@@ -787,7 +780,7 @@ tail_recurse:
 		  return keyword_tokens[i].token;
 		}
 	    }
-	  
+
 	  nlmheader_identify ();
 	  fprintf (stderr, _("%s:%d: unrecognized keyword: %s\n"),
 		   current.name, current.lineno, lex_buf);
@@ -838,7 +831,7 @@ tail_recurse:
 
   /* Gather a generic argument.  */
   BUF_INIT ();
-  while (! isspace (c)
+  while (! ISSPACE (c)
 	 && c != ','
 	 && c != COMMENT_CHAR
 	 && c != '('
@@ -859,8 +852,7 @@ tail_recurse:
 /* Get a number from a string.  */
 
 static long
-nlmlex_get_number (s)
-     const char *s;
+nlmlex_get_number (const char *s)
 {
   long ret;
   char *send;
@@ -877,7 +869,7 @@ nlmlex_get_number (s)
    number.  */
 
 static void
-nlmheader_identify ()
+nlmheader_identify (void)
 {
   static int done;
 
@@ -892,9 +884,7 @@ nlmheader_identify ()
 /* Issue a warning.  */
 
 static void
-nlmheader_warn (s, imax)
-     const char *s;
-     int imax;
+nlmheader_warn (const char *s, int imax)
 {
   nlmheader_identify ();
   fprintf (stderr, "%s:%d: %s", current.name, current.lineno, s);
@@ -906,8 +896,7 @@ nlmheader_warn (s, imax)
 /* Report an error.  */
 
 static void
-nlmheader_error (s)
-     const char *s;
+nlmheader_error (const char *s)
 {
   nlmheader_warn (s, -1);
   ++parse_errors;
@@ -916,9 +905,7 @@ nlmheader_error (s)
 /* Add a string to a string list.  */
 
 static struct string_list *
-string_list_cons (s, l)
-     char *s;
-     struct string_list *l;
+string_list_cons (char *s, struct string_list *l)
 {
   struct string_list *ret;
 
@@ -931,9 +918,7 @@ string_list_cons (s, l)
 /* Append a string list to another string list.  */
 
 static struct string_list *
-string_list_append (l1, l2)
-     struct string_list *l1;
-     struct string_list *l2;
+string_list_append (struct string_list *l1, struct string_list *l2)
 {
   register struct string_list **pp;
 
@@ -946,9 +931,7 @@ string_list_append (l1, l2)
 /* Append a string to a string list.  */
 
 static struct string_list *
-string_list_append1 (l, s)
-     struct string_list *l;
-     char *s;
+string_list_append1 (struct string_list *l, char *s)
 {
   struct string_list *n;
   register struct string_list **pp;
@@ -965,8 +948,7 @@ string_list_append1 (l, s)
 /* Duplicate a string in memory.  */
 
 static char *
-xstrdup (s)
-     const char *s;
+xstrdup (const char *s)
 {
   unsigned long len;
   char *ret;

@@ -1,6 +1,7 @@
 ; Error cases for invalid operands.
 ;  { dg-do assemble { target cris-*-* } }
  .text
+ .syntax no_register_prefix
 start:
  add.w r3,r4,r5 ; { dg-error "(Illegal|Invalid) operands" }
  add.w 42,r4,r5 ; { dg-error "(Illegal|Invalid) operands" }
@@ -29,8 +30,8 @@ start:
  test.d [r3=r2+[r4]] ; { dg-error "(Illegal|Invalid) operands" }
  test.d [r3=r2+[r4].w ; { dg-error "(Illegal|Invalid) operands" }
  test.d [r3=r2] ; { dg-error "(Illegal|Invalid) operands" }
- test.d [r3=r2+] ; { dg-error "(Illegal|Invalid) operands|Bad expression" }
- test.d [r3++] ; { dg-error "(Illegal|Invalid) operands|Bad expression" }
+ test.d [r3=r2+] ; { dg-error "(Illegal|Invalid) operands|(B|b)ad expression" }
+ test.d [r3++] ; { dg-error "(Illegal|Invalid) operands|(B|b)ad expression" }
 
 ; I think these should be valid; a dip with "postincrement" on
 ; the insn that follows.

@@ -2,7 +2,7 @@
 
 THIS FILE IS MACHINE GENERATED WITH CGEN.
 
-Copyright 1996, 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 
 This file is part of the GNU Binutils and/or GDB, the GNU debugger.
 
@@ -30,6 +30,31 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "m32r-opc.h"
 #include "libiberty.h"
 
+/* -- opc.c */
+unsigned int
+m32r_cgen_dis_hash (buf, value)
+     const char * buf ATTRIBUTE_UNUSED;
+     CGEN_INSN_INT value;
+{
+  unsigned int x;
+                                                                                
+  if (value & 0xffff0000) /* 32bit instructions */
+    value = (value >> 16) & 0xffff;
+                                                                                
+  x = (value>>8) & 0xf0;
+  if (x == 0x40 || x == 0xe0 || x == 0x60 || x == 0x50)
+    return x;
+                                                                                
+  if (x == 0x70 || x == 0xf0)
+    return x | ((value>>8) & 0x0f);
+                                                                                
+  if (x == 0x30)
+    return x | ((value & 0x70) >> 4);
+  else
+    return x | ((value & 0xf0) >> 4);
+}
+                                                                                
+/* -- */
 /* The hash functions are recorded here to help keep assembler code out of
    the disassembler and vice versa.  */
 
@@ -40,8 +65,11 @@ static unsigned int dis_hash_insn PARAMS ((const char *, CGEN_INSN_INT));
 
 /* Instruction formats.  */
 
-#define F(f) & m32r_cgen_ifld_table[CONCAT2 (M32R_,f)]
-
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define F(f) & m32r_cgen_ifld_table[M32R_##f]
+#else
+#define F(f) & m32r_cgen_ifld_table[M32R_/**/f]
+#endif
 static const CGEN_IFMT ifmt_empty = {
   0, 0, 0x0, { { 0 } }
 };
@@ -170,11 +198,31 @@ static const CGEN_IFMT ifmt_satb = {
   32, 32, 0xf0f0ffff, { { F (F_OP1) }, { F (F_R1) }, { F (F_OP2) }, { F (F_R2) }, { F (F_UIMM16) }, { 0 } }
 };
 
+static const CGEN_IFMT ifmt_clrpsw = {
+  16, 16, 0xff00, { { F (F_OP1) }, { F (F_R1) }, { F (F_UIMM8) }, { 0 } }
+};
+
+static const CGEN_IFMT ifmt_bset = {
+  32, 32, 0xf8f00000, { { F (F_OP1) }, { F (F_BIT4) }, { F (F_UIMM3) }, { F (F_OP2) }, { F (F_R2) }, { F (F_SIMM16) }, { 0 } }
+};
+
+static const CGEN_IFMT ifmt_btst = {
+  16, 16, 0xf8f0, { { F (F_OP1) }, { F (F_BIT4) }, { F (F_UIMM3) }, { F (F_OP2) }, { F (F_R2) }, { 0 } }
+};
+
 #undef F
 
-#define A(a) (1 << CONCAT2 (CGEN_INSN_,a))
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define A(a) (1 << CGEN_INSN_##a)
+#else
+#define A(a) (1 << CGEN_INSN_/**/a)
+#endif
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define OPERAND(op) M32R_OPERAND_##op
+#else
+#define OPERAND(op) M32R_OPERAND_/**/op
+#endif
 #define MNEM CGEN_SYNTAX_MNEMONIC /* syntax value for mnemonic */
-#define OPERAND(op) CONCAT2 (M32R_OPERAND_,op)
 #define OP(field) CGEN_SYNTAX_MAKE_FIELD (OPERAND (field))
 
 /* The instruction table.  */
@@ -436,6 +484,48 @@ static const CGEN_OPCODE m32r_cgen_insn_opcode_table[MAX_INSNS] =
     { 0, 0, 0, 0 },
     { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
     & ifmt_div, { 0x90300000 }
+  },
+/* remh $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90200010 }
+  },
+/* remuh $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90300010 }
+  },
+/* remb $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90200018 }
+  },
+/* remub $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90300018 }
+  },
+/* divuh $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90100010 }
+  },
+/* divb $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90000018 }
+  },
+/* divub $dr,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (DR), ',', OP (SR), 0 } },
+    & ifmt_div, { 0x90100018 }
   },
 /* divh $dr,$sr */
   {
@@ -887,6 +977,18 @@ static const CGEN_OPCODE m32r_cgen_insn_opcode_table[MAX_INSNS] =
     { { MNEM, ' ', OP (SRC1), ',', '@', '+', OP (SRC2), 0 } },
     & ifmt_cmp, { 0x2060 }
   },
+/* sth $src1,@$src2+ */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (SRC1), ',', '@', OP (SRC2), '+', 0 } },
+    & ifmt_cmp, { 0x2030 }
+  },
+/* stb $src1,@$src2+ */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (SRC1), ',', '@', OP (SRC2), '+', 0 } },
+    & ifmt_cmp, { 0x2010 }
+  },
 /* st $src1,@-$src2 */
   {
     { 0, 0, 0, 0 },
@@ -989,17 +1091,50 @@ static const CGEN_OPCODE m32r_cgen_insn_opcode_table[MAX_INSNS] =
     { { MNEM, 0 } },
     & ifmt_nop, { 0x7501 }
   },
+/* clrpsw $uimm8 */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (UIMM8), 0 } },
+    & ifmt_clrpsw, { 0x7200 }
+  },
+/* setpsw $uimm8 */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (UIMM8), 0 } },
+    & ifmt_clrpsw, { 0x7100 }
+  },
+/* bset $uimm3,@($slo16,$sr) */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (UIMM3), ',', '@', '(', OP (SLO16), ',', OP (SR), ')', 0 } },
+    & ifmt_bset, { 0xa0600000 }
+  },
+/* bclr $uimm3,@($slo16,$sr) */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (UIMM3), ',', '@', '(', OP (SLO16), ',', OP (SR), ')', 0 } },
+    & ifmt_bset, { 0xa0700000 }
+  },
+/* btst $uimm3,$sr */
+  {
+    { 0, 0, 0, 0 },
+    { { MNEM, ' ', OP (UIMM3), ',', OP (SR), 0 } },
+    & ifmt_btst, { 0xf0 }
+  },
 };
 
 #undef A
-#undef MNEM
 #undef OPERAND
+#undef MNEM
 #undef OP
 
 /* Formats for ALIAS macro-insns.  */
 
-#define F(f) & m32r_cgen_ifld_table[CONCAT2 (M32R_,f)]
-
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define F(f) & m32r_cgen_ifld_table[M32R_##f]
+#else
+#define F(f) & m32r_cgen_ifld_table[M32R_/**/f]
+#endif
 static const CGEN_IFMT ifmt_bc8r = {
   16, 16, 0xff00, { { F (F_OP1) }, { F (F_R1) }, { F (F_DISP8) }, { 0 } }
 };
@@ -1148,9 +1283,17 @@ static const CGEN_IFMT ifmt_push = {
 
 /* Each non-simple macro entry points to an array of expansion possibilities.  */
 
-#define A(a) (1 << CONCAT2 (CGEN_INSN_,a))
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define A(a) (1 << CGEN_INSN_##a)
+#else
+#define A(a) (1 << CGEN_INSN_/**/a)
+#endif
+#if defined (__STDC__) || defined (ALMOST_STDC) || defined (HAVE_STRINGIZE)
+#define OPERAND(op) M32R_OPERAND_##op
+#else
+#define OPERAND(op) M32R_OPERAND_/**/op
+#endif
 #define MNEM CGEN_SYNTAX_MNEMONIC /* syntax value for mnemonic */
-#define OPERAND(op) CONCAT2 (M32R_OPERAND_,op)
 #define OP(field) CGEN_SYNTAX_MAKE_FIELD (OPERAND (field))
 
 /* The macro instruction table.  */
@@ -1165,7 +1308,7 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* bc $disp24 */
   {
     -1, "bc24r", "bc", 32,
-    { 0|A(RELAX)|A(COND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(RELAXED)|A(COND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
   },
 /* bl $disp8 */
   {
@@ -1175,17 +1318,17 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* bl $disp24 */
   {
     -1, "bl24r", "bl", 32,
-    { 0|A(RELAX)|A(UNCOND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(RELAXED)|A(UNCOND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
   },
 /* bcl $disp8 */
   {
     -1, "bcl8r", "bcl", 16,
-    { 0|A(RELAXABLE)|A(FILL_SLOT)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX), PIPE_O } }
+    { 0|A(RELAXABLE)|A(FILL_SLOT)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_O } }
   },
 /* bcl $disp24 */
   {
     -1, "bcl24r", "bcl", 32,
-    { 0|A(RELAX)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX), PIPE_NONE } }
+    { 0|A(RELAXED)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_NONE } }
   },
 /* bnc $disp8 */
   {
@@ -1195,7 +1338,7 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* bnc $disp24 */
   {
     -1, "bnc24r", "bnc", 32,
-    { 0|A(RELAX)|A(COND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(RELAXED)|A(COND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
   },
 /* bra $disp8 */
   {
@@ -1205,17 +1348,17 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* bra $disp24 */
   {
     -1, "bra24r", "bra", 32,
-    { 0|A(RELAX)|A(UNCOND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(RELAXED)|A(UNCOND_CTI)|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
   },
 /* bncl $disp8 */
   {
     -1, "bncl8r", "bncl", 16,
-    { 0|A(RELAXABLE)|A(FILL_SLOT)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX), PIPE_O } }
+    { 0|A(RELAXABLE)|A(FILL_SLOT)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_O } }
   },
 /* bncl $disp24 */
   {
     -1, "bncl24r", "bncl", 32,
-    { 0|A(RELAX)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX), PIPE_NONE } }
+    { 0|A(RELAXED)|A(COND_CTI)|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_NONE } }
   },
 /* ld $dr,@($sr) */
   {
@@ -1270,7 +1413,7 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* pop $dr */
   {
     -1, "pop", "pop", 16,
-    { 0|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(ALIAS), { (1<<MACH_BASE), PIPE_O } }
   },
 /* ldi $dr,$simm8 */
   {
@@ -1285,22 +1428,22 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* rac $accd */
   {
     -1, "rac-d", "rac", 16,
-    { 0|A(ALIAS), { (1<<MACH_M32RX), PIPE_S } }
+    { 0|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_S } }
   },
 /* rac $accd,$accs */
   {
     -1, "rac-ds", "rac", 16,
-    { 0|A(ALIAS), { (1<<MACH_M32RX), PIPE_S } }
+    { 0|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_S } }
   },
 /* rach $accd */
   {
     -1, "rach-d", "rach", 16,
-    { 0|A(ALIAS), { (1<<MACH_M32RX), PIPE_S } }
+    { 0|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_S } }
   },
 /* rach $accd,$accs */
   {
     -1, "rach-ds", "rach", 16,
-    { 0|A(ALIAS), { (1<<MACH_M32RX), PIPE_S } }
+    { 0|A(ALIAS), { (1<<MACH_M32RX)|(1<<MACH_M32R2), PIPE_S } }
   },
 /* st $src1,@($src2) */
   {
@@ -1335,7 +1478,7 @@ static const CGEN_IBASE m32r_cgen_macro_insn_table[] =
 /* push $src1 */
   {
     -1, "push", "push", 16,
-    { 0|A(ALIAS), { (1<<MACH_BASE), PIPE_NONE } }
+    { 0|A(ALIAS), { (1<<MACH_BASE), PIPE_O } }
   },
 };
 
@@ -1562,8 +1705,8 @@ static const CGEN_OPCODE m32r_cgen_macro_insn_opcode_table[] =
 };
 
 #undef A
-#undef MNEM
 #undef OPERAND
+#undef MNEM
 #undef OP
 
 #ifndef CGEN_ASM_HASH_P
@@ -1579,7 +1722,7 @@ static const CGEN_OPCODE m32r_cgen_macro_insn_opcode_table[] =
 
 static int
 asm_hash_insn_p (insn)
-     const CGEN_INSN *insn;
+     const CGEN_INSN *insn ATTRIBUTE_UNUSED;
 {
   return CGEN_ASM_HASH_P (insn);
 }
@@ -1629,11 +1772,13 @@ asm_hash_insn (mnem)
 
 static unsigned int
 dis_hash_insn (buf, value)
-     const char * buf;
-     CGEN_INSN_INT value;
+     const char * buf ATTRIBUTE_UNUSED;
+     CGEN_INSN_INT value ATTRIBUTE_UNUSED;
 {
   return CGEN_DIS_HASH (buf, value);
 }
+
+static void set_fields_bitsize PARAMS ((CGEN_FIELDS *, int));
 
 /* Set the recorded length of the insn in the CGEN_FIELDS struct.  */
 
@@ -1663,6 +1808,7 @@ m32r_cgen_init_opcode_table (cd)
     {
       insns[i].base = &ib[i];
       insns[i].opcode = &oc[i];
+      m32r_cgen_build_insn_regex (& insns[i]);
     }
   cd->macro_insn_table.init_entries = insns;
   cd->macro_insn_table.entry_size = sizeof (CGEN_IBASE);
@@ -1671,7 +1817,10 @@ m32r_cgen_init_opcode_table (cd)
   oc = & m32r_cgen_insn_opcode_table[0];
   insns = (CGEN_INSN *) cd->insn_table.init_entries;
   for (i = 0; i < MAX_INSNS; ++i)
-    insns[i].opcode = &oc[i];
+    {
+      insns[i].opcode = &oc[i];
+      m32r_cgen_build_insn_regex (& insns[i]);
+    }
 
   cd->sizeof_fields = sizeof (CGEN_FIELDS);
   cd->set_fields_bitsize = set_fields_bitsize;

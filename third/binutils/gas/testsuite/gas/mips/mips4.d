@@ -1,6 +1,5 @@
-#objdump: -dr --prefix-addresses -mmips:5000
+#objdump: -dr --prefix-addresses
 #name: MIPS mips4
-#as: -mips4 -mcpu=r5000
 
 # Test the mips4 macros.
 
@@ -27,14 +26,14 @@ Disassembly of section .text:
 0+0044 <[^>]*> movf.d	\$f4,\$f6,\$fcc0
 0+0048 <[^>]*> movf.s	\$f4,\$f6,\$fcc0
 0+004c <[^>]*> movn	a0,a2,a2
-0+0050 <[^>]*> movn.d	\$f4,\$f5,a2
-0+0054 <[^>]*> movn.s	\$f4,\$f5,a2
+0+0050 <[^>]*> movn.d	\$f4,\$f6,a2
+0+0054 <[^>]*> movn.s	\$f4,\$f6,a2
 0+0058 <[^>]*> movt	a0,a1,\$fcc4
 0+005c <[^>]*> movt.d	\$f4,\$f6,\$fcc0
 0+0060 <[^>]*> movt.s	\$f4,\$f6,\$fcc0
 0+0064 <[^>]*> movz	a0,a2,a2
-0+0068 <[^>]*> movz.d	\$f4,\$f5,a2
-0+006c <[^>]*> movz.s	\$f4,\$f5,a2
+0+0068 <[^>]*> movz.d	\$f4,\$f6,a2
+0+006c <[^>]*> movz.s	\$f4,\$f6,a2
 0+0070 <[^>]*> msub.d	\$f0,\$f2,\$f4,\$f6
 0+0074 <[^>]*> msub.s	\$f0,\$f2,\$f4,\$f6
 0+0078 <[^>]*> nmadd.d	\$f0,\$f2,\$f4,\$f6

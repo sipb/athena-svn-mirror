@@ -1,5 +1,5 @@
 /* tc-m68hc11.h -- Header file for tc-m68hc11.c.
-   Copyright 1999, 2000, 2001 Free Software Foundation, Inc.
+   Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -45,47 +45,35 @@ struct fix;
 
 /* The target BFD architecture.  */
 #define TARGET_ARCH (m68hc11_arch ())
-extern enum bfd_architecture m68hc11_arch PARAMS ((void));
+extern enum bfd_architecture m68hc11_arch (void);
 
 #define TARGET_MACH (m68hc11_mach ())
-extern int m68hc11_mach PARAMS ((void));
+extern int m68hc11_mach (void);
 
 #define TARGET_FORMAT (m68hc11_arch_format ())
-extern const char *m68hc11_arch_format PARAMS ((void));
-
-/* Specific sections:
-   - The .page0 is a data section that is mapped in [0x0000..0x00FF].
-     Page0 accesses are faster on the M68HC11. Soft registers used by GCC-m6811
-     are located in .page0.
-   - The .vectors is the data section that represents the interrupt
-     vectors.  */
-#define ELF_TC_SPECIAL_SECTIONS \
-  { ".page0",	SHT_PROGBITS,	SHF_ALLOC + SHF_WRITE	}, \
-  { ".vectors",	SHT_PROGBITS,	SHF_ALLOC + SHF_WRITE	},
+extern const char *m68hc11_arch_format (void);
 
 #define LISTING_WORD_SIZE 1	/* A word is 1 bytes */
 #define LISTING_LHS_WIDTH 4	/* One word on the first line */
 #define LISTING_LHS_WIDTH_SECOND 4	/* One word on the second line */
 #define LISTING_LHS_CONT_LINES 4	/* And 4 lines max */
 #define LISTING_HEADER m68hc11_listing_header ()
-extern const char *m68hc11_listing_header PARAMS (());
-
-/* call md_pcrel_from_section, not md_pcrel_from */
-#define MD_PCREL_FROM_SECTION(FIXP, SEC) md_pcrel_from_section(FIXP, SEC)
-extern long md_pcrel_from_section PARAMS ((struct fix *fixp, segT sec));
+extern const char *m68hc11_listing_header (void);
 
 /* Permit temporary numeric labels.  */
 #define LOCAL_LABELS_FB 1
 
-#define DIFF_EXPR_OK		/* .-foo gets turned into PC relative relocs */
-
 #define tc_init_after_args m68hc11_init_after_args
-extern void m68hc11_init_after_args PARAMS ((void));
+extern void m68hc11_init_after_args (void);
 
 #define md_parse_long_option m68hc11_parse_long_option
-extern int m68hc11_parse_long_option PARAMS ((char *));
+extern int m68hc11_parse_long_option (char *);
 
 #define DWARF2_LINE_MIN_INSN_LENGTH 1
+
+/* Use 32-bit address to represent a symbol address so that we can
+   represent them with their page number.  */
+#define DWARF2_ADDR_SIZE(bfd) 4
 
 /* We don't need to handle .word strangely.  */
 #define WORKING_DOT_WORD
@@ -97,10 +85,39 @@ extern int m68hc11_parse_long_option PARAMS ((char *));
 #define TC_GENERIC_RELAX_TABLE md_relax_table
 extern struct relax_type md_relax_table[];
 
+/* GAS only handles relaxations for pc-relative data targeting addresses
+   in the same segment, so we have to handle the rest on our own.  */
+#define md_relax_frag(SEG, FRAGP, STRETCH)		\
+ ((FRAGP)->fr_symbol != NULL				\
+  && S_GET_SEGMENT ((FRAGP)->fr_symbol) == (SEG)	\
+  ? relax_frag (SEG, FRAGP, STRETCH)			\
+  : m68hc11_relax_frag (SEG, FRAGP, STRETCH))
+extern long m68hc11_relax_frag (segT, fragS*, long);
+
+#define TC_HANDLES_FX_DONE
+
+#define DIFF_EXPR_OK		/* .-foo gets turned into PC relative relocs */
+
+/* Values passed to md_apply_fix3 don't include the symbol value.  */
+#define MD_APPLY_SYM_VALUE(FIX) 0
+
+/* No shared lib support, so we don't need to ensure externally
+   visible symbols can be overridden.  */
+#define EXTERN_FORCE_RELOC 0
+
+#define TC_FORCE_RELOCATION(fix) tc_m68hc11_force_relocation (fix)
+extern int tc_m68hc11_force_relocation (struct fix *);
+
+#define tc_fix_adjustable(X) tc_m68hc11_fix_adjustable(X)
+extern int tc_m68hc11_fix_adjustable (struct fix *);
+
 #define md_operand(x)
 #define tc_frob_label(sym) do {\
   S_SET_VALUE (sym, (valueT) frag_now_fix ()); \
 } while (0)
 
+#define elf_tc_final_processing	m68hc11_elf_final_processing
+extern void m68hc11_elf_final_processing (void);
+
 #define tc_print_statistics(FILE) m68hc11_print_statistics (FILE)
-extern void m68hc11_print_statistics PARAMS ((FILE *));
+extern void m68hc11_print_statistics (FILE *);

@@ -1,5 +1,5 @@
 /* sysdep.h -- handle host dependencies for the BFD library
-   Copyright 1995, 1996, 1997, 1998, 1999, 2000
+   Copyright 1995, 1996, 1997, 1998, 1999, 2000, 2001
    Free Software Foundation, Inc.
    Written by Cygnus Support.
 
@@ -123,6 +123,12 @@ extern void free ();
 
 #ifdef NEED_DECLARATION_GETENV
 extern char *getenv ();
+#endif
+
+/* Define offsetof for those systems which lack it */
+
+#ifndef offsetof
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 #endif
 
 #ifdef ENABLE_NLS

@@ -1,5 +1,5 @@
 /* flonum_mult.c - multiply two flonums
-   Copyright 1987, 1990, 1991, 1992, 1995, 2000
+   Copyright 1987, 1990, 1991, 1992, 1995, 2000, 2002
    Free Software Foundation, Inc.
 
    This file is part of Gas, the GNU Assembler.
@@ -19,7 +19,7 @@
    in a file named COPYING.  Among other things, the copyright
    notice and this notice must be preserved on all copies.  */
 
-#include <ansidecl.h>
+#include "ansidecl.h"
 #include "flonum.h"
 
 /*	plan for a . b => p(roduct)
@@ -71,10 +71,8 @@
 	(C style also gives deeper insight [to me] ... oh well ...)  */
 
 void
-flonum_multip (a, b, product)
-     const FLONUM_TYPE *a;
-     const FLONUM_TYPE *b;
-     FLONUM_TYPE *product;
+flonum_multip (const FLONUM_TYPE *a, const FLONUM_TYPE *b,
+	       FLONUM_TYPE *product)
 {
   int size_of_a;		/* 0 origin  */
   int size_of_b;		/* 0 origin  */

@@ -1,6 +1,6 @@
 /* Table of opcodes for the sparc.
    Copyright 1989, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-   2000
+   2000, 2002, 2004
    Free Software Foundation, Inc.
 
 This file is part of the BFD library.
@@ -1440,25 +1440,25 @@ cond ("bz",	"tz",   CONDZ, F_CONDBR|F_ALIAS), /* for e */
   FBRX(fop, F2(0, 5)|COND(mask), F2(~0, ~5)|COND(~(mask)), flags), /* v9 */ \
   FBR(fop, F2(0, 6)|COND(mask), F2(~0, ~6)|COND(~(mask)), flags)
 
-CONDFC  ("fb",    "cb",    0x8, 0),
-CONDFCL ("fba",	  "cba",   0x8, F_ALIAS),
-CONDFC  ("fbe",	  "cb0",   0x9, 0),
-CONDF   ("fbz",            0x9, F_ALIAS),
-CONDFC  ("fbg",	  "cb2",   0x6, 0),
-CONDFC  ("fbge",  "cb02",  0xb, 0),
-CONDFC  ("fbl",	  "cb1",   0x4, 0),
-CONDFC  ("fble",  "cb01",  0xd, 0),
-CONDFC  ("fblg",  "cb12",  0x2, 0),
-CONDFCL ("fbn",	  "cbn",   0x0, 0),
-CONDFC  ("fbne",  "cb123", 0x1, 0),
-CONDF   ("fbnz",           0x1, F_ALIAS),
-CONDFC  ("fbo",	  "cb012", 0xf, 0),
-CONDFC  ("fbu",	  "cb3",   0x7, 0),
-CONDFC  ("fbue",  "cb03",  0xa, 0),
-CONDFC  ("fbug",  "cb23",  0x5, 0),
-CONDFC  ("fbuge", "cb023", 0xc, 0),
-CONDFC  ("fbul",  "cb13",  0x3, 0),
-CONDFC  ("fbule", "cb013", 0xe, 0),
+CONDFC  ("fb",    "cb",    0x8, F_UNBR),
+CONDFCL ("fba",	  "cba",   0x8, F_UNBR|F_ALIAS),
+CONDFC  ("fbe",	  "cb0",   0x9, F_CONDBR),
+CONDF   ("fbz",            0x9, F_CONDBR|F_ALIAS),
+CONDFC  ("fbg",	  "cb2",   0x6, F_CONDBR),
+CONDFC  ("fbge",  "cb02",  0xb, F_CONDBR),
+CONDFC  ("fbl",	  "cb1",   0x4, F_CONDBR),
+CONDFC  ("fble",  "cb01",  0xd, F_CONDBR),
+CONDFC  ("fblg",  "cb12",  0x2, F_CONDBR),
+CONDFCL ("fbn",	  "cbn",   0x0, F_UNBR),
+CONDFC  ("fbne",  "cb123", 0x1, F_CONDBR),
+CONDF   ("fbnz",           0x1, F_CONDBR|F_ALIAS),
+CONDFC  ("fbo",	  "cb012", 0xf, F_CONDBR),
+CONDFC  ("fbu",	  "cb3",   0x7, F_CONDBR),
+CONDFC  ("fbue",  "cb03",  0xa, F_CONDBR),
+CONDFC  ("fbug",  "cb23",  0x5, F_CONDBR),
+CONDFC  ("fbuge", "cb023", 0xc, F_CONDBR),
+CONDFC  ("fbul",  "cb13",  0x3, F_CONDBR),
+CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 
 #undef CONDFC
 #undef CONDFCL
@@ -1525,17 +1525,17 @@ CONDFC  ("fbule", "cb013", 0xe, 0),
 { "fstoi",	F3F(2, 0x34, 0x0d1), F3F(~2, ~0x34, ~0x0d1)|RS1_G0, "f,g", F_FLOAT, v6 },
 { "fqtoi",	F3F(2, 0x34, 0x0d3), F3F(~2, ~0x34, ~0x0d3)|RS1_G0, "R,g", F_FLOAT, v8 },
 
-{ "fdtox",	F3F(2, 0x34, 0x082), F3F(~2, ~0x34, ~0x082)|RS1_G0, "B,g", F_FLOAT, v9 },
-{ "fstox",	F3F(2, 0x34, 0x081), F3F(~2, ~0x34, ~0x081)|RS1_G0, "f,g", F_FLOAT, v9 },
-{ "fqtox",	F3F(2, 0x34, 0x083), F3F(~2, ~0x34, ~0x083)|RS1_G0, "R,g", F_FLOAT, v9 },
+{ "fdtox",	F3F(2, 0x34, 0x082), F3F(~2, ~0x34, ~0x082)|RS1_G0, "B,H", F_FLOAT, v9 },
+{ "fstox",	F3F(2, 0x34, 0x081), F3F(~2, ~0x34, ~0x081)|RS1_G0, "f,H", F_FLOAT, v9 },
+{ "fqtox",	F3F(2, 0x34, 0x083), F3F(~2, ~0x34, ~0x083)|RS1_G0, "R,H", F_FLOAT, v9 },
 
 { "fitod",	F3F(2, 0x34, 0x0c8), F3F(~2, ~0x34, ~0x0c8)|RS1_G0, "f,H", F_FLOAT, v6 },
 { "fitos",	F3F(2, 0x34, 0x0c4), F3F(~2, ~0x34, ~0x0c4)|RS1_G0, "f,g", F_FLOAT, v6 },
 { "fitoq",	F3F(2, 0x34, 0x0cc), F3F(~2, ~0x34, ~0x0cc)|RS1_G0, "f,J", F_FLOAT, v8 },
 
-{ "fxtod",	F3F(2, 0x34, 0x088), F3F(~2, ~0x34, ~0x088)|RS1_G0, "f,H", F_FLOAT, v9 },
-{ "fxtos",	F3F(2, 0x34, 0x084), F3F(~2, ~0x34, ~0x084)|RS1_G0, "f,g", F_FLOAT, v9 },
-{ "fxtoq",	F3F(2, 0x34, 0x08c), F3F(~2, ~0x34, ~0x08c)|RS1_G0, "f,J", F_FLOAT, v9 },
+{ "fxtod",	F3F(2, 0x34, 0x088), F3F(~2, ~0x34, ~0x088)|RS1_G0, "B,H", F_FLOAT, v9 },
+{ "fxtos",	F3F(2, 0x34, 0x084), F3F(~2, ~0x34, ~0x084)|RS1_G0, "B,g", F_FLOAT, v9 },
+{ "fxtoq",	F3F(2, 0x34, 0x08c), F3F(~2, ~0x34, ~0x08c)|RS1_G0, "B,J", F_FLOAT, v9 },
 
 { "fdtoq",	F3F(2, 0x34, 0x0ce), F3F(~2, ~0x34, ~0x0ce)|RS1_G0, "B,J", F_FLOAT, v8 },
 { "fdtos",	F3F(2, 0x34, 0x0c6), F3F(~2, ~0x34, ~0x0c6)|RS1_G0, "B,g", F_FLOAT, v6 },

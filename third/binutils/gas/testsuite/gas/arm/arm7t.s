@@ -72,3 +72,10 @@ misc:
 	.align
 .L2:
 	.word	fred
+	
+	.ltorg
+
+	# Add two nop instructions to ensure that the
+	# output is 32-byte aligned as required for arm-aout.
+	nop
+	nop

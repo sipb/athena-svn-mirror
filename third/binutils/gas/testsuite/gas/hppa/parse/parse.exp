@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
 
 # Please email any bugs, comments, and/or additions to this file to:
-# DejaGnu@cygnus.com
+# dejagnu@gnu.org
 
 # Written by the Center for Software Science at the University of Utah
 # and by Cygnus Support.
@@ -119,7 +119,11 @@ proc do_valid_align_tests {} {
 }
 
 if [istarget hppa*-*-*] then {
-    # GAS-2.0 does not always parse ! as a line separator when it should.
+    if { ![istarget hppa*-*-linux*] 
+	 && ![istarget hppa*-*-netbsd*] } {
+	# GAS-2.0 does not always parse ! as a line separator when it should.
+	setup_xfail hppa*-*-*
+    }
     gas_test "linesepbug.s" "" "" "line separator bug"
 
     # Make sure GAS accepts syntax for accessing static data.
@@ -218,5 +222,8 @@ if [istarget hppa*-*-*] then {
     # Check for bogus registers in single precision fmpyadd/fmpysub
     # instructions
     gas_test_error "badfmpyadd.s" "" "Check for error on bad fmpyadd insn"
+
+    # Make sure we grok spaces in directives.
+    gas_test "space.s" "" "" "Test acceptance of spaces in directives"
 }
 

@@ -1,6 +1,6 @@
 /* BFD back end for traditional Unix core files (U-area and raw sections)
    Copyright 1988, 1989, 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999,
-   2000
+   2000, 2001, 2002, 2003, 2004
    Free Software Foundation, Inc.
    Written by John Gilmore of Cygnus Support.
 
@@ -47,13 +47,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include TRAD_HEADER
 #endif
 
-  struct trad_core_struct
-    {
-      asection *data_section;
-      asection *stack_section;
-      asection *reg_section;
-      struct user u;
-    };
+struct trad_core_struct
+{
+  asection *data_section;
+  asection *stack_section;
+  asection *reg_section;
+  struct user u;
+};
 
 #define core_upage(bfd) (&((bfd)->tdata.trad_core_data->u))
 #define core_datasec(bfd) ((bfd)->tdata.trad_core_data->data_section)
@@ -63,15 +63,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 /* forward declarations */
 
 const bfd_target *trad_unix_core_file_p PARAMS ((bfd *abfd));
-char *		trad_unix_core_file_failing_command PARAMS ((bfd *abfd));
-int		trad_unix_core_file_failing_signal PARAMS ((bfd *abfd));
-boolean		trad_unix_core_file_matches_executable_p
-			 PARAMS ((bfd *core_bfd, bfd *exec_bfd));
-static void	swap_abort PARAMS ((void));
+char * trad_unix_core_file_failing_command PARAMS ((bfd *abfd));
+int trad_unix_core_file_failing_signal PARAMS ((bfd *abfd));
+bfd_boolean trad_unix_core_file_matches_executable_p
+  PARAMS ((bfd *core_bfd, bfd *exec_bfd));
+static void swap_abort PARAMS ((void));
 
 /* Handle 4.2-style (and perhaps also sysV-style) core dump file.  */
 
-/* ARGSUSED */
 const bfd_target *
 trad_unix_core_file_p (abfd)
      bfd *abfd;
@@ -80,14 +79,15 @@ trad_unix_core_file_p (abfd)
   int val;
   struct user u;
   struct trad_core_struct *rawptr;
+  bfd_size_type amt;
 
 #ifdef TRAD_CORE_USER_OFFSET
   /* If defined, this macro is the file position of the user struct.  */
-  if (bfd_seek (abfd, TRAD_CORE_USER_OFFSET, SEEK_SET) != 0)
+  if (bfd_seek (abfd, (file_ptr) TRAD_CORE_USER_OFFSET, SEEK_SET) != 0)
     return 0;
 #endif
 
-  val = bfd_read ((void *)&u, 1, sizeof u, abfd);
+  val = bfd_bread ((void *) &u, (bfd_size_type) sizeof u, abfd);
   if (val != sizeof u)
     {
       /* Too small to be a core file */
@@ -149,8 +149,8 @@ trad_unix_core_file_p (abfd)
 
   /* Allocate both the upage and the struct core_data at once, so
      a single free() will free them both.  */
-  rawptr = (struct trad_core_struct *)
-		bfd_zmalloc (sizeof (struct trad_core_struct));
+  amt = sizeof (struct trad_core_struct);
+  rawptr = (struct trad_core_struct *) bfd_zmalloc (amt);
   if (rawptr == NULL)
     return 0;
 
@@ -158,22 +158,17 @@ trad_unix_core_file_p (abfd)
 
   rawptr->u = u; /*Copy the uarea into the tdata part of the bfd */
 
-  /* Create the sections.  This is raunchy, but bfd_close wants to free
-     them separately.  */
+  /* Create the sections.  */
 
-  core_stacksec(abfd) = (asection *) bfd_zalloc (abfd, sizeof (asection));
+  core_stacksec(abfd) = bfd_make_section_anyway (abfd, ".stack");
   if (core_stacksec (abfd) == NULL)
-    return NULL;
-  core_datasec (abfd) = (asection *) bfd_zalloc (abfd, sizeof (asection));
+    goto fail;
+  core_datasec (abfd) = bfd_make_section_anyway (abfd, ".data");
   if (core_datasec (abfd) == NULL)
-    return NULL;
-  core_regsec (abfd) = (asection *) bfd_zalloc (abfd, sizeof (asection));
+    goto fail;
+  core_regsec (abfd) = bfd_make_section_anyway (abfd, ".reg");
   if (core_regsec (abfd) == NULL)
-    return NULL;
-
-  core_stacksec (abfd)->name = ".stack";
-  core_datasec (abfd)->name = ".data";
-  core_regsec (abfd)->name = ".reg";
+    goto fail;
 
   core_stacksec (abfd)->flags = SEC_ALLOC + SEC_LOAD + SEC_HAS_CONTENTS;
   core_datasec (abfd)->flags = SEC_ALLOC + SEC_LOAD + SEC_HAS_CONTENTS;
@@ -215,7 +210,7 @@ trad_unix_core_file_p (abfd)
      0 is at the place pointed to by u_ar0 (by setting the vma of the start
      of the section to -u_ar0).  GDB uses this info to locate the regs,
      using minor trickery to get around the offset-or-absolute-addr problem.  */
-  core_regsec (abfd)->vma = - (bfd_vma) u.u_ar0;
+  core_regsec (abfd)->vma = - (bfd_vma) (unsigned long) u.u_ar0;
 
   core_datasec (abfd)->filepos = NBPG * UPAGES;
   core_stacksec (abfd)->filepos = (NBPG * UPAGES) + NBPG * u.u_dsize
@@ -230,12 +225,13 @@ trad_unix_core_file_p (abfd)
   core_datasec (abfd)->alignment_power = 2;
   core_regsec (abfd)->alignment_power = 2;
 
-  abfd->sections = core_stacksec (abfd);
-  core_stacksec (abfd)->next = core_datasec (abfd);
-  core_datasec (abfd)->next = core_regsec (abfd);
-  abfd->section_count = 3;
-
   return abfd->xvec;
+
+ fail:
+  bfd_release (abfd, abfd->tdata.any);
+  abfd->tdata.any = NULL;
+  bfd_section_list_clear (abfd);
+  return NULL;
 }
 
 char *
@@ -251,7 +247,6 @@ trad_unix_core_file_failing_command (abfd)
     return 0;
 }
 
-/* ARGSUSED */
 int
 trad_unix_core_file_failing_signal (ignore_abfd)
      bfd *ignore_abfd ATTRIBUTE_UNUSED;
@@ -263,13 +258,12 @@ trad_unix_core_file_failing_signal (ignore_abfd)
 #endif
 }
 
-/* ARGSUSED */
-boolean
+bfd_boolean
 trad_unix_core_file_matches_executable_p  (core_bfd, exec_bfd)
      bfd *core_bfd ATTRIBUTE_UNUSED;
      bfd *exec_bfd ATTRIBUTE_UNUSED;
 {
-  return true;		/* FIXME, We have no way of telling at this point */
+  return TRUE;		/* FIXME, We have no way of telling at this point */
 }
 
 /* If somebody calls any byte-swapping routines, shoot them.  */
@@ -278,10 +272,13 @@ swap_abort ()
 {
   abort (); /* This way doesn't require any declaration for ANSI to fuck up */
 }
-#define	NO_GET	((bfd_vma (*) PARAMS ((   const bfd_byte *))) swap_abort )
-#define	NO_PUT	((void    (*) PARAMS ((bfd_vma, bfd_byte *))) swap_abort )
-#define	NO_SIGNED_GET \
-  ((bfd_signed_vma (*) PARAMS ((const bfd_byte *))) swap_abort )
+
+#define	NO_GET ((bfd_vma (*) (const void *)) swap_abort)
+#define	NO_PUT ((void (*) (bfd_vma, void *)) swap_abort)
+#define	NO_GETS ((bfd_signed_vma (*) (const void *)) swap_abort)
+#define	NO_GET64 ((bfd_uint64_t (*) (const void *)) swap_abort)
+#define	NO_PUT64 ((void (*) (bfd_uint64_t, void *)) swap_abort)
+#define	NO_GETS64 ((bfd_int64_t (*) (const void *)) swap_abort)
 
 const bfd_target trad_core_vec =
   {
@@ -296,39 +293,39 @@ const bfd_target trad_core_vec =
     0,			                                   /* symbol prefix */
     ' ',						   /* ar_pad_char */
     16,							   /* ar_max_namelen */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 64 bit data */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 32 bit data */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 16 bit data */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 64 bit hdrs */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 32 bit hdrs */
-    NO_GET, NO_SIGNED_GET, NO_PUT,	/* 16 bit hdrs */
+    NO_GET64, NO_GETS64, NO_PUT64,	/* 64 bit data */
+    NO_GET, NO_GETS, NO_PUT,		/* 32 bit data */
+    NO_GET, NO_GETS, NO_PUT,		/* 16 bit data */
+    NO_GET64, NO_GETS64, NO_PUT64,	/* 64 bit hdrs */
+    NO_GET, NO_GETS, NO_PUT,		/* 32 bit hdrs */
+    NO_GET, NO_GETS, NO_PUT,		/* 16 bit hdrs */
 
     {				/* bfd_check_format */
-     _bfd_dummy_target,		/* unknown format */
-     _bfd_dummy_target,		/* object file */
-     _bfd_dummy_target,		/* archive */
-     trad_unix_core_file_p	/* a core file */
+      _bfd_dummy_target,		/* unknown format */
+      _bfd_dummy_target,		/* object file */
+      _bfd_dummy_target,		/* archive */
+      trad_unix_core_file_p		/* a core file */
     },
     {				/* bfd_set_format */
-     bfd_false, bfd_false,
-     bfd_false, bfd_false
+      bfd_false, bfd_false,
+      bfd_false, bfd_false
     },
     {				/* bfd_write_contents */
-     bfd_false, bfd_false,
-     bfd_false, bfd_false
+      bfd_false, bfd_false,
+      bfd_false, bfd_false
     },
 
-       BFD_JUMP_TABLE_GENERIC (_bfd_generic),
-       BFD_JUMP_TABLE_COPY (_bfd_generic),
-       BFD_JUMP_TABLE_CORE (trad_unix),
-       BFD_JUMP_TABLE_ARCHIVE (_bfd_noarchive),
-       BFD_JUMP_TABLE_SYMBOLS (_bfd_nosymbols),
-       BFD_JUMP_TABLE_RELOCS (_bfd_norelocs),
-       BFD_JUMP_TABLE_WRITE (_bfd_generic),
-       BFD_JUMP_TABLE_LINK (_bfd_nolink),
-       BFD_JUMP_TABLE_DYNAMIC (_bfd_nodynamic),
+    BFD_JUMP_TABLE_GENERIC (_bfd_generic),
+    BFD_JUMP_TABLE_COPY (_bfd_generic),
+    BFD_JUMP_TABLE_CORE (trad_unix),
+    BFD_JUMP_TABLE_ARCHIVE (_bfd_noarchive),
+    BFD_JUMP_TABLE_SYMBOLS (_bfd_nosymbols),
+    BFD_JUMP_TABLE_RELOCS (_bfd_norelocs),
+    BFD_JUMP_TABLE_WRITE (_bfd_generic),
+    BFD_JUMP_TABLE_LINK (_bfd_nolink),
+    BFD_JUMP_TABLE_DYNAMIC (_bfd_nodynamic),
 
     NULL,
 
     (PTR) 0			/* backend_data */
-};
+  };
