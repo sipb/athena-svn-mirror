@@ -1,3 +1,41 @@
+1999-09-12  Paul D. Smith  <psmith@gnu.org>
+
+	* fnmatch.c: Last GLIBC version wouldn't compile outside of GLIBC
+	(undefined reference to internal_function).  Update to the latest
+	version
+
+1999-09-11  Paul Eggert  <eggert@twinsun.com>
+
+	* glob.h (glob): If #defining to glob64, do this before
+	declaring it, so that all declarations and uses match, and
+	do not declare glob64, to avoid a declaration clash.
+	(globfree): Likewise with globfree64.
+
+1999-09-08  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* glob.c (prefix_array) [__MSDOS__,WINDOWS32]: Keep the trailing
+	slash unless DIRNAME is just "x:/".
+
+1999-09-06  Paul D. Smith  <psmith@gnu.org>
+
+	* fnmatch.c: Update to latest version from GLIBC.
+
+1999-07-21  Paul D. Smith  <psmith@gnu.org>
+
+	* glob.c, glob.h, fnmatch.c, fnmatch.h: Update to latest version
+	from GLIBC.
+
+	* fnmatch.c (internal_fnmatch): Use K&R definition syntax, not ANSI.
+	(__strchrnul): This won't exist outside GLIBC, so create one.
+
+	* glob.c: Move getlogin{,_r} prototypes below glob.h to get __P()
+	macro.
+
+1998-08-05  Paul D. Smith  <psmith@gnu.org>
+
+	* configure.in: Remove; configuration for glob is handled by the
+	make configure.in.
+
 1998-07-29  Paul D. Smith  <psmith@gnu.org>
 
 	* glob.c, fnmatch.c: New versions from the GLIBC folks (Ulrich

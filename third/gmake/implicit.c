@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "rule.h"
@@ -35,7 +36,7 @@ try_implicit_rule (file, depth)
      struct file *file;
      unsigned int depth;
 {
-  DEBUGPR ("Looking for an implicit rule for `%s'.\n");
+  DEBUGPR (_("Looking for an implicit rule for `%s'.\n"));
 
   /* The order of these searches was previously reversed.  My logic now is
      that since the non-archive search uses more information in the target
@@ -50,7 +51,7 @@ try_implicit_rule (file, depth)
      archive member name to search for implicit rules.  */
   if (ar_name (file->name))
     {
-      DEBUGPR ("Looking for archive-member implicit rule for `%s'.\n");
+      DEBUGPR (_("Looking for archive-member implicit rule for `%s'.\n"));
       if (pattern_search (file, 1, depth, 0))
 	return 1;
     }
@@ -148,7 +149,7 @@ pattern_search (file, archive, depth, recursions)
      that is not just `%'.  */
   int specific_rule_matched = 0;
 
-  register unsigned int i;
+  register unsigned int i = 0;  /* uninit checks OK */
   register struct rule *rule;
   register struct dep *dep;
 
@@ -167,7 +168,7 @@ pattern_search (file, archive, depth, recursions)
       lastslash = rindex (filename, ']');
 #else
       lastslash = rindex (filename, '/');
-#ifdef __MSDOS__
+#if defined(__MSDOS__) || defined(WINDOWS32)
       /* Handle backslashes (possibly mixed with forward slashes)
 	 and the case of "d:file".  */
       {
@@ -198,7 +199,7 @@ pattern_search (file, archive, depth, recursions)
 	 don't use it here.  */
       if (rule->in_use)
 	{
-	  DEBUGP2 ("Avoiding implicit rule recursion.%s%s\n", "", "");
+	  DEBUGP2 (_("Avoiding implicit rule recursion.%s%s\n"), "", "");
 	  continue;
 	}
 
@@ -246,11 +247,11 @@ pattern_search (file, archive, depth, recursions)
 	  if (check_lastslash)
 	    {
 	      if (stem > (lastslash + 1)
-		  && strncmp (target, lastslash + 1, stem - lastslash - 1))
+		  && !strneq (target, lastslash + 1, stem - lastslash - 1))
 		continue;
 	    }
 	  else if (stem > filename
-		   && strncmp (target, filename, stem - filename))
+		   && !strneq (target, filename, stem - filename))
 	    continue;
 
 	  /* Check that the rule pattern matches the text after the stem.
@@ -334,7 +335,7 @@ pattern_search (file, archive, depth, recursions)
 	      stemlen -= (lastslash - filename) + 1;
 	    }
 
-	  DEBUGP2 ("Trying pattern rule with stem `%.*s'.\n",
+	  DEBUGP2 (_("Trying pattern rule with stem `%.*s'.\n"),
 		   (int) stemlen, stem);
 
 	  /* Try each dependency; see if it "exists".  */
@@ -342,6 +343,8 @@ pattern_search (file, archive, depth, recursions)
 	  deps_found = 0;
 	  for (dep = rule->deps; dep != 0; dep = dep->next)
 	    {
+              struct file *fp;
+
 	      /* If the dependency name has a %, substitute the stem.  */
 	      p = index (dep_name (dep), '%');
 	      if (p != 0)
@@ -373,16 +376,16 @@ pattern_search (file, archive, depth, recursions)
 		     "impossible", then the rule fails and don't
 		     bother trying it on the second pass either
 		     since we know that will fail too.  */
-		  DEBUGP2 ("Rejecting impossible %s dependency `%s'.\n",
-			   p == depname ? "implicit" : "rule", p);
+		  DEBUGP2 (_("Rejecting impossible %s prerequisite `%s'.\n"),
+			   p == depname ? _("implicit") : _("rule"), p);
 		  tryrules[i] = 0;
 		  break;
 		}
 
 	      intermediate_files[deps_found] = 0;
 
-	      DEBUGP2 ("Trying %s dependency `%s'.\n",
-		       p == depname ? "implicit" : "rule", p);
+	      DEBUGP2 (_("Trying %s prerequisite `%s'.\n"),
+		       p == depname ? _("implicit") : _("rule"), p);
 
 	      /* The DEP->changed flag says that this dependency resides in a
 		 nonexistent directory.  So we normally can skip looking for
@@ -390,20 +393,24 @@ pattern_search (file, archive, depth, recursions)
 		 dependency file we are actually looking for is in a different
 		 directory (the one gotten by prepending FILENAME's directory),
 		 so it might actually exist.  */
+              /* If we find a file but the intermediate flag is set, then it
+                 was put here by a .INTERMEDIATE: rule so ignore it.  */
 
 	      if ((!dep->changed || check_lastslash)
-		  && (lookup_file (p) != 0 || file_exists_p (p)))
+		  && (((fp = lookup_file (p)) != 0 && !fp->intermediate)
+                      || file_exists_p (p)))
 		{
-		  found_files[deps_found++] = savestring (p, strlen (p));
+		  found_files[deps_found++] = xstrdup (p);
 		  continue;
 		}
 	      /* This code, given FILENAME = "lib/foo.o", dependency name
 		 "lib/foo.c", and VPATH=src, searches for "src/lib/foo.c".  */
 	      vp = p;
-	      if (vpath_search (&vp, (time_t *) 0))
+	      if (vpath_search (&vp, (FILE_TIMESTAMP *) 0))
 		{
-		  DEBUGP2 ("Found dependency `%s' as VPATH `%s'\n", p, vp);
-		  strcpy(vp, p);
+		  DEBUGP2 (_("Found prerequisite `%s' as VPATH `%s'\n"),
+                           p, vp);
+		  strcpy (vp, p);
 		  found_files[deps_found++] = vp;
 		  continue;
 		}
@@ -418,15 +425,15 @@ pattern_search (file, archive, depth, recursions)
 		    intermediate_file
 		      = (struct file *) alloca (sizeof (struct file));
 
-		  DEBUGP2 ("Looking for a rule with %s file `%s'.\n",
-			   "intermediate", p);
+		  DEBUGP2 (_("Looking for a rule with %s file `%s'.\n"),
+			   _("intermediate"), p);
 
 		  bzero ((char *) intermediate_file, sizeof (struct file));
 		  intermediate_file->name = p;
 		  if (pattern_search (intermediate_file, 0, depth + 1,
 				      recursions + 1))
 		    {
-		      p = savestring (p, strlen (p));
+		      p = xstrdup (p);
 		      intermediate_patterns[deps_found]
 			= intermediate_file->name;
 		      intermediate_file->name = p;
@@ -435,7 +442,7 @@ pattern_search (file, archive, depth, recursions)
 		      /* Allocate an extra copy to go in FOUND_FILES,
 			 because every elt of FOUND_FILES is consumed
 			 or freed later.  */
-		      found_files[deps_found] = savestring (p, strlen (p));
+		      found_files[deps_found] = xstrdup (p);
 		      ++deps_found;
 		      continue;
 		    }
@@ -518,6 +525,7 @@ pattern_search (file, archive, depth, recursions)
 	  f->deps = imf->deps;
 	  f->cmds = imf->cmds;
 	  f->stem = imf->stem;
+          f->also_make = imf->also_make;
 	  imf = lookup_file (intermediate_patterns[deps_found]);
 	  if (imf != 0 && imf->precious)
 	    f->precious = 1;
@@ -526,6 +534,9 @@ pattern_search (file, archive, depth, recursions)
 	  for (dep = f->deps; dep != 0; dep = dep->next)
 	    {
 	      dep->file = enter_file (dep->name);
+              /* enter_file uses dep->name _if_ we created a new file.  */
+              if (dep->name != dep->file->name)
+                free (dep->name);
 	      dep->name = 0;
 	      dep->file->tried_implicit |= dep->changed;
 	    }
@@ -585,10 +596,9 @@ pattern_search (file, archive, depth, recursions)
 
   file->cmds = rule->cmds;
 
-  /* Put the targets other than the one that
-     matched into FILE's `also_make' member.  */
+  /* If this rule builds other targets, too, put the others into FILE's
+     `also_make' member.  */
 
-  /* If there was only one target, there is nothing to do.  */
   if (rule->targets[1] != 0)
     for (i = 0; rule->targets[i] != 0; ++i)
       if (i != matches[foundrule])

@@ -8,7 +8,9 @@
 #include "w32err.h"
 #include "config.h"
 
-static char *make_command_line( char *shell_name, char *exec_path, char **argv);
+static char *make_command_line(char *shell_name, char *exec_path, char **argv);
+
+extern int debug_flag; /* from make */
 
 typedef struct sub_process_t {
 	int sv_stdin[2];
@@ -52,7 +54,7 @@ process_adjust_wait_state(sub_process* pproc)
 	if (i < proc_index) {
 		proc_index--;
 		if (i != proc_index)
-			memmove(&proc_array[i], &proc_array[i+1], 
+			memmove(&proc_array[i], &proc_array[i+1],
 				(proc_index-i) * sizeof(sub_process*));
 		proc_array[proc_index] = NULL;
 	}
@@ -91,7 +93,7 @@ process_wait_for_any_private(void)
 
 	/* return pointer to process */
 	if (retval != WAIT_FAILED) {
-		sub_process* pproc = proc_array[which];	
+		sub_process* pproc = proc_array[which];
 		process_adjust_wait_state(pproc);
 		return pproc;
 	} else
@@ -111,8 +113,8 @@ process_kill(HANDLE proc, int signal)
 
 /*
  * Use this function to register processes you wish to wait for by
- * calling process_file_io(NULL) or process_wait_any(). This must be done 
- * because it is possible for callers of this library to reuse the same 
+ * calling process_file_io(NULL) or process_wait_any(). This must be done
+ * because it is possible for callers of this library to reuse the same
  * handle for multiple processes launches :-(
  */
 void
@@ -127,7 +129,7 @@ process_register(HANDLE proc)
  * you must do 1 of things:
  *
  * 	x = process_easy(...);
- *	
+ *
  * or
  *
  *	x = process_init_fd();
@@ -146,14 +148,14 @@ process_register(HANDLE proc)
 HANDLE
 process_wait_for_any(void)
 {
-	sub_process* pproc = process_wait_for_any_private(); 
+	sub_process* pproc = process_wait_for_any_private();
 
 	if (!pproc)
 		return NULL;
 	else {
-		/* 
-		 * Ouch! can't tell caller if this fails directly. Caller 
-		 * will have to use process_last_err() 
+		/*
+		 * Ouch! can't tell caller if this fails directly. Caller
+		 * will have to use process_last_err()
                  */
 		(void) process_file_io(pproc);
 		return ((HANDLE) pproc);
@@ -238,7 +240,7 @@ process_init()
 	   uses the default security descriptor of the calling process.
 	   Instead we use a security descriptor with no DACL.  This
 	   allows nonrestricted access to the associated objects. */
-	
+
 	if (!InitializeSecurityDescriptor((PSECURITY_DESCRIPTOR)(&sd),
 					  SECURITY_DESCRIPTOR_REVISION)) {
 		pproc->last_err = GetLastError();
@@ -265,11 +267,11 @@ process_init()
 	//
 	// Mark the parent sides of the pipes as non-inheritable
 	//
-	if (SetHandleInformation(stdin_pipes[0], 
+	if (SetHandleInformation(stdin_pipes[0],
 				HANDLE_FLAG_INHERIT, 0) == FALSE ||
-		SetHandleInformation(stdout_pipes[0], 
+		SetHandleInformation(stdout_pipes[0],
 				HANDLE_FLAG_INHERIT, 0) == FALSE ||
-		SetHandleInformation(stderr_pipes[0], 
+		SetHandleInformation(stderr_pipes[0],
 				HANDLE_FLAG_INHERIT, 0) == FALSE) {
 
 		pproc->last_err = GetLastError();
@@ -367,9 +369,9 @@ find_file(char *exec_path, LPOFSTRUCT file_info)
 /*
  * Description:   Create the child process to be helped
  *
- * Returns: 
+ * Returns:
  *
- * Notes/Dependencies:  
+ * Notes/Dependencies:
  */
 long
 process_begin(
@@ -414,10 +416,10 @@ process_begin(
 	}
 	else {
 		/* Attempt to read the first line of the file */
-		if (ReadFile( exec_handle, 
+		if (ReadFile( exec_handle,
 				buf, sizeof(buf) - 1, /* leave room for trailing NULL */
 				&bytes_returned, 0) == FALSE || bytes_returned < 2) {
-	
+
 			pproc->last_err = GetLastError();
 			pproc->lerrno = E_IO;
 			CloseHandle(exec_handle);
@@ -429,7 +431,7 @@ process_begin(
 			 *	exec_path args to shell_name exec_path args
 			 */
 			char *p;
-	
+
 			/*  Make sure buf is NULL terminated */
 			buf[bytes_returned] = 0;
 			/*
@@ -443,7 +445,7 @@ process_begin(
 			p = strchr(buf, '\r');
 			if (p)
 				*p = 0;
-		
+
 			/*
 			 *  Find base name of shell
 			 */
@@ -454,7 +456,7 @@ process_begin(
 				shell_name = &buf[2];/* skipping "#!" */
 			}
 
-		} 
+		}
 		CloseHandle(exec_handle);
 	}
 
@@ -504,18 +506,22 @@ process_begin(
 		if (envblk) free(envblk);
 		return -1;
 	} else {
+		if (debug_flag)
+			printf("CreateProcess(%s,%s,...)\n",
+				exec_path ? exec_path : "NULL",
+				command_line ? command_line : "NULL");
 		if (CreateProcess(
 			exec_path,
 			command_line,
 			NULL,
 			0, /* default security attributes for thread */
 			TRUE, /* inherit handles (e.g. helper pipes, oserv socket) */
-			flags, 
+			flags,
 			envblk,
 			0, /* default starting directory */
 			&startInfo,
 			&procInfo) == FALSE) {
-		
+
 			pproc->last_err = GetLastError();
 			pproc->lerrno = E_FORK;
 			fprintf(stderr, "process_begin: CreateProcess(%s, %s, ...) failed.\n", exec_path, command_line);
@@ -524,11 +530,11 @@ process_begin(
 			return(-1);
 		}
 	}
-	
+
 	pproc->pid = (int)procInfo.hProcess;
 	/* Close the thread handle -- we'll just watch the process */
 	CloseHandle(procInfo.hThread);
-	
+
 	/* Close the halves of the pipes we don't need */
 	if (pproc->sv_stdin) {
 		CloseHandle((HANDLE)pproc->sv_stdin[1]);
@@ -551,7 +557,7 @@ process_begin(
 
 
 
-static DWORD 
+static DWORD
 proc_stdin_thread(sub_process *pproc)
 {
 	DWORD in_done;
@@ -583,7 +589,7 @@ proc_stdout_thread(sub_process *pproc)
 	pproc->outcnt = 0;
 
 	for (;;) {
-		if (ReadFile( (HANDLE)pproc->sv_stdout[0], &c, 1, &nread, NULL) 
+		if (ReadFile( (HANDLE)pproc->sv_stdout[0], &c, 1, &nread, NULL)
 					== FALSE) {
 /*			map_windows32_error_to_string(GetLastError());*/
 			_endthreadex(0);
@@ -591,7 +597,7 @@ proc_stdout_thread(sub_process *pproc)
 		if (nread == 0)
 			_endthreadex(0);
 		if (pproc->outcnt + nread > bufsize) {
-			bufsize += nread + 512; 
+			bufsize += nread + 512;
 			pproc->outp = realloc(pproc->outp, bufsize);
 			if (pproc->outp == NULL) {
 				pproc->outcnt = 0;
@@ -622,7 +628,7 @@ proc_stderr_thread(sub_process *pproc)
 		if (nread == 0)
 			_endthreadex(0);
 		if (pproc->errcnt + nread > bufsize) {
-			bufsize += nread + 512; 
+			bufsize += nread + 512;
 			pproc->errp = realloc(pproc->errp, bufsize);
 			if (pproc->errp == NULL) {
 				pproc->errcnt = 0;
@@ -640,14 +646,14 @@ proc_stderr_thread(sub_process *pproc)
  *
  * Description:
  *
- * Returns: 
+ * Returns:
  *
  * Notes/Dependencies:
  */
 	long
 process_pipe_io(
 	HANDLE proc,
-	char *stdin_data, 
+	char *stdin_data,
 	int stdin_data_len)
 {
 	sub_process *pproc = (sub_process *)proc;
@@ -681,19 +687,19 @@ process_pipe_io(
 			goto done;
 		}
 	}
-	
+
 	/*
 	 *   Assume child will produce stdout and stderr
-	 */ 
+	 */
 	tStdout = (HANDLE) _beginthreadex( 0, 1024,
 		(unsigned (__stdcall *) (void *))proc_stdout_thread, pproc, 0,
 		(unsigned int *) &dwStdout);
 	tStderr = (HANDLE) _beginthreadex( 0, 1024,
 		(unsigned (__stdcall *) (void *))proc_stderr_thread, pproc, 0,
 		(unsigned int *) &dwStderr);
-	
+
 	if (tStdout == 0 || tStderr == 0) {
-	
+
 		pproc->last_err = GetLastError();
 		pproc->lerrno = E_SCALL;
 		goto done;
@@ -718,12 +724,12 @@ process_pipe_io(
 		if (!child_dead) {
 			wait_list[wait_count++] = childhand;
 		}
-		
+
 		wait_return = WaitForMultipleObjects(wait_count, wait_list,
 			 FALSE, /* don't wait for all: one ready will do */
 			 child_dead? 1000 :INFINITE); /* after the child dies, subthreads have
 			 	one second to collect all remaining output */
-		
+
 		if (wait_return == WAIT_FAILED) {
 /*			map_windows32_error_to_string(GetLastError());*/
 			pproc->last_err = GetLastError();
@@ -732,48 +738,48 @@ process_pipe_io(
 		}
 
 		ready_hand = wait_list[wait_return - WAIT_OBJECT_0];
-		
+
 		if (ready_hand == tStdin) {
 			CloseHandle((HANDLE)pproc->sv_stdin[0]);
 			(HANDLE)pproc->sv_stdin[0] = 0;
 			CloseHandle(tStdin);
 			tStdin = 0;
 			stdin_eof = TRUE;
-		
+
 		} else if (ready_hand == tStdout) {
-		
+
 		  	CloseHandle((HANDLE)pproc->sv_stdout[0]);
 			(HANDLE)pproc->sv_stdout[0] = 0;
 			CloseHandle(tStdout);
 			tStdout = 0;
 		  	stdout_eof = TRUE;
-		
+
 		} else if (ready_hand == tStderr) {
-			
+
 			CloseHandle((HANDLE)pproc->sv_stderr[0]);
 			(HANDLE)pproc->sv_stderr[0] = 0;
 			CloseHandle(tStderr);
 			tStderr = 0;
 			stderr_eof = TRUE;
-		
+
 		} else if (ready_hand == childhand) {
-			
+
 			if (GetExitCodeProcess(childhand, &pproc->exit_code) == FALSE) {
 				pproc->last_err = GetLastError();
 				pproc->lerrno = E_SCALL;
 				goto done;
 			}
 			child_dead = TRUE;
-	
+
 		} else {
-		
+
 			/* ?? Got back a handle we didn't query ?? */
 			pproc->last_err = 0;
 			pproc->lerrno = E_FAIL;
 			goto done;
 		}
 	}
- 
+
  done:
 	if (tStdin != 0)
 		CloseHandle(tStdin);
@@ -794,7 +800,7 @@ process_pipe_io(
  *
  * Description:
  *
- * Returns: 
+ * Returns:
  *
  * Notes/Dependencies:
  */
@@ -819,7 +825,7 @@ process_file_io(
 
 	/*
 	 * This function is poorly named, and could also be used just to wait
-	 * for child death if you're doing your own pipe I/O.  If that is 
+	 * for child death if you're doing your own pipe I/O.  If that is
 	 * the case, close the pipe handles here.
 	 */
 	if (pproc->sv_stdin[0]) {
@@ -840,7 +846,7 @@ process_file_io(
 	 */
 
 	wait_return = WaitForSingleObject(childhand, INFINITE);
-		
+
 	if (wait_return != WAIT_OBJECT_0) {
 /*		map_windows32_error_to_string(GetLastError());*/
 		pproc->last_err = GetLastError();
@@ -852,7 +858,7 @@ process_file_io(
 		pproc->last_err = GetLastError();
 		pproc->lerrno = E_SCALL;
 	}
-	
+
 done2:
 	if (pproc->lerrno)
 		return(-1);
@@ -884,22 +890,22 @@ process_cleanup(
 	}
 	if ((HANDLE)pproc->pid)
 		CloseHandle((HANDLE)pproc->pid);
-	
+
 	free(pproc);
 }
 
 
 /*
- * Description: 
+ * Description:
  *	 Create a command line buffer to pass to CreateProcess
  *
  * Returns:  the buffer or NULL for failure
  *	Shell case:  sh_name a:/full/path/to/script argv[1] argv[2] ...
  *  Otherwise:   argv[0] argv[1] argv[2] ...
  *
- * Notes/Dependencies: 
+ * Notes/Dependencies:
  *   CreateProcess does not take an argv, so this command creates a
- *   command line for the executable.  
+ *   command line for the executable.
  */
 
 static char *
@@ -912,6 +918,13 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 	unsigned int	bytes_required = 0;
 	char*		command_line;
 	char*		command_line_i;
+	int  cygwin_mode = 0; /* HAVE_CYGWIN_SHELL */
+	int have_sh = 0; /* HAVE_CYGWIN_SHELL */
+
+#ifdef HAVE_CYGWIN_SHELL
+	have_sh = (shell_name != NULL || strstr(full_exec_path, "sh.exe"));
+	cygwin_mode = 1;
+#endif
 
 	if (shell_name && full_exec_path) {
 		bytes_required
@@ -964,9 +977,11 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 				backslash_count = 0;
 				break;
 
+#if !defined(HAVE_MKS_SHELL) && !defined(HAVE_CYGWIN_SHELL)
 			case '\\':
 				backslash_count++;
 				break;
+#endif
 	/*
 	 * At one time we set *enclose_in_quotes_i for '*' or '?' to suppress
 	 * wildcard expansion in programs linked with MSVC's SETARGV.OBJ so
@@ -988,7 +1003,7 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 				backslash_count = 0;
 				break;
 			}
-			
+
 			/*
 			 * Add one for each character in argv[i].
 			 */
@@ -1005,7 +1020,7 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 			 */
 			bytes_required += (backslash_count + 2);
 		}
-		
+
 		/*
 		 * Add one for the intervening space.
 		 */
@@ -1056,6 +1071,11 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 
 		while(*p) {
 			if (*p == '\"') {
+				if (cygwin_mode && have_sh) { /* HAVE_CYGWIN_SHELL */
+					/* instead of a \", cygwin likes "" */
+					*(command_line_i++) = '\"';
+				} else {
+
 				/*
 				 * We have to insert a backslash for the "
 				 * and each \ that precedes the ".
@@ -1066,11 +1086,13 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 					*(command_line_i++) = '\\';
 					backslash_count--;
 				};
-
+				}
+#if !defined(HAVE_MKS_SHELL) && !defined(HAVE_CYGWIN_SHELL)
 			} else if (*p == '\\') {
 				backslash_count++;
 			} else {
 				backslash_count = 0;
+#endif
 			}
 
 			/*
@@ -1080,6 +1102,7 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 		}
 
 		if (*enclose_in_quotes_i) {
+#if !defined(HAVE_MKS_SHELL) && !defined(HAVE_CYGWIN_SHELL)
 			/*
 			 * Add one \ for each \ that precedes the
 			 * closing ".
@@ -1087,17 +1110,17 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
 			while(backslash_count--) {
 				*(command_line_i++) = '\\';
 			};
-				
+#endif
 			*(command_line_i++) = '\"';
 		}
-		
+
 		/*
 		 * Append an intervening space.
 		 */
 		if (*(++argvi)) {
 			*(command_line_i++) = ' ';
 		}
-		
+
 		enclose_in_quotes_i++;
 	}
 
@@ -1114,12 +1137,12 @@ make_command_line( char *shell_name, char *full_exec_path, char **argv)
  * Description: Given an argv and optional envp, launch the process
  *              using the default stdin, stdout, and stderr handles.
  *              Also, register process so that process_wait_for_any_private()
- *		can be used via process_file_io(NULL) or 
+ *		can be used via process_file_io(NULL) or
  *		process_wait_for_any().
  *
- * Returns: 
+ * Returns:
  *
- * Notes/Dependencies:  
+ * Notes/Dependencies:
  */
 HANDLE
 process_easy(

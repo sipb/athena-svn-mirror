@@ -18,7 +18,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "job.h"
@@ -157,7 +158,7 @@ start_remote_job (argv, envp, stdin_fd, is_remote, id_ptr, used_stdin)
   retsock = Rpc_UdpCreate (True, 0);
   if (retsock < 0)
     {
-      error ("exporting: Couldn't create return socket.");
+      error (NILF, "exporting: Couldn't create return socket.");
       return 1;
     }
 
@@ -202,7 +203,7 @@ start_remote_job (argv, envp, stdin_fd, is_remote, id_ptr, used_stdin)
     {
       (void) close (retsock);
       (void) close (sock);
-      error ("exporting to %s: %s",
+      error (NILF, "exporting to %s: %s",
              host ? host->h_name : inet_ntoa (permit.addr),
              Rpc_ErrorMessage (status));
       return 1;
@@ -211,14 +212,14 @@ start_remote_job (argv, envp, stdin_fd, is_remote, id_ptr, used_stdin)
     {
       (void) close (retsock);
       (void) close (sock);
-      error ("exporting to %s: %s",
+      error (NILF, "exporting to %s: %s",
              host ? host->h_name : inet_ntoa (permit.addr),
              msg);
       return 1;
     }
   else
     {
-      error ("*** exported to %s (id %u)",
+      error (NILF, "*** exported to %s (id %u)",
 	      host ? host->h_name : inet_ntoa (permit.addr),
 	      permit.id);
     }

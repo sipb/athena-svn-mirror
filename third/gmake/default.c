@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "rule.h"
@@ -182,21 +183,21 @@ static char *default_suffix_rules[] =
     ".S.o",
     "$(COMPILE.S) -o $@ $<",
     ".c.o",
-    "$(COMPILE.c) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.c) $(OUTPUT_OPTION) $<",
     ".cc.o",
-    "$(COMPILE.cc) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.cc) $(OUTPUT_OPTION) $<",
     ".C.o",
-    "$(COMPILE.C) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.C) $(OUTPUT_OPTION) $<",
     ".cpp.o",
-    "$(COMPILE.cpp) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.cpp) $(OUTPUT_OPTION) $<",
     ".f.o",
-    "$(COMPILE.f) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.f) $(OUTPUT_OPTION) $<",
     ".p.o",
-    "$(COMPILE.p) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.p) $(OUTPUT_OPTION) $<",
     ".F.o",
-    "$(COMPILE.F) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.F) $(OUTPUT_OPTION) $<",
     ".r.o",
-    "$(COMPILE.r) $< $(OUTPUT_OPTION)",
+    "$(COMPILE.r) $(OUTPUT_OPTION) $<",
     ".mod.o",
     "$(COMPILE.mod) -o $@ $<",
 
@@ -221,9 +222,9 @@ static char *default_suffix_rules[] =
     "@$(RM) $@ \n $(LEX.l) $< > $@",
 
     ".F.f",
-    "$(PREPROCESS.F) $< $(OUTPUT_OPTION)",
+    "$(PREPROCESS.F) $(OUTPUT_OPTION) $<",
     ".r.f",
-    "$(PREPROCESS.r) $< $(OUTPUT_OPTION)",
+    "$(PREPROCESS.r) $(OUTPUT_OPTION) $<",
 
     /* This might actually make lex.yy.c if there's no %R%
        directive in $*.l, but in that case why were you
@@ -425,6 +426,16 @@ static char *default_variables[] =
     "SCCS_OUTPUT_OPTION", "-G$@",
 #endif
 
+#ifdef _AMIGA
+    ".LIBPATTERNS", "%.lib",
+#else
+#ifdef __MSDOS__
+    ".LIBPATTERNS", "lib%.a $(DJDIR)/lib/lib%.a",
+#else
+    ".LIBPATTERNS", "lib%.so lib%.a",
+#endif
+#endif
+
 #endif /* !VMS */
     0, 0
   };
@@ -468,7 +479,7 @@ install_default_suffix_rules ()
       if (f->cmds == 0)
 	{
 	  f->cmds = (struct commands *) xmalloc (sizeof (struct commands));
-	  f->cmds->filename = 0;
+	  f->cmds->fileinfo.filenm = 0;
 	  f->cmds->commands = s[1];
 	  f->cmds->command_lines = 0;
 	}
@@ -497,6 +508,9 @@ void
 define_default_variables ()
 {
   register char **s;
+
+  if (no_builtin_variables_flag)
+    return;
 
   for (s = default_variables; *s != 0; s += 2)
     (void) define_variable (s[0], strlen (s[0]), s[1], o_default, 1);

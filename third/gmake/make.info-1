@@ -1,20 +1,20 @@
 This is Info file make.info, produced by Makeinfo version 1.67 from the
 input file make.texinfo.
 
-INFO-DIR-SECTION The GNU make utility
+INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
-* Make: (make.info).               The GNU make utility.
+* Make: (make).            Remake files automatically.
 END-INFO-DIR-ENTRY
 
    This file documents the GNU Make utility, which determines
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.52, last updated 20 May 1998, of `The GNU Make
-Manual', for `make', Version 3.77.
+   This is Edition 0.54, last updated 09 September 1999, of `The GNU
+Make Manual', for `make', Version 3.78.1.
 
-   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97, '98
-Free Software Foundation, Inc.
+   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
+'98, '99         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -40,8 +40,8 @@ Make
 large program need to be recompiled, and issues the commands to
 recompile them.
 
-   This edition of the `GNU Make Manual', last updated 20 May 1998,
-documents GNU `make' Version 3.77.
+   This edition of the `GNU Make Manual', last updated 09 September
+1999, documents GNU `make' Version 3.78.1.
 
    This manual describes `make' and contains the following chapters:
 
@@ -56,7 +56,7 @@ documents GNU `make' Version 3.77.
 * Conditionals::                Use or ignore parts of the makefile based
                                  on the values of variables.
 * Functions::                   Many powerful ways to manipulate text.
-* make Invocation: Running.     How to invoke `make' on the command line.
+* Invoking make: Running.       How to invoke `make' on the command line.
 * Implicit Rules::              Use implicit rules to treat many files alike,
                                  based on their file names.
 * Archives::                    How `make' can update library archives.
@@ -85,7 +85,7 @@ An Introduction to Makefiles
 * How Make Works::              How `make' Processes This Makefile
 * Variables Simplify::          Variables Make Makefiles Simpler
 * make Deduces::                Letting `make' Deduce the Commands
-* Combine By Dependency::       Another Style of Makefile
+* Combine By Prerequisite::     Another Style of Makefile
 * Cleanup::                     Rules for Cleaning the Directory
 
 Writing Makefiles
@@ -97,6 +97,7 @@ Writing Makefiles
 * Remaking Makefiles::          How makefiles get remade.
 * Overriding Makefiles::        How to override part of one makefile
                                  with another makefile.
+* Reading Makefiles::           How makefiles are parsed.
 
 Writing Rules
 
@@ -106,7 +107,7 @@ Writing Rules
 * Directory Search::            Searching other directories for source files.
 * Phony Targets::               Using a target that is not a real file's name.
 * Force Targets::               You can use a target without commands
-                                  or dependencies to mark other
+                                  or prerequisites to mark other
                                   targets as phony.
 * Empty Targets::               When only the date matters and the
                                   files are empty.
@@ -114,12 +115,12 @@ Writing Rules
 * Multiple Targets::            When to make use of several targets in a rule.
 * Multiple Rules::              How to use several rules with the same target.
 * Static Pattern::              Static pattern rules apply to multiple targets
-                                  and can vary the dependencies according to
+                                  and can vary the prerequisites according to
                                   the target name.
 * Double-Colon::                How to use a special kind of rule to allow
                                   several independent rules for one target.
-* Automatic Dependencies::      How to automatically generate rules giving
-                                 dependencies from the source files themselves.
+* Automatic Prerequisites::     How to automatically generate rules giving
+                                 prerequisites from source files themselves.
 
 Using Wildcard Characters in File Names
 
@@ -128,10 +129,10 @@ Using Wildcard Characters in File Names
 * Wildcard Function::           How to cause wildcard expansion where
                                   it does not normally take place.
 
-Searching Directories for Dependencies
+Searching Directories for Prerequisites
 
 * General Search::              Specifying a search path that applies
-                                  to every dependency.
+                                  to every prerequisite.
 * Selective Search::            Specifying a search path
                                   for a specified class of names.
 * Search Algorithm::            When and how search paths are applied.
@@ -199,6 +200,7 @@ Functions for Transforming Text
 * Text Functions::              General-purpose text manipulation functions.
 * File Name Functions::         Functions for manipulating file names.
 * Foreach Function::            Repeat some text with controlled variation.
+* Call Function::               Expand a user-defined function.
 * Origin Function::             Find where a variable got its value.
 * Shell Function::              Substitute the output of a shell command.
 
@@ -265,8 +267,11 @@ Overview of `make'
    The `make' utility automatically determines which pieces of a large
 program need to be recompiled, and issues commands to recompile them.
 This manual describes GNU `make', which was implemented by Richard
-Stallman and Roland McGrath.  GNU `make' conforms to section 6.2 of
-`IEEE Standard 1003.2-1992' (POSIX.2).
+Stallman and Roland McGrath.  Development since Version 3.76 has been
+handled by Paul D. Smith.
+
+   GNU `make' conforms to section 6.2 of `IEEE Standard 1003.2-1992'
+(POSIX.2).
 
    Our examples show C programs, since they are most common, but you
 can use `make' with any programming language whose compiler can be run
@@ -389,7 +394,7 @@ together to produce the new executable editor.
 * How Make Works::              How `make' Processes This Makefile
 * Variables Simplify::          Variables Make Makefiles Simpler
 * make Deduces::                Letting `make' Deduce the Commands
-* Combine By Dependency::       Another Style of Makefile
+* Combine By Prerequisite::     Another Style of Makefile
 * Cleanup::                     Rules for Cleaning the Directory
 
 
@@ -400,7 +405,7 @@ What a Rule Looks Like
 
    A simple makefile consists of "rules" with the following shape:
 
-     TARGET ... : DEPENDENCIES ...
+     TARGET ... : PREREQUISITES ...
              COMMAND
              ...
              ...
@@ -410,23 +415,23 @@ program; examples of targets are executable or object files.  A target
 can also be the name of an action to carry out, such as `clean' (*note
 Phony Targets::.).
 
-   A "dependency" is a file that is used as input to create the target.
-A target often depends on several files.
+   A "prerequisite" is a file that is used as input to create the
+target.  A target often depends on several files.
 
    A "command" is an action that `make' carries out.  A rule may have
 more than one command, each on its own line.  *Please note:* you need
 to put a tab character at the beginning of every command line!  This is
 an obscurity that catches the unwary.
 
-   Usually a command is in a rule with dependencies and serves to
-create a target file if any of the dependencies change.  However, the
-rule that specifies commands for the target need not have dependencies.
-For example, the rule containing the delete command associated with the
-target `clean' does not have dependencies.
+   Usually a command is in a rule with prerequisites and serves to
+create a target file if any of the prerequisites change.  However, the
+rule that specifies commands for the target need not have
+prerequisites.  For example, the rule containing the delete command
+associated with the target `clean' does not have prerequisites.
 
    A "rule", then, explains how and when to remake certain files which
 are the targets of the particular rule.  `make' carries out the
-commands on the dependencies to create or update the target.  A rule
+commands on the prerequisites to create or update the target.  A rule
 can also explain how and when to carry out an action.  *Note Writing
 Rules: Rules.
 
@@ -488,20 +493,20 @@ files from the directory, type:
      make clean
 
    In the example makefile, the targets include the executable file
-`edit', and the object files `main.o' and `kbd.o'.  The dependencies
+`edit', and the object files `main.o' and `kbd.o'.  The prerequisites
 are files such as `main.c' and `defs.h'.  In fact, each `.o' file is
-both a target and a dependency.  Commands include `cc -c main.c' and
+both a target and a prerequisite.  Commands include `cc -c main.c' and
 `cc -c kbd.c'.
 
    When a target is a file, it needs to be recompiled or relinked if any
-of its dependencies change.  In addition, any dependencies that are
+of its prerequisites change.  In addition, any prerequisites that are
 themselves automatically generated should be updated first.  In this
 example, `edit' depends on each of the eight object files; the object
 file `main.o' depends on the source file `main.c' and on the header
 file `defs.h'.
 
    A shell command follows each line that contains a target and
-dependencies.  These shell commands say how to update the target file.
+prerequisites.  These shell commands say how to update the target file.
 A tab character must come at the beginning of every command line to
 distinguish commands lines from other lines in the makefile.  (Bear in
 mind that `make' does not know anything about how the commands work.
@@ -511,10 +516,10 @@ specified when the target file needs to be updated.)
 
    The target `clean' is not a file, but merely the name of an action.
 Since you normally do not want to carry out the actions in this rule,
-`clean' is not a dependency of any other rule.  Consequently, `make'
+`clean' is not a prerequisite of any other rule.  Consequently, `make'
 never does anything with it unless you tell it specifically.  Note that
-this rule not only is not a dependency, it also does not have any
-dependencies, so the only purpose of the rule is to run the specified
+this rule not only is not a prerequisite, it also does not have any
+prerequisites, so the only purpose of the rule is to run the specified
 commands.  Targets that do not refer to files but are just actions are
 called "phony targets".  *Note Phony Targets::, for information about
 this kind of target.  *Note Errors in Commands: Errors, to see how to
@@ -545,16 +550,16 @@ the rules for the files that `edit' depends on, which in this case are
 the object files.  Each of these files is processed according to its
 own rule.  These rules say to update each `.o' file by compiling its
 source file.  The recompilation must be done if the source file, or any
-of the header files named as dependencies, is more recent than the
+of the header files named as prerequisites, is more recent than the
 object file, or if the object file does not exist.
 
    The other rules are processed because their targets appear as
-dependencies of the goal.  If some other rule is not depended on by the
+prerequisites of the goal.  If some other rule is not depended on by the
 goal (or anything it depends on, etc.), that rule is not processed,
 unless you tell `make' to do so (with a command such as `make clean').
 
    Before recompiling an object file, `make' considers updating its
-dependencies, the source file and header files.  This makefile does not
+prerequisites, the source file and header files.  This makefile does not
 specify anything to be done for them--the `.c' and `.h' files are not
 the targets of any rules--so `make' does nothing for these files.  But
 `make' would update automatically generated C programs, such as those
@@ -632,7 +637,7 @@ variable for the object files:
              rm edit $(objects)
 
 
-File: make.info,  Node: make Deduces,  Next: Combine By Dependency,  Prev: Variables Simplify,  Up: Introduction
+File: make.info,  Node: make Deduces,  Next: Combine By Prerequisite,  Prev: Variables Simplify,  Up: Introduction
 
 Letting `make' Deduce the Commands
 ==================================
@@ -646,8 +651,8 @@ can therefore omit the commands from the rules for the object files.
 *Note Using Implicit Rules: Implicit Rules.
 
    When a `.c' file is used automatically in this way, it is also
-automatically added to the list of dependencies.  We can therefore omit
-the `.c' files from the dependencies, provided we omit the commands.
+automatically added to the list of prerequisites.  We can therefore omit
+the `.c' files from the prerequisites, provided we omit the commands.
 
    Here is the entire example, with both of these changes, and a
 variable `objects' as suggested above:
@@ -679,14 +684,14 @@ complications associated with `clean' are described elsewhere.  See
 will see them used frequently.
 
 
-File: make.info,  Node: Combine By Dependency,  Next: Cleanup,  Prev: make Deduces,  Up: Introduction
+File: make.info,  Node: Combine By Prerequisite,  Next: Cleanup,  Prev: make Deduces,  Up: Introduction
 
 Another Style of Makefile
 =========================
 
    When the objects of a makefile are created only by implicit rules, an
 alternative style of makefile is possible.  In this style of makefile,
-you group entries by their dependencies instead of by their targets.
+you group entries by their prerequisites instead of by their targets.
 Here is what one looks like:
 
      objects = main.o kbd.o command.o display.o \
@@ -699,8 +704,8 @@ Here is what one looks like:
      kbd.o command.o files.o : command.h
      display.o insert.o search.o files.o : buffer.h
 
-Here `defs.h' is given as a dependency of all the object files;
-`command.h' and `buffer.h' are dependencies of the specific object
+Here `defs.h' is given as a prerequisite of all the object files;
+`command.h' and `buffer.h' are prerequisites of the specific object
 files listed for them.
 
    Whether this is better is a matter of taste: it is more compact, but
@@ -708,7 +713,7 @@ some people dislike it because they find it clearer to put all the
 information about each target in one place.
 
 
-File: make.info,  Node: Cleanup,  Prev: Combine By Dependency,  Up: Introduction
+File: make.info,  Node: Cleanup,  Prev: Combine By Prerequisite,  Up: Introduction
 
 Rules for Cleaning the Directory
 ================================
@@ -741,9 +746,9 @@ makefile, because we do not want it to run by default!  Thus, in the
 example makefile, we want the rule for `edit', which recompiles the
 editor, to remain the default goal.
 
-   Since `clean' is not a dependency of `edit', this rule will not run
-at all if we give the command `make' with no arguments.  In order to
-make the rule run, we have to type `make clean'.  *Note How to Run
+   Since `clean' is not a prerequisite of `edit', this rule will not
+run at all if we give the command `make' with no arguments.  In order
+to make the rule run, we have to type `make clean'.  *Note How to Run
 `make': Running.
 
 
@@ -764,6 +769,7 @@ from reading a data base called the "makefile".
 * Remaking Makefiles::          How makefiles get remade.
 * Overriding Makefiles::        How to override part of one makefile
                                  with another makefile.
+* Reading Makefiles::           How makefiles are parsed.
 
 
 File: make.info,  Node: Makefile Contents,  Next: Makefile Names,  Up: Makefiles
@@ -777,8 +783,9 @@ variables, and directives are described at length in later chapters.
 
    * An "explicit rule" says when and how to remake one or more files,
      called the rule's targets.  It lists the other files that the
-     targets "depend on", and may also give commands to use to create
-     or update the targets.  *Note Writing Rules: Rules.
+     targets depend on, call the "prerequisites" of the target, and may
+     also give commands to use to create or update the targets.  *Note
+     Writing Rules: Rules.
 
    * An "implicit rule" says when and how to remake a class of files
      based on their names.  It describes how a target may depend on a
@@ -890,12 +897,12 @@ common set of variable definitions (*note Setting Variables: Setting.)
 or pattern rules (*note Defining and Redefining Pattern Rules: Pattern
 Rules.).
 
-   Another such occasion is when you want to generate dependencies from
-source files automatically; the dependencies can be put in a file that
+   Another such occasion is when you want to generate prerequisites from
+source files automatically; the prerequisites can be put in a file that
 is included by the main makefile.  This practice is generally cleaner
-than that of somehow appending the dependencies to the end of the main
+than that of somehow appending the prerequisites to the end of the main
 makefile as has been traditionally done with other versions of `make'.
-*Note Automatic Dependencies::.
+*Note Automatic Prerequisites::.
 
    If the specified name does not start with a slash, and the file is
 not found in the current directory, several other directories are
@@ -980,15 +987,23 @@ over again.  (It will also attempt to update each of them over again,
 but normally this will not change them again, since they are already up
 to date.)
 
+   If you know that one or more of your makefiles cannot be remade and
+you want to keep `make' from performing an implicit rule search on
+them, perhaps for efficiency reasons, you can use any normal method of
+preventing implicit rule lookup to do so.  For example, you can write an
+explicit rule with the makefile as the target, and an empty command
+string (*note Using Empty Commands: Empty Commands.).
+
    If the makefiles specify a double-colon rule to remake a file with
-commands but no dependencies, that file will always be remade (*note
+commands but no prerequisites, that file will always be remade (*note
 Double-Colon::.).  In the case of makefiles, a makefile that has a
-double-colon rule with commands but no dependencies will be remade every
-time `make' is run, and then again after `make' starts over and reads
-the makefiles in again.  This would cause an infinite loop: `make'
-would constantly remake the makefile, and never do anything else.  So,
-to avoid this, `make' will *not* attempt to remake makefiles which are
-specified as double-colon targets but have no dependencies.
+double-colon rule with commands but no prerequisites will be remade
+every time `make' is run, and then again after `make' starts over and
+reads the makefiles in again.  This would cause an infinite loop:
+`make' would constantly remake the makefile, and never do anything
+else.  So, to avoid this, `make' will *not* attempt to remake makefiles
+which are specified as targets of a double-colon rule with commands but
+no prerequisites.
 
    If you do not specify any makefiles to be read with `-f' or `--file'
 options, `make' will try the default makefile names; *note What Name to
@@ -1013,7 +1028,7 @@ updated even if `-t' is specified.  Likewise, `-q' (or `--question')
 and `-n' (or `--just-print') do not prevent updating of makefiles,
 because an out-of-date makefile would result in the wrong output for
 other targets.  Thus, `make -f mfile -n foo' will update `mfile', read
-it in, and then print the commands to update `foo' and its dependencies
+it in, and then print the commands to update `foo' and its prerequisites
 without running them.  The commands printed for `foo' will be those
 specified in the updated contents of `mfile'.
 
@@ -1030,7 +1045,7 @@ them.  The commands for `foo' will be those specified by the existing
 contents of `mfile'.
 
 
-File: make.info,  Node: Overriding Makefiles,  Prev: Remaking Makefiles,  Up: Makefiles
+File: make.info,  Node: Overriding Makefiles,  Next: Reading Makefiles,  Prev: Remaking Makefiles,  Up: Makefiles
 
 Overriding Part of Another Makefile
 ===================================
@@ -1068,58 +1083,9 @@ If you say `make bar', `make' will find no way to make `bar' in
 
    The way this works is that the pattern rule has a pattern of just
 `%', so it matches any target whatever.  The rule specifies a
-dependency `force', to guarantee that the commands will be run even if
-the target file already exists.  We give `force' target empty commands
-to prevent `make' from searching for an implicit rule to build
+prerequisite `force', to guarantee that the commands will be run even
+if the target file already exists.  We give `force' target empty
+commands to prevent `make' from searching for an implicit rule to build
 it--otherwise it would apply the same match-anything rule to `force'
-itself and create a dependency loop!
-
-
-File: make.info,  Node: Rules,  Next: Commands,  Prev: Makefiles,  Up: Top
-
-Writing Rules
-*************
-
-   A "rule" appears in the makefile and says when and how to remake
-certain files, called the rule's "targets" (most often only one per
-rule).  It lists the other files that are the "dependencies" of the
-target, and "commands" to use to create or update the target.
-
-   The order of rules is not significant, except for determining the
-"default goal": the target for `make' to consider, if you do not
-otherwise specify one.  The default goal is the target of the first
-rule in the first makefile.  If the first rule has multiple targets,
-only the first target is taken as the default.  There are two
-exceptions: a target starting with a period is not a default unless it
-contains one or more slashes, `/', as well; and, a target that defines
-a pattern rule has no effect on the default goal.  (*Note Defining and
-Redefining Pattern Rules: Pattern Rules.)
-
-   Therefore, we usually write the makefile so that the first rule is
-the one for compiling the entire program or all the programs described
-by the makefile (often with a target called `all').  *Note Arguments to
-Specify the Goals: Goals.
-
-* Menu:
-
-* Rule Example::                An example explained.
-* Rule Syntax::                 General syntax explained.
-* Wildcards::                   Using wildcard characters such as `*'.
-* Directory Search::            Searching other directories for source files.
-* Phony Targets::               Using a target that is not a real file's name.
-* Force Targets::               You can use a target without commands
-                                  or dependencies to mark other
-                                  targets as phony.
-* Empty Targets::               When only the date matters and the
-                                  files are empty.
-* Special Targets::             Targets with special built-in meanings.
-* Multiple Targets::            When to make use of several targets in a rule.
-* Multiple Rules::              How to use several rules with the same target.
-* Static Pattern::              Static pattern rules apply to multiple targets
-                                  and can vary the dependencies according to
-                                  the target name.
-* Double-Colon::                How to use a special kind of rule to allow
-                                  several independent rules for one target.
-* Automatic Dependencies::      How to automatically generate rules giving
-                                 dependencies from the source files themselves.
+itself and create a prerequisite loop!
 

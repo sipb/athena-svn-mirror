@@ -1,20 +1,20 @@
 This is Info file make.info, produced by Makeinfo version 1.67 from the
 input file make.texinfo.
 
-INFO-DIR-SECTION The GNU make utility
+INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
-* Make: (make.info).               The GNU make utility.
+* Make: (make).            Remake files automatically.
 END-INFO-DIR-ENTRY
 
    This file documents the GNU Make utility, which determines
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.52, last updated 20 May 1998, of `The GNU Make
-Manual', for `make', Version 3.77.
+   This is Edition 0.54, last updated 09 September 1999, of `The GNU
+Make Manual', for `make', Version 3.78.1.
 
-   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97, '98
-Free Software Foundation, Inc.
+   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
+'98, '99         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +29,358 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Catalogue of Rules,  Next: Implicit Variables,  Prev: Using Implicit,  Up: Implicit Rules
+
+Catalogue of Implicit Rules
+===========================
+
+   Here is a catalogue of predefined implicit rules which are always
+available unless the makefile explicitly overrides or cancels them.
+*Note Canceling Implicit Rules: Canceling Rules, for information on
+canceling or overriding an implicit rule.  The `-r' or
+`--no-builtin-rules' option cancels all predefined rules.
+
+   Not all of these rules will always be defined, even when the `-r'
+option is not given.  Many of the predefined implicit rules are
+implemented in `make' as suffix rules, so which ones will be defined
+depends on the "suffix list" (the list of prerequisites of the special
+target `.SUFFIXES').  The default suffix list is: `.out', `.a', `.ln',
+`.o', `.c', `.cc', `.C', `.p', `.f', `.F', `.r', `.y', `.l', `.s',
+`.S', `.mod', `.sym', `.def', `.h', `.info', `.dvi', `.tex', `.texinfo',
+`.texi', `.txinfo', `.w', `.ch' `.web', `.sh', `.elc', `.el'.  All of
+the implicit rules described below whose prerequisites have one of
+these suffixes are actually suffix rules.  If you modify the suffix
+list, the only predefined suffix rules in effect will be those named by
+one or two of the suffixes that are on the list you specify; rules
+whose suffixes fail to be on the list are disabled.  *Note
+Old-Fashioned Suffix Rules: Suffix Rules, for full details on suffix
+rules.
+
+Compiling C programs
+     `N.o' is made automatically from `N.c' with a command of the form
+     `$(CC) -c $(CPPFLAGS) $(CFLAGS)'.
+
+Compiling C++ programs
+     `N.o' is made automatically from `N.cc' or `N.C' with a command of
+     the form `$(CXX) -c $(CPPFLAGS) $(CXXFLAGS)'.  We encourage you to
+     use the suffix `.cc' for C++ source files instead of `.C'.
+
+Compiling Pascal programs
+     `N.o' is made automatically from `N.p' with the command `$(PC) -c
+     $(PFLAGS)'.
+
+Compiling Fortran and Ratfor programs
+     `N.o' is made automatically from `N.r', `N.F' or `N.f' by running
+     the Fortran compiler.  The precise command used is as follows:
+
+    `.f'
+          `$(FC) -c $(FFLAGS)'.
+
+    `.F'
+          `$(FC) -c $(FFLAGS) $(CPPFLAGS)'.
+
+    `.r'
+          `$(FC) -c $(FFLAGS) $(RFLAGS)'.
+
+Preprocessing Fortran and Ratfor programs
+     `N.f' is made automatically from `N.r' or `N.F'.  This rule runs
+     just the preprocessor to convert a Ratfor or preprocessable
+     Fortran program into a strict Fortran program.  The precise
+     command used is as follows:
+
+    `.F'
+          `$(FC) -F $(CPPFLAGS) $(FFLAGS)'.
+
+    `.r'
+          `$(FC) -F $(FFLAGS) $(RFLAGS)'.
+
+Compiling Modula-2 programs
+     `N.sym' is made from `N.def' with a command of the form `$(M2C)
+     $(M2FLAGS) $(DEFFLAGS)'.  `N.o' is made from `N.mod'; the form is:
+     `$(M2C) $(M2FLAGS) $(MODFLAGS)'.
+
+Assembling and preprocessing assembler programs
+     `N.o' is made automatically from `N.s' by running the assembler,
+     `as'.  The precise command is `$(AS) $(ASFLAGS)'.
+
+     `N.s' is made automatically from `N.S' by running the C
+     preprocessor, `cpp'.  The precise command is `$(CPP) $(CPPFLAGS)'.
+
+Linking a single object file
+     `N' is made automatically from `N.o' by running the linker
+     (usually called `ld') via the C compiler.  The precise command
+     used is `$(CC) $(LDFLAGS) N.o $(LOADLIBES) $(LDLIBS)'.
+
+     This rule does the right thing for a simple program with only one
+     source file.  It will also do the right thing if there are multiple
+     object files (presumably coming from various other source files),
+     one of which has a name matching that of the executable file.
+     Thus,
+
+          x: y.o z.o
+
+     when `x.c', `y.c' and `z.c' all exist will execute:
+
+          cc -c x.c -o x.o
+          cc -c y.c -o y.o
+          cc -c z.c -o z.o
+          cc x.o y.o z.o -o x
+          rm -f x.o
+          rm -f y.o
+          rm -f z.o
+
+     In more complicated cases, such as when there is no object file
+     whose name derives from the executable file name, you must write
+     an explicit command for linking.
+
+     Each kind of file automatically made into `.o' object files will
+     be automatically linked by using the compiler (`$(CC)', `$(FC)' or
+     `$(PC)'; the C compiler `$(CC)' is used to assemble `.s' files)
+     without the `-c' option.  This could be done by using the `.o'
+     object files as intermediates, but it is faster to do the
+     compiling and linking in one step, so that's how it's done.
+
+Yacc for C programs
+     `N.c' is made automatically from `N.y' by running Yacc with the
+     command `$(YACC) $(YFLAGS)'.
+
+Lex for C programs
+     `N.c' is made automatically from `N.l' by by running Lex.  The
+     actual command is `$(LEX) $(LFLAGS)'.
+
+Lex for Ratfor programs
+     `N.r' is made automatically from `N.l' by by running Lex.  The
+     actual command is `$(LEX) $(LFLAGS)'.
+
+     The convention of using the same suffix `.l' for all Lex files
+     regardless of whether they produce C code or Ratfor code makes it
+     impossible for `make' to determine automatically which of the two
+     languages you are using in any particular case.  If `make' is
+     called upon to remake an object file from a `.l' file, it must
+     guess which compiler to use.  It will guess the C compiler, because
+     that is more common.  If you are using Ratfor, make sure `make'
+     knows this by mentioning `N.r' in the makefile.  Or, if you are
+     using Ratfor exclusively, with no C files, remove `.c' from the
+     list of implicit rule suffixes with:
+
+          .SUFFIXES:
+          .SUFFIXES: .o .r .f .l ...
+
+Making Lint Libraries from C, Yacc, or Lex programs
+     `N.ln' is made from `N.c' by running `lint'.  The precise command
+     is `$(LINT) $(LINTFLAGS) $(CPPFLAGS) -i'.  The same command is
+     used on the C code produced from `N.y' or `N.l'.
+
+TeX and Web
+     `N.dvi' is made from `N.tex' with the command `$(TEX)'.  `N.tex'
+     is made from `N.web' with `$(WEAVE)', or from `N.w' (and from
+     `N.ch' if it exists or can be made) with `$(CWEAVE)'.  `N.p' is
+     made from `N.web' with `$(TANGLE)' and `N.c' is made from `N.w'
+     (and from `N.ch' if it exists or can be made) with `$(CTANGLE)'.
+
+Texinfo and Info
+     `N.dvi' is made from `N.texinfo', `N.texi', or `N.txinfo', with
+     the command `$(TEXI2DVI) $(TEXI2DVI_FLAGS)'.  `N.info' is made from
+     `N.texinfo', `N.texi', or `N.txinfo', with the command
+     `$(MAKEINFO) $(MAKEINFO_FLAGS)'.
+
+RCS
+     Any file `N' is extracted if necessary from an RCS file named
+     either `N,v' or `RCS/N,v'.  The precise command used is
+     `$(CO) $(COFLAGS)'.  `N' will not be extracted from RCS if it
+     already exists, even if the RCS file is newer.  The rules for RCS
+     are terminal (*note Match-Anything Pattern Rules: Match-Anything
+     Rules.), so RCS files cannot be generated from another source;
+     they must actually exist.
+
+SCCS
+     Any file `N' is extracted if necessary from an SCCS file named
+     either `s.N' or `SCCS/s.N'.  The precise command used is
+     `$(GET) $(GFLAGS)'.  The rules for SCCS are terminal (*note
+     Match-Anything Pattern Rules: Match-Anything Rules.), so SCCS
+     files cannot be generated from another source; they must actually
+     exist.
+
+     For the benefit of SCCS, a file `N' is copied from `N.sh' and made
+     executable (by everyone).  This is for shell scripts that are
+     checked into SCCS.  Since RCS preserves the execution permission
+     of a file, you do not need to use this feature with RCS.
+
+     We recommend that you avoid using of SCCS.  RCS is widely held to
+     be superior, and is also free.  By choosing free software in place
+     of comparable (or inferior) proprietary software, you support the
+     free software movement.
+
+   Usually, you want to change only the variables listed in the table
+above, which are documented in the following section.
+
+   However, the commands in built-in implicit rules actually use
+variables such as `COMPILE.c', `LINK.p', and `PREPROCESS.S', whose
+values contain the commands listed above.
+
+   `make' follows the convention that the rule to compile a `.X' source
+file uses the variable `COMPILE.X'.  Similarly, the rule to produce an
+executable from a `.X' file uses `LINK.X'; and the rule to preprocess a
+`.X' file uses `PREPROCESS.X'.
+
+   Every rule that produces an object file uses the variable
+`OUTPUT_OPTION'.  `make' defines this variable either to contain `-o
+$@', or to be empty, depending on a compile-time option.  You need the
+`-o' option to ensure that the output goes into the right file when the
+source file is in a different directory, as when using `VPATH' (*note
+Directory Search::.).  However, compilers on some systems do not accept
+a `-o' switch for object files.  If you use such a system, and use
+`VPATH', some compilations will put their output in the wrong place.  A
+possible workaround for this problem is to give `OUTPUT_OPTION' the
+value `; mv $*.o $@'.
+
+
+File: make.info,  Node: Implicit Variables,  Next: Chained Rules,  Prev: Catalogue of Rules,  Up: Implicit Rules
+
+Variables Used by Implicit Rules
+================================
+
+   The commands in built-in implicit rules make liberal use of certain
+predefined variables.  You can alter these variables in the makefile,
+with arguments to `make', or in the environment to alter how the
+implicit rules work without redefining the rules themselves.  You can
+cancel all variables used by implicit rules with the `-R' or
+`--no-builtin-variables' option.
+
+   For example, the command used to compile a C source file actually
+says `$(CC) -c $(CFLAGS) $(CPPFLAGS)'.  The default values of the
+variables used are `cc' and nothing, resulting in the command `cc -c'.
+By redefining `CC' to `ncc', you could cause `ncc' to be used for all C
+compilations performed by the implicit rule.  By redefining `CFLAGS' to
+be `-g', you could pass the `-g' option to each compilation.  *All*
+implicit rules that do C compilation use `$(CC)' to get the program
+name for the compiler and *all* include `$(CFLAGS)' among the arguments
+given to the compiler.
+
+   The variables used in implicit rules fall into two classes: those
+that are names of programs (like `CC') and those that contain arguments
+for the programs (like `CFLAGS').  (The "name of a program" may also
+contain some command arguments, but it must start with an actual
+executable program name.)  If a variable value contains more than one
+argument, separate them with spaces.
+
+   Here is a table of variables used as names of programs in built-in
+rules:
+
+`AR'
+     Archive-maintaining program; default `ar'.
+
+`AS'
+     Program for doing assembly; default `as'.
+
+`CC'
+     Program for compiling C programs; default `cc'.
+
+`CXX'
+     Program for compiling C++ programs; default `g++'.
+
+`CO'
+     Program for extracting a file from RCS; default `co'.
+
+`CPP'
+     Program for running the C preprocessor, with results to standard
+     output; default `$(CC) -E'.
+
+`FC'
+     Program for compiling or preprocessing Fortran and Ratfor programs;
+     default `f77'.
+
+`GET'
+     Program for extracting a file from SCCS; default `get'.
+
+`LEX'
+     Program to use to turn Lex grammars into C programs or Ratfor
+     programs; default `lex'.
+
+`PC'
+     Program for compiling Pascal programs; default `pc'.
+
+`YACC'
+     Program to use to turn Yacc grammars into C programs; default
+     `yacc'.
+
+`YACCR'
+     Program to use to turn Yacc grammars into Ratfor programs; default
+     `yacc -r'.
+
+`MAKEINFO'
+     Program to convert a Texinfo source file into an Info file; default
+     `makeinfo'.
+
+`TEX'
+     Program to make TeX DVI files from TeX source; default `tex'.
+
+`TEXI2DVI'
+     Program to make TeX DVI files from Texinfo source; default
+     `texi2dvi'.
+
+`WEAVE'
+     Program to translate Web into TeX; default `weave'.
+
+`CWEAVE'
+     Program to translate C Web into TeX; default `cweave'.
+
+`TANGLE'
+     Program to translate Web into Pascal; default `tangle'.
+
+`CTANGLE'
+     Program to translate C Web into C; default `ctangle'.
+
+`RM'
+     Command to remove a file; default `rm -f'.
+
+   Here is a table of variables whose values are additional arguments
+for the programs above.  The default values for all of these is the
+empty string, unless otherwise noted.
+
+`ARFLAGS'
+     Flags to give the archive-maintaining program; default `rv'.
+
+`ASFLAGS'
+     Extra flags to give to the assembler (when explicitly invoked on a
+     `.s' or `.S' file).
+
+`CFLAGS'
+     Extra flags to give to the C compiler.
+
+`CXXFLAGS'
+     Extra flags to give to the C++ compiler.
+
+`COFLAGS'
+     Extra flags to give to the RCS `co' program.
+
+`CPPFLAGS'
+     Extra flags to give to the C preprocessor and programs that use it
+     (the C and Fortran compilers).
+
+`FFLAGS'
+     Extra flags to give to the Fortran compiler.
+
+`GFLAGS'
+     Extra flags to give to the SCCS `get' program.
+
+`LDFLAGS'
+     Extra flags to give to compilers when they are supposed to invoke
+     the linker, `ld'.
+
+`LFLAGS'
+     Extra flags to give to Lex.
+
+`PFLAGS'
+     Extra flags to give to the Pascal compiler.
+
+`RFLAGS'
+     Extra flags to give to the Fortran compiler for Ratfor programs.
+
+`YFLAGS'
+     Extra flags to give to Yacc.
 
 
 File: make.info,  Node: Chained Rules,  Next: Pattern Rules,  Prev: Implicit Variables,  Up: Implicit Rules
@@ -61,8 +413,8 @@ not exist.  If an ordinary file B does not exist, and `make' considers
 a target that depends on B, it invariably creates B and then updates
 the target from B.  But if B is an intermediate file, then `make' can
 leave well enough alone.  It won't bother updating B, or the ultimate
-target, unless some dependency of B is newer than that target or there
-is some other reason to update that target.
+target, unless some prerequisite of B is newer than that target or
+there is some other reason to update that target.
 
    The second difference is that if `make' *does* create B in order to
 update something else, it deletes B later on after it is no longer
@@ -71,20 +423,20 @@ needed.  Therefore, an intermediate file which did not exist before
 to you by printing a `rm -f' command showing which file it is deleting.
 
    Ordinarily, a file cannot be intermediate if it is mentioned in the
-makefile as a target or dependency.  However, you can explicitly mark a
-file as intermediate by listing it as a dependency of the special target
-`.INTERMEDIATE'.  This takes effect even if the file is mentioned
+makefile as a target or prerequisite.  However, you can explicitly mark
+a file as intermediate by listing it as a prerequisite of the special
+target `.INTERMEDIATE'.  This takes effect even if the file is mentioned
 explicitly in some other way.
 
    You can prevent automatic deletion of an intermediate file by
-marking it as a "secondary" file.  To do this, list it as a dependency
-of the special target `.SECONDARY'.  When a file is secondary, `make'
-will not create the file merely because it does not already exist, but
-`make' does not automatically delete the file.  Marking a file as
-secondary also marks it as intermediate.
+marking it as a "secondary" file.  To do this, list it as a
+prerequisite of the special target `.SECONDARY'.  When a file is
+secondary, `make' will not create the file merely because it does not
+already exist, but `make' does not automatically delete the file.
+Marking a file as secondary also marks it as intermediate.
 
    You can list the target pattern of an implicit rule (such as `%.o')
-as a dependency of the special target `.PRECIOUS' to preserve
+as a prerequisite of the special target `.PRECIOUS' to preserve
 intermediate files made by implicit rules whose target patterns match
 that file's name; see *Note Interrupts::.
 
@@ -119,7 +471,7 @@ rule looks like an ordinary rule, except that its target contains the
 character `%' (exactly one of them).  The target is considered a
 pattern for matching file names; the `%' can match any nonempty
 substring, while other characters match only themselves.  The
-dependencies likewise use `%' to show how their names relate to the
+prerequisites likewise use `%' to show how their names relate to the
 target name.
 
    Thus, a pattern rule `%.o : %.c' says how to make any file `STEM.o'
@@ -159,36 +511,36 @@ nonempty substring, while other characters match only themselves.
 be at least one character to match the `%'.)  The substring that the
 `%' matches is called the "stem".
 
-   `%' in a dependency of a pattern rule stands for the same stem that
-was matched by the `%' in the target.  In order for the pattern rule to
-apply, its target pattern must match the file name under consideration,
-and its dependency patterns must name files that exist or can be made.
-These files become dependencies of the target.
+   `%' in a prerequisite of a pattern rule stands for the same stem
+that was matched by the `%' in the target.  In order for the pattern
+rule to apply, its target pattern must match the file name under
+consideration, and its prerequisite patterns must name files that exist
+or can be made.  These files become prerequisites of the target.
 
    Thus, a rule of the form
 
      %.o : %.c ; COMMAND...
 
 specifies how to make a file `N.o', with another file `N.c' as its
-dependency, provided that `N.c' exists or can be made.
+prerequisite, provided that `N.c' exists or can be made.
 
-   There may also be dependencies that do not use `%'; such a dependency
-attaches to every file made by this pattern rule.  These unvarying
-dependencies are useful occasionally.
+   There may also be prerequisites that do not use `%'; such a
+prerequisite attaches to every file made by this pattern rule.  These
+unvarying prerequisites are useful occasionally.
 
-   A pattern rule need not have any dependencies that contain `%', or
-in fact any dependencies at all.  Such a rule is effectively a general
+   A pattern rule need not have any prerequisites that contain `%', or
+in fact any prerequisites at all.  Such a rule is effectively a general
 wildcard.  It provides a way to make any file that matches the target
 pattern.  *Note Last Resort::.
 
    Pattern rules may have more than one target.  Unlike normal rules,
-this does not act as many different rules with the same dependencies and
-commands.  If a pattern rule has multiple targets, `make' knows that
+this does not act as many different rules with the same prerequisites
+and commands.  If a pattern rule has multiple targets, `make' knows that
 the rule's commands are responsible for making all of the targets.  The
 commands are executed only once to make all the targets.  When searching
 for a pattern rule to match a target, the target patterns of a rule
 other than the one that matches the target in need of a rule are
-incidental: `make' worries only about giving commands and dependencies
+incidental: `make' worries only about giving commands and prerequisites
 to the file presently in question.  However, when this file's commands
 are run, the other targets are marked as having been updated themselves.
 
@@ -196,8 +548,8 @@ are run, the other targets are marked as having been updated themselves.
 since this is the order in which they are considered.  Of equally
 applicable rules, only the first one found is used.  The rules you
 write take precedence over those that are built in.  Note however, that
-a rule whose dependencies actually exist or are mentioned always takes
-priority over a rule with dependencies that must be made by chaining
+a rule whose prerequisites actually exist or are mentioned always takes
+priority over a rule with prerequisites that must be made by chaining
 other implicit rules.
 
 
@@ -225,8 +577,8 @@ the target file and the source file in each case where the rule applies
 defines a rule that can make any file `X' whatsoever from a
 corresponding file `X,v' in the subdirectory `RCS'.  Since the target
 is `%', this rule will apply to any file whatever, provided the
-appropriate dependency file exists.  The double colon makes the rule
-"terminal", which means that its dependency may not be an intermediate
+appropriate prerequisite file exists.  The double colon makes the rule
+"terminal", which means that its prerequisite may not be an intermediate
 file (*note Match-Anything Pattern Rules: Match-Anything Rules.).
 
    This pattern rule has two targets:
@@ -238,11 +590,11 @@ This tells `make' that the command `bison -d X.y' will make both
 `X.tab.c' and `X.tab.h'.  If the file `foo' depends on the files
 `parse.tab.o' and `scan.o' and the file `scan.o' depends on the file
 `parse.tab.h', when `parse.y' is changed, the command `bison -d parse.y'
-will be executed only once, and the dependencies of both `parse.tab.o'
+will be executed only once, and the prerequisites of both `parse.tab.o'
 and `scan.o' will be satisfied.  (Presumably the file `parse.tab.o'
 will be recompiled from `parse.tab.c' and the file `scan.o' from
 `scan.c', while `foo' is linked from `parse.tab.o', `scan.o', and its
-other dependencies, and it will execute happily ever after.)
+other prerequisites, and it will execute happily ever after.)
 
 
 File: make.info,  Node: Automatic,  Next: Pattern Match,  Prev: Pattern Examples,  Up: Pattern Rules
@@ -257,9 +609,9 @@ because the name is different each time the implicit rule is applied.
 
    What you do is use a special feature of `make', the "automatic
 variables".  These variables have values computed afresh for each rule
-that is executed, based on the target and dependencies of the rule.  In
-this example, you would use `$@' for the object file name and `$<' for
-the source file name.
+that is executed, based on the target and prerequisites of the rule.
+In this example, you would use `$@' for the object file name and `$<'
+for the source file name.
 
    Here is a table of automatic variables:
 
@@ -277,26 +629,26 @@ the source file name.
      target is not an archive member.
 
 `$<'
-     The name of the first dependency.  If the target got its commands
-     from an implicit rule, this will be the first dependency added by
-     the implicit rule (*note Implicit Rules::.).
+     The name of the first prerequisite.  If the target got its
+     commands from an implicit rule, this will be the first
+     prerequisite added by the implicit rule (*note Implicit Rules::.).
 
 `$?'
-     The names of all the dependencies that are newer than the target,
-     with spaces between them.  For dependencies which are archive
+     The names of all the prerequisites that are newer than the target,
+     with spaces between them.  For prerequisites which are archive
      members, only the member named is used (*note Archives::.).
 
 `$^'
-     The names of all the dependencies, with spaces between them.  For
-     dependencies which are archive members, only the member named is
-     used (*note Archives::.).  A target has only one dependency on
+     The names of all the prerequisites, with spaces between them.  For
+     prerequisites which are archive members, only the member named is
+     used (*note Archives::.).  A target has only one prerequisite on
      each other file it depends on, no matter how many times each file
-     is listed as a dependency.  So if you list a dependency more than
-     once for a target, the value of `$^' contains just one copy of the
-     name.
+     is listed as a prerequisite.  So if you list a prerequisite more
+     than once for a target, the value of `$^' contains just one copy
+     of the name.
 
 `$+'
-     This is like `$^', but dependencies listed more than once are
+     This is like `$^', but prerequisites listed more than once are
      duplicated in the order they were listed in the makefile.  This is
      primarily useful for use in linking commands where it is
      meaningful to repeat library file names in a particular order.
@@ -323,7 +675,7 @@ the source file name.
      recognized suffix, `$*' is set to the empty string for that rule.
 
    `$?' is useful even in explicit rules when you wish to operate on
-only the dependencies that have changed.  For example, suppose that an
+only the prerequisites that have changed.  For example, suppose that an
 archive named `lib' is supposed to contain copies of several object
 files.  This rule copies just the changed object files into the archive:
 
@@ -331,9 +683,9 @@ files.  This rule copies just the changed object files into the archive:
              ar r lib $?
 
    Of the variables listed above, four have values that are single file
-names, and two have values that are lists of file names.  These six have
-variants that get just the file's directory name or just the file name
-within the directory.  The variant variables' names are formed by
+names, and three have values that are lists of file names.  These seven
+have variants that get just the file's directory name or just the file
+name within the directory.  The variant variables' names are formed by
 appending `D' or `F', respectively.  These variants are semi-obsolete
 in GNU `make' since the functions `dir' and `notdir' can be used to get
 a similar effect (*note Functions for File Names: File Name
@@ -368,17 +720,17 @@ function.  Here is a table of the variants:
 `$(<D)'
 `$(<F)'
      The directory part and the file-within-directory part of the first
-     dependency.
+     prerequisite.
 
 `$(^D)'
 `$(^F)'
      Lists of the directory parts and the file-within-directory parts
-     of all dependencies.
+     of all prerequisites.
 
 `$(?D)'
 `$(?F)'
      Lists of the directory parts and the file-within-directory parts of
-     all dependencies that are newer than the target.
+     all prerequisites that are newer than the target.
 
    Note that we use a special stylistic convention when we talk about
 these automatic variables; we write "the value of `$<'", rather than
@@ -400,23 +752,23 @@ either or both of which may be empty.  The pattern matches a file name
 only if the file name starts with the prefix and ends with the suffix,
 without overlap.  The text between the prefix and the suffix is called
 the "stem".  Thus, when the pattern `%.o' matches the file name
-`test.o', the stem is `test'.  The pattern rule dependencies are turned
-into actual file names by substituting the stem for the character `%'.
-Thus, if in the same example one of the dependencies is written as
-`%.c', it expands to `test.c'.
+`test.o', the stem is `test'.  The pattern rule prerequisites are
+turned into actual file names by substituting the stem for the character
+`%'.  Thus, if in the same example one of the prerequisites is written
+as `%.c', it expands to `test.c'.
 
    When the target pattern does not contain a slash (and it usually does
 not), directory names in the file names are removed from the file name
 before it is compared with the target prefix and suffix.  After the
 comparison of the file name to the target pattern, the directory names,
-along with the slash that ends them, are added on to the dependency
-file names generated from the pattern rule's dependency patterns and
+along with the slash that ends them, are added on to the prerequisite
+file names generated from the pattern rule's prerequisite patterns and
 the file name. The directories are ignored only for the purpose of
 finding an implicit rule to use, not in the application of that rule.
 Thus, `e%t' matches the file name `src/eat', with `src/a' as the stem.
-When dependencies are turned into file names, the directories from the
+When prerequisites are turned into file names, the directories from the
 stem are added at the front, while the rest of the stem is substituted
-for the `%'.  The stem `src/a' with a dependency pattern `c%r' gives
+for the `%'.  The stem `src/a' with a prerequisite pattern `c%r' gives
 the file name `src/car'.
 
 
@@ -429,7 +781,7 @@ Match-Anything Pattern Rules
 whatever.  We call these rules "match-anything" rules.  They are very
 useful, but it can take a lot of time for `make' to think about them,
 because it must consider every such rule for each file name listed
-either as a target or as a dependency.
+either as a target or as a prerequisite.
 
    Suppose the makefile mentions `foo.c'.  For this target, `make'
 would have to consider making it by linking an object file `foo.c.o',
@@ -450,9 +802,9 @@ must choose one or the other for that rule.
 
    One choice is to mark the match-anything rule as "terminal" by
 defining it with a double colon.  When a rule is terminal, it does not
-apply unless its dependencies actually exist.  Dependencies that could
-be made with other implicit rules are not good enough.  In other words,
-no further chaining is allowed beyond a terminal rule.
+apply unless its prerequisites actually exist.  Prerequisites that
+could be made with other implicit rules are not good enough.  In other
+words, no further chaining is allowed beyond a terminal rule.
 
    For example, the built-in implicit rules for extracting sources from
 RCS and SCCS files are terminal; as a result, if the file `foo.c,v' does
@@ -483,8 +835,8 @@ some other specific type of data (such as a C source file).
 
    Special built-in dummy pattern rules are provided solely to recognize
 certain file names so that nonterminal match-anything rules will not be
-considered.  These dummy rules have no dependencies and no commands, and
-they are ignored for all other purposes.  For example, the built-in
+considered.  These dummy rules have no prerequisites and no commands,
+and they are ignored for all other purposes.  For example, the built-in
 implicit rule
 
      %.p :
@@ -505,12 +857,12 @@ Canceling Implicit Rules
 
    You can override a built-in implicit rule (or one you have defined
 yourself) by defining a new pattern rule with the same target and
-dependencies, but different commands.  When the new rule is defined, the
-built-in one is replaced.  The new rule's position in the sequence of
-implicit rules is determined by where you write the new rule.
+prerequisites, but different commands.  When the new rule is defined,
+the built-in one is replaced.  The new rule's position in the sequence
+of implicit rules is determined by where you write the new rule.
 
    You can cancel a built-in implicit rule by defining a pattern rule
-with the same target and dependencies, but no commands.  For example,
+with the same target and prerequisites, but no commands.  For example,
 the following would cancel the rule that runs the assembler:
 
      %.o : %.s
@@ -522,11 +874,11 @@ Defining Last-Resort Default Rules
 ==================================
 
    You can define a last-resort implicit rule by writing a terminal
-match-anything pattern rule with no dependencies (*note Match-Anything
+match-anything pattern rule with no prerequisites (*note Match-Anything
 Rules::.).  This is just like any other pattern rule; the only thing
 special about it is that it will match any target.  So such a rule's
-commands are used for all targets and dependencies that have no commands
-of their own and for which no other implicit rule applies.
+commands are used for all targets and prerequisites that have no
+commands of their own and for which no other implicit rule applies.
 
    For example, when testing a makefile, you might not care if the
 source files contain real data, only that they exist.  Then you might
@@ -535,17 +887,17 @@ do this:
      %::
              touch $@
 
-to cause all the source files needed (as dependencies) to be created
+to cause all the source files needed (as prerequisites) to be created
 automatically.
 
    You can instead define commands to be used for targets for which
 there are no rules at all, even ones which don't specify commands.  You
 do this by writing a rule for the target `.DEFAULT'.  Such a rule's
-commands are used for all dependencies which do not appear as targets in
-any explicit rule, and for which no implicit rule applies.  Naturally,
-there is no `.DEFAULT' rule unless you write one.
+commands are used for all prerequisites which do not appear as targets
+in any explicit rule, and for which no implicit rule applies.
+Naturally, there is no `.DEFAULT' rule unless you write one.
 
-   If you use `.DEFAULT' with no commands or dependencies:
+   If you use `.DEFAULT' with no commands or prerequisites:
 
      .DEFAULT:
 
@@ -574,16 +926,16 @@ compatibility with old makefiles.  They come in two kinds:
 
    A double-suffix rule is defined by a pair of suffixes: the target
 suffix and the source suffix.  It matches any file whose name ends with
-the target suffix.  The corresponding implicit dependency is made by
+the target suffix.  The corresponding implicit prerequisite is made by
 replacing the target suffix with the source suffix in the file name.  A
 two-suffix rule whose target and source suffixes are `.o' and `.c' is
 equivalent to the pattern rule `%.o : %.c'.
 
    A single-suffix rule is defined by a single suffix, which is the
 source suffix.  It matches any file name, and the corresponding implicit
-dependency name is made by appending the source suffix.  A single-suffix
-rule whose source suffix is `.c' is equivalent to the pattern rule `% :
-%.c'.
+prerequisite name is made by appending the source suffix.  A
+single-suffix rule whose source suffix is `.c' is equivalent to the
+pattern rule `% : %.c'.
 
    Suffix rule definitions are recognized by comparing each rule's
 target against a defined list of known suffixes.  When `make' sees a
@@ -600,15 +952,15 @@ for compiling a C source file:
      .c.o:
              $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-   Suffix rules cannot have any dependencies of their own.  If they
+   Suffix rules cannot have any prerequisites of their own.  If they
 have any, they are treated as normal files with funny names, not as
 suffix rules.  Thus, the rule:
 
      .c.o: foo.h
              $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-tells how to make the file `.c.o' from the dependency file `foo.h', and
-is not at all like the pattern rule:
+tells how to make the file `.c.o' from the prerequisite file `foo.h',
+and is not at all like the pattern rule:
 
      %.o: %.c foo.h
              $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
@@ -621,17 +973,17 @@ remove previous rules as do pattern rules with no commands (*note
 Canceling Implicit Rules: Canceling Rules.).  They simply enter the
 suffix or pair of suffixes concatenated as a target in the data base.
 
-   The known suffixes are simply the names of the dependencies of the
+   The known suffixes are simply the names of the prerequisites of the
 special target `.SUFFIXES'.  You can add your own suffixes by writing a
-rule for `.SUFFIXES' that adds more dependencies, as in:
+rule for `.SUFFIXES' that adds more prerequisites, as in:
 
      .SUFFIXES: .hack .win
 
 which adds `.hack' and `.win' to the end of the list of suffixes.
 
    If you wish to eliminate the default known suffixes instead of just
-adding to them, write a rule for `.SUFFIXES' with no dependencies.  By
-special dispensation, this eliminates all existing dependencies of
+adding to them, write a rule for `.SUFFIXES' with no prerequisites.  By
+special dispensation, this eliminates all existing prerequisites of
 `.SUFFIXES'.  You can then write another rule to add the suffixes you
 want.  For example,
 
@@ -655,9 +1007,9 @@ Implicit Rule Search Algorithm
    Here is the procedure `make' uses for searching for an implicit rule
 for a target T.  This procedure is followed for each double-colon rule
 with no commands, for each target of ordinary rules none of which have
-commands, and for each dependency that is not the target of any rule.
-It is also followed recursively for dependencies that come from implicit
-rules, in the search for a chain of rules.
+commands, and for each prerequisite that is not the target of any rule.
+It is also followed recursively for prerequisites that come from
+implicit rules, in the search for a chain of rules.
 
    Suffix rules are not mentioned in this algorithm because suffix
 rules are converted to equivalent pattern rules once the makefiles have
@@ -686,31 +1038,31 @@ rule.
        a. Find the stem S, which is the nonempty part of T or N matched
           by the `%' in the target pattern.
 
-       b. Compute the dependency names by substituting S for `%'; if
+       b. Compute the prerequisite names by substituting S for `%'; if
           the target pattern does not contain a slash, append D to the
-          front of each dependency name.
+          front of each prerequisite name.
 
-       c. Test whether all the dependencies exist or ought to exist.
+       c. Test whether all the prerequisites exist or ought to exist.
           (If a file name is mentioned in the makefile as a target or
-          as an explicit dependency, then we say it ought to exist.)
+          as an explicit prerequisite, then we say it ought to exist.)
 
-          If all dependencies exist or ought to exist, or there are no
-          dependencies, then this rule applies.
+          If all prerequisites exist or ought to exist, or there are no
+          prerequisites, then this rule applies.
 
   6. If no pattern rule has been found so far, try harder.  For each
      pattern rule in the list:
 
        a. If the rule is terminal, ignore it and go on to the next rule.
 
-       b. Compute the dependency names as before.
+       b. Compute the prerequisite names as before.
 
-       c. Test whether all the dependencies exist or ought to exist.
+       c. Test whether all the prerequisites exist or ought to exist.
 
-       d. For each dependency that does not exist, follow this algorithm
-          recursively to see if the dependency can be made by an
-          implicit rule.
+       d. For each prerequisite that does not exist, follow this
+          algorithm recursively to see if the prerequisite can be made
+          by an implicit rule.
 
-       e. If all dependencies exist, ought to exist, or can be made by
+       e. If all prerequisites exist, ought to exist, or can be made by
           implicit rules, then this rule applies.
 
   7. If no implicit rule applies, the rule for `.DEFAULT', if any,
@@ -726,7 +1078,7 @@ the data base and marked as having been updated and having the same
 update status as the file T.
 
    When the commands of a pattern rule are executed for T, the automatic
-variables are set corresponding to the target and dependencies.  *Note
+variables are set corresponding to the target and prerequisites.  *Note
 Automatic Variables: Automatic.
 
 
@@ -754,12 +1106,12 @@ Archive Members as Targets
 ==========================
 
    An individual member of an archive file can be used as a target or
-dependency in `make'.  You specify the member named MEMBER in archive
+prerequisite in `make'.  You specify the member named MEMBER in archive
 file ARCHIVE as follows:
 
      ARCHIVE(MEMBER)
 
-This construct is available only in targets and dependencies, not in
+This construct is available only in targets and prerequisites, not in
 commands!  Most programs that you might use in commands do not support
 this syntax and cannot act directly on archive members.  Only `ar' and
 other programs specifically designed to operate on archives can do so.
@@ -838,290 +1190,4 @@ named `file.o'.  In connection with such usage, the automatic variables
 * Menu:
 
 * Archive Symbols::             How to update archive symbol directories.
-
-
-File: make.info,  Node: Archive Symbols,  Up: Archive Update
-
-Updating Archive Symbol Directories
------------------------------------
-
-   An archive file that is used as a library usually contains a special
-member named `__.SYMDEF' that contains a directory of the external
-symbol names defined by all the other members.  After you update any
-other members, you need to update `__.SYMDEF' so that it will summarize
-the other members properly.  This is done by running the `ranlib'
-program:
-
-     ranlib ARCHIVEFILE
-
-   Normally you would put this command in the rule for the archive file,
-and make all the members of the archive file dependencies of that rule.
-For example,
-
-     libfoo.a: libfoo.a(x.o) libfoo.a(y.o) ...
-             ranlib libfoo.a
-
-The effect of this is to update archive members `x.o', `y.o', etc., and
-then update the symbol directory member `__.SYMDEF' by running
-`ranlib'.  The rules for updating the members are not shown here; most
-likely you can omit them and use the implicit rule which copies files
-into the archive, as described in the preceding section.
-
-   This is not necessary when using the GNU `ar' program, which updates
-the `__.SYMDEF' member automatically.
-
-
-File: make.info,  Node: Archive Pitfalls,  Next: Archive Suffix Rules,  Prev: Archive Update,  Up: Archives
-
-Dangers When Using Archives
-===========================
-
-   It is important to be careful when using parallel execution (the
-`-j' switch; *note Parallel Execution: Parallel.) and archives.  If
-multiple `ar' commands run at the same time on the same archive file,
-they will not know about each other and can corrupt the file.
-
-   Possibly a future version of `make' will provide a mechanism to
-circumvent this problem by serializing all commands that operate on the
-same archive file.  But for the time being, you must either write your
-makefiles to avoid this problem in some other way, or not use `-j'.
-
-
-File: make.info,  Node: Archive Suffix Rules,  Prev: Archive Pitfalls,  Up: Archives
-
-Suffix Rules for Archive Files
-==============================
-
-   You can write a special kind of suffix rule for dealing with archive
-files.  *Note Suffix Rules::, for a full explanation of suffix rules.
-Archive suffix rules are obsolete in GNU `make', because pattern rules
-for archives are a more general mechanism (*note Archive Update::.).
-But they are retained for compatibility with other `make's.
-
-   To write a suffix rule for archives, you simply write a suffix rule
-using the target suffix `.a' (the usual suffix for archive files).  For
-example, here is the old-fashioned suffix rule to update a library
-archive from C source files:
-
-     .c.a:
-             $(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $*.o
-             $(AR) r $@ $*.o
-             $(RM) $*.o
-
-This works just as if you had written the pattern rule:
-
-     (%.o): %.c
-             $(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $*.o
-             $(AR) r $@ $*.o
-             $(RM) $*.o
-
-   In fact, this is just what `make' does when it sees a suffix rule
-with `.a' as the target suffix.  Any double-suffix rule `.X.a' is
-converted to a pattern rule with the target pattern `(%.o)' and a
-dependency pattern of `%.X'.
-
-   Since you might want to use `.a' as the suffix for some other kind
-of file, `make' also converts archive suffix rules to pattern rules in
-the normal way (*note Suffix Rules::.).  Thus a double-suffix rule
-`.X.a' produces two pattern rules: `(%.o): %.X' and `%.a: %.X'.
-
-
-File: make.info,  Node: Features,  Next: Missing,  Prev: Archives,  Up: Top
-
-Features of GNU `make'
-**********************
-
-   Here is a summary of the features of GNU `make', for comparison with
-and credit to other versions of `make'.  We consider the features of
-`make' in 4.2 BSD systems as a baseline.  If you are concerned with
-writing portable makefiles, you should use only the features of `make'
-*not* listed here or in *Note Missing::.
-
-   Many features come from the version of `make' in System V.
-
-   * The `VPATH' variable and its special meaning.  *Note Searching
-     Directories for Dependencies: Directory Search.  This feature
-     exists in System V `make', but is undocumented.  It is documented
-     in 4.3 BSD `make' (which says it mimics System V's `VPATH'
-     feature).
-
-   * Included makefiles.  *Note Including Other Makefiles: Include.
-     Allowing multiple files to be included with a single directive is
-     a GNU extension.
-
-   * Variables are read from and communicated via the environment.
-     *Note Variables from the Environment: Environment.
-
-   * Options passed through the variable `MAKEFLAGS' to recursive
-     invocations of `make'.  *Note Communicating Options to a
-     Sub-`make': Options/Recursion.
-
-   * The automatic variable `$%' is set to the member name in an
-     archive reference.  *Note Automatic Variables: Automatic.
-
-   * The automatic variables `$@', `$*', `$<', `$%', and `$?' have
-     corresponding forms like `$(@F)' and `$(@D)'.  We have generalized
-     this to `$^' as an obvious extension.  *Note Automatic Variables:
-     Automatic.
-
-   * Substitution variable references.  *Note Basics of Variable
-     References: Reference.
-
-   * The command-line options `-b' and `-m', accepted and ignored.  In
-     System V `make', these options actually do something.
-
-   * Execution of recursive commands to run `make' via the variable
-     `MAKE' even if `-n', `-q' or `-t' is specified.  *Note Recursive
-     Use of `make': Recursion.
-
-   * Support for suffix `.a' in suffix rules.  *Note Archive Suffix
-     Rules::.  This feature is obsolete in GNU `make', because the
-     general feature of rule chaining (*note Chains of Implicit Rules:
-     Chained Rules.) allows one pattern rule for installing members in
-     an archive (*note Archive Update::.) to be sufficient.
-
-   * The arrangement of lines and backslash-newline combinations in
-     commands is retained when the commands are printed, so they appear
-     as they do in the makefile, except for the stripping of initial
-     whitespace.
-
-   The following features were inspired by various other versions of
-`make'.  In some cases it is unclear exactly which versions inspired
-which others.
-
-   * Pattern rules using `%'.  This has been implemented in several
-     versions of `make'.  We're not sure who invented it first, but
-     it's been spread around a bit.  *Note Defining and Redefining
-     Pattern Rules: Pattern Rules.
-
-   * Rule chaining and implicit intermediate files.  This was
-     implemented by Stu Feldman in his version of `make' for AT&T
-     Eighth Edition Research Unix, and later by Andrew Hume of AT&T
-     Bell Labs in his `mk' program (where he terms it "transitive
-     closure").  We do not really know if we got this from either of
-     them or thought it up ourselves at the same time.  *Note Chains of
-     Implicit Rules: Chained Rules.
-
-   * The automatic variable `$^' containing a list of all dependencies
-     of the current target.  We did not invent this, but we have no
-     idea who did.  *Note Automatic Variables: Automatic.  The
-     automatic variable `$+' is a simple extension of `$^'.
-
-   * The "what if" flag (`-W' in GNU `make') was (as far as we know)
-     invented by Andrew Hume in `mk'.  *Note Instead of Executing the
-     Commands: Instead of Execution.
-
-   * The concept of doing several things at once (parallelism) exists in
-     many incarnations of `make' and similar programs, though not in the
-     System V or BSD implementations.  *Note Command Execution:
-     Execution.
-
-   * Modified variable references using pattern substitution come from
-     SunOS 4.  *Note Basics of Variable References: Reference.  This
-     functionality was provided in GNU `make' by the `patsubst'
-     function before the alternate syntax was implemented for
-     compatibility with SunOS 4.  It is not altogether clear who
-     inspired whom, since GNU `make' had `patsubst' before SunOS 4 was
-     released.
-
-   * The special significance of `+' characters preceding command lines
-     (*note Instead of Executing the Commands: Instead of Execution.) is
-     mandated by `IEEE Standard 1003.2-1992' (POSIX.2).
-
-   * The `+=' syntax to append to the value of a variable comes from
-     SunOS 4 `make'.  *Note Appending More Text to Variables: Appending.
-
-   * The syntax `ARCHIVE(MEM1 MEM2...)' to list multiple members in a
-     single archive file comes from SunOS 4 `make'.  *Note Archive
-     Members::.
-
-   * The `-include' directive to include makefiles with no error for a
-     nonexistent file comes from SunOS 4 `make'.  (But note that SunOS 4
-     `make' does not allow multiple makefiles to be specified in one
-     `-include' directive.)  The same feature appears with the name
-     `sinclude' in SGI `make' and perhaps others.
-
-   The remaining features are inventions new in GNU `make':
-
-   * Use the `-v' or `--version' option to print version and copyright
-     information.
-
-   * Use the `-h' or `--help' option to summarize the options to `make'.
-
-   * Simply-expanded variables.  *Note The Two Flavors of Variables:
-     Flavors.
-
-   * Pass command-line variable assignments automatically through the
-     variable `MAKE' to recursive `make' invocations.  *Note Recursive
-     Use of `make': Recursion.
-
-   * Use the `-C' or `--directory' command option to change directory.
-     *Note Summary of Options: Options Summary.
-
-   * Make verbatim variable definitions with `define'.  *Note Defining
-     Variables Verbatim: Defining.
-
-   * Declare phony targets with the special target `.PHONY'.
-
-     Andrew Hume of AT&T Bell Labs implemented a similar feature with a
-     different syntax in his `mk' program.  This seems to be a case of
-     parallel discovery.  *Note Phony Targets: Phony Targets.
-
-   * Manipulate text by calling functions.  *Note Functions for
-     Transforming Text: Functions.
-
-   * Use the `-o' or `--old-file' option to pretend a file's
-     modification-time is old.  *Note Avoiding Recompilation of Some
-     Files: Avoiding Compilation.
-
-   * Conditional execution.
-
-     This feature has been implemented numerous times in various
-     versions of `make'; it seems a natural extension derived from the
-     features of the C preprocessor and similar macro languages and is
-     not a revolutionary concept.  *Note Conditional Parts of
-     Makefiles: Conditionals.
-
-   * Specify a search path for included makefiles.  *Note Including
-     Other Makefiles: Include.
-
-   * Specify extra makefiles to read with an environment variable.
-     *Note The Variable `MAKEFILES': MAKEFILES Variable.
-
-   * Strip leading sequences of `./' from file names, so that `./FILE'
-     and `FILE' are considered to be the same file.
-
-   * Use a special search method for library dependencies written in the
-     form `-lNAME'.  *Note Directory Search for Link Libraries:
-     Libraries/Search.
-
-   * Allow suffixes for suffix rules (*note Old-Fashioned Suffix Rules:
-     Suffix Rules.) to contain any characters.  In other versions of
-     `make', they must begin with `.' and not contain any `/'
-     characters.
-
-   * Keep track of the current level of `make' recursion using the
-     variable `MAKELEVEL'.  *Note Recursive Use of `make': Recursion.
-
-   * Provide any goals given on the command line in the variable
-     `MAKECMDGOALS'.  *Note Arguments to Specify the Goals: Goals.
-
-   * Specify static pattern rules.  *Note Static Pattern Rules: Static
-     Pattern.
-
-   * Provide selective `vpath' search.  *Note Searching Directories for
-     Dependencies: Directory Search.
-
-   * Provide computed variable references.  *Note Basics of Variable
-     References: Reference.
-
-   * Update makefiles.  *Note How Makefiles Are Remade: Remaking
-     Makefiles.  System V `make' has a very, very limited form of this
-     functionality in that it will check out SCCS files for makefiles.
-
-   * Various new built-in implicit rules.  *Note Catalogue of Implicit
-     Rules: Catalogue of Rules.
-
-   * The built-in variable `MAKE_VERSION' gives the version number of
-     `make'.
 

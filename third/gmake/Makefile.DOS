@@ -1,7 +1,7 @@
 # -*-Makefile-*- template for DJGPP
 # Makefile.in generated automatically by automake 1.2 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-1998, 1999 Free Software Foundation, Inc.
 # This Makefile.DOS is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
@@ -53,9 +53,10 @@ CPP = gcc -E
 LIBOBJS =
 MAKEINFO = ${bindir}/makeinfo
 PACKAGE = make
+PERL = perl
 RANLIB = ranlib
 REMOTE = stub
-VERSION = 3.77
+VERSION = 3.78.1
 
 AUTOMAKE_OPTIONS = 1.2
 
@@ -63,7 +64,7 @@ bin_PROGRAMS =	make
 
 make_SOURCES =	main.c commands.c job.c dir.c file.c misc.c read.c remake.c rule.c implicit.c default.c variable.c expand.c function.c vpath.c version.c ar.c arscan.c commands.h dep.h filedef.h job.h make.h rule.h variable.h signame.c signame.h getopt.c getopt1.c getopt.h remote-$(REMOTE).c
 # This should include the glob/ prefix
-libglob_a_SOURCES =	glob/fnmatch.c glob/glob.c glob/config.h glob/fnmatch.h glob/glob.h
+libglob_a_SOURCES =	glob/fnmatch.c glob/glob.c glob/fnmatch.h glob/glob.h
 make_LDADD =	  glob/libglob.a
 
 info_TEXINFOS =	make.texinfo
@@ -80,6 +81,8 @@ mkinstalldirs = ${bindir}/gmkdir -p
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  build.sh
 PROGRAMS =  $(bin_PROGRAMS)
+
+MAKE_HOST = i386-pc-msdosdjgpp
 
 
 DEFS =  -I. -I$(srcdir) -I.
@@ -118,7 +121,11 @@ HEADERS = $(wildcard $(srcdir)/*.h)
 default: all
 
 .SUFFIXES:
-.SUFFIXES: .c .dvi .info .o .ps .texi .texinfo
+.SUFFIXES: .S .c .dvi .info .o .ps .s .texi .texinfo .txi
+
+mostlyclean-hdr:
+
+clean-hdr:
 
 distclean-hdr:
 	-rm -f config.h
@@ -141,9 +148,15 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 
 uninstall-binPROGRAMS:
 	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(bindir)/`echo $$p|sed '$(transform)'`;  done
+	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(bindir)/`echo $$p|sed '$(transform)'`.exe;  done
 
 .c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 clean-noinstLIBRARIES:
@@ -155,7 +168,7 @@ mostlyclean-compile:
 clean-compile:
 
 distclean-compile:
-	-rm -f *.tab.c
+	-rm -f *.tab.c *_tab.c
 
 maintainer-clean-compile:
 
@@ -188,6 +201,12 @@ DVIPS = dvips
 .texinfo.dvi:
 	TEXINPUTS="$(srcdir);$$TEXINPUTS"    MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
 
+.txi.info:
+	$(MAKEINFO) $(srcdir)/$< -o ./$@
+
+.txi.dvi:
+	TEXINPUTS="$(srcdir);$$TEXINPUTS"    MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+
 .dvi.ps:
 	$(DVIPS) $< -o $@
 
@@ -208,7 +227,9 @@ dist-info: $(INFO_DEPS)
 	for base in $(INFO_DEPS); do    d=$(srcdir);    for file in `cd $$d && eval echo $$base*`; do      test -f $(distdir)/$$file      || ln $$d/$$file $(distdir)/$$file 2> /dev/null      || cp -p $$d/$$file $(distdir)/$$file;    done;  done
 
 mostlyclean-aminfo:
-	rm -f make.aux make.cp make.cps make.dvi make.fn make.fns make.ky    make.kys make.ps make.log make.pg make.toc make.tp make.tps make.vr make.vrs    make.op make.tr make.cv make.cn
+	-rm -f make.aux make.cp make.cps make.dvi make.fn make.fns make.ky \
+	  make.kys make.ps make.log make.pg make.toc make.tp make.tps \
+	  make.vr make.vrs make.op make.tr make.cv make.cn
 
 clean-aminfo:
 
@@ -277,7 +298,8 @@ libglob.a: $(libglob_a_OBJECTS)
 	$(AR) cru libglob.a $(libglob_a_OBJECTS) $(libglob_a_LIBADD)
 	$(RANLIB) libglob.a
 
-mostlyclean-recursive clean-recursive distclean-recursive  maintainer-clean-recursive:
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive check-recursive:
 ifeq ($(words $(SUBDIRS)), 1)
 	@echo Making $(shell echo $@ | sed s/-recursive//) in $(SUBDIRS)
 	$(MAKE) -C $(SUBDIRS) -f ../Makefile $(shell echo $@ | sed s/-recursive//)-am
@@ -346,8 +368,8 @@ distdir: $(DISTFILES)
 
 info: $(INFO_DEPS) info-recursive
 dvi: $(DVIS) dvi-recursive
-check: all-am
-	$(MAKE) check-recursive check-local
+check: all-am check-recursive check-local
+	@:
 installcheck: installcheck-recursive
 all-recursive-am: config.h
 	$(MAKE) all-recursive
@@ -421,7 +443,7 @@ maintainer-clean-compile install-info-am uninstall-info \
 mostlyclean-aminfo distclean-aminfo clean-aminfo \
 maintainer-clean-aminfo install-data-recursive uninstall-data-recursive \
 install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
+uninstalldirs-recursive all-recursive check-recursive check-am \
 installcheck-recursive info-recursive dvi-recursive \
 mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
@@ -446,8 +468,27 @@ dist-hook:
 
 # --------------- Local CHECK Section
 
-check-local: check-loadavg check-regression
-.PHONY: check-loadavg check-regression
+# Note: check-loadavg is NOT a prerequisite of check-local, since
+# there's no uptime utility, and the test it does doesn't make sense
+# on MSDOS anyway.
+check-local: check-shell check-regression
+	@banner=" Regression PASSED: GNU Make $(VERSION) ($(MAKE_HOST)) built with $(CC) "; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	echo
+
+.PHONY: check-loadavg check-shell check-regression
+
+# > check-shell
+#
+# check-shell is designed to fail if they don't have a Unixy shell
+# installed.  The test suite requires such a shell.
+check-shell:
+	@echo If Make says Error -1, you do not have Unix-style shell installed
+	@foo=bar.exe :
 
 # > check-loadavg
 #
@@ -472,23 +513,22 @@ check-loadavg: loadavg
 # parents.
 #
 check-regression:
-	here=`pwd`; testdir=""; \
-	  case "$(MAKE_TEST)" in "") \
-	    for d1 in $$here $(srcdir); do \
-	      for d2 in ../.. .. .; do \
-		all=`echo $$d1/$$d2/make-test-[0-9]*/run_make_tests`; \
-		case "$$all" in \
-		  "$$d1/$$d2/make-test-[0-9]*/run_make_tests") : ;; \
-		  *) try=`for x in $$all; do echo $$x; done | sort | tail -1`;\
-		     testdir=`dirname $$try` ;; esac; \
-            done; done ;; \
-	    *) testdir="$(MAKE_TEST)" ;; \
-	  esac; \
-	  case "$$testdir" in \
-	    "") echo "Couldn't find make-test-* test suite."; exit 0;; \
-	  esac; \
-	  echo "cd $$testdir && ./run_make_tests -make_path $$here/make"; \
-	  cd $$testdir && ./run_make_tests -make_path $$here/make
+	@if test -f "$(srcdir)/tests/run_make_tests"; then \
+	  if $(PERL) -v >/dev/null 2>&1; then \
+	    case `cd $(srcdir); pwd` in `pwd`) : ;; \
+	      *) test -d tests || mkdir tests; \
+		 for f in run_make_tests run_make_tests.pl test_driver.pl scripts; do \
+		   rm -rf tests/$$f; cp -pr $(srcdir)/tests/$$f tests; \
+		 done ;; \
+	    esac; \
+	    echo "cd tests && $(PERL) ./run_make_tests.pl -make ../make.exe $(MAKETESTFLAGS)"; \
+	    cd tests && $(PERL) ./run_make_tests.pl -make ../make.exe $(MAKETESTFLAGS); \
+	  else \
+	    echo "Can't find a working Perl ($(PERL)); the test suite requires Perl."; \
+	  fi; \
+	 else \
+	  echo "Can't find the GNU Make test suite ($(srcdir)/tests)."; \
+	 fi
 
 # --------------- Maintainer's Section
 
@@ -523,17 +563,17 @@ implicit.o: implicit.c make.h config.h signame.h rule.h dep.h filedef.h
 job.o: job.c make.h config.h signame.h job.h filedef.h commands.h \
 	variable.h
 main.o: main.c make.h config.h signame.h dep.h filedef.h variable.h \
-	job.h commands.h getopt.h
+	job.h commands.h rule.h getopt.h
 misc.o: misc.c make.h config.h signame.h dep.h
-read.o: read.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h rule.h glob/glob.h
+read.o: read.c make.h config.h signame.h glob/glob.h dep.h filedef.h \
+	job.h commands.h variable.h rule.h
 remake.o: remake.c make.h config.h signame.h filedef.h job.h commands.h \
-	dep.h
+	dep.h variable.h
 remote-stub.o: remote-stub.c make.h config.h signame.h filedef.h job.h \
 	commands.h
 rule.o: rule.c make.h config.h signame.h dep.h filedef.h job.h \
 	commands.h variable.h rule.h
-signame.o: signame.c config.h signame.h
+signame.o: signame.c make.h config.h signame.h
 variable.o: variable.c make.h config.h signame.h dep.h filedef.h job.h \
 	commands.h variable.h
 version.o: version.c config.h

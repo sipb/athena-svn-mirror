@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 
@@ -331,6 +332,13 @@ find_directory (name)
 #ifdef VMS
       if (vmsstat_dir (name, &st) < 0)
 #else
+
+#ifdef WINDOWS32
+      /* Remove any trailing '\'.  Windows32 stat fails even on valid
+         directories if they end in '\'. */
+      if (p[-1] == '\\')
+        p[-1] = '\0';
+#endif
       if (stat (name, &st) < 0)
 #endif
 	{
@@ -384,7 +392,7 @@ find_directory (name)
 	      /* Enter it in the contents hash table.  */
 	      dc->dev = st.st_dev;
 #ifdef WINDOWS32
-              dc->path_key = strdup(w32_path);
+              dc->path_key = xstrdup(w32_path);
               dc->mtime = st.st_mtime;
 
               /*
@@ -771,7 +779,7 @@ file_impossible (filename)
   new = (struct dirfile *) xmalloc (sizeof (struct dirfile));
   new->next = dir->contents->files[hash];
   dir->contents->files[hash] = new;
-  new->name = savestring (filename, strlen (filename));
+  new->name = xstrdup (filename);
   new->impossible = 1;
 }
 
@@ -876,7 +884,7 @@ print_dir_data_base ()
   register unsigned int i, dirs, files, impossible;
   register struct directory *dir;
 
-  puts ("\n# Directories\n");
+  puts (_("\n# Directories\n"));
 
   dirs = files = impossible = 0;
   for (i = 0; i < DIRECTORY_BUCKETS; ++i)
@@ -884,19 +892,19 @@ print_dir_data_base ()
       {
 	++dirs;
 	if (dir->contents == 0)
-	  printf ("# %s: could not be stat'd.\n", dir->name);
+	  printf (_("# %s: could not be stat'd.\n"), dir->name);
 	else if (dir->contents->files == 0)
 #ifdef WINDOWS32
-          printf ("# %s (key %s, mtime %d): could not be opened.\n",
+          printf (_("# %s (key %s, mtime %d): could not be opened.\n"),
                   dir->name, dir->contents->path_key,dir->contents->mtime);
 #else  /* WINDOWS32 */
 #ifdef VMS
-	  printf ("# %s (device %d, inode [%d,%d,%d]): could not be opened.\n",
+	  printf (_("# %s (device %d, inode [%d,%d,%d]): could not be opened.\n"),
 		  dir->name, dir->contents->dev,
 		  dir->contents->ino[0], dir->contents->ino[1],
 		  dir->contents->ino[2]);
 #else
-	  printf ("# %s (device %ld, inode %ld): could not be opened.\n",
+	  printf (_("# %s (device %ld, inode %ld): could not be opened.\n"),
 		  dir->name, (long int) dir->contents->dev,
 		  (long int) dir->contents->ino);
 #endif
@@ -913,34 +921,34 @@ print_dir_data_base ()
 		else
 		  ++f;
 #ifdef WINDOWS32
-            printf ("# %s (key %s, mtime %d): ",
+            printf (_("# %s (key %s, mtime %d): "),
                     dir->name, dir->contents->path_key, dir->contents->mtime);
 #else  /* WINDOWS32 */
 #ifdef VMS
-	    printf ("# %s (device %d, inode [%d,%d,%d]): ",
+	    printf (_("# %s (device %d, inode [%d,%d,%d]): "),
 		    dir->name, dir->contents->dev,
 			dir->contents->ino[0], dir->contents->ino[1],
 			dir->contents->ino[2]);
 #else
-	    printf ("# %s (device %ld, inode %ld): ",
+	    printf (_("# %s (device %ld, inode %ld): "),
 		    dir->name,
                     (long)dir->contents->dev, (long)dir->contents->ino);
 #endif
 #endif /* WINDOWS32 */
 	    if (f == 0)
-	      fputs ("No", stdout);
+	      fputs (_("No"), stdout);
 	    else
 	      printf ("%u", f);
-	    fputs (" files, ", stdout);
+	    fputs (_(" files, "), stdout);
 	    if (im == 0)
-	      fputs ("no", stdout);
+	      fputs (_("no"), stdout);
 	    else
 	      printf ("%u", im);
-	    fputs (" impossibilities", stdout);
+	    fputs (_(" impossibilities"), stdout);
 	    if (dir->contents->dirstream == 0)
 	      puts (".");
 	    else
-	      puts (" so far.");
+	      puts (_(" so far."));
 	    files += f;
 	    impossible += im;
 	  }
@@ -948,15 +956,15 @@ print_dir_data_base ()
 
   fputs ("\n# ", stdout);
   if (files == 0)
-    fputs ("No", stdout);
+    fputs (_("No"), stdout);
   else
     printf ("%u", files);
-  fputs (" files, ", stdout);
+  fputs (_(" files, "), stdout);
   if (impossible == 0)
-    fputs ("no", stdout);
+    fputs (_("no"), stdout);
   else
     printf ("%u", impossible);
-  printf (" impossibilities in %u directories.\n", dirs);
+  printf (_(" impossibilities in %u directories.\n"), dirs);
 }
 
 /* Hooks for globbing.  */
@@ -1060,7 +1068,9 @@ void
 dir_setup_glob (gl)
      glob_t *gl;
 {
+#ifndef VMS
   extern int stat ();
+#endif
 
   /* Bogus sunos4 compiler complains (!) about & before functions.  */
   gl->gl_opendir = open_dirstream;

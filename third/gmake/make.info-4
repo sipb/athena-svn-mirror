@@ -1,20 +1,20 @@
 This is Info file make.info, produced by Makeinfo version 1.67 from the
 input file make.texinfo.
 
-INFO-DIR-SECTION The GNU make utility
+INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
-* Make: (make.info).               The GNU make utility.
+* Make: (make).            Remake files automatically.
 END-INFO-DIR-ENTRY
 
    This file documents the GNU Make utility, which determines
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.52, last updated 20 May 1998, of `The GNU Make
-Manual', for `make', Version 3.77.
+   This is Edition 0.54, last updated 09 September 1999, of `The GNU
+Make Manual', for `make', Version 3.78.1.
 
-   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97, '98
-Free Software Foundation, Inc.
+   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
+'98, '99         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +29,209 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Flavors,  Next: Advanced,  Prev: Reference,  Up: Using Variables
+
+The Two Flavors of Variables
+============================
+
+   There are two ways that a variable in GNU `make' can have a value;
+we call them the two "flavors" of variables.  The two flavors are
+distinguished in how they are defined and in what they do when expanded.
+
+   The first flavor of variable is a "recursively expanded" variable.
+Variables of this sort are defined by lines using `=' (*note Setting
+Variables: Setting.) or by the `define' directive (*note Defining
+Variables Verbatim: Defining.).  The value you specify is installed
+verbatim; if it contains references to other variables, these
+references are expanded whenever this variable is substituted (in the
+course of expanding some other string).  When this happens, it is
+called "recursive expansion".
+
+   For example,
+
+     foo = $(bar)
+     bar = $(ugh)
+     ugh = Huh?
+     
+     all:;echo $(foo)
+
+will echo `Huh?': `$(foo)' expands to `$(bar)' which expands to
+`$(ugh)' which finally expands to `Huh?'.
+
+   This flavor of variable is the only sort supported by other versions
+of `make'.  It has its advantages and its disadvantages.  An advantage
+(most would say) is that:
+
+     CFLAGS = $(include_dirs) -O
+     include_dirs = -Ifoo -Ibar
+
+will do what was intended: when `CFLAGS' is expanded in a command, it
+will expand to `-Ifoo -Ibar -O'.  A major disadvantage is that you
+cannot append something on the end of a variable, as in
+
+     CFLAGS = $(CFLAGS) -O
+
+because it will cause an infinite loop in the variable expansion.
+(Actually `make' detects the infinite loop and reports an error.)
+
+   Another disadvantage is that any functions (*note Functions for
+Transforming Text: Functions.) referenced in the definition will be
+executed every time the variable is expanded.  This makes `make' run
+slower; worse, it causes the `wildcard' and `shell' functions to give
+unpredictable results because you cannot easily control when they are
+called, or even how many times.
+
+   To avoid all the problems and inconveniences of recursively expanded
+variables, there is another flavor: simply expanded variables.
+
+   "Simply expanded variables" are defined by lines using `:=' (*note
+Setting Variables: Setting.).  The value of a simply expanded variable
+is scanned once and for all, expanding any references to other
+variables and functions, when the variable is defined.  The actual
+value of the simply expanded variable is the result of expanding the
+text that you write.  It does not contain any references to other
+variables; it contains their values *as of the time this variable was
+defined*.  Therefore,
+
+     x := foo
+     y := $(x) bar
+     x := later
+
+is equivalent to
+
+     y := foo bar
+     x := later
+
+   When a simply expanded variable is referenced, its value is
+substituted verbatim.
+
+   Here is a somewhat more complicated example, illustrating the use of
+`:=' in conjunction with the `shell' function.  (*Note The `shell'
+Function: Shell Function.)  This example also shows use of the variable
+`MAKELEVEL', which is changed when it is passed down from level to
+level.  (*Note Communicating Variables to a Sub-`make':
+Variables/Recursion, for information about `MAKELEVEL'.)
+
+     ifeq (0,${MAKELEVEL})
+     cur-dir   := $(shell pwd)
+     whoami    := $(shell whoami)
+     host-type := $(shell arch)
+     MAKE := ${MAKE} host-type=${host-type} whoami=${whoami}
+     endif
+
+An advantage of this use of `:=' is that a typical `descend into a
+directory' command then looks like this:
+
+     ${subdirs}:
+           ${MAKE} cur-dir=${cur-dir}/$@ -C $@ all
+
+   Simply expanded variables generally make complicated makefile
+programming more predictable because they work like variables in most
+programming languages.  They allow you to redefine a variable using its
+own value (or its value processed in some way by one of the expansion
+functions) and to use the expansion functions much more efficiently
+(*note Functions for Transforming Text: Functions.).
+
+   You can also use them to introduce controlled leading whitespace into
+variable values.  Leading whitespace characters are discarded from your
+input before substitution of variable references and function calls;
+this means you can include leading spaces in a variable value by
+protecting them with variable references, like this:
+
+     nullstring :=
+     space := $(nullstring) # end of the line
+
+Here the value of the variable `space' is precisely one space.  The
+comment `# end of the line' is included here just for clarity.  Since
+trailing space characters are *not* stripped from variable values, just
+a space at the end of the line would have the same effect (but be
+rather hard to read).  If you put whitespace at the end of a variable
+value, it is a good idea to put a comment like that at the end of the
+line to make your intent clear.  Conversely, if you do *not* want any
+whitespace characters at the end of your variable value, you must
+remember not to put a random comment on the end of the line after some
+whitespace, such as this:
+
+     dir := /foo/bar    # directory to put the frobs in
+
+Here the value of the variable `dir' is `/foo/bar    ' (with four
+trailing spaces), which was probably not the intention.  (Imagine
+something like `$(dir)/file' with this definition!)
+
+   There is another assignment operator for variables, `?='.  This is
+called a conditional variable assignment operator, because it only has
+an effect if the variable is not yet defined.  This statement:
+
+     FOO ?= bar
+
+is exactly equivalent to this (*note The `origin' Function: Origin
+Function.):
+
+     ifeq ($(origin FOO), undefined)
+       FOO = bar
+     endif
+
+   Note that a variable set to an empty value is still defined, so `?='
+will not set that variable.
+
+
+File: make.info,  Node: Advanced,  Next: Values,  Prev: Flavors,  Up: Using Variables
+
+Advanced Features for Reference to Variables
+============================================
+
+   This section describes some advanced features you can use to
+reference variables in more flexible ways.
+
+* Menu:
+
+* Substitution Refs::           Referencing a variable with
+                                  substitutions on the value.
+* Computed Names::              Computing the name of the variable to refer to.
+
+
+File: make.info,  Node: Substitution Refs,  Next: Computed Names,  Up: Advanced
+
+Substitution References
+-----------------------
+
+   A "substitution reference" substitutes the value of a variable with
+alterations that you specify.  It has the form `$(VAR:A=B)' (or
+`${VAR:A=B}') and its meaning is to take the value of the variable VAR,
+replace every A at the end of a word with B in that value, and
+substitute the resulting string.
+
+   When we say "at the end of a word", we mean that A must appear
+either followed by whitespace or at the end of the value in order to be
+replaced; other occurrences of A in the value are unaltered.  For
+example:
+
+     foo := a.o b.o c.o
+     bar := $(foo:.o=.c)
+
+sets `bar' to `a.c b.c c.c'.  *Note Setting Variables: Setting.
+
+   A substitution reference is actually an abbreviation for use of the
+`patsubst' expansion function (*note Functions for String Substitution
+and Analysis: Text Functions.).  We provide substitution references as
+well as `patsubst' for compatibility with other implementations of
+`make'.
+
+   Another type of substitution reference lets you use the full power of
+the `patsubst' function.  It has the same form `$(VAR:A=B)' described
+above, except that now A must contain a single `%' character.  This
+case is equivalent to `$(patsubst A,B,$(VAR))'.  *Note Functions for
+String Substitution and Analysis: Text Functions, for a description of
+the `patsubst' function.
+
+For example:
+
+     foo := a.o b.o c.o
+     bar := $(foo:%.o=%.c)
+
+sets `bar' to `a.c b.c c.c'.
 
 
 File: make.info,  Node: Computed Names,  Prev: Substitution Refs,  Up: Advanced
@@ -532,7 +735,7 @@ variable value to be preferred.
 
    There is one more special feature of target-specific variables: when
 you define a target-specific variable, that variable value is also in
-effect for all dependencies of this target (unless those dependencies
+effect for all prerequisites of this target (unless those prerequisites
 override it with their own target-specific variable value).  So, for
 example, a statement like this:
 
@@ -542,7 +745,7 @@ example, a statement like this:
 will set `CFLAGS' to `-g' in the command script for `prog', but it will
 also set `CFLAGS' to `-g' in the command scripts that create `prog.o',
 `foo.o', and `bar.o', and any command scripts which create their
-dependencies.
+prerequisites.
 
 
 File: make.info,  Node: Pattern-specific,  Prev: Target-specific,  Up: Using Variables
@@ -853,8 +1056,11 @@ the point of the call, just as a variable might be substituted.
 * Text Functions::              General-purpose text manipulation functions.
 * File Name Functions::         Functions for manipulating file names.
 * Foreach Function::            Repeat some text with controlled variation.
+* If Function::                 Conditionally expand a value.
+* Call Function::               Expand a user-defined function.
 * Origin Function::             Find where a variable got its value.
 * Shell Function::              Substitute the output of a shell command.
+* Make Control Functions::      Functions that control how make runs.
 
 
 File: make.info,  Node: Syntax of Functions,  Next: Text Functions,  Up: Functions
@@ -871,7 +1077,8 @@ or like this:
      ${FUNCTION ARGUMENTS}
 
    Here FUNCTION is a function name; one of a short list of names that
-are part of `make'.  There is no provision for defining new functions.
+are part of `make'.  You can also essentially create your own functions
+by using the `call' builtin function.
 
    The ARGUMENTS are the arguments of the function.  They are separated
 from the function name by one or more spaces or tabs, and if there is
@@ -1022,8 +1229,8 @@ Functions for String Substitution and Analysis
      *Note Testing Flags::, for a practical application of `findstring'.
 
 `$(filter PATTERN...,TEXT)'
-     Removes all whitespace-separated words in TEXT that do *not* match
-     any of the PATTERN words, returning only matching words.  The
+     Returns all whitespace-separated words in TEXT that *do* match any
+     of the PATTERN words, removing any words that *do not* match.  The
      patterns are written using `%', just like the patterns used in the
      `patsubst' function above.
 
@@ -1039,6 +1246,10 @@ Functions for String Substitution and Analysis
      command to the compiler.
 
 `$(filter-out PATTERN...,TEXT)'
+     Returns all whitespace-separated words in TEXT that *do not* match
+     any of the PATTERN words, removing the words that *do* match one
+     or more.  This is the exact opposite of the `filter' function.
+
      Removes all whitespace-separated words in TEXT that *do* match the
      PATTERN words, returning only the words that *do not* match.  This
      is the exact opposite of the `filter' function.
@@ -1067,8 +1278,8 @@ Functions for String Substitution and Analysis
 
    Here is a realistic example of the use of `subst' and `patsubst'.
 Suppose that a makefile uses the `VPATH' variable to specify a list of
-directories that `make' should search for dependency files (*note
-`VPATH' Search Path for All Dependencies: General Search.).  This
+directories that `make' should search for prerequisite files (*note
+`VPATH' Search Path for All Prerequisites: General Search.).  This
 example shows how to tell the C compiler to search for header files in
 the same list of directories.
 
@@ -1090,230 +1301,4 @@ given value of `CFLAGS'.  The `override' directive is used so that the
 new value is assigned even if the previous value of `CFLAGS' was
 specified with a command argument (*note The `override' Directive:
 Override Directive.).
-
-
-File: make.info,  Node: File Name Functions,  Next: Foreach Function,  Prev: Text Functions,  Up: Functions
-
-Functions for File Names
-========================
-
-   Several of the built-in expansion functions relate specifically to
-taking apart file names or lists of file names.
-
-   Each of the following functions performs a specific transformation
-on a file name.  The argument of the function is regarded as a series
-of file names, separated by whitespace.  (Leading and trailing
-whitespace is ignored.)  Each file name in the series is transformed in
-the same way and the results are concatenated with single spaces
-between them.
-
-`$(dir NAMES...)'
-     Extracts the directory-part of each file name in NAMES.  The
-     directory-part of the file name is everything up through (and
-     including) the last slash in it.  If the file name contains no
-     slash, the directory part is the string `./'.  For example,
-
-          $(dir src/foo.c hacks)
-
-     produces the result `src/ ./'.
-
-`$(notdir NAMES...)'
-     Extracts all but the directory-part of each file name in NAMES.
-     If the file name contains no slash, it is left unchanged.
-     Otherwise, everything through the last slash is removed from it.
-
-     A file name that ends with a slash becomes an empty string.  This
-     is unfortunate, because it means that the result does not always
-     have the same number of whitespace-separated file names as the
-     argument had; but we do not see any other valid alternative.
-
-     For example,
-
-          $(notdir src/foo.c hacks)
-
-     produces the result `foo.c hacks'.
-
-`$(suffix NAMES...)'
-     Extracts the suffix of each file name in NAMES.  If the file name
-     contains a period, the suffix is everything starting with the last
-     period.  Otherwise, the suffix is the empty string.  This
-     frequently means that the result will be empty when NAMES is not,
-     and if NAMES contains multiple file names, the result may contain
-     fewer file names.
-
-     For example,
-
-          $(suffix src/foo.c src-1.0/bar.c hacks)
-
-     produces the result `.c .c'.
-
-`$(basename NAMES...)'
-     Extracts all but the suffix of each file name in NAMES.  If the
-     file name contains a period, the basename is everything starting
-     up to (and not including) the last period.  Periods in the
-     directory part are ignored.  If there is no period, the basename
-     is the entire file name.  For example,
-
-          $(basename src/foo.c src-1.0/bar hacks)
-
-     produces the result `src/foo src-1.0/bar hacks'.
-
-`$(addsuffix SUFFIX,NAMES...)'
-     The argument NAMES is regarded as a series of names, separated by
-     whitespace; SUFFIX is used as a unit.  The value of SUFFIX is
-     appended to the end of each individual name and the resulting
-     larger names are concatenated with single spaces between them.
-     For example,
-
-          $(addsuffix .c,foo bar)
-
-     produces the result `foo.c bar.c'.
-
-`$(addprefix PREFIX,NAMES...)'
-     The argument NAMES is regarded as a series of names, separated by
-     whitespace; PREFIX is used as a unit.  The value of PREFIX is
-     prepended to the front of each individual name and the resulting
-     larger names are concatenated with single spaces between them.
-     For example,
-
-          $(addprefix src/,foo bar)
-
-     produces the result `src/foo src/bar'.
-
-`$(join LIST1,LIST2)'
-     Concatenates the two arguments word by word: the two first words
-     (one from each argument) concatenated form the first word of the
-     result, the two second words form the second word of the result,
-     and so on.  So the Nth word of the result comes from the Nth word
-     of each argument.  If one argument has more words that the other,
-     the extra words are copied unchanged into the result.
-
-     For example, `$(join a b,.c .o)' produces `a.c b.o'.
-
-     Whitespace between the words in the lists is not preserved; it is
-     replaced with a single space.
-
-     This function can merge the results of the `dir' and `notdir'
-     functions, to produce the original list of files which was given
-     to those two functions.
-
-`$(word N,TEXT)'
-     Returns the Nth word of TEXT.  The legitimate values of N start
-     from 1.  If N is bigger than the number of words in TEXT, the
-     value is empty.  For example,
-
-          $(word 2, foo bar baz)
-
-     returns `bar'.
-
-`$(wordlist S,E,TEXT)'
-     Returns the list of words in TEXT starting with word S and ending
-     with word E (inclusive).  The legitimate values of S and E start
-     from 1.  If S is bigger than the number of words in TEXT, the
-     value is empty.  If E is bigger than the number of words in TEXT,
-     words up to the end of TEXT are returned.  If S is greater than E,
-     `make' swaps them for you.  For example,
-
-          $(wordlist 2, 3, foo bar baz)
-
-     returns `bar baz'.
-
-`$(words TEXT)'
-     Returns the number of words in TEXT.  Thus, the last word of TEXT
-     is `$(word $(words TEXT),TEXT)'.
-
-`$(firstword NAMES...)'
-     The argument NAMES is regarded as a series of names, separated by
-     whitespace.  The value is the first name in the series.  The rest
-     of the names are ignored.
-
-     For example,
-
-          $(firstword foo bar)
-
-     produces the result `foo'.  Although `$(firstword TEXT)' is the
-     same as `$(word 1,TEXT)', the `firstword' function is retained for
-     its simplicity.
-
-`$(wildcard PATTERN)'
-     The argument PATTERN is a file name pattern, typically containing
-     wildcard characters (as in shell file name patterns).  The result
-     of `wildcard' is a space-separated list of the names of existing
-     files that match the pattern.  *Note Using Wildcard Characters in
-     File Names: Wildcards.
-
-
-File: make.info,  Node: Foreach Function,  Next: Origin Function,  Prev: File Name Functions,  Up: Functions
-
-The `foreach' Function
-======================
-
-   The `foreach' function is very different from other functions.  It
-causes one piece of text to be used repeatedly, each time with a
-different substitution performed on it.  It resembles the `for' command
-in the shell `sh' and the `foreach' command in the C-shell `csh'.
-
-   The syntax of the `foreach' function is:
-
-     $(foreach VAR,LIST,TEXT)
-
-The first two arguments, VAR and LIST, are expanded before anything
-else is done; note that the last argument, TEXT, is *not* expanded at
-the same time.  Then for each word of the expanded value of LIST, the
-variable named by the expanded value of VAR is set to that word, and
-TEXT is expanded.  Presumably TEXT contains references to that
-variable, so its expansion will be different each time.
-
-   The result is that TEXT is expanded as many times as there are
-whitespace-separated words in LIST.  The multiple expansions of TEXT
-are concatenated, with spaces between them, to make the result of
-`foreach'.
-
-   This simple example sets the variable `files' to the list of all
-files in the directories in the list `dirs':
-
-     dirs := a b c d
-     files := $(foreach dir,$(dirs),$(wildcard $(dir)/*))
-
-   Here TEXT is `$(wildcard $(dir)/*)'.  The first repetition finds the
-value `a' for `dir', so it produces the same result as `$(wildcard
-a/*)'; the second repetition produces the result of `$(wildcard b/*)';
-and the third, that of `$(wildcard c/*)'.
-
-   This example has the same result (except for setting `dirs') as the
-following example:
-
-     files := $(wildcard a/* b/* c/* d/*)
-
-   When TEXT is complicated, you can improve readability by giving it a
-name, with an additional variable:
-
-     find_files = $(wildcard $(dir)/*)
-     dirs := a b c d
-     files := $(foreach dir,$(dirs),$(find_files))
-
-Here we use the variable `find_files' this way.  We use plain `=' to
-define a recursively-expanding variable, so that its value contains an
-actual function call to be reexpanded under the control of `foreach'; a
-simply-expanded variable would not do, since `wildcard' would be called
-only once at the time of defining `find_files'.
-
-   The `foreach' function has no permanent effect on the variable VAR;
-its value and flavor after the `foreach' function call are the same as
-they were beforehand.  The other values which are taken from LIST are
-in effect only temporarily, during the execution of `foreach'.  The
-variable VAR is a simply-expanded variable during the execution of
-`foreach'.  If VAR was undefined before the `foreach' function call, it
-is undefined after the call.  *Note The Two Flavors of Variables:
-Flavors.
-
-   You must take care when using complex variable expressions that
-result in variable names because many strange things are valid variable
-names, but are probably not what you intended.  For example,
-
-     files := $(foreach Esta escrito en espanol!,b c ch,$(find_files))
-
-might be useful if the value of `find_files' references the variable
-whose name is `Esta escrito en espanol!' (es un nombre bastante largo,
-no?), but it is more likely to be a mistake.
 
