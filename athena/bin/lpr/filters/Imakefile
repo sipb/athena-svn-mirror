@@ -54,8 +54,8 @@ print:
 	@${CXREF} *.c | pr -h XREF
 	@pr *.h *.c
 
-SimpleProgram(lpf,lpf.c,,$(LIBDIR))
-SimpleProgram(necf,necf.c,,$(LIBDIR))
+SimpleProgram(lpf,lpf.o,,$(LIBDIR))
+SimpleProgram(necf,necf.o,,$(LIBDIR))
 SimpleProgram(ln01filter,ln01filter.o,$(OPTLIBS),$(LIBDIR))
 SimpleProgram(staff_ln03filter,staff_ln03filter.o,,$(LIBDIR))
 SimpleProgram(ln01raw,ln01raw.o,$(OPTLIBS),$(LIBDIR))
