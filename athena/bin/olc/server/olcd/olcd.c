@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.43 1991-04-10 11:12:07 lwvanels Exp $
+ *	$Id: olcd.c,v 1.44 1991-04-11 13:22:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.43 1991-04-10 11:12:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.44 1991-04-11 13:22:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -248,8 +248,13 @@ main (argc, argv)
 	}
     }
 
+#ifdef _AUX_SOURCE
+    setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
+    setvbuf(stderr,NULL,_IOLBF,BUFSIZ);
+#else
     setlinebuf(stdout);
     setlinebuf(stderr);
+#endif
 
     /* handle setuid-ness, etc., so we can dump core */
     setreuid((uid_t) geteuid(), -1);

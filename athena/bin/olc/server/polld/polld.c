@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.7 1991-04-08 23:47:41 lwvanels Exp $
+ *	$Id: polld.c,v 1.8 1991-04-11 13:20:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.7 1991-04-08 23:47:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.8 1991-04-11 13:20:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -206,9 +206,14 @@ main(argc, argv)
     }
   }
   
+#ifdef _AUX_SOURCE
+  setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
+  setvbuf(stderr,NULL,_IOLBF,BUFSIZ);
+#else
   setlinebuf(stdout);
   setlinebuf(stderr);
-  
+#endif
+
   /* handle setuid-ness, etc., so we can dump core */
   setreuid((uid_t) geteuid(), -1);
   setregid((gid_t) getegid(), -1);
