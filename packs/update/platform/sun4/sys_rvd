@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.12 1994-06-16 16:39:24 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.13 1994-06-17 12:05:30 vrt Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -275,7 +275,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> cpio
 		-> crypt
 		-> csh.sun
-		-> cut
 		-> cancel
 		-> calendar
 		-> catman
