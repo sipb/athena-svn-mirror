@@ -11,6 +11,7 @@
  */
 
 #include <config.h>
+#include <unistd.h>
 
 #include "foobar-widget.h"
 
@@ -49,8 +50,7 @@ static gboolean foobar_enter_notify	(GtkWidget *widget,
 static void append_task_menu (FoobarWidget *foo, GtkMenuBar *menu_bar);
 static void setup_task_menu (FoobarWidget *foo);
 
-static GtkWidget *das_global_foobar = NULL;
-static GtkWidget *clock_ebox = NULL;
+static GList *foobars = NULL;
 
 static GtkWindowClass *parent_class = NULL;
 
@@ -225,12 +225,12 @@ append_gnome_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 		{ NULL, "" },
 		{ N_("Software (www)"),            N_("http://www.gnome.org/applist/list-martin.phtml"), GNOME_STOCK_PIXMAP_SAVE },
 		{ N_("Development (www)"),         N_("http://developer.gnome.org/"),                    "gnome-devel.png" },
-		{ N_("Bug Tracking System (www)"), N_("http://bugs.gnome.org/"),                         "bug-buddy.png" },
+		{ N_("Bug Tracking System (www)"), N_("http://bugzilla.gnome.org/"),                         "bug-buddy.png" },
 		{ NULL }
 	};
 	
 	
-	menu = scroll_menu_new ();
+	menu = hack_scroll_menu_new ();
 	
 	for (i=0; url[i][1]; i++)
 		gtk_menu_append (GTK_MENU (menu),
@@ -329,7 +329,7 @@ append_desktop_menu (GtkWidget *menu_bar)
 	};
 	GList *gmc_menu_items = NULL;
 
-	menu = scroll_menu_new ();
+	menu = hack_scroll_menu_new ();
 
 	for (i=0; arrange[i]; i+=2)
 		append_gmc_item (menu, _(arrange[i]), arrange[i+1]);
@@ -340,7 +340,7 @@ append_desktop_menu (GtkWidget *menu_bar)
 
 	add_tearoff (GTK_MENU (menu));
 
-	menu = scroll_menu_new ();
+	menu = hack_scroll_menu_new ();
 
 	gtk_menu_append (GTK_MENU (menu), item);
 
@@ -402,13 +402,21 @@ append_folder_menu (GtkWidget *menu_bar, const char *label,
 		: gnome_util_home_file (path);
 
 	if (real_path == NULL) {
-		g_warning (_("can't fine real path"));
+		g_warning (_("can't find real path"));
 		return NULL;
 	}
 
-	menu = create_fake_menu_at (real_path, FALSE, FALSE,
-				    label, NULL, FALSE);
+	menu = create_fake_menu_at (real_path,
+				    FALSE /* applets */,
+				    FALSE /* launcher_add */,
+				    FALSE /* favourites_add */,
+				    label /* dir_name */,
+				    NULL /* pixmap_name */,
+				    FALSE /* title */);
 	g_free (real_path);
+	if (path != NULL && strcmp (path, "apps") == 0)
+		/* This will add the add submenu thingie */
+		start_favourites_menu (menu, TRUE /* fake_submenus */);
 
 	if (menu == NULL) {
 		g_warning (_("menu wasn't created"));
@@ -461,7 +469,8 @@ update_clock (FoobarWidget *foo)
 		}
 		hour[sizeof(hour)-1] = '\0'; /* just for sanity */
 
-		gtk_tooltips_set_tip (panel_tooltips, clock_ebox, hour, NULL);
+		gtk_tooltips_set_tip (panel_tooltips, foo->clock_ebox,
+				      hour, NULL);
 
 		day = das_tm->tm_mday;
 	}
@@ -495,11 +504,12 @@ timeout_cb (gpointer data)
 static void
 set_fooclock_format (GtkWidget *w, char *format)
 {
-	if ( ! IS_FOOBAR_WIDGET (das_global_foobar))
-		return;
+	GList *li;
 
-	foobar_widget_set_clock_format (FOOBAR_WIDGET (das_global_foobar),
-					_(format));
+	for (li = foobars; li != NULL; li = li->next) {
+		foobar_widget_set_clock_format (FOOBAR_WIDGET (li->data),
+						_(format));
+	}
 }
 
 static void
@@ -508,7 +518,7 @@ append_format_item (GtkWidget *menu, const char *format)
 	char hour[256];
 	GtkWidget *item;
 	struct tm *das_tm;
-	time_t das_time = 0;
+	time_t das_time = 43200;
 
 	das_tm = localtime (&das_time);
 	if (strftime (hour, sizeof(hour), _(format), das_tm) == 0) {
@@ -526,10 +536,21 @@ append_format_item (GtkWidget *menu, const char *format)
 			    (gpointer)format);
 }
 
+static void
+set_time_cb (GtkWidget *menu_item, char *path)
+{
+	char *v[2] = { path };
+	
+	if (gnome_execute_async (g_get_home_dir (), 1, v) < 0)
+		panel_error_dialog (_("Could not call time-admin\n"
+						  "Perhaps time-admin is not installed"));
+}
+
 static GtkWidget *
 append_clock_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 {
 	GtkWidget *item, *menu, *menu2;
+	gchar *time_admin_path;
 	int i;
 	const char *cals[] = { 
 		N_("Today"),      "dayview",
@@ -546,7 +567,7 @@ append_clock_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 		NULL
 	};
 
-	menu = scroll_menu_new ();
+	menu = hack_scroll_menu_new ();
 	
 #if 0 /* put back when evolution can do this */
 	item = gtk_menu_item_new_with_label (_("Add appointement..."));
@@ -555,12 +576,21 @@ append_clock_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 	add_menu_separator (menu);
 #endif
 
+	time_admin_path = gnome_is_program_in_path ("time-admin");
+	if (time_admin_path) {
+		item = gtk_menu_item_new_with_label (_("Set Time"));
+		gtk_signal_connect (GTK_OBJECT (item), "activate",
+						GTK_SIGNAL_FUNC (set_time_cb), time_admin_path);
+		gtk_menu_append (GTK_MENU (menu), item);
+		add_menu_separator (menu);
+	}
+
 	for (i=0; cals[i]; i+=2)
 		append_gnomecal_item (menu, _(cals[i]), cals[i+1]);
 
 	add_menu_separator (menu);
 
-	menu2 = scroll_menu_new ();
+	menu2 = hack_scroll_menu_new ();
 	for (i=0; formats[i]; i++)
 		append_format_item (menu2, formats[i]);
 
@@ -573,10 +603,11 @@ append_clock_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 	add_tearoff (GTK_MENU (menu));
 
 	item = gtk_menu_item_new ();
+
 	foo->clock_label = gtk_label_new ("");
 	foo->clock_timeout = gtk_timeout_add (1000, timeout_cb, foo);
 
-	clock_ebox = item;
+	foo->clock_ebox = item;
 	gtk_container_add (GTK_CONTAINER (item), foo->clock_label);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 
@@ -588,12 +619,12 @@ append_clock_menu (FoobarWidget *foo, GtkWidget *menu_bar)
 void
 foobar_widget_global_set_clock_format (const char *format)
 {
-	if (das_global_foobar == NULL ||
-	    ! IS_FOOBAR_WIDGET (das_global_foobar))
-		return;
+	GList *li;
 
-	foobar_widget_set_clock_format (FOOBAR_WIDGET (das_global_foobar),
-					format);
+	for (li = foobars; li != NULL; li = li->next) {
+		foobar_widget_set_clock_format (FOOBAR_WIDGET (li->data),
+						format);
+	}
 }
 
 void
@@ -614,10 +645,11 @@ foobar_widget_update_winhints (FoobarWidget *foo)
 	if ( ! foo->compliant_wm)
 		return;
 
-	gdk_window_set_hints (w->window, 
-			      multiscreen_x (foo->screen),
-			      multiscreen_y (foo->screen),
-			      0, 0, 0, 0, GDK_HINT_POS);
+	xstuff_set_pos_size (w->window,
+			     multiscreen_x (foo->screen),
+			     multiscreen_y (foo->screen),
+			     w->allocation.width,
+			     w->allocation.height);
 
 	gnome_win_hints_set_expanded_size (w, 0, 0, 0, 0);
 	gdk_window_set_decorations (w->window, 0);
@@ -672,7 +704,7 @@ programs_menu_to_display(GtkWidget *menu)
 static void
 set_the_task_submenu (FoobarWidget *foo, GtkWidget *item)
 {
-	foo->task_menu = scroll_menu_new ();
+	foo->task_menu = hack_scroll_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), foo->task_menu);
 	/*g_message ("setting...");*/
 }
@@ -695,7 +727,6 @@ add_task (GwmhTask *task, FoobarWidget *foo)
 	char *title = NULL;
 	int slen;
 	GtkWidget *pixmap  = NULL;
-	char *name;
 
 	static GwmhDesk *desk = NULL;
 
@@ -1100,9 +1131,7 @@ foobar_widget_destroy (GtkObject *o)
 {
 	FoobarWidget *foo = FOOBAR_WIDGET (o);
 
-	/* Just sanity */
-	if ((gpointer)das_global_foobar == (gpointer)foo)
-		das_global_foobar = NULL;
+	foobars = g_list_remove (foobars, foo);
 
 	if (foo->clock_timeout != 0)
 		gtk_timeout_remove (foo->clock_timeout);
@@ -1133,56 +1162,91 @@ foobar_widget_size_allocate (GtkWidget *w, GtkAllocation *alloc)
 		GTK_WIDGET_CLASS (parent_class)->size_allocate (w, alloc);
 
 	if (GTK_WIDGET_REALIZED (w)) {
+		FoobarWidget *foo = FOOBAR_WIDGET (w);
+		xstuff_set_pos_size (w->window,
+				     multiscreen_x (foo->screen),
+				     multiscreen_y (foo->screen),
+				     alloc->width,
+				     alloc->height);
+
 		g_slist_foreach (panel_list, queue_panel_resize, NULL);
-		basep_border_queue_recalc ();
+		basep_border_queue_recalc (foo->screen);
 	}
 }
 
 GtkWidget *
-foobar_widget_new (void)
+foobar_widget_new (int screen)
 {
-	g_return_val_if_fail (das_global_foobar == NULL, NULL);
+	FoobarWidget *foo;
 
-	das_global_foobar = gtk_type_new (TYPE_FOOBAR_WIDGET);
+	g_return_val_if_fail (screen >= 0, NULL);
 
-	return das_global_foobar;
+	if (foobar_widget_exists (screen))
+		return NULL;
+
+	foo = gtk_type_new (TYPE_FOOBAR_WIDGET);
+
+	foo->screen = screen;
+	gtk_widget_set_uposition (GTK_WIDGET (foo),
+				  multiscreen_x (foo->screen),
+				  multiscreen_y (foo->screen));
+	gtk_widget_set_usize (GTK_WIDGET (foo),
+			      multiscreen_width (foo->screen), -2);
+
+	foobars = g_list_prepend (foobars, foo);
+
+	return GTK_WIDGET (foo);
 }
 
 gboolean
 foobar_widget_exists (int screen)
 {
-	return (das_global_foobar != NULL);
+	GList *li;
+
+	for (li = foobars; li != NULL; li = li->next) {
+		FoobarWidget *foo = li->data;
+
+		if (foo->screen == screen)
+			return TRUE;
+	}
+	return FALSE;
 }
 
 void
 foobar_widget_force_menu_remake (void)
 {
 	FoobarWidget *foo;
-	if (das_global_foobar == NULL)
-		return;
+	GList *li;
 
-	foo = FOOBAR_WIDGET(das_global_foobar);
+	for (li = foobars; li != NULL; li = li->next) {
+		foo = FOOBAR_WIDGET(li->data);
 
-	if (foo->programs != NULL)
-		gtk_object_set_data (GTK_OBJECT(foo->programs),
-				     "need_reread", GINT_TO_POINTER(1));
-	if (foo->settings != NULL)
-		gtk_object_set_data (GTK_OBJECT(foo->settings),
-				     "need_reread", GINT_TO_POINTER(1));
-	if (foo->favorites != NULL)
-		gtk_object_set_data (GTK_OBJECT(foo->favorites),
-				     "need_reread", GINT_TO_POINTER(1));
+		if (foo->programs != NULL)
+			gtk_object_set_data (GTK_OBJECT(foo->programs),
+					     "need_reread", GINT_TO_POINTER(1));
+		if (foo->settings != NULL)
+			gtk_object_set_data (GTK_OBJECT(foo->settings),
+					     "need_reread", GINT_TO_POINTER(1));
+		if (foo->favorites != NULL)
+			gtk_object_set_data (GTK_OBJECT(foo->favorites),
+					     "need_reread", GINT_TO_POINTER(1));
+	}
 }
 
 gint
 foobar_widget_get_height (int screen)
 {
-	if (das_global_foobar != NULL &&
-	    GTK_WIDGET_REALIZED (das_global_foobar) &&
-	    FOOBAR_WIDGET (das_global_foobar)->screen == screen) 
-		return das_global_foobar->allocation.height;
-	else
-		return 0; 
+	GList *li;
+
+	g_return_val_if_fail (screen >= 0, 0);
+
+	for (li = foobars; li != NULL; li = li->next) {
+		FoobarWidget *foo = FOOBAR_WIDGET(li->data);
+
+		if (foo->screen == screen)
+			return GTK_WIDGET (foo)->allocation.height;
+	}
+	return 0; 
 }
 
 static void

@@ -35,6 +35,7 @@ extern int applets_to_sync;
 extern int panels_to_sync;
 extern int need_complete_save;
 
+extern gboolean commie_mode;
 extern GlobalConfig global_config;
 extern PanelWidget *current_panel;
 
@@ -378,7 +379,7 @@ setup_an_item(AppletUserMenu *menu,
 	/* if the item is a submenu and doesn't have it's menu
 	   created yet*/
 	} else if(!menu->submenu) {
-		menu->submenu = scroll_menu_new();
+		menu->submenu = hack_scroll_menu_new();
 	}
 
 	if(menu->submenu) {
@@ -440,7 +441,7 @@ add_to_submenus (AppletInfo *info,
 	}
 	
 	if (s_menu->submenu == NULL) {
-		s_menu->submenu = scroll_menu_new();
+		s_menu->submenu = hack_scroll_menu_new();
 		/*a more elegant way to do this should be done
 		  when I don't want to go to sleep */
 		if (s_menu->menuitem != NULL) {
@@ -464,25 +465,27 @@ create_applet_menu (AppletInfo *info, gboolean is_basep)
 	GList *user_menu = info->user_menu;
 	gchar *pixmap;
 
-	info->menu = scroll_menu_new ();
+	info->menu = hack_scroll_menu_new ();
 
-	menuitem = gtk_menu_item_new();
-	setup_menuitem(menuitem,
-		       gnome_stock_new_with_icon (GNOME_STOCK_PIXMAP_REMOVE),
-		       _("Remove from panel"));
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   (GtkSignalFunc) remove_applet_callback,
-			   info);
-	gtk_menu_append(GTK_MENU(info->menu), menuitem);
-	
-	menuitem = gtk_menu_item_new();
-	setup_menuitem(menuitem,NULL,_("Move"));
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   (GtkSignalFunc) move_applet_callback,
-			   info);
-	gtk_menu_append(GTK_MENU(info->menu), menuitem);
+	if ( ! commie_mode) {
+		menuitem = gtk_menu_item_new();
+		setup_menuitem(menuitem,
+			       gnome_stock_new_with_icon (GNOME_STOCK_PIXMAP_REMOVE),
+			       _("Remove from panel"));
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+				   (GtkSignalFunc) remove_applet_callback,
+				   info);
+		gtk_menu_append(GTK_MENU(info->menu), menuitem);
 
-	panel_menu = scroll_menu_new();
+		menuitem = gtk_menu_item_new();
+		setup_menuitem(menuitem,NULL,_("Move"));
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+				   (GtkSignalFunc) move_applet_callback,
+				   info);
+		gtk_menu_append(GTK_MENU(info->menu), menuitem);
+	}
+
+	panel_menu = hack_scroll_menu_new();
 	make_panel_submenu (panel_menu, TRUE, is_basep);
 	menuitem = gtk_menu_item_new ();
 

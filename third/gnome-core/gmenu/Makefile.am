@@ -1,7 +1,7 @@
 INCLUDES = 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	$(GNOME_INCLUDEDIR)		\
+	-I$(includedir) $(GNOME_INCLUDEDIR)		\
 	-DGNOME_DATADIR=\""$(datadir)"\"
 
 bin_PROGRAMS = gmenu
@@ -33,6 +33,8 @@ gmenu_SOURCES =	\
 	treeutil.c		\
 	utils.c
 
+man_MANS = gmenu.1
+
 gmenu_LDADD = \
 	$(GNOME_LIBDIR)					\
 	$(GNOMEUI_LIBS)					\
@@ -40,7 +42,9 @@ gmenu_LDADD = \
 
 BUILT_SOURCES = $(ICON_ENTRY_HACK_SRCLIST)
 
-EXTRA_DIST = gmenu.desktop top.xpm unknown.xpm
+EXTRA_DIST = gmenu.desktop.in top.xpm unknown.xpm $(man_MANS)
 
 sysdir = $(datadir)/gnome/apps/Settings
-sys_DATA = gmenu.desktop
+sys_in_files = gmenu.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@

@@ -1,7 +1,7 @@
 ## Process this file with auotmake to create Makefile.in.
 
 ## Gnome programs can assume the existence of mkstemp.
-INCLUDES = $(GNOME_INCLUDEDIR) \
+INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 ## FIXME: this sucks.  We should just rewrite to use Gtk and not Xt.

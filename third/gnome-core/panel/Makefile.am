@@ -6,23 +6,32 @@
 ## We require new-style dependency handling.
 AUTOMAKE_OPTIONS = 1.3
 
-SUBDIRS = doc help
+SUBDIRS = config doc help
 
-INCLUDES = -I. -I$(srcdir) \
-	-I$(top_srcdir)/intl \
-	-I$(top_builddir)/intl \
-	-I$(top_builddir)/panel \
+INCLUDES = \
+	-I.			\
+	-I$(srcdir)		\
+	-I$(top_srcdir)/intl	\
+	-I$(top_builddir)/intl	\
+	-I$(top_builddir)/panel	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DGNOME_DATADIR=\""$(datadir)"\" \
-	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) \
-	@PIXBUF_CFLAGS@
+	-DGLADEDIR=\""$(datadir)/gnome/panel"\" \
+	-DGLOBAL_CONFDIR=\""$(sysconfdir)/gnome/panel-config"\" \
+	-I$(includedir)		\
+	$(GNOME_INCLUDEDIR)	\
+	$(ORB_CFLAGS)		\
+	$(GNOME_PRINT_CFLAGS)	\
+	$(GLADE_CFLAGS)		\
+	$(PIXBUF_CFLAGS)
 
 gwmh_dir = $(top_srcdir)/applets/desk-guide
 
 bin_PROGRAMS = \
 	panel				\
 	gnome-panel-properties-capplet	\
-	gnome-panel-add-launcher
+	gnome-panel-add-launcher	\
+	gnome-panel-screenshot
 
 noinst_PROGRAMS = bad-applet
 
@@ -174,8 +183,14 @@ panel_SOURCES=\
 	icon-entry-hack.c	\
 	icon-entry-hack.h	\
 	multiscreen-stuff.c	\
-	multiscreen-stuff.h
+	multiscreen-stuff.h	\
+	conditional.c		\
+	conditional.h
 
+man_MANS = panel.1			\
+	gnome-panel-add-launcher.1	\
+	gnome-panel-properties-capplet.1
+	
 panel_LDADD = \
 	libpanel_applet.la	\
 	$(GNOME_LIBDIR)		\
@@ -183,7 +198,8 @@ panel_LDADD = \
 	$(ORB_LIBS)		\
 	$(GNOMEUI_LIBS)		\
 	$(INTLLIBS)		\
-	@PIXBUF_LIBS@
+	$(PIXBUF_LIBS)		\
+	$(XINERAMA_LIBS)
 
 panel_LDFLAGS=-export-dynamic
 
@@ -191,17 +207,21 @@ gnome_panel_properties_capplet_SOURCES = \
 	gnome-panel-properties.c	\
 	panel-util.c			\
 	icon-entry-hack.c		\
+	conditional.c			\
 	$(CORBA_SRCLIST)
 
 gnome_panel_properties_capplet_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_CAPPLET_LIBS)	\
 	$(INTLLIBS)		\
-	@PIXBUF_LIBS@
+	$(PIXBUF_LIBS)
 
 gnome_panel_add_launcher_SOURCES = \
 	gnome-panel-add-launcher.c	\
 	$(CORBA_SRCLIST)
+
+gnome_panel_screenshot_SOURCES = \
+	gnome-panel-screenshot.c
 
 gnome_panel_add_launcher_LDADD = \
 	$(GNOME_LIBDIR)		\
@@ -209,7 +229,16 @@ gnome_panel_add_launcher_LDADD = \
 	$(GNORBA_LIBS)		\
 	$(ORB_LIBS)		\
 	$(INTLLIBS)		\
-	@PIXBUF_LIBS@
+	$(PIXBUF_LIBS)
+
+gnome_panel_screenshot_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOMEUI_LIBS)		\
+	$(GLADE_LIBS)		\
+	$(GNOME_PRINT_LIBS)	\
+	$(INTLLIBS)		\
+	$(PNG_LIBS)		\
+	$(PIXBUF_LIBS)
 
 MAINTAINERCLEANFILES = $(CORBA_SRCLIST)
 
@@ -217,12 +246,15 @@ EXTRA_DIST = \
 	appletsConf.sh.in		\
 	dockletsConf.sh.in		\
 	panel.gnorba			\
-	panel.soundlist			\
+	panel.soundlist.in		\
 	APPLET_WRITING			\
 	panel.hints			\
-	gnome-panel-properties.desktop	\
+	gnome-panel-properties.desktop.in	\
 	nothing.cP			\
-	title-item.gob
+	title-item.gob			\
+	gnome-panel-screenshot.glade	\
+	gnome-panel-screenshot.glade.h	\
+	$(man_MANS)
 
 ## Put `exec' in the name because this should be installed by
 ## `install-exec', not `install-data'.
@@ -255,16 +287,25 @@ panelgnorbadir  = $(sysconfdir)/CORBA/servers
 panelgnorba_DATA = panel.gnorba
 
 soundlistdir = $(sysconfdir)/sound/events
-soundlist_DATA = panel.soundlist
+soundlist_in_files = panel.soundlist.in
+soundlist_DATA = $(soundlist_in_files:.soundlist.in=.soundlist)
+@XML_I18N_MERGE_SOUNDLIST_RULE@
+
+gladedir = $(datadir)/gnome/panel
+glade_DATA =gnome-panel-screenshot.glade
 
 hintsdir = $(datadir)/gnome/hints
 hints_DATA = panel.hints
 
 sysdir = $(datadir)/control-center/Desktop/
-sys_DATA = gnome-panel-properties.desktop
+sys_in_files = gnome-panel-properties.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
-desk_DATA = gnome-panel-properties.desktop
+desk_in_files = gnome-panel-properties.desktop.in
+desk_DATA = $(desk_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = info.png logout-icon-menu.png

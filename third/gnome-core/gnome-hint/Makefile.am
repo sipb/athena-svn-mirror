@@ -17,27 +17,34 @@ gnome_hint_SOURCES = 		\
 
 gnome_hint_properties_capplet_SOURCES = gnome-hint-properties.c
 
+man_MANS = gnome-hint-properties-capplet.1	\
+	gnome-hint.1
+	
 gnome_hint_properties_capplet_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_CAPPLET_LIBS)	\
 	$(INTLLIBS)
 
 utildir = $(datadir)/gnome/apps/Utilities
-util_DATA = gnome-hint.desktop
-
-EXTRA_DIST = \
-	gnome-hint-properties.desktop \
-	gnome-hint.png \
-	gnome-hint.desktop
+util_in_files = gnome-hint.desktop.in
+util_DATA = $(util_in_files:.desktop.in=.desktop)
 
 sysdir = $(datadir)/control-center/Session/
-# Disable capplet listing, since Athena doesn't run gnome-hint by default.
-# sys_DATA = gnome-hint-properties.desktop
+sys_in_files = gnome-hint-properties.desktop.in
+#sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = gnome-hint.png
 
+EXTRA_DIST = \
+	$(util_in_files)	\
+	$(util_DATA)		\
+	$(sys_in_files)		\
+	gnome-hint.png		\
+	$(man_MANS)
+
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(datadir)/gnome/apps/Settings/Session/
-	$(INSTALL_DATA) $(srcdir)/gnome-hint-properties.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Session/gnome-hint-properties.desktop
+	$(INSTALL_DATA) gnome-hint-properties.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Session/gnome-hint-properties.desktop
 

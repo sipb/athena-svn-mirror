@@ -64,6 +64,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CANVAS_PIXBUF_CFLAGS = @CANVAS_PIXBUF_CFLAGS@
 CANVAS_PIXBUF_LIBS = @CANVAS_PIXBUF_LIBS@
@@ -76,11 +77,15 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
+GLADE_CFLAGS = @GLADE_CFLAGS@
+GLADE_LIBS = @GLADE_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -93,6 +98,8 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_LIBS_REQUIRED = @GNOME_LIBS_REQUIRED@
+GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
+GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
 GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
 GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
@@ -110,11 +117,14 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HAVE_JW = @HAVE_JW@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
@@ -125,6 +135,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -136,6 +147,7 @@ PACKAGE = @PACKAGE@
 PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
+PNG_LIBS = @PNG_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -143,13 +155,23 @@ RANLIB = @RANLIB@
 RES_LIBS = @RES_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XINERAMA_LIBS = @XINERAMA_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -161,14 +183,14 @@ l = @l@
 
 AUTOMAKE_OPTIONS = 1.3
 
-SUBDIRS = doc help
+SUBDIRS = config doc help
 
-INCLUDES = -I. -I$(srcdir) 	-I$(top_srcdir)/intl 	-I$(top_builddir)/intl 	-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) 	@PIXBUF_CFLAGS@
+INCLUDES =  	-I.				-I$(srcdir)			-I$(top_srcdir)/intl		-I$(top_builddir)/intl		-I$(top_builddir)/panel		-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	-DGLADEDIR=\""$(datadir)/gnome/panel"\" 	-DGLOBAL_CONFDIR=\""$(sysconfdir)/gnome/panel-config"\" 	-I$(includedir)			$(GNOME_INCLUDEDIR)		$(ORB_CFLAGS)			$(GNOME_PRINT_CFLAGS)		$(GLADE_CFLAGS)			$(PIXBUF_CFLAGS)
 
 
 gwmh_dir = $(top_srcdir)/applets/desk-guide
 
-bin_PROGRAMS =  	panel					gnome-panel-properties-capplet		gnome-panel-add-launcher
+bin_PROGRAMS =  	panel					gnome-panel-properties-capplet		gnome-panel-add-launcher		gnome-panel-screenshot
 
 
 noinst_PROGRAMS = bad-applet
@@ -212,29 +234,38 @@ GWMH_SRCLIST =  	gwmh.c			gwmh.h			gstc.c			gstc.h
 
 BUILT_SOURCES = $(CORBA_SRCLIST) $(GWMH_SRCLIST)
 
-panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h		multiscreen-stuff.c		multiscreen-stuff.h
+panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h		multiscreen-stuff.c		multiscreen-stuff.h		conditional.c			conditional.h
 
 
-panel_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(GNOMEUI_LIBS)			$(INTLLIBS)			@PIXBUF_LIBS@
+man_MANS = panel.1				gnome-panel-add-launcher.1		gnome-panel-properties-capplet.1
+
+
+panel_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(GNOMEUI_LIBS)			$(INTLLIBS)			$(PIXBUF_LIBS)			$(XINERAMA_LIBS)
 
 
 panel_LDFLAGS = -export-dynamic
 
-gnome_panel_properties_capplet_SOURCES =  	gnome-panel-properties.c		panel-util.c				icon-entry-hack.c			$(CORBA_SRCLIST)
+gnome_panel_properties_capplet_SOURCES =  	gnome-panel-properties.c		panel-util.c				icon-entry-hack.c			conditional.c				$(CORBA_SRCLIST)
 
 
-gnome_panel_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS)			@PIXBUF_LIBS@
+gnome_panel_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS)			$(PIXBUF_LIBS)
 
 
 gnome_panel_add_launcher_SOURCES =  	gnome-panel-add-launcher.c		$(CORBA_SRCLIST)
 
 
-gnome_panel_add_launcher_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(INTLLIBS)			@PIXBUF_LIBS@
+gnome_panel_screenshot_SOURCES =  	gnome-panel-screenshot.c
+
+
+gnome_panel_add_launcher_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(INTLLIBS)			$(PIXBUF_LIBS)
+
+
+gnome_panel_screenshot_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GLADE_LIBS)			$(GNOME_PRINT_LIBS)		$(INTLLIBS)			$(PNG_LIBS)			$(PIXBUF_LIBS)
 
 
 MAINTAINERCLEANFILES = $(CORBA_SRCLIST)
 
-EXTRA_DIST =  	appletsConf.sh.in			dockletsConf.sh.in			panel.gnorba				panel.soundlist				APPLET_WRITING				panel.hints				gnome-panel-properties.desktop		nothing.cP				title-item.gob
+EXTRA_DIST =  	appletsConf.sh.in			dockletsConf.sh.in			panel.gnorba				panel.soundlist.in			APPLET_WRITING				panel.hints				gnome-panel-properties.desktop.in		nothing.cP				title-item.gob				gnome-panel-screenshot.glade		gnome-panel-screenshot.glade.h		$(man_MANS)
 
 
 confexecdir = $(libdir)
@@ -244,16 +275,22 @@ panelgnorbadir = $(sysconfdir)/CORBA/servers
 panelgnorba_DATA = panel.gnorba
 
 soundlistdir = $(sysconfdir)/sound/events
-soundlist_DATA = panel.soundlist
+soundlist_in_files = panel.soundlist.in
+soundlist_DATA = $(soundlist_in_files:.soundlist.in=.soundlist)
+
+gladedir = $(datadir)/gnome/panel
+glade_DATA = gnome-panel-screenshot.glade
 
 hintsdir = $(datadir)/gnome/hints
 hints_DATA = panel.hints
 
 sysdir = $(datadir)/control-center/Desktop/
-sys_DATA = gnome-panel-properties.desktop
+sys_in_files = gnome-panel-properties.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
-desk_DATA = gnome-panel-properties.desktop
+desk_in_files = gnome-panel-properties.desktop.in
+desk_DATA = $(desk_in_files:.desktop.in=.desktop)
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = info.png logout-icon-menu.png
@@ -276,27 +313,42 @@ gnome-panel-skels.lo gnome-panel-common.lo
 libpanel_status_la_DEPENDENCIES = 
 libpanel_status_la_OBJECTS =  status-docklet.lo gnome-panel-stubs.lo \
 gnome-panel-skels.lo gnome-panel-common.lo
+bin_PROGRAMS =  panel$(EXEEXT) gnome-panel-properties-capplet$(EXEEXT) \
+gnome-panel-add-launcher$(EXEEXT) gnome-panel-screenshot$(EXEEXT)
+noinst_PROGRAMS =  bad-applet$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-panel_OBJECTS =  gwmh.o gstc.o main.o applet.o panel.o session.o \
-panel_config.o distribution.o menu.o menu-fentry.o menu-rh.o \
-menu-properties.o menu-util.o launcher.o logout.o extern.o status.o \
-swallow.o drawer.o panel-widget.o basep-widget.o border-widget.o \
-edge-widget.o aligned-widget.o sliding-widget.o floating-widget.o \
-drawer-widget.o button-widget.o panel-util.o tearoffitem.o rgb-stuff.o \
-global-keys.o gnome-run.o xstuff.o foobar-widget.o tasklist_icon.o \
-title-item.o scroll-menu.o icon-entry-hack.o multiscreen-stuff.o
+panel_OBJECTS =  gwmh.$(OBJEXT) gstc.$(OBJEXT) main.$(OBJEXT) \
+applet.$(OBJEXT) panel.$(OBJEXT) session.$(OBJEXT) \
+panel_config.$(OBJEXT) distribution.$(OBJEXT) menu.$(OBJEXT) \
+menu-fentry.$(OBJEXT) menu-rh.$(OBJEXT) menu-properties.$(OBJEXT) \
+menu-util.$(OBJEXT) launcher.$(OBJEXT) logout.$(OBJEXT) \
+extern.$(OBJEXT) status.$(OBJEXT) swallow.$(OBJEXT) drawer.$(OBJEXT) \
+panel-widget.$(OBJEXT) basep-widget.$(OBJEXT) border-widget.$(OBJEXT) \
+edge-widget.$(OBJEXT) aligned-widget.$(OBJEXT) sliding-widget.$(OBJEXT) \
+floating-widget.$(OBJEXT) drawer-widget.$(OBJEXT) \
+button-widget.$(OBJEXT) panel-util.$(OBJEXT) tearoffitem.$(OBJEXT) \
+rgb-stuff.$(OBJEXT) global-keys.$(OBJEXT) gnome-run.$(OBJEXT) \
+xstuff.$(OBJEXT) foobar-widget.$(OBJEXT) tasklist_icon.$(OBJEXT) \
+title-item.$(OBJEXT) scroll-menu.$(OBJEXT) icon-entry-hack.$(OBJEXT) \
+multiscreen-stuff.$(OBJEXT) conditional.$(OBJEXT)
 panel_DEPENDENCIES =  libpanel_applet.la
-gnome_panel_properties_capplet_OBJECTS =  gnome-panel-properties.o \
-panel-util.o icon-entry-hack.o gnome-panel-stubs.o gnome-panel-skels.o \
-gnome-panel-common.o
+gnome_panel_properties_capplet_OBJECTS =  \
+gnome-panel-properties.$(OBJEXT) panel-util.$(OBJEXT) \
+icon-entry-hack.$(OBJEXT) conditional.$(OBJEXT) \
+gnome-panel-stubs.$(OBJEXT) gnome-panel-skels.$(OBJEXT) \
+gnome-panel-common.$(OBJEXT)
 gnome_panel_properties_capplet_DEPENDENCIES = 
 gnome_panel_properties_capplet_LDFLAGS = 
-gnome_panel_add_launcher_OBJECTS =  gnome-panel-add-launcher.o \
-gnome-panel-stubs.o gnome-panel-skels.o gnome-panel-common.o
+gnome_panel_add_launcher_OBJECTS =  gnome-panel-add-launcher.$(OBJEXT) \
+gnome-panel-stubs.$(OBJEXT) gnome-panel-skels.$(OBJEXT) \
+gnome-panel-common.$(OBJEXT)
 gnome_panel_add_launcher_DEPENDENCIES = 
 gnome_panel_add_launcher_LDFLAGS = 
-bad_applet_OBJECTS =  bad-applet.o
+gnome_panel_screenshot_OBJECTS =  gnome-panel-screenshot.$(OBJEXT)
+gnome_panel_screenshot_DEPENDENCIES = 
+gnome_panel_screenshot_LDFLAGS = 
+bad_applet_OBJECTS =  bad-applet.$(OBJEXT)
 bad_applet_DEPENDENCIES =  libpanel_applet.la
 bad_applet_LDFLAGS = 
 SCRIPTS =  $(athena_SCRIPTS)
@@ -305,8 +357,13 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(athena_DATA) $(confexec_DATA) $(desk_DATA) $(hints_DATA) \
-$(panelgnorba_DATA) $(pixmap_DATA) $(soundlist_DATA) $(sys_DATA)
+man1dir = $(mandir)/man1
+MANS = $(man_MANS)
+
+NROFF = nroff
+DATA =  $(athena_DATA) $(confexec_DATA) $(desk_DATA) $(glade_DATA) \
+$(hints_DATA) $(panelgnorba_DATA) $(pixmap_DATA) $(soundlist_DATA) \
+$(sys_DATA)
 
 HEADERS =  $(libpanel_appletinclude_HEADERS) \
 $(libpanel_statusinclude_HEADERS)
@@ -318,12 +375,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libpanel_applet_la_SOURCES) $(libpanel_status_la_SOURCES) $(panel_SOURCES) $(gnome_panel_properties_capplet_SOURCES) $(gnome_panel_add_launcher_SOURCES) $(bad_applet_SOURCES)
-OBJECTS = $(libpanel_applet_la_OBJECTS) $(libpanel_status_la_OBJECTS) $(panel_OBJECTS) $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_add_launcher_OBJECTS) $(bad_applet_OBJECTS)
+SOURCES = $(libpanel_applet_la_SOURCES) $(libpanel_status_la_SOURCES) $(panel_SOURCES) $(gnome_panel_properties_capplet_SOURCES) $(gnome_panel_add_launcher_SOURCES) $(gnome_panel_screenshot_SOURCES) $(bad_applet_SOURCES)
+OBJECTS = $(libpanel_applet_la_OBJECTS) $(libpanel_status_la_OBJECTS) $(panel_OBJECTS) $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_screenshot_OBJECTS) $(bad_applet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps panel/Makefile
 
@@ -360,6 +417,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -368,6 +430,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -435,20 +498,24 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-panel: $(panel_OBJECTS) $(panel_DEPENDENCIES)
-	@rm -f panel
+panel$(EXEEXT): $(panel_OBJECTS) $(panel_DEPENDENCIES)
+	@rm -f panel$(EXEEXT)
 	$(LINK) $(panel_LDFLAGS) $(panel_OBJECTS) $(panel_LDADD) $(LIBS)
 
-gnome-panel-properties-capplet: $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_properties_capplet_DEPENDENCIES)
-	@rm -f gnome-panel-properties-capplet
+gnome-panel-properties-capplet$(EXEEXT): $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_properties_capplet_DEPENDENCIES)
+	@rm -f gnome-panel-properties-capplet$(EXEEXT)
 	$(LINK) $(gnome_panel_properties_capplet_LDFLAGS) $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_properties_capplet_LDADD) $(LIBS)
 
-gnome-panel-add-launcher: $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_add_launcher_DEPENDENCIES)
-	@rm -f gnome-panel-add-launcher
+gnome-panel-add-launcher$(EXEEXT): $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_add_launcher_DEPENDENCIES)
+	@rm -f gnome-panel-add-launcher$(EXEEXT)
 	$(LINK) $(gnome_panel_add_launcher_LDFLAGS) $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_add_launcher_LDADD) $(LIBS)
 
-bad-applet: $(bad_applet_OBJECTS) $(bad_applet_DEPENDENCIES)
-	@rm -f bad-applet
+gnome-panel-screenshot$(EXEEXT): $(gnome_panel_screenshot_OBJECTS) $(gnome_panel_screenshot_DEPENDENCIES)
+	@rm -f gnome-panel-screenshot$(EXEEXT)
+	$(LINK) $(gnome_panel_screenshot_LDFLAGS) $(gnome_panel_screenshot_OBJECTS) $(gnome_panel_screenshot_LDADD) $(LIBS)
+
+bad-applet$(EXEEXT): $(bad_applet_OBJECTS) $(bad_applet_DEPENDENCIES)
+	@rm -f bad-applet$(EXEEXT)
 	$(LINK) $(bad_applet_LDFLAGS) $(bad_applet_OBJECTS) $(bad_applet_LDADD) $(LIBS)
 
 install-athenaSCRIPTS: $(athena_SCRIPTS)
@@ -469,6 +536,45 @@ uninstall-athenaSCRIPTS:
 	list='$(athena_SCRIPTS)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
 	done
+
+install-man1:
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+uninstall-man1:
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
+install-man: $(MANS)
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-man1
+uninstall-man:
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1
 
 install-athenaDATA: $(athena_DATA)
 	@$(NORMAL_INSTALL)
@@ -525,6 +631,25 @@ uninstall-deskDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(desk_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(deskdir)/$$p; \
+	done
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
 	done
 
 install-hintsDATA: $(hints_DATA)
@@ -778,8 +903,8 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 		install-confexecDATA
 install-exec: install-exec-recursive
 
-install-data-am: install-athenaSCRIPTS install-athenaDATA \
-		install-deskDATA install-hintsDATA \
+install-data-am: install-athenaSCRIPTS install-man install-athenaDATA \
+		install-deskDATA install-gladeDATA install-hintsDATA \
 		install-panelgnorbaDATA install-pixmapDATA \
 		install-soundlistDATA install-sysDATA \
 		install-libpanel_appletincludeHEADERS \
@@ -791,15 +916,16 @@ install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-athenaSCRIPTS uninstall-athenaDATA \
-		uninstall-confexecDATA uninstall-deskDATA \
+		uninstall-athenaSCRIPTS uninstall-man \
+		uninstall-athenaDATA uninstall-confexecDATA \
+		uninstall-deskDATA uninstall-gladeDATA \
 		uninstall-hintsDATA uninstall-panelgnorbaDATA \
 		uninstall-pixmapDATA uninstall-soundlistDATA \
 		uninstall-sysDATA \
 		uninstall-libpanel_appletincludeHEADERS \
 		uninstall-libpanel_statusincludeHEADERS
 uninstall: uninstall-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 		$(HEADERS)
 all-redirect: all-recursive
 install-strip:
@@ -807,8 +933,9 @@ install-strip:
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(athenadir) $(DESTDIR)$(athenadir) \
-		$(DESTDIR)$(confexecdir) $(DESTDIR)$(deskdir) \
+		$(DESTDIR)$(athenadir) $(DESTDIR)$(mandir)/man1 \
+		$(DESTDIR)$(athenadir) $(DESTDIR)$(confexecdir) \
+		$(DESTDIR)$(deskdir) $(DESTDIR)$(gladedir) \
 		$(DESTDIR)$(hintsdir) $(DESTDIR)$(panelgnorbadir) \
 		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(soundlistdir) \
 		$(DESTDIR)$(sysdir) \
@@ -867,12 +994,14 @@ maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
-uninstall-athenaSCRIPTS install-athenaSCRIPTS uninstall-athenaDATA \
+uninstall-athenaSCRIPTS install-athenaSCRIPTS install-man1 \
+uninstall-man1 install-man uninstall-man uninstall-athenaDATA \
 install-athenaDATA uninstall-confexecDATA install-confexecDATA \
-uninstall-deskDATA install-deskDATA uninstall-hintsDATA \
-install-hintsDATA uninstall-panelgnorbaDATA install-panelgnorbaDATA \
-uninstall-pixmapDATA install-pixmapDATA uninstall-soundlistDATA \
-install-soundlistDATA uninstall-sysDATA install-sysDATA \
+uninstall-deskDATA install-deskDATA uninstall-gladeDATA \
+install-gladeDATA uninstall-hintsDATA install-hintsDATA \
+uninstall-panelgnorbaDATA install-panelgnorbaDATA uninstall-pixmapDATA \
+install-pixmapDATA uninstall-soundlistDATA install-soundlistDATA \
+uninstall-sysDATA install-sysDATA \
 uninstall-libpanel_appletincludeHEADERS \
 install-libpanel_appletincludeHEADERS \
 uninstall-libpanel_statusincludeHEADERS \
@@ -927,6 +1056,9 @@ dockletsConf.sh: dockletsConf.sh.in Makefile
 	    -e 's?\@VERSION\@?$(VERSION)?g' \
 	    < $(srcdir)/dockletsConf.sh.in > dockletsConf.tmp \
 	  && mv dockletsConf.tmp dockletsConf.sh
+@XML_I18N_MERGE_SOUNDLIST_RULE@
+@XML_I18N_MERGE_DESKTOP_RULE@
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(athenadir)
