@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -22,10 +22,12 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.16 1993-11-24 01:07:47 probe Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.17 1994-11-11 19:55:36 ghudson Exp $";
 #endif
-		     
+
+#ifndef linux /* Defines atol() as a macro. */
 extern long atol();
+#endif
 
 #ifdef __STDC__
 const
