@@ -871,8 +871,8 @@ default:
 	 strcat(newoname, printer);
       }
       strcat(newoname, p + 2);
+      oname = newstring(newoname);
    }
-   oname = newstring(newoname);
    checkenv(1) ;
 /*
  *   The logic here is a bit convoluted.  Since all `additional'
