@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,8 +20,8 @@
 #include <com_err.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.7 1990-07-12 14:01:53 raeburn Exp $";
-#endif lint
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.8 1991-12-05 15:31:22 lwvanels Exp $";
+#endif /* lint */
 
 #define MAIL_CLASS "MAIL"
 #define MAIL_INSTANCE "POP"
