@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_load.c	4.38 (Berkeley) 3/2/91";
-static char rcsid[] = "$Id: db_load.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_load.c,v 1.1.1.2 1998-05-12 18:03:55 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -128,6 +128,7 @@ static char rcsid[] = "$Id: db_load.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -152,7 +153,11 @@ static int		datepart(const char *, int, int, int, int *);
 static u_int32_t	datetosecs(const char *, int *);
 static int		get_nxt_types(u_char *, FILE *, const char *);
 static void		fixup_soa(const char *fn, struct zoneinfo *zp);
- 
+#ifdef BIND_NOTIFY
+static void		notify_after_delay(evContext ctx, void *uap,
+					   struct timespec due,
+					   struct timespec inter);
+#endif
 static int		wordtouint32_error = 0;
 static int		empty_token = 0;
 static int		getmlword_nesting = 0;
@@ -160,6 +165,10 @@ static int		getmlword_nesting = 0;
 /* Global. */
 
 static int clev;	/* a zone deeper in a hierarchy has more credibility */
+
+#ifdef BIND_NOTIFY
+static notify_info_list	pending_notifies;
+#endif
 
 /*
  * Parser token values
@@ -172,15 +181,17 @@ static int clev;	/* a zone deeper in a hierarchy has more credibility */
 #define ORIGIN	6
 #define ERROR	7
 
-#define MAKENAME_OK(N)	if (!makename_ok(N, origin, class, zp, \
-					 transport, context, \
-					 domain, filename, lineno, \
-					 sizeof(data) - \
-					 ((u_char*)N - data))) { \
-				errs++; \
-				sprintf(buf, "bad name \"%s\"", N); \
-			        goto err; \
-			}
+#define MAKENAME_OK(N) \
+	do { \
+		if (!makename_ok(N, origin, class, zp, \
+				 transport, context, \
+				 domain, filename, lineno, \
+				 sizeof(data) - ((u_char*)N - data))) { \
+			errs++; \
+			sprintf(buf, "bad name \"%s\"", N); \
+		        goto err; \
+		} \
+	} while (0)
 
 /* Public. */
 
@@ -224,7 +235,12 @@ db_load(const char *filename, const char *in_origin,
 	empty_from.sin_addr.s_addr = htonl(INADDR_ANY);
 	empty_from.sin_port = htons(0);
 
-#define	ERRTO(msg)  if (1) { errtype = msg; goto err; } else (void)NULL
+/*
+ * We use an 'if' inside of the 'do' below because otherwise the Solaris
+ * compiler detects that the 'while' is never executed because of the 'goto'
+ * and complains.
+ */
+#define	ERRTO(msg)  do { if (1) { errtype = msg; goto err; } } while (0)
 
 	switch (zp->z_type) {
 	case Z_PRIMARY:
@@ -506,7 +522,7 @@ db_load(const char *filename, const char *in_origin,
 #ifdef BIND_UPDATE
                                 if ((zp->z_type == Z_PRIMARY) && 
 				    (zp->z_flags & Z_DYNAMIC))
-                                        if (zp->z_soaincrintvl >
+                                        if ((u_int32_t)zp->z_soaincrintvl >
 					    zp->z_refresh/3) {
                                                 ns_info(ns_log_load,
 		    "zone soa update time truncated to 1/3rd of refresh time");
@@ -1079,11 +1095,11 @@ db_load(const char *filename, const char *in_origin,
 			ERRTO("TTL is greater than signed original TTL");
 
 		/* Don't let bogus signers "sign" in the future.  */
-		if (signtime > now)
+		if (signtime > (u_int32_t)now)
 			ERRTO("signature time is in the future");
 		
 		/* Ignore received SIG RR's that are already expired.  */
-		if (exptime <= now)
+		if (exptime <= (u_int32_t)now)
 			ERRTO("expiration time is in the past");
 
 		/* Lop off the TTL at the expiration time.  */
@@ -1216,7 +1232,7 @@ db_load(const char *filename, const char *in_origin,
 					ns_debug(ns_log_load, 1,
 						 "update failed %s %d", 
 						 domain, type);
-				db_free(dp);
+				db_freedata(dp);
 			} else {
 				rrcount++;
 			}
@@ -1284,22 +1300,31 @@ db_load(const char *filename, const char *in_origin,
 		       "%s failed, cannot notify for zone %s";
 		notify_info ni;
 
-		ni = (notify_info)malloc(sizeof (struct notify_info));
+		ni = memget(sizeof *ni);
 		if (ni == NULL)
-			ns_info(ns_log_load, no_room, "malloc", zp->z_origin);
+			ns_info(ns_log_load, no_room, "memget", zp->z_origin);
 		else {
-			ni->name = strdup(zp->z_origin);
+			ni->name = savestr(zp->z_origin, 0);
 			if (ni->name == NULL) {
-				free(ni);
+				memput(ni, sizeof *ni);
 				ns_info(ns_log_load, no_room,
-					"strdup", zp->z_origin);
+					"memget", zp->z_origin);
 			} else {
 				ni->class = zp->z_class;
-				(void) evWaitFor(ev, (const void *)
-							notify_after_load,
-						 notify_after_load, ni,
-						 NULL);
-				ns_need(MAIN_NEED_NOTIFY);
+				ni->state = notify_info_waitfor;
+				if (evWaitFor(ev,
+					      (const void *)notify_after_load,
+					      notify_after_load, ni,
+					      &ni->wait_id) < 0) {
+					ns_error(ns_log_load,
+						 "evWaitFor() failed: %s",
+						 strerror(errno));
+					freestr(ni->name);
+					memput(ni, sizeof *ni);
+				} else {
+					APPEND(pending_notifies, ni, link);
+					ns_need(MAIN_NEED_NOTIFY);
+				}
 			}
 		}
 	}
@@ -2132,10 +2157,22 @@ fixup_soa(const char *fn, struct zoneinfo *zp) {
 			   fn, zp->z_refresh, zp->z_retry);
 }
 
+#ifdef BIND_NOTIFY
+static void
+free_notify_info(notify_info ni) {
+	if (ni->state == notify_info_waitfor)
+		evUnwait(ev, ni->wait_id);
+	else if (ni->state == notify_info_delay)
+		evClearTimer(ev, ni->timer_id);
+	freestr(ni->name);
+	memput(ni, sizeof *ni);
+}
+
 void
 notify_after_load(evContext ctx, void *uap, const void *tag) {
 	int delay, max_delay;
-
+	notify_info ni = uap;
+	
 	INSIST(tag == (const void *)notify_after_load);
 
 	/* delay notification for from five seconds up to fifteen minutes */
@@ -2144,19 +2181,38 @@ notify_after_load(evContext ctx, void *uap, const void *tag) {
 	delay = 5 + (rand() % max_delay);
 	ns_debug(ns_log_notify, 3, "notify_after_load: uap %p tag %p delay %d",
 		 uap, tag, delay);
-	(void) evSetTimer(ctx, notify_after_delay, uap,
-			  evAddTime(evNowTime(), evConsTime(delay, 0)),
-			  evConsTime(0, 0), NULL);
+	if (evSetTimer(ctx, notify_after_delay, ni,
+		       evAddTime(evNowTime(), evConsTime(delay, 0)),
+		       evConsTime(0, 0), &ni->timer_id) < 0) {
+		ns_error(ns_log_notify, "evSetTimer() failed: %s",
+			 strerror(errno));
+		UNLINK(pending_notifies, ni, link);
+		ni->state = notify_info_error;
+		free_notify_info(ni);
+	}
+	ni->state = notify_info_delay;
 }
 
-void
+static void
 notify_after_delay(evContext ctx, void *uap,
 		   struct timespec due,
 		   struct timespec inter)
 {
 	notify_info ni = uap;
 
+	UNLINK(pending_notifies, ni, link);
+	ni->state = notify_info_done;
 	sysnotify(ni->name, ni->class, ns_t_soa);
-	free(ni->name);
-	free(ni);
+	free_notify_info(ni);
 }
+
+void
+db_cancel_pending_notifies(void) {
+	notify_info ni, ni_next;
+	for (ni = HEAD(pending_notifies); ni != NULL; ni = ni_next) {
+		ni_next = NEXT(ni, link);
+		free_notify_info(ni);
+	}
+	INIT_LIST(pending_notifies);
+}
+#endif

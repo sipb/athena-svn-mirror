@@ -1,6 +1,6 @@
 /*
  *	from ns.h	4.33 (Berkeley) 8/23/90
- *	$Id: ns_defs.h,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $
+ *	$Id: ns_defs.h,v 1.1.1.2 1998-05-12 18:04:01 ghudson Exp $
  */
 
 /*
@@ -142,6 +142,10 @@
 #define	OPTION_NONAUTH_NXDOMAIN	0x0020	/* Generate non-auth NXDOMAINs? */
 #define	OPTION_MULTIPLE_CNAMES	0x0040	/* Allow a name to have multiple
 					 * CNAME RRs */
+#define OPTION_HOSTSTATS	0x0080	/* Maintain per-host statistics? */
+#define OPTION_DEALLOC_ON_EXIT	0x0100	/* Deallocate everything on exit? */
+
+#define	DEFAULT_OPTION_FLAGS	0
 
 #ifdef BIND_UPDATE
 #define SOAINCRINTVL 300 /* default value for the time after which
@@ -178,17 +182,25 @@
 	/* Sequence space arithmetic. */
 #define SEQ_GT(a,b)	((int32_t)((a)-(b)) > 0)
 
-	/* Cheap garbage collection. */
-#define	FREE_ONCE(p)	do { if (p) { free(p); p = NULL; } } while (0)
+#define	NS_OPTION_P(option) ((server_options == NULL) ? \
+		(panic(panic_msg_no_options, NULL), 0) : \
+		((server_options->flags & option) != 0))
 
-	/* Like assert() but using log system rather than stderr. */
-#define INSIST(c) if (!(c)) \
-	ns_panic(ns_log_insist, 1, "%s:%d: insist '%s' failed", \
-		 __FILE__, __LINE__, #c); else (void)NULL
-
-#define INSIST_ERR(c) if (!(c)) \
-	ns_panic(ns_log_insist, 1, "%s:%d: insist '%s' failed: %s", \
-		 __FILE__, __LINE__, #c, strerror(errno)); else (void)NULL
+#define	NS_INCRSTAT(addr, which) \
+	do { \
+		if ((int)which >= (int)nssLast) \
+			ns_panic(ns_log_insist, 1, panic_msg_bad_which, \
+				 __FILE__, __LINE__, #which); \
+		else { \
+			if (NS_OPTION_P(OPTION_HOSTSTATS)) { \
+				struct nameser *ns = \
+					nameserFind(addr, NS_F_INSERT); \
+				if (ns != NULL) \
+					ns->stats[(int)which]++; \
+			} \
+			globalStats[(int)which]++; \
+		} \
+	} while (0)
 
 enum severity { ignore, warn, fail, not_set };
 
@@ -246,6 +258,7 @@ struct zoneinfo {
 	u_int32_t	z_serial;	/* changes if zone modified */
 	char		*z_source;	/* source location of data */
 	time_t		z_ftime;	/* modification time of source file */
+	struct in_addr	z_axfr_src;	/* bind() the axfr socket to this */
 	struct in_addr	z_xaddr;	/* override server for next xfer */
 	struct in_addr	z_addr[NSMAX];	/* list of master servers for zone */
 	u_char		z_addrcnt;	/* number of entries in z_addr[] */
@@ -340,7 +353,9 @@ struct qinfo {
 	u_char		*q_msg,		/* the message */
 			*q_cmsg;	/* the cname message */
 	int16_t		q_msglen,	/* len of message */
-			q_cmsglen;	/* len of cname message */
+			q_msgsize,	/* allocated size of message */
+			q_cmsglen,	/* len of cname message */
+			q_cmsgsize;	/* allocated size of cname message */
 	int16_t		q_dfd;		/* UDP file descriptor */
 	struct fwdinfo	*q_fwd;		/* last	forwarder used */
 	time_t		q_time;		/* time to retry */
@@ -400,6 +415,22 @@ struct fdlist {
 };
 #endif
 
+typedef struct _interface {
+	int			dfd,		/* Datagram file descriptor */
+				sfd;		/* Stream file descriptor. */
+	time_t			gen;		/* Generation number. */
+	struct in_addr		addr;		/* Interface address. */
+	u_int16_t		port;		/* Interface port. */
+	u_int16_t		flags;		/* Valid bits for evXXXXID. */
+	evFileID		evID_d;		/* Datagram read-event. */
+	evConnID		evID_s;		/* Stream listen-event. */
+	LINK(struct _interface)	link;
+} interface;
+
+#define INTERFACE_FILE_VALID	0x01
+#define INTERFACE_CONN_VALID	0x02
+#define INTERFACE_FORWARDING	0x04
+
 struct qstream {
 	int		s_rfd;		/* stream file descriptor */
 	int		s_size;		/* expected amount of data to rcv */
@@ -413,6 +444,7 @@ struct qstream {
 	struct qstream	*s_next;	/* next stream */
 	struct sockaddr_in
 			s_from;		/* address query came from */
+	interface	*s_ifp;		/* interface query came from */
 	time_t		s_time;		/* time stamp of last transaction */
 	int		s_refcnt;	/* number of outstanding queries */
 	u_char		s_temp[HFIXEDSZ];
@@ -440,8 +472,8 @@ struct qstream {
 				*ptrs[128];	/* ptrs for dn_comp(). */
 		int		class,		/* class of an XFR. */
 				id,		/* id of an XFR. */
-				opcode,		/* opcode of an XFR. */
-				zone;		/* zone being XFR'd. */
+				opcode;		/* opcode of an XFR. */
+		u_int		zone;		/* zone being XFR'd. */
 		struct namebuf	*top;		/* top np of an XFR. */
 		struct qs_x_lev {		/* decompose the recursion. */
 			enum {sxl_ns, sxl_all, sxl_sub}
@@ -469,12 +501,6 @@ struct qstream {
 #define STREAM_DONE_CLOSE	0x10
 #define STREAM_AXFR		0x20
 
-struct netinfo {
-	struct netinfo	*next;
-	struct in_addr	addr,
-			mask;
-};
-
 #define ALLOW_NETS	0x0001
 #define	ALLOW_HOSTS	0x0002
 #define	ALLOW_ALL	(ALLOW_NETS | ALLOW_HOSTS)
@@ -500,7 +526,6 @@ enum nameserStats {	nssRcvdR,	/* sent us an answer */
 			nssSentFwdQ,	/* fwdd a query to them */
 			nssSentDupQ,	/* sent them a retry */
 			nssSendtoErr,	/* error in sendto */
-#ifdef XSTATS
 			nssRcvdQ,	/* sent us a query */
 			nssRcvdIQ,	/* sent us an inverse query */
 			nssRcvdFwdQ,	/* sent us a query we had to fwd */
@@ -511,7 +536,6 @@ enum nameserStats {	nssRcvdR,	/* sent us an answer */
 			nssSentFErr,	/* sent them a FORMERR */
 			nssSentNaAns,   /* sent them a non autoritative answer */
 			nssSentNXD,	/* sent them a negative response */
-#endif
 			nssLast };
 
 struct nameser {
@@ -544,12 +568,18 @@ typedef struct listen_info_list {
 	listen_info last;
 } *listen_info_list;
 
+#ifndef RLIMIT_TYPE
+#define RLIMIT_TYPE u_long
+#endif
+typedef RLIMIT_TYPE rlimit_type;
+
 typedef struct options {
 	u_int flags;
 	char *directory;
 	char *dump_filename;
 	char *pid_filename;
 	char *stats_filename;
+	char *memstats_filename;
 	char *named_xfer;
 	int transfers_in;
 	int transfers_per_ns;
@@ -693,11 +723,22 @@ enum req_action { Finish, Refuse, Return };
 #endif
 
 #ifdef BIND_NOTIFY
+typedef enum {
+	notify_info_waitfor, notify_info_delay, notify_info_error,
+	notify_info_done
+} notify_info_state;
+
 typedef struct notify_info {
 	char *name;
 	int class;
+	notify_info_state state;
+	evWaitID wait_id;
+	evTimerID timer_id;
+	LINK(struct notify_info) link;
 } *notify_info;
-#endif
+
+typedef LIST(struct notify_info) notify_info_list;
+#endif /* BIND_NOTIFY */
 
 #ifdef INIT
 	error "INIT already defined, check system include files"

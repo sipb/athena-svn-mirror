@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Mon Jun 23 20:08:55 1997
+%%CreationDate: Thu May  7 13:34:46 1998
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 2
@@ -354,22 +354,20 @@ F(eep)-.1 E 1.857(open option \(implies vc\) use/don')72 636 R 4.357(tu)
 (ault domain name to ignore/don')-.1 F 3.625(ti)-.18 G 1.125
 (gnore trunc. errors use/don')-3.625 F 3.625(tu)-.18 G 1.125
 (se primary serv)-3.625 F 1.125(er authoritati)-.15 F -.15(ve)-.25 G
-1.247(query only \215ag sort resource records echo parsed ar)72 660 R
-1.247(guments print query statistics print basic header print header)
--.18 F .199(\215ags print TTLs print class info print outgoing query print reply print question section print answer section print au-)
-72 672 R(thoritati)72 684 Q .593 -.15(ve s)-.25 H .292
-(ection print additional section set to def).15 F .292
-(ault print \215ags set to minimal def)-.1 F .292
-(ault print \215ags set print \215ags to)-.1 F 2.915(#\()72 696 S 2.915
-(#c)-2.915 G .415(an be he)-2.915 F .416(x/octal/decimal\) bitwise and print \215ags with # bitwise or print \215ags with # The and options af)
--.15 F .416(fect the)-.25 F .088(retransmission strate)72 708 R .088
-(gy used by the resolv)-.15 F .088
-(er library when sending datagram queries.)-.15 F .087
-(The algorithm is as follo)5.087 F .087(ws: for)-.25 F 2.5(i=0t)72 720 S
-2.5(or)-2.5 G(etry - 1)-2.5 E(for j = 1 to num_serv)82 732 Q 36
-(ers send_query w)-.15 F(ait\(\(time * \(2**i\)\) / num_serv)-.1 E
-(ers\))-.15 E .404(end end \(Note: al)82 744 R -.1(wa)-.1 G .404
-(ys uses a v).1 F .405
+.992(query only \215ag echo parsed ar)72 660 R .992(guments print query statistics print basic header print header \215ags print TTLs print)
+-.18 F .18(class info print outgoing query print reply print question section print answer section print authoritati)
+72 672 R .48 -.15(ve s)-.25 H .18(ection print).15 F 1.048
+(additional section set to def)72 684 R 1.047
+(ault print \215ags set to minimal def)-.1 F 1.047
+(ault print \215ags set print \215ags to # \(# can be he)-.1 F(x/oc-)
+-.15 E 1.17(tal/decimal\) bitwise and print \215ags with # bitwise or print \215ags with # The and options af)
+72 696 R 1.17(fect the retransmission)-.25 F(strate)72 708 Q .182
+(gy used by the resolv)-.15 F .182
+(er library when sending datagram queries.)-.15 F .182
+(The algorithm is as follo)5.182 F .182(ws: for i = 0 to retry -)-.25 F
+(1)72 720 Q(for j = 1 to num_serv)82 732 Q 36(ers send_query w)-.15 F
+(ait\(\(time * \(2**i\)\) / num_serv)-.1 E(ers\))-.15 E .404
+(end end \(Note: al)82 744 R -.1(wa)-.1 G .404(ys uses a v).1 F .405
 (alue of 1 for once required a slightly modi\214ed v)-.25 F .405
 (ersion of the BIND library)-.15 F 5.405(.A)-.65 G 2.905(so)-5.405 G(f)
 -2.905 E .585(BIND 4.9, BIND')72 756 R 3.085(sr)-.55 G(esolv)-3.085 E

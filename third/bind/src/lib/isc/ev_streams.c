@@ -1,4 +1,4 @@
-/* Copyright (c) 1996, 1997 by Internet Software Consortium
+/* Copyright (c) 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,24 +19,23 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_streams.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: ev_streams.c,v 1.1.1.2 1998-05-12 18:05:30 ghudson Exp $";
 #endif
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
 #include <sys/types.h>
 #include <sys/uio.h>
 
-#include <assert.h>
 #include <errno.h>
 
 #include <isc/eventlib.h>
+#include <isc/assertions.h>
 #include "eventlib_p.h"
 
 #include "port_after.h"
 
-static evStream	*newStream(evContext_p *);
-static evStream	*freeStream(evContext_p *, evStream *);
 static int	copyvec(evStream *str, const struct iovec *iov, int iocnt);
 static void	consume(evStream *str, size_t bytes);
 static void	done(evContext opaqueCtx, evStream *str);
@@ -58,21 +57,23 @@ evWrite(evContext opaqueCtx, int fd, const struct iovec *iov, int iocnt,
 	evStreamFunc func, void *uap, evStreamID *id)
 {
 	evContext_p *ctx = opaqueCtx.opaque;
-	evStream *new = newStream(ctx);
+	evStream *new;
 	int save;
 
-	if (!new) {
-		errno = ENOMEM;
-		goto err;
-	}
+	OKNEW(new);
 	new->func = func;
 	new->uap = uap;
 	new->fd = fd;
+	new->flags = 0;
 	if (evSelectFD(opaqueCtx, fd, EV_WRITE, writable, new, &new->file) < 0)
 		goto free;
 	if (copyvec(new, iov, iocnt) < 0)
 		goto free;
+	new->prevDone = NULL;
 	new->nextDone = NULL;
+	if (ctx->streams != NULL)
+		ctx->streams->prev = new;
+	new->prev = NULL;
 	new->next = ctx->streams;
 	ctx->streams = new;
 	if (id != NULL)
@@ -80,7 +81,7 @@ evWrite(evContext opaqueCtx, int fd, const struct iovec *iov, int iocnt,
 	return (0);
  free:
 	save = errno;
-	(void) freeStream(ctx, new);
+	FREE(new);
 	errno = save;
  err:
 	return (-1);
@@ -91,21 +92,23 @@ evRead(evContext opaqueCtx, int fd, const struct iovec *iov, int iocnt,
        evStreamFunc func, void *uap, evStreamID *id)
 {
 	evContext_p *ctx = opaqueCtx.opaque;
-	evStream *new = newStream(ctx);
+	evStream *new;
 	int save;
 
-	if (!new) {
-		errno = ENOMEM;
-		goto err;
-	}
+	OKNEW(new);
 	new->func = func;
 	new->uap = uap;
 	new->fd = fd;
+	new->flags = 0;
 	if (evSelectFD(opaqueCtx, fd, EV_READ, readable, new, &new->file) < 0)
 		goto free;
 	if (copyvec(new, iov, iocnt) < 0)
 		goto free;
+	new->prevDone = NULL;
 	new->nextDone = NULL;
+	if (ctx->streams != NULL)
+		ctx->streams->prev = new;
+	new->prev = NULL;
 	new->next = ctx->streams;
 	ctx->streams = new;
 	if (id)
@@ -113,16 +116,35 @@ evRead(evContext opaqueCtx, int fd, const struct iovec *iov, int iocnt,
 	return (0);
  free:
 	save = errno;
-	(void) freeStream(ctx, new);
+	FREE(new);
 	errno = save;
  err:
 	return (-1);
 }
 
 int
+evTimeRW(evContext opaqueCtx, evStreamID id, evTimerID timer) /*ARGSUSED*/ {
+	evContext_p *ctx = opaqueCtx.opaque;
+	evStream *str = id.opaque;
+
+	str->timer = timer;
+	str->flags |= EV_STR_TIMEROK;
+	return (0);
+}
+
+int
+evUntimeRW(evContext opaqueCtx, evStreamID id) /*ARGSUSED*/ {
+	evContext_p *ctx = opaqueCtx.opaque;
+	evStream *str = id.opaque;
+
+	str->flags &= ~EV_STR_TIMEROK;
+	return (0);
+}
+
+int
 evCancelRW(evContext opaqueCtx, evStreamID id) {
 	evContext_p *ctx = opaqueCtx.opaque;
-	evStream *old = id.opaque, *this, *prev;
+	evStream *old = id.opaque;
 
 	/*
 	 * The streams list is doubly threaded.  First, there's ctx->streams
@@ -132,64 +154,45 @@ evCancelRW(evContext opaqueCtx, evStreamID id) {
 	 * used in evGetNext() to avoid scanning the entire list.
 	 */
 
-	/* Unlink from ctx->streams (head). */
-	for (prev = NULL, this = ctx->streams;
-	     this != NULL;
-	     prev = this, this = this->next)
-		if (this == old) {
-			if (prev)
-				prev->next = this->next;
-			else
-				ctx->streams = this->next;
-			break;
-		}
-	if (this == NULL) {
-		errno = ENOENT;
-		return (-1);
-	}
+	/* Unlink from ctx->streams. */
+	if (old->prev != NULL)
+		old->prev->next = old->next;
+	else
+		ctx->streams = old->next;
+	if (old->next != NULL)
+		old->next->prev = old->prev;
 
-	/* Unlink (maybe) from ctx->strDone (head) and ctx->strLast (tail). */
-	for (prev = NULL, this = ctx->strDone;
-	     this != NULL;
-	     prev = this, this = this->next)
-		if (this == old) {
-			if (prev)
-				prev->nextDone = this->nextDone;
-			else
-				ctx->strDone = this->nextDone;
-			if (ctx->strLast == this) {
-				assert(this->nextDone == NULL);
-				ctx->strLast = prev;
-			}
+	/*
+	 * If 'old' is on the ctx->strDone list, remove it.  Update
+	 * ctx->strLast if necessary.
+	 */
+	if (old->prevDone == NULL && old->nextDone == NULL) {
+		/*
+		 * Either 'old' is the only item on the done list, or it's
+		 * not on the done list.  If the former, then we unlink it
+		 * from the list.  If the latter, we leave the list alone.
+		 */
+		if (ctx->strDone == old) {
+			ctx->strDone = NULL;
+			ctx->strLast = NULL;
 		}
+	} else {
+		if (old->prevDone != NULL)
+			old->prevDone->nextDone = old->nextDone;
+		else
+			ctx->strDone = old->nextDone;
+		if (old->nextDone != NULL)
+			old->nextDone->prevDone = old->prevDone;
+		else
+			ctx->strLast = old->prevDone;
+	}
 
 	/* Deallocate the stream. */
 	if (old->file.opaque)
 		evDeselectFD(opaqueCtx, old->file);
-	free(old->iovOrig);
-	freeStream(ctx, old);
+	memput(old->iovOrig, sizeof (struct iovec) * old->iovOrigCount);
+	FREE(old);
 	return (0);
-}
-
-static evStream *
-newStream(evContext_p *ctx) {
-	evStream *new;
-
-	if ((new = ctx->strFree) != NULL) {
-		ctx->strFree = new->next;
-		FILL(new);
-	} else
-		NEW(new);
-	return (new);
-}
-
-static evStream *
-freeStream(evContext_p *ctx, evStream *old) {
-	evStream *next = old->next;
-
-	old->next = ctx->strFree;
-	ctx->strFree = old;
-	return (next);
 }
 
 /* Copy a scatter/gather vector and initialize a stream handler's IO. */
@@ -197,8 +200,8 @@ static int
 copyvec(evStream *str, const struct iovec *iov, int iocnt) {
 	int i;
 
-	str->iovOrig = (struct iovec *)malloc(sizeof(struct iovec) * iocnt);
-	if (!str->iovOrig) {
+	str->iovOrig = (struct iovec *)memget(sizeof(struct iovec) * iocnt);
+	if (str->iovOrig == NULL) {
 		errno = ENOMEM;
 		return (-1);
 	}
@@ -238,10 +241,12 @@ static void
 done(evContext opaqueCtx, evStream *str) {
 	evContext_p *ctx = opaqueCtx.opaque;
 
-	if (ctx->strLast)
+	if (ctx->strLast != NULL) {
+		str->prevDone = ctx->strLast;
 		ctx->strLast->nextDone = str;
-	else {
-		assert(ctx->strDone == NULL);
+		ctx->strLast = str;
+	} else {
+		INSIST(ctx->strDone == NULL);
 		ctx->strDone = ctx->strLast = str;
 	}
 	evDeselectFD(opaqueCtx, str->file);
@@ -256,9 +261,11 @@ writable(evContext opaqueCtx, void *uap, int fd, int evmask) {
 	int bytes;
 
 	bytes = writev(fd, str->iovCur, str->iovCurCount);
-	if (bytes > 0)
+	if (bytes > 0) {
+		if ((str->flags & EV_STR_TIMEROK) != 0)
+			evTouchIdleTimer(opaqueCtx, str->timer);
 		consume(str, bytes);
-	else {
+	} else {
 		if (bytes < 0 && errno != EINTR) {
 			str->ioDone = -1;
 			str->ioErrno = errno;
@@ -275,9 +282,11 @@ readable(evContext opaqueCtx, void *uap, int fd, int evmask) {
 	int bytes;
 
 	bytes = readv(fd, str->iovCur, str->iovCurCount);
-	if (bytes > 0)
+	if (bytes > 0) {
+		if ((str->flags & EV_STR_TIMEROK) != 0)
+			evTouchIdleTimer(opaqueCtx, str->timer);
 		consume(str, bytes);
-	else {
+	} else {
 		if (bytes == 0)
 			str->ioDone = 0;
 		else {

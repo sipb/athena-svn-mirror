@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_pr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static const char rcsid[] = "$Id: dns_pr.c,v 1.1.1.2 1998-05-12 18:04:55 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -32,6 +32,8 @@ static const char rcsid[] = "$Id: dns_pr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson
 #include <ctype.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

@@ -52,7 +52,7 @@
 /* BIND Id: gethnamaddr.c,v 8.15 1996/05/22 04:56:30 vixie Exp $ */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$Id: lcl_ho.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static char rcsid[] = "$Id: lcl_ho.c,v 1.1.1.2 1998-05-12 18:05:14 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports. */
@@ -75,6 +75,8 @@ static char rcsid[] = "$Id: lcl_ho.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

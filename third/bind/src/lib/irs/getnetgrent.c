@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.2 1998-05-12 18:05:08 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports */
@@ -26,9 +26,10 @@ static const char rcsid[] = "$Id: getnetgrent.c,v 1.1.1.1 1998-05-04 22:23:41 gh
 #include <errno.h>
 #include <stdio.h>
 
+#include <irs.h>
+
 #include "port_after.h"
 
-#include "irs.h"
 #include "irs_data.h"
 
 /* Forward */

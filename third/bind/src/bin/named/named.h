@@ -16,13 +16,11 @@
  */
 
 /*
- * $Id: named.h,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+ * $Id: named.h,v 1.1.1.2 1998-05-12 18:03:59 ghudson Exp $
  */
 
 /* Options. Leave these on. */
 #define DEBUG
-#define STATS
-#define XSTATS
 #define ADDAUTH
 #define STUBS
 #define RETURNSOA
@@ -46,6 +44,17 @@
 #undef RSAREF
 #undef BSAFE
 #define ALLOW_LONG_TXT_RDATA
+
+#if 0
+#define	strdup	PLEASE_USE_SAVESTR
+#define	malloc	PLEASE_USE_DB_MEMGET
+#define	calloc	PLEASE_USE_DB_MEMGET
+#define	realloc PLEASE_USE_DB_MEMGET
+#define free	PLEASE_USE_DB_MEMPUT
+#endif
+
+#include <isc/assertions.h>
+#include <isc/list.h>
 
 #include "pathnames.h"
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: lcl.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static char rcsid[] = "$Id: lcl.c,v 1.1.1.2 1998-05-12 18:05:12 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -26,6 +26,8 @@ static char rcsid[] = "$Id: lcl.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -55,7 +57,11 @@ irs_lcl_acc(const char *options) {
 	}
 	memset(lcl, 0x5e, sizeof *lcl);
 	acc->private = lcl;
+#ifdef WANT_IRS_GR
 	acc->gr_map = irs_lcl_gr;
+#else
+	acc->gr_map = NULL;
+#endif
 #ifdef WANT_IRS_PW
 	acc->pw_map = irs_lcl_pw;
 #else

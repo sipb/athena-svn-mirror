@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: util.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.1.1.2 1998-05-12 18:05:25 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -32,6 +32,8 @@ static const char rcsid[] = "$Id: util.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson E
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

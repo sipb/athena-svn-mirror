@@ -50,7 +50,7 @@
 
 /*
  *	@(#)resolv.h	8.1 (Berkeley) 6/2/93
- *	$Id: resolv.h,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $
+ *	$Id: resolv.h,v 1.1.1.2 1998-05-12 18:04:31 ghudson Exp $
  */
 
 #ifndef _RESOLV_H_
@@ -240,6 +240,9 @@ extern const struct res_sym __p_type_syms[];
 #define	res_nameinquery		__res_nameinquery
 #define	res_queriesmatch	__res_queriesmatch
 #define res_close		__res_close
+#define res_mkupdate		__res_mkupdate
+#define res_mkupdrec		__res_mkupdrec
+#define res_freeupdrec		__res_freeupdrec
 __BEGIN_DECLS
 int		res_hnok __P((const char *));
 int		res_ownok __P((const char *));
@@ -294,6 +297,7 @@ const char *	p_section __P((int section, int opcode));
 int		res_update __P((ns_updrec *));
 int		res_mkupdate __P((ns_updrec *, u_char *, int));
 ns_updrec *	res_mkupdrec __P((int, const char *, u_int, u_int, u_long));
+void		res_freeupdrec __P((ns_updrec *));
 __END_DECLS
 
 #endif /* !_RESOLV_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 1996, 1997 by Internet Software Consortium
+ * Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,7 +18,7 @@
 /* eventlib_p.h - private interfaces for eventlib
  * vix 09sep95 [initial]
  *
- * $Id: eventlib_p.h,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $
+ * $Id: eventlib_p.h,v 1.1.1.2 1998-05-12 18:05:34 ghudson Exp $
  */
 
 #ifndef _EVENTLIB_P_H
@@ -26,6 +26,7 @@
 
 #include <sys/param.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 
 #define EVENTLIB_DEBUG 1
 
@@ -36,20 +37,23 @@
 #include <string.h>
 
 #include <isc/heap.h>
+#include <isc/list.h>
+#include <isc/memcluster.h>
 
 #define	EV_MASK_ALL	(EV_READ | EV_WRITE | EV_EXCEPT)
 #define ERR(e)		return (errno = (e), -1)
 #define OK(x)		if ((x) < 0) ERR(errno); else (void)NULL
 
-#define	NEW(p)		if (((p) = malloc(sizeof *(p))) != NULL) \
+#define	NEW(p)		if (((p) = memget(sizeof *(p))) != NULL) \
 				FILL(p); \
 			else \
 				(void)NULL;
-#define OKNEW(p)	if (!((p) = malloc(sizeof *(p)))) { \
+#define OKNEW(p)	if (!((p) = memget(sizeof *(p)))) { \
 				errno = ENOMEM; \
 				return (-1); \
 			} else \
 				FILL(p)
+#define FREE(p)		memput((p), sizeof *(p))
 
 #if EVENTLIB_DEBUG
 #define FILL(p)		memset((p), 0xF5, sizeof *(p))
@@ -57,19 +61,29 @@
 #define FILL(p)
 #endif
 
-/* These are potentially bad assumptions about the underlying system. */
-#define FIRST_SIG	1
-#define LAST_SIG	31
-
 typedef struct evConn {
 	evConnFunc	func;
 	void *		uap;
 	int		fd;
-	enum {Listen, Connect}
-			type;
+	int		flags;
+#define EV_CONN_LISTEN		0x0001		/* Connection is a listener. */
+#define EV_CONN_SELECTED	0x0002		/* evSelectFD(conn->file). */
+#define EV_CONN_BLOCK		0x0004		/* Listener fd was blocking. */
 	evFileID	file;
+	struct evConn *	prev;
 	struct evConn *	next;
 } evConn;
+
+typedef struct evAccept {
+	int		fd;
+	struct sockaddr	la;
+	int		lalen;
+	struct sockaddr	ra;
+	int		ralen;
+	int		ioErrno;
+	evConn *	conn;
+	LINK(struct evAccept) link;
+} evAccept;
 
 typedef struct evFile {
 	evFileFunc	func;
@@ -77,13 +91,19 @@ typedef struct evFile {
 	int		fd;
 	int		eventmask;
 	int		preemptive;
+	struct evFile *	prev;
 	struct evFile *	next;
+	struct evFile *	fdprev;
+	struct evFile *	fdnext;
 } evFile;
 
 typedef struct evStream {
 	evStreamFunc	func;
 	void *		uap;
 	evFileID	file;
+	evTimerID	timer;
+	int		flags;
+#define EV_STR_TIMEROK	0x0001	/* IFF timer valid. */
 	int		fd;
 	struct iovec *	iovOrig;
 	int		iovOrigCount;
@@ -92,8 +112,8 @@ typedef struct evStream {
 	int		ioTotal;
 	int		ioDone;
 	int		ioErrno;
-	struct evStream	*nextDone;
-	struct evStream	*next;
+	struct evStream	*prevDone, *nextDone;
+	struct evStream	*prev, *next;
 } evStream;
 
 typedef struct evTimer {
@@ -118,9 +138,9 @@ typedef struct evWaitList {
 } evWaitList;
 
 typedef struct evEvent_p {
-	enum {  Conn, File, Stream, Timer, Wait, Free, Null  } type;
+	enum {  Accept, File, Stream, Timer, Wait, Free, Null  } type;
 	union {
-		struct {  evConn *this;  }			conn;
+		struct {  evAccept *this;  }			accept;
 		struct {  evFile *this; int eventmask;  }	file;
 		struct {  evStream *this;  }			stream;
 		struct {  evTimer *this;  }			timer;
@@ -131,11 +151,14 @@ typedef struct evEvent_p {
 } evEvent_p;
 
 typedef struct {
+	/* Global. */
+	const evEvent_p	*cur;
 	/* Debugging. */
 	int		debug;
 	FILE		*output;
 	/* Connections. */
 	evConn		*conns;
+	LIST(evAccept)	accepts;
 	/* Files. */
 	evFile		*files, *fdNext;
 	fd_set		rdLast, rdNext;
@@ -143,18 +166,20 @@ typedef struct {
 	fd_set		exLast, exNext;
 	fd_set		nonblockBefore;
 	int		fdMax, fdCount;
+	evFile		*fdTable[FD_SETSIZE];
+#ifdef EVENTLIB_TIME_CHECKS
+	struct timespec	lastSelectTime;
+	int		lastFdCount;
+#endif
 	/* Streams. */
-	evStream	*streams, *strFree;
+	evStream	*streams;
 	evStream	*strDone, *strLast;
 	/* Timers. */
+	struct timespec	lastEventTime;
 	heap_context	timers;
 	/* Waits. */
 	evWaitList	*waitLists;
 	evWaitList	waitDone;
-	evWaitList	*waitListFree;
-	evWait		*waitFree;
-	/* Housekeeping. */
-	evEvent_p *	evFree;
 } evContext_p;
 
 /* eventlib.c */

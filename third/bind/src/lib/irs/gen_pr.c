@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: gen_pr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: gen_pr.c,v 1.1.1.2 1998-05-12 18:05:00 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -28,6 +28,8 @@ static char rcsid[] = "$Id: gen_pr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

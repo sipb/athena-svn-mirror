@@ -25,6 +25,10 @@
  *	ISBN 0-201-06673-4, chapter 11.
  */
 
+#if !defined(LINT) && !defined(CODECENTER)
+static char rcsid[] = "$Id: heap.c,v 1.1.1.2 1998-05-12 18:05:34 ghudson Exp $";
+#endif /* not lint */
+
 #include "port_before.h"
 
 #include <stddef.h>

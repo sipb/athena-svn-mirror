@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_glue.c	4.4 (Berkeley) 6/1/90";
-static char rcsid[] = "$Id: db_glue.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_glue.c,v 1.1.1.2 1998-05-12 18:03:54 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -96,6 +96,7 @@ static char rcsid[] = "$Id: db_glue.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -121,11 +122,11 @@ buildservicelist() {
 	setservent(1);
 #endif
 	while ((sp = getservent()) != NULL) {
-		slp = (struct valuelist *)malloc(sizeof(struct valuelist));
+		slp = (struct valuelist *)memget(sizeof(struct valuelist));
 		if (!slp)
-			panic("malloc(servent)", NULL);
-		slp->name = savestr(sp->s_name);
-		slp->proto = savestr(sp->s_proto);
+			panic("memget(servent)", NULL);
+		slp->name = savestr(sp->s_name, 1);
+		slp->proto = savestr(sp->s_proto, 1);
 		slp->port = ntohs((u_int16_t)sp->s_port);  /* host byt order */
 		slp->next = servicelist;
 		slp->prev = NULL;
@@ -134,6 +135,18 @@ buildservicelist() {
 		servicelist = slp;
 	}
 	endservent();
+}
+
+void
+destroyservicelist() {
+	struct valuelist *slp, *slp_next;
+
+	for (slp = servicelist; slp != NULL; slp = slp_next) {
+		slp_next = slp->next;
+		freestr(slp->name);
+		freestr(slp->proto);
+		memput(slp, sizeof *slp);
+	}
 }
 
 void
@@ -147,10 +160,10 @@ buildprotolist() {
 	setprotoent(1);
 #endif
 	while ((pp = getprotoent()) != NULL) {
-		slp = (struct valuelist *)malloc(sizeof(struct valuelist));
+		slp = (struct valuelist *)memget(sizeof(struct valuelist));
 		if (!slp)
-			panic("malloc(protoent)", NULL);
-		slp->name = savestr(pp->p_name);
+			panic("memget(protoent)", NULL);
+		slp->name = savestr(pp->p_name, 1);
 		slp->port = pp->p_proto;	/* host byte order */
 		slp->next = protolist;
 		slp->prev = NULL;
@@ -159,6 +172,17 @@ buildprotolist() {
 		protolist = slp;
 	}
 	endprotoent();
+}
+
+void
+destroyprotolist() {
+	struct valuelist *plp, *plp_next;
+
+	for (plp = protolist; plp != NULL; plp = plp_next) {
+		plp_next = plp->next;
+		freestr(plp->name);
+		memput(plp, sizeof *plp);
+	}
 }
 
 static int
@@ -311,22 +335,24 @@ rm_datum(struct databuf *dp, struct namebuf *np, struct databuf *pdp,
 	ns_debug(ns_log_db, 3, "rm_datum(%lx, %lx, %lx, %lx) -> %lx",
 		 (u_long)dp, (u_long)np->n_data, (u_long)pdp, 
 		 (u_long)savedpp, (u_long)ndp);
+	if ((dp->d_flags & DB_F_ACTIVE) == 0)
+		panic("rm_datum: DB_F_ACTIVE not set", NULL);
 	if (pdp == NULL)
 		np->n_data = ndp;
 	else
 		pdp->d_next = ndp;
 #ifdef BIND_UPDATE
-	if (savedpp) {
+	if (savedpp != NULL) {
 		/* mark deleted or pending deletion */
-		dp->d_mark = D_MARK_DELETED; 
+		dp->d_mark |= D_MARK_DELETED; 
 		dp->d_next = *savedpp;
 		*savedpp = dp;
-	}
-#endif
-	if ((dp->d_flags & DB_F_ACTIVE) == 0)
-		panic("rm_datum: DB_F_ACTIVE not set", NULL);
-	dp->d_flags &= ~DB_F_ACTIVE;
+	} else
+		dp->d_next = NULL;
+#else
 	dp->d_next = NULL;
+#endif
+	dp->d_flags &= ~DB_F_ACTIVE;
 	DRCNTDEC(dp);
 	if (dp->d_rcnt) {
 #ifdef DEBUG
@@ -338,23 +364,23 @@ rm_datum(struct databuf *dp, struct namebuf *np, struct databuf *pdp,
 			ns_debug(ns_log_db, 3, "rm_datum: %s rcnt = %d",
 				 dp->d_data, dp->d_rcnt);
 			break;
-		case T_A:
 #ifdef DEBUG
+		case T_A:
 			memcpy(&ii, dp->d_data, sizeof ii);
-#endif
 			ns_debug(ns_log_db, 3,
 				 "rm_datum: %08.8X rcnt = %d",
 				 ii, dp->d_rcnt);
 			break;
+#endif
 		default:
 			ns_debug(ns_log_db, 3,
 				 "rm_datum: rcnt = %d", dp->d_rcnt);
 		}
 	} else
 #ifdef BIND_UPDATE
-		if (!savedpp)
+		if (savedpp == NULL)
 #endif
-		        db_free(dp);
+		        db_freedata(dp);
 	return (ndp);
 }
 
@@ -383,10 +409,18 @@ rm_name(struct namebuf *np, struct namebuf **pp, struct namebuf *pnp) {
 		*pp = nnp;
 
 	/* deallocate */
-	free((char*) np);
+	memput(np, NAMESIZE(NAMELEN(*np)));
 
 	/* done */
 	return (nnp);
+}
+
+void
+rm_hash(struct hashbuf *htp) {
+	REQUIRE(htp != NULL);
+	REQUIRE(htp->h_cnt == 0);
+
+	memput(htp, HASHSIZE(htp->h_size));
 }
 
 /*
@@ -565,15 +599,18 @@ samedomain(const char *a, const char *b) {
 }
 
 void
-db_free(struct databuf *dp) {
-	int bytes = DATASIZE(dp->d_size);
+db_freedata(struct databuf *dp) {
+	int bytes = (dp->d_type == T_NS) ?
+		DATASIZE(dp->d_size)+INT32SZ : DATASIZE(dp->d_size);
 
 	if (dp->d_rcnt != 0)
-		panic("db_free: d_rcnt != 0", NULL);
-	if (dp->d_flags & DB_F_ACTIVE)
-		panic("db_free: DB_F_ACTIVE set", NULL);
-	if (dp->d_next)
-		panic("db_free: d_next != 0", NULL);
-	memset(dp, 0x5E, bytes);
-	free((char*)dp);
+		panic("db_freedata: d_rcnt != 0", NULL);
+	if ((dp->d_flags & (DB_F_ACTIVE|DB_F_FREE)) != 0)
+		panic("db_freedata: %s set",
+		      (dp->d_flags & DB_F_FREE) != 0 ? "DB_F_FREE" :
+		      "DB_F_ACTIVE");
+	if (dp->d_next != NULL)
+		panic("db_free: d_next != NULL", NULL);
+	dp->d_flags |= DB_F_FREE;
+	memput(dp, bytes);
 }

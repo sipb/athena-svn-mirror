@@ -2,8 +2,6 @@
 <HTML>
 <HEAD>
   <TITLE>BIND zone Statement</TITLE>
-  <LINK REV=MADE HREF="mailto:sjr@vix.com">
-  <META NAME="Author" CONTENT="Steven J. Richardson">
 </HEAD>
 
 <BODY>
@@ -38,7 +36,7 @@ zone <VAR><A HREF="docdef.html">domain_name</A></VAR> [ ( in | hs | hesiod | cha
   [ also-notify { <VAR><A HREF="docdef.html">ip_addr</A></VAR>; [ <VAR>ip_addr</VAR>; ... ] };
 };
 
-zone . [ ( in | hs | hesiod | chaos ) ] { 
+zone "." [ ( in | hs | hesiod | chaos ) ] { 
   type hint;
   file <VAR><A HREF="docdef.html">path_name</A></VAR>;
   [ check-names ( warn | fail | ignore ); ]
@@ -136,8 +134,7 @@ meaningful for <CODE>stub</CODE> zones.  The default is the empty list.
 
 <HR>
 <ADDRESS>
-Steven J. Richardson <A HREF="mailto:sjr@vix.com">&lt;sjr@vix.com&gt;</A><BR>
-Last Updated: $Id: zone.html,v 1.1.1.1 1998-05-04 22:23:16 ghudson Exp $
+Last Updated: $Id: zone.html,v 1.1.1.2 1998-05-12 18:08:09 ghudson Exp $
 </ADDRESS>
 </BODY>
 </HTML>

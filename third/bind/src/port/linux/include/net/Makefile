@@ -51,7 +51,8 @@
 # -
 # --Copyright--
 
-HFILES= 
+# Ensure that HFILES isn't empty to keep bash happy
+HFILES= junk
 
 DESTDIR=
 DESTINC= /usr/local/bind/include

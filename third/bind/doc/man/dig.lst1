@@ -215,7 +215,6 @@ DDEESSCCRRIIPPTTIIOONN
                                          [nnooii]
                  [nnoo] pprriimmaarryy   (pprr)     use/don't use primary server [nnoopprr]
                  [nnoo] aaaaoonnllyy    (aaaa)     authoritative query only flag [nnooaaaa]
-                 [nnoo] ssoorrtt      (ssoorr)    sort resource records [nnoossoorr]
                  [nnoo] ccmmdd                echo parsed arguments [ccmmdd]
                  [nnoo] ssttaattss     (sstt)     print query statistics [sstt]
                  [nnoo] HHeeaaddeerr    (HH)      print basic header [HH]
@@ -259,7 +258,6 @@ DDEESSCCRRIIPPTTIIOONN
 EENNVVIIRROONNMMEENNTT
      LOCALRES    file to use in place of Pa /etc/resolv.conf
      LOCALDEF    default environment file
-
 
      See also the explanation of the --eennvvssaavv, --eennvvsseett, and --[nnoo] ssttiicckk op-
      tions, above.

@@ -34,6 +34,7 @@
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -49,16 +50,24 @@ symbol_table
 new_symbol_table(int size_guess, free_function free_value) {
 	symbol_table st;
 
-	st = (symbol_table)malloc(sizeof (struct symbol_table));
+	st = (symbol_table)memget(sizeof (struct symbol_table));
 	if (st == NULL)
-		panic("malloc() failed in new_symbol_table()", NULL);
-	st->table = (symbol_entry *)malloc(size_guess * sizeof (symbol_entry));
+		panic("memget failed in new_symbol_table()", NULL);
+	st->table = (symbol_entry *)memget(size_guess * sizeof *st->table);
 	if (st->table == NULL)
-		panic("malloc() failed in new_symbol_table()", NULL);
+		panic("memget failed in new_symbol_table()", NULL);
 	memset(st->table, 0, size_guess * sizeof (symbol_entry));
 	st->size = size_guess;   /* size_guess should be prime */
 	st->free_value = free_value;
 	return (st);
+}
+
+void
+free_symbol(symbol_table st, symbol_entry ste) {
+	if (ste->flags & SYMBOL_FREE_KEY)
+		freestr(ste->key);
+	if (ste->flags & SYMBOL_FREE_VALUE)
+		(st->free_value)(ste->type, ste->value.pointer);
 }
 
 void
@@ -69,20 +78,12 @@ free_symbol_table(symbol_table st) {
 	for (i = 0; i < st->size; i++) {
 		for (ste = st->table[i]; ste != NULL; ste = ste_next) {
 			ste_next = ste->next;
-			if (ste->flags & SYMBOL_FREE_KEY)
-				free(ste->key);
-			if (ste->flags & SYMBOL_FREE_VALUE) {
-				if (st->free_value != NULL)
-					(st->free_value)(ste->type,
-							 ste->value.pointer);
-				else
-					free(ste->value.pointer);
-			}
-			free(ste);
+			free_symbol(st, ste);
+			memput(ste, sizeof *ste);
 		}
 	}
-	free(st->table);
-	free(st);
+	memput(st->table, st->size * sizeof (symbol_entry));
+	memput(st, sizeof *st);
 }
 
 void
@@ -155,9 +156,9 @@ define_symbol(symbol_table st, char *key, int type, symbol_value value,
 		    strcasecmp(ste->key, key) == 0)
 			break;
 	if (ste == NULL) {
-		ste = (symbol_entry)malloc(sizeof (struct symbol_entry));
+		ste = (symbol_entry)memget(sizeof *ste);
 		if (ste == NULL)
-			panic("malloc() failed in define_symbol()", NULL);
+			panic("memget failed in define_symbol()", NULL);
 		ste->key = key;
 		ste->type = type;
 		ste->value = value;
@@ -167,16 +168,7 @@ define_symbol(symbol_table st, char *key, int type, symbol_value value,
 	} else {
 		ns_debug(ns_log_parser, 7, "redefined symbol %s type %d",
 			 key, type);
-		/* note we use old flags to decide what to do */
-		if (ste->flags & SYMBOL_FREE_KEY)
-			free(ste->key);
-		if (ste->flags & SYMBOL_FREE_VALUE) {
-			if (st->free_value != NULL)
-				(st->free_value)(ste->type,
-						 ste->value.pointer);
-			else
-				free(ste->value.pointer);
-		}
+		free_symbol(st, ste);
 		ste->key = key;
 		ste->value = value;
 		ste->flags = flags;
@@ -196,20 +188,12 @@ undefine_symbol(symbol_table st, char *key, int type) {
 		    strcasecmp(ste->key, key) == 0)
 			break;
 	if (ste != NULL) {
-		if (ste->flags & SYMBOL_FREE_KEY)
-			free(ste->key);
-		if (ste->flags & SYMBOL_FREE_VALUE) {
-			if (st->free_value != NULL)
-				(st->free_value)(ste->type,
-						 ste->value.pointer);
-			else
-				free(ste->value.pointer);
-		}
+		free_symbol(st, ste);
 		if (prev_ste != NULL)
 			prev_ste->next = ste->next;
 		else
 			st->table[hash] = ste->next;
-		free(ste);
+		memput(ste, sizeof *ste);
 	}
 }
 

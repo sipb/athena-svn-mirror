@@ -15,7 +15,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-## $Id: named-bootconf.pl,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+## $Id: named-bootconf.pl,v 1.1.1.2 1998-05-12 18:03:58 ghudson Exp $
 
 # This is a filter.  Input is a named.boot.  Output is a named.conf.
 
@@ -91,7 +91,12 @@ while(<>) {
 	$new_config .= "{\n";
 	$new_config .= "\ttype $type;\n";
 	$filename = pop(@rest);
-	$new_config .= "\tfile \"$filename\";\n";
+	if ($filename =~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/) {
+	    push(@rest, $filename);
+	    $filename = "";
+	} else {
+	    $new_config .= "\tfile \"$filename\";\n";
+	}
 	$new_config .= "\tmasters {\n";
 	foreach $master (@rest) {
 	    $new_config .= "\t\t$master;\n";

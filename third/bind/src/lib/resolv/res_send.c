@@ -70,7 +70,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)res_send.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: res_send.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: res_send.c,v 1.1.1.2 1998-05-12 18:05:45 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -78,6 +78,7 @@ static char rcsid[] = "$Id: res_send.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp
  */
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -198,6 +199,8 @@ res_isourserver(const struct sockaddr_in *inp) {
 /* int
  * res_nameinquery(name, type, class, buf, eom)
  *	look for (name,type,class) in the query section of packet (buf,eom)
+ * requires:
+ *	buf + HFIXEDSZ <= eom
  * returns:
  *	-1 : format error
  *	0  : not found
@@ -220,6 +223,8 @@ res_nameinquery(const char *name, int type, int class,
 		if (n < 0)
 			return (-1);
 		cp += n;
+		if (cp + 2 * INT16SZ > eom)
+			return (-1);
 		ttype = ns_get16(cp); cp += INT16SZ;
 		tclass = ns_get16(cp); cp += INT16SZ;
 		if (ttype == type &&
@@ -248,6 +253,9 @@ res_queriesmatch(const u_char *buf1, const u_char *eom1,
 	const u_char *cp = buf1 + HFIXEDSZ;
 	int qdcount = ntohs(((HEADER*)buf1)->qdcount);
 
+	if (buf1 + HFIXEDSZ > eom1 || buf2 + HFIXEDSZ > eom2)
+		return (-1);
+
 	/*
 	 * Only header section present in replies to
 	 * dynamic update packets.
@@ -266,6 +274,8 @@ res_queriesmatch(const u_char *buf1, const u_char *eom1,
 		if (n < 0)
 			return (-1);
 		cp += n;
+		if (cp + 2 * INT16SZ > eom1)
+			return (-1);
 		ttype = ns_get16(cp);	cp += INT16SZ;
 		tclass = ns_get16(cp); cp += INT16SZ;
 		if (!res_nameinquery(tname, ttype, tclass, buf2, eom2))
@@ -283,6 +293,10 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 
 	if ((_res.options & RES_INIT) == 0 && res_init() == -1) {
 		/* errno should have been set by res_init() in this case. */
+		return (-1);
+	}
+	if (anssiz < HFIXEDSZ) {
+		errno = EINVAL;
 		return (-1);
 	}
 	DprintQ((_res.options & RES_DEBUG) || (_res.pfcode & RES_PRF_QUERY),
@@ -429,6 +443,17 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 				len = anssiz;
 			} else
 				len = resplen;
+			if (len < HFIXEDSZ) {
+				/*
+				 * Undersized message.
+				 */
+				Dprint(_res.options & RES_DEBUG,
+				       (stdout, ";; undersized: %d\n", len));
+				terrno = EMSGSIZE;
+				badns |= (1 << ns);
+				res_close();
+				goto next_ns;
+			}
 			cp = ans;
 			while (len != 0 &&
 			       (n = read(s, (char *)cp, (int)len)) > 0) {
@@ -497,6 +522,7 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 				}
 				connected = 0;
 			}
+#ifndef CANNOT_CONNECT_DGRAM
 			/*
 			 * On a 4.3BSD+ machine (client and server,
 			 * actually), sending to a nameserver datagram
@@ -560,10 +586,11 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 					(void) close(s1);
 					Dprint(_res.options & RES_DEBUG,
 					       (stdout, ";; new DG socket\n"))
-#endif
+#endif /* CAN_RECONNECT */
 					connected = 0;
 					errno = 0;
 				}
+#endif /* !CANNOT_CONNECT_DGRAM */
 				if (sendto(s, (char*)buf, buflen, 0,
 					   (struct sockaddr *)nsap,
 					   sizeof *nsap)
@@ -573,7 +600,9 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 					res_close();
 					goto next_ns;
 				}
+#ifndef CANNOT_CONNECT_DGRAM
 			}
+#endif /* !CANNOT_CONNECT_DGRAM */
 
 			/*
 			 * Wait for reply
@@ -584,12 +613,12 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 			if ((long) timeout.tv_sec <= 0)
 				timeout.tv_sec = 1;
 			timeout.tv_usec = 0;
-			if (s+1 > FD_SETSIZE) {
-				Perror(stderr, "s+1 > FD_SETSIZE", EMFILE);
+ wait:
+			if (s < 0 || s >= FD_SETSIZE) {
+				Perror(stderr, "s out-of-bounds", EMFILE);
 				res_close();
 				goto next_ns;
 			}
- wait:
 			FD_ZERO(&dsmask);
 			FD_SET(s, &dsmask);
 			n = select(s+1, &dsmask, (fd_set *)NULL,
@@ -621,6 +650,18 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 				goto next_ns;
 			}
 			gotsomewhere = 1;
+			if (resplen < HFIXEDSZ) {
+				/*
+				 * Undersized message.
+				 */
+				Dprint(_res.options & RES_DEBUG,
+				       (stdout, ";; undersized: %d\n",
+					resplen));
+				terrno = EMSGSIZE;
+				badns |= (1 << ns);
+				res_close();
+				goto next_ns;
+			}
 			if (hp->id != anhp->id) {
 				/*
 				 * response from old query, ignore it.
@@ -740,12 +781,12 @@ res_send(const u_char *buf, int buflen, u_char *ans, int anssiz) {
 	   } /*foreach ns*/
 	} /*foreach retry*/
 	res_close();
-	if (!v_circuit)
+	if (!v_circuit) {
 		if (!gotsomewhere)
 			errno = ECONNREFUSED;	/* no nameservers found */
 		else
 			errno = ETIMEDOUT;	/* no answer obtained */
-	else
+	} else
 		errno = terrno;
 	return (-1);
 }

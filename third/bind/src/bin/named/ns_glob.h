@@ -1,6 +1,6 @@
 /*
  *	from ns.h	4.33 (Berkeley) 8/23/90
- *	$Id: ns_glob.h,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $
+ *	$Id: ns_glob.h,v 1.1.1.2 1998-05-12 18:04:04 ghudson Exp $
  */
 
 /* Copyright (c) 1986
@@ -117,7 +117,7 @@ DECL	time_t			resettime;
 DECL	struct qinfo		*retryqp;
 
 	/* default configuration file */
-DECL	char			*conffile	INIT(_PATH_CONF);
+DECL	char			*conffile	INIT(NULL);
 
 	/* default debug output file */
 DECL	const char		*debugfile	INIT(_PATH_DEBUG);
@@ -294,7 +294,26 @@ DECL	const struct ns_sym	category_constants[]
 #endif
 ;
 
+DECL	const char panic_msg_no_options[]
+	INIT("no server_options in NS_OPTION_P");
+
+DECL	const char panic_msg_insist_failed[]
+	INIT("%s:%d: insist '%s' failed: %s");
+
+DECL	const char panic_msg_bad_which[]
+	INIT("%s:%d: INCRSTATS(%s): bad \"which\"");
+
+DECL	u_long			globalStats[nssLast];
+
 DECL	evTimerID		clean_timer;
 DECL	evTimerID		interface_timer;
 DECL	evTimerID		stats_timer;
 DECL	int			active_timers		INIT(0);
+
+DECL	uid_t			user_id;
+DECL	char *			user_name		INIT(NULL);
+DECL	gid_t			group_id;
+DECL	char *			group_name		INIT(NULL);
+DECL	char *			chroot_dir		INIT(NULL);
+
+DECL	int			loading			INIT(0);

@@ -1,4 +1,4 @@
-#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: Makefile,v 1.1.1.1 1998-05-04 22:23:45 ghudson Exp $"
+#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: Makefile,v 1.1.1.2 1998-05-12 18:05:59 ghudson Exp $"
 
 CFLAGS=	${CDEBUG} -I../${INCL} -I../${COMPINCL} ${DEFS} ${LOCDEFS}
 LOCDEFS= -DUSE_OPTIONS_H

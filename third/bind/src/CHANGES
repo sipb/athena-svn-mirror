@@ -1,4 +1,426 @@
 
+	--- 8.1.2 released ---
+
+ 380.	[bug]		Replaying the dynamic update log could trigger an
+			INSIST.
+
+ 379.	[port]		Updated IRIX port.
+
+ 378.	[bug]		The declaration for res_freeupdrec() in resolv.h
+			didn't use __P().
+
+ 377.	[func]		The server now sets SO_SNDBUF on UDP sockets.
+
+ 376.	[port]		The malloc() implementation on many systems didn't
+			like memcluster.c's 4KB block allocations, sometimes
+			causing huge amounts of memory to be wasted.
+			memcluster.c now allocates bigger chunks and makes
+			its own 4KB blocks.
+
+ 375.	[bug]		If more than (sizeof u_long) gets occurred for a
+			particular memory bucket, an INSIST about puts < gets
+			might have been erroneously trigged.  Now total
+			gets and outstanding gets are counted.
+
+ 374.	[port]		SCO 3.2v4.2 doesn't have initgroups(), so we do not
+			want to define CAN_CHANGE_ID.
+
+ 373.	[port]		Updated LynxOS port.
+
+ 372.	[port]		Updated SCO 3.2v5.0.x port.
+
+ 371.	[bug]		"make install" could fail on some Linux systems
+			because src/port/linux/include/net/Makefile didn't
+			cope with an empty HFILES variable.
+
+ 370.	[bug]		Trying to update an expired slave zone would cause
+			the server to panic.
+
+ 369.	[bug]		The Makefile for named-xfer didn't try to create
+			${DESTDIR}${DESTEXEC} if it didn't exist.
+
+ 368.	[bug]		Interface scanning could get confused on BSD-like
+			systems if the sa_len of the address was less than
+			sizeof (struct sockaddr).
+
+ 367.	[func]		The default value for the host-statistics option has
+			been changed to "no".
+
+	--- 8.1.2-T3B released ---
+
+ 366.	[bug]		Z_AUTH was set on the cache zone do_reload().
+
+ 365.	[security]	Missing bounds checking in inverse query handling
+			allowed an attacker to overwrite the server's stack.
+
+ 364.	[port]		Added support for HP MPE.
+
+ 363.	[bug]		named-xfer automatically restarts the transfer if the
+			SOA changes during the transfer.  There was no limit
+			on the number of restarts, resulting in a lot of
+			wasted effort if the SOA was constantly changing.
+			The number of restarts is now limited.
+
+ 362.	[security]	Requesting a zone transfer for a domain name which
+			had a resource record of a certain format would
+			cause the server to abort().
+
+ 361.	[bug]		named-xfer tries to close files named might have
+			had open.  On Solaris, sysconf(_SC_OPEN_MAX) can
+			return RLIM_INFINITY, and if it did named-xfer
+			would try to close all those files.  named-xfer
+			now applies an upper limit of FD_SETSIZE.
+
+ 360.	[port]		Solaris 2.5 systems needed <sys/resource.h> to
+			be included in port_after.h to get rlim_t.
+
+	--- 8.1.2-T3A released ---
+
+ 359.	[func]		IRS group support is now controlled by the
+			WANT_IRS_GR define in port_before.h.
+
+ 358.	[port]		Updated IRIX port.
+
+ 357.	[port]		Added support for QNX.
+
+ 356.	[func]		Added -u (set user id), -g (set group id), and
+			-t (chroot) command line options to 'named'.
+
+ 355.	[func]		If getnetconf() fails because it can't create the
+			socket used to get the interface list, the server
+			will log an error if it is doing a periodic interface
+			scan, and panic otherwise.  Previous versions of the
+			server always panicked.
+
+ 354.	[security]	Bounds checking in named-xfer, dig, host, and nslookup
+			had problems similar to those in item 293.  Added a
+			few more bounds checks to the server.
+
+ 353.	[port]		Paths are no longer overridden in port_after.h, and
+			are now generated from the various DEST paths in
+			Makefile.set.
+
+ 352.	[bug]		Because of problems with setting an infinite rlim_max
+			for RLIMIT_NOFILE on some systems, previous versions
+			of the server implemented "limit files unlimited" by
+			setting the limit to the value returned by
+			sysconf(_SC_OPEN_MAX).  The server will now use
+			RLIM_INFINITY on systems which allow it.
+
+ 351.	[port]		Updated HP/UX 10.x port.
+
+ 350.	[bug]		errno could be changed by certain signal handlers.
+			These signal handlers now save errno on entry
+			and restore it on exit.  This changes eliminates the
+			need for the SPURIOUS_ECHILD #define.
+
+ 349.	[bug]		hesiod.h wasn't installed.
+
+ 348.	[port]		Added support for LynxOS.
+
+ 347.	[bug]		res_update() leaked the zone section it allocated.
+			This leak no longer occurs on normal returns, but
+			still occurs when there is an abnormal return.  This
+			will be addressed in a future fix.
+
+ 346.	[bug]		Fix 303 fixed one thing and broke another, resulting
+			in a nonfunctional grscan().
+
+ 345.	[bug]		Fix 328 was bad, causing the root zone to be purged
+			every time a toplevel domain was reloaded.
+
+ 344.	[bug]		The priming fix in change 330 erroneously called
+			unsched() twice, causing a core dump if priming
+			failed.  The priming fix could also erroneously
+			query [0.0.0.0].0.
+
+ 343.	[bug]		The REQUIRE() in free_rrecp() was wrong, and was
+			triggered by an unapproved update.
+
+ 342.	[port]		Added support for SCO UNIX 3.2v5.0.4.
+
+	--- 8.1.2-T2A released ---
+
+ 341.	[port]		The LOG_CONS option to openlog() does not work as
+			documented on some systems.  The server will now use
+			LOG_CONS only if USE_LOG_CONS is defined by the
+			port.  Currently the bsdos, decunix, freebsd, linux,
+			and netbsd ports define USE_LOG_CONS.
+
+ 340.	[bug]		The pid file was updated before the configuration
+			file had been read.
+
+ 339.	[port]		#define HAVE_GETRUSAGE for Solaris >= 2.5.
+
+ 338.	[func]		'host' can now print AAAA records.
+
+ 337.	[bug]		rm_datum() erroneously set dp->d_next to NULL
+			when savedpp wasn't NULL.  Given a dynamic update
+			operation that deleted more than one RR, this bug
+			would cause all but one of the RRs to be leaked, and
+			would prevent correct rollback if the update failed.
+
+ 336.	[bug]		Make sure 's' isn't negative in res_send().  This
+			shouldn't happen, but there have been some reports
+			suggesting it can happen.
+
+ 335.	[lint]		Cleaned up more gcc warnings.
+
+ 334.	[port]		Added support for HP-UX 9.x.
+
+ 333.	[bug]		db_glue.c didn't compile if DEBUG wasn't defined.
+
+ 332.	[bug]		named-bootconf.pl didn't convert secondary lines
+			that didn't contain a filename correctly.
+
+ 331.	[bug]		If the server was configured with forwarders (but
+			not in forward-only mode), and a query ran out of
+			forwarders and had no nameservers, then the server
+			would erroneously forward the request to [0.0.0.0].0.
+
+ 330.	[bug]		If priming of the root servers failed, recovery could
+			take a long time.  If using forwarders to prime
+			and the query expired, the first forwarder would
+			always be skipped on subsequent attempts.  The server
+			complained about priming problems in forward-only mode,
+			even though it doesn't matter.
+
+ 329.	[port]		Some versions of Linux apparently need SPURIOUS_ECHILD.
+
+ 328.	[bug]		purge_zone() didn't recurse if given the root zone,
+			causing old data and new data for the root zone to be
+			merged.
+
+ 327.	[func]		Add log_check() and log_check_channel().
+
+ 326.	[func]		Add r_prev field to ns_updrec in <arpa/nameser.h>.
+
+ 325.	[bug]		Rollback of a failed dynamic update was done in FIFO
+			order instead of LIFO order.
+
+ 324.	[bug]		evTryAccept() closed the wrong fd if getsockname()
+			failed.
+
+ 323.	[bug]		eventlib didn't clear bits that had been serviced
+			or deselected out of ctx->{rd,wr,ex}Last.
+
+ 322.	[bug]		evDestroy() destroyed the files list before destroying
+			the streams list.  If there were any active streams,
+			this would cause a double destroy of the streams'
+			file objects, very likely triggering an 'insist'.
+
+ 321.	[bug]		The correct error code for a failed asynchronous
+			connect was not reported.  It now is, at least on
+			systems that have the SO_ERROR socket option.
+
+ 320.	[func]		Allow multiple pending accepts.  evTryAccept() now
+			reports the errno if an error was queued.
+
+ 319.	[bug]		The toplevel Makefile passed MARGS before $settings,
+			which prevented overriding a port's Makefile.set
+			from the command line.
+
+ 318.	[bug]		The Solaris port_after.h checked for SUNOS_2_5_1
+			instead of SUNOS_5_5_1.
+
+ 317.	[unused]	[This change number was allocated but not used.]
+
+ 316.	[bug]		evTryAccept() didn't append to the done list correctly
+			if connLast wasn't NULL.
+
+ 315.	[bug]		The dynamic update code was incorrectly converted to
+			clean up ns_updrec structures using the new clustered
+			memory allocator, and this would cause an 'insist' to
+			be triggered some time after a dynamic update had
+			been processed.  Instead of freeing the ns_updrec
+			fields directly in ns_update.c, res_freeupdrec() was
+			added to the resolver.
+
+ 314.	[bug]		Adding and then deleting an RR in a single dynamic
+			update request would crash the server.
+
+ 313.	[bug]		The nameserver would only try zone transfers from
+			the master that answered its SOA query.  If a master
+			for some reason can answer the SOA but not the AXFR,
+			the other masters (if any) should be tried.
+
+ 312.	[security]	Bounds checking in the resolver and dynamic update
+			code had problems similar to those in item 293.
+			Added more checks to ns_resp.c.
+
+ 311.	[bug]		The s_wbuf in the qstream structure was leaked in
+			certain zone transfer failures.
+
+ 310.	[bug]		If the server ran out of memory in ns_xfr(), the
+			subsequent connection cleanup could modify the
+			z_numxfrs field of zone 0 instead of the zone being
+			transferred, causing an 'insist' to be triggered later.
+
+ 309.	[bug]		NAMELEN() could return a negative length.
+
+ 308.	[func]		Don't log ECONNRESET in stream_getlen().
+
+ 307.	[bug]		include/isc/assertions.h and include/isc/list.h
+			weren't installed.
+
+ 306.	[bug]		Timewarping into the future would cause repeating
+			timers to generate an event for every interval between
+			the previous time and the new time.  Repeating timers
+			are now rescheduled based on the last event time, not
+			their due time.  Idle timers now use the last event
+			time to compute the idle interval instead of the due
+			time.
+
+ 305.	[bug]		The BOUNDS_CHECK() for the 5 32-bit integers in the
+			SOA RR was wrong.
+
+ 304.	[bug]		lib/isc/assertions.c and lib/isc/memcluster.c did not
+			follow the port_{before/after}.h convention.
+			memcluster.c #included eventlib.h but did not need it.
+
+	--- 8.1.2-T1A released ---
+
+ 303.	[bug]		'bp' in grscan() in lib/irs/lcl_gr.c was incorrectly
+			validated, potentially causing corrupt data to be read.
+
+ 302.	[port]		#define HAVE_GETRUSAGE for Solaris >= 2.5.1.
+
+ 301.	[port]		Added support for Solaris 2.6.
+
+ 300.	[bug]		The space for the pathname of named-xfer in the
+			options block leaked.
+
+ 299.	[bug]		<irs.h> wasn't in the include directory, and wasn't
+			included before "port_after.h".
+
+ 298.	[func]		Added "deallocate-on-exit" and "memstatistics-file"
+			options.  If deallocate-on-exit is "yes", the server
+			will painstakingly deallocate every object it
+			allocated.  This is slower than letting the OS clean
+			things up, but is helpful in detecting memory leaks.
+
+ 297.	[port]		GNU libc 2.0 doesn't have <nlist.h> so in the
+			Linux port we now provide a stub nlist.h that
+			includes the real nlist.h if GNU libc < 2.0 and
+			does nothing if >= 2.0.
+
+ 296.	[bug]		"make stdlinks" didn't "mkdir /var/obj" if /var/obj
+			didn't exist.
+
+ 295.	[bug]		Specifying a query-source with and address and port
+			that the server was listening to didn't work.
+
+ 294.	[security]	The server was willing to answer queries on its
+			forwarding sockets.
+
+ 293.	[security]	rrextract() did insufficient bounds checking which
+			could cause it to crash the server by reading from
+			an invalid memory location.
+
+ 292.	[bug]		The server sometimes leaked the flushset (ns_resp.c).
+
+ 291.	[bug]		The server did not detect oversized UDP packets,
+			causing useless retries.
+
+ 290.	[bug]		free_listen_info_list() leaked the IP matching lists;
+			the leak occurred when the config file was reloaded.
+
+ 289.	[bug]		[This bug number was allocated for something that
+			turned out not to be a bug.]
+
+ 288.	[func]		Add new list and assertion code to the ISC library.
+
+ 287.	[bug]		"dig +sort" doesn't do anything, but was mentioned
+			in dig's usage message, as well as in the man page.
+
+ 286.	[bug]		Some systems have a default FD_SETSIZE much smaller
+			than the number of files that can be opened.  This
+			could cause problems in the resolver and eventlib.
+			FD_SETSIZE may now be set in
+			port/*/include/fd_setsize.h.
+
+ 285.	[bug]		If OS probing failed to match any of the supported
+			ports, the build would try to continue with BSD 4.4
+			settings, with poor results in most situations.  An
+			error message is now printed if probing fails.
+
+ 284.	[func]		The interface list is now doubly-linked.
+
+ 283.	[bug]		The server would panic if binding to an interface that
+			it had discovered failed.  Simply not listening to
+			the interface is a better solution.
+
+ 282.	[bug]		The nslookup Makefile didn't prefix DESTHELP with
+			DESTDIR when setting DEFS.
+
+ 281.	[bug]		A socket() called in ns_main.c used PF_INET instead
+			of AF_INET.
+
+ 280.	[bug]		The sample named.conf used "clean-interval" instead of
+			"cleaning-interval".
+
+ 279.	[bug]		Some panic() messages in the IP matching code in
+			ns_config.c were wrong.
+
+ 278.	[bug]		Setting an interval to zero (e.g. interface-interval)
+			eventually caused random timer destruction.
+
+ 277.	[bug]		ns_panic() used "args" twice, but only called
+			va_start() and va_end() once.
+
+ 276.	[bug]		nslookup's "ls" command always listed all records
+			instead of behaving the way its man page describes.
+
+ 275.	[bug]		add_related_additional() leaked memory if the name
+			was already in the related array.
+
+ 274.	[bug]		If a timer was cleared while in executing its callback,
+			and a new non-repeating timer was created afterwards
+			(but still in the callback), the new timer was
+			erroneously destroyed when the callback completed.
+
+ 273.	[func]		Added transfer-source and host-statistics options.
+
+ 272.	[func]		The zone number is now unsigned, allowing up to
+			65536 zones instead of the previous limit of 32768.
+
+ 271.	[func]		Added evDefer().
+
+ 270.	[bug]		The meaning of the count returned by select() varies
+			somewhat by operating system.  Under certain
+			circumstances, this confused eventlib's accounting and
+			caused the server to spin.
+
+ 269.	[func]		Added evLastEventTime().
+
+ 268.	[bug]		Connections weren't cleaned up when the eventlib
+			context was destroyed.
+
+ 267.	[func]		Added evTimeRW() and evUntimeRW() to control idle timer
+			usage in the eventlib streams module.
+	
+ 266.	[func]		Added file descriptor table to ev_files.c to improve
+			performance of evSelect() and evDeselect().
+
+ 265.	[func]		Added evHold(), evUnhold(), and evTryAccept().
+
+ 264.	[func]		Double-link many eventlib lists to allow faster
+			removal of list elements.
+
+ 263.	[bug]		Remember the previous non-blocking status of
+			sockets given to evListen().
+
+ 262.	[func]		Added idle timers to eventlib.
+
+ 261.	[func]		Added clustered memory allocator to eventlib; eventlib
+			and named now use this allocator.
+
+ 260.	[func]		The value of FD_SETSIZE that eventlib uses can be
+			set by changing include/fd_setsize.h.
+
+ 259.	[bug]		Notification of hosts on the also-notify list stopped
+			after the first successful notification.
+
 	--- 8.1.1 released ---
 
  258.	[bug]		Setting SO_SNDLOWAT to 0 in ns_xfr() wasn't doing

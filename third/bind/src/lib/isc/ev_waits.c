@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1997 by Internet Software Consortium
+ * Copyright (c) 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,23 +20,22 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_waits.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: ev_waits.c,v 1.1.1.2 1998-05-12 18:05:31 ghudson Exp $";
 #endif
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
-#include <assert.h>
 #include <errno.h>
 
 #include <isc/eventlib.h>
+#include <isc/assertions.h>
 #include "eventlib_p.h"
 
 #include "port_after.h"
 
 /* Forward. */
 
-/*hidden*/ evWait *	evFreeWait(evContext_p *ctx, evWait *old);
-static evWait *		evNewWait(evContext_p *ctx);
 static void		print_waits(evContext_p *ctx);
 static evWaitList *	evNewWaitList(evContext_p *);
 static void		evFreeWaitList(evContext_p *, evWaitList *);
@@ -53,13 +52,10 @@ evWaitFor(evContext opaqueCtx, const void *tag,
        evWaitFunc func, void *uap, evWaitID *id)
 {
 	evContext_p *ctx = opaqueCtx.opaque;
-	evWait *new = evNewWait(ctx);
+	evWait *new;
 	evWaitList *wl = evGetWaitList(ctx, tag, 1);
 
-	if (!new || !wl) {
-		errno = ENOMEM;
-		return (-1);
-	}
+	OKNEW(new);
 	new->func = func;
 	new->uap = uap;
 	new->tag = tag;
@@ -92,7 +88,7 @@ evDo(evContext opaqueCtx, const void *tag) {
 	}
 
 	first = wl->first;
-	assert(first != NULL);
+	INSIST(first != NULL);
 
 	if (ctx->waitDone.last != NULL)
 		ctx->waitDone.last->next = first;
@@ -115,7 +111,7 @@ evUnwait(evContext opaqueCtx, evWaitID id) {
 	int found = 0;
 
 	this = id.opaque;
-	assert(this != NULL);
+	INSIST(this != NULL);
 	wl = evGetWaitList(ctx, this->tag, 0);
 	if (wl != NULL) {
 		for (prev = NULL, this = wl->first;
@@ -157,7 +153,7 @@ evUnwait(evContext opaqueCtx, evWaitID id) {
 		return (-1);
 	}
 
-	evFreeWait(ctx, id.opaque);
+	FREE(this);
 
 	if (ctx->debug >= 9)
 		print_waits(ctx);
@@ -165,28 +161,27 @@ evUnwait(evContext opaqueCtx, evWaitID id) {
 	return (0);
 }
 
-/* Private. */
-
-static evWait *
-evNewWait(evContext_p *ctx) {
+int
+evDefer(evContext opaqueCtx, evWaitFunc func, void *uap) {
+	evContext_p *ctx = opaqueCtx.opaque;
 	evWait *new;
 
-	if ((new = ctx->waitFree) != NULL) {
-		ctx->waitFree = new->next;
-		FILL(new);
-	} else
-		NEW(new);
-	return (new);
+	OKNEW(new);
+	new->func = func;
+	new->uap = uap;
+	new->tag = NULL;
+	new->next = NULL;
+	if (ctx->waitDone.last != NULL)
+		ctx->waitDone.last->next = new;
+	else
+		ctx->waitDone.first = new;
+	ctx->waitDone.last = new;
+	if (ctx->debug >= 9)
+		print_waits(ctx);
+	return (0);
 }
 
-/*hidden*/ evWait *
-evFreeWait(evContext_p *ctx, evWait *old) {
-	evWait *next = old->next;
-
-	old->next = ctx->waitFree;
-	ctx->waitFree = old;
-	return (next);
-}
+/* Private. */
 
 static void
 print_waits(evContext_p *ctx) {
@@ -195,7 +190,7 @@ print_waits(evContext_p *ctx) {
 
 	evPrintf(ctx, 9, "wait waiting:\n");
 	for (wl = ctx->waitLists; wl != NULL; wl = wl->next) {
-		assert(wl->first != NULL);
+		INSIST(wl->first != NULL);
 		evPrintf(ctx, 9, "  tag %#x:", wl->first->tag);
 		for (this = wl->first; this != NULL; this = this->next)
 			evPrintf(ctx, 9, " %#x", this);
@@ -205,35 +200,15 @@ print_waits(evContext_p *ctx) {
 	for (this = ctx->waitDone.first; this != NULL; this = this->next)
 		evPrintf(ctx, 9, " %#x", this);
 	evPrintf(ctx, 9, "\n");
-	if (ctx->debug >= 99) {
-		evPrintf(ctx, 99, "wait list free:");
-		for (wl = ctx->waitListFree;
-		     wl != NULL;
-		     wl = wl->next)
-			evPrintf(ctx, 99, " %#x", wl);
-		evPrintf(ctx, 99, "\n");
-		evPrintf(ctx, 99, "wait free:");
-		for (this = ctx->waitFree;
-		     this != NULL;
-		     this = this->next)
-			evPrintf(ctx, 99, " %#x", this);
-		evPrintf(ctx, 99, "\n");
-	}
 }
 
 static evWaitList *
 evNewWaitList(evContext_p *ctx) {
 	evWaitList *new;
 
-	if (ctx->waitListFree != NULL) {
-		new = ctx->waitListFree;
-		ctx->waitListFree = ctx->waitListFree->next;
-		FILL(new);
-	} else {
-		NEW(new);
-		if (new == NULL)
-			return (NULL);
-	}
+	NEW(new);
+	if (new == NULL)
+		return (NULL);
 	new->first = new->last = NULL;
 	new->prev = NULL;
 	new->next = ctx->waitLists;
@@ -245,7 +220,7 @@ static void
 evFreeWaitList(evContext_p *ctx, evWaitList *this) {
 	evWaitList *prev;
 
-	assert(this != NULL);
+	INSIST(this != NULL);
 
 	if (this->prev != NULL)
 		this->prev->next = this->next;
@@ -253,9 +228,7 @@ evFreeWaitList(evContext_p *ctx, evWaitList *this) {
 		ctx->waitLists = this->next;
 	if (this->next != NULL)
 		this->next->prev = this->prev;
-	this->prev = NULL;	
-	this->next = ctx->waitListFree;
-	ctx->waitListFree = this;
+	FREE(this);
 }
 
 static evWaitList *

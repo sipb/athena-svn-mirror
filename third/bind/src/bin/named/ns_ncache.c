@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_ncache.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_ncache.c,v 1.1.1.2 1998-05-12 18:04:10 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -43,24 +43,33 @@ static char rcsid[] = "$Id: ns_ncache.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Ex
 
 #include "named.h"
 
+#define BOUNDS_CHECK(ptr, count) \
+	do { \
+		if ((ptr) + (count) > eom) { \
+			return; \
+		} \
+	} while (0)
+
 void
 cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 	struct databuf *dp;
 	HEADER *hp;
-	u_char *cp;
+	u_char *cp, *eom, *rdatap;
 	char dname[MAXDNAME];
 	int n;
 	int type, class;
 	int Vcode;
 	int flags;
 	u_int16_t ancount;
+	u_int dlen;
 
 	nameserIncr(from.sin_addr, nssRcvdNXD);
 
 	hp = (HEADER *)msg;
 	cp = msg+HFIXEDSZ;
+	eom = msg + msglen;
   
-	n = dn_expand(msg, msg + msglen, cp, dname, sizeof dname);
+	n = dn_expand(msg, eom, cp, dname, sizeof dname);
 	if (n < 0) {
 		ns_debug(ns_log_ncache, 1,	
 			 "Query expand name failed: cache_n_resp");
@@ -68,6 +77,7 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		return;
 	}
 	cp += n;
+	BOUNDS_CHECK(cp, 2 * INT16SZ);
 	GETSHORT(type, cp);
 	GETSHORT(class, cp);
 	ns_debug(ns_log_ncache, 1, "ncache: dname %s, type %d, class %d",
@@ -79,12 +89,13 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		u_int32_t ttl;
 		u_int16_t atype;
 		u_int16_t aclass;
-		n = dn_skipname(cp, msg + msglen);
+		n = dn_skipname(cp, eom);
 		if (n < 0) {
 			ns_debug(ns_log_ncache, 3, "ncache: form error");
 			return;
 		}
 		cp += n;
+		BOUNDS_CHECK(cp, 3 * INT16SZ + INT32SZ);
 		GETSHORT(atype, cp);
 		GETSHORT(aclass, cp);
 		if (atype != T_CNAME || aclass != class) {
@@ -92,13 +103,19 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 			return;
 		}
 		GETLONG(ttl, cp);
-		cp += 2;	/* dlen */
+		GETSHORT(dlen, cp);
+		BOUNDS_CHECK(cp, dlen);
+		rdatap = cp;
 		n = dn_expand(msg, msg + msglen, cp, dname, sizeof dname);
 		if (n < 0) {
 			ns_debug(ns_log_ncache, 3, "ncache: form error");
 			return;
 		}
 		cp += n;
+		if (cp != rdatap + dlen) {
+			ns_debug(ns_log_ncache, 3, "ncache: form error");
+			return;
+		}
 	}
 
 #ifdef RETURNSOA
@@ -121,15 +138,19 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 			return;
 		}
 		tp += n;
+		
+		BOUNDS_CHECK(tp, 3 * INT16SZ + INT32SZ);
 		GETSHORT(atype, tp);		/* type */
 		if (atype != T_SOA) {
 			ns_debug(ns_log_ncache, 3,
 				 "ncache: type (%d) != T_SOA", atype);
 			goto no_soa;
 		}
-		tp += INT16SZ;		/* class */
-		GETLONG(ttl, tp);	/* ttl */
-		tp += INT16SZ;		/* dlen */
+		tp += INT16SZ;			/* class */
+		GETLONG(ttl, tp);		/* ttl */
+		GETSHORT(dlen, tp);		/* dlen */
+		BOUNDS_CHECK(tp, dlen);
+		rdatap = tp;
 
 		/* origin */
 		n = dn_expand(msg, msg + msglen, tp, (char*)data, len);
@@ -153,10 +174,16 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		cp1 += n;
 		len -= n;
 		n = 5 * INT32SZ;
+		BOUNDS_CHECK(tp, n);
 		memcpy(cp1, tp, n);
 		/* serial, refresh, retry, expire, min */
 		cp1 += n;
 		len -= n;
+		tp += n;
+		if (tp != rdatap + dlen) {
+			ns_debug(ns_log_ncache, 3, "ncache: form error");
+			return;
+		}
 		/* store the zone of the soa record */
 		n = dn_expand(msg, msg + msglen, cp, (char*)cp1, len);
 		if (n < 0) {
@@ -189,7 +216,7 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 	if ((n = db_update(dname, dp, dp, NULL, flags, hashtab, from)) != OK) {
 		ns_debug(ns_log_ncache, 1,
 			 "db_update failed (%d), cache_n_resp()", n);
-		db_free(dp);
+		db_freedata(dp);
 		return;
 	}
 	ns_debug(ns_log_ncache, 4,

@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)list.c	5.23 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: list.c,v 1.1.1.1 1998-05-04 22:23:37 ghudson Exp $";
+static char rcsid[] = "$Id: list.c,v 1.1.1.2 1998-05-12 18:04:26 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -397,14 +397,18 @@ ListSubr(int qtype, char *domain, char *cmd) {
 				fprintf(filePtr, "$ORIGIN %s.\n", name);
 				strcpy(origin, name);
 			}
-			if (ns_sprintrr(&handle, &rr, name_ctx, origin,
-					buf, sizeof buf) < 0) {
-				perror("ns_sprintrr");
-				error = ERR_PRINTING;
-				break;
+			if (qtype == T_ANY || ns_rr_type(rr) == qtype) {
+				if (ns_sprintrr(&handle, &rr, name_ctx, origin,
+						buf, sizeof buf) < 0) {
+					perror("ns_sprintrr");
+					error = ERR_PRINTING;
+					break;
+				}
+				strcpy(name_ctx, name);
+				numAnswers++;
+				fputs(buf, filePtr);
+				fputc('\n', filePtr);
 			}
-			strcpy(name_ctx, name);
-			numAnswers++;
 			if (ns_rr_type(rr) == T_SOA) {
 				strcpy(soaname[soacnt], name);
 				if (soacnt == 0)
@@ -414,8 +418,6 @@ ListSubr(int qtype, char *domain, char *cmd) {
 					soacnt = 2;
 				}
 			}
-			fputs(buf, filePtr);
-			fputc('\n', filePtr);
 		}
 		if (error != NO_ERRORS)
 			break;

@@ -65,13 +65,18 @@ all depend clean distclean install::
 		(cd $$x; pwd; ${MAKE} ${MARGS} $@); \
 	done
 
+all depend::
+	make_os_version	
+
 distclean:: clean
 
 clean::
+	rm -f os_version.h new_os_version.h
 	rm -f *~ *.BAK *.CKP *.orig
 
 links: FRC
 	@set -e; ln -s SRC/*.h .
+	@rm -f os_version.h new_os_version.h
 	@set -e; for x in ${SUBDIRS}; do \
 		( mkdir $$x; cd $$x; pwd; ln -s ../SRC/$$x SRC; \
 		cp SRC/Makefile Makefile; chmod +w Makefile; \

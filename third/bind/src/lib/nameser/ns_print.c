@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: ns_print.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: ns_print.c,v 1.1.1.2 1998-05-12 18:05:40 ghudson Exp $";
 #endif
 
 /* Import. */
@@ -60,7 +60,11 @@ static int	addtab(size_t len, size_t target, int spaced,
 
 /* Macros. */
 
-#define	T(x) if ((x) < 0) return (-1); else (void)NULL
+#define	T(x) \
+	do { \
+		if ((x) < 0) \
+			return (-1); \
+	} while (0)
 
 /* Public. */
 
@@ -490,7 +494,7 @@ ns_sprintrrf(const u_char *msg, size_t msglen,
 		len = SPRINTF((tmp, " %s %d %lu ",
 			       p_type(type), algorithm, t));
 		T(addstr(tmp, len, &buf, &buflen));
-		if (labels != dn_count_labels(name))
+		if (labels != (u_int)dn_count_labels(name))
 			goto formerr;
 
 		/* Signature expiry. */
@@ -672,9 +676,9 @@ addname(const u_char *msg, size_t msglen,
 	const u_char **pp, const char *origin,
 	char **buf, size_t *buflen)
 {
-	size_t save_buflen = *buflen;
+	size_t newlen, save_buflen = *buflen;
 	char *save_buf = *buf;
-	int n, newlen;
+	int n;
 
 	n = dn_expand(msg, msg + msglen, *pp, *buf, *buflen);
 	if (n < 0)

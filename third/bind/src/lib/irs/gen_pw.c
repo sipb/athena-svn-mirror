@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: gen_pw.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: gen_pw.c,v 1.1.1.2 1998-05-12 18:05:01 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -33,6 +33,8 @@ static int __bind_irs_pw_unneeded;
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

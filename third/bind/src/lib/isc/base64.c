@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,6 +39,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE, EVEN
  * IF IBM IS APPRISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
+#if !defined(LINT) && !defined(CODECENTER)
+static char rcsid[] = "$Id: base64.c,v 1.1.1.2 1998-05-12 18:05:27 ghudson Exp $";
+#endif /* not lint */
 
 #include "port_before.h"
 
@@ -132,7 +136,7 @@ b64_ntop(u_char const *src, size_t srclength, char *target, size_t targsize) {
 	size_t datalength = 0;
 	u_char input[3];
 	u_char output[4];
-	int i;
+	size_t i;
 
 	while (2 < srclength) {
 		input[0] = *src++;
@@ -219,7 +223,7 @@ b64_pton(src, target, targsize)
 		switch (state) {
 		case 0:
 			if (target) {
-				if (tarindex >= targsize)
+				if ((size_t)tarindex >= targsize)
 					return (-1);
 				target[tarindex] = (pos - Base64) << 2;
 			}
@@ -227,7 +231,7 @@ b64_pton(src, target, targsize)
 			break;
 		case 1:
 			if (target) {
-				if (tarindex + 1 >= targsize)
+				if ((size_t)tarindex + 1 >= targsize)
 					return (-1);
 				target[tarindex]   |=  (pos - Base64) >> 4;
 				target[tarindex+1]  = ((pos - Base64) & 0x0f)
@@ -238,7 +242,7 @@ b64_pton(src, target, targsize)
 			break;
 		case 2:
 			if (target) {
-				if (tarindex + 1 >= targsize)
+				if ((size_t)tarindex + 1 >= targsize)
 					return (-1);
 				target[tarindex]   |=  (pos - Base64) >> 2;
 				target[tarindex+1]  = ((pos - Base64) & 0x03)
@@ -249,7 +253,7 @@ b64_pton(src, target, targsize)
 			break;
 		case 3:
 			if (target) {
-				if (tarindex >= targsize)
+				if ((size_t)tarindex >= targsize)
 					return (-1);
 				target[tarindex] |= (pos - Base64);
 			}

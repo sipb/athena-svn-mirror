@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: nsupdate.c,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $";
+static char rcsid[] = "$Id: nsupdate.c,v 1.1.1.2 1998-05-12 18:04:29 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -128,7 +128,7 @@ main(argc, argv)
 	char *host = hostbuf, *batchfile = filebuf;
 	char *r_dname, *cp, *startp, *endp, *svstartp;
 	char section[15], opcode[10];
-	int i, c, n, n1, inside, lineno, vc = 0,
+	int i, c, n, n1, inside, lineno = 0, vc = 0,
 		debug = 0, r_size, r_section, r_opcode,
 		prompt = 0, ret = 0;
 	int16_t r_class, r_type;
@@ -431,6 +431,7 @@ main(argc, argv)
 		}
 	    }
 	} /* for */
+	return (0);
 }
 
 static void

@@ -56,17 +56,21 @@ HFILES= bitypes.h cdefs.h
 DESTDIR=
 DESTINC= /usr/local/bind/include
 
-all depend:
+all depend:: bitypes.h
+
+bitypes.h: FRC
+	choose_bitypes
 
 distclean: clean
 
 clean:
-	rm -f *~ *.BAK *.CKP *.orig time.h stat.h
+	rm -f *~ *.BAK *.CKP *.orig bitypes.h
 
 links:
 	@set -e; ln -s SRC/*.h .
+	@rm -f bitypes.h
 
-install: ${DESTDIR}${DESTINC}/sys
+install: ${DESTDIR}${DESTINC}/sys bitypes.h
 	for x in ${HFILES}; do \
 		if [ -f $$x ]; then \
 			${INSTALL} -c -m 444 $$x ${DESTDIR}${DESTINC}/sys/$$x;\
@@ -75,3 +79,5 @@ install: ${DESTDIR}${DESTINC}/sys
 
 ${DESTDIR}${DESTINC}/sys:
 	mkdir -p ${DESTDIR}${DESTINC}/sys
+
+FRC:

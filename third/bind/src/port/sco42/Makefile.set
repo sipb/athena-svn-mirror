@@ -12,6 +12,8 @@
 'DESTEXEC=/etc'
 'DESTMAN=/usr/local/man'
 'DESTHELP=/usr/lib'
+'DESTETC=/etc'
+'DESTRUN=/etc'
 'LDFLAGS='
 'MANDIR=man'
 'MANROFF=man'

@@ -67,7 +67,7 @@
 
 /* ns_func.h - declarations for ns_*.c's externally visible functions
  *
- * $Id: ns_func.h,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $
+ * $Id: ns_func.h,v 1.1.1.2 1998-05-12 18:04:03 ghudson Exp $
  */
 
 /* ++from ns_glue.c++ */
@@ -78,18 +78,35 @@ extern void		ns_debug(int, int, const char *, ...),
 			ns_notice(int, const char *, ...),
 			ns_warning(int, const char *, ...),
 			ns_error(int, const char *, ...),
-			ns_panic(int, int, const char *, ...);
+			ns_panic(int, int, const char *, ...),
+			ns_assertion_failed(char *file, int line,
+					    assertion_type type, char *cond,
+					    int print_errno);
 extern void		panic(const char *, const void *),
 			gettime(struct timeval *);
 extern int		nlabels(const char *),
 			my_close(int),
 			my_fclose(FILE *);
-extern char		*savestr(const char *),
+extern void		__freestr(char *);
+extern char		*__newstr(size_t, int),
+			*__savestr(const char *, int),
 			*checked_ctime(const time_t *t),
 			*ctimel(long);
 extern u_char		*ina_put(struct in_addr ina, u_char *data),
-			*savebuf(const u_char *, int);
+			*savebuf(const u_char *, size_t, int);
 extern void		dprintf(int level, const char *format, ...);
+#ifdef DEBUG_STRINGS
+extern char		*debug_newstr(size_t, int, const char *, int),
+			*debug_savestr(const char *, int, const char *, int);
+extern void		debug_freestr(char *, const char *, int);
+#define newstr(l, n) debug_newstr((l), (n), __FILE__, __LINE__)
+#define savestr(s, n) debug_savestr((s), (n), __FILE__, __LINE__)
+#define freestr(s) debug_freestr((s), __FILE__, __LINE__)
+#else
+#define newstr(l, n) __newstr((l), (n))
+#define savestr(s, n) __savestr((s), (n))
+#define freestr(s) __freestr((s))
+#endif /* DEBUG_STRINGS */
 /* --from ns_glue.c-- */
 
 /* ++from ns_resp.c++ */
@@ -111,7 +128,8 @@ extern int		doupdate(u_char *, u_char *, struct databuf **,
 			wanted(const struct databuf *, int, int),
 			add_data(struct namebuf *,
 				 struct databuf **,
-				 u_char *, int, int *);
+				 u_char *, int, int *),
+			trunc_adjust(u_char *, int, int);
 /* --from ns_resp.c-- */
 
 /* ++from ns_req.c++ */
@@ -171,8 +189,9 @@ extern void		schedretry(struct qinfo *, time_t),
 			retry(struct qinfo *),
 			qflush(void),
 			qremove(struct qinfo *),
-                        nsfree(struct qinfo *, char *),
-			qfree(struct qinfo *);
+                        ns_freeqns(struct qinfo *, char *),
+			ns_freeqry(struct qinfo *),
+			freeComplaints(void);
 extern struct qinfo	*qfindid(u_int16_t),
 			*qnew(const char *, int, int);
 /* --from ns_forw.c-- */
@@ -186,8 +205,7 @@ extern void		sq_remove(struct qstream *),
 			dq_remove_all(),
 			sq_done(struct qstream *),
 			ns_setproctitle(char *, int),
-			getnetconf(evContext, void *, struct timespec,
-				   struct timespec),
+			getnetconf(int),
 			nsid_init(void),
 			ns_setoption(int option),
 			writestream(struct qstream *, const u_char *, int),
@@ -200,7 +218,6 @@ extern int		sq_openw(struct qstream *, int),
 			ns_need_p(int option),
 			tcp_send(struct qinfo *),
 			aIsUs(struct in_addr);
-extern struct netinfo	*findnetinfo(struct in_addr);
 /* --from ns_main.c-- */
 
 /* ++from ns_maint.c++ */
@@ -239,7 +256,8 @@ extern int		ns_nameok(const char *name, int class,
 				  struct in_addr source);
 extern int		ns_wildcard(const char *name);
 extern void		zoneinit(struct zoneinfo *),
-                        do_reload(const char *, int, int);
+                        do_reload(const char *, int, int),
+			ns_shutdown(void);
 /* --from ns_init.c-- */
 
 /* ++from ns_ncache.c++ */
@@ -251,16 +269,14 @@ extern void		ns_udp(void);
 /* --from ns_udp.c-- */
 
 /* ++from ns_stats.c++ */
-extern void		ns_stats(void);
-#ifdef XSTATS
+extern void		ns_stats(void),
+			ns_freestats(void);
 extern void		ns_logstats(evContext ctx, void *uap,
 				    struct timespec, struct timespec);
-#endif
 extern void		qtypeIncr(int qtype);
 extern struct nameser	*nameserFind(struct in_addr addr, int flags);
 #define NS_F_INSERT	0x0001
-extern void		nameserIncr(struct in_addr addr,
-				    enum nameserStats which);
+#define nameserIncr(a,w) NS_INCRSTAT(a,w)	/* XXX should change name. */
 /* --from ns_stats.c-- */
 
 /* ++from ns_update.c++ */
@@ -293,13 +309,13 @@ int			set_zone_notify(zone_config, int value);
 int			set_zone_update_acl(zone_config, ip_match_list);
 int			set_zone_query_acl(zone_config, ip_match_list);
 int			set_zone_transfer_acl(zone_config, ip_match_list);
+int			set_zone_transfer_source(zone_config, struct in_addr);
 int 			set_zone_transfer_time_in(zone_config, long);
-int			add_zone_master(zone_config zh,
-					struct in_addr address);
+int			add_zone_master(zone_config, struct in_addr);
+int			add_zone_notify(zone_config, struct in_addr);
 options			new_options(void);
 void			free_options(options);
 void			set_boolean_option(options, int, int);
-int			ns_option_p(int);
 listen_info_list	new_listen_info_list(void);
 void			free_listen_info_list(listen_info_list);
 void			add_listen_on(options, u_int16_t, ip_match_list);
@@ -348,6 +364,9 @@ void			set_logging(log_config, int);
 void			end_logging(log_config, int);
 void			use_default_logging(void);
 void			init_logging(void);
+void			shutdown_logging(void);
+void			init_configuration(void);
+void			shutdown_configuration(void);
 void			load_configuration(const char *);
 /* --from ns_config.c-- */
 /* ++from parser.y++ */
@@ -356,4 +375,6 @@ void			define_acl(char *, ip_match_list);
 key_info		lookup_key(char *);
 void			define_key(char *, key_info);
 void			parse_configuration(const char *);
+void			parser_initialize(void);
+void			parser_shutdown(void);
 /* --from parser.y-- */

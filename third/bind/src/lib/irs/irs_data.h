@@ -16,10 +16,8 @@
  */
 
 /*
- * $Id: irs_data.h,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $
+ * $Id: irs_data.h,v 1.1.1.2 1998-05-12 18:05:11 ghudson Exp $
  */
-
-#include "irs.h"
 
 #define net_data		__net_data
 #define	net_data_init		__net_data_init

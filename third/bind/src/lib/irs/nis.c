@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: nis.c,v 1.1.1.2 1998-05-12 18:05:19 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -33,6 +33,8 @@ static const char rcsid[] = "$Id: nis.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Ex
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -67,7 +69,11 @@ irs_nis_acc(const char *options) {
 	memset(acc, 0x5e, sizeof *acc);
 	acc->private = nis;
 	nis->domain = strdup(domain);
+#ifdef WANT_IRS_GR
 	acc->gr_map = irs_nis_gr;
+#else
+	acc->gr_map = NULL;
+#endif
 #ifdef WANT_IRS_PW
 	acc->pw_map = irs_nis_pw;
 #else

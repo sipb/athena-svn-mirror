@@ -1,6 +1,6 @@
 #!/bin/sh
 
-uname=/usr/local/bin/uname
+uname=/bin/uname
 
 if [ -f $uname ]; then
 	case `$uname -s`-`$uname -r` in

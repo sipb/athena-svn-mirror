@@ -8,13 +8,8 @@
 #define SETGRENT_VOID
 #define SETPWENT_VOID
 #define SIOCGIFCONF_ADDR
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/sbin/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/sbin/named-xfer"
-#undef _PATH_PIDFILE
-#define _PATH_PIDFILE	"/etc/named.pid"
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define PORT_NONBLOCK	O_NONBLOCK
 #define PORT_WOULDBLK	EWOULDBLOCK

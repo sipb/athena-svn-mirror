@@ -278,10 +278,12 @@ LIB_NETWORK_OUT =	gethostbyname.${LIB_NETWORK_OUT_EXT} \
 #
 # File format manual entries
 #
-FORMAT_BASE =	resolver
+FORMAT_BASE =	resolver irs.conf
 FORMAT_SRC_EXT = 5
-FORMAT_SRC = 	resolver.${FORMAT_SRC_EXT}
-FORMAT_OUT = 	resolver.${FORMAT_OUT_EXT}
+FORMAT_SRC = 	resolver.${FORMAT_SRC_EXT} \
+		irs.conf.${FORMAT_SRC_EXT}
+FORMAT_OUT = 	resolver.${FORMAT_OUT_EXT} \
+		irs.conf.${FORMAT_OUT_EXT}
 
 #
 # Feature Description manual entries

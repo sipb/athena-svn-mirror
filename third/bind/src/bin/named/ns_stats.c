@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_stats.c	4.10 (Berkeley) 6/27/90";
-static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.2 1998-05-12 18:04:16 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -91,6 +91,7 @@ static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 #include <isc/tree.h>
 
 #include "port_after.h"
@@ -138,8 +139,7 @@ static const char *typenames[T_ANY+1] = {
 static void		nameserStats(FILE *);
 
 void
-ns_stats()
-{
+ns_stats() {
 	time_t timenow = time(NULL);
 	FILE *f;
 	int i;
@@ -162,17 +162,21 @@ ns_stats()
 	/* query type statistics */
 	fprintf(f, "%lu\tUnknown query types\n", (u_long)typestats[0]);
 	for(i=1; i < T_ANY+1; i++)
-		if (typestats[i])
-			if (typenames[i])
+		if (typestats[i]) {
+			if (typenames[i] != NULL)
 				fprintf(f, "%lu\t%s queries\n",
 					(u_long)typestats[i], typenames[i]);
 			else
 				fprintf(f, "%lu\ttype %d queries\n",
 					(u_long)typestats[i], i);
+		}
 
 	/* name server statistics */
 	nameserStats(f);
 
+	fprintf(f, "++ Memory Statistics ++\n");
+	memstats(f);
+	fprintf(f, "-- Memory Statistics --\n");
 	fprintf(f, "--- Statistics Dump --- (%ld) %s",
 		(long)timenow, checked_ctime(&timenow));
 	(void) my_fclose(f);
@@ -191,9 +195,7 @@ qtypeIncr(qtype)
 static tree		*nameserTree;
 static int		nameserInit;
 
-#ifdef STATS
 static FILE		*nameserStatsFile;
-static u_long		globalStats[nssLast];
 static const char	*statNames[nssLast] = {
 			"RR",		/* sent us an answer */
 			"RNXD",		/* sent us a negative response */
@@ -210,7 +212,6 @@ static const char	*statNames[nssLast] = {
 			"SFwdQ",	/* fwdd a query to them */
 			"SDupQ",	/* sent them a retry */
 			"SErr",	        /* sent failed (in sendto) */
-#ifdef XSTATS
 			"RQ",		/* sent us a query */
 			"RIQ",		/* sent us an inverse query */
 			"RFwdQ",	/* sent us a query we had to fwd */
@@ -221,9 +222,7 @@ static const char	*statNames[nssLast] = {
 			"SFErr",	/* sent them a FORMERR */
 			"SNaAns",       /* sent them a non autoritative answer */
 			"SNXD",         /* sent them a negative response */
-#endif
 			};
-#endif /*STATS*/
 
 /*
  * Note that addresses in network byte order always have the high byte first.
@@ -261,20 +260,20 @@ nameserFind(addr, flags)
 	dummy.addr = addr;
 	ns = (struct nameser *)tree_srch(&nameserTree, nameserCompar,
 					 (tree_t)&dummy);
-	if (!ns && (flags & NS_F_INSERT)) {
-		ns = (struct nameser *)malloc(sizeof(struct nameser));
-		if (!ns) {
+	if (ns == NULL && (flags & NS_F_INSERT) != 0) {
+		ns = (struct nameser *)memget(sizeof(struct nameser));
+		if (ns == NULL) {
  nomem:			if (!haveComplained((u_long)nameserFind, 0))
 				ns_notice(ns_log_statistics, 
-					  "nameserFind: malloc failed; %s",
+					  "nameserFind: memget failed; %s",
 					  strerror(errno));
 			return (NULL);
 		}
-		memset(ns, 0, sizeof(struct nameser));
+		memset(ns, 0, sizeof *ns);
 		ns->addr = addr;
 		if (!tree_add(&nameserTree, nameserCompar, (tree_t)ns, NULL)) {
 			int save = errno;
-			free(ns);
+			memput(ns, sizeof *ns);
 			errno = save;
 			goto nomem;
 		}
@@ -282,28 +281,6 @@ nameserFind(addr, flags)
 	return (ns);
 }
 
-
-void
-nameserIncr(addr, which)
-	struct in_addr addr;
-	enum nameserStats which;
-{
-#ifdef STATS
-	struct nameser *ns = nameserFind(addr, NS_F_INSERT);
-
-	if ((int)which < (int)nssLast) {
-		if (ns)
-			ns->stats[(int)which]++;
-		globalStats[(int)which]++;
-	} else {
-		ns_debug(ns_log_statistics, 1,
-			 "nameserIncr([%d], %d): bad 'which'",
-			 inet_ntoa(addr), (int)which);
-	}
-#endif /*STATS*/
-}
-
-#ifdef STATS
 static void
 nameserStatsOut(f, stats)
 	FILE *f;
@@ -346,28 +323,22 @@ nameserStatsTravUAR(t)
 	nameserStatsOut(nameserStatsFile, ns->stats);
 	return (1);
 }
-#endif /*STATS*/
 
 static void
 nameserStats(f)
 	FILE *f;
 {
-#ifndef STATS
-	fprintf(f, "<<No nameserver statistics in this server>>\n");
-#else
 	nameserStatsFile = f;
 	fprintf(f, "++ Name Server Statistics ++\n");
 	nameserStatsHdr(f);
 	fprintf(f, "(Global)\n");
 	nameserStatsOut(f, globalStats);
-	tree_trav(&nameserTree, nameserStatsTravUAR);
+	if (NS_OPTION_P(OPTION_HOSTSTATS))
+		tree_trav(&nameserTree, nameserStatsTravUAR);
 	fprintf(f, "-- Name Server Statistics --\n");
 	nameserStatsFile = NULL;
-#endif /*STATS*/
 }
 
-#ifdef XSTATS
-/* Benoit Grange, log minimal statistics, called from ns_maint */
 void
 ns_logstats(evContext ctx, void *uap, struct timespec due,
 	    struct timespec inter)
@@ -376,10 +347,12 @@ ns_logstats(evContext ctx, void *uap, struct timespec due,
 	char buffer2[32], header[64];
 	time_t timenow = time(NULL);
 	int i;
+#ifdef HAVE_GETRUSAGE
+	struct rusage usage, childu;
+#endif /*HAVE_GETRUSAGE*/
 
 #ifdef HAVE_GETRUSAGE
 # define tv_float(tv) ((tv).tv_sec + ((tv).tv_usec / 1000000.0))
-	struct rusage usage, childu;
 
 	getrusage(RUSAGE_SELF, &usage);
 	getrusage(RUSAGE_CHILDREN, &childu);
@@ -390,7 +363,7 @@ ns_logstats(evContext ctx, void *uap, struct timespec due,
 	ns_info(ns_log_statistics, "USAGE %lu %lu %s", (u_long)timenow,
 		(u_long)boottime, buffer);
 # undef tv_float
-#endif
+#endif /*HAVE_GETRUSAGE*/
 
 	sprintf(header, "NSTATS %lu %lu", (u_long)timenow, (u_long)boottime);
 	strcpy(buffer, header);
@@ -426,4 +399,17 @@ ns_logstats(evContext ctx, void *uap, struct timespec due,
 	ns_info(ns_log_statistics, buffer);
 }
 
-#endif /*XSTATS*/
+static void
+nameserFree(void *uap) {
+	struct nameser *ns = uap;
+
+	memput(ns, sizeof *ns);
+}
+
+void
+ns_freestats(void) {
+	if (nameserTree == NULL)
+		return;
+	tree_mung(&nameserTree, nameserFree);
+	nameserInit = 0;
+}

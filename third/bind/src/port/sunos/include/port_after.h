@@ -14,13 +14,8 @@
 #define FIX_UDP_SUM
 #define __BIND_RES_TEXT
 #define SIOCGIFCONF_ADDR
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/etc/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/etc/named-xfer"
-#undef _PATH_PIDFILE
-#define _PATH_PIDFILE	"/etc/named.pid"
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define PORT_NONBLOCK	O_NONBLOCK
 #define PORT_WOULDBLK	EWOULDBLOCK

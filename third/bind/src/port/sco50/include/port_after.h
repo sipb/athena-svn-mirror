@@ -13,18 +13,11 @@
 #define SIG_FN void
 /* #define USE_UTIME /**/
 #define CAN_RECONNECT /* ??? */
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define PORT_NONBLOCK	O_NONBLOCK
 #define PORT_WOULDBLK	EWOULDBLOCK
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/etc/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/etc/named-xfer"
-#undef _PATH_DUMPFILE
-#define _PATH_DUMPFILE	"/usr/tmp/named_dump.db"
-#undef _PATH_PIDFILE
-#define _PATH_PIDFILE	"/etc/named.pid"
 
 /*
  * We need to know the IPv6 address family number even on IPv4-only systems.

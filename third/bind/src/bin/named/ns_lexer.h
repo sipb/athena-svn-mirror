@@ -37,6 +37,8 @@ void	lexer_begin_file(const char *, FILE *);
 void	lexer_end_file(void);
 int	yylex(void);
 void	lexer_initialize(void);
+void	lexer_setup(void);
+void	lexer_shutdown(void);
 
 extern symbol_table constants;
 

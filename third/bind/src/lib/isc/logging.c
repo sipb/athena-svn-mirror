@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1997 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,6 +15,10 @@
  * SOFTWARE.
  */
 
+#if !defined(LINT) && !defined(CODECENTER)
+static char rcsid[] = "$Id: logging.c,v 1.1.1.2 1998-05-12 18:05:35 ghudson Exp $";
+#endif /* not lint */
+
 #include "port_before.h"
 
 #include <sys/types.h>
@@ -29,11 +33,12 @@
 #include <stdarg.h>
 #include <syslog.h>
 #include <errno.h>
-#include <assert.h>
 #include <time.h>
 #include <unistd.h>
 
+#include <isc/assertions.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -190,6 +195,69 @@ log_get_filename(log_channel chan) {
 	return (chan->out.file.name);
 }
 
+int
+log_check_channel(log_context lc, int level, log_channel chan) {
+	int debugging, chan_level;
+
+	REQUIRE(lc != NULL);
+
+	debugging = ((lc->flags & LOG_OPTION_DEBUG) != 0);
+
+	/*
+	 * If not debugging, short circuit debugging messages very early.
+	 */
+	if (level > 0 && !debugging)
+		return (0);
+
+	if ((chan->flags & (LOG_CHANNEL_BROKEN|LOG_CHANNEL_OFF)) != 0)
+		return (0);
+
+	/* Some channels only log when debugging is on. */
+	if ((chan->flags & LOG_REQUIRE_DEBUG) && !debugging)
+		return (0);
+
+	/* Some channels use the global level. */
+	if ((chan->flags & LOG_USE_CONTEXT_LEVEL) != 0) {
+		chan_level = lc->level;
+	} else
+		chan_level = chan->level;
+
+	if (level > chan_level)
+		return (0);
+
+	return (1);
+}
+
+int 
+log_check(log_context lc, int category, int level) {
+	log_channel_list lcl;
+	int debugging;
+
+	REQUIRE(lc != NULL);
+
+	debugging = ((lc->flags & LOG_OPTION_DEBUG) != 0);
+
+	/*
+	 * If not debugging, short circuit debugging messages very early.
+	 */
+	if (level > 0 && !debugging)
+		return (0);
+
+	if (category < 0 || category > lc->num_categories)
+		category = 0;		/* use default */
+	lcl = lc->categories[category];
+	if (lcl == NULL) {
+		category = 0;
+		lcl = lc->categories[0];
+	}
+
+	for ( /* nothing */; lcl != NULL; lcl = lcl->next) {
+		if (log_check_channel(lc, level, lcl->channel))
+			return (1);
+	}
+	return (0);
+}
+
 void
 log_vwrite(log_context lc, int category, int level, const char *format, 
 	   va_list args) {
@@ -197,7 +265,6 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	int pri, debugging, did_vsprintf = 0;
 	int original_category;
 	FILE *stream;
-	log_context_p lcp;
 	int chan_level;
 	log_channel chan;
 	struct timeval tv;
@@ -207,11 +274,9 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	char time_buf[256];
 	char level_buf[256];
 
-	lcp = lc.opaque;
+	REQUIRE(lc != NULL);
 
-	assert(lcp != NULL);
-
-	debugging = (lcp->flags & LOG_OPTION_DEBUG);
+	debugging = (lc->flags & LOG_OPTION_DEBUG);
 
 	/*
 	 * If not debugging, short circuit debugging messages very early.
@@ -219,13 +284,13 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	if (level > 0 && !debugging)
 		return;
 
-	if (category < 0 || category > lcp->num_categories)
+	if (category < 0 || category > lc->num_categories)
 		category = 0;		/* use default */
 	original_category = category;
-	lcl = lcp->categories[category];
+	lcl = lc->categories[category];
 	if (lcl == NULL) {
 		category = 0;
-		lcl = lcp->categories[0];
+		lcl = lc->categories[0];
 	}
 
 	/*
@@ -237,11 +302,11 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	} else {
 		local_tm = localtime((time_t *)&tv.tv_sec);
 		if (local_tm != NULL) {
-			sprintf(time_buf, "%02d-%s-%4d %02d:%02d:%02d.%03d ",
+			sprintf(time_buf, "%02d-%s-%4d %02d:%02d:%02d.%03ld ",
 				local_tm->tm_mday, months[local_tm->tm_mon],
 				local_tm->tm_year+1900, local_tm->tm_hour,
 				local_tm->tm_min, local_tm->tm_sec,
-				tv.tv_usec/1000);
+				(long)tv.tv_usec/1000);
 		}
 	}
 
@@ -249,9 +314,9 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	 * Make a string representation of the current category and level
 	 */
 
-	if (lcp->category_names != NULL &&
-	    lcp->category_names[original_category] != NULL)
-		category_name = lcp->category_names[original_category];
+	if (lc->category_names != NULL &&
+	    lc->category_names[original_category] != NULL)
+		category_name = lc->category_names[original_category];
 	else
 		category_name = "";
 
@@ -272,24 +337,11 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	for ( /* nothing */; lcl != NULL; lcl = lcl->next) {
 		chan = lcl->channel;
 
-		if (chan->flags & (LOG_CHANNEL_BROKEN|LOG_CHANNEL_OFF))
-			continue;
-
-		/* some channels only log when debugging is on */
-		if ((chan->flags & LOG_REQUIRE_DEBUG) && !debugging)
-			continue;
-
-		/* some channels use the global level */
-		if (chan->flags & LOG_USE_CONTEXT_LEVEL) {
-			chan_level = lcp->level;
-		} else
-			chan_level = chan->level;
-
-		if (level > chan_level)
+		if (!log_check_channel(lc, level, chan))
 			continue;
 
 		if (!did_vsprintf) {
-			if (VSPRINTF((lcp->buffer, format, args)) >
+			if (VSPRINTF((lc->buffer, format, args)) >
 			    LOG_BUFFER_SIZE) {
 				syslog(LOG_CRIT,
 				       "memory overrun in log_vwrite()");
@@ -311,7 +363,7 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 			       category_name : "",
 			       (chan->flags & LOG_PRINT_LEVEL) ?
 			       level_str : "",
-			       lcp->buffer);
+			       lc->buffer);
 			break;
 		case log_file:
 			stream = chan->out.file.stream;
@@ -325,7 +377,8 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 				
 				pos = ftell(stream);
 				if (pos >= 0 &&
-				    pos > chan->out.file.max_size)
+				    (unsigned long)pos >
+				    chan->out.file.max_size)
 					break;
 			}
 			fprintf(stream, "%s%s%s%s\n", 
@@ -334,7 +387,7 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 				category_name : "",
 				(chan->flags & LOG_PRINT_LEVEL) ?
 				level_str : "",
-				lcp->buffer);
+				lc->buffer);
 			fflush(stream);
 			break;
 		case log_null:
@@ -361,89 +414,81 @@ log_write(log_context lc, int category, int level, const char *format, ...) {
 
 int
 log_new_context(int num_categories, char **category_names, log_context *lc) {
-	log_context_p lcp;
+	log_context nlc;
 
-	lcp = (log_context_p)malloc(sizeof (struct log_context_p));
-	if (lcp == NULL) {
+	nlc = memget(sizeof (struct log_context));
+	if (nlc == NULL) {
 		errno = ENOMEM;
 		return (-1);
 	}
-	lcp->num_categories = num_categories;
-	lcp->category_names = category_names;
-	lcp->categories = (log_channel_list *)malloc(num_categories *
-						     sizeof(log_channel_list));
-	if (lcp->categories == NULL) {
+	nlc->num_categories = num_categories;
+	nlc->category_names = category_names;
+	nlc->categories = memget(num_categories * sizeof (log_channel_list));
+	if (nlc->categories == NULL) {
+		memput(nlc, sizeof (struct log_context));
 		errno = ENOMEM;
 		return (-1);
 	}
-	memset(lcp->categories, '\0',
-	       num_categories * sizeof(log_channel_list));
-	lcp->flags = 0U;
-	lcp->level = 0;
-	lc->opaque = lcp;
+	memset(nlc->categories, '\0',
+	       num_categories * sizeof (log_channel_list));
+	nlc->flags = 0U;
+	nlc->level = 0;
+	*lc = nlc;
 	return (0);
 }
 
 void
 log_free_context(log_context lc) {
-	log_context_p lcp;
 	log_channel_list lcl, lcl_next;
 	log_channel chan;
 	int i;
 
-	lcp = lc.opaque;
+	REQUIRE(lc != NULL);
 
-	assert(lcp != NULL);
-	for (i = 0; i < lcp->num_categories; i++)
-		for (lcl = lcp->categories[i]; lcl != NULL; lcl = lcl_next) {
+	for (i = 0; i < lc->num_categories; i++)
+		for (lcl = lc->categories[i]; lcl != NULL; lcl = lcl_next) {
 			lcl_next = lcl->next;
 			chan = lcl->channel;
 			(void)log_free_channel(chan);
-			free(lcl);
+			memput(lcl, sizeof (struct log_channel_list));
 		}
-	free(lcp->categories);
-	free(lcp);
-	lc.opaque = NULL;
+	memput(lc->categories,
+	       lc->num_categories * sizeof (log_channel_list));
+	memput(lc, sizeof (struct log_context));
 }
 
 int
 log_add_channel(log_context lc, int category, log_channel chan) {
-	log_context_p lcp;
 	log_channel_list lcl;
 
-	lcp = lc.opaque;
-
-	if (lcp == NULL || category < 0 || category >= lcp->num_categories) {
+	if (lc == NULL || category < 0 || category >= lc->num_categories) {
 		errno = EINVAL;
 		return (-1);
 	}
 
-	lcl = (log_channel_list)malloc(sizeof (struct log_channel_list));
+	lcl = memget(sizeof (struct log_channel_list));
 	if (lcl == NULL) {
 		errno = ENOMEM;
 		return(-1);
 	}
 	lcl->channel = chan;
-	lcl->next = lcp->categories[category];
-	lcp->categories[category] = lcl;
+	lcl->next = lc->categories[category];
+	lc->categories[category] = lcl;
 	chan->references++;
 	return (0);
 }
 
 int
 log_remove_channel(log_context lc, int category, log_channel chan) {
-	log_context_p lcp;
 	log_channel_list lcl, prev_lcl, next_lcl;
 	int found = 0;
 
-	lcp = lc.opaque;
-
-	if (lcp == NULL || category < 0 || category >= lcp->num_categories) {
+	if (lc == NULL || category < 0 || category >= lc->num_categories) {
 		errno = EINVAL;
 		return (-1);
 	}
 
-	for (prev_lcl = NULL, lcl = lcp->categories[category];
+	for (prev_lcl = NULL, lcl = lc->categories[category];
 	     lcl != NULL;
 	     lcl = next_lcl) {
 		next_lcl = lcl->next;
@@ -452,8 +497,8 @@ log_remove_channel(log_context lc, int category, log_channel chan) {
 			if (prev_lcl != NULL)
 				prev_lcl->next = next_lcl;
 			else
-				lcp->categories[category] = next_lcl;
-			free(lcl);
+				lc->categories[category] = next_lcl;
+			memput(lcl, sizeof (struct log_channel_list));
 			/*
 			 * We just set found instead of returning because
 			 * the channel might be on the list more than once.
@@ -471,22 +516,19 @@ log_remove_channel(log_context lc, int category, log_channel chan) {
 
 int
 log_option(log_context lc, int option, int value) {
-	log_context_p lcp;
-	lcp = lc.opaque;
-
-	if (lcp == NULL) {
+	if (lc == NULL) {
 		errno = EINVAL;
 		return (-1);
 	}
 	switch (option) {
 	case LOG_OPTION_DEBUG:
 		if (value)
-			lcp->flags |= option;
+			lc->flags |= option;
 		else
-			lcp->flags &= ~option;
+			lc->flags &= ~option;
 		break;
 	case LOG_OPTION_LEVEL:
-		lcp->level = value;
+		lc->level = value;
 		break;
 	default:
 		errno = EINVAL;
@@ -497,15 +539,12 @@ log_option(log_context lc, int option, int value) {
 
 int
 log_category_is_active(log_context lc, int category) {
-	log_context_p lcp;
-	lcp = lc.opaque;
-
-	if (lcp == NULL) {
+	if (lc == NULL) {
 		errno = EINVAL;
 		return (-1);
 	}
-	if (category >= 0 && category < lcp->num_categories &&
-	    lcp->categories[category] != NULL)
+	if (category >= 0 && category < lc->num_categories &&
+	    lc->categories[category] != NULL)
 		return (1);
 	return (0);
 }
@@ -514,7 +553,7 @@ log_channel
 log_new_syslog_channel(unsigned int flags, int level, int facility) {
 	log_channel chan;
 
-	chan = (log_channel)malloc(sizeof(struct log_channel));
+	chan = memget(sizeof (struct log_channel));
 	if (chan == NULL) {
 		errno = ENOMEM;
 		return (NULL);
@@ -533,7 +572,7 @@ log_new_file_channel(unsigned int flags, int level,
 		     unsigned long max_size) {
 	log_channel chan;
 
-	chan = (log_channel)malloc(sizeof(struct log_channel));
+	chan = memget(sizeof (struct log_channel));
 	if (chan == NULL) {
 		errno = ENOMEM;
 		return (NULL);
@@ -541,7 +580,28 @@ log_new_file_channel(unsigned int flags, int level,
 	chan->type = log_file;
 	chan->flags = flags;
 	chan->level = level;
-	chan->out.file.name = name;
+	if (name != NULL) {
+		size_t len;
+		
+		len = strlen(name);
+		/* 
+		 * Quantize length to a multiple of 256.  There's space for the
+		 * NUL, since if len is a multiple of 256, the size chosen will
+		 * be the next multiple.
+		 */
+		chan->out.file.name_size = ((len / 256) + 1) * 256;
+		chan->out.file.name = memget(chan->out.file.name_size);
+		if (chan->out.file.name == NULL) {
+			memput(chan, sizeof (struct log_channel));
+			errno = ENOMEM;
+			return (NULL);
+		}
+		/* This is safe. */
+		strcpy(chan->out.file.name, name);
+	} else {
+		chan->out.file.name_size = 0;
+		chan->out.file.name = NULL;
+	}
 	chan->out.file.stream = stream;
 	chan->out.file.versions = versions;
 	chan->out.file.max_size = max_size;
@@ -553,7 +613,7 @@ log_channel
 log_new_null_channel() {
 	log_channel chan;
 
-	chan = (log_channel)malloc(sizeof(struct log_channel));
+	chan = memget(sizeof (struct log_channel));
 	if (chan == NULL) {
 		errno = ENOMEM;
 		return (NULL);
@@ -585,6 +645,13 @@ log_dec_references(log_channel chan) {
 	return (0);
 }
 
+log_channel_type
+log_get_channel_type(log_channel chan) {
+	REQUIRE(chan != NULL);
+	
+	return (chan->type);
+}
+
 int
 log_free_channel(log_channel chan) {
 	if (chan == NULL || chan->references <= 0) {
@@ -598,9 +665,10 @@ log_free_channel(log_channel chan) {
 			    chan->out.file.stream != NULL)
 				(void)fclose(chan->out.file.stream);
 			if (chan->out.file.name != NULL)
-				free(chan->out.file.name);
+				memput(chan->out.file.name,
+				       chan->out.file.name_size);
 		}
-		free(chan);
+		memput(chan, sizeof (struct log_channel));
 	}
 	return (0);
 }

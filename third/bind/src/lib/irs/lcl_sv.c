@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: lcl_sv.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: lcl_sv.c,v 1.1.1.2 1998-05-12 18:05:18 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* extern */
@@ -66,6 +66,8 @@ static const char rcsid[] = "$Id: lcl_sv.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

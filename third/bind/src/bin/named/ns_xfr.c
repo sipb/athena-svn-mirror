@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_xfr.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Exp $";
+static char rcsid[] = "$Id: ns_xfr.c,v 1.1.1.2 1998-05-12 18:04:18 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -40,15 +40,13 @@ static char rcsid[] = "$Id: ns_xfr.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Exp $
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
 #include "named.h"
 
-static struct qs_x_lev	*sx_freelev_list = NULL;
-
-static struct qs_x_lev	*sx_newlev(void),
-			*sx_freelev(struct qs_x_lev *lev);
+static struct qs_x_lev *sx_freelev(struct qs_x_lev *lev);
 
 static void		sx_newmsg(struct qstream *qsp),
 			sx_sendlev(struct qstream *qsp),
@@ -60,10 +58,10 @@ static int		sx_flush(struct qstream *qsp),
 				 struct databuf *dp),
 			sx_nsrrs(struct qstream *qsp),
 			sx_allrrs(struct qstream *qsp),
-			sx_pushlev(struct qstream *qsp,
-				   struct namebuf *np);
+			sx_pushlev(struct qstream *qsp, struct namebuf *np);
 
-/* void
+/*
+ * void
  * ns_xfr(qsp, znp, zone, class, type, opcode, id)
  *	Initiate a concurrent (event driven) outgoing zone transfer.
  */
@@ -103,8 +101,6 @@ ns_xfr(struct qstream *qsp, struct namebuf *znp,
 	(void) setsockopt(qsp->s_rfd, SOL_SOCKET, SO_SNDLOWAT,
 			  (char *)&sndlowat, sizeof sndlowat);
 #endif
-	zones[zone].z_numxfrs++;
-	qsp->flags |= STREAM_AXFR;
 	if (sq_openw(qsp, 64*1024) == -1)
 		goto abort;
 	memset(&qsp->xfr, 0, sizeof qsp->xfr);
@@ -113,12 +109,14 @@ ns_xfr(struct qstream *qsp, struct namebuf *znp,
 	qsp->xfr.class = class;
 	qsp->xfr.id = id;
 	qsp->xfr.opcode = opcode;
-	qsp->xfr.msg = (u_char *)malloc(XFER_BUFSIZE);
+	qsp->xfr.msg = memget(XFER_BUFSIZE);
 	if (!qsp->xfr.msg)
 		goto abort;
 	qsp->xfr.eom = qsp->xfr.msg + XFER_BUFSIZE;
 	qsp->xfr.cp = NULL;
 	qsp->xfr.state = s_x_firstsoa;
+	zones[zone].z_numxfrs++;
+	qsp->flags |= STREAM_AXFR;
 
 	si = find_server(qsp->s_from.sin_addr);
 	if (si != NULL && si->transfer_format != axfr_use_default)
@@ -135,14 +133,15 @@ ns_xfr(struct qstream *qsp, struct namebuf *znp,
 	(void) sq_writeh(qsp, sx_sendsoa);
 }
 
-/* void
+/*
+ * void
  * ns_stopxfrs(zp)
  *	Stop (abort, reset) all transfers of the zone specified by 'zp'.
  */
 void
 ns_stopxfrs(struct zoneinfo *zp) {
 	struct qstream *this, *next;
-	int zone = zp - zones;
+	u_int zone = (u_int)(zp - zones);
 
 	for (this = streamq; this; this = next) {
 		next = this->s_next;
@@ -154,14 +153,15 @@ ns_stopxfrs(struct zoneinfo *zp) {
 	INSIST(zp->z_numxfrs == 0);
 }
 
-/* void
+/*
+ * void
  * ns_freexfr(qsp)
  *	Free all xfr-related dynamic data associated with qsp.
  */
 void
 ns_freexfr(struct qstream *qsp) {
-	if (qsp->xfr.msg) {
-		free(qsp->xfr.msg);
+	if (qsp->xfr.msg != NULL) {
+		memput(qsp->xfr.msg, XFER_BUFSIZE);
 		qsp->xfr.msg = NULL;
 	}
 	while (qsp->xfr.lev)
@@ -170,7 +170,8 @@ ns_freexfr(struct qstream *qsp) {
 	qsp->flags &= ~STREAM_AXFR;
 }
 
-/* u_char *
+/*
+ * u_char *
  * renew_msg(msg)
  *	init the header of a message, reset the compression pointers, and
  *	reset the write pointer to the first byte following the header.
@@ -191,7 +192,8 @@ sx_newmsg(struct qstream *qsp) {
 	qsp->xfr.cp = qsp->xfr.msg + HFIXEDSZ;
 }
 
-/* int
+/*
+ * int
  * sx_flush(qsp)
  *	flush the intermediate buffer out to the stream IO system.
  * return:
@@ -212,12 +214,13 @@ sx_flush(struct qstream *qsp) {
 	return (ret);
 }
 
-/* int
+/*
+ * int
  * sx_addrr(qsp, name, dp)
  *	add name/dp's RR to the current assembly message.  if it won't fit,
  *	write current message out, renew the message, and then RR should fit.
  * return:
- *	-1 = the sq_write() failed so we could not queue the full message.
+ *	-1 = the sx_flush() failed so we could not queue the full message.
  *	0 = one way or another, everything is fine.
  * side effects:
  *	on success, the ANCOUNT is incremented and the pointers are advanced.
@@ -251,7 +254,8 @@ sx_addrr(struct qstream *qsp, const char *dname, struct databuf *dp) {
 	return (0);
 }
 
-/* int
+/*
+ * int
  * sx_soarr(qsp)
  *	add the SOA RR's at the current level's top np to the assembly message.
  * return:
@@ -271,10 +275,11 @@ sx_soarr(struct qstream *qsp) {
 		}
 		return (0);
 	}
-	abort();
+	ns_panic(ns_log_xfer_out, 1, "no SOA at zone top");
 }
 
-/* int
+/*
+ * int
  * sx_nsrrs(qsp)
  *	add the NS RR's at the current level's current np,
  *	to the assembly message
@@ -316,7 +321,7 @@ sx_nsrrs(struct qstream *qsp) {
 		 *	@ NS RRset into our parent's zone.  But that is what
 		 *	db_load() does, so for now we have no choice.
 		 */
-		if (dp->d_zone == 0)
+		if (dp->d_zone == DB_Z_CACHE)
 			continue;
 		if (dp->d_type != T_NS)
 			continue;
@@ -373,7 +378,8 @@ sx_nsrrs(struct qstream *qsp) {
 	return (rrcount);
 }
 
-/* int
+/*
+ * int
  * sx_allrrs(qsp)
  *	add the non-(SOA,NS) RR's at the current level's current np,
  *	to the assembly message
@@ -394,7 +400,8 @@ sx_allrrs(struct qstream *qsp) {
 	struct namebuf *gnp, *tnp, *top;
 	struct hashbuf *htp;
 	const char *fname;
-	int rrcount, class, zone;
+	int rrcount, class;
+	u_int zone;
 
 	class = qsp->xfr.class;
 	top = qsp->xfr.top;
@@ -433,7 +440,8 @@ sx_allrrs(struct qstream *qsp) {
 	return (rrcount);
 }
 
-/* void
+/*
+ * void
  * sx_sendlev(qsp)
  *	send all the RRs at the current level (really a domain name), and
  *	do a decomposed recursion to get all subdomains up to and including
@@ -520,7 +528,8 @@ sx_sendlev(struct qstream *qsp) {
 	goto again;
 }
 
-/* void
+/*
+ * void
  * sx_sendsoa(qsp)
  *	send either the first or last SOA needed for an AXFR.
  * side effects:
@@ -540,13 +549,14 @@ sx_sendsoa(struct qstream *qsp) {
 	    }
 	    case s_x_lastsoa: {
 		/* Next thing to do is go back and wait for another query. */
-		sx_flush(qsp);
+		(void)sx_flush(qsp);
 		qsp->xfr.state = s_x_done;
 		sq_writeh(qsp, sq_flushw);
 		break;
 	    }
 	    default: {
-		abort();
+		ns_panic(ns_log_xfer_out, 1,
+			 "unexpected state %d in sx_sendsoa", qsp->xfr.state);
 	    }
 	}
 }
@@ -560,7 +570,7 @@ sx_sendsoa(struct qstream *qsp) {
  */
 static int
 sx_pushlev(struct qstream *qsp, struct namebuf *np) {
-	struct qs_x_lev *new = sx_newlev();
+	struct qs_x_lev *new = memget(sizeof *new);
 	struct hashbuf *htp;
 
 	if (!new) {
@@ -617,33 +627,16 @@ sx_pushlev(struct qstream *qsp, struct namebuf *np) {
 }
 
 /*
- * We keep our own private free list for levels since every name in the zone
- * allocates and destroys one and we don't trust the system malloc()/free()
- * to have a short code path for this case.
- *
- * Note 1: The objects are never destroyed, so this list will hang around at
- *	a length equal to the deepest zone's depth (measured in labels.)
- *
- * Note 2: The free list is global, so concurrent transfers can share it.
+ * qs_x_lev *
+ * sx_freelev(lev)
+ *	free the memory occupied by a level descriptor
+ * return:
+ *	pointer to "next" level descriptor
  */
-
-static struct qs_x_lev *
-sx_newlev() {
-	struct qs_x_lev *ret;
-
-	if ((ret = sx_freelev_list) != NULL)
-		sx_freelev_list = sx_freelev_list->next;
-	else
-		ret = (struct qs_x_lev *)malloc(sizeof *ret);
-	return (ret);
-}
-
 static struct qs_x_lev *
 sx_freelev(struct qs_x_lev *lev) {
-	struct qs_x_lev *next;
+	struct qs_x_lev *next = lev->next;
 
-	next = lev->next;
-	lev->next = sx_freelev_list;
-	sx_freelev_list = lev;
+	memput(lev, sizeof *lev);
 	return (next);
 }

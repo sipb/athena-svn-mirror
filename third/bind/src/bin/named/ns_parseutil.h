@@ -47,6 +47,7 @@ typedef struct symbol_table {
 } *symbol_table;
 
 symbol_table		new_symbol_table(int, free_function);
+void			free_symbol(symbol_table, symbol_entry);
 void			free_symbol_table(symbol_table);
 void			dprint_symbol_table(int, symbol_table);
 int			lookup_symbol(symbol_table, const char *, int,

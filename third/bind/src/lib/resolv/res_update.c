@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: res_update.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: res_update.c,v 1.1.1.2 1998-05-12 18:05:46 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -82,8 +82,8 @@ res_update(ns_updrec *rrecp_in) {
 	char *dname, *svdname, *cp1, *target;
 	u_char *cp, *eom;
 	HEADER *hp = (HEADER *) answer;
-	struct zonegrp *zptr, *tmpzptr, *prevzptr, *zgrp_start = NULL;
-	int i, j, k, n, ancount, nscount, arcount, rcode, rdatasize,
+	struct zonegrp *zptr = NULL, *tmpzptr, *prevzptr, *zgrp_start = NULL;
+	int i, j, k = 0, n, ancount, nscount, arcount, rcode, rdatasize,
 	    newgroup, done, myzone, seen_before, numzones = 0;
 	u_int16_t dlen, class, qclass, type, qtype;
 	u_int32_t ttl;
@@ -164,6 +164,8 @@ res_update(ns_updrec *rrecp_in) {
 			    rrecp->r_dname);
 		    return (n);
 		}
+		if (n < HFIXEDSZ)
+			return (-1);
 		ancount = ntohs(hp->ancount);
 		nscount = ntohs(hp->nscount);
 		arcount = ntohs(hp->arcount);
@@ -171,7 +173,10 @@ res_update(ns_updrec *rrecp_in) {
 		cp = answer + HFIXEDSZ;
 		eom = answer + n;
 		/* skip the question section */
-		cp += dn_skipname(cp, eom) + 2*INT16SZ;
+		n = dn_skipname(cp, eom);
+		if (n < 0 || cp + n + 2 * INT16SZ > eom)
+			return (-1);
+		cp += n + 2 * INT16SZ;
 
 		if (qtype == T_SOA) {
 		    if (ancount == 0 && nscount == 0 && arcount == 0) {
@@ -198,6 +203,8 @@ res_update(ns_updrec *rrecp_in) {
 					sizeof zname)) < 0)
 			    return (n);
 			cp += n;
+			if (cp + 2 * INT16SZ > eom)
+				return (-1);
 			GETSHORT(type, cp);
 			GETSHORT(class, cp);
 			if (type != T_SOA || class != qclass) {
@@ -235,6 +242,8 @@ res_update(ns_updrec *rrecp_in) {
 				return (n);
 			else
 				cp += n;
+			if (cp + 2 * INT16SZ > eom)
+				return (-1);
 			GETSHORT(type, cp);
 			GETSHORT(class, cp);
 			if (type == T_CNAME) {
@@ -256,9 +265,13 @@ res_update(ns_updrec *rrecp_in) {
 				ancount, nscount, arcount, hp->rcode);
 			return (-1);
 		    }
+		    if (cp + INT32SZ + INT16SZ > eom)
+			    return (-1);
 		    /* continue processing the soa record */
 		    GETLONG(ttl, cp);
 		    GETSHORT(dlen, cp);
+		    if (cp + dlen > eom)
+			    return (-1);
 		    newgroup = 1;
 		    zptr = zgrp_start;
 		    prevzptr = NULL;
@@ -286,6 +299,10 @@ res_update(ns_updrec *rrecp_in) {
 				       	   sizeof primary)) < 0)
 			    return (n);
 			cp += n;
+			/* 
+			 * We don't have to bounds check here because the
+			 * next use of 'cp' is in dn_expand().
+			 */
 			cp1 = (char *)soardata;
 			strcpy(cp1, primary);
 			cp1 += strlen(cp1) + 1;
@@ -295,6 +312,8 @@ res_update(ns_updrec *rrecp_in) {
 			cp += n;
 			strcpy(cp1, mailaddr);
 			cp1 += strlen(cp1) + 1;
+			if (cp + 5*INT32SZ > eom)
+				return (-1);
 			memcpy(cp1, cp, 5*INT32SZ);
 			cp += 5*INT32SZ;
 			cp1 += 5*INT32SZ;
@@ -329,7 +348,13 @@ res_update(ns_updrec *rrecp_in) {
 			     * the same information, skip answer section
 			     */
 			    for (j = 0; j < ancount; j++) {
-				cp += dn_skipname(cp, eom) + 4*INT16SZ;
+				n = dn_skipname(cp, eom);
+				if (n < 0)
+					return (-1);
+				n += 2*INT16SZ + INT32SZ;
+				if (cp + n + INT16SZ > eom)
+					return (-1);
+				cp += n;
 				GETSHORT(dlen, cp);
 				cp += dlen;
 			    }
@@ -361,10 +386,14 @@ ans=%d, auth=%d, add=%d, rcode=%d\n",
 					sizeof name)) < 0)
 			return (n);
 		    cp += n;
+		    if (cp + 3 * INT16SZ + INT32SZ > eom)
+			    return (-1);
 		    GETSHORT(type, cp);
 		    GETSHORT(class, cp);
 		    GETLONG(ttl, cp);
 		    GETSHORT(dlen, cp);
+		    if (cp + dlen > eom)
+			return (-1);
 		    if (strcasecmp(name, zname) == 0 &&
 			type == T_NS && class == qclass) {
 				if ((n = dn_expand(answer, eom, cp,
@@ -383,10 +412,14 @@ ans=%d, auth=%d, add=%d, rcode=%d\n",
 					sizeof name)) < 0)
 			return (n);
 		    cp += n;
+		    if (cp + 3 * INT16SZ + INT32SZ > eom)
+			return (-1);
 		    GETSHORT(type, cp);
 		    GETSHORT(class, cp);
 		    GETLONG(ttl, cp);
 		    GETSHORT(dlen, cp);
+		    if (cp + dlen > eom)
+			    return (-1);
 		    if (type == T_A && dlen == INT32SZ && class == qclass) {
 			for (j = 0; j < zptr->z_nscount; j++)
 			    if (strcasecmp(name, zptr->z_ns[j].nsname) == 0) {
@@ -394,8 +427,8 @@ ans=%d, auth=%d, add=%d, rcode=%d\n",
 				       INT32SZ);
 				break;
 			    }
-			cp += dlen;
 		    }
+		    cp += dlen;
 		}
 		if (zptr->z_nscount == 0) {
 		    dname = zname;
@@ -477,6 +510,7 @@ ans=%d, auth=%d, add=%d, rcode=%d\n",
 	while(zgrp_start) {
 		zptr = zgrp_start;
 		zgrp_start = zgrp_start->z_next;
+		res_freeupdrec(zptr->z_rr);  /* Zone section we allocated. */
 		free((char *)zptr);
 	}
 

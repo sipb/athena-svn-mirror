@@ -1,6 +1,6 @@
-.\" $Id: logging.mdoc,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $
+.\" $Id: logging.mdoc,v 1.1.1.2 1998-05-12 18:05:36 ghudson Exp $
 .\"
-.\"Copyright (c) 1995, 1996 by Internet Software Consortium
+.\"Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
 .\"
 .\"Permission to use, copy, modify, and distribute this software for any
 .\"purpose with or without fee is hereby granted, provided that the above
@@ -22,8 +22,27 @@
 .\"Dt DOCUMENT_TITLE [section number] [volume]
 .Dt LOGGING @SYSCALL_EXT@
 .Sh NAME
+.Nm log_open_stream ,
+.Nm log_close_stream ,
+.Nm log_get_stream ,
+.Nm log_get_filename ,
+.Nm log_vwrite ,
+.Nm log_write ,
+.Nm log_new_context ,
+.Nm log_free_context ,
+.Nm log_add_channel ,
+.Nm log_remove_channel ,
+.Nm log_option ,
+.Nm log_category_is_active ,
+.Nm log_new_syslog_channel ,
+.Nm log_new_file_channel ,
+.Nm log_new_null_channel ,
+.Nm log_inc_references ,
+.Nm log_dec_references ,
+.Nm log_free_channel
+.Nd logging system
 .Sh SYNOPSIS
-.Fd #include \&"isc/logging.h\&"
+.Fd #include <isc/logging.h>
 .Ft FILE *
 .Fn log_open_stream "log_channel chan"
 .Ft int
@@ -38,6 +57,10 @@
 .Ft void 
 .Fn log_write "log_context lc" "int category" "int level" \
     "const char *format" "..."
+.Ft int
+.Fn log_check_channel "log_context lc" "int level" "log_channel chan"
+.Ft int
+.Fn log_check "log_context lc" "int category" "int level"
 .Ft int 
 .Fn log_new_context "int num_categories" "char **category_names" \
     "log_context *lc"
@@ -67,7 +90,7 @@
 .Fn log_free_channel "log_channel chan"
 .Sh DESCRIPTION
 The
-.Sy BIND
+.Sy ISC
 .Nm logging library
 is flexible logging system which is based upon a set of concepts:
 .Nm logging channels ,
@@ -503,6 +526,27 @@ The
 function is merely a front-end to a call to 
 .Fn log_vwrite ;
 see the description of that function, above, for more information.
+.Pp
+.Fn log_check
+and
+.Fn log_check_channel
+are used to see if a contemplated logging call will actually generate any
+output, which is useful when creating a log message involves non-trivial
+work.
+.Fn log_check
+will return non-zero if a call to
+.Fn log_vwrite
+with the given 
+.Fa category
+and
+.Fa level
+would generate output on any channels, and zero otherwise.
+.Fn log_check_channel
+will return non-zero if writing to the
+.Fa chan
+at the given
+.Fa level
+would generate output.
 .Pp
 The function
 .Fn log_new_context 

@@ -28,11 +28,6 @@
 /* Digital UNIX deprecates send() which BIND uses. */
 #undef send
 
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/sbin/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/sbin/named-xfer"
-
 #define USE_POSIX
 #define USE_UTIME
 #define POSIX_SIGNALS
@@ -44,6 +39,11 @@
 #define NEED_PSELECT
 #define HAVE_SA_LEN
 #define FIX_ZERO_SA_LEN
+#define USE_LOG_CONS
+#define RLIMIT_TYPE rlim_t
+#define RLIMIT_FILE_INFINITY
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define _TIMEZONE	timezone
 #define SIG_FN		void

@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_save.c	4.16 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: db_save.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_save.c,v 1.1.1.2 1998-05-12 18:03:57 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -95,6 +95,7 @@ static char rcsid[] = "$Id: db_save.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -107,10 +108,16 @@ struct namebuf *
 savename(const char *name, int len) {
 	struct namebuf *np;
 
+	/*
+	 * Note that MAXLABEL * 4 < 256, so a single length byte is enough.
+	 * Also, we use MAXLABEL * 4 because each label character can
+	 * expand into up to four characters when rendered in canonical
+	 * form.
+	 */
 	INSIST(len >= 0 && len <= (MAXLABEL * 4));
-	np = (struct namebuf *) malloc(NAMESIZE(len));
+	np = (struct namebuf *) memget(NAMESIZE(len));
 	if (np == NULL)
-		panic("savename: malloc", NULL);
+		panic("savename: memget", NULL);
 	memset(np, 0, NAMESIZE(len));
 	NAMELEN(*np) = (unsigned)len;
 	memcpy(NAME(*np), name, len);
@@ -131,9 +138,9 @@ savedata(class, type, ttl, data, size)
 	struct databuf *dp;
 	int bytes = (type == T_NS) ? DATASIZE(size)+INT32SZ : DATASIZE(size);
 
-	dp = (struct databuf *)malloc(bytes);
+	dp = (struct databuf *)memget(bytes);
 	if (dp == NULL)
-		panic("savedata: malloc", NULL);
+		panic("savedata: memget", NULL);
 	memset(dp, 0, bytes);
 	dp->d_next = NULL;
 	dp->d_type = type;
@@ -145,9 +152,7 @@ savedata(class, type, ttl, data, size)
 	dp->d_cred = 0;
 	dp->d_clev = 0;
 	dp->d_rcode = NOERROR;
-#ifdef STATS
 	dp->d_ns = NULL;
-#endif
 	dp->d_nstime = 0;
 	memcpy(dp->d_data, data, dp->d_size);
 	return (dp);
@@ -163,6 +168,7 @@ int hashsizes[] = {	/* hashtable sizes */
 	4073,
 	8011,
 	16001,
+	99887,
 	0
 };
 
@@ -189,7 +195,7 @@ savehash(oldhtp)
 			newsize = oldhtp->h_size * 2 + 1;
 	}
 	ns_debug(ns_log_db, 4, "savehash GROWING to %d", newsize);
-	htp = (struct hashbuf *) malloc((unsigned)HASHSIZE(newsize));
+	htp = (struct hashbuf *) memget(HASHSIZE(newsize));
 	if (htp == NULL)
 		ns_panic(ns_log_db, 0, "savehash: %s", strerror(errno));
 	htp->h_size = newsize;
@@ -209,6 +215,7 @@ savehash(oldhtp)
 			*hp = np;
 		}
 	}
-	free((char *) oldhtp);
+	oldhtp->h_cnt = 0;	/* Keep rm_hash() happy. */
+	rm_hash(oldhtp);
 	return (htp);
 }

@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)getinfo.c	5.26 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: getinfo.c,v 1.1.1.1 1998-05-04 22:23:37 ghudson Exp $";
+static char rcsid[] = "$Id: getinfo.c,v 1.1.1.2 1998-05-12 18:04:25 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -210,7 +210,12 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 
     /* Skip over question section. */
     while (qdcount-- > 0) {
-	cp += dn_skipname(cp, eom) + QFIXEDSZ;
+	    n = dn_skipname(cp, eom);
+	    if (n < 0)
+		    return (ERROR);
+	    cp += n + QFIXEDSZ;
+	    if (cp > eom)
+		    return (ERROR);
     }
 
     aliasPtr	= host_aliases;
@@ -242,14 +247,17 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 	} else {
 	    while (--ancount >= 0 && cp < eom) {
 		n = dn_expand(answer.qb2, eom, cp, (char *)bp, buflen);
-		if (n < 0) {
+		if (n < 0)
 		    return(ERROR);
-		}
-		cp   += n;
+		cp += n;
+		if (cp + 3 * INT16SZ + INT32SZ > eom)
+			return (ERROR);
 		type  = GetShort(cp);
 		class = GetShort(cp);
 		cp   += INT32SZ;	/* skip TTL */
 		dlen  = GetShort(cp);
+		if (cp + dlen > eom)
+			return (ERROR);
 		if (type == T_CNAME) {
 		    /*
 		     * Found an alias.
@@ -284,6 +292,8 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 		    cp += dlen;
 		    continue;
 		}
+		if (dlen != INADDRSZ)
+			return (ERROR);
 		if (haveAnswer) {
 		    /*
 		     * If we've already got 1 address, we aren't interested
@@ -410,10 +420,14 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 	    dnamePtr = Calloc(1, len);   /* domain name */
 	    memcpy(dnamePtr, bp, len);
 
+	    if (cp + 3 * INT16SZ + INT32SZ > eom)
+		    return (ERROR);
 	    type  = GetShort(cp);
 	    class = GetShort(cp);
 	    cp   += INT32SZ;	/* skip TTL */
 	    dlen  = GetShort(cp);
+	    if (cp + dlen > eom)
+		    return (ERROR);
 
 	    if (type != T_NS) {
 		cp += dlen;
@@ -481,15 +495,21 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 		break;
 	    }
 	    cp   += n;
+	    if (cp + 3 * INT16SZ + INT32SZ > eom)
+		    return (ERROR);
 	    type  = GetShort(cp);
 	    class = GetShort(cp);
 	    cp   += INT32SZ;	/* skip TTL */
 	    dlen  = GetShort(cp);
+	    if (cp + dlen > eom)
+		    return (ERROR);
 
 	    if (type != T_A)  {
 		cp += dlen;
 		continue;
 	    } else {
+		if (dlen != INADDRSZ)
+			return (ERROR);
 		for (j = 0; j < numServers; j++) {
 		    if (strcmp((char *)bp, server[j].name) == 0) {
 			server[j].numAddresses++;

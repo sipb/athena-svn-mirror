@@ -5,6 +5,8 @@
 'DESTEXEC=/usr/sbin'
 'DESTMAN=/usr/man'
 'DESTHELP=/usr/lib'
+'DESTETC=/etc'
+'DESTRUN=/etc'
 'LDS=:'
 'LEX=lex -v'
 'YACC=yacc -d'
