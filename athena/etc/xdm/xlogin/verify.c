@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.43 1993-06-04 16:15:26 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.44 1993-06-08 13:54:32 miki Exp $
  */
 
 #include <stdio.h>
@@ -106,7 +106,7 @@
 #define WTMP "/usr/adm/wtmp"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 #ifdef SOLARIS
-char *defaultpath = "/usr/athena/bin:/bin/athena:/usr/openwin/bin:/usr/ucb:/bin:/usr/sbin:/usr/andrew/bin:.";
+char *defaultpath = "/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 char *libpath = "/usr/openwin/lib";
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
