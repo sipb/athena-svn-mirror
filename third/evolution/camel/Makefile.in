@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -175,11 +176,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -188,14 +198,13 @@ localedir = @localedir@
 SUBDIRS = providers tests
 
 libcamelincludedir = $(includedir)/camel
-providerdir = $(libdir)/evolution/camel-providers/$(VERSION)
 
 sbin_PROGRAMS = camel-lock-helper
 
 lib_LTLIBRARIES = libcamel.la
 noinst_LTLIBRARIES = libcamel-static.la
 
-INCLUDES = -I.. -I$(srcdir)/.. 			 	-I$(top_srcdir)/intl			 	-I$(top_srcdir)/e-util			 	$(CAMEL_CFLAGS)				 	$(GNOME_INCLUDEDIR)			 	$(KRB4_CFLAGS)				 	$(NSPR_CFLAGS)				 	$(NSS_CFLAGS)				 	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\" 	-DG_LOG_DOMAIN=\"camel\"
+INCLUDES = -I.. -I$(srcdir)/.. 			 	-I$(top_srcdir)/intl			 	-I$(top_srcdir)/e-util			 	$(CAMEL_CFLAGS)				 	$(GNOME_INCLUDEDIR)			 	$(KRB4_CFLAGS)				 	$(NSPR_CFLAGS)				 	$(NSS_CFLAGS)				 	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	-DG_LOG_DOMAIN=\"camel\"
 
 
 libcamel_la_SOURCES =  	broken-date-parser.c				camel-address.c					camel-cipher-context.c				camel-cms-context.c				camel-data-wrapper.c				camel-digest-folder.c				camel-disco-diary.c				camel-disco-folder.c				camel-disco-store.c				camel-exception.c				camel-file-utils.c				camel-filter-driver.c				camel-filter-search.c				camel-folder-search.c				camel-folder-summary.c				camel-folder-thread.c				camel-folder.c					camel-html-parser.c				camel-internet-address.c			camel-lock.c					camel-lock-client.c				camel-medium.c					camel-mime-filter-bestenc.c			camel-mime-filter-basic.c			camel-mime-filter-charset.c			camel-mime-filter-crlf.c			camel-mime-filter-from.c			camel-mime-filter-html.c			camel-mime-filter-index.c			camel-mime-filter-linewrap.c			camel-mime-filter-save.c			camel-mime-filter.c				camel-mime-message.c				camel-mime-parser.c				camel-mime-part-utils.c				camel-mime-part.c				camel-mime-utils.c				camel-movemail.c				camel-multipart.c				camel-object.c					camel-operation.c				camel-pgp-context.c				camel-pgp-mime.c				camel-smime-context.c				camel-smime-utils.c				camel-provider.c				camel-remote-store.c				camel-sasl.c					camel-sasl-anonymous.c				camel-sasl-cram-md5.c				camel-sasl-digest-md5.c				camel-sasl-kerberos4.c				camel-sasl-login.c				camel-sasl-plain.c				camel-sasl-popb4smtp.c				camel-search-private.c				camel-seekable-stream.c				camel-seekable-substream.c			camel-service.c					camel-session.c					camel-store.c					camel-stream-buffer.c				camel-stream-filter.c				camel-stream-fs.c				camel-stream-mem.c				camel-stream-null.c				camel-stream.c					camel-tcp-stream-raw.c				camel-tcp-stream-ssl.c				camel-tcp-stream.c				camel-transport.c				camel-uid-cache.c				camel-url.c					camel-vee-folder.c				camel-vee-store.c				camel-vtrash-folder.c				camel-charset-map.c				camel.c						gstring-util.c					hash-table-utils.c				string-utils.c

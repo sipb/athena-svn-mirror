@@ -4,12 +4,15 @@ AM_CONFIG_HEADER(config.h)
 
 EVOLUTION_MAJOR_VERSION=1
 EVOLUTION_MINOR_VERSION=0
-EVOLUTION_MICRO_VERSION=0
-VERSION=$EVOLUTION_MAJOR_VERSION.$EVOLUTION_MINOR_VERSION
+EVOLUTION_MICRO_VERSION=2
+EVOLUTION_NANO_VERSION=99
+VERSION=$EVOLUTION_MAJOR_VERSION.$EVOLUTION_MINOR_VERSION.$EVOLUTION_MICRO_VERSION
 PACKAGE=evolution
 
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AC_SUBST(VERSION)
+
+AC_DEFINE_UNQUOTED(VERSION_COMMENT, "")
 
 AC_DEFUN(EVO_CHECK_LIB, [
 	dispname="$1"
@@ -111,7 +114,7 @@ GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 EVO_CHECK_LIB(gnome-libs, gnome, 1.2.9)
 
-ALL_LINGUAS="az bg ca da de el en_AU en_GB es fi fr ga gl hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sv tr uk zh_CN zh_TW"
+ALL_LINGUAS="az bg ca da de el en_AU en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv tr uk zh_CN zh_TW"
 AM_GNOME_GETTEXT
 localedir='$(prefix)/$(DATADIRNAME)/locale'
 AC_SUBST(localedir)
@@ -575,8 +578,8 @@ EVO_CHECK_LIB(GNOME-VFS, vfs, 1.0)
 EVO_CHECK_LIB(libxml, xml, 1.8.10, 2.0)
 EVO_CHECK_LIB(bonobo-conf, bonobo_conf, 0.11)
 
-EVO_CHECK_LIB(GAL, gal, 0.18.1)
-EVO_CHECK_LIB(GtkHTML, gtkhtml, 1.0)
+EVO_CHECK_LIB(GAL, gal, 0.19)
+EVO_CHECK_LIB(GtkHTML, gtkhtml, 1.0.1)
 
 dnl *************************
 dnl CFLAGS and LIBS and stuff
@@ -644,6 +647,9 @@ CAMEL_LIBS="`gnome-config --libs gal xml` $THREADS_LIBS"
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 
+camel_providerdir='$(libdir)/evolution/camel-providers/'$EVOLUTION_MAJOR_VERSION.$EVOLUTION_MINOR_VERSION
+AC_SUBST(camel_providerdir)
+
 MAILER_CFLAGS="`gnome-config --cflags gtkhtml libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal bonobo_conf bonobox bonobox_print vfs oaf` $THREADS_CFLAGS"
 MAILER_LIBS="`gnome-config --libs gtkhtml libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal bonobo_conf bonobox bonobox_print vfs oaf` $THREADS_LIBS"
 AC_SUBST(MAILER_CFLAGS)
@@ -674,7 +680,7 @@ int main (int argc, char **argv)
 	size_t utf8_real_len = strlen (utf8);
 	char *pstring;	
 
-	if (convert_ToPilotChar ("UTF8", utf8, utf8_real_len, &pstring) == -1)
+	if (convert_ToPilotChar ("UTF-8", utf8, utf8_real_len, &pstring) == -1)
 	        exit (1);
 
 	exit (0);
