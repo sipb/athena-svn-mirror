@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_defines.h,v $
- *	$Id: server_defines.h,v 1.2 1992-01-07 19:00:50 lwvanels Exp $
+ *	$Id: server_defines.h,v 1.3 1992-02-05 02:53:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -25,8 +25,6 @@
 #define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
 #define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
 #define ERROR_LOG 		"/usr/adm/olc/errors"
-#define REQ_STATS_LOG 		"/usr/adm/olc/requests.stats"
-#define QUES_STATS_LOG 		"/usr/adm/olc/question.stats"
 #define STATUS_LOG 		"/usr/adm/olc/status"
 #define ADMIN_LOG 		"/usr/adm/olc/admin"
 #define STDERR_LOG 		"/usr/adm/olc/errors"
