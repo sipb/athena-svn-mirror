@@ -1,4 +1,4 @@
-/* $Id: listsuidcells.c,v 1.1 1996-03-25 18:12:24 ghudson Exp $
+/* $Id: listsuidcells.c,v 1.2 1996-03-25 18:33:01 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/etc/listsuidcells/listsuidcells.c,v $
  * Created by Greg Hudson.
  * Copyright (c) 1996 by the Massachusetts Institute of Technology.
@@ -7,17 +7,22 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
+#if defined(sun) && defined(__SVR4)
 #include <sys/filio.h>
+#endif
 #include <netinet/in.h>
 #include <afs/param.h>
 #include <afs/afs.h>
 #include <afs/venus.h>
 
+#define INT32 int
+
 static void try_cell(char *name);
 
 int main(int argc, char **argv)
 {
-    int32 i;
+    INT32 i;
     char out[2048];
     struct ViceIoctl ioc;
     
@@ -28,16 +33,15 @@ int main(int argc, char **argv)
 	ioc.out_size = sizeof(out);
 	if (pioctl(0, VIOCGETCELL, &ioc, 1) < 0)
 	    exit((errno == EDOM) ? 0 : 1);
-	try_cell(space + OMAXHOSTS * sizeof(int32));
+	try_cell(out + OMAXHOSTS * sizeof(INT32));
     }
     return 0;
 }
 
 static void try_cell(char *name)
 {
-    register int32 code;
+    INT32 out[2];
     struct ViceIoctl ioc;
-    int32 out[2];
     
     ioc.in = (caddr_t) name;
     ioc.in_size = strlen(name) + 1;
