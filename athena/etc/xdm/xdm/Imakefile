@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.21 1999-09-02 14:56:19 ghudson Exp $
+# $Id: Imakefile,v 1.22 1999-10-13 22:32:34 ghudson Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -28,7 +28,7 @@ OSLIBS = -lcrypt -lresolv
 #endif
 
 LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lal -llocker \
-	-lhesiod -lzephyr $(AFSLIBS) -lkrb4 -ldes425 -lkrb5 -lcrypto \
+	-lhesiod -lzephyr $(AFSLIBS) -lkrb4 -ldes425 -lkrb5 -lk5crypto \
 	-lcom_err $(OSLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \

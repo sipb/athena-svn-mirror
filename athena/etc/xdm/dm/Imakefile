@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.7 1999-09-02 14:56:17 ghudson Exp $
+# $Id: Imakefile,v 1.8 1999-10-13 22:32:33 ghudson Exp $
 
 #ifdef SOLARIS
 MACHLIBS = -lbsd
@@ -6,7 +6,7 @@ MACHLIBS = -lbsd
 AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad \
 	-lubik $(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys
 LIBS = -lX11 -lal -llocker $(AFSLIBS) -lzephyr -lkrb4 -ldes425 -lkrb5 \
-	-lcrypto -lcom_err -lhesiod $(MACHLIBS)
+	-lk5crypto -lcom_err -lhesiod $(MACHLIBS)
 
 create_dir(/etc/athena)
 create_dir($(ATHMANDIR)/man8)
