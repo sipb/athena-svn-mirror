@@ -62,6 +62,9 @@ if [ `uname -m` = "IP22" ]; then
 
 	# Copy in files specific to the hardware combination (kernel)
 	case ${cpu} in
+	    R4400)
+		hdwr=44
+		;;
 	    R4600)
 		hdwr=46
 		;;
