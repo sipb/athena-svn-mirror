@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.53 2000-09-18 19:29:05 jweiss Exp $
+# $Id: reactivate.sh,v 1.54 2000-12-22 07:52:39 jweiss Exp $
 
 trap "" 1 15
 
@@ -29,7 +29,7 @@ fi
 
 # Determine where the congfig files live
 THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
-if [ -n "$SYSPREFIX" ]; then
+if [ "$HOSTTYPE" = linux -a -n "$SYSPREFIX" ]; then
 	config=$SYSPREFIX/config/$THISVERS
 else
 	config=/srvd
