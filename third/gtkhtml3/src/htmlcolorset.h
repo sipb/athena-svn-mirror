@@ -52,7 +52,8 @@ void              html_colorset_set_color             (HTMLColorSet *set,
 						       HTMLColorId idx);
 HTMLColor        *html_colorset_get_color             (HTMLColorSet *set,
 						       HTMLColorId idx);
-HTMLColor        *html_colorset_get_color_allocated   (HTMLPainter *painter,
+HTMLColor        *html_colorset_get_color_allocated   (HTMLColorSet *s,
+						       HTMLPainter *painter,
 						       HTMLColorId idx);
 
 /* copy colors from one se to another, used for resetting to default values */

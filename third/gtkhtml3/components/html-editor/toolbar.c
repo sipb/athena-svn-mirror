@@ -27,8 +27,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <gnome.h>
 #include <bonobo.h>
-#include <gal/widgets/widget-color-combo.h>
 
+#include "gi-color-combo.h"
 #include "toolbar.h"
 #include "utils.h"
 #include "htmlcolor.h"
@@ -265,7 +265,8 @@ static void
 set_color_combo (GtkHTML *html, GtkHTMLControlData *cd)
 {
 	color_combo_set_color (COLOR_COMBO (cd->combo),
-			       &html_colorset_get_color_allocated (html->engine->painter, HTMLTextColor)->color);
+			       &html_colorset_get_color_allocated (html->engine->settings->color_set,
+								   html->engine->painter, HTMLTextColor)->color);
 }
 
 static void
@@ -298,8 +299,6 @@ setup_color_combo (GtkHTMLControlData *cd)
         g_signal_connect (cd->html, "load_done", G_CALLBACK (load_done), cd);
 
 	cd->combo = color_combo_new (NULL, _("Automatic"), &color->color, color_group_fetch ("toolbar_text", cd));
-	GTK_WIDGET_UNSET_FLAGS (cd->combo, GTK_CAN_FOCUS);
-	gtk_container_forall (GTK_CONTAINER (cd->combo), unset_focus, NULL);
         g_signal_connect (cd->combo, "color_changed", G_CALLBACK (color_changed), cd);
 
 	gtk_widget_show_all (cd->combo);
@@ -505,28 +504,46 @@ editor_toolbar_unindent_cb (GtkWidget *widget,
 
 /* Editor toolbar.  */
 
+enum EditorAlignmentButtons {
+	EDITOR_ALIGNMENT_LEFT,
+	EDITOR_ALIGNMENT_CENTER,
+	EDITOR_ALIGNMENT_RIGHT
+};
 static GnomeUIInfo editor_toolbar_alignment_group[] = {
-	GNOMEUIINFO_ITEM_STOCK (N_("Left align"), N_("Left justifies the paragraphs"),
-				editor_toolbar_left_align_cb, GTK_STOCK_JUSTIFY_LEFT),
-	GNOMEUIINFO_ITEM_STOCK (N_("Center"), N_("Center justifies the paragraphs"),
-				editor_toolbar_center_cb, GTK_STOCK_JUSTIFY_CENTER),
-	GNOMEUIINFO_ITEM_STOCK (N_("Right align"), N_("Right justifies the paragraphs"),
-				editor_toolbar_right_align_cb, GTK_STOCK_JUSTIFY_RIGHT),
+	{ GNOME_APP_UI_ITEM, N_("Left align"), N_("Left justifies the paragraphs"),
+	  editor_toolbar_left_align_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
+	{ GNOME_APP_UI_ITEM, N_("Center"), N_("Center justifies the paragraphs"),
+	  editor_toolbar_center_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
+	{ GNOME_APP_UI_ITEM, N_("Right align"), N_("Right justifies the paragraphs"),
+	  editor_toolbar_right_align_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 	GNOMEUIINFO_END
+};
+
+enum EditorToolbarButtons {
+	EDITOR_TOOLBAR_TT,
+	EDITOR_TOOLBAR_BOLD,
+	EDITOR_TOOLBAR_ITALIC,
+	EDITOR_TOOLBAR_UNDERLINE,
+	EDITOR_TOOLBAR_STRIKEOUT,
+	EDITOR_TOOLBAR_SEP1,
+	EDITOR_TOOLBAR_ALIGNMENT,
+	EDITOR_TOOLBAR_SEP2,
+	EDITOR_TOOLBAR_UNINDENT,
+	EDITOR_TOOLBAR_INDENT
 };
 
 static GnomeUIInfo editor_toolbar_style_uiinfo[] = {
 
 	{ GNOME_APP_UI_TOGGLEITEM, N_("Typewriter"), N_("Toggle typewriter font style"),
-	  editor_toolbar_tt_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME, GTKHTML_DATADIR "/icons/font-tt-24.png" },
+	  editor_toolbar_tt_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 	{ GNOME_APP_UI_TOGGLEITEM, N_("Bold"), N_("Makes the text bold"),
-	  editor_toolbar_bold_cb, NULL, NULL, GNOME_APP_PIXMAP_STOCK, GTK_STOCK_BOLD },
+	  editor_toolbar_bold_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 	{ GNOME_APP_UI_TOGGLEITEM, N_("Italic"), N_("Makes the text italic"),
-	  editor_toolbar_italic_cb, NULL, NULL, GNOME_APP_PIXMAP_STOCK, GTK_STOCK_ITALIC },
+	  editor_toolbar_italic_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 	{ GNOME_APP_UI_TOGGLEITEM, N_("Underline"), N_("Underlines the text"),
-	  editor_toolbar_underline_cb, NULL, NULL, GNOME_APP_PIXMAP_STOCK, GTK_STOCK_UNDERLINE },
+	  editor_toolbar_underline_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 	{ GNOME_APP_UI_TOGGLEITEM, N_("Strikeout"), N_("Strikes out the text"),
-	  editor_toolbar_strikeout_cb, NULL, NULL, GNOME_APP_PIXMAP_STOCK, GTK_STOCK_STRIKETHROUGH },
+	  editor_toolbar_strikeout_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 
 	GNOMEUIINFO_SEPARATOR,
 
@@ -534,10 +551,10 @@ static GnomeUIInfo editor_toolbar_style_uiinfo[] = {
 
 	GNOMEUIINFO_SEPARATOR,
 
-	GNOMEUIINFO_ITEM_STOCK (N_("Unindent"), N_("Indents the paragraphs less"),
-				editor_toolbar_unindent_cb, GNOME_STOCK_TEXT_UNINDENT),
-	GNOMEUIINFO_ITEM_STOCK (N_("Indent"), N_("Indents the paragraphs more"),
-				editor_toolbar_indent_cb, GNOME_STOCK_TEXT_INDENT),
+	{ GNOME_APP_UI_ITEM, N_("Unindent"), N_("Indents the paragraphs less"),
+	  editor_toolbar_unindent_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
+	{ GNOME_APP_UI_ITEM, N_("Indent"), N_("Indents the paragraphs more"),
+	  editor_toolbar_indent_cb, NULL, NULL, GNOME_APP_PIXMAP_FILENAME },
 
 	GNOMEUIINFO_END
 };
@@ -568,22 +585,52 @@ static GtkWidget *
 create_style_toolbar (GtkHTMLControlData *cd)
 {
 	GtkWidget *hbox;
-
+	gchar *domain;
+	
 	hbox = gtk_hbox_new (FALSE, 0);
 
 	cd->toolbar_style = gtk_toolbar_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), cd->toolbar_style, TRUE, TRUE, 0);
 
-	cd->paragraph_option = setup_paragraph_style_option_menu (cd->html),
+	cd->paragraph_option = setup_paragraph_style_option_menu (cd->html);
+	gtk_toolbar_prepend_space (GTK_TOOLBAR (cd->toolbar_style));
 	gtk_toolbar_prepend_widget (GTK_TOOLBAR (cd->toolbar_style),
 				    cd->paragraph_option,
 				    NULL, NULL);
 
+	gtk_toolbar_prepend_space (GTK_TOOLBAR (cd->toolbar_style));
 	gtk_toolbar_prepend_widget (GTK_TOOLBAR (cd->toolbar_style),
 				    setup_font_size_option_menu (cd),
 				    NULL, NULL);
 
+	/* 
+	 * FIXME: steal textdomain temporarily from main-process,  and set it to 
+	 * GETTEXT_PACKAGE, after create the widgets, restore it.
+	 */
+	domain = g_strdup (textdomain (NULL));
+	textdomain (GETTEXT_PACKAGE);
+	
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_TT].pixmap_info = GTKHTML_DATADIR "/icons/font-tt-24.png";
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_BOLD].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_bold", 24, NULL, NULL);
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_ITALIC].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_italic", 24, NULL, NULL);
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_UNDERLINE].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_underlined", 24, NULL, NULL);
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_STRIKEOUT].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text-strikethrough", 24, NULL, NULL);
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_UNINDENT].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_unindent", 24, NULL, NULL);
+	editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_INDENT].pixmap_info = gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_indent", 24, NULL, NULL);
+
+	((GnomeUIInfo *) editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_ALIGNMENT].moreinfo) [EDITOR_ALIGNMENT_LEFT].pixmap_info
+		= gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_left", 24, NULL, NULL);
+	((GnomeUIInfo *) editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_ALIGNMENT].moreinfo) [EDITOR_ALIGNMENT_CENTER].pixmap_info
+		= gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_center", 24, NULL, NULL);
+	((GnomeUIInfo *) editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_ALIGNMENT].moreinfo) [EDITOR_ALIGNMENT_RIGHT].pixmap_info
+		= gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_text_right", 24, NULL, NULL);
+
 	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (cd->toolbar_style), editor_toolbar_style_uiinfo, NULL, cd);
+
+	/* restore the stolen domain */
+	textdomain (domain);
+	g_free (domain);
+
 	gtk_toolbar_append_widget (GTK_TOOLBAR (cd->toolbar_style),
 				   setup_color_combo (cd),
 				   NULL, NULL);
@@ -593,17 +640,18 @@ create_style_toolbar (GtkHTMLControlData *cd)
 				      G_CALLBACK (insertion_font_style_changed_cb), cd);
 
 	/* The following SUCKS!  */
-	cd->tt_button        = editor_toolbar_style_uiinfo [0].widget;
-	cd->bold_button      = editor_toolbar_style_uiinfo [1].widget;
-	cd->italic_button    = editor_toolbar_style_uiinfo [2].widget;
-	cd->underline_button = editor_toolbar_style_uiinfo [3].widget;
-	cd->strikeout_button = editor_toolbar_style_uiinfo [4].widget;
+	cd->tt_button        = editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_TT].widget;
+	cd->bold_button      = editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_BOLD].widget;
+	cd->italic_button    = editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_ITALIC].widget;
+	cd->underline_button = editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_UNDERLINE].widget;
+	cd->strikeout_button = editor_toolbar_style_uiinfo [EDITOR_TOOLBAR_STRIKEOUT].widget;
 
 	cd->left_align_button = editor_toolbar_alignment_group[0].widget;
 	cd->center_button = editor_toolbar_alignment_group[1].widget;
 	cd->right_align_button = editor_toolbar_alignment_group[2].widget;
 
 	cd->unindent_button  = editor_toolbar_style_uiinfo [8].widget;
+	gtk_widget_set_sensitive (cd->unindent_button, gtk_html_get_paragraph_indentation (cd->html) != 0);
 	g_signal_connect (cd->html, "current_paragraph_indentation_changed",
 			  G_CALLBACK (indentation_changed), cd);
 
@@ -622,8 +670,28 @@ create_style_toolbar (GtkHTMLControlData *cd)
 	gtk_widget_show_all (hbox);
 
 	toolbar_update_format (cd);
+	GTK_WIDGET_UNSET_FLAGS (cd->toolbar_style, GTK_CAN_FOCUS);
+	gtk_container_forall (GTK_CONTAINER (cd->toolbar_style), unset_focus, NULL);
 
 	return hbox;
+}
+
+static gboolean
+toolbar_item_represents (GtkWidget *item, GtkWidget *widget)
+{
+	GtkWidget *parent;
+
+	if (item == widget)
+		return TRUE;
+
+	parent = gtk_widget_get_parent (widget);
+	while (parent) {
+		if (parent == item)
+			return TRUE;
+		parent = gtk_widget_get_parent (parent);
+	}
+
+	return FALSE;
 }
 
 static void
@@ -632,13 +700,15 @@ toolbar_item_update_sensitivity (GtkWidget *widget, gpointer data)
 	GtkHTMLControlData *cd = (GtkHTMLControlData *)data;
 	gboolean sensitive;
 
-	sensitive = ((cd->format_html && widget != cd->unindent_button)
-		     || widget == cd->paragraph_option
-		     || widget == cd->indent_button
-		     || (widget == cd->unindent_button && gtk_html_get_paragraph_indentation (cd->html))
-		     || widget == cd->left_align_button
-		     || widget == cd->center_button
-		     || widget == cd->right_align_button);
+	if (toolbar_item_represents (widget, cd->unindent_button))
+		return;
+
+	sensitive = (cd->format_html
+		     || toolbar_item_represents (widget, cd->paragraph_option)
+		     || toolbar_item_represents (widget, cd->indent_button)
+		     || toolbar_item_represents (widget, cd->left_align_button)
+		     || toolbar_item_represents (widget, cd->center_button)
+		     || toolbar_item_represents (widget, cd->right_align_button));
 
 	gtk_widget_set_sensitive (widget, sensitive);
 }
@@ -647,8 +717,8 @@ void
 toolbar_update_format (GtkHTMLControlData *cd)
 {
 	if (cd->toolbar_style)
-		gtk_container_forall (GTK_CONTAINER (cd->toolbar_style), 
-				      toolbar_item_update_sensitivity, cd);
+		gtk_container_foreach (GTK_CONTAINER (cd->toolbar_style), 
+		toolbar_item_update_sensitivity, cd);
 
 	if (cd->paragraph_option)
 		paragraph_style_option_menu_set_mode (cd->paragraph_option, 

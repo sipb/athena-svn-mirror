@@ -26,42 +26,54 @@
 
 #include "htmltypes.h"
 
-void  html_engine_copy                    (HTMLEngine  *e);
-void  html_engine_copy_object             (HTMLEngine  *e,
-					   HTMLObject **o,
-					   guint       *len);
-gint  html_engine_cut                     (HTMLEngine  *e);
-void  html_engine_cut_line                (HTMLEngine  *e);
-void  html_engine_delete                  (HTMLEngine  *e);
-void  html_engine_paste                   (HTMLEngine  *e);
-void  html_engine_paste_object            (HTMLEngine  *e,
-					   HTMLObject  *o,
-					   guint        len);
-void  html_engine_paste_text              (HTMLEngine  *e,
-					   const gchar *text,
-					   guint        len);
-void  html_engine_insert_text             (HTMLEngine  *e,
-					   const gchar *text,
-					   guint        len);
-void  html_engine_insert_object           (HTMLEngine  *e,
-					   HTMLObject  *o,
-					   guint        len,
-					   gint         level);
-void  html_engine_append_object           (HTMLEngine  *e,
-					   HTMLObject  *o,
-					   guint        len);
-void  html_engine_append_flow             (HTMLEngine  *e,
-					   HTMLObject  *o,
-					   guint        len);
-void  html_engine_edit_set_link           (HTMLEngine  *e,
-					   const gchar *url,
-					   const gchar *target);
-void  html_engine_insert_empty_paragraph  (HTMLEngine  *e);
-void  html_engine_delete_n                (HTMLEngine  *e,
-					   guint        len,
-					   gboolean     forward);
-void  html_engine_delete_container        (HTMLEngine  *e);
-void  html_engine_set_insertion_link      (HTMLEngine  *e,
-					   const gchar *url,
-					   const gchar *target);
+void  html_engine_copy                               (HTMLEngine     *e);
+void  html_engine_copy_object                        (HTMLEngine     *e,
+						      HTMLObject    **o,
+						      guint          *len);
+gint  html_engine_cut                                (HTMLEngine     *e);
+void  html_engine_cut_line                           (HTMLEngine     *e);
+void  html_engine_delete                             (HTMLEngine     *e);
+void  html_engine_paste                              (HTMLEngine     *e);
+void  html_engine_paste_object                       (HTMLEngine     *e,
+						      HTMLObject     *o,
+						      guint           len);
+void  html_engine_paste_text                         (HTMLEngine     *e,
+						      const gchar    *text,
+						      guint           len);
+void  html_engine_paste_text_with_extra_attributes   (HTMLEngine     *e,
+						      const gchar    *text,
+						      guint           len,
+						      PangoAttrList  *attrs);
+void  html_engine_paste_link                         (HTMLEngine     *e,
+						      const char     *text,
+						      int             len,
+						      const char     *complete_url);
+void  html_engine_insert_text                        (HTMLEngine     *e,
+						      const gchar    *text,
+						      guint           len);
+void  html_engine_insert_text_with_extra_attributes  (HTMLEngine     *e,
+						      const gchar    *text,
+						      guint           len,
+						      PangoAttrList  *attrs);
+void  html_engine_insert_object                      (HTMLEngine     *e,
+						      HTMLObject     *o,
+						      guint           len,
+						      gint            level);
+void  html_engine_append_object                      (HTMLEngine     *e,
+						      HTMLObject     *o,
+						      guint           len);
+void  html_engine_append_flow                        (HTMLEngine     *e,
+						      HTMLObject     *o,
+						      guint           len);
+void  html_engine_edit_set_link                      (HTMLEngine     *e,
+						      const gchar    *url,
+						      const gchar    *target);
+void  html_engine_insert_empty_paragraph             (HTMLEngine     *e);
+void  html_engine_delete_n                           (HTMLEngine     *e,
+						      guint           len,
+						      gboolean        forward);
+void  html_engine_delete_container                   (HTMLEngine     *e);
+void  html_engine_set_insertion_link                 (HTMLEngine     *e,
+						      const gchar    *url,
+						      const gchar    *target);
 #endif

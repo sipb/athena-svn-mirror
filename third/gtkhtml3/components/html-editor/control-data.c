@@ -49,6 +49,7 @@ gtk_html_control_data_new (GtkHTML *html, GtkWidget *vbox)
 	ncd->replace_text_replace    = NULL;
 	ncd->has_spell_control_set   = FALSE;
 	ncd->language                = NULL;
+	ncd->icon_theme              = gnome_icon_theme_new ();
 
 	spell_init (html, ncd);
 
@@ -80,6 +81,11 @@ gtk_html_control_data_destroy (GtkHTMLControlData *cd)
 
 	if (cd->languages)
 		CORBA_free (cd->languages);
+
+	if (cd->icon_theme) {
+		g_object_unref (cd->icon_theme);
+		cd->icon_theme = NULL;
+	}
 
 	g_free (cd);
 }

@@ -54,7 +54,8 @@ struct _HTMLPrinterClass {
 };
 
 GtkType      html_printer_get_type                    (void);
-HTMLPainter *html_printer_new                         (GnomePrintContext *print_context,
+HTMLPainter *html_printer_new                         (GtkWidget         *widget,
+						       GnomePrintContext *print_context,
 						       GnomePrintJob     *print_master);
 guint        html_printer_get_page_width              (HTMLPrinter       *printer);
 guint        html_printer_get_page_height             (HTMLPrinter       *printer);

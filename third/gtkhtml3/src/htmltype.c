@@ -39,7 +39,6 @@
 #include "htmliframe.h"
 #include "htmlimage.h"
 #include "htmlimageinput.h"
-#include "htmllinktext.h"
 #include "htmlmap.h"
 #include "htmlobject.h"
 #include "htmlradio.h"
@@ -88,7 +87,6 @@ html_types_init (void)
 	html_hidden_type_init ();
 	html_image_type_init ();
 	html_imageinput_type_init ();
-	html_link_text_type_init ();
 	html_object_type_init ();
 	html_radio_type_init ();
 	html_rule_type_init ();
@@ -167,8 +165,6 @@ html_type_name (HTMLType type)
  		return "TextInput";
 	case HTML_TYPE_TEXTSLAVE:
  		return "TextSlave";
-	case HTML_TYPE_VSPACE:
- 		return "VSpace";
 	case HTML_TYPE_IFRAME:
 		return "IFrame";
 	case HTML_TYPE_FRAME:

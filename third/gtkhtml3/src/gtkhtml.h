@@ -130,7 +130,7 @@ struct _GtkHTMLEditorAPI
 
 /* Creation.  */
 GtkType                    gtk_html_get_type                      (void);
-void                       gtk_html_construct                     (GtkWidget                 *html);
+void                       gtk_html_construct                     (GtkHTML                   *html);
 GtkWidget                 *gtk_html_new                           (void);
 void                       gtk_html_set_editor_api                (GtkHTML                   *html,
 								   GtkHTMLEditorAPI          *api,
@@ -140,6 +140,7 @@ void                       gtk_html_set_editor_api                (GtkHTML      
 gint                       gtk_html_set_iframe_parent             (GtkHTML                   *html,
 								   GtkWidget                 *parent,
 								   HTMLObject                *frame);
+GtkHTML                   *gtk_html_get_top_html                  (GtkHTML                   *html);
 
 /* Debugging.  */
 void                       gtk_html_enable_debug                  (GtkHTML                   *html,
@@ -172,6 +173,8 @@ void                       gtk_html_write                         (GtkHTML      
 void                       gtk_html_end                           (GtkHTML                   *html,
 								   GtkHTMLStream             *handle,
 								   GtkHTMLStreamStatus        status);
+void                       gtk_html_flush                         (GtkHTML                   *html);
+void                       gtk_html_stop                          (GtkHTML                   *html);
 void                       gtk_html_load_from_string              (GtkHTML                   *html,
 								   const gchar               *str,
 								   gint                       len);
@@ -196,10 +199,10 @@ void                       gtk_html_set_magic_smileys             (GtkHTML      
 								   gboolean                   magic_smileys);
 gboolean                   gtk_html_get_magic_smileys             (const GtkHTML             *html);
 
-/* Animated Images */
-void                       gtk_html_set_animate                   (GtkHTML                   *html,
-								   gboolean                   animate);
-gboolean                   gtk_html_get_animate                   (const GtkHTML             *html);
+/* Caret Mode */
+void                       gtk_html_set_caret_mode                (GtkHTML                   *html,
+								   gboolean                   caret_mode);
+gboolean                   gtk_html_get_caret_mode                (const GtkHTML             *html);
 
 /* Animated Images */
 void                       gtk_html_set_animate                   (GtkHTML                   *html,
@@ -299,6 +302,8 @@ void                       gtk_html_image_preload                 (GtkHTML      
 								   const gchar               *url);
 void                       gtk_html_set_blocking                  (GtkHTML                   *html,
 								   gboolean                   block);
+void                       gtk_html_set_images_blocking           (GtkHTML                   *html,
+								   gboolean                   block);
 gboolean                   gtk_html_has_undo                      (GtkHTML                   *html);
 void                       gtk_html_drop_undo                     (GtkHTML                   *html);
 
@@ -315,6 +320,7 @@ gboolean                   gtk_html_save                          (GtkHTML      
 								   gpointer                   data);
 GtkHTMLStream             *gtk_html_begin_content                 (GtkHTML                   *html,
 								   gchar                     *content_type);
+void                       gtk_html_drag_dest_set                 (GtkHTML                   *html);
 #endif
 
 #endif /* _GTKHTML_H_ */

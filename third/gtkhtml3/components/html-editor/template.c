@@ -244,7 +244,6 @@ selection_changed (GtkTreeSelection *selection, GtkHTMLEditTemplateProperties *d
 		else {
 			FILL;
 		}
-		CHANGE;
 	}
 }
 
@@ -267,7 +266,7 @@ template_widget (GtkHTMLEditTemplateProperties *d, gboolean insert)
 	GtkWidget *template_page, *frame;
 	GladeXML *xml;
 
-	xml = glade_xml_new (GLADE_DATADIR "/gtkhtml-editor-properties.glade", "vbox_template", NULL);
+	xml = glade_xml_new (GLADE_DATADIR "/gtkhtml-editor-properties.glade", "vbox_template", GETTEXT_PACKAGE);
 	if (!xml)
 		g_error (_("Could not load glade file."));
 
@@ -310,7 +309,6 @@ template_insert (GtkHTMLControlData *cd, gpointer *set_data)
 	*set_data = data;
 	rv = template_widget (data, TRUE);
 	set_ui (data);
-	gtk_html_edit_properties_dialog_change (data->cd->properties_dialog);
 
 	return rv;
 }

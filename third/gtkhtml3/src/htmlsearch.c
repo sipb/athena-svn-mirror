@@ -30,6 +30,7 @@
 */
 
 #include <config.h>
+#include <string.h>
 
 #include "htmlsearch.h"
 #include "htmlobject.h"
@@ -39,8 +40,8 @@
 static void
 set_text (HTMLSearch *s, const gchar *text)
 {
-	s->text           = g_strdup (text);
-	s->text_len       = g_utf8_strlen (text, -1);
+	s->text = g_strdup (text);
+	s->text_bytes = strlen (text);
 }
 
 HTMLSearch *
@@ -91,7 +92,7 @@ html_search_new (HTMLEngine *e, const gchar *text, gboolean case_sensitive, gboo
 		ns->reb = g_new0 (regex_t, 1);
 
 		ns->reb->translate = ns->trans;
-		rv = re_compile_pattern (ns->text, ns->text_len, ns->reb);
+		rv = re_compile_pattern (ns->text, ns->text_bytes, ns->reb);
 		if (rv) {
 			g_warning (rv);
 		}

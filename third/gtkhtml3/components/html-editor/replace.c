@@ -52,6 +52,7 @@ ask_dialog_response (GtkDialog *dialog, gint response_id, GtkHTMLReplaceAskDialo
 	switch (response_id) {
 	case GTK_RESPONSE_DELETE_EVENT:
 	case GTK_RESPONSE_CLOSE:
+	case GTK_RESPONSE_CANCEL:
 		html_engine_replace_do (d->engine, RQA_Cancel);
 		break;
 	case 0: /* Replace */
@@ -72,11 +73,12 @@ ask_dialog_new (HTMLEngine *e)
 	GtkHTMLReplaceAskDialog *d;
 
 	d = g_new (GtkHTMLReplaceAskDialog, 1);
+	/* we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c */
 	d->dialog = GTK_DIALOG (gtk_dialog_new_with_buttons (_("Replace confirmation"), NULL, 0,
-							     _("Replace all"), 1,
-							     _("Next"), 2,
-							     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-							     _("Replace"), 0,
+							     _("Replace _All"), 1,
+							     _("_Next"), 2,
+							     GTK_STOCK_CLOSE, GTK_RESPONSE_CANCEL,
+							     _("_Replace"), 0,
 							     NULL));
 	d->engine = e;
 
@@ -94,6 +96,7 @@ ask (HTMLEngine *e, gpointer data)
 	ask_dialog = ask_dialog_new (e);
 	gtk_dialog_run (ask_dialog->dialog);
 	gtk_widget_destroy (GTK_WIDGET (ask_dialog->dialog));
+	gtk_widget_grab_focus (GTK_WIDGET (ask_dialog->engine->widget));
 	g_free (ask_dialog);
 }
 
@@ -132,6 +135,10 @@ replace_dialog_response (GtkDialog *dialog, gint response_id, GtkHTMLReplaceDial
 				     GTK_TOGGLE_BUTTON (d->backward)->active == 0, FALSE,
 				     ask, d);
 		break;
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_CLOSE:
+		gtk_widget_grab_focus (GTK_WIDGET (d->html));
+		break;
 	}
 }
 
@@ -150,8 +157,9 @@ gtk_html_replace_dialog_new (GtkHTML *html, GtkHTMLControlData *cd)
 	GtkWidget *table;
 	GtkWidget *label;
 
+	/* we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c */
 	dialog->dialog         = GTK_DIALOG (gtk_dialog_new_with_buttons (_("Replace"), NULL, 0,
-									  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+									  GTK_STOCK_CLOSE, GTK_RESPONSE_CANCEL,
 									  GTK_STOCK_FIND_AND_REPLACE, 0,
 									  NULL));
 

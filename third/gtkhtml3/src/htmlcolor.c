@@ -97,8 +97,10 @@ html_color_alloc (HTMLColor *color, HTMLPainter *painter)
 gboolean
 html_color_equal (HTMLColor *color1, HTMLColor *color2)
 {
-	g_assert (color1);
-	g_assert (color2);
+	if (color1 == color2)
+		return TRUE;
+	if (!color1 || !color2)
+		return FALSE;
 
 	return gdk_color_equal (&color1->color, &color2->color);
 }

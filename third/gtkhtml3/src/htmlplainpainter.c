@@ -31,6 +31,7 @@
 #include "htmlcolor.h"
 #include "htmlcolorset.h"
 #include "htmlengine.h"
+#include "htmltext.h"
 
 static HTMLGdkPainterClass *parent_class = NULL;
 
@@ -129,86 +130,6 @@ html_plain_painter_init (GObject *object)
 {
 }
 
-inline static void
-items_destroy (GList *items)
-{
-	GList *l;
-
-	for (l = items; l; l = l->next)
-		pango_item_free ((PangoItem *) l->data);
-	g_list_free (items);
-}
-
-inline static void
-glyphs_destroy (GList *glyphs)
-{
-	GList *l;
-
-	for (l = glyphs; l; l = l->next)
-		pango_glyph_string_free ((PangoGlyphString *) l->data);
-	g_list_free (glyphs);
-}
-
-static inline GList *
-shift_items (GList *items, gint byte_offset)
-{
-	PangoItem *item;
-
-	while (items && (item = (PangoItem *)items->data) && item->offset + item->length <= byte_offset)
-		items = items->next;
-
-	return items;
-}
-
-static gint
-draw_text (HTMLPainter *painter, gint x, gint y, const gchar *text, gint len, GList *items, GList *glyphs, gint start_byte_offset)
-{
-	HTMLGdkPainter *gdk_painter;
-	PangoFontDescription *desc;
-	gint blen, width = 0;
-	gboolean temp_items = FALSE;
-
-	if (len == -1)
-		len = g_utf8_strlen (text, -1);
-
-	gdk_painter = HTML_GDK_PAINTER (painter);
-
-	x -= gdk_painter->x1;
-	y -= gdk_painter->y1;
-
-	blen = g_utf8_offset_to_pointer (text, len) - text;
-	desc = html_painter_get_font (painter, painter->font_face, painter->font_style);
-	if (!items) {
-		items = html_gdk_painter_text_itemize_and_prepare_glyphs (gdk_painter, desc, text, blen, &glyphs);
-		temp_items = TRUE;
-	}
-	if (items && items->data) {
-		PangoGlyphString *str;
-		GList *gl, *il;
-		guint i, char_offset = 0;
-		const gchar *c_text = text;
-
-		il = shift_items (items, start_byte_offset);
-		for (gl = glyphs; gl && char_offset < len; gl = gl->next) {
-			str = (PangoGlyphString *) gl->data;
-			gdk_draw_glyphs (gdk_painter->pixmap, gdk_painter->gc, ((PangoItem *) il->data)->analysis.font, x + width, y, str);
-			for (i=0; i < str->num_glyphs; i ++)
-				width += PANGO_PIXELS (str->glyphs [i].geometry.width);
-			c_text = g_utf8_offset_to_pointer (c_text, str->num_glyphs);
-			il = shift_items (il, start_byte_offset + (c_text - text));
-			char_offset += str->num_glyphs;
-		}
-	}
-	if (temp_items) {
-		if (glyphs)
-			glyphs_destroy (glyphs);
-		if (items)
-			items_destroy (items);
-	}
-
-	return width;
-}
-
 static void
 draw_rect (HTMLPainter *painter,
 	   gint x, gint y,
@@ -219,14 +140,15 @@ draw_rect (HTMLPainter *painter,
 static guint
 get_page_width (HTMLPainter *painter, HTMLEngine *e)
 {
-	return MIN (72 * html_painter_get_space_width (painter, GTK_HTML_FONT_STYLE_SIZE_3, NULL),
-		    html_engine_get_view_width (e)) + e->leftBorder + e->rightBorder;
+	return MIN (72 * MAX (html_painter_get_space_width (painter, GTK_HTML_FONT_STYLE_SIZE_3 | GTK_HTML_FONT_STYLE_FIXED, NULL),
+			      html_painter_get_e_width (painter, GTK_HTML_FONT_STYLE_SIZE_3 | GTK_HTML_FONT_STYLE_FIXED, NULL)),
+		    html_engine_get_view_width (e)) + (html_engine_get_left_border (e) + html_engine_get_right_border (e));
 }
 
 static guint
 get_page_height (HTMLPainter *painter, HTMLEngine *e)
 {
-	return html_engine_get_view_height (e) + e->topBorder + e->bottomBorder;
+	return html_engine_get_view_height (e) + (html_engine_get_top_border (e) + html_engine_get_bottom_border (e));
 }
 
 static void
@@ -239,7 +161,6 @@ html_plain_painter_class_init (GObjectClass *object_class)
 
 	painter_class->alloc_font = alloc_fixed_font;
 	painter_class->draw_rect = draw_rect;
-	painter_class->draw_text = draw_text;
 	painter_class->fill_rect = fill_rect;
 	painter_class->draw_pixmap = draw_pixmap;
 	painter_class->draw_shade_line = draw_shade_line;
@@ -279,6 +200,7 @@ html_plain_painter_new (GtkWidget *widget, gboolean double_buffer)
 	HTMLPlainPainter *new;
 
 	new = g_object_new (HTML_TYPE_PLAIN_PAINTER, NULL);
+	html_painter_set_widget (HTML_PAINTER (new), widget);
 	HTML_GDK_PAINTER (new)->double_buffer = double_buffer;
 	HTML_GDK_PAINTER (new)->pc = gtk_widget_get_pango_context (widget);
 	g_object_ref (HTML_GDK_PAINTER (new)->pc);

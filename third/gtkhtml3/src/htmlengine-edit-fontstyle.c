@@ -35,7 +35,7 @@
 #include "htmlundo.h"
 
 /* #define PARANOID_DEBUG */
-static HTMLObject * html_engine_text_style_object (HTMLEngine *e);
+static HTMLObject * html_engine_text_style_object (HTMLEngine *e, gint *offset);
 
 
 static GtkHTMLFontStyle
@@ -45,6 +45,7 @@ get_font_style_from_selection (HTMLEngine *engine)
 	GtkHTMLFontStyle conflicts;
 	gboolean first;
 	HTMLPoint p;
+	gint offset;
 
 	g_return_val_if_fail (engine->clue != NULL, GTK_HTML_FONT_STYLE_DEFAULT);
 	g_return_val_if_fail (html_engine_is_selection_active (engine), GTK_HTML_FONT_STYLE_DEFAULT);
@@ -60,20 +61,26 @@ get_font_style_from_selection (HTMLEngine *engine)
 	first = TRUE;
 
 	p = engine->selection->from;
+	offset = p.offset;
 
 	while (1) {
 		if (html_object_is_text (p.object) && p.offset != html_object_get_length (p.object)) {
+			gint index = 0;
 			if (first) {
-				style = HTML_TEXT (p.object)->font_style;
+				gint index = g_utf8_offset_to_pointer (HTML_TEXT (p.object)->text, offset) - HTML_TEXT (p.object)->text;
+				style = html_text_get_fontstyle_at_index (HTML_TEXT (p.object), index);
 				first = FALSE;
-			} else
-				conflicts |= HTML_TEXT (p.object)->font_style ^ style;
+			}
+			conflicts |= html_text_get_style_conflicts (HTML_TEXT (p.object), style, index,
+								    p.object == engine->selection->to.object
+								    ? engine->selection->to.offset : HTML_TEXT (p.object)->text_bytes);
 		}
 
 		if (html_point_cursor_object_eq (&p, &engine->selection->to))
 			break;
 
 		html_point_next_cursor (&p);
+		offset = 0;
 
 		if (p.object == NULL) {
 			g_warning ("Unable to find style for end of selection");
@@ -96,7 +103,9 @@ get_color_from_selection (HTMLEngine *engine)
 	p = engine->selection->from;
 	while (1) {
 		if (html_object_is_text (p.object)  && p.offset != html_object_get_length (p.object)) {
-			color = HTML_TEXT (p.object)->color;
+			color = html_text_get_color (HTML_TEXT (p.object), engine,
+						     p.object == engine->selection->from.object
+						     ? g_utf8_offset_to_pointer (HTML_TEXT (p.object)->text, p.offset) - HTML_TEXT (p.object)->text : 0);
 			break;
 		}
 
@@ -124,6 +133,7 @@ html_engine_get_document_font_style (HTMLEngine *engine)
 		return get_font_style_from_selection (engine);
 	else {
 		HTMLObject *curr = engine->cursor->object;
+		gint offset;
 
 		if (curr == NULL)
 			return GTK_HTML_FONT_STYLE_DEFAULT;
@@ -132,9 +142,9 @@ html_engine_get_document_font_style (HTMLEngine *engine)
 		else {
 			HTMLObject *obj;
 
-			obj = html_engine_text_style_object (engine);
+			obj = html_engine_text_style_object (engine, &offset);
 			return obj
-				? HTML_TEXT (obj)->font_style
+				? html_text_get_fontstyle_at_index (HTML_TEXT (obj), g_utf8_offset_to_pointer (HTML_TEXT (obj)->text, offset) - HTML_TEXT (obj)->text)
 				: GTK_HTML_FONT_STYLE_DEFAULT;
 		}
 	}
@@ -158,10 +168,11 @@ html_engine_get_document_color (HTMLEngine *engine)
 			return NULL;
 		else {
 			HTMLObject *obj;
+			gint offset;
 
-			obj = html_engine_text_style_object (engine);
+			obj = html_engine_text_style_object (engine, &offset);
 			return obj
-				? HTML_TEXT (obj)->color
+				? html_text_get_color_at_index (HTML_TEXT (obj), engine, g_utf8_offset_to_pointer (HTML_TEXT (obj)->text, offset) - HTML_TEXT (obj)->text)
 				: html_colorset_get_color (engine->settings->color_set, HTMLTextColor);
 		}
 	}
@@ -258,17 +269,9 @@ object_set_font_style (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
 	if (html_object_is_text (o)) {
 		struct tmp_font *tf = (struct tmp_font *) data;
-		HTMLObject *prev;
 
-		HTML_TEXT (o)->font_style &= tf->and_mask;
-		HTML_TEXT (o)->font_style |= tf->or_mask;
-
-		if (o->parent) {
-			prev = html_object_prev_not_slave (o);
-			if (prev) {
-				html_object_merge (prev, o, e, NULL, NULL, NULL);
-			}
-		}
+		html_text_unset_style (HTML_TEXT (o), ~tf->and_mask);
+		html_text_set_style (HTML_TEXT (o), tf->or_mask, e);
 	}
 }
 
@@ -406,7 +409,7 @@ set_color (HTMLObject *o, HTMLEngine *e, gpointer data)
 	if (html_object_is_text (o)) {
 		HTMLObject *prev;
 
-		html_text_set_color (HTML_TEXT (o), NULL, (HTMLColor *) data);
+		html_text_set_color (HTML_TEXT (o), (HTMLColor *) data);
 
 		if (o->parent) {
 			prev = html_object_prev_not_slave (o);
@@ -415,53 +418,6 @@ set_color (HTMLObject *o, HTMLEngine *e, gpointer data)
 			}
 		}
 	}
-}
-
-struct _HTMLEmptyParaSetColor {
-	HTMLUndoData data;
-
-	HTMLColor *color;
-};
-typedef struct _HTMLEmptyParaSetColor HTMLEmptyParaSetColor;
-
-static void set_empty_flow_color (HTMLEngine *e, HTMLColor *c, HTMLUndoDirection dir);
-
-static void
-set_empty_flow_color_undo_action (HTMLEngine *e, HTMLUndoData *undo_data, HTMLUndoDirection dir, guint position_after)
-{
-	HTMLEmptyParaSetColor *undo = (HTMLEmptyParaSetColor *) undo_data;
-
-	set_empty_flow_color (e, undo->color, html_undo_direction_reverse (dir));
-}
-
-static void
-set_empty_flow_color_destroy (HTMLUndoData *undo_data)
-{
-	HTMLEmptyParaSetColor *undo = (HTMLEmptyParaSetColor *) undo_data;
-
-	html_color_unref (undo->color);
-}
-
-static void
-set_empty_flow_color (HTMLEngine *e, HTMLColor *color, HTMLUndoDirection dir)
-{
-	HTMLColor *old_color;
-	HTMLEmptyParaSetColor *undo;
-
-	g_return_if_fail (html_object_is_text (e->cursor->object));
-
-	old_color = HTML_TEXT (e->cursor->object)->color;
-	html_color_ref (old_color);
-	html_text_set_color (HTML_TEXT (e->cursor->object), e, color);
-
-	undo = g_new (HTMLEmptyParaSetColor, 1);
-	html_undo_data_init (HTML_UNDO_DATA (undo));
-	undo->color = old_color;
-	undo->data.destroy = set_empty_flow_color_destroy;
-	html_undo_add_action (e->undo,
-			      html_undo_action_new ("Set empty paragraph color", set_empty_flow_color_undo_action,
-						    HTML_UNDO_DATA (undo), html_cursor_get_position (e->cursor),
-						    html_cursor_get_position (e->cursor)), dir);
 }
 
 gboolean
@@ -475,13 +431,11 @@ html_engine_set_color (HTMLEngine *e, HTMLColor *color)
 	if (html_engine_is_selection_active (e))
 		html_engine_cut_and_paste (e, "Set color", "Unset color", set_color, color);
 	else {
-		if (e->cursor->object->parent && html_clueflow_is_empty (HTML_CLUEFLOW (e->cursor->object->parent))) {
-			set_empty_flow_color (e, color, HTML_UNDO_UNDO);
-		}
 		if (gdk_color_equal (&e->insertion_color->color, &color->color))
 			rv = FALSE;
 	}
 	html_color_unref (e->insertion_color);
+
 	e->insertion_color = color;
 	html_color_ref (e->insertion_color);
 
@@ -534,7 +488,7 @@ get_url_or_target_from_selection (HTMLEngine *e, gboolean get_url)
 
 	p = e->selection->from;
 	while (1) {
-		str = get_url ? html_object_get_url (p.object) : html_object_get_target (p.object);
+		str = get_url ? html_object_get_url (p.object, p.offset) : html_object_get_target (p.object, p.offset);
 		if (str || html_point_cursor_object_eq (&p, &e->selection->to))
 			break;
 		html_point_next_cursor (&p);
@@ -549,24 +503,33 @@ get_url_or_target_from_selection (HTMLEngine *e, gboolean get_url)
 }
 
 static HTMLObject *
-html_engine_text_style_object (HTMLEngine *e)
+html_engine_text_style_object (HTMLEngine *e, gint *offset)
 {
 	if (HTML_IS_TEXT (e->cursor->object)
-	    || (e->cursor->offset && e->cursor->offset != html_object_get_length (e->cursor->object)))
+	    || (e->cursor->offset && e->cursor->offset != html_object_get_length (e->cursor->object))) {
+		if (offset)
+			*offset = e->cursor->offset;
 		return e->cursor->object;
+	}
 
 	if (e->cursor->offset) {
 		HTMLObject *next;
 
 		next = html_object_next_not_slave (e->cursor->object);
-		if (next && HTML_IS_TEXT (next))
+		if (next && HTML_IS_TEXT (next)) {
+			if (offset)
+				*offset = 0;
 			return next;
+		}
 	} else {
 		HTMLObject *prev;
 
 		prev = html_object_prev_not_slave (e->cursor->object);
-		if (prev && HTML_IS_TEXT (prev))
+		if (prev && HTML_IS_TEXT (prev)) {
+			if (offset)
+				*offset = html_object_get_length (prev);
 			return prev;
+		}
 	}
 
 	return NULL;
@@ -579,9 +542,10 @@ html_engine_get_document_url (HTMLEngine *e)
 		return get_url_or_target_from_selection (e, TRUE);
 	else {
 		HTMLObject *obj;
+		gint offset;
 
-		obj = html_engine_text_style_object (e);
-		return obj ? html_object_get_url (obj) : NULL;
+		obj = html_engine_text_style_object (e, &offset);
+		return obj ? html_object_get_url (obj, offset) : NULL;
 	}
 }
 
@@ -592,9 +556,10 @@ html_engine_get_document_target (HTMLEngine *e)
 		return get_url_or_target_from_selection (e, FALSE);
 	else {
 		HTMLObject *obj;
+		gint offset;
 
-		obj = html_engine_text_style_object (e);
-		return obj ? html_object_get_target (obj) : NULL;
+		obj = html_engine_text_style_object (e, &offset);
+		return obj ? html_object_get_target (obj, offset) : NULL;
 	}
 }
 

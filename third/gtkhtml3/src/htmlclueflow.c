@@ -40,11 +40,11 @@
 #include "htmlentity.h"
 #include "htmlengine-edit.h"
 #include "htmlengine-save.h"
-#include "htmllinktext.h"
 #include "htmlpainter.h"
 #include "htmlplainpainter.h"
 #include "htmlsearch.h"
 #include "htmlselection.h"
+#include "htmlsettings.h"
 #include "htmltable.h"
 #include "htmltablecell.h"
 #include "htmltext.h"
@@ -56,7 +56,7 @@ static HTMLClueClass *parent_class = NULL;
 #define HCF_CLASS(x) HTML_CLUEFLOW_CLASS (HTML_OBJECT (x)->klass)
 
 inline HTMLHAlignType html_clueflow_get_halignment          (HTMLClueFlow *flow);
-static gchar *        get_item_number_str                   (HTMLClueFlow *flow);
+static gchar *        get_item_marker_str                   (HTMLClueFlow *flow, gboolean ascii_only);
 static guint          get_post_padding                      (HTMLClueFlow *flow, 
 							     guint pad);
 static int            get_similar_depth                     (HTMLClueFlow *self, 
@@ -380,15 +380,9 @@ static guint
 calc_padding (HTMLPainter *painter)
 {
 	if (!HTML_IS_PLAIN_PAINTER (painter)) {
-		return html_painter_get_space_width (painter, GTK_HTML_FONT_STYLE_SIZE_3, NULL);
+		return 2 * html_painter_get_space_width (painter, GTK_HTML_FONT_STYLE_SIZE_3, NULL);
 	}
 	return 0;
-}
-
-static guint
-calc_bullet_size (HTMLPainter *painter)
-{
-	return html_painter_get_space_width (painter, GTK_HTML_FONT_STYLE_SIZE_3, NULL) / 2;
 }
 
 static gboolean
@@ -673,8 +667,9 @@ pref_right_margin (HTMLPainter *p, HTMLClueFlow *clueflow, HTMLObject *o, gint y
 	  
 	if (clueflow->style == HTML_CLUEFLOW_STYLE_PRE || ! HTML_IS_PLAIN_PAINTER(p))
 		return fixed_margin;
-	
-	return MIN (fixed_margin, 72 * html_painter_get_space_width (p, GTK_HTML_FONT_STYLE_SIZE_3, NULL));
+
+	return MIN (fixed_margin, 72 * (MAX (html_painter_get_space_width (p, GTK_HTML_FONT_STYLE_SIZE_3 | GTK_HTML_FONT_STYLE_FIXED, NULL),
+					     html_painter_get_e_width (p, GTK_HTML_FONT_STYLE_SIZE_3 | GTK_HTML_FONT_STYLE_FIXED, NULL))));
 }
 
 static void
@@ -839,7 +834,8 @@ layout_line (HTMLObject *o, HTMLPainter *painter, HTMLObject *begin,
 	cur = begin;
 
 	old_y = o->y;
-	html_object_calc_size (begin, painter, changed_objs);
+	if (!HTML_IS_TEXT_SLAVE (begin) || HTML_IS_TEXT (begin->prev))
+		html_object_calc_size (begin, painter, changed_objs);
 
 	a = d = height = 0;
 	update_height (begin, html_object_get_valign (begin), &a, &d, &height, &top_align);
@@ -860,7 +856,8 @@ layout_line (HTMLObject *o, HTMLPainter *painter, HTMLObject *begin,
 		update_leafs_children_changed_size (cur, leaf_children_changed_size);
 
 		cur->x = x;
-		html_object_calc_size (cur, painter, changed_objs);
+		if (cur != begin)
+			html_object_calc_size (cur, painter, changed_objs);
 
 		valign = html_object_get_valign (cur);
 		if ((!is_top_aligned (valign) && (cur->ascent > a || cur->descent > d))
@@ -926,10 +923,10 @@ layout_aligned (HTMLObject *o, HTMLPainter *painter, HTMLObject *cur,
 }
 
 static gboolean
-layout (HTMLObject *o, HTMLPainter *painter, GList **changed_objs, gboolean *leaf_children_changed_size)
+html_clue_flow_layout (HTMLObject *o, HTMLPainter *painter, GList **changed_objs, gboolean *leaf_children_changed_size)
 {
 	HTMLClueFlow *cf = HTML_CLUEFLOW (o);
-	HTMLObject *cur = HTML_CLUE (o)->head, *end;
+	HTMLObject *cur = HTML_CLUE (o)->head;
 	gint indent, lmargin, rmargin;
 	gboolean changed = FALSE;
 
@@ -939,19 +936,18 @@ layout (HTMLObject *o, HTMLPainter *painter, GList **changed_objs, gboolean *lea
 
 	while (cur) {
 		if (cur->flags & HTML_OBJECT_FLAG_ALIGNED)
-			end = layout_aligned (o, painter, cur, changed_objs, leaf_children_changed_size,
+			cur = layout_aligned (o, painter, cur, changed_objs, leaf_children_changed_size,
 					      &lmargin, &rmargin, indent, &changed);
 		else
-			end = layout_line (o, painter, cur, changed_objs, leaf_children_changed_size,
+			cur = layout_line (o, painter, cur, changed_objs, leaf_children_changed_size,
 					   &lmargin, &rmargin, indent);
-		cur = end;
 	}
 
 	return changed;
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_clue_flow_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLClueFlow *cf = HTML_CLUEFLOW (o);
 	gint oa, od, ow, padding;
@@ -972,7 +968,7 @@ calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 	/* calc size */
 	padding = calc_padding (painter);
 	add_pre_padding (cf, padding);
-	changed = layout (o, painter, changed_objs, &leaf_children_changed_size);
+	changed = html_clue_flow_layout (o, painter, changed_objs, &leaf_children_changed_size);
 	add_post_padding (cf, padding);
 
 	/* take care about changes */
@@ -1090,9 +1086,22 @@ get_roman_value (gint value, gboolean lower)
 }
 
 static gchar *
-get_item_number_str (HTMLClueFlow *flow)
+get_item_marker_str (HTMLClueFlow *flow, gboolean ascii_only)
 {
-	switch (flow->item_type) {
+	HTMLListType type = flow->item_type;
+
+	if (type == HTML_LIST_TYPE_BLOCKQUOTE && flow->levels->len > 0) {
+		int i;
+
+		for (i = flow->levels->len - 1; i >= 0; i --) {
+			if (flow->levels->data [i] != HTML_LIST_TYPE_BLOCKQUOTE) {
+				type = flow->levels->data [i];
+				break;
+			}
+		}
+	}
+
+	switch (type) {
 	case HTML_LIST_TYPE_ORDERED_ARABIC:
 		return g_strdup_printf ("%d. ", flow->item_number);
 	case HTML_LIST_TYPE_ORDERED_LOWER_ALPHA:
@@ -1101,6 +1110,13 @@ get_item_number_str (HTMLClueFlow *flow)
 	case HTML_LIST_TYPE_ORDERED_LOWER_ROMAN:
 	case HTML_LIST_TYPE_ORDERED_UPPER_ROMAN:
 		return get_roman_value (flow->item_number, flow->item_type == HTML_LIST_TYPE_ORDERED_LOWER_ROMAN);
+	case HTML_LIST_TYPE_UNORDERED:
+		if (ascii_only)
+			return g_strdup ("* ");
+		else if (flow->levels->len == 0 || flow->levels->len & 1)
+			return g_strdup ("\342\227\217 "); /* U+25CF BLACK CIRCLE */
+		else
+			return g_strdup ("\342\227\213 "); /* U+25CB WHITE CIRCLE */
 	default:
 		return NULL;
 	}
@@ -1113,7 +1129,7 @@ draw_gt_line (HTMLObject *cur, HTMLPainter *p, gint offset, gint x, gint y)
 
 	/* FIXME: cache items and glyphs? */
 	html_painter_calc_text_size (p, HTML_BLOCK_CITE, 
-				     strlen (HTML_BLOCK_CITE), NULL, NULL, 0, &line_offset,
+				     strlen (HTML_BLOCK_CITE), NULL, NULL, NULL, 0, &line_offset,
 				     GTK_HTML_FONT_STYLE_SIZE_3, NULL,
 				     &w, &a, &d);
 
@@ -1121,7 +1137,7 @@ draw_gt_line (HTMLObject *cur, HTMLPainter *p, gint offset, gint x, gint y)
 	while (cy + a <= cur->ascent) {
 		/* FIXME: cache items and glyphs? */
 		html_painter_draw_text (p, x, y + cur->y - cy,
-					HTML_BLOCK_CITE, 1, NULL, NULL, 0, 0);
+					HTML_BLOCK_CITE, 1, NULL, NULL, NULL, 0, 0);
 		cy += a + d;
 	}
 
@@ -1129,7 +1145,7 @@ draw_gt_line (HTMLObject *cur, HTMLPainter *p, gint offset, gint x, gint y)
 	while (cy + d <= cur->descent) {
 		/* FIXME: cache items and glyphs? */
 		html_painter_draw_text (p, x, y + cur->y + cy,
-					HTML_BLOCK_CITE, 1, NULL, NULL, 0, 0);
+					HTML_BLOCK_CITE, 1, NULL, NULL, NULL, 0, 0);
 		cy += a + d;
 	}
 }
@@ -1146,13 +1162,20 @@ draw_quotes (HTMLObject *self, HTMLPainter *painter,
 	int last_indent = 0;
 	gint pixel_size = html_painter_get_pixel_size (painter);
 	gboolean is_plain = HTML_IS_PLAIN_PAINTER (painter);
+	HTMLEngine *e;
+
+	if (painter->widget && GTK_IS_HTML (painter->widget))
+		e = GTK_HTML (painter->widget)->engine;
+	else
+		return;
 	
 	flow = HTML_CLUEFLOW (self);
 
 	for (i = 0; i < flow->levels->len; i++, last_indent = indent) {
 		indent = get_level_indent (flow, i, painter);
 
-		html_painter_set_pen (painter, &html_colorset_get_color_allocated (painter, HTMLLinkColor)->color);
+		html_painter_set_pen (painter, &html_colorset_get_color_allocated (e->settings->color_set,
+										   painter, HTMLLinkColor)->color);
 		if (is_cite (flow, i)) {
 			if (!is_plain) {
 				area.x = self->x + indent - 5 * pixel_size;
@@ -1200,7 +1223,13 @@ draw_item (HTMLObject *self, HTMLPainter *painter, gint x, gint y, gint width, g
 {
 	HTMLClueFlow *flow;
 	HTMLObject *first;
-	gint indent;
+	gchar *marker;
+	HTMLEngine *e;
+
+	if (painter->widget && GTK_IS_HTML (painter->widget))
+		e = GTK_HTML (painter->widget)->engine;
+	else
+		return;
 
 	first = HTML_CLUE (self)->head;
 	if (html_object_is_text (first) && first->next)
@@ -1212,52 +1241,26 @@ draw_item (HTMLObject *self, HTMLPainter *painter, gint x, gint y, gint width, g
 		html_color_alloc (flow->item_color, painter);
 		html_painter_set_pen (painter, &flow->item_color->color);
 	} else
-		html_painter_set_pen (painter, &html_colorset_get_color_allocated (painter, HTMLTextColor)->color);
+		html_painter_set_pen (painter, &html_colorset_get_color_allocated (e->settings->color_set,
+										   painter, HTMLTextColor)->color);
 
-	indent = get_indent (flow, painter);
-	if (flow->item_type == HTML_LIST_TYPE_UNORDERED) {
-		guint bullet_size;
-		gint xp, yp;
-		bullet_size = MAX (3, calc_bullet_size (painter));
-
-		xp = self->x + indent - 2 * bullet_size;	
-		yp = self->y - self->ascent 
-			+ (first->y - first->ascent) 
-			+ (first->ascent + first->descent)/2 
-			- bullet_size/2;
-
-		xp += tx, yp += ty;
-
-		if (flow->levels->len == 0 || (flow->levels->len & 1) != 0)
-			html_painter_fill_rect (painter, xp + 1, yp + 1, bullet_size - 2, bullet_size - 2);
-
-		html_painter_draw_line (painter, xp + 1, yp, xp + bullet_size - 2, yp);
-		html_painter_draw_line (painter, xp + 1, yp + bullet_size - 1,
-					xp + bullet_size - 2, yp + bullet_size - 1);
-		html_painter_draw_line (painter, xp, yp + 1, xp, yp + bullet_size - 2);
-		html_painter_draw_line (painter, xp + bullet_size - 1, yp + 1,
-					xp + bullet_size - 1, yp + bullet_size - 2);
-	} else {
-		gchar *number;
-
-		number = get_item_number_str (flow);
-		if (number) {
-			gint width, len, line_offset = 0, asc, dsc;
-
-			len   = strlen (number);
-			/* FIXME: cache items and glyphs? */
-			html_painter_calc_text_size (painter, number, len, NULL, NULL, 0, &line_offset,
-						     html_clueflow_get_default_font_style (flow), NULL, &width, &asc, &dsc);
-			width += html_painter_get_space_width (painter, html_clueflow_get_default_font_style (flow), NULL);
-			html_painter_set_font_style (painter, html_clueflow_get_default_font_style (flow));
-			html_painter_set_font_face  (painter, NULL);
-			/* FIXME: cache items and glyphs? */
-			html_painter_draw_text (painter, self->x + first->x - width + tx,
-						self->y - self->ascent + first->y + ty,
-						number, strlen (number), NULL, NULL, 0, 0);
-		}
-		g_free (number);
+	marker = get_item_marker_str (flow, HTML_IS_PLAIN_PAINTER (painter));
+	if (marker) {
+		gint width, len, line_offset = 0, asc, dsc;
+		
+		len   = g_utf8_strlen (marker, -1);
+		/* FIXME: cache items and glyphs? */
+		html_painter_calc_text_size (painter, marker, len, NULL, NULL, NULL, 0, &line_offset,
+					     html_clueflow_get_default_font_style (flow), NULL, &width, &asc, &dsc);
+		width += html_painter_get_space_width (painter, html_clueflow_get_default_font_style (flow), NULL);
+		html_painter_set_font_style (painter, html_clueflow_get_default_font_style (flow));
+		html_painter_set_font_face  (painter, NULL);
+		/* FIXME: cache items and glyphs? */
+		html_painter_draw_text (painter, self->x + first->x - width + tx,
+					self->y - self->ascent + first->y + ty,
+					marker, len, NULL, NULL, NULL, 0, 0);
 	}
+	g_free (marker);
 }
 
 static void
@@ -1278,22 +1281,6 @@ draw (HTMLObject *self,
 
 	(* HTML_OBJECT_CLASS (&html_clue_class)->draw) (self, painter, x, y, width, height, tx, ty);
 }
-
-static void
-draw_background (HTMLObject *self,
-		 HTMLPainter *p,
-		 gint x, gint y,
-		 gint width, gint height,
-		 gint tx, gint ty)
-{
-	html_object_draw_background (self->parent, p,
-				     x + self->parent->x,
-				     y + self->parent->y - self->parent->ascent,
-				     width, height,
-				     tx - self->parent->x,
-				     ty - self->parent->y + self->parent->ascent);
-}
-
 
 static HTMLObject*
 check_point (HTMLObject *self,
@@ -1592,7 +1579,7 @@ write_flow_tag (HTMLClueFlow *self, HTMLEngineSaveState *state)
 		char *start = get_start_tag (self);
 
 		if (start) {
-			if (!save_indent_string (self, state, "<%s>", start))
+			if (!save_indent_string (self, state, "<%s>\n", start))
 				return FALSE;
 		} else {
 			if (!save_indent_string (self, state, ""))
@@ -1623,13 +1610,13 @@ write_flow_tag (HTMLClueFlow *self, HTMLEngineSaveState *state)
 	}
 
 	if (is_item (self)) {
-		if (next && is_levels_equal (self, next) && !is_item (next)) {
+		if (next && is_levels_equal (self, next) && !is_item (next) && !html_clueflow_contains_table (self)) {
 			if (!html_engine_save_output_string (state, "<BR>\n"))
 				return FALSE;
 		} else if (!html_engine_save_output_string (state, "\n"))
 			return FALSE;
 	} else if (is_levels_equal (self, next) && self->style == next->style) {
-		if (self->style != HTML_CLUEFLOW_STYLE_PRE) {
+		if (self->style != HTML_CLUEFLOW_STYLE_PRE && !html_clueflow_contains_table (self)) {
 			if (!html_engine_save_output_string (state, "<BR>\n"))
 				return FALSE;
 		} else {
@@ -1639,14 +1626,21 @@ write_flow_tag (HTMLClueFlow *self, HTMLEngineSaveState *state)
 	} else {
 		char *end = get_start_tag (self);
 
-		if (end) {
-			if (!html_engine_save_output_string (state, "</%s>\n", end))
-				return FALSE;
-		} else if (html_clueflow_is_empty (self)) {
-			if (!html_engine_save_output_string (state, "<BR>\n"))
-				return FALSE;
+		if (self->style != HTML_CLUEFLOW_STYLE_PRE) {
+			if ((!html_clueflow_contains_table (self) && !end && next && self->style == next->style) || html_clueflow_is_empty (self)) {
+				if (!html_engine_save_output_string (state, "<BR>\n"))
+					return FALSE;
+			} else {
+				if (!html_engine_save_output_string (state, "\n"))
+					return FALSE;
+			}
 		} else {
 			if (!html_engine_save_output_string (state, "\n"))
+				return FALSE;
+		}
+
+		if (end) {
+			if (!html_engine_save_output_string (state, "</%s>\n", end))
 				return FALSE;
 		}
 	}
@@ -1704,20 +1698,7 @@ write_item_marker (GString *pad_string, HTMLClueFlow *flow)
 {
 	char *marker;
 
-	switch (flow->item_type) {
-	case HTML_LIST_TYPE_ORDERED_ARABIC:
-	case HTML_LIST_TYPE_ORDERED_UPPER_ROMAN:
-	case HTML_LIST_TYPE_ORDERED_LOWER_ROMAN:
-	case HTML_LIST_TYPE_ORDERED_UPPER_ALPHA:
-	case HTML_LIST_TYPE_ORDERED_LOWER_ALPHA:
-		marker = get_item_number_str (flow);
-		break;
-	case HTML_LIST_TYPE_UNORDERED:
-		marker = g_strdup ("* ");
-		break;
-	default:
-		marker = NULL;
-	}
+	marker = get_item_marker_str (flow, TRUE);
 
 	if (marker) {
 		gint marker_len = strlen (marker);
@@ -1800,7 +1781,6 @@ save_plain (HTMLObject *self,
 	HTMLClueFlow *flow;
 	HTMLEngineSaveState *buffer_state;
 	GString *out = g_string_new ("");
-	gint len;
 	gint pad;
 	gint align_pad;
 	gboolean firstline = TRUE;
@@ -1811,13 +1791,13 @@ save_plain (HTMLObject *self,
 	pad = plain_padding (flow, NULL, FALSE);
 	buffer_state = html_engine_save_buffer_new (state->engine, 
 						    state->inline_frames);
-
 	max_len = MAX (requested_width - pad, 0);
 	/* buffer the paragraph's content into the save buffer */
 	if (HTML_OBJECT_CLASS (&html_clue_class)->save_plain (self, 
 							      buffer_state, 
 							      max_len)) {
-		guchar *s, *space;
+		guchar *s;
+		int offset;
 		
 		if (get_pre_padding (flow, calc_padding (state->engine->painter)) > 0) {
 		        plain_padding (flow, out, FALSE);
@@ -1829,60 +1809,134 @@ save_plain (HTMLObject *self,
 		if (*s == 0) {
 		        plain_padding (flow, out, TRUE);
 			g_string_append (out, "\n");
-		} else while (*s) {
-			len = strcspn (s, "\n");
-			
-			if ((flow->style != HTML_CLUEFLOW_STYLE_PRE) 
-			    && !HTML_IS_TABLE (HTML_CLUE (flow)->head)) {
-				
-				if (g_utf8_strlen (s, len) > max_len) {
-					space = g_utf8_offset_to_pointer (s, max_len);
-					while (space 
-					       && (*space != ' '))
-						/* || (IS_UTF8_NBSP ((guchar *)g_utf8_find_next_char (space, NULL)))
-						   || (IS_UTF8_NBSP ((guchar *)g_utf8_find_prev_char (s, space))))) */
-						space = g_utf8_find_prev_char (s, space);
-					
-					if (space != NULL)
-						len = space - s;
+		} else {
+			PangoAttrList *attrs = pango_attr_list_new ();
+			gint bytes = html_engine_save_buffer_peek_text_bytes (buffer_state), slen = g_utf8_strlen (s, -1), i, clen, n_items;
+			GList *items_list, *cur;
+			PangoContext *pc = gtk_widget_get_pango_context (GTK_WIDGET (state->engine->widget));
+			PangoLogAttr *lattrs;
+			PangoItem **items;
+			gint len, skip;
+
+			items_list = pango_itemize (pc, s, 0, bytes, attrs, NULL);
+			lattrs = g_new (PangoLogAttr, slen + 1);
+			n_items = g_list_length (items_list);
+			items = g_new (PangoItem *, n_items);
+			for (i = 0, cur = items_list; i < n_items; i ++, cur = cur->next)
+				items [i] = (PangoItem *) cur->data;
+
+			offset = 0;
+			for (i = 0; i < n_items; i ++) {
+				PangoItem tmp_item;
+				int start_i, start_offset;
+
+				start_i = i;
+				start_offset = offset;
+				offset += items [i]->num_chars;
+				tmp_item = *items [i];
+				while (i < n_items - 1) {
+					if (tmp_item.analysis.lang_engine == items [i + 1]->analysis.lang_engine) {
+						tmp_item.length += items [i + 1]->length;
+						tmp_item.num_chars += items [i + 1]->num_chars;
+						offset += items [i + 1]->num_chars;
+						i ++;
+					} else
+						break;
 				}
-			}
-			
-			/* FIXME plain padding doesn't work properly with tables aligment
-			 * at the moment.
-			 */
-		        plain_padding (flow, out, firstline);
 
-			switch (html_clueflow_get_halignment (flow)) {
-			case HTML_HALIGN_RIGHT:
-				align_pad = max_len - len;
-				break;
-			case HTML_HALIGN_CENTER:
-				align_pad = (max_len - len) / 2;
-				break;
-			default:
-				align_pad = 0;
-				break;
-			}
-			
-			while (align_pad > 0) {
-				g_string_append_c (out, ' ');
-				align_pad--;
+				pango_break (s + tmp_item.offset, tmp_item.length, &tmp_item.analysis, lattrs + start_offset, tmp_item.num_chars + 1);
 			}
 
-			s += html_engine_save_string_append_nonbsp (out, s, len);
+			html_text_remove_unwanted_line_breaks (s, slen, lattrs);
+
+			g_list_free (items_list);
+			for (i = 0; i < n_items; i ++)
+				pango_item_free (items [i]);
+			g_free (items);
+			pango_attr_list_unref (attrs);
+
+			clen = 0;
+			while (*s) {
+				len = strcspn (s, "\n");
+				len = g_utf8_strlen (s, len);
+				skip = 0;
 			
-			/* Trim the space at the end */
-			while (*s == ' ' || IS_UTF8_NBSP (s)) 
-				s = g_utf8_next_char (s);
+				if ((flow->style != HTML_CLUEFLOW_STYLE_PRE) 
+				    && !HTML_IS_TABLE (HTML_CLUE (flow)->head)) {
+					if (len > max_len) {
+						gboolean look_backward = TRUE;
+						gint wi, wl;
+
+						wl = clen + max_len;
+
+						if (lattrs [wl].is_white) {
+
+							while (lattrs [wl].is_white && wl < slen)
+								wl ++;
+
+							if (wl < slen && html_text_is_line_break (lattrs [wl]))
+								look_backward = FALSE;
+							else
+								wl = clen + max_len;
+						}
+
+						if (look_backward) {
+							while (wl > 0) {
+								if (html_text_is_line_break (lattrs [wl]))
+									break;
+								wl --;
+							}
+						}
+
+						if (wl > clen && wl < slen && html_text_is_line_break (lattrs [wl])) {
+							wi = MIN (wl, clen + max_len);
+							while (wi > 0 && lattrs [wi - 1].is_white)
+								wi --;
+							len = wi - clen;
+							skip = wl - wi;
+						}
+					}
+				}
+
+				/* FIXME plain padding doesn't work properly with tables aligment
+				 * at the moment.
+				 */
+				plain_padding (flow, out, firstline);
+
+				switch (html_clueflow_get_halignment (flow)) {
+				case HTML_HALIGN_RIGHT:
+					align_pad = max_len - len;
+					break;
+				case HTML_HALIGN_CENTER:
+					align_pad = (max_len - len) / 2;
+					break;
+				default:
+					align_pad = 0;
+					break;
+				}
 			
-			if (*s == '\n') 
-				s++;
+				while (align_pad > 0) {
+					g_string_append_c (out, ' ');
+					align_pad--;
+				}
+
+				bytes = ((guchar *) g_utf8_offset_to_pointer (s, len)) - s;
+				html_engine_save_string_append_nonbsp (out, s, bytes);
+				s += bytes;
+				s = g_utf8_offset_to_pointer (s, skip);
+				clen += len + skip;
+
+				if (*s == '\n') {
+					s++;
+					clen ++;
+				}
 			
-			g_string_append_c (out, '\n');
-			firstline = FALSE;
+				g_string_append_c (out, '\n');
+				firstline = FALSE;
+			}
+			g_free (lattrs);
 		}
-		
+
 		if (get_post_padding (flow, calc_padding (state->engine->painter)) > 0) {
 			plain_padding (flow, out, FALSE);
 			g_string_append (out, "\n");
@@ -1936,12 +1990,12 @@ get_default_font_style (const HTMLClueFlow *self)
 }
 
 static void
-search_set_info (HTMLObject *cur, HTMLSearch *info, guchar *text, guint pos, guint len)
+search_set_info (HTMLObject *cur, HTMLSearch *info, guchar *text, guint index, guint bytes)
 {
-	guint text_len = 0;
-	guint cur_len;
+	guint text_bytes = 0;
+	guint cur_bytes;
 
-	info->found_len = len;
+	info->found_bytes = bytes;
 
 	if (info->found) {
 		g_list_free (info->found);
@@ -1950,17 +2004,18 @@ search_set_info (HTMLObject *cur, HTMLSearch *info, guchar *text, guint pos, gui
 
 	while (cur) {
 		if (html_object_is_text (cur)) {
-			cur_len = strlen (HTML_TEXT (cur)->text);
-			if (text_len + cur_len > pos) {
+			cur_bytes = HTML_TEXT (cur)->text_bytes;
+			if (text_bytes + cur_bytes > index) {
 				if (!info->found) {
-					info->start_pos = g_utf8_pointer_to_offset (text + text_len,
-										    text + pos);
+					info->start_pos = g_utf8_pointer_to_offset (text + text_bytes,
+										    text + index);
 				}
 				info->found = g_list_append (info->found, cur);
 			}
-			text_len += cur_len;
-			if (text_len >= pos+info->found_len) {
-				info->stop_pos = info->start_pos + info->found_len;
+			text_bytes += cur_bytes;
+			if (text_bytes >= index + info->found_bytes) {
+				info->stop_pos = info->start_pos + g_utf8_pointer_to_offset (text + index,
+											     text + index + info->found_bytes);
 				info->last     = HTML_OBJECT (cur);
 				return;
 			}
@@ -1981,18 +2036,18 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 	HTMLObject *end = cur;
 	HTMLObject *head;
 	guchar *par, *pp;
-	guint text_len;
-	guint eq_len;
-	gint  pos;
+	guint text_bytes;
+	guint eq_bytes;
+	gint index;
 	gboolean retval = FALSE;
 
 	/* printf ("search flow look for \"text\" %s\n", info->text); */
 
-	/* first get flow text_len */
-	text_len = 0;
+	/* first get flow text_bytes */
+	text_bytes = 0;
 	while (cur) {
 		if (html_object_is_text (cur)) {
-			text_len += strlen (HTML_TEXT (cur)->text);
+			text_bytes += HTML_TEXT (cur)->text_bytes;
 			end = cur;
 		} else if (HTML_OBJECT_TYPE (cur) != HTML_TYPE_TEXTSLAVE) {
 			break;
@@ -2000,11 +2055,11 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 		cur = (info->forward) ? cur->next : cur->prev;
 	}
 
-	if (text_len > 0) {
-		par = g_new (gchar, text_len+1);
-		par [text_len] = 0;
+	if (text_bytes > 0) {
+		par = g_new (gchar, text_bytes + 1);
+		par [text_bytes] = 0;
 
-		pp = (info->forward) ? par : par+text_len;
+		pp = (info->forward) ? par : par + text_bytes;
 
 		/* now fill par with text */
 		head = cur = (info->forward) ? *beg : end;
@@ -2012,11 +2067,11 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 		while (cur) {
 			if (html_object_is_text (cur)) {
 				if (!info->forward) {
-					pp -= strlen (HTML_TEXT (cur)->text);
+					pp -= HTML_TEXT (cur)->text_bytes;
 				}
-				strncpy (pp, HTML_TEXT (cur)->text, strlen (HTML_TEXT (cur)->text));
+				strncpy (pp, HTML_TEXT (cur)->text, HTML_TEXT (cur)->text_bytes);
 				if (info->forward) {
-					pp += strlen (HTML_TEXT (cur)->text);
+					pp += HTML_TEXT (cur)->text_bytes;
 				}
 			} else if (HTML_OBJECT_TYPE (cur) != HTML_TYPE_TEXTSLAVE) {
 				break;
@@ -2024,20 +2079,20 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 			cur = (info->forward) ? cur->next : cur->prev;
 		}
 
-		/* set eq_len and pos counters */
-		eq_len = 0;
+		/* set eq_bytes and pos counters */
+		eq_bytes = 0;
 		if (info->found) {
-			pos = info->start_pos + ((info->forward) ? 1 : -1);
+			index = ((guchar *)g_utf8_offset_to_pointer (par, info->start_pos + ((info->forward) ? 1 : -1))) - par;
 		} else {
-			pos = (info->forward) ? 0 : text_len - 1;
+			index = (info->forward) ? 0 : text_bytes - 1;
 		}
 
 		/* FIXME make shorter text instead */
 		if (!info->forward)
-			par [pos+1] = 0;
+			par [index+1] = 0;
 
-		if ((info->forward && pos < text_len)
-		    || (!info->forward && pos>0)) {
+		if ((info->forward && index < text_bytes)
+		    || (!info->forward && index > 0)) {
 			if (info->reb) {
 				/* regex search */
 				gint rv;
@@ -2054,29 +2109,31 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 					p += (info->forward) ? 1 : -1;
 					} */
 
-				while ((info->forward && pos < text_len)
-				       || (!info->forward && pos >= 0)) {
+				while ((info->forward && index < text_bytes)
+				       || (!info->forward && index >= 0)) {
 					rv = regexec (info->reb,
-						      par + pos,
+						      par + index,
 						      1, &match, 0);
 					if (rv == 0) {
 						search_set_info (head, info, par,
-								 pos + match.rm_so, match.rm_eo - match.rm_so);
+								 index + match.rm_so, match.rm_eo - match.rm_so);
 						retval = TRUE;
 						break;
 					}
-					pos += (info->forward) ? 1 : -1;
+					index += (info->forward)
+						? (((guchar *) g_utf8_next_char (par + index)) - par - index)
+						: (((guchar *) g_utf8_prev_char (par + index)) - par - index);
 				}
 #else
-				rv = re_search (info->reb, par, text_len, pos,
-						(info->forward) ? text_len-pos : -pos, NULL);
-				if (rv>=0) {
-					guint found_pos = rv;
-					rv = re_match (info->reb, par, text_len, found_pos, NULL);
+				rv = re_search (info->reb, par, text_bytes, index,
+						(info->forward) ? text_bytes - index : -index, NULL);
+				if (rv >= 0) {
+					guint found_index = rv;
+					rv = re_match (info->reb, par, text_bytes, found_index, NULL);
 					if (rv < 0) {
 						g_warning ("re_match (...) error");
 					}
-					search_set_info (head, info, par, found_pos, rv);
+					search_set_info (head, info, par, found_index, rv);
 					retval = TRUE;
 				} else {
 					if (rv < -1) {
@@ -2087,23 +2144,27 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 			} else {
 				/* substring search - simple one - could be improved
 				   go thru par and look for info->text */
-				while (par [pos]) {
+				while (par [index]) {
 					if (info->trans [(guchar) info->text
-							[(info->forward) ? eq_len : info->text_len - eq_len - 1]]
-					    == info->trans [par [pos]]) {
-						eq_len++;
-						if (eq_len == info->text_len) {
+							[(info->forward) ? eq_bytes : info->text_bytes - eq_bytes - 1]]
+					    == info->trans [par [index]]) {
+						eq_bytes ++;
+						if (eq_bytes == info->text_bytes) {
 							search_set_info (head, info, par,
-									 pos - (info->forward ? eq_len-1 : 0),
-									 info->text_len);
+									 index - (info->forward
+										  ? -(((guchar *) g_utf8_next_char (par + index - eq_bytes)) - par - index)
+										  : 0),
+									 info->text_bytes);
 							retval=TRUE;
 							break;
 						}
 					} else {
-						pos += (info->forward) ? -eq_len : eq_len;
-						eq_len = 0;
+						index += (info->forward) ? -eq_bytes : eq_bytes;
+						eq_bytes = 0;
 					}
-					pos += (info->forward) ? 1 : -1;
+					index += (info->forward)
+						? (((guchar *) g_utf8_next_char (par + index)) - par - index)
+						: (((guchar *) g_utf8_prev_char (par + index)) - par - index);
 				}
 			}
 		}
@@ -2143,7 +2204,7 @@ search (HTMLObject *obj, HTMLSearch *info)
 
 		is_text = html_object_is_text (cur);
 
-		if (html_object_is_text (cur)) {
+		if (is_text) {
 			if (search_text (&cur, info))
 				return TRUE;
 		}
@@ -2221,13 +2282,12 @@ html_clueflow_class_init (HTMLClueFlowClass *klass,
 	object_class->op_copy = op_copy;
 	object_class->split = split;
 	object_class->merge = merge;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_clue_flow_real_calc_size;
 	object_class->set_max_width = set_max_width;
 	object_class->set_max_height = set_max_height;
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
 	object_class->draw = draw;
-	object_class->draw_background = draw_background;
 	object_class->save = save;
 	object_class->save_plain = save_plain;
 	object_class->check_point = check_point;
@@ -2401,9 +2461,7 @@ html_clueflow_set_style (HTMLClueFlow *flow,
 	g_return_if_fail (engine != NULL);
 	g_return_if_fail (HTML_IS_ENGINE (engine));
 
-	if ((flow->style & HTML_CLUEFLOW_STYLE_PRE) ^ (style & HTML_CLUEFLOW_STYLE_PRE))
-		html_object_clear_word_width (HTML_OBJECT (flow));
-	html_object_change_set (HTML_OBJECT (flow), HTML_CHANGE_ALL);
+	html_object_change_set_down (HTML_OBJECT (flow), HTML_CHANGE_ALL);
 	flow->style = style;
 	if (style != HTML_CLUEFLOW_STYLE_LIST_ITEM)
 		flow->item_number = 0;
@@ -2858,6 +2916,20 @@ html_clueflow_is_empty (HTMLClueFlow *flow)
 	    || (clue->head && html_object_is_text (clue->head)
 		&& HTML_TEXT (clue->head)->text_len == 0 && !html_object_next_not_slave (clue->head)))
 		return TRUE;
+	return FALSE;
+}
+
+gboolean
+html_clueflow_contains_table (HTMLClueFlow *flow)
+{
+	HTMLClue *clue;
+	g_return_val_if_fail (HTML_IS_CLUEFLOW (flow), FALSE);
+
+	clue = HTML_CLUE (flow);
+
+	if (clue->head && HTML_IS_TABLE (clue->head))
+		return TRUE;
+
 	return FALSE;
 }
 

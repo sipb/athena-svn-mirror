@@ -11,15 +11,15 @@ INCLUDES = 				\
 	-DPREFIX=\"$(prefix)\"
 
 AM_CFLAGS = 								\
-	-DICONDIR=\"$(datadir)/gtkhtml-@GTKHTML_RELEASE@/icons\"	\
-	-DGTK_DISABLE_DEPRECATED=1					\
+	-DICONDIR=\"$(datadir)/gtkhtml-@GTKHTML_API_VERSION@/icons\"	\
 	-DGDK_DISABLE_DEPRECATED=1					\
 	-DG_DISABLE_DEPRECATED=1					\
 	-DGNOME_DISABLE_DEPRECATED=1
+#	-DGTK_DISABLE_DEPRECATED=1
 
-lib_LTLIBRARIES = libgtkhtml-3.0.la
+lib_LTLIBRARIES = libgtkhtml-3.1.la
 
-libgtkhtmldir = $(includedir)/libgtkhtml-@GTKHTML_RELEASE@/gtkhtml
+libgtkhtmldir = $(includedir)/libgtkhtml-@GTKHTML_API_VERSION@/gtkhtml
 
 # FIXME not all the stuff should be installed!
 
@@ -75,7 +75,6 @@ libgtkhtml_HEADERS =				\
 	htmlimage.h				\
 	htmlimageinput.h			\
 	htmlinterval.h				\
-	htmllinktext.h				\
 	htmllist.h				\
 	htmlmap.h				\
 	htmlmarshal.h				\
@@ -112,7 +111,7 @@ libgtkhtml_HEADERS =				\
 	htmlengine-edit-table.h			\
 	$(NULL)
 
-libgtkhtml_3_0_la_SOURCES =			\
+libgtkhtml_3_1_la_SOURCES =			\
 	gtkhtml-embedded.c			\
 	gtkhtml-properties.c			\
 	gtkhtml-search.c			\
@@ -159,7 +158,6 @@ libgtkhtml_3_0_la_SOURCES =			\
 	htmlimage.c				\
 	htmlimageinput.c			\
 	htmlinterval.c				\
-	htmllinktext.c				\
 	htmllist.c				\
 	htmlmap.c				\
 	htmlmarshal.c				\
@@ -192,8 +190,8 @@ libgtkhtml_3_0_la_SOURCES =			\
 	htmlframeset.c				\
 	$(NULL)
 
-libgtkhtml_3_0_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE)
-libgtkhtml_3_0_la_LIBADD = $(GTKHTML_LIBS) ../a11y/libgtkhtml-a11y-3.0.la
+libgtkhtml_3_1_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE)
+libgtkhtml_3_1_la_LIBADD = $(GTKHTML_LIBS) ../a11y/libgtkhtml-a11y.la $(GAIL_LIBS)
 
 dist-hook:
 	mkdir $(distdir)/tests
@@ -209,38 +207,39 @@ testgtkhtml_SOURCES = 		\
 	testgtkhtml.c		\
 	htmlurl.h		\
 	htmlurl.c
+#testgtkhtml_LDFLAGS = -static
 testgtkhtml_LDADD =					\
-	libgtkhtml-@GTKHTML_RELEASE@.la			\
-	../a11y/libgtkhtml-a11y-@GTKHTML_RELEASE@.la 	\
+	libgtkhtml-@GTKHTML_API_VERSION@.la			\
 	$(SOUP_LIBS)
 
 gtest_SOURCES = \
 	test.c
 gtest_LDFLAGS =
 gtest_LDADD =	\
-	libgtkhtml-@GTKHTML_RELEASE@.la ../a11y/libgtkhtml-a11y-@GTKHTML_RELEASE@.la
+	libgtkhtml-@GTKHTML_API_VERSION@.la
 
+pkgconfig_in_files = libgtkhtml.pc.in
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libgtkhtml.pc
+pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
 
-keybindingsdir = $(datadir)/gtkhtml-@GTKHTML_RELEASE@
+keybindingsdir = $(datadir)/gtkhtml-@GTKHTML_API_VERSION@
 keybindings_DATA =		\
 	keybindingsrc.emacs
 
 EXTRA_DIST =			\
 	htmlclosures.list	\
 	$(keybindings_DATA)	\
-	$(pkgconfig_DATA)	\
 	$(NULL)
 
 install-data-hook:
-	mv $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml.pc $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml-@GTKHTML_RELEASE@.pc
+	mv $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml.pc $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml-@GTKHTML_API_VERSION@.pc
 
 uninstall-hook:
-	rm -f $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml-@GTKHTML_RELEASE@.pc	
+	rm -f $(DESTDIR)$(libdir)/pkgconfig/libgtkhtml-@GTKHTML_API_VERSION@.pc	
 
 htmlmarshal.h:	htmlclosures.list
 	glib-genmarshal --header --prefix=html_g_cclosure_marshal $< > $@
 
 htmlmarshal.c:	htmlclosures.list
-	glib-genmarshal --body --prefix=html_g_cclosure_marshal $< > $@
+	( echo '#include "htmlmarshal.h"' > $@ &&				\
+	glib-genmarshal --body --prefix=html_g_cclosure_marshal $< >> $@ ) || rm -f $@

@@ -44,6 +44,10 @@ struct _GtkHTMLPersistFile {
 	BonoboPersist parent;
 
 	GtkHTML *html;
+
+	/* The uri of the current file this corresponds to. */
+	gchar *uri;
+	gint saved_step_count;
 };
 
 typedef struct {

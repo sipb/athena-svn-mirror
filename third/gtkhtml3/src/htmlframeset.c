@@ -34,6 +34,7 @@
 #include "htmltablecell.h"
 
 #include "htmlshape.h"
+#include "htmlstyle.h"
 #include "htmlframe.h"
 #include "htmlframeset.h"
 
@@ -139,7 +140,7 @@ calc_dimension (GPtrArray *dim, gint *span, gint total)
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_frameset_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLFrameset *set = HTML_FRAMESET (o);
 	HTMLObject *frame = NULL;
@@ -251,32 +252,6 @@ draw (HTMLObject *o,
 				  tx, ty);
 	}
 }
-
-/* static void
-draw_background (HTMLObject *self,
-		 HTMLPainter *painter,
-		 gint x, gint y, 
-		 gint width, gint height,
-		 gint tx, gint ty)
-{
-	GdkRectangle paint;
-	GdkColor color;
-
-	if (!html_object_intersect (self, &paint, x, y, width, height))
-	      return;
-	
-	
-	gdk_color_parse ("#000000", &color);
-       	html_painter_draw_background (painter,
-				      &color,
-				      NULL,
-				      tx + paint.x,
-				      ty + paint.y,
-				      paint.width,
-				      paint.width,
-				      paint.x - self->x,
-				      paint.y - (self->y - self->ascent));
-} */
 
 static void
 destroy (HTMLObject *self)
@@ -412,7 +387,7 @@ html_frameset_class_init (HTMLFramesetClass *klass,
 
 	html_object_class_init (object_class, type, object_size);
 
-	object_class->calc_size =   calc_size;
+	object_class->calc_size =   html_frameset_real_calc_size;
 	object_class->draw =        draw;
 	object_class->destroy =     destroy;
 	object_class->check_point = check_point;

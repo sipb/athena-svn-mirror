@@ -125,6 +125,8 @@ set_frame_cb (BonoboControl *control,
 	GtkWidget *scrolled_window;
 	Bonobo_ControlFrame frame;
 
+	/* printf ("set_frame_cb\n"); */
+
 	control_data = (GtkHTMLControlData *) data;
 
 	frame = bonobo_control_get_control_frame (control, NULL);
@@ -173,8 +175,8 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 			;
 		}
 		if (run_dialog) {
-			cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"), 
-										     ICONDIR "/properties-16.png");
+			cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Properties"), 
+										     gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_properties", 16, NULL, NULL));
 			html_cursor_jump_to (e->cursor, e, cd->obj, 0);
 			html_engine_disable_selection (e);
 			html_engine_set_mark (e);
@@ -186,7 +188,6 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 				gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 									   GTK_HTML_EDIT_PROPERTY_IMAGE, _("Image"),
 									   image_properties,
-									   image_apply_cb,
 									   image_close_cb);
 				start = GTK_HTML_EDIT_PROPERTY_IMAGE;
 				break;
@@ -195,7 +196,6 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 				gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 									   GTK_HTML_EDIT_PROPERTY_TEXT, _("Text"),
 									   text_properties,
-									   text_apply_cb,
 									   text_close_cb);
 				start = (HTML_OBJECT_TYPE (cd->obj) == HTML_TYPE_TEXT)
 					? GTK_HTML_EDIT_PROPERTY_TEXT
@@ -206,7 +206,6 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 				gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 									   GTK_HTML_EDIT_PROPERTY_RULE, _("Rule"),
 									   rule_properties,
-									   rule_apply_cb,
 									   rule_close_cb);
 				start = GTK_HTML_EDIT_PROPERTY_RULE;
 				break;
@@ -216,12 +215,10 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 			gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 								   GTK_HTML_EDIT_PROPERTY_PARAGRAPH, _("Paragraph"),
 								   paragraph_properties,
-								   paragraph_apply_cb,
 								   paragraph_close_cb);
 			gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 								   GTK_HTML_EDIT_PROPERTY_BODY, _("Page"),
 								   body_properties,
-								   body_apply_cb,
 								   body_close_cb);
 			gtk_html_edit_properties_dialog_show (cd->properties_dialog);
 			gtk_html_edit_properties_dialog_set_page (cd->properties_dialog, start);
@@ -361,10 +358,8 @@ html_button_pressed_after (GtkWidget *html, GdkEventButton *event, GtkHTMLContro
 			html_engine_select_interval (e, html_interval_new_from_cursor (e->mark, e->cursor));
 			/* printf ("delete template text\n"); */
 			html_engine_delete (cd->html->engine);
-		} else if (HTML_IS_IMAGE (obj) && html_object_get_data (obj->parent, "template_image")) {
+		} else if (HTML_IS_IMAGE (obj) && html_object_get_data (obj->parent, "template_image"))
 			property_dialog_show (cd);
-			html_object_set_data_full (obj->parent, "template_image", NULL, NULL);
-		}
 	}
 
 	return FALSE;
@@ -385,9 +380,6 @@ editor_init_painters (GtkHTMLControlData *cd)
 	if (!cd->plain_painter) {
 		cd->gdk_painter = HTML_GDK_PAINTER (html->engine->painter);
 		cd->plain_painter = HTML_GDK_PAINTER (html_plain_painter_new (GTK_WIDGET (html), TRUE));
-
-		html_colorset_add_slave (html->engine->settings->color_set, 
-					 HTML_PAINTER (cd->plain_painter)->color_set);
 
 		/* the plain painter starts with a ref */
 		g_object_ref (G_OBJECT (cd->gdk_painter));
@@ -439,7 +431,7 @@ editor_set_format (GtkHTMLControlData *cd, gboolean format_html)
 		
 }
 
-static enum {
+typedef enum {
 	PROP_EDIT_HTML,
 	PROP_HTML_TITLE,
 	PROP_INLINE_SPELLING,
@@ -450,7 +442,7 @@ static enum {
 static void
 editor_get_prop (BonoboPropertyBag *bag,
 		 BonoboArg         *arg,
-		 guint              arg_id,
+		 EditorControlProps arg_id,
 		 CORBA_Environment *ev,
 		 gpointer           user_data)
 {
@@ -528,7 +520,6 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 	html_widget = gtk_html_new ();
 	gtk_html_load_empty (GTK_HTML (html_widget));
 	gtk_html_set_editable (GTK_HTML (html_widget), TRUE);
-	gtk_html_set_animate (GTK_HTML (html_widget), FALSE);
 
 	cd = gtk_html_control_data_new (GTK_HTML (html_widget), vbox);
 	g_signal_connect (control, "destroy", G_CALLBACK (control_destroy), cd);
@@ -626,7 +617,7 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 	   embedded in its control frame.  We use the "set_frame" signal to
 	   handle that.  */
 
-	/* g_signal_connect (control, "activate", G_CALLBACK (activate_ui_cb), cd); */
+	//g_signal_connect (control, "activate", G_CALLBACK (activate_ui_cb), cd);
 	g_signal_connect (control, "set_frame", G_CALLBACK (set_frame_cb), cd);
 	g_signal_connect (html_widget, "url_requested", G_CALLBACK (url_requested_cb), cd);
 	g_signal_connect (html_widget, "button_press_event", G_CALLBACK (html_button_pressed), cd);
@@ -664,10 +655,15 @@ send_event_str (GNOME_GtkHTML_Editor_Engine engine, GNOME_GtkHTML_Editor_Listene
 {
 	CORBA_Environment ev;
 	GValue *gvalue_retval = NULL;
-	BonoboArg *bonobo_arg = bonobo_arg_new (bonobo_arg_type_from_gtype (G_VALUE_TYPE (arg)));
+	BonoboArg *bonobo_arg;
 	BonoboArg *bonobo_retval;
 
-	bonobo_arg_from_gvalue (bonobo_arg, arg);
+	bonobo_arg = bonobo_arg_new (bonobo_arg_type_from_gtype (G_VALUE_TYPE (arg)));
+
+	/* bonobo_arg_from_gvalue() doesn't handle the case of a NULL string
+	   properly, at least in libbonobo 2.4.0.  */
+	if (! G_VALUE_HOLDS_STRING (arg) || g_value_get_string (arg) != NULL)
+		bonobo_arg_from_gvalue (bonobo_arg, arg);
 
 	/* printf ("sending to listener\n"); */
 	CORBA_exception_init (&ev);

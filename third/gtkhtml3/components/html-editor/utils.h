@@ -26,6 +26,9 @@
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-pixmap-entry.h>
 #include "gtkhtml.h"
+#include "control-data.h"
+
+#define GTKHTML_STOCK_TEST_URL "gtkhtml-stock-test-url"
 
 GtkWidget *color_table_new                         (GtkSignalFunc      f,
 						    gpointer           data);
@@ -35,5 +38,20 @@ void       url_requested                           (GtkHTML           *html,
 						    GtkHTMLStream     *handle);
 void       our_gnome_pixmap_entry_set_last_pixmap  (GnomePixmapEntry  *entry);
 void       our_gnome_pixmap_entry_set_last_dir     (GnomePixmapEntry  *entry);
+
+GtkWidget *editor_hig_inner_hbox  (gchar     *text,
+				   GtkWidget *control);
+GtkWidget *editor_hig_vbox        (gchar     *text,
+				   GtkWidget *control);
+GtkWidget *editor_hig_vbox_full   (gchar     *text,
+				   GtkWidget *control,
+				   gboolean   vexpand);
+void       editor_hig_attach_row  (GtkWidget *table,
+				   gchar     *text,
+				   GtkWidget *control,
+				   int        row);
+gboolean   editor_has_html_object (GtkHTMLControlData *cd,
+				   HTMLObject *o);
+void       editor_check_stock     (void);
 
 #endif

@@ -27,4 +27,6 @@
 void               html_engine_capitalize_word                   (HTMLEngine       *e);
 void               html_engine_upcase_downcase_word              (HTMLEngine       *e,
 								  gboolean          up);
+void               html_engine_set_link                          (HTMLEngine       *e,
+								  const char       *complete_url);
 #endif

@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include "htmlclue.h"
+#include "htmlclueflow.h"
 #include "htmlobject.h"
 #include "htmlsearch.h"
 #include "htmltextslave.h"
@@ -281,15 +282,17 @@ set_max_height (HTMLObject *o, HTMLPainter *painter, gint height)
 	HTMLClue *clue = HTML_CLUE (o);
 	HTMLObject *obj;
 
-	for (obj = HTML_CLUE (o)->head; obj != 0; obj = obj->next) {
-		html_object_set_max_height (obj, painter, height);
-		if (clue->valign == HTML_VALIGN_MIDDLE)
-			obj->y = obj->y + ((height - o->ascent) / 2);
-		else if (clue->valign == HTML_VALIGN_BOTTOM)
-			obj->y = obj->y + height - o->ascent;
-	}
+	if (o->ascent < height) {
+		for (obj = HTML_CLUE (o)->head; obj != 0; obj = obj->next) {
+			html_object_set_max_height (obj, painter, height);
+			if (clue->valign == HTML_VALIGN_MIDDLE)
+				obj->y += (height - o->ascent)/2;
+			else if (clue->valign == HTML_VALIGN_BOTTOM)
+				obj->y += height - o->ascent;
+		}
 
-	o->ascent = height;
+		o->ascent = height;
+	}
 }
 
 static void
@@ -306,7 +309,7 @@ reset (HTMLObject *clue)
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_clue_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	gboolean changed;
 
@@ -420,8 +423,7 @@ check_point (HTMLObject *o,
 }
 
 static gint
-check_page_split (HTMLObject *self,
-		  gint y)
+check_page_split (HTMLObject *self, HTMLPainter *painter, gint y)
 {
 	HTMLClue *clue;
 	HTMLObject *p;
@@ -438,7 +440,7 @@ check_page_split (HTMLObject *self,
 			return last_under;
 
 		if (y >= y1 && y < y2)
-			return html_object_check_page_split (p, y - y1) + y1;
+			return html_object_check_page_split (p, painter, y - y1) + y1;
 		last_under = y2;
 	}
 
@@ -630,7 +632,7 @@ html_clue_class_init (HTMLClueClass *klass,
 	object_class->draw = draw;
 	object_class->set_max_height = set_max_height;
 	object_class->reset = reset;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_clue_real_calc_size;
 	object_class->calc_preferred_width = calc_preferred_width;
 	object_class->calc_min_width = calc_min_width;
 	object_class->check_point = check_point;
@@ -916,4 +918,16 @@ html_clue_remove_text_slaves (HTMLClue *clue)
 			html_object_destroy (p);
 		}
 	}
+}
+
+
+gboolean
+html_clue_is_empty (HTMLClue *clue)
+{
+	if (clue->head == NULL)
+		return TRUE;
+	if (clue->head == clue->tail
+	    && HTML_IS_CLUEFLOW (clue->head) && html_clueflow_is_empty (HTML_CLUEFLOW (clue->head)))
+		return TRUE;
+	return FALSE;
 }

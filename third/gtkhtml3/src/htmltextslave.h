@@ -34,10 +34,9 @@ struct _HTMLTextSlave {
 	HTMLText *owner;
 	guint posStart;
 	guint posLen;
-	guint start_word;
 	gchar *charStart;
 
-	GList *items;
+	HTMLTextPangoInfo *pi;
 	GList *glyphs;
 };
 
@@ -53,12 +52,10 @@ void        html_text_slave_init                  (HTMLTextSlave      *slave,
 						   HTMLTextSlaveClass *klass,
 						   HTMLText           *owner,
 						   guint               posStart,
-						   guint               posLen,
-						   guint               start_word);
+						   guint               posLen);
 HTMLObject *html_text_slave_new                   (HTMLText           *owner,
 						   guint               posStart,
-						   guint               posLen,
-						   guint               start_word);
+						   guint               posLen);
 gint        html_text_slave_get_line_offset       (HTMLTextSlave      *slave,
 						   gint                offset,
 						   HTMLPainter        *p);
@@ -74,6 +71,7 @@ gint        html_text_slave_get_nb_width          (HTMLTextSlave      *slave,
 						   gboolean            lineBegin);
 GList      *html_get_glyphs_non_tab               (GList              *glyphs,
 						   PangoItem          *item,
+						   gint                ii,
 						   const gchar        *text,
 						   gint                bytes,
 						   gint                len);

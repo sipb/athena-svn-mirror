@@ -63,24 +63,12 @@ draw_background_helper (HTMLTableCell *cell,
 		}
 		color = &cell->bg;
 	}
-#if 0
-	else if (t && t->bgColor) {
-		html_painter_alloc_color (p, t->bgColor);
-		color = t->bgColor;
-	}
-#endif
 
 	if (cell->have_bgPixmap) {
 		if (cell->bgPixmap->animation) {
 			pixbuf = gdk_pixbuf_animation_get_static_image (cell->bgPixmap->animation);
 		}
 	}
-#if 0
-	else if (t && t->bgPixmap && t->bgPixmap->animation)
-		pixbuf = gdk_pixbuf_animation_get_static_image (t->bgPixmap->animation);
-	
-#endif
-	/* FIXME this should be moved into the painter interface */
 	if (!HTML_IS_PLAIN_PAINTER (p))
 		html_painter_draw_background (p,
 					      color,
@@ -146,7 +134,7 @@ calc_min_width (HTMLObject *o,
 		HTMLPainter *painter)
 {
 	if (HTML_TABLE_CELL (o)->no_wrap)
-		return MAX ((* HTML_OBJECT_CLASS (parent_class)->calc_preferred_width) (o, painter),
+		return MAX ((* HTML_OBJECT_CLASS (parent_class)->calc_min_width) (o, painter),
 			    o->flags & HTML_OBJECT_FLAG_FIXEDWIDTH
 			    ? HTML_TABLE_CELL (o)->fixed_width * html_painter_get_pixel_size (painter)
 			    : 0);
@@ -195,7 +183,7 @@ clue_move_children (HTMLClue *clue, gint x_delta, gint y_delta)
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_table_cell_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLTableCell *cell;
 	gboolean rv;
@@ -232,23 +220,6 @@ calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 		html_object_add_to_changed (changed_objs, o->parent);
 
 	return rv;
-}
-
-static void
-draw_background (HTMLObject *self,
-		 HTMLPainter *painter,
-		 gint x, gint y, 
-		 gint width, gint height,
-		 gint tx, gint ty)
-{
-	GdkRectangle paint;
-	
-	(* HTML_OBJECT_CLASS (parent_class)->draw_background) (self, painter, x, y, width, height, tx, ty);
-
-	if (!html_object_intersect (self, &paint, x, y, width, height))
-	    return;
-
-	draw_background_helper (HTML_TABLE_CELL (self), painter, &paint, tx, ty);
 }
 
 static void
@@ -335,7 +306,7 @@ save (HTMLObject *self,
 	    && HTML_IS_CLUEFLOW (HTML_CLUE (self)->head) && html_clueflow_is_empty (HTML_CLUEFLOW (HTML_CLUE (self)->head)))
 	    SB "&nbsp;" SE; */
 
-	SB "</TD>\n" SE;
+	SB cell->heading ? "</TH>\n" : "</TD>\n" SE;
 
 	return TRUE;
 }
@@ -364,9 +335,8 @@ html_table_cell_class_init (HTMLTableCellClass *klass,
 	object_class->copy = copy;
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_table_cell_real_calc_size;
 	object_class->draw = draw;
-	object_class->draw_background = draw_background;
 	object_class->set_bg_color = set_bg_color;
 	object_class->get_bg_color = get_bg_color;
 	object_class->save = save;
@@ -465,15 +435,4 @@ gint
 html_table_cell_get_fixed_width (HTMLTableCell *cell, HTMLPainter *painter)
 {
 	return html_painter_get_pixel_size (painter) * cell->fixed_width;
-}
-
-gboolean
-html_table_cell_is_empty (HTMLTableCell *cell)
-{
-	g_assert (HTML_IS_TABLE_CELL (cell));
-
-	if (HTML_CLUE (cell)->head && HTML_CLUE (cell)->head == HTML_CLUE (cell)->tail
-	    && HTML_IS_CLUEFLOW (HTML_CLUE (cell)->head) && html_clueflow_is_empty (HTML_CLUEFLOW (HTML_CLUE (cell)->head)))
-		return TRUE;
-	return FALSE;
 }

@@ -248,6 +248,12 @@ view_html_source_html_cb (GtkWidget *widget,
 }
 
 static void
+file_selection_cancel_cb (GtkWidget *widget, gpointer data)
+{
+	gtk_widget_destroy (GTK_WIDGET (data));
+}
+
+static void
 file_selection_ok_cb (GtkWidget *widget,
 		      gpointer data)
 {
@@ -270,7 +276,7 @@ file_selection_ok_cb (GtkWidget *widget,
 		g_warning ("The Control does not seem to support `%s'.", interface_name);
 	} else 	 {
 		const gchar *fname;
-	
+
 		fname = gtk_file_selection_get_filename
 			(GTK_FILE_SELECTION (file_selection_info.widget));
 
@@ -325,8 +331,7 @@ open_or_save_as_dialog (BonoboWindow *app,
 	file_selection_info.control = control;
 	file_selection_info.operation = op;
 
-	g_signal_connect_object (GTK_FILE_SELECTION (widget)->cancel_button,
-				 "clicked", G_CALLBACK (gtk_widget_destroy), widget, G_CONNECT_AFTER);
+	g_signal_connect (GTK_FILE_SELECTION (widget)->cancel_button, "clicked", G_CALLBACK (file_selection_cancel_cb), widget);
 	g_signal_connect (GTK_FILE_SELECTION (widget)->ok_button, "clicked", G_CALLBACK (file_selection_ok_cb), NULL);
 	g_signal_connect (file_selection_info.widget, "destroy", G_CALLBACK (file_selection_destroy_cb), NULL);
 
@@ -510,6 +515,17 @@ container_create (void)
 	GNOME_GtkHTML_Editor_Engine_runCommand (engine, "grab-focus", &ev);
 	bonobo_object_release_unref (engine, &ev);
 	CORBA_exception_free (&ev);
+
+	bonobo_widget_set_property (BONOBO_WIDGET (control),
+				    "MagicSmileys", TC_CORBA_boolean, TRUE,
+				    NULL);
+	bonobo_widget_set_property (BONOBO_WIDGET (control),
+				    "MagicLinks", TC_CORBA_boolean, TRUE,
+				    NULL);
+	bonobo_widget_set_property (BONOBO_WIDGET (control),
+				   "InlineSpelling", TC_CORBA_boolean, TRUE,
+				   NULL);
+
 
 	return FALSE;
 }

@@ -25,6 +25,7 @@
 #ifndef EDITOR_CONTROL_FACTORY_H_
 #define EDITOR_CONTROL_FACTORY_H_
 
+#include <config.h>
 #include <bonobo.h>
 
 #define CONTROL_FACTORY_ID "OAFIID:GNOME_GtkHTML_Editor_Factory:" EDITOR_API_VERSION

@@ -602,7 +602,7 @@ expand_cspan (HTMLEngine *e, HTMLTableCell *cell, gint cspan, HTMLUndoDirection 
 	move_rows = g_new0 (gint, cell->rspan);
 	for (r = cell->row; r < cell->row + cell->rspan; r ++)
 		for (c = cell->col + cell->cspan; c < MIN (cell->col + cspan, table->totalCols); c ++)
-			if (table->cells [r][c] && !html_table_cell_is_empty (table->cells [r][c]) && move_rows [r - cell->row] == 0)
+			if (table->cells [r][c] && !html_clue_is_empty (HTML_CLUE (table->cells [r][c])) && move_rows [r - cell->row] == 0)
 				move_rows [r - cell->row] = cspan - (c - cell->col);
 
 	max_move = 0;
@@ -721,7 +721,7 @@ calc_rspan_max_move (HTMLTableCell *cell, gint rspan)
 	move_cols = g_new0 (gint, cell->cspan);
 	for (c = cell->col; c < cell->col + cell->cspan; c ++)
 		for (r = cell->row + cell->rspan; r < MIN (cell->row + rspan, table->totalRows); r ++)
-			if (table->cells [r][c] && !html_table_cell_is_empty (table->cells [r][c]) && move_cols [c - cell->col] == 0)
+			if (table->cells [r][c] && !html_clue_is_empty (HTML_CLUE (table->cells [r][c])) && move_cols [c - cell->col] == 0)
 				move_cols [c - cell->col] = rspan - (r - cell->row);
 
 	max_move = 0;

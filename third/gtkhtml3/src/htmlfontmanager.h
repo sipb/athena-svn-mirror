@@ -31,8 +31,11 @@
 struct _HTMLFont {
 	gpointer data;
 	guint    space_width;
+	guint    space_asc;
+	guint    space_dsc;
 	guint    nbsp_width;
 	guint    tab_width;
+	guint    e_width;
 	guint    indent_width;
 	guint    cite_width;
 	gint     ref_count;
@@ -83,8 +86,11 @@ gchar *             html_font_manager_get_attr                (gchar           *
  */
 HTMLFont *html_font_new      (gpointer     data,
 			      guint        space_width,
+			      guint        space_asc,
+			      guint        space_dsc,
 			      guint        nbsp_width,
 			      guint        tab_width,
+			      guint        e_width,
 			      guint        indent_width,
 			      guint        cite_width);
 void      html_font_destroy  (HTMLFont    *font);

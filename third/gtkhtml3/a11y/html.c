@@ -149,7 +149,7 @@ get_parent_html (AtkObject *accessible)
 static AtkObject* 
 html_a11y_get_parent (AtkObject *accessible)
 {
-	AtkObject *parent;
+	AtkObject *parent, *p;
 
 	parent = accessible->accessible_parent;
 
@@ -160,7 +160,10 @@ html_a11y_get_parent (AtkObject *accessible)
 
 		parent_obj = get_parent_html (accessible);
 		if (parent_obj) {
-			parent = HTML_OBJECT_ACCESSIBLE (parent_obj);
+			parent = html_utils_get_accessible (parent_obj, NULL);
+			if ((p = html_a11y_get_parent(parent)) != NULL) {
+				atk_object_set_parent(parent, p);
+			}
 		}
 	}
 
@@ -188,7 +191,7 @@ html_a11y_get_index_in_parent (AtkObject *accessible)
 static AtkStateSet *
 html_a11y_ref_state_set (AtkObject *accessible)
 {
-	AtkStateSet *state_set;
+	AtkStateSet *state_set = NULL;
 
 	if (ATK_OBJECT_CLASS (parent_class)->ref_state_set)
 		state_set = ATK_OBJECT_CLASS (parent_class)->ref_state_set (accessible);

@@ -87,6 +87,14 @@ static void on_set_base (GtkHTML *html, const gchar *url, gpointer data);
 
 static gchar *parse_href (const gchar *s);
 
+#ifdef HAVE_OLD_SOUP
+#define SOUP_STATUS_IS_SUCCESSFUL SOUP_ERROR_IS_SUCCESSFUL
+#define status_code errorcode
+#define reason_phrase errorphrase
+#else
+static SoupSession *session;
+#endif
+
 static GtkHTML *html;
 static GtkHTMLStream *html_stream_handle = NULL;
 /* static GtkWidget *animator; */
@@ -101,7 +109,6 @@ static int go_position;
 static gboolean use_redirect_filter;
 
 static gboolean slow_loading = FALSE;
-static gboolean exit_when_done = FALSE;
 
 static gint redirect_timerId = 0;
 static gchar *redirect_url = NULL;
@@ -195,9 +202,6 @@ create_toolbars (GtkWidget *app)
 	
 	toolbar = gtk_toolbar_new ();
 	gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
-	/* RM2 gtk_toolbar_set_space_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_SPACE_LINE);
-	gtk_toolbar_set_button_relief (GTK_TOOLBAR (toolbar),
-	GTK_RELIEF_NONE); */
 	gtk_box_pack_start (GTK_BOX (hbox), toolbar, FALSE, FALSE, 0);
 
 	toolbar_back = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
@@ -484,7 +488,11 @@ static void
 stop_cb (GtkWidget *widget, gpointer data)
 {
 	/* Kill all requests */
+#ifdef HAVE_OLD_SOUP
 	soup_shutdown ();
+#else
+	soup_session_abort (session);
+#endif
 	html_stream_handle = NULL;
 }
 
@@ -620,7 +628,7 @@ object_requested_cmd (GtkHTML *html, GtkHTMLEmbedded *eb, void *data)
 {
 	/* printf("object requested, wiaint a bit before creating it ...\n"); */
 
-	if (strcmp (eb->classid, "mine:NULL") == 0)
+	if (eb->classid && strcmp (eb->classid, "mine:NULL") == 0)
 		return FALSE;
 
 	gtk_widget_ref (GTK_WIDGET (eb));
@@ -635,8 +643,8 @@ got_data (SoupMessage *msg, gpointer user_data)
 {
 	GtkHTMLStream *handle = user_data;
 
-	if (!SOUP_ERROR_IS_SUCCESSFUL (msg->errorcode)) {
-		g_warning ("%d - %s", msg->errorcode, msg->errorphrase);
+	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
+		g_warning ("%d - %s", msg->status_code, msg->reason_phrase);
 		gtk_html_end (html, handle, GTK_HTML_STREAM_ERROR);
 		return;
 	}
@@ -653,13 +661,18 @@ url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer d
 	full_url = parse_href (url);
 
 	if (full_url && !strncmp (full_url, "http", 4)) {
-		SoupContext *ctx;
 		SoupMessage *msg;
+#ifdef HAVE_OLD_SOUP
+		SoupContext *ctx;
 
 		ctx = soup_context_get (full_url);
 		msg = soup_message_new (ctx, SOUP_METHOD_GET);
 
 		soup_message_queue (msg, got_data, handle);
+#else
+		msg = soup_message_new (SOUP_METHOD_GET, full_url);
+		soup_session_queue_message (session, msg, got_data, handle);
+#endif
 	} else if (full_url && !strncmp (full_url, "file:", 5)) {
 		struct stat st;
 		char *buf;
@@ -808,7 +821,11 @@ goto_url(const char *url, int back_or_forward)
 	gchar *full_url;
 
 	/* Kill all requests */
+#ifdef HAVE_OLD_SOUP
 	soup_shutdown ();
+#else
+	soup_session_abort (session);
+#endif
 
 	/* Remove any pending redirection */
 	if(redirect_timerId) {
@@ -947,11 +964,11 @@ exit_cb (GtkWidget *widget, gpointer data)
 	gtk_main_quit ();
 }
 
-static struct poptOption options[] = {
+/* static struct poptOption options[] = {
   {"slow-loading", '\0', POPT_ARG_NONE, &slow_loading, 0, "Load the document as slowly as possible", NULL},
   {"exit-when-done", '\0', POPT_ARG_NONE, &exit_when_done, 0, "Exit the program as soon as the document is loaded", NULL},
   {NULL}
-};
+  }; */
 
 gint
 main (gint argc, gchar *argv[])
@@ -959,9 +976,6 @@ main (gint argc, gchar *argv[])
 	GtkWidget *app, *bar;
 	GtkWidget *html_widget;
 	GtkWidget *scrolled_window;
-	/* GdkColor   bgColor = {0, 0xc7ff, 0xc7ff, 0xc7ff}; */
-	/* RM2 poptContext ctx; */
-	GError  *gconf_error  = NULL;
 
 #ifdef MEMDEBUG
 	void *p = malloc (1024);	/* to make linker happy with ccmalloc */
@@ -995,6 +1009,10 @@ main (gint argc, gchar *argv[])
 					GTK_POLICY_AUTOMATIC);
 
 	gnome_app_set_contents (GNOME_APP (app), scrolled_window);
+
+#ifndef HAVE_OLD_SOUP
+	session = soup_session_async_new ();
+#endif
 
 	html_widget = gtk_html_new ();
 	html = GTK_HTML (html_widget);
@@ -1055,13 +1073,6 @@ main (gint argc, gchar *argv[])
 
 	if (argc > 1 && *argv [argc - 1] != '-')
 		goto_url (argv [argc - 1], 0);
-	/* RM2 {
-		const char **args;
-		args = poptGetArgs(ctx);
-
-		if (args && args[0])
-			goto_url (args[0], 0);
-			} */
 
 	gtk_main ();
 

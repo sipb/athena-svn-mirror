@@ -109,7 +109,7 @@ print_all_pages (HTMLPainter *painter,
 
 	do {
 		pages ++;
-		new_split_offset = html_object_check_page_split (engine->clue,
+		new_split_offset = html_object_check_page_split (engine->clue, painter,
 								 split_offset + body_height);
 
 		if (new_split_offset <= split_offset
@@ -153,12 +153,11 @@ print_with_header_footer (HTMLEngine *engine,
 {
 	HTMLPainter *printer;
 	HTMLPainter *old_painter;
-	GtkHTMLClassProperties *prop = GTK_HTML_CLASS (GTK_WIDGET_GET_CLASS (engine->widget))->properties;
 	gint pages = 0;
 
 	g_return_val_if_fail (engine->clue != NULL, 0);
 
-	printer = html_printer_new (print_context, GTK_HTML (engine->widget)->priv->print_master);
+	printer = html_printer_new (GTK_WIDGET (engine->widget), print_context, GTK_HTML (engine->widget)->priv->print_master);
 	gtk_html_set_fonts (engine->widget, printer);
 
 	if (do_we_have_default_font (printer)) {

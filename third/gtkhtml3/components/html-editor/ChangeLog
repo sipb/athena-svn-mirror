@@ -1,25 +1,333 @@
-2003-09-15  Larry Ewing  <lewing@ximian.com>
+2004-08-13  JP Rosevear  <jpr@ximian.com>
 
-	* editor-control-factory.c (set_frame_cb): activate the menu items
-	by hand in set_frame rather than using the activate signal.  The
-	has the effect of reverting most of the changes federico
-	introduced with the bonoboui fixes.
+	* menubar.c (insert_image_cb): optionally use gtk file chooser
+	(file_dialog_ok): ditto
+	(insert_file_dialog): ditto and use it in a more GtkDialog manner
 
-	* control-data.c (gtk_html_control_data_new): remove now unused
-	detach handler id.
+2004-07-22  Rodney Dawes  <dobey@novell.com>
 
-	* menubar.c (menubar_set_languages): protect again a NULL language
-	setting.  Remove teh detach function.
+	* Makefile.am (gtkhtml_data, LDADD): Use GTKHTML_API_VERSION
 
-2003-09-02  Larry Ewing  <lewing@ximian.com>
+2004-06-25  Radek Doulik  <rodo@ximian.com>
 
-	* GNOME_GtkHTML_Editor-emacs.xml.in: add file with emacs friendly
-	keybindings converted by Alain Mellan (see Ximian #41187).
+	* editor-control-shlib.c (editor_control_shlib_factory): make the
+	function static
 
-	* menubar.c (menubar_setup): load emacs keybindings if the
-	use_emacs_keybindings is set in the class.
+	* popup.c (remove_link): use html_engine_set_link
 
-	* Makefile.am: add rules for GNOME_GtkHTML_Editor-emacs.xml.in.
+Sat Jun  5 12:20:42 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* html-stream-mem.c (html_stream_mem_construct): Add a missing static.
+
+2004-06-04  Radek Doulik  <rodo@ximian.com>
+
+	* clean all unused variables and other compiler warnings
+
+	* gi-combo-box.c (gtk_combo_tearoff_bg_copy): replace deprecated
+	calls
+
+	* link.c (link_set_ui): removed unused variables
+	removed unused variables and old unused methods
+
+	* image.c (load_done): added return value
+	remove unused old methods
+
+	* cell.c (data_new): make sure we always return value
+
+	* utils.c (editor_hig_vbox): return value (pointed out by Miguel Ibarra)
+
+2004-05-31  Radek Doulik  <rodo@ximian.com>
+
+	* body.c (ADD_COLOR): get colors from settings and not from
+	default settings
+
+	Fixes #59258
+
+	* table.c: after making sure the table still exists, move one step
+	forward so that cursor is inside the table
+
+	Fixes #59261
+
+	* menubar.c (insert_image_cb): complete the image url (prepend
+	"file://" prefix)
+
+	Fixes #59263
+
+2004-05-27  Radek Doulik  <rodo@ximian.com>
+
+	* updated for color set changes
+
+2003-05-21  Pratik V. Parikh  <pratikvp@despammed.com>
+
+	* search.c (search_dialog_response): integrate the regular
+	expression search feature into the find dialog
+	(regular_toggled): make find button sensitive again
+
+2004-05-24  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_setup): connect
+	menubar_paragraph_style_changed_cb, it was probably unconnected by
+	mistake, causing Wrap Lines menu item unaccessible
+
+2004-05-14  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (insert_image_cb): use html_engine_get_image_factory
+
+2004-05-04  Radek Doulik  <rodo@ximian.com>
+
+	* search.c (case_toggled): cast GTK_TOGGLE_BUTTON
+
+2004-05-17  Radek Doulik  <rodo@ximian.com>
+
+	* editor-control-factory.c (editor_control_construct): do not
+	disable animations, they work nicely now
+
+	Fixes #58335
+
+2004-04-28  Pratik V. Parikh  <pratikvp@despammed.com>
+
+	* search.c (search_dialog_response):
+	(case_toggled): make find button sensitive again
+	Fixes bug #57719
+
+2004-04-16  Radek Doulik  <rodo@ximian.com>
+
+	* search.c (search_dialog_response): do not hide the search dialog
+	when we are successful
+	(backward_toggled): make find button sensitive again
+
+2003-12-12  Charles Zhang  <charles.zhang@sun.com>
+
+	* search.c (search): use existing find dialog, not new one blindly.
+	(search_dialog_response): if not found, disable the Find button
+	and leave dialog visible to indicate the user.
+	(entry_changed): enable the Find button when entry changed.
+	Fixes bug #49702
+
+2004-04-15  Radek Doulik  <rodo@ximian.com>
+
+	* popup.c (prepare_properties_and_menu): keep table delete submenu
+	in plain text editor. it may contain tables and we would like to
+	give the user a possibility to delete table/table parts
+
+2004-04-09  Radek Doulik  <rodo@ximian.com>
+
+	* toolbar.c (create_style_toolbar): do not use gtk 2.4 new toolbar
+	API
+
+2004-04-07  Radek Doulik  <rodo@ximian.com>
+
+	* toolbar.c (create_style_toolbar): added two new separators as
+	suggested in #42865
+
+2004-03-19  Radek Doulik  <rodo@ximian.com>
+
+	* image.c (image_widget): default gnome pixmap entry set to home
+	dir
+	(get_data): do not use image location if it has template_image
+	data set
+	(insert_or_apply): reset template_image data
+
+	* editor-control-factory.c (html_button_pressed_after): do not
+	reset template_image data here, do it when applying changes so
+	that it will survive cancel response and will bring properties
+	dialog again
+
+	Fixes #54566
+
+2004-03-12  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am (%.server): Don't put Makefile in the list after :
+	This avoids the circular dependency and causing the server file to
+	get overridden with the contents of Makefile in some cases
+	(BUILT_SOURCES): remove $(server_DATA) and $(ui_DATA) from here
+	(CLEANFILES): and put $(server_DATA) and $(ui_DATA) here instead
+
+2004-03-12  Radek Doulik  <rodo@ximian.com>
+
+	* replace.c (ask_dialog_new): use CANCEL response for CLOSE button
+	(gtk_html_replace_dialog_new): ditto
+	(ask_dialog_response): handle CANCEL response as well as CLOSE one
+	(replace_dialog_response): ditto
+
+	* search.c (gtk_html_search_dialog_new): use CANCEL response for
+	close button, gtkdialog.c closes dialog when Esc key is pressed
+	only if there's CANCEL response present
+	(search_dialog_response): handle CANCEL response as well as CLOSE
+	one
+
+	Fixes #47064
+
+2004-02-26    <rodo@ximian.com>
+
+	* image.c (insert_or_apply): set alt to d->alt instead of d->url
+
+2004-02-17  Radek Doulik  <rodo@ximian.com>
+
+	* popup.c (prepare_properties_and_menu): do not add "Insert Link"
+	popup menu item in plain text mode
+	(prepare_properties_and_menu): capitalize link in "Insert Link"
+	(prepare_properties_and_menu): add separator before "Input
+	Methods"
+	(prepare_properties_and_menu): do not add separator after "Style"
+	submenu and place it before table items
+
+2004-02-13  Radek Doulik  <rodo@ximian.com>
+
+	* image.c (load_done): new handler, replaces set_size idle
+	callback
+	(image_widget): hoohkup load_done
+
+	Fixes #54204
+
+2004-02-11  Yong Sun <Yong.Sun@sun.com>
+
+	* toolbar.c: (create_style_toolbar) steal domain for libgnomeui to 
+	create toolbar.
+
+2004-02-03  Radek Doulik  <rodo@ximian.com>
+
+	* paragraph.c (fill_sample): don't include </div> in translateable
+	string
+
+	* toolbar.c (create_style_toolbar): unset focus for all toolbar
+	widgets
+
+2004-02-02  Radek Doulik  <rodo@ximian.com>
+
+	* properties.c (gtk_html_edit_properties_dialog_new): make the
+	code more readable
+	(dialog_response): close the dialog only if dialog succeeded
+
+	* link.c (link_insert_cb): complain if text and/or url is not
+	filled
+
+2004-01-30  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_setup): as below
+
+	* gnome-gtkhtml-editor.c (main): as below
+
+	* editor-control-shlib.c (editor_shlib_init): use GETTEXT_PACKAGE
+	instead of GNOME_EXPLICIT_TRANSLATION_DOMAIN
+
+2004-01-30  Yong Sun <Yong.Sun@sun.com>
+
+	* cell.c image.c rule.c table.c template.c: add domain param in
+	glade_xml_new()
+
+	* properties.c link.c: add domain member in GtkStockItem
+
+2004-01-23  Radek Doulik  <rodo@ximian.com>
+
+	* toolbar.c (create_style_toolbar): set initial unindent button
+	sensitivity
+	(toolbar_item_represents): new helper function
+	(toolbar_item_update_sensitivity): use toolbar_item_represents,
+	newer gtk toolbar contains gtktoolitems so we have to be more
+	careful
+	(toolbar_update_format): use gtk_container_foreach instead of
+	forall
+
+2003-12-15  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_update_format): disable sick smiley for plain
+	text mode
+
+2003-12-02  Charles Zhang  <charles.zhang@sun.com>
+
+	* replace.c (ask_dialog_new): new button with mnemonics.
+	Fixes bug #51472
+
+2003-09-24  Radek Doulik  <rodo@ximian.com>
+
+	* spell.c (spell_check_dialog): added missing dialog, set
+	temporary inline spelling in case it's disabled and whole document
+	has to be checked
+
+2003-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* GNOME_GtkHTML_Editor.xml.in: as below, make it the same order
+	and grouping as in paragraph dialog
+
+	* paragraph.c (paragraph_properties): s/Pre/Preformatted,
+	reordered and added few separators
+
+	* menubar.c (menubar_update_format): allow alignment change in
+	plain text mode, we support this
+
+	* paragraph.c (paragraph_properties): disable headings and address
+	styles for plain text mode
+
+2003-12-03  Radek Doulik  <rodo@ximian.com>
+
+	* editor-control-factory.h: include config.h for
+	EDITOR_API_VERSION
+
+2003-12-02  Rodney Dawes  <dobey@ximian.com>
+
+	* GNOME_GtkHTML_Editor.oaf.in.in:
+	* GNOME_GtkHTML_Editor.oafinfo: Removed unneeded files
+
+2003-12-02  Radek Doulik  <rodo@ximian.com>
+
+	* persist-file.c (impl_getCurrentFile): use CORBA_string_dup
+	(gtk_html_persist_file_new): add step counter
+	(impl_isDirty): check step counter, use CORBA types
+
+2003-09-10  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* persist-file.c (impl_save): call to open, mode should be 0666 instead
+	of 0600.
+	(gtk_html_persist_file_new): initialize new member, uri.
+	(finalize): free the file->uri field.
+	(gtk_html_persist_file_class_init): setup the 2 new methods. isDirty()
+	and getCurrentFile().
+	(impl_isDirty, impl_getCurrentFile): new.
+	(impl_save): call gtk_html_command (html, "saved"). Also save the
+	uri/path to which data is saved.
+	(impl_load): likewise for the uri.
+
+	* test-html-editor-control.c (file_selection_cancel_cb): new callback.
+	Destroy the whole filesel widget. Previously only the cancel_button
+	was destroyed.
+	(open_or_save_as_dialog): setup cancel callback correctly.
+
+2003-11-18  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am: remove gnome and gtk deprecated flags
+
+2003-11-07  Radek Doulik  <rodo@ximian.com>
+
+	* link.c (link_insert_cb): use add_link => pass engine as
+	parameter
+
+	* test-html-editor-control.c (container_create): enable magic
+	smileys, links and inline spell checking
+
+2003-10-14  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* popup.c: Add missing header include.
+
+2003-10-02  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: Version the server file, Clean up some of the
+	unneeded rules, and condense them, Don't dist generated files
+
+2003-09-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* editor-control-factory.c (send_event_str): Work around the fact
+	that bonobo_arg_from_gvalue() in libbonobo 2.4.0 doesn't handle
+	NULL strings.
+
+2003-09-22  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am (glade_DATA): don't link with a11y, it's already in
+	libgtkhtml
+
+2003-09-03  Larry Ewing  <lewing@ximian.com>
+
+	* menubar.c: revert the destach changes
 
 2003-09-03  Radek Doulik  <rodo@ximian.com>
 
@@ -58,15 +366,37 @@
 
 2003-09-03  Dan Winship  <danw@ximian.com>
 
-	* Makefile.am (libgnome_gtkhtml_editor_3_0_la_LDFLAGS): Remove
-	-no-undefined (which is wrong), and add -module
+	* Makefile.am (libgnome_gtkhtml_editor_3_1_la_LDFLAGS): Remove
+	-no-undefined (which is wrong), and add -module.
+
+2003-09-02  Larry Ewing  <lewing@ximian.com>
+
+	* GNOME_GtkHTML_Editor-emacs.xml.in: add file with emacs friendly
+	keybindings converted by Alain Mellan (see Ximian #41187).
+
+	* menubar.c (menubar_setup): load emacs keybindings if the
+	use_emacs_keybindings is set in the class.
+
+	* Makefile.am: add rules for GNOME_GtkHTML_Editor-emacs.xml.in.
+
+2003-09-02  Radek Doulik  <rodo@ximian.com>
+
+	* body.c: renamed draft paper to graph paper as suggested by Aaron
 
 2003-08-08  Yuedong Du  <yuedong.du@sun.com>
 
-        * menubar.c: fix a typo cause bullet list not work. See bug
-        #47387
+	* menubar.c: fix a typo cause bullet list not work. See bug 
+	#47387
 
-2003-07-28  Alex Jiang <alex.jiang@sun.com>
+2003-07-31  Radek Doulik  <rodo@ximian.com>
+
+	* replace.c (ask_dialog_response): as below
+
+	* search.c (search_dialog_response): as below
+
+	* properties.c (prop_close): grab focus after closing prop dialog
+
+2003-06-28  Alex Jiang <alex.jiang@sun.com>
 
 	* image.c (changed_template): before clear option data, check 
 	if we are using the same template. Fixes #44705

@@ -30,6 +30,7 @@ typedef struct _GtkHTMLEditPropertiesDialog   GtkHTMLEditPropertiesDialog;
 
 #include <gtkhtml.h>
 #include <bonobo.h>
+#include <libgnomeui/gnome-icon-theme.h>
 #include "persist-stream.h"
 #include "htmlgdkpainter.h"
 #include "search.h"
@@ -109,6 +110,8 @@ struct _GtkHTMLControlData {
 
 	GtkWidget *file_dialog;
 	gboolean file_html;
+
+	GnomeIconTheme *icon_theme;
 };
 
 GtkHTMLControlData * gtk_html_control_data_new       (GtkHTML *html, GtkWidget *vbox);

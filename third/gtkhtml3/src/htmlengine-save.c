@@ -194,6 +194,13 @@ html_engine_save_output_string (HTMLEngineSaveState *state,
   return retval;
 }
 
+gboolean
+html_engine_save_output_buffer (HTMLEngineSaveState *state, const gchar *buffer, int bytes)
+{
+	if (bytes == -1)
+		bytes = strlen (buffer);
+	return state->receiver (state->engine, buffer, bytes, state->user_data);
+}
 
 
 static gchar *
@@ -214,6 +221,7 @@ get_body (HTMLEngine *e)
 	gchar *bg;
 	gchar *bg_image;
 	gchar *link;
+	gchar *lm, *rm, *tm, *bm;
 	gchar *url = NULL;
 
 	cset = e->settings->color_set;
@@ -226,8 +234,17 @@ get_body (HTMLEngine *e)
 		: g_strdup ("");
 	g_free (url);
 
-	body = g_strconcat ("<BODY", text, link, bg, bg_image, ">\n", NULL);
+	lm = e->leftBorder != LEFT_BORDER ? g_strdup_printf (" LEFTMARGIN=\"%d\"", e->leftBorder) : g_strdup ("");
+	rm = e->rightBorder != RIGHT_BORDER ? g_strdup_printf (" RIGHTMARGIN=\"%d\"", e->rightBorder) : g_strdup ("");
+	tm = e->topBorder != TOP_BORDER ? g_strdup_printf (" TOPMARGIN=\"%d\"", e->topBorder) : g_strdup ("");
+	bm = e->bottomBorder != BOTTOM_BORDER ? g_strdup_printf (" BOTTOMMARGIN=\"%d\"", e->bottomBorder) : g_strdup ("");
 
+	body = g_strconcat ("<BODY", text, link, bg, bg_image, lm, rm, tm, bm, ">\n", NULL);
+
+	g_free (lm);
+	g_free (rm);
+	g_free (tm);
+	g_free (bm);
 	g_free (text);
 	g_free (link);
 	g_free (bg);
@@ -377,7 +394,7 @@ html_engine_save_buffer_free (HTMLEngineSaveState *state)
 	string = (GString *)state->user_data;
 
 	g_string_free (string, TRUE);
-	
+
 	g_free (state);
 }
 
@@ -390,6 +407,17 @@ html_engine_save_buffer_peek_text (HTMLEngineSaveState *state)
 	string = (GString *)state->user_data;
 	
 	return string->str;
+}
+
+int
+html_engine_save_buffer_peek_text_bytes (HTMLEngineSaveState *state)
+{
+	GString *string;
+	
+	g_return_val_if_fail (state != NULL, 0);
+	string = (GString *)state->user_data;
+	
+	return string->len;
 }
 
 HTMLEngineSaveState *

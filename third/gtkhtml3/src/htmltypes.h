@@ -36,7 +36,6 @@
 
 typedef struct _HTMLAnchor HTMLAnchor;
 typedef struct _HTMLAnchorClass HTMLAnchorClass;
-typedef struct _HTMLBlockStackElement HTMLBlockStackElement;
 typedef struct _HTMLButton HTMLButton;
 typedef struct _HTMLButtonClass HTMLButtonClass;
 typedef struct _HTMLCheckBox HTMLCheckBox;
@@ -88,8 +87,6 @@ typedef struct _HTMLImageInput HTMLImageInput;
 typedef struct _HTMLImageInputClass HTMLImageInputClass;
 typedef struct _HTMLImagePointer HTMLImagePointer;
 typedef struct _HTMLInterval HTMLInterval;
-typedef struct _HTMLLinkText HTMLLinkText;
-typedef struct _HTMLLinkTextClass HTMLLinkTextClass;
 typedef struct _HTMLList HTMLList;
 typedef struct _HTMLMap HTMLMap;
 typedef struct _HTMLMapClass HTMLMapClass;
@@ -98,6 +95,7 @@ typedef struct _HTMLObjectClass HTMLObjectClass;
 typedef struct _HTMLObjectClearRectangle HTMLObjectClearRectangle;
 typedef struct _HTMLPainter HTMLPainter;
 typedef struct _HTMLPainterClass HTMLPainterClass;
+typedef struct _HTMLPangoAttrFontSize HTMLPangoAttrFontSize;
 typedef struct _HTMLPoint HTMLPoint;
 typedef struct _HTMLPrinter HTMLPrinter;
 typedef struct _HTMLPrinterClass HTMLPrinterClass;
@@ -117,6 +115,8 @@ typedef struct _HTMLTableCell HTMLTableCell;
 typedef struct _HTMLTableCellClass HTMLTableCellClass;
 typedef struct _HTMLTableClass HTMLTableClass;
 typedef struct _HTMLText HTMLText;
+typedef struct _HTMLTextPangoInfoEntry HTMLTextPangoInfoEntry;
+typedef struct _HTMLTextPangoInfo HTMLTextPangoInfo;
 typedef struct _HTMLTextArea HTMLTextArea;
 typedef struct _HTMLTextAreaClass HTMLTextAreaClass;
 typedef struct _HTMLTextClass HTMLTextClass;
@@ -129,9 +129,8 @@ typedef struct _HTMLTokenizerClass HTMLTokenizerClass;
 typedef struct _HTMLUndo HTMLUndo;
 typedef struct _HTMLUndoData HTMLUndoData;
 typedef struct _HTMLUndoAction HTMLUndoAction;
-typedef struct _HTMLVSpace HTMLVSpace;
-typedef struct _HTMLVSpaceClass HTMLVSpaceClass;
 typedef struct _SpellError SpellError;
+typedef struct _Link Link;
 
 typedef void     (* HTMLObjectForallFunc)       (HTMLObject        *self,
 						 HTMLEngine        *e,

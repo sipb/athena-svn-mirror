@@ -255,23 +255,31 @@ spell_check_dialog (GtkHTMLControlData *cd, gboolean whole_document)
 	GtkWidget *control;
 	GtkWidget *dialog;
 	guint position;
+	gboolean inline_spelling = gtk_html_get_inline_spelling (cd->html);
 
 	position = cd->html->engine->cursor->position;
 	cd->spell_check_next = whole_document;
 	if (whole_document) {
 		html_engine_disable_selection (cd->html->engine);
 		html_engine_beginning_of_document (cd->html->engine);
+		if (!inline_spelling)
+			gtk_html_set_inline_spelling (cd->html, TRUE);
 	}
 
 	if (html_engine_spell_word_is_valid (cd->html->engine))
 		if (next_word (cd, TRUE)) {
+			GtkWidget *info;
+
 			html_engine_hide_cursor (cd->html->engine);
 			html_cursor_jump_to_position (cd->html->engine->cursor, cd->html->engine, position);
 			html_engine_show_cursor (cd->html->engine);
 
-			/* FIX2 gnome_ok_dialog (_("No misspelled word found")); */
+			info = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO,
+						       GTK_BUTTONS_OK, _("No misspelled word found"));
+			gtk_dialog_run (GTK_DIALOG (info));
+			gtk_widget_destroy (info);
 
-			return;
+			goto end;
 		}
 
 	dialog  = gtk_dialog_new_with_buttons (_("Spell checker"), NULL, 0, GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
@@ -280,7 +288,7 @@ spell_check_dialog (GtkHTMLControlData *cd, gboolean whole_document)
 	if (!control) {
 		g_warning ("Cannot create spell control");
 		gtk_widget_unref (dialog);
-		return;
+		goto end;
 	}
 
 	cd->spell_dialog = dialog;
@@ -302,6 +310,10 @@ spell_check_dialog (GtkHTMLControlData *cd, gboolean whole_document)
 	gtk_widget_destroy (dialog);
 	bonobo_object_release_unref (cd->spell_control_pb, NULL);
 	cd->spell_control_pb = CORBA_OBJECT_NIL;
+
+ end:
+	if (!inline_spelling)
+		gtk_html_set_inline_spelling (cd->html, inline_spelling);
 }
 
 static void

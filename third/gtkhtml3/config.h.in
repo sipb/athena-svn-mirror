@@ -24,6 +24,7 @@
 #undef GTKHTML_RELEASE
 #undef GTKHTML_RELEASE_STRING
 #undef GNOME_EXPLICIT_TRANSLATION_DOMAIN
+#undef HAVE_OLD_SOUP
 
 
 /* Editor API Version */
@@ -32,14 +33,17 @@
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
+/* Package name for gettext */
+#undef GETTEXT_PACKAGE
+
 /* Gnome Explicit Translation Domain */
 #undef GNOME_EXPLICIT_TRANSLATION_DOMAIN
 
 /* Editor shlib */
 #undef GNOME_GTKHTML_EDITOR_SHLIB
 
-/* GtkHTML Release */
-#undef GTKHTML_RELEASE
+/* GtkHTML API Version */
+#undef GTKHTML_API_VERSION
 
 /* GtkHTML Release String */
 #undef GTKHTML_RELEASE_STRING
@@ -109,6 +113,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Use new GtkFileChooser */
+#undef USE_GTKFILECHOOSER
 
 /* Version number of package */
 #undef VERSION

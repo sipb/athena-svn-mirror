@@ -31,6 +31,7 @@
 #include "htmlcolorset.h"
 #include "htmlentity.h"
 #include "htmltext.h"
+#include "htmltextslave.h"
 #include "htmlpainter.h"
 
 
@@ -52,12 +53,16 @@ finalize (GObject *object)
 	painter = HTML_PAINTER (object);
 	html_font_manager_finalize (&painter->font_manager);
 
-	html_colorset_destroy (painter->color_set);
 	g_free (painter->font_face);
 
 	/* FIXME ownership of the color set?  */
 
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+
+	if (painter->widget) {
+		g_object_unref (painter->widget);
+		painter->widget = NULL;
+	}
 }
 
 
@@ -105,18 +110,25 @@ DEFINE_UNIMPLEMENTED (get_pixel_size)
 DEFINE_UNIMPLEMENTED (get_page_width)
 DEFINE_UNIMPLEMENTED (get_page_height)
 
-
 static void
 html_painter_init (GObject *object, HTMLPainterClass *real_klass)
 {
 	HTMLPainter *painter;
 
 	painter = HTML_PAINTER (object);
-	painter->color_set = html_colorset_new (NULL);
-
 	html_font_manager_init (&painter->font_manager, painter);
 	painter->font_style = GTK_HTML_FONT_STYLE_DEFAULT;
 	painter->font_face = NULL;
+	painter->widget = NULL;
+}
+
+static void
+html_painter_real_set_widget (HTMLPainter *painter, GtkWidget *widget)
+{
+	if (painter->widget)
+		g_object_unref (painter->widget);
+	painter->widget = widget;
+	g_object_ref (widget);
 }
 
 static void
@@ -129,6 +141,7 @@ html_painter_class_init (GObjectClass *object_class)
 	object_class->finalize = finalize;
 	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
+	class->set_widget = html_painter_real_set_widget;
 	class->begin = (gpointer) begin_unimplemented;
 	class->end = (gpointer) end_unimplemented;
 
@@ -189,13 +202,6 @@ html_painter_get_type (void)
 	return html_painter_type;
 }
 
-HTMLPainter *
-html_painter_new (void)
-{
-	return g_object_new (HTML_TYPE_PAINTER, NULL);
-}
-
-
 /* Functions to begin/end a painting process.  */
 
 void
@@ -289,7 +295,7 @@ html_painter_get_font (HTMLPainter *painter, HTMLFontFace *face, GtkHTMLFontStyl
 void
 html_painter_calc_text_size (HTMLPainter *painter,
 			     const gchar *text,
-			     guint len, GList *items, GList *glyphs, gint start_byte_offset, gint *line_offset,
+			     guint len, HTMLTextPangoInfo *pi, PangoAttrList *attrs, GList *glyphs, gint start_byte_offset, gint *line_offset,
 			     GtkHTMLFontStyle font_style,
 			     HTMLFontFace *face,
 			     gint *width, gint *asc, gint *dsc)
@@ -297,9 +303,8 @@ html_painter_calc_text_size (HTMLPainter *painter,
 	g_return_if_fail (painter != NULL);
 	g_return_if_fail (HTML_IS_PAINTER (painter));
 	g_return_if_fail (text != NULL);
-	g_return_if_fail (font_style != GTK_HTML_FONT_STYLE_DEFAULT);
 
-	(* HP_CLASS (painter)->calc_text_size) (painter, text, len, items, glyphs, start_byte_offset, font_style, face, width, asc, dsc);
+	(* HP_CLASS (painter)->calc_text_size) (painter, text, len, pi, attrs, glyphs, start_byte_offset, font_style, face, width, asc, dsc);
 
 	if (line_offset) {
 		gint tabs;
@@ -309,17 +314,17 @@ html_painter_calc_text_size (HTMLPainter *painter,
 
 void
 html_painter_calc_text_size_bytes (HTMLPainter *painter,
-				    const gchar *text,
-				    guint bytes_len, GList *items, GList *glyphs, gint start_byte_offset, gint *line_offset,
-				    HTMLFont *font, GtkHTMLFontStyle style,
-				    gint *width, gint *asc, gint *dsc)
+				   const gchar *text,
+				   guint bytes_len, HTMLTextPangoInfo *pi, PangoAttrList *attrs, GList *glyphs, gint start_byte_offset, gint *line_offset,
+				   HTMLFont *font, GtkHTMLFontStyle style,
+				   gint *width, gint *asc, gint *dsc)
 {
 	g_return_if_fail (painter != NULL);
 	g_return_if_fail (HTML_IS_PAINTER (painter));
 	g_return_if_fail (text != NULL);
 	g_return_if_fail (style != GTK_HTML_FONT_STYLE_DEFAULT);
 
-	(* HP_CLASS (painter)->calc_text_size_bytes) (painter, text, bytes_len, items, glyphs, start_byte_offset, font, style, width, asc, dsc);
+	(* HP_CLASS (painter)->calc_text_size_bytes) (painter, text, bytes_len, pi, attrs, glyphs, start_byte_offset, font, style, width, asc, dsc);
 	if (line_offset) {
 		gint tabs, len = g_utf8_pointer_to_offset (text, text + bytes_len);
 		*width += (html_text_text_line_length (text, line_offset, len, &tabs) - len + tabs)*font->space_width;
@@ -404,7 +409,7 @@ shift_glyphs (GList *glyphs, gint len)
 
 		while (glyphs && (str = (PangoGlyphString *) glyphs->data) && len > 0) {
 			len -= str->num_glyphs;
-			glyphs = glyphs->next;
+			glyphs = glyphs->next->next;
 		}
 	}
 
@@ -413,7 +418,7 @@ shift_glyphs (GList *glyphs, gint len)
 
 gint
 html_painter_draw_text (HTMLPainter *painter, gint x, gint y,
-			const gchar *text, gint len, GList *items, GList *glyphs, gint start_byte_offset, gint line_offset)
+			const gchar *text, gint len, HTMLTextPangoInfo *pi, PangoAttrList *attrs, GList *glyphs, gint start_byte_offset, gint line_offset)
 {
 	const gchar *tab, *c_text = text;
 	gint bytes, byte_offset = 0;
@@ -421,16 +426,13 @@ html_painter_draw_text (HTMLPainter *painter, gint x, gint y,
 	g_return_val_if_fail (painter != NULL, line_offset);
 	g_return_val_if_fail (HTML_IS_PAINTER (painter), line_offset);
 
-	if (items)
-		items = shift_items (items, start_byte_offset);
-
 	bytes = g_utf8_offset_to_pointer (text, len) - text;
 	while ((tab = memchr (c_text, (unsigned char) '\t', bytes))) {
 		gint c_bytes = tab - c_text;
 		gint c_len = g_utf8_pointer_to_offset (c_text, tab);
 		
 		if (c_bytes)
-			x += (* HP_CLASS (painter)->draw_text) (painter, x, y, c_text, c_len, items, glyphs, start_byte_offset + (c_text - text));
+			x += (* HP_CLASS (painter)->draw_text) (painter, x, y, c_text, c_len, pi, NULL, glyphs, start_byte_offset + (c_text - text));
 		if (line_offset == -1)
 			x += html_painter_get_space_width (painter, painter->font_style, painter->font_face);
 		else {
@@ -441,12 +443,11 @@ html_painter_draw_text (HTMLPainter *painter, gint x, gint y,
 		c_text += c_bytes + 1;
 		bytes -= c_bytes + 1;
 		byte_offset += c_bytes + 1;
-		items = shift_items (items, start_byte_offset + byte_offset);
 		glyphs = shift_glyphs (glyphs, c_len);
 		len -= c_len + 1;
 	}
 
-	(* HP_CLASS (painter)->draw_text) (painter, x, y, c_text, len, items, glyphs, start_byte_offset + (c_text - text));
+	(* HP_CLASS (painter)->draw_text) (painter, x, y, c_text, len, pi, attrs, glyphs, start_byte_offset + (c_text - text));
 
 	return line_offset + len;
 }
@@ -582,9 +583,9 @@ gint
 html_painter_draw_spell_error (HTMLPainter *painter,
 			       gint x, gint y,
 			       const gchar *text,
-			       gint len, GList *items, GList *glyphs, gint start_byte_offset)
+			       gint len, HTMLTextPangoInfo *pi, GList *glyphs, gint start_byte_offset)
 {
-	return (* HP_CLASS (painter)->draw_spell_error) (painter, x, y, text, len, items, glyphs, start_byte_offset);
+	return (* HP_CLASS (painter)->draw_spell_error) (painter, x, y, text, len, pi, glyphs, start_byte_offset);
 }
 
 HTMLFont *
@@ -609,6 +610,24 @@ guint
 html_painter_get_space_width (HTMLPainter *painter, GtkHTMLFontStyle style, HTMLFontFace *face)
 {
 	return html_font_manager_get_font (&painter->font_manager, face, style)->space_width;
+}
+
+guint
+html_painter_get_space_asc (HTMLPainter *painter, GtkHTMLFontStyle style, HTMLFontFace *face)
+{
+	return html_font_manager_get_font (&painter->font_manager, face, style)->space_asc;
+}
+
+guint
+html_painter_get_space_dsc (HTMLPainter *painter, GtkHTMLFontStyle style, HTMLFontFace *face)
+{
+	return html_font_manager_get_font (&painter->font_manager, face, style)->space_dsc;
+}
+
+guint
+html_painter_get_e_width (HTMLPainter *painter, GtkHTMLFontStyle style, HTMLFontFace *face)
+{
+	return html_font_manager_get_font (&painter->font_manager, face, style)->e_width;
 }
 
 guint
@@ -639,4 +658,66 @@ void
 html_painter_set_focus (HTMLPainter *p, gboolean focus)
 {
 	p->focus = focus;
+}
+
+void
+html_painter_set_widget (HTMLPainter *painter, GtkWidget *widget)
+{
+	return 	(* HP_CLASS (painter)->set_widget) (painter, widget);
+}
+
+HTMLTextPangoInfo *
+html_painter_text_itemize_and_prepare_glyphs (HTMLPainter *painter, PangoFontDescription *desc, const gchar *text, gint bytes, GList **glyphs, PangoAttrList *attrs)
+{
+	PangoAttribute *attr;
+	GList *items = NULL;
+	gboolean empty_attrs = (attrs == NULL);
+	HTMLTextPangoInfo *pi = NULL;
+
+	/* printf ("itemize + glyphs\n"); */
+
+	if (empty_attrs) {
+		attrs = pango_attr_list_new ();
+		attr = pango_attr_font_desc_new (desc);
+		attr->start_index = 0;
+		attr->end_index = bytes;
+		pango_attr_list_insert (attrs, attr);
+	}
+	items = pango_itemize (gtk_widget_get_pango_context (painter->widget), text, 0, bytes, attrs, NULL);
+	if (empty_attrs)
+		pango_attr_list_unref (attrs);
+
+	if (items && items->data) {
+		PangoItem *item;
+		GList *il;
+		const gchar *end;
+		gint i = 0;
+
+		pi = html_text_pango_info_new (g_list_length (items));
+
+		*glyphs = NULL;
+		for (il = items; il; il = il->next) {
+			item = (PangoItem *) il->data;
+			pi->entries [i].item = item;
+			end = g_utf8_offset_to_pointer (text, item->num_chars);
+			*glyphs = html_get_glyphs_non_tab (*glyphs, item, i, text, end - text, item->num_chars);
+			text = end;
+			i ++;
+		}
+		*glyphs = g_list_reverse (*glyphs);
+		g_list_free (items);
+	} else
+		*glyphs = NULL;
+
+	return pi;
+}
+
+void
+html_painter_glyphs_destroy (GList *glyphs)
+{
+	GList *l;
+
+	for (l = glyphs; l; l = l->next->next)
+		pango_glyph_string_free ((PangoGlyphString *) l->data);
+	g_list_free (glyphs);
 }

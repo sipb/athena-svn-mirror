@@ -423,17 +423,6 @@ op_cut (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left, GL
 		return cut_whole (self, len);
 }
 
-static gboolean
-cell_is_empty (HTMLTableCell *cell)
-{
-	g_assert (HTML_IS_TABLE_CELL (cell));
-
-	if (HTML_CLUE (cell)->head && HTML_CLUE (cell)->head == HTML_CLUE (cell)->tail
-	    && HTML_IS_CLUEFLOW (HTML_CLUE (cell)->head) && html_clueflow_is_empty (HTML_CLUEFLOW (HTML_CLUE (cell)->head)))
-		return TRUE;
-	return FALSE;
-}
-
 static void
 split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint level, GList **left, GList **right)
 {
@@ -452,7 +441,7 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 	dup_cell  = HTML_TABLE_CELL ((*right)->data);
 	cell      = HTML_TABLE_CELL ((*left)->data);
 
-	if (dup_cell->row == t->totalRows - 1 && dup_cell->col == t->totalCols - 1 && cell_is_empty (dup_cell)) {
+	if (dup_cell->row == t->totalRows - 1 && dup_cell->col == t->totalCols - 1 && html_clue_is_empty (HTML_CLUE (dup_cell))) {
 		dup = html_engine_new_text_empty (e);
 		html_object_destroy ((*right)->data);
 		g_list_free (*right);
@@ -569,10 +558,10 @@ could_merge (HTMLTable *t1, HTMLTable *t2)
 				return FALSE;
 
 			if (first) {
-				if (!cell_is_empty (c2))
+				if (!html_clue_is_empty (HTML_CLUE (c2)))
 					first = FALSE;
 			} else {
-				if (!cell_is_empty (c1))
+				if (!html_clue_is_empty (HTML_CLUE (c1)))
 					return FALSE;
 			}
 		}
@@ -662,9 +651,9 @@ merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList **left, GList **
 			c2 = t2->cells [r][c];
 
 			if (first) {
-				if (!cell_is_empty (c2)) {
+				if (!html_clue_is_empty (HTML_CLUE (c2))) {
 					t1_tail = prev_c1;
-					if (cell_is_empty (c1)) {
+					if (html_clue_is_empty (HTML_CLUE (c1))) {
 						move_cell (t1, t2, c1, c2, cursor_cell_1, cursor_cell_2,
 							   r, c, e->cursor, cursor);
 						c1 = c2;
@@ -1016,7 +1005,9 @@ calc_row_heights (HTMLTable *table,
 					ROW_HEIGHT (table, rl) = height;
 			}
 		}
+		/* printf ("height %d: %d\n", r, ROW_HEIGHT (table, r)); */
 	}
+	/* printf ("height %d: %d\n", r, ROW_HEIGHT (table, r)); */
 }
 
 static void
@@ -1048,6 +1039,7 @@ html_table_set_cells_position (HTMLTable *table, HTMLPainter *painter)
 				HTML_OBJECT (cell)->x = COLUMN_OPT (table, c) + pixel_size * border_extra;
 				HTML_OBJECT (cell)->y = ROW_HEIGHT (table, rl) + pixel_size * (- table->spacing)
 					- HTML_OBJECT (cell)->descent;
+				/* printf ("y: %d\n", HTML_OBJECT (cell)->y); */
 				html_object_set_max_height (HTML_OBJECT (cell), painter,
 							    ROW_HEIGHT (table, rl) - ROW_HEIGHT (table, cell->row)
 							    - pixel_size * (table->spacing + border_extra));
@@ -1084,7 +1076,7 @@ html_table_set_max_height (HTMLObject *o, HTMLPainter *painter, gint height)
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_table_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLTable *table = HTML_TABLE (o);
 	gint old_width, old_ascent, pixel_size;
@@ -1212,23 +1204,6 @@ draw_background_helper (HTMLTable *table,
 }
 
 static void
-draw_background (HTMLObject *self,
-		 HTMLPainter *p,
-		 gint x, gint y, 
-		 gint width, gint height,
-		 gint tx, gint ty)
-{
-	GdkRectangle paint;
-	
-	(* HTML_OBJECT_CLASS (parent_class)->draw_background) (self, p, x, y, width, height, tx, ty);
-
-	if (!html_object_intersect (self, &paint, x, y, width, height))
-	    return;
-
-	draw_background_helper (HTML_TABLE (self), p, &paint, tx, ty);
-}
-
-static void
 draw (HTMLObject *o,
       HTMLPainter *p, 
       gint x, gint y,
@@ -1323,7 +1298,8 @@ calc_min_width (HTMLObject *o,
 {
 	HTMLTable *table = HTML_TABLE (o);
 
-	calc_column_width_template (table, painter, table->columnMin, html_object_calc_min_width, table->columnMin);
+	calc_column_width_template (table, painter, table->columnPref, html_object_calc_preferred_width, table->columnPref);
+	calc_column_width_template (table, painter, table->columnMin, html_object_calc_min_width, table->columnPref);
 
 	return o->flags & HTML_OBJECT_FLAG_FIXEDWIDTH
 		? MAX (html_painter_get_pixel_size (painter) * table->specified_width,
@@ -1336,15 +1312,17 @@ calc_preferred_width (HTMLObject *o,
 		      HTMLPainter *painter)
 {
 	HTMLTable *table = HTML_TABLE (o);
+	int min_width;
 
-	calc_column_width_template (table, painter, table->columnPref,
-				    html_object_calc_preferred_width, table->columnPref);
+	/* note that calculating min width prepares columnPref for us */
+	min_width = html_object_calc_min_width (o, painter);
+
 	calc_column_width_template (table, painter, table->columnFixed,
 				    (gint (*)(HTMLObject *, HTMLPainter *)) html_table_cell_get_fixed_width,
 				    table->columnPref);
 
 	return o->flags & HTML_OBJECT_FLAG_FIXEDWIDTH
-		? MAX (html_painter_get_pixel_size (painter) * table->specified_width, html_object_calc_min_width (o, painter))
+		? MAX (html_painter_get_pixel_size (painter) * table->specified_width, min_width)
 		: COLUMN_PREF (table, table->totalCols) + table->border * html_painter_get_pixel_size (painter);
 }
 
@@ -1491,11 +1469,12 @@ divide_into_percented (HTMLTable *table, gint *col_percent, gint *max_size, gint
 
 static gboolean
 calc_lowest_fill (HTMLTable *table, GArray *pref, gint *max_size, gint *col_percent, gint pixel_size,
-		  gint *ret_col, gint *ret_total_pref)
+		  gint *ret_col, gint *ret_total_pref, gint *ret_total)
 {
 	gint c, pw, border_extra = table->border ? 2 : 0, min_fill = COLUMN_PREF (table, table->totalCols);
 
 	*ret_total_pref = 0;
+	*ret_total = 0;
 	for (c = 0; c < table->totalCols; c++)
 		if (col_percent [c + 1] == col_percent [c]) {
 			pw = PREF (c + 1) - PREF (c)
@@ -1508,6 +1487,7 @@ calc_lowest_fill (HTMLTable *table, GArray *pref, gint *max_size, gint *col_perc
 				}
 
 				(*ret_total_pref) += pw;
+				(*ret_total) += max_size [c];
 			}
 		}
 
@@ -1519,27 +1499,25 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 			     gint *col_percent, gint *max_size, gint left)
 {
 	gint added, part, c, pw, pixel_size = html_painter_get_pixel_size (painter);
-	gint total_fill, min_col, min_fill, min_pw, processed_pw, border_extra = table->border ? 2 : 0;
+	gint total, total_fill, to_fill, min_col, min_fill, min_pw, processed_pw, border_extra = table->border ? 2 : 0;
 
-	while (left && calc_lowest_fill (table, pref, max_size, col_percent, pixel_size, &min_col, &total_fill)) {
+	/* printf ("cols: %d left: %d\n", table->totalCols, left); */
+	while (left > 0 && calc_lowest_fill (table, pref, max_size, col_percent, pixel_size, &min_col, &total_fill, &total)) {
 		min_pw   = PREF (min_col + 1) - PREF (min_col)
 			- pixel_size * (table->spacing + border_extra);
-		min_fill = MIN (min_pw - max_size [min_col], ((gdouble) min_pw * left) / total_fill);
-		if (min_fill <= 0)
-			break;
-		/* printf ("min_col %d min_pw %d MIN(%d,%d)\n", min_col, min_pw, min_pw - max_size [min_col],
-		   (gint)(((gdouble) min_pw * left) / total_fill)); */
-
-		if (min_fill == min_pw - max_size [min_col]) {
-			/* first add to minimal one */
-			max_size [min_col] += min_fill;
-			left -= min_fill;
+		/* printf ("min: %d left: %d\n", min_col, left); */
+		to_fill = MIN (total, left);
+		if (min_pw - max_size [min_col] < ((gdouble) min_pw * to_fill) / total_fill) {
+			added = min_pw - max_size [min_col];
+			left -= added;
+			min_fill = to_fill - added;
+			max_size [min_col] += added;
 			total_fill -= min_pw;
-			/* printf ("min satisfied %d, (%d=%d)left: %d\n", min_fill, max_size [min_col], min_pw, left); */
+		} else {
+			min_fill = to_fill;
 		}
-		if (!left)
-			break;
 
+		/* printf ("min satisfied %d, (%d=%d) left: %d\n", min_fill, max_size [min_col], min_pw, left); */
 		processed_pw = 0;
 		added = 0;
 
@@ -1554,6 +1532,8 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 					    > LL (part + 1) * total_fill - LL min_fill * processed_pw)
 						part ++;
 					part         -= added;
+					if (max_size [c] + part > pw)
+						part = pw - max_size [c];
 					added        += part;
 					max_size [c] += part;
 					left         -= part;
@@ -1562,6 +1542,8 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 			}
 		}
 	}
+
+	/* printf ("cols: %d left: %d (END)\n", table->totalCols, left); */
 
 	return left;
 }
@@ -1995,17 +1977,6 @@ search (HTMLObject *obj, HTMLSearch *info)
 	return FALSE;
 }
 
-static HTMLFitType
-fit_line (HTMLObject *o,
-	  HTMLPainter *painter,
-	  gboolean start_of_line,
-	  gboolean first_run,
-	  gboolean next_to_floating,
-	  gint width_left)
-{
-	return HTML_FIT_COMPLETE;
-}
-
 static void
 append_selection_string (HTMLObject *self,
 			 GString *buffer)
@@ -2168,7 +2139,7 @@ save (HTMLObject *self,
 		}
 		SB "</TR>\n" SE;
 	}
-	SB "</TABLE>\n" SE;
+	SB "</TABLE>" SE;
 
 	return TRUE;
 }
@@ -2199,7 +2170,7 @@ save_plain (HTMLObject *self,
 }
 
 static gboolean
-check_row_split (HTMLTable *table, gint r, gint *min_y)
+check_row_split (HTMLTable *table, HTMLPainter *painter, gint r, gint *min_y)
 {
 	HTMLTableCell *cell;
 	gboolean changed = FALSE;
@@ -2216,8 +2187,8 @@ check_row_split (HTMLTable *table, gint r, gint *min_y)
 		y2 = HTML_OBJECT (cell)->y + HTML_OBJECT (cell)->descent;
 
 		if (y1 <= *min_y && *min_y < y2) {
-			cs = html_object_check_page_split (HTML_OBJECT (cell), *min_y - y1) + y1;
-			/* printf ("min_y: %d y1: %d y2: %d --> cs=%d\n", *min_y, y1, y2, cs); */
+			cs = html_object_check_page_split (HTML_OBJECT (cell), painter, *min_y - y1) + y1;
+			/* printf ("r %d min_y: %d y1: %d y2: %d --> cs=%d\n", *min_y, y1, y2, cs); */
 
 			if (cs < *min_y) {
 				*min_y = cs;
@@ -2230,10 +2201,10 @@ check_row_split (HTMLTable *table, gint r, gint *min_y)
 }
 
 static gint
-check_page_split (HTMLObject *self, gint y)
+check_page_split (HTMLObject *self, HTMLPainter *painter, gint y)
 {
 	HTMLTable     *table;
-	gint r, min_y;
+	int r, min_y;
 
 	table = HTML_TABLE (self);
 	r     = to_index (bin_search_index (table->rowHeights, 0, table->totalRows, y), 0, table->totalRows - 1);
@@ -2246,7 +2217,7 @@ check_page_split (HTMLObject *self, gint y)
 	   return MIN (y, ROW_HEIGHT (table, table->totalRows)); */
 
 	min_y = MIN (y, ROW_HEIGHT (table, r+1));
-	while (check_row_split (table, r, &min_y));
+	while (check_row_split (table, painter, r, &min_y));
 
 	/* printf ("min_y=%d\n", min_y); */
 
@@ -2287,9 +2258,8 @@ html_table_class_init (HTMLTableClass *klass,
 	object_class->split = split;
 	object_class->merge = merge;
 	object_class->accepts_cursor = accepts_cursor;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_table_real_calc_size;
 	object_class->draw = draw;
-       	object_class->draw_background = draw_background;
 	object_class->destroy = destroy;
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
@@ -2301,7 +2271,6 @@ html_table_class_init (HTMLTableClass *klass,
 	object_class->is_container = is_container;
 	object_class->forall = forall;
 	object_class->search = search;
-	object_class->fit_line = fit_line;
 	object_class->append_selection_string = append_selection_string;
 	object_class->head = head;
 	object_class->tail = tail;

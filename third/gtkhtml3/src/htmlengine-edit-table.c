@@ -188,6 +188,7 @@ html_engine_table_goto_col (HTMLEngine *e, HTMLTable *table, gint col)
 	HTMLTableCell *cell;
 
 	if (html_engine_goto_table_0 (e, table)) {
+		html_cursor_forward (e->cursor, e);
 		cell = html_engine_get_table_cell (e);
 		while (cell && cell->col != col && HTML_OBJECT (cell)->parent == HTML_OBJECT (table)) {
 			html_engine_next_cell (e, FALSE);
@@ -206,6 +207,7 @@ html_engine_table_goto_row (HTMLEngine *e, HTMLTable *table, gint row)
 	HTMLTableCell *cell;
 
 	if (html_engine_goto_table_0 (e, table)) {
+		html_cursor_forward (e->cursor, e);
 		cell = html_engine_get_table_cell (e);
 		while (cell && cell->row != row && HTML_OBJECT (cell)->parent == HTML_OBJECT (table)) {
 			html_engine_next_cell (e, FALSE);

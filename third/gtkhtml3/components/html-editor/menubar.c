@@ -30,9 +30,21 @@
 #include <fcntl.h>
 
 #include <gnome.h>
+#ifdef USE_GTKFILECHOOSER
+#include <gtk/gtkfilechooser.h>
+#include <gtk/gtkfilechooserdialog.h>
+#else
+#include <gtk/gtkfilesel.h>
+#endif
 #include <bonobo.h>
 
+#include "htmlengine.h"
 #include "htmlengine-edit-cut-and-paste.h"
+#include "htmlengine-edit-rule.h"
+#include "htmlengine-edit-table.h"
+#include "htmlimage.h"
+#include "htmlrule.h"
+#include "htmltable.h"
 
 #include "menubar.h"
 #include "gtkhtml.h"
@@ -59,13 +71,7 @@ paste_quotation_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *
 static void
 search_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cname)
 {
-	search (cd, FALSE);
-}
-
-static void
-search_regex_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cname)
-{
-	search (cd, TRUE);
+	search (cd);
 }
 
 static void
@@ -83,16 +89,39 @@ replace_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cname)
 static void
 insert_image_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cname)
 {
-	if (cd->properties_dialog)
-		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, TRUE, _("Insert"), ICONDIR "/insert-image-24.png");
+	GtkWidget *filesel;
+	HTMLObject *img;
 
-	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
-						   GTK_HTML_EDIT_PROPERTY_IMAGE, _("Image"),
-						   image_insertion,
-						   image_insert_cb,
-						   image_close_cb);
-	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
+#ifdef USE_GTKFILECHOOSER
+	filesel = gtk_file_chooser_dialog_new (_("Insert image"),
+					       NULL,
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+					       NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (filesel), GTK_RESPONSE_OK);
+#else
+	filesel = gtk_file_selection_new (_("Insert image"));
+#endif
+	if (filesel) {
+		if (gtk_dialog_run (GTK_DIALOG (filesel)) == GTK_RESPONSE_OK) {
+			const char *filename;
+			char *url = NULL;
+
+#ifdef USE_GTKFILECHOOSER
+			filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (filesel));
+#else
+			filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
+#endif
+			if (filename)
+				url = g_strconcat ("file://", filename, NULL);
+			img = html_image_new (html_engine_get_image_factory (cd->html->engine), url,
+					      NULL, NULL, 0, 0, 0, 0, 0, NULL, HTML_VALIGN_NONE, FALSE);
+			html_engine_paste_object (cd->html->engine, img, 1);
+			g_free (url);
+		}
+		gtk_widget_destroy (filesel);
+	}
 }
 
 static void
@@ -101,12 +130,11 @@ insert_link_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cnam
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, TRUE, _("Insert"), ICONDIR "/insert-link-24.png");
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Insert"), ICONDIR "/insert-link-24.png");
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_LINK, _("Link"),
 						   link_insert,
-						   link_insert_cb,
 						   link_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -119,12 +147,13 @@ insert_rule_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cnam
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, TRUE, _("Insert"), ICONDIR "/insert-rule-24.png");
+	html_engine_insert_rule (cd->html->engine, 0, 100, 2, FALSE, HTML_HALIGN_LEFT);
+
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Insert"), ICONDIR "/insert-rule-24.png");
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_RULE, _("Rule"),
-						   rule_insert,
-						   rule_insert_cb,
+						   rule_properties,
 						   rule_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -136,12 +165,16 @@ insert_table (GtkHTMLControlData *cd)
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, TRUE, _("Insert"), ICONDIR "/insert-table-24.png");
+	html_engine_insert_table_1_1 (cd->html->engine);
+	if (html_engine_get_table (cd->html->engine)) {
+		html_engine_table_set_cols (cd->html->engine, 3);
+		html_engine_table_set_rows (cd->html->engine, 3);
+	}
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Insert"), ICONDIR "/insert-table-24.png");
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_TABLE, _("Table"),
-						   table_insert,
-						   table_insert_cb,
+						   table_properties,
 						   table_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -159,21 +192,14 @@ insert_template_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, TRUE, _("Insert"), ICONDIR "/insert-object-24.png");
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Insert"), ICONDIR "/insert-object-24.png");
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_TABLE, _("Template"),
 						   template_insert,
-						   template_insert_cb,
 						   template_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
-}
-
-static void
-file_dialog_destroy (GtkWidget *w, GtkHTMLControlData *cd)
-{
-	cd->file_dialog = NULL;
 }
 
 static void
@@ -185,8 +211,12 @@ file_dialog_ok (GtkWidget *w, GtkHTMLControlData *cd)
 	gchar *data = NULL;
 	gsize len = 0;
 	const char *charset;
-	
+
+#ifdef USE_GTKFILECHOOSER
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (cd->file_dialog));
+#else	
 	filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (cd->file_dialog));
+#endif
 	io = g_io_channel_new_file (filename, "r", &error);
 
 	if (error || !io)
@@ -263,8 +293,6 @@ file_dialog_ok (GtkWidget *w, GtkHTMLControlData *cd)
 		}
 		g_error_free (error);
 	}
-
-	gtk_widget_destroy (cd->file_dialog);
 }
 
 static void
@@ -276,18 +304,27 @@ insert_file_dialog (GtkHTMLControlData *cd, gboolean html)
 		return;
 	}
 
+#ifdef USE_GTKFILECHOOSER
+	cd->file_dialog = gtk_file_chooser_dialog_new (html ? _("Insert: HTML File") : _("Insert: Text File"),
+						       NULL,
+						       GTK_FILE_CHOOSER_ACTION_OPEN,
+						       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						       GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+						       NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (cd->file_dialog), GTK_RESPONSE_OK);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (cd->file_dialog), g_get_home_dir ());
+#else
 	cd->file_dialog = gtk_file_selection_new (html ? _("Insert: HTML File") : _("Insert: Text File"));
 	gtk_file_selection_set_filename (GTK_FILE_SELECTION (cd->file_dialog), "~/");
+#endif
 
-	g_signal_connect_object (GTK_FILE_SELECTION (cd->file_dialog)->cancel_button,
-				 "clicked", G_CALLBACK (gtk_widget_destroy), GTK_OBJECT (cd->file_dialog),
-				 G_CONNECT_SWAPPED);
-
-	g_signal_connect (GTK_FILE_SELECTION (cd->file_dialog)->ok_button, "clicked", G_CALLBACK (file_dialog_ok), cd);
-
-	g_signal_connect (cd->file_dialog, "destroy", G_CALLBACK (file_dialog_destroy), cd);
-
-	gtk_widget_show (cd->file_dialog);
+	if (cd->file_dialog) {
+		if (gtk_dialog_run (GTK_DIALOG (cd->file_dialog)) == GTK_RESPONSE_OK) {
+			file_dialog_ok (cd->file_dialog, cd);
+		}
+		gtk_widget_destroy (cd->file_dialog);
+		cd->file_dialog = NULL;
+	}
 }
 
 static void
@@ -314,12 +351,12 @@ format_page_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cnam
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"), ICONDIR "/properties-16.png");
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Properties"),
+								     gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_properties", 16, NULL, NULL));
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_BODY, _("Page"),
 						   body_properties,
-						   body_apply_cb,
 						   body_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -332,12 +369,12 @@ format_text_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cnam
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"), ICONDIR "/properties-16.png");
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Properties"),
+								     gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_properties", 16, NULL, NULL));
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_BODY, _("Text"),
 						   text_properties,
-						   text_apply_cb,
 						   text_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -350,12 +387,12 @@ format_paragraph_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char 
 	if (cd->properties_dialog)
 		gtk_html_edit_properties_dialog_close (cd->properties_dialog);
 
-	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"), ICONDIR "/properties-16.png");
+	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, _("Properties"),
+								     gnome_icon_theme_lookup_icon (cd->icon_theme, "stock_properties", 16, NULL, NULL));
 
 	gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 						   GTK_HTML_EDIT_PROPERTY_BODY, _("Paragraph"),
 						   paragraph_properties,
-						   paragraph_apply_cb,
 						   paragraph_close_cb);
 
 	gtk_html_edit_properties_dialog_show (cd->properties_dialog);
@@ -370,7 +407,6 @@ static BonoboUIVerb editor_verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("EditPaste", command_cb),
 	BONOBO_UI_UNSAFE_VERB ("EditPasteQuotation", paste_quotation_cb),
 	BONOBO_UI_UNSAFE_VERB ("EditFind", search_cb),
-	BONOBO_UI_UNSAFE_VERB ("EditFindRegex", search_regex_cb),
 	BONOBO_UI_UNSAFE_VERB ("EditFindAgain", search_next_cb),
 	BONOBO_UI_UNSAFE_VERB ("EditReplace", replace_cb),
 	BONOBO_UI_UNSAFE_VERB ("EditSelectAll", command_cb),
@@ -395,6 +431,7 @@ static BonoboUIVerb editor_verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("InsertSmiley9", smiley_cb),
 	BONOBO_UI_UNSAFE_VERB ("InsertSmiley10", smiley_cb),
 	BONOBO_UI_UNSAFE_VERB ("InsertSmiley11", smiley_cb),
+	BONOBO_UI_UNSAFE_VERB ("InsertSmiley12", smiley_cb),
 
 	BONOBO_UI_UNSAFE_VERB ("IndentMore", command_cb),
 	BONOBO_UI_UNSAFE_VERB ("IndentLess", command_cb),
@@ -576,6 +613,8 @@ menubar_update_format (GtkHTMLControlData *cd)
 					      "sensitive", sensitive, &ev);
 		bonobo_ui_component_set_prop (uic, "/commands/InsertSmiley11",
 					      "sensitive", sensitive, &ev);
+		bonobo_ui_component_set_prop (uic, "/commands/InsertSmiley12",
+					      "sensitive", sensitive, &ev);
 
 		bonobo_ui_component_set_prop (uic, "/commands/FormatBold",
 					      "sensitive", sensitive, &ev);
@@ -587,13 +626,6 @@ menubar_update_format (GtkHTMLControlData *cd)
 					      "sensitive", sensitive, &ev);
 		bonobo_ui_component_set_prop (uic, "/commands/FormatPlain",
 					      "sensitive", sensitive, &ev);
-	
-		bonobo_ui_component_set_prop (uic, "/commands/AlignLeft",
-					      "sensitive", sensitive, &ev);		
-		bonobo_ui_component_set_prop (uic, "/commands/AlignRight",
-					      "sensitive", sensitive, &ev);	
-		bonobo_ui_component_set_prop (uic, "/commands/AlignCenter",
-					      "sensitive", sensitive, &ev);	
 
 		bonobo_ui_component_set_prop (uic, "/commands/HeadingH1",
 					      "sensitive", sensitive, &ev);	
@@ -636,7 +668,7 @@ menubar_set_languages (GtkHTMLControlData *cd)
 	cd->block_language_changes = FALSE;
 }
 
-#define SMILEYS 11
+#define SMILEYS 12
 static gchar *smiley [SMILEYS] = {
 	":D",
 	":O",
@@ -648,7 +680,8 @@ static gchar *smiley [SMILEYS] = {
 	":-|",
 	":-/",
 	":-P",
-	":~("
+	":~(",
+	":-Q"
 };
 
 static void
@@ -675,11 +708,50 @@ menubar_paragraph_style_changed_cb (GtkHTML *html, GtkHTMLParagraphStyle style, 
 				      "sensitive", style == GTK_HTML_PARAGRAPH_STYLE_PRE ? "1" : "0", NULL);
 }
 
+typedef enum
+{
+	EDITOR_ICON_MENU = 16,
+	EDITOR_ICON_TOOLBAR = 24,
+} EditorIconSize;
+
+typedef struct
+{
+	const char *path;
+	const char *stock_name;
+	EditorIconSize size;
+} EditorUIPixmap;
+
+static EditorUIPixmap pixmaps_map [] =
+{
+	{ "/Toolbar/EditUndo", "stock_undo", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/EditRedo", "stock_redo", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/EditCut", "stock_cut", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/EditCopy", "stock_copy", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/EditPaste", "stock_paste", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/EditFind", "stock_search", EDITOR_ICON_TOOLBAR },
+	{ "/Toolbar/InsertImage", "stock_insert_image", EDITOR_ICON_TOOLBAR },
+
+	{ "/menu/Edit/EditUndoRedo/EditUndo", "stock_undo", EDITOR_ICON_MENU },
+	{ "/menu/Edit/EditUndoRedo/EditRedo", "stock_redo", EDITOR_ICON_MENU },
+
+	{ "/menu/Edit/EditCutCopyPaste/EditCut", "stock_cut", EDITOR_ICON_MENU },
+	{ "/menu/Edit/EditCutCopyPaste/EditCopy", "stock_copy", EDITOR_ICON_MENU },
+	{ "/menu/Edit/EditCutCopyPaste/EditPaste", "stock_paste", EDITOR_ICON_MENU },
+
+	{ "/menu/Edit/EditFindReplace/EditFind", "stock_search", EDITOR_ICON_MENU },
+	/* { "/menu/Edit/EditFindReplace/EditReplace", "stock_replace", EDITOR_ICON_MENU }, */
+
+	{ "/menu/Edit/EditMisc/EditSpellCheck", "stock_spellcheck", EDITOR_ICON_MENU },
+
+	{ "/menu/Insert/Component/InsertImage", "stock_insert_image", EDITOR_ICON_MENU },
+};
+
 void
 menubar_setup (BonoboUIComponent  *uic,
 	       GtkHTMLControlData *cd)
 {
-	gchar *domain;
+	char *domain;
+	int i;
 	g_return_if_fail (cd->html != NULL);
 	g_return_if_fail (GTK_IS_HTML (cd->html));
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (uic));
@@ -693,13 +765,21 @@ menubar_setup (BonoboUIComponent  *uic,
 	*/
 
 	domain = g_strdup (textdomain (NULL));
-	textdomain (GNOME_EXPLICIT_TRANSLATION_DOMAIN);
+	textdomain (GETTEXT_PACKAGE);
 	bonobo_ui_component_add_verb_list_with_data (uic, editor_verbs, cd);
 
 	if (GTK_HTML_CLASS(G_OBJECT_GET_CLASS (cd->html))->use_emacs_bindings) {
 		bonobo_ui_util_set_ui (uic, GTKHTML_DATADIR, "GNOME_GtkHTML_Editor-emacs.xml", "GNOME_GtkHTML_Editor", NULL);
 	} else {
 		bonobo_ui_util_set_ui (uic, GTKHTML_DATADIR, "GNOME_GtkHTML_Editor.xml", "GNOME_GtkHTML_Editor", NULL);
+	}
+
+	for (i = 0; i < sizeof (pixmaps_map) / sizeof (pixmaps_map [0]); i ++)
+	{
+		bonobo_ui_component_set_prop (uic, pixmaps_map [i].path, "pixtype", "filename", NULL);
+		bonobo_ui_component_set_prop (uic, pixmaps_map [i].path, "pixname",
+					      gnome_icon_theme_lookup_icon (cd->icon_theme, pixmaps_map [i].stock_name, pixmaps_map [i].size, NULL, NULL),
+					      NULL);
 	}
 
 	spell_create_language_menu (cd);
@@ -710,6 +790,7 @@ menubar_setup (BonoboUIComponent  *uic,
 	g_free (domain);
 
 	menubar_paragraph_style_changed_cb (cd->html, gtk_html_get_paragraph_style (cd->html), cd);
+	g_signal_connect (cd->html, "current_paragraph_style_changed", G_CALLBACK (menubar_paragraph_style_changed_cb), cd);
 
 	if (!cd->has_spell_control_set) {
 		cd->has_spell_control = spell_has_control ();

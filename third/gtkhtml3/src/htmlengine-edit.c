@@ -35,7 +35,6 @@
 #include "htmlclueflow.h"
 #include "htmlcolorset.h"
 #include "htmlcursor.h"
-#include "htmllinktext.h"
 #include "htmlobject.h"
 #include "htmltable.h"
 #include "htmltext.h"
@@ -92,7 +91,7 @@ html_engine_set_mark (HTMLEngine *e)
 {
 	g_return_if_fail (e != NULL);
 	g_return_if_fail (HTML_IS_ENGINE (e));
-	g_return_if_fail (e->editable);
+	g_return_if_fail (e->editable || e->caret_mode);
 
 	if (e->mark != NULL)
 		html_engine_unselect_all (e);
@@ -163,6 +162,35 @@ html_engine_selection_pop (HTMLEngine *e)
 	html_engine_edit_selection_updater_update_now (e->selection_updater);
 }
 
+gboolean
+html_engine_selection_stack_top (HTMLEngine *e, gint *cpos, gint *mpos)
+{
+	if (e->selection_stack && GPOINTER_TO_INT (e->selection_stack->data) && e->selection_stack->next && e->selection_stack->next->next) {
+		if (cpos)
+			*cpos = GPOINTER_TO_INT (e->selection_stack->next->data);
+		if (mpos)
+			*mpos = GPOINTER_TO_INT (e->selection_stack->next->next->data);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+html_engine_selection_stack_top_modify (HTMLEngine *e, gint delta)
+{
+	if (e->selection_stack && GPOINTER_TO_INT (e->selection_stack->data) && e->selection_stack->next && e->selection_stack->next->next) {
+		e->selection_stack->next->data = GINT_TO_POINTER (GPOINTER_TO_INT (e->selection_stack->next->data) + delta);
+		e->selection_stack->next->next->data = GINT_TO_POINTER (GPOINTER_TO_INT (e->selection_stack->next->next->data) + delta);
+
+		return TRUE;
+	}
+
+	return FALSE;
+
+}
+
 static void
 spell_check_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
@@ -231,8 +259,17 @@ html_engine_select_spell_word_editable (HTMLEngine *e)
 	gboolean cited, cited2;
 
 	cited = cited2 = FALSE;
-	while (html_selection_spell_word (html_cursor_get_prev_char (e->cursor), &cited))
+	while (html_selection_spell_word (html_cursor_get_prev_char (e->cursor), &cited) || cited) {
 		html_cursor_backward (e->cursor, e);
+		cited2 = cited;
+		cited = FALSE;
+	}
+
+	if (cited2) {
+		html_cursor_forward (e->cursor, e);
+		cited = TRUE;
+	}
+
 	html_engine_set_mark (e);
 	while (html_selection_spell_word (html_cursor_get_current_char (e->cursor), &cited2) || (!cited && cited2)) {
 		html_cursor_forward (e->cursor, e);
@@ -327,11 +364,18 @@ html_engine_clipboard_clear (HTMLEngine *e)
 HTMLObject *
 html_engine_new_text (HTMLEngine *e, const gchar *text, gint len)
 {
-	if (e->insertion_url && *e->insertion_url) {
-		return html_link_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color,
-						    e->insertion_url, e->insertion_target);
-	} else
-		return html_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color);
+	HTMLObject *to;
+
+	to = html_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color);
+	if (e->insertion_font_style != GTK_HTML_FONT_STYLE_DEFAULT)
+		html_text_set_style_in_range (HTML_TEXT (to), e->insertion_font_style, e, 0, HTML_TEXT (to)->text_bytes);
+	if (e->insertion_color &&
+	    e->insertion_color != html_colorset_get_color (e->settings->color_set, HTMLTextColor))
+		html_text_set_color_in_range (HTML_TEXT (to), e->insertion_color, 0, HTML_TEXT (to)->text_bytes);
+	if (e->insertion_url)
+		html_text_append_link (HTML_TEXT (to), e->insertion_url, e->insertion_target, 0, HTML_TEXT (to)->text_len);
+
+	return to;
 }
 
 HTMLObject *
@@ -347,9 +391,9 @@ html_engine_new_link (HTMLEngine *e, const gchar *text, gint len, gchar *url)
 	} else
 		real_url = url;
 		
-	link = html_link_text_new_with_len (text, len, e->insertion_font_style,
-					    html_colorset_get_color (e->settings->color_set, HTMLLinkColor),
-					    real_url, real_target);
+	link = html_text_new_with_len (text, len, e->insertion_font_style,
+				       html_colorset_get_color (e->settings->color_set, HTMLLinkColor));
+	html_text_append_link (HTML_TEXT (link), real_url, real_target, 0, HTML_TEXT (link)->text_len);
 
 	if (real_target)
 		g_free (real_url);
@@ -666,6 +710,7 @@ html_engine_next_cell (HTMLEngine *e, gboolean create)
 		if (create && HTML_IS_TABLE (e->cursor->object)) {
 			html_cursor_backward (e->cursor, e);
 			html_engine_insert_table_row (e, TRUE);
+			html_cursor_forward (e->cursor, e);
 		}
 		html_engine_show_cursor (e);
 

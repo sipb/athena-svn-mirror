@@ -38,7 +38,6 @@
 
 HTMLFrameClass html_frame_class;
 static HTMLEmbeddedClass *parent_class = NULL;
-static gboolean calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs);
 
 static void
 frame_url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data)
@@ -46,7 +45,8 @@ frame_url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpoi
 	HTMLFrame *frame = HTML_FRAME (data);
 	GtkHTML *parent = GTK_HTML (HTML_EMBEDDED(frame)->parent);
 
-	g_signal_emit_by_name (parent->engine, "url_requested", url, handle);
+	if (!html->engine->stopped)
+		g_signal_emit_by_name (parent->engine, "url_requested", url, handle);
 }
 
 static void
@@ -154,29 +154,8 @@ set_max_width (HTMLObject *o, HTMLPainter *painter, gint max_width)
 	HTMLEngine *e = GTK_HTML (HTML_FRAME (o)->html)->engine;
 
 	o->max_width = max_width;
-	html_object_set_max_width (e->clue, e->painter, max_width - e->leftBorder - e->rightBorder);
+	html_object_set_max_width (e->clue, e->painter, max_width - (html_engine_get_left_border (e) + html_engine_get_right_border (e)));
 }
-
-/* static void
-reset (HTMLObject *o)
-{
-	HTMLFrame *frame;
-
-	(* HTML_OBJECT_CLASS (parent_class)->reset) (o);
-	frame = HTML_FRAME (o);
-	html_object_reset (GTK_HTML (frame->html)->engine->clue);
-} */
-
-static void
-draw_background (HTMLObject *self,
-		 HTMLPainter *p,
-		 gint x, gint y,
-		 gint width, gint height,
-		 gint tx, gint ty)
-{
-}
-
-/* FIXME rodo - draw + set_painter is not much clean now, needs refactoring */
 
 static void
 draw (HTMLObject *o,
@@ -197,9 +176,9 @@ draw (HTMLObject *o,
 
 		html_object_draw (e->clue, e->painter,
 				  x, y,
-				  width - pixel_size * (e->leftBorder + e->rightBorder),
-				  height - pixel_size * (e->topBorder + e->bottomBorder),
-				  tx + pixel_size * e->leftBorder, ty + pixel_size * e->topBorder);
+				  width - pixel_size * (html_engine_get_left_border (e) + html_engine_get_right_border (e)),
+				  height - pixel_size * (html_engine_get_top_border (e) + html_engine_get_bottom_border (e)),
+				  tx + pixel_size * html_engine_get_left_border (e), ty + pixel_size * html_engine_get_top_border (e));
 	} else
 		(*HTML_OBJECT_CLASS (parent_class)->draw) (o, p, x, y, width, height, tx, ty);
 }
@@ -232,17 +211,16 @@ forall (HTMLObject *self,
 }
 
 static gint
-check_page_split (HTMLObject *self, gint y)
+check_page_split (HTMLObject *self, HTMLPainter *p, gint y)
 {
-	return html_object_check_page_split (GTK_HTML (HTML_FRAME (self)->html)->engine->clue, y);
+	return html_object_check_page_split (GTK_HTML (HTML_FRAME (self)->html)->engine->clue, p, y);
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_frame_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLFrame *frame;
 	HTMLEngine *e;
-	gint width, height;
 	gint old_width, old_ascent, old_descent;
 	
 	old_width = o->width;
@@ -253,19 +231,15 @@ calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 	e     = GTK_HTML (frame->html)->engine;
 
 	if ((frame->width < 0) && (frame->height < 0)) {
-		e->width = o->max_width;
-		html_engine_calc_size (e, changed_objs);
-
-		height = html_engine_get_doc_height (e);
-		width = html_engine_get_doc_width (e);
-
-		gtk_widget_set_size_request (frame->scroll, width, height);
-		gtk_widget_queue_resize (frame->scroll);
-		
+		if (e->clue) {
+			html_engine_calc_size (e, changed_objs);
+			e->width = html_engine_get_doc_width (e);
+			e->height = html_engine_get_doc_height (e);
+		}
 		html_frame_set_scrolling (frame, GTK_POLICY_NEVER);
 
-		o->width = width;
-		o->ascent = height;
+		o->width = e->width;
+		o->ascent = e->height;
 		o->descent = 0;
 	} else
 		return (* HTML_OBJECT_CLASS (parent_class)->calc_size) (o, painter, changed_objs);
@@ -337,8 +311,8 @@ check_point (HTMLObject *self,
 	    || y >= self->y + self->descent || y < self->y - self->ascent)
 		return NULL;
 
-	x -= self->x + e->leftBorder - e->x_offset;
-	y -= self->y - self->ascent + e->topBorder - e->y_offset;
+	x -= self->x + html_engine_get_left_border (e) - e->x_offset;
+	y -= self->y - self->ascent + html_engine_get_top_border (e) - e->y_offset;
 
 	if (for_cursor && (x < 0 || y < e->clue->y - e->clue->ascent))
 		return html_object_check_point (e->clue, e->painter, 0, e->clue->y - e->clue->ascent,
@@ -461,7 +435,6 @@ html_frame_init (HTMLFrame *frame,
 	GtkWidget *new_widget;
 	GtkHTML   *new_html;
 	GtkHTML   *parent_html;
-	GtkHTMLStream *handle;
 	GtkWidget *scrolled_window;
 	gint depth;
 
@@ -487,23 +460,29 @@ html_frame_init (HTMLFrame *frame,
 	gtk_html_set_default_content_type (new_html,
 					   parent_html->priv->content_type);
 	frame->html = new_widget;
-	depth = gtk_html_set_iframe_parent (new_html, parent, HTML_OBJECT (frame));
-	gtk_container_add (GTK_CONTAINER (scrolled_window), new_widget);
-	gtk_widget_show (new_widget);
-
 	frame->url = g_strdup (src);
 	frame->width = width;
 	frame->height = height;
 	frame->gdk_painter = NULL;
 	gtk_html_set_base (new_html, src);
+	depth = gtk_html_set_iframe_parent (new_html, parent, HTML_OBJECT (frame));
+	gtk_container_add (GTK_CONTAINER (scrolled_window), new_widget);
+	gtk_widget_show (new_widget);
 
-	handle = gtk_html_begin (new_html);
-	gtk_html_set_base (new_html, src);
+	g_signal_connect (new_html, "url_requested", G_CALLBACK (frame_url_requested), frame);
+
+	if (parent_html->engine->stopped) {
+		gtk_html_stop (new_html);
+		gtk_html_load_empty (new_html);
+	} else {
+		GtkHTMLStream *handle;
+
+		handle = gtk_html_begin (new_html);
+		g_signal_emit_by_name (parent_html->engine, "url_requested", src, handle);
+	}
 
 	new_html->engine->clue->parent = HTML_OBJECT (frame);
 
-
-	g_signal_connect (new_html, "url_requested", G_CALLBACK (frame_url_requested), frame);
 #if 0
 	/* NOTE: because of peculiarities of the frame/gtkhtml relationship
 	 * on_url and link_clicked are emitted from the toplevel widget not
@@ -528,8 +507,6 @@ html_frame_init (HTMLFrame *frame,
 	  gtk_signal_connect (GTK_OBJECT (html), "button_press_event",
 	  GTK_SIGNAL_FUNC (frame_button_press_event), frame);
 	*/
-
-	g_signal_emit_by_name (parent_html->engine, "url_requested", src, handle);
 
 	gtk_widget_set_size_request (scrolled_window, width, height);
 
@@ -578,7 +555,7 @@ html_frame_class_init (HTMLFrameClass *klass,
 	parent_class = &html_embedded_class;
 
 	object_class->destroy                 = destroy;
-	object_class->calc_size               = calc_size;
+	object_class->calc_size               = html_frame_real_calc_size;
 	object_class->calc_min_width          = calc_min_width;
 	object_class->set_painter             = set_painter;
 	/* object_class->reset                   = reset; */
@@ -592,7 +569,6 @@ html_frame_class_init (HTMLFrameClass *klass,
 	object_class->get_engine              = get_engine;
 	object_class->check_point             = check_point;
 	object_class->is_container            = is_container;
-	object_class->draw_background         = draw_background;
 	object_class->append_selection_string = append_selection_string;
 	object_class->select_range            = select_range;
 
