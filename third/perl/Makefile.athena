@@ -1,16 +1,18 @@
-# $Id: Makefile.athena,v 1.1 1996-10-12 22:06:06 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-10-17 07:23:15 ghudson Exp $
 
 SHELL=/bin/sh
 
 configure:
 	rm -f config.sh
 	cp "config.sh.$$HOSTTYPE" config.sh
+	for i in *.SH x2p/*.SH; do sh $$i; done
 
 clean:
 	${MAKE} clean
 
 all:
-	${MAKE} depend all
+	${MAKE} depend
+	${MAKE} all
 
 check:
 	${MAKE} test
