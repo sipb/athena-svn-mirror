@@ -35,6 +35,7 @@
 
 static GtkIconSize panel_menu_icon_size = 0;
 static GtkIconSize panel_foobar_icon_size = 0;
+static GtkIconSize panel_button_icon_size = 0;
 
 GtkIconSize
 panel_menu_icon_get_size (void)
@@ -46,6 +47,12 @@ GtkIconSize
 panel_foobar_icon_get_size (void)
 {
 	return panel_foobar_icon_size;
+}
+
+GtkIconSize
+panel_button_icon_get_size (void)
+{
+	return panel_button_icon_size;
 }
 
 typedef struct {
@@ -63,10 +70,11 @@ static PanelStockIcon stock_icons [] = {
 	{ PANEL_STOCK_DEBIAN,              "gnome-debian"},
 	{ PANEL_STOCK_SUSE,                "gnome-suse"},
 	{ PANEL_STOCK_CDE,                 "cdeappmenu"},
+	{ PANEL_STOCK_ACCESSORIES,         "gnome-util"},
 	{ PANEL_STOCK_AMUSEMENTS,          "gnome-amusements"},
 	{ PANEL_STOCK_MULTIMEDIA,          "gnome-multimedia"},
 	{ PANEL_STOCK_INTERNET,            "gnome-globe"},
-	{ PANEL_STOCK_UTILITY,             "gnome-util"},
+	{ PANEL_STOCK_UTILITY,             "advanced-directory"},
 	{ PANEL_STOCK_CORNER_PANEL,        "gnome-panel-type-corner" },
 	{ PANEL_STOCK_EDGE_PANEL,          "gnome-panel-type-edge" },
 	{ PANEL_STOCK_FLOATING_PANEL,      "gnome-panel-type-floating" },
@@ -77,6 +85,10 @@ static PanelStockIcon stock_icons [] = {
 	{ PANEL_STOCK_APPLETS,             "gnome-applets" },
 	{ PANEL_STOCK_DESKTOP,             "gnome-ccdesktop" },
 	{ PANEL_STOCK_KDE,                 "go" },
+	{ PANEL_STOCK_ARROW_RIGHT,         "panel-arrow-right" },
+	{ PANEL_STOCK_ARROW_LEFT,          "panel-arrow-left" },
+	{ PANEL_STOCK_ARROW_UP,            "panel-arrow-up" },
+	{ PANEL_STOCK_ARROW_DOWN,          "panel-arrow-down" },
 };
 
 static void
@@ -96,9 +108,9 @@ panel_init_stock_icons (GtkIconFactory *factory)
 		char       *filename;
 
 		filename = gnome_desktop_item_find_icon (
-				panel_icon_loader, stock_icons [i].icon, icon_height, 0);
+				panel_icon_theme, stock_icons [i].icon, icon_height, 0);
 		if (!filename) {
-			g_warning ("Unable to load panel stock icon '%s'\n", stock_icons [i].icon);
+			g_warning (_("Unable to load panel stock icon '%s'\n"), stock_icons [i].icon);
 
 			/* FIXME: does this take into account the theme? */
 			set = gtk_icon_factory_lookup_default (GTK_STOCK_MISSING_IMAGE);
@@ -165,6 +177,10 @@ panel_init_stock_icons_and_items (void)
 						       PANEL_DEFAULT_MENU_ICON_SIZE);
 
 	panel_foobar_icon_size = gtk_icon_size_register ("panel-foobar", 20, 20);
+
+	panel_button_icon_size = gtk_icon_size_register ("panel-button",
+							 PANEL_DEFAULT_BUTTON_ICON_SIZE,
+							 PANEL_DEFAULT_BUTTON_ICON_SIZE);
 
 	factory = gtk_icon_factory_new ();
 	gtk_icon_factory_add_default (factory);

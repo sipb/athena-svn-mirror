@@ -53,8 +53,9 @@ struct _AlignedPosClass {
 
 GType aligned_pos_get_type (void) G_GNUC_CONST;
 
-GtkWidget *aligned_widget_new (gchar *panel_id,
+GtkWidget *aligned_widget_new (const char *panel_id,
 			       int screen,
+			       int monitor,
 			       AlignedAlignment aligned,
 			       BorderEdge edge,
 			       BasePMode mode,
@@ -62,15 +63,16 @@ GtkWidget *aligned_widget_new (gchar *panel_id,
 			       int sz,
 			       gboolean hidebuttons_enabled,
 			       gboolean hidebutton_pixmaps_enabled,
-			       PanelBackType back_type,
-			       char *back_pixmap,
+			       PanelBackgroundType back_type,
+			       const char *back_pixmap,
 			       gboolean fit_pixmap_bg,
 			       gboolean stretch_pixmap_bg,
 			       gboolean rotate_pixmap_bg,
-			       GdkColor *back_color);
+			       PanelColor *back_color);
 
 void aligned_widget_change_params (AlignedWidget *alignedw,
 				   int screen,
+				   int monitor,
 				   AlignedAlignment align,
 				   BorderEdge edge,
 				   int sz,
@@ -78,12 +80,12 @@ void aligned_widget_change_params (AlignedWidget *alignedw,
 				   BasePState state,
 				   gboolean hidebuttons_enabled,
 				   gboolean hidebutton_pixmaps_enabled,
-				   PanelBackType back_type,
+				   PanelBackgroundType back_type,
 				   char *pixmap_name,
 				   gboolean fit_pixmap_bg,
 				   gboolean stretch_pixmap_bg,
 				   gboolean rotate_pixmap_bg,
-				   GdkColor *back_color);
+				   PanelColor *back_color);
 
 void aligned_widget_change_align (AlignedWidget *aligned,
 				  AlignedAlignment align);

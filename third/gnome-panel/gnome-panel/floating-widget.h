@@ -46,8 +46,9 @@ struct _FloatingPosClass {
 
 GType floating_pos_get_type (void) G_GNUC_CONST;
 
-GtkWidget *floating_widget_new (gchar *panel_id,
+GtkWidget *floating_widget_new (const char *panel_id,
 				int screen,
+				int monitor,
 				gint16 x,
 				gint16 y,
 				GtkOrientation orient,
@@ -56,15 +57,16 @@ GtkWidget *floating_widget_new (gchar *panel_id,
 				int sz,
 				gboolean hidebuttons_enabled,
 				gboolean hidebutton_pixmap_enabled,
-				PanelBackType back_type,
-				char *back_pixmap,
+				PanelBackgroundType back_type,
+				const char *back_pixmap,
 				gboolean fit_pixmap_bg,
 				gboolean stretch_pixmap_bg,
 				gboolean rotate_pixmap_bg,
-				GdkColor *back_color);
+				PanelColor *back_color);
 
 void floating_widget_change_params (FloatingWidget *floating,
 				    int screen,
+				    int monitor,
 				    gint16 x,
 				    gint16 y,
 				    GtkOrientation orient,
@@ -73,12 +75,12 @@ void floating_widget_change_params (FloatingWidget *floating,
 				    int sz,
 				    gboolean hidebuttons_enabled,
 				    gboolean hidebutton_pixmap_enabled,
-				    PanelBackType back_type,
-				    char *back_pixmap,
+				    PanelBackgroundType back_type,
+				    const char *back_pixmap,
 				    gboolean fit_pixmap_bg,
 				    gboolean stretch_pixmap_bg,
 				    gboolean rotate_pixmap_bg,
-				    GdkColor *back_color);
+				    PanelColor *back_color);
 
 void floating_widget_change_coords (FloatingWidget *floating,
 				    gint16 x, gint16 y);

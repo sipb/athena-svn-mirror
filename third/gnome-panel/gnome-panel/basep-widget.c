@@ -28,8 +28,7 @@
 #include "multiscreen-stuff.h"
 #include "panel-typebuiltins.h"
 #include "panel-gconf.h"
-
-#undef BASEP_WIDGET_DEBUG
+#include "panel-stock-icons.h"
 
 extern GSList *panel_list;
 
@@ -52,7 +51,7 @@ static void basep_pos_instance_init (BasePPos *pos);
 /* Forward declare some static functions for use in the class init */
 static void basep_widget_mode_change (BasePWidget *basep, BasePMode mode);
 static void basep_widget_state_change (BasePWidget *basep, BasePState state);
-static void basep_widget_real_screen_change (BasePWidget *basep, int screen);
+static void basep_widget_real_screen_change (BasePWidget *basep, int screen, int monitor);
 static gboolean basep_widget_popup_panel_menu (BasePWidget *basep);
 static void basep_widget_size_request (GtkWidget *widget, GtkRequisition *requisition);
 static void basep_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
@@ -159,7 +158,7 @@ basep_widget_class_init (BasePWidgetClass *klass)
                                         g_param_spec_enum ("mode",
                                                              _("Mode"),
                                                              _("Mode of this panel"),
-							    PANEL_TYPE_BASE_PMODE,
+							    PANEL_TYPE_PMODE,
                                                             BASEP_EXPLICIT_HIDE,
                                                             G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
@@ -167,7 +166,7 @@ basep_widget_class_init (BasePWidgetClass *klass)
                                         g_param_spec_enum ("state",
                                                              _("State"),
                                                              _("Current state of this panel"),
-							     PANEL_TYPE_BASE_PSTATE,
+							     PANEL_TYPE_PSTATE,
                                                              BASEP_SHOWN,
                                                              G_PARAM_READWRITE));
 
@@ -209,7 +208,7 @@ basep_widget_class_init (BasePWidgetClass *klass)
 				g_cclosure_marshal_VOID__ENUM,
 				G_TYPE_NONE,
 				1,
-				PANEL_TYPE_BASE_PMODE);
+				PANEL_TYPE_PMODE);
 
 	basep_widget_signals[STATE_CHANGE_SIGNAL] = 
 		g_signal_new	("state_change",
@@ -221,18 +220,19 @@ basep_widget_class_init (BasePWidgetClass *klass)
 				g_cclosure_marshal_VOID__ENUM,
 				G_TYPE_NONE,
 				1,
-				PANEL_TYPE_BASE_PSTATE);
+				PANEL_TYPE_PSTATE);
 
-	basep_widget_signals[SCREEN_CHANGE_SIGNAL] = 
-		g_signal_new	("screen_change",
+	basep_widget_signals [SCREEN_CHANGE_SIGNAL] = 
+		g_signal_new   ("screen_change",
 				G_TYPE_FROM_CLASS (object_class),
 				G_SIGNAL_RUN_LAST,
 				G_STRUCT_OFFSET (BasePWidgetClass, screen_change),
 				NULL,
 				NULL,
-				g_cclosure_marshal_VOID__INT,
+				panel_marshal_VOID__INT_INT,
 				G_TYPE_NONE,
-				1,
+				2,
+				G_TYPE_INT,
 				G_TYPE_INT);
 
 	basep_widget_signals [POPUP_PANEL_MENU_SIGNAL] =
@@ -281,6 +281,26 @@ basep_widget_set_property (GObject *object, guint prop_id, const GValue *value, 
                		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
 	}
+}
+
+void
+basep_widget_screen_size_changed (BasePWidget *basep,
+				  GdkScreen   *screen)
+{
+	GtkWindow *window;
+	int        w, h;
+	int        x, y;
+
+	window = GTK_WINDOW (basep);
+
+	basep_widget_get_pos (basep, &x, &y);
+	basep_widget_get_size (basep, &w, &h);
+
+	gtk_window_move (window, x, y);
+
+	gtk_window_set_resizable (window, TRUE);
+	gtk_widget_set_size_request (GTK_WIDGET (basep), w, h);
+	gtk_window_resize (window, w, h);
 }
 
 static void
@@ -394,11 +414,6 @@ basep_widget_size_allocate (GtkWidget *widget,
 	/*we actually want to ignore the size_reqeusts since they
 	  are sometimes a cube for the flicker prevention*/
 
-#ifdef BASEP_WIDGET_DEBUG
-	if (basep->moving)
-		g_warning ("size_allocate whilst moving");
-#endif
-
 	gtk_widget_size_request (basep->ebox, &chreq);
 
 	if (klass->get_size) {
@@ -455,22 +470,22 @@ basep_widget_size_allocate (GtkWidget *widget,
 	if (basep->keep_in_screen) {
 		gint16 max;
 
-		max = multiscreen_width (basep->screen) -
+		max = multiscreen_width (basep->screen, basep->monitor) -
 			allocation->width +
-			multiscreen_x (basep->screen);
+			multiscreen_x (basep->screen, basep->monitor);
 
-		if (allocation->x < multiscreen_x (basep->screen))
-			allocation->x = multiscreen_x (basep->screen);
+		if (allocation->x < multiscreen_x (basep->screen, basep->monitor))
+			allocation->x = multiscreen_x (basep->screen, basep->monitor);
 		else if (allocation->x > max)
 			allocation->x = max;
 
 
-		max = multiscreen_height (basep->screen) -
+		max = multiscreen_height (basep->screen, basep->monitor) -
 			allocation->height +
-			multiscreen_y (basep->screen);
+			multiscreen_y (basep->screen, basep->monitor);
 
-		if (allocation->y < multiscreen_y (basep->screen))
-			allocation->y = multiscreen_y (basep->screen);
+		if (allocation->y < multiscreen_y (basep->screen, basep->monitor))
+			allocation->y = multiscreen_y (basep->screen, basep->monitor);
 		else if (allocation->y > max)
 			allocation->y = max;
 				       
@@ -503,7 +518,7 @@ basep_widget_size_allocate (GtkWidget *widget,
 				right = global_config.minimized_size ;
 			else
 				right = basep->shown_alloc.width;
-                        right += multiscreen_width (basep->screen) -
+                        right += multiscreen_width (basep->screen, basep->monitor) -
                           (allocation->x + allocation->width);
 			break;
 		case BORDER_TOP:
@@ -518,7 +533,7 @@ basep_widget_size_allocate (GtkWidget *widget,
 				bottom = global_config.minimized_size ;
 			else
 				bottom = basep->shown_alloc.height;
-                        bottom += multiscreen_height (basep->screen) -
+                        bottom += multiscreen_height (basep->screen, basep->monitor) -
                           (allocation->y + allocation->height);
 			break;
 		}
@@ -558,7 +573,7 @@ static void
 basep_widget_mode_change (BasePWidget *basep, BasePMode old_mode)
 {
 	if (BORDER_IS_WIDGET (basep))
-		basep_border_queue_recalc (basep->screen);
+		basep_border_queue_recalc (basep->screen, basep->monitor);
 }
 
 static void
@@ -678,15 +693,25 @@ static void
 basep_widget_state_change (BasePWidget *basep, BasePState old_state)
 {
 	if (BORDER_IS_WIDGET (basep))
-		basep_border_queue_recalc (basep->screen);
+		basep_border_queue_recalc (basep->screen, basep->monitor);
 
 	setup_hidebuttons (basep);
 }
 
 static void
-basep_widget_real_screen_change (BasePWidget *basep, int old_screen)
+basep_widget_real_screen_change (BasePWidget *basep,
+				 int          old_screen,
+				 int          old_monitor)
 {
-	basep_border_queue_recalc (old_screen);
+	if (basep->screen != old_screen) {
+		gtk_widget_hide (GTK_WIDGET (basep));
+		gtk_window_set_screen (
+			GTK_WINDOW (basep),
+			panel_screen_from_number (basep->screen));
+		gtk_widget_show (GTK_WIDGET (basep));
+	}
+
+	basep_border_queue_recalc (old_screen, old_monitor);
 
 	/* this will queue border recalc in the new screen */
 	gtk_widget_queue_resize (GTK_WIDGET (basep));
@@ -739,10 +764,6 @@ basep_pos_get_hide_size (BasePWidget *basep,
 			 PanelOrient hide_orient,
 			 int *w, int *h)
 {
-
-#ifdef BASEP_WIDGET_DEBUG
-	printf ("basep_pos_get_hide_size %d\n", global_config.minimized_size);
-#endif
 	switch (hide_orient) {
 	case PANEL_ORIENT_UP:
 	case PANEL_ORIENT_DOWN:
@@ -825,21 +846,35 @@ basep_widget_focus_in_event (GtkWidget     *widget,
 	return GTK_WIDGET_CLASS (basep_widget_parent_class)->focus_in_event (widget, event);
 }
 
+static BasePWidget *
+find_non_drawer_parent_panel (BasePWidget *basep)
+{
+	BasePWidget *retval;
+	Drawer      *drawer;
+
+	g_assert (DRAWER_IS_WIDGET (basep));
+
+	drawer = drawer_widget_get_drawer (DRAWER_WIDGET (basep));
+
+	retval = BASEP_WIDGET (PANEL_WIDGET (drawer->button->parent)->panel_parent);
+
+	if (DRAWER_IS_WIDGET (retval))
+		retval = find_non_drawer_parent_panel (retval);
+
+	return retval;
+}
+
 static gboolean
 basep_leave_notify (GtkWidget *widget,
 		    GdkEventCrossing *event)
 {
 	BasePWidget *basep = BASEP_WIDGET (widget);
 
-#ifdef BASEP_WIDGET_DEBUG
-	if (basep->moving)
-		g_warning ("moving in leave_notify");
-
-	if (basep->leave_notify_timer_tag != 0)
-		g_warning ("timeout already queued");
-#endif
 	if (event->detail == GDK_NOTIFY_INFERIOR)
 		return FALSE;
+
+	if (DRAWER_IS_WIDGET (basep))
+		basep = find_non_drawer_parent_panel (basep);
 	
 	basep_widget_queue_autohide (basep);
 
@@ -1084,10 +1119,6 @@ basep_widget_do_showing(BasePWidget *basep, PanelOrient hide_orient,
 				step = PANEL_MEDIUM_STEP_SIZE;
 	}
 
-#ifdef BASEP_WIDGET_DEBUG
-		g_warning ("do_showing with step %d", step);
-#endif
-
 	wid = GTK_WIDGET(basep);
 	
 	ox = dx = x = basep->shown_alloc.x;
@@ -1197,39 +1228,32 @@ basep_widget_do_showing(BasePWidget *basep, PanelOrient hide_orient,
 
 
 static GtkWidget *
-make_hidebutton(BasePWidget *basep,
-		char *pixmaparrow,
-		int horizontal)
+make_hidebutton (BasePWidget *basep,
+		 const char  *arrow_stock_id,
+		 gboolean     horizontal)
 {
-	GtkWidget *w;
+	GtkWidget *button;
 	GtkWidget *pixmap;
-	char *pixmap_name;
 
-	w = gtk_button_new();
-	GTK_WIDGET_UNSET_FLAGS(w, GTK_CAN_DEFAULT);
-	if(horizontal)
-		gtk_widget_set_size_request (w, -1, PANEL_MINIMUM_WIDTH);
+	button = gtk_button_new ();
+	GTK_WIDGET_UNSET_FLAGS (button, GTK_CAN_DEFAULT);
+
+	if (horizontal)
+		gtk_widget_set_size_request (button, -1, PANEL_MINIMUM_WIDTH);
 	else
-		gtk_widget_set_size_request (w, PANEL_MINIMUM_WIDTH, -1);
+		gtk_widget_set_size_request (button, PANEL_MINIMUM_WIDTH, -1);
 
-	pixmap_name = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, 
-						 pixmaparrow, TRUE, NULL);
+	pixmap = gtk_image_new_from_stock (
+			arrow_stock_id, panel_button_icon_get_size ());
+	gtk_widget_show (pixmap);
 
-	if(pixmap_name) {
-		pixmap = gtk_image_new_from_file(pixmap_name);
-		g_free(pixmap_name);
-	} else {
-		pixmap = gtk_label_new("*");
-	}
-	gtk_widget_show(pixmap);
+	gtk_container_add (GTK_CONTAINER (button), pixmap);
+	g_object_set_data (G_OBJECT (button), "gnome_disable_sound_events",
+			   GINT_TO_POINTER  (TRUE));
 
-	gtk_container_add (GTK_CONTAINER (w), pixmap);
-	g_object_set_data (G_OBJECT (w), "gnome_disable_sound_events",
-			   GINT_TO_POINTER (TRUE));
+	set_tip (button, TRUE);
 
-	set_tip (w, TRUE);
-
-	return w;
+	return button;
 }
 
 static void
@@ -1242,10 +1266,11 @@ basep_widget_destroy (GtkObject *o)
 		g_source_remove (basep->leave_notify_timer_tag);
 	basep->leave_notify_timer_tag = 0;
 
-	if (basep->pos != NULL) {
+	if (basep->pos) {
 		if (BORDER_IS_WIDGET (basep))
-			basep_border_queue_recalc (basep->screen);
-		g_object_unref (G_OBJECT (basep->pos));
+			basep_border_queue_recalc (
+				basep->screen, basep->monitor);
+		g_object_unref (basep->pos);
 	}
 	basep->pos = NULL;
 
@@ -1369,6 +1394,7 @@ static void
 basep_widget_instance_init (BasePWidget *basep)
 {
 	basep->screen = 0;
+	basep->monitor = 0;
 
 	/*if we set the gnomewm hints it will have to be changed to TOPLEVEL*/
 	basep->compliant_wm = xstuff_is_compliant_wm();
@@ -1474,15 +1500,24 @@ basep_widget_update_winhints (BasePWidget *basep)
 void
 basep_update_frame (BasePWidget *basep)
 {
-	gboolean hide_frame = PANEL_WIDGET (basep->panel)->back_type == PANEL_BACK_PIXMAP;
+	PanelWidget *panel;
+	gboolean     hide_frame = FALSE;
+
+	g_return_if_fail (PANEL_IS_WIDGET (basep->panel));
+
+	panel = PANEL_WIDGET (basep->panel);
+
+	if (panel->background.type == PANEL_BACK_IMAGE ||
+	    panel->background.type == PANEL_BACK_COLOR)
+		hide_frame = TRUE;
 
 	if (hide_frame && GTK_WIDGET_VISIBLE (basep->frame)) {
 		gtk_widget_show (basep->innerebox);
-		gtk_widget_reparent (basep->panel, basep->innerebox);
+		gtk_widget_reparent (GTK_WIDGET (panel), basep->innerebox);
 		gtk_widget_hide (basep->frame);
 	} else if (!hide_frame && !GTK_WIDGET_VISIBLE (basep->frame)) {
 		gtk_widget_show (basep->frame);
-		gtk_widget_reparent (basep->panel, basep->frame);
+		gtk_widget_reparent (GTK_WIDGET (panel), basep->frame);
 		gtk_widget_hide (basep->innerebox);
 	}
 }
@@ -1591,27 +1626,31 @@ basep_widget_west_clicked (GtkWidget *widget, gpointer data)
 }
 
 GtkWidget*
-basep_widget_construct (gchar *panel_id,
+basep_widget_construct (const char *panel_id,
 			BasePWidget *basep,
 			gboolean packed,
 			gboolean reverse_arrows,
 			int screen,
+			int monitor, 
 			GtkOrientation orient,
 			int sz,
 			BasePMode mode,
 			BasePState state,
 			gboolean hidebuttons_enabled,
 			gboolean hidebutton_pixmaps_enabled,
-			PanelBackType back_type,
-			char *back_pixmap,
+			PanelBackgroundType back_type,
+			const char *back_pixmap,
 			gboolean fit_pixmap_bg,
 			gboolean stretch_pixmap_bg,
 			gboolean rotate_pixmap_bg,
-			GdkColor *back_color)
+			PanelColor *back_color)
 {
 	BasePPosClass *klass = basep_widget_get_pos_class (basep);
-	int x = 0, y = 0;
-	GList *focus_chain = NULL;
+	GList         *focus_chain = NULL;
+	int            x = 0, y = 0;
+
+	gtk_window_set_screen (GTK_WINDOW (basep),
+			       panel_screen_from_number (screen));
 
 	basep->panel = panel_widget_new(panel_id,
 					packed,
@@ -1637,20 +1676,21 @@ basep_widget_construct (gchar *panel_id,
 
 	gtk_widget_show(basep->panel);
 
-	if(back_type != PANEL_BACK_PIXMAP) {
-		gtk_widget_show(basep->frame);
-		gtk_container_add(GTK_CONTAINER(basep->frame),basep->panel);
+	if (back_type != PANEL_BACK_IMAGE &&
+	    back_type != PANEL_BACK_COLOR) {
+		gtk_widget_show (basep->frame);
+		gtk_container_add (GTK_CONTAINER (basep->frame), basep->panel);
 	} else {
-		gtk_widget_show(basep->innerebox);
-		gtk_container_add(GTK_CONTAINER(basep->innerebox),basep->panel);
+		gtk_widget_show (basep->innerebox);
+		gtk_container_add (GTK_CONTAINER (basep->innerebox), basep->panel);
 	}
 
 	/*we add all the hide buttons to the table here*/
 	/*WEST*/
 	basep->hidebutton_w = make_hidebutton(basep,
 					      reverse_arrows?
-					      "panel-arrow-right.png":
-					      "panel-arrow-left.png",
+					      PANEL_STOCK_ARROW_RIGHT:
+					      PANEL_STOCK_ARROW_LEFT,
 					      TRUE);
 	gtk_table_attach(GTK_TABLE(basep->table),basep->hidebutton_w,
 			 0,1,1,2,GTK_FILL,GTK_FILL,0,0);
@@ -1660,8 +1700,8 @@ basep_widget_construct (gchar *panel_id,
 	/*NORTH*/
 	basep->hidebutton_n = make_hidebutton(basep,
 					      reverse_arrows?
-					      "panel-arrow-down.png":
-					      "panel-arrow-up.png",
+					      PANEL_STOCK_ARROW_DOWN:
+					      PANEL_STOCK_ARROW_UP,  
 					      FALSE);
 	gtk_table_attach(GTK_TABLE(basep->table),basep->hidebutton_n,
 			 1,2,0,1,GTK_FILL,GTK_FILL,0,0);
@@ -1671,8 +1711,8 @@ basep_widget_construct (gchar *panel_id,
 	/*EAST*/
 	basep->hidebutton_e = make_hidebutton(basep,
 					      reverse_arrows?
-					      "panel-arrow-left.png":
-					      "panel-arrow-right.png",
+					      PANEL_STOCK_ARROW_LEFT: 
+					      PANEL_STOCK_ARROW_RIGHT, 
 					      TRUE);
 	gtk_table_attach(GTK_TABLE(basep->table),basep->hidebutton_e,
 			 2,3,1,2,GTK_FILL,GTK_FILL,0,0);
@@ -1682,8 +1722,8 @@ basep_widget_construct (gchar *panel_id,
 	/*SOUTH*/
 	basep->hidebutton_s = make_hidebutton (basep,
 					      reverse_arrows ?
-					      "panel-arrow-up.png" :
-					      "panel-arrow-down.png",
+					      PANEL_STOCK_ARROW_UP: 
+					      PANEL_STOCK_ARROW_DOWN, 
 					      FALSE);
 	gtk_table_attach(GTK_TABLE(basep->table), basep->hidebutton_s,
 			 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
@@ -1692,6 +1732,7 @@ basep_widget_construct (gchar *panel_id,
 			    basep);
 
 	basep->screen = screen;
+	basep->monitor = monitor;
 
 	basep->hidebuttons_enabled = hidebuttons_enabled;
 	basep->hidebutton_pixmaps_enabled = hidebutton_pixmaps_enabled;
@@ -1736,18 +1777,19 @@ basep_widget_construct (gchar *panel_id,
 void
 basep_widget_change_params (BasePWidget *basep,
 			    int screen,
+			    int monitor,
 			    GtkOrientation orient,
 			    int sz,
 			    BasePMode mode,
 			    BasePState state,
 			    gboolean hidebuttons_enabled,
 			    gboolean hidebutton_pixmaps_enabled,
-			    PanelBackType back_type,
-			    char *pixmap_name,
+			    PanelBackgroundType back_type,
+			    const char *pixmap_name,
 			    gboolean fit_pixmap_bg,
 			    gboolean stretch_pixmap_bg,
 			    gboolean rotate_pixmap_bg,
-			    GdkColor *back_color)
+			    PanelColor *back_color)
 {
 	g_return_if_fail(GTK_WIDGET_REALIZED(GTK_WIDGET(basep)));
 
@@ -1795,7 +1837,7 @@ basep_widget_change_params (BasePWidget *basep,
 	basep_widget_set_hidebuttons (basep);
 	basep_widget_show_hidebutton_pixmaps (basep);
 
-	basep_widget_screen_change (basep, screen);
+	basep_widget_screen_change (basep, screen, monitor);
 
 	gtk_widget_queue_resize (GTK_WIDGET (basep));
 }
@@ -1892,15 +1934,11 @@ basep_widget_explicit_hide (BasePWidget *basep, BasePState state)
 	g_assert ( (state == BASEP_HIDDEN_RIGHT) ||
 		   (state == BASEP_HIDDEN_LEFT) );
 
-	if((basep->state != BASEP_SHOWN))
+	if ((basep->state != BASEP_SHOWN))
 		return;
 
-	if (basep->moving) {
-#ifdef BASEP_WIDGET_DEBUG
-		g_warning ("explicit_hide whilst moving");
-#endif
+	if (basep->moving)
 		return;
-	}
 
 	basep->moving = TRUE;
 
@@ -1966,12 +2004,8 @@ basep_widget_explicit_show (BasePWidget *basep)
 	      basep->state != BASEP_HIDDEN_RIGHT))
 		return;
  
-	if (basep->moving) {
-#ifdef BASEP_WIDGET_DEBUG
-		g_warning ("explicit_show whilst moving");
-#endif
+	if (basep->moving)
 		return;
-	}
 
 	basep->moving = TRUE;
 
@@ -2016,12 +2050,8 @@ basep_widget_autoshow (gpointer data)
 
 	g_return_val_if_fail (BASEP_IS_WIDGET(basep), FALSE);
 
-	if (basep->moving) {
-#ifdef BASEP_WIDGET_DEBUG
-		g_warning ("autoshow whilst moving");
-#endif
+	if (basep->moving)
 		return TRUE;
-	}
 	
 	if ( (basep->mode != BASEP_AUTO_HIDE) ||
 	     (basep->state != BASEP_AUTO_HIDDEN))
@@ -2089,16 +2119,13 @@ basep_widget_queue_autoshow (BasePWidget *basep)
             (basep->state == BASEP_SHOWN))
                 return;
 
-	if (global_config.hide_delay == 0) {
-		/* set up our idle for popup. */
+	if (global_config.show_delay <= 0)
 		basep->enter_notify_timer_tag =
 			g_idle_add (basep_widget_autoshow, basep);
-	} else {
-		/* set up our delay for popup. */
+	else
 		basep->enter_notify_timer_tag =
 			g_timeout_add (global_config.show_delay,
 				       basep_widget_autoshow, basep);
-	} 
 }
 
 gboolean
@@ -2109,23 +2136,21 @@ basep_widget_autohide (gpointer data)
 
 	g_return_val_if_fail (BASEP_IS_WIDGET(basep), TRUE);
 
+	if (basep->drawers_open > 0)
+		return FALSE;
+
+	if (basep->state != BASEP_SHOWN ||
+	    basep->mode != BASEP_AUTO_HIDE ||
+	    panel_widget_is_cursor (PANEL_WIDGET (basep->panel), 0))
+		return FALSE;
+
 	if (basep->autohide_inhibit)
 		return TRUE;
-	
-	if (basep->moving) {
-#ifdef BASEP_WIDGET_DEBUG
-		g_warning ("autohide whilst moving");
-#endif
-		return TRUE;
-	}
 
-	if ( (basep->state != BASEP_SHOWN) ||
-	     (basep->mode != BASEP_AUTO_HIDE) ||
-	     (panel_widget_is_cursor(PANEL_WIDGET(basep->panel), 0)) ) {
+	if (basep->moving)
 		return TRUE;
-	}
-	
-	if (panel_applet_in_drag || basep->drawers_open>0)
+
+	if (panel_applet_in_drag)
 		return TRUE;
 
 	if (!gdk_pointer_is_grabbed ()) {
@@ -2198,50 +2223,13 @@ basep_widget_queue_autohide (BasePWidget *basep)
             basep->state != BASEP_SHOWN)
                 return;
                 
-	if (!global_config.hide_delay)
+	if (global_config.hide_delay <= 0)
 		basep->leave_notify_timer_tag =
 			g_idle_add (basep_widget_autohide, basep);
 	else
 		basep->leave_notify_timer_tag =
 			g_timeout_add (global_config.hide_delay,
 				       basep_widget_autohide, basep);
-}
-
-void
-basep_widget_get_menu_pos (BasePWidget *basep,
-			   GtkWidget   *menu,
-			   int *x, int *y,
-			   int wx, int wy,
-			   int ww, int wh)
-{
-	BasePPosClass  *klass = basep_widget_get_pos_class (basep);
-	GtkRequisition  mreq;
-	int             monitor_x;
-	int             monitor_y;
-	int             monitor_width;
-	int             monitor_height;
-
-	g_return_if_fail (klass && klass->get_menu_pos);
-
-	gtk_widget_get_child_requisition (menu, &mreq);
-
-	klass->get_menu_pos (
-			basep, menu, &mreq, x, y, wx, wy, ww, wh);
-
-	monitor_x      = multiscreen_x (basep->screen);
-	monitor_y      = multiscreen_y (basep->screen);
-	monitor_width  = multiscreen_width (basep->screen);
-	monitor_height = multiscreen_height (basep->screen);
-
-	if (*x + mreq.width > (monitor_x + monitor_width))
-		*x = monitor_x + monitor_width - mreq.width;
-	if (*x < monitor_x)
-		*x = monitor_x;
-
-	if (*y + mreq.height > (monitor_y + monitor_height))
-		*y = monitor_y + monitor_height - mreq.height;
-	if (*y < monitor_y)
-		*y = monitor_y;
 }
 
 PanelOrient
@@ -2307,20 +2295,18 @@ void
 basep_widget_set_pos (BasePWidget *basep,
 		      int x, int y)
 {
-	int w, h;
-	int newscreen;
-	gboolean force = FALSE;
-	BasePPosClass *klass = 
-		basep_widget_get_pos_class (basep);
+	BasePPosClass *klass = basep_widget_get_pos_class (basep);
+	gboolean       force = FALSE;
+	int            w, h;
+	int            new_monitor;
 
 	g_return_if_fail (klass && klass->set_pos);
 
-	/* first take care of switching screens */
-	newscreen = multiscreen_locate_coords (x, y);
-	if (newscreen >= 0 &&
-	    newscreen != basep->screen) {
+	/* first take care of switching monitors */
+	new_monitor = multiscreen_locate_coords (basep->screen, x, y);
+	if (new_monitor >= 0 && new_monitor != basep->monitor) {
 		force = TRUE;
-		basep_widget_screen_change (basep, newscreen);
+		basep_widget_screen_change (basep, basep->screen, new_monitor);
 	}
 
 	basep_widget_get_size (basep, &w, &h);
@@ -2337,28 +2323,30 @@ basep_widget_pre_convert_hook (BasePWidget *basep)
 }
 
 void
-basep_widget_screen_change (BasePWidget *basep, int screen)
+basep_widget_screen_change (BasePWidget *basep,
+			    int          screen,
+			    int          monitor)
 {
 	int old_screen;
+	int old_monitor;
 
 	g_return_if_fail (BASEP_IS_WIDGET (basep));
 	g_return_if_fail (screen >= 0);
+	g_return_if_fail (monitor >= 0);
 
-	if (basep->screen == screen)
+	if (basep->screen == screen && basep->monitor == monitor)
 		return;
 
-	old_screen = basep->screen;
-	basep->screen = screen;
+	old_screen  = basep->screen;  basep->screen  = screen;
+	old_monitor = basep->monitor; basep->monitor = monitor;
 
-	g_signal_emit (G_OBJECT (basep),
-		       basep_widget_signals[SCREEN_CHANGE_SIGNAL],
-		       0, old_screen);
+	g_signal_emit (basep, basep_widget_signals [SCREEN_CHANGE_SIGNAL],
+		       0, old_screen, old_monitor);
 }
 
 /*****
  * Collision avoidance stuff
  *****/
-/* FIXME: needs to be per screen! */
 typedef struct {
 	int left;
 	int center;
@@ -2367,6 +2355,7 @@ typedef struct {
 
 typedef struct {
 	int screen;
+	int monitor;
 	Border borders[4];
 	int left;
 	int right;
@@ -2374,10 +2363,15 @@ typedef struct {
 	int bottom;
 } ScreenBorders;
 
+typedef struct {
+	int screen;
+	int monitor;
+} Recalc;
+
 static GList *border_list = NULL;
 
 static ScreenBorders *
-get_borders (int screen)
+get_borders (int screen, int monitor)
 {
 	ScreenBorders *retval;
 	GList         *l;
@@ -2385,24 +2379,26 @@ get_borders (int screen)
 	for (l = border_list; l; l = l->next) {
 		ScreenBorders *sb = l->data;
 
-		if (sb->screen == screen)
+		if (sb->screen == screen &&
+		    sb->monitor == monitor)
 			return sb;
 	}
 
 	retval = g_new0 (ScreenBorders, 1);
 	retval->screen  = screen;
+	retval->monitor = monitor;
 	border_list = g_list_prepend (border_list, retval);
 
 	return retval;
 }
 
 static void
-basep_calculate_borders (int screen)
+basep_calculate_borders (int screen, int monitor)
 {
 	ScreenBorders *sb;
 	GSList        *l;
 
-	sb = get_borders (screen);
+	sb = get_borders (screen, monitor);
 
 	for (l = panel_list; l; l = l->next) {
 		PanelData      *pd = l->data;
@@ -2420,7 +2416,8 @@ basep_calculate_borders (int screen)
 		basep = BASEP_WIDGET (pd->panel);
 
 		if (basep->mode == BASEP_AUTO_HIDE ||
-		    basep->screen != screen)
+		    basep->screen != screen ||
+		    basep->monitor != monitor)
 			continue;
 
 		gtk_widget_get_child_requisition (basep->ebox, &chreq);
@@ -2488,14 +2485,14 @@ border_max (ScreenBorders *sb,
 }
 
 void
-basep_border_recalc (int screen)
+basep_border_recalc (int screen, int monitor)
 {
 	ScreenBorders *sb;
 	ScreenBorders  old;
 	GSList        *l;
 	int            i;
 
-	sb = get_borders (screen);
+	sb = get_borders (screen, monitor);
 
 	memcpy (&old, sb, sizeof (ScreenBorders));
 
@@ -2505,13 +2502,13 @@ basep_border_recalc (int screen)
 		sb->borders [i].right = 0;
 	}
 
-	basep_calculate_borders (screen);
+	basep_calculate_borders (screen, monitor);
 
 	sb->left   = border_max (sb, BORDER_LEFT);
 	sb->right  = border_max (sb, BORDER_RIGHT);
 	sb->bottom = border_max (sb, BORDER_BOTTOM);
 	sb->top    = border_max (sb, BORDER_TOP) +
-				foobar_widget_get_height (screen);
+				foobar_widget_get_height (screen, monitor);
 
 	if (!memcmp (&old, sb, sizeof (ScreenBorders)))
 		return;
@@ -2525,7 +2522,8 @@ basep_border_recalc (int screen)
 		panel = pdata->panel;
 
 		if (BORDER_IS_WIDGET (panel) &&
-		    BASEP_WIDGET (panel)->screen == screen)
+		    BASEP_WIDGET (panel)->screen == screen &&
+		    BASEP_WIDGET (panel)->monitor == monitor)
 			gtk_widget_queue_resize (panel);
 	}
 }
@@ -2543,8 +2541,12 @@ queue_recalc_handler (gpointer data)
 	list = pending_recalc_list;
 	pending_recalc_list = NULL;
 
-	for (l = list; l; l = l->next)
-		basep_border_recalc (GPOINTER_TO_INT (l->data));
+	for (l = list; l; l = l->next) {
+		Recalc *recalc = l->data;
+
+		basep_border_recalc (recalc->screen, recalc->monitor);
+		g_free (recalc);
+	}
 
 	g_list_free (list);
 
@@ -2552,34 +2554,56 @@ queue_recalc_handler (gpointer data)
 }
 
 void
-basep_border_queue_recalc (int screen)
+basep_border_queue_recalc (int screen, int monitor)
 {
-	if (!g_list_find (pending_recalc_list, GINT_TO_POINTER (screen)))
-		pending_recalc_list =
-			g_list_prepend (pending_recalc_list,
-					GINT_TO_POINTER (screen));
+	Recalc *new_recalc;
+	GList  *l;
 
+	for (l = pending_recalc_list; l; l = l->next) {
+		Recalc *recalc = l->data;
+
+		if (recalc->screen == screen &&
+		    recalc->monitor == monitor)
+			return;
+	}
+
+	new_recalc = g_new0 (Recalc, 1);
+	new_recalc->screen  = screen;
+	new_recalc->monitor = monitor;
+
+	pending_recalc_list = g_list_prepend (
+					pending_recalc_list, new_recalc);
 	if (!queue_recalc_id)
 		queue_recalc_id = g_idle_add (queue_recalc_handler, NULL);
 }
 
 void
-basep_border_get (int screen, BorderEdge edge,
-		  int *left, int *center, int *right)
+basep_border_get (BasePWidget *basep,
+		  BorderEdge   edge,
+		  int         *left,
+		  int         *center,
+		  int         *right)
 {
 	ScreenBorders *sb;
 
-	g_assert (screen >=0);
-	g_assert (edge >=0 && edge <= 3);
+	g_assert (BASEP_IS_WIDGET (basep));
+	g_assert (basep->screen >=0);
+	g_assert (basep->monitor >=0);
+	g_assert (edge == BORDER_TOP    ||
+		  edge == BORDER_BOTTOM ||
+		  edge == BORDER_RIGHT  ||
+		  edge == BORDER_LEFT);
 
-	sb = get_borders (screen);
+	sb = get_borders (basep->screen, basep->monitor);
 
-	if (left != NULL)
-		*left = sb->borders[edge].left;
-	if (center != NULL)
-		*center = sb->borders[edge].center;
-	if (right != NULL)
-		*right = sb->borders[edge].right;
+	if (left)
+		*left = sb->borders [edge].left;
+
+	if (center)
+		*center = sb->borders [edge].center;
+
+	if (right)
+		*right = sb->borders [edge].right;
 
 }
 

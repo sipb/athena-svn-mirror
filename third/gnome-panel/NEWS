@@ -1,75 +1,307 @@
+=============
+Version 2.2.0
+=============
+
+Panel
+	* Make sure we don't break old lock/logout button configurations (Mark)
+	* Disable re-loading the applet menu because of crashing (Mark)
+	* Fix the permissions of screenshot files (George)
+
+Applets
+
+	* Fix typo in the mailcheck schemas (R.I.P. Deaddog)
+	* Fix some build issues with the notification area (Mark)
+
+Translations
+
+	* Abel Cheung, Andras Timar, Artis Trops, Christian Neumair,
+	  Christian Rose, Daniel Yacob, Dmitry G. Mastrukov, German Poo-Caaman~o,
+	  Gil "Dolfin" Osher, Juan Manuel Garc?Â­a Molina, Kjartan Maraas,
+	  Kostas Papadimas, Miloslav Trmac, Ole Laursen, Pablo Gonzalo del Campo,
+	  Pauli Virtanen and Reinout van Schouwen.
+
+================
+Version 2.1.90.1
+================
+
+Panel
+
+	* Fix problems with transparent panels with hide buttons (Mark)
+	* Add the "Show Desktop Button" applet to the default panel (Mark)
+
+Applets
+
+	* Make the notification are applet out of process (Mark)
+
+Translations
+
+	* Dmitry G. Mastrukov.
+
 ==============
-Version 2.0.11
+Version 2.1.90
 ==============
 
 Panel
 
-	* Correctly resize the menu panel when theme changes (Mark, Glynn)
-	* Removed gconfd syncing improving startup performance (Brian Cameron)
-	* Fix utf8 conversion issue with run dialog (Toshi)
-	* Fix crasher when passing a symbolic link to the run dialog (putte_xvi@tunedal.nu)
-	* Fix disclosure widget issues in RTL locales (jaiserca@inf.upv.es, Glynn)
+	* Make PanelBackgroundMonitor multiscreen aware (Mark)
+	* Support tiled desktop background images with transparent panels (Mark)
+	* Fix menu items not resizing when icon size changes (Mark, Padraig)
+	* Fix panel busy loop with autohide panels and drawers (Mark, Arvind)
+	* Load the default panel setup on newly detected screens (Mark)
+	* Reload the applet menu when the bonobo-activation query changes (Mark)
+	* Fix launchers having incorrect focus line colour (Padraig)
+	* Make only the applications/actions menu use the panel icon size (Mark)
+	* Make the recent files menu use the correct icons size (Mark, James)
+	* Fix focus problem with application list in run dialog (Frank Worsley)
 
 Applets
 
-	* Fix race condition in mailcheck applet forking (Arvind)
+	* Make the Inbox Monitor password dialog not modal (Bala, Mark)
+	* Remove the border around the clock so the text isn't cropped (Mark)
+	* Fix Wanda's preferences dialog help button (Muktha)
 
 Miscellanous
 
-	* Fixup .server file cleaning (Padraig)
+	* Moved the location of all the help files in the source tree (Mark)
+	* Copyright strings changes (Christian Neumair, Mark)
+	* Use @ENUMSHORT@ instead of @ENUMNAME@ with glib-mkenums (Mark)
 
 Translations
 
-	* Andras Timar, Changwoo Ryu, Daniel Yacob, Dmitry G. Mastrukov,
-	  Juan Manuel Garcia Molina, Kostas Papadimas, Marcel Telka,
-	  Pablo Saratxaga, Peteris Krisjanis, Reinout van Schouwen and
-	  Stanislav Visnovsky.
+	* Abel Cheung, Andras Timar, Artis Trops, Christian Neumair, Christian
+	  Rose, Christophe Merlet, Gil "Dolfin" Osher, Gustavo Noronha Silva,
+	  Hasbullah Bin Pit, Kjartan Maraas, Ole Laursen and Reinout van
+	  Schouwen.
 
-==============
-Version 2.0.10
-==============
+=============
+Version 2.1.5
+=============
 
 Panel
 
-	* Explicitly destroy panels on logout (Mark)
-	* Give the PanelWidget focus with new drawer (Padraig)
-	* Make applets use the default background if no background is set (Mark)
-	* Fix tooltip hanging around after dragging to the desktop (Arvind)
-	* Don't pop the run dialog up at the current mouse position (Havoc)
-	* Fix broken option list for background changing (Mark)
-	* Fix weird effects with drawers and some window managers (Mark)
-	* Significant speedup in menu icon loading (Soeren Sandmann)
-	* Don't strdup stock ids (Mark)
-	* Make Ctrl-F10 popup panel menu when focus is on the hidebuttons (Padraig)
-	* Change launchers icons when the icon theme changes (Rajkumar Sivasamy)
-	* Fix silly with creating new launchers from menus (Alex Graveley)
-	* Fix new sub-menus not being sorted with existing menus (Mark)
-	* Fix re-ordering of launchers in drawers on startup (Frederic Crozat)
-	* Remove .desktop parameters when adding a menu item to the run dialog (Arvind)
-
-Screenshot Utility 
-
-	* Fix defunct processes (Arvind)
+	* Allow all drawer drag and drop operations to be performed on the
+	  drawer's button (Mark)
+	* Make gnome-panel-preferences notice gconf changes (Mark)
+	* Fix issue with invisible launchers on transparent panels (Arvind)
+	* Allow show/hide panel buttons to be themed (Raj)
+	* Be even more robust in the case of applet loading failures (Mark)
+	* Fix rare icon load related crash (Mark)
+	* Fix crash when moving applets between panels (Mark)
+	* Fix crash with the run dialog's disclosure widget (Arvind)
 
 Applets
 
-	* Translate the clock applet format (Havoc)
-	* Use per-applet tooltips (Mark)
-	* Memleaks fixes (Arjan van de Ven)
-	* Allow applets to retain focus when nothing else can (Padraig)
+	* Allow clock/date order to be translated (Mark, Toshi)
+
+Fish Applet
+
+	* Typo fix (Mark)
+	* Add bugzilla attributes for bug-buddy (Fernando Herrera)
 
 Miscellanous
 
-	* Fix clock docs so it validates (Yanko Kaneti)
-	* Small panel-applet docs fix (Mark)
+	* Require gnome-desktop >= 2.1.4 (Frederic)
+	* Add startup notification flag to .desktop files (Dennis Cranston)
 
 Translations
 
-	* Abel Cheung, Christian Meyer, Christian Neumair, Christian Rose,
-	  Daniel Yacob, Hasbullah Bin Pit, He Qiangqiang, Juan Manuel Garcia Molina,
-	  Marius Andreiana, Michal Bukovjan, Miloslav Trmac, Pablo Gonzalo del Campo,
-	  Pablo Saratxaga, Pauli Virtanen, Peteris Krisjanis, Ryoichi INAGAKI and
-	  Zbigniew Chyla.
+	* Andras Timar, Christophe Merlet, Hasbullah Bin Pit,
+	  Kjartan Maraas, Ole Laursen and Pauli Virtanen.
+
+=============
+Version 2.1.4
+=============
+
+Panel
+
+	* Re-write the background rendering code (Mark)
+	* Add a "Transparent" type to the background option menu (Mark)
+	* Fix major pixmap leak with the background monitor (Frederic Crozat)
+	* Various ui-review bugfixes (Mark)
+	* Fix duplicate launchers after drag and drop moving (Arvind, Mark)
+	* Fix crash when dragging a launcher whose dialog is open (Arvind)
+	* Fix autohide panel not hiding (Arvind)
+	* Fix keynav issue with drawers (Padraig)
+	* Add X-GNOME-BUGZILLA stuff to the .desktop files (Fernando Herrera)
+	* Move the action buttons to a seperate submenu (Iain)
+	* Launch "dropped" applications on the correct screen (Satyajit Kanungo)
+	* Add icon for "Accessories" applet submenu (Glynn)
+
+Panel Screenshot Utility
+
+	* Various ui-review bugfixes (Dennis Cranston)
+
+Panel Applet Library
+
+	* Fix memory leak (Frederic Crozat)
+	* Fix up image background code (Mark)
+
+Applets
+
+	* Use the icon loader for the window list (Havoc)
+
+Fish Applet
+
+	* Make the prefs instant apply and handle gconf notifications (Mark)
+	* Respect panel size allocations (Mark)
+	* Use glade for the preferences dialog (Mark)
+Miscellanous
+
+	* Fix various issues with strings (Mark)
+	* Add forgotten file to be translated (Mark)
+
+Translations
+
+	* Artis Trops, Christian Neumair, Christian Rose, Gil Osher,
+	  He Qiangqiang, Kjartan Maraas, Marius Andreiana, Ole Laursen
+	  and Pauli Virtanen.
+
+=============
+Version 2.1.3
+=============
+
+Panel
+
+	* Use new desktop item launching API for startup notification (Mark)
+	* Update path for SuSE distribution menu (Stanislav Brabec)
+	* Fix crash when gconf preferences are corrupt (Mark)
+	* Port over disclosure widget fixes from gsearchtool (Mark)
+	* Don't crash when a symlink is passed to the run dialog (putte_xvi@tunedal.nu)
+	* Handle changes in icon size (Andrew Sebola)
+	* Misc string changes (Andrew Sebola)
+
+Panel Applet Library
+
+	* Kill custom control lifecycle managment and use libbonobui (Mark)
+
+Applets
+
+	* Fix race condition in mailcheck forking (Arvind)
+	* Use Wanda's real name in the fish applet (Vincent Untz)
+	* Fixup some schemas wording for style guide conformance (Andrew Sebola)
+
+Miscellanous
+
+	* Fix gtk-doc version check (Dan)
+
+Translations
+
+	* Dmitry G. Mastrukov, Hasbullah Bin Pit, Kjartan Maraas,
+	  Kostas Papadimas, TÃµivo LeedjÃ¤rv, Vincent van Adrighem and
+	  Yanko Kaneti.
+
+=============
+Version 2.1.2
+=============
+
+Panel
+
+	* Add support for panel background colors with an alpha channel (Ian McKellar, Mark)
+	* Make launchers icons update when the icon theme changes (Rajkumar Siva)
+	* Allow the menu panel to resize on theme changes (Mark, Glynn)
+	* Constrain applets size to the size of the panel (Mark)
+	* Fix more run dialog i18n issues (Hidetoshi Tajima)
+	* Remove gconf syncing to improve startup performance (Brian Cameron)
+
+Panel Screenshot Utility
+
+	* Fix bug that caused corrupt screenshots (Anders)
+	* Add option to save in the user's web directory (Anders, Mark)
+
+Panel Applet Library
+
+	* Make room to draw focus around applets if needed (Padraig, Mark)
+
+Applets
+
+	* Added new "Notification Area" applet (Havoc)
+	* Use libwnck to change no. of workspaces instead of gconf (Havoc)
+	* Fix incorrect background signal handler in the clock (Mark)
+
+Miscellanous
+
+	* Updated for changed multiscreen help API (Mark)
+	* Fix build problem with .server files (Padraig)
+
+Translations
+
+	* Andras Timar, Dmitry G. Mastrukov and Marcel Telka.
+
+=============
+Version 2.1.1
+=============
+
+Panel
+
+	* Add recent files menu (James Willcox)
+	* Support screen resizing (Keith Packard, Mark)
+	* Make applet menus popup at the edge of the applet (Mark)
+
+Applets
+
+	* Don't use leading 0 with 12-hour clock (Mark)
+
+Miscellanous
+
+	* Remove check for gtk+ with multihead support (Mark)
+	* Fix clock applet schemas to validate (Yanko Kaneti)
+
+
+Translations
+
+	* Daniel Yacob, Hasbullah Bin Pit, Kjartan Maraas and
+	  Pauli Virtanen. 
+
+=============
+Version 2.1.0
+=============
+
+Panel
+
+	* Multiscreen support (Mark)
+	* Draw a zoom animation when a launcher is clicked (Jacob)
+	* Add a new PanelActionButton widget (Mark)
+	* Offer option to remove crashed applet from configuration (Mark)
+	* Focus applets as they are added to the panel (Mark)
+	* Don't change the cursor when the panel is realised (Anders)
+	* UTF8 conversion fixes in the run dialog (George)
+	* Add mnemonic to "Help on X" menu item (Pasupathi Duraisamy)
+	* Make ButtonWidget use GObject properties (Mark)
+	* Allow ButtonWidget to use stock icons (Mark)
+	* Sed job for change in GnomeIconLoader's name (Alex)
+
+Screenshot Utility
+
+	* Add shaped window support (Anders, Mark)
+	* Kill the seperator from the dialog (Mark)
+	* Avoid taking the sreenshot multiple times (Owen Taylor)
+	* Handle NULL return from gdk_window_foreign_new (George)
+
+Applets
+
+	* Multiscreen support for all applets (Mark)
+	* New "Show Desktop" toggle applet (Havoc)
+	* Fix up references to old applet names in schemas (Mark)
+
+Clock Applet
+
+	* Move Copy time/date menu items (Mark)
+	* Fix clashing mnemonics in prefs dialog (Dennis Smit)
+	* Don't show seconds by default (Dennis Smit)
+	* Put the date before the time (Mark)
+
+Window List Applet
+
+	* Ensure frames in the preferences dialog are aligned (Mark)
+
+Misc
+
+	* Build fixes (Jacob)
+
+Translations
+
+	* Germán Poo-Caamaño, Hasbullah Bin Pit, Matthias Warkus,
+	  Ole Laursen and Pauli Virtanen.
 
 =============
 Version 2.0.9

@@ -129,6 +129,7 @@ fork_new_handler (RemoteHandler handler, gpointer data,
 			/* Make sure that the pid is written first */
 
 			struct pollfd poll_list[1];
+
 			poll_list[0].fd = fd[0];
 			poll_list[0].events = POLLIN;
 			poll (poll_list, 1, POLLTIMEOUT);

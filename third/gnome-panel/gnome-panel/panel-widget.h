@@ -15,6 +15,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "button-widget.h"
 #include "panel-types.h"
+#include "panel-background.h"
 
 G_BEGIN_DECLS
 
@@ -63,50 +64,36 @@ struct _AppletData
 
 struct _PanelWidget
 {
-	GtkFixed		fixed;
+	GtkFixed        fixed;
 
-	gchar 			*unique_id;
+	gchar          *unique_id;
 	
-	GList			*applet_list;
+	GList          *applet_list;
 
-	int			size;
-	GtkOrientation		orient;
-	int			sz;
-	gboolean		fit_pixmap_bg;  /* fit pixmap while keeping
-						   ratio*/
-	gboolean		stretch_pixmap_bg; /*stretch pixmap to the size
-						    of the panel */
-	gboolean		rotate_pixmap_bg; /*rotate pixmap on vertical
-						    panels */
+	int             size;
+	GtkOrientation  orient;
+	int             sz;
 
-	gboolean		packed;
+	AppletData     *currently_dragged_applet;
 
-	AppletData		*currently_dragged_applet;
+	int             thick;
 
-	int			thick;
+	PanelBackground background;
 
-	PanelBackType		back_type;
-	char                    *back_pixmap;
-	GdkColor		back_color;
-	gboolean		inhibit_draw;
-
+	GtkWidget      *master_widget;
 	
-	GtkWidget		*master_widget;
+	GtkWidget      *drop_widget;     /* widget that the panel checks for
+	                                  * the cursor on drops usually the
+	                                  * panel widget itself
+	                                  */
 	
-	GtkWidget		*drop_widget; /*this is the widget that the
-						panel checks for the cursor
-						on drops usually the panel
-					        widget itself*/
+	GtkWidget      *panel_parent;
 	
-	GtkWidget		*panel_parent;
-	
-	GdkPixbuf		*backpix;	/* background pixmap unscaled */
-	int			scale_w, scale_h;
-	
-	GdkPixmap		*backpixmap;	/* if a background pixmap
-						   was set, this is used
-						   for tiling onto the
-						   background */
+	GdkEventKey    *key_event;
+
+	guint           packed : 1;
+
+	guint           inhibit_draw : 1;
 };
 
 struct _PanelWidgetClass
@@ -135,16 +122,16 @@ struct _PanelWidgetClass
 
 GType		panel_widget_get_type		(void) G_GNUC_CONST;
 
-GtkWidget *	panel_widget_new		(gchar *panel_id,
+GtkWidget *	panel_widget_new		(const char *panel_id,
 						 gboolean packed,
 						 GtkOrientation orient,
 						 int sz,
-						 PanelBackType back_type,
-						 char *back_pixmap,
+						 PanelBackgroundType back_type,
+						 const char *back_pixmap,
 						 gboolean fit_pixmap_bg,
 						 gboolean stretch_pixmap_bg,
 						 gboolean rotate_pixmap_bg,
-						 GdkColor *back_color);
+						 PanelColor *back_color);
 /*add an applet to the panel, preferably at position pos, if insert_at_pos
   is on, we REALLY want to insert at the pos given by pos*/
 int		panel_widget_add		(PanelWidget *panel,
@@ -188,17 +175,17 @@ void		panel_widget_applet_drag_end_no_grab(PanelWidget *panel);
 void		panel_widget_change_params	(PanelWidget *panel,
 						 GtkOrientation orient,
 						 int sz,
-						 PanelBackType back_type,
-						 char *pixmap_name,
+						 PanelBackgroundType back_type,
+						 const char *pixmap_name,
 						 gboolean fit_pixmap_bg,
 						 gboolean stretch_pixmap_bg,
 						 gboolean rotate_pixmap_bg,
-						 GdkColor *back_color);
+						 PanelColor *back_color);
 
 void		panel_widget_set_back_pixmap	(PanelWidget *panel,
 						 const char *file);
 void		panel_widget_set_back_color	(PanelWidget *panel,
-						 GdkColor *color);
+						 PanelColor  *color);
 
 /*draw EVERYTHING (meaning icons)*/
 void		panel_widget_draw_all		(PanelWidget *panel,

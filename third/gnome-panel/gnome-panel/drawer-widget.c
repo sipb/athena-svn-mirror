@@ -38,13 +38,6 @@ static void drawer_pos_get_pos(BasePWidget *basep,
 			       int *x, int *y,
 			       int width, int height);
 
-static void drawer_pos_get_menu_pos (BasePWidget *basep,
-				     GtkWidget *widget,
-				     GtkRequisition *mreq,
-				     int *x, int *y,
-				     int wx, int wy,
-				     int ww, int wh);
-
 static void drawer_pos_hidebutton_click (BasePWidget *basep);
 
 static void drawer_pos_pre_convert_hook (BasePWidget *basep);
@@ -88,7 +81,6 @@ drawer_pos_class_init (DrawerPosClass *klass)
 	pos_class->get_hide_pos = drawer_pos_get_hide_pos;
 	pos_class->get_hide_size = drawer_pos_get_hide_size;
 	pos_class->get_pos = drawer_pos_get_pos;
-	pos_class->get_menu_pos = drawer_pos_get_menu_pos;
 
 	pos_class->north_clicked = 
 		pos_class->west_clicked = 
@@ -143,14 +135,14 @@ drawer_pos_get_applet_orient (BasePWidget *basep)
 	y = GTK_WIDGET(basep)->allocation.y;
 
 	if(porient == GTK_ORIENTATION_VERTICAL) {
-		if (x > (multiscreen_width (basep->screen)/2 +
-			 multiscreen_x (basep->screen)))
+		if (x > (multiscreen_width (basep->screen, basep->monitor)/2 +
+			 multiscreen_x (basep->screen, basep->monitor)))
 			return PANEL_ORIENT_LEFT;
 		else
 			return PANEL_ORIENT_RIGHT;
 	} else {
-		if (y > (multiscreen_height (basep->screen)/2 +
-			 multiscreen_y (basep->screen)))
+		if (y > (multiscreen_height (basep->screen, basep->monitor)/2 +
+			 multiscreen_y (basep->screen, basep->monitor)))
 			return PANEL_ORIENT_UP;
 		else
 			return PANEL_ORIENT_DOWN;
@@ -221,8 +213,7 @@ drawer_widget_close_drawer (DrawerWidget *drawer, GtkWidget *parentp)
 static void
 drawer_pos_hidebutton_click (BasePWidget *basep)
 {
-	Drawer *drawer = g_object_get_data (G_OBJECT (basep),
-					    DRAWER_PANEL_KEY);
+	Drawer *drawer = drawer_widget_get_drawer (DRAWER_WIDGET (basep));
 	PanelWidget *panel = PANEL_WIDGET (drawer->button->parent);
 	GtkWidget *parent = panel->panel_parent;
 
@@ -230,26 +221,6 @@ drawer_pos_hidebutton_click (BasePWidget *basep)
 	drawer->moving_focus = TRUE;
 	gtk_window_present (GTK_WINDOW (parent));
 	gtk_widget_grab_focus (drawer->button);
-}
-
-static void
-drawer_pos_get_menu_pos (BasePWidget *basep,
-			 GtkWidget *widget,
-			 GtkRequisition *mreq,
-			 int *x, int *y,
-			 int wx, int wy,
-			 int ww, int wh)
-{	
-	PanelWidget *panel =
-		PANEL_WIDGET(basep->panel);
-
-	if(panel->orient==GTK_ORIENTATION_VERTICAL) {
-		*x = wx + ww;
-		*y += wy;
-	} else {
-		*x += wx;
-		*y = wy - mreq->height;
-	}
 }
 
 static void
@@ -360,19 +331,21 @@ drawer_pos_pre_convert_hook (BasePWidget *basep)
 }
 
 void
-drawer_widget_change_params (DrawerWidget *drawer,
-			     PanelOrient orient,
-			     BasePMode mode,
-			     BasePState state,
-			     int sz,
-			     gboolean hidebuttons_enabled,
-			     gboolean hidebutton_pixmap_enabled,
-			     PanelBackType back_type,
-			     char *back_pixmap,
-			     gboolean fit_pixmap_bg,
-			     gboolean stretch_pixmap_bg,
-			     gboolean rotate_pixmap_bg,
-			     GdkColor *back_color)
+drawer_widget_change_params (DrawerWidget        *drawer,
+			     int                  screen,
+			     int                  monitor,
+			     PanelOrient          orient,
+			     BasePMode            mode,
+			     BasePState           state,
+			     int                  sz,
+			     gboolean             hidebuttons_enabled,
+			     gboolean             hidebutton_pixmap_enabled,
+			     PanelBackgroundType  back_type,
+			     const char          *back_pixmap,
+			     gboolean             fit_pixmap_bg,
+			     gboolean             stretch_pixmap_bg,
+			     gboolean             rotate_pixmap_bg,
+			     PanelColor          *back_color)
 {
 	GtkOrientation porient;
 	DrawerPos *pos = DRAWER_POS (BASEP_WIDGET (drawer)->pos);
@@ -414,7 +387,8 @@ drawer_widget_change_params (DrawerWidget *drawer,
 	}
 
 	basep_widget_change_params (BASEP_WIDGET (drawer),
-				    0 /*FIXME */,
+				    screen,
+				    monitor,
 				    porient,
 				    sz,
 				    mode,
@@ -439,35 +413,39 @@ drawer_widget_change_orient (DrawerWidget *drawer,
 		BasePWidget *basep = BASEP_WIDGET (drawer);
 		PanelWidget *panel = PANEL_WIDGET (basep->panel);
 		drawer_widget_change_params (drawer,
+					     basep->screen,
+					     basep->monitor,
 					     orient,
 					     basep->mode,
 					     basep->state,
 					     panel->sz,
 					     basep->hidebuttons_enabled,
 					     basep->hidebutton_pixmaps_enabled,
-					     panel->back_type,
-					     panel->back_pixmap,
-					     panel->fit_pixmap_bg,
-					     panel->stretch_pixmap_bg,
-					     panel->rotate_pixmap_bg,
-					     &panel->back_color);
+					     panel->background.type,
+					     panel->background.image,
+					     panel->background.fit_image,
+					     panel->background.stretch_image,
+					     panel->background.rotate_image,
+					     &panel->background.color);
 	}
 }
 
 GtkWidget *
-drawer_widget_new (gchar *panel_id,
-		   PanelOrient orient,
-		   BasePMode mode,
-		   BasePState state,
-		   int sz,
-		   gboolean hidebuttons_enabled,
-		   gboolean hidebutton_pixmap_enabled,
-		   PanelBackType back_type,
-		   char *back_pixmap,
-		   gboolean fit_pixmap_bg,
-		   gboolean stretch_pixmap_bg,
-		   gboolean rotate_pixmap_bg,
-		   GdkColor *back_color)
+drawer_widget_new (const char          *panel_id,
+		   int                  screen,
+		   int                  monitor,
+		   PanelOrient          orient,
+		   BasePMode            mode,
+		   BasePState           state,
+		   int                  sz,
+		   gboolean             hidebuttons_enabled,
+		   gboolean             hidebutton_pixmap_enabled,
+		   PanelBackgroundType  back_type,
+		   const char          *back_pixmap,
+		   gboolean             fit_pixmap_bg,
+		   gboolean             stretch_pixmap_bg,
+		   gboolean             rotate_pixmap_bg,
+		   PanelColor          *back_color)
 {
 	DrawerWidget *drawer;
 	DrawerPos *pos;
@@ -491,7 +469,8 @@ drawer_widget_new (gchar *panel_id,
 	basep_widget_construct (panel_id, 
 				BASEP_WIDGET (drawer),
 				TRUE, TRUE,
-				0 /*FIXME */,
+				screen,
+				monitor,
 				porient,
 				sz, mode, state,
 				hidebuttons_enabled,
@@ -503,4 +482,17 @@ drawer_widget_new (gchar *panel_id,
 				rotate_pixmap_bg,
 				back_color);
 	return GTK_WIDGET (drawer);
+}
+
+void
+drawer_widget_set_drawer (DrawerWidget *widget,
+			  Drawer       *drawer)
+{
+	g_object_set_data (G_OBJECT (widget), "drawer-panel", drawer);
+}
+
+Drawer *
+drawer_widget_get_drawer (DrawerWidget *widget)
+{
+	return g_object_get_data (G_OBJECT (widget), "drawer-panel");
 }

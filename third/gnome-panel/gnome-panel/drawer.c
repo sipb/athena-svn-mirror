@@ -62,8 +62,7 @@ properties_apply_callback(gpointer data)
 							    "panel-drawer.png", TRUE, NULL);
 	}
 
-	button_widget_set_pixmap (BUTTON_WIDGET (drawer->button),
-				  drawer->pixmap, -1);
+	button_widget_set_pixmap (BUTTON_WIDGET (drawer->button), drawer->pixmap);
 
 	cs = gtk_entry_get_text(GTK_ENTRY(gnome_entry_gtk_entry(GNOME_ENTRY(tipentry))));
 	if (string_empty (cs))
@@ -220,50 +219,12 @@ destroy_drawer(GtkWidget *widget, gpointer data)
 
 	drawer->properties = NULL;
 
+	if (drawer->close_timeout_id)
+		g_source_remove (drawer->close_timeout_id);
+	drawer->close_timeout_id = 0;
+
 	if(prop_dialog)
 		gtk_widget_destroy(prop_dialog);
-}
-
-static int
-enter_notify_drawer(GtkWidget *widget, GdkEventCrossing *event, gpointer data)
-{
-	Drawer *drawer = data;
-	BasePWidget *basep = BASEP_WIDGET (drawer->drawer);
-
-	if (!xstuff_is_compliant_wm ())
-		gdk_window_raise (drawer->drawer->window);
-
-	if (basep->moving)
-		return FALSE;
-	
-	if ((basep->state != BASEP_AUTO_HIDDEN) ||
-	    (event->detail == GDK_NOTIFY_INFERIOR) ||
-	    (basep->mode != BASEP_AUTO_HIDE))
-		return FALSE;
-
-	if (basep->leave_notify_timer_tag != 0) {
-		gtk_timeout_remove (basep->leave_notify_timer_tag);
-		basep->leave_notify_timer_tag = 0;
-	}
-
-	basep_widget_autoshow (basep);
-
-	return FALSE;
-}
-
-static int
-leave_notify_drawer (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
-{
-	Drawer *drawer = data;
-	BasePWidget *basep = BASEP_WIDGET (drawer->drawer);
-
-	if (event->detail == GDK_NOTIFY_INFERIOR)
-		return FALSE;
-
-	basep_widget_queue_autohide (basep);
-
-	return FALSE;
-	
 }
 
 static gboolean
@@ -315,7 +276,7 @@ key_press_drawer (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	GtkWidget *drawer_panel;
 	GtkDirectionType dir;
 
-	if (event->state == 0) {
+	if (event->state != gtk_accelerator_get_default_mod_mask ()) {
 		drawer = data;
 		parent = PANEL_WIDGET (drawer->button->parent);
 		drawerw = DRAWER_WIDGET (drawer->drawer);
@@ -397,7 +358,7 @@ key_press_drawer_widget (GtkWidget *widget, GdkEventKey *event, gpointer data)
 		if (event->state == GDK_SHIFT_MASK) {
 			gtk_window_present (GTK_WINDOW (parent->panel_parent));
 			ret_val = TRUE;
-		} else if (event->state == 0) {
+		} else if (event->state != gtk_accelerator_get_default_mod_mask ()) {
 			gtk_window_present (GTK_WINDOW (parent->panel_parent));
 			switch (BASEP_WIDGET (drawerw)->state) {
 			case BASEP_SHOWN:
@@ -417,13 +378,133 @@ key_press_drawer_widget (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	return ret_val;
 }
 
+static void 
+drag_data_received_cb (GtkWidget          *widget,
+		       GdkDragContext     *context,
+		       gint                x,
+		       gint                y,
+		       GtkSelectionData   *selection_data,
+		       guint               info,
+		       guint               time_,
+		       Drawer             *drawer)
+{
+	PanelWidget *panel;
+
+	if (!panel_check_dnd_target_data (widget, context, &info, NULL)) {
+		gtk_drag_finish (context, FALSE, FALSE, time_);
+		return;
+	}
+
+	panel = PANEL_WIDGET (BASEP_WIDGET (drawer->drawer)->panel);
+
+	panel_receive_dnd_data (
+		panel, info, -1, selection_data, context, time_, FALSE);
+}
+
+static gboolean
+drag_motion_cb (GtkWidget          *widget,
+		GdkDragContext     *context,
+		int                 x,
+		int                 y,
+		guint               time_,
+		Drawer             *drawer)
+{
+	PanelWidget *panel;
+	guint        info = 0;
+
+	if (!panel_check_dnd_target_data (widget, context, &info, NULL))
+		return FALSE;
+
+	panel = PANEL_WIDGET (BASEP_WIDGET (drawer->drawer)->panel);
+
+	if (!panel_check_drop_forbidden (panel, context, info, time_))
+		return FALSE;
+
+	if (drawer->close_timeout_id)
+		g_source_remove (drawer->close_timeout_id);
+	drawer->close_timeout_id = 0;
+
+	button_widget_set_dnd_highlight (BUTTON_WIDGET (widget), TRUE);
+
+	if (BASEP_WIDGET (drawer->drawer)->state == BASEP_HIDDEN_RIGHT ||
+	    BASEP_WIDGET (drawer->drawer)->state == BASEP_HIDDEN_LEFT) {
+		PanelWidget *button_parent;
+
+		button_parent = PANEL_WIDGET (drawer->button->parent);
+
+		drawer_widget_open_drawer (DRAWER_WIDGET (drawer->drawer),
+					   button_parent->panel_parent);
+		drawer->opened_for_drag = TRUE;
+	}
+
+
+	return TRUE;
+}
+
+static gboolean
+close_drawer_in_idle (gpointer data)
+{
+	Drawer *drawer = (Drawer *) data;
+
+	drawer->close_timeout_id = 0;
+
+	if (drawer->opened_for_drag) {
+		PanelWidget *button_parent;
+
+		button_parent = PANEL_WIDGET (drawer->button->parent);
+
+		drawer_widget_close_drawer (DRAWER_WIDGET (drawer->drawer),
+					    button_parent->panel_parent);
+		drawer->opened_for_drag = FALSE;
+	}
+
+	return FALSE;
+}
+
+static void
+queue_drawer_close_for_drag (Drawer *drawer)
+{
+	if (!drawer->close_timeout_id)
+		drawer->close_timeout_id =
+			g_timeout_add (1 * 1000, close_drawer_in_idle, drawer);
+}
+
+static void
+drag_leave_cb (GtkWidget      *widget,
+	       GdkDragContext *context,
+	       guint           time_,
+	       Drawer         *drawer)
+{
+	queue_drawer_close_for_drag (drawer);
+
+	button_widget_set_dnd_highlight (BUTTON_WIDGET (widget), FALSE);
+}
+
+static gboolean
+drag_drop_cb (GtkWidget      *widget,
+	      GdkDragContext *context,
+	      int             x,
+	      int             y,
+	      guint           time_,
+	      Drawer         *drawer)
+{
+	GdkAtom atom = 0;
+
+	if (!panel_check_dnd_target_data (widget, context, NULL, &atom))
+		return FALSE;
+
+	gtk_drag_get_data (widget, context, atom, time_);
+
+	return TRUE;
+}
+
 static void  
 drag_data_get_cb (GtkWidget          *widget,
 		  GdkDragContext     *context,
 		  GtkSelectionData   *selection_data,
 		  guint               info,
 		  guint               time,
-		  gpointer            data)
+		  Drawer             *drawer)
 {
 	char *foo;
 
@@ -475,8 +556,7 @@ create_drawer_applet (GtkWidget   *drawer_panel,
 		drawer->pixmap = g_strdup (pixmap);
 	}
 	drawer->button = button_widget_new (drawer->pixmap, -1,
-					    TRUE, orient,
-					    _("Drawer"));
+					    TRUE, orient);
 	if (!drawer->button) {
 		free_drawer (drawer);
 		return NULL;
@@ -495,9 +575,18 @@ create_drawer_applet (GtkWidget   *drawer_panel,
 			     GDK_ACTION_MOVE);
 	GTK_WIDGET_SET_FLAGS (drawer->button, GTK_NO_WINDOW);
 
-	g_signal_connect (G_OBJECT (drawer->button), "drag_data_get",
-			  G_CALLBACK (drag_data_get_cb),
-			  NULL);
+	gtk_drag_dest_set (drawer->button, 0, NULL, 0, 0); 
+
+	g_signal_connect (drawer->button, "drag_data_get",
+			  G_CALLBACK (drag_data_get_cb), drawer);
+	g_signal_connect (drawer->button, "drag_data_received",
+			  G_CALLBACK (drag_data_received_cb), drawer);
+	g_signal_connect (drawer->button, "drag_motion",
+			  G_CALLBACK (drag_motion_cb), drawer);
+	g_signal_connect (drawer->button, "drag_leave",
+			  G_CALLBACK (drag_leave_cb), drawer);
+	g_signal_connect (drawer->button, "drag_drop",
+			  G_CALLBACK (drag_drop_cb), drawer);
 
 	gtk_widget_show(drawer->button);
 
@@ -508,10 +597,6 @@ create_drawer_applet (GtkWidget   *drawer_panel,
 			    G_CALLBACK (drawer_click), drawer);
 	g_signal_connect (G_OBJECT (drawer->button), "destroy",
 			    G_CALLBACK (destroy_drawer), drawer);
-	g_signal_connect (G_OBJECT (drawer->button), "enter_notify_event",
-			    G_CALLBACK (enter_notify_drawer), drawer);
-	g_signal_connect (G_OBJECT (drawer->button), "leave_notify_event",
-			    G_CALLBACK (leave_notify_drawer), drawer);
 	g_signal_connect (G_OBJECT (drawer->button), "focus_in_event",
 			    G_CALLBACK (focus_in_drawer), drawer);
 	g_signal_connect (G_OBJECT (drawer->button), "focus_out_event",
@@ -521,24 +606,35 @@ create_drawer_applet (GtkWidget   *drawer_panel,
 	g_signal_connect (G_OBJECT (drawer->drawer), "key_press_event",
 			    G_CALLBACK (key_press_drawer_widget), drawer);
 
-	g_object_set_data (G_OBJECT (drawer_panel), DRAWER_PANEL_KEY, drawer);
+	drawer_widget_set_drawer (DRAWER_WIDGET (drawer_panel), drawer);
 	gtk_widget_queue_resize (GTK_WIDGET (drawer_panel));
 
 	return drawer;
 }
 
 static Drawer *
-create_empty_drawer_applet(const char *tooltip, const char *pixmap,
-			   PanelOrient orient)
+create_empty_drawer_applet (PanelWidget *container,
+			    const char  *tooltip,
+			    const char  *pixmap,
+			    PanelOrient  orient)
 {
-	GtkWidget *dw = drawer_widget_new (NULL, orient,
+	GtkWidget *drawer_widget;
+	int        screen;
+	int        monitor;
+
+	screen  = panel_screen_from_panel_widget (container);
+	monitor = panel_monitor_from_panel_widget (container);
+
+	drawer_widget = drawer_widget_new (NULL, screen,
+					   monitor, orient,
 					   BASEP_EXPLICIT_HIDE,
 					   BASEP_SHOWN,
 					   PANEL_SIZE_MEDIUM,
 					   TRUE, TRUE,
 					   PANEL_BACK_NONE, NULL,
 					   TRUE, FALSE, TRUE, NULL);
-	return create_drawer_applet (dw, tooltip, pixmap, orient);
+	return create_drawer_applet (
+			drawer_widget, tooltip, pixmap, orient);
 }
 
 void
@@ -596,7 +692,7 @@ load_drawer_applet (gchar       *mypanel_id,
 	orient = panel_widget_get_applet_orient (panel);
 
 	if (!mypanel_id) {
-		drawer = create_empty_drawer_applet (tooltip, pixmap, orient);
+		drawer = create_empty_drawer_applet (panel, tooltip, pixmap, orient);
 		if (drawer != NULL)
 			panel_setup (drawer->drawer);
 		panels_to_sync = TRUE;
@@ -607,12 +703,12 @@ load_drawer_applet (gchar       *mypanel_id,
 
 		if (dr_pd == NULL) {
 			g_warning ("Can't find the panel for drawer, making a new panel");
-			drawer = create_empty_drawer_applet(tooltip, pixmap, orient);
+			drawer = create_empty_drawer_applet(panel, tooltip, pixmap, orient);
 			if(drawer) panel_setup(drawer->drawer);
 			panels_to_sync = TRUE;
 		} else if ( ! DRAWER_IS_WIDGET (dr_pd->panel)) {
 			g_warning ("I found a bogus panel for a drawer, making a new one");
-			drawer = create_empty_drawer_applet(tooltip, pixmap, orient);
+			drawer = create_empty_drawer_applet(panel, tooltip, pixmap, orient);
 			if(drawer) panel_setup(drawer->drawer);
 			panels_to_sync = TRUE;
 		} else {

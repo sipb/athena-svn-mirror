@@ -2,15 +2,16 @@
 #ifndef PANEL_TYPES_H
 #define PANEL_TYPES_H
 
+#include <gdk/gdkcolor.h>
 #include <gtk/gtktypeutils.h>
 #include "GNOME_Panel.h"
 
-typedef GNOME_Vertigo_PanelOrient PanelOrient;
-
-#define PANEL_ORIENT_UP    GNOME_Vertigo_PANEL_ORIENT_UP
-#define PANEL_ORIENT_DOWN  GNOME_Vertigo_PANEL_ORIENT_DOWN
-#define PANEL_ORIENT_LEFT  GNOME_Vertigo_PANEL_ORIENT_LEFT
-#define PANEL_ORIENT_RIGHT GNOME_Vertigo_PANEL_ORIENT_RIGHT
+typedef enum {
+	PANEL_ORIENT_UP    = GNOME_Vertigo_PANEL_ORIENT_UP,
+	PANEL_ORIENT_DOWN  = GNOME_Vertigo_PANEL_ORIENT_DOWN,
+	PANEL_ORIENT_LEFT  = GNOME_Vertigo_PANEL_ORIENT_LEFT,
+	PANEL_ORIENT_RIGHT = GNOME_Vertigo_PANEL_ORIENT_RIGHT,
+} PanelOrient;
 
 typedef enum {
 	PANEL_SIZE_XX_SMALL = GNOME_Vertigo_PANEL_XX_SMALL,
@@ -23,10 +24,10 @@ typedef enum {
 } PanelSize;
 
 typedef enum {
-	PANEL_BACK_NONE,
+	PANEL_BACK_NONE = 0,
 	PANEL_BACK_COLOR,
-	PANEL_BACK_PIXMAP
-} PanelBackType;
+	PANEL_BACK_IMAGE
+} PanelBackgroundType;
 
 /* XXX: if you add any here you need to make the tile type larger
  * for button-widget, as it's 2 bits only for now */
@@ -52,5 +53,10 @@ typedef enum {
 	PANEL_SPEED_MEDIUM,
 	PANEL_SPEED_FAST
 } PanelSpeed;
+
+typedef struct {
+	GdkColor gdk;
+	guint16  alpha;
+} PanelColor;
 
 #endif

@@ -14,7 +14,40 @@ TITLE="Multiple Applets"
 HREF="multi-applets.html"><LINK
 REL="NEXT"
 TITLE="The Panel Applet Library"
-HREF="panel-applet.html"></HEAD
+HREF="panel-applet.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="CHAPTER"
 BGCOLOR="#FFFFFF"
@@ -22,87 +55,53 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->Panel Applet Writer's Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="multi-applets.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="h"
 HREF="libpanel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
+><TH
+WIDTH="100%"
+align="center"
+>Panel Applet Writer's Reference Manual</TH
 ><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
 ><A
+ACCESSKEY="n"
 HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><DIV
 CLASS="CHAPTER"
 ><H1
@@ -173,13 +172,6 @@ applet_widget_new and applet_widget_add are now effectively merged
 into one call panel_applet_new, to which the top-level widget of the
 applet should be passed. applet_widget_init is not neccessary anymore.
 So the new code should look something like this</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#include &lt;panel-applet.h&gt;
@@ -222,9 +214,6 @@ PANEL_APPLET_BONOBO_FACTORY ("OAFIID:BlahApplet_Factory",
                              blah_applet_factory,
                              NULL)
       </PRE
-></TD
-></TR
-></TABLE
 ><P
 >You should use PANEL_APPLET_BONOBO_FACTORY or
 PANEL_APPLET_BONOBO_SHLIB_FACTORY depending on whether you want the
@@ -254,13 +243,6 @@ CLASS="FILENAME"
 >.gnorba</TT
 > looks something like this
 :</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >[blah]
@@ -269,22 +251,12 @@ repo_id=IDL:GNOME/Applet:1.0
 description=Blah
 location_info=blah-de-blah
 	</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Your <TT
 CLASS="FILENAME"
 >.server</TT
 > file should look like
 this :</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >&lt;oaf_info&gt;
@@ -320,9 +292,6 @@ CLASS="PROGRAMLISTING"
 
 &lt;/oaf_info&gt;
 	</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A lot of this should be copied and pasted. The most
 important bits are setting "panel:category" and "panel:icon". The
@@ -367,13 +336,6 @@ panel_applet_setup_menu.</P
 ><P
 >The xml description should look something like this
 :</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >static const char fish_menu_xml [] =
@@ -386,9 +348,6 @@ CLASS="PROGRAMLISTING"
         "             pixtype=\"stock\" pixname=\"gnome-stock-about\"/&gt;\n"
         "&lt;/popup&gt;\n";
 	</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This could also be in a seperate
 <TT
@@ -397,13 +356,6 @@ CLASS="FILENAME"
 > file and loaded with
 panel_applet_setup_menu_from_file. The description of the verbs should
 look something like :</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >static const BonoboUIVerb fish_menu_verbs [] = {
@@ -414,9 +366,6 @@ CLASS="PROGRAMLISTING"
         BONOBO_UI_VERB_END
 };
 	</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This is just a list of callbacks invoked when the menu
 items are clicked. There are other macros you may use other than
@@ -428,13 +377,6 @@ CLASS="FILENAME"
 ><P
 >To actually register the menu you just do something like
 :</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >	panel_applet_setup_menu (PANEL_APPLET (blah-&#62;applet),
@@ -442,108 +384,39 @@ CLASS="PROGRAMLISTING"
                                  blah_menu_verbs,
                                  blah);
 	</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The last argument is the user_data argument passed back
 to the callbacks.</P
 ></DIV
 ></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="multi-applets.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;Multiple Applets</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="libpanel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
 ><A
+ACCESSKEY="n"
 HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->Next Page &#62;&#62;&#62;</B
-></FONT
+>The Panel Applet Library&nbsp;&gt;&gt;&gt;</B
 ></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Multiple Applets</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->The Panel Applet Library</B
-></FONT
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

@@ -1,3 +1,97 @@
+2003-01-03  Muktha  <muktha.narayan@wipro.com>
+
+	Fixes #102409.
+
+	* fish.c:
+	(show_help): take a link id as an argument.
+	(handle_response): display the settings help page
+	here, not the main one.
+	(display_help_dialog): upd.
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/.cvsignore:
+	* help/C/.cvsignore:
+	* help/C/Makefile.am:
+	* help/C/figures/fish_applet.png:
+	* help/C/figures/fish_settings.png:
+	* help/C/fish-applet-2-C.omf:
+	* help/C/fish-applet-2.xml:
+	* help/C/legal.xml:
+	* help/C/topic.dat:
+	* help/Makefile.am: remove these files.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't build help subdir. Its
+	moved to $(toplevel)/help/ now.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.glade: s/FIsh/Fish/. #101335.
+
+2002-12-13  Fernando Herrera <fherrera@onirica.com>
+
+	* GNOME_FishApplet_Factory.server.in.in: add bugzilla attributes
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (display_about_dialog): revert
+	copyright changes until we decide on a
+	format.
+
+2002-12-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: make the prefs dialog instant
+	apply, fixing #77044. In the process,
+	substantially clean up this applet. Gladify
+	the dialog, make it handle gconf key changes,
+	derive from PanelApplet, respect the widget
+	size allocation and more ...
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (update_fortune_dialog): no whitespace
+	before punctuation marks.
+
+2002-12-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (apply_dialog_properties): don't mark
+	pango markup for translation. #100047.
+
+2002-11-07  Vincent Untz  <vincent@vuntz.net>
+
+	* fish.c: (fish_properties_apply), (display_about_dialog): Replace
+	the use of 'Wanda' by the actual name of the fish (bug #97577).
+
+2002-10-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* egg-screen-help.[ch], egg-screen-url.[ch]: sync
+	with libegg.
+
+	* fish.c: use updated multiscreen help api.
+
+2002-10-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (fish_timeout): stop the april fools joke
+	at midday - #77186. Based on patch by Christian Marrilat.
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (fishy_root_window), (fish_properties_apply), (phelp),
+	(display_properties_dialog), (something_fishy_going_on),
+	(update_fortune_dialog), (change_water), (display_help_dialog),
+	(display_about_dialog): remove all HAVE_GTK_MULTIHEAD conditionals
+	as we require gtk 2.1.0 now.
+
+2002-08-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add egg-screen-exec files to
+	the build.
+
+	* fish.c: (phelp),
+	(display_help_dialog): use egg_screen_help_displ_desktop.
+
 2002-07-18  Mark McLoughlin  <mark@skynet.ie>
 
 	* Makefile.am: install applet in libexec.
@@ -10,6 +104,18 @@
 	* fish.c: (get_location): clean up a bit to
 	fix warning.
 
+2002-07-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (something_fishy_going_on): fix build breakage.
+
+2002-07-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c:
+	(something_fishy_going_on): add fish arg and set dialog
+	screen.
+	(fish_locate_fortune_command), (update_fortune_dialog): upd
+	for above change.
+
 2002-07-12  Mark McLoughlin  <mark@skynet.ie>
 
 	* fish.c: (something_fishy_going_on): impl.
@@ -21,6 +127,17 @@
 
 	* fish.c (update_fortune_dialog): Convert the fortune string from
 	the user locale to UTF-8. This fixes bug #82254
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (fishy_root_window),
+	(fishy_window_set_screen): impl helper methods.
+	(load_image_file): create the pixmap using the correct
+	root window.
+	(fish_properties_apply), (display_properties_dialog),
+	(update_fortune_dialog), (change_water),
+	(display_about_dialog): set the screen on which the window
+	is to realize.
 
 2002-06-21  Mark McLoughlin  <mark@skynet.ie>
   

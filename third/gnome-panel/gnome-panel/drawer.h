@@ -6,8 +6,6 @@
 
 G_BEGIN_DECLS
 
-#define DRAWER_PANEL_KEY "drawer_panel"
-
 typedef struct {
 	char         *pixmap;
 	char         *tooltip;
@@ -17,6 +15,8 @@ typedef struct {
 	GtkWidget    *properties;
 
 	gboolean      moving_focus;
+	gboolean      opened_for_drag;
+	guint         close_timeout_id;
 
 	AppletInfo   *info;
 } Drawer;

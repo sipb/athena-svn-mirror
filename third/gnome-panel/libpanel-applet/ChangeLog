@@ -1,3 +1,59 @@
+2002-12-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* panel-applet.c: (panel_applet_finalize):
+	Don't leak size_hints.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c:
+	(panel_applet_get_pixmap): its a window we're copying
+	from, not a pixmap.
+	(panel_applet_handle_background_string): don't attempt
+	this until the applet is realized.
+	(panel_applet_handle_background):
+	(panel_applet_set_prop): split out background handling
+	and signal emission into a seperate function.
+	(panel_applet_realize): and invoke it here when the
+	applet is realized.
+	(panel_applet_class_init): hook up the realized handler.
+
+2002-11-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: kill custom lifecycle management
+	for controls and use libbonobui's new API instead.
+
+2002-10-17  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Padraig to ensure there is enough room around
+	each applet to draw a focus indication if one is needed.
+	Focus indication is only needed when there is a toplevel
+	tooltip on the PanelApplet *or* the applet has no
+	focusable children. Fixes #84215.
+
+	Please read:
+
+http://mail.gnome.org/archives/desktop-devel-list/2002-October/msg00227.html
+
+	before deciding that this behaviour is wrong.
+
+	* panel-applet.c:
+	(panel_applet_can_focus): only focus if the applet has
+	a toplevel tooltip or no focusable children.
+	(panel_applet_size_request): request room to draw the
+	focus indication. Deliberately ignore focus padding.
+	(panel_applet_size_allocate): adjust the child's position
+	to give room to draw focus.
+	(panel_applet_expose): draw focus here.
+	(panel_applet_class_init): hook up.
+
+2002-10-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c:
+	(panel_applet_position_menu): impl positioning the popup
+	menu outside of applets.
+	(panel_applet_button_press), (_panel_applet_popup_menu):
+	use it here. Fixes #70502.
+
 2002-08-21  Havoc Pennington  <hp@redhat.com>
 
 	* panel-applet.c (panel_applet_handle_background_string): memory

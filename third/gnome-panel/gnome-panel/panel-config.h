@@ -19,6 +19,7 @@ struct _PerPanelConfig {
 
 	/*basep types*/
 	int			screen;
+	int			monitor;
 	gboolean		hidebuttons;
 	gboolean		hidebutton_pixmaps;
 	BasePMode               mode;
@@ -39,9 +40,9 @@ struct _PerPanelConfig {
 	gboolean		fit_pixmap_bg;
 	gboolean		stretch_pixmap_bg;
 	gboolean		rotate_pixmap_bg;
-	PanelBackType		back_type;
+	PanelBackgroundType	back_type;
 	char			*back_pixmap;
-	GdkColor		back_color;
+	PanelColor		back_color;
 	
 	gboolean		register_changes; /*used for startup*/
 	gboolean		ppc_origin_change; /* if true then the dialog
@@ -59,8 +60,9 @@ struct _PerPanelConfig {
 
 	GtkWidget		*pix_entry;
 
-	/*screen number spinner*/
+	/*screen number spinners*/
 	GtkWidget               *screen_spin;
+	GtkWidget               *monitor_spin;
 
 	/*hiding stuff*/
 	GtkWidget               *autohide_button;

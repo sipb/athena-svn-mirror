@@ -1,175 +1,125 @@
-# German translation file for gnome-panel.
-# Copyright (C) 1998-2002 Free Software Foundation, Inc.
+# German gnome-panel translation.
+# Copyright (C) 1998-2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-panel package.
 # Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
 # Matthias Warkus <mawa@iname.com>, 1999-2001.
 # Benedikt Roth <Benedikt.Roth@gmx.net>, 2000, 2001.
 # Christian Meyer <chrisime@gnome.org>, 2000, 2001.
 # Karl Eichwalder <ke@suse.de>, 2000, 2001.
 # Jörgen Scheibengruber <mfcn@gmx.de>, 2002.
-# Christian Neumair <chris@gnome-de.org>, 2002.
+# Christian Neumair <chris@gnome-de.org>, 2002, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-panel 2.0.x\n"
-"POT-Creation-Date: 2002-11-15 16:46+1300\n"
-"PO-Revision-Date: 2002-09-26 14:59+0100\n"
+"Project-Id-Version: gnome-panel 2.2\n"
+"POT-Creation-Date: 2003-01-21 18:37+1300\n"
+"PO-Revision-Date: 2003-01-20 17:10+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: applets/fish/GNOME_FishApplet.xml.h:1
-#: applets/gen_util/GNOME_ClockApplet.xml.h:3
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:1
-#: applets/gen_util/GNOME_PagerApplet.xml.h:1
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:1
-msgid "_About..."
-msgstr "_Info..."
-
-#: applets/fish/GNOME_FishApplet.xml.h:2
-#: applets/gen_util/GNOME_ClockApplet.xml.h:4
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:3
-#: applets/gen_util/GNOME_PagerApplet.xml.h:2
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:2 gnome-panel/drawer.c:672
-#: gnome-panel/launcher.c:756 gnome-panel/logout.c:134
-#: gnome-panel/logout.c:221 gnome-panel/menu.c:3447 gnome-panel/menu.c:4150
-msgid "_Help"
-msgstr "_Hilfe"
-
-#: applets/fish/GNOME_FishApplet.xml.h:3
-#: applets/gen_util/GNOME_ClockApplet.xml.h:5
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:4
-#: applets/gen_util/GNOME_PagerApplet.xml.h:3
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:3
-msgid "_Preferences..."
-msgstr "_Einstellungen..."
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:1
-msgid "Amusements"
-msgstr "Unterhaltung"
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:2
-msgid "Display a swimming fish or another animated creature"
-msgstr "Einen schwimmenden Fisch oder andere animierte Lebewesen anzeigen"
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:3
-#: applets/fish/fish.c:1236
-msgid "Fish"
-msgstr "Fisch"
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:4
-msgid "From Whence That Stupid Fish Came"
-msgstr "Da wo dieser blöde Fisch herkam"
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:5
-msgid "Wanda Factory"
-msgstr "Wanda-Fabrik"
-
-#: applets/fish/fish.c:67
+#: applets/fish/fish.c:128 applets/gen_util/clock.c:909
+#: applets/gen_util/clock.c:1149 applets/gen_util/mailcheck.c:1623
+#: applets/gen_util/mailcheck.c:1831 applets/gen_util/pager.c:187
+#: applets/gen_util/pager.c:501 applets/gen_util/showdesktop.c:412
+#: applets/gen_util/tasklist.c:123 applets/gen_util/tasklist.c:762
+#: applets/notification_area/main.c:80
 #, c-format
-msgid "%s the GNOME Fish"
-msgstr "%s, der GNOME Fisch"
+msgid "There was an error displaying help: %s"
+msgstr "Beim Anzeigen der Hilfe ist ein Fehler aufgetreten: %s"
 
-#: applets/fish/fish.c:68
+#: applets/fish/fish.c:194
 #, c-format
-msgid "%s the GNOME Fish, a contemporary oracle"
-msgstr "%s, der GNOME Fisch, ein zeitgenössisches Orakel"
+msgid ""
+"Warning:  The command appears to be something actually useful.\n"
+"Since this is a useless applet, you may not want to do this.\n"
+"We strongly advise you against using %s for anything\n"
+"which would make the applet \"practical\" or useful."
+msgstr ""
+"Warnung: Dieser Befehl scheint in der Tat in irgendeiner Form nützlich zu "
+"sein.\n"
+"Da dies jedoch ein nutzloses Applet ist, sollten Sie diesen nicht ausführen."
+"Wir bitten Sie nachdrücklich, %s nicht für etwas zu verwenden,\n"
+"das dieses Applet irgendwie „praktisch” oder „nützlich” machen könnte."
 
-#: applets/fish/fish.c:107
-msgid "GNOME Fish, the fortune teller"
-msgstr "GNOME-Fisch, der Wahrsager"
-
-#: applets/fish/fish.c:485 applets/fish/fish.c:1203
+#: applets/fish/fish.c:378 applets/fish/fish.c:536
 #, no-c-format
 msgid "%s the Fish"
 msgstr "%s, der Fisch"
 
-#: applets/fish/fish.c:486
+#: applets/fish/fish.c:379
 #, c-format
-msgid "<big><big>%s the GNOME Fish Says:</big></big>"
-msgstr "<big><big>%s, der GNOME Fisch, sagt:</big></big>"
-
-#: applets/fish/fish.c:581
 msgid ""
-"Warning:  The command appears to be something actually useful.\n"
-"Since this is a useless applet, you may not want to do this.\n"
-"We strongly advise you against usage of wanda for anything\n"
-"which would make the applet \"practical\" or useful."
+"%s has no use what-so-ever. It only takes up disk space and compilation "
+"time, and if loaded it also takes up precious panel space and memory. If "
+"anyone is found using it, he should be promptly sent for a psychiatric "
+"evaluation."
 msgstr ""
-"Warnung:  Dieser Befehl scheint in der Tat irgendwie nützlich zu sein.\n"
-"Da dies jedoch ein nutzloses Applet ist, sollten Sie diesen Befehl nicht "
-"verwenden.\n"
-"Wir weisen Sie nachdrücklich darauf hin, »Wanda« nicht für etwas zu "
-"verwenden,\n"
-"das dieses Applet irgendwie »praktisch« oder nützlich machen könnte."
+"%s hat nicht den geringsten Nutzen. Es verbraucht bloß Plattenplatz und Zeit "
+"zur Übersetzung, und wenn es läuft, verbraucht es zudem wertvollen Platz im "
+"Panel sowie im Speicher. Sollte jemand beim Verwenden dieses Applets "
+"erwischt werden, hat sich er sofort einer psychiatrischen Untersuchung zu "
+"unterziehen."
 
-#: applets/fish/fish.c:712
-msgid "GNOME Fish Preferences"
-msgstr "Einstellungen des GNOME-Fisches"
+#: applets/fish/fish.c:400
+msgid "(with minor help from George)"
+msgstr "(mit etwas Hilfe von George)"
 
-#: applets/fish/fish.c:722
-msgid "_Name of GNOME fish:"
-msgstr "_Name des GNOME-Fisches:"
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:3
+#: applets/fish/fish.c:416
+msgid "Fish"
+msgstr "Fisch"
 
-#: applets/fish/fish.c:739
-msgid "_Animation filename:"
-msgstr "Name der _Animationsdatei:"
+#: applets/fish/fish.c:448
+#, c-format
+msgid "%s the GNOME Fish"
+msgstr "%s, der GNOME Fisch"
 
-#: applets/fish/fish.c:741 applets/gen_util/mailcheck.c:1291
-#: gnome-panel/panel-config.c:1386 gnome-panel/panel-util.c:241
-msgid "Browse"
-msgstr "Auswählen"
+#: applets/fish/fish.c:449
+#, c-format
+msgid "%s the GNOME Fish, a contemporary oracle"
+msgstr "%s, der GNOME Fisch, ein zeitgenössisches Orakel"
 
-#: applets/fish/fish.c:757
-msgid "Command to _execute when fish is clicked:"
-msgstr "A_uszuführender Befehl beim Klick auf den Fisch:"
-
-#: applets/fish/fish.c:774
-msgid "Frame_s in animation:"
-msgstr "_Einzelbildanzahl der Animation:"
-
-#: applets/fish/fish.c:792
-msgid "Pause _per frame (s):"
-msgstr "Pause _pro Einzelbild (s):"
-
-#: applets/fish/fish.c:807
-msgid "_Rotate on vertical panels"
-msgstr "Auf vertikalen Panels _gedreht darstellen"
-
-#: applets/fish/fish.c:863
+#: applets/fish/fish.c:496
 msgid "Unable to get the name of the command to execute"
 msgstr "Name des auszuführenden Befehls konnte nicht erhalten werden"
 
-#: applets/fish/fish.c:879
+#: applets/fish/fish.c:513
 msgid "Unable to locate the command to execute"
 msgstr "Auszuführender Befehl nicht gefunden."
 
-#: applets/fish/fish.c:1004
+#: applets/fish/fish.c:541
+#, no-c-format
+msgid "%s the GNOME Fish Says:"
+msgstr "%s, der GNOME Fisch, sagt:"
+
+#: applets/fish/fish.c:666
 #, c-format
 msgid ""
 "Unable to execute '%s'\n"
 "\n"
-"Details : %s"
+"Details: %s"
 msgstr ""
-"»%s« konnte nicht ausgeführt werden\n"
+"„%s” konnte nicht ausgeführt werden\n"
 "\n"
 "Details: %s"
 
-#: applets/fish/fish.c:1024
+#: applets/fish/fish.c:687
 msgid ""
 "You do not have fortune installed or you have not specified a program to "
 "run.\n"
 "\n"
 "Please refer to fish properties dialog."
 msgstr ""
-"Sie haben »fortune« oder das angegebene Programm, das aufgerufen werden "
+"Sie haben „fortune” oder das angegebene Programm, das aufgerufen werden "
 "soll, nicht installiert.\n"
 "\n"
 "Bitte orientieren Sie sich an dem Dialog zum Einstellen der Eigenschaften "
 "des Fischs."
 
-#: applets/fish/fish.c:1039
+#: applets/fish/fish.c:1289
 msgid ""
 "The water needs changing!\n"
 "(Look at today's date)"
@@ -177,22 +127,46 @@ msgstr ""
 "Das Wasser muss gewechselt werden!\n"
 "(Schauen Sie auf das heutige Datum)"
 
-#: applets/fish/fish.c:1218
-msgid "(with minor help from George)"
-msgstr "(mit etwas Hilfe von George)"
+#: applets/fish/fish.c:1358
+msgid "GNOME Fish, the fortune teller"
+msgstr "GNOME-Fisch, der Wahrsager"
 
-#: applets/fish/fish.c:1239
-msgid ""
-"This applet has no use what-so-ever. It only takes up disk space and "
-"compilation time, and if loaded it also takes up precious panel space and "
-"memory. If anyone is found using this applet, he should be promptly sent for "
-"a psychiatric evaluation."
-msgstr ""
-"Diese Applet hat nicht den geringsten Nutzen. Es verbraucht bloß "
-"Plattenplatz und Compilierzeit, und wenn es läuft, verbraucht es zudem auch "
-"noch wertvollen Platz im Panel und im Speicher. Sollte jemand beim Verwenden "
-"dieses Applets erwischt werden, muss er sofort einer psychiatrischen "
-"Untersuchung unterzogen werden."
+#: applets/fish/fish.glade.h:1 gnome-panel/gnome-panel-screenshot.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: applets/fish/fish.glade.h:2 applets/gen_util/mailcheck.c:1319
+#: gnome-panel/panel-config.c:1498 gnome-panel/panel-util.c:287
+msgid "Browse"
+msgstr "Auswählen"
+
+#: applets/fish/fish.glade.h:3
+msgid "Command to _execute when fish is clicked:"
+msgstr "Beim Anklicken des Fisches _auszuführender Befehl:"
+
+#: applets/fish/fish.glade.h:4
+msgid "Frame_s in animation:"
+msgstr "_Einzelbildanzahl der Animation:"
+
+#: applets/fish/fish.glade.h:5
+msgid "GNOME Fish Preferences"
+msgstr "Einstellungen des GNOME-Fisches"
+
+#: applets/fish/fish.glade.h:6
+msgid "Pause _per frame (s):"
+msgstr "_Pause pro Einzelbild (in Sekunden):"
+
+#: applets/fish/fish.glade.h:7
+msgid "_Animation filename:"
+msgstr "Name der Animations_datei:"
+
+#: applets/fish/fish.glade.h:8
+msgid "_Name of GNOME fish:"
+msgstr "_Name des GNOME-Fisches:"
+
+#: applets/fish/fish.glade.h:9
+msgid "_Rotate on vertical panels"
+msgstr "Auf vertikalen Panels _gedreht darstellen"
 
 #: applets/fish/fish.schemas.in.h:1
 msgid ""
@@ -204,7 +178,7 @@ msgstr ""
 
 #: applets/fish/fish.schemas.in.h:2
 msgid "Command to execute when the fish is clicked"
-msgstr "Auszuführender Befehl beim Klick auf den Fisch"
+msgstr "Beim Anklicken des Fisches auszuführender Befehl"
 
 #: applets/fish/fish.schemas.in.h:3
 msgid "Pause per frame"
@@ -226,13 +200,244 @@ msgstr "Der Name des Fisches"
 msgid "The number of frames in the fish's animation"
 msgstr "Die Anzahl der Einzelbilder in der Animation des Fisches"
 
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:1
+msgid "Amusements"
+msgstr "Unterhaltung"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:2
+msgid "Display a swimming fish or another animated creature"
+msgstr "Einen schwimmenden Fisch oder andere animierte Lebewesen anzeigen"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:4
+msgid "From Whence That Stupid Fish Came"
+msgstr "Da wo dieser blöde Fisch herkam"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:5
+msgid "Wanda Factory"
+msgstr "Wanda-Fabrik"
+
+#: applets/fish/GNOME_FishApplet.xml.h:1
+#: applets/gen_util/GNOME_ClockApplet.xml.h:3
+#: applets/gen_util/GNOME_MailCheckApplet.xml.h:1
+#: applets/gen_util/GNOME_PagerApplet.xml.h:1
+#: applets/gen_util/GNOME_ShowDesktopApplet.xml.h:1
+#: applets/gen_util/GNOME_TasklistApplet.xml.h:1
+#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:1
+msgid "_About..."
+msgstr "_Info..."
+
+#: applets/fish/GNOME_FishApplet.xml.h:2
+#: applets/gen_util/GNOME_ClockApplet.xml.h:4
+#: applets/gen_util/GNOME_MailCheckApplet.xml.h:3
+#: applets/gen_util/GNOME_PagerApplet.xml.h:2
+#: applets/gen_util/GNOME_ShowDesktopApplet.xml.h:2
+#: applets/gen_util/GNOME_TasklistApplet.xml.h:2
+#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:2
+#: gnome-panel/drawer.c:768 gnome-panel/launcher.c:804 gnome-panel/menu.c:3521
+#: gnome-panel/menu.c:4243 gnome-panel/panel-action-button.c:510
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: applets/fish/GNOME_FishApplet.xml.h:3
+#: applets/gen_util/GNOME_ClockApplet.xml.h:5
+#: applets/gen_util/GNOME_MailCheckApplet.xml.h:4
+#: applets/gen_util/GNOME_PagerApplet.xml.h:3
+#: applets/gen_util/GNOME_TasklistApplet.xml.h:3
+msgid "_Preferences..."
+msgstr "_Einstellungen..."
+
+#: applets/gen_util/clock.c:178
+msgid "%l:%M:%S %p"
+msgstr "%I:%M:%S %p"
+
+#: applets/gen_util/clock.c:178
+msgid "%l:%M %p"
+msgstr "%I:%M %p"
+
+#: applets/gen_util/clock.c:180 applets/gen_util/clock.c:499
+msgid "%H:%M:%S"
+msgstr "%H:%M:%S"
+
+#: applets/gen_util/clock.c:180 applets/gen_util/clock.c:501
+msgid "%H:%M"
+msgstr "%H.%M"
+
+#: applets/gen_util/clock.c:186
+msgid "%a %b %d"
+msgstr "%a, %d. %b"
+
+#. translators: reverse the order of these arguments
+#. *              if the time should come before the
+#. *              date on a clock in your locale.
+#.
+#: applets/gen_util/clock.c:193
+#, c-format
+msgid ""
+"%s\n"
+"%s"
+msgstr ""
+"%s\n"
+"%s"
+
+#. translators: reverse the order of these arguments
+#. *              if the time should come before the
+#. *              date on a clock in your locale.
+#.
+#: applets/gen_util/clock.c:200
+#, c-format
+msgid "%s, %s"
+msgstr "%s, %s"
+
+#. Show date in tooltip
+#: applets/gen_util/clock.c:303
+msgid "%A %B %d"
+msgstr "%A, %d. %B"
+
+#: applets/gen_util/clock.c:409
+msgid "Computer Clock"
+msgstr "Computer-Uhr"
+
+#: applets/gen_util/clock.c:494
+msgid "%I:%M:%S %p"
+msgstr "%H:%M:%S"
+
+#: applets/gen_util/clock.c:496
+msgid "%I:%M %p"
+msgstr "%I:%M %p"
+
+#: applets/gen_util/clock.c:535
+msgid "%A, %B %d %Y"
+msgstr "%A, %B %d %Y"
+
+#: applets/gen_util/clock.c:957
+msgid "Clock Preferences"
+msgstr "Einstellungen der Uhr"
+
+#: applets/gen_util/clock.c:986
+msgid "Clock type"
+msgstr "Typ der Uhr"
+
+#: applets/gen_util/clock.c:996
+msgid "_12 hour"
+msgstr "_12 Stunden"
+
+#: applets/gen_util/clock.c:1002
+msgid "_24 hour"
+msgstr "_24 Stunden"
+
+#: applets/gen_util/clock.c:1007
+msgid "UNI_X time"
+msgstr "U_NIX-Zeit"
+
+#: applets/gen_util/clock.c:1011
+msgid "_Internet time"
+msgstr "_Internet-Zeit"
+
+#: applets/gen_util/clock.c:1048
+msgid "Show _seconds"
+msgstr "_Sekunden anzeigen"
+
+#: applets/gen_util/clock.c:1058
+msgid "Show _date"
+msgstr "_Datum anzeigen"
+
+#: applets/gen_util/clock.c:1068
+msgid "Use _UTC"
+msgstr "Koordinierte Weltzeit (_UTC) verwenden"
+
+#. Translator credits
+#: applets/gen_util/clock.c:1185 applets/gen_util/mailcheck.c:1753
+#: applets/gen_util/pager.c:534 applets/gen_util/showdesktop.c:443
+#: applets/gen_util/tasklist.c:794 applets/notification_area/main.c:112
+#: gnome-panel/menu.c:252
+msgid "translator_credits"
+msgstr ""
+"Karl Eichwalder <ke@suse.de>\n"
+"Christian Meyer <chrisime@gnome.org>\n"
+"Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>\n"
+"Jörgen Scheibengruber <mfcn@gmx.de>\n"
+"Matthias Warkus <mawarkus@gnome.org>\n"
+"Christian Neumair <chris@gnome-de.org>"
+
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:4
+#: applets/gen_util/clock.c:1204
+msgid "Clock"
+msgstr "Uhr"
+
+# CHECK
+#: applets/gen_util/clock.c:1206
+msgid "The Clock displays the current time and date"
+msgstr "Die aktuelle Zeit und das heutige Datum anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:1
+msgid "24"
+msgstr "24"
+
+#: applets/gen_util/clock.schemas.in.h:2
+msgid "Display Internet time, which is same all over the world"
+msgstr "Internet-Zeit anzeigen, die auf der ganzen Welt gleich ist"
+
+#: applets/gen_util/clock.schemas.in.h:3
+msgid "Display date in the Clock, in addition to time"
+msgstr "Zusätzlich zur Zeit das Datum in der Uhr anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:4
+msgid "Display seconds in time"
+msgstr "Zeit sekundengenau anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:5
+msgid "Display time in Universal Coordinated Time zone"
+msgstr "Zeit in koordinierter Weltzeit (UTC) anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:6
+msgid "Display time in seconds since Epoch, i.e. 1970-01-01"
+msgstr "Zeit in Sekunden seit Epoche, also dem 1.1.1971, anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:7
+msgid "Hour format"
+msgstr "Stundenformat"
+
+#: applets/gen_util/clock.schemas.in.h:8
+msgid "Sets the hour format, may be either 12 or 24"
+msgstr "Legt das Stundenformat fest, darf entweder 12 oder 24 sein"
+
+#: applets/gen_util/clock.schemas.in.h:9
+msgid "Show date in Clock"
+msgstr "Datum in Uhr anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:10
+msgid "Show date in a tooltip when a mouse is over the Clock"
+msgstr ""
+"Soll das Datum in einer Popup-Hilfe angezeigt werden, sobald sich die Maus "
+"über der Uhr befindet?"
+
+#: applets/gen_util/clock.schemas.in.h:11
+msgid "Show date in tooltip"
+msgstr "Datum in einer Minihilfe anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:12
+msgid "Show time with seconds"
+msgstr "Zeit sekundengenau anzeigen"
+
+#: applets/gen_util/clock.schemas.in.h:13
+msgid "Use Internet time"
+msgstr "Internet-Zeit verwenden"
+
+#: applets/gen_util/clock.schemas.in.h:14
+msgid "Use UNIX time"
+msgstr "Unix-Zeit verwenden"
+
+#: applets/gen_util/clock.schemas.in.h:15
+msgid "Use UTC"
+msgstr "Koordinierte Weltzeit (UTC) verwenden"
+
 #: applets/gen_util/GNOME_ClockApplet.xml.h:1
 msgid "Copy _date"
 msgstr "_Datum kopieren"
 
 #: applets/gen_util/GNOME_ClockApplet.xml.h:2
 msgid "Copy _time"
-msgstr "_Zeit kopieren"
+msgstr "_Uhrzeit kopieren"
 
 #: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:1
 msgid "Accessories"
@@ -243,220 +448,70 @@ msgid "Alert you when new mail arrives"
 msgstr "Benachrichtigen, wenn neue Mail eintrifft"
 
 #: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:3
-#: applets/gen_util/clock.c:1173
-msgid "Clock"
-msgstr "Uhr"
+msgid "Button to hide application windows and show the desktop"
+msgstr "Knopf zum Verbergen der Anwendungsfenster und Anzeigen des Desktops"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:4
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:5
 msgid "GenUtil Applet Factory"
 msgstr "GenUtil-Applet-Fabrik"
 
 # CHECK
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:5
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:6
 msgid "Get the current time and date"
 msgstr "Die aktuelle Zeit und das Datum holen"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:6
-#: applets/gen_util/mailcheck.c:263 applets/gen_util/mailcheck.c:1736
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:7
+#: applets/gen_util/mailcheck.c:322 applets/gen_util/mailcheck.c:1766
 msgid "Inbox Monitor"
 msgstr "E-Mail-Eingangsmonitor"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:7
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:8
 msgid "Internet"
 msgstr "Internet"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:8
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:9
+#: applets/gen_util/showdesktop.c:452
+msgid "Show Desktop Button"
+msgstr "Desktop-Knopf anzeigen"
+
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:10
 msgid "Switch between open windows"
 msgstr "Zwischen offenen Fenstern wechseln"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:9
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:11
 msgid "Switch between workspaces"
-msgstr "Zwischen den Arbeitsplätzen wecheln"
+msgstr "Zwischen den Arbeitsflächen wecheln"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:10
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:12
+#: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:4
 msgid "Utility"
 msgstr "Werkzeug"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:11
-#: applets/gen_util/tasklist.c:725
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:13
+#: applets/gen_util/tasklist.c:808
 msgid "Window List"
 msgstr "Fensterliste"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:12
-#: applets/gen_util/pager.c:503 applets/gen_util/pager.c:814
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:14
+#: applets/gen_util/pager.c:547 applets/gen_util/pager.c:840
 #: applets/gen_util/pager.glade.h:7
 msgid "Workspace Switcher"
 msgstr "Arbeitsflächen-Umschalter"
 
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:13
+#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:15
 msgid "factory for creating some general applets"
 msgstr "Fabrik um einige allgemeine Applets zu erzeugen"
 
 #: applets/gen_util/GNOME_MailCheckApplet.xml.h:2
 msgid "_Check for mail"
-msgstr "Nach E-Mail _sehen"
+msgstr "Nach E-Mails _sehen"
 
-#: applets/gen_util/clock.c:169 applets/gen_util/clock.c:479
-msgid "%I:%M:%S %p"
-msgstr "%H:%M:%S"
-
-#: applets/gen_util/clock.c:171 applets/gen_util/clock.c:481
-msgid "%I:%M %p"
-msgstr "%I:%M %p"
-
-#: applets/gen_util/clock.c:174 applets/gen_util/clock.c:484
-msgid "%H:%M:%S"
-msgstr "%H:%M:%S"
-
-#: applets/gen_util/clock.c:176 applets/gen_util/clock.c:486
-msgid "%H:%M"
-msgstr "%H.%M"
-
-#: applets/gen_util/clock.c:187 applets/gen_util/clock.c:190
-msgid "%a %b %d"
-msgstr "%a, %d. %b"
-
-#. Show date in tooltip
-#: applets/gen_util/clock.c:290
-msgid "%A %B %d"
-msgstr "%A, %d. %B"
-
-#: applets/gen_util/clock.c:394
-msgid "Computer Clock"
-msgstr "Computer-Uhr"
-
-#: applets/gen_util/clock.c:520
-msgid "%A, %B %d %Y"
-msgstr "%A, %B %d %Y"
-
-#: applets/gen_util/clock.c:889 applets/gen_util/clock.c:1121
-#: applets/gen_util/mailcheck.c:1593 applets/gen_util/mailcheck.c:1798
-#: applets/gen_util/pager.c:157 applets/gen_util/pager.c:460
-#: applets/gen_util/tasklist.c:114 applets/gen_util/tasklist.c:683
+#: applets/gen_util/mailcheck.c:200
 #, c-format
-msgid "There was an error displaying help: %s"
-msgstr "Beim Anzeigen der Hilfe ist ein Fehler aufgetreten: %s"
+msgid "There was an error executing %s: %s"
+msgstr "Beim Ausführen von %s ist ein Fehler aufgetreten: %s"
 
-#: applets/gen_util/clock.c:933
-msgid "Clock Preferences"
-msgstr "Einstellungen der Uhr"
-
-#: applets/gen_util/clock.c:960
-msgid "Clock type"
-msgstr "Typ der Uhr"
-
-#: applets/gen_util/clock.c:970
-msgid "_12 hour"
-msgstr "_12 Stunden"
-
-#: applets/gen_util/clock.c:976
-msgid "_24 hour"
-msgstr "_24 Stunden"
-
-#: applets/gen_util/clock.c:981
-msgid "_UNIX time"
-msgstr "_UNIX-Zeit"
-
-#: applets/gen_util/clock.c:985
-msgid "_Internet time"
-msgstr "_Internet-Zeit"
-
-#: applets/gen_util/clock.c:1022
-msgid "Show _seconds"
-msgstr "_Sekunden anzeigen"
-
-#: applets/gen_util/clock.c:1032
-msgid "Show _date"
-msgstr "_Datum anzeigen"
-
-#: applets/gen_util/clock.c:1042
-msgid "Use _UTC"
-msgstr "Koordinierte Weltzeit (_UTC) verwenden"
-
-#. Translator credits
-#: applets/gen_util/clock.c:1155 applets/gen_util/mailcheck.c:1723
-#: applets/gen_util/pager.c:491 applets/gen_util/tasklist.c:713
-#: gnome-panel/menu.c:249
-msgid "translator_credits"
-msgstr ""
-"Karl Eichwalder <ke@suse.de>\n"
-"Christian Meyer <chrisime@gnome.org>\n"
-"Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>\n"
-"Jörgen Scheibengruber <mfcn@gmx.de>\n"
-"Matthias Warkus <mawarkus@gnome.org>"
-
-#: applets/gen_util/clock.c:1174
-msgid "(C) 1998-2002 the Free Software Foundation"
-msgstr "(C) 1998-2002 the Free Software Foundation"
-
-# CHECK
-#: applets/gen_util/clock.c:1175
-msgid "The Clock displays the current time and date"
-msgstr "Die aktuelle Zeit und das heutige Datum anzeigen"
-
-#: applets/gen_util/clock.schemas.in.h:1
-msgid "Display Internet time, which is same all over the world"
-msgstr "Internet-Zeit anzeigen, die auf der ganzen Welt gleich ist"
-
-#: applets/gen_util/clock.schemas.in.h:2
-msgid "Display date in applet, in addition to time"
-msgstr "Im Applet zusätzlich zur Zeit das Datum anzeigen"
-
-#: applets/gen_util/clock.schemas.in.h:3
-msgid "Display time in Universal Coordinated Time zone"
-msgstr "Zeit in koordinierter Weltzeit (UTC) anzeigen"
-
-#: applets/gen_util/clock.schemas.in.h:4
-msgid "Display time in seconds since Epoch, i.e. 1970-01-01"
-msgstr "Zeit in Sekunden seit Epoche, also dem 1.1.1971, anzeigen"
-
-#: applets/gen_util/clock.schemas.in.h:5
-msgid "Hour format"
-msgstr "Stundenformat"
-
-#: applets/gen_util/clock.schemas.in.h:6
-msgid ""
-"Sets the hour format, may be either 12 or 24</long> <default>24</default> </"
-"locale> <locale name=\"en_US\"> <short>Hour format</short> <long>Sets the "
-"hour format, may be either 12 or 24</long> <default>12</default> </locale> </"
-"schema> <schema> <key>/schemas/apps/clock_applet/prefs/show_seconds</key> "
-"<owner>clock-applet</owner> <type>bool</type> <default>true</default> "
-"<locale name=\"C\"> <short>Show time with seconds</short> <long>Display "
-"seconds in time"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:7
-msgid "Show date in a tooltip when a mouse is over applet"
-msgstr ""
-"Datum in einer Popup-Hilfe anzeigen sobald sich die Maus über dem Applet "
-"befindet"
-
-#: applets/gen_util/clock.schemas.in.h:8
-msgid "Show date in applet"
-msgstr "Datum im Applet zeigen"
-
-#: applets/gen_util/clock.schemas.in.h:9
-msgid "Show date in tooltip"
-msgstr "Datum in einer Minihilfe zeigen"
-
-#: applets/gen_util/clock.schemas.in.h:10
-msgid "Use Internet time"
-msgstr "Internet-Zeit verwenden"
-
-#: applets/gen_util/clock.schemas.in.h:11
-msgid "Use UNIX time"
-msgstr "Unix-Zeit verwenden"
-
-#: applets/gen_util/clock.schemas.in.h:12
-msgid "Use UTC"
-msgstr "Koordinierte Weltzeit (UTC) verwenden"
-
-#: applets/gen_util/mailcheck.c:193
-#, c-format
-msgid "There was an error executing %s : %s"
-msgstr "Beim Ausführen von »%s« ist ein Fehler aufgetreten: %s"
-
-#: applets/gen_util/mailcheck.c:269
+#: applets/gen_util/mailcheck.c:328
 msgid ""
 "You didn't set a password in the preferences for the Inbox Monitor,\n"
 "so you have to enter it each time it starts up."
@@ -464,218 +519,215 @@ msgstr ""
 "Sie haben in den Einstellungen der E-Mail-Anzeige kein Passwort angegeben,\n"
 "daher müssen Sie es bei jedem Start des Applets eingeben."
 
-#: applets/gen_util/mailcheck.c:277
+#: applets/gen_util/mailcheck.c:336
 msgid "Please enter your mailserver's _password:"
-msgstr "Bitte geben Sie das _Passwort Ihres Mail-Servers ein:"
+msgstr "Bitte geben Sie das _Passwort Ihres E-Mail-Servers ein:"
 
-#: applets/gen_util/mailcheck.c:282 applets/gen_util/mailcheck.c:1351
+#: applets/gen_util/mailcheck.c:341 applets/gen_util/mailcheck.c:1379
 msgid "Password Entry box"
 msgstr "Passworteingabefeld"
 
-#: applets/gen_util/mailcheck.c:325
+#: applets/gen_util/mailcheck.c:382
 msgid ""
 "The Inbox Monitor failed to check your mails and thus automatic updating has "
 "been deactivated for now.\n"
 "Maybe you used a wrong server, username or password?"
 msgstr ""
-"Der E-Mail konnte nicht nach E-Mail sehen und daher wurde das automatische "
-"Nachsehen jetzt deaktiviert.\n"
-"Vielleicht haben Sie Server, Benutzernamen oder Passwort falsch angegeben?"
+"Der E-Mail-Eingangsmonitor konnte nicht nach E-Mails sehen. Daher wurde das "
+"automatische Nachsehen jetzt deaktiviert.\n"
+"Möglicherweise haben Sie Server, Benutzernamen oder Passwort falsch "
+"angegeben."
 
-#: applets/gen_util/mailcheck.c:530
+#: applets/gen_util/mailcheck.c:558
 msgid "You have new mail."
-msgstr "Sie haben neue E-Mail."
+msgstr "Sie haben neue Mail."
 
-#: applets/gen_util/mailcheck.c:532
+#: applets/gen_util/mailcheck.c:560
 msgid "You have mail."
 msgstr "Sie haben E-Mail."
 
-#: applets/gen_util/mailcheck.c:536
+#: applets/gen_util/mailcheck.c:564
 #, c-format
 msgid "%d/%d messages"
 msgstr "%d/%d Mitteilungen"
 
-#: applets/gen_util/mailcheck.c:538
+#: applets/gen_util/mailcheck.c:566
 #, c-format
 msgid "%d messages"
 msgstr "%d Mitteilungen"
 
-#: applets/gen_util/mailcheck.c:542
+#: applets/gen_util/mailcheck.c:570
 msgid "No mail."
 msgstr "Keine E-Mail."
 
-#: applets/gen_util/mailcheck.c:1062 applets/gen_util/mailcheck.c:1063
-#: applets/gen_util/mailcheck.c:1921 applets/gen_util/mailcheck.c:1922
+#: applets/gen_util/mailcheck.c:1090 applets/gen_util/mailcheck.c:1091
+#: applets/gen_util/mailcheck.c:1957 applets/gen_util/mailcheck.c:1958
 msgid "Status not updated"
 msgstr "Status unverändert"
 
-#: applets/gen_util/mailcheck.c:1235
+#: applets/gen_util/mailcheck.c:1263
 msgid "Mailbox _resides on:"
-msgstr "Briefkasten befindet sich _auf:"
+msgstr "Postfach befindet sich _auf:"
 
-#: applets/gen_util/mailcheck.c:1243
+#: applets/gen_util/mailcheck.c:1271
 msgid "Local mailspool"
-msgstr "Lokales E-Mail-Spoolverzeichnis"
+msgstr "Lokalem E-Mail-Spoolverzeichnis"
 
-#: applets/gen_util/mailcheck.c:1251
+#: applets/gen_util/mailcheck.c:1279
 msgid "Local maildir"
-msgstr "Lokales E-Mail-Verzeichnis"
-
-#: applets/gen_util/mailcheck.c:1259
-msgid "Remote POP3-server"
-msgstr "Ferner POP3-Server"
-
-#: applets/gen_util/mailcheck.c:1267
-msgid "Remote IMAP-server"
-msgstr "Ferner IMAP-Server"
+msgstr "Lokalem E-Mail-Verzeichnis"
 
 #: applets/gen_util/mailcheck.c:1287
+msgid "Remote POP3-server"
+msgstr "Einem POP3-Server"
+
+#: applets/gen_util/mailcheck.c:1295
+msgid "Remote IMAP-server"
+msgstr "Einem IMAP-Server"
+
+#: applets/gen_util/mailcheck.c:1315
 msgid "Mail _spool file:"
-msgstr "E-Mail-_Spool-Datei:"
-
-#: applets/gen_util/mailcheck.c:1306
-msgid "Mail s_erver:"
-msgstr "_Mail-Server:"
-
-#: applets/gen_util/mailcheck.c:1312
-msgid "Mail Server Entry box"
-msgstr "Mail-Server-Eingabefeld"
-
-#: applets/gen_util/mailcheck.c:1326
-msgid "_Username:"
-msgstr "Benutzer_name:"
+msgstr "E-Mail-_Spooldatei:"
 
 #: applets/gen_util/mailcheck.c:1334
+msgid "Mail s_erver:"
+msgstr "E-Mail-_Server:"
+
+#: applets/gen_util/mailcheck.c:1340
+msgid "Mail Server Entry box"
+msgstr "Eingabefeld für E-Mail-Server"
+
+#: applets/gen_util/mailcheck.c:1354
+msgid "_Username:"
+msgstr "_Benutzername:"
+
+#: applets/gen_util/mailcheck.c:1362
 msgid "Username Entry box"
 msgstr "Benutzername-Eingabefeld"
 
-#: applets/gen_util/mailcheck.c:1343
+#: applets/gen_util/mailcheck.c:1371
 msgid "_Password:"
 msgstr "_Passwort:"
 
-#: applets/gen_util/mailcheck.c:1364
+#: applets/gen_util/mailcheck.c:1392
 msgid "_Folder:"
 msgstr "_Ordner:"
 
-#: applets/gen_util/mailcheck.c:1372
+#: applets/gen_util/mailcheck.c:1400
 msgid "Folder Entry box"
 msgstr "Ordner-Eingabefeld"
 
-#: applets/gen_util/mailcheck.c:1384
+#: applets/gen_util/mailcheck.c:1412
 msgid "C_ommand to run before checking for mail:"
-msgstr "Auszuführender Befehl bevor nach E-Mail gesehen _wird:"
+msgstr "_Vor dem Sehen nach E-Mails auszuführender Befehl:"
 
-#: applets/gen_util/mailcheck.c:1392
+#: applets/gen_util/mailcheck.c:1420
 msgid "Command Entry box"
 msgstr "Befehlseingabefeld"
 
-#: applets/gen_util/mailcheck.c:1417
+#: applets/gen_util/mailcheck.c:1445
 msgid "Execute"
 msgstr "Ausführen"
 
-#: applets/gen_util/mailcheck.c:1428
+#: applets/gen_util/mailcheck.c:1456
 msgid "Before each _update:"
-msgstr "Vor jeder _Aktualisierung:"
+msgstr "_Vor jeder Aktualisierung:"
 
-#: applets/gen_util/mailcheck.c:1443
+#: applets/gen_util/mailcheck.c:1471
 msgid "Command to execute before each update"
-msgstr "Auszuführender Befehl vor jeder Aktualisierung"
+msgstr "Vor jeder Aktualisierung auszuführender Befehl"
 
-#: applets/gen_util/mailcheck.c:1453
+#: applets/gen_util/mailcheck.c:1481
 msgid "When new mail _arrives:"
-msgstr "Wenn neue E-Mail _eintrifft:"
+msgstr "Wenn _neue Mail eintrifft:"
 
-#: applets/gen_util/mailcheck.c:1466 applets/gen_util/mailcheck.schemas.in.h:2
+#: applets/gen_util/mailcheck.c:1494 applets/gen_util/mailcheck.schemas.in.h:2
 msgid "Command to execute when new mail arrives"
-msgstr "Auszuführender Befehl beim Eintreffen von neuer E-Mail"
+msgstr "Beim Eintreffen neuer Mail auszuführender Befehl"
 
-#: applets/gen_util/mailcheck.c:1476
+#: applets/gen_util/mailcheck.c:1504
 msgid "When clicke_d:"
-msgstr "_Wenn angeklickt:"
+msgstr "Wenn ange_klickt:"
 
-#: applets/gen_util/mailcheck.c:1489
+#: applets/gen_util/mailcheck.c:1517
 msgid "Command to execute when clicked"
-msgstr "Auszuführender Befehl beim Klick"
+msgstr "Beim Anklicken auszuführender Befehl"
 
-#: applets/gen_util/mailcheck.c:1499
+#: applets/gen_util/mailcheck.c:1527
 msgid "Set the number of unread mails to _zero"
-msgstr "Die Anzahl ungelesener Mails auf _Null_ setzen"
+msgstr "Die Anzahl ungelesener E-Mails auf _Null setzen"
 
-#: applets/gen_util/mailcheck.c:1510
+#: applets/gen_util/mailcheck.c:1538
 msgid "Check for mail _every"
-msgstr "Nach _E-Mail sehen alle"
+msgstr "Nach _E-Mails sehen alle"
 
-#: applets/gen_util/mailcheck.c:1522 applets/gen_util/mailcheck.c:1526
+#: applets/gen_util/mailcheck.c:1550 applets/gen_util/mailcheck.c:1554
 msgid "minutes"
 msgstr "Minuten"
 
-#: applets/gen_util/mailcheck.c:1522
+#: applets/gen_util/mailcheck.c:1550
 msgid "Choose time interval in minutes to check mail"
-msgstr "Zeitintervall in Minuten für das Sehen nach E-Mail festlegen"
+msgstr "Wählen Sie ein Zeitintervall (in Minuten) für das Sehen nach E-Mails"
 
-#: applets/gen_util/mailcheck.c:1536 applets/gen_util/mailcheck.c:1540
+#: applets/gen_util/mailcheck.c:1564 applets/gen_util/mailcheck.c:1568
 msgid "seconds"
 msgstr "Sekunden"
 
-#: applets/gen_util/mailcheck.c:1536
+#: applets/gen_util/mailcheck.c:1564
 msgid "Choose time interval in seconds to check mail"
-msgstr "Zeitintervall in Sekunden für das Sehen nach E-Mail festlegen"
+msgstr "Wählen Sie ein Zeitintervall (in Sekunden) für das Sehen nach E-Mails"
 
-#: applets/gen_util/mailcheck.c:1548
+#: applets/gen_util/mailcheck.c:1576
 msgid "Play a _sound when new mail arrives"
-msgstr "Einen _Klang abspielen, wenn neue E-Mail eintrifft"
+msgstr "Einen _Klang abspielen, wenn neue Mail eintrifft"
 
-#: applets/gen_util/mailcheck.c:1559
+#: applets/gen_util/mailcheck.c:1587
 msgid "Select a_nimation"
 msgstr "A_nimation auswählen"
 
-#: applets/gen_util/mailcheck.c:1634
+#: applets/gen_util/mailcheck.c:1664
 msgid "Inbox Monitor Preferences"
 msgstr "Einstellungen des E-Mail-Eingangsmonitors"
 
-#: applets/gen_util/mailcheck.c:1653
+#: applets/gen_util/mailcheck.c:1684
 msgid "_Mail check"
-msgstr "E-_Mail-Anzeige"
+msgstr "Nach _E-Mails sehen"
 
-#: applets/gen_util/mailcheck.c:1657
+#: applets/gen_util/mailcheck.c:1688
 msgid "Mail_box"
-msgstr "_Briefkasten"
+msgstr "_Postfach"
 
-#: applets/gen_util/mailcheck.c:1737
-msgid "(c) 1998-2000 the Free Software Foundation"
-msgstr "(C) 1998-2000 Free Software Foundation"
-
-#: applets/gen_util/mailcheck.c:1738
+#: applets/gen_util/mailcheck.c:1768
 msgid "Inbox Monitor notifies you when new mail arrives in your mailbox"
 msgstr ""
-"Der E-Mail-Eingangsmonitor benachrichtigt Sie, wenn eine neue E-Mail in "
-"Ihrem Postfach ankommt."
+"Der E-Mail-Eingangsmonitor benachrichtigt Sie, wenn neue Mail in Ihrem "
+"Postfach ankommt."
 
-#: applets/gen_util/mailcheck.c:1897
+#: applets/gen_util/mailcheck.c:1933
 msgid "Text only"
 msgstr "Nur Text"
 
-#: applets/gen_util/mailcheck.c:1923
+#: applets/gen_util/mailcheck.c:1959
 msgid "Mail check"
 msgstr "E-_Mail-Anzeige"
 
-#: applets/gen_util/mailcheck.c:1924
+#: applets/gen_util/mailcheck.c:1960
 msgid "Mail check notifies you when new mail arrives in your mailbox"
 msgstr ""
-"Die E-Mail-Anzeige benachrichtigt Sie, wenn eine neue E-Mail in Ihrem "
-"Postfach ankommt."
+"Die E-Mail-Anzeige benachrichtigt Sie, wenn neue Mail in Ihrem Postfach "
+"ankommt."
 
 #: applets/gen_util/mailcheck.schemas.in.h:1
 msgid "Command to execute when checking mail"
-msgstr "Auszuführender Befehl beim Sehen nach E-Mail"
+msgstr "Beim Sehen nach E-Mails auszuführender Befehl"
 
 #: applets/gen_util/mailcheck.schemas.in.h:3
-msgid "Command to execute when the applet is clicked"
-msgstr "Auszuführender Befehl beim Klick auf das Applet"
+msgid "Command to execute when you click on the Inbox Monitor"
+msgstr "Beim Anklicken des E-Mail-Eingangsmonitors auszuführender Befehl"
 
 #: applets/gen_util/mailcheck.schemas.in.h:4
 msgid "Command to run before checking mail"
-msgstr "Auszuführender Befehl bevor nach E-Mail gesehen wird"
+msgstr "Vor dem Sehen nach E-Mails auszuführender Befehl"
 
 #: applets/gen_util/mailcheck.schemas.in.h:5
 msgid "Do we run the exec-command"
@@ -687,15 +739,15 @@ msgstr "Sollen wir den newmail-command-Befehl ausführen"
 
 #: applets/gen_util/mailcheck.schemas.in.h:7
 msgid "How often (in milliseconds) we check the mail"
-msgstr "Wie oft (in Sekunden) wir nach E-Mail sehen"
+msgstr "Wie oft (in Millisekunden) nach E-Mails sehen"
 
 #: applets/gen_util/mailcheck.schemas.in.h:8
 msgid "If mail should be checked automatically"
-msgstr "Automatisch nach E-Mail sehen"
+msgstr "Automatisch nach E-Mails sehen"
 
 #: applets/gen_util/mailcheck.schemas.in.h:9
 msgid "If this is set mail will be checked every update-freq milliseconds"
-msgstr "Falls gesetzt wird alle update-freq Millisekunden nach E-Mail gesehen"
+msgstr "Soll alle update-freq Millisekunden nach E-Mails gesehen werden?"
 
 #: applets/gen_util/mailcheck.schemas.in.h:10
 msgid "If this is set, we should run the exec-command"
@@ -715,25 +767,25 @@ msgstr "Pfad zur Animationsdatei"
 
 #: applets/gen_util/mailcheck.schemas.in.h:14
 msgid "Play a sound when mail is recieved"
-msgstr "Einen Klang abspielen, wenn neue E-Mail eintrifft"
+msgstr "Einen Klang abspielen, wenn neue Mail eintrifft"
 
 #: applets/gen_util/mailcheck.schemas.in.h:15
 msgid "Remote folder for mail retrieval"
 msgstr "Entfernter Ordner für E-Mail-Empfang"
 
 #: applets/gen_util/mailcheck.schemas.in.h:16
-msgid "Remove server to connect to for our mail"
+msgid "Remote server to connect to for our mail"
 msgstr ""
-"Entfernter Server mit dem wir die Verbindung aufnehmen, um nach E-Mail zu "
+"Entfernter Server. mit dem wir die Verbindung aufnehmen, um nach E-Mails zu "
 "sehen"
 
 #: applets/gen_util/mailcheck.schemas.in.h:17
 msgid "Run this command before we check the mail"
-msgstr "Auszuführender Befehl bevor nach E-Mail gesehen wird"
+msgstr "Vor dem Sehen nach E-Mails auszuführender Befehl"
 
 #: applets/gen_util/mailcheck.schemas.in.h:18
 msgid "The mail server"
-msgstr "Der Mail-Server"
+msgstr "Der E-Mail-Server"
 
 #: applets/gen_util/mailcheck.schemas.in.h:19
 msgid "The user's password"
@@ -746,34 +798,38 @@ msgstr "Das Passwort des Benutzers für den entfernten Server"
 #: applets/gen_util/mailcheck.schemas.in.h:21
 msgid "This is how we check the mail, check the mail, check the mail..."
 msgstr ""
-"Die Methode mit der wir nach E-Mail sehen, nach E-Mail sehen, nach E-Mail "
+"Die Methode mit der wir nach E-Mails sehen, nach E-Mails sehen, nach E-Mails "
 "sehen..."
 
 #: applets/gen_util/mailcheck.schemas.in.h:22
 msgid "This is how we process the mail, process the mail, process the mail..."
 msgstr ""
-"Die Methode mit der wir E-Mail verarbeiten, E-Mail verarbeiten, E-Mail "
+"Die Methode mit der wir E-Mails verarbeiten, E-Mails verarbeiten, E-Mails "
 "verarbeiten..."
 
 #: applets/gen_util/mailcheck.schemas.in.h:23
 msgid ""
-"This is the animation that will be displayed during normal use of the "
-"mailcheck applet"
+"This is the animation that will be displayed during normal Inbox Monitor "
+"usage"
 msgstr ""
-"Dies ist die Animation, die während dem Alltagsgebrauch des mailcheck-"
-"Applets angezeigt wird "
+"Dies ist die Animation, die vom E-Mail-Eingangsmonitor beim normalen "
+"Gebrauch angezeigt wird "
 
 #: applets/gen_util/mailcheck.schemas.in.h:24
 msgid "Username on the remote server"
 msgstr "Benutzername auf dem entfernten Server"
 
 #: applets/gen_util/mailcheck.schemas.in.h:25
-msgid "We run this command when the user clicks on the applet"
-msgstr "Dieser Befehl wird ausgeführt, wenn der Benutzer auf das Applet klickt"
+msgid "We run this command when the user clicks on Inbox Monitor"
+msgstr ""
+"Dieser Befehl wird ausgeführt, wenn der Benutzer auf den E-Mail-"
+"Eingangsmonitor klickt"
 
 #: applets/gen_util/mailcheck.schemas.in.h:26
-msgid "Whether to reset mail status when the applet is clicked"
-msgstr "E-Mail-Status beim Klick auf das Panel zurücksetzen"
+msgid "Whether to reset mail status when you click on Inbox Monitor"
+msgstr ""
+"Soll der E-Mail-Status beim Anklicken des Eingangsmonitors zurückgesetzt "
+"werden?"
 
 #: applets/gen_util/mailcheck.schemas.in.h:27
 msgid "You've got mail!"
@@ -785,47 +841,39 @@ msgstr "E-Mail-Anzeige"
 
 #: applets/gen_util/mailcheck.soundlist.in.h:2
 msgid "New Mail"
-msgstr "Neue E-Mail"
+msgstr "Neue Mail"
 
-#: applets/gen_util/pager.c:130 applets/gen_util/pager.c:737
+#: applets/gen_util/pager.c:157 applets/gen_util/pager.c:761
 #: applets/gen_util/pager.glade.h:2
 msgid "Rows"
 msgstr "Zeilen"
 
-#: applets/gen_util/pager.c:130 applets/gen_util/pager.c:737
+#: applets/gen_util/pager.c:157 applets/gen_util/pager.c:761
 msgid "Columns"
 msgstr "Spalten"
 
-#: applets/gen_util/pager.c:344
+#: applets/gen_util/pager.c:378
 #, c-format
-msgid "Error loading num_rows value for workspace switcher applet: %s\n"
+msgid "Error loading num_rows value for Workspace Switcher: %s\n"
 msgstr ""
-"Fehler beim Laden des »num_rows«-Wertes für Arbeitsflächen-Umschalter-"
-"Applet: %s\n"
+"Fehler beim Laden des „num_rows”-Wertes des Arbeitsflächen-Umschalters: %s\n"
 
-#: applets/gen_util/pager.c:355
-#, c-format
-msgid ""
-"Error loading display_workspace_names value for workspace switcher applet: %"
-"s\n"
-msgstr ""
-"Fehler beim Laden des »display_workspace_names«-Wertes für Arbeitsflächen-"
-"Umschalter-Applet: %s\n"
-
-#: applets/gen_util/pager.c:370
+#: applets/gen_util/pager.c:389
 #, c-format
 msgid ""
-"Error loading display_all_workspaces value for workspace switcher applet: %"
-"s\n"
+"Error loading display_workspace_names value for Workspace Switcher: %s\n"
 msgstr ""
-"Fehler beim Laden des »display_all_workspaces«-Wertes für Arbeitsflächen-"
-"Umschalter-Applet: %s\n"
+"Fehler beim Laden des „display_workspace_names”-Wertes des Arbeitsflächen-"
+"Umschalters: %s\n"
 
-#: applets/gen_util/pager.c:504
-msgid "(c) 2001 Red Hat, Inc."
-msgstr "(c) 2001 Red Hat, Inc."
+#: applets/gen_util/pager.c:404
+#, c-format
+msgid "Error loading display_all_workspaces value for Workspace Switcher: %s\n"
+msgstr ""
+"Fehler beim Laden des „display_all_workspaces”-Wertes des Arbeitsflächen-"
+"Umschalters: %s\n"
 
-#: applets/gen_util/pager.c:505
+#: applets/gen_util/pager.c:549
 msgid ""
 "The Workspace Switcher shows you a small version of your workspaces that "
 "lets you manage your windows."
@@ -835,19 +883,19 @@ msgstr ""
 
 #: applets/gen_util/pager.glade.h:1
 msgid "Number of _workspaces:"
-msgstr "Anzahl der Arbeits_flächen:"
+msgstr "An_zahl der Arbeitsflächen:"
 
 #: applets/gen_util/pager.glade.h:3
 msgid "Show _all workspaces"
-msgstr "_Alle Arbeitsplätzen wecheln"
+msgstr "_Alle Arbeitsflächen anzeigen"
 
 #: applets/gen_util/pager.glade.h:4
 msgid "Show only the _current workspace"
-msgstr "Nur die aktuelle Arbeitsfläche _zeigen"
+msgstr "Nur die aktuelle Arbeitsfläche a_nzeigen"
 
 #: applets/gen_util/pager.glade.h:5
 msgid "Show workspace _names in the switcher"
-msgstr "_Namen der Arbeitsflächen im Umschalter zeigen"
+msgstr "_Namen der Arbeitsflächen im Umschalter anzeigen"
 
 #: applets/gen_util/pager.glade.h:6
 msgid "Workspace Names"
@@ -863,106 +911,83 @@ msgstr "Arbeitsflächen"
 
 #: applets/gen_util/pager.schemas.in.h:1
 msgid ""
-"If this is true, the pager will show all workspaces, otherwise it will only "
-"show the current workspace."
+"If this is true, the Workspace Switcher will show all workspaces, otherwise "
+"it will only show the current workspace."
 msgstr ""
-"Falls gesetzt, zeigt der Arbeitsflächen-Umschalter alle Arbeitsplätze an, "
-"ansonsten zeigt er lediglich die Aktuelle."
+"Soll der Arbeitsflächen-Umschalter alle Arbeitsflächen anzeigen? Andernfalls "
+"zeigt er lediglich die Aktuelle."
 
 #: applets/gen_util/pager.schemas.in.h:2
 msgid ""
-"If this is true, the workspaces in the pager will display the names of the "
-"workspaces, otherwise they will display the contents of the workspace."
+"If this is true, the workspaces in the Workspace Switcher will display the "
+"names of the workspaces, otherwise they will display the contents of the "
+"workspace."
 msgstr ""
-"Falls gesetzt, zeigt der Arbeitsflächen-Umschalter auf den Arbeitsplätzen "
-"deren Namen an, ansonsten enthalten diese den Inhalt der Arbeitsflächen."
+"Soll der Arbeitsflächen-Umschalter auf den Mini-Arbeitsflächen im Umschalter "
+"deren Namen anzeigen? Andernfalls enthalten diese den Inhalt der "
+"Arbeitsflächen."
 
 #: applets/gen_util/pager.schemas.in.h:3
-msgid "Number of rows in the pager"
-msgstr "Anzahl der Zeilen im Arbeitsflächen-Umschalter"
+msgid "Number of rows in the Workspace Switcher."
+msgstr "Anzahl der Zeilen im Arbeitsflächen-Umschalter."
 
 #: applets/gen_util/pager.schemas.in.h:4
 msgid ""
 "When showing all the workspaces this determines how many rows (for "
-"horizontal layout) or columns (for vertical layout) the pager shows the "
-"workspaces in."
+"horizontal layout) or columns (for vertical layout) the Workspace Switcher "
+"shows the workspaces in."
 msgstr ""
-"Anzahl der Zeilen (für horizontale Darstellung) oder Spalten (für vertikale "
-"Darstellung), in denen der Umschalter die Arbeitsplätze anzeigt."
+"Beim Anzeigen aller Arbeitsflächen legt dieser Wert die Anzahl der Zeilen "
+"(bei horizontaler Darstellung) oder Spalten (bei vertikaler Darstellung), in "
+"denen der Umschalter die Arbeitsflächen anzeigt."
 
 #: applets/gen_util/pager.schemas.in.h:5
-msgid "Whether to display the all workspaces in the pager."
-msgstr "Alle Arbeitsplätze im Umschalter anzeigen"
+msgid "Whether to display the all workspaces in the Workspace Switcher."
+msgstr ""
+"Sollen alle Arbeitsflächen im Arbeitsflächen-Umschalter angezeigt werden?"
 
 #: applets/gen_util/pager.schemas.in.h:6
-msgid "Whether to display the names of the workspaces in the pager."
-msgstr "Die Namen der Arbeitsplätze im Umschalter anzeigen"
-
-#: applets/gen_util/printer.c:120
-msgid "Can't execute printer command"
-msgstr "Der Druckbefehl konnte nicht ausgeführt werden"
-
-#: applets/gen_util/printer.c:306
-msgid "Printer properties"
-msgstr "Druckereigenschaften"
-
-#: applets/gen_util/printer.c:315
-msgid "Printer name:"
-msgstr "Druckername:"
-
-#: applets/gen_util/printer.c:319
-msgid "Print command:"
-msgstr "Druckbefehl:"
-
-#: applets/gen_util/printer.c:325
-msgid "Printer"
-msgstr "Drucker"
-
-#: applets/gen_util/printer.c:353
-msgid "Printer Applet"
-msgstr "Drucker-Applet"
-
-#: applets/gen_util/printer.c:354
-msgid "(c) 1998 the Free Software Foundation"
-msgstr "(C) 1998 The Free Software Foundation"
-
-#: applets/gen_util/printer.c:356
 msgid ""
-"The printer applet lets you easily drag files to be printed via a print "
-"command"
-msgstr "Das Drucker-Applet ermöglicht es, Dateien per Drag & Drop zu drucken"
+"Whether to display the names of the workspaces in the Workspace Switcher."
+msgstr ""
+"Sollen die Namen der Arbeitsflächen im Arbeitsflächen-Umschalter angezeigt "
+"werden?"
 
-#: applets/gen_util/printer.c:423
-msgid "Can't create applet!\n"
-msgstr "Applet konnte nicht erstellt werden!\n"
+#: applets/gen_util/showdesktop.c:217
+msgid "Click here to restore hidden windows."
+msgstr "Klicken Sie hier, um die verborgenen Fenster wieder hervorzuholen."
 
-#: applets/gen_util/printer.c:466
-msgid "Properties..."
-msgstr "Eigenschaften..."
+#: applets/gen_util/showdesktop.c:220
+msgid "Click here to hide all windows and show the desktop."
+msgstr ""
+"Klicken Sie hier, um alle Fenster zu verbergen und den Desktop anzuzeigen."
 
-#: applets/gen_util/printer.c:473
-msgid "Help"
-msgstr "Hilfe"
+#: applets/gen_util/showdesktop.c:290
+#, c-format
+msgid "Failed to load %s: %s\n"
+msgstr "„%s” konnte nicht geladen werden: %s\n"
 
-#: applets/gen_util/printer.c:479
-msgid "About..."
-msgstr "Info..."
+#: applets/gen_util/showdesktop.c:291
+msgid "File not found"
+msgstr "Datei nicht gefunden"
 
-#: applets/gen_util/tasklist.c:726
-msgid "(c) 2001 Red Hat, Inc"
-msgstr "(c) 2001 Red Hat, Inc"
+#: applets/gen_util/showdesktop.c:454
+msgid "This button lets you hide all windows and show the desktop"
+msgstr ""
+"Beim Anklicken dieses Knopfes werden alle Fenster verborgen und der Desktop "
+"angezeigt"
 
-#: applets/gen_util/tasklist.c:727
+#: applets/gen_util/tasklist.c:810
 msgid ""
 "The Window List shows a list of all visible windows and lets you browse them."
 msgstr ""
-"Die Fensterliste zeigt eine Liste aller sichtbaren Fenster und lässt Sie "
+"Die Fensterliste zeigt eine Liste aller sichtbaren Fenster an und lässt Sie "
 "durch diese wechseln."
 
 # missing accelerator
 #: applets/gen_util/tasklist.glade.h:1
 msgid "Group windows when _space is limited"
-msgstr "Fenster gruppieren wenn _Platz begrenzt ist"
+msgstr "Fenster gruppieren, falls _Platz begrenzt ist"
 
 #: applets/gen_util/tasklist.glade.h:2
 msgid "M_inimum size:"
@@ -974,23 +999,23 @@ msgstr "Ma_ximale Größe:"
 
 #: applets/gen_util/tasklist.glade.h:4
 msgid "Restore to current _workspace"
-msgstr "Auf aktueller Arbeits_fläche wiederherstellen"
+msgstr "Auf a_ktueller Arbeitsfläche wiederherstellen"
 
 #: applets/gen_util/tasklist.glade.h:5
 msgid "Restore to na_tive workspace"
-msgstr "Zur _ursprünglichen Arbeitsfläche wiederherstellen"
+msgstr "Auf _ursprünglicher Arbeitsfläche wiederherstellen"
 
 #: applets/gen_util/tasklist.glade.h:6
 msgid "Show windows from _current workspace"
-msgstr "Fenster von _aktueller Arbeitsfläche zeigen"
+msgstr "Fenster von _aktueller Arbeitsfläche anzeigen"
 
 #: applets/gen_util/tasklist.glade.h:7
 msgid "Show windows from a_ll workspaces"
-msgstr "Fenster von a_llen Arbeitsflächen zeigen"
+msgstr "Fenster von a_llen Arbeitsflächen anzeigen"
 
 #: applets/gen_util/tasklist.glade.h:8
 msgid "When restoring minimized windows"
-msgstr "Wenn minimierte Fenster wiederhergestellt werden"
+msgstr "Wenn minimierte Fenster wiederhergestellt anwerden"
 
 #: applets/gen_util/tasklist.glade.h:9
 msgid "Window List Preferences"
@@ -1002,11 +1027,11 @@ msgstr "Inhalt der Fensterliste"
 
 #: applets/gen_util/tasklist.glade.h:11
 msgid "Window List size"
-msgstr "Fensterlistengröße"
+msgstr "Größe der Fensterliste"
 
 #: applets/gen_util/tasklist.glade.h:12
 msgid "Window grouping"
-msgstr "Fenstergruppierung"
+msgstr "Fenster gruppieren"
 
 #: applets/gen_util/tasklist.glade.h:13
 msgid "_Always group windows"
@@ -1018,173 +1043,226 @@ msgstr "Fenster _nie gruppieren"
 
 #: applets/gen_util/tasklist.schemas.in.h:1
 msgid ""
-"Decides when to group windows from the same application on the tasklist. "
-"Valid values are never, auto, and always."
+"Decides when to group windows from the same application on the Window List. "
+"Valid values are \"never\", \"auto\" and \"always\"."
 msgstr ""
-"Legt fest, wann Fenster der selben Anwendung in der Fensterliste gruppiert "
-"werden. Gültige Werte sind never (Nie), auto (Bei Platzmangel) sowie always "
-"(Immer)."
+"Dieser Schlüssel legt fest, wann Fenster der selben Anwendung in der "
+"Fensterliste gruppiert werden. Gültige Werte sind „never” (Nie), „auto” (Bei "
+"Platzmangel) sowie „always” (Immer)."
 
 #: applets/gen_util/tasklist.schemas.in.h:2
 msgid ""
-"If this is true, the tasklist will show windows from all workspaces, "
+"If this is true, the Window List will show windows from all workspaces, "
 "otherwise it will display windows from the current workspace only."
 msgstr ""
-"Falls gesetzt, zeigt die Fensterliste die Fenster in allen Arbeitsflächen, "
-"andernfalls zeigt es lediglich die auf der aktuellen Arbeitsfläche "
-"befindlichen."
+"Soll die Fensterliste alle geöffneten Fenster einschließlich derer, die sich "
+"auf anderen Arbeitsflächen befinden, anzeigen? Ansonsten zeigt es lediglich "
+"die auf der aktuellen Arbeitsfläche dargestellten Fenster."
 
 #: applets/gen_util/tasklist.schemas.in.h:3
 msgid ""
 "If true, then when unminimizing a window, bring it to the current workspace. "
 "Otherwise, change to the workspace of the window."
 msgstr ""
-"Falls gesetzt, wird ein Fenster beim Wiederherstellen auf der aktuellen "
-"Arbeitsfläche angezeigt. Andernfalls wird zur Arbeitsfläche, auf dem sich "
-"das Fenster befindet, gewechselt."
+"Soll ein Fenster beim Wiederherstellen auf der aktuellen Arbeitsfläche "
+"angezeigt werden? Ansonsten wird zur Arbeitsfläche, auf dem sich das Fenster "
+"befindet, gewechselt."
 
 #: applets/gen_util/tasklist.schemas.in.h:4
-msgid "Maximum size the tasklist applet will request"
-msgstr "Maximale Größe die das Fensterlisten-Applet anfordern darf"
+msgid "Maximum size that Window List requests"
+msgstr "Maximale Größe die die Fensterliste anfordern darf"
 
 #: applets/gen_util/tasklist.schemas.in.h:5
-msgid "Minimum size the tasklist applet will request"
-msgstr "Minimale Größe die das Fensterlisten-Applet anfordern darf"
+msgid "Minimum size that Window List requests"
+msgstr "Minimale Größe die die Fensterliste anfordern darf"
 
 # CHECK
 #: applets/gen_util/tasklist.schemas.in.h:6
 msgid "Move windows to the current workspace when unminimized"
-msgstr "Fenster beim Wiederherstellen auf aktuelle Arbeitsfläche verschieben"
+msgstr ""
+"Fenster beim Wiederherstellen auf die aktuelle Arbeitsfläche verschieben"
 
 #: applets/gen_util/tasklist.schemas.in.h:7
 msgid "Show windows from all workspaces"
-msgstr "Fenster von allen Arbeitsflächen zeigen"
+msgstr "Fenster von allen Arbeitsflächen anzeigen"
 
 #: applets/gen_util/tasklist.schemas.in.h:8
 msgid ""
-"The tasklist applet needs a minimum width to be useful at all. This value is "
-"the minimum width the applet will request. This is useful for sliding and "
-"edge panels, which would otherwise ask for a very small default width."
+"This value is the maximum width that Window List requests. The maximum width "
+"setting is useful to limit the size of Window List in large panels such as "
+"edge panels, where Window List could fill the entire space available."
 msgstr ""
-"Das Fensterlisten-Applet benötigt eine minimale Breite, um überhaupt einen "
-"Nutzen zu haben. Dieser Wert ist die minmale Breite, die das Applet "
-"anfordern darf. Dies ist für gleitende und Kantenpanels nützlich, die "
-"ansonsten nur eine sehr kleine Vorgabe-Breite anfordern würden."
+"Dieser Wert ist die maximale Breite, die die Fensterliste anfordern darf. "
+"Dies ist nützlich, um in großen Panels die Größe zu begrenzen, in denen "
+"diese Fensterliste andernfalls die gesamte verfügbare Breite belegen würde, "
+"so z.B. in Kantenpanels."
 
 #: applets/gen_util/tasklist.schemas.in.h:9
 msgid ""
-"This value is the maximum width the applet will request. This is useful to "
-"limit the size used in big panels where this applet could otherwise fill the "
-"entire available space, like in edge panels."
+"To be usable, Window List requires a minimum width. Window List requests "
+"this minimum width. The minimum width setting is useful for sliding and edge "
+"panels, which usually request a small default width."
 msgstr ""
-"Dieser Wert ist die maximale Breite, die das Applet anfordern darf. Dies ist "
-"nützlich, um in großen Panels die Größe zu begrenzen, in denen dieses Applet "
-"andernfalls die gesamte verfügbare Breite belegen würde, so z.B. in "
-"Kantenpanels."
+"Die Fensterliste benötigt eine minimale Breite, um überhaupt einen Nutzen zu "
+"haben. Dieser Wert ist die minmale Breite, die das Applet anfordern darf. "
+"Dies ist für gleitende und Kantenpanels nützlich, die sonst nur eine sehr "
+"kleine Vorgabe-Breite anfordern würden."
 
 #: applets/gen_util/tasklist.schemas.in.h:10
 msgid "When to group windows"
 msgstr "Wann Fenster gruppiert werden"
 
-#: gnome-panel/GNOME_Panel.server.in.h:1
-msgid "GNOME Panel Shell"
-msgstr "GNOME-Panel-Shell"
+#: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:1
+msgid "Area where notification icons appear"
+msgstr "Feld, in dem Benachrichtigungsicons angezeigt werden"
 
-#: gnome-panel/GNOME_Panel_Popup.xml.h:1 gnome-panel/applet.c:517
-msgid "_Move"
-msgstr "_Verschieben"
+#: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:2
+msgid "Notification Area"
+msgstr "Benachrichtigungsfeld"
 
-#: gnome-panel/GNOME_Panel_Popup.xml.h:2 gnome-panel/applet.c:505
-msgid "_Remove From Panel"
-msgstr "Aus dem Panel entfe_rnen"
+#: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:3
+msgid "Notification Area Factory"
+msgstr "Benachrichtigungsfeld-Fabrik"
+
+#: applets/notification_area/main.c:125
+msgid "Panel Notification Area"
+msgstr "Panel-Benachrichtigungsfeld"
 
 #. Translators: Task with no name, should not really happen, so
 #. * this should signal that the panel is confused by this task
 #. * (thus question marks)
-#: gnome-panel/applet.c:441 gnome-panel/foobar-widget.c:397
+#: gnome-panel/applet.c:428 gnome-panel/foobar-widget.c:393
 msgid "???"
 msgstr "???"
 
-#: gnome-panel/applet.c:815
+#: gnome-panel/GNOME_Panel_Popup.xml.h:2 gnome-panel/applet.c:492
+msgid "_Remove From Panel"
+msgstr "Aus dem Panel _entfernen"
+
+#: gnome-panel/GNOME_Panel_Popup.xml.h:1 gnome-panel/applet.c:504
+msgid "_Move"
+msgstr "_Verschieben"
+
+#: gnome-panel/applet.c:793
 #, c-format
 msgid "No object_type set for panel object with ID %s\n"
 msgstr "Für das Panelobjekt mit der Kennung %s ist kein Objekt festgelegt\n"
 
-#: gnome-panel/applet.c:837
+#: gnome-panel/applet.c:813 gnome-panel/applet.c:921
 #, c-format
 msgid "No panel_id set for panel object with ID %s\n"
 msgstr "Für das Panelobjekt mit der Kennung %s ist panel_id nicht festgelegt\n"
 
-#: gnome-panel/applet.c:1137
+#: gnome-panel/applet.c:1258
 msgid "Can't find an empty spot"
 msgstr "Kein freier Fleck mehr im Panel"
 
-#: gnome-panel/basep-widget.c:160
+#: gnome-panel/basep-widget.c:159
 msgid "Mode"
 msgstr "Modus"
 
-#: gnome-panel/basep-widget.c:161
+#: gnome-panel/basep-widget.c:160
 msgid "Mode of this panel"
 msgstr "Modus dieses Panels"
 
-#: gnome-panel/basep-widget.c:168
+#: gnome-panel/basep-widget.c:167
 msgid "State"
 msgstr "Zustand"
 
-#: gnome-panel/basep-widget.c:169
+#: gnome-panel/basep-widget.c:168
 msgid "Current state of this panel"
-msgstr "Aktueller Zustand dieses Panels"
+msgstr "Momentaner Zustand dieses Panels"
 
-#: gnome-panel/basep-widget.c:177
+#: gnome-panel/basep-widget.c:176
 msgid "Hidebuttons enabled"
 msgstr "Versteckknöpfe _aktivieren"
 
-#: gnome-panel/basep-widget.c:178
+#: gnome-panel/basep-widget.c:177
 msgid "Are hidebuttons (buttons that hide or show the panel) enabled?"
 msgstr ""
 "Sind Versteckknöpfe (Knöpfe, die das Panel anzeigen oder verbergen) "
 "aktiviert?"
 
-#: gnome-panel/basep-widget.c:185
+#: gnome-panel/basep-widget.c:184
 msgid "Hidebutton pixmaps enabled"
 msgstr "Versteckknopf-Pixmaps aktivieren"
 
-#: gnome-panel/basep-widget.c:186
+#: gnome-panel/basep-widget.c:185
 msgid "Hidebuttons have pixmaps"
 msgstr "Versteckknöpfe haben Pixmaps"
 
-#: gnome-panel/basep-widget.c:569
+#: gnome-panel/basep-widget.c:584
 msgid "Hide this panel"
 msgstr "Dieses Panel verbergen"
 
-#: gnome-panel/basep-widget.c:572
+#: gnome-panel/basep-widget.c:587
 msgid "Show this panel"
-msgstr "Dieses Panel entfernen"
+msgstr "Dieses Panel anzeigen"
 
-#: gnome-panel/button-widget.c:341
-msgid "none"
-msgstr "keines"
-
-#: gnome-panel/button-widget.c:346
-msgid "file not found"
-msgstr "Datei nicht gefunden"
-
-#: gnome-panel/button-widget.c:747 gnome-panel/button-widget.c:785
+#: gnome-panel/button-widget.c:322
 #, c-format
 msgid ""
 "Failed to load image %s\n"
 "\n"
 "Details: %s"
 msgstr ""
-"Bild »%s« konnte nicht geladen werden\n"
+"Bild „%s” konnte nicht geladen werden\n"
 "\n"
 "Details: %s"
 
-#: gnome-panel/disclosure-widget.c:251
+#: gnome-panel/button-widget.c:537
+msgid "none"
+msgstr "keines"
+
+#: gnome-panel/button-widget.c:542
+msgid "file not found"
+msgstr "Datei nicht gefunden"
+
+#: gnome-panel/button-widget.c:868
+msgid "Size"
+msgstr "Größe"
+
+#: gnome-panel/button-widget.c:869
+msgid "The desired ButtonWidget size"
+msgstr "Die gewünschte ButtonWidget-Größe"
+
+#: gnome-panel/button-widget.c:877
+msgid "Has Arrow"
+msgstr "Hat Pfeil"
+
+#: gnome-panel/button-widget.c:878
+msgid "Whether or not to draw an arrow indicator"
+msgstr "Soll ein Pfeil-Anzeiger dargestellt werden?"
+
+#: gnome-panel/button-widget.c:886
+msgid "Orientation"
+msgstr "Ausrichtung"
+
+#: gnome-panel/button-widget.c:887
+msgid "The ButtonWidget orientation"
+msgstr "Die ButtonWidget-Ausrichtung"
+
+#: gnome-panel/button-widget.c:896
+msgid "Icon Name"
+msgstr "Icon-Name"
+
+#: gnome-panel/button-widget.c:897
+msgid "The desired icon for the ButtonWidget"
+msgstr "Das gewünschte Icon für das ButtonWidget"
+
+#: gnome-panel/button-widget.c:905
+msgid "Stock Icon ID"
+msgstr "Icon-Repertoirekennung"
+
+#: gnome-panel/button-widget.c:906
+msgid "The desired stock icon for the ButtonWidget"
+msgstr "Das gewünschte Repertoire-Icon für das ButtonWidget"
+
+#: gnome-panel/disclosure-widget.c:259
 msgid "Expander Size"
 msgstr "Expandergröße"
 
-#: gnome-panel/disclosure-widget.c:252
+#: gnome-panel/disclosure-widget.c:260
 msgid "Size of the expander arrow"
 msgstr "Größe des Expanderpfeils"
 
@@ -1212,126 +1290,119 @@ msgstr "Solaris"
 msgid "CDE Menu"
 msgstr "CDE-Menü"
 
-#: gnome-panel/drawer.c:127
+#: gnome-panel/drawer.c:126
 msgid "Size and Position"
 msgstr "Größe und Position"
 
-#: gnome-panel/drawer.c:135
+#: gnome-panel/drawer.c:134
 msgid "Tooltip/Name"
 msgstr "Minihilfe/Name"
 
-#: gnome-panel/drawer.c:141
+#: gnome-panel/drawer.c:140
 msgid "Icon"
 msgstr "Icon"
 
-#: gnome-panel/drawer.c:147
+#: gnome-panel/drawer.c:146
 msgid "Applet appearance"
 msgstr "Aussehen des Applets"
 
-#: gnome-panel/drawer.c:152
+#: gnome-panel/drawer.c:151
 msgid "Drawer handle"
 msgstr "Schubladengriff"
 
 #. we store this in w for later use!, so don't use w as temp from now
 #. on
-#: gnome-panel/drawer.c:157
+#: gnome-panel/drawer.c:156
 msgid "Enable hidebutton"
-msgstr "Versteckknopf an/aus"
+msgstr "Versteckknopf aktivieren"
 
-#: gnome-panel/drawer.c:166
+#: gnome-panel/drawer.c:165
 msgid "Enable hidebutton arrow"
-msgstr "Pfeil auf Versteckknopf an/aus"
+msgstr "Pfeil auf Versteckknopf aktivieren"
 
-#: gnome-panel/drawer.c:184 gnome-panel/drawer.c:479 gnome-panel/menu.c:3314
+#: gnome-panel/drawer.c:183 gnome-panel/menu.c:3620
 msgid "Drawer"
 msgstr "Schublade"
 
-#: gnome-panel/drawer.c:669 gnome-panel/launcher.c:754
-#: gnome-panel/logout.c:219 gnome-panel/menu.c:1447 gnome-panel/menu.c:3422
+#: gnome-panel/drawer.c:765 gnome-panel/launcher.c:802 gnome-panel/menu.c:1533
+#: gnome-panel/menu.c:3475 gnome-panel/panel-action-button.c:89
 msgid "_Properties"
-msgstr "_Eigenschaften"
+msgstr "Ei_genschaften"
 
-#: gnome-panel/foobar-widget.c:172 gnome-panel/menu.c:3602
-msgid "Cannot execute gnome-panel-screenshot"
-msgstr "gnome-panel-screenshot konnte nicht ausgeführt werden"
-
-#: gnome-panel/foobar-widget.c:183 gnome-panel/menu.c:3612
-msgid "Cannot execute gnome-search-tool"
-msgstr "gnome-search-tool konnte nicht ausgeführt werden"
-
-#: gnome-panel/foobar-widget.c:193 gnome-panel/menu.c:3731
+#: gnome-panel/foobar-widget.c:176 gnome-panel/menu.c:3818
 msgid "Run Program..."
 msgstr "Programm ausführen..."
 
-#: gnome-panel/foobar-widget.c:197
+#: gnome-panel/foobar-widget.c:180
 msgid "Run applications, if you know the correct command to type in"
 msgstr "Anwendungen ausführen; wenn Sie den korrekten Befehl wissen"
 
-#: gnome-panel/foobar-widget.c:206 gnome-panel/menu.c:3743
+#: gnome-panel/foobar-widget.c:193 gnome-panel/menu.c:3834
 msgid "Search for Files..."
 msgstr "Nach Dateien suchen..."
 
-#: gnome-panel/foobar-widget.c:211 gnome-panel/menu.c:3746
+#: gnome-panel/foobar-widget.c:198 gnome-panel/menu.c:3837
 msgid "Find files, folders, and documents on your computer"
-msgstr "Dateien, Ordner und Dokumente auf dem Computer finden"
+msgstr "Auf dem Computer nach Dateien, Ordnern und Dokumenten suchen"
 
-#: gnome-panel/foobar-widget.c:221 gnome-panel/menu.c:3756
+#: gnome-panel/foobar-widget.c:213 gnome-panel/menu.c:3853
 msgid "Screenshot..."
 msgstr "Bildschirmfoto..."
 
-#: gnome-panel/foobar-widget.c:225 gnome-panel/menu.c:3759
+#: gnome-panel/foobar-widget.c:217 gnome-panel/menu.c:3856
 msgid "Take a screenshot of your desktop"
-msgstr "Ein Bildschirmfoto Ihres _Desktops aufnehmen"
+msgstr "Ein Bildschirmfoto Ihres Desktops aufnehmen"
 
-#: gnome-panel/foobar-widget.c:236 gnome-panel/menu.c:3516
+#: gnome-panel/foobar-widget.c:229 gnome-panel/menu.c:3642
 msgid "Lock Screen"
 msgstr "Bildschirm sperren"
 
-#: gnome-panel/foobar-widget.c:240
+#: gnome-panel/foobar-widget.c:233
 msgid "Protect your computer from unauthorized use"
-msgstr "Schützen Sie Ihren Computer vor unberechtigter Benutzung"
+msgstr "Den Computer vor unbefugtem Zugriff schützen"
 
-#: gnome-panel/foobar-widget.c:249 gnome-panel/menu.c:3527
+#: gnome-panel/foobar-widget.c:242 gnome-panel/menu.c:3224
+#: gnome-panel/menu.c:3654
 msgid "Log Out"
 msgstr "Abmelden"
 
-#: gnome-panel/foobar-widget.c:253
+#: gnome-panel/foobar-widget.c:246
 msgid "Quit from the GNOME desktop"
 msgstr "Den GNOME-Desktop beenden"
 
 #. FIXME: shutdown or reboot
-#: gnome-panel/foobar-widget.c:262
+#: gnome-panel/foobar-widget.c:255
 msgid "Actions"
 msgstr "Aktionen"
 
-#: gnome-panel/foobar-widget.c:479
+#: gnome-panel/foobar-widget.c:477
 msgid "No windows open"
 msgstr "Keine Fenster geöffnet"
 
-#: gnome-panel/foobar-widget.c:717 gnome-panel/menu.c:2744
+#: gnome-panel/foobar-widget.c:716 gnome-panel/menu.c:2984
 msgid "Menu Panel"
 msgstr "Menüpanel"
 
-#: gnome-panel/foobar-widget.c:717
+#: gnome-panel/foobar-widget.c:716
 msgid "GNOME Menu Panel"
 msgstr "GNOME-Menüpanel"
 
-#: gnome-panel/foobar-widget.c:737 gnome-panel/menu.c:2880
-#: gnome-panel/menu.c:2885 gnome-panel/menu.c:3699
+#: gnome-panel/foobar-widget.c:736 gnome-panel/menu.c:3122
+#: gnome-panel/menu.c:3127 gnome-panel/menu.c:3793
 msgid "Applications"
 msgstr "Anwendungen"
 
-#: gnome-panel/global-keys.c:319 gnome-panel/global-keys.c:347
+#: gnome-panel/global-keys.c:328 gnome-panel/global-keys.c:357
 msgid "Can't find the screenshot program"
 msgstr "Das Bildschirmfoto-Programm kann nicht gefunden werden"
 
-#: gnome-panel/global-keys.c:328 gnome-panel/global-keys.c:357
+#: gnome-panel/global-keys.c:337 gnome-panel/global-keys.c:367
 msgid "Can't execute the screenshot program"
 msgstr "Das Bildschirmfoto-Programm kann nicht ausgeführt werden"
 
 #: gnome-panel/gnome-desktop-item-edit.c:27
 msgid "Create new file in the given directory"
-msgstr "Eine neue Datei in dem angegebenen Verzeichnis erstellen"
+msgstr "Eine neue Datei in dem angegebenen Verzeichnis anlegen"
 
 #: gnome-panel/gnome-panel-add-launcher.c:34
 msgid "Panel to add the launcher to"
@@ -1362,8 +1433,8 @@ msgstr ""
 msgid "No panel found\n"
 msgstr "Kein Panel gefunden\n"
 
-#: gnome-panel/gnome-panel-preferences.c:192
-#: gnome-panel/gnome-panel-screenshot.c:841
+#: gnome-panel/gnome-panel-preferences.c:259
+#: gnome-panel/gnome-panel-screenshot.c:862
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -1372,7 +1443,7 @@ msgstr ""
 "Beim Anzeigen der Hilfe ist ein Fehler aufgetreten: \n"
 "%s"
 
-#: gnome-panel/gnome-panel-preferences.c:240
+#: gnome-panel/gnome-panel-preferences.c:307
 msgid ""
 "The system administrator has disallowed\n"
 "modification of the panel configuration"
@@ -1380,7 +1451,7 @@ msgstr ""
 "Der Systemadministrator hat Änderungen\n"
 "an der Panelkonfiguration gesperrt"
 
-#: gnome-panel/gnome-panel-preferences.c:270
+#: gnome-panel/gnome-panel-preferences.c:337
 #, c-format
 msgid "Error loading glade file %s"
 msgstr "Fehler beim Laden der glade-Datei %s"
@@ -1402,51 +1473,55 @@ msgid "Close _drawer when launcher is clicked"
 msgstr "Schublade _schließen, wenn ein Starter darin gedrückt wird"
 
 #: gnome-panel/gnome-panel-preferences.glade.h:3
+msgid "Drawer and Panel _Animation"
+msgstr "Schubladen- und Panel-_Animation"
+
+#: gnome-panel/gnome-panel-preferences.glade.h:4
 msgid "Fast"
 msgstr "Schnell"
 
-#: gnome-panel/gnome-panel-preferences.glade.h:4
+#: gnome-panel/gnome-panel-preferences.glade.h:5
+#: gnome-panel/panel-config.c:1221
 #: libpanel-applet/panel-test-applets.glade.h:5
 msgid "Medium"
 msgstr "Mittel"
 
-#: gnome-panel/gnome-panel-preferences.glade.h:5
+#: gnome-panel/gnome-panel-preferences.glade.h:6
 msgid "Panel Preferences"
 msgstr "Einstellungen des Panels"
 
-#: gnome-panel/gnome-panel-preferences.glade.h:6
+#: gnome-panel/gnome-panel-preferences.glade.h:7
 msgid "Slow"
 msgstr "Langsam"
 
-#: gnome-panel/gnome-panel-preferences.glade.h:7
-msgid "_Animation"
-msgstr "_Animation"
-
-#: gnome-panel/gnome-panel-screenshot.c:128
+#: gnome-panel/gnome-panel-screenshot.c:135
 msgid ""
 "Unable to initialize png structure.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 "PNG-Struktur kann nicht initialisiert werden.\n"
-"Wahrscheinlich haben Sie eine falsche Version der libpng auf Ihrem System"
+"Wahrscheinlich ist auf diesem System eine fehlerhafte libpng-Version "
+"installiert"
 
-#: gnome-panel/gnome-panel-screenshot.c:136
+#: gnome-panel/gnome-panel-screenshot.c:143
 msgid ""
 "Unable to create png info.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 "PNG-Information kann nicht erzeugt werden.\n"
-"Wahrscheinlich haben Sie eine falsche Version der libpng auf Ihrem System"
+"Wahrscheinlich ist auf diesem System eine fehlerhafte libpng-Version "
+"installiert"
 
-#: gnome-panel/gnome-panel-screenshot.c:143
+#: gnome-panel/gnome-panel-screenshot.c:150
 msgid ""
 "Unable to set png info.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 "PNG-Information kann nicht geschrieben werden.\n"
-"Wahrscheinlich haben Sie eine falsche Version der libpng auf Ihrem System"
+"Wahrscheinlich ist auf diesem System eine fehlerhafte libpng-Version "
+"installiert"
 
-#: gnome-panel/gnome-panel-screenshot.c:157
+#: gnome-panel/gnome-panel-screenshot.c:168
 msgid ""
 "Insufficient memory to save the screenshot.\n"
 "Please free up some resources and try again."
@@ -1454,13 +1529,13 @@ msgstr ""
 "Speicher reicht nicht aus, um das Bildschirmfoto zu speichern.\n"
 "Bitte geben Sie Ressourcen frei und versuchen Sie es nochmals."
 
-#: gnome-panel/gnome-panel-screenshot.c:205
+#: gnome-panel/gnome-panel-screenshot.c:220
 #, c-format
 msgid "File %s already exists. Overwrite?"
 msgstr "Die Datei %s ist bereits vorhanden. Überschreiben?"
 
-#: gnome-panel/gnome-panel-screenshot.c:222
-#: gnome-panel/gnome-panel-screenshot.c:726
+#: gnome-panel/gnome-panel-screenshot.c:237
+#: gnome-panel/gnome-panel-screenshot.c:743
 #, c-format
 msgid ""
 "Unable to create the file:\n"
@@ -1468,55 +1543,55 @@ msgid ""
 "Please check your permissions of the parent directory"
 msgstr ""
 "Datei kann nicht angelegt werden:\n"
-"»%s«\n"
+"„%s”\n"
 "Bitte überprüfen Sie die Berechtigungen des Elternverzeichnisses"
 
-#: gnome-panel/gnome-panel-screenshot.c:494
+#: gnome-panel/gnome-panel-screenshot.c:509
 msgid "Print Screenshot"
 msgstr "Bildschirmfoto drucken"
 
-#: gnome-panel/gnome-panel-screenshot.c:542
+#: gnome-panel/gnome-panel-screenshot.c:557
 msgid "Screenshot Print Preview"
 msgstr "Bildschirmfoto-Druckvorschau"
 
 #. translators: this is the file that gets made up with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:569
+#: gnome-panel/gnome-panel-screenshot.c:584
 #, c-format
 msgid "%s%cScreenshot-%s.png"
-msgstr "%s%Bildschirmfoto-%s.png"
+msgstr "%s%cBildschirmfoto-%s.png"
 
 #. translators: this is the file that gets made up with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:576
+#: gnome-panel/gnome-panel-screenshot.c:591
 #, c-format
 msgid "%s%cScreenshot.png"
 msgstr "%s%cBildschirmfoto.png"
 
 #. translators: this is the file that gets made up with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:593
+#: gnome-panel/gnome-panel-screenshot.c:608
 #, c-format
 msgid "%s%cScreenshot-%s-%d.png"
 msgstr "%s%cBildschirmfoto-%s-%d.png"
 
 #. translators: this is the file that gets made up with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:600
+#: gnome-panel/gnome-panel-screenshot.c:615
 #, c-format
 msgid "%s%cScreenshot-%d.png"
 msgstr "%s%cBildschirmfoto-%d.png"
 
-#: gnome-panel/gnome-panel-screenshot.c:747
+#: gnome-panel/gnome-panel-screenshot.c:764
 #, c-format
 msgid "Not enough room to write file %s"
 msgstr "Nicht genügend Platz, um die Datei %s zu schreiben."
 
-#: gnome-panel/gnome-panel-screenshot.c:1078
+#: gnome-panel/gnome-panel-screenshot.c:1213
 msgid "Grab a window instead of the entire screen"
 msgstr "Ein Fenster statt des gesamten Bildschirms aufnehmen"
 
-#: gnome-panel/gnome-panel-screenshot.c:1079
+#: gnome-panel/gnome-panel-screenshot.c:1214
 msgid "Take screenshot after specified delay [in seconds]"
 msgstr "Nach angegebener Verzögerung (in Sekunden) Bildschirmfoto machen"
 
-#: gnome-panel/gnome-panel-screenshot.c:1121
+#: gnome-panel/gnome-panel-screenshot.c:1266
 msgid ""
 "Glade file for the screenshot program is missing.\n"
 "Please check your installation of gnome-panel"
@@ -1524,33 +1599,29 @@ msgstr ""
 "Die glade-Datei für das Bildschirmfoto-Program fehlt.\n"
 "Bitte überprüfen Sie Ihre gnome-panel-Installation"
 
-#: gnome-panel/gnome-panel-screenshot.c:1144
+#: gnome-panel/gnome-panel-screenshot.c:1290
 msgid "Unable to take a screenshot of the current desktop."
 msgstr "Vom aktuellen Desktop kann kein Screenshot gezogen werden."
 
-#: gnome-panel/gnome-panel-screenshot.glade.h:1
-msgid "*"
-msgstr "*"
-
 #: gnome-panel/gnome-panel-screenshot.glade.h:2
-msgid "Options"
-msgstr "Optionen"
+msgid "<b>Options</b>"
+msgstr "<b>Optionen</b>"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:3
-msgid "Preview"
-msgstr "Vorschau"
+msgid "<b>Preview</b>"
+msgstr "<b>Vorschau</b>"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:4
-msgid "Save screenshot to _desktop"
-msgstr "Bildschirmfoto auf _Desktop speichern"
+msgid "Save Screenshot"
+msgstr "Bildschirmfoto speichern"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:5
-msgid "Save screenshot to _web page (save in ~/public__html)"
-msgstr "Bildschirmfoto in _Webseite speichern (in ~/public__html)"
+msgid "Save screenshot to _desktop"
+msgstr "Bildschirmfoto auf dem _Desktop speichern"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:6
-msgid "Screenshot"
-msgstr "Bildschirmfoto"
+msgid "Save screenshot to _web page (save in ~/public__html)"
+msgstr "Bildschirmfoto in _Webseite speichern (in ~/public__html)"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:7
 msgid "_Print screenshot..."
@@ -1560,7 +1631,23 @@ msgstr "Bildschirmfoto _drucken..."
 msgid "_Save screenshot to file:"
 msgstr "Bildschirmfoto in Datei _speichern:"
 
-#: gnome-panel/gnome-run.c:228 gnome-panel/gnome-run.c:245
+#: gnome-panel/gnome-panel-screenshot.schemas.in.h:1
+msgid ""
+"The user's directory in which screenshots should be saved so as to appear on "
+"the web."
+msgstr ""
+"Das Verzeichnis des Benutzers, in dem Bildschirmfotos gespeichert werden als "
+"ob sie im Netz erscheinen würden."
+
+#: gnome-panel/gnome-panel-screenshot.schemas.in.h:2
+msgid "Web directory."
+msgstr "Web-Verzeichnis."
+
+#: gnome-panel/GNOME_Panel.server.in.h:1
+msgid "GNOME Panel Shell"
+msgstr "GNOME-Panel-Shell"
+
+#: gnome-panel/gnome-run.c:244 gnome-panel/gnome-run.c:265
 #, c-format
 msgid ""
 "<b>Failed to run this program</b>\n"
@@ -1571,85 +1658,85 @@ msgstr ""
 "\n"
 "Details: %s"
 
-#: gnome-panel/gnome-run.c:356 gnome-panel/gnome-run.c:432
+#: gnome-panel/gnome-run.c:388 gnome-panel/gnome-run.c:468
 #, c-format
 msgid ""
 "<b>Failed to execute command:</b> '%s'\n"
 "\n"
 "Details: %s"
 msgstr ""
-"<b>Befehl »%s« konnte nicht ausgeführt werden</b>\n"
+"<b>Befehl „%s” konnte nicht ausgeführt werden</b>\n"
 "\n"
 "Details: %s"
 
-#: gnome-panel/gnome-run.c:457
+#: gnome-panel/gnome-run.c:495
 #, c-format
 msgid ""
 "<b>Failed to open file:</b> '%s'\n"
 "\n"
 "Details: no application available to open file"
 msgstr ""
-"<b>Öffnen der Datei »%s« fehlgeschlagen:</b>\n"
+"<b>Öffnen der Datei „%s” fehlgeschlagen:</b>\n"
 "\n"
 "Details: Keine Anwendung zum Öffnen der Datei verfügbar"
 
-#: gnome-panel/gnome-run.c:468
+#: gnome-panel/gnome-run.c:510
 #, c-format
 msgid ""
 "<b>Failed to open file:</b> '%s'\n"
 "\n"
 "Details: %s"
 msgstr ""
-"<b>Datei »%s« konnte nicht geöffnet werden</b>\n"
+"<b>Datei „%s” konnte nicht geöffnet werden</b>\n"
 "\n"
 "Details: %s"
 
-#: gnome-panel/gnome-run.c:557
+#: gnome-panel/gnome-run.c:599
 msgid "Choose a file"
 msgstr "Eine Datei auswählen"
 
-#: gnome-panel/gnome-run.c:796 gnome-panel/gnome-run.c:797
+#: gnome-panel/gnome-run.c:838 gnome-panel/gnome-run.c:839
 msgid "Known Applications"
 msgstr "Bekannte Anwendungen"
 
-#: gnome-panel/gnome-run.c:927
+#: gnome-panel/gnome-run.c:970
 msgid "Command to run"
 msgstr "Auszuführender Befehl"
 
-#: gnome-panel/gnome-run.c:962
+#: gnome-panel/gnome-run.c:1005
 msgid "Run in _terminal"
-msgstr "Im _Terminal ausführen"
+msgstr "In einem _Terminal ausführen"
 
-#: gnome-panel/gnome-run.c:967
+#: gnome-panel/gnome-run.c:1010
 msgid "_Append File..."
 msgstr "Datei _anfügen..."
 
-#: gnome-panel/gnome-run.c:1350
+#: gnome-panel/gnome-run.c:1393
 #, c-format
 msgid "Will run command: '%s'"
-msgstr "Wird Befehl »%s« ausgeführen"
+msgstr "Wird Befehl „%s” ausgeführen"
 
-#: gnome-panel/gnome-run.c:1359
+#: gnome-panel/gnome-run.c:1402
 msgid "No application selected"
 msgstr "Kein Programm gewählt"
 
-#: gnome-panel/gnome-run.c:1479
+#: gnome-panel/gnome-run.c:1522
 msgid "List of known applications"
 msgstr "Liste bekannter Anwendungen"
 
-#: gnome-panel/gnome-run.c:1480
+#: gnome-panel/gnome-run.c:1523
 msgid "Choose an application to run from the list"
 msgstr "Eine auszuführende Anwendung aus der Liste wählen"
 
-#: gnome-panel/gnome-run.c:1604
+#: gnome-panel/gnome-run.c:1649 gnome-panel/panel-action-button.c:203
 msgid "Run Program"
 msgstr "Programm ausführen"
 
-#: gnome-panel/launcher.c:75
+#: gnome-panel/launcher.c:100
 msgid "This launch icon does not specify a url to show"
 msgstr "Dieses Starter-Icon gibt keine anzuzeigende URL an"
 
-#: gnome-panel/launcher.c:83
+#: gnome-panel/launcher.c:109
 #, c-format
 msgid ""
 "Cannot show %s\n"
@@ -1658,7 +1745,7 @@ msgstr ""
 "%s konnte nicht angezeigt werden\n"
 "%s"
 
-#: gnome-panel/launcher.c:110
+#: gnome-panel/launcher.c:141
 #, c-format
 msgid ""
 "<b>Cannot launch icon</b>\n"
@@ -1669,7 +1756,7 @@ msgstr ""
 "\n"
 "Details: %s"
 
-#: gnome-panel/launcher.c:152
+#: gnome-panel/launcher.c:194
 #, c-format
 msgid ""
 "Cannot launch icon\n"
@@ -1678,37 +1765,36 @@ msgstr ""
 "Icon konnte nicht gestartet werden\n"
 "%s"
 
-#: gnome-panel/launcher.c:349
+#: gnome-panel/launcher.c:391
 msgid "No URI provided for panel launcher desktop file\n"
 msgstr "Keine URI für die Panel-Starter-Desktop-Datei angegeben\n"
 
-#: gnome-panel/launcher.c:369
+#: gnome-panel/launcher.c:411
 #, c-format
 msgid "Unable to open desktop file %s for panel launcher%s%s\n"
 msgstr ""
 "Desktop-Datei %s für den Panel-Starter %s%s konnte nicht geöffnet werden\n"
 
-#: gnome-panel/launcher.c:484
+#: gnome-panel/launcher.c:525
 #, c-format
-msgid "Help on %s Application"
-msgstr "Hilfe zur %s-Anwendung"
+msgid "Help on %s _Application"
+msgstr "Hilfe zur _Anwendung %s"
 
-#: gnome-panel/launcher.c:603 gnome-panel/menu-ditem.c:176
-#: gnome-panel/menu-ditem.c:250
+#: gnome-panel/launcher.c:647 gnome-panel/menu-ditem.c:180
+#: gnome-panel/menu-ditem.c:257
 msgid "Launcher Properties"
 msgstr "Starter-Eigenschaften"
 
-#: gnome-panel/launcher.c:710
+#: gnome-panel/launcher.c:758
 #, c-format
 msgid "Key %s is not set, can't load launcher\n"
 msgstr "Schlüssel %s ist nicht festgelegt, Starter kann nicht geladen werden\n"
 
-#: gnome-panel/launcher.c:804 gnome-panel/menu-ditem.c:514
+#: gnome-panel/launcher.c:854 gnome-panel/menu-ditem.c:526
 msgid "Create Launcher"
-msgstr "Starter erzeugen"
+msgstr "Einen Starter erstellen"
 
-#. class
-#: gnome-panel/launcher.c:1024
+#: gnome-panel/launcher.c:1076
 #, c-format
 msgid ""
 "Cannot save launcher to disk, the following error occured:\n"
@@ -1719,8 +1805,8 @@ msgstr ""
 "Fehler trat auf:\n"
 "%s"
 
-#: gnome-panel/launcher.c:1110 gnome-panel/menu.c:1107
-#: gnome-panel/panel-util.c:49
+#: gnome-panel/launcher.c:1163 gnome-panel/menu.c:1188
+#: gnome-panel/panel-util.c:96
 #, c-format
 msgid ""
 "<b>Cannot display help document</b>\n"
@@ -1731,105 +1817,20 @@ msgstr ""
 "\n"
 "Details: %s"
 
-#: gnome-panel/logout.c:84
-msgid "Log out"
-msgstr "Abmelden"
-
-#: gnome-panel/logout.c:105
-msgid "Log out of GNOME"
-msgstr "Von GNOME abmelden"
-
-#: gnome-panel/logout.c:152 gnome-panel/logout.c:173
-msgid "Lock screen"
-msgstr "Bildschirm sperren"
-
-#.
-#. <jwz> Activate Screensaver
-#. <jwz> Lock Screen
-#. <jwz> Kill Screensaver Daemon
-#. <jwz> Restart Screensaver Daemon
-#. <jwz> Properties
-#. <jwz> (or "configuration" instead?  whatever word you use)
-#. <jwz> those should do xscreensaver-command -activate, -lock, -exit...
-#. <jwz> and "xscreensaver-command -exit ; xscreensaver &"
-#. <jwz> and "xscreensaver-demo"
-#.
-#: gnome-panel/logout.c:213
-msgid "_Activate Screensaver"
-msgstr "Bildschirmschoner _aktivieren"
-
-#: gnome-panel/logout.c:214
-msgid "_Lock Screen"
-msgstr "Bildschirm _sperren"
-
-# Daemon = Disk And Execution MONitor (no umlauts please).
-#: gnome-panel/logout.c:215
-msgid "_Kill Screensaver Daemon"
-msgstr "Bildschirmschoner-Dämon ab_würgen"
-
-# Daemon = Disk And Execution MONitor (no umlauts please).
-#: gnome-panel/logout.c:216
-msgid "Restart _Screensaver Daemon"
-msgstr "Bildschirmschoner-Dämon _neu starten"
-
 #: gnome-panel/main.c:149
 msgid "Specify a profile name to load"
 msgstr "Geben Sie einen zu ladenden Profilnamen an"
 
-#: gnome-panel/menu-ditem.c:119
-#, c-format
-msgid ""
-"<b>Cannot save changes to launcher</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-"<b>Die Änderungen am Menüeintrag konnten nicht gespeichert werden</b>\n"
-"\n"
-"Details: %s"
-
-#: gnome-panel/menu-ditem.c:282 gnome-panel/menu.c:3799
-#: gnome-panel/menu.c:4027
-msgid "Menu"
-msgstr "Menü"
-
-#: gnome-panel/menu-ditem.c:439
-msgid "You have to specify a name for the launcher."
-msgstr "Sie müssen einen Namen für den Starter angeben."
-
-#: gnome-panel/menu-ditem.c:455
-msgid "You have to specify a valid URL or command."
-msgstr "Sie müssen eine gültige Adresse oder einen gültigen Befehl angeben."
-
-#. class
-#: gnome-panel/menu-ditem.c:484
-#, c-format
-msgid ""
-"<b>Cannot save menu item to disk</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-"<b>Der Menüeintrag konnte nicht gespeichert werden</b>\n"
-"\n"
-"Details: %s"
-
-#: gnome-panel/menu-ditem.c:507
-msgid ""
-"You can not create a new launcher at this location since the location is not "
-"writable."
-msgstr ""
-"Sie können an diesem Ort keinen neuen Starter erstellen, da Sie für diesen "
-"Ort keine Schreibrechten besitzen."
-
-#: gnome-panel/menu.c:237
-msgid "Many many others ..."
+#: gnome-panel/menu.c:240
+msgid "Many, many others..."
 msgstr "Viele, viele andere..."
 
 #. ... from the Monty Pythons show...
-#: gnome-panel/menu.c:239
-msgid "and finally, The Knights Who Say ... NI!"
-msgstr "und schließlich, Die Ritter die NI sagen!"
+#: gnome-panel/menu.c:242
+msgid "and finally, The Knights Who Say... NI!"
+msgstr "und schließlich: die Ritter, die NI sagen!"
 
-#: gnome-panel/menu.c:272
+#: gnome-panel/menu.c:277
 msgid ""
 "This program is responsible for launching other applications, embedding "
 "small applets within itself, world peace, and random X crashes."
@@ -1838,7 +1839,7 @@ msgstr ""
 "das Einbetten von kleinen Applets in sich selber, den Weltfrieden, und\n"
 "grundlose X-Abstürze."
 
-#: gnome-panel/menu.c:278
+#: gnome-panel/menu.c:283
 msgid ""
 "\n"
 "\n"
@@ -1850,30 +1851,26 @@ msgstr ""
 "Sperrmodus aktiv. Dies bedeutet, dass Ihr Systemadministrator es verboten "
 "hat, Änderungen an der Panel-Konfiguration vorzunehmen."
 
-#: gnome-panel/menu.c:284
+#: gnome-panel/menu.c:289
 msgid "The GNOME Panel"
 msgstr "Das GNOME-Panel"
 
-#: gnome-panel/menu.c:285
-msgid "(C) 1997-2002 the Free Software Foundation"
-msgstr "(C) 1997-2002 the Free Software Foundation"
-
-#: gnome-panel/menu.c:304
+#: gnome-panel/menu.c:311
 msgid "End world hunger"
 msgstr "Ein Ende dem Hunger in der Welt"
 
-#: gnome-panel/menu.c:319
+#: gnome-panel/menu.c:329
 #, c-format
 msgid ""
 "<b>Can't execute 'About GNOME'</b>\n"
 "\n"
 "Details: %s probably does not exist"
 msgstr ""
-"<b>»Info zu GNOME« konnte nicht ausgeführt werden</b>\n"
+"<b>„Info zu GNOME” konnte nicht ausgeführt werden</b>\n"
 "\n"
 "Details: %s existiert wahrscheinlich nicht"
 
-#: gnome-panel/menu.c:341
+#: gnome-panel/menu.c:353
 #, c-format
 msgid ""
 "<b>Can't launch entry</b>\n"
@@ -1884,7 +1881,7 @@ msgstr ""
 "\n"
 "Details: %s"
 
-#: gnome-panel/menu.c:350 gnome-panel/menu.c:1085 gnome-panel/menu.c:1117
+#: gnome-panel/menu.c:363 gnome-panel/menu.c:1162 gnome-panel/menu.c:1199
 #, c-format
 msgid ""
 "<b>Can't load entry</b>\n"
@@ -1895,7 +1892,7 @@ msgstr ""
 "\n"
 "Details: %s"
 
-#: gnome-panel/menu.c:991
+#: gnome-panel/menu.c:1066
 #, c-format
 msgid ""
 "<b>Could not remove the menu item %s</b>\n"
@@ -1906,229 +1903,238 @@ msgstr ""
 "\n"
 "Details: %s\n"
 
-#: gnome-panel/menu.c:1001
+#: gnome-panel/menu.c:1076
 #, c-format
 msgid "Could not get file name from path: %s"
-msgstr "Dateiname konnte nicht aus Pfad entnommen werden: %s"
+msgstr "Dateiname konnte dem Pfad nicht entnommen werden: %s"
 
-#: gnome-panel/menu.c:1008
+#: gnome-panel/menu.c:1083
 #, c-format
 msgid "Could not get directory name from path: %s"
-msgstr "Verzeichnisname konnte nicht aus Pfad entnommen werden: %s"
+msgstr "Verzeichnisname konnte dem Pfad nicht entnommen werden: %s"
 
-#: gnome-panel/menu.c:1077
+#: gnome-panel/menu.c:1153
 msgid ""
 "<b>Can't add to run box</b>\n"
 "\n"
 "Details: No 'Exec' or 'URL' field in entry"
 msgstr ""
-"<b>Konnte nicht zum »Ausführen«-Dialog hinzugefügt werden</b>\n"
+"<b>Konnte nicht zum „Ausführen”-Dialog hinzugefügt werden</b>\n"
 "\n"
-"Details: Kein »Exec«- oder »URL«-Feld im Eintrag"
+"Details: Kein „Exec”- oder „URL”-Feld im Eintrag"
 
-#: gnome-panel/menu.c:1379
+#: gnome-panel/menu.c:1463
 msgid "Add this launcher to panel"
-msgstr "Diesen Starter zum Panel hinzufügen"
+msgstr "Als Starter zum Panel hinzufügen"
 
-#: gnome-panel/menu.c:1387
+#: gnome-panel/menu.c:1471
 msgid "Remove this item"
 msgstr "Diesen Eintrag entfernen"
 
-#: gnome-panel/menu.c:1403
+#: gnome-panel/menu.c:1487
 msgid "Put into run dialog"
 msgstr "In den Ausführen-Dialog aufnehmen"
 
-#: gnome-panel/menu.c:1421
+#: gnome-panel/menu.c:1505
 #, c-format
 msgid "Help on %s"
 msgstr "Hilfe zu %s"
 
-#: gnome-panel/menu.c:1422
+#: gnome-panel/menu.c:1506
 msgid "Application"
 msgstr "Anwendung"
 
-#: gnome-panel/menu.c:1466
+#: gnome-panel/menu.c:1552
 msgid "Entire menu"
-msgstr "Vollständiges Menü"
+msgstr "Gesamtes Menü"
 
-#: gnome-panel/menu.c:1475
+#: gnome-panel/menu.c:1561
 msgid "Add this as drawer to panel"
-msgstr "Dies als Schublade im Panel hinzufügen"
+msgstr "Als Schublade zum Panel hinzufügen"
 
-#: gnome-panel/menu.c:1483
+#: gnome-panel/menu.c:1569
 msgid "Add this as menu to panel"
-msgstr "Dies als Menu im Panel hinzufügen"
+msgstr "Als Menü zum Panel hinzufügen"
 
-#: gnome-panel/menu.c:1491
+#: gnome-panel/menu.c:1577
 msgid "Add new item to this menu"
-msgstr "Neuen Eintrag zu diesem Menü hinzufügen"
+msgstr "Neuen Eintrag hinzufügen"
 
-#: gnome-panel/menu.c:1516
+#: gnome-panel/menu.c:1603
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: gnome-panel/menu.c:2413 libpanel-applet/panel-test-applets.c:102
+#: gnome-panel/menu.c:2532 gnome-panel/menu.c:2587 gnome-panel/menu.c:2623
+#: libpanel-applet/panel-test-applets.c:102
 #, c-format
 msgid "query returned exception %s\n"
 msgstr "Die Anfrage gab die Ausnahme %s zurück\n"
 
-#: gnome-panel/menu.c:2657 gnome-panel/menu.c:2662
+#: gnome-panel/menu.c:2894 gnome-panel/menu.c:2899
 msgid "Aligned Panel"
 msgstr "Ausgerichtetes Panel"
 
-#: gnome-panel/menu.c:2663
+#: gnome-panel/menu.c:2900
 msgid "GNOME Aligned Panel"
 msgstr "Ausgerichtetes GNOME-Panel"
 
-#: gnome-panel/menu.c:2679 gnome-panel/menu.c:2683
-#: gnome-panel/panel-config.c:1608
+#: gnome-panel/menu.c:2917 gnome-panel/menu.c:2921
+#: gnome-panel/panel-config.c:1727
 msgid "Edge Panel"
 msgstr "Kantenpanel"
 
-#: gnome-panel/menu.c:2684
+#: gnome-panel/menu.c:2922
 msgid "GNOME Edge Panel"
 msgstr "GNOME-Kantenpanel"
 
-#: gnome-panel/menu.c:2704 gnome-panel/menu.c:2708
-#: gnome-panel/panel-config.c:1630
+#: gnome-panel/menu.c:2943 gnome-panel/menu.c:2947
+#: gnome-panel/panel-config.c:1749
 msgid "Sliding Panel"
 msgstr "Gleitendes Panel"
 
-#: gnome-panel/menu.c:2709
+#: gnome-panel/menu.c:2948
 msgid "GNOME Sliding Panel"
 msgstr "Gleitendes GNOME-Panel"
 
-#: gnome-panel/menu.c:2726 gnome-panel/menu.c:2731
-#: gnome-panel/panel-config.c:1641
+#: gnome-panel/menu.c:2966 gnome-panel/menu.c:2971
+#: gnome-panel/panel-config.c:1760
 msgid "Floating Panel"
-msgstr "Frei-schwebendes Panel"
+msgstr "Frei schwebendes Panel"
 
-#: gnome-panel/menu.c:2732
+#: gnome-panel/menu.c:2972
 msgid "GNOME Floating Panel"
 msgstr "Frei-schwebendes GNOME-Panel"
 
-#: gnome-panel/menu.c:2751
+#: gnome-panel/menu.c:2992
 msgid "You can only have one menu panel at a time."
-msgstr "Sie können zu jedem Zeitpunkt nur ein Menüpanel haben."
+msgstr "Sie können lediglich ein Menüpanel verwenden."
 
-#: gnome-panel/menu.c:2790
+#: gnome-panel/menu.c:3037
 msgid "C_orner Panel"
 msgstr "_Eckpanel"
 
-#: gnome-panel/menu.c:2792
+#: gnome-panel/menu.c:3039
 msgid "Create corner panel"
-msgstr "Eckpanel erzeugen"
+msgstr "Ein Eckpanel erzeugen"
 
-#: gnome-panel/menu.c:2800
+#: gnome-panel/menu.c:3047
 msgid "_Edge Panel"
 msgstr "_Kantenpanel"
 
-#: gnome-panel/menu.c:2802
+#: gnome-panel/menu.c:3049
 msgid "Create edge panel"
-msgstr "Kantenpanel erzeugen"
+msgstr "Ein Kantenpanel erzeugen"
 
-#: gnome-panel/menu.c:2809
+#: gnome-panel/menu.c:3057
 msgid "_Floating Panel"
 msgstr "_Frei-schwebendes Panel"
 
-#: gnome-panel/menu.c:2811
+#: gnome-panel/menu.c:3059
 msgid "Create floating panel"
-msgstr "Frei schwebendes Panel erzeugen"
+msgstr "Ein frei schwebendes Panel erzeugen"
 
-#: gnome-panel/menu.c:2818
+#: gnome-panel/menu.c:3067
 msgid "_Sliding Panel"
 msgstr "_Gleitendes Panel"
 
-#: gnome-panel/menu.c:2820
+#: gnome-panel/menu.c:3069
 msgid "Create sliding panel"
-msgstr "Gleitendes Panel erzeugen"
+msgstr "Ein gleitendes Panel erzeugen"
 
-#: gnome-panel/menu.c:2839
+#: gnome-panel/menu.c:3079
 msgid "_Menu Panel"
 msgstr "_Menüpanel"
 
-#: gnome-panel/menu.c:2841
+#: gnome-panel/menu.c:3081
 msgid "Create menu panel"
-msgstr "Menüpanel erzeugen"
+msgstr "Ein Menüpanel erzeugen"
 
-#: gnome-panel/menu.c:2928 gnome-panel/menu.c:2934 gnome-panel/menu.c:3588
+#: gnome-panel/menu.c:3170 gnome-panel/menu.c:3176 gnome-panel/menu.c:3717
 msgid "KDE Menu"
 msgstr "KDE-Menü"
 
-#: gnome-panel/menu.c:3033
+#: gnome-panel/menu.c:3233
+msgid "Lock"
+msgstr "Sperren"
+
+#: gnome-panel/menu.c:3242 gnome-panel/panel-action-button.c:213
+msgid "Screenshot"
+msgstr "Bildschirmfoto"
+
+#: gnome-panel/menu.c:3251
+msgid "Search"
+msgstr "Suchen"
+
+#: gnome-panel/menu.c:3260
+msgid "Run"
+msgstr "Ausführen"
+
+#: gnome-panel/menu.c:3332
 msgid "You cannot remove your last panel."
 msgstr "Sie können das letzte Panel nicht entfernen."
 
-#: gnome-panel/menu.c:3046
+#: gnome-panel/menu.c:3345
 msgid ""
 "When a panel is deleted, the panel and its\n"
 " settings are lost. Delete this panel?"
 msgstr ""
 "Wenn ein Panel entfernt wird, gehen das Panel und seine\n"
-" Einstellungen verloren. Dieses Panel entfernen?"
+"Einstellungen verloren.\n"
+"\n"
+"Soll dieses Panel entfernt werden?"
 
-#: gnome-panel/menu.c:3291
-msgid "Launcher..."
-msgstr "Starter..."
+#: gnome-panel/menu.c:3353
+msgid "Delete Panel"
+msgstr "Panel entfernen"
 
-#: gnome-panel/menu.c:3298
-msgid "Launcher from menu"
-msgstr "Starter aus Menü"
-
-#: gnome-panel/menu.c:3306 gnome-panel/menu.c:3851 gnome-panel/menu.c:3879
-#: gnome-panel/menu.c:4072
-msgid "GNOME Menu"
-msgstr "GNOME-Menü"
-
-#: gnome-panel/menu.c:3322
-msgid "Log Out Button"
-msgstr "Abmeldeknopf"
-
-#: gnome-panel/menu.c:3330
-msgid "Lock button"
-msgstr "Sperrknopf"
-
-#: gnome-panel/menu.c:3374
+#: gnome-panel/menu.c:3419
 msgid "_Delete This Panel..."
 msgstr "Dieses Panel _entfernen..."
 
-#: gnome-panel/menu.c:3377 gnome-panel/menu.c:3408
+#: gnome-panel/menu.c:3422 gnome-panel/menu.c:3460
 msgid "_Delete This Panel"
 msgstr "Dieses Panel _entfernen"
 
-#: gnome-panel/menu.c:3395
+#: gnome-panel/menu.c:3444
 msgid "_Add to Panel"
 msgstr "Zum Panel _hinzufügen"
 
-#: gnome-panel/menu.c:3435
+#: gnome-panel/menu.c:3489
 msgid "_New Panel"
 msgstr "_Neues Panel"
 
-#: gnome-panel/menu.c:3460
-msgid ""
-"<b>Cannot execute xscreensaver</b>\n"
-"\n"
-"Details: xscreensaver-command not found"
-msgstr ""
-"<b>XScreenSaver konnte nicht ausgeführt werden</b>\n"
-"\n"
-"Details: Befehl »xscreensaver« nicht gefunden"
-
-#: gnome-panel/menu.c:3480
+#: gnome-panel/menu.c:3531
 msgid "_About Panels"
 msgstr "_Info zu den Panels"
 
-#: gnome-panel/menu.c:3493
+#: gnome-panel/menu.c:3544
 msgid "About _GNOME"
 msgstr "Info zu _GNOME"
 
-#: gnome-panel/menu.c:3522
+#: gnome-panel/menu.c:3584
+msgid "Launcher..."
+msgstr "Starter..."
+
+#: gnome-panel/menu.c:3592
+msgid "Launcher from menu"
+msgstr "Starter aus Menü"
+
+#: gnome-panel/menu.c:3601
+msgid "Button"
+msgstr "Knopf"
+
+#: gnome-panel/menu.c:3611 gnome-panel/menu.c:3941 gnome-panel/menu.c:3969
+#: gnome-panel/menu.c:4165
+msgid "Main Menu"
+msgstr "Hauptmenü"
+
+#: gnome-panel/menu.c:3648
 msgid "Lock the screen so that you can temporarily leave your computer"
 msgstr ""
 "Den Bildschirm sperren, sodass Sie Ihren Computer vorübergehend verlassen "
 "können"
 
-#: gnome-panel/menu.c:3533
+#: gnome-panel/menu.c:3660
 msgid ""
 "Log out of this session to log in as a different user or to shut down your "
 "computer"
@@ -2136,41 +2142,126 @@ msgstr ""
 "Diese Sitzung beenden, um sich als ein anderer Benutzer anzumelden oder um "
 "den Computer herunterzufahren"
 
-#: gnome-panel/menu.c:3715
-msgid "Applets"
-msgstr "Applets"
-
-#: gnome-panel/menu.c:3737
+#: gnome-panel/menu.c:3825
 msgid "Run a command"
 msgstr "Einen Befehl ausführen"
 
-#: gnome-panel/menu.c:3771
+#: gnome-panel/menu.c:3871
 msgid "Desktop"
 msgstr "Desktop"
 
-#: gnome-panel/menu.c:3801
+#: gnome-panel/menu-ditem.c:290 gnome-panel/menu.c:3889
+msgid "Menu"
+msgstr "Menü"
+
+#: gnome-panel/menu.c:3891
 msgid "Menu:"
 msgstr "Menü:"
 
-#: gnome-panel/menu.c:3873
+#: gnome-panel/menu.c:3963
 msgid "Can't create menu, using main menu!"
 msgstr "Menü kann nicht erzeugt werden, Hauptmenü wird verwendet!"
 
-#: gnome-panel/menu.c:4388
+#: gnome-panel/menu.c:4400
 #, c-format
 msgid "No path set at %s for panel menu object\n"
 msgstr "Kein Pfad bei %s für das Panel-Menüobjekt festgelegt\n"
 
-#: gnome-panel/panel-applet-frame.c:181
+#: gnome-panel/menu-ditem.c:123
+#, c-format
+msgid ""
+"<b>Cannot save changes to launcher</b>\n"
+"\n"
+"Details: %s"
+msgstr ""
+"<b>Die Änderungen am Menüeintrag konnten nicht gespeichert werden</b>\n"
+"\n"
+"Details: %s"
+
+#: gnome-panel/menu-ditem.c:447
+msgid "You have to specify a name for the launcher."
+msgstr "Sie müssen einen Namen für den Starter angeben."
+
+#: gnome-panel/menu-ditem.c:463
+msgid "You have to specify a valid URL or command."
+msgstr "Sie müssen eine gültige Adresse oder einen gültigen Befehl angeben."
+
+#. class
+#: gnome-panel/menu-ditem.c:494
+#, c-format
+msgid ""
+"<b>Cannot save menu item to disk</b>\n"
+"\n"
+"Details: %s"
+msgstr ""
+"<b>Der Menüeintrag konnte nicht gespeichert werden</b>\n"
+"\n"
+"Details: %s"
+
+#: gnome-panel/menu-ditem.c:519
+msgid ""
+"You can not create a new launcher at this location since the location is not "
+"writable."
+msgstr ""
+"Sie können an diesem Ort keinen neuen Starter erstellen, da Sie für diesen "
+"Ort keine Schreibrechten besitzen."
+
+#: gnome-panel/panel-action-button.c:83
+msgid "_Activate Screensaver"
+msgstr "Bildschirmschoner _aktivieren"
+
+#: gnome-panel/panel-action-button.c:84
+msgid "_Lock Screen"
+msgstr "Bildschirm _sperren"
+
+# Daemon = Disk And Execution MONitor (no umlauts please).
+#: gnome-panel/panel-action-button.c:85
+msgid "_Kill Screensaver Daemon"
+msgstr "Bildschirmschoner-Dämon ab_würgen"
+
+# Daemon = Disk And Execution MONitor (no umlauts please).
+#: gnome-panel/panel-action-button.c:86
+msgid "Restart _Screensaver Daemon"
+msgstr "Bildschirmschoner-Dämon _neu starten"
+
+#: gnome-panel/panel-action-button.c:155
+msgid "Cannot execute gnome-search-tool"
+msgstr "gnome-search-tool konnte nicht ausgeführt werden"
+
+#: gnome-panel/panel-action-button.c:171
+msgid "Cannot execute gnome-panel-screenshot"
+msgstr "gnome-panel-screenshot konnte nicht ausgeführt werden"
+
+#: gnome-panel/panel-action-button.c:191
+msgid "Lock screen"
+msgstr "Bildschirm sperren"
+
+#: gnome-panel/panel-action-button.c:198
+msgid "Log out of GNOME"
+msgstr "Von GNOME abmelden"
+
+#: gnome-panel/panel-action-button.c:208
+msgid "Search for Files"
+msgstr "Nach Dateien suchen"
+
+#: gnome-panel/panel-action-button.c:364
+msgid "Action Type"
+msgstr "Aktionstyp"
+
+#: gnome-panel/panel-action-button.c:365
+msgid "The type of action this button implements"
+msgstr "Der Typ der Aktion, die dieser Knopf beim Anklicken ausführt"
+
+#: gnome-panel/panel-applet-frame.c:185
 msgid "Cannot register control widget\n"
 msgstr "Das Steuerungs-Widget konnte nicht registriert werden\n"
 
-#: gnome-panel/panel-applet-frame.c:607
+#: gnome-panel/panel-applet-frame.c:602
 #, c-format
 msgid "Exception from popup_menu '%s'\n"
-msgstr "Ausnahme des popup_menu-Menüs »%s«\n"
+msgstr "Ausnahme des popup_menu-Menüs „%s”\n"
 
-#: gnome-panel/panel-applet-frame.c:710
+#: gnome-panel/panel-applet-frame.c:711
 #, c-format
 msgid ""
 "The %s applet appears to have died unexpectedly\n"
@@ -2180,182 +2271,222 @@ msgid ""
 "(If you choose not to reload it at this time you can always add it by right "
 "clicking on the panel and clicking on the \"Add to Panel\" submenu)"
 msgstr ""
-"Das %s-Applet ist unerwartet abgestürzt\n"
+"Das Applet „%s” ist unerwartet abgestürzt\n"
 "\n"
-"Dieses Applet neu laden?\n"
+"Soll dieses Applet neu geladen werden?\n"
 "\n"
 "(Falls Sie sich nicht dafür entscheiden, das Applet jetzt neu zu laden, "
-"können Sie es jederzeit durch einen Rechsklick auf das Panel und einen Klick "
-"auf das »Zum Panel hinzufügen«-Untermenü hinzufügen"
+"können Sie es jederzeit durch einen Rechtsklick auf ein Panel und das "
+"Anklicken des „Zum Panel hinzufügen”-Untermenüs hinzufügen)"
 
-#: gnome-panel/panel-applet-frame.c:805
+#: gnome-panel/panel-applet-frame.c:746
+msgid "D_on't Delete"
+msgstr "_Nicht löschen"
+
+#: gnome-panel/panel-applet-frame.c:780
+#, c-format
+msgid ""
+"The panel encountered a problem while loading \"%s\"\n"
+"Details: %s\n"
+"\n"
+"Do you want to delete the applet from your configuration?"
+msgstr ""
+"Beim Laden von „%s” ist ein Problem aufgetreten\n"
+"\n"
+"Details: %s"
+
+#: gnome-panel/panel-applet-frame.c:878
 msgid "Unable to obtain AppletShell interface from control\n"
 msgstr ""
 "Es war nicht möglich die AppletShell-Schnittstelle von der Kontrolle zu "
 "erhalten\n"
 
-#: gnome-panel/panel-applet-frame.c:932
+#: gnome-panel/panel.c:876
 #, c-format
+msgid "Open URL: %s"
+msgstr "URL öffnen: %s"
+
+#: gnome-panel/panel.c:2594
 msgid ""
-"<b>There was a problem loading applet '%s'</b>\n"
-"\n"
-"Details: %s"
+"No panels were found in your configuration.  I will create a menu panel for "
+"you"
 msgstr ""
-"<b>Beim Laden des Applets »%s« ist ein Problem aufgetreten</b>\n"
-"\n"
-"Details: %s"
+"In Ihrer Konfiguration wurden keine Panels gefunden. Es wird nun ein Menü-"
+"Panel erstellt"
 
 #. Auto-hide
-#: gnome-panel/panel-config.c:532
+#: gnome-panel/panel-config.c:546
 msgid "_Autohide"
 msgstr "_Auto-Verbergen"
 
 #. Hidebuttons enable
-#: gnome-panel/panel-config.c:543
+#: gnome-panel/panel-config.c:557
 msgid "Show hide _buttons"
-msgstr "_Versteckknöpfe zeigen"
+msgstr "_Versteckknöpfe anzeigen"
 
 #. Arrow enable
-#: gnome-panel/panel-config.c:555
+#: gnome-panel/panel-config.c:569
 msgid "Arro_ws on hide buttons"
-msgstr "_Pfeile auf Versteckknöpfen zeigen"
+msgstr "_Pfeile auf Versteckknöpfen anzeigen"
 
-#: gnome-panel/panel-config.c:594
-msgid "Miscellaneous"
-msgstr "Verschiedenes"
+#: gnome-panel/panel-config.c:624
+msgid "Miscellaneous:"
+msgstr "Verschiedenes:"
 
-#: gnome-panel/panel-config.c:604
+#: gnome-panel/panel-config.c:642
 msgid "Current screen:"
 msgstr "Aktueller Bildschirm"
 
-#: gnome-panel/panel-config.c:698
+#: gnome-panel/panel-config.c:658
+msgid "Current monitor:"
+msgstr "Aktueller Bildschirm:"
+
+#: gnome-panel/panel-config.c:750
 msgid "Indicates the panel position and orientation on screen"
 msgstr "Zeigt die Position und Ausrichtung des Panels auf dem Bildschirm an"
 
-#: gnome-panel/panel-config.c:716
+#: gnome-panel/panel-config.c:768
 msgid "_Position:"
 msgstr "_Position:"
 
-#: gnome-panel/panel-config.c:943
-msgid "Orient hori_zontally"
-msgstr "Hori_zontal ausrichten"
+#: gnome-panel/panel-config.c:993 libpanel-applet/panel-test-applets.glade.h:6
+msgid "Orientation:"
+msgstr "Ausrichtung:"
 
-#: gnome-panel/panel-config.c:955
-msgid "Orient _vertically"
-msgstr "_Vertikal ausrichten"
+#: gnome-panel/panel-config.c:1008
+msgid "Hori_zontal"
+msgstr "Hori_zontal"
 
-#: gnome-panel/panel-config.c:969
-msgid "H_orizontal offset:"
-msgstr "H_orizontale Verschiebung:"
+#: gnome-panel/panel-config.c:1020
+msgid "_Vertical"
+msgstr "_Vertikal"
 
-#: gnome-panel/panel-config.c:989
-msgid "Ver_tical offset:"
-msgstr "Ver_tikale Verschiebung:"
+#: gnome-panel/panel-config.c:1030
+msgid "Position:"
+msgstr "Position:"
 
-#: gnome-panel/panel-config.c:1054
-msgid "Screen edge _offset:"
-msgstr "_Bildschirmkanten-Verschiebung:"
+#: gnome-panel/panel-config.c:1045
+msgid "H_orizontal:"
+msgstr "H_orizontal:"
 
-#: gnome-panel/panel-config.c:1113
+#: gnome-panel/panel-config.c:1065
+msgid "Ver_tical:"
+msgstr "Ver_tikal:"
+
+#: gnome-panel/panel-config.c:1130
+msgid "_Distance from edge:"
+msgstr "A_bstand von der Kante:"
+
+#: gnome-panel/panel-config.c:1189
 msgid "_Size:"
 msgstr "_Größe:"
 
-#: gnome-panel/panel-config.c:1121
-msgid "XX Small (12 pixels)"
-msgstr "Extrem Klein (12 Pixel)"
+#: gnome-panel/panel-config.c:1197
+#: libpanel-applet/panel-test-applets.glade.h:15
+msgid "XX Small"
+msgstr "Extrem Klein"
 
-#: gnome-panel/panel-config.c:1129
-msgid "X Small (24 pixels)"
-msgstr "Sehr Klein (24 Pixel)"
+#: gnome-panel/panel-config.c:1205
+#: libpanel-applet/panel-test-applets.glade.h:13
+msgid "X Small"
+msgstr "Sehr Klein"
 
-#: gnome-panel/panel-config.c:1137
-msgid "Small (36 pixels)"
-msgstr "Klein (36 Pixel)"
+#: gnome-panel/panel-config.c:1213
+#: libpanel-applet/panel-test-applets.glade.h:10
+msgid "Small"
+msgstr "Klein"
 
-#: gnome-panel/panel-config.c:1145
-msgid "Medium (48 pixels)"
-msgstr "Mittelgroß (48 Pixel)"
+#: gnome-panel/panel-config.c:1229
+#: libpanel-applet/panel-test-applets.glade.h:3
+msgid "Large"
+msgstr "Groß"
 
-#: gnome-panel/panel-config.c:1153
-msgid "Large (64 pixels)"
-msgstr "Groß (64 Pixel)"
+#: gnome-panel/panel-config.c:1237
+#: libpanel-applet/panel-test-applets.glade.h:12
+msgid "X Large"
+msgstr "Sehr Groß"
 
-#: gnome-panel/panel-config.c:1161
-msgid "X Large (80 pixels)"
-msgstr "Sehr Groß (80 Pixel)"
+#: gnome-panel/panel-config.c:1245
+#: libpanel-applet/panel-test-applets.glade.h:14
+msgid "XX Large"
+msgstr "Extrem Groß"
 
-#: gnome-panel/panel-config.c:1169
-msgid "XX Large (128 pixels)"
-msgstr "Extrem Groß (128 Pixel)"
+#: gnome-panel/panel-config.c:1420
+msgid "_Type:"
+msgstr "_Typ:"
 
-#: gnome-panel/panel-config.c:1323
-msgid "Background _type:"
-msgstr "Hintergrund_typ: "
-
-#: gnome-panel/panel-config.c:1332
+#: gnome-panel/panel-config.c:1429
 msgid "Default"
 msgstr "Vorgabe"
 
-#: gnome-panel/panel-config.c:1334
+#: gnome-panel/panel-config.c:1431
 msgid "Color"
 msgstr "Farbe"
 
-#. image frame
-#: gnome-panel/panel-config.c:1336 gnome-panel/panel-config.c:1377
+#: gnome-panel/panel-config.c:1433
 msgid "Image"
 msgstr "Bild"
 
-#: gnome-panel/panel-config.c:1351
-msgid "Background co_lor:"
-msgstr "Hintergrund_farbe:"
+#: gnome-panel/panel-config.c:1435
+msgid "Transparent"
+msgstr "Transparent"
 
-#: gnome-panel/panel-config.c:1400
-msgid "_Do not scale image to fit"
-msgstr "Bild nicht _durch Skalieren einpassen"
+#: gnome-panel/panel-config.c:1450
+msgid "_Color:"
+msgstr "_Farbe:"
 
-#: gnome-panel/panel-config.c:1405
-msgid "Sc_ale image"
-msgstr "Bild sk_alieren"
+#. image frame
+#: gnome-panel/panel-config.c:1480
+msgid "Image:"
+msgstr "Bild:"
 
-#: gnome-panel/panel-config.c:1409
-msgid "St_retch image"
-msgstr "Bild st_recken"
+#: gnome-panel/panel-config.c:1512
+msgid "T_ile"
+msgstr "_Kacheln"
 
-#: gnome-panel/panel-config.c:1423
-msgid "Rotate image for _vertical panels"
+#: gnome-panel/panel-config.c:1517
+msgid "_Scale"
+msgstr "_Skalieren"
+
+#: gnome-panel/panel-config.c:1521
+msgid "St_retch"
+msgstr "st_recken"
+
+#: gnome-panel/panel-config.c:1535
+msgid "Rotate image when panel is _vertical"
 msgstr "Bild auf vertikalen Panels _gedreht darstellen"
 
-#: gnome-panel/panel-config.c:1484
+#: gnome-panel/panel-config.c:1596
 msgid "Edge panel"
 msgstr "Kantenpanel"
 
-#: gnome-panel/panel-config.c:1491
+#: gnome-panel/panel-config.c:1603
 msgid "Corner panel"
 msgstr "Eckenpanel"
 
-#: gnome-panel/panel-config.c:1497
+#: gnome-panel/panel-config.c:1609
 msgid "Sliding panel"
 msgstr "Gleitendes Panel"
 
-#: gnome-panel/panel-config.c:1503
+#: gnome-panel/panel-config.c:1615
 msgid "Floating panel"
 msgstr "Frei schwebendes Panel"
 
-#: gnome-panel/panel-config.c:1576
+#: gnome-panel/panel-config.c:1693
 msgid "Panel Properties"
 msgstr "Panel-Eigenschaften"
 
-#: gnome-panel/panel-config.c:1619
+#: gnome-panel/panel-config.c:1738
 msgid "Corner Panel"
 msgstr "Eckpanel"
 
-#: gnome-panel/panel-config.c:1660
+#: gnome-panel/panel-config.c:1779
 msgid "Background"
 msgstr "Hintergrund"
 
 #: gnome-panel/panel-global-config.schemas.in.h:1
 msgid "Display \"Run\" dialog"
-msgstr "»Ausführen«-Dialog anzeigen"
+msgstr "„Ausführen”-Dialog anzeigen"
 
 #: gnome-panel/panel-global-config.schemas.in.h:2
 msgid "FIXME - is this resolved with the new menu stuff?"
@@ -2379,16 +2510,36 @@ msgstr "Ein Bildschirmfoto eines Fensters aufnehmen"
 
 #: gnome-panel/panel-per-panel-config.schemas.in.h:1
 msgid "Enable the program listing in the run box"
-msgstr "Die Programmliste im »Ausführen«-Dialog aktivieren"
+msgstr "Die Programmliste im „Ausführen”-Dialog aktivieren"
 
 #: gnome-panel/panel-per-panel-config.schemas.in.h:2
 msgid "Show the program listing by default when opening the Run box"
 msgstr ""
-"Die Programmliste per Vorgabe beim Öffnen des »Ausführen«-Dialoges anzeigen"
+"Die Programmliste per Vorgabe beim Öffnen des „Ausführen”-Dialoges anzeigen"
 
 #: gnome-panel/panel-per-panel-config.schemas.in.h:3
 msgid "Show the program listing in the Run box"
-msgstr "Die Programmliste im »Ausführen«-Dialog aktivieren"
+msgstr "Die Programmliste im „Ausführen”-Dialog aktivieren"
+
+#: gnome-panel/panel-recent.c:56
+msgid "Couldn't find a suitable application"
+msgstr "Es konnte keine passende Anwendung gefunden werden"
+
+#: gnome-panel/panel-recent.c:79
+msgid ""
+"The default application for this type of file cannot handle remote files"
+msgstr ""
+"Die Vorgabeanwendung für diesen Typ kann keine Dateien auf entfernten "
+"Datenträgern handhaben"
+
+#: gnome-panel/panel-recent.c:136
+#, c-format
+msgid "An unknown error occurred while trying to open %s"
+msgstr "Beim Versuch, %s zu öffnen, ist ein unbekannter Fehler aufgetreten"
+
+#: gnome-panel/panel-recent.c:154
+msgid "Open Recent"
+msgstr "Zuletzt geöffnete Dateien"
 
 #: gnome-panel/panel-shell.c:43
 msgid ""
@@ -2396,7 +2547,7 @@ msgid ""
 "and will now exit."
 msgstr ""
 "Es wurde ein bereits laufendes Panel gefunden.\n"
-"Dieses Panel wird beendet."
+"Dieses Panel wird nun beendet."
 
 #: gnome-panel/panel-shell.c:47
 #, c-format
@@ -2411,41 +2562,43 @@ msgstr ""
 "Der Fehlercode ist: %d\n"
 "Das Panel wird nun beendet."
 
-#: gnome-panel/panel-stock-icons.c:130
+#: gnome-panel/panel-stock-icons.c:113
+#, c-format
+msgid "Unable to load panel stock icon '%s'\n"
+msgstr "Panel-Icon „%s” konnte nicht aus dem Repertoire geladen werden\n"
+
+#: gnome-panel/panel-stock-icons.c:142
 msgid "_Run"
 msgstr "_Ausführen"
 
 #. XXX: Not really a correct error,
 #. * but just somewhat correct
-#: gnome-panel/panel-util.c:72 gnome-panel/panel-util.c:107
-#: gnome-panel/panel-util.c:132
+#: gnome-panel/panel-util.c:122 gnome-panel/panel-util.c:152
+#: gnome-panel/panel-util.c:177
 msgid "Help document not found"
-msgstr "Das Hilfedokument konnte nicht gefunden werden"
+msgstr "Hilfedokument nicht gefunden werden"
 
-#: gnome-panel/panel-util.c:145
+#: gnome-panel/panel-util.c:191
 msgid "No document to show"
-msgstr "Dokument kann nicht angezeigt werden"
+msgstr "Kein Dokument zum Anzeigen"
 
-#: gnome-panel/panel-util.c:582 gnome-panel/panel-util.c:598
+#: gnome-panel/panel-util.c:639 gnome-panel/panel-util.c:655
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: gnome-panel/panel.c:867
-#, c-format
-msgid "Open URL: %s"
-msgstr "URL öffnen: %s"
-
-#: gnome-panel/panel.c:2180
+#: gnome-panel/panel-util.c:1485
 msgid ""
-"No panels were found in your configuration.  I will create a menu panel for "
-"you"
+"<b>Cannot execute xscreensaver</b>\n"
+"\n"
+"Details: xscreensaver-command not found"
 msgstr ""
-"In Ihrer Konfiguration wurden keine Panels gefunden. Es wird nun ein Menü-"
-"Panel erstellt"
+"<b>Der Bildschirmschoner konnte nicht ausgeführt werden</b>\n"
+"\n"
+"Details: Befehl „xscreensaver” nicht gefunden"
 
 #: libpanel-applet/GNOME_Panel_TestApplet.server.in.h:1
 msgid "A simple applet for testing the GNOME-2.0 panel"
-msgstr "Ein einfaches Applet um das GNOME-2.0-Panel zu testen"
+msgstr "Ein einfaches Applet, um das GNOME-Panel zu testen"
 
 #: libpanel-applet/GNOME_Panel_TestApplet.server.in.h:2
 msgid "Test Bonobo Applet"
@@ -2455,44 +2608,44 @@ msgstr "Bonobo-Test-Applet"
 msgid "Test Bonobo Applet Factory"
 msgstr "Test-Bonobo-Applet-Fabrik"
 
-#: libpanel-applet/panel-applet.c:822
+#: libpanel-applet/panel-applet.c:862
 #, c-format
 msgid "Incomplete '%s' background type received"
-msgstr "Unvollständiger »%s«-Hintergrundtyp empfangen"
+msgstr "Unvollständiger Hintergrundtyp „%s” empfangen"
 
-#: libpanel-applet/panel-applet.c:836
+#: libpanel-applet/panel-applet.c:876
 #, c-format
 msgid "Incomplete '%s' background type received: %s"
-msgstr "Unvollständiger »%s«-Hintergrundtyp empfangen: %s"
+msgstr "Unvollständiger Hintergrundtyp „%s” empfangen: %s"
 
-#: libpanel-applet/panel-applet.c:845
+#: libpanel-applet/panel-applet.c:885
 #, c-format
 msgid "Failed to get pixmap %s"
-msgstr "Die Pixmap %s konnte geholt werden"
+msgstr "Pixmap %s konnte geholt werden"
 
-#: libpanel-applet/panel-applet.c:852
+#: libpanel-applet/panel-applet.c:892
 msgid "Unknown background type received"
 msgstr "Unbekannter Hintergrundtyp empfangen"
 
-#: libpanel-applet/panel-applet.c:1029
+#: libpanel-applet/panel-applet.c:1073
 msgid "The Applet's containing Panel's orientation"
 msgstr "Das Applet enthält die Ausrichtung des Panels"
 
-#: libpanel-applet/panel-applet.c:1037
+#: libpanel-applet/panel-applet.c:1081
 msgid "The Applet's containing Panel's size in pixels"
 msgstr "Das Applet enthält die Größe des Panels in Pixeln"
 
-#: libpanel-applet/panel-applet.c:1045
+#: libpanel-applet/panel-applet.c:1089
 msgid "The Applet's containing Panel's background color or pixmap"
-msgstr "Das Applet enthält die Hintergrundfarbe oder -pixmap des Panels"
+msgstr "Das Applet enthält die Hintergrundfarbe oder -Pixmap des Panels"
 
-#: libpanel-applet/panel-applet.c:1053
+#: libpanel-applet/panel-applet.c:1097
 msgid "The Applet's flags"
 msgstr "Die Einstellungen des Applets"
 
-#: libpanel-applet/panel-applet.c:1061
+#: libpanel-applet/panel-applet.c:1105
 msgid "Ranges that hint what sizes are acceptable for the applet"
-msgstr "Bereiche, die die akzeptierbaren Größen für die Applets verbergen"
+msgstr "Bereiche, die die akzeptierbaren Größen für das Applet verbergen"
 
 #: libpanel-applet/panel-test-applets.glade.h:1
 msgid "Applet:"
@@ -2502,21 +2655,13 @@ msgstr "Applet: "
 msgid "Bottom"
 msgstr "Unten"
 
-#: libpanel-applet/panel-test-applets.glade.h:3
-msgid "Large"
-msgstr "Groß"
-
 #: libpanel-applet/panel-test-applets.glade.h:4
 msgid "Left"
 msgstr "Links"
 
-#: libpanel-applet/panel-test-applets.glade.h:6
-msgid "Orientation:"
-msgstr "Ausrichtung"
-
 #: libpanel-applet/panel-test-applets.glade.h:7
 msgid "Prefs Dir:"
-msgstr "Einstellungen-Verz.:"
+msgstr "Einstellungsverzeichnis:"
 
 #: libpanel-applet/panel-test-applets.glade.h:8
 msgid "Right"
@@ -2526,35 +2671,100 @@ msgstr "Rechts"
 msgid "Size:"
 msgstr "Größe:"
 
-#: libpanel-applet/panel-test-applets.glade.h:10
-msgid "Small"
-msgstr "Klein"
-
 #: libpanel-applet/panel-test-applets.glade.h:11
 msgid "Top"
 msgstr "Oben"
 
-#: libpanel-applet/panel-test-applets.glade.h:12
-msgid "X Large"
-msgstr "Sehr Groß"
+#~ msgid "Factory for the window navigation related applets"
+#~ msgstr "Fabrik für die Fensternavigations-Applets"
 
-#: libpanel-applet/panel-test-applets.glade.h:13
-msgid "X Small"
-msgstr "Sehr Klein"
+#~ msgid "Window Menu"
+#~ msgstr "Fenstermenü"
 
-#: libpanel-applet/panel-test-applets.glade.h:14
-msgid "XX Large"
-msgstr "Extrem Groß"
+#~ msgid "Window Navigation Applet Factory"
+#~ msgstr "Fabrik für Fensternavigations-Applet"
 
-#: libpanel-applet/panel-test-applets.glade.h:15
-msgid "XX Small"
-msgstr "Extrem Klein"
+#~ msgid "Unknown Window"
+#~ msgstr "Unbekanntes Fenster"
 
-#~ msgid "Display seconds in time"
-#~ msgstr "Zeit sekundengenau anzeigen"
+#~ msgid "Menu Bar"
+#~ msgstr "Menüleiste"
 
-#~ msgid "Sets the hour format, may be either 12 or 24"
-#~ msgstr "Legt das Stundenformat fest, darf entweder 12 oder 24 sein"
+#~ msgid "Take a screenshot"
+#~ msgstr "Ein Bildschirmfoto aufnehmen"
 
-#~ msgid "Show time with seconds"
-#~ msgstr "Zeit sekundengenau anzeigen"
+#~ msgid "Specify an applet IID to load"
+#~ msgstr "Geben Sie eine zu ladende Applet-Identifikationskennung an"
+
+#~ msgid " (invalid Unicode)"
+#~ msgstr " (ungültiger Unicode)"
+
+#~ msgid "Applets"
+#~ msgstr "Applets"
+
+#~ msgid "Can't execute printer command"
+#~ msgstr "Der Druckbefehl konnte nicht ausgeführt werden"
+
+#~ msgid "Printer properties"
+#~ msgstr "Druckereigenschaften"
+
+#~ msgid "Printer name:"
+#~ msgstr "Druckername:"
+
+#~ msgid "Print command:"
+#~ msgstr "Druckbefehl:"
+
+#~ msgid "Printer"
+#~ msgstr "Drucker"
+
+#~ msgid "Printer Applet"
+#~ msgstr "Drucker-Applet"
+
+#~ msgid ""
+#~ "The printer applet lets you easily drag files to be printed via a print "
+#~ "command"
+#~ msgstr ""
+#~ "Das Drucker-Applet ermöglicht es, Dateien per Drag & Drop zu drucken"
+
+#~ msgid "Can't create applet!\n"
+#~ msgstr "Applet konnte nicht erstellt werden!\n"
+
+#~ msgid "Properties..."
+#~ msgstr "Eigenschaften..."
+
+#~ msgid "Help"
+#~ msgstr "Hilfe"
+
+#~ msgid "About..."
+#~ msgstr "Info..."
+
+#, fuzzy
+#~ msgid "Copyright 2002 Red Hat Inc."
+#~ msgstr "© 2002 Red Hat, Inc."
+
+#, fuzzy
+#~ msgid "(C) 1998-2002 the Free Software Foundation"
+#~ msgstr "© 1998 Free Software Foundation, Inc."
+
+#, fuzzy
+#~ msgid "(c) 1998-2000 the Free Software Foundation"
+#~ msgstr "© 1998 Free Software Foundation, Inc."
+
+#, fuzzy
+#~ msgid "(c) 2001 Red Hat, Inc."
+#~ msgstr "© 2001 Red Hat, Inc."
+
+#, fuzzy
+#~ msgid "(c) 1998 the Free Software Foundation"
+#~ msgstr "© 1998 Free Software Foundation, Inc."
+
+#~ msgid "(C) 2002 Red Hat, Inc."
+#~ msgstr "© 2002 Red Hat, Inc."
+
+#, fuzzy
+#~ msgid "(c) 2001 Red Hat, Inc"
+#~ msgstr "© 2001 Red Hat, Inc."
+
+#, fuzzy
+#~ msgid "(C) 1997-2002 the Free Software Foundation"
+#~ msgstr "© 1997 Free Software Foundation, Inc."

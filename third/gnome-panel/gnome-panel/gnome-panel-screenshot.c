@@ -49,6 +49,11 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xmu/WinUtil.h>
+
+#ifdef HAVE_X11_EXTENSIONS_SHAPE_H
+#include <X11/extensions/shape.h>
+#endif
+
 #include <libart_lgpl/art_rgb_affine.h>
 
 #ifdef HAVE_PAPER_WIDTH
@@ -90,6 +95,7 @@ void on_preview_configure_event (GtkWidget *drawing_area,
 void on_ok_button_clicked (GtkWidget *widget, gpointer data);
 void on_cancel_button_clicked (GtkWidget *widget, gpointer data);
 void on_help_button_clicked (GtkWidget *widget, gpointer data);
+int on_save_entry_key_press_event (GtkWidget *widget, GdkEventKey *key);
 int on_toplevel_key_press_event (GtkWidget *widget, GdkEventKey *key);
 
 /* some local prototypes */
@@ -111,7 +117,8 @@ save_to_file_internal (FILE *fp, const char *file, char **error)
 	int w, h, rowstride;
 	int has_alpha;
 	int bpc;
-
+	int p;
+	
 	*error = NULL;
 
 	bpc = gdk_pixbuf_get_bits_per_sample (screenshot);
@@ -149,9 +156,13 @@ save_to_file_internal (FILE *fp, const char *file, char **error)
 	png_init_io (png_ptr, fp);
 
 	png_set_IHDR (png_ptr, info_ptr, w, h, bpc,
-		      PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+		      has_alpha ? PNG_COLOR_TYPE_RGB_ALPHA :
+		      PNG_COLOR_TYPE_RGB,
+		      PNG_INTERLACE_NONE,
 		      PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-	data = malloc (w * 3 * sizeof (char));
+
+	p = has_alpha ? 4 : 3;
+	data = malloc (w * p * sizeof (char));
 
 	if (data == NULL) {
 		*error = _("Insufficient memory to save the screenshot.\n"
@@ -167,12 +178,16 @@ save_to_file_internal (FILE *fp, const char *file, char **error)
 	png_write_info (png_ptr, info_ptr);
 	png_set_shift (png_ptr, &sig_bit);
 	png_set_packing (png_ptr);
-
+	
 	ptr = pixels;
 	for (y = 0; y < h; y++) {
-		for (j = 0, x = 0; x < w; x++)
-			memcpy (&(data[x*3]), &(ptr[x*3]), 3);
-
+		for (j = 0, x = 0; x < w; x++) {
+			data[x*p] = ptr[x*p];
+			data[x*p + 1] = ptr[x*p + 1];
+			data[x*p + 2] = ptr[x*p + 2];
+			if (has_alpha)
+				data[x*p + 3] = ptr[x*p + 3];			
+		}
 		row_ptr = (png_bytep)data;
 		png_write_rows (png_ptr, &row_ptr, 1);
 		ptr += rowstride;
@@ -210,7 +225,7 @@ nibble_on_file (const char *file)
 		}
 	}
 
-	old_mask = umask(077);
+	old_mask = umask(022);
 
 	fp = fopen (file, "w");
 	if (fp == NULL) {
@@ -624,16 +639,17 @@ on_preview_expose_event (GtkWidget      *drawing_area,
 			 GdkEventExpose *event,
 			 gpointer        data)
 {
-	gdk_draw_rgb_image (drawing_area->window,
-			    drawing_area->style->white_gc,
-			    event->area.x, event->area.y,
-			    event->area.width,
-			    event->area.height,
-			    GDK_RGB_DITHER_NORMAL,
-			    gdk_pixbuf_get_pixels (preview_image)
-			    + (event->area.y * gdk_pixbuf_get_rowstride (preview_image))
-			    + (event->area.x * gdk_pixbuf_get_n_channels (preview_image)),
-			    gdk_pixbuf_get_rowstride (preview_image));
+	gdk_pixbuf_render_to_drawable (preview_image,
+				       drawing_area->window,
+				       drawing_area->style->white_gc,
+				       event->area.x,
+				       event->area.y,
+				       event->area.x,
+				       event->area.y,
+				       event->area.width,
+				       event->area.height,
+				       GDK_RGB_DITHER_NORMAL,
+				       0, 0);
 }
 
 void
@@ -707,6 +723,7 @@ gimme_file (const char *filename)
 		fclose (fp);
 
 		if (rename (temporary_file, filename) == 0) {
+			chmod (filename, 0644);
 			return TRUE;
 		}
 		infd = open (temporary_file, O_RDONLY);
@@ -715,7 +732,7 @@ gimme_file (const char *filename)
 			return FALSE;
 		}
 
-		outfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0600);
+		outfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		if (outfd < 0) {
 			GtkWidget *dialog;
 			dialog = gtk_message_dialog_new
@@ -773,8 +790,12 @@ on_ok_button_clicked (GtkWidget *widget,
 	button = glade_xml_get_widget (xml, "save_rbutton");
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
 		GtkWidget *entry;
+		GtkWidget *fileentry;
 		entry = glade_xml_get_widget (xml, "save_entry");
+		fileentry = glade_xml_get_widget (xml, "save_fileentry");
 		if (gimme_file (gtk_entry_get_text (GTK_ENTRY (entry)))) {
+			gnome_entry_prepend_history (GNOME_ENTRY (gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (fileentry))),
+						     TRUE, gtk_entry_get_text (GTK_ENTRY (entry)));
 			gtk_main_quit ();
 		}
 		setup_busy (FALSE);
@@ -853,6 +874,16 @@ on_help_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 int
+on_save_entry_key_press_event (GtkWidget    	*widget, 
+			       GdkEventKey	*key)
+{
+	if (key->keyval == GDK_Return)
+		on_ok_button_clicked (widget, NULL);
+	
+	return FALSE;
+}
+
+int
 on_toplevel_key_press_event (GtkWidget *widget,
 			     GdkEventKey *key)
 {
@@ -927,7 +958,7 @@ find_toplevel_window (int depth, Window xid, gboolean *keep_going)
 	return 0;
 }
 
-static void
+static gboolean
 take_window_shot (void)
 {
 	GdkWindow *window;
@@ -941,10 +972,17 @@ take_window_shot (void)
 	XClassHint class_hint;
 	gchar *result = NULL;
 	gboolean keep_going;
+
+#ifdef HAVE_X11_EXTENSIONS_SHAPE_H
+	XRectangle *rectangles;
+	GdkPixbuf *tmp;
+	int rectangle_count, rectangle_order, i;
+#endif
+
 	
 	disp = GDK_DISPLAY ();
 	w = GDK_ROOT_WINDOW ();
-
+	
 	XQueryPointer (disp, w, &root, &child,
 		       &unused,
 		       &unused,
@@ -957,6 +995,8 @@ take_window_shot (void)
 	} else {
 
                 window = gdk_window_foreign_new (child);
+		if (window == NULL)
+			return FALSE;
 
 		keep_going = TRUE;
 
@@ -990,13 +1030,52 @@ take_window_shot (void)
 		width = gdk_screen_width () - x_orig;
 	if (y_orig + height > gdk_screen_height ())
 		height = gdk_screen_height () - y_orig;
-			
-	screenshot = gdk_pixbuf_get_from_drawable (NULL, window,
-						   NULL,
+
+
+#ifdef HAVE_X11_EXTENSIONS_SHAPE_H
+	tmp = gdk_pixbuf_get_from_drawable (NULL, window, NULL,
+					    x, y, 0, 0,
+					    width, height);
+
+	rectangles = XShapeGetRectangles (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (window),
+					  ShapeBounding, &rectangle_count, &rectangle_order);
+	if (rectangle_count > 0) {
+		screenshot = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
+		gdk_pixbuf_fill (screenshot, 0);
+	
+		for (i = 0; i < rectangle_count; i++) {
+			for (y = rectangles[i].y; y < rectangles[i].y + rectangles[i].height; y++) {
+				guchar *src_pixels, *dest_pixels;
+				
+				src_pixels = gdk_pixbuf_get_pixels (tmp) +
+					y * gdk_pixbuf_get_rowstride(tmp) +
+					rectangles[i].x * (gdk_pixbuf_get_has_alpha (tmp) ? 4 : 3);
+				dest_pixels = gdk_pixbuf_get_pixels (screenshot) +
+					y * gdk_pixbuf_get_rowstride (screenshot) +
+					rectangles[i].x * 4;
+				
+				for (x = rectangles[i].x; x < rectangles[i].x + rectangles[i].width; x++) {
+					*dest_pixels++ = *src_pixels ++;
+					*dest_pixels++ = *src_pixels ++;
+					*dest_pixels++ = *src_pixels ++;
+					*dest_pixels++ = 255;
+				}
+			}
+		}
+		g_object_unref (tmp);
+	}
+	else {
+		screenshot = tmp;
+	}
+#else /* HAVE_X11_EXTENSIONS_SHAPE_H */
+	screenshot = gdk_pixbuf_get_from_drawable (NULL, window, NULL,
 						   x, y, 0, 0,
 						   width, height);
+#endif /* HAVE_X11_EXTENSIONS_SHAPE_H */
 
 	class_name = result;
+
+	return TRUE;
 }
 
 static void
@@ -1060,6 +1139,61 @@ drag_begin (GtkWidget *widget, GdkDragContext *context)
 	start_temporary ();
 }
 
+/* To make sure there is only one screenshot taken at a time,
+ * (Imagine key repeat for the print screen key) we hold a selection
+ * until we are done taking the screenshot
+ */
+static GtkWidget *selection_window;
+
+#define SELECTION_NAME "_GNOME_PANEL_SCREENSHOT"
+
+static gboolean
+get_lock (void)
+{
+        Atom selection_atom = gdk_x11_get_xatom_by_name (SELECTION_NAME);
+	GdkCursor *cursor;
+	gboolean result = FALSE;
+
+	XGrabServer (GDK_DISPLAY ());
+        if (XGetSelectionOwner (GDK_DISPLAY(), selection_atom) != None)
+                goto out;
+
+	selection_window = gtk_invisible_new ();
+	gtk_widget_show (selection_window);
+
+	if (!gtk_selection_owner_set (selection_window,
+				      gdk_atom_intern (SELECTION_NAME, FALSE),
+				      GDK_CURRENT_TIME)) {
+		gtk_widget_destroy (selection_window);
+		selection_window = NULL;
+		goto out;
+	}
+
+	cursor = gdk_cursor_new (GDK_WATCH);
+	gdk_pointer_grab (selection_window->window, FALSE, 0, NULL,
+			  cursor, GDK_CURRENT_TIME);
+	gdk_cursor_unref (cursor);
+
+	result = TRUE;
+
+ out:
+	XUngrabServer (GDK_DISPLAY ());
+	gdk_flush ();
+
+        return result;
+}
+
+static void
+release_lock (void)
+{
+	if (selection_window) {
+		gtk_widget_destroy (selection_window);
+		selection_window = NULL;
+	}
+
+	gdk_flush ();
+}
+
 /* main */
 int
 main (int argc, char *argv[])
@@ -1073,7 +1207,8 @@ main (int argc, char *argv[])
 	gboolean window = FALSE;
 	gint width, height; 
 	guint delay = 0;
-
+	gboolean normal_web_dir = TRUE;
+	
 	struct poptOption opts[] = {
 		{"window", '\0', POPT_ARG_NONE, &window, 0, N_("Grab a window instead of the entire screen"), NULL},
 		{"delay", '\0', POPT_ARG_INT, &delay, 0, N_("Take screenshot after specified delay [in seconds]"), NULL},
@@ -1098,11 +1233,20 @@ main (int argc, char *argv[])
 	if (delay > 0) {
 		sleep (delay);	
 	}
+
+	if (!get_lock ()) {
+		g_printerr ("gnome-panel-screenshot is already running\n");
+		exit (1);
+	}
 	
-	if (window)
-		take_window_shot ();
-	else
+	if (window) {
+		if ( ! take_window_shot ()) {
+			release_lock ();
+			exit (1);
+		}
+	} else {
 		take_screen_shot ();
+	}
 
 	if (g_file_test ("gnome-panel-screenshot.glade", G_FILE_TEST_EXISTS)) {
 		xml = glade_xml_new ("gnome-panel-screenshot.glade", NULL, NULL);
@@ -1113,6 +1257,7 @@ main (int argc, char *argv[])
 	}
 	if (xml == NULL) {
 		GtkWidget *dialog;
+		release_lock ();
 		dialog = gtk_message_dialog_new
 			(NULL /* parent */,
 			 0 /* flags */,
@@ -1136,6 +1281,7 @@ main (int argc, char *argv[])
 
 	if (screenshot == NULL) {
 		GtkWidget *dialog;
+		release_lock ();
 		dialog = gtk_message_dialog_new
 			(NULL /* parent */,
 			 0 /* flags */,
@@ -1169,18 +1315,23 @@ main (int argc, char *argv[])
 	
 	gtk_window_set_default_size (GTK_WINDOW (toplevel), width * 2, -1);
 	gtk_widget_set_size_request (preview, width, height);
-	gtk_aspect_frame_set (GTK_ASPECT_FRAME (frame), 0.5, 0.5,
+	gtk_aspect_frame_set (GTK_ASPECT_FRAME (frame), 0.0, 0.5,
 			      gdk_pixbuf_get_width (screenshot)/
 			      (gfloat) gdk_pixbuf_get_height (screenshot),
 			      FALSE);
 	if (window)
 		gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 
-	home_dir = g_get_home_dir ();
-	web_dir = g_strconcat (home_dir, G_DIR_SEPARATOR_S,
-			       "public_html", NULL);
-
 	gconf_client = gconf_client_get_default ();
+
+	home_dir = g_get_home_dir ();	
+	web_dir = gconf_client_get_string (gconf_client, "/apps/gnome_panel_screenshot/web_dir", NULL);
+	if (!web_dir || !web_dir[0]) {
+		g_free (web_dir);
+		web_dir = g_strconcat (home_dir, G_DIR_SEPARATOR_S, "public_html", NULL);
+	} else
+		normal_web_dir = FALSE;
+
 	if (gconf_client_get_bool (gconf_client, "/apps/nautilus/preferences/desktop_is_home_dir", NULL))
 		desktop_dir = g_strdup (home_dir);
 	else
@@ -1192,11 +1343,18 @@ main (int argc, char *argv[])
 	gtk_entry_set_text (GTK_ENTRY (save_entry), file);
 	g_free (file);
 
-	if (! stat (web_dir, &s) &&
-	    S_ISDIR (s.st_mode)) {
+	if (!stat (web_dir, &s) && S_ISDIR (s.st_mode)) {
 		GtkWidget *cbutton;
+		char      *str = NULL;		
+
 		cbutton = glade_xml_get_widget (xml, "web_rbutton");
 		gtk_widget_show (cbutton);
+
+		if (!normal_web_dir)
+			str = g_strdup_printf ("Save screenshot to _web page (save in %s)",
+					       web_dir);
+		gtk_button_set_label (GTK_BUTTON (cbutton), str);
+		g_free (str);
 	}
 
 	/* setup dnd */
@@ -1212,11 +1370,12 @@ main (int argc, char *argv[])
 
 	gtk_widget_grab_focus (save_entry);
 	gtk_editable_select_region (GTK_EDITABLE (save_entry), 0, -1);
-	g_signal_connect (G_OBJECT (save_entry), "activate",
-			  G_CALLBACK (on_ok_button_clicked),
+	g_signal_connect (G_OBJECT (save_entry), "key_press_event",
+			  G_CALLBACK (on_save_entry_key_press_event),
 			  NULL);
 
 	gtk_widget_show_now (toplevel);
+	release_lock ();
 
 	/*
 	 * Start working on the temporary file in a fork, now this is

@@ -24,13 +24,6 @@ static PanelOrient border_pos_get_applet_orient (BasePWidget *basep);
 
 static PanelOrient border_pos_get_hide_orient (BasePWidget *basep);
 
-static void border_pos_get_menu_pos (BasePWidget *basep,
-				     GtkWidget *widget,
-				     GtkRequisition *mreq,
-				     int *x, int *y,
-				     int wx, int wy,
-				     int ww, int wh);
-
 static void border_pos_show_hide_left (BasePWidget *basep);
 static void border_pos_show_hide_right (BasePWidget *basep);
 
@@ -88,13 +81,12 @@ border_pos_class_init (BorderPosClass *klass)
 			     g_cclosure_marshal_VOID__ENUM,
 			     G_TYPE_NONE,
 			     1,
-			     PANEL_TYPE_BORDER_EDGE);
+			     PANEL_TYPE_EDGE);
 
 	/* fill out the virtual funcs */
 	pos_class->set_hidebuttons = border_pos_set_hidebuttons;
 	pos_class->get_applet_orient = border_pos_get_applet_orient;
 	pos_class->get_hide_orient = border_pos_get_hide_orient;
-	pos_class->get_menu_pos = border_pos_get_menu_pos;
 
 	pos_class->north_clicked = pos_class->west_clicked = 
 		border_pos_show_hide_left;
@@ -170,52 +162,22 @@ border_pos_get_hide_orient (BasePWidget *basep)
 	return PANEL_ORIENT_LEFT;
 }
 
-static void
-border_pos_get_menu_pos (BasePWidget *basep,
-			 GtkWidget *widget,
-			 GtkRequisition *mreq,
-			 int *x, int *y,
-			 int wx, int wy,
-			 int ww, int wh)
-{
-	switch (BORDER_POS(basep->pos)->edge) {
-	case BORDER_TOP:
-		*x += wx;
-		*y = wy + wh;
-		break;
-	case BORDER_RIGHT:
-		*x = wx - mreq->width;
-		*y += wy;
-		break;
-	case BORDER_BOTTOM:
-		*x += wx;
-		*y = wy - mreq->height;
-		break;
-	case BORDER_LEFT:
-		*x = wx + ww;
-		*y += wy;
-		break;
-	default:
-		g_assert_not_reached ();
-		break;
-	}
-}
-
 void
 border_widget_change_params (BorderWidget *border,
 			     int screen,
+			     int monitor,
 			     BorderEdge edge,
 			     int sz,
 			     BasePMode mode,
 			     BasePState state,
 			     gboolean hidebuttons_enabled,
 			     gboolean hidebutton_pixmaps_enabled,
-			     PanelBackType back_type,
+			     PanelBackgroundType back_type,
 			     char *pixmap_name,
 			     gboolean fit_pixmap_bg,
 			     gboolean stretch_pixmap_bg,
 			     gboolean rotate_pixmap_bg,
-			     GdkColor *back_color)
+			     PanelColor *back_color)
 {
 	GtkOrientation new_orient;
 	g_return_if_fail (GTK_WIDGET_REALIZED (GTK_WIDGET (border)));
@@ -234,6 +196,7 @@ border_widget_change_params (BorderWidget *border,
 
 	basep_widget_change_params (BASEP_WIDGET (border),
 				    screen,
+				    monitor,
 				    new_orient,
 				    sz,
 				    mode,
@@ -297,24 +260,26 @@ border_widget_change_edge (BorderWidget *border, BorderEdge edge)
 
 	border_widget_change_params (border,
 				     basep->screen,
+				     basep->monitor,
 				     edge,
 				     panel->sz,
 				     basep->mode,
 				     basep->state,
 				     basep->hidebuttons_enabled,
 				     basep->hidebutton_pixmaps_enabled,
-				     panel->back_type,
-				     panel->back_pixmap,
-				     panel->fit_pixmap_bg,
-				     panel->stretch_pixmap_bg,
-				     panel->rotate_pixmap_bg,
-				     &panel->back_color);
+				     panel->background.type,
+				     panel->background.image,
+				     panel->background.fit_image,
+				     panel->background.stretch_image,
+				     panel->background.rotate_image,
+				     &panel->background.color);
 }
 
 GtkWidget *
-border_widget_construct (gchar *panel_id,
+border_widget_construct (const char *panel_id,
 			 BorderWidget *border,
 			 int screen,
+			 int monitor,
 			 BorderEdge edge,
 			 gboolean packed,
 			 gboolean reverse_arrows,
@@ -323,12 +288,12 @@ border_widget_construct (gchar *panel_id,
 			 BasePState state,
 			 gboolean hidebuttons_enabled,
 			 gboolean hidebutton_pixmaps_enabled,
-			 PanelBackType back_type,
-			 char *back_pixmap,
+			 PanelBackgroundType back_type,
+			 const char *back_pixmap,
 			 gboolean fit_pixmap_bg,
 			 gboolean stretch_pixmap_bg,
 			 gboolean rotate_pixmap_bg,
-			 GdkColor *back_color)
+			 PanelColor *back_color)
 {
 	BasePWidget *basep = BASEP_WIDGET (border);
 	GtkOrientation orient;
@@ -347,6 +312,7 @@ border_widget_construct (gchar *panel_id,
 				packed,
 				reverse_arrows,
 				screen,
+				monitor,
 				orient,
 				sz,
 				mode,

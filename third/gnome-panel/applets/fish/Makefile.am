@@ -4,19 +4,25 @@ INCLUDES =							\
 	-I$(top_builddir)/libpanel-applet			\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps\""		\
-	$(GNOME_INCLUDEDIR)					\
+	-DFISH_GLADEDIR=\""$(gladedir)"\"			\
 	$(WARN_CFLAGS)						\
-	$(PANEL_CFLAGS)
-
-SUBDIRS = help
+	$(FISH_CFLAGS)
 
 libexec_PROGRAMS = fish-applet-2
 
-fish_applet_2_SOURCES = fish.c
+EGGFILES =                      \
+	egg-screen-exec.h       \
+	egg-screen-exec.c       \
+	egg-screen-help.h       \
+	egg-screen-help.c       \
+	egg-screen-url.h        \
+	egg-screen-url.c
+
+fish_applet_2_SOURCES = fish.c $(EGGFILES)
 
 fish_applet_2_LDADD =					\
 	../../libpanel-applet/libpanel-applet-2.la	\
-	$(PANEL_LIBS)
+	$(FISH_LIBS)
 
 FISH_BITMAPS =		\
 	fishanim.png	\
@@ -29,7 +35,11 @@ EXTRA_DIST =					\
 	GNOME_FishApplet_Factory.server.in.in	\
 	gnome-fish.png				\
 	fish.schemas.in				\
-	$(ui_DATA)
+	$(ui_DATA)				\
+	$(glade_DATA)
+
+gladedir   = $(datadir)/fish
+glade_DATA = fish.glade
 
 fishbitmapsdir = $(datadir)/pixmaps/fish
 fishbitmaps_DATA = $(FISH_BITMAPS)
@@ -62,3 +72,8 @@ install-data-local:
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/applets/fish/$$p ; \
 	done \
 	fi
+
+EGGDIR = $(srcdir)/../../../libegg/libegg/screen-exec
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh

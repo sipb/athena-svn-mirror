@@ -1,74 +1,190 @@
+2003-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.2.0.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.90.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require gnome-vfs >= 2.1.3 for
+	the recent files menu.
+
+2003-01-05  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharaic 'am' to ALL_LINGUAS
+
+2002-12-19  Christian Neumair  <chris@gnome-de.org>
+
+	* applets/fish/fish.c, applets/gen_util/clock.c, 
+	applets/gen_util/mailcheck.c, applets/gen_util/pager.c, 
+	applets/gen_util/printer.c, applets/gen_util/showdesktop.c,
+	applets/gen_util/tasklist.c, applets/notification_area/main.c, 
+	gnome-panel/menu.c: Changed Copyright strings (#101346).
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require libbonoboui >= 2.1.1
+	for the control life instrumentation API.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/C/clock/*, help/C/mailcheck/*,
+	  help/C/workspace-switcher/*, help/C/window-list/*,
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.90.1.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.90.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require gnome-vfs >= 2.1.3 for
+	the recent files menu.
+
+2003-01-05  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharaic 'am' to ALL_LINGUAS
+
+2002-12-19  Christian Neumair  <chris@gnome-de.org>
+
+	* applets/fish/fish.c, applets/gen_util/clock.c, 
+	applets/gen_util/mailcheck.c, applets/gen_util/pager.c, 
+	applets/gen_util/printer.c, applets/gen_util/showdesktop.c,
+	applets/gen_util/tasklist.c, applets/notification_area/main.c, 
+	gnome-panel/menu.c: Changed Copyright strings (#101346).
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require libbonoboui >= 2.1.1
+	for the control life instrumentation API.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/C/clock/*, help/C/mailcheck/*,
+	  help/C/workspace-switcher/*, help/C/window-list/*,
+	  help/C/fish/*: move all these docs to here.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.5.
+
+2002-12-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in:
+	require gnome-desktop >= 2.1.4 for
+	gnome_desktop_item_drop_uri_list_with_env
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.4.
+
+2002-12-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: define FISH_CFLAGS.
+
+2002-11-29  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: require libwnck 2.1.5 for new interfaces for
+	tasklist icon loading
+	(WNCKLET): add gnome-desktop-2.0 as a dependency of the WNCKLETs
+
+2002-11-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.3.
+
+2002-11-22  Dan Mills  <thunder@ximian.com>
+
+	* configure.in: fix gtk-doc version check.
+
 2002-11-15  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.11.
+	* configure.in: require libbonobui HEAD.
+
+2002-11-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: actually check for libgnome wally.
+
+2002-11-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.2.
+
+2002-11-03  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: require libwnck 2.1.3 for new workspace prefs
+	handling code for pager applet
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-10-15  Brian Cameron <Brian.Cameron@sun.com>
+2002-10-31  Havoc Pennington  <hp@pobox.com>
 
-    * gnome-panel/panel.c, gnome-panel/session.c,
-    gnome-panel/applet.c:  Removeved calls to
-    gconf_client_suggest_sync since this synching is
-    not necessary.  Performance analysis highlighted
-    that gnome-panel was causing >100 syncs to happen
-    (with ~10 items in the panel).
+	* configure.in: add applets/notification_area/Makefile to
+	AC_OUTPUT
+
+	* applets/notification_area: move in the system tray, renamed 
+	notification area
+
+2002-10-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require libgnome-2.1.0. We actually
+	want HEAD, but who's counting ...
 
 2002-10-14  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.10.
-	Libtool version revision++.
+	* configure.in: Version 2.1.1.
 
-2002-09-07  Yanko Kaneti <yaneti@declera.com>
+2002-10-04  Mark McLoughlin  <mark@skynet.ie>
 
-	* applets/gen_util/help/C/clock/clock-C.omf: remove some leftovers so 
-	that it validates against the scrollkeeper dtd.
+	* configure.in: kill the HAVE_GTK_MULTIHEAD
+	check from here ...
 
-2002-09-06  Mark McLoughlin  <mark@skynet.ie>
+	* acconfig.h: ... just define it here.
 
-	* configure.in: Version 2.0.9.
-	Libtool version revision++.
+2002-09-28  Mark McLoughlin  <mark@skynet.ie>
 
-2002-09-05  Mark McLoughlin  <mark@skynet.ie>
+	* configure.in: Version 2.1.0.
 
-	* configure.in: Version 2.0.8.
-	Libtool version revision++.
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
 
-2002-08-27  Mark McLoughlin  <mark@skynet.ie>
+	* configure.in:
+	Require libgnomeui 2.1.0
 
-	* configure.in: Version 2.0.7.
-	Libtool version revision++.
+2002-09-23  Havoc Pennington  <hp@pobox.com>
 
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
+	* configure.in: require a newer libwnck
 
-	* applets/fish/help/C/fish-applet-2.xml,
-	  applets/gen_util/help/C/clock/clock-C.omf,
-	  applets/gen_util/help/C/clock/clock.xml,
-	  applets/gen_util/help/C/mailcheck/legal.xml,
-	  applets/gen_util/help/C/mailcheck/mailcheck-C.omf,
-	  applets/gen_util/help/C/mailcheck/mailcheck.xml,
-	  applets/gen_util/help/C/window-list/window-list-C.omf,
-	  applets/gen_util/help/C/window-list/window-list.xml,
-	  applets/gen_util/help/C/workspace-switcher/workspace-switcher-C.omf,
-	  applets/gen_util/help/C/workspace-switcher/workspace-switcher.xml,
+2002-09-20  James Willcox  <jwillcox@gnome.org>
 
-	update docs
+	* configure.in: Look for gtk-2.1, and define HAVE_GTK_MULTIHEAD for
+	egg-screen-exec to work properly.
 
-2002-08-11  Mark McLoughlin  <mark@skynet.ie>
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.6.
-	Libtool version revision++.
+	* configure.in: require libwnck and gtk+ HEAD.
 
-2002-08-08  Mark McLoughlin  <mark@skynet.ie>
+2002-09-10  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.5.
-	Libtool version revision++.
+	* configure.in: keep libtool version in
+	sync with the gnome-2-0 branch.
 
-2002-08-05  Mark McLoughlin  <mark@skynet.ie>
+2002-08-07  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.4.
-	Libtool version revision++.
+	* configure.in: add a check for the shape
+	extension.
+
+2002-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: check for libwnck multiscreen patch.
+
+2002-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: set version to 2.1.0. 2.0.x
+	development is on the gnome-2-0 branch.
 
 2002-07-30  Mark McLoughlin  <mark@skynet.ie>
 
@@ -115,6 +231,11 @@
 
 	* gnome-panel/panel.c: (drop_directory):
 	remove uri_exists and use panel_uri_exists instead
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add check for gtk+ 2.1.x and
+	define HAVE_GTK_MULTIHEAD if found.
 
 2002-06-21  Mark McLoughlin  <mark@skynet.ie>
 

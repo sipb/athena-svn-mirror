@@ -75,6 +75,8 @@ ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 EXEEXT = @EXEEXT@
+FISH_CFLAGS = @FISH_CFLAGS@
+FISH_LIBS = @FISH_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -83,14 +85,12 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_VFS_MODULE_REQUIRED = @GNOME_VFS_MODULE_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTKDOC = @GTKDOC@
 GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -105,6 +105,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -135,6 +136,8 @@ PKG_CONFIG = @PKG_CONFIG@
 PNG_LIBS = @PNG_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
@@ -145,10 +148,9 @@ WARN_CFLAGS = @WARN_CFLAGS@
 WNCKLET_CFLAGS = @WNCKLET_CFLAGS@
 WNCKLET_LIBS = @WNCKLET_LIBS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XSHAPE_LIBS = @XSHAPE_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
-
-SUBDIRS = help
 
 INCLUDES =  	-I$(srcdir)/../../libpanel-applet 			-I$(top_builddir)/libpanel-applet 			$(DISABLE_DEPRECATED_CFLAGS)				$(GNOME_INCLUDEDIR) 					$(WARN_CFLAGS) 						$(WNCKLET_CFLAGS) 					-DPAGER_GLADEDIR=\""$(gladedir)"\"			-DTASKLIST_GLADEDIR=\""$(gladedir)"\"			-DDATADIR=\""$(datadir)"\"				-DLIBDIR=\""$(libdir)"\"				-DSYSCONFDIR=\""$(sysconfdir)"\"			-DPREFIX=\""$(prefix)"\"					-DGNOME_ICONDIR=\""$(datadir)/pixmaps\""			-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 
 
@@ -159,7 +161,14 @@ DISABLE_DEPRECATED_CFLAGS =  	-DG_DISABLE_DEPRECATED				-DGDK_DISABLE_DEPRECATED
 gladedir = $(datadir)/gen_util
 glade_DATA = pager.glade tasklist.glade
 
-libgen_util_applet_2_la_SOURCES =  	main.c 	clock.c 	clock.h		pager.c		pager.h		tasklist.c 	tasklist.h 	mailcheck.c 	mailcheck.h 	popcheck.c 	popcheck.h 	remote-helper.c 	remote-helper.h
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA =  	gnome-show-desktop.png
+
+
+EGGFILES =  	egg-screen-exec.h       	egg-screen-exec.c       	egg-screen-help.h       	egg-screen-help.c       	egg-screen-url.h        	egg-screen-url.c
+
+
+libgen_util_applet_2_la_SOURCES =  	main.c 	clock.c 	clock.h		pager.c		pager.h		showdesktop.c 	showdesktop.h 	tasklist.c 	tasklist.h 	mailcheck.c 	mailcheck.h 	popcheck.c 	popcheck.h 	remote-helper.c 	remote-helper.h 	$(EGGFILES)
 
 
 libgen_util_applet_2_la_LDFLAGS = -module -avoid-version
@@ -181,7 +190,7 @@ soundlist_in_files = mailcheck.soundlist.in
 soundlist_DATA = $(soundlist_in_files:.soundlist.in=.soundlist)
 
 uidir = $(datadir)/gnome-2.0/ui
-ui_DATA =  	GNOME_ClockApplet.xml			GNOME_MailCheckApplet.xml		GNOME_PagerApplet.xml			GNOME_TasklistApplet.xml	
+ui_DATA =  	GNOME_ClockApplet.xml			GNOME_MailCheckApplet.xml		GNOME_PagerApplet.xml			GNOME_ShowDesktopApplet.xml		GNOME_TasklistApplet.xml
 
 
 serverdir = $(libdir)/bonobo/servers
@@ -193,10 +202,12 @@ schemas_in_files = mailcheck.schemas.in				   pager.schemas.in				   tasklist.sc
 
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
-EXTRA_DIST = GNOME_GenUtilApplet_Factory.server.in.in		$(PRINTER_BITMAPS)					$(MAILCHECK_BITMAPS)					$(soundlist_in_files)					$(schemas_in_files)					$(glade_DATA)						$(ui_DATA)
+EXTRA_DIST = GNOME_GenUtilApplet_Factory.server.in.in		$(PRINTER_BITMAPS)					$(MAILCHECK_BITMAPS)					$(soundlist_in_files)					$(schemas_in_files)					$(glade_DATA)						$(pixmap_DATA)						$(ui_DATA)
 
 
 CLEANFILES = $(server_in_files) $(server_DATA)
+
+EGGDIR = $(srcdir)/../../../libegg/libegg/screen-exec
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -210,14 +221,15 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libgen_util_applet_2_la_DEPENDENCIES =  \
 ../../libpanel-applet/libpanel-applet-2.la
-libgen_util_applet_2_la_OBJECTS =  main.lo clock.lo pager.lo tasklist.lo \
-mailcheck.lo popcheck.lo remote-helper.lo
+libgen_util_applet_2_la_OBJECTS =  main.lo clock.lo pager.lo \
+showdesktop.lo tasklist.lo mailcheck.lo popcheck.lo remote-helper.lo \
+egg-screen-exec.lo egg-screen-help.lo egg-screen-url.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(glade_DATA) $(mailcheckbitmaps_DATA) $(schemas_DATA) \
-$(server_DATA) $(soundlist_DATA) $(ui_DATA)
+DATA =  $(glade_DATA) $(mailcheckbitmaps_DATA) $(pixmap_DATA) \
+$(schemas_DATA) $(server_DATA) $(soundlist_DATA) $(ui_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -350,6 +362,25 @@ uninstall-mailcheckbitmapsDATA:
 	  rm -f $(DESTDIR)$(mailcheckbitmapsdir)/$$p; \
 	done
 
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
+	@list='$(pixmap_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pixmap_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
+	done
+
 install-schemasDATA: $(schemas_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(schemasdir)
@@ -426,61 +457,6 @@ uninstall-uiDATA:
 	  rm -f $(DESTDIR)$(uidir)/$$p; \
 	done
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-
-@SET_MAKE@
-
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
-	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
-	done; \
-	test "$$dot_seen" = "no" && rev=". $$rev"; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -491,14 +467,9 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-   if test "$$subdir" = .; then :; else \
-	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-   fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -530,74 +501,75 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(SUBDIRS); do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    chmod 777 $(distdir)/$$subdir; \
-	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 clock.lo clock.o : clock.c ../../config.h \
 	../../libpanel-applet/panel-applet.h \
 	../../libpanel-applet/GNOME_Panel.h \
-	../../libpanel-applet/panel-applet-gconf.h clock.h
+	../../libpanel-applet/panel-applet-gconf.h clock.h \
+	egg-screen-help.h
+egg-screen-exec.lo egg-screen-exec.o : egg-screen-exec.c ../../config.h \
+	egg-screen-exec.h
+egg-screen-help.lo egg-screen-help.o : egg-screen-help.c ../../config.h \
+	egg-screen-help.h egg-screen-exec.h
+egg-screen-url.lo egg-screen-url.o : egg-screen-url.c ../../config.h \
+	egg-screen-url.h egg-screen-exec.h
 mailcheck.lo mailcheck.o : mailcheck.c ../../config.h \
 	../../libpanel-applet/panel-applet.h \
 	../../libpanel-applet/GNOME_Panel.h \
 	../../libpanel-applet/panel-applet-gconf.h popcheck.h \
-	remote-helper.h mailcheck.h
+	remote-helper.h mailcheck.h egg-screen-help.h
 main.lo main.o : main.c ../../config.h \
 	../../libpanel-applet/panel-applet.h \
 	../../libpanel-applet/GNOME_Panel.h mailcheck.h clock.h pager.h \
-	tasklist.h
+	showdesktop.h tasklist.h
 pager.lo pager.o : pager.c ../../config.h \
 	../../libpanel-applet/panel-applet.h \
 	../../libpanel-applet/GNOME_Panel.h \
-	../../libpanel-applet/panel-applet-gconf.h pager.h
+	../../libpanel-applet/panel-applet-gconf.h pager.h \
+	egg-screen-help.h
 popcheck.lo popcheck.o : popcheck.c ../../config.h popcheck.h
 remote-helper.lo remote-helper.o : remote-helper.c ../../config.h \
 	popcheck.h remote-helper.h
+showdesktop.lo showdesktop.o : showdesktop.c ../../config.h \
+	showdesktop.h ../../libpanel-applet/panel-applet.h \
+	../../libpanel-applet/GNOME_Panel.h egg-screen-help.h
 tasklist.lo tasklist.o : tasklist.c ../../config.h \
 	../../libpanel-applet/panel-applet.h \
 	../../libpanel-applet/GNOME_Panel.h \
-	../../libpanel-applet/panel-applet-gconf.h tasklist.h
+	../../libpanel-applet/panel-applet-gconf.h tasklist.h \
+	egg-screen-help.h
 
 info-am:
-info: info-recursive
+info: info-am
 dvi-am:
-dvi: dvi-recursive
+dvi: dvi-am
 check-am: all-am
-check: check-recursive
+check: check-am
 installcheck-am:
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-exec-am:
-install-exec: install-exec-recursive
+install-exec: install-exec-am
 
 install-data-am: install-appletLTLIBRARIES install-gladeDATA \
-		install-mailcheckbitmapsDATA install-schemasDATA \
-		install-serverDATA install-soundlistDATA install-uiDATA \
-		install-data-local
-install-data: install-data-recursive
+		install-mailcheckbitmapsDATA install-pixmapDATA \
+		install-schemasDATA install-serverDATA \
+		install-soundlistDATA install-uiDATA install-data-local
+install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-recursive
+install: install-am
 uninstall-am: uninstall-appletLTLIBRARIES uninstall-gladeDATA \
-		uninstall-mailcheckbitmapsDATA uninstall-schemasDATA \
-		uninstall-serverDATA uninstall-soundlistDATA \
-		uninstall-uiDATA
-uninstall: uninstall-recursive
+		uninstall-mailcheckbitmapsDATA uninstall-pixmapDATA \
+		uninstall-schemasDATA uninstall-serverDATA \
+		uninstall-soundlistDATA uninstall-uiDATA
+uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
-all-redirect: all-recursive
+all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs: installdirs-recursive
-installdirs-am:
+installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(appletdir) $(DESTDIR)$(gladedir) \
-		$(DESTDIR)$(mailcheckbitmapsdir) \
+		$(DESTDIR)$(mailcheckbitmapsdir) $(DESTDIR)$(pixmapdir) \
 		$(DESTDIR)$(schemasdir) $(DESTDIR)$(serverdir) \
 		$(DESTDIR)$(soundlistdir) $(DESTDIR)$(uidir)
 
@@ -616,19 +588,19 @@ mostlyclean-am:  mostlyclean-appletLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 clean-am:  clean-appletLTLIBRARIES clean-compile clean-libtool \
 		clean-tags clean-generic mostlyclean-am
 
-clean: clean-recursive
+clean: clean-am
 
 distclean-am:  distclean-appletLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
-distclean: distclean-recursive
+distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-appletLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
@@ -637,7 +609,7 @@ maintainer-clean-am:  maintainer-clean-appletLTLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-appletLTLIBRARIES distclean-appletLTLIBRARIES \
 clean-appletLTLIBRARIES maintainer-clean-appletLTLIBRARIES \
@@ -646,19 +618,15 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-gladeDATA \
 install-gladeDATA uninstall-mailcheckbitmapsDATA \
-install-mailcheckbitmapsDATA uninstall-schemasDATA install-schemasDATA \
-uninstall-serverDATA install-serverDATA uninstall-soundlistDATA \
-install-soundlistDATA uninstall-uiDATA install-uiDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
-maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-local install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs-am \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+install-mailcheckbitmapsDATA uninstall-pixmapDATA install-pixmapDATA \
+uninstall-schemasDATA install-schemasDATA uninstall-serverDATA \
+install-serverDATA uninstall-soundlistDATA install-soundlistDATA \
+uninstall-uiDATA install-uiDATA tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-local install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
@@ -678,6 +646,9 @@ install-data-local:
 		        GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/applets/gen_util/$$p ; \
 		done \
 	fi
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

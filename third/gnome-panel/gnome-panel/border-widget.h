@@ -53,9 +53,10 @@ struct _BorderPosClass {
 	
 GType border_pos_get_type (void) G_GNUC_CONST;
 
-GtkWidget *border_widget_construct (gchar *panel_id,
+GtkWidget *border_widget_construct (const char *panel_id,
 				    BorderWidget *border,
 				    int screen,
+				    int monitor,
 				    BorderEdge edge,
 				    gboolean packed,
 				    gboolean reverse_arrows,
@@ -64,27 +65,28 @@ GtkWidget *border_widget_construct (gchar *panel_id,
 				    BasePState state,
 				    gboolean hidebuttons_enabled,
 				    gboolean hidebutton_pixmaps_enabled,
-				    PanelBackType back_type,
-				    char *back_pixmap,
+				    PanelBackgroundType back_type,
+				    const char *back_pixmap,
 				    gboolean fit_pixmap_bg,
 				    gboolean stretch_pixmap_bg,
 				    gboolean rotate_pixmap_bg,
-				    GdkColor *back_color);
+				    PanelColor *back_color);
 
 void border_widget_change_params (BorderWidget *border,
 				  int screen,
+				  int monitor,
 				  BorderEdge edge,
 				  int sz,
 				  BasePMode mode,
 				  BasePState state,
 				  gboolean hidebuttons_enabled,
 				  gboolean hidebutton_pixmaps_enabled,
-				  PanelBackType back_type,
+				  PanelBackgroundType back_type,
 				  char *pixmap_name,
 				  gboolean fit_pixmap_bg,
 				  gboolean stretch_pixmap_bg,
 				  gboolean rotate_pixmap_bg,
-				  GdkColor *back_color);
+				  PanelColor *back_color);
 
 
 void border_widget_change_edge (BorderWidget *border, BorderEdge edge);

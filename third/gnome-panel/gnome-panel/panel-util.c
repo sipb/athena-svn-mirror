@@ -4,9 +4,11 @@
  * Copyright 2000 Helix Code, Inc.
  * Copyright 2000,2001 Eazel, Inc.
  * Copyright 2001 George Lebl
+ * Copyright 2002 Sun Microsystems Inc.
  *
  * Authors: George Lebl
  *          Jacob Berkman
+ *          Mark McLoughlin
  */
 
 #include <config.h>
@@ -30,30 +32,78 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <libwnck/screen.h>
+#include <libwnck/workspace.h>
+
 #include "panel-util.h"
 
 #include "applet.h"
 #include "nothing.h"
+#include "basep-widget.h"
+#include "foobar-widget.h"
+#include "panel.h"
+#include "egg-screen-exec.h"
+#include "egg-screen-url.h"
+#include "egg-screen-help.h"
 
 extern GlobalConfig global_config;
 
 extern GSList *applets;
+extern GSList *panels;
+
+GdkScreen *
+panel_screen_from_number (int screen)
+{
+	return gdk_display_get_screen (
+			gdk_display_get_default (), screen);
+}
+
+int
+panel_ditem_launch (const GnomeDesktopItem       *item,
+		    GList                        *file_list,
+		    GnomeDesktopItemLaunchFlags   flags,
+		    GdkScreen                    *screen,
+		    GError                      **error)
+{
+	WnckScreen *wnck_screen = NULL;
+	int         workspace;
+
+	if (screen)
+		wnck_screen = wnck_screen_get (
+				gdk_screen_get_number (screen));
+
+	if (!wnck_screen)
+		wnck_screen = wnck_screen_get_default ();
+
+	workspace = wnck_workspace_get_number (
+			wnck_screen_get_active_workspace (wnck_screen));
+
+	return gnome_desktop_item_launch_on_screen (
+			item, file_list, flags, screen, workspace, error);
+}
 
 void
-panel_show_help (const char *doc_name, const char *linkid)
+panel_show_help (GdkScreen  *screen,
+		 const char *doc_name,
+		 const char *linkid)
 {
 	GError *error = NULL;
 
-	if (!gnome_help_display_desktop (NULL, "user-guide", doc_name, linkid, &error)) {
-		panel_error_dialog ("cannot_show_help",
-				    _("<b>Cannot display help document</b>\n\n"
-				      "Details: %s"), error != NULL ? error->message : "");
+	if (!egg_help_display_desktop_on_screen (NULL, "user-guide", doc_name, linkid, screen, &error)) {
+		panel_error_dialog (
+			screen,
+			"cannot_show_help",
+			_("<b>Cannot display help document</b>\n\n"
+			  "Details: %s"),
+			error != NULL ? error->message : "");
 		g_clear_error (&error);
 	}
 }
 
 static gboolean
-panel_show_gnome_help (const char *docpath, GError **error)
+panel_show_gnome_help (GdkScreen   *screen,
+		       const char  *docpath,
+		       GError     **error)
 {
 	char *app, *p, *path;
 	gboolean retval;
@@ -78,16 +128,9 @@ panel_show_gnome_help (const char *docpath, GError **error)
 
 	retval = TRUE;
 
-	if ( ! gnome_help_display_desktop (NULL /* program */,
-					   app /* doc_id */,
-					   path /* file_name */,
-					   NULL /* link_id */,
-					   error)) {
-		retval = gnome_help_display_with_doc_id (NULL /* program */,
-							 app /* doc_id */,
-							 path /* file_name */,
-							 NULL /* link_id */,
-							 error);
+	if ( ! egg_help_display_desktop_on_screen (NULL, app, path, NULL, screen, error)) {
+		retval = egg_help_display_with_doc_id_on_screen (
+				NULL, app, path, NULL, screen, error);
 	}
 
 	g_free (app);
@@ -96,7 +139,9 @@ panel_show_gnome_help (const char *docpath, GError **error)
 }
 
 static gboolean
-panel_show_kde_help (const char *docpath, GError **error)
+panel_show_kde_help (GdkScreen   *screen,
+		     const char  *docpath,
+		     GError     **error)
 {
 	const GList *li;
 
@@ -119,7 +164,7 @@ panel_show_kde_help (const char *docpath, GError **error)
 			gboolean retval;
 			char *uri = g_strconcat ("ghelp:", fullpath, NULL);
 			g_free (fullpath);
-			retval = gnome_help_display_uri (uri, error);
+			retval = egg_help_display_uri_on_screen (uri, screen, error);
 			g_free (uri);
 			return retval;
 		}
@@ -135,8 +180,9 @@ panel_show_kde_help (const char *docpath, GError **error)
 }
 
 gboolean
-panel_show_gnome_kde_help (const char *docpath,
-			   GError **error)
+panel_show_gnome_kde_help (GdkScreen   *screen,
+			   const char  *docpath,
+			   GError     **error)
 {
 	if (string_empty (docpath)) {
 		g_set_error (error,
@@ -147,10 +193,10 @@ panel_show_gnome_kde_help (const char *docpath,
 	}
 
 	if (panel_is_url (docpath))
-		return gnome_help_display_uri (docpath, error);
+		return egg_help_display_uri_on_screen (docpath, screen, error);
 
-	if ( ! panel_show_gnome_help (docpath, error)) {
-		return panel_show_kde_help (docpath, error);
+	if ( ! panel_show_gnome_help (screen, docpath, error)) {
+		return panel_show_kde_help (screen, docpath, error);
 	}
 
 	return TRUE;
@@ -490,9 +536,9 @@ gtk_style_shade (GdkColor *a,
   gdouble green;
   gdouble blue;
 
-  red = (gdouble) a->red / 65535.0;
+  red   = (gdouble) a->red / 65535.0;
   green = (gdouble) a->green / 65535.0;
-  blue = (gdouble) a->blue / 65535.0;
+  blue  = (gdouble) a->blue / 65535.0;
 
   rgb_to_hls (&red, &green, &blue);
 
@@ -510,9 +556,9 @@ gtk_style_shade (GdkColor *a,
 
   hls_to_rgb (&red, &green, &blue);
 
-  b->red = red * 65535.0;
+  b->red   = red * 65535.0;
   b->green = green * 65535.0;
-  b->blue = blue * 65535.0;
+  b->blue  = blue * 65535.0;
 }
 
 #define LIGHTNESS_MULT  1.3
@@ -522,30 +568,41 @@ static void
 set_color_back (GtkWidget *widget, PanelWidget *panel)
 {
 	GtkStyle *ns;
-	int i;
+	GdkColor  gdkcolor = {0, };
+	int       i;
+
+	/* FIXME:
+	 *   need to implement alpha background for these
+	 *   widgets too ...
+	 */
+	if (panel->background.has_alpha) {
+		gtk_widget_set_style (widget, NULL);
+		return;
+	}
+
+	gdkcolor = panel->background.color.gdk;
 
 	gtk_widget_set_style (widget, NULL);
 	ns = gtk_style_copy (gtk_widget_get_style (widget));
 
-	ns->bg[GTK_STATE_NORMAL] =
-		panel->back_color;
-	gtk_style_shade (&panel->back_color,
-			 &ns->bg[GTK_STATE_PRELIGHT],1.5);
-	gtk_style_shade (&panel->back_color,
-			 &ns->bg[GTK_STATE_ACTIVE],0.8);
-	ns->bg[GTK_STATE_INSENSITIVE] = 
-		panel->back_color;
+	ns->bg [GTK_STATE_NORMAL] = gdkcolor;
+	ns->bg [GTK_STATE_INSENSITIVE] = gdkcolor;
+
+	gtk_style_shade (&gdkcolor, &ns->bg [GTK_STATE_PRELIGHT], 1.5);
+	gtk_style_shade (&gdkcolor, &ns->bg [GTK_STATE_ACTIVE], 0.8);
 
 	for (i = 0; i < 5; i++) {
-		gtk_style_shade (&ns->bg[i], &ns->light[i], LIGHTNESS_MULT);
-		gtk_style_shade (&ns->bg[i], &ns->dark[i], DARKNESS_MULT);
+		gtk_style_shade (&ns->bg [i], &ns->light [i], LIGHTNESS_MULT);
+		gtk_style_shade (&ns->bg [i], &ns->dark  [i], DARKNESS_MULT);
 
-		ns->mid[i].red = (ns->light[i].red + ns->dark[i].red) / 2;
-		ns->mid[i].green = (ns->light[i].green + ns->dark[i].green) / 2;
-		ns->mid[i].blue = (ns->light[i].blue + ns->dark[i].blue) / 2;
+		ns->mid [i].red   = (ns->light [i].red   + ns->dark [i].red) / 2;
+		ns->mid [i].green = (ns->light [i].green + ns->dark [i].green) / 2;
+		ns->mid [i].blue  = (ns->light [i].blue  + ns->dark [i].blue) / 2;
 	}
+
 	gtk_widget_set_style (widget, ns);
-	g_object_unref (G_OBJECT (ns));
+
+	g_object_unref (ns);
 }
 
 void
@@ -553,7 +610,7 @@ panel_set_frame_colors (PanelWidget *panel, GtkWidget *frame,
 			GtkWidget *but1, GtkWidget *but2,
 			GtkWidget *but3, GtkWidget *but4)
 {
-	if (panel->back_type == PANEL_BACK_COLOR) {
+	if (panel->background.type == PANEL_BACK_COLOR) {
 		set_color_back (frame, panel);
 		set_color_back (but1, panel);
 		set_color_back (but2, panel);
@@ -601,36 +658,38 @@ convert_keysym_state_to_string(guint keysym,
 }
 
 static GtkWidget *
-panel_dialog (GtkWidget *parent,
-	      int type,
+panel_dialog (GdkScreen  *screen,
+	      int         type,
 	      const char *class,
 	      const char *str)
 {
-	GtkWidget *w;
+	GtkWidget *dialog;
 
-	w = gtk_message_dialog_new ((GtkWindow *) parent, 0, type,
-				    GTK_BUTTONS_OK, "foo");
-	gtk_widget_add_events (w, GDK_KEY_PRESS_MASK);
-	g_signal_connect (G_OBJECT (w), "event",
+	dialog = gtk_message_dialog_new (
+			NULL, 0, type, GTK_BUTTONS_OK, "foo");
+	gtk_widget_add_events (dialog, GDK_KEY_PRESS_MASK);
+	g_signal_connect (dialog, "event",
 			  G_CALLBACK (panel_dialog_window_event), NULL);
-	gtk_window_set_wmclass (GTK_WINDOW (w),
-				class, "Panel");
+	gtk_label_set_markup (
+		GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label), str);
 
-	gtk_label_set_markup (GTK_LABEL (GTK_MESSAGE_DIALOG (w)->label), str);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), class, "Panel");
+	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 
-	gtk_widget_show_all (w);
+	gtk_widget_show_all (dialog);
 
 	/* FIXME: this is ugly and makes it bad to run gtk_dialog_run
 	 * after this function */
-	g_signal_connect_swapped (G_OBJECT (w), "response",
+	g_signal_connect_swapped (G_OBJECT (dialog), "response",
 				  G_CALLBACK (gtk_widget_destroy),
-				  G_OBJECT (w));
+				  G_OBJECT (dialog));
 
-	return w;
+	return dialog;
 }
 
 GtkWidget *
-panel_error_dialog (const char *class,
+panel_error_dialog (GdkScreen  *screen,
+		    const char *class,
 		    const char *format,
 		    ...)
 {
@@ -647,13 +706,14 @@ panel_error_dialog (const char *class,
 		va_end (ap);
 	}
 
-	w = panel_dialog (NULL, GTK_MESSAGE_ERROR, class, s);
+	w = panel_dialog (screen, GTK_MESSAGE_ERROR, class, s);
 	g_free (s);
 	return w;
 }
 
 GtkWidget *
-panel_info_dialog (const char *class,
+panel_info_dialog (GdkScreen  *screen,
+		   const char *class,
 		   const char *format,
 		   ...)
 {
@@ -670,55 +730,7 @@ panel_info_dialog (const char *class,
 		va_end (ap);
 	}
 
-	w = panel_dialog (NULL, GTK_MESSAGE_INFO, class, s);
-	g_free (s);
-	return w;
-}
-
-GtkWidget *
-panel_error_dialog_with_parent (GtkWindow *parent,
-				const char *class,
-				const char *format,
-				...)
-{
-	GtkWidget *w;
-	char *s;
-	va_list ap;
-
-	if (format == NULL) {
-		g_warning ("NULL error dialog");
-		s = g_strdup ("(null)");
-	} else {
-		va_start (ap, format);
-		s = g_strdup_vprintf (format, ap);
-		va_end (ap);
-	}
-
-	w = panel_dialog (GTK_WIDGET (parent), GTK_MESSAGE_ERROR, class, s);
-	g_free (s);
-	return w;
-}
-
-GtkWidget *
-panel_info_dialog_with_parent (GtkWindow *parent,
-			       const char *class,
-			       const char *format,
-			       ...)
-{
-	GtkWidget *w;
-	char *s;
-	va_list ap;
-
-	if (format == NULL) {
-		g_warning ("NULL info dialog");
-		s = g_strdup ("(null)");
-	} else {
-		va_start (ap, format);
-		s = g_strdup_vprintf (format, ap);
-		va_end (ap);
-	}
-
-	w = panel_dialog (GTK_WIDGET (parent), GTK_MESSAGE_INFO, class, s);
+	w = panel_dialog (screen, GTK_MESSAGE_INFO, class, s);
 	g_free (s);
 	return w;
 }
@@ -1457,4 +1469,19 @@ missing_pixbuf (int size)
 	}
 
 	return pb;
+}
+
+void
+panel_lock_screen (GdkScreen *screen)
+{
+	char *argv[3] = {"xscreensaver-command", "-lock", NULL};
+
+	if (!screen)
+		screen = gdk_screen_get_default ();
+
+	if (egg_screen_execute_async (screen, g_get_home_dir (), 2, argv) < 0)
+		panel_error_dialog (screen,
+				    "cannot_exec_xscreensaver",
+				    _("<b>Cannot execute xscreensaver</b>\n\n"
+				    "Details: xscreensaver-command not found"));
 }

@@ -50,6 +50,7 @@ struct _BasePWidget
 	GtkAllocation		shown_alloc;
 
 	int			screen;
+	int                     monitor;
 
 	GtkWidget		*ebox;
 	
@@ -113,7 +114,8 @@ struct _BasePWidgetClass
 			       BasePState old_state);
 
 	void (* screen_change) (BasePWidget *basep,
-				int old_screen);
+				int          old_screen,
+				int          old_monitor);
 
 	gboolean (* popup_panel_menu) (BasePWidget *basep);
 };
@@ -159,13 +161,6 @@ struct _BasePPosClass {
 					    int *x, int *y,
 					    int w, int h);
 
-	void (*get_menu_pos)              (BasePWidget *basep,
-					   GtkWidget *widget,
-					   GtkRequisition *mreq,
-					   int *x, int *y,
-					   int wx, int wy,
-					   int ww, int wh);
-
 	void (*realize)                   (GtkWidget *widget);
 
 	void (*north_clicked)             (BasePWidget *basep);
@@ -179,39 +174,44 @@ struct _BasePPosClass {
 GType           basep_pos_get_type              (void) G_GNUC_CONST;
 GType		basep_widget_get_type		(void) G_GNUC_CONST;
 
-GtkWidget*	basep_widget_construct		(gchar *panel_id,
+GtkWidget*	basep_widget_construct		(const char *panel_id,
 						 BasePWidget *basep,
 						 gboolean packed,
 						 gboolean reverse_arrows,
 						 int screen,
+						 int monitor,
 						 GtkOrientation orient,
 						 int sz,
 						 BasePMode mode,
 						 BasePState state,
 						 gboolean hidebuttons_enabled,
 						 gboolean hidebutton_pixmaps_enabled,
-						 PanelBackType back_type,
-						 char *back_pixmap,
+						 PanelBackgroundType back_type,
+						 const char *back_pixmap,
 						 gboolean fit_pixmap_bg,
 						 gboolean stretch_pixmap_bg,
 						 gboolean rotate_pixmap_bg,
-						 GdkColor *back_color);
+						 PanelColor *back_color);
 
 /* changing parameters */
 void		basep_widget_change_params	(BasePWidget *basep,
 						 int screen,
+						 int monitor,
 						 GtkOrientation orient,
 						 int sz,
 						 BasePMode mode,
 						 BasePState state,
 						 gboolean hidebuttons_enabled,
 						 gboolean hidebutton_pixmaps_enabled,
-						 PanelBackType back_type,
-						 char *pixmap_name,
+						 PanelBackgroundType back_type,
+						 const char *pixmap_name,
 						 gboolean fit_pixmap_bg,
 						 gboolean stretch_pixmap_bg,
 						 gboolean rotate_pixmap_bg,
-						 GdkColor *back_color);
+						 PanelColor *back_color);
+
+void            basep_widget_screen_size_changed (BasePWidget *basep,
+						  GdkScreen   *screen);
 
 /*gboolean       basep_widget_convert_to         (BasePWidget *basep,
 						 PanelType type);*/
@@ -250,12 +250,6 @@ void		basep_widget_get_position	(BasePWidget *basep,
 						 int *x, int *y,
 						 int w, int h);
 
-void            basep_widget_get_menu_pos  (BasePWidget *basep,
-					    GtkWidget *menu,
-					    int *x, int *y,
-					    int wx, int wy,
-					    int ww, int wh);
-
 PanelOrient basep_widget_get_applet_orient (BasePWidget *basep);
 
 /* initialize drag offsets according to cursor */
@@ -273,7 +267,8 @@ void            basep_widget_get_size          (BasePWidget *basep,
 void            basep_widget_pre_convert_hook (BasePWidget *basep);
 
 void		basep_widget_screen_change	(BasePWidget *basep,
-						 int screen);
+						 int          screen,
+						 int          monitor);
 
 void            basep_update_frame             (BasePWidget *basep);
 
@@ -282,17 +277,15 @@ void		basep_widget_redo_window	(BasePWidget *basep);
 
 /* -1 means don't set, caller will not get queue resized as optimization */
 
-void		basep_border_recalc		(int screen);
-void		basep_border_queue_recalc	(int screen);
-void		basep_border_get		(int screen,
-						 BorderEdge edge,
-						 int *left,
-						 int *center,
-						 int *right);
-
-/* FIXME:
-#define GNOME_PANEL_HINTS (WIN_HINTS_SKIP_FOCUS|WIN_HINTS_SKIP_WINLIST|WIN_HINTS_SKIP_TASKBAR)
-*/
+void		basep_border_recalc		(int          screen,
+						 int          monitor);
+void		basep_border_queue_recalc	(int          screen,
+						 int          monitor);
+void		basep_border_get		(BasePWidget *basep, 
+						 BorderEdge   edge,
+						 int         *left,
+						 int         *center,
+						 int         *right);
 
 G_END_DECLS
 

@@ -27,6 +27,8 @@
 
 #include "clock.h"
 
+#include "egg-screen-help.h"
+
 #define INTERNETSECOND (864)
 #define INTERNETBEAT   (86400)
 
@@ -159,40 +161,51 @@ get_itime (time_t current_time)
 }
 
 static void
-update_timeformat(ClockData *cd)
+update_timeformat (ClockData *cd)
 {
-	const char *time;
-	gchar *loc;
+ /* Show date in another line if panel is vertical, or
+  * horizontal but large enough to hold two lines of text
+  */
+#define USE_TWO_LINE_FORMAT(cd) ((cd)->orient == PANEL_APPLET_ORIENT_LEFT  || \
+                                 (cd)->orient == PANEL_APPLET_ORIENT_RIGHT || \
+                                 (cd)->size >= GNOME_Vertigo_PANEL_MEDIUM)
 
-	if (cd->hourformat == 12) {
-		if (cd->showseconds)
-			time = _("%I:%M:%S %p");
+	const char *time_format;
+	const char *date_format;
+	char       *clock_format;
+
+	if (cd->hourformat == 12)
+		time_format = cd->showseconds ? _("%l:%M:%S %p") : _("%l:%M %p");
+	else
+		time_format = cd->showseconds ? _("%H:%M:%S") : _("%H:%M");
+
+	if (!cd->showdate)
+		clock_format = g_strdup (time_format);
+
+	else {
+		date_format = _("%a %b %d");
+
+		if (USE_TWO_LINE_FORMAT (cd))
+			/* translators: reverse the order of these arguments
+			 *              if the time should come before the
+			 *              date on a clock in your locale.
+			 */
+			clock_format = g_strdup_printf (_("%s\n%s"),
+							date_format, time_format);
 		else
-			time = _("%I:%M %p");
-	} else {
-		if (cd->showseconds)
-			time = _("%H:%M:%S");
-		else
-			time = _("%H:%M");
+			/* translators: reverse the order of these arguments
+			 *              if the time should come before the
+			 *              date on a clock in your locale.
+			 */
+			clock_format = g_strdup_printf (_("%s, %s"),
+							date_format, time_format);
 	}
 
 	g_free (cd->timeformat);
-	if (cd->showdate) {
-		/* Show date in another line if panel is vertical, or
-		 * horizontal but large enough to hold two lines of text */
-		if (cd->orient == PANEL_APPLET_ORIENT_LEFT ||
-		    cd->orient == PANEL_APPLET_ORIENT_RIGHT ||
-		    cd->size >= GNOME_Vertigo_PANEL_MEDIUM)
-			loc = g_strconcat (time, "\n",
-					   _("%a %b %d"), NULL);
-		else
-			loc = g_strconcat (time, " ",
-					   _("%a %b %d"), NULL);
-	} else {
-		loc = g_strdup (time);
-	}
-	cd->timeformat = g_locale_from_utf8 (loc, -1, NULL, NULL, NULL);
-	g_free (loc);
+	cd->timeformat = g_locale_from_utf8 (clock_format, -1, NULL, NULL, NULL);
+	g_free (clock_format);
+
+#undef USE_TWO_LINE_FORMAT
 }
 
 /* sets accessible name and description for the widget */
@@ -366,6 +379,8 @@ destroy_clock(GtkWidget * widget, ClockData *cd)
 		cd->props = NULL;
 	}
 
+        g_free (cd->timeformat);
+        
 	g_free (cd);
 }
 
@@ -415,7 +430,7 @@ static void
 applet_change_background (PanelApplet               *applet,
 			  PanelAppletBackgroundType  type,
 			  GdkColor                  *color,
-			  const gchar               *pixmap,
+			  GdkPixmap                 *pixmap,
 			  ClockData                 *cd)
 {
 	if (type == PANEL_NO_BACKGROUND) {
@@ -755,7 +770,7 @@ fill_clock_applet(PanelApplet *applet)
 
 	create_clock_widget (cd);
 
-	gtk_container_set_border_width (GTK_CONTAINER (cd->applet), 4);
+	gtk_container_set_border_width (GTK_CONTAINER (cd->applet), 0);
 	gtk_container_add (GTK_CONTAINER (cd->applet), cd->clockw);
 
 	gtk_widget_show (cd->applet);
@@ -862,7 +877,9 @@ set_gmt_time_cb (GtkWidget *w,
 }
 
 static void
-properties_response_cb (GtkWidget *widget, gint id, gpointer data)
+properties_response_cb (GtkWidget *widget,
+			int        id,
+			ClockData *cd)
 {
 	
 	if (id == GTK_RESPONSE_HELP) {
@@ -877,8 +894,11 @@ properties_response_cb (GtkWidget *widget, gint id, gpointer data)
 							      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 		}
 
-		gnome_help_display_desktop (applet_program, "clock",
-					    "clock", "clock-settings", &error);
+		egg_help_display_desktop_on_screen (
+				applet_program, "clock",
+				"clock", "clock-settings",
+				gtk_widget_get_screen (cd->applet),
+				&error);
 
 		if (error) {
 			GtkWidget *dialog;
@@ -894,6 +914,8 @@ properties_response_cb (GtkWidget *widget, gint id, gpointer data)
 					  NULL);
 
 			gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+			gtk_window_set_screen (GTK_WINDOW (dialog),
+					       gtk_widget_get_screen (cd->applet));
 			gtk_widget_show (dialog);
 			g_error_free (error);
 		}
@@ -925,7 +947,9 @@ display_properties_dialog (BonoboUIComponent *uic,
 	GSList    *list;
 	char      *file;
 
-	if (cd->props != NULL) {
+	if (cd->props) {
+		gtk_window_set_screen (GTK_WINDOW (cd->props),
+				       gtk_widget_get_screen (cd->applet));
 		gtk_window_present (GTK_WINDOW (cd->props));
 		return;
 	}
@@ -939,6 +963,8 @@ display_properties_dialog (BonoboUIComponent *uic,
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (cd->props), FALSE);
 	gtk_dialog_set_default_response (GTK_DIALOG (cd->props), GTK_RESPONSE_CLOSE);
+	gtk_window_set_screen (GTK_WINDOW (cd->props),
+			       gtk_widget_get_screen (cd->applet));
 		
 	file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
 	                                  "gnome-clock.png", TRUE, NULL);
@@ -978,7 +1004,7 @@ display_properties_dialog (BonoboUIComponent *uic,
 	gtk_widget_show (twentyfourhour);
 	g_object_set_data (G_OBJECT (twentyfourhour), "user_data", cd);
 
-	unixtime = gtk_radio_button_new_with_mnemonic (gtk_radio_button_get_group (GTK_RADIO_BUTTON (twelvehour)), _("_UNIX time"));
+	unixtime = gtk_radio_button_new_with_mnemonic (gtk_radio_button_get_group (GTK_RADIO_BUTTON (twelvehour)), _("UNI_X time"));
 	gtk_box_pack_start (GTK_BOX (type_box), unixtime, FALSE, FALSE, 0);
 	gtk_widget_show (unixtime);
 
@@ -1078,7 +1104,7 @@ display_properties_dialog (BonoboUIComponent *uic,
 	g_signal_connect (G_OBJECT (cd->props), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &(cd->props));
 	g_signal_connect (G_OBJECT (cd->props), "response",
-			  G_CALLBACK (properties_response_cb), NULL);
+			  G_CALLBACK (properties_response_cb), cd);
 
 	/* sets up atk relation  */
 	list = g_slist_append (NULL, twelvehour);
@@ -1110,8 +1136,10 @@ display_help_dialog (BonoboUIComponent *uic,
 						      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 	}
 
-	gnome_help_display_desktop (applet_program, "clock",
-				    "clock",NULL, &error);
+	egg_help_display_desktop_on_screen (
+			applet_program, "clock", "clock",NULL,
+			gtk_widget_get_screen (cd->applet),
+			&error);
 	if (error) {
 		GtkWidget *dialog;
 		dialog = gtk_message_dialog_new (NULL,
@@ -1126,6 +1154,8 @@ display_help_dialog (BonoboUIComponent *uic,
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (cd->applet));
 		gtk_widget_show (dialog);
 		g_error_free (error);
 	}
@@ -1154,8 +1184,9 @@ display_about_dialog (BonoboUIComponent *uic,
 	/* Translator credits */
 	const char *translator_credits = _("translator_credits");
 
-	if (about != NULL)
-	{
+	if (about) {
+		gtk_window_set_screen (GTK_WINDOW (about),
+				       gtk_widget_get_screen (cd->applet));
 		gtk_window_present (GTK_WINDOW (about));
 		return;
 	}
@@ -1171,7 +1202,7 @@ display_about_dialog (BonoboUIComponent *uic,
 		g_warning (G_STRLOC ": gnome-clock.png cannot be found");
 
 	about = gnome_about_new (_("Clock"), VERSION,
-				 _("(C) 1998-2002 the Free Software Foundation"),
+				 "Copyright \xc2\xa9 1998-2002 Free Software Foundation. Inc.",
 				 _("The Clock displays the current time and date"),
 				 authors,
 				 documenters,
@@ -1179,6 +1210,8 @@ display_about_dialog (BonoboUIComponent *uic,
 				 pixbuf);
 	
 	gtk_window_set_wmclass (GTK_WINDOW (about), "clock", "Clock");
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (cd->applet));
 
 	if (pixbuf) {
 		gtk_window_set_icon (GTK_WINDOW (about), pixbuf);
