@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.4 1991-01-01 14:00:21 lwvanels Exp $
+ *	$Id: motd.c,v 1.5 1991-01-03 16:15:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.4 1991-01-01 14:00:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.5 1991-01-03 16:15:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -129,11 +129,10 @@ void
 KNUCKLE *requester;
 {
   FILE *f;		/* motd file */
-  FILE *new_motd;		/* altered motd file fd */
+  FILE *new_motd;	/* altered motd file fd */
   char line[BUF_SIZE];	/* buffer to read in to parse possible timeout */
   char msgbuf[BUF_SIZE];
   char *time;
-  int which;
 
   expire_time = 0;
   in_time = 0;
@@ -153,35 +152,31 @@ KNUCKLE *requester;
   while (fgets(line,BUF_SIZE,f) != NULL) {
     line[BUF_SIZE-1] = '\0';
     if (strncasecmp(line,"timeout:",8) == 0) {
-      which = 1;
       time = &line[8];
+      expire_time = parse_time(time);
+      continue;
     }
     else if (strncasecmp(line,"timein:",7) == 0) {
-      which = 2;
       time = &line[7];
+      in_time = parse_time(time);
+      continue;
     }
     else {
       fputs(line,new_motd);
       continue;
     }
-
-    if (which == 1)
-      expire_time = parse_time(time);
-    else
-      in_time = parse_time(time);
-
   }
   fclose(f);
   fclose(new_motd);
 
   strcpy(msgbuf,"MOTD set to time out at: ");
   if (expire_time == 0)
-    strcat(msgbuf,"Never");
+    strcat(msgbuf,"Never\n");
   else
     strcat(msgbuf,ctime(&expire_time));
-  strcat(msgbuf,"\n            start at   : ");
+  strcat(msgbuf,"            start at   : ");
   if (in_time == 0)
-    strcat(msgbuf,"Immediately");
+    strcat(msgbuf,"Immediately\n");
   else
     strcat(msgbuf,ctime(&in_time));
 
@@ -192,7 +187,7 @@ KNUCKLE *requester;
       log_error("change_motd_timeout: rename: %m");
   }
   else {
-    expire_time = 1;
+    unlink(MOTD_FILE);
     check_motd_timeout();
     if (rename("/tmp/new_motd",MOTD_HOLD_FILE) != 0)
       log_error("change_motd_timeout: rename: %m");
