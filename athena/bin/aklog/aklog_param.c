@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_param.c,v 1.1 1990-06-22 18:03:11 qjb Exp $
+ * $Id: aklog_param.c,v 1.2 1990-06-22 18:43:05 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_param.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.1 1990-06-22 18:03:11 qjb Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.2 1990-06-22 18:43:05 qjb Exp $";
 #endif /* lint || SABER */
 
 #include <aklog.h>
@@ -14,6 +14,30 @@ static char *rcsid = "$Id: aklog_param.c,v 1.1 1990-06-22 18:03:11 qjb Exp $";
 
 extern int readlink ARGS((char *, char *, int));
 extern int lstat ARGS((char *, struct stat *));
+
+
+#ifdef __STDC__
+static int get_cred(char *name, char *inst, char *realm, CREDENTIALS *c)
+#else
+static int get_cred(name, inst, realm, c)
+  char *name;
+  char *inst;
+  char *realm;
+  CREDENTIALS *c;
+#endif /* __STDC__ */
+{
+    int status; 
+
+    status = krb_get_cred(name, inst, realm, c);
+    if (status != KSUCCESS) {
+	status = get_ad_tkt(name, inst, realm, 255);
+	if (status == KSUCCESS)
+	    status = krb_get_cred(name, inst, realm, c);
+    }
+
+    return (status);
+}
+
 
 #ifdef __STDC__
 static void pstderr(char *string)
@@ -23,7 +47,6 @@ static void pstderr(string)
 #endif /* __STDC__ */
 {
     write(2, string, strlen(string));
-    write(2, "\n", 1);
 }
 
 
@@ -35,7 +58,6 @@ static void pstdout(string)
 #endif /* __STDC__ */
 {
     write(1, string, strlen(string));
-    write(1, "\n", 1);
 }
 
 
@@ -59,6 +81,7 @@ void aklog_init_params(params)
 {
     params->readlink = readlink;
     params->lstat = lstat;
+    params->get_cred = get_cred;
     params->pstderr = pstderr;
     params->pstdout = pstdout;
     params->exitprog = exitprog;
