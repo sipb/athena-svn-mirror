@@ -24,7 +24,7 @@
 #include <memory.h>
 
 /*
- * $Id: accept_sec_context.c,v 1.1.1.3 1999-02-09 20:59:39 danw Exp $
+ * $Id: accept_sec_context.c,v 1.2 1999-03-31 03:49:59 danw Exp $
  */
 
 #if 0
@@ -57,32 +57,84 @@ rd_req_keyproc(krb5_pointer keyprocarg, krb5_principal server,
 
 /* Decode, decrypt and store the forwarded creds in the local ccache. */
 static krb5_error_code
-rd_and_store_for_creds(context, auth_context, inbuf)
+rd_and_store_for_creds(context, inbuf, out_cred)
     krb5_context context;
-    krb5_auth_context auth_context;
     krb5_data *inbuf;
+    krb5_gss_cred_id_t *out_cred;    
 {
     krb5_creds ** creds;
     krb5_error_code retval;
     krb5_ccache ccache;
+    krb5_gss_cred_id_t cred = NULL;
+    extern krb5_cc_ops krb5_mcc_ops;
+    krb5_auth_context auth_context = NULL;
+
+    if ((retval = krb5_auth_con_init(context, &auth_context)))
+	return(retval);
+
+    krb5_auth_con_setflags(context, auth_context, 0);
 
     if ((retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL))) 
 	return(retval);
 
-    if ((retval = krb5_cc_default(context, &ccache)))
-       goto cleanup;
-    
+    /* Lots of kludging going on here... Some day the ccache interface
+       will be rewritten though */
+
+    krb5_cc_register(context, &krb5_mcc_ops, 0);
+    if ((retval = krb5_cc_resolve(context, "MEMORY:GSSAPI", &ccache)))
+        goto cleanup;
+ 
+    if ((retval = krb5_cc_gen_new(context, &ccache)))
+        goto cleanup;
+
     if ((retval = krb5_cc_initialize(context, ccache, creds[0]->client)))
-	goto cleanup;
+        goto cleanup;
 
     if ((retval = krb5_cc_store_cred(context, ccache, creds[0])))
 	goto cleanup;
 
-    if ((retval = krb5_cc_close(context, ccache)))
-	goto cleanup;
+    /* generate a delegated credential handle */
+    if (out_cred) {
+	/* allocate memory for a cred_t... */
+	if (!(cred =
+	      (krb5_gss_cred_id_t) xmalloc(sizeof(krb5_gss_cred_id_rec)))) {
+	    retval = ENOMEM; /* out of memory? */
+	    goto cleanup;
+	}
+
+	/* zero it out... */
+	memset(cred, 0, sizeof(krb5_gss_cred_id_rec));
+
+	/* copy the client principle into it... */
+	if ((retval =
+	     krb5_copy_principal(context, creds[0]->client, &(cred->princ)))) {
+	    retval = ENOMEM; /* out of memory? */
+	    xfree(cred); /* clean up memory on failure */
+	    cred = NULL;
+	    goto cleanup;
+	}
+
+	cred->usage = GSS_C_INITIATE; /* we can't accept with this */
+	/* cred->princ already set */
+	cred->prerfc_mech = 1; /* this cred will work with all three mechs */
+	cred->rfc_mech = 1;
+	cred->keytab = NULL; /* no keytab associated with this... */
+	cred->ccache = ccache; /* but there is a credential cache */
+	cred->tgt_expire = creds[0]->times.endtime; /* store the end time */
+    }
 
 cleanup:
     krb5_free_tgt_creds(context, creds);
+
+    if (!cred && ccache)
+	(void)krb5_cc_close(context, ccache);
+
+    if (out_cred)
+	*out_cred = cred; /* return credential */
+
+    if (auth_context)
+	krb5_auth_con_free(context, auth_context);
+
     return retval;
 }
 
@@ -127,7 +179,6 @@ krb5_gss_accept_sec_context(minor_status, context_handle,
    krb5_ticket * ticket = NULL;
    int option_id;
    krb5_data option;
-   krb5_auth_context auth_context_cred = NULL;
    const gss_OID_desc *mech_used = NULL;
 
 
@@ -351,25 +402,15 @@ krb5_gss_accept_sec_context(minor_status, context_handle,
 		    TREAD_STR(ptr, ptr2, bigend);
 		    option.data = (char FAR *) ptr2;
 
-		    /* get a temporary auth_context structure for the
-		       call to rd_and_store_for_creds() and clear its flags */
+		    /* store the delegated credential */
 
-		    if ((code = krb5_auth_con_init(context,
-						   &auth_context_cred))) {
-			*minor_status = code;
-			return(GSS_S_FAILURE);
-		    }
-
-		    krb5_auth_con_setflags(context, auth_context_cred, 0);
-
-		    /* store the delegated credential in the user's cache */
-
-		    rd_and_store_for_creds(context, auth_context_cred,
-					   &option);
+		    rd_and_store_for_creds(context, &option,
+					   (delegated_cred_handle) ?
+					   delegated_cred_handle : NULL);
 
 		    i -= option.length + 4;
 
-		    krb5_auth_con_free(context, auth_context_cred);
+		    gss_flags |= GSS_C_DELEG_FLAG; /* got a delegation */
 
 		    break;
 
