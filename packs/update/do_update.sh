@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: do_update.sh,v 1.1 1995-10-26 22:30:23 cfields Exp $
+# $Id: do_update.sh,v 1.2 1995-10-26 22:37:59 cfields Exp $
 #
 
 ROOT=${ROOT-}; export ROOT
@@ -24,7 +24,7 @@ if [ ! -f ${ROOT}/${CONFDIR}/rc.conf -a -f ${ROOT}/etc/rc.conf ]; then
 fi
 
 echo "Starting update..."
-SITE=site; export SITE
+SITE=/var; export SITE
 SERVERDIR=${SITE}/server; export SERVERDIR
 CP_P=-p; export CP_P
 MTYPE=`/srvd/bin/athena/machtype -c` ; export MTYPE
@@ -33,55 +33,41 @@ mpublic="	/etc/crontab"
 case $MTYPE in 
 KN01)
 	MACH=DS3100; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server; export SERVERDIR
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
 			/etc/elcsd.conf"
 	;;
 KN02)
 	MACH=DS5000; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server; export SERVERDIR
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
 			/etc/elcsd.conf"
 	;;
 KN02ba)
 	MACH=DS5000_100; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server; export SERVERDIR
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
 			/etc/elcsd.conf"
 	;;
 KN02ca)
 	MACH=DSMAXINE; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server; export SERVERDIR
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
 			/etc/elcsd.conf"
 	;;
 KN210)
 	MACH=DS5400; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server; export SERVERDIR
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
 			/etc/elcsd.conf"
 	;;
 POWER*)
 	MACH=RSAIX; export MACH
-	SITE=var; export SITE
-	SERVERDIR=${SITE}/server
 	mpublic="	/etc/resolv.conf \
 			/etc/syslog.conf"
 	;;
 SPARC/IP*)
 	MACH=SUN4c; export MACH
-	SITE=/var; export SITE
-	SERVERDIR=/var/server
 	mpublic="	/etc/resolv.conf
 			/etc/syslog.conf
 			/etc/inet/inetd.conf
@@ -92,8 +78,6 @@ SPARC/IP*)
 # SPARC/Classic, 5, 10, 20
 SPARC/*)
 	MACH=SUN4m; export MACH
-	SITE=/var; export SITE
-	SERVERDIR=/var/server
 	mpublic="	/etc/resolv.conf
 			/etc/syslog.conf
 			/etc/inet/inetd.conf
