@@ -9,6 +9,7 @@ PangoDirection
 PANGO_TYPE_DIRECTION
 <SUBSECTION>
 pango_itemize
+pango_itemize_with_base_dir
 pango_item_free
 pango_item_copy
 pango_item_new
@@ -17,16 +18,23 @@ pango_reorder_items
 <SUBSECTION>
 pango_context_new
 pango_context_set_font_map
+pango_context_get_font_map
 pango_context_get_font_description
 pango_context_set_font_description
 pango_context_get_language
 pango_context_set_language
 pango_context_get_base_dir
 pango_context_set_base_dir
+pango_context_get_matrix
+pango_context_set_matrix
 pango_context_load_font
 pango_context_load_fontset
 pango_context_get_metrics
 pango_context_list_families
+<SUBSECTION>
+pango_get_mirror_char
+pango_unichar_direction
+pango_find_base_dir
 <SUBSECTION Standard>
 PANGO_TYPE_CONTEXT
 PangoContextClass
@@ -59,6 +67,15 @@ PANGO_ASCENT
 PANGO_DESCENT
 PANGO_LBEARING
 PANGO_RBEARING
+PangoMatrix
+PANGO_TYPE_MATRIX
+PANGO_MATRIX_INIT
+pango_matrix_copy
+pango_matrix_free
+pango_matrix_translate
+pango_matrix_scale
+pango_matrix_rotate
+pango_matrix_concat
 PangoGlyph
 PangoGlyphInfo
 PangoGlyphGeometry
@@ -78,9 +95,12 @@ pango_glyph_string_x_to_index
 pango_glyph_string_get_logical_widths
 pango_glyph_item_split
 pango_glyph_item_apply_attrs
+pango_glyph_item_letter_space
+pango_glyph_item_free
 
 <SUBSECTION Private>
 pango_glyph_string_get_type
+pango_matrix_get_type
 </SECTION>
 
 <SECTION>
@@ -156,6 +176,10 @@ pango_font_metrics_get_ascent
 pango_font_metrics_get_descent
 pango_font_metrics_get_approximate_char_width
 pango_font_metrics_get_approximate_digit_width
+pango_font_metrics_get_underline_thickness
+pango_font_metrics_get_underline_position
+pango_font_metrics_get_strikethrough_thickness
+pango_font_metrics_get_strikethrough_position
 <SUBSECTION>
 PangoFont
 PANGO_TYPE_FONT
@@ -172,6 +196,7 @@ PANGO_TYPE_FONT_FAMILY
 PANGO_FONT_FAMILY
 PANGO_IS_FONT_FAMILY
 pango_font_family_get_name
+pango_font_family_is_monospace
 pango_font_family_list_faces
 <SUBSECTION>
 PangoFontFace
@@ -179,6 +204,7 @@ PANGO_TYPE_FONT_FACE
 PANGO_FONT_FACE
 PANGO_IS_FONT_FACE
 pango_font_face_get_face_name
+pango_font_face_list_sizes
 pango_font_face_describe
 <SUBSECTION>
 PangoFontMap
@@ -192,12 +218,15 @@ PANGO_FONT_MAP_GET_CLASS
 pango_font_map_load_font
 pango_font_map_load_fontset
 pango_font_map_list_families
+pango_font_map_get_shape_engine_type
 <SUBSECTION>
 PangoFontset
 PANGO_TYPE_FONTSET
 PangoFontsetClass
 pango_fontset_get_font
 pango_fontset_get_metrics
+PangoFontsetForeachFunc
+pango_fontset_foreach
 PangoFontsetSimple
 PANGO_TYPE_FONTSET_SIMPLE
 pango_fontset_simple_new
@@ -279,6 +308,7 @@ PangoUnderline
 PANGO_TYPE_UNDERLINE
 pango_attr_shape_new
 pango_attr_scale_new
+pango_attr_fallback_new
 PANGO_SCALE_XX_SMALL
 PANGO_SCALE_X_SMALL
 PANGO_SCALE_SMALL
@@ -287,6 +317,7 @@ PANGO_SCALE_LARGE
 PANGO_SCALE_X_LARGE
 PANGO_SCALE_XX_LARGE
 pango_attr_rise_new
+pango_attr_letter_spacing_new
 PangoColor
 PANGO_TYPE_COLOR
 pango_color_free
@@ -374,12 +405,18 @@ pango_layout_set_wrap
 pango_layout_get_wrap
 PangoWrapMode
 PANGO_TYPE_WRAP_MODE
+pango_layout_set_ellipsize
+pango_layout_get_ellipsize
+PangoEllipsizeMode
+PANGO_TYPE_ELLIPSIZE_MODE
 pango_layout_set_indent
 pango_layout_get_indent
 pango_layout_get_spacing
 pango_layout_set_spacing
 pango_layout_set_justify
 pango_layout_get_justify
+pango_layout_set_auto_dir
+pango_layout_get_auto_dir
 pango_layout_set_alignment
 pango_layout_get_alignment
 pango_layout_set_tabs
@@ -442,27 +479,93 @@ PANGO_IS_LAYOUT
 PANGO_LAYOUT_CLASS
 PANGO_IS_LAYOUT_CLASS
 PANGO_LAYOUT_GET_CLASS
+PANGO_TYPE_LAYOUT_ITER
 
 <SUBSECTION Private>
 pango_layout_get_type
+pango_layout_iter_get_type
 pango_alignment_get_type
 pango_wrap_mode_get_type
+pango_ellipsize_mode_get_type
+</SECTION>
+
+<SECTION>
+<TITLE>Scripts</TITLE>
+<FILE>scripts</FILE>
+PangoScriptIter
+PangoScript
+PANGO_TYPE_SCRIPT
+pango_script_for_unichar
+pango_script_get_sample_language
+pango_language_includes_script
+pango_script_iter_new
+pango_script_iter_get_range
+pango_script_iter_next
+pango_script_iter_free
+<SUBSECTION Private>
+pango_script_get_type
+PangoScriptForLang
 </SECTION>
 
 <SECTION>
 <TITLE>Engines</TITLE>
 <FILE>engines</FILE>
 PangoEngineInfo
-PangoEngineRange
+PangoEngineScriptInfo
 PangoEngine
-PangoEngineLang
-PangoEngineShape
-PANGO_ENGINE_TYPE_LANG
-PANGO_ENGINE_TYPE_SHAPE
+PangoEngineClass
 PANGO_RENDER_TYPE_NONE
 script_engine_list
-script_engine_load
-script_engine_unload
+script_engine_init
+script_engine_exit
+script_engine_create
+<SUBSECTION Standard>
+PANGO_ENGINE
+PANGO_IS_ENGINE
+PANGO_TYPE_ENGINE
+PANGO_ENGINE_CLASS
+PANGO_IS_ENGINE_CLASS
+PANGO_ENGINE_GET_CLASS
+<SUBSECTION Private>
+pango_engine_get_type
+PANGO_MODULE_ENTRY
+PANGO_ENGINE_DEFINE_TYPE
+</SECTION>
+
+<SECTION>
+<TITLE>PangoEngineLang</TITLE>
+<FILE>pango-engine-lang</FILE>
+PangoEngineLang
+PangoEngineLangClass
+PANGO_ENGINE_TYPE_LANG
+PANGO_ENGINE_LANG_DEFINE_TYPE
+<SUBSECTION Standard>
+PANGO_ENGINE_LANG
+PANGO_IS_ENGINE_LANG
+PANGO_TYPE_ENGINE_LANG
+PANGO_ENGINE_LANG_CLASS
+PANGO_IS_ENGINE_LANG_CLASS
+PANGO_ENGINE_LANG_GET_CLASS
+<SUBSECTION Private>
+pango_engine_lang_get_type
+</SECTION>
+
+<SECTION>
+<TITLE>PangoEngineShape</TITLE>
+<FILE>pango-engine-shape</FILE>
+PangoEngineShape
+PangoEngineShapeClass
+PANGO_ENGINE_TYPE_SHAPE
+PANGO_ENGINE_SHAPE_DEFINE_TYPE
+<SUBSECTION Standard>
+PANGO_ENGINE_SHAPE
+PANGO_IS_ENGINE_SHAPE
+PANGO_TYPE_ENGINE_SHAPE
+PANGO_ENGINE_SHAPE_CLASS
+PANGO_IS_ENGINE_SHAPE_CLASS
+PANGO_ENGINE_SHAPE_GET_CLASS
+<SUBSECTION Private>
+pango_engine_shape_get_type
 </SECTION>
 
 <SECTION>
@@ -472,21 +575,9 @@ PangoIncludedModule
 PangoMap
 PangoMapEntry
 pango_find_map
-pango_map_get_entry
 pango_map_get_engine
+pango_map_get_engines
 pango_module_register
-</SECTION>
-
-<SECTION>
-<FILE>pango-indic</FILE>
-<TITLE>Indic Engine Support</TITLE>
-PANGO_ZERO_WIDTH_NON_JOINER
-PANGO_ZERO_WIDTH_JOINER
-PangoIndicScript
-pango_indic_shift_vowels
-pango_indic_compact
-pango_indic_convert_vowels
-pango_indic_split_out_characters
 </SECTION>
 
 <SECTION>
@@ -562,8 +653,11 @@ pango_ft2_font_map_set_default_substitute
 pango_ft2_font_map_substitute_changed
 pango_ft2_get_context
 pango_ft2_render
+pango_ft2_render_transformed
 pango_ft2_render_layout_line
+pango_ft2_render_layout_line_subpixel
 pango_ft2_render_layout
+pango_ft2_render_layout_subpixel
 pango_ft2_get_unknown_glyph
 pango_ft2_font_get_kerning
 pango_ft2_font_get_face
@@ -608,10 +702,76 @@ pango_xft_font_get_type
 </SECTION>
 
 <SECTION>
+<FILE>pangofc-fontmap</FILE>
+<TITLE>PangoFcFontMap</TITLE>
+PangoFcFontMap
+PangoFcFontMapClass
+pango_fc_font_description_from_pattern
+pango_fc_font_map_cache_clear
+pango_fc_font_map_create_context
+pango_fc_font_map_shutdown
+pango_fc_font_map_add_decoder_find_func
+PangoFcDecoderFindFunc
+<SUBSECTION Standard>
+PANGO_FC_FONT_MAP
+PANGO_IS_FC_FONT_MAP
+PANGO_TYPE_FC_FONT_MAP
+PANGO_FC_FONT_MAP_CLASS
+PANGO_IS_FC_FONT_MAP_CLASS
+PANGO_FC_FONT_MAP_GET_CLASS
+
+<SUBSECTION Private>
+PangoFcFontMapPrivate
+pango_fc_font_map_get_type
+</SECTION>
+
+<SECTION>
+<FILE>pangofc-font</FILE>
+<TITLE>PangoFcFont</TITLE>
+PangoFcFont
+PangoFcFontClass
+PANGO_RENDER_TYPE_FC
+pango_fc_font_lock_face
+pango_fc_font_unlock_face
+pango_fc_font_has_char
+pango_fc_font_get_glyph
+pango_fc_font_get_unknown_glyph
+pango_fc_font_kern_glyphs
+<SUBSECTION Standard>
+PANGO_FC_FONT
+PANGO_IS_FC_FONT
+PANGO_TYPE_FC_FONT
+PANGO_FC_FONT_CLASS
+PANGO_IS_FC_FONT_CLASS
+PANGO_FC_FONT_GET_CLASS
+<SUBSECTION Private>
+pango_fc_font_get_type
+</SECTION>
+
+<SECTION>
+<FILE>pangofc-decoder</FILE>
+<TITLE>PangoFcDecoder</TITLE>
+PangoFcDecoder
+PangoFcDecoderClass
+pango_fc_decoder_get_charset
+pango_fc_decoder_get_glyph
+<SUBSECTION Standard>
+PANGO_FC_DECODER
+PANGO_IS_FC_DECODER
+PANGO_TYPE_FC_DECODER
+pango_fc_decoder_get_type
+PANGO_FC_DECODER_CLASS
+PANGO_IS_FC_DECODER_CLASS
+PANGO_FC_DECODER_GET_CLASS
+</SECTION>
+
+<SECTION>
 <TITLE>OpenType Font Handling</TITLE>
 <FILE>opentype</FILE>
 PangoOTTag
 PangoOTInfo
+PangoOTBuffer
+PangoOTGlyph
 PangoOTRuleset
 PangoOTTableType
 pango_ot_info_get
@@ -621,8 +781,17 @@ pango_ot_info_find_feature
 pango_ot_info_list_scripts
 pango_ot_info_list_languages
 pango_ot_info_list_features
+pango_ot_buffer_new
+pango_ot_buffer_destroy
+pango_ot_buffer_clear
+pango_ot_buffer_add_glyph
+pango_ot_buffer_set_rtl
+pango_ot_buffer_set_zero_width_marks
+pango_ot_buffer_get_glyphs
+pango_ot_buffer_output
 pango_ot_ruleset_new
 pango_ot_ruleset_add_feature
-pango_ot_ruleset_shape
+pango_ot_ruleset_substitute
+pango_ot_ruleset_position
 </SECTION>
 

@@ -23,10 +23,9 @@
 
 #include <stdlib.h>
 
+#include "pangofc-fontmap.h"
 #include "pangoxft-private.h"
-#include "pango-layout.h"
-#include "pango-modules.h"
-#include "pango-utils.h"
+#include "pangofc-private.h"
 
 #define PANGO_XFT_FONT(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_XFT_FONT, PangoXftFont))
 #define PANGO_XFT_FONT_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), PANGO_TYPE_XFT_FONT, PangoXftFontClass))
@@ -36,113 +35,72 @@
 #define PANGO_XFT_UNKNOWN_FLAG 0x10000000
 
 typedef struct _PangoXftFontClass    PangoXftFontClass;
-typedef struct _PangoXftMetricsInfo  PangoXftMetricsInfo;
 
 struct _PangoXftFontClass
 {
-  PangoFontClass  parent_class;
+  PangoFcFontClass  parent_class;
 };
 
-struct _PangoXftMetricsInfo
-{
-  const char       *sample_str;
-  PangoFontMetrics *metrics;
-};
+static void pango_xft_font_finalize (GObject *object);
 
-static PangoFontClass *parent_class;	/* Parent class structure for PangoXftFont */
-
-static void pango_xft_font_class_init (PangoXftFontClass *class);
-static void pango_xft_font_init       (PangoXftFont      *xfont);
-static void pango_xft_font_dispose    (GObject         *object);
-static void pango_xft_font_finalize   (GObject         *object);
-
-static PangoFontDescription *pango_xft_font_describe          (PangoFont        *font);
-static PangoCoverage *       pango_xft_font_get_coverage      (PangoFont        *font,
-							       PangoLanguage    *language);
-static PangoEngineShape *    pango_xft_font_find_shaper       (PangoFont        *font,
-							       PangoLanguage    *language,
-							       guint32           ch);
 static void                  pango_xft_font_get_glyph_extents (PangoFont        *font,
 							       PangoGlyph        glyph,
 							       PangoRectangle   *ink_rect,
 							       PangoRectangle   *logical_rect);
-static PangoFontMetrics *    pango_xft_font_get_metrics       (PangoFont        *font,
-							       PangoLanguage    *language);
+
+static FT_Face    pango_xft_font_real_lock_face         (PangoFcFont      *font);
+static void       pango_xft_font_real_unlock_face       (PangoFcFont      *font);
+static gboolean   pango_xft_font_real_has_char          (PangoFcFont      *font,
+							 gunichar          wc);
+static guint      pango_xft_font_real_get_glyph         (PangoFcFont      *font,
+							 gunichar          wc);
+static PangoGlyph pango_xft_font_real_get_unknown_glyph (PangoFcFont      *font,
+							 gunichar          wc);
+static void       pango_xft_font_real_shutdown          (PangoFcFont      *font);
 
 static XftFont *xft_font_get_font (PangoFont *font);
 
-GType
-pango_xft_font_get_type (void)
-{
-  static GType object_type = 0;
-
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoXftFontClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) pango_xft_font_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoXftFont),
-        0,              /* n_preallocs */
-        (GInstanceInitFunc) pango_xft_font_init,
-      };
-      
-      object_type = g_type_register_static (PANGO_TYPE_FONT,
-                                            "PangoXftFont",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
-}
-
-static void 
-pango_xft_font_init (PangoXftFont *xfont)
-{
-  xfont->metrics_by_lang = NULL;
-  xfont->in_cache = FALSE;
-}
+G_DEFINE_TYPE (PangoXftFont, pango_xft_font, PANGO_TYPE_FC_FONT)
 
 static void
 pango_xft_font_class_init (PangoXftFontClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
   PangoFontClass *font_class = PANGO_FONT_CLASS (class);
+  PangoFcFontClass *fc_font_class = PANGO_FC_FONT_CLASS (class);
 
-  parent_class = g_type_class_peek_parent (class);
-  
   object_class->finalize = pango_xft_font_finalize;
-  object_class->dispose = pango_xft_font_dispose;
   
-  font_class->describe = pango_xft_font_describe;
-  font_class->get_coverage = pango_xft_font_get_coverage;
-  font_class->find_shaper = pango_xft_font_find_shaper;
   font_class->get_glyph_extents = pango_xft_font_get_glyph_extents;
-  font_class->get_metrics = pango_xft_font_get_metrics;
+
+  fc_font_class->lock_face = pango_xft_font_real_lock_face;
+  fc_font_class->unlock_face = pango_xft_font_real_unlock_face;
+  fc_font_class->has_char = pango_xft_font_real_has_char;
+  fc_font_class->get_glyph = pango_xft_font_real_get_glyph;
+  fc_font_class->get_unknown_glyph = pango_xft_font_real_get_unknown_glyph;
+  fc_font_class->shutdown = pango_xft_font_real_shutdown;
+}
+
+static void
+pango_xft_font_init (PangoXftFont *xftfont)
+{
 }
 
 PangoXftFont *
-_pango_xft_font_new (PangoFontMap               *fontmap,
-		     FcPattern			*pattern)
+_pango_xft_font_new (PangoXftFontMap *xftfontmap,
+		     FcPattern	     *pattern)
 {
+  PangoFontMap *fontmap = PANGO_FONT_MAP (xftfontmap);
   PangoXftFont *xfont;
 
   g_return_val_if_fail (fontmap != NULL, NULL);
   g_return_val_if_fail (pattern != NULL, NULL);
 
-  xfont = (PangoXftFont *)g_object_new (PANGO_TYPE_XFT_FONT, NULL);
+  xfont = (PangoXftFont *)g_object_new (PANGO_TYPE_XFT_FONT,
+					"pattern", pattern,
+					NULL);
   
-  xfont->fontmap = fontmap;
-  xfont->font_pattern = pattern;
-  
-  g_object_ref (fontmap);
-  xfont->description = _pango_xft_font_desc_from_pattern (pattern, TRUE);
   xfont->xft_font = NULL;
-
-  _pango_xft_font_map_add (xfont->fontmap, xfont);
 
   return xfont;
 }
@@ -151,8 +109,9 @@ static PangoFont *
 get_mini_font (PangoFont *font)
 {
   PangoXftFont *xfont = (PangoXftFont *)font;
+  PangoFcFont *fcfont = (PangoFcFont *)font;
 
-  g_assert (xfont->fontmap);
+  g_assert (fcfont->fontmap);
 
   if (!xfont->mini_font)
     {
@@ -163,13 +122,13 @@ get_mini_font (PangoFont *font)
       XGlyphInfo extents;
       XftFont *mini_xft;
       
-      _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
+      _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
 
       pango_font_description_set_family_static (desc, "monospace");
       pango_font_description_set_size (desc,
-				       0.5 * pango_font_description_get_size (xfont->description));
+				       0.5 * pango_font_description_get_size (fcfont->description));
       
-      xfont->mini_font = pango_font_map_load_font (xfont->fontmap, NULL, desc);
+      xfont->mini_font = pango_font_map_load_font (fcfont->fontmap, NULL, desc);
       pango_font_description_free (desc);
       
       mini_xft = xft_font_get_font (xfont->mini_font);
@@ -258,15 +217,16 @@ pango_xft_real_render (Display          *display,
 		       gint              y)
 {
   PangoXftFont *xfont = PANGO_XFT_FONT (font);
+  PangoFcFont *fcfont = PANGO_FC_FONT (font);
   XftFont *xft_font = xft_font_get_font (font);
   int i;
   int x_off = 0;
 #define N_XFT_LOCAL	1024
   XftGlyphSpec  xft_glyphs[N_XFT_LOCAL];
-  XftCharSpec	chars[4];     /* for unknown */
+  XftCharSpec	chars[6];     /* for unknown */
   int		n_xft_glyph = 0;
 
-  if (!xfont->fontmap)		/* Display closed */
+  if (!fcfont->fontmap)		/* Display closed */
     return;
 
 #define FLUSH_GLYPHS() G_STMT_START {						\
@@ -282,7 +242,7 @@ pango_xft_real_render (Display          *display,
   } G_STMT_END
 
   if (!display)
-    _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
+    _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
 
   for (i=0; i<glyphs->num_glyphs; i++)
     {
@@ -302,10 +262,11 @@ pango_xft_real_render (Display          *display,
 	{
 	  if (glyph & PANGO_XFT_UNKNOWN_FLAG)
 	    {
-	      char buf[5];
+	      char buf[7];
 	      int ys[3];
-	      int xs[3];
-	      int j, k;
+	      int xs[4];
+	      int row, col;
+              int cols;
 	      
 	      PangoFont *mini_font = get_mini_font (font);
 	      XftFont *mini_xft = xft_font_get_font (mini_font);
@@ -319,30 +280,40 @@ pango_xft_real_render (Display          *display,
 	      xs[0] = glyph_x; 
 	      xs[1] = xs[0] + 2 * xfont->mini_pad;
 	      xs[2] = xs[1] + xfont->mini_width + xfont->mini_pad;
-	      
+	      xs[3] = xs[2] + xfont->mini_width + xfont->mini_pad;
+
+              if (glyph > 0xffff)
+                {
+                  cols = 3;
+                  g_snprintf (buf, sizeof(buf), "%06X", glyph);
+                }
+              else
+                {
+                  cols = 2;
+                  g_snprintf (buf, sizeof(buf), "%04X", glyph);
+                }
+
 	      draw_box (display, src_picture, dest_picture, draw, color, xfont,
 			xs[0], ys[0],
-			xfont->mini_width * 2 + xfont->mini_pad * 5,
+			xfont->mini_width * cols + xfont->mini_pad * (2 * cols + 1),
 			xfont->mini_height * 2 + xfont->mini_pad * 5);
-	      
-	      g_snprintf (buf, sizeof(buf), "%04X", glyph);
 
 	      FLUSH_GLYPHS ();
-	      for (j = 0; j < 2; j++)
-		for (k = 0; k < 2; k++)
+	      for (row = 0; row < 2; row++)
+		for (col = 0; col < cols; col++)
 		  {
-		    XftCharSpec *c = &chars[j * 2 + k];
-		    c->ucs4 = buf[j * 2 + k] & 0xff;
-		    c->x = xs[k+1];
-		    c->y = ys[j+1];
+		    XftCharSpec *c = &chars[row * cols + col];
+		    c->ucs4 = buf[row * cols + col] & 0xff;
+		    c->x = xs[col+1];
+		    c->y = ys[row+1];
 		  }
 	      if (draw)
 		XftDrawCharSpec (draw, color, mini_xft,
-				 chars, 4);
+				 chars, 2 * cols);
 	      else
 		XftCharSpecRender (display, PictOpOver, src_picture,
 				   mini_xft, dest_picture, 0, 0,
-				   chars, 4);
+				   chars, 2 * cols);
 	    }
 	  else if (glyph)
 	    {
@@ -421,145 +392,133 @@ pango_xft_picture_render (Display          *display,
   pango_xft_real_render (display, src_picture, dest_picture, NULL, NULL, font, glyphs, x, y);
 }
 
-static PangoFontMetrics *
-pango_xft_font_get_metrics (PangoFont     *font,
-			    PangoLanguage *language)
-{
-  PangoXftFont *xfont = PANGO_XFT_FONT (font);
-  PangoXftMetricsInfo *info = NULL; /* Quiet gcc */
-  GSList *tmp_list;      
-
-  const char *sample_str = pango_language_get_sample_string (language);
-  
-  tmp_list = xfont->metrics_by_lang;
-  while (tmp_list)
-    {
-      info = tmp_list->data;
-      
-      if (info->sample_str == sample_str)    /* We _don't_ need strcmp */
-	break;
-
-      tmp_list = tmp_list->next;
-    }
-
-  if (!tmp_list)
-    {
-      PangoLayout *layout;
-      PangoRectangle extents;
-      PangoContext *context;
-      XftFont *xft_font;
-      Display *display;
-
-      info = g_new0 (PangoXftMetricsInfo, 1);
-      xfont->metrics_by_lang = g_slist_prepend (xfont->metrics_by_lang, 
-                                                info);
-
-	  
-      if (xfont->fontmap)
-	{
-	  xft_font = xft_font_get_font (font);
-      
-	  _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
-	  context = pango_xft_get_context (display, 0);
-
-	  info->sample_str = sample_str;
-	  info->metrics = pango_font_metrics_new ();
-
-	  info->metrics->ascent = PANGO_SCALE * xft_font->ascent;
-	  info->metrics->descent = PANGO_SCALE * xft_font->descent;
-	  info->metrics->approximate_char_width = 
-	    info->metrics->approximate_digit_width = 
-	    PANGO_SCALE * xft_font->max_advance_width;
-
-	  pango_context_set_language (context, language);
-	  layout = pango_layout_new (context);
-	  pango_layout_set_font_description (layout, xfont->description);
-
-	  pango_layout_set_text (layout, sample_str, -1);      
-	  pango_layout_get_extents (layout, NULL, &extents);
-      
-	  info->metrics->approximate_char_width = 
-	    extents.width / g_utf8_strlen (sample_str, -1);
-
-	  pango_layout_set_text (layout, "0123456789", -1);      
-	  pango_layout_get_extents (layout, NULL, &extents);
-      
-	  info->metrics->approximate_digit_width = extents.width / 10;
-
-	  g_object_unref (layout);
-	  g_object_unref (context);
-	}
-    }
-
-  return pango_font_metrics_ref (info->metrics);
-}
-
-static void
-pango_xft_font_dispose (GObject *object)
-{
-  PangoXftFont *xfont = PANGO_XFT_FONT (object);
-
-  /* If the font is not already in the freed-fonts cache, add it,
-   * if it is already there, do nothing and the font will be
-   * freed.
-   */
-  if (!xfont->in_cache && xfont->fontmap)
-    _pango_xft_font_map_cache_add (xfont->fontmap, xfont);
-
-  G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-free_metrics_info (PangoXftMetricsInfo *info)
-{
-  pango_font_metrics_unref (info->metrics);
-  g_free (info);
-}
-
 static void
 pango_xft_font_finalize (GObject *object)
 {
   PangoXftFont *xfont = (PangoXftFont *)object;
-
-  if (xfont->fontmap)
-    _pango_xft_font_map_remove (xfont->fontmap, xfont);
+  PangoFcFont *fcfont = (PangoFcFont *)object;
 
   if (xfont->mini_font)
     g_object_unref (xfont->mini_font);
-
-  pango_font_description_free (xfont->description);
-
-  g_slist_foreach (xfont->metrics_by_lang, (GFunc)free_metrics_info, NULL);
-  g_slist_free (xfont->metrics_by_lang);  
 
   if (xfont->xft_font)
     {
       Display *display;
       
-      _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
+      _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
       XftFontClose (display, xfont->xft_font);
     }
 
-  FcPatternDestroy (xfont->font_pattern);
+  if (xfont->glyph_info)
+    g_hash_table_destroy (xfont->glyph_info);
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (pango_xft_font_parent_class)->finalize (object);
 }
 
-static PangoFontDescription *
-pango_xft_font_describe (PangoFont *font)
-{
-  PangoXftFont *xfont = (PangoXftFont *)font;
+static void
+get_glyph_extents_missing (PangoXftFont    *xfont,
+			   PangoGlyph       glyph,
+			   PangoRectangle  *ink_rect,
+			   PangoRectangle  *logical_rect)
 
-  return pango_font_description_copy (xfont->description);
+{
+  PangoFont *font = PANGO_FONT (xfont);
+  XftFont *xft_font = xft_font_get_font (font);
+  
+  gint cols = (glyph & ~PANGO_XFT_UNKNOWN_FLAG) > 0xffff ? 3 : 2;
+  
+  get_mini_font (font);
+  
+  if (ink_rect)
+    {
+      ink_rect->x = 0;
+      ink_rect->y = PANGO_SCALE * (- xft_font->ascent + (xft_font->ascent + xft_font->descent - xfont->mini_height * 2 - xfont->mini_pad * 5) / 2);
+      ink_rect->width = PANGO_SCALE * (xfont->mini_width * cols + xfont->mini_pad * (2 * cols + 1));
+      ink_rect->height = PANGO_SCALE * (xfont->mini_height * 2 + xfont->mini_pad * 5);
+    }
+  
+  if (logical_rect)
+    {
+      logical_rect->x = 0;
+      logical_rect->y = - PANGO_SCALE * xft_font->ascent;
+      logical_rect->width = PANGO_SCALE * (xfont->mini_width * cols + xfont->mini_pad * (2 * cols + 2));
+      logical_rect->height = (xft_font->ascent + xft_font->descent) * PANGO_SCALE;
+    }
 }
 
-static PangoCoverage *
-pango_xft_font_get_coverage (PangoFont     *font,
-			     PangoLanguage *language)
+static void
+get_glyph_extents_xft (PangoFcFont      *fcfont,
+		       PangoGlyph        glyph,
+		       PangoRectangle   *ink_rect,
+		       PangoRectangle   *logical_rect)
 {
-  PangoXftFont *xfont = (PangoXftFont *)font;
+  XftFont *xft_font = xft_font_get_font ((PangoFont *)fcfont);
+  XGlyphInfo extents;
+  Display *display;
+  FT_UInt ft_glyph = glyph;
+  
+  _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
 
-  return _pango_xft_font_map_get_coverage (xfont->fontmap, xfont->font_pattern);
+  XftGlyphExtents (display, xft_font, &ft_glyph, 1, &extents);
+
+  if (ink_rect)
+    {
+      ink_rect->x = - extents.x * PANGO_SCALE; /* Xft crack-rock sign choice */
+      ink_rect->y = - extents.y * PANGO_SCALE; /*             "              */
+      ink_rect->width = extents.width * PANGO_SCALE;
+      ink_rect->height = extents.height * PANGO_SCALE;
+    }
+  
+  if (logical_rect)
+    {
+      logical_rect->x = 0;
+      logical_rect->y = - xft_font->ascent * PANGO_SCALE;
+      logical_rect->width = extents.xOff * PANGO_SCALE;
+      logical_rect->height = (xft_font->ascent + xft_font->descent) * PANGO_SCALE;
+    }
+}
+
+typedef struct
+{
+  PangoRectangle ink_rect;
+  PangoRectangle logical_rect;
+} Extents;
+
+static void
+get_glyph_extents_raw (PangoXftFont     *xfont,
+		       PangoGlyph        glyph,
+		       PangoRectangle   *ink_rect,
+		       PangoRectangle   *logical_rect)
+{
+  Extents *extents;
+
+  if (!xfont->glyph_info)
+    xfont->glyph_info = g_hash_table_new_full (NULL, NULL,
+					       NULL, (GDestroyNotify)g_free);
+
+  extents = g_hash_table_lookup (xfont->glyph_info,
+				 GUINT_TO_POINTER (glyph));
+
+  if (!extents)
+    {
+      extents = g_new (Extents, 1);
+     
+      pango_fc_font_get_raw_extents (PANGO_FC_FONT (xfont),
+				     FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING,
+				     glyph,
+				     &extents->ink_rect,
+				     &extents->logical_rect);
+
+      g_hash_table_insert (xfont->glyph_info,
+			   GUINT_TO_POINTER (glyph),
+			   extents);
+    }
+  
+  if (ink_rect)
+    *ink_rect = extents->ink_rect;
+
+  if (logical_rect)
+    *logical_rect = extents->logical_rect;
 }
 
 static void
@@ -569,58 +528,24 @@ pango_xft_font_get_glyph_extents (PangoFont        *font,
 				  PangoRectangle   *logical_rect)
 {
   PangoXftFont *xfont = (PangoXftFont *)font;
-  XftFont *xft_font = xft_font_get_font (font);
-  XGlyphInfo extents;
-  Display *display;
+  PangoFcFont *fcfont = PANGO_FC_FONT (font);
 
-  if (!xfont->fontmap)		/* Display closed */
+  if (!fcfont->fontmap)		/* Display closed */
     goto fallback;
 
-  _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
-  
   if (glyph == (PangoGlyph)-1)
     glyph = 0;
 
   if (glyph & PANGO_XFT_UNKNOWN_FLAG)
     {
-      get_mini_font (font);
-      
-      if (ink_rect)
-	{
-	  ink_rect->x = 0;
-	  ink_rect->y = PANGO_SCALE * (- xft_font->ascent + (xft_font->ascent + xft_font->descent - xfont->mini_height * 2 - xfont->mini_pad * 5) / 2);
-	  ink_rect->width = PANGO_SCALE * (xfont->mini_width * 2 + xfont->mini_pad * 5);
-	  ink_rect->height = PANGO_SCALE * (xfont->mini_height * 2 + xfont->mini_pad * 5);
-	}
-      
-      if (logical_rect)
-	{
-	  logical_rect->x = 0;
-	  logical_rect->y = - PANGO_SCALE * xft_font->ascent;
-	  logical_rect->width = PANGO_SCALE * (xfont->mini_width * 2 + xfont->mini_pad * 6);
-	  logical_rect->height = (xft_font->ascent + xft_font->descent) * PANGO_SCALE;
-	}
+      get_glyph_extents_missing (xfont, glyph, ink_rect, logical_rect);
     }
   else if (glyph)
     {
-      FT_UInt ft_glyph = glyph;
-      XftGlyphExtents (display, xft_font, &ft_glyph, 1, &extents);
-
-      if (ink_rect)
-	{
-	  ink_rect->x = - extents.x * PANGO_SCALE; /* Xft crack-rock sign choice */
-	  ink_rect->y = - extents.y * PANGO_SCALE; /*             "              */
-	  ink_rect->width = extents.width * PANGO_SCALE;
-	  ink_rect->height = extents.height * PANGO_SCALE;
-	}
-      
-      if (logical_rect)
-	{
-	  logical_rect->x = 0;
-	  logical_rect->y = - xft_font->ascent * PANGO_SCALE;
-	  logical_rect->width = extents.xOff * PANGO_SCALE;
-	  logical_rect->height = (xft_font->ascent + xft_font->descent) * PANGO_SCALE;
-	}
+      if (!fcfont->is_transformed)
+	get_glyph_extents_xft (fcfont, glyph, ink_rect, logical_rect);
+      else
+	get_glyph_extents_raw (xfont, glyph, ink_rect, logical_rect);
     }
   else
     {
@@ -643,59 +568,19 @@ pango_xft_font_get_glyph_extents (PangoFont        *font,
     }
 }
 
-static PangoMap *
-pango_xft_get_shaper_map (PangoLanguage *language)
-{
-  static guint engine_type_id = 0;
-  static guint render_type_id = 0;
-  
-  if (engine_type_id == 0)
-    {
-      engine_type_id = g_quark_from_static_string (PANGO_ENGINE_TYPE_SHAPE);
-      render_type_id = g_quark_from_static_string (PANGO_RENDER_TYPE_XFT);
-    }
-  
-  return pango_find_map (language, engine_type_id, render_type_id);
-}
-
-static PangoEngineShape *
-pango_xft_font_find_shaper (PangoFont     *font,
-			    PangoLanguage *language,
-			    guint32        ch)
-{
-  PangoMap *shape_map = NULL;
-
-  shape_map = pango_xft_get_shaper_map (language);
-  return (PangoEngineShape *)pango_map_get_engine (shape_map, ch);
-}
-
-static gboolean
-set_unicode_charmap (FT_Face face)
-{
-  int charmap;
-
-  for (charmap = 0; charmap < face->num_charmaps; charmap++)
-    if (face->charmaps[charmap]->encoding == ft_encoding_unicode)
-      {
-	FT_Error error = FT_Set_Charmap(face, face->charmaps[charmap]);
-	return error == FT_Err_Ok;
-      }
-
-  return FALSE;
-}
-
 static void
 load_fallback_font (PangoXftFont *xfont)
 {
+  PangoFcFont *fcfont = PANGO_FC_FONT (xfont);
   Display *display;
   int screen;
   XftFont *xft_font;
   
-  _pango_xft_font_map_get_info (xfont->fontmap, &display, &screen);
+  _pango_xft_font_map_get_info (fcfont->fontmap, &display, &screen);
       
   xft_font = XftFontOpen (display,  screen,
                           FC_FAMILY, FcTypeString, "sans",
-                          FC_SIZE, FcTypeDouble, (double)pango_font_description_get_size (xfont->description)/PANGO_SCALE,
+                          FC_SIZE, FcTypeDouble, (double)pango_font_description_get_size (fcfont->description)/PANGO_SCALE,
                           NULL);
   
   if (!xft_font)
@@ -711,19 +596,21 @@ static XftFont *
 xft_font_get_font (PangoFont *font)
 {
   PangoXftFont *xfont;
+  PangoFcFont *fcfont;
   Display *display;
   int screen;
 
   xfont = (PangoXftFont *)font;
+  fcfont = (PangoFcFont *)font;
 
   if (xfont->xft_font == NULL)
     {
-      _pango_xft_font_map_get_info (xfont->fontmap, &display, &screen);
+      _pango_xft_font_map_get_info (fcfont->fontmap, &display, &screen);
 
-      xfont->xft_font = XftFontOpenPattern (display, FcPatternDuplicate (xfont->font_pattern));
+      xfont->xft_font = XftFontOpenPattern (display, FcPatternDuplicate (fcfont->font_pattern));
       if (!xfont->xft_font)
 	{
-	  gchar *name = pango_font_description_to_string (xfont->description);
+	  gchar *name = pango_font_description_to_string (fcfont->description);
 	  g_warning ("Cannot open font file for font %s", name);
   	  g_free (name);
   	  
@@ -732,6 +619,62 @@ xft_font_get_font (PangoFont *font)
     }
   
   return xfont->xft_font;
+}
+
+static FT_Face
+pango_xft_font_real_lock_face (PangoFcFont *font)
+{
+  XftFont *xft_font = xft_font_get_font ((PangoFont *)font);
+  
+  return XftLockFace (xft_font);
+}
+
+static void
+pango_xft_font_real_unlock_face (PangoFcFont *font)
+{
+  XftFont *xft_font = xft_font_get_font ((PangoFont *)font);
+  
+  XftUnlockFace (xft_font);
+}
+
+static gboolean
+pango_xft_font_real_has_char (PangoFcFont *font,
+			      gunichar     wc)
+{
+  XftFont *xft_font = xft_font_get_font ((PangoFont *)font);
+  
+  return XftCharExists (NULL, xft_font, wc);
+}
+
+static guint
+pango_xft_font_real_get_glyph (PangoFcFont *font,
+			       gunichar     wc)
+{
+  XftFont *xft_font = xft_font_get_font ((PangoFont *)font);
+
+  return XftCharIndex (NULL, xft_font, wc);
+}
+
+static PangoGlyph
+pango_xft_font_real_get_unknown_glyph (PangoFcFont *font,
+				       gunichar     wc)
+{
+  return wc | PANGO_XFT_UNKNOWN_FLAG;
+}
+
+static void
+pango_xft_font_real_shutdown (PangoFcFont *fcfont)
+{
+  PangoXftFont *xfont = PANGO_XFT_FONT (fcfont);
+  
+  if (xfont->xft_font)
+    {
+      Display *display;
+
+      _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
+      XftFontClose (display, xfont->xft_font);
+      xfont->xft_font = NULL;
+    }
 }
 
 /**
@@ -761,13 +704,13 @@ pango_xft_font_get_font (PangoFont *font)
 Display *
 pango_xft_font_get_display (PangoFont *font)
 {
-  PangoXftFont *xfont;
+  PangoFcFont *fcfont;
   Display *display;
 
   g_return_val_if_fail (PANGO_XFT_IS_FONT (font), NULL);
 
-  xfont = PANGO_XFT_FONT (font);
-  _pango_xft_font_map_get_info (xfont->fontmap, &display, NULL);
+  fcfont = PANGO_FC_FONT (font);
+  _pango_xft_font_map_get_info (fcfont->fontmap, &display, NULL);
 
   return display;
 }
@@ -780,6 +723,8 @@ pango_xft_font_get_display (PangoFont *font)
  * Returns the index of a glyph suitable for drawing @wc as an
  * unknown character.
  *
+ * Use pango_fc_font_get_unknown_glyph() instead.
+ *
  * Return value: a glyph index into @font.
  **/
 PangoGlyph
@@ -788,7 +733,7 @@ pango_xft_font_get_unknown_glyph (PangoFont *font,
 {
   g_return_val_if_fail (PANGO_XFT_IS_FONT (font), -1);
 
-  return wc | PANGO_XFT_UNKNOWN_FLAG;
+  return pango_fc_font_get_unknown_glyph (PANGO_FC_FONT (font), wc);
 }
 
 /**
@@ -799,6 +744,8 @@ pango_xft_font_get_unknown_glyph (PangoFont *font,
  * This face will be kept around until you call
  * pango_xft_font_unlock_face().
  *
+ * Use pango_fc_font_lock_face() instead.
+ *
  * Returns: the FreeType FT_Face associated with @font.
  *
  * Since: 1.2
@@ -806,13 +753,9 @@ pango_xft_font_get_unknown_glyph (PangoFont *font,
 FT_Face
 pango_xft_font_lock_face (PangoFont *font)
 {
-  XftFont *xft_font;
-
   g_return_val_if_fail (PANGO_XFT_IS_FONT (font), NULL);
 
-  xft_font = xft_font_get_font (font);
-  
-  return XftLockFace (xft_font);
+  return pango_fc_font_lock_face (PANGO_FC_FONT (font));
 }
 
 /**
@@ -822,18 +765,16 @@ pango_xft_font_lock_face (PangoFont *font)
  * Releases a font previously obtained with
  * pango_xft_font_lock_face().
  *
+ * Use pango_fc_font_unlock_face() instead.
+ *
  * Since: 1.2
  **/
 void
 pango_xft_font_unlock_face (PangoFont *font)
 {
-  XftFont *xft_font;
-
   g_return_if_fail (PANGO_XFT_IS_FONT (font));
 
-  xft_font = xft_font_get_font (font);
-  
-  XftUnlockFace (xft_font);
+  pango_fc_font_unlock_face (PANGO_FC_FONT (font));
 }
 
 /**
@@ -845,6 +786,8 @@ pango_xft_font_unlock_face (PangoFont *font)
  * for @font. If you only want to determine
  * whether the font has the glyph, use pango_xft_font_has_char().
  * 
+ * Use pango_fc_font_get_glyph() instead.
+ *
  * Return value: the glyph index, or 0, if the unicode
  *  codepoint doesn't exist in the font.
  *
@@ -854,13 +797,9 @@ guint
 pango_xft_font_get_glyph (PangoFont *font,
 			  gunichar   wc)
 {
-  XftFont *xft_font;
-
   g_return_val_if_fail (PANGO_XFT_IS_FONT (font), 0);
 
-  xft_font = xft_font_get_font (font);
-  
-  return XftCharIndex (NULL, xft_font, wc);
+  return pango_fc_font_get_glyph (PANGO_FC_FONT (font), wc);
 }
 
 /**
@@ -870,6 +809,8 @@ pango_xft_font_get_glyph (PangoFont *font,
  * 
  * Determines whether @font has a glyph for the codepoint @wc.
  * 
+ * Use pango_fc_font_has_char() instead.
+ *
  * Return value: %TRUE if @font has the requested codepoint.
  *
  * Since: 1.2
@@ -878,11 +819,7 @@ gboolean
 pango_xft_font_has_char (PangoFont *font,
 			 gunichar   wc)
 {
-  XftFont *xft_font;
-
   g_return_val_if_fail (PANGO_XFT_IS_FONT (font), 0);
 
-  xft_font = xft_font_get_font (font);
-  
-  return XftCharExists (NULL, xft_font, wc);
+  return pango_fc_font_has_char (PANGO_FC_FONT (font), wc);
 }

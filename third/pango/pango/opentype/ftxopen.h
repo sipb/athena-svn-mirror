@@ -22,7 +22,8 @@
 #ifndef FTXOPEN_H
 #define FTXOPEN_H
 
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,6 +117,8 @@ extern "C" {
   {
     FT_UShort           FeatureCount;   /* number of FeatureRecords */
     TTO_FeatureRecord*  FeatureRecord;  /* array of FeatureRecords  */
+    FT_UShort*		ApplyOrder;	/* order to apply features */
+    FT_UShort		ApplyCount;	/* number of elements in ApplyOrder */
   };
 
   typedef struct TTO_FeatureList_  TTO_FeatureList;
@@ -149,15 +152,19 @@ extern "C" {
   {
     FT_UShort    LookupCount;           /* number of Lookups       */
     TTO_Lookup*  Lookup;                /* array of Lookup records */
-    FT_UShort*   Properties;            /* array of flags          */
+    FT_UInt*     Properties;            /* array of flags          */
   };
 
   typedef struct TTO_LookupList_  TTO_LookupList;
 
 
-/* Possible LookupFlag bit masks.  `IGNORE_SPECIAL_MARKS' comes from the
-   OpenType 1.2 specification.                                           */
+  /* Possible LookupFlag bit masks.  `IGNORE_SPECIAL_MARKS' comes from the
+     OpenType 1.2 specification; RIGHT_TO_LEFT has been (re)introduced in
+     OpenType 1.3 -- if set, the last glyph in a cursive attachment
+     sequence has to be positioned on the baseline -- regardless of the
+     writing direction.                                                    */
 
+#define RIGHT_TO_LEFT         0x0001
 #define IGNORE_BASE_GLYPHS    0x0002
 #define IGNORE_LIGATURES      0x0004
 #define IGNORE_MARKS          0x0008
@@ -275,6 +282,7 @@ extern "C" {
   typedef struct TTO_Device_  TTO_Device;
 
 
+#include "otlbuffer.h"
 #include "ftxgdef.h"
 #include "ftxgsub.h"
 #include "ftxgpos.h"

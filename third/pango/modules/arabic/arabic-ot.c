@@ -27,7 +27,7 @@
  *
  *    The following character also has a joining class:
  *
- *     U+200C  ZERO WIDTH NON-JOINER  -> causing
+ *     U+200D  ZERO WIDTH JOINER  -> causing
  *
  *    All other characters are given the joining class `none'.
  *
@@ -54,8 +54,8 @@ joining_class  arabic[] =
   transparent, transparent, transparent, transparent,
 
   /* U+0650 */
-  transparent, transparent, transparent, none,
-  none, none, none, none,
+  transparent, transparent, transparent, transparent,
+  transparent, transparent, transparent, transparent,
   none, none, none, none,
   none, none, none, none,
 
@@ -111,13 +111,13 @@ joining_class  arabic[] =
   transparent, transparent, transparent, transparent,
   transparent, none, none, transparent,
   transparent, none, transparent, transparent,
-  transparent, transparent, none, none,
+  transparent, transparent, right, right,
 
   /* U+06F0 */
   none, none, none, none,
   none, none, none, none,
   none, none, dual, dual,
-  dual, none, none, none
+  dual, none, none, dual
 };
 
 #if 0
@@ -269,7 +269,7 @@ static joining_class  Get_Joining_Class (gunichar*   string,
       if (string[pos] < 0x0620 ||
 	  string[pos] >= 0x0700)
 	{
-	  if (string[pos] == 0x200C)
+	  if (string[pos] == 0x200D)
 	    return causing;
 	  else
 	    return none;

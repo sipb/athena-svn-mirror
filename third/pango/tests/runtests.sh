@@ -3,6 +3,9 @@
 LOGFILE=runtests.log
 POTENTIAL_TESTS='testboundaries testcolor'
 
+ECHO_C=''
+ECHO_N='-n'
+
 for I in $POTENTIAL_TESTS
 do
     GOOD=yes
@@ -32,7 +35,7 @@ echo "" >> $LOGFILE
 
 for I in $TESTS
 do
-    echo -n "Running test program \"$I\", please wait:"
+    echo $ECHO_N "Running test program \"$I\", please wait:$ECHO_C"
     echo "" >> $LOGFILE
     echo "Output of $I:" >> $LOGFILE
     if ./$I >>$LOGFILE 2>&1; then

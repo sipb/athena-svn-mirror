@@ -21,8 +21,8 @@
 
 #include "pango-ot-private.h"
 #include "fterrcompat.h"
-#include <freetype/internal/ftobjs.h>
-#include <freetype/ftmodule.h>
+#include FT_INTERNAL_OBJECTS_H
+#include FT_MODULE_H
 
 static void pango_ot_info_class_init (GObjectClass *object_class);
 static void pango_ot_info_finalize   (GObject *object);
@@ -137,7 +137,8 @@ pango_ot_info_get (FT_Face face)
 static gboolean
 is_truetype (FT_Face face)
 {
-  return strcmp (FT_MODULE_CLASS (face->driver)->module_name, "truetype") == 0;
+  return strcmp (FT_MODULE_CLASS (face->driver)->module_name, "truetype") == 0 ||
+	 strcmp (FT_MODULE_CLASS (face->driver)->module_name, "cff") == 0;
 }
 
 typedef struct _GlyphInfo GlyphInfo;
@@ -161,18 +162,47 @@ compare_glyph_info (gconstpointer a,
 /* Make a guess at the appropriate class for a glyph given 
  * a character code that maps to the glyph
  */
-static FT_UShort
-get_glyph_class (gunichar charcode)
+static gboolean
+get_glyph_class (gunichar   charcode,
+		 FT_UShort *class)
 {
+  /* For characters mapped into the Arabic Presentation forms, using properties
+   * derived as we apply GSUB substitutions will be more reliable
+   */
+  if ((charcode >= 0xFB50 && charcode <= 0xFDFF) || /* Arabic Presentation Forms-A */
+      (charcode >= 0xFE70 && charcode <= 0XFEFF))   /* Arabic Presentation Forms-B */
+    return FALSE;
+  
   switch (g_unichar_type (charcode))
     {
     case G_UNICODE_COMBINING_MARK:
     case G_UNICODE_ENCLOSING_MARK:
     case G_UNICODE_NON_SPACING_MARK:
-      return 3;		/* Mark glyph (non-spacing combining glyph) */
+      *class = 3;		/* Mark glyph (non-spacing combining glyph) */
+      return TRUE;
+    case G_UNICODE_UNASSIGNED:
+    case G_UNICODE_PRIVATE_USE:
+      return FALSE;		/* Unknown, don't assign a class; classes get
+				 * propagated during GSUB application */
     default:
-      return 1;		/* Base glyph (single character, spacing glyph) */
+      *class = 1;               /* Base glyph (single character, spacing glyph) */
+      return TRUE;
     }
+}
+
+static gboolean
+set_unicode_charmap (FT_Face face)
+{
+  int charmap;
+
+  for (charmap = 0; charmap < face->num_charmaps; charmap++)
+    if (face->charmaps[charmap]->encoding == ft_encoding_unicode)
+      {
+	FT_Error error = FT_Set_Charmap(face, face->charmaps[charmap]);
+	return error == FT_Err_Ok;
+      }
+
+  return FALSE;
 }
 
 /* Synthesize a GDEF table using the font's charmap and the
@@ -188,9 +218,13 @@ synthesize_class_def (PangoOTInfo *info)
   FT_ULong charcode;
   FT_UInt glyph;
   int i, j;
+  FT_CharMap old_charmap;
   
-  if (info->face->charmap->encoding != ft_encoding_unicode)
-    return;
+  old_charmap = info->face->charmap;
+
+  if (!old_charmap || !old_charmap->encoding != ft_encoding_unicode)
+    if (!set_unicode_charmap (info->face))
+      return;
 
   glyph_infos = g_array_new (FALSE, FALSE, sizeof (GlyphInfo));
 
@@ -202,13 +236,12 @@ synthesize_class_def (PangoOTInfo *info)
     {
       GlyphInfo glyph_info;
 
-      if (glyph > 65535)
-	continue;
-
-      glyph_info.glyph = glyph;
-      glyph_info.class = get_glyph_class (charcode);
-
-      g_array_append_val (glyph_infos, glyph_info);
+      if (glyph <= 65535)
+	{
+	  glyph_info.glyph = glyph;
+	  if (get_glyph_class (charcode, &glyph_info.class))
+	    g_array_append_val (glyph_infos, glyph_info);
+	}
       
       charcode = FT_Get_Next_Char (info->face, charcode, &glyph);
     }
@@ -240,6 +273,9 @@ synthesize_class_def (PangoOTInfo *info)
 
   g_free (glyph_indices);
   g_free (classes);
+
+  if (old_charmap && info->face->charmap != old_charmap)
+    FT_Set_Charmap (info->face, old_charmap);
 }
 
 TTO_GDEF 

@@ -1,8 +1,7 @@
 #ifndef __THAI_SHAPER_H__
 #define __THAI_SHAPER_H__
 
-#include "pangox.h"
-
+#define isthai(wc)      (wc >= 0xE00 && wc < 0xE80)
 #define ucs2tis(wc)     (unsigned int)((unsigned int)(wc) - 0x0E00 + 0xA0)
 #define tis2uni(c)      ((gunichar)(c) - 0xA0 + 0x0E00)
 
@@ -12,7 +11,6 @@ typedef struct _ThaiFontInfo ThaiFontInfo;
  */
 typedef enum {
   THAI_FONT_NONE,
-  THAI_FONT_XTIS,
   THAI_FONT_TIS,
   THAI_FONT_TIS_MAC,
   THAI_FONT_TIS_WIN,
@@ -28,7 +26,6 @@ struct _ThaiFontInfo
 {
   PangoFont       *font;
   ThaiFontSet      font_set;
-  PangoXSubfont    subfont; /* For X backend */
 };
 
 /*
@@ -47,7 +44,8 @@ thai_make_unknown_glyph (ThaiFontInfo *font_info, unsigned int c);
  * Public functions
  */
 void
-thai_engine_shape (PangoFont        *font,
+thai_engine_shape (PangoEngineShape *engine,
+		   PangoFont        *font,
                    const char       *text,
                    gint              length,
                    PangoAnalysis    *analysis,

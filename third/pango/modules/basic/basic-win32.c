@@ -34,6 +34,10 @@
 
 #include "basic-common.h"
 
+/* No extra fields needed */
+typedef PangoEngineShape      BasicEngineWin32;
+typedef PangoEngineShapeClass BasicEngineWin32Class ;
+
 #define SCRIPT_ENGINE_NAME "BasicScriptEngineWin32"
 
 static gboolean pango_win32_debug = FALSE;
@@ -103,101 +107,66 @@ typedef HRESULT (WINAPI *pScriptPlace) (HDC,
 
 typedef HRESULT (WINAPI *pScriptFreeCache) (SCRIPT_CACHE *);
 
+typedef HRESULT (WINAPI *pScriptIsComplex) (WCHAR *,
+					    int,
+					    DWORD);
+
 static pScriptGetProperties script_get_properties;
 static pScriptItemize script_itemize;
 static pScriptShape script_shape;
 static pScriptPlace script_place;
 static pScriptFreeCache script_free_cache;
+static pScriptIsComplex script_is_complex;
 
+#ifdef BASIC_WIN32_DEBUGGING
 static const SCRIPT_PROPERTIES **scripts;
 static int nscripts;
+#endif
 
 #endif
 
 #ifdef HAVE_USP10_H
-static PangoEngineRange uniscribe_ranges[] = {
+static PangoEngineScriptInfo uniscribe_scripts[] = {
   /* We claim to cover everything ;-) */
-  { 0x0020, 0xffee, "*" }
+  { PANGO_SCRIPT_COMMON,  "" },
 };
 #endif
 
-static PangoEngineRange basic_ranges[] = {
+static PangoEngineScriptInfo basic_scripts[] = {
   /* Those characters that can be rendered legibly without Uniscribe.
    * I am not certain this list is correct.
    */
+  { PANGO_SCRIPT_ARMENIAN, "*" },
+  { PANGO_SCRIPT_BOPOMOFO, "*" },
+  { PANGO_SCRIPT_CHEROKEE, "*" },
+  { PANGO_SCRIPT_COPTIC,   "*" },
+  { PANGO_SCRIPT_CYRILLIC, "*" },
+  { PANGO_SCRIPT_DESERET,  "*" },
+  { PANGO_SCRIPT_ETHIOPIC, "*" },
+  { PANGO_SCRIPT_GEORGIAN, "*" },
+  { PANGO_SCRIPT_GOTHIC,   "*" },
+  { PANGO_SCRIPT_GREEK,    "*" },
+  { PANGO_SCRIPT_HAN,      "*" },
+  { PANGO_SCRIPT_HANGUL,   "*" },
+  { PANGO_SCRIPT_HIRAGANA, "*" },
+  { PANGO_SCRIPT_KATAKANA, "*" },
+  { PANGO_SCRIPT_LATIN,    "*" },
+  { PANGO_SCRIPT_OGHAM,    "*" },
+  { PANGO_SCRIPT_OLD_ITALIC, "*" },
+  { PANGO_SCRIPT_RUNIC,     "*" },
+  { PANGO_SCRIPT_THAI,      "*" },
+  { PANGO_SCRIPT_CANADIAN_ABORIGINAL, "*" },
+  { PANGO_SCRIPT_YI,       "*" },
+  { PANGO_SCRIPT_BRAILLE,  "*" },
+  { PANGO_SCRIPT_CYPRIOT,  "*" },
+  { PANGO_SCRIPT_LIMBU,    "*" },
+  { PANGO_SCRIPT_OSMANYA,  "*" },
+  { PANGO_SCRIPT_SHAVIAN,  "*" },
+  { PANGO_SCRIPT_LINEAR_B, "*" },
+  { PANGO_SCRIPT_UGARITIC, "*" },
 
-  /* Basic Latin, Latin-1 Supplement, Latin Extended-A, Latin Extended-B,
-   * IPA Extensions
-   */
-  { 0x0020, 0x02af, "*" },
-
-  /* Spacing Modifier Letters */
-  { 0x02b0, 0x02ff, "" },
-
-  /* Not covered: Combining Diacritical Marks */
-
-  /* Greek, Cyrillic, Armenian */
-  { 0x0380, 0x058f, "*" },
-
-  /* Hebrew */
-  { 0x0591, 0x05f4, "*" },
-
-  /* Arabic */
-  { 0x060c, 0x06f9, "" },
-
-  /* Not covered: Syriac, Thaana, Devanagari, Bengali, Gurmukhi, Gujarati,
-   * Oriya, Tamil, Telugu, Kannada, Malayalam, Sinhala
-   */
-
-  /* Thai */
-  { 0x0e01, 0x0e5b, "" },
-
-  /* Not covered: Lao, Tibetan, Myanmar */
-
-  /* Georgian */
-  { 0x10a0, 0x10ff, "*" },
-
-  /* Not covered: Hangul Jamo */
-
-  /* Ethiopic, Cherokee, Unified Canadian Aboriginal Syllabics, Ogham,
-   * Runic */
-  { 0x1200, 0x16ff, "*" },
-
-  /* Not covered: Khmer, Mongolian */
-
-  /* Latin Extended Additional, Greek Extended */
-  { 0x1e00, 0x1fff, "*" },
-
-  /* General Punctuation, Superscripts and Subscripts, Currency
-   * Symbols, Combining Marks for Symbols, Letterlike Symbols, Number
-   * Forms, Arrows, Mathematical Operators, Miscellaneous Technical,
-   * Control Pictures, Optical Character Recognition, Enclosed
-   * Alphanumerics, Box Drawing, Block Elements, Geometric Shapes,
-   * Miscellaneous Symbols, Dingbats, Braille Patterns, CJK Radicals
-   * Supplement, Kangxi Radicals, Ideographic Description Characters,
-   * CJK Symbols and Punctuation, Hiragana, Katakana, Bopomofo, Hangul
-   * Compatibility Jamo, Kanbun, Bopomofo Extended, Enclosed CJK
-   * Letters and Months, CJK Compatibility, CJK Unified Ideographs
-   * Extension A, CJK Unified Ideographs, Yi Syllables, Yi Radicals
-   */
-  { 0x2000, 0xa4c6, "*" },
-
-  /* Hangul Syllables */
-  { 0xac00, 0xd7a3, "kr" },
-
-  /* Not covered: Private Use */
-
-  /* CJK Compatibility Ideographs (partly) */
-  { 0xf900, 0xfa0b, "kr" },
-
-  /* Not covered: CJK Compatibility Ideographs (partly), Alphabetic
-   * Presentation Forms, Arabic Presentation Forms-A, Combining Half
-   * Marks, CJK Compatibility Forms, Small Form Variants, Arabic
-   * Presentation Forms-B, Specials
-   */
-
-  /* Halfwidth and Fullwidth Forms */
-  { 0xff00, 0xffed, "*" }
+  /* Claim to handle everything as a fallback */
+  { PANGO_SCRIPT_COMMON,   "" }
 };
 
 static PangoEngineInfo script_engines[] = {
@@ -260,6 +229,8 @@ swap_range (PangoGlyphString *glyphs,
 
 #ifdef BASIC_WIN32_DEBUGGING
 
+#if 0
+
 static char *
 charset_name (int charset)
 {
@@ -294,6 +265,8 @@ charset_name (int charset)
     }
 }
 
+#endif
+
 static char *
 lang_name (int lang)
 {
@@ -303,23 +276,35 @@ lang_name (int lang)
     {
 #define CASE(n) case LANG_##n: return #n
       CASE (NEUTRAL);
+#ifdef LANG_INVARIANT
       CASE (INVARIANT);
+#endif
       CASE (AFRIKAANS);
       CASE (ALBANIAN);
       CASE (ARABIC);
+#ifdef LANG_ARMENIAN
       CASE (ARMENIAN);
+#endif
+#ifdef LANG_ASSAMESE
       CASE (ASSAMESE);
+#endif
+#ifdef LANG_AZERI
       CASE (AZERI);
+#endif
       CASE (BASQUE);
       CASE (BELARUSIAN);
+#ifdef LANG_BENGALI
       CASE (BENGALI);
+#endif
       CASE (BULGARIAN);
       CASE (CATALAN);
       CASE (CHINESE);
       CASE (CROATIAN);
       CASE (CZECH);
       CASE (DANISH);
+#ifdef LANG_DIVEHI
       CASE (DIVEHI);
+#endif
       CASE (DUTCH);
       CASE (ENGLISH);
       CASE (ESTONIAN);
@@ -327,56 +312,110 @@ lang_name (int lang)
       CASE (FARSI);
       CASE (FINNISH);
       CASE (FRENCH);
+#ifdef LANG_GALICIAN
       CASE (GALICIAN);
+#endif
+#ifdef LANG_GEORGIAN
       CASE (GEORGIAN);
+#endif
       CASE (GERMAN);
       CASE (GREEK);
+#ifdef LANG_GUJARATI
       CASE (GUJARATI);
+#endif
       CASE (HEBREW);
+#ifdef LANG_HINDI
       CASE (HINDI);
+#endif
       CASE (HUNGARIAN);
       CASE (ICELANDIC);
       CASE (INDONESIAN);
       CASE (ITALIAN);
       CASE (JAPANESE);
+#ifdef LANG_KANNADA
       CASE (KANNADA);
+#endif
+#ifdef LANG_KASHMIRI
       CASE (KASHMIRI);
+#endif
+#ifdef LANG_KAZAK
       CASE (KAZAK);
+#endif
+#ifdef LANG_KONKANI
       CASE (KONKANI);
+#endif
       CASE (KOREAN);
+#ifdef LANG_KYRGYZ
       CASE (KYRGYZ);
+#endif
       CASE (LATVIAN);
       CASE (LITHUANIAN);
+#ifdef LANG_MACEDONIAN
       CASE (MACEDONIAN);
+#endif
+#ifdef LANG_MALAY
       CASE (MALAY);
+#endif
+#ifdef LANG_MALAYALAM
       CASE (MALAYALAM);
+#endif
+#ifdef LANG_MANIPURI
       CASE (MANIPURI);
+#endif
+#ifdef LANG_MARATHI
       CASE (MARATHI);
+#endif
+#ifdef LANG_MONGOLIAN
       CASE (MONGOLIAN);
+#endif
+#ifdef LANG_NEPALI
       CASE (NEPALI);
+#endif
       CASE (NORWEGIAN);
+#ifdef LANG_ORIYA
       CASE (ORIYA);
+#endif
       CASE (POLISH);
       CASE (PORTUGUESE);
+#ifdef LANG_PUNJABI
       CASE (PUNJABI);
+#endif
       CASE (ROMANIAN);
       CASE (RUSSIAN);
+#ifdef LANG_SANSKRIT
       CASE (SANSKRIT);
+#endif
+#ifdef LANG_SINDHI
       CASE (SINDHI);
+#endif
       CASE (SLOVAK);
       CASE (SLOVENIAN);
       CASE (SPANISH);
+#ifdef LANG_SWAHILI
       CASE (SWAHILI);
+#endif
       CASE (SWEDISH);
+#ifdef LANG_SYRIAC
       CASE (SYRIAC);
+#endif
+#ifdef LANG_TAMIL
       CASE (TAMIL);
+#endif
+#ifdef LANG_TATAR
       CASE (TATAR);
+#endif
+#ifdef LANG_TELUGU
       CASE (TELUGU);
+#endif
       CASE (THAI);
       CASE (TURKISH);
       CASE (UKRAINIAN);
+#ifdef LANG_URDU
       CASE (URDU);
+#endif
+#ifdef LANG_UZBEK
       CASE (UZBEK);
+#endif
       CASE (VIETNAMESE);
 #undef CASE
     default:
@@ -632,47 +671,31 @@ set_up_pango_log_clusters (gboolean rtl,
 static void
 convert_log_clusters_to_byte_offsets (const char       *text,
 				      gint              length,
-				      PangoAnalysis    *analysis,
 				      PangoGlyphString *glyphs)
 {
   const char *p;
   int charix, glyphix;
+  int n_chars = g_utf8_strlen (text, length);
+  int *byte_offset = g_new (int, n_chars);
 
-  /* Convert char indexes in the log_clusters array to byte offsets in
-   * the UTF-8 text.
-   */
   p = text;
   charix = 0;
-  if (analysis->level % 2)
+  while (p < text + length)
     {
-      glyphix = glyphs->num_glyphs - 1;
-      while (p < text + length)
-	{
-	  while (glyphix >= 0 &&
-		 glyphs->log_clusters[glyphix] == charix)
-	    {
-	      glyphs->log_clusters[glyphix] = p - text;
-	      glyphix--;
-	    }
-	  charix++;
-	  p = g_utf8_next_char (p);
-	}
+      byte_offset[charix] = p - text;
+      charix++;
+      p = g_utf8_next_char (p);
     }
-  else
+
+  /* Convert char indexes in the log_clusters array to byte offsets.
+   */
+  for (glyphix = 0; glyphix < glyphs->num_glyphs; glyphix++)
     {
-      glyphix = 0;
-      while (p < text + length)
-	{
-	  while (glyphix < glyphs->num_glyphs &&
-		 glyphs->log_clusters[glyphix] == charix)
-	    {
-	      glyphs->log_clusters[glyphix] = p - text;
-	      glyphix++;
-	    }
-	  charix++;
-	  p = g_utf8_next_char (p);
-	}
+      g_assert (glyphs->log_clusters[glyphix] < n_chars);
+      glyphs->log_clusters[glyphix] = byte_offset[glyphs->log_clusters[glyphix]];
     }
+  
+  g_free (byte_offset);
 }
 
 static gboolean
@@ -684,9 +707,9 @@ itemize_shape_and_place (PangoFont        *font,
 			 PangoGlyphString *glyphs,
 			 SCRIPT_CACHE     *script_cache)
 {
-  int item, nitems;
+  int i;
+  int item, nitems, item_step;
   int itemlen, glyphix, nglyphs;
-  int nc;
   SCRIPT_CONTROL control;
   SCRIPT_STATE state;
   SCRIPT_ITEM items[100];
@@ -712,8 +735,18 @@ itemize_shape_and_place (PangoFont        *font,
     printf (G_STRLOC ": ScriptItemize: %d items\n", nitems);
 #endif
 
-  nc = 0;
-  for (item = 0; item < nitems; item++)
+  if (analysis->level % 2)
+    {
+      item = nitems - 1;
+      item_step = -1;
+    }
+  else
+    {
+      item = 0;
+      item_step = 1;
+    }
+
+  for (i = 0; i < nitems; i++, item += item_step)
     {
       WORD iglyphs[1000];
       WORD log_clusters[1000];
@@ -770,7 +803,8 @@ itemize_shape_and_place (PangoFont        *font,
       pango_glyph_string_set_size (glyphs, ng + nglyphs);
       
       set_up_pango_log_clusters (items[item].a.fRTL, itemlen, log_clusters,
-				 nglyphs, glyphs->log_clusters + ng, nc);
+				 nglyphs, glyphs->log_clusters + ng,
+				 items[item].iCharPos);
 
       if ((*script_place) (hdc, &script_cache[script], iglyphs, nglyphs,
 			   visattrs, &items[item].a,
@@ -808,13 +842,12 @@ itemize_shape_and_place (PangoFont        *font,
 	      glyphs->glyphs[ng+glyphix].geometry.y_offset = 0;
 	    }
 	}
-      nc += itemlen;
     }
 
 #ifdef BASIC_WIN32_DEBUGGING
   if (pango_win32_debug)
     {
-      printf ("  Pango log_clusters, char index:");
+      printf ("  Pango log_clusters (%d), char index:", analysis->level);
       for (glyphix = 0; glyphix < glyphs->num_glyphs; glyphix++)
 	printf ("%d ", glyphs->log_clusters[glyphix]);
       printf ("\n");
@@ -834,14 +867,13 @@ uniscribe_shape (PangoFont        *font,
   wchar_t *wtext;
   int wlen, i;
   gboolean retval = TRUE;
-  GError *error;
   HGDIOBJ old_font = NULL;
   HFONT hfont = NULL;
   LOGFONT *lf;
   SCRIPT_CACHE script_cache[100];
 
   wtext = (wchar_t *) g_convert (text, length, "UTF-16LE", "UTF-8",
-				 NULL, &wlen, &error);
+				 NULL, &wlen, NULL);
   if (wtext == NULL)
     return FALSE;
 
@@ -877,7 +909,7 @@ uniscribe_shape (PangoFont        *font,
   
   if (retval)
     {
-      convert_log_clusters_to_byte_offsets (text, length, analysis, glyphs);
+      convert_log_clusters_to_byte_offsets (text, length, glyphs);
 #ifdef BASIC_WIN32_DEBUGGING
       if (pango_win32_debug)
 	{
@@ -902,10 +934,40 @@ uniscribe_shape (PangoFont        *font,
   return retval;
 }
 
+static gboolean
+text_is_simple (const char *text,
+		gint        length)
+{
+  gboolean retval;
+  wchar_t *wtext;
+  int wlen;
+
+  wtext = (wchar_t *) g_convert (text, length, "UTF-16LE", "UTF-8",
+				 NULL, &wlen, NULL);
+
+  if (wtext == NULL)
+    return TRUE;
+
+  wlen /= 2;
+
+  retval = ((*script_is_complex) (wtext, wlen, SIC_COMPLEX) == S_FALSE);
+
+  g_free (wtext);
+
+#ifdef BASIC_WIN32_DEBUGGING
+  if (pango_win32_debug)
+    printf ("text_is_simple: %.*s (%d chars): %s\n",
+	    MIN (length, 10), text, wlen, retval ? "YES" : "NO");
+#endif
+
+  return retval;
+}
+		
 #endif /* HAVE_USP10_H */
 
 static void 
-basic_engine_shape (PangoFont        *font,
+basic_engine_shape (PangoEngineShape *engine,
+		    PangoFont        *font,
 		    const char       *text,
 		    gint              length,
 		    PangoAnalysis    *analysis,
@@ -922,7 +984,9 @@ basic_engine_shape (PangoFont        *font,
 
 #ifdef HAVE_USP10_H
 
-  if (have_uniscribe && uniscribe_shape (font, text, length, analysis, glyphs))
+  if (have_uniscribe &&
+      !text_is_simple (text, length) &&
+      uniscribe_shape (font, text, length, analysis, glyphs))
     return;
 
 #endif
@@ -1009,29 +1073,6 @@ basic_engine_shape (PangoFont        *font,
     }
 }
 
-static PangoCoverage *
-basic_engine_get_coverage (PangoFont     *font,
-			   PangoLanguage *lang)
-{
-  return pango_font_get_coverage (font, lang);
-}
-
-static PangoEngine *
-basic_engine_win32_new (void)
-{
-  PangoEngineShape *result;
-  
-  result = g_new (PangoEngineShape, 1);
-
-  result->engine.id = SCRIPT_ENGINE_NAME;
-  result->engine.type = PANGO_ENGINE_TYPE_SHAPE;
-  result->engine.length = sizeof (result);
-  result->script_shape = basic_engine_shape;
-  result->get_coverage = basic_engine_get_coverage;
-
-  return (PangoEngine *)result;
-}
-
 static void
 init_uniscribe (void)
 {
@@ -1040,8 +1081,7 @@ init_uniscribe (void)
 
   have_uniscribe = FALSE;
   
-  if (getenv ("PANGO_WIN32_NO_UNISCRIBE") == NULL &&
-      (usp10_dll = LoadLibrary ("usp10.dll")) != NULL)
+  if ((usp10_dll = LoadLibrary ("usp10.dll")) != NULL)
     {
       (script_get_properties = (pScriptGetProperties)
        GetProcAddress (usp10_dll, "ScriptGetProperties")) &&
@@ -1053,12 +1093,15 @@ init_uniscribe (void)
        GetProcAddress (usp10_dll, "ScriptPlace")) &&
       (script_free_cache = (pScriptFreeCache)
        GetProcAddress (usp10_dll, "ScriptFreeCache")) &&
-	(have_uniscribe = TRUE);
+      (script_is_complex = (pScriptIsComplex)
+       GetProcAddress (usp10_dll, "ScriptIsComplex")) &&
+      (have_uniscribe = TRUE);
     }
   if (have_uniscribe)
     {
+#ifdef BASIC_WIN32_DEBUGGING
       (*script_get_properties) (&scripts, &nscripts);
-      
+#endif
       font_cache = pango_win32_font_map_get_font_cache
 	(pango_win32_font_map_for_display ());
       
@@ -1067,23 +1110,50 @@ init_uniscribe (void)
 #endif
 } 
 
-/* The following three functions provide the public module API for
- * Pango
- */
-#ifdef WIN32_MODULE_PREFIX
-#define MODULE_ENTRY(func) _pango_basic_win32_##func
-#else
-#define MODULE_ENTRY(func) func
-#endif
+static PangoCoverageLevel
+basic_engine_covers (PangoEngineShape *engine,
+		     PangoFont        *font,
+		     PangoLanguage    *lang,
+		     gunichar          wc)
+{
+  return PANGO_COVERAGE_EXACT;
+  return find_char (font, wc) ? PANGO_COVERAGE_EXACT : PANGO_COVERAGE_NONE;
+}
 
-void
-MODULE_ENTRY(script_engine_list) (PangoEngineInfo **engines,
-				  gint             *n_engines)
+static void
+basic_engine_win32_class_init (PangoEngineShapeClass *class)
+{
+  class->covers = basic_engine_covers;
+  class->script_shape = basic_engine_shape;
+}
+
+PANGO_ENGINE_SHAPE_DEFINE_TYPE (BasicEngineWin32, basic_engine_win32,
+				basic_engine_win32_class_init, NULL);
+
+void 
+PANGO_MODULE_ENTRY(init) (GTypeModule *module)
 {
   init_uniscribe ();
 
-  script_engines[0].ranges = basic_ranges;
-  script_engines[0].n_ranges = G_N_ELEMENTS (basic_ranges);
+  if (pango_win32_get_debug_flag ())
+    pango_win32_debug = TRUE;
+
+  basic_engine_win32_register_type (module);
+}
+
+void 
+PANGO_MODULE_ENTRY(exit) (void)
+{
+}
+
+void 
+PANGO_MODULE_ENTRY(list) (PangoEngineInfo **engines,
+			  int              *n_engines)
+{
+  init_uniscribe ();
+
+  script_engines[0].scripts = basic_scripts;
+  script_engines[0].n_scripts = G_N_ELEMENTS (basic_scripts);
 
 #ifdef HAVE_USP10_H
   if (have_uniscribe)
@@ -1104,8 +1174,8 @@ MODULE_ENTRY(script_engine_list) (PangoEngineInfo **engines,
       script_engines[0].ranges = ranges;
       script_engines[0].n_ranges = ranges->len;
 #else
-      script_engines[0].ranges = uniscribe_ranges;
-      script_engines[0].n_ranges = G_N_ELEMENTS (uniscribe_ranges);
+      script_engines[0].scripts = uniscribe_scripts;
+      script_engines[0].n_scripts = G_N_ELEMENTS (uniscribe_scripts);
 #endif
     }
 #endif
@@ -1115,20 +1185,10 @@ MODULE_ENTRY(script_engine_list) (PangoEngineInfo **engines,
 }
 
 PangoEngine *
-MODULE_ENTRY(script_engine_load) (const char *id)
+PANGO_MODULE_ENTRY(create) (const char *id)
 {
-  init_uniscribe ();
-
-  if (pango_win32_get_debug_flag ())
-    pango_win32_debug = TRUE;
-
   if (!strcmp (id, SCRIPT_ENGINE_NAME))
-    return basic_engine_win32_new ();
+    return g_object_new (basic_engine_win32_type, NULL);
   else
     return NULL;
-}
-
-void 
-MODULE_ENTRY(script_engine_unload) (PangoEngine *engine)
-{
 }

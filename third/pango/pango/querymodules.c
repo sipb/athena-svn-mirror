@@ -27,6 +27,7 @@
 #include "pango-context.h"
 #include "pango-utils.h"
 #include "pango-engine.h"
+#include "pango-enum-types.h"
 
 #include <errno.h>
 #include <string.h>
@@ -84,12 +85,45 @@ escape_string (const char *str)
   return g_string_free (result, FALSE);
 }
 
+/* Suppresses strict-aliasing warnings for gcc >= 3.3 */
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
+#define GET_SYMBOL(module,name,location) ({              \
+  gboolean result;					 \
+  void *tmp;                                             \
+  result = g_module_symbol (module, name, &tmp);         \
+  location = (typeof(location))tmp;                      \
+  result;                                                \
+})
+#else
+#define GET_SYMBOL(module,name,location)                 \
+  g_module_symbol (module, name, (gpointer *)&location)
+#endif
+
+static const char *
+script_from_string (PangoScript script)
+{
+  static GEnumClass *class = NULL;
+  GEnumValue *value;
+  if (!class)
+    class = g_type_class_ref (PANGO_TYPE_SCRIPT);
+  
+  value = g_enum_get_value (class, script);
+  if (!value)
+    {
+      g_warning ("Engine reported invalid script value %d\n", script);
+      return script_from_string (PANGO_SCRIPT_INVALID_CODE);
+    }
+
+  return value->value_nick;
+}
+
 void 
 query_module (const char *dir, const char *name)
 {
   void (*list) (PangoEngineInfo **engines, gint *n_engines);
-  PangoEngine *(*load) (const gchar *id);
-  void (*unload) (PangoEngine *engine);
+  void (*init) (GTypeModule *module);
+  void (*exit) (void);
+  PangoEngine *(*create) (const gchar *id);
 
   GModule *module;
   gchar *path;
@@ -105,9 +139,10 @@ query_module (const char *dir, const char *name)
     g_printerr ("Cannot load module %s: %s\n", path, g_module_error ());
 	  
   if (module &&
-      g_module_symbol (module, "script_engine_list", (gpointer *) &list) &&
-      g_module_symbol (module, "script_engine_load", (gpointer *) &load) &&
-      g_module_symbol (module, "script_engine_unload", (gpointer *) &unload))
+      GET_SYMBOL (module, "script_engine_list", list) &&
+      GET_SYMBOL (module, "script_engine_init", init) &&
+      GET_SYMBOL (module, "script_engine_exit", exit) &&
+      GET_SYMBOL (module, "script_engine_create", create))
     {
       gint i,j;
       PangoEngineInfo *engines;
@@ -135,14 +170,13 @@ query_module (const char *dir, const char *name)
 		    engines[i].id, engines[i].engine_type, engines[i].render_type);
 	  g_free (quoted_path);
 
-	  for (j=0; j < engines[i].n_ranges; j++)
+	  for (j=0; j < engines[i].n_scripts; j++)
 	    {
 	      if (j != 0)
 		g_printf (" ");
-	      g_printf ("%d-%d:%s",
-		      engines[i].ranges[j].start,
-		      engines[i].ranges[j].end,
-		      engines[i].ranges[j].langs);
+	      g_printf ("%s:%s",
+			script_from_string (engines[i].scripts[j].script),
+			engines[i].scripts[j].langs);
 	    }
 	  g_printf ("\n");
 	}
@@ -163,6 +197,8 @@ int main (int argc, char **argv)
   int i;
   char *path;
 
+  g_type_init ();
+  
   g_printf ("# Pango Modules file\n"
 	    "# Automatically generated file, do not edit\n"
 	    "#\n");

@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Modules</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Modules</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Pango Reference Manual"><link rel="up" href="lowlevel.html" title="Low Level Functionality"><link rel="previous" href="PangoEngineShape.html" title="PangoEngineShape"><link rel="next" href="tools.html" title="Pango Tools"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -29,7 +28,7 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style><link rel="home" href="index.html" title="Pango Reference Manual"><link rel="up" href="lowlevel.html" title="Low Level Functionality"><link rel="previous" href="pango-Indic-Engine-Support.html" title="Indic Engine Support"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="pango-Indic-Engine-Support.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="lowlevel.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Pango Reference Manual</th></tr></table><div class="refentry"><a name="pango-Modules"></a><div class="titlepage"></div><div class="refnamediv"><h2>Modules</h2><p>Modules &#8212; Support for loadable modules</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="PangoEngineShape.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="lowlevel.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Pango Reference Manual</th><td><a accesskey="n" href="tools.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="pango-Modules"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Modules</span></h2><p>Modules &#8212; Support for loadable modules</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
@@ -43,83 +42,89 @@ href="../glib/glib-Basic-Types.html#guint"
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> render_type_id);
-<a href="pango-Modules.html#PangoMapEntry">PangoMapEntry</a>* <a href="pango-Modules.html#pango-map-get-entry">pango_map_get_entry</a>          (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);
 <a href="pango-Engines.html#PangoEngine">PangoEngine</a>* <a href="pango-Modules.html#pango-map-get-engine">pango_map_get_engine</a>           (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
+                                             <a href="pango-Scripts.html#PangoScript">PangoScript</a> script);
+void        <a href="pango-Modules.html#pango-map-get-engines">pango_map_get_engines</a>           (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
+                                             <a href="pango-Scripts.html#PangoScript">PangoScript</a> script,
                                              <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> **exact_engines,
+                                             <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> **fallback_engines);
 void        <a href="pango-Modules.html#pango-module-register">pango_module_register</a>           (<a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a> *module);
-</pre></div><div class="refsect1"><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2967512"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="PangoIncludedModule"></a>struct PangoIncludedModule</h3><pre class="programlisting">struct PangoIncludedModule {
+</p></div><div class="refsect1" lang="en"><a name="id2967522"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2967527"></a><h3><a name="PangoIncludedModule"></a>struct PangoIncludedModule</h3><a class="indexterm" name="id2967539"></a><pre class="programlisting">struct PangoIncludedModule {
 
-  void (*list) (PangoEngineInfo **engines, int *n_engines);
-  PangoEngine *(*load) (const char *id);
-  void (*unload) (PangoEngine *engine);
+  void (*list) (PangoEngineInfo **engines,
+		int              *n_engines);
+  void (*init) (GTypeModule      *module);
+  void (*exit) (void);
+  PangoEngine *(*create) (const char       *id);
 };
 </pre><p>
-The <a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a> structure for a statically linked module 
+The <a href="pango-Modules.html#PangoIncludedModule"><span class="type">PangoIncludedModule</span></a> structure for a statically linked module 
 contains the functions that would otherwise be loaded from a dynamically 
 loaded module.
-</p></div><hr><div class="refsect2"><h3><a name="PangoMap"></a>struct PangoMap</h3><pre class="programlisting">struct PangoMap;</pre><p>
-A <a href="pango-Modules.html#PangoMap">PangoMap</a> structure can be used to determine the engine to
+</p></div><hr><div class="refsect2" lang="en"><a name="id2967568"></a><h3><a name="PangoMap"></a>struct PangoMap</h3><a class="indexterm" name="id2967578"></a><pre class="programlisting">struct PangoMap;</pre><p>
+A <a href="pango-Modules.html#PangoMap"><span class="type">PangoMap</span></a> structure can be used to determine the engine to
 use for each character.
-</p></div><hr><div class="refsect2"><h3><a name="PangoMapEntry"></a>struct PangoMapEntry</h3><pre class="programlisting">struct PangoMapEntry {
-
-  PangoEngineInfo *info;
-  gboolean is_exact;
-};
-</pre><p>
-A <a href="pango-Modules.html#PangoMapEntry">PangoMapEntry</a> contains information about the engine that should be used 
+</p></div><hr><div class="refsect2" lang="en"><a name="id2967602"></a><h3><a name="PangoMapEntry"></a>struct PangoMapEntry</h3><a class="indexterm" name="id2967614"></a><pre class="programlisting">struct PangoMapEntry;</pre><p>
+A <a href="pango-Modules.html#PangoMapEntry"><span class="type">PangoMapEntry</span></a> contains information about the engine that should be used 
 for the codepoint to which this entry belongs and also whether the engine 
 matches the language tag for this entry's map exactly or just approximately.
-</p></div><hr><div class="refsect2"><h3><a name="pango-find-map"></a>pango_find_map ()</h3><pre class="programlisting"><a href="pango-Modules.html#PangoMap">PangoMap</a>*   pango_find_map                  (<a href="pango-Text-Attributes.html#PangoLanguage">PangoLanguage</a> *language,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2967640"></a><h3><a name="pango-find-map"></a>pango_find_map ()</h3><a class="indexterm" name="id2967651"></a><pre class="programlisting"><a href="pango-Modules.html#PangoMap">PangoMap</a>*   pango_find_map                  (<a href="pango-Text-Attributes.html#PangoLanguage">PangoLanguage</a> *language,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> engine_type_id,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> render_type_id);</pre><p>
-Locate a <a href="pango-Modules.html#PangoMap">PangoMap</a> for a particular engine type and render
+Locate a <a href="pango-Modules.html#PangoMap"><span class="type">PangoMap</span></a> for a particular engine type and render
 type. The resulting map can be used to determine the engine
 for each character.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>language</tt></i> :</span></td><td> the language tag for which to find the map
-</td></tr><tr><td><span class="term"><i><tt>engine_type_id</tt></i> :</span></td><td> the engine type for the map to find
-</td></tr><tr><td><span class="term"><i><tt>render_type_id</tt></i> :</span></td><td> the render type for the map to find
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>language</tt></i> :</span></td><td> the language tag for which to find the map
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>engine_type_id</tt></i> :</span></td><td> the engine type for the map to find
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>render_type_id</tt></i> :</span></td><td> the render type for the map to find
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-map-get-entry"></a>pango_map_get_entry ()</h3><pre class="programlisting"><a href="pango-Modules.html#PangoMapEntry">PangoMapEntry</a>* pango_map_get_entry          (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);</pre><p>
-Returns the entry in the map for a given codepoint. The entry
-contains information about the engine that should be used for
-the codepoint and also whether the engine matches the language
-tag for which the map was created exactly or just approximately.</p><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967766"></a><h3><a name="pango-map-get-engine"></a>pango_map_get_engine ()</h3><a class="indexterm" name="id2967778"></a><pre class="programlisting"><a href="pango-Engines.html#PangoEngine">PangoEngine</a>* pango_map_get_engine           (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
+                                             <a href="pango-Scripts.html#PangoScript">PangoScript</a> script);</pre><p>
+Returns the best engine listed in the map for a given script</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>map</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoMap">PangoMap</a>
-</td></tr><tr><td><span class="term"><i><tt>wc</tt></i> :</span></td><td>  an ISO-10646 codepoint
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="pango-Modules.html#PangoMapEntry">PangoMapEntry</a> for the codepoint. This value
-  is owned by the <a href="pango-Modules.html#PangoMap">PangoMap</a> and should not be freed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-map-get-engine"></a>pango_map_get_engine ()</h3><pre class="programlisting"><a href="pango-Engines.html#PangoEngine">PangoEngine</a>* pango_map_get_engine           (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>map</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoMap"><span class="type">PangoMap</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script</tt></i> :</span></td><td> a <a href="pango-Scripts.html#PangoScript"><span class="type">PangoScript</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the best engine, if one is listed for the script,
+   or <tt class="literal">NULL</tt>. The lookup may cause the engine to be loaded;
+   once an engine is loaded, it won't be unloaded. If multiple
+   engines are exact for the script, the choice of which is
+   returned is arbitrary.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967885"></a><h3><a name="pango-map-get-engines"></a>pango_map_get_engines ()</h3><a class="indexterm" name="id2967896"></a><pre class="programlisting">void        pango_map_get_engines           (<a href="pango-Modules.html#PangoMap">PangoMap</a> *map,
+                                             <a href="pango-Scripts.html#PangoScript">PangoScript</a> script,
                                              <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);</pre><p>
-Returns the engine listed in the map for a given codepoint.</p><p>
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> **exact_engines,
+                                             <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> **fallback_engines);</pre><p>
+Finds engines in the map that handle the given script. The returned
+lists should be fred with g_slist_free, but the engines in the
+lists are owned by GLib and will be kept around permanently, so
+they should not be unref'ed.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>map</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoMap">PangoMap</a>
-</td></tr><tr><td><span class="term"><i><tt>wc</tt></i> :</span></td><td>  an ISO-10646 codepoint
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the engine, if one is listed for the codepoint,
-   or <tt>NULL</tt>. The lookup may cause the engine to be loaded;
-   once an engine is loaded
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-module-register"></a>pango_module_register ()</h3><pre class="programlisting">void        pango_module_register           (<a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a> *module);</pre><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>map</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoMap"><span class="type">PangoMap</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script</tt></i> :</span></td><td> a <a href="pango-Scripts.html#PangoScript"><span class="type">PangoScript</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>exact_engines</tt></i> :</span></td><td> location to store list of engines that exactly
+ handle this script.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>fallback_engines</tt></i> :</span></td><td> location to store list of engines that approximately
+ handle this script.
+</td></tr></tbody></table></div><p>Since  1.4
+</p></div><hr><div class="refsect2" lang="en"><a name="id2968034"></a><h3><a name="pango-module-register"></a>pango_module_register ()</h3><a class="indexterm" name="id2968045"></a><pre class="programlisting">void        pango_module_register           (<a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a> *module);</pre><p>
 Registers a statically linked module with Pango. The
-<a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a> structure that is passed in contains the
+<a href="pango-Modules.html#PangoIncludedModule"><span class="type">PangoIncludedModule</span></a> structure that is passed in contains the
 functions that would otherwise be loaded from a dynamically loaded
 module.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>module</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoIncludedModule">PangoIncludedModule</a>
-</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="pango-Indic-Engine-Support.html"><b>&lt;&lt; Indic Engine Support</b></a></td><td align="right"></td></tr></table></body></html>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>module</tt></i> :</span></td><td> a <a href="pango-Modules.html#PangoIncludedModule"><span class="type">PangoIncludedModule</span></a>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="PangoEngineShape.html"><b>&lt;&lt; PangoEngineShape</b></a></td><td align="right"><a accesskey="n" href="tools.html"><b>Pango Tools &gt;&gt;</b></a></td></tr></table></body></html>

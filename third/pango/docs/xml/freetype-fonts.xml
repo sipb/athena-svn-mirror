@@ -10,46 +10,62 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
+<anchor id="PangoFT2FontMap"/>
 <synopsis>
 
 
 
-struct      <link linkend="PangoFT2FontMap">PangoFT2FontMap</link>;
+struct      <link linkend="PangoFT2FontMap-struct">PangoFT2FontMap</link>;
 #define     <link linkend="PANGO-RENDER-TYPE-FT2-CAPS">PANGO_RENDER_TYPE_FT2</link>
 <link linkend="PangoFontMap">PangoFontMap</link>* <link linkend="pango-ft2-font-map-new">pango_ft2_font_map_new</link>        (void);
-void        <link linkend="pango-ft2-font-map-set-resolution">pango_ft2_font_map_set_resolution</link>
+<link linkend="void">void</link>        <link linkend="pango-ft2-font-map-set-resolution">pango_ft2_font_map_set_resolution</link>
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap,
                                              <link linkend="double">double</link> dpi_x,
                                              <link linkend="double">double</link> dpi_y);
 <link linkend="PangoContext">PangoContext</link>* <link linkend="pango-ft2-font-map-create-context">pango_ft2_font_map_create_context</link>
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap);
-void        (<link linkend="PangoFT2SubstituteFunc">*PangoFT2SubstituteFunc</link>)       (<link linkend="FcPattern">FcPattern</link> *pattern,
+<link linkend="void">void</link>        (<link linkend="PangoFT2SubstituteFunc">*PangoFT2SubstituteFunc</link>)       (<link linkend="FcPattern">FcPattern</link> *pattern,
                                              <link linkend="gpointer">gpointer</link> data);
-void        <link linkend="pango-ft2-font-map-set-default-substitute">pango_ft2_font_map_set_default_substitute</link>
+<link linkend="void">void</link>        <link linkend="pango-ft2-font-map-set-default-substitute">pango_ft2_font_map_set_default_substitute</link>
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap,
                                              <link linkend="PangoFT2SubstituteFunc">PangoFT2SubstituteFunc</link> func,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> notify);
-void        <link linkend="pango-ft2-font-map-substitute-changed">pango_ft2_font_map_substitute_changed</link>
+<link linkend="void">void</link>        <link linkend="pango-ft2-font-map-substitute-changed">pango_ft2_font_map_substitute_changed</link>
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap);
 <link linkend="PangoContext">PangoContext</link>* <link linkend="pango-ft2-get-context">pango_ft2_get_context</link>         (<link linkend="double">double</link> dpi_x,
                                              <link linkend="double">double</link> dpi_y);
-void        <link linkend="pango-ft2-render">pango_ft2_render</link>                (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+<link linkend="void">void</link>        <link linkend="pango-ft2-render">pango_ft2_render</link>                (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
                                              <link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);
-void        <link linkend="pango-ft2-render-layout-line">pango_ft2_render_layout_line</link>    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+<link linkend="void">void</link>        <link linkend="pango-ft2-render-transformed">pango_ft2_render_transformed</link>    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             const <link linkend="PangoMatrix">PangoMatrix</link> *matrix,
+                                             <link linkend="PangoFont">PangoFont</link> *font,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
+<link linkend="void">void</link>        <link linkend="pango-ft2-render-layout-line">pango_ft2_render_layout_line</link>    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
                                              <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
-                                             int x,
-                                             int y);
-void        <link linkend="pango-ft2-render-layout">pango_ft2_render_layout</link>         (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
+<link linkend="void">void</link>        <link linkend="pango-ft2-render-layout-line-subpixel">pango_ft2_render_layout_line_subpixel</link>
+                                            (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
+<link linkend="void">void</link>        <link linkend="pango-ft2-render-layout">pango_ft2_render_layout</link>         (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
                                              <link linkend="PangoLayout">PangoLayout</link> *layout,
-                                             int x,
-                                             int y);
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
+<link linkend="void">void</link>        <link linkend="pango-ft2-render-layout-subpixel">pango_ft2_render_layout_subpixel</link>
+                                            (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
 <link linkend="PangoGlyph">PangoGlyph</link>  <link linkend="pango-ft2-get-unknown-glyph">pango_ft2_get_unknown_glyph</link>     (<link linkend="PangoFont">PangoFont</link> *font);
-int         <link linkend="pango-ft2-font-get-kerning">pango_ft2_font_get_kerning</link>      (<link linkend="PangoFont">PangoFont</link> *font,
+<link linkend="int">int</link>         <link linkend="pango-ft2-font-get-kerning">pango_ft2_font_get_kerning</link>      (<link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="PangoGlyph">PangoGlyph</link> left,
                                              <link linkend="PangoGlyph">PangoGlyph</link> right);
 <link linkend="FT-Face">FT_Face</link>     <link linkend="pango-ft2-font-get-face">pango_ft2_font_get_face</link>         (<link linkend="PangoFont">PangoFont</link> *font);
@@ -57,11 +73,24 @@ int         <link linkend="pango-ft2-font-get-kerning">pango_ft2_font_get_kernin
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);
 <link linkend="PangoFontMap">PangoFontMap</link>* <link linkend="pango-ft2-font-map-for-display">pango_ft2_font_map_for_display</link>
                                             (void);
-void        <link linkend="pango-ft2-shutdown-display">pango_ft2_shutdown_display</link>      (void);
+<link linkend="void">void</link>        <link linkend="pango-ft2-shutdown-display">pango_ft2_shutdown_display</link>      (void);
 
 
 </synopsis>
 </refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="PangoFontMap">PangoFontMap</link>
+         +----<link linkend="PangoFcFontMap">PangoFcFontMap</link>
+               +----PangoFT2FontMap
+</synopsis>
+
+</refsect1>
+
 
 
 
@@ -79,40 +108,40 @@ void        <link linkend="pango-ft2-shutdown-display">pango_ft2_shutdown_displa
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="PangoFT2FontMap"/>struct PangoFT2FontMap</title>
-<programlisting>struct PangoFT2FontMap;</programlisting>
+<title><anchor id="PangoFT2FontMap-struct"/>struct PangoFT2FontMap</title>
+<indexterm><primary>PangoFT2FontMap</primary></indexterm><programlisting>struct PangoFT2FontMap;</programlisting>
 <para>
-The <link linkend="PangoFT2FontMap">PangoFT2FontMap</link> is the <link linkend="PangoFontMap">PangoFontMap</link> implementation for FreeType fonts.
+The <link linkend="PangoFT2FontMap"><type>PangoFT2FontMap</type></link> is the <link linkend="PangoFontMap"><type>PangoFontMap</type></link> implementation for FreeType fonts.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PANGO-RENDER-TYPE-FT2-CAPS"/>PANGO_RENDER_TYPE_FT2</title>
-<programlisting>#define PANGO_RENDER_TYPE_FT2 "PangoRenderFT2"
+<indexterm><primary>PANGO_RENDER_TYPE_FT2</primary></indexterm><programlisting>#define PANGO_RENDER_TYPE_FT2 "PangoRenderFT2"
 </programlisting>
 <para>
-A string constant identifying the FreeType renderer. The associated quark (see
-<link linkend="g-quark-from-string">g_quark_from_string</link>()) is used to identify the renderer in <link linkend="pango-find-map">pango_find_map</link>().
+A string constant that was used to identify shape engines that work
+with the FreeType backend. See <literal>PANGO_RENDER_TYPE_FC</literal> for the replacement.
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-new"/>pango_ft2_font_map_new ()</title>
-<programlisting><link linkend="PangoFontMap">PangoFontMap</link>* pango_ft2_font_map_new        (void);</programlisting>
+<indexterm><primary>pango_ft2_font_map_new</primary></indexterm><programlisting><link linkend="PangoFontMap">PangoFontMap</link>* pango_ft2_font_map_new        (void);</programlisting>
 <para>
-Create a new <link linkend="PangoFT2FontMap">PangoFT2FontMap</link> object; a fontmap is used
+Create a new <link linkend="PangoFT2FontMap"><type>PangoFT2FontMap</type></link> object; a fontmap is used
 to cache information about available fonts, and holds
 certain global parameters such as the resolution and
 the default substitute function (see
-<link linkend="pango-ft2-font-map-set-default-substitute">pango_ft2_font_map_set_default_substitute</link>()).</para>
+<link linkend="pango-ft2-font-map-set-default-substitute"><function>pango_ft2_font_map_set_default_substitute()</function></link>).</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created fontmap object. Unref
-with <link linkend="g-object-unref">g_object_unref</link>() when you are finished with it.
+with <link linkend="g-object-unref"><function>g_object_unref()</function></link> when you are finished with it.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  1.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-set-resolution"/>pango_ft2_font_map_set_resolution ()</title>
-<programlisting>void        pango_ft2_font_map_set_resolution
+<indexterm><primary>pango_ft2_font_map_set_resolution</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_font_map_set_resolution
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap,
                                              <link linkend="double">double</link> dpi_x,
                                              <link linkend="double">double</link> dpi_y);</programlisting>
@@ -122,7 +151,7 @@ Sets the horizontal and vertical resolutions for the fontmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>fontmap</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFT2Fontmap">PangoFT2Fontmap</link> 
+<listitem><simpara> a <link linkend="PangoFT2Fontmap"><type>PangoFT2Fontmap</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dpi_x</parameter>&nbsp;:</term>
 <listitem><simpara> dots per inch in the X direction
@@ -133,24 +162,24 @@ Sets the horizontal and vertical resolutions for the fontmap.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-create-context"/>pango_ft2_font_map_create_context ()</title>
-<programlisting><link linkend="PangoContext">PangoContext</link>* pango_ft2_font_map_create_context
+<indexterm><primary>pango_ft2_font_map_create_context</primary></indexterm><programlisting><link linkend="PangoContext">PangoContext</link>* pango_ft2_font_map_create_context
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap);</programlisting>
 <para>
-Create a <link linkend="PangoContext">PangoContext</link> for the given fontmap.</para>
+Create a <link linkend="PangoContext"><type>PangoContext</type></link> for the given fontmap.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>fontmap</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFT2Fontmap">PangoFT2Fontmap</link>
+<listitem><simpara> a <link linkend="PangoFT2Fontmap"><type>PangoFT2Fontmap</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created context; free with <link linkend="g-object-unref">g_object_unref</link>().
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created context; free with <link linkend="g-object-unref"><function>g_object_unref()</function></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  1.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoFT2SubstituteFunc"/>PangoFT2SubstituteFunc ()</title>
-<programlisting>void        (*PangoFT2SubstituteFunc)       (<link linkend="FcPattern">FcPattern</link> *pattern,
+<indexterm><primary>PangoFT2SubstituteFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*PangoFT2SubstituteFunc)       (<link linkend="FcPattern">FcPattern</link> *pattern,
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Function type for doing final config tweaking on prepared FcPatterns.
@@ -166,25 +195,25 @@ Function type for doing final config tweaking on prepared FcPatterns.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-set-default-substitute"/>pango_ft2_font_map_set_default_substitute ()</title>
-<programlisting>void        pango_ft2_font_map_set_default_substitute
+<indexterm><primary>pango_ft2_font_map_set_default_substitute</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_font_map_set_default_substitute
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap,
                                              <link linkend="PangoFT2SubstituteFunc">PangoFT2SubstituteFunc</link> func,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> notify);</programlisting>
 <para>
 Sets a function that will be called to do final configuration
-substitution on a <link linkend="FcPattern">FcPattern</link> before it is used to load
+substitution on a <link linkend="FcPattern"><type>FcPattern</type></link> before it is used to load
 the font. This function can be used to do things like set
-hinting and antiasing options.</para>
+hinting and antialiasing options.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>fontmap</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFT2FontMap">PangoFT2FontMap</link>
+<listitem><simpara> a <link linkend="PangoFT2FontMap"><type>PangoFT2FontMap</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>func</parameter>&nbsp;:</term>
 <listitem><simpara> function to call to to do final config tweaking
-       on <link linkend="FcPattern">FcPattern</link> objects.
+       on <link linkend="FcPattern"><type>FcPattern</type></link> objects.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara> data to pass to <parameter>func</parameter>
@@ -196,33 +225,33 @@ hinting and antiasing options.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-substitute-changed"/>pango_ft2_font_map_substitute_changed ()</title>
-<programlisting>void        pango_ft2_font_map_substitute_changed
+<indexterm><primary>pango_ft2_font_map_substitute_changed</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_font_map_substitute_changed
                                             (<link linkend="PangoFT2FontMap">PangoFT2FontMap</link> *fontmap);</programlisting>
 <para>
 Call this function any time the results of the
 default substitution function set with
-<link linkend="pango-ft2-font-map-set-default-substitute">pango_ft2_font_map_set_default_substitute</link>() change.
+<link linkend="pango-ft2-font-map-set-default-substitute"><function>pango_ft2_font_map_set_default_substitute()</function></link> change.
 That is, if your subsitution function will return different
 results for the same input pattern, you must call this function.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>fontmap</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFT2Fontmap">PangoFT2Fontmap</link>
+<listitem><simpara> a <link linkend="PangoFT2Fontmap"><type>PangoFT2Fontmap</type></link>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  1.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-get-context"/>pango_ft2_get_context ()</title>
-<programlisting><link linkend="PangoContext">PangoContext</link>* pango_ft2_get_context         (<link linkend="double">double</link> dpi_x,
+<indexterm><primary>pango_ft2_get_context</primary></indexterm><programlisting><link linkend="PangoContext">PangoContext</link>* pango_ft2_get_context         (<link linkend="double">double</link> dpi_x,
                                              <link linkend="double">double</link> dpi_y);</programlisting>
 <para>
-Retrieves a <link linkend="PangoContext">PangoContext</link> for the default PangoFT2 fontmap
-(see <link linkend="pango-ft2-fontmap-get-for-display">pango_ft2_fontmap_get_for_display</link>()) and sets the resolution
+Retrieves a <link linkend="PangoContext"><type>PangoContext</type></link> for the default PangoFT2 fontmap
+(see <link linkend="pango-ft2-fontmap-get-for-display"><function>pango_ft2_fontmap_get_for_display()</function></link>) and sets the resolution
 for the default fontmap to <parameter>dpi_x</parameter> by <parameter>dpi_y</parameter>.
 </para>
 <para>
-Use of this function is discouraged, see <link linkend="pango-ft2-fontmap-create-context">pango_ft2_fontmap_create_context</link>()
+Use of this function is deprecated; see <link linkend="pango-ft2-fontmap-create-context"><function>pango_ft2_fontmap_create_context()</function></link>
 instead.</para>
 <para>
 
@@ -233,18 +262,18 @@ instead.</para>
 <varlistentry><term><parameter>dpi_y</parameter>&nbsp;:</term>
 <listitem><simpara>  the vertical dpi of the target device
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoContext">PangoContext</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-render"/>pango_ft2_render ()</title>
-<programlisting>void        pango_ft2_render                (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+<indexterm><primary>pango_ft2_render</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render                (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
                                              <link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
-Renders a PangoGlyphString onto a FreeType2 bitmap.</para>
+Renders a <link linkend="PangoGlyphString"><type>PangoGlyphString</type></link> onto a FreeType2 bitmap.</para>
 <para>
 
 </para><variablelist role="params">
@@ -265,13 +294,53 @@ Renders a PangoGlyphString onto a FreeType2 bitmap.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-ft2-render-layout-line"/>pango_ft2_render_layout_line ()</title>
-<programlisting>void        pango_ft2_render_layout_line    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
-                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
-                                             int x,
-                                             int y);</programlisting>
+<title><anchor id="pango-ft2-render-transformed"/>pango_ft2_render_transformed ()</title>
+<indexterm><primary>pango_ft2_render_transformed</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render_transformed    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             const <link linkend="PangoMatrix">PangoMatrix</link> *matrix,
+                                             <link linkend="PangoFont">PangoFont</link> *font,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
 <para>
-Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto a FreeType2 bitmap</para>
+Renders a <link linkend="PangoGlyphString"><type>PangoGlyphString</type></link> onto a FreeType2 bitmap, possibly
+transforming the layed-out coordinates through a transformation
+matrix. Note that the transformation matrix for <parameter>font</parameter> is not
+changed, so to produce correct rendering results, the <parameter>font</parameter>
+must have been loaded using a <link linkend="PangoContext"><type>PangoContext</type></link> with an identical
+transformation matrix to that passed in to this function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bitmap</parameter>&nbsp;:</term>
+<listitem><simpara>  the FreeType2 bitmap onto which to draw the string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoMatrix"><type>PangoMatrix</type></link>, or <literal>NULL</literal> to use an identity transformation
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
+<listitem><simpara>    the font in which to draw the string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>  the glyph string to draw
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>       the x position of the start of the string (in Pango
+          units in user space coordinates)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>       the y position of the baseline (in Pango units
+          in user space coordinates)
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-ft2-render-layout-line"/>pango_ft2_render_layout_line ()</title>
+<indexterm><primary>pango_ft2_render_layout_line</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render_layout_line    (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
+<para>
+Render a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link> onto a FreeType2 bitmap</para>
 <para>
 
 </para><variablelist role="params">
@@ -279,7 +348,7 @@ Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto a FreeType2
 <listitem><simpara>    a FT_Bitmap to render the line onto
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>line</parameter>&nbsp;:</term>
-<listitem><simpara>      a <link linkend="PangoLayoutLine">PangoLayoutLine</link>
+<listitem><simpara>      a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara>         the x position of start of string (in pixels)
@@ -289,21 +358,51 @@ Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto a FreeType2
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-ft2-render-layout"/>pango_ft2_render_layout ()</title>
-<programlisting>void        pango_ft2_render_layout         (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
-                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
-                                             int x,
-                                             int y);</programlisting>
+<title><anchor id="pango-ft2-render-layout-line-subpixel"/>pango_ft2_render_layout_line_subpixel ()</title>
+<indexterm><primary>pango_ft2_render_layout_line_subpixel</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render_layout_line_subpixel
+                                            (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
 <para>
-Render a <link linkend="PangoLayout">PangoLayout</link> onto a FreeType2 bitmap</para>
+Render a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link> onto a FreeType2 bitmap, with he
+location specified in fixed-point pango units rather than
+pixels. (Using this will avoid extra inaccuracies from
+rounding to integer pixels multiple times, even if the
+final glyph positions are integers.)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>bitmap</parameter>&nbsp;:</term>
 <listitem><simpara>    a FT_Bitmap to render the line onto
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>line</parameter>&nbsp;:</term>
+<listitem><simpara>      a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>         the x position of start of string (in pango units)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>         the y position of baseline (in pango units)
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-ft2-render-layout"/>pango_ft2_render_layout ()</title>
+<indexterm><primary>pango_ft2_render_layout</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render_layout         (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
+<para>
+Render a <link linkend="PangoLayout"><type>PangoLayout</type></link> onto a FreeType2 bitmap</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bitmap</parameter>&nbsp;:</term>
+<listitem><simpara>    a FT_Bitmap to render the layout onto
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
-<listitem><simpara>    a <link linkend="PangoLayout">PangoLayout</link>
+<listitem><simpara>    a <link linkend="PangoLayout"><type>PangoLayout</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara>         the X position of the left of the layout (in pixels)
@@ -313,37 +412,73 @@ Render a <link linkend="PangoLayout">PangoLayout</link> onto a FreeType2 bitmap<
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-ft2-get-unknown-glyph"/>pango_ft2_get_unknown_glyph ()</title>
-<programlisting><link linkend="PangoGlyph">PangoGlyph</link>  pango_ft2_get_unknown_glyph     (<link linkend="PangoFont">PangoFont</link> *font);</programlisting>
+<title><anchor id="pango-ft2-render-layout-subpixel"/>pango_ft2_render_layout_subpixel ()</title>
+<indexterm><primary>pango_ft2_render_layout_subpixel</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_render_layout_subpixel
+                                            (<link linkend="FT-Bitmap">FT_Bitmap</link> *bitmap,
+                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
 <para>
-Return the index of a glyph suitable for drawing unknown characters.</para>
+Render a <link linkend="PangoLayout"><type>PangoLayout</type></link> onto a FreeType2 bitmap, with he
+location specified in fixed-point pango units rather than
+pixels. (Using this will avoid extra inaccuracies from
+rounding to integer pixels multiple times, even if the
+final glyph positions are integers.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bitmap</parameter>&nbsp;:</term>
+<listitem><simpara>    a FT_Bitmap to render the layout onto
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara>    a <link linkend="PangoLayout"><type>PangoLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>         the X position of the left of the layout (in Pango units)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>         the Y position of the top of the layout (in Pango units)
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-ft2-get-unknown-glyph"/>pango_ft2_get_unknown_glyph ()</title>
+<indexterm><primary>pango_ft2_get_unknown_glyph</primary></indexterm><programlisting><link linkend="PangoGlyph">PangoGlyph</link>  pango_ft2_get_unknown_glyph     (<link linkend="PangoFont">PangoFont</link> *font);</programlisting>
+<para>
+Return the index of a glyph suitable for drawing unknown characters.
+</para>
+<para>
+Use <link linkend="pango-fc-font-get-unknown-glyph"><function>pango_fc_font_get_unknown_glyph()</function></link> instead.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFont">PangoFont</link>
+<listitem><simpara> a <link linkend="PangoFont"><type>PangoFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a glyph index into <parameter>font</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-get-kerning"/>pango_ft2_font_get_kerning ()</title>
-<programlisting>int         pango_ft2_font_get_kerning      (<link linkend="PangoFont">PangoFont</link> *font,
+<indexterm><primary>pango_ft2_font_get_kerning</primary></indexterm><programlisting><link linkend="int">int</link>         pango_ft2_font_get_kerning      (<link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="PangoGlyph">PangoGlyph</link> left,
                                              <link linkend="PangoGlyph">PangoGlyph</link> right);</programlisting>
 <para>
-Retrieves kerning information for a combination of two glyphs.</para>
+Retrieves kerning information for a combination of two glyphs.
+</para>
+<para>
+Use <link linkend="pango-fc-font-kern-glyphs"><function>pango_fc_font_kern_glyphs()</function></link> instead.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFont">PangoFont</link>
+<listitem><simpara> a <link linkend="PangoFont"><type>PangoFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>left</parameter>&nbsp;:</term>
-<listitem><simpara> the left <link linkend="PangoGlyph">PangoGlyph</link>
+<listitem><simpara> the left <link linkend="PangoGlyph"><type>PangoGlyph</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>right</parameter>&nbsp;:</term>
-<listitem><simpara> the right <link linkend="PangoGlyph">PangoGlyph</link>
+<listitem><simpara> the right <link linkend="PangoGlyph"><type>PangoGlyph</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The amount of kerning (in Pango units) to apply for 
 the given combination of glyphs.
@@ -351,56 +486,64 @@ the given combination of glyphs.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-get-face"/>pango_ft2_font_get_face ()</title>
-<programlisting><link linkend="FT-Face">FT_Face</link>     pango_ft2_font_get_face         (<link linkend="PangoFont">PangoFont</link> *font);</programlisting>
+<indexterm><primary>pango_ft2_font_get_face</primary></indexterm><programlisting><link linkend="FT-Face">FT_Face</link>     pango_ft2_font_get_face         (<link linkend="PangoFont">PangoFont</link> *font);</programlisting>
 <para>
 Returns the native FreeType2 FT_Face structure used for this PangoFont.
-This may be useful if you want to use FreeType2 functions directly.</para>
+This may be useful if you want to use FreeType2 functions directly.
+</para>
+<para>
+Use <link linkend="pango-fc-font-lock-face"><function>pango_fc_font_lock_face()</function></link> instead; when you are done with a
+face from <link linkend="pango-fc-font-lock-face"><function>pango_fc_font_lock_face()</function></link> you must call
+<link linkend="pango-fc-font-unlock-face"><function>pango_fc_font_unlock_face()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFont">PangoFont</link>
+<listitem><simpara> a <link linkend="PangoFont"><type>PangoFont</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to a <link linkend="FT-Face">FT_Face</link> structure, with the size set correctly
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to a <link linkend="FT-Face"><type>FT_Face</type></link> structure, with the size set correctly
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-get-coverage"/>pango_ft2_font_get_coverage ()</title>
-<programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_ft2_font_get_coverage  (<link linkend="PangoFont">PangoFont</link> *font,
+<indexterm><primary>pango_ft2_font_get_coverage</primary></indexterm><programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_ft2_font_get_coverage  (<link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);</programlisting>
 <para>
-Should not be called directly, use <link linkend="pango-font-get-coverage">pango_font_get_coverage</link>() instead.</para>
+Gets the <link linkend="PangoCoverage"><type>PangoCoverage</type></link> for a <link linkend="PangoFT2Font"><type>PangoFT2Font</type></link>. Use <link linkend="pango-font-get-coverage"><function>pango_font_get_coverage()</function></link> instead.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFT2Font">PangoFT2Font</link>.
+<listitem><simpara> a <link linkend="PangoFT2Font"><type>PangoFT2Font</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>language</parameter>&nbsp;:</term>
 <listitem><simpara> a language tag.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-font-map-for-display"/>pango_ft2_font_map_for_display ()</title>
-<programlisting><link linkend="PangoFontMap">PangoFontMap</link>* pango_ft2_font_map_for_display
+<indexterm><primary>pango_ft2_font_map_for_display</primary></indexterm><programlisting><link linkend="PangoFontMap">PangoFontMap</link>* pango_ft2_font_map_for_display
                                             (void);</programlisting>
 <para>
-Returns a <link linkend="PangoFT2FontMap">PangoFT2FontMap</link>. This font map is cached and should
+Returns a <link linkend="PangoFT2FontMap"><type>PangoFT2FontMap</type></link>. This font map is cached and should
 not be freed. If the font map is no longer needed, it can
-be released with <link linkend="pango-ft2-shutdown-display">pango_ft2_shutdown_display</link>().</para>
+be released with <link linkend="pango-ft2-shutdown-display"><function>pango_ft2_shutdown_display()</function></link>. Use of the 
+global PangoFT2 fontmap is deprecated; use <link linkend="pango-ft2-font-map-new"><function>pango_ft2_font_map_new()</function></link>
+instead.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoFT2FontMap">PangoFT2FontMap</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoFT2FontMap"><type>PangoFT2FontMap</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ft2-shutdown-display"/>pango_ft2_shutdown_display ()</title>
-<programlisting>void        pango_ft2_shutdown_display      (void);</programlisting>
+<indexterm><primary>pango_ft2_shutdown_display</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ft2_shutdown_display      (void);</programlisting>
 <para>
-Free the global fontmap. (See <link linkend="pango-ft2-font-map-for-display">pango_ft2_font_map_for_display</link>())</para>
+Free the global fontmap. (See <link linkend="pango-ft2-font-map-for-display"><function>pango_ft2_font_map_for_display()</function></link>)
+Use of the global PangoFT2 fontmap is deprecated.</para>
 <para>
 
 </para></refsect2>

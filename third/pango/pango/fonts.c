@@ -95,13 +95,12 @@ void
 pango_font_description_set_family (PangoFontDescription *desc,
 				   const char           *family)
 {
+  gchar *old_family = NULL;
+	
   g_return_if_fail (desc != NULL);
 
-  if (desc->family_name == family)
-    return;
-  
   if (desc->family_name && !desc->static_family)
-    g_free (desc->family_name);
+    old_family = desc->family_name;
 
   if (family)
     {
@@ -114,6 +113,9 @@ pango_font_description_set_family (PangoFontDescription *desc,
       desc->family_name = NULL;
       desc->mask &= ~PANGO_FONT_MASK_FAMILY;
     }
+
+  if (old_family)
+    g_free (old_family);
 }
 
 /**
@@ -616,6 +618,24 @@ pango_font_description_equal (const PangoFontDescription  *desc1,
 	   (desc1->family_name && desc2->family_name && g_ascii_strcasecmp (desc1->family_name, desc2->family_name) == 0)));
 }
 
+#define TOLOWER(c) \
+  (((c) >= 'A' && (c) <= 'Z') ? (c) - 'A' + 'a' : (c))
+
+static guint
+case_insensitive_hash (const char *key)
+{
+  const char *p = key;
+  guint h = TOLOWER (*p);
+
+  if (h)
+    {
+      for (p += 1; *p != '\0'; p++)
+	h = (h << 5) - h + TOLOWER (*p);
+    }
+
+  return h;
+}
+
 /**
  * pango_font_description_hash:
  * @desc: a #PangoFontDescription
@@ -633,7 +653,7 @@ pango_font_description_hash (const PangoFontDescription *desc)
   hash = desc->mask;
   
   if (desc->mask & PANGO_FONT_MASK_FAMILY)
-    hash = g_str_hash (desc->family_name);
+    hash = case_insensitive_hash (desc->family_name);
   if (desc->mask & PANGO_FONT_MASK_SIZE)
     hash ^= desc->size;
   if (desc->mask & PANGO_FONT_MASK_STYLE)
@@ -979,33 +999,17 @@ pango_font_description_to_filename (const PangoFontDescription  *desc)
 
   return result;
 }  
-  
-GType
-pango_font_get_type (void)
-{
-  static GType object_type = 0;
 
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoFontClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        NULL,           /* class_init */
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoFont),
-        0,              /* n_preallocs */
-	NULL            /* init */
-      };
-      
-      object_type = g_type_register_static (G_TYPE_OBJECT,
-                                            "PangoFont",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
+G_DEFINE_TYPE (PangoFont, pango_font, G_TYPE_OBJECT)
+
+static void
+pango_font_class_init (PangoFontClass *class)
+{
+}
+
+static void
+pango_font_init (PangoFont *font)
+{
 }
 
 /**
@@ -1107,7 +1111,7 @@ pango_font_get_glyph_extents  (PangoFont      *font,
  * be provided to indicate that the metrics should be retrieved that
  * correspond to the script(s) used by that language.
  *
- * Returns: a #PangoMetrics object. The caller must call pango_font_metrics_unref()
+ * Returns: a #PangoFontMetrics object. The caller must call pango_font_metrics_unref()
  *   when finished using the object.
  **/
 PangoFontMetrics *
@@ -1268,36 +1272,98 @@ pango_font_metrics_get_approximate_digit_width (PangoFontMetrics *metrics)
   return metrics->approximate_digit_width;
 }
 
+/**
+ * pango_font_metrics_get_underline_position:
+ * @metrics: a #PangoFontMetrics structure
+ * 
+ * Gets the suggested position to draw the underline.
+ * The value returned is the distance <emphasis>above</emphasis> the
+ * baseline of the top of the underline. Since most fonts have
+ * underline positions beneath the baseline, this value is typically
+ * negative.
+ * 
+ * Return value: the suggested underline position, in Pango units.
+ *
+ * Since: 1.6
+ **/
+int
+pango_font_metrics_get_underline_position (PangoFontMetrics *metrics)
+{
+  g_return_val_if_fail (metrics != NULL, 0);
+
+  return metrics->underline_position;
+}
+
+/**
+ * pango_font_metrics_get_underline_thickness:
+ * @metrics: a #PangoFontMetrics structure
+ * 
+ * Gets the suggested thickness to draw for the underline.
+ * 
+ * Return value: the suggested underline thickness, in Pango units.
+ *
+ * Since: 1.6
+ **/
+int
+pango_font_metrics_get_underline_thickness (PangoFontMetrics *metrics)
+{
+  g_return_val_if_fail (metrics != NULL, 0);
+
+  return metrics->underline_thickness;
+}
+
+/**
+ * pango_font_metrics_get_strikethrough_position:
+ * @metrics: a #PangoFontMetrics structure
+ * 
+ * Gets the suggested position to draw the strikethrough.
+ * The value returned is the distance <emphasis>above</emphasis> the
+ * baseline of the top of the strikethrough.
+ * 
+ * Return value: the suggested strikethrough position, in Pango units.
+ *
+ * Since: 1.6
+ **/
+int
+pango_font_metrics_get_strikethrough_position (PangoFontMetrics *metrics)
+{
+  g_return_val_if_fail (metrics != NULL, 0);
+
+  return metrics->strikethrough_position;
+}
+
+/**
+ * pango_font_metrics_get_strikethrough_thickness:
+ * @metrics: a #PangoFontMetrics structure
+ * 
+ * Gets the suggested thickness to draw for the strikethrough.
+ * 
+ * Return value: the suggested strikethrough thickness, in Pango units.
+ *
+ * Since: 1.6
+ **/
+int
+pango_font_metrics_get_strikethrough_thickness (PangoFontMetrics *metrics)
+{
+  g_return_val_if_fail (metrics != NULL, 0);
+
+  return metrics->strikethrough_thickness;
+}
+
 /*
  * PangoFontFamily
  */
 
-GType
-pango_font_family_get_type (void)
-{
-  static GType object_type = 0;
+G_DEFINE_TYPE (PangoFontFamily, pango_font_family, G_TYPE_OBJECT)
 
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoFontFamilyClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        NULL,           /* class_init */
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoFontFamily),
-        0,              /* n_preallocs */
-	NULL            /* init */
-      };
-      
-      object_type = g_type_register_static (G_TYPE_OBJECT,
-                                            "PangoFontFamily",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
+static void
+pango_font_family_class_init (PangoFontFamilyClass *class)
+{
+}
+
+static void
+pango_font_family_init (PangoFontFamily *family)
+{
 }
 
 /**
@@ -1341,36 +1407,50 @@ pango_font_family_list_faces (PangoFontFamily  *family,
   PANGO_FONT_FAMILY_GET_CLASS (family)->list_faces (family, faces, n_faces);
 }
 
+/**
+ * pango_font_family_is_monospace:
+ * @family: a #PangoFontFamily
+ *
+ * A monospace font is a font designed for text display where the the
+ * characters form a regular grid. For Western languages this would
+ * mean that the advance width of all characters are the same, but
+ * this categorization also includes Asian fonts which include
+ * double-width characters: characters that occupy two grid cells.
+ * g_unichar_iswide() returns a result that indicates whether a
+ * character is typically double-width in a monospace font.
+ * 
+ * The best way to find out the grid-cell size is to call
+ * pango_font_metrics_get_approximate_digit_width(), since the results
+ * of pango_font_metrics_get_approximate_char_width() may be affected
+ * by double-width characters.  
+ * 
+ * Return value: TRUE if the family is monospace.
+ **/
+gboolean 
+pango_font_family_is_monospace (PangoFontFamily  *family)
+{
+  g_return_val_if_fail (PANGO_IS_FONT_FAMILY (family), FALSE);
+
+  if (PANGO_FONT_FAMILY_GET_CLASS (family)->is_monospace)
+    return PANGO_FONT_FAMILY_GET_CLASS (family)->is_monospace (family);
+  else
+    return FALSE;
+}
+
 /*
  * PangoFontFace
  */
 
-GType
-pango_font_face_get_type (void)
-{
-  static GType object_type = 0;
+G_DEFINE_TYPE (PangoFontFace, pango_font_face, G_TYPE_OBJECT)
 
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoFontFaceClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        NULL,           /* class_init */
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoFont),
-        0,              /* n_preallocs */
-	NULL            /* init */
-      };
-      
-      object_type = g_type_register_static (G_TYPE_OBJECT,
-                                            "PangoFontFace",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
+static void
+pango_font_face_class_init (PangoFontFaceClass *class)
+{
+}
+
+static void
+pango_font_face_init (PangoFontFace *face)
+{
 }
 
 /**
@@ -1411,4 +1491,38 @@ pango_font_face_get_face_name (PangoFontFace *face)
   g_return_val_if_fail (PANGO_IS_FONT_FACE (face), NULL);
 
   return PANGO_FONT_FACE_GET_CLASS (face)->get_face_name (face);
+}
+
+/**
+ * pango_font_face_list_sizes:
+ * @face: a #PangoFontFace.
+ * @sizes: location to store a pointer to an array of int. This array
+ *         should be freed with g_free().
+ * @n_sizes: location to store the number of elements in @sizes
+ * 
+ * List the available sizes for a font. This is only applicable to bitmap
+ * fonts. For scalable fonts, stores %NULL at the location pointed to by
+ * @sizes and 0 at the location pointed to by @n_sizes. The sizes returned
+ * are in pango units and are sorted in ascending order.
+ *
+ * Since: 1.4
+ **/
+void
+pango_font_face_list_sizes (PangoFontFace  *face, 
+                            int           **sizes, 
+                            int            *n_sizes)
+{
+  g_return_if_fail (PANGO_IS_FONT_FACE (face));
+  g_return_if_fail (sizes == NULL || n_sizes != NULL);
+
+  if (n_sizes == NULL)
+    return;
+
+  if (PANGO_FONT_FACE_GET_CLASS (face)->list_sizes != NULL)
+    PANGO_FONT_FACE_GET_CLASS (face)->list_sizes (face, sizes, n_sizes);
+  else
+    {
+      *sizes = NULL;
+      *n_sizes = 0;
+    }
 }

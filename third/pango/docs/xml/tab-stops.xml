@@ -28,19 +28,19 @@ enum        <link linkend="PangoTabAlign">PangoTabAlign</link>;
                                              <link linkend="gint">gint</link> first_position,
                                              ...);
 <link linkend="PangoTabArray">PangoTabArray</link>* <link linkend="pango-tab-array-copy">pango_tab_array_copy</link>         (<link linkend="PangoTabArray">PangoTabArray</link> *src);
-void        <link linkend="pango-tab-array-free">pango_tab_array_free</link>            (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);
+<link linkend="void">void</link>        <link linkend="pango-tab-array-free">pango_tab_array_free</link>            (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);
 <link linkend="gint">gint</link>        <link linkend="pango-tab-array-get-size">pango_tab_array_get_size</link>        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);
-void        <link linkend="pango-tab-array-resize">pango_tab_array_resize</link>          (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<link linkend="void">void</link>        <link linkend="pango-tab-array-resize">pango_tab_array_resize</link>          (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> new_size);
-void        <link linkend="pango-tab-array-set-tab">pango_tab_array_set_tab</link>         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<link linkend="void">void</link>        <link linkend="pango-tab-array-set-tab">pango_tab_array_set_tab</link>         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> tab_index,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> alignment,
                                              <link linkend="gint">gint</link> location);
-void        <link linkend="pango-tab-array-get-tab">pango_tab_array_get_tab</link>         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<link linkend="void">void</link>        <link linkend="pango-tab-array-get-tab">pango_tab_array_get_tab</link>         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> tab_index,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> *alignment,
                                              <link linkend="gint">gint</link> *location);
-void        <link linkend="pango-tab-array-get-tabs">pango_tab_array_get_tabs</link>        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<link linkend="void">void</link>        <link linkend="pango-tab-array-get-tabs">pango_tab_array_get_tabs</link>        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> **alignments,
                                              <link linkend="gint">gint</link> **locations);
 <link linkend="gboolean">gboolean</link>    <link linkend="pango-tab-array-get-positions-in-pixels">pango_tab_array_get_positions_in_pixels</link>
@@ -48,6 +48,8 @@ void        <link linkend="pango-tab-array-get-tabs">pango_tab_array_get_tabs</l
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -66,21 +68,21 @@ void        <link linkend="pango-tab-array-get-tabs">pango_tab_array_get_tabs</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="PangoTabArray"/>struct PangoTabArray</title>
-<programlisting>struct PangoTabArray;</programlisting>
+<indexterm><primary>PangoTabArray</primary></indexterm><programlisting>struct PangoTabArray;</programlisting>
 <para>
 A <structname>PangoTabArray</structname> struct contains an array
 of tab stops. Each tab stop has an alignment and a position.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PANGO-TYPE-TAB-ARRAY-CAPS"/>PANGO_TYPE_TAB_ARRAY</title>
-<programlisting>#define PANGO_TYPE_TAB_ARRAY (pango_tab_array_get_type ())
+<indexterm><primary>PANGO_TYPE_TAB_ARRAY</primary></indexterm><programlisting>#define PANGO_TYPE_TAB_ARRAY (pango_tab_array_get_type ())
 </programlisting>
 <para>
-The GObject type for <link linkend="PangoTabArray">PangoTabArray</link>.
+The GObject type for <link linkend="PangoTabArray"><type>PangoTabArray</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoTabAlign"/>enum PangoTabAlign</title>
-<programlisting>typedef enum
+<indexterm><primary>PangoTabAlign</primary></indexterm><programlisting>typedef enum
 {
   PANGO_TAB_LEFT
 
@@ -94,7 +96,7 @@ The GObject type for <link linkend="PangoTabArray">PangoTabArray</link>.
 } PangoTabAlign;
 </programlisting>
 <para>
-A <link linkend="PangoTabAlign">PangoTabAlign</link> specifies where a tab stop appears relative to the text.
+A <link linkend="PangoTabAlign"><type>PangoTabAlign</type></link> specifies where a tab stop appears relative to the text.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>PANGO_TAB_LEFT</literal></term>
@@ -105,14 +107,14 @@ A <link linkend="PangoTabAlign">PangoTabAlign</link> specifies where a tab stop 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="PANGO-TYPE-TAB-ALIGN-CAPS"/>PANGO_TYPE_TAB_ALIGN</title>
-<programlisting>#define PANGO_TYPE_TAB_ALIGN (pango_tab_align_get_type())
+<indexterm><primary>PANGO_TYPE_TAB_ALIGN</primary></indexterm><programlisting>#define PANGO_TYPE_TAB_ALIGN (pango_tab_align_get_type())
 </programlisting>
 <para>
-The GObject type for <link linkend="PangoTabAlign">PangoTabAlign</link>.
+The GObject type for <link linkend="PangoTabAlign"><type>PangoTabAlign</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-new"/>pango_tab_array_new ()</title>
-<programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_new          (<link linkend="gint">gint</link> initial_size,
+<indexterm><primary>pango_tab_array_new</primary></indexterm><programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_new          (<link linkend="gint">gint</link> initial_size,
                                              <link linkend="gboolean">gboolean</link> positions_in_pixels);</programlisting>
 <para>
 Creates an array of <parameter>initial_size</parameter> tab stops. Tab stops are specified in
@@ -127,19 +129,19 @@ units. All stops are initially at position 0.</para>
 <varlistentry><term><parameter>positions_in_pixels</parameter>&nbsp;:</term>
 <listitem><simpara> whether positions are in pixel units
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-new-with-positions"/>pango_tab_array_new_with_positions ()</title>
-<programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_new_with_positions
+<indexterm><primary>pango_tab_array_new_with_positions</primary></indexterm><programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_new_with_positions
                                             (<link linkend="gint">gint</link> size,
                                              <link linkend="gboolean">gboolean</link> positions_in_pixels,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> first_alignment,
                                              <link linkend="gint">gint</link> first_position,
                                              ...);</programlisting>
 <para>
-This is a convenience function that creates a <link linkend="PangoTabArray">PangoTabArray</link>
+This is a convenience function that creates a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 and allows you to specify the alignment and position of each
 tab stop. You <emphasis>must</emphasis> provide an alignment
 and position for <parameter>size</parameter> tab stops.</para>
@@ -161,52 +163,52 @@ and position for <parameter>size</parameter> tab stops.</para>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> additional alignment/position pairs
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="PangoTabArray">PangoTabArray</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-copy"/>pango_tab_array_copy ()</title>
-<programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_copy         (<link linkend="PangoTabArray">PangoTabArray</link> *src);</programlisting>
+<indexterm><primary>pango_tab_array_copy</primary></indexterm><programlisting><link linkend="PangoTabArray">PangoTabArray</link>* pango_tab_array_copy         (<link linkend="PangoTabArray">PangoTabArray</link> *src);</programlisting>
 <para>
-Copy a <link linkend="PangoTabArray">PangoTabArray</link></para>
+Copies a <link linkend="PangoTabArray"><type>PangoTabArray</type></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara> <link linkend="PangoTabArray">PangoTabArray</link> to copy
+<listitem><simpara> <link linkend="PangoTabArray"><type>PangoTabArray</type></link> to copy
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Newly-allocated <link linkend="PangoTabArray">PangoTabArray</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Newly-allocated <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-free"/>pango_tab_array_free ()</title>
-<programlisting>void        pango_tab_array_free            (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);</programlisting>
+<indexterm><primary>pango_tab_array_free</primary></indexterm><programlisting><link linkend="void">void</link>        pango_tab_array_free            (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);</programlisting>
 <para>
-Free a tab array and associated resources.</para>
+Frees a tab array and associated resources.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-get-size"/>pango_tab_array_get_size ()</title>
-<programlisting><link linkend="gint">gint</link>        pango_tab_array_get_size        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);</programlisting>
+<indexterm><primary>pango_tab_array_get_size</primary></indexterm><programlisting><link linkend="gint">gint</link>        pango_tab_array_get_size        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);</programlisting>
 <para>
-Get the number of tab stops in <parameter>tab_array</parameter>.</para>
+Gets the number of tab stops in <parameter>tab_array</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of tab stops in the array.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-resize"/>pango_tab_array_resize ()</title>
-<programlisting>void        pango_tab_array_resize          (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<indexterm><primary>pango_tab_array_resize</primary></indexterm><programlisting><link linkend="void">void</link>        pango_tab_array_resize          (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> new_size);</programlisting>
 <para>
 Resizes a tab array. You must subsequently initialize any tabs that
@@ -215,7 +217,7 @@ were added as a result of growing the array.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>new_size</parameter>&nbsp;:</term>
 <listitem><simpara> new size of the array
@@ -223,19 +225,19 @@ were added as a result of growing the array.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-set-tab"/>pango_tab_array_set_tab ()</title>
-<programlisting>void        pango_tab_array_set_tab         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<indexterm><primary>pango_tab_array_set_tab</primary></indexterm><programlisting><link linkend="void">void</link>        pango_tab_array_set_tab         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> tab_index,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> alignment,
                                              <link linkend="gint">gint</link> location);</programlisting>
 <para>
 Sets the alignment and location of a tab stop.
-<parameter>alignment</parameter> must always be <link linkend="PANGO-TAB-LEFT-CAPS">PANGO_TAB_LEFT</link> in the current
+<parameter>alignment</parameter> must always be <link linkend="PANGO-TAB-LEFT-CAPS"><type>PANGO_TAB_LEFT</type></link> in the current
 implementation.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_index</parameter>&nbsp;:</term>
 <listitem><simpara> the index of a tab stop
@@ -249,7 +251,7 @@ implementation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-get-tab"/>pango_tab_array_get_tab ()</title>
-<programlisting>void        pango_tab_array_get_tab         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<indexterm><primary>pango_tab_array_get_tab</primary></indexterm><programlisting><link linkend="void">void</link>        pango_tab_array_get_tab         (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="gint">gint</link> tab_index,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> *alignment,
                                              <link linkend="gint">gint</link> *location);</programlisting>
@@ -261,7 +263,7 @@ interested in their value.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_index</parameter>&nbsp;:</term>
 <listitem><simpara> tab stop index
@@ -275,18 +277,18 @@ interested in their value.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-get-tabs"/>pango_tab_array_get_tabs ()</title>
-<programlisting>void        pango_tab_array_get_tabs        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
+<indexterm><primary>pango_tab_array_get_tabs</primary></indexterm><programlisting><link linkend="void">void</link>        pango_tab_array_get_tabs        (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array,
                                              <link linkend="PangoTabAlign">PangoTabAlign</link> **alignments,
                                              <link linkend="gint">gint</link> **locations);</programlisting>
 <para>
 If non-NULL, <parameter>alignments</parameter> and <parameter>locations</parameter> are filled with allocated
-arrays of length <link linkend="pango-tab-array-get-size">pango_tab_array_get_size</link>(). You must free the
+arrays of length <link linkend="pango-tab-array-get-size"><function>pango_tab_array_get_size()</function></link>. You must free the
 returned array.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>alignments</parameter>&nbsp;:</term>
 <listitem><simpara> location to store an array of tab stop alignments
@@ -297,7 +299,7 @@ returned array.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-tab-array-get-positions-in-pixels"/>pango_tab_array_get_positions_in_pixels ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    pango_tab_array_get_positions_in_pixels
+<indexterm><primary>pango_tab_array_get_positions_in_pixels</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    pango_tab_array_get_positions_in_pixels
                                             (<link linkend="PangoTabArray">PangoTabArray</link> *tab_array);</programlisting>
 <para>
 Returns TRUE if the tab positions are in pixels, FALSE if they are
@@ -306,7 +308,7 @@ in Pango units.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tab_array</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoTabArray">PangoTabArray</link>
+<listitem><simpara> a <link linkend="PangoTabArray"><type>PangoTabArray</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether positions are in pixels
 </simpara></listitem></varlistentry>

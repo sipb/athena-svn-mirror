@@ -38,6 +38,7 @@
 #define PANGO_WIN32_IS_FONT_MAP(object)     (G_TYPE_CHECK_INSTANCE_TYPE ((object), PANGO_TYPE_WIN32_FONT_MAP))
 
 typedef struct _PangoWin32FontMap      PangoWin32FontMap;
+typedef struct _PangoWin32FontMapClass PangoWin32FontMapClass;
 typedef struct _PangoWin32Family       PangoWin32Family;
 typedef struct _PangoWin32SizeInfo     PangoWin32SizeInfo;
 
@@ -75,6 +76,8 @@ struct _PangoWin32Family
 
   char *family_name;
   GSList *font_entries;
+
+  gboolean is_monospace;
 };
 
 struct _PangoWin32SizeInfo
@@ -93,8 +96,9 @@ struct _PangoWin32SizeInfo
 GType             pango_win32_family_get_type        (void);
 GType             pango_win32_face_get_type          (void);
 
-static void       pango_win32_font_map_init          (PangoWin32FontMap       *fontmap);
-static void       pango_win32_font_map_class_init    (PangoFontMapClass       *class);
+static void       pango_win32_face_list_sizes        (PangoFontFace  *face,
+                                                      int           **sizes,
+                                                      int            *n_sizes);
 
 static void       pango_win32_font_map_finalize      (GObject                      *object);
 static PangoFont *pango_win32_font_map_load_font     (PangoFontMap                 *fontmap,
@@ -109,35 +113,7 @@ static void       pango_win32_fontmap_cache_clear    (PangoWin32FontMap         
 static void       pango_win32_insert_font            (PangoWin32FontMap            *fontmap,
 						      LOGFONT                      *lfp);
 
-static PangoFontClass *font_map_parent_class;	/* Parent class structure for PangoWin32FontMap */
-
-static GType
-pango_win32_font_map_get_type (void)
-{
-  static GType object_type = 0;
-
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoFontMapClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) pango_win32_font_map_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoWin32FontMap),
-        0,              /* n_preallocs */
-        (GInstanceInitFunc) pango_win32_font_map_init,
-      };
-      
-      object_type = g_type_register_static (PANGO_TYPE_FONT_MAP,
-                                            "PangoWin32FontMap",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
-}
+G_DEFINE_TYPE (PangoWin32FontMap, pango_win32_font_map, PANGO_TYPE_FONT_MAP)
 
 /* A hash function for LOGFONTs that takes into consideration only
  * those fields that indicate a specific .ttf file is in use:
@@ -178,16 +154,16 @@ pango_win32_font_map_init (PangoWin32FontMap *win32fontmap)
 }
 
 static void
-pango_win32_font_map_class_init (PangoFontMapClass *class)
+pango_win32_font_map_class_init (PangoWin32FontMapClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
-  
-  font_map_parent_class = g_type_class_peek_parent (class);
+  PangoFontMapClass *fontmap_class = PANGO_FONT_MAP_CLASS (class);
   
   object_class->finalize = pango_win32_font_map_finalize;
-  class->load_font = pango_win32_font_map_load_font;
-  class->list_families = pango_win32_font_map_list_families;
-
+  fontmap_class->load_font = pango_win32_font_map_load_font;
+  fontmap_class->list_families = pango_win32_font_map_list_families;
+  fontmap_class->shape_engine_type = PANGO_RENDER_TYPE_WIN32;
+  
   pango_win32_get_dc ();
 }
 
@@ -199,7 +175,11 @@ pango_win32_inner_enum_proc (LOGFONT    *lfp,
 			     DWORD       fontType,
 			     LPARAM      lParam)
 {
-  pango_win32_insert_font (fontmap, lfp);
+  /* Windows generates synthetic vertical writing versions of East
+   * Asian fonts with @ prepended to their name, ignore them.
+   */
+  if (lfp->lfFaceName[0] != '@')
+    pango_win32_insert_font (fontmap, lfp);
 
   return 1;
 }
@@ -245,7 +225,7 @@ pango_win32_font_map_for_display (void)
   if (fontmap != NULL)
     return PANGO_FONT_MAP (fontmap);
 
-  fontmap = (PangoWin32FontMap *) g_type_create_instance (PANGO_TYPE_WIN32_FONT_MAP);
+  fontmap = g_object_new (PANGO_TYPE_WIN32_FONT_MAP, NULL);
   
   fontmap->font_cache = pango_win32_font_cache_new ();
   fontmap->freed_fonts = g_queue_new ();
@@ -254,7 +234,7 @@ pango_win32_font_map_for_display (void)
   logfont.lfCharSet = DEFAULT_CHARSET;
   EnumFontFamiliesExA (pango_win32_hdc, &logfont, (FONTENUMPROC) pango_win32_enum_proc, 0, 0);
 
-  fontmap->resolution = PANGO_SCALE / GetDeviceCaps (pango_win32_hdc, LOGPIXELSY) * 72.0;
+  fontmap->resolution = (PANGO_SCALE / (double) GetDeviceCaps (pango_win32_hdc, LOGPIXELSY)) * 72.0;
 
   return PANGO_FONT_MAP (fontmap);
 }
@@ -286,7 +266,7 @@ pango_win32_font_map_finalize (GObject *object)
   
   pango_win32_font_cache_free (win32fontmap->font_cache);
 
-  G_OBJECT_CLASS (font_map_parent_class)->finalize (object);
+  G_OBJECT_CLASS (pango_win32_font_map_parent_class)->finalize (object);
 }
 
 /*
@@ -316,11 +296,19 @@ pango_win32_family_list_faces (PangoFontFamily  *family,
     }
 }
 
-const char *
+static const char *
 pango_win32_family_get_name (PangoFontFamily  *family)
 {
   PangoWin32Family *win32family = PANGO_WIN32_FAMILY (family);
   return win32family->family_name;
+}
+
+static gboolean
+pango_win32_family_is_monospace (PangoFontFamily *family)
+{
+  PangoWin32Family *win32family = PANGO_WIN32_FAMILY (family);
+
+  return win32family->is_monospace;
 }
 
 static void
@@ -328,6 +316,7 @@ pango_win32_family_class_init (PangoFontFamilyClass *class)
 {
   class->list_faces = pango_win32_family_list_faces;
   class->get_name = pango_win32_family_get_name;
+  class->is_monospace = pango_win32_family_is_monospace;
 }
 
 GType
@@ -736,6 +725,7 @@ pango_win32_insert_font (PangoWin32FontMap *win32fontmap,
   stretch = PANGO_STRETCH_NORMAL;
 
   font_family = pango_win32_get_font_family (win32fontmap, family_name);
+  g_free (family_name);
 
   tmp_list = font_family->font_entries;
   while (tmp_list)
@@ -785,6 +775,7 @@ pango_win32_insert_font (PangoWin32FontMap *win32fontmap,
     { 
     case FF_MODERN : /* monospace */
       PING(("monospace"));
+      font_family->is_monospace = TRUE; /* modify before reuse */
       font_family = pango_win32_get_font_family (win32fontmap, "monospace");
       font_family->font_entries = g_slist_append (font_family->font_entries, win32face);
       win32fontmap->n_fonts++;
@@ -932,6 +923,20 @@ pango_win32_face_class_init (PangoFontFaceClass *class)
 {
   class->describe = pango_win32_face_describe;
   class->get_face_name = pango_win32_face_get_face_name;
+  class->list_sizes = pango_win32_face_list_sizes;
+}
+
+static void
+pango_win32_face_list_sizes (PangoFontFace  *face,
+                             int           **sizes,
+                             int            *n_sizes)
+{
+  /*
+   * for scalable fonts it's simple, and currently we only have such
+   * see : pango_win32_enum_proc(), TRUETYPE_FONTTYPE
+   */
+  *sizes = NULL;
+  *n_sizes = 0;
 }
 
 GType

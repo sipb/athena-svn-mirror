@@ -20,6 +20,7 @@
  */
 
 #include <errno.h>
+#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -498,7 +499,7 @@ read_config_file (const char *filename, gboolean enoent_error)
 	{
 	  gboolean empty = FALSE;
 	  gboolean append = FALSE;
-	  char *k, *v;
+	  char *v;
 
 	  if (!section)
 	    {
@@ -545,16 +546,12 @@ read_config_file (const char *filename, gboolean enoent_error)
 	  g_string_prepend_c (tmp_buffer1, '/');
 	  g_string_prepend (tmp_buffer1, section);
 
-	  /* Remove any existing values */
-	  if (g_hash_table_lookup_extended (config_hash, tmp_buffer1->str,
-					    (gpointer *)&k, (gpointer *)&v))
+	  if (append)
 	    {
-	      g_free (k);
-	      if (append)
-		{
-		  g_string_prepend (tmp_buffer2, v);
-		  g_free (v);
-		}
+	      /* Get any existing value */
+	      v = g_hash_table_lookup (config_hash, tmp_buffer1->str);
+	      if (v)
+		g_string_prepend (tmp_buffer2, v);
 	    }
 	      
 	  if (!empty)
@@ -594,7 +591,9 @@ read_config ()
       const char *home;
       const char *envvar;
       
-      config_hash = g_hash_table_new (g_str_hash, g_str_equal);
+      config_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+					   (GDestroyNotify)g_free,
+					   (GDestroyNotify)g_free);
       filename = g_build_filename (pango_get_sysconf_subdirectory (),
 				   "pangorc",
 				   NULL);
@@ -988,6 +987,166 @@ pango_parse_stretch (const char   *str,
   return FALSE;
 }
 
+GType
+pango_matrix_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("PangoMatrix",
+					     (GBoxedCopyFunc) pango_matrix_copy,
+					     (GBoxedFreeFunc) pango_matrix_free);
+
+  return our_type;
+}
+
+/**
+ * pango_matrix_copy:
+ * @matrix: a #PangoMatrix
+ * 
+ * Copies a #PangoMatrix.
+ * 
+ * Return value: a copy of @matrix. The result must be freed with
+ *  pango_matrix_free().
+ *
+ * Since: 1.6
+ **/
+PangoMatrix *
+pango_matrix_copy (const PangoMatrix *matrix)
+{
+  g_return_val_if_fail (matrix != NULL, NULL);
+
+  return g_memdup (matrix, sizeof (PangoMatrix));
+}
+
+/**
+ * pango_matrix_free:
+ * @matrix: a #PangoMatrix
+ * 
+ * Free a #PangoMatrix created with pango_matrix_copy().
+ *
+ * Since: 1.6
+ **/
+void
+pango_matrix_free (PangoMatrix *matrix)
+{
+  g_return_if_fail (matrix != NULL);
+  
+  g_free (matrix);
+}
+
+/**
+ * pango_matrix_translate:
+ * @matrix: a #PangoMatrix
+ * @tx: amount to translate in the X direction
+ * @ty: amount to translate in the Y direction
+ * 
+ * Changes the transformation represented by @matrix to be the
+ * transformation given by first translating by (@tx, @ty)
+ * then applying the original transformation.
+ *
+ * Since: 1.6
+ **/
+void
+pango_matrix_translate (PangoMatrix *matrix,
+			double       tx,
+			double       ty)
+{
+  g_return_if_fail (matrix != NULL);
+
+  matrix->x0  = matrix->xx * tx + matrix->xy * ty + matrix->x0;
+  matrix->y0  = matrix->yx * tx + matrix->yy * ty + matrix->y0;
+}
+
+/**
+ * pango_matrix_scale:
+ * @matrix: a #PangoMatrix
+ * @scale_x: amount to scale by in X direction
+ * @scale_y: amount to scale by in Y direction
+ * 
+ * Changes the transformation represented by @matrix to be the
+ * transformation given by first scaling by @sx in the X direction
+ * and @sy in the Y direction then applying the original
+ * transformation.
+ *
+ * Since: 1.6
+ **/
+void
+pango_matrix_scale (PangoMatrix *matrix,
+		    double       scale_x,
+		    double       scale_y)
+{
+  g_return_if_fail (matrix != NULL);
+
+  matrix->xx *= scale_x;
+  matrix->xy *= scale_y;
+  matrix->yx *= scale_x;
+  matrix->yy *= scale_y;
+}
+
+/**
+ * pango_matrix_rotate:
+ * @matrix: a #PangoMatrix
+ * @degrees: degrees to rotate counter-clockwise
+ * 
+ * Changes the transformation represented by @matrix to be the
+ * transformation given by first rotating by @degrees degrees
+ * counter-clokwise then applying the original transformation.
+ *
+ * Since: 1.6
+ **/
+void
+pango_matrix_rotate (PangoMatrix *matrix,
+		     double       degrees)
+{
+  PangoMatrix tmp;
+  gdouble r, s, c;
+
+  g_return_if_fail (matrix != NULL);
+
+  r = degrees * (G_PI / 180.);
+  s = sin (r);
+  c = cos (r);
+
+  tmp.xx = c;
+  tmp.xy = s;
+  tmp.yx = -s;
+  tmp.yy = c;
+  tmp.x0 = 0;
+  tmp.y0 = 0;
+
+  pango_matrix_concat (matrix, &tmp);
+}
+
+/**
+ * pango_matrix_concat:
+ * @matrix: a #PangoMatrix
+ * @new_matrix: a #PangoMatrix
+ * 
+ * Changes the transformation represented by @matrix to be the
+ * transformation given by first applying transformation
+ * given by @new_matrix then applying the original transformation.
+ *
+ * Since: 1.6
+ **/
+void
+pango_matrix_concat (PangoMatrix       *matrix,
+		     const PangoMatrix *new_matrix)
+{
+  PangoMatrix tmp;
+  
+  g_return_if_fail (matrix != NULL);
+
+  tmp = *matrix;
+
+  matrix->xx = tmp.xx * new_matrix->xx + tmp.xy * new_matrix->yx;
+  matrix->xy = tmp.xx * new_matrix->xy + tmp.xy * new_matrix->yy;
+  matrix->yx = tmp.yx * new_matrix->xx + tmp.yy * new_matrix->yx;
+  matrix->yy = tmp.yx * new_matrix->xy + tmp.yy * new_matrix->yy;
+  matrix->x0  = tmp.xx * new_matrix->x0 + tmp.xy * new_matrix->y0 + tmp.x0;
+  matrix->y0  = tmp.yx * new_matrix->y0 + tmp.yy * new_matrix->y0 + tmp.y0;
+}
+
 static const char canon_map[256] = {
    0,   0,   0,   0,   0,   0,   0,   0,    0,   0,   0,   0,   0,   0,   0,   0, 
    0,   0,   0,   0,   0,   0,   0,   0,    0,   0,   0,   0,   0,   0,   0,   0, 
@@ -1142,7 +1301,8 @@ pango_language_matches (PangoLanguage *language,
 	   (lang_str[end - p] == '\0' || lang_str[end - p] == '-')))
 	return TRUE;
 
-      p = end;
+      if (!done)
+	p = end + 1;
     }
 
   return FALSE;
@@ -1166,7 +1326,7 @@ lang_info_compare (const void *key, const void *val)
  * in the following have sufficient text to excercise all the accents for the language, and
  * there are obviously many more languages to include as well.
  */
-static LangInfo lang_texts[] = {
+static const LangInfo lang_texts[] = {
   { "ar", "Arabic  \330\247\331\204\330\263\331\204\330\247\331\205 \330\271\331\204\331\212\331\203\331\205" },
   { "cs", "Czech (\304\215esky)  Dobr\303\275 den" },
   { "da", "Danish (Dansk)  Hej, Goddag" },
@@ -1178,8 +1338,8 @@ static LangInfo lang_texts[] = {
   { "fi", "Finnish (Suomi)  Hei, Hyv\303\244\303\244 p\303\244iv\303\244\303\244" },
   { "fr", "French (Fran\303\247ais)" },
   { "de", "German Gr\303\274\303\237 Gott" },
-  { "iw", "Hebrew   \327\251\327\234\327\225\327\235" },
-  { "il", "Italiano  Ciao, Buon giorno" },
+  { "he", "Hebrew   \327\251\327\234\327\225\327\235" },
+  { "it", "Italiano  Ciao, Buon giorno" },
   { "ja", "Japanese (\346\227\245\346\234\254\350\252\236) \343\201\223\343\202\223\343\201\253\343\201\241\343\201\257, \357\275\272\357\276\235\357\276\206\357\276\201\357\276\212" },
   { "ko", "Korean (\355\225\234\352\270\200)   \354\225\210\353\205\225\355\225\230\354\204\270\354\232\224, \354\225\210\353\205\225\355\225\230\354\213\255\353\213\210\352\271\214" },
   { "mt", "Maltese   \304\212aw, Sa\304\247\304\247a" },
@@ -1254,15 +1414,29 @@ pango_log2vis_get_embedding_levels (gunichar       *str,
   return result;
 }
 
+#endif /* HAVE_FRIBIDI */
 
+/**
+ * pango_get_mirror_char:
+ * @ch: a unicode character
+ * @mirrored_ch: location to store the mirrored character
+ *
+ * If @ch has the Unicode mirrored property and there is another unicode
+ * character that typically has a glyph that is the mirror image of @ch's
+ * glyph, puts that character in the address pointed to by @mirrored_ch.
+ *
+ * Use g_unichar_get_mirror_char() instead; the docs for that function
+ * provide full details.
+ * 
+ * Return value: %TRUE if @ch has a mirrored character and @mirrored_ch is
+ * filled in, %FALSE otherwise
+ **/
 gboolean 
 pango_get_mirror_char (gunichar        ch,
 		       gunichar       *mirrored_ch)
 {
-  return fribidi_get_mirror_char (ch, mirrored_ch); 
+  return g_unichar_get_mirror_char (ch, mirrored_ch); 
 }
-
-#endif /* HAVE_FRIBIDI */
 
 
 static guint
@@ -1494,4 +1668,40 @@ pango_lookup_aliases (const char   *fontname,
       *families = NULL;
       *n_families = 0;
     }
+}
+
+/**
+ * pango_find_base_dir:
+ * @text:   the text to process
+ * @length: length of @text in bytes (may be -1 if @text is nul-terminated)
+ *
+ * Searches a string the first character that has a strong 
+ * direction, according to the Unicode bidirectional algorithm.
+ *
+ * Return value: The direction corresponding to the first strong character.
+ * If no such character is found, then %PANGO_DIRECTION_NEUTRAL is returned.
+ */
+PangoDirection
+pango_find_base_dir (const gchar *text,
+		     gint         length)
+{
+  PangoDirection dir = PANGO_DIRECTION_NEUTRAL;
+  const gchar *p;
+
+  g_return_val_if_fail (text != NULL, PANGO_DIRECTION_NEUTRAL);
+
+  p = text;
+  while ((length < 0 || p < text + length) && *p)
+    {
+      gunichar wc = g_utf8_get_char (p);
+
+      dir = pango_unichar_direction (wc);
+
+      if (dir != PANGO_DIRECTION_NEUTRAL)
+	break;
+
+      p = g_utf8_next_char (p);
+    }
+
+  return dir;
 }

@@ -24,15 +24,15 @@
 #include <math.h>
 
 #include <X11/Xlib.h>
-#include "pangox.h"
 #include "pango-utils.h"
-#include "pangox-private.h"
-#include "pango-intset.h"
 #include "modules.h"
 
-#define PANGO_X_UNKNOWN_FLAG 0x10000000
+#undef PANGO_DISABLE_DEPRECATED
 
-#define PANGO_LIGATURE_HACK_DEBUG
+#include "pangox.h"
+#include "pangox-private.h"
+
+#define PANGO_X_UNKNOWN_FLAG 0x10000000
 
 #include "config.h"
 
@@ -46,97 +46,6 @@
 typedef struct _PangoXFontClass   PangoXFontClass;
 typedef struct _PangoXMetricsInfo PangoXMetricsInfo;
 typedef struct _PangoXContextInfo PangoXContextInfo;
-typedef struct _PangoXLigatureInfo   PangoXLigatureInfo;
-typedef struct _PangoXLigatureSource PangoXLigatureSource;
-
-#ifndef HAVE_STRTOK_R
-/* This implementation of strtok_r comes from the GNU C library.
- * Copyright (C) 1991, 1996, 1997, 1998, 1999, 2001 Free Software Foundation, Inc.
- */
-static char *
-my_strtok_r (char       *s,
-	     const char *delim,
-	     char      **save_ptr)
-{
-  char *token;
-
-  if (s == NULL)
-    s = *save_ptr;
-
-  /* Scan leading delimiters.  */
-  s += strspn (s, delim);
-  if (*s == '\0')
-    {
-      *save_ptr = s;
-      return NULL;
-    }
-
-  /* Find the end of the token.  */
-  token = s;
-  s = strpbrk (token, delim);
-  if (s == NULL)
-    /* This token finishes the string.  */
-    *save_ptr = token + strlen (token);
-  else
-    {
-      /* Terminate the token and make *SAVE_PTR point past it.  */
-      *s = '\0';
-      *save_ptr = s + 1;
-    }
-  return token;
-}
-#else
-#define my_strtok_r strtok_r
-#endif /* HAVE_STRTOK_R */
-
-static int
-hex_to_integer (const char *s) 
-{
-  int a;
-  char *end_ptr;
-  
-  if (!*s)
-    return (gunichar)-1;
-
-  a = strtol (s, &end_ptr, 16);
-  if (*end_ptr)
-    return (gunichar)-1;  /* Invalid characters in string */
-    
-  if (a <= 0 || a >= 0xffff)
-    return (gunichar)-1; /* Character out of range */
-  
-  return a;
-}
-
-static PangoIntSet *
-parse_gintset_spec (char *s) 
-{
-  char *m = NULL;
-  PangoIntSet *set = pango_int_set_new ();
-  s = my_strtok_r (s, ",", &m);
-  while (s)
-    {
-      char *p = strchr (s, '-');
-      if (!p) 
-	{
-	  int i = hex_to_integer (s);
-	  if (i != -1)
-	    pango_int_set_add (set, i);
-	}
-      else 
-	{
-	  int start, end;
-	  *p = 0;
-	  p++;
-	  start = hex_to_integer (s);
-	  end = hex_to_integer (p);
-	  if (start != -1 && end != -1)
-	    pango_int_set_add_range (set, start, end);
-	}
-      s = my_strtok_r (NULL, ",", &m);
-    }
-  return set;
-}
 
 struct _PangoXSubfontInfo
 {
@@ -145,12 +54,6 @@ struct _PangoXSubfontInfo
   gboolean     is_1byte;
   int          range_byte1;
   int          range_byte2;
-  
-  /* hash table mapping setnames to PangoIntSets */
-  GHashTable *ligature_sets;
-   
-  PangoXLigatureInfo *ligs;
-  int n_ligs;
 };
 
 struct _PangoXMetricsInfo
@@ -168,24 +71,6 @@ struct _PangoXContextInfo
 struct _PangoXFontClass
 {
   PangoFontClass parent_class;
-};
-
-struct _PangoXLigatureSource
-{
-  gboolean is_set;
-  union {
-    PangoIntSet *set;
-    gunichar glyph;
-  } data;
-};
-
-struct _PangoXLigatureInfo 
-{
-  int n_source;
-  PangoXLigatureSource *source;
-
-  gunichar *dest;
-  int n_dest;
 };
 
 static PangoFontClass *parent_class;	/* Parent class structure for PangoXFont */
@@ -227,11 +112,6 @@ static void     pango_x_get_item_properties (PangoItem      *item,
 					     PangoAttrColor *bg_color,
 					     gboolean       *bg_set);
 
-static void font_struct_get_ligatures (PangoFontMap *map,
-				       Display *display, 
-				       XFontStruct *fs, 
-				       PangoXSubfontInfo *info);
-
 static inline PangoXSubfontInfo *
 pango_x_find_subfont (PangoFont  *font,
 		      PangoXSubfont subfont_index)
@@ -267,7 +147,6 @@ pango_x_make_font_struct (PangoFont *font, PangoXSubfontInfo *info)
   info->is_1byte = (info->font_struct->min_byte1 == 0 && info->font_struct->max_byte1 == 0);
   info->range_byte1 = info->font_struct->max_byte1 - info->font_struct->min_byte1 + 1;
   info->range_byte2 = info->font_struct->max_char_or_byte2 - info->font_struct->min_char_or_byte2 + 1;
-  font_struct_get_ligatures (xfont->fontmap, xfont->display, info->font_struct, info);
 }
 
 static inline XFontStruct *
@@ -414,7 +293,7 @@ pango_x_font_new (PangoFontMap *fontmap, const char *spec, int size)
   g_return_val_if_fail (fontmap != NULL, NULL);
   g_return_val_if_fail (spec != NULL, NULL);
 
-  result = (PangoXFont *)g_type_create_instance (PANGO_TYPE_X_FONT);
+  result = g_object_new (PANGO_TYPE_X_FONT, NULL);
   
   result->fontmap = fontmap;
   g_object_ref (fontmap);
@@ -455,6 +334,19 @@ pango_x_load_font (Display    *display,
 
   return (PangoFont *)result;
 }
+
+
+#define FLUSH						\
+  G_STMT_START {					\
+    if (charcount)					\
+      {							\
+	XDrawString16 (display, d, gc,			\
+		       glyph_x0, glyph_y0,		\
+		       xcharbuffer, charcount);		\
+	charcount = 0;					\
+      }							\
+  } G_STMT_END
+
  
 /**
  * pango_x_render:
@@ -477,14 +369,20 @@ pango_x_render  (Display           *display,
 		 int                x, 
 		 int                y)
 {
-  /* Slow initial implementation. For speed, it should really
-   * collect the characters into runs, and draw multiple
-   * characters with each XDrawString16 call.
-   */
   Font old_fid = None;
   XFontStruct *fs;
   int i;
   int x_off = 0;
+
+  /*
+   * We collect the characters in this buffer as long as the font does not
+   * change.  At that time, or when the buffer runs full, or at the end,
+   * then we empty the buffer.
+   */
+  XChar2b xcharbuffer[1000];
+  int glyph_x0 = 0, expected_x = 0; /* x/y initializations are to quiet GCC */
+  int glyph_y0 = 0;
+  int charcount = 0;
 
   g_return_if_fail (display != NULL);
   g_return_if_fail (glyphs != NULL);
@@ -515,7 +413,9 @@ pango_x_render  (Display           *display,
 	  int stroke_thick;
 
           gunichar wc;
-          
+
+	  FLUSH;
+
           x1 = glyph_x;
           y1 = glyph_y - PANGO_PIXELS (metrics->ascent);
           x2 = x1 + PANGO_PIXELS (glyphs->glyphs[i].geometry.width);
@@ -624,34 +524,46 @@ pango_x_render  (Display           *display,
 	  guint16 subfont_index = PANGO_X_GLYPH_SUBFONT (glyph);
 	  PangoXSubfontInfo *subfont;
       
-	  XChar2b c;
-	  
 	  subfont = pango_x_find_subfont (font, subfont_index);
 	  if (subfont)
 	    {
-	      c.byte1 = index / 256;
-	      c.byte2 = index % 256;
-	      
 	      fs = pango_x_get_font_struct (font, subfont);
 	      if (!fs)
 		continue;
 	      
 	      if (fs->fid != old_fid)
 		{
+		  FLUSH;
 		  XSetFont (display, gc, fs->fid);
 		  old_fid = fs->fid;
 		}
-	      
-	      XDrawString16 (display, d, gc,
-			     glyph_x, glyph_y,
-			     &c, 1);
+
+	      if (charcount == G_N_ELEMENTS (xcharbuffer) ||
+		  (charcount > 0 && (glyph_y != glyph_y0 ||
+				     glyph_x != expected_x)))
+		FLUSH;
+
+	      if (charcount == 0)
+		{
+		  glyph_x0 = glyph_x;
+		  glyph_y0 = glyph_y;
+		}
+	      xcharbuffer[charcount].byte1 = index / 256;
+	      xcharbuffer[charcount].byte2 = index % 256;
+
+	      expected_x = glyph_x + XTextWidth16 (fs, &xcharbuffer[charcount], 1);
+
+	      charcount++;
 	    }
 	}
 
     next_glyph:
       x_off += glyphs->glyphs[i].geometry.width;
     }
+  FLUSH;
 }
+
+#undef FLUSH
 
 static void
 pango_x_font_get_glyph_extents  (PangoFont      *font,
@@ -938,7 +850,7 @@ get_font_metrics_from_subfonts (PangoFont        *font,
     metrics->approximate_char_width = 10 * PANGO_SCALE;
 }
 
-void
+static void
 get_subfonts_foreach (PangoFont      *font,
 		      PangoGlyphInfo *glyph_info,
 		      gpointer        data)
@@ -970,7 +882,7 @@ get_font_metrics_from_string (PangoFont        *font,
   g_slist_free (subfonts);
 }
 
-void
+static void
 average_width_foreach (PangoFont      *font,
 		       PangoGlyphInfo *glyph_info,
 		       gpointer        data)
@@ -1109,9 +1021,6 @@ pango_x_insert_subfont (PangoFont *font, const char *xlfd)
   
   info->xlfd = g_strdup (xlfd);
   info->font_struct = NULL;
-  info->n_ligs = 0;
-  info->ligs = 0;
-  info->ligature_sets = 0;
 
   xfont->n_subfonts++;
   
@@ -1315,13 +1224,6 @@ subfonts_foreach (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-free_sets_foreach (gpointer key, gpointer value, gpointer data)
-{
-  g_free (key);
-  pango_int_set_destroy (value);
-}
-
-static void
 free_metrics_info (PangoXMetricsInfo *info)
 {
   pango_font_metrics_unref (info->metrics);
@@ -1334,7 +1236,7 @@ pango_x_font_finalize (GObject *object)
   PangoXFont *xfont = (PangoXFont *)object;
   PangoXFontCache *cache = pango_x_font_map_get_font_cache (xfont->fontmap);
 
-  int i, j;
+  int i;
 
   for (i=0; i<xfont->n_subfonts; i++)
     {
@@ -1344,20 +1246,6 @@ pango_x_font_finalize (GObject *object)
 
       if (info->font_struct)
 	pango_x_font_cache_unload (cache, info->font_struct);
-
-      if (info->ligs) 
-	{
-	  
-	  for (j=0; j<info->n_ligs;j++) 
-	    {
-	      g_free (info->ligs[j].source);
-	    }
-	  
-	  g_free (info->ligs);
-	  
-	  g_hash_table_foreach (info->ligature_sets, free_sets_foreach, NULL);
-	  g_hash_table_destroy (info->ligature_sets);
-	}
 
       g_free (info);
     }
@@ -1612,6 +1500,27 @@ pango_x_render_layout_line (Display          *display,
 		     x + (x_off + ink_rect.x) / PANGO_SCALE - 1, y + 2,
 		     x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE, y + 2);
 	  break;
+	case PANGO_UNDERLINE_ERROR:
+          {
+            int point_x;
+            int counter = 0;
+	    int end_x = x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE;
+
+            for (point_x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
+                 point_x <= end_x;
+                 point_x += 2)
+	      {
+		if (counter)
+		  XDrawLine (display, drawable, gc,
+			     point_x, y + 2, MIN (point_x + 1, end_x), y + 2);
+		else
+		  XDrawLine (display, drawable, gc,
+			     point_x, y + 3, MIN (point_x + 1, end_x), y + 3);
+		
+		counter = (counter + 1) % 2;
+	      }
+          }
+	  break;
 	case PANGO_UNDERLINE_LOW:
 	  XDrawLine (display, drawable, fg_gc,
 		     x + (x_off + ink_rect.x) / PANGO_SCALE - 1, y + (ink_rect.y + ink_rect.height) / PANGO_SCALE + 2,
@@ -1645,72 +1554,32 @@ pango_x_render_layout (Display         *display,
 		       int              x, 
 		       int              y)
 {
-  PangoRectangle logical_rect;
-  GSList *tmp_list;
-  PangoAlignment align;
-  int indent;
-  int width;
-  int y_offset = 0;
+  PangoLayoutIter *iter;
 
-  gboolean first = TRUE;
-  
   g_return_if_fail (display != NULL);
-  g_return_if_fail (layout != NULL);
+  g_return_if_fail (PANGO_IS_LAYOUT (layout));
 
-  indent = pango_layout_get_indent (layout);
-  width = pango_layout_get_width (layout);
-  align = pango_layout_get_alignment (layout);
+  iter = pango_layout_get_iter (layout);
 
-  if (width == -1 && align != PANGO_ALIGN_LEFT)
+  do
     {
-      pango_layout_get_extents (layout, NULL, &logical_rect);
-      width = logical_rect.width;
-    }
-  
-  tmp_list = pango_layout_get_lines (layout);
-  while (tmp_list)
-    {
-      PangoLayoutLine *line = tmp_list->data;
-      int x_offset;
+      PangoRectangle   logical_rect;
+      PangoLayoutLine *line;
+      int              baseline;
       
-      pango_layout_line_get_extents (line, NULL, &logical_rect);
-
-      if (width != 1 && align == PANGO_ALIGN_RIGHT)
-	x_offset = width - logical_rect.width;
-      else if (width != 1 && align == PANGO_ALIGN_CENTER)
-	x_offset = (width - logical_rect.width) / 2;
-      else
-	x_offset = 0;
-
-      if (first)
-	{
-	  if (indent > 0)
-	    {
-	      if (align == PANGO_ALIGN_LEFT)
-		x_offset += indent;
-	      else
-		x_offset -= indent;
-	    }
-
-	  first = FALSE;
-	}
-      else
-	{
-	  if (indent < 0)
-	    {
-	      if (align == PANGO_ALIGN_LEFT)
-		x_offset -= indent;
-	      else
-		x_offset += indent;
-	    }
-	}
-	  
+      line = pango_layout_iter_get_line (iter);
+      
+      pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
+      baseline = pango_layout_iter_get_baseline (iter);
+      
       pango_x_render_layout_line (display, drawable, gc,
-				  line, x + x_offset / PANGO_SCALE, y + (y_offset - logical_rect.y) / PANGO_SCALE);
-
-      y_offset += logical_rect.height;
-      tmp_list = tmp_list->next;
+                                  line,
+                                  x + PANGO_PIXELS (logical_rect.x),
+                                  y + PANGO_PIXELS (baseline));
     }
+  while (pango_layout_iter_next_line (iter));
+
+  pango_layout_iter_free (iter);
 }
 
 /* This utility function is duplicated here and in pango-layout.c; should it be
@@ -1766,243 +1635,17 @@ pango_x_get_item_properties (PangoItem      *item,
     }
 }
 
-static void 
-font_struct_get_ligatures (PangoFontMap *fontmap,
-                           Display *display, 
-                           XFontStruct *fs,
-                           PangoXSubfontInfo *info)
-{
-  int i;
-   
-  PangoXLigatureInfo *linfo = 0;
-  int n_linfo = 0;
-
-  GList *list = g_list_append (NULL, g_strdup ("PANGO_LIGATURE_HACK"));
-  GList *list_start = list;
-
-  info->ligature_sets = g_hash_table_new (g_str_hash, g_str_equal);
-   
-  while (list) 
-    {
-      Atom this_atom = pango_x_fontmap_atom_from_name (fontmap, (char *)list->data);
-      for (i = 0; i < fs->n_properties; i++)
-        {
-          if (fs->properties[i].name == this_atom) 
-            {
-              char *val = g_strdup (pango_x_fontmap_name_from_atom (fontmap, fs->properties[i].card32));
-              char *p;
-              char *a = my_strtok_r (val, " ", &p);
-              while (a)
-                {
-                  char *r;
-                  char *m;
-                  char *q;
-                  PangoXLigatureSource *source = NULL;
-                  gunichar *dest = NULL;
-                  int n_source = 0;
-                  int n_dest = 0;
-                  PangoXLigatureInfo *xli;
-                  
-                  switch (*a) 
-                    {
-                      
-                    case '$': 
-                      /* class being defined */
-                      {
-                        char *name = a + 1;
-                        char *data = strchr (a, '=');
-                        PangoIntSet *set;
-                        if (!data) 
-                          {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-                            g_warning ("Error parsing ligature info: Isolated $.\n");
-#endif 
-                            break;
-                          }
-                        
-                        *data = 0;
-                        data++;
-                        set = parse_gintset_spec (data);
-                        if (!set) 
-                          {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-                            g_warning ("Error parsing ligature info: Invalid glyphset.\n");
-#endif
-                            break;
-                          }
-                        g_hash_table_insert (info->ligature_sets, 
-                                             g_strdup (name), set);
-                        break;
-                      }
-                      
-                    case ':': 
-                      /* a pointer */
-                      {
-                        char *lang = a+1;
-                        char *name = strchr (lang, ':');
-                        if (name) 
-                          {
-                            name++;
-                            list = g_list_append (list, g_strdup (name));
-                          }
-                        else 
-			  {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-			    g_warning ("Error parsing ligature info: Bad pointer.\n");
-#endif
-			  }
-                        break;
-                      }
-                      
-                    default:
-                      /* a literal */
-                      {
-                        n_linfo++;
-                        linfo = g_realloc (linfo, sizeof (PangoXLigatureInfo) * 
-                                           n_linfo);
-                        r = strchr (a, '=');
-                        if (!r) 
-                          {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-                            g_warning ("Error parsing ligature info: No equals.\n");
-#endif
-                            n_linfo--;
-                            break;
-                          }
-                        *r = 0;
-                        r++;
-                        q = a;
-                        q = my_strtok_r (q, "+", &m);
-                        while (q) 
-                          {
-                            n_source ++;
-                            source = g_realloc (source, n_source * 
-                                                sizeof (PangoXLigatureSource));
-                            if (q[0] == '%') 
-                              {
-                                source[n_source-1].is_set = 1;
-                                source[n_source-1].data.set = 
-                                  g_hash_table_lookup (info->ligature_sets, 
-                                                       q+1);
-                                if (!source[n_source-1].data.set) 
-				  {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-				    g_warning ("Error parsing ligature info: Unable to locate glyphset : %s\n", q+1);
-#endif
-				    source [n_source-1].is_set = 0;
-				    source [n_source-1].data.glyph = 0;
-				  }
-                              } 
-                            else 
-                              {
-                                int i = hex_to_integer (q);
-                                if (i == -1) 
-				  {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-				    g_warning ("Error parsing ligature info: Bad character value : %s. Assuming 0\n", q);
-#endif
-				    i = 0;
-				  }
-                                source [n_source-1].is_set = 0;
-                                source [n_source-1].data.glyph = i;
-                              }
-                            q = my_strtok_r (NULL, "+", &m);
-                          }
-                        q = r;
-                        q = my_strtok_r (q, "+", &m);
-                        while (q) 
-                          {
-                            n_dest++;
-                            dest = g_realloc (dest, n_dest * sizeof (gunichar));
-                            
-                            if (q[0] == '%') 
-			      {
-				char *er;
-				dest[n_dest-1] = -strtol (q+1, &er, 10);
-				if (*er) 
-				  {
-#ifdef PANGO_LIGATURE_HACK_DEBUG
-				    g_warning ("Error parsing ligature info: Bad %% reference. Assuming 1");
-#endif
-				    dest[n_dest-1] = -1;
-				  }
-			      }
-                            else 
-			      {
-				int i = hex_to_integer (q);
-				if (i != -1) 
-				  {
-				    dest[n_dest-1] = i;
-				  } 
-				else 
-				  {
-				    dest[n_dest-1] = 0;
-				  }
-			      }
-                            
-                            q = my_strtok_r (NULL, "+", &m);
-                          }
-                        
-                        xli = linfo + n_linfo - 1;
-                        
-                        xli->source = source;
-                        xli->n_source = n_source;
-                        xli->dest = dest;
-                        xli->n_dest = n_dest;
-                        
-                        if (xli->n_dest > xli->n_source)
-                          {
-                            g_warning ("Error parsing ligature info: Warning : truncating substitute string.");
-                            xli->n_dest = n_source;
-                          }
-                      }
-                    }
-                  
-                  /* end switch */
-                  a = my_strtok_r (NULL, " ", &p);
-                }
-              g_free (val);
-            }
-        }
-      list = g_list_next (list);
-    }
-  
-  list = list_start;
-  
-  while (list) 
-    {
-      g_free (list->data);
-      list = g_list_next (list);
-    }
-
-  g_list_free (list_start);
-  
-  info->n_ligs = n_linfo;
-  info->ligs = linfo;
-}
-
 /**
  * pango_x_apply_ligatures:
- * @font: a #PangoFont.
- * @subfont: a #PangoXSubFont.
- * @glyphs: a pointer to a pointer to an array of
- *          glyph indices. This holds the input glyphs
- *          on entry, and ligation will be performed
- *          on this array in-place. If the number
- *          of glyphs is increased, Pango will
- *          call g_realloc() on @glyphs, so @chars
- *          must be allocated with g_malloc().
- * @n_glyphs: a pointer to the number of glyphs
- *            *@n_glyphs is the number of original glyphs
- *            on entry and the number of resulting glyphs
- *            upon return.
- * @clusters: a pointer to the cluster information.
+ * @font: unused
+ * @subfont: unused
+ * @glyphs: unused
+ * @n_glyphs: unused
+ * @clusters: unused
  *
- * Does subfont-specific ligation.  This involves replacing
- * groups of glyphs in @chars with alternate groups of glyphs
- * based on information provided in the X font.
+ * Previously did subfont-specific ligation. Now a no-op.
  *
- * Return value: %TRUE if any ligations were performed.
+ * Return value: %FALSE, always.
  */
 gboolean
 pango_x_apply_ligatures (PangoFont     *font, 
@@ -2011,81 +1654,7 @@ pango_x_apply_ligatures (PangoFont     *font,
                          int           *n_glyphs,
                          int           **clusters) 
 {
-  int hits = 0;
-  int i, j, k;
-  PangoXSubfontInfo *subfont;
-  PangoXLigatureInfo *linfo;
-  int n_linfo = 0;
-  XFontStruct *fs;
-  
-  g_return_val_if_fail (font != NULL, 0);
-
-  subfont = pango_x_find_subfont (font, subfont_id);
-  if (!subfont)
-    return 0;
-
-  fs = pango_x_get_font_struct (font, subfont);
-  if (!fs)
-    return 0;
-
-  linfo = subfont->ligs;
-  n_linfo = subfont->n_ligs;
-  
-  for (i = 0; i < *n_glyphs; i++) 
-    for (j= 0; j < n_linfo; j++) 
-      {
-        PangoXLigatureInfo *li = &linfo[j];
-        gunichar *temp;
-        
-        if (i + li->n_source > *n_glyphs) 
-          continue;
-        
-        for (k = 0; k < li->n_source; k++) 
-          {
-            if ((li->source[k].is_set && 
-                 !pango_int_set_contains (li->source[k].data.set,
-                                          (*glyphs)[i + k]))
-                || (!li->source[k].is_set && 
-                    (*glyphs)[i + k] != li->source[k].data.glyph))
-              goto next_pattern;
-          }
-        
-
-        {
-          gunichar buffer[16];
-          if (li->n_source < G_N_ELEMENTS (buffer))
-            {
-              memcpy (buffer, &(*glyphs)[i], li->n_source * sizeof (gunichar));
-              temp = buffer;
-            }
-          else
-            { 
-              temp = g_memdup (&(*glyphs)[i], li->n_source * sizeof (gunichar));
-            }
-          
-          for (k = 0; k < li->n_dest; k++) 
-            {
-              int f = li->dest[k];
-              if (f < 0) 
-                f = temp[i - (1+f)];
-              
-              (*glyphs) [i + k - (li->n_dest - li->n_source)] = f;
-            }
-          
-          for (k = 0; k < li->n_source-li->n_dest; k++)
-            (*glyphs) [i+k] = 0;
-          
-          hits++;
-          i += li->n_source - 1;
-
-          if (temp != buffer) 
-            g_free (temp);
-        }
-
-      next_pattern: ;
-      }
-  
-  return hits >= 1;
+  return FALSE;
 }
   
 /**

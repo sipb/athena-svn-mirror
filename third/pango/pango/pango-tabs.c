@@ -168,7 +168,7 @@ pango_tab_array_get_type (void)
  * pango_tab_array_copy:
  * @src: #PangoTabArray to copy
  * 
- * Copy a #PangoTabArray
+ * Copies a #PangoTabArray
  * 
  * Return value: Newly-allocated #PangoTabArray
  **/
@@ -190,7 +190,7 @@ pango_tab_array_copy (PangoTabArray *src)
  * pango_tab_array_free:
  * @tab_array: a #PangoTabArray
  *
- * Free a tab array and associated resources.
+ * Frees a tab array and associated resources.
  * 
  **/
 void
@@ -207,7 +207,7 @@ pango_tab_array_free   (PangoTabArray *tab_array)
  * pango_tab_array_get_size:
  * @tab_array: a #PangoTabArray
  * 
- * Get the number of tab stops in @tab_array.
+ * Gets the number of tab stops in @tab_array.
  * 
  * Return value: the number of tab stops in the array.
  **/
@@ -242,8 +242,8 @@ pango_tab_array_resize (PangoTabArray *tab_array,
       while (new_size > tab_array->allocated)
         tab_array->allocated = tab_array->allocated * 2;
       
-      tab_array->tabs = g_realloc (tab_array->tabs,
-                                   tab_array->allocated);
+      tab_array->tabs = g_renew (PangoTab, tab_array->tabs,
+				 tab_array->allocated);
       
       init_tabs (tab_array, current_end, tab_array->allocated);
     }

@@ -767,8 +767,11 @@ big_parse_func      (MarkupData            *md,
   CHECK_NO_ATTRS("big");
 
   /* Grow text one level */
-  tag->scale_level_delta += 1;
-  tag->scale_level += 1;
+  if (tag)
+    {
+      tag->scale_level_delta += 1;
+      tag->scale_level += 1;
+    }
 
   return TRUE;
 }
@@ -816,7 +819,8 @@ parse_absolute_size (OpenTag               *tag,
    */
   factor = scale_factor (level, 1.0);
   add_attribute (tag, pango_attr_scale_new (factor));
-  open_tag_set_absolute_font_scale (tag, factor);
+  if (tag)
+    open_tag_set_absolute_font_scale (tag, factor);
   
   return TRUE;
 }
@@ -853,7 +857,9 @@ span_parse_func     (MarkupData            *md,
   const char *underline = NULL;
   const char *strikethrough = NULL;
   const char *rise = NULL;
+  const char *letter_spacing = NULL;
   const char *lang = NULL;
+  const char *fallback = NULL;
   
   g_markup_parse_context_get_position (context,
                                        &line_number, &char_number);
@@ -923,10 +929,20 @@ span_parse_func     (MarkupData            *md,
           CHECK_DUPLICATE (rise);
           rise = values[i];
         }
+      else if (strcmp (names[i], "letter_spacing") == 0)
+        {
+          CHECK_DUPLICATE (letter_spacing);
+          letter_spacing = values[i];
+        }
       else if (strcmp (names[i], "lang") == 0)
         {
           CHECK_DUPLICATE (lang);
           lang = values[i];
+        }
+      else if (strcmp (names[i], "fallback") == 0)
+        {
+          CHECK_DUPLICATE (fallback);
+          fallback = values[i];
         }
       else
         {
@@ -950,7 +966,8 @@ span_parse_func     (MarkupData            *md,
       if (parsed)
         {
           add_attribute (tag, pango_attr_font_desc_new (parsed));
-          open_tag_set_absolute_font_size (tag, pango_font_description_get_size (parsed));
+	  if (tag)
+	    open_tag_set_absolute_font_size (tag, pango_font_description_get_size (parsed));
           pango_font_description_free (parsed);
         }
     }
@@ -982,17 +999,24 @@ span_parse_func     (MarkupData            *md,
             }
 
           add_attribute (tag, pango_attr_size_new (n));
-          open_tag_set_absolute_font_size (tag, n);
+	  if (tag)
+	    open_tag_set_absolute_font_size (tag, n);
         }
       else if (strcmp (size, "smaller") == 0)
         {
-          tag->scale_level_delta -= 1;
-          tag->scale_level -= 1;
+	  if (tag)
+	    {
+	      tag->scale_level_delta -= 1;
+	      tag->scale_level -= 1;
+	    }
         }
       else if (strcmp (size, "larger") == 0)
         {
-          tag->scale_level_delta += 1;
-          tag->scale_level += 1;
+	  if (tag)
+	    {
+	      tag->scale_level_delta += 1;
+	      tag->scale_level += 1;
+	    }
         }
       else if (parse_absolute_size (tag, size))
         ; /* nothing */
@@ -1133,6 +1157,8 @@ span_parse_func     (MarkupData            *md,
         ul = PANGO_UNDERLINE_DOUBLE;
       else if (strcmp (underline, "low") == 0)
         ul = PANGO_UNDERLINE_LOW;
+      else if (strcmp (underline, "error") == 0)
+        ul = PANGO_UNDERLINE_ERROR;
       else if (strcmp (underline, "none") == 0)
         ul = PANGO_UNDERLINE_NONE;
       else
@@ -1170,6 +1196,25 @@ span_parse_func     (MarkupData            *md,
         }
     }
 
+  if (fallback)
+    {
+      if (strcmp (fallback, "true") == 0)
+        add_attribute (tag, pango_attr_fallback_new (TRUE));
+      else if (strcmp (fallback, "false") == 0)
+        add_attribute (tag, pango_attr_fallback_new (FALSE));
+      else
+        {
+          g_set_error (error,
+                       G_MARKUP_ERROR,
+                       G_MARKUP_ERROR_INVALID_CONTENT,
+                       _("'fallback' attribute on <span> tag "
+                         "line %d should have one of the values "
+                         "'true' or 'false': '%s' is not valid"),
+                       line_number, fallback);
+          goto error;
+        }
+    }
+
   if (rise)
     {
       char *end = NULL;
@@ -1190,6 +1235,28 @@ span_parse_func     (MarkupData            *md,
         }
 
       add_attribute (tag, pango_attr_rise_new (n));
+    }
+
+  if (letter_spacing)
+    {
+      char *end = NULL;
+      glong n;
+      
+      n = strtol (letter_spacing, &end, 10);
+
+      if (*end != '\0')
+        {
+          g_set_error (error,
+                       G_MARKUP_ERROR,
+                       G_MARKUP_ERROR_INVALID_CONTENT,
+                       _("Value of 'letter_spacing' attribute on <span> tag "
+                         "on line %d could not be parsed; "
+                         "should be an integer, not '%s'"),
+                       line_number, letter_spacing);
+          goto error;
+        }
+
+      add_attribute (tag, pango_attr_letter_spacing_new (n));
     }
 
   if (lang)
@@ -1259,8 +1326,11 @@ sub_parse_func      (MarkupData            *md,
   CHECK_NO_ATTRS("sub");
 
   /* Shrink font, and set a negative rise */
-  tag->scale_level_delta -= 1;
-  tag->scale_level -= 1;
+  if (tag)
+    {
+      tag->scale_level_delta -= 1;
+      tag->scale_level -= 1;
+    }
 
   add_attribute (tag, pango_attr_rise_new (-SUPERSUB_RISE));
 
@@ -1278,8 +1348,11 @@ sup_parse_func      (MarkupData            *md,
   CHECK_NO_ATTRS("sup");
 
   /* Shrink font, and set a positive rise */
-  tag->scale_level_delta -= 1;
-  tag->scale_level -= 1;
+  if (tag)
+    {
+      tag->scale_level_delta -= 1;
+      tag->scale_level -= 1;
+    }
 
   add_attribute (tag, pango_attr_rise_new (SUPERSUB_RISE));
 
@@ -1297,8 +1370,11 @@ small_parse_func    (MarkupData            *md,
   CHECK_NO_ATTRS("small");
 
   /* Shrink text one level */
-  tag->scale_level_delta -= 1;
-  tag->scale_level -= 1;
+  if (tag)
+    {
+      tag->scale_level_delta -= 1;
+      tag->scale_level -= 1;
+    }
 
   return TRUE;
 }

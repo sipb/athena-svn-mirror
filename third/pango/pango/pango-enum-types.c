@@ -26,6 +26,8 @@ pango_attr_type_get_type (void)
       { PANGO_ATTR_RISE, "PANGO_ATTR_RISE", "rise" },
       { PANGO_ATTR_SHAPE, "PANGO_ATTR_SHAPE", "shape" },
       { PANGO_ATTR_SCALE, "PANGO_ATTR_SCALE", "scale" },
+      { PANGO_ATTR_FALLBACK, "PANGO_ATTR_FALLBACK", "fallback" },
+      { PANGO_ATTR_LETTER_SPACING, "PANGO_ATTR_LETTER_SPACING", "letter-spacing" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("PangoAttrType", values);
@@ -43,6 +45,7 @@ pango_underline_get_type (void)
       { PANGO_UNDERLINE_SINGLE, "PANGO_UNDERLINE_SINGLE", "single" },
       { PANGO_UNDERLINE_DOUBLE, "PANGO_UNDERLINE_DOUBLE", "double" },
       { PANGO_UNDERLINE_LOW, "PANGO_UNDERLINE_LOW", "low" },
+      { PANGO_UNDERLINE_ERROR, "PANGO_UNDERLINE_ERROR", "error" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("PangoUnderline", values);
@@ -196,6 +199,93 @@ pango_wrap_mode_get_type (void)
   return etype;
 }
 
+GType
+pango_ellipsize_mode_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { PANGO_ELLIPSIZE_NONE, "PANGO_ELLIPSIZE_NONE", "none" },
+      { PANGO_ELLIPSIZE_START, "PANGO_ELLIPSIZE_START", "start" },
+      { PANGO_ELLIPSIZE_MIDDLE, "PANGO_ELLIPSIZE_MIDDLE", "middle" },
+      { PANGO_ELLIPSIZE_END, "PANGO_ELLIPSIZE_END", "end" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("PangoEllipsizeMode", values);
+  }
+  return etype;
+}
+
+
+/* enumerations from "pango-script.h" */
+GType
+pango_script_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { PANGO_SCRIPT_INVALID_CODE, "PANGO_SCRIPT_INVALID_CODE", "invalid-code" },
+      { PANGO_SCRIPT_COMMON, "PANGO_SCRIPT_COMMON", "common" },
+      { PANGO_SCRIPT_INHERITED, "PANGO_SCRIPT_INHERITED", "inherited" },
+      { PANGO_SCRIPT_ARABIC, "PANGO_SCRIPT_ARABIC", "arabic" },
+      { PANGO_SCRIPT_ARMENIAN, "PANGO_SCRIPT_ARMENIAN", "armenian" },
+      { PANGO_SCRIPT_BENGALI, "PANGO_SCRIPT_BENGALI", "bengali" },
+      { PANGO_SCRIPT_BOPOMOFO, "PANGO_SCRIPT_BOPOMOFO", "bopomofo" },
+      { PANGO_SCRIPT_CHEROKEE, "PANGO_SCRIPT_CHEROKEE", "cherokee" },
+      { PANGO_SCRIPT_COPTIC, "PANGO_SCRIPT_COPTIC", "coptic" },
+      { PANGO_SCRIPT_CYRILLIC, "PANGO_SCRIPT_CYRILLIC", "cyrillic" },
+      { PANGO_SCRIPT_DESERET, "PANGO_SCRIPT_DESERET", "deseret" },
+      { PANGO_SCRIPT_DEVANAGARI, "PANGO_SCRIPT_DEVANAGARI", "devanagari" },
+      { PANGO_SCRIPT_ETHIOPIC, "PANGO_SCRIPT_ETHIOPIC", "ethiopic" },
+      { PANGO_SCRIPT_GEORGIAN, "PANGO_SCRIPT_GEORGIAN", "georgian" },
+      { PANGO_SCRIPT_GOTHIC, "PANGO_SCRIPT_GOTHIC", "gothic" },
+      { PANGO_SCRIPT_GREEK, "PANGO_SCRIPT_GREEK", "greek" },
+      { PANGO_SCRIPT_GUJARATI, "PANGO_SCRIPT_GUJARATI", "gujarati" },
+      { PANGO_SCRIPT_GURMUKHI, "PANGO_SCRIPT_GURMUKHI", "gurmukhi" },
+      { PANGO_SCRIPT_HAN, "PANGO_SCRIPT_HAN", "han" },
+      { PANGO_SCRIPT_HANGUL, "PANGO_SCRIPT_HANGUL", "hangul" },
+      { PANGO_SCRIPT_HEBREW, "PANGO_SCRIPT_HEBREW", "hebrew" },
+      { PANGO_SCRIPT_HIRAGANA, "PANGO_SCRIPT_HIRAGANA", "hiragana" },
+      { PANGO_SCRIPT_KANNADA, "PANGO_SCRIPT_KANNADA", "kannada" },
+      { PANGO_SCRIPT_KATAKANA, "PANGO_SCRIPT_KATAKANA", "katakana" },
+      { PANGO_SCRIPT_KHMER, "PANGO_SCRIPT_KHMER", "khmer" },
+      { PANGO_SCRIPT_LAO, "PANGO_SCRIPT_LAO", "lao" },
+      { PANGO_SCRIPT_LATIN, "PANGO_SCRIPT_LATIN", "latin" },
+      { PANGO_SCRIPT_MALAYALAM, "PANGO_SCRIPT_MALAYALAM", "malayalam" },
+      { PANGO_SCRIPT_MONGOLIAN, "PANGO_SCRIPT_MONGOLIAN", "mongolian" },
+      { PANGO_SCRIPT_MYANMAR, "PANGO_SCRIPT_MYANMAR", "myanmar" },
+      { PANGO_SCRIPT_OGHAM, "PANGO_SCRIPT_OGHAM", "ogham" },
+      { PANGO_SCRIPT_OLD_ITALIC, "PANGO_SCRIPT_OLD_ITALIC", "old-italic" },
+      { PANGO_SCRIPT_ORIYA, "PANGO_SCRIPT_ORIYA", "oriya" },
+      { PANGO_SCRIPT_RUNIC, "PANGO_SCRIPT_RUNIC", "runic" },
+      { PANGO_SCRIPT_SINHALA, "PANGO_SCRIPT_SINHALA", "sinhala" },
+      { PANGO_SCRIPT_SYRIAC, "PANGO_SCRIPT_SYRIAC", "syriac" },
+      { PANGO_SCRIPT_TAMIL, "PANGO_SCRIPT_TAMIL", "tamil" },
+      { PANGO_SCRIPT_TELUGU, "PANGO_SCRIPT_TELUGU", "telugu" },
+      { PANGO_SCRIPT_THAANA, "PANGO_SCRIPT_THAANA", "thaana" },
+      { PANGO_SCRIPT_THAI, "PANGO_SCRIPT_THAI", "thai" },
+      { PANGO_SCRIPT_TIBETAN, "PANGO_SCRIPT_TIBETAN", "tibetan" },
+      { PANGO_SCRIPT_CANADIAN_ABORIGINAL, "PANGO_SCRIPT_CANADIAN_ABORIGINAL", "canadian-aboriginal" },
+      { PANGO_SCRIPT_YI, "PANGO_SCRIPT_YI", "yi" },
+      { PANGO_SCRIPT_TAGALOG, "PANGO_SCRIPT_TAGALOG", "tagalog" },
+      { PANGO_SCRIPT_HANUNOO, "PANGO_SCRIPT_HANUNOO", "hanunoo" },
+      { PANGO_SCRIPT_BUHID, "PANGO_SCRIPT_BUHID", "buhid" },
+      { PANGO_SCRIPT_TAGBANWA, "PANGO_SCRIPT_TAGBANWA", "tagbanwa" },
+      { PANGO_SCRIPT_BRAILLE, "PANGO_SCRIPT_BRAILLE", "braille" },
+      { PANGO_SCRIPT_CYPRIOT, "PANGO_SCRIPT_CYPRIOT", "cypriot" },
+      { PANGO_SCRIPT_LIMBU, "PANGO_SCRIPT_LIMBU", "limbu" },
+      { PANGO_SCRIPT_OSMANYA, "PANGO_SCRIPT_OSMANYA", "osmanya" },
+      { PANGO_SCRIPT_SHAVIAN, "PANGO_SCRIPT_SHAVIAN", "shavian" },
+      { PANGO_SCRIPT_LINEAR_B, "PANGO_SCRIPT_LINEAR_B", "linear-b" },
+      { PANGO_SCRIPT_TAI_LE, "PANGO_SCRIPT_TAI_LE", "tai-le" },
+      { PANGO_SCRIPT_UGARITIC, "PANGO_SCRIPT_UGARITIC", "ugaritic" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("PangoScript", values);
+  }
+  return etype;
+}
+
 
 /* enumerations from "pango-tabs.h" */
 GType
@@ -224,6 +314,9 @@ pango_direction_get_type (void)
       { PANGO_DIRECTION_RTL, "PANGO_DIRECTION_RTL", "rtl" },
       { PANGO_DIRECTION_TTB_LTR, "PANGO_DIRECTION_TTB_LTR", "ttb-ltr" },
       { PANGO_DIRECTION_TTB_RTL, "PANGO_DIRECTION_TTB_RTL", "ttb-rtl" },
+      { PANGO_DIRECTION_WEAK_LTR, "PANGO_DIRECTION_WEAK_LTR", "weak-ltr" },
+      { PANGO_DIRECTION_WEAK_RTL, "PANGO_DIRECTION_WEAK_RTL", "weak-rtl" },
+      { PANGO_DIRECTION_NEUTRAL, "PANGO_DIRECTION_NEUTRAL", "neutral" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("PangoDirection", values);

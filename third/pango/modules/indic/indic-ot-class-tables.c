@@ -82,9 +82,14 @@ static IndicOTCharClass devaCharClasses[] =
     _xx                                                                             /* 0970        */
 };
 
+/* As a hack, BENGALI LETTER A (U+0985) and BENGALI LETTER E (U+098F)
+ * are marked as consonants below; this gives approximately the
+ * right behavior for the sequences "a halant ya aa" and
+ * "e halant ya aa".
+ */
 static IndicOTCharClass bengCharClasses[] =
 {
-    _xx, _ma, _mp, _mp, _xx, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _xx, _xx, _iv, /* 0980 - 098F */
+    _xx, _ma, _mp, _mp, _xx, _ct, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _xx, _xx, _ct, /* 0980 - 098F */
     _iv, _xx, _xx, _iv, _iv, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, /* 0990 - 099F */
     _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _xx, _ct, _ct, _bb, _ct, _ct, _pb, /* 09A0 - 09AF */
     _rv, _xx, _ct, _xx, _xx, _xx, _ct, _ct, _ct, _ct, _xx, _xx, _nu, _xx, _dr, _dl, /* 09B0 - 09BF */
@@ -153,15 +158,22 @@ static IndicOTCharClass teluCharClasses[] =
     _iv, _iv, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx  /* 0C60 - 0C6F */
 };
 
-/* FIXME: is 0CD5 a dr or an lm?? */
+/* U+CC3 and U+CC4 are _lm here not _dr since the Kannada rendering
+ * rules want them below and to the right of the entire cluster. They
+ * aren't, strictly speaking, length marks, however.
+ *
+ * There's some information about this in:
+ *
+ *  http://brahmi.sourceforge.net/docs/KannadaComputing.html
+ */
 static IndicOTCharClass kndaCharClasses[] =
 {
     _xx, _xx, _mp, _mp, _xx, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _xx, _iv, /* 0C80 - 0C8F */
     _iv, _xx, _iv, _iv, _iv, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, /* 0C90 - 0C9F */
     _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _bb, _xx, _bb, _bb, _bb, _bb, _bb, _bb, /* 0CA0 - 0CAF */
     _rb, _ct, _bb, _bb, _xx, _bb, _bb, _bb, _bb, _bb, _xx, _xx, _xx, _xx, _dr, _da, /* 0CB0 - 0CBF */
-    _s1, _dr, _dr, _dr, _dr, _xx, _da, _s2, _s3, _xx, _s4, _s5, _da, _vr, _xx, _xx, /* 0CC0 - 0CCF */
-    _xx, _xx, _xx, _xx, _xx, _lm, _dr, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _ct, _xx, /* 0CD0 - 0CDF */
+    _s1, _dr, _dr, _lm, _lm, _xx, _da, _s2, _s3, _xx, _s4, _s5, _da, _vr, _xx, _xx, /* 0CC0 - 0CCF */
+    _xx, _xx, _xx, _xx, _xx, _lm, _lm, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _ct, _xx, /* 0CD0 - 0CDF */
     _iv, _iv, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx  /* 0CE0 - 0CEF */
 };
 
@@ -173,9 +185,9 @@ static IndicOTCharClass mlymCharClasses[] =
 {
     _xx, _xx, _mp, _mp, _xx, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _iv, _xx, _iv, _iv, /* 0D00 - 0D0F */
     _iv, _xx, _iv, _iv, _iv, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _ct, _bb, /* 0D10 - 0D1F */
-    _ct, _ct, _ct, _bb, _ct, _bb, _bb, _ct, _ct, _xx, _ct, _ct, _ct, _ct, _ct, _ct, /* 0D20 - 0D2F */
+    _ct, _ct, _ct, _bb, _ct, _bb, _bb, _ct, _ct, _xx, _ct, _ct, _ct, _ct, _ct, _pb, /* 0D20 - 0D2F */
     _pb, _cn, _bb, _ct, _ct, _pb, _ct, _ct, _ct, _ct, _xx, _xx, _xx, _xx, _dr, _dr, /* 0D30 - 0D3F */
-    _dr, _db, _db, _db, _xx, _xx, _dl, _dl, _dl, _xx, _s1, _s2, _s3, _vr, _xx, _xx, /* 0D40 - 0D4F */
+    _dr, _dr, _dr, _dr, _xx, _xx, _dl, _dl, _dl, _xx, _s1, _s2, _s3, _vr, _xx, _xx, /* 0D40 - 0D4F */
     _xx, _xx, _xx, _xx, _xx, _xx, _xx, _dr, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, /* 0D50 - 0D5F */
     _iv, _iv, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx, _xx  /* 0D60 - 0D6F */
 };
@@ -213,7 +225,7 @@ static const IndicOTSplitMatra mlymSplitTable[] = {{0x0D46, 0x0D3E}, {0x0D47, 0x
 #define TAML_SCRIPT_FLAGS (SF_MPRE_FIXUP | SF_NO_POST_BASE_LIMIT)
 #define TELU_SCRIPT_FLAGS (SF_MATRAS_AFTER_BASE | 3)
 #define KNDA_SCRIPT_FLAGS (SF_MATRAS_AFTER_BASE | 3)
-#define MLYM_SCRIPT_FLAGS (SF_NO_POST_BASE_LIMIT)
+#define MLYM_SCRIPT_FLAGS (SF_MPRE_FIXUP | SF_NO_POST_BASE_LIMIT)
 
 /*
  * Indic Class Tables
@@ -387,7 +399,7 @@ static const gint8 stateTable[][CC_COUNT] =
     {-1,  6,  1, -1, -1, -1, -1,  5,  4, -1},
     {-1,  6,  1, -1, -1, -1,  2,  5,  4, -1},
     {-1, -1, -1, -1,  3,  2, -1, -1, -1,  8},
-    {-1,  6,  1, -1, -1, -1, -1, -1, -1, -1},
+    {-1,  6,  1, -1, -1, -1, -1,  5, -1, -1},
     {-1,  7,  1, -1, -1, -1, -1, -1, -1, -1},
     {-1, -1,  1, -1, -1, -1, -1, -1, -1, -1},
     {-1, -1, -1, -1,  3,  2, -1, -1, -1, -1}

@@ -80,21 +80,24 @@ typedef enum
   PANGO_ATTR_STRIKETHROUGH,	/* PangoAttrInt */
   PANGO_ATTR_RISE,		/* PangoAttrInt */
   PANGO_ATTR_SHAPE,		/* PangoAttrShape */
-  PANGO_ATTR_SCALE              /* PangoAttrFloat */
+  PANGO_ATTR_SCALE,             /* PangoAttrFloat */
+  PANGO_ATTR_FALLBACK,          /* PangoAttrInt */
+  PANGO_ATTR_LETTER_SPACING     /* PangoAttrInt */
 } PangoAttrType;
 
 typedef enum {
   PANGO_UNDERLINE_NONE,
   PANGO_UNDERLINE_SINGLE,
   PANGO_UNDERLINE_DOUBLE,
-  PANGO_UNDERLINE_LOW
+  PANGO_UNDERLINE_LOW,
+  PANGO_UNDERLINE_ERROR
 } PangoUnderline;
 
 struct _PangoAttribute
 {
   const PangoAttrClass *klass;
-  guint start_index;
-  guint end_index;
+  guint start_index;	/* in bytes */
+  guint end_index;	/* in bytes. The character at this index is not included */
 };
 
 typedef gboolean (*PangoAttrFilterFunc) (PangoAttribute *attribute,
@@ -179,6 +182,8 @@ PangoAttribute *pango_attr_rise_new          (int                         rise);
 PangoAttribute *pango_attr_shape_new         (const PangoRectangle       *ink_rect,
 					      const PangoRectangle       *logical_rect);
 PangoAttribute *pango_attr_scale_new         (double                      scale_factor);
+PangoAttribute *pango_attr_fallback_new      (gboolean                    enable_fallback);
+PangoAttribute *pango_attr_letter_spacing_new (int                        letter_spacing);
 
 GType              pango_attr_list_get_type      (void) G_GNUC_CONST;
 PangoAttrList *    pango_attr_list_new           (void);

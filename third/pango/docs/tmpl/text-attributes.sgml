@@ -22,7 +22,7 @@ of attributes applied to a portion of text.
 <para>
 distinguishes between different types of attributes. Along with the
 predefined values, it is possible to allocate additional values
-for custom attributes using pango_attr_register_type(). The predefined
+for custom attributes using pango_attr_type_register(). The predefined
 values are given below. The type of structure used to store the
 attribute is listed in parentheses after the description.
 </para>
@@ -43,6 +43,8 @@ attribute is listed in parentheses after the description.
 @PANGO_ATTR_RISE: baseline displacement (#PangoAttrInt)
 @PANGO_ATTR_SHAPE: shape (#PangoAttrShape)
 @PANGO_ATTR_SCALE: font size scale factor (#PangoAttrScale)
+@PANGO_ATTR_FALLBACK: whether fallback is enabled (#PangoAttrInt)
+@PANGO_ATTR_LETTER_SPACING: 
 
 <!-- ##### MACRO PANGO_TYPE_ATTR_TYPE ##### -->
 <para>
@@ -74,9 +76,9 @@ applies.
 </para>
 
 @klass: the class structure holding information about the type of the attribute
-@start_index: the start index of the range.
-@end_index: end index of the range. The character at this index is not
-            included in the range.
+@start_index: the start index of the range (in bytes).
+@end_index: end index of the range (in bytes). The character at this index
+	not included in the range.
 
 <!-- ##### STRUCT PangoAttrString ##### -->
 <para>
@@ -321,6 +323,11 @@ of underlining.
                       single characters, such as for keyboard
                       accelerators. %PANGO_UNDERLINE_SINGLE should
                       be used for extended portions of text.
+@PANGO_UNDERLINE_ERROR: a wavy underline should be drawn below.
+                        This underline is typically used to indicate
+                        an error such as a possilble mispelling; in some
+                        cases an contrasting color may automatically
+                        be used.
 
 <!-- ##### MACRO PANGO_TYPE_UNDERLINE ##### -->
 <para>
@@ -345,6 +352,15 @@ The GObject type for #PangoUnderline.
 </para>
 
 @scale_factor: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_attr_fallback_new ##### -->
+<para>
+
+</para>
+
+@enable_fallback: 
 @Returns: 
 
 
@@ -403,6 +419,15 @@ The scale factor for three magnification steps (1.2 * 1.2 * 1.2).
 </para>
 
 @rise: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_attr_letter_spacing_new ##### -->
+<para>
+
+</para>
+
+@letter_spacing: 
 @Returns: 
 
 
