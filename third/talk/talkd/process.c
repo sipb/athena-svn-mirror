@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.2 1996-10-13 07:08:54 ghudson Exp $";
+static char rcsid[] = "$Id: process.c,v 1.3 1997-06-27 23:08:45 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -200,7 +200,11 @@ find_user(name, tty)
 #define SCMPN(a, b)	strncmp(a, b, sizeof (a))
 	status = NOT_HERE;
 	(void) strcpy(ftty, _PATH_DEV);
-	while (fread((char *) &ubuf, sizeof ubuf, 1, fd) == 1)
+	while (fread((char *) &ubuf, sizeof ubuf, 1, fd) == 1) {
+#ifdef USER_PROCESS
+		if (ubuf.ut_type != USER_PROCESS)
+			continue;
+#endif
 		if (SCMPN(ubuf.ut_name, name) == 0) {
 			if (*tty == '\0') {
 				status = PERMISSION_DENIED;
@@ -219,6 +223,7 @@ find_user(name, tty)
 				break;
 			}
 		}
+	}
 	fclose(fd);
 	return (status);
 }
