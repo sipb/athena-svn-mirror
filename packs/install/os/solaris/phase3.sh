@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3 1999-03-31 15:08:25 ghudson Exp $
+# $Id: phase3.sh,v 1.4 1999-11-06 23:27:45 miki Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -64,6 +64,12 @@ cp -p /srvd/kernel/strmod/* /root/kernel/strmod/
 echo "copying platform directory"
 cp -rp "/os/platform/$platform" "/root/platform/$platform"
 
+echo "adding some of the sun4u platform directories"
+if [ "$platform" = sun4u ]; then
+	cp -p -r /os/platform/SUNW,Ultra-250 /root/platform
+	cp -p -r /os/platform/SUNW,Ultra-4 /root/platform
+	cp -p -r /os/platform/SUNW,Ultra-Enterpris* /root/platform
+fi
 echo "Create devices and dev"
 mkdir /root/dev
 mkdir /root/devices
