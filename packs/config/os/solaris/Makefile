@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2003-07-20 06:32:59 zacheiss Exp $
+# $Id: Makefile,v 1.15 2003-07-25 05:20:35 zacheiss Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -69,6 +69,7 @@ install:
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 sendmail-noauth.cf ${DESTDIR}${MAIL}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${MAIL}
 	install -c -m 0644 services ${DESTDIR}${INET}
 	install -c -m 0644 shadow.fallback ${DESTDIR}${ETCDIR}

@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.21 2003-07-25 05:20:36 zacheiss Exp $
+# $Id: sendmail-noauth.cf,v 1.1 2003-07-25 05:20:15 zacheiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -29,28 +29,24 @@ CR
 # map for local configuration
 Kathconf program /etc/athena/sendmail-relay-select
 
-Kauthinfo hash -o /etc/mail/authinfo
-
 ###################
 ###   Options   ###
 ###################
 
-O AliasFile=/etc/mail/aliases
+O AliasFile=/etc/aliases
 O DefaultUser=daemon:daemon
 # where do errors that occur when sending errors get sent?
 O DoubleBounceAddress=postmaster
-O HelpFile=/etc/mail/sendmail.hf
+O HelpFile=/usr/lib/sendmail.hf
 # send message to sender too (only affects local mailing lists)
 O MeToo
 O OperatorChars=.:%@!^=/[]
 O QueueDirectory=/var/spool/mqueue
 O SmtpGreetingMessage=$j Sendmail $v; $b
-O StatusFile=/etc/mail/sendmail.st
+O StatusFile=/etc/sendmail.st
 # queue up everything before starting transmission
 O SuperSafe
 O TempFileMode=0640
-O AuthMechanisms=GSSAPI
-O DeliveryMode=interactive
 
 ###############################
 ###   Message precedences   ###
@@ -189,20 +185,6 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 R$*<@$=w>$*		$#local$:$1			Local mail
 R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
 
-######################################################################
-###  authinfo: lookup authinfo in the access map
-###
-###     Parameters:
-###             $1: {server_name}
-###             $2: {server_addr}
-######################################################################
-Sauthinfo
-R$*			$: <$(authinfo AuthInfo:$&{server_name} $: ? $)>
-R<?>			$: <$(authinfo AuthInfo:$&{server_addr} $: ? $)>
-R<?>			$: <$(authinfo AuthInfo: $: ? $)>
-R<?>			$@ no			    no authinfo available
-R<$*>			$# $1
-
 #####################
 ###   Anti-spam   ###
 #####################
@@ -233,13 +215,13 @@ R$*			$#error $: "550 Relaying Denied"
 ###   Mailer specifications   ###
 #################################
 
-Mlocal,		P=/bin/mail, F=lsDFMAw5:/|@qnE9, S=10, R=20, A=mail -d $u
+Mlocal,		P=/usr/bin/procmail, F=lsDFMAw5:/|@qSPfn9, S=10, R=20, A=procmail -a $h -d $u
 Mprog,		P=/bin/sh, F=lsDFMoqeu9, S=10, R=20, A=sh -c $u
-Msmtp,		P=[IPC], F=gmDFMuCX, S=11, R=21, A=TCP $h 587
+Msmtp,		P=[IPC], F=gmDFMuCX, S=11, R=21, A=TCP $h
 
 S10
 
-S20
+S10
 
 S11
 

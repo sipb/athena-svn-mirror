@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.18 2003-04-08 21:29:00 zacheiss Exp $
+# $Id: sendmail.cf,v 1.19 2003-07-25 05:20:15 zacheiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -27,7 +27,9 @@ Cwlocalhost $w
 CR
 
 # map for local configuration
-Kathconf text -o -v 1 /etc/athena/sendmail.conf
+Kathconf program /etc/athena/sendmail-relay-select
+
+Kauthinfo hash -o /etc/mail/authinfo
 
 ###################
 ###   Options   ###
@@ -47,6 +49,8 @@ O StatusFile=/etc/sendmail.st
 # queue up everything before starting transmission
 O SuperSafe
 O TempFileMode=0640
+O AuthMechanisms=GSSAPI
+O DeliveryMode=interactive
 
 ###############################
 ###   Message precedences   ###
@@ -185,6 +189,20 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 R$*<@$=w>$*		$#local$:$1			Local mail
 R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
 
+######################################################################
+###  authinfo: lookup authinfo in the access map
+###
+###     Parameters:
+###             $1: {server_name}
+###             $2: {server_addr}
+######################################################################
+Sauthinfo
+R$*                    $: <$(authinfo AuthInfo:$&{server_name} $: ? $)>
+R<?>                   $: <$(authinfo AuthInfo:$&{server_addr} $: ? $)>
+R<?>                   $: <$(authinfo AuthInfo: $: ? $)>
+R<?>                   $@ no                       no authinfo available
+R<$*>                  $# $1
+
 #####################
 ###   Anti-spam   ###
 #####################
@@ -217,7 +235,7 @@ R$*			$#error $: "550 Relaying Denied"
 
 Mlocal,		P=/usr/bin/procmail, F=lsDFMAw5:/|@qSPfn9, S=10, R=20, A=procmail -a $h -d $u
 Mprog,		P=/bin/sh, F=lsDFMoqeu9, S=10, R=20, A=sh -c $u
-Msmtp,		P=[IPC], F=gmDFMuCX, S=11, R=21, A=TCP $h
+Msmtp,		P=[IPC], F=gmDFMuCX, S=11, R=21, A=TCP $h 587
 
 S10
 
