@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.14 1990-11-18 22:01:50 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.15 1990-11-22 07:07:44 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -52,7 +52,7 @@ endif
 setenv XSESSION $$
 
 # Set the sleep time for waiting between launching large applications.
-# These can be overriden in the ~/.cshrc or ~/.environment files.
+# These can be overridden in the ~/.cshrc or ~/.environment files.
 
 switch (`machtype -c`)
     case VAXSTAR:
@@ -64,8 +64,8 @@ switch (`machtype -c`)
     case RTPC_ROMPC:
 	setenv SLEEP_TIME 6
 	breaksw
-    case ps2:
-	setenv SLEEP_TIME 10
+    case PS2-*:
+	setenv SLEEP_TIME 6
 	breaksw
     default:
 	setenv SLEEP_TIME 0
