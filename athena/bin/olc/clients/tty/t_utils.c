@@ -19,17 +19,17 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.28 1991-03-28 13:17:01 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.29 1991-04-08 20:44:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.28 1991-03-28 13:17:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.29 1991-04-08 20:44:35 lwvanels Exp $";
 #endif
 #endif
 
-#ifdef m68k
+#ifdef _AUX_SOURCE
 #define MORE_PROG "/bin/more"
 #else
 #define MORE_PROG "/usr/ucb/more"
@@ -44,7 +44,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef m68k
+#ifdef TERMIO
 #include <sys/termio.h>
 struct termio mode;
 #else
@@ -187,7 +187,7 @@ input_text_into_file(filename)
 	break;
       if (write(fd, line, nchars) != nchars) 
 	{
-	  perror("input_text: error writing to file");
+	  olc_perror("input_text: error writing to file");
 	  return(ERROR);
 	}
     }
@@ -224,7 +224,7 @@ get_key_input(text)
   printf("%s",text);
   fflush(stdout);
   raw_mode();
-#ifdef m68k
+#ifdef TERMIO
   ioctl(0, TCFLSH, 2);
 #else
   ioctl(0, TIOCFLUSH, 0);
@@ -236,7 +236,7 @@ get_key_input(text)
 }
 
 
-#ifdef m68k
+#ifdef TERMIO
 raw_mode()
 {
   ioctl(0, TCGETA, &mode);
@@ -528,7 +528,7 @@ what_now(file, edit_first, editor)
 
   if ((fd = open(file, O_RDWR | O_CREAT, 0644)) < 0) 
     {
-      perror("whatnow: unable to create temp file");
+      olc_perror("whatnow: unable to create temp file");
       return(ERROR);
     }
   (void) close(fd);
@@ -565,9 +565,6 @@ what_now(file, edit_first, editor)
 	return(SUCCESS);
       else if (string_equiv(inbuf,"list",max(strlen(inbuf),1)))
 	display_file(file);
-      else if (*inbuf == 'a')
-	printf("hello!\n");
-	  
     }
 }
 
@@ -628,7 +625,7 @@ mail_message(user, consultant, msgfile, args)
 
   if ((nbytes = file_length(msgfile)) == ERROR)
     {
-      perror("mail");
+      olc_perror("mail");
       printf("Unable to get message file.\n");
       return(ERROR);
     }
@@ -636,14 +633,14 @@ mail_message(user, consultant, msgfile, args)
   msgbuf = (char *)malloc((unsigned) nbytes);
   if ((filedes = open(msgfile, O_RDONLY, 0)) <= 0) 
     {
-      perror("mail");
+      olc_perror("mail");
       printf("Error opening mail file.\n");
       free(msgbuf);
       return(ERROR);
     }
   if (read(filedes, msgbuf, nbytes) != nbytes) 
     {
-      perror("mail");
+      olc_perror("mail");
       printf("Error reading mail message.\n");
       free(msgbuf);
       (void) close(filedes);
@@ -658,7 +655,7 @@ mail_message(user, consultant, msgfile, args)
     }
   if (write(fd, msgbuf, nbytes) != nbytes)
     {
-      perror("mail");
+      olc_perror("mail");
       printf("Error sending mail.\n");
       free(msgbuf);
       (void) close(filedes);
