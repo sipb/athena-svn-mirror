@@ -1,4 +1,4 @@
-! $Id: Xlogin.netbsd.presed,v 1.1 1999-01-29 17:56:58 ghudson Exp $
+! $Id: Xlogin.netbsd.presed,v 1.2 1999-07-19 18:34:05 danw Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -230,6 +230,11 @@ xlogin.Geometry: 		580x325+205+105
 			idleReset() \
 			setfocus(*pword_input) \n\
 	Ctrl<Key>m:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
+	<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: white) \
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
