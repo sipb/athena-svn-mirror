@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.1 1988-11-14 11:19:23 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.2 1988-11-22 13:46:17 jtkohl Exp $
 /**/#
 
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${HES_LIB} ${KRB_LIB} ${DES_LIB}
@@ -51,7 +51,7 @@ normal_obj_rule()
 
 program(zephyrd,${OBJS},,${LIBS},${USRETCDIR})
 
-error_table(zsrv_err)
+error_table_noprof(zsrv_err)
 
 
 install::
