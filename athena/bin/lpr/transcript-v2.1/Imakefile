@@ -1,9 +1,9 @@
-# transcript/src/Makefile.bsd
-#
-# Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
-# GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.1 1990-08-25 17:57:44 epeisach Exp $
-
+/* # transcript/src/Makefile.bsd
+   #
+   # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
+   # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
+   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.2 1990-11-14 17:45:56 epeisach Exp $
+*/
 
 LPROGS = pscomm #lps40comm
 BPROGS = 
@@ -18,17 +18,28 @@ PSTEMPDIR=/tmp
 DITDIR=/usr/lib/font
 TROFFFONTDIR=$(PSLIBDIR)/troff.font
 
-CFLAGS = -O -DBSD -DSYSLOG -DZEPHYR
+#if defined(AIX) && defined(_I386)
+OCFLAGS=-D_BSD
+LDFLAGS=-L/usr/athena/lib -lbsd
+#endif
+
+CFLAGS = -O -DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
 
 programs all:	${LPROGS} ${BPROGS}
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile 
+	/lib/cpp `../cppflags` Imakefile Makefile 
 
+#ifndef _AUX_SOURCE
 pscomm: pscomm.o psutil.o config.o
-		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
-			-lcom_err -lkrb -ldes 
+		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o \
+			${LDFLAGS} -lzephyr -lcom_err -lkrb -ldes 
+#else
+pscomm: pscomm.o psutil.o config.o
+		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o \
+			${LDFLAGS} -lzephyr -lcom_err -lkrb -ldes -lposix
+#endif
 
 lps40comm: lps40comm.o psutil.o config.o
 	cc ${CFLAGS} -o lps40comm lps40comm.o psutil.o config.o
