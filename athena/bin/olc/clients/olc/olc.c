@@ -16,18 +16,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.19 1990-09-10 01:11:33 lwvanels Exp $
+ *	$Id: olc.c,v 1.20 1990-11-14 11:16:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.19 1990-09-10 01:11:33 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.20 1990-11-14 11:16:33 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -75,7 +78,7 @@ extern do_olc_queue();
 
 #ifdef KERBEROS
 extern int krb_ap_req_debug;
-#endif KERBEROS
+#endif /* KERBEROS */
 
 
 /*
@@ -161,7 +164,7 @@ int select_timeout = 300;
  *			environment and starts the command interpreter.
  * Arguments:	argc:	Number of arguments in the command line.
  *		argv:	Array of words from the command line.
- *		Someday these will be used.
+ *
  * Returns:	Nothing.
  * Notes:
  *	First, check the terminal mode to make sure that the program is
@@ -257,7 +260,7 @@ main(argc, argv)
       printf("at the shell prompt, and then type 'olc' again.\n");
       exit(1);
     }
-#endif TERMINAL
+#endif /* TERMINAL */
 
  no_tty:
 
@@ -307,7 +310,7 @@ do_olc_init()
 	 VERSION_STRING);
   printf("Copyright (c) 1989 by ");
   printf("the Massachusetts Institute of Technology.\n\n");
-#endif LAVIN
+#endif /* LAVIN */
   
   OInitialize();
 
@@ -337,7 +340,7 @@ do_olc_init()
 	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
-#endif LAVIN
+#endif /* LAVIN */
       first = 1;
 	
       break;
@@ -351,7 +354,7 @@ do_olc_init()
 	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
-#endif LAVIN
+#endif /* LAVIN */
 
       if(t_set_default_instance(&Request) != SUCCESS)
 	fprintf(stderr,"Error setting default instance... continuing.\n");
