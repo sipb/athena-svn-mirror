@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.6 1990-08-25 16:52:09 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.7 1990-11-14 17:50:40 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  90/08/25  16:52:09  epeisach
+ * Under _AUX include sys/types.h
+ * 
  * Revision 1.5  90/07/13  13:41:22  ilham
  * Does the right thing for group quota account
  * 
@@ -198,6 +201,8 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 
 #ifdef _AUX_SOURCE
 #include <sys/types.h>
+#define _POSIX_SOURCE
+#include <termios.h>
 #endif
 #include <sys/file.h>
 #include <sys/ioctl.h>
@@ -1482,8 +1487,13 @@ private int resetprt() {
     int flg = FREAD|FWRITE;	 /* ioctl FLUSH arg */
 
     VOIDC openprtread();    /* Re-open the printer */
+#ifndef _AUX_SOURCE
     if (ioctl(fdsend,TIOCFLUSH,&flg) || ioctl(fdsend,TIOCSTART,&flg) )
 	return(-1);
+#else
+    if (tcflush(fdsend,TCIOFLUSH) || tcflow(fdsend,TCOON) || tcflow(fdsend,TCION) )
+	return(-1);
+#endif /* _AUX_SOURCE */
 #endif BRIDGE
 
     return(0);
