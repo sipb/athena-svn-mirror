@@ -202,9 +202,6 @@ xolc.resizable:			FALSE
 *cancel_btn.labelString:		Cancel
 *savelog_btn.labelString:		Save to file...
 *motd_btn.labelString:			MOTD
-#ifdef _IBMR2
-*motd_btn.sensitive:			false
-#endif
 *update_btn.labelString:		Show new messages
 !
 *replay_frame.rightAttachment:		ATTACH_FORM
@@ -215,6 +212,8 @@ xolc.resizable:			FALSE
 *replay_frame.bottomWidget:		optionsRowCol
 *replay_frame.marginHeight:		5
 *replay_frame.marginWidth:		5
+*replay_frame.height			300
+
 !
 *replay_scrl.editable:			FALSE
 *replay_scrl.editMode:			MULTI_LINE_EDIT
@@ -257,7 +256,7 @@ xolc.resizable:			FALSE
 *welcome_lbl.leftAttachment:		ATTACH_FORM
 *welcome_lbl.rightAttachment:		ATTACH_FORM
 !
-*copyright_lbl.labelString:		Copyright ) 1991 by the Massachusetts Institute of Technology.
+*copyright_lbl.labelString:		Copyright 1991 by the Massachusetts Institute of Technology.
 #ifdef _IBMR2
 *copyright_lbl.fontList:		-adobe-*schoolbook-bold-r-normal--14-*
 #else
