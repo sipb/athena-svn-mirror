@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.5 2003-04-09 19:42:20 ghudson Exp $
+# $Id: athchanges,v 1.6 2003-04-09 19:53:45 ghudson Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 # Unlike oschanges, this script is run under a chroot into the update
@@ -28,7 +28,7 @@ pango-querymodules > /etc/athena/pango/pango.modules
 # Create gtk module configs.
 mkdir -p /etc/athena/gtk-2.0
 gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
-gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loader
+gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loaders
 
 # Create fontconfig cache.
 fc-cache -f 2>/dev/null
