@@ -146,7 +146,10 @@ install-sendmail: sendmail
 
 install-docs: aliases.${MAN5SRC} mailq.${MAN1SRC} newaliases.${MAN1SRC} sendmail.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} sendmail.${MAN8SRC} ${MAN8}/sendmail.${MAN8EXT}
+`	mkdir -p ${MAN1}
+	mkdir -p ${MAN5}
+	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} sendmail.${MAN8SRC} ${MAN8}/sendmail.${MAN8EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} aliases.${MAN5SRC} ${MAN5}/aliases.${MAN5EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mailq.${MAN1SRC} ${MAN1}/mailq.${MAN1EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} newaliases.${MAN1SRC} ${MAN1}/newaliases.${MAN1EXT}')
