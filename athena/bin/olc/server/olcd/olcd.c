@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.53 1992-03-10 23:31:33 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olcd.c,v 1.54 1993-04-28 14:34:58 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.53 1992-03-10 23:31:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.54 1993-04-28 14:34:58 vanharen Exp $";
 #endif
 #endif
 
@@ -399,7 +399,11 @@ restart:
 
     if (bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in)) < 0)
     {
-	log_error("bind: %m");
+	log_zephyr_error("bind: %m");
+	  /* no, this isn't really a zephyr error, but we don't want to
+	     broadcast this out over zephyr because we use cron to try
+	     and restart every 20 min., and of course it fails here, and
+	     broadcasting that every 20 min gets annoying... */
 	exit(ERROR);
     }
 
