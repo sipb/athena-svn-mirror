@@ -10,6 +10,7 @@
 
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
 
 #include "bonobo-moniker-std.h"
 
@@ -38,6 +39,16 @@ bonobo_moniker_oaf_resolve (BonoboMoniker               *moniker,
 
 	object = oaf_activate_from_id (
 		(char *) bonobo_moniker_get_name_full (moniker), 0, NULL, ev);
+
+
+	if (BONOBO_USER_EX (ev, "IDL:OAF/GeneralError:1.0")) {
+		OAF_GeneralError *error;
+
+		error = ev->_params;
+		g_message ("OAF error activating component: %s", error->description);
+		return CORBA_OBJECT_NIL;
+	}
+/*	g_warning ("Activate from ID '%s' = '%p'", bonobo_moniker_get_name_full (moniker)); */
 
 	return bonobo_moniker_util_qi_return (object, requested_interface, ev);
 }

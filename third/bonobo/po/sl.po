@@ -5,79 +5,79 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.13\n"
-"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"POT-Creation-Date: 2001-11-01 10:51+0000\n"
 "PO-Revision-Date: 2000-05-14 20:32+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso8859-2\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/bonobo-ui-config-widget.c:235
+#: bonobo/bonobo-ui-config-widget.c:280
 msgid "Visible"
 msgstr "Viden"
 
-#: bonobo/bonobo-ui-config-widget.c:243
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_Show"
 msgstr "_Ka¾i"
 
-#: bonobo/bonobo-ui-config-widget.c:253
+#: bonobo/bonobo-ui-config-widget.c:298
 msgid "_Hide"
 msgstr "_Skrij"
 
-#: bonobo/bonobo-ui-config-widget.c:263
+#: bonobo/bonobo-ui-config-widget.c:308
 msgid "_View tooltips"
 msgstr "_Ka¾i namige orodij"
 
-#: bonobo/bonobo-ui-config-widget.c:270
+#: bonobo/bonobo-ui-config-widget.c:315
 msgid "Toolbars"
-msgstr "Orodna vrstica"
+msgstr "Orodne vrstice"
 
-#: bonobo/bonobo-ui-config-widget.c:280
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "Look"
 msgstr "Glej"
 
-#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "_Icon"
 msgstr "_Ikone"
 
-#: bonobo/bonobo-ui-config-widget.c:300
+#: bonobo/bonobo-ui-config-widget.c:345
 msgid "_Text and Icon"
 msgstr "_Besedilo in ikone"
 
-#: bonobo/bonobo-ui-config-widget.c:310
+#: bonobo/bonobo-ui-config-widget.c:355
 msgid "_Priority text only"
 msgstr "Le _prednostno besedilo"
 
-#: bonobo/bonobo-ui-engine-config.c:518
-msgid "Configure UI"
-msgstr "Nastavi uporabni¹ki vmesnik"
+#: bonobo/bonobo-ui-engine-config.c:524
+msgid "Customize Toolbars"
+msgstr "Prikroji orodne vrstice"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:539
+#: bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "B_oth"
 msgstr "_Oboje"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:541
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "T_ext"
 msgstr "_Besedilo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Hide t_ips"
 msgstr "Skrij _namige"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "Show t_ips"
 msgstr "Ka¾i _namige"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:543
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "_Hide toolbar"
 msgstr "_Skrij orodno vrstico"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customi_ze"
-msgstr "_Prikroji"
+msgstr "_Prilagodi"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:520
 msgid "Customize the toolbar"
 msgstr "Prikroji orodno vrstico"
 
@@ -86,158 +86,157 @@ msgstr "Prikroji orodno vrstico"
 msgid "Oaf options"
 msgstr "Mo¾nosti OAF"
 
-#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:403
 msgid "Could not initialize Bonobo!\n"
 msgstr "Nisem mogel inicializirati Bonoba!\n"
 
-#: bonobo/bonobo-exception.c:129
+#: bonobo/bonobo-exception.c:162
 msgid "An unsupported action was attempted"
 msgstr "Posku¹eno je bilo nepodprto dejanje"
 
-#: bonobo/bonobo-exception.c:132
+#: bonobo/bonobo-exception.c:165
 msgid "IO Error"
 msgstr "IO napaka"
 
-#: bonobo/bonobo-exception.c:135
+#: bonobo/bonobo-exception.c:168
 msgid "Invalid argument value"
 msgstr "Neveljavna vrednost argumenta"
 
-#: bonobo/bonobo-exception.c:139
+#: bonobo/bonobo-exception.c:172
 msgid "Object not found"
 msgstr "Predmet ni najden"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:175
 msgid "Syntax error in object description"
 msgstr "Sintaktièna napaka v opisku predmeta"
 
-#: bonobo/bonobo-exception.c:146
+#: bonobo/bonobo-exception.c:179
 msgid "The User canceled the save"
 msgstr "Uporabnik je preklical shranitev"
 
-#: bonobo/bonobo-exception.c:151
+#: bonobo/bonobo-exception.c:184
 msgid "Cannot activate object from factory"
 msgstr "Ne morem aktivirati predmeta za tovarno"
 
-#: bonobo/bonobo-exception.c:156
+#: bonobo/bonobo-exception.c:189
 msgid "No permission to access stream"
 msgstr "Ni dovoljenja za dostop do toka"
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:192
 msgid "An unsupported stream action was attempted"
 msgstr "Posku¹eno je bilo nepodprto dejanje toka"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:195
 msgid "IO Error on stream"
 msgstr "IO napaka na toku"
 
-#: bonobo/bonobo-exception.c:166
+#: bonobo/bonobo-exception.c:199
 msgid "IO Error on storage"
 msgstr "IO napaka na shrambi"
 
-#: bonobo/bonobo-exception.c:169
+#: bonobo/bonobo-exception.c:202
 msgid "Name already exists in storage"
 msgstr "Ime ¾e obstaja v shrambi"
 
-#: bonobo/bonobo-exception.c:172
+#: bonobo/bonobo-exception.c:205
 msgid "Object not found in storage"
 msgstr "Predmet ni bil najden v shrambi"
 
-#: bonobo/bonobo-exception.c:175
+#: bonobo/bonobo-exception.c:208
 msgid "No permission to do operation on storage"
 msgstr "Ni dovoljenja za operacijo na shrambi"
 
-#: bonobo/bonobo-exception.c:177
+#: bonobo/bonobo-exception.c:210
 msgid "An unsupported storage action was attempted"
 msgstr "Posku¹eno je bilo nepodprto dejanje shrambe"
 
-#: bonobo/bonobo-exception.c:179
+#: bonobo/bonobo-exception.c:212
 msgid "Object is not a stream"
 msgstr "Predmet ni tok"
 
-#: bonobo/bonobo-exception.c:182
+#: bonobo/bonobo-exception.c:215
 msgid "Object is not a storage"
 msgstr "Predmet ni shramba"
 
-#: bonobo/bonobo-exception.c:185
+#: bonobo/bonobo-exception.c:218
 msgid "Storage is not empty"
 msgstr "Shramba ni prazna"
 
-#: bonobo/bonobo-exception.c:189
+#: bonobo/bonobo-exception.c:222
 msgid "malformed user interface XML description"
 msgstr "Napaèno formuliran XML opis uporabni¹ega vmesnika"
 
-#: bonobo/bonobo-exception.c:192
+#: bonobo/bonobo-exception.c:225
 msgid "invalid path to XML user interface element"
 msgstr "neveljavna pot do elementa XML uporabni¹kega vmesnika"
 
-#: bonobo/bonobo-exception.c:196
+#: bonobo/bonobo-exception.c:229
 msgid "incorrect data type"
 msgstr "napaèen tip podatkov"
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:232
 msgid "stream not found"
 msgstr "tok ni bil najden"
 
-#: bonobo/bonobo-exception.c:203
+#: bonobo/bonobo-exception.c:236
 msgid "property not found"
 msgstr "lastnost ni bila najdena"
 
-#: bonobo/bonobo-exception.c:207
+#: bonobo/bonobo-exception.c:240
 msgid "Moniker interface cannot be found"
 msgstr "Vmesnik vzdevka ni bil najden"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:243
 msgid "Moniker activation timed out"
 msgstr "Aktivaciji vzdevka je pretekla èasovna omejitev"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:246
 msgid "Syntax error within moniker"
 msgstr "Sintaktièna napaka v vzdevku"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:249
 msgid "Moniker has an unknown moniker prefix"
 msgstr "Vzdevek ima neznano vzdevèno predpono"
 
-#: bonobo/bonobo-exception.c:238
+#: bonobo/bonobo-exception.c:273
 msgid "Error checking error; no exception"
 msgstr "Napaka pri preverjanju napake; ni izjeme"
 
-#: bonobo/bonobo-object-directory.c:224
+#: bonobo/bonobo-object-directory.c:225
 msgid "No filename"
 msgstr "Ni imena datoteke"
 
-#: bonobo/bonobo-object-directory.c:230
+#: bonobo/bonobo-object-directory.c:231
 #, c-format
 msgid "unknown mime type for '%s'"
-msgstr "neznan mime tip za '%s'"
+msgstr "neznan tip mime za '%s'"
 
-#: bonobo/bonobo-object-directory.c:255
+#: bonobo/bonobo-object-directory.c:256
 #, c-format
 msgid "no handlers for mime type '%s'"
-msgstr "ni obravnavalnika za mime tip '%s'"
+msgstr "ni obravnavalnika za tip mime '%s'"
 
-#: bonobo/bonobo-selector-widget.c:212
+#: bonobo/bonobo-selector-widget.c:213
 msgid "Name"
 msgstr "Ime"
 
-#: bonobo/bonobo-selector-widget.c:235
+#: bonobo/bonobo-selector-widget.c:236
 msgid "Description"
 msgstr "Opis"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
 msgid "GnoMines control"
-msgstr ""
+msgstr "Kontrola GnoMine"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
 msgid "GnoMines control factory"
-msgstr ""
+msgstr "Tovarna kontrol GnoMine"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
 msgid "bonobo GnoMines object"
-msgstr ""
+msgstr "bonobo predmet GnoMine"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
-#, fuzzy
 msgid "bonobo GnoMines object factory"
 msgstr "Ne morem aktivirati predmeta za tovarno"
 
@@ -263,71 +262,65 @@ msgstr "_Igra"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
 msgid "Waveform"
-msgstr ""
+msgstr "Zvoèni vzorec"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
-#, fuzzy
 msgid "Waveform component"
-msgstr "Po¾eni komponento"
+msgstr "Komponenta zvoènega vzorca"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
 msgid "Waveform component factory"
-msgstr ""
+msgstr "Tovarna komponent zvoènih vzorcev"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
-#, fuzzy
 msgid "audio/ulaw bonobo object"
-msgstr "Ne morem pognati bonobovega predmeta."
+msgstr "bonobo predmet audio/ulaw"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
-#, fuzzy
 msgid "audio/ulaw bonobo object factory"
-msgstr "Ne morem pognati bonobovega predmeta."
+msgstr "tovarna bonobo predmetov audio/ulaw"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:1
 msgid "Component Selector"
-msgstr ""
+msgstr "Izbirnik komponent"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:2
 msgid "Component Selector factory"
-msgstr ""
+msgstr "Tovarna izbirnika komponent"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:3
 msgid "Component selector control"
-msgstr ""
+msgstr "Kontrola izbirnika komponent"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:4
 msgid "component selector control factory"
-msgstr ""
+msgstr "Tovarna kontrol izbirnikov komponent"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
-#, fuzzy
 msgid "Text"
-msgstr "_Besedilo"
+msgstr "Besedilo"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
-#, fuzzy
 msgid "Text component"
-msgstr "Po¾eni komponento"
+msgstr "Komponenta besedila"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
 msgid "Text component factory"
-msgstr ""
+msgstr "Tovarna komponente besedila"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
-#, fuzzy
 msgid "text/plain component"
-msgstr "Po¾eni komponento"
+msgstr "komponenta besedilo/èisto"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
 msgid "text/plain embeddable factory"
-msgstr ""
+msgstr "vgradljiva komponenta besedilo/èisto"
 
-#: components/text-plain/bonobo-text-plain.c:338
+#: components/text-plain/bonobo-text-plain.c:340
 msgid "_Clear Text"
 msgstr "_Poèisti besedilo"
 
-#: components/text-plain/bonobo-text-plain.c:339
+#: components/text-plain/bonobo-text-plain.c:341
 msgid "Clears the text in the component"
 msgstr "Poèisti besedilo v komponenti"
 
@@ -353,7 +346,7 @@ msgstr ""
 
 #: gshell/gshell-ui.xml.h:1
 msgid "About this application"
-msgstr "O tej aplikaciji"
+msgstr "O tem programu"
 
 #: gshell/gshell-ui.xml.h:2
 msgid "Close the current window"
@@ -361,7 +354,7 @@ msgstr "Zapri trenutno okno"
 
 #: gshell/gshell-ui.xml.h:3
 msgid "Configure the application"
-msgstr "Nastavi aplikacijo"
+msgstr "Nastavi program"
 
 #: gshell/gshell-ui.xml.h:4
 msgid "Create New _Window"
@@ -377,7 +370,7 @@ msgstr "Poka¾e le eno okno"
 
 #: gshell/gshell-ui.xml.h:7
 msgid "E_xit"
-msgstr "_Izhod"
+msgstr "Iz_hod"
 
 #: gshell/gshell-ui.xml.h:8
 msgid "Exit the program"
@@ -465,7 +458,7 @@ msgstr "Poveèaj na stran"
 
 #: gshell/gshell-ui.xml.h:29
 msgid "_About..."
-msgstr "_O..."
+msgstr "_O programu..."
 
 #: gshell/gshell-ui.xml.h:30
 msgid "_Buffers"
@@ -509,7 +502,7 @@ msgstr "_Nastavitve..."
 
 #: gshell/gshell-ui.xml.h:40
 msgid "_Print"
-msgstr "_Natisni"
+msgstr "Na_tisni"
 
 #: gshell/gshell-ui.xml.h:41
 msgid "_Save"
@@ -603,68 +596,70 @@ msgstr "Komponenta nima nobenih lastnosti, ki se jih lahko spremeni"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
 msgid "Gunzip Moniker factory"
-msgstr ""
+msgstr "tovarna vzdevkov gunzip"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
 msgid "gunzip Moniker"
-msgstr ""
+msgstr "vzdevek gunzip"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
 msgid "HTTP Moniker"
-msgstr ""
+msgstr "Vzdevek HTTP"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Obièajna tovarna vzdevkov"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "datoteka Podalj¹ekVzdevka"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr ""
+msgstr "generièen vzdevek aktivacije Oaf"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr ""
+msgstr "generièen vzdevek poizvedbe Oaf"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr ""
+msgstr "generièna tovarna 'novega' vzdevka"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
 msgid "generic file moniker"
-msgstr ""
+msgstr "gnerièen datoteèni vzdevek"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
 msgid "generic item moniker"
-msgstr ""
+msgstr "generièen vzdevek predmetov"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
 msgid "stream MonikerExtender"
-msgstr ""
+msgstr "tokovni Podalj¹ekVzdevka"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "Tovarna stre¾nika bonobo odmeov"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Preizkusni program bonobo stre¾nika odmevov"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
-#, fuzzy
 msgid "Echo component"
-msgstr "Po¾eni komponento"
+msgstr "Komponenta odmeva"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
-#, fuzzy
 msgid "Echo component factory"
-msgstr "Po¾eni komponento"
+msgstr "Tovarna komponente odmevov"
 
 #: samples/bonobo-class/echo-client.c:30
 msgid "I could not initialize Bonobo"
+msgstr "Nisem mogel inicializirati Bonoba"
+
+#: samples/bonobo-class/main.c:40
+msgid "Could not initialize Bonobo"
 msgstr "Nisem mogel inicializirati Bonoba"
 
 #: samples/compound-doc/container/component.c:253
@@ -712,33 +707,27 @@ msgstr ""
 msgid "Select an object"
 msgstr "Izberi predmet"
 
-#: tests/test-container.c:65 tests/test-container.c:95
-msgid "Can not activate object_server"
-msgstr "Ne morem aktivirati stre¾nika predmetov"
-
-#: tests/test-container.c:70 tests/test-container.c:100
-msgid "Can not bind object server to client_site"
-msgstr "Ne morem povezati stre¾nika predmetov s client_site"
-
-#: tests/test-container.c:269
-msgid "Can not activate server"
-msgstr "Ne morem aktivirati stre¾nika"
-
-#: tests/test-container.c:319 tests/test-container.c:364
-msgid "Could not launch bonobo object."
-msgstr "Ne morem pognati bonobovega predmeta."
-
-#: tests/test-container.c:562
-msgid "Could not launch Embeddable."
-msgstr "Ne morem pognati Integrirano."
-
-#: tests/test-container.c:596
-msgid "Could not launch Control."
-msgstr "Ne morem pognati Kontrole."
-
-#: tests/test-container.c:848 tests/test-storage.c:489
+#: tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "Ne morem incializirati bonoba"
+
+#~ msgid "Configure UI"
+#~ msgstr "Nastavi uporabni¹ki vmesnik"
+
+#~ msgid "Can not activate object_server"
+#~ msgstr "Ne morem aktivirati stre¾nika predmetov"
+
+#~ msgid "Can not bind object server to client_site"
+#~ msgstr "Ne morem povezati stre¾nika predmetov s client_site"
+
+#~ msgid "Can not activate server"
+#~ msgstr "Ne morem aktivirati stre¾nika"
+
+#~ msgid "Could not launch Embeddable."
+#~ msgstr "Ne morem pognati Integrirano."
+
+#~ msgid "Could not launch Control."
+#~ msgstr "Ne morem pognati Kontrole."
 
 #~ msgid "no listening to this property"
 #~ msgstr "ni poslu¹anja te lastnosti"
@@ -766,9 +755,6 @@ msgstr "Ne morem incializirati bonoba"
 
 #~ msgid "Set the current drawing color to green"
 #~ msgstr "Nastavi trenutno barvo za risanje na zeleno"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "Nisem mogel inicializirati Bonoba"
 
 #~ msgid "Change the game"
 #~ msgstr "Spremeni igro"

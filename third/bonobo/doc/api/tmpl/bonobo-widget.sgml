@@ -63,6 +63,22 @@ Simplified embedding of widgets in Bonobo.
         </informalexample>
       </para>
     </listitem>
+
+    <listitem>
+      <para>
+        To provide an extremely simple wrapper for using Monikers. In
+      fact all BonoboWidget use uses the OAFIID: moniker to activate
+      its sub-components. However monikers (#bonobo-moniker-util) are
+      far more powerful than this:
+        <informalexample>
+          <programlisting>
+	         bw = bonobo_widget_new_control ("file:/demo/a.jpeg");
+          </programlisting>
+        </informalexample>
+	will launch an application that can render a jpeg as a control,
+      usualy the Eye Of Gnome (EOG), and embed it as a control.
+      </para>
+    </listitem>
   </orderedlist>
 </para>
 
@@ -81,45 +97,6 @@ Simplified embedding of widgets in Bonobo.
    #BonoboControl, #BonoboControlFrame, #BonoboObject, #BonoboView,
    #BonoboEmbeddable, #BonoboUIContainer, #BonoboItemContainer. 
 </para>
-
-<!-- ##### MACRO BONOBO_WIDGET_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_WIDGET ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_WIDGET_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_WIDGET ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_WIDGET_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### STRUCT BonoboWidget ##### -->
 <para>
@@ -142,14 +119,39 @@ Simplified embedding of widgets in Bonobo.
 @Returns: 
 
 
+<!-- ##### FUNCTION bonobo_widget_construct_control ##### -->
+<para>
+
+</para>
+
+@bw: 
+@moniker: 
+@uic: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_widget_construct_control_from_objref ##### -->
+<para>
+
+</para>
+
+@bw: 
+@control: 
+@uic: 
+@Returns: 
+
+
 <!-- ##### FUNCTION bonobo_widget_new_control ##### -->
 <para>
 
 </para>
 
+@moniker: 
+@uic: 
+@Returns: 
+<!-- # Unused Parameters # -->
 @goad_id: 
 @uih: 
-@Returns: 
 
 
 <!-- ##### FUNCTION bonobo_widget_new_control_from_objref ##### -->
@@ -158,8 +160,10 @@ Simplified embedding of widgets in Bonobo.
 </para>
 
 @control: 
-@uih: 
+@uic: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@uih: 
 
 
 <!-- ##### FUNCTION bonobo_widget_get_control_frame ##### -->
@@ -176,9 +180,12 @@ Simplified embedding of widgets in Bonobo.
 
 </para>
 
+@moniker: 
+@uic: 
+@Returns: 
+<!-- # Unused Parameters # -->
 @object_desc: 
 @uih: 
-@Returns: 
 
 
 <!-- ##### FUNCTION bonobo_widget_get_container ##### -->
@@ -209,6 +216,15 @@ Simplified embedding of widgets in Bonobo.
 
 
 <!-- ##### FUNCTION bonobo_widget_get_uih ##### -->
+<para>
+
+</para>
+
+@bw: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_widget_get_objref ##### -->
 <para>
 
 </para>

@@ -93,46 +93,6 @@ create_widget_from_component (BonoboContainer *container, const char *id)
   #BonoboEmbeddable, #BonoboContainer, #BonoboObjectClient, #BonoboViewFrame
 </para>
 
-<!-- ##### MACRO BONOBO_CLIENT_SITE_TYPE ##### -->
-<para>
-  Returns the GtkType associated with the
-  <classname>BonoboClientSite</classname> object. 
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_CLIENT_SITE ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_CLIENT_SITE_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_CLIENT_SITE ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_CLIENT_SITE_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
 <!-- ##### STRUCT BonoboClientSite ##### -->
 <para>
 
@@ -143,15 +103,6 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 <para>
 
 </para>
-
-
-<!-- ##### FUNCTION bonobo_client_site_corba_object_create ##### -->
-<para>
-
-</para>
-
-@object: 
-@Returns: 
 
 
 <!-- ##### FUNCTION bonobo_client_site_new ##### -->
@@ -169,9 +120,10 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 </para>
 
 @client_site: 
-@corba_client_site: 
 @container: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@corba_client_site: 
 
 
 <!-- ##### FUNCTION bonobo_client_site_bind_embeddable ##### -->
@@ -208,10 +160,12 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 </para>
 
 @client_site: 
-@uih: 
+@uic: 
 @visible_cover: 
 @active_view: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@uih: 
 
 
 <!-- ##### FUNCTION bonobo_client_site_new_view ##### -->
@@ -220,8 +174,10 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 </para>
 
 @client_site: 
-@uih: 
+@uic: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@uih: 
 
 
 <!-- ##### FUNCTION bonobo_client_site_new_item ##### -->
@@ -230,6 +186,7 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 </para>
 
 @client_site: 
+@uic: 
 @group: 
 @Returns: 
 
@@ -249,14 +206,6 @@ create_widget_from_component (BonoboContainer *container, const char *id)
 </para>
 
 @verb_list: 
-
-
-<!-- ##### FUNCTION bonobo_client_site_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 
 <!-- ##### SIGNAL BonoboClientSite::show-window ##### -->

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-storage.c: Storage manipulation.
  *
  * Authors:
@@ -170,9 +170,9 @@ bonobo_storage_init (GtkObject *object)
 }
 
 BONOBO_X_TYPE_FUNC_FULL (BonoboStorage, 
-			   Bonobo_Storage,
-			   PARENT_TYPE,
-			   bonobo_storage);
+			 Bonobo_Storage,
+			 PARENT_TYPE,
+			 bonobo_storage);
 
 /**
  * bonobo_storage_open:
@@ -183,7 +183,9 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboStorage,
  *
  * Opens or creates the file named at @path with the stream driver @driver.
  *
- * @driver is one of: "efs", "vfs" or "fs" for now.
+ * @driver is one of: "efs", "vfs" or "fs" for now, please use
+ * the macros for this though, see bonobo-stream.h eg.
+ * BONOBO_IO_DRIVER_FS
  *
  * Returns: a created BonoboStorage object.
  */
@@ -223,9 +225,25 @@ bonobo_storage_open_full (const char *driver, const char *path,
 	return storage;
 }
 
+/**
+ * bonobo_storage_open:
+ * @driver: driver to use for opening.
+ * @path: path where the base file resides
+ * @flags: Bonobo Storage OpenMode
+ * @mode: Unix open(2) mode
+ *
+ * Opens or creates the file named at @path with the stream driver
+ * @driver.
+ *
+ * @driver is one of: "efs", "vfs" or "fs" for now, please use
+ * the macros for this though, see bonobo-stream.h eg.
+ * BONOBO_IO_DRIVER_FS
+ *
+ * Returns: a created BonoboStorage object.
+ **/
 BonoboStorage *
-bonobo_storage_open (const char *driver, const char *path, gint flags, 
-		     gint mode)
+bonobo_storage_open (const char *driver, const char *path,
+		     gint flags, gint mode)
 {
 	return bonobo_storage_open_full (driver, path, flags, mode, NULL);
 }
@@ -257,6 +275,16 @@ copy_stream (Bonobo_Stream src, Bonobo_Stream dest, CORBA_Environment *ev)
 				     ex_Bonobo_Storage_IOError, NULL);
 }
 
+/**
+ * bonobo_storage_copy_to:
+ * @src: the source storage
+ * @dest: the destination storage
+ * @ev: CORBA exception environment
+ * 
+ * Implements a pure CORBA method for copying one storage into
+ * another, this is used by several BonoboStorage implemetations
+ * where a fast case localy copy cannot work.
+ **/
 void
 bonobo_storage_copy_to (Bonobo_Storage src, Bonobo_Storage dest,
 			CORBA_Environment *ev) 

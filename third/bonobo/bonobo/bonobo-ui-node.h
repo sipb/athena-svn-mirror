@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-ui-node.h: Code to manipulate BonoboUINode objects
  *
  * Author:
@@ -55,6 +55,7 @@ void          bonobo_ui_node_copy_attrs  (BonoboUINode *src,
 
 /* This blows. libxml2 fixes it I guess. */
 void          bonobo_ui_node_free_string (char *str);
+void          bonobo_ui_node_strip       (BonoboUINode **node);
 
 char *        bonobo_ui_node_to_string   (BonoboUINode *node,
 					  gboolean      recurse);

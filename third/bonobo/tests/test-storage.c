@@ -4,7 +4,7 @@
 
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 
 #define TESTSIZE (1024*1)
 
@@ -259,7 +259,7 @@ dir_tests (CORBA_Object storage, CORBA_Environment *ev)
 
 	CORBA_exception_free (ev);
 
-	printf ("end directorty tests\n");
+	printf ("end directory tests\n");
 }
 
 static void

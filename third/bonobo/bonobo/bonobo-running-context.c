@@ -28,9 +28,6 @@
  * NB. for a quicker debugging experience simply
  * #define BONOBO_RUNNING_HOOKS
  */
-#if 0
-#	define BONOBO_RUNNING_HOOKS
-#endif
 
 typedef struct {
 	gboolean    emitted_last_unref;

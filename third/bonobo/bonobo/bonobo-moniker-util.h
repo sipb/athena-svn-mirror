@@ -1,4 +1,4 @@
-/**
+/*
  * bonobo-moniker-util.h
  *
  * Copyright (C) 2000  Helix Code, Inc.
@@ -86,4 +86,18 @@ char          *bonobo_moniker_util_escape               (const char        *stri
 char          *bonobo_moniker_util_unescape             (const char        *string,
 							 int                num_chars);
 
+void           bonobo_url_register                      (char              *oafiid, 
+							 char              *url, 
+							 char              *mime_type,
+							 Bonobo_Unknown     object,
+							 CORBA_Environment *ev);
+
+void           bonobo_url_unregister                    (char              *oafiid, 
+							 char              *url,
+							 CORBA_Environment *ev);
+
+Bonobo_Unknown bonobo_url_lookup                        (char              *oafiid,
+							 char              *url,
+							 CORBA_Environment *ev);
+					   
 #endif /* _BONOBO_MONIKER_UTIL_H */

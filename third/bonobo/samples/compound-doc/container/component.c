@@ -1,4 +1,4 @@
-/* $Id: component.c,v 1.1.1.2 2001-02-11 17:54:56 ghudson Exp $ */
+/* $Id: component.c,v 1.1.1.3 2001-11-02 17:14:23 ghudson Exp $ */
 
 #include "component.h"
 #include "embeddable-io.h"
@@ -303,6 +303,10 @@ sample_client_site_destroy (GtkObject *object)
 /* FIXME: unref the server as we pop it in */
 /*	bonobo_object_unref (BONOBO_OBJECT (component->server));*/
 
+	if (site->obj_id) {
+		g_free (site->obj_id);
+		site->obj_id = NULL;
+	}
 	gtk_widget_destroy (site->frame);
 	GTK_OBJECT_CLASS (sample_client_site_parent_class)->destroy
 		(GTK_OBJECT (site));

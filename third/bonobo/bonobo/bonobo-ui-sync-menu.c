@@ -358,6 +358,8 @@ impl_bonobo_ui_sync_menu_state (BonoboUISync *sync,
 	else
 		return;
 
+	label_attr = bonobo_ui_engine_get_attr (node, cmd_node, "label");
+
 	if ((type = bonobo_ui_engine_get_attr (node, cmd_node, "type")))
 		bonobo_ui_node_free_string (type);
 	else {
@@ -365,7 +367,11 @@ impl_bonobo_ui_sync_menu_state (BonoboUISync *sync,
 			GtkWidget *pixmap;
 			GtkPixmapMenuItem *gack = GTK_PIXMAP_MENU_ITEM (menu_widget);
 
-			pixmap = cmd_get_menu_pixmap (node, cmd_node);
+			if (gnome_preferences_get_menus_have_icons () ||
+			    label_attr == NULL)
+				pixmap = cmd_get_menu_pixmap (node, cmd_node);
+			else
+				pixmap = NULL;
 
 			if (pixmap) {
 				/* Since this widget sucks we must claw inside its guts */
@@ -381,7 +387,7 @@ impl_bonobo_ui_sync_menu_state (BonoboUISync *sync,
 		}
 	}
 
-	if ((label_attr = bonobo_ui_engine_get_attr (node, cmd_node, "label"))) {
+	if (label_attr) {
 		GtkWidget *label;
 		guint      keyval;
 		gboolean   err;
@@ -434,9 +440,10 @@ impl_bonobo_ui_sync_menu_state (BonoboUISync *sync,
 		} /* else
 			g_warning ("No change in label '%s'", txt); */
 
-		bonobo_ui_node_free_string (label_attr);
 		g_free (txt);
 	}
+
+	bonobo_ui_node_free_string (label_attr);
 	
 	if ((txt = bonobo_ui_engine_get_attr (node, cmd_node, "accel"))) {
 		guint           key;
@@ -626,7 +633,8 @@ impl_bonobo_ui_sync_menu_build (BonoboUISync     *sync,
 			char *txt;
 			
 			/* FIXME: why not always create pixmap menu items ? */
-			if ((txt = bonobo_ui_engine_get_attr (node, cmd_node, "pixtype")))
+			if ((txt = bonobo_ui_engine_get_attr (node, cmd_node, "pixtype")) &&
+			    gnome_preferences_get_menus_have_icons ())
 				menu_widget = gtk_pixmap_menu_item_new ();
 			else
 				menu_widget = gtk_menu_item_new ();

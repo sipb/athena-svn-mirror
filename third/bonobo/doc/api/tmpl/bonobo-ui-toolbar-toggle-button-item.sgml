@@ -2,7 +2,7 @@
 BonoboUIToolbarToggleButtonItem
 
 <!-- ##### SECTION Short_Description ##### -->
-
+a bonobo toolbar toggle button item
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -13,45 +13,6 @@ BonoboUIToolbarToggleButtonItem
 <para>
 
 </para>
-
-<!-- ##### MACRO BONOBO_TYPE_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
 
 <!-- ##### TYPEDEF BonoboUIToolbarToggleButtonItem ##### -->
 <para>

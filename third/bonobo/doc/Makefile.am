@@ -1,4 +1,4 @@
-SUBDIRS = api
+SUBDIRS = api dia
 
 text_files =			\
 	FAQ			\
@@ -10,7 +10,8 @@ text_files =			\
 	std-ui.xml		\
 	storage.txt		\
 	ui-faq.txt		\
-	ui-xml.txt
+	ui-xml.txt		\
+	bonobo.dtd
 
 sgml_files = 			\
 	Bonobo.sgml		\

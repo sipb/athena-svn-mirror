@@ -319,6 +319,7 @@ show_popup_window (BonoboUIToolbar *toolbar)
 {
 	BonoboUIToolbarPrivate *priv;
 	const GtkAllocation *toolbar_allocation;
+	GtkRequisition requisition;
 	int x, y;
 
 	priv = toolbar->priv;
@@ -331,10 +332,20 @@ show_popup_window (BonoboUIToolbar *toolbar)
 
 	toolbar_allocation = & GTK_WIDGET (toolbar)->allocation;
 
-	if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+	gtk_widget_size_request (priv->popup_window, &requisition);
+
+	if (priv->orientation == GTK_ORIENTATION_HORIZONTAL) {
 		x += toolbar_allocation->x + toolbar_allocation->width;
-	else
+		if (x >= gdk_screen_width () - requisition.width)
+			y += toolbar_allocation->height;
+	} else {
 		y += toolbar_allocation->y + toolbar_allocation->height;
+		if (y >= gdk_screen_height () - requisition.height)
+			x += toolbar_allocation->width;
+	}
+
+	x = CLAMP (x, 0, MAX (0, gdk_screen_width () - requisition.width));
+	y = CLAMP (y, 0, MAX (0, gdk_screen_height () - requisition.height));
 
 	gtk_widget_set_uposition (GTK_WIDGET (priv->popup_window), x, y);
 
@@ -1229,6 +1240,7 @@ bonobo_ui_toolbar_construct (BonoboUIToolbar *toolbar)
 
 	frame = gtk_frame_new (NULL);
 	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
 	gtk_container_add (GTK_CONTAINER (priv->popup_window), frame);
 
 	priv->popup_window_vbox = gtk_vbox_new (FALSE, 0);

@@ -33,8 +33,6 @@ extern void bonobo_object_epv_init (POA_Bonobo_Unknown__epv *epv);
 
 /* Assumptions made: sizeof(POA_interfacename) does not change between interfaces */
 
-POA_Bonobo_Unknown__vepv bonobo_object_vepv;
-
 #ifdef BONOBO_OBJECT_DEBUG
 #	define BONOBO_REF_HOOKS
 #endif
@@ -167,8 +165,11 @@ bonobo_object_destroy (BonoboAggregateObject *ao)
 
 	for (l = ao->objs; l; l = l->next) {
 		GtkObject *o = l->data;
+		guint id = BONOBO_OBJECT (o)->priv->destroy_id;
 
-		gtk_signal_disconnect (o, BONOBO_OBJECT (o)->priv->destroy_id);
+		if (id)
+			gtk_signal_disconnect (o, id);
+		BONOBO_OBJECT (o)->priv->destroy_id = 0;
 		if (o->ref_count >= 1)
 			gtk_object_destroy (GTK_OBJECT (o));
 		else
@@ -212,7 +213,6 @@ bonobo_object_finalize (BonoboAggregateObject *ao)
 			 * The GTK+ object was already destroy()ed in
 			 * bonobo_object_destroy().
 			 */
-
 			BONOBO_OBJECT (o)->priv->ao = NULL;
 			gtk_object_unref (o);
 		}
@@ -235,7 +235,7 @@ bonobo_object_finalize (BonoboAggregateObject *ao)
  * bonobo_object_ref:
  * @object: A BonoboObject you want to ref-count
  *
- * increments the reference count for the aggregate BonoboObject.
+ * Increments the reference count for the aggregate BonoboObject.
  */
 void
 bonobo_object_ref (BonoboObject *object)
@@ -257,7 +257,7 @@ bonobo_object_ref (BonoboObject *object)
  * bonobo_object_unref:
  * @object: A BonoboObject you want to unref.
  *
- * decrements the reference count for the aggregate BonoboObject.
+ * Decrements the reference count for the aggregate BonoboObject.
  */
 void
 bonobo_object_unref (BonoboObject *object)
@@ -378,7 +378,7 @@ impl_Bonobo_Unknown_ref (PortableServer_Servant servant, CORBA_Environment *ev)
  *   This function returns a duplicated CORBA Object reference;
  * it also bumps the ref count on the object. This is ideal to
  * use in any method returning a Bonobo_Object in a CORBA impl.
- * if object is CORBA_OBJECT_NIL it is returned unaffected.
+ * If object is CORBA_OBJECT_NIL it is returned unaffected.
  * 
  * Return value: duplicated & ref'd corba object reference.
  **/
@@ -416,7 +416,7 @@ bonobo_object_dup_ref (Bonobo_Unknown     object,
  *   This function releases a CORBA Object reference;
  * it also decrements the ref count on the bonobo object.
  * This is the converse of bonobo_object_dup_ref. We
- * tolerate object == CORBA_OBJECT_NIL silently
+ * tolerate object == CORBA_OBJECT_NIL silently.
  **/
 void
 bonobo_object_release_unref (Bonobo_Unknown     object,
@@ -433,6 +433,12 @@ bonobo_object_release_unref (Bonobo_Unknown     object,
 		rev = &tmpev;
 		CORBA_exception_init (rev);
 	}
+
+	if (BONOBO_OBJECT_IS_LOCAL (object) &&
+	    (ORBIT_ROOT_OBJECT (object)->refs <= 1))
+		g_error ("Incorrect CORBA OBJECT referencing somewhere, perhaps "
+			 "someone forget to CORBA_Object_duplicate before returning "
+			 "an object, or used bonobo_object_release_unref on a local object");
 
 	Bonobo_Unknown_unref (object, rev);
 	CORBA_Object_release (object, rev);
@@ -604,12 +610,6 @@ bonobo_object_get_epv (void)
 }
 
 static void
-init_object_corba_class (void)
-{
-	bonobo_object_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-}
-
-static void
 bonobo_object_finalize_real (GtkObject *object)
 {
 	BonoboObject *bonobo_object = BONOBO_OBJECT (object);
@@ -667,8 +667,6 @@ bonobo_object_class_init (BonoboObjectClass *klass)
 	gtk_object_class_add_signals (object_class, bonobo_object_signals, LAST_SIGNAL);
 
 	object_class->finalize = bonobo_object_finalize_real;
-
-	init_object_corba_class ();
 }
 
 static void
@@ -1085,18 +1083,25 @@ gboolean
 bonobo_unknown_ping (Bonobo_Unknown object)
 {
 	CORBA_Environment ev;
-	gboolean alive;
+	gboolean          alive;
+	Bonobo_Unknown    unknown;
 
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	alive = FALSE;
 	CORBA_exception_init (&ev);
-	Bonobo_Unknown_ref (object, &ev);
+
+	unknown = CORBA_Object_duplicate (object, &ev);
+
+	Bonobo_Unknown_ref (unknown, &ev);
 	if (!BONOBO_EX (&ev)) {
-		Bonobo_Unknown_unref (object, &ev);
+		Bonobo_Unknown_unref (unknown, &ev);
 		if (!BONOBO_EX (&ev))
 			alive = TRUE;
 	}
+
+	CORBA_Object_release (unknown, &ev);
+
 	CORBA_exception_free (&ev);
 
 	return alive;
@@ -1174,8 +1179,8 @@ unref_list (GSList *l)
  * bonobo_object_list_unref_all:
  * @list: A list of BonoboObjects *s
  * 
- *  This routine unrefs all the objects listed in
- * the list and then removes them from @list: if
+ *  This routine unrefs all valid objects in
+ * the list and then removes them from @list if
  * they have not already been so removed.
  **/
 void
@@ -1204,7 +1209,24 @@ bonobo_object_list_unref_all (GList **list)
 void
 bonobo_object_slist_unref_all (GSList **list)
 {
-	g_warning ("Dummy - cut and paste above");
+	GSList *l;
+	GSList *unrefs = NULL, *u;
+
+	g_return_if_fail (list != NULL);
+
+	for (l = *list; l; l = l->next) {
+		if (l->data && !BONOBO_IS_OBJECT (l->data))
+			g_warning ("Non object in unref list");
+		else if (l->data)
+			unrefs = g_slist_prepend (unrefs, l->data);
+	}
+
+	unref_list (unrefs);
+
+	for (u = unrefs; u; u = u->next)
+		*list = g_slist_remove (*list, u->data);
+
+	g_slist_free (unrefs);
 }
 
 int

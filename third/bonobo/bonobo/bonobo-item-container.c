@@ -59,9 +59,19 @@ bonobo_item_container_destroy (GtkObject *object)
 	/* Destroy all the ClientSites. */
 	g_hash_table_foreach_remove (container->priv->objects,
 				     remove_object, NULL);
-	g_hash_table_destroy (container->priv->objects);
-	
+
 	bonobo_item_container_parent_class->destroy (object);
+}
+
+static void
+bonobo_item_container_finalize (GtkObject *object)
+{
+	BonoboItemContainer *container = BONOBO_ITEM_CONTAINER (object);
+
+	g_hash_table_destroy (container->priv->objects);
+	g_free (container->priv);
+	
+	bonobo_item_container_parent_class->finalize (object);
 }
 
 static void
@@ -166,6 +176,7 @@ bonobo_item_container_class_init (BonoboItemContainerClass *klass)
 	bonobo_item_container_parent_class = gtk_type_class (PARENT_TYPE);
 
 	object_class->destroy = bonobo_item_container_destroy;
+	object_class->finalize = bonobo_item_container_finalize;
 
 	signals [GET_OBJECT] =
 		gtk_signal_new  (
@@ -261,9 +272,9 @@ bonobo_item_container_remove_by_name (BonoboItemContainer *container,
 					   &key, &value))
 		g_warning ("Removing '%s' but not in container", name);
 	else {
+		g_hash_table_remove (container->priv->objects, name);
 		g_free (key);
 		bonobo_object_unref (value);
-		g_hash_table_remove (container->priv->objects, name);
 	}
 }
 

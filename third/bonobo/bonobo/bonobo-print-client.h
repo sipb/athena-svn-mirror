@@ -32,6 +32,7 @@ typedef struct {
 	GtkObjectClass			parent;
 } BonoboPrintClientClass;
 
+/* FIXME: at the least, this should be opaque */
 typedef struct {
 	double width;
 	double height;

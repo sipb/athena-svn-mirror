@@ -24,45 +24,6 @@ Helper widget for controlling event delivery to embedded components
    #GtkWidget #BonoboView #BonoboViewFrame
 </para>
 
-<!-- ##### MACRO GNOME_TYPE_WRAPPER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_WRAPPER ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_WRAPPER_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_IS_WRAPPER ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_IS_WRAPPER_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
 <!-- ##### TYPEDEF BonoboWrapper ##### -->
 <para>
 

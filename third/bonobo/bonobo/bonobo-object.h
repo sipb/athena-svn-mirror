@@ -26,6 +26,7 @@ BEGIN_GNOME_DECLS
 #define BONOBO_IS_OBJECT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_OBJECT_TYPE))
 
 #define BONOBO_OBJREF(o)          (bonobo_object_corba_objref(BONOBO_OBJECT(o)))
+#define BONOBO_OBJECT_IS_LOCAL(o) ((o)->servant && (o)->vepv)
 
 /*
  * If you're using a custom servant for your CORBA objects, just make
@@ -55,7 +56,8 @@ typedef struct {
 	 */
 	void  (*query_interface) (BonoboObject *object, const char *repo_id,  CORBA_Object      *retval);
 	void  (*system_exception)(BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
-	gpointer expansion;
+
+	gpointer expansion; /* Used by XObject */
 } BonoboObjectClass;
 
 GtkType                  bonobo_object_get_type               (void);

@@ -354,7 +354,6 @@ static void
 paint_with_pixbuf (BonoboUIToolbarIcon *gpixmap, GdkRectangle *area)
 {
 	GtkWidget *widget;
-	GtkStateType state;
         GdkPixbuf *draw_source;
         GdkBitmap *draw_mask;
         GtkMisc   *misc;
@@ -366,14 +365,12 @@ paint_with_pixbuf (BonoboUIToolbarIcon *gpixmap, GdkRectangle *area)
         misc = GTK_MISC (gpixmap);
         widget = GTK_WIDGET (gpixmap);
 
-	state = GTK_WIDGET_STATE (widget);
-
         /* Ensure we have this state, if we can think of a way to have
            it */
-        generate_image (gpixmap, state);
+        generate_image (gpixmap, GTK_WIDGET_STATE (widget));
         
-        draw_source = gpixmap->generated[state].pixbuf;
-        draw_mask = gpixmap->generated[state].mask;
+        draw_source = gpixmap->generated[GTK_WIDGET_STATE (widget)].pixbuf;
+        draw_mask = gpixmap->generated[GTK_WIDGET_STATE (widget)].mask;
         
         if (draw_source == NULL)
 		return;
@@ -433,163 +430,54 @@ paint_with_pixbuf (BonoboUIToolbarIcon *gpixmap, GdkRectangle *area)
 			gdk_gc_set_clip_origin (widget->style->black_gc, 0, 0);
 		}
 	} else if (gpixmap->mode == BONOBO_UI_TOOLBAR_ICON_COLOR) {
-		GtkWidget *button_widget;
 		GdkPixbuf *dest_source;
-		gint bg_pixmap_x, bg_pixmap_y, bg_pixmap_width, bg_pixmap_height;
 		gint i, j, height, width, rowstride, dest_rowstride;
 		gint r, g, b;
 		guchar *dest_pixels, *c, *a, *original_pixels;
 
-		/* button_widget = GTK_WIDGET (gpixmap)->parent->parent; */
-		button_widget = GTK_WIDGET (gpixmap);
-		while (button_widget && GTK_WIDGET_NO_WINDOW (button_widget))
-			button_widget = button_widget->parent;
 
-		g_return_if_fail (button_widget != NULL);
+		dest_source = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+					      FALSE,
+					      gdk_pixbuf_get_bits_per_sample (draw_source),
+					      gdk_pixbuf_get_width (draw_source) - left_clip - right_clip,
+					      gdk_pixbuf_get_height (draw_source) - top_clip - bottom_clip);
 
-		if (button_widget->style->bg_pixmap [state] != NULL &&
-                    button_widget->style->bg_pixmap [state] != (GdkPixmap*) GDK_PARENT_RELATIVE) {
 
-			gdk_window_get_geometry (widget->style->bg_pixmap[state],
-						 &bg_pixmap_x, &bg_pixmap_y,
-						 &bg_pixmap_width, &bg_pixmap_height, NULL);
+		gdk_gc_set_clip_mask (widget->style->black_gc, draw_mask);
+		gdk_gc_set_clip_origin (widget->style->black_gc, x_off, y_off);
 
-			dest_source = gdk_pixbuf_get_from_drawable (NULL,
-								    button_widget->style->bg_pixmap[state],
-								    gtk_widget_get_colormap (button_widget),
-								    area->x, area->y, 0, 0,
-								    gdk_pixbuf_get_width (draw_source) - left_clip - right_clip,
-								    gdk_pixbuf_get_height (draw_source) - top_clip - bottom_clip);
-			gdk_pixbuf_composite (draw_source,
-					      dest_source,
-					      0, 0,
-					      gdk_pixbuf_get_width (dest_source),
-					      gdk_pixbuf_get_height (dest_source),
-					      0, 0, 1, 1,
-					      GDK_INTERP_NEAREST, 255);
-
-			gdk_pixbuf_render_to_drawable (dest_source,
-						       widget->window,
-						       widget->style->black_gc,
-						       0, 0,
-						       x_off + left_clip,
-						       y_off + top_clip,
-						       gdk_pixbuf_get_width (dest_source),
-						       gdk_pixbuf_get_height (dest_source),
-						       GDK_RGB_DITHER_NORMAL,
-						       0, 0); /* FIXME -- get the right offset */
-		} else { /* We're using either default, or a theme engine */
-#if 0
-			/*
-			 * This section is for full alpha compositing for themes not
-			 * based on bg_pixmap.  Currently it's broken, but if anyone
-			 * can figure out how to fix it, I'll buy you a beer!
-			 *		-- bratsche
-			 */
-			GdkRectangle  a;
-			GdkPixmap    *pixmap;
-			gint          w, h, d;
-			gint          area_width, area_height;
-
-			g_print ("parent is a %s\n", gtk_type_name (GTK_OBJECT_TYPE (button_widget)));
-
-			gdk_window_get_geometry (button_widget->window, NULL, NULL,
-						 &area_width, &area_height, &d);
-
-			w = gdk_pixbuf_get_width (draw_source) - left_clip - right_clip;
-			h = gdk_pixbuf_get_height (draw_source) - top_clip - bottom_clip;
-
-			a.x = a.y = 0;
-			a.height = area_height;
-			a.width = area_width;
-
-			/* Create a temporary pixmap to draw to */
-			pixmap = gdk_pixmap_new (button_widget->window, w, h, d);
-
-			g_return_if_fail (GTK_IS_BUTTON (button_widget));
-			g_return_if_fail (button_widget->style != NULL);
-
-			/* Paint to that pixmap using our button's style */
-			gtk_paint_box (button_widget->style,
-				       pixmap,
-				       state,
-				       GTK_SHADOW_NONE,
-				       &a,
-				       button_widget,
-				       "button",
-				       0, 0, w, h);
-
-			/* Create a pixbuf from that pixmap */
-			dest_source = gdk_pixbuf_get_from_drawable (NULL,
-								    pixmap,
-								    gtk_widget_get_colormap (button_widget),
-								    0, 0, 0, 0, w, h);
-
-			/* Discard the pixmap.  We don't need it now. */
-			gdk_pixmap_unref (pixmap);
-
-			/* Composite our icon pixbuf over the new pixbuf */
-			gdk_pixbuf_composite (draw_source,
-					      dest_source,
-					      0, 0, w, h,
-					      0, 0, 1, 1,
-					      GDK_INTERP_NEAREST, 255);
-
-			/* Now render it */
-			gdk_pixbuf_render_to_drawable (dest_source,
-						       widget->window,
-						       widget->style->black_gc,
-						       0, 0,
-						       x_off + left_clip,
-						       y_off + top_clip,
-						       gdk_pixbuf_get_width (dest_source),
-						       gdk_pixbuf_get_height (dest_source),
-						       GDK_RGB_DITHER_NORMAL,
-						       0, 0);
-#else
-			dest_source = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-						      FALSE,
-						      gdk_pixbuf_get_bits_per_sample (draw_source),
-						      gdk_pixbuf_get_width (draw_source) - left_clip - right_clip,
-						      gdk_pixbuf_get_height (draw_source) - top_clip - bottom_clip);
-
-			gdk_gc_set_clip_mask (widget->style->black_gc, draw_mask);
-			gdk_gc_set_clip_origin (widget->style->black_gc, x_off, y_off);
-
-			r = widget->style->bg[GTK_WIDGET_STATE (widget)].red >> 8;
-			g = widget->style->bg[GTK_WIDGET_STATE (widget)].green >> 8;
-			b = widget->style->bg[GTK_WIDGET_STATE (widget)].blue >> 8;
-			height = gdk_pixbuf_get_height (dest_source);
-			width = gdk_pixbuf_get_width (dest_source);
-			rowstride = gdk_pixbuf_get_rowstride (draw_source);
-			dest_rowstride = gdk_pixbuf_get_rowstride (dest_source);
-			dest_pixels = gdk_pixbuf_get_pixels (dest_source);
-			original_pixels = gdk_pixbuf_get_pixels (draw_source);
-			for (i = 0; i < height; i++) {
-				for (j = 0; j < width; j++) {
-					c = original_pixels + (i + top_clip)*rowstride + (j + left_clip)*4;
-					a = c + 3;
-					*(dest_pixels + i*dest_rowstride + j*3) = r + (((*c - r) * (*a) + 0x80) >> 8);
-					c++;
-					*(dest_pixels + i*dest_rowstride + j*3 + 1) = g + (((*c - g) * (*a) + 0x80) >> 8);
-					c++;
-					*(dest_pixels + i*dest_rowstride + j*3 + 2) = b + (((*c - b) * (*a) + 0x80) >> 8);
-				}
+		r = widget->style->bg[GTK_WIDGET_STATE (widget)].red >> 8;
+		g = widget->style->bg[GTK_WIDGET_STATE (widget)].green >> 8;
+		b = widget->style->bg[GTK_WIDGET_STATE (widget)].blue >> 8;
+		height = gdk_pixbuf_get_height (dest_source);
+		width = gdk_pixbuf_get_width (dest_source);
+		rowstride = gdk_pixbuf_get_rowstride (draw_source);
+		dest_rowstride = gdk_pixbuf_get_rowstride (dest_source);
+		dest_pixels = gdk_pixbuf_get_pixels (dest_source);
+		original_pixels = gdk_pixbuf_get_pixels (draw_source);
+		for (i = 0; i < height; i++) {
+			for (j = 0; j < width; j++) {
+				c = original_pixels + (i + top_clip)*rowstride + (j + left_clip)*4;
+				a = c + 3;
+				*(dest_pixels + i*dest_rowstride + j*3) = r + (((*c - r) * (*a) + 0x80) >> 8);
+				c++;
+				*(dest_pixels + i*dest_rowstride + j*3 + 1) = g + (((*c - g) * (*a) + 0x80) >> 8);
+				c++;
+				*(dest_pixels + i*dest_rowstride + j*3 + 2) = b + (((*c - b) * (*a) + 0x80) >> 8);
 			}
-
-			gdk_pixbuf_render_to_drawable (dest_source,
-						       widget->window,
-						       widget->style->black_gc,
-						       0, 0,
-						       x_off + left_clip, y_off + top_clip,
-						       width, height,
-						       GDK_RGB_DITHER_NORMAL,
-						       0, 0); /* FIXME -- get the right offset */
-
-			gdk_gc_set_clip_mask (widget->style->black_gc, NULL);
-			gdk_gc_set_clip_origin (widget->style->black_gc, 0, 0);
-#endif /* 0 */
 		}
+
+		gdk_pixbuf_render_to_drawable (dest_source,
+					       widget->window,
+					       widget->style->black_gc,
+					       0, 0,
+					       x_off + left_clip, y_off + top_clip,
+					       width, height,
+					       GDK_RGB_DITHER_NORMAL,
+					       0, 0); /* FIXME -- get the right offset */
+
+		gdk_gc_set_clip_mask (widget->style->black_gc, NULL);
+		gdk_gc_set_clip_origin (widget->style->black_gc, 0, 0);
 
 		gdk_pixbuf_unref (dest_source);
 	}

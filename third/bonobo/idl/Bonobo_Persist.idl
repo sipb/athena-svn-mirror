@@ -132,9 +132,10 @@ module Bonobo {
 			raises (IOError, NotSupported);
 	
 		/**
-		 * initNew:
+		 * initNew: - Deprecated
 		 * @storage: A storage that is provided for this object
 		 *
+		 * Deprecated.
 		 * BonoboObjects do have access to a valid storage through
 		 * their entire life.  This is a chance given to initialize such 
 		 * storage and keep it around (users should addref it).
@@ -188,6 +189,8 @@ module Bonobo {
 		 *
 		 * Should return the number of bytes requested to save
 		 * this object, or -1 if it is not known.
+		 *
+		 * Deprecated - this information should be on the stream.
 		 */
 		long getMaxSize ();
 	};

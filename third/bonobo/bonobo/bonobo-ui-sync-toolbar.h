@@ -39,6 +39,8 @@ typedef struct {
 
 BonoboUISync *bonobo_ui_sync_toolbar_new      (BonoboUIEngine *engine,
 					       GnomeDock      *dock);
+BonoboUIToolbarStyle bonobo_ui_sync_toolbar_get_look (BonoboUIEngine *engine,
+						      BonoboUINode   *node);
 
 END_GNOME_DECLS
 

@@ -19,7 +19,7 @@ include_HEADERS = efs.h efs_error.h
 noinst_HEADERS = efs_internal.h ib1_driver.h blowfish.h
 
 libefs_la_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lz
 
 libefs_la_SOURCES = 	\
 	efs.c		\

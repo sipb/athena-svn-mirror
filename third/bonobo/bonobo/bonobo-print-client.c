@@ -16,6 +16,17 @@
 
 #undef PRINT_DEBUG
 
+/**
+ * bonobo_print_client_render:
+ * @client: the print client.
+ * @pd: the intialized print data
+ * 
+ * This routine is used to encourage a remote print client
+ * to print itself. The BonoboPrintData specifies the size
+ * information for the remote client to render itself to.
+ * After render the BonoboPrintData contains the meta data
+ * for the rendered page. This interface is baroque.
+ **/
 void
 bonobo_print_client_render (BonoboPrintClient   *client,
 			    BonoboPrintData     *pd)
@@ -83,6 +94,12 @@ bonobo_print_client_render (BonoboPrintClient   *client,
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * bonobo_print_data_get_meta:
+ * @pd: the print data
+ * 
+ * Return value: the meta_data from @pd
+ **/
 GnomePrintMeta *
 bonobo_print_data_get_meta (BonoboPrintData *pd)
 {
@@ -94,6 +111,20 @@ bonobo_print_data_get_meta (BonoboPrintData *pd)
 	return pd->meta_data;
 }
 
+/**
+ * bonobo_print_data_new_full:
+ * @width: the width in pts of the component to render
+ * @height: the height in pts of the component to render
+ * @width_first_page: the clear width available on the first page
+ * @width_per_page: the width available on subsequent pages
+ * @height_first_page: the clear height available on the first page
+ * @height_per_page: the height available on subsequent pages
+ * 
+ * This initializes a BonoboPrintData to contain the above
+ * parameters so that it can be used by #bonobo_print_client_render
+ * 
+ * Return value: a new BonoboPrintData object.
+ **/
 BonoboPrintData *
 bonobo_print_data_new_full (double               width,
 			    double               height,
@@ -117,6 +148,15 @@ bonobo_print_data_new_full (double               width,
 	return pd;
 }
 
+/**
+ * bonobo_print_data_new:
+ * @width: the width in pts of the component to render
+ * @height: the height in pts of the component to render
+ * 
+ * This constructs a BonoboPrintData with default scissor data.
+ * 
+ * Return value: a new BonoboPrintData object.
+ **/
 BonoboPrintData *
 bonobo_print_data_new (double               width,
 		       double               height)
@@ -124,6 +164,18 @@ bonobo_print_data_new (double               width,
 	return bonobo_print_data_new_full (width, height, width, 0.0, height, 0.0);
 }
 
+/**
+ * bonobo_print_data_render:
+ * @ctx: the context
+ * @x: the tlc bbox x
+ * @y: the ltc bbox y
+ * @pd: the print data to render
+ * @meta_x: the offset into the print data x
+ * @meta_y: the offset into the print data y
+ * 
+ * This is used to render the print data in @pd
+ * onto a GnomePrintContext in @ctx.
+ **/
 void
 bonobo_print_data_render (GnomePrintContext   *ctx,
 			  double               x,
@@ -188,6 +240,12 @@ bonobo_print_data_render (GnomePrintContext   *ctx,
 #endif
 }
 
+/**
+ * bonobo_print_data_free:
+ * @pd: the print data
+ * 
+ * Releases all resources associated with the print data.
+ **/
 void
 bonobo_print_data_free (BonoboPrintData *pd)
 {
@@ -199,6 +257,12 @@ bonobo_print_data_free (BonoboPrintData *pd)
 	}
 }
 
+/**
+ * bonobo_print_client_new:
+ * @corba_print: a remote Bonobo_Print interface handle
+ * 
+ * Return value: a newly constructed BonoboPrintClient
+ **/
 BonoboPrintClient *
 bonobo_print_client_new (Bonobo_Print corba_print)
 {
@@ -220,6 +284,16 @@ bonobo_print_client_new (Bonobo_Print corba_print)
 	return pbc;
 }
 
+/**
+ * bonobo_print_client_get:
+ * @object: the print client
+ * 
+ * This does a QI on a remote BonoboObjectClient object, and
+ * if it supports the interface returns a newly constructed
+ * BonoboPrintClient handle, otherwise NULL.
+ * 
+ * Return value: a new handle or NULL.
+ **/
 BonoboPrintClient *
 bonobo_print_client_get (BonoboObjectClient *object)
 {
@@ -246,13 +320,6 @@ bonobo_print_client_get (BonoboObjectClient *object)
 	return client;
 }
 
-
-static void
-bonobo_print_client_class_init (BonoboPrintClientClass *class)
-{
-/*	GtkObjectClass *object_class = (GtkObjectClass *) class; */
-}
-
 static void
 bonobo_print_client_gtk_init (BonoboPrintClient *pbc)
 {
@@ -275,7 +342,7 @@ bonobo_print_client_get_type (void)
 			"BonoboPrintClient",
 			sizeof (BonoboPrintClient),
 			sizeof (BonoboPrintClientClass),
-			(GtkClassInitFunc) bonobo_print_client_class_init,
+			(GtkClassInitFunc) NULL,
 			(GtkObjectInitFunc) bonobo_print_client_gtk_init,
 			NULL, /* reserved 1 */
 			NULL, /* reserved 2 */

@@ -8,7 +8,15 @@ Base object for wrapping Bonobo::Unknown derived objects.
 
 <para>
   BonoboObject is the base object in Bonobo for wrapping CORBA servers
-  as Gtk+ objects.  
+  as Gtk+ objects. HOWEVER, since it's use is complicated, it is left
+  in bonobo for the benefit of Nautilus' binary compatibility. It is
+  strongly recommended that #BonoboXObject be used for all new CORBA
+  server implementations.
+</para>
+
+<para>
+  Again if you are looking to implement a CORBA interface you want to 
+see #BonoboXObject.
 </para>
 
 <para>
@@ -131,45 +139,6 @@ stop_animations (BrowserHTML html)
 #GtkObject
 </para>
 
-<!-- ##### MACRO BONOBO_OBJECT_TYPE ##### -->
-<para>
-Returns the #GtkType for the BonoboObject object.
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_OBJECT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_OBJECT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_OBJECT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_OBJECT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
 <!-- ##### TYPEDEF BonoboObjectServant ##### -->
 <para>
   This structure defines the type for BonoboObject-based CORBA servants.
@@ -251,6 +220,14 @@ Returns the #GtkType for the BonoboObject object.
 @Returns: 
 
 
+<!-- ##### FUNCTION bonobo_object_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
 <!-- ##### FUNCTION bonobo_object_activate_servant ##### -->
 <para>
 
@@ -258,6 +235,17 @@ Returns the #GtkType for the BonoboObject object.
 
 @object: 
 @servant: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_object_activate_servant_full ##### -->
+<para>
+
+</para>
+
+@object: 
+@servant: 
+@shlib_id: 
 @Returns: 
 
 
@@ -334,12 +322,12 @@ Returns the #GtkType for the BonoboObject object.
 @object: 
 
 
-<!-- ##### FUNCTION bonobo_object_get_epv ##### -->
+<!-- ##### FUNCTION bonobo_object_idle_unref ##### -->
 <para>
 
 </para>
 
-@Returns: 
+@object: 
 
 
 <!-- ##### FUNCTION bonobo_object_init ##### -->
@@ -378,6 +366,30 @@ Returns the #GtkType for the BonoboObject object.
 @ev: 
 
 
+<!-- ##### FUNCTION bonobo_object_list_unref_all ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION bonobo_object_slist_unref_all ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### MACRO BONOBO_OBJREF ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
 <!-- ##### MACRO BONOBO_OBJECT_CHECK ##### -->
 <para>
    Checks if the exception in @e needs to be signaled.  If so, then
@@ -390,7 +402,7 @@ Returns the #GtkType for the BonoboObject object.
 @e: 
 
 
-<!-- ##### FUNCTION gnome_unknown_ping ##### -->
+<!-- ##### FUNCTION bonobo_unknown_ping ##### -->
 <para>
 
 </para>
@@ -416,12 +428,4 @@ Returns the #GtkType for the BonoboObject object.
 @bonoboobject: the object which received the signal.
 @arg1: 
 @arg2: 
-
-<!-- ##### SIGNAL BonoboObject::object-gone ##### -->
-<para>
-
-</para>
-
-@bonoboobject: the object which received the signal.
-@arg1: 
 

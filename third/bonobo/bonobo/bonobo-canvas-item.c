@@ -1,4 +1,4 @@
-/**
+/*
  * bonobo-canvas-item.c: GnomeCanvasItem implementation to serve as a client-
  *			 proxy for embedding remote canvas-items.
  *
@@ -17,6 +17,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtksignal.h>
 #include <stdio.h>
+#include <libgnomeui/gnome-canvas-util.h>
 
 static GnomeCanvasItemClass *gbi_parent_class;
 
@@ -197,10 +198,7 @@ gbi_update (GnomeCanvasItem *item, double *item_affine, ArtSVP *item_clip_path, 
 			gnome_canvas_request_redraw_uta (item->canvas, uta);
 		}
 
-		item->x1 = x1;
-		item->y1 = y1;
-		item->x2 = x2;
-		item->y2 = y2;
+		gnome_canvas_update_bbox (item, x1, y1, x2, y2);
 
 		if (getenv ("DEBUG_BI"))
 			g_message ("Bbox: %g %g %g %g", x1, y1, x2, y2);
@@ -656,8 +654,44 @@ impl_Bonobo_Canvas_ComponentProxy_requestUpdate (PortableServer_Servant servant,
 {
 	ComponentProxyServant *item_proxy = (ComponentProxyServant *) servant;
 
+	if (getenv ("DEBUG_BI"))
+		g_message ("Proxy_requestUpdate: item=%p", 
+			   item_proxy->item_bound);
+
 	gnome_canvas_item_request_update (item_proxy->item_bound);
 
+}
+					    
+static void
+impl_Bonobo_Canvas_ComponentProxy_requestRedraw (PortableServer_Servant servant,
+						 gint x1, gint y1,
+						 gint x2, gint y2,
+					         CORBA_Environment *ev)
+{
+	ComponentProxyServant *item_proxy = (ComponentProxyServant *) servant;
+	GnomeCanvas           *canvas;
+
+	g_return_if_fail (item_proxy->item_bound != NULL);
+	
+	canvas = item_proxy->item_bound->canvas;
+
+	if (getenv ("DEBUG_BI"))
+		g_message ("Proxy_requestRedraw: item=%p", 
+			   item_proxy->item_bound);
+
+	/*
+	 *  Nasty re-enterany bug in the canvas in gnome-canvas.c (paint)
+	 * we need to set redraw_area = NULL and need_redraw = FALSE
+	 * concurrently, and deal with the re-enterancy. For now -
+	 * we try to correct the canvas:
+	 */
+	if (canvas->redraw_area == NULL && canvas->need_redraw) {
+		/* Re-entered during paint */
+		g_warning ("Discarding redraw request");
+	} else
+		gnome_canvas_request_redraw (
+			item_proxy->item_bound->canvas,
+			x1, y1, x2, y2);
 }
 					    
 static void
@@ -718,6 +752,7 @@ create_proxy (GnomeCanvasItem *item)
 	POA_Bonobo_Canvas_ComponentProxy__init ((PortableServer_Servant) item_proxy, &ev);
 
 	item_proxy_epv.requestUpdate  = impl_Bonobo_Canvas_ComponentProxy_requestUpdate;
+	item_proxy_epv.requestRedraw  = impl_Bonobo_Canvas_ComponentProxy_requestRedraw;
 	item_proxy_epv.grabFocus      = impl_Bonobo_Canvas_ComponentProxy_grabFocus;
 	item_proxy_epv.ungrabFocus    = impl_Bonobo_Canvas_ComponentProxy_ungrabFocus;
 	item_proxy_epv.getUIContainer = impl_Bonobo_Canvas_ComponentProxy_getUIContainer;

@@ -217,7 +217,7 @@ file_save_as_cb (GtkWidget *widget, Frame *frame)
 	BonoboViewFrame *view_frame;
 	gchar *name;
 
-	name = strdup(gtk_file_selection_get_filename(app.fs));
+	name = g_strdup(gtk_file_selection_get_filename(app.fs));
 	gtk_widget_destroy (GTK_WIDGET(app.fs));
 
 	if (!(view_frame = get_active_view_frame (frame))) {
@@ -535,7 +535,7 @@ file_load_cb (GtkWidget *widget, Frame *frame)
 {
 	gchar *name;
 
-	name = strdup(gtk_file_selection_get_filename(app.fs));
+	name = g_strdup(gtk_file_selection_get_filename(app.fs));
 	gtk_widget_destroy (GTK_WIDGET(app.fs));
 	app.fs = NULL;
 	if (!name) return;

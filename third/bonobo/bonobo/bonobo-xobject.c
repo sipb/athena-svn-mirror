@@ -1,12 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /**
- * b-object.c: B Unknown interface base implementation
+ * bonobo-xobject.c: B Unknown interface base implementation
  *
  * Authors:
- *   Miguel de Icaza (miguel@kernel.org)
- *   Michael Meeks (michael@helixcode.com)
+ *   Michael Meeks (michael@ximian.com)
  *
- * Copyright 1999,2000 Helix Code, Inc.
+ * Copyright 2000 Ximian, Inc.
  */
 
 #include <config.h>
@@ -20,7 +19,7 @@
 #include "bonobo-running-context.h"
 #include "bonobo-object-directory.h"
 
-#undef BONOBO_X_OBJECT_DEBUG
+/* #define BONOBO_X_OBJECT_DEBUG */
 
 /* Shared stuff with BonoboObject */
 extern int  bonobo_object_get_refs (BonoboObject            *object);
@@ -31,8 +30,7 @@ extern void bonobo_object_epv_init (POA_Bonobo_Unknown__epv *epv);
 	guchar is_pseudo_object;
 	gint refs;
 */
-#define BONOBO_X_GTK_FLAG_PATTERN    (GTK_FLOATING | 0x4000)
-#define BONOBO_X_SERVANT_FLAG_PATTERN 0x7132
+#define BONOBO_X_SERVANT_FLAG_PATTERN 0x7133
 
 static GtkObjectClass *x_object_parent_class;
 
@@ -90,7 +88,7 @@ corba_cleanup (BonoboXObject *x_object)
 			
 	if (klass->poa_fini_fn)
 		klass->poa_fini_fn (servant, &ev);
-	else /* Actualy quicker and nicer */
+	else /* Actually quicker and nicer */
 		PortableServer_ServantBase__fini (servant, &ev);
 			
 	CORBA_free (oid);
@@ -113,6 +111,10 @@ try_finalize (BonoboXObject *object)
 		if (bonobo_object_get_refs ((BonoboObject *) object) <= 0) {
 
 			corba_cleanup (object);
+
+			object->base.servant = NULL;
+			object->base.corba_objref = CORBA_OBJECT_NIL;
+
 			x_object_parent_class->finalize ((GtkObject *) object);
 #ifdef BONOBO_X_OBJECT_DEBUG
 			g_warning ("Finalized '%p'", object);
@@ -239,16 +241,18 @@ bonobo_x_object_instance_init (GtkObject    *gtk_object,
 
 	GTK_OBJECT_UNSET_FLAGS (GTK_OBJECT (object), GTK_FLOATING);
 
-#ifdef BONOBO_X_OBJECT_DEBUG
-	g_warning ("bonobo_x_object_instance init '%s' '%s' -> %p",
-		   gtk_type_name (gtk_object->klass->type),
-		   gtk_type_name (klass->type), object);
-#endif
-
 	do_corba_hacks (object, BONOBO_X_OBJECT_CLASS (klass));
 
 	object->base.corba_objref = BONOBO_X_OBJECT_GET_CORBA   (object);
 	object->base.servant      = BONOBO_X_OBJECT_GET_SERVANT (object);
+
+#ifdef BONOBO_X_OBJECT_DEBUG
+	g_warning ("bonobo_x_object_instance init '%s' '%s' -> %p (%d, %d)",
+		   gtk_type_name (gtk_object->klass->type),
+		   gtk_type_name (klass->type), object,
+		   ORBIT_ROOT_OBJECT (object)->refs,
+		   bonobo_object_get_refs ((BonoboObject *) object));
+#endif
 }
 
 static void
@@ -256,7 +260,7 @@ bonobo_x_object_class_init (BonoboXObjectClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
 
-	x_object_parent_class = gtk_type_class (gtk_object_get_type ());
+	x_object_parent_class = gtk_type_class (bonobo_object_get_type ());
 
 	object_class->finalize = bonobo_x_object_finalize_real;
 }
@@ -290,6 +294,19 @@ bonobo_x_object_get_type (void)
 	return type;
 }
 
+/**
+ * bonobo_x_type_setup:
+ * @type: The type to initialize
+ * @init_fn: the POA_init function for the CORBA interface or NULL
+ * @fini_fn: NULL or a custom POA free fn.
+ * @epv_struct_offset: the offset in the class structure where the epv is or 0
+ * 
+ *   This function initializes a type derived from BonoboXObject, such that
+ * when you instantiate a new object of this type with gtk_type_new the
+ * CORBA object will be correctly created and embedded.
+ * 
+ * Return value: TRUE on success, FALSE on error.
+ **/
 gboolean
 bonobo_x_type_setup (GtkType            type,
 		     BonoboXObjectPOAFn init_fn,
@@ -361,6 +378,21 @@ bonobo_x_type_setup (GtkType            type,
 	return TRUE;
 }
 
+/**
+ * bonobo_x_type_unique:
+ * @parent_type: the parent Gtk Type
+ * @init_fn: a POA initialization function
+ * @fini_fn: a POA finialization function or NULL
+ * @epv_struct_offset: the offset into the struct that the epv
+ * commences at, or 0 if we are inheriting a plain Gtk Object
+ * from a BonoboXObject, adding no new CORBA interfaces
+ * @info: the standard GtkTypeInfo.
+ * 
+ * This function is the main entry point for deriving bonobo
+ * server interfaces.
+ * 
+ * Return value: the constructed Gtk Type.
+ **/
 GtkType
 bonobo_x_type_unique (GtkType            parent_type,
 		      BonoboXObjectPOAFn init_fn,
@@ -390,26 +422,42 @@ bonobo_x_type_unique (GtkType            parent_type,
 		return 0;
 }
 
+/**
+ * bonobo_x_object:
+ * @p: a pointer to something
+ * 
+ * This function can be passed a BonoboXObject * or a
+ * PortableServer_Servant, and it will return a BonoboXObject *.
+ * 
+ * Return value: a BonoboXObject or NULL.
+ **/
 BonoboXObject *
 bonobo_x_object (gpointer p)
 {
-	GtkObject     *obj;
 	BonoboXObject *xobj;
-	
 
 	if (!p)
 		return NULL;
 
-	if (((obj = p)->flags & BONOBO_X_GTK_FLAG_PATTERN) ==
-	    BONOBO_X_GTK_FLAG_PATTERN)
-		return BONOBO_X_OBJECT (p);
+	xobj = p;
 
-	else if ((xobj = BONOBO_X_SERVANT_GET_OBJECT (p))->flags ==
-		 BONOBO_X_SERVANT_FLAG_PATTERN)
+	if (xobj->base.corba_objref ==
+	    BONOBO_X_OBJECT_GET_CORBA (xobj) &&
+	    xobj->base.servant ==
+	    BONOBO_X_OBJECT_GET_SERVANT (xobj))
 		return xobj;
 
-	else { /* Dodgy indeed */
-		g_warning ("Untested, unsafe code path");
-		return BONOBO_X_CORBA_GET_OBJECT (p);
+	else {
+		BonoboObjectServant *s = p;
+
+		if ((xobj = s->bonobo_object) ==
+		    BONOBO_X_SERVANT_GET_OBJECT (s) &&
+		    &xobj->servant == p)
+			return xobj;
+		else
+			g_warning ("Serious error, unidentifiable "
+				   "pointer type");
 	}
+
+	return NULL;
 }

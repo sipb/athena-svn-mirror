@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-selector-widget.c: Bonobo Component Selector widget
  *
  * Authors:
@@ -19,6 +19,7 @@
 #include <string.h> /* strcmp */
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>

@@ -47,7 +47,7 @@ void bonobo_async_demarshal (BonoboAsyncReply        *reply,
 void bonobo_async_invoke    (const BonoboAsyncMethod *method,
 			     BonoboAsyncCallback      cb,
 			     gpointer                 user_data,
-			     guint                    timeout_usec,
+			     guint                    timeout_msec,
 			     CORBA_Object             object,
 			     gpointer                *args,
 			     CORBA_Environment       *ev);

@@ -13,6 +13,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <bonobo/bonobo-stream-memory.h>
+#include <bonobo/bonobo-exception.h>
 #include <errno.h>
 
 static BonoboStreamClass *bonobo_stream_mem_parent_class;
@@ -27,10 +28,16 @@ mem_get_info (BonoboStream                  *stream,
 
 	si = Bonobo_StorageInfo__alloc ();
 
-	si->size = smem->size;
-	si->type = Bonobo_STORAGE_TYPE_REGULAR;
-	si->name = CORBA_string_dup ("");
-	si->content_type = CORBA_string_dup ("application/octet-stream");
+	si->name = CORBA_string_dup (smem->name);
+
+	if (mask & Bonobo_FIELD_SIZE)
+		si->size = smem->size;
+	if (mask & Bonobo_FIELD_TYPE)
+		si->type = Bonobo_STORAGE_TYPE_REGULAR;
+	si->content_type = CORBA_string_dup (
+		(mask & Bonobo_FIELD_CONTENT_TYPE)
+		? smem->content_type
+		: "");
 
 	return si;
 }
@@ -43,14 +50,35 @@ mem_set_info (BonoboStream *stream,
 {
 	BonoboStreamMem *smem = BONOBO_STREAM_MEM (stream);
 
-	if (smem->read_only)
+	if (smem->read_only) {
 		CORBA_exception_set (
 			ev, CORBA_USER_EXCEPTION,
 			ex_Bonobo_Stream_NoPermission, NULL);
-	else
+		return;
+	}
+
+	if (mask & Bonobo_FIELD_SIZE)
 		CORBA_exception_set (
 			ev, CORBA_USER_EXCEPTION,
 			ex_Bonobo_Stream_NotSupported, NULL);
+
+	if ((mask & Bonobo_FIELD_TYPE) && 
+	    (info->type != Bonobo_STORAGE_TYPE_REGULAR))
+		CORBA_exception_set (
+			ev, CORBA_USER_EXCEPTION,
+			ex_Bonobo_Stream_NotSupported, NULL);
+
+	if (mask & Bonobo_FIELD_CONTENT_TYPE) {
+		bonobo_return_if_fail (info->content_type != NULL, ev);
+		g_free (smem->content_type);
+		smem->content_type = g_strdup (info->content_type);
+	}
+
+	if (strcmp (info->name, smem->name)) {
+		bonobo_return_if_fail (info->name != NULL, ev);
+		g_free (smem->name);
+		smem->name = g_strdup (info->name);
+	}
 }
 
 static void
@@ -229,6 +257,8 @@ mem_destroy (GtkObject *object)
 	
 	if (smem->buffer)
 		g_free (smem->buffer);
+	g_free (smem->name);
+	g_free (smem->content_type);
 	
 	GTK_OBJECT_CLASS (bonobo_stream_mem_parent_class)->destroy (object);
 }
@@ -322,6 +352,8 @@ bonobo_stream_mem_construct (BonoboStreamMem *stream_mem,
 	stream_mem->pos = 0;
 	stream_mem->read_only = read_only;
 	stream_mem->resizable = resizable;
+	stream_mem->name = g_strdup ("");
+	stream_mem->content_type = g_strdup ("application/octet-stream");
 
 	return BONOBO_STREAM_MEM (
 		bonobo_object_construct (BONOBO_OBJECT (stream_mem),

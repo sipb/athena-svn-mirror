@@ -102,11 +102,12 @@ bonobo_clock_control_new (void)
 	/* Create the properties. */
 	pb = bonobo_property_bag_new (get_prop, set_prop, clock);
 	bonobo_control_set_properties (control, pb);
-	bonobo_object_unref (BONOBO_OBJECT (pb));
 
 	bonobo_property_bag_add (pb, "running", PROP_RUNNING,
 				 BONOBO_ARG_BOOLEAN, def,
 				 "Whether or not the clock is running", 0);
+
+	bonobo_object_unref (BONOBO_OBJECT (pb));
 
 	return BONOBO_OBJECT (control);
 }

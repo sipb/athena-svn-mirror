@@ -10,7 +10,7 @@
 #include <zlib.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 #include <bonobo/bonobo-stream-memory.h>
 #include <bonobo/bonobo-moniker-extender.h>
 

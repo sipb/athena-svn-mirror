@@ -2,56 +2,84 @@
 BonoboEmbeddable
 
 <!-- ##### SECTION Short_Description ##### -->
-
+A compound document element's model
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+A BonoboEmbeddable is a component that is an element of a compound
+document. There is an implicit contract that anything implimenting
+the embeddable interface will also implement the following interfaces:
+  <itemizedlist>
+    <listitem><para>#BonoboPrint</para></listitem>
+    <listitem><para>#BonoboPersistStream</para></listitem>
+  </itemizedlist>
+</para>
 
+<para>
+An embeddable is not a Control - by this I mean that it does not control
+its own sizing, rendering or layout. It is entirely a slave to the parent
+with respect to this. An Embeddable should never render scroll bars into
+itself ( unless, exceptionaly if it is activated, and allows the user to
+pan around a larger area ). Essentialy a non-activated embeddable view
+should only show things that it will print, and should render WYSIWYG
+as much as possible. Embeddable's views scale linearly to obey the zoom
+level they are given.
+</para>
+
+<para>
+If you think your embeddable should have scroll bars, or other widgets
+inside it's view, you need to implement a #BonoboControl first. Many
+applications will export a #BonoboControl and several #BonoboEmbeddable.
+eg. to embed a complete gnumeric application you would use the
+#BonoboControl, to embed a cell range you would use a #BonoboEmbeddable.
+</para>
+
+<para>
+Embeddables are model / view, that is the BonoboEmbeddable should be
+derived from and becomes the model, several #BonoboView or
+#BonoboCanvasComponent views can be produced to render this information.
+</para>
+
+<para>
+Here is an example of how to create a BonoboEmbeddable interface:
+  <example>
+    <title>An embeddable interface</title>
+    <programlisting>
+static BonoboView *
+simple_view_factory (BonoboEmbeddable      *embeddable,
+                     const Bonobo_ViewFrame view_frame,
+		     void                  *closure)
+{
+	BonoboView *view = bonobo_view_new (
+		gtk_drawing_area_new ());
+
+	bonobo_view_set_view_frame (view, view_frame);
+
+	return view;
+}
+
+BonoboObject *
+create_embeddable ()
+{
+	BonoboEmbeddable *embeddable;
+
+	embeddable = bonobo_embeddable_new (simple_view_factory, NULL);
+
+	... aggregate other interfaces ...
+
+	return BONOBO_OBJECT (embeddable);
+}
+    </programlisting>
+  </example>
+  Note, that this example returns a GtkDrawingArea with nothing in it -
+simply a white box. This is better than returning a widget - no widget
+can be a correct Embeddable view, since it cannot zoom.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-  #BonoboWidget, bonobo_widget_new()
+  #BonoboView, #BonoboCanvasComponent, #BonoboWidget, #BonoboControl, bonobo_widget_new ()
 </para>
-
-<!-- ##### MACRO BONOBO_EMBEDDABLE_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_EMBEDDABLE ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_EMBEDDABLE_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_EMBEDDABLE ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_EMBEDDABLE_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### STRUCT BonoboEmbeddable ##### -->
 <para>
@@ -113,6 +141,7 @@ BonoboEmbeddable
 </para>
 
 @parent_class: 
+@epv: 
 @host_name_changed: 
 @uri_changed: 
 
@@ -132,8 +161,10 @@ BonoboEmbeddable
 </para>
 
 @item_factory: 
-@closure: 
+@data: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@closure: 
 
 
 <!-- ##### FUNCTION bonobo_embeddable_construct ##### -->
@@ -142,10 +173,11 @@ BonoboEmbeddable
 </para>
 
 @embeddable: 
-@corba_embeddable: 
 @factory: 
 @data: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@corba_embeddable: 
 
 
 <!-- ##### FUNCTION bonobo_embeddable_construct_full ##### -->
@@ -154,21 +186,13 @@ BonoboEmbeddable
 </para>
 
 @embeddable: 
-@corba_embeddable: 
 @factory: 
 @factory_data: 
 @item_factory: 
 @item_factory_data: 
 @Returns: 
-
-
-<!-- ##### FUNCTION bonobo_embeddable_corba_object_create ##### -->
-<para>
-
-</para>
-
-@object: 
-@Returns: 
+<!-- # Unused Parameters # -->
+@corba_embeddable: 
 
 
 <!-- ##### FUNCTION bonobo_embeddable_set_view_factory ##### -->
@@ -217,14 +241,6 @@ BonoboEmbeddable
 @embeddable: 
 @fn: 
 @data: 
-
-
-<!-- ##### FUNCTION bonobo_embeddable_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 
 <!-- ##### SIGNAL BonoboEmbeddable::host-name-changed ##### -->

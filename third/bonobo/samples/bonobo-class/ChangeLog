@@ -1,3 +1,28 @@
+2001-10-24  Michael Meeks  <michael@ximian.com>
+
+	* echo-client.c (main): re-write.
+
+2001-04-14  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am (dist-hook): add.
+
+2001-02-21  Michael Meeks  <michael@ximian.com>
+
+	* main.c (main): expand the macro so we don't
+	quit - this defeats the point.
+
+	* echo-client.c (usage): add runtime help text.
+	(main): upd.
+
+	* echo.c (echo_get_epv): move into
+	(echo_class_init): here & upd.
+	(init_echo_corba_class): kill.
+	(echo_construct): kill.
+	(echo_init): impl.
+	(echo_construct): kill.
+	(create_echo): kill.
+	(echo_new): prune contents.
+
 2001-01-25  Michael Meeks  <michael@helixcode.com>
 
 	* main.c: fix include.

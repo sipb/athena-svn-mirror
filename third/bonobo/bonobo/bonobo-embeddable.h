@@ -71,7 +71,7 @@ GtkType           bonobo_embeddable_get_type         (void);
 BonoboEmbeddable *bonobo_embeddable_new              (BonoboViewFactory factory,
 						      void             *data);
 BonoboEmbeddable *bonobo_embeddable_new_canvas_item  (GnomeItemCreator  item_factory,
-						      void             *closure);
+						      void             *data);
 BonoboEmbeddable *bonobo_embeddable_construct        (BonoboEmbeddable *embeddable,
 						      BonoboViewFactory factory,
 						      void             *data);
@@ -81,7 +81,7 @@ BonoboEmbeddable *bonobo_embeddable_construct_full   (BonoboEmbeddable *embeddab
 						      GnomeItemCreator  item_factory,
 						      void             *item_factory_data);
 
-void             bonobo_embeddable_set_view_factory  (BonoboEmbeddable  *embeddable,
+void             bonobo_embeddable_set_view_factory  (BonoboEmbeddable *embeddable,
 						      BonoboViewFactory factory,
 						      void             *data);
 

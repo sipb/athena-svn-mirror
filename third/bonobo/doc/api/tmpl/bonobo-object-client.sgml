@@ -31,45 +31,6 @@ Object activation routines
   #BonoboMoniker #BonoboObject
 </para>
 
-<!-- ##### MACRO BONOBO_OBJECT_CLIENT_TYPE ##### -->
-<para>
-Returns the #GtkType for the BonoboObjectClient object.
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_OBJECT_CLIENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_OBJECT_CLIENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_OBJECT_CLIENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_OBJECT_CLIENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
 <!-- ##### TYPEDEF BonoboObjectClient ##### -->
 <para>
 

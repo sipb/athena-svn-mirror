@@ -55,6 +55,8 @@ GtkWidget          *bonobo_widget_new_control_from_objref  (Bonobo_Control     c
 							    Bonobo_UIContainer uic);
 BonoboControlFrame *bonobo_widget_get_control_frame        (BonoboWidget      *bw);
 
+/* FIXME: we need _async versions of these */
+
 /*
  * Constructors (for derivation and wrapping only)
  */

@@ -24,9 +24,11 @@
  * @size: number of bytes to write
  * @ev: a CORBA environment to return status information.
  *
- * This is a helper routine to write @size bytes from @buffer to the @stream
- * It will continue to write bytes until a fatal error occurs.
- *
+ * This is a helper routine to write @size bytes from @buffer to the
+ * @stream.  It will continue to write bytes until a fatal error
+ * occurs. It works around serious problems in ORBit's handling of
+ * sequences, and makes for nicer, saner protocol usage for
+ * transfering huge chunks of data.
  */
 void
 bonobo_stream_client_write (const Bonobo_Stream stream,

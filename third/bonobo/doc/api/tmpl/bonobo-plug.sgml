@@ -21,39 +21,16 @@ inside the first applications window.
 </para>
 
 <para>
-  This code is a copy of #GtkPlug, and it is here, as debugging and
-  special handlers had to be setup of Bonobo.  FIXME: include a full
-  description. 
+  This code is a modified copy of #GtkPlug, it is included in
+bonobo since this forked version could be effectively bug fixed,
+and integrated with the #BonoboControl / #BonoboControlframe CORBA
+pipe, to ensure synchronization between the X and CORBA transports.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-   #BonoboSocket.
+   #BonoboSocket, #BonoboControlFrame.
 </para>
-
-<!-- ##### MACRO BONOBO_PLUG ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_PLUG_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_IS_PLUG ##### -->
-<para>
-
-</para>
-
-@obj: 
-
 
 <!-- ##### TYPEDEF BonoboPlug ##### -->
 <para>

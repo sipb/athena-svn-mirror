@@ -62,7 +62,8 @@ set_prop (BonoboPropertyBag *bag,
 		break;
 
 	case PROP_STRING_TEST:
-		pd->s = BONOBO_ARG_GET_STRING (arg);
+		g_free (pd->s);
+		pd->s = g_strdup (BONOBO_ARG_GET_STRING (arg));
 		break;
 
 	default:
@@ -188,7 +189,7 @@ create_bag (void)
 	pd->b = TRUE;
 	pd->f = 2.71828182845;
 	pd->d = 3.14159265358;
-	pd->s = "Hello world";
+	pd->s = g_strdup ("Hello world");
 
 	/* Create the property bag. */
 	pb = bonobo_property_bag_new (get_prop, set_prop, pd);

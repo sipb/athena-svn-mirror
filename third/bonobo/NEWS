@@ -1,3 +1,141 @@
+Bonobo 1.0.9
+
+	* Features
+		* UI parse / translate caching (Alex Larsson)
+		* parallel build fixes (Havoc)
+		* gnome 1.4.1 spec file (Ludovic Danigo)
+
+	* Bugs fixed
+		* moniker escaping bug (Me)
+		* storage-fs fixes (David Kaelbling)
+		* more preconditions on UI component (Me)
+		* toolbar shadow fix (Ettore)
+		* xml18ntools config issue (Darin)
+		* property bag leak (Larry Ewing)
+		* pixmap leak (Larry Ewing)
+		* event source UMR (Dan Winship)
+		* stream-memory segv (Jody)
+		* build fixes (Darin)
+		* require new libxml (Radek Doulik)
+		* exception env. leak fixage (Anders Carlsson)
+
+Bonobo 1.0.5
+
+	* UI handler stuff:
+
+		* Key stroke handling fixage (Darin)
+		* set/get prop acceleration (Alexander Larsson)
+		* default icon fixage (Jacob)
+		* prototype cleans (Johan Dahlin)
+
+	* Misc stuff
+		* re-entrancy fix in event_source_destroy (Me)
+		* moniker-extender-file fix (Dave Camp)
+		* item-container bug (Dave Camp)
+		* Portability fixes (? & Dietmar)
+		* doc fixes (Jacob)
+		* updated tests (Me)
+		* config dialog rename (Miles Lane)
+		* fixed libefs linking (Federico)
+
+Bonobo 1.0.4
+
+	* Revert WM Focus order fix (Federico)
+
+	* Kill duff plug/socket assertion (Federico)
+
+	* Canvas item redraw bug fixage (Mike Kestner)
+
+	* Moniker mime query fixes (Gergo)
+
+	* Remove 'object' keyword misuse from IDL (Uche Ogbuji)
+
+	* Honour gnome_preferences_get_menus_have_icons (Me)
+
+	* PropertyControl leak fixage (Iain Holmes)
+
+	* UIContainer /Control / ControlFrame debug calming (Me)
+
+	* Dependency fix (Gediminas Paulauskas)
+
+	* Documentation fixes.
+
+Bonobo 1.0.3
+
+	* Focus fixage (Federico)
+
+	* WM Focus order fixage (John Harper)
+
+	* Sensitivity fixage (George Lebl)
+
+	* Much MacOS X build fixage & cleaning (Dan Winship)
+
+	* bonobo_x_object fix & test-xobject (Me)
+
+	* some re-enterancy issues nailed (Me)
+
+	* bonobo-listener fix (Dietmar)
+
+	* Documentation fixage (Jacob Berkman, Dan, Johan Dahlin)
+
+Bonobo 1.0.2
+
+	* Manualy remove generated files (Me)
+
+	* Misc. cleans (Darin Adler)
+
+	* UI control properties (Darin Adler)
+
+Bonobo 1.0.1
+
+	* POTFILES.in fix - automake should do that (Me)
+
+Bonobo 1.0.0
+
+	* Documentation
+		* Full C API documentation (Me, Miguel & John Sheets)
+		* Lots of nice DIA diagrams (John Sheets)
+		* preliminary UI XML DTD (Paolo)
+
+	* Storage / Stream
+		* fix symlink issues in fs storage (Vladimir Vukicevic)
+		* fs storage permissions fix (Dietmar)
+		* improved storage-fs / stream-fs mime typing (Jens Finke)
+
+	* Event source / Listener
+		* event-source fixes (Richard Hult)
+		* event-source cleans (Dietmar)
+		* event-source re-enterancy fix (Me)
+
+	* Property Bag
+		* batch property get/set impl. (Dietmar)
+		* property bag client SEGV fix (Larry)
+		* PropertyBag leak fixes (Iain Holmes)
+
+	* Monikers
+		* moniker file extender fix (Dietmar)
+		* monikers memory leak fix (Dietmar)
+		* moniker URL registry (Dietmar)
+
+	* Any support logic
+		* bonobo-arg fixes (Dietmar)
+		* XML typecode reference fix (Dietmar)
+		* Fix XML type coding bugs (Me)
+
+	* UI handler bits
+		* Revert unsafe attempt at AA pixbufs (Me)
+		* minor XML de-merge logic fix (Me)
+		* config fixes (Iain Holmes)
+		* Always cleanup XML we hand out (Me)
+		* pixmap <-> XML acceleration (John Harper)
+
+	* Misc fixes
+		* fix multiple translation issues (Me)
+		* gshell fixes (Martin Baulig)
+		* include config.h some more (Kjartan)
+		* control / object destruction race fix (Darin)
+		* Reduce control's memory footprint (Me)
+
 Bonobo 0.37
 
 	* Fix Bonobo Zoomable (Michael Engber)

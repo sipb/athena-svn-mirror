@@ -53,6 +53,8 @@ bonobo_shlib_factory_construct (BonoboShlibFactory    *c_factory,
 				GnomeFactoryCallback   factory_cb,
 				gpointer               user_data)
 {
+	BonoboGenericFactory *r_factory;
+
 	g_return_val_if_fail (c_factory != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_SHLIB_FACTORY (c_factory), NULL);
 	g_return_val_if_fail (corba_factory != CORBA_OBJECT_NIL, NULL);
@@ -62,10 +64,11 @@ bonobo_shlib_factory_construct (BonoboShlibFactory    *c_factory,
 
         oaf_plugin_use (poa, oaf_impl_ptr);
 
-	return BONOBO_SHLIB_FACTORY (
-		bonobo_generic_factory_construct (
-			oaf_iid, BONOBO_GENERIC_FACTORY (c_factory),
-			corba_factory, factory, factory_cb, user_data));
+	r_factory = bonobo_generic_factory_construct_noregister (
+		oaf_iid, BONOBO_GENERIC_FACTORY (c_factory),
+		corba_factory, factory, factory_cb, user_data);
+
+	return (BonoboShlibFactory *) r_factory;
 }
 
 /**

@@ -58,13 +58,13 @@ efs_remove_all_lockfiles (void)
  * Returns: zero on success, or -1 on failure.
  */
 
-gint         
+EFSResult
 efs_lock_create (const char *lockfile)
 {
 	struct stat	st, st1;
 	char		tmplock[1024];
 	char		sysname[256];
-	char		buf[8];
+	char		buf[32];
 	char		*p;
 	int		sleeptime = 5;
 	int		statfailed = 0;
@@ -164,7 +164,7 @@ efs_lock_create (const char *lockfile)
  * process has locked the file by itself.
  */
 
-gint         
+EFSResult
 efs_lock_check (const char *lockfile)
 {
 	struct stat	st;
@@ -210,7 +210,7 @@ efs_lock_check (const char *lockfile)
  * Returns: zero on success, or -1 on failure.
  */
 
-gint         
+EFSResult
 efs_lock_remove (const char *lockfile)
 {
 	GList *l;
@@ -237,4 +237,3 @@ efs_lock_remove (const char *lockfile)
 
 	return unlink (lockfile);
 }
-

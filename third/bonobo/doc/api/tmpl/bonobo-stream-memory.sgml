@@ -58,45 +58,6 @@ BonoboStream *make_bonobo_stream_on_string (char *string)
 </para>
 
 
-<!-- ##### MACRO BONOBO_STREAM_MEM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_STREAM_MEM ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_STREAM_MEM_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_STREAM_MEM ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_STREAM_MEM_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
 <!-- ##### TYPEDEF BonoboStreamMemClass ##### -->
 <para>
 

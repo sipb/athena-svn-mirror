@@ -4,7 +4,8 @@
  * Author:
  *   Miguel de Icaza (miguel@helixcode.com)
  *
- * This file is here to show what are the basic steps into create a Bonobo Component.
+ * This file is here to show what are the basic steps
+ * neccessary to create a Bonobo Component.
  */
 #include <config.h>
 #include <bonobo.h>
@@ -20,14 +21,14 @@
 #include "echo.h"
 
 /*
- * A pointer to our parent object class
- */
-static BonoboObjectClass *echo_parent_class;
+ * Our parent Gtk object type
+ */ 
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 /*
- * The VEPV for the Demo Echo objecg
+ * A pointer to our parent object class
  */
-static POA_Bonobo_Sample_Echo__vepv echo_vepv;
+static GtkObjectClass *echo_parent_class;
 
 /*
  * Implemented GtkObject::destroy
@@ -39,7 +40,7 @@ echo_object_destroy (GtkObject *object)
 
 	g_free (echo->instance_data);
 	
-	GTK_OBJECT_CLASS (echo_parent_class)->destroy (object);
+	echo_parent_class->destroy (object);
 }
 
 /*
@@ -56,42 +57,25 @@ impl_demo_echo_echo (PortableServer_Servant  servant,
 		echo->instance_data);
 }
 
-/*
- * If you want users to derive classes from your implementation
- * you need to support this method.
- */
-POA_Bonobo_Sample_Echo__epv *
-echo_get_epv (void)
-{
-	POA_Bonobo_Sample_Echo__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Sample_Echo__epv, 1);
-
-	/*
-	 * This is the method invoked by CORBA
-	 */
-	epv->echo = impl_demo_echo_echo;
-
-	return epv;
-}
-
-static void
-init_echo_corba_class (void)
-{
-	echo_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	echo_vepv.Bonobo_Sample_Echo_epv      = echo_get_epv ();
-}
-
 static void
 echo_class_init (EchoClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	POA_Bonobo_Sample_Echo__epv *epv = &klass->epv;
 
-	echo_parent_class = gtk_type_class (bonobo_object_get_type ());
+	echo_parent_class = gtk_type_class (PARENT_TYPE);
 
 	object_class->destroy = echo_object_destroy;
 
-	init_echo_corba_class ();
+	epv->echo = impl_demo_echo_echo;
+}
+
+static void
+echo_init (Echo *echo)
+{
+	static int i = 0;
+
+	echo->instance_data = g_strdup_printf ("Hello %d!", i++);
 }
 
 GtkType
@@ -99,95 +83,35 @@ echo_get_type (void)
 {
 	static GtkType type = 0;
 
-	if (!type){
+	if (!type) {
 		GtkTypeInfo info = {
 			"Echo",
 			sizeof (Echo),
 			sizeof (EchoClass),
 			(GtkClassInitFunc) echo_class_init,
-			(GtkObjectInitFunc) NULL,
+			(GtkObjectInitFunc) echo_init,
 			NULL, /* reserved 1 */
 			NULL, /* reserved 2 */
 			(GtkClassInitFunc) NULL
 		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
+		/*
+		 *   Here we use bonobo_x_type_unique instead of
+		 * gtk_type_unique, this auto-generates a load of
+		 * CORBA structures for us. All derived types must
+		 * use bonobo_x_type_unique.
+		 */
+		type = bonobo_x_type_unique (
+			PARENT_TYPE,
+			POA_Bonobo_Sample_Echo__init, NULL,
+			GTK_STRUCT_OFFSET (EchoClass, epv),
+			&info);
 	}
 
 	return type;
 }
 
 Echo *
-echo_construct (Echo *echo, Bonobo_Sample_Echo corba_echo)
-{
-	static int i;
-	
-	g_return_val_if_fail (echo != NULL, NULL);
-	g_return_val_if_fail (IS_ECHO (echo), NULL);
-	g_return_val_if_fail (corba_echo != CORBA_OBJECT_NIL, NULL);
-
-	/*
-	 * Call parent constructor
-	 */
-	if (!bonobo_object_construct (BONOBO_OBJECT (echo), (CORBA_Object) corba_echo))
-		return NULL;
-
-	/*
-	 * Initialize echo
-	 */
-	echo->instance_data = g_strdup_printf ("Hello %d!", i++);
-	
-	/*
-	 * Success: return the GtkType we were given
-	 */
-	return echo;
-}
-
-/*
- * This routine creates the ORBit CORBA server and initializes the
- * CORBA side of things
- */
-static Bonobo_Sample_Echo
-create_echo (BonoboObject *echo)
-{
-	POA_Bonobo_Sample_Echo *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_Sample_Echo *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &echo_vepv;
-
-	CORBA_exception_init (&ev);
-	POA_Bonobo_Sample_Echo__init ((PortableServer_Servant) servant, &ev);
-	ORBIT_OBJECT_KEY(servant->_private)->object = NULL;
-
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	/*
-	 * Activates the CORBA object & binds to the servant
-	 */
-	return (Bonobo_Sample_Echo) bonobo_object_activate_servant (echo, servant);
-}
-
-Echo *
 echo_new (void)
 {
-	Echo *echo;
-	Bonobo_Sample_Echo corba_echo;
-
-	echo = gtk_type_new (echo_get_type ());
-
-	corba_echo = create_echo (BONOBO_OBJECT (echo));
-
-	if (corba_echo == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (echo));
-		return NULL;
-	}
-	
-	return echo_construct (echo, corba_echo);
+	return gtk_type_new (echo_get_type ());
 }

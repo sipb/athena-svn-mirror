@@ -160,8 +160,16 @@ Bonobo_Unknown bonobo_ui_engine_get_component        (BonoboUIEngine *engine,
 CORBA_char      *bonobo_ui_engine_xml_get         (BonoboUIEngine   *engine,
 						   const char       *path,
 						   gboolean          node_only);
+CORBA_char      *bonobo_ui_engine_xml_get_prop    (BonoboUIEngine   *engine,
+						   const char       *path,
+						   const char       *property);
 gboolean         bonobo_ui_engine_xml_node_exists (BonoboUIEngine   *engine,
 						   const char       *path);
+BonoboUIError    bonobo_ui_engine_xml_set_prop    (BonoboUIEngine    *engine,
+						   const char        *path,
+						   const char        *property,
+						   const char        *value,
+						   const char        *component);
 BonoboUIError    bonobo_ui_engine_xml_merge_tree  (BonoboUIEngine    *engine,
 						   const char        *path,
 						   BonoboUINode      *tree,

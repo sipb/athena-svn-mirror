@@ -4,80 +4,80 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bonobo 0.35\n"
-"POT-Creation-Date: 2001-02-15 01:52-0500\n"
-"PO-Revision-Date: 2001-02-07 21:42+09:00\n"
+"Project-Id-Version: bonobo 1.0.8cvs\n"
+"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"PO-Revision-Date: 2001-09-19 22:32+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/bonobo-ui-config-widget.c:235
+#: bonobo/bonobo-ui-config-widget.c:280
 msgid "Visible"
 msgstr "可視"
 
-#: bonobo/bonobo-ui-config-widget.c:243
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_Show"
 msgstr "表示(_S)"
 
-#: bonobo/bonobo-ui-config-widget.c:253
+#: bonobo/bonobo-ui-config-widget.c:298
 msgid "_Hide"
 msgstr "隠す(_H)"
 
-#: bonobo/bonobo-ui-config-widget.c:263
+#: bonobo/bonobo-ui-config-widget.c:308
 msgid "_View tooltips"
 msgstr "ツールチップを表示(_V)"
 
-#: bonobo/bonobo-ui-config-widget.c:270
+#: bonobo/bonobo-ui-config-widget.c:315
 msgid "Toolbars"
 msgstr "ツールバー"
 
-#: bonobo/bonobo-ui-config-widget.c:280
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "Look"
 msgstr "見る"
 
-#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "_Icon"
 msgstr "アイコン(_I)"
 
-#: bonobo/bonobo-ui-config-widget.c:300
+#: bonobo/bonobo-ui-config-widget.c:345
 msgid "_Text and Icon"
 msgstr "テキストとアイコン(_T)"
 
-#: bonobo/bonobo-ui-config-widget.c:310
+#: bonobo/bonobo-ui-config-widget.c:355
 msgid "_Priority text only"
 msgstr "優先テキストのみ(_P)"
 
-#: bonobo/bonobo-ui-engine-config.c:518
-msgid "Configure UI"
-msgstr "UI を設定"
+#: bonobo/bonobo-ui-engine-config.c:524
+msgid "Customize Toolbars"
+msgstr "ツールバーの設定"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:539
+#: bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "B_oth"
 msgstr "両方(_O)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:541
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "T_ext"
 msgstr "テキスト (_E)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Hide t_ips"
 msgstr "チップを隠す(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "Show t_ips"
 msgstr "チップを表示(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:543
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "_Hide toolbar"
 msgstr "ツールバーを隠す(_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customi_ze"
 msgstr "設定(_Z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:520
 msgid "Customize the toolbar"
 msgstr "ツールバーの設定"
 
@@ -86,141 +86,141 @@ msgstr "ツールバーの設定"
 msgid "Oaf options"
 msgstr "OAF オプション"
 
-#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:403
 msgid "Could not initialize Bonobo!\n"
 msgstr "Bonoboを初期化できません!\n"
 
-#: bonobo/bonobo-exception.c:129
+#: bonobo/bonobo-exception.c:162
 msgid "An unsupported action was attempted"
 msgstr "サポートされてないアクションが試みられました"
 
-#: bonobo/bonobo-exception.c:132
+#: bonobo/bonobo-exception.c:165
 msgid "IO Error"
 msgstr "I/O エラー"
 
-#: bonobo/bonobo-exception.c:135
+#: bonobo/bonobo-exception.c:168
 msgid "Invalid argument value"
 msgstr "引数が正しくありません"
 
-#: bonobo/bonobo-exception.c:139
+#: bonobo/bonobo-exception.c:172
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:175
 msgid "Syntax error in object description"
 msgstr "オブジェクトの記述に文法エラーがあります"
 
-#: bonobo/bonobo-exception.c:146
+#: bonobo/bonobo-exception.c:179
 msgid "The User canceled the save"
 msgstr "ユーザが保存を取り消しました"
 
-#: bonobo/bonobo-exception.c:151
+#: bonobo/bonobo-exception.c:184
 msgid "Cannot activate object from factory"
 msgstr "ファクトリ(factory)からオブジェクトをアクティブにできません"
 
-#: bonobo/bonobo-exception.c:156
+#: bonobo/bonobo-exception.c:189
 msgid "No permission to access stream"
 msgstr "ストリームヘアクセスする許可がありません"
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:192
 msgid "An unsupported stream action was attempted"
 msgstr "サポートされてないストリームアクションが試みられました"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:195
 msgid "IO Error on stream"
 msgstr "ストリームでI/Oエラー"
 
-#: bonobo/bonobo-exception.c:166
+#: bonobo/bonobo-exception.c:199
 msgid "IO Error on storage"
 msgstr "ストレージでI/Oエラー"
 
-#: bonobo/bonobo-exception.c:169
+#: bonobo/bonobo-exception.c:202
 msgid "Name already exists in storage"
 msgstr "ストレージに名前が既に存在しています"
 
-#: bonobo/bonobo-exception.c:172
+#: bonobo/bonobo-exception.c:205
 msgid "Object not found in storage"
 msgstr "ストレージにオブジェクトがありません"
 
-#: bonobo/bonobo-exception.c:175
+#: bonobo/bonobo-exception.c:208
 msgid "No permission to do operation on storage"
 msgstr "ストレージへの操作が許可されていません"
 
-#: bonobo/bonobo-exception.c:177
+#: bonobo/bonobo-exception.c:210
 msgid "An unsupported storage action was attempted"
 msgstr "サポートされてないストレージアクションが試みられました"
 
-#: bonobo/bonobo-exception.c:179
+#: bonobo/bonobo-exception.c:212
 msgid "Object is not a stream"
 msgstr "オブジェクトはストリームではありません"
 
-#: bonobo/bonobo-exception.c:182
+#: bonobo/bonobo-exception.c:215
 msgid "Object is not a storage"
 msgstr "オブジェクトはストレージではありません"
 
-#: bonobo/bonobo-exception.c:185
+#: bonobo/bonobo-exception.c:218
 msgid "Storage is not empty"
 msgstr "ストレージが空ではありません"
 
-#: bonobo/bonobo-exception.c:189
+#: bonobo/bonobo-exception.c:222
 msgid "malformed user interface XML description"
 msgstr "ユーザインターフェースのXMLの説明が誤っています"
 
-#: bonobo/bonobo-exception.c:192
+#: bonobo/bonobo-exception.c:225
 msgid "invalid path to XML user interface element"
 msgstr "XMLユーザインターフェースのパスが正しくありません"
 
-#: bonobo/bonobo-exception.c:196
+#: bonobo/bonobo-exception.c:229
 msgid "incorrect data type"
 msgstr "データ型が正しくありません"
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:232
 msgid "stream not found"
 msgstr "ストリームが見つかりません"
 
-#: bonobo/bonobo-exception.c:203
+#: bonobo/bonobo-exception.c:236
 msgid "property not found"
 msgstr "プロパティが見つかりません"
 
-#: bonobo/bonobo-exception.c:207
+#: bonobo/bonobo-exception.c:240
 msgid "Moniker interface cannot be found"
 msgstr "モニカのインターフェイスが見つかりません"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:243
 msgid "Moniker activation timed out"
 msgstr "モニカの活性化がタイムアウト"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:246
 msgid "Syntax error within moniker"
 msgstr "モニカに文法エラー"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:249
 msgid "Moniker has an unknown moniker prefix"
 msgstr "モニカに不明なモニカ・プリフィックスがあります"
 
-#: bonobo/bonobo-exception.c:238
+#: bonobo/bonobo-exception.c:273
 msgid "Error checking error; no exception"
 msgstr "エラーチェックでエラー: 例外ではありません"
 
-#: bonobo/bonobo-object-directory.c:224
+#: bonobo/bonobo-object-directory.c:225
 msgid "No filename"
 msgstr "ファイル名がありません"
 
-#: bonobo/bonobo-object-directory.c:230
+#: bonobo/bonobo-object-directory.c:231
 #, c-format
 msgid "unknown mime type for '%s'"
 msgstr "'%s'のMIMEタイプは不明です"
 
-#: bonobo/bonobo-object-directory.c:255
+#: bonobo/bonobo-object-directory.c:256
 #, c-format
 msgid "no handlers for mime type '%s'"
 msgstr "MIMEタイプ '%s' のハンドラはありません"
 
-#: bonobo/bonobo-selector-widget.c:212
+#: bonobo/bonobo-selector-widget.c:213
 msgid "Name"
 msgstr "名称"
 
-#: bonobo/bonobo-selector-widget.c:235
+#: bonobo/bonobo-selector-widget.c:236
 msgid "Description"
 msgstr "説明"
 
@@ -316,11 +316,11 @@ msgstr "text/plain コンポーネント"
 msgid "text/plain embeddable factory"
 msgstr "text/plain 埋め込み可能ファクトリ"
 
-#: components/text-plain/bonobo-text-plain.c:338
+#: components/text-plain/bonobo-text-plain.c:340
 msgid "_Clear Text"
 msgstr "テキストの消去(_C)"
 
-#: components/text-plain/bonobo-text-plain.c:339
+#: components/text-plain/bonobo-text-plain.c:341
 msgid "Clears the text in the component"
 msgstr "コンポーネントのテキストを消去します"
 
@@ -531,10 +531,9 @@ msgid ""
 "under the conditions of the GNU General Public License. Please report bugs "
 "to dietmar@maurer-it.com"
 msgstr ""
-"このプログラムは GNOME プロジェクトの一部です。Gnome Shell は "
-"「完全に無保証です」 このプログラムはフリーソフトウェアで、 "
-"GNU一般公有許諾書の条件のもとで自由に再配布することを歓迎します。 バグ報告は "
-"dietmar@maurer-it.com まで。"
+"このプログラムは GNOME プロジェクトの一部です。Gnome Shell は 「完全に無保証"
+"です」 このプログラムはフリーソフトウェアで、 GNU一般公有許諾書の条件のもとで"
+"自由に再配布することを歓迎します。 バグ報告は dietmar@maurer-it.com まで。"
 
 #: gshell/gshell.c:89
 msgid "fatal CORBA exception!  Shutting down..."
@@ -570,8 +569,8 @@ msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStream"
 msgstr ""
-"PersistStream "
-"でコンポーネントからデータを保存しようとしたら例外が発生しました"
+"PersistStream でコンポーネントからデータを保存しようとしたら例外が発生しまし"
+"た"
 
 #: gshell/inout.c:364
 msgid "Open"
@@ -657,6 +656,10 @@ msgstr "エコーコンポーネントファクトリ"
 msgid "I could not initialize Bonobo"
 msgstr "Bonoboを初期化できません"
 
+#: samples/bonobo-class/main.c:40
+msgid "Could not initialize Bonobo"
+msgstr "Bonoboを初期化できません"
+
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
 msgstr "コンポーネントは PersistStream をサポートしていないと言っています!"
@@ -694,43 +697,37 @@ msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStorage"
 msgstr ""
-"PersistStorage "
-"でコンポーネントからデータを保存しようとしたら例外が発生しました"
+"PersistStorage でコンポーネントからデータを保存しようとしたら例外が発生しまし"
+"た"
 
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
 msgstr "オブジェクトを選択"
 
-#: tests/test-container.c:65 tests/test-container.c:95
-msgid "Can not activate object_server"
-msgstr "object_serverをアクティブにできません"
-
-#: tests/test-container.c:70 tests/test-container.c:100
-msgid "Can not bind object server to client_site"
-msgstr "object_serverをclient_siteにバインドできません"
-
-#: tests/test-container.c:269
-msgid "Can not activate server"
-msgstr "サーバをアクティブにできません。"
-
-#: tests/test-container.c:319 tests/test-container.c:364
-msgid "Could not launch bonobo object."
-msgstr "bonoboオブジェクトを起動できません。"
-
-#: tests/test-container.c:562
-msgid "Could not launch Embeddable."
-msgstr "Embeddable を起動できません。"
-
-#: tests/test-container.c:596
-msgid "Could not launch Control."
-msgstr "コントロールを起動できません。"
-
-#: tests/test-container.c:848 tests/test-storage.c:489
+#: tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "bonobo_init()の実行に失敗です"
 
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "Bonoboを初期化できません"
+#~ msgid "Configure UI"
+#~ msgstr "UI を設定"
+
+#~ msgid "Can not activate object_server"
+#~ msgstr "object_serverをアクティブにできません"
+
+#~ msgid "Can not bind object server to client_site"
+#~ msgstr "object_serverをclient_siteにバインドできません"
+
+#~ msgid "Can not activate server"
+#~ msgstr "サーバをアクティブにできません。"
+
+#~ msgid "Could not launch bonobo object."
+#~ msgstr "bonoboオブジェクトを起動できません。"
+
+#~ msgid "Could not launch Embeddable."
+#~ msgstr "Embeddable を起動できません。"
+
+#~ msgid "Could not launch Control."
+#~ msgstr "コントロールを起動できません。"
 
 #~ msgid "Select drawing color..."
 #~ msgstr "描画色を選択..."

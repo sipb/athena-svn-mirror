@@ -42,7 +42,7 @@ my_item_creator (BonoboEmbeddable *embeddable,
                 "outline_color", "black",
                 NULL);
 
-        return gnome_canvas_component_new (item);
+        return bonobo_canvas_component_new (item);
 }
 
 /*
@@ -73,45 +73,6 @@ BonoboEmbeddable *make_embeddable (void)
   #BonoboEmbeddable, #BonoboCanvasItem
 </para>
 
-<!-- ##### MACRO BONOBO_CANVAS_COMPONENT_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_CANVAS_COMPONENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_CANVAS_COMPONENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_CANVAS_COMPONENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_CANVAS_COMPONENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
 <!-- ##### TYPEDEF BonoboCanvasComponent ##### -->
 <para>
 
@@ -124,22 +85,14 @@ BonoboEmbeddable *make_embeddable (void)
 </para>
 
 
-<!-- ##### FUNCTION bonobo_canvas_component_object_create ##### -->
+<!-- ##### FUNCTION bonobo_canvas_new ##### -->
 <para>
 
 </para>
 
-@object: 
-@Returns: 
-
-
-<!-- ##### FUNCTION bonobo_canvas_component_set_proxy ##### -->
-<para>
-
-</para>
-
-@comp: 
+@is_aa: 
 @proxy: 
+@Returns: 
 
 
 <!-- ##### FUNCTION bonobo_canvas_component_construct ##### -->
@@ -148,10 +101,10 @@ BonoboEmbeddable *make_embeddable (void)
 </para>
 
 @comp: 
-@corba_canvas_comp: 
 @item: 
 @Returns: 
 <!-- # Unused Parameters # -->
+@corba_canvas_comp: 
 @ccomp: 
 
 
@@ -173,12 +126,33 @@ BonoboEmbeddable *make_embeddable (void)
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_canvas_component_get_epv ##### -->
+<!-- ##### FUNCTION bonobo_canvas_component_get_ui_container ##### -->
 <para>
 
 </para>
 
+@comp: 
 @Returns: 
+
+
+<!-- ##### FUNCTION bonobo_canvas_component_grab ##### -->
+<para>
+
+</para>
+
+@comp: 
+@mask: 
+@cursor: 
+@time: 
+
+
+<!-- ##### FUNCTION bonobo_canvas_component_ungrab ##### -->
+<para>
+
+</para>
+
+@comp: 
+@time: 
 
 
 <!-- ##### SIGNAL BonoboCanvasComponent::set-bounds ##### -->
@@ -192,4 +166,13 @@ BonoboEmbeddable *make_embeddable (void)
 <!-- # Unused Parameters # -->
 @bbox: The bounding box.
 @ev: CORBA Environment to return errors on.
+
+<!-- ##### SIGNAL BonoboCanvasComponent::event ##### -->
+<para>
+
+</para>
+
+@bonobocanvascomponent: the object which received the signal.
+@arg1: 
+@Returns: 
 

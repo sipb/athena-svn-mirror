@@ -1,28 +1,39 @@
-/**
+/*
  * bonobo-property-bag-client.c: C sugar for property bags.
  *
- * Author:
- *   Nat Friedman (nat@nat.org)
+ * Authors:
+ *   Nat Friedman  (nat@ximian.com)
+ *   Michael Meeks (michael@ximian.com)
  *
- * Copyright 1999, Helix Code, Inc.
+ * Copyright 1999, 2001 Ximian, Inc.
  */
 #include <config.h>
 #include <stdarg.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-property-bag-client.h>
 
+static CORBA_unsigned_long
+get_kind (CORBA_TypeCode tc)
+{
+	while (tc->kind == CORBA_tk_alias)
+		tc = tc->subtypes [0];
+
+	return tc->kind;
+}
+
 /**
  * bonobo_property_bag_client_get_properties:
  * @pb: A #Bonobo_PropertyBag      which is bound to a remote
  * #Bonobo_PropertyBag.
+ * @ev: optional CORBA exception environment or NULL
  *
  * Returns: A #GList filled with #Bonobo_Property CORBA object
  * references for all of the properties stored in the remote
  * #BonoboPropertyBag.
  */
 GList *
-bonobo_property_bag_client_get_properties (Bonobo_PropertyBag       pb,
-					   CORBA_Environment       *ev)
+bonobo_property_bag_client_get_properties (Bonobo_PropertyBag pb,
+					   CORBA_Environment *ev)
 {
 	Bonobo_PropertyList  *props;
 	GList		    *prop_list;
@@ -125,6 +136,7 @@ bonobo_property_bag_client_free_properties (GList *list)
  * bonobo_property_bag_client_get_property_names:
  * @pb: A #Bonobo_PropertyBag      which is bound to a remote
  * #Bonobo_PropertyBag.
+ * @ev: optional CORBA exception environment or NULL
  *
  * This function exists as a convenience, so that you don't have to
  * iterate through all of the #Bonobo_Property objects in order to get
@@ -136,8 +148,8 @@ bonobo_property_bag_client_free_properties (GList *list)
  * the properties stored in the remote #BonoboPropertyBag.
  */
 GList *
-bonobo_property_bag_client_get_property_names (Bonobo_PropertyBag       pb,
-					       CORBA_Environment       *ev)
+bonobo_property_bag_client_get_property_names (Bonobo_PropertyBag pb,
+					       CORBA_Environment *ev)
 {
 	Bonobo_PropertyNames  *names;
 	GList		     *name_list;
@@ -180,12 +192,14 @@ bonobo_property_bag_client_get_property_names (Bonobo_PropertyBag       pb,
 
 /**
  * bonobo_property_bag_client_get_property:
- * @pb: A Bonobo_PropertyBag      which is associated with a remote
+ * @pb: A Bonobo_PropertyBag which is associated with a remote
  * BonoboPropertyBag.
  * @name: A string containing the name of the property which is to
  * be fetched.
+ * @ev: optional CORBA exception environment or NULL
  *
- * Returns: A #Bonobo_Property CORBA object reference for the
+ * Returns: A #Bonobo_Property CORBA object reference corresponding
+ * to the requested property.
  *
  */
 Bonobo_Property
@@ -205,7 +219,7 @@ bonobo_property_bag_client_get_property (Bonobo_PropertyBag       pb,
 
 	g_return_val_if_fail (pb != CORBA_OBJECT_NIL, NULL);
 
-	prop = Bonobo_PropertyBag_getPropertyByName (pb, property_name, ev);
+	prop = Bonobo_PropertyBag_getPropertyByName (pb, property_name, real_ev);
 
 	if (BONOBO_EX (real_ev))
 		prop = CORBA_OBJECT_NIL;
@@ -223,11 +237,12 @@ bonobo_property_bag_client_get_property (Bonobo_PropertyBag       pb,
 
 /**
  * bonobo_property_bag_client_persist:
- * @pb: A #Bonobo_PropertyBag      object which is bound to a remote
+ * @pb: A #Bonobo_PropertyBag object which is bound to a remote
  * #Bonobo_PropertyBag server.
  * @stream: A #BonoboStream into which the data in @pb will be written.
+ * @ev: optional CORBA exception environment or NULL
  *
- * Reads the property data stored in the #Bonobo_Property_bag to which
+ * Reads the property data stored in the #Bonobo_PropertyBag to which
  * @pb is bound and streams it into @stream.  The typical use for
  * this function is to save the property data for a given Bonobo
  * Control into a persistent store to which @stream is attached.
@@ -241,8 +256,7 @@ bonobo_property_bag_client_persist (Bonobo_PropertyBag       pb,
 
 	g_return_if_fail (ev != NULL);
 	g_return_if_fail (pb != CORBA_OBJECT_NIL);
-	g_return_if_fail (stream != NULL);
-	g_return_if_fail (BONOBO_IS_STREAM (stream));
+	g_return_if_fail (stream != CORBA_OBJECT_NIL);
 
 	persist = Bonobo_Unknown_queryInterface (pb, "IDL:Bonobo/PersistStream:1.0", ev);
 
@@ -266,7 +280,14 @@ bonobo_property_bag_client_persist (Bonobo_PropertyBag       pb,
 
 /**
  * bonobo_property_bag_client_depersist:
- */
+ * @pb: the property bag to persist
+ * @stream: the stream to persist to
+ * @ev: optional CORBA exception environment or NULL
+ * 
+ *  Serializes the property bag @pb to the @stream,
+ * using the PersistStream interface associated with the
+ * PropertyBag.
+ **/
 void
 bonobo_property_bag_client_depersist (Bonobo_PropertyBag       pb,
 				      Bonobo_Stream            stream,
@@ -276,8 +297,7 @@ bonobo_property_bag_client_depersist (Bonobo_PropertyBag       pb,
 
 	g_return_if_fail (ev != NULL);
 	g_return_if_fail (pb != CORBA_OBJECT_NIL);
-	g_return_if_fail (stream != NULL);
-	g_return_if_fail (BONOBO_IS_STREAM (stream));
+	g_return_if_fail (stream != CORBA_OBJECT_NIL);
 
 	persist = Bonobo_Unknown_queryInterface (
 		pb, "IDL:Bonobo/PersistStream:1.0", ev);
@@ -307,7 +327,14 @@ bonobo_property_bag_client_depersist (Bonobo_PropertyBag       pb,
 
 /**
  * bonobo_property_bag_client_get_property_type:
- */
+ * @pb: the property bag
+ * @propname: the property name
+ * @ev: optional CORBA exception environment or NULL
+ * 
+ * Finds the typecode associated with the property in @pb of name @propname
+ * 
+ * Return value: the TypeCode for property @name or CORBA_OBJECT_NIL
+ **/
 CORBA_TypeCode
 bonobo_property_bag_client_get_property_type (Bonobo_PropertyBag       pb,
 					      const char              *propname,
@@ -334,6 +361,7 @@ bonobo_property_bag_client_get_property_type (Bonobo_PropertyBag       pb,
 			g_warning ("prop is NIL");
 			CORBA_exception_free (&tmp_ev);
 		}
+		return (CORBA_TypeCode) TC_null;
 	}
 
 	tc = Bonobo_Property_getType (prop, real_ev);
@@ -435,7 +463,11 @@ bonobo_property_bag_client_get_field_##type (Bonobo_PropertyBag       pb,	\
 	if (any == NULL)							\
 		return 0.0;							\
 										\
-	g_return_val_if_fail (any->_type->kind == tk, (def));			\
+        if (get_kind (any->_type) != tk) {                                           \
+                g_warning ("Assertion `any->_type->kind == tk' failed");        \
+                CORBA_any__free (any, NULL, TRUE);                              \
+                return (def);                                                   \
+        }                                                                       \
 										\
 	d = *(corbatype *) any->_value;						\
 										\
@@ -468,7 +500,11 @@ bonobo_property_bag_client_get_field_string (Bonobo_PropertyBag       pb,
 	if (any == NULL)
 		return NULL;
 
-	g_return_val_if_fail (any->_type->kind == CORBA_tk_string, NULL);
+	if (get_kind (any->_type) != CORBA_tk_string) {
+		g_warning ("assertion failed: `any->_type->kind == CORBA_tk_string'");
+		CORBA_any__free (any, NULL, TRUE);
+		return NULL;
+	}
 
 	str = g_strdup (*(char **) any->_value);
 
@@ -511,6 +547,17 @@ MAKE_BONOBO_PROPERTY_BAG_CLIENT_PAIR(any,      BonoboArg *);
 /*
  * Setting property values.
  */
+
+/**
+ * bonobo_property_bag_client_set_value_any:
+ * @pb: the property bag
+ * @propname: name of property to set
+ * @value: value to set it to.
+ * @ev: optional CORBA exception environment or NULL
+ * 
+ * This function sets the value of the property with name
+ * @propname in @pb to @value.
+ **/
 void
 bonobo_property_bag_client_set_value_any (Bonobo_PropertyBag       pb,
 					  const char              *propname,
@@ -532,14 +579,18 @@ bonobo_property_bag_client_set_value_any (Bonobo_PropertyBag       pb,
 	}
 
 	prop = bonobo_property_bag_client_get_property (pb, propname, real_ev);
-	g_return_if_fail (prop != CORBA_OBJECT_NIL);
 
-	Bonobo_Property_setValue (prop, value, real_ev);
+	if (BONOBO_EX (real_ev)) {
+		if (!ev)
+			g_warning ("bonobo_property_bag_client_set_value_any: Exception getting property!");
+	} else {
+		Bonobo_Property_setValue (prop, value, real_ev);
 
-	if (!ev && BONOBO_EX (real_ev))
-		g_warning ("bonobo_property_bag_client_set_value_any: Exception setting property!");
+		if (!ev && BONOBO_EX (real_ev))
+			g_warning ("bonobo_property_bag_client_set_value_any: Exception setting property!");
 
-	CORBA_Object_release (prop, real_ev);
+		CORBA_Object_release (prop, real_ev);
+	}
 
 	if (!ev)
 		CORBA_exception_free (&tmp_ev);
@@ -598,6 +649,18 @@ bonobo_property_bag_client_set_value_string (Bonobo_PropertyBag       pb,
 /*
  * Querying other fields and flags.
  */
+
+/**
+ * bonobo_property_bag_client_get_docstring:
+ * @pb: the property bag
+ * @propname: the property name
+ * @ev: optional CORBA exception environment or NULL
+ * 
+ * This function retrieves the documentation string associated
+ * with the property.
+ * 
+ * Return value: the doc string.
+ **/
 char *
 bonobo_property_bag_client_get_docstring (Bonobo_PropertyBag       pb,
 					  const char              *propname,
@@ -644,6 +707,14 @@ bonobo_property_bag_client_get_docstring (Bonobo_PropertyBag       pb,
 	return (char *) docstr;
 }
 
+/**
+ * bonobo_property_bag_client_get_flags:
+ * @pb: the property bag
+ * @propname: the property's name
+ * @ev: optional CORBA exception environment or NULL
+ * 
+ * Return value: the flags associated with this property
+ **/
 BonoboPropertyFlags
 bonobo_property_bag_client_get_flags (Bonobo_PropertyBag       pb,
 				      const char              *propname,
@@ -688,9 +759,23 @@ bonobo_property_bag_client_get_flags (Bonobo_PropertyBag       pb,
 
 #define SEND(pb,name,args,corbat,gt,ansip)									\
 	case CORBA_tk##corbat:											\
-		bonobo_property_bag_client_set_value##gt (pb, name, (CORBA##corbat) va_arg (args, ##ansip), ev);\
+		bonobo_property_bag_client_set_value##gt (pb, name, (CORBA##corbat) va_arg (args, ansip), ev);\
 		break;
 
+/**
+ * bonobo_property_bag_client_setv:
+ * @pb: the property bag
+ * @ev: optional CORBA exception environment or NULL
+ * @first_arg: first argument name
+ * @var_args: list of subsequent name / value pairs
+ * 
+ * This function uses the TypeCode data extracted from the
+ * @pb to determine how it walks its stack. This function
+ * provides the grunt implementation for other var-arg
+ * functions like bonobo_widget_set_property
+ * 
+ * Return value: an error string on error or NULL on success.
+ **/
 char *
 bonobo_property_bag_client_setv (Bonobo_PropertyBag       pb,
 				 CORBA_Environment       *ev,
@@ -705,13 +790,14 @@ bonobo_property_bag_client_setv (Bonobo_PropertyBag       pb,
 	arg_name = first_arg;
 	while (arg_name) {
 		CORBA_TypeCode type;
+		char *msg;
 
 		type = bonobo_property_bag_client_get_property_type (pb, arg_name, ev);
 
 		if (type == TC_null)
 			return g_strdup_printf ("No such arg '%s'", arg_name);
 
-		switch (type->kind) {
+		switch (get_kind (type)) {
 			SEND (pb, arg_name, var_args, _boolean, _gboolean, int);
 			SEND (pb, arg_name, var_args, _long,    _glong,    int);
 			SEND (pb, arg_name, var_args, _float,   _gfloat,   double);
@@ -726,12 +812,16 @@ bonobo_property_bag_client_setv (Bonobo_PropertyBag       pb,
 			bonobo_property_bag_client_set_value_any    (pb, arg_name,
 								     va_arg (var_args, BonoboArg *), ev);
 			break;
-
+			
 		default:
-			return g_strdup_printf ("Unhandled setv arg '%s' type %d",
-						arg_name, type->kind);
+			msg = g_strdup_printf ("Unhandled setv arg '%s' type %d",
+					       arg_name, get_kind (type));
+
+			CORBA_Object_release ((CORBA_Object)type, ev);
+			return msg;
 		}
 
+		CORBA_Object_release ((CORBA_Object)type, ev);
 		arg_name = va_arg (var_args, char *);
 	}
 
@@ -741,10 +831,24 @@ bonobo_property_bag_client_setv (Bonobo_PropertyBag       pb,
 
 #define RECEIVE(pb,name,args,corbat,gt,ansip)					\
 	case CORBA_tk##corbat:							\
-		*((CORBA##corbat *)va_arg (args, ##ansip *)) =			\
+		*((CORBA##corbat *)va_arg (args, ansip *)) =			\
 		    bonobo_property_bag_client_get_value##gt (pb, name, ev);	\
 		break;
 
+/**
+ * bonobo_property_bag_client_getv:
+ * @pb: the property bag
+ * @ev: optional CORBA exception environment or NULL
+ * @first_arg: first argument name
+ * @var_args: list of subsequent name / value pairs
+ * 
+ * This function uses the TypeCode data extracted from the
+ * @pb to determine how it walks its stack. This function
+ * provides the grunt implementation for other var-arg
+ * functions like bonobo_widget_get_property.
+ * 
+ * Return value: an error string on error or NULL on success.
+ **/
 char *
 bonobo_property_bag_client_getv (Bonobo_PropertyBag pb,
 				 CORBA_Environment *ev,
@@ -759,13 +863,14 @@ bonobo_property_bag_client_getv (Bonobo_PropertyBag pb,
 	arg_name = first_arg;
 	while (arg_name) {
 		CORBA_TypeCode type;
+		char *msg;
 
 		type = bonobo_property_bag_client_get_property_type (pb, arg_name, ev);
 
 		if (type == TC_null)
 			return g_strdup_printf ("No such arg '%s'", arg_name);
 
-		switch (type->kind) {
+		switch (get_kind (type)) {
 
 			RECEIVE (pb, arg_name, var_args, _boolean, _gboolean, int);
 			RECEIVE (pb, arg_name, var_args, _long,    _glong,    int);
@@ -783,15 +888,16 @@ bonobo_property_bag_client_getv (Bonobo_PropertyBag pb,
 			break;
 
 		default:
-			return g_strdup_printf ("Unhandled getv arg '%s' type %d",
-						arg_name, type->kind);
+			msg = g_strdup_printf ("Unhandled getv arg '%s' type %d",
+					       arg_name, get_kind (type));
+			CORBA_Object_release ((CORBA_Object)type, ev);
+			return msg;
 		}
 
+		CORBA_Object_release ((CORBA_Object)type, ev);
 		arg_name = va_arg (var_args, char *);
 	}
 
 	return NULL;
 }
 #undef RECEIVE
-
-

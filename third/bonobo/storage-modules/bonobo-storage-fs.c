@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-mime.h>
 #include <storage-modules/bonobo-storage-fs.h>
 #include <storage-modules/bonobo-stream-fs.h>
 #include <bonobo/bonobo-storage-plugin.h>
@@ -41,7 +42,8 @@ fs_get_info (BonoboStorage *storage,
 	Bonobo_StorageInfo *si;
 	struct stat st;
 	char *full = NULL;
-	
+	gboolean dangling = FALSE;
+
 	if (mask & ~(Bonobo_FIELD_CONTENT_TYPE | Bonobo_FIELD_SIZE |
 		     Bonobo_FIELD_TYPE)) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
@@ -50,9 +52,12 @@ fs_get_info (BonoboStorage *storage,
 	}
 
 	full = g_concat_dir_and_file (storage_fs->path, path);
-
-	if (stat (full, &st) == -1)
-		goto get_info_except;
+	if (stat (full, &st) == -1) {
+		if (lstat (full, &st) == -1)
+			goto get_info_except;
+		else
+			dangling = TRUE;
+	}
 
 	si = Bonobo_StorageInfo__alloc ();
 	
@@ -64,9 +69,15 @@ fs_get_info (BonoboStorage *storage,
 		si->content_type = CORBA_string_dup ("x-directory/normal");
 	} else {
 		si->type = Bonobo_STORAGE_TYPE_REGULAR;
-		si->content_type = 
-			CORBA_string_dup ("application/octet-stream");
+		if (dangling)
+			si->content_type =
+				CORBA_string_dup ("x-symlink/dangling");
+		else
+			si->content_type = 
+				CORBA_string_dup (gnome_mime_type_of_file (full));
 	}
+
+	g_free (full);
 
 	return si;
 
@@ -194,7 +205,7 @@ fs_list_contents (BonoboStorage *storage, const CORBA_char *path,
 	struct stat st;
 	DIR *dir = NULL;
 	gint i, max, v, num_entries = 0;
-	gchar *full;
+	gchar *full = NULL;
 
 	if (mask & ~(Bonobo_FIELD_CONTENT_TYPE | Bonobo_FIELD_SIZE |
 		     Bonobo_FIELD_TYPE)) {
@@ -220,8 +231,10 @@ fs_list_contents (BonoboStorage *storage, const CORBA_char *path,
 		
 		if ((de->d_name[0] == '.' && de->d_name[1] == '\0') ||
 		    (de->d_name[0] == '.' && de->d_name[1] == '.' 
-		     && de->d_name[2] == '\0'))
+		     && de->d_name[2] == '\0')) {
+			i--;
 			continue; /* Ignore . and .. */
+		}
 
 		buf [i].name = CORBA_string_dup (de->d_name);
 		buf [i].size = 0;
@@ -229,10 +242,37 @@ fs_list_contents (BonoboStorage *storage, const CORBA_char *path,
 
 		full = g_concat_dir_and_file (storage_fs->path, de->d_name);
 		v = stat (full, &st);
-		g_free (full);
 
-		if (v == -1) 
+		if (v == -1) {
+			/*
+			 * The stat failed -- two common cases are where
+			 * the file was removed between the call to readdir
+			 * and the iteration, and where the file is a dangling
+			 * symlink.
+			 */
+			if (errno == ENOENT || errno == ELOOP) {
+				v = lstat (full, &st);
+				if (v == 0) {
+					/* FIXME - x-symlink/dangling is odd */
+					buf [i].size = st.st_size;
+					buf [i].type = Bonobo_STORAGE_TYPE_REGULAR;
+					buf [i].content_type =
+						CORBA_string_dup ("x-symlink/dangling");
+					g_free (full);
+					num_entries++;
+					continue;
+				}
+			}
+
+			/* Unless it's something grave, just skip the file */
+			if (errno != ENOMEM && errno != EFAULT && errno != ENOTDIR) {
+				i--;
+				g_free (full);
+				continue;
+			}
+
 			goto list_contents_except;
+		}
 
 		buf [i].size = st.st_size;
 	
@@ -243,8 +283,10 @@ fs_list_contents (BonoboStorage *storage, const CORBA_char *path,
 		} else { 
 			buf [i].type = Bonobo_STORAGE_TYPE_REGULAR;
 			buf [i].content_type = 
-				CORBA_string_dup ("application/octet-stream");
+				CORBA_string_dup (gnome_mime_type_of_file (full));
 		}
+
+		g_free (full);
 
 		num_entries++;
 	}
@@ -262,6 +304,9 @@ fs_list_contents (BonoboStorage *storage, const CORBA_char *path,
 
 	if (list) 
 		CORBA_free (list);
+
+	if (full)
+		g_free (full);
 	
 	if (errno == ENOENT) 
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
@@ -294,11 +339,11 @@ fs_erase (BonoboStorage *storage,
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
 					     ex_Bonobo_Storage_NotFound, 
 					     NULL);
-		else if (errno == ENOTEMPTY) 
+		else if (errno == ENOTEMPTY || errno == EEXIST)
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
 					     ex_Bonobo_Storage_NotEmpty, 
 					     NULL);
-		else if ((errno == EACCES) || (errno = EPERM)) 
+		else if (errno == EACCES || errno == EPERM)
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
 					     ex_Bonobo_Storage_NoPermission, 
 					     NULL);
@@ -376,7 +421,7 @@ bonobo_storage_fs_open (const char *path, gint flags, gint mode,
 	g_return_val_if_fail (ev != NULL, NULL);
 
 	/* Most storages are files */
-	mode = mode | 010101;
+	mode = mode | 0111;
 
 	if ((flags & Bonobo_Storage_CREATE) &&
 	    (mkdir (path, mode) == -1) && (errno != EEXIST)) {

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-selector.c: Bonobo Component Selector
  *
  * Authors:
@@ -27,8 +27,7 @@
 
 static GtkDialogClass *parent_class;
 
-struct _BonoboSelectorPrivate 
-{
+struct _BonoboSelectorPrivate {
 	BonoboSelectorWidget *selector;
 };
 
@@ -127,7 +126,7 @@ cancel_callback (GtkWidget *widget, gpointer data)
 }
 
 /**
- * gnome_bonobo_select_id:
+ * bonobo_selector_select_id:
  * @title: The title to be used for the dialog.
  * @interfaces_required: A list of required interfaces.  See
  * bonobo_selector_new().

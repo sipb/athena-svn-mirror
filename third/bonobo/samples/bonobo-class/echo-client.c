@@ -35,11 +35,18 @@ init_bonobo (int argc, char *argv [])
 	bonobo_activate ();
 }
 
+static void
+usage (void)
+{
+	fprintf (stderr, "To use this program run oaf-slay, then type\n"
+		 "bonobo-echo & # to register the echoing server\n"
+		 "then run echo-client to see the echo\n");
+}
+
 int 
 main (int argc, char *argv [])
 {
-	BonoboObjectClient *server;
-	Bonobo_Sample_Echo           echo_server;
+	Bonobo_Sample_Echo  echo_server;
 	CORBA_Environment   ev;
 	char               *obj_id;
 
@@ -47,28 +54,23 @@ main (int argc, char *argv [])
 
 	obj_id = "OAFIID:Bonobo_Sample_Echo";
 
-	server = bonobo_object_activate (obj_id, 0);
+	CORBA_exception_init (&ev);
 
-	if (!server) {
+	echo_server = bonobo_get_object (obj_id, "IDL:Bonobo/Sample/Echo:1.0", &ev);
+
+	if (echo_server == CORBA_OBJECT_NIL) {
 		printf ("Could not create an instance of the %s component", obj_id);
 		return 1;
 	}
 
-	CORBA_exception_init (&ev);
-
-	/*
-	 * Get the CORBA Object reference from the BonoboObjectClient
-	 */
-	echo_server = BONOBO_OBJREF (server);
-
-	/*
-	 * Send a message
-	 */
+	/* Send a message */
 	Bonobo_Sample_Echo_echo (echo_server, "This is the message from the client\n", &ev);
+	if (BONOBO_EX (&ev))
+		usage ();
 
 	CORBA_exception_free (&ev);
 
-	bonobo_object_unref (BONOBO_OBJECT (server));
+	bonobo_object_release_unref (echo_server, NULL);
 	
 	return 0;
 }

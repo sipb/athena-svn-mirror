@@ -26,7 +26,7 @@
 
 #include "efs.h"
 
-//#define TESTSIZE ((512/4)*(16+127+127*127+127*127*2))
+/*#define TESTSIZE ((512/4)*(16+127+127*127+127*127*2))*/
 #define TESTSIZE (1024*1)
 
 #define SR(x) { show_result(x); g_assert_not_reached (); }

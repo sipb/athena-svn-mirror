@@ -42,19 +42,19 @@ typedef struct {
 	BonoboMonikerExtenderFn resolve;
 } BonoboMonikerExtenderClass;
 
-GtkType                          bonobo_moniker_extender_get_type            (void);
-BonoboMonikerExtender           *bonobo_moniker_extender_new                 (BonoboMonikerExtenderFn      resolve,
-									      gpointer                     data);
+GtkType                bonobo_moniker_extender_get_type (void);
+BonoboMonikerExtender *bonobo_moniker_extender_new      (BonoboMonikerExtenderFn      resolve,
+							 gpointer                     data);
+ 
+Bonobo_MonikerExtender bonobo_moniker_find_extender     (const gchar                 *name,
+							 const gchar                 *interface,
+							 CORBA_Environment           *ev);
 
-Bonobo_MonikerExtender           bonobo_moniker_find_extender                (const gchar                 *name,
-									      const gchar                 *interface,
-									      CORBA_Environment           *ev);
-
-Bonobo_Unknown                   bonobo_moniker_use_extender                 (const gchar                 *extender_oafiid,
-									      BonoboMoniker               *moniker,
-									      const Bonobo_ResolveOptions *options,
-									      const CORBA_char            *requested_interface,
-									      CORBA_Environment           *ev);
+Bonobo_Unknown         bonobo_moniker_use_extender      (const gchar                 *extender_oafiid,
+							 BonoboMoniker               *moniker,
+							 const Bonobo_ResolveOptions *options,
+							 const CORBA_char            *requested_interface,
+							 CORBA_Environment           *ev);
 
 END_GNOME_DECLS
 

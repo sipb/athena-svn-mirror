@@ -2,7 +2,7 @@
 #include <config.h>
 
 #include <bonobo/Bonobo.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 
 #define gray50_width 2
 #define gray50_height 2

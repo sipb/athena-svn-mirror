@@ -83,6 +83,7 @@ Creates a server that will handle transient objects.
       The interface name implemented by the object named before.  This
       is the CORBA interface name that your object implements, for
       example "IDL:Echo/echo:1.0".
+    </para>
   </listitem>
 </itemizedlist>
 
@@ -148,11 +149,11 @@ init_transient ()
  
 <para>
    The previous example shows: how the
-   <variable>my_transient</variable> object is first created, and how
+   <parameter>my_transient</parameter> object is first created, and what
    the implementations for the create_servant and destroy_servant look
    like.  It does not make use of the user pointer, so it passes
-   NULL.  But applications will most likely want to pass data here to
-   the new_servant and destroy_servant methods.  
+   NULL.  However, in practice, applications will most likely want to
+   pass data here to the new_servant and destroy_servant methods.  
 </para>
 
 <para>
@@ -167,45 +168,6 @@ init_transient ()
 <para>
   <classname>BonoboPropertyBag</classname>
 </para>
-
-<!-- ##### MACRO BONOBO_TRANSIENT_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_TRANSIENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_TRANSIENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_TRANSIENT ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_TRANSIENT_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### TYPEDEF BonoboTransient ##### -->
 <para>
@@ -245,6 +207,19 @@ init_transient ()
 
 </para>
 
+@poa: 
+@new_servant: 
+@destroy_servant: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_transient_construct ##### -->
+<para>
+
+</para>
+
+@transient: 
 @poa: 
 @new_servant: 
 @destroy_servant: 

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-moniker-simple: Simplified object naming abstraction
  *
  * Author:
@@ -46,10 +46,9 @@ BONOBO_X_TYPE_FUNC (BonoboMonikerSimple,
 
 /**
  * bonobo_moniker_simple_construct:
- * @moniker: 
- * @corba_moniker: 
- * @name: 
- * @resolve_fn: 
+ * @moniker: the moniker to construct
+ * @name: the name of the moniker eg. 'file:'
+ * @resolve_fn: the function used to resolve the moniker
  * 
  * Constructs a simple moniker
  * 

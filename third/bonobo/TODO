@@ -19,14 +19,6 @@ Bugs to fix
 General Cleanup
 ===============
 
-* XML DTD for UI handler stuff (Martin)
-
-Controls etc
-------------
-* doc new control/control frame functions
-* system exception should be on gnome object client. sigh.
-* Doc GnomeBonoboWidget functions
-
 Bonobo-endemic issues
 ---------------------
 
@@ -37,11 +29,11 @@ Bonobo-endemic issues
 
 Bonobo Core (files in bonobo/)
 ------------------------------
-* Fix CORBA robustness issues (SIGSEGV on unfinished corba method invocation)
-* UIHandler documented
-* Move remaining test code out of bonobo/bonobo.
+* Fix CORBA robustness issues (SIGSEGV on unfinished corba method
+  invocation)
 
 Interfaces (files in idl/)
 --------------------------
 * Documented.
 * Clean, API-doc'd IDL files.
+

@@ -1,39 +1,41 @@
-#!@XML_I18N_TOOLS_PERL@ -w 
+#!@INTLTOOL_PERL@ -w 
 # -*- Mode: perl; indent-tabs-mode: nil; c-basic-offset: 4  -*-
 
 #
-#  The XML Translation Extractor
+#  The Intltool Message Extractor
 #
-#  Copyright (C) 2000 Free Software Foundation.
+#  Copyright (C) 2000-2001 Free Software Foundation.
 #
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License as
+#  Intltool is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Library General Public License as
 #  published by the Free Software Foundation; either version 2 of the
 #  License, or (at your option) any later version.
 #
-#  This script is distributed in the hope that it will be useful,
+#  Intltool is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
+#  Library General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with this library; if not, write to the Free Software
-#  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#  You should have received a copy of the GNU Library General Public
+#  License along with the Gnome Library; see the file COPYING.LIB.  If not,
+#  write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+#  Boston, MA 02111-1307, USA.
 #
 #  Authors: Kenneth Christiansen <kenneth@gnu.org>
-#           Darin Adler <darin@eazel.com>
+#           Darin Adler <darin@bentspoon.com>
 #
 
 ## Release information
-my $PROGRAM      = "xml-i18n-extract";
-my $PACKAGE      = "xml-i18n-tools";
-my $VERSION      = "0.7";
+my $PROGRAM      = "intltool-extract";
+my $PACKAGE      = "intltool";
+my $VERSION      = "0.9.6";
 
 ## Script options - Enable by setting value to 1
-my $ENABLE_INI   = "1"; ## desktop and alike files
-my $ENABLE_KEYS  = "1"; ## mimetype descriptions
-my $ENABLE_GLADE = "1"; ## glade files
-my $ENABLE_XML 	 = "1"; ## generic xml files
+my $ENABLE_INI    = "1"; ## desktop and alike files
+my $ENABLE_KEYS   = "1"; ## mimetype descriptions
+my $ENABLE_GLADE  = "1"; ## glade files
+my $ENABLE_XML 	  = "1"; ## generic xml files
+my $ENABLE_SCHEME = "1"; ## scheme files
 
 ## Loaded modules
 use strict; 
@@ -55,6 +57,9 @@ my $gettext_type = "";
 my $input;
 my %messages = ();
 
+## Use this instead of \w for XML files to handle more possible characters.
+my $w = "[-A-Za-z0-9._:]";
+
 ## Always print first
 $| = 1;
 
@@ -62,7 +67,7 @@ $| = 1;
 GetOptions (
 	    "type=s"     => \$TYPE_ARG,
             "local|l"    => \$LOCAL_ARG,
-            "help|h|?"   => \$HELP_ARG,
+            "help|h"     => \$HELP_ARG,
             "version|v"  => \$VERSION_ARG,
             "update"     => \$UPDATE_ARG,
 	    "quiet|q"    => \$QUIET_ARG,
@@ -145,7 +150,6 @@ sub help{
 
 ## Sub for printing error messages
 sub error{
-#   print "xml-i18n-extract: invalid option @ARGV\n";
     print "Try `${PROGRAM} --help' for more information.\n";
     exit;
 }
@@ -180,6 +184,7 @@ sub convert($) {
     &type_keys;
     &type_xml;
     &type_glade;
+    &type_scheme;
 }
 
 sub type_ini {
@@ -219,12 +224,12 @@ sub type_xml {
         
         if ($gettext_type eq "xml"){
 
-            while ($input =~ /[\t\n\s]_\w+=\"([^\"]+)\"/sg) {
+            while ($input =~ /[\t\n\s]_$w+=\"([^\"]+)\"/sg) {
                 $messages{$1} = [];
             }
 
-            while ($input =~ /<_\w+>([^_]+)<\/_\w+>/sg) {
-                $messages{$1} = [];
+            while ($input =~ /<_($w+)>([^<]+)<\/_\1>/sg) {
+                $messages{$2} = [];
             }
 
 	}
@@ -240,14 +245,14 @@ sub type_glade {
         if ($gettext_type eq "glade"){
 
             my $translate = "label|title|text|format|copyright|comments|
-                             preview_text|tooltip";
+                             preview_text|tooltip|message";
 
             while ($input =~ /<($translate)>([^<]+)<\/($translate)>/sg) {
 
                 # Glade has some bugs, especially it uses translations tags to contain little
                 # non-translatable content. We work around this, by not including these
                 # strings that only includes something like: label4, and window1
-                if ($2 !~ /^(window|label)[0-9]$/) {
+                if ($2 !~ /^(window|label)[0-9]+$/) {
                     $messages{$2} = [];
                 }
             }
@@ -262,6 +267,21 @@ sub type_glade {
 	}
     }
 
+}
+
+sub type_scheme {
+
+    if ($ENABLE_SCHEME) {
+
+	### For translatable scheme files ###
+
+	if ($gettext_type eq "scheme"){
+
+	    while ($input =~ /_\(?"((?:[^"\\]+|\\.)*)"\)?/sg) {
+		$messages{$1} = [];
+	    }
+	}
+    }
 }
 
 sub msg_write {

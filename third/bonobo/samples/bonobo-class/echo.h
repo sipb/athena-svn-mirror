@@ -3,7 +3,7 @@
 #define ECHO_H_
 
 #include <libgnome/gnome-defs.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
@@ -14,20 +14,19 @@ BEGIN_GNOME_DECLS
 #define IS_ECHO_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), ECHO_TYPE))
 
 typedef struct {
-	BonoboObject parent;
+	BonoboXObject parent;
 
 	char *instance_data;
 } Echo;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
+
+	POA_Bonobo_Sample_Echo__epv epv;
 } EchoClass;
 
 GtkType   	    echo_get_type  (void);
-Echo      	   *echo_construct (Echo *echo, Bonobo_Sample_Echo corba_echo);
 Echo      	   *echo_new       (void);
-
-POA_Bonobo_Sample_Echo__epv *echo_get_epv (void);
 
 END_GNOME_DECLS
 
