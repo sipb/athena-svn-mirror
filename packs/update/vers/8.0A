@@ -13,6 +13,9 @@ RSAIX)
 SUN*)
 	sh remove_files
 	sh create_files
+	rm -f /var/sadm
+	mkdir /var/sadm
+	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                     >> ${CONFVARS}
