@@ -93,6 +93,60 @@ fi
 sed -e '/^COLOR/s/tty/none/' /etc/DIR_COLORS > /etc/DIR_COLORS.new
 mv -f /etc/DIR_COLORS.new /etc/DIR_COLORS
 
+%triggerin -- kernel >= 2.4.9
+# punt on smp machines
+if uname -r|grep -q smp ; then
+  exit 0
+fi
+
+# switch root and boot filesystems to ext3 (if not done already)
+umask 022
+if grep -q '[ 	]/[ 	].*ext2' /etc/fstab ; then
+  sed -e '/[ 	]\/[ 	]/s/ext2/ext3/' /etc/fstab > /etc/fstab.new
+  mv -f /etc/fstab.new /etc/fstab
+  buildext3=true
+fi
+if grep -q '[ 	]/boot[ 	].*ext2' /etc/fstab ; then
+  sed -e '/[ 	]\/boot[ 	]/s/ext2/ext3/' /etc/fstab > /etc/fstab.new
+  mv -f /etc/fstab.new /etc/fstab
+  buildext3=true
+fi
+
+# add ext3 system support
+if [ "${buildext3}" == true ] ; then
+  rootfs=`sed -n -e '/[ 	]\/[ 	]/s/[ 	].*//p' /etc/fstab`
+  bootfs=`sed -n -e '/[ 	]\/boot[ 	]/s/[ 	].*//p' /etc/fstab`
+  oldkernelversion=`uname -r`
+  oldkernelversion=${oldkernelversion%smp}
+  newkernelversion=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'`
+  if [ -z "${newkernelversion}" ] ; then
+    echo "No kernel detected, build initrd and modify lilo.conf by hand."
+    exit 0
+  fi
+
+  # build ext3 journals
+  tune2fs -j ${rootfs}
+  tune2fs -j ${bootfs}
+
+  # add initrd entry (or entries) to anything in /etc/lilo.conf that matches
+  if ! grep -q initrd=/boot/initrd-${oldkernelversion}'[^0-9]*'.img /etc/lilo.conf ; then
+    sed -e '/image=\/boot\/vmlinuz-'${oldkernelversion}'$/s/$/\
+	initrd=\/boot\/initrd-'${oldkernelversion}.img/ \
+	-e '/image=\/boot\/vmlinuz-'${oldkernelversion}smp'$/s/$/\
+	initrd=\/boot\/initrd-'${oldkernelversion}smp.img/ /etc/lilo.conf \
+	> /etc/lilo.conf.new
+    mv -f /etc/lilo.conf.new /etc/lilo.conf
+  fi
+  # if there's not a concurrent kernel update, we need to run lilo here
+  if [ "${oldkernelversion}" == "${newkernelversion}" ] ; then
+    mkinitrd -f /boot/initrd-${newkernelversion}.img ${newkernelversion}
+    if grep -q initrd=/boot/initrd-${oldkernelversion}smp.img /etc/lilo.conf ; then
+      mkinitrd -f /boot/initrd-${newkernelversion}smp.img ${newkernelversion}smp
+    fi
+    /sbin/lilo
+  fi
+fi
+
 %post
 chkconfig --add athena-ws
 chkconfig --add athena-verify
