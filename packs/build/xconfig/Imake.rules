@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM Imake rules for building libraries, programs, scripts, and data files
-XCOMM rules:  $XConsortium: Imake.rules,v 1.126 91/12/30 20:14:35 rws Exp $
+XCOMM rules:  $XConsortium: Imake.rules,v 1.129 92/05/29 17:01:19 rws Exp $
 
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
@@ -12,6 +12,7 @@ XCOMM rules:  $XConsortium: Imake.rules,v 1.126 91/12/30 20:14:35 rws Exp $
  * The following macros are defined for the various templates and Imakefiles
  * (for a list of the applicable make variables, see the template files):
  * 
+ * SaberLoadTarget		(target,srclist,libs,defines)
  * SaberProgramTarget		(program,srclist,objlist,locallibs,syslibs)
  * RemoveTargetProgram		(program)
  * MakeDir			(dir)
@@ -69,6 +70,7 @@ XCOMM rules:  $XConsortium: Imake.rules,v 1.126 91/12/30 20:14:35 rws Exp $
  * NormalFortranObjectRule	()
  * ObjectFromSpecialSource	(dst,src,flags)
  * SpecialObjectRule		(objs,depends,options)
+ * SpecialCObjectRule		(basename,depends,options)
  * NormalLibraryTarget		(libname,objlist)
  * NormalLibraryTarget2		(libname,objlist1,objlist2)
  * NormalLibraryTarget3		(libname,objlist1,objlist2,objlist3)
@@ -146,21 +148,27 @@ XCOMM rules:  $XConsortium: Imake.rules,v 1.126 91/12/30 20:14:35 rws Exp $
 #endif
 
 /*
+ * SaberLoadTarget - generate rules to load Saber-C files
+ */
+#ifndef SaberLoadTarget
+#if HasSaberC
+#define SaberLoadTarget(target,srclist,libs,defines)			@@\
+target:: srclist							@@\
+	XCOMM load defines srclist libs
+#else
+#define SaberLoadTarget(target,srclist,libs,defines) /**/
+#endif
+#endif
+
+/*
  * SaberProgramTarget - generate rules to make Saber-C read in sources and
  * objects.
  */
 #ifndef SaberProgramTarget
-#if HasSaberC
 #define SaberProgramTarget(program,srclist,objlist,locallibs,syslibs)	@@\
-Concat(saber_,program):: srclist					@@\
-	XCOMM load $(ALLDEFINES) srclist locallibs $(SYS_LIBRARIES) $(EXTRA_LIBRARIES) syslibs @@\
+SaberLoadTarget(Concat(saber_,program),srclist,$(LDOPTIONS) locallibs $(SYS_LIBRARIES) $(EXTRA_LIBRARIES) syslibs,$(ALLDEFINES))					@@\
 									@@\
-Concat(osaber_,program):: objlist					@@\
-	XCOMM load $(ALLDEFINES) objlist locallibs $(SYS_LIBRARIES) $(EXTRA_LIBRARIES) syslibs
-
-#else
-#define SaberProgramTarget(program,srclist,objlist,locallibs,syslibs) /**/
-#endif
+SaberLoadTarget(Concat(osaber_,program),objlist,$(LDOPTIONS) locallibs $(SYS_LIBRARIES) $(EXTRA_LIBRARIES) syslibs,$(ALLDEFINES))
 #endif
 
 #ifndef RemoveTargetProgram
@@ -822,21 +830,6 @@ BuildMakefileTarget(Imakefile,NullParameter)
 	$(FC) -c $(FCFLAGS) $*.f
 #endif
 
-#ifndef ObjectFromSpecialSource
-#define ObjectFromSpecialSource(dst,src,flags)				@@\
-dst.c:  src.c								@@\
-	$(RM) $@							@@\
-	$(LN) $? $@							@@\
-									@@\
-dst.o:  dst.c								@@\
-	ObjectCompile(flags)						@@\
-									@@\
-depend::  dst.c								@@\
-									@@\
-clean::									@@\
-	$(RM) dst.c
-#endif /* ObjectFromSpecialSource */
-
 /*
  * SpecialObjectRule - generate rules to compile a file with special flags.
  */
@@ -846,6 +839,32 @@ objs:	depends								@@\
 	ObjectCompile(options)
 #endif /* SpecialObjectRule */
 
+
+/*
+ * SpecialCObjectRule - generate rules to compile a C file with special flags.
+ *			also handles Saber rules
+ */
+#ifndef SpecialCObjectRule
+#define SpecialCObjectRule(basename,depends,options)			@@\
+SpecialObjectRule(basename.o,basename.c depends,options)		@@\
+									@@\
+SaberLoadTarget(saber,basename.c,NullParameter,$(ALLDEFINES) options)
+#endif /* SpecialCObjectRule */
+
+
+#ifndef ObjectFromSpecialSource
+#define ObjectFromSpecialSource(dst,src,flags)				@@\
+dst.c:  src.c								@@\
+	$(RM) $@							@@\
+	$(LN) $? $@							@@\
+									@@\
+SpecialCObjectRule(dst,NullParameter,flags)				@@\
+									@@\
+depend::  dst.c								@@\
+									@@\
+clean::									@@\
+	$(RM) dst.c
+#endif /* ObjectFromSpecialSource */
 
 /*
  * NormalLibraryTarget - generate rules to create a library.
@@ -1272,7 +1291,7 @@ target::								@@\
 #ifdef UseInstalled
 #define ImakeSubCmdHelper $(IMAKE_CMD)
 #else
-#define ImakeSubCmdHelper $$imaketop$(NEWTOP)$(IMAKE) -I$$imaketop$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES)
+#define ImakeSubCmdHelper $$imaketop$(IMAKE) -I$$imaketop$(IRULESRC) $(IMAKE_DEFINES)
 #endif
 
 #endif /* MakeMakeSubdirs */

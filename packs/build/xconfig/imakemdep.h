@@ -1,5 +1,5 @@
 /*
- * $XConsortium: imakemdep.h,v 1.41 91/10/31 10:37:56 rws Exp $
+ * $XConsortium: imakemdep.h,v 1.42 92/05/29 18:40:52 rws Exp $
  * 
  * This file contains machine-dependent constants for the imake utility.
  * When porting imake, read each of the steps below and add in any necessary
@@ -280,6 +280,18 @@ struct symtab	predefs[] = {
 #endif
 #ifdef sun
 	{"sun", "1"},
+#endif
+#ifdef sun2
+	{"sun2", "1"},
+#endif
+#ifdef sun3
+	{"sun3", "1"},
+#endif
+#ifdef sun4
+	{"sun4", "1"},
+#endif
+#ifdef sparc
+	{"sparc", "1"},
 #endif
 #ifdef hpux
 	{"hpux", "1"},

@@ -1,4 +1,4 @@
-XCOMM platform:  $XConsortium: sun.cf,v 1.73 92/03/18 13:10:14 rws Exp $
+XCOMM platform:  $XConsortium: sun.cf,v 1.77 92/05/29 18:37:21 rws Exp $
 
 #define OSName            SunOS 4.1.2
 XCOMM operating system:  OSName
@@ -28,22 +28,16 @@ XCOMM operating system:  OSName
 #define BuildPexExt	  XsunServer
 #define InstKmemFlags	  -g kmem -m 2755
 
-#ifdef sparc
-#undef sparc
-#define SparcArchitecture
-#endif
-#ifdef sun386
-#undef sun386
-#define i386Architecture
-#endif
-
 #include <sunLib.rules>
 
 #if HasGcc
-
+#if HasGcc2
+#define OptimizedCDebugFlags -O2
+#else
 #define SharedLibraryCcCmd cc
 #define ExtraLoadFlags -B/usr/bin/
 #define AllocateLocalDefines /**/
+#endif
 
 .c.o:
 	$(CC) -c $(CFLAGS) $*.c
@@ -52,7 +46,7 @@ XCOMM operating system:  OSName
 
 #define AllocateLocalDefines -DINCLUDE_ALLOCA_H
 
-#ifdef mc68000
+#ifdef Sun3Architecture
 #define DefaultCCOptions -f68881 -pipe
 #else
 #define DefaultCCOptions -pipe

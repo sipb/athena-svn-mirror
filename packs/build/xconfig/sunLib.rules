@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sunLib.rules,v 1.7 91/12/20 11:19:47 rws Exp $
+XCOMM $XConsortium: sunLib.rules,v 1.8 92/05/22 11:47:31 rws Exp $
 
 /*
  * SunOS shared library rules
@@ -23,7 +23,11 @@ XCOMM $XConsortium: sunLib.rules,v 1.7 91/12/20 11:19:47 rws Exp $
 #define SharedLibraryLoadFlags -assert pure-text
 #endif
 #ifndef PositionIndependentCFlags
+#if HasGcc2
+#define PositionIndependentCFlags -fpic
+#else
 #define PositionIndependentCFlags -pic
+#endif
 #endif
 
 /*

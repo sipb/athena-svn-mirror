@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sgiLib.rules,v 1.5 91/03/25 09:52:02 rws Exp $
+XCOMM $XConsortium: sgiLib.rules,v 1.6 92/05/29 17:05:46 rws Exp $
 
 #ifndef HasSharedLibraries
 #define HasSharedLibraries YES
@@ -18,7 +18,7 @@ XCOMM $XConsortium: sgiLib.rules,v 1.5 91/03/25 09:52:02 rws Exp $
 #define SharedLibraryTarget(libname,rev,solist,down,up)			@@\
 AllTarget(Concat3(lib,libname,_s))					@@\
 									@@\
-Concat3(lib,libname,_s: sharedlib.o solist Concat(lib,libname.spec)	@@\
+Concat3(lib,libname,_s): sharedlib.o solist Concat(lib,libname.spec)	@@\
 	$(RM) $@ $@.a \							@@\
 	&& cd down \							@@\
 	&& mkshlib -s Concat(up/lib,libname.spec) -t up/$@ -h up/$@.a \	@@\

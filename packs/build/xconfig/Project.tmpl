@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.147 92/05/26 11:58:01 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.149 92/06/01 19:39:56 rws Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -142,16 +142,22 @@ XCOMM $XConsortium: Project.tmpl,v 1.147 92/05/26 11:58:01 rws Exp $
 #define ProfileLibXinput	NO	/* profiled Xi library */
 #endif
 #ifndef DebugLibXTest
-#define DebugLibXTest		NO	/* debugged XTest library */
+#define DebugLibXTest		NO	/* debugged Xtst library */
 #endif
 #ifndef ProfileLibXTest
-#define ProfileLibXTest		NO	/* profiled XTest library */
+#define ProfileLibXTest		NO	/* profiled Xtst library */
 #endif
 #ifndef DebugLibXTrap
 #define DebugLibXTrap		NO	/* debugged XTrap library */
 #endif
 #ifndef ProfileLibXTrap
 #define ProfileLibXTrap		NO	/* profiled XTrap library */
+#endif
+#ifndef DebugLibPex
+#define DebugLibPex		NO	/* debugged PEX5 library */
+#endif
+#ifndef ProfileLibPex
+#define ProfileLibPex		NO	/* profiled PEX5 library */
 #endif
 #ifndef ManDirectoryRoot
 #ifdef ProjectRoot
@@ -372,11 +378,13 @@ XCOMM $XConsortium: Project.tmpl,v 1.147 92/05/26 11:58:01 rws Exp $
 #define PexApiDir $(LIBDIR)/PEX
 #endif
 #ifndef XFileSearchPathBase
-#define XFileSearchPathBase $(LIBDIR)/%L/%T/%N%C%S:$(LIBDIR)/%l/%T/%N%C%S:$(LIBDIR)/%T/%N%C%S:$(LIBDIR)/%L/%T/%N%S:$(LIBDIR)/%l/%T/%N%S:$(LIBDIR)/%T/%N%S
+/* avoid SCCS keyword */
+#define XFileSearchPathBase Concat4($(LIBDIR)/%L/%T/%N%C,%S:$(LIBDIR)/%l/%T/%N%C,%S:$(LIBDIR)/%T/%N%C,%S:$(LIBDIR)/%L/%T/%N%S:$(LIBDIR)/%l/%T/%N%S:$(LIBDIR)/%T/%N%S)
 #endif
 #ifndef XFileSearchPathDefault
 #ifdef XAppLoadDir
-#define XFileSearchPathDefault XAppLoadDir/%N%C%S:XAppLoadDir/%N%S:XFileSearchPathBase
+/* avoid SCCS keyword */
+#define XFileSearchPathDefault XAppLoadDir/Concat(%N%C,%S):XAppLoadDir/%N%S:XFileSearchPathBase
 #else
 #define XFileSearchPathDefault XFileSearchPathBase
 #endif

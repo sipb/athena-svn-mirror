@@ -1,14 +1,18 @@
-XCOMM platform:  $XConsortium: hp.cf,v 1.48 91/12/18 09:43:08 rws Exp $
+XCOMM platform:  $XConsortium: hp.cf,v 1.52 92/05/11 10:20:19 rws Exp $
 
-#define OSName                 HP-UX 7.0
+#define OSName                 HP-UX 8.07
 XCOMM operating system:  OSName
-#define OSMajorVersion         7
+#define OSMajorVersion         8
 #define OSMinorVersion         0
 
 #define SystemV                YES
 #define Malloc0ReturnsNull     YES
-#ifdef hp9000s800
+#ifdef __hp9000s800
 #define OptimizedCDebugFlags   +O1
+#define DefaultCCOptions       -Aa +ESlit
+#define SharedLibraryCCOptions -Aa
+#define StandardDefines        -Dhpux -DSYSV -D_HPUX_SOURCE
+/* #include <hpLib.rules> */
 #else
 #define DefaultCCOptions       -Wc,-Nd4000,-Ns4100,-Ne700,-Np200,-Nw300
 #define PexCCOptions           -Wp,-H150000 -Wc,-Nd4000,-Ns8100,-Ne700,-Np200
@@ -22,9 +26,10 @@ XCOMM operating system:  OSName
 #define HasVFork               YES
 #define RemoveTargetProgramByMoving YES
 #define ExpandManNames         YES
+#define HasPutenv              YES
 
 #define BuildServer            NO
-#define NeedBerklib            BuildServer
+#define NeedBerklib            (BuildServer|BuildFontServer)
 
 #if OSMajorVersion < 6 || (OSMajorVersion == 6 && OSMinorVersion < 2)
 #define ConnectionFlags		-DTCPCONN	/* no unix sockets */

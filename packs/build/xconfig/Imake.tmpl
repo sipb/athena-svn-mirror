@@ -7,7 +7,7 @@
 #endif
 XCOMM -------------------------------------------------------------------------
 XCOMM Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-XCOMM $XConsortium: Imake.tmpl,v 1.143 92/01/02 15:35:08 rws Exp $
+XCOMM $XConsortium: Imake.tmpl,v 1.155 92/06/01 18:33:08 rws Exp $
 XCOMM
 XCOMM Platform-specific parameters may be set in the appropriate <vendor>.cf
 XCOMM configuration files.  Site-specific parameters should be set in the file
@@ -66,6 +66,18 @@ XCOMM
 #ifdef sun
 #define MacroIncludeFile <sun.cf>
 #define MacroFile sun.cf
+#ifdef sparc
+#undef sparc
+#define SparcArchitecture
+#endif
+#ifdef mc68000
+#undef mc68000
+#define Sun3Architecture
+#endif
+#ifdef i386
+#undef i386
+#define i386Architecture
+#endif
 #undef sun
 #define SunArchitecture
 #endif /* sun */
@@ -277,6 +289,10 @@ XCOMM the platform-specific parameters - edit site.def to change
 #include <site.def>
 #undef BeforeVendorCF
 
+#if defined(HasGcc2) && !defined(HasGcc)
+#define HasGcc HasGcc2
+#endif
+
 XCOMM -------------------------------------------------------------------------
 XCOMM platform-specific configuration parameters - edit MacroFile to change
 #include MacroIncludeFile
@@ -304,6 +320,17 @@ XCOMM platform-specific configuration parameters - edit MacroFile to change
 #define Concat3(a,b,c)a##b##c
 #else
 #define Concat3(a,b,c)a/**/b/**/c
+#endif
+#endif
+
+/*
+ * Concat4 - concatenates four strings.
+ */
+#ifndef Concat4
+#if __STDC__ && !defined(UnixCpp)
+#define Concat4(a,b,c,d)a##b##c##d
+#else
+#define Concat4(a,b,c,d)a/**/b/**/c/**/d
 #endif
 #endif
 
@@ -358,8 +385,12 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef HasLargeTmp
 #define HasLargeTmp		NO	/* be paranoid */
 #endif
+
+#ifndef HasBSD44Sockets
+#define HasBSD44Sockets		NO
+#endif
 #ifndef HasSockets
-#if SystemV || SystemV4
+#if (SystemV || SystemV4) && (!HasBSD44Sockets)
 #define HasSockets		NO	/* do not assume it has them */
 #else
 #define HasSockets		YES	/* bsd does have them */
@@ -506,14 +537,21 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef BootstrapCFlags
 #define BootstrapCFlags /**/
 #endif
+#ifndef HasGcc2
+#define HasGcc2 NO
+#endif
 #ifndef HasGcc
-#define HasGcc NO
+#define HasGcc HasGcc2
 #endif
 #ifndef CcCmd
+#if HasGcc2
+#define CcCmd gcc -fpcc-struct-return 
+#else
 #if HasGcc
 #define CcCmd gcc -fstrength-reduce -fpcc-struct-return 
 #else
 #define CcCmd cc
+#endif
 #endif
 #endif
 #if HasFortran
@@ -539,12 +577,12 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef PreProcessCmd
 #define PreProcessCmd CcCmd -E
 #endif
-#ifndef InstallCmd
+#ifndef InstallCmd		/* hack should be in project */
 #if SystemV || SystemV4
 #ifdef UseInstalled
-#define InstallCmd $(BINDIR)/bsdinst		/* hack should be in project */
+#define InstallCmd $(BINDIR)/bsdinst
 #else
-#define InstallCmd $(SCRIPTSRC)/bsdinst.sh	/* hack should be in project */
+#define InstallCmd $(SHELL) $(SCRIPTSRC)/bsdinst.sh
 #endif
 #else
 #define InstallCmd install
@@ -552,6 +590,12 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #ifndef LdCmd
 #define LdCmd ld
+#endif
+#ifndef LexCmd
+#define LexCmd lex
+#endif
+#ifndef YaccCmd
+#define YaccCmd yacc
 #endif
 #ifndef LintCmd
 #define LintCmd lint
@@ -588,9 +632,9 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #ifndef DoRanlibCmd
 #if SystemV || SystemV4
-#define DoRanlibCmd 0
+#define DoRanlibCmd NO
 #else
-#define DoRanlibCmd 1
+#define DoRanlibCmd YES
 #endif
 #endif
 #ifndef RanlibCmd
@@ -639,6 +683,9 @@ XCOMM the platform-specific parameters - edit site.def to change
 #else
 #define ExtraLibraries /**/
 #endif
+#endif
+#ifndef ExtraLoadOptions
+#define ExtraLoadOptions /**/
 #endif
 #ifndef ExtraLoadFlags
 #define ExtraLoadFlags /**/
@@ -713,6 +760,8 @@ XCOMM the platform-specific parameters - edit site.def to change
     PREPROCESSCMD = PreProcessCmd $(STD_CPP_DEFINES)	/* prefered; mdep */
           INSTALL = InstallCmd
                LD = LdCmd
+              LEX = LexCmd
+             YACC = YaccCmd
              LINT = LintCmd
       LINTLIBFLAG = LintLibFlag
          LINTOPTS = LintOpts
@@ -733,6 +782,7 @@ XCOMM the platform-specific parameters - edit site.def to change
   STD_CPP_DEFINES = StandardCppDefines
       STD_DEFINES = StandardDefines
  EXTRA_LOAD_FLAGS = ExtraLoadFlags
+  EXTRA_LDOPTIONS = ExtraLoadOptions
   EXTRA_LIBRARIES = ExtraLibraries
              TAGS = TagsCmd
 #if ConstructMFLAGS
@@ -828,9 +878,9 @@ XCOMM the platform-specific parameters - edit site.def to change
            LDLIBS = $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
 #endif
 #if AlternateUsrLibDir && defined(UseInstalled)
-        LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(LOCAL_LDFLAGS) -L$(USRLIBDIR)
+        LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(EXTRA_LDOPTIONS) $(LOCAL_LDFLAGS) -L$(USRLIBDIR)
 #else
-        LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(LOCAL_LDFLAGS)
+        LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(EXTRA_LDOPTIONS) $(LOCAL_LDFLAGS)
 #endif
    LDCOMBINEFLAGS = LdCombineFlags
       DEPENDFLAGS = DependFlags
@@ -844,7 +894,7 @@ XCOMM the platform-specific parameters - edit site.def to change
         IMAKE_CMD = $(IMAKE) -DUseInstalled -I$(IRULESRC) $(IMAKE_DEFINES)
 #else
          IRULESRC = $(CONFIGSRC)
-        IMAKE_CMD = $(NEWTOP)$(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES)
+        IMAKE_CMD = $(IMAKE) -I$(IRULESRC) $(IMAKE_DEFINES)
 #endif
      ICONFIGFILES = $(IRULESRC)/Imake.tmpl $(IRULESRC)/Imake.rules \
 			$(IRULESRC)/Project.tmpl $(IRULESRC)/site.def \
@@ -882,14 +932,9 @@ TagsTarget()
 MakefileAdditions()
 #endif
 
-#if HasSaberC
-saber:
-	XCOMM load $(ALLDEFINES) $(SRCS)
+SaberLoadTarget(saber,$(SRCS),NullParameter,$(ALLDEFINES))
 
-osaber:
-	XCOMM load $(ALLDEFINES) $(OBJS)
-#endif
-
+SaberLoadTarget(osaber,$(OBJS),NullParameter,$(ALLDEFINES))
 
 #ifdef IHaveSubdirs
 XCOMM -------------------------------------------------------------------------
