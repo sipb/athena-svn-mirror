@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.18 1993-11-21 03:13:15 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.19 1994-10-31 06:01:45 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZCheckAuthentication_c[] =
@@ -46,11 +46,6 @@ int ZCheckAuthentication(notice, from)
     if (__Zephyr_server) {
 	/* XXX: This routine needs to know where the server ticket
 	   file is! */
-	static char srvtab[MAXPATHLEN];
-	if (srvtab[0] == 0) {
-	    strcpy (srvtab, Z_LIBDIR);
-	    strcat (srvtab, "/srvtab");
-	}
 	if (notice->z_authent_len <= 0)	/* bogus length */
 	    return(ZAUTH_FAILED);
 	if (ZReadAscii(notice->z_ascii_authent, 
@@ -62,7 +57,7 @@ int ZCheckAuthentication(notice, from)
 	authent.length = notice->z_authent_len;
 	result = krb_rd_req(&authent, SERVER_SERVICE, 
 			    SERVER_INSTANCE, from->sin_addr.s_addr, 
-			    &dat, srvtab);
+			    &dat, SERVER_SRVTAB);
 	if (result == RD_AP_OK) {
 		(void) memcpy((char *)__Zephyr_session, (char *)dat.session, 
 			       sizeof(C_Block));
