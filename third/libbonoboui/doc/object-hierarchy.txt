@@ -1,0 +1,56 @@
+BonoboUI Object Hierarchy
+-------------------------
+
+GObject
+ +--- BonoboObject
+       +--- BonoboControl
+       +--- BonoboControlFrame
+       +--- BonoboZoomableFrame
+       +--- BonoboZoomable
+       +--- BonoboCanvasComponent
+       +--- BonoboPropertyControl
+       +--- BonoboUIComponent
+       +--- BonoboUIContainer
+ +--- BonoboUIEngineConfig
+ +--- BonoboUIEngine
+ +--- BonoboUISync
+       +--- BonoboUISyncToolbar
+       +--- BonoboUISyncStatus
+       +--- BonoboUISyncMenu
+       +--- BonoboUISyncKeys
+
+GtkWindow
+ +--- BonoboWindow
+
+GtkBin
+ +--- BonoboWidget
+ +--- BonoboWrapper
+ +--- BonoboUIToolbarItem
+       +--- BonoboUIToolbarSeparatorItem
+       +--- BonoboUIToolbarButtonItem
+             +--- BonoboUIToolbarControlItem
+                   +--- BonoboUIToolbarToggleButtonItem
+                         +--- BonoboUIToolbarPopupItem
+ +--- BonoboDockItem
+       +--- BonoboDockLayoutItem
+
+GtkContainer
+ +--- BonoboUIToolbar
+ +--- BonoboDock
+ +--- BonoboDockBand
+
+GtkDialog
+ +--- BonoboSelector
+
+GtkVBox
+ +--- BonoboSelectorWidget
+ +--- BonoboUIConfigWidget
+
+GtkPlug
+ +--- BonoboPlug
+
+GtkSocket
+ +--- BonoboSocket
+
+GnomeCanvasItem
+ +--- BonoboCanvasItem

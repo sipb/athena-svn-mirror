@@ -1,0 +1,4324 @@
+2002-12-02  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.3.3
+
+2002-11-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-file-selector-util.c
+	(create_bonobo_selector): fix acute brokenness,
+	thanks to NotZed.
+
+2002-11-20  hhetter@suse.de
+
+	* bonobo/bonobo-ui-component.c (ui_event),
+	(impl_Bonobo_UIComponent_execVerb): 64bit safe
+	va-list termination.
+
+2002-11-18  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (cb_do_popup): don't destroy
+	popup immediately after popup ;-)
+
+2002-11-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_set_translate): don't
+	segv later if we have a NULL / bogus xml
+	string coming in.
+
+2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-06  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* samples/controls/Makefile.am,
+	samples/compound-doc/bonobo-hello/Makefile.am:
+	Fix $(prefix)/lib -> $(libdir).
+
+2002-11-05  Balamurali Viswanathan  <balamurali.viswanathan@wipro.com>
+
+	* bonobo/bonobo-ui-init-gtk.c: Change POPT_ARG_STRING to
+	POPT_ARG_INT for the screen argument
+
+2002-10-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require libxml - fixes breakage
+	from removing it from bonobo-activation's pkg-config
+	requirements.
+
+2002-10-22  Gustavo Carneiro  <gjc@inescporto.pt>
+
+	* doc/ui-faq.txt: add item.
+
+2002-10-18  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.3.2
+
+2002-10-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c (impl_finalize),
+	(impl_dispose): unlink widgets we destroy,
+	don't free the list until here - otherwise
+	we can't remove any widgets as we chain to
+	parent (doh) - thanks Jaka / Satyajit
+
+2002-10-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(set_label): re-write for Morten to make
+	it substantially more efficient.
+
+2002-10-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.3.1
+
+2002-10-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_popup_component):
+	don't use un-initialized return value.
+
+2002-09-30  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-filesel.c (get_files): make
+	it quit nicely; #94368
+
+2002-09-19  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/Makefile.am: Add CLEANFILES so that make clean
+	deletes Bonobo_Sample_Controls.server 
+	and Bonobo_Sample_controls.server.in
+
+2002-09-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c
+	(impl_dispose): free list here no in finalize
+	(impl_finalize): upd.
+	(bonobo_ui_toolbar_insert): only sink/ref
+	if we didn't own it already.
+	(item_destroy_cb): unref the object on remove.
+
+2002-09-16  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (prune_node):
+	never unref a root widget.
+
+2002-09-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_copy): fix; not that anyone
+	uses it in fact.
+	(bonobo_ui_node_add_child): simplify.
+
+2002-09-09  Gustavo Carneiro <gjc@inescporto.pt>
+
+	* doc/ui-faq.txt: add BonoboCustomize note.
+
+2002-09-03  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_stamp_root): don't leak
+	references as we re-stamp the root.
+
+2002-09-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_ref): fix bad bogon.
+
+	* bonobo/bonobo-window.c
+	(bonobo_window_realize): kill; we don't
+	need to flush the cache, on settings
+	changed, we use stock icons properly now.
+	(setting_changed_cb): bin.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_set_image): bin the
+	widget direction in the cache.
+	(bonobo_ui_image_cache_trash): bin.
+	(bonobo_ui_util_xml_set_image): upd.
+
+2002-08-31  Jacob Berkman  <jacob@ximian.com>
+
+	* tests/Makefile.am (LDADD): add -lpopt
+
+2002-08-30  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.3
+
+2002-08-30  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_image_set_pixbuf): fix
+	pixbuf leak on theme change.
+	(bonobo_ui_util_xml_get_pixbuf): kill.
+	(bonobo_ui_image_set_stock): impl. for speed.
+	(bonobo_ui_util_xml_set_image): impl from
+	its' guts, handle stock icons more
+	efficiently, and far more sanely.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_state): upd.
+	(cmd_get_toolbar_image): kill.
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): upd.
+	(cmd_get_menu_pixbuf): kill.
+
+2002-08-28  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.2
+
+2002-08-23  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_remove_root): fix leak.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_build_help_menu): don't leak id.
+
+	* bonobo/bonobo-ui-engine.c (do_sync): add ref/unref
+	pair on node around here #90600
+
+	* bonobo/bonobo-ui-xml.c (node_free): unref don't free.
+	(bonobo_ui_xml_finalize): ditto.
+	(free_nodedata_tree): set data to NULL after info free.
+
+	* bonobo/bonobo-ui-node.c (node_free_internal):
+	move tree unlinkage into here, unlink if we have
+	->prev node too.
+	(bonobo_ui_node_unref, bonobo_ui_node_ref): impl.
+	(bonobo_ui_node_free): implement in terms of unref.
+	(bonobo_ui_node_new, bonobo_ui_node_copy): assign to 1.
+
+2002-08-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_add_id): since
+	in-proc we know that Gtk+ will go through a 4 step
+	process:
+		 a) size_request the toplevel
+		 b) allocate the toplevel to the requested size 
+		 c) realize the toplevel
+		 d) map the toplevel
+	and since we have to add the plug at step 'c' - having
+	missed stepps a and b, - but since we know that the
+	size_request in a) is done fine via CORBA, and that the
+	other end is already realized (c), we simply add a size
+	request on the in-proc child plug to replace step b)
+	before continuing the chain to map.
+	This fixes a number of flickers / size allocation issues.
+
+2002-08-20  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* configure.in (ALL_LINGUAS): Added Latvian (lv) languaga support.
+
+2002-08-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_size_allocate):
+	kill hacks around sizing logic - requires a fixed gtk+
+
+	* bonobo/bonobo-plug.c (bonobo_plug_map): impl.
+
+2002-08-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_add_id): impl.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_remote_window): use
+	bonobo_socket_add_id.
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_getWindowId): just realize the
+	widget so we can do sizing here, we get mapped on
+	the size_allocate (that's coming).
+
+	* bonobo/bonobo-plug.c (bonobo_plug_size_allocate):
+	show the widget if we have a sensible size allocation.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_show): kill
+	the check-resize hack here.
+
+2002-08-16  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_size_request): set size
+	to 1x1 on failure not 0x0.
+
+2002-08-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-window.c (bonobo_window_realize):
+	bin 'destroy' handling on GtkSettings, thanks to
+	rhult.
+
+2002-08-17  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added el to ALL_LINGUAS.
+
+2002-08-16  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_image_cache_trash): impl.
+	(bonobo_ui_util_xml_get_pixbuf): split hash and
+	hash on screen ptr too if doing multi-head.
+
+	* bonobo/bonobo-window.c (setting_changed_cb),
+	(bonobo_window_realize): impl. to catch theme changes.
+	(bonobo_window_class_init): upd.
+
+2002-08-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-window.c (construct_priv): put
+	the dock inside an hbox, inside the window, with
+	the status outside the dock, so re-arrangement works
+	better. #82546, #89261
+	(bonobo_window_get_contents): just use the dock.
+	(bonobo_window_set_contents): ditto.
+	(bonobo_window_show_all): upd.
+	(bonobo_window_focus): upd.
+	Thanks to herzi@abi02.de for the initial patch.
+
+2002-08-06  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_expose_event): Call the
+	handler of our parent class.
+
+2002-08-05  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.1
+
+2002-07-27  James Henstridge  <james@daa.com.au>
+
+	* glade/glade-bonobo.c (dock_item_set_behavior): add function to
+	handle behavior property for BonoboDockItem objects.
+	(dock_item_build): free dockitem->name to trap potential memory
+	leak.
+	(add_dock_item): behavior is a widget property, rather than a
+	child packing property (we were ignoring it anyway).
+
+2002-07-26  Gustavo Noronha Silva  <kov@beterraba>
+
+	* configure.in: added pt_BR to ALL_LINGUAS
+
+2002-07-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (real_exec_verb):
+	copy the verb over the emission, dup the component.
+	(impl_emit_event_on): same fix.
+
+2002-07-17  Morten Welinder  <terra@diku.dk>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_build_help_menu): No
+	foo.
+
+2002-07-16  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* samples/compound-doc/container/Makefile.am
+	No longer install sample-container-2.
+
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_get_path_child): impl. & optimize.
+
+	* bonobo/bonobo-ui-xml.c (find_child): kill.
+	(xml_get_path): upd.
+
+	* bonobo/bonobo-ui-toolbar.c
+	(bonobo_ui_toolbar_instance_init): set the a11y
+	role on the toolbar to ROLE_TOOL_BAR.
+
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c
+	(bonobo_ui_toolbar_insert): guard against
+	re-enterancy during the realize.
+	(parentize_widget): prune cruft that is in
+	gtk_widget_set_parent anyway.
+	(bonobo_ui_toolbar_insert): remove bogus
+	assertion, we could have been destroyed in the
+	meantime, by an incoming remote unref.
+
+2002-07-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(bonobo_ui_sync_menu_new): create an accel group
+	if we don't get one.
+
+2002-06-28  Michael Meeks  <michael@ximian.com>
+
+	* tests/control/test-control.c (run_tests): get
+	re-parenting ref counting right ...
+	(destroy_test): assert that the container widget
+	got correctly destroyed.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_realize),
+	(bonobo_plug_unrealize): remove bogus ref/unref on
+	control - originally not being used, but exposing a
+	nasty leak since Mark removed the show () after plug
+	creation. Thanks to Dave Camp for the lead.
+
+2002-06-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-dock-item.c: include config.h.
+	(bonobo_dock_item_realize): Use the root window on
+	same screen as the dock for the parent of the float
+	window.
+	(bonobo_dock_item_motion): also get the location of
+	the pointer relative to the same root window.
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-control.c: (impl_Bonobo_Control_getWindowId):
+	s/gdk_get_default_screen/gdk_screen_get_default/
+	s/gdk_get_default_display/gdk_display_get_default/
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: actually add check for multihead gtk+
+	this time.
+
+2002-06-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-control-frame.c:
+	(bonobo_control_frame_get_remote_window_id): impl with
+	multiscreen support.
+	(bonobo_control_frame_get_remote_window): use it here.
+
+	* bonobo/bonobo-control.c: (create_plug): don't show the
+	plug here.
+	(parse_cookie): parse ',' delimited string returning the
+	screen number.
+	(impl_Bonobo_Control_getWindowId): parse the cookie and
+	set the screen on which the plug should realize accordingly.
+	(bonobo_control_do_popup_full): show the menu on the same
+	screen as the plug.
+
+	* bonobo/bonobo-ui-init-gtk.c: use HAVE_GTK_MULTIHEAD.
+
+	* configure.in: add check for multihead gtk+.
+
+2002-06-11  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-focus.c (add_control): switch back
+	to Sample_Entry so we can test transience.
+
+2002-06-11  Michael Meeks  <michael@ximian.com>
+
+	* configure.in (gnomelocaledir): setup properly.
+
+2002-06-10  Naba Kumar <kh_naba@users.sourceforge.net>
+
+	* configure.in: Added hi in ALL_LINGUAS
+
+2002-06-05  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.0
+	
+2002-06-05  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/*.h: add dummy bin-compat padding for future
+	expansion.
+
+Mon Jun 03 15:30:08 2002  George Lebl <jirka@5z.com>
+
+	* configure.in, po/cs.po: add a basic Czech translation
+
+2002-06-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.118.0
+
+2002-06-01  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump reqs.
+
+2002-05-31  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_size_request): Do not g_return_if_fail() if
+	we haven't been bound to a control yet.  Rather, return 0 for the
+	requisition, which means "I don't care about what I get assigned".
+
+2002-05-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_show):
+	force a check_resize before we show, since the queued
+	idle resize is just way too ugly. Fixes Nautilus new
+	window creation / flicker.
+	(bonobo_socket_class_init): upd.
+
+2002-05-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_size_request): fix some truly stupid things
+	happening with mixed up widths / heights.
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_setSize): fill out a bit.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_instance_init): immediate resize.
+	(bonobo_socket_size_allocate): for in-proc chain
+	immediately to size alloc the child.
+	(bonobo_socket_size_request): fix something very dumb
+	with mixed up / uninitialized width / height.
+
+2002-05-30  Kristian Rietveld  <kris@gtk.org>
+
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_set_behavior): added
+	this (non-public, but exported) function.
+
+2002-05-28  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_fixup_icons): Don't leak
+	the pixbuf.
+
+2002-05-27  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.117.1
+
+2002-05-24  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo/bonobo-file-selector-util.c
+	(cancel_clicked_cb): NULL the user_data.
+	(run_file_selector): handle NULL user_data without
+	crashing, so 'Cancel' works - sigh.
+
+2002-05-23  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine-config.c
+	(bonobo_ui_engine_config_construct),
+	(bonobo_ui_engine_config_new): store transient parent.
+	(dialog_new): set transient parent #82592
+
+	* bonobo/bonobo-ui-engine.c (bonobo_ui_engine_construct): 
+	pass the view as the transient parent if it's a
+	GtkWindow.
+
+2002-05-22  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* bonobo/bonobo-ui-config-widget.c (look_cb, set_values,
+	widgets_init): Add "Text only" option.
+	
+2002-05-22  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* bonobo/bonobo-ui-config-widget.c (look_cb): Changed "text" by
+	"both_horiz" for priority text setting.
+
+2002-05-20  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.117.0
+
+	* configure.in: prune message-of-doom
+
+2002-05-20  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo/bonobo-file-selector-util.c
+	(run_file_selector): handle dialog not being activated
+	properly correctly.
+
+2002-05-17  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump version to 1.116.1
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_destroy): destroy the widget
+	before unreffing it, so it's lifecycle is closely
+	coupled with the BonoboControl's, as expected.
+	(create_plug): sink the plug.
+
+	* tests/control/test-control.c: implement
+	(DESTROY_CONTROL) regression test.
+
+2002-05-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_build_help_menu): port.
+	(bonobo_help_display_cb): ditto.
+	(bonobo_help_file_find_file): kill.
+	(help_display_closure_free): impl.
+
+2002-05-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-preferences.c (toolbar_styles):
+	update to handle "text" and "both_horiz"
+
+	* bonobo/bonobo-ui-sync-toolbar.c (parse_look): change
+	the 'text' -> 'both_horiz' and add the 'text' == text
+	only setting.
+
+	* doc/ui-xml.txt: update to reflect the changes.
+
+	* bonobo/bonobo-ui-toolbar.c (set_attributes_on_child): 
+	add a text only attribute.
+	
+2002-05-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-widget.c: update docs.
+
+2002-05-13  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* bonobo/bonobo-ui-init-gtk.c: pass the "screen"
+	argument onto gtk+
+
+	* configure.in: check for multi-head gdk.
+
+2002-05-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_set_control_frame),
+	* bonobo/bonobo-control-frame.c (bonobo_control_frame_set_socket),
+	* bonobo/bonobo-control.c (bonobo_control_set_plug),
+	* bonobo/bonobo-plug.c (bonobo_plug_set_control): fix the same
+	problem, so that we can transfer ownership of the object
+	without problems - it seems we never did this before.
+
+2002-05-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_set_ui_container): unset the old
+	engine before setting the new.
+
+	* tests/test-ui-auto.c (test_engine_container): add.
+	(test_ui_engine): upd.
+
+	* bonobo/bonobo-ui-engine-private.h: move
+	BonoboUIEnginePrivate here for the regression tests.
+
+2002-05-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(impl_Bonobo_ControlFrame_getToplevelId):
+	actually invoke the getToplevelId on the ControlFrame
+	not the Control - doh, thanks Jon-Kare, #80782
+
+2002-05-10  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS
+
+2002-05-09  Michael Meeks  <michael@ximian.com>
+
+	* po/POTFILES.in: update.
+
+2002-05-07  Jon Kåre Hellan  <Jon.Kare.hellan@uninett.no>
+
+	* bonobo/bonobo-control.c (bonobo_control_set_transient_for):
+	Catch exception.
+
+2002-04-29  Anders Carlsson  <andersca@gnu.org>
+
+	* Release 1.116.0
+
+2002-04-28  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-ui-main.c (do_low_level_init): Revert change
+	made by Alex Graveley since it breaks nautilus (and probably
+	other things too).
+	
+2002-04-28  Murray Cumming  <murrayc@usa.net>
+
+	* Corrected libglade version requirement, because jamesh
+	decremented the libglade version.
+
+2002-04-26  Alex Graveley <alex@ximian.com>
+
+	* bonobo/bonobo-ui-main.c (do_low_level_init): Use
+	gdk_get_display(), instead of the gdk internal variable
+	gdk_display, which can sometimes be NULL.  This fixes a startup
+	crash on Solaris.
+
+2002-04-18  Murray Cumming  <murrayc@usa.net>
+
+	* glade/glade-bonobo.c: Changed GladeWidgetInfo::class to
+	classname, now that libglade has corrected its use of the C++
+	keyword.
+	
+2002-04-23  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-window.[h|c]: bonobo_window_new() is now just
+	a convenience wrapper for g_object_new(). This is possible because
+	BonoboWindow now has a "win_name" property and the UIContainer is
+	created in the *_instance_init function.
+	
+2002-04-23  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-selector.[h|c] BonoboSelector now has an
+	"interfaces_required" property, and the child BonoboSelectorWidget
+	is instantiated in the *_instance_init() function, so that
+	bonobo_selector_new() can now be just a convenience wrapper for
+	g_object_new().
+	
+2002-04-22  Jacob Berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-window.c:
+	* bonobo/bonobo-selector.c: revert changes again as they break (at
+	least) nautilus
+
+2002-04-22  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-window.c: (bonbo_window_construct) Recommitted,
+	with bonobo_window_construct() implementation which was ommitted
+	somehow before.
+
+2002-04-22  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-window.c (bonobo_window_construct): revert
+	previous commit as it broke the build and wasn't approved by the
+	release team
+
+2002-04-22  Murray Cumming  <murrayc@usa.net>
+
+	* glade/glade-bonobo.h: reverted part of previous commit - I
+	had committed part of another pending patch that depends on a
+	not-yet-applied libglade patch.
+
+2002-04-22  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-selector.[h|c] BonoboSelector now has an
+	"interfaces_required" property, and the child BonoboSelectorWidget
+	is instantiated in the *_instance_init() function, so that
+	bonobo_selector_new() can now be just a convenience wrapper for
+	g_object_new().
+	
+2002-04-22  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-window.[h|c]: bonobo_window_new() is now just
+	a convenience wrapper for g_object_new(). This is possible because
+	BonoboWindow now has a "win_name" property and the UIContainer is
+	created in the *_instance_init function.
+	
+2002-04-19  jacob berkman  <jacob@ximian.com>
+
+	* COPYING: add
+
+2002-04-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-status.c
+	(impl_bonobo_ui_sync_status_build): get signal
+	connection lifetime right - thanks to Morten.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_construct_control_from_objref):
+	don't auto-activate the control; this sucked and
+	confused people lots.
+
+2002-04-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.115.0
+
+2002-04-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c
+	(do_parse): set the replaceEntities flag on the context,
+	split out common code.
+	(bonobo_ui_node_from_file),
+	(bonobo_ui_node_from_string): upd.
+
+	* tests/test-ui-auto.c
+	(test_ui_node_parsing, test_xml_roundtrip): impl.
+
+	* bonobo/bonobo-ui-node.c (uiGetEntity): axe,
+	unneeded.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_translate_ui): make it more
+	efficient and obvious.
+
+2002-04-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_get_remote_ui_container): set
+	ui_container to NIL on exception.
+
+2002-04-14  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-dock-band.c: bonobo_dock_band_new() is now
+	just a convenience wrapper for g_object_new(), now that
+	the widget_queue_resize() call is in the instance_init() function.
+
+2002-04-13  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-dock-item.c (bonobo_widget_clobber_focus): Also 
+	reverse the focus list on GTK_DIR_LEFT.
+
+2002-03-29  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-ui-main.c (gdk_x_error) : replace with
+	  gdk_x_error_func so that gdb does not get confused.
+
+2002-04-11  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-dock-item.c: Corrected "orientation-changed" 
+	signal paratemeter types registration.
+	
+2002-04-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c (label_same):
+	do proper label comparisons.
+	(str_uscore_equal): kill, not needed now.
+
+2002-04-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): set the
+	mnemonic (doh).
+
+2002-04-09  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): don't re-build
+	accel labels when we don't need to, freeze / thaw
+	the label appropriately.
+
+2002-04-06  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-focus.c (add_control): split out.
+	(main): from here & add 'new control' button.
+
+2002-04-09  Jeroen Zwartepoorte  <jeroen@xs4all.nl>
+
+	* bonobo/bonobo-dock-item.c: (bonobo_dock_item_size_allocate):
+	Remove space around toolbar handle widget so it looks like the
+	gnome 1.4 handle.
+
+2002-04-03  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-ui-container.h: include gmacros.h before using a
+	macro defined there (fixes nautilus build errors)
+
+2002-04-01  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/bonobo-a11y.h, bonobo/bonobo-control-internal.h,
+	bonobo/bonobo-ui-container.h, bonobo/bonobo-ui-node-private.h,
+	bonobo/bonobo-ui-node.h, bonobo/bonobo-ui-private.h,
+	bonobo/bonobo-ui-util.h, bonobo/bonobo-ui-xml.h,
+	bonobo/bonobo-window.h:	
+	Added G_BEGIN_DECLS/G_END_DECLS for use with C++.
+
+2002-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-plug.c: (bonobo_plug_button_event): ungrab the
+	pointer here, so our parents can do grabs.
+
+2002-04-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(create_dockitem): remove bogus double
+	detachable check.
+	(impl_bonobo_ui_sync_toolbar_update_root):
+	set detachable (or not) on sync.
+
+	* bonobo/bonobo-dock-item.c
+	(bonobo_dock_item_set_locked): impl.
+
+2002-03-28  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-selector.c (signals): 
+	* bonobo/bonobo-ui-engine.c (signals): these should be static
+
+2002-03-28  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-file-selector-util.c
+	(create_control): do an explicit construct to avoid
+	the warning.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_launch_component): move activation
+	exception warning to
+	(bonobo_widget_new_control): here.
+
+2002-03-27  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-window.c
+	(bonobo_window_key_release_event): chain to
+	key_release not key_press.
+
+2002-03-26  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-item.c
+	(bonobo_ui_toolbar_item_class_init): clobber
+	focus handling for items here.
+
+	* bonobo/bonobo-dock-item-grip.c
+	(bonobo_dock_item_grip_key_press_event): only
+	allow band traversal if not floating.
+
+	* bonobo/bonobo-dock.c
+	(bonobo_dock_focus_roll): upd. to include
+	floating children.
+
+	* bonobo/bonobo-ui-toolbar.c
+	(bonobo_ui_toolbar_class_init): klobber focus stuff.
+
+	* bonobo/bonobo-dock-item.c
+	(bonobo_dock_item_focus): rename
+	(bonobo_widget_clobber_focus): to this.
+
+2002-03-26  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock-item-grip.c
+	(bonobo_dock_item_grip_dock),
+	(bonobo_dock_item_grip_undock): split out of
+	(bonobo_dock_item_grip_activate): here.
+	(bonobo_dock_item_grip_do_action): use them.
+	(bonobo_dock_item_grip_get_n_actions): impl.
+
+2002-03-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-a11y.c
+	(bonobo_a11y_get_atk_object),
+	(bonobo_a11y_set_atk_object): impl.
+	(bonobo_a11y_get_derived_type_for): publicise.a
+	(bonobo_a11y_add_actions_interface): impl.
+	(bonobo_a11y_action_get_name),
+	(bonobo_a11y_action_get_keybinding),
+	(bonobo_a11y_action_do_action),
+	(bonobo_a11y_action_get_n_actions),
+	(bonobo_a11y_action_get_description): impl.
+	(bonobo_a11y_action_set_description): don't impl.
+	(bonobo_a11y_action_get_type),
+	(bonobo_a11y_action_if_finalize),
+	(bonobo_a11y_action_if_init): impl.
+
+	* bonobo/bonobo-ui-toolbar-separator-item.c
+	(impl_get_accessible): upd.
+
+	* bonobo/bonobo-dock-item-grip.c
+	(grip_item_do_action): impl.
+
+	* bonobo/bonobo-ui-toolbar.c
+	(bonobo_ui_toolbar_instance_init): don't let it
+	focus.
+
+	* bonobo/bonobo-a11y.c
+	(bonobo_a11y_create_accessible_for): add custom
+	interface addition vararag.
+	(bonobo_a11y_get_derived_type_for): do it.
+
+	* tests/test-ui.c (cb_do_popup): destroy the
+	popup after use.
+
+2002-03-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-window.c
+	(bonobo_window_focus): impl.
+	(bonobo_window_key_press_event): Make Alt-F10 roll
+	through the dock items.
+	(bonobo_window_class_init): upd.
+	(bonobo_window_key_press_event): upd.
+	(bonobo_window_key_release_event): impl.
+
+	* bonobo/bonobo-dock-item.c
+	(bonobo_dock_item_focus): impl.
+	(bonobo_gtk_container_focus_move): cut & paste.
+	(bonobo_dock_item_get_grip): impl.
+	
+2002-03-23  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock-item.c
+	(bonobo_dock_item_unfloat): impl.
+	(bonobo_dock_item_attach): use it.
+
+2002-03-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-dock.c (get_band_list): split out of
+	(bonobo_dock_add_item): here.
+	(bonobo_dock_handle_key_nav): impl.
+	(find_band_list): impl.
+	(new_band_setup): split from
+	(drag_new): here.
+	(insert_into_band_list): impl.
+	(bonobo_dock_focus_roll): impl.
+
+	* bonobo/bonobo-dock-band.c
+	(bonobo_dock_band_handle_key_nav): impl.
+	(bonobo_dock_band_insert): fix theoretical parental
+	confusion.
+
+	* bonobo/bonobo-dock-item.c 
+	(bonobo_dock_item_instance_init): create the grip
+	(bonobo_dock_item_size_allocate): size the grip.
+	(draw_textured_frame): kill.
+	(bonobo_dock_item_paint): just propagate the expose
+	to the grip.
+	(bonobo_dock_item_remove): special case the grip.
+	(bonobo_dock_item_forall): impl.
+	(bonobo_dock_item_realize),
+	(bonobo_dock_item_unmap),
+	(bonobo_dock_item_map): handle grip.
+	(bonobo_dock_item_construct): hide grip if
+	neccessary.
+	(bonobo_dock_item_grab_pointer): also grab keyboard.
+	(bonobo_dock_item_drag_end): impl & release k/b
+	(bonobo_dock_item_button_changed): upd.
+	(bonobo_dock_item_remove): upd.
+
+	* bonobo/bonobo-dock-item-grip.[ch]: impl.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(bonobo_ui_toolbar_button_item_construct): allow
+	these items to take focus.
+
+2002-03-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-a11y.c
+	Remove ugly get_accessible clobbering code.
+	(bonobo_a11y_get_derived_type_for): remove the cruft,
+	we'll just override get_accessible for each widget.
+	(bonobo_a11y_create_accessible_for): impl.
+
+	* bonobo/bonobo-ui-toolbar-separator-item.c
+	(impl_get_accessible),
+	(separator_ref_state_set),
+	(separator_item_a11y_init),
+	(separator_item_a11y_class_init): impl.
+
+2002-03-21  Michael Meeks  <michael@ximian.com>
+	
+	* bonobo/bonobo-a11y.c
+	(bonobo_a11y_register_type_for): impl.
+	(bonobo_a11y_clobber_atk_junk_code): do the
+	hacks neccessary to make a11y clean enough to use.
+	(recursive_a11y_clobber): ug.
+	(bonobo_a11y_get_accessible): urgh.
+	(bonobo_a11y_get_derived_type_for): impl.
+
+2002-03-19  Murray Cumming  <murrayc@usa.net>
+
+	* bonobo/libbonobo-2.0.pc.in: Added libgnome dependency. 
+
+2002-03-18  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.113.0
+
+2002-03-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-preferences.c
+	(bonobo_ui_preferences_shutdown): always
+	shutdown gconf.
+
+	* tests/*.c: use gnome_program_init so we get
+	a11y support where neccessary.
+
+2002-03-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-main.c
+	(libbonoboui_module_info_get): impl.
+	(do_low_level_init): split out of
+	(bonobo_ui_init_full): here.
+	(libbonoboui_post_args_parse): impl.
+
+	* bonobo/bonobo-ui-init-gtk.c: move from libgnomeui
+
+2002-03-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full): 
+	use DisplayString not gdk_get_display.
+
+	* samples/controls/bonobo-sample-controls.c (main):
+	ditto.
+
+2002-03-11  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added 'ko' to ALL_LINGUAS.
+
+2002-03-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full):
+	initialize the display context setting so it
+	correctly matches the normalized name returned
+	from gdk_display_name.
+
+2002-03-06  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/bonobo-sample-controls.c
+	(main): do per display init.
+
+2002-03-05  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-config-widget.c
+	(row_activated_cb): rename to
+	(list_selection_changed): this.
+	(set_values): move up & expand.
+	(list_selection_changed): use set_values.
+
+2002-03-05  Christian Meyer  <chrisime@gnome.org>
+
+	* configure.in: Added 'de' to ALL_LINGUAS.
+
+2002-03-04  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): fix leak.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_get_icon_widget),
+	(bonobo_ui_util_xml_get_pixbuf),
+	(lookup_stock_compat): lookup pixmaps not
+	stock items.
+
+2002-03-04  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.112.1
+
+2002-03-04  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui-auto.c (test_ui_performance):
+	use top_srcdir.
+
+	* bonobo/bonobo-ui-sync-status.c
+	(impl_bonobo_ui_sync_status_state): get
+	'resize_grip' from the parent 'status' node, and
+	don't show the grip if we have controls / items
+	shown to the right.
+
+2002-03-02  James Willcox  <jwilcox@cs.indiana.edu>
+
+	* bonobo/bonobo-file-selector-util.c
+	(run_file_selector): fix for FILESEL_OPEN_MULTI
+
+2002-03-02  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo/bonobo-widget.c (bonobo_widget_construct_control):
+	bw is a floating objetc so to unref (and kill it) we have to 
+	call gtk_object_sink
+	(bonobo_widget_new_control_from_objref): call CORBA_exception_free
+	to free the ev
+	(bonobo_widget_new_control): ditto
+
+2002-02-27  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-zoomable-frame.c
+	(bonobo_zoomable_frame_bind_to_zoomable),
+	(bonobo_zoomable_frame_dispose): only hold a CORBA
+	ref on the remote zoomable, to ease ref counting
+	issues with BonoboControl.
+
+2002-02-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-control.c:
+	(bonobo_control_get_popup_ui_container): fix
+	race condition/re-entrancy bug.
+
+2002-02-26  Paolo Maggi  <maggi@athena.polito.it>
+
+	* configure.in: now libbonoboui needs gtk+ 1.3.14
+
+	* bonobo/bonobo-ui-sync-status.c (impl_bonobo_ui_sync_status_state): 
+	Show the resize grip if resize_grip is set to 1.
+
+	* bonobo/bonobo-file-selector-ui.c: fixed to work
+	with the new GtkFileSelection API for multiple files
+
+2002-02-24  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-ui-component.h (BonoboUIVerb) : const the name to
+	  silence some warnings.
+
+2002-02-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c (impl_set_property): 
+	fix uint -> boolean.
+
+2002-02-25  Johan Dahlin  <jdahlin@telia.com>
+
+	* bonobo/bonobo-ui-engine.h (BONOBO_IS_UI_ENGINE): Make macros and
+	bonobo_ui_engine_get_type public
+
+2002-02-25  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.in: REALLY Added Malay (ms)to ALL_LINGUAS.
+
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(control_connection_died_cb): upd. to disconnect us
+	safely & fire a "system_exception" signal.
+
+	* tests/Makefile.am (-DBONOBO_TOPBUILDDIR): define.
+
+	* tests/test-ui-auto.c (test_ui_performance): use it.
+
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (class_init): add
+	cmd_id & commands_id.
+	(find_sync_for_node): we have no sync. for commands.
+
+	* bonobo/bonobo-ui-sync-keys.c
+	(impl_bonobo_ui_sync_keys_can_handle): accel.
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_can_handle): expand
+	scope to accelerate.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_can_handle): ditto.
+
+2002-02-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_can_handle): optimize.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_can_handle): ditto.
+
+	* bonobo/bonobo-ui-util.c
+	(lookup_stock_compat): improve the mapping
+
+2002-02-19  James Willcox  <jwillcox@cs.indiana.edu>
+
+	* bonobo/bonobo-file-selector-util.c (run_file_selector):
+	Fixed the behavior of bonobo_file_selector_open returning a local
+	path instead of a text uri when using the GTK file selector.
+
+2002-02-19  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.112.0
+
+2002-02-18  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: remove GNOME_COMMON_INIT, GNOME_PLATFORM_GNOME_2
+	macros to match latest gnome-common.
+
+2002-02-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* bonobo/bonobo-zoomable.c (bonobo_zoomable_class_init):
+	Fixed typo in translatable string.
+
+	* configure.in (ALL_LINGUAS): Added pl (Polish).
+
+2002-02-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/Makefile.am: add deprecated flags.
+
+	* tests/test-moniker.c (display_as_control): fix
+	ref. leak.
+
+2002-02-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_popup_component): implement.
+
+	* bonobo/bonobo-ui-engine-config.c
+	(bonobo_ui_engine_config_serialize),
+	(bonobo_ui_engine_config_hydrate): port to gconf.
+
+2002-02-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine-config.c
+	(response_fn, dialog_new): upd.
+
+	* bonobo/bonobo-ui-config-widget.c
+	(populate_list): port away from GtkList.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_new_default): upd. pid
+	printf.
+
+	* samples/controls/bonobo-sample-controls.c
+	(bonobo_entry_control_new): remove visual push/pop.
+
+	* samples/bonoboui/hello.c (hello_new): upd window
+	handling.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_get_icon_widget): upd.
+	pixbuf ref counting.
+
+	* bonobo/bonobo-ui-toolbar.c (show_popup_window): 
+	use gtk_window_move not widget_set_uposition
+	(bonobo_ui_toolbar_insert): upd.
+
+	* bonobo/bonobo-canvas-component.c
+	(impl_Bonobo_Canvas_Component_unrealize): 
+	update pixbuf ref/unref
+	(bonobo_canvas_new): prune gdk_rgb_init
+	
+	* bonobo/bonobo-dock-item.c
+	(bonobo_dock_item_grab_pointer): unref don't
+	destroy cursor.
+	(bonobo_dock_item_detach): remove hints.
+
+2002-02-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector.c
+	(bonobo_selector_class_init): fix signal_new
+	arg. ordering.
+
+	* bonobo/bonobo-ui-engine.c
+	(get_parent_path): rename to
+	(find_last_slash): this.
+	(bonobo_ui_engine_xml_set_prop): upd. to
+	re-write the parent path on the stack.
+
+	* tests/*.c: port.
+
+	* bonobo/*.c: more deprecated bits removal.
+
+2002-02-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector-widget.c: port from
+	CList, re-write several innards.
+
+	* configure.in: depend on gconf >= 1.1.8
+
+	* bonobo/bonobo-ui-preferences.c
+	(bonobo_ui_preferences_shutdown): unref the
+	gconf client.
+
+2002-02-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector.c: port.
+
+	* bonobo/bonobo-file-selector-util.c: port.
+
+	* bonobo/*.[ch]: lots of porting action, too boring
+	to enumerate.
+
+	* bonobo/bonobo-canvas-item.c
+	(bonobo_canvas_item_get_type): kill.
+	(gbi_finalize): upd.
+	(gbi_set_property): re-write.
+	(gbi_class_init): port.
+
+	* bonobo/bonobo-canvas-item.h: 
+	* bonobo/bonobo-canvas-component.h: add
+	deprecated guards.
+
+2002-02-11  Michael Meeks  <michael@ximian.com>
+	
+	* bonobo/bonobo-ui-xml.c (do_set_id): only do
+	sanity checks where absolutely neccessary,
+	accelerate, remove redundant NULL check.
+	(set_id): upd.
+	(xml_get_path): do on-stack path splitting to
+	avoid locking / malloc overheads.
+	(bonobo_ui_xml_path_split),
+	(bonobo_ui_xml_path_freev): kill.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_unlink): tolerate NULL
+	nodes silently.
+
+	* tests/test-ui-auto.c (test_ui_performance): 
+	more beef.
+
+2002-02-11  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.111.0
+
+2002-02-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.h: fix G_BEGIN_DECLS
+
+2002-02-10  Pauli Virtanen  <ptvirtan@cc.hut.fi>
+
+	* configure.in (ALL_LINGUAS): Added "fi" (Finnish).
+
+2002-02-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_xml_set_prop): optimize some
+	more.
+
+2002-02-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-plug.c: port &
+	(bonobo_plug_get_type): kill.
+
+	* bonobo/bonobo-canvas-component.c: port &
+	(root_item_hack_get_type): kill.
+
+	* bonobo/bonobo-dock-item.h: make
+	the bits marked 'private' private.
+
+	* bonobo/bonobo-dock-item.c: port &
+	(bonobo_dock_item_get_type): remove
+	(bonobo_dock_item_destroy): remove.
+
+	* bonobo/bonobo-dock-band.c: port &
+	(bonobo_dock_band_get_type),
+	(bonobo_dock_band_destroy): remove
+	remove bogus empty private structs.
+
+	* bonobo/bonobo-ui-sync.h: ditto.
+
+	* bonobo/Makefile.am (INCLUDES): define
+	BONOBO_UI_INTERNAL.
+
+	* bonobo/bonobo-ui-engine.h: re-arrange into public
+	and guard internal bits so they don't get used
+	erroneously.
+
+	* bonobo/bonobo-ui-xml.h: guard entirely with
+	internal API guards.
+
+	* bonobo/bonobo-dock.c (bonobo_dock_class_init),
+	(drag_end, connect_drag_signals),
+	(bonobo_dock_new, bonobo_dock_add_item),
+	(bonobo_dock_unmap, bonobo_dock_map): port.
+	(bonobo_dock_get_type): kill.
+
+	* bonobo/*.c: remove deprecated bits - lots of work.
+	
+2002-02-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_update): remove access
+	syscalls slowing us down.
+	(bonobo_ui_engine_xml_set_prop): optimize
+	setting the same prop multiple times.
+
+2002-02-05  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: require GConf >= 1.1.7
+
+	* bonobo/bonobo-ui-main.c
+	(bonobo_ui_debug_shutdown): upd.
+
+	* bonobo/bonobo-ui-preferences.c
+	remove no_gconf boolean throught.
+	(bonobo_ui_gconf_leaks_refs): remove.
+	(bonobo_ui_preferences_shutdown): do a
+	gconf_debug_shutdown.
+
+2002-02-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-ui-sync-menu.c: (impl_bonobo_ui_sync_menu_build):
+	check whether the attribute is set in the cmd_node also. Fix
+	leak.
+
+	* tests/test-events.c: (main): some error checking.
+
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.110.2
+
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui-auto.c
+	(test_ui_node_attrs): split from
+	(test_ui_node): here
+	(test_ui_node_inserts): impl.
+	(test_engine_default_placeholder): impl.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_insert_before): unlink new_before
+	before operating & simplify flow.
+
+	* tests/test-ui-auto.c (test_engine_misc): rename
+
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.110.1
+
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): remove bogus thaw,
+	unhide the placeholder containing radio buttons
+
+2002-02-04  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo/bonobo-file-selector-ui.c: updated to work
+	with the new GtkTreeView based GtkFileSelection widget
+
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(impl_emit_event_on): hold refs on the engine.
+	(class_init): setup state_id
+
+2002-02-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c (do_set_attr): fix
+	heinous bug.
+
+	* tests/test-ui-auto.c (test_ui_node): impl.
+
+2002-02-02  Michael Meeks  <michael@ximian.com>
+
+	* samples/bonoboui/hello.c (utf8_reverse): copy
+	from glib/glib/gpattern.c
+	(hello_on_button_click): use it not g_strreverse.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_set_attr_by_id): split out into
+	(do_set_attr): here.
+	(bonobo_ui_node_try_set_attr): impl.
+
+	* bonobo/bonobo-ui-engine.c (set_cmd_attr): only
+	signal / re-build if different.
+
+2002-02-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (set_cmd_attr):
+	take a quark
+
+2002-01-31  Jens Finke <jens@triq.net>
+
+	* bonobo/bonobo-property-control.c (bonobo_property_control_new):
+	Don't create property control object here. This is done by
+	bonobo_property_control_new_full.
+
+2002-01-29  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.110.0
+
+2002-01-28  Szabolcs Ban <shooby@gnome.hu>
+
+	* configure.in Added Hungarian language.
+
+2002-01-28  Alexander Shopov  <al_shopov@web.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian).
+
+2002-01-25  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-util.c: (bonobo_ui_util_xml_to_pixbuf),
+	(bonobo_ui_util_build_help_menu): Wean from <ctype.h>, use
+	new g_ascii_xxx calls instead.
+
+2002-01-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_state): fix silly
+	with sensitivity.
+
+2002-01-24  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(bonobo_ui_toolbar_control_item_set_sensitive): impl.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_state): add sensitivity
+	set for controls.
+
+	* bonobo/bonobo-ui-toolbar.c
+	(hide_not_fitting_items): remove cruft.
+
+2002-01-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (state_update_new):
+	sensitivity fix from stable.
+
+2002-01-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-preferences.c
+	(bonobo_ui_gconf_leaks_refs): allow gconf to be turned off.
+	(bonobo_ui_preferences_get_toolbar_style): upd.
+	(bonobo_ui_preferences_add_engine): upd.
+	(bonobo_ui_preferences_remove_engine): upd.
+	(get): upd.
+
+	* tests/test-ui-auto.c: add.
+
+2002-01-21  Michael Meeks  <michael@ximian.com>
+
+	* glade/glade-bonobo.c (glade_bonobo_widget_new):
+	release the property bag after using it.
+
+	* configure.in: require libbonobo >= 1.109.1
+
+	* bonobo/bonobo-ui-component.c
+	(impl_set_prop): upd.
+	
+	* bonobo/bonobo-ui-container.c
+	(impl_Bonobo_UIContainer_setAttr): upd.
+
+	* bonobo/bonobo-ui-engine.c (get_parent_path),
+	(bonobo_ui_engine_xml_set_prop): forward port from
+	stable - fix node ownership issues, add component
+	argument.
+
+2002-01-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(impl_Bonobo_ControlFrame_queueResize): queue resize
+	on the socket.
+
+2002-01-20  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.ini: Added Malay (ms)to ALL_LINGUAS.
+	* po/ms.po: Added Malay Malay Translation by
+	  Mohamad Afifi Omar (App) <mr_mohd_afifi@yahoo.com>.
+
+2002-01-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-item.c
+	(impl_set_style): move optimization
+	(bonobo_ui_toolbar_item_set_style): here for speed
+	in bonobo case.
+
+	* bonobo/bonobo-ui-component.c (impl_freeze):
+	optimize for repeated freeze/thaws.
+	(impl_thaw): ditto.
+
+2002-01-16  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (lookup_stock_compat):
+	implement a more compatible mapping for the old stock
+	names.
+
+2002-01-15  Johan Dahlin  <jdahlin@telia.com>
+
+	* bonobo/bonobo-canvas-component.h
+	(BONOBO_TYPE_CANVAS_COMPONENT): Add
+
+	* bonobo/bonobo-ui-config-widget.h
+	(BONOBO_TYPE_UI_CONFIG_WIDGET): Add
+
+	* bonobo/bonobo-selector-widget.h
+	(BONOBO_TYPE_SELECTOR_WIDGET): Add
+
+	* bonobo/bonobo-selector.h (BONOBO_TYPE_SELECTOR): Add
+
+2002-01-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.109.2
+
+2002-01-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-preferences.c
+	(bonobo_ui_preferences_remove_engine): remove assert,
+	we can double dispose.
+
+	* bonobo/bonobo-ui-engine.c (impl_finalize): move loads
+	of guff into
+	(bonobo_ui_engine_dispose): here.
+	(bonobo_ui_engine_update): tolerate a NULL tree.
+
+	* bonobo/bonobo-window.c (bonobo_window_dispose): do an
+	explicit dispose on the engine.
+
+	* bonobo/bonobo-ui-engine.c (impl_dispose):
+	freeze/thaw the engine, since we can get bogus 'updates'
+	happening from re-enterancy as we release the tree.
+	(bonobo_ui_engine_dispose): split from dispose.
+
+2002-01-14  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-ui-engine.c: (impl_dispose),
+	(bonobo_ui_engine_construct):
+	Add/remove engine from preferences list;
+	
+	* bonobo/bonobo-ui-preferences.c: (update_engines_idle_callback),
+	(keys_changed_fn), (bonobo_ui_preferences_add_engine),
+	(bonobo_ui_preferences_remove_engine),
+	(bonobo_ui_preferences_get_toolbar_style):
+	Add support for notification, remove unused functions.
+	
+	* bonobo/bonobo-ui-preferences.h:
+	* bonobo/bonobo-ui-sync-menu.c: (impl_bonobo_ui_sync_menu_state),
+	(impl_bonobo_ui_sync_menu_build):
+	Always create image menu items, update image in sync_state.
+	
+	* bonobo/bonobo-ui-sync-toolbar.c: (parse_look), (create_dockitem):
+	Use bonobo_ui_preferences_get_toolbar_style.
+	* bonobo/bonobo-window.c: (construct_priv):
+	* tests/test-ui.c: (dump_prefs):
+	Remove unneeded calls.
+	
+2002-01-10  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_dispose):
+	destroy the hash table here.
+	(impl_finalize): kill this.
+	(init): setup the hash with free methods.
+	(radio_group_remove): upd.
+	(radio_group_destroy): kill.
+	(radio_group_add): upd.
+
+	* bonobo/bonobo-ui-engine.c
+	(impl_dispose): move component de-register to here
+	(impl_finalize): from here.
+
+	* Version 1.109.1
+
+2002-01-10  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/Makefile.am: fix dist.
+	
+	* Version 1.109.0
+
+2002-01-09  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(bonobo_ui_sync_toolbar_new): take a ref on the dock.
+	(impl_dispose): impl.
+	(impl_finalize): kill.
+	(class_init): upd.
+
+	* bonobo/bonobo-ui-sync-status.c
+	(impl_dispose): impl.
+	(class_init): upd.
+	(bonobo_ui_sync_status_new): take a ref on status.
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_dispose): impl.
+	(class_init): add dispose.
+	(bonobo_ui_sync_menu_new): hold references on the
+	various bits.
+
+	* bonobo/bonobo-ui-engine.c (widget_unref): impl.
+	(info_free_fn, prune_node, bonobo_ui_engine_object_set),
+	(bonobo_ui_engine_sync, bonobo_ui_engine_stamp_root): hold
+	a reference on the info->widget member.
+	(custom_widget_unparent): don't do extra refs.
+
+2002-01-09  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: remove monikers.
+
+	* monikers/: remove, in libgnome now.
+
+2002-01-08  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo/bonobo-file-selector-util.c: gtkeditable.h #included
+	(ok_clicked_cb): fixed a bug with mode == FILESEL_OPEN_MULTI
+	(create_gtk_selector): almost rewritten
+	
+	* tests/test-filesel.c (get_files): set the default file name
+	when calling bonobo_file_selector_save
+
+2002-01-08  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/Makefile.am: Remove unnecessary "cd srcdir" from
+	build rule that screwed up distcheck.
+
+2002-01-07  Rodrigo Moya <rodrigo@ximian.com>
+
+	* monikers/bonobo-moniker-config.c: implemented config: moniker, based
+	in GConf
+
+	* monikers/bonobo-config-bag.[ch]: PropertyBag implementation for the
+	config: moniker, based on bonobo-config's BonoboConfigBag
+
+	* monikers/bonobo-moniker-extra.[ch]: added new moniker
+
+2002-01-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-widget.c (bonobo_widget_construct_control):
+	nail daft leak.
+
+2002-01-04  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-sync-status.c:
+	(impl_bonobo_ui_sync_status_state): Check for NULL before calling atoi.
+
+2002-01-04  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_auto_merge): only set
+	the container if we are still active after getting the remote
+	container, as we could be de-activated before finishing with an
+	original activation call
+	(impl_Bonobo_Control_activate): only emit the activated signal if
+	we are still active (same deal as above)
+
+2002-01-04  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-ui-sync-status.c: Show the resize grip by default, and
+	only disable it if resize_grip is set to 0.
+
+2002-01-03  Bill Haneman  <bill.haneman@sun.com>
+
+	* bonobo/bonobo-socket.h:
+	Add missing BONOBO_TYPE_SOCKET macro.
+
+2002-01-03  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-ui-sync-toolbar.c (impl_bonobo_ui_sync_toolbar_update_root): 
+	Plug a leak.
+
+2002-01-02  Dave Camp  <dave@ximian.com>
+
+	* bonobo/bonobo-control-frame.c (impl_Bonobo_ControlFrame_notifyActivated): 
+	(impl_Bonobo_ControlFrame_activateURI): Use g_signal_emit instead of 
+	gtk_signal_emit, and cast the control frame to GObject rather than
+	GtkObject.
+
+2002-01-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c
+	(impl_Bonobo_UIComponent__get_name): stub.
+	(impl_Bonobo_UIComponent_unsetContainer),
+	(impl_Bonobo_UIComponent_setContainer): impl.
+	(bonobo_ui_component_class_init): fully populate epv.
+
+	* bonobo/bonobo-ui-engine.c (sub_component_destroy):
+	de-register the component.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): remove redundant
+	'rm' command; and just deregister.
+
+	* bonobo/bonobo-window.c (bonobo_window_dispose): impl.
+	(destroy_priv): fold into
+	(bonobo_window_finalize): here & upd.
+	(bonobo_window_class_init): upd.
+
+	* bonobo/bonobo-ui-sync-status.c
+	(impl_bonobo_ui_sync_status_state): kill
+	redundant braces - grr.
+
+2001-12-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): kill warning.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_dispose): kill
+	bogus ref.
+
+	* bonobo/bonobo-control.c (bonobo_control_construct):
+	sink the widget - we own it.
+
+	* tests/control/test-control.c (create_frame),
+	(create_control): add weak refs on the pointers we keep.
+	(destroy_test): do some checks on the objects to make
+	sure they are released.
+
+2001-12-29  Anders Carlsson  <andersca@gnu.org>
+
+	* doc/ui-xml.txt (Example): Update docs.
+
+	* bonobo/bonobo-ui-sync-status.c (impl_bonobo_ui_sync_status_state): 
+	Check for resize_grip property.
+	(impl_bonobo_ui_sync_status_build): Likewise.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (cmd_get_toolbar_image): 
+	Use GTK_ICON_SIZE_LARGE_TOOLBAR since that's what everyone
+	else uses.
+
+2001-12-28  Jens Finke <jens@triq.net>
+
+	* bonobo/bonobo-property-control.c
+	(impl_Bonobo_PropertyControl_notifyAction),
+	(bonobo_property_control_destroy),
+	(bonobo_property_control_class_init),
+	(bonobo_property_control_new_full),
+	(bonobo_property_control_new): Replaced functions from gtk based
+	type system with new gobject based functions.
+
+	* bonobo/bonobo-ui-marshal.list: Added 'VOID:INT,INT'.
+
+2001-12-27  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added portuguese to ALL_LINGUAS
+
+2001-12-23  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* configure.in: Added "ja" to ALL_LINGUAS.
+
+2001-12-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_class_init): kill setting the
+	'unimplemented' bits - that sucks.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_class_init): ditto.
+
+2001-12-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): accelerate pixbuf sets.
+	(cmd_get_menu_pixbuf): upd.
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(impl_set_icon): upd. but this can never have worked.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(bonobo_ui_toolbar_button_item_set_image): un-type
+	the image pointer so we can shoehorn GdkPixbufs in.
+	(bonobo_ui_toolbar_button_item_construct, impl_set_icon): upd.
+	(set_image): re-impl. for more efficiency.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(cmd_get_toolbar_image): upd.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_get_pixbuf): update sig.
+	(bonobo_ui_image_set_pixbuf): impl.
+
+2001-12-20  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* tests/test-moniker.c: added exception's text to error messages
+
+	* monikers/bonobo-moniker-extra.[ch]: extra moniker factory
+
+	* monikers/bonobo-moniker-conf-indirect.c: implemented new
+	conf_indirect: moniker
+
+	* configure.in:
+	* Makefile.am: added monikers directory
+
+2001-12-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/*.c: use bonobo_ui_node_peek_attr to save doing
+	lots of wasteful malloc / frees all over the shop.
+
+2001-12-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_get_pixbuf): stub.
+
+2001-12-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c (bonobo_ui_node_peek_attr): impl.
+
+2001-12-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_update): find the sync once here.
+	(bonobo_ui_engine_update_node): simplify checks.
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_state): pass 'sync' here.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_propbag): fix cast.
+
+	* bonobo/bonobo-ui-engine.c (bonobo_ui_engine_update):
+	instrument with 'access' calls.
+
+2001-12-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_do_popup):
+	fixup return value.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_sync): after sync, all dirty
+	flags must be TRUE.
+	(replace_override_fn): work out which attrs changed.
+	(override_fn): set all attrs to changed on override.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_transparent): treat separators
+	differently - they tend to have no attrs, but are
+	not 'transparent'.
+
+2001-12-18  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-component.c: (bonobo_ui_component_set_tree):
+	* bonobo/bonobo-ui-engine.c: (bonobo_ui_engine_xml_get):
+	Use g_free to free the result of bonobo_ui_node_to_string.
+
+	* bonobo/bonobo-ui-node.c: (bonobo_ui_node_to_string):
+	Change function and documentation so that you use g_free to
+	free the result rather than bonobo_ui_node_free_string.
+
+2001-12-17  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-node.c: (bonobo_ui_node_to_string):
+	Fix bug where bonobo_ui_node_to_string was returning a string
+	that you must free with g_free, not bonobo_ui_node_free_string.
+
+	* bonobo/bonobo-ui-engine.c: (bonobo_ui_engine_xml_get_prop):
+	Fix comment that mentions the wrong function to free
+	the resulting string.
+
+2001-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-plug.c: (bonobo_plug_set_property),
+	(bonobo_plug_get_property), (bonobo_plug_button_event):
+	fix stylistic faux pas.
+
+2001-12-14  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.108.1
+
+2001-12-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-control.[ch]:
+	(bonobo_control_do_popup_full): impl to expose
+	other gtk_menu_popup args.
+	(bonobo_control_do_popup): use.
+
+2001-12-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_get_popup_ui_container): upd.
+	(bonobo_control_destroy): upd.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_build_control): upd. referencing.
+
+	* tests/test-ui.c: update.
+
+2001-12-13  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-reparent.c (main): destroy the
+	window after use.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_class_init): upd.
+	(bonobo_control_dispose): rename to
+	(bonobo_control_destroy): this.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_class_init): upd.
+	(bonobo_plug_unrealize, bonobo_plug_realize): impl,
+	upd. take / release ref on realize / unrealize.
+	(bonobo_plug_set_control): only hold a g_object ref.
+
+	* tests/control/test-control.c (simple_tests): impl.
+	(main): upd.
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(bonobo_ui_toolbar_control_item_construct): upd.
+	ref counting.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_set_container): only take a CORBA
+	ref on the container.
+	(bonobo_ui_component_unset_container): upd.
+
+	* bonobo/bonobo-ui-preferences.c
+	(bonobo_ui_preferences_shutdown): impl.
+
+	* bonobo/bonobo-ui-private.h: add.
+
+	* bonobo/Makefile.am: upd.
+
+	* tests/test-ui.c (main): Do a bonobo_ui_debug_shutdown.
+
+	* tests/test-selector.c (main): ditto.
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_debug_shutdown):
+	add for internal use.
+
+2001-12-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-plug.c:
+	(bonobo_plug_set_property), (bonobo_plug_get_property),
+	(bonobo_plug_finalize), (bonobo_plug_class_init),
+	(bonobo_plug_init): add "event_forwarding" property.
+	(bonobo_plug_button_event): impl forwarding of button events.
+	(bonobo_plug_class_init): upd.
+
+	* tests/test-events.c: test it.
+
+	* tests/Makefile.am: upd.
+
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_set_ui_container): warning fix.
+
+2001-12-12  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-*.h (BONOBO_IS_*_CLASS): s/obj/klass/ where
+	appropriate
+
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-reparent.c: do the out of proc re-parent,
+	it works ! :-)
+
+	* tests/test-control.c: upd. referencing.
+
+	* tests/test-ui.c: upd. referencing.
+
+	* doc/control.txt: upd.
+
+	* bonobo/bonobo-widget.c (bonobo_widget_dispose): 
+	release the frame's ref.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_dispose): upd.
+	(bonobo_socket_set_control_frame): take B. ref.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_set_control): take
+	a B. ref, remove crack smoking mess.
+
+	* bonobo/bonobo-control.c
+	(control_frame_connection_died_cb): loose a single B. ref.
+	(bonobo_control_notify_plug_died): kill.
+	(bonobo_control_dispose): NULL widget on dispose.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_bind_to_control): upd. referencing.
+
+	* bonobo/bonobo-window.c
+	(bonobo_window_construct): deal with UI contianer
+	referencing.
+
+	* bonobo/bonobo-ui-container.c
+	(bonobo_ui_container_class_init): upd.
+	(bonobo_ui_container_dispose): impl, unhook
+	from the engine.
+	(bonobo_ui_container_set_engine): upd.
+	(blank_engine): kill heap of dung.
+
+	* bonobo/bonobo-ui-engine.c (class_init): upd.
+	(impl_dispose): impl, unhook from the ui container.
+	(bonobo_ui_engine_set_ui_container): upd.
+	(blank_container): kill evil smelling mess.
+	(sub_component_destroy): upd, kill signal mess,
+	don't blank our UI container - why was that there ?a
+
+2001-12-08  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-moniker.c (display_as_control): dump
+	the exception string.
+
+2001-12-12  George Lebl  <jirka@5z.com>
+
+	* bonobo/bonobo-dock-item.c, bonobo/bonobo-plug.c,
+	  bonobo/bonobo-selector-widget.c, bonobo/bonobo-selector.c,
+	  bonobo/bonobo-ui-config-widget.c:  s/guint/GtkType/
+	  inside the _get_type methods, for greater enjoyment on
+	  64 bit platforms
+
+	* bonobo/bonobo-ui-util.c: Patch a small memleak
+
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.108.0
+
+2001-12-12  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/Makefile.am: build built sources in $(srcdir)
+
+2001-12-10  jacob berkman  <jacob@ximian.com>
+
+	* glade/glade-gnome.c (add_dock_item): fix dock item placement
+
+	* glade/glade-bonobo.c: allow more values for boolean true
+
+2001-12-09  James Henstridge  <james@daa.com.au>
+
+	* bonobo/bonobo-ui-config-widget.c (widgets_init): use mnemonics
+	for button labels here as well.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_state):
+	just call gtk_label_set_use_underline() to set up the mnemonic.
+
+2001-12-07  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/Makefile.am: some fixes to generated files
+	
+	* bonobo/Makefile.am (libbonoboui.defs): forgot to add a rule for
+	libbonoboui.defs
+
+	* configure.in: look for glib-mkenums
+
+2001-12-06  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.h (BonoboUIToolbarStyle): reformat so
+	that glib-mkenums likes us
+
+	* bonobo/bonobo-dock-layout.[ch]: make it a GObject rather than a
+	GtkObject
+
+	* bonobo/Makefile.am: add builtin type files
+
+	* glade/glade-bonobo.c (dock_allow_floating): 
+	(dock_item_set_shadow_type): handle some properties
+	(dock_item_build): set the dock name
+	(add_dock_item):
+	(dock_build_children): ported from libglade 1
+	(glade_module_register_widgets): tell glade about the new widgets
+	we can do
+
+2001-12-06  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* samples/compound-doc/bonobo-hello/Makefile.am:
+	* samples/controls/Makefile.am: install sample servers in
+	$(prefix)/lib/bonobo-2.0/samples, and added server.in.in files
+	and needed Makefile rules for converting them to server.in
+
+2001-12-04  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-toolbar.c: (impl_destroy): Sink the tooltips
+	rather than unrefing them.
+
+2001-12-04  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-plug.c (bonobo_plug_expose_event):
+	chain to parent.
+
+2001-12-03  Laszlo Peter  <laca@ireland.sun.com>
+
+	* bonobo/bonobo-plug.c:
+	* bonobo/bonobo-socket.c:
+
+	Fix some void functions returning values.
+
+2001-11-30  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.107.0
+
+2001-12-02  Seth Nickell  <snickell@stanford.edu>
+
+	* bonobo/Makefile.am:
+	* bonobo/bonobo-property-control.c:
+	(bonobo_property_control_changed):
+
+	Add bonobo-property-control back into the build,
+	and fix one minor type error.
+	
+2001-11-26  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_remote_window): disable
+	hack around GtkPlug / Socket bugs.
+
+2001-11-26  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_main): impl.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_show_all):
+	fix prototype.
+
+2001-11-26  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-socket.[ch] (bonobo_socket_get_type): return a GType
+	rather than guint
+
+2001-11-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_class_init): upd.
+	(bonobo_socket_show_all): empty impl - don't propagate.
+
+Tue Nov 20 21:17:03 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* bonobo/bonobo-control-frame.c (bonobo_control_frame_get_control_property):
+	Finish renaming opt_ev argument in function body as well.
+
+	* samples/compound-doc/container/{component.h, document.h}: Include glib-object.h
+	instead of specific gobject/* header files. 
+
+2001-11-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-control-frame.[ch]:
+	(bonobo_control_frame_get_control_property_bag): renamed
+	exception param to 'opt_ev' to indicate that it's optional.
+
+2001-11-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-plug.c (bonobo_plug_dispose): update
+	to use bonobo_socket_disposed.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_disposed): impl.
+	internal method to replace GTK_OBJECT_DESTROYED
+
+2001-11-18  Peter Williams  <peterw@ximian.com>
+
+	* bonobo/bonobo-ui-marshal-main.c: Same.
+
+	* bonobo/bonobo-ui-xml.c: See below.
+
+	* bonobo/bonobo-ui-engine.c: Include glib-object.h instead of gobject/gsignal.h
+
+	* bonobo/bonobo-ui-component.c: Remove a double-include of bonobo-types.h
+
+	* bonobo/bonobo-ui-xml.h: Include glib-object.h instead of gobject/gobject.h
+
+	* bonobo/bonobo-canvas-item.c (prepare_state): See below.
+
+	* bonobo/bonobo-canvas-component.c (restore_state): Don't
+	try to set the xoffset / yoffset members of GtkLayout;
+	they've been removed.
+
+2001-11-15  Michael Meeks  <michael@ximian.com>
+
+	* tests/control/test-control.c (run_tests): beef up
+	the tests with some re-parenting action.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_expose_event): 
+	add debug rendering.
+
+	* bonobo/bonobo-control-internal.h: turn off control
+	debugging for a cleaner feel ...
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_remote_window): rename to
+	(bonobo_control_frame_get_remote_window): this to
+	better reflect function.
+	(bonobo_control_frame_get_remote_window): make it map
+	the widget too.
+	(dump_geom, dump_gdk_tree): debugging tools ...
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_notify_plug_died): handle an inproc
+	unrealize differently to a destroy.
+	(bonobo_control_init): split out
+	(impl_Bonobo_Control_getWindowId): demand re-create
+	plug.
+	(create_plug): impl & upd.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_size_allocate),
+	(bonobo_plug_expose_event, bonobo_plug_size_request): add.
+	(bonobo_plug_dispose): distinguish between a parent's
+	unrealize and a dispose
+
+	* bonobo/bonobo-socket.c (bonobo_socket_size_allocate),
+	(bonobo_plug_expose_event, bonobo_socket_size_request):
+	add for debugging.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): forward port
+	fix from stable.
+
+2001-11-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_popup_component): stub.
+
+2001-11-14  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (do_sane_popup, main): test it.
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_getPopupContainer): impl.
+	(bonobo_control_get_popup_ui_container): impl.
+	(bonobo_control_set_popup_ui_container): impl.
+	(bonobo_control_get_popup_ui_component): impl.
+	(bonobo_control_dispose): upd.
+	(bonobo_control_do_popup): impl.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_control_activate),
+	(bonobo_control_frame_control_deactivate): kill debug.
+
+2001-11-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_class_init): fill out the
+	unimplemented methods & upd handler.
+	(bonobo_control_frame_set_remote_window): use getWindowId
+	(bonobo_control_frame_bind_to_control): do a setFrame (always).
+	(impl_Bonobo_ControlFrame_getUIHandler): rename to
+	(impl_Bonobo_ControlFrame_getUIContainer): this.
+	(bonobo_control_frame_bind_to_control): upd. for new setFrame.
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_getWindowId): impl.
+	(impl_Bonobo_Control_getPopupContainer): stub.
+	(impl_Bonobo_Control_setFrame): upd - just set frame.
+	(bonobo_control_class_init): fill out the unimpl methods
+	& update to include the new methods.
+	(bonobo_control_get_remote_ui_container): upd. for new name.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_focus_out),
+	(bonobo_socket_focus_in): upd. to chain always.
+
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (impl_xml_get),
+	(bonobo_ui_component_get, bonobo_ui_component_set),
+	(impl_xml_set, bonobo_ui_component_rm, impl_xml_rm),
+	(bonobo_ui_component_freeze, impl_freeze),
+	(bonobo_ui_component_thaw, impl_thaw),
+	(bonobo_ui_component_set_prop, impl_set_prop),
+	(impl_get_prop, bonobo_ui_component_get_prop),
+	(bonobo_ui_component_path_exists, impl_exists): move
+	pre-conditions to somewhere actualy useful.
+
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(control_frame_connection_died_cb): upd. fixup casts.
+
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c: kill plug_xid, it's
+	transient and stale ...
+	(bonobo_control_frame_bind_to_control): prune get id
+	out of here.
+	(bonobo_control_frame_set_remote_window): re-write to
+	always fetch the plug x11 id.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_realize):
+	hold a ref around the set_remote_window.
+
+	* tests/test-ui.c (main): disable statusa set.
+
+2001-11-09  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): check every possible
+	CORBA_Environment.
+
+2001-11-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-ui-container.h: kill non-existent
+	bonobo_ui_container_construct
+
+	* bonobo/libbonoboui-2.0.pc.in: add libgnomecanvas-2.0.
+
+	* doc/object-hierarchy.txt: add.
+
+	* doc/Makefile.am: add object-hierarchy.txt, 
+	ui-across-boundaries.txt, control.txt and compdoc.html.
+
+2001-11-09  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_bind_to_control): add paranoid check.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): fix possible
+	re-enterancy issue.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_plug_removed): impl.
+	(bonobo_socket_class_init): hook.
+
+	* tests/test-moniker.c (display_as_control): use
+	bonobo_main.
+	(main): debug_shutdown.
+
+2001-11-08  Michael Meeks  <michael@ximian.com>
+
+	* glade/glade-bonobo.c
+	(bonobo_window_find_internal_child): impl.
+	(glade_module_register_widgets): upd.
+
+2001-11-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_construct):
+	don't hold a ref on ourselves.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_delete_event): don't
+	chain to a NULL pointer.
+
+2001-11-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-container.c
+	(impl_Bonobo_UIContainer_setNode): upd. spelling for Darin.
+	(impl_Bonobo_UIContainer_getAttr): upd.
+
+	* bonobo/bonobo-ui-component.c (impl_get_prop): ditto.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_destroy_event): rename
+	(bonobo_plug_delete_event): to this.
+
+2001-11-07  jacob berkman  <jacob@ximian.com>
+
+	* glade/Makefile.am (glademoduledir): install into our prefix
+	rather than libglade's
+
+	* configure.in: remove glade module dir check
+
+2001-11-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_remote_window): add disgusting
+	hacks around GtkPlug brokenness in the in-proc case.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_construct_control_from_objref): remove
+	sinking feeling.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_remote_window): an ugly,
+	ugly hack to make the control play ball in-proc.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_realize): impl.
+	(bonobo_plug_class_init): hook.
+
+	* tests/control/test-control.c (create_frame):
+	remove bogus remote faking, we need to fool Gdk too.
+
+2001-11-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (impl_get_prop): make the
+	check faster.
+
+	* tests/test-ui.c (main): update test.
+
+	* bonobo/bonobo-ui-container.c
+	(impl_Bonobo_UIContainer_getAttr): check it & fire the
+	right exceptions.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_xml_get_prop): add invalid_path arg.
+
+	* bonobo/bonobo-ui-xml.c (bonobo_ui_xml_finalize):
+	chain to parent properly & upd.
+	(bonobo_ui_xml_dispose): impl.
+	(bonobo_ui_xml_class_init): hook.
+
+	* bonobo/bonobo-ui-preferences.c
+	(DEFINE_BONOBO_UI_PREFERENCE): cache the value localy.
+
+	* bonobo/Makefile.am: don't build / install bonobo-wrapper.h
+
+	* bonobo/bonobo-widget.c (bonobo_widget_class_init): upd.
+	(bonobo_widget_remove): impl.
+
+2001-11-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-ui-toolbar.c: (size_allocate_helper):
+	don't assume we have to be the last widget on the list to
+	be the last visible widget.
+
+	* bonobo/bonobo-ui-toolbar-popup-item.c: (impl_set_orientation):
+	don't unref pixbuf.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-zoomable.c 
+	(impl_Bonobo_Zoomable__get_preferredLevels): use a memcpy
+	to be slightly efficient.
+	(impl_Bonobo_Zoomable__get_preferredLevelNames): 
+	make legible.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-zoomable.c 
+	(bonobo_zoomable_class_init): fix bounds.
+
+	* bonobo/bonobo-zoomable-frame.c: substantialy re-write.
+	(bonobo_zoomable_frame_bind_to_zoomable): add opt_ev.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-zoomable.c
+	(bonobo_zoomable_free_preferred_zoom_level_arrays):
+	handle double destroys.
+	(bonobo_zoomable_destroy): rename to
+	(bonobo_zoomable_dispose): this & upd.
+	(bonobo_zoomable_finalize): upd.
+	(bonobo_zoomable_from_servant): simplify.
+	(impl_Bonobo_Zoomable_setLevel),
+	(impl_Bonobo_Zoomable_zoomOut),
+	(impl_Bonobo_Zoomable_zoomIn),
+	(impl_Bonobo_Zoomable_zoomFit),
+	(impl_Bonobo_Zoomable_zoomDefault),
+	(impl_Bonobo_Zoomable_setFrame): clean + gsignal.
+	(bonobo_zoomable_new): prune cruft.
+	(bonobo_zoomable_report_zoom_level_changed): add opt_ev.
+	(bonobo_zoomable_report_zoom_parameters_changed): ditto.
+	(bonobo_zoomable_class_init): upd. for g_signal.
+	(bonobo_zoomable_get_arg): rename to
+	(bonobo_zoomable_get_property): this.
+	(bonobo_zoomable_set_parameters_full): upd.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-widget.c (bonobo_widget_dispose):
+	re-order for more safety & simplify.
+	(bonobo_widget_get_objref): use the frame's version,
+	not our own private, stale copy.
+	(bonobo_widget_get_uih): rename to
+	(bonobo_widget_get_ui_container): use the frame's version.
+	(bonobo_widget_construct_control): kill priv->server.
+	(bonobo_widget_construct_control_from_objref): remove
+	ui container management.
+	(bonobo_widget_dispose): ditto.
+
+	* bonobo/bonobo-widget.h: kill
+	bonobo_widget_new_subdoc decl. add bonobo_widget_get_uih
+	compat method.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_dispose): pull
+	the child out before it can be disposed of.
+
+	* bonobo/bonobo-control.c (bonobo_control_dispose):
+	unref the plug on dispose.
+	(bonobo_control_construct): take a ref on the widget.
+
+	* bonobo/bonobo-ui-component.c (impl_get_prop):
+	silently return NULL even with a NULL opt_ev, if we
+	get a NonExistantAttr.
+
+	* tests/test-ui.c (main): regression test it.
+
+2001-11-05  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.106.0
+
+2001-11-05  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: update all dep versions, & ver.
+	
+	* bonobo/*.[ch]: s/Helix Code/Ximian/
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_set_pixbuf, bonobo_ui_util_set_ui): add
+	optional CORBA_Environments.
+
+	* libbonoboui.h: update.
+
+	* bonobo/bonobo-canvas-component.c
+	(bonobo_canvas_component_get_ui_container): add opt_ev.
+	(bonobo_canvas_component_ungrab): ditto.
+	(bonobo_canvas_component_grab): 
+
+2001-11-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_init): use set_plug to associate it
+	correctly with the control.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_size_request): upd to accelerate.
+
+	* bonobo/bonobo-control.c
+	(control_frame_connection_died_cb): stub.
+	(add_connection_listener): impl.
+	(bonobo_control_add_listener): impl.
+	(bonobo_control_unset_control_frame): unlisten on
+	frame, re-order to re-enterancy guard.
+	(impl_Bonobo_Control_setFrame): add listener, hold refs.
+
+	* bonobo/bonobo-control-frame.c
+	(add_connection_listener): remove.
+	(bonobo_control_frame_bind_to_control): upd.
+	(control_connection_died_cb): stub.
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_construct): put
+	the widget inside the plug; oh yes.
+
+	* tests/control/test-control.c (create_control): upd.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_remote_window): drasticaly
+	simplify.
+	(bonobo_control_frame_set_inproc_widget): kill; Owen
+	doesn't like it; sigh.
+	(bonobo_control_frame_bind_to_control): update.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_realize): upd.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_set_control_frame): privatize - makes no
+	sense to be public, split into
+	(bonobo_control_unset_control_frame): here and
+	(impl_Bonobo_Control_setFrame): here. Return the plug's
+	window id.
+	(bonobo_control_init): always setup the plug.
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_unrealize): impl.
+	(bonobo_socket_class_init): hook.
+	(bonobo_socket_unrealize): unset the REALIZED flag before
+	we chain - bug in Gtk+.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_inproc_widget): impl. to do aweful
+	GtkPlug / Socket skullduggery - we know we're in-proc well
+	before the plug / socket is realized.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_set_control_frame): setup inproc_frame.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_bind_to_control): upd, unset the
+	frame on the control if we are releasing it, setup
+	inproc_control if we're in-proc.
+	(bonobo_control_frame_set_ui_container): short circuit re-set.
+	(bonobo_control_frame_dispose): use the generic routines.
+	(bonobo_control_frame_set_propbag): upd. for sloppier bonobo
+	ref methods.
+
+	* bonobo/bonobo-control.c: s/control_frame/frame/
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_set_control_frame): de-activate exiting frame.
+	(bonobo_control_dispose): use the std. methods, destroy not
+	unref toplevel widget.
+	(bonobo_control_set_properties): short circuit re-set.
+	(bonobo_control_set_ui_component): short circuit re-set,
+	unset the ui_component's container on release, dup the
+	incoming ref.
+	(bonobo_control_notify_plug_died): update for new ORBit2 API.
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* tests/control/test-control.c (main): use
+	bonobo_debug_shutdown.
+
+	* tests/test-sensitivity.c (main): ditto
+
+	* tests/test-reparent.c (main): ditto
+
+	* tests/test-focus.c (main): ditto.
+
+2001-10-31  Michael Meeks  <michael@ximian.com>
+
+	* tests/control/test-control.c (main): upd.
+	(run_tests, create_test, create_frame),
+	(create_control, destroy_test, mainloop_for): impl.
+
+2001-10-30  jacob berkman  <jacob@ximian.com>
+
+	* bonobo/bonobo-control.c (ORBIT2_INTERNAL_API): define this so
+	that we build with current orbit
+
+	* bonobo/libbonoboui-2.0.pc.in (Cflags): 
+	* bonobo/Makefile.am (libbonoboincludedir): 
+	* Makefile.am (libincludedir): use libbonoboui-2.0 rather than
+	gnome-2.0
+
+2001-10-31  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add test-control.c
+
+	* tests/control/test-control.c: add.
+
+	* tests/control/Makefile.am: add.
+
+2001-10-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-plug.c (bonobo_plug_destroy_event): hack the
+	mjmess out - this is never called it seems.
+	
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_focus_in),
+	(bonobo_socket_focus_out): fix broken focus chaining.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_finalize): re-impl.
+	(bonobo_widget_dispose): impl.
+	(bonobo_widget_class_init): hook.
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(impl_finalize, impl_dispose): re-impl.
+	(class_init): hook.
+	(bonobo_ui_toolbar_control_item_new): upd.
+
+	* tests/test-ui.c (main): give a relative path for std-ui.xml
+
+2001-10-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(set_control_property_bag_value): don't set things on a NULL bag.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_get_ui_fname): fix silly.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_set_transient_for): re-impl, fix leak.
+
+2001-10-30  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_bind_to_control): shortcut re-sets,
+	only take a CORBA ref.
+	(bonobo_control_frame_dispose): only release a CORBA ref.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_notify_plug_died): impl.
+
+	* bonobo/bonobo-plug.c
+	(bonobo_plug_destroy_event): impl.
+	(bonobo_plug_dispose): notify control that plug died.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_plug_destroy_cb): kill.
+	(bonobo_control_plug_destroy_event_cb): kill.
+	(impl_Bonobo_Control_setWindowId): don't connect them.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_sync_unrealize): kill.
+	(bonobo_control_frame_sync_realize): simplify.
+	s/priv->container/priv->socket/ remove the hbox
+	hack.
+	(bonobo_control_frame_construct): kill hbox code, add ev.
+	(bonobo_control_frame_socket_state_changed): kill, move
+	into the socket -> loose a signal & unsafety.
+	(bonobo_control_frame_autoactivate_focus_in): kill.
+	(bonobo_control_frame_autoactivate_focus_out): kill.
+	(bonobo_control_frame_create_socket): fold back into
+	(bonobo_control_frame_construct): here & upd.
+	(bonobo_control_frame_new): upd.
+	(bonobo_control_frame_init): create the socket here.
+	(bonobo_control_frame_get_widget): return the socket.
+	(bonobo_control_frame_realize): kill in favour of
+	(bonobo_control_frame_set_remote_window): me & upd.
+	(bonobo_control_frame_destroy): kill.
+	(bonobo_control_frame_set_propbag): take a ref on the
+	incoming prop bag.
+	(bonobo_control_frame_dispose): unref the propbag.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_state_changed, bonobo_socket_focus_in),
+	(bonobo_socket_focus_out): impl.
+	(bonobo_socket_class_init): hook up.
+	(bonobo_socket_size_request): use CORBA if we are not
+	realized yet.
+
+	* changes.txt: upd.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_unrealize): kill.
+	(bonobo_socket_class_init): upd.
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_getDesiredSize): upd. signature.
+	(impl_Bonobo_Control_realize): kill.
+	(impl_Bonobo_Control_unrealize): kill.
+	(bonobo_control_set_control_frame): shortcut re-sets.
+
+	* bonobo/bonobo-control-frame.c (get_toplevel_fn):
+	rename to
+	(impl_Bonobo_ControlFrame_getToplevelId): this & re-impl.
+	(add_toplevel_prop): kill.
+	(bonobo_control_frame_set_propbag): upd.
+	(impl_Bonobo_ControlFrame_getAmbientProperties): no demand
+	property bag instantiation nonsense.
+
+	* doc/control.txt (Note 2): add Darin's input.
+
+2001-10-27  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_get_socket),
+	(bonobo_control_frame_set_socket): impl.
+	(bonobo_control_frame_dispose): impl.
+	(bonobo_control_frame_finalize): move stuff to dispose.
+	(bonobo_control_frame_socket_destroy): kill the mess.
+	(bonobo_control_frame_create_socket): don't connect to
+	destroy.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_dispose): impl.
+	(bonobo_socket_finalize): stub.
+	(bonobo_socket_set_control_frame): impl.
+	(bonobo_socket_get_control_frame): impl.
+	(bonobo_socket_init): kill.
+
+	* doc/control.txt (interactions): fix typo.
+	(Misc Notes): add to describe Marks' tests.
+
+2001-10-25  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(impl_Bonobo_Control_setWindowId): kill is_local,
+	GtkPlug / GtkSocket now do this for us.
+	(idle_destroy_socket): kill.
+	(remove_destroy_idle): kill.
+	(impl_Bonobo_Control_setWindowId): completely
+	re-write & simplify.
+	(bonobo_control_dispose): chain to parent dispoze
+	method; sigh.
+	(bonobo_gtk_widget_from_x11_id): kill.
+	(bonobo_control_finalize): remove destroy_idle mess.
+
+	* bonobo/bonobo-control-internal.h: add.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_sync_realize): kill remote
+	call to realize.
+	(bonobo_control_frame_sync_unrealize): ditto.
+
+	* bonobo/bonobo-control.c (process_events): kill.
+	(impl_Bonobo_Control_realize),
+	(impl_Bonobo_Control_unrealize): stub.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_destroy): chain to parent.
+
+2001-10-29  jacob berkman  <jacob@ximian.com>
+
+	* tests/test-filesel.c (main): 
+	* tests/test-ui.c (main): 
+	* tests/test-focus.c (main): 
+	* samples/bonoboui/hello.c: use GETTEXT_PACKAGE where appropriate
+
+	* samples/controls/Makefile.am: use INTLTOOL rules
+
+	* configure.in: drop the 2 from the package name, use intltool,
+	set GETTEXT_PACKAGE, and use AM_GLIB_GNU_GETTEXT
+
+	* acconfig.h: add GETTEXT_PACKAGE
+
+	* Makefile.am (SUBDIRS): dist intltool-* rather than xml-i18n-*
+
+2001-10-28  Seth Nickell  <snickell@stanford.edu>
+
+	* bonobo/bonobo-canvas-component.c: (bonobo_canvas_component_new):
+	* bonobo/bonobo-canvas-component.h:
+	* bonobo/bonobo-control-frame.c: (bonobo_control_frame_new):
+	* bonobo/bonobo-control-frame.h:
+	* bonobo/bonobo-control.c:
+	* bonobo/bonobo-control.h:
+	* bonobo/bonobo-embeddable-factory.h:
+	* bonobo/bonobo-property-control.c:
+	* bonobo/bonobo-property-control.h:
+	* bonobo/bonobo-ui-component.c: (ui_event),
+	(impl_Bonobo_UIComponent_execVerb), (bonobo_ui_component_new):
+	* bonobo/bonobo-ui-component.h:
+	* bonobo/bonobo-ui-container.c: (bonobo_ui_container_new):
+	* bonobo/bonobo-ui-container.h:
+	* bonobo/bonobo-ui-xml.c: (bonobo_ui_xml_new):
+	* bonobo/bonobo-ui-xml.h:
+	* bonobo/bonobo-widget.c: (bonobo_widget_new_control_async),
+	(bonobo_widget_new_control_from_objref),
+	(bonobo_widget_new_control):
+	* bonobo/bonobo-widget.h:
+	* bonobo/bonobo-zoomable-frame.c:
+	* bonobo/bonobo-zoomable-frame.h:
+	* bonobo/bonobo-zoomable.c:
+	* bonobo/bonobo-zoomable.h:
+
+	Convert Bonobo TYPE macros from:
+
+	BONOBO_..._TYPE to BONOBO_TYPE_... 
+
+	Add #defines to the old style for compatibility, but
+	add a magic comment so its easy to remove them in the 
+	future.
+
+	See also: http://www.stanford.edu/~snickell/bonobo_type_convert.pl
+
+	(converts source code to use the new macros)
+	
+2001-10-26  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (dump_prefs): impl. (main): invoke.
+
+2001-10-26  Michael Meeks  <michael@ximian.com>
+
+	* glade/glade-bonobo.c (glade_module_register_widgets):
+	use the new, new API - the pace of change ...
+
+2001-10-26  Michael Meeks  <michael@ximian.com>
+
+	* glade/glade-bonobo.c (glade_module_register_widgets):
+	don't use glade_register_widget - it doesn't exist.
+	Use glade_standard_build_widget for a BonoboWindow.
+	Use 8 stop tabs.
+
+2001-10-25  Michael Meeks  <michael@ximian.com>
+
+	* doc/control.txt: add re-design of Control / ControlFrame
+	thoughts.
+
+2001-10-24  jacob berkman  <jacob@ximian.com>
+
+	* glade/glade-bonobo.c: move from libglade/glade/
+
+	* configure.in: add libglade checks
+
+	* Makefile.am: build glade/
+
+2001-10-24  Michael Meeks  <michael@ximian.com>
+
+	* Upd. all factories from _OAF_FACTORY to _ACTIVATION_FACTORY.
+	
+	* tests/test-ui.c (main): add a friendly warning so people know
+	it hasn't crashed.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_build):
+	honour get_menus_have_icons.
+	
+2001-10-24  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add gconf; yuck.
+
+	* bonobo/bonobo-ui-preferences.[ch]: impl.
+
+	* bonobo/bonobo-ui-sync-status.c (impl_bonobo_ui_sync_status_build): 
+	upd. prefs
+
+	* bonobo/bonobo-selector-widget.c (bonobo_selector_widget_init): 
+	upd. prefs.
+
+	* bonobo/bonobo-window.c (construct_priv): upd. prefs.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (parse_look),
+	(create_dockitem): upd. prefs.
+
+	* bonobo/bonobo-ui-sync-menu.c (add_tearoff): upd prefs.
+
+2001-10-23  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-moniker.c (display_as_stream): upd.
+	(main): make async a global option.
+	re-order to kill redundant prototypes. do a ui_init so
+	we can use Gtk+.
+	(display_control_async_cb): impl.
+	(display_as_control): upd.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_construct_control_from_objref),
+	(bonobo_widget_construct_control),
+	(bonobo_widget_launch_component): add CORBA_Environments.
+	(bonobo_widget_new_control_from_objref),
+	(bonobo_widget_new_control): setup the CORBA_Environments.
+
+	* bonobo/bonobo-widget.c
+	(bonobo_widget_new_control_async): impl.
+	(control_new_async_cb): impl.
+
+2001-10-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-file-selector-util.c (run_file_slector): 
+	remove window_set_icon - we just need the transient and we
+	get the icon just fine.
+
+2001-10-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_plug_destroy_event_cb): 
+	call new method.
+	(bonobo_control_plug_destroy_cb): ditto.
+	(impl_Bonobo_Control_setWindowId): unset.
+	(bonobo_control_finalize): upd.
+	(bonobo_control_set_plug): impl.
+	(bonobo_control_get_plug): impl.
+	(bonobo_control_dispose): impl.
+	(bonobo_control_class_init): hook it up.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_dispose): impl.
+	(bonobo_plug_set_control): impl.
+	(bonobo_plug_get_control): impl.
+	(bonobo_plug_class_init): hook dispose.
+
+	* bonobo/bonobo-control-frame.c (get_toplevel_fn): if we
+	are not the real toplevel, ie. our toplevel == a BonoboPlug
+	then recurse up the tree via. CORBA.
+
+	* bonobo/bonobo-selector.c (DEFAULT_INTERFACE): make it
+	Bonobo/Control so we can test effectively.
+
+	* bonobo/bonobo-selector-widget.c (free_lang_list): kill.
+	(get_lang_list): re-write, converts a glist into a gslist
+	for oaf - sigh.
+	(get_filtered_objects): don't free the list.
+
+2001-10-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c (check_ambient_propbag):
+	don't do redundant set of toplevel property.
+
+	* samples/controls/bonobo-sample-controls.c
+	(bonobo_entry_control_new): fixup.
+
+2001-10-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c
+	(impl_bonobo_ui_sync_menu_build): only set stuff from
+	the stockid if we don't have it set already.
+
+	* samples/bonoboui/hello.c: finish re-write.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_add_verb_list_with_data),
+	(bonobo_ui_component_add_verb_list): constipate.
+
+2001-10-20  Michael Meeks  <michael@ximian.com>
+
+	* samples/bonoboui/hello.c: kill all redundant forward
+	prototypes, substantialy re-write, clean the mess.
+	Remove swathes of C++ style comments.
+
+	* samples/bonoboui/Makefile.am: rewrite.
+
+	* configure.in: update bonoboui-hello to bonoboui
+
+2001-10-18  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/bonobo-sample-controls.c
+	(bonobo_entry_control_new): upd. for new param spec mappings.
+
+2001-10-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-marshal.list (VOID): don't generate an ENUM
+	marshaler.
+
+	* bonobo/bonobo-ui-component.c (ui_event): dont use G_TYPE_ENUM
+	it sucks. (bonobo_ui_component_add_listener_full): register the
+	enum as an int.
+
+2001-10-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-file-selector-util.c
+	(run_file_slector): use g_getenv.
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_x11_from_window_id): upd. sig.
+
+2001-10-16  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-moniker.c (display_as_stream): split chunks
+	into (dump_stream): here.
+	(disp_stream_async_cb, display_as_stream_async): impl.
+
+2001-10-10  Havoc Pennington  <hp@redhat.com>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_set_ui): fix docs to
+	reflect that arg should be datadir not prefix
+	(bonobo_ui_util_get_ui_fname): fix docs to reflect that arg should 
+	be datadir not prefix
+
+2001-10-11  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_get_ui_fname):
+	update to allow absolute file name paths, and fall back to
+	a straight prefix / file_name conflation.
+	version gnome-2.0/ui
+
+	* bonobo/Makefile.am (BONOBOUIDIR): version dir.
+
+	* bonobo/bonobo-socket.c (bonobo_socket_destroy): rename to
+	(bonobo_socket_finalize): and finalize instead.
+	(bonobo_socket_class_init): upd.
+
+2001-10-05  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (lookup_stock_compat): rename
+	gnome-stock-pixmap- prefix to gnome-stock- for compat.
+
+2001-10-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* samples/controls/*: Rename bonobo-sample-controls ->
+	  bonobo-sample-controls-2 , to enable parallel install
+	  with bonobo 1.0.x .
+
+2001-09-27  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.103
+
+2001-09-25  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-ui-util.c: (lookup_stock_compat):
+	Update for change in g_ascii_strdown API.
+
+2001-09-24  Havoc Pennington  <hp@redhat.com>
+
+	* autogen.sh, configure.in: destroy CERTIFIED_GNOMIE
+
+2001-09-22  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Added zh_CN for Simplified Chinese.
+
+2001-06-21  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Catalan (ca) to $ALL_LINGUAS
+
+2001-09-20  Frank Belew <frb@ximian.com>
+
+	* configure.in: removed AM_CONDITIONAL(FALSE...)
+
+2001-09-20  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" to the languages list.
+
+2001-09-19  Darin Adler  <darin@bentspoon.com>
+
+	* bonobo/bonobo-control.c: (impl_Bonobo_Control_setWindowId):
+	Fix parameter type to match new ORBit rules for string-like types.
+
+	* bonobo/bonobo-file-selector-util.c: Add missing include of
+	<string.h>.
+
+2001-09-15  Murray Cumming <murrayc@usa.net>
+
+	* samples/bonboui-hello: Now uses gtk stock items for menus and
+	toolbars. Corrected symlink suggestion to include gnome/ui in
+	path.
+
+2001-09-07  Martin Baulig  <baulig@suse.de>
+
+	Removing the libgnome dependency - part I.
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full): Call
+	g_set_prgname().
+
+	* bonobo/bonobo-file-selector-util.c (listener_cb): Make the
+	`event_name' and `any' arguments const to make it compile
+	without warnings.
+	(create_control): Usfe g_get_prgname() instead of
+	gnome_program_get_app_id().
+	(concat_dir_and_file): New static function, copied from libgnome.
+	(ok_clicked_cb): Use the local concat_dir_and_file() instead of
+	g_concat_dir_and_file() from libgnome.
+
+	* bonobo/bonobo-dock-item.c: #include <bonobo/bonobo-i18n.h>
+	instead of <libgnome/gnome-i18n.h>.
+
+2001-09-07  Martin Baulig  <baulig@suse.de>
+
+	* samples/bonoboui-hello/helloapp.c: Don't #include <libgnome.h>.
+	* samples/bonoboui-hello/main.c: ditto.
+	* tests/test-selector.c: ditto.
+
+2001-09-07  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-component.c
+	(ui_event, impl_Bonobo_UIComponent_execVerb): Reflect latest
+	bonobo_closure_invoke() API changes.
+
+2001-09-07  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-canvas-component.c: Use the bonobo-ui-marshal.[ch]
+	marshalling functions.
+	* bonobo/bonobo-control-frame.c: ditto.
+	* bonobo/bonobo-ui-engine.c: ditto.
+	* bonobo/bonobo-ui-xml.c: ditto.
+
+	* bonobo/bonobo-ui-marshal.list: Added `VOID:STRING,BOOLEAN',
+	`BOOLEAN:POINTER', `VOID:POINTER,STRING', `VOID:POINTER,POINTER'.
+
+2001-09-07 Glynn Foster <glynn.foster@sun.com>
+	
+	* Makefile.am: Change includedir to gnome-2.0/ instead of gnome/2/
+
+2001-09-03  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (bonobo_ui_component_set_status): 
+	do escaping on set string.
+
+	* bonobo/bonobo-ui-node.c (append_escaped_text): cpy from glib.
+	(internal_to_string): do entity encoding for basic entities.
+
+	* tests/test-ui.c (main): upd. regression tests.
+
+2001-09-06  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/Makefile.am (libbonoboincludedir): Change includedir
+	to gnome-2.0/ instead of gnome/2/
+
+	* bonobo/libbonoboui-2.0.pc.in (Cflags): Likewise.
+
+Sun Sep 02 23:32:07 2001  George Lebl <jirka@5z.com>
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full):
+	  libgnome_module_info is now libgnome_module_info_get ()
+
+Sun Sep 02 00:50:00 2001  George Lebl <jirka@5z.com>
+
+	* bonobo/bonobo-file-selector-util.c (create_control):
+	  gnome_program_get_name is now called gnome_program_get_app_id
+	  so use that.
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-24  jacob berkman  <jacob@ximian.com>
+
+	* tests/test-filesel.c: test for bonobo-file-selector
+
+	* bonobo/bonobo-file-selector-util.[ch]: import libgnomefilesel
+
+2001-08-22  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): do a batch of 1000 sets for profiling.
+
+	* bonobo/bonobo-ui-node.c (uiCharacters): use g_string_append_len
+
+2001-08-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/*: convert to GQuark more fully, use static
+	initializers.
+
+	* bonobo/bonobo-ui-node.c (cleanhash): prune if & clean
+	prototype ( from Darin ).
+	(bonobo_ui_node_get_attr): simplify to use dup
+	without conditional.
+	(bonobo_ui_node_get_content): ditto.
+	(bonobo_ui_node_copy_attrs): ditto.
+
+	* Merged to 2001-08-22 from bonobo: ui-shrink branch.
+
+2001-08-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_set_status): update path - since tree
+	no longer has empty child content nodes.
+
+2001-08-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (state_update_new):
+	efficiency wins.
+	(hide_placeholder_if_empty_or_hidden): ditto.
+
+	* bonobo/bonobo-ui-xml.c (do_insert): optimize.
+	(merge): more efficiency tweaking.
+
+	* bonobo/bonobo-ui-engine.c (move_dirt_cmd_to_widget): 
+	accelerate loop, use name_id
+	(update_commands_state): ditto.
+
+	* bonobo/bonobo-ui-xml.c (bonobo_ui_xml_set_dirty, merge):
+	quick compares for placeholder.
+	(find_child, merge): accelerate name lookups.
+
+	* tests/test-ui.c (main): update status check.
+
+	* bonobo/bonobo-ui-node.c (uiEndElement): fix
+	empty content pruning bug.
+	(bonobo_ui_node_replace): swap arg. order; it was wrong.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_translate_ui): encode strings for
+	libxml transport issues.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_move_children): impl.
+
+	* bonobo/bonobo-ui-xml.c (override_node_with),
+	(reinstate_old_node): use it.
+	(move_children): kill it - slow.
+
+	* bonobo/bonobo-ui-engine.c (class_init): setup
+	cached ids for "id", "verb", "name"
+	(node_get_id): fix horrible inefficiencies.
+	(cmd_to_node_add_node): upd.
+	(cmd_to_node_remove_node): upd.
+	(impl_emit_verb_on): upd.
+	(cmd_get_node): upd.
+	(impl_emit_event_on): upd.
+	(bonobo_ui_engine_get_cmd_node): upd.
+
+	* bonobo/bonobo-ui-xml.c
+	(bonobo_ui_xml_class_init): setup name_id.
+	(do_set_id): use it.
+	(bonobo_ui_xml_make_path): ditto & optimize.
+
+2001-08-21  Michael Meeks  <michael@ximian.com>
+
+	* Merged libbonoboui to here:
+
+	* bonobo/bonobo-ui-xml.c (bonobo_ui_xml_dump),
+	(override_node_with): port to new code.
+	(bonobo_ui_xml_merge): ditto.
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_translate_ui):
+	re-implement for new node structures.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_from_string, bonobo_ui_node_from_file): reimpl.
+	(parse_state_new, parse_state_free): impl.
+	(bonobo_ui_node_str_from_id): impl.
+	(internal_to_string): impl.
+	(bonobo_ui_node_to_string): re-impl.
+
+2001-08-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c (bonobo_ui_node_new),
+	(bonobo_ui_node_new_child, bonobo_ui_node_copy): rewrite.
+	(node_free_internal): impl.
+	(bonobo_ui_node_free, bonobo_ui_node_set_data),
+	(bonobo_ui_node_get_data): rewrite.
+	(bonobo_ui_node_get_id, cleanhash): impl.
+	(bonobo_ui_node_set_attr_by_id): impl.
+	(bonobo_ui_node_set_attr): upd.
+	(bonobo_ui_node_remove_attr): upd.
+	(bonobo_ui_node_unlink, bonobo_ui_node_insert_before),
+	(bonobo_ui_node_add_child, bonobo_ui_node_set_content),
+	(bonobo_ui_node_replace): rewrite.
+	(bonobo_ui_node_peek_content): impl
+	(bonobo_ui_node_next): re-impl.
+	(bonobo_ui_node_prev, bonobo_ui_node_children),
+	(bonobo_ui_node_get_name, bonobo_ui_node_parent): rewrite.
+	(bonobo_ui_node_has_name): reimpl.
+	(bonobo_ui_node_has_name_by_id): impl.
+	(bonobo_ui_node_transparent): reimpl.
+	(bonobo_ui_node_copy_attrs): reimpl.
+	(node_free_attrs): impl.
+	(do_strip): kill.
+	(bonobo_ui_node_strip): make a noop.
+
+	* bonobo/bonobo-ui-node-private.h: add.
+
+2001-08-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (free_loaded_node_cache),
+	(free_node_cache_entry, bonobo_ui_util_set_ui):
+	(node_hash, node_equal): port Alex' cache code from
+	bonobo stable.
+	(bonobo_ui_util_new_ui): remove 'strip'
+
+2001-08-22  Anders Carlsson  <andersca@gnu.org>
+
+	* bonobo/bonobo-ui-component.c (impl_xml_get): Free our
+	ev.
+
+2001-08-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c (bonobo_ui_node_from_file):
+	update to unlink root node as well, and strip earlier.
+
+2001-08-20  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): Make the 'Insensitive' item
+	insensitive - woah !
+
+	* bonobo/bonobo-ui-container.c
+	(impl_Bonobo_UIContainer_setNode): silently accept
+	xml being empty without doing anything.
+
+	* bonobo/bonobo-ui-component.c (impl_xml_set): return
+	if xml is empty.
+
+	* bonobo/bonobo-ui-node.c
+	(bonobo_ui_node_from_string): unlink the root node
+	from the doc.
+
+2001-08-18  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Add GLIB_GENMARSHAL.
+	
+	* bonobo/Makefile.am: Build marshal files in a simpler way.
+	
+	* bonobo/.cvsignore:
+	* bonobo/bonoboui-marshal-main.c:
+	* bonobo/bonoboui-marshal.list:
+	* bonobo/bonobo-ui-component.c:
+	* bonobo/bonobo-ui-marshal-main.c:
+	* bonobo/bonobo-ui-marshal.list:
+	Changed name of marshal files.
+	
+	* samples/bonoboui-hello/Makefile.am:
+	* samples/controls/Makefile.am:
+	* tests/Makefile.am:
+	Removed extra -I directives.
+
+2001-08-17  Cody Russell  <bratsche@gnome.org>
+
+	* bonobo/bonobo-zoomable.c: bonobo_zoomable_new() should be
+	using g_object_new(), not gtk_type_new().
+
+2001-08-16  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "tr" to the languages list.
+
+2001-08-14  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: depend on bonobo-activation >= 0.9.1
+
+	* samples/controls/Makefile.am (serverdir): s/oaf/server/
+	update directory to install to.
+
+2001-08-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control-frame.c (get_toplevel_fn):
+	fixup allocator mixup.
+
+	* tests/test-focus.c (main): upd.
+	(clicked_fn): add to kill transient thing.
+
+2001-08-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-canvas-component.h: add missing includes.
+
+	* bonobo/bonobo-canvas-component.c: squash warning.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_exec_verb): stub.
+	(bonobo_ui_engine_ui_event): stub.
+
+	* configure.in: depend on libbonobo >= 1.101.2
+
+	* bonobo/bonobo-ui-container.c
+	(bonobo_ui_container_class_init): upd.
+	(impl_Bonobo_UIContainer_execVerb),
+	(Bonobo_UIContainer_uiEvent): impl.
+
+2001-08-09  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): Typo fix.
+
+2001-08-08  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: build samples/controls.
+	add xml-i18n-tools.
+
+	* samples/controls/Makefile.am: fixup.
+
+2001-08-07  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: use PKG_CHECK_MODULES, depend on
+	libbonobo >= 1.101.1
+
+	* bonobo/bonobo-control.c (bonobo_control_set_transient_for),
+	(bonobo_control_unset_transient_for): impl.
+	(window_transient_realize_gdk_cb): impl.
+	(window_transient_unrealize_gdk_cb): 
+	(window_set_transient_for_gdk): impl.
+
+	* bonobo/bonobo-control-frame.c: Sort out transient issues.
+	(impl_Bonobo_ControlFrame_getAmbientProperties): 
+	demand create the ambient property bag.
+	(get_toplevel_fn): impl.
+	(add_toplevel_prop): impl.
+	(bonobo_control_frame_set_propbag): upd.
+	(check_ambient_propbag): impl.
+	(bonobo_control_frame_destroy): impl to remove property to kill race.
+	(bonobo_control_frame_class_init): hook it up.
+
+2001-08-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/Makefile.am: don't distribute marshal-sources.
+
+2001-08-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c
+	(bonobo_control_window_id_from_x11): fix to return
+	correctlty CORBA allocated type.
+
+	* bonobo/bonobo-control-frame.c
+	(bonobo_control_frame_set_remote_window): upd.
+
+2001-08-08  Darin Adler  <darin@bentspoon.com>
+
+	* README: Help people find the information about using
+	and hacking on this library, which is, for the moment,
+	in another package.
+
+2001-08-08  Cody Russell  <bratsche@gnome.org>
+
+	* bonobo/*.[ch]: Ensure that all get_type () functions are
+	declared as G_GNUC_CONST and that their return values are
+	either GType or GtkType, not guint.
+
+2001-08-07  Darin Adler  <darin@bentspoon.com>
+
+	* Makefile.am:
+	* configure.in:
+	No need to build intl directory given how we use gettext.
+
+2001-08-07  Martin Baulig  <baulig@suse.de>
+
+	* configure.in: Fix the PKG_CHECK_MODULES checks.
+	You need to check for all dependencies for any given target in a
+	single PKG_CHECK_MODULES command, otherwise you'll get duplicate
+	-ldl etc. into your *.la files.
+
+	* */Makefile.am: Use the correct _CFLAGS and _LIBS.
+
+2001-08-06  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Use PKG_CHECK_MODULES instead of
+	GNOME_PKGCONFIG_CHECK_MODULES.
+
+2001-08-06  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-main.c: #include <libgnome/gnome-init.h>,
+	not <libgnome/libgnome-init.h>.
+
+	* samples/compound-doc/container/container.c: Ditto.
+
+2001-08-05  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: add changes.txt
+
+2001-08-01  Darin Adler  <darin@bentspoon.com>
+
+	* samples/bonoboui-hello/main.c:
+	* tests/test-selector.c:
+	Update <libgnome/libgnome.h> to <libgnome.h>.
+
+2001-08-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector-widget.c: update for bonobo-activation.
+
+2001-08-01  ERDI Gergo  <cactus@cactus.rulez.org>
+
+	* changes.txt: Added note about new opt_ev's
+
+	* bonobo/bonobo-control.h: Add opt_ev's around the place
+
+	* bonobo/bonobo-control-frame.h: ditto
+
+2001-08-01  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/sample-control-container.c (main): upd.
+
+2001-07-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added zh_TW.Big5 to ALL_LINGUAS.
+
+2001-07-31  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c, 
+	* tests/test-sensitivity.c, 
+	* tests/test-moniker.c, 
+	* tests/test-focus.c, 
+	* tests/test-container.c, 
+	* bonobo/bonobo-window.c, 
+	* bonobo/bonobo-ui-main.c, 
+	* bonobo/bonobo-ui-container.c, 
+	* samples/controls/sample-control-factory.c, 
+	* samples/controls/sample-control-container.c: remove 
+	redundant liboaf.h includes.
+
+2001-07-30  ERDI Gergo  <cactus@cactus.rulez.org>
+
+	* bonobo/Makefile.am: Create our own marshallers instead of
+	relying on libbonobo
+
+	* bonobo/bonobo-ui-component.c: Use these marshallers
+
+2001-07-30  Mikael Hallendal  <micke@codefactory.se>
+
+	* tests/test-selector.c: include libgnome/libgnome.h instead
+
+2001-07-31  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): fixup set_containers.
+
+2001-07-31  Jamil Geor <geor@ihug.co.nz>
+
+	* bonobo/bonobo-ui-component.c (bonobo_ui_component_unset_container),
+	(bonobo_ui_component_set_container): add opt_ev.
+
+	* bonobo/bonobo-control.c (bonobo_control_finalize), 
+	(bonobo_control_auto_merge): upd.
+
+2001-07-30  Michael Meeks  <michael@ximian.com>
+
+	* samples/bonoboui-hello/helloapp.c: kill libgnomeui includes.
+
+	* tests/test-moniker.c (display_as_stream): show helpful exceptions.
+
+2001-07-30  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (bonobo_ui_component_add_verb): upd.
+	(bonobo_ui_component_add_verb_full): gclosureize.
+	(bonobo_ui_component_add_listener): upd.
+	(bonobo_ui_component_add_listener_full): gclosureize.
+	(listener_destroy, verb_destroy): ditto.
+	(ui_event): upd invoke.
+	(marshal_VOID__USER_DATA_STRING): impl manualy to do some leve of
+	nasty backwards compat with the Gnome::UIInfo stuff.
+	(remove_verb): update.
+	(bonobo_ui_component_remove_verb_by_closure): impl.
+	(bonobo_ui_component_remove_verb_by_func): remove
+	(bonobo_ui_component_remove_verb_by_data): remove.
+	(remove_listener): upd.
+	(bonobo_ui_component_remove_listener_by_closure): impl.
+	(bonobo_ui_component_remove_listener_by_data): kill.
+	(bonobo_ui_component_remove_listener_by_func): kill.
+
+2001-07-29  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* samples/bonoboui-hello/helloapp.h: Include
+	<bonobo/bonobo-window.h> instead of <bonobo/bonobo-win.h> to fix
+	build.
+
+2001-07-29  Murray Cumming  <murrayc@usa.net>
+
+	* samples/bonoboui-hello/helloapp.c: Corrected the
+	  'can't find xml' warning.
+
+2001-07-28  Murray Cumming  <murrayc@usa.net>
+
+	* samples/bonoboui-hello: Added this example, which is
+	  meant to be a more sane and understandable bonoboui
+	  example than tests/test-ui.
+	
+2001-07-28  Murray Cumming  <murrayc@usa.net>
+
+	* tests/test-ui.c: Corrected the 'can't find std-ui.xml'
+	  warning - ~/.gnome/ui is no longer used.
+
+2001-07-28  Michael Meeks  <michael@ximian.com>
+
+	* tests/Makefile.am: install test-moniker.
+
+	* tests/test-moniker.c: add POPT_AUTOHELP
+
+2001-07-27  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-control.c (window_id_demangle): rename to
+	(bonobo_control_x11_from_window_id): this, and publicise.
+	(bonobo_control_windowid_from_x11): rename to
+	(bonobo_control_window_id_from_x11): this & add compat macro.
+
+	* bonobo/bonobo-control-frame.c (bonobo_control_frame_set_remote_window): upd.
+
+2001-07-24  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full): init. bonobo
+	inside here - of course :-)
+
+2001-07-23  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (impl_set_prop): re-write to use
+	setAttr.
+	(impl_get_prop): upd. for getAttr.
+
+	* bonobo/bonobo-ui-container.c (impl_Bonobo_UIContainer_getAttr),
+	(impl_Bonobo_UIContainer_setAttr): impl.
+	(bonobo_ui_container_class_init): hook em up.
+
+	* bonobo/bonobo-ui-engine.c (bonobo_ui_engine_xml_set_prop):
+	forward port from Alex's bonobo 1.0 UI work
+	(bonobo_ui_engine_xml_get_prop): ditto.
+
+2001-07-23  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-engine-config.[ch]: Ported to GObject.
+
+	* bonobo/bonobo-ui-sync.[ch]: Ported to GObject.
+	* bonobo/bonobo-ui-sync-keys.[ch]: Ported to GObject.
+	* bonobo/bonobo-ui-sync-menus.[ch]: Ported to GObject.
+	* bonobo/bonobo-ui-sync-toolbar.[ch]: Ported to GObject.
+	* bonobo/bonobo-ui-sync-status.[ch]: Ported to GObject.
+
+2001-07-23  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-widget.c (bonobo_widget_construct_control):
+	`bw->priv->server' is already a CORBA_Object, don't call
+	BONOBO_OBJREF on it.
+
+2001-07-23  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-engine.c (BonoboUIEngineClass): Added
+	"destroy" signal.
+
+	* bonobo/bonobo-ui-container.c
+	(bonobo_ui_container_set_engine): Connect to the engine's
+	"destroy" signal.
+
+2001-07-22  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-xml.c (bonobo_ui_xml_strip): Removed.
+	(bonobo_ui_xml_merge): Don't call bonobo_ui_xml_strip.
+
+2001-07-22  Mike Kestner  <mkestner@speakeasy.net>
+
+	* configure.in : produce the samples Makefiles.
+	* libbonoboui.h : kill the removed header files.
+	* bonobo/Makefile.am : remove the cs, view, vframe, and embed files.
+	* bonobo/bonobo-embeddable.[ch]:
+	* bonobo/bonobo-client-site.[ch]:
+	* bonobo/bonobo-view.[ch]:
+	* bonobo/bonobo-view-frame.[ch]:
+		killed.
+
+	* bonobo/bonobo-canvas-item.c : switch from embeddable prop to a
+	CanvasComponentFactory property.
+	* bonobo/bonobo-widget.c : removed the subdoc functions.
+	* samples/Makefile.am : activate the compound-doc build
+	* samples/compound-doc/Makefile.am : activate container build
+
+2001-07-22  Joe Shaw  <joe@ximian.com>
+
+	* bonobo/bonobo-ui-sync-status.c (bonobo_ui_sync_status_new): Use
+	the GObject signal functions since BonoboUIEngine is a GObject now.
+
+2001-07-21  Dan Damian  <dand@dnttm.ro>
+
+	* libbonoboui.h: changed reference from bonobo-win.h
+	to bonobo-window.h
+
+	* bonobo/bonobo-window.h: ditto.
+	
+2001-07-20  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (PARENT_TYPE): make it inherit
+	from a GObject since the structures do: doh.
+
+	* bonobo/bonobo-window.c (destroy_priv): g_object_unref
+	the BonoboUIEngine, not gtk_object_unref.
+
+	* bonobo/bonobo-ui-toolbar-item.c (impl_destroy): protect
+	against double destroys - these seem to happen; argh.
+
+	* bonobo/bonobo-canvas-component.c (rih_destroy): ditto.
+
+	* bonobo/bonobo-wrapper.c (bonobo_wrapper_destroy): ditto.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c (impl_destroy): ditto.
+
+2001-07-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-node.c (bonobo_ui_node_strip): NULL
+	all the node's parents: they are now orphand.
+
+	* bonobo/bonobo-ui-engine.c (bonobo_ui_engine_xml_merge_tree):
+	remove redundant strip.
+
+	* bonobo/bonobo-ui-util.c (lookup_stock_compat): impl.
+	(bonobo_ui_util_xml_get_icon_widget): obfuscate stock
+	code to provide reasonable backwards compat, show the
+	widget we return.
+
+	* tests/test-ui.c (main): upd.
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_new_menu),
+	(bonobo_ui_util_new_placeholder),
+	(bonobo_ui_util_set_radiogroup),
+	(bonobo_ui_util_set_toggle),
+	(bonobo_ui_util_new_std_toolbar): 
+	(bonobo_ui_util_new_toggle_toolbar),
+	(bonobo_ui_util_xml_set_pix_fname),
+	(bonobo_ui_util_xml_set_pix_stock),
+	(bonobo_ui_util_xml_set_pix_xpm),
+	(bonobo_ui_util_build_accel): kill.
+
+	* changes.txt: upd.
+
+2001-07-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-button-item.c: upd.
+
+	* bonobo/Makefile.am: remove bonobo-ui-toolbar-icon.[ch]
+
+	* bonobo/bonobo-ui-toolbar-icon.[ch]: remove.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_build): upd.
+
+2001-07-19  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-ui.c (main): hack out test encode / decode.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (do_config_popup): simplify.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_build): ditto.
+
+	* bonobo/bonobo-ui-component.c (bonobo_ui_component_get_prop): 
+	simplify removing decode.
+	(bonobo_ui_component_set_prop): simplify removing encode.
+	(bonobo_ui_component_set_status): ditto.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (impl_bonobo_ui_sync_toolbar_state): ditto.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (impl_bonobo_ui_sync_toolbar_state): ditto.
+
+	* bonobo/bonobo-ui-sync-status.c (impl_bonobo_ui_sync_status_state): ditto.
+
+	* bonobo/bonobo-ui-sync-menu.c (put_hint_in_statusbar): ditto.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_state): ditto.
+
+	* bonobo/bonobo-ui-config-widget.c (populate_list): ditto.
+
+	* bonobo/bonobo-selector-widget.c (get_lang_list): 
+	cut and paste from Nautilus - ug.
+	(free_lang_list): impl.
+	(get_filtered_objects): internationalize properly & simplify.
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_decode_str),
+	(bonobo_ui_util_encode_str): kill.
+
+	* bonobo/bonobo-ui-util.h (bonobo_ui_util_encode_str),
+	(bonobo_ui_util_encode_str): turn into g_strdup aliases - now
+	libxml2 can cope with utf-8 fine.
+
+2001-07-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector.c (bonobo_selector_construct):
+	connect the "response" not "clicked" signal on GtkDialog.
+	s/button_callback/response/callback/, don't listen on "close"
+	(response_callback): upd.
+	use bonobo_main_quit.
+	(cancel_callback): remove: redundant.
+	(ok_callback): upd.
+	(bonobo_selector_select_id): upd & handle dialog_run correctly.
+
+	* tests/test-selector.c (main): hack out loads of cruft,
+	simplify to a single function.
+
+2001-07-19  Anders Carlsson  <andersca@gnome.org>
+
+	* tests/test-selector.c: Change include of bonobo-win.h
+	to bonobo-window.h
+
+	* tests/test-ui.c: Change include of bonobo-win.h to 
+	bonobo-window.h
+
+	* bonobo/bonobo-win.c: Remove file.
+	
+	* bonobo/bonobo-win.h: Remove file.
+
+	* bonobo/bonobo-ui-xml.c (bonobo_ui_xml_set_dirty): Change
+	reference to bonobo-window.c
+
+	* bonobo/Makefile.am (libbonoboinclude_HEADERS): Change
+	bonobo-win.h to bonobo-window.h
+	(libbonoboui_2_la_SOURCES): Change bonobo-win.c to
+	bonobo-window.c
+
+	* changes.txt: Add change about bonobo-window.[ch]
+
+2001-07-19  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-sync-menu.c, bonobo/bonobo-ui-sync-toolbar.c:
+	Added "stockid=`stockid'" attribute to the XML node which you can
+	use to get GtkStock items.
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_xml_get_icon_pixmap_widget):
+	Made second argument of this function a GtkIconSize.
+
+2001-07-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-selector-widget.c (server_list_compare): kill.
+	(get_filtered_objects): impl.
+	(build_id_query_fragment): impl. - essentialy use oaf directly,
+	thus removing bonobo_directory_* permanantly.
+
+	* tests/Makefile.am: rename selector_test to conform to the
+	grand plan.
+
+2001-07-19  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-engine.[ch]: Ported to GObject.
+	* bonobo/bonobo-ui-xml.[ch]: Ported to GObject.
+
+2001-07-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/Makefile.am (libbonoboinclude_HEADERS): remove
+	bonobo-ui-compat.h: extremely stale.
+
+2001-07-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-status.c
+	(impl_bonobo_ui_sync_status_build): don't have a 'resize
+	grip' on the statusbar.
+
+	* bonobo/bonobo-ui-component.c (impl_get_prop):
+	free the string.
+
+	* bonobo/bonobo-ui-toolbar.c (impl_destroy): cope with
+	a NULL priv->popup_item.
+	(impl_remove): don't do a typechecked cast -
+	popup_item can be NULL.
+	(impl_destroy): check before unref.
+
+	* bonobo/bonobo-wrapper.c (bonobo_wrapper_draw): kill.
+
+	* bonobo/bonobo-ui-toolbar.c (impl_draw): kill.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_new_default): make default name
+	just getpid () + static idx.
+
+	* bonobo/bonobo-ui-toolbar-separator-item.c
+	(impl_expose_event): move the draw impl. here.
+	(impl_draw): kill.
+
+	* bonobo/bonobo-ui-toolbar.c (impl_expose_event): return
+	TRUE from expose.
+
+	* libbonoboui.h: include bonobo-ui-main.h
+
+	* tests/test-reparent.c (main): do a bonobo_ui_init.
+
+2001-07-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar.c (impl_expose_event): port to
+	Gtk+ 2.0
+
+2001-07-13  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Remove duplicate macros.
+	* doc/.cvsignore: Ignore some generated files.
+
+2001-07-12  Murray Cumming <murrayc@usa.net>
+
+	* doc directory: Added some files from the original bonobo module,
+	which deal with UI stuff. Maybe others should go in too, but
+	I don't know whether the component stuff is in libbonobo or
+	libbonoboui.
+	
+2001-07-12  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-engine.c: Fix signal marshaller for EMIT_EVENT_ON.
+
+	* bonobo/bonobo-ui-component.c: Fix signal marshaller for UI_EVENT.
+
+2001-07-05  Tim Mooney <mooney@dogbert.cc.ndsu.NoDak.edu>
+
+	* bonobo/bonobo-view.c: add a placeholder member to _BonoboViewPrivate
+	struct, since most compilers object to empty structs.
+
+2001-07-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-container.c (bonobo_ui_container_set_engine):
+	port to GObject.
+
+	* bonobo/bonobo-ui-main.c (bonobo_ui_init_full):
+	always init gtk+, leave gnome_ bits as optional on full_init.
+
+	* bonobo/bonobo-win.c (bonobo_window_construct): add
+	ui container bits. (bonobo_window_new): ditto.
+	(bonobo_window_get_ui_container): impl.
+	(bonobo_window_set_ui_container): remove.
+
+	* bonobo/bonobo-ui-engine-config.c (create_popup_engine):
+	set view to NULL.
+
+2001-07-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_get_view): impl.
+	(bonobo_ui_engine_new, bonobo_ui_engine_construct): upd,
+	adding view.
+	(bonobo_ui_engine_get_ui_container): impl. for symmetry.
+	(bonobo_ui_engine_set_ui_container): upd. preconditions.
+
+	* bonobo/bonobo-win.c (construct_priv): set the view.
+
+	* bonobo/bonobo-ui-container.c
+	(bonobo_ui_container_set_win),
+	(bonobo_ui_container_get_win): remove; deprecated. 
+	upd.
+
+	* bonobo/bonobo-win.c
+	(bonobo_window_deregister_dead_components),
+	(bonobo_window_register_component),
+	(bonobo_window_deregister_component),
+	(bonobo_window_deregister_component_by_ref),
+	(bonobo_window_deregister_get_component_names),
+	(bonobo_window_component_get),
+	(bonobo_window_xml_node_exists), 
+	(bonobo_window_object_set), 
+	(bonobo_window_object_get), 
+	(bonobo_window_xml_merge_tree), 
+	(bonobo_window_xml_merge), 
+	(bonobo_window_xml_rm), 
+	(bonobo_window_freeze), 
+	(bonobo_window_thaw), 
+	(bonobo_window_xml_get),
+	(bonobo_window_dump), 
+	(bonobo_window_set_ui_container):  remove a few deprecated
+	methods NB. use the equivalents on the BonoboUIEngine.
+
+	* bonobo/bonobo-win.h: kill from header too.
+
+	* tests/test-ui.c (main): don't call bonobo_ui_init - it get's
+	libgnome to do seriously whacked out things.
+
+2001-07-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sv to ALL_LINGUAS.
+
+2001-07-02  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* bonobo/bonobo-canvas-component.c, bonobo/bonobo-control.c,
+	bonobo/bonobo-control-frame.c, bonobo/bonobo-embeddable.c,
+	bonobo/bonobo-ui-component.c, bonobo/bonobo-view.c:
+	/s/g_signal_newc/g_signal_new/ to sync with the latest glib.
+
+2001-06-29  Anders Carlsson  <andersca@codefactory.se>
+
+	* bonobo/bonobo-ui-component.c (impl_get_prop): Use CORBA_free
+	since bonobo_ui_component_get returns a CORBA_char.
+
+Sat Jun 30 16:11:37 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* bonobo/bonobo-embeddable.c (make_canvas_component): change
+	g_signal_connect_data arguments to match new signature
+	(impl_Bonobo_Embeddable_createView): ditto
+
+	* bonobo/bonobo-ui-engine.c (bonobo_ui_engine_set_ui_container):
+	ditto.
+
+2001-06-28  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/*.h: update for new gmacros location, requires HEAD
+	glib.
+
+	* *.c: include string.h where neccessary, update includes,
+	misc warning fixes.
+
+2001-06-26  Darin Adler  <darin@bentspoon.com>
+
+        * bonobo/bonobo-win.c: (construct_priv): Don't connect
+        a signal handler.
+        (bonobo_window_key_press_event): Use a default handler, and call
+        the inherited one first. This gives the focused widget first
+        crack at the event, and prevents us from having two things that
+        both handle the same event.
+        (bonobo_window_class_init): Point to the default handler.
+
+2001-06-21  Mike Kestner <mkestner@speakeasy.net>
+
+	* bonobo/bonobo-ui-node.c (do_strip): Move XML_TEXT_NODE to the
+	"suspicious" branch so whitespace nodes are stripped from the tree.
+
+2001-06-19  Héctor García Álvarez <hector@scouts-es.org>
+
+	* configure.in: added "es" for Spanish to $ALL_LINGUAS
+
+2001-06-15  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo/bonobo-view.c: added something to the empty structure to
+	stop compiler warnings on solaris.
+
+	* bonobo/bonobo-ui-sync.c (bonobo_ui_sync_state): return void
+	(bonobo_ui_sync_state_placeholder): return void
+
+2001-06-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added "sk" for Slovak to $ALL_LINGUAS
+
+2001-06-10  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-engine-config.c: #ifdef FIXME all gnome-config calls.
+
+Sun Jun 10 01:27:57 2001  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* bonobo/bonobo-control.c (impl_Bonobo_Control_focus): altered a
+	  gtk_container_focus() call to be a gtk_widget_child_focus() call
+	  (matching a recent gtk+ change).
+
+2001-06-07  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added "az", "wa" and Norwegian to $ALL_LINGUAS
+
+2001-06-01  Joe Shaw  <joe@ximian.com>
+
+	* bonobo/bonobo-canvas-component.c: Added 
+	_bonobo_boolean_handled_accumulator(), ripped from gtk+/gtk/gtkmain.c.
+
+2001-05-31  Joe Shaw  <joe@ximian.com>
+
+	* bonobo/bonobo-canvas-component.c: GObjectify. Change calls to
+	GNOME_CANVAS_ITEM_CLASS() to GNOME_CANVAS_ITEM_GET_CLASS(). Make
+	gcc_destroy() gcc_finalize().
+
+	* bonobo/bonobo-embeddable.c: GObjectify. Change
+	bonobo_embeddable_destroy() to bonobo_embeddable_finalize()
+
+	* bonobo/bonobo-view.c: GObjectify. Delete
+	gnome_marshal_NONE__DOUBLE.
+
+2001-05-30  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo/bonobo-control.c (bonobo_control_set_properties): pass a
+	Bonobo_PropertyBag instead of a BonoboPropertyBag
+	(bonobo_control_get_properties): return a Bonobo_PropertyBag
+
+2001-05-30  Johan Dahlin  <zilch.am@home.se>
+
+	* bonobo/bonobo-ui-toolbar-item.h: Removed duplicate prototypes.
+	
+2001-05-30  Christophe Merlet  <redfox@eikonex.org>
+
+	* configure.in: Added fr to $ALL_LINGUAS
+
+2001-05-25  Joe Shaw  <joe@ximian.com>
+
+	* bonobo/bonobo-ui-engine-config.c (dialog_new),
+	bonobo/bonobo-selector.c (bonobo_selector_construct):
+	GTK_STOCK_BUTTON_OK -> GTK_STOCK_OK
+
+2001-05-19  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-plug.[ch]: Derive from GtkPlug.
+	* bonobo/bonobo-socket.[ch]: Derive from GtkSocket.
+
+	* bonobo/bonobo-control.c (process_events): Use g_main_context_pending()
+	and g_main_context_iteration() instead of gtk_events_pending() and
+	gtk_main_iteration().
+
+2001-05-06  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(set_control_property_bag_value): Use the new bonobo_pbclient_set_value().
+
+2001-05-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-embeddable.c (impl_Bonobo_Embeddable_advise),
+	(impl_Bonobo_Embeddable_unadvise): kill.
+	(bonobo_embeddable_class_init): upd.
+
+	* changes.txt: add to document changes
+
+	* bonobo/Makefile.am: remove bonobo-desktop.[ch]
+
+	* bonobo/bonobo-desktop.[ch]: remove.
+
+2001-05-02  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-widget.c (bonobo_widget_launch_component),
+	(bonobo_widget_get_objref): kill BonoboObjectClient
+
+	* bonobo/bonobo-client-site.c (bonobo_client_site_bind_embeddable),
+	(bonobo_client_site_get_embeddable): kill BonoboObjectClient.
+
+2001-05-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c (bonobo_ui_component_set_container),
+	(bonobo_ui_component_unset_container, impl_set_prop),
+	(bonobo_ui_component_add_verb_list_with_data):  kill theoretical
+	re-enterancy issues.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-control.[ch]: Use GObject, not GtkObject.
+	* bonobo/bonobo-control-frame.[ch]: Likewise.
+	* bonobo/bonobo-ui-component.[ch]: Likewise.
+	* bonobo/bonobo-ui-container.[ch]: Likewise.
+
+	* bonobo/bonobo-ui-engine.c (impl_destroy): Removed and put
+	all the stuff into finalize; `destroy' may be run multiple
+	times with GTK+ 2.0, so it's easier to have this in finalize.
+
+	* bonobo/bonobo-widget.c (bonobo_widget_destroy): Renamed to
+	bonobo_widget_finalize(), we use `finalize' since `destroy'
+	may be run multiple times.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/Makefile.am: Install all our header files.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* libbonoboui.h: Don't #include bonobo-print.h and
+	bonobo-print-client.h for the moment.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-win.c (construct_priv): #ifdef FIXME call
+	to gtk_menu_bar_set_shadow_type().
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-selector-widget.c: #include
+	<libgnome/gnome-preferences.h> instead of
+	<libgnomeui/gnome-uidefs.h>.
+	* bonobo/bonobo-ui-sync-static.c: Likewise.
+
+	* bonobo/bonobo-ui-sync-menu.c: #include
+	<libgnome/gnome-preferences.h> instead of
+	<libgnomeui/gnome-preferences.h>.
+	* bonobo/bonobo-ui-sync-toolbar.c: Likewise.
+	* bonobo/bonobo-win.c: Likewise.
+
+	* bonobo/bonobo-ui-sync-menu.h: #include <gtk/gtkmenubar.h>.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-main.[ch]: New files.
+	(bonobo_ui_init, bonobo_ui_init_full): New functions to
+	initialize libbonoboui.
+	(bonobo_setup_x_error_handler): Moved here from libbonobo.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* tests/*.c: Make the tests actually work.
+
+	* Makefile.am (SUBDIRS): Added tests/.
+
+2001-05-01  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/libbonoboui-2.0.pc.in: Make this actually work.
+
+2001-04-25  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-dock.[ch], bonobo/bonobo-dock-item.[ch],
+	bonobo/bonobo-dock-band.[ch], bonobo/bonobo-dock-layout.[ch]:
+	Moved here from libgnomeui/libgnomeui/gnome-dock*.[ch] and
+	renamed from GnomeDock -> BonoboDock.
+
+	* bonobo/bonobo-ui-sync-toolbar.[ch], bonobo/bonobo-win.c:
+	s/GnomeDock/BonoboDock/g; s/gnome_dock/bonobo_dock/g;.
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_state):
+	Use GtkImageMenuItem instead of GtkPixmapMenuItem.
+	(impl_bonobo_ui_sync_menu_state): Comment out accelerator stuff.
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(cmd_get_toolbar_pixbuf): Renamed to cmd_get_toolbar_image() and let
+	it return a GtkWidget.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(create_pixmap_widget_from_pixbuf): Removed.
+	(set_icon): Renamed to set_image() and let it return a GtkWidget.
+
+	* bonobo/bonobo-ui-toolbar-button-item.h
+	(bonobo_ui_toolbar_button_item_set_icon): Renamed to
+	bonobo_ui_toolbar_button_set_image() and changed argument from
+	GdkPixbuf to GtkWidget.
+	(BonoboUIToolbarButtonItemClass): Changed argument of `set_icon'
+	from GdkPixbuf to GtkWidget.
+
+	* bonobo/bonobo-ui-util.c (get_stock_pixbuf): Removed.
+	(bonobo_ui_util_xml_get_icon_pixbuf): Removed.
+	(bonobo_ui_util_xml_get_icon_pixmap_widget): Move functionality
+	from bonobo_ui_util_xml_get_icon_pixbuf() and use the GtkStock
+	system.
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* configure.in: Depend on libgnome.
+
+	* bonobo/Makefile.am (INCLUDES): Added BONOBO_UIDIR.
+
+	* bonobo/bonobo-ui-util.c
+	(convert_from_chromakey, pixbuf_from_imlib): Removed.
+	(get_stock_pixbuf): Use find_pixmap_in_path() instead of
+	gnome_pixmap_file().
+	(find_pixmap_in_path): Use gnome_program_locate_file() to
+	locate the pixmap file instead of our own parser.
+	(bonobo_ui_util_xml_get_icon_pixmap_widget): Create and
+	return a GtkImage instead of a GnomePixmap.
+	(bonobo_ui_util_build_help_menu): `#ifdef FIXME' this.
+	
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-insert-component.xpm: constify this.
+
+	* bonobo/bonobo-selector-widget.c (bonobo_selector_widget_init):
+	use GdkPixbuf/GtkImage instead of GnomePixmap.
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-selector.[ch]: Use GtkDialog, not GnomeDialog.
+
+	* bonobo/bonobo-ui-engine-config.c (dialog_new): Use GtkDialog,
+	not GnomeDialog.
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/bonobo-zoomable.h (BonoboZoomableClass):
+	Added `POA_Bonobo_Zoomable__epv epv'.
+	(bonobo_zoomable_get_epv): Removed.
+	(bonobo_zoomable_corba_object_create): Removed.
+	(bonobo_zoomable_construct): Removed.
+
+	* bonobo/bonobo-zoomable-frame.h (BonoboZoomableFrameClass):
+	Added `POA_Bonobo_ZoomableFrame__epv epv'.
+	(bonobo_zoomable_frame_get_epv): Removed.
+	(bonobo_zoomable_frame_corba_object_create): Removed.
+	(bonobo_zoomable_frame_construct): Removed.
+
+	* bonobo/bonobo-zoomable.c, bonobo/bonobo-zoomable-frame.c:
+	Use the new BonoboObject API (the code which was formerly known
+	as BonoboXObject).
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/*.c: Did the basic GTK+ 2.0 porting work, but without
+	any real code changes.
+
+2001-04-24  Martin Baulig  <baulig@suse.de>
+
+	* bonobo/Makefile.am (INCLUDES, libbonoboui_la_LIBADD):
+	Use the correct CFLAGS and LIBS to make this actually work.
+	(libbonoboui_la_SOURCES): Removed bonobo-item-container.c and
+	bonobo-property-bag-xml.c.
+
+	* bonobo/bonobo-insert-component.xpm: Moved this here from the
+	staging directory.
+	
+2001-04-19  Michael Meeks  <michael@ximian.com>
+
+	* *.[ch]:
+	s/bonobo-xobject/bonobo-object/g;
+	s/BonoboXObject/BonoboObject/g;
+	s/bonobo_x_object/bonobo_object/g;
+	s/BONOBO_X_/BONOBO_/g;
+	s/<libgnomebase\/gnome-defs.h>/<gmacros.h>/;
+	s/BEGIN_GNOME_DECLS/G_BEGIN_DECLS/g;
+	s/END_GNOME_DECLS/G_END_DECLS/g;
+	
+2001-04-19  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/Makefile.am: add.
+
+	* bonobo/libbonoboui-2.0.pc.in: add.
+
+2001-04-18  Michael Meeks  <michael@ximian.com>
+
+	* tests/Makefile.am: upd.
+
+2001-04-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo.h: add.
+
+	* libbonoboui.h: add
+
