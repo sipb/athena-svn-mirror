@@ -16,54 +16,63 @@
 *XmLabelGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-120-*
 #endif
 *XmText.blinkRate:			300
-*XmFrame.shadowThickness:		0
-*XmFrame.borderWidth:			0
-*XmForm.shadowThickness:		2
-*XmForm.borderWidth:			0
-*XmForm.paneMinimum:			183
+*XmForm.paneMinimum:			150
 *XmForm.horizontalSpacing:		5
 *XmForm.verticalSpacing:		5
 *XmList.listMarginWidth:		5
-*XmList.listMarginHeight:		5
+!*XmList.listMarginHeight:		5
+*XmList.listSpacing:			0
+*XmLabelGadget.alignment:		ALIGNMENT_CENTER
 *fontList:				fixed
+*XmDialogShell.borderWidth:		2
+!
 *title:					On-Line Consulting
 *iconName:				OLC
 !
-xolc.width:			561
+xolc.minWidth:			585
+xolc.minHeight:			415
+xolc.width:			576
 xolc.height:			430
-xolc.resizable:			FALSE
+xolc.borderWidth:		2
 !
-! *main.width:			560
-! *main.height:			430
+!*main.width:			560
+!*main.height:			430
 !
 *main.topAttachment:			ATTACH_FORM
 *main.leftAttachment:			ATTACH_FORM
 *main.rightAttachment:			ATTACH_FORM
 *main.bottomAttachment:			ATTACH_FORM
+*main.shadowThickness:			2
+*main.resizePolicy:			RESIZE_NONE
 !
 ! Menu buttons
 !
 *new_ques_btn.topAttachment:		ATTACH_FORM
 *new_ques_btn.leftAttachment:		ATTACH_FORM
 *new_ques_btn.labelString:		Ask a question
+*new_ques_btn.traversalOn:		false
 !
 *cont_ques_btn.labelString:		Continue your question
 *cont_ques_btn.topAttachment:		ATTACH_FORM
 *cont_ques_btn.leftAttachment:		ATTACH_FORM
+*cont_ques_btn.traversalOn:		false
 !
 *stock_btn.labelString:			Browse stock answers
 *stock_btn.topAttachment:		ATTACH_FORM
 *stock_btn.leftAttachment:		ATTACH_WIDGET
-*stock_btn.leftWidget:			cont_ques_btn
+!*stock_btn.leftWidget:			cont_ques_btn
+*stock_btn.traversalOn:			false
 !
 *help_btn.labelString:			Help
 *help_btn.topAttachment:		ATTACH_FORM
 *help_btn.rightAttachment:		ATTACH_FORM
+*help_btn.traversalOn:			false
 !
 *quit_btn.labelString:			Quit
 *quit_btn.topAttachment:		ATTACH_FORM
 *quit_btn.rightAttachment:		ATTACH_WIDGET
 *quit_btn.rightWidget:			help_btn
+*quit_btn.traversalOn:			false
 !
 ! Separator between top buttons and main part
 !
@@ -84,8 +93,6 @@ xolc.resizable:			FALSE
 *new_ques_form.bottomAttachment:	ATTACH_FORM
 *new_ques_form.topAttachment:		ATTACH_WIDGET
 *new_ques_form.topWidget:		buttonSep
-*new_ques_form.width:			540
-*new_ques_form.height:			400
 !
 ! New question
 !
@@ -105,13 +112,13 @@ xolc.resizable:			FALSE
 *top_lbl.leftAttachment:		ATTACH_FORM
 *top_lbl.rightAttachment:		ATTACH_FORM
 !
-*list_frame.topAttachment:		ATTACH_WIDGET
-*list_frame.topWidget:			top_lbl
-*list_frame.leftAttachment:		ATTACH_FORM
-*list_frame.rightAttachment:		ATTACH_FORM
-*list_frame.bottomAttachment:		ATTACH_FORM
+*topic_listSW.topAttachment:		ATTACH_WIDGET
+*topic_listSW.topWidget:		top_lbl
+*topic_listSW.leftAttachment:		ATTACH_FORM
+*topic_listSW.rightAttachment:		ATTACH_FORM
+*topic_listSW.bottomAttachment:		ATTACH_FORM
 !
-*topic_list*selectionPolicy:		SINGLE_SELECT
+*topic_list*selectionPolicy:		BROWSE_SELECT
 *topic_list*scrollBarDisplayPolicy:	AS_NEEDED
 *topic_list*scrollBarPlacement:		BOTTOM_RIGHT
 !
@@ -131,25 +138,27 @@ xolc.resizable:			FALSE
 *newqRowCol.borderWidth:		0
 *newqRowCol.orientation:		HORIZONTAL
 *newqRowCol.packing:			PACK_TIGHT
+*newqRowCol*traversalOn:		False
 !
 *send_newq_btn.labelString:		Enter this question in OLC
 !
 *clear_btn.labelString:			Clear question
 !
-*newq_frame.rightAttachment:		ATTACH_FORM
-*newq_frame.leftAttachment:		ATTACH_FORM
-*newq_frame.topAttachment:		ATTACH_WIDGET
-*newq_frame.topWidget:			bottom_lbl
-*newq_frame.bottomAttachment:		ATTACH_WIDGET
-*newq_frame.bottomWidget:		newqRowCol
+*newqSW.rightAttachment:		ATTACH_FORM
+*newqSW.leftAttachment:			ATTACH_FORM
+*newqSW.topAttachment:			ATTACH_WIDGET
+*newqSW.topWidget:			bottom_lbl
+*newqSW.bottomAttachment:		ATTACH_WIDGET
+*newqSW.bottomWidget:			newqRowCol
 !
-*newq_scrl.editable:			TRUE
-*newq_scrl.editMode:			MULTI_LINE_EDIT
-*newq_scrl.wordWrap:			TRUE
-*newq_scrl.scrollHorizontal:		FALSE
-*newq_scrl.scrollVertical:		TRUE
+*newq.traversalOn:			True
+*newq.editable:				TRUE
+*newq.editMode:				MULTI_LINE_EDIT
+*newq.wordWrap:				TRUE
+*newq.scrollHorizontal:			FALSE
+*newq.scrollVertical:			TRUE
 !
-! Continue question form -containts log in progress & motd
+! Continue question form -contains log in progress & motd
 !
 *cont_ques_form.marginWidth:		5
 *cont_ques_form.marginHeight:		0
@@ -158,22 +167,13 @@ xolc.resizable:			FALSE
 *cont_ques_form.bottomAttachment:	ATTACH_FORM
 *cont_ques_form.topAttachment:		ATTACH_WIDGET
 *cont_ques_form.topWidget:		buttonSep
-*cont_ques_form.width:			540
-*cont_ques_form.height:			400
-!
-*status_form.marginWidth:		0
-*status_form.marginHeight:		0
-*status_form.topAttachment:		ATTACH_FORM
-*status_form.leftAttachment:		ATTACH_FORM
-*status_form.rightAttachment:		ATTACH_FORM
+*cont_ques_form*traversalOn:		false
 !
 *connect_lbl.labelString:		Status unknown.
 *connect_lbl.topAttachment:		ATTACH_FORM
 *connect_lbl.leftAttachment:		ATTACH_FORM
-*connect_lbl.bottomAttachment:		ATTACH_FORM
 !
 *topic_lbl.topAttachment:		ATTACH_FORM
-*topic_lbl.bottonAttachment:		ATTACH_FORM
 *topic_lbl.rightAttachment:		ATTACH_FORM
 *topic_lbl.labelString:			unknown
 #ifdef _IBMR2
@@ -183,7 +183,6 @@ xolc.resizable:			FALSE
 #endif
 !
 *your_topic_lbl.topAttachment:		ATTACH_FORM
-*your_topic_lbl.bottomAttachment:	ATTACH_FORM
 *your_topic_lbl.rightAttachment:	ATTACH_WIDGET
 *your_topic_lbl.rightWidget:		topic_lbl
 *your_topic_lbl.labelString:		Your topic is: 
@@ -196,31 +195,35 @@ xolc.resizable:			FALSE
 *optionsRowCol.marginHeight:		0
 *optionsRowCol.orientation:		HORIZONTAL
 *optionsRowCol.packing:			PACK_TIGHT
+*optionsRowCol*traversalOn:		False
 !
 *send_btn.labelString:			Open `send' window
 *done_btn.labelString:			Done
 *cancel_btn.labelString:		Cancel
 *savelog_btn.labelString:		Save to file...
 *motd_btn.labelString:			MOTD
+!#ifdef _IBMR2
+!*motd_btn.sensitive:			false
+!#endif
 *update_btn.labelString:		Show new messages
 !
-*replay_frame.rightAttachment:		ATTACH_FORM
-*replay_frame.leftAttachment:		ATTACH_FORM
-*replay_frame.topAttachment:		ATTACH_WIDGET
-*replay_frame.topWidget:		status_form
-*replay_frame.bottomAttachment:		ATTACH_WIDGET
-*replay_frame.bottomWidget:		optionsRowCol
-*replay_frame.marginHeight:		5
-*replay_frame.marginWidth:		5
-*replay_frame.height			300
+*replaySW.rightAttachment:		ATTACH_FORM
+*replaySW.leftAttachment:		ATTACH_FORM
+*replaySW.topAttachment:		ATTACH_WIDGET
+*replaySW.topWidget:			connect_lbl
+*replaySW.bottomAttachment:		ATTACH_WIDGET
+*replaySW.bottomWidget:			optionsRowCol
+*replaySW.marginHeight:			5
+*replaySW.marginWidth:			5
+!*replaySW.height			300
 
 !
-*replay_scrl.editable:			FALSE
-*replay_scrl.editMode:			MULTI_LINE_EDIT
-*replay_scrl.wordWrap:			TRUE
-*replay_scrl.scrollHorizontal:		FALSE
-*replay_scrl.scrollVertical:		TRUE
-*replay_scrl.insertionPointVisible:	FALSE
+*replay.editable:			FALSE
+*replay.editMode:			MULTI_LINE_EDIT
+*replay.wordWrap:			TRUE
+*replay.scrollHorizontal:		FALSE
+*replay.scrollVertical:			TRUE
+*replay.insertionPointVisible:		FALSE
 !
 ! Motd form
 !
@@ -231,20 +234,19 @@ xolc.resizable:			FALSE
 *motd_form.bottomAttachment:		ATTACH_FORM
 *motd_form.topAttachment:		ATTACH_WIDGET
 *motd_form.topWidget:			buttonSep
-*motd_form.width:			540
-*motd_form.height:			400
 !
-*motd_frame.rightAttachment:		ATTACH_FORM
-*motd_frame.leftAttachment:		ATTACH_FORM
-*motd_frame.topWidget:			copyright_lbl
-*motd_frame.topAttachment:		ATTACH_WIDGET
-*motd_frame.bottomAttachment:		ATTACH_FORM
+*motdSW.rightAttachment:		ATTACH_FORM
+*motdSW.leftAttachment:			ATTACH_FORM
+*motdSW.topWidget:			copyright_lbl
+*motdSW.topAttachment:			ATTACH_WIDGET
+*motdSW.bottomAttachment:		ATTACH_FORM
 !
-*motd_scrl.editable:			FALSE
-*motd_scrl.editMode:			MULTI_LINE_EDIT
-*motd_scrl.wordWrap:			TRUE
-*motd_scrl.scrollHorizontal:		FALSE
-*motd_scrl.scrollVertical:		TRUE
+*motd.traversalOn:			false
+*motd.editable:				FALSE
+*motd.editMode:				MULTI_LINE_EDIT
+*motd.wordWrap:				TRUE
+*motd.scrollHorizontal:			FALSE
+*motd.scrollVertical:			TRUE
 !
 #ifdef _IBMR2
 *welcome_lbl.fontList:			-adobe-*schoolbook-bold-r-normal--18-*
@@ -255,8 +257,9 @@ xolc.resizable:			FALSE
 *welcome_lbl.topAttachment:		ATTACH_FORM
 *welcome_lbl.leftAttachment:		ATTACH_FORM
 *welcome_lbl.rightAttachment:		ATTACH_FORM
+*welcome_lbl.recomputeSize:		False
 !
-*copyright_lbl.labelString:		Copyright 1991 by the Massachusetts Institute of Technology.
+*copyright_lbl.labelString:		Copyright © 1992 by the Massachusetts Institute of Technology.
 #ifdef _IBMR2
 *copyright_lbl.fontList:		-adobe-*schoolbook-bold-r-normal--14-*
 #else
@@ -266,6 +269,7 @@ xolc.resizable:			FALSE
 *copyright_lbl.leftAttachment:		ATTACH_FORM
 *copyright_lbl.topAttachment:		ATTACH_WIDGET
 *copyright_lbl.topWidget:		welcome_lbl
+*copyright_lbl.recomputeSize:		False
 !
 !
 ! Dialogs
@@ -281,11 +285,11 @@ xolc.resizable:			FALSE
 *save_dlg.selectionLabelString:		Please enter the name of a file to save in:
 !
 !
-*send_form.marginWidth:			0
-*send_form.marginHeight:		0
-*send_form.borderWidth:			5
-*send_form.width:		530
-*send_form.height:		250
+*send_form.marginWidth:			5
+*send_form.marginHeight:		5
+*send_form.shadowThickness:		2
+*send_form.width:			530
+*send_form.height:			250
 !
 *send_lbl.labelString:			Type your message in the box below.
 *send_lbl.topAttachment:		ATTACH_FORM
@@ -300,6 +304,7 @@ xolc.resizable:			FALSE
 *sendRowCol.marginWidth:		0
 *sendRowCol.orientation:		HORIZONTAL
 *sendRowCol.packing:			PACK_TIGHT
+*sendRowCol*traversalOn:		False
 !
 *send_msg_btn.labelString:		Send message
 !
@@ -307,18 +312,18 @@ xolc.resizable:			FALSE
 !
 *close_msg_btn.labelString:		Close `send' window
 !
-*send_frame.rightAttachment:		ATTACH_FORM
-*send_frame.leftAttachment:		ATTACH_FORM
-*send_frame.topAttachment:		ATTACH_WIDGET
-*send_frame.topWidget:			send_lbl
-*send_frame.bottomAttachment:		ATTACH_WIDGET
-*send_frame.bottomWidget:		sendRowCol
+*sendSW.rightAttachment:		ATTACH_FORM
+*sendSW.leftAttachment:			ATTACH_FORM
+*sendSW.topAttachment:			ATTACH_WIDGET
+*sendSW.topWidget:			send_lbl
+*sendSW.bottomAttachment:		ATTACH_WIDGET
+*sendSW.bottomWidget:			sendRowCol
 !
-*send_scrl.editMode:			MULTI_LINE_EDIT
-*send_scrl.editable:			TRUE
-*send_scrl.wordWrap:			TRUE
-*send_scrl.scrollHorizontal:		FALSE
-*send_scrl.scrollVertical:		TRUE
+*send.editMode:			MULTI_LINE_EDIT
+*send.editable:			TRUE
+*send.wordWrap:			TRUE
+*send.scrollHorizontal:		FALSE
+*send.scrollVertical:		TRUE
 
 !
 *XmPushButton.translations:		#override \

@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.21 1992-03-16 15:29:43 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.22 1992-04-23 21:35:22 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -139,10 +139,8 @@ olc_new_ques (w, tag, callback_data)
 
   XtSetSensitive(w_newq_btn, FALSE);
   WAIT_CURSOR;
-  if ( XtIsRealized(w_motd_form) )
-    XtUnrealizeWidget(w_motd_form);
-/*  MakeNewqForm(); */
-  XtManageChild(w_newq_form);
+  XtMapWidget(w_newq_form);
+  XtUnmapWidget(w_motd_form);
   ask_screen = TRUE;
 
   current_topic[0] = '\0';
@@ -207,9 +205,8 @@ olc_send_newq (w, tag, callback_data)
       MuWarning("It appears that you already have a question entered in OLC.\nContinuing with that question...");
       olc_status();
       olc_replay();
-      if ( XtIsManaged(w_newq_form) )
-	XtUnmanageChild(w_newq_form);
-      XtManageChild(w_contq_form);
+      XtMapWidget(w_contq_form);
+      XtUnmapWidget(w_newq_form);
       STANDARD_CURSOR;
       return;
     }
@@ -228,9 +225,8 @@ olc_send_newq (w, tag, callback_data)
   has_question = TRUE;
   olc_status();
   olc_replay();
-  if ( XtIsManaged(w_newq_form) )
-    XtUnmanageChild(w_newq_form);
-  XtManageChild(w_contq_form);
+  XtMapWidget(w_contq_form);
+  XtUnmapWidget(w_newq_form);
   STANDARD_CURSOR;
   replay_screen = TRUE;
 #ifdef LOG_USAGE
@@ -255,7 +251,10 @@ olc_topic_select (w, tag, callback_data)
       XmListDeselectAllItems(w); 
     }
   else
-    strcpy(current_topic, TopicTable[item].topic);
+    {
+      strcpy(current_topic, TopicTable[item].topic);
+      _XmGrabTheFocus(w_newq_scrl, NULL);
+    }
 }
 
 void
@@ -268,9 +267,8 @@ olc_cont_ques (w, tag, callback_data)
   WAIT_CURSOR;
   olc_status();
   olc_replay();
-  if ( XtIsManaged(w_motd_form) )
-    XtUnmanageChild(w_motd_form);
-  XtManageChild(w_contq_form);
+  XtMapWidget(w_contq_form);
+  XtUnmapWidget(w_motd_form);
   replay_screen = TRUE;
   STANDARD_CURSOR;
 #ifdef LOG_USAGE
@@ -446,6 +444,7 @@ olc_savelog (w, tag, callback_data)
   sprintf(file, "%s/%s.%s", homedir, "OLC.log", current_topic);
   XmTextSetString(W,file);
   XtManageChild(w_save_dlg);
+  _XmGrabTheFocus(W, NULL);
 #ifdef LOG_USAGE
   log_view("log_save");
 #endif
@@ -542,6 +541,7 @@ olc_stock (w, tag, callback_data)
   if (sa_pid == 0) {
     if (execl(SA_LOC,SA_ARGV0,"-signal",pidascii,0) == -1) {
       perror("Error in execl; cannot start stock answer browser");
+      STANDARD_CURSOR;
       _exit(1);
     }
   }
@@ -737,6 +737,7 @@ olc_send (w, tag, callback_data)
 {
   XtSetSensitive(w_send_btn, FALSE);
   XtManageChild(w_send_form);
+  _XmGrabTheFocus(w_send_scrl, NULL);
 }
   
 void
