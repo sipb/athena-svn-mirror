@@ -224,6 +224,10 @@ sys_DATA = gnome-panel-properties.desktop
 
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
+
+athenadir = $(datadir)/gnome/athena/
+athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
+athena_SCRIPTS = mail-script browser-script terminal-script editor-script
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -256,12 +260,14 @@ gnome_panel_properties_capplet_LDFLAGS =
 bad_applet_OBJECTS =  bad-applet.o
 bad_applet_DEPENDENCIES =  libpanel_applet.la
 bad_applet_LDFLAGS = 
+SCRIPTS =  $(athena_SCRIPTS)
+
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(confexec_DATA) $(desk_DATA) $(hints_DATA) $(panelgnorba_DATA) \
-$(soundlist_DATA) $(sys_DATA)
+DATA =  $(athena_DATA) $(confexec_DATA) $(desk_DATA) $(hints_DATA) \
+$(panelgnorba_DATA) $(soundlist_DATA) $(sys_DATA)
 
 HEADERS =  $(libpanel_appletinclude_HEADERS) \
 $(libpanel_statusinclude_HEADERS)
@@ -401,6 +407,44 @@ gnome-panel-properties-capplet: $(gnome_panel_properties_capplet_OBJECTS) $(gnom
 bad-applet: $(bad_applet_OBJECTS) $(bad_applet_DEPENDENCIES)
 	@rm -f bad-applet
 	$(LINK) $(bad_applet_LDFLAGS) $(bad_applet_OBJECTS) $(bad_applet_LDADD) $(LIBS)
+
+install-athenaSCRIPTS: $(athena_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	@list='$(athena_SCRIPTS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	  else if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; fi; \
+	done
+
+uninstall-athenaSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	list='$(athena_SCRIPTS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+install-athenaDATA: $(athena_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	@list='$(athena_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(athenadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(athenadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(athenadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(athenadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-athenaDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(athena_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(athenadir)/$$p; \
+	done
 
 install-confexecDATA: $(confexec_DATA)
 	@$(NORMAL_INSTALL)
@@ -672,29 +716,34 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 		install-confexecDATA
 install-exec: install-exec-recursive
 
-install-data-am: install-deskDATA install-hintsDATA \
+install-data-am: install-athenaSCRIPTS install-athenaDATA \
+		install-deskDATA install-hintsDATA \
 		install-panelgnorbaDATA install-soundlistDATA \
 		install-sysDATA install-libpanel_appletincludeHEADERS \
-		install-libpanel_statusincludeHEADERS
+		install-libpanel_statusincludeHEADERS \
+		install-data-local
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+		uninstall-athenaSCRIPTS uninstall-athenaDATA \
 		uninstall-confexecDATA uninstall-deskDATA \
 		uninstall-hintsDATA uninstall-panelgnorbaDATA \
 		uninstall-soundlistDATA uninstall-sysDATA \
 		uninstall-libpanel_appletincludeHEADERS \
 		uninstall-libpanel_statusincludeHEADERS
 uninstall: uninstall-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
+		$(HEADERS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(athenadir) $(DESTDIR)$(athenadir) \
 		$(DESTDIR)$(confexecdir) $(DESTDIR)$(deskdir) \
 		$(DESTDIR)$(hintsdir) $(DESTDIR)$(panelgnorbadir) \
 		$(DESTDIR)$(soundlistdir) $(DESTDIR)$(sysdir) \
@@ -753,9 +802,10 @@ maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
-uninstall-confexecDATA install-confexecDATA uninstall-deskDATA \
-install-deskDATA uninstall-hintsDATA install-hintsDATA \
-uninstall-panelgnorbaDATA install-panelgnorbaDATA \
+uninstall-athenaSCRIPTS install-athenaSCRIPTS uninstall-athenaDATA \
+install-athenaDATA uninstall-confexecDATA install-confexecDATA \
+uninstall-deskDATA install-deskDATA uninstall-hintsDATA \
+install-hintsDATA uninstall-panelgnorbaDATA install-panelgnorbaDATA \
 uninstall-soundlistDATA install-soundlistDATA uninstall-sysDATA \
 install-sysDATA uninstall-libpanel_appletincludeHEADERS \
 install-libpanel_appletincludeHEADERS \
@@ -768,8 +818,8 @@ dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
@@ -805,6 +855,18 @@ dockletsConf.sh: dockletsConf.sh.in Makefile
 	    -e 's?\@VERSION\@?$(VERSION)?g' \
 	    < $(srcdir)/dockletsConf.sh.in > dockletsConf.tmp \
 	  && mv dockletsConf.tmp dockletsConf.sh
+
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	rm -f $(DESTDIR)$(athenadir)/mail-icon
+	ln -s ../../pixmaps/gnome-mailcheck.png \
+		$(DESTDIR)$(athenadir)/mail-icon
+	rm -f $(DESTDIR)$(athenadir)/browser-icon
+	ln -s ../../pixmaps/netscape.png $(DESTDIR)$(athenadir)/browser-icon
+	rm -f $(DESTDIR)$(athenadir)/terminal-icon
+	ln -s ../../pixmaps/gnome-term.png $(DESTDIR)$(athenadir)/terminal-icon
+	rm -f $(DESTDIR)$(athenadir)/editor-icon
+	ln -s ../../pixmaps/gnome-word.png $(DESTDIR)$(athenadir)/editor-icon
 
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
 
