@@ -20,12 +20,14 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.8 1990-04-25 19:35:44 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.9 1990-04-26 20:46:50 vanharen Exp $";
 #endif
 
 
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
+
+extern int num_of_args;
 
 ERRCODE
 do_olc_send(arguments)
@@ -37,8 +39,8 @@ do_olc_send(arguments)
   char editor[NAME_SIZE];
   int temp = FALSE;
 
-  file[0] = '\0';
-  editor[0] = '\0';
+  strcpy(file, "");
+  strcpy(editor, "");
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -73,6 +75,8 @@ do_olc_send(arguments)
       if(status)
 	return(ERROR);
 
+      arguments += num_of_args;		/* HACKHACKHACK */
+	
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
@@ -117,8 +121,8 @@ do_olc_comment(arguments)
   char editor[NAME_SIZE];
   int temp = FALSE;
 
-  file[0] = '\0';
-  editor[0] = '\0';
+  strcpy(file, "");
+  strcpy(editor, "");
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -152,6 +156,8 @@ do_olc_comment(arguments)
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
+
+      arguments += num_of_args;		/* HACKHACKHACK */
 	
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -191,8 +197,8 @@ do_olc_mail(arguments)
   int checkhub = 0;
   int i = 0;
 
-  file[0] = '\0';
-  editor[0] = '\0';
+  strcpy(file, "");
+  strcpy(editor, NO_EDITOR);
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -284,6 +290,8 @@ do_olc_mail(arguments)
       if(status)
 	return(ERROR);
 
+      arguments += num_of_args;		/* HACKHACKHACK */
+	
       if(arguments == (char **) NULL)   /* error */
 	{
 	  printf("Usage is: \tmail  [<username> <instance id>] ");
