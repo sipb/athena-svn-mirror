@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.27 1989-10-18 09:40:47 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.28 1989-12-28 16:10:35 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.27 1989-10-18 09:40:47 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.28 1989-12-28 16:10:35 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -579,6 +579,12 @@ leavethis:
 	}
 	if (*pwd->pw_shell == '\0')
 	    pwd->pw_shell = "/bin/sh";
+
+	/* 
+	  The effective uid is used under AFS for access.
+	  NFS uses euid and uid for access checking
+	 */
+	setreuid(geteuid(),pwd->pw_uid);
 	if (chdir(pwd->pw_dir) < 0 && !invalid ) {
 	    if (chdir("/") < 0) {
 		printf("No directory!\n");
@@ -588,6 +594,7 @@ leavethis:
 		pwd->pw_dir = "/";
 	    }
 	}
+	setreuid(getuid(), getuid());
 	/*
 	 * Remote login invalid must have been because
 	 * of a restriction of some sort, no extra chances.
@@ -1287,7 +1294,7 @@ char *dname;
 goodhomedir()
 {
 	DIR *dp;
-	
+
 	if (access(pwd->pw_dir,F_OK))
 		return (0);
 
