@@ -50,6 +50,10 @@ main(int argc, char **argv, char **envp)
   else
     name = "elmer";
 
+  /* xdm needed AFS tokens to stat the user's home directory.  We don't want
+   * them any more; we're going to make a pag and get new ones. */
+  ktc_ForgetAllTokens();
+
   uid = getuid();
   nannyKnows = !nanny_loginUser(&env, &args, &tty);
 
