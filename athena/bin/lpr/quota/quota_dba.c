@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.2 1990-04-25 11:48:32 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.3 1990-07-10 03:20:24 ilham Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: ilham $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.2 1990-04-25 11:48:32 epeisach Exp $";
+static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.3 1990-07-10 03:20:24 ilham Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -19,6 +19,10 @@ static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/l
 #include <sys/types.h>
 #include <sys/time.h>
 
+#ifdef ultrix
+/* We are dumb and redefine NULL */
+#undef NULL 
+#endif
 
 #ifdef NDBM
 #include <ndbm.h>
@@ -210,7 +214,7 @@ long quota_get_db_age()
  * the server (for example, during slave updates).
  */
 
-static long quota_start_update(db_name)
+long quota_start_update(db_name)
     char *db_name;
 {
     char *okname = gen_dbsuffix(db_name, ".ok");
@@ -224,7 +228,7 @@ static long quota_start_update(db_name)
     return age;
 }
 
-static long quota_end_update(db_name, age)
+long quota_end_update(db_name, age)
     char *db_name;
     long age;
 {
@@ -642,3 +646,50 @@ int quota_db_set_lockmode(mode)
     non_blocking = mode;
     return old;
 }
+
+
+#ifdef NOTUSED
+
+/* Generate a new unique id to put into the user group record */
+/* The same structure is used as a user record but we use the */
+/* uid field to store the present max uid already allocated.  */
+
+long quota_db_generate_uid()
+{
+    quota_rec quotarec;
+    int retval,more;
+
+    /* Assume that database is already open */
+    retval = quota_db_get_principal(QUOTA_UID_NAME, QUOTA_UID_INSTANCE,
+				    QUOTA_UID_SERVICE, QUOTA_UID_REALM,
+				    &quotarec,
+				    (unsigned int)1, &more);
+
+    if(!(retval)) {
+	/* Entry does not exist. This is probably a new database */
+	/* Well, go ahead and create one */
+	strncpy(quotarec.name, QUOTA_UID_NAME, ANAME_SZ);
+	strncpy(quotarec.instance, QUOTA_UID_INSTANCE, INST_SZ);
+	strncpy(quotarec.realm, QUOTA_UID_REALM, REALM_SZ);
+	strncpy(quotarec.service, QUOTA_UID_SERVICE, SERV_SZ);
+	quotarec.uid = (long) 1;   /* Initialize to first uid */
+	quotarec.quotaAmount = 0;
+	quotarec.quotaLimit  = 0;
+	quotarec.lastBilling = (u_long) 0;
+	quotarec.lastCharge  = 0;
+	quotarec.pendingCharge = 0;
+	quotarec.lastQuotaAmount = 0;
+	quotarec.yearToDateCharge = 0;
+	quotarec.allowedToPrint = 0;
+	quotarec.deleted = 0;
+    } else {
+	quotarec.uid = quotarec.uid + (long)1;
+    }
+
+    if (quota_db_put_principal(&quotarec, (unsigned int) 1) < 0)
+	return ((long) -1);
+
+    return(quotarec.uid);
+}
+
+#endif NOTUSED
