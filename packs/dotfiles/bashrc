@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.9 1999-08-10 16:06:47 ghudson Exp $
+# $Id: bashrc,v 1.10 1999-09-10 17:19:40 danw Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -132,6 +132,11 @@ if [ "${ENV_SET+set}" != set ]; then
 		. ~/.bash_environment
 	fi
 	
+	# On IRIX, limits are reset on exec of a setuid program, e.g.
+	# xterm. So record now what the user wanted coredumpsize to
+	# be so we can fix it later.
+	export COREDUMPSIZE_LIMIT=`ulimit -c`
+
 	# Standard Athena path
 	PATH=`athdir $HOME`:$athena_path:.
 	unset athena_path
@@ -177,6 +182,9 @@ if [ "${PS1+set}" = set ]; then
 	HISTSIZE=20
 	CDPATH=~
 fi
+
+# Fix coredumpsize limit in case it was reset
+ulimit -c $COREDUMPSIZE_LIMIT
 
 #   alias for re-establishing authentication
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
