@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.5 1999-09-10 17:15:48 danw Exp $";
+"$Id: sendmail.c,v 1.6 1999-09-12 02:05:18 danw Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -53,7 +53,8 @@ void Sendmail_to_user( int retval, struct job *job )
 		logname = Find_str_value(&job->info,LOGNAME,Value_sep);
 		
 		if( zname && logname && !strcmp(zname, logname) ){
-			mailname = malloc_or_die(8 + strlen(zname));
+			mailname = malloc_or_die(8 + strlen(zname),
+						 __FILE__,__LINE__);
 			sprintf(mailname, "zephyr%%%s", zname);
 		}
 	}
