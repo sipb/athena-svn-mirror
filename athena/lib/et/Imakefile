@@ -4,12 +4,16 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.5 1991-01-22 12:24:51 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.6 1991-03-07 12:21:50 epeisach Exp $
 #	$Locker:  $
 #
 
 #ifdef ULTRIX40
 DEFINES=-DULTRIX_40
+#endif
+
+#ifdef error_table
+#undef error_table
 #endif
 
 LINTFLAGS=-uhvb 
