@@ -2,6 +2,7 @@
 "*cycle:			10",
 "*lockTimeout:		0",
 "*passwdTimeout:		30",
+"*maxIdleTime:		20",
 "*nice:			10",
 "*lock:			False",
 "*lockVTs:		True",
@@ -13,22 +14,17 @@
 "*fadeTicks:		20",
 "*splash:		True",
 "*splashDuration:	5",
-"*captureStderr: 	True",
+"*captureStderr: 	False",
 "*overlayTextForeground:	#FFFF00",
 "*overlayTextBackground:	#000000",
 "*overlayStderr:		True",
 "*font:			*-medium-r-*-140-*-m-*",
-"*demoCommand: xscreensaver-demo",
-"*prefsCommand: xscreensaver-demo -prefs",
+"*demoCommand: xss-demo",
+"*prefsCommand: xss-demo -prefs",
 "*helpURL: http://www.jwz.org/xscreensaver/man.html",
 "*loadURL: netscape -remote 'openURL(%s)' || netscape '%s'",
 "*installColormap:	True",
 "*programs:	qix -root -solid -delay 0 -segments 100			\\n\
-		attraction -root -mode balls				\\n\
-		attraction -root -mode lines -points 3 -segments 200	\\n\
-		attraction -root -mode splines -segments 300		\\n\
-		attraction -root -mode lines -radius 300		  \
-			-orbit -vmult 0.5				\\n\
 		pyro -root						\\n\
 		helix -root						\\n\
 		pedal -root						\\n\
@@ -37,12 +33,6 @@
 		greynetic -root						\\n\
 		xroger -root						\\n\
 		imsmap -root						\\n\
-		slidescreen -root					\\n\
-		decayscreen -root					\\n\
-		jigsaw -root						\\n\
-		blitspin -root -grab					\\n\
-		slip -root						\\n\
-		distort -root						\\n\
 		hypercube -root						\\n\
 		halo -root						\\n\
 		maze -root						\\n\
@@ -86,48 +76,17 @@
 		vines -root						\\n\
 		kaleidescope -root					\\n\
 		xjack -root						\\n\
-  -		xlyap -root -randomize					\\n\
 		cynosure -root						\\n\
 		flow -root						\\n\
 		epicycle -root						\\n\
 		interference -root					\\n\
 		truchet -root -randomize				\\n\
-		bsod -root						\\n\
 		crystal -root						\\n\
 		discrete -root						\\n\
 		kumppa -root						\\n\
 		rd-bomb -root						\\n\
 		rd-bomb -root -speed 1 -size 0.1			\\n\
-		sonar -root						\\n\
-									  \
-	mono:	rocks -root						\\n\
-	color:	rocks -root -fg darksalmon				\\n\
-									  \
-	mono:	qix -root -linear -count 5 -size 200 -spread 30		  \
-			-segments 75 -solid -xor			\\n\
-									  \
-	color:	attraction -root -mode polygons				\\n\
-	color:	attraction -root -mode filled-splines -segments 0	\\n\
-	color:	attraction -root -glow -points 10			\\n\
-	color:	bubbles -root						\\n\
-									  \
-  PseudoColor:	qix -root -count 4 -solid -transparent			\\n\
-  PseudoColor:	qix -root -count 5 -solid -transparent -linear		  \
-			-segments 250 -size 100				\\n\
-									  \
-		gears -root					  	\\n\
-		superquadrics -root				  	\\n\
-		morph3d -root					  	\\n\
-		cage -root					  	\\n\
-		moebius -root					  	\\n\
-		stairs -root					  	\\n\
-		pipes -root					  	\\n\
-		sproingies -root				  	\\n\
-		rubik -root					  	\\n\
-		atlantis -root					  	\\n\
-		lament -root					  	\\n\
-		bubble3d -root					  	\\n\
-		glplanet -root					  	\\n",
+		sonar -root						\\n",
 " ",
 "XScreenSaver.pointerPollTime:		5",
 "XScreenSaver.initialDelay:		0",
@@ -156,6 +115,8 @@
 "*passwd.body.label:		This display is locked.",
 "*passwd.user.label:		User:",
 "*passwd.passwd.label:		Password:",
+"*passwd.idle.label:		Idle time:",
+"*passwd.logout.label:		Press Ctrl-L to logout",
 "*passwd.passwdFont:		*-courier-medium-r-*-*-*-140-*-*-*-iso8859-1",
 "*passwd.thermometer.width:	8",
 "*splash.heading.label:		XScreenSaver %s",
@@ -200,6 +161,7 @@
 "*fadeTicksLabel.labelString:	Fade Ticks",
 "*lockLabel.labelString:		Lock Timeout",
 "*passwdLabel.labelString:	Password Timeout",
+"*maxIdleLabel.labelString:	Maximum Idle Time",
 "*preferencesForm*XmTextField.columns:	8",
 "*verboseToggle.labelString:	Verbose",
 "*cmapToggle.labelString:	Install Colormap",
