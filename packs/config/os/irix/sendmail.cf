@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.7 1999-04-11 19:17:43 danw Exp $
+# $Id: sendmail.cf,v 1.8 1999-05-07 14:21:20 rbasch Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -44,6 +44,8 @@ O StatusFile=/usr/lib/sendmail.st
 # queue up everything before starting transmission
 O SuperSafe
 O TempFileMode=0640
+# Setting TimeZoneSpec to no value means use TZ environment setting.
+O TimeZoneSpec
 
 ###############################
 ###   Message precedences   ###
