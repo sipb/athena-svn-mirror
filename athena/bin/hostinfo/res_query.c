@@ -64,7 +64,7 @@ int h_errno;
  * Caller must parse answer and determine whether it answers the question.
  */
 res_query(name, class, type, answer, anslen)
-	char *name;		/* domain name */
+	const char *name;	/* domain name */
 	int class, type;	/* class and type of query */
 	u_char *answer;		/* buffer to put answer */
 	int anslen;		/* size of answer buffer */
@@ -142,7 +142,7 @@ res_query(name, class, type, answer, anslen)
  * (not, for example, for host address-to-name lookups in domain in-addr.arpa).
  */
 res_search(name, class, type, answer, anslen)
-	char *name;		/* domain name */
+	const char *name;	/* domain name */
 	int class, type;	/* class and type of query */
 	u_char *answer;		/* buffer to put answer */
 	int anslen;		/* size of answer */
@@ -217,7 +217,7 @@ res_search(name, class, type, answer, anslen)
  * removing a trailing dot from name if domain is NULL.
  */
 res_querydomain(name, domain, class, type, answer, anslen)
-	char *name, *domain;
+	const char *name, *domain;
 	int class, type;	/* class and type of query */
 	u_char *answer;		/* buffer to put answer */
 	int anslen;		/* size of answer */
@@ -251,7 +251,7 @@ res_querydomain(name, domain, class, type, answer, anslen)
 
 char *
 hostalias(name)
-	register char *name;
+	const char *name;
 {
 	register char *C1, *C2;
 	FILE *fp;
