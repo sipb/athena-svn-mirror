@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.1 1987-12-01 16:45:00 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.2 1987-12-02 18:46:29 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/01  16:45:00  don
+ * fixed bugs in readstat's traversal of entries] and statfile:
+ * cur_ent is no longer global, but is now part of get_next_match's
+ * state. also, last_match() was causing entries[]'s last element to be
+ * skipped.
+ * 
  * Revision 2.0  87/11/30  15:14:38  don
  * general rewrite; got rid of stamp data-type, with its attendant garbage,
  * cleaned up pathname-handling. readstat & writestat now sort overything
@@ -36,7 +42,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.1 1987-12-01 16:45:00 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.2 1987-12-02 18:46:29 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -145,7 +151,6 @@ char **argv;
 		 */ 
 		case 'T':
 			get_arg(toroot,argv,&i);
-			break;
 			break;
 		/* -d dirname
 		 *    Specify the working directory for
@@ -415,7 +420,7 @@ clearlocks()
 writestat()
 {
 	char **from, **cmp;
-	struct stat *cmpstatp, *fromstatp;
+	struct stat *cmpstatp;
 
 	from = initpath();
 	cmp  = initpath();
