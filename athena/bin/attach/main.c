@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.24 1991-08-13 21:47:17 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.25 1991-08-13 22:52:37 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -299,20 +299,36 @@ nfsidcmd(argc, argv)
 		unlock_attachtab();
 		atp = attachtab_first;
 		while (atp) {
-			if (!is_an_owner(atp,owner_uid) ||
-			    atp->fs->type == TYPE_MUL) {
-				/* Do nothing */
+			if (atp->fs->type == TYPE_MUL) {
+				/* Do nothing
+				 * Type MUL filesystems are authenticated
+				 * by their individual parts.
+				 */
+			} else if ((op == MOUNTPROC_KUIDMAP ||
+				    op == MOUNTPROC_KUIDUMAP) &&
+				   !is_an_owner(atp,owner_uid)) {
+				/* Do nothing
+				 * Only map/unmap to filesystems that the
+				 * user has attached.
+				 *
+				 * Purges apply to ALL attached filesystems.
+				 */
 			} else if (atp->fs->type == TYPE_NFS) {
-				if (atp->mode != 'n' &&
-				    (nfsid(atp->host, atp->hostaddr[0], op, 1,
-					   atp->hesiodname, 0, owner_uid)
-				     == SUCCESS) && verbose)
+				if ((op == MOUNTPROC_KUIDMAP ||
+				     op == MOUNTPROC_KUIDUMAP) &&
+				    atp->mode == 'n')
+					/* Do nothing */
+				else if (nfsid(atp->host, atp->hostaddr[0],
+					       op, 1, atp->hesiodname, 0,
+					       owner_uid) == SUCCESS &&
+					 verbose)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
 #ifdef AFS
-			} else if (atp->fs->type == TYPE_AFS) {
+			} else if (atp->fs->type == TYPE_AFS &&
+				   op == MOUNTPROC_KUIDMAP) {
+				/* We only support map operations on AFS */
 				if (atp->mode != 'n' &&
-				    op == MOUNTPROC_KUIDMAP && 
 				    (afs_auth(atp->hesiodname, atp->hostdir)
 				     == SUCCESS) && verbose)
 					printf("%s: %s %s\n", progname,
