@@ -34,7 +34,7 @@ printer: ${PRINTER}
 varian:	${VARIAN}
 #endif
 
-create_dir(LIBDIR)
+create_dir($(LIBDIR))
 
 install:: 
 	for i in ${LN01FILTERS}; do \
