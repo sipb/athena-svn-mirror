@@ -830,6 +830,7 @@
 /usr/athena/bin/scan
 /usr/athena/bin/scout
 /usr/athena/bin/scp
+/usr/athena/bin/screensaver-properties-capplet
 /usr/athena/bin/scrollkeeper-config
 /usr/athena/bin/scrollkeeper-extract
 /usr/athena/bin/scrollkeeper-gen-seriesid
