@@ -73,10 +73,3 @@ The packs hirearchy has the following subdirectories:
 
 Platform-dependent information in each of these directories lives
 under a platform/${HOSTTYPE}, which the Makefile can traverse.
-
-There are a couple of small C source flies in the packs hierarchy, too
-closely tailored to the Athena environment to be moved to the athena
-hierarchy.  No particular autoconfiguration needs to be done for these
-programs, but the correct C compiler needs to be selected; thus the
-build system sets the environment variable CC while building the packs
-directory.
