@@ -22,14 +22,16 @@ NANNY		=	nanny
 
 ELMER		=	elmer
 
-LIBOBJS		=	pc_err.o nannylib.o pc_bsd.o cons_sysv.o var.o cvt.o
+LIBOBJS		=	pc_err.o nannylib.o pc_bsd.o cons_sysv.o \
+			dpy_irix.o var.o cvt.o
 
 NANNYOBJS	=	nanny.o
 
 ELMEROBJS	=	elmer.o
 
 CFILES		=	pc_err.c nanny.c pc_bsd.c cons_sysv.c var.c cvt.c \
-			nannylib.c testtty.c testsetUser.c testloginUser.c
+			dpy_irix.c nannylib.c testtty.c testsetUser.c \
+			testloginUser.c
 
 LIBS		=	-L/source/athena/lib/AL -lAL -L. -lnanny -lcom_err \
 			-lhesiod
