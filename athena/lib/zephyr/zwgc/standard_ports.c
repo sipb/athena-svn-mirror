@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.4 1989-11-15 12:15:26 jtkohl Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.5 1989-11-15 15:29:46 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -191,7 +191,7 @@ void init_standard_ports(pargc, argv)
         if (p->port_setup_status==2)
           continue;
 
-        if (p->port_init && (*(p->port_init))(pargc, argv)) {
+        if (p->port_init && (*(p->port_init))(p->port_name, pargc, argv)) {
             p->port_setup_status = 2;
             continue;
         }
