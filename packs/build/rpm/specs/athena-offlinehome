@@ -1,0 +1,11 @@
+Name: athena-offlinehome
+Summary: Script to create an offline user home directory
+License: MIT
+Group: System Environment/Base
+
+Requires: athena-hesinfo athena-passwd
+
+%description
+The offlinehome script creates an offline home directory for an Athena
+user.  An offline home directory is not shared with other machines,
+but allows a user to be logged in while disconnected from the network.
