@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
  *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.6 1991-12-04 13:25:58 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.7 1992-01-17 07:56:02 lwvanels Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -29,7 +29,7 @@
 
 #ifdef KERBEROS
 /* name of file to hold the tickets for keys to exchange with other servers */
-#define	ZEPHYR_TKFILE		"/usr/athena/lib/zephy/ztkts"
+#define	ZEPHYR_TKFILE		"/usr/athena/lib/zephyr/ztkts"
 
 /* Pathname of Kerberos srvtab file.
    WARNING: lib/ZCheckAuthentication.c needs to have a corresponding
