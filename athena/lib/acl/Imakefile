@@ -3,7 +3,7 @@ CFLAGS= -O
 all:: llib-lacl.ln libacl.a 
 
 install:: all
-	install libacl.a ${DESTDIR}${ATHLIBDIR}/libacl.a
+	install -c libacl.a ${DESTDIR}${ATHLIBDIR}/libacl.a
 	ranlib ${DESTDIR}${ATHLIBDIR}/libacl.a
 	cp llib-lacl.ln ${DESTDIR}/usr/lib/lint/llib-lacl.ln
 
