@@ -1,9 +1,8 @@
 /* Mode: -*- C -*- */
 %{
-#ifdef _AUX_SOURCE
 #include <sys/types.h>
-#endif
-#include <sys/file.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <signal.h>
 
 extern int sighandler();
@@ -53,16 +52,28 @@ PRINTABLE    [0-9A-Za-z \t`\[\];'\\<,./-=~!@#$%^&*()_+{}:"|>?]
 
 yywrap()
 {
+	struct flock lock;
+
+	lock.l_type = F_UNLCK;
+	lock.l_start = 0;
+	lock.l_whence = SEEK_SET;
+	lock.l_len = 0;
 	fflush(stdout);
-	flock(1, LOCK_UN);
+	fcntl(STDOUT_FILENO, F_SETLK, &lock);
 	return(1);
 }
 main(argc,argv)
 int argc;
 register char *argv[];
 {
-	register int i;
-	flock(1, LOCK_EX);
+	struct flock lock;
+	int i;
+
+	lock.l_type = F_WRLCK;
+	lock.l_start = 0;
+	lock.l_whence = SEEK_SET;
+	lock.l_len = 0;
+	fcntl(STDOUT_FILENO, F_SETLKW, &lock);
 	if(!strcmp(argv[0], "ln01l")) {
 		mode = landscape;
 		form_length = land_length;

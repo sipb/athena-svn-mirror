@@ -1,15 +1,20 @@
-#ifdef _AUX_SOURCE
 #include <sys/types.h>
-#endif
-#include <sys/file.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 main()
 {
-    register int count;
+    struct flock lock;
+    int count;
     char buf[1024];
     
-    flock(1, LOCK_EX);
-    while ((count = read(0, buf, 1024)) > 0)
-    	write(1, buf, count);
-    flock(1, LOCK_UN);
+    lock.l_type = F_WRLCK;
+    lock.l_start = 0;
+    lock.l_whence = SEEK_SET;
+    lock.l_len = 0;
+    fcntl(STDOUT_FILENO, F_SETLKW, &lock);
+    while ((count = read(STDIN_FILENO, buf, 1024)) > 0)
+    	write(STDOUT_FILENO, buf, count);
+    lock.l_type = F_UNLCK;
+    fcntl(STDOUT_FILENO, F_SETLK, &lock);
 }
