@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.3 1990-07-03 14:56:03 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.4 1990-07-16 14:17:26 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v $
 #  $Author: qjb $
 #
@@ -42,7 +42,7 @@ depend:
 	makedepend $(CFLAGS) $(CSRCS)
 
 install:
-	install -s rkinit $(DESTDIR)$(INSTALLDIR)/rkinit
+	install -c -s rkinit $(DESTDIR)$(INSTALLDIR)/rkinit
 
 clean:
 	rm -f core *.o *~ *.bak rkinit
