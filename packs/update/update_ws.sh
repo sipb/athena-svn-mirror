@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.24 1997-05-04 05:02:30 ghudson Exp $
+# $Id: update_ws.sh,v 1.25 1997-05-15 20:20:22 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -268,6 +268,8 @@ if [ "$method" = Auto -a "$why" = reactivate ]; then
 	fi
 fi
 
+# Everything is all set; do the actual update.
+rm -f /var/athena/update.log
 if [ "$method" = Auto ]; then
 	echo
 	echo THIS WORKSTATION IS ABOUT TO UNDERGO AN AUTOMATIC SOFTWARE UPDATE.
@@ -275,11 +277,11 @@ if [ "$method" = Auto ]; then
 	echo
 	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
 	echo
+	sh "$LIBDIR/do-update" "$method" < /dev/null 2>&1 \
+		| tee /var/athena/update.log
+else
+	sh "$LIBDIR/do-update" "$method" 2>&1 | tee /var/athena/update.log
 fi
-
-# Everything is all set; do the actual update.
-rm -f /var/athena/update.log
-sh "$LIBDIR/do-update" "$method" < /dev/null 2>&1 | tee /var/athena/update.log
 echo "Update partially completed, system will reboot in 15 seconds."
 sync
 sleep 15
