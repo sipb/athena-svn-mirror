@@ -1,9 +1,9 @@
 /*
- *	$Id: track.c,v 4.22 1999-02-16 15:06:58 danw Exp $
+ *	$Id: track.c,v 4.23 1999-03-23 19:01:51 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: track.c,v 4.22 1999-02-16 15:06:58 danw Exp $";
+static char *rcsid_header_h = "$Id: track.c,v 4.23 1999-03-23 19:01:51 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -541,7 +541,6 @@ struct currentness *currency;
 				 /* fall through to poppath() calls */
 		case DONT_TRACK: poppath( f);
 				 poppath( c);
-				 fprintf(stderr, "not tracking %s\n", dp->d_name);
 				 continue;
 		default:	 sprintf(errmsg,"bad value from gettail\n");
 				 do_panic();
