@@ -77,7 +77,8 @@ $ECHO "done."
 $ECHO ""
 
 if [ "${PUBLIC}" = "true" ]; then
-	/sbin/cp /dev/null /var/athena/attachtab
+	rm -f /var/athena/attachtab
+	touch /var/athena/attachtab
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
@@ -124,8 +125,8 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 
-	cp /dev/null /etc/named.local
-	cp /dev/null /etc/X0.hosts
+	rm -f /etc/named.local /etc/X0.hosts
+	touch /etc/named.local /etc/X0.hosts
 	if [ -f /srvd/.rvdinfo ]; then
             NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
