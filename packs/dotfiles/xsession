@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.12 2003-07-02 19:49:09 ghudson Exp $
+# $Id: xsession,v 1.13 2003-07-17 20:58:20 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -153,6 +153,33 @@ else if ($?offer_gnome_upgrade) then
     set offer_gnome_failure
   endif
   unset dtext
+endif
+
+# 2003-07-17: Due to bugs in the public 9.2 release, many users
+# received a broken panel state.  This will manifest as a broken or
+# missing panel_id_list value or (more likely) as a single extra-small
+# menu panel at the top of the screen.  For now, detect those states
+# and revert to the default panel configuration.  (If the user
+# actually wants an extra-small menu panel at the top of the screen,
+# this will be an irritation, but there's no easy way around that.)
+# This check can probably go away after a few months.
+if ( ! $?NOCALLS && -d ~/.gnome2 ) then
+  set pnidlist=/apps/panel/profiles/default/general/panel_id_list
+  set npnids=`gconftool-2 --get-list-size $pnidlist`
+  if ( $npnids == 0 || $npnids == "" ) then
+    echo "Detected broken panel config, reverting to defaults"
+    gconftool-2 --recursive-unset /apps/panel
+  else if ( $npnids == 1 ) then
+    set pnid=`gconftool-2 --get-list-element $pnidlist 0`
+    set pndir=/apps/panel/profiles/default/panels/$pnid
+    set pntype=`gconftool-2 --get $pndir/panel_type`
+    set pnsize=`gconftool-2 --get $pndir/panel_size`
+    if ( $pntype == menu-panel && $pnsize == panel-size-x-small ) then
+      echo "Detected broken panel config, reverting to defaults"
+      gconftool-2 --recursive-unset /apps/panel
+    endif
+  endif
+  unset pnidlist npnids pnid pndir pntype pnsize
 endif
 
 if ( ! $?ATHENA_DASH_INTERFACE) then
