@@ -1,8 +1,6 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.62 1997-10-03 17:45:03 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.63 1997-12-11 21:26:50 cfields Exp $ */
  
-#ifdef POSIX
 #include <unistd.h>
-#endif
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,20 +35,6 @@
 #ifdef SYSV
 #define random	lrand48
 #define srandom	srand48
-#endif
-/* Define the following if restarting the X server does not restore
- * auto-repeat properly
- */
-
-#ifdef ultrix
-#define BROKEN_AUTO_REP
-#define DISABLE_AUTO_REP
-#endif
-
-
-#if defined(_IBMR2)
-#include <time.h>
-#include <sys/id.h>
 #endif
 
 #ifndef MIN
@@ -91,9 +75,8 @@ gid_t def_grplist[] = { 101 };			/* default group list */
 extern void AriRegisterAthena ();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), blinkIs(), initOwl(), adjustOwl();
-static void catch_child(), setFontPath(), setAutoRepeat();
+static void catch_child(), setFontPath();
 static Boolean auxConditions();
-static int getAutoRepeat();
 extern pid_t fork_and_store(pid_t *var);
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
@@ -256,9 +239,7 @@ int activation_state, activate_count = 0, attach_state, attachhelp_state;
 int exiting = FALSE;
 extern char *defaultpath;
 char login[128], passwd[128];
-#ifdef POSIX
 sigset_t sig_zero;
-#endif
 
 #ifdef SOLARIS_MAE
 int netspy = FALSE;
@@ -267,10 +248,7 @@ int netspy = FALSE;
 /*
  * Local Globals
  */
-static int autorep;
-#ifdef POSIX
 static struct sigaction sigact, osigact;
-#endif
 
 /******************************************************************************
 *   MAIN function
@@ -290,9 +268,7 @@ main(argc, argv)
   unsigned acc = 0;
   int pid;
 
-#ifdef POSIX
   sigemptyset(&sig_zero);
-#endif
 
 #ifdef sgi
   /*
@@ -373,14 +349,9 @@ main(argc, argv)
      beyond knowing the exec of XLogin succeeded, I don't see any reason
      not to just get it over with and get the console flowing when we
      need it. We need it now. --- cfields */
-#ifdef POSIX
   sigaction(SIGUSR1, NULL, &osigact);
   if (osigact.sa_handler == SIG_IGN)
     kill(getppid(), SIGUSR1);
-#else
-  if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
-    kill(getppid(), SIGUSR1);
-#endif
 #endif /* not sgi */
 
 #ifdef SOLARIS_MAE
@@ -416,24 +387,16 @@ main(argc, argv)
       fprintf(stderr, "XLogin: unable to fork for reactivatation\n");
       break;
     default:
-#ifdef vax
-      while (pid != wait(0));
-#else
       waitpid(pid, NULL, 0);
-#endif
       break;
     }
 
   /* We set up the signal handler later than we used to because we don't
      need or want it to be running to handle the prelogin script. */
-#ifdef POSIX
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
   sigact.sa_handler = catch_child;
   sigaction(SIGCHLD, &sigact, NULL);
-#else
-  signal(SIGCHLD, catch_child);
-#endif
 
   WcRegisterCallback(app, "UnsetFocus", unfocusACT, NULL);
   WcRegisterCallback(app, "runCB", runCB, NULL);
@@ -454,16 +417,6 @@ main(argc, argv)
 
   /* clear console */
   sigconsCB(NULL, "clear", NULL);
-
-  /* Turn off keyboard autorepeat - triggers bugs when ^P used to 
-   * shutdown for a console login
-   */
-#ifdef BROKEN_AUTO_REP
-  autorep = AutoRepeatModeOn;
-#else
-  autorep = getAutoRepeat();
-#endif
-  setAutoRepeat(AutoRepeatModeOff);
 
   /*
    *  Create widget tree below toplevel shell using Xrm database
@@ -644,7 +597,7 @@ start_reactivate(data, timerid)
     if ((file = open(UTMPF, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (utmp.ut_name[0] != 0
-#if defined(_AIX) || defined(SYSV)
+#ifdef SYSV
 		&& utmp.ut_type == USER_PROCESS
 #endif
 		) {
@@ -951,42 +904,25 @@ Cardinal *n;
      * the timers.
      */
     if (activation_state != ACTIVATED) {
-#if defined (POSIX) || defined (sun)
 	void (*oldsig)();
-#else
-	int (*oldsig)();
-#endif
 
 	fprintf(stderr, "Waiting for workstation to finish activating...");
 	fflush(stderr);
-#ifdef POSIX
 	sigemptyset(&sigact.sa_mask);
 	sigact.sa_flags = 0;
 	sigact.sa_handler = stop_activate;
 	sigaction(SIGALRM, &sigact, &osigact);
-#else
-	oldsig = signal(SIGALRM, stop_activate); 
-#endif
  	alarm(resources.activate_timeout); 
 	while (activation_state != ACTIVATED)
-#ifdef POSIX
 	  sigsuspend(&sig_zero);
-#else
-	  sigpause(0);
-#endif
         alarm(0);
-#ifdef POSIX
  	sigaction(SIGALRM, &osigact, NULL);
-#else
-	signal(SIGALRM, oldsig);
-#endif
 	fprintf(stderr, "done.\n");
     }
 
     if (access(resources.srvdcheck, F_OK) != 0)
       tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x3-1410, hotline@mit.edu.";
     else {
-	setAutoRepeat(autorep);
  	setFontPath();
 #ifdef sgi
 	/* We obtained the tty earlier from nanny. */
@@ -1001,7 +937,6 @@ Cardinal *n;
 	XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		     0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,
 		     HeightOfScreen(DefaultScreenOfDisplay(dpy))/2);
-	setAutoRepeat(AutoRepeatModeOff);
     }
     XtMapWidget(appShell);
     XtPopup(WcFullNameToWidget(appShell, "*warningShell"), XtGrabExclusive);
@@ -1036,7 +971,7 @@ Cardinal *n;
 {
     Widget target;
 
-#if defined(_AIX) && defined(_IBMR2) || defined(sgi)
+#ifdef sgi
     static int done_once = 0;
 
     /* This crock works around the an invalid argument error on the
@@ -1141,18 +1076,13 @@ Cardinal *n;
     if (activation_state != ACTIVATED)
       fprintf(stderr, "Waiting for workstation to finish activating...\n");
     while (activation_state != ACTIVATED)
-#ifdef POSIX
       sigsuspend(&sig_zero);
-#else
-      sigpause(0);
-#endif
     if (access(resources.srvdcheck, F_OK) != 0) {
 	fprintf(stderr, "Workstation failed to activate successfully.\nPlease notify the Athena Hotline, x3-1410, hotline@mit.edu.");
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
     setFontPath();
-    setAutoRepeat(autorep);
     XFlush(dpy);
     XtCloseDisplay(dpy);
 
@@ -1199,9 +1129,6 @@ Cardinal *n;
 #else
     setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
-#if defined(_AIX) && defined(_IBMR2)
-    setuidx(ID_LOGIN, DAEMON);
-#endif
     setgid(def_grplist[0]);
     if (setuid(DAEMON)) {
 	fprintf(stderr, "Unable to set user id.\n");
@@ -1256,11 +1183,7 @@ caddr_t unused;
 	break;
     default:
 	while (attach_state == -1)
-#ifdef POSIX
 	  sigsuspend(&sig_zero);
-#else
-	  sigpause(0);
-#endif
 	if (attach_state != 0) {
 	    fprintf(stderr, "Unable to attach locker %s, aborting...\n",
 		    locker);
@@ -1601,14 +1524,6 @@ static void initOwl(search)
 							      NULL, NULL);
 	      if (owlBitmaps[owlNumBitmaps] == None)
 		return; /* abort */
-#ifdef notdef
-	      if (BitmapSuccess != XReadBitmapFile(dpy, owlWindow,
-						   filenames,
-						   &owlWidth, &owlHeight,
-						   &owlBitmaps[owlNumBitmaps],
-						   &scratch, &scratch))
-		return; /* abort */
-#endif
 	      owlNumBitmaps++;
 	      if (!done)
 		{
@@ -1672,14 +1587,6 @@ static void initOwl(search)
 							      NULL, NULL);
 	      if (isBitmaps[isNumBitmaps] == None)
 		return; /* abort */
-#ifdef notdef
-	      if (BitmapSuccess != XReadBitmapFile(dpy, isWindow,
-						   filenames,
-						   &isWidth, &isHeight,
-						   &isBitmaps[isNumBitmaps],
-						   &scratch, &scratch))
-		return; /* abort */
-#endif
 	      isNumBitmaps++;
 	      if (!done)
 		{
@@ -1920,27 +1827,3 @@ static void setFontPath()
 
     XSetFontPath(dpy, dirlist, ndirs);
 }
-
-static void setAutoRepeat(mode)
-int mode;
-{
-#ifdef DISABLE_AUTO_REP
-    XKeyboardControl cntrl;
-    cntrl.auto_repeat_mode = mode;
-    XChangeKeyboardControl(dpy,KBAutoRepeatMode,&cntrl);
-#endif
-    return;
-}
-
-#ifndef BROKEN_AUTO_REP
-static int getAutoRepeat()
-{
-#ifdef DISABLE_AUTO_REP
-    XKeyboardState st;
-    XGetKeyboardControl(dpy, &st);
-    return st.global_auto_repeat;
-#else
-    return 0;
-#endif
-}
-#endif 
