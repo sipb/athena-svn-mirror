@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.19 1988-07-10 19:56:58 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.20 1988-07-10 22:24:18 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -156,12 +156,8 @@ main(argc, argv)
     notice.z_recipient = "";
     if (filsys == 1)
 	    notice.z_default_format = "@bold(Filesystem Operation Message for $instance:)\nFrom: @bold($sender)\n$message";
-    else if (signature && auth == ZAUTH)
-	notice.z_default_format = "Class $class, Instance $instance:\n@center(To: @bold($recipient))\nFrom: $message";
-    else if (signature)
-	notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n@center(To: @bold($recipient))\nFrom: $message";
     else if (auth == ZAUTH)
-	notice.z_default_format = "Class $class, Instance $instance:\n$message";
+	notice.z_default_format = "Class $class, Instance $instance:\n@center(To: @bold($recipient))\n$message";
     else
 	notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n$message";
 
@@ -174,8 +170,9 @@ main(argc, argv)
     message = NULL;
     msgsize = 0;
     if (signature) {
-	message = malloc((unsigned)(strlen(signature)+1));
-	(void) strcpy(message, signature);
+	message = malloc((unsigned)(strlen(signature)+sizeof("From: ")+2));
+	(void) strcpy(message, "From: ");
+	(void) strcat(message, signature);
 	msgsize = strlen(message)+1;
     }
 	
