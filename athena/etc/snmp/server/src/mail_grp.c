@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v $
- *    $Author: tom $
+ *    $Author: vrt $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  02:02:12  tom
+ * release 7.4
+ * 	fixed name of queued mail files
+ * 
  * Revision 1.4  90/05/26  13:38:30  tom
  * athena release 7.0e
  * 
@@ -28,7 +32,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.0 1992-04-22 02:02:12 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.1 1994-03-07 15:12:36 vrt Exp $";
 #endif
 
 #include "include.h"
@@ -36,7 +40,11 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 
 #ifdef MIT
 
+#ifdef POSIX
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 
 /*
  * Mail queue directory
