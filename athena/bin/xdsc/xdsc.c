@@ -22,7 +22,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.7 1991-02-05 09:11:27 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.8 1991-02-11 16:30:27 sao Exp $";
 
 /*
 ** Globals
@@ -37,6 +37,7 @@ Widget		topW, paneW;
 void		RemoveLetterC();
 int		char_width;
 char		axis[10];
+void		TopSelect(), BotSelect();
 
 /*
 ** External functions
@@ -57,8 +58,10 @@ extern void	TriggerFocusMove();
 ** Private functions
 */
 
+/*
 static void	TopCallback(), BotCallback();
-static void	TopSelect(), BotSelect();
+*/
+static void	MenuCallback();
 static void	KeyCallback();
 static void	QuitCB(), HelpCB();
 static void	BuildUserInterface();
@@ -66,7 +69,6 @@ static void	Update(), Stub();
 static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
 static void	DisplayHighlightedTransaction();
-static void	MakeArrows();
 
 /*
 ** Private globals
@@ -76,14 +78,12 @@ static int	filedesparent[2], filedeschild[2];
 static FILE	*inputfile, *outputfile;
 
 static char	*meetinglist;
-static Boolean	reading = False;
 
 static Widget	topboxW, botboxW;
 static Widget	label1W;
 static int	prevfirst = 0;
 static Boolean	changedMeetingList = False;
 static XawTextPosition	startOfCurrentMeeting = -1;
-Pixmap          arrow_pixmaps[4];
 Display         *dpy;
 Window          root_window;
 
@@ -91,15 +91,15 @@ Window          root_window;
 ** Data for top row of buttons
 */
 
-static char * menu_labels0[] = {
-        "--", "--", "update", "configure", "mode",
-        "show", "HELP", "QUIT", NULL};
+static char * menu_labels0[MAX_BUTTONS] = {
+        "Down", "Up", "update", "configure", "mode",
+        "show", "HELP", "QUIT"};
 
-static char * menu_names0[] = {
-        "upbutton", "downbutton", "updatebutton", "configurebutton", "modebutton",
-        "showbutton", "HELPbutton", "QUITbutton", NULL};
+static char * menu_names0[MAX_BUTTONS] = {
+        "downbutton", "upbutton", "updatebutton", "configurebutton", 
+	"modebutton", "showbutton", "helpbutton", "quitbutton"};
 
-static char * submenu_labels0[MAX_BUTTONS][4] = {
+static char * submenu_labels0[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
@@ -109,7 +109,7 @@ static char * submenu_labels0[MAX_BUTTONS][4] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL }};
 
-static char * submenu_names0[MAX_BUTTONS][4] = {
+static char * submenu_names0[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
@@ -123,15 +123,15 @@ static char * submenu_names0[MAX_BUTTONS][4] = {
 ** Data for bottom row of buttons
 */
 
-static char * menu_labels1[] = {
-        "--", "--", "Next in chain", "Prev in chain",
+static char * menu_labels1[MAX_BUTTONS] = {
+        "next", "prev", "Next in chain", "Prev in chain",
         "goto", "enter", "write", NULL };
 
-static char * menu_names1[] = {
+static char * menu_names1[MAX_BUTTONS] = {
         "nextbutton", "prevbutton", "nchainbutton", "pchainbutton",
         "gotobutton", "enterbutton", "writebutton", NULL };
 
-static char * submenu_labels1[MAX_BUTTONS][4] = {
+static char * submenu_labels1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
@@ -140,7 +140,7 @@ static char * submenu_labels1[MAX_BUTTONS][4] = {
         { "reply", "new transaction", NULL },
         { "write to file", "mail to someone", NULL }};
 
-static char * submenu_names1[MAX_BUTTONS][4] = {
+static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
@@ -151,23 +151,6 @@ static char * submenu_names1[MAX_BUTTONS][4] = {
 
 
 EntryRec        toplevelbuttons[2][MAX_BUTTONS];
-
-#define arrow_width 10
-#define arrow_height 10
-
-static char arrowdown_bits[] = {
-   0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0xff, 0x03,
-   0xfe, 0x01, 0xfc, 0x00, 0x78, 0x00, 0x30, 0x00};
-static char arrowleft_bits[] = {
-   0x10, 0x00, 0x18, 0x00, 0x1c, 0x00, 0xfe, 0x03, 0xff, 0x03, 0xff, 0x03,
-   0xfe, 0x03, 0x1c, 0x00, 0x18, 0x00, 0x10, 0x00};
-static char arrowright_bits[] = {
-   0x20, 0x00, 0x60, 0x00, 0xe0, 0x00, 0xff, 0x01, 0xff, 0x03, 0xff, 0x03,
-   0xff, 0x01, 0xe0, 0x00, 0x60, 0x00, 0x20, 0x00};
-static char arrowup_bits[] = {
-   0x30, 0x00, 0x78, 0x00, 0xfc, 0x00, 0xfe, 0x01, 0xff, 0x03, 0x78, 0x00,
-   0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00};
-
 
 void
 main(argc, argv)
@@ -193,7 +176,7 @@ char *argv[];
 	pipe (filedesparent);
 	pipe (filedeschild);
 
-	pid = fork();
+	pid = vfork();
 
 	if (pid == 0)
 		SetUpEdsc();
@@ -231,7 +214,7 @@ char *argv[];
 
 #endif
 
-	topW = XtInitialize("topwidget", "Xdsc-new", NULL, 0, &argc, argv);
+	topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
 
 	myfree (newpath);
 
@@ -250,10 +233,10 @@ char *argv[];
 
 	XtRealizeWidget(topW);
 
-	MakeArrows();
+	dpy = XtDisplay(topW);
+	root_window = XtWindow(topW);
 
 	(void) MoveToMeeting(INITIALIZE);
-	BotSelect(NULL, 0, NULL);
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 	XtMainLoop();
 }
@@ -261,18 +244,19 @@ char *argv[];
 SetUpEdsc()
 {
 	int	retval;
-	FILE	*tempfile;
 	char	commandtorun[50];
 	char	machtype[20];
 
+#ifdef 0
+
 /*
 ** Figure out what type of machine I'm running on
-*/
 	sprintf (commandtorun, "/bin/athena/machtype > %s", filebase);
 	if (system (commandtorun) == 127) {
 		fprintf (stderr, "Cannot execute %s to determine machine type\n", commandtorun);
 		exit (-1);
 	}
+*/
 
 	if (! (tempfile = fopen(filebase, "r"))) {
 		fprintf (stderr, "Cannot open file %s\n", filebase);
@@ -287,6 +271,22 @@ SetUpEdsc()
 ** Remove trailing newline
 */
 	machtype[strlen(machtype)-1] = '\0';
+
+#endif
+
+#if defined (mips) && defined (ultrix)
+	strcpy (machtype, "decmips");
+#else
+#ifdef vax
+	strcpy (machtype, "vax");
+#else
+#ifdef ibm032
+	strcpy (machtype, "rt");
+#else
+	Need to define for this machine
+#endif
+#endif
+#endif
 
 	sprintf (	commandtorun, 
 			"/mit/StaffTools/%sbin/edsc",
@@ -303,8 +303,8 @@ SetUpEdsc()
 
 	retval = execlp (commandtorun, commandtorun, 0);
 
-	fprintf (stderr, "Shouldn't be here.  Return from exec was %d\n",retval);
-	exit (-1);
+	fprintf (stderr, "Fatal error:  Unable to exec '%s'\n",commandtorun);
+	_exit (-1);
 }
 
 static void
@@ -314,8 +314,7 @@ BuildUserInterface()
 	unsigned int	n;
 
 	static XtActionsRec actions[] = {
-		{"TopCallback",		TopCallback},
-		{"BotCallback",		BotCallback},
+		{"MenuCallback",	MenuCallback},
 		{"KeyCallback",		KeyCallback},
 		{"Update",		Update},
 		{"TriggerAdd",		TriggerAdd},
@@ -413,6 +412,74 @@ BuildUserInterface()
 */
 
 static void
+MenuCallback(w, event, params, num_params)
+Widget  w;
+XEvent  *event;
+String  *params;
+int     *num_params;
+{
+	int	buttonnum, entrynum;
+	int	whichrow;
+
+	if (*num_params != 2)
+		goto ABORT;
+
+	for (buttonnum = 0; buttonnum < MAX_BUTTONS; buttonnum++) {
+		if (	menu_names0[buttonnum] &&
+			!strcmp(menu_names0[buttonnum], params[0])) {
+				whichrow = 0;
+				break;
+		}
+		if (	menu_names1[buttonnum] &&
+			!strcmp(menu_names1[buttonnum], params[0])) {
+				whichrow = 1;
+				break;
+		}
+	}
+
+	if (buttonnum == MAX_BUTTONS)
+		goto ABORT;
+
+	for (entrynum = 0; entrynum < MAX_MENU_LEN; entrynum++) {
+		if (whichrow == 0) {
+			if (	submenu_names0[buttonnum][entrynum] && 
+				!strcmp(submenu_names0[buttonnum][entrynum],
+					params[1]))
+				break;
+		}
+		else {
+			if (	submenu_names1[buttonnum][entrynum] &&
+				!strcmp(submenu_names1[buttonnum][entrynum],
+					params[1]))
+				break;
+		}
+	}
+
+	if (entrynum == MAX_MENU_LEN)
+		goto ABORT;
+
+/*
+** If a menu item was selected, popdown the menu and relinquish keyboard focus.
+*/
+	if (whichrow == 0)
+		TopSelect (NULL, buttonnum + (entrynum << 4));
+	else
+		BotSelect (NULL, buttonnum + (entrynum << 4));
+
+	if (XtIsSubclass (w, simpleMenuWidgetClass))
+		XtPopdown(w);
+	XtSetKeyboardFocus(topW, paneW);
+	return;
+
+ABORT:
+
+	if (XtIsSubclass (w, simpleMenuWidgetClass))
+		XtPopdown(w);
+	XtSetKeyboardFocus(topW, paneW);
+}
+
+#ifdef 0
+static void
 TopCallback(w, event, params, num_params)
 Widget  w;
 XEvent  *event;
@@ -428,11 +495,12 @@ int     *num_params;
 ** If a menu item was selected, popdown the menu and relinquish keyboard focus.
 */
 	if (entrynum != -1)  {
-		TopSelect (w, buttonnum + (entrynum << 4));
+		TopSelect (NULL, buttonnum + (entrynum << 4));
 	}
 	XtPopdown(w);
 	XtSetKeyboardFocus(topW, paneW);
 }
+#endif
 
 /*
 ** TopSelect is called either automatically through the select callback
@@ -440,9 +508,9 @@ int     *num_params;
 ** key hit.
 */
 
-static void
+void
 TopSelect(w, client_data, call_data)
-Widget	w;
+Widget	w;				/*IGNORED*/
 XtPointer	client_data;
 XtPointer	call_data;
 {
@@ -460,10 +528,7 @@ XtPointer	call_data;
 */
 	case 0:
 		if (topscreen == MAIN) {
-			if (MoveToMeeting(NEXTNEWS) == 0) {
-				reading = False;
-				BotSelect(NULL, 0, NULL);
-			}
+			(void) MoveToMeeting(NEXTNEWS);
 		}
 		else {
 			BotSelect (NULL, 0, NULL);
@@ -472,10 +537,7 @@ XtPointer	call_data;
 
 	case 1:
 		if (topscreen == MAIN) {
-			if (MoveToMeeting(PREVNEWS) == 0) {
-				reading = False;
-				BotSelect(NULL, 0, NULL);
-			}
+			(void) MoveToMeeting(PREVNEWS);
 		}
 		else {
 			BotSelect (NULL, 1, NULL);
@@ -485,15 +547,17 @@ XtPointer	call_data;
 ** Check for changed meetings
 */
 	case 2:
+		MarkLastRead();
 		PutUpTempMessage("Rereading meeting list...");
 		ParseMeetingsFile();
 		n = 0;
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
 		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
-		reading = False;
+		MoveToMeeting(INITIALIZE);
+/* trial
 		(void) HighlightNewItem((Widget) toptextW, NEXTNEWS, True);
-		GoToTransaction(TransactionNum(HIGHESTSEEN), True);
+*/
 		break;
 
 /*
@@ -579,6 +643,7 @@ XtPointer	call_data;
 	}
 }
 
+#ifdef 0
 static void
 BotCallback(w, event, params, num_params)
 Widget  w;
@@ -595,16 +660,17 @@ int     *num_params;
 ** If a menu item was selected, popdown the menu and relinquish keyboard focus.
 */
 	if (entrynum != -1)  {
-		BotSelect (w, buttonnum + (entrynum << 4));
+		BotSelect (NULL, buttonnum + (entrynum << 4));
 	}
 	XtPopdown(w);
 	XtSetKeyboardFocus(topW, paneW);
 }
+#endif
 
 
 static void
 BotSelect(w, client_data, call_data)
-Widget	w;
+Widget	w;				/*IGNORED*/
 XtPointer	client_data;
 XtPointer	call_data;
 {
@@ -616,32 +682,12 @@ XtPointer	call_data;
 	switch (buttonnum) {
 
 	case 0:
-
-/*
-** If in a new meeting
-*/
-		if (reading == False) {
-/*
-** Is there new stuff to read?  Y->go to next one.  N->go to the
-** transaction last read.
-*/
-			GoToTransaction(TransactionNum(HIGHESTSEEN), False);
-
-			if (TransactionNum(CURRENT) < TransactionNum(LAST))
-				GoToTransaction(TransactionNum(NEXT), True);
-			else 
-				GoToTransaction(TransactionNum(CURRENT), True);
-
-			reading = True;
-		}
-/*
-** Else, continuing in current meeting
-*/
-		else {
+		if (TransactionNum(CURRENT) < TransactionNum(LAST))
 			GoToTransaction(TransactionNum(NEXT), True);
-		}
-
+		else 
+			GoToTransaction(TransactionNum(CURRENT), True);
 		break;
+
 	case 1:
 		GoToTransaction(TransactionNum(PREV), True);
 		break;
@@ -703,7 +749,7 @@ Widget	w;
 XtPointer	client_data;
 XtPointer	call_data;
 {
-	(void) EnterMeeting("", "");
+	(void) SaveMeetingNames("", "");
 
 	fputs("(quit)\n", outputfile);
 	fflush (outputfile);
@@ -817,17 +863,10 @@ Boolean	flag;		/* update current meeting? */
 	else if (mode == UPDATE) {
 /*
 ** Just need to update current meeting to match highlighted item.
-**
-** Watch out for that newline...A clicked-on selection includes the
-** newline as the end of it.
 */
-		if (tempstring[end-1] == '\n') {
-			PutUpWarning(	"Yo, Andy!", 
-					"This got called after all!",
-					False);
-			end--;
-		}
 	}
+
+	PutUpArrow(textW, start);
 
 	if (flag) {
 		length = (end - start);
@@ -841,14 +880,12 @@ Boolean	flag;		/* update current meeting? */
 		free (foo);
 	}
 
-	if (EnterMeeting(longmtg, shortmtg) == -1) {
+	if (SaveMeetingNames(longmtg, shortmtg) == -1) {
 		PutUpStatusMessage("No current meeting");
 		CheckButtonSensitivity(BUTTONS_OFF);
 		return (-1);
 	}
 	CheckButtonSensitivity(BUTTONS_ON);
-
-	PutUpArrow(textW, start);
 
 	sprintf (statusline, "Reading %s [%d-%d]", 
 			longmtg,
@@ -1099,9 +1136,7 @@ static void
 Update()
 {
 	if (topscreen == MAIN) {
-		if (MoveToMeeting(UPDATE) == 0)
-			reading = False;
-		BotSelect(NULL, 0, NULL);
+		(void) MoveToMeeting(UPDATE);
 	}
 	else if (topscreen == LISTTRNS) {
 		DisplayHighlightedTransaction();
@@ -1137,7 +1172,6 @@ DisplayHighlightedTransaction()
 	num = atoi (strchr (tempstring + start, '[') + 1);
 
 	GoToTransaction(num, True);
-	reading = True;
 }
 
 static void
@@ -1161,8 +1195,9 @@ DoTheRightThing()
 		
 /*
 **  Are we at the end of a meeting?
-*/
 	if (TransactionNum(CURRENT) < TransactionNum(LAST)) {
+*/
+	if (TransactionNum(NEXT) != 0) {
 /*
 **  No, read the next transaction
 */
@@ -1172,7 +1207,13 @@ DoTheRightThing()
 /*
 **  Yes, go to the next meeting and read its next transaction.
 */
+		if (MoveToMeeting(NEXTNEWS) == 0) {
+			BotSelect(NULL, 0, NULL);
+		}
+/*
 		TopSelect(NULL, (XtPointer)0, NULL);
+		BotSelect(NULL, 0, NULL);
+*/
 		
 	}
 }
@@ -1571,10 +1612,10 @@ int	whichone;
 		mycallback = BotSelect;
 	}
 
-	for (i = 0; buttonnames[i]; i++) {
+	for (i = 0; i < MAX_BUTTONS && buttonnames[i]; i++) {
 		n = 0;
 		XtSetArg(args[n], XtNmenuName, buttonlabels[i]);	n++;
-		XtSetArg(args[n], XtNlabel, buttonlabels[i]);	n++;
+		XtSetArg(args[n], XtNlabel, buttonlabels[i]);		n++;
 
 		if (whichone == 0) {
 			label = submenu_labels0[i][0];
@@ -1608,10 +1649,11 @@ int	whichone;
 
 		if (!name)
 			continue;
+
 /*
-**	Making the menus children of the menubuttons makes it impossible
-**	for XtNameToWidget to find them later.  Grump.
+**  Add menus to menu buttons.
 */
+
 		n = 0;
 		menu = XtCreatePopupShell(
 				buttonlabels[i],
@@ -1619,11 +1661,21 @@ int	whichone;
 				parent, 
 				args, n);
 
-		j = 0;
-		do {
+		for (j = 0; j < MAX_MENU_LEN; j++) {
+			if (whichone == 0) {
+				label = submenu_labels0[i][j];
+				name = submenu_names0[i][j];
+			}
+			else {
+				label = submenu_labels1[i][j];
+				name = submenu_names1[i][j];
+			}
+			if (!name)
+				break;
+
 			newrec = (EntryRec *) malloc (sizeof (EntryRec));
-			toprec->nextrec = newrec;
-			newrec->nextrec = NULL;
+			toprec->nextrec = newrec; 
+			newrec->nextrec = NULL; 
 			n = 0;
 			XtSetArg(args[n], XtNlabel, label);		n++;
 
@@ -1633,79 +1685,11 @@ int	whichone;
 			XtAddCallback(	entry, XtNcallback,
 					mycallback, i + (j << 4));
 			newrec->button = entry;
-			if (whichone == 0) {
-				label = submenu_labels0[i][j + 1];
-				name = submenu_names0[i][j + 1];
-			}
-			else {
-				label = submenu_labels1[i][j + 1];
-				name = submenu_names1[i][j + 1];
-			}
 			toprec = newrec;
-			j++;
-		} while (name);
+		}
 	}
 }
     
-static void
-MakeArrows()
-{
-	Arg		args[5];
-	Screen		*screen;
-
-	dpy = XtDisplay(topW);
-	screen = XtScreen(topW);
-	root_window = XtWindow(topW);
-
-	arrow_pixmaps[0] = XCreatePixmapFromBitmapData(
-                        dpy,
-                        root_window,
-                        arrowdown_bits, arrow_width, arrow_height,
-			WhitePixelOfScreen(screen), 
-			BlackPixelOfScreen(screen),
-			DefaultDepthOfScreen(screen));
-
-	arrow_pixmaps[1] = XCreatePixmapFromBitmapData(
-                        dpy,
-                        root_window,
-                        arrowup_bits, arrow_width, arrow_height,
-			WhitePixelOfScreen(screen), 
-			BlackPixelOfScreen(screen),
-			DefaultDepthOfScreen(screen));
-
-	arrow_pixmaps[2] = XCreatePixmapFromBitmapData(
-                        dpy,
-                        root_window,
-                        arrowright_bits, arrow_width, arrow_height,
-			WhitePixelOfScreen(screen), 
-			BlackPixelOfScreen(screen),
-			DefaultDepthOfScreen(screen));
-
-	arrow_pixmaps[3] = XCreatePixmapFromBitmapData(
-                        dpy,
-                        root_window,
-                        arrowleft_bits, arrow_width, arrow_height,
-			WhitePixelOfScreen(screen), 
-			BlackPixelOfScreen(screen),
-			DefaultDepthOfScreen(screen));
-
-	XtSetArg(args[1], XtNheight, arrow_height + 12);
-	XtSetArg(args[2], XtNwidth, arrow_height + 12);
-
-	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[0]);
-	XtSetValues ((toplevelbuttons[0][0]).button, args, 3);
-
-	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[1]);
-	XtSetValues ((toplevelbuttons[0][1]).button, args, 3);
-
-	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[2]);
-	XtSetValues ((toplevelbuttons[1][0]).button, args, 3);
-
-	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[3]);
-	XtSetValues ((toplevelbuttons[1][1]).button, args, 3);
-
-}
-
 /*
 ** A keyboard equivalent has been hit.  For normal command widgets, send
 ** them a button-one-down and button-one-up.  For menu buttons, just send
@@ -1721,8 +1705,30 @@ int	*num_params;
 {
 	Widget		button;
 	XButtonEvent	MyEvent;
+	int		i, whichrow;
+	
+	if (*num_params < 1)
+		return;
 
-	button = (toplevelbuttons[atoi(params[0])][atoi(params[1])]).button;
+	for (i = 0; i < MAX_BUTTONS; i++) {
+
+		if (menu_names0[i] && !strcmp (params[0], menu_names0[i])) {
+			whichrow = 0;
+			break;
+		}
+
+		if (menu_names1[i] && !strcmp (params[0], menu_names1[i])) {
+			whichrow = 1;
+			break;
+		}
+	}
+
+	if (i == MAX_BUTTONS) {
+		fprintf (stderr, "Key not found.  Aborting.\n");
+		return;
+	}
+
+	button = (toplevelbuttons[whichrow][i]).button;
 
 	MyEvent.type = ButtonPress;
 	MyEvent.display = dpy;
@@ -1738,7 +1744,7 @@ int	*num_params;
 			(XEvent *) &MyEvent);
 
 	XSync(dpy, False);
-	if (!(toplevelbuttons[atoi(params[0])][atoi(params[1])]).nextrec) {
+	if (!(toplevelbuttons[whichrow][i]).nextrec) {
 		MyEvent.type = ButtonRelease;
 		MyEvent.state = ButtonReleaseMask;
 		XSendEvent(	dpy,
@@ -1749,5 +1755,3 @@ int	*num_params;
 	}
 
 }
-
-
