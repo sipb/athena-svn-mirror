@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.6 2000-07-31 18:18:57 zacheiss Exp $
+# $Id: syncconf.sh,v 1.7 2000-08-03 07:01:37 jweiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -42,7 +42,7 @@ append()
 
 update()
 {
-  $maybe ln "$1" "$1.saved"
+  $maybe ln -f "$1" "$1.saved"
   $maybe /bin/athena/syncupdate "$1.new" "$1"
 }
 
