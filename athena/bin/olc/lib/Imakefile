@@ -1,0 +1,26 @@
+#
+# $Id: Imakefile,v 1.1 1990-07-24 12:20:31 lwvanels Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/Imakefile,v $
+#
+
+#define IHaveSubdirs
+SUBDIRS=olc_help olcr_help
+RM=rm -f
+MV=mv -f
+
+all::
+
+world::
+	make ${MFLAGS} Makefile
+	@make ${MFLAGS} -f Makefile world2
+
+world2:
+	make ${MFLAGS} Makefiles
+	make ${MFLAGS} depend
+	make ${MFLAGS} all
+
+#if 0		/* so resulting Makefile doesn't get it twice */
+Makefile::
+	-$(RM) Makefile.bak ; $(MV) Makefile Makefile.bak
+	imake -Iconfig -DNEW_TOP=. -s Makefile
+#endif
