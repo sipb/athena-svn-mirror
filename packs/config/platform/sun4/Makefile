@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9.2.2 1997-06-02 07:00:38 ghudson Exp $
+# $Id: Makefile,v 1.9.2.3 1997-07-29 18:21:58 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -61,7 +61,6 @@ install:
 	install -c -m 0644 netmasks ${DESTDIR}${INET}
 	install -c -m 0644 netspy ${DESTDIR}${ETCDIR}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0644 nscd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
