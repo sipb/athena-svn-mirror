@@ -1,4 +1,0 @@
-#!/bin/sh
-# $Id: many-symlinks,v 1.1.1.2 2005-03-10 20:32:56 zacheiss Exp $
-
-$objdir/create-symlinks 1000
