@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.2.100\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2003-01-13 04:08+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -805,7 +805,7 @@ msgstr ""
 "\n"
 "Gràcies!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -813,15 +813,15 @@ msgstr ""
 "Ja que Bug Buddy no sap res sobre el producte del que voleu informar d'un "
 "error, tindreu que ficar l'adreça de l'informe d'error a ma."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Seleccioneu el producte a què es refereix l'informe d'error."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Seleccioneu una aplicació a què es refereix l'informe d'error."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -840,15 +840,15 @@ msgstr ""
 "És possible que trobeu una en el diàleg «Quant a» de l'aplicació, o en la "
 "documentació de l'aplicació."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Heu d'indicar el component a què es refereix l'informe d'error."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Heu d'indicar la versió a què es refereix l'informe d'error."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

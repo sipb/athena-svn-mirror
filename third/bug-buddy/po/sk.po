@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2003-01-04 15:04+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -802,7 +802,7 @@ msgstr ""
 "\n"
 "Vďaka!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -810,15 +810,15 @@ msgstr ""
 "Pretože Priateľ v núdzi nepozná váš produkt, o ktorom chcete poslať správu o "
 "chybe, musíte zadať adresu, kam správu poslať, ručne."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Prosím, vyberte produkt pre vašu správu o chybe."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Prosím, vyberte aplikáciu pre vašu správu o chybe."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -835,15 +835,15 @@ msgstr ""
 "\n"
 "Je možné, že ju nájdete v dialógu \"O aplikácii\" alebo v dokumentácii."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Vo vašej správe o chybe musíte uviesť komponent."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Vo vašej správe o chybe musíte uviesť verziu."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

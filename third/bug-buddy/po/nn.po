@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.1.2\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2002-01-28 04:19+0100\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: nynorsk <nn@li.org>\n"
@@ -784,7 +784,7 @@ msgstr ""
 "\n"
 "Takk!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -792,17 +792,17 @@ msgstr ""
 "Sidan Bug Buddy ikkje veit om produktet du sender inn feilrapport på, må "
 "manuellt adressere feilmeldinga."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 #, fuzzy
 msgid "Please choose a product for your bug report."
 msgstr "Du må oppgi eit produkt for feilrapporten din."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 #, fuzzy
 msgid "Please choose an application for your bug report."
 msgstr "Gjere siste korreksjonar på feilrapporten."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -813,15 +813,15 @@ msgid ""
 "the application's documentation."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Du må oppgi ein komponent for feilrapporten din."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Du må spesifisere ein versjon for lus rapporten."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

@@ -1,95 +1,96 @@
-# bug-buddy hu.po.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Gergely Nagy <greg@gnome.hu>, 2000.
-# András Tímár <timar@gnome.hu>, 2001.
+# translation of bug-buddy.HEAD.mn.po to Mongolian
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Ochirbat Batzaya <buuvei@yahoo.com>, 2003
+# Sanlig Badral <badral@chinggis.com>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy VERSION\n"
+"Project-Id-Version: bug-buddy.HEAD.mn\n"
 "POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2003-01-03 18:32+0100\n"
-"Last-Translator: András Tímár <timar@gnome.hu>\n"
-"Language-Team: Hungarian <hu@gnome.hu>\n"
+"PO-Revision-Date: 2003-01-20 02:09+0100\n"
+"Last-Translator: Ochirbat Batzaya <buuvei@yahoo.com>\n"
+"Language-Team: Mongolian <mn@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.1\n"
 
 #: src/bug-buddy.c:56
 msgid "Submit bug report"
-msgstr "A hibajelentés elküldése"
+msgstr "Алдааны мэдээллийг илгээх"
 
 #: src/bug-buddy.c:57
 msgid "Only send report to yourself"
-msgstr "Hibajelentés elküldése csak saját címre"
+msgstr "Мэдээг зөвхөн танд илгээх"
 
 #: src/bug-buddy.c:58
 msgid "Save report to file"
-msgstr "Hibajelentés fájlba mentése"
+msgstr "Тайланг файлд хадгалах"
 
 #: src/bug-buddy.c:63
 msgid "crashed application"
-msgstr "elszállt program"
+msgstr "Гацсан х.программ"
 
-# src/glade-strings.c:45
 #: src/bug-buddy.c:64
 msgid "core file"
-msgstr "core fájl"
+msgstr "Цөм-файл"
 
 #: src/bug-buddy.c:65
 msgid "nothing"
-msgstr "semmi"
+msgstr "юу ч үгүй"
 
 #: src/bug-buddy.c:70
 msgid "Create a new bug report"
-msgstr "Új hibajelentés létrehozása"
+msgstr "Алдааны шинэ тайлан зохиох"
 
 #: src/bug-buddy.c:71
 msgid "Add more information to existing report"
-msgstr "További információ hozzáfűzése egy létező hibajelentéshez"
+msgstr "Аль хэдийн илгээсэн алдааны тайланд нэмэлт мэдээ оруулах"
 
 #: src/bug-buddy.c:80
 msgid "Name of contact"
-msgstr "Kapcsolat neve"
+msgstr "Холбоо барихад ашиглах нэр"
 
 #: src/bug-buddy.c:80
 msgid "NAME"
-msgstr "NÉV"
+msgstr "Нэр"
 
 #: src/bug-buddy.c:81
 msgid "Email address of contact"
-msgstr "Kapcsolat e-mail címe"
+msgstr "Холбоо барихад ашиглах и-мэйл хаяг"
 
 #: src/bug-buddy.c:81
 msgid "EMAIL"
-msgstr "E-MAIL"
+msgstr "И-Мэйл"
 
 #: src/bug-buddy.c:82
 msgid "Package containing the program"
-msgstr "A programot tartalmazó csomag"
+msgstr "Программ агуулсан пакет"
 
 #: src/bug-buddy.c:82
 msgid "PACKAGE"
-msgstr "CSOMAG"
+msgstr "Пакет"
 
 #: src/bug-buddy.c:83
 msgid "Version of the package"
-msgstr "Csomag verziója"
+msgstr "Пакетны хувилбар"
 
 #: src/bug-buddy.c:83
 msgid "VERSION"
-msgstr "VERZIÓ"
+msgstr "Хувилбар"
 
 #: src/bug-buddy.c:84
 msgid "File name of crashed program"
-msgstr "A hibás program fájlneve"
+msgstr "Гацсан программын файлын нэр"
 
 #: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
 msgid "FILE"
-msgstr "FÁJL"
+msgstr "Файл"
 
 #: src/bug-buddy.c:85
 msgid "PID of crashed program"
-msgstr "A hibás program PID-je"
+msgstr "Гацсан программын PID"
 
 #: src/bug-buddy.c:85
 msgid "PID"
@@ -97,36 +98,36 @@ msgstr "PID"
 
 #: src/bug-buddy.c:86
 msgid "Core file from program"
-msgstr "A program core fájlja"
+msgstr "Программын цөм-файл"
 
 #: src/bug-buddy.c:87
 msgid "Text file to include in the report"
-msgstr "A jelentésbe ágyazandó szövegfájl"
+msgstr "Тайланд дагуулах текст-файл"
 
 #: src/bug-buddy.c:97
 #, c-format
 msgid "Could not find widget named %s at %s"
-msgstr "%s nevű widget nem található a következő helyen: %s"
+msgstr "Widget-%s дотроос %s-ийг олж чадсангүй"
 
 #: src/bug-buddy.c:209
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
-"A gdb még nem fejezte be a hibakeresési adatok gyűjtését.\n"
-"Megszakítsam a gdb folyamatot (a stack trace nem lesz teljes)?"
+"gdb оношлолын мэдээгээ хараахан цуглуулж дуусаагүй байна.\n"
+"gdb-процессыг алчих уу? (энэ тохиолдолд Stacktrace бүрэн дуусахгүй)?"
 
 #: src/bug-buddy.c:220 src/gdb-buddy.c:125
 msgid "gdb has already exited"
-msgstr "A gdb már kilépett."
+msgstr "gdb хэдийнэ дууссан байна"
 
 #: src/bug-buddy.c:250
 msgid "Save Backtrace"
-msgstr "Backtrace mentése"
+msgstr "Backtrace-ийг хадгалах"
 
 #: src/bug-buddy.c:261
 msgid "Please wait while Bug Buddy saves the stack trace..."
-msgstr "Várj, amíg a Bug Buddy menti a stack trace-t..."
+msgstr "Түр хүлээнэ үү. Bug Buddy stack trace-ийг хадгалж байна"
 
 #: src/bug-buddy.c:270
 #, c-format
@@ -137,59 +138,64 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
-"A stack trace nem lett mentve ide: %s:\n"
+"stack trace %s дотор хадгалагдаагүй байна:\n"
 "\n"
 "%s\n"
 "\n"
-"Próbáld újra, esetleg egy másik fájlnévvel."
+"Дахин туршаад үзнэ үү (өөр нэгэн файлын нэрээр)"
 
 #: src/bug-buddy.c:298
 msgid "Show _Applications"
-msgstr "_Alkalmazások megjelenítése"
+msgstr "_Х.программуудыг үзүүлэх"
 
 #: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
 msgid "Show _Products"
-msgstr "_Termékek megjelenítése"
+msgstr "_Үр дүнг (бүтээгдэхүүнийг) харуулах"
 
 #: src/bug-buddy.c:368
 msgid "_Start Mailer"
-msgstr "_Levélküldő indítása"
+msgstr "И- Мэйл программ _ажиллуулах"
 
 #: src/bug-buddy.c:372
 msgid "_Send Report"
-msgstr "_Jelentés küldése"
+msgstr "Мэдээг (тайланг) _илгээх"
 
 #: src/bug-buddy.c:400
 msgid "Hide Debugging Options"
-msgstr "Debug információ elrejtése"
+msgstr "Алдааны оношилгооны тохиргооны сонголтыг далдлах"
 
 #: src/bug-buddy.c:401
 msgid "Show Debugging Options"
-msgstr "Debug információ megjelenítése"
+msgstr "Алдааны оношилгооны тохиргооны сонголтыг ил үзүүлэх"
 
 #: src/bug-buddy.c:503
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
 "Please use the --appname command lineargument instead."
 msgstr ""
-"$GNOME_CRASHED_APPNAME már elavult.\n"
-"Használd helyette a --appname parancssori kapcsolót."
+"$GNOME_CRASHED_APPNAME хэрэглэхйиг зөвлөмөөргүй байна.\n"
+"\n"
+"Үүний оронд --appname -ийг мөрийн аргументаар \n"
+" ашиглана уу"
 
 #: src/bug-buddy.c:513
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
 "Please use the --pid command lineargument instead."
 msgstr ""
-"$GNOME_CRASHED_PID már elavult\n"
-"Használd helyette a --pid parancssori kapcsolót."
+"$GNOME_CRASHED_PID хэрэглэхйиг зөвлөмөөргүй байна.\n"
+"\n"
+"Үүний оронд --PID -ийг мөрийн аргументаар \n"
+" ашиглана уу"
 
 #: src/bug-buddy.c:529
 msgid ""
 "Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
 "It will step you through the process of submitting a bug report."
 msgstr ""
-"Üdvözöl a Bug Buddy, a GNOME hibabejelentő eszköze.\n"
-"A program segít végigmenni a hibajelentés elkészítésének lépésein."
+"Тавтай морил та GNOME-ийн алдааны мэдээ боловсруулагч Bug Buddy д дотор "
+"байна.\n"
+"Энэ программ алдааны мэдээг илгээх процесстой нэг бүрчлэн танилцуулна"
 
 #: src/bug-buddy.c:532
 msgid ""
@@ -199,8 +205,9 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Azért jelent meg ez az üzenet, mert egy másik alkalmazás is összeomlott."
+"Ямар нэгэн х. программд гацаа гарсан учраас үүнийг танд харуулж"
 
+# CHECK, von den Anwendungen + nützlicheren Fehlerbericht
 #: src/bug-buddy.c:535
 msgid ""
 "\n"
@@ -210,13 +217,14 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Várj egy kicsit, amíg a Bug Buddy hibakövetési adatokat szerez az "
-"alkalmazástól. Ezek az adatok használhatóbb hibajelentéseket eredményeznek."
+"Та хэдхэн агшин хүлээзнээрэй. Bug Buddy х. программуудаас алдааны мэдэг "
+"бүрдүүлж байна. Ингэж байж хэмээнэ хэрэглэж болохуйц алдааны тайлан "
+"боловсруулна."
 
 #: src/bug-buddy.c:650
 #, c-format
 msgid "Could not find pixmap: %s (%d)\n"
-msgstr "A kép nem található: %s (%d)\n"
+msgstr "Pixmap олдсонгүй: %s (%d)\n"
 
 #: src/bug-buddy.c:717
 #, c-format
@@ -224,28 +232,28 @@ msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"A Bug Buddy felhasználói felületének fájlja (%s) nem található.\n"
-"Ellenőrizd, hogy a Bug Buddy megfelelően volt-e telepítve."
+"Bug Buddy ID-ээ ачаалж чадсангүй (%s).\n"
+"Bug Buddy -ээ зөв суулгасан эсэхээ шалгаарай"
 
 #: src/bug-buddy.c:749
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
-"A Bug Buddy nem tudta frissíteni a hibainformációkat.\n"
-"A régiek lesznek használva."
+"Bug Buddy алдааны мэдээллээ шинэчлэгдэж чадсангүй.\n"
+"Хуучныгаа ашиглахаар боллоо."
 
 #: src/bug-buddy.c:763
 msgid "Bug Buddy updated its bug information correctly."
-msgstr "A Bug Buddy sikeresen frissítette a hibainformációkat."
+msgstr "Bug Buddy алдааны мэдээллээ зөв шинэчиллээ"
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
-msgstr "Hibabejelentő eszköz"
+msgstr "Алдаагаа тайлагнах хэрэгсэл"
 
 #: src/bug-buddy.desktop.in.h:2
 msgid "Report a bug in GNOME"
-msgstr "A GNOME grafikus hibabejelentő eszköze"
+msgstr "Алдааг GNOME-дотор мэдээлэх"
 
 #: src/bug-buddy.glade.h:1
 msgid "*"
@@ -263,23 +271,23 @@ msgid ""
 "'Update' will update it. Choosing 'Don't update' will force the bug "
 "reporting to use old data.'\n"
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Bug Buddy frissítés</span>\n"
+"<span weight=\"bold\" size=\"larger\">Bug Buddy-шинэчлэх</span>\n"
 "\n"
-"A rendszereden tárolt hibainformációk elavultak. A 'Frissítés' választásával "
-"frissítheted ezeket. A 'Ne legyen frissítés' választása esetén a "
-"hibajelentésnél a régi hibainformációk lesznek használva.\n"
+"Таны системд байгаа алдааны мэдээлэл шинэчлэгдээгүй байна. »Шинэчлэх«-ийг "
+"дарж эдгээрийг шинэчилж болно.Харин »Үл шинэчлэх« -ийг дарвал алдааны "
+"тайландаа хуучин мэдээгээ ашиглахад түлхэнэ.\n"
 
 #: src/bug-buddy.glade.h:7
 msgid "Advanced"
-msgstr "Haladó"
+msgstr "Нарийвчилсан"
 
 #: src/bug-buddy.glade.h:8
 msgid "Assbarn Phenomenon"
-msgstr "Szamáristálló jelenség"
+msgstr "Assbarn-Феномен"
 
 #: src/bug-buddy.glade.h:9
 msgid "Binary file:"
-msgstr "Bináris fájl:"
+msgstr "Бинар файл:"
 
 #: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
 msgid "Bug Buddy"
@@ -290,76 +298,75 @@ msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"A Bug-Buddy hibakeresési adatokat is tud csatolni a hibajelentéshez.\n"
-"A megfelelő beállítások automatikusan meg lettek jelölve neked."
+"Bug Buddy алдааны тайлангийн хамт засварласан мэдээг хавсруулж явуулж "
+"болох.\n"
+"Шаардлагатай тохируулга нь автоматаар хийгдсэн байх учиртай."
 
 #: src/bug-buddy.glade.h:13
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
-"A Bug Buddy e-mailben küldi el a hibajelentést.\n"
-"Add meg, hogy küldjön levelet a Bug Buddy."
+"Bug Buddy алдааны тайлангаа илгээхэд И-Мэйл-ийг ашиглана.\n"
+"Bug Buddy И-Мэйл-ээ хэрхэн илгээхийг сонгоно уу."
 
 #: src/bug-buddy.glade.h:15
 msgid "Cc"
-msgstr "Cc"
+msgstr "Зэрэг илгээсэн (Cc)"
 
-# src/glade-strings.c:45
 #: src/bug-buddy.glade.h:16
 msgid "Core file"
-msgstr "Core fájl"
+msgstr "Цөм файл"
 
 #: src/bug-buddy.glade.h:17
 msgid "Debug"
-msgstr "Debug"
+msgstr "Алдаааны оношилгоо"
 
 #: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
 #: src/bugzilla.c:819
 msgid "Description"
-msgstr "Leírás"
+msgstr "Тайлбар"
 
 #: src/bug-buddy.glade.h:19
 msgid "Downloading files"
-msgstr "Fájlok letöltése"
+msgstr "Файлуудыг татаж авч байна"
 
 #: src/bug-buddy.glade.h:20
 msgid "Email"
-msgstr "E-mail"
+msgstr "И-Мэйл"
 
 #: src/bug-buddy.glade.h:21
 msgid "Include a text file"
-msgstr "Szöveges fájl hozzácsatolása"
+msgstr "Текст файл багтаах"
 
 #: src/bug-buddy.glade.h:22
 msgid "Just save to a file so I can submit a bug report manually"
-msgstr "A hibajelentést mentse fájlba, amelyet kézzel küldök majd el"
+msgstr "Өөрийн гараар и-мэйл-ээр илгээж болохуйц файлд хадгал"
 
 #: src/bug-buddy.glade.h:23
 msgid "Name"
-msgstr "Neved"
+msgstr "Нэр"
 
 #: src/bug-buddy.glade.h:24
 msgid "Path of sendmail"
-msgstr "A sendmail elérési útvonala"
+msgstr "Илгээх И-Мэйл-ийн зам"
 
 #: src/bug-buddy.glade.h:25
 msgid "Please choose a component, version, and severity level."
-msgstr "Válassz egy komponenst, verziót és súlyossági szintet."
+msgstr "Бүрэлдхүүнүүд, хувибар болон хүндийн зэргийг сонгоно уу."
 
 #: src/bug-buddy.glade.h:26
 msgid "Please make any final corrections to the bug report."
-msgstr "Végezd el az utolsó simításokat a hibajelentésen."
+msgstr "Алдааны тайландаа эцсийн оруулгуудаа хийж өгнө үү."
 
 #: src/bug-buddy.glade.h:27
 msgid "Please make your bug report in English, if possible."
-msgstr "Ha lehetséges, angolul írd a hibabejelentést."
+msgstr "Алдааны тайлангаа аль болох англи хэлээр хийгээрэй."
 
 #: src/bug-buddy.glade.h:28
 msgid ""
 "Please select the product or application for the bug you wish to report."
-msgstr ""
-"Válassz egy terméket vagy alkalmazást, amelyhez hibát szeretnél jelenteni."
+msgstr "Алдаатай байгаа х. программын нэрийг сонгоорой."
 
 #: src/bug-buddy.glade.h:29
 msgid ""
@@ -367,109 +374,112 @@ msgid ""
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
-"Szakíts egy kis időt a leggyakrabban jelentett hibák megtekintésére.\n"
-"Ha már jelentették a hibát, ne jelentsd még egyszer."
+"Таны тайлагнаж буй алдаа нь байнга мэдээлдэг алдаа согогуудын нэг нь эсэхийг "
+"шалгаж үзнэ үү.\n"
+"Хэрэв тйим бол энэ мэдээг бүү илгээ."
 
+# CHECK, bug tracking system
 #: src/bug-buddy.glade.h:31
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Várj, amíg a Bug Buddy frissíti a terméklistáját\n"
-"a hibabejelentő rendszerek részére."
+"Түр хүлээнэ үү. Bug Buddy алдааны тайланд тавигдах х.программуудын "
+"жагсаалтаа шинэчилж байна.\n"
+" шинэчилж байна \n"
+"(Bug Tracking Systems)."
 
-# src/glade-strings.c:44
 #: src/bug-buddy.glade.h:33
 msgid "Process ID:"
-msgstr "Folyamatazonosító:"
+msgstr "Процесс таних ID"
 
 #: src/bug-buddy.glade.h:34
 msgid "Save in"
-msgstr "Mentés ide"
+msgstr "Дотор хадгалах"
 
 #: src/bug-buddy.glade.h:35
 msgid "Save the report to..."
-msgstr "A bejelentés kimentése..."
+msgstr "Тайланг дараахи нэрийн дор хадгална..."
 
 #: src/bug-buddy.glade.h:36
 msgid "Saving: "
-msgstr "Mentés alatt: "
+msgstr "Хадгалах: "
 
 #: src/bug-buddy.glade.h:37
 msgid "Sendmail Settings"
-msgstr "Sendmail beállításai"
+msgstr "Мэйл илгээх тохируулгууд"
 
 #: src/bug-buddy.glade.h:38
 msgid "Severity"
-msgstr "Súlyosság"
+msgstr "Хүндийн зэрэг"
 
 #: src/bug-buddy.glade.h:39
 msgid "Show _Debugging Details"
-msgstr "_Debug információ megjelenítése"
+msgstr "Алдааны оношилгоог-нэгд нэгэнгүй үзүүлэх"
 
 #: src/bug-buddy.glade.h:41
 msgid "Show most frequent bugs in:"
-msgstr "Leggyakoribb hibák megjelenítése ebben:"
+msgstr "Байнга мэдээлдэг алдааг дараахи цонхонд харуулах:"
 
 #: src/bug-buddy.glade.h:42
 msgid "Simple"
-msgstr "Egyszerű"
+msgstr "Энгийн"
 
 #: src/bug-buddy.glade.h:43
 msgid "Start"
-msgstr "Indítás"
+msgstr "Эхлэх"
 
 #: src/bug-buddy.glade.h:44
 msgid "Stop"
-msgstr "Állj"
+msgstr "Зогс"
 
 #: src/bug-buddy.glade.h:45
 msgid "Submit another bug"
-msgstr "Még egy jelentés küldése"
+msgstr "Дараагийн алдааг мэдээлэх"
 
 #: src/bug-buddy.glade.h:46
 msgid "Summary"
-msgstr "Összegzés"
+msgstr "Дүгнэлт"
 
 #: src/bug-buddy.glade.h:47
 msgid "The product or application is not listed above."
-msgstr "A termék vagy alkalmazás nincs a fenti listában."
+msgstr "Энэ программ дээрхи жагсаалтанд байхгүй байна"
 
 #: src/bug-buddy.glade.h:48
 msgid "To"
-msgstr "Címzett"
+msgstr "тийш"
 
 #: src/bug-buddy.glade.h:49
 msgid "Use sendmail directly"
-msgstr "A sendmail közvetlen használata"
+msgstr "Мэйл илгээх үйлдлийг даруй ашиглах"
 
 #: src/bug-buddy.glade.h:50
 msgid "Version"
-msgstr "Verzió"
+msgstr "Хувилбар"
 
 #: src/bug-buddy.glade.h:51
 msgid "_Don't update"
-msgstr "_Ne legyen frissítés"
+msgstr "_Шинэчлэхгүй"
 
 #: src/bug-buddy.glade.h:52
 msgid "_Update"
-msgstr "_Frissítés"
+msgstr "_Шинэчилнэ"
 
 #: src/bug-buddy.glade.h:53
 msgid "component"
-msgstr "komponens"
+msgstr "Бүрдэл хэсэг"
 
 #: src/bug-buddy.glade.h:54
 msgid "desc"
-msgstr "leírás"
+msgstr "Тайлбар"
 
 #: src/bug-buddy.glade.h:55
 msgid "email info"
-msgstr "e-mail információ"
+msgstr "И-Мэйл-мэдээлэл"
 
 #: src/bug-buddy.glade.h:56
 msgid "finished"
-msgstr "befejezve"
+msgstr "Дууслаа"
 
 #: src/bug-buddy.glade.h:57
 msgid "gdb"
@@ -477,32 +487,32 @@ msgstr "gdb"
 
 #: src/bug-buddy.glade.h:58
 msgid "mail config"
-msgstr "levélküldés beállításai"
+msgstr "И-Мэйл тохируулга"
 
 #: src/bug-buddy.glade.h:59
 msgid "mostfreq"
-msgstr "leggyakoribb"
+msgstr "Байнгын"
 
 #: src/bug-buddy.glade.h:60
 msgid "product"
-msgstr "termék"
+msgstr "Бүтээгдэхүүн (энэ тохиолдолд Программ)"
 
 #: src/bugzilla.c:257
 #, c-format
 msgid "%d of %d"
-msgstr "%d / %d"
+msgstr "%d -ийн %d"
 
 #: src/bugzilla.c:687
 msgid "ID"
-msgstr "Azonosító"
+msgstr "ID (таних)"
 
 #: src/bugzilla.c:701 src/bugzilla.c:770
 msgid "Product"
-msgstr "Termék"
+msgstr "Бүтээгдэхүүн (энэ тохиолдолд Программ)"
 
 #: src/bugzilla.c:707 src/bugzilla.c:813
 msgid "Component"
-msgstr "Komponens"
+msgstr "Бүрдэл хэсэг"
 
 #: src/bugzilla.c:870
 #, c-format
@@ -512,10 +522,10 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Nem lehet '%s'-t megnyitni.\n"
-"Ellenőrizd, hogy a Bug Buddy megfelelően volt-e telepítve.\n"
+"Bug Buddy »%s«-ийг нээж чадсангүй.\n"
+"Bug Buddy -ээ зөв суулгасан эсэхээ шалгаарай.\n"
 "\n"
-"A Bug Buddy most kilép."
+"Bug Buddy одоо салгагдлаа."
 
 #: src/bugzilla.c:915
 msgid ""
@@ -525,16 +535,16 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"A Bug Buddy nem tudja, hova kell a hibajelentéseket elküldeni.\n"
+"Алдааны мэдээлэл хааш нь хүргэх тухай мэдээллийг Bug Buddy олж чадсангүй\n"
 "\n"
-"Ellenőrizd, hogy bug-buddy megfelelően volt-e telepítve.\n"
+"Bug Buddy -ээ зөв суулгасан эсэхээ шалгаарай.\n"
 "\n"
-"A Bug Buddy most kilép."
+"Bug Buddy одоо салгагдлаа."
 
 #: src/bugzilla.c:994
 #, c-format
 msgid "Couldn't load icon for %s: %s"
-msgstr "Nem tölthető be %s ikonja: %s"
+msgstr "%s-ийн эмблемийг ачаалж чадсангүй: %s"
 
 #: src/cell-renderer-uri.c:151
 msgid "URI"
@@ -542,20 +552,20 @@ msgstr "URI"
 
 #: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr "A kattintás után megjelenítendő URI"
+msgstr "Товшиход URI-ийг харуулах"
 
 #: src/cell-renderer-uri.c:159
 msgid "Visited"
-msgstr "Látogatott"
+msgstr "хэдийнэ үзсэн (зочилсон)"
 
 #: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr "Ha az URI-t már meglátogattad valaha"
+msgstr "Энэ URI-ээр аль хэдийнэ зочилсон (үзсэн) эсэхйиг харуулна"
 
 #: src/gdb-buddy.c:82
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr "Verem információ (stack trace) lekérdezése... (%d)"
+msgstr "Stack trace-ийг дуудаж байна... (%d)"
 
 #: src/gdb-buddy.c:175
 #, c-format
@@ -563,37 +573,37 @@ msgid ""
 "Unable to process core file with gdb:\n"
 "'%s'"
 msgstr ""
-"Nem sikerült a core fájlt gdb-vel feldolgozni:\n"
-"'%s'"
+"Цөм-файл gdb-ийн тусламжтайгаар боловсруулж чадсангүй:\n"
+"»%s«"
 
 #: src/gdb-buddy.c:206
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
-msgstr ""
-"A GDB nem tudta megállapítani, hogy melyik bináris\n"
-"hozta létre '%s'-t."
+msgstr "Аль программ (binary) »%s« үүсгэснийг тогтоож чадахгүй байна"
 
 #: src/gdb-buddy.c:238
 msgid "Error on read... aborting"
-msgstr "Hiba történt olvasás közben... kilépés"
+msgstr "Уншилтанд алдаа гарав... ажиллагааг тасаллаа"
 
 #: src/gdb-buddy.c:290
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
 msgstr ""
-"A GDB nem található a rendszereden.\n"
-"A hibakeresési adatok gyűjtése elmarad."
+"GNU-ийн Debugger болох GDB \n"
+"таны системд олдсонгүй. Тиймээс\n"
+"ямар ч оношилгооны мэдээлэл\n"
+"цуглуулж болсонгүй"
 
 #: src/gdb-buddy.c:333
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
-"A gdb-cmd file nem található\n"
-"Próbáld orvosolni a Bug Buddy újratelepítésével."
+"Файл gdb-cmd олдсонгүй.\n"
+"Bug Buddy шинээр суулгаад үзнэ үү"
 
 #: src/gdb-buddy.c:352
 #, c-format
@@ -602,31 +612,31 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Hiba történt a gdb futtatása közben:\n"
+"gdb ажиллагаанд алдаа гарлаа:\n"
 "\n"
 "%s"
 
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr "%s szimbolikuslink-adatai nem olvashatóak"
+msgstr "%s-ийн символик сэжүүрийн мэдээллийг уншиж чадсангүй"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr "A fájl túl sok szimbolikus linkkel rendelkezik."
+msgstr "Файлд хэт олон символик сэжүүр байна"
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr "A főhurok nem fut!"
+msgstr "Гол гогцоо ажилладаггүй ээ!"
 
 #: src/save-buddy.c:284
 #, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr "Hiba a sigchld-kezelő beállításánál: %s"
+msgstr "»SIGCHLD«-Handlers-ийг суулгахад алдаа гарлаа: %s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr "Érvénytelen fájlnév."
+msgstr "Файлын нэр утгагүй"
 
 #: src/save-buddy.c:412
 #, c-format
@@ -635,65 +645,65 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
-"Már létezik ez a fájl: '%s'.\n"
+"»%s« нэртэй файл хэдийн байна.\n"
 "\n"
-"Felülírod ezt a fájlt?"
+"Дараад биччих үү?"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr "_Felülírás"
+msgstr "_Дарж бичих"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr "A biztonsági mentés létrehozása nem sikerült."
+msgstr "Backup файл зохиож чадсангүй."
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
-msgstr "Üdvözöl a Bug Buddy"
+msgstr "Bug Buddy-д тавтай морил"
 
 #: src/united-states-of-bug-buddy.c:55
 msgid "Select a Product or Application"
-msgstr "Válassz egy terméket vagy alkalmazást"
+msgstr "Нэг программ сонго"
 
 #: src/united-states-of-bug-buddy.c:56
 msgid "Select a Component"
-msgstr "Válassz egy komponenst"
+msgstr "Нэг бүрдэл хэсгийг сонго"
 
 #: src/united-states-of-bug-buddy.c:57
 msgid "Frequently Reported Bugs"
-msgstr "Gyakran jelentett hibák"
+msgstr "Байнга мэдээлдэг алдаа согогууд"
 
 #: src/united-states-of-bug-buddy.c:58
 msgid "Bug Description"
-msgstr "Hiba Leírása"
+msgstr "Алдааны тайлбар"
 
 #: src/united-states-of-bug-buddy.c:59
 msgid "Mail Configuration"
-msgstr "Levélküldés beállításai"
+msgstr "И-Мэйлийн тохиргоо"
 
 #: src/united-states-of-bug-buddy.c:60
 msgid "Confirmation"
-msgstr "Megerősítés"
+msgstr "Баталгаа"
 
 #: src/united-states-of-bug-buddy.c:61
 msgid "Finished!"
-msgstr "Kész!"
+msgstr "Амжилттай дууслаа!"
 
 #: src/united-states-of-bug-buddy.c:105
 msgid "The graphical bug reporting tool for GNOME."
-msgstr "A GNOME grafikus hibabejelentő eszköze"
+msgstr "Алдааг зургаар илэрхийлэх GNOME-ийн хэрэгсэл"
 
 #: src/united-states-of-bug-buddy.c:118
 msgid "The lame Bug Buddy web page"
-msgstr "A Bug Buddy honlapja"
+msgstr "Bug Buddy-ийн ядарсан муу вэб хуудас"
 
 #: src/united-states-of-bug-buddy.c:308
 msgid "Please enter your name."
-msgstr "Add meg a neved!"
+msgstr "Та нэрээ оруулна уу"
 
 #: src/united-states-of-bug-buddy.c:324
 msgid "Please enter a valid email address."
-msgstr "Írd be az e-mail címed!"
+msgstr "Ажиллагаатай и-мэйл хаягаа өгнө үү."
 
 #: src/united-states-of-bug-buddy.c:340
 #, c-format
@@ -702,22 +712,22 @@ msgid ""
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
-"'%s' nem létezik.\n"
+"»%s« байхгүй л юм шиг байна даа.\n"
 "\n"
-"Ellenőrizd a sendmail elérési útját!"
+"мэйл илгээх замаа дахин шалгана уу."
 
 #: src/united-states-of-bug-buddy.c:372
 msgid "Please enter a valid email command."
-msgstr "Adj meg egy érvényes e-mail parancsot!"
+msgstr "И-мэйлийн үйлчилгээтэй команд өгнө үү."
 
 #: src/united-states-of-bug-buddy.c:436
 msgid "The specified file does not exist."
-msgstr "A megadott fájl nem létezik."
+msgstr "оруулсан файл ер байхгүй байна."
 
 #: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid "File is of type: %s"
-msgstr "A fájl típusa: %s"
+msgstr "Файл дараахи төрлийнх юм байна %s"
 
 #: src/united-states-of-bug-buddy.c:453
 #, c-format
@@ -726,29 +736,30 @@ msgid ""
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
-"'%s' fájl típusa %s.\n"
+"»%s« нь %s.төрлийн файл биш юм байна \n"
 "\n"
-"A Bug Buddy csak sima szövegben (text/*) tudja elküldeni a jelentést."
+"Bug Buddy цэвэр текст л (MIME-Typ text/*) илгээж чадна."
 
 #: src/united-states-of-bug-buddy.c:473
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr "A hibajelentéshez meg kell adni egy értelmes tárgy mezőt."
+msgstr "Та энэхүү алдааны тайландаа жинтэйхэн сэдэв зааж өгөх хэрэгтэй шүү."
 
 #: src/united-states-of-bug-buddy.c:489
 msgid "You must include a comprehensible description in your bug report."
-msgstr "A hibajelentéshez kell adni egy használható leírást."
+msgstr ""
+"Та энэхүү алдааны тайландаа жинтэйхэн тайлбар дагуулж өгөх хэрэгтэй шүү."
 
 #: src/united-states-of-bug-buddy.c:520
 msgid "Submit this bug report now?"
-msgstr "Most küldjem el a hibajelentést?"
+msgstr "Энэ алдааны тайланг яг одоо илгээх үү?"
 
 #: src/united-states-of-bug-buddy.c:523
 msgid "_Submit"
-msgstr "_Küldés"
+msgstr "_Илгээх"
 
 #: src/united-states-of-bug-buddy.c:560
 msgid "Please wait while Bug Buddy saves your bug report..."
-msgstr "Várj, amíg a Bug Buddy menti a hibajelentést..."
+msgstr "Та түр хүлээнэ үү. Bug Buddy таны алдааны мэдээг хадгалж байна."
 
 #: src/united-states-of-bug-buddy.c:567
 #, c-format
@@ -759,20 +770,20 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
-"A hibajelentést nem lett mentve ide: %s:\n"
+"Алдааны тайлан »%s« хадгалагдсангүй:\n"
 "\n"
 "%s\n"
 "\n"
-"Próbáld újra, esetleg egy másik fájlnévvel."
+"Өөр нэг файлын нэр сонгоод шинээр туршаад үзнэ үү."
 
 #: src/united-states-of-bug-buddy.c:576
 #, c-format
 msgid "Your bug report was saved in %s"
-msgstr "A hibabejelentés ide lett mentve: '%s'"
+msgstr "Алдааны тайланг »%s« дотор хадгаллаа."
 
 #: src/united-states-of-bug-buddy.c:584
 msgid "Please wait while Bug Buddy submits your bug report..."
-msgstr "Várj, amíg a Bug Buddy elküldi a hibajelentést..."
+msgstr "Та түр хүлээнэ үү. Bug Buddy таны алдааны мэдээг илгээж байна..."
 
 #: src/united-states-of-bug-buddy.c:591
 #, c-format
@@ -781,7 +792,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Hiba történt a hibajelentés elküldése közben:\n"
+"Алдааны тайлан илгээх явцад алдаа гарлаа:\n"
 "\n"
 "%s"
 
@@ -794,27 +805,27 @@ msgid ""
 "\n"
 "Thanks!"
 msgstr ""
-"A hibabejelentés ide lett elküldve:\n"
+"Дараахи хаягаар алдааны тайланг явууллаа\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Köszönjük!"
+"Гялайлаа!"
 
 #: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
 msgstr ""
-"Mivel a Bug Buddy nem ismeri azt a programot, amihez hibajelentést szeretnél "
-"feladni, kézzel kell beírnod, hogy kinek címzed a hibajelentést."
+"Bug Buddy таны алдааг нь мэдээлэх гэж байгаа программын тухай хараахан "
+"мэдээлэл цуглуулж амжаагүй байгаа тул и-мэйл хаягаа гараас оруулна уу."
 
 #: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
-msgstr "A hibajelentéshez meg kell adni egy terméket."
+msgstr "Алдаанд хамаарах бүтэгдэхүүнээ сонгоно уу."
 
 #: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
-msgstr "A hibabejelentéshez meg kell adni egy alkalmazást."
+msgstr "Алдаанд хамаарах х.программаа сонгоно уу."
 
 #: src/united-states-of-bug-buddy.c:804
 msgid ""
@@ -826,26 +837,26 @@ msgid ""
 "You may be able to find one in an \"About\" box in the application, or in "
 "the application's documentation."
 msgstr ""
-"Az alkalmazás nem tartalmaz a hibajelentés beküldésére vonatkozó adatokat.\n"
+"Энэ х.программ алдааг хэрхэн тайлагнах тухай мэдээлэл агуулаагүй байна.\n"
 "\n"
-"Ha tudod, hogy milyen e-mail címre kell küldeni a hibajelentést, megadhatod "
-"később.\n"
+"Та ямар нэгэн алдааны мэдээлэл цуглуулж хүлээн авдаг и-мэйл хаяг мэдэх бол "
+"дараа нь шаардахад гараасаа оруулж өгөөрэй.\n"
 "\n"
-"Az alkalmazás névjegye vagy dokumentációja általában tartalmaz ilyen e-mail "
-"címet."
+"та энэ программын »About« эсвэл танилцуулгын номонд нь алдаа мэдээлэх хаяг "
+"олж ч магад"
 
 #: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
-msgstr "A hibajelentéshez meg kell adni egy komponenst."
+msgstr "Алдааны тайландаа нэг бүрдэл хэсгийг (component) зааж өгнө үү"
 
 #: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
-msgstr "A hibajelentéshez meg kell adni a verziót."
+msgstr "Алдааны тайландаа хувилбарыг зааж өгнө үү"
 
 #: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"
 msgstr ""
-"Biztosan nem folytatod\n"
-"a hibajelentést?"
+"Та энэ алдааны тайланг \n"
+"илгээхээ болихоор шийдэв үү?"

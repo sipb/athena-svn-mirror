@@ -1,3 +1,25 @@
+2003-02-03  Fernando Herrera <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/products:
+	* configure.in: update for 2.2.102 release ("Oh na na na")
+
+2003-02-01  Fernando Herrera <fherrera@onirica.com>
+
+	* TODO: Update with some ideas from Owen and me.
+	* src/bugzilla.c: (bugzilla_application_new),
+	  (generate_email_text): Only add a binary to the list if it is not
+	  already in. If the app doesn't have bugzilla product, ask for email
+	  address to send the report. (Fix #104599)
+	* src/united-states-of-bug-buddy.c: (select_component_row): Check if
+	  component is NULL.
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2002-01-19  Fernando Herrera  <fherrera@onirica.com>
 
 	* NEWS: 

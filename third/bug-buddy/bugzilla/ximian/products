@@ -510,4 +510,14 @@
     <version value="80%" />
     <version value="90%" />
   </product>
+  <product votestoconfirm="0" description="The mono debugger" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Mono/Debugger">
+    <component initialowner="7100" description="The graphical user interface" initialqacontact="7100" value="gui" />
+    <component initialowner="7100" description="The command-line interpreter" initialqacontact="7100" value="interpreter" />
+    <component initialowner="7100" description="The debugger backend" initialqacontact="7100" value="backend" />
+    <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="The Mono assembler" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Mono/Assembler">
+    <component initialowner="7100" description="All bugs go here" initialqacontact="7100" value="General" />
+    <version value="unspecified" />
+  </product>
 </products>

@@ -1,17 +1,19 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# translation of bug-buddy.po to zh_CN
+# Copyright (C) 2003 Free Software Foundation, Inc.
 # Wang Jian <lark@linux.net.cn>, 2001
+# Xiong Jiang <jxiong@offtopic.org>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
-"PO-Revision-Date: 2002-03-16 21:05+0800\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"PO-Revision-Date: 2003-01-29 22:40+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #: src/bug-buddy.c:56
 msgid "Submit bug report"
@@ -120,14 +122,11 @@ msgstr "GDB 已经退出"
 
 #: src/bug-buddy.c:250
 msgid "Save Backtrace"
-msgstr ""
+msgstr "保存回溯跟踪信息"
 
 #: src/bug-buddy.c:261
-#, fuzzy
 msgid "Please wait while Bug Buddy saves the stack trace..."
-msgstr ""
-"在 Bug Buddy 更新它错误跟踪系统的产品列表时，\n"
-"请耐心等待。"
+msgstr "请等待 Bug Buddy 保存堆栈跟踪信息..."
 
 #: src/bug-buddy.c:270
 #, c-format
@@ -138,16 +137,19 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"堆栈跟踪信息未保存在 %s：\n"
+"\n"
+"%s\n"
+"\n"
+"请重试，或者换用不同的文件名。"
 
 #: src/bug-buddy.c:298
-#, fuzzy
 msgid "Show _Applications"
-msgstr "崩溃的程序"
+msgstr "显示程序(_A)"
 
 #: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-#, fuzzy
 msgid "Show _Products"
-msgstr "产品"
+msgstr "显示产品(_P)"
 
 #: src/bug-buddy.c:368
 msgid "_Start Mailer"
@@ -230,10 +232,12 @@ msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Bug Buddy 无法更新它的错误信息。\n"
+"将使用以前的信息。"
 
 #: src/bug-buddy.c:763
 msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
+msgstr "Bug Buddy 已正确更新了它的错误信息。"
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
@@ -245,13 +249,14 @@ msgstr "报告 GNOME 中的错误"
 
 #: src/bug-buddy.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/bug-buddy.glade.h:2
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
 #: src/bug-buddy.glade.h:3
+#, fuzzy
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
@@ -259,6 +264,10 @@ msgid ""
 "'Update' will update it. Choosing 'Don't update' will force the bug "
 "reporting to use old data.'\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy 更新</span>\n"
+"\n"
+"您的系统中保存的错误信息已经过时。选择‘更新’将更新它，选择‘不更新’将强制使用"
+"旧的数据进行错误报告。"
 
 #: src/bug-buddy.glade.h:7
 msgid "Advanced"
@@ -266,12 +275,11 @@ msgstr "高级"
 
 #: src/bug-buddy.glade.h:8
 msgid "Assbarn Phenomenon"
-msgstr "Assbarn Phenomenon"
+msgstr "Assbarn 现象"
 
 #: src/bug-buddy.glade.h:9
-#, fuzzy
 msgid "Binary file:"
-msgstr "程序文件"
+msgstr "执行文件："
 
 #: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
 msgid "Bug Buddy"
@@ -288,15 +296,12 @@ msgstr ""
 "要想了解更多，请单击帮助按钮。"
 
 #: src/bug-buddy.glade.h:13
-#, fuzzy
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
 "Bug Buddy 使用电子邮件提交错误报告。\n"
-"请选择您如何让 Bug Buddy 发送邮件。\n"
-"如果您选择使用默认的 GNOME 邮件程序，该设置也会用在\n"
-"其它的 GNOME 程序中。"
+"请您选择如何让 Bug Buddy 发送邮件。"
 
 #: src/bug-buddy.glade.h:15
 msgid "Cc"
@@ -304,7 +309,7 @@ msgstr "抄送"
 
 #: src/bug-buddy.glade.h:16
 msgid "Core file"
-msgstr "核心文件"
+msgstr "溃核文件"
 
 #: src/bug-buddy.glade.h:17
 msgid "Debug"
@@ -316,9 +321,8 @@ msgid "Description"
 msgstr "描述"
 
 #: src/bug-buddy.glade.h:19
-#, fuzzy
 msgid "Downloading files"
-msgstr "下载进度"
+msgstr "下载文件"
 
 #: src/bug-buddy.glade.h:20
 msgid "Email"
@@ -353,10 +357,9 @@ msgid "Please make your bug report in English, if possible."
 msgstr "在可能的情况下，请使用英语。"
 
 #: src/bug-buddy.glade.h:28
-#, fuzzy
 msgid ""
 "Please select the product or application for the bug you wish to report."
-msgstr "请选择您要报告错误的产品。"
+msgstr "请选择您要报告错误的产品或者应用程序。"
 
 #: src/bug-buddy.glade.h:29
 msgid ""
@@ -376,9 +379,8 @@ msgstr ""
 "请耐心等待。"
 
 #: src/bug-buddy.glade.h:33
-#, fuzzy
 msgid "Process ID:"
-msgstr "进程号"
+msgstr "进程号："
 
 #: src/bug-buddy.glade.h:34
 msgid "Save in"
@@ -389,7 +391,6 @@ msgid "Save the report to..."
 msgstr "保存报告到..."
 
 #: src/bug-buddy.glade.h:36
-#, fuzzy
 msgid "Saving: "
 msgstr "正在保存："
 
@@ -402,9 +403,8 @@ msgid "Severity"
 msgstr "严重程度"
 
 #: src/bug-buddy.glade.h:39
-#, fuzzy
 msgid "Show _Debugging Details"
-msgstr "显示调试信息详情"
+msgstr "显示详细调试信息(_D)"
 
 #: src/bug-buddy.glade.h:41
 msgid "Show most frequent bugs in:"
@@ -431,9 +431,8 @@ msgid "Summary"
 msgstr "摘要"
 
 #: src/bug-buddy.glade.h:47
-#, fuzzy
 msgid "The product or application is not listed above."
-msgstr "产品没有列在上面。"
+msgstr "产品或者应用程序在上面没有列出。"
 
 #: src/bug-buddy.glade.h:48
 msgid "To"
@@ -448,8 +447,9 @@ msgid "Version"
 msgstr "版本"
 
 #: src/bug-buddy.glade.h:51
+#, fuzzy
 msgid "_Don't update"
-msgstr ""
+msgstr "不更新"
 
 #: src/bug-buddy.glade.h:52
 msgid "_Update"
@@ -490,7 +490,7 @@ msgstr "产品"
 #: src/bugzilla.c:257
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d／%d"
 
 #: src/bugzilla.c:687
 msgid "ID"
@@ -505,7 +505,7 @@ msgid "Component"
 msgstr "部件"
 
 #: src/bugzilla.c:870
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
 "Please make sure Bug Buddy was installed correctly.\n"
@@ -513,10 +513,11 @@ msgid ""
 "Bug Buddy will now quit."
 msgstr ""
 "Bug Buddy 无法打开“%s”。\n"
-"请确定 Bug Buddy 安装正确。"
+"请确定 Bug Buddy 安装正确。\n"
+"\n"
+"Bug Buddy 现在将退出。"
 
 #: src/bugzilla.c:915
-#, fuzzy
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -524,13 +525,15 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy 无法载入用户界面文件(%s)。\n"
-"请确定 Bug Buddy 安装正确。"
+"Bug Buddy 无法找到关于向何处提交错误报告的任何信息。\n"
+"请确定 Bug Buddy 安装正确。\n"
+"\n"
+"Bug Buddy 现在将退出。"
 
 #: src/bugzilla.c:994
 #, c-format
 msgid "Couldn't load icon for %s: %s"
-msgstr ""
+msgstr "无法为 %s 载入图标：%s"
 
 #: src/cell-renderer-uri.c:151
 msgid "URI"
@@ -592,34 +595,37 @@ msgstr ""
 "请重新安装 Bug Buddy。"
 
 #: src/gdb-buddy.c:352
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There was an error running gdb:\n"
 "\n"
 "%s"
-msgstr "运行 gdb 时发生错误。"
+msgstr ""
+"运行 gdb 时发生错误：\n"
+"\n"
+"%s"
 
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr ""
+msgstr "无法读取 %s 的符号链接信息"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr ""
+msgstr "该文件含有太多的符号链接。"
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr ""
+msgstr "主循环没有运行！"
 
 #: src/save-buddy.c:284
 #, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr ""
+msgstr "设置 sigchld 信号处理时发生错误：%s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr ""
+msgstr "文件名无效。"
 
 #: src/save-buddy.c:412
 #, c-format
@@ -628,23 +634,25 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
+"名为‘%s’的文件已经存在。\n"
+"\n"
+"是否要覆盖这个文件？"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr ""
+msgstr "覆盖(_O)"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "无法创建备份文件。"
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
 msgstr "欢迎使用 Bug Buddy"
 
 #: src/united-states-of-bug-buddy.c:55
-#, fuzzy
 msgid "Select a Product or Application"
-msgstr "选择一个产品"
+msgstr "选择一个产品或者应用程序"
 
 #: src/united-states-of-bug-buddy.c:56
 msgid "Select a Component"
@@ -735,12 +743,11 @@ msgstr "现在提交错误报告？"
 
 #: src/united-states-of-bug-buddy.c:523
 msgid "_Submit"
-msgstr ""
+msgstr "提交(_S)"
 
 #: src/united-states-of-bug-buddy.c:560
-#, fuzzy
 msgid "Please wait while Bug Buddy saves your bug report..."
-msgstr "在 Bug Buddy 确定您的系统信息时，请耐心等待。"
+msgstr "请等待 Bug Buddy 保存您的错误报告..."
 
 #: src/united-states-of-bug-buddy.c:567
 #, c-format
@@ -751,24 +758,31 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"错误报告未保存在 %s：\n"
+"\n"
+"%s\n"
+"\n"
+"请重试，或者换用不同的文件名。"
 
 #: src/united-states-of-bug-buddy.c:576
-#, fuzzy, c-format
+#, c-format
 msgid "Your bug report was saved in %s"
-msgstr "您的错误报告被保存在“%s”"
+msgstr "您的错误报告已保存在 %s"
 
 #: src/united-states-of-bug-buddy.c:584
-#, fuzzy
 msgid "Please wait while Bug Buddy submits your bug report..."
-msgstr "在 Bug Buddy 确定您的系统信息时，请耐心等待。"
+msgstr "请等待 Bug Buddy 提交您的错误报告..."
 
 #: src/united-states-of-bug-buddy.c:591
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
 "\n"
 "%s"
-msgstr "运行 gdb 时发生错误。"
+msgstr ""
+"提交错误报告时发生错误：\n"
+"\n"
+"%s"
 
 #: src/united-states-of-bug-buddy.c:599
 #, c-format
@@ -785,23 +799,22 @@ msgstr ""
 "\n"
 "非常感谢！"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
 msgstr "由于 Bug Buddy 不知道您要提交错误报告的产品，您必须手工生成错误报告。"
 
-#: src/united-states-of-bug-buddy.c:769
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
-msgstr "您必须为错误报告指定一个产品。"
+msgstr "请指定您的错误报告是关于哪个产品。"
 
-#: src/united-states-of-bug-buddy.c:783
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
-msgstr "请对错误报告进行最后的改正。"
+msgstr "请指定您的错误报告是关于哪个应用程序。"
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
+#, fuzzy
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -811,16 +824,21 @@ msgid ""
 "You may be able to find one in an \"About\" box in the application, or in "
 "the application's documentation."
 msgstr ""
+"这个应用程序没有包含如何提交错误报告的信息。\n"
+"\n"
+"如果您知道应该发送错误报告的电子邮件地址，稍后您将能指定它。\n"
+"\n"
+"您也许能在应用程序的“关于”对话框或者它的文档中找到这样的电子邮件地址。"
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "您必须为错误报告指定一个部件。"
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "您必须为错误报告指定一个版本。"
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

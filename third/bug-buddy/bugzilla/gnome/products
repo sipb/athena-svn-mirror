@@ -68,6 +68,7 @@
     <version value="2.1.x" />
     <version value="2.0.x" />
     <version value="1.90.1" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="GNOME front-end to the TinyFugue mud client" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="crescendo">
     <component initialowner="15" description="General client bugs" initialqacontact="0" value="general" />
@@ -148,6 +149,7 @@
     <version value="2.0.5" />
     <version value="2.1.x" />
     <version value="2.0.6" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="The GLib base library used by GTK+ and GNOME" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="glib">
     <component initialowner="44" description="The GLib reference documentation" initialqacontact="0" value="docs" />
@@ -342,6 +344,7 @@
     <version value="2.0.x" />
     <version value="2.1.x" />
     <version value="1.5.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="5" description="gecko-based GNOME web browser" maxvotesperbug="5" votesperuser="5" disallownew="0" name="galeon">
     <component initialowner="1273" description="Browsing bugs" initialqacontact="90" value="Mozilla interaction" />
@@ -492,7 +495,7 @@
     <version value="0.2.26" />
     <version value="0.2.28" />
   </product>
-  <product votestoconfirm="0" description="GNOME 2.0 UI Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" defaultmilestone="future" name="libgnomeui">
+  <product votestoconfirm="0" description="GNOME 2.x UI Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" defaultmilestone="future" name="libgnomeui">
     <component initialowner="96" description="All unclassified bugs" initialqacontact="0" value="general" />
     <component initialowner="96" description="The demo applications in the demos/ directory." initialqacontact="0" value="demos" />
     <component initialowner="18" description="the GnomeDruid widgets." initialqacontact="0" value="GnomeDruid" />
@@ -510,8 +513,9 @@
     <version value="1.110.0" />
     <version value="2.0.x" />
     <version value="CVS HEAD" />
+    <version value="2.2.x" />
   </product>
-  <product votestoconfirm="0" description="GNOME 2.0 Base Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="libgnome">
+  <product votestoconfirm="0" description="GNOME 2.x Base Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="libgnome">
     <component initialowner="96" description="General, unclassified bugs." initialqacontact="0" value="general" />
     <component initialowner="226" description="programs to convert man, info and DocBook files to HTML for help browser display" initialqacontact="0" value="Help Converters" />
     <version value="unspecified" />
@@ -523,6 +527,7 @@
     <version value="1.1xx" />
     <version value="2.0.x" />
     <version value="HEAD" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="Spreadsheet" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Gnumeric">
     <component initialowner="25" description="Gnumeric does not run when initially installed.  This is almost certain to be a packaging bug rather than something specific to Gnumeric." initialqacontact="0" value="Installation" />
@@ -686,6 +691,7 @@
     <version value="1.4.x" />
     <version value="2.0.x" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A set of components for doing graphical debugging." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-debug">
     <component initialowner="79" description="General gnome-debug bugs" initialqacontact="79" value="general" />
@@ -759,6 +765,8 @@
     <version value="1.1.4" />
     <version value="1.1.5" />
     <version value="1.1.6" />
+    <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="GTK+/GNOME user interface builder" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="glade">
     <component initialowner="10733" description="General Glade bugs" initialqacontact="10733" value="general" />
@@ -1027,6 +1035,8 @@
     <version value="2.1.7" />
     <version value="2.1.8" />
     <version value="2.1.9" />
+    <version value="2.2.0" />
+    <version value="2.2.1" />
   </product>
   <product votestoconfirm="0" description="GNOME Midnight Commander file manager." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gmc">
     <component initialowner="2871" description="General, unclassified bugs" initialqacontact="0" value="general" />
@@ -1036,6 +1046,7 @@
     <component initialowner="44" description="All bugs about gtk-engines" initialqacontact="0" value="general" />
     <version value="unspecified" />
     <version value="1.9.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="Eye of Gnome image viewer and cataloging program." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="EOG">
     <component initialowner="735" description="General, unclassified bugs." initialqacontact="8141" value="general" />
@@ -1068,6 +1079,7 @@
     <version value="2.0.x" />
     <version value="CVS HEAD" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A 100% GNOME web browser" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="encompass">
     <component initialowner="1648" description="all non-documentation encompass bugs at present" initialqacontact="0" value="general" />
@@ -1115,6 +1127,7 @@
     <version value="1.0.6" />
     <version value="2.0.x" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A graphics program to create and edit icons." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-iconedit">
     <component initialowner="37" description="all bugs" initialqacontact="0" value="general" />
@@ -1167,6 +1180,7 @@
     <version value="2.3.x" />
     <version value="2.4.X" />
     <version value="2.5.x" />
+    <version value="2.6.x" />
   </product>
   <product votestoconfirm="0" description="Here you can place your bugs about GNOME translations" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="l10n">
     <component initialowner="90" description="Here you can place your bugs about the Bulgarian [bg] GNOME translations / &amp;#1058;&amp;#1091;&amp;#1082; &amp;#1084;&amp;#1086;&amp;#1078;&amp;#1077; &amp;#1076;&amp;#1072; &amp;#1087;&amp;#1086;&amp;#1089;&amp;#1090;&amp;#1072;&amp;#1074;&amp;#1103;&amp;#1090;&amp;#1077; &amp;#1073;&amp;#1098;&amp;#1075;&amp;#1086;&amp;#1074;&amp;#1077; &amp;#1082;&amp;#1072;&amp;#1089;&amp;#1072;&amp;#1077;&amp;#1097;&amp;#1080; &amp;#1073;&amp;#1098;&amp;#1083;&amp;#1075;&amp;#1072;&amp;#1088;&amp;#1089;&amp;#1082;&amp;#1080;&amp;#1090;&amp;#1077; [bg] GNOME &amp;#1087;&amp;#1088;&amp;#1077;&amp;#1074;&amp;#1086;&amp;#1076;&amp;#1080;." initialqacontact="0" value="Bulgarian" />
@@ -1175,14 +1189,24 @@
     <component initialowner="3008" description="Here you can place your bugs about Danish [da] translations" initialqacontact="0" value="Danish" />
     <component initialowner="6496" description="Here you can place your bugs about Swedish [sv] translations / Haer kan du laemna felrapporter om svenska [sv] oeversaettningar" initialqacontact="39" value="Swedish" />
     <component initialowner="1041" description="Here you can place your bugs about the Slovak [sk] translation / Sem mozete oznamit chyby v slovenskom preklade." initialqacontact="0" value="Slovak" />
-    <component initialowner="6815" description="Here you can place your bugs about brazillian portuguese [pt_BR] translations / Aqui voce pode colocar relatorios de erros sobre traducoes em Portugues do Brasil [pt_BR]" initialqacontact="6166" value="Brazillian Portuguese" />
+    <component initialowner="6815" description="Here you can place your bugs about brazilian Portuguese [pt_BR] translations / Aqui voce pode colocar relatorios de erros sobre traducoes em Portugues do Brasil [pt_BR]" initialqacontact="6166" value="Brazilian Portuguese" />
     <component initialowner="10486" description="If your locale is not listed here, use this component to place your bug report." initialqacontact="142" value="other" />
-    <component initialowner="6309" description="Here you can place your bugs about portuguese from Portugal [pt] translations / Aqui voce pode colocar relatorios de erros sobre traducoes em Portugues do Portugal [pt]" initialqacontact="0" value="Portugues from Portugal" />
+    <component initialowner="6309" description="Here you can place your bugs about Portuguese from Portugal [pt] translations / Aqui voce pode colocar relatorios de erros sobre traducoes em Portugues do Portugal [pt]" initialqacontact="0" value="Portuguese from Portugal" />
     <component initialowner="3559" description="Here you can place your bugs about Malay [ms] translations / Di sini anda boleh letakkan pepijat anda mengenai terjemahan B.Melayu 
     [ms]" initialqacontact="0" value="Malay" />
     <component initialowner="1069" description="Bugs in the german localization of GNOME." initialqacontact="1069" value="German" />
     <component initialowner="42" description="Bugreports / suggestions for the Norwegian (bokmal) translation of GNOME" initialqacontact="42" value="Norwegian (bokmal)" />
     <component initialowner="7798" description="Here you can place your bugs about Greek [el] translations" initialqacontact="2887" value="Greek" />
+    <component initialowner="6681" description="Here you can place your bugs about Dutch [nl] translations / Plaats hier uw bugs met betrekking tot de Nederlandse vertaling van GNOME" initialqacontact="0" value="Dutch [nl]" />
+    <component initialowner="14559" description="Here you can report bugs and suggest enhancements for Amharic [am] translations." initialqacontact="14559" value="Amharic [am]" />
+    <component initialowner="505" description="Here you can place your bugs about Romanian [ro] translations / Aici puteti introduce defecte ale traducerii romanesti" initialqacontact="505" value="Romanian" />
+    <component initialowner="5034" description="Submit bugs in Hindi [hi] translations for Gnome" initialqacontact="14480" value="Hindi [hi]" />
+    <component initialowner="6513" description="Here you can place your bugs about Estonian [et] translations / 
+    Siia saad teatada eesti keelega [et] seotud vigadest" initialqacontact="0" value="Estonian [et]" />
+    <component initialowner="333" description="Here you can place your bugs about Hungarian [hu] translations / Ide varjuk eszreveteleidet a magyar [hu] nyelvu forditasokkal kapcsolatban" initialqacontact="2132" value="Hungarian [hu]" />
+    <component initialowner="14373" description="Here you can place your bugs about Ukrainian [uk] translations" initialqacontact="0" value="Ukrainian [uk]" />
+    <component initialowner="8542" description="Here you can place your bugs about Czech [cs] translations / Zde lze nahlasit chyby ceskeho prekladu" initialqacontact="8542" value="Czech [cs]" />
+    <component initialowner="190" description="Here you can place your bugs about Lithuanian [lt] translations" initialqacontact="190" value="Lithuanian [lt]" />
     <version value="GNOME 1.4" />
     <version value="GNOME 2.0" />
     <version value="unspecified" />
@@ -1212,6 +1236,7 @@
     <version value="0.5.x" />
     <version value="0.1.x" />
     <version value="0.7.x" />
+    <version value="1.0.x" />
   </product>
   <product votestoconfirm="0" description="H.323 compatible Video-Conferencing client" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnomemeeting">
     <component initialowner="12152" description="General documentation for gnomemeeting" initialqacontact="12153" value="Documentation" />
@@ -1255,6 +1280,7 @@
     <version value="1.0.x" />
     <version value="2.1.x" />
     <version value="2.0.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A library for rendering svg files that also has some font-handling code used by eel and nautilus." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="librsvg">
     <component initialowner="4872" description="You need one component." initialqacontact="0" value="general" />
@@ -1264,6 +1290,7 @@
     <version value="1.1.x" />
     <version value="2.0.x" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="data file internationalization tools" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="intltool">
     <component initialowner="2275" description="All sorts of bugs" initialqacontact="0" value="general" />
@@ -1298,6 +1325,7 @@
     <version value="0.6.0" />
     <version value="0.6.1" />
     <version value="0.6.5" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="The GNOME graphical shell and file manager" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="nautilus">
     <component initialowner="2274" description="Custom appearance: Different backgrounds per directory, customized colors, emblems, and themes." initialqacontact="5439" value="Backgrounds Emblems and Themes" />
@@ -1339,6 +1367,7 @@
     <version value="1.1.x" />
     <version value="2.1.x" />
     <version value="2.0.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="GNOME Notification Framework" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="grapevine">
     <component initialowner="153" description="Gnome Properties" initialqacontact="0" value="GnoP" />
@@ -1425,6 +1454,7 @@
     <version value="0.10" />
     <version value="0.7" />
     <version value="0.9" />
+    <version value="1.0" />
   </product>
   <product votestoconfirm="0" description="Guppi does plotting for GNOME." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Guppi">
     <component initialowner="1038" description="For now, all bugs are 'general' bugs." initialqacontact="0" value="General" />
@@ -1484,6 +1514,7 @@
     <version value="0.x" />
     <version value="0.14" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="IDL parsing library." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="libIDL">
     <component initialowner="1779" description="general" initialqacontact="0" value="general" />
@@ -1505,6 +1536,7 @@
     <version value="1.0" />
     <version value="1.0.x" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A fax sender/manager for GNOME, part of GNOME Office" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Gfax">
     <component initialowner="3602" description="For general bugs about gfax" initialqacontact="0" value="general" />
@@ -1541,6 +1573,13 @@
     <version value="2.4.23" />
     <version value="2.4.24" />
     <version value="2.4.25" />
+    <version value="2.4.26" />
+    <version value="2.4.27" />
+    <version value="2.4.28" />
+    <version value="2.4.29" />
+    <version value="2.4.30" />
+    <version value="2.5.0" />
+    <version value="2.5.1" />
   </product>
   <product votestoconfirm="0" description="A library that provides terminal functionality." maxvotesperbug="10000" milestoneurl="2.0" votesperuser="0" disallownew="0" name="libzvt">
     <component initialowner="185" description="Bugs against libzvt" initialqacontact="37" value="general" />
@@ -1576,6 +1615,7 @@
     <version value="1.110.0" />
     <version value="2.0.x" />
     <version value="CVS HEAD" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="The Gnome 2.x panel, the panel applet library and some core  utility applets (window list, workspace switcher, inbox monitor, clock and wanda the fish)" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-panel">
     <component initialowner="4570" description="The GNOME 2.x panel" initialqacontact="8145" value="Panel" />
@@ -1605,6 +1645,7 @@
     <version value="unspecified" />
     <version value="1.5.x" />
     <version value="2.0.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="The GNOME 2.x session manager and session manager proxy" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-session">
     <component initialowner="4571" description="The session manager" initialqacontact="8146" value="gnome-session" />
@@ -1614,6 +1655,7 @@
     <version value="unspecified" />
     <version value="1.5.x" />
     <version value="2.0.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="GNOME 2 ONLY terminal; gnome-terminal 1.x goes in gnome-core product, gnome-terminal component" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-terminal">
     <component initialowner="8" description="All bugs go here ..." initialqacontact="8147" value="general" />
@@ -1621,6 +1663,7 @@
     <version value="unspecified" />
     <version value="1.9.x" />
     <version value="2.0.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="Extra modules not distributed as part of gnome-vfs proper. These are used in nautilus, and include the SMB samba-based network browser. Typically these modules are GPL'd (gnome-vfs proper is LGPL'd). If you can make this description more friendly, please do." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnome-vfs-extras">
     <component initialowner="63" description="Currently everything in gnome-vfs-extras not specifically listed in other components." initialqacontact="0" value="general" />
@@ -1654,6 +1697,7 @@
     <version value="unspecified" />
     <version value="2.0.x" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="A screensaver program. Only bugs against the xscreensaver capplet, gtk2 port, and gettext problems should be filed here. Other bugs should be reported to the original maintainer." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="xscreensaver">
     <component initialowner="185" description="Bugs against the capplet." initialqacontact="8148" value="capplet" />
@@ -1688,7 +1732,7 @@
   new codecs and filters by writing a simple plugin with a clean, generic 
   interface. GStreamer is released under the LGPL, with many of the included 
   plugins retaining the license of the code they were derived from, usually 
-  GPL or BSD." maxvotesperbug="10000" milestoneurl="http://www.gstreamer.net" votesperuser="0" defaultmilestone="0.4.0" name="GStreamer" disallownew="0">
+  GPL or BSD." maxvotesperbug="10000" milestoneurl="http://www.gstreamer.net" votesperuser="0" defaultmilestone="0.6.x" name="GStreamer" disallownew="0">
     <component initialowner="6437" description="GStreamer Recorder and libgstrec related stuff" initialqacontact="6437" value="gst-rec" />
     <component initialowner="6437" description="This includes everything about gstreamer for now." initialqacontact="6437" value="gstreamer (core)" />
     <component initialowner="6437" description="File anything you cannot classify further here." initialqacontact="6437" value="don't know" />
@@ -1715,6 +1759,7 @@
     <version value="unspecified" />
     <version value="1.2" />
     <version value="2.0" />
+    <version value="2.4" />
   </product>
   <product votestoconfirm="0" description="C++ bindings for GNOME libs" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gnomemm">
     <component initialowner="5595" description="libgnome wrappers" initialqacontact="0" value="libgnomemm" />
@@ -1839,6 +1884,7 @@
     <version value="2.0.x" />
     <version value="unspecified" />
     <version value="2.1.x" />
+    <version value="2.2.x" />
   </product>
   <product votestoconfirm="0" description="Free documentation management and publishing system" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="lampadas">
     <component initialowner="579" description="Miscellaneous" initialqacontact="0" value="general" />
@@ -2024,6 +2070,8 @@
   <product votestoconfirm="0" description="gnome gnupg frontend" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="seahorse">
     <component initialowner="13782" description="bugs in seahorse" initialqacontact="0" value="general" />
     <version value="unspecified" />
+    <version value="0.6.x" />
+    <version value="0.7.x" />
   </product>
   <product votestoconfirm="0" description="C++ signals library, used by gtkmm." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="libsigc++">
     <component initialowner="117" description="build stuff" initialqacontact="0" value="build" />
@@ -2047,6 +2095,7 @@
     <component initialowner="5595" description="bugs in tests" initialqacontact="0" value="tests" />
     <component initialowner="5595" description="bugs" initialqacontact="0" value="general" />
     <version value="unspecified" />
+    <version value="2.4.x" />
   </product>
   <product votestoconfirm="0" description="GSwitchIt - XKB toolkit for GNOME" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gswitchit">
     <component initialowner="3476" description="The XKB state indication applet" initialqacontact="0" value="gswitchit_applet" />
@@ -2055,5 +2104,35 @@
     <component initialowner="3476" description="documentation" initialqacontact="0" value="documentation" />
     <component initialowner="3476" description="general problems and issues" initialqacontact="0" value="general" />
     <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="Tetrinet client for GNOME" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gtetrinet">
+    <component initialowner="14439" description="General issues" initialqacontact="0" value="general" />
+    <component initialowner="14439" description="Translation and localization issues" initialqacontact="0" value="i18n" />
+    <component initialowner="14439" description="Documentation issues" initialqacontact="0" value="docs" />
+    <component initialowner="14439" description="Themes issues" initialqacontact="0" value="themes" />
+    <version value="unspecified" />
+    <version value="0.5.x" />
+    <version value="0.4.x" />
+  </product>
+  <product votestoconfirm="0" description="Unicode Character Map Tool [gucharmap.sf.net]" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gucharmap">
+    <component initialowner="12268" description="All bugs go here." initialqacontact="0" value="general" />
+    <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="The GTcpSocket Networking Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="libgtcpsocket">
+    <component initialowner="1457" description="GTcpSocket in general" initialqacontact="0" value="General" />
+    <component initialowner="1457" description="API documentation and tutorials" initialqacontact="0" value="Documentation" />
+    <component initialowner="1457" description="The client object" initialqacontact="0" value="GTcpConnection" />
+    <component initialowner="1457" description="The server object" initialqacontact="0" value="GTcpServer" />
+    <component initialowner="1457" description="DNS Lookup routines" initialqacontact="0" value="DNS Lookup" />
+    <component initialowner="1457" description="GConf configuration &amp; proxy support" initialqacontact="0" value="Proxy Support" />
+    <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="gFTP is a multithreaded FTP client for X Windows written using GTK+." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gftp">
+    <component initialowner="9985" description="General issues" initialqacontact="9985" value="general" />
+    <component initialowner="9985" description="Translation and localization issues" initialqacontact="9985" value="i18n" />
+    <component initialowner="9985" description="Documentation issues" initialqacontact="9985" value="docs" />
+    <version value="unspecified" />
+    <version value="2.0.13" />
+    <version value="CVS" />
   </product>
 </products>

@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy 2.2.100\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
-"PO-Revision-Date: 2003-01-04 00:38+0100\n"
+"Project-Id-Version: bug-buddy 2.2.101\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"PO-Revision-Date: 2003-01-25 17:34+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -267,8 +267,9 @@ msgstr ""
 "<span weight=\"bold\" size=\"larger\">Mise à jour de Bug Buddy</span>\n"
 "\n"
 "Les informations de bogues qui sont stockées sur votre système sont "
-"périmées. Choisir « Mettre à jour » la mettre à jour. Choisir « Ne pas "
-"mettre à jour » forcera l'application à utiliser les vielles données.\n"
+"périmées. Choisissez « Mettre à jour » pour les mettre à jour. Choisissez "
+"« Ne pas mettre à jour » forcera l'application à utiliser les vieilles "
+"informations.\n"
 
 #: src/bug-buddy.glade.h:7
 msgid "Advanced"
@@ -814,7 +815,7 @@ msgstr ""
 "\n"
 "Merci !"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -823,15 +824,15 @@ msgstr ""
 "rapport d'anomalies, vous devrez adressez manuellement le rapport "
 "d'anomalies."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Veuillez choisir un produit pour votre rapport d'anomalies."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Veuillez choisir une application pour votre rapport d'anomalies."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -850,15 +851,15 @@ msgstr ""
 "Vous pouvez en trouvez une dans la boîte de dialogue « À propos » de "
 "l'application, ou dans la documentation de l'application."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Vous devez spécifier un composant dans votre rapport d'anomalies."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Vous devez spécifier une version dans votre rapport d'anomalies."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

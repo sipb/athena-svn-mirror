@@ -642,6 +642,8 @@ select_component_row (char *component_name)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
+	g_return_if_fail (component_name!=NULL);
+	
 	view = GTK_TREE_VIEW (GET_WIDGET ("component-list"));
 	selection = gtk_tree_view_get_selection (view);
 	model = gtk_tree_view_get_model (view);

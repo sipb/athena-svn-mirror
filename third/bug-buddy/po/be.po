@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.0\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2002-11-20 09:46+0200\n"
 "Last-Translator: Ales Nyakhaychyk <i18n@infonet.by>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -796,7 +796,7 @@ msgstr ""
 "\n"
 "Вялікі дзякуй!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -805,18 +805,18 @@ msgstr ""
 "паведамленьне аб якой вы жадаеце даслаць, вам неабходна ўласна пазначыць "
 "адрэсу для накіраваньня паведамленьня."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 #, fuzzy
 msgid "Please choose a product for your bug report."
 msgstr "Вам патрэбна вызначыць праграму для вашага паведамленьня."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 #, fuzzy
 msgid "Please choose an application for your bug report."
 msgstr ""
 "Калі ласка, зрабіце канчатковыя выпраўленьні ў паведамленьні аб памылцы."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -827,15 +827,15 @@ msgid ""
 "the application's documentation."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Вам патрэбна вызначыць складальнік для вашага паведамленьня."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Вам патрэбна вызначыць вэрсыю для вашага паведамленьня."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

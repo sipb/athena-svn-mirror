@@ -1003,8 +1003,10 @@ bugzilla_application_new (const char *name,
 			char *s;
 			s = strrchr (programv[0], G_DIR_SEPARATOR);
 			s = s ? s+1 : programv[0];
-			d(g_print ("adding app: %s\n", s));
-			g_hash_table_insert (druid_data.program_to_application, g_strdup (s), app);
+			if (g_hash_table_lookup (druid_data.program_to_application, s) == NULL) {
+				d(g_print ("adding app: %s\n", s));
+				g_hash_table_insert (druid_data.program_to_application, g_strdup (s), app);
+			}
 		}
 		if (programv)
 			g_strfreev (programv);
@@ -1013,8 +1015,10 @@ bugzilla_application_new (const char *name,
 	if (other_programs) {
 		programv = g_strsplit (other_programs, ";", -1);
 		for (i=0; programv[i]; i++) {
-			d(g_print ("adding app: %s\n", programv[i]));
-			g_hash_table_insert (druid_data.program_to_application, g_strdup (programv[i]), app);
+			if (g_hash_table_lookup (druid_data.program_to_application, programv[i]) == NULL) {
+				d(g_print ("adding app: %s\n", programv[i]));
+				g_hash_table_insert (druid_data.program_to_application, g_strdup (programv[i]), app);
+			}
 		}
 		g_strfreev (programv);
 	}
@@ -1395,7 +1399,9 @@ generate_email_text (gboolean include_headers)
 	GString *email;
 	char *subject, *body, *s, *debug_info, *version, *severity;
 
-	gboolean is_bugzilla = !GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active;
+	gboolean is_bugzilla;
+       
+	is_bugzilla = !(GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active || druid_data.product == NULL);
 
 	email = g_string_new (NULL);
 

@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.0.6\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2003-01-05 13:21+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -881,7 +881,7 @@ msgstr ""
 "\n"
 "Ευχαριστούμε!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -889,15 +889,15 @@ msgstr ""
 "Επειδή ο Βοηθός Σφαλμάτων δεν γνωρίζει το προϊόν για το οποίο θέλετε να "
 "στείλετε αναφορά, θα πρέπει να υποβάλετε την αναφορά σας χειροκίνητα."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Επιλέξτε ένα προϊόν για την αναφορά σας."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Επιλέξτε μια εφαρμογή για την αναφορά σφάλματός σας."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -916,19 +916,19 @@ msgstr ""
 "Μπορεί να βρείτε μια στο μενού  \"Περί\" της εφαρμογής ή στην τεκμηρίωση της "
 "εφαρμογής."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr ""
 "Πρέπει να καθορίσετε ένα συστατικό\n"
 "για την αναφορά σφάλματός σας."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr ""
 "Πρέπει να καθορίσετε μια έκδοση\n"
 "στην αναφορά σφάλματός σας."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

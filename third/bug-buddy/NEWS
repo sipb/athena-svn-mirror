@@ -1,3 +1,10 @@
+2.2.102 ("Oh na na na"):
+
+  * Fixes: 
+
+	- Fix a crashing bug when sending a bug report for a product without
+	  X-Gnome-Bugzilla stuff in its .desktop file (#104599)
+
 2.2.101 ("Fidelio"):
 
   * Fixes:
