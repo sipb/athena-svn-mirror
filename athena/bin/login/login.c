@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.30 1990-07-15 17:42:39 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.31 1990-07-20 16:44:57 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.30 1990-07-15 17:42:39 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.31 1990-07-20 16:44:57 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -64,7 +64,7 @@ typedef struct in_addr inaddr_t;
 #ifdef POSIX
 #define sigtype void
 #else
-typedef sigtype int;
+typedef int sigtype;
 #endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
