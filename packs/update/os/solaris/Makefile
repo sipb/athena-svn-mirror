@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2001-06-20 14:33:43 zacheiss Exp $
+# $Id: Makefile,v 1.4.2.1 2001-08-21 00:25:28 ghudson Exp $
 
 SLISTS=/usr/athena/lib/slists
 UPDATE=/usr/athena/lib/update
@@ -17,7 +17,8 @@ install:
 	install -c -m 0555 setup-swap-boot.sh \
 		${DESTDIR}${UPDATE}/setup-swap-boot
 	install -c -m 0444 sys_rvd ${DESTDIR}${SLISTS}
-	install -c -m 0444 sys_rvd.local ${DESTDIR}${SLISTS}
+	install -c -m 0444 sys_rvd.big ${DESTDIR}${SLISTS}
+	install -c -m 0555 track-srvd.sh ${DESTDIR}${UPDATE}/track-srvd
 	install -c -m 0555 update-os.sh ${DESTDIR}${UPDATE}/update-os
 	install -c -m 0444 usr_kernel_rvd ${DESTDIR}${SLISTS}
 
