@@ -1,0 +1,44 @@
+.TH RENEW 1 "9 August 1991"
+.ds ]W MIT Project Athena
+.SH NAME
+renew - get kerberos tickets, tokens, mappings, zephyr authentication
+.SH SYNOPSIS
+renew
+.SH DESCRIPTION
+\fIrenew\fR is an alias provided by the standard Athena dotfiles.  It is
+intended to make the process of getting new kerberos tickets,
+re-authenticating yourself to any fileservers from which you may have
+filesystems attached, and reloading your zephyr suscriptions easier.
+
+Typing "alias renew" will reveal that renew simply executes the series
+of commands:
+
+.ti 12
+kinit $USER && fsid -a && zctl load /dev/null
+
+"USER" is an environment variable that is set to your username.
+\fIkinit\fR prompts you for your password and gets you a new kerberos
+ticket-granting ticket.  Kerberos tickets automatically expire after 10
+hours.
+
+\fIfsid -a\fR establishes new NFS mappings and gets new AFS tokens for
+any filesystems you have attached.  Valid mappings or tokens are
+required to write (and sometimes read) files from remote filesystems.
+Mappings and tokens automatically expire after 10 hours.
+
+\fIzctl load /dev/null\fR reauthenticates you to the zephyr servers.
+Valid authentication is necessary to send authentic zephyrgrams;
+otherwise, your zephyrgrams will be marked unauthentic.
+
+The "&&" between the commands means that the command is only executed if
+the previous command was successful.  This eliminates error messages
+that would occur if something failed; for example, if you mis-type your
+password, it will not attempt to get mappings and tokens with no
+kerberos tickets, which would print many errors.
+.SH FILES
+.PP
+/usr/athena/lib/init/cshrc    global Athena cshrc file
+.br
+~/.cshrc                      users's cshrc file
+.SH "SEE ALSO"
+kinit(1), fsid(1), zctl(1), csh(1)
