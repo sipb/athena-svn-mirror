@@ -17,6 +17,7 @@ extern GlobalConfig global_config;
 static void
 logout (GtkWidget *widget)
 {
+	gtk_signal_handler_block_by_func (GTK_OBJECT (widget), GTK_SIGNAL_FUNC(logout), NULL);
 	if (global_config.drawer_auto_close) {
 		GtkWidget *parent = PANEL_WIDGET(widget->parent)->panel_parent;
 		g_return_if_fail(parent!=NULL);
@@ -31,6 +32,7 @@ logout (GtkWidget *widget)
 	}
 
 	panel_quit();
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (widget), GTK_SIGNAL_FUNC(logout), NULL);
 }
 
 static void  

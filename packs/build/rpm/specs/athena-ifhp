@@ -21,7 +21,7 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc
-cp ifhp.conf $RPM_BUILD_ROOT/etc/ifhp.conf
+cp ifhp.conf.athena $RPM_BUILD_ROOT/etc/ifhp.conf
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
