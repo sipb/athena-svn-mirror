@@ -1,3 +1,6 @@
 #!/bin/sh
 
+echo "SUNWeuluf"					>> $PACKAGES
 echo "117171-12"					>> $PATCHES
+
+echo "OSCHANGES=true"					>> $CONFVARS
