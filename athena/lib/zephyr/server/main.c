@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Id: main.c,v 1.41 1990-12-12 01:10:11 raeburn Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.42 1990-12-16 12:55:47 raeburn Exp $";
 #endif
 #endif
 
@@ -230,11 +230,11 @@ main(int argc, char **argv)
 #define SIG_IGN SignalIgnore
 #endif
 	(void) signal(SIGINT, SIG_IGN);
-	syslog(LOG_INFO, "Ready for action");
 #else
 	(void) signal(SIGINT, bye);
 	(void) signal(SIGTERM, bye);
-#endif DEBUG
+#endif
+	syslog(LOG_INFO, "Ready for action");
 	(void) signal(SIGUSR1, dbug_on);
 	(void) signal(SIGUSR2, dbug_off);
 	(void) signal(SIGCHLD, reap);
