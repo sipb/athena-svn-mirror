@@ -1,0 +1,1 @@
+./configure "$@" --with-krb4=/usr/athena --with-krb5=/usr/athena
