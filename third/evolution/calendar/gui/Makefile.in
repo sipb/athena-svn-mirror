@@ -961,7 +961,7 @@ e-tasks.o: e-tasks.c ../../config.h ../../e-util/e-url.h \
 	../../widgets/misc/e-calendar-item.h \
 	../../widgets/misc/e-dateedit.h \
 	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h component-factory.h e-tasks.h
+	calendar-model.h component-factory.h misc.h e-tasks.h
 e-timezone-entry.o: e-timezone-entry.c ../../config.h \
 	../../widgets/e-timezone-dialog/e-timezone-dialog.h \
 	../../libical/src/libical/ical.h e-timezone-entry.h \
@@ -1097,7 +1097,7 @@ gnome-cal.o: gnome-cal.c ../../config.h ../../e-util/e-url.h \
 	../../filter/filter-element.h ../../filter/filter-rule.h \
 	calendar-commands.h calendar-config.h \
 	../../widgets/misc/e-dateedit.h calendar-view.h \
-	calendar-view-factory.h tag-calendar.h
+	calendar-view-factory.h tag-calendar.h misc.h
 goto.o: goto.c ../../config.h calendar-commands.h gnome-cal.h \
 	../../widgets/misc/e-calendar.h \
 	../../widgets/misc/e-calendar-item.h \
@@ -1146,7 +1146,7 @@ main.o: main.c ../../config.h alarm-notify/alarm.h calendar-commands.h \
 	../../shell/evolution-shell-component-utils.h \
 	comp-editor-factory.h evolution-calendar.h control-factory.h \
 	itip-control-factory.h tasks-control-factory.h
-misc.o: misc.c ../../config.h misc.h
+misc.o: misc.c ../../config.h ../../e-util/e-url.h misc.h
 print.o: print.c ../../config.h ../../e-util/e-dialog-widgets.h \
 	../../e-util/e-time-utils.h ../../calendar/cal-util/timeutil.h \
 	../../libical/src/libical/ical.h calendar-commands.h \

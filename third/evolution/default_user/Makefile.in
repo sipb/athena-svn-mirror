@@ -455,9 +455,9 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 install-data-hook:
-	-mkdir $(defaultdir)/private
-@ENABLE_NNTP_TRUE@	-mkdir $(defaultdir)/news
-@ENABLE_NNTP_TRUE@	-mkdir $(defaultdir)/config
+	-mkdir $(DESTDIR)$(defaultdir)/private
+@ENABLE_NNTP_TRUE@	-mkdir $(DESTDIR)$(defaultdir)/news
+@ENABLE_NNTP_TRUE@	-mkdir $(DESTDIR)$(defaultdir)/config
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,17 +1,20 @@
+# translation of evolution.evolution-1-2-branch.sk.po to Slovak
+# translation of sk.po to Slovak
 # evolution Slovak translation.
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
-# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2001-2002.
+# Copyright (C) 2001-2002,2003 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2001-2002,2003.
+# Stanislav Visnovsky <visnovsky@kde.org>, 2003
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution 1.0\n"
-"POT-Creation-Date: 2002-12-05 17:57-0500\n"
-"PO-Revision-Date: 27.02.2002 13:56\n"
-"Last-Translator: Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>\n"
-"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"Project-Id-Version: evolution.evolution-1-2-branch.sk\n"
+"POT-Creation-Date: 2003-02-04 12:25-0500\n"
+"PO-Revision-Date: 2003-01-26 17:19+0100\n"
+"Last-Translator: Stanislav Visnovsky <visnovsky@kde.org>\n"
+"Language-Team: Slovak <sk-i18n@linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 1.2\n"
 
 #: addressbook/backend/ebook/GNOME_Evolution_Addressbook_LDIF_Importer.oaf.in.h:1
 msgid "Factory to import LDIF files into Evolution."
@@ -36,7 +39,7 @@ msgstr "Uložiť ako"
 
 #: addressbook/backend/ebook/e-card-simple.c:61
 #: addressbook/gui/component/select-names/e-select-names.etspec.h:1
-#: mail/mail-config.glade.h:74 my-evolution/e-summary-table.c:59
+#: mail/mail-config.glade.h:76 my-evolution/e-summary-table.c:59
 msgid "Name"
 msgstr "Meno"
 
@@ -321,9 +324,8 @@ msgstr "%x"
 
 #: addressbook/backend/ebook/e-card-simple.c:853
 #: addressbook/backend/ebook/e-destination.c:706
-#, fuzzy
 msgid "Unnamed List"
-msgstr "Zoznam kontaktov bez mena"
+msgstr "Zoznam bez mena"
 
 #: addressbook/backend/ebook/e-card.c:2683
 msgid "Multiple VCards"
@@ -346,11 +348,12 @@ msgstr "VKartapre %s"
 #: tools/evolution-addressbook-abuse.c:132
 #: tools/evolution-addressbook-export.c:60
 #: tools/evolution-addressbook-import.c:86
+#: tools/evolution-launch-composer.c:344
 msgid "Could not initialize Bonobo"
 msgstr "Nie je možné inicializovať Bonobo"
 
 #: addressbook/backend/pas/pas-backend-file.c:364
-#: addressbook/backend/pas/pas-backend-ldap.c:3010
+#: addressbook/backend/pas/pas-backend-ldap.c:3021
 msgid "Searching..."
 msgstr "Hľadám...."
 
@@ -358,32 +361,30 @@ msgstr "Hľadám...."
 msgid "Loading..."
 msgstr "Načítavam..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:719
-#, fuzzy
+#: addressbook/backend/pas/pas-backend-ldap.c:730
 msgid "Reconnecting to LDAP server..."
-msgstr "Pripájam sa na server LDAP..."
+msgstr "Znovu sa pripájam na server LDAP..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:1262
+#: addressbook/backend/pas/pas-backend-ldap.c:1273
 msgid "Adding card to LDAP server..."
 msgstr "Pridávam kartu do serveru LDAP..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:1368
+#: addressbook/backend/pas/pas-backend-ldap.c:1379
 msgid "Removing card from LDAP server..."
 msgstr "Odstraňujem kartu zo serveru LDAP..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:1604
-#: addressbook/backend/pas/pas-backend-ldap.c:1607
+#: addressbook/backend/pas/pas-backend-ldap.c:1615
+#: addressbook/backend/pas/pas-backend-ldap.c:1618
 msgid "Modifying card from LDAP server..."
 msgstr "Upravujem kartu na serveri LDAP..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:2921
+#: addressbook/backend/pas/pas-backend-ldap.c:2932
 msgid "Receiving LDAP search results..."
 msgstr "Prijímam výsledky hľadania LDAP..."
 
-#: addressbook/backend/pas/pas-backend-ldap.c:3030
-#, fuzzy
+#: addressbook/backend/pas/pas-backend-ldap.c:3041
 msgid "Error performing search"
-msgstr "Chyba pri odstraňovaní karty"
+msgstr "Chyba počas hľadania"
 
 #: addressbook/conduit/address-conduit.c:293
 msgid "Default Sync Address:"
@@ -428,11 +429,11 @@ msgstr "Ukážkový ovládací prvok Bonobo, ktorý zobrazuje adresár."
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:4
 msgid "Configuration control for the Evolution Addressbook Storages."
-msgstr ""
+msgstr "Ovládací prvok nastavenia pre adresáre Evolution."
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:5
 msgid "Configure access to LDAP directory servers here"
-msgstr ""
+msgstr "Nastavenie prístupu k adresárovým serverom LDAP"
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:6
 msgid "Control that displays an Evolution addressbook minicard."
@@ -440,7 +441,7 @@ msgstr "Ovládací prvok pre zobrazenie minikariet adresára Evolution."
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:7
 msgid "Directory Servers"
-msgstr ""
+msgstr "Adresárové servery"
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:8
 msgid "Evolution Addressbook minicard viewer"
@@ -464,18 +465,18 @@ msgstr "Vytváracie rozhranie pre rozhranie adresu z Adresára."
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:13
 msgid "Factory for the configuration controls for the Evolution Addressbook."
-msgstr ""
+msgstr "Vytváracie rozhranie pre prvok nastavenia adresára Evolution"
 
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:14
 msgid "Factory for the sample Addressbook control"
 msgstr "Vytváracie rozhranie pre ukážkový ovládací prvok Adresár"
 
 #: addressbook/gui/component/addressbook-component.c:73
-#: addressbook/gui/component/addressbook-component.c:611
+#: addressbook/gui/component/addressbook-component.c:630
 #: calendar/gui/dialogs/comp-editor-util.c:310
 #: calendar/gui/dialogs/comp-editor-util.c:366
 #: importers/netscape-importer.c:1874 shell/e-local-storage.c:177
-#: shell/e-shortcuts.c:1067
+#: shell/e-shortcuts.c:1063
 msgid "Contacts"
 msgstr "Kontakty"
 
@@ -492,84 +493,69 @@ msgid "LDAP server containing contact information"
 msgstr "LDAP server obsahujúci informácie o kontaktoch"
 
 #: addressbook/gui/component/addressbook-component.c:77
-#, fuzzy
 msgid "Public Contacts"
-msgstr "Kontakty"
+msgstr "Verejné kontakty"
 
 #: addressbook/gui/component/addressbook-component.c:77
-#, fuzzy
 msgid "Public folder containing contact information"
-msgstr "Priečinok obsahujúci informácie o kontaktoch"
+msgstr "Priečinok obsahujúci informácie o verejných kontaktoch"
 
-#: addressbook/gui/component/addressbook-component.c:567
+#: addressbook/gui/component/addressbook-component.c:586
 msgid "New Contact"
 msgstr "Nový kontakt"
 
-#: addressbook/gui/component/addressbook-component.c:567
+#: addressbook/gui/component/addressbook-component.c:586
 msgid "_Contact"
 msgstr "_Kontakt"
 
-#: addressbook/gui/component/addressbook-component.c:568
+#: addressbook/gui/component/addressbook-component.c:587
 #: ui/evolution-addressbook.h:15
-#, fuzzy
 msgid "Create a new contact"
 msgstr "Vytvoriť nový kontakt"
 
-#: addressbook/gui/component/addressbook-component.c:571
+#: addressbook/gui/component/addressbook-component.c:590
 msgid "New Contact List"
 msgstr "Nový zoznam kontaktov"
 
-#: addressbook/gui/component/addressbook-component.c:571
+#: addressbook/gui/component/addressbook-component.c:590
 msgid "Contact _List"
 msgstr "Zoznam _kontaktov"
 
-#: addressbook/gui/component/addressbook-component.c:572
-#, fuzzy
+#: addressbook/gui/component/addressbook-component.c:591
 msgid "Create a new contact list"
 msgstr "Vytvoriť nový zoznam kontaktov"
 
 #: addressbook/gui/component/addressbook-config.c:197
-#, fuzzy
 msgid "Failed to connect to LDAP server"
-msgstr "Nepodarilo sa pripojiť k serveru LDAP."
+msgstr "Nepodarilo sa pripojiť k serveru LDAP"
 
 #: addressbook/gui/component/addressbook-config.c:216
-#, fuzzy
 msgid "Failed to authenticate with LDAP server"
-msgstr ""
-"Nepodarilo sa overiť na IMAP serveri.\n"
-"%s\n"
-"\n"
+msgstr "Nepodarilo sa prihlásiť na IMAP serveri"
 
 #: addressbook/gui/component/addressbook-config.c:239
 msgid "Could not perform query on Root DSE"
-msgstr ""
+msgstr "Nepodarilo sa vykonať dotaz na koreňovom DSE"
 
 #: addressbook/gui/component/addressbook-config.c:648
 msgid "The server responded with no supported search bases"
-msgstr ""
+msgstr "Server odpovedal nepodporovanými databázami hľadania"
 
 #: addressbook/gui/component/addressbook-config.c:1154
-#, fuzzy
 msgid "This server does not support LDAPv3 schema information"
-msgstr "Odpoveď IMAP serveru neobsahovala informáciu %s"
+msgstr "Tento server nepodporuje informácie schém LDAPv3"
 
 #: addressbook/gui/component/addressbook-config.c:1176
-#, fuzzy
 msgid "Error retrieving schema information"
-msgstr ""
-"Chyba pri načítavaní informácie o filtroch:\n"
-"%s"
+msgstr "Chyba pri načítavaní informácie zo schémy"
 
 #: addressbook/gui/component/addressbook-config.c:1184
-#, fuzzy
 msgid "Server did not respond with valid schema information"
-msgstr "Odpoveď IMAP serveru neobsahovala informáciu %s"
+msgstr "Server neodpovedal platnou informáciou o schéme"
 
 #: addressbook/gui/component/addressbook-config.c:1630
-#, fuzzy
 msgid "LDAP was not enabled in this build of Evolution"
-msgstr "(Táto verzia Evolution nepodporuje SSL)"
+msgstr "LDAP nie je v tejto verzii Evolution povolený"
 
 #: addressbook/gui/component/addressbook-config.etspec.h:1
 msgid "Account Name"
@@ -601,7 +587,6 @@ msgstr ""
 "existuje a že máte dostatočné práva."
 
 #: addressbook/gui/component/addressbook.c:490
-#, fuzzy
 msgid ""
 "We were unable to open this addressbook.  This either\n"
 "means you have entered an incorrect URI, or the LDAP server\n"
@@ -622,43 +607,36 @@ msgstr ""
 "z CVS po získaní OpenLDAP z tohto odkazu.\n"
 
 #: addressbook/gui/component/addressbook.c:504
-#, fuzzy
 msgid ""
 "We were unable to open this addressbook.  This either\n"
 "means you have entered an incorrect URI, or the server\n"
 "is unreachable."
 msgstr ""
 "Nebolo možné otvoriť tento adresár. To buď znamená, že ste\n"
-"zadali neplatné URI, alebo LDAP server nefunguje."
+"zadali neplatné URI, alebo server nefunguje."
 
 #. the user clicked cancel in the password dialog
 #: addressbook/gui/component/addressbook.c:582
 msgid "Accessing LDAP Server anonymously"
-msgstr ""
+msgstr "Používam server LDAP anonymne"
 
 #: addressbook/gui/component/addressbook.c:625
-#, fuzzy
 msgid "Failed to authenticate.\n"
-msgstr ""
-"Nepodarilo sa overiť na IMAP serveri.\n"
-"%s\n"
-"\n"
+msgstr "Nepodarilo sa prihlásiť.\n"
 
 #: addressbook/gui/component/addressbook.c:633
 #: addressbook/gui/component/addressbook.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "%sEnter password for %s (user %s)"
-msgstr "Zadajte heslo pre %s (používateľ %s)"
+msgstr "%sZadajte heslo pre %s (používateľ %s)"
 
 #: addressbook/gui/component/addressbook.c:782
-#, fuzzy
 msgid "Name begins with"
-msgstr "končí na"
+msgstr "Meno začína na"
 
 #: addressbook/gui/component/addressbook.c:783
-#, fuzzy
 msgid "Email begins with"
-msgstr "končí na"
+msgstr "E-mail končí na"
 
 #: addressbook/gui/component/addressbook.c:784
 #: calendar/gui/cal-search-bar.c:53
@@ -682,6 +660,10 @@ msgid ""
 "Please make your search more specific or raise the result limit in\n"
 "the directory server preferences for this addressbook."
 msgstr ""
+"Vášmu dotazu odpovedá viac kariet, než dokáže server\n"
+"poslať alebo Evolution zobraziť. Prosím, upresnite svoj\n"
+"dotaz alebo zvýšte obmedzenie v nastavení adresárového\n"
+"serveru pre tento adresár."
 
 #: addressbook/gui/component/addressbook.c:962
 msgid ""
@@ -690,18 +672,21 @@ msgid ""
 "more specific or raise the time limit in the directory server\n"
 "preferences for this addressbook."
 msgstr ""
+"Čas pre vykonanie tohto dotazu prekročil limit nastavený na serveri\n"
+"alebo pre tento adresár. Prosím, upresnite hľadanie alebo zvýšte\n"
+"časový limit v nastavení adresárového serveru pre tento adresár."
 
 #: addressbook/gui/component/addressbook.c:968
 msgid "The backend for this addressbook was unable to parse this query."
-msgstr ""
+msgstr "Podpora tohto adresára nedokázala spracovať tento dotaz."
 
 #: addressbook/gui/component/addressbook.c:971
 msgid "The backend for this addressbook refused to perform this query."
-msgstr ""
+msgstr "Podpora tohto adresára odmietla vykonať tento dotaz."
 
 #: addressbook/gui/component/addressbook.c:975
 msgid "This query did not complete successfully."
-msgstr ""
+msgstr "Tento dotaz nebol dokončený úspešne."
 
 #. All, unmatched, separator
 #: addressbook/gui/component/addressbook.c:1050
@@ -771,86 +756,85 @@ msgid "Enable Queries (Dangerous!)"
 msgstr "Povoliť otázky (nebezpečné)"
 
 #: addressbook/gui/component/ldap-config.glade.h:1
-#, fuzzy
-msgid "  S_how Supported Bases "
-msgstr "Kontrolovať _podporované typy"
-
-#: addressbook/gui/component/ldap-config.glade.h:2
-msgid "1234"
-msgstr ""
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:1
+#: mail/mail-config.glade.h:1 mail/subscribe-dialog.glade.h:1
+msgid "\n"
+msgstr "\n"
 
 #: addressbook/gui/component/ldap-config.glade.h:3
-#, fuzzy
-msgid "1:00"
-msgstr "100"
+msgid "  S_how Supported Bases "
+msgstr "Zobraziť _podporované základy"
 
 #: addressbook/gui/component/ldap-config.glade.h:4
-msgid "2:30"
-msgstr ""
+msgid "1234"
+msgstr "1234"
 
 #: addressbook/gui/component/ldap-config.glade.h:5
-msgid "3268"
-msgstr ""
+msgid "1:00"
+msgstr "1:00"
 
 #: addressbook/gui/component/ldap-config.glade.h:6
-#, fuzzy
-msgid "380"
-msgstr "389"
+msgid "2:30"
+msgstr "2:30"
 
 #: addressbook/gui/component/ldap-config.glade.h:7
+msgid "3268"
+msgstr "3268"
+
+#: addressbook/gui/component/ldap-config.glade.h:8
+msgid "380"
+msgstr "380"
+
+#: addressbook/gui/component/ldap-config.glade.h:9
 msgid "389"
 msgstr "389"
 
-#: addressbook/gui/component/ldap-config.glade.h:8
-msgid "5:00"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:9
-msgid "636"
-msgstr ""
-
 #: addressbook/gui/component/ldap-config.glade.h:10
-msgid "666"
-msgstr ""
+msgid "5:00"
+msgstr "5:00"
 
 #: addressbook/gui/component/ldap-config.glade.h:11
-#, fuzzy
-msgid "<- _Remove"
-msgstr "Odstrániť"
+msgid "636"
+msgstr "636"
 
 #: addressbook/gui/component/ldap-config.glade.h:12
-#, fuzzy
-msgid "<< Fewer Options"
-msgstr "Nastavenie"
+msgid "666"
+msgstr "666"
 
 #: addressbook/gui/component/ldap-config.glade.h:13
-msgid "Add (or Edit) Attribute Mappings"
-msgstr ""
+msgid "<- _Remove"
+msgstr "<- _Odstrániť"
 
 #: addressbook/gui/component/ldap-config.glade.h:14
+msgid "<< Fewer Options"
+msgstr "<< Menej možností"
+
+#: addressbook/gui/component/ldap-config.glade.h:15
+msgid "Add (or Edit) Attribute Mappings"
+msgstr "Pridať (alebo upraviť) mapovanie atribútov"
+
+#: addressbook/gui/component/ldap-config.glade.h:16
 msgid "Addressbook Sources"
 msgstr "Zdroje adresára"
 
-#: addressbook/gui/component/ldap-config.glade.h:15 mail/mail-account-gui.c:58
-#: mail/mail-config.glade.h:14
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:17 mail/mail-account-gui.c:58
+#: mail/mail-config.glade.h:16
 msgid "Always"
-msgstr "Alarmy"
-
-#: addressbook/gui/component/ldap-config.glade.h:16
-#, fuzzy
-msgid "Anonymously"
-msgstr "Anonymný"
-
-#: addressbook/gui/component/ldap-config.glade.h:17
-msgid "Associated LDAP Attribute"
-msgstr ""
+msgstr "Vždy"
 
 #: addressbook/gui/component/ldap-config.glade.h:18
-msgid "Attribute"
-msgstr ""
+msgid "Anonymously"
+msgstr "Anonymne"
 
 #: addressbook/gui/component/ldap-config.glade.h:19
+msgid "Associated LDAP Attribute"
+msgstr "Asociovaný atribút LDAP"
+
+#: addressbook/gui/component/ldap-config.glade.h:20
+msgid "Attribute"
+msgstr "Atribút"
+
+#: addressbook/gui/component/ldap-config.glade.h:21
 msgid ""
 "Congratulations, you are finished setting up this LDAP server. You\n"
 "are now ready to access this directory.\n"
@@ -858,81 +842,75 @@ msgid ""
 "Please click the \"Finish\" button to save the settings you have entered "
 "here."
 msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:23
-#, fuzzy
-msgid "Connecting"
-msgstr "Connecticut"
-
-#: addressbook/gui/component/ldap-config.glade.h:24
-msgid "Corresponding Evolution Attribute"
-msgstr ""
+"Gratulujeme, dokončili ste nastavenie tohto serveru LDAP.\n"
+"Teraz by malo byť možné tento adresár používať.\n"
+"\n"
+"Prosím, stlačte \"Dokončiť\", aby sa nastavenie uložilo."
 
 #: addressbook/gui/component/ldap-config.glade.h:25
-#, fuzzy
-msgid "DN Customization"
-msgstr "Žiadna informácia"
+msgid "Connecting"
+msgstr "Pripojenie"
 
 #: addressbook/gui/component/ldap-config.glade.h:26
+msgid "Corresponding Evolution Attribute"
+msgstr "Zodpovedajúci atribút Evolution"
+
+#: addressbook/gui/component/ldap-config.glade.h:27
+msgid "DN Customization"
+msgstr "Upravenie DN"
+
+#: addressbook/gui/component/ldap-config.glade.h:28
 msgid "De_lete"
 msgstr "O_dstrániť"
 
-#: addressbook/gui/component/ldap-config.glade.h:27
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:29
 msgid "Distinguished _name:"
 msgstr "_Známe meno:"
 
-#: addressbook/gui/component/ldap-config.glade.h:28
-#, fuzzy
-msgid "Email Address:"
-msgstr "_E-mailová adresa:"
-
-#: addressbook/gui/component/ldap-config.glade.h:29
-#, fuzzy
-msgid "Evolution Attribute"
-msgstr "Upozorňovanie Evolution"
-
 #: addressbook/gui/component/ldap-config.glade.h:30
-#, fuzzy
-msgid "Evolution will use this DN to authenticate you with the server"
-msgstr "Evolution použije túto e-mailovú adresu pre prihlásenie na váš server"
+msgid "Email Address:"
+msgstr "E-mailová adresa:"
 
 #: addressbook/gui/component/ldap-config.glade.h:31
+msgid "Evolution Attribute"
+msgstr "Atribút Evolution"
+
+#: addressbook/gui/component/ldap-config.glade.h:32
+msgid "Evolution will use this DN to authenticate you with the server"
+msgstr "Evolution použije tento DN pre prihlásenie na váš server"
+
+#: addressbook/gui/component/ldap-config.glade.h:33
 msgid ""
 "Evolution will use this email address to authenticate you with the server"
 msgstr "Evolution použije túto e-mailovú adresu pre prihlásenie na váš server"
 
-#: addressbook/gui/component/ldap-config.glade.h:32
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:34
 msgid "Finished"
-msgstr "_Nájsť"
+msgstr "Dokončené"
 
-#: addressbook/gui/component/ldap-config.glade.h:33
+#: addressbook/gui/component/ldap-config.glade.h:35
 #: addressbook/gui/contact-editor/contact-editor.glade.h:16
 msgid "General"
 msgstr "Všeobecné"
 
-#: addressbook/gui/component/ldap-config.glade.h:34
-msgid "LDAP Attribute"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:35
-#, fuzzy
-msgid "LDAP Configuration Assistant"
-msgstr "Nastavenie"
-
 #: addressbook/gui/component/ldap-config.glade.h:36
-#, fuzzy
-msgid "Mappings"
-msgstr "Okraje"
+msgid "LDAP Attribute"
+msgstr "Atribúť LDAP"
 
-#: addressbook/gui/component/ldap-config.glade.h:37 mail/mail-account-gui.c:60
-#: mail/mail-config.glade.h:75
-#, fuzzy
-msgid "Never"
-msgstr "_každých"
+#: addressbook/gui/component/ldap-config.glade.h:37
+msgid "LDAP Configuration Assistant"
+msgstr "Asistent nastavenia LDAP"
 
 #: addressbook/gui/component/ldap-config.glade.h:38
+msgid "Mappings"
+msgstr "Mapovanie"
+
+#: addressbook/gui/component/ldap-config.glade.h:39 mail/mail-account-gui.c:60
+#: mail/mail-config.glade.h:77
+msgid "Never"
+msgstr "Nikdy"
+
+#: addressbook/gui/component/ldap-config.glade.h:40
 msgid ""
 "Now, you must specify how you want to connect to the LDAP server. The SSL "
 "(Secure Sockets Layer)\n"
@@ -941,47 +919,44 @@ msgid ""
 "your connection. Ask your system administrator if your LDAP server uses "
 "these protocols."
 msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:41
-msgid "Objectclasses"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:42
-msgid "Objectclasses Used in Evolution:"
-msgstr ""
+"Teraz musíte určiť, ako sa má vytvárať spojenie so serverom LDAP.\n"
+"Niektoré servery používajú protokoly SSL (Secure Socket Layer) alebo TLS "
+"(Transport Layer Security) pre šifrované zabezpečenie spojenia.\n"
+"To, ktorý z nich používa váš server LDAP, zistíte od jeho administrátora."
 
 #: addressbook/gui/component/ldap-config.glade.h:43
-msgid "Objectclasses Used on Server:"
-msgstr ""
+msgid "Objectclasses"
+msgstr "Objektové triedy"
 
 #: addressbook/gui/component/ldap-config.glade.h:44
+msgid "Objectclasses Used in Evolution:"
+msgstr "Objektové triedy použité v Evolution:"
+
+#: addressbook/gui/component/ldap-config.glade.h:45
+msgid "Objectclasses Used on Server:"
+msgstr "Objektové triedy použité na serveri:"
+
+#: addressbook/gui/component/ldap-config.glade.h:46
 msgid "One"
 msgstr "Jeden"
 
-#: addressbook/gui/component/ldap-config.glade.h:45
+#: addressbook/gui/component/ldap-config.glade.h:47
 msgid ""
 "Please select an Evolution attribute and an\n"
 "LDAP attribute to associate with it."
 msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:47
-msgid ""
-"Please select and Evolution attribute and an\n"
-"LDAP attribute to associate with it."
-msgstr ""
+"Prosím, vyberte atribút Evolution a atribút\n"
+"LDAP, ktorý s nim chcete asociovať."
 
 #: addressbook/gui/component/ldap-config.glade.h:49
-#, fuzzy
 msgid "R_estore Defaults"
-msgstr "Štandardné"
+msgstr "Š_tandardné"
 
 #: addressbook/gui/component/ldap-config.glade.h:50
-#, fuzzy
 msgid "Re_store Defaults"
-msgstr "Štandardné"
+msgstr "Š_tandardné"
 
 #: addressbook/gui/component/ldap-config.glade.h:51
-#, fuzzy
 msgid "S_earch scope: "
 msgstr "_Rozsah hľadania:"
 
@@ -993,14 +968,12 @@ msgid "Searching"
 msgstr "Hľadám"
 
 #: addressbook/gui/component/ldap-config.glade.h:53
-#, fuzzy
 msgid "Select"
-msgstr "Vybrať všetko"
+msgstr "Vybrať"
 
 #: addressbook/gui/component/ldap-config.glade.h:54
-#, fuzzy
 msgid "Selected:"
-msgstr "Odstránené"
+msgstr "Vybrané:"
 
 #: addressbook/gui/component/ldap-config.glade.h:55
 msgid ""
@@ -1008,6 +981,8 @@ msgid ""
 "server if\n"
 "your LDAP server supports SSL or TLS."
 msgstr ""
+"Výber tejto voľby znamená, že Evolution bude váš server LDAP\n"
+"používať iba ak sever podporuje SSL alebo TLS."
 
 #: addressbook/gui/component/ldap-config.glade.h:57
 msgid ""
@@ -1019,6 +994,10 @@ msgid ""
 "is already\n"
 "secure."
 msgstr ""
+"Zapnutie tejto voľby znamená, že Evolution sa bude pokúšať použiť\n"
+"SSL/TLS iba v nezabezpečenom prostredí. napríklad, ak je váš\n"
+"server LDAP za firewallom, Evolution nemusí tieto protokoly používať,\n"
+"pretože vaše spojenie už zabezpečené je."
 
 #: addressbook/gui/component/ldap-config.glade.h:61
 msgid ""
@@ -1028,6 +1007,8 @@ msgid ""
 "to security\n"
 "exploits. "
 msgstr ""
+"Táto voľba znamená, že váš server nepodporuje ani SSL ani TLS.\n"
+"Preto bude vaše spojenie nezabezpečené proti útokom."
 
 #: addressbook/gui/component/ldap-config.glade.h:64
 msgid ""
@@ -1035,56 +1016,52 @@ msgid ""
 "LDAP\n"
 "searches, and for creating and editing contacts. "
 msgstr ""
+"Táto voľba umožňuje zmeniť štandardné nastavenie Evolution\n"
+"pre hľadanie pomocou LDAP a pre vytváranie a úpravu kontaktov."
 
 #: addressbook/gui/component/ldap-config.glade.h:66
-msgid ""
-"Selecting this option will let you change Evolution's default settings for "
-"LDAP\n"
-"searches, and for creating and editting contacts. "
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:68
 msgid ""
 "Specifying a display name is the last required step in configuring an LDAP "
 "server."
 msgstr ""
+"Zadanie mena displeja je rýchly požadovaný krok v nastavení serveru LDAP."
+
+#: addressbook/gui/component/ldap-config.glade.h:67
+msgid "Step 1: Server Information"
+msgstr "Krok 1. Informácie o serveri"
+
+#: addressbook/gui/component/ldap-config.glade.h:68
+msgid "Step 2: Connecting to Server"
+msgstr "Krok 2. Pripojenie k serveru"
 
 #: addressbook/gui/component/ldap-config.glade.h:69
-#, fuzzy
-msgid "Step 1: Server Information"
-msgstr "Informácia o zdrojovom kóde"
+msgid "Step 3: Searching the Directory"
+msgstr "Krok 3. Hľadanie v adresári"
 
 #: addressbook/gui/component/ldap-config.glade.h:70
-#, fuzzy
-msgid "Step 2: Connecting to Server"
-msgstr "Pripájam sa na server..."
+msgid "Step 4: Display Name"
+msgstr "Krok 4. Meno displeja"
 
 #: addressbook/gui/component/ldap-config.glade.h:71
-msgid "Step 3: Searching the Directory"
-msgstr ""
+msgid "Sub"
+msgstr "Pod"
 
 #: addressbook/gui/component/ldap-config.glade.h:72
-msgid "Step 4: Display Name"
-msgstr ""
+msgid "Supported Search Bases"
+msgstr "Podporované databáze hľadania"
 
 #: addressbook/gui/component/ldap-config.glade.h:73
-msgid "Sub"
-msgstr "Sub"
-
-#: addressbook/gui/component/ldap-config.glade.h:74
-#, fuzzy
-msgid "Supported Search Bases"
-msgstr "Nepodporovaná schéma"
-
-#: addressbook/gui/component/ldap-config.glade.h:75
 msgid ""
 "The first step in configuring an LDAP server is to provide its name, and "
 "your log in\n"
 "information. Please ask your system administrator if you are unsure of this "
 "information."
 msgstr ""
+"Prvým krokom v nastavení serveru LDAP je zadanie jeho mena\n"
+"a informácií pre prihlásenie. Ak ich nepoznáte, kontaktujte vášho\n"
+"systémového administrátora."
 
-#: addressbook/gui/component/ldap-config.glade.h:77
+#: addressbook/gui/component/ldap-config.glade.h:75
 msgid ""
 "The options on this page control how many entries should be included in "
 "your\n"
@@ -1092,26 +1069,37 @@ msgid ""
 "if you\n"
 "need to change these options."
 msgstr ""
+"Nastavenia v tomto kroku určujú, koľko položiek má byť vo výsledkoch\n"
+"vašich hľadaní a ako dlho môže hľadanie trvať. Váš administrátor\n"
+"by vám mal povedať, či potrebujete tieto hodnoty zmeniť."
 
-#: addressbook/gui/component/ldap-config.glade.h:80
+#: addressbook/gui/component/ldap-config.glade.h:78
 msgid ""
 "The search base is the distinguished name (DN)  of the entry where your "
 "searches will \n"
 "begin. If you leave this blank, the search will begin at the root of the "
 "directory tree."
 msgstr ""
+"Základ hľadania je dobre známe meno (distinquished name DN)\n"
+"položky, kde hľadanie začne. Ak ho necháte prázdne, bude sa\n"
+"hľadať v celom adresárovom strome."
 
-#: addressbook/gui/component/ldap-config.glade.h:82
+#: addressbook/gui/component/ldap-config.glade.h:80
 msgid ""
 "The search scope defines how deep you would like the search to extend down "
 "the \n"
 "directory tree. A search scope of \"sub\" will include all entries below "
 "your search base.\n"
 "A search scope of \"one\" will only include the entries one level beneath "
-"your base."
+"your base.\n"
 msgstr ""
+"Rozsah hľadania určuje, ako hlboko sa pri hľadaní môže v strome\n"
+"zostúpiť. Rozsah \"Pod\" znamená vo všetkých položkách podstromu\n"
+"základu hľadania.\n"
+"Rozsah hľadania \"jedna\" zahrnie iba položky, ktoré sú jednu úroveň\n"
+"pod vašim základnom hľadania.\n"
 
-#: addressbook/gui/component/ldap-config.glade.h:85
+#: addressbook/gui/component/ldap-config.glade.h:84
 msgid ""
 "This assistant will help you to access online directory services\n"
 "using LDAP (Lightweight Directory Access Protocol) servers. \n"
@@ -1120,15 +1108,19 @@ msgid ""
 "about the server. Please contact your system administrator if you \n"
 "need help finding this information."
 msgstr ""
+"Tento sprievodca vám zjednoduší prístup k on-line adresárovým službám\n"
+"pomocou serverov LDAP (Lightweight Directory Access Protocol).\n"
+"\n"
+"Pridanie nového serveru vyžaduje niektoré špeciálne informácie,\n"
+"ktoré by vám mal poskytnúť administrátor vášho systému."
 
-#: addressbook/gui/component/ldap-config.glade.h:91
+#: addressbook/gui/component/ldap-config.glade.h:90
 msgid ""
 "This is the full name of your ldap server. For example, \"ldap.mycompany.com"
 "\"."
-msgstr ""
+msgstr "Toto je plné meno vášho serveru LDAP. Napríklad \"ldap.mojafirma.sk\"."
 
-#: addressbook/gui/component/ldap-config.glade.h:92
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:91
 msgid ""
 "This is the maximum number of entries to download. Setting this number to "
 "be \n"
@@ -1137,7 +1129,7 @@ msgstr ""
 "Toto je maximálny počet sťahovaných kariet. Ak nastavíte príliš veľké číslo, "
 "tento adresár bude pomalý."
 
-#: addressbook/gui/component/ldap-config.glade.h:94
+#: addressbook/gui/component/ldap-config.glade.h:93
 msgid ""
 "This is the method evolution will use to authenticate you.  Note that "
 "setting this to \"Email Address\" requires anonymous access to your ldap "
@@ -1146,29 +1138,32 @@ msgstr ""
 "Toto je metóda, ktorú Evolution použije pre prihlásenie. Uvedmte si, že "
 "použitie voľby \"E-mailová adresa\" vyžaduje anonymný prístup k serveru LDAP."
 
-#: addressbook/gui/component/ldap-config.glade.h:95
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:94
 msgid ""
 "This is the name for this server that will appear in your Evolution folder "
 "list.\n"
 "It is for display purposes only. "
 msgstr ""
-"Toto meno sa bude identifikovať váš účet, ale používať sa bude iba pre "
-"zobrazenie."
+"Toto meno sa bude identifikovať tento server v zozname priečinkov "
+"Evolution.\n"
+"Používa sa iba na zobrazovanie."
 
-#: addressbook/gui/component/ldap-config.glade.h:97
+#: addressbook/gui/component/ldap-config.glade.h:96
 msgid ""
 "This is the port on the LDAP server that Evolution will try to connect to. "
 "A \n"
 "list of standard ports has been provided. Ask your system administrator\n"
 "what port you should specify."
 msgstr ""
+"Toto je port serveru LDAP, ku ktorému sa Evolution pokúsi pripojiť.\n"
+"Zoznam štandardných portov je predvyplnený. Číslo portu by vám\n"
+"mal poskytnúť váš administrátor."
+
+#: addressbook/gui/component/ldap-config.glade.h:99
+msgid "This option controls how long a search will be run."
+msgstr "Táto voľba učuje, ako dlho môže hľadanie prebiehať."
 
 #: addressbook/gui/component/ldap-config.glade.h:100
-msgid "This option controls how long a search will be run."
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:101
 msgid ""
 "To add an attribute to the DN, select it from the list and click the \"Add "
 "Attribute\" button.\n"
@@ -1176,80 +1171,74 @@ msgid ""
 "contacts\n"
 "that you add to the directory on the LDAP server. "
 msgstr ""
+"Atribút do DN pridáte tak, že ho vyberiete v zozname a stlačíte\n"
+"\"Pridať atribút\".\n"
+"Každá hodnota, ktorú pridáte, sa bude požadovať pre každý nový\n"
+"kontakt, ktorý pridáte do adresára na serveri LDAP."
+
+#: addressbook/gui/component/ldap-config.glade.h:103
+msgid "U_se SSL/TLS:"
+msgstr "Použiť _SSL/TLS:"
 
 #: addressbook/gui/component/ldap-config.glade.h:104
-msgid "U_se SSL/TLS:"
-msgstr ""
+msgid "Using distinguished name (DN)"
+msgstr "Použiť známe meno (DN)"
 
 #: addressbook/gui/component/ldap-config.glade.h:105
-#, fuzzy
-msgid "Using distinguished name (DN)"
-msgstr "Známe meno (DN)"
+msgid "Using email address"
+msgstr "Použiť e-mailovú adresu"
 
 #: addressbook/gui/component/ldap-config.glade.h:106
-#, fuzzy
-msgid "Using email address"
-msgstr "E-mailová adresa"
+#: mail/mail-account-gui.c:59 mail/mail-config.glade.h:134
+msgid "Whenever Possible"
+msgstr "Ak je to možné"
 
 #: addressbook/gui/component/ldap-config.glade.h:107
-#: mail/mail-account-gui.c:59 mail/mail-config.glade.h:132
-msgid "Whenever Possible"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:108
 #: addressbook/gui/contact-editor/contact-editor.glade.h:30
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:4
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:6
 #: calendar/gui/dialogs/alarm-page.glade.h:8 filter/filter.glade.h:14
-#: mail/mail-config.glade.h:135 shell/glade/e-folder-list.glade.h:1
+#: mail/mail-config.glade.h:137 shell/glade/e-folder-list.glade.h:1
 msgid "_Add"
 msgstr "_Pridať"
 
-#: addressbook/gui/component/ldap-config.glade.h:109
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:108
 msgid "_Add ->"
-msgstr "_Pridať"
+msgstr "_Pridať ->"
+
+#: addressbook/gui/component/ldap-config.glade.h:109
+msgid "_Add Mapping"
+msgstr "_Pridať mapovanie"
 
 #: addressbook/gui/component/ldap-config.glade.h:110
-#, fuzzy
-msgid "_Add Mapping"
-msgstr "Pridať akciu"
+msgid "_Add to DN"
+msgstr "_Pridať do DN"
 
 #: addressbook/gui/component/ldap-config.glade.h:111
-#, fuzzy
-msgid "_Add to DN"
-msgstr "Pridať akciu"
+msgid "_Always"
+msgstr "_Vždy"
 
 #: addressbook/gui/component/ldap-config.glade.h:112
-#, fuzzy
-msgid "_Always"
-msgstr "Alarmy"
+msgid "_Delete Mapping"
+msgstr "_Odstrániť mapovanie"
 
 #: addressbook/gui/component/ldap-config.glade.h:113
-#, fuzzy
-msgid "_Delete Mapping"
-msgstr "_Odstrániť všetky"
+msgid "_Display name:"
+msgstr "Meno pre zo_brazenie:"
 
 #: addressbook/gui/component/ldap-config.glade.h:114
-#, fuzzy
-msgid "_Display name:"
-msgstr "_Zobrazenie"
+msgid "_Distinguished Name (DN):"
+msgstr "_Známe meno (DN):"
 
 #: addressbook/gui/component/ldap-config.glade.h:115
-#, fuzzy
-msgid "_Distinguished Name (DN):"
-msgstr "Známe meno (DN)"
+msgid "_Don't use SSL/TLS"
+msgstr "_Nepoužívať SSL/TLS"
 
 #: addressbook/gui/component/ldap-config.glade.h:116
-msgid "_Don't use SSL/TLS"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:117
-#, fuzzy
 msgid "_Download limit:"
-msgstr "Obmedzenie _sťahovania"
+msgstr "Obmedzenie _sťahovania:"
 
-#: addressbook/gui/component/ldap-config.glade.h:118 filter/filter.glade.h:16
-#: mail/mail-config.glade.h:150 ui/evolution-addressbook.xml.h:33
+#: addressbook/gui/component/ldap-config.glade.h:117 filter/filter.glade.h:16
+#: mail/mail-config.glade.h:152 ui/evolution-addressbook.xml.h:33
 #: ui/evolution-calendar.xml.h:28 ui/evolution-mail-list.xml.h:25
 #: ui/evolution-mail-messagedisplay.xml.h:6 ui/evolution-message-composer.h:40
 #: ui/evolution-message-composer.xml.h:41
@@ -1258,106 +1247,93 @@ msgstr "Obmedzenie _sťahovania"
 msgid "_Edit"
 msgstr "_Upraviť"
 
-#: addressbook/gui/component/ldap-config.glade.h:119
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:118
 msgid "_Edit Mapping"
-msgstr "_Upraviť schôdzku"
+msgstr "_Upraviť mapovanie"
+
+#: addressbook/gui/component/ldap-config.glade.h:119
+msgid "_Evolution attribute:"
+msgstr "Atribút _Evolution:"
 
 #: addressbook/gui/component/ldap-config.glade.h:120
-#, fuzzy
-msgid "_Evolution attribute:"
-msgstr "Upozorňovanie Evolution"
+msgid "_If necessary "
+msgstr "_Ak potrebné"
 
 #: addressbook/gui/component/ldap-config.glade.h:121
-msgid "_If necessary "
-msgstr ""
+msgid "_LDAP attribute:"
+msgstr "Atribút _LDAP:"
 
 #: addressbook/gui/component/ldap-config.glade.h:122
-msgid "_LDAP attribute:"
-msgstr ""
+msgid "_LDAP attributes:"
+msgstr "Atribúty _LDAP:"
 
 #: addressbook/gui/component/ldap-config.glade.h:123
-msgid "_LDAP attributes:"
-msgstr ""
+msgid "_Log in method:"
+msgstr "Spôsob _prihlásenia:"
 
 #: addressbook/gui/component/ldap-config.glade.h:124
-msgid "_Log in method:"
-msgstr ""
+msgid "_More Options >>"
+msgstr "_Viac možností >>"
 
 #: addressbook/gui/component/ldap-config.glade.h:125
-#, fuzzy
-msgid "_More Options >>"
-msgstr "_Nastavenie"
-
-#: addressbook/gui/component/ldap-config.glade.h:126
-#, fuzzy
 msgid "_Port number:"
 msgstr "_Port:"
 
-#: addressbook/gui/component/ldap-config.glade.h:127
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:126
 msgid "_Restore Defaults"
-msgstr "Štandardné"
+msgstr "Š_tandardné"
 
-#: addressbook/gui/component/ldap-config.glade.h:128
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:127
 msgid "_Search base:"
 msgstr "_Oblasť hľadania:"
 
-#: addressbook/gui/component/ldap-config.glade.h:129
+#: addressbook/gui/component/ldap-config.glade.h:128
 msgid "_Server name:"
 msgstr "_Meno serveru:"
 
-#: addressbook/gui/component/ldap-config.glade.h:130
-#, fuzzy
+#: addressbook/gui/component/ldap-config.glade.h:129
 msgid "_Timeout (minutes):"
-msgstr "Čas opakovania (minúty)"
+msgstr "Ča_kanie (minúty):"
+
+#: addressbook/gui/component/ldap-config.glade.h:130
+msgid "account-druid"
+msgstr "account-druid"
 
 #: addressbook/gui/component/ldap-config.glade.h:131
-#, fuzzy
-msgid "account-druid"
-msgstr "Účet %d"
+msgid "account-editor"
+msgstr "account-editor"
 
 #: addressbook/gui/component/ldap-config.glade.h:132
-#, fuzzy
-msgid "account-editor"
-msgstr "editor-zoznamu-kontaktov"
+msgid "cards"
+msgstr "karty"
 
 #: addressbook/gui/component/ldap-config.glade.h:133
-#, fuzzy
-msgid "cards"
-msgstr "Žiadne karty"
+msgid "connecting-tab"
+msgstr "connecting-tab"
 
 #: addressbook/gui/component/ldap-config.glade.h:134
-#, fuzzy
-msgid "connecting-tab"
-msgstr "Znovu sa pripojujem na %s"
+msgid "dn-customization-tab"
+msgstr "dn-customization-tab"
 
 #: addressbook/gui/component/ldap-config.glade.h:135
-msgid "dn-customization-tab"
-msgstr ""
+msgid "edit_server_window_simple"
+msgstr "edit_server_window_simple"
 
 #: addressbook/gui/component/ldap-config.glade.h:136
-msgid "edit_server_window_simple"
-msgstr ""
+msgid "general-tab"
+msgstr "general-tab"
 
 #: addressbook/gui/component/ldap-config.glade.h:137
-#, fuzzy
-msgid "general-tab"
-msgstr "Všeobecné"
+msgid "mappings-tab"
+msgstr "mappings-tab"
 
 #: addressbook/gui/component/ldap-config.glade.h:138
-msgid "mappings-tab"
-msgstr ""
+msgid "objectclasses-tab"
+msgstr "objectclasses-tab"
 
 #: addressbook/gui/component/ldap-config.glade.h:139
-msgid "objectclasses-tab"
-msgstr ""
-
-#: addressbook/gui/component/ldap-config.glade.h:140
-#, fuzzy
 msgid "searching-tab"
-msgstr "Hľadám"
+msgstr "searching-tab"
 
 #: addressbook/gui/component/select-names/GNOME_Evolution_Addressbook_SelectNames.oaf.in.h:1
 msgid "Evolution's addressbook name selection interface."
@@ -1406,35 +1382,33 @@ msgid "Select Contacts from Addressbook"
 msgstr "Vyberte kontakty z adresára"
 
 #: addressbook/gui/component/select-names/e-select-names.c:572
-#, fuzzy
 msgid "Find contact in"
-msgstr "Odosielateľ obsahuje"
+msgstr "Nájsť kontakt v"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:1
 #: ui/evolution-addressbook.h:16
-#, fuzzy
 msgid "Find"
-msgstr "Hľadať:"
+msgstr "Nájsť"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:2
 msgid "Select Names"
 msgstr "Výber mien"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:3
-#, fuzzy
 msgid "Selected Contacts:"
-msgstr "Odstrániť kontakt?"
+msgstr "Vybrané kontakty:"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:4
-#, fuzzy
 msgid "Show Contacts"
-msgstr "Kontakty"
+msgstr "Zobraziť kontakty"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:5
 msgid ""
 "Type a name into the entry, or\n"
 "select one from the list below:"
 msgstr ""
+"Zadajte meno alebo ho\n"
+"vyberte zo zoznamu:"
 
 #: addressbook/gui/component/select-names/select-names.glade.h:7
 msgid "_Category:"
@@ -1547,7 +1521,7 @@ msgstr "Chce prijímať poštu ako _HTML"
 #: calendar/gui/dialogs/meeting-page.c:674
 #: calendar/gui/e-calendar-table.c:1006 calendar/gui/e-day-view.c:3766
 #: calendar/gui/e-week-view.c:3563 filter/filter.glade.h:15
-#: mail/folder-browser.c:1756 mail/mail-config.glade.h:148
+#: mail/folder-browser.c:1756 mail/mail-config.glade.h:150
 #: shell/glade/e-folder-list.glade.h:2 ui/evolution-addressbook.xml.h:32
 #: ui/evolution-calendar.xml.h:27 ui/evolution-mail-message.xml.h:97
 #: ui/evolution-tasks.xml.h:16 ui/evolution.xml.h:48
@@ -2648,15 +2622,15 @@ msgid "E-mail"
 msgstr "E-mail"
 
 #. This is a filename. Translators take note.
-#: addressbook/gui/contact-editor/e-contact-save-as.c:107
+#: addressbook/gui/contact-editor/e-contact-save-as.c:103
 msgid "card.vcf"
 msgstr "card.vcf"
 
-#: addressbook/gui/contact-editor/e-contact-save-as.c:183
+#: addressbook/gui/contact-editor/e-contact-save-as.c:179
 msgid "list"
 msgstr "zoznam"
 
-#: addressbook/gui/contact-editor/e-contact-save-as.c:221
+#: addressbook/gui/contact-editor/e-contact-save-as.c:217
 #, c-format
 msgid ""
 "%s already exists\n"
@@ -2667,16 +2641,15 @@ msgstr ""
 
 #: addressbook/gui/contact-editor/file-exists.glade.h:1
 msgid "Confirm Overwrite"
-msgstr ""
+msgstr "Potvrdiť prepísanie"
 
 #: addressbook/gui/contact-editor/file-exists.glade.h:2
 msgid "Don't bother translating this string.  It's not used."
-msgstr ""
+msgstr "Don't bother translating this string.  It's not used."
 
 #: addressbook/gui/contact-editor/file-exists.glade.h:3
-#, fuzzy
 msgid "Overwrite"
-msgstr "Prepísať súbor?"
+msgstr "Prepísať"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:1
 msgid "Address _2:"
@@ -2778,28 +2751,28 @@ msgstr "_Prípona:"
 msgid "_Title:"
 msgstr "_Titul:"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:1
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:3
 msgid "List _name:"
 msgstr "Meno _zoznamu:"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:2
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:4
 msgid "Members"
 msgstr "Členovia"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:3
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:5
 msgid "Type an email address or drag a contact into the list below:"
 msgstr "Zadajte e-mailovú adresu, alo do zoznamu pretiahnite kontakt myšou:"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:5
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:7
 msgid "_Hide addresses when sending mail to this list"
 msgstr "_Skryť adresy pri posielaní e-mailu do tohto zoznamu"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:6
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:8
 #: calendar/gui/dialogs/recurrence-page.glade.h:12 filter/filter.glade.h:17
 msgid "_Remove"
 msgstr "_Odstrániť"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:7
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:9
 msgid "contact-list-editor"
 msgstr "editor-zoznamu-kontaktov"
 
@@ -2813,9 +2786,8 @@ msgid "Save List as VCard"
 msgstr "Uložiť zoznam ako VCard"
 
 #: addressbook/gui/contact-list-editor/e-contact-list-editor.etspec.h:1
-#, fuzzy
 msgid "Contact"
-msgstr "Kontakty"
+msgstr "Kontakt"
 
 #: addressbook/gui/merging/e-card-duplicate-detected.glade.h:1
 msgid "Add Anyway"
@@ -2941,23 +2913,20 @@ msgid "Cancelled"
 msgstr "Zrušený"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:43
-#, fuzzy
 msgid "Authentication Failed"
-msgstr "Overenie zlyhalo."
+msgstr "Overenie zlyhalo"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:44
-#, fuzzy
 msgid "Authentication Required"
-msgstr "Autentifikácia vyžadovaná"
+msgstr "Vyžadované overenie"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:45
 msgid "TLS not Available"
-msgstr ""
+msgstr "TLS nie je k dispozícii"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:46
-#, fuzzy
 msgid "Addressbook does not exist"
-msgstr "Súbor %s neexistuje"
+msgstr "Adresár neexistuje"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:47
 msgid "Other error"
@@ -3000,12 +2969,12 @@ msgid "Display Cards"
 msgstr "Zobraziť karty"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:213
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Opening %d cards will open %d new windows as well.\n"
 "Do you really want to display all of these cards?"
 msgstr ""
-"Požadujete, aby %d kariet bolo kartami. Otvorí sa %d nový okien.\n"
+"Požadujete, aby sa %d kariet otvorilo v nových oknách.\n"
 "Naozaj chcete zobraziť všetky tieto karty?"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:348
@@ -3037,39 +3006,32 @@ msgid "Save as VCard"
 msgstr "Uložiť ako VCard"
 
 #: addressbook/gui/widgets/e-addressbook-view.c:800
-#, fuzzy
 msgid "New Contact..."
-msgstr "Nový kontakt"
+msgstr "Nový kontakt..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:801
-#, fuzzy
 msgid "New Contact List..."
-msgstr "Nový zoznam kontaktov"
+msgstr "Nový zoznam kontaktov..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:804
-#, fuzzy
 msgid "Go to Folder..."
-msgstr "_Prejsť do priečinku..."
+msgstr "Prejsť do priečinku..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:805
-#, fuzzy
 msgid "Import..."
-msgstr "_Import..."
+msgstr "Importovať..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:807
-#, fuzzy
 msgid "Search for Contacts..."
-msgstr "_Hľadať kontakty"
+msgstr "Hľadať kontakty..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:808
-#, fuzzy
 msgid "Addressbook Sources..."
-msgstr "Zdroje _adresára..."
+msgstr "Zdroje adresára..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:810
-#, fuzzy
 msgid "Pilot Settings..."
-msgstr "Nastavenie _pilota..."
+msgstr "Nastavenie pilota..."
 
 #: addressbook/gui/widgets/e-addressbook-view.c:814
 #: ui/evolution-addressbook.xml.h:10
@@ -3125,9 +3087,8 @@ msgstr "Odstrániť"
 
 #: addressbook/gui/widgets/e-addressbook-view.c:833
 #: calendar/gui/e-day-view.c:3726 calendar/gui/e-week-view.c:3528
-#, fuzzy
 msgid "Current View"
-msgstr "_Aktuálny pohľad"
+msgstr "Aktuálny pohľad"
 
 #. Minicard view stuff
 #. Translators: put here a list of labels you want to see on buttons in
@@ -3152,6 +3113,9 @@ msgid ""
 "%s\n"
 "has crashed. You will have to restart Evolution in order to use it again"
 msgstr ""
+"Adresárové rozhranie pre\n"
+"%s\n"
+"spadlo. Aby ste ho mohli znovu použiť, musíte Evolution reštartovať."
 
 #: addressbook/gui/widgets/e-addressbook-view.etspec.h:1
 msgid "* Click here to add a contact *"
@@ -3357,7 +3321,7 @@ msgstr "Okraje"
 msgid "Number of columns:"
 msgstr "Počet stĺpcov:"
 
-#: addressbook/printing/e-contact-print.glade.h:23 mail/mail-config.glade.h:81
+#: addressbook/printing/e-contact-print.glade.h:23 mail/mail-config.glade.h:83
 msgid "Options"
 msgstr "Nastavenie"
 
@@ -3473,7 +3437,7 @@ msgstr "Nedefinovaná"
 
 #: calendar/conduits/calendar/calendar-conduit.c:205
 msgid "Split Multi-Day Events:"
-msgstr ""
+msgstr "Rozdeliť viacdňové udalosti:"
 
 #: calendar/conduits/calendar/calendar-conduit.c:1225
 #: calendar/conduits/todo/todo-conduit.c:835
@@ -3503,18 +3467,16 @@ msgid "A sample Bonobo control which displays an calendar."
 msgstr "Ukážkový ovládací prvok Bonobo pre zobrazenie kalendára."
 
 #: calendar/gui/GNOME_Evolution_Calendar.oaf.in.h:3
-#, fuzzy
 msgid "Calendar and Tasks"
-msgstr "Nastavenie kalendára a úloh"
+msgstr "Kalendár a úlohy"
 
 #: calendar/gui/GNOME_Evolution_Calendar.oaf.in.h:4
-#, fuzzy
 msgid "Configuration control for the Evolution Calendar."
-msgstr "Vytváracie rozhranie pre editor správ Evolution."
+msgstr "Nastavenie pre kalendár Evolution."
 
 #: calendar/gui/GNOME_Evolution_Calendar.oaf.in.h:5
 msgid "Configure your timezone, Calendar and Task List here "
-msgstr ""
+msgstr "Nastavenie časovej zóny, kalendára a zoznamu úloh"
 
 #: calendar/gui/GNOME_Evolution_Calendar.oaf.in.h:6
 msgid "Evolution calendar iTip/iMip viewer"
@@ -3565,9 +3527,8 @@ msgid "invalid time"
 msgstr "neplatný čas"
 
 #: calendar/gui/alarm-notify/alarm-notify-dialog.c:276
-#, fuzzy
 msgid "Evolution Alarm"
-msgstr "Evolution "
+msgstr "Alarm Evolution"
 
 #: calendar/gui/alarm-notify/alarm-notify-dialog.c:371
 #, c-format
@@ -3591,11 +3552,11 @@ msgstr "Čas opakovania (minúty)"
 msgid "_Edit appointment"
 msgstr "_Upraviť schôdzku"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:680
+#: calendar/gui/alarm-notify/alarm-queue.c:681
 msgid "No description available."
 msgstr "Popis nie je k dispozícii."
 
-#: calendar/gui/alarm-notify/alarm-queue.c:741
+#: calendar/gui/alarm-notify/alarm-queue.c:742
 msgid ""
 "Evolution does not support calendar reminders with\n"
 "email notifications yet, but this reminder was\n"
@@ -3606,13 +3567,13 @@ msgstr ""
 "pomocou e-mailu, ale toto upozornenie tak bolo nastavené.\n"
 "Evolution preto zobrazí normálny dialóg."
 
-#: calendar/gui/alarm-notify/alarm-queue.c:759
+#: calendar/gui/alarm-notify/alarm-queue.c:760
 #: calendar/gui/tasks-control.c:454 mail/mail-callbacks.c:2924
 #: widgets/misc/e-messagebox.c:159
 msgid "Warning"
 msgstr "Varovanie"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:764
+#: calendar/gui/alarm-notify/alarm-queue.c:765
 #, c-format
 msgid ""
 "An Evolution Calendar reminder is about to trigger. This reminder is "
@@ -3629,7 +3590,7 @@ msgstr ""
 "\n"
 "Chcete tento program spustiť?"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:778
+#: calendar/gui/alarm-notify/alarm-queue.c:779
 msgid "Do not ask me about this program again."
 msgstr "Pre tento program túto správu už nezobrazovať."
 
@@ -3768,7 +3729,7 @@ msgstr ""
 #: calendar/gui/dialogs/meeting-page.glade.h:1 composer/e-msg-composer.c:1967
 #: mail/folder-browser.c:1718 mail/mail-account-gui.c:1230
 #: mail/mail-account-gui.c:1650 mail/mail-accounts.c:453
-#: mail/mail-accounts.c:468 mail/mail-config.glade.h:77
+#: mail/mail-accounts.c:468 mail/mail-config.glade.h:79
 #: widgets/e-timezone-dialog/e-timezone-dialog.c:204
 #: widgets/misc/e-cell-date-edit.c:250 widgets/misc/e-dateedit.c:452
 #: widgets/misc/e-dateedit.c:1473 widgets/misc/e-dateedit.c:1588
@@ -3810,9 +3771,9 @@ msgstr "Týždeň"
 msgid "Month View"
 msgstr "Mesiac"
 
-#: calendar/gui/component-factory.c:71 calendar/gui/gnome-cal.c:1371
+#: calendar/gui/component-factory.c:71 calendar/gui/gnome-cal.c:1372
 #: importers/netscape-importer.c:1873 my-evolution/my-evolution.glade.h:3
-#: shell/e-local-storage.c:176 shell/e-shortcuts.c:1059
+#: shell/e-local-storage.c:176 shell/e-shortcuts.c:1055
 msgid "Calendar"
 msgstr "Kalendár"
 
@@ -3821,21 +3782,19 @@ msgid "Folder containing appointments and events"
 msgstr "Priečinok obsahujúci schôdzky a udalosti"
 
 #: calendar/gui/component-factory.c:76
-#, fuzzy
 msgid "Public Calendar"
-msgstr "URL pre _verejný kalendár:"
+msgstr "Verejný kalendár"
 
 #: calendar/gui/component-factory.c:77
-#, fuzzy
 msgid "Public folder containing appointments and events"
-msgstr "Priečinok obsahujúci schôdzky a udalosti"
+msgstr "Verejný priečinok obsahujúci schôdzky a udalosti"
 
-#: calendar/gui/component-factory.c:81 calendar/gui/e-tasks.c:722
+#: calendar/gui/component-factory.c:81 calendar/gui/e-tasks.c:738
 #: calendar/gui/print.c:1777 calendar/gui/tasks-control.c:508
 #: calendar/importers/icalendar-importer.c:704
 #: importers/netscape-importer.c:1875 my-evolution/e-summary-tasks.c:327
 #: my-evolution/e-summary-tasks.c:345 shell/e-local-storage.c:182
-#: shell/e-shortcuts.c:1063
+#: shell/e-shortcuts.c:1059
 msgid "Tasks"
 msgstr "Úlohy"
 
@@ -3844,14 +3803,12 @@ msgid "Folder containing to-do items"
 msgstr "Priečinok obsahujúci úlohy to-do"
 
 #: calendar/gui/component-factory.c:86
-#, fuzzy
 msgid "Public Tasks"
-msgstr "Tlačiť karty"
+msgstr "Verejné úlohy"
 
 #: calendar/gui/component-factory.c:87
-#, fuzzy
 msgid "Public folder containing to-do items"
-msgstr "Priečinok obsahujúci úlohy to-do"
+msgstr "Verejný priečinok obsahujúci úlohy to-do"
 
 #: calendar/gui/component-factory.c:750
 msgid "New appointment"
@@ -3890,19 +3847,16 @@ msgid "Create a new task"
 msgstr "Vytvorí novú úlohu"
 
 #: calendar/gui/component-factory.c:765
-#, fuzzy
 msgid "New All Day Appointment"
-msgstr "Nová schôdzka"
+msgstr "Nová celodenná schôdzka"
 
 #: calendar/gui/component-factory.c:765
-#, fuzzy
 msgid "All _Day Appointment"
-msgstr "S_chôdzka"
+msgstr "_Celodenná Schôdzka"
 
 #: calendar/gui/component-factory.c:766
-#, fuzzy
 msgid "Create a new all-day appointment"
-msgstr "Vytvoriť novú schôdzku"
+msgstr "Vytvoriť novú celodennú schôdzku"
 
 #: calendar/gui/control-factory.c:123
 #, c-format
@@ -3914,9 +3868,8 @@ msgid "The URI that the calendar will display"
 msgstr "URI, ktoré bude kalendár zobrazovať"
 
 #: calendar/gui/control-factory.c:174
-#, fuzzy
 msgid "The type of view to show"
-msgstr "Zmeniť pohľad na %s"
+msgstr "Typ pohľadu, ktorý sa má zobraziť"
 
 #: calendar/gui/dialogs/alarm-options.c:359
 msgid "Audio Alarm Options"
@@ -3943,7 +3896,6 @@ msgid "Alarm Repeat"
 msgstr "Opakovanie alarmu"
 
 #: calendar/gui/dialogs/alarm-options.glade.h:2
-#, fuzzy
 msgid ""
 "Evolution does not yet support email notification for reminders.  You will "
 "not be able to edit the options for this reminder."
@@ -4143,7 +4095,7 @@ msgstr "koniec schôdzky"
 msgid "hour(s)"
 msgstr "hodín"
 
-#: calendar/gui/dialogs/alarm-page.glade.h:16 mail/mail-config.glade.h:180
+#: calendar/gui/dialogs/alarm-page.glade.h:16 mail/mail-config.glade.h:182
 msgid "minute(s)"
 msgstr "minút"
 
@@ -4171,10 +4123,9 @@ msgstr "30 minút"
 msgid "60 minutes"
 msgstr "60 minút"
 
-#: calendar/gui/dialogs/cal-prefs-dialog.glade.h:6 mail/mail-config.glade.h:12
-#, fuzzy
+#: calendar/gui/dialogs/cal-prefs-dialog.glade.h:6 mail/mail-config.glade.h:14
 msgid "Alerts"
-msgstr "Alberta"
+msgstr "Alarmy"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:7
 msgid "Calendar and Tasks Settings"
@@ -4190,7 +4141,7 @@ msgstr "Farba pre úlohy do dnešného dňa"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:10
 msgid "Day _ends:"
-msgstr ""
+msgstr "Deň _končí:"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 msgid "Days"
@@ -4217,7 +4168,6 @@ msgid "Monday"
 msgstr "Pondelok"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:16
-#, fuzzy
 msgid "S_un"
 msgstr "_Ne"
 
@@ -4229,7 +4179,7 @@ msgstr "Sobota"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:18
 msgid "Sh_ow a reminder"
-msgstr ""
+msgstr "_Zobraziť pripomenutie"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:19
 msgid "Show week _numbers in date navigator"
@@ -4242,7 +4192,6 @@ msgid "Sunday"
 msgstr "Nedeľa"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:21
-#, fuzzy
 msgid "T_asks due today:"
 msgstr "Úlohy s _dnešným termínom:"
 
@@ -4251,9 +4200,8 @@ msgid "T_hu"
 msgstr "Š_tv"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:23
-#, fuzzy
 msgid "Task List"
-msgstr "_Zoznam úloh"
+msgstr "Zoznam úloh"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:24
 #: calendar/gui/dialogs/recurrence-page.c:1134
@@ -4281,7 +4229,7 @@ msgstr "Utorok"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:29
 msgid "W_eek starts:"
-msgstr ""
+msgstr "_Týždeň začína:"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:30
 #: calendar/gui/dialogs/recurrence-page.c:1133
@@ -4296,7 +4244,7 @@ msgstr "Pracovný týždeň"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:32
 msgid "Work days:"
-msgstr ""
+msgstr "Pracovné dni:"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:33
 msgid "_12 hour (AM/PM)"
@@ -4315,9 +4263,8 @@ msgid "_Compress weekends in month view"
 msgstr "Z_hustiť víkendy v mesačnom pohľade"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:37
-#, fuzzy
 msgid "_Day begins:"
-msgstr "Úloha začína: <b>"
+msgstr "_Deň začína:"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:38
 msgid "_Display"
@@ -4328,7 +4275,7 @@ msgid "_Fri"
 msgstr "P_ia"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:40
-#: mail/mail-config.glade.h:155
+#: mail/mail-config.glade.h:157
 msgid "_General"
 msgstr "_Všeobecné"
 
@@ -4341,7 +4288,6 @@ msgid "_Mon"
 msgstr "_Pon"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:43
-#, fuzzy
 msgid "_Overdue tasks:"
 msgstr "Úlohy _po termíne:"
 
@@ -4608,21 +4554,21 @@ msgstr "Plánovanie"
 msgid "Meeting"
 msgstr "Stretnutie"
 
-#: calendar/gui/dialogs/event-page.c:656 calendar/gui/dialogs/task-page.c:567
+#: calendar/gui/dialogs/event-page.c:662 calendar/gui/dialogs/task-page.c:567
 #, fuzzy
 msgid "Start date is wrong"
 msgstr "Dátum štartu"
 
-#: calendar/gui/dialogs/event-page.c:666
+#: calendar/gui/dialogs/event-page.c:672
 msgid "End date is wrong"
 msgstr ""
 
-#: calendar/gui/dialogs/event-page.c:689
+#: calendar/gui/dialogs/event-page.c:695
 #, fuzzy
 msgid "Start time is wrong"
 msgstr "Čas _začiatku:"
 
-#: calendar/gui/dialogs/event-page.c:696
+#: calendar/gui/dialogs/event-page.c:702
 msgid "End time is wrong"
 msgstr ""
 
@@ -5026,7 +4972,7 @@ msgstr ""
 
 #: calendar/gui/dialogs/task-page.glade.h:5 calendar/gui/e-itip-control.c:1081
 #: calendar/gui/e-itip-control.glade.h:6
-#: composer/e-msg-composer-attachment.glade.h:2 mail/mail-config.glade.h:42
+#: composer/e-msg-composer-attachment.glade.h:2 mail/mail-config.glade.h:44
 msgid "Description:"
 msgstr "Popis:"
 
@@ -5206,7 +5152,7 @@ msgstr "Dátum štartu"
 
 #: calendar/gui/e-calendar-table.etspec.h:16
 #: my-evolution/component-factory.c:51 shell/e-shell.c:748
-#: shell/e-shortcuts.c:1051
+#: shell/e-shortcuts.c:1047
 msgid "Summary"
 msgstr "Súhrn"
 
@@ -5342,101 +5288,92 @@ msgid "Delete _All Occurrences"
 msgstr "Odstrániť _všetky výskyty"
 
 #: calendar/gui/e-itip-control.c:684
-#, fuzzy
 msgid "Yes. (Complex Recurrence)"
-msgstr "_Jednoduché opakovanie"
+msgstr ""
 
 #: calendar/gui/e-itip-control.c:696
-#, fuzzy
 msgid "Every day"
-msgstr "Každých"
+msgstr "Každý deň"
 
 #: calendar/gui/e-itip-control.c:698
-#, fuzzy, c-format
+#, c-format
 msgid "Every %d days"
-msgstr "%d dní"
+msgstr "Každých %d dní"
 
 #: calendar/gui/e-itip-control.c:704
-#, fuzzy
 msgid "Every week"
-msgstr "Každých"
+msgstr "Každý týždeň"
 
 #: calendar/gui/e-itip-control.c:706
-#, fuzzy, c-format
+#, c-format
 msgid "Every %d weeks"
-msgstr "%d týždňov"
+msgstr "Každých %d týždňov"
 
 #: calendar/gui/e-itip-control.c:709
-#, fuzzy
 msgid "Every week on "
-msgstr "Evergreen"
+msgstr "Každý týždeň "
 
 #: calendar/gui/e-itip-control.c:711
-#, fuzzy, c-format
+#, c-format
 msgid "Every %d weeks on "
-msgstr "%d týždňov"
+msgstr "Každých %d týždňov "
 
 #: calendar/gui/e-itip-control.c:719
-#, fuzzy
 msgid " and "
-msgstr "Piesok"
+msgstr " a "
 
 #: calendar/gui/e-itip-control.c:726
 #, c-format
 msgid "The %s day of "
-msgstr ""
+msgstr "%s deň z "
 
 #: calendar/gui/e-itip-control.c:739
 #, c-format
 msgid "The %s %s of "
-msgstr ""
+msgstr "%s %s z "
 
 #: calendar/gui/e-itip-control.c:744
-#, fuzzy
 msgid "every month"
-msgstr "Jeden _mesiac"
+msgstr "každý mesiac"
 
 #: calendar/gui/e-itip-control.c:749
 #, c-format
 msgid "every %d months"
-msgstr ""
+msgstr "každých %d mesiacov"
 
 #: calendar/gui/e-itip-control.c:755
-#, fuzzy
 msgid "Every year"
-msgstr "Každých"
+msgstr "Každý rok"
 
 #: calendar/gui/e-itip-control.c:757
 #, c-format
 msgid "Every %d years"
-msgstr ""
+msgstr "Každých %d rokov"
 
 #: calendar/gui/e-itip-control.c:769
 #, c-format
 msgid " a total of %d times"
-msgstr ""
+msgstr " celkom %d-krát"
 
 #: calendar/gui/e-itip-control.c:777
 msgid ", ending on "
-msgstr ""
+msgstr ", končiace na "
 
 #: calendar/gui/e-itip-control.c:801
 msgid "<b>Starts:</b> "
-msgstr ""
+msgstr "<b>Začína:</b> "
 
 #: calendar/gui/e-itip-control.c:811
-#, fuzzy
 msgid "<b>Ends:</b> "
-msgstr "Končí: <b>"
+msgstr "<b>Končí:</b> "
 
 #: calendar/gui/e-itip-control.c:831
-#, fuzzy
 msgid "<b>Completed:</b> "
-msgstr "Dokončený "
+msgstr "<b>Dokončený:</b> "
 
 #: calendar/gui/e-itip-control.c:841
 msgid "<b>Due:</b> "
-msgstr ""
+msgstr "<b>Termín:</b> "
 
 #: calendar/gui/e-itip-control.c:878 calendar/gui/e-itip-control.c:928
 msgid "iCalendar Information"
@@ -5465,9 +5402,8 @@ msgid "<i>None</i>"
 msgstr "<i>Žiadna</i>"
 
 #: calendar/gui/e-itip-control.c:1035
-#, fuzzy
 msgid "Location:"
-msgstr "_Miesto: "
+msgstr "Umiestnenie:"
 
 #: calendar/gui/e-itip-control.c:1049
 msgid "Status:"
@@ -5556,9 +5492,9 @@ msgid "Meeting Information"
 msgstr "Informácie o stretnutí"
 
 #: calendar/gui/e-itip-control.c:1300
-#, fuzzy, c-format
+#, c-format
 msgid "<b>%s</b> requests the presence of %s at a meeting."
-msgstr "<b>%s</b> požaduje vašu účasť na stretnutí."
+msgstr "<b>%s</b> požaduje účasť %s na stretnutí."
 
 #: calendar/gui/e-itip-control.c:1302
 #, c-format
@@ -5625,9 +5561,9 @@ msgid "Task Information"
 msgstr "Informácia o úlohe"
 
 #: calendar/gui/e-itip-control.c:1367
-#, fuzzy, c-format
+#, c-format
 msgid "<b>%s</b> requests %s to perform a task."
-msgstr "<b>%s</b> požaduje, aby ste vykonali úlohu."
+msgstr "<b>%s</b> požaduje, aby %s vykonal úlohu."
 
 #: calendar/gui/e-itip-control.c:1369
 #, c-format
@@ -5710,9 +5646,8 @@ msgid "Bad Free/Busy Message"
 msgstr "Neplatná správa o voľnom čase"
 
 #: calendar/gui/e-itip-control.c:1513
-#, fuzzy
 msgid "The message does not appear to be properly formed"
-msgstr "Priečinok vyzerá ako nenapraviteľne poškodený."
+msgstr "Správa asi nie je správne formátovaná"
 
 #: calendar/gui/e-itip-control.c:1575
 msgid "The message contains only unsupported requests."
@@ -5728,22 +5663,19 @@ msgstr "Príloha nemá žiadne zobraziteľné položky kalendára"
 
 #: calendar/gui/e-itip-control.c:1856 calendar/gui/e-itip-control.c:1948
 msgid "Object is invalid and cannot be updated\n"
-msgstr ""
+msgstr "Objekt nie je platný a nie je možné ho aktualizovať\n"
 
 #: calendar/gui/e-itip-control.c:1859 calendar/gui/e-itip-control.c:1951
-#, fuzzy
 msgid "There was an error on the CORBA system\n"
-msgstr "Nastala chyba pri sťahovaní dát pre"
+msgstr "Nastala chyba v systéme CORBA\n"
 
 #: calendar/gui/e-itip-control.c:1862 calendar/gui/e-itip-control.c:1954
-#, fuzzy
 msgid "Object could not be found\n"
-msgstr "Položku nie je možné poslať!\n"
+msgstr "Objekt sa nepodarilo nájsť\n"
 
 #: calendar/gui/e-itip-control.c:1865
-#, fuzzy
 msgid "You do not have the right permissions to update the calendar\n"
-msgstr "Nie je možné otvoriť priečinok v `%s'"
+msgstr "Nemáte práva pre aktualizáciu kalendára\n"
 
 #: calendar/gui/e-itip-control.c:1868
 msgid "Update complete\n"
@@ -5854,7 +5786,7 @@ msgstr "Nepovinní účastníci"
 #: calendar/gui/e-meeting-model.c:87
 #, fuzzy
 msgid "Resources"
-msgstr "Zdroj"
+msgstr "Zdroje"
 
 #: calendar/gui/e-meeting-model.c:233 calendar/gui/e-meeting-model.c:250
 #: calendar/gui/e-meeting-model.c:565 calendar/gui/e-meeting-model.c:831
@@ -5992,45 +5924,45 @@ msgstr "_Začiatok stretnutia:"
 msgid "Meeting _end time:"
 msgstr "_Koniec stretnutia:"
 
-#: calendar/gui/e-tasks.c:355 calendar/gui/gnome-cal.c:2013
-#: calendar/gui/gnome-cal.c:2024
+#: calendar/gui/e-tasks.c:358 calendar/gui/gnome-cal.c:2036
+#: calendar/gui/gnome-cal.c:2047
 #, c-format
 msgid "Opening tasks at %s"
 msgstr "Otváram úlohy na %s"
 
-#: calendar/gui/e-tasks.c:381 calendar/gui/tasks-control.c:196
+#: calendar/gui/e-tasks.c:387 calendar/gui/tasks-control.c:196
 #, c-format
 msgid "Could not load the tasks in `%s'"
 msgstr "Nepodarilo sa načítať úlohy v `%s'"
 
-#: calendar/gui/e-tasks.c:393
+#: calendar/gui/e-tasks.c:402
 #, c-format
 msgid "The method required to load `%s' is not supported"
 msgstr "Metódy potrebná pre načítanie `%s' nie je podporovaná"
 
-#: calendar/gui/e-tasks.c:404 calendar/gui/gnome-cal.c:1552
+#: calendar/gui/e-tasks.c:416 calendar/gui/gnome-cal.c:1561
 #, fuzzy, c-format
 msgid "You don't have permission to open the folder in `%s'"
 msgstr "Nie je možné otvoriť priečinok v `%s'"
 
-#: calendar/gui/e-tasks.c:469 calendar/gui/gnome-cal.c:1750
+#: calendar/gui/e-tasks.c:484 calendar/gui/gnome-cal.c:1765
 #, fuzzy, c-format
 msgid ""
 "Error on %s:\n"
 " %s"
 msgstr "Chyba pri štarte %s"
 
-#: calendar/gui/e-tasks.c:540
+#: calendar/gui/e-tasks.c:556
 #, fuzzy
 msgid "Completing tasks..."
 msgstr "Dátum dokončenia"
 
-#: calendar/gui/e-tasks.c:563
+#: calendar/gui/e-tasks.c:579
 #, fuzzy
 msgid "Deleting selected objects..."
 msgstr "Odstráňujem vybrané objekty"
 
-#: calendar/gui/e-tasks.c:656
+#: calendar/gui/e-tasks.c:672
 msgid "Expunging"
 msgstr "Čistím"
 
@@ -6038,23 +5970,22 @@ msgstr "Čistím"
 msgid "New _Appointment..."
 msgstr "Nová _schôdzka..."
 
-#: calendar/gui/gnome-cal.c:1530
+#: calendar/gui/gnome-cal.c:1533
 #, c-format
 msgid "Could not open the folder in `%s'"
 msgstr "Nie je možné otvoriť priečinok v `%s'"
 
-#: calendar/gui/gnome-cal.c:1541
+#: calendar/gui/gnome-cal.c:1547
 #, c-format
 msgid "The method required to open `%s' is not supported"
 msgstr "Metóda nutná k otvoreniu `%s' nie je podporovaná"
 
-#. add the alarms for this client
-#: calendar/gui/gnome-cal.c:1581
+#: calendar/gui/gnome-cal.c:1593
 #, fuzzy, c-format
 msgid "Adding alarms for %s"
 msgstr "Upozornenie na %s"
 
-#: calendar/gui/gnome-cal.c:1767
+#: calendar/gui/gnome-cal.c:1786
 #, c-format
 msgid ""
 "The calendar backend for\n"
@@ -6062,7 +5993,7 @@ msgid ""
 " has crashed. You will have to restart Evolution in order to use it again"
 msgstr ""
 
-#: calendar/gui/gnome-cal.c:1772
+#: calendar/gui/gnome-cal.c:1791
 #, c-format
 msgid ""
 "The task backend for\n"
@@ -6070,12 +6001,12 @@ msgid ""
 " has crashed. You will have to restart Evolution in order to use it again"
 msgstr ""
 
-#: calendar/gui/gnome-cal.c:1996
+#: calendar/gui/gnome-cal.c:2018
 #, c-format
 msgid "Opening calendar at %s"
 msgstr "Otváram kalendára na%s"
 
-#: calendar/gui/gnome-cal.c:2035
+#: calendar/gui/gnome-cal.c:2058
 #, fuzzy
 msgid "Opening default tasks folder"
 msgstr "Otváram priečinok %s"
@@ -6167,12 +6098,12 @@ msgstr "Informácie o kalendári"
 #: calendar/gui/itip-utils.c:506
 #, fuzzy
 msgid "Updated"
-msgstr "Aktualizovať"
+msgstr "Aktualizované"
 
 #: calendar/gui/itip-utils.c:514
 #, fuzzy
 msgid "Refresh"
-msgstr "Obnoviť zoznam"
+msgstr "Obnoviť"
 
 #: calendar/gui/itip-utils.c:518
 msgid "Counter-proposal"
@@ -6553,9 +6484,8 @@ msgstr ""
 "Chcete ich naimportovať do Evolution?"
 
 #: calendar/importers/icalendar-importer.c:729
-#, fuzzy
 msgid "Gnome Calendar"
-msgstr "Kalendár"
+msgstr "Kalendár GNOME"
 
 #: calendar/pcs/query.c:289
 msgid "time-now expects 0 arguments"
@@ -6666,9 +6596,8 @@ msgid "Evaluation of the search expression did not yield a boolean value"
 msgstr "Vyhodnotenie výrazu pre hľadanie neskončilo pravdivostnou hodnotou"
 
 #: calendar/pcs/query.c:1483
-#, fuzzy
 msgid "Parse error"
-msgstr "Iná chyba"
+msgstr "Chyba pri spracovaní"
 
 #.
 #. * These are the timezone names from the Olson timezone data.
@@ -7568,18 +7497,16 @@ msgid "Asia/Macao"
 msgstr "Ázia/Makao"
 
 #: calendar/zones.h:230
-#, fuzzy
 msgid "Asia/Macau"
-msgstr "Ázia/Makao"
+msgstr "Ázia/Macao"
 
 #: calendar/zones.h:231
 msgid "Asia/Magadan"
 msgstr "Ázia/Magadan"
 
 #: calendar/zones.h:232
-#, fuzzy
 msgid "Asia/Makassar"
-msgstr "Ázia/Magadan"
+msgstr "Ázia/Makasar"
 
 #: calendar/zones.h:233
 msgid "Asia/Manila"
@@ -7602,9 +7529,8 @@ msgid "Asia/Omsk"
 msgstr "Ázia/Omsk"
 
 #: calendar/zones.h:238
-#, fuzzy
 msgid "Asia/Oral"
-msgstr "Ázia/Kábul"
+msgstr "Ázia/Oral"
 
 #: calendar/zones.h:239
 msgid "Asia/Phnom_Penh"
@@ -7623,9 +7549,8 @@ msgid "Asia/Qatar"
 msgstr "Ázia/Katar"
 
 #: calendar/zones.h:243
-#, fuzzy
 msgid "Asia/Qyzylorda"
-msgstr "Ázia/Gaza"
+msgstr "Ázia/Qyzylorda"
 
 #: calendar/zones.h:244
 msgid "Asia/Rangoon"
@@ -8255,9 +8180,9 @@ msgid "Resynchronizing with server"
 msgstr "Obnovujem synchronizáciu so serverom"
 
 #: camel/camel-disco-folder.c:278
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "Ukladám priečinok '%s'"
+msgstr "Pripravujem priečinok '%s' pre prácu off-line"
 
 #: camel/camel-disco-store.c:367
 msgid "You must be working online to complete this operation"
@@ -8318,24 +8243,22 @@ msgid "Failed to retrieve message"
 msgstr "Nepodarilo sa prijať správu"
 
 #: camel/camel-filter-search.c:387
-#, fuzzy
 msgid "Invalid arguments to (system-flag)"
-msgstr "Neplatné argumenty"
+msgstr "Neplatné argumenty pre (systémové príznaky)"
 
 #: camel/camel-filter-search.c:402
-#, fuzzy
 msgid "Invalid arguments to (user-tag)"
-msgstr "Neplatné argumenty"
+msgstr "Neplatné argumenty pre (používateľské značky)"
 
 #: camel/camel-filter-search.c:514
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to create pipe to '%s': %s"
-msgstr "Nepodarilo sa uložiť správu %s: %s"
+msgstr "Nepodarilo sa vytvoriť rúru do '%s': %s"
 
 #: camel/camel-filter-search.c:550
-#, fuzzy, c-format
-msgid "Failed to create create child process '%s': %s"
-msgstr "Nepodarilo sa uložiť správu %s: %s"
+#, c-format
+msgid "Failed to create child process '%s': %s"
+msgstr "Nepodarilo sa vytvoriť proces potomka '%s': %s"
 
 #: camel/camel-filter-search.c:656 camel/camel-filter-search.c:664
 #, c-format
@@ -8389,9 +8312,8 @@ msgid "Moving messages"
 msgstr "Presúvam správy"
 
 #: camel/camel-folder.c:1319
-#, fuzzy
 msgid "Copying messages"
-msgstr "Kopírujem správy do %s"
+msgstr "Kopírujem správy"
 
 #: camel/camel-gpg-context.c:697
 #, c-format
@@ -8400,14 +8322,17 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Vyskytla sa neočakávaná správa o stave GnuPG:\n"
+"\n"
+"%s"
 
 #: camel/camel-gpg-context.c:711
 msgid "Failed to parse gpg userid hint."
-msgstr ""
+msgstr "Nepodarilo sa spracovať radu gpg userid."
 
 #: camel/camel-gpg-context.c:734
 msgid "Failed to parse gpg passphrase request."
-msgstr ""
+msgstr "Nepodarilo sa spracovať požiadavku na heslo gpg."
 
 #: camel/camel-gpg-context.c:742
 #, c-format
@@ -8415,6 +8340,8 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
+"Musíte zadať heslo pre odomkntie kľúča\n"
+"pre používateľa: \"%s\""
 
 #: camel/camel-gpg-context.c:753 camel/camel-gpg-context.c:1206
 #: camel/camel-gpg-context.c:1313 camel/camel-gpg-context.c:1388
@@ -8424,50 +8351,50 @@ msgstr "Zrušené."
 
 #: camel/camel-gpg-context.c:771
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
+msgstr "Nepodarilo sa odomknúť tajný kľúč: zadané 3 neplatné heslá."
 
 #: camel/camel-gpg-context.c:777
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected response from GnuPG: %s"
-msgstr "Neočakávaná odpoveď od IMAP serveru: %s"
+msgstr "Neočakávaná odpoveď od GnuPG: %s"
 
 #: camel/camel-gpg-context.c:787
-#, fuzzy
 msgid "No data provided"
-msgstr "Nezadané meno súboru."
+msgstr "Nezadané žiadne dáta"
 
 #: camel/camel-gpg-context.c:830
-#, fuzzy
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Nie je možné zašiftovať správu: adresáti nie sú definovaní"
+msgstr "Nie je možné zašiftovať správu: nezadaní žiadni platní adresáti."
 
 #: camel/camel-gpg-context.c:1082
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Failed to GPG %s message: %s\n"
 "\n"
 "%.*s"
-msgstr "Nepodarilo sa uložiť správu %s: %s"
+msgstr ""
+"Nepodarilo sa použiť GPG %s pre správu správu: %s\n"
+"\n"
+"%.*s"
 
 #: camel/camel-gpg-context.c:1088
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to GPG %s message: %s\n"
-msgstr "Nepodarilo sa uložiť správu %s: %s"
+msgstr "Nepodarilo sa použiť GPG %s na správu: %s\n"
 
 #: camel/camel-gpg-context.c:1197
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to execute gpg: %s"
-msgstr "Nepodarilo sa dekódovať správu."
+msgstr "Nepodarilo sa spustiť gpg: %s"
 
 #: camel/camel-gpg-context.c:1227 camel/camel-gpg-context.c:1305
 #: camel/camel-gpg-context.c:1379 camel/camel-gpg-context.c:1409
 #: camel/camel-gpg-context.c:1436 camel/camel-gpg-context.c:1466
-#, fuzzy
 msgid "Failed to execute gpg."
-msgstr "Nepodarilo sa dekódovať správu."
+msgstr "Nepodarilo sa spustiť gpg."
 
 #: camel/camel-gpg-context.c:1290
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "Nie je možné overiť správu: nie je možné vytvoriť dočasný súbor: %s"
 
@@ -8568,26 +8495,23 @@ msgstr "Chyba kopírovaní dočasného súboru: pošty %s"
 
 #: camel/camel-multipart-encrypted.c:259 camel/camel-multipart-encrypted.c:274
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr ""
+msgstr "Nepodarilo sa dešifrovať časť MIME: chyba protokolu"
 
 #: camel/camel-multipart-encrypted.c:287
-#, fuzzy
 msgid "Failed to decrypt MIME part: invalid structure"
-msgstr "Nepodarilo sa dešifrovať: Neznáme"
+msgstr "Nepodarilo sa dešifrovať časť MIME: neplatná štruktúra"
 
 #: camel/camel-multipart-encrypted.c:327
-#, fuzzy
 msgid "Failed to decrypt MIME part: parse error"
-msgstr "Nepodarilo sa dešifrovať: Neznáme"
+msgstr "Nepodarilo sa dešifrovať časť MIME: chyba spracovania"
 
-#: camel/camel-multipart-signed.c:624
+#: camel/camel-multipart-signed.c:625
 msgid "This is a digitally signed message part"
 msgstr "Toto je digitálne podpísaná časť správy"
 
-#: camel/camel-multipart-signed.c:678
-#, fuzzy
+#: camel/camel-multipart-signed.c:679
 msgid "parse error"
-msgstr "Iná chyba"
+msgstr "chyba spracovania"
 
 #: camel/camel-provider.c:131
 #, c-format
@@ -8731,18 +8655,18 @@ msgstr "Neznámy stav overenia."
 
 #: camel/camel-sasl-ntlm.c:31
 msgid "NTLM / SPA"
-msgstr ""
+msgstr "NTLM / SPA"
 
 #: camel/camel-sasl-ntlm.c:33
-#, fuzzy
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr "Táto voľba vás pripojí na server pomocou overenia Kerberos 4."
+msgstr ""
+"Táto voľba vás pripojí na server Windows pomocou overenie NTLM / Secure."
 
 #: camel/camel-sasl-plain.c:32
 msgid "PLAIN"
-msgstr ""
+msgstr "PLAIN"
 
 #: camel/camel-sasl-popb4smtp.c:34
 msgid "POP before SMTP"
@@ -8805,19 +8729,16 @@ msgid "Host lookup failed: %s: unknown reason"
 msgstr "Zlyhalo hľadanie hostiteľa: %s: neznámy dôvod"
 
 #: camel/camel-service.c:851
-#, fuzzy
 msgid "Resolving address"
-msgstr "Zisťujem adresu: %s"
+msgstr "Zisťujem adresu"
 
 #: camel/camel-service.c:913
-#, fuzzy
 msgid "Host lookup failed: host not found"
-msgstr "Zlyhalo hľadanie hostiteľa: %s: hostiteľ nenájdený"
+msgstr "Zlyhalo hľadanie hostiteľa: hostiteľ nenájdený"
 
 #: camel/camel-service.c:916
-#, fuzzy
 msgid "Host lookup failed: unknown reason"
-msgstr "Zlyhalo hľadanie hostiteľa: %s: neznámy dôvod"
+msgstr "Zlyhalo hľadanie hostiteľa: neznámy dôvod"
 
 #: camel/camel-session.c:75
 msgid "Virtual folder email provider"
@@ -8887,9 +8808,8 @@ msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Nie je možné vytvoriť priečinok: Neplatná operácia pre tento sklad"
 
 #: camel/camel-tcp-stream-openssl.c:566
-#, fuzzy
 msgid "Unable to get issuer's certificate"
-msgstr "Nepodarilo sa overiť certifikáty"
+msgstr "Nepodarilo sa získať certifikát vydávateľa"
 
 #: camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get Certificate Revocation List"
@@ -9073,6 +8993,8 @@ msgid ""
 "Certificate problem: %s\n"
 "Issuer: %s"
 msgstr ""
+"Problém certifikátu: %s\n"
+"Vydal: %s"
 
 #: camel/camel-tcp-stream-ssl.c:911
 #, c-format
@@ -9080,20 +9002,26 @@ msgid ""
 "Bad certificate domain: %s\n"
 "Issuer: %s"
 msgstr ""
+"Neplatná doména certifikátu: %s\n"
+"Vydal: %s"
 
 #: camel/camel-tcp-stream-ssl.c:929
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Certificate expired: %s\n"
 "Issuer: %s"
-msgstr "ID _certifikátu:"
+msgstr ""
+"Platnosť certifikátu vypršala: %s\n"
+"Vydal: %s"
 
 #: camel/camel-tcp-stream-ssl.c:946
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
 "Issuer: %s"
-msgstr "ID _certifikátu:"
+msgstr ""
+"Vypršala platnosť zoznamu zrušených certifikátov: %s\n"
+"Vydal: %s"
 
 #: camel/camel-url.c:288
 #, c-format
@@ -9101,9 +9029,9 @@ msgid "Could not parse URL `%s'"
 msgstr "Nie je možné spracovať URL `%s'"
 
 #: camel/camel-vee-folder.c:618
-#, fuzzy, c-format
+#, c-format
 msgid "Error storing `%s': %s"
-msgstr "Chyba pri štarte %s"
+msgstr "Chyba pri uložení '%s': %s"
 
 #: camel/camel-vee-folder.c:656
 #, c-format
@@ -9111,9 +9039,9 @@ msgid "No such message %s in %s"
 msgstr "Taká správa neexistuje %s v %s"
 
 #: camel/camel-vee-folder.c:816 camel/camel-vee-folder.c:822
-#, fuzzy
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "Kontrolujem novú poštu vo všetkých priečinkoch"
+msgstr ""
+"Nepodarilo sa skopírovať alebo presunúť správu do virtuálneho priečinku"
 
 #: camel/camel-vee-store.c:296
 #, c-format
@@ -9200,9 +9128,9 @@ msgid "Scanning for changed messages"
 msgstr "Hľadám zmenené správy"
 
 #: camel/providers/imap/camel-imap-folder.c:1872
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to retrieve message: %s"
-msgstr "Nepodarilo sa prijať správu"
+msgstr "Nepodarilo sa prijať správu: %s"
 
 #: camel/providers/imap/camel-imap-folder.c:1908
 #: camel/providers/local/camel-maildir-folder.c:212
@@ -9298,7 +9226,7 @@ msgstr "Pre čítanie a ukladanie pošty na IMAP serveroch."
 
 #: camel/providers/imap/camel-imap-provider.c:80
 #: camel/providers/nntp/camel-nntp-store.c:267
-#: camel/providers/pop3/camel-pop3-provider.c:69 mail/mail-config.glade.h:85
+#: camel/providers/pop3/camel-pop3-provider.c:69 mail/mail-config.glade.h:87
 msgid "Password"
 msgstr "Heslo"
 
@@ -9308,14 +9236,14 @@ msgstr ""
 "Táto voľba pripojí na IMAP server pomocou hesiel prenášaných ako čistý text."
 
 #: camel/providers/imap/camel-imap-store.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "IMAP server %s"
-msgstr "SMTP server %s"
+msgstr "IMAP server %s"
 
 #: camel/providers/imap/camel-imap-store.c:459
-#, fuzzy, c-format
+#, c-format
 msgid "IMAP service for %s on %s"
-msgstr "%s služba pre %s na %s"
+msgstr "Služba IMAP pre %s na %s"
 
 #: camel/providers/imap/camel-imap-store.c:584
 #: camel/providers/nntp/camel-nntp-store.c:130
@@ -9406,9 +9334,9 @@ msgstr "Rodičovský priečinok nesmie obsahovať podpriečinky"
 
 #. $HOME relative path + protocol string
 #: camel/providers/local/camel-local-folder.c:352
-#, fuzzy, c-format
+#, c-format
 msgid "~%s (%s)"
-msgstr "%s (%d)"
+msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
 #: camel/providers/local/camel-local-folder.c:356
@@ -9419,9 +9347,9 @@ msgstr "Nie je možné otvoriť poštovú schránku: %s: %s\n"
 
 #. a full path + protocol
 #: camel/providers/local/camel-local-folder.c:363
-#, fuzzy, c-format
+#, c-format
 msgid "%s (%s)"
-msgstr "%s (%d)"
+msgstr "%s (%s)"
 
 #: camel/providers/local/camel-local-provider.c:43
 msgid "Use the `.folders' folder summary file (exmh)"
@@ -9983,7 +9911,7 @@ msgstr "Nechať poštu na serveri"
 msgid "Delete after %s day(s)"
 msgstr "Odstrániť po %s dňoch"
 
-#: camel/providers/pop3/camel-pop3-provider.c:52 mail/mail-config.glade.h:84
+#: camel/providers/pop3/camel-pop3-provider.c:52 mail/mail-config.glade.h:86
 msgid "POP"
 msgstr "POP"
 
@@ -10077,7 +10005,7 @@ msgid "No such folder `%s'."
 msgstr "Priečinok `%s' neexistuje."
 
 #: camel/providers/sendmail/camel-sendmail-provider.c:36
-#: mail/mail-config.glade.h:109
+#: mail/mail-config.glade.h:111
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -10129,7 +10057,7 @@ msgstr "sendmail"
 msgid "Mail delivery via the sendmail program"
 msgstr "Prenos pošty pomocou programu sendmail"
 
-#: camel/providers/smtp/camel-smtp-provider.c:37 mail/mail-config.glade.h:101
+#: camel/providers/smtp/camel-smtp-provider.c:37 mail/mail-config.glade.h:103
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10305,7 +10233,7 @@ msgstr "Nie je možné poslať správu: adresa odosielateľa nie je platná."
 msgid "Sending message"
 msgstr "Posielam správu"
 
-#: camel/providers/smtp/camel-smtp-transport.c:703
+#: camel/providers/smtp/camel-smtp-transport.c:704
 msgid "Cannot send message: no recipients defined."
 msgstr "Nie je možné poslať správu: adresáti nie sú definovaní."
 
@@ -10409,19 +10337,19 @@ msgid "QUIT response error"
 msgstr "Chyba odpovede QUIT"
 
 #: composer/e-msg-composer-attachment-bar.c:107
-#, fuzzy, c-format
+#, c-format
 msgid "%.0fK"
-msgstr "%.1fK"
+msgstr "%.0fK"
 
 #: composer/e-msg-composer-attachment-bar.c:110
-#, fuzzy, c-format
+#, c-format
 msgid "%.0fM"
-msgstr "%.1fM"
+msgstr "%.0fM"
 
 #: composer/e-msg-composer-attachment-bar.c:113
-#, fuzzy, c-format
+#, c-format
 msgid "%.0fG"
-msgstr "%.1fG"
+msgstr "%.0fG"
 
 #. This is a filename. Translators take note.
 #: composer/e-msg-composer-attachment-bar.c:371 mail/mail-display.c:227
@@ -10639,9 +10567,8 @@ msgid "Open file"
 msgstr "Otvoriť súbor"
 
 #: composer/e-msg-composer.c:1927
-#, fuzzy
 msgid "Signature:"
-msgstr "Uložiť podpis"
+msgstr "Podpis:"
 
 #: composer/e-msg-composer.c:1968 mail/mail-account-gui.c:1231
 msgid "Autogenerated"
@@ -10693,7 +10620,6 @@ msgstr ""
 "nenastavili žiadne identity pre poštový komponent."
 
 #: composer/evolution-composer.c:413
-#, fuzzy
 msgid "Cannot initialize the Evolution composer."
 msgstr "Nie je možné inicializovať editor správ Evolution."
 
@@ -10745,12 +10671,12 @@ msgstr "Predmet obsahuje"
 msgid "Subject does not contain"
 msgstr "Predmet neobsahuje"
 
-#: e-util/e-component-listener.c:131
+#: e-util/e-component-listener.c:135
 msgid ""
 "ping_timeout_callback: could not determine if the CORBA object is nil or not"
 msgstr ""
 
-#: e-util/e-dialog-utils.c:237 mail/mail-callbacks.c:2563
+#: e-util/e-dialog-utils.c:241 mail/mail-callbacks.c:2563
 msgid ""
 "A file by that name already exists.\n"
 "Overwrite it?"
@@ -10861,7 +10787,7 @@ msgid "%I %p"
 msgstr "%I %p"
 
 #: filter/filter-datespec.c:70 filter/filter.glade.h:24
-#: mail/mail-config.glade.h:181
+#: mail/mail-config.glade.h:183
 msgid "seconds"
 msgstr "sekúnd"
 
@@ -10974,32 +10900,32 @@ msgstr ""
 "%s"
 
 #: filter/filter-label.c:136 filter/libfilter-i18n.h:26 mail/mail-config.c:68
-#: mail/mail-config.glade.h:62
+#: mail/mail-config.glade.h:64
 msgid "Important"
 msgstr "Dôležité"
 
 #. red
 #: filter/filter-label.c:137 mail/mail-config.c:69
-#: mail/mail-config.glade.h:133
+#: mail/mail-config.glade.h:135
 #, fuzzy
 msgid "Work"
-msgstr "Cork"
+msgstr "Zamestnanie"
 
 #. orange
-#: filter/filter-label.c:138 mail/mail-config.c:70 mail/mail-config.glade.h:86
+#: filter/filter-label.c:138 mail/mail-config.c:70 mail/mail-config.glade.h:88
 #, fuzzy
 msgid "Personal"
-msgstr "Pownal"
+msgstr "Osobný"
 
 #. forest green
 #: filter/filter-label.c:139 mail/mail-config.c:71
-#: mail/mail-config.glade.h:124
+#: mail/mail-config.glade.h:126
 #, fuzzy
 msgid "To Do"
 msgstr "Togo"
 
 #. blue
-#: filter/filter-label.c:140 mail/mail-config.c:72 mail/mail-config.glade.h:66
+#: filter/filter-label.c:140 mail/mail-config.c:72 mail/mail-config.glade.h:68
 #, fuzzy
 msgid "Later"
 msgstr "po"
@@ -11142,7 +11068,7 @@ msgstr "pre všetky lokálne priečinky"
 #: filter/libfilter-i18n.h:2
 #, fuzzy
 msgid "Adjust Score"
-msgstr "Priradiť skóre"
+msgstr "Upraviť skóre"
 
 #: filter/libfilter-i18n.h:3
 msgid "Assign Color"
@@ -11159,7 +11085,7 @@ msgstr "Prílohy"
 #: filter/libfilter-i18n.h:6
 #, fuzzy
 msgid "Beep"
-msgstr "Belem"
+msgstr "Pípnuť"
 
 #: filter/libfilter-i18n.h:7
 msgid "contains"
@@ -11269,7 +11195,7 @@ msgstr "nie je označený"
 #: filter/libfilter-i18n.h:35 mail/folder-browser.c:1766
 #, fuzzy
 msgid "Label"
-msgstr "Laurel"
+msgstr "Popis"
 
 #: filter/libfilter-i18n.h:36
 msgid "Mailing list"
@@ -11295,7 +11221,7 @@ msgstr "Vykonať príkaz"
 #: filter/libfilter-i18n.h:41
 #, fuzzy
 msgid "Play Sound"
-msgstr "Prehrať zvuk:"
+msgstr "Zahrať zvuk"
 
 #: filter/libfilter-i18n.h:42 mail/message-tag-followup.c:60
 msgid "Read"
@@ -11406,7 +11332,8 @@ msgid "You must name this vfolder."
 msgstr "Musíte tento vpriečinok pomenovať."
 
 #: filter/vfolder-rule.c:215
-msgid "You need to to specify at least one folder as a source."
+#, fuzzy
+msgid "You need to specify at least one folder as a source."
 msgstr "Musíte zadať aspoň jeden priečinok ako zdrojový."
 
 #: importers/elm-importer.c:95
@@ -11635,9 +11562,9 @@ msgstr "_Neopakovať"
 msgid "Mail Accounts"
 msgstr "Účty"
 
-#: mail/GNOME_Evolution_Mail.oaf.in.h:19 mail/mail-config.glade.h:69
+#: mail/GNOME_Evolution_Mail.oaf.in.h:19 mail/mail-config.glade.h:71
 msgid "Mail Preferences"
-msgstr ""
+msgstr "Nastavenie pošty"
 
 #: mail/GNOME_Evolution_Mail.oaf.in.h:20
 msgid "Mail configuration interface"
@@ -11740,12 +11667,12 @@ msgid "Cannot initialize Evolution's folder info component."
 msgstr ""
 "Nie je možné inicializovať komponent pre infomácie o priečinkoch Evolution."
 
-#: mail/component-factory.c:1340 mail/component-factory.c:1370
+#: mail/component-factory.c:1344 mail/component-factory.c:1374
 #, fuzzy
 msgid "Connecting..."
 msgstr "Pripájam sa na server..."
 
-#: mail/component-factory.c:1381
+#: mail/component-factory.c:1385
 msgid "Cannot register storage with shell"
 msgstr "Nie je možné zaregistrovať sklad u shellu"
 
@@ -11942,7 +11869,7 @@ msgstr "Filter na konferenciu (%s)"
 msgid "VFolder on M_ailing List (%s)"
 msgstr "VPriečinok na konferenciu (%s)"
 
-#: mail/folder-browser.h:26 mail/mail-config.glade.h:38
+#: mail/folder-browser.h:26 mail/mail-config.glade.h:40
 msgid "Default"
 msgstr "Štandard"
 
@@ -12010,16 +11937,16 @@ msgstr "Nevyplnili ste všetky povinné informácie."
 msgid "Evolution Account Editor"
 msgstr "Editor účtov Evolution"
 
-#: mail/mail-account-gui.c:743 mail/mail-config.glade.h:157
+#: mail/mail-account-gui.c:743 mail/mail-config.glade.h:159
 msgid "_Host:"
 msgstr "_Hostiteľ:"
 
-#: mail/mail-account-gui.c:747 mail/mail-config.glade.h:127
+#: mail/mail-account-gui.c:747 mail/mail-config.glade.h:129
 #, fuzzy
 msgid "User_name:"
 msgstr "Meno po_užívateľa:"
 
-#: mail/mail-account-gui.c:751 mail/mail-config.glade.h:164
+#: mail/mail-account-gui.c:751 mail/mail-config.glade.h:166
 msgid "_Path:"
 msgstr "_Cesta:"
 
@@ -12057,7 +11984,7 @@ msgid "[Default]"
 msgstr "Štandard"
 
 #: mail/mail-accounts.c:538 mail/mail-accounts.etspec.h:2
-#: mail/mail-config.glade.h:53
+#: mail/mail-config.glade.h:55
 msgid "Enabled"
 msgstr "Povolené"
 
@@ -12069,7 +11996,7 @@ msgstr "Meno úč_tu:"
 #: mail/mail-accounts.c:540 mail/mail-accounts.etspec.h:3
 #, fuzzy
 msgid "Protocol"
-msgstr "Portoriko"
+msgstr "Protokol"
 
 #: mail/mail-autofilter.c:78
 #, fuzzy, c-format
@@ -12326,12 +12253,12 @@ msgstr "Bez popisu"
 
 #: mail/mail-composer-prefs.c:309
 msgid "Please specify a valid script name"
-msgstr ""
+msgstr "Prosím, zadajte platné meno skriptu"
 
 #: mail/mail-composer-prefs.c:325 mail/mail-config.c:2629
 #, fuzzy
 msgid "Unnamed"
-msgstr "Kontakt bez mena"
+msgstr "Bez mena"
 
 #: mail/mail-composer-prefs.c:880
 #, fuzzy
@@ -12394,14 +12321,14 @@ msgstr ""
 "Toto meno bude používané iba pre zobrazenie."
 
 #. set window title
-#: mail/mail-config-druid.c:637
+#: mail/mail-config-druid.c:638
 msgid "Evolution Account Assistant"
 msgstr "Sprievodca účtom Evolution"
 
 #: mail/mail-config.c:622
-#, fuzzy, c-format
+#, c-format
 msgid "Account %d"
-msgstr "Účet"
+msgstr "Účet %d"
 
 #: mail/mail-config.c:2316
 msgid "Checking Service"
@@ -12411,129 +12338,119 @@ msgstr "Kontrolujem službu"
 msgid "Connecting to server..."
 msgstr "Pripájam sa na server..."
 
-#: mail/mail-config.glade.h:1
+#: mail/mail-config.glade.h:3
 msgid " _Check for supported types "
 msgstr "Kontrolovať _podporované typy"
 
-#: mail/mail-config.glade.h:2
+#: mail/mail-config.glade.h:4
 msgid "(SSL is not supported in this build of Evolution)"
 msgstr "(Táto verzia Evolution nepodporuje SSL)"
 
-#: mail/mail-config.glade.h:3
+#: mail/mail-config.glade.h:5
 msgid "(SSL is not supported in this build of evolution)"
 msgstr "(Táto verzia Evolution nepodporuje SSL)"
 
-#: mail/mail-config.glade.h:4
+#: mail/mail-config.glade.h:6
 msgid "A_lways encrypt to myself when sending encrypted mail"
 msgstr "_Vždy šifrovať kópiu sebe pri posielaní šifrovanej správy"
 
-#: mail/mail-config.glade.h:5
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
-
-#: mail/mail-config.glade.h:6
-#, fuzzy
-msgid "Account Editor"
-msgstr "Účet %d"
-
 #: mail/mail-config.glade.h:7
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaÄäÁáBbCcČčDdĎďEeÉéFfGgHhIiÍíJjKkLlĹĺĽľMmNnŇňOoPpQqRrSsTtUuVvWwXxYyZz"
+
+#: mail/mail-config.glade.h:8
+msgid "Account Editor"
+msgstr "Editor účtu"
+
+#: mail/mail-config.glade.h:9
 msgid "Account Information"
 msgstr "Informácia o účte"
 
-#: mail/mail-config.glade.h:8 shell/glade/evolution-startup-wizard.glade.h:1
+#: mail/mail-config.glade.h:10 shell/glade/evolution-startup-wizard.glade.h:1
 msgid "Account Management"
 msgstr "Správa účtu"
 
-#: mail/mail-config.glade.h:9
-#, fuzzy
-msgid "Add Sc_ript"
-msgstr "Pridať kritérium"
-
-#: mail/mail-config.glade.h:10
-#, fuzzy
-msgid "Add new signature..."
-msgstr "Uložiť podpis"
-
 #: mail/mail-config.glade.h:11
-#, fuzzy
+msgid "Add Sc_ript"
+msgstr "Pridať _skript"
+
+#: mail/mail-config.glade.h:12
+msgid "Add new signature..."
+msgstr "Pridať nový podpis..."
+
+#: mail/mail-config.glade.h:13
 msgid "Al_ways encrypt to myself when sending encrypted mail"
 msgstr "_Vždy šifrovať kópiu sebe pri posielaní šifrovanej správy"
 
-#: mail/mail-config.glade.h:13
-#, fuzzy
+#: mail/mail-config.glade.h:15
 msgid "Alwa_ys sign outgoing messages when using this account"
 msgstr "Vždy _podpisovať správy pri použití tohto účtu"
 
-#: mail/mail-config.glade.h:15
+#: mail/mail-config.glade.h:17
 msgid "Always _blind carbon-copy (Bcc) to:"
 msgstr "Vždy poslať _slepú kópiu (Bcc):"
 
-#: mail/mail-config.glade.h:16
+#: mail/mail-config.glade.h:18
 msgid "Always _carbon-copy (Cc) to:"
 msgstr "Vždy poslať _kópiu (Cc):"
 
-#: mail/mail-config.glade.h:17
+#: mail/mail-config.glade.h:19
 msgid "Always _trust keys in my keyring when encrypting"
-msgstr ""
+msgstr "Vždy _dôverovať kľúčom v mojom keyringu pri šifrovaní"
 
-#: mail/mail-config.glade.h:18
-#, fuzzy
+#: mail/mail-config.glade.h:20
 msgid "Attach original message"
-msgstr "Priloží súbor k správe"
+msgstr "Priložiť pôvodnú správu"
 
-#: mail/mail-config.glade.h:19 mail/message-list.etspec.h:1
+#: mail/mail-config.glade.h:21 mail/message-list.etspec.h:1
 msgid "Attachment"
 msgstr "Príloha"
 
-#: mail/mail-config.glade.h:20
+#: mail/mail-config.glade.h:22
 msgid "Authentication"
 msgstr "Overenie"
 
-#: mail/mail-config.glade.h:21
-#, fuzzy
-msgid "Automatically _detect links"
-msgstr "_Automaticky kontrolovať novú poštu"
-
-#: mail/mail-config.glade.h:22
-msgid "Baltic (ISO-8859-13)"
-msgstr ""
-
 #: mail/mail-config.glade.h:23
-msgid "Baltic (ISO-8859-4)"
-msgstr ""
+msgid "Automatically _detect links"
+msgstr "_Automaticky nájsť odkazy"
 
 #: mail/mail-config.glade.h:24
-#, fuzzy
-msgid "C_haracter set:"
-msgstr "Neznáma znaková sada: %s"
+msgid "Baltic (ISO-8859-13)"
+msgstr "Pobaltská (ISO-8859-13)"
 
 #: mail/mail-config.glade.h:25
-#, fuzzy
-msgid "C_olors"
-msgstr "_Zavrieť"
+msgid "Baltic (ISO-8859-4)"
+msgstr "Pobaltská (ISO-8859-4)"
 
 #: mail/mail-config.glade.h:26
-msgid "Check spelling while I _type"
-msgstr ""
+msgid "C_haracter set:"
+msgstr "_Znaková sada:"
 
 #: mail/mail-config.glade.h:27
+msgid "C_olors"
+msgstr "_Farby"
+
+#: mail/mail-config.glade.h:28
+msgid "Check spelling while I _type"
+msgstr "Kontrolovať pravopis _priebežne"
+
+#: mail/mail-config.glade.h:29
 msgid "Checking for New Mail"
 msgstr "Kontrolujem novú poštu"
 
-#: mail/mail-config.glade.h:28
-#, fuzzy
+#: mail/mail-config.glade.h:30
 msgid "Color for _misspelled words:"
-msgstr "Farba pre úlohy do dnešného dňa"
+msgstr "Farba pre ne_správne slová:"
 
-#: mail/mail-config.glade.h:29
+#: mail/mail-config.glade.h:31
 msgid "Composing Messages"
 msgstr "Písanie správ"
 
-#: mail/mail-config.glade.h:30
+#: mail/mail-config.glade.h:32
 msgid "Configuration"
 msgstr "Nastavenie"
 
-#: mail/mail-config.glade.h:31
+#: mail/mail-config.glade.h:33
 msgid ""
 "Congratulations, your mail configuration is complete.\n"
 "\n"
@@ -12549,335 +12466,306 @@ msgstr ""
 "\n"
 "Kliknutím na \"Dokončiť\" uložíte vaše nastavenie."
 
-#: mail/mail-config.glade.h:37
+#: mail/mail-config.glade.h:39
 msgid "De_fault"
 msgstr "Š_tandardné"
 
-#: mail/mail-config.glade.h:39
-#, fuzzy
-msgid "Default Behavior"
-msgstr "Štandardná priorita:"
-
-#: mail/mail-config.glade.h:40
-#, fuzzy
-msgid "Default character _encoding:"
-msgstr "Štandardná znaková sada:"
-
 #: mail/mail-config.glade.h:41
-#, fuzzy
-msgid "Deleting Mail"
-msgstr "Prijímam poštu"
+msgid "Default Behavior"
+msgstr "Štandardné chovanie"
+
+#: mail/mail-config.glade.h:42
+msgid "Default character _encoding:"
+msgstr "Štandardná _znaková sada:"
 
 #: mail/mail-config.glade.h:43
+msgid "Deleting Mail"
+msgstr "Odstraňovanie správ"
+
+#: mail/mail-config.glade.h:45
 msgid "Digital IDs..."
 msgstr "Digitálne IDs..."
 
-#: mail/mail-config.glade.h:44
-#, fuzzy
+#: mail/mail-config.glade.h:46
 msgid "Do not quote original message"
-msgstr "Nie je možné otvoriť správu"
+msgstr "Necitovať pôvodnú správu"
 
-#: mail/mail-config.glade.h:45
+#: mail/mail-config.glade.h:47
 msgid "Don't sign _meeting requests (for Outlook compatibility)"
 msgstr ""
+"Nepodpisovať požiadavky na _stretnutie (pre kompatibilitu s klientom Outlook)"
 
-#: mail/mail-config.glade.h:46 shell/glade/evolution-startup-wizard.glade.h:2
+#: mail/mail-config.glade.h:48 shell/glade/evolution-startup-wizard.glade.h:2
 msgid "Done"
 msgstr "Hotovo"
 
-#: mail/mail-config.glade.h:47
-#, fuzzy
+#: mail/mail-config.glade.h:49
 msgid "Drafts _folder:"
 msgstr "Priečinok _konceptov:"
 
-#: mail/mail-config.glade.h:48
+#: mail/mail-config.glade.h:50
 msgid "E_nable"
 msgstr "_Povoliť"
 
-#: mail/mail-config.glade.h:49
-#, fuzzy
-msgid "Emacs"
-msgstr "Východ"
-
-#: mail/mail-config.glade.h:50
-#, fuzzy
-msgid "Email Accounts"
-msgstr "E-mail obsahuje"
-
 #: mail/mail-config.glade.h:51
-#, fuzzy
+msgid "Emacs"
+msgstr "Emacs"
+
+#: mail/mail-config.glade.h:52
+msgid "Email Accounts"
+msgstr "E-mailové účty"
+
+#: mail/mail-config.glade.h:53
 msgid "Email _address:"
 msgstr "_E-mailová adresa:"
 
-#: mail/mail-config.glade.h:52
-#, fuzzy
-msgid "Empty _trash folders on exit"
-msgstr "Vyprázdniť priečinky na O_dpadky pri ukončení"
-
 #: mail/mail-config.glade.h:54
+msgid "Empty _trash folders on exit"
+msgstr "Vyprázdniť O_dpadky pri ukončení"
+
+#: mail/mail-config.glade.h:56
 msgid "Execute Command..."
 msgstr "Vykonať príkaz..."
 
-#: mail/mail-config.glade.h:55
-#, fuzzy
-msgid "Fi_xed -width:"
-msgstr "končí na"
-
-#: mail/mail-config.glade.h:56
-#, fuzzy
-msgid "Font Properties"
-msgstr "Vlastnosti"
-
 #: mail/mail-config.glade.h:57
-#, fuzzy
-msgid "Format messages in _HTML"
-msgstr "Správy predané ďalej"
+msgid "Fi_xed -width:"
+msgstr "Pe_vná šírka:"
 
 #: mail/mail-config.glade.h:58
+msgid "Font Properties"
+msgstr "Vlastnosti písma"
+
+#: mail/mail-config.glade.h:59
+msgid "Format messages in _HTML"
+msgstr "Písať správy v _HTML"
+
+#: mail/mail-config.glade.h:60
 msgid "Get Digital ID..."
 msgstr "Získať digitálne ID..."
 
-#: mail/mail-config.glade.h:59
-#, fuzzy
+#: mail/mail-config.glade.h:61
 msgid "Highlight _quotations with"
 msgstr "_Zvýrazniť citácie pomocou"
 
-#: mail/mail-config.glade.h:60
+#: mail/mail-config.glade.h:62
 msgid "IMAPv4 "
 msgstr "IMAPv4 "
 
-#: mail/mail-config.glade.h:61 shell/glade/evolution-startup-wizard.glade.h:4
+#: mail/mail-config.glade.h:63 shell/glade/evolution-startup-wizard.glade.h:4
 msgid "Identity"
 msgstr "Identita"
 
-#: mail/mail-config.glade.h:63
+#: mail/mail-config.glade.h:65
 msgid "Inline"
 msgstr "v texte"
 
-#: mail/mail-config.glade.h:64
+#: mail/mail-config.glade.h:66
 msgid "Kerberos "
 msgstr "Kerberos "
 
-#: mail/mail-config.glade.h:65
-#, fuzzy
-msgid "Labels and Colors"
-msgstr "Uložiť a zavrieť"
-
 #: mail/mail-config.glade.h:67
-#, fuzzy
-msgid "Loading Images"
-msgstr "Nahrávať _obrázky"
+msgid "Labels and Colors"
+msgstr "Popisy a farby"
 
-#: mail/mail-config.glade.h:68
+#: mail/mail-config.glade.h:69
+msgid "Loading Images"
+msgstr "Nahrávanie obrázkov"
+
+#: mail/mail-config.glade.h:70
 msgid "Mail Configuration"
 msgstr "Nastavenie pošty"
 
-#: mail/mail-config.glade.h:70
+#: mail/mail-config.glade.h:72
 msgid "Mailbox location"
 msgstr "Umiestnenie poštovej schránky"
 
-#: mail/mail-config.glade.h:71
-#, fuzzy
-msgid "Message Composer"
-msgstr "Hlavička správy"
-
-#: mail/mail-config.glade.h:72
-#, fuzzy
-msgid "Message Display"
-msgstr "Zobrazenie _správy"
-
 #: mail/mail-config.glade.h:73
-#, fuzzy
-msgid "Microsoft"
-msgstr "Mikronézia"
+msgid "Message Composer"
+msgstr "Písanie správ"
 
-#: mail/mail-config.glade.h:76
+#: mail/mail-config.glade.h:74
+msgid "Message Display"
+msgstr "Zobrazovanie správ"
+
+#: mail/mail-config.glade.h:75
+msgid "Microsoft"
+msgstr "Microsoft"
+
+#: mail/mail-config.glade.h:78
 msgid "New Mail Notification"
 msgstr "Upozornenie na novú poštu"
 
-#: mail/mail-config.glade.h:78
+#: mail/mail-config.glade.h:80
 msgid ""
 "Note: you will not be prompted for a password until you connect for the "
 "first time"
-msgstr ""
+msgstr "Poznámka: Kým sa prvýkrát nepripojíte, nebudete musieť heslo zadávať."
 
-#: mail/mail-config.glade.h:79
+#: mail/mail-config.glade.h:81
 msgid "On Screen fonts"
-msgstr ""
+msgstr "Písma pre zobrazenie"
 
-#: mail/mail-config.glade.h:80
+#: mail/mail-config.glade.h:82
 msgid "Optional Information"
 msgstr "Nepovinné informácie"
 
-#: mail/mail-config.glade.h:82
-#, fuzzy
+#: mail/mail-config.glade.h:84
 msgid "Or_ganization:"
 msgstr "Or_ganizácia:"
 
-#: mail/mail-config.glade.h:83
+#: mail/mail-config.glade.h:85
 msgid "PGP/GPG _Key ID:"
 msgstr "ID PGP/GPG _kľúča:"
 
-#: mail/mail-config.glade.h:87
+#: mail/mail-config.glade.h:89
 msgid "Pick a color"
 msgstr "Vyberte farbu"
 
-#: mail/mail-config.glade.h:88
-#, fuzzy
+#: mail/mail-config.glade.h:90
 msgid "Pr_ompt when sending messages with only Bcc recipients defined"
 msgstr "Pýtať sa pri posielaní správ s adresátmi iba v _Bcc"
 
-#: mail/mail-config.glade.h:89
+#: mail/mail-config.glade.h:91
 msgid "Pretty Good Privacy (PGP/GPG)"
 msgstr "Pretty Good Privacy (PGP/GPG)"
 
-#: mail/mail-config.glade.h:90
-#, fuzzy
+#: mail/mail-config.glade.h:92
 msgid "Printed Fonts"
-msgstr "Tlačiť vybrané kontakty"
+msgstr "Písma pre tlač"
 
-#: mail/mail-config.glade.h:91
+#: mail/mail-config.glade.h:93
 msgid "Qmail maildir "
 msgstr "Qmail maildir "
 
-#: mail/mail-config.glade.h:92
-#, fuzzy
+#: mail/mail-config.glade.h:94
 msgid "Quote original message"
-msgstr "Nie je možné otvoriť správu"
+msgstr "Citovať pôvodnú správu"
 
-#: mail/mail-config.glade.h:93
+#: mail/mail-config.glade.h:95
 msgid "Quoted"
 msgstr "Citovať"
 
-#: mail/mail-config.glade.h:94
+#: mail/mail-config.glade.h:96
 msgid "Re_member this password"
 msgstr "_Uložiť toto heslo"
 
-#: mail/mail-config.glade.h:95
-#, fuzzy
+#: mail/mail-config.glade.h:97
 msgid "Re_ply-To:"
-msgstr "Odpovedať komu:"
+msgstr "Komu o_dpovedať:"
 
-#: mail/mail-config.glade.h:96 shell/glade/evolution-startup-wizard.glade.h:6
+#: mail/mail-config.glade.h:98 shell/glade/evolution-startup-wizard.glade.h:6
 msgid "Receiving Email"
 msgstr "Príjem pošty"
 
-#: mail/mail-config.glade.h:97
-#, fuzzy
-msgid "Receiving _Options"
-msgstr "Možnosti príjmu"
-
-#: mail/mail-config.glade.h:98
-#, fuzzy
-msgid "Remember this _password"
-msgstr "Uložiť toto heslo"
-
 #: mail/mail-config.glade.h:99
+msgid "Receiving _Options"
+msgstr "Nastavenie _príjmu"
+
+#: mail/mail-config.glade.h:100
+msgid "Remember this _password"
+msgstr "Zapamätať toto _heslo"
+
+#: mail/mail-config.glade.h:101
 msgid "Required Information"
 msgstr "Povinné informácie"
 
-#: mail/mail-config.glade.h:100
-#, fuzzy
-msgid "Restore Defaults"
-msgstr "Štandardné"
-
 #: mail/mail-config.glade.h:102
-#, fuzzy
-msgid "S_ecurity"
-msgstr "Bezpečnosť"
+msgid "Restore Defaults"
+msgstr "Obnoviť štandardné"
 
-#: mail/mail-config.glade.h:103
+#: mail/mail-config.glade.h:104
+msgid "S_ecurity"
+msgstr "_Bezpečnosť"
+
+#: mail/mail-config.glade.h:105
 msgid "Secure MIME (S/MIME)"
 msgstr "Bezpečné MIME (S/MIME)"
 
-#: mail/mail-config.glade.h:104
-msgid "Select HTML fixed width font"
-msgstr ""
-
-#: mail/mail-config.glade.h:105
-msgid "Select HTML fixed width font for printing"
-msgstr ""
-
 #: mail/mail-config.glade.h:106
-msgid "Select HTML variable width font"
-msgstr ""
+msgid "Select HTML fixed width font"
+msgstr "Vyberte písmo pevnej širky pre HTML"
 
 #: mail/mail-config.glade.h:107
-msgid "Select HTML variable width font for printing"
-msgstr ""
+msgid "Select HTML fixed width font for printing"
+msgstr "Vyberte písmo pevnej širky pre tlač HTML"
 
-#: mail/mail-config.glade.h:108 shell/glade/evolution-startup-wizard.glade.h:7
+#: mail/mail-config.glade.h:108
+msgid "Select HTML variable width font"
+msgstr "Vyberte písmo premenlivej širky pre HTML"
+
+#: mail/mail-config.glade.h:109
+msgid "Select HTML variable width font for printing"
+msgstr "Vyberte písmo premenlivej šírky pre tlač HTML"
+
+#: mail/mail-config.glade.h:110 shell/glade/evolution-startup-wizard.glade.h:7
 msgid "Sending Email"
 msgstr "Posielanie pošty"
 
-#: mail/mail-config.glade.h:110
+#: mail/mail-config.glade.h:112
 msgid "Sent _messages folder:"
 msgstr "Priečinok pre _odoslané správy:"
 
-#: mail/mail-config.glade.h:111
+#: mail/mail-config.glade.h:113
 msgid "Sent and Draft Messages"
 msgstr "Odoslané a koncepty"
 
-#: mail/mail-config.glade.h:112
+#: mail/mail-config.glade.h:114
 msgid "Ser_ver requires authentication"
 msgstr "Server vyžaduje _prihlásenie"
 
-#: mail/mail-config.glade.h:113
+#: mail/mail-config.glade.h:115
 msgid "Server Configuration"
 msgstr "Nastavenie serveru"
 
-#: mail/mail-config.glade.h:114
+#: mail/mail-config.glade.h:116
 msgid "Server _Type: "
 msgstr "_Typ serveru:"
 
-#: mail/mail-config.glade.h:115
-#, fuzzy
-msgid "Shortcuts _type:"
-msgstr "Skratky"
-
-#: mail/mail-config.glade.h:116
-#, fuzzy
-msgid "Specify _filename:"
-msgstr "Zadajte meno súboru:"
-
 #: mail/mail-config.glade.h:117
-msgid "Spell Checking Language"
-msgstr ""
+msgid "Shortcuts _type:"
+msgstr "_Typ skratky:"
 
 #: mail/mail-config.glade.h:118
-msgid "Spell _Checking"
-msgstr ""
+msgid "Specify _filename:"
+msgstr "Zadajte _meno súboru:"
 
 #: mail/mail-config.glade.h:119
+msgid "Spell Checking Language"
+msgstr "Jazyk kontroly pravopisu"
+
+#: mail/mail-config.glade.h:120
+msgid "Spell _Checking"
+msgstr "Kontrola _pravopisu"
+
+#: mail/mail-config.glade.h:121
 msgid "Standard Unix mbox"
 msgstr "Štandardný Unixový súbor mbox"
 
-#: mail/mail-config.glade.h:120
+#: mail/mail-config.glade.h:122
 msgid ""
 "The output of this script will be used as your\n"
 "signature. The name you specify will be used\n"
 "for display purposes only. "
 msgstr ""
 
-#: mail/mail-config.glade.h:123
+#: mail/mail-config.glade.h:125
 msgid ""
 "This page allows you to configure spell checking behavior and language. The "
 "list of languages here reflects only the languages for which you have a "
 "dictionary installed."
 msgstr ""
 
-#: mail/mail-config.glade.h:125
+#: mail/mail-config.glade.h:127
 msgid ""
 "Type the name by which you would like to refer to this account.\n"
 "For example: \"Work\" or \"Personal\""
 msgstr ""
 
-#: mail/mail-config.glade.h:128
-#, fuzzy
+#: mail/mail-config.glade.h:130
 msgid "V_ariable-width:"
-msgstr "Premenlivo"
+msgstr "_Premenlivá šírka:"
 
-#: mail/mail-config.glade.h:129
+#: mail/mail-config.glade.h:131
 msgid ""
 "Welcome to the Evolution Mail Configuration Assistant.\n"
 "\n"
@@ -12887,189 +12775,165 @@ msgstr ""
 "\n"
 "Kliknutím \"Nasledujúci\" začneme."
 
-#: mail/mail-config.glade.h:134
-#, fuzzy
-msgid "XEmacs"
-msgstr "Východ"
-
 #: mail/mail-config.glade.h:136
-#, fuzzy
-msgid "_Add Signature"
-msgstr "Súbor s po_dpisom:"
+msgid "XEmacs"
+msgstr "XEmacs"
 
-#: mail/mail-config.glade.h:137
+#: mail/mail-config.glade.h:138
+msgid "_Add Signature"
+msgstr "_Pridať podpis"
+
+#: mail/mail-config.glade.h:139
 msgid "_Always load images off the net"
 msgstr "_Vždy načítavať obrázky zo siete"
 
-#: mail/mail-config.glade.h:138
+#: mail/mail-config.glade.h:140
 msgid "_Always sign outgoing messages when using this account"
 msgstr "_Vždy podpisovať správy pri použití tohto účtu"
 
-#: mail/mail-config.glade.h:139
+#: mail/mail-config.glade.h:141
 msgid "_Authentication Type: "
 msgstr "_Typ overenia:"
 
-#: mail/mail-config.glade.h:140
+#: mail/mail-config.glade.h:142
 msgid "_Authentication type: "
 msgstr "_Typ overenia:"
 
-#: mail/mail-config.glade.h:141
+#: mail/mail-config.glade.h:143
 msgid "_Automatically check for new mail"
 msgstr "_Automaticky kontrolovať novú poštu"
 
-#: mail/mail-config.glade.h:142
+#: mail/mail-config.glade.h:144
 #, fuzzy
 msgid "_Automatically insert smiley images"
 msgstr "_Automaticky kontrolovať novú poštu"
 
-#: mail/mail-config.glade.h:143
-#, fuzzy
+#: mail/mail-config.glade.h:145
 msgid "_Beep when new mail arrives"
-msgstr "Pípnuť pri príchode novej správy"
+msgstr "Píp_nuť pri príchode novej správy"
 
-#: mail/mail-config.glade.h:144
+#: mail/mail-config.glade.h:146
 msgid "_Certificate ID:"
 msgstr "ID _certifikátu:"
 
-#: mail/mail-config.glade.h:145
-#, fuzzy
-msgid "_Confirm when expunging a folder"
-msgstr "Potvrdenie pri čistení priečinku"
-
-#: mail/mail-config.glade.h:146
-#, fuzzy
-msgid "_Default signature:"
-msgstr "_HTML podpis:"
-
 #: mail/mail-config.glade.h:147
-#, fuzzy
-msgid "_Defaults"
-msgstr "Štandardné"
+msgid "_Confirm when expunging a folder"
+msgstr "_Potvrdenie pri čistení priečinku"
+
+#: mail/mail-config.glade.h:148
+msgid "_Default signature:"
+msgstr "Š_tandardný podpis:"
 
 #: mail/mail-config.glade.h:149
-#, fuzzy
-msgid "_Do not notify me when new mail arrives"
-msgstr "Neuprozorňovať na príchod novej správy"
+msgid "_Defaults"
+msgstr "Š_tandardné"
 
 #: mail/mail-config.glade.h:151
-#, fuzzy
-msgid "_Enable"
-msgstr "Povoliť"
-
-#: mail/mail-config.glade.h:152
-msgid "_Fixed-width:"
-msgstr ""
+msgid "_Do not notify me when new mail arrives"
+msgstr "_Neuprozorňovať na príchod novej správy"
 
 #: mail/mail-config.glade.h:153
-#, fuzzy
-msgid "_Forward style:"
-msgstr "Správy _predané ďalej"
+msgid "_Enable"
+msgstr "_Povoliť"
 
 #: mail/mail-config.glade.h:154
+msgid "_Fixed-width:"
+msgstr "_Pevná šírka:"
+
+#: mail/mail-config.glade.h:155
+msgid "_Forward style:"
+msgstr "Štýl _preposielania:"
+
+#: mail/mail-config.glade.h:156
 msgid "_Full name:"
 msgstr "_Celé meno:"
 
-#: mail/mail-config.glade.h:156
-#, fuzzy
-msgid "_HTML Mail"
-msgstr "v HTML pošte"
-
 #: mail/mail-config.glade.h:158
-#, fuzzy
-msgid "_Identity"
-msgstr "Identita"
+msgid "_HTML Mail"
+msgstr "_HTML správy"
 
-#: mail/mail-config.glade.h:159
+#: mail/mail-config.glade.h:160
+msgid "_Identity"
+msgstr "_Identita"
+
+#: mail/mail-config.glade.h:161
 msgid "_Load images if sender is in addressbook"
 msgstr "_Načítať obrázky ak je odosielateľ v adresári"
 
-#: mail/mail-config.glade.h:160
-#, fuzzy
-msgid "_Make this my default account"
-msgstr "Použiť ho ako š_tandardný účet"
-
-#: mail/mail-config.glade.h:161
-#, fuzzy
-msgid "_Mark messages as read after"
-msgstr "_Označiť správy ako \"Prečítané\" po"
-
 #: mail/mail-config.glade.h:162
+msgid "_Make this my default account"
+msgstr "Použiť ako š_tandardný účet"
+
+#: mail/mail-config.glade.h:163
+msgid "_Mark messages as read after"
+msgstr "_Označiť správy ako prečítané po"
+
+#: mail/mail-config.glade.h:164
 msgid "_Name:"
 msgstr "_Meno:"
 
-#: mail/mail-config.glade.h:163
+#: mail/mail-config.glade.h:165
 msgid "_Never load images off the net"
 msgstr "_Nikdy nenačítať obrázky zo siete"
 
-#: mail/mail-config.glade.h:165
-#, fuzzy
-msgid "_Play sound file when new mail arrives"
-msgstr "Zahrať zvuk pri príchode novej správy"
-
-#: mail/mail-config.glade.h:166
-#, fuzzy
-msgid "_Prompt when sending HTML messages to contacts that don't want them"
-msgstr "Pýtať sa pri posielaní HTML správ kontaktom, ktoré nechcú tento formát"
-
 #: mail/mail-config.glade.h:167
-#, fuzzy
+msgid "_Play sound file when new mail arrives"
+msgstr "_Zahrať zvuk pri príchode novej správy"
+
+#: mail/mail-config.glade.h:168
+msgid "_Prompt when sending HTML messages to contacts that don't want them"
+msgstr ""
+"_Pýtať sa pri posielaní HTML správ kontaktom, ktoré nechcú tento formát"
+
+#: mail/mail-config.glade.h:169
 msgid "_Prompt when sending messages with an empty subject line"
 msgstr "Pýtať sa pri posielaní správ be_z predmetu"
 
-#: mail/mail-config.glade.h:168
-#, fuzzy
-msgid "_Receiving Mail"
-msgstr "Prijímam poštu"
-
-#: mail/mail-config.glade.h:169
-#, fuzzy
-msgid "_Reply style:"
-msgstr "Odpovedať všetkým"
-
 #: mail/mail-config.glade.h:170
-msgid "_Restore defaults"
-msgstr ""
+msgid "_Receiving Mail"
+msgstr "_Prijem pošty"
 
 #: mail/mail-config.glade.h:171
-#, fuzzy
-msgid "_Script:"
-msgstr "Za_bezpečenie"
+msgid "_Reply style:"
+msgstr "Š_týl odpovede:"
 
 #: mail/mail-config.glade.h:172
-#, fuzzy
-msgid "_Sending Mail"
-msgstr "Posielanie pošty"
+msgid "_Restore defaults"
+msgstr "Š_tandardné"
 
 #: mail/mail-config.glade.h:173
-#, fuzzy
-msgid "_Show animated images"
-msgstr "Zobraziť čas ako"
+msgid "_Script:"
+msgstr "_Skript:"
 
 #: mail/mail-config.glade.h:174
-#, fuzzy
-msgid "_Signatures"
-msgstr "Súbor s po_dpisom:"
+msgid "_Sending Mail"
+msgstr "_Posielanie pošty"
 
 #: mail/mail-config.glade.h:175
-#, fuzzy
-msgid "_Use secure connection (SSL):"
-msgstr "Použiť _bezpečné pripojenie (_SSL)"
+msgid "_Show animated images"
+msgstr "Zobraziť _animované obrázky"
 
 #: mail/mail-config.glade.h:176
-#, fuzzy
-msgid "_Variable-width:"
-msgstr "Premenlivo"
+msgid "_Signatures"
+msgstr "_Podpisy"
 
 #: mail/mail-config.glade.h:177
+msgid "_Use secure connection (SSL):"
+msgstr "Použiť _bezpečné pripojenie (SSL):"
+
+#: mail/mail-config.glade.h:178
+msgid "_Variable-width:"
+msgstr "P_remenlivá šírka:"
+
+#: mail/mail-config.glade.h:179
 msgid "_every"
 msgstr "_každých"
 
-#: mail/mail-config.glade.h:178
-#, fuzzy
+#: mail/mail-config.glade.h:180
 msgid "color"
-msgstr " farba"
+msgstr "farba"
 
-#: mail/mail-config.glade.h:179
+#: mail/mail-config.glade.h:181
 msgid "description"
 msgstr "popis"
 
@@ -13094,12 +12958,12 @@ msgid "Could not create a S/MIME decode context."
 msgstr "Nepodarilo sa vytvoriť kontext dekódovania S/MIME."
 
 #: mail/mail-display.c:194
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File `%s' already exists.\n"
 "Overwrite it?"
 msgstr ""
-"Súbor s týmto menom už existuje\n"
+"Súbor '%s' už existuje\n"
 "Prepísať ho?"
 
 #: mail/mail-display.c:326
@@ -13112,9 +12976,8 @@ msgid "Could not create temporary file '%s': %s"
 msgstr "Nie je možné vytvoriť dočasný súbor '%s': %s"
 
 #: mail/mail-display.c:437
-#, fuzzy
 msgid "Save Attachment..."
-msgstr "Uložiť prílohu"
+msgstr "Uložiť prílohu..."
 
 #: mail/mail-display.c:438
 msgid "View Inline"
@@ -13139,23 +13002,20 @@ msgid "External Viewer"
 msgstr "Externý zobrazovač"
 
 #: mail/mail-display.c:1320
-#, fuzzy
 msgid "Downloading images"
-msgstr "Nahrávať _obrázky"
+msgstr "Sťahujem obrázky"
 
 #: mail/mail-display.c:1497
 msgid "Loading message content"
 msgstr "Načítavam obsah správy"
 
 #: mail/mail-display.c:1784
-#, fuzzy
 msgid "Overdue:"
-msgstr "Úlohy _po termíne:"
+msgstr "Po termíne:"
 
 #: mail/mail-display.c:1788
-#, fuzzy
 msgid "by %B %d, %Y, %l:%M %P"
-msgstr "%b %d %l:%M %p"
+msgstr "%B %d, %Y, %l:%M %P"
 
 #: mail/mail-display.c:2115
 msgid "Open Link in Browser"
@@ -13174,7 +13034,7 @@ msgid "Save Image as..."
 msgstr "Uložiť obrázok ako..."
 
 #: mail/mail-folder-cache.c:743
-#, fuzzy, c-format
+#, c-format
 msgid "Pinging %s"
 msgstr "Prehľadávam %s"
 
@@ -13218,9 +13078,8 @@ msgid "Bcc"
 msgstr "Bcc"
 
 #: mail/mail-format.c:963
-#, fuzzy
 msgid "Mailer"
-msgstr "Pošta"
+msgstr "Poštový klient"
 
 #: mail/mail-format.c:1848
 msgid ""
@@ -13230,9 +13089,8 @@ msgstr ""
 "podrobnosti."
 
 #: mail/mail-format.c:1875
-#, fuzzy
 msgid "Could not create a PGP verfication context"
-msgstr "Nepodarilo sa vytvoriť kontext overenia PGP."
+msgstr "Nepodarilo sa vytvoriť kontext overenia PGP"
 
 #: mail/mail-format.c:1884
 msgid "This message is digitally signed and has been found to be authentic."
@@ -13272,16 +13130,16 @@ msgid "Malformed external-body part."
 msgstr "Nesprávna časť externého tela."
 
 #: mail/mail-local.c:539 mail/mail-local.c:541
-#, fuzzy, c-format
+#, c-format
 msgid "Local folders/%s"
-msgstr "Lokálne priečinky"
+msgstr "Lokálne priečinky/%s"
 
 #: mail/mail-local.c:671
 msgid "Reconfiguring folder"
 msgstr "Znovu nastavujem priečinok"
 
 #: mail/mail-local.c:752
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot save folder metainfo; you may find you can't\n"
 "open this folder anymore: %s: %s"
@@ -13566,9 +13424,8 @@ msgid "_Remember this password"
 msgstr "_Uložiť toto heslo"
 
 #: mail/mail-session.c:273
-#, fuzzy
 msgid "_Remember this password for the remainder of this session"
-msgstr "Zapamätať si heslo pre zvyšok tohto sedenia"
+msgstr "_Zapamätať si heslo pre zvyšok tohto sedenia"
 
 #: mail/mail-session.c:330
 #, c-format
@@ -13580,9 +13437,9 @@ msgid "Enter Password"
 msgstr "Zadajte heslo"
 
 #: mail/mail-signature-editor.c:81
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save signature file: %s"
-msgstr "Nepodarilo sa uložiť súbor podpisu."
+msgstr "Nepodarilo sa uložiť súbor podpisu: %s"
 
 #: mail/mail-signature-editor.c:175
 msgid "Save signature"
@@ -13599,14 +13456,12 @@ msgstr ""
 "Chcete uložiť zmeny?"
 
 #: mail/mail-signature-editor.c:333
-#, fuzzy
 msgid "Edit signature"
-msgstr "Pridať kritérium"
+msgstr "Upraviť podpis"
 
 #: mail/mail-signature-editor.c:372
-#, fuzzy
 msgid "Enter a name for this signature."
-msgstr "_HTML podpis:"
+msgstr "Zadajte meno pre tento podpis."
 
 #: mail/mail-signature-editor.c:375 my-evolution/e-summary-preferences.c:852
 msgid "Name:"
@@ -13759,9 +13614,8 @@ msgid "Follow Up Flag"
 msgstr "Značka Follow up"
 
 #: mail/message-list.etspec.h:8
-#, fuzzy
 msgid "Original Location"
-msgstr "Pôvodný kontakt:"
+msgstr "Pôvodný umiestnenie:"
 
 #: mail/message-list.etspec.h:9
 msgid "Received"
@@ -13772,24 +13626,20 @@ msgid "Size"
 msgstr "Veľkosť"
 
 #: mail/message-tag-followup.c:54
-#, fuzzy
 msgid "Call"
-msgstr "McCall"
+msgstr "Volať"
 
 #: mail/message-tag-followup.c:55
-#, fuzzy
 msgid "Do Not Forward"
-msgstr "Prejsť dopredu"
+msgstr "Nepreposielať"
 
 #: mail/message-tag-followup.c:56
-#, fuzzy
 msgid "Follow-Up"
 msgstr "Follow Up"
 
 #: mail/message-tag-followup.c:57
-#, fuzzy
 msgid "For Your Information"
-msgstr "Informácia o zdrojovom kóde"
+msgstr "Pre vašu informáciu"
 
 #: mail/message-tag-followup.c:58 ui/evolution-mail-message.xml.h:36
 msgid "Forward"
@@ -13797,7 +13647,7 @@ msgstr "Poslať ďalej"
 
 #: mail/message-tag-followup.c:59
 msgid "No Response Necessary"
-msgstr ""
+msgstr "Odpoveď nie je nutná"
 
 #: mail/message-tag-followup.c:61 ui/evolution-mail-message.xml.h:72
 msgid "Reply"
@@ -13808,40 +13658,36 @@ msgid "Reply to All"
 msgstr "Odpovedať všetkým"
 
 #: mail/message-tag-followup.c:63
-#, fuzzy
 msgid "Review"
-msgstr "Ukážka"
+msgstr "Revízia"
 
 #: mail/message-tag-followup.c:246 mail/message-tags.glade.h:2
-#, fuzzy
 msgid "Flag to Follow Up"
-msgstr "Follow Up"
+msgstr "Značka pre Follow Up"
 
 #: mail/message-tags.glade.h:1
-#, fuzzy
 msgid "C_ompleted"
-msgstr "Dokončený"
+msgstr "_Dokončený"
 
 #: mail/message-tags.glade.h:5
 msgid ""
 "The messages you have selected for follow up are listed below.\n"
 "Please select a follow up action from the \"Flag\" menu."
 msgstr ""
+"Správy, ktoré ste označili ako nasledujúce, sú uvedené dole.\n"
+"Prosím, vyberte akciu follow up z menu \"Značka\"."
 
 #: mail/message-tags.glade.h:7
-#, fuzzy
 msgid "_Clear Flag"
 msgstr "Vymazať _značky"
 
 #: mail/message-tags.glade.h:8
-#, fuzzy
 msgid "_Due by:"
-msgstr "Termín do "
+msgstr "_Termín:"
 
 #: mail/message-tags.glade.h:9
-#, fuzzy
 msgid "_Flag:"
-msgstr "Meno súboru:"
+msgstr "_Značka:"
 
 #: mail/subscribe-dialog.c:231
 #, c-format
@@ -13869,9 +13715,8 @@ msgid "Folder"
 msgstr "Priečinok"
 
 #: mail/subscribe-dialog.c:1450
-#, fuzzy
 msgid "Scanning folders..."
-msgstr "Uložiť v priečinku..."
+msgstr "Prehľadávam priečinky..."
 
 #: mail/subscribe-dialog.c:1557
 msgid "No server has been selected"
@@ -13881,16 +13726,11 @@ msgstr "Nebol vybraný žiadny server"
 msgid "Please select a server."
 msgstr "Prosím, vyberte server."
 
-#: mail/subscribe-dialog.glade.h:1
+#: mail/subscribe-dialog.glade.h:3
 msgid "All folders"
 msgstr "Všetky priečinky"
 
-#: mail/subscribe-dialog.glade.h:2
-#, fuzzy
-msgid "Apri file"
-msgstr "Apríl"
-
-#: mail/subscribe-dialog.glade.h:3 ui/evolution-comp-editor.xml.h:2
+#: mail/subscribe-dialog.glade.h:4 ui/evolution-comp-editor.xml.h:2
 #: ui/evolution-contact-editor.xml.h:1
 #: ui/evolution-contact-list-editor.xml.h:1
 #: ui/evolution-mail-messagedisplay.xml.h:1 ui/evolution-message-composer.h:15
@@ -13899,38 +13739,35 @@ msgstr "Apríl"
 msgid "Close"
 msgstr "Zavrieť"
 
-#: mail/subscribe-dialog.glade.h:4
-#, fuzzy
+#: mail/subscribe-dialog.glade.h:5
 msgid "Display Options"
 msgstr "Možnosti zobrazenia"
 
-#: mail/subscribe-dialog.glade.h:5
+#: mail/subscribe-dialog.glade.h:6
 msgid "Folders whose names begin with:"
 msgstr "Priečinky, ktorých meno začína na:"
 
-#: mail/subscribe-dialog.glade.h:6
+#: mail/subscribe-dialog.glade.h:7
 msgid "Manage Subscriptions"
 msgstr "Správa prihlásení"
 
-#: mail/subscribe-dialog.glade.h:7 ui/evolution-subscribe.xml.h:3
+#: mail/subscribe-dialog.glade.h:8 ui/evolution-subscribe.xml.h:3
 msgid "Refresh List"
 msgstr "Obnoviť zoznam"
 
-#: mail/subscribe-dialog.glade.h:8
-#, fuzzy
-msgid "S_elect server: "
-msgstr "Vyberte službu"
-
 #: mail/subscribe-dialog.glade.h:9
-#, fuzzy
-msgid "Salve file"
-msgstr "Vyberte súbor"
+msgid "Refresh folder listing"
+msgstr "Aktualizovať zoznam priečinkov"
 
 #: mail/subscribe-dialog.glade.h:10
+msgid "S_elect server: "
+msgstr "_Vyberte server: "
+
+#: mail/subscribe-dialog.glade.h:11
 msgid "_Subscribe"
 msgstr "_Prihlásiť si"
 
-#: mail/subscribe-dialog.glade.h:11
+#: mail/subscribe-dialog.glade.h:12
 msgid "_Unsubscribe"
 msgstr "O_dhlásiť"
 
@@ -18332,12 +18169,10 @@ msgid "Kushiro Airport"
 msgstr "Kuširo letisko"
 
 #: my-evolution/Locations.h:1147
-#, fuzzy
 msgid "Kyiv/Boryspil"
 msgstr "Kyjev/Borispyl"
 
 #: my-evolution/Locations.h:1148
-#, fuzzy
 msgid "Kyiv/Zhulyany"
 msgstr "Kyjev/Žuljani"
 
@@ -22458,7 +22293,6 @@ msgid "Tallahassee"
 msgstr "Tallahassee"
 
 #: my-evolution/Locations.h:2211
-#, fuzzy
 msgid "Tallinn"
 msgstr "Talin"
 
@@ -23794,20 +23628,17 @@ msgid "News Feed"
 msgstr "Kanály správ"
 
 #: my-evolution/e-summary-shown.c:519
-#, fuzzy
 msgid "All"
-msgstr "McAllen"
+msgstr "Všetky"
 
 #. Fixme: nice GFX version
 #: my-evolution/e-summary-shown.c:531
-#, fuzzy
 msgid "Add"
-msgstr "_Pridať"
+msgstr "Pridať"
 
 #: my-evolution/e-summary-shown.c:546 my-evolution/e-summary-table.c:58
-#, fuzzy
 msgid "Shown"
-msgstr "Shannon"
+msgstr "Zobrazený"
 
 #: my-evolution/e-summary-tasks.c:328
 msgid "No tasks"
@@ -25032,9 +24863,8 @@ msgid "C_elsius"
 msgstr "C_elzius"
 
 #: my-evolution/my-evolution.glade.h:4
-#, fuzzy
 msgid "Delete news feed"
-msgstr "Pridať nový k_anál"
+msgstr "Odstrániť kanál správ"
 
 #: my-evolution/my-evolution.glade.h:5
 msgid "How many days should the calendar display at once?"
@@ -25085,7 +24915,6 @@ msgid "Tasks "
 msgstr "Úlohy "
 
 #: my-evolution/my-evolution.glade.h:17
-#, fuzzy
 msgid "Weather Settings"
 msgstr "Nastavenie počasia"
 
@@ -25118,18 +24947,16 @@ msgid "_Weather"
 msgstr "_Počasie"
 
 #: shell/GNOME_Evolution_Shell.oaf.in.h:1
-#, fuzzy
 msgid "Configuration control for Evolution folder settings."
-msgstr "Vytváracie rozhranie pre editor správ Evolution."
+msgstr "Ovládací prvok nastavenia priečinkov Evolution."
 
 #: shell/GNOME_Evolution_Shell.oaf.in.h:2
 msgid "Configure special folders and offline folder behavior here"
-msgstr ""
+msgstr "Nastavenie špeciálnych priečinkov a ich off-line chovanie"
 
 #: shell/GNOME_Evolution_Shell.oaf.in.h:3
-#, fuzzy
 msgid "Folder Settings"
-msgstr "Nastavenie pošty"
+msgstr "Nastavenie priečinkov"
 
 #: shell/GNOME_Evolution_Shell.oaf.in.h:4
 msgid "The Evolution shell."
@@ -25153,21 +24980,20 @@ msgstr ""
 "%s"
 
 #: shell/e-folder-list.c:113 shell/evolution-folder-selector-button.c:121
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" in \"%s\""
-msgstr "Otvoriť v %s..."
+msgstr "\"%s\" v \"%s\""
 
 #: shell/e-folder-list.c:312
-#, fuzzy
 msgid "Add a Folder"
-msgstr "Ako priečinok odoslaných"
+msgstr "Pridať priečinok"
 
 #: shell/e-local-storage.c:178
 msgid "Drafts"
 msgstr "Koncepty"
 
 #: shell/e-local-storage.c:179 shell/e-shell-view.c:400
-#: shell/e-shortcuts.c:1055
+#: shell/e-shortcuts.c:1051
 msgid "Inbox"
 msgstr "Doručená pošta"
 
@@ -25292,41 +25118,34 @@ msgid "Brought to you by"
 msgstr "Pre vás vytvoril"
 
 #: shell/e-shell-config-autocompletion.c:106
-#, fuzzy
 msgid "Extra Completion folders"
-msgstr "Dátum dokončenia"
+msgstr "Priečinky extra dopĺňania"
 
 #: shell/e-shell-config-default-folders.c:133
-#, fuzzy
 msgid "Select Default Folder"
-msgstr "Vybrať priečinok"
+msgstr "Vybrať štandardný priečinok"
 
 #: shell/e-shell-config-folder-settings.c:71
-#, fuzzy
 msgid "Default Folders"
-msgstr "Vybrať priečinok"
+msgstr "Štandardné priečinky"
 
 #: shell/e-shell-config-folder-settings.c:74
-#, fuzzy
 msgid "Offline Folders"
-msgstr "Vybrať priečinok"
+msgstr "Priečinky off-line"
 
 #: shell/e-shell-config-folder-settings.c:77
-#, fuzzy
 msgid "Autocompletion Folders"
-msgstr "Dátum dokončenia"
+msgstr "Priečinky automatického dopĺňania"
 
 #: shell/e-shell-folder-commands.c:140
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot copy folder: %s"
-msgstr "Nie je možné skontrolovať priečinok: %s: %s"
+msgstr "Nie je možné skopírovať priečinok: %s"
 
 #: shell/e-shell-folder-commands.c:143
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot move folder: %s"
-msgstr ""
-"Nie je možné premenovať priečinok:\n"
-"%s"
+msgstr "Nie je možné presunúť priečinok: %s"
 
 #: shell/e-shell-folder-commands.c:190
 msgid "Cannot move a folder over itself."
@@ -25373,11 +25192,9 @@ msgid "Delete \"%s\""
 msgstr "Odstrániť \"%s\""
 
 #: shell/e-shell-folder-commands.c:407
-#, fuzzy, c-format
+#, c-format
 msgid "Really delete folder \"%s\"?"
-msgstr ""
-"Nie je možné odstrániť priečinok:\n"
-"%s"
+msgstr "Naozaj odstrániť priečinok \"%s\"?"
 
 #: shell/e-shell-folder-commands.c:488
 #, c-format
@@ -25405,15 +25222,15 @@ msgstr "Zadané meno priečinku nie je platné: %s"
 
 #: shell/e-shell-folder-commands.c:586
 msgid "Selected folder does not belong to another user"
-msgstr ""
+msgstr "Vybraný priečinok nepatrí inému používateľovi"
 
 #: shell/e-shell-folder-commands.c:589
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot remove folder:\n"
 "%s"
 msgstr ""
-"Nie je možné premenovať priečinok:\n"
+"Nie je možné odstrániť priečinok:\n"
 "%s"
 
 #: shell/e-shell-folder-creation-dialog.c:122
@@ -25426,9 +25243,8 @@ msgstr ""
 "%s"
 
 #: shell/e-shell-folder-creation-dialog.c:288
-#, fuzzy
 msgid "Create New Folder"
-msgstr "Vytvoriť _nový priečinok..."
+msgstr "Vytvoriť nový priečinok"
 
 #: shell/e-shell-folder-selection-dialog.c:393
 msgid "New..."
@@ -25470,9 +25286,8 @@ msgstr ""
 "Importujem položku %d."
 
 #: shell/e-shell-importer.c:355
-#, fuzzy
 msgid "Select importer"
-msgstr "Vybrať priečinok"
+msgstr "Vyberte nástroj pre import"
 
 #: shell/e-shell-importer.c:487
 #, c-format
@@ -25584,16 +25399,15 @@ msgid "Closing connections..."
 msgstr "Zatváram spojenia..."
 
 #: shell/e-shell-offline-sync.c:161
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error synchronizing \"%s\":\n"
 "%s"
 msgstr ""
-"Chyba počas '%s':\n"
+"Chyba počas synchronizácie \"%s\":\n"
 "%s"
 
 #: shell/e-shell-offline-sync.c:239
-#, fuzzy
 msgid "Syncing Folder"
 msgstr "Synchronizujem priečinok"
 
@@ -25601,39 +25415,34 @@ msgstr "Synchronizujem priečinok"
 #: shell/e-shell-offline-sync.c:317
 #, c-format
 msgid "Synchronizing \"%s\" (%d of %d) ..."
-msgstr ""
+msgstr "Synchronizujem \"%s\" (%d z %d) ..."
 
 #: shell/e-shell-settings-dialog.c:327
-#, fuzzy
 msgid "Evolution Settings"
-msgstr "Evolution "
+msgstr "Nastavenie Evolution"
 
-#: shell/e-shell-shared-folder-picker-dialog.c:357
-#, fuzzy
+#: shell/e-shell-shared-folder-picker-dialog.c:362
 msgid "Opening Folder"
-msgstr "Otváram priečinok %s"
-
-#: shell/e-shell-shared-folder-picker-dialog.c:364
-#, fuzzy, c-format
-msgid "Opening Folder \"%s\""
-msgstr "Otváram priečinok %s"
+msgstr "Otváram priečinok"
 
 #: shell/e-shell-shared-folder-picker-dialog.c:369
-#, fuzzy, c-format
+#, c-format
+msgid "Opening Folder \"%s\""
+msgstr "Otváram priečinok \"%s\""
+
+#: shell/e-shell-shared-folder-picker-dialog.c:374
+#, c-format
 msgid "in \"%s\" ..."
-msgstr "Otvoriť v %s..."
+msgstr "v \"%s\"..."
 
-#: shell/e-shell-shared-folder-picker-dialog.c:455
-#, fuzzy, c-format
+#: shell/e-shell-shared-folder-picker-dialog.c:460
+#, c-format
 msgid "Could not open shared folder: %s."
-msgstr "Nie je možné premenovať priečinok: %s"
+msgstr "Nie je možné otvoriť zdieľaný priečinok: %s."
 
-#: shell/e-shell-shared-folder-picker-dialog.c:513
-#, fuzzy
+#: shell/e-shell-shared-folder-picker-dialog.c:518
 msgid "Cannot find the specified shared folder."
-msgstr ""
-"Zadaný priečinok sa nedá vytvoriť:\n"
-"%s"
+msgstr "Nepodarilo sa nájsť zadaný zdieľaný priečinok."
 
 #: shell/e-shell-startup-wizard.c:159
 #, c-format
@@ -25700,9 +25509,8 @@ msgid "Select the folder that you want to open"
 msgstr "Vyberte priečinok, ktorý chcete otvoriť"
 
 #: shell/e-shell-view-menu.c:625
-#, fuzzy
 msgid "Create New Shortcut"
-msgstr "Vytvorí novú skratku"
+msgstr "Vytvoriť novú skratku"
 
 #: shell/e-shell-view-menu.c:626
 msgid "Select the folder you want the shortcut to point to:"
@@ -25752,14 +25560,13 @@ msgstr ""
 "do módu on-line."
 
 #: shell/e-shell.c:175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot activate component %s :\n"
 "The error from the activation system is:\n"
 "%s"
 msgstr ""
-"%s\n"
-"\n"
+"Nie je možné aktivovať komponent %s\n"
 "Chyba z aktivačného systému:\n"
 "%s"
 
@@ -25873,14 +25680,12 @@ msgid "Hide the shortcut bar"
 msgstr "Skryť panel skratiek"
 
 #: shell/e-shortcuts-view.c:274
-#, fuzzy
 msgid "Create _Default Shortcuts"
-msgstr "Vytvorí novú skratku"
+msgstr "Vytvoriť š_tandardné skratky"
 
 #: shell/e-shortcuts-view.c:275
-#, fuzzy
 msgid "Create Default Shortcuts"
-msgstr "Vytvorí novú skratku"
+msgstr "Vytvoriť štandardné klávesové skratky"
 
 #: shell/e-shortcuts-view.c:394
 msgid "Rename shortcut"
@@ -25918,18 +25723,17 @@ msgstr "O_dstrániť"
 msgid "Remove this shortcut from the shortcut bar"
 msgstr "Odstrániť túto skratku z panelu skratiek"
 
-#: shell/e-shortcuts.c:641
+#: shell/e-shortcuts.c:637
 msgid "Error saving shortcuts."
 msgstr "Chyba pri ukladaní skratiek."
 
-#: shell/e-shortcuts.c:1080
+#: shell/e-shortcuts.c:1076
 msgid "Shortcuts"
 msgstr "Skratky"
 
 #: shell/e-storage-set-view.etspec.h:1
-#, fuzzy
 msgid "Checkbox"
-msgstr "Chico"
+msgstr "Zaškrtávacie tlačidlo"
 
 #: shell/e-storage.c:569
 msgid "No error"
@@ -25985,7 +25789,7 @@ msgstr "Nepodarilo sa vytvoriť priečinok s týmto menom"
 
 #: shell/e-storage.c:599
 msgid "This operation cannot be performed in off-line mode"
-msgstr ""
+msgstr "Túto operáciu nie je možné urobiť v režime off-line"
 
 #: shell/e-task-widget.c:191
 #, c-format
@@ -26119,24 +25923,20 @@ msgid "The following connections are currently active:"
 msgstr "Tieto spojenia sú momentálne aktívne:"
 
 #: shell/glade/e-shell-config-default-folders.glade.h:1
-#, fuzzy
 msgid "C_alendar:"
-msgstr "Kalendár"
+msgstr "Kalen_dár:"
 
 #: shell/glade/e-shell-config-default-folders.glade.h:2
-#, fuzzy
 msgid "_Contacts:"
-msgstr "Kontakty: "
+msgstr "_Kontakty:"
 
 #: shell/glade/e-shell-config-default-folders.glade.h:3
-#, fuzzy
 msgid "_Mail:"
-msgstr "_Pošta"
+msgstr "_Pošta:"
 
 #: shell/glade/e-shell-config-default-folders.glade.h:4
-#, fuzzy
 msgid "_Tasks:"
-msgstr "Úlohy"
+msgstr "Ú_lohy:"
 
 #: shell/glade/e-shell-folder-creation-dialog.glade.h:1
 msgid "Folder name:"
@@ -26151,24 +25951,20 @@ msgid "Specify where to create the folder:"
 msgstr "Zadajte, kde vytvoriť priečinok"
 
 #: shell/glade/e-shell-shared-folder-picker-dialog.glade.h:1
-#, fuzzy
 msgid "Open Other User's Folder"
-msgstr "Vytvoriť _nový priečinok..."
+msgstr "Otvoriť priečinok iného používateľa"
 
 #: shell/glade/e-shell-shared-folder-picker-dialog.glade.h:2
-#, fuzzy
 msgid "_Account:"
-msgstr "Účet"
+msgstr "Úče_t:"
 
 #: shell/glade/e-shell-shared-folder-picker-dialog.glade.h:3
-#, fuzzy
 msgid "_Folder Name:"
-msgstr "Meno priečinku:"
+msgstr "_Meno priečinku:"
 
 #: shell/glade/e-shell-shared-folder-picker-dialog.glade.h:4
-#, fuzzy
 msgid "_User:"
-msgstr "Meno po_užívateľa:"
+msgstr "_Používateľ:"
 
 #: shell/glade/evolution-startup-wizard.glade.h:3
 msgid "Evolution Setup Assistant"
@@ -26201,7 +25997,6 @@ msgstr ""
 "Stlačením \"Nasledujúci\" môžete spustiť toto nastavenie."
 
 #: shell/glade/evolution-startup-wizard.glade.h:15
-#, fuzzy
 msgid ""
 "You have successfully entered all of the information\n"
 "needed to set up Evolution. \n"
@@ -26298,7 +26093,7 @@ msgstr "Poslať ladiaci výstup zo všetkých komponent od súboru."
 
 #: shell/main.c:429
 msgid "Force upgrading of configuration files from Evolution 1.0.x"
-msgstr ""
+msgstr "Vynútiť aktualizáciu konfiguračných súborov z Evolution 1.0.x"
 
 #: shell/main.c:447
 #, c-format
@@ -26332,6 +26127,30 @@ msgstr "Výstupný súbor"
 msgid "No filename provided."
 msgstr "Nezadané meno súboru."
 
+#: tools/evolution-launch-composer.c:322
+msgid "An attachment to add."
+msgstr "Pridávaná príloha."
+
+#: tools/evolution-launch-composer.c:323
+msgid "Content type of the attachment."
+msgstr "Typ obsahu prílohy."
+
+#: tools/evolution-launch-composer.c:324
+msgid "The filename to display in the mail."
+msgstr "Meno súboru zobrazené v správe."
+
+#: tools/evolution-launch-composer.c:325
+msgid "Description of the attachment."
+msgstr "Popis prílohy."
+
+#: tools/evolution-launch-composer.c:326
+msgid "Mark attachment to be shown inline by default."
+msgstr "Označiť prílohy štandardne zobrazené v texte."
+
+#: tools/evolution-launch-composer.c:327
+msgid "Default subject for the message."
+msgstr "Štandardný predmet pre správu."
+
 #.
 #. *  This file is autogenerated from evolution-addressbook.xml, do not edit
 #. *
@@ -26340,19 +26159,16 @@ msgstr "Nezadané meno súboru."
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: ui/evolution-addressbook.h:9
-#, fuzzy
 msgid "_Print Contacts..."
-msgstr "_Kontakty..."
+msgstr "_Tlačiť kontakty..."
 
 #: ui/evolution-addressbook.h:10
-#, fuzzy
 msgid "As _Table"
-msgstr "Zakázať"
+msgstr "Ako _tabuľku"
 
 #: ui/evolution-addressbook.h:11
-#, fuzzy
 msgid "_New Contact"
-msgstr "Nový kontakt"
+msgstr "_Nový kontakt"
 
 #: ui/evolution-addressbook.h:12 ui/evolution-mail-message.xml.h:113
 #: ui/evolution.xml.h:65
@@ -26360,32 +26176,26 @@ msgid "_Tools"
 msgstr "_Nástroje"
 
 #: ui/evolution-addressbook.h:13
-#, fuzzy
 msgid "_Search for contacts"
 msgstr "_Hľadať kontakty"
 
 #: ui/evolution-addressbook.h:17
-#, fuzzy
 msgid "Find a contact"
-msgstr "Odosielateľ obsahuje"
+msgstr "Nájsť kontakt"
 
 #: ui/evolution-addressbook.h:19
-#, fuzzy
 msgid "Print contacts"
-msgstr "Tlačiť vybrané kontakty"
+msgstr "Tlačiť kontakty"
 
 #: ui/evolution-addressbook.h:21
-#, fuzzy
 msgid "Delete a contact"
-msgstr "Odstrániť kontakt?"
+msgstr "Odstrániť kontakt"
 
 #: ui/evolution-addressbook.h:22
-#, fuzzy
 msgid "View All"
-msgstr "Zobraziť v texte"
+msgstr "Zobraziť všetky"
 
 #: ui/evolution-addressbook.h:23
-#, fuzzy
 msgid "View all contacts"
 msgstr "Vybrať všetky kontakty"
 
@@ -26705,7 +26515,6 @@ msgid "Schedule a meeting for this item"
 msgstr "Naplánovať stretnutie pre túto položku"
 
 #: ui/evolution-executive-summary.xml.h:1
-#, fuzzy
 msgid "Customize My Evolution"
 msgstr "Prispôsobiť moje Evolution"
 
@@ -26746,17 +26555,14 @@ msgid "Permanently remove all deleted messages from all folders"
 msgstr "Trvalo odstrániť všetky zmazané správy zo všetkých priečinkov"
 
 #: ui/evolution-mail-global.xml.h:11
-#, fuzzy
 msgid "Post New Message"
-msgstr "Napísať _novú správu"
+msgstr "Poslať novú správu"
 
 #: ui/evolution-mail-global.xml.h:12
-#, fuzzy
 msgid "Post a message to a Public folder"
-msgstr "Ukladám správu do priečinku"
+msgstr "Poslať správu do verejného priečinku"
 
 #: ui/evolution-mail-global.xml.h:13
-#, fuzzy
 msgid "S_ubscribe to Folders..."
 msgstr "_Prihlásiť priečinky..."
 
@@ -26785,18 +26591,16 @@ msgid "Change the properties of this folder"
 msgstr "Zmení vlastnosti tohto priečinku"
 
 #: ui/evolution-mail-list.xml.h:2
-#, fuzzy
 msgid "Copy selected message(s) to the clipboard"
-msgstr "Kopírovať vybrané správy do iného priečinka"
+msgstr "Kopírovať vybrané správy do schránky"
 
 #: ui/evolution-mail-list.xml.h:3
 msgid "Cu_t"
 msgstr "Vy_strihnúť"
 
 #: ui/evolution-mail-list.xml.h:4
-#, fuzzy
 msgid "Cut selected message(s) to the clipboard"
-msgstr "Vloží správu zo schránky"
+msgstr "Vystrihnúť vybrané správy do schránky"
 
 #: ui/evolution-mail-list.xml.h:5
 msgid "Hide S_elected Messages"
@@ -26824,9 +26628,8 @@ msgid "Mark all visible messages as read"
 msgstr "Označí všetky viditeľné správy ako už prečítané"
 
 #: ui/evolution-mail-list.xml.h:11
-#, fuzzy
 msgid "Paste message(s) from the clipboard"
-msgstr "Vloží správu zo schránky"
+msgstr "Vložiť správy zo schránky"
 
 #: ui/evolution-mail-list.xml.h:12
 msgid "Permanently remove all deleted messages from this folder"
@@ -26893,17 +26696,14 @@ msgid "_Threaded Message List"
 msgstr "Zoznam _vlákien"
 
 #: ui/evolution-mail-message.xml.h:1
-#, fuzzy
 msgid "A_dd Sender to Addressbook"
-msgstr "Pridať odosielateľa do adresára"
+msgstr "_Pridať odosielateľa do adresára"
 
 #: ui/evolution-mail-message.xml.h:2
-#, fuzzy
 msgid "A_pply Filters"
-msgstr "Použiť filtre"
+msgstr "Použiť _filtre"
 
 #: ui/evolution-mail-message.xml.h:3
-#, fuzzy
 msgid "Add Sender to Addressbook"
 msgstr "Pridať odosielateľa do adresára"
 
@@ -26996,9 +26796,8 @@ msgid "Display the previous unread message"
 msgstr "Prejsť na predchádzajúcu neprečítanú správu"
 
 #: ui/evolution-mail-message.xml.h:28
-#, fuzzy
 msgid "F_orward"
-msgstr "Poslať ďalej"
+msgstr "P_reposlať"
 
 #: ui/evolution-mail-message.xml.h:29
 msgid "Filter on Mailing _List..."
@@ -27097,19 +26896,16 @@ msgid "Next"
 msgstr "Nasledujúca"
 
 #: ui/evolution-mail-message.xml.h:55
-#, fuzzy
 msgid "Next _Important Message"
-msgstr "Nasledujúca dôležitá správa"
+msgstr "Nasledujúca _dôležitá správa"
 
 #: ui/evolution-mail-message.xml.h:56
-#, fuzzy
 msgid "Next _Thread"
-msgstr "Nasledujúce vlákno"
+msgstr "Nasledujúce _vlákno"
 
 #: ui/evolution-mail-message.xml.h:57
-#, fuzzy
 msgid "Next _Unread Message"
-msgstr "Nasledujúca neprečítaná správa"
+msgstr "Nasledujúca _neprečítaná správa"
 
 #: ui/evolution-mail-message.xml.h:58
 msgid "Open the selected message in a new window"
@@ -27124,24 +26920,20 @@ msgid "Original Si_ze"
 msgstr "Pôvodná _veľkosť"
 
 #: ui/evolution-mail-message.xml.h:61
-#, fuzzy
 msgid "P_revious Unread Message"
-msgstr "Prejde na predchádzajúcu neprečítanú správu"
+msgstr "Predchádzajúca n_eprečítaná správa"
 
 #: ui/evolution-mail-message.xml.h:62
-#, fuzzy
 msgid "Post a Reply"
-msgstr "Odpoveď pre úlohu"
+msgstr "Poslať odpoveď"
 
 #: ui/evolution-mail-message.xml.h:63
-#, fuzzy
 msgid "Post a reply to a message in a Public folder"
-msgstr "Kontrolujem novú poštu vo všetkých priečinkoch"
+msgstr "Poslať odpoveď na správu vo verejnom priečinku"
 
 #: ui/evolution-mail-message.xml.h:64
-#, fuzzy
 msgid "Pr_evious Important Message"
-msgstr "Prejde na predchádzajúcu dôležitú správu"
+msgstr "P_redchádzajúca dôležitá správa"
 
 #: ui/evolution-mail-message.xml.h:65
 msgid "Preview the message to be printed"
@@ -27184,7 +26976,6 @@ msgid "Search for text in the body of the displayed message"
 msgstr "Hľadá v texte zobrazenej správy"
 
 #: ui/evolution-mail-message.xml.h:81
-#, fuzzy
 msgid "Set up the page settings for your current printer"
 msgstr "Nastaví stránku pre aktuálnu tlačiareň"
 
@@ -27249,9 +27040,8 @@ msgid "_Forward Message"
 msgstr "Správy _predané ďalej"
 
 #: ui/evolution-mail-message.xml.h:99
-#, fuzzy
 msgid "_Go To"
-msgstr "Prejsť na"
+msgstr "_Prejsť na"
 
 #: ui/evolution-mail-message.xml.h:100
 msgid "_Inline"
@@ -27270,9 +27060,8 @@ msgid "_Move to Folder"
 msgstr "_Presunúť do priečinku"
 
 #: ui/evolution-mail-message.xml.h:104
-#, fuzzy
 msgid "_Next Message"
-msgstr "Nasledujúca správa"
+msgstr "_Nasledujúca správa"
 
 #: ui/evolution-mail-message.xml.h:105
 msgid "_Normal Display"
@@ -27283,18 +27072,16 @@ msgid "_Open Message"
 msgstr "_Otvoriť správu"
 
 #: ui/evolution-mail-message.xml.h:107
-#, fuzzy
 msgid "_Previous Message"
-msgstr "Predchádzajúca správa"
+msgstr "_Predchádzajúca správa"
 
 #: ui/evolution-mail-message.xml.h:109
 msgid "_Quoted"
 msgstr "_Citované"
 
 #: ui/evolution-mail-message.xml.h:111
-#, fuzzy
 msgid "_Resend..."
-msgstr "_Premenovať..."
+msgstr "Poslať _znovu..."
 
 #: ui/evolution-mail-message.xml.h:114
 msgid "_Undelete"
@@ -27371,7 +27158,6 @@ msgid "Send"
 msgstr "Poslať"
 
 #: ui/evolution-message-composer.h:22
-#, fuzzy
 msgid "Send the message now"
 msgstr "Poslať túto správu hneď"
 
@@ -27388,9 +27174,8 @@ msgid "Attach"
 msgstr "Priložiť"
 
 #: ui/evolution-message-composer.h:27
-#, fuzzy
 msgid "HTML"
-msgstr "_HTML"
+msgstr "HTML"
 
 #: ui/evolution-message-composer.h:28 ui/evolution-message-composer.xml.h:25
 #: ui/evolution-signature-editor.xml.h:9
@@ -27410,23 +27195,20 @@ msgid "_Open..."
 msgstr "_Otvoriť..."
 
 #: ui/evolution-message-composer.h:35
-#, fuzzy
 msgid "Save in _folder... (FIXME)"
-msgstr "Uložiť v priečinku..."
+msgstr "Uložiť do _priečinku..."
 
 #: ui/evolution-message-composer.h:36
-#, fuzzy
 msgid "_Insert text file... (FIXME)"
-msgstr "Vložiť textový súbor...."
+msgstr "Vložiť te_xtový súbor...."
 
 #: ui/evolution-message-composer.h:38
 msgid "Send _Later"
 msgstr "Poslať _neskôr"
 
 #: ui/evolution-message-composer.h:41
-#, fuzzy
 msgid "F_ormat"
-msgstr "Formát"
+msgstr "_Formát"
 
 #: ui/evolution-message-composer.h:43 ui/evolution-message-composer.xml.h:28
 msgid "Show _attachments"
@@ -27438,28 +27220,24 @@ msgid "_Help"
 msgstr "_Pomocník"
 
 #: ui/evolution-message-composer.h:45
-#, fuzzy
 msgid "_About..."
-msgstr "_Písmo..."
+msgstr "_O programe..."
 
 #: ui/evolution-message-composer.h:46
-#, fuzzy
 msgid "_Debug"
-msgstr "Dyersburg"
+msgstr "_Ladiť"
 
 #: ui/evolution-message-composer.h:47
-#, fuzzy
 msgid "Send this message now"
 msgstr "Poslať túto správu hneď"
 
 #: ui/evolution-message-composer.h:48
-#, fuzzy
 msgid "Bold"
-msgstr "Telo"
+msgstr "Tučné"
 
 #: ui/evolution-message-composer.h:49
 msgid "Sets something as bold"
-msgstr ""
+msgstr "Nastaví niečo ako tučné"
 
 #: ui/evolution-message-composer.xml.h:5
 msgid "Delete all but signature"
@@ -27478,9 +27256,8 @@ msgid "For_mat"
 msgstr "_Formát"
 
 #: ui/evolution-message-composer.xml.h:9
-#, fuzzy
 msgid "HT_ML"
-msgstr "_HTML"
+msgstr "HT_ML"
 
 #: ui/evolution-message-composer.xml.h:12
 msgid "PGP Encrypt"
@@ -27503,9 +27280,8 @@ msgid "Save _Draft"
 msgstr "Uložiť _koncept"
 
 #: ui/evolution-message-composer.xml.h:26
-#, fuzzy
 msgid "Send this message"
-msgstr "Poslať túto správu hneď"
+msgstr "Poslať túto správu"
 
 #: ui/evolution-message-composer.xml.h:30
 msgid "Sign this message with your PGP key"
@@ -27569,14 +27345,12 @@ msgid "H_TML"
 msgstr "_HTML"
 
 #: ui/evolution-signature-editor.xml.h:8
-#, fuzzy
 msgid "Save the current file and close the window"
-msgstr "Uložiť zoznam a zatvoriť dialóg"
+msgstr "Uložiť aktuálny súbor a zavrieť okno"
 
 #: ui/evolution-signature-editor.xml.h:16
-#, fuzzy
 msgid "_Signature editor"
-msgstr "Uložiť podpis"
+msgstr "Editor _podpisu"
 
 #: ui/evolution-subscribe.xml.h:1
 msgid "Add folder to your list of subscribed folders"
@@ -27651,14 +27425,12 @@ msgid "Paste task from the clipboard"
 msgstr "Vloží úlohu zo schránky"
 
 #: ui/evolution-tasks.xml.h:11
-#, fuzzy
 msgid "Previews the list of tasks to be printed"
-msgstr "Náhľad kontaktov pred tlačou"
+msgstr "Náhľad zoznamu kontaktov pred tlačou"
 
 #: ui/evolution-tasks.xml.h:13
-#, fuzzy
 msgid "Print the list of tasks"
-msgstr "Vytlačí túto správu"
+msgstr "Vytlačiť zoznam úloh"
 
 #: ui/evolution.xml.h:1
 msgid "About Ximian Evolution..."
@@ -27669,9 +27441,8 @@ msgid "Add to _Shortcut Bar"
 msgstr "Pridať do _panelu skratiek"
 
 #: ui/evolution.xml.h:3
-#, fuzzy
 msgid "Change Evolution's settings"
-msgstr "Evolution "
+msgstr "Zmeniť nastavenie Evolution"
 
 #: ui/evolution.xml.h:4
 msgid "Change the name of this folder"
@@ -27698,9 +27469,8 @@ msgid "Create a new shortcut"
 msgstr "Vytvorí novú skratku"
 
 #: ui/evolution.xml.h:12
-#, fuzzy
 msgid "Create a new window displaying this folder"
-msgstr "Vytvoriť nový priečinok"
+msgstr "Vytvoriť nové okno pre tento priečinok"
 
 #: ui/evolution.xml.h:13
 msgid "Delete this folder"
@@ -27731,13 +27501,12 @@ msgid "Move this folder to another place"
 msgstr "Presunúť tento priečinok inam"
 
 #: ui/evolution.xml.h:21
-#, fuzzy
 msgid "Open Other _User's Folder..."
-msgstr "Vytvoriť _nový priečinok..."
+msgstr "Otvoriť priečinok _iného používateľa..."
 
 #: ui/evolution.xml.h:22
 msgid "Open a folder belonging to some other user on the server"
-msgstr ""
+msgstr "Otvoriť priečinok patriaci inému používateľovi na serveri"
 
 #: ui/evolution.xml.h:23
 msgid "Open in New Window"
@@ -27748,38 +27517,33 @@ msgid "Open this folder in an other window"
 msgstr "Otvoriť tento priečinok v inom okne"
 
 #: ui/evolution.xml.h:26
-#, fuzzy
 msgid "Pi_lot Settings..."
 msgstr "Nastavenie _pilota..."
 
 #: ui/evolution.xml.h:27
-#, fuzzy
 msgid "Pilot Con_duit Settings..."
-msgstr "Nastavenie _pilota..."
+msgstr "Nastavenie spojky _pilota..."
 
 #: ui/evolution.xml.h:28
-#, fuzzy
 msgid "Remove a folder added with \"Open Other User's Folder\""
-msgstr "Vytvoriť _nový priečinok..."
+msgstr ""
+"Odstrániť priečinok pridaný pomocou \"Otvoriť priečinok iného používateľa\""
 
 #: ui/evolution.xml.h:29
 msgid "Send / Receive"
 msgstr "Príjem / odoslanie"
 
 #: ui/evolution.xml.h:30
-#, fuzzy
 msgid "Send queued items and retrieve new items"
 msgstr "Poslať neodoslanú poštu a prijať novú poštu"
 
 #: ui/evolution.xml.h:31
-#, fuzzy
 msgid "Set up Pilot conduit configuration"
-msgstr "Nastavenie pošty"
+msgstr "Nastavenie spojky pre Pilota"
 
 #: ui/evolution.xml.h:32
-#, fuzzy
 msgid "Set up Pilot configuration"
-msgstr "Nastavenie pošty"
+msgstr "Nastavenie Pilota"
 
 #: ui/evolution.xml.h:33
 msgid "Show information about Ximian Evolution"
@@ -27835,9 +27599,8 @@ msgid "_Folder Bar"
 msgstr "Pru_h priečinkov"
 
 #: ui/evolution.xml.h:52
-#, fuzzy
 msgid "_Folder..."
-msgstr "_Priečinok"
+msgstr "_Priečinok..."
 
 #: ui/evolution.xml.h:53
 msgid "_Go to Folder..."
@@ -27860,9 +27623,8 @@ msgid "_New Folder"
 msgstr "Nový _priečinok"
 
 #: ui/evolution.xml.h:59
-#, fuzzy
 msgid "_Remove Other User's Folder"
-msgstr "Vytvoriť _nový priečinok..."
+msgstr "_Odstrániť priečinok iného používateľa"
 
 #: ui/evolution.xml.h:60
 msgid "_Rename..."
@@ -27877,9 +27639,8 @@ msgid "_Shortcut Bar"
 msgstr "_Panel skratiek"
 
 #: ui/evolution.xml.h:64
-#, fuzzy
 msgid "_Shortcut..."
-msgstr "_Skratka"
+msgstr "Klávesová _skratka..."
 
 #: ui/my-evolution.xml.h:3
 msgid "Print summary"
@@ -27894,39 +27655,32 @@ msgid "Reload the view"
 msgstr "Znovu načíta pohľad"
 
 #: views/addressbook/galview.xml.h:1
-#, fuzzy
 msgid "By _Company"
-msgstr "Podľa firmy"
+msgstr "Podľa _firmy"
 
 #: views/addressbook/galview.xml.h:2
-#, fuzzy
 msgid "_Address Cards"
-msgstr "Karty adresára"
+msgstr "Karty _adresára"
 
 #: views/addressbook/galview.xml.h:3
-#, fuzzy
 msgid "_Phone List"
-msgstr "Zoznam telefónov"
+msgstr "_Telefónny zoznam"
 
 #: views/calendar/galview.xml.h:1
-#, fuzzy
 msgid "W_eek View"
-msgstr "Týždeň"
+msgstr "_Týždeň"
 
 #: views/calendar/galview.xml.h:2
-#, fuzzy
 msgid "_Day View"
-msgstr "Deň"
+msgstr "_Deň"
 
 #: views/calendar/galview.xml.h:3
-#, fuzzy
 msgid "_Month View"
-msgstr "Mesiac"
+msgstr "_Mesiac"
 
 #: views/calendar/galview.xml.h:4
-#, fuzzy
 msgid "_Work Week View"
-msgstr "Pracovný týždeň"
+msgstr "_Pracovný týždeň"
 
 #: views/mail/galview.xml.h:1
 msgid "As Sent Folder"
@@ -27953,14 +27707,12 @@ msgid "Messages"
 msgstr "Správy"
 
 #: views/tasks/galview.xml.h:1
-#, fuzzy
 msgid "With _Category"
-msgstr "S kategóriou"
+msgstr "S _kategóriou"
 
 #: views/tasks/galview.xml.h:2
-#, fuzzy
 msgid "_Tasks"
-msgstr "Ú_loha"
+msgstr "Ú_lohy"
 
 #. Check for UTC.
 #: widgets/e-timezone-dialog/e-timezone-dialog.c:209
@@ -28125,19 +27877,16 @@ msgid "Save Search"
 msgstr "Uložiť hľadanie"
 
 #: widgets/misc/e-filter-bar.h:91 widgets/misc/e-filter-bar.h:98
-#, fuzzy
 msgid "_Save Search..."
-msgstr "Uložiť hľadanie"
+msgstr "_Uložiť hľadanie..."
 
 #: widgets/misc/e-filter-bar.h:92 widgets/misc/e-filter-bar.h:99
-#, fuzzy
 msgid "_Edit Saved Searches..."
-msgstr "Pridať do uložených hľadaní"
+msgstr "_Upraviť uložené hľadania..."
 
 #: widgets/misc/e-filter-bar.h:93 widgets/misc/e-filter-bar.h:100
-#, fuzzy
 msgid "_Advanced..."
-msgstr "Pokročilé..."
+msgstr "_Pokročilé..."
 
 #: widgets/misc/e-messagebox.c:152
 msgid "Information"
@@ -28161,14 +27910,12 @@ msgid "Don't show this message again."
 msgstr "Túto správu už nezobrazovať."
 
 #: widgets/misc/e-search-bar.c:521
-#, fuzzy
 msgid "_Find Now"
-msgstr "Nájsť"
+msgstr "_Nájsť teraz"
 
 #: widgets/misc/e-search-bar.c:522
-#, fuzzy
 msgid "_Clear"
-msgstr "Vymazať"
+msgstr "_Vyčistiť"
 
 #: widgets/misc/e-search-bar.c:895
 msgid "Clear"
@@ -28199,894 +27946,3 @@ msgstr "init_corba(): Nie je možné inicializovať GNOME"
 #: wombat/wombat.c:224
 msgid "init_bonobo(): could not initialize Bonobo"
 msgstr "init_bonobo(): Nie je možné inicializovať Bonobo"
-
-#, fuzzy
-#~ msgid "Configuration control for the Evolution Summary."
-#~ msgstr "Priečinok obsahujúci súhrn Evolution"
-
-#, fuzzy
-#~ msgid "Configure the appearance of the Evolution Summary here"
-#~ msgstr "Priečinok obsahujúci súhrn Evolution"
-
-#, fuzzy
-#~ msgid "Evolution Summary component."
-#~ msgstr "Poštový komponent Evolution."
-
-#, fuzzy
-#~ msgid "Factory for Evolution Summary's configuration control."
-#~ msgstr "Vytváracie rozhranie pre ovládací prvok úloh Evolution."
-
-#, fuzzy
-#~ msgid "Factory for the Evolution Summary component."
-#~ msgstr "Vytváracie rozhranie pre komponent Súhrn Evolution."
-
-#, fuzzy
-#~ msgid "Summary Preferences"
-#~ msgstr "Nastavenie súhrnu"
-
-#, fuzzy
-#~ msgid ""
-#~ "Thanks\n"
-#~ "The Ximian Evolution Team\n"
-#~ msgstr "Ximian Evolution"
-
-#, fuzzy
-#~ msgid "Don't tell me again"
-#~ msgstr "Túto správu už nezobrazovať"
-
-#, fuzzy
-#~ msgid "_Configure..."
-#~ msgstr "Nastaviť %s"
-
-#, fuzzy
-#~ msgid "_Configure Pilot..."
-#~ msgstr "Nastaviť %s"
-
-#, fuzzy
-#~ msgid "en"
-#~ msgstr "Odoslané"
-
-#, fuzzy
-#~ msgid " "
-#~ msgstr ", "
-
-#, fuzzy
-#~ msgid "Select PGP program"
-#~ msgstr "Vyberte program PGP"
-
-#, fuzzy
-#~ msgid "Signature #1"
-#~ msgstr "Uložiť podpis"
-
-#, fuzzy
-#~ msgid "Signature #2"
-#~ msgstr "Uložiť podpis"
-
-#~ msgid "_PGP binary path:"
-#~ msgstr "Cesta k spustiteľnému _súboru PGP:"
-
-#~ msgid "Copy selected messages"
-#~ msgstr "Kopírovať vybrané správy"
-
-#~ msgid "Cut selected messages"
-#~ msgstr "Vystrihnúť vybrané správy"
-
-#, fuzzy
-#~ msgid "&lt;- _Remove"
-#~ msgstr "_Odstrániť"
-
-#, fuzzy
-#~ msgid "_Add -&gt;"
-#~ msgstr "_Pridať"
-
-#~ msgid "Scanning for new messages"
-#~ msgstr "Hľadám nové správy"
-
-#, fuzzy
-#~ msgid "The folder %s no longer exists"
-#~ msgstr "Priečinok je prázdny"
-
-#~ msgid "1 byte"
-#~ msgstr "1 bajt"
-
-#~ msgid "%u bytes"
-#~ msgstr "%u bajtov"
-
-#~ msgid ""
-#~ "You forgot to choose a folder.\n"
-#~ "Please go back and specify a valid folder to deliver mail to."
-#~ msgstr ""
-#~ "Zabudli ste vybrať priečinok.\n"
-#~ "Prosím, vráťte sa a zadajte platný priečinok, kam doručiť poštu."
-
-#~ msgid "%s may not be reconfigured because it is not a local folder"
-#~ msgstr "%s nie je možné znovu nastaviť, pretože to nie je lokálny priečinok"
-
-#~ msgid ""
-#~ "Importing %s\n"
-#~ "Importer not ready.\n"
-#~ "Waiting 5 seconds to retry."
-#~ msgstr ""
-#~ "Importujem %s\n"
-#~ "Importér nie je pripravený.\n"
-#~ "Čakám 5 sekúnd a skúsim to znovu."
-
-#~ msgid "Evolution Importer Assistant"
-#~ msgstr "Nástroj Evolution pre import"
-
-#, fuzzy
-#~ msgid "_Preferences..."
-#~ msgstr "_Neopakovať"
-
-#~ msgid "Error in search expression."
-#~ msgstr "Chyba v hľadanom výraze."
-
-#~ msgid "Restarting search."
-#~ msgstr "Spúšťam hľadanie znovu."
-
-#, fuzzy
-#~ msgid "Could not parse query string"
-#~ msgstr "Nie je možné spracovať URL `%s'"
-
-#, fuzzy
-#~ msgid "Email is"
-#~ msgstr "E-mail 2"
-
-#~ msgid "Could not create the alarm notify service"
-#~ msgstr "Nie je možné vytvoriť službu upozorňovania"
-
-#~ msgid "Meeting begins: <b>"
-#~ msgstr "Stretnutie začína: <b>"
-
-#~ msgid "Task begins: <b>"
-#~ msgstr "Úloha začína: <b>"
-
-#~ msgid "Free/Busy info begins: <b>"
-#~ msgstr "Informácia o voľnom čase začína: <b>"
-
-#~ msgid "Begins: <b>"
-#~ msgstr "Začína: <b>"
-
-#~ msgid "Meeting ends: <b>"
-#~ msgstr "Stretnutie končí: <b>"
-
-#~ msgid "Free/Busy info ends: <b>"
-#~ msgstr "Informácia o voľnom čase končí: <b>"
-
-#~ msgid "Task Completed: <b>"
-#~ msgstr "Úloha dokončená: <b>"
-
-#~ msgid "Task Due: <b>"
-#~ msgstr "Termín úlohy: <b>"
-
-#~ msgid "Non-Participants"
-#~ msgstr "Bez účasti"
-
-#, fuzzy
-#~ msgid "Set as default"
-#~ msgstr " (štandard)"
-
-#, fuzzy
-#~ msgid "Signature hint"
-#~ msgstr "Uložiť podpis"
-
-#, fuzzy
-#~ msgid "Hide signature hint"
-#~ msgstr "Súbor s HTML podpisom:"
-
-#~ msgid " _Refresh List "
-#~ msgstr "_Aktualizovať zoznam"
-
-#~ msgid "Show _folders from server: "
-#~ msgstr "Zobraziť _priečinky zo serveru:"
-
-#, fuzzy
-#~ msgid "_Server:"
-#~ msgstr "_Meno serveru:"
-
-#~ msgid ""
-#~ "Evolution is unable to get the addressbook local storage.\n"
-#~ "This may have been caused by the evolution-addressbook component "
-#~ "crashing.\n"
-#~ "To help us better understand and ultimately resolve this problem,\n"
-#~ "please send an e-mail to Jon Trowbridge <trow@ximian.com> with a\n"
-#~ "detailed description of the circumstances under which this error\n"
-#~ "occurred.  Thank you."
-#~ msgstr ""
-#~ "Evolution sa nepodarilo získať lokálny uloženie pre adresár. Je to možno\n"
-#~ "spôsobené pádom komponentu evolution-addressbook. Aby sme lepšie "
-#~ "pochopili\n"
-#~ "a vyriešili tento problém, pošlite e-mail Jonovi Trowbridgeovi "
-#~ "<trow@ximian\n"
-#~ "com> s detailným popisom okolností, pri ktorých sa chyba objavila. "
-#~ "Ďakujeme."
-
-#~ msgid ""
-#~ "Evolution is unable to get the addressbook local storage.\n"
-#~ "Under normal circumstances, this should never happen.\n"
-#~ "You may need to exit and restart Evolution in order to\n"
-#~ "correct this problem."
-#~ msgstr ""
-#~ "Evolution sa nepodarilo získať uloženie pre lokálny adresár.\n"
-#~ "Obvykle by sa to nemalo stať. Možno budete musieť znovu\n"
-#~ "Evolution spustiť, aby sa problém vyriešil."
-
-#, fuzzy
-#~ msgid "_Browse..."
-#~ msgstr "_Presunúť..."
-
-#~ msgid "The meeting status has changed. Send an updated version?"
-#~ msgstr "Stav stretnutia sa zmenil. Chcete poslať aktualizovanú verziu?"
-
-#~ msgid "_Delete this Appointment"
-#~ msgstr "O_dstrániť túto schôdzku"
-
-#~ msgid ""
-#~ "Issuer: %s\n"
-#~ "Subject: %s"
-#~ msgstr ""
-#~ "Vydal: %s\n"
-#~ "Pre: %s"
-
-#~ msgid "SASL Protocol error"
-#~ msgstr "SASL chyba protokolu"
-
-#~ msgid "I/O Error: %s"
-#~ msgstr "Chyba V/V: %s"
-
-#~ msgid "Welcome response error: %s: possibly non-fatal"
-#~ msgstr "Chyba privítanie od serveru: %s : možno nie kritické"
-
-#~ msgid "HELO request timed out: %s: non-fatal"
-#~ msgstr "Vypršal čas odpovede HELO: %s: nie je kritická"
-
-#~ msgid "HELO response error: %s: non-fatal"
-#~ msgstr "Chyba odpovede HELO: %s: nie je kritická"
-
-#~ msgid "QUIT request timed out: %s: non-fatal"
-#~ msgstr "Vypršal čas odpovede QUIT: %s: nie je kritická"
-
-#~ msgid "Insert File"
-#~ msgstr "Vložiť súbor"
-
-#~ msgid "You have chosen an invalid date."
-#~ msgstr "Vybrali ste neplatný dátum."
-
-#~ msgid ""
-#~ "The message's date will be compared against\n"
-#~ "whatever the time is when the filter is run\n"
-#~ "or vfolder is opened."
-#~ msgstr ""
-#~ "Dátum správy bude porovnaný s časom\n"
-#~ "keď bol spustený filter alebo keď bol\n"
-#~ "otvorený vpriečinok."
-
-#, fuzzy
-#~ msgid "Command"
-#~ msgstr "Firma"
-
-#~ msgid "Evolution News Editor"
-#~ msgstr "Editor diskusných skupín Evolution"
-
-#~ msgid "Are you sure you want to delete this news account?"
-#~ msgstr "Naozaj chcete odstrániť tento účet diskusných skupín?"
-
-#~ msgid "You must configure an account before you can send this email."
-#~ msgstr "Musíte nastaviť účet pred poslaním tejto správy."
-
-#~ msgid "NNTP Server:"
-#~ msgstr "NNTP server:"
-
-#, fuzzy
-#~ msgid "News Servers"
-#~ msgstr "_Kanály správ"
-
-#~ msgid "Source"
-#~ msgstr "Zdroj"
-
-#~ msgid "Source Information"
-#~ msgstr "Informácia o zdrojovom kóde"
-
-#~ msgid "newswindow1"
-#~ msgstr "newswindow1"
-
-#~ msgid "Save to Disk..."
-#~ msgstr "Uložiť na disk..."
-
-#, fuzzy
-#~ msgid "View messages..."
-#~ msgstr "Uložiť správu ako..."
-
-#~ msgid "Executing shell command: %s"
-#~ msgstr "Vykonávam príkaz shellu: %s"
-
-#~ msgid "Evolution - Create new folder"
-#~ msgstr "Evolution - Vytvoriť nový priečinok"
-
-#~ msgid ""
-#~ "The type of the selected folder is not valid for\n"
-#~ "the requested operation."
-#~ msgstr ""
-#~ "Typ vybraného priečinku nie je platný\n"
-#~ "pre požadovanú operáciu."
-
-#~ msgid "You may only import to local folders"
-#~ msgstr "Do lokálnych priečinkov môžete iba importovať"
-
-#~ msgid "_Contact List"
-#~ msgstr "Zoznam _kontaktov"
-
-#~ msgid "Inline Text _File..."
-#~ msgstr "Vložiť te_xtový súbor...."
-
-#~ msgid "_Pilot Settings..."
-#~ msgstr "Nastavenie _pilota..."
-
-#, fuzzy
-#~ msgid "Addressbook Settings"
-#~ msgstr "Zdroje adresára"
-
-#, fuzzy
-#~ msgid "Could not query for schema information"
-#~ msgstr ""
-#~ "Neplatná informácia nepriehľadného krokovania:\n"
-#~ "%s"
-
-#~ msgid "Evolution calendar executive summary component."
-#~ msgstr "Komponent Súhrn kalendára Evolution."
-
-#~ msgid "Factory for the Calendar Summary component."
-#~ msgstr "Vytváracie rozhranie pre komponent Súhrnu kalendára."
-
-#~ msgid "Sta_rt of day:"
-#~ msgstr "_Začiatok dňa:"
-
-#~ msgid "_End of day:"
-#~ msgstr "_Koniec dňa:"
-
-#~ msgid "_Other Organizer"
-#~ msgstr "_Iný organizátor"
-
-#~ msgid "Clearsigning is not supported by this cipher"
-#~ msgstr "Digitálny podpis v čistom texte nie je podporovaný touto šifrou"
-
-#~ msgid "Please enter your %s passphrase for %s"
-#~ msgstr "Prosím, zadajte vaše %s heslo pre %s"
-
-#~ msgid "Please enter your %s passphrase"
-#~ msgstr "Prosím, zadajte vaše %s heslo"
-
-#~ msgid "Cannot sign this message: no plaintext to sign"
-#~ msgstr "Nie je možné podpísať správu: žiadny text na podpis"
-
-#~ msgid "Cannot sign this message: no password provided"
-#~ msgstr "Nie je možné podpísať správu: nezadané heslo"
-
-#~ msgid "Cannot sign this message: couldn't create pipe to GPG/PGP: %s"
-#~ msgstr ""
-#~ "Nie je možné podpísať správu: nie je možné vytvoriť rúru do GPG/PGP: %s"
-
-#~ msgid "Cannot sign this message: no plaintext to clearsign"
-#~ msgstr "Nie je možné podpísať správu: žiadny text pre podpis v texte"
-
-#~ msgid "Cannot verify this message: no plaintext to verify"
-#~ msgstr "Nie je možné overiť správu: žiadny text na overenie"
-
-#~ msgid "Cannot verify this message: couldn't create pipe to GPG/PGP: %s"
-#~ msgstr ""
-#~ "Nie je možné overiť správu: nie je možné vytvoriť rúru do GPG/PGP: %s"
-
-#~ msgid "Cannot encrypt this message: no plaintext to encrypt"
-#~ msgstr "Nie je možné zašifrovať správu: žiadny text na zašifrovanie"
-
-#~ msgid "Cannot encrypt this message: no password provided"
-#~ msgstr "Nie je možné zašifrovať správu: nezadané heslo"
-
-#~ msgid "Cannot encrypt this message: couldn't create pipe to GPG/PGP: %s"
-#~ msgstr ""
-#~ "Nie je možné zašifrovať správu: nie je možné vytvoriť rúru do GPG/PGP: %s"
-
-#~ msgid "Cannot decrypt this message: no ciphertext to decrypt"
-#~ msgstr ""
-#~ "Nie je možné dešifrovať správu: žiadny šifrovaný text na dešifrovanie"
-
-#~ msgid "Cannot decrypt this message: no password provided"
-#~ msgstr "Nie je možné dešifrovať správu: nezadané heslo"
-
-#~ msgid "Cannot decrypt this message: couldn't create pipe to GPG/PGP: %s"
-#~ msgstr ""
-#~ "Nie je možné dešifrovať správu: nie je možné vytvoriť rúru do GPG/PGP: %s"
-
-#~ msgid "%s server %s"
-#~ msgstr "%s server %s"
-
-#~ msgid "(unknown host)"
-#~ msgstr "(neznámy hostiteľ)"
-
-#~ msgid "No such message: %s"
-#~ msgstr "Žiadna taká správa: %s"
-
-#~ msgid "You cannot copy messages from this trash folder."
-#~ msgstr "Nemôžete skopírovať správy z tohto priečinku s odpadkami."
-
-#~ msgid "Directory tree of mbox files"
-#~ msgstr "Strom priečinkov zo súborov mbox"
-
-#~ msgid ""
-#~ "For accessing mail storedin an external tree of mbox files.\n"
-#~ "This will allow you to directly access pine and elm folders.\n"
-#~ "NOTE: This provider is still experimental so ensure you backup any mail "
-#~ "folders first."
-#~ msgstr ""
-#~ "Pre prístup k pošte uloženej v externom strome súborov mbox.\n"
-#~ "To umožňuje priamy prístup k priečinkom pine a elm.\n"
-#~ "POZNÁMKA: Tento poskytovateľ je stále ešte experimentálny, takže\n"
-#~ "nezabudnite najprv svoju poštu zálohovať."
-
-#~ msgid "Cannot append message to spool file: %s: %s"
-#~ msgstr "Nie je možné pridať správu do súboru fronty: %s: %s"
-
-#~ msgid "Could not file: %s: %s"
-#~ msgstr "Nie je uložiť: %s: %s"
-
-#, fuzzy
-#~ msgid "Store `%s' does not exist or is not a directory"
-#~ msgstr "Fronta `%s' neexistuje alebo nie je normálny súbor."
-
-#, fuzzy
-#~ msgid "Random"
-#~ msgstr "Rádio"
-
-#~ msgid ""
-#~ "Could not get inbox for new mail store:\n"
-#~ "%s\n"
-#~ "No shortcut will be created."
-#~ msgstr ""
-#~ "Nie je možné získať schránku pre nové správy v sklade:\n"
-#~ "%s\n"
-#~ "Skratka nebude vytvorená."
-
-#, fuzzy
-#~ msgid " Edit "
-#~ msgstr "_Upraviť"
-
-#, fuzzy
-#~ msgid " New "
-#~ msgstr "Nová"
-
-#, fuzzy
-#~ msgid "Advanced Options"
-#~ msgstr "Zrušiť operáciu"
-
-#, fuzzy
-#~ msgid "Afrikaans"
-#~ msgstr "Arkansas"
-
-#, fuzzy
-#~ msgid "Arabic"
-#~ msgstr "Arica"
-
-#, fuzzy
-#~ msgid "Dari"
-#~ msgstr "Bari"
-
-#, fuzzy
-#~ msgid "Hulu"
-#~ msgstr "Honolulu"
-
-#, fuzzy
-#~ msgid "Same as text"
-#~ msgstr "Somerset"
-
-#, fuzzy
-#~ msgid "Select a signature script"
-#~ msgstr "Odstrániť všetko okrem podpisu"
-
-#, fuzzy
-#~ msgid "_HTML Signature:"
-#~ msgstr "_HTML podpis:"
-
-#, fuzzy
-#~ msgid "_Language:"
-#~ msgstr "Jazyk"
-
-#, fuzzy
-#~ msgid "_Random"
-#~ msgstr "Rádio"
-
-#~ msgid "Could not create a PGP encryption context."
-#~ msgstr "Nepodarilo sa vytvoriť kontext zašifrovania PGP."
-
-#~ msgid "Could not create a PGP decryption context."
-#~ msgstr "Nepodarilo sa vytvoriť kontext dešifrovania PGP."
-
-#~ msgid "Moving"
-#~ msgstr "Premiestňujem"
-
-#~ msgid "Copying"
-#~ msgstr "Kopírujem"
-
-#, fuzzy
-#~ msgid "Signature name:"
-#~ msgstr "Súbor s podpisom:"
-
-#~ msgid "Riga"
-#~ msgstr "Riga"
-
-#~ msgid "Are you sure you want to remove the \"%s\" folder?"
-#~ msgstr "Naozaj chcete odstrániť priečinok \"%s\"?"
-
-#~ msgid "Waiting for connection to LDAP server..."
-#~ msgstr "Čakám na spojenie so serverom LDAP..."
-
-#~ msgid "Edit Addressbook"
-#~ msgstr "Upraviť adresár"
-
-#~ msgid "A_uthenticate with server using:"
-#~ msgstr "_Prihlásiť sa k serveru pomocou:"
-
-#~ msgid "Add Addressbook"
-#~ msgstr "Pridať adresár"
-
-#~ msgid "Advanced"
-#~ msgstr "Pokročilé"
-
-#~ msgid "Base"
-#~ msgstr "Sústava"
-
-#~ msgid "Check this if the server requires you to authenticate."
-#~ msgstr "Použite túto voľbu, ak server vyžaduje prihlásenie."
-
-#~ msgid ""
-#~ "Evolution will use this Distinquished Name (DN) to authenticate you with "
-#~ "the server"
-#~ msgstr ""
-#~ "Evolution použije toto známe meno (DN) pre prihlásenie na váš server"
-
-#~ msgid "The information below is required in order to add an addressbook.  "
-#~ msgstr "Údaje uvedené dole sú nutné pre pridanie adresára."
-
-#~ msgid "This information is not required for most ldap servers. "
-#~ msgstr "Táto informácia nie je pre väčšinu serverov LDAP nutná."
-
-#~ msgid ""
-#~ "This information is used by your ldap server to specify which nodes are "
-#~ "used in a search. Contact your server administrator for more information."
-#~ msgstr ""
-#~ "Túto informáciu používa váš server LDAP pre určenie, ktoré uzly použiť "
-#~ "pre hľadanie. Detaily by vám mal poskytnúť váš systémový administrátor."
-
-#~ msgid ""
-#~ "This is the base node for all your searches on the ldap server. Contact "
-#~ "your server administrator for more information."
-#~ msgstr ""
-#~ "Toto je základný uzol pre všetky hľadania na serveri LDAP. Detaily by ste "
-#~ "mali získať od vášho systémového administrátora."
-
-#~ msgid "This is the name of the server where your addressbook is located."
-#~ msgstr "Toto je meno serveru, kde je umiestnený adresár."
-
-#~ msgid "This is the port that your ldap server uses."
-#~ msgstr "Toto je port, ktorý používa váš server LDAP."
-
-#~ msgid "Name contains"
-#~ msgstr "Meno obsahuje"
-
-#~ msgid "C_ontaining:"
-#~ msgstr "O_bsahuje:"
-
-#~ msgid "Show contacts matching the following criteria:"
-#~ msgstr "Zobraziť kontakty odpovedajúce týmto kritériám:"
-
-#~ msgid "Create new appointments with a default _reminder"
-#~ msgstr "Vytvoriť novú schôdzku so štandardným _pripomenutím"
-
-#~ msgid "First day of wee_k:"
-#~ msgstr "_Prvý deň týždňa:"
-
-#~ msgid "_Other"
-#~ msgstr "_Iné"
-
-#~ msgid "_Delete this Task"
-#~ msgstr "O_dstrániť túto úlohu"
-
-#~ msgid "Unable to find any of your identities in the attendees list!\n"
-#~ msgstr "Nepodarilo sa nájsť žiadnu z vašich identít v zozname účastníkov!\n"
-
-#~ msgid "Invalid type in body-contains, expecting string"
-#~ msgstr "Neplatný typ v body-contains, očakávam reťazec"
-
-#~ msgid "Error hashing password."
-#~ msgstr "Chyba pri hešovaní hesla."
-
-#~ msgid "Invalid password."
-#~ msgstr "Neplatné heslo."
-
-#~ msgid "Could not sign: certificate not found for \"%s\"."
-#~ msgstr "Nepodarilo sa podpísať: certifikát nenájdený pre \"%s\"."
-
-#~ msgid "Could not clearsign: certificate not found for \"%s\"."
-#~ msgstr ""
-#~ "Nie je možné podpísať v čistom texte: nnájdený certifikát pre \"%s\"."
-
-#~ msgid "Could not encrypt: failed to create enveloped data."
-#~ msgstr "Nepodarilo sa zašifrovať: zlyhalo vytvorenie obálky pre dáta."
-
-#~ msgid "Could not encrypt: failed to create encryption context."
-#~ msgstr "Nepodarilo sa zašifrovať: zlyhalo vytvorenie kontextu zašifrovania."
-
-#~ msgid "Could not encrypt data: invalid user key: \"%s\"."
-#~ msgstr "Nie je možné zašifrovať dáta: neplatný používateľský kľúč: \"%s\"."
-
-#~ msgid "Could not encrypt: encoding failed."
-#~ msgstr "Nepodarilo sa zašifrovať: kodovanie zlyhalo."
-
-#~ msgid "Please enter the NNTP password for %s@%s"
-#~ msgstr "Prosím, zadajte NNTP heslo pre %s@%s"
-
-#~ msgid "Server rejected username"
-#~ msgstr "Server odmietol používateľské meno"
-
-#~ msgid "Failed to send username to server"
-#~ msgstr "Nepodarilo sa poslať používateľské meno na server"
-
-#~ msgid "Server rejected username/password"
-#~ msgstr "Server odmietol používateľské meno/heslo"
-
-#~ msgid "Internal error: uid in invalid format: %s"
-#~ msgstr "Vnútorná chyba: uid v neplatnom formáte. %s"
-
-#~ msgid "Could not get group list from server."
-#~ msgstr "Nie je možné získať zoznam skupín zo serveru."
-
-#~ msgid "Unable to load grouplist file for %s: %s"
-#~ msgstr "Nie je možné načítať súbor so zoznamom skupín pre %s: %s"
-
-#~ msgid "Unable to save grouplist file for %s: %s"
-#~ msgstr "Nie je možné uložiť súbor so zoznamom skupín pre %s: %s"
-
-#~ msgid "Could not find 'From' address in message"
-#~ msgstr "Nie je možné nájsť v správe adresu 'Od'"
-
-#~ msgid "Cannot send message: sender address not defined."
-#~ msgstr "Nie je možné poslať správu: adresa odosielateľa nie je definovaná."
-
-#~ msgid "Evolution component for the executive summary."
-#~ msgstr "Komponent Evolution pre Súhrn."
-
-#~ msgid "Cannot initialize Evolution's Executive Summary component."
-#~ msgstr "Nie je možné inicializovať komponent Súhrnu Evolution."
-
-#~ msgid ""
-#~ "You can select a different HTML page for the background of the Executive "
-#~ "Summary.\n"
-#~ "\n"
-#~ "Just leave it blank for the default"
-#~ msgstr ""
-#~ "Pre pozadie súhrnu si môžete zvoliť inú stránku HTML.\n"
-#~ "\n"
-#~ "Pre štandardnú nechajte prázdne"
-
-#~ msgid "Open %s with the default GNOME application"
-#~ msgstr "Otvoriť %s pomocou štandardnej aplikácie GNOME"
-
-#~ msgid "Open %s with the default GNOME web browser"
-#~ msgstr "Otvoriť %s pomocou štandardného web prehliadača GNOME"
-
-#~ msgid "Send an email to %s"
-#~ msgstr "Poslať e-mail %s"
-
-#~ msgid "Run %s"
-#~ msgstr "Spustiť %s"
-
-#~ msgid "Close %s"
-#~ msgstr "Zavrieť %s"
-
-#~ msgid "Move %s to the left"
-#~ msgstr "Presunúť %s doľava"
-
-#~ msgid "Move %s to the right"
-#~ msgstr "Presunúť %s doprava"
-
-#~ msgid "Move %s into the previous row"
-#~ msgstr "Presunúť %s do predchádzajúceho riadku"
-
-#~ msgid "Move %s into the next row"
-#~ msgstr "Presunúť %s do nasledujúceho riadku"
-
-#~ msgid "page"
-#~ msgstr "strana"
-
-#~ msgid ""
-#~ "Cannot open the HTML file:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Nie je možné otvoriť súbor HTML:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Error reading data:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Chyba pri čítaní dát:\n"
-#~ "%s"
-
-#~ msgid "File does not have a place for the services.\n"
-#~ msgstr "Súbor neobsahuje miesto pre služby.\n"
-
-#~ msgid ""
-#~ "Executive summary component could not initialize Bonobo.\n"
-#~ "If there was a warning message about the RootPOA, it probably means\n"
-#~ "you compiled Bonobo against GOAD instead of OAF."
-#~ msgstr ""
-#~ "Komponent Súhrn nemohol inicializovať Bonobo.\n"
-#~ "Ak sa objavilo varovanie o RootPOA, asi to znamená, že ste\n"
-#~ "preložili Bonobo pre GOAD a nie pre OAF."
-
-#~ msgid "Factory for the RDF summary."
-#~ msgstr "Vytváracie rozhranie pre Súhrn RDF."
-
-#~ msgid "RDF Summary"
-#~ msgstr "Súhrn DRF"
-
-#~ msgid "Factory for the test bonobo component."
-#~ msgstr "Vytváracie rozhranie pre testovací komponent bonobo."
-
-#~ msgid "Factory for the test component."
-#~ msgstr "Vytváracie rozhranie pre testovací komponent."
-
-#~ msgid "Test bonobo service"
-#~ msgstr "Testovacia služba bonobo"
-
-#~ msgid "Test service"
-#~ msgstr "Testovacia služba"
-
-#~ msgid "Update automatically"
-#~ msgstr "Automaticky aktualizovať"
-
-#~ msgid "Update now"
-#~ msgstr "Aktualizovať"
-
-#~ msgid "Update every "
-#~ msgstr "Aktualizovať každých "
-
-#~ msgid "Enter folder URI"
-#~ msgstr "Zadajte URI priečinku"
-
-#~ msgid "Mail storage folder (internal)"
-#~ msgstr "Priečinok pre ukladanie pošty (interné)"
-
-#~ msgid "Create vFolder from Search"
-#~ msgstr "Vytvoriť vPriečinok z výsledku hľadania"
-
-#~ msgid "Filter on Mailing List"
-#~ msgstr "Filter na konferenciu"
-
-#~ msgid "Indexing:"
-#~ msgstr "Index:"
-
-#~ msgid "Mailbox Format"
-#~ msgstr "Formát poštová schránky"
-
-#~ msgid "%s: Inbox"
-#~ msgstr "%s: Doručená pošta"
-
-#~ msgid "Always _encrypt to myself when sending encrypted mail"
-#~ msgstr "Vždy ši_frovať kópiu sebe pri posielaní šifrovanej správy"
-
-#~ msgid "Composer"
-#~ msgstr "Editor"
-
-#~ msgid "Default Forward style is: "
-#~ msgstr "Štandardný štýl \"Predať ďalej\" je: "
-
-#~ msgid "Display"
-#~ msgstr "Zobrazenie"
-
-#~ msgid "Edit..."
-#~ msgstr "Upraviť..."
-
-#~ msgid "News"
-#~ msgstr "Diskusné skupiny"
-
-#~ msgid "Select Filter Log file..."
-#~ msgstr "Vyberte súbor pre ukladanie záznamu filtrovania..."
-
-#~ msgid "Sources"
-#~ msgstr "Zdroje"
-
-#~ msgid "_Log filter actions to:"
-#~ msgstr "Uložiť _záznam o filtrovaní do:"
-
-#~ msgid "_Organization:"
-#~ msgstr "_Organizácia:"
-
-#~ msgid "_Send mail in HTML format by default."
-#~ msgstr "Posielať štandardne ako _HTML."
-
-#~ msgid "_Server type: "
-#~ msgstr "_Typ serveru:"
-
-#~ msgid "placeholder"
-#~ msgstr "miesto"
-
-#~ msgid "seconds."
-#~ msgstr "sekúnd."
-
-#~ msgid "Evolution does not recognize this type of signed message."
-#~ msgstr "Evolution nerozpoznala tento typ podpísanej správy."
-
-#~ msgid "Incomplete message written on pipe!"
-#~ msgstr "Do rúry nebola zapísaná úplná správa!"
-
-#~ msgid "Mail Summary"
-#~ msgstr "Súhrn pošty"
-
-#~ msgid "Cannot initialize Evolution's Summary component."
-#~ msgstr "Nie je možné inicializovať komponent súhrnu Evolution."
-
-#~ msgid "Factory for the Evolution notes component."
-#~ msgstr "Vytváracie rozhranie pre komponent poznámok Evolution."
-
-#~ msgid "Factory for the Notes control"
-#~ msgstr "Vytváracie rozhranie pre ovládací prvok Poznámky"
-
-#~ msgid "Copyright 1999, 2000, 2001, 2002 Ximian, Inc."
-#~ msgstr "Copyright 1999, 2000, 2001, 2002 Ximian, Inc."
-
-#~ msgid "(No name)"
-#~ msgstr "(Bez mena)"
-
-#~ msgid "Dump"
-#~ msgstr "Vyhodiť"
-
-#~ msgid "Configure the calendar's settings"
-#~ msgstr "Nastavenie kalendára"
-
-#~ msgid "Create a New All Day _Event"
-#~ msgstr "Vytvoriť novú celodennú _udalosť"
-
-#~ msgid "Create a New _Task"
-#~ msgstr "Vytvoriť novú ú_lohu"
-
-#~ msgid "Create a _New Appointment"
-#~ msgstr "Vytvoriť _novú schôdzku"
-
-#~ msgid "Create a _New Meeting"
-#~ msgstr "Vytvoriť _nové stretnutie"
-
-#~ msgid "Create an event for the whole day"
-#~ msgstr "Vytvorí udalosť počas celého dňa"
-
-#~ msgid "_Appointment..."
-#~ msgstr "_Schôdzka..."
-
-#~ msgid "_Calendar Settings..."
-#~ msgstr "Nastavenie _kalendára..."
-
-#~ msgid "_Meeting..."
-#~ msgstr "_Stretnutie..."
-
-#~ msgid "_Task..."
-#~ msgstr "Ú_loha..."
-
-#~ msgid "_Apply Filters"
-#~ msgstr "_Použiť filtre"
-
-#~ msgid "Configure the task view's settings"
-#~ msgstr "Nastavenie pohľadu pre úlohy"
-
-#~ msgid "Tasks Settings..."
-#~ msgstr "Nastavenie úloh..."
-
-#~ msgid "Change the settings for the summary"
-#~ msgstr "Zmení nastavenie súhrnu"
-
-#~ msgid "_Summary Settings..."
-#~ msgstr "Nastavenie _súhrnu..."
-
-#~ msgid "Show All"
-#~ msgstr "Zobraziť všetko"
-
-#~ msgid "Sear_ch"
-#~ msgstr "_Nájsť"

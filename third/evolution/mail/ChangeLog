@@ -1,3 +1,38 @@
+2003-01-24  Antonio Xu  <antonio.xu@sun.com>
+
+	* component-factory.c (storage_remove_folder): Change
+	strcmp(fi->path, path) to strcmp(fi->name, name) and now the
+	execution takes the right path. My patch base on Callie's patch
+	for bug #33525.
+
+2003-01-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_copy): Correctly create the
+	clipboard buffer by using a nul to delimit the uri and the list of
+	uids.
+
+2003-01-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (storage_remove_folder): Fixed a situation
+	in which we could notify the shell listener twice.
+
+2003-01-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config-druid.c (get_fn): Connect to the toggled event on
+	the transport_needs_auth toggle button so if the user turns this
+	off after having deleted the username field, the Next button
+	becomes re-enabled. Fixes bug #36862.
+
+2003-01-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Use
+	e_destination_get_email() instead of e_destination_get_address()
+	when checking that we have a list of valid recipients to send the
+	message to because get_email() returns the addr-spec portion of
+	the address, which is what we care about. if that doesn't exist,
+	then the address is useless. This does all we can do mailer-side
+	for the recent "SMTP Problem" thread.
+
 2002-12-02  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* mail-callbacks.c (guess_me_from_accounts): Use the same logic as

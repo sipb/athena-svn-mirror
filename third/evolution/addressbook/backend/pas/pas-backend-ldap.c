@@ -234,7 +234,7 @@ struct prop_info {
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX, "business_fax", "facsimileTelephoneNumber"), 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_HOME_FAX,     "home_fax", "homeFacsimileTelephoneNumber"), 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_OTHER,        "other_phone", "otherPhone"), 
-	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_OTHER,        "other_fax", "otherFacsimileTelephoneNumber"), 
+	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_OTHER_FAX,    "other_fax", "otherFacsimileTelephoneNumber"), 
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_PHONE_ISDN,         "isdn", "internationaliSDNNumber"), 
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_PHONE_PAGER,        "pager", "pager"),
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_RADIO,        "radio", "radio"),
@@ -269,7 +269,7 @@ struct prop_info {
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_MAILER,      "mailer", "mailer"), 
 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_FILE_AS,     "file_as", "fileAs"),
-	E_COMPLEX_PROP (E_CARD_SIMPLE_FIELD_CATEGORIES,  "category", "category", category_populate, category_ber, category_compare),
+	E_COMPLEX_PROP (E_CARD_SIMPLE_FIELD_CATEGORIES,  "categories", "category", category_populate, category_ber, category_compare),
 
 	STRING_PROP (E_CARD_SIMPLE_FIELD_CALURI,      "caluri", "calCalURI"),
 	STRING_PROP (E_CARD_SIMPLE_FIELD_FBURL,       "fburl", "calFBURL"),
@@ -673,6 +673,17 @@ pas_backend_ldap_connect (PASBackendLDAP *bl)
 				else
 					g_message ("TLS active");
 			}
+		}
+
+		/* bind anonymously initially, we'll actually
+		   authenticate the user properly later (in
+		   authenticate_user) if they've selected
+		   authentication */
+		ldap_error = ldap_simple_bind_s (blpriv->ldap, NULL, NULL);
+		if (ldap_error == LDAP_SERVER_DOWN) {
+			/* we only want this to be fatal if the server is down. */
+			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
+			return GNOME_Evolution_Addressbook_BookListener_RepositoryOffline;
 		}
 
 		ldap_error = query_ldap_root_dse (bl);

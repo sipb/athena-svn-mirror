@@ -252,7 +252,7 @@ econdinclude_HEADERS =  	e-pilot-map.h			e-pilot-settings.h		e-pilot-util.h
 pilot_sources =  	$(econdinclude_HEADERS)		e-pilot-map.c			e-pilot-settings.c		e-pilot-util.c
 
 @ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = $(pilot_sources)
-@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = 
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = e-pilot-settings.c e-pilot-settings.h
 
 libeconduit_la_SOURCES = $(pilot_compile)
 
@@ -286,10 +286,11 @@ e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
 e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
 e-time-utils.lo e-url.lo md5-utils.lo
 libeconduit_static_la_LIBADD = 
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS = 
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_static_la_OBJECTS =  \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-map.lo e-pilot-settings.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-util.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS =  \
+@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
 libeutil_la_LDFLAGS = 
 libeutil_la_DEPENDENCIES = 
 libeutil_la_OBJECTS =  e-bonobo-factory-util.lo \
@@ -305,9 +306,10 @@ libedb3util_la_LIBADD =
 libedb3util_la_OBJECTS =  e-db3-utils.lo e-dbhash.lo
 libeconduit_la_LDFLAGS = 
 libeconduit_la_LIBADD = 
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS = 
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_la_OBJECTS =  e-pilot-map.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-settings.lo e-pilot-util.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS =  \
+@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

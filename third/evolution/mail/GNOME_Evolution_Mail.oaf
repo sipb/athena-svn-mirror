@@ -98,7 +98,7 @@
     <oaf_attribute name="description-el" type="string"
 		   value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#244;&#239;&#245; Evolution &#227;&#233;&#225; &#244;&#239; &#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#246;&#225;&#234;&#221;&#235;&#239;&#245; &#236;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237;."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Componente para factor&#237;a de carpetas de correo de Evolution"/>
+		   value="Componente para factor&#195;&#173;a de carpetas de correo de Evolution"/>
     <oaf_attribute name="description-eu" type="string"
 		   value="Posta-karpeten fabrikarako Evolution-en osagaia."/>
     <oaf_attribute name="description-fr" type="string"
@@ -132,7 +132,7 @@
     <oaf_attribute name="description-sl" type="string"
 		   value="Evolucijina komponenta za tovarne po&#197;&#161;tnih map."/>
     <oaf_attribute name="description-sv" type="string"
-		   value="Fabrik f&#195;&#182;r Evolutions e-postmappkomponent."/>
+		   value="Fabrik f&#246;r Evolutions e-postmappkomponent."/>
     <oaf_attribute name="description-tr" type="string"
 		   value="Evolution e-posta dizin bile&#197;&#159;eni"/>
     <oaf_attribute name="description-uk" type="string"
@@ -166,7 +166,7 @@
     <oaf_attribute name="description-da" type="string"
 		   value="Evolution komponent for h&#229;ndtering af e-post."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Evolution-Komponente f&#195;&#188;r den Umgang mit Mail."/>
+		   value="Evolution-Komponente f&#252;r den Umgang mit Mail."/>
     <oaf_attribute name="description-el" type="string"
 		   value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; Evolution &#227;&#233;&#225; &#244;&#231;&#237; &#228;&#233;&#225;&#247;&#229;&#223;&#241;&#233;&#243;&#231; &#236;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237;."/>
     <oaf_attribute name="description-es" type="string"
@@ -206,7 +206,7 @@
     <oaf_attribute name="description-sl" type="string"
 		   value="Evolucijina komponenta za obravnavo po&#197;&#161;te."/>
     <oaf_attribute name="description-sv" type="string"
-		   value="Evolutionkomponenten f&#195;&#182;r hantering av e-post."/>
+		   value="Evolutionkomponenten f&#246;r hantering av e-post."/>
     <oaf_attribute name="description-tr" type="string"
 		   value="E-posta alma va g&#195;&#182;nderme i&#195;&#167;in Evolution bile&#197;&#159;eni"/>
     <oaf_attribute name="description-uk" type="string"
@@ -243,11 +243,11 @@
     <oaf_attribute name="description-da" type="string"
 		   value="Fabrik for e-post sammendrag komponent."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Fabrik f&#195;&#188;r die Mailzusammenfassungs-Komponente."/>
+		   value="Fabrik f&#252;r die Mailzusammenfassungs-Komponente."/>
     <oaf_attribute name="description-el" type="string"
 		   value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#227;&#233;&#225; &#244;&#239; &#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#240;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242; &#204;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237;."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Factor&#237;a para el componente de Resumen de Correo."/>
+		   value="Factor&#195;&#173;a para el componente de Resumen de Correo."/>
     <oaf_attribute name="description-eu" type="string"
 		   value="Posta-laburpenaren osagairako fabrika."/>
     <oaf_attribute name="description-fr" type="string"
@@ -263,7 +263,7 @@
     <oaf_attribute name="description-lt" type="string"
 		   value="Pa&#240;to ap&#254;valgos komponento gamykla."/>
     <oaf_attribute name="description-lv" type="string"
-		   value="Pasta Kopsavilkuma komponentes ra&#197;&#190;otne."/>
+		   value="Pasta kopsavilkuma komponentes ra&#197;&#190;otne."/>
     <oaf_attribute name="description-nl" type="string"
 		   value="Fabriek voor het post-samenvattingscomponent."/>
     <oaf_attribute name="description-no" type="string"
@@ -281,7 +281,7 @@
     <oaf_attribute name="description-sl" type="string"
 		   value="Tovarna za komponento povzetka po&#197;&#161;te."/>
     <oaf_attribute name="description-sv" type="string"
-		   value="Fabrik f&#195;&#182;r e-postsammanfattningskomponenten."/>
+		   value="Fabrik f&#246;r e-postsammanfattningskomponenten."/>
     <oaf_attribute name="description-tr" type="string"
 		   value="E-posta &#195;&#182;zet bile&#197;&#159;en mimarisi"/>
     <oaf_attribute name="description-uk" type="string"
@@ -328,6 +328,8 @@
 		   value="Componente dell&#39;indice esecutivo della posta di Evolution."/>
     <oaf_attribute name="description-ja" type="string"
 		   value="Evolution &#165;&#225;&#161;&#188;&#165;&#235;&#188;&#194;&#185;&#212;&#165;&#181;&#165;&#222;&#165;&#234;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Evolution pasta izpildkopsavilkuma komponente."/>
     <oaf_attribute name="description-nl" type="string"
 		   value="Evolution post-samenvattingscomponent."/>
     <oaf_attribute name="description-no" type="string"
@@ -380,11 +382,11 @@
     <oaf_attribute name="description-da" type="string"
 		   value="Fabrik for Evolution beskedsredigering."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Fabrik f&#195;&#188;r den Evolution-Maileditor."/>
+		   value="Fabrik f&#252;r den Evolution-Maileditor."/>
     <oaf_attribute name="description-el" type="string"
 		   value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239;&#237; &#229;&#240;&#229;&#238;&#229;&#241;&#227;&#225;&#243;&#244;&#222; &#244;&#239;&#245; Evolution."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Factor&#237;a para el compositor de correo de Evolution."/>
+		   value="Factor&#195;&#173;a para el compositor de correo de Evolution."/>
     <oaf_attribute name="description-eu" type="string"
 		   value="Evolution-en mezu-prestatzailerako fabrika."/>
     <oaf_attribute name="description-fr" type="string"
@@ -400,7 +402,7 @@
     <oaf_attribute name="description-lt" type="string"
 		   value="Evolution ra&#240;ykl&#235;s komponento gamykla."/>
     <oaf_attribute name="description-lv" type="string"
-		   value="Evolution komponista ra&#197;&#190;otne."/>
+		   value="Evolution sacer&#196;&#147;t&#196;&#129;ja ra&#197;&#190;otne."/>
     <oaf_attribute name="description-nl" type="string"
 		   value="Fabriek voor de Evolution opsteller."/>
     <oaf_attribute name="description-no" type="string"
@@ -418,7 +420,7 @@
     <oaf_attribute name="description-sl" type="string"
 		   value="Tovarna za Evolucijinega skladatelja."/>
     <oaf_attribute name="description-sv" type="string"
-		   value="Fabrik f&#195;&#182;r Evolutions e-postredigerare."/>
+		   value="Fabrik f&#246;r Evolutions e-postredigerare."/>
     <oaf_attribute name="description-tr" type="string"
 		   value="Evolution e-posta program&#196;&#177; mimarisi."/>
     <oaf_attribute name="description-uk" type="string"
@@ -454,7 +456,7 @@
     <oaf_attribute name="description-el" type="string"
 		   value="&#197;&#240;&#229;&#238;&#229;&#241;&#227;&#225;&#243;&#244;&#222;&#242; &#236;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; Evolution."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Compositor de correo de Evolution."/>
+		   value="Editor de mensajes de correo de Evolution."/>
     <oaf_attribute name="description-et" type="string"
 		   value="Evolution&#39;i s&#245;numiredaktor."/>
     <oaf_attribute name="description-eu" type="string"
@@ -534,11 +536,11 @@
     <oaf_attribute name="description-da" type="string"
                    value="Gr&#230;nseflade for e-post-konfiguration"/>
     <oaf_attribute name="description-de" type="string"
-                   value="Mailkonfigurations-Oberfl&#195;&#164;che"/>
+                   value="Mailkonfigurations-Oberfl&#228;che"/>
     <oaf_attribute name="description-el" type="string"
                    value="&#196;&#233;&#229;&#240;&#225;&#246;&#222; &#241;&#245;&#232;&#236;&#223;&#243;&#229;&#249;&#237; &#204;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237;"/>
     <oaf_attribute name="description-es" type="string"
-                   value="Interfaz de configuraci&#243;n del correo"/>
+                   value="Interfaz de configuraci&#195;&#179;n del correo"/>
     <oaf_attribute name="description-et" type="string"
                    value="E-posti seadistamisliides"/>
     <oaf_attribute name="description-eu" type="string"
@@ -576,7 +578,7 @@
     <oaf_attribute name="description-sl" type="string"
                    value="Vmesnik za nastavitev po&#197;&#161;te"/>
     <oaf_attribute name="description-sv" type="string"
-                   value="Gr&#195;&#164;nssnitt f&#195;&#182;r e-postkonfiguration"/>
+                   value="Gr&#228;nssnitt f&#246;r e-postkonfiguration"/>
     <oaf_attribute name="description-tr" type="string"
                    value="&#196;&#176;leti yap&#196;&#177;land&#196;&#177;rma aray&#195;&#188;z&#195;&#188;"/>
     <oaf_attribute name="description-uk" type="string"
@@ -621,11 +623,11 @@
     <oaf_attribute name="description-da" type="string"
 		   value="Gr&#230;nseflade for e-post-konfiguration"/>
     <oaf_attribute name="description-de" type="string"
-		   value="Mailkonfigurations-Oberfl&#195;&#164;che"/>
+		   value="Mailkonfigurations-Oberfl&#228;che"/>
     <oaf_attribute name="description-el" type="string"
 		   value="&#196;&#233;&#229;&#240;&#225;&#246;&#222; &#241;&#245;&#232;&#236;&#223;&#243;&#229;&#249;&#237; &#204;&#231;&#237;&#245;&#236;&#220;&#244;&#249;&#237;"/>
     <oaf_attribute name="description-es" type="string"
-		   value="Interfaz de configuraci&#243;n del correo"/>
+		   value="Interfaz de configuraci&#195;&#179;n del correo"/>
     <oaf_attribute name="description-et" type="string"
 		   value="E-posti seadistamisliides"/>
     <oaf_attribute name="description-eu" type="string"
@@ -663,7 +665,7 @@
     <oaf_attribute name="description-sl" type="string"
 		   value="Vmesnik za nastavitev po&#197;&#161;te"/>
     <oaf_attribute name="description-sv" type="string"
-		   value="Gr&#195;&#164;nssnitt f&#195;&#182;r e-postkonfiguration"/>
+		   value="Gr&#228;nssnitt f&#246;r e-postkonfiguration"/>
     <oaf_attribute name="description-tr" type="string"
 		   value="&#196;&#176;leti yap&#196;&#177;land&#196;&#177;rma aray&#195;&#188;z&#195;&#188;"/>
     <oaf_attribute name="description-uk" type="string"
@@ -739,13 +741,21 @@
     <oaf_attribute name="evolution:config_item:title-cs" type="string"
 		   value="E-mailov&#233; &#250;&#232;ty"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
-		   value="Mail-Zug&#195;&#164;nge"/>
+		   value="Mail-Zug&#228;nge"/>
+    <oaf_attribute name="evolution:config_item:title-es" type="string"
+		   value="Cuentas de Correo"/>
+    <oaf_attribute name="evolution:config_item:title-et" type="string"
+		   value="E-posti kontod"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Comptes de courrier"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
 		   value="Postafi&#243;kok"/>
+    <oaf_attribute name="evolution:config_item:title-it" type="string"
+		   value="Account di posta"/>
     <oaf_attribute name="evolution:config_item:title-ko" type="string"
 		   value="&#198;&#237;&#193;&#246; &#176;&#232;&#193;&#164;"/>
+    <oaf_attribute name="evolution:config_item:title-lv" type="string"
+		   value="Pasta konti"/>
     <oaf_attribute name="evolution:config_item:title-no" type="string"
 		   value="E-post-konti"/>
     <oaf_attribute name="evolution:config_item:title-pl" type="string"
@@ -754,17 +764,33 @@
 		   value="Contas de correio"/>
     <oaf_attribute name="evolution:config_item:title-ru" type="string"
 		   value="&#245;&#222;&#163;&#212;&#206;&#217;&#197; &#218;&#193;&#208;&#201;&#211;&#201;"/>
+    <oaf_attribute name="evolution:config_item:title-sv" type="string"
+		   value="E-postkonton"/>
+    <oaf_attribute name="evolution:config_item:title-tr" type="string"
+		   value="E-posta Hesaplar&#196;&#177;"/>
+    <oaf_attribute name="evolution:config_item:title-uk" type="string"
+		   value="&#208;&#159;&#208;&#190;&#209;&#136;&#209;&#130;&#208;&#190;&#208;&#178;&#209;&#150; &#208;&#160;&#208;&#176;&#209;&#133;&#209;&#131;&#208;&#189;&#208;&#186;&#208;&#184;"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
 		   value="T&#195;&#160;i kho&#225;&#186;&#163;n th&#198;&#176;"/>
 
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure your email accounts here"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
-		   value="Hier k&#195;&#182;nnen Sie Ihre E-Mail-Zug&#195;&#164;nge konfigurieren"/>
+		   value="Hier k&#246;nnen Sie Ihre E-Mail-Zug&#228;nge konfigurieren"/>
+    <oaf_attribute name="evolution:config_item:description-es" type="string"
+		   value="Configure sus cuentas de correo aqu&#195;&#173;"/>
+    <oaf_attribute name="evolution:config_item:description-it" type="string"
+		   value="Configura qui i tuoi account di posta elettronica"/>
+    <oaf_attribute name="evolution:config_item:description-lv" type="string"
+		   value="&#197;&#160;eit konfigur&#196;&#147;jiet j&#197;&#171;su epasta kontus"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer e-post-kontoer her"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure as suas contas de correio aqui"/>
+    <oaf_attribute name="evolution:config_item:description-sv" type="string"
+		   value="Konfigurera dina e-postkonton h&#228;r"/>
+    <oaf_attribute name="evolution:config_item:description-tr" type="string"
+		   value="Posta hesaplar&#196;&#177;n&#196;&#177; buradan yap&#196;&#177;land&#196;&#177;r&#196;&#177;n"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh t&#195;&#160;i kho&#225;&#186;&#163;n th&#198;&#176; &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
 
@@ -782,15 +808,23 @@
     <oaf_attribute name="description-cs" type="string"
 		   value="Nastaven&#237; ovl&#225;dac&#237;ho prvku pro e-mailov&#233; &#250;&#232;ty v Evolution."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Konfigurationssteuerung f&#195;&#188;r die Evolution Mail-Zug&#195;&#164;nge."/>
+		   value="Konfigurations-Bedienelement f&#252;r die Evolution Mail-Zug&#228;nge."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Control de configuraci&#243;n para las cuentas de correo de Evolution."/>
+		   value="Control de configuraci&#195;&#179;n para las cuentas de correo de Evolution."/>
     <oaf_attribute name="description-fr" type="string"
 		   value="Contr&#244;le de configuration pour les comptes de courrier d&#39;Evolution."/>
+    <oaf_attribute name="description-it" type="string"
+		   value="Controlli di configurazione per gli account della posta di Evolution."/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Konfigur&#196;&#129;cijas kontrole Evolution pasta kontiem."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for Evolution e-post-konti."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para as Contas de correio do Evolution."/>
+    <oaf_attribute name="description-sv" type="string"
+		   value="Konfigurationsverktyg f&#246;r Evolutions e-postkonton."/>
+    <oaf_attribute name="description-tr" type="string"
+		   value="Evolution posta hesab&#196;&#177; i&#195;&#167;in yap&#196;&#177;land&#196;&#177;rma denetimi."/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho T&#195;&#160;i kho&#225;&#186;&#163;n Th&#198;&#176; t&#195;&#173;n Evolution."/>
 
@@ -811,29 +845,53 @@
 		   value="Nastaven&#237; po&#185;ty"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
 		   value="Mail-Einstellungen"/>
+    <oaf_attribute name="evolution:config_item:title-es" type="string"
+		   value="Opciones de Correo"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Pr&#233;f&#233;rences du courrier"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
 		   value="Levelez&#233;s be&#225;ll&#237;t&#225;sai"/>
+    <oaf_attribute name="evolution:config_item:title-it" type="string"
+		   value="Preferenze di posta"/>
     <oaf_attribute name="evolution:config_item:title-ko" type="string"
 		   value="&#184;&#222;&#192;&#207; &#177;&#226;&#186;&#187; &#188;&#179;&#193;&#164;"/>
+    <oaf_attribute name="evolution:config_item:title-lv" type="string"
+		   value="Pasta Preferences"/>
     <oaf_attribute name="evolution:config_item:title-no" type="string"
 		   value="Brukervalg for e-post"/>
     <oaf_attribute name="evolution:config_item:title-pl" type="string"
 		   value="Ustawienia poczty"/>
     <oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
 		   value="Prefer&#234;ncias de correio"/>
+    <oaf_attribute name="evolution:config_item:title-ru" type="string"
+		   value="&#238;&#193;&#211;&#212;&#210;&#207;&#202;&#203;&#201; &#208;&#207;&#222;&#212;&#217;"/>
+    <oaf_attribute name="evolution:config_item:title-sk" type="string"
+		   value="Nastavenie po&#197;&#161;ty"/>
+    <oaf_attribute name="evolution:config_item:title-sv" type="string"
+		   value="E-postinst&#228;llningar"/>
+    <oaf_attribute name="evolution:config_item:title-tr" type="string"
+		   value="E-posta Tercihleri"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
 		   value="Th&#195;&#180;ng s&#225;&#187;&#145; th&#198;&#176;"/>
 
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure mail preferences, including security and message display, here"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
-		   value="Hier k&#195;&#182;nnen Sie die E-Mail-Einstellungen einschlie&#195;&#159;lich der Sicherheit und der Anzeige von Nachrichten festlegen"/>
+		   value="Hier k&#246;nnen Sie die E-Mail-Einstellungen einschlie&#223;lich der Sicherheit und der Anzeige von Nachrichten festlegen"/>
+    <oaf_attribute name="evolution:config_item:description-es" type="string"
+		   value="Configurar aqu&#195;&#173; las preferencias de correo, incluyendo seguridad y vista de mensajes"/>
+    <oaf_attribute name="evolution:config_item:description-it" type="string"
+		   value="onfigura qui le tue preferenze della posta, incluse sicurezza e aspetto visualizzazione"/>
+    <oaf_attribute name="evolution:config_item:description-lv" type="string"
+		   value="&#197;&#160;eit konfigur&#196;&#147;jiet pasta preferences, ieskaitot dro&#197;&#161;&#196;&#171;bu un v&#196;&#147;stu&#196;&#188;u att&#196;&#147;lo&#197;&#161;anu"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer brukervalg for e-post, inkludert sikkerhet og meldingsvisning her"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure prefer&#234;ncias de correio, incluindo seguran&#231;a e exibi&#231;&#227;o de mensagens, aqui"/>
+    <oaf_attribute name="evolution:config_item:description-sv" type="string"
+		   value="Konfigurera e-postinst&#228;llningar, inklusive s&#228;kerhet och meddelandevisning, h&#228;r"/>
+    <oaf_attribute name="evolution:config_item:description-tr" type="string"
+		   value="&#196;&#176;leti tercihleri, g&#195;&#188;venlik ve di&#196;&#159;er ayarlar&#196;&#177; buradan yap&#196;&#177;land&#196;&#177;r&#196;&#177;n"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh th&#195;&#180;ng s&#225;&#187;&#145; th&#198;&#176; t&#195;&#173;n, bao g&#225;&#187;&#147;m t&#195;&#173;nh b&#225;&#186;&#163;o m&#225;&#186;&#173;t v&#195;&#160; hi&#225;&#187;&#131;n th&#225;&#187;&#139; th&#195;&#180;ng &#196;&#145;i&#225;&#187;&#135;p, &#225;&#187;&#159; &#196;&#145;&#195;&#162;y."/>
 
@@ -847,13 +905,23 @@
     <oaf_attribute name="description-cs" type="string"
 		   value="Nastaven&#237; ovl&#225;dac&#237;ho prvku pro elektronickou po&#185;tu v Evolution."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Konfigurationssteuerung f&#195;&#188;r den Evolution-Mailer."/>
+		   value="Konfigurations-Bedienelement f&#252;r den Evolution-Mailer."/>
+    <oaf_attribute name="description-es" type="string"
+		   value="Control de configuraci&#195;&#179;n para el Transporte de Correo de Evolution."/>
     <oaf_attribute name="description-fr" type="string"
 		   value="Contr&#244;le de configuration pour le courrier d&#39;Evolution."/>
+    <oaf_attribute name="description-it" type="string"
+		   value="Controlli di configurazione per il gestore della posta di Evolution."/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Konfigur&#196;&#129;cijas kontrole Evolution pastniekam."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for Evolution e-posth&#229;ndterer."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para o Correio do Evolution."/>
+    <oaf_attribute name="description-sv" type="string"
+		   value="Konfigurationsverktyg f&#246;r Evolutions e-postkomponent."/>
+    <oaf_attribute name="description-tr" type="string"
+		   value="Evolution e-posta servisi i&#195;&#167;in yap&#196;&#177;land&#196;&#177;rma denetimi."/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho Evolution Mailer."/>
 
@@ -874,10 +942,16 @@
 		   value="Nastaven&#237; p&#237;sma"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
 		   value="Schrift-Einstellungen"/>
+    <oaf_attribute name="evolution:config_item:title-es" type="string"
+		   value="Opciones de Tipograf&#195;&#173;as"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Pr&#233;f&#233;rences des Polices"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
 		   value="Bet&#251;be&#225;ll&#237;t&#225;sok"/>
+    <oaf_attribute name="evolution:config_item:title-it" type="string"
+		   value="Preferenze caratteri"/>
+    <oaf_attribute name="evolution:config_item:title-lv" type="string"
+		   value="Fontu preferences"/>
     <oaf_attribute name="evolution:config_item:title-no" type="string"
 		   value="Brukervalg for skrift"/>
     <oaf_attribute name="evolution:config_item:title-pl" type="string"
@@ -886,19 +960,33 @@
 		   value="Prefer&#234;ncias de fontes"/>
     <oaf_attribute name="evolution:config_item:title-ru" type="string"
 		   value="&#238;&#193;&#211;&#212;&#210;&#207;&#202;&#203;&#201; &#219;&#210;&#201;&#198;&#212;&#207;&#215;"/>
+    <oaf_attribute name="evolution:config_item:title-sv" type="string"
+		   value="Typsnittsinst&#228;llningar"/>
+    <oaf_attribute name="evolution:config_item:title-tr" type="string"
+		   value="Yaz&#196;&#177;tipi Tercihleri"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
 		   value="Th&#195;&#180;ng s&#225;&#187;&#145; font"/>
 
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure the fonts used by Evolution here"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
-		   value="Hier k&#195;&#182;nnen Sie die von Evolution verwendeten Schriften konfigurieren"/>
+		   value="Hier k&#246;nnen Sie die von Evolution verwendeten Schriften konfigurieren"/>
+    <oaf_attribute name="evolution:config_item:description-es" type="string"
+		   value="Configure la tipograf&#195;&#173;a usada por Evolution aqu&#195;&#173;."/>
     <oaf_attribute name="evolution:config_item:description-fr" type="string"
 		   value="Configurez ici les polices utilis&#233;es par Evolution"/>
+    <oaf_attribute name="evolution:config_item:description-it" type="string"
+		   value="Configura qui i font utilizzati da Evolution"/>
+    <oaf_attribute name="evolution:config_item:description-lv" type="string"
+		   value="&#197;&#160;eit konfigur&#196;&#147;jiet Evolution izmantotos fontus"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer skrifter for Evolution her"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure as fontes usadas pelo Evolution aqui"/>
+    <oaf_attribute name="evolution:config_item:description-sv" type="string"
+		   value="Konfigurera de typsnitt som anv&#228;nds Evolution h&#228;r"/>
+    <oaf_attribute name="evolution:config_item:description-tr" type="string"
+		   value="Evolution&#39;un kullanaca&#196;&#159;&#196;&#177; yaz&#196;&#177;tiplerini buradan yap&#196;&#177;land&#196;&#177;r&#196;&#177;n"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh font &#196;&#145;&#198;&#176;&#225;&#187;&#163;c d&#195;&#185;ng b&#225;&#187;&#159;i Evolution &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
 
@@ -912,13 +1000,23 @@
     <oaf_attribute name="description-cs" type="string"
 		   value="Nastaven&#237; ovl&#225;dac&#237;ho prvku pro zobrazov&#225;n&#237; font&#249; v Evolution."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Konfigurationssteuerung f&#195;&#188;r die Evolution Anzeige-Schriftarten"/>
+		   value="Konfigurations-Bedienelement f&#252;r die von Evolution verwendeten Schriftarten."/>
+    <oaf_attribute name="description-es" type="string"
+		   value="Control de configuraci&#195;&#179;n para Tipograf&#195;&#173;as de Evolution"/>
     <oaf_attribute name="description-fr" type="string"
 		   value="Contr&#244;le de configuration pour les polices d&#39;afichage d&#39;Evolution."/>
+    <oaf_attribute name="description-it" type="string"
+		   value="Controlli di configurazione per i font di visualizzazione di Evolution."/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Konfigur&#196;&#129;cijas kontrole Evolution att&#196;&#147;lo&#197;&#161;anas fontiem."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for Evolution skjermskrifter."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para as Fontes de exibi&#231;&#227;o do Evolution."/>
+    <oaf_attribute name="description-sv" type="string"
+		   value="Konfigurationsverktyg f&#246;r Evolutions visningstypsnitt."/>
+    <oaf_attribute name="description-tr" type="string"
+		   value="Evolution yaz&#196;&#177;tipleri i&#195;&#167;in yap&#196;&#177;land&#196;&#177;rma denetimi."/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho Font hi&#225;&#187;&#131;n th&#225;&#187;&#139; Evolution."/>
 
@@ -936,28 +1034,50 @@
     <oaf_attribute name="evolution:config_item:title" type="string"
 		   value="Composer Preferences"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
-		   value="Composer-Einstellungen"/>
+		   value="Editor-Einstellungen"/>
+    <oaf_attribute name="evolution:config_item:title-es" type="string"
+		   value="Preferencias del Editor"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Pr&#233;f&#233;rences de l&#39;&#233;diteur"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
 		   value="Lev&#233;lszerkeszt&#245; be&#225;ll&#237;t&#225;sai"/>
+    <oaf_attribute name="evolution:config_item:title-it" type="string"
+		   value="Preferenze di composizione"/>
     <oaf_attribute name="evolution:config_item:title-ko" type="string"
 		   value="&#198;&#237;&#193;&#246; &#192;&#219;&#188;&#186;&#177;&#226; &#177;&#226;&#186;&#187; &#188;&#179;&#193;&#164;"/>
+    <oaf_attribute name="evolution:config_item:title-lv" type="string"
+		   value="Sacer&#196;&#147;t&#196;&#129;ja preferences"/>
     <oaf_attribute name="evolution:config_item:title-no" type="string"
 		   value="Brukervalg for redigering"/>
     <oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
 		   value="Prefer&#234;ncias do redator"/>
+    <oaf_attribute name="evolution:config_item:title-ru" type="string"
+		   value="&#238;&#193;&#211;&#212;&#210;&#207;&#202;&#203;&#201; &#210;&#197;&#196;&#193;&#203;&#212;&#207;&#210;&#193; &#208;&#207;&#222;&#212;&#217;"/>
+    <oaf_attribute name="evolution:config_item:title-sv" type="string"
+		   value="Redigerarinst&#228;llningar"/>
+    <oaf_attribute name="evolution:config_item:title-tr" type="string"
+		   value="D&#195;&#188;zenleyici Tercihleri"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
 		   value="Th&#195;&#180;ng s&#225;&#187;&#145; b&#225;&#187;&#153; so&#225;&#186;&#161;n th&#225;&#186;&#163;o"/>
 
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure spell-checking, signatures, and the message composer here"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
-		   value="Hier k&#195;&#182;nnen Sie die Rechtschreibpr&#195;&#188;fung, Signaturen sowie den Nachrichteneditor konfigurieren"/>
+		   value="Hier k&#246;nnen Sie die Rechtschreibpr&#252;fung, Signaturen sowie den Nachrichteneditor konfigurieren"/>
+    <oaf_attribute name="evolution:config_item:description-es" type="string"
+		   value="Configure la ortograf&#195;&#173;a, firmas y el editor de mensajes aqu&#195;&#173;"/>
+    <oaf_attribute name="evolution:config_item:description-it" type="string"
+		   value="Configura qui il controllo ortografico, le firme e il compositore dei messaggi"/>
+    <oaf_attribute name="evolution:config_item:description-lv" type="string"
+		   value="&#197;&#160;eit konfigur&#196;&#147;jiet pareizrakst&#196;&#171;bas p&#196;&#129;rbaudi, parakstus un v&#196;&#147;stu&#196;&#188;u sacer&#196;&#147;t&#196;&#129;jam"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer stavekontroll, signaturer og meldingskomposisjon her"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure a verifica&#231;&#227;o ortogr&#225;fica, assinaturas e o redator de mensagens aqui"/>
+    <oaf_attribute name="evolution:config_item:description-sv" type="string"
+		   value="Konfigurera stavningskontroll, signaturer, och meddelanderedigeraren h&#228;r"/>
+    <oaf_attribute name="evolution:config_item:description-tr" type="string"
+		   value="&#196;&#176;mla denetimi, imza ve metin d&#195;&#188;zenleyiciyi buradan yap&#196;&#177;land&#196;&#177;r&#196;&#177;n"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh ki&#225;&#187;&#131;m tra ch&#195;&#173;nh t&#225;&#186;&#163;, ch&#225;&#187;&#175; k&#195;&#189;, v&#195;&#160; b&#225;&#187;&#153; so&#225;&#186;&#161;n th&#225;&#186;&#163;o th&#195;&#180;ng &#196;&#145;i&#225;&#187;&#135;p &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
 
@@ -971,13 +1091,23 @@
     <oaf_attribute name="description-cs" type="string"
 		   value="Nastaven&#237; ovl&#225;dac&#237;ho prvku pro psan&#237; zpr&#225;v v Evolution."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Konfigurationssteuerung f&#195;&#188;r den Evolution Nachrichten-Composer."/>
+		   value="Konfigurations-Bedienelement f&#252;r den Evolution Nachrichten-Editor."/>
+    <oaf_attribute name="description-es" type="string"
+		   value="Control de Configuraci&#195;&#179;n para el Editor de Mensajes de Evolution."/>
     <oaf_attribute name="description-fr" type="string"
 		   value="Contr&#244;le de configuration pour l&#39;&#233;diteur de message d&#39;Evolution."/>
+    <oaf_attribute name="description-it" type="string"
+		   value="Controlli di configurazione per il compositore di messaggi di Evolution."/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Konfigur&#196;&#129;cijas kontrole Evolution v&#196;&#147;stu&#196;&#188;u sacer&#196;&#147;t&#196;&#129;jam."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for Evolution meldingsredigering."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para o Redator de mensagens do Evolution."/>
+    <oaf_attribute name="description-sv" type="string"
+		   value="Konfigurationsverktyg f&#246;r Evolutions meddelanderedigerare."/>
+    <oaf_attribute name="description-tr" type="string"
+		   value="Evolution &#196;&#176;leti D&#195;&#188;zenleyici i&#195;&#167;in yap&#196;&#177;land&#196;&#177;rma denetimi"/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho B&#225;&#187;&#153; so&#225;&#186;&#161;n th&#225;&#186;&#163;o th&#195;&#180;ng &#196;&#145;i&#225;&#187;&#135;p Evolution."/>
 

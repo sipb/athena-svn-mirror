@@ -19,7 +19,7 @@ fi
 
 EVOLUTION_MAJOR_VERSION=1
 EVOLUTION_MINOR_VERSION=2
-EVOLUTION_MICRO_VERSION=1
+EVOLUTION_MICRO_VERSION=2
 EVOLUTION_NANO_VERSION=0
 VERSION=$EVOLUTION_MAJOR_VERSION.$EVOLUTION_MINOR_VERSION.$EVOLUTION_MICRO_VERSION
 PACKAGE=evolution
@@ -707,7 +707,7 @@ if test x${with_krb4:=no} != xno; then
 			KRB4_CFLAGS="-I$with_krb4/include"
 		fi
 		if test -d "$with_krb4/include/kerberosIV"; then
-			KRB4_CFLAGS="-I$with_krb4/include/kerberosIV"
+			KRB4_CFLAGS="$KRB4_CFLAGS -I$with_krb4/include/kerberosIV"
 		fi
 		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
 

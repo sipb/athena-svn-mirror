@@ -766,7 +766,8 @@ evolution-composer.o: evolution-composer.c ../config.h ../camel/camel.h \
 	../addressbook/backend/ebook/e-book-view.h \
 	../addressbook/backend/ebook/e-book-view-listener.h \
 	../addressbook/backend/ebook/e-book-types.h \
-	../mail/mail-config.h Editor.h ../e-util/e-html-utils.h
+	../mail/mail-config.h Editor.h ../mail/mail-session.h \
+	../e-util/e-html-utils.h
 listener.o: listener.c ../config.h listener.h Editor.h e-msg-composer.h \
 	e-msg-composer-attachment-bar.h e-icon-list.h \
 	../camel/camel-multipart.h ../camel/camel-data-wrapper.h \

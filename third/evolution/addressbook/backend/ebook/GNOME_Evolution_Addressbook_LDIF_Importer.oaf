@@ -19,11 +19,11 @@
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik til import af LDIF filer i Evolution."/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Fabrik, um LDIF in Evolution zu importieren."/>
+		       value="Fabrik zum Import von LDIF-Dateien in Evolution."/>
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; LDIF &#243;&#244;&#239; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#237;a para importar archivos LDIF a Evolution."/>
+		       value="Factor&#195;&#173;a para importar archivos LDIF a Evolution."/>
 	<oaf_attribute name="description-eu" type="string"
 		       value="LDIF fitxategiak Evolution-era inportatzeko fabrika."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -33,7 +33,7 @@
 	<oaf_attribute name="description-it" type="string"
 		       value="Fabbrica per importare i file LDIF in Evolution."/>
 	<oaf_attribute name="description-lv" type="string"
-		       value="Ra&#197;&#190;otne, lai import&#196;&#147;tu LDIF failus Evolution."/>
+		       value="Ra&#197;&#190;otne LDIF failu import&#196;&#147;&#197;&#161;anai Evolution."/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek om LDIF bestanden te importeren in Evolution."/>
 	<oaf_attribute name="description-nn" type="string"
@@ -51,7 +51,7 @@
 	<oaf_attribute name="description-sl" type="string"
 		       value="Tovarna uvozov datotek LDIF v Evolucijo."/>
 	<oaf_attribute name="description-sv" type="string"
-		       value="Fabrik f&#195;&#182;r import av LDIF-filer till Evolution."/>
+		       value="Fabrik f&#246;r import av LDIF-filer till Evolution."/>
 	<oaf_attribute name="description-tr" type="string"
 		       value="LDIF dosyalar&#196;&#177;n&#196;&#177; Evolution&#39;a aktar&#196;&#177;m mimarisi."/>
 	<oaf_attribute name="description-uk" type="string"
