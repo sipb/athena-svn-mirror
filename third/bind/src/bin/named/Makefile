@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.3 1998-05-12 18:35:04 ghudson Exp $
+# $Id: Makefile,v 1.4 1998-05-17 03:40:18 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -63,6 +63,9 @@ OBJS=	db_dump.${O} db_load.${O} db_lookup.${O} db_save.${O} db_update.${O} \
 	ns_forw.${O} ns_init.${O} ns_main.${O} ns_maint.${O} ns_req.${O} \
 	ns_resp.${O} ns_stats.${O} ns_ncache.${O} ns_xfr.${O} ns_glue.${O} \
 	ns_udp.${O} ns_config.${O} ns_update.${O}
+
+.SUFFIXES:
+.SUFFIXES: .c .o
 
 all: ${PROG} pathnames
 
