@@ -1,6 +1,5 @@
 case $OS in
 solaris)
-	/bin/athena/attach -h -q sunsoft
 	cc=`/usr/athena/bin/athdir /mit/sunsoft`/cc
 	;;
 esac
