@@ -59,6 +59,11 @@ case $1 in
 		fi
 		sh /etc/athena/config_afs
 	fi
+	echo "Loading pcfile system..."
+	/usr/sbin/modload /usr/kernel/fs/pcfs
+	echo "Loading fd driver..."
+	/usr/sbin/modload /usr/kernel/fs/fdfs
+	echo "Done"
 
 	if [ "${NFSCLIENT}" != "false" ]; then
 		echo  "NFS client: "				>/dev/console
@@ -88,7 +93,7 @@ case $1 in
 	# Take a new release, if necessary.
 	if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
 		echo  "Checking /srvd/auto_update..."		>/dev/console
-#		/srvd/auto_update rc < /dev/console > /dev/console 2>&1
+		/srvd/auto_update rc < /dev/console > /dev/console 2>&1
 		echo "done."					>/dev/console
 	elif [ -f /srvd/.rvdinfo ]; then
 		NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
@@ -149,7 +154,7 @@ EOF
 
 	fi
 	# Dealing with sendmail.cf
-	if [ "${NEWMAILCF}" = "true"];then
+	if [ "${NEWMAILCF}" = "true" ];then
 		echo "copying sendmail.cf..."
 		cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
 	fi
