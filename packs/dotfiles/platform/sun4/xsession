@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.28 1991-07-21 13:52:31 lwvanels Exp $
+# $Id: xsession,v 1.29 1991-08-07 22:45:49 epeisach Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -100,10 +100,17 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
-($WINDOW_MANAGER &)
-sleep $sleep_time
-# mwm takes twice as long to start
-if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time	
+
+if ($?NOCALLS) then
+	(mwm -xrm "*configFile: /usr/athena/lib/X11/system.mwmrc" &)
+	sleep $sleep_time
+	sleep $sleep_time
+else
+	($WINDOW_MANAGER &)
+	sleep $sleep_time
+	# mwm takes twice as long to start
+	if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time	
+endif
 
 
 # *******************   ACTIVITY STARTUP   *******************
