@@ -1,6 +1,6 @@
 /* 
- *	$Id: Imakefile,v 1.10 1991-09-30 11:13:09 epeisach Exp $
- *	$Author: epeisach $
+ *	$Id: Imakefile,v 1.11 1992-07-23 15:54:35 miki Exp $
+ *	$Author: miki $
  *	$Locker:  $
  *
  *      Copyright 1990 Massachusetts Institute of Technology.
@@ -182,6 +182,13 @@ printcap.c:
 #if defined(_AUX_SOURCE) 
 .c.o:
 	 $(CC) -tp -Bncs/cpp/ -c $(CFLAGS) $*.c
+#endif
+#if defined(sun)
+DBMLIB=-ldbm
+#define compile_file_to(from,to) ncs/cpp/cpp $(CFLAGS) from x.c; $(CC) -c $(CFLAGS) x.c; mv x.o to
+
+.c.o:
+      compile_file_to($*.c,$*.o)
 #endif
 #if defined(i386)
 .c.o:
