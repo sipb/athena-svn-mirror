@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.34 1992-01-10 20:02:11 lwvanels Exp $
+ *	$Id: olc.c,v 1.35 1992-02-14 21:23:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.34 1992-01-10 20:02:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.35 1992-02-14 21:23:00 lwvanels Exp $";
 #endif
 #endif
 
@@ -75,17 +75,17 @@ COMMAND OLC_Command_Table[] = {
   "ask",	do_olc_ask,		"Ask a question",
   "cancel",	do_olc_cancel,		"Cancel your question",
   "done",	do_olc_done,		"Mark your question resolved",
-  "exit",	do_quit,		"Temporarily exit OLC",
-  "hours",      do_olc_hours,		"Print hours OLC is staffed",
+  "exit",	do_quit,		"Temporarily exit",
+  "hours",      do_olc_hours,		"Print the staffed hours",
   "motd",	do_olc_motd,		"See message of the day",
-  "quit",	do_quit,		"Temporarily exit OLC",
+  "quit",	do_quit,		"Temporarily exit",
   "replay",	do_olc_replay,		"Replay the conversation so far",
-  "send",	do_olc_send,		"Send a message to the consultant",
+  "send",	do_olc_send,		"Send a message",
   "show",	do_olc_show,		"Show any new messages",
   "status",	do_olc_status,		"Print your status",
   "topic",	do_olc_topic,		"Find question topic",
   "version",	do_olc_version,		"Print version number",
-  "who",	do_olc_who,		"Find name of connected consultant",
+  "who",	do_olc_who,		"Find out who you're connected to",
   (char *) NULL, (ERRCODE (*)()) NULL,	""
   };
   
@@ -106,7 +106,7 @@ COMMAND OLCR_Command_Table[] = {
   "exit",	do_quit,		"Quit",
   "forward",	do_olc_forward,		"Forward a question",
   "grab",	do_olc_grab,		"Grab a user",
-  "hours",      do_olc_hours,		"Print hours OLC is staffed",
+  "hours",      do_olc_hours,		"Print staffed hours",
   "instance",	do_olc_instance,	"Show/Change default instance",
   "list",	do_olc_list,		"List the world",
   "mail",	do_olc_mail,		"Mail a message",
