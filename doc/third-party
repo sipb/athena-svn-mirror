@@ -107,6 +107,7 @@ Distribution sites for software under third
 	emacs		ftp.gnu.org:pub/gnu/emacs; see below
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
 	evolution	ftp.gnome.org:pub/GNOME/unstable/sources/evolution
+	fcpackage	http://fontconfig.org/
 	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
 	freetype	ftp.freetype.org:pub/freetype2
 	gcc		ftp.gnu.org:pub/gnu/gcc
@@ -179,6 +180,7 @@ Distribution sites for software under third
 	tcsh		ftp.astron.com:pub/tcsh
 	tetex		ctan.tug.org:tex-archive/systems/unix/teTeX
 	texinfo		ftp.gnu.org:pub/gnu/texinfo
+	tiff		ftp.remotesensing.org:pub/libtiff
 	top		ftp.groupsys.com:pub/top
 	traceroute	ftp.ee.lbl.gov (top level)
 	transcript	From Adobe
