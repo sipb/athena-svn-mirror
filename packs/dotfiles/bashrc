@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.30 2003-07-30 18:31:50 ghudson Exp $
+# $Id: bashrc,v 1.30.2.1 2004-10-27 01:21:34 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -15,14 +15,22 @@ initdir=/usr/athena/lib/init
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
-if [ "${ENV_SET:+set}" != set ]; then
+# If we see ENV_SET set to empty, we could be a tcsh user who has
+# decided to run bash, or we could be a bash user suffering from the
+# misfeature that the standard xsession script runs the tcsh dotfiles
+# for all users.  Running the environment setup for the former
+# category of user would be unfriendly (it resets the homedir and
+# path), so for now, only run environment setup for bash users.  If
+# the xsession problem is ever fixed, change this conditional to check
+# for '"${ENV_SET+set}" != set' and eliminate the shell check.
+if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/athena/machtype`"
 
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
-	ulimit -c unlimited			# Don't allow coredumps
+	ulimit -c 0				# Don't allow coredumps
 	export EDITOR=emacs			# Set default editor
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
@@ -41,8 +49,10 @@ if [ "${ENV_SET:+set}" != set ]; then
 		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
 		athena_path=$athena_path:/bin/athena:/usr/openwin/bin
 		athena_path=$athena_path:/usr/openwin/demo:/usr/dt/bin:/usr/bin
-		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin:/usr/ucb
+		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin
+		athena_path=$athena_path:/usr/sfw/bin:/usr/ucb
 		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+		MANPATH=$MANPATH:/usr/sfw/man
 		;;
 	linux)
 		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
@@ -78,7 +88,6 @@ if [ "${ENV_SET:+set}" != set ]; then
 		export NOMSGSEVERITY=1
 		;;
 	sun4)
-		export LD_LIBRARY_PATH=/usr/openwin/lib
 		export OPENWINHOME=/usr/openwin
 		;;
 	linux)
@@ -162,15 +171,6 @@ if [ "${ENV_SET:+set}" != set ]; then
 
 	export XUSERFILESEARCHPATH
 
-
-	if [ sun4 = "$HOSTTYPE" ]; then
-		if [ "${XFILESEARCHPATH+set}" != set ]; then
-			XFILESEARCHPATH="/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
-		else
-			XFILESEARCHPATH="$XFILESEARCHPATH:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
-		fi
-		export XFILESEARCHPATH
-	fi
 fi
 	
 
