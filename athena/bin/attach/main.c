@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.25 1991-08-13 22:52:37 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.26 1991-08-13 23:03:02 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -316,12 +316,12 @@ nfsidcmd(argc, argv)
 			} else if (atp->fs->type == TYPE_NFS) {
 				if ((op == MOUNTPROC_KUIDMAP ||
 				     op == MOUNTPROC_KUIDUMAP) &&
-				    atp->mode == 'n')
+				    atp->mode == 'n') {
 					/* Do nothing */
-				else if (nfsid(atp->host, atp->hostaddr[0],
-					       op, 1, atp->hesiodname, 0,
-					       owner_uid) == SUCCESS &&
-					 verbose)
+				} else if (nfsid(atp->host, atp->hostaddr[0],
+						 op, 1, atp->hesiodname, 0,
+						 owner_uid) == SUCCESS &&
+					   verbose)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
 #ifdef AFS
@@ -336,7 +336,7 @@ nfsidcmd(argc, argv)
 #endif
 			} else
 				if (verbose)
-				    printf("%s: %s ignored (%s)\n",
+				    printf("%s: %s ignored (operation not supported on %s)\n",
 					   progname, atp->hesiodname,
 					   atp->fs->name);
 			atp = atp->next;
