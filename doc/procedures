@@ -107,12 +107,13 @@ Updating third-party sources
 For modules in the third hierarchy, we generally use the "cvs import"
 command to track development from outside.  (To find out if this
 applies to a given module, to a "cvs log" of a file in the tree; if
-you see a revision 1.1.1.1, then we're using cvs import.)  Under no
-circumstances should you ever check a new version of a third-party
-package onto the mainline if it was originally imported with cvs
-import; it's very difficult to recover from that particular mistake.
-Always refer to doc/third-party before doing an import to see if there
-are any special notes on the module you are importing.
+you see a revision 1.1.1.1, then we're using cvs import.)  Do not
+check in a new outside version of a third-party package onto the
+mainline if it was originally imported with cvs import; it's very
+difficult to recover from that particular mistake.  Do, however, check
+local changes you made yourself onto the mainline.  Always refer to
+doc/third-party before doing an import to see if there are any special
+notes on the module you are importing.
 
 Generally, you should only import "clean" third-party source trees
 with no modifications.  If you absolutely need to make changes to the
