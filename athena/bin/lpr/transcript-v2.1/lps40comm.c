@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.5 1990-04-16 18:03:13 epeisach Exp $
+ *	$Author: miki $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.6 1995-07-11 21:13:30 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.5 1990-04-16 18:03:13 epeisach Exp $";
+static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.6 1995-07-11 21:13:30 miki Exp $";
 #endif lint
 
 /* lps40comm.c
@@ -41,7 +41,11 @@ static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <signal.h>
 #include <stdio.h>
 #include <strings.h>
-
+#ifdef POSIX
+#include <unistd.h>
+#include "../posix.h"
+#include <fcntl.h>
+#endif
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
@@ -150,7 +154,11 @@ main(argc,argv)
 
     char mybuf[BUFSIZ];
     int wpid;
+#if defined(POSIX) && !defined(ultrix)
+    int status;	        /* Return value from wait() */
+#else
     union wait status;
+#endif
     int fdpipe[2];
     int format = 0;
     int i;
@@ -161,12 +169,25 @@ main(argc,argv)
     char *pb;		/* pointer for above */
     int pc1, pc2; 	/* page counts before and after job */
     int sc;		/* pattern match count for sscanf */
+#if defined(POSIX) && !defined(ultrix)
+    struct sigaction sa;
+#endif
 
+#if defined(POSIX) && !defined(ultrix)
+
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = intinit;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
+#else
     VOIDC signal(SIGINT, intinit);
     VOIDC signal(SIGHUP, intinit);
     VOIDC signal(SIGQUIT, intinit);
     VOIDC signal(SIGTERM, intinit);
-
+#endif
     /* parse command-line arguments */
     /* the argv (see header comments) comes from the spooler daemon */
     /* itself, so it should be canonical, but at least one 4.2-based */
@@ -334,11 +355,21 @@ main(argc,argv)
 	    intrup = 0;
 	    goto donefile; /* sorry ewd! */
     }
+#if defined(POSIX) && !defined(ultrix)
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = intsend;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
+
+#else
     VOIDC signal(SIGINT, intsend);
     VOIDC signal(SIGHUP, intsend);
     VOIDC signal(SIGQUIT, intsend);
     VOIDC signal(SIGTERM, intsend);
-
+#endif
     RestoreStatus();
     /* initial page accounting (BEFORE break page) */
     if (doactng) {
@@ -471,12 +502,22 @@ main(argc,argv)
 
     VOIDC close(fdlisten);
     VOIDC fclose(psin);
+#if defined(POSIX) && !defined(ultrix)
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGEMT, &sa, (struct sigaction *)0);
+#else
     VOIDC signal(SIGINT, SIG_IGN);
     VOIDC signal(SIGHUP, SIG_IGN);
     VOIDC signal(SIGQUIT, SIG_IGN);
     VOIDC signal(SIGTERM, SIG_IGN);
     VOIDC signal(SIGEMT, SIG_IGN);
-
+#endif
     if (VerboseLog) {
 	    fprintf(stderr,"%s: end - %s",prog,
 		    (VOIDC time(&clock),ctime(&clock)));
@@ -730,6 +771,54 @@ char *file1, *file2;
     char buf[BUFSIZ];
     int cnt;
 
+#if defined(POSIX) && !defined(ultrix)
+    register int status;
+    struct flock fl;
+    
+    VOIDC umask(0);
+    fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
+    if (fd1 < 0) {
+	VOIDC unlink(file1);
+	fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
+    }
+    status = (fd1 < 0);
+    if (!status) {
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	fl.l_pid = getpid();
+	status = fcntl(fd1, F_SETLKW, &fl);
+    }
+    if (status) {
+	fprintf(stderr, "%s: writing %s",prog,file1);
+	perror("");
+	VOIDC close(fd1);
+	return;
+    }
+    VOIDC ftruncate(fd1,0);
+    if ((fd2 = open(file2, O_RDONLY,0)) < 0) {
+	fprintf(stderr, "%s: error reading %s", prog, file2);
+	perror("");
+	VOIDC close(fd1);
+	return;
+    }
+    cnt = read(fd2,buf,BUFSIZ);
+    VOIDC write(fd1,buf,cnt);
+
+    fl.l_type = F_UNLCK;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_pid = getpid();
+    VOIDC fcntl(fd1, F_SETLKW, &fl);
+	
+    VOIDC close(fd1);
+    VOIDC close(fd2);
+
+#else
+
+
     VOIDC umask(0);
     fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
     if ((fd1 < 0) || (flock(fd1,LOCK_EX) < 0)) {
@@ -756,6 +845,7 @@ char *file1, *file2;
     VOIDC flock(fd1,LOCK_UN);
     VOIDC close(fd1);
     VOIDC close(fd2);
+#endif
 }
 
 /* Make an entry in the accounting file */
