@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.9 1993-09-14 22:42:36 cfields Exp $
+/* $Id: cleanup.c,v 2.10 1994-08-14 15:10:02 cfields Exp $
  *
  * Cleanup program for stray processes
  *
@@ -36,10 +36,9 @@
 #include <nlist.h>
 #ifdef SOLARIS
 #include <kvm.h>
-#include <dirent.h>
 #endif
 
-char *version = "$Id: cleanup.c,v 2.9 1993-09-14 22:42:36 cfields Exp $";
+char *version = "$Id: cleanup.c,v 2.10 1994-08-14 15:10:02 cfields Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -172,7 +171,7 @@ char *argv[];
 		break;
 	    if (users[j] == -1) {
 #ifdef DEBUG
-		printf("kill(%d, SIGHUP)\n", procs[i].pid);
+		fprintf(stderr,"kill(%d, SIGHUP)\n", procs[i].pid);
 #endif
 		if (kill(procs[i].pid, SIGHUP) == 0)
 		  found = 1;
@@ -184,7 +183,7 @@ char *argv[];
 		break;
 	    if (pword[j] == -1) {
 #ifdef DEBUG
-		printf("kill(%d, SIGHUP)\n", procs[i].pid);
+		fprintf(stderr,"kill(%d, SIGHUP)\n", procs[i].pid);
 #endif
 		if (kill(procs[i].pid, SIGHUP) == 0)
 		  found = 1;
@@ -199,7 +198,7 @@ char *argv[];
     if (found) {
 	sleep(5);
 #ifdef DEBUG
-	printf("Starting second pass\n");
+	fprintf(stderr,"Starting second pass\n");
 #endif
 
 	for (i = 0; procs[i].pid != -1; i++) {
@@ -210,7 +209,7 @@ char *argv[];
 		    break;
 		if (users[j] == -1) {
 #ifdef DEBUG
-		    printf("kill(%d, SIGKILL)\n", procs[i].pid);
+		    fprintf(stderr,"kill(%d, SIGKILL)\n", procs[i].pid);
 #endif
 		    if (kill(procs[i].pid, SIGKILL) == 0)
 		      found = 1;
@@ -222,7 +221,7 @@ char *argv[];
 		    break;
 		if (pword[j] == -1) {
 #ifdef DEBUG
-		    printf("kill(%d, SIGKILL)\n", procs[i].pid);
+		    fprintf(stderr,"kill(%d, SIGKILL)\n", procs[i].pid);
 #endif
 		    if (kill(procs[i].pid, SIGKILL) == 0)
 		      found = 1;
@@ -266,7 +265,7 @@ int *get_logged_in()
     uids[i++] = ROOTUID;
     uids[i++] = DAEMONUID;
 #ifdef DEBUG
-    printf("Logged in: 0, 1");
+    fprintf(stderr,"Logged in: 0, 1");
 #endif
 
     /* make sure that this string will always end in NULL */
@@ -296,7 +295,7 @@ int *get_logged_in()
 	    if (i == j) {
 		uids[i++] = pwuid;
 #ifdef DEBUG
-		printf(", %d", pwuid);
+		fprintf(stderr,", %d", pwuid);
 #endif
             }
         }
@@ -325,7 +324,7 @@ int *get_logged_in()
 	    if (i == j) {
 		uids[i++] = p->pw_uid;
 #ifdef DEBUG
-		printf(", %d", p->pw_uid);
+		fprintf(stderr,", %d", p->pw_uid);
 #endif
 	    }
 	}
@@ -335,7 +334,7 @@ int *get_logged_in()
 #endif /* _IBMR2 */
 
 #ifdef DEBUG
-    printf("\n");
+    fprintf(stderr,"\n");
 #endif
     return(uids);
 }
@@ -351,13 +350,13 @@ int *get_password_entries()
 
     setpwent();
 #ifdef DEBUG
-    printf("In passwd:");
+    fprintf(stderr,"In passwd:");
 #endif
 
     while ((p = getpwent()) != NULL && i < MAXUSERS) {
 	uids[i++] = p->pw_uid;
 #ifdef DEBUG
-	printf(", %d", p->pw_uid);
+	fprintf(stderr,", %d", p->pw_uid);
 #endif
     }
     if (i >= MAXUSERS) {
@@ -368,7 +367,7 @@ int *get_password_entries()
     endpwent();
     uids[i] = -1;
 #ifdef DEBUG
-    printf("\n");
+    fprintf(stderr,"\n");
 #endif
 
     return(uids);
@@ -379,28 +378,29 @@ int *get_password_entries()
 
 struct cl_proc *get_processes()
 {
+#ifndef SOLARIS
     int kmem, nproc, i;
     caddr_t procp;
-#ifndef SOLARIS
     struct proc p;
 #else
-    struct proc  *p;
+     int i=0;
+    proc_t  *p;
+    struct pid pid_buf;
 #endif
     static struct cl_proc procs[MAXPROCS];
 #ifdef _AIX
     char *kernel = "/unix";
 #else
 #ifdef SOLARIS
-    char *kernel = "/dev/ksyms";
     kvm_t *kv;
-    int j,pid;
-    DIR *dirp;
-    struct dirent *dp;
+    int j,pid,tst=0;
 #else
     char *kernel = "/vmunix";
 #endif
 #endif
+#ifndef SOLARIS
     char *memory = "/dev/kmem";
+#endif
 
 #ifndef SOLARIS
     if (nlist(kernel, nl) != 0) {
@@ -447,25 +447,24 @@ struct cl_proc *get_processes()
     return(procs);
 #else /* SOLARIS */
       kv = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
-      if (kvm_nlist(kv, &nl) < 0) {
-        fprintf(stderr,"%s: can't get namelist\n", "Cleanup");
+      if (kv == NULL ) {
+        fprintf(stderr,"%s: can't open kvm\n","Cleanup");
         exit(2);
       }
-    kvm_read(kv,nl[PROC].n_value,&nproc,sizeof(nproc));
-    (void) kvm_setproc(kv);
+      tst =  kvm_setproc(kv);
+      if ( tst  == -1 ) {
+              fprintf(stderr,"kvm_setproc failed\n");
+      }
       i=0;
-      dirp = opendir("/proc");
-      for (j=0;j<2;j++)
-                      dp = readdir(dirp);
-      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-                      sscanf(dp->d_name,"%d",&pid);
-              p = kvm_getproc(kv,pid);
+      while ( (p = kvm_nextproc(kv)) != NULL ) {
               if ( p != NULL ) {
-                      if (p->p_epid == 0)
+                     kvm_read(kv, (unsigned long)p ->p_pidp, 
+			      (char *)&pid_buf, sizeof(struct pid)); 
+		      if (pid_buf.pid_id == 0)
                               continue;
                       else {
-                              procs[i].pid = p->p_epid;
-                              procs[i].uid = p->p_uid;
+                              procs[i].pid = pid_buf.pid_id;
+			      procs[i].uid = p->p_uid;
                               i++;
                       }
               }
@@ -479,6 +478,7 @@ struct cl_proc *get_processes()
 
 /* lock protocol for /etc/passwd & /etc/group using /etc/ptmp & /etc/gtmp */
 
+int
 lock_file(fn)
 char *fn;
 {
@@ -532,7 +532,7 @@ int *users;
 	if (getuserattr(usr, S_ID, &uid, SEC_INT) == -1)
 	    uid = -1;
 #ifdef DEBUG
-	printf("Checking user %s (uid %d)\n", usr, uid);
+	fprintf(stderr,"Checking user %s (uid %d)\n", usr, uid);
 #endif
 	if (getuserattr(usr, "athena_temp", &count, SEC_INT) == 0) {
 	    for (i = 0; users[i] >= 0; i++)
@@ -540,7 +540,7 @@ int *users;
 		    break;
 	    if (users[i] < 0 || users[i] != uid) {
 #ifdef DEBUG
-		printf("Deleting user %s from passwd file\n", usr);
+		fprintf(stderr,"Deleting user %s from passwd file\n", usr);
 #endif
 		putuserattr(usr, S_GROUPS, (void *)empty, SEC_LIST);
 		putuserattr(usr, (char *)0, (void *)0, SEC_COMMIT);
@@ -742,19 +742,20 @@ int *users;
 		sys_errlist[errno]);
 #ifdef SOLARIS
     /* now process /etc/shadow, avoiding duplicates */
+    bzero(buffer,sizeof(buffer));
     while (in1 && fgets(buffer, sizeof(buffer), in1)) {
        uid = -1;
        strcpy(buffer1, buffer);
        p = index(buffer1, ':');
        if (p) {
-            strcpy(p, "\0");
-            strcpy(username, buffer1);
+            strncpy(username, buffer1,p-buffer1);
             pw = getpwnam(username);
             if (pw)
                uid = pw-> pw_uid;
 	  }
        if (uid !=-1)
 	       fputs(buffer, out1);
+    bzero(buffer,sizeof(buffer));
     }
     fclose(in1);
     fclose(out1);
@@ -771,7 +772,6 @@ int *users;
     make_group(in_passwd);
     return(0);
 }
-
 
 /* Rebuild the group file, keeping any group which has a member who is 
  * in the passwd file.
