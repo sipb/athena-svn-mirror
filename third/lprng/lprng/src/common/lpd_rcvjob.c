@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_rcvjob.c,v 1.4 2001-03-07 21:23:10 ghudson Exp $";
+"$Id: lpd_rcvjob.c,v 1.5 2003-05-15 09:34:55 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -648,7 +648,7 @@ int Scan_block_file( int fd, char *error, int errlen )
 			}
 			Free_job(&job);
 			Free_line_list(&l);
-			Get_file_image_and_split(0,tempfile,0,1, &l,Line_ends,1,Value_sep,1,1,1);
+			Get_file_image_and_split(0,tempfile,0,1, &l,Line_ends,0,0,0,1,0);
 			DEBUGF(DRECV2)("Scan_block_file- control file '%s'", filename );
 			DEBUGFC(DRECV2)Dump_line_list("Scan_block_file- control file", &l );
 			Setup_job( &job, &Spool_control, Spool_dir_DYN, filename, 0, &l);
