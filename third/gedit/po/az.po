@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit 0.9.7\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2001-12-19 19:26GMT+0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"

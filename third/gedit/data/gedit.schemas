@@ -64,6 +64,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>KÃ¤ytÃ¤ oletuskirjasinta</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kÃ¤ytetÃ¤Ã¤nkÃ¶ muokkausalueella jÃ¤rjestelmÃ¤n oletuskirjasinta vaiko kÃ¤yttÃ¤jÃ¤n mÃ¤Ã¤rittelemÃ¤Ã¤ kirjasinta. Jos tÃ¤mÃ¤ asetetaan pois pÃ¤Ã¤ltÃ¤, kÃ¤ytetÃ¤Ã¤n geditissÃ¤ asetuksen &quot;Muokkaimen kirjasin&quot; mÃ¤Ã¤rittÃ¤mÃ¤Ã¤ kirjasinta.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Utiliser la police par dÃ©faut</short>
 	<long>Activer ou dÃ©sactiver la police par dÃ©faut du systÃ¨me pour l&apos;Ã©dition de texte au lieu d&apos;une police spÃ©cifique Ã  gedit. Si cette option est dÃ©sactivÃ©e, alors la police choisie dans l&apos;option Â«Â Police de l&apos;Ã©diteurÂ Â» sera utilisÃ©e au lieu de la police du systÃ¨me.</long>
@@ -166,7 +171,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ Ð¿Ð¾ÑÐ°ÑÐºÐ¾Ð²Ð¸Ð¹ ÑÑÐ¸ÑÑ</short>
-	
+	<long>Ð§Ð¸ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ ÑÐ¸ÑÑÐµÐ¼Ð½Ð¸Ð¹ ÑÑÐ¸ÑÑ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ. Ð¯ÐºÑÐ¾ ÑÐµÐ¹ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ Ð²Ð¸Ð¼ÐºÐ½ÑÑÐ¾, ÑÐ¾ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ Ð±ÑÐ´Ðµ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ÑÑ ÑÑÐ¸ÑÑ, Ð²Ð¸Ð·Ð½Ð°ÑÐµÐ½Ð¸Ð¹ Ð² Ð¿Ð°ÑÐ°Ð¼ÐµÑÑÑ &quot;Ð¨ÑÐ¸ÑÑ ÑÐµÐ´Ð°ÐºÑÐ¾ÑÐ°&quot;.</long>
       </locale>
 
       <locale name="vi">
@@ -204,7 +209,7 @@
       </locale>
 
       <locale name="am">
-	<short>á¨á á­á³á áá°á áá­á½</short>
+	<short>á¨áááá áá°á áá­á½</short>
 	
       </locale>
 
@@ -251,6 +256,11 @@
       <locale name="et">
 	<short>Redaktori kirjatÃ¼Ã¼p</short>
 	<long>Kohandatud kirjatÃ¼Ã¼p, mida kasutatakse redaktoris. See vÃ¤Ã¤rtus kehtib vaid siis, kui &quot;Kasuta teema vaikimisi kirjatÃ¼Ã¼pi&quot; on vÃ¤lja lÃ¼litatud.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Muokkaimen kirjasin</short>
+	<long>Kirjasin jota kÃ¤ytetÃ¤Ã¤n muokkausalueella. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;KÃ¤ytÃ¤ oletuskirjasinta&quot; on pois pÃ¤Ã¤ltÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -330,7 +340,7 @@
 
       <locale name="ru">
 	<short>Ð¨ÑÐ¸ÑÑ ÑÐµÐ´Ð°ÐºÑÐ¾ÑÐ°</short>
-	<long>ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÑÑÐºÐ¸Ð¹ ÑÑÐ¸ÑÑ, ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð±ÑÐ´ÐµÑ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÐ¸ ÑÐµÐ´Ð°ÐºÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ. ÐÑÐ´ÐµÑ Ð¸Ð¼ÐµÑÑ ÑÑÑÐµÐºÑ ÑÐ¾Ð»ÑÐºÐ¾ ÐµÑÐ»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÑ Ð¸ÑÑÐ¾Ð´Ð½ÑÐ¹ ÑÑÐ¸ÑÑ&quot; Ð²ÑÐºÐ»ÑÑÑÐ½.</long>
+	<long>ÐÑÑÐ³Ð¾Ð¹ ÑÑÐ¸ÑÑ, ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð±ÑÐ´ÐµÑ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÐ¸ ÑÐµÐ´Ð°ÐºÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ. ÐÑÐ´ÐµÑ Ð¸Ð¼ÐµÑÑ ÑÑÑÐµÐºÑ ÑÐ¾Ð»ÑÐºÐ¾ ÐµÑÐ»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÑ Ð¸ÑÑÐ¾Ð´Ð½ÑÐ¹ ÑÑÐ¸ÑÑ&quot; Ð²ÑÐºÐ»ÑÑÑÐ½.</long>
       </locale>
 
       <locale name="sk">
@@ -444,6 +454,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>KÃ¤ytÃ¤ oletusvÃ¤rejÃ¤</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kÃ¤ytetÃ¤Ã¤nkÃ¶ muokkausalueella jÃ¤rjestelmÃ¤n oletusvÃ¤rejÃ¤. Jos tÃ¤mÃ¤ asetetaan pois pÃ¤Ã¤ltÃ¤, muokkausalueen vÃ¤rit mÃ¤Ã¤ritetÃ¤Ã¤n asetuksilla &quot;TaustavÃ¤ri&quot;, &quot;TekstinvÃ¤ri&quot;, &quot;Valitun tekstin vÃ¤ri&quot; ja &quot;ValintavÃ¤ri&quot;.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Utiliser les couleurs par dÃ©faut</short>
 	<long>Activer ou dÃ©sactiver l&apos;utilisation des couleurs par dÃ©faut du systÃ¨me pour la zone d&apos;Ã©dition. Si cette option est dÃ©sactivÃ©e, alors les couleurs de la zone d&apos;Ã©dition seront celles mentionnÃ©es dans les options Â«Â Couleur d&apos;arriÃ¨re-planÂ Â» , Â«Â Couleur du texteÂ Â», Â«Â Couleur du texte sÃ©lectionnÃ©Â Â» et Â«Â Couleur de sÃ©lectionÂ Â».</long>
@@ -546,7 +561,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ Ð¿Ð¾ÑÐ°ÑÐºÐ¾Ð²Ð¸Ð¹ Ð½Ð°Ð±ÑÑ ÐºÐ¾Ð»ÑÐ¾ÑÑÐ²</short>
-	
+	<long>Ð§Ð¸ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ ÑÐ¸ÑÑÐµÐ¼Ð½Ñ ÐºÐ¾Ð»ÑÐ¾ÑÐ¸ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ. Ð¯ÐºÑÐ¾ ÑÐµÐ¹ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ Ð²Ð¸Ð¼ÐºÐ½ÑÑÐ¾, ÑÐ¾ Ð´Ð»Ñ Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ Ð±ÑÐ´ÑÑÑ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸ÑÑ ÐºÐ¾Ð»ÑÐ¾ÑÐ¸, Ð²Ð¸Ð·Ð½Ð°ÑÐµÐ½Ñ Ð² Ð¿Ð°ÑÐ°Ð¼ÐµÑÑÐ°Ñ &quot;ÐÐ¾Ð»ÑÑ ÑÐ»Ð°&quot;, &quot;ÐÐ¾Ð»ÑÑ ÑÐµÐºÑÑÑ&quot;, &quot;ÐÐ¾Ð»ÑÑ Ð²ÑÐ±ÑÐ°Ð½Ð¾Ð³Ð¾ ÑÐµÐºÑÑÑ&quot; Ñ &quot;ÐÐ¾Ð»ÑÑ Ð²Ð¸Ð±Ð¾ÑÑ&quot;.</long>
       </locale>
 
       <locale name="vi">
@@ -631,6 +646,11 @@
       <locale name="et">
 	<short>TaustavÃ¤rv</short>
 	<long>Teksti taustavÃ¤rv redaktoris. See vÃ¤Ã¤rtus kehtib vaid siis, kui &quot;Kasuta teema vaikimisi vÃ¤rve&quot; on vÃ¤lja lÃ¼litatud.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>TaustavÃ¤ri</short>
+	<long>TaustavÃ¤ri muokkausalueen valitsemattomalle tekstille. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;KÃ¤ytÃ¤ oletusvÃ¤rejÃ¤&quot; ei ole pÃ¤Ã¤llÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -822,6 +842,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>TekstivÃ¤ri</short>
+	<long>TekstivÃ¤ri muokkausalueen valitulle tekstille. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;KÃ¤ytÃ¤ oletusvÃ¤rejÃ¤&quot; on pois pÃ¤Ã¤ltÃ¤.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Couleur du texte</short>
 	<long>Couleur de premier plan pour le texte non-sÃ©lectionnÃ© dans la zone d&apos;Ã©dition. Cela ne s&apos;appliquera que si l&apos;option Â«Â Utiliser les couleurs par dÃ©fautÂ Â» est dÃ©sactivÃ©e.</long>
@@ -1009,6 +1034,11 @@
       <locale name="et">
 	<short>Valitud teksti vÃ¤rv</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Valitun tekstin vÃ¤ri</short>
+	<long>TekstivÃ¤ri muokkausalueen valitulle tekstille. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;KÃ¤ytÃ¤ oletusvÃ¤rejÃ¤&quot; on pois pÃ¤Ã¤ltÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -1200,6 +1230,11 @@
 	<long>Tekstivaliku vÃ¤rv redaktoris. See vÃ¤Ã¤rtus kehtib vaid siis, kui &quot;Kasuta teema vaikimisi vÃ¤rve&quot; on vÃ¤lja lÃ¼litatud.</long>
       </locale>
 
+      <locale name="fi">
+	<short>ValintavÃ¤ri</short>
+	<long>TaustavÃ¤ri muokkausalueen valitulle tekstille. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;KÃ¤ytÃ¤ oletusvÃ¤rejÃ¤&quot; ei ole pÃ¤Ã¤llÃ¤.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Couleur de la sÃ©lection</short>
 	<long>Couleur de fond pour le texte selectionnÃ© dans la zone d&apos;Ã©dition. Cela ne s&apos;appliquera que si l&apos;option Â«Â Utiliser les couleurs par dÃ©fautÂ Â» est dÃ©sactivÃ©e.</long>
@@ -1384,6 +1419,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>Luo varmuuskopiot</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ luoko gedit tallentamistaan tiedostoista varmuuskopiot. Voit asettaa varmuuskopion tiedostonimen lisÃ¤mÃ¤Ã¤reen asetuksella &quot;Varmuuskopion lisÃ¤mÃ¤Ã¤re&quot;.</long>
+      </locale>
+
       <locale name="fr">
 	<short>CrÃ©er des copies de sauvegarde</short>
 	<long>Activer ou dÃ©sactiver la crÃ©ation de copies de sauvegarde pour les fichiers que gedit sauvegarde. Vous pouvez spÃ©cifier l&apos;extention du fichier de sauvegarde avec l&apos;option Â«Â Extention de la copie de sauvegardeÂ Â».</long>
@@ -1485,8 +1525,8 @@
       </locale>
 
       <locale name="uk">
-	<short>Ð¡ÑÐ²Ð¾ÑÑÐ²Ð°ÑÐ¸ ÑÐµÐ·ÐµÐ¾Ð²Ð½Ñ ÐºÐ¾Ð¿ÑÑ</short>
-	
+	<short>Ð¡ÑÐ²Ð¾ÑÑÐ²Ð°ÑÐ¸ ÑÐµÐ·ÐµÑÐ²Ð½Ñ ÐºÐ¾Ð¿ÑÑ</short>
+	<long>Ð§Ð¸ Ð¼Ð°ÑÑÑ ÑÑÐ²Ð¾ÑÑÐ²Ð°ÑÐ¸ÑÑ ÑÐµÐ·ÐµÑÐ²Ð½Ñ ÐºÐ¾Ð¿ÑÑ Ð´Ð»Ñ ÑÐ°Ð¹Ð»ÑÐ². ÐÐ¸ Ð¼Ð¾Ð¶ÐµÑÐµ Ð²ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐ¸ ÑÐ¾Ð·ÑÐ¸ÑÐµÐ½Ð½Ñ ÑÐµÐ·ÐµÑÐ²Ð½Ð¸Ñ ÑÐ°Ð¹Ð»ÑÐ² Ð¿Ð°ÑÐ°Ð¼ÐµÑÑÐ¾Ð¼ &quot;Ð Ð¾Ð·ÑÐ¸ÑÐµÐ½Ð½Ñ ÑÐµÐ·ÐµÑÐ²Ð½Ð¸Ñ ÐºÐ¾Ð¿ÑÐ¹&quot;.</long>
       </locale>
 
       <locale name="vi">
@@ -1561,6 +1601,11 @@
       <locale name="et">
 	<short>Varukoopia laiend</short>
 	<long>Laiend vÃµi sufiks, mida kasutatakse failide varukoopiate nimedes. See kehtib vaid juhul kui on sisse lÃ¼litatud valik &quot;Tee varukoopiaid&quot;.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Varmuuskopion lisÃ¤mÃ¤Ã¤re</short>
+	<long>LisÃ¤ys tai jÃ¤lkiliite jota kÃ¤ytetÃ¤Ã¤n varmuuskopioiden tiedostonimissÃ¤. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;Luo varmuuskopiot&quot; on pÃ¤Ã¤llÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -1747,6 +1792,11 @@
 	<long>Kas gedit peab faile etteantud ajaintervalliga automaatselt salvestama. Intervalli saad mÃ¤Ã¤rata sÃ¤ttega &quot;Automaatse salvestamise intervall&quot;.</long>
       </locale>
 
+      <locale name="fi">
+	<short>Automaattitallennus</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ tallentaako gedit tiedostot automaattisesti tietyin aikavÃ¤lein. Voit asettaa aikavÃ¤lin asetuksella &quot;Automaattitallennuksen aikavÃ¤li&quot;.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Enregistrer automatiquement</short>
 	<long>Activer ou dÃ©sactiver la sauvegarde automatique des fichiers modifiÃ©s aprÃ¨s un certain intervalle de temps. Vous pouvez dÃ©finir l&apos;intervalle de temps avec l&apos;option Â«Â Intervalle de la sauvegarde automatiqueÂ Â».</long>
@@ -1849,7 +1899,7 @@
 
       <locale name="uk">
 	<short>ÐÐ²ÑÐ¾Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ</short>
-	
+	<long>Ð§Ð¸ Ð¿Ð¾ÑÑÑÐ±Ð½Ð¾ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸ÑÐ½Ð¾ Ð·Ð±ÐµÑÑÐ³Ð°ÑÐ¸ Ð·Ð¼ÑÐ½ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¸ Ð· Ð¿ÐµÐ²Ð½Ð¸Ð¼ ÑÐ°ÑÐ¾Ð¼ Ð¿ÑÐ¾Ð¼ÑÐ¶ÐºÐ¾Ð¼. ÐÐ¸ Ð¼Ð¾Ð¶ÐµÑÐµ Ð²ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐ¸ Ð²ÐµÐ»Ð¸ÑÐ¸Ð½Ñ Ð¿ÑÐ¾Ð¼ÑÐ¶ÐºÑ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑÐ¾Ð¼ &quot;ÐÐ½ÑÐµÑÐ²Ð°Ð» Ð°Ð²ÑÐ¾Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ&quot;</long>
       </locale>
 
       <locale name="vi">
@@ -1929,6 +1979,11 @@
       <locale name="et">
 	<short>Automaatse salvestuse intervall</short>
 	<long>Mitme minutilise intervalliga salvestab gedit failid automaatselt. See kehtib vaid juhul kui on sisse lÃ¼litatud valik &quot;Automaatne salvestamine&quot;.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Automaattisen tallennuksen aikavÃ¤li</short>
+	<long>AikavÃ¤li minuuteissa jonka jÃ¤lkeen gedit tallentaa muutetut tiedostot automaattisesti. TÃ¤mÃ¤ tulee voimaan ainoastaan mikÃ¤li asetus &quot;Automaattitallennus&quot; on pÃ¤Ã¤llÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -2033,7 +2088,7 @@
 
       <locale name="uk">
 	<short>ÐÐ½ÑÐµÑÐ²Ð°Ð» Ð°Ð²ÑÐ¾Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ</short>
-	
+	<long>ÐÐ½ÑÐµÑÐ²Ð°Ð» Ð² ÑÐ²Ð¸Ð»Ð¸Ð½Ð°Ñ, Ð¿ÑÑÐ»Ñ ÑÐºÐ¾Ð³Ð¾ Ð²ÑÑ Ð½ÐµÐ·Ð±ÐµÑÐµÐ¶ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¸ Ð±ÑÐ´Ðµ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸ÑÐ½Ð¾ Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð¾. ÐÐ°ÑÐ¸Ð¼Ðµ ÐµÑÐµÐºÑ Ð»Ð¸ÑÐµ ÑÐ¾Ð´Ñ, ÐºÐ¾Ð»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;Ð°Ð²ÑÐ¾Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ&quot; Ð±ÑÐ´Ðµ ÑÐ²ÑÐ¼ÐºÐ½ÐµÐ½Ð¾.</long>
       </locale>
 
       <locale name="vi">
@@ -2123,6 +2178,11 @@
       <locale name="et">
 	<short>Salvestuse kodeering</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Tallennettaessa kÃ¤ytettÃ¤vÃ¤ koodaus</short>
+	<long>Koodaustapa jota kÃ¤ytetÃ¤Ã¤n tallennettaessa tiedostoa. Mahdollisia arvoja ovat &quot;GEDIT_SAVE_ALWAYS_UTF&quot; tallentaaksesi aina UTF-8:na, &quot;GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE&quot; mikÃ¤li haluat geditin yrittÃ¤vÃ¤n muuntaa tallennettavaa asiakirjaa nykyisen maa-asetuksen mukaiseen koodaukseen, &quot;GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE&quot; mikÃ¤li haluat geditin yrittÃ¤vÃ¤n kÃ¤ytÃ¤Ã¤ tiedoston alkuperÃ¤istÃ¤ koodaustapaa (uudet tiedostot UTF8:na) ja &quot;GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL&quot; mikÃ¤li haluat geditin yrittÃ¤vÃ¤n kÃ¤yttÃ¤Ã¤ alkupelÃ¤istÃ¤ koodaustapaa (uudet tiedostot maa-asetuksen mukaisesti). MikÃ¤li muunto onnistuu, sitÃ¤ kÃ¤ytetÃ¤Ã¤n. Muutoin kÃ¤ytetÃ¤Ã¤n UTF-8:aa, Huomaa ettÃ¤ asetuksien kirjainkoolla on vÃ¤liÃ¤, joten ne pitÃ¤Ã¤ kirjoittaa tÃ¤smÃ¤lleen tÃ¤ssÃ¤ esitetyllÃ¤ tavalla.</long>
       </locale>
 
       <locale name="fr">
@@ -2227,7 +2287,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ Ð´Ð»Ñ Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ Ð¼ÐµÑÐ¾Ð´ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ Ð´Ð»Ñ Ð·Ð±ÐµÑÑÐ³Ð°Ð½Ð½Ñ ÑÐ°Ð¹Ð»ÑÐ². ÐÐ¾Ð¶Ð»Ð¸Ð²Ñ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ: &quot;GEDIT_SAVE_ALWAYS_UTF8&quot; Ð´Ð»Ñ Ð±ÐµÐ·ÑÐ¼Ð¾Ð²Ð½Ð¾Ð³Ð¾ Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ Ñ ÑÐ¾ÑÐ¼Ð°ÑÑ UTF-8, &quot;GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE&quot; Ð´Ð»Ñ ÑÐ¿ÑÐ¾Ð±Ð¸ Ð¿ÐµÑÐµÑÐ²Ð¾ÑÐµÐ½Ð½Ñ Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ° Ð² Ð¿Ð¾ÑÐ¾ÑÐ½Ðµ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ Ð»Ð¾ÐºÐ°Ð»Ñ, Ð¿ÑÐ´ ÑÐ°Ñ Ð¹Ð¾Ð³Ð¾ Ð·Ð°Ð¿Ð¸ÑÑ, &quot;GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE&quot; Ð´Ð»Ñ ÑÐ¿ÑÐ¾Ð±Ð¸ Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ Ñ Ð¿Ð¾ÑÐ°ÑÐºÐ¾Ð²Ð¾Ð¼Ñ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ ÑÐ°Ð¹Ð»Ð° (Ð½Ð¾Ð²Ñ ÑÐ°Ð¹Ð»Ð¸ Ð² ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ UTF-8) Ñ &quot;GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL&quot; Ð´Ð»Ñ ÑÐ¿ÑÐ¾Ð±Ð¸ Ð·Ð±ÐµÑÐµÐ¶ÐµÐ½Ð½Ñ Ð² Ð¿Ð¾ÑÐ°ÑÐºÐ¾Ð²Ð¾Ð¼Ñ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ ÑÐ°Ð¹Ð»Ð° (Ð½Ð¾Ð²Ñ ÑÐ°Ð¹Ð»Ð¸ Ð² Ð¿Ð¾ÑÐ¾ÑÐ½Ð¾Ð¼Ñ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ Ð»Ð¾ÐºÐ°Ð»Ñ). Ð¯ÐºÑÐ¾ Ð¿ÐµÑÐµÑÐ²Ð¾ÑÐµÐ½Ð½Ñ Ð·Ð°Ð²ÐµÑÑÐ¸Ð»Ð¾ÑÑ ÑÑÐ¿ÑÑÐ½Ð¾, ÑÐµÐ·ÑÐ»ÑÑÐ°Ñ Ð±ÑÐ´Ðµ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ°Ð½Ð¾. Ð Ð·Ð²Ð¾ÑÐ¾ÑÐ½ÑÐ¾Ð¼Ñ Ð²Ð¸Ð¿Ð°Ð´ÐºÑ, Ð±ÑÐ´Ðµ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ°Ð½Ð¾ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ UTF-8. ÐÐ°ÑÐ²Ð°Ð¶ÑÐµ, ÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ ÑÑÑÐ»Ð¸Ð²Ñ Ð´Ð¾ ÑÐµÐ³ÑÑÑÑÑ Ñ Ð¼Ð°ÑÑÑ Ð·&apos;ÑÐ²Ð»ÑÑÐ¸ÑÑ ÑÐ¾ÑÐ½Ð¾ Ñ Ð²ÐºÐ°Ð·Ð°Ð½Ð¾Ð¼Ñ Ð²Ð¸Ð³Ð»ÑÐ´Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -2311,6 +2371,11 @@
       <locale name="et">
 	<short>Unustatavate tegevuste limiit</short>
 	<long>Maksimaalne tegevuste arv, mida gedit laseb unustada vÃµi uuesti tÃ¤ita.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Kumoamiskertojen mÃ¤Ã¤rÃ¤</short>
+	<long>EnimmÃ¤ismÃ¤Ã¤rÃ¤ toimintoja jonka gedit voi kumota tai tehdÃ¤ uudelleen.</long>
       </locale>
 
       <locale name="fr">
@@ -2413,6 +2478,11 @@
 	<long>Gedit&apos;in geri alabileceÄi ya da tekrarlayabileceÄi eylemlerin en yÃ¼kek sayÄ±sÄ±.</long>
       </locale>
 
+      <locale name="uk">
+	<short>ÐÑÐ¼ÑÑ Ð¾Ð¿ÐµÑÐ°ÑÑÐ¹ ÑÐºÐ°ÑÑÐ²Ð°Ð½Ð½Ñ Ð·Ð¼ÑÐ½</short>
+	<long>ÐÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑÐ½Ð° ÐºÑÐ»ÑÐºÑÑÑÑ Ð´ÑÐ¹, ÑÐºÑ Ð¼Ð¾Ð¶Ð½Ð° ÑÐºÐ°ÑÑÐ²Ð°ÑÐ¸ ÑÐ¸ Ð¿Ð¾Ð²ÑÐ¾ÑÐ¸ÑÐ¸.</long>
+      </locale>
+
       <locale name="vi">
 	<short>Giá»i háº¡n hoÃ n láº¡i</short>
 	<long>Sá» tá»i Äa cÃ¡c hÃ nh Äá»ng HoÃ n Láº¡i/LÃ m Láº¡i cÃ³ thá» thá»±c hiá»n.</long>
@@ -2488,6 +2558,11 @@
       <locale name="es">
 	<short>Modo de ajuste de lÃ­nea</short>
 	<long>Especifica como deben ajustar las lÃ­neas demasiados largas en el Ã¡rea de ediciÃ³n. Utilice Â«GTK_WRAP_NONEÂ» para no ajustar las lÃ­neas, Â«GTK_WRAP_WORDÂ» para ajustar al largo de la palabra y Â«GTK_WRAP_CHARÂ» para ajustar de acuerdo a caracteres individuales. Note que los valores son sensibles a mayÃºsculas y minÃºsculas, por ello asegÃºrese de que aparecen exactamente del mismo modo en que son mencionados aquÃ­.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Tekstin rivitystapa</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kuinka pitkÃ¤t rivit rivitetÃ¤Ã¤n muokkausalueela. KÃ¤ytÃ¤ asetusta &quot;GTK_WRAP_NONE&quot; jollet halua rivitystÃ¤. &quot;GTK_WRAP_WORD&quot; rivittÃ¤Ã¤ sanojen rajojen mukaisesti ja &quot;GTK_WRAP_CHAR&quot; rivittÃ¤Ã¤ yksittÃ¤isen merkin kohdalta. Huomaa ettÃ¤ kirjainkoko huomioidaan, joten asetus tÃ¤ytyy kirjoittaa tÃ¤smÃ¤lleen siten kuin se tÃ¤ssÃ¤ esitetÃ¤Ã¤n.</long>
       </locale>
 
       <locale name="fr">
@@ -2592,7 +2667,7 @@
 
       <locale name="uk">
 	<short>Ð ÐµÐ¶Ð¸Ð¼ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ ÑÑÐ´ÐºÑÐ²</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ, ÑÐº Ð·Ð°Ð³Ð¾ÑÑÐ°ÑÐ¸ Ð´Ð¾Ð²Ð³Ñ ÑÑÐ´ÐºÐ¸ Ð² Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ. ÐÐ¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ¹ÑÐµ &quot;GTK_WRAP_NONE&quot; Ð´Ð»Ñ Ð²Ð¸Ð¼ÐºÐ½ÐµÐ½Ð½Ñ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ, &quot;GTK_WRAP_WORD&quot; Ð´Ð»Ñ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ Ð¿Ð¾ Ð³ÑÐ°Ð½Ð¸ÑÑ ÑÐ»ÑÐ² Ñ &quot;GTK_WRAP_CHAR&quot; Ð´Ð»Ñ Ð¿Ð¾ÑÐ¸Ð¼Ð²Ð¾Ð»ÑÐ½Ð¾Ð³Ð¾ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ. ÐÐ°ÑÐ²Ð°Ð¶ÑÐµ, ÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ ÑÑÑÐ»Ð¸Ð²Ñ Ð´Ð¾ ÑÐµÐ³ÑÑÑÑÑ Ñ Ð¼Ð°ÑÑÑ Ð·&apos;ÑÐ²Ð»ÑÑÐ¸ÑÑ ÑÐ¾ÑÐ½Ð¾ Ñ Ð²ÐºÐ°Ð·Ð°Ð½Ð¾Ð¼Ñ Ð²Ð¸Ð³Ð»ÑÐ´Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -2676,6 +2751,11 @@
       <locale name="et">
 	<short>Saki suurus</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>VÃ¤lilehtipainikkeen koko</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ sarkaimen korvaavien vÃ¤lilyÃ¶ntien mÃ¤Ã¤rÃ¤n.</long>
       </locale>
 
       <locale name="fr">
@@ -2778,6 +2858,11 @@
 	<long>Sekme karakteri yerine gÃ¶rÃ¼ntÃ¼lenecek boÅluk sayÄ±sÄ±nÄ± belirtir.</long>
       </locale>
 
+      <locale name="uk">
+	<short>Ð Ð¾Ð·Ð¼ÑÑ ÑÐ°Ð±ÑÐ»ÑÑÑÑ</short>
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÐºÑÐ»ÑÐºÑÑÑÑ Ð¿ÑÐ¾Ð¿ÑÑÐºÑÐ², ÑÐºÑ Ð¿Ð¾ÑÑÑÐ±Ð½Ð¾ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ Ð·Ð°Ð¼ÑÑÑÑ ÑÐ¸Ð¼Ð²Ð¾Ð»Ð° ÑÐ°Ð±ÑÐ»ÑÑÑÑ.</long>
+      </locale>
+
       <locale name="vi">
 	<short>Cá»¡ tab</short>
 	<long>XÃ¡c Äá»nh sá» khoáº£ng tráº¯ng ÄÆ°á»£c hiá»n thá» thay vÃ¬ kÃ½ tá»± Tab.</long>
@@ -2855,6 +2940,11 @@
 	<long>Kas gedit peab tÃ¼hikuid tabulaatorite asemel lisama.</long>
       </locale>
 
+      <locale name="fi">
+	<short>LisÃ¤Ã¤ tyhjeitÃ¤</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ lisÃ¤Ã¤kÃ¶ gedit vÃ¤lilyÃ¶ntejÃ¤ sarkainten sijaan.</long>
+      </locale>
+
       <locale name="fr">
 	<short>InsÃ©rer des espaces</short>
 	<long>Activer ou dÃ©sactiver l&apos;insertion d&apos;espace au lieu des tabulations.</long>
@@ -2905,6 +2995,11 @@
 	<long>Om gedit skal sette inn mellomrom i stedet for tabulator.</long>
       </locale>
 
+      <locale name="pt">
+	<short>Inserir espaÃ§os</short>
+	<long>Se o gedit deverÃ¡ ou nÃ£o inserir espaÃ§os em vez de tabuladores.</long>
+      </locale>
+
       <locale name="pt_BR">
 	<short>Inserir espaÃ§os</short>
 	<long>Se o gedit deve inserir espaÃ§os ao invÃ©s de tabs.</long>
@@ -2913,6 +3008,11 @@
       <locale name="ro">
 	<short>InsereazÄ spaÅ£ii</short>
 	<long>DacÄ gedit ar trebui sÄ insereze spaÅ£ii Ã®n loc de tab-uri.</long>
+      </locale>
+
+      <locale name="ru">
+	<short>ÐÑÑÐ°Ð²Ð»ÑÑÑ Ð¿ÑÐ¾Ð±ÐµÐ»Ñ</short>
+	<long>Ð¡Ð»ÐµÐ´ÑÐµÑ Ð»Ð¸ Ð²ÑÑÐ°Ð²Ð»ÑÑÑ Ð¿ÑÐ¾Ð±ÐµÐ»Ñ Ð²Ð¼ÐµÑÑÐ¾ ÑÐ°Ð±ÑÐ»ÑÑÐ¸Ð¹.</long>
       </locale>
 
       <locale name="sk">
@@ -2933,6 +3033,11 @@
       <locale name="tr">
 	<short>BoÅluklarÄ± araya ekle</short>
 	<long>Gedit sekmelerin yerine boÅluk ekler.</long>
+      </locale>
+
+      <locale name="uk">
+	<short>ÐÑÑÐ°Ð²Ð»ÑÑÐ¸ Ð¿ÑÐ¾Ð¿ÑÑÐºÐ¸</short>
+	<long>Ð§Ð¸ Ð¼Ð°Ñ gedit Ð²ÑÑÐ°Ð²Ð»ÑÑÐ¸ Ð¿ÑÐ¾Ð¿ÑÑÐºÐ¸ Ð·Ð°Ð¼ÑÑÑÑ Ð·Ð½Ð°ÐºÑÐ² ÑÐ°Ð±ÑÐ»ÑÑÑÑ.</long>
       </locale>
 
       <locale name="vi">
@@ -3007,6 +3112,11 @@
 	<long>Kas gedit peab autotaandeid (auto indentation) tegema.</long>
       </locale>
 
+      <locale name="fi">
+	<short>Automaattinen sisennys</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kÃ¤yttÃ¤Ã¤kÃ¶ gedit automaattisisennystÃ¤.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Auto-indentation</short>
 	<long>Activer ou dÃ©sactiver l&apos;auto-indentation.</long>
@@ -3057,6 +3167,11 @@
 	<long>Om gedit skal aktivere automatisk indentering.</long>
       </locale>
 
+      <locale name="pt">
+	<short>IndentaÃ§Ã£o automÃ¡tica</short>
+	<long>Se o gedit deverÃ¡ ou nÃ£o activar a indentaÃ§Ã£o automÃ¡tica.</long>
+      </locale>
+
       <locale name="pt_BR">
 	<short>Auto indentaÃ§Ã£o</short>
 	<long>Se o gedit deve habilitar auto indentaÃ§Ã£o.</long>
@@ -3065,6 +3180,11 @@
       <locale name="ro">
 	<short>Auto indentare</short>
 	<long>DacÄ gedit ar trebui sÄ activeze auto indentarea.</long>
+      </locale>
+
+      <locale name="ru">
+	<short>ÐÐ²ÑÐ¾Ð¼Ð°ÑÐ¸ÑÐµÑÐºÐ¸Ð¹ Ð¾ÑÑÑÑÐ¿</short>
+	<long>Ð¡Ð»ÐµÐ´ÑÐµÑ Ð»Ð¸ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸ÑÐµÑÐºÐ¸ ÑÐ°ÑÑÑÐ°Ð²Ð»ÑÑÑ Ð¾ÑÑÑÑÐ¿Ñ.</long>
       </locale>
 
       <locale name="sk">
@@ -3089,7 +3209,7 @@
 
       <locale name="uk">
 	<short>ÐÐ²ÑÐ¾Ð²ÑÐ´ÑÑÑÐ¿</short>
-	
+	<long>Ð§Ð¸ Ð¿Ð¾ÑÑÑÐ±Ð½Ð¾ ÑÐ²ÑÐ¼ÐºÐ½ÑÑÐ¸ Ð°Ð²ÑÐ¾Ð²ÑÐ´ÑÑÑÐ¿.</long>
       </locale>
 
       <locale name="vi">
@@ -3168,6 +3288,11 @@
       <locale name="et">
 	<short>NÃ¤ita reanumbreid</short>
 	<long>Kas gedit peab readktoris reanumbreid nÃ¤itama.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>NÃ¤ytÃ¤ rivinumerot</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ nÃ¤yttÃ¤Ã¤kÃ¶ gedit rivinumerot muokkausalueella.</long>
       </locale>
 
       <locale name="fr">
@@ -3272,7 +3397,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÐ¸ Ð½Ð¾Ð¼ÐµÑÐ¸ ÑÑÐ´ÐºÑÐ²</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°ÑÑÑ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ÑÑ Ð½Ð¾Ð¼ÐµÑÐ¸ ÑÑÐ´ÐºÑÐ² Ñ Ð¾Ð±Ð»Ð°ÑÑÑ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -3350,6 +3475,11 @@
       <locale name="et">
 	<short>TÃ¶Ã¶riistariba on nÃ¤htaval</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>TyÃ¶kalupalkki nÃ¤ytetÃ¤Ã¤n</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ nÃ¤ytetÃ¤Ã¤nkÃ¶ tyÃ¶kalupalkkia.</long>
       </locale>
 
       <locale name="fr">
@@ -3454,7 +3584,7 @@
 
       <locale name="uk">
 	<short>ÐÐµÐ½Ð°Ð» Ð²Ð¸Ð´Ð¸Ð¼Ð¸Ð¹</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°Ñ Ð¿ÐµÐ½Ð°Ð» Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ÑÑ Ñ Ð²ÑÐºÐ½Ð°Ñ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -3540,6 +3670,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>TyÃ¶kalupalkin painiketyyli</short>
+	<long>TyÃ¶kalupalkin painikkeiden tyyli. Mahdollisia arvoja ovat &quot;GEDIT_TOOLBAR_SYSTEM&quot; jolloin kÃ¤ytetÃ¤Ã¤n jÃ¤rjestelmÃ¤n oletustyyliÃ¤, &quot;GEDIT_TOOLBAR_ICONS&quot; jolloin nÃ¤ytetÃ¤Ã¤n vain kuvakkeet, &quot;GEDIT_TOOLBAR_ICONS_AND_TEXT&quot; jolloin nÃ¤ytetÃ¤Ã¤n sekÃ¤ kuvakkeet ettÃ¤ teksti, sekÃ¤ &quot;GEDIT_TOOLBAR_ICONS_BOTH_HORIZ&quot; jolloin nÃ¤ytetÃ¤Ã¤n teksti kuvakkeen vieressÃ¤. Huomaa, ettÃ¤ asetusten kirjainkoolla on vÃ¤liÃ¤, joten ne tulee kirjoittaa tÃ¤smÃ¤lleen siten kuin ne tÃ¤ssÃ¤ esitetÃ¤Ã¤n.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Style des boutons de la barre d&apos;outils</short>
 	<long>Style pour les boutons de la barre d&apos;outils. Les valeurs possibles sont Â«Â GEDIT_TOOLBAR_SYSTEMÂ Â» pour utiliser le style par dÃ©faut du systÃ¨me, Â«Â GEDIT_TOOLBAR_ICONSÂ Â» pour n&apos;afficher que les icÃ´nes et Â«Â GEDIT_TOOLBAR_ICONS_AND_TEXTÂ Â» pour afficher  les icÃ´nes et le texte. Veuillez noter que ces valeurs sont sensibles Ã  la casse. Faites donc en sorte qu&apos;elles apparaissent exactement comme mentionnÃ©es ici.</long>
@@ -3602,7 +3737,7 @@
 
       <locale name="pt">
 	<short>Estilo Barra BotÃµes</short>
-	
+	<long>Estilo para a barra de botÃµes. Valores possÃ­veis sÃ£o &quot;GEDIT_TOOLBAR_SYSTEM&quot; para utilizar o valor por omissÃ£o do sistema, &quot;GEDIT_TOOLBAR_ICONS&quot; para mostrar apenas Ã­cones, &quot;GEDIT_TOOLBAR_ICONS_AND_TEXT&quot; para mostrar Ã­cones e texto e &quot;GEDIT_TOOLBAR_ICONS_BOTH_HORIZ&quot; para mostrar texto prioritÃ¡rio ao lado dos Ã­cones. Note que os valores sÃ£o sensÃ­veis Ã  capitalizaÃ§Ã£o, pelo que se deverÃ¡ certificar de que aparecem exactamente como aqui mencionados.</long>
       </locale>
 
       <locale name="pt_BR">
@@ -3617,7 +3752,7 @@
 
       <locale name="ru">
 	<short>Ð¡ÑÐ¸Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº Ð¿Ð°Ð½ÐµÐ»Ð¸ Ð¸Ð½ÑÑÑÑÐ¼ÐµÐ½ÑÐ¾Ð²</short>
-	
+	<long>ÐÐ¿ÑÐµÐ´ÐµÐ»ÑÐµÑ ÑÑÐ¸Ð»Ñ Ð´Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº Ð¿Ð°Ð½ÐµÐ»Ð¸ Ð¸Ð½ÑÑÑÑÐ¼ÐµÐ½ÑÐ¾Ð². ÐÐ¾Ð·Ð¼Ð¾Ð¶Ð½ÑÐµ Ð·Ð½Ð°ÑÐµÐ½Ð¸Ñ: &quot;GEDIT_TOOLBAR_SYSTEM&quot; Ð´Ð»Ñ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ÑÑÐ¾Ð´Ð½ÑÑ ÑÐ¸ÑÑÐµÐ¼Ð½ÑÑ Ð·Ð½Ð°ÑÐµÐ½Ð¸Ð¹, &quot;GEDIT_TOOLBAR_ICONS&quot; Ð´Ð»Ñ Ð¾ÑÐ¾Ð±ÑÐ°Ð¶ÐµÐ½Ð¸Ñ ÑÐ¾Ð»ÑÐºÐ¾ Ð¿Ð¸ÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¼ Ð¸ &quot;GEDIT_TOOLBAR_ICONS_AND_TEXT&quot; Ð´Ð»Ñ Ð¾ÑÐ¾Ð±ÑÐ°Ð¶ÐµÐ½Ð¸Ñ Ð¿Ð¸ÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¼ Ð¸ ÑÐµÐºÑÑÐ°, &quot;GEDIT_TOOLBAR_ICONS_BOTH_HORIZ&quot; Ð´Ð»Ñ Ð¾ÑÐ¾Ð±ÑÐ°Ð¶ÐµÐ½Ð¸Ñ ÑÐµÐºÑÑÐ° Ð·Ð° Ð·Ð½Ð°ÑÐºÐ°Ð¼Ð¸. ÐÐ¼ÐµÐ¹ÑÐµ Ð² Ð²Ð¸Ð´Ñ, ÑÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð¸Ñ ÑÐµÐ³Ð¸ÑÑÑÐ¾-Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ñ Ð¸ Ð´Ð¾Ð»Ð¶Ð½Ñ Ð¿Ð¾ÑÐ²Ð»ÑÑÑÑÑ ÑÐ¾ÑÐ½Ð¾ Ð² ÑÐºÐ°Ð·Ð°Ð½Ð½Ð¾Ð¼ Ð²Ð¸Ð´Ðµ.</long>
       </locale>
 
       <locale name="sk">
@@ -3642,7 +3777,7 @@
 
       <locale name="uk">
 	<short>Ð¡ÑÐ¸Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº Ð¿ÐµÐ½Ð°Ð»Ð°</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÑÑÐ¸Ð»Ñ Ð´Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº Ð¿ÐµÐ½Ð°Ð»Ð°. ÐÐ¾Ð¶Ð»Ð¸Ð²Ñ Ð²Ð°ÑÑÐ°Ð½ÑÐ¸: &quot;GEDIT_TOOLBAR_SYSTEM&quot; Ð´Ð»Ñ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ°Ð½Ð½Ñ ÑÐ¸ÑÑÐµÐ¼Ð½Ð¸Ñ Ð·Ð½Ð°ÑÐµÐ½Ñ, &quot;GEDIT_TOOLBAR_ICONS&quot; Ð´Ð»Ñ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÐµÐ½Ð½Ñ Ð»Ð¸ÑÐµ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼ Ñ &quot;GEDIT_TOOLBAR_ICONS_AND_TEXT&quot; Ð´Ð»Ñ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÐµÐ½Ð½Ñ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼ Ñ ÑÐµÐºÑÑÑ, &quot;GEDIT_TOOLBAR_ICONS_BOTH_HORIZ&quot; Ð´Ð»Ñ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÐµÐ½Ð½Ñ ÑÐµÐºÑÑÑ Ð·Ð° Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð°Ð¼Ð¸. ÐÐ°ÑÐ²Ð°Ð¶ÑÐµ, ÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ ÑÑÑÐ»Ð¸Ð²Ñ Ð´Ð¾ ÑÐµÐ³ÑÑÑÑÑ Ñ Ð¼Ð°ÑÑÑ Ð·&apos;ÑÐ²Ð»ÑÑÐ¸ÑÑ ÑÐ¾ÑÐ½Ð¾ Ñ Ð²ÐºÐ°Ð·Ð°Ð½Ð¾Ð¼Ñ Ð²Ð¸Ð³Ð»ÑÐ´Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -3728,6 +3863,11 @@
 	
       </locale>
 
+      <locale name="fi">
+	<short>Tilarivi nÃ¤ytetÃ¤Ã¤n</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ nÃ¤ytetÃ¤Ã¤nkÃ¶ muokkausikkunan alalaidassa tilariviÃ¤.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Barre d&apos;Ã©tat visible</short>
 	<long>Activer ou dÃ©sactiver la barre d&apos;Ã©tat en bas de la fenÃªtre d&apos;Ã©dition.</long>
@@ -3804,7 +3944,7 @@
       </locale>
 
       <locale name="ru">
-	<short>Ð¡ÑÑÐ¾ÐºÐ° ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð°</short>
+	<short>ÐÐ¸Ð´Ð¸Ð¼Ð¾ÑÑÑ ÑÑÑÐ¾ÐºÐ¸ ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ñ</short>
 	<long>ÐÑÐ´ÐµÑ Ð»Ð¸ Ð²Ð¸Ð´Ð½Ð° ÑÑÑÐ¾ÐºÐ° ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ñ Ð¾ÐºÐ½Ð° ÑÐµÐ´Ð°ÐºÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ.</long>
       </locale>
 
@@ -3830,7 +3970,7 @@
 
       <locale name="uk">
 	<short>ÐÐ°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð°</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°Ñ Ð¿Ð°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ÑÑ Ñ Ð²ÑÐºÐ½Ð°Ñ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ.</long>
       </locale>
 
       <locale name="vi">
@@ -3905,6 +4045,11 @@
       <locale name="et">
 	<short>NÃ¤ita kursori asukohta</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>NÃ¤ytÃ¤ kohdistimen sijainti</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ nÃ¤ytetÃ¤Ã¤nkÃ¶ tilarivillÃ¤ kohdistimen sijainti. Varmista ettÃ¤ asetus &quot;Tilarivi nÃ¤ytetÃ¤Ã¤n&quot; on pÃ¤Ã¤llÃ¤ jotta tÃ¤mÃ¤ asetus tulisi voimaan.</long>
       </locale>
 
       <locale name="fr">
@@ -4009,7 +4154,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÐ¸ Ð¿Ð¾Ð·Ð¸ÑÑÑ ÐºÑÑÑÐ¾ÑÐ°</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°Ñ Ð¿Ð¾Ð·Ð¸ÑÑÑ ÐºÑÑÑÐ¾ÑÐ° Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ÑÑ Ñ Ð¿Ð°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ñ Ð²ÑÐºÐ½Ð°Ñ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ. ÐÐµÑÐµÐºÐ¾Ð½Ð°Ð¹ÑÐµÑÑ, ÑÐ¾ Ð²Ð¸ ÑÐ²ÑÐ¼ÐºÐ½ÑÐ»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÐ°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð°&quot;, Ð´Ð»Ñ ÑÐ¾Ð³Ð¾ ÑÐ¾Ð± ÑÐµÐ¹ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ Ð¼Ð°Ð² ÐµÑÐµÐºÑ.</long>
       </locale>
 
       <locale name="vi">
@@ -4089,6 +4234,11 @@
       <locale name="et">
 	<short>NÃ¤ita Ã¼lekirjutamise olekut</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>NÃ¤ytÃ¤ ylikirjoitustila</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ nÃ¤ytetÃ¤Ã¤nkÃ¶ tilarivillÃ¤ lisÃ¤ys-/ylikirjoitustila. Varmista ettÃ¤ asetus &quot;Tilarivi nÃ¤ytetÃ¤Ã¤n&quot; on pÃ¤Ã¤llÃ¤ jotta tÃ¤mÃ¤ asetus tulisi voiman.</long>
       </locale>
 
       <locale name="fr">
@@ -4193,7 +4343,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÐ¸ ÑÐµÐ¶Ð¸Ð¼ Ð·Ð°Ð¼ÑÑÐµÐ½Ð½Ñ</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°Ñ ÑÑÐ°Ð½ ÑÐµÐ¶Ð¸Ð¼Ñ Ð²ÑÑÐ°Ð²Ð»ÑÐ½Ð½Ñ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ÑÑ Ñ Ð¿Ð°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ñ Ð²ÑÐºÐ½Ð°Ñ ÑÐµÐ´Ð°Ð³ÑÐ²Ð°Ð½Ð½Ñ. ÐÐµÑÐµÐºÐ¾Ð½Ð°Ð¹ÑÐµÑÑ, ÑÐ¾ Ð²Ð¸ ÑÐ²ÑÐ¼ÐºÐ½ÑÐ»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÐ°Ð½ÐµÐ»Ñ ÑÑÐ°Ð½Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð°&quot;, Ð´Ð»Ñ ÑÐ¾Ð³Ð¾ ÑÐ¾Ð± ÑÐµÐ¹ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ Ð¼Ð°Ð² ÐµÑÐµÐºÑ.</long>
       </locale>
 
       <locale name="vi">
@@ -4272,6 +4422,11 @@
       <locale name="et">
 	<short>Prindi pÃ¤is</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Tulosta otsikkotiedot</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ tulostaako gedit asiakirjan otsikkotiedot tulostettaessa asiakirjoja.</long>
       </locale>
 
       <locale name="fr">
@@ -4376,7 +4531,7 @@
 
       <locale name="uk">
 	<short>ÐÑÑÐºÑÐ²Ð°ÑÐ¸ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº</short>
-	
+	<long>Ð§Ð¸ Ð¼Ð°Ñ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ° Ð²ÐºÐ»ÑÑÐ°ÑÐ¸ÑÑ Ñ Ð´ÑÑÐºÐ¾Ð²Ð°Ð½Ñ Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ¸.</long>
       </locale>
 
       <locale name="vi">
@@ -4454,6 +4609,11 @@
       <locale name="es">
 	<short>ImpresiÃ³n del modo de ajuste de lÃ­nea</short>
 	<long>Especifica como deben ajustarse las lÃ­neas demasiados largas al imprimir. Utilice Â«GTK_WRAP_NONEÂ» para no ajustar las lÃ­neas, Â«GTK_WRAP_WORDÂ» para ajustar al largo de la palabra y Â«GTK_WRAP_CHARÂ» para ajustar de acuerdo a caracteres individuales. Note que los valores son sensibles a mayÃºsculas y minÃºsculas, por ello asegÃºrese de que aparecen exactamente del mismo modo en que son mencionados aquÃ­.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Tulostuksen rivitystapa</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kuinka pitkÃ¤t rivit rivitetÃ¤Ã¤n tulostusta varten. KÃ¤ytÃ¤ asetusta &quot;GTK_WRAP_NONE&quot; jollet halua rivitystÃ¤. &quot;GTK_WRAP_WORD&quot; rivittÃ¤Ã¤ sanojen rajojen mukaisesti ja &quot;GTK_WRAP_CHAR&quot; rivittÃ¤Ã¤ yksittÃ¤isen merkin kohdalta. Huomaa ettÃ¤ kirjainkoko huomioidaan, joten asetus tÃ¤ytyy kirjoittaa tÃ¤smÃ¤lleen siten kuin se tÃ¤ssÃ¤ esitetÃ¤Ã¤n.</long>
       </locale>
 
       <locale name="fr">
@@ -4556,6 +4716,11 @@
 	<long>YazdÄ±rma iÅlemi iÃ§in uzun satÄ±rlarÄ±n nasÄ±l kaydÄ±rÄ±lacaÄÄ±nÄ± belirtir. KaydÄ±rmamak iÃ§in &quot;GTK_WRAP_WORD&quot;, sÃ¶zcÃ¼k sÄ±nÄ±rlarÄ±nda kaydÄ±rmak iÃ§in &quot;GTK_WRAP_WORD&quot;, baÄÄ±msÄ±z karakter sÄ±nÄ±rlarÄ±nda kaydÄ±rmak iÃ§in  &quot;GTK_WRAP_WORD&quot; kullanÄ±nÄ±z. DeÄerler BÃYÃK/kÃ¼Ã§Ã¼k harf duyarlÄ±dÄ±r, tam olarak burada yer aldÄ±ÄÄ± gibi yazmaya Ã¶zen gÃ¶steriniz.</long>
       </locale>
 
+      <locale name="uk">
+	<short>Ð ÐµÐ¶Ð¸Ð¼ Ð·Ð°Ð²ÐµÑÑÐ°Ð½Ð½Ñ ÑÑÐ´ÐºÑÐ² Ð¿ÑÐ´ ÑÐ°Ñ Ð´ÑÑÐºÑ</short>
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ, ÑÐº Ð·Ð°Ð³Ð¾ÑÑÐ°ÑÐ¸ Ð´Ð¾Ð²Ð³Ñ ÑÑÐ´ÐºÐ¸ Ð¿ÑÐ´ ÑÐ°Ñ Ð´ÑÑÐºÑ. ÐÐ¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ¹ÑÐµ &quot;GTK_WRAP_NONE&quot; Ð´Ð»Ñ Ð²Ð¸Ð¼ÐºÐ½ÐµÐ½Ð½Ñ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ, &quot;GTK_WRAP_WORD&quot; Ð´Ð»Ñ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ Ð¿Ð¾ Ð³ÑÐ°Ð½Ð¸ÑÑ ÑÐ»ÑÐ² Ñ &quot;GTK_WRAP_CHAR&quot; Ð´Ð»Ñ Ð¿Ð¾ÑÐ¸Ð¼Ð²Ð¾Ð»ÑÐ½Ð¾Ð³Ð¾ Ð·Ð°Ð³Ð¾ÑÑÐ°Ð½Ð½Ñ. ÐÐ°ÑÐ²Ð°Ð¶ÑÐµ, ÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ ÑÑÑÐ»Ð¸Ð²Ñ Ð´Ð¾ ÑÐµÐ³ÑÑÑÑÑ Ñ Ð¼Ð°ÑÑÑ Ð·&apos;ÑÐ²Ð»ÑÑÐ¸ÑÑ ÑÐ¾ÑÐ½Ð¾ Ñ Ð²ÐºÐ°Ð·Ð°Ð½Ð¾Ð¼Ñ Ð²Ð¸Ð³Ð»ÑÐ´Ñ.</long>
+      </locale>
+
       <locale name="vi">
 	<short>Cháº¿ Äá» cuá»n dÃ²ng in</short>
 	<long>XÃ¡c Äá»nh cuá»n dÃ²ng dÃ i nhÆ° tháº¿ nÃ o khi in. DÃ¹ng &quot;GTK_WRAP_MODE&quot; náº¿u khÃ´ng cuá»n, &quot;GTK_WRAP_WORD&quot; náº¿u cuá»n theo biÃªn tá»«, vÃ  &quot;GTK_WRAP_CHAR&quot; náº¿u cuá»n theo cÃ¡c kÃ½ tá»±. ChÃº Ã½ cÃ¡c giÃ¡ trá» nÃ y cáº§n viáº¿t hoa.</long>
@@ -4638,6 +4803,11 @@
       <locale name="et">
 	<short>Prindi reanumbrid</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Tulosta rivinumerot</short>
+	<long>Jos tÃ¤mÃ¤ arvo on 0, rivinumeroita ei lisÃ¤tÃ¤ asiakirjaa tulostettaessa ollenkaan. Muutoin gedit tulostaa rivinumeron annetun arvon vÃ¤lein.</long>
       </locale>
 
       <locale name="fr">
@@ -4742,7 +4912,7 @@
 
       <locale name="uk">
 	<short>ÐÑÑÐºÑÐ²Ð°ÑÐ¸ Ð½Ð¾Ð¼ÐµÑÐ¸ ÑÑÐ´ÐºÑÐ²</short>
-	
+	<long>Ð¯ÐºÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð½Ñ Ð²ÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾ Ð² 0, Ð½Ð¾Ð¼ÐµÑÐ¸ ÑÑÐ´ÐºÑÐ² Ð½Ðµ Ð±ÑÐ´Ðµ Ð²ÑÑÐ°Ð²Ð»ÐµÐ½Ð¾, ÐºÐ¾Ð»Ð¸ Ð´ÑÑÐºÑÐ²Ð°ÑÐ¸Ð¼ÐµÑÑÑÑ Ð´Ð¾ÐºÑÐ¼ÐµÐ½Ñ. ÐÐ½Ð°ÐºÑÐµ, Ð½Ð¾Ð¼ÐµÑ Ð´ÑÑÐºÑÐ²Ð°ÑÐ¸Ð¼ÑÑÑÑÑ Ð±ÑÐ»Ñ ÐºÐ¾Ð¶Ð½Ð¾Ð³Ð¾ ÑÑÐ´ÐºÐ°.</long>
       </locale>
 
       <locale name="vi">
@@ -4821,6 +4991,11 @@
       <locale name="et">
 	<short>Sisu kirjatÃ¼Ã¼p printimisel</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Tekstin kirjasin tulostettaessa</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ asiakirjan tekstiosassa tulostettaessa kÃ¤ytettÃ¤vÃ¤n kirjasimen.</long>
       </locale>
 
       <locale name="fr">
@@ -4925,7 +5100,7 @@
 
       <locale name="uk">
 	<short>Ð¨ÑÐ¸ÑÑ ÑÑÐ»Ð° Ð´Ð»Ñ Ð´ÑÑÐºÑ</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÑÑÐ¸ÑÑ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸Ð¼ÐµÑÑÑÑ Ð´Ð»Ñ Ð´ÑÑÐºÑ ÑÑÐ»Ð° Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÑÐ².</long>
       </locale>
 
       <locale name="vi">
@@ -5000,6 +5175,11 @@
       <locale name="et">
 	<short>PÃ¤ise kirjatÃ¼Ã¼p printimisel</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Otsikkokirjasin tulostettaessa</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kirjasimen jolla sivun otsikkotiedot tulostetaan. TÃ¤mÃ¤ on voimassa ainoastaan mikÃ¤li asetus &quot;Tulosta otsikkotiedot&quot; on pÃ¤Ã¤llÃ¤.</long>
       </locale>
 
       <locale name="fr">
@@ -5104,7 +5284,7 @@
 
       <locale name="uk">
 	<short>Ð¨ÑÐ¸ÑÑ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ° Ð´Ð»Ñ Ð´ÑÑÐºÑ</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÑÑÐ¸ÑÑ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸Ð¼ÐµÑÑÑÑ Ð´Ð»Ñ Ð´ÑÑÐºÑ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÑÐ² ÑÑÐ¾ÑÑÐ½Ð¾Ðº. ÐÐ°ÑÐ¸Ð¼Ðµ ÐµÑÐµÐºÑ Ð»Ð¸ÑÐµ ÑÐ¾Ð´Ñ, ÐºÐ¾Ð»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÑÑÐºÑÐ²Ð°ÑÐ¸ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº&quot; ÑÐ²ÑÐ¼ÐºÐ½ÐµÐ½Ð¾.</long>
       </locale>
 
       <locale name="vi">
@@ -5179,6 +5359,11 @@
       <locale name="et">
 	<short>Reanumbrite kirjatÃ¼Ã¼p printimisel</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Rivinumeron kirjasin tulostettaessa</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ kirjasimen jolla rivinumerot tulostetaan. TÃ¤mÃ¤ on voimassa ainoastaan mikÃ¤li asetuksen &quot;Tulosta rivinumerot&quot; arvo on muu kuin nolla.</long>
       </locale>
 
       <locale name="fr">
@@ -5283,7 +5468,7 @@
 
       <locale name="uk">
 	<short>Ð¨ÑÐ¸ÑÑ Ð½Ð¾Ð¼ÐµÑÑÐ² ÑÑÐ´ÐºÑÐ² Ð´Ð»Ñ Ð´ÑÑÐºÑ</short>
-	
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÑÑÐ¸ÑÑ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÐ²Ð°ÑÐ¸Ð¼ÐµÑÑÑÑ Ð´Ð»Ñ Ð´ÑÑÐºÑ Ð½Ð¾Ð¼ÐµÑÑÐ² ÑÑÐ´ÐºÑÐ². ÐÐ°ÑÐ¸Ð¼Ðµ ÐµÑÐµÐºÑ Ð»Ð¸ÑÐµ ÑÐ¾Ð´Ñ, ÐºÐ¾Ð»Ð¸ Ð¿Ð°ÑÐ°Ð¼ÐµÑÑ &quot;ÐÑÑÐºÑÐ²Ð°ÑÐ¸ Ð½Ð¾Ð¼ÐµÑÑÐ² ÑÑÐ´ÐºÑÐ²&quot; ÑÐ²ÑÐ¼ÐºÐ½ÐµÐ½Ð¾.</long>
       </locale>
 
       <locale name="vi">
@@ -5357,6 +5542,11 @@
       <locale name="et">
 	<short>Maksimaalne hiljutiste failide arv</short>
 	
+      </locale>
+
+      <locale name="fi">
+	<short>Pikavalintojen enimmÃ¤ismÃ¤Ã¤rÃ¤</short>
+	<long>MÃ¤Ã¤rittÃ¤Ã¤ valikossa &quot;Pikavalinnat&quot; nÃ¤kyvien tiedostojen enimmÃ¤ismÃ¤Ã¤rÃ¤n.</long>
       </locale>
 
       <locale name="fr">
@@ -5436,7 +5626,7 @@
 
       <locale name="ru">
 	<short>ÐÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑÐ½Ð¾Ðµ ÑÐ¸ÑÐ»Ð¾ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ñ ÑÐ°Ð¹Ð»Ð¾Ð²</short>
-	<long>ÐÐ¿ÑÐµÐ´ÐµÐ»ÑÐµÑ ÑÐ¸ÑÐ»Ð¾ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ñ Ð¿Ð¾ Ð²ÑÐµÐ¼ÐµÐ½Ð¸ Ð¾ÑÐºÑÑÑÑÑ ÑÐ°Ð¹Ð»Ð¾Ð², ÐºÐ¾ÑÐ¾ÑÑÐµ Ð±ÑÐ´ÑÑ Ð¾ÑÐ¾Ð±ÑÐ°Ð¶Ð°ÑÑÑÑ Ð² Ð¿Ð¾Ð´Ð¼ÐµÐ½Ñ &quot;ÐÑÐºÑÑÑÑ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ðµ ÑÐ°Ð¹Ð»Ñ&quot;.</long>
+	<long>ÐÐ¿ÑÐµÐ´ÐµÐ»ÑÐµÑ ÑÐ¸ÑÐ»Ð¾ Ð½ÐµÐ´Ð°Ð²Ð½Ð¾ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½Ð½ÑÑ ÑÐ°Ð¹Ð»Ð¾Ð², ÐºÐ¾ÑÐ¾ÑÑÐµ Ð±ÑÐ´ÑÑ Ð¾ÑÐ¾Ð±ÑÐ°Ð¶Ð°ÑÑÑÑ Ð² Ð¿Ð¾Ð´Ð¼ÐµÐ½Ñ &quot;ÐÑÐºÑÑÑÑ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ðµ ÑÐ°Ð¹Ð»Ñ&quot;.</long>
       </locale>
 
       <locale name="sk">
@@ -5457,6 +5647,11 @@
       <locale name="tr">
 	
 	<long>&quot;Son Dosyalar &quot; altmenÃ¼sÃ¼nde gÃ¶rÃ¼ntÃ¼lenecek olan son dÃ¶nemde aÃ§Ä±lmÄ±Å dosyalarÄ±n en yÃ¼ksek sayÄ±sÄ±nÄ± belirtir.</long>
+      </locale>
+
+      <locale name="uk">
+	<short>ÐÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑÐ½Ð° ÐºÑÐ»ÑÐºÑÑÑÑ Ð¾ÑÑÐ°Ð½Ð½ÑÑ ÑÐ°Ð¹Ð»ÑÐ²</short>
+	<long>ÐÐ¸Ð·Ð½Ð°ÑÐ°Ñ ÐºÑÐ»ÑÐºÑÑÑÑ Ð¾ÑÑÐ°Ð½Ð½ÑÑ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ°Ð½Ð¸Ñ ÑÐ°Ð¹Ð»ÑÐ², ÑÐºÑ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸Ð¼ÑÑÑÑÑ Ð² Ð¿ÑÐ´Ð¼ÐµÐ½Ñ &quot;ÐÑÑÐ°Ð½Ð½Ñ ÑÐ°Ð¹Ð»Ð¸&quot;.</long>
       </locale>
 
       <locale name="vi">
@@ -5533,6 +5728,11 @@
 	<long>Lista de codificaciones usadas por gedit para leer archivos no codificados en UTF-8 o en la codificaciÃ³n local actual.</long>
       </locale>
 
+      <locale name="fi">
+	<short>Koodaukset</short>
+	<long>Luettelo koodaustavoista jotka geditillÃ¤ on kÃ¤ytÃ¶ssÃ¤Ã¤n luettaessa tiedostoja joita ei ole koodattu UTF-8:lla tai kÃ¤ytetÃ¶ssÃ¤ olevan maa-asetuksetn koodauksella.</long>
+      </locale>
+
       <locale name="fr">
 	<short>Codages</short>
 	<long>Liste de codages utilisÃ©s par gedit pour la lecture de fichiers non-encodÃ©s en UTF-8 ou dans le codage en cours.</long>
@@ -5588,6 +5788,11 @@
 	<long>Lista kodowaÅ uÅ¼ywana przez program gedit do czytania plikÃ³w w kodowaniu innym niÅ¼ UTF-8 lub wynikajÄcym z ustawieÅ narodowych.</long>
       </locale>
 
+      <locale name="pt">
+	<short>CodificaÃ§Ãµes</short>
+	<long>Lista de codificaÃ§Ãµes utilizadas pelo gedit para ler ficheiros nÃ£o codificados em UTF-8 ou na codificaÃ§Ã£o do local actual.</long>
+      </locale>
+
       <locale name="pt_BR">
 	<short>CodificaÃ§Ãµes</short>
 	<long>Lista de codificaÃ§Ãµes usadas pelo gedit para ler arquivos que nÃ£o estejam codificados em UTF-8 ou na codificaÃ§Ã£o da localizaÃ§Ã£o atual.</long>
@@ -5596,6 +5801,11 @@
       <locale name="ro">
 	<short>CodÄri</short>
 	<long>ListÄ a codÄrilor folosite de gedit pentru a citi fiÅiere care nu sunt codate Ã®n UTF-8 sau Ã®n codarea localÄ curentÄ.</long>
+      </locale>
+
+      <locale name="ru">
+	<short>ÐÐ¾Ð´Ð¸ÑÐ¾Ð²ÐºÐ¸</short>
+	<long>Ð¡Ð¿Ð¸ÑÐ¾Ðº ÐºÐ¾Ð´Ð¸ÑÐ¾Ð²Ð¾Ðº, Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼ÑÑ ÑÐµÐ´Ð°ÐºÑÐ¾ÑÐ¾Ð¼ Ð´Ð»Ñ ÑÑÐµÐ½Ð¸Ñ ÑÐ°Ð¹Ð»Ð¾Ð², Ð½Ðµ ÐºÐ¾Ð´Ð¸ÑÐ¾Ð²Ð½Ð½ÑÑ Ð² UTF-8 Ð¸Ð»Ð¸ Ð² ÐºÐ¾Ð´Ð¸ÑÐ¾Ð²ÐºÐµ ÑÐµÐºÑÑÐµÐ¹ Ð»Ð¾ÐºÐ°Ð»Ð¸.</long>
       </locale>
 
       <locale name="sk">
@@ -5620,7 +5830,7 @@
 
       <locale name="uk">
 	<short>ÐÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ</short>
-	
+	<long>Ð¡Ð¿Ð¸ÑÐ¾Ðº ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ñ, ÑÐ¾ Ð²Ð¸ÐºÐ¾ÑÐ¸ÑÑÐ¾Ð²ÑÑ ÑÐµÐ´Ð°ÐºÑÐ¾Ñ Ð´Ð»Ñ Ð·ÑÐ¸ÑÑÐ²Ð°Ð½Ð½Ñ ÑÐ°Ð¹Ð»ÑÐ², ÑÐºÑ Ð½Ðµ Ð·Ð½Ð°ÑÐ¾Ð´ÑÑÑÑÑ Ñ ÐºÐ¾Ð´ÑÐ²Ð°Ð½Ð½Ñ Ð¿Ð¾ÑÐ¾ÑÐ½Ð¾Ñ Ð»Ð¾ÐºÐ°Ð»Ñ ÑÐ¸  UTF-8.</long>
       </locale>
 
       <locale name="vi">

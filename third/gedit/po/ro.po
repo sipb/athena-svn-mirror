@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
-"PO-Revision-Date: 2003-01-20 01:39+0200\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
+"PO-Revision-Date: 2003-01-30 12:51+0200\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team: română <ro@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr "aplicaţia gedit"
 
 #: data/GNOME_Gedit.server.in.h:2
 msgid "gedit automation factory"
-msgstr ""
+msgstr "uzina gedit de automatizare"
 
 #: data/gedit.desktop.in.h:1
 msgid "Edit text files"
@@ -2096,15 +2096,15 @@ msgstr ""
 
 #: src/gedit-mdi.c:1037
 msgid "Do_n't save"
-msgstr "Nu _salva"
+msgstr "_Nu salva"
 
 #: src/gedit-mdi.c:1056
 msgid "_Don't quit"
-msgstr "Nu ieşi"
+msgstr "Nu _ieşi"
 
 #: src/gedit-mdi.c:1060
 msgid "_Don't close"
-msgstr "Nu î_nchide"
+msgstr "Nu închi_de"
 
 #: src/gedit-mdi.c:1150
 msgid "(modified)"

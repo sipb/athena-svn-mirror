@@ -1,3 +1,4 @@
+# translation of gedit.HEAD.he.po to Hebrew
 # translation of gedit.HEAD.po to Hebrew
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
@@ -6,9 +7,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gedit.HEAD\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
-"PO-Revision-Date: 2003-01-06 16:06+0200\n"
+"Project-Id-Version: gedit.HEAD.he\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
+"PO-Revision-Date: 2003-01-27 14:19+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1037,7 +1038,7 @@ msgstr "בדיקת איות הסתיימה"
 
 #: plugins/spell/gedit-spell-checker.c:73
 msgid "Breton"
-msgstr ""
+msgstr "ברטון"
 
 #: plugins/spell/gedit-spell-checker.c:74
 msgid "Catalan"
@@ -1201,7 +1202,7 @@ msgstr "מילה שגויה:"
 
 #: plugins/spell/spell-checker.glade2.h:13
 msgid "User dictionary:"
-msgstr ""
+msgstr "מילון משתמש:"
 
 #: plugins/spell/spell-checker.glade2.h:14
 msgid "_Ignore"
@@ -1218,23 +1219,23 @@ msgstr "_מיין..."
 
 #: plugins/sort/sort.c:29
 msgid "Sort the current document or selection."
-msgstr ""
+msgstr "מיין את המסמך הנוכחי או את הבחירה."
 
 #: plugins/spell/spell.c:51
 msgid "_Check Spelling"
-msgstr ""
+msgstr "_בדיקת איות"
 
 #: plugins/spell/spell.c:54
 msgid "Check the current document for incorrect spelling"
-msgstr ""
+msgstr "בדוק את המסמך הנוכחי לאיות שגוי"
 
 #: plugins/spell/spell.c:56
 msgid "_Autocheck Spelling"
-msgstr ""
+msgstr "בדוק איות _אוטמטית"
 
 #: plugins/spell/spell.c:59
 msgid "Automatically spell-check the current document"
-msgstr ""
+msgstr "בדוק את האיות במסמך הנוכחי אוטומטית"
 
 #: plugins/spell/spell.c:61
 msgid "Set _Language"
@@ -1242,7 +1243,7 @@ msgstr "קבע _שפה"
 
 #: plugins/spell/spell.c:64
 msgid "Set the language of the current document"
-msgstr ""
+msgstr "קבע את השפה של המסמך הנוכחי"
 
 #: plugins/spell/spell.c:549
 msgid "The document is empty."
@@ -1250,11 +1251,11 @@ msgstr "המסמך ריק."
 
 #: plugins/spell/spell.c:567
 msgid "The selected text does not contain mispelled words."
-msgstr ""
+msgstr "המלל הנבחר אינו מכיל מילים בעלות איות שגוי."
 
 #: plugins/spell/spell.c:568
 msgid "The document does not contain mispelled words."
-msgstr ""
+msgstr "המסמך הזה אינו מכיל מילים בעלות איות שגוי."
 
 #: src/bonobo-mdi.c:549 src/bonobo-mdi.c:1962
 #, c-format
@@ -1297,7 +1298,7 @@ msgstr "מצא"
 #: src/dialogs/gedit-dialog-replace.c:1034
 #, c-format
 msgid "Found and replaced %d occurences."
-msgstr ""
+msgstr "מציאה והחלפה ארעה %d פעמים."
 
 #: src/dialogs/gedit-dialog-uri.c:83
 msgid "Open Location"
@@ -1313,7 +1314,7 @@ msgstr "טען"
 
 #: src/dialogs/gedit-plugin-manager.c:320
 msgid "Module file name"
-msgstr ""
+msgstr "שם קובץ המודול"
 
 #: src/dialogs/gedit-plugin-manager.c:321
 msgid "Author(s)"
@@ -1340,10 +1341,13 @@ msgid ""
 "\n"
 "Please, specify the location of the <tt>%s</tt> program."
 msgstr ""
+"התוסף %s משתמש בתוכנית חיצונית, הנקראת <tt>%s</tt>, כדי לבצע את פעולתו.\n"
+"\n"
+"אנא ודא את המיקום של התוכנית <tt>%s</tt>."
 
 #: src/dialogs/gedit-plugin-program-location-dialog.c:152
 msgid "The selected file is not executable."
-msgstr ""
+msgstr "הקובץ הנבחר אינו ניתו להפעלה."
 
 #: src/dialogs/gedit-preferences-dialog.c:233
 msgid "Font & Colors"
@@ -1352,7 +1356,7 @@ msgstr "גופן וצבעים"
 #: src/dialogs/gedit-preferences-dialog.c:235
 #: src/dialogs/gedit-preferences.glade2.h:47
 msgid "Tabs"
-msgstr ""
+msgstr "טבולטורים"
 
 #: src/dialogs/gedit-preferences-dialog.c:236
 msgid "Wrap Mode"
@@ -1492,7 +1496,7 @@ msgstr "<span weight=\"bold\" size=\"x-large\">שמירה</span>"
 
 #: src/dialogs/gedit-preferences.glade2.h:11
 msgid "<span weight=\"bold\" size=\"x-large\">Tabs</span>"
-msgstr ""
+msgstr "<span weight=\"bold\" size=\"x-large\">טבולטורים</span>"
 
 #: src/dialogs/gedit-preferences.glade2.h:12
 msgid "<span weight=\"bold\" size=\"x-large\">Undo</span>"
@@ -1552,7 +1556,7 @@ msgstr "גופנים וצבעים"
 
 #: src/dialogs/gedit-preferences.glade2.h:26
 msgid "Insert _spaces instead of tabs"
-msgstr ""
+msgstr "הכנס _רווחים במקום טבולטורים"
 
 #: src/dialogs/gedit-preferences.glade2.h:27
 msgid "LOGO"
@@ -1616,11 +1620,11 @@ msgstr "צבע _בחירה:"
 
 #: src/dialogs/gedit-preferences.glade2.h:44
 msgid "Selecte_d text color:"
-msgstr ""
+msgstr "צבע מלל נב_חר:"
 
 #: src/dialogs/gedit-preferences.glade2.h:45
 msgid "Set _tabs width equivalent to"
-msgstr ""
+msgstr "קבע אורך _טבולטור שווה ל"
 
 #: src/dialogs/gedit-preferences.glade2.h:46
 msgid "Set limit on _undo actions to"
@@ -1757,7 +1761,7 @@ msgstr ""
 
 #: src/dialogs/gnome-print-font-picker.c:218
 msgid "Use font in label"
-msgstr ""
+msgstr "השתמש בגופן בתוית"
 
 #: src/dialogs/gnome-print-font-picker.c:219
 msgid "Use font in the label in font info mode"
@@ -1765,7 +1769,7 @@ msgstr ""
 
 #: src/dialogs/gnome-print-font-picker.c:227
 msgid "Font size for label"
-msgstr ""
+msgstr "גודל הגופן לתוית"
 
 #: src/dialogs/gnome-print-font-picker.c:228
 msgid "Font size for label in font info mode"
@@ -1814,7 +1818,7 @@ msgstr ""
 
 #: src/dialogs/program-location-dialog.glade2.h:2
 msgid "_Location to search for:"
-msgstr ""
+msgstr "_מיקום לחפש בו:"
 
 #: src/dialogs/program-location-dialog.glade2.h:3
 msgid "label"
@@ -1822,7 +1826,7 @@ msgstr ""
 
 #: src/dialogs/replace.glade2.h:2
 msgid "Find Next"
-msgstr ""
+msgstr "מצא את הבא"
 
 #: src/dialogs/replace.glade2.h:3
 msgid "Match _entire word only"
@@ -1850,7 +1854,7 @@ msgstr ""
 
 #: src/dialogs/uri.glade2.h:2
 msgid "Enter the _location (URI) of the file you would like to open:"
-msgstr ""
+msgstr "הכנס את ה_מיקום (כתובת) של הקובץ שברצונך לפתוח:"
 
 #: src/dialogs/uri.glade2.h:3
 msgid "Open from URI"
@@ -1874,7 +1878,7 @@ msgstr "gedit"
 
 #: src/gedit-commands.c:501
 msgid "gedit is a small and lightweight text editor for Gnome"
-msgstr ""
+msgstr "gedit הינו עורך מלל קטן וקל בעבור Gnome"
 
 #: src/gedit-document.c:537 src/gedit-document.c:555
 #, c-format
@@ -1887,11 +1891,11 @@ msgstr "ללא שם"
 
 #: src/gedit-document.c:543 src/gedit-document.c:590
 msgid "Invalid file name"
-msgstr ""
+msgstr "שם קובץ לא תקני"
 
 #: src/gedit-document.c:702 src/gedit-document.c:786
 msgid "Invalid UTF-8 data"
-msgstr ""
+msgstr "מידע UTF-8 לא תקני"
 
 #: src/gedit-document.c:1016
 #, c-format
@@ -1913,13 +1917,15 @@ msgstr ""
 
 #: src/gedit-document.c:1138
 msgid "Invalid filename."
-msgstr ""
+msgstr "שם קובץ לא תקני."
 
 #: src/gedit-document.c:1278
 msgid ""
 "There is not enough disk space to save the file.\n"
 "Please free some disk space and try again."
 msgstr ""
+"אין מספיק מקום פנוי על הדיסק כדי לשמור את הקובץ.\n"
+"אנא פנה מעט מקום על הדיסק ונסה שוב."
 
 #: src/gedit-document.c:1283
 msgid ""
@@ -1930,11 +1936,11 @@ msgstr ""
 
 #: src/gedit-document.c:1327
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "לא ניתן ליצור קובץ גיבוי."
 
 #: src/gedit-document.c:1447
 msgid "It is not possible to revert an Untitled document"
-msgstr ""
+msgstr "לא ניתן לשחזר מסמך ללא שם"
 
 #: src/gedit-file-selector-util.c:147
 #, c-format
@@ -1942,6 +1948,8 @@ msgid ""
 "A file named \"%s\" already exists.\n"
 "Do you want to replace it with the one you are saving?"
 msgstr ""
+"קובץ בשם \"%s\" כבר קיים.\n"
+"האם אתה רוצה להחליפו עם זה שאתה שומר?"
 
 #: src/gedit-file-selector-util.c:158
 #, c-format
@@ -1949,10 +1957,12 @@ msgid ""
 "The file \"%s\" is read-only.\n"
 "Do you want to try to replace it with the one you are saving?"
 msgstr ""
+"הקובץ \"%s\" הינו לקריאה בלבד.\n"
+"האם ברצונך להחליפו עם זה שאתה שומר?"
 
 #: src/gedit-file-selector-util.c:544
 msgid "Select a filename to save"
-msgstr ""
+msgstr "בחר שם קובץ לשמירה"
 
 #: src/gedit-file.c:151
 msgid "Open File..."
@@ -1961,12 +1971,12 @@ msgstr "פתח קובץ..."
 #: src/gedit-file.c:177 src/gedit-file.c:887
 #, c-format
 msgid "Loaded file '%s'"
-msgstr ""
+msgstr "נטען הקובץ '%s'"
 
 #: src/gedit-file.c:309 src/gedit-file.c:455
 #, c-format
 msgid "Saving file '%s'..."
-msgstr ""
+msgstr "שומר את הקובץ '%s'..."
 
 #: src/gedit-file.c:337 src/gedit-file.c:470
 msgid "The document has not been saved."
@@ -1988,6 +1998,9 @@ msgid ""
 "\n"
 "You will not be able to undo this operation."
 msgstr ""
+"האם ברצונך לחזור למסמך השמור '%s'?\n"
+"\n"
+"לא תוכל לבטל פעולה זו."
 
 #: src/gedit-file.c:638 src/gedit-ui.xml.h:99
 msgid "_Revert"
@@ -2000,7 +2013,7 @@ msgstr "משחזר קובץ '%s'..."
 
 #: src/gedit-file.c:685
 msgid "The document has not been reverted."
-msgstr ""
+msgstr "המסמך לא שוחזר."
 
 #: src/gedit-file.c:695
 #, c-format
@@ -2020,7 +2033,7 @@ msgstr "הקובץ \"%s\" איננו קיים. האם ברצונך ליצור א
 #: src/gedit-file.c:812
 #, c-format
 msgid "Loaded %i files"
-msgstr ""
+msgstr "נטענו %i קבצים"
 
 #: src/gedit-file.c:945
 msgid "Could not read data from stdin."
@@ -2038,7 +2051,7 @@ msgstr "ה_זז לחלון חדש"
 
 #: src/gedit-mdi.c:446
 msgid "Open a file."
-msgstr ""
+msgstr "פתח קובץ."
 
 #: src/gedit-mdi.c:1032
 #, c-format
@@ -2047,6 +2060,9 @@ msgid ""
 "\n"
 "Your changes will be lost if you don't save them."
 msgstr ""
+"האם ברצונך לשמור את השינויים שערכת למסמך \"%s\"?\n"
+"\n"
+"השינויים שלך יאבדו אם לא תשמור אותם."
 
 #: src/gedit-mdi.c:1037
 msgid "Do_n't save"
@@ -2071,7 +2087,7 @@ msgstr "(קריאה בלבד)"
 #: src/gedit-plugins-engine.c:362
 #, c-format
 msgid "Error, unable to open module file '%s'\n"
-msgstr ""
+msgstr "שגיאה, לא ניתן לפתוח קובץ מודול '%s'\n"
 
 #: src/gedit-plugins-engine.c:372
 #, c-format
@@ -2151,6 +2167,9 @@ msgid ""
 "\n"
 "%s,"
 msgstr ""
+"ארעה שגיאה בזמן ההדפסה.\n"
+"\n"
+"%s,"
 
 #: src/gedit-ui.xml.h:1
 msgid "About this application"
@@ -2174,19 +2193,19 @@ msgstr ""
 
 #: src/gedit-ui.xml.h:6
 msgid "Close"
-msgstr ""
+msgstr "סגור"
 
 #: src/gedit-ui.xml.h:7
 msgid "Close all open files"
-msgstr ""
+msgstr "סגור את כל הקבצים הפתוחים"
 
 #: src/gedit-ui.xml.h:8
 msgid "Close the current file"
-msgstr ""
+msgstr "סגור את הקובץ הנוכחי"
 
 #: src/gedit-ui.xml.h:9
 msgid "Configure the application"
-msgstr ""
+msgstr "הגדר את היישום"
 
 #: src/gedit-ui.xml.h:10
 msgid "Copy"
@@ -2194,11 +2213,11 @@ msgstr "העתק"
 
 #: src/gedit-ui.xml.h:11
 msgid "Copy the selection"
-msgstr ""
+msgstr "העתק את הבחירה"
 
 #: src/gedit-ui.xml.h:12
 msgid "Create a new document"
-msgstr ""
+msgstr "צור מסמך חדש"
 
 #: src/gedit-ui.xml.h:13
 msgid "Cu_t"
@@ -2206,11 +2225,11 @@ msgstr "_גזור"
 
 #: src/gedit-ui.xml.h:14
 msgid "Customize"
-msgstr ""
+msgstr "התאם אישית"
 
 #: src/gedit-ui.xml.h:15
 msgid "Customize toolbars"
-msgstr ""
+msgstr "התאם אישית את סרגל הכלים"
 
 #: src/gedit-ui.xml.h:16
 msgid "Cut"
@@ -2218,7 +2237,7 @@ msgstr "גזור"
 
 #: src/gedit-ui.xml.h:17
 msgid "Cut the selection"
-msgstr ""
+msgstr "גזור את הבחירה"
 
 #: src/gedit-ui.xml.h:18
 msgid "Delete"
@@ -2226,7 +2245,7 @@ msgstr "מחק"
 
 #: src/gedit-ui.xml.h:19
 msgid "Delete the selected text"
-msgstr ""
+msgstr "מחק את המלל הנבחר"
 
 #: src/gedit-ui.xml.h:20
 msgid "Dump XML"
@@ -2262,7 +2281,7 @@ msgstr "סרגל כלים ראשי"
 
 #: src/gedit-ui.xml.h:29
 msgid "Move the current document to a new window"
-msgstr ""
+msgstr "הזז את המסמך הנוכחי לחלון חדש"
 
 #: src/gedit-ui.xml.h:30
 msgid "New"
@@ -2282,15 +2301,15 @@ msgstr "פתח _מיקום..."
 
 #: src/gedit-ui.xml.h:35
 msgid "Open a file"
-msgstr ""
+msgstr "פתח קובץ"
 
 #: src/gedit-ui.xml.h:36
 msgid "Open a file from a specified location"
-msgstr ""
+msgstr "פתח קובץ ממיקום מסויים"
 
 #: src/gedit-ui.xml.h:37
 msgid "Open the gedit manual"
-msgstr ""
+msgstr "פתח את מדריך gedit"
 
 #: src/gedit-ui.xml.h:38
 msgid "Paste"
@@ -2298,7 +2317,7 @@ msgstr "הדבק"
 
 #: src/gedit-ui.xml.h:39
 msgid "Paste the clipboard"
-msgstr ""
+msgstr "הדבק מהלוח"
 
 #: src/gedit-ui.xml.h:40
 msgid "Pr_eferences"
@@ -2322,7 +2341,7 @@ msgstr "תצוגה מקדימה"
 
 #: src/gedit-ui.xml.h:46
 msgid "Print the current file"
-msgstr ""
+msgstr "הדפס את הקובץ הנוכחי"
 
 #: src/gedit-ui.xml.h:47
 msgid "Quit"
@@ -2330,7 +2349,7 @@ msgstr "יציאה"
 
 #: src/gedit-ui.xml.h:48
 msgid "Quit the program"
-msgstr ""
+msgstr "יציאה מהתוכנית"
 
 #: src/gedit-ui.xml.h:49
 msgid "Redo"
@@ -2342,7 +2361,7 @@ msgstr ""
 
 #: src/gedit-ui.xml.h:52
 msgid "Replace a string"
-msgstr ""
+msgstr "החלף מחרוזת"
 
 #: src/gedit-ui.xml.h:53
 msgid "Revert"
@@ -2350,7 +2369,7 @@ msgstr "שחזר"
 
 #: src/gedit-ui.xml.h:54
 msgid "Revert to a saved version of the file"
-msgstr ""
+msgstr "חזור לגירסה השמורה של הקובץ"
 
 #: src/gedit-ui.xml.h:56
 msgid "Save As"
@@ -2362,23 +2381,23 @@ msgstr "שמירה _בשם..."
 
 #: src/gedit-ui.xml.h:58
 msgid "Save all open files"
-msgstr ""
+msgstr "שמור את כל הקבצים הפתוחים"
 
 #: src/gedit-ui.xml.h:59
 msgid "Save the current file"
-msgstr ""
+msgstr "שמור את הקובץ הנוכחי"
 
 #: src/gedit-ui.xml.h:60
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "שמור את הקובץ הנוכחי עם שם אחר"
 
 #: src/gedit-ui.xml.h:61
 msgid "Search again for the same string"
-msgstr ""
+msgstr "חפש שוב בעבור אותה המחרוזת"
 
 #: src/gedit-ui.xml.h:62
 msgid "Search for a string"
-msgstr ""
+msgstr "חפש בעבור מחרוזת"
 
 #: src/gedit-ui.xml.h:63
 msgid "Select All"
@@ -2390,7 +2409,7 @@ msgstr "בחר _הכל"
 
 #: src/gedit-ui.xml.h:65
 msgid "Select the entire document"
-msgstr ""
+msgstr "בחר את כל המסמך"
 
 #: src/gedit-ui.xml.h:66
 msgid "Set toolbar button style according to desktop default"
@@ -2770,7 +2789,7 @@ msgstr ""
 #: src/gedit-utils.c:1300
 #, c-format
 msgid "The file \"%s\" already exists."
-msgstr ""
+msgstr "הקובץ \"%s\" כבר קיים."
 
 #: src/gedit-utils.c:1306
 #, c-format
@@ -2816,7 +2835,7 @@ msgstr ""
 #: src/gedit-utils.c:1344
 #, c-format
 msgid "Could not create the file \"%s\"."
-msgstr ""
+msgstr "לא ניתן ליצור את הקובץ \"%s\"."
 
 #.
 #. if (col == chars)
@@ -2831,11 +2850,11 @@ msgstr "  שורה %d, עמודה %d"
 
 #: src/gedit-view.c:1114
 msgid "  OVR"
-msgstr ""
+msgstr "  OVR"
 
 #: src/gedit-view.c:1116
 msgid "  INS"
-msgstr ""
+msgstr "  INS"
 
 #: src/gedit2.c:79
 msgid "Show utility debugging messages."
@@ -2911,7 +2930,7 @@ msgstr "סגור את חלון הפלט"
 
 #: src/gedit-output-window.c:371
 msgid "Copy selected lines"
-msgstr ""
+msgstr "העתק את השורות הנבחרות"
 
 #: src/gedit-output-window.c:391
 msgid "Clear the output window"
@@ -2929,27 +2948,27 @@ msgstr "בחר ק_ידוד אחד או יותר:"
 #: src/gedit-encodings.c:214 src/gedit-encodings.c:264
 #: src/gedit-encodings.c:289
 msgid "Western"
-msgstr ""
+msgstr "מערבי"
 
 #: src/gedit-encodings.c:149 src/gedit-encodings.c:216
 #: src/gedit-encodings.c:244 src/gedit-encodings.c:285
 msgid "Central European"
-msgstr ""
+msgstr "מרכז אירופה"
 
 #: src/gedit-encodings.c:151
 msgid "South European"
-msgstr ""
+msgstr "דרום אירופה"
 
 #: src/gedit-encodings.c:153 src/gedit-encodings.c:169
 #: src/gedit-encodings.c:299
 msgid "Baltic"
-msgstr ""
+msgstr "באלטית"
 
 #: src/gedit-encodings.c:155 src/gedit-encodings.c:218
 #: src/gedit-encodings.c:231 src/gedit-encodings.c:235
 #: src/gedit-encodings.c:248 src/gedit-encodings.c:287
 msgid "Cyrillic"
-msgstr ""
+msgstr "קירילית"
 
 #: src/gedit-encodings.c:157 src/gedit-encodings.c:224
 #: src/gedit-encodings.c:242 src/gedit-encodings.c:297
@@ -2973,19 +2992,19 @@ msgstr "עברית"
 #: src/gedit-encodings.c:165 src/gedit-encodings.c:220
 #: src/gedit-encodings.c:268 src/gedit-encodings.c:293
 msgid "Turkish"
-msgstr ""
+msgstr "טורקית"
 
 #: src/gedit-encodings.c:167
 msgid "Nordic"
-msgstr ""
+msgstr "נורדית"
 
 #: src/gedit-encodings.c:171
 msgid "Celtic"
-msgstr ""
+msgstr "קלטית"
 
 #: src/gedit-encodings.c:175 src/gedit-encodings.c:266
 msgid "Romanian"
-msgstr ""
+msgstr "רומנית"
 
 #: src/gedit-encodings.c:178 src/gedit-encodings.c:180
 #: src/gedit-encodings.c:182 src/gedit-encodings.c:184
@@ -3003,7 +3022,7 @@ msgstr "סינית מסורתית"
 
 #: src/gedit-encodings.c:193
 msgid "Cyrillic/Russian"
-msgstr ""
+msgstr "קירילית/רוסית"
 
 #: src/gedit-encodings.c:196 src/gedit-encodings.c:227
 #: src/gedit-encodings.c:274
@@ -3018,15 +3037,15 @@ msgstr "קוריאנית"
 #: src/gedit-encodings.c:203 src/gedit-encodings.c:205
 #: src/gedit-encodings.c:207 src/gedit-encodings.c:211
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "סינית פשוטה"
 
 #: src/gedit-encodings.c:209
 msgid "Georgian"
-msgstr ""
+msgstr "גרוזית"
 
 #: src/gedit-encodings.c:237 src/gedit-encodings.c:270
 msgid "Cyrillic/Ukrainian"
-msgstr ""
+msgstr "קירילית/אוקראיינית"
 
 #: src/gedit-encodings.c:246
 msgid "Croatian"
@@ -3050,7 +3069,7 @@ msgstr ""
 
 #: src/gedit-encodings.c:262
 msgid "Icelandic"
-msgstr ""
+msgstr "איסלנדית"
 
 #: src/gedit-encodings.c:276 src/gedit-encodings.c:282
 #: src/gedit-encodings.c:301
@@ -3059,7 +3078,7 @@ msgstr "ויאטנמית"
 
 #: src/gedit-encodings.c:278
 msgid "Thai"
-msgstr ""
+msgstr "תאי"
 
 #: src/recent-files/egg-recent-vfs-utils.c:90
 msgid " (invalid Unicode)"

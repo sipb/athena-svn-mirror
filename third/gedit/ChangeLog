@@ -1,3 +1,11 @@
+2003-02-04  Paolo Maggi <paolo.maggi@polito.it>
+
+	* configure.in: bump version to 2.2.0.1,
+
+	* README: bump version to 2.2.0.1
+
+	* NEW: updated
+
 2003-01-27  Paolo Maggi <paolo.maggi@polito.it>
 
 	* configure.in: bump version to 2.2.0,

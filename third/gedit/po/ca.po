@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit 2.2.0\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2003-01-23 14:46+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"

@@ -28,7 +28,8 @@
   <oaf_attribute name="name-pl" type="string" value="generator automatyzacji programu gedit"/>
   <oaf_attribute name="name-pt" type="string" value="fÃ¡brica de automaÃ§Ã£o gedit"/>
   <oaf_attribute name="name-pt_BR" type="string" value="fÃ¡brica de automaÃ§Ã£o do gedit"/>
-  <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° gedit"/>
+  <oaf_attribute name="name-ro" type="string" value="uzina gedit de automatizare"/>
+  <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð¿ÑÐ¾Ð³ÑÐ°Ð¼Ð¼Ñ &quot;gedit&quot;"/>
   <oaf_attribute name="name-sk" type="string" value="vytvÃ¡racie rozhranie pre gedit automation"/>
   <oaf_attribute name="name-sl" type="string" value="tovarna samodejnosti gedit"/>
   <oaf_attribute name="name-sv" type="string" value="gedit-automatikfabrik"/>
@@ -72,7 +73,7 @@
   <oaf_attribute name="name-pt" type="string" value="aplicaÃ§Ã£o gedit"/>
   <oaf_attribute name="name-pt_BR" type="string" value="aplicaÃ§Ã£o gedit"/>
   <oaf_attribute name="name-ro" type="string" value="aplicaÅ£ia gedit"/>
-  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ gedit"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ &quot;gedit&quot;"/>
   <oaf_attribute name="name-sk" type="string" value="aplikÃ¡cia gedit"/>
   <oaf_attribute name="name-sl" type="string" value="program gedit"/>
   <oaf_attribute name="name-sv" type="string" value="gedit-program"/>

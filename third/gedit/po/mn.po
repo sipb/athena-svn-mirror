@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit.HEAD.mn\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2003-01-21 06:31+0100\n"
 "Last-Translator: Sanlig Badral <badral@chinggis.com>\n"
 "Language-Team: Mongolian <mn@li.org>\n"

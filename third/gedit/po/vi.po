@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit for gnome v.2.1.x\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2003-01-19 20:07+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: Gnome-Vi <gnomevi-list@lists.sourceforge.net>\n"

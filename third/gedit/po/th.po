@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: glib\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2002-12-30 10:20-0700\n"
 "Last-Translator: not yet assigned\n"
 "Language-Team: Thai <gnome-th-devel@lists.sourceforge.net>\n"
