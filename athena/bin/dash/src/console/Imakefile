@@ -18,7 +18,7 @@
 
 CONSOLE		=	console
 
-#ifdef MacIIArchitecture
+#if defined(MacIIArchitecture)
 M_LIB		=	-lmalloc
 #else
 M_LIB		=
@@ -30,10 +30,17 @@ OBJS		=	console.o
 XJLIB		=	../lib/libXj.a
 C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
 
-#ifdef RtArchitecture
-DEFINES		=	-D_BSD -D_BSD_INCLUDES -DAIXV=12
+#if defined(HasPutenv)
+PUTENV_DEF      =       -DHAS_PUTENV
 #else
-DEFINES		=
+PUTENV_DEF      =
+#endif
+
+#if defined(AIXArchitecture)
+DEFINES         =       ${PUTENV_DEF} \
+                        -D_BSD -D_BSD_INCLUDES -DAIX_ARCH
+#else
+DEFINES         =       ${PUTENV_DEF}
 #endif
 
 INCLUDES	=	-I.. ${LOCAL_INCLUDES}

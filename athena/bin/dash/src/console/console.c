@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.3 1993-07-02 02:57:42 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.4 1993-07-02 04:30:54 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -525,7 +525,7 @@ int input(fd, pfd)
   return 0;
 }
 
-#if defined(AIXArchitecture)
+#if defined(AIX_ARCH)
 void sighandler(sig)		/* broken header files under aix... */
      int sig;
 #else
@@ -670,7 +670,7 @@ main(argc, argv)
   (void) signal(SIGUSR1, sighandler);
   (void) signal(SIGUSR2, sighandler);
 
-#if (HasPutenv)
+#if defined(HAS_PUTENV)
 /*
  *  setenv() doesn't exist on some systems...  it's putenv instead.
  */
