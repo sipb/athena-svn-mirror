@@ -42,14 +42,10 @@ while ( $#add_opts > 0 )
       shift add_opts
 
     default:
-      set add_attargs
-      while ( $#add_opts > 0 )
-        if ( $add_opts[1] =~ -* ) then
-          set add_attargs = ( $add_attargs $add_opts[1] )
-          shift add_opts
-        else
-        endif
-      end
+      if ( $#add_opts ) then
+        set add_attach = "$add_opts"
+        set add_opts=
+      endif
   endsw
   shift add_opts
 
