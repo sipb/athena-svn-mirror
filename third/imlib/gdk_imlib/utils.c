@@ -1676,11 +1676,15 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
 	}
       else if (strncmp(pp, "%J", 3) == 0)
 	{
+	  if (!*DJPEG_PROG)
+	    goto oops;
 	  if ((vec[vn] = strdup(DJPEG_PROG)) == NULL)
 	    break;
 	}
       else if (strncmp(pp, "%H", 3) == 0)
 	{
+	  if (!*CJPEG_PROG)
+	    goto oops;
 	  if ((vec[vn] = strdup(CJPEG_PROG)) == NULL)
 	    break;
 	}
