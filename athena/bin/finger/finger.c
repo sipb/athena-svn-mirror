@@ -4,9 +4,16 @@
  * "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
- *	$Author: ambar $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.7 1987-11-17 14:28:36 ambar Exp $
+ *	$Author: shanzer $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.8 1989-01-23 21:14:45 shanzer Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.8  89/01/17  09:46:34  jtkohl
+ * Fix zephyr stuff.
+ * 
+ * Revision 1.7  87/11/17  14:28:36  ambar
+ * buggy call to strncmp caused "last login" info to occasionally match
+ * other users.
+ * 
  * Revision 1.6  87/08/27  16:57:12  ambar
  * zephyrisation now works.
  * 
@@ -24,7 +31,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.7 1987-11-17 14:28:36 ambar Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.8 1989-01-23 21:14:45 shanzer Exp $";
 
 #endif lint
 
@@ -100,7 +107,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <netinet/in.h>
 #include <netdb.h>
 #include <hesiod.h>
-#include "zephyr.h"
+#include <zephyr/zephyr.h>
 #include "mit-copyright.h"
 
 #define MAXTTYS 256
@@ -142,6 +149,7 @@ struct person {			/* one for each person fingered */
 	char writable;		/* tty is writable */
 	int original;		/* this is not a duplicate entry */
 	struct person *link;	/* link to next person */
+	int zlocation;		/* found via Zephyr */
 };
 
 char LASTLOG[] = "/usr/adm/lastlog";	/* last login info */
@@ -168,8 +176,8 @@ ZLocations_t location;		/* holds Zephyr locations */
 int znloc = NULL;		/* number of locations returned via a Zephyr
 				 * lookup */
 int unshort;
-int lf;				/* LASTLOG file descriptor */
-int lw;				/* ACCTLOG file descriptor */
+int lf = -1;			/* LASTLOG file descriptor */
+int lw = -1;			/* ACCTLOG file descriptor */
 
 /* !#$%!@#$! Bezerkeley non-initializations !!! */
 struct person *person1 = (struct person *) NULL;	/* list of people */
@@ -270,10 +278,14 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
+#ifdef ULTRIX30
+		setpwent();
+#else
 		extern _pw_stayopen;
 
 		setpwent();
 		_pw_stayopen = 1;
+#endif
 		fwopen();
 	}
 	while (read(uf, (char *) &user, sizeof user) == sizeof user) {
@@ -295,6 +307,7 @@ doall()
 		p->loginat = user.ut_time;
 		p->pwd = 0;
 		p->loggedin = 1;
+		p->zlocation = 0;
 		if (unquick && (pw = getpwnam(name))) {
 			p->pwd = pwdcopy(pw);
 			decode(p);
@@ -361,7 +374,7 @@ donames(argv)
 		p->loggedin = q->loggedin = 0;
 		p->writable = q->writable = '\0';
 		p->original = q->original = 1;
-
+		p->zlocation = q->zlocation = 0;
 	}
 	if (person1 == 0)
 		return;
@@ -373,9 +386,11 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
+#ifndef ULTRIX30
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
+#endif
 			for (p = person1; p != 0; p = p->link)
 				if (pw = getpwnam(p->name))
 					p->pwd = pwdcopy(pw);
@@ -479,6 +494,8 @@ initialization");
 ZLocateUser");
 				break;
 			}
+			q->zlocation = 1;
+			q->loggedin = 0;
 			for (i = 1; i >= znloc; i++) {
 				if ((state = ZGetLocations(&location, &numloc))
 				    != 0)
@@ -489,10 +506,11 @@ ZLocateUser");
 					(void) strcpy(q->tty,
 						      location.tty);
 					q->loggedin = 1;
-					q->writable = 1;	/* if we can zlocate
-								 * them, we can zwrite
-								 * them -- if they're
-								 * subscribing. */
+					/* if we can zlocate them, we can
+					 * zwrite them -- if they're
+					 * subscribing. */
+					q->writable = 1;
+
 				}
 			}
 		}
@@ -790,7 +808,14 @@ personprint(pers)
 		if (*pers->pwd->pw_shell)
 			printf("\tShell: %-s", pers->pwd->pw_shell);
 	}
-	if (pers->loggedin) {
+	if (pers->zlocation) {
+		if (pers->loggedin)
+			printf("\nOn since %s on %s on host %s",
+			       pers->logintime, pers->tty, pers->host);
+		else
+			printf("\nNot currently locatable.");
+	}
+	else if (pers->loggedin) {
 		if (*pers->host) {
 			if (pers->logintime) {
 				printf("\nOn since %s on %s from %s",
@@ -1015,7 +1040,7 @@ decode(pers)
 	}
 	if (pers->loggedin)
 		findidle(pers);
-	else
+	else if (!pers->zlocation)
 		findwhen(pers);
 }
 
@@ -1030,7 +1055,7 @@ fwopen()
 	if ((lf = open(LASTLOG, 0)) < 0)
 		fprintf(stderr, "finger: %s open error\n", LASTLOG);
 	if ((lw = open(ACCTLOG, 0)) < 0)
-		fprintf(stderr, "finger: %s open error\n", LASTLOG);
+		fprintf(stderr, "finger: %s open error\n", ACCTLOG);
 }
 
 findwhen(pers)
@@ -1120,10 +1145,14 @@ fudged:
 
 fwclose()
 {
-	if (lf >= 0)
+	if (lf >= 0) {
 		(void) close(lf);
-	if (lw >= 0)
+		lf = -1;
+	}
+	if (lw >= 0) {
 		(void) close(lw);
+		lw = -1;
+	}
 }
 
 /*
@@ -1139,18 +1168,23 @@ findidle(pers)
 
 #define TTYLEN 5
 
-	(void) strcpy(buffer + TTYLEN, pers->tty);
-	buffer[TTYLEN + LMAX] = 0;
-	if (stat(buffer, &ttystatus) < 0) {
-		fprintf(stderr, "finger: Can't stat %s\n", buffer);
-		exit(4);
-	}
-	(void) time(&t);
-	if (t < ttystatus.st_atime)
+	if (!pers->zlocation) {
+		(void) strcpy(buffer + TTYLEN, pers->tty);
+		buffer[TTYLEN + LMAX] = 0;
+		if (stat(buffer, &ttystatus) < 0) {
+			fprintf(stderr, "finger: Can't stat %s\n", buffer);
+			exit(4);
+		}
+		(void) time(&t);
+		if (t < ttystatus.st_atime)
+			pers->idletime = 0L;
+		else
+			pers->idletime = t - ttystatus.st_atime;
+		pers->writable = (ttystatus.st_mode & TALKABLE) == TALKABLE;
+	} else {
 		pers->idletime = 0L;
-	else
-		pers->idletime = t - ttystatus.st_atime;
-	pers->writable = (ttystatus.st_mode & TALKABLE) == TALKABLE;
+		pers->writable = 1;
+	}
 }
 
 /*
