@@ -1,6 +1,6 @@
 #ifndef lint
 static char     rcsid[] =
-"$Id: t_getline.c,v 1.2 1992-03-16 16:31:15 lwvanels Exp $";
+"$Id: t_getline.c,v 1.3 1992-03-30 19:28:23 lwvanels Exp $";
 #endif
 
 /* 
@@ -98,6 +98,7 @@ static char *copyright = "Copyright (C) 1991, Chris Thewalt";
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <signal.h>
 
 extern int      isatty();	
 
@@ -147,7 +148,7 @@ extern void     _exit();
 
 extern int      read();
 #include <sys/ioctl.h>
-#ifdef _POSIX_SOURCE
+#ifdef TERMIO
 #include <termio.h>
 struct termio   tty, old_tty;
 #else
@@ -160,7 +161,13 @@ void
 gl_char_init()
 /* turn off input echo */
 {
-#ifdef _POSIX_SOURCE
+#if defined(ultrix)
+/* This grossness necessary because ultrix loses terminal modes after a */
+/* stop/continue */
+  signal(SIGCONT,gl_char_init);
+#endif
+
+#ifdef TERMIO
     ioctl(0, TCGETA, &old_tty);
     tty = old_tty;
     tty.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
@@ -180,10 +187,14 @@ void
 gl_char_cleanup()
 /* undo effects of gl_char_init, as necessary */
 {
-#ifdef _POSIX_SOURCE
+#ifdef TERMIO
     ioctl(0, TCSETA, &old_tty);
 #else
     ioctl(0, TIOCSETN, &old_tty);
+#endif
+
+#if defined(ultrix)
+    signal(SIGCONT,SIG_DFL);
 #endif
 }
 
