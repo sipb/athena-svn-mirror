@@ -126,8 +126,8 @@ ALputUtmp(ALsession sess)
    *     stdin, stripped of /dev/.
    *   The user field is lifted from the session structure.
    *   The type field is set to USER_PROCESS.
-   *   The id field is set to "XX" if the device was ttyXX,
-   *     "  co" if console.
+   *   The id field is set to "XX" if the device was ttyXX, otherwise
+   *     set to the first two characters.
    *
    * It's a good idea to set a plausible id all the time just in
    * case we're intending to overwrite a particular line that isn't
@@ -160,17 +160,16 @@ ALputUtmp(ALsession sess)
 
   if (!ALutIsSet(sess, ALutID))
     {
-      if (!strcmp("console", ALut_line(sess)))
+      if (!strncmp("tty", ALut_line(sess), 3))
 	{
-	  strncpy(ALut_id(sess), "co", sizeof(ALut_id(sess)));
+	  strncpy(ALut_id(sess), ALut_line(sess)+3, sizeof(ALut_id(sess)));
 	  ALutFlagSet(sess, ALutID);
 	}
       else
-	if (!strncmp("tty", ALut_line(sess), 3))
-	  {
-	    strncpy(ALut_id(sess), ALut_line(sess)+3, sizeof(ALut_id(sess)));
-	    ALutFlagSet(sess, ALutID);
-	  }
+	{
+	  strncpy(ALut_id(sess), "", sizeof(ALut_id(sess)));
+	  strncpy(ALut_id(sess), ALut_line(sess), 2);
+	}
     }
 #endif
 
