@@ -32,6 +32,13 @@ VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 OPTLIBS=-lbsd
 #endif
 
+#ifdef SOLARIS
+OPTLIBS=-lucb
+
+SpecialObject(ln01filter.o,ln01filter.c,-I/usr/ucbinclude)
+SpecialObject(ln01raw.o,ln01raw.c,-I/usr/ucbinclude)
+#endif
+
 printer: ${PRINTER}
 
 #ifdef Varian
