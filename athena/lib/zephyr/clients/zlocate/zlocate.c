@@ -16,7 +16,7 @@
 #include <sys/socket.h>
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zlocate_c[] = "$Id: zlocate.c,v 1.11 1993-10-16 21:51:38 probe Exp $";
+static char rcsid_zlocate_c[] = "$Id: zlocate.c,v 1.12 1993-11-19 15:28:44 probe Exp $";
 #endif
 
 int numusers=0, numleft=0, parallel=0, oneline=0;
@@ -128,7 +128,7 @@ main(argc,argv)
 	if (argv[loc][0] == '-') continue;
 
 	(void) strcpy(user,argv[loc]);
-	if (!index(user,'@')) {
+	if (!strchr(user,'@')) {
 	    (void) strcat(user,"@");
 	    (void) strcat(user,ZGetRealm());
 	} 
