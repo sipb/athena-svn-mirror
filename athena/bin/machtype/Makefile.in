@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-09-22 00:26:48 danw Exp $
+# $Id: Makefile.in,v 1.2 2000-04-24 15:08:39 rbasch Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -9,6 +9,7 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+lbindir=@lbindir@
 mandir=@mandir@
 
 CC=@CC@
@@ -34,10 +35,10 @@ machtype: ${OBJS}
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${INSTALL_PROGRAM} ${INSTALLFLAGS} ${TARGET} \
-		${DESTDIR}${bindir}/machtype
+		${DESTDIR}${lbindir}/machtype
 	${INSTALL} -m 444 ${srcdir}/machtype.1 ${DESTDIR}${mandir}/man1
 
 clean:
