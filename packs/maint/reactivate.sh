@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.41 1999-04-02 16:09:36 rbasch Exp $
+# $Id: reactivate.sh,v 1.42 1999-06-01 20:27:58 mwhitson Exp $
 
 trap "" 1 15
 
@@ -93,6 +93,7 @@ if [ "$PUBLIC" = true ]; then
 		chmod 600 /etc/shadow.local
 		chown root /etc/shadow.local
 	fi
+	rm -rf /etc/athena/access >/dev/null 2>&1
 fi
 
 # Restore password and group files
