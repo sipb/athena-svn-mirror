@@ -1,14 +1,18 @@
 # Danish translation of gnome-terminal.
 # Copyright (C) 2002, 03, 04 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-terminal package.
 # Ole Laursen <olau@hardworking.dk>, 2002, 03, 04.
+# Martin Willemoes Hansen <mwh@sysrq.dk>, 2004.
+#
+# Husk at tilføje dig i credit-listen (besked id "translator_credits")
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-03-03 19:05+0100\n"
-"Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-11-23 11:23+0100\n"
+"Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -357,9 +361,8 @@ msgid "Goes before initial title"
 msgstr "Står før starttitel"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Afslut terminalen"
+msgstr "Hold terminalen åben"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -617,9 +620,8 @@ msgid "_Transparent background"
 msgstr "_Gennemsigtig baggrund"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Opdatér utmp/wtmp-opføringer når kommando køres"
+msgstr "_Opdatér log ind-opførsler når kommando køres"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -796,13 +798,12 @@ msgstr ""
 "have en tankestreg foran)."
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
 msgstr ""
-"Om utmp/wtmp vil blive opdateret når kommandoen inden i terminalen bliver "
-"udført."
+"Om log ind-opførslerne utmp/wtmp i systemet vil blive opdateret når "
+"kommandoen inden i terminalen bliver udført."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1508,11 +1509,12 @@ msgid ""
 "Whether to ask for confirmation when closing a terminal window which has "
 "more than one open tab."
 msgstr ""
+"Om der skal spørges efter bekræftelsen ved lukning af et terminalvindue med "
+"mere end ét åbent faneblad."
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "Om utmp/wtmp skal opdateres ved kørsel af terminalkommando"
+msgstr "Om der skal spørges efter bekræftelse ved lukning af terminalvinduer"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
@@ -1558,9 +1560,8 @@ msgid "Whether to silence terminal bell"
 msgstr "Om terminalbippet skal være stumt"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "Om utmp/wtmp skal opdateres ved kørsel af terminalkommando"
+msgstr "Om log ind-opførsler skal opdateres ved kørsel af terminalkommando"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1570,13 +1571,15 @@ msgstr "Om farverne fra temaet skal benyttes til terminalkontrollen"
 msgid "Whether to use the system font"
 msgstr "Om systemskrifttypen skal benyttes"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-15]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1894,7 +1897,7 @@ msgstr ""
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Genvejstasten \"%s\" er allerede bundet til handlingen \"%s\""
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -2200,48 +2203,43 @@ msgstr "Vis menu_linje"
 msgid "_Full Screen"
 msgstr "_Fuldskærm"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "_Normal størrelse"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Skift _profil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "Skift _titel..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Sæt _tegnkodning"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Nulstil"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Nulstil og r_yd"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "_Foregående fane"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "_Næste fane"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Indhold"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Om"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2249,7 +2247,7 @@ msgstr ""
 "Der opstod en fejl under indlæsning af konfigurationsværdi for om der skal "
 "bruges tastaturgenveje. %s\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2258,54 +2256,60 @@ msgstr ""
 "Der opstod en fejl under bestilling af underrettelser om "
 "konfigurationsændringer for terminalvindue. %s\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Fil"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Redigér"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Vis"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminal"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "Fane_blade"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Hjælp"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
+"Dette vindue har et faneblad åbent. Lukning af vinduet vil lukke det."
 msgstr[1] ""
+"Dette vindue har %d faneblade åbent. Lukning af vinduet vil lukke alle "
+"fanebladene"
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Luk faneblad"
+msgstr "Luk alle faneblade?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Luk faneblad"
+msgstr "Luk alle faneblade"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
-msgstr "Ole Laursen <olau@hardworking.dk>"
+msgstr ""
+"Martin Willemoes Hansen\n"
+"Ole Laursen\n"
+"\n"
+"Dansk-gruppen <dansk@klid.dk>\n"
+"Mere info: http://www.klid.dk/dansk/"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "Gnome-terminal"
 
@@ -2737,6 +2741,18 @@ msgstr ""
 #: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Det mislykkedes at skaffe terminalserveren fra aktiveringsserveren\n"
+
+#~ msgid ""
+#~ "<!-- Translators: please note this is has to be a list of valid encodings "
+#~ "(which are to be taken from the list in src/encoding.c) It has to include "
+#~ "UTF-8 and the word 'current', which is not to be translated. This is "
+#~ "provided for costumization of the default encoding menu; see bug 144810 "
+#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
+#~ "current]"
+#~ msgstr "[UTF-8,current,ISO-8859-15]"
+
+#~ msgid "_Normal Size"
+#~ msgstr "_Normal størrelse"
 
 #~ msgid "There was an error creating the child process for this terminal: %s"
 #~ msgstr ""

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal 2.5.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-02-25 00:45+0900\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-10-06 12:28+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -254,7 +254,7 @@ msgstr "ASCII DEL"
 
 #: src/gnome-terminal.glade2.h:14
 msgid "A_vailable encodings:"
-msgstr "사용 가능한 인코딩:"
+msgstr "사용 가능한 인코딩(_V):"
 
 #: src/gnome-terminal.glade2.h:15
 msgid "Add or Remove Terminal Encodings"
@@ -310,7 +310,7 @@ msgstr "Control-H"
 
 #: src/gnome-terminal.glade2.h:28
 msgid "Cursor blin_ks"
-msgstr "커서 깜박임(_K)"
+msgstr "커서 깜박이기(_K)"
 
 #: src/gnome-terminal.glade2.h:29
 msgid "Custom co_mmand:"
@@ -339,7 +339,7 @@ msgstr "이스케이프 문자열"
 
 #: src/gnome-terminal.glade2.h:36
 msgid "Exit the terminal"
-msgstr "터미널에서 나갑니다"
+msgstr "터미널 끝내기"
 
 #: src/gnome-terminal.glade2.h:37
 msgid "General"
@@ -347,24 +347,23 @@ msgstr "일반"
 
 #: src/gnome-terminal.glade2.h:38
 msgid "Goes after initial title"
-msgstr "초기 제목 뒤에 붙임"
+msgstr "처음 제목 뒤에 붙이기"
 
 #: src/gnome-terminal.glade2.h:39
 msgid "Goes before initial title"
-msgstr "초기 제목 앞에 붙임"
+msgstr "처음 제목 앞에 붙이기"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "터미널에서 나갑니다"
+msgstr "터미널을 열어 둔 채로 놔 둡니다"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
-msgstr "초기 제목(_T):"
+msgstr "처음 제목(_T):"
 
 #: src/gnome-terminal.glade2.h:42
 msgid "Isn't displayed"
-msgstr "보여주지 않음"
+msgstr "표시하지 않기"
 
 #: src/gnome-terminal.glade2.h:43
 msgid "Keyboard Shortcuts"
@@ -376,11 +375,11 @@ msgstr "새 프로파일"
 
 #: src/gnome-terminal.glade2.h:45
 msgid "On the left side"
-msgstr "왼쪽에 둡니다"
+msgstr "왼쪽에 놓기"
 
 #: src/gnome-terminal.glade2.h:46
 msgid "On the right side"
-msgstr "오른쪽에 둡니다"
+msgstr "오른쪽에 놓기"
 
 #: src/gnome-terminal.glade2.h:47
 msgid "Open a dialog to specify the color"
@@ -468,7 +467,7 @@ msgstr "프로파일 이름(_N):"
 
 #: src/gnome-terminal.glade2.h:68
 msgid "Replaces initial title"
-msgstr "초기 제목과 바꿈"
+msgstr "처음 제목 바꾸기"
 
 #: src/gnome-terminal.glade2.h:69
 msgid "Restart the command"
@@ -484,7 +483,7 @@ msgstr "출력이 있으면 스크롤(_R)"
 
 #: src/gnome-terminal.glade2.h:72
 msgid "Scr_ollback:"
-msgstr "스크롤 공간(_O):"
+msgstr "스크롤 범위(_O):"
 
 #: src/gnome-terminal.glade2.h:73
 msgid "Scroll on _keystroke"
@@ -500,7 +499,7 @@ msgstr "단어 단위 선택 문자(_W):"
 
 #: src/gnome-terminal.glade2.h:76
 msgid "Show _menubar by default in new terminals"
-msgstr "기본값으로 새 터미널에서 메뉴 모음 보임(_M)"
+msgstr "새 터미널에서 처음에 메뉴 모음 표시(_M)"
 
 #: src/gnome-terminal.glade2.h:77
 msgid "Terminal _bell"
@@ -508,7 +507,7 @@ msgstr "터미널 종소리(_B)"
 
 #: src/gnome-terminal.glade2.h:78
 msgid "Terminal applications have these colors available to them."
-msgstr "터미널 프로그램에서 이 색을 사용할 수 있도록 합니다."
+msgstr "터미널 프로그램에서 다음 색을 사용할 수 있습니다."
 
 #: src/gnome-terminal.glade2.h:79
 msgid ""
@@ -521,21 +520,21 @@ msgid ""
 "They are only here to allow you to work around certain applications\n"
 "and operating systems that expect different terminal behavior."
 msgstr ""
-"이 옵션은 몇몇 응용 프로그램에서 올바르지 않게 작동할 수 있습니다.\n"
-"이 옵션은 터미널 동작을 다르게 이용하는 몇몇 운영체제에서, 그리고 몇몇 \n"
-"프로그램에서 올바르게 동작할 수 있도록 만들었을 뿐입니다."
+"다음 옵션을 켜면 일부 프로그램이 제대로 작동하지 않을 수도 있습니다.\n"
+"다음 옵션은 터미널 기능을 다르게 이용하는 일부 프로그램과 운영체제의\n"
+"문제를 피해가는 기능일 뿐입니다."
 
 #: src/gnome-terminal.glade2.h:83
 msgid "Title and Command"
-msgstr "제목과 명령"
+msgstr "제목 및 명령"
 
 #: src/gnome-terminal.glade2.h:84
 msgid "Use colors from s_ystem theme"
-msgstr "시스템 테마의 색 사용(_Y)"
+msgstr "시스템 테마 색 사용(_Y)"
 
 #: src/gnome-terminal.glade2.h:85
 msgid "When command _exits:"
-msgstr "명령을 마칠때(_E):"
+msgstr "명령을 마칠 때(_E):"
 
 #: src/gnome-terminal.glade2.h:86
 msgid "_Allow bold text"
@@ -547,7 +546,7 @@ msgstr "바탕색(_B):"
 
 #: src/gnome-terminal.glade2.h:88
 msgid "_Background image"
-msgstr "바탕그림(_B)"
+msgstr "바탕 그림(_B)"
 
 #: src/gnome-terminal.glade2.h:89
 msgid "_Backspace key generates:"
@@ -567,7 +566,7 @@ msgstr "<Delete> 키(_D):"
 
 #: src/gnome-terminal.glade2.h:93
 msgid "_Dynamically-set title:"
-msgstr "동적으로 설정되는 제목(_D):"
+msgstr "동적으로 설정하는 제목(_D):"
 
 #: src/gnome-terminal.glade2.h:94
 msgid "_Image file:"
@@ -591,7 +590,7 @@ msgstr "로그인 쉘로 명령 실행(_R)"
 
 #: src/gnome-terminal.glade2.h:99
 msgid "_Scrollbar is:"
-msgstr "스크롤 막대를(_S):"
+msgstr "스크롤 막대(_S):"
 
 #: src/gnome-terminal.glade2.h:100
 msgid "_Shade transparent or image background:"
@@ -610,9 +609,8 @@ msgid "_Transparent background"
 msgstr "투명 바탕(_T)"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "명령이 실행되면 utmp/wtmp 바꿈(_U)"
+msgstr "명령을 실행하면 로그인 기록을 업데이트(_U)"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -784,11 +782,11 @@ msgstr ""
 "이 붙습니다.)"
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
-msgstr "참이면, 터미널에서 명령어를 실행할 때 utmp/wtmp를 업데이트합니다."
+msgstr ""
+"참이면, 터미널에서 명령어를 실행할 때 로그인 기록 utmp/wtmp를 업데이트합니다."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1454,11 +1452,11 @@ msgid ""
 "Whether to ask for confirmation when closing a terminal window which has "
 "more than one open tab."
 msgstr ""
+"한 개 이상의 탭이 들어 있는 터미널 창을 닫을 때 확인 질문을 할 지 여부."
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "터미널 명령어를 실행할 때 utmp/wtmp를 업데이트할 지 여부"
+msgstr "터미널 창을 닫을 때 확인 질문을 할 지 여부"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
@@ -1500,28 +1498,29 @@ msgstr "새 창/탭에서 메뉴 모음을 보일 지 여부"
 
 #: src/gnome-terminal.schemas.in.h:133
 msgid "Whether to silence terminal bell"
-msgstr "터미널 벨소리를 내지 않을 지 여부"
+msgstr "터미널 종소리를 내지 않을 지 여부"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "터미널 명령어를 실행할 때 utmp/wtmp를 업데이트할 지 여부"
+msgstr "터미널 명령어를 실행할 때 로그인 기록을 업데이트할 지 여부"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
-msgstr "터미널 위젯에 대해 테마의 색을 사용할 지 여부."
+msgstr "터미널 위젯에 대해 테마 색을 사용할 지 여부."
 
 #: src/gnome-terminal.schemas.in.h:136
 msgid "Whether to use the system font"
 msgstr "시스템 글꼴을 사용할 지 여부"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,EUC-KR,current]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1658,7 +1657,7 @@ msgstr "붙여 넣기"
 
 #: src/terminal-accels.c:97
 msgid "Hide and Show menubar"
-msgstr "메뉴 모음 숨김/보임"
+msgstr "메뉴 모음 숨기기/보기"
 
 #: src/terminal-accels.c:99
 msgid "Full Screen"
@@ -1829,7 +1828,7 @@ msgstr ""
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "바로가기 키 \"%s\" 키는 이미 \"%s\" 동작에 연결되어 있습니다"
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -1878,13 +1877,13 @@ msgstr "터미널 프로파일 \"%2$s\"의 아이콘 \"%1$s\" 읽기 실패: %3$
 #, c-format
 msgid ""
 "Could not find a background image called \"%s\" for terminal profile \"%s\"\n"
-msgstr "터미널 프로파일 \"%2$s\"의 바탕그림 \"%1$s\"을(를) 찾을 수 없습니다\n"
+msgstr "터미널 프로파일 \"%2$s\"의 바탕 그림 \"%1$s\"을(를) 찾을 수 없습니다\n"
 
 #: src/terminal-profile.c:1207
 #, c-format
 msgid ""
 "Failed to load background image \"%s\" for terminal profile \"%s\": %s\n"
-msgstr "터미널 프로파일 \"%2$s\"의 바탕그림 \"%1$s\" 읽기 실패: %3$s\n"
+msgstr "터미널 프로파일 \"%2$s\"의 바탕 그림 \"%1$s\" 읽기 실패: %3$s\n"
 
 #: src/terminal-profile.c:1861
 #, c-format
@@ -2015,7 +2014,7 @@ msgstr "현재 프로파일 편집(_E)..."
 
 #: src/terminal-screen.c:1589
 msgid "Show _Menubar"
-msgstr "메뉴 모음 보임(_M)"
+msgstr "메뉴 모음 보기(_M)"
 
 #: src/terminal-screen.c:1596
 msgid "Secure _Keyboard"
@@ -2117,116 +2116,109 @@ msgstr "현재 프로파일(_U)..."
 #. * it won't be seen, of course, because the menubar will be then hidden.
 #: src/terminal-window.c:902
 msgid "Show Menu_bar"
-msgstr "메뉴 모음 보임(_B)"
+msgstr "메뉴 모음 보기(_B)"
 
 #: src/terminal-window.c:906
 msgid "_Full Screen"
 msgstr "전체 화면(_F)"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "보통 크기(_N)"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "프로파일 바꾸기(_P)"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "제목 설정(_S)..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "글자 코딩(_C)"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "리셋(_R)"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "리셋하고 비움(_L)"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "이전 탭(_P)"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "다음 탭(_N)"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "차례(_C)"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "정보(_A)"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
 msgstr "mnemonics을 사용하기 위해 설정 값을 읽는 중 오류가 생겼습니다. (%s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
 "configuration changes. (%s)\n"
 msgstr "터미널 창의 설정 바뀜 알림 받기에 오류가 생겼습니다. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "파일(_F)"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "편집(_E)"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "보기(_V)"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "터미널(_T)"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "탭(_B)"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "도움말(_H)"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
-msgstr[1] ""
+"이 창에는 %d개의 탭이 열려 있습니다. 창을 닫으면 이 탭을 모두 닫게 됩니다."
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "탭 닫기"
+msgstr "탭을 전부 닫을까요?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "탭 닫기"
+msgstr "탭 전부 닫기"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr ""
 "차영호 <ganadist@mizi.com>\n"
 "류창우 <cwryu@debian.org>"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "그놈 터미널"
 
@@ -2642,12 +2634,17 @@ msgstr "활성 서비스로 터미널을 등록하는 중 오류; 팩토리 모�
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "활성 서버로 부터 터미널 서버를 가져오기 실패\n"
 
-#~ msgid "There was an error creating the child process for this terminal: %s"
-#~ msgstr ""
-#~ "터미널을 만들기 위해 자식 프로세스를 만드는 도중 오류가 발생했습니다: %s"
+#~ msgid "Farsi"
+#~ msgstr "페르시아어"
 
-#~ msgid "Could not set working directory to \"%s\": %s\n"
-#~ msgstr "작업 디렉토리를 \"%s\"(으)로 설정할 수 없습니다: %s\n"
+#~ msgid "Tamil"
+#~ msgstr "타밀어"
 
-#~ msgid "Could not execute command %s: %s\n"
-#~ msgstr "명령 %s을(를) 실행할 수 없습니다: %s\n"
+#~ msgid ""
+#~ "<!-- Translators: please note this is has to be a list of valid encodings "
+#~ "(which are to be taken from the list in src/encoding.c) It has to include "
+#~ "UTF-8 and the word 'current', which is not to be translated. This is "
+#~ "provided for costumization of the default encoding menu; see bug 144810 "
+#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
+#~ "current]"
+#~ msgstr "[UTF-8,EUC-KR,current]"

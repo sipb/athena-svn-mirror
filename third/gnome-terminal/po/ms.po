@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: profterm HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2003-11-12 01:32+0800\n"
-"Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-18 00:36+0730\n"
+"Last-Translator: Hasbullah Bin Pit <sebol@my-penguin.org>\n"
 "Language-Team: ms <sebol@ikhlas.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 # help-browser/toc2-man.c:21
 #: gnome-terminal.desktop.in.in.h:1
 msgid "Command line"
-msgstr "Arahan baris"
+msgstr "Baris arahan"
 
 #: gnome-terminal.desktop.in.in.h:2 src/gnome-terminal.schemas.in.h:109
 #: src/terminal-accels.c:172 src/terminal-profile.c:276
@@ -291,9 +291,8 @@ msgid "Built-in foreground and background color schemes:"
 msgstr ""
 
 #: src/gnome-terminal.glade2.h:20
-#, fuzzy
 msgid "Built-in palette schemes:"
-msgstr "_Skema dalaman:"
+msgstr "Skema palet dalaman:"
 
 #: src/gnome-terminal.glade2.h:21
 msgid "Choose terminal background color"
@@ -304,9 +303,8 @@ msgid "Choose terminal text color"
 msgstr "Pilih warna teks bagi terminal"
 
 #: src/gnome-terminal.glade2.h:23
-#, fuzzy
 msgid "Color Selector"
-msgstr "_Palet warna:"
+msgstr "Pemilih Warna"
 
 #: src/gnome-terminal.glade2.h:24
 msgid "Color _palette:"
@@ -372,9 +370,8 @@ msgid "Goes before initial title"
 msgstr "Sebelum tajuk awalan"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Keluar dari terminal"
+msgstr "Biarkan terminal dibuka"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -630,9 +627,8 @@ msgid "_Transparent background"
 msgstr "LatarBelakang _Telus"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Kemaskini rekod utmp/wtmp bila arahan dilancarkan"
+msgstr "_Kemaskini rekod logmasuk bila arahan dilancarkan"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -784,13 +780,12 @@ msgid ""
 msgstr ""
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
 msgstr ""
-"Jika benar, utmp/wtmp akan dikemaskini bila arahan di dalam terminal "
-"dilancarkan."
+"Jika benar, rekod sistem logmasuk utmp/wtmp akan dikemaskini bila arahan di "
+"dalam terminal dilancarkan."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1448,9 +1443,8 @@ msgstr ""
 "\", dan \"disabled\"."
 
 #: src/gnome-terminal.schemas.in.h:120
-#, fuzzy
 msgid "Whether the menubar has access keys"
-msgstr "Samada bar menu mempunyai mnemonics"
+msgstr "Samada bar menu mempunyai kekunci akses"
 
 #: src/gnome-terminal.schemas.in.h:121
 msgid "Whether the standard GTK shortcut for menubar access is enabled"
@@ -1467,22 +1461,20 @@ msgid ""
 msgstr ""
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "Samada mengemaskini utmp/wtmp bila melancar arahan terminal"
+msgstr "Samada tanya kepastian bila menutup terminal"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
 msgstr "Samada mengelip kursor"
 
 #: src/gnome-terminal.schemas.in.h:126
-#, fuzzy
 msgid ""
 "Whether to have Alt+letter access keys for the menubar. They may interfere "
 "with some applications run inside the terminal so it's possible to turn them "
 "off."
 msgstr ""
-"Samada mempunai pintasan Alt+huruf bagi bar menu. Ia mungkin menggangu "
+"Samada mempunyai kekunci akses Alt+huruf bagi bar menu. Ia mungkin menggangu "
 "aplikasi yang terlaksana di dalam terminal jadi ia boleh juga dimatikan."
 
 #: src/gnome-terminal.schemas.in.h:127
@@ -1514,9 +1506,8 @@ msgid "Whether to silence terminal bell"
 msgstr "Samada menyenyapkan locang terminal"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "Samada mengemaskini utmp/wtmp bila melancar arahan terminal"
+msgstr "Samada mengemaskini rekod logmasuk bila melancar arahan terminal"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1526,13 +1517,15 @@ msgstr "Samada mengguna warna drpd tema bagi wiget terminal"
 msgid "Whether to use the system font"
 msgstr "Samada mengguna font sistem"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1807,13 +1800,13 @@ msgid "The value of configuration key %s is not valid; value is \"%s\"\n"
 msgstr "Nilai kekunci konfigurasi %s adalah tidak sah; nilai ialah \"%s\"\n"
 
 #: src/terminal-accels.c:358
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There was an error loading config value for whether to use menubar access "
 "keys. (%s)\n"
 msgstr ""
-"Terdapat ralat memuatkan nilai konfigurasi samada untuk menggunakan pemecut "
-"menu. (%s)\n"
+"Terdapat ralat memuatkan nilai konfigurasi samada untuk menggunakan kekunci "
+"akses bar  menu. (%s)\n"
 
 #: src/terminal-accels.c:372
 #, fuzzy, c-format
@@ -1847,7 +1840,7 @@ msgstr ""
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Kekunci pintasa \"%s\" sudah diumpukkan sengan aksi \"%s\" "
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -1855,9 +1848,9 @@ msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr "Ralat menetapkan pemecut bagi pada pangkalan data konfigirasi: %s\n"
 
 #: src/terminal-accels.c:1049
-#, fuzzy, c-format
+#, c-format
 msgid "Error setting %s config key: %s\n"
-msgstr "Ralat menetapkan kekunci use_mnemonics: %s\n"
+msgstr "Ralat menetapkan kekunci konfigurasi %s: %s\n"
 
 #: src/terminal-accels.c:1077
 #, c-format
@@ -2028,7 +2021,6 @@ msgid "_Close Window"
 msgstr "_Tutup Tetingkap"
 
 #: src/terminal-screen.c:1534
-#, fuzzy
 msgid "Change P_rofile"
 msgstr "Tukar _Profil"
 
@@ -2149,48 +2141,43 @@ msgstr "Papar Bar _menu"
 msgid "_Full Screen"
 msgstr "S_krin penuh"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "Saiz _Normal"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Tukar _Profil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Tetapkan Tajuk..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Set Pengenkodan _Aksara"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Ulangtetap"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Ulangtetapkan dan _Terangkan"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "Tab _Terdahulu"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "Tab _Seterusnya"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Kandungan"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Perihal"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2198,7 +2185,7 @@ msgstr ""
 "Terdapat ralat memuatkan nilai konfigurasi samada untuk menggunakan "
 "mnemonik. (%s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2207,31 +2194,31 @@ msgstr ""
 "Terdapat ralat melanggan notifikasi bagi perubahan konfigurasi tetingkap "
 "terminal. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Fail"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Edit"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Lihat"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminal"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "T_ab"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Bantuan"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
@@ -2240,23 +2227,21 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Tutup Tab"
+msgstr "Tutup semua tab?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Tutup Tab"
+msgstr "Tutup Semua Tab"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr ""
 "Hasbullah Bin Pit <sebol@ikhlas.com>,Merlimau.\n"
 "Berserta dorongan daripada rakan-rakan."
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "Terminal GNOME"
 
@@ -2505,9 +2490,8 @@ msgstr ""
 "direktori\n"
 
 #: src/terminal.c:1051
-#, fuzzy
 msgid "Two --default-working-directories given\n"
-msgstr "Dua direktori kerja default diberikan untuk\n"
+msgstr "Dua direktori-kerja-default diberi\n"
 
 #: src/terminal.c:1067
 #, c-format
@@ -2617,11 +2601,11 @@ msgstr ""
 "semuanya.  "
 
 #: src/terminal.c:2559
-#, c-format
+#, fuzzy, c-format
 msgid "Delete this profile?\n"
 msgid_plural "Delete these %d profiles?\n"
-msgstr[0] "Padam Profil ini?\n"
-msgstr[1] "Padam Profil ini?\n"
+msgstr[0] "Padam Profil"
+msgstr[1] "Padam Profil"
 
 #: src/terminal.c:2580
 #, c-format
@@ -2693,15 +2677,11 @@ msgstr ""
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Gagal memperolehi pelayan terminal dari pelayan pengaktifan\n"
 
-#~ msgid "There was an error creating the child process for this terminal: %s"
-#~ msgstr "Terdapat ralat mencipta proses anak bagi terminal ini: %s"
-
-#~ msgid "Could not set working directory to \"%s\": %s\n"
-#~ msgstr "Tak boleh menetapkan direktori kerja ke \"%s\": %s\n"
-
-#~ msgid "Could not execute command %s: %s\n"
-#~ msgstr "Gagal melaksanakan arahan %s: %s:\n"
-
 #~ msgid ""
-#~ "There was an error subscribing to notification for use_mnemonics (%s)\n"
-#~ msgstr "Terdapat ralat melanggan notifikasi bagi use_mnemonics. (%s)\n"
+#~ "<!-- Translators: please note this is has to be a list of valid encodings "
+#~ "(which are to be taken from the list in src/encoding.c) It has to include "
+#~ "UTF-8 and the word 'current', which is not to be translated. This is "
+#~ "provided for costumization of the default encoding menu; see bug 144810 "
+#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
+#~ "current]"
+#~ msgstr "[UTF-8,current]"

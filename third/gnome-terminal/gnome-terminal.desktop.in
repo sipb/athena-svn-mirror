@@ -9,6 +9,6 @@ X-GNOME-DocPath=gnome-terminal/index.html
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=gnome-terminal
 X-GNOME-Bugzilla-Component=general
-X-GNOME-Bugzilla-Version=2.7.3
+X-GNOME-Bugzilla-Version=2.8.2
 Categories=GNOME;Application;System;Utility;TerminalEmulator;
 StartupNotify=true

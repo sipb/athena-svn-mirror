@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-03-22 15:58+0100\n"
-"Last-Translator: Åsmund Skjæveland\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-30 22:36+0000\n"
+"Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -359,9 +359,8 @@ msgid "Goes before initial title"
 msgstr "Står før den faste tittelen"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Avslutt terminalen"
+msgstr "Hald terminalen open"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -615,9 +614,8 @@ msgid "_Transparent background"
 msgstr "_Gjennomskinleg bakgrunn"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Oppdater utmp/wtmp-loggane når kommandoen vert køyrt"
+msgstr "_Oppdater påloggingslistene når kommandoen vert køyrt"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -643,7 +641,7 @@ msgid ""
 msgstr ""
 "Eit utval av moglege teiknkodingar vert viste i teiknkodingar-undermenyen. "
 "Dette er ei liste over dei teiknkodingane som vert viste der. Den særskilde "
-"teiknkodinga «noverande» tyder at den noverande teiknkodinga skal visast."
+"teiknkodinga «current» tyder at den noverande teiknkodinga skal visast."
 
 #: src/gnome-terminal.schemas.in.h:2
 msgid ""
@@ -679,11 +677,11 @@ msgstr "Bakgrunnstype"
 
 #: src/gnome-terminal.schemas.in.h:7
 msgid "Characters that are considered \"part of a word\""
-msgstr "Teikn som vert rekna som deler av ord."
+msgstr "Teikn som vert rekna som deler av ord"
 
 #: src/gnome-terminal.schemas.in.h:8
 msgid "Custom command to use instead of the shell"
-msgstr "Sjølvvakd kommando å køyra i staden for skalet"
+msgstr "Sjølvvald kommando å køyra i staden for skalet"
 
 #: src/gnome-terminal.schemas.in.h:9
 msgid "Default color of terminal background"
@@ -719,7 +717,7 @@ msgstr "Kva tasten «Delete» gjer"
 
 #: src/gnome-terminal.schemas.in.h:15
 msgid "Filename of a background image."
-msgstr "Filnamn på bakgrunnsbilete"
+msgstr "Fil med bakgrunnsbilete."
 
 #: src/gnome-terminal.schemas.in.h:16
 msgid "Font"
@@ -791,13 +789,12 @@ msgstr ""
 "(argv[0] vil ha ein bindestrek fyrst.)"
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
 msgstr ""
-"Dersom sann, vil utmp/wtmp verta oppdaterte når kommandoen i terminalen vert "
-"køyrt."
+"Dersom sann, vil påloggingslistene utmp og wtmp verta oppdaterte når "
+"kommandoen i terminalen vert køyrt."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1492,11 +1489,12 @@ msgid ""
 "Whether to ask for confirmation when closing a terminal window which has "
 "more than one open tab."
 msgstr ""
+"Om programmet skal be om stadfesting når eit terminalvindauge med meir enn "
+"ei open arkfane vert lukka."
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "Om utmp/wtmp skal oppdaterast når kommandoen i terminalen vert køyrt"
+msgstr "Om programmet skal be om stadfesting når terminalvindauget vert lukka"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
@@ -1540,9 +1538,9 @@ msgid "Whether to silence terminal bell"
 msgstr "Om terminalsignalet skal dempast"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "Om utmp/wtmp skal oppdaterast når kommandoen i terminalen vert køyrt"
+msgstr ""
+"Om innloggingslistene skal oppdaterast når kommandoen i terminalen vert køyrt"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1552,13 +1550,15 @@ msgstr "Om fargar frå drakta skal brukast i terminalen"
 msgid "Whether to use the system font"
 msgstr "Om systemskrifttypen skal brukast"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-15,ISO-8859-1]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1874,12 +1874,12 @@ msgstr "Feil under formidling av snøggtastendring til oppsettsdatabasen: %s\n"
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Snøggtasten «%s» er allereie bunden til handlinga «%s»"
 
 #: src/terminal-accels.c:1018
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
-msgstr "Feil under stilling av ny snøggtast i oppsettsdatabasen: %s\n"
+msgstr "Feil under oppsett av ny snøggtast i oppsettsdatabasen: %s\n"
 
 #: src/terminal-accels.c:1049
 #, c-format
@@ -2172,48 +2172,43 @@ msgstr "Vis men_ylinje"
 msgid "_Full Screen"
 msgstr "_Fullskjerm"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "_Normal storleik"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Endra _profil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Vel tittel ..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "_Vel teikn_koding"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Nullstill"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Nu_llstill og tøm"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "_Førre arkfane"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "_Neste arkfane"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Innhald"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Om"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2221,7 +2216,7 @@ msgstr ""
 "Ein feil oppstod under lasting av oppsettsverdien for om "
 "menylinjesnøggtastar skal brukast. (%s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2230,56 +2225,56 @@ msgstr ""
 "Ein feil oppstod under tinging av varsling om endringar i "
 "terminalvindaugeoppsettet. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Fil"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "R_ediger"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Vis"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminal"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "A_rkfaner"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
+"Dette vindauget har ei open arkfane. Å lukka vindauget vil lukka denne."
 msgstr[1] ""
+"Dette vindauget har %d opne arkfaner. Å lukka vindauget vil lukka dei."
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Lukk arkfane"
+msgstr "Lukka alle arkfanene?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Lukk arkfane"
+msgstr "Lukk alle arkfanene"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr ""
 "Åsmund Skjæveland\n"
 "Send feilmeldingar og kommentarar til i18n-nn@lister.ping.uio.no"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "GNOME Terminal"
 
@@ -2705,14 +2700,3 @@ msgstr ""
 #: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Klarte ikkje å henta terminaltenaren frå aktiveringstenaren\n"
-
-#~ msgid "There was an error creating the child process for this terminal: %s"
-#~ msgstr ""
-#~ "Ein feil oppstod under oppretting av barneprosessen til denne terminalen: "
-#~ "%s"
-
-#~ msgid "Could not set working directory to \"%s\": %s\n"
-#~ msgstr "Klarte ikkje å endra arbeidskatalog til «%s»: %s\n"
-
-#~ msgid "Could not execute command %s: %s\n"
-#~ msgstr "Klarte ikkje å køyra kommandoen «%s»: %s\n"

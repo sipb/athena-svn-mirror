@@ -1,14 +1,14 @@
-# Albanian translation for gnome-terminal.
+# Përkthimi i mesazheve të gnome-terminal në shqip
 # Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-terminal package.
 # Laurent Dhima <laurenti@alblinux.net>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-terminal.HEAD\n"
+"Project-Id-Version: gnome-terminal HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-06-29 12:23+0200\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-28 10:37+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr "Pulsant përshpejtues"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr "Modifikues të përshpejtuesit"
+msgstr "Ndryshues të përshpejtuesit"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
@@ -140,7 +140,7 @@ msgstr "Koreane"
 
 #: src/encoding.c:116 src/encoding.c:118 src/encoding.c:120 src/encoding.c:124
 msgid "Chinese Simplified"
-msgstr "Kineze e thjeshtuar"
+msgstr "Kineze e thjeshtëzuar"
 
 #: src/encoding.c:122
 msgid "Georgian"
@@ -168,7 +168,7 @@ msgstr "Gujarati"
 
 #: src/encoding.c:169
 msgid "Gurmukhi"
-msgstr "Gurmukhi"
+msgstr "Gurmuki"
 
 #: src/encoding.c:173
 msgid "Icelandic"
@@ -371,7 +371,7 @@ msgstr "Nuk duket"
 
 #: src/gnome-terminal.glade2.h:43
 msgid "Keyboard Shortcuts"
-msgstr "Kombinacionet përshpejtuese nga tastiera"
+msgstr "Kombinacione përshpejtuese nga tastiera"
 
 #: src/gnome-terminal.glade2.h:44 src/terminal-accels.c:79
 msgid "New Profile"
@@ -1553,13 +1553,15 @@ msgstr "Lejo përdorimin e ngjyrave nga tema e terminal widget"
 msgid "Whether to use the system font"
 msgstr "Lejo përdorimin e shkronjave të sistemit"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-15,ISO-8859-2]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1819,7 +1821,7 @@ msgid ""
 "changes. (%s)\n"
 msgstr ""
 "Gabim gjatë regjistrimit për të kryer njoftimin mbi ndryshimet e funksioneve "
-"të pulsantëve. (%s)\n"
+"të pulsantëve të terminalit. (%s)\n"
 
 #: src/terminal-accels.c:319
 #, c-format
@@ -1902,7 +1904,7 @@ msgstr "_Veprimi"
 
 #: src/terminal-accels.c:1216
 msgid "Shortcut _Key"
-msgstr "Shortcut _Key"
+msgstr "_Kyçi përshpejtues"
 
 #: src/terminal-profile.c:407
 #, c-format
@@ -1981,7 +1983,7 @@ msgstr ""
 
 #: src/terminal-profile.c:2488
 msgid "_Details"
-msgstr "_Hollësitë"
+msgstr "_Detaje"
 
 #: src/terminal-profile.c:2923
 #, c-format
@@ -2061,7 +2063,7 @@ msgstr "M_byll skedën"
 
 #: src/terminal-screen.c:1506 src/terminal-window.c:849
 msgid "_Close Window"
-msgstr "_Mbylle Dritaren"
+msgstr "_Mbyll dritaren"
 
 #: src/terminal-screen.c:1534
 msgid "Change P_rofile"
@@ -2184,48 +2186,43 @@ msgstr "Shfaq panelin e _menusë"
 msgid "_Full Screen"
 msgstr "Ekran i _Plotë"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "Madhësia _Normale"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Ndrysho _Profilin"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Vendos Titullin..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Rregullo kodifikimin e _Gërmave"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Nga fillimi"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Rivendos dhe P_astro"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "Skeda _Paraardhëse"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "Skeda në _Vazhdim"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Përmbajtja"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Informacione"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2233,7 +2230,7 @@ msgstr ""
 "Gabim gjatë ngarkimit të vlerës së konfigurimit që përcakton nëse do të "
 "përdoren mnemonics. (%s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2242,31 +2239,31 @@ msgstr ""
 "Gabim gjatë regjistrimit për njoftimin e ndryshimeve të konfigurimit të "
 "dritares së terminalit. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_File"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Ndrysho"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Shfaq"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminali"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "Ske_dat"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Ndihmë"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
@@ -2278,19 +2275,19 @@ msgstr[1] ""
 "Kjo dritare ka një %d skeda të hapura. Duke mbyllur dritaren do të mbyllni "
 "të gjitha skedat e saj."
 
-#: src/terminal-window.c:2288
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
 msgstr "Mbyll të gjitha skedat?"
 
-#: src/terminal-window.c:2300
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
 msgstr "Mbylli të Gjitha Skedat"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr "Laurent Dhima  <laurenti@alblinux.net>"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "Terminali i GNOME"
 
@@ -2730,11 +2727,8 @@ msgid "Failed to retrieve terminal server from activation server\n"
 msgstr ""
 "Dështim gjatë rekuperimit të «terminal server» nga «activation server»\n"
 
-#~ msgid ""
-#~ "<!-- Translators: please note this is has to be a list of valid encodings "
-#~ "(which are to be taken from the list in src/encoding.c) It has to include "
-#~ "UTF-8 and the word 'current', which is not to be translated. This is "
-#~ "provided for costumization of the default encoding menu; see bug 144810 "
-#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
-#~ "current]"
-#~ msgstr "[UTF-8,current]"
+#~ msgid "Farsi"
+#~ msgstr "Farsi"
+
+#~ msgid "Tamil"
+#~ msgstr "Tamil"
