@@ -73,21 +73,4 @@ grep -s '^MAILRELAY=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
 MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
 EOF
 
-# Inaugurate /etc/shells if necessary, and make sure it contains
-# our favorite local shells.
-extrashells="/afs/sipb/project/tcsh/tcsh \
-             /afs/sipb/project/tcsh/t \
-             /afs/sipb/project/tcsh/betatcsh \
-             /afs/sipb/project/tcsh/b \
-             /afs/athena/project/gnu/bin/bash \
-             /afs/sipb/project/bash/bash"
-
-if [ ! -f $PKG_INSTALL_ROOT/etc/shells ]; then
-  cp -p /srvd/etc/shells $PKG_INSTALL_ROOT/etc/shells
-fi
-for s in $extrashells; do
-  grep -s "^$s\$" $PKG_INSTALL_ROOT/etc/shells > /dev/null || \
-    echo "$s" >> $PKG_INSTALL_ROOT/etc/shells
-done
-
 exit 0
