@@ -1,23 +1,30 @@
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Беларускі пераклад gnome-terminal.HEAD.
+# Copyright (C) 2002, 2003, 2004 Free Software Foundation, Inc.
+# Vital Khilko <dojlid@mova.org>, 2003.
+# Ales Nyakhaychyk <nab@mail.by>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: profterm\n"
-"POT-Creation-Date: 2003-02-05 21:34-0500\n"
-"PO-Revision-Date: 2002-10-26 15:58GMT+2\n"
-"Last-Translator: Vital Khilko <dojlid@mova.org>\n"
-"Language-Team: belarusian <i18n@mova.org>\n"
+"Project-Id-Version: gnome-terminal.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-29 19:42-0300\n"
+"PO-Revision-Date: 2004-03-13 19:20+0200\n"
+"Last-Translator: Ales Nyakhaychyk <nab@mail.by>\n"
+"Language-Team: Belarusian <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: KBabel 1.0.2\n"
 
-#: gnome-terminal.desktop.in.h:1
+#: gnome-terminal.desktop.in.in.h:1
 msgid "Command line"
-msgstr "Камандны радок"
+msgstr "Загадны радок"
 
-#: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:172
-#: src/terminal-profile.c:275 src/terminal-window.c:651 src/terminal.c:1080
+#: gnome-terminal.desktop.in.in.h:2 src/gnome-terminal.schemas.in.h:109
+#: src/terminal-accels.c:172 src/terminal-profile.c:276
+#: src/terminal-window.c:761 src/terminal.c:1172 src/terminal.c:1518
 msgid "Terminal"
 msgstr "Тэрмінал"
 
@@ -27,18 +34,17 @@ msgstr "Клявіша-паскаральнік"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr "Мадыфікатары паскаральніку"
+msgstr "Зьмяняльнікі паскаральніка"
 
 #: src/eggcellrendererkeys.c:180
-#, fuzzy
 msgid "Accelerator Mode"
-msgstr "Клявіша-паскаральнік"
+msgstr "Рэжым паскаральніка"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr "Увядзіце новы паскаральнік"
+msgstr "Увядзіце новы паскаральнік."
 
-#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:28
+#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:32
 #: src/terminal-accels.c:717
 msgid "Disabled"
 msgstr "Выключана"
@@ -51,221 +57,201 @@ msgstr "Увядзіце новы паскаральнік ці націсьні
 msgid "Type a new accelerator"
 msgstr "Увядзіце новы паскаральнік"
 
-#: src/encoding.c:57
-#, fuzzy
+#: src/encoding.c:55
 msgid "Current Locale"
-msgstr "Наладзіць бягучы _профіль..."
+msgstr "Бягучая мясцовасьць"
 
-#: src/encoding.c:60 src/encoding.c:86 src/encoding.c:129 src/encoding.c:177
-#: src/encoding.c:201
+#: src/encoding.c:58 src/encoding.c:84 src/encoding.c:127 src/encoding.c:175
+#: src/encoding.c:199
 msgid "Western"
-msgstr ""
+msgstr "Заходняя"
 
-#: src/encoding.c:62 src/encoding.c:131 src/encoding.c:157 src/encoding.c:197
+#: src/encoding.c:60 src/encoding.c:129 src/encoding.c:155 src/encoding.c:195
 msgid "Central European"
-msgstr ""
+msgstr "Цэнтральна-эўрапейская"
 
-#: src/encoding.c:64
+#: src/encoding.c:62
 msgid "South European"
-msgstr ""
+msgstr "Паўднёва-Эўрапейская"
 
-#: src/encoding.c:66 src/encoding.c:82 src/encoding.c:211
-#, fuzzy
+#: src/encoding.c:64 src/encoding.c:80 src/encoding.c:209
 msgid "Baltic"
-msgstr "курсыў"
+msgstr "Балцкая"
 
-#: src/encoding.c:68 src/encoding.c:133 src/encoding.c:146 src/encoding.c:150
-#: src/encoding.c:161 src/encoding.c:199
+#: src/encoding.c:66 src/encoding.c:131 src/encoding.c:144 src/encoding.c:148
+#: src/encoding.c:159 src/encoding.c:197
 msgid "Cyrillic"
-msgstr ""
+msgstr "Кірылічная"
 
-#: src/encoding.c:70 src/encoding.c:139 src/encoding.c:155 src/encoding.c:209
+#: src/encoding.c:68 src/encoding.c:137 src/encoding.c:153 src/encoding.c:207
 msgid "Arabic"
-msgstr ""
+msgstr "Арабская"
 
-#: src/encoding.c:72 src/encoding.c:167 src/encoding.c:203
+#: src/encoding.c:70 src/encoding.c:165 src/encoding.c:201
 msgid "Greek"
-msgstr ""
+msgstr "Грэцкая"
 
-#: src/encoding.c:74
+#: src/encoding.c:72
 msgid "Hebrew Visual"
-msgstr ""
+msgstr "Габрэйская наглядная"
 
-#: src/encoding.c:76 src/encoding.c:137 src/encoding.c:173 src/encoding.c:207
+#: src/encoding.c:74 src/encoding.c:135 src/encoding.c:171 src/encoding.c:205
 msgid "Hebrew"
-msgstr ""
+msgstr "Габрэйская"
 
-#: src/encoding.c:78 src/encoding.c:135 src/encoding.c:181 src/encoding.c:205
+#: src/encoding.c:76 src/encoding.c:133 src/encoding.c:179 src/encoding.c:203
 msgid "Turkish"
-msgstr ""
+msgstr "Турэцкая"
 
-#: src/encoding.c:80
+#: src/encoding.c:78
 msgid "Nordic"
-msgstr ""
+msgstr "Паўночная"
 
-#: src/encoding.c:84
-#, fuzzy
+#: src/encoding.c:82
 msgid "Celtic"
-msgstr "Мэтрыка:"
+msgstr "Кельцкая"
 
-#: src/encoding.c:88 src/encoding.c:179
-#, fuzzy
+#: src/encoding.c:86 src/encoding.c:177
 msgid "Romanian"
-msgstr "прамы"
+msgstr "Румынская"
 
-#: src/encoding.c:91 src/encoding.c:93 src/encoding.c:95 src/encoding.c:97
-#: src/encoding.c:99
+#: src/encoding.c:89 src/encoding.c:91 src/encoding.c:93 src/encoding.c:95
+#: src/encoding.c:97
 msgid "Unicode"
-msgstr ""
+msgstr "Унікод"
 
-#: src/encoding.c:102
-#, fuzzy
+#: src/encoding.c:100
 msgid "Armenian"
-msgstr "прамы"
+msgstr "Армянская"
 
-#: src/encoding.c:104 src/encoding.c:106 src/encoding.c:115
+#: src/encoding.c:102 src/encoding.c:104 src/encoding.c:113
 msgid "Chinese Traditional"
-msgstr ""
+msgstr "Кітайская традыцыйная"
 
-#: src/encoding.c:108
+#: src/encoding.c:106
 msgid "Cyrillic/Russian"
-msgstr ""
+msgstr "Кірылічная/Расейская"
 
-#: src/encoding.c:111 src/encoding.c:142 src/encoding.c:186
+#: src/encoding.c:109 src/encoding.c:140 src/encoding.c:184
 msgid "Japanese"
-msgstr ""
+msgstr "Японская"
 
-#: src/encoding.c:113 src/encoding.c:144 src/encoding.c:148 src/encoding.c:192
+#: src/encoding.c:111 src/encoding.c:142 src/encoding.c:146 src/encoding.c:190
 msgid "Korean"
-msgstr ""
+msgstr "Карэйская"
 
-#: src/encoding.c:118 src/encoding.c:120 src/encoding.c:122 src/encoding.c:126
+#: src/encoding.c:116 src/encoding.c:118 src/encoding.c:120 src/encoding.c:124
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "Кітайская спрошчаная"
 
-#: src/encoding.c:124
+#: src/encoding.c:122
 msgid "Georgian"
-msgstr ""
+msgstr "Грузынская"
 
-#: src/encoding.c:152 src/encoding.c:183
+#: src/encoding.c:150 src/encoding.c:181
 msgid "Cyrillic/Ukrainian"
-msgstr ""
+msgstr "Кірылічная/Украінская"
 
-#: src/encoding.c:159
-#, fuzzy
+#: src/encoding.c:157
 msgid "Croatian"
-msgstr "прамы"
+msgstr "Харвацкая"
+
+#: src/encoding.c:161
+msgid "Hindi"
+msgstr "Хіндзі"
 
 #: src/encoding.c:163
-msgid "Hindi"
-msgstr ""
+msgid "Persian"
+msgstr "Пэрсыдская"
 
-#: src/encoding.c:165
-msgid "Farsi"
-msgstr ""
+#: src/encoding.c:167
+msgid "Gujarati"
+msgstr "Гуараці"
 
 #: src/encoding.c:169
-msgid "Gujarati"
-msgstr ""
-
-#: src/encoding.c:171
 msgid "Gurmukhi"
-msgstr ""
+msgstr "Гармухі"
 
-#: src/encoding.c:175
+#: src/encoding.c:173
 msgid "Icelandic"
-msgstr ""
+msgstr "Ісляндская"
 
-#: src/encoding.c:188 src/encoding.c:194 src/encoding.c:213
+#: src/encoding.c:186 src/encoding.c:192 src/encoding.c:211
 msgid "Vietnamese"
-msgstr ""
+msgstr "В'етнамская"
 
-#: src/encoding.c:190
+#: src/encoding.c:188
 msgid "Thai"
-msgstr ""
+msgstr "Тайская"
 
-#: src/encoding.c:379
+#: src/encoding.c:377
 msgid "User Defined"
-msgstr ""
+msgstr "Вызначаецца карыстальнікам"
 
-#: src/encoding.c:442 src/profile-editor.c:889 src/terminal-window.c:2510
-#: src/terminal.c:2742
-#, c-format
-msgid "There was an error displaying help: %s"
-msgstr "Пад час адлюстраваньня дапамогі ўзьнікла памылка: %s"
-
-#: src/encoding.c:764 src/encoding.c:828
-#, fuzzy
+#: src/encoding.c:735 src/encoding.c:799
 msgid "_Description"
-msgstr "_Дзеяньне"
+msgstr "_Апісаньне"
 
-#: src/encoding.c:773 src/encoding.c:837
+#: src/encoding.c:744 src/encoding.c:808
 msgid "_Encoding"
-msgstr ""
+msgstr "_Кадаваньне"
 
-#: src/encoding.c:1006
-#, fuzzy, c-format
+#: src/encoding.c:977
+#, c-format
 msgid ""
 "There was an error subscribing to notification of terminal encoding list "
 "changes. (%s)\n"
 msgstr ""
-"Узьнікла памылка пад час падпіскі на нагад аб зьмене сьпісу профіляў "
-"тэрміналу. (%s)\n"
+"Узьнікла памылка пад час падпіскі на нагад аб зьмене сьпіса кадаваньняў "
+"тэрмінала. (%s)\n"
 
-#: src/gnome-terminal.glade2.h:1 src/x-font-selector.c:883
+#: src/gnome-terminal.glade2.h:1
 msgid "*"
 msgstr "*"
 
 #: src/gnome-terminal.glade2.h:2
-#, fuzzy
 msgid "<b>Background</b>"
-msgstr "Тло"
+msgstr "<b>Тло</b>"
 
 #: src/gnome-terminal.glade2.h:3
-#, fuzzy
 msgid "<b>Command</b>"
-msgstr "Каманда"
+msgstr "<b>Каманда</b>"
 
 #: src/gnome-terminal.glade2.h:4
-#, fuzzy
 msgid "<b>Compatibility</b>"
-msgstr "Сумяшчальнасьць"
+msgstr "<b>Сумяшчальнасьць</b>"
 
 #: src/gnome-terminal.glade2.h:5
-#, fuzzy
 msgid "<b>Foreground and Background</b>"
-msgstr "Тэкст і тло"
+msgstr "<b>Тэкст і тло</b>"
 
 #: src/gnome-terminal.glade2.h:6
-#, fuzzy
 msgid "<b>General</b>"
-msgstr "Агульнае"
+msgstr "<b>Агульнае</b>"
 
 #: src/gnome-terminal.glade2.h:7
-#, fuzzy
 msgid "<b>Palette</b>"
-msgstr "Палітра"
+msgstr "<b>Палітра</b>"
 
 #: src/gnome-terminal.glade2.h:8
-#, fuzzy
 msgid "<b>Scrolling</b>"
-msgstr "Пракрутка"
+msgstr "<b>Пракрутка</b>"
 
 #: src/gnome-terminal.glade2.h:9
 msgid "<b>Title</b>"
-msgstr ""
+msgstr "<b>Загаловак</b>"
 
 #: src/gnome-terminal.glade2.h:10
 msgid "<big>S/Key Challenge Response</big>"
-msgstr ""
+msgstr "<big>Адказ на спробу аўтарызацыі S/Key</big>"
 
 #: src/gnome-terminal.glade2.h:11
 msgid "<small><i>Maximum</i></small>"
-msgstr ""
+msgstr "<small><i>Максымум</i></small>"
 
 #: src/gnome-terminal.glade2.h:12
 msgid "<small><i>None</i></small>"
-msgstr ""
+msgstr "<small><i>Няма</i></small>"
 
 #: src/gnome-terminal.glade2.h:13
 msgid "ASCII DEL"
@@ -273,397 +259,1351 @@ msgstr "ASCII DEL"
 
 #: src/gnome-terminal.glade2.h:14
 msgid "A_vailable encodings:"
-msgstr ""
+msgstr "Кадаваньні, якія пры_сутнічаюць:"
 
 #: src/gnome-terminal.glade2.h:15
+msgid "Add or Remove Terminal Encodings"
+msgstr "Дадаць ці выдаліць кадаваньне тэрмінала"
+
+#: src/gnome-terminal.glade2.h:16
 msgid "Background image _scrolls"
 msgstr "Пракр_учваць відарыс тла"
 
-#: src/gnome-terminal.glade2.h:16
+#: src/gnome-terminal.glade2.h:17
 msgid "Built-_in schemes:"
 msgstr "Убудаваныя с_хемы:"
 
-#: src/gnome-terminal.glade2.h:17
+#: src/gnome-terminal.glade2.h:18
 msgid "Built-in _schemes:"
 msgstr "Убудаваныя сх_емы:"
 
-#: src/gnome-terminal.glade2.h:18
+#: src/gnome-terminal.glade2.h:19
+msgid "Built-in foreground and background color schemes:"
+msgstr "Убудаваныя схемы колераў:"
+
+#: src/gnome-terminal.glade2.h:20
+msgid "Built-in palette schemes:"
+msgstr "Убудаваныя схемы палітры:"
+
+#: src/gnome-terminal.glade2.h:21
 msgid "Choose terminal background color"
 msgstr "Выбярыце колер тла тэрмінала"
 
-#: src/gnome-terminal.glade2.h:19
+#: src/gnome-terminal.glade2.h:22
 msgid "Choose terminal text color"
-msgstr "Выбярыце колер тэксту тэрмінала"
+msgstr "Выбярыце колер тэкста ў тэрмінале"
 
-#: src/gnome-terminal.glade2.h:20
+#: src/gnome-terminal.glade2.h:23
+msgid "Color Selector"
+msgstr "Вылучальнік колеру"
+
+#: src/gnome-terminal.glade2.h:24
 msgid "Color _palette:"
 msgstr "_Палітра:"
 
-#: src/gnome-terminal.glade2.h:21
+#: src/gnome-terminal.glade2.h:25
 msgid "Colors"
 msgstr "Колеры"
 
-#: src/gnome-terminal.glade2.h:22
+#: src/gnome-terminal.glade2.h:26
 msgid "Compatibility"
 msgstr "Сумяшчальнасьць"
 
-#: src/gnome-terminal.glade2.h:23
+#: src/gnome-terminal.glade2.h:27
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/gnome-terminal.glade2.h:24
-msgid "Cursor _blinks"
-msgstr "_Мільганьне курсору"
+#: src/gnome-terminal.glade2.h:28
+msgid "Cursor blin_ks"
+msgstr "_Мільганьне курсора"
 
-#: src/gnome-terminal.glade2.h:25
+#: src/gnome-terminal.glade2.h:29
 msgid "Custom co_mmand:"
 msgstr "Інш_ая каманда:"
 
-#: src/gnome-terminal.glade2.h:26
-msgid "Disable all menu m_nemonics (such as Alt+f to open File menu)"
-msgstr ""
-"Адключыць усе камбінацыі клавішаў для мэню (гэткія як Alt+f для мэню 'Файл')"
-
-#: src/gnome-terminal.glade2.h:27
-msgid "Disable menu acc_ess key (F10 by default)"
-msgstr "Адключыць усе клявішы _доступу для меню (дапомна F10)"
-
-#: src/gnome-terminal.glade2.h:29
-msgid "E_ncodings shown in menu:"
-msgstr ""
-
 #: src/gnome-terminal.glade2.h:30
+msgid "Disable all me_nu access keys (such as Alt+f to open File menu)"
+msgstr ""
+"Адключыць усе клявішы доступу да _мэню (гэткія як Alt+f для мэню \"Файл\")"
+
+#: src/gnome-terminal.glade2.h:31
+msgid "Disable m_enu shortcut key (F10 by default)"
+msgstr "Адключыць клявішы _доступу да мэню (дапомная F10)"
+
+#: src/gnome-terminal.glade2.h:33
+msgid "E_ncodings shown in menu:"
+msgstr "_Кадаваньні што паказаны ў мэню:"
+
+#: src/gnome-terminal.glade2.h:34
 msgid "Effects"
 msgstr "Эфекты"
 
-#: src/gnome-terminal.glade2.h:31
+#: src/gnome-terminal.glade2.h:35
 msgid "Escape sequence"
-msgstr "Выключная пасьлядоўнасьць (esc)"
+msgstr "Выключальная пасьлядоўнасьць (esc)"
 
-#: src/gnome-terminal.glade2.h:32
+#: src/gnome-terminal.glade2.h:36
 msgid "Exit the terminal"
-msgstr "Выйсьці з тэрміналу"
+msgstr "Выйсьці з тэрмінала"
 
-#: src/gnome-terminal.glade2.h:33
+#: src/gnome-terminal.glade2.h:37
 msgid "General"
 msgstr "Агульнае"
 
-#: src/gnome-terminal.glade2.h:34
+#: src/gnome-terminal.glade2.h:38
 msgid "Goes after initial title"
 msgstr "Усталёўваць пасьля зыходнага загалоўка"
 
-#: src/gnome-terminal.glade2.h:35
+#: src/gnome-terminal.glade2.h:39
 msgid "Goes before initial title"
 msgstr "Усталёўваць перад зыходным загалоўкам"
 
-#: src/gnome-terminal.glade2.h:36
+#: src/gnome-terminal.glade2.h:40
+#, fuzzy
+msgid "Hold the terminal open"
+msgstr "Выйсьці з тэрмінала"
+
+#: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
 msgstr "Зы_ходны загаловак:"
 
-#: src/gnome-terminal.glade2.h:37
+#: src/gnome-terminal.glade2.h:42
 msgid "Isn't displayed"
 msgstr "Ня адлюстраваны"
 
-#: src/gnome-terminal.glade2.h:38
-msgid "Keybindings Editor"
-msgstr "Рэдактар хуткіх клявішаў"
+#: src/gnome-terminal.glade2.h:43
+msgid "Keyboard Shortcuts"
+msgstr "Гарачыя клявішы"
 
-#: src/gnome-terminal.glade2.h:39
+#: src/gnome-terminal.glade2.h:44 src/terminal-accels.c:79
+msgid "New Profile"
+msgstr "Стварыць профіль"
+
+#: src/gnome-terminal.glade2.h:45
 msgid "On the left side"
 msgstr "Па левым баку"
 
-#: src/gnome-terminal.glade2.h:40
+#: src/gnome-terminal.glade2.h:46
 msgid "On the right side"
 msgstr "Па правым баку"
 
-#: src/gnome-terminal.glade2.h:41
-msgid "Palette entry 1"
-msgstr "Радок палітры 1"
-
-#: src/gnome-terminal.glade2.h:42
-msgid "Palette entry 10"
-msgstr "Радок палітры 10"
-
-#: src/gnome-terminal.glade2.h:43
-msgid "Palette entry 11"
-msgstr "Радок палітры 11"
-
-#: src/gnome-terminal.glade2.h:44
-msgid "Palette entry 12"
-msgstr "Радок палітры 12"
-
-#: src/gnome-terminal.glade2.h:45
-msgid "Palette entry 13"
-msgstr "Радок палітры 13"
-
-#: src/gnome-terminal.glade2.h:46
-msgid "Palette entry 14"
-msgstr "Радок палітры 14"
-
 #: src/gnome-terminal.glade2.h:47
-msgid "Palette entry 15"
-msgstr "Радок палітры 15"
+msgid "Open a dialog to specify the color"
+msgstr "Адчыняе дыялёг для вылучэньня колеру"
 
 #: src/gnome-terminal.glade2.h:48
-msgid "Palette entry 16"
-msgstr "Радок палітры 16"
+msgid "Palette entry 1"
+msgstr "Поле палітры 1"
 
 #: src/gnome-terminal.glade2.h:49
-msgid "Palette entry 2"
-msgstr "Радок палітры 2"
+msgid "Palette entry 10"
+msgstr "Поле палітры 10"
 
 #: src/gnome-terminal.glade2.h:50
-msgid "Palette entry 3"
-msgstr "Радок палітры 3"
+msgid "Palette entry 11"
+msgstr "Поле палітры 11"
 
 #: src/gnome-terminal.glade2.h:51
-msgid "Palette entry 4"
-msgstr "Радок палітры 4"
+msgid "Palette entry 12"
+msgstr "Поле палітры 12"
 
 #: src/gnome-terminal.glade2.h:52
-msgid "Palette entry 5"
-msgstr "Радок палітры 5"
+msgid "Palette entry 13"
+msgstr "Поле палітры 13"
 
 #: src/gnome-terminal.glade2.h:53
-msgid "Palette entry 6"
-msgstr "Радок палітры 6"
+msgid "Palette entry 14"
+msgstr "Поле палітры 14"
 
 #: src/gnome-terminal.glade2.h:54
-msgid "Palette entry 7"
-msgstr "Радок палітры 7"
+msgid "Palette entry 15"
+msgstr "Поле палітры 15"
 
 #: src/gnome-terminal.glade2.h:55
-msgid "Palette entry 8"
-msgstr "Радок палітры 8"
+msgid "Palette entry 16"
+msgstr "Поле палітры 16"
 
 #: src/gnome-terminal.glade2.h:56
-msgid "Palette entry 9"
-msgstr "Радок палітры 9"
+msgid "Palette entry 2"
+msgstr "Поле палітры 2"
 
 #: src/gnome-terminal.glade2.h:57
-msgid "Password:"
-msgstr ""
+msgid "Palette entry 3"
+msgstr "Поле палітры 3"
 
 #: src/gnome-terminal.glade2.h:58
+msgid "Palette entry 4"
+msgstr "Поле палітры 4"
+
+#: src/gnome-terminal.glade2.h:59
+msgid "Palette entry 5"
+msgstr "Поле палітры 5"
+
+#: src/gnome-terminal.glade2.h:60
+msgid "Palette entry 6"
+msgstr "Поле палітры 6"
+
+#: src/gnome-terminal.glade2.h:61
+msgid "Palette entry 7"
+msgstr "Поле палітры 7"
+
+#: src/gnome-terminal.glade2.h:62
+msgid "Palette entry 8"
+msgstr "Поле палітры 8"
+
+#: src/gnome-terminal.glade2.h:63
+msgid "Palette entry 9"
+msgstr "Поле палітры 9"
+
+#: src/gnome-terminal.glade2.h:64
+msgid "Password:"
+msgstr "Пароль:"
+
+#: src/gnome-terminal.glade2.h:65
 msgid "Profile Editor"
 msgstr "Рэдактар профіляў"
 
-#: src/gnome-terminal.glade2.h:59
+#: src/gnome-terminal.glade2.h:66
 msgid "Profile _icon:"
 msgstr "Зна_чка профілю"
 
-#: src/gnome-terminal.glade2.h:60
-msgid "R_un a custom command instead of my shell"
-msgstr "Зап_ускаць іншую каманду замест абалонкі"
+#: src/gnome-terminal.glade2.h:67
+msgid "Profile _name:"
+msgstr "Назва _профілю:"
 
-#: src/gnome-terminal.glade2.h:61
+#: src/gnome-terminal.glade2.h:68
 msgid "Replaces initial title"
 msgstr "Зьмяняць загаловак"
 
-#: src/gnome-terminal.glade2.h:62
+#: src/gnome-terminal.glade2.h:69
 msgid "Restart the command"
 msgstr "Перазапусьціць каманду"
 
-#: src/gnome-terminal.glade2.h:63
-msgid "S_croll on keystroke"
-msgstr "Прак_ручваць радок"
+#: src/gnome-terminal.glade2.h:70
+msgid "Ru_n a custom command instead of my shell"
+msgstr "Вы_конваць іншы загад замест маёй абалонкі"
 
-#: src/gnome-terminal.glade2.h:64
+#: src/gnome-terminal.glade2.h:71
 msgid "Sc_roll on output"
-msgstr "Пракру_чваць увод"
+msgstr "Пракру_чваць на вывадзе"
 
-#: src/gnome-terminal.glade2.h:65
+#: src/gnome-terminal.glade2.h:72
 msgid "Scr_ollback:"
 msgstr "Ад_варотная пракрутка:"
 
-#: src/gnome-terminal.glade2.h:66
+#: src/gnome-terminal.glade2.h:73
+msgid "Scroll on _keystroke"
+msgstr "Прак_ручваць на націск кнопак"
+
+#: src/gnome-terminal.glade2.h:74
 msgid "Scrolling"
 msgstr "Пракрутка"
 
-#: src/gnome-terminal.glade2.h:67
+#: src/gnome-terminal.glade2.h:75
 msgid "Select-by-_word characters:"
-msgstr "Сымбалі, якія выбіраюць слова:"
+msgstr "Сымбалі, якія выбіраюць с_лова:"
 
-#: src/gnome-terminal.glade2.h:68
+#: src/gnome-terminal.glade2.h:76
 msgid "Show _menubar by default in new terminals"
 msgstr "Дапомна паказываць у новых тэрміналах радок мэню"
 
-#: src/gnome-terminal.glade2.h:69
-#, fuzzy
-msgid "Terminal Encodings"
-msgstr "Тэрмінал"
-
-#: src/gnome-terminal.glade2.h:70
+#: src/gnome-terminal.glade2.h:77
 msgid "Terminal _bell"
-msgstr "_Сыгнал тэрміналу"
+msgstr "_Сыгнал тэрмінала"
 
-#: src/gnome-terminal.glade2.h:71
+#: src/gnome-terminal.glade2.h:78
 msgid "Terminal applications have these colors available to them."
 msgstr "Дастасаваньням у тэрмінале будуць даступны гэтыя колеры."
 
-#: src/gnome-terminal.glade2.h:72
+#: src/gnome-terminal.glade2.h:79
 msgid ""
 "The command running inside the terminal may dynamically set a new title."
 msgstr ""
-"Каманда, якая запушчана ў тэрмінале, можа дынамічна усталяваць новы "
+"Каманда, якая выконваецца ў тэрмінале, можа дынамічна усталяваць новы "
 "загаловак."
 
-#: src/gnome-terminal.glade2.h:73
+#: src/gnome-terminal.glade2.h:80
 msgid ""
 "These options may cause some applications to behave incorrectly.\n"
 "They are only here to allow you to work around certain applications\n"
-"and operating sytems that expect different terminal behavior."
+"and operating systems that expect different terminal behavior."
 msgstr ""
-"Гэтыя парамэтры могуць выклікаць некарэктную працу пэўных дастасаваньняўй.\n"
-"Яны прадстаўлены толькі для таго, каб дазволіць працаваць з пэўнымі\n"
-"дастасаваньнямі й АС, якія чакаюць іншых паводзін тэрміналу."
+"Гэтыя выбары могуць выклікаць няправільную працу пэўных дастасаваньняў.\n"
+"Яны прадастаўлены толькі дзеля таго, каб дазволіць працаваць з пэўнымі\n"
+"дастасаваньнямі й апэрацыйнымі сыстэмамі, якія чакаюць іншых паводзін "
+"тэрмінала."
 
-#: src/gnome-terminal.glade2.h:76
+#: src/gnome-terminal.glade2.h:83
 msgid "Title and Command"
-msgstr "Загаловак і каманда"
+msgstr "Загаловак і загад"
 
-#: src/gnome-terminal.glade2.h:77
+#: src/gnome-terminal.glade2.h:84
 msgid "Use colors from s_ystem theme"
 msgstr "Выкарыстоўваць колеры с_ыстэмнае тэмы"
 
-#: src/gnome-terminal.glade2.h:78
+#: src/gnome-terminal.glade2.h:85
 msgid "When command _exits:"
 msgstr "Пад час в_ыхаду з каманды:"
 
-#: src/gnome-terminal.glade2.h:79
-msgid "_Accelerators:"
-msgstr "_Паскаральнікі:"
-
-#: src/gnome-terminal.glade2.h:80
+#: src/gnome-terminal.glade2.h:86
 msgid "_Allow bold text"
 msgstr "Д_азваляць напаўтлусты тэкст"
 
-#: src/gnome-terminal.glade2.h:81
+#: src/gnome-terminal.glade2.h:87
 msgid "_Background color:"
 msgstr "Ко_лер тла:"
 
-#: src/gnome-terminal.glade2.h:82
+#: src/gnome-terminal.glade2.h:88
 msgid "_Background image"
 msgstr "Відарыс _тла"
 
-#: src/gnome-terminal.glade2.h:83
+#: src/gnome-terminal.glade2.h:89
 msgid "_Backspace key generates:"
 msgstr "Клявіша \"_Backspace\" генеруе:"
 
-#: src/gnome-terminal.glade2.h:84
+#: src/gnome-terminal.glade2.h:90
+msgid "_Base on:"
+msgstr "_Заснаваць на:"
+
+#: src/gnome-terminal.glade2.h:91
+msgid "_Create"
+msgstr "_Стварыць"
+
+#: src/gnome-terminal.glade2.h:92
 msgid "_Delete key generates:"
 msgstr "Клявіша \"_Delete\" генеруе:"
 
-#: src/gnome-terminal.glade2.h:85
+#: src/gnome-terminal.glade2.h:93
 msgid "_Dynamically-set title:"
-msgstr "_Дынамічна усталёўваць загаловак:"
+msgstr "_Дынамічны загаловак:"
 
-#: src/gnome-terminal.glade2.h:86
+#: src/gnome-terminal.glade2.h:94
 msgid "_Image file:"
-msgstr "Файл в_ідарысу:"
+msgstr "Файл в_ідарыса:"
 
-#: src/gnome-terminal.glade2.h:87
+#: src/gnome-terminal.glade2.h:95
 msgid "_None (use solid color)"
 msgstr "_Няма (выкарыстоўваць суцэльны колер)"
 
-#: src/gnome-terminal.glade2.h:88
+#: src/gnome-terminal.glade2.h:96
 msgid "_Profile name:"
-msgstr "Наійменьне _профілю:"
+msgstr "Назва _профілю:"
 
-#: src/gnome-terminal.glade2.h:89
+#: src/gnome-terminal.glade2.h:97
 msgid "_Reset compatibility options to defaults"
 msgstr "С_кінуць парамэтры сумяшчальнасьці да дапомных"
 
-#: src/gnome-terminal.glade2.h:90
+#: src/gnome-terminal.glade2.h:98
 msgid "_Run command as a login shell"
 msgstr "За_пускаць каманду як абалонку ўваходу"
 
-#: src/gnome-terminal.glade2.h:91
+#: src/gnome-terminal.glade2.h:99
 msgid "_Scrollbar is:"
 msgstr "Паласа пракр_уткі:"
 
-#: src/gnome-terminal.glade2.h:92
+#: src/gnome-terminal.glade2.h:100
 msgid "_Shade transparent or image background:"
 msgstr "За_цямняць празрыстасьць ці відарыс тла:"
 
-#: src/gnome-terminal.glade2.h:93
-msgid "_Text color:"
-msgstr "Колер _тэксту:"
+#: src/gnome-terminal.glade2.h:101
+msgid "_Shortcut Keys:"
+msgstr "_Гарачыя клявішы:"
 
-#: src/gnome-terminal.glade2.h:94
+#: src/gnome-terminal.glade2.h:102
+msgid "_Text color:"
+msgstr "Колер _тэкста:"
+
+#: src/gnome-terminal.glade2.h:103
 msgid "_Transparent background"
 msgstr "Празр_ыстае тло"
 
-#: src/gnome-terminal.glade2.h:95
-msgid "_Update utmp/wtmp records when command is launched"
+#: src/gnome-terminal.glade2.h:104
+#, fuzzy
+msgid "_Update login records when command is launched"
 msgstr "Аб_наўляць запісы utmp/wtmp пад час запуску каманды"
 
-#: src/gnome-terminal.glade2.h:96
-#, fuzzy
-msgid "_Use the same size font as other applications"
-msgstr "Выкарыстоўваць той жа шр_ыфт, што й іншыя дастасаваньні"
+#: src/gnome-terminal.glade2.h:105
+msgid "_Use the system terminal font"
+msgstr "_Выкарыстоўваць сыстэмны шрыфт тэрмінала"
 
-#: src/gnome-terminal.glade2.h:97
+#: src/gnome-terminal.glade2.h:106
 msgid "_kilobytes"
-msgstr "к_ілабайтаў"
+msgstr "к_ілябайтаў"
 
-#: src/gnome-terminal.glade2.h:98
+#: src/gnome-terminal.glade2.h:107
 msgid "_lines"
 msgstr "_радкоў"
 
-#: src/gnome-terminal.glade2.h:99
+#: src/gnome-terminal.glade2.h:108
 msgid "kilobytes"
-msgstr "кілабайтаў"
+msgstr "кілябайтаў"
 
-#: src/profile-editor.c:50
+#: src/gnome-terminal.schemas.in.h:1
+msgid ""
+"A subset of possible encodings are presented in the Encoding submenu. This "
+"is a list of encodings to appear there. The special encoding name \"current"
+"\" means to display the encoding of the current locale."
+msgstr ""
+"Падмноства магчымых кадаваньняў, якія прысутнічаюць у падмэню Кадаваньні. "
+"Гэты сьпіс кадаваньняў зьяўляецца тутака. Адмысловая назва мясцовасьці "
+"\"current\" азначае адлюстраваньне кадаваньня бягучае мясцовасьці."
+
+#: src/gnome-terminal.schemas.in.h:2
+msgid ""
+"A value between 0.0 and 1.0 indicating how much to darken the background "
+"image. 0.0 means no darkness, 1.0 means fully dark. In the current "
+"implementation, there are only two levels of darkness possible, so the "
+"setting behaves as a boolean, where 0.0 disables the darkening effect."
+msgstr ""
+"Значэньне паміж 0.0 і 1.0 паказывае наколькі цёмны відарыс тла. 0.0 азначае "
+"няма зацьменьня, 1.0 азначае цалкам чорны. У бягучым выкананьні, існуе "
+"толькі два магчымыя ўзроўні, таму гэтая ўсталёўка вядзе сябе як лягічаская, "
+"дзе 0.0 выключае гэты эфэкт."
+
+#: src/gnome-terminal.schemas.in.h:3
+msgid "An Pango font name. Examples are \"Sans 12\" or \"Monospace Bold 14\"."
+msgstr "Pango назва шрыфту. Прыклады: \"Sans 12\" ці \"Monospace Bold 14\"."
+
+#: src/gnome-terminal.schemas.in.h:4
+msgid ""
+"An X font name. See the X man page (type \"man X\") for more details on the "
+"format of X font names."
+msgstr ""
+"X назва шрыфту. Глядзіце man старонку для X (увядзіце \"man X\") для больш "
+"падрабязных зьвестак пра гэты фармат назваў."
+
+#: src/gnome-terminal.schemas.in.h:5
+msgid "Background image"
+msgstr "Выява тла"
+
+#: src/gnome-terminal.schemas.in.h:6
+msgid "Background type"
+msgstr "Від тла"
+
+#: src/gnome-terminal.schemas.in.h:7
+msgid "Characters that are considered \"part of a word\""
+msgstr "Знакі, якія лічацца часткай слова"
+
+#: src/gnome-terminal.schemas.in.h:8
+msgid "Custom command to use instead of the shell"
+msgstr "Адмысловы загад замест абалонкі"
+
+#: src/gnome-terminal.schemas.in.h:9
+msgid "Default color of terminal background"
+msgstr "Дапомны колер тла тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:10
+msgid ""
+"Default color of terminal background, as a color specification (can be HTML-"
+"style hex digits, or a color name such as \"red\")."
+msgstr ""
+"Дапомны колер тла тэрмінала (можа быць у стылі HTML ці проста назва, "
+"напрыклад \"red\" (чырвоны))."
+
+#: src/gnome-terminal.schemas.in.h:11
+msgid "Default color of text in the terminal"
+msgstr "Дапомны колер тэксту тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:12
+msgid ""
+"Default color of text in the terminal, as a color specification (can be HTML-"
+"style hex digits, or a color name such as \"red\")."
+msgstr ""
+"Дапомны колер тэксту тэрмінала (можа быць у стылі HTML ці проста назва, "
+"напрыклад \"red\" (чырвоны))."
+
+#: src/gnome-terminal.schemas.in.h:13
+msgid "Effect of the Backspace key"
+msgstr "Узьдзеяньне клявішы \"Backspace\""
+
+#: src/gnome-terminal.schemas.in.h:14
+msgid "Effect of the Delete key"
+msgstr "Узьдзеяньне клявішы \"Delete\""
+
+#: src/gnome-terminal.schemas.in.h:15
+msgid "Filename of a background image."
+msgstr "Назва файла відарыса тла."
+
+#: src/gnome-terminal.schemas.in.h:16
+msgid "Font"
+msgstr "Шрыфт"
+
+#: src/gnome-terminal.schemas.in.h:17
+msgid "How much to darken the background image"
+msgstr "На колькі цёмны відарыс тла"
+
+#: src/gnome-terminal.schemas.in.h:18
+msgid "Human-readable name of the profile"
+msgstr "Прыдатная для чытаньня чалавекам назва профілю"
+
+#: src/gnome-terminal.schemas.in.h:19
+msgid "Human-readable name of the profile."
+msgstr "Чалавека-чытаемая назва профілю."
+
+#: src/gnome-terminal.schemas.in.h:20
+msgid "Icon for terminal window"
+msgstr "Значка для вакна тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:21
+msgid "Icon to use for tabs/windows containing this profile."
+msgstr "Значка для выкарыстаньня ўкладкай/вакном гэтага профілю."
+
+#: src/gnome-terminal.schemas.in.h:22
+msgid ""
+"If the application in the terminal sets the title (most typically people "
+"have their shell set up to do this), the dynamically-set title can erase the "
+"configured title, go before it, go after it, or replace it. The possible "
+"values are \"replace\", \"before\", \"after\", and \"ignore\"."
+msgstr ""
+"Калі дастасаваньне, якое выконваецца ў тэрмінале, усталёўвае загаловак "
+"(большасьць людзей мае абалонкі, якія робяць так), дынамічнае ўсталяваньне "
+"загалоўку можа выдаліць наладжаны загаловак, уставіць перад ім, уставіць "
+"пасьля яго ці замяніць яго. Магчымыя значэньні: \"replace\" (змяніць), "
+"\"before\" (перад ім), \"after\" (пасьля яго) і \"ignore\" (незаўважаць)."
+
+#: src/gnome-terminal.schemas.in.h:23
+msgid "If true, allow applications in the terminal to make text boldface."
+msgstr "Калі ісьціна, дазваляе даставаньняў у тэрмінале рабіць тэкст тлустым."
+
+#: src/gnome-terminal.schemas.in.h:24
+msgid ""
+"If true, don't make a noise when applications send the escape sequence for "
+"the terminal bell."
+msgstr ""
+"Калі ісьціна, не шумець, калі даставаньні дасылаюць "
+"кіравальнуюпасьлядоўнасьць для званка тэрміналу."
+
+#: src/gnome-terminal.schemas.in.h:25
+msgid "If true, pressing a key jumps the scrollbar to the bottom."
+msgstr "Калі ісьціна, націск на клявішу, перакідае паласу пракруткі да долу."
+
+#: src/gnome-terminal.schemas.in.h:26
+msgid ""
+"If true, scroll the background image with the foreground text; if false, "
+"keep the image in a fixed position and scroll the text above it."
+msgstr ""
+"Калі ісьціна, тады відарыс тла будзе пракручвацца разам з тэкстам, калі "
+"хлусьня, тады відарыс будзе нерухомы, а тэкст будзе пракручвацца над ім."
+
+#: src/gnome-terminal.schemas.in.h:27
+msgid ""
+"If true, the command inside the terminal will be launched as a login shell. "
+"(argv[0] will have a hyphen in front of it.)"
+msgstr ""
+"Калі ісьціна, загад унутры тэрміналу будзе выкананы як уваходная абалонка. "
+"(argv[0] будзе мець працяжік прад сабой.)"
+
+#: src/gnome-terminal.schemas.in.h:28
+#, fuzzy
+msgid ""
+"If true, the system login records utmp and wtmp will be updated when the "
+"command inside the terminal is launched."
+msgstr ""
+"Калі ісьціна, utmp/wtmp будзе абноўлены тады, калі загад унутры тэрміналу "
+"будзе запушчаны."
+
+#: src/gnome-terminal.schemas.in.h:29
+msgid ""
+"If true, the terminal will use the desktop-global standard font if it's "
+"monospace (and the most similar font it can come up with otherwise)."
+msgstr ""
+"Калі ісьціна, тэрмінал будзе выкарыстоўваць агульны шрыфт асяродзьдзя ў "
+"выпадку, калі ён аднашырынёвы (ці самы падобны шрыфт у іншым выпадку)."
+
+#: src/gnome-terminal.schemas.in.h:30
+msgid ""
+"If true, the theme color scheme used for text entry boxes will be used for "
+"the terminal, instead of colors provided by the user."
+msgstr ""
+"Калі ісьціна, для тэрмінала будзе выкарыстоўвацца тая самая схема колераў, "
+"што й для палёў уводу тэксту, замест колераў карыстальніка."
+
+#: src/gnome-terminal.schemas.in.h:31
+msgid ""
+"If true, the value of the custom_command setting will be used in place of "
+"running a shell."
+msgstr ""
+"Калі ісьціна, тады значэньне ўсталёўкі custom_command будзе выкарыстоўвацца "
+"замест абалонкі."
+
+#: src/gnome-terminal.schemas.in.h:32
+msgid ""
+"If true, whenever there's new output the terminal will scroll to the bottom."
+msgstr ""
+"Калі ісьціна, тады калі будзе новы вывад у тэрмінал, ён будзе пракручаны да "
+"долу."
+
+#: src/gnome-terminal.schemas.in.h:33
+msgid ""
+"Keyboard shortcut key for bringing up the dialog for profile creation. "
+"Expressed as a string in the same format used for GTK+ resource files. If "
+"you set the option to the special string \"disabled\", then there will be no "
+"keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для дыялёгу стварэньня профіля. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэтую "
+"акалічнасьць у адмысловы радок \"disabled\", тады для гэтага дзеяньня "
+"паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:34
+msgid ""
+"Keyboard shortcut key for closing a tab. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для зачыненьня ўкладкі. Чакаецца радок такога ж фармату, што й "
+"для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:35
+msgid ""
+"Keyboard shortcut key for closing a window. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для зачыненьня вакна. Чакаецца радок такога ж фармату, што й "
+"для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:36
+msgid ""
+"Keyboard shortcut key for copying selected text to the clipboard. Expressed "
+"as a string in the same format used for GTK+ resource files. If you set the "
+"option to the special string \"disabled\", then there will be no keyboard "
+"shortcut for this action."
+msgstr ""
+"Паскаральнік для капіяваньня вылучанага тэксту ў буфэр абмену. Чакаецца "
+"радок такога ж фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце "
+"гэты выбар у адмысловы радок \"disabled\", тады для гэтага дзеяньня "
+"паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:37
+msgid ""
+"Keyboard shortcut key for launching help. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для выкліку даведкі. Чакаецца радок такога ж фармату, што й для "
+"файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:38
+msgid ""
+"Keyboard shortcut key for making font larger. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для павелічэньня шрыфту. Чакаецца радок такога ж фармату, што й "
+"для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:39
+msgid ""
+"Keyboard shortcut key for making font smaller. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для памяншэньня шрыфту. Чакаецца радок такога ж фармату, што й "
+"для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:40
+msgid ""
+"Keyboard shortcut key for making font the normal size. Expressed as a string "
+"in the same format used for GTK+ resource files. If you set the option to "
+"the special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для ўсталяваньня звычайнага памеру шрыфту. Чакаецца радок "
+"такога ж фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты "
+"выбар у адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка "
+"ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:41
+msgid ""
+"Keyboard shortcut key for opening a new tab. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для стварэньня новае ўкладкі. Чакаецца радок такога ж фармату, "
+"што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы "
+"радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:42
+msgid ""
+"Keyboard shortcut key for opening a new window. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для стварэньня новага вакна. Чакаецца радок такога ж фармату, "
+"што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы "
+"радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:43
+msgid ""
+"Keyboard shortcut key for pasting the contents of the clipboard into the "
+"terminal. Expressed as a string in the same format used for GTK+ resource "
+"files. If you set the option to the special string \"disabled\", then there "
+"will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для ўстаўкі вылучанага тэксту з буфэру абмену. Чакаецца радок "
+"такога ж фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты "
+"выбар у адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка "
+"ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:44
+msgid ""
+"Keyboard shortcut key for switch to tab 1. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 1. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:45
+msgid ""
+"Keyboard shortcut key for switch to tab 10. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 10. Чакаецца радок такога ж фармату, "
+"што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы "
+"радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:46
+msgid ""
+"Keyboard shortcut key for switch to tab 11. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 11. Чакаецца радок такога ж фармату, "
+"што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы "
+"радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:47
+msgid ""
+"Keyboard shortcut key for switch to tab 12. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 12. Чакаецца радок такога ж фармату, "
+"што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы "
+"радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:48
+msgid ""
+"Keyboard shortcut key for switch to tab 2. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 2. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:49
+msgid ""
+"Keyboard shortcut key for switch to tab 3. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 3. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:50
+msgid ""
+"Keyboard shortcut key for switch to tab 4. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 4. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:51
+msgid ""
+"Keyboard shortcut key for switch to tab 5. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 5. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:52
+msgid ""
+"Keyboard shortcut key for switch to tab 6. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 6. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:53
+msgid ""
+"Keyboard shortcut key for switch to tab 7. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 7. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:54
+msgid ""
+"Keyboard shortcut key for switch to tab 8. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 8. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:55
+msgid ""
+"Keyboard shortcut key for switch to tab 9. Expressed as a string in the same "
+"format used for GTK+ resource files. If you set the option to the special "
+"string \"disabled\", then there will be no keyboard shortcut for this action."
+msgstr ""
+"Паскаральнік для пераходу да ўкладкі 9. Чакаецца радок такога ж фармату, што "
+"й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:56
+msgid ""
+"Keyboard shortcut key for toggling full screen mode. Expressed as a string "
+"in the same format used for GTK+ resource files. If you set the option to "
+"the special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераключэньня поўнаэкраннага рэжыму. Чакаецца радок такога "
+"ж фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:57
+msgid ""
+"Keyboard shortcut key to reset and clear the terminal. Expressed as a string "
+"in the same format used for GTK+ resource files. If you set the option to "
+"the special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для ачышчэньня й скіданьня тэрміналу. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:58
+msgid ""
+"Keyboard shortcut key to reset the terminal. Expressed as a string in the "
+"same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для скіданьня тэрміналу. Чакаецца радок такога ж фармату, што й "
+"для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у адмысловы радок "
+"\"disabled\", тады для гэтага дзеяньня паскаральніка ня будзе."
+
+#: src/gnome-terminal.schemas.in.h:59
+msgid ""
+"Keyboard shortcut key to set the terminal title. Expressed as a string in "
+"the same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для ўсталёўкі загалоўка тэрмінала. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:60
+msgid ""
+"Keyboard shortcut key to switch to the next tab. Expressed as a string in "
+"the same format used for GTK+ resource files. If you set the option to the "
+"special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераходу да наступнае ўкладкі. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:61
+msgid ""
+"Keyboard shortcut key to switch to the previous tab. Expressed as a string "
+"in the same format used for GTK+ resource files. If you set the option to "
+"the special string \"disabled\", then there will be no keyboard shortcut for "
+"this action."
+msgstr ""
+"Паскаральнік для пераходу да папярэдняе ўкладкі. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:62
+msgid ""
+"Keyboard shortcut key to toggle the visibility of the menubar. Expressed as "
+"a string in the same format used for GTK+ resource files. If you set the "
+"option to the special string \"disabled\", then there will be no keyboard "
+"shortcut for this action."
+msgstr ""
+"Паскаральнік для пераключэньня бачнасьці радка мэню. Чакаецца радок такога ж "
+"фармату, што й для файлаў рэсурсаў GTK+. Калі вы ўсталюеце гэты выбар у "
+"адмысловы радок \"disabled\", тады для гэтага дзеяньня паскаральніка ня "
+"будзе."
+
+#: src/gnome-terminal.schemas.in.h:63
+msgid "Keyboard shortcut to close a tab"
+msgstr "Паскаральнік для зачыненьня ўкладкі"
+
+#: src/gnome-terminal.schemas.in.h:64
+msgid "Keyboard shortcut to close a window"
+msgstr "Паскаральнік для зачыненьня вакна"
+
+#: src/gnome-terminal.schemas.in.h:65
+msgid "Keyboard shortcut to copy text"
+msgstr "Паскаральнік для капіяваньня тэкста"
+
+#: src/gnome-terminal.schemas.in.h:66
+msgid "Keyboard shortcut to create a new profile"
+msgstr "Паскаральнік для стварэньня профілю"
+
+#: src/gnome-terminal.schemas.in.h:67
+msgid "Keyboard shortcut to launch help"
+msgstr "Паскаральнік для выкліку даведкі"
+
+#: src/gnome-terminal.schemas.in.h:68
+msgid "Keyboard shortcut to make font larger"
+msgstr "Паскаральнік для павелічэньня шрыфта"
+
+#: src/gnome-terminal.schemas.in.h:69
+msgid "Keyboard shortcut to make font normal-size"
+msgstr "Паскаральнік для звычайнага памеру шрыфта"
+
+#: src/gnome-terminal.schemas.in.h:70
+msgid "Keyboard shortcut to make font smaller"
+msgstr "Паскаральнік для памяншэньня шрыфта"
+
+#: src/gnome-terminal.schemas.in.h:71
+msgid "Keyboard shortcut to open a new tab"
+msgstr "Паскаральнік для стварэньня ўкладкі"
+
+#: src/gnome-terminal.schemas.in.h:72
+msgid "Keyboard shortcut to open a new window"
+msgstr "Паскаральнік для стварэньня вакна"
+
+#: src/gnome-terminal.schemas.in.h:73
+msgid "Keyboard shortcut to paste text"
+msgstr "Паскаральнік для ўстаўкі тэкста"
+
+#: src/gnome-terminal.schemas.in.h:74
+msgid "Keyboard shortcut to reset and clear the terminal"
+msgstr "Паскаральнік для скіданьня й ачышэчэньня тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:75
+msgid "Keyboard shortcut to reset the terminal"
+msgstr "Паскаральнік для скіданьня тэрміналу"
+
+#: src/gnome-terminal.schemas.in.h:76
+msgid "Keyboard shortcut to set the terminal title"
+msgstr "Паскаральнік для ўсталяваньня загалоўка вакна"
+
+#: src/gnome-terminal.schemas.in.h:77
+msgid "Keyboard shortcut to switch to tab 1"
+msgstr "Паскаральнік для пераключэньня на ўкладку 1"
+
+#: src/gnome-terminal.schemas.in.h:78
+msgid "Keyboard shortcut to switch to tab 10"
+msgstr "Паскаральнік для пераключэньня на ўкладку 10"
+
+#: src/gnome-terminal.schemas.in.h:79
+msgid "Keyboard shortcut to switch to tab 11"
+msgstr "Паскаральнік для пераключэньня на ўкладку 11"
+
+#: src/gnome-terminal.schemas.in.h:80
+msgid "Keyboard shortcut to switch to tab 12"
+msgstr "Паскаральнік для пераключэньня на ўкладку 12"
+
+#: src/gnome-terminal.schemas.in.h:81
+msgid "Keyboard shortcut to switch to tab 2"
+msgstr "Паскаральнік для пераключэньня на ўкладку 2"
+
+#: src/gnome-terminal.schemas.in.h:82
+msgid "Keyboard shortcut to switch to tab 3"
+msgstr "Паскаральнік для пераключэньня на ўкладку 3"
+
+#: src/gnome-terminal.schemas.in.h:83
+msgid "Keyboard shortcut to switch to tab 4"
+msgstr "Паскаральнік для пераключэньня на ўкладку 4"
+
+#: src/gnome-terminal.schemas.in.h:84
+msgid "Keyboard shortcut to switch to tab 5"
+msgstr "Паскаральнік для пераключэньня на ўкладку 5"
+
+#: src/gnome-terminal.schemas.in.h:85
+msgid "Keyboard shortcut to switch to tab 6"
+msgstr "Паскаральнік для пераключэньня на ўкладку 6"
+
+#: src/gnome-terminal.schemas.in.h:86
+msgid "Keyboard shortcut to switch to tab 7"
+msgstr "Паскаральнік для пераключэньня на ўкладку 7"
+
+#: src/gnome-terminal.schemas.in.h:87
+msgid "Keyboard shortcut to switch to tab 8"
+msgstr "Паскаральнік для пераключэньня на ўкладку 8"
+
+#: src/gnome-terminal.schemas.in.h:88
+msgid "Keyboard shortcut to switch to tab 9"
+msgstr "Паскаральнік для пераключэньня на ўкладку 9"
+
+#: src/gnome-terminal.schemas.in.h:89
+msgid "Keyboard shortcut to switch to the next tab"
+msgstr "Паскаральнік для пераключэньня на наступную ўкладку"
+
+#: src/gnome-terminal.schemas.in.h:90
+msgid "Keyboard shortcut to switch to the previous tab"
+msgstr "Паскаральнік для пераключэньня на папярэднюю ўкладку"
+
+#: src/gnome-terminal.schemas.in.h:91
+msgid "Keyboard shortcut to toggle full screen mode"
+msgstr "Паскаральнік для пераключэньня поўнаэкраннага рэжыму"
+
+#: src/gnome-terminal.schemas.in.h:92
+msgid "Keyboard shortcut to toggle the visibility of the menubar"
+msgstr "Паскаральнік для пераключэньня бачнасьці радка мэню"
+
+#: src/gnome-terminal.schemas.in.h:93
+msgid "List of available encodings"
+msgstr "Сьпіс наяўных кадаваньняў"
+
+#: src/gnome-terminal.schemas.in.h:94
+msgid "List of profiles"
+msgstr "Сьпіс профіляў"
+
+#: src/gnome-terminal.schemas.in.h:95
+msgid ""
+"List of profiles known to gnome-terminal. The list contains strings naming "
+"subdirectories relative to /apps/gnome-terminal/profiles."
+msgstr ""
+"Сьпіс профільяў, якія ведае gnome-terminal. Сьпіс утрымлівае радкі назваў "
+"падтэчак, адносна /apps/gnome-terminal/profiles."
+
+#: src/gnome-terminal.schemas.in.h:96
+msgid ""
+"Normally you can access the menubar with F10. This can also be customized "
+"via gtkrc (gtk-menu-bar-accel = \"whatever\"). This option allows the "
+"standard menubar accelerator to be disabled."
+msgstr ""
+"Звычайна, вы можаце зайсьці ў мэню націснуўшы F10. Гэтая магчымасьць можа "
+"быць наладжана праз gtkrc (gtk-menu-bar-accel = \"што_трэба\"). Гэтая "
+"магчымасьць дазваляе выключыць дапомны паскаральнік мэню."
+
+#: src/gnome-terminal.schemas.in.h:97
+msgid "Number of lines to keep in scrollback"
+msgstr "Колькасьць радкоў для пракруткі назад"
+
+#: src/gnome-terminal.schemas.in.h:98
+msgid ""
+"Number of scrollback lines to keep around. You can scroll back in the "
+"terminal by this number of lines; lines that don't fit in the scrollback are "
+"discarded. Be careful with this setting; it's the primary factor in "
+"determining how much memory the terminal will use."
+msgstr ""
+"Колькасьць радкоў для пракруткі назад. Вы можаце пракручваць назад у "
+"тэрмінале на гэтую колькасьць радокў; астатнія радкі, большыя за гэтую "
+"колькасьць, будуць адкінуты. Будзце асьцярожны з гэтай магчымасьцю, гэта "
+"першасны пункт, які вызначае колькі памяці будзе скарыстана тэрміналам."
+
+#: src/gnome-terminal.schemas.in.h:99
+msgid "Palette for terminal applications"
+msgstr "Палітра для тэрмінальных дастасаваньняў"
+
+#: src/gnome-terminal.schemas.in.h:100
+msgid ""
+"Popup a dialog when an s/key challenge response query is detected and "
+"clicked on. Typing a password into the dialog will send it to the terminal."
+msgstr ""
+"Усплывае дыялёгавае вакно, калі s/key выклік-адказ запыт выяўлены й "
+"націснуты. Увод паролю ў дыялёг дашле яго да тэрміналу."
+
+#: src/gnome-terminal.schemas.in.h:101
+msgid "Position of the scrollbar"
+msgstr "Знаходжаньне паласы пракруткі"
+
+#: src/gnome-terminal.schemas.in.h:102
+msgid ""
+"Possible values are \"close\" to close the terminal, and \"restart\" to "
+"restart the command."
+msgstr ""
+"Магчымыя значэньні \"close\", каб зачыніць тэрмінал і \"restart\", каб "
+"перазапусьціць загад."
+
+#: src/gnome-terminal.schemas.in.h:103
+msgid ""
+"Profile to be used when opening a new window or tab. Must be in profile_list."
+msgstr ""
+"Профіль, які будзе скарыстаны калі ствараецца новая ўкладка ці вакно. Мусіць "
+"быць у profile_list."
+
+#: src/gnome-terminal.schemas.in.h:104
+msgid "Profile to use for new terminals"
+msgstr "Профіль для новых тэрміналаў"
+
+#: src/gnome-terminal.schemas.in.h:105
+msgid "Run this command in place of the shell, if use_custom_command is true."
+msgstr "Выканаць гэты загад замест абалонкі, калі use_custom_command ісьціна."
+
+#: src/gnome-terminal.schemas.in.h:106
+msgid ""
+"Sets what code the backspace key generates. Possible values are \"ascii-del"
+"\" for the ASCII DEL character, \"control-h\" for Control-H (AKA the ASCII "
+"BS character), \"escape-sequence\" for the escape sequence typically bound "
+"to backspace or delete. \"ascii-del\" is normally considered the correct "
+"setting for the Backspace key."
+msgstr ""
+"Усталёўвае, які код будзе ствараць клявіша Backspace. Магчымыя значэньні: "
+"\"ascii-del\" для знака ASCII DEL, \"control-h\" для Control-H (ці знак "
+"ASCII BS), \"escape-sequence\" для кіруючае пасьлядоўнасьці, якая звычайна "
+"прывязаная да backspace ці delete. \"ascii-del\" - гэта найбольш звычайная й "
+"правільная ўсталёўка для клявішы Backspace."
+
+#: src/gnome-terminal.schemas.in.h:107
+msgid ""
+"Sets what code the delete key generates. Possible values are \"ascii-del\" "
+"for the ASCII DEL character, \"control-h\" for Control-H (AKA the ASCII BS "
+"character), \"escape-sequence\" for the escape sequence typically bound to "
+"backspace or delete. \"escape-sequence\" is normally considered the correct "
+"setting for the Delete key."
+msgstr ""
+"Усталёўвае, які код будзе ствараць клявіша Delete. Магчымыя значэньні: "
+"\"ascii-del\" для знака ASCII DEL, \"control-h\" для Control-H (ці знак "
+"ASCII BS), \"escape-sequence\" для кіруючае пасьлядоўнасьці, якая звычайна "
+"прывязаная да backspace ці delete. \"escape-sequence\" - гэта найбольш "
+"звычайная й правільная ўсталёўка для клявішы Delete."
+
+#: src/gnome-terminal.schemas.in.h:108
+msgid "Support skey dingus clicking"
+msgstr "Падтрымка зычнага націску skey"
+
+#: src/gnome-terminal.schemas.in.h:110
+msgid ""
+"Terminals have a 16-color palette that applications inside the terminal can "
+"use. This is that palette, in the form of a colon-separated list of color "
+"names. Color names should be in hex format e.g. \"#FF00FF\""
+msgstr ""
+"Тэрмінал мае палітру на шаснацца колераў, якую дастасаваньні ўнутры яго "
+"могуць выкарыстоўваць. Гэтая палітра складаецца са сьпіса колераў, які "
+"падзелены двукроп'ямі. Назвы колераў мусяць быць у шаснаццацічным фармаце "
+"(напрыклад, \"#FF00FF\")"
+
+#: src/gnome-terminal.schemas.in.h:111
+msgid "Title for terminal"
+msgstr "Загаловак тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:112
+msgid ""
+"Title to display for the terminal window or tab. This title may be replaced "
+"by or combined with the title set by the application inside the terminal, "
+"depending on the title_mode setting."
+msgstr ""
+"Загаловак акна ці ўкладкі для адлюстраваньня. Гэты загаловак можа быць "
+"замененны ці аб'яднаны з загалоўкам, які ўсталёўваецца дастасаваньнем у "
+"тэрмінале, у залежнасьці ад усталёўкі ключа title_mode."
+
+#: src/gnome-terminal.schemas.in.h:113
+msgid ""
+"True if the cursor should blink when the terminal has focus, for windows/"
+"tabs with this profile."
+msgstr ""
+"Калі ісьціна, тады курсор мусіць мільгаць калі тэрмінал мае засяроджаньне "
+"для вокнаў/укладак з гэтым профілям."
+
+#: src/gnome-terminal.schemas.in.h:114
+msgid ""
+"True if the menubar should be shown in new windows, for windows/tabs with "
+"this profile."
+msgstr ""
+"Ісьціна, калі радок мэню мусіць быць бачным у новых вокнах для вокнаў/"
+"укладак з гэтым профілям."
+
+#: src/gnome-terminal.schemas.in.h:115
+msgid ""
+"Type of terminal background. May be \"solid\" for a solid color, \"image\" "
+"for an image, or \"transparent\" for pseudo-transparency."
+msgstr ""
+"Від тла тэрміналу. Можа быць \"solid\" для суцэльнага колеру, \"image\" для "
+"відарыса ці \"transparent\" для фальш-празрыстасьці."
+
+#: src/gnome-terminal.schemas.in.h:116
+msgid "What to do with dynamic title"
+msgstr "Што рабіць з дынамічным загалоўкам"
+
+#: src/gnome-terminal.schemas.in.h:117
+msgid "What to do with the terminal when the child command exits"
+msgstr "Што рабіць з тэрміналам, калі загад-нашчадак завяршыўся"
+
+#: src/gnome-terminal.schemas.in.h:118
+msgid ""
+"When selecting text by word, sequences of these characters are considered "
+"single words. Ranges can be given as \"A-Z\". Literal hyphen (not expressing "
+"a range) should be the first character given."
+msgstr ""
+"Калі вылучаецца тэкст па словах, пасьлядоўнасьці гэтых знакаў лічацца "
+"асобнымі словамі. Прамежкі могуць быць заданыя як \"A-Z\". Калі неабходна "
+"задаць і працяжнік, ён мусіць быць пазначаны першым."
+
+#: src/gnome-terminal.schemas.in.h:119
+msgid ""
+"Where to put the terminal scrollbar. Possibilities are \"left\", \"right\", "
+"and \"disabled\"."
+msgstr ""
+"Дзе зьмяшчаць паласу пракруткі. Магчымыя значэньні: \"left\" (зьлева), "
+"\"right\" (зправа) ці \"disabled\" (нідзе)."
+
+#: src/gnome-terminal.schemas.in.h:120
+msgid "Whether the menubar has access keys"
+msgstr "Ці мае радок мэню клявішы доступу"
+
+#: src/gnome-terminal.schemas.in.h:121
+msgid "Whether the standard GTK shortcut for menubar access is enabled"
+msgstr "Ці ўключаны стандартныя гарачыя клявішы GTK для доступу ў мэню"
+
+#: src/gnome-terminal.schemas.in.h:122
+msgid "Whether to allow bold text"
+msgstr "Ці дазваляць тлусты тэкст"
+
+#: src/gnome-terminal.schemas.in.h:123
+msgid ""
+"Whether to ask for confirmation when closing a terminal window which has "
+"more than one open tab."
+msgstr ""
+
+#: src/gnome-terminal.schemas.in.h:124
+#, fuzzy
+msgid "Whether to ask for confirmation when closing terminal windows"
+msgstr "Ці абнаўляць utmp/wtmp, калі выконваецца загад тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:125
+msgid "Whether to blink the cursor"
+msgstr "Ці мільгае курсор"
+
+#: src/gnome-terminal.schemas.in.h:126
+msgid ""
+"Whether to have Alt+letter access keys for the menubar. They may interfere "
+"with some applications run inside the terminal so it's possible to turn them "
+"off."
+msgstr ""
+"Ці мае мэню гарачыя клявішы віду \"Alt+літара\". Яны могуць перакрыжоўвацца "
+"з клявішамі некаторых дастасаваньняў, якія выконваюцца ўнутры тэрмінала й "
+"такім чынам іх можна выключыць."
+
+#: src/gnome-terminal.schemas.in.h:127
+msgid "Whether to launch the command in the terminal as a login shell"
+msgstr "Ці выконваць загад у тэрмінале як абалонку"
+
+#: src/gnome-terminal.schemas.in.h:128
+msgid "Whether to run a custom command instead of the shell"
+msgstr "Ці выконваць адмысловы загад замест абалонкі"
+
+#: src/gnome-terminal.schemas.in.h:129
+msgid "Whether to scroll background image"
+msgstr "Ці пракручваць відарыс тла"
+
+#: src/gnome-terminal.schemas.in.h:130
+msgid "Whether to scroll to the bottom when a key is pressed"
+msgstr "Ці пракручваць назад, калі націснулі клявішу"
+
+#: src/gnome-terminal.schemas.in.h:131
+msgid "Whether to scroll to the bottom when there's new output"
+msgstr "Ці пракручваць назад, калі зьявіўся новы вывад"
+
+#: src/gnome-terminal.schemas.in.h:132
+msgid "Whether to show menubar in new windows/tabs"
+msgstr "Ці паказываць радок мэню у новых вокнах/укладках"
+
+#: src/gnome-terminal.schemas.in.h:133
+msgid "Whether to silence terminal bell"
+msgstr "Ці мусіць званок тэрмінала быць бязгучным"
+
+#: src/gnome-terminal.schemas.in.h:134
+#, fuzzy
+msgid "Whether to update login records when launching terminal command"
+msgstr "Ці абнаўляць utmp/wtmp, калі выконваецца загад тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:135
+msgid "Whether to use the colors from the theme for the terminal widget"
+msgstr "Ці выкарыстоўваць колеры ад тэмы для віджэта тэрмінала"
+
+#: src/gnome-terminal.schemas.in.h:136
+msgid "Whether to use the system font"
+msgstr "Ці выкарыстоўваць сыстэмны шрыфт"
+
+#. Translators: please note this is has to be a list of valid encodings (which are to
+#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
+#. is not to be translated. This is provided for costumization of the default encoding menu; see
+#. bug 144810 for an use case. In most cases, this should be left alone.
+#: src/gnome-terminal.schemas.in.h:141
+msgid "[UTF-8,current]"
+msgstr ""
+
+#: src/profile-editor.c:47
 msgid "Black on light yellow"
 msgstr "Чорны на зырка-жоўтым"
 
-#: src/profile-editor.c:52
+#: src/profile-editor.c:49
 msgid "Black on white"
 msgstr "Чорны на белым"
 
-#: src/profile-editor.c:54
-#, fuzzy
+#: src/profile-editor.c:51
 msgid "Gray on black"
-msgstr "Зялёны на чорным"
+msgstr "Шэры на чорным"
 
-#: src/profile-editor.c:56
+#: src/profile-editor.c:53
 msgid "Green on black"
 msgstr "Зялёны на чорным"
 
-#: src/profile-editor.c:58
+#: src/profile-editor.c:55
 msgid "White on black"
 msgstr "Белы на чорным"
 
-#: src/profile-editor.c:71
+#: src/profile-editor.c:68
 msgid "Linux console"
 msgstr "Кансоль Linux"
 
-#: src/profile-editor.c:72
+#: src/profile-editor.c:69
 msgid "XTerm"
 msgstr "XTerm"
 
-#: src/profile-editor.c:73
+#: src/profile-editor.c:70
 msgid "Rxvt"
 msgstr "Rxvt"
 
-#: src/profile-editor.c:813 src/profile-editor.c:843
+#: src/profile-editor.c:791 src/profile-editor.c:821
 msgid "Custom"
 msgstr "Іншы"
 
-#: src/profile-editor.c:1230
+#: src/profile-editor.c:1179
 msgid "Choose a terminal font"
-msgstr "Выбярыце шрыфт тэрміналу"
+msgstr "Выбярыце шрыфт тэрмінала"
 
-#: src/profile-editor.c:1240 src/simple-x-font-selector.c:327
+#: src/profile-editor.c:1190 src/simple-x-font-selector.c:327
 msgid "_Font:"
 msgstr "_Шрыфт:"
 
-#: src/profile-editor.c:1515
+#: src/profile-editor.c:1468
 #, c-format
-msgid "Editing profile \"%s\""
-msgstr "Зьмена профілю \"%s\""
+msgid "Editing Profile \"%s\""
+msgstr "Рэдагаваньне профілю \"%s\""
 
 #: src/simple-x-font-selector.c:332
 msgid "Si_ze:"
@@ -671,60 +1611,59 @@ msgstr "_Памер:"
 
 #: src/simple-x-font-selector.c:334
 msgid "_Use bold version of font"
-msgstr "Выкарыстоўваць напаў_тлустую версыю шрыфту"
+msgstr "Выкарыстоўваць напаў_тлустую версыю шрыфта"
 
-#: src/simple-x-font-selector.c:342
+#: src/simple-x-font-selector.c:341
 msgid "Click to choose font type"
-msgstr "Клікніце тут, каб выбраць шрыфт"
+msgstr "Пстрыкніце тутака, каб выбраць шрыфт"
 
-#: src/simple-x-font-selector.c:348
+#: src/simple-x-font-selector.c:345
 msgid "Click to choose font size"
-msgstr "Клікніце тутака, каб выбраць памер шрыфту"
+msgstr "Пстрыкніце тутака, каб выбраць памер шрыфта"
 
-#: src/simple-x-font-selector.c:659 src/x-font-selector.c:1964
+#: src/simple-x-font-selector.c:656
 msgid "roman"
 msgstr "прамы"
 
-#: src/simple-x-font-selector.c:660 src/x-font-selector.c:1213
-#: src/x-font-selector.c:1965
+#: src/simple-x-font-selector.c:657
 msgid "italic"
 msgstr "курсыў"
 
-#: src/simple-x-font-selector.c:661 src/x-font-selector.c:1214
-#: src/x-font-selector.c:1966
+#: src/simple-x-font-selector.c:658
 msgid "oblique"
 msgstr "нахілены"
 
-#: src/simple-x-font-selector.c:662 src/x-font-selector.c:1215
-#: src/x-font-selector.c:1967
+#: src/simple-x-font-selector.c:659
 msgid "reverse italic"
 msgstr "адваротны курсыў"
 
-#: src/simple-x-font-selector.c:663 src/x-font-selector.c:1216
-#: src/x-font-selector.c:1968
+#: src/simple-x-font-selector.c:660
 msgid "reverse oblique"
 msgstr "адваротна нахілены"
 
-#: src/simple-x-font-selector.c:664 src/x-font-selector.c:1217
-#: src/x-font-selector.c:1969
+#: src/simple-x-font-selector.c:661
 msgid "other"
 msgstr "іншы"
 
-#: src/simple-x-font-selector.c:671 src/x-font-selector.c:1976
+#: src/simple-x-font-selector.c:668
 msgid "proportional"
 msgstr "прапарцыянальны"
 
-#: src/simple-x-font-selector.c:672 src/x-font-selector.c:1977
+#: src/simple-x-font-selector.c:669
 msgid "monospaced"
 msgstr "монашыранёвы"
 
-#: src/simple-x-font-selector.c:673 src/x-font-selector.c:1978
+#: src/simple-x-font-selector.c:670
 msgid "char cell"
 msgstr "ячея сымбалю"
 
-#: src/simple-x-font-selector.c:1268 src/x-font-selector.c:2654
+#: src/simple-x-font-selector.c:1265
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
 msgstr "Перавышана значэньне MAX_FONTS. Пэўныя шрыфты могуць быць недаступныя."
+
+#: src/skey-popup.c:63
+msgid "The text you clicked doesn't seem to be an S/Key challenge."
+msgstr "Тэкст, які вы націснулі не выглядае як S/Key выклік."
 
 #: src/terminal-accels.c:75
 msgid "New Tab"
@@ -733,10 +1672,6 @@ msgstr "Стварыць укладку"
 #: src/terminal-accels.c:77
 msgid "New Window"
 msgstr "Стварыць акно"
-
-#: src/terminal-accels.c:79 src/terminal.c:2166
-msgid "New Profile"
-msgstr "Стварыць профіль"
 
 #: src/terminal-accels.c:81
 msgid "Close Tab"
@@ -764,17 +1699,17 @@ msgstr "На ўвесь экран"
 
 #: src/terminal-accels.c:101
 msgid "Zoom In"
-msgstr ""
+msgstr "Маштаб +"
 
 #: src/terminal-accels.c:103
 msgid "Zoom Out"
-msgstr ""
+msgstr "Маштаб -"
 
 #: src/terminal-accels.c:105
 msgid "Normal Size"
-msgstr ""
+msgstr "Нармальны памер"
 
-#: src/terminal-accels.c:111
+#: src/terminal-accels.c:111 src/terminal-screen.c:1969
 msgid "Set Title"
 msgstr "Усталяваць загаловак"
 
@@ -866,7 +1801,8 @@ msgstr "Пераход"
 msgid "Help"
 msgstr "Дапамога"
 
-#: src/terminal-accels.c:264 src/terminal-profile.c:391 src/terminal.c:1469
+#: src/terminal-accels.c:264 src/terminal-profile.c:392
+#: src/terminal-screen.c:199 src/terminal.c:1620
 #, c-format
 msgid "There was an error loading config from %s. (%s)\n"
 msgstr "Пад час загрузкі наладак з %s узьнікла памылка. (%s)\n"
@@ -877,33 +1813,37 @@ msgid ""
 "There was an error subscribing to notification of terminal keybinding "
 "changes. (%s)\n"
 msgstr ""
-"Пад час падпіскі на нагад аб зьмене камбінацыяў клавішаў тэрміналу ўзьнікла "
+"Пад час падпіскі на нагад аб зьмене камбінацыяў клавішаў тэрмінала ўзьнікла "
 "памылка. (%s)\n"
 
 #: src/terminal-accels.c:319
 #, c-format
 msgid "There was an error loading a terminal keybinding. (%s)\n"
 msgstr ""
-"Пад час загрузкі камбінацыяў клавішаў тэрміналу ўзьнікла памылка. (%s)\n"
+"Пад час загрузкі камбінацыяў клавішаў тэрмінала ўзьнікла памылка. (%s)\n"
 
 #: src/terminal-accels.c:335
 #, c-format
 msgid "The value of configuration key %s is not valid; value is \"%s\"\n"
 msgstr "Значэньне ключа канфігурацыі %s памылковае: \"%s\"\n"
 
-#: src/terminal-accels.c:358 src/terminal-window.c:1028
+#: src/terminal-accels.c:358
 #, c-format
 msgid ""
-"There was an error loading config value for whether to use mnemonics. (%s)\n"
+"There was an error loading config value for whether to use menubar access "
+"keys. (%s)\n"
 msgstr ""
-"Пад час загрузкі значэньня выкарыстаньня мнемонік узьнікла памылка. (%s)\n"
+"Узьнікла памылка пад час загрузкі значэньня наладкі для клявішаў доступу да "
+"радка мэню. (%s)\n"
 
 #: src/terminal-accels.c:372
 #, c-format
-msgid "There was an error subscribing to notification for use_mnemonics (%s)\n"
+msgid ""
+"There was an error subscribing to notification on changes on whether to use "
+"menubar access keys (%s)\n"
 msgstr ""
-"Пад час падпіскі на нагад выкарыстаньня значэньня use_mneminics узьнікла "
-"памылка (%s)\n"
+"Узьнікла памылка пад час падпіскі на нагадваньне аб зьмене значэньня "
+"выкарыстаньня клявішаў доступу да мэню (%s)\n"
 
 #: src/terminal-accels.c:383
 #, c-format
@@ -927,33 +1867,38 @@ msgstr ""
 #, c-format
 msgid "Error propagating accelerator change to configuration database: %s\n"
 msgstr ""
-"Памылка распаўсюду зьмены паскаральніку ў базе даньняў канфігурацыі: %s\n"
+"Памылка распаўсюду зьмены паскаральніка ў базе даньняў канфігурацыі: %s\n"
 
-#: src/terminal-accels.c:947
+#: src/terminal-accels.c:986
+#, c-format
+msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
+msgstr ""
+
+#: src/terminal-accels.c:1018
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
-"Памылка ўсталяваньня новага паскаральніку ў базе даньняў канфігурацыі: %s\n"
+"Памылка ўсталяваньня новага паскаральніка ў базе даньняў канфігурацыі: %s\n"
 
-#: src/terminal-accels.c:978
+#: src/terminal-accels.c:1049
 #, c-format
-msgid "Error setting use_mnemonics key: %s\n"
-msgstr "Памылка ўсталяваньня клявішы use_mnemonics: %s\n"
+msgid "Error setting %s config key: %s\n"
+msgstr "Памылка ўсталяваньня ключа наладак %s: %s\n"
 
-#: src/terminal-accels.c:1008
+#: src/terminal-accels.c:1077
 #, c-format
 msgid "Error setting use_menu_accelerators key: %s\n"
-msgstr "Памылка ўсталяваньня клявішы use_mtnu_accellerators: %s\n"
+msgstr "Памылка ўсталяваньня ключа use_mtnu_accellerators: %s\n"
 
-#: src/terminal-accels.c:1127
+#: src/terminal-accels.c:1196
 msgid "_Action"
 msgstr "_Дзеяньне"
 
-#: src/terminal-accels.c:1147
-msgid "Accelerator _Key"
-msgstr "_Клявіша-паскаральнік"
+#: src/terminal-accels.c:1216
+msgid "Shortcut _Key"
+msgstr "Гарачая _клявіша"
 
-#: src/terminal-profile.c:406
+#: src/terminal-profile.c:407
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile changes. "
@@ -962,57 +1907,58 @@ msgstr ""
 "Пад час падпіскі на нагад аб зьмене профілю тэрмінала ўзьнікла памылка. (%"
 "s)\n"
 
-#: src/terminal-profile.c:1001
+#: src/terminal-profile.c:1002
 #, c-format
 msgid "Could not find an icon called \"%s\" for terminal profile \"%s\"\n"
 msgstr "Ня атрымалася адшукаць значку \"%s\" для профілю \"%s\"\n"
 
-#: src/terminal-profile.c:1015
+#: src/terminal-profile.c:1016
 #, c-format
 msgid "Failed to load icon \"%s\" for terminal profile \"%s\": %s\n"
 msgstr "Збой пад час загрузкі значкі \"%s\" для профілю \"%s\": %s\n"
 
-#: src/terminal-profile.c:1192
+#: src/terminal-profile.c:1193
 #, c-format
 msgid ""
 "Could not find a background image called \"%s\" for terminal profile \"%s\"\n"
 msgstr "Ня атрымалася адшукаць відарыс тла \"%s\" для профілю \"%s\"\n"
 
-#: src/terminal-profile.c:1206
+#: src/terminal-profile.c:1207
 #, c-format
 msgid ""
 "Failed to load background image \"%s\" for terminal profile \"%s\": %s\n"
 msgstr "Збой пад час загрузкі відарысу тла \"%s\" для профілю \"%s\": %s\n"
 
-#: src/terminal-profile.c:1860
+#: src/terminal-profile.c:1861
 #, c-format
 msgid ""
 "GNOME Terminal: font name \"%s\" set in configuration database is not valid\n"
 msgstr ""
-"Тэрмінал асяродьдзя GNOME: імя шрыфту \"%s\", усталявана у базе даньняў "
+"Тэрмінал асяродьдзя GNOME: назва шрыфта \"%s\", усталяваная у базе даньняў "
 "канфігурацыі, недапушчальна\n"
 
-#: src/terminal-profile.c:2161
+#: src/terminal-profile.c:2162
 #, c-format
 msgid "Error getting default value of %s: %s\n"
 msgstr "Памылка атрыманьняя дапомнага значэньня %s : %s\n"
 
-#: src/terminal-profile.c:2167
+#: src/terminal-profile.c:2168
 #, c-format
 msgid "There wasn't a default value for %s\n"
 msgstr "Адсутнічае дапомнае значэньне для %s\n"
 
-#: src/terminal-profile.c:2182
+#: src/terminal-profile.c:2183
 #, c-format
 msgid "Error setting key %s back to default: %s\n"
 msgstr "Памылка усталяваньня клавішы %s у дапомнае значэньне: %s\n"
 
-#: src/terminal-profile.c:2385
+#: src/terminal-profile.c:2386
 #, c-format
-msgid "There was an error forgetting profile dir %s. (%s)\n"
-msgstr "Пад час скіданьня каталёгу профіля %s узьнікла памылка. (%s)\n"
+msgid ""
+"There was an error while removing the configuration directory %s. (%s)\n"
+msgstr "Узьнікла памылка пад час выдаленьня тэчкі наладак %s. (%s)\n"
 
-#: src/terminal-profile.c:2442
+#: src/terminal-profile.c:2443
 #, c-format
 msgid ""
 "There was an error subscribing to notification of changes to default "
@@ -1021,40 +1967,52 @@ msgstr ""
 "Пад час падпіскі на нагад аб зьмене профілю на дапомны ўзьнікла памылка. (%"
 "s)\n"
 
-#: src/terminal-profile.c:2487
+#: src/terminal-profile.c:2488
 msgid "_Details"
 msgstr "Па_драбязнасьці"
 
-#: src/terminal-profile.c:2922
+#: src/terminal-profile.c:2923
 #, c-format
 msgid "There was an error creating the profile \"%s\""
 msgstr "Пад час стварэньня профілю ўзьнікла памылка \"%s\""
 
-#: src/terminal-profile.c:3002
+#: src/terminal-profile.c:3003
 msgid "There was an error deleting the profiles"
 msgstr "Пад час выдаленьня профіляў узьнікла памылка"
 
-#: src/terminal-profile.c:3071
+#: src/terminal-profile.c:3106
 #, c-format
 msgid "Could not parse string \"%s\" as a color palette\n"
 msgstr "Ня атрымалася прааналізаваць радок \"%s\" як палітру колераў\n"
 
-#: src/terminal-profile.c:3080
+#: src/terminal-profile.c:3115
 #, c-format
-msgid "Palette had %d entries instead of %d\n"
-msgstr "Палітра мае %d запісаў замест %d\n"
+msgid "Palette had %d entry instead of %d\n"
+msgid_plural "Palette had %d entries instead of %d\n"
+msgstr[0] "Палітра мае %d запіс замест %d\n"
+msgstr[1] "Палітра мае %d запісы замест %d\n"
+msgstr[2] "Палітра мае %d запісаўа замест %d\n"
 
-#: src/terminal-screen.c:662
+#: src/terminal-screen.c:215
+#, c-format
+msgid ""
+"There was an error subscribing to notification of monospace font changes. (%"
+"s)\n"
+msgstr ""
+"Узьнікла памылка пад час падпіскі на нагад аб зьмене аднашырынёвага шрыфту. "
+"(%s)\n"
+
+#: src/terminal-screen.c:822
 #, c-format
 msgid "Could not load font \"%s\"\n"
 msgstr "Ня атрымалася загрузіць шрыфт \"%s\"\n"
 
-#: src/terminal-screen.c:819
+#: src/terminal-screen.c:950
 #, c-format
 msgid "There was a problem with the command for this terminal: %s"
-msgstr "Узьнікла праблема з камандай для гэтага тэрміналу: %s"
+msgstr "Узьнікла праблема з камандай для гэтага тэрмінала: %s"
 
-#: src/terminal-screen.c:1142
+#: src/terminal-screen.c:1306
 #, c-format
 msgid ""
 "Could not open the address \"%s\":\n"
@@ -1063,204 +2021,209 @@ msgstr ""
 "Ня атрымалася адчыніць адрэсу \"%s\":\n"
 "%s"
 
-#: src/terminal-screen.c:1264 src/terminal-window.c:699
-msgid "_New Window"
-msgstr "_Стварыць акно"
-
-#: src/terminal-screen.c:1271 src/terminal-window.c:702
-msgid "New _Tab"
-msgstr "Стварыць _укладку"
-
-#: src/terminal-screen.c:1295 src/terminal-window.c:803
-msgid "_Profile"
-msgstr "_Профіль"
-
-#: src/terminal-screen.c:1345
-msgid "_Edit Current Profile..."
-msgstr "Зьмяніць бяг_учы профіль..."
-
-#: src/terminal-screen.c:1351
-msgid "_Input Methods"
+#: src/terminal-screen.c:1399 src/terminal-window.c:784
+#, c-format
+msgid ""
+"There was an error loading config value for whether to use image in menus. (%"
+"s)\n"
 msgstr ""
+"Узьнікла памылка пад час загрузкі значэньня наладкі выкарыстаньня значак у "
+"мэню. (%s)\n"
 
-#: src/terminal-screen.c:1367
-msgid "Hide _Menubar"
-msgstr "Схаваць радок _мэню"
+#: src/terminal-screen.c:1470
+msgid "_Open Link"
+msgstr "Адчыніць спа_сылку"
 
-#: src/terminal-screen.c:1372
+#: src/terminal-screen.c:1475
+msgid "_Copy Link Address"
+msgstr "Скапіяваць а_дрэсу спасылкі"
+
+#: src/terminal-screen.c:1486 src/terminal-window.c:827
+msgid "Open _Terminal"
+msgstr "Адчыніць _тэрмінал"
+
+#: src/terminal-screen.c:1491 src/terminal-window.c:830
+msgid "Open Ta_b"
+msgstr "Адчыніць _укладку"
+
+#: src/terminal-screen.c:1501 src/terminal-window.c:845
+msgid "C_lose Tab"
+msgstr "Зачыніць у_кладку"
+
+#: src/terminal-screen.c:1506 src/terminal-window.c:849
+msgid "_Close Window"
+msgstr "_Закрыць акно"
+
+#: src/terminal-screen.c:1534
+msgid "Change P_rofile"
+msgstr "Зьмяніць _профіль"
+
+#: src/terminal-screen.c:1584
+msgid "_Edit Current Profile..."
+msgstr "Рэдагаваць бяг_учы профіль..."
+
+#: src/terminal-screen.c:1589
 msgid "Show _Menubar"
-msgstr "Адлюстраваць радок _мэню"
+msgstr "Паказаць радок _мэню"
 
-#: src/terminal-screen.c:1381
+#: src/terminal-screen.c:1596
 msgid "Secure _Keyboard"
 msgstr "Абараніць _клявіятуру"
 
-#: src/terminal-screen.c:1387
-msgid "_Open Link"
-msgstr "Адчыніць луч_ыва"
+#: src/terminal-screen.c:1606
+msgid "_Input Methods"
+msgstr "_Мэтады ўвода"
 
-#: src/terminal-screen.c:1394
-msgid "_Copy Link Address"
-msgstr "Скапіяваць а_дрэсу лучыва"
-
-#: src/terminal-screen.c:1743
-msgid "Change terminal title"
-msgstr "Зьмяніць загаловак тэрміналу"
-
-#: src/terminal-screen.c:1770
+#: src/terminal-screen.c:1998
 msgid "_Title:"
 msgstr "За_галовак:"
 
-#: src/terminal-screen.c:1888
+#: src/terminal-screen.c:2115
 #, c-format
 msgid "text/plain dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Звычайны тэкст (text/plain), скінуты на тэрмінал, меў памылковы фармат (%d) "
 "ці даўжыню (%d)\n"
 
-#: src/terminal-screen.c:1911
+#: src/terminal-screen.c:2138
 #, c-format
 msgid "Color dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Колер, скінуты на тэрмінал, меў памылковы фармат (%d) ці даўжыню (%d)\n"
 
-#: src/terminal-screen.c:1954
+#: src/terminal-screen.c:2181
 #, c-format
 msgid "Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"URL з праглядальніку Mozilla, скінуты на тэрмінал, меў памылковы фармат (%d) "
-"ці даўжыню (%d)\n"
+"URL з праглядальніка Mozilla, які быў кінуты на тэрмінал, меў памылковы "
+"фармат (%d) ці даўжыню (%d)\n"
 
-#: src/terminal-screen.c:2003
+#: src/terminal-screen.c:2230
 #, c-format
 msgid "URI list dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"Сьпіс URI, скінуты на тэрмінал, меў памылковы фармат (%d) ці даўжыню (%d)\n"
+"Сьпіс URI, які быў кінуты на тэрмінал, меў памылковы фармат (%d) ці даўжыню "
+"(%d)\n"
 
-#: src/terminal-screen.c:2057
+#: src/terminal-screen.c:2284
 #, c-format
 msgid ""
 "Image filename dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"Імя файлу відарысу, скінуты на тэрмінал, мела памылковы фармат (%d) ці "
-"даўжыню (%d)\n"
+"Назва файла відарыса, які быў кінуты на тэрмінал, мела памылковы фармат (%d) "
+"ці даўжыню (%d)\n"
 
-#: src/terminal-screen.c:2083
+#: src/terminal-screen.c:2310
 #, c-format
 msgid "Error converting URI \"%s\" into filename: %s\n"
-msgstr "Памылка канвэртацыі URI \"%s\" у імя файлу: %s\n"
+msgstr "Памылка канвэртацыі URI \"%s\" у назву файла: %s\n"
 
-#: src/terminal-widget-zvt.c:1069
-#, c-format
-msgid "There was an error creating the child process for this terminal: %s"
+#: src/terminal-widget-vte.c:574
+msgid "There was an error creating the child process for this terminal"
 msgstr ""
-"Пад час стварэньня працэса-нашчадка для гэтага тэрміналу ўзьнікла памылка: %s"
+"Пад час стварэньня працэса-нашчадка для гэтага тэрмінала ўзьнікла памылка"
 
-#: src/terminal-widget-zvt.c:1085
+#: src/terminal-window.c:336
 #, c-format
-msgid "Could not set working directory to \"%s\": %s\n"
-msgstr "Ня атрымалася усталяваць працоўны каталёг у \"%s\": %s\n"
+msgid ""
+"There was an error subscribing to notification of menu icon visibility "
+"changes. (%s)\n"
+msgstr ""
+"Узьнікла памылка пад час падпіскі на нагад аб зьмене бачнасьці знчакі мэню. "
+"(%s)\n"
 
-#: src/terminal-widget-zvt.c:1091
-#, c-format
-msgid "Could not execute command %s: %s\n"
-msgstr "Ня атрымалася выканаць каманду %s: %s\n"
-
-#: src/terminal-window.c:466
+#: src/terminal-window.c:594
 #, c-format
 msgid "_%d. %s"
 msgstr "_%d. %s"
 
-#: src/terminal-window.c:469
+#: src/terminal-window.c:596
 #, c-format
 msgid "_%c. %s"
 msgstr "_%c. %s"
 
-#: src/terminal-window.c:613
+#: src/terminal-window.c:717
 msgid "_Add or Remove..."
-msgstr ""
+msgstr "_Даданьне ці выдаленьне..."
 
 #. This is fairly bogus to have here but I don't know
 #. * where else to put it really
 #.
-#: src/terminal-window.c:707
+#: src/terminal-window.c:838
 msgid "New _Profile..."
-msgstr "Стварыць _профіль..."
+msgstr "Новы _профіль..."
 
-#: src/terminal-window.c:713
-msgid "_Close Window"
-msgstr "_Зачыніць акно"
-
-#: src/terminal-window.c:718
-msgid "C_lose Tab"
-msgstr "Зачыніць у_кладку"
-
-#: src/terminal-window.c:747
-msgid "C_urrent Profile..."
-msgstr "Наладзіць бягучы _профіль..."
-
-#: src/terminal-window.c:750
-msgid "_Keybindings..."
-msgstr "Наладзіць камбінацыі к_лявішаў..."
-
-#: src/terminal-window.c:753
+#: src/terminal-window.c:880
 msgid "P_rofiles..."
 msgstr "Наладзіць про_філі..."
 
-#: src/terminal-window.c:766
-msgid "Hide Menu_bar"
-msgstr "Схаваць радок _мэню"
+#: src/terminal-window.c:883
+msgid "_Keyboard Shortcuts..."
+msgstr "Га_рачыя клявішы..."
 
-#: src/terminal-window.c:769
+#: src/terminal-window.c:887
+msgid "C_urrent Profile..."
+msgstr "Бягучы _профіль..."
+
+#. This is a check menu item so that the togglability is evident, but when it is not checked,
+#. * it won't be seen, of course, because the menubar will be then hidden.
+#: src/terminal-window.c:902
+msgid "Show Menu_bar"
+msgstr "Паказаць радок _мэню"
+
+#: src/terminal-window.c:906
 msgid "_Full Screen"
-msgstr "На ўвесь _экран"
+msgstr "Поўна_экранны рэжым"
 
-#: src/terminal-window.c:773
-msgid "_Zoom In"
-msgstr ""
-
-#: src/terminal-window.c:777
-msgid "Zoom _Out"
-msgstr ""
-
-#: src/terminal-window.c:781
-#, fuzzy
+#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
+#: src/terminal-window.c:929
 msgid "_Normal Size"
-msgstr "_Аднавіць нармальны памер"
+msgstr "З_вычайны памер"
 
-#: src/terminal-window.c:806
+#: src/terminal-window.c:951
+msgid "Change _Profile"
+msgstr "Зьмяніць _профіль"
+
+#: src/terminal-window.c:954
 msgid "_Set Title..."
 msgstr "Усталяваць за_галовак..."
 
-#: src/terminal-window.c:813
-msgid "_Character Coding"
-msgstr ""
+#: src/terminal-window.c:961
+msgid "Set _Character Encoding"
+msgstr "Усталяваць _кадаваньне"
 
-#: src/terminal-window.c:820
+#: src/terminal-window.c:971
 msgid "_Reset"
 msgstr "С_кінуць"
 
-#: src/terminal-window.c:823
+#: src/terminal-window.c:974
 msgid "Reset and C_lear"
 msgstr "Скінуць і а_чысьціць"
 
-#: src/terminal-window.c:837
+#: src/terminal-window.c:988
 msgid "_Previous Tab"
 msgstr "На _папярэднюю ўкладку"
 
-#: src/terminal-window.c:841
+#: src/terminal-window.c:992
 msgid "_Next Tab"
 msgstr "На на_ступную ўкладку"
 
-#: src/terminal-window.c:860
+#: src/terminal-window.c:1011
 msgid "_Contents"
 msgstr "_Зьмест"
 
-#: src/terminal-window.c:869
+#: src/terminal-window.c:1021
 msgid "_About"
 msgstr "_Пра праграму"
 
-#: src/terminal-window.c:1047
+#: src/terminal-window.c:1185
+#, c-format
+msgid ""
+"There was an error loading config value for whether to use mnemonics. (%s)\n"
+msgstr ""
+"Пад час загрузкі значэньня выкарыстаньня мнемонік узьнікла памылка. (%s)\n"
+
+#: src/terminal-window.c:1204
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -1269,77 +2232,96 @@ msgstr ""
 "Падчас падпіскі на нагад аб зьмене канфігурацыі тэрмінальнага акна ўзьнікла "
 "памылка. (%s)\n"
 
-#: src/terminal-window.c:1922
+#: src/terminal-window.c:2092
 msgid "_File"
 msgstr "_Файл"
 
-#: src/terminal-window.c:1924 src/terminal.c:2773
+#: src/terminal-window.c:2094 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Рэдагаваньне"
 
-#: src/terminal-window.c:1926
+#: src/terminal-window.c:2096
 msgid "_View"
 msgstr "_Выгляд"
 
-#: src/terminal-window.c:1928
+#: src/terminal-window.c:2098
 msgid "_Terminal"
 msgstr "_Тэрмінал"
 
-#: src/terminal-window.c:1930
-msgid "_Go"
-msgstr "_Пераход"
+#: src/terminal-window.c:2100
+msgid "Ta_bs"
+msgstr "Ук_ладкі"
 
-#: src/terminal-window.c:1932
+#: src/terminal-window.c:2102
 msgid "_Help"
-msgstr "_Дапамога"
+msgstr "_Даведка"
 
-#: src/terminal-window.c:2054
-msgid "_Restore normal size"
-msgstr "_Аднавіць нармальны памер"
+#: src/terminal-window.c:2283
+#, c-format
+msgid "This window has one tab open. Closing the window will close it."
+msgid_plural ""
+"This window has %d tabs open. Closing the window will also close all its "
+"tabs."
+msgstr[0] ""
+msgstr[1] ""
 
-#: src/terminal-window.c:2058
-msgid "_Full screen"
-msgstr "На ўвесь _экран"
+#: src/terminal-window.c:2288
+#, fuzzy
+msgid "Close all tabs?"
+msgstr "Зачыніць укладку"
 
-#: src/terminal-window.c:2254
-msgid ""
-"Your current desktop environment does not support the full screen feature.\n"
-" (In technical terms, you need a window manager with support for the "
-"_NET_WM_STATE_FULLSCREEN property.)"
-msgstr ""
-"Бягучае асяродьдзе не падтрымлівае працу з поўным экранам.\n"
-"(Вам неабходны мэнаджар вокнаў, які падтрымлівае ўласьцівасьць "
-"_NET_WM_STATE_FULLSCREEN)."
+#: src/terminal-window.c:2300
+#, fuzzy
+msgid "Close All Tabs"
+msgstr "Зачыніць укладку"
 
-#: src/terminal-window.c:2540
+#: src/terminal-window.c:2692
 msgid "translator_credits"
-msgstr "Belarusian Language Linux Team <i18n@mova.org>"
+msgstr ""
+"Віталь Хілько <dojlid@mova.org>, 2003\n"
+"Алесь Няхайчык <nab@mail.by>, 2003-04"
 
-#: src/terminal-window.c:2554
+#: src/terminal-window.c:2704
 msgid "GNOME Terminal"
 msgstr "Тэрмінал GNOME"
 
-#: src/terminal.c:181
+#: src/terminal.c:187
 msgid "Execute the argument to this option inside the terminal."
-msgstr "Выканаць аргумэнт да гэтага парамэтру ў тэрмінале."
+msgstr "Выканаць аргумэнт да гэтага парамэтра ў тэрмінале."
 
-#: src/terminal.c:190
+#: src/terminal.c:196
 msgid "Execute the remainder of the command line inside the terminal."
-msgstr "Выканаць частку каманднага родку, які застаўся ў тэрмінале."
+msgstr "Выканаць частку каманднага родка, які застаўся ў тэрмінале."
 
-#: src/terminal.c:199
+#: src/terminal.c:205
+msgid ""
+"Open a new window containing a tab with the default profile. More than one "
+"of these options can be provided."
+msgstr ""
+"Адчыніць новае вакно, якое ўтрымлівае укладку з дапомным профілям. Можна "
+"задаць некалькі гэткіх выбараў."
+
+#: src/terminal.c:214
 msgid ""
 "Open a new window containing a tab with the given profile. More than one of "
 "these options can be provided."
 msgstr ""
-"Адчыніць новае акно, якое ўтрымлівае укладку з зададзеным профілем. Можна "
-"задаць неколькі гэткіх парамэтраў."
+"Адчыніць новае вакно, якое ўтрымлівае ўкладку з зададзеным профілем. Можна "
+"задаць некалькі гэткіх парамэтраў."
 
-#: src/terminal.c:200 src/terminal.c:209
+#: src/terminal.c:215 src/terminal.c:233
 msgid "PROFILENAME"
-msgstr "НАЙМЕНЬНЕ ПРОФІЛЮ"
+msgstr "НАЗВА_ПРОФІЛЮ"
 
-#: src/terminal.c:208
+#: src/terminal.c:223
+msgid ""
+"Open a new tab in the last-opened window with the default profile. More than "
+"one of these options can be provided."
+msgstr ""
+"Адчыніць новую ўкладку ў апошнім адчыненым акне з дапомным профілем. Можна "
+"задаць некалькі гэткіх парамэтраў."
+
+#: src/terminal.c:232
 msgid ""
 "Open a new tab in the last-opened window with the given profile. More than "
 "one of these options can be provided."
@@ -1347,7 +2329,7 @@ msgstr ""
 "Адчыніць новую ўкладку ў апошнім адчыненым акне з зададзеным профілем. Можна "
 "задаць некалькі гэткіх парамэтраў."
 
-#: src/terminal.c:217
+#: src/terminal.c:241
 msgid ""
 "Open a new window containing a tab with the given profile ID. Used "
 "internally to save sessions."
@@ -1355,11 +2337,11 @@ msgstr ""
 "Адчыніць новае акно, якое ўтрымлівае ўкладку з ідэнтыфікатарам зададзенага "
 "профілю. Выкарыстоўваецца ў нутры для захаваньня сэансаў."
 
-#: src/terminal.c:218 src/terminal.c:227
+#: src/terminal.c:242 src/terminal.c:251
 msgid "PROFILEID"
-msgstr "ID ПРОФІЛЮ"
+msgstr "ІДЭНТЫФІКАТАР_ПРОФІЛЮ"
 
-#: src/terminal.c:226
+#: src/terminal.c:250
 msgid ""
 "Open a new tab in the last-opened window with the given profile ID. Used "
 "internally to save sessions."
@@ -1367,22 +2349,20 @@ msgstr ""
 "Адчыніць новую ўкладку ў апошнім адчыненым акне з зададзеным ідэнтыфікатарам "
 "профілю. Выкарыстоўваецца ў нутры для захаваньня сэансаў."
 
-#: src/terminal.c:235
-#, fuzzy
+#: src/terminal.c:259
 msgid ""
 "Set the role for the last-specified window; applies to only one window; can "
 "be specified once for each window you create from the command line."
 msgstr ""
-"Уключыць мэню для апошняга з указаных вокнаў; ужываецца толькі да аднаго "
+"Пазначыць ролю для апошняга з указаных вокнаў; ужываецца толькі да аднаго "
 "акна; можа быць указана толькі адзін раз для кожнага акна, якое ствараецца з "
-"каманднага радку."
+"каманднага радка."
 
-#: src/terminal.c:236
-#, fuzzy
+#: src/terminal.c:260
 msgid "ROLE"
-msgstr "ID ПРОФІЛЮ"
+msgstr "РОЛЯ"
 
-#: src/terminal.c:244
+#: src/terminal.c:268
 msgid ""
 "Turn on the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
@@ -1390,9 +2370,9 @@ msgid ""
 msgstr ""
 "Уключыць мэню для апошняга з указаных вокнаў; ужываецца толькі да аднаго "
 "акна; можа быць указана толькі адзін раз для кожнага акна, якое ствараецца з "
-"каманднага радку."
+"каманднага радка."
 
-#: src/terminal.c:253
+#: src/terminal.c:277
 msgid ""
 "Turn off the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
@@ -1400,523 +2380,582 @@ msgid ""
 msgstr ""
 "Выключыць мэню для апошняга з указаных вокнаў; ужываецца толькі да аднаго "
 "акна; можа быць указана толькі адзін раз для кожнага акна, якое ствараецца "
-"зкаманднага радку."
+"зкаманднага радка."
 
-#: src/terminal.c:262
+#: src/terminal.c:286
 msgid ""
 "X geometry specification (see \"X\" man page), can be specified once per "
 "window to be opened."
 msgstr ""
 "Парамэтры акна (гл. старонку кіраўніцтва /man/  па \"X\"), могуць быць "
-"указаны па адным для кожнага акна, якое адчыняецца."
+"указаны па адным для кожнага акна, якое разгортваецца."
 
-#: src/terminal.c:263
+#: src/terminal.c:287
 msgid "GEOMETRY"
 msgstr "ГЕАМЭТРЫЯ"
 
-#: src/terminal.c:271
+#: src/terminal.c:295
 msgid ""
 "Do not register with the activation nameserver, do not re-use an active "
 "terminal"
 msgstr ""
-"Не рэгістраваць з дапамогай паслужніку імёнаў актывацыі, ня выкарыстоўваць "
+"Не рэгістраваць з дапамогай паслужніка імёнаў актывацыі, ня выкарыстоўваць "
 "тэрмінал паўторна"
 
-#: src/terminal.c:280
+#: src/terminal.c:304
+msgid "Register with the activation nameserver [default]"
+msgstr "Зарэгістраваць на паслужніке назваў задзейнічаньня [дапомна]"
+
+#: src/terminal.c:313
 msgid "ID for startup notification protocol."
-msgstr ""
+msgstr "Ідэнтыфікатар для пратакола паведамленьняў пад час запуска."
 
-#: src/terminal.c:289
+#: src/terminal.c:322
 msgid "Set the terminal's title"
-msgstr "Усталяваць загаловак тэрміналу"
+msgstr "Усталяваць загаловак тэрмінала"
 
-#: src/terminal.c:290
+#: src/terminal.c:323
 msgid "TITLE"
 msgstr "ЗАГАЛОВАК"
 
-#: src/terminal.c:298
+#: src/terminal.c:331
 msgid "Set the terminal's working directory"
-msgstr "Усталяваць працоўны каталёг тэрміналу"
+msgstr "Усталяваць працоўны каталёг тэрмінала"
 
-#: src/terminal.c:299
+#: src/terminal.c:332 src/terminal.c:341
 msgid "DIRNAME"
 msgstr "КАТАЛЁГ"
 
-#: src/terminal.c:308
+#: src/terminal.c:340
+msgid "Set the default terminal's working directory. Used internally"
+msgstr ""
+"Усталяваць дапомную працоўную тэчку тэрмінала. Выкарыстоўаецца ўнутрана"
+
+#: src/terminal.c:349
 msgid "Set the terminal's zoom factor (1.0 = normal size)"
-msgstr ""
+msgstr "Усталяваньне ступені маштаба тэрмінала (1.0 = нармальны памер)"
 
-#: src/terminal.c:309
+#: src/terminal.c:350 src/terminal.c:359
 msgid "ZOOMFACTOR"
-msgstr ""
+msgstr "СТУПЕНЬ_МАШТАБА"
 
-#: src/terminal.c:653
+#: src/terminal.c:358
+msgid "Set the last specified tab as the active one in its window"
+msgstr "Усталяваць апошнюю заданую ўкладку ў якасьці актыўнай для гэтага вакна"
+
+#: src/terminal.c:696
 #, c-format
 msgid "Could not load icon \"%s\": %s\n"
 msgstr "Ня атрымалася загрузіць значку \"%s\": %s\n"
 
-#: src/terminal.c:718
-msgid "Option --command/-e requires specifying the command to run\n"
-msgstr "Парамэтар --command/-e патрабуе каманды запуску\n"
-
-#: src/terminal.c:726
+#: src/terminal.c:761
 #, c-format
-msgid "Argument to --command/-e is not a valid command: %s\n"
-msgstr "Аргумэнт для --command/-e ня зьяўляецца дапушчальнай камандай: %s\n"
+msgid "Option \"%s\" requires specifying the command to run\n"
+msgstr "Выбар \"%s\" патрабуе загад для выкананьня\n"
 
-#: src/terminal.c:736 src/terminal.c:758
-msgid ""
-"--command/-e/--execute/-x specified more than once for the same window or "
-"tab\n"
+#: src/terminal.c:769
+#, c-format
+msgid "Argument to \"%s\" is not a valid command: %s\n"
+msgstr "Довад для \"%s\"  ня зьяўляецца рэчаісным загадам: %s\n"
+
+#: src/terminal.c:779 src/terminal.c:803
+#, c-format
+msgid "\"%s\" specified more than once for the same window or tab\n"
 msgstr ""
-"--command/-e/--execute/-x указана болей за адзін раз для аднаго й таго сама "
-"акна ці укладкі\n"
+"\"%s\" зададзены болей за адзін раз для аднаго й таго ж акна ці укладкі\n"
 
-#: src/terminal.c:750
+#: src/terminal.c:794
+#, c-format
 msgid ""
-"Option --execute/-x requires specifying the command to run on the rest of "
-"the command line\n"
+"Option \"%s\" requires specifying the command to run on the rest of the "
+"command line\n"
 msgstr ""
-"Парамэтар --execute/-x патрабуе каманду для запуску ў застаўшайся часцы "
-"каманднага радку\n"
+"Выбар \"%s\" патрабуе загад для выкананьня ў застаўшайся частцы загаднага "
+"радка\n"
 
-#: src/terminal.c:775
-msgid ""
-"Option --window-with-profile requires an argument specifying what profile to "
-"use\n"
-msgstr ""
-"Парамэтар --window-with-profile патрабуе аргумэнт, які указывае які профіль "
-"выкарыстоўваць\n"
+#: src/terminal.c:825 src/terminal.c:849
+#, c-format
+msgid "Option \"%s\" requires an argument specifying what profile to use\n"
+msgstr "Выбар \"%s\" патрабуе довад, які называе профіль длявыкарыстаньня\n"
 
-#: src/terminal.c:792
-msgid ""
-"Option --tab-with-profile requires an argument specifying what profile to "
-"use\n"
-msgstr ""
-"Парамэтар --tab-with-profile патрабуе аргумэнт, які указывае які профіль "
-"выкарыстоўваць\n"
+#: src/terminal.c:883 src/terminal.c:909
+#, c-format
+msgid "\"%s\" option given twice for the same window\n"
+msgstr "Выбар \"%s\" заданы двойчы для аднаго вакна\n"
 
-#: src/terminal.c:823
-msgid "--show-menubar option given twice for the same window\n"
-msgstr "Парамэтар --show-menubar зададзены двойчы для аднаго акна\n"
+#: src/terminal.c:932
+#, c-format
+msgid "Option \"%s\" requires an argument giving the role\n"
+msgstr "Выбар \"%s\" патрабуе довад, які задае ролю\n"
 
-#: src/terminal.c:849
-msgid "--hide-menubar option given twice for the same window\n"
-msgstr "Парамэтар --hide-menubar зададзены двойчы для аднаго акна\n"
-
-#: src/terminal.c:872
-#, fuzzy
-msgid "Option --role requires an argument giving the role\n"
-msgstr "Парамэтар --title патрабуе указаньня аргумэнту, які задае загаловак\n"
-
-#: src/terminal.c:881
-#, fuzzy
+#: src/terminal.c:941
 msgid "Two roles given for one window\n"
-msgstr "Для аднаго акна зададзены два наборы памераў\n"
+msgstr "Для аднаго акна зададзены дзьве ролі\n"
 
-#: src/terminal.c:897
-msgid "Option --geometry requires an argument giving the geometry\n"
-msgstr "Парамэтар --geometry патрабуе аргумэнт, які задае геамэтрыю акна\n"
+#: src/terminal.c:957
+#, c-format
+msgid "Option \"%s\" requires an argument giving the geometry\n"
+msgstr "Выбар \"%s\" патрабуе довад, які задае геамэтрыю\n"
 
-#: src/terminal.c:906 src/terminal.c:916
+#: src/terminal.c:966
+#, c-format
+msgid "Two \"%s\" options given for one window\n"
+msgstr "Два выбары \"%s\" заданы для аднаго вакна\n"
+
+#: src/terminal.c:976
 msgid "Two geometries given for one window\n"
-msgstr "Для аднаго акна зададзены два наборы памераў\n"
+msgstr "Для аднаго вакна зададзены два наборы памераў\n"
 
-#: src/terminal.c:938
-msgid "Option --title requires an argument giving the title\n"
-msgstr "Парамэтар --title патрабуе указаньня аргумэнту, які задае загаловак\n"
+#: src/terminal.c:1002
+#, c-format
+msgid "Option \"%s\" requires an argument giving the title\n"
+msgstr "Выбар \"%s\" патрабуе довад у якасьці загалоўку\n"
 
-#: src/terminal.c:946
-msgid "Two titles given for one tab\n"
-msgstr "Два загалоўкі зададзены для адной укладкі\n"
+#: src/terminal.c:1010 src/terminal.c:1033 src/terminal.c:1075
+#, c-format
+msgid "Two \"%s\" options given for one tab\n"
+msgstr "Два выбары \"%s\" заданыя для адной укладкі\n"
 
-#: src/terminal.c:961
-msgid "Option --working-directory requires an argument giving the directory\n"
-msgstr "Парамэтар --working-directory патрабуе аргумэнт, які задае каталёг\n"
+#: src/terminal.c:1025
+#, c-format
+msgid "Option \"%s\" requires an argument giving the directory\n"
+msgstr "Выбар \"%s\" патрабуе довад як тэчку\n"
 
-#: src/terminal.c:969
-msgid "Two working directories given for one tab\n"
-msgstr "Два каталёгі зададзены для адной укладкі\n"
+#: src/terminal.c:1045
+msgid ""
+"Option --default-working-directory requires an argument giving the "
+"directory\n"
+msgstr ""
+"Акалічнасьць --default-working-directory патрабуе довад, які задае тэчку\n"
 
-#: src/terminal.c:985
-#, fuzzy
-msgid "Option --zoom requires an argument giving the zoom factor\n"
-msgstr "Парамэтар --geometry патрабуе аргумэнт, які задае геамэтрыю акна\n"
+#: src/terminal.c:1051
+msgid "Two --default-working-directories given\n"
+msgstr "Акалічнасьць --default-working-directories задана двойчы\n"
 
-#: src/terminal.c:993
-#, fuzzy
-msgid "Two zoom factors given for one tab\n"
-msgstr "Два загалоўкі зададзены для адной укладкі\n"
+#: src/terminal.c:1067
+#, c-format
+msgid "Option \"%s\" requires an argument giving the zoom factor\n"
+msgstr "Акалічнасьць \"%s\" патрабуе довад як ступень павелічэньня\n"
 
-#: src/terminal.c:1008
+#: src/terminal.c:1090
 #, c-format
 msgid "\"%s\" is not a valid zoom factor\n"
-msgstr ""
+msgstr "\"%s\" нерэчаісная ступень маштаба\n"
 
-#: src/terminal.c:1016
+#: src/terminal.c:1098
 #, c-format
 msgid "Zoom factor \"%g\" is too small, using %g\n"
-msgstr ""
+msgstr "Ступень маштаба \"%g\" замалая, выкарыстоўваецца %g\n"
 
-#: src/terminal.c:1023
+#: src/terminal.c:1105
 #, c-format
 msgid "Zoom factor \"%g\" is too large, using %g\n"
-msgstr ""
+msgstr "Ступень маштаба \"%g\" завялікая, выкарыстоўваецца %g\n"
 
-#: src/terminal.c:1035
+#: src/terminal.c:1126
+#, c-format
 msgid ""
-"Option given which is no longer supported in this version of gnome-terminal; "
-"you might want to create a profile with the desired setting, and use the new "
-"--window-with-profile option\n"
+"Option --%s is no longer supported in this version of gnome-terminal; you "
+"might want to create a profile with the desired setting, and use the new --"
+"window-with-profile option\n"
 msgstr ""
-"Дадзены парамэтар больш ня падтрымліваецца праграмай gnome-terminal; вам "
-"трэба стварыць профіль з пажаданымі ўласьцівасьцямі, й выкарыстоўваць новы "
-"парамэтар --window-with-profile\n"
+"Выбар --%s больш не падтрымліваецца гэтай вэрсыяй gnome-terminal; вам трэба "
+"стварыць профіль з пажаданымі наладкамі й выкарыстоўваць новы выбар --window-"
+"with-profile\n"
 
-#: src/terminal.c:1041
-msgid "--startup-id option given twice\n"
-msgstr ""
+#: src/terminal.c:1132
+#, c-format
+msgid "\"%s\" option given twice\n"
+msgstr "выбар \"%s\" заданы двойчы\n"
 
-#: src/terminal.c:1046
-msgid "--startup-id option requires an argument\n"
-msgstr ""
+#: src/terminal.c:1137 src/terminal.c:1278
+#, c-format
+msgid "\"%s\" option requires an argument\n"
+msgstr "выбар \"%s\" патрабуе довад\n"
 
-#: src/terminal.c:1163
-msgid "No argument given to --display option\n"
-msgstr ""
+#: src/terminal.c:1256
+#, c-format
+msgid "No argument given to \"%s\" option\n"
+msgstr "Незаданыя довады выбару \"%s\"\n"
 
-#: src/terminal.c:1185
-msgid "No argument given to --screen option\n"
-msgstr ""
-
-#: src/terminal.c:1269
+#: src/terminal.c:1390
 #, c-format
 msgid "No such profile '%s', using default profile\n"
 msgstr "Профіль \"%s\" ня існуе, выкарыстоўваецца дапомны профіль\n"
 
-#: src/terminal.c:1431
+#: src/terminal.c:1568
 #, c-format
 msgid "Invalid argument: \"%s\"\n"
 msgstr "Недапушчальны аргумэнт: \"%s\"\n"
 
-#: src/terminal.c:1485
+#: src/terminal.c:1636
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile list "
 "changes. (%s)\n"
 msgstr ""
-"Узьнікла памылка пад час падпіскі на нагад аб зьмене сьпісу профіляў "
-"тэрміналу. (%s)\n"
+"Узьнікла памылка пад час падпіскі на нагад аб зьмене сьпіса профіляў "
+"тэрмінала. (%s)\n"
 
-#: src/terminal.c:1721
+#: src/terminal.c:1864
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
-msgstr "Недапушчалны памер радку \"%s\"\n"
+msgstr "Недапушчалны памер радка \"%s\"\n"
 
-#: src/terminal.c:1781
+#: src/terminal.c:1924
 #, c-format
 msgid "There was an error getting the list of terminal profiles. (%s)\n"
-msgstr "Узьнікла памылка пад час атрыманьня сьпісу профіляў тэрміналу. (%s)\n"
+msgstr "Узьнікла памылка пад час атрыманьня сьпіса профіляў тэрмінала. (%s)\n"
 
-#: src/terminal.c:2060
-msgid "You have to name your profile."
-msgstr "Неабходна назваць профіль."
-
-#: src/terminal.c:2070
+#: src/terminal.c:2223
 #, c-format
 msgid "You already have a profile called \"%s\""
-msgstr "Профіль, пад найменьнем \"%s\", ужо існуе"
+msgstr "Профіль, пад назвай \"%s\", ужо існуе"
 
-#: src/terminal.c:2107
+#: src/terminal.c:2234
 msgid ""
 "The profile you selected as a base for your new profile no longer exists"
 msgstr "Профіль, выбраны ў якасьці асновы для новага, болей ня існуе"
 
-#: src/terminal.c:2171
-msgid "C_reate"
-msgstr "_Стварыць"
-
-#: src/terminal.c:2196
-msgid "Profile _name:"
-msgstr "Найменьне _профілю:"
-
-#: src/terminal.c:2200
+#: src/terminal.c:2323
 msgid "Enter profile name"
-msgstr "Увядзіце імя профілю"
+msgstr "Увядзіце назву профілю"
 
-#: src/terminal.c:2215
-msgid "_Base on:"
-msgstr "_Заснаваць на:"
+#: src/terminal.c:2333
+msgid "Choose base profile"
+msgstr "Абярыце асноўны профіль"
 
-#: src/terminal.c:2363
+#: src/terminal.c:2472
 msgid "Profile list"
 msgstr "Сьпіс профіляў"
 
-#: src/terminal.c:2436
+#: src/terminal.c:2541
 msgid "You must select one or more profiles to delete."
 msgstr "Трэба выбраць адзін ці болей профіляў для выдаленьня."
 
-#: src/terminal.c:2459
+#: src/terminal.c:2552
 msgid "You must have at least one profile; you can't delete all of them."
-msgstr "Неабходны хоця б адзін профіль; нельга выдаліць іх усе."
+msgstr "Неабходны хаця б адзін профіль; нельга выдаліць іх усе."
 
-#: src/terminal.c:2477
-msgid "Delete these two profiles?\n"
-msgstr "Выдаліць гэтыя два профілі?\n"
-
-#: src/terminal.c:2479
+#: src/terminal.c:2559
 #, c-format
-msgid "Delete these %d profiles?\n"
-msgstr "Выдаліць гэтыя %d профілі?\n"
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "Выдаліць гэты профіль?\n"
+msgstr[1] "Выдаліць %d гэтых профілі?\n"
+msgstr[2] "Выдаліць %d гэтых профіляў?\n"
 
-#: src/terminal.c:2497
+#: src/terminal.c:2580
 #, c-format
 msgid "Delete profile \"%s\"?"
 msgstr "Выдаліць профіль \"%s\"?"
 
-#: src/terminal.c:2519
+#: src/terminal.c:2602
 msgid "Delete Profile"
 msgstr "Выдаліць профіль"
 
-#: src/terminal.c:2806
-msgid "Edit Profiles"
-msgstr "Рэдагаваць профіль"
+#: src/terminal.c:2860
+msgid "Profiles"
+msgstr "Профілі"
 
-#: src/terminal.c:2846
+#: src/terminal.c:2902
 msgid "Profile _used when launching a new terminal:"
-msgstr "Профіль, які _выкарыстоўваецца пад час запуску новага тэрміналу:"
+msgstr "Профіль, які _выкарыстоўваецца пад час запуску новага тэрмінала:"
 
-#: src/terminal.c:2868
+#: src/terminal.c:2922
 msgid "_Profiles:"
 msgstr "_Профілі:"
 
-#: src/terminal.c:2917
+#: src/terminal.c:2969
 msgid "Click to open new profile dialog"
-msgstr "Клікніце тут, каб стварыць профіль"
+msgstr "Пстрыкніце тутака, каб стварыць профіль"
 
-#: src/terminal.c:2930
+#: src/terminal.c:2982
 msgid "Click to open edit profile dialog"
-msgstr "Клікніце тутака, каб зьмяніць профіль"
+msgstr "Пстрыкніце тутака, каб зьмяніць профіль"
 
-#: src/terminal.c:2940
+#: src/terminal.c:2992
 msgid "Click to delete selected profile"
-msgstr "Клікніце тутака, каб выдаліць выбраны профіль"
+msgstr "Пстрыкніце тутака, каб выдаліць выбраны профіль"
 
-#: src/terminal.c:2989
+#: src/terminal.c:3041
 msgid "Click button to choose profile"
 msgstr "Націсьніце кнопку, каб выбраць профіль"
 
-#: src/terminal.c:3410
-#, fuzzy, c-format
+#: src/terminal.c:3458
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Пад час адлюстраваньня даведкі ўзьнікла памылка: %s"
+
+#: src/terminal.c:3529
+#, c-format
 msgid ""
 "The file \"%s\" is missing. This indicates that the application is installed "
-"incorrectly, so the dialog can't be displayed."
+"incorrectly."
 msgstr ""
-"Файл \"%s\" адсутнічае. Гэта азначае, што дастасаваньне было ўсталявана "
-"некарэктна. Дыялёг камбінацыяў клавішаў ня будзе адлюстраваны."
+"Файл \"%s\" адсутнічае. Гэта сьведчыць, што дастасаваньне было ўсталявана "
+"няправільна."
 
-#: src/terminal.c:3583
+#: src/terminal.c:3693
 msgid ""
 "It appears that you do not have gnome-terminal.server installed in a valid "
 "location. Factory mode disabled.\n"
-msgstr "Здаецца, файл gnome-terminal.server ня ўсталяваны. Мейсца адключана.\n"
+msgstr ""
+"Здаецца, файл gnome-terminal.server ня ўсталяваны. Рэжым вытворчасьці "
+"выключаны.\n"
 
-#: src/terminal.c:3586
+#: src/terminal.c:3696
 msgid ""
 "Error registering terminal with the activation service; factory mode "
 "disabled.\n"
 msgstr ""
-"Памылка рэгістрацыі тэрміналу ў паслуге актывацыі; рэжым іейсца выключаны.\n"
+"Памылка рэгістрацыі тэрмінала ў паслуге актывацыі; рэжым  вытворчасьці "
+"выключаны.\n"
 
-#: src/terminal.c:3622
+#: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
-msgstr "Збой падч ас выкліку паслужніка тэрміналу з сэрвэру актывацыі\n"
+msgstr "Збой падч ас выкліку паслужніка тэрмінала з паслужніка актывацыі\n"
 
-#: src/x-font-selector.c:201
-msgid "Foundry:"
-msgstr "Вытворца:"
+#~ msgid "There was an error creating the child process for this terminal: %s"
+#~ msgstr ""
+#~ "Пад час стварэньня працэса-нашчадка для гэтага тэрмінала ўзьнікла "
+#~ "памылка: %s"
 
-#: src/x-font-selector.c:202
-msgid "Family:"
-msgstr "Сям'я:"
+#~ msgid "Could not set working directory to \"%s\": %s\n"
+#~ msgstr "Ня атрымалася усталяваць працоўны каталёг у \"%s\": %s\n"
 
-#: src/x-font-selector.c:203
-msgid "Weight:"
-msgstr "Шчыльнасьць:"
+#~ msgid "Could not execute command %s: %s\n"
+#~ msgstr "Ня атрымалася выканаць каманду %s: %s\n"
 
-#: src/x-font-selector.c:204
-msgid "Slant:"
-msgstr "Нахіл:"
+#~ msgid ""
+#~ "There was an error subscribing to notification for use_mnemonics (%s)\n"
+#~ msgstr ""
+#~ "Пад час падпіскі на нагад выкарыстаньня значэньня use_mneminics узьнікла "
+#~ "памылка (%s)\n"
 
-#: src/x-font-selector.c:205
-msgid "Set Width:"
-msgstr "Усталяваць шырыню:"
+#~ msgid "Accelerator to close a tab."
+#~ msgstr "Паскаральнік для зачыненьня ўкладкі."
 
-#: src/x-font-selector.c:206
-msgid "Add Style:"
-msgstr "Дадаць стыль:"
+#~ msgid "Accelerator to copy text."
+#~ msgstr "Паскаральнік для капіяваньня тэксту."
 
-#: src/x-font-selector.c:207
-msgid "Pixel Size:"
-msgstr "Памер у піксэлях:"
+#~ msgid "Accelerator to launch help."
+#~ msgstr "Паскаральнік для выкліку даведкі."
 
-#: src/x-font-selector.c:208
-msgid "Point Size:"
-msgstr "Памер у кропках:"
+#~ msgid "Accelerator to paste text."
+#~ msgstr "Паскаральнік для ўстаўкі тэксту."
 
-#: src/x-font-selector.c:209
-msgid "Resolution X:"
-msgstr "Раздзяленьне па X:"
+#~ msgid "Delete these two profiles?\n"
+#~ msgstr "Выдаліць гэтыя два профілі?\n"
 
-#: src/x-font-selector.c:210
-msgid "Resolution Y:"
-msgstr "Раздзяленьне па Y:"
+#~ msgid "Edit Profiles"
+#~ msgstr "Рэдагаваць профіль"
 
-#: src/x-font-selector.c:211
-msgid "Spacing:"
-msgstr "Прапарцыянальнасьць:"
+#~ msgid "_New Window"
+#~ msgstr "_Стварыць акно"
 
-#: src/x-font-selector.c:212
-msgid "Average Width:"
-msgstr "Сярэдняя шырыня:"
+#~ msgid "New _Tab"
+#~ msgstr "Стварыць _укладку"
 
-#: src/x-font-selector.c:213
-msgid "Charset:"
-msgstr "Набор сымбаляў:"
+#~ msgid "Hide _Menubar"
+#~ msgstr "Схаваць радок _мэню"
 
-#. Number of internationalized titles here must match number
-#. of NULL initializers above
-#: src/x-font-selector.c:450
-msgid "Font Property"
-msgstr "Уласьцівасьці шрыфту"
+#~ msgid "Change terminal title"
+#~ msgstr "Зьмяніць загаловак тэрмінала"
 
-#: src/x-font-selector.c:451
-msgid "Requested Value"
-msgstr "Запытанае значэньне"
+#~ msgid "Hide Menu_bar"
+#~ msgstr "Схаваць радок _мэню"
 
-#: src/x-font-selector.c:452
-msgid "Actual Value"
-msgstr "Сапраўднае значэньне"
+#~ msgid "_Zoom In"
+#~ msgstr "Маштаб _+"
 
-#: src/x-font-selector.c:485
-msgid "Font"
-msgstr "Шрыфт"
+#~ msgid "Zoom _Out"
+#~ msgstr "Маштаб _-"
 
-#: src/x-font-selector.c:495 src/x-font-selector.c:2173
-#: src/x-font-selector.c:2403
-msgid "Font:"
-msgstr "Шрыфт:"
+#~ msgid "_Go"
+#~ msgstr "_Пераход"
 
-#: src/x-font-selector.c:500
-msgid "Font Style:"
-msgstr "Стыль шрыфту:"
+#~ msgid "_Restore normal size"
+#~ msgstr "_Аднавіць нармальны памер"
 
-#: src/x-font-selector.c:505
-msgid "Size:"
-msgstr "Памер:"
+#~ msgid "_Full screen"
+#~ msgstr "На ўвесь _экран"
 
-#: src/x-font-selector.c:637 src/x-font-selector.c:861
-msgid "Reset Filter"
-msgstr "Пераўсталяваць фільтар"
+#~ msgid ""
+#~ "Your current desktop environment does not support the full screen "
+#~ "feature.\n"
+#~ " (In technical terms, you need a window manager with support for the "
+#~ "_NET_WM_STATE_FULLSCREEN property.)"
+#~ msgstr ""
+#~ "Бягучае асяродьдзе не падтрымлівае працу з поўным экранам.\n"
+#~ "(Вам неабходны мэнаджар вокнаў, які падтрымлівае ўласьцівасьць "
+#~ "_NET_WM_STATE_FULLSCREEN)."
 
-#: src/x-font-selector.c:651
-msgid "Metric:"
-msgstr "Мэтрыка:"
+#~ msgid "_Accelerators:"
+#~ msgstr "_Паскаральнікі:"
 
-#: src/x-font-selector.c:655
-msgid "Points"
-msgstr "Кропак"
+#~ msgid "_Use the same size font as other applications"
+#~ msgstr "Выкарыстоўваць той жа шр_ыфт, што й іншыя дастасаваньні"
 
-#: src/x-font-selector.c:662
-msgid "Pixels"
-msgstr "Піксэлаў"
+#~ msgid "Accelerator _Key"
+#~ msgstr "_Клявіша-паскаральнік"
 
-#. create the text entry widget
-#: src/x-font-selector.c:678
-msgid "Preview:"
-msgstr "Прыклад:"
+#~ msgid ""
+#~ "Option --window-with-profile requires an argument specifying what profile "
+#~ "to use\n"
+#~ msgstr ""
+#~ "Парамэтар --window-with-profile патрабуе аргумэнт, які указывае які "
+#~ "профіль выкарыстоўваць\n"
 
-#: src/x-font-selector.c:709
-msgid "Font Information"
-msgstr "Інфармацыя пра шрыфт"
+#~ msgid "--hide-menubar option given twice for the same window\n"
+#~ msgstr "Парамэтар --hide-menubar зададзены двойчы для аднаго акна\n"
 
-#: src/x-font-selector.c:742
-msgid "Requested Font Name:"
-msgstr "Запытаная назва шрыфту:"
+#~ msgid "Two zoom factors given for one tab\n"
+#~ msgstr "Дзьве ступені маштаба зададзеныя для адной укладкі\n"
 
-#: src/x-font-selector.c:753
-msgid "Actual Font Name:"
-msgstr "Сапраўдная назва шрыфту:"
+#~ msgid "No argument given to --display option\n"
+#~ msgstr "Няма аргумэнта да парамэтра --display\n"
 
-#: src/x-font-selector.c:764
-#, c-format
-msgid "%i fonts available with a total of %i styles."
-msgstr "даступныя %i шрыфтоў у %i стылях."
+#~ msgid "You have to name your profile."
+#~ msgstr "Неабходна назваць профіль."
 
-#: src/x-font-selector.c:779
-msgid "Filter"
-msgstr "Фільтар"
+#~ msgid "There was an error forgetting profile dir %s. (%s)\n"
+#~ msgstr "Пад час скіданьня каталёгу профіля %s узьнікла памылка. (%s)\n"
 
-#: src/x-font-selector.c:792
-msgid "Font Types:"
-msgstr "Тыпы шрыфтоў:"
+#~ msgid "_Keybindings..."
+#~ msgstr "Камбінацыі к_лявішаў..."
 
-#: src/x-font-selector.c:800
-msgid "Bitmap"
-msgstr "Растар"
+#~ msgid "Farsi"
+#~ msgstr "Фарсі"
 
-#: src/x-font-selector.c:806
-msgid "Scalable"
-msgstr "Маштабуецца"
+#~ msgid "Foundry:"
+#~ msgstr "Вытворца:"
 
-#: src/x-font-selector.c:812
-msgid "Scaled Bitmap"
-msgstr "Маштабаваны растар"
+#~ msgid "Family:"
+#~ msgstr "Сям'я:"
 
-#. Convert '(nil)' weights to 'regular', since it looks nicer.
-#: src/x-font-selector.c:1208
-msgid "(nil)"
-msgstr "(nil)"
+#~ msgid "Weight:"
+#~ msgstr "Шчыльнасьць:"
 
-#: src/x-font-selector.c:1208
-msgid "regular"
-msgstr "прамы"
+#~ msgid "Slant:"
+#~ msgstr "Нахіл:"
 
-#: src/x-font-selector.c:1224
-msgid "[M]"
-msgstr "[M]"
+#~ msgid "Set Width:"
+#~ msgstr "Усталяваць шырыню:"
 
-#: src/x-font-selector.c:1225
-msgid "[C]"
-msgstr "[C]"
+#~ msgid "Add Style:"
+#~ msgstr "Дадаць стыль:"
 
-#: src/x-font-selector.c:1785
-msgid "The selected font is not available."
-msgstr "Выбраны шрыфт недаступны."
+#~ msgid "Pixel Size:"
+#~ msgstr "Памер у піксэлях:"
 
-#: src/x-font-selector.c:1791
-msgid "The selected font is not a valid font."
-msgstr "Абраны памылковы шрыфт."
+#~ msgid "Point Size:"
+#~ msgstr "Памер у кропках:"
 
-#: src/x-font-selector.c:1847
-msgid "This is a 2-byte font and may not be displayed correctly."
-msgstr "Гэта 2-х байтны шрыфт, магчымыя праблемы з адлюстраваньнем."
+#~ msgid "Resolution X:"
+#~ msgstr "Раздзяленьне па X:"
 
-#: src/x-font-selector.c:1953
-msgid "(unknown)"
-msgstr "(невядома)"
+#~ msgid "Resolution Y:"
+#~ msgstr "Раздзяленьне па Y:"
 
-#: src/x-font-selector.c:2178
-msgid "Font: (Filter Applied)"
-msgstr "Шрыфт: (фільтраваны)"
+#~ msgid "Spacing:"
+#~ msgstr "Прапарцыянальнасьць:"
 
-#: src/x-font-selector.c:3502
-msgid "Font Selection"
-msgstr "Выбар шрыфту"
+#~ msgid "Average Width:"
+#~ msgstr "Сярэдняя шырыня:"
 
-#: src/x-font-selector.c:3598
-msgid "Select a font"
-msgstr "Выбраць шрыфт"
+#~ msgid "Charset:"
+#~ msgstr "Набор сымбаляў:"
+
+#~ msgid "Font Property"
+#~ msgstr "Уласьцівасьці шрыфта"
+
+#~ msgid "Requested Value"
+#~ msgstr "Запытанае значэньне"
+
+#~ msgid "Actual Value"
+#~ msgstr "Сапраўднае значэньне"
+
+#~ msgid "Font:"
+#~ msgstr "Шрыфт:"
+
+#~ msgid "Font Style:"
+#~ msgstr "Стыль шрыфта:"
+
+#~ msgid "Size:"
+#~ msgstr "Памер:"
+
+#~ msgid "Reset Filter"
+#~ msgstr "Пераўсталяваць фільтар"
+
+#~ msgid "Metric:"
+#~ msgstr "Мэтрыка:"
+
+#~ msgid "Points"
+#~ msgstr "Кропак"
+
+#~ msgid "Pixels"
+#~ msgstr "Піксэляў"
+
+#~ msgid "Preview:"
+#~ msgstr "Прыклад:"
+
+#~ msgid "Font Information"
+#~ msgstr "Інфармацыя пра шрыфт"
+
+#~ msgid "Requested Font Name:"
+#~ msgstr "Запытаная назва шрыфта:"
+
+#~ msgid "Actual Font Name:"
+#~ msgstr "Сапраўдная назва шрыфта:"
+
+#~ msgid "%i fonts available with a total of %i styles."
+#~ msgstr "даступныя %i шрыфтоў у %i стылях."
+
+#~ msgid "Filter"
+#~ msgstr "Фільтар"
+
+#~ msgid "Font Types:"
+#~ msgstr "Тыпы шрыфтоў:"
+
+#~ msgid "Bitmap"
+#~ msgstr "Растар"
+
+#~ msgid "Scalable"
+#~ msgstr "Маштабуецца"
+
+#~ msgid "Scaled Bitmap"
+#~ msgstr "Маштабаваны растар"
+
+#~ msgid "(nil)"
+#~ msgstr "(nil)"
+
+#~ msgid "regular"
+#~ msgstr "прамы"
+
+#~ msgid "[M]"
+#~ msgstr "[M]"
+
+#~ msgid "[C]"
+#~ msgstr "[C]"
+
+#~ msgid "The selected font is not available."
+#~ msgstr "Выбраны шрыфт недаступны."
+
+#~ msgid "The selected font is not a valid font."
+#~ msgstr "Выбраны шрыфт нерэчаісны."
+
+#~ msgid "This is a 2-byte font and may not be displayed correctly."
+#~ msgstr "Гэта 2-х байтны шрыфт, магчымы праблемы з адлюстраваньнем."
+
+#~ msgid "(unknown)"
+#~ msgstr "(невядома)"
+
+#~ msgid "Font: (Filter Applied)"
+#~ msgstr "Шрыфт: (фільтраваны)"
+
+#~ msgid "Select a font"
+#~ msgstr "Выбраць шрыфт"
 
 #~ msgid "Copyright 2002 Havoc Pennington"
 #~ msgstr "Аўтарскае права (С) 2002 Havoc Pennington"
@@ -1940,9 +2979,6 @@ msgstr "Выбраць шрыфт"
 #~ msgstr ""
 #~ "Файл \"%s\" адсутнічае. Гэта азначае, што дастасаваньне было ўсталявана "
 #~ "некарэктна. Дыялёг камбінацыяў клавішаў ня будзе адлюстраваны."
-
-#~ msgid "Silence terminal _bell"
-#~ msgstr "Н_е сыгналізаваць у тэрмінале"
 
 #~ msgid "_Blink cursor"
 #~ msgstr "К_урсор мільгае"

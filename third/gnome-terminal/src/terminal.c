@@ -3,6 +3,7 @@
  * Copyright (C) 2001, 2002 Havoc Pennington
  * Copyright (C) 2002 Red Hat, Inc.
  * Copyright (C) 2002 Sun Microsystems
+ * Copyright (C) 2003 Mariano Suarez-Alvarez
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,6 +25,7 @@
 #include "terminal.h"
 #include "terminal-accels.h"
 #include "terminal-window.h"
+#include "terminal-widget.h"
 #include "profile-editor.h"
 #include "encoding.h"
 #include <gconf/gconf-client.h>
@@ -70,8 +72,6 @@ struct _TerminalApp
   GtkWidget *edit_keys_dialog;
   GtkWidget *edit_encodings_dialog;
   GtkWidget *new_profile_dialog;
-  GtkWidget *new_profile_name_entry;
-  GtkWidget *new_profile_base_menu;
   GtkWidget *manage_profiles_dialog;
   GtkWidget *manage_profiles_list;
   GtkWidget *manage_profiles_new_button;
@@ -96,6 +96,7 @@ typedef struct
   gboolean default_window_menubar_forced;
   gboolean default_window_menubar_state;
   char *default_geometry;
+  char *default_working_dir;
   char **post_execute_args;
 } OptionParsingResults;
 
@@ -145,7 +146,9 @@ static void handle_new_terminal_events (void);
 enum {
   OPTION_COMMAND = 1,
   OPTION_EXECUTE,
+  OPTION_WINDOW,
   OPTION_WINDOW_WITH_PROFILE,
+  OPTION_TAB,
   OPTION_TAB_WITH_PROFILE,
   OPTION_WINDOW_WITH_PROFILE_ID,
   OPTION_TAB_WITH_PROFILE_ID,
@@ -154,10 +157,13 @@ enum {
   OPTION_HIDE_MENUBAR,
   OPTION_GEOMETRY,
   OPTION_DISABLE_FACTORY,
+  OPTION_USE_FACTORY,
   OPTION_STARTUP_ID,
   OPTION_TITLE,
   OPTION_WORKING_DIRECTORY,
+  OPTION_DEFAULT_WORKING_DIRECTORY,
   OPTION_ZOOM,
+  OPTION_ACTIVE,
   OPTION_COMPAT,
   OPTION_LAST
 };  
@@ -191,6 +197,15 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "window",
+    '\0',
+    POPT_ARG_NONE,
+    NULL,
+    OPTION_WINDOW,
+    N_("Open a new window containing a tab with the default profile. More than one of these options can be provided."),
+    NULL
+  },
+  {
     "window-with-profile",
     '\0',
     POPT_ARG_STRING,
@@ -198,6 +213,15 @@ struct poptOption options[] = {
     OPTION_WINDOW_WITH_PROFILE,
     N_("Open a new window containing a tab with the given profile. More than one of these options can be provided."),
     N_("PROFILENAME")
+  },
+  {
+    "tab",
+    '\0',
+    POPT_ARG_NONE,
+    NULL,
+    OPTION_TAB,
+    N_("Open a new tab in the last-opened window with the default profile. More than one of these options can be provided."),
+    NULL
   },
   {
     "tab-with-profile",
@@ -272,6 +296,15 @@ struct poptOption options[] = {
     NULL
   },
   {
+    "use-factory",
+    '\0',
+    POPT_ARG_NONE,
+    NULL,
+    OPTION_USE_FACTORY,
+    N_("Register with the activation nameserver [default]"),
+    NULL
+  },
+  {
     "startup-id",
     '\0',
     POPT_ARG_STRING,
@@ -298,7 +331,15 @@ struct poptOption options[] = {
     N_("Set the terminal's working directory"),
     N_("DIRNAME")
   },
-
+  {
+    "default-working-directory",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_DEFAULT_WORKING_DIRECTORY,
+    N_("Set the default terminal's working directory. Used internally"),
+    N_("DIRNAME")
+  },
   {
     "zoom",
     '\0',
@@ -308,19 +349,19 @@ struct poptOption options[] = {
     N_("Set the terminal's zoom factor (1.0 = normal size)"),
     N_("ZOOMFACTOR")
   },
+  {
+    "active",
+    '\0',
+    POPT_ARG_NONE,
+    NULL,
+    OPTION_ACTIVE,
+    N_("Set the last specified tab as the active one in its window"),
+    N_("ZOOMFACTOR")
+  },
   
   /*
    * Crappy old compat args
    */
-  {
-    "use-factory",
-    '\0',
-    POPT_ARG_NONE,
-    NULL,
-    OPTION_COMPAT,
-    NULL,
-    NULL
-  },
   {
     "tclass",
     '\0',
@@ -509,6 +550,7 @@ typedef struct
   char *working_dir;
   double zoom;
   guint zoom_set : 1;
+  guint active : 1;
 } InitialTab;
 
 typedef struct
@@ -538,6 +580,7 @@ initial_tab_new (const char *profile,
   it->working_dir = NULL;
   it->zoom = 1.0;
   it->zoom_set = FALSE;
+  it->active = FALSE;
   
   return it;
 }
@@ -715,7 +758,7 @@ parse_options_callback (poptContext              ctx,
 
         if (arg == NULL)
           {
-            g_printerr (_("Option --command/-e requires specifying the command to run\n"));
+            g_printerr (_("Option \"%s\" requires specifying the command to run\n"), "--command/-e");
             exit (1);
           }
             
@@ -723,8 +766,8 @@ parse_options_callback (poptContext              ctx,
         exec_argv = NULL;
         if (!g_shell_parse_argv (arg, NULL, &exec_argv, &err))
           {
-            g_printerr (_("Argument to --command/-e is not a valid command: %s\n"),
-                        err->message);
+            g_printerr (_("Argument to \"%s\" is not a valid command: %s\n"),
+                        "--command/-e", err->message);
             g_error_free (err);
             exit (1);
           }
@@ -733,7 +776,8 @@ parse_options_callback (poptContext              ctx,
 
         if (it->exec_argv != NULL)
           {
-            g_printerr (_("--command/-e/--execute/-x specified more than once for the same window or tab\n"));
+            g_printerr (_("\"%s\" specified more than once for the same window or tab\n"),
+                        "--command/-e/--execute/-x");
             exit (1);
           }
 
@@ -747,7 +791,8 @@ parse_options_callback (poptContext              ctx,
             
         if (results->post_execute_args == NULL)
           {
-            g_printerr (_("Option --execute/-x requires specifying the command to run on the rest of the command line\n"));
+            g_printerr (_("Option \"%s\" requires specifying the command to run on the rest of the command line\n"),
+                        "--execute/-x");
             exit (1);
           }
 
@@ -755,7 +800,8 @@ parse_options_callback (poptContext              ctx,
 
         if (it->exec_argv != NULL)
           {
-            g_printerr (_("--command/-e/--execute/-x specified more than once for the same window or tab\n"));
+            g_printerr (_("\"%s\" specified more than once for the same window or tab\n"),
+                        "--command/-e/--execute/-x");
             exit (1);
           }
 
@@ -764,34 +810,48 @@ parse_options_callback (poptContext              ctx,
       }
       break;
           
+    case OPTION_WINDOW:
     case OPTION_WINDOW_WITH_PROFILE:
     case OPTION_WINDOW_WITH_PROFILE_ID:
       {
         InitialWindow *iw;
+        const char *profile;
 
 
-        if (arg == NULL)
+        if (opt->val == OPTION_WINDOW)
+          profile = NULL;
+        else if (arg == NULL)
           {
-            g_printerr (_("Option --window-with-profile requires an argument specifying what profile to use\n"));
+            g_printerr (_("Option \"%s\" requires an argument specifying what profile to use\n"),
+                        "--window-with-profile");
             exit (1);
           }
+        else
+          profile = arg;
 
-        iw = add_new_window (results, arg,
+        iw = add_new_window (results, profile,
                              opt->val == OPTION_WINDOW_WITH_PROFILE_ID);
       }
       break;
 
+    case OPTION_TAB:
     case OPTION_TAB_WITH_PROFILE:
     case OPTION_TAB_WITH_PROFILE_ID:
       {
         InitialWindow *iw;
+        const char *profile;
 
 
-        if (arg == NULL)
+        if (opt->val == OPTION_TAB)
+          profile = NULL;
+        else if (arg == NULL)
           {
-            g_printerr (_("Option --tab-with-profile requires an argument specifying what profile to use\n"));
+            g_printerr (_("Option \"%s\" requires an argument specifying what profile to use\n"),
+                        "--tab-with-profile");
             exit (1);
           }
+        else
+          profile = arg;
 
                 
         if (results->initial_windows)
@@ -799,12 +859,12 @@ parse_options_callback (poptContext              ctx,
             iw = g_list_last (results->initial_windows)->data;
 
             iw->tabs = g_list_append (iw->tabs,
-                                      initial_tab_new (arg,
+                                      initial_tab_new (profile,
                                                        opt->val == OPTION_TAB_WITH_PROFILE_ID));
           }
         else
           {
-            iw = add_new_window (results, arg, 
+            iw = add_new_window (results, profile, 
                                  opt->val == OPTION_TAB_WITH_PROFILE_ID);
           }
       }
@@ -820,7 +880,7 @@ parse_options_callback (poptContext              ctx,
 
             if (iw->force_menubar_state)
               {
-                g_printerr (_("--show-menubar option given twice for the same window\n"));
+                g_printerr (_("\"%s\" option given twice for the same window\n"), "--show-menubar");
 
                 exit (1);
               }
@@ -846,7 +906,7 @@ parse_options_callback (poptContext              ctx,
 
             if (iw->force_menubar_state)
               {
-                g_printerr (_("--hide-menubar option given twice for the same window\n"));
+                g_printerr (_("\"%s\" option given twice for the same window\n"), "--hide-menubar");
 
                 exit (1);
               }
@@ -869,7 +929,7 @@ parse_options_callback (poptContext              ctx,
 
         if (arg == NULL)
           {
-            g_printerr (_("Option --role requires an argument giving the role\n"));
+            g_printerr (_("Option \"%s\" requires an argument giving the role\n"), "--role");
             exit (1);
           }
             
@@ -894,7 +954,7 @@ parse_options_callback (poptContext              ctx,
 
         if (arg == NULL)
           {
-            g_printerr (_("Option --geometry requires an argument giving the geometry\n"));
+            g_printerr (_("Option \"%s\" requires an argument giving the geometry\n"), "--geometry");
             exit (1);
           }
             
@@ -903,7 +963,7 @@ parse_options_callback (poptContext              ctx,
             iw = g_list_last (results->initial_windows)->data;
             if (iw->geometry)
               {
-                g_printerr (_("Two geometries given for one window\n"));
+                g_printerr (_("Two \"%s\" options given for one window\n"), "--geometry");
                 exit (1);
               }
 
@@ -928,6 +988,10 @@ parse_options_callback (poptContext              ctx,
       terminal_factory_disabled = TRUE;
       break;
 
+    case OPTION_USE_FACTORY:
+      terminal_factory_disabled = FALSE;
+      break;
+
     case OPTION_TITLE:
       {
         InitialTab *it;
@@ -935,7 +999,7 @@ parse_options_callback (poptContext              ctx,
 
         if (arg == NULL)
           {
-            g_printerr (_("Option --title requires an argument giving the title\n"));
+            g_printerr (_("Option \"%s\" requires an argument giving the title\n"), "--title");
             exit (1);
           }
 
@@ -943,7 +1007,7 @@ parse_options_callback (poptContext              ctx,
 
         if (it->title)
           {
-            g_printerr (_("Two titles given for one tab\n"));
+            g_printerr (_("Two \"%s\" options given for one tab\n"), "--title");
             exit (1);
           }
 
@@ -958,7 +1022,7 @@ parse_options_callback (poptContext              ctx,
 
         if (arg == NULL)
           {
-            g_printerr (_("Option --working-directory requires an argument giving the directory\n"));
+            g_printerr (_("Option \"%s\" requires an argument giving the directory\n"), "--working-directory");
             exit (1);
           }
 
@@ -966,11 +1030,29 @@ parse_options_callback (poptContext              ctx,
 
         if (it->working_dir)
           {
-            g_printerr (_("Two working directories given for one tab\n"));
+            g_printerr (_("Two \"%s\" options given for one tab\n"), "--working-directory");
             exit (1);
           }
 
         it->working_dir = g_strdup (arg);
+      }
+      break;
+
+    case OPTION_DEFAULT_WORKING_DIRECTORY:
+      {
+        if (arg == NULL)
+          {
+            g_printerr (_("Option --default-working-directory requires an argument giving the directory\n"));
+            exit (1);
+          }
+
+        if (results->default_working_dir)
+          {
+            g_printerr (_("Two --default-working-directories given\n"));
+            exit (1);
+          }
+
+        results->default_working_dir = g_strdup (arg);
       }
       break;
 
@@ -982,7 +1064,7 @@ parse_options_callback (poptContext              ctx,
         
         if (arg == NULL)
           {
-            g_printerr (_("Option --zoom requires an argument giving the zoom factor\n"));
+            g_printerr (_("Option \"%s\" requires an argument giving the zoom factor\n"), "--zoom");
             exit (1);
           }
 
@@ -990,7 +1072,7 @@ parse_options_callback (poptContext              ctx,
 
         if (it->zoom_set)
           {
-            g_printerr (_("Two zoom factors given for one tab\n"));
+            g_printerr (_("Two \"%s\" options given for one tab\n"), "--zoom");
             exit (1);
           }
 
@@ -1030,20 +1112,29 @@ parse_options_callback (poptContext              ctx,
       }
       break;
 
+    case OPTION_ACTIVE:
+      {
+        InitialTab *it;
+
+        it = ensure_top_tab (results);
+
+        it->active = TRUE;
+      }
+      break;
       
     case OPTION_COMPAT:
-      g_printerr (_("Option given which is no longer supported in this version of gnome-terminal; you might want to create a profile with the desired setting, and use the new --window-with-profile option\n"));
+      g_printerr (_("Option --%s is no longer supported in this version of gnome-terminal; you might want to create a profile with the desired setting, and use the new --window-with-profile option\n"), opt->longName);
       break;
 
     case OPTION_STARTUP_ID:
       if (results->startup_id != NULL)
         {
-          g_printerr (_("--startup-id option given twice\n"));
+          g_printerr (_("\"%s\" option given twice\n"), "--startup-id");
           exit (1);
         }
       else if (arg == NULL)
         {
-          g_printerr (_("--startup-id option requires an argument\n"));
+          g_printerr (_("\"%s\" option requires an argument\n"), "--startup-id");
           exit (1);
         }
       else
@@ -1066,6 +1157,7 @@ option_parsing_results_free (OptionParsingResults *results)
   g_list_free (results->initial_windows);
 
   g_free (results->default_geometry);
+  g_free (results->default_working_dir);
 
   if (results->post_execute_args)
     g_strfreev (results->post_execute_args);
@@ -1097,6 +1189,7 @@ option_parsing_results_init (int *argc, char **argv)
 
   results = g_new0 (OptionParsingResults, 1);
   results->screen_number = -1;
+  results->default_working_dir = NULL;
   
   /* pre-scan for -x and --execute options (code from old gnome-terminal) */
   results->post_execute_args = NULL;
@@ -1160,7 +1253,7 @@ option_parsing_results_check_for_display_name (OptionParsingResults *results,
         {          
           if ((i + 1) >= *argc)
             {
-              g_printerr (_("No argument given to --display option\n"));
+              g_printerr (_("No argument given to \"%s\" option\n"), "--display");
               return; /* popt will die on this later, plus it shouldn't happen
                        * because normally gtk_init() parses --display
                        * when not using factory mode.
@@ -1182,7 +1275,7 @@ option_parsing_results_check_for_display_name (OptionParsingResults *results,
           
           if ((i + 1) >= *argc)
             {
-              g_printerr (_("No argument given to --screen option\n"));
+              g_printerr (_("\"%s\" option requires an argument\n"), "--screen");
               return; /* popt will die on this later, plus it shouldn't happen
                        * because normally gtk_init() parses --display
                        * when not using factory mode.
@@ -1228,6 +1321,32 @@ option_parsing_results_check_for_display_name (OptionParsingResults *results,
     }
 }
 
+static void
+option_parsing_results_apply_directory_defaults (OptionParsingResults *results)
+{
+  GList *w, *t;
+
+  if (results->default_working_dir == NULL)
+    return;
+
+  for (w = results->initial_windows; w; w = w ->next)
+    {
+      InitialWindow *window;
+
+      window = (InitialWindow*) w->data;
+      
+      for (t = window->tabs; t ; t = t->next)
+        {
+          InitialTab *tab;
+
+          tab = (InitialTab*) t->data;
+
+          if (tab->working_dir == NULL)
+            tab->working_dir = g_strdup (results->default_working_dir);
+        }
+    }
+}
+
 static int
 new_terminal_with_options (OptionParsingResults *results)
 {
@@ -1239,12 +1358,14 @@ new_terminal_with_options (OptionParsingResults *results)
       TerminalProfile *profile;
       GList *tmp2;
       TerminalWindow *current_window;
+      TerminalScreen *active_screen;
       
       InitialWindow *iw = tmp->data;
 
       g_assert (iw->tabs);
 
       current_window = NULL;
+      active_screen = NULL;
       tmp2 = iw->tabs;
       while (tmp2 != NULL)
         {
@@ -1309,9 +1430,21 @@ new_terminal_with_options (OptionParsingResults *results)
                                          NULL, NULL, -1);
             }
           
+          if (it->active)
+            {
+              /* TerminalWindow's interface does not expose the list of TerminalScreens,
+               * so we use the fact that terminal_app_new_terminal() sets the new terminal
+               * to be the active one. Not nice.
+               */
+              active_screen = terminal_window_get_active (current_window);
+             }
+
           tmp2 = tmp2->next;
         }
       
+      if (active_screen)
+        terminal_window_set_active (current_window, active_screen);
+
       tmp = tmp->next;
     }
 
@@ -1356,13 +1489,15 @@ main (int argc, char **argv)
   const char *display_name;
   GdkDisplay *display;
   GnomeModuleRequirement reqs[] = {
-    { "2.0.0", LIBGNOMEUI_MODULE },
+    { "2.0.0", NULL },
     { NULL, NULL }
   };
   GnomeClient *sm_client;
   OptionParsingResults *results;
   GnomeProgram *program;
-  
+
+  reqs[0].module_info = LIBGNOMEUI_MODULE;
+
   if (setlocale (LC_ALL, "") == NULL)
     g_printerr ("GNOME Terminal: locale not understood by C library, internationalization will not work\n");
 
@@ -1380,9 +1515,11 @@ main (int argc, char **argv)
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 
+  g_set_application_name (_("Terminal"));
+  
   argc_copy = argc;
-  /* we leave empty slots, for --startup-id and --display */
-  argv_copy = g_new0 (char *, argc_copy + 5);
+  /* we leave empty slots, for --startup-id, --display and --default-working-directory */
+  argv_copy = g_new0 (char *, argc_copy + 7);
   for (i = 0; i < argc_copy; i++)
     argv_copy [i] = g_strdup (argv [i]);
   argv_copy [i] = NULL;
@@ -1428,13 +1565,17 @@ main (int argc, char **argv)
   args = poptGetArgs (ctx);
   if (args)
     {
-      g_printerr (_("Invalid argument: \"%s\"\n"),
-                  *args);
+      g_printerr (_("Invalid argument: \"%s\"\n"), *args);
+      g_strfreev (argv_copy);
       return 1;
     }
+  poptFreeContext (ctx);
+
+  option_parsing_results_apply_directory_defaults (results);
   
   if (!terminal_factory_disabled)
     {
+      char *cwd;
       
       if (results->startup_id != NULL)
         {
@@ -1447,8 +1588,18 @@ main (int argc, char **argv)
       insert_args (&argc_copy, argv_copy,
                    "--display", results->display_name);
       
+      /* Forward out working directory */
+      cwd = g_get_current_dir ();
+      insert_args (&argc_copy, argv_copy,
+                   "--default-working-directory", cwd);
+      g_free (cwd);
+
       if (terminal_invoke_factory (argc_copy, argv_copy))
-        return 0;
+        {
+          g_strfreev (argv_copy);
+          option_parsing_results_free (results);
+          return 0;
+        }
     }
 
   g_strfreev (argv_copy);
@@ -1504,7 +1655,10 @@ main (int argc, char **argv)
                     NULL);
 
   if (new_terminal_with_options (results))
-    return 1;
+    {
+      option_parsing_results_free (results);
+      return 1;
+    }
 
   option_parsing_results_free (results);
   results = NULL;
@@ -1643,7 +1797,6 @@ terminal_app_new_terminal (TerminalApp     *app,
 {
   TerminalScreen *screen;
   gboolean window_created;
-  char *new_role;
   
   g_return_if_fail (profile);
 
@@ -1673,19 +1826,9 @@ terminal_app_new_terminal (TerminalApp     *app,
         terminal_window_set_startup_id (window, startup_id);
       
       if (role == NULL)
-        {
-          /* Invent a unique-enough number for the role */
-          new_role = g_strdup_printf ("gnome-terminal-%d-%d-%d",
-                                      getpid (),
-                                      g_random_int (),
-                                      (int) time (NULL));
-          gtk_window_set_role (GTK_WINDOW (window), new_role);
-          g_free (new_role);
-        }
+        terminal_util_set_unique_role (GTK_WINDOW (window), "gnome-terminal");
       else
-        {
-          gtk_window_set_role (GTK_WINDOW (window), role);
-        }
+        gtk_window_set_role (GTK_WINDOW (window), role);
     }
 
   if (force_menubar_state)
@@ -1871,8 +2014,13 @@ sync_profile_list (gboolean use_this_list,
 
   g_assert (terminal_profile_get_count () > 0);  
 
-  if (app->new_profile_base_menu)
-    profile_optionmenu_refill (app->new_profile_base_menu);
+  if (app->new_profile_dialog)
+    {
+      GtkWidget *new_profile_base_menu;
+
+      new_profile_base_menu = g_object_get_data (G_OBJECT (app->new_profile_dialog), "base_option_menu");
+      profile_optionmenu_refill (new_profile_base_menu);
+    }
   if (app->manage_profiles_list)
     refill_profile_treeview (app->manage_profiles_list);
   if (app->manage_profiles_default_menu)
@@ -2034,10 +2182,11 @@ terminal_app_edit_encodings (TerminalApp     *app,
 
 enum
 {
-  RESPONSE_CREATE,
+  RESPONSE_CREATE = GTK_RESPONSE_ACCEPT, /* Arghhh: Glade wants a GTK_RESPONSE_* for dialog buttons */
   RESPONSE_CANCEL,
   RESPONSE_DELETE
 };
+
 
 static void
 new_profile_response_callback (GtkWidget *new_profile_dialog,
@@ -2046,87 +2195,64 @@ new_profile_response_callback (GtkWidget *new_profile_dialog,
 {
   if (response_id == RESPONSE_CREATE)
     {
-      char *name = NULL;
+      GtkWidget *name_entry;
+      char *name;
+      GtkWidget *base_option_menu;
       TerminalProfile *base_profile = NULL;
-      char *bad_name_message = NULL;
-      GList *profiles = NULL;
+      TerminalProfile *new_profile;
+      GList *profiles;
       GList *tmp;
+      GSList n;
       GtkWindow *transient_parent;
       
-      name = gtk_editable_get_chars (GTK_EDITABLE (app->new_profile_name_entry),
-                                     0, -1);
-      
-      if (*name == '\0')
-        bad_name_message = g_strdup (_("You have to name your profile."));
+      name_entry = g_object_get_data (G_OBJECT (new_profile_dialog), "name_entry");
+      name = gtk_editable_get_chars (GTK_EDITABLE (name_entry), 0, -1);
+      g_strstrip (name); /* name will be non empty after stripping */
       
       profiles = terminal_profile_get_list ();
-      tmp = profiles;
-      while (tmp != NULL)
+      for (tmp = profiles; tmp != NULL; tmp = tmp->next)
         {
           TerminalProfile *profile = tmp->data;
 
           if (strcmp (name, terminal_profile_get_visible_name (profile)) == 0)
-            {
-              bad_name_message = g_strdup_printf (_("You already have a profile called \"%s\""),
-                                                  name);
-            }
-          
-          tmp = tmp->next;
+            break;
         }
-
-      if (bad_name_message)
+      if (tmp)
         {
-          GtkWidget *dialog;
-
-          dialog = gtk_message_dialog_new (GTK_WINDOW (new_profile_dialog),
-                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                           GTK_MESSAGE_ERROR,
-                                           GTK_BUTTONS_CLOSE,
-                                           bad_name_message);
-          g_signal_connect (G_OBJECT (dialog), "response",
-                            G_CALLBACK (gtk_widget_destroy),
-                            NULL);
-
-          gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-          
-          gtk_widget_show_all (dialog);
-
+          terminal_util_show_error_dialog (GTK_WINDOW (new_profile_dialog), NULL, 
+                                           _("You already have a profile called \"%s\""), name);
           goto cleanup;
         }
+      g_list_free (profiles);
 
-      base_profile = profile_optionmenu_get_selected (app->new_profile_base_menu);
+      base_option_menu = g_object_get_data (G_OBJECT (new_profile_dialog), "base_option_menu");
+      base_profile = profile_optionmenu_get_selected (base_option_menu);
       
       if (base_profile == NULL)
         {
-          GtkWidget *dialog;
-
-          dialog = gtk_message_dialog_new (GTK_WINDOW (new_profile_dialog),
-                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                           GTK_MESSAGE_ERROR,
-                                           GTK_BUTTONS_CLOSE,
-                                           _("The profile you selected as a base for your new profile no longer exists"));
-          g_signal_connect (G_OBJECT (dialog), "response",
-                            G_CALLBACK (gtk_widget_destroy),
-                            NULL);
-
-          gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-          
-          gtk_widget_show_all (dialog);
-          
+          terminal_util_show_error_dialog (GTK_WINDOW (new_profile_dialog), NULL, 
+                                          _("The profile you selected as a base for your new profile no longer exists"));
           goto cleanup;
         }
 
-      transient_parent =
-        gtk_window_get_transient_for (GTK_WINDOW (new_profile_dialog));
+      transient_parent = gtk_window_get_transient_for (GTK_WINDOW (new_profile_dialog));
       
       gtk_widget_destroy (new_profile_dialog);
       
-      terminal_profile_create (base_profile, name,
-                               transient_parent);
+      terminal_profile_create (base_profile, name, transient_parent);
+
+      n.next = NULL;
+      n.data = gconf_escape_key (name, -1);
+      sync_profile_list (TRUE, &n);
+      g_free (n.data);
+      
+      new_profile = terminal_profile_lookup_by_visible_name (name);
+
+      g_assert (new_profile != NULL);
+
+      terminal_profile_edit (new_profile, transient_parent);
 
     cleanup:
-      g_list_free (profiles);
-      g_free (bad_name_message);
       g_free (name);
     }
   else
@@ -2136,12 +2262,22 @@ new_profile_response_callback (GtkWidget *new_profile_dialog,
 }
 
 static void
-new_profile_destroyed_callback (GtkWidget   *new_profile_dialog,
-                                TerminalApp *app)
+new_profile_name_entry_changed_callback (GtkEditable *editable, gpointer data)
 {
-  app->new_profile_dialog = NULL;
-  app->new_profile_name_entry = NULL;
-  app->new_profile_base_menu = NULL;
+  char *name, *saved_name;
+  GtkWidget *create_button;
+
+  create_button = (GtkWidget*) data;
+
+  saved_name = name = gtk_editable_get_chars (editable, 0, -1);
+
+  /* make the create button sensitive only if something other than space has been set */
+  while (*name != '\0' && g_ascii_isspace (*name))
+    name++;
+ 
+  gtk_widget_set_sensitive (create_button, *name != '\0' ? TRUE : FALSE);
+
+  g_free (saved_name);
 }
 
 void
@@ -2150,97 +2286,67 @@ terminal_app_new_profile (TerminalApp     *app,
                           GtkWindow       *transient_parent)
 {
   GtkWindow *old_transient_parent;
+  GtkWidget *create_button;
 
   if (app->new_profile_dialog == NULL)
     {
-      GtkWidget *vbox;
-      GtkWidget *hbox;
-      GtkWidget *entry;
-      GtkWidget *label;
-      GtkWidget *option_menu;
-      GtkSizeGroup *size_group;
-      
-      old_transient_parent = NULL;      
-      
-      app->new_profile_dialog =
-        gtk_dialog_new_with_buttons (_("New Profile"),
-                                     NULL,
-                                     GTK_DIALOG_DESTROY_WITH_PARENT,
-                                     GTK_STOCK_CANCEL,
-                                     RESPONSE_CANCEL,
-                                     _("C_reate"),
-                                     RESPONSE_CREATE,
-                                     NULL);
-      g_signal_connect (G_OBJECT (app->new_profile_dialog),
-                        "response",
-                        G_CALLBACK (new_profile_response_callback),
-                        app);
+      GladeXML *xml;
+      GtkWidget *w, *wl;
+      GtkWidget *create_button;
+      GtkSizeGroup *size_group, *size_group_labels;
 
-      g_signal_connect (G_OBJECT (app->new_profile_dialog),
-                        "destroy",
-                        G_CALLBACK (new_profile_destroyed_callback),
-                        app);
+      xml = terminal_util_load_glade_file (TERM_GLADE_FILE, "new-profile-dialog", transient_parent);
 
-      gtk_window_set_resizable (GTK_WINDOW (app->new_profile_dialog),
-                                FALSE);
-      
-#define PADDING 5
-      
-      vbox = gtk_vbox_new (FALSE, PADDING);
-      gtk_container_set_border_width (GTK_CONTAINER (vbox), PADDING);
-      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (app->new_profile_dialog)->vbox),
-                          vbox, TRUE, TRUE, 0);
-      
-      hbox = gtk_hbox_new (FALSE, PADDING);
+      if (xml == NULL)
+        return;
 
-      label = gtk_label_new_with_mnemonic (_("Profile _name:"));
-      gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
-      entry = gtk_entry_new ();
-      app->new_profile_name_entry = entry;
-      terminal_util_set_atk_name_description (entry, _("Enter profile name"), NULL);
+      app->new_profile_dialog = glade_xml_get_widget (xml, "new-profile-dialog");
+      g_signal_connect (G_OBJECT (app->new_profile_dialog), "response", G_CALLBACK (new_profile_response_callback), app);
 
+      terminal_util_set_unique_role (GTK_WINDOW (app->new_profile_dialog), "gnome-terminal-new-profile");
+  
+      g_object_add_weak_pointer (G_OBJECT (app->new_profile_dialog), (void**) &app->new_profile_dialog);
 
-      gtk_entry_set_width_chars (GTK_ENTRY (entry), 14);
-      gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-      gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-      terminal_util_set_labelled_by (entry, GTK_LABEL (label));
-      
-      gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-      gtk_box_pack_end (GTK_BOX (hbox), entry, FALSE, FALSE, 0);
-      
-      gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);      
-      
-      hbox = gtk_hbox_new (FALSE, PADDING);
-
-      label = gtk_label_new_with_mnemonic (_("_Base on:"));
-      gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
-      app->new_profile_base_menu = profile_optionmenu_new ();
-      option_menu = app->new_profile_base_menu;
-      if (default_base_profile)
-        profile_optionmenu_set_selected (option_menu,
-                                         default_base_profile);
-      
-      gtk_label_set_mnemonic_widget (GTK_LABEL (label), option_menu);
-      terminal_util_set_labelled_by (option_menu, GTK_LABEL (label));
-      
-      gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-      gtk_box_pack_end (GTK_BOX (hbox), option_menu, FALSE, FALSE, 0);
-
-      gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-      
-      gtk_widget_grab_focus (app->new_profile_name_entry);
-      gtk_dialog_set_default_response (GTK_DIALOG (app->new_profile_dialog),
-                                       RESPONSE_CREATE);
+      create_button = glade_xml_get_widget (xml, "new-profile-create-button");
+      g_object_set_data (G_OBJECT (app->new_profile_dialog), "create_button", create_button);
+      gtk_widget_set_sensitive (create_button, FALSE);
 
       size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-      gtk_size_group_add_widget (size_group, entry);
-      gtk_size_group_add_widget (size_group, option_menu);
+      size_group_labels = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
+      /* the name entry */
+      w = glade_xml_get_widget (xml, "new-profile-name-entry");
+      g_object_set_data (G_OBJECT (app->new_profile_dialog), "name_entry", w);
+      g_signal_connect (G_OBJECT (w), "changed", G_CALLBACK (new_profile_name_entry_changed_callback), create_button);
+      gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
+      gtk_widget_grab_focus (w);
+      terminal_util_set_atk_name_description (w, _("Enter profile name"), NULL);
+      gtk_size_group_add_widget (size_group, w);
+
+      wl = glade_xml_get_widget (xml, "new-profile-name-label");
+      gtk_label_set_mnemonic_widget (GTK_LABEL (wl), w);
+      gtk_size_group_add_widget (size_group_labels, wl);
+ 
+      /* the base profile option menu */
+      w = glade_xml_get_widget (xml, "new-profile-base-option-menu");
+      g_object_set_data (G_OBJECT (app->new_profile_dialog), "base_option_menu", w);
+      terminal_util_set_atk_name_description (w, _("Choose base profile"), NULL);
+      profile_optionmenu_refill (w);
+      gtk_size_group_add_widget (size_group, w);
+
+      wl = glade_xml_get_widget (xml, "new-profile-base-label");
+      gtk_label_set_mnemonic_widget (GTK_LABEL (wl), w);
+      gtk_size_group_add_widget (size_group_labels, wl);
+
+      gtk_dialog_set_default_response (GTK_DIALOG (app->new_profile_dialog), RESPONSE_CREATE);
+
       g_object_unref (G_OBJECT (size_group));
+      g_object_unref (G_OBJECT (size_group_labels));
+
+      g_object_unref (G_OBJECT (xml));
     }
-  else 
-    {
-      old_transient_parent = gtk_window_get_transient_for (GTK_WINDOW (app->new_profile_dialog));
-    }
+
+  old_transient_parent = gtk_window_get_transient_for (GTK_WINDOW (app->new_profile_dialog));
   
   if (old_transient_parent != transient_parent)
     {
@@ -2248,6 +2354,9 @@ terminal_app_new_profile (TerminalApp     *app,
                                     transient_parent);
       gtk_widget_hide (app->new_profile_dialog); /* re-show the window on its new parent */
     }
+
+  create_button = g_object_get_data (G_OBJECT (app->new_profile_dialog), "create_button");
+  gtk_widget_set_sensitive (create_button, FALSE);
   
   gtk_widget_show_all (app->new_profile_dialog);
   gtk_window_present (GTK_WINDOW (app->new_profile_dialog));
@@ -2429,20 +2538,7 @@ profile_list_delete_selection (GtkWidget   *profile_list,
 
   if (deleted_profiles == NULL)
     {
-      dialog = gtk_message_dialog_new (transient_parent,
-                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                       GTK_MESSAGE_ERROR,
-                                       GTK_BUTTONS_CLOSE,
-                                       _("You must select one or more profiles to delete."));
-
-      g_signal_connect (G_OBJECT (dialog), "response",
-                        G_CALLBACK (gtk_widget_destroy),
-                        NULL);
-      
-      gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-      
-      gtk_widget_show_all (dialog);
-      
+      terminal_util_show_error_dialog (transient_parent, NULL, _("You must select one or more profiles to delete."));
       return;
     }
   
@@ -2451,32 +2547,19 @@ profile_list_delete_selection (GtkWidget   *profile_list,
   if (count == terminal_profile_get_count ())
     {
       free_profiles_list (deleted_profiles);
-      
-      dialog = gtk_message_dialog_new (transient_parent,
-                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                       GTK_MESSAGE_ERROR,
-                                       GTK_BUTTONS_CLOSE,
-                                       _("You must have at least one profile; you can't delete all of them."));
 
-      g_signal_connect (G_OBJECT (dialog), "response",
-                        G_CALLBACK (gtk_widget_destroy),
-                        NULL);
-      
-      gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-      
-      gtk_widget_show_all (dialog);
-      
+      terminal_util_show_error_dialog (transient_parent, NULL,
+                                       _("You must have at least one profile; you can't delete all of them."));
       return;
     }
   
   if (count > 1)
     {
       str = g_string_new (NULL);
-      /* for languages with separate forms for 2 vs. many */
-      if (count == 2)
-        g_string_printf (str, _("Delete these two profiles?\n"));
-      else
-        g_string_printf (str, _("Delete these %d profiles?\n"), count);
+      g_string_printf (str, ngettext ("Delete this profile?\n", 
+                                      "Delete these %d profiles?\n",
+                                      count), 
+                       count);
 
       tmp = deleted_profiles;
       while (tmp != NULL)
@@ -2725,38 +2808,9 @@ manage_profiles_response_cb (GtkDialog *dialog,
   g_assert (app->manage_profiles_dialog == GTK_WIDGET (dialog));
   
   if (id == GTK_RESPONSE_HELP)
-    {
-      GError *err;
-      err = NULL;
-      gnome_help_display ("gnome-terminal", "gnome-terminal-manage-profiles",
-                          &err);
-      
-      if (err)
-        {
-          GtkWidget *dialog;
-          
-          dialog = gtk_message_dialog_new (GTK_WINDOW (app->manage_profiles_dialog),
-                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                           GTK_MESSAGE_ERROR,
-                                           GTK_BUTTONS_CLOSE,
-                                           _("There was an error displaying help: %s"),
-                                           err->message);
-          
-          g_signal_connect (G_OBJECT (dialog), "response",
-                            G_CALLBACK (gtk_widget_destroy),
-                            NULL);
-          
-          gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-          
-          gtk_widget_show (dialog);
-          
-          g_error_free (err);
-        }
-    }
+    terminal_util_show_help ("gnome-terminal-manage-profiles", GTK_WINDOW (dialog));
   else
-    {
-      gtk_widget_destroy (GTK_WIDGET (dialog));
-    }
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -2803,7 +2857,7 @@ terminal_app_manage_profiles (TerminalApp     *app,
       old_transient_parent = NULL;      
       
       app->manage_profiles_dialog =
-        gtk_dialog_new_with_buttons (_("Edit Profiles"),
+        gtk_dialog_new_with_buttons (_("Profiles"),
                                      NULL,
                                      GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_STOCK_HELP,
@@ -2822,7 +2876,9 @@ terminal_app_manage_profiles (TerminalApp     *app,
                         "destroy",
                         G_CALLBACK (manage_profiles_destroyed_callback),
                         app);
-      
+
+      terminal_util_set_unique_role (GTK_WINDOW (app->manage_profiles_dialog), "gnome-terminal-profile-manager");
+
 #define PADDING 5
 
       vbox = gtk_vbox_new (FALSE, PADDING);
@@ -2846,8 +2902,6 @@ terminal_app_manage_profiles (TerminalApp     *app,
       label = gtk_label_new_with_mnemonic (_("Profile _used when launching a new terminal:"));
       gtk_label_set_mnemonic_widget (GTK_LABEL (label),
                                      app->manage_profiles_default_menu);
-      terminal_util_set_labelled_by (GTK_WIDGET(app->manage_profiles_default_menu),                    
-                                     GTK_LABEL (label));
 
       gtk_box_pack_start (GTK_BOX (hbox),
                           label, TRUE, TRUE, 0);
@@ -2878,8 +2932,6 @@ terminal_app_manage_profiles (TerminalApp     *app,
                         app);
       
       sw = gtk_scrolled_window_new (NULL, NULL);
-      terminal_util_set_labelled_by (GTK_WIDGET(app->manage_profiles_list),                            
-                                     GTK_LABEL (label));
       
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
                                       GTK_POLICY_AUTOMATIC,
@@ -3117,7 +3169,8 @@ terminal_app_get_clone_command (TerminalApp *app,
   
   argc = 1; /* argv[0] */
 
-  argc += 1; /* --use-factory or --disable-factory */
+  if (terminal_factory_disabled)
+    argc += 1; /* --disable-factory */
   
   argc += n_windows; /* one --with-window-profile-internal-id per window,
                       * for the first tab in that window
@@ -3125,6 +3178,8 @@ terminal_app_get_clone_command (TerminalApp *app,
   argc += n_windows; /* one --show-menubar or --hide-menubar per window */
 
   argc += n_windows; /* one --role per window */
+
+  argc += n_windows; /* one --active per window */
 
   argc += n_tabs - n_windows; /* one --with-tab-profile-internal-id
                                * per extra tab
@@ -3138,6 +3193,8 @@ terminal_app_get_clone_command (TerminalApp *app,
 
   argc += n_tabs * 2; /* one "--zoom" per tab */
   
+  argc += 2; /* one "--geometry" per active tab */
+  
   argv = g_new0 (char*, argc + 1);
 
   i = 0;
@@ -3145,10 +3202,10 @@ terminal_app_get_clone_command (TerminalApp *app,
   ++i;
 
   if (terminal_factory_disabled)
-    argv[i] = g_strdup ("--disable-factory");
-  else
-    argv[i] = g_strdup ("--use-factory");
-  ++i;
+    {
+      argv[i] = g_strdup ("--disable-factory");
+      ++i;
+    }
   
   tmp = app->windows;
   while (tmp != NULL)
@@ -3156,6 +3213,9 @@ terminal_app_get_clone_command (TerminalApp *app,
       GList *tabs;
       GList *tmp2;
       TerminalWindow *window = tmp->data;
+      TerminalScreen *active_screen;
+
+      active_screen = terminal_window_get_active (window);
       
       tabs = terminal_window_list_screens (window);
 
@@ -3188,6 +3248,20 @@ terminal_app_get_clone_command (TerminalApp *app,
             {
               argv[i] = g_strdup_printf ("--tab-with-profile-internal-id=%s",
                                          profile_id);
+              ++i;
+            }
+
+          if (screen == active_screen)
+            {
+              int w, h;
+
+              /* FIXME saving the geometry is not great :-/ */
+              argv[i] = g_strdup ("--active");
+              ++i;
+              argv[i] = g_strdup ("--geometry");
+              ++i;
+              terminal_widget_get_size (terminal_screen_get_widget (screen), &w, &h);
+              argv[i] = g_strdup_printf ("%dx%d", w, h);
               ++i;
             }
 
@@ -3300,41 +3374,93 @@ client_die_cb (GnomeClient        *client,
  * Utility stuff
  */
 
-
-
-/* This function is used to set LABLLED_BY relation between widgets
- * and labels
- */
 void
-terminal_util_set_labelled_by (GtkWidget *widget,
-                               GtkLabel  *label)
+terminal_util_set_unique_role (GtkWindow *window, const char *prefix)
 {
-  AtkObject *atkwidget;
-  AtkRelationSet *relation_set;
-  AtkRelation *relation;
-  AtkObject *targets[1];
+  char *role;
 
-  atkwidget = gtk_widget_get_accessible (widget);
-
-  if (atkwidget == NULL)
-    {
-      g_warning ("%s: for some reason widget has no GtkAccessible",
-                 G_GNUC_FUNCTION);
-      return;
-    }
-
-  if (!GTK_IS_ACCESSIBLE (atkwidget))
-    return; /* This means GAIL is not loaded so we have the NoOp accessible */
-  
-  relation_set = atk_object_ref_relation_set (atkwidget);
-  targets[0] = gtk_widget_get_accessible (GTK_WIDGET (label));
-
-  relation = atk_relation_new (targets, 1, ATK_RELATION_LABELLED_BY);
-  atk_relation_set_add (relation_set, relation);
-  g_object_unref (G_OBJECT (relation));
-
+  role = g_strdup_printf ("%s-%d-%d-%d", prefix, getpid (), g_random_int (), (int) time (NULL));
+  gtk_window_set_role (window, role);
+  g_free (role);
 }
 
+/**
+ * terminal_util_show_error_dialog:
+ * @transient_parent: parent of the future dialog window;
+ * @weap_ptr: pointer to a #Widget pointer, to control the population.
+ * @message_format: printf() style format string
+ *
+ * Create a #GtkMessageDialog window with the message, and present it, handling its buttons.
+ * If @weap_ptr is not #NULL, only create the dialog if <literal>*weap_ptr</literal> is #NULL 
+ * (and in that * case, set @weap_ptr to be a weak pointer to the new dialog), otherwise just 
+ * present <literal>*weak_ptr</literal>. Note that in this last case, the message <emph>will</emph>
+ * be changed.
+ */
+
+void
+terminal_util_show_error_dialog (GtkWindow *transient_parent, GtkWidget **weak_ptr, const char *message_format, ...)
+{
+  char *message;
+  va_list args;
+
+  if (message_format)
+    {
+      va_start (args, message_format);
+      message = g_strdup_vprintf (message_format, args);
+      va_end (args);
+    }
+  else message = NULL;
+
+  if (weak_ptr == NULL || *weak_ptr == NULL)
+    {
+      GtkWidget *dialog;
+      dialog = gtk_message_dialog_new (transient_parent,
+                                       GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       GTK_MESSAGE_ERROR,
+                                       GTK_BUTTONS_OK,
+                                       message);
+
+      g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (gtk_widget_destroy), NULL);
+
+      if (weak_ptr != NULL)
+        {
+        *weak_ptr = dialog;
+        g_object_add_weak_pointer (G_OBJECT (dialog), (void**)weak_ptr);
+        }
+
+      gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+      
+      gtk_widget_show_all (dialog);
+    }
+  else 
+    {
+      g_return_if_fail (GTK_IS_MESSAGE_DIALOG (*weak_ptr));
+
+      gtk_label_set_text (GTK_LABEL (GTK_MESSAGE_DIALOG (*weak_ptr)->label), message);
+
+      gtk_window_present (GTK_WINDOW (*weak_ptr));
+    }
+  }
+
+void
+terminal_util_show_help (const char *topic, 
+                         GtkWindow  *transient_parent)
+{
+  GError *err;
+
+  err = NULL;
+
+  gnome_help_display ("gnome-terminal", topic, &err);
+  
+  if (err)
+    {
+      terminal_util_show_error_dialog (GTK_WINDOW (transient_parent), NULL,
+                                       _("There was an error displaying help: %s"),
+                                      err->message);
+      g_error_free (err);
+    }
+}
+ 
 /* sets accessible name and description for the widget */
 
 void
@@ -3399,26 +3525,8 @@ terminal_util_load_glade_file (const char *filename,
     {
       static GtkWidget *no_glade_dialog = NULL;
 
-      if (no_glade_dialog != NULL)
-        gtk_widget_destroy (no_glade_dialog);
-      
-      no_glade_dialog =
-        gtk_message_dialog_new (error_dialog_parent,
-                                GTK_DIALOG_DESTROY_WITH_PARENT,
-                                GTK_MESSAGE_ERROR,
-                                GTK_BUTTONS_CLOSE,
-                                _("The file \"%s\" is missing. This indicates that the application is installed incorrectly, so the dialog can't be displayed."),
-                                path);
-      
-      g_signal_connect (G_OBJECT (no_glade_dialog),
-                        "response",
-                        G_CALLBACK (gtk_widget_destroy),
-                        NULL);
-      
-      g_object_add_weak_pointer (G_OBJECT (no_glade_dialog),
-                                 (void**)&no_glade_dialog);
-  
-      gtk_window_present (GTK_WINDOW (no_glade_dialog));
+      terminal_util_show_error_dialog (error_dialog_parent, &no_glade_dialog, 
+                                       _("The file \"%s\" is missing. This indicates that the application is installed incorrectly."), path);
     }
 
   g_free (path);
@@ -3474,6 +3582,8 @@ handle_new_terminal_event (int          argc,
 
   poptFreeContext (ctx);
   options[0].descrip = store;
+
+  option_parsing_results_apply_directory_defaults (results);
 
   new_terminal_with_options (results);
 

@@ -24,9 +24,6 @@
 #include "terminal-intl.h"
 #include "terminal.h"
 #include <glade/glade.h>
-#include <libgnome/gnome-help.h>
-#include <libgnomeui/gnome-color-picker.h>
-#include <libgnomeui/gnome-font-picker.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <libgnomeui/gnome-icon-entry.h>
 #include <string.h>
@@ -167,19 +164,12 @@ static void
 colorpicker_set_if_changed (GtkWidget      *colorpicker,
                             const GdkColor *color)
 {
-  guint16 r, g, b;
+  GdkColor old_color;
 
-  gnome_color_picker_get_i16 (GNOME_COLOR_PICKER (colorpicker),
-                              &r, &g, &b, NULL);
+  gtk_color_button_get_color (GTK_COLOR_BUTTON (colorpicker), &old_color);
 
-  if (r != color->red ||
-      g != color->green ||
-      b != color->blue)
-    gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (colorpicker),
-                                color->red,
-                                color->green,
-                                color->blue,
-                                0xffff);
+  if (!gdk_color_equal (color, &old_color))
+    gtk_color_button_set_color (GTK_COLOR_BUTTON (colorpicker), color);
 }
 
 static void
@@ -204,7 +194,7 @@ fontpicker_get_desc (GtkWidget *font_picker)
   const char *current_name;
   PangoFontDescription *current_desc;
 
-  current_name = gnome_font_picker_get_font_name (GNOME_FONT_PICKER (font_picker));
+  current_name = gtk_font_button_get_font_name (GTK_FONT_BUTTON (font_picker));
   if (current_name)
     current_desc = pango_font_description_from_string (current_name);
   else
@@ -226,7 +216,7 @@ fontpicker_set_if_changed (GtkWidget                  *font_picker,
       char *str;
 
       str = pango_font_description_to_string (font_desc);
-      gnome_font_picker_set_font_name (GNOME_FONT_PICKER (font_picker),
+      gtk_font_button_set_font_name (GTK_FONT_BUTTON (font_picker),
                                        str);
 
       g_free (str);
@@ -401,36 +391,28 @@ show_menubar_toggled (GtkWidget       *checkbutton,
 
 static void
 foreground_color_set (GtkWidget       *colorpicker,
-                      guint r, guint g, guint b, guint a,
                       TerminalProfile *profile)
 {
   GdkColor color;
   GdkColor bg;
 
-  color.red = r;
-  color.green = g;
-  color.blue = b;
+  gtk_color_button_get_color (GTK_COLOR_BUTTON (colorpicker), &color);
 
-  terminal_profile_get_color_scheme (profile,
-                                     NULL, &bg);
+  terminal_profile_get_color_scheme (profile, NULL, &bg);
   
   terminal_profile_set_color_scheme (profile, &color, &bg);
 }
 
 static void
 background_color_set (GtkWidget       *colorpicker,
-                      guint r, guint g, guint b, guint a,
                       TerminalProfile *profile)
 {
   GdkColor color;
   GdkColor fg;
 
-  color.red = r;
-  color.green = g;
-  color.blue = b;
+  gtk_color_button_get_color (GTK_COLOR_BUTTON (colorpicker), &color);
 
-  terminal_profile_get_color_scheme (profile,
-                                     &fg, NULL);
+  terminal_profile_get_color_scheme (profile, &fg, NULL);
   
   terminal_profile_set_color_scheme (profile, &fg, &color);
 }
@@ -628,21 +610,16 @@ palette_scheme_changed (GtkWidget       *option_menu,
 
 static void
 palette_color_set (GtkWidget       *colorpicker,
-                   guint r, guint g, guint b, guint a,
                    TerminalProfile *profile)
 {
   int i;
   GdkColor color;
 
-  color.red = r;
-  color.green = g;
-  color.blue = b;
-  
-  i = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (colorpicker),
-                                          "palette-entry-index"));
+  gtk_color_button_get_color (GTK_COLOR_BUTTON (colorpicker), &color);
 
-  terminal_profile_set_palette_entry (profile, i,
-                                      &color);
+  i = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (colorpicker), "palette-entry-index"));
+
+  terminal_profile_set_palette_entry (profile, i, &color);
 }
 
 static void
@@ -761,12 +738,13 @@ use_system_font_toggled (GtkWidget       *checkbutton,
 
 static void
 font_set (GtkWidget       *fontpicker,
-          const char      *font_name,
           TerminalProfile *profile)
 {
   PangoFontDescription *desc;
   PangoFontDescription *tmp;
+  const char *font_name;
   
+  font_name = gtk_font_button_get_font_name (GTK_FONT_BUTTON (fontpicker));
   desc = pango_font_description_from_string (font_name);
   if (desc == NULL)
     {
@@ -872,38 +850,9 @@ editor_response_cb (GtkDialog *editor,
                     void      *data)
 {  
   if (id == GTK_RESPONSE_HELP)
-    {
-      GError *err;
-      err = NULL;
-      gnome_help_display ("gnome-terminal", "gnome-terminal-prefs",
-                          &err);
-      
-      if (err)
-        {
-          GtkWidget *dialog;
-          
-          dialog = gtk_message_dialog_new (GTK_WINDOW (editor),
-                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                           GTK_MESSAGE_ERROR,
-                                           GTK_BUTTONS_CLOSE,
-                                           _("There was an error displaying help: %s"),
-                                           err->message);
-          
-          g_signal_connect (G_OBJECT (dialog), "response",
-                            G_CALLBACK (gtk_widget_destroy),
-                            NULL);
-          
-          gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-          
-          gtk_widget_show (dialog);
-          
-          g_error_free (err);
-        }
-    }
+    terminal_util_show_help ("gnome-terminal-prefs", GTK_WINDOW (editor));
   else
-    {
-      gtk_widget_destroy (GTK_WIDGET (editor));
-    }
+    gtk_widget_destroy (GTK_WIDGET (editor));
 }
 
 void
@@ -1151,6 +1100,7 @@ terminal_profile_edit (TerminalProfile *profile,
                         profile);
 
       w = glade_xml_get_widget (xml, "background-image-fileentry");
+      g_object_set (G_OBJECT (w), "use-filechooser", TRUE, NULL);
       profile_editor_update_background_image (editor, profile);
       g_signal_connect (G_OBJECT (w), "changed",
                         G_CALLBACK (background_image_changed),
@@ -1223,14 +1173,14 @@ terminal_profile_edit (TerminalProfile *profile,
         {
           GtkWidget *font_label;
           
-          fontsel = gnome_font_picker_new ();
+          fontsel = gtk_font_button_new ();
           g_object_set_data (G_OBJECT (editor), "font-selector", fontsel);
 
-          gnome_font_picker_set_title (GNOME_FONT_PICKER (fontsel),
-                                       _("Choose a terminal font"));
-          gnome_font_picker_set_mode (GNOME_FONT_PICKER (fontsel),
-                                      GNOME_FONT_PICKER_MODE_FONT_INFO);
-          gnome_font_picker_fi_set_show_size (GNOME_FONT_PICKER (fontsel), TRUE);
+          gtk_font_button_set_title (GTK_FONT_BUTTON (fontsel), _("Choose a terminal font"));
+          gtk_font_button_set_show_size (GTK_FONT_BUTTON (fontsel), TRUE);
+          gtk_font_button_set_show_style (GTK_FONT_BUTTON (fontsel), FALSE);
+          gtk_font_button_set_use_font (GTK_FONT_BUTTON (fontsel), TRUE);
+          gtk_font_button_set_use_size (GTK_FONT_BUTTON (fontsel), FALSE);
 
           profile_editor_update_font (editor, profile);
           g_signal_connect (G_OBJECT (fontsel), "font_set",
@@ -1239,6 +1189,7 @@ terminal_profile_edit (TerminalProfile *profile,
 
           font_label = gtk_label_new_with_mnemonic (_("_Font:"));
           gtk_misc_set_alignment (GTK_MISC (font_label), 0.0, 0.5);
+          gtk_label_set_mnemonic_widget (GTK_LABEL (font_label), fontsel);
 
           gtk_box_set_spacing (GTK_BOX (w), 12);
           
@@ -1286,6 +1237,8 @@ terminal_profile_edit (TerminalProfile *profile,
       g_signal_connect (G_OBJECT (w), "clicked",
 			G_CALLBACK (reset_compat_defaults_clicked),
 			profile);
+
+      terminal_util_set_unique_role (GTK_WINDOW (editor), "gnome-terminal-profile-editor");
     }
   else
     {
@@ -1512,7 +1465,7 @@ profile_editor_update_visible_name (GtkWidget       *editor,
   char *s;
   GtkWidget *w;
   
-  s = g_strdup_printf (_("Editing profile \"%s\""),
+  s = g_strdup_printf (_("Editing Profile \"%s\""),
                        terminal_profile_get_visible_name (profile));
   
   gtk_window_set_title (GTK_WINDOW (editor), s);

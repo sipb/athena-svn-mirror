@@ -19,6 +19,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "terminal-intl.h"
 #include "terminal-widget.h"
 
 #include <string.h>
@@ -28,8 +29,14 @@
 
 typedef struct
 {
-  int foo;
-  int skey_tag;
+  int tag;
+  int flavor;
+} TagData;
+
+typedef struct
+{
+  GSList *url_tags;
+  GSList *skey_tags;
 } VteData;
 
 static void
@@ -38,6 +45,12 @@ free_vte_data (gpointer data)
   VteData *vte;
 
   vte = data;
+
+  g_slist_foreach (vte->url_tags, (GFunc) g_free, NULL);
+  g_slist_free(vte->url_tags);
+
+  g_slist_foreach (vte->skey_tags, (GFunc) g_free, NULL);
+  g_slist_free(vte->skey_tags);
   
   g_free (vte);
 }
@@ -53,6 +66,10 @@ terminal_widget_new (void)
   vte_terminal_set_mouse_autohide(VTE_TERMINAL(terminal), TRUE);
   
   data = g_new0 (VteData, 1);
+
+  data->url_tags = NULL;
+  data->skey_tags = NULL;
+
   g_object_set_data_full (G_OBJECT (terminal), "terminal-widget-data",
                           data, free_vte_data);
   
@@ -107,60 +124,111 @@ terminal_widget_get_padding                (GtkWidget            *widget,
 
 void
 terminal_widget_match_add                  (GtkWidget            *widget,
-					    const char           *regexp)
+					    const char           *regexp,
+                                            int                   flavor)
 {
-  vte_terminal_match_add(VTE_TERMINAL(widget), regexp);
+  TagData *tag_data;
+  VteData *data;
+  int tag;
+  
+  data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
+
+  tag = vte_terminal_match_add (VTE_TERMINAL (widget), regexp);
+
+  tag_data = g_new0 (TagData, 1);
+  tag_data->tag = tag;
+  tag_data->flavor = flavor;
+
+  data->url_tags = g_slist_append (data->url_tags, tag_data);
 }
 
 void
 terminal_widget_skey_match_add             (GtkWidget            *widget,
-					    const char           *regexp)
+					    const char           *regexp,
+                                            int                   flavor)
 {
+  TagData *tag_data;
   VteData *data;
+  int tag;
   
   data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
 
-  data->skey_tag = vte_terminal_match_add(VTE_TERMINAL(widget), regexp);
+  tag = vte_terminal_match_add(VTE_TERMINAL(widget), regexp);
+
+  tag_data = g_new0 (TagData, 1);
+  tag_data->tag = tag;
+  tag_data->flavor = flavor;
+
+  data->skey_tags = g_slist_append (data->skey_tags, tag_data);
 }
 
 void
 terminal_widget_skey_match_remove          (GtkWidget            *widget)
 {
   VteData *data;
+  GSList *tags;
   
   data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
 
-  vte_terminal_match_remove(VTE_TERMINAL(widget), data->skey_tag);
+  for (tags = data->skey_tags; tags != NULL; tags = g_slist_next(tags))
+    vte_terminal_match_remove(VTE_TERMINAL(widget),
+   			      GPOINTER_TO_INT(((TagData*)tags->data)->tag));
 
-  data->skey_tag = -1;
+  g_slist_foreach (data->skey_tags, (GFunc) g_free, NULL);
+  g_slist_free(data->skey_tags);
+  data->skey_tags = NULL;
 }
 
 char*
 terminal_widget_check_match (GtkWidget *widget,
 			     int        column,
-			     int        row)
-{
-  return vte_terminal_match_check(VTE_TERMINAL(widget), column, row, NULL);
-}
-
-char*
-terminal_widget_skey_check_match (GtkWidget *widget,
-				  int        column,
-				  int        row)
+			     int        row,
+                             int       *flavor)
 {
   VteData *data;
+  GSList *tags;
   gint tag;
   char *match;
    
   data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
 
   match = vte_terminal_match_check(VTE_TERMINAL(widget), column, row, &tag);
-  if (data->skey_tag == tag)
-    return match;
+  for (tags = data->url_tags; tags != NULL; tags = g_slist_next(tags))
+    if (GPOINTER_TO_INT(((TagData*)tags->data)->tag) == tag)
+      {
+        if (flavor)
+          *flavor = tag;
+        return match;
+      }
 
   g_free (match);
   return NULL;
-      
+}
+
+char*
+terminal_widget_skey_check_match (GtkWidget *widget,
+				  int        column,
+				  int        row,
+                                  int       *flavor)
+{
+  VteData *data;
+  GSList *tags;
+  gint tag;
+  char *match;
+   
+  data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
+
+  match = vte_terminal_match_check(VTE_TERMINAL(widget), column, row, &tag);
+  for (tags = data->skey_tags; tags != NULL; tags = g_slist_next(tags))
+    if (GPOINTER_TO_INT(((TagData*)tags->data)->tag) == tag)
+      {
+        if (flavor)
+          *flavor = tag;
+        return match;
+      }
+
+  g_free (match);
+  return NULL;
 }
 
 void
@@ -298,7 +366,8 @@ void
 terminal_widget_set_background_scrolls (GtkWidget *widget,
 					gboolean   setting)
 {
-  UNIMPLEMENTED;
+  g_return_if_fail(VTE_IS_TERMINAL(widget));
+  vte_terminal_set_scroll_background(VTE_TERMINAL(widget), setting);
 }
 
 void
@@ -332,6 +401,7 @@ terminal_widget_set_colors (GtkWidget      *widget,
   g_return_if_fail(VTE_IS_TERMINAL(widget));
   vte_terminal_set_colors(VTE_TERMINAL(widget), foreground, background,
 			  palette_entries, TERMINAL_PALETTE_SIZE);
+  vte_terminal_set_background_tint_color(VTE_TERMINAL(widget), background);
 }
 
 void
@@ -483,6 +553,7 @@ terminal_widget_get_scroll_adjustment (GtkWidget *widget)
 
 gboolean
 terminal_widget_fork_command (GtkWidget   *widget,
+                              gboolean     lastlog,
 			      gboolean     update_records,
 			      const char  *path,
 			      char       **argv,
@@ -493,8 +564,19 @@ terminal_widget_fork_command (GtkWidget   *widget,
 {
   *child_pid = vte_terminal_fork_command (VTE_TERMINAL (widget),
 		 			  path, argv, envp, working_dir,
-					  update_records, TRUE, TRUE);
-  return (*child_pid != -1);
+					  lastlog, update_records, update_records);
+
+  if (*child_pid == -1)
+    {
+      g_set_error (err,
+                   G_SPAWN_ERROR,
+                   G_SPAWN_ERROR_FAILED,
+                   _("There was an error creating the child process for this terminal")
+                   );
+      return FALSE;
+    }
+
+  return TRUE;
 }
 
 
@@ -504,7 +586,7 @@ terminal_widget_get_estimated_bytes_per_scrollback_line (void)
 {
   /* One slot in the ring buffer, plus the array which holds the data for
    * the line, plus about 80 vte_charcell structures. */
-  return sizeof(gpointer) + sizeof(GArray) + (80 * (sizeof(wchar_t) + 4));
+  return sizeof(gpointer) + sizeof(GArray) + (80 * (sizeof(gunichar) + 4));
 }
 
 void
