@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.1 1990-04-19 12:00:09 jfc Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.2 1990-04-19 12:00:16 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -213,7 +213,7 @@ parse_attach(bfr, at)
     if (!strcmp(cp, "A0"))
 	    old_version = 1;
     else if (strcmp(cp, ATTACH_VERSION)) {
-	    fprintf(stderr, "Bad version number in %s\n", ATTACHTAB);
+	    fprintf(stderr, "Bad version number in %s\n", attachtab_fn);
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
     }
@@ -300,7 +300,7 @@ parse_attach(bfr, at)
     return;
     
 bad_line:
-    fprintf(stderr,"Badly formatted entry in %s\n", ATTACHTAB);
+    fprintf(stderr,"Badly formatted entry in %s\n", attachtab_fn);
     fprintf(stderr, abort_msg);
     exit(ERR_FATAL);
 }
