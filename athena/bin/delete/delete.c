@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.5 1989-01-23 09:26:51 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.6 1989-01-23 10:59:15 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -153,6 +153,7 @@ usage()
      printf("     -v     verbose\n");
      printf("     -F     files only\n");
      printf("     -D     directories only\n");
+     printf("     --     end options and start filenames\n");
      printf("-r and -D are mutually exclusive\n");
      printf("-F and -D are mutually exclusive\n");
 }
