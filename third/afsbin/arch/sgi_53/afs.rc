@@ -140,6 +140,23 @@ case "$1" in
 	fi
 
 	if $IS_ON afsclient && test -x /usr/vice/etc/afsd ; then
+		# Athena addition
+		. /etc/athena/rc.conf
+		if [ \( "$AFSADJUST" = true -o $PUBLIC = true \) -a \
+			-d /usr/vice/cache/ ]; then
+			echo "Adjusting the cache size" > /dev/console
+			rm -f /usr/vice/etc/cacheinfo.old
+			mv -f /usr/vice/etc/cacheinfo \
+				/usr/vice/etc/cacheinfo.old
+			df -bk /usr/vice/cache/ | awk '
+				(NR == 2) {
+					printf("/afs:/usr/vice/cache:%d\n",
+					       int($2 * 3 / 4));
+				}' > /usr/vice/etc/cacheinfo
+			sed -n '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
+				/usr/vice/etc/cacheinfo	> /dev/console
+		fi
+
 		if test -s /usr/vice/etc/ThisCell ; then
 			MYCELL=`cat /usr/vice/etc/ThisCell`
 		else
