@@ -1,11 +1,12 @@
-.\" $XConsortium: imake.man,v 1.16 91/07/31 23:44:36 gildea Exp $
+.\" $XConsortium: imake.man,v 1.18 92/09/14 11:53:38 rws Exp $
 .TH IMAKE 1 "Release 5" "X Version 11"
 .SH NAME
 imake \- C preprocessor interface to the make utility
 .SH SYNOPSIS
 \fBimake\fP [ \fB\-D\fP\fIdefine\fP ] [ \fB\-I\fP\fIdir\fP ]
 [ \fB\-T\fP\fItemplate\fP ]
-[ \fB\-f\fP \fIfilename\fP ] [ \fB\-s\fP \fIfilename\fP ] [ \fB\-e\fP ]
+[ \fB\-f\fP \fIfilename\fP ] [ \fB\-C\fP \fIfilename\fP ]
+[ \fB\-s\fP \fIfilename\fP ] [ \fB\-e\fP ]
 [ \fB\-v\fP ]
 .SH DESCRIPTION
 .I Imake
@@ -39,6 +40,10 @@ The default is \fIImake.tmpl\fP.
 This option specifies the name of the per-directory input file.  The default
 is \fIImakefile\fP.
 .TP 8
+.B \-C \fIfilename\fP
+This option specifies the name of the .c file that is constructed in the
+current directory.  The default is \fIImakefile.c\fP.
+.TP 8
 .B \-s \fIfilename\fP
 This option specifies the name of the \fImake\fP description file to be 
 generated but \fImake\fP should not be invoked.
@@ -55,11 +60,12 @@ This option indicates that \fIimake\fP should print the \fIcpp\fP command line
 that it is using to generate the \fIMakefile\fP.
 .SH "HOW IT WORKS"
 \fIImake\fP invokes \fIcpp\fP with any \fI\-I\fP or \fI\-D\fP flags passed
-on the command line and passes it the following 3 lines:
+on the command line and passes the name of a file containing the
+following 3 lines:
 .sp
 .nf
 		#define IMAKE_TEMPLATE "Imake.tmpl"
-		#define INCLUDE_IMAKEFILE "Imakefile"
+		#define INCLUDE_IMAKEFILE <Imakefile>
 		#include IMAKE_TEMPLATE
 .fi
 .sp
@@ -112,6 +118,10 @@ foo:	foo1.o  foo2.o
 
 .fi
 .PP
+\fIImake\fP also replaces any occurrences of the word ``XCOMM'' with
+the character ``#'' to permit placing comments in the Makefile without
+causing ``invalid directive'' errors from the preprocessor.
+.PP
 On systems whose \fIcpp\fP reduces multiple tabs and spaces to a single
 space, \fIimake\fP attempts to put back any necessary tabs (\fImake\fP is
 very picky about the difference between tabs and spaces).  For this reason,
@@ -149,9 +159,9 @@ The indentation shows what files include what other files.
         Project.tmpl	X-specific variables
             *Lib.tmpl	shared library variables
         Imake.rules	rules
-    Imakefile
-        Library.tmpl	library rules
-        Server.tmpl	server rules
+        Imakefile
+            Library.tmpl	library rules
+            Server.tmpl	server rules
 .fi
 .LP
 Note that \fIsite.def\fP gets included twice, once before the
@@ -166,9 +176,11 @@ defined.  All code in \fIsite.def\fP should be inside an #ifdef for
 one of these symbols.
 .SH FILES
 .ta 3i
-/usr/tmp/tmp-imake.\fInnnnnn\fP	temporary input file for cpp
+Imakefile.c	temporary input file for cpp
 .br
-/usr/tmp/tmp-make.\fInnnnnn\fP	temporary input file for make
+/tmp/Imf.XXXXXX	temporary Makefile for -s
+.br
+/tmp/IIf.XXXXXX	temporary Imakefile if specified Imakefile uses # comments
 .br
 /lib/cpp	default C preprocessor
 .DT

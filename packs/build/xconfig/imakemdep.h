@@ -1,9 +1,9 @@
 /*
- * $XConsortium: imakemdep.h,v 1.43 92/08/22 16:42:41 rws Exp $
+ * $XConsortium: imakemdep.h,v 1.44 92/09/03 19:55:01 rws Exp $
  * 
  * This file contains machine-dependent constants for the imake utility.
  * When porting imake, read each of the steps below and add in any necessary
- * definitions.  Do *not* edit ccimake.c or imake.c!
+ * definitions.  In general you should *not* edit ccimake.c or imake.c!
  */
 
 #ifdef CCIMAKE
@@ -51,19 +51,15 @@
 #define imake_ccflags "-DSYSV -DUSG -DX_NOT_STDC_ENV"
 #endif
 
-#ifdef _IBMR2
-#define imake_ccflags "-Daix -DSYSV -D_IBMR2"
-#else
-#ifdef aix
+#if defined(_IBMR2) || defined(aix)
 #define imake_ccflags "-Daix -DSYSV"
-#endif
 #endif
 
 #ifdef Mips
 #  if defined(SYSTYPE_BSD) || defined(BSD) || defined(BSD43)
-#    define imake_ccflags "-DMips -DBSD43"
+#    define imake_ccflags "-DBSD43"
 #  else 
-#    define imake_ccflags "-DMips -DSYSV"
+#    define imake_ccflags "-DSYSV"
 #  endif
 #endif 
 
@@ -116,9 +112,10 @@
 
 
 /*
- * Step 4:  DEFAULT_CPP
- *     If the C preprocessor does not live in /lib/cpp, set this symbol to 
- *     the appropriate location.
+ * Step 4:  USE_CC_E, DEFAULT_CC, DEFAULT_CPP
+ *     If you want to use cc -E instead of cpp, define USE_CC_E.
+ *     If use cc -E but want a different compiler, define DEFAULT_CC.
+ *     If the cpp you need is not in /lib/cpp, define DEFAULT_CPP.
  */
 #ifdef apollo
 #define DEFAULT_CPP "/usr/lib/cpp"
@@ -129,29 +126,24 @@
 
 /*
  * Step 5:  cpp_argv
- *     The following table contains the cpp flags that should be passed to 
- *     cpp whenever a Makefile is being generated.  If your preprocessor 
+ *     The following table contains the flags that should be passed
+ *     whenever a Makefile is being generated.  If your preprocessor 
  *     doesn't predefine any unique symbols, choose one and add it to the
  *     end of this table.  Then, do the following:
  * 
- *         a.  Use this symbol at the top of Imake.tmpl when setting MacroFile.
+ *         a.  Use this symbol in Imake.tmpl when setting MacroFile.
  *         b.  Put this symbol in the definition of BootstrapCFlags in your
  *             <platform>.cf file.
  *         c.  When doing a make World, always add "BOOTSTRAPCFLAGS=-Dsymbol" 
  *             to the end of the command line.
  * 
- *     Note that you may define more than one symbols (useful for platforms 
+ *     Note that you may define more than one symbol (useful for platforms 
  *     that support multiple operating systems).
  */
 
 #define	ARGUMENTS 50	/* number of arguments in various arrays */
 char *cpp_argv[ARGUMENTS] = {
-#ifdef USE_CC_E
-	"cc",		/* replaced by the actual cpp program to exec */
-	"-E",
-#else
-	"cpp",		/* replaced by the actual cpp program to exec */
-#endif /* USE_CC_E */
+	"cc",		/* replaced by the actual program to exec */
 	"-I.",		/* add current directory to include path */
 #ifdef unix
 	"-Uunix",	/* remove unix symbol so that filename unix.c okay */
