@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.14 1988-06-23 16:57:41 jtkohl Exp $";
+static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.15 1988-06-24 22:54:07 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -113,7 +113,12 @@ ZServerDesc_t *server;
 	xinsque(clist, hlp2->zh_clients);
 	(void) sigsetmask(omask);
 
-	return(subscr_def_subs(*client)); /* add default subscriptions */
+	if (!server->zs_dumping)
+		/* add default subscriptions only if this is not
+		   resulting from a brain dump */
+		return(subscr_def_subs(*client));
+	else
+		return(ZERR_NONE);
 }
 
 /*
