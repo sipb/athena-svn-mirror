@@ -25,14 +25,25 @@ static char sccsid[] = "@(#)logwtmp.c	5.2 (Berkeley) 9/22/88";
 #include <sys/file.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#ifdef POSIX
+#include <unistd.h>
+#include <sys/fcntl.h>
+#include <string.h>
+#else
 #include <ttyent.h>
+#endif
 #include <utmp.h>
-
+#ifdef SOLARIS
+#include <utmpx.h>
+#endif
 #ifdef ATHENA
 #define UTMPFILE	"/etc/utmp"
 #endif
 #define	WTMPFILE	"/usr/adm/wtmp"
-
+#ifdef SOLARIS
+#define UTMPXFILE	"/etc/utmpx"
+#define	WTMPXFILE	"/usr/adm/wtmpx"
+#endif
 static int fd;
 #ifdef ATHENA
 static int utmpfd = -1, ptrvalid = 0;
@@ -46,18 +57,28 @@ static off_t ptr;
 loguwtmp(linepid, name, host)
 	char *linepid, *name, *host;
 {
+#ifndef SOLARIS
   struct utmp ut;
+#else
+  struct utmpx ut;
+#endif
   struct stat buf;
   time_t time();
   char *strncpy();
   int cc, ttynum;
   char line[10];
   static int ftpline = 0, firsttime = 1;
-
+#ifdef SOLARIS
+    struct flock lock;
+#endif
   if (firsttime)
     {
       if (utmpfd == -1)
+#ifndef SOLARIS
 	utmpfd = open(UTMPFILE, O_RDWR, 0);
+#else
+	utmpfd = open(UTMPXFILE, O_RDWR, 0);
+#endif
       ptrvalid = 0; ptr = 0;
 
       /*
@@ -70,10 +91,13 @@ loguwtmp(linepid, name, host)
        */
       if (utmpfd >= 0)
 	{
-#ifdef _AIX
+#if defined(_AIX) || defined(SOLARIS)
 	  /*
 	   * Under AIX, we run through all of utmp looking for
 	   * the appropriate place to put an ftp entry.
+	   */
+	  /* 
+	   * Same for SOLARIS
 	   */
 #else
 	  /*
@@ -98,7 +122,15 @@ loguwtmp(linepid, name, host)
 	   * furthermore, locking of the utmp file is required
 	   * under AIX, even if IBM's own software doesn't do it.
 	   */
+#ifndef SOLARIS
 	  flock(utmpfd, LOCK_EX);
+#else
+          lock.l_type = F_WRLCK;
+          lock.l_start = 0;
+          lock.l_whence = 0;
+       	  lock.l_len = 0;
+          fcntl(utmpfd, F_SETLK, &lock);
+#endif
 	  lseek(utmpfd, ptr, L_SET);
 
 	  /* Scan for a line with the name ftpX */
@@ -112,7 +144,7 @@ loguwtmp(linepid, name, host)
 		   * The AIX manpage is not rich in suggestions
 		   * of how this _should_ be done, and other software
 		   * varies. */
-#ifdef _AIX
+#if defined(_AIX) || defined(SOLARIS)
 		  if (ut.ut_type == DEAD_PROCESS)
 #else
 		  if (ut.ut_name[0] == '\0')
@@ -136,7 +168,15 @@ loguwtmp(linepid, name, host)
 		   * to truncate it to its original length when
 		   * a write only partially succeeds.
 		   */
+#ifndef SOLARIS
 		  flock(utmpfd, LOCK_UN);
+#else
+		  lock.l_type = F_UNLCK;
+		  lock.l_start = 0;
+		  lock.l_whence = 0;
+		  lock.l_len = 0;
+		  fcntl(utmpfd, F_SETLK, &lock);
+#endif
 		  close(utmpfd);
 		  utmpfd = -1;
 		}
@@ -148,14 +188,22 @@ loguwtmp(linepid, name, host)
 	      }
 	    else /* The utmp file has a bad length. Don't touch it. */
 	      {
+#ifndef SOLARIS
 		flock(utmpfd, LOCK_UN);
+#else
+		lock.l_type = F_UNLCK;
+		lock.l_start = 0;
+		lock.l_whence = 0;
+		lock.l_len = 0;
+		fcntl(utmpfd, F_SETLK, &lock);
+#endif
 		close(utmpfd);
 		utmpfd = -1;
 	      }
 	}
     }
 
-  bzero(&ut, sizeof(ut));
+  memset(&ut, 0, sizeof(ut));
   if (ptrvalid)
     {
       /* Do this if we got to deal with utmp and got a real line number */
@@ -166,8 +214,12 @@ loguwtmp(linepid, name, host)
     (void)strncpy(ut.ut_line, linepid, sizeof(ut.ut_line));
   (void)strncpy(ut.ut_name, name, sizeof(ut.ut_name));
   (void)strncpy(ut.ut_host, host, sizeof(ut.ut_host));
+#ifndef SOLARIS
   (void)time(&ut.ut_time);
-#ifdef _AIX
+#else
+  (void) gettimeofday(&ut.ut_tv);
+#endif
+#if defined(_AIX) || defined(SOLARIS)
   /* Note that name is only \0 in the case where the program
    * is exiting. */
   ut.ut_type = (name[0] == '\0' ? DEAD_PROCESS : USER_PROCESS);
@@ -183,13 +235,31 @@ loguwtmp(linepid, name, host)
 	{
 	  (void)ftruncate(utmpfd, buf.st_size);
 	  ptrvalid = 0;
+#ifndef SOLARIS
 	  flock(utmpfd, LOCK_UN);
+#else
+	  lock.l_type = F_UNLCK;
+	  lock.l_start = 0;
+	  lock.l_whence = 0;
+	  lock.l_len = 0;
+	  fcntl(utmpfd, F_SETLK, &lock);
+#endif
+
 	  close(utmpfd);
 	  utmpfd = -1;
 	}
       else
 	if (firsttime)
+#ifndef SOLARIS
 	  flock(utmpfd, LOCK_UN);
+#else
+	  lock.l_type = F_UNLCK;
+	  lock.l_start = 0;
+	  lock.l_whence = 0;
+	  lock.l_len = 0;
+	  fcntl(utmpfd, F_SETLK, &lock);
+#endif
+
       /* In case this was the first time around and we had it locked...
        * Note that the file lock is only necessary for when we allocate
        * our slot. Afterwards, until we release the slot, its ours.
@@ -198,6 +268,7 @@ loguwtmp(linepid, name, host)
 
   firsttime = 0;
 
+#ifndef SOLARIS
   if (!fd && (fd = open(WTMPFILE, O_WRONLY|O_APPEND, 0)) < 0)
     return;
   if (!fstat(fd, &buf)) {
@@ -205,14 +276,21 @@ loguwtmp(linepid, name, host)
 	sizeof(struct utmp))
       (void)ftruncate(fd, buf.st_size);
   }
+#else
+  (void) updwtmpx(WTMPXFILE, &ut);
+#endif
 }
 
 int user_logged_in(who)
      char *who;
 {
+#ifndef SOLARIS
   struct utmp ut;
+#else
+  struct utmpx ut;
+#endif
   off_t p = 0;
-#ifdef _AIX
+#if defined(_AIX) || defined(SOLARIS)
   static int pid = 0;
 
   if (pid == 0)
@@ -221,7 +299,11 @@ int user_logged_in(who)
 
   if (utmpfd == -1)
     {
+#ifndef SOLARIS
       utmpfd = open(UTMPFILE, O_RDWR, 0);
+#else
+      utmpfd = open(UTMPXFILE, O_RDWR, 0);
+#endif
       if (utmpfd == -1)
 	return 0; /* should this be what we do? XXX */
     }
@@ -230,7 +312,7 @@ int user_logged_in(who)
   while (read(utmpfd, &ut, sizeof(ut)) == sizeof(ut))
     {
       if (!strcmp(ut.ut_name, who) && 
-#ifdef _AIX
+#if defined(_AIX) || defined(SOLARIS)
 	  (ut.ut_type == USER_PROCESS) &&
 	  (ut.ut_pid != pid))
 #else
@@ -248,20 +330,32 @@ int user_logged_in(who)
 logwtmp(line, name, host)
 	char *line, *name, *host;
 {
+#ifndef SOLARIS
 	struct utmp ut;
+#else
+	struct utmpx ut;
+#endif
 	struct stat buf;
 	time_t time();
 	char *strncpy();
 
+#ifndef SOLARIS
 	if (!fd && (fd = open(WTMPFILE, O_WRONLY|O_APPEND, 0)) < 0)
+#else
+	if (!fd && (fd = open(WTMPXFILE, O_WRONLY|O_APPEND, 0)) < 0)
+#endif
 		return;
 	if (!fstat(fd, &buf)) {
-	        bzero(&ut, sizeof(ut));
+	        memset(&ut, 0, sizeof(ut));
 		(void)strncpy(ut.ut_line, line, sizeof(ut.ut_line));
 		(void)strncpy(ut.ut_name, name, sizeof(ut.ut_name));
 		(void)strncpy(ut.ut_host, host, sizeof(ut.ut_host));
+#ifndef SOLARIS
 		(void)time(&ut.ut_time);
-#ifdef _AIX
+#else
+		(void) gettimeofday(&ut.ut_tv);
+#endif
+#if defined(_AIX) || defined(SOLARIS)
 		ut.ut_pid = getpid();
 		if (name[0] != '\0')
 		  ut.ut_type = USER_PROCESS;
