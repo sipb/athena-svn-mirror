@@ -1,154 +1,0 @@
-
-col.c,163
-static int calc_string_width(94,2814
-static int calc_widths(116,3297
-int column_array(40,1078
-static int num_width(180,5016
-static void trim_strings(105,3087
-
-col.h,0
-
-delete.c,147
-delete(197,5055
-do_move(407,9661
-empty_directory(313,7858
-main(78,2124
-recursive_delete(342,8323
-unlink_completely(500,12418
-usage(172,4331
-
-delete.h,0
-
-directories.c,750
-int accumulate_names(656,13772
-int add_directory_to_parent(448,9158
-int add_file_to_parent(395,7965
-int add_path_to_tree(132,2560
-int change_path(569,11780
-int find_child(532,11111
-filerec *first_in_directory(330,6678
-filerec *first_specified_in_directory(349,7047
-void free_leaf(501,10410
-filerec *get_cwd_tree(106,2099
-int get_leaf_path(617,12929
-filerec *get_root_tree(99,2042
-int get_specs(208,4410
-int initialize_tree(112,2153
-filerec *next_directory(273,5672
-filerec *next_in_directory(300,6150
-filerec *next_leaf(244,5195
-filerec *next_specified_directory(289,5969
-filerec *next_specified_in_directory(319,6491
-filerec *next_specified_leaf(263,5506
-void print_paths_from(364,7320
-void print_specified_paths_from(379,7608
-
-directories.h,170
-#define space_to_k(23,717
-#define space_to_k(27,867
-#define specs_to_k(24,772
-#define specs_to_k(28,928
-#define specs_to_space(22,675
-#define specs_to_space(26,827
-
-errors.c,20
-void error(38,1176
-
-errors.h,81
-#define set_error(23,693
-#define set_status(25,837
-#define set_warning(24,774
-
-expunge.c,218
-int expunge(193,4483
-expunge_specified(282,6654
-int get_the_files(482,10789
-list_files(441,9959
-main(64,1737
-process_files(335,7811
-purge(142,3187
-really_do_expunge(365,8237
-top_level(422,9414
-usage(172,3716
-
-expunge.h,0
-
-lsdel.c,162
-int get_the_files(199,4488
-list_files(259,5521
-ls(121,2642
-main(51,1241
-process_files(231,5034
-int sort_files(307,6535
-int unique(317,6676
-usage(106,2106
-
-lsdel.h,0
-
-mit-copying.h,0
-
-pattern.c,234
-int add_arrays(52,1341
-int add_str(80,1890
-int do_match(406,11788
-int do_recurs(725,19666
-int find_matches(174,5367
-void free_list(968,25140
-int no_wildcards(990,25497
-#define string_pop(320,8871
-#define string_push(310,8622
-
-pattern.h,0
-
-shell_regexp.c,50
-static int real_cmp(44,1386
-int reg_cmp(34,1164
-
-shell_regexp.h,0
-
-stack.c,20
-int dostack(33,848
-
-stack.h,64
-#define pop(20,683
-#define popall(21,749
-#define push(19,616
-
-undelete.c,332
-choose_better(502,10817
-do_file_rename(386,8400
-do_undelete(329,6943
-filecmp(428,9378
-int get_the_files(579,12289
-interactive_mode(114,2490
-main(45,1163
-int process_files(260,5412
-int recurs_and_undelete(209,4504
-int sort_files(436,9498
-undelete(162,3724
-int unique(449,9646
-unlink_completely(527,11247
-usage(148,3156
-
-undelete.h,0
-
-util.c,312
-char *Malloc(386,7587
-char *append(109,2360
-char *convert_to_user_name(49,1199
-int directory_exists(250,4697
-char *firstpart(182,3674
-get_home(204,4004
-is_link(265,4918
-int is_mountpoint(300,5708
-char *lastpart(155,3291
-char *strindex(68,1529
-char *strrindex(82,1766
-timed_out(238,4486
-yes(137,3000
-
-util.h,102
-#define Malloc(29,777
-#define Opendir(44,1159
-#define is_deleted(40,997
-#define is_dotfile(35,869
