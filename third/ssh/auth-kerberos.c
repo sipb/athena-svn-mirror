@@ -9,8 +9,14 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.5.2.1 1998-07-15 22:46:38 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.5.2.2 1998-07-15 22:49:55 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  1998/07/15 22:48:53  ghudson
+ * Dan left out a right paren.
+ *
+ * Revision 1.5.2.1  1998/07/15 22:46:38  ghudson
+ * Pull up change from rev 1.6 to Athena 8.2 branch.
+ *
  * Revision 1.6  1998/07/14 17:34:49  danw
  * use krb5_build_principal_ext instead of krb5_build_principal in case
  * the realm data isn't NUL-terminated
@@ -271,7 +277,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_build_principal_ext(ssh_context, &(increds.server),
 					realm->length, realm->data, 6,
 					"krbtgt", realm->length, realm->data,
-					NULL);
+					NULL));
     goto errout2;
 
   increds.client = (*creds)->client;
