@@ -168,7 +168,7 @@ main(int argc, char *argv[])
                && gnome_config_get_bool("/sound/system/settings/event_sounds=true"))
                 reload_all_esd_samples();
 
-            if(gnome_config_get_bool("/sound/system/settings/restore_gmix=true")) {
+            if(gnome_config_get_bool("/sound/system/settings/restore_gmix=false")) {
                 static const char *gmix_cmdline[] = {"gmix", "-i", NULL};
 
                 (void) gnome_execute_async(NULL, 2, (char **)gmix_cmdline);
