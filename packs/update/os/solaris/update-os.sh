@@ -42,6 +42,7 @@ fi
 if [ "$NEWOS" = "true" ]; then
   echo "Making adjustments"
   cp /cdrom/INST_RELEASE "$UPDATE_ROOT/var/sadm/system/admin"
+  cp /cdrom/mach/sun4u/etc/driver_aliases "$UPDATE_ROOT/etc"
   rm $UPDATE_ROOT/etc/.UNC*
   rm "$UPDATE_ROOT/etc/.sysidconfig.apps"
   cp /cdrom/.sysIDtool.state "$UPDATE_ROOT/etc/default"
@@ -59,9 +60,6 @@ fi
 if [ "$OSCHANGES" = true ]; then
   echo "Performing local OS changes"
   sh /srvd/install/oschanges
-
-  # Take care of the etc/driver_aliases
-cp /cdrom/mach/sun4u/etc/driver_aliases /root/etc/
 
   # Restore any config file that pkgadd has replaced.
   echo "Re-copying config files after OS update"
