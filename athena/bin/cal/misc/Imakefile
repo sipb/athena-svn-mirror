@@ -10,13 +10,13 @@
  *	"mit-copyright.h".
  *
  *
- *	$Id: Imakefile,v 1.1 1991-07-30 20:16:58 lwvanels Exp $
+ *	$Id: Imakefile,v 1.2 1991-07-30 20:19:58 lwvanels Exp $
  */
 
 .SUFFIXES: .el .elc
 
 FORMSINSTDIR=/usr/athena/lib
-MACROINSTDIR=/usr/athena/lib
+MACROINSTDIR=/usr/athena/lib/elisp
 
 BLANKFORMS= bulkpost.longform bulkpost.shortform
 EMACSMACROS= postit.el
@@ -31,6 +31,7 @@ SUBDIR=
 
 all::	${COMPILEDMACROS}
 
+create_dir($(MACROINSTDIR))
 install:: all
 	for i in ${BLANKFORMS}; do \
 		(install -c $$i ${DESTDIR}${FORMSINSTDIR}/$$i); \
