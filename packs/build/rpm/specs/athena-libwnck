@@ -1,9 +1,0 @@
-Name: athena-libwnck
-Summary: Window Navigator Construction Kit, for Athena
-License: LGPL
-Group: System Environment/Libraries
-
-%description
-libwnck (pronounced "libwink") is used to implement pagers, tasklists,
-and other such things. It allows applications to monitor information
-about open windows, workspaces, their names/icons, and so forth.

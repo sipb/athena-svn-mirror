@@ -1,2 +1,0 @@
-# $Id: ssh_config,v 1.1 2001-12-13 22:05:24 zacheiss Exp $
-ForwardX11 yes
