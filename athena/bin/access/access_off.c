@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.5 1997-01-11 19:21:02 ghudson Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.6 1997-04-11 20:48:49 ghudson Exp $";
 
 #include <stdio.h>
 #include <signal.h>
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
   int pid, status, signo;
   char *progname;
 
-  pidfile = fopen("/etc/athena/inetd.pid", "r");
+  pidfile = fopen("/var/athena/inetd.pid", "r");
   if (!pidfile)
     {
       printf("cannot read process id file--daemon probably not running\n");
