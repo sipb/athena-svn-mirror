@@ -170,7 +170,10 @@ sub expr {
     while ($_ ne '') {
 	s/^(\s+)//		&& do {$new .= ' '; next;};
 	s/^(0x[0-9a-fA-F]+)//	&& do {$new .= $1; next;};
-	s/^(\d+)//		&& do {$new .= $1; next;};
+	s/^0X([0-9a-fA-F]+)//	&& do {$new .= '0x' . $1; next;};
+	s/^(\d+\.\d*([eE][+-]?\d+))[fFlL]?//	&& do {$new .= $1; next;};
+	   s/^(\.\d+([eE][+-]?\d+))[fFlL]?//	&& do {$new .= $1; next;};
+	s/^(\d+)[lL]?//		&& do {$new .= $1; next;};
 	s/^("(\\"|[^"])*")//	&& do {$new .= $1; next;};
 	s/^'((\\"|[^"])*)'//	&& do {
 	    if ($curargs{$1}) {
@@ -202,6 +205,7 @@ sub expr {
 	    }
 	    elsif ($id eq 'defined') {
 		$new .= 'defined';
+		$no_eval = 1;
 	    }
 	    elsif (/^\(/) {
 		s/^\((\w),/("$1",/ if $id =~ /^_IO[WR]*$/i;	# cheat
@@ -220,7 +224,12 @@ sub expr {
 		}
 	    }
 	    else {
-		$new .= ' &' . $id;
+		if ($no_eval) {
+		  $new .= ' &' . $id;
+		  $no_eval = 0;
+		} else {
+		  $new .= "eval('&$id')";
+		}
 	    }
 	    next;
 	};
