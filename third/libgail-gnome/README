@@ -1,4 +1,5 @@
-This directory contains the GAIL library.
+Version 1.1.0.
+This directory contains the LIBGAIL-GNOME library.
 
 For more information about GAIL and accessibility in GNOME, see:
  http://developer.gnome.org/projects/gap
@@ -7,7 +8,7 @@ Dependencies
 ============
 
 In order to get CVS libgail-gnome installed on your system, you need to have
-the most recent CVS versions of libbonoboui installed as well.
+libbonoboui and gnome-panel installed as well.
 Note that libgail-gnome also requires atk and gnome-common.
 
 Building

@@ -63,7 +63,7 @@ bonobo_socket_atk_object_get_accessible (SpiRemoteObject *remote)
 }
 
 static void
-bonobo_plug_finalize (GObject *object)
+bonobo_socket_finalize (GObject *object)
 {
   BonoboControlFrame *frame;
 
@@ -79,7 +79,7 @@ bonobo_socket_atk_object_class_init (BonoboSocketAtkObjectClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
-  gobject_class->finalize = bonobo_plug_finalize;
+  gobject_class->finalize = bonobo_socket_finalize;
 
   quark_private_frame = g_quark_from_static_string ("gail-gnome-private-frame");
 }

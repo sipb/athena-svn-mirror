@@ -233,6 +233,20 @@ case $host in
   rm -rf conftest*
   ;;
 
+*-*-linux*)
+  # Test if the compiler is 64bit
+  echo 'int i;' > conftest.$ac_ext
+  lt_cv_cc_64bit_output=no
+  if AC_TRY_EVAL(ac_compile); then
+    case `/usr/bin/file conftest.$ac_objext` in
+    *"ELF 64"*)
+      lt_cv_cc_64bit_output=yes
+      ;;
+    esac
+  fi
+  rm -rf conftest*
+  ;;
+  
 *-*-sco3.2v5*)
   # On SCO OpenServer 5, we need -belf to get full-featured binaries.
   SAVE_CFLAGS="$CFLAGS"
@@ -904,12 +918,6 @@ if test x"$host" != x"$build"; then
 else
   ac_tool_prefix=
 fi
-
-# Transform linux* to *-*-linux-gnu*, to support old configure scripts.
-case $host_os in
-linux-gnu*) ;;
-linux*) host=`echo $host | sed 's/^\(.*-.*-linux\)\(.*\)$/\1-gnu\2/'`
-esac
 
 case $host_os in
 aix3*)
@@ -2238,12 +2246,12 @@ irix5* | irix6*)
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
-linux-gnuoldld* | linux-gnuaout* | linux-gnucoff*)
+linux*oldld* | linux*aout* | linux*coff*)
   dynamic_linker=no
   ;;
 
 # This must be Linux ELF.
-linux-gnu*)
+linux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
@@ -2256,6 +2264,13 @@ linux-gnu*)
   # Some rework will be needed to allow for fast_install
   # before this can be enabled.
   hardcode_into_libs=yes
+
+  case $host_cpu:$lt_cv_cc_64bit_output in
+  powerpc64:yes | s390x:yes | sparc64:yes | x86_64:yes)
+    sys_lib_dlsearch_path_spec="/lib64 /usr/lib64"
+    sys_lib_search_path_spec="/lib64 /usr/lib64 /usr/local/lib64"
+    ;;
+  esac
 
   # We used to test for /lib/ld.so.1 and disable shared libraries on
   # powerpc, because MkLinux only supported shared libraries with the
@@ -2525,7 +2540,7 @@ if test -f "$ltmain"; then
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
   for var in echo old_CC old_CFLAGS \
-    AR AR_FLAGS CC LD LN_S NM SHELL \
+    AR AR_FLAGS AS CC LD LN_S NM SHELL \
     reload_flag reload_cmds wl \
     pic_flag link_static_flag no_builtin_flag export_dynamic_flag_spec \
     thread_safe_flag_spec whole_archive_flag_spec libname_spec \
@@ -2651,7 +2666,7 @@ DLLTOOL="$DLLTOOL"
 OBJDUMP="$OBJDUMP"
 
 # Used on cygwin: assembler.
-AS="$AS"
+AS=$lt_AS
 
 # The name of the directory that contains temporary libtool files.
 objdir=$objdir
@@ -3445,9 +3460,9 @@ irix5* | irix6*)
   ;;
 
 # This must be Linux ELF.
-linux-gnu*)
+linux*)
   case $host_cpu in
-  alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* | s390* )
+  alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* | s390* | m68* | mips* | x86_64* )
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM

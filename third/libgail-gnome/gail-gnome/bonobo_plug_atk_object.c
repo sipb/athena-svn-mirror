@@ -70,12 +70,21 @@ bonobo_plug_finalize (GObject *object)
   }
 }
 
+static gint
+bonobo_plug_get_index_in_parent (AtkObject *obj)
+{
+  return 0;
+}
+
 static void
 bonobo_plug_atk_object_class_init (BonoboPlugAtkObjectClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+  AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
 
   gobject_class->finalize = bonobo_plug_finalize;
+
+  class->get_index_in_parent = bonobo_plug_get_index_in_parent;
 
   quark_private_control = g_quark_from_static_string ("gail-gnome-private-control");
 }
