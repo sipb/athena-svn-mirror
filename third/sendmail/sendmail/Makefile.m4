@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.3 2003-04-08 21:13:54 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.4 2003-07-25 05:12:24 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -68,10 +68,10 @@ divert(bldTARGETS_SECTION)
 install-set-user-id: bldCURRENT_PRODUCT ifdef(`confNO_HELPFILE_INSTALL',, `install-hf') ifdef(`confNO_STATISTICS_INSTALL',, `install-st') ifdef(`confNO_MAN_BUILD',, `install-docs')
 	mkdir -p ${DESTDIR}${M`'BINDIR}
 	mkdir -p ${DESTDIR}${U`'BINDIR}
-	${INSTALL} -c -o ${S`'BINOWN} -g ${S`'BINGRP} -m ${S`'BINMODE} bldCURRENT_PRODUCT ${DESTDIR}${M`'BINDIR}
+	${INSTALL} -c -o ${S`'BINOWN} -g ${S`'BINGRP} -m ${S`'BINMODE} bldCURRENT_PRODUCT ${DESTDIR}${M`'BINDIR}/sendmail.real
 	for i in ${sendmailTARGET_LINKS}; do \
 		rm -f $$i; \
-		${LN} ${LNOPTS} ${M`'BINDIR}/sendmail $$i; \
+		${LN} ${LNOPTS} ${M`'BINDIR}/sendmail.real $$i; \
 	done
 
 define(`confMTA_LINKS', `${DESTDIR}${UBINDIR}/newaliases ${DESTDIR}${UBINDIR}/mailq ${DESTDIR}${UBINDIR}/hoststat ${DESTDIR}${UBINDIR}/purgestat')
