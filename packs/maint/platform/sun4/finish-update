@@ -15,9 +15,9 @@ start)
 			exit 0
 		fi
 
-		# We get run before inetsvc (since we don't want to run
-		# inetd), which means named isn't running.  Run it.
-		/usr/sbin/in.named
+		# We get run before bind and inetsvc (since we don't want 
+		# to run inetd), which means named isn't running.  Run it.
+		/etc/athena/named
 
 		# Make sure we see the right cells as setuid.
 		sh /etc/athena/config_afs
