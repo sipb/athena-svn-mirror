@@ -25,6 +25,7 @@
 #include <config.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <X11/Xlib.h>
 #include "gdk-pixbuf.h"
 #include "gdk-pixbuf-private.h"
@@ -153,7 +154,7 @@ free_buffer (guchar *pixels, gpointer data)
  * has an optimal rowstride.  Note that the buffer is not cleared; you will have
  * to fill it completely yourself.
  *
- * Return value: A newly-created #GdkPixbuf with a reference count of 1, or NULL
+ * Return value: A newly-created #GdkPixbuf with a reference count of 1, or %NULL
  * if not enough memory could be allocated for the image buffer.
  **/
 GdkPixbuf *
@@ -190,7 +191,7 @@ gdk_pixbuf_new (GdkColorspace colorspace, gboolean has_alpha, int bits_per_sampl
  * Creates a new #GdkPixbuf with a copy of the information in the specified
  * @pixbuf.
  * 
- * Return value: A newly-created pixbuf with a reference count of 1, or NULL if
+ * Return value: A newly-created pixbuf with a reference count of 1, or %NULL if
  * not enough memory could be allocated.
  **/
 GdkPixbuf *

@@ -42,17 +42,17 @@ extern "C" {
 #define GDK_IS_PIXBUF_LOADER(obj)	   (GTK_CHECK_TYPE ((obj), GDK_TYPE_PIXBUF_LOADER))
 #define GDK_IS_PIXBUF_LOADER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((klass), GDK_TYPE_PIXBUF_LOADER))
 
-
 typedef struct _GdkPixbufLoader GdkPixbufLoader;
-struct _GdkPixbufLoader
-{
+typedef struct _GdkPixbufLoaderClass GdkPixbufLoaderClass;
+typedef struct _GdkPixbufLoaderPrivate GdkPixbufLoaderPrivate;
+
+struct _GdkPixbufLoader {
 	GtkObject object;
 
-	/* < Private > */
-	gpointer private;
+	/* Private data */
+	GdkPixbufLoaderPrivate *priv;
 };
 
-typedef struct _GdkPixbufLoaderClass GdkPixbufLoaderClass;
 struct _GdkPixbufLoaderClass {
 	GtkObjectClass parent_class;
 

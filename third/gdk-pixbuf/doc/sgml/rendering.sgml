@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-rendering" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-rendering">
 <refmeta>
 <refentrytitle>Rendering</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -108,7 +108,7 @@ void        <link linkend="gdk-pixbuf-render-pixmap-and-mask">gdk_pixbuf_render_
     channel extension, it will be possible to do full alpha
     compositing onto arbitrary drawables.  For now both cases fall
     back to a bilevel clipping mask.
-  </para><informaltable pgwide=1 frame="none" role="enum">
+  </para><informaltable pgwide="1" frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -123,7 +123,7 @@ considered fully opaque.
 </row>
 <row>
 <entry><literal>GDK_PIXBUF_ALPHA_FULL</literal></entry>
-<entry>For now falls back to <link linkend="GDK-PIXBUF-ALPHA-BILEVEL">GDK_PIXBUF_ALPHA_BILEVEL</link>.
+<entry>For now falls back to <link linkend="GDK-PIXBUF-ALPHA-BILEVEL-CAPS">GDK_PIXBUF_ALPHA_BILEVEL</link>.
 In the future it will do full alpha compositing.
 
 </entry>
@@ -150,7 +150,7 @@ Renders a rectangular portion of a pixbuf to a drawable.  This is done using
 GdkRGB, so the specified drawable must have the GdkRGB visual and colormap.
 </para>
 <para>
-When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL">GDK_PIXBUF_ALPHA_BILEVEL</link>, this function has to create a bitmap
+When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL-CAPS">GDK_PIXBUF_ALPHA_BILEVEL</link>, this function has to create a bitmap
 out of the thresholded alpha channel of the image and, it has to set this
 bitmap as the clipping mask for the GC used for drawing.  This can be a
 significant performance penalty depending on the size and the complexity of
@@ -159,7 +159,7 @@ the alpha channel yourself (possibly by caching it in your application) and
 using <link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>() or GdkRGB directly instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ for consistent visual results.  If you do not have any of these cases, the
 dither offsets can be both zero.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -297,7 +297,7 @@ them to produce a bi-level alpha mask that can be used as a clipping mask for
 a drawable.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -351,7 +351,7 @@ If the pixbuf does not have an alpha channel, then *<parameter>mask_return</para
 to NULL.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables">
 <refmeta>
 <refentrytitle>X Drawables to Pixbufs</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -75,17 +75,17 @@ If the drawable is a window, the <parameter>cmap</parameter> argument will be ig
 window's own colormap will be used instead.
 </para>
 <para>
-If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL">NULL</link>, then this function will
+If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL-CAPS">NULL</link>, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <parameter>width</parameter> and <parameter>height</parameter> arguments.  In this case, the <parameter>dest_x</parameter> and
 <parameter>dest_y</parameter> arguments must be specified as 0, otherwise the function will return
-<link linkend="NULL">NULL</link>.  If the specified destination pixbuf is not NULL and it contains alpha
+<link linkend="NULL-CAPS">NULL</link>.  If the specified destination pixbuf is not NULL and it contains alpha
 information, then the filled pixels will be set to full opacity.
 </para>
 <para>
 If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return <link linkend="NULL">NULL</link>.
+return <link linkend="NULL-CAPS">NULL</link>.
 </para>
 <para>
 If the specified drawable is a window, then it must be viewable, i.e. all of
@@ -97,7 +97,7 @@ inferior windows of a different depth than that of the source window will also
 be undefined.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

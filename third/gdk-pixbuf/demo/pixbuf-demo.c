@@ -212,7 +212,13 @@ main (int argc, char **argv)
 	gtk_signal_connect (GTK_OBJECT (window), "destroy",
 			    GTK_SIGNAL_FUNC (destroy_cb), NULL);
 
+	gtk_widget_push_visual (gdk_rgb_get_visual ());
+	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
+
 	da = gtk_drawing_area_new ();
+
+	gtk_widget_pop_visual ();
+	gtk_widget_pop_colormap ();
 
 	gtk_signal_connect (GTK_OBJECT (da), "expose_event",
 			    GTK_SIGNAL_FUNC (expose_cb), NULL);

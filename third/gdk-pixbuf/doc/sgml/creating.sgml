@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-creating" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-creating">
 <refmeta>
 <refentrytitle>Image Data in Memory</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -48,7 +48,7 @@
     data buffer needs to be freed; this will happen when a <link linkend="GdkPixbuf">GdkPixbuf</link>
     is finalized by the reference counting functions If you have a
     chunk of static data compiled into your application, you can pass
-    in <link linkend="NULL">NULL</link> as the destroy notification function so that the data
+    in <link linkend="NULL-CAPS">NULL</link> as the destroy notification function so that the data
     will not be freed.
   </para>
 
@@ -89,7 +89,7 @@ has an optimal rowstride.  Note that the buffer is not cleared; you will have
 to fill it completely yourself.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -129,7 +129,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> out of in-memory image 
 images with 8 bits per sample are supported.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -174,7 +174,7 @@ Creates a new pixbuf by parsing XPM data in memory.  This data is commonly
 the result of including an XPM file into a program's C source.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -193,7 +193,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> with a copy of the info
 <parameter>pixbuf</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

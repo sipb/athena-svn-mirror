@@ -1,3 +1,174 @@
+2002-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.16.0 "Deadly Yellow Snow".
+
+	* configure.in (GDK_PIXBUF_VERSION): Bumped version number to
+	0.16.0.
+
+	* gdk-pixbuf/gdk-pixbuf-xlib-drawable.c (rgb565lsb):
+	(rgb565msb):
+	(rgb555lsb):
+	(rgb555msb): Oops, merged in endianness conversion fixes from the
+	GDK version.
+
+2002-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/*.c: Slight docs improvements.
+
+	* gdk-pixbuf/gdk-pixbuf-parse-color.c (gdk_pixbuf_parse_color):
+	Handle null arguments.  Added docs.
+
+	* pixops/*: Merged changes from GTK+ 2.0.
+
+2002-01-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.15.0 "Ben Bitdiddle Got Confused"
+
+	* configure.in (GDK_PIXBUF_VERSION): Bumped version number to
+	0.15.0.
+
+2002-01-18  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-drawable.c (rgb565msb): Fixed the
+	endianness conversion --- swap the individual 16 bit values
+	instead of taking everying as a 32 bit value.
+	(rgb565lsb): Likewise.
+	(rgb555lsb): Likewise.
+	(rgb555msb): Likewise.
+
+2002-01-03  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/Makefile.am: Added libgdk_pixbuf.la and $(GTK_LIBS)
+	to the LIBADD for the image loaders.  Patch courtesy of Johan
+	Dahlin <zilch.am@home.se>.  Fixes Ximian bug #18173.
+
+2002-01-02  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-gif.c: Removed trailing comma from an enum.  From
+	the IBM/AIX patches.  Thanks to Christian Schaller
+	<uraeus@linuxrising.org> for pointing this out.
+
+2001-12-13  Federico Mena Quintero  <federico@ximian.com>
+
+	Released version 0.14.0.
+
+	* configure.in: Bumped version number to 0.14.0.
+
+2001-11-21  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix Ximian bug #12125.
+
+	* gdk-pixbuf/io-bmp.c: Merge the changes from GTK+ 1.3.
+	(gdk_pixbuf__bmp_image_load_increment): Use a simple state machine
+	instead of a scary if/else chain.
+	(DecodeHeader): Set the reading state.
+	(DecodeColormap): Set the reading state.
+	(decode_bitmasks): New function, decodes the bitmasks for
+	BI_BITFIELDS coding.
+	(OneLine32): Handle BI_BITFIELDS coding.
+	(OneLine16): Likewise.
+
+2001-10-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.13.0.
+
+	* configure.in: Bumped version number to 0.13.0.
+
+	* gdk-pixbuf/gdk-pixbuf.c: #include <string.h> for memcpy().
+
+	* gdk-pixbuf/gdk-pixbuf-xlibrgb.c (xlib_rgb_gc_set_background):
+	Fixed inline docs.
+	(xlib_rgb_set_install): Added inline docs.
+	(xlib_rgb_set_min_colors): Likewise.
+	(xlib_rgb_set_verbose): Likewise.
+
+2001-10-25  Federico Mena Quintero  <federico@ximian.com>
+
+	* doc/Makefile.am (install-data-local): html/index.sgml is not
+	generated, so don't try to install it.
+
+	* gdk-pixbuf/io-ico.c (DecodeHeader): Duh, ICos are always
+	supposed to have an alpha channel.  Unconditionally create a
+	pixbuf with one.  Fixes Ximian bug #11224.
+
+2001-10-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.12.0.
+
+	* configure.in: Bumped version number to 0.12.0.
+
+2001-10-09  Havoc Pennington  <hp@redhat.com>
+
+	* gdk-pixbuf/Makefile.am (libgdk_pixbufincludedir): change to a
+	subdir
+
+	* gdk-pixbuf-config.in: headers now moved
+
+	* configure.in: change GDK_PIXBUF_INCLUDEDIR to put headers in a
+	subdir
+
+2001-09-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Support for 32-bit ICOs.  Fixes Ximian bug #2065.
+
+	* gdk-pixbuf/io-ico.c (OneLine32): New function, copied from
+	io-bmp.c.
+	(DecodeHeader): Added support for 32-bit ICOs.
+	(OneLine): Likewise.
+
+2001-08-27  Federico Mena Quintero  <federico@ximian.com>
+
+	Support for 16-bit BMPs.  Fixes Ximian bug #5697.
+
+	* gdk-pixbuf/io-bmp.c (DecodeHeader): Added support for 16-bpp
+	BMPs.
+	(OneLine16): new function, decode a 16-bpp line into 24-bit
+	pixels.
+	(OneLine): Call OneLine16() if appropriate.
+
+	* gdk-pixbuf/io-ico.c (DecodeHeader): Added support for 16-bpp
+	BMPs.
+	(OneLine16): new function, decode a 16-bpp line into 24-bit
+	pixels.
+	(OneLine): Call OneLine16() if appropriate.
+
+2001-07-16  jacob berkman  <jacob@ximian.com>
+
+	* gdk-pixbuf/Makefile.am: 
+	* configure.in: remove the INSIDE_GNOME stuff as:
+
+	a) it's no longer relevant 
+
+	2) it's broken w.r.t. libgnomeui being a toplevel module now
+
+2001-05-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* demo/pixbuf-demo.c (main): Gaaaah, push the proper
+	visual/colormap for the drawing area.  Thanks to Jan Böhm
+	<jan.boehm@ifp.uni-stuttgart.de> for pointing this out.
+
+2001-04-26  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.11.0.
+
+	* configure.in: Bumped version number to 0.11.0.
+
+2001-04-25  Federico Mena Quintero  <federico@ximian.com>
+
+	* configure.in: Stole gtk-doc bits from GTK+ HEAD.
+
+	* doc/Makefile.am: Stole from GTK+ HEAD for a much better
+	makefile.
+
+2001-04-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Similar patches from Dom Lachowicz <dominicl@seas.upenn.edu> and
+	Diego González <dggonz@yahoo.com>, with a few stylistic changes.
+
+	* gdk-pixbuf/gdk-pixbuf-loader.[ch] (GdkPixbufLoader): Renamed the
+	"private" field to "priv" so that this can be used with C++
+	compilers.
+
 2001-03-11  Federico Mena Quintero  <federico@ximian.com>
 
 	Released version 0.10.1.
@@ -272,6 +443,8 @@
 
 	* gdk-pixbuf/testpixbuf-scale.c: Revert accidental changes
 	from Federico's last commit.
+
+*** GDK-PIXBUF DIVERGED INTO GTK+ 1.3 HERE ***
 
 2000-06-10  Federico Mena Quintero  <federico@helixcode.com>
 

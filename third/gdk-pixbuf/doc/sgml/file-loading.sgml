@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-file-loading" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-file-loading">
 <refmeta>
 <refentrytitle>File Loading</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -51,7 +51,7 @@ Creates a new pixbuf by loading an image from a file.  The file format is
 detected automatically.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -150,7 +150,7 @@ CLASS="SYNOPSIS"
 
 
 #define     <A
-HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER"
+HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-CAPS"
 >GDK_PIXBUF_LOADER</A
 >               (obj)
 <A
@@ -160,38 +160,23 @@ HREF="gdkpixbufloader.html"
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-NEW"
 >gdk_pixbuf_loader_new</A
 >      (void);
-<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->    <A
+gboolean    <A
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-WRITE"
 >gdk_pixbuf_loader_write</A
 >         (<A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *loader,
-                                             const <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> *buf,
-                                             <GTKDOCLINK
-HREF="SIZE-T"
->size_t</GTKDOCLINK
-> count);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+                                             const guchar *buf,
+                                             size_t count);
+GdkPixbuf*  <A
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-GET-PIXBUF"
 >gdk_pixbuf_loader_get_pixbuf</A
 >    (<A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *loader);
-<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* <A
+GdkPixbufAnimation* <A
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-GET-ANIMATION"
 >gdk_pixbuf_loader_get_animation</A
 >
@@ -227,10 +212,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="SYNOPSIS"
->&#13;  <GTKDOCLINK
-HREF="GTKOBJECT"
->GtkObject</GTKDOCLINK
->
+>&#13;  GtkObject
    +----GdkPixbufLoader</PRE
 ></TD
 ></TR
@@ -260,26 +242,11 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-AREA-UPDATED"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg1,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg2,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg3,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg4,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);
+                                            gint arg1,
+                                            gint arg2,
+                                            gint arg3,
+                                            gint arg4,
+                                            gpointer user_data);
 &quot;<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-AREA-PREPARED"
 >area-prepared</A
@@ -288,10 +255,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-AREA-PREPARED"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);
+                                            gpointer user_data);
 &quot;<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-FRAME-DONE"
 >frame-done</A
@@ -300,14 +264,8 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-FRAME-DONE"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> arg1,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);
+                                            gpointer arg1,
+                                            gpointer user_data);
 &quot;<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-ANIMATION-DONE"
 >animation-done</A
@@ -316,10 +274,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-ANIMATION-DONE"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);
+                                            gpointer user_data);
 &quot;<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-CLOSED"
 >closed</A
@@ -327,10 +282,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-CLOSED"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -423,10 +375,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-ANIMATION-DONE"
 >"
       signal.  The first lets the application know that it is dealing
       with an animation, instead of a static image.  It also passes a
-      <GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> in the signal.  As before, if you want to keep
+      GdkPixbufFrame in the signal.  As before, if you want to keep
       the frame, you need to ref it.  Once the first "<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-FRAME-DONE"
 >frame_done</A
@@ -435,10 +384,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-FRAME-DONE"
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-GET-ANIMATION"
 >gdk_pixbuf_loader_get_animation</A
 >()
-      to get the <GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> struct.  Each subsequent frame
+      to get the GdkPixbufAnimation struct.  Each subsequent frame
       goes through a similar lifecycle.  For example "<A
 HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-AREA-PREPARED"
 >area_prepared</A
@@ -469,7 +415,7 @@ NAME="AEN2040"
 ></A
 ><H3
 ><A
-NAME="GDK-PIXBUF-LOADER"
+NAME="GDK-PIXBUF-LOADER-CAPS"
 ></A
 >GDK_PIXBUF_LOADER()</H3
 ><TABLE
@@ -486,10 +432,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->    Casts a <GTKDOCLINK
-HREF="GTKOBJECT"
->GtkObject</GTKDOCLINK
-> to a <A
+>    Casts a GtkObject to a <A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 >.
@@ -612,21 +555,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->    gdk_pixbuf_loader_write         (<A
+>gboolean    gdk_pixbuf_loader_write         (<A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *loader,
-                                             const <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> *buf,
-                                             <GTKDOCLINK
-HREF="SIZE-T"
->size_t</GTKDOCLINK
-> count);</PRE
+                                             const guchar *buf,
+                                             size_t count);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -723,13 +657,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> <GTKDOCLINK
-HREF="TRUE"
->TRUE</GTKDOCLINK
-> if the write was successful, or <GTKDOCLINK
-HREF="FALSE"
->FALSE</GTKDOCLINK
-> if the loader
+> TRUE if the write was successful, or FALSE if the loader
 cannot parse the buffer.</TD
 ></TR
 ></TBODY
@@ -757,10 +685,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_loader_get_pixbuf    (<A
+>GdkPixbuf*  gdk_pixbuf_loader_get_pixbuf    (<A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *loader);</PRE
@@ -854,10 +779,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* gdk_pixbuf_loader_get_animation
+>GdkPixbufAnimation* gdk_pixbuf_loader_get_animation
                                             (<A
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
@@ -950,10 +872,7 @@ HREF="gdkpixbufloader.html"
 ></TR
 ></TABLE
 ><P
->Informs a pixbuf loader that no further writes with <GTKDOCLINK
-HREF="GDK-PIXBUF-LOAD-WRITE"
->gdk_pixbuf_load_write</GTKDOCLINK
->()
+>Informs a pixbuf loader that no further writes with gdk_pixbuf_load_write()
 will occur, so that it can free its internal loading structures.</P
 ><P
 ></P
@@ -1023,26 +942,11 @@ CLASS="PROGRAMLISTING"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg1,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg2,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg3,
-                                            <GTKDOCLINK
-HREF="GINT"
->gint</GTKDOCLINK
-> arg4,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gint arg1,
+                                            gint arg2,
+                                            gint arg3,
+                                            gint arg4,
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1073,14 +977,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->loader</I
+>gdkpixbufloader</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Loader which emitted the signal.</TD
+>the object which received the signal.</TD
 ></TR
 ><TR
 ><TD
@@ -1090,14 +994,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->x</I
+>arg1</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->X offset of upper-left corner of the updated area.</TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1107,14 +1011,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->y</I
+>arg2</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Y offset of upper-left corner of the updated area.</TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1124,14 +1028,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->width</I
+>arg3</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Width of updated area.</TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1141,14 +1045,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->height</I
+>arg4</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Height of updated area.&#13;</TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1196,10 +1100,7 @@ CLASS="PROGRAMLISTING"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1233,14 +1134,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->loader</I
+>gdkpixbufloader</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Loader which emitted the signal.&#13;</TD
+>the object which received the signal.</TD
 ></TR
 ><TR
 ><TD
@@ -1288,14 +1189,8 @@ CLASS="PROGRAMLISTING"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> arg1,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gpointer arg1,
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1323,14 +1218,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->loader</I
+>gdkpixbufloader</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Loader which emitted the signal.</TD
+>the object which received the signal.</TD
 ></TR
 ><TR
 ><TD
@@ -1340,14 +1235,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->frame</I
+>arg1</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Frame which just completed loading.&#13;</TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1395,10 +1290,7 @@ CLASS="PROGRAMLISTING"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1425,14 +1317,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->loader</I
+>gdkpixbufloader</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Loader which emitted the signal.&#13;</TD
+>the object which received the signal.</TD
 ></TR
 ><TR
 ><TD
@@ -1480,10 +1372,7 @@ CLASS="PROGRAMLISTING"
 HREF="gdkpixbufloader.html"
 >GdkPixbufLoader</A
 > *gdkpixbufloader,
-                                            <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> user_data);</PRE
+                                            gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1516,15 +1405,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->loader</I
+>gdkpixbufloader</I
 ></TT
 >&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->Loader which emitted the signal.
-&#13;</TD
+>the object which received the signal.</TD
 ></TR
 ><TR
 ><TD

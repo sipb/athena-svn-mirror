@@ -136,6 +136,12 @@ Application-driven progressive image loading.
     areas of an image that is being loaded.
   </para>
 
+@gdkpixbufloader: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+<!-- # Unused Parameters # -->
 @loader: Loader which emitted the signal.
 @x: X offset of upper-left corner of the updated area.
 @y: Y offset of upper-left corner of the updated area.
@@ -151,6 +157,8 @@ Application-driven progressive image loading.
     fetch the partially-loaded pixbuf.
   </para>
 
+@gdkpixbufloader: the object which received the signal.
+<!-- # Unused Parameters # -->
 @loader: Loader which emitted the signal.
 
 <!-- ##### SIGNAL GdkPixbufLoader::frame-done ##### -->
@@ -159,6 +167,9 @@ Application-driven progressive image loading.
     emitted for each frame in an animation data stream.
   </para>
 
+@gdkpixbufloader: the object which received the signal.
+@arg1: 
+<!-- # Unused Parameters # -->
 @loader: Loader which emitted the signal.
 @frame: Frame which just completed loading.
 
@@ -167,6 +178,8 @@ Application-driven progressive image loading.
     This signal is emitted when an animation is done loading.
   </para>
 
+@gdkpixbufloader: the object which received the signal.
+<!-- # Unused Parameters # -->
 @loader: Loader which emitted the signal.
 
 <!-- ##### SIGNAL GdkPixbufLoader::closed ##### -->
@@ -177,6 +190,8 @@ Application-driven progressive image loading.
     drives it.
   </para>
 
+@gdkpixbufloader: the object which received the signal.
+<!-- # Unused Parameters # -->
 @loader: Loader which emitted the signal.
 
 <!--

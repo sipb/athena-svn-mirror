@@ -460,18 +460,42 @@ xlib_rgb_colorcube_222 (void)
     }
 }
 
+/**
+ * xlib_rgb_set_verbose:
+ * @verbose: Whether to print visual/colormap debugging information.
+ * 
+ * This is primarily a debugging function.  Sets whether you want XlibRGB to
+ * print information about the visual and colormap it chooses.  You normally do
+ * not need to use this function.
+ **/
 void
 xlib_rgb_set_verbose (Bool verbose)
 {
   xlib_rgb_verbose = verbose;
 }
 
+/**
+ * xlib_rgb_set_install:
+ * @install: Whether to install a private colormap.
+ * 
+ * Sets whether XlibRGB should install its own private colormap instead of
+ * trying to allocate color cells from the system colormap.  This should be
+ * called before initializing XlibRGB.
+ **/
 void
 xlib_rgb_set_install (Bool install)
 {
   xlib_rgb_install_cmap = install;
 }
 
+/**
+ * xlib_rgb_set_min_colors:
+ * @min_colors: Minimum number of colors to look for in the system colormap.
+ * 
+ * Sets the minimum number of free color cells that must be available in the
+ * system color map for XlibRGB to use it.  If the specified number of colors is
+ * not available, XlibRGB will install its own private colormap.
+ **/
 void
 xlib_rgb_set_min_colors (int min_colors)
 {
@@ -1020,7 +1044,7 @@ xlib_rgb_gc_set_foreground (GC gc, guint32 rgb)
 }
 
 /**
- * xlib_rgb_gc_set_foreground:
+ * xlib_rgb_gc_set_background:
  * @gc: A graphic context.
  * @rgb: 32-bit representation of an RGB value, specified as 0x00RRGGBB.
  * 

@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-rgb" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-rgb">
 <refmeta>
 <refentrytitle>XlibRGB</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -22,12 +22,12 @@ void        <link linkend="xlib-rgb-init">xlib_rgb_init</link>                  
 void        <link linkend="xlib-rgb-init-with-depth">xlib_rgb_init_with_depth</link>        (<link linkend="Display">Display</link> *display,
                                              <link linkend="Screen">Screen</link> *screen,
                                              int prefDepth);
-void        <link linkend="xlib-rgb-gc-set-foreground">xlib_rgb_gc_set_foreground</link>      (<link linkend="GC">GC</link> gc,
+void        <link linkend="xlib-rgb-gc-set-foreground">xlib_rgb_gc_set_foreground</link>      (<link linkend="GC-CAPS">GC</link> gc,
                                              <link linkend="guint32">guint32</link> rgb);
-void        <link linkend="xlib-rgb-gc-set-background">xlib_rgb_gc_set_background</link>      (<link linkend="GC">GC</link> gc,
+void        <link linkend="xlib-rgb-gc-set-background">xlib_rgb_gc_set_background</link>      (<link linkend="GC-CAPS">GC</link> gc,
                                              <link linkend="guint32">guint32</link> rgb);
 void        <link linkend="xlib-draw-rgb-image">xlib_draw_rgb_image</link>             (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -36,7 +36,7 @@ void        <link linkend="xlib-draw-rgb-image">xlib_draw_rgb_image</link>      
                                              unsigned char *rgb_buf,
                                              int rowstride);
 void        <link linkend="xlib-draw-rgb-image-dithalign">xlib_draw_rgb_image_dithalign</link>   (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -47,7 +47,7 @@ void        <link linkend="xlib-draw-rgb-image-dithalign">xlib_draw_rgb_image_di
                                              int xdith,
                                              int ydith);
 void        <link linkend="xlib-draw-rgb-32-image">xlib_draw_rgb_32_image</link>          (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -56,7 +56,7 @@ void        <link linkend="xlib-draw-rgb-32-image">xlib_draw_rgb_32_image</link>
                                              unsigned char *buf,
                                              int rowstride);
 void        <link linkend="xlib-draw-gray-image">xlib_draw_gray_image</link>            (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -68,7 +68,7 @@ void        <link linkend="xlib-draw-gray-image">xlib_draw_gray_image</link>    
                                              int n_colors);
 void        <link linkend="xlib-rgb-cmap-free">xlib_rgb_cmap_free</link>              (<link linkend="XlibRgbCmap">XlibRgbCmap</link> *cmap);
 void        <link linkend="xlib-draw-indexed-image">xlib_draw_indexed_image</link>         (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -115,7 +115,7 @@ int         <link linkend="xlib-rgb-get-depth">xlib_rgb_get_depth</link>        
 </programlisting>
   <para>
     FIXME: Describe this.
-  </para><informaltable pgwide=1 frame="none" role="struct">
+  </para><informaltable pgwide="1" frame="none" role="struct">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ int         <link linkend="xlib-rgb-get-depth">xlib_rgb_get_depth</link>        
     <symbol>XLIB_RGB_DITHER_MAX</symbol> will provide dithering on
     pseudocolor and 16-bit truecolor or &ldquo;high color&rdquo;
     displays.
-  </para><informaltable pgwide=1 frame="none" role="enum">
+  </para><informaltable pgwide="1" frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -185,7 +185,7 @@ display.  This function or <link linkend="xlib-rgb-init-with-depth">xlib_rgb_ini
 using any of the other functions in XlibRGB.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -209,7 +209,7 @@ function or <link linkend="xlib-rgb-init">xlib_rgb_init</link>() must be called 
 functions in XlibRGB.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -227,15 +227,15 @@ be one of the supported visual depths in the specified <parameter>display</param
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="xlib-rgb-gc-set-foreground">xlib_rgb_gc_set_foreground ()</title>
-<programlisting>void        xlib_rgb_gc_set_foreground      (<link linkend="GC">GC</link> gc,
+<programlisting>void        xlib_rgb_gc_set_foreground      (<link linkend="GC-CAPS">GC</link> gc,
                                              <link linkend="guint32">guint32</link> rgb);</programlisting>
 <para>
-This is a convenience function to set the background of a GC from an RGB
+This is a convenience function to set the foreground of a GC from an RGB
 triplet.  It calls <link linkend="xlib-rgb-xpixel-from-rgb">xlib_rgb_xpixel_from_rgb</link>() internally and uses the
-returned pixel value to set the GC's background.</para>
+returned pixel value to set the GC's foreground.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -249,26 +249,30 @@ returned pixel value to set the GC's background.</para>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="xlib-rgb-gc-set-background">xlib_rgb_gc_set_background ()</title>
-<programlisting>void        xlib_rgb_gc_set_background      (<link linkend="GC">GC</link> gc,
+<programlisting>void        xlib_rgb_gc_set_background      (<link linkend="GC-CAPS">GC</link> gc,
                                              <link linkend="guint32">guint32</link> rgb);</programlisting>
 <para>
+This is a convenience function to set the background of a GC from an RGB
+triplet.  It calls <link linkend="xlib-rgb-xpixel-from-rgb">xlib_rgb_xpixel_from_rgb</link>() internally and uses the
+returned pixel value to set the GC's background.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gc</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry> A graphic context.
+</entry></row>
 <row><entry align="right"><parameter>rgb</parameter>&nbsp;:</entry>
-<entry>
-
+<entry> 32-bit representation of an RGB value, specified as 0x00RRGGBB.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="xlib-draw-rgb-image">xlib_draw_rgb_image ()</title>
 <programlisting>void        xlib_draw_rgb_image             (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -284,7 +288,7 @@ offsets; applications that need to render partial regions of a buffer to
 build the final image should use <link linkend="xlib-draw-rgb-image-dithalign">xlib_draw_rgb_image_dithalign</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -321,7 +325,7 @@ upper-left corner of the rectangular region to render.
 <refsect2>
 <title><anchor id="xlib-draw-rgb-image-dithalign">xlib_draw_rgb_image_dithalign ()</title>
 <programlisting>void        xlib_draw_rgb_image_dithalign   (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -340,7 +344,7 @@ separately to form the final image; the dither offsets let you align the
 dither mask appropriately.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -383,7 +387,7 @@ upper-left corner of the rectangular region to render.
 <refsect2>
 <title><anchor id="xlib-draw-rgb-32-image">xlib_draw_rgb_32_image ()</title>
 <programlisting>void        xlib_draw_rgb_32_image          (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -399,7 +403,7 @@ faster results than <link linkend="xlib-draw-rgb-image">xlib_draw_rgb_image</lin
 32-bit boundaries.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -436,7 +440,7 @@ upper-left corner of the rectangular region to render.
 <refsect2>
 <title><anchor id="xlib-draw-gray-image">xlib_draw_gray_image ()</title>
 <programlisting>void        xlib_draw_gray_image            (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -450,7 +454,7 @@ intensity values.  An image will thus look as a GGGGGG sequence of 8-bit
 values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -492,7 +496,7 @@ upper-left corner of the rectangular region to render.
 FIXME</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -513,7 +517,7 @@ FIXME</para>
 Frees an XlibRGB colormap.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -525,7 +529,7 @@ Frees an XlibRGB colormap.</para>
 <refsect2>
 <title><anchor id="xlib-draw-indexed-image">xlib_draw_indexed_image ()</title>
 <programlisting>void        xlib_draw_indexed_image         (<link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int x,
                                              int y,
                                              int width,
@@ -538,7 +542,7 @@ Frees an XlibRGB colormap.</para>
 FIXME</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -581,7 +585,7 @@ FIXME</para>
 Queries whether XlibRGB supports dithering for its chosen visual.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -594,45 +598,54 @@ is using, FALSE otherwise.
 <title><anchor id="xlib-rgb-set-verbose">xlib_rgb_set_verbose ()</title>
 <programlisting>void        xlib_rgb_set_verbose            (<link linkend="Bool">Bool</link> verbose);</programlisting>
 <para>
+This is primarily a debugging function.  Sets whether you want XlibRGB to
+print information about the visual and colormap it chooses.  You normally do
+not need to use this function.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>verbose</parameter>&nbsp;:</entry>
-<entry>
-
+<entry> Whether to print visual/colormap debugging information.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="xlib-rgb-set-install">xlib_rgb_set_install ()</title>
 <programlisting>void        xlib_rgb_set_install            (<link linkend="Bool">Bool</link> install);</programlisting>
 <para>
+Sets whether XlibRGB should install its own private colormap instead of
+trying to allocate color cells from the system colormap.  This should be
+called before initializing XlibRGB.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>install</parameter>&nbsp;:</entry>
-<entry>
-
+<entry> Whether to install a private colormap.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="xlib-rgb-set-min-colors">xlib_rgb_set_min_colors ()</title>
 <programlisting>void        xlib_rgb_set_min_colors         (int min_colors);</programlisting>
 <para>
+Sets the minimum number of free color cells that must be available in the
+system color map for XlibRGB to use it.  If the specified number of colors is
+not available, XlibRGB will install its own private colormap.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>min_colors</parameter>&nbsp;:</entry>
-<entry>
-
+<entry> Minimum number of colors to look for in the system colormap.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -642,7 +655,7 @@ is using, FALSE otherwise.
 Queries the X colormap that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -657,7 +670,7 @@ Queries the X colormap that XlibRGB is using.</para>
 Queries the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -672,7 +685,7 @@ Queries the visual that XlibRGB is using.</para>
 Queries the visual info structure for the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -687,7 +700,7 @@ Queries the visual info structure for the visual that XlibRGB is using.</para>
 Queries the depth of the visual that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -702,7 +715,7 @@ Queries the depth of the visual that XlibRGB is using.</para>
 Queries the X display that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -717,7 +730,7 @@ Queries the X display that XlibRGB is using.</para>
 Queries the screen that XlibRGB is using.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -35,7 +35,7 @@
  * detected automatically.  If the file's format does not support multi-frame
  * images, then an animation with a single frame will be created.
  *
- * Return value: A newly created animation with a reference count of 1, or NULL
+ * Return value: A newly created animation with a reference count of 1, or %NULL
  * if any of several error conditions ocurred:  the file could not be opened,
  * there was no loader for the file's format, there was not enough memory to
  * allocate the image buffer, or the image file contained invalid data.

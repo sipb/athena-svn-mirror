@@ -149,47 +149,23 @@ CLASS="SYNOPSIS"
 >&#13;#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-util.html#GDK-PIXBUF-ADD-ALPHA"
 >gdk_pixbuf_add_alpha</A
->            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> substitute_color,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> r,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> g,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> b);
+>            (const GdkPixbuf *pixbuf,
+                                             gboolean substitute_color,
+                                             guchar r,
+                                             guchar g,
+                                             guchar b);
 void        <A
 HREF="gdk-pixbuf-util.html#GDK-PIXBUF-COPY-AREA"
 >gdk_pixbuf_copy_area</A
->            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src_pixbuf,
+>            (const GdkPixbuf *src_pixbuf,
                                              int src_x,
                                              int src_y,
                                              int width,
                                              int height,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest_pixbuf,
+                                             GdkPixbuf *dest_pixbuf,
                                              int dest_x,
                                              int dest_y);</PRE
 ></TD
@@ -236,29 +212,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_add_alpha            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> substitute_color,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> r,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> g,
-                                             <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> b);</PRE
+>GdkPixbuf*  gdk_pixbuf_add_alpha            (const GdkPixbuf *pixbuf,
+                                             gboolean substitute_color,
+                                             guchar r,
+                                             guchar g,
+                                             guchar b);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -271,19 +229,13 @@ CLASS="PARAMETER"
 ><I
 >substitute_color</I
 ></TT
-> is <GTKDOCLINK
-HREF="FALSE"
->FALSE</GTKDOCLINK
->.  If
+> is FALSE.  If
 <TT
 CLASS="PARAMETER"
 ><I
 >substitute_color</I
 ></TT
-> is <GTKDOCLINK
-HREF="TRUE"
->TRUE</GTKDOCLINK
->, then the color specified by (<TT
+> is TRUE, then the color specified by (<TT
 CLASS="PARAMETER"
 ><I
 >r</I
@@ -347,10 +299,7 @@ WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 > Whether to substitute a color for zero opacity.  If this
-is <GTKDOCLINK
-HREF="FALSE"
->FALSE</GTKDOCLINK
->, then the (<TT
+is FALSE, then the (<TT
 CLASS="PARAMETER"
 ><I
 >r</I
@@ -458,18 +407,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_copy_area            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src_pixbuf,
+>void        gdk_pixbuf_copy_area            (const GdkPixbuf *src_pixbuf,
                                              int src_x,
                                              int src_y,
                                              int width,
                                              int height,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest_pixbuf,
+                                             GdkPixbuf *dest_pixbuf,
                                              int dest_x,
                                              int dest_y);</PRE
 ></TD
@@ -673,10 +616,7 @@ NAME="AEN1635"
 ><H2
 >See Also</H2
 ><P
->    <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->
+>    GdkPixbuf
   </P
 ></DIV
 ><DIV

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -62,8 +62,10 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
-GDK_PIXBUF_DIR = @GDK_PIXBUF_DIR@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_INCLUDEDIR = @GDK_PIXBUF_INCLUDEDIR@
 GDK_PIXBUF_LIBDIR = @GDK_PIXBUF_LIBDIR@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -90,6 +92,7 @@ GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
 LIBTIFF = @LIBTIFF@
@@ -98,9 +101,14 @@ LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 STATIC_LIB_DEPS = @STATIC_LIB_DEPS@
+STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
 VERSION = @VERSION@
 
 noinst_LTLIBRARIES = libpixops.la
@@ -139,9 +147,10 @@ libpixops_la_LIBADD =
 @USE_MMX_TRUE@libpixops_la_OBJECTS =  pixops.lo have_mmx.lo \
 @USE_MMX_TRUE@scale_line_22_33_mmx.lo composite_line_22_4a4_mmx.lo \
 @USE_MMX_TRUE@composite_line_color_22_4a4_mmx.lo
+noinst_PROGRAMS =  timescale$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
-timescale_OBJECTS =  timescale.o
+timescale_OBJECTS =  timescale.$(OBJEXT)
 timescale_DEPENDENCIES =  libpixops.la
 timescale_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -161,7 +170,7 @@ OBJECTS = $(libpixops_la_OBJECTS) $(timescale_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps gdk-pixbuf/pixops/Makefile
 
@@ -182,6 +191,11 @@ maintainer-clean-noinstLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -190,6 +204,7 @@ maintainer-clean-noinstLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -229,8 +244,8 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-timescale: $(timescale_OBJECTS) $(timescale_DEPENDENCIES)
-	@rm -f timescale
+timescale$(EXEEXT): $(timescale_OBJECTS) $(timescale_DEPENDENCIES)
+	@rm -f timescale$(EXEEXT)
 	$(LINK) $(timescale_LDFLAGS) $(timescale_OBJECTS) $(timescale_LDADD) $(LIBS)
 
 tags: TAGS
@@ -277,11 +292,8 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-pixops.lo pixops.o : pixops.c ../../config.h pixops.h \
-	../../gdk-pixbuf/gdk-pixbuf.h \
-	../../gdk-pixbuf/gdk-pixbuf-features.h pixops-internal.h
-timescale.o: timescale.c pixops.h ../../gdk-pixbuf/gdk-pixbuf.h \
-	../../gdk-pixbuf/gdk-pixbuf-features.h
+pixops.lo pixops.o : pixops.c ../../config.h pixops.h pixops-internal.h
+timescale.o: timescale.c pixops.h
 
 info-am:
 info: info-am

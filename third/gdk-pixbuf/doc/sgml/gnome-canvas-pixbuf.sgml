@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasPixbuf" revision="27 Aug 2000">
+<refentry id="GnomeCanvasPixbuf">
 <refmeta>
 <refentrytitle>GnomeCanvasPixbuf</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,7 +15,7 @@
 #include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-#define     <link linkend="GNOME-CANVAS-PIXBUF">GNOME_CANVAS_PIXBUF</link>             (obj)
+#define     <link linkend="GNOME-CANVAS-PIXBUF-CAPS">GNOME_CANVAS_PIXBUF</link>             (obj)
 
 
 </synopsis>
@@ -38,15 +38,15 @@
 
   &quot;<link linkend="GnomeCanvasPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="gpointer">gpointer</link>             : Read / Write
   &quot;<link linkend="GnomeCanvasPixbuf--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--width-set">width_set</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--width-in-pixels">width_in_pixels</link>&quot;      <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--width-set">width-set</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--width-in-pixels">width-in-pixels</link>&quot;      <link linkend="gboolean">gboolean</link>             : Read / Write
   &quot;<link linkend="GnomeCanvasPixbuf--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--height-set">height_set</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--height-in-pixels">height_in_pixels</link>&quot;     <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--height-set">height-set</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--height-in-pixels">height-in-pixels</link>&quot;     <link linkend="gboolean">gboolean</link>             : Read / Write
   &quot;<link linkend="GnomeCanvasPixbuf--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--x-in-pixels">x_in_pixels</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--x-in-pixels">x-in-pixels</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
   &quot;<link linkend="GnomeCanvasPixbuf--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasPixbuf--y-in-pixels">y_in_pixels</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--y-in-pixels">y-in-pixels</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -225,11 +225,11 @@
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GNOME-CANVAS-PIXBUF">GNOME_CANVAS_PIXBUF()</title>
+<title><anchor id="GNOME-CANVAS-PIXBUF-CAPS">GNOME_CANVAS_PIXBUF()</title>
 <programlisting>#define     GNOME_CANVAS_PIXBUF(obj)</programlisting>
   <para>
     Casts a <link linkend="GtkOjbect">GtkOjbect</link> to a <link linkend="GnomeCanvasPixbuf">GnomeCanvasPixbuf</link>.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -272,7 +272,7 @@
     taken to be in pixels, and will visually remain a constant size
     even if the item's affine transformation changes.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--width-set">&quot;<literal>width_set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--width-set">&quot;<literal>width-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     Determines whether the <link
@@ -281,7 +281,7 @@
     <literal>FALSE</literal>, then the width value of the pixbuf will be used instead.
     This argument is <literal>FALSE</literal> by default.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--width-in-pixels">&quot;<literal>width_in_pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--width-in-pixels">&quot;<literal>width-in-pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     If this argument is <literal>TRUE</literal>, then the width of the pixbuf will be
@@ -300,7 +300,7 @@
     is <literal>TRUE</literal>.  Works in the same way as the <link
     linkend="GnomeCanvasPixbuf--width">width</link> argument.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--height-set">&quot;<literal>height_set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--height-set">&quot;<literal>height-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     Determines whether the <link
@@ -310,7 +310,7 @@
     linkend="GnomeCanvasPixbuf--width-set">width_set</link> argument.
     The default is <literal>FALSE</literal>.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--height-in-pixels">&quot;<literal>height_in_pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--height-in-pixels">&quot;<literal>height-in-pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     Works in the same way as the <link
@@ -325,7 +325,7 @@
     will be affected by the item's affine transformation.  The default
     is 0.0.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--x-in-pixels">&quot;<literal>x_in_pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--x-in-pixels">&quot;<literal>x-in-pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     If this argument is <literal>TRUE</literal>, the pixbuf's translation with respect
@@ -344,7 +344,7 @@
     linkend="GnomeCanvasPixbuf--x">x</link> argument.  The default is
     0.0.
   </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasPixbuf--y-in-pixels">&quot;<literal>y_in_pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeCanvasPixbuf--y-in-pixels">&quot;<literal>y-in-pixels</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
   <para>
     Works in the same way as the <link

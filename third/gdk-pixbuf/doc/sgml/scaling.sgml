@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-scaling" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-scaling">
 <refmeta>
 <refentrytitle>Scaling</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -158,7 +158,7 @@ expose_cb (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 	interpolation is just as fast and results in higher quality.
       </para>
     </note>
-  </para><informaltable pgwide=1 frame="none" role="enum">
+  </para><informaltable pgwide="1" frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -217,7 +217,7 @@ translating by <parameter>offset_x</parameter> and <parameter>offset_y</paramete
 destination drawable replacing the previous contents.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -277,7 +277,7 @@ translating by <parameter>offset_x</parameter> and <parameter>offset_y</paramete
 destination drawable.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -346,7 +346,7 @@ a checkboard of the colors <parameter>color1</parameter> and <parameter>color2</
 destination drawable.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -414,7 +414,7 @@ Scale the <link linkend="GdkPixbuf">GdkPixbuf</link> <parameter>src</parameter> 
 a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -452,7 +452,7 @@ a checkboard of colors <parameter>color1</parameter> and <parameter>color2</para
 a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

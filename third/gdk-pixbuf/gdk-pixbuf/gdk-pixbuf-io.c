@@ -434,7 +434,7 @@ gdk_pixbuf_get_module (guchar *buffer, guint size)
  * Creates a new pixbuf by loading an image from a file.  The file format is
  * detected automatically.
  *
- * Return value: A newly-created pixbuf with a reference count of 1, or NULL if
+ * Return value: A newly-created pixbuf with a reference count of 1, or %NULL if
  * any of several error conditions occurred:  the file could not be opened,
  * there was no loader for the file's format, there was not enough memory to
  * allocate the image buffer, or the image file contained invalid data.

@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-gdk-pixbuf" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-gdk-pixbuf">
 <refmeta>
 <refentrytitle>The GdkPixbuf Structure</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -52,7 +52,7 @@ int         <link linkend="gdk-pixbuf-get-rowstride">gdk_pixbuf_get_rowstride</l
   <para>
     This enumeration defines the color spaces that are supported by
     the &gdk-pixbuf; library.  Currently only RGB is supported.
-  </para><informaltable pgwide=1 frame="none" role="enum">
+  </para><informaltable pgwide="1" frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -71,7 +71,7 @@ int         <link linkend="gdk-pixbuf-get-rowstride">gdk_pixbuf_get_rowstride</l
 Queries the color space of a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -89,7 +89,7 @@ Queries the color space of a pixbuf.</para>
 Queries the number of channels of a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -107,7 +107,7 @@ Queries the number of channels of a pixbuf.</para>
 Queries whether a pixbuf has an alpha channel (opacity information).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -125,7 +125,7 @@ Queries whether a pixbuf has an alpha channel (opacity information).</para>
 Queries the number of bits per color sample in a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -143,7 +143,7 @@ Queries the number of bits per color sample in a pixbuf.</para>
 Queries a pointer to the pixel data of a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -161,7 +161,7 @@ Queries a pointer to the pixel data of a pixbuf.</para>
 Queries the width of a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -179,7 +179,7 @@ Queries the width of a pixbuf.</para>
 Queries the height of a pixbuf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -197,7 +197,7 @@ Queries the height of a pixbuf.</para>
 Queries the rowstride of a pixbuf, which is the number of bytes between rows.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -149,29 +149,14 @@ CLASS="SYNOPSIS"
 >&#13;#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#GDK-PIXBUF-XLIB-GET-FROM-DRAWABLE"
 >gdk_pixbuf_xlib_get_from_drawable</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> src,
-                                             <GTKDOCLINK
-HREF="COLORMAP"
->Colormap</GTKDOCLINK
-> cmap,
-                                             <GTKDOCLINK
-HREF="VISUAL"
->Visual</GTKDOCLINK
-> *visual,
+                                            (GdkPixbuf *dest,
+                                             Drawable src,
+                                             Colormap cmap,
+                                             Visual *visual,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -191,10 +176,7 @@ NAME="AEN2892"
 >Description</H2
 ><P
 >    The functions in this section allow you to take the image data
-    from an X drawable and dump it into a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->.  This can be
+    from an X drawable and dump it into a GdkPixbuf.  This can be
     used for screenshots and other special effects.  Note that these
     operations can be expensive, since the image data has to be
     transferred from the X server to the client program and converted.
@@ -233,26 +215,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_xlib_get_from_drawable
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> src,
-                                             <GTKDOCLINK
-HREF="COLORMAP"
->Colormap</GTKDOCLINK
-> cmap,
-                                             <GTKDOCLINK
-HREF="VISUAL"
->Visual</GTKDOCLINK
-> *visual,
+>GdkPixbuf*  gdk_pixbuf_xlib_get_from_drawable
+                                            (GdkPixbuf *dest,
+                                             Drawable src,
+                                             Colormap cmap,
+                                             Visual *visual,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -286,10 +253,7 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
-> is <GTKDOCLINK
-HREF="NULL"
->NULL</GTKDOCLINK
->, then this function will
+> is NULL, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <TT
 CLASS="PARAMETER"
@@ -313,18 +277,12 @@ CLASS="PARAMETER"
 >dest_y</I
 ></TT
 > arguments must be specified as 0, otherwise the function will return
-<GTKDOCLINK
-HREF="NULL"
->NULL</GTKDOCLINK
->.  If the specified destination pixbuf is not NULL and it contains alpha
+NULL.  If the specified destination pixbuf is not NULL and it contains alpha
 information, then the filled pixels will be set to full opacity.</P
 ><P
 >If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return <GTKDOCLINK
-HREF="NULL"
->NULL</GTKDOCLINK
->.</P
+return NULL.</P
 ><P
 >If the specified drawable is a window, then it must be viewable, i.e. all of
 its ancestors up to the root window must be mapped.  Also, the specified

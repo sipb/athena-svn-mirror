@@ -157,14 +157,8 @@ void        <A
 HREF="gdk-pixbuf-rendering.html#GDK-PIXBUF-RENDER-TO-DRAWABLE-ALPHA"
 >gdk_pixbuf_render_to_drawable_alpha</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKDRAWABLE"
->GdkDrawable</GTKDOCLINK
-> *drawable,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkDrawable *drawable,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -176,51 +170,30 @@ HREF="gdk-pixbuf-rendering.html#GDKPIXBUFALPHAMODE"
 >GdkPixbufAlphaMode</A
 > alpha_mode,
                                              int alpha_threshold,
-                                             <GTKDOCLINK
-HREF="GDKRGBDITHER"
->GdkRgbDither</GTKDOCLINK
-> dither,
+                                             GdkRgbDither dither,
                                              int x_dither,
                                              int y_dither);
 void        <A
 HREF="gdk-pixbuf-rendering.html#GDK-PIXBUF-RENDER-TO-DRAWABLE"
 >gdk_pixbuf_render_to_drawable</A
->   (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKDRAWABLE"
->GdkDrawable</GTKDOCLINK
-> *drawable,
-                                             <GTKDOCLINK
-HREF="GDKGC"
->GdkGC</GTKDOCLINK
-> *gc,
+>   (GdkPixbuf *pixbuf,
+                                             GdkDrawable *drawable,
+                                             GdkGC *gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
                                              int dest_y,
                                              int width,
                                              int height,
-                                             <GTKDOCLINK
-HREF="GDKRGBDITHER"
->GdkRgbDither</GTKDOCLINK
-> dither,
+                                             GdkRgbDither dither,
                                              int x_dither,
                                              int y_dither);
 void        <A
 HREF="gdk-pixbuf-rendering.html#GDK-PIXBUF-RENDER-THRESHOLD-ALPHA"
 >gdk_pixbuf_render_threshold_alpha</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKBITMAP"
->GdkBitmap</GTKDOCLINK
-> *bitmap,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkBitmap *bitmap,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -232,18 +205,9 @@ void        <A
 HREF="gdk-pixbuf-rendering.html#GDK-PIXBUF-RENDER-PIXMAP-AND-MASK"
 >gdk_pixbuf_render_pixmap_and_mask</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKPIXMAP"
->GdkPixmap</GTKDOCLINK
-> **pixmap_return,
-                                             <GTKDOCLINK
-HREF="GDKBITMAP"
->GdkBitmap</GTKDOCLINK
-> **mask_return,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkPixmap **pixmap_return,
+                                             GdkBitmap **mask_return,
                                              int alpha_threshold);</PRE
 ></TD
 ></TR
@@ -284,10 +248,7 @@ CLASS="IMPORTANT"
 >Important: </B
 >      Since these functions use GdkRGB for rendering, you must
       initialize GdkRGB before using any of them.  You can do this by
-      calling <GTKDOCLINK
-HREF="GDK-RGB-INIT"
->gdk_rgb_init</GTKDOCLINK
->() near the beginning of your program.
+      calling gdk_rgb_init() near the beginning of your program.
     </P
 ></BLOCKQUOTE
 ></DIV
@@ -381,10 +342,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->For now falls back to <GTKDOCLINK
-HREF="GDK-PIXBUF-ALPHA-BILEVEL"
->GDK_PIXBUF_ALPHA_BILEVEL</GTKDOCLINK
->.
+>For now falls back to GDK_PIXBUF_ALPHA_BILEVEL.
 In the future it will do full alpha compositing.&#13;</TD
 ></TR
 ></TBODY
@@ -413,14 +371,8 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_render_to_drawable_alpha
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKDRAWABLE"
->GdkDrawable</GTKDOCLINK
-> *drawable,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkDrawable *drawable,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -432,10 +384,7 @@ HREF="gdk-pixbuf-rendering.html#GDKPIXBUFALPHAMODE"
 >GdkPixbufAlphaMode</A
 > alpha_mode,
                                              int alpha_threshold,
-                                             <GTKDOCLINK
-HREF="GDKRGBDITHER"
->GdkRgbDither</GTKDOCLINK
-> dither,
+                                             GdkRgbDither dither,
                                              int x_dither,
                                              int y_dither);</PRE
 ></TD
@@ -445,10 +394,7 @@ HREF="GDKRGBDITHER"
 >Renders a rectangular portion of a pixbuf to a drawable.  This is done using
 GdkRGB, so the specified drawable must have the GdkRGB visual and colormap.</P
 ><P
->When used with <GTKDOCLINK
-HREF="GDK-PIXBUF-ALPHA-BILEVEL"
->GDK_PIXBUF_ALPHA_BILEVEL</GTKDOCLINK
->, this function has to create a bitmap
+>When used with GDK_PIXBUF_ALPHA_BILEVEL, this function has to create a bitmap
 out of the thresholded alpha channel of the image and, it has to set this
 bitmap as the clipping mask for the GC used for drawing.  This can be a
 significant performance penalty depending on the size and the complexity of
@@ -726,28 +672,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_render_to_drawable   (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKDRAWABLE"
->GdkDrawable</GTKDOCLINK
-> *drawable,
-                                             <GTKDOCLINK
-HREF="GDKGC"
->GdkGC</GTKDOCLINK
-> *gc,
+>void        gdk_pixbuf_render_to_drawable   (GdkPixbuf *pixbuf,
+                                             GdkDrawable *drawable,
+                                             GdkGC *gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
                                              int dest_y,
                                              int width,
                                              int height,
-                                             <GTKDOCLINK
-HREF="GDKRGBDITHER"
->GdkRgbDither</GTKDOCLINK
-> dither,
+                                             GdkRgbDither dither,
                                              int x_dither,
                                              int y_dither);</PRE
 ></TD
@@ -1010,14 +944,8 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_render_threshold_alpha
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKBITMAP"
->GdkBitmap</GTKDOCLINK
-> *bitmap,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkBitmap *bitmap,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -1226,18 +1154,9 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_render_pixmap_and_mask
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="GDKPIXMAP"
->GdkPixmap</GTKDOCLINK
-> **pixmap_return,
-                                             <GTKDOCLINK
-HREF="GDKBITMAP"
->GdkBitmap</GTKDOCLINK
-> **mask_return,
+                                            (GdkPixbuf *pixbuf,
+                                             GdkPixmap **pixmap_return,
+                                             GdkBitmap **mask_return,
                                              int alpha_threshold);</PRE
 ></TD
 ></TR

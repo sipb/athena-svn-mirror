@@ -212,7 +212,7 @@ Canvas item to display #GdkPixbuf images.
     even if the item's affine transformation changes.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:width_set ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:width-set ##### -->
   <para>
     Determines whether the <link
     linkend="GnomeCanvasPixbuf--width">width</link> argument is taken
@@ -221,7 +221,7 @@ Canvas item to display #GdkPixbuf images.
     This argument is %FALSE by default.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:width_in_pixels ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:width-in-pixels ##### -->
   <para>
     If this argument is %TRUE, then the width of the pixbuf will be
     considered to be in pixels, that is, it will not be visually
@@ -240,7 +240,7 @@ Canvas item to display #GdkPixbuf images.
     linkend="GnomeCanvasPixbuf--width">width</link> argument.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:height_set ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:height-set ##### -->
   <para>
     Determines whether the <link
     linkend="GnomeCanvasPixbuf--height">height</link> argument is
@@ -250,7 +250,7 @@ Canvas item to display #GdkPixbuf images.
     The default is %FALSE.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:height_in_pixels ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:height-in-pixels ##### -->
   <para>
     Works in the same way as the <link
     linkend="GnomeCanvasPixbuf--width-in-pixels">width_in_pixels</link>
@@ -265,7 +265,7 @@ Canvas item to display #GdkPixbuf images.
     is 0.0.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:x_in_pixels ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:x-in-pixels ##### -->
   <para>
     If this argument is %TRUE, the pixbuf's translation with respect
     to its logical origin in item-relative coordinates will be in
@@ -284,7 +284,7 @@ Canvas item to display #GdkPixbuf images.
     0.0.
   </para>
 
-<!-- ##### ARG GnomeCanvasPixbuf:y_in_pixels ##### -->
+<!-- ##### ARG GnomeCanvasPixbuf:y-in-pixels ##### -->
   <para>
     Works in the same way as the <link
     linkend="GnomeCanvasPixbuf--x-in-pixels">x_in_pixels</link>

@@ -23,14 +23,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
-
-Known bugs:
-	* 4bpp compressed files don't work
-	* bi-tonal files aren't tested with palettes
-
-*/
-
 #include <config.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -40,44 +32,60 @@ Known bugs:
 
 
 
-/* 
-
-These structures are actually dummies. These are according to
-the "Windows API reference guide volume II" as written by 
-Borland International, but GCC fiddles with the alignment of 
-the internal members, so these aren't actually usable.
-
-*/
-
+#if 0
+/* If these structures were unpacked, they would define the two headers of the
+ * BMP file.  After them comes the palette, and then the image data.
+ *
+ * We do not use these structures; we just keep them here for reference.
+ */
 struct BitmapFileHeader {
-	gushort bfType;
-	guint bfSize;
-	guint reserverd;
-	guint bfOffbits;
+	guint16 magic;
+	guint32 file_size;
+	guint32 reserved;
+	guint32 data_offset;
 };
 
 struct BitmapInfoHeader {
-	guint biSize;
-	guint biWidth;
-	guint biHeight;
-	gushort biPlanes;
-	gushort biBitCount;
-	guint biCompression;
-	guint biSizeImage;
-	guint biXPelsPerMeter;
-	guint biYPelsPerMeter;
-	guint biClrUsed;
-	guint biClrImportant;
+	guint32 header_size;
+	guint32 width;
+	guint32 height;
+	guint16 planes;
+	guint16 bpp;
+	guint32 compression;
+	guint32 data_size;
+	guint32 x_ppm;
+	guint32 y_ppm;
+	guint32 n_colors;
+	guint32 n_important_colors;
 };
+#endif
 
-/* 
+/* Compression values */
 
-DumpBIH printf's the values in a BitmapInfoHeader to the screen, for 
+#define BI_RGB 0
+#define BI_RLE8 1
+#define BI_RLE4 2
+#define BI_BITFIELDS 3
+
+/* State machine */
+typedef enum {
+	READ_STATE_HEADERS,	/* Reading the bitmap file header and bitmap info header */
+	READ_STATE_PALETTE,	/* Reading the palette */
+	READ_STATE_BITMASKS,	/* Reading the bitmasks for BI_BITFIELDS */
+	READ_STATE_DATA,	/* Reading the actual image data */
+	READ_STATE_ERROR,	/* An error occurred; further data will be ignored */
+	READ_STATE_DONE		/* Done reading the image; further data will be ignored */
+} ReadState;
+
+/*
+
+DumpBIH printf's the values in a BitmapInfoHeader to the screen, for
 debugging purposes.
 
 */
 #if DUMPBIH
-static void DumpBIH(unsigned char *BIH)
+static void
+DumpBIH(unsigned char *BIH)
 {
 	printf("biSize      = %i \n",
 	       (int) (BIH[3] << 24) + (BIH[2] << 16) + (BIH[1] << 8) +
@@ -114,26 +122,22 @@ static void DumpBIH(unsigned char *BIH)
    the current bitmap */
 
 struct headerpair {
-	guint width;
-	guint height;
+	guint32 size;
+	gint32 width;
+	gint32 height;
 	guint depth;
-	guint Negative;		/* Negative = 1 -> top down BMP,  
+	guint Negative;		/* Negative = 1 -> top down BMP,
 				   Negative = 0 -> bottom up BMP */
 };
 
 /* Data needed for the "state" during decompression */
 struct bmp_compression_state {
-	gint phase;		/* 0 = clean, 
-				   1 = count received
-				   2 = escape received
-				   3 = in "raw" run
-				   4 = Relative part 1 is next
-				   5 = Relative part 2 is next
-				   6 = end of image -> No more input allowed
-				 */
+	gint phase;
 	gint RunCount;
-	gint XDelta;
-	gint YDelta;
+
+	guchar *linebuff;
+	gint linebuffsize;	/* these two counts in nibbles */
+	gint linebuffdone;
 };
 
 /* Progressive loading */
@@ -143,21 +147,24 @@ struct bmp_progressive_state {
 	ModuleUpdatedNotifyFunc updated_func;
 	gpointer user_data;
 
-	gint HeaderSize;	/* The size of the header-part (incl colormap) */
-	guchar *HeaderBuf;	/* The buffer for the header (incl colormap) */
-	gint HeaderDone;	/* The nr of bytes actually in HeaderBuf */
+	ReadState read_state;
 
-	gint LineWidth;		/* The width of a line in bytes */
-	guchar *LineBuf;	/* Buffer for 1 line */
-	gint LineDone;		/* # of bytes in LineBuf */
-	gint Lines;		/* # of finished lines */
+	guint LineWidth;
+	guint Lines;		/* # of finished lines */
 
-	gint Type;		/*  
+	guchar *buff;
+	gint BufferSize;
+	gint BufferDone;
+
+	guchar (*Colormap)[3];
+
+	gint Type;		/*
 				   32 = RGB + alpha
 				   24 = RGB
+				   16 = RGB
 				   4  = 4 bpp colormapped
 				   8  = 8 bpp colormapped
-				   1  = 1 bit bitonal 
+				   1  = 1 bit bitonal
 				 */
 	gint Compressed;
 	struct bmp_compression_state compr;
@@ -165,51 +172,47 @@ struct bmp_progressive_state {
 
 	struct headerpair Header;	/* Decoded (BE->CPU) header */
 
+	/* Bit masks, shift amounts, and significant bits for BI_BITFIELDS coding */
+	int r_mask, r_shift, r_bits;
+	int g_mask, g_shift, g_bits;
+	int b_mask, b_shift, b_bits;
 
 	GdkPixbuf *pixbuf;	/* Our "target" */
 };
 
-gpointer
-gdk_pixbuf__bmp_image_begin_load(ModulePreparedNotifyFunc prepared_func,
-				 ModuleUpdatedNotifyFunc updated_func,
-				 ModuleFrameDoneNotifyFunc frame_done_func,
-				 ModuleAnimationDoneNotifyFunc
-				 anim_done_func, gpointer user_data);
+gpointer gdk_pixbuf__bmp_image_begin_load (ModulePreparedNotifyFunc prepared_func,
+					   ModuleUpdatedNotifyFunc updated_func,
+					   ModuleFrameDoneNotifyFunc frame_done_func,
+					   ModuleAnimationDoneNotifyFunc
+					   anim_done_func, gpointer user_data);
 
 void gdk_pixbuf__bmp_image_stop_load(gpointer data);
-gboolean gdk_pixbuf__bmp_image_load_increment(gpointer data, guchar * buf,
-					      guint size);
+gboolean gdk_pixbuf__bmp_image_load_increment(gpointer data, guchar *buf, guint size);
 
 
 
 /* Shared library entry point --> This should be removed when
    generic_image_load enters gdk-pixbuf-io. */
-GdkPixbuf *gdk_pixbuf__bmp_image_load(FILE * f)
+GdkPixbuf *
+gdk_pixbuf__bmp_image_load(FILE *f)
 {
-	guchar *membuf;
+	guchar membuf[4096];
 	size_t length;
 	struct bmp_progressive_state *State;
 
 	GdkPixbuf *pb;
 
-	State =
-	    gdk_pixbuf__bmp_image_begin_load(NULL, NULL, NULL, NULL, NULL);
-	membuf = g_malloc(4096);
-
-	g_assert(membuf != NULL);
-
+	State = gdk_pixbuf__bmp_image_begin_load(NULL, NULL, NULL, NULL, NULL);
 
 	while (feof(f) == 0) {
-		length = fread(membuf, 1, 4096, f);
+		length = fread(membuf, 1, sizeof (membuf), f);
 		if (length > 0)
-
-			(void)
-			    gdk_pixbuf__bmp_image_load_increment(State,
-								 membuf,
-								 length);
-
+			if (!gdk_pixbuf__bmp_image_load_increment (State, membuf, length)) {
+				gdk_pixbuf__bmp_image_stop_load (State);
+				return NULL;
+			}
 	}
-	g_free(membuf);
+
 	if (State->pixbuf != NULL)
 		gdk_pixbuf_ref(State->pixbuf);
 
@@ -219,33 +222,47 @@ GdkPixbuf *gdk_pixbuf__bmp_image_load(FILE * f)
 	return pb;
 }
 
-static void DecodeHeader(unsigned char *BFH, unsigned char *BIH,
-			 struct bmp_progressive_state *State)
+static gboolean
+DecodeHeader (unsigned char *BFH, unsigned char *BIH,
+	      struct bmp_progressive_state *State)
 {
+	g_assert (State->read_state == READ_STATE_HEADERS);
+
+        /* FIXME this is totally unrobust against bogus image data. */
+
+	if (State->BufferSize < GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14) {
+		State->BufferSize = GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14;
+		State->buff = g_realloc (State->buff, State->BufferSize);
+		return TRUE;
+	}
+
 #if DUMPBIH
 	DumpBIH(BIH);
 #endif
 
-	State->Header.width =
-	    (int) (BIH[7] << 24) + (BIH[6] << 16) + (BIH[5] << 8) +
-	    (BIH[4]);
-	State->Header.height =
-	    (int) (BIH[11] << 24) + (BIH[10] << 16) + (BIH[9] << 8) +
-	    (BIH[8]);
-	State->Header.depth = (int) (BIH[15] << 8) + (BIH[14]);;
+	State->Header.size = GUINT32_FROM_LE (* (guint32 *) &BIH[0]);
+	if (State->Header.size == 40) {
+		State->Header.width = GINT32_FROM_LE (* (gint32 *) &BIH[4]);
+		State->Header.height = GINT32_FROM_LE (* (gint32 *) &BIH[8]);
+		State->Header.depth = GUINT16_FROM_LE (* (guint16 *) &BIH[14]);
+		State->Compressed = GUINT32_FROM_LE (* (guint32 *) &BIH[16]);
+	} else if (State->Header.size == 12) {
+		State->Header.width = GUINT16_FROM_LE (* (guint16 *) &BIH[4]);
+		State->Header.height = GUINT16_FROM_LE (* (guint16 *) &BIH[6]);
+		State->Header.depth = GUINT16_FROM_LE (* (guint16 *) &BIH[10]);
+		State->Compressed = BI_RGB;
+	} else {
+#if 0
+		g_set_error (error,
+			     GDK_PIXBUF_ERROR,
+			     GDK_PIXBUF_ERROR_CORRUPT_IMAGE,
+			     _("BMP image has unsupported header size"));
+#endif
+		State->read_state = READ_STATE_ERROR;
+		return FALSE;
+	}
 
 	State->Type = State->Header.depth;	/* This may be less trivial someday */
-	State->HeaderSize =
-	    (int) ((BFH[13] << 24) + (BFH[12] << 16) + (BFH[11] << 8) +
-		   (BFH[10]));
-	if (State->HeaderSize >= 14 + 40 + 1024)
-		State->HeaderBuf =
-		    g_realloc(State->HeaderBuf, State->HeaderSize);
-
-	if ((BIH[16] != 0) || (BIH[17] != 0) || (BIH[18] != 0)
-	    || (BIH[19] != 0)) {
-		State->Compressed = 1;
-	}
 
 	/* Negative heights indicates bottom-down pixelorder */
 	if (State->Header.height < 0) {
@@ -257,30 +274,50 @@ static void DecodeHeader(unsigned char *BFH, unsigned char *BIH,
 		State->Header.Negative = 0;
 	}
 
+	if (State->Header.width == 0 || State->Header.height == 0 ||
+	    (State->Compressed == BI_RLE4 && State->Type != 4)    ||
+	    (State->Compressed == BI_RLE8 && State->Type != 8)	  ||
+	    (State->Compressed == BI_BITFIELDS && !(State->Type == 16 || State->Type == 32)) ||
+	    State->Compressed > BI_BITFIELDS) {
+#if 0
+		g_set_error (error,
+			     GDK_PIXBUF_ERROR,
+			     GDK_PIXBUF_ERROR_CORRUPT_IMAGE,
+			     _("BMP image has bogus header data"));
+#endif
+		State->read_state = READ_STATE_ERROR;
+		return FALSE;
+	}
+
 	if (State->Type == 32)
 		State->LineWidth = State->Header.width * 4;
-	if (State->Type == 24)
+	else if (State->Type == 24)
 		State->LineWidth = State->Header.width * 3;
-	if (State->Type == 8)
+	else if (State->Type == 16)
+		State->LineWidth = State->Header.width * 2;
+	else if (State->Type == 8)
 		State->LineWidth = State->Header.width * 1;
-	if (State->Type == 4)
+	else if (State->Type == 4)
 		State->LineWidth = (State->Header.width + 1) / 2;
-	if (State->Type == 1) {
+	else if (State->Type == 1) {
 		State->LineWidth = State->Header.width / 8;
 		if ((State->Header.width & 7) != 0)
 			State->LineWidth++;
+	} else {
+#if 0
+		g_set_error (error,
+			     GDK_PIXBUF_ERROR,
+			     GDK_PIXBUF_ERROR_CORRUPT_IMAGE,
+			     _("BMP image has bogus header data"));
+#endif
+		State->read_state = READ_STATE_ERROR;
+		return FALSE;
 	}
 
 	/* Pad to a 32 bit boundary */
-	if (((State->LineWidth % 4) > 0) && (State->Compressed == 0))
+	if (((State->LineWidth % 4) > 0)
+	    && (State->Compressed == BI_RGB || State->Compressed == BI_BITFIELDS))
 		State->LineWidth = (State->LineWidth / 4) * 4 + 4;
-
-
-	if (State->LineBuf == NULL)
-		State->LineBuf = g_malloc(State->LineWidth);
-
-	g_assert(State->LineBuf != NULL);
-
 
 	if (State->pixbuf == NULL) {
 		if (State->Type == 32)
@@ -294,26 +331,137 @@ static void DecodeHeader(unsigned char *BFH, unsigned char *BIH,
 					   (gint) State->Header.width,
 					   (gint) State->Header.height);
 
+                if (State->pixbuf == NULL) {
+#if 0
+                        g_set_error (error,
+                                     GDK_PIXBUF_ERROR,
+                                     GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY,
+                                     _("Not enough memory to load bitmap image"));
+#endif
+			State->read_state = READ_STATE_ERROR;
+                        return FALSE;
+                }
+
 		if (State->prepared_func != NULL)
 			/* Notify the client that we are ready to go */
 			(*State->prepared_func) (State->pixbuf, State->user_data);
 
 	}
 
+	if (!(State->Compressed == BI_RGB || State->Compressed == BI_BITFIELDS)) {
+		State->compr.linebuffdone = 0;
+		State->compr.linebuffsize = State->Header.width;
+		if (State->Type == 8)
+			State->compr.linebuffsize *= 2;
+		State->compr.linebuff = g_malloc ((State->compr.linebuffsize + 1) / 2);
+	}
+
+	State->BufferDone = 0;
+	if (State->Type <= 8) {
+		State->read_state = READ_STATE_PALETTE;
+		State->BufferSize = GUINT32_FROM_LE (* (guint32 *) &BFH[10]) - 14 - State->Header.size;
+	} else if (State->Compressed == BI_RGB) {
+		State->read_state = READ_STATE_DATA;
+		State->BufferSize = State->LineWidth;
+	} else if (State->Compressed == BI_BITFIELDS) {
+		State->read_state = READ_STATE_BITMASKS;
+		State->BufferSize = 12;
+	} else
+		g_assert_not_reached ();
+
+	State->buff = g_realloc (State->buff, State->BufferSize);
+
+        return TRUE;
 }
 
-/* 
+static void
+DecodeColormap (guchar *buff,
+		struct bmp_progressive_state *State)
+{
+	gint i;
+
+	g_assert (State->read_state == READ_STATE_PALETTE);
+
+	State->Colormap = g_malloc ((1 << State->Header.depth) * sizeof (*State->Colormap));
+
+	for (i = 0; i < (1 << State->Header.depth); i++)
+	{
+		State->Colormap[i][0] = buff[i * (State->Header.size == 12 ? 3 : 4)];
+		State->Colormap[i][1] = buff[i * (State->Header.size == 12 ? 3 : 4) + 1];
+		State->Colormap[i][2] = buff[i * (State->Header.size == 12 ? 3 : 4) + 2];
+	}
+
+	State->read_state = READ_STATE_DATA;
+
+	State->BufferDone = 0;
+	if (!(State->Compressed == BI_RGB || State->Compressed == BI_BITFIELDS))
+		State->BufferSize = 2;
+	else
+		State->BufferSize = State->LineWidth;
+
+	State->buff = g_realloc (State->buff, State->BufferSize);
+}
+
+/* Finds the lowest set bit and the number of set bits */
+static void
+find_bits (int n, int *lowest, int *n_set)
+{
+	int i;
+
+	*n_set = 0;
+
+	for (i = 31; i >= 0; i--)
+		if (n & (1 << i)) {
+			*lowest = i;
+			(*n_set)++;
+		}
+}
+
+/* Decodes the 3 shorts that follow for the bitmasks for BI_BITFIELDS coding */
+static void
+decode_bitmasks (struct bmp_progressive_state *State, guchar *buf)
+{
+	State->r_mask = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	buf += 4;
+
+	State->g_mask = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	buf += 4;
+
+	State->b_mask = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+
+	find_bits (State->r_mask, &State->r_shift, &State->r_bits);
+	find_bits (State->g_mask, &State->g_shift, &State->g_bits);
+	find_bits (State->b_mask, &State->b_shift, &State->b_bits);
+
+	if (State->r_bits == 0 || State->g_bits == 0 || State->b_bits == 0) {
+		State->r_mask = 0x7c00;
+		State->r_shift = 10;
+		State->g_mask = 0x03e0;
+		State->g_shift = 5;
+		State->b_mask = 0x001f;
+		State->b_shift = 0;
+
+		State->r_bits = State->g_bits = State->b_bits = 5;
+	}
+
+	State->read_state = READ_STATE_DATA;
+	State->BufferDone = 0;
+	State->BufferSize = State->LineWidth;
+	State->buff = g_realloc (State->buff, State->BufferSize);
+}
+
+/*
  * func - called when we have pixmap created (but no image data)
  * user_data - passed as arg 1 to func
  * return context (opaque to user)
  */
 
 gpointer
-gdk_pixbuf__bmp_image_begin_load(ModulePreparedNotifyFunc prepared_func,
-				 ModuleUpdatedNotifyFunc updated_func,
-				 ModuleFrameDoneNotifyFunc frame_done_func,
-				 ModuleAnimationDoneNotifyFunc
-				 anim_done_func, gpointer user_data)
+gdk_pixbuf__bmp_image_begin_load (ModulePreparedNotifyFunc prepared_func,
+				  ModuleUpdatedNotifyFunc updated_func,
+				  ModuleFrameDoneNotifyFunc frame_done_func,
+				  ModuleAnimationDoneNotifyFunc
+				  anim_done_func, gpointer user_data)
 {
 	struct bmp_progressive_state *context;
 
@@ -322,23 +470,21 @@ gdk_pixbuf__bmp_image_begin_load(ModulePreparedNotifyFunc prepared_func,
 	context->updated_func = updated_func;
 	context->user_data = user_data;
 
-	context->HeaderSize = 54;
-	context->HeaderBuf = g_malloc(14 + 40 + 1024);
-	/* 14 for the BitmapFileHeader, 40 for the BitmapImageHeader and 
-	   1024 for the colormap */
+	context->read_state = READ_STATE_HEADERS;
 
-	context->HeaderDone = 0;
+	context->BufferSize = 26;
+	context->buff = g_malloc (26);
+	context->BufferDone = 0;
+	/* 14 for the BitmapFileHeader, 12 for the BitmapImageHeader */
 
-	context->LineWidth = 0;
-	context->LineBuf = NULL;
-	context->LineDone = 0;
+	context->Colormap = NULL;
+
 	context->Lines = 0;
 
 	context->Type = 0;
 
 	memset(&context->Header, 0, sizeof(struct headerpair));
 	memset(&context->compr, 0, sizeof(struct bmp_compression_state));
-
 
 	context->pixbuf = NULL;
 
@@ -351,7 +497,8 @@ gdk_pixbuf__bmp_image_begin_load(ModulePreparedNotifyFunc prepared_func,
  *
  * free context, unref gdk_pixbuf
  */
-void gdk_pixbuf__bmp_image_stop_load(gpointer data)
+void
+gdk_pixbuf__bmp_image_stop_load (gpointer data)
 {
 	struct bmp_progressive_state *context =
 	    (struct bmp_progressive_state *) data;
@@ -359,26 +506,105 @@ void gdk_pixbuf__bmp_image_stop_load(gpointer data)
 
 	g_return_if_fail(context != NULL);
 
-	if (context->LineBuf != NULL)
-		g_free(context->LineBuf);
-	context->LineBuf = NULL;
+	if (context->compr.linebuff != NULL)
+		g_free(context->compr.linebuff);
 
-	if (context->HeaderBuf != NULL)
-		g_free(context->HeaderBuf);
-	context->LineBuf = NULL;
+	if (context->Colormap != NULL)
+		g_free(context->Colormap);
 
 	if (context->pixbuf)
 		gdk_pixbuf_unref(context->pixbuf);
 
-	g_free(context);
+	g_free (context->buff);
+	g_free (context);
 }
 
 
 /*
 The OneLineXX functions are called when 1 line worth of data is present.
-OneLine24 is the 24 bpp-version.
+OneLine32 is the 32 bpp-version.
 */
-static void OneLine32(struct bmp_progressive_state *context)
+static void
+OneLine32 (struct bmp_progressive_state *context)
+{
+	int i;
+	guchar *pixels;
+	guchar *src;
+
+	if (!context->Header.Negative)
+		pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride * (context->Header.height - context->Lines - 1));
+	else
+		pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride * context->Lines);
+
+	src = context->buff;
+
+	if (context->Compressed == BI_BITFIELDS) {
+		int r_lshift, r_rshift;
+		int g_lshift, g_rshift;
+		int b_lshift, b_rshift;
+
+		r_lshift = 8 - context->r_bits;
+		g_lshift = 8 - context->g_bits;
+		b_lshift = 8 - context->b_bits;
+
+		r_rshift = context->r_bits - r_lshift;
+		g_rshift = context->g_bits - g_lshift;
+		b_rshift = context->b_bits - b_lshift;
+
+		for (i = 0; i < context->Header.width; i++) {
+			int v, r, g, b;
+
+			v = src[0] | (src[1] << 8) | (src[2] << 16);
+
+			r = (v & context->r_mask) >> context->r_shift;
+			g = (v & context->g_mask) >> context->g_shift;
+			b = (v & context->b_mask) >> context->b_shift;
+
+			*pixels++ = (r << r_lshift) | (r >> r_rshift);
+			*pixels++ = (g << g_lshift) | (g >> g_rshift);
+			*pixels++ = (b << b_lshift) | (b >> b_rshift);
+			*pixels++ = src[3]; /* alpha */
+
+			src += 4;
+		}
+	} else
+		for (i = 0; i < context->Header.width; i++) {
+			*pixels++ = src[2];
+			*pixels++ = src[1];
+			*pixels++ = src[0];
+			*pixels++ = src[3];
+
+			src += 4;
+		}
+#if 0
+
+	gint X;
+	guchar *Pixels;
+
+	X = 0;
+	if (context->Header.Negative == 0)
+		Pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride *
+			  (context->Header.height - context->Lines - 1));
+	else
+		Pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride *
+			  context->Lines);
+
+	while (X < context->Header.width) {
+		Pixels[X * 4 + 0] = context->buff[X * 4 + 2];
+		Pixels[X * 4 + 1] = context->buff[X * 4 + 1];
+		Pixels[X * 4 + 2] = context->buff[X * 4 + 0];
+		Pixels[X * 4 + 3] = context->buff[X * 4 + 3];
+		X++;
+	}
+#endif
+}
+
+static void
+OneLine24 (struct bmp_progressive_state *context)
 {
 	gint X;
 	guchar *Pixels;
@@ -393,39 +619,76 @@ static void OneLine32(struct bmp_progressive_state *context)
 			  context->pixbuf->rowstride *
 			  context->Lines);
 	while (X < context->Header.width) {
-		Pixels[X * 4 + 0] = context->LineBuf[X * 4 + 2];
-		Pixels[X * 4 + 1] = context->LineBuf[X * 4 + 1];
-		Pixels[X * 4 + 2] = context->LineBuf[X * 4 + 0];
-		Pixels[X * 4 + 3] = context->LineBuf[X * 4 + 3];
+		Pixels[X * 3 + 0] = context->buff[X * 3 + 2];
+		Pixels[X * 3 + 1] = context->buff[X * 3 + 1];
+		Pixels[X * 3 + 2] = context->buff[X * 3 + 0];
 		X++;
 	}
 
 }
 
-static void OneLine24(struct bmp_progressive_state *context)
+static void
+OneLine16 (struct bmp_progressive_state *context)
 {
-	gint X;
-	guchar *Pixels;
+	int i;
+	guchar *pixels;
+	guchar *src;
 
-	X = 0;
-	if (context->Header.Negative == 0)
-		Pixels = (context->pixbuf->pixels +
-			  context->pixbuf->rowstride *
-			  (context->Header.height - context->Lines - 1));
+	if (!context->Header.Negative)
+		pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride * (context->Header.height - context->Lines - 1));
 	else
-		Pixels = (context->pixbuf->pixels +
-			  context->pixbuf->rowstride *
-			  context->Lines);
-	while (X < context->Header.width) {
-		Pixels[X * 3 + 0] = context->LineBuf[X * 3 + 2];
-		Pixels[X * 3 + 1] = context->LineBuf[X * 3 + 1];
-		Pixels[X * 3 + 2] = context->LineBuf[X * 3 + 0];
-		X++;
-	}
+		pixels = (context->pixbuf->pixels +
+			  context->pixbuf->rowstride * context->Lines);
 
+	src = context->buff;
+
+	if (context->Compressed == BI_BITFIELDS) {
+		int r_lshift, r_rshift;
+		int g_lshift, g_rshift;
+		int b_lshift, b_rshift;
+
+		r_lshift = 8 - context->r_bits;
+		g_lshift = 8 - context->g_bits;
+		b_lshift = 8 - context->b_bits;
+
+		r_rshift = context->r_bits - r_lshift;
+		g_rshift = context->g_bits - g_lshift;
+		b_rshift = context->b_bits - b_lshift;
+
+		for (i = 0; i < context->Header.width; i++) {
+			int v, r, g, b;
+
+			v = (int) src[0] | ((int) src[1] << 8);
+
+			r = (v & context->r_mask) >> context->r_shift;
+			g = (v & context->g_mask) >> context->g_shift;
+			b = (v & context->b_mask) >> context->b_shift;
+
+			*pixels++ = (r << r_lshift) | (r >> r_rshift);
+			*pixels++ = (g << g_lshift) | (g >> g_rshift);
+			*pixels++ = (b << b_lshift) | (b >> b_rshift);
+
+			src += 2;
+		}
+	} else
+		for (i = 0; i < context->Header.width; i++) {
+			int v, r, g, b;
+
+			v = src[0] | (src[1] << 8);
+
+			r = (v >> 10) & 0x1f;
+			g = (v >> 5) & 0x1f;
+			b = v & 0x1f;
+
+			*pixels++ = (r << 3) | (r >> 2);
+			*pixels++ = (g << 3) | (g >> 2);
+			*pixels++ = (b << 3) | (b >> 2);
+		}
 }
 
-static void OneLine8(struct bmp_progressive_state *context)
+static void
+OneLine8 (struct bmp_progressive_state *context)
 {
 	gint X;
 	guchar *Pixels;
@@ -441,16 +704,17 @@ static void OneLine8(struct bmp_progressive_state *context)
 			  context->Lines);
 	while (X < context->Header.width) {
 		Pixels[X * 3 + 0] =
-		    context->HeaderBuf[4 * context->LineBuf[X] + 56];
+		    context->Colormap[context->buff[X]][2];
 		Pixels[X * 3 + 1] =
-		    context->HeaderBuf[4 * context->LineBuf[X] + 55];
+		    context->Colormap[context->buff[X]][1];
 		Pixels[X * 3 + 2] =
-		    context->HeaderBuf[4 * context->LineBuf[X] + 54];
+		    context->Colormap[context->buff[X]][0];
 		X++;
 	}
 }
 
-static void OneLine4(struct bmp_progressive_state *context)
+static void
+OneLine4 (struct bmp_progressive_state *context)
 {
 	gint X;
 	guchar *Pixels;
@@ -468,30 +732,31 @@ static void OneLine4(struct bmp_progressive_state *context)
 	while (X < context->Header.width) {
 		guchar Pix;
 
-		Pix = context->LineBuf[X / 2];
+		Pix = context->buff[X / 2];
 
 		Pixels[X * 3 + 0] =
-		    context->HeaderBuf[4 * (Pix >> 4) + 56];
+		    context->Colormap[Pix >> 4][2];
 		Pixels[X * 3 + 1] =
-		    context->HeaderBuf[4 * (Pix >> 4) + 55];
+		    context->Colormap[Pix >> 4][1];
 		Pixels[X * 3 + 2] =
-		    context->HeaderBuf[4 * (Pix >> 4) + 54];
+		    context->Colormap[Pix >> 4][0];
 		X++;
 		if (X < context->Header.width) {
 			/* Handle the other 4 bit pixel only when there is one */
 			Pixels[X * 3 + 0] =
-			    context->HeaderBuf[4 * (Pix & 15) + 56];
+			    context->Colormap[Pix & 15][2];
 			Pixels[X * 3 + 1] =
-			    context->HeaderBuf[4 * (Pix & 15) + 55];
+			    context->Colormap[Pix & 15][1];
 			Pixels[X * 3 + 2] =
-			    context->HeaderBuf[4 * (Pix & 15) + 54];
+			    context->Colormap[Pix & 15][0];
 			X++;
 		}
 	}
 
 }
 
-static void OneLine1(struct bmp_progressive_state *context)
+static void
+OneLine1 (struct bmp_progressive_state *context)
 {
 	gint X;
 	guchar *Pixels;
@@ -508,32 +773,37 @@ static void OneLine1(struct bmp_progressive_state *context)
 	while (X < context->Header.width) {
 		gint Bit;
 
-		Bit = (context->LineBuf[X / 8]) >> (7 - (X & 7));
+		Bit = (context->buff[X / 8]) >> (7 - (X & 7));
 		Bit = Bit & 1;
-		Pixels[X * 3 + 0] = Bit * 255;
-		Pixels[X * 3 + 1] = Bit * 255;
-		Pixels[X * 3 + 2] = Bit * 255;
+		Pixels[X * 3 + 0] = context->Colormap[Bit][2];
+		Pixels[X * 3 + 1] = context->Colormap[Bit][1];
+		Pixels[X * 3 + 2] = context->Colormap[Bit][0];
 		X++;
 	}
 }
 
 
-static void OneLine(struct bmp_progressive_state *context)
+static void
+OneLine (struct bmp_progressive_state *context)
 {
-	context->LineDone = 0;
+	context->BufferDone = 0;
 	if (context->Lines >= context->Header.height)
 		return;
 
 	if (context->Type == 32)
 		OneLine32(context);
-	if (context->Type == 24)
+	else if (context->Type == 24)
 		OneLine24(context);
-	if (context->Type == 8)
+	else if (context->Type == 16)
+		OneLine16(context);
+	else if (context->Type == 8)
 		OneLine8(context);
-	if (context->Type == 4)
+	else if (context->Type == 4)
 		OneLine4(context);
-	if (context->Type == 1)
+	else if (context->Type == 1)
 		OneLine1(context);
+	else
+		g_assert_not_reached ();
 
 	context->Lines++;
 
@@ -542,152 +812,137 @@ static void OneLine(struct bmp_progressive_state *context)
 					  0,
 					  context->Lines,
 					  context->Header.width,
-					  context->Header.height,
+					  1,
 					  context->user_data);
 
 	}
 }
 
-/* DoCompressedByte handles 1 byte of incomming compressed data */
-void DoCompressedByte(struct bmp_progressive_state *context, guchar ** buf,
-		      gint * size)
+static void
+DoCompressed(struct bmp_progressive_state *context)
 {
-	gint BytesToCopy;
+	gint count, pos;
 	switch (context->compr.phase) {
 	case 0:		/* Neutral state */
-		if ((*buf)[0] != 0) {	/* run count */
-			context->compr.phase = 1;
-			context->compr.RunCount = (*buf)[0];
+		if (context->buff[0] != 0) {	/* run count */
+			context->compr.RunCount = context->buff[0];
+			if (context->Type == 8)
+				context->compr.RunCount *= 2;
+			while (context->compr.RunCount > 0) {
+				if (context->compr.linebuffdone & 1) {
+					guchar *ptr = context->compr.linebuff +
+					    context->compr.linebuffdone / 2;
 
+					*ptr = (*ptr & 0xF0) | (context->buff[1] >> 4);
+					context->buff[1] = (context->buff[1] << 4) |
+							   (context->buff[1] >> 4);
+					context->compr.linebuffdone++;
+					context->compr.RunCount--;
+				}
+
+				if (context->compr.RunCount) {
+					count = context->compr.linebuffsize -
+					    context->compr.linebuffdone;
+					if (count > context->compr.RunCount)
+						count = context->compr.RunCount;
+
+					memset (context->compr.linebuff +
+						context->compr.linebuffdone / 2,
+						context->buff[1],
+						(count + 1) / 2);
+					context->compr.RunCount -= count;
+					context->compr.linebuffdone += count;
+				}
+				if (context->compr.linebuffdone == context->compr.linebuffsize) {
+					guchar *tmp = context->buff;
+					context->buff = context->compr.linebuff;
+					OneLine (context);
+					context->buff = tmp;
+
+					if (context->compr.linebuffdone & 1)
+						context->buff[1] = (context->buff[1] << 4) |
+								   (context->buff[1] >> 4);
+					context->compr.linebuffdone = 0;
+				}
+			}
 		} else {	/* Escape */
-			context->compr.phase = 2;
-		}
-		(*buf)++;
-		(*size)--;
-		break;
-	case 1:		/* Run count received.... */
-		while (context->compr.RunCount > 0) {
-			BytesToCopy =
-			    context->LineWidth - context->LineDone;
-			if (BytesToCopy > context->compr.RunCount)
-				BytesToCopy = context->compr.RunCount;
-			if (BytesToCopy > 0) {
-				memset(context->LineBuf +
-				       context->LineDone, (*buf)[0],
-				       BytesToCopy);
+			if (context->buff[1] == 0) {	/* End of line */
+				if (context->compr.linebuffdone) {
+					guchar *tmp = context->buff;
+					context->buff = context->compr.linebuff;
+					OneLine (context);
+					context->buff = tmp;
 
-				context->compr.RunCount -= BytesToCopy;
-				context->LineDone += BytesToCopy;
+					context->compr.linebuffdone = 0;
+				}
+			} else if (context->buff[1] == 1) {	/* End of image */
+				if (context->compr.linebuffdone) {
+					guchar *tmp = context->buff;
+					context->buff = context->compr.linebuff;
+					OneLine (context);
+					context->buff = tmp;
+				}
+
+				context->compr.phase = 2;
+			} else if (context->buff[1] == 2)	/* Cursor displacement */
+				;	/* not implemented */
+			else {
+				context->compr.phase = 1;
+				context->compr.RunCount = context->buff[1];
+				if (context->Type == 8)
+					context->compr.RunCount *= 2;
+				context->BufferSize = (context->compr.RunCount + 3) / 4 * 2;
+				context->buff = g_realloc (context->buff, context->BufferSize);
 			}
-			if ((context->LineDone >= context->LineWidth)
-			    && (context->LineWidth > 0)) {
-				OneLine(context);
+		}
+		context->BufferDone = 0;
+		break;
+	case 1:
+		pos = 0;
+		while (pos < context->compr.RunCount) {
+			count = context->compr.linebuffsize - context->compr.linebuffdone;
+			if (count > context->compr.RunCount)
+				count = context->compr.RunCount;
+
+			if ((context->compr.linebuffdone & 1) || (pos & 1)) {
+				gint i, newval;
+				guchar *ptr;
+				for (i = 0; i < count; i++) {
+					ptr = context->compr.linebuff + (i +
+					      context->compr.linebuffdone) / 2;
+					newval = *(context->buff + (pos + i) / 2) & (0xf0 >> (((pos + i) % 2) * 4));
+					if (((pos + i) % 2) ^ ((context->compr.linebuffdone + i) % 2)) {
+						if ((pos + i) % 2)
+							newval <<= 4;
+						else
+							newval >>= 4;
+					}
+					*ptr = (*ptr & (0xf << (((i + context->compr.linebuffdone) % 2) * 4))) | newval;
+				}
+			} else {
+				memmove (context->compr.linebuff +
+					 context->compr.linebuffdone / 2,
+					 context->buff + pos / 2,
+					 (count + 1) / 2);
+			}
+			pos += count;
+			context->compr.linebuffdone += count;
+			if (context->compr.linebuffdone == context->compr.linebuffsize) {
+				guchar *tmp = context->buff;
+				context->buff = context->compr.linebuff;
+				OneLine (context);
+				context->buff = tmp;
+
+				context->compr.linebuffdone = 0;
 			}
 		}
 		context->compr.phase = 0;
-		(*buf)++;
-		(*size)--;
+		context->BufferSize = 2;
+		context->buff = g_realloc (context->buff, context->BufferSize);
+		context->BufferDone = 0;
 		break;
-	case 2:		/* Escape received */
-		if ((*buf)[0] == 0) {	/* End of line */
-			context->compr.phase = 0;
-			if (context->LineDone > 0)
-				OneLine(context);
-		} else if ((*buf)[0] == 1) {	/* End of image */
-			OneLine(context);
-			context->compr.phase = 6;
-			(*size) = 0;
-			break;
-		} else if ((*buf)[0] == 2) {	/* Cursor displacement */
-			context->compr.phase = 4;
-		} else {
-			context->compr.phase = 3;
-			context->compr.RunCount = (*buf)[0];
-			if (context->compr.RunCount & 1)
-				context->compr.phase = 7;
-
-		}
-		(*buf)++;
-		(*size)--;
-
-		break;
-	case 3:
-		while ((context->compr.RunCount > 0)
-		       && (*size > 0)) {
-			BytesToCopy =
-			    context->LineWidth - context->LineDone;
-			if (BytesToCopy > context->compr.RunCount)
-				BytesToCopy = context->compr.RunCount;
-			if (BytesToCopy > *size)
-				BytesToCopy = *size;
-
-			if (BytesToCopy > 0) {
-				memcpy(context->LineBuf +
-				       context->LineDone, *buf,
-				       BytesToCopy);
-
-				context->compr.RunCount -= BytesToCopy;
-				(*buf) += BytesToCopy;
-				(*size) -= BytesToCopy;
-				context->LineDone += BytesToCopy;
-			}
-			if ((context->LineDone >= context->LineWidth)
-			    && (context->LineWidth > 0))
-				OneLine(context);
-		}
-		if (context->compr.RunCount <= 0)
-			context->compr.phase = 0;
-
-		break;
-	case 4:
-		context->compr.phase = 5;
-		context->compr.XDelta = (*buf)[0];
-		(*buf)++;
-		(*size)--;
-		break;
-	case 5:
-		context->compr.phase = 0;
-		context->compr.YDelta = (*buf)[0];
-		g_assert(0);	/* No implementatio of this yet */
-		/* If this happens, please email me (arjan@fenrus.demon.nl)
-		   the image concerned. */
-		(*buf)++;
-		(*size)--;
-		break;
-	case 6:
-		(*size) = 0;
-		break;
-	case 7:		/* Odd raw run */
-		while ((context->compr.RunCount > 0) && (*size > 0)) {
-			BytesToCopy =
-			    context->LineWidth - context->LineDone;
-			if (BytesToCopy > context->compr.RunCount)
-				BytesToCopy = context->compr.RunCount;
-			if (BytesToCopy > *size)
-				BytesToCopy = *size;
-
-			if (BytesToCopy > 0) {
-				memcpy(context->LineBuf +
-				       context->LineDone, *buf,
-				       BytesToCopy);
-
-				context->compr.RunCount -= BytesToCopy;
-				(*buf) += BytesToCopy;
-				(*size) -= BytesToCopy;
-				context->LineDone += BytesToCopy;
-			}
-			if ((context->LineDone >= context->LineWidth)
-			    && (context->LineWidth > 0))
-				OneLine(context);
-		}
-		if (context->compr.RunCount <= 0)
-			context->compr.phase = 8;
-
-		break;
-	case 8:		/* Eat dummy byte; */
-		(*buf)++;
-		(*size)--;
-		context->compr.phase = 0;
+	case 2:
+		context->BufferDone = 0;
 		break;
 	}
 }
@@ -699,62 +954,63 @@ void DoCompressedByte(struct bmp_progressive_state *context, guchar ** buf,
  *
  * append image data onto inrecrementally built output image
  */
-gboolean gdk_pixbuf__bmp_image_load_increment(gpointer data, guchar * buf,
-					      guint size)
+gboolean
+gdk_pixbuf__bmp_image_load_increment (gpointer data, guchar *buf, guint size)
 {
-	struct bmp_progressive_state *context =
-	    (struct bmp_progressive_state *) data;
+	struct bmp_progressive_state *context = (struct bmp_progressive_state *) data;
 
 	gint BytesToCopy;
 
+	if (context->read_state == READ_STATE_DONE)
+		return TRUE;
+	else if (context->read_state == READ_STATE_ERROR)
+		return FALSE;
+
 	while (size > 0) {
-		g_assert(context->LineDone >= 0);
-		if (context->HeaderDone < context->HeaderSize) {	/* We still 
+		if (context->BufferDone < context->BufferSize) {	/* We still
 									   have headerbytes to do */
 			BytesToCopy =
-			    context->HeaderSize - context->HeaderDone;
+			    context->BufferSize - context->BufferDone;
 			if (BytesToCopy > size)
 				BytesToCopy = size;
 
-			memmove(context->HeaderBuf + context->HeaderDone,
+			memmove(context->buff + context->BufferDone,
 				buf, BytesToCopy);
 
 			size -= BytesToCopy;
 			buf += BytesToCopy;
-			context->HeaderDone += BytesToCopy;
+			context->BufferDone += BytesToCopy;
 
-		} else if (context->Compressed) {
-			/* Compression is done 1 byte at a time for now */
-			DoCompressedByte(context, &buf, &size);
-
-		} else {
-			/* Uncompressed pixeldata */
-			BytesToCopy =
-			    context->LineWidth - context->LineDone;
-			if (BytesToCopy > size)
-				BytesToCopy = size;
-
-			if (BytesToCopy > 0) {
-				memmove(context->LineBuf +
-					context->LineDone, buf,
-					BytesToCopy);
-
-				size -= BytesToCopy;
-				buf += BytesToCopy;
-				context->LineDone += BytesToCopy;
-			}
-			if ((context->LineDone >= context->LineWidth)
-			    && (context->LineWidth > 0))
-				OneLine(context);
-
-
+			if (context->BufferDone != context->BufferSize)
+				break;
 		}
 
-		if (context->HeaderDone >= 14 + 40)
-			DecodeHeader(context->HeaderBuf,
-				     context->HeaderBuf + 14, context);
+		switch (context->read_state) {
+		case READ_STATE_HEADERS:
+			if (!DecodeHeader (context->buff, context->buff + 14, context))
+				return FALSE;
 
+			break;
 
+		case READ_STATE_PALETTE:
+			DecodeColormap (context->buff, context);
+			break;
+
+		case READ_STATE_BITMASKS:
+			decode_bitmasks (context, context->buff);
+			break;
+
+		case READ_STATE_DATA:
+			if (context->Compressed == BI_RGB || context->Compressed == BI_BITFIELDS)
+				OneLine (context);
+			else
+				DoCompressed (context);
+
+			break;
+
+		default:
+			g_assert_not_reached ();
+		}
 	}
 
 	return TRUE;

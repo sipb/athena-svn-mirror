@@ -1,3 +1,64 @@
+Version 0.16.0 "Deadly Yellow Snow"
+-----------------------------------
+
+* Merged fixes in GTK+ 2.0 to the pixops directory.  This should fix
+  some memory overruns in the scaling/compositing code (Merge by
+  Federico; fixes by Owen Taylor, Michael Hore, Sven Neumann, 
+  Darin Adler).
+
+* Merged the endianness conversion fixes from the GDK version into the
+  Xlib version; oops (Federico).
+
+* Minor documentation improvements (Federico).
+
+Version 0.15 (Ben Bitdiddle Got Confused)
+-----------------------------------------
+
+* Fixed endianness conversion in the 16-bit gdk-pixbuf-drawable
+  functions (Federico).
+
+* Minor fixes for the IBM/AIX compiler (Christian Schaller).
+
+* The image loaders are now linked against the pixbuf and GTK+
+  libraries so that the Python bindings work (Johan Dahlin).
+
+Version 0.14 "Camembert" (2001/12/13)
+--------------------------------
+
+* Backported the BMP loader from GTK+ 1.3 (Federico).
+
+* Added support for BI_BITFIELDS coding to the BMP loader [Ximian bug
+  #12125] (Federico).
+
+Version 0.13 "Roquefort" (2001/10/25)
+-------------------------------------
+
+* Fixed stupid bug in the ICO loader.  ICO pixbufs should always have
+  an alpha channel [Ximian bug #11224].  (Federico)
+
+* Slight tweaks to the documentation Makefile.  (Federico)
+
+Version 0.12 "Wensleydale"
+--------------------------
+
+* Added support for 16-bpp BMPs and ICOs (Federico).
+
+* Added support for 32-bpp ICOs (Federico).
+
+* Use the correct visual and colormap for the pixbuf-demo widgets (Jan Böhm).
+
+* Install the headers in a versioned directory so that they don't
+  collide with the GNOME 2 platform (Havoc).
+
+Version 0.11 "Infrequent as a Moon of Green Cheese"
+---------------------------------------------------
+
+* Made the GdkPixbufLoader headers usable by C++ compilers by
+  replacing "private" with "priv" (Dom Lachowicz, Diego González).
+
+* Replaced the documentation Makefile with one similar to that in GTK+
+  HEAD (Federico, but Owen deserves all the credit).
+
 Version 0.10.1 "Dance the ghost with me but don't step on my toes"
 ------------------------------------------------------------------
 

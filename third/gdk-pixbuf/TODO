@@ -27,12 +27,6 @@ Federico Mena-Quintero (federico@helixcode.com).
 
 * The pixops functions could use better sanity checks.
 
-* The XPM loader currently needs a connection to an X display so that
-  it can XParseColor().  We could use an X color spec parser like the
-  one in libgr/netpbm; this parses color specifications without going
-  through X.  It has to do some ugly stuff to find rgb.txt; we want
-  something nicer than the hack they have there.
-
 * We could use some functions for doing full affine transformations,
   without using libart.
 

@@ -153,14 +153,8 @@ void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#GDK-PIXBUF-XLIB-RENDER-THRESHOLD-ALPHA"
 >gdk_pixbuf_xlib_render_threshold_alpha</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> bitmap,
+                                            (GdkPixbuf *pixbuf,
+                                             Pixmap bitmap,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -172,18 +166,9 @@ void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#GDK-PIXBUF-XLIB-RENDER-TO-DRAWABLE"
 >gdk_pixbuf_xlib_render_to_drawable</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+                                            (GdkPixbuf *pixbuf,
+                                             Drawable drawable,
+                                             GC gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -200,14 +185,8 @@ void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#GDK-PIXBUF-XLIB-RENDER-TO-DRAWABLE-ALPHA"
 >gdk_pixbuf_xlib_render_to_drawable_alpha</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
+                                            (GdkPixbuf *pixbuf,
+                                             Drawable drawable,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -229,18 +208,9 @@ void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html#GDK-PIXBUF-XLIB-RENDER-PIXMAP-AND-MASK"
 >gdk_pixbuf_xlib_render_pixmap_and_mask</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> *pixmap_return,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> *mask_return,
+                                            (GdkPixbuf *pixbuf,
+                                             Pixmap *pixmap_return,
+                                             Pixmap *mask_return,
                                              int alpha_threshold);</PRE
 ></TD
 ></TR
@@ -296,14 +266,8 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_xlib_render_threshold_alpha
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> bitmap,
+                                            (GdkPixbuf *pixbuf,
+                                             Pixmap bitmap,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -512,18 +476,9 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_xlib_render_to_drawable
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+                                            (GdkPixbuf *pixbuf,
+                                             Drawable drawable,
+                                             GC gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -796,14 +751,8 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_xlib_render_to_drawable_alpha
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
+                                            (GdkPixbuf *pixbuf,
+                                             Drawable drawable,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -828,10 +777,7 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 >Renders a rectangular portion of a pixbuf to a drawable.  This is done using
 XlibRGB, so the specified drawable must have the XlibRGB visual and colormap.</P
 ><P
->When used with <GTKDOCLINK
-HREF="GDK-PIXBUF-ALPHA-BILEVEL"
->GDK_PIXBUF_ALPHA_BILEVEL</GTKDOCLINK
->, this function has to create a bitmap
+>When used with GDK_PIXBUF_ALPHA_BILEVEL, this function has to create a bitmap
 out of the thresholded alpha channel of the image and, it has to set this
 bitmap as the clipping mask for the GC used for drawing.  This can be a
 significant performance penalty depending on the size and the complexity of
@@ -1110,18 +1056,9 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gdk_pixbuf_xlib_render_pixmap_and_mask
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> *pixmap_return,
-                                             <GTKDOCLINK
-HREF="PIXMAP"
->Pixmap</GTKDOCLINK
-> *mask_return,
+                                            (GdkPixbuf *pixbuf,
+                                             Pixmap *pixmap_return,
+                                             Pixmap *mask_return,
                                              int alpha_threshold);</PRE
 ></TD
 ></TR

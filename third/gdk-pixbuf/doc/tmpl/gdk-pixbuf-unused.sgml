@@ -1,111 +1,22 @@
-<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:See_Also ##### -->
-  <para>
-    GdkRGB
-  </para>
-
-
-<!-- ##### FUNCTION gdk_pixbuf_load_module ##### -->
+<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:Long_Description ##### -->
 <para>
 
 </para>
 
-@image_module: 
+
+<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:See_Also ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:Short_Description ##### -->
 
 
 
-<!-- ##### SECTION ./tmpl/xlib-rendering.sgml:Long_Description ##### -->
-  <para>
-    The &gdk-pixbuf; Xlib library provides several convenience
-    functions to render pixbufs to X drawables.  It uses XlibRGB to
-    render the image data.
-  </para>
+<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:Title ##### -->
+gdk-pixbuf-io
 
-  <para>
-    These functions are analogous to those for the Gdk version of
-    &gdk-pixbuf;.
-  </para>
-
-
-<!-- ##### SECTION ./tmpl/xlib-init.sgml:Title ##### -->
-&gdk-pixbuf; Xlib initialization
-
-
-<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:See_Also ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:Short_Description ##### -->
-Getting parts of an X drawable's image data into a pixbuf.
-
-
-<!-- ##### STRUCT GdkPixbufModule ##### -->
-<para>
-
-</para>
-
-@module_name: 
-@format_check: 
-@module: 
-@load: 
-@load_xpm_data: 
-@begin_load: 
-@stop_load: 
-@load_increment: 
-
-<!-- ##### STRUCT GdkPixbufAnimation ##### -->
-  <para>
-    This structure describes an animation, which is represented as a
-    list of #GdkPixbufFrame structures.
-  </para>
-
-@ref_count: 
-@n_frames: 
-@frames: 
-@width: 
-@height: 
-
-<!-- ##### SECTION ./tmpl/xlib-init.sgml:Short_Description ##### -->
-Initializing the &gdk-pixbuf; Xlib library.
-
-
-<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Long_Description ##### -->
-  <para>
-    The XlibRGB set of functions is a port of the GdkRGB library to
-    use plain Xlib and X drawables.  You can use these functions to
-    render RGB buffers into drawables very quickly with high-quality
-    dithering.
-  </para>
-
-
-<!-- ##### ARG GnomeCanvasPixbuf:x_set ##### -->
-  <para>
-    Determines whether the <link
-    linkend="GnomeCanvasPixbuf--x">x</link> argument is used to
-    translate the pixbuf from its logical origin in item-relative
-    coordinates.
-  </para>
-
-
-<!-- ##### USER_FUNCTION ModulePreparedNotifyFunc ##### -->
-<para>
-
-</para>
-
-@pixbuf: 
-@user_data: 
-
-<!-- ##### FUNCTION gdk_pixbuf_get_module ##### -->
-<para>
-
-</para>
-
-@buffer: 
-@size: 
-@Returns: 
 
 <!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:Long_Description ##### -->
   <para>
@@ -122,44 +33,18 @@ Initializing the &gdk-pixbuf; Xlib library.
   </para>
 
 
-<!-- ##### SECTION ./tmpl/xlib-init.sgml:See_Also ##### -->
-  <para>
-    XlibRGB
-  </para>
-
-
-<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:See_Also ##### -->
+<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:See_Also ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### FUNCTION gdk_pixbuf_new_from_art_pixbuf ##### -->
-<para>
-
-</para>
-
-@art_pixbuf: 
-@Returns: 
-
-<!-- ##### SECTION ./tmpl/xlib-rendering.sgml:Title ##### -->
-Xlib Rendering
+<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:Short_Description ##### -->
+Getting parts of an X drawable's image data into a pixbuf.
 
 
-<!-- ##### ARG GnomeCanvasPixbuf:height_pixels ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Short_Description ##### -->
-Functions for rendering RGB buffers to X drawables.
-
-
-<!-- ##### ARG GnomeCanvasPixbuf:y_pixels ##### -->
-<para>
-
-</para>
+<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:Title ##### -->
+X Drawables to Pixbufs
 
 
 <!-- ##### SECTION ./tmpl/xlib-init.sgml:Long_Description ##### -->
@@ -176,13 +61,34 @@ Functions for rendering RGB buffers to X drawables.
   </para>
 
 
+<!-- ##### SECTION ./tmpl/xlib-init.sgml:See_Also ##### -->
+  <para>
+    XlibRGB
+  </para>
+
+
+<!-- ##### SECTION ./tmpl/xlib-init.sgml:Short_Description ##### -->
+Initializing the &gdk-pixbuf; Xlib library.
+
+
+<!-- ##### SECTION ./tmpl/xlib-init.sgml:Title ##### -->
+&gdk-pixbuf; Xlib initialization
+
+
+<!-- ##### SECTION ./tmpl/xlib-rendering.sgml:Long_Description ##### -->
+  <para>
+    The &gdk-pixbuf; Xlib library provides several convenience
+    functions to render pixbufs to X drawables.  It uses XlibRGB to
+    render the image data.
+  </para>
+
+  <para>
+    These functions are analogous to those for the Gdk version of
+    &gdk-pixbuf;.
+  </para>
+
+
 <!-- ##### SECTION ./tmpl/xlib-rendering.sgml:See_Also ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:Long_Description ##### -->
 <para>
 
 </para>
@@ -192,31 +98,31 @@ Functions for rendering RGB buffers to X drawables.
 Rendering a pixbuf to an X drawable.
 
 
-<!-- ##### USER_FUNCTION ModuleUpdatedNotifyFunc ##### -->
-<para>
-
-</para>
-
-@pixbuf: 
-@user_data: 
-@x: 
-@y: 
-@width: 
-@height: 
-
-<!-- ##### SECTION ./tmpl/gdk-pixbuf-io.sgml:Title ##### -->
-gdk-pixbuf-io
+<!-- ##### SECTION ./tmpl/xlib-rendering.sgml:Title ##### -->
+Xlib Rendering
 
 
-<!-- ##### ARG GnomeCanvasPixbuf:y_set ##### -->
+<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Long_Description ##### -->
   <para>
-    Determines whether the <link
-    linkend="GnomeCanvasPixbuf--y">y</link> argument is used to
-    translate the pixbuf from its logical origin in item-relative
-    coordinates.  Works in the same way as the <link
-    linkend="GnomeCanvasPixbuf--x-set">x_set</link> argument.  The
-    default is %FALSE.
+    The XlibRGB set of functions is a port of the GdkRGB library to
+    use plain Xlib and X drawables.  You can use these functions to
+    render RGB buffers into drawables very quickly with high-quality
+    dithering.
   </para>
+
+
+<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:See_Also ##### -->
+  <para>
+    GdkRGB
+  </para>
+
+
+<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Short_Description ##### -->
+Functions for rendering RGB buffers to X drawables.
+
+
+<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Title ##### -->
+XlibRGB
 
 
 <!-- ##### STRUCT GdkPixbuf ##### -->
@@ -241,25 +147,17 @@ gdk-pixbuf-io
 @last_unref_fn_data: 
 @has_alpha: 
 
-<!-- ##### ARG GnomeCanvasPixbuf:x_pixels ##### -->
-<para>
+<!-- ##### STRUCT GdkPixbufAnimation ##### -->
+  <para>
+    This structure describes an animation, which is represented as a
+    list of #GdkPixbufFrame structures.
+  </para>
 
-</para>
-
-
-<!-- ##### FUNCTION gdk_pixbuf_get_format ##### -->
-<para>
-
-</para>
-
-@pixbuf: 
-@Returns: 
-
-<!-- ##### ARG GnomeCanvasPixbuf:width_pixels ##### -->
-<para>
-
-</para>
-
+@ref_count: 
+@n_frames: 
+@frames: 
+@width: 
+@height: 
 
 <!-- ##### STRUCT GdkPixbufFrame ##### -->
   <para>
@@ -275,11 +173,113 @@ gdk-pixbuf-io
 @delay_time: 
 @action: 
 
-<!-- ##### SECTION ./tmpl/xlib-from-drawables.sgml:Title ##### -->
-X Drawables to Pixbufs
+<!-- ##### STRUCT GdkPixbufModule ##### -->
+<para>
+
+</para>
+
+@module_name: 
+@format_check: 
+@module: 
+@load: 
+@load_xpm_data: 
+@begin_load: 
+@stop_load: 
+@load_increment: 
+
+<!-- ##### ARG GnomeCanvasPixbuf:height-pixels ##### -->
+<para>
+
+</para>
 
 
-<!-- ##### SECTION ./tmpl/xlib-rgb.sgml:Title ##### -->
-XlibRGB
+<!-- ##### ARG GnomeCanvasPixbuf:width-pixels ##### -->
+<para>
 
+</para>
+
+
+<!-- ##### ARG GnomeCanvasPixbuf:x-pixels ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GnomeCanvasPixbuf:x-set ##### -->
+  <para>
+    Determines whether the <link
+    linkend="GnomeCanvasPixbuf--x">x</link> argument is used to
+    translate the pixbuf from its logical origin in item-relative
+    coordinates.
+  </para>
+
+
+<!-- ##### ARG GnomeCanvasPixbuf:y-pixels ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GnomeCanvasPixbuf:y-set ##### -->
+  <para>
+    Determines whether the <link
+    linkend="GnomeCanvasPixbuf--y">y</link> argument is used to
+    translate the pixbuf from its logical origin in item-relative
+    coordinates.  Works in the same way as the <link
+    linkend="GnomeCanvasPixbuf--x-set">x_set</link> argument.  The
+    default is %FALSE.
+  </para>
+
+
+<!-- ##### USER_FUNCTION ModulePreparedNotifyFunc ##### -->
+<para>
+
+</para>
+
+@pixbuf: 
+@user_data: 
+
+<!-- ##### USER_FUNCTION ModuleUpdatedNotifyFunc ##### -->
+<para>
+
+</para>
+
+@pixbuf: 
+@user_data: 
+@x: 
+@y: 
+@width: 
+@height: 
+
+<!-- ##### FUNCTION gdk_pixbuf_get_format ##### -->
+<para>
+
+</para>
+
+@pixbuf: 
+@Returns: 
+
+<!-- ##### FUNCTION gdk_pixbuf_get_module ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gdk_pixbuf_load_module ##### -->
+<para>
+
+</para>
+
+@image_module: 
+
+<!-- ##### FUNCTION gdk_pixbuf_new_from_art_pixbuf ##### -->
+<para>
+
+</para>
+
+@art_pixbuf: 
+@Returns: 
 

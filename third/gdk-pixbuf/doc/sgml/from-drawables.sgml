@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-from-drawables" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-from-drawables">
 <refmeta>
 <refentrytitle>Drawables to Pixbufs</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -66,17 +66,17 @@ If the drawable is a window, the <parameter>cmap</parameter> argument will be ig
 window's own colormap will be used instead.
 </para>
 <para>
-If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL">NULL</link>, then this function will
+If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL-CAPS">NULL</link>, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <parameter>width</parameter> and <parameter>height</parameter> arguments.  In this case, the <parameter>dest_x</parameter> and
 <parameter>dest_y</parameter> arguments must be specified as 0, otherwise the function will return
-<link linkend="NULL">NULL</link>.  If the specified destination pixbuf is not NULL and it contains alpha
+<link linkend="NULL-CAPS">NULL</link>.  If the specified destination pixbuf is not NULL and it contains alpha
 information, then the filled pixels will be set to full opacity.
 </para>
 <para>
 If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return <link linkend="NULL">NULL</link>.
+return <link linkend="NULL-CAPS">NULL</link>.
 </para>
 <para>
 If the specified drawable is a window, then it must be viewable, i.e. all of
@@ -88,7 +88,7 @@ inferior windows of a different depth than that of the source window will also
 be undefined.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,8 @@ be ignored.
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The same pixbuf as <parameter>dest</parameter> if it was non-NULL, or a newly-created
 pixbuf with a reference count of 1 if no destination pixbuf was specified; in
 the latter case, NULL will be returned if not enough memory could be
-allocated for the pixbuf to be created.
+allocated for the pixbuf to be created or if the image data could not be
+retrieved from the drawable.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 
