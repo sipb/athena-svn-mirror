@@ -18,8 +18,12 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.3 1997-11-15 00:04:20 danw Exp $
+ * $Id: sshd.c,v 1.4 1997-11-19 20:44:45 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1997/11/15 00:04:20  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
  * Revision 1.2  1997/11/12 21:16:18  danw
  * Athena-login changes (including some krb4 stuff)
  *
@@ -450,6 +454,7 @@ char *ticket = "none\0";
 
 #include <al.h>
 extern int setpag(), ktc_ForgetAllTokens();
+extern char *tkt_string();
 void try_afscall(int (*func)(void));
 void al_cleanup(void);
 int *al_warnings = NULL;
@@ -3258,6 +3263,15 @@ void do_child(const char *command, struct passwd *pw, const char *term,
       close(i);
     }
 
+#ifdef KERBEROS
+  /* Chown ticket files to user */
+  if (ticket && strcmp(ticket, "none"))
+    {
+      chown(ticket + 5, user_uid, user_gid);
+      chown(tkt_string(), user_uid, user_gid);
+    }
+#endif
+
   /* At this point, this process should no longer be holding any confidential
      information, as changing uid below will permit the user to attach with
      a debugger on some machines. */
@@ -3396,7 +3410,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   if (ticket)
     {
       child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
-      child_set_env(&env, &envsize, "KRBTKFILE", (char *)tkt_string());
+      child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
     }
 #endif /* KRB5 */
 #endif /* KERBEROS */
@@ -3704,14 +3718,18 @@ char *username;
 
 void try_afscall(int (*func)(void))
 {
+#ifdef SIGSYS
   struct sigaction sa, osa;
 
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = 0;
   sa.sa_handler = SIG_IGN;
   sigaction(SIGSYS, &sa, &osa);
+#endif
   func();
+#ifdef SIGSYS
   sigaction(SIGSYS, &osa, NULL);
+#endif
 }
 
 void al_cleanup(void)

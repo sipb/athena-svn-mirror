@@ -9,8 +9,12 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.3 1997-11-15 00:04:12 danw Exp $
+ * $Id: auth-kerberos.c,v 1.4 1997-11-19 20:44:42 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1997/11/15 00:04:12  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
  * Revision 1.2  1997/11/12 21:16:08  danw
  * Athena-login changes (including some krb4 stuff)
  *
@@ -241,9 +245,6 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_cc_store_cred(ssh_context, ccache, *creds))
     goto errout;
   
-  if (retval = chown(ccname+5, pwd->pw_uid, -1))
-    goto errout2;
-  
   ticket = xmalloc(strlen(ccname + 5) + 1);
   (void) sprintf(ticket, "%s", ccname+5);
   
@@ -277,9 +278,6 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
 				    &(v4creds.ticket_st), v4creds.issue_date))
     goto errout2;
 
-  if (retval = chown(tktname+10, pwd->pw_uid, -1))
-    goto errout3;
-  
   /* Successful */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();

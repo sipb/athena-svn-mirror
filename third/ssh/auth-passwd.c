@@ -15,8 +15,12 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.3 1997-11-15 00:04:13 danw Exp $
+ * $Id: auth-passwd.c,v 1.4 1997-11-19 20:44:43 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1997/11/15 00:04:13  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
  * Revision 1.2  1997/11/12 21:16:09  danw
  * Athena-login changes (including some krb4 stuff)
  *
@@ -557,7 +561,6 @@ int auth_password(const char *server_user, const char *password)
             /* get_name pulls out just the name not the
                type */
 	      strcpy(ccname + 5, krb5_cc_get_name(ssh_context, ccache));
-	      (void) chown(ccname + 5, pw->pw_uid, pw->pw_gid);
 	      
 	      /* If tgt was passed, destroy it */
 	      if (ticket)
@@ -594,7 +597,6 @@ int auth_password(const char *server_user, const char *password)
 				  password);
 	      if (status)
 		goto errout;
-	      chown(krbtkfile+10, pw->pw_uid, pw->pw_gid);
 
 	      havecred = 1;
 	      atexit(krb_cleanup);
