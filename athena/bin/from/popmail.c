@@ -1,13 +1,13 @@
 /* 
- * $Id: popmail.c,v 1.1 1991-05-29 10:04:37 akajerry Exp $
+ * $Id: popmail.c,v 1.2 1991-07-01 15:13:47 epeisach Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
- * $Author: akajerry $
+ * $Author: epeisach $
  *
  */
 
-#if !defined(lint) && !defined(SABER) && defined(RCS_HDRS)
-static char *rcsid = "$Id: popmail.c,v 1.1 1991-05-29 10:04:37 akajerry Exp $";
-#endif /* lint || SABER || RCS_HDRS */
+#if !defined(lint) && !defined(SABER)
+static char *rcsid = "$Id: popmail.c,v 1.2 1991-07-01 15:13:47 epeisach Exp $";
+#endif /* lint || SABER */
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -48,7 +48,7 @@ char *host;
     KTEXT ticket = (KTEXT)NULL;
     int rem;
     long authopts;
-#endif KPOP
+#endif
     char *get_errmsg();
 
     hp = gethostbyname(host);
@@ -58,35 +58,27 @@ char *host;
     }
 
 #ifdef KPOP
-#ifdef ATHENA_COMPAT
-    sp = getservbyname("knetd", "tcp");
-#else
     sp = getservbyname("kpop", "tcp");
-#endif
     if (sp == 0) {
-#ifdef ATHENA_COMPAT
-	(void) strcpy(Errmsg, "tcp/knetd: unknown service");
-#else
 	(void) strcpy(Errmsg, "tcp/kpop: unknown service");
-#endif
 	return(NOTOK);
     }
-#else !KPOP
+#else
     sp = getservbyname("pop", "tcp");
     if (sp == 0) {
 	(void) strcpy(Errmsg, "tcp/pop: unknown service");
 	return(NOTOK);
     }
-#endif KPOP
+#endif
 
     sin.sin_family = hp->h_addrtype;
     bcopy(hp->h_addr, (char *)&sin.sin_addr, hp->h_length);
     sin.sin_port = sp->s_port;
 #ifdef KPOP
     s = socket(AF_INET, SOCK_STREAM, 0);
-#else !KPOP
+#else
     s = rresvport(&lport);
-#endif KPOP
+#endif
     if (s < 0) {
 	(void) sprintf(Errmsg, "error creating socket: %s", get_errmsg());
 	return(NOTOK);
@@ -99,18 +91,13 @@ char *host;
     }
 #ifdef KPOP
     ticket = (KTEXT)malloc( sizeof(KTEXT_ST) );
+    if (ticket == NULL)
+      {
+	fprintf (stderr, "from: out of memory");
+	exit (1);
+      }
     rem=KSUCCESS;
-#ifdef ATHENA_COMPAT
-    authopts = KOPT_DO_OLDSTYLE;
-    rem = krb_sendsvc(s,"pop");
-    if (rem != KSUCCESS) {
-	(void) sprintf(Errmsg, "kerberos error: %s", krb_err_txt[rem]);
-	(void) close(s);
-	return(NOTOK);
-    }
-#else
     authopts = 0L;
-#endif
     rem = krb_sendauth(authopts, s, ticket, "pop", hp->h_name, (char *)0,
 		       0, (MSG_DAT *) 0, (CREDENTIALS *) 0,
 		       (bit_64 *) 0, (struct sockaddr_in *)0,
@@ -120,12 +107,12 @@ char *host;
 	(void) close(s);
 	return(NOTOK);
     }
-#endif KPOP
+#endif
 
     sfi = fdopen(s, "r");
     sfo = fdopen(s, "w");
     if (sfi == NULL || sfo == NULL) {
-	(void) sprintf(Errmsg, "error in fdopen: %s", get_errmsg());
+	(void) sprintf(Errmsg, "error in fdopen\n");
 	(void) close(s);
 	return(NOTOK);
     }
@@ -219,9 +206,9 @@ FILE *f;
 	return (DONE);
     }
 
-    *p = NULL;
-    if (*--p == '\n') *p = NULL;
-    if (*--p == '\r') *p = NULL;
+    *p = '\0';
+    if (*--p == '\n') *p = '\0';
+    if (*--p == '\r') *p = '\0';
     return(OK);
 }
 
@@ -232,7 +219,7 @@ FILE *f;
 {
     if (getline(buf, n, f) != OK) return (NOTOK);
     if (*buf == '.') {
-	if (*(buf+1) == NULL) {
+	if (*(buf+1) == '\0') {
 	    return (DONE);
 	} else {
 	    (void) strcpy(buf, buf+1);
