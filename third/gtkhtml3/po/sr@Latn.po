@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
-"PO-Revision-Date: 2003-05-22 00:50+0200\n"
+"POT-Creation-Date: 2003-07-27 00:09+0200\n"
+"PO-Revision-Date: 2003-07-27 00:08+0200\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgid "<None>"
 msgstr "<Ništa>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:541
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
@@ -804,9 +804,8 @@ msgid "_Wink"
 msgstr "_Namiguje"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
-#, fuzzy
 msgid "_Wrap Lines"
-msgstr "Prelom reda:"
+msgstr "Prelomi _redove"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:153
 msgid "etc..."
@@ -830,7 +829,7 @@ msgstr "Plavo mastilo"
 msgid "Rectangles"
 msgstr "Pravougaonici"
 
-#: components/html-editor/body.c:275 src/gtkhtml.c:2555
+#: components/html-editor/body.c:275 src/gtkhtml.c:2558
 msgid "Document Title"
 msgstr "Naslov dokumenta"
 
@@ -863,7 +862,6 @@ msgid "Background"
 msgstr "Pozadina"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Brza smeđa lisica skače preko lenjeg psa."
@@ -1222,7 +1220,19 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place your "
 "comment here]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr ""
+"Ovo je probni tekst, osmišljen radi prikazivanja kako bi tekst išao oko ove "
+"slike ako ubacite sliku u vašu poruku."
+
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "Slika nije izabrana"
+
+#: components/html-editor/image.c:701
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
@@ -1565,71 +1575,71 @@ msgstr "Više uvlači pasus"
 msgid "Sample"
 msgstr "Primer"
 
-#: src/gtkhtml.c:2548
+#: src/gtkhtml.c:2551
 msgid "Editable"
 msgstr "Izmenjiv"
 
-#: src/gtkhtml.c:2549
+#: src/gtkhtml.c:2552
 msgid "Whether the html can be edited"
 msgstr "Da li se HTML može menjati"
 
-#: src/gtkhtml.c:2556
+#: src/gtkhtml.c:2559
 msgid "The title of the current document"
 msgstr "Naslov tekućeg dokumenta"
 
-#: src/gtkhtml.c:2562
+#: src/gtkhtml.c:2565
 msgid "Document Base"
 msgstr "Osnova dokumenta"
 
-#: src/gtkhtml.c:2563
+#: src/gtkhtml.c:2566
 msgid "The base URL for relative references"
 msgstr "Osnovna adresa za relativne reference"
 
-#: src/gtkhtml.c:2569
+#: src/gtkhtml.c:2572
 msgid "Target Base"
 msgstr "Ciljna osnova"
 
-#: src/gtkhtml.c:2570
+#: src/gtkhtml.c:2573
 msgid "The base URL of the targe frame"
 msgstr "Osnovna adresa za ciljni okvir"
 
-#: src/gtkhtml.c:2579
+#: src/gtkhtml.c:2582
 msgid "Fixed Width Font"
 msgstr "Pismo utvrđene širine"
 
-#: src/gtkhtml.c:2580
+#: src/gtkhtml.c:2583
 msgid "The Monospace font to use for typewriter text"
 msgstr "Pismo koje treba koristiti za kucani tekst"
 
-#: src/gtkhtml.c:2586
+#: src/gtkhtml.c:2589
 msgid "New Link Color"
 msgstr "Boja novih veza"
 
-#: src/gtkhtml.c:2587
+#: src/gtkhtml.c:2590
 msgid "The color of new link elements"
 msgstr "Boja novih veza"
 
-#: src/gtkhtml.c:2592
+#: src/gtkhtml.c:2595
 msgid "Visited Link Color"
 msgstr "Boja posećenih veza"
 
-#: src/gtkhtml.c:2593
+#: src/gtkhtml.c:2596
 msgid "The color of visited link elements"
 msgstr "Boja posećenih veza"
 
-#: src/gtkhtml.c:2598
+#: src/gtkhtml.c:2601
 msgid "Active Link Color"
 msgstr "Boja aktivnih veza"
 
-#: src/gtkhtml.c:2599
+#: src/gtkhtml.c:2602
 msgid "The color of active link elements"
 msgstr "Boja aktivnih veza"
 
-#: src/gtkhtml.c:2604
+#: src/gtkhtml.c:2607
 msgid "Spelling Error Color"
 msgstr "Boja pravopisnih grešaka"
 
-#: src/gtkhtml.c:2605
+#: src/gtkhtml.c:2608
 msgid "The color of the spelling error markers"
 msgstr "Boja za označavanje pravopisnih grešaka"
 

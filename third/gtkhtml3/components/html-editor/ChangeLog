@@ -1,3 +1,12 @@
+2003-07-18  Antonio Xu <antonio.xu@sun.com>
+
+	* image.c : (get_sample_html) : change some no sense text.
+
+2003-07-01  Yuedong Du <yuedong.du@sun.com>
+
+	* editor-control-factory.c : add a new signal handler (html_show_popup)
+	for "popup-menu" signal. Thus shift+f10 to activate popup menu.
+
 2003-06-26  Radek Doulik  <rodo@ximian.com>
 
 	* editor-control-factory.c (html_button_pressed): update for gtk2

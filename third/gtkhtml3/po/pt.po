@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
-"PO-Revision-Date: 2003-05-22 01:48+0100\n"
+"POT-Creation-Date: 2003-07-22 20:24+0100\n"
+"PO-Revision-Date: 2003-07-22 20:30+0100\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgid "<None>"
 msgstr "<Nenhum>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:541
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
@@ -800,9 +800,8 @@ msgid "_Wink"
 msgstr "Piscar o Ol_ho"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
-#, fuzzy
 msgid "_Wrap Lines"
-msgstr "Quebra:"
+msgstr "_Quebrar Linhas"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:153
 msgid "etc..."
@@ -825,7 +824,7 @@ msgstr "Tinta Azul"
 msgid "Rectangles"
 msgstr "Rectângulos"
 
-#: components/html-editor/body.c:275 src/gtkhtml.c:2555
+#: components/html-editor/body.c:275 src/gtkhtml.c:2558
 msgid "Document Title"
 msgstr "Título Documento"
 
@@ -858,7 +857,6 @@ msgid "Background"
 msgstr "Fundo"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "The quick brown fox jumps over the lazy dog."
@@ -1216,7 +1214,19 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Insira o "
 "seu comentário aqui]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr ""
+"Este é texto de exemplo, destinado a mostrar-lhe como o texto iria fluir "
+"à volta desta imagem caso insira a imagem na sua mensagem."
+
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "Nenhuma imagem seleccionada"
+
+#: components/html-editor/image.c:701
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
@@ -1559,71 +1569,71 @@ msgstr "Aumenta indentação do parágrafo"
 msgid "Sample"
 msgstr "Amostra"
 
-#: src/gtkhtml.c:2548
+#: src/gtkhtml.c:2551
 msgid "Editable"
 msgstr "Editável"
 
-#: src/gtkhtml.c:2549
+#: src/gtkhtml.c:2552
 msgid "Whether the html can be edited"
 msgstr "Se o html pode ou não ser editado"
 
-#: src/gtkhtml.c:2556
+#: src/gtkhtml.c:2559
 msgid "The title of the current document"
 msgstr "O título do documento actual"
 
-#: src/gtkhtml.c:2562
+#: src/gtkhtml.c:2565
 msgid "Document Base"
 msgstr "Base Documento"
 
-#: src/gtkhtml.c:2563
+#: src/gtkhtml.c:2566
 msgid "The base URL for relative references"
 msgstr "O URL base para referências relativas"
 
-#: src/gtkhtml.c:2569
+#: src/gtkhtml.c:2572
 msgid "Target Base"
 msgstr "Base Alvo"
 
-#: src/gtkhtml.c:2570
+#: src/gtkhtml.c:2573
 msgid "The base URL of the targe frame"
 msgstr "O URL base para a frame alvo"
 
-#: src/gtkhtml.c:2579
+#: src/gtkhtml.c:2582
 msgid "Fixed Width Font"
 msgstr "Fonte Largura Fixa"
 
-#: src/gtkhtml.c:2580
+#: src/gtkhtml.c:2583
 msgid "The Monospace font to use for typewriter text"
 msgstr "A fonte Monoespaçada a utilizar para texto dactilografado"
 
-#: src/gtkhtml.c:2586
+#: src/gtkhtml.c:2589
 msgid "New Link Color"
 msgstr "Cor Novo Link"
 
-#: src/gtkhtml.c:2587
+#: src/gtkhtml.c:2590
 msgid "The color of new link elements"
 msgstr "A cor de elementos link novos"
 
-#: src/gtkhtml.c:2592
+#: src/gtkhtml.c:2595
 msgid "Visited Link Color"
 msgstr "Cor Link Visitado"
 
-#: src/gtkhtml.c:2593
+#: src/gtkhtml.c:2596
 msgid "The color of visited link elements"
 msgstr "A cor de elementos link visitados"
 
-#: src/gtkhtml.c:2598
+#: src/gtkhtml.c:2601
 msgid "Active Link Color"
 msgstr "Cor Link Activo"
 
-#: src/gtkhtml.c:2599
+#: src/gtkhtml.c:2602
 msgid "The color of active link elements"
 msgstr "A cor de elementos link activos"
 
-#: src/gtkhtml.c:2604
+#: src/gtkhtml.c:2607
 msgid "Spelling Error Color"
 msgstr "Cor Erros Ortográficos"
 
-#: src/gtkhtml.c:2605
+#: src/gtkhtml.c:2608
 msgid "The color of the spelling error markers"
 msgstr "A cor das marcações de erros ortográficos"
 
@@ -1841,9 +1851,6 @@ msgstr "Aplicação Teste GtkHTML"
 
 #~ msgid "Pick a color"
 #~ msgstr "Seleccione uma cor"
-
-#~ msgid "Image selection"
-#~ msgstr "Selecção de imagem"
 
 #~ msgid "width"
 #~ msgstr "largura"
