@@ -20,7 +20,16 @@ case ${AIS_MODE} in
 	# Information on these paramenters is available from system(4).
 
 	DCONFIG=${configdir}/irix.sm
-	mv ${DCONFIG} ${DCONFIG}.plain
+
+	# Disable the R5000 cvt workaround.  This is a temporary fix
+	# for the AFS problem on R5000 rev 1.x CPU's.
+	# Remove this, and uncomment the following mv command, when the
+	# AFS problem has been resolved.
+	# mv ${DCONFIG} ${DCONFIG}.plain
+	sed -e "s/-D_R5000_CVT_WAR=1/-D_R5000_CVT_WAR=0/g" ${DCONFIG} \
+	    > ${DCONFIG}.plain
+	rm -f ${DCONFIG}
+
 	if [ ${AIS_MODE} = "root" ]; then
 	    sed -e "s-ROOTDEV: .*-ROOTDEV: ${disk}s0-g" ${DCONFIG}.plain | \
 	    sed -e "s-SWAPDEV: .*-SWAPDEV: ${disk}s1 0 0-g" | \
@@ -52,7 +61,16 @@ case ${AIS_MODE} in
 #	sed -e "s-DUMPDEV: .*-DUMPDEV: /dev/null-g" > ${DCONFIG}
 
 	DCONFIG=${configdir}/irix.sm
-	mv ${DCONFIG} ${DCONFIG}.plain
+
+	# Disable the R5000 cvt workaround.  This is a temporary fix
+	# for the AFS problem on R5000 rev 1.x CPU's.
+	# Remove this, and uncomment the following mv command, when the
+	# AFS problem has been resolved.
+	# mv ${DCONFIG} ${DCONFIG}.plain
+	sed -e "s/-D_R5000_CVT_WAR=1/-D_R5000_CVT_WAR=0/g" ${DCONFIG} \
+	    > ${DCONFIG}.plain
+	rm -f ${DCONFIG}
+
 	sed -e "s/EXCLUDE: xfs, grio, dmi, xfsrt/USE: xfs, grio, dmi, xfsrt/g"\
 	    ${DCONFIG}.plain > ${DCONFIG}
 
