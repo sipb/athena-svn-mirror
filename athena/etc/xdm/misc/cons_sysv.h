@@ -7,6 +7,7 @@ typedef struct _cons_state {
   char ttydev[64], ptydev[64];
 
   int state;
+  int exitStatus;
   pid_t pid;
   int fd[2];
 } cons_state;
