@@ -13,7 +13,7 @@ port(ip:[3703])
 ]
 
 interface print_logger {
-    import "quota_ncs.idl";
+    import "quota_ncs_v1.idl";
     import "base.idl";
 
 #include "quota_limits.h"
