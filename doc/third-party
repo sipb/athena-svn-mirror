@@ -79,6 +79,7 @@ Distribution sites for software under third
 			some ITAR-related paperwork.
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
+	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	krb5		athena-dist.mit.edu:pub/kerberos
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
@@ -98,6 +99,7 @@ Distribution sites for software under third
 			 with some modifications for portability.
 	tex		See below
 	top		eecs.nwu.edu:pub/top
+	traceroute	ftp.ee.lbl.edu (top level)
 	transcript	From Adobe
 	wcl		ftp.x.org:contrib/devel_tools
 	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
@@ -212,6 +214,7 @@ rules to get the value of such variables):
 	COMPILER	Appropriate compiler for this system
 	CONFIGDIR	Location of Athena Imake templates
 	XCONFIGDIR	Location of X-style Imake templates
+	ATHTOOLROOT	Root of installed Athena tree
 
 Following is a sample Makefile.athena file, used to build a package
 which uses an X-style Imakefile:
