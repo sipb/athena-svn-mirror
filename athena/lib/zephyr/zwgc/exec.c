@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_exec_c[] = "$Id: exec.c,v 1.6 1990-05-17 03:04:15 raeburn Exp $";
+static char rcsid_exec_c[] = "$Id: exec.c,v 1.7 1991-01-09 02:35:57 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -33,6 +33,10 @@ static char rcsid_exec_c[] = "$Id: exec.c,v 1.6 1990-05-17 03:04:15 raeburn Exp 
 #include "port.h"
 #include "variables.h"
 #include "notice.h"
+
+#if !defined(__STDC__) && !defined(const)
+#define const
+#endif
 
 static int exec_subtree(), exec_fields();
 
@@ -351,7 +355,7 @@ static int exec_exec(node)
 
 static struct _Opstuff {
     int (*exec)();
-} opstuff[] = {
+} const opstuff[] = {
     { exec_noop },                         /* string_constant */
     { exec_noop },                         /* varref */
     { exec_noop },                         /* varname */
