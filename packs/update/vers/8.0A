@@ -11,13 +11,45 @@ DS*)
 RSAIX)
 	;;
 SUN*)
-	sh remove_files
-	sh create_files
+	# Remove obsolete files.
+	rm -rf /etc/*.sun /etc/TIMEZONE.temp /etc/athena/*old
+	rm -rf /etc/athena/login/fonts /etc/init.d/* /etc/lib/*old
+	rm -rf /etc/lib/ld.so.1.old /etc/lib/tcpip.so* /etc/rc*.d/*
+	rm -rf /include /kernel/* /sbin/bdconfig /sbin/shutdown /ups_data
+	rm -rf /usr/bin/*.23 /usr/bin/*.sun /usr/cancel /usr/disable
+	rm -rf /usr/enable /usr/kernel/* /usr/kvm/* /usr/lib/ld.so.1.old
+	rm -rf /usr/lib/libnisdb.so.1 /usr/lib/libthread_db.a /usr/lib/lint
+	rm -rf /usr/lib/switch.so /usr/lib/switch.so.2 /usr/lib/tcpip.so
+	rm -rf /usr/lib/tcpip.so.2 /usr/lp* /usr/openwin/SUNWits
+	rm -rf /usr/openwin/lib/C.ct /usr/openwin/lib/X11/fonts/misc/3270.pcf.Z
+	rm -rf /usr/openwin/lib/X11/standardPS_xdps.VM
+	rm -rf /usr/openwin/lib/libPEX5.a /usr/sbin/in.rlogind.21
+	rm -rf /usr/sbin/in.rlogind.21 /usr/sbin/in.rlogind.23
+	rm -rf /usr/sbin/in.routed.sun /usr/sbin/in.telnetd.21
+	rm -rf /usr/sbin/in.telnetd.23 /usr/sbin/inetplumb /usr/sbin/kmacntl
+	rm -rf /usr/sbin/kmamkdb /usr/sbin/kmapr /usr/sbin/swm
+	rm -rf /usr/share/lib/keytables/layout_81
+	rm -rf /usr/share/lib/keytables/layout_82
+	rm -rf /usr/share/lib/terminfo/a/a.term
+	rm -rf /usr/share/lib/terminfo/c/c.term
+	rm -rf /usr/share/lib/terminfo/d/d.term
+	rm -rf /usr/share/lib/zoneinfo/US/Yukon /var/cron/log
+	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
+	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
+
+	# Create new directories and files, make /var/sadm local (otherwise
+	# "showrev" fails).
 	rm -f /var/sadm
-	mkdir /var/sadm
+	mkdir /var/audit /var/log /var/sadm
+	touch /var/log/authlog /var/log/syslog
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
+
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                     >> ${CONFVARS}
-	echo "Done."
+	if [ "${PUBLIC}" != "true" ]; then
+		echo "athena/inetd.conf was moved to inetd.conf.old"
+		mv /etc/athena/inetd.conf /etc/athena/inetd.conf.old
+		cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
+	fi
 esac
