@@ -315,7 +315,7 @@ show_job_list (void)
 
 static void clean_job_list (void);
 
-static struct screenhack_job *
+struct screenhack_job *
 make_job (pid_t pid, const char *cmd)
 {
   struct screenhack_job *job = (struct screenhack_job *) malloc (sizeof(*job));
