@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.1 1997-10-02 18:55:07 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.2 1997-10-02 19:01:30 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -192,7 +192,7 @@ AC_CHECK_LIB(krb, krb_rd_req, [KRB4_LIBS="-lkrb -ldes"],
 	AC_CHECK_LIB(krb4, krb_rd_req,
 		     [KRB4_LIBS="-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err"],
 		     [AC_MSG_ERROR(Kerberos 4 libraries not found)],
-		     -ldes425 -lcom_err)], -ldes)])
+		     -lkrb5 -ldes425 -lcrypto -lcom_err)], -ldes)])
 
 AC_DEFUN(ATHENA_KRB4,
 [AC_ARG_WITH(krb4,
