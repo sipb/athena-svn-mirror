@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.4 1989-11-17 14:11:34 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.5 1990-04-25 16:51:27 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -74,7 +74,7 @@ t_change_motd(Request,type,file, editor, incflag)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr,"No dice.\n");
+      fprintf(stderr, "You are not allowed to do that.\n");
       status = ERROR;
       break;
 
