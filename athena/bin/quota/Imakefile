@@ -1,23 +1,31 @@
-DEFINES=-DUW $(MACHDEFS)
+DEFINES=-DUW $(MACHDEFS) \
+	-I. -I../../bin.athena/attach -I/usr/local/include
+INSTOPT=-o root -m 4755
 
-PROGRAM=	quota
-SRCS=		quota.c $(MACHSRCS)
-OBJS=		quota.o $(MACHOBJS)
+OBJS = quota.o attachtab.o afsquota.o $(MACHOBJS)
+LIBS = $(MACHLIBS) /usr/local/lib/afs/libsys.a
+
 #if defined(vax) || defined(ibm032)
-LIBS=		-lrpcsvc
+MACHLIBS= -lrpcsvc
 #endif
-#ifdef _AIX
-LIBS=		-lrpclib
+#if defined(_AIX) && !defined(_IBMR2)
+MACHLIBS= -lrpclib
+#endif
+
+#if defined(_IBMR2)
+/* Need to use the local header files and sources */
+MACHDEFS=-I./include
+MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
+INSTOPT=-o root -m 0755
 #endif
 
 #if defined(ultrix) || defined(i386)
 /* Need to use the local header files and sources */
 MACHDEFS=-I./include
-MACHSRCS=rcquotaxdr.c
 MACHOBJS=rcquotaxdr.o
 #endif
 
 build_program(quota,$(OBJS),,$(LIBS))
-install_program(quota,-o root -m 4755,/usr/ucb/quota)
+install_program(quota,$(INSTOPT),$(ATHBINDIR))
 install_man(quota.1,quota.1)
 

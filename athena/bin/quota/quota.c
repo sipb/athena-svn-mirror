@@ -1,90 +1,63 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.12 1991-03-01 14:25:31 epeisach Exp $
- *   $Log: not supported by cvs2svn $
- * Revision 1.11  91/01/14  13:45:43  epeisach
- * Changes to work in conjunction with Ultrix's local quota system.
- * 
- * Revision 1.10  90/08/07  19:39:32  probe
- * Changes to prevent the super-user from accesing a user's quota on a server
- * running the old RPC daemon, fix formatting problems for long-named
- * filesystems, prevent printing of quota information the user "root" or the
- * group "wheel" which are not quota-controlled, fixed core-dump that would
- * happen if warnings were to be printed for multiple users.  [jnrees]
- * 
- * Revision 1.9  90/07/17  09:12:43  epeisach
- * Quota changes from jnrees for 7.1
- * 
- * Revision 1.8  90/06/01  15:20:40  jnrees
- * Fixed core dump error, again.   This time it was found to 
- * dump core if a warning was to be printed for a user or group
- * which was not known on the workstation. Previously I only
- * fixed the part which was for printing out all values (-v flag).
- * 
- * 
- * Revision 1.7  90/05/24  10:58:11  jnrees
- * Fixed potential bus error problem, dereferencing an unset pointer.
- * 
- * Revision 1.6  90/05/23  12:25:41  jnrees
- * Changed output format.  '-i' flag no longer needed.
- * Added a usage message if command line is improper.
- * 
- * Revision 1.5  90/05/22  12:12:09  jnrees
- * Fixup of permissions, plus fallback to old rpc call
- * if the first call fails because the rpc server is not
- * registered on the server machine.
- * 
- * Revision 1.4  90/05/17  15:04:02  jnrees
- * Fixed bug where unknown uid or gid would result in a bus error
- * 
+ *   $Id: quota.c,v 1.13 1991-06-30 02:40:28 probe Exp $
  *   
  *   Uses the rcquota rpc call for group and user quotas
  */
 #include <stdio.h>
-#ifndef ultrix
-#include <mntent.h>
-#else
 #include <sys/types.h>
-#include <sys/param.h>
-#include <sys/mount.h>
-#include <fstab.h>
-#include <sys/fs_types.h>
-#include <sys/stat.h>
-#define mntent fs_data
-struct fs_data mountbuffer[NMOUNT];
-#endif
-#ifdef _I386
-#include <stat.h>
-#endif
 #include <ctype.h>
-#include <pwd.h>
-#include <grp.h>
-
+#include <errno.h>
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/time.h>
+#include <pwd.h>
+#include <grp.h>
+#include <rpc/rpc.h>
+#include <rpc/pmap_prot.h>
+#include <rpcsvc/rquota.h>
+#include <rpcsvc/rcquota.h>
+
+#ifdef _IBMR2
+#include <sys/select.h>
+#include <rpc/rpc.h>
+#include <sys/mntctl.h>
+#include <sys/vmount.h>
+#include <sys/dir.h>
+#define dbtob(db) ((unsigned)(db) << UBSHIFT)
+
+#else /* !_IBMR2 */
+
 #if defined(ultrix) || defined(_I386)
+#include <sys/stat.h>
 #include <sys/quota.h>
 #else
 #include <ufs/quota.h>
 #endif
-#if !defined(ultrix) && !defined(_I386)
+
+#ifdef ultrix
+#include <sys/mount.h>
+#include <fstab.h>
+#include <sys/fs_types.h>
+#define mntent fs_data
+struct fs_data mountbuffer[NMOUNT];
+#else
+#include <mntent.h>
+#endif
+
+#endif /* !_IBMR2 */
+
+#include "attach.h"
+
+#if defined(vax) || defined(ibm032)
 #include <qoent.h>
 #endif
 
-#include <rpc/rpc.h>
-#include <rpc/pmap_prot.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <rpcsvc/rquota.h>
-#include <rpcsvc/rcquota.h>
-#include <errno.h>
 
 static char *warningstring = NULL;
 
-static int	vflag=0, uflag=0, gflag=0;
+int	vflag=0, uflag=0, gflag=0;
 #if defined(ultrix) || defined(_I386)
 int	qflag=0, done=0;
 #endif
@@ -183,6 +156,10 @@ main(argc, argv)
     exit(6);
   }
 
+  lock_attachtab();
+  get_attachtab();
+  unlock_attachtab();
+
   if (fsind) verify_filesystems();
 
   if (idind == 0) showid(getuid());
@@ -254,11 +231,95 @@ showname(name)
   }
 }
 
+/* Different enough that it's a mess to ifdef it all individually */
 showquotas(id,name)
      int id;
      char *name;
 {
-  register struct mntent *mntp;
+#ifdef _IBMR2
+    int myuid, ngroups, gidset[NGROUPS];
+    struct getcquota_rslt qvalues;
+    int mntsize;
+    char *mntbuf;
+    int nmount;
+    struct vmount *vmt;
+    int j;
+    struct _attachtab *p;
+    void *v;				/* Pointer to AFS VolumeStatus */
+
+    myuid = getuid();
+
+    if (gflag){				/* Must be in group or super-user */
+	if ((ngroups = getgroups(NGROUPS, gidset)) == -1){
+	    perror("quota: Couldn't get list of groups.");
+	    exit(9);
+	}
+	while(ngroups){ if (id == gidset[ngroups-1]) break; --ngroups;}
+	if (!ngroups && myuid != 0){
+	    printf("quota: %s (gid %d): permission denied\n", name, id);
+	    return;
+	}
+    }
+    else{
+	if (id != myuid && myuid != 0){
+	    printf("quota: %s (uid %d): permission denied\n", name, id);
+	    return;
+	}
+    }
+
+    mntsize = 4096;
+    if ((mntbuf = (char *)malloc(mntsize)) == NULL) {
+	perror("quota: error allocating memory");
+	exit(9);
+    }
+    nmount = mntctl(MCTL_QUERY,mntsize,mntbuf);
+    if (nmount == -1) {
+	perror("quota: mntctl failed");
+	exit(9);
+    }
+    if (nmount == 0) {
+	mntsize = *((int *) mntbuf);
+	if ((mntbuf = (char *)realloc(mntsize)) == NULL) {
+	    perror("quota: error reallocing memory");
+	    exit(9);
+	}
+	nmount = mntctl(MCTL_QUERY,mntsize,mntbuf);
+	if (nmount == -1) {
+	    perror("quota: mntctl failed");
+	    exit(9);
+	}
+    }
+
+    vmt = (struct vmount *)mntbuf;
+    for(j=0;j<nmount;j++,vmt = (struct vmount *)
+	((char *)vmt + vmt->vmt_length)) { 
+	if (fsind) {
+	    int i, l;
+	    for(i=0;i<fsind;i++){
+		l = strlen(fslist[i]);
+		if(!strncmp(((char *)vmt + vmt->vmt_data[VMT_STUB].vmt_off),
+			    fslist[i], l))
+		    break;
+	    }
+	    if (i == fsind) continue;	/* Punt filesystems not in fslist */
+	}
+    
+    
+	if (vmt->vmt_gfstype == MNT_NFS) {
+	    if (!getnfsquota(vmt, id,&qvalues))
+		continue;
+	}
+	else
+	    continue;
+	if (vflag) prquota(vmt, &qvalues, id, name);      
+	if (user_and_groups || !vflag) warn(vmt, &qvalues);
+    }
+
+#else /* !_IBMR2  */
+
+    struct _attachtab *p;
+    void *v;				/* Pointer to AFS VolumeStatus */
+    register struct mntent *mntp;
 #ifdef ultrix
 #define mnt_dir fd_path
 #define mnt_type fd_fstype
@@ -274,106 +335,135 @@ showquotas(id,name)
 #ifdef _I386
 #define MNTTYPE_42 MNTTYPE_UFS
 #endif
-  FILE *mtab;
-  int myuid, ngroups, gidset[NGROUPS];
-  struct getcquota_rslt qvalues;
+    FILE *mtab;
+    int myuid, ngroups, gidset[NGROUPS];
+    struct getcquota_rslt qvalues;
 #ifdef ultrix
-  int loc=0, ret;
+    int loc=0, ret;
 #endif
 #if defined(ultrix) || defined(_I386)
-  int ultlocalquotas=0;
+    int ultlocalquotas=0;
 #endif
 
-  myuid = getuid();
+    myuid = getuid();
 
-  if (gflag){ /* User must be in group or be the super-user */
-    if ((ngroups = getgroups(NGROUPS, gidset)) == -1){
-      perror("quota: Couldn't get list of groups.");
-      exit(9);
-    }
-    while(ngroups){ if (id == gidset[ngroups-1]) break; --ngroups;}
-    if (!ngroups && myuid != 0){
-      printf("quota: %s (gid %d): permission denied\n", name, id);
-      return;
-    }
-  }
-  else{
-    if (id != myuid && myuid != 0){
-      printf("quota: %s (uid %d): permission denied\n", name, id);
-      return;
-    }
-  }
-
-#ifndef ultrix
-  mtab = setmntent(MOUNTED, "r");
-#else
-  ret = getmountent(&loc, mountbuffer, NMOUNT);
-  if (ret == 0) {
-      perror("getmountent");
-      exit(3);
-  }
-#endif
-
-#ifndef ultrix
-  while(mntp = getmntent(mtab)){
-#else
-  for(mntp = mountbuffer; mntp < &mountbuffer[ret]; mntp++) {
-#endif
-    if (fsind)
-      {
-	int i, l;
-	for(i=0;i<fsind;i++){
-	  l = strlen(fslist[i]);
-	  if(!strncmp(mntp->mnt_dir, fslist[i], l))
-	    break;
+    if (gflag){				/* Must be in group or super-user */
+	if ((ngroups = getgroups(NGROUPS, gidset)) == -1){
+	    perror("quota: Couldn't get list of groups.");
+	    exit(9);
 	}
-	if (i == fsind) continue; /* If this filesystem isn't in the fslist,
-				     punt.*/
-      }
-        
+	while(ngroups){ if (id == gidset[ngroups-1]) break; --ngroups;}
+	if (!ngroups && myuid != 0){
+	    printf("quota: %s (gid %d): permission denied\n", name, id);
+	    return;
+	}
+    }
+    else{
+	if (id != myuid && myuid != 0){
+	    printf("quota: %s (uid %d): permission denied\n", name, id);
+	    return;
+	}
+    }
+
 #ifndef ultrix
-    if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0 &&
-	hasmntopt(mntp, MNTOPT_QUOTA)){
-#ifdef _I386
-	ultlocalquotas++;
+    mtab = setmntent(MOUNTED, "r");
 #else
-      if (getlocalquota(mntp,id,&qvalues)) continue;
+    ret = getmountent(&loc, mountbuffer, NMOUNT);
+    if (ret == 0) {
+	perror("getmountent");
+	exit(3);
+    }
+#endif
+
+#ifndef ultrix
+    while(mntp = getmntent(mtab))
+#else
+	for(mntp = mountbuffer; mntp < &mountbuffer[ret]; mntp++)
+#endif
+	    {
+		if (fsind)
+		    {
+			int i, l;
+			for(i=0;i<fsind;i++){
+			    l = strlen(fslist[i]);
+			    if(!strncmp(mntp->mnt_dir, fslist[i], l))
+				break;
+			}
+			if (i == fsind) continue; /* Punt filesystems not
+						   * in the fslist */
+		    }
+        
+
+#ifndef ultrix
+		if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0 &&
+		    hasmntopt(mntp, MNTOPT_QUOTA)){
+#ifdef _I386
+		    ultlocalquotas++;
+#else
+		    if (getlocalquota(mntp,id,&qvalues)) continue;
+		}
 #endif /* _I386 */
 #else /* ultrix */
-    if (mntp->mnt_type == MNTTYPE_42 &&
-        (mntp->fd_flags & M_QUOTA)) {
-	ultlocalquotas++;
-      continue;
+		if (mntp->mnt_type == MNTTYPE_42 &&
+		    (mntp->fd_flags & M_QUOTA)) {
+		    ultlocalquotas++;
+		    continue;
+		}
 #endif /* ultrix */
 
-      }
-#ifndef ultrix
-    else if (strcmp(mntp->mnt_type, MNTTYPE_NFS) == 0){
-#else
-    else if (mntp->mnt_type == MNTTYPE_NFS){
-#endif
-      if (!getnfsquota(mntp, id, &qvalues)) continue;
-    }
-    else continue;
 
-    if (vflag) prquota(mntp, &qvalues, id, name);      
-    if (user_and_groups || !vflag) warn(mntp, &qvalues);
-  }
 #ifndef ultrix
-  endmntent(mtab);
+		else if (strcmp(mntp->mnt_type, MNTTYPE_NFS) == 0)
+#else
+		    else if (mntp->mnt_type == MNTTYPE_NFS)
 #endif
-  if (warningstring){
-    printf("\n%s\n", warningstring);
-    free(warningstring);
-    warningstring = NULL;
-  }
+			{
+			    if (!getnfsquota(mntp, id, &qvalues)) continue;
+			}
+		    else continue;
+
+		if (vflag) prquota(mntp, &qvalues, id, name);      
+		if (user_and_groups || !vflag) warn(mntp, &qvalues);
+	    }
+#ifndef ultrix
+    endmntent(mtab);
+#endif
 #if defined(ultrix) || defined(_I386)
-  if(ultlocalquotas) 
-      ultprintquotas(id,name);
+    if(ultlocalquotas) 
+	ultprintquotas(id,name);
 #endif
+#endif /* !_IBMR2 */
+  
+    /* Check afs volumes */
+    for(p = attachtab_first;p != NULL;p=p->next) {
+	/* Only look at AFS mountpoints; others already done */
+	if ((p->fs->type != TYPE_AFS) || (p->status != STATUS_ATTACHED))
+	    continue;
+	if (fsind) {
+	    int i, l;
+	    for(i=0;i<fsind;i++){
+		l = strlen(fslist[i]);
+		if(!strncmp(p->mntpt, fslist[i], l))
+		    break;
+	    }
+	    if (i == fsind) continue;	/* Punt filesystems not in fslist */
+	}
+    
+	if ((v = getafsquota(p)) == NULL)
+	    continue;
+	if (vflag) prafsquota(p, v, id, name);      
+	if (user_and_groups || !vflag) afswarn(p,v,name);
+    }
+
+    if (warningstring) {
+	printf("\n%s\n", warningstring);
+	free(warningstring);
+	warningstring = NULL;
+    }
 }
 
-#if !defined(ultrix) && !defined(_I386)
+
+#if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2)
 getlocalquota(mntp, uid, qvp)
      struct mntent *mntp;
      int uid;
@@ -445,17 +535,28 @@ getlocalquota(mntp, uid, qvp)
 #endif
 
 int
+#ifdef _IBMR2
+getnfsquota(vmt, uid, qvp)
+     struct vmount *vmt;
+#else
 getnfsquota(mntp, uid, qvp)
      struct mntent *mntp;
+#endif
      int uid;
      struct getcquota_rslt *qvp;
 {
   char *hostp;
+#ifndef _IBMR2
   char *cp;
+#endif
   struct getcquota_args gq_args;
   extern char *index();
   int oldrpc = 0;
 
+#ifdef _IBMR2
+  hostp = ((char *)vmt + vmt->vmt_data[VMT_HOSTNAME].vmt_off);
+  gq_args.gqa_pathp = ((char *)vmt + vmt->vmt_data[VMT_OBJECT].vmt_off);
+#else
   hostp = mntp->mnt_fsname;
   cp = index(mntp->mnt_fsname, ':');
   if (cp == 0) {
@@ -464,6 +565,8 @@ getnfsquota(mntp, uid, qvp)
   }
   *cp = '\0';
   gq_args.gqa_pathp = cp + 1;
+#endif
+
   gq_args.gqa_uid = (gflag ? getuid() : uid);
   if ((enum clnt_stat)
       callrpc(hostp, RCQUOTAPROG, RCQUOTAVERS,
@@ -483,7 +586,9 @@ getnfsquota(mntp, uid, qvp)
 		  xdr_getquota_args, &gq_args,
 		  xdr_getquota_rslt, &oldquota_result) != 0){
       /* Okay, it really failed */
+#ifndef _IBMR2
       *cp = ':';
+#endif
       return (0);
     }
     else{
@@ -541,6 +646,7 @@ getnfsquota(mntp, uid, qvp)
       if (uflag && qvp->rq_group) return(0); /* Not user-controlled */
 
       gettimeofday(&tv, NULL);
+
       blockconv = (float)qvp->rq_bsize / DEV_BSIZE;
       qvp->gqr_zm.rq_bhardlimit *= blockconv;
       qvp->gqr_zm.rq_bsoftlimit *= blockconv;
@@ -553,7 +659,9 @@ getnfsquota(mntp, uid, qvp)
 	qvp->gqr_rcquota[i].rq_btimeleft += tv.tv_sec;
 	qvp->gqr_rcquota[i].rq_ftimeleft += tv.tv_sec;
       }
+#ifndef _IBMR2
       *cp = ':';
+#endif
       return (1);
     }
 
@@ -571,7 +679,9 @@ getnfsquota(mntp, uid, qvp)
     fprintf(stderr, "bad rpc result, host: %s\n",  hostp);
     break;
   }
+#ifndef _IBMR2
   *cp = ':';
+#endif
   return (0);
 }
 
@@ -682,8 +792,13 @@ heading(id,name)
   heading_printed = 1;
 }
 
+#ifdef _IBMR2
+prquota(vmt, qvp, heading_id, heading_name)
+     register struct vmount *vmt;
+#else
 prquota(mntp, qvp, heading_id, heading_name)
      register struct mntent *mntp;
+#endif
      register struct getcquota_rslt *qvp;
      int heading_id;
      char *heading_name;
@@ -762,7 +877,11 @@ prquota(mntp, qvp, heading_id, heading_name)
       ftimeleft[0] = '\0';
     }
 
+#ifdef _IBMR2
+    cp = ((char *)vmt + vmt->vmt_data[VMT_STUB].vmt_off);
+#else
     cp = mntp->mnt_dir;
+#endif
 
     if (!user_and_groups){
       if (!heading_printed) simpleheading(heading_id,heading_name);
@@ -802,8 +921,13 @@ prquota(mntp, qvp, heading_id, heading_name)
   }
 }
   
+#ifdef _IBMR2
+warn(vmt, qvp)
+     register struct vmount *vmt;
+#else
 warn(mntp, qvp)
      register struct mntent *mntp;
+#endif
      register struct getcquota_rslt *qvp;
 {
   struct timeval tv;
@@ -847,7 +971,11 @@ warn(mntp, qvp)
        rqp->rq_curblocks >= rqp->rq_bhardlimit){
       sprintf(buf,
 	      "Block limit reached for %s %s on %s\n",
+#ifdef _IBMR2
+             id_type, id_name, ((char *)vmt + vmt->vmt_data[VMT_STUB].vmt_off));
+#else
 	     id_type, id_name, mntp->mnt_dir);
+#endif
       putwarning(buf);
     }
 
@@ -856,7 +984,11 @@ warn(mntp, qvp)
       if (rqp->rq_btimeleft == 0) {
 	sprintf(buf,
 		"%s %s over disk quota on %s, remove %dK\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type, id_name, mntp->mnt_dir,
+#endif
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1));
 	putwarning(buf);
       }
@@ -866,7 +998,11 @@ warn(mntp, qvp)
 	fmttime(btimeleft, rqp->rq_btimeleft - tv.tv_sec);
 	sprintf(buf,
 		"%s %s over disk quota on %s, remove %dK within %s\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type, id_name, mntp->mnt_dir,
+#endif
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1),
 	       btimeleft);
 	putwarning(buf);
@@ -874,7 +1010,11 @@ warn(mntp, qvp)
       else {
 	sprintf(buf,
 		"%s %s over disk quota on %s, time limit has expired, remove %dK\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type, id_name, mntp->mnt_dir,
+#endif
 	       kb(rqp->rq_curblocks - rqp->rq_bsoftlimit + 1));
 	putwarning(buf);
       }
@@ -884,7 +1024,11 @@ warn(mntp, qvp)
 	rqp->rq_curfiles >= rqp->rq_fhardlimit){
       sprintf(buf,
 	      "File count limit reached for %s %s on %s\n",
+#ifdef _IBMR2
+             id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off));
+#else
 	     id_type, id_name, mntp->mnt_dir);
+#endif
       putwarning(buf);
     }
 
@@ -893,7 +1037,11 @@ warn(mntp, qvp)
       if (rqp->rq_ftimeleft == 0) {
 	sprintf(buf,
 		"%s %s over file quota on %s, remove %d file%s\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type, id_name, mntp->mnt_dir,
+#endif
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ));
@@ -906,7 +1054,11 @@ warn(mntp, qvp)
 	fmttime(ftimeleft, rqp->rq_ftimeleft - tv.tv_sec);
 	sprintf(buf,
 		"%s %s over file quota on %s, remove %d file%s within %s\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type,id_name,mntp->mnt_dir,
+#endif
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ), ftimeleft);
@@ -915,7 +1067,11 @@ warn(mntp, qvp)
       else {
 	sprintf(buf,
 		"%s %s over file quota on %s, time limit has expired, remove %d file%s\n",
+#ifdef _IBMR2
+	       id_type, id_name, ((char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off),
+#else
 	       id_type, id_name, mntp->mnt_dir,
+#endif
 	       rqp->rq_curfiles - rqp->rq_fsoftlimit + 1,
 	       ((rqp->rq_curfiles - rqp->rq_fsoftlimit + 1) > 1 ?
 		"s" : "" ));
@@ -944,7 +1100,7 @@ alldigits(s)
 	return (1);
 }
 
-#if !defined(ultrix) && !defined(_I386)
+#if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2)
 dqblk2rcquota(dqblkp, rcquotap, uid)
      struct dqblk *dqblkp;
      struct rcquota *rcquotap;
@@ -1031,6 +1187,60 @@ fmttime(buf, time)
 	sprintf(buf, "%.1f %s", (double)time/cunits[i].c_secs, cunits[i].c_str);
 }
 
+#ifdef _IBMR2
+verify_filesystems()
+{
+  int i, j, found, l;
+  int mntsize;
+  char *mntbuf;
+  int nmount;
+  struct vmount *vmt;
+
+  mntsize = 4096;
+  if ((mntbuf = (char *)malloc(mntsize)) == NULL) {
+    perror("quota: error allocating memory");
+    exit(9);
+  }
+  nmount = mntctl(MCTL_QUERY,mntsize,mntbuf);
+  if (nmount == -1) {
+    perror("quota: mntctl failed");
+    exit(9);
+  }
+  if (nmount == 0) {
+    mntsize = *((int *) mntbuf);
+    if ((mntbuf = (char *)realloc(mntsize)) == NULL) {
+      perror("quota: error reallocing memory");
+      exit(9);
+    }
+    nmount = mntctl(MCTL_QUERY,mntsize,mntbuf);
+    if (nmount == -1) {
+      perror("quota: mntctl failed");
+      exit(9);
+    }
+  }
+
+  for(i=0;i<fsind;i++){
+    l = strlen(fslist[i]);
+    found = 0;
+    vmt = (struct vmount *)mntbuf;
+    for(j=0;j<nmount;j++) {
+      if (!strncmp(fslist[i],
+		   (char *)vmt+vmt->vmt_data[VMT_STUB].vmt_off,l)) { 
+	found = 1;
+	break;
+      }
+      vmt = (struct vmount *)((char *)vmt + vmt->vmt_length);
+    }
+    if ((!found) && (attachtab_lookup_mntpt(fslist[i]) == NULL)) {
+      fprintf(stderr, "quota: '%s' matches no mounted filesystems.\n",
+	      fslist[i]);
+      exit(10);
+    }
+  }
+}
+
+#else /* _IBMR2 */
+
 verify_filesystems()
 {
   struct mntent *mntp;
@@ -1039,20 +1249,20 @@ verify_filesystems()
 #ifdef ultrix
   int loc=0, ret;
 #endif
-
+  
   for(i=0;i<fsind;i++){
     l = strlen(fslist[i]);
     found = 0;
 #ifndef ultrix
     mtab = setmntent(MOUNTED, "r");
 #else
-  ret = getmountent(&loc, mountbuffer, NMOUNT);
-  if (ret == 0) {
+    ret = getmountent(&loc, mountbuffer, NMOUNT);
+    if (ret == 0) {
       perror("getmountent");
       exit(3);
-  }
+    }
 #endif
-
+    
 #ifndef ultrix
     while(mntp = getmntent(mtab)){
 #else
@@ -1066,13 +1276,14 @@ verify_filesystems()
 #ifndef ultrix
     endmntent(mtab);
 #endif
-    if (!found){
+    if ((!found) && (attachtab_lookup_mntpt(fslist[i]) == NULL)) {
       fprintf(stderr, "quota: '%s' matches no mounted filesystems.\n",
 	      fslist[i]);
       exit(10);
     }
   }
 }
+#endif /* IBMR2 */
 
 #if defined(_I386) || defined(ultrix)
 #ifdef ultrix

@@ -1,5 +1,5 @@
 .\" @(#)quota.1 1.1 85/12/28 SMI; from UCB 4.2
-.TH QUOTA 1  "23 May 1990"
+.TH QUOTA 1  "25 Jun 1991"
 .UC 4
 .SH NAME
 quota \- display disk usage and limits
@@ -19,7 +19,8 @@ group [group] ...
 .IX  "limits of disk space quota"  ""  "limits of disk space \(em \fLquota\fP"
 .I Quota
 displays users' and groups' disk usage and limits on local and NFS
-mounted file systems.  If a user or group is specified (by name or by
+mounted file systems, as well as AFS lockers that have been attached.  If a
+user or group is specified (by name or by 
 id), \fIquota\fP will return information on disk usage and limits for
 the given user or group (See \fBPERMISSIONS\fP below).
 .LP
@@ -47,7 +48,10 @@ User joeuser over disk quota on /mit/joeuser, remove 395K within 7.0 days
 .if n .in +.755i
 .fi
 
-Everyone has a "soft" limit for disk space usage (given in the first
+Additionally, it will display quota information for any AFS lockers that
+have been attached.
+On NFS or local file systems, everyone has a "soft" limit for disk space
+usage (given in the first 
 .B quota
 column) and a
 "hard" limit (given in the first
@@ -78,6 +82,10 @@ or files within that filesystem.
 
 If no quotas for the user (or groups that the user is a member of) exist on any
 local or NFS mounted file systems, nothing will be displayed.
+
+In an AFS locker, there is no quota on the number of files you can create as
+long as your disk usage remains under quota.
+
 .IP \fB\-f\fP dirname
 With this option, quota information will be returned on any filesystems whose
 mount-points begin with the given directory name.  A single directory name
@@ -126,7 +134,8 @@ to any user who is in the specified group.
 .ta 2i
 \fIquotas\fP	quota file at the file system root
 \fI/etc/qotab\fP	quota options file
+\fI/usr/tmp/attachtab\fP	list of attached filesystems
 .fi
 .DT
 .SH "SEE ALSO"
-quotactl(2), quotaon(8), edquota(8), rquotad(8c)
+quotactl(2), quotaon(8), edquota(8), rquotad(8c), fs
