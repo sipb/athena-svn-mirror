@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.67 2001-10-23 23:35:07 rbasch Exp $
+# $Id: reactivate.sh,v 1.68 2002-01-09 23:26:07 jweiss Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -334,8 +334,13 @@ if [ "$full" = true ]; then
 			ps -e | awk '$4=="inetd" {print $1}' | xargs kill -HUP
 		fi
 	fi
-	if [ "$PUBLIC" = true ]; then
-		rm -f /etc/athena/reactivate.local /etc/ssh_*
+fi
+
+if [ "$PUBLIC" = true ]; then
+	rm -f /etc/athena/reactivate.local /etc/ssh_*
+	if [ -r /var/athena/sshd.pid ]; then
+		# public machines shouldn't be running an sshd
+		kill `cat /var/athena/sshd.pid`
 	fi
 fi
 
