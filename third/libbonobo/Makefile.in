@@ -126,15 +126,10 @@ gnomelocaledir = @gnomelocaledir@
 SUBDIRS = idl bonobo monikers samples tests po doc
 
 libincludedir = $(includedir)/libbonobo-2.0
-libinclude_HEADERS = \
-	libbonobo.h
+libinclude_HEADERS =  	libbonobo.h
 
 
-EXTRA_DIST = \
-	intltool-extract.in  \
-	intltool-merge.in    \
-	intltool-update.in   \
-	changes.txt
+EXTRA_DIST =  	intltool-extract.in  	intltool-merge.in    	intltool-update.in   	changes.txt
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -142,10 +137,10 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 HEADERS =  $(libinclude_HEADERS)
 
-DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
-ChangeLog INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h \
-aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-install-sh ltconfig ltmain.sh missing mkinstalldirs
+DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
+config.guess config.h.in config.sub configure configure.in install-sh \
+ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

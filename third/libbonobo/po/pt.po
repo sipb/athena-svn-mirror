@@ -1,14 +1,14 @@
 # libbonobo's Portuguese Translation
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Duarte Loreto <happyguy_pt@hotmail.com>, 2001, 2002
+# Duarte Loreto <happyguy_pt@hotmail.com>, 2001, 2002, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
-"PO-Revision-Date: 2002-02-10 02:34+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-02-01 23:45+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
-"Language-Team: Portuguese <none@none.org>\n"
+"Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -194,13 +194,13 @@ msgstr "moniker genérico de item"
 msgid "stream MonikerExtender"
 msgstr "fluxo MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
 msgid "Exception activating '%s'"
 msgstr "Excepção ao activar '%s'"
 
-#: monikers/bonobo-moniker-oaf.c:60
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
 msgid "Failed to activate '%s'"
 msgstr "Falha ao activar '%s'"
 

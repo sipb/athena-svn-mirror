@@ -39,6 +39,7 @@
     <!ENTITY libbonobo-properties SYSTEM "properties.xml">
     <!ENTITY libbonobo-debugging SYSTEM "debugging.xml">
     <!ENTITY libbonobo-faq SYSTEM "faq.xml">
+    <!ENTITY libbonobo-monikers-overview SYSTEM "monikers-overview.xml">
     ]>
 
 <book id="index">
@@ -82,6 +83,7 @@
 
     <chapter id="monikers">
 	<title>Monikers</title>
+	&libbonobo-monikers-overview;
 	&libbonobo-bonobo-moniker;
 	&libbonobo-bonobo-moniker-simple;
 	&libbonobo-bonobo-moniker-util;

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
 "PO-Revision-Date: 2003-01-12 23:55+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -194,12 +194,12 @@ msgstr "všeobecný moniker položiek"
 msgid "stream MonikerExtender"
 msgstr "prúd MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
 msgstr "Aktivácia výnimky '%s'"
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
 msgstr "Zlyhala aktivácia '%s'"

@@ -366,26 +366,6 @@ BONOBO_IS_STREAM_MEM_CLASS
 </SECTION>
 
 <SECTION>
-<FILE>bonobo-transient</FILE>
-BONOBO_TRANSIENT_TYPE
-BonoboTransientPriv
-BonoboTransient
-BonoboTransientClass
-BonoboTransientServantNew
-BonoboTransientServantDestroy
-bonobo_transient_new
-bonobo_transient_construct
-bonobo_transient_create_objref
-<SUBSECTION Standard>
-BONOBO_TRANSIENT
-BONOBO_IS_TRANSIENT
-BONOBO_TYPE_TRANSIENT
-bonobo_transient_get_type
-BONOBO_TRANSIENT_CLASS
-BONOBO_IS_TRANSIENT_CLASS
-</SECTION>
-
-<SECTION>
 <FILE>bonobo-xobject</FILE>
 BONOBO_X_OBJECT_TYPE
 BONOBO_X_OBJECT_HEADER_SIZE

@@ -46,9 +46,10 @@ bonobo_std_moniker_factory (BonoboGenericFactory *this,
 		return BONOBO_OBJECT (bonobo_moniker_extender_new (
 			bonobo_stream_extender_resolve, NULL));
 
+#ifdef G_ENABLE_DEBUG
 	else
 		g_warning ("Failing to manufacture a '%s'", object_id);
-
+#endif
 	return NULL;
 }
 

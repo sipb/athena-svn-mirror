@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 2\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
 "PO-Revision-Date: 2002-03-03 16:20+0100\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@cgabriel.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -194,12 +194,12 @@ msgstr "moniker genericop per oggetti"
 msgid "stream MonikerExtender"
 msgstr "MonikerExtender stream"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, fuzzy, c-format
 msgid "Exception activating '%s'"
 msgstr "Eccezione attiva '%s"
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, fuzzy, c-format
 msgid "Failed to activate '%s'"
 msgstr "Impossibile attivare '%s"

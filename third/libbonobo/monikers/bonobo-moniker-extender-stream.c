@@ -49,8 +49,9 @@ bonobo_stream_extender_resolve (BonoboMonikerExtender       *extender,
 	Bonobo_Unknown stream;
 	Bonobo_Persist persist;
 
-	g_warning ("Stream extender: '%s'", display_name);
-
+#ifdef G_ENABLE_DEBUG
+	g_message ("Stream extender: '%s'", display_name);
+#endif
 	if (!m)
 		return CORBA_OBJECT_NIL;
 
@@ -69,15 +70,19 @@ bonobo_stream_extender_resolve (BonoboMonikerExtender       *extender,
 		mime_type, requested_interface);
 		
 	object = bonobo_activation_activate (requirements, NULL, 0, NULL, ev);
-	g_warning ("Attempt activate object satisfying '%s': %p",
+#ifdef G_ENABLE_DEBUG
+	g_message ("Attempt activate object satisfying '%s': %p",
 		   requirements, object);
+#endif
 	g_free (requirements);
 
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		goto unref_stream_exception;
 		
 	if (object == CORBA_OBJECT_NIL) {
+#ifdef G_ENABLE_DEBUG
 		g_warning ("Can't find object satisfying requirements");
+#endif
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		goto unref_stream_exception;

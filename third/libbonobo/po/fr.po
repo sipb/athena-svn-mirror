@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 2.1.1\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
 "PO-Revision-Date: 2003-01-02 18:55+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -196,12 +196,12 @@ msgstr "Moniker d'élément générique"
 msgid "stream MonikerExtender"
 msgstr "MonikerExtender de flux"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
 msgstr "Exception lors de l'activation de « %s »"
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
 msgstr "Impossible d'activer « %s »"

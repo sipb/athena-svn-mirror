@@ -24,12 +24,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_LISTENER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_LISTENER))
 
 typedef struct _BonoboListenerPrivate BonoboListenerPrivate;
+typedef struct _BonoboListener        BonoboListener;
 
-typedef struct {
+struct _BonoboListener {
         BonoboObject          parent;
 
 	BonoboListenerPrivate *priv;
-} BonoboListener;
+};
 
 typedef struct {
 	BonoboObjectClass     parent_class;

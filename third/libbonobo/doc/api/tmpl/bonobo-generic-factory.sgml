@@ -91,8 +91,6 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 
 </para>
 
-@base: 
-@priv: 
 
 <!-- ##### USER_FUNCTION BonoboFactoryCallback ##### -->
 <para>

@@ -1,4 +1,4 @@
-# libbonobo fr.po
+# libbonobo translation to Azerbaijani.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Christophe Merlet (RedFox) <redfox@eikonex.org>, 2001.
 # Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>, 2001
@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo2 1.103.0\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
-"PO-Revision-Date: 2001-12-19 19:44GMT+0200\n"
-"Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
-"Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-02-05 01:29+0200\n"
+"Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
+"Language-Team: Azerbaijani Turkish <az@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -158,12 +158,11 @@ msgstr "Bonobo başladıla bilmir"
 #: bonobo/bonobo-moniker.c:353
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr ""
+msgstr "'%s'-i çözümləmə vəya uzadmada müvəffəqiyyətsizlik"
 
 #: bonobo/bonobo-moniker-util.c:246
-#, fuzzy
 msgid "Failed to activate object"
-msgstr "Cism vericisini işə sala bilmədim"
+msgstr "Cismi işə sala bilmədim"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -197,42 +196,41 @@ msgstr "sıravi üzv monikeri"
 msgid "stream MonikerExtender"
 msgstr "axım MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
-msgstr ""
+msgstr "'%s'-ni fəallaşdırırkən estisna yarandı"
 
-#: monikers/bonobo-moniker-oaf.c:60
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
 msgid "Failed to activate '%s'"
-msgstr "Cism vericisini işə sala bilmədim"
+msgstr "'%s'-ni işə sala bilmədim"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "Bonobo Əks-səda verici fabrika"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Bonobo Əks-səda nünumə proqram"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
 msgid "Echo component"
-msgstr ""
+msgstr "Əks-səda hissəsi"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr ""
+msgstr "Əks-səda hissə fabrika"
 
 #: samples/echo/echo-client.c:22
-#, fuzzy
 msgid "I could not initialize Bonobo"
-msgstr "Bonobo başladıla bilmir"
+msgstr "Bonobonu başlada bilmədim"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr ""
+msgstr "Nümunə əks-səda hissəsinin nümunəsini yarada bilmədim"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr ""
+msgstr "Estisna yarandı '%s'"

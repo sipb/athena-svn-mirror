@@ -27,6 +27,10 @@ document system for the GNU system.
    You can find copies of the licenses in the files COPYING.LIB and
    COPYING for the libraries and the code respectively.
 
+* Bug reports
+
+   File any bug reports at http://bugzilla.gnome.org/
+
 * What you will need
 
    You will need a working GNOME 1.x system with the development tools

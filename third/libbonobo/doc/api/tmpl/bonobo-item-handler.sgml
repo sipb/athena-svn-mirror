@@ -44,7 +44,7 @@ getObject (BonoboItemHandler *h, const char *item_name,
         }
                                                                         
         /* we just return ourselves */
-        return bonobo_object_corba_objref (h);
+        return bonobo_object_dup_ref (bonobo_object_corba_objref (h), NULL);
 }
 	</programlisting>
     </informalexample>
@@ -110,9 +110,6 @@ bonobo_item_option_free (x);
 
 </para>
 
-@base: 
-@epv: 
-@priv: 
 
 <!-- ##### TYPEDEF BonoboItemHandlerClass ##### -->
 <para>

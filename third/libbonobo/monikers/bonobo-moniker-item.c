@@ -29,7 +29,9 @@ bonobo_moniker_item_resolve (BonoboMoniker               *moniker,
 		return CORBA_OBJECT_NIL;
 	
 	if (parent == CORBA_OBJECT_NIL) {
+#ifdef G_ENABLE_DEBUG
 		g_warning ("Item moniker with no parent !");
+#endif
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		return CORBA_OBJECT_NIL;
@@ -42,7 +44,9 @@ bonobo_moniker_item_resolve (BonoboMoniker               *moniker,
 		goto return_unref_parent;
 
 	if (container == CORBA_OBJECT_NIL) {
+#ifdef G_ENABLE_DEBUG
 		g_warning ("Failed to extract a container from our parent");
+#endif
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		goto return_unref_parent;

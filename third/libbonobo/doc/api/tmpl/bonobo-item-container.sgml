@@ -33,7 +33,7 @@ This implementation is mostly deprecated, see #BonoboItemHandler
 </para>
 
 
-<!-- ##### TYPEDEF BonoboItemContainer ##### -->
+<!-- ##### STRUCT BonoboItemContainer ##### -->
 <para>
 
 </para>
@@ -71,4 +71,15 @@ This implementation is mostly deprecated, see #BonoboItemHandler
 @container: 
 @name: 
 
+
+<!-- ##### SIGNAL BonoboItemContainer::get-object ##### -->
+<para>
+
+</para>
+
+@bonoboitemcontainer: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
 

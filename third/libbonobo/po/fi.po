@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 1.109.1\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
 "PO-Revision-Date: 2003-01-02 15:36+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -201,12 +201,12 @@ msgstr "yleinen kohdemoniker"
 msgid "stream MonikerExtender"
 msgstr "virta-MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
 msgstr "Poikkeus monikerin \"%s\" aktivoinnissa"
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
 msgstr "Monikerin \"%s\" aktivointi epäonnistui"

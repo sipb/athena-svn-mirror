@@ -38,7 +38,9 @@ bonobo_moniker_new_resolve (BonoboMoniker               *moniker,
 		goto return_unref_parent;
 
 	if (factory == CORBA_OBJECT_NIL) {
+#ifdef G_ENABLE_DEBUG
 		g_warning ("Failed to extract a factory from our parent");
+#endif
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		goto return_unref_parent;
