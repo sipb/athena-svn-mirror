@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.7 1991-07-20 12:28:55 lwvanels Exp $
+# $Id: reactivate.sh,v 1.8 1991-07-25 13:39:01 probe Exp $
 
 trap "" 1 15
 
@@ -71,8 +71,8 @@ fi
 # Now start activate again
 /etc/athena/save_cluster_info
 
-if [ -f /etc/clusterinfo.bsh ] ; then
-	. /etc/clusterinfo.bsh
+if [ -f /etc/athena/clusterinfo.bsh ] ; then
+	. /etc/athena/clusterinfo.bsh
 else
 	if [ "${RVDCLIENT}" = "true" ]; then
 		echo "Can't find library servers."
