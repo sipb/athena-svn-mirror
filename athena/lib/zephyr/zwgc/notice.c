@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_notice_c[] = "$Id: notice.c,v 1.8 1993-09-24 21:31:09 probe Exp $";
+static char rcsid_notice_c[] = "$Id: notice.c,v 1.9 1994-08-29 17:59:33 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -307,10 +307,14 @@ char *decode_notice(notice)
     /*
      * Convert host notice sent from to ascii:
      */
-    fromhost = gethostbyaddr(&(notice->z_sender_addr), sizeof(struct in_addr),
-			   AF_INET);
-    var_set_variable("fromhost", fromhost ? fromhost->h_name :
-		     inet_ntoa(notice->z_sender_addr));
+    if (notice->z_sender_addr.s_addr) {
+	fromhost = gethostbyaddr(&(notice->z_sender_addr),
+				 sizeof(struct in_addr), AF_INET);
+	var_set_variable("fromhost", fromhost ? fromhost->h_name :
+			 inet_ntoa(notice->z_sender_addr));
+    } else {
+	var_set_variable("fromhost", inet_ntoa(notice->z_sender_addr));
+    }
 
     /*
      * Set $message to the message field of the notice with nulls changed
