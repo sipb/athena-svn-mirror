@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.vers.c,v 1.2 1996-10-03 04:45:05 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.vers.c,v 1.3 1998-01-20 23:13:36 ghudson Exp $ */
 /*
  * tc.vers.c: Version dependent stuff
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.vers.c,v 1.2 1996-10-03 04:45:05 ghudson Exp $")
+RCSID("$Id: tc.vers.c,v 1.3 1998-01-20 23:13:36 ghudson Exp $")
 
 #include "patchlevel.h"
 
@@ -355,7 +355,7 @@ gethosttype()
     hosttype = "decmips";
 #   else
 #    ifdef sgi /* sgi iris 4d */
-    hosttype = "sgi";
+    hosttype = "iris4d";
 #    else
 #     ifdef sony_news
     hosttype = "news_mips";
