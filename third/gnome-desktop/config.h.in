@@ -1,70 +1,10 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-#undef ENABLE_NLS
-#undef HAVE_CATGETS
-#undef HAVE_DEVGTK
-#undef HAVE_GETTEXT
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef HAVE_LIBSM
-#undef HAVE_PROGRAM_INVOCATION_SHORT_NAME
-#undef HAVE_PROGRAM_INVOCATION_NAME
-
-#undef HAVE_ESD
-#undef HAVE_LIBESD
-
-#undef HAVE_LIBGTOP
-
-/* Define if LibGTop has support for multiple processors. */
-#undef HAVE_LIBGTOP_SMP
-
-/* Define if there is no `u_int64_t' and `int64_t'. */
-#undef u_int64_t
-#undef int64_t
-
-#undef HAVE_DEVGTK
-
-/* LibGTop major, minor and micro version. */
-#undef LIBGTOP_MAJOR_VERSION
-#undef LIBGTOP_MINOR_VERSION
-#undef LIBGTOP_MICRO_VERSION
-
-/* LibGTop version and numerical version code ("1.234.567" -> 1234567). */
-#undef LIBGTOP_VERSION
-#undef LIBGTOP_VERSION_CODE
-
-/* LibGTop server version, increased each time the protocol changes. */
-#undef LIBGTOP_SERVER_VERSION
-
-/* Location of KDE menus */
-#undef KDE_MENUDIR
-#undef KDE_ICONDIR
-#undef KDE_MINI_ICONDIR
-
-/* Location of KDE documentation */
-#undef KDE_DOCDIR
-
-#undef HAVE_ZVT_TERM_RESET
-#undef HAVE_ZVT_DEL_IS_DEL
-
-#undef HAVE_HOSTS_ACCESS
-
-#undef HAVE_LIBBZ2
-#undef HAVE_LIBBZ2_1_0
-
-#undef HAVE__ICETRANSNOLISTEN
-#undef DO_LIBICE_CHECK
-
-#undef HAVE_LIBXINERAMA
-
-#undef HAVE_GNOME_PRINT
-
-#undef GETTEXT_PACKAGE
-
-#undef HAVE_STARTUP_NOTIFICATION
-
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
+
+/* The gettext translation domain */
+#undef GETTEXT_PACKAGE
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
@@ -90,6 +30,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define if the startup-notification package is present */
+#undef HAVE_STARTUP_NOTIFICATION
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -110,6 +53,15 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* The KDE icon directory */
+#undef KDE_ICONDIR
+
+/* The KDE menu directory */
+#undef KDE_MENUDIR
+
+/* The KDE mini icon directory */
+#undef KDE_MINI_ICONDIR
 
 /* Name of package */
 #undef PACKAGE

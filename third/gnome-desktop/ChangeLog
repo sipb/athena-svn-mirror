@@ -1,3 +1,66 @@
+2005-02-14  Vincent Untz  <vincent@vuntz.net>
+
+	* configure.in, README, NEWS: Version 2.8.3.
+
+2004-12-02  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-11-29  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-10-27  Davyd Madeley  <davyd@madeley.id.au>
+
+	gnome-2-8 branch
+
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.2.
+
+==================== 2.8.1 ====================
+
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.1.
+
+2004-10-10  Shaun McCance  <shaunm@gnome.org>
+
+	* gnome-about/contributors.h:
+	- Added myself
+
+2004-10-06  James Henstridge  <james@jamesh.id.au>
+
+	* acconfig.h: remove unneeded file.
+
+	* configure.in: pass a comment string to each AC_DEFINE() call.
+
+	Fixes bug #154647:
+
+	* configure.in: modernise the configure script a bit.
+
+	* Makefile.am: add some files to clean lists.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require >= 1.7.
+
+2004-09-29  Mark McLoughlin  <mark@skynet.ie>
+
+	Sent by James Ogley <james@rubberturnip.org.uk>
+
+	* pixmaps/gnome-suse.png: more recent icon.
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* pixmaps/gnome-modem.png,
+	  pixmaps/gnome-money.png: new icons from
+	Jakub Steiner.
+
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0 ====================
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.
