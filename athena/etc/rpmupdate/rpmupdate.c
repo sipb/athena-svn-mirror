@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.4 2001-03-30 16:08:09 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.5 2001-04-05 00:30:01 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -57,6 +57,7 @@ struct package {
 
 struct notify_data {
   FD_t fd;
+  int total;
   int hashmarks_flag;
   int hashmarks_printed;
 };
@@ -70,8 +71,8 @@ static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_installed_versions(struct package **pkgtab);
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks);
-static void *notify(const Header h, const rpmCallbackType what,
-		    const unsigned long amount, const unsigned long total,
+static void *notify(const void *arg, rpmCallbackType what,
+		    unsigned long amount, unsigned long total,
 		    const void *pkgKey, void *data);
 static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
@@ -207,8 +208,8 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
 
 static void read_installed_versions(struct package **pkgtab)
 {
+  rpmdbMatchIterator mi;
   Header h;
-  int offset;
   char *pkgname, *version, *release;
   struct package *pkg;
   rpmdb db;
@@ -218,13 +219,11 @@ static void read_installed_versions(struct package **pkgtab)
   if (rpmdbOpen(NULL, &db, O_RDONLY, 0644))
     die("Can't open RPM database for reading");
 
-  for (offset = rpmdbFirstRecNum(db);
-       offset != 0;
-       offset = rpmdbNextRecNum(db, offset))
+  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  if (mi == NULL)
+    die("Failed to initialize database iterator\n");
+  while ((h = rpmdbNextIterator(mi)) != NULL)
     {
-      h = rpmdbGetRecord(db, offset);
-      if (h == NULL)
-	die("Failed to read database record\n");
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       if (!headerGetEntry(h, RPMTAG_EPOCH, NULL, (void **) &epoch, NULL))
 	epoch = NULL;
@@ -249,8 +248,6 @@ static void read_installed_versions(struct package **pkgtab)
 	}
       else
 	freerev(&rev);
-
-      headerFree(h);
     }
 
   rpmdbClose(db);
@@ -259,13 +256,14 @@ static void read_installed_versions(struct package **pkgtab)
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks)
 {
-  int r, i, offset;
+  int r, i;
   struct package *pkg;
   rpmdb db;
   rpmTransactionSet rpmdep;
   rpmProblemSet probs = NULL;
   struct rpmDependencyConflict *conflicts;
   int nconflicts;
+  rpmdbMatchIterator mi;
   Header h;
   enum act action;
   char *pkgname;
@@ -310,26 +308,15 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
    * installed at two different versions on the system, we will remove
    * both packages.
    */
-  for (offset = rpmdbFirstRecNum(db);
-       offset != 0;
-       offset = rpmdbNextRecNum(db, offset))
+  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  if (mi == NULL)
+    die("Failed to initialize database iterator\n");
+  while ((h = rpmdbNextIterator(mi)) != NULL)
     {
-      h = rpmdbGetRecord(db, offset);
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->erase)
-	{
-	  /* What we'd really like to do is display hashmarks while
-	   * we're actually removing the package.  But librpm doesn't
-	   * issue callbacks for erased RPMs, so we can't do that
-	   * currently.  Instead, tell people what packages we're
-	   * going to erase.
-	   */
-	  if (hashmarks)
-	    printf("Scheduling removal of package %s\n", pkgname); 
-	  rpmtransRemovePackage(rpmdep, offset);
-	}
-      headerFree(h);
+	rpmtransRemovePackage(rpmdep, rpmdbGetIteratorOffset(mi));
     }
 
   /* The transaction set is complete.  Check for dependency problems. */
@@ -360,10 +347,11 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 }
 
 /* Callback function for rpmRunTransactions. */
-static void *notify(const Header h, const rpmCallbackType what,
-		    const unsigned long amount, const unsigned long total,
+static void *notify(const void *arg, rpmCallbackType what,
+		    unsigned long amount, unsigned long total,
 		    const void *pkgKey, void *data)
 {
+  Header h = (Header) arg;
   const char *filename = pkgKey;
   struct notify_data *ndata = data;
   int n;
@@ -379,15 +367,26 @@ static void *notify(const Header h, const rpmCallbackType what,
       return NULL;
 
     case RPMCALLBACK_INST_START:
+    case RPMCALLBACK_UNINST_START:
+      ndata->total = total;
       if (ndata->hashmarks_flag)
 	{
 	  ndata->hashmarks_printed = 0;
-	  printf("%-28s", headerSprintf(h, "%{NAME}", rpmTagTable,
+	  printf("%c ", (what == RPMCALLBACK_INST_START) ? '+' : '-');
+	  printf("%-26s", headerSprintf(h, "%{NAME}", rpmTagTable,
 					rpmHeaderFormats, NULL));
 	  fflush(stdout);
 	}
       return NULL;
 
+    case RPMCALLBACK_UNINST_PROGRESS:
+      /* "amount" is the number of files left to delete, and "total" is
+       * some meaningless (to us) file action.  Fix up these arguments
+       * so that "amount" increases from 1 to the file count, and fall
+       * through.
+       */
+      total = ndata->total;
+      amount = total - amount;
     case RPMCALLBACK_INST_PROGRESS:
       if (ndata->hashmarks_flag)
 	{
