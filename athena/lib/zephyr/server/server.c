@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.18 1987-11-20 12:32:59 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.19 1987-12-14 19:25:41 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -325,7 +325,7 @@ struct sockaddr_in *who;
 	xfree(otherservers);
 	otherservers = temp;
 	/* don't reschedule limbo's timer, so start i=1 */
-	for (i = 1; i < nservers - 1; i++) {
+	for (i = 1; i < nservers; i++) {
 		if (i == me_server_idx) /* don't reset myself */
 			continue;
 		/* reschedule the timers--we moved otherservers */
@@ -679,6 +679,7 @@ ZServerDesc_t *server;
 		send_stats(who);
 		return;
 	}
+#ifdef notdef
 	syslog(LOG_INFO, "disp: new server?");
 	if (server_register(notice, auth, who) != ZERR_NONE)
 		syslog(LOG_INFO, "new server failed");
@@ -688,6 +689,10 @@ ZServerDesc_t *server;
 		       ntohs(who->sin_port));
 		hello_respond(who, DONT_ADJUST, auth);
 	}
+#else
+	syslog(LOG_INFO, "srv_adisp: server attempt from %s",
+	       inet_ntoa(who->sin_addr));
+#endif /* notdef */
 	return;
 }
 
