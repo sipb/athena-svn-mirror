@@ -25,8 +25,8 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp ssh_config $RPM_BUILD_ROOT/etc/ssh_config
 cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
-cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
-chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
+cp athena-opensshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-opensshd
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-opensshd
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -56,9 +56,9 @@ if [ ! -f /etc/ssh_host_dsa_key ]; then
 	    -N ''
 fi
 
-chkconfig --add athena-sshd
+chkconfig --add athena-opensshd
 
 %preun
 if [ $1 = 0 ]; then
-  chkconfig --del athena-sshd
+  chkconfig --del athena-opensshd
 fi
