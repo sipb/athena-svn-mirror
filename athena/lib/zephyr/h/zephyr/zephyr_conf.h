@@ -4,8 +4,8 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
- *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.6 1989-03-23 09:47:32 jtkohl Exp $
+ *	$Author: raeburn $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.7 1990-12-21 17:38:39 raeburn Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -58,6 +58,12 @@ typedef int gid_t;
 #endif /* KERBEROS */
 #define	FD_CLR(n, p)	((p)->fds_bits[0] &= ~(1 << (n)))
 #endif /* ultrix */
+
+#ifdef macII
+#define FD_ZERO(p)  ((p)->fds_bits[0] = 0)
+#define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
+#define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
+#endif
 
 #ifndef KERBEROS
 #define	REALM_SZ	MAXHOSTNAMELEN
