@@ -1,4 +1,4 @@
-# $Id: packages,v 1.282 2004-09-26 15:16:38 ghudson Exp $
+# $Id: packages,v 1.283 2004-09-28 15:40:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -211,6 +211,7 @@ third/ifplugd			on linux requires libdaemon
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
+third/intltool			except linux,solaris
 third/ispell
 third/jot
 third/jpeg			except linux
