@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.4 1994-04-30 00:18:06 cfields Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.5 1994-06-07 09:30:56 cfields Exp $
 .TH DM 8 "30 April 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -38,7 +38,7 @@ errors while starting up, it will initiate a console login.
 If the console exits, another one will be started.  If the X server or
 xlogin exit, the display manager will clean up and exit.  If xlogin
 exits with status 2, it is requesting that a raw console login be
-started.  If the display manager receives SIGFPE, it will kill it's
+started.  If the display manager receives SIGFPE, it will kill its
 children and sleep forever (this is a way to shutdown the display
 during updates).  If it receives SIGUSR2, this means that xlogin added
 a user to /etc/passwd and the display manager should clean that up on
