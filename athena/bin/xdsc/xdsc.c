@@ -14,7 +14,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.5 1990-12-12 14:28:22 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.6 1990-12-20 15:29:00 sao Exp $";
 
 /*
 ** Globals
@@ -72,6 +72,7 @@ static Widget	helpButton, quitButton;
 static Widget	label1W;
 static int	prevfirst = 0;
 static Boolean	changedMeetingList = False;
+static XawTextPosition	startOfCurrentLine = -1;
 
 static char *botstrings[] = {
 	"next", "prev", 
@@ -87,14 +88,6 @@ static char *sampletop2 =
 	of a new meeting, as found in the \"new_meetings\"\n\
 	meeting, default values will be read from it.";
 
-/*
-static XawTextSelectType sampleselections[] = {
-	XawselectLine,
-	XawselectNull
-};
-*/
-
-
 static CommandWidget	topbuttons[MAX_TOP_BUTTONS];
 
 static XawTextPosition	savedstart = -1;
@@ -109,7 +102,7 @@ char *argv[];
 	Arg	args[1];
 	int	width;
 
-	if (argc > 1)
+	if (argc > 1 && !strcmp(argv[1], "-debug"))
 		debug = True;
 
 	if (debug)
@@ -163,7 +156,7 @@ char *argv[];
 
 	topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
 
-	free (newpath);
+	myfree (newpath);
 
 	BuildUserInterface ();
 
@@ -243,10 +236,6 @@ BuildUserInterface()
 	CommandWidget	commandW;
 	Arg		args[5];
 	unsigned int	n, i;
-
-	static String	specialTranslations =
-		"<Btn1Up>:	Update() \n\
-		<Btn2Up>:	Update()";
 
 	static XtActionsRec actions[] = {
 		{"BotFakeKeyPress",	BotFakeKeyPress},
@@ -378,11 +367,6 @@ BuildUserInterface()
 	XtInstallAccelerators(bottextW, paneW);
 	XtInstallAllAccelerators(paneW, paneW);
 
-/*
-** For the upper text widget:  Special actions for buttons one and two.
-*/
-	XtOverrideTranslations(	toptextW,
-				XtParseTranslationTable(specialTranslations));
 }
 
 static void
@@ -541,9 +525,6 @@ XtPointer	call_data;
 		ParseMeetingsFile();
 		n = 0;
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
-/*
-		XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
-*/
 		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
 		reading = False;
@@ -569,6 +550,7 @@ XtPointer	call_data;
 		SaveTopTextWidget();
 		prevfirst = TransactionNum(CURRENT);
 		PutUpTransactionList(TransactionNum(CURRENT), TransactionNum(LAST));
+		UpdateHighlightedTransaction(TransactionNum(CURRENT));
 		break;
 
 	}
@@ -623,17 +605,26 @@ XtPointer	call_data;
 		PutUpTransactionList(
 			TransactionNum(HIGHESTSEEN), TransactionNum(LAST));
 		prevfirst = TransactionNum(HIGHESTSEEN);
+		UpdateHighlightedTransaction(TransactionNum(CURRENT));
 		break;
 	case 1:
 		PutUpTransactionList(
 			TransactionNum(FIRST), TransactionNum(LAST));
 		prevfirst = TransactionNum(FIRST);
+		UpdateHighlightedTransaction(TransactionNum(CURRENT));
 		break;
 	case 2:
+		PutUpTransactionList(	prevfirst <= 10 ? 1 : prevfirst - 10, 
+					TransactionNum(LAST));
+		UpdateHighlightedTransaction(prevfirst - 1);
+
+/*  Since "back ten" is typically used for searching through
+**  a list of headers, I removed the following line because it made
+**  the back tenning go too slowly.
+		GoToTransaction(prevfirst - 1, True);
+*/
 		prevfirst -= 10;
 		if (prevfirst <=0) prevfirst = 1;
-		PutUpTransactionList(
-			prevfirst, TransactionNum(LAST));
 		break;
 	case 3:
 		RestoreTopTextWidget();
@@ -1025,9 +1016,6 @@ TextWidget	textW;
 		message[cursize - BUFSIZE + numread] = '\0';
 		n = 0;
 		XtSetArg (args[n], XtNstring, message);		n++;
-/*
-		XtSetArg (args[n], XtNlength, strlen(message));	n++;
-*/
 		XtSetValues (textW, args, n);
 	}
 	else {
@@ -1061,9 +1049,8 @@ ParseMeetingsFile()
 		myfree (meetinglist);
 
 	i = strlen(fulllist) * 2;
-	if (debug) fprintf (stderr, "Want to allocate %d\n",i);
 	meetinglist = (char *) calloc (i, sizeof(char));
-	if (debug) fprintf (stderr, "Allocated %d\n", i);
+	if (debug) fprintf (stderr, "Allocated %x, %d long\n", meetinglist, i);
 
 	secondquote = fulllist;
 
@@ -1282,12 +1269,6 @@ int	finish;
 	static char	oldmeeting[LONGNAMELEN];
 	static int	oldstart=0, oldfinish=0;
 
-	sprintf (	command, 
-			"Reading headers for transactions %d to %d%s...", 
-			start, finish,
-			(finish-start>100)?" (This may take a while)":"");
-
-	PutUpTempMessage(command);
 
 	SetLabelsAndCallback (LISTTRNS);
 
@@ -1299,6 +1280,9 @@ int	finish;
 		finish == oldfinish && 
 		start <= oldstart) {
 
+		if (oldstart == start)
+			return;
+
 		sprintf (	command, 
 				"mv %s-list %s-old", 
 				filebase, filebase);
@@ -1308,6 +1292,13 @@ int	finish;
 					filebase);
 			PutUpWarning("WARNING", command, False);
 		}
+
+		sprintf (	command, 
+				"Reading headers for transactions %d to %d%s...", 
+				start, oldstart-1,
+				(oldstart-start>100) ? " (This may take a while)":"");
+
+		PutUpTempMessage(command);
 
 		sprintf (filename, "%s-list", filebase);
 		sprintf (command, "(ls %s %d %d 0 %s)\n", filename, 
@@ -1329,7 +1320,6 @@ int	finish;
 		}
 
 		FileIntoWidget(filename, (Widget) toptextW);
-		UpdateHighlightedTransaction(TransactionNum(CURRENT));
 
 		myfree (returndata);
 		sprintf (filename, "%s-old", filebase);
@@ -1340,6 +1330,13 @@ int	finish;
 ** Get an entirely new list
 */
 	else {
+
+		sprintf (	command, 
+			"Reading headers for transactions %d to %d%s...", 
+			start, finish,
+			(finish-start>100)?" (This may take a while)":"");
+
+		PutUpTempMessage(command);
 		sprintf (filename, "%s-list", filebase);
 		unlink (filename);
 
@@ -1351,8 +1348,6 @@ int	finish;
 			TakeDownTempMessage();
 			return (-1);
 		}
-
-		UpdateHighlightedTransaction(TransactionNum(CURRENT));
 
 		myfree (returndata);
 	}
@@ -1423,12 +1418,6 @@ RestoreTopTextWidget()
 	if (changedMeetingList) {
 		TopButton1CB (NULL, (XtPointer)2, NULL);
 		changedMeetingList = False;
-
-/*
-		reading = False;
-		(void) HighlightNewItem((Widget) toptextW, NEXTNEWS, True);
-		GoToTransaction(TransactionNum(HIGHESTSEEN), True);
-*/
 	}
 /*
 ** Otherwise, restore the old meeting list.
@@ -1436,9 +1425,6 @@ RestoreTopTextWidget()
 
 	else {
 		n = 0;
-/*
-		XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
-*/
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
 		XtSetValues (toptextW, args, n);
 		PutUpArrow(toptextW, savedstart);
@@ -1499,16 +1485,6 @@ int num;
 		for (bar = foo; *bar && *bar != '\n'; bar++)
 			;
 		PutUpArrow(toptextW, foo - tempstring);
-
-/*
-		while (bar - tempstring < toptextW->text.lt.info[0].position) {
-			TryToScrollAPage(toptextW, -1);
-		}
-
-		while (bar - tempstring >= toptextW->text.lt.info[toptextW->text.lt.lines].position) {
-			TryToScrollAPage(toptextW, 1);
-		}
-*/
 	}
 	if (bar)
 		lastend = bar - tempstring;
@@ -1555,7 +1531,6 @@ XawTextPosition	start;
 {
 	XawTextBlock		textblock;
 	static XawTextPosition	oldstart = -1;
-	int			offset;
 	static int		oldTopScreen = -1;
 
 /*
@@ -1566,27 +1541,23 @@ XawTextPosition	start;
 
 	oldTopScreen = whichTopScreen;
 
-	if (whichTopScreen == MAIN)
-		offset = 7;
-	else
-		offset = 7;
-
 	textblock.firstPos = 0;
 	textblock.length = 1;
 	textblock.format = FMT8BIT;
 
 	if (oldstart != -1) {
 		textblock.ptr = " ";
-		XawTextReplace (	textW, oldstart + offset, 
-					oldstart + offset + 1, &textblock);
+		XawTextReplace (	textW, oldstart + 7, 
+					oldstart + 8, &textblock);
 	}
 
 	textblock.ptr = "+";
 
-	XawTextReplace (	textW, start + offset, 
-				start + offset + 1, &textblock);
+	XawTextReplace (	textW, start + 7, 
+				start + 8, &textblock);
 
 	XawTextSetInsertionPoint (textW, start);
+	startOfCurrentLine = start;
 
 	XFlush(XtDisplay(textW));
 
@@ -1595,7 +1566,11 @@ XawTextPosition	start;
 
 /*
 **  This assumes the insert position is at the start of the line containing
-**  the letter 'c'.  If UseStringInPlace were True for toptextW, we
+**  the letter 'c'.  
+*/
+
+/*
+**  If UseStringInPlace were True for toptextW, we
 **  wouldn't need both the XawTextReplace and the setting of
 **  the char in meetinglist, but setting it to True causes weird
 **  memory overlaps I haven't figured out yet.
@@ -1612,7 +1587,10 @@ RemoveLetterC()
 	textblock.format = FMT8BIT;
 	textblock.ptr = " ";
 
+	inspoint = startOfCurrentLine;
+/*
 	inspoint = XawTextGetInsertionPoint(toptextW);
+*/
 
 	if (inspoint > strlen (meetinglist))
 		return;
