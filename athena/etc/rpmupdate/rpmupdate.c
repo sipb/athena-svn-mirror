@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.1 2001-03-09 20:38:00 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.1.2.1 2001-03-09 21:22:49 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
