@@ -1,8 +1,8 @@
 #
-# $Id: Imakefile,v 1.23 1994-03-17 20:33:37 cfields Exp $
+# $Id: Imakefile,v 1.24 1997-12-15 00:35:31 cfields Exp $
 #
 # Remember: most conditionalization should be done in the package, not here.
 
 
 SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
-
+install_man(gettime.8,gettime.8)
