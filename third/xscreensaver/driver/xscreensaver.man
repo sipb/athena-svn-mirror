@@ -11,7 +11,7 @@
 .if n .sp 1
 .if t .sp .5
 ..
-.TH XScreenSaver 1 "22-Nov-98 (3.06)" "X Version 11"
+.TH XScreenSaver 1 "15-Mar-99 (3.08)" "X Version 11"
 .SH NAME
 xss - graphics hack and screen locker, launched when the user is idle
 .SH SYNOPSIS
@@ -39,6 +39,8 @@ xss - graphics hack and screen locker, launched when the user is idle
 [\-no\-sgi\-extension] \
 [\-xidle\-extension] \
 [\-no\-xidle\-extension] \
+[\-proc\-interrupts] \
+[\-no\-proc\-interrupts] \
 [\-xrm \fIresources\fP]
 .SH DESCRIPTION
 The \fIxss\fP program waits until the keyboard and mouse have been 
@@ -421,6 +423,24 @@ used to decide whether the user is idle.  This is the default
 if \fIxss\fP has been compiled with support for this extension.
 (This extension is only available for X11R4 and X11R5 systems, unfortunately.)
 .TP 8
+.B procInterrupts\fP (class \fBBoolean\fP)
+This resource controls whether the \fB/proc/interrupts\fP file should be
+consulted to decide whether the user is idle.  This is the default
+if \fIxscreensaver\fP has been compiled on a system which supports this
+mechanism (i.e., Linux systems.)  
+
+The benefit to doing this is that \fIxscreensaver\fP can note that the user
+is active even when the X console is not the active one: if the user is 
+typing in another virtual console, xscreensaver will notice that and will
+fail to activate.  For example, if you're playing Quake in VGA-mode, 
+xscreensaver won't wake up in the middle of your game and start competing 
+for CPU.
+
+The drawback to doing this is that perhaps you \fIreally do\fP want idleness
+on the X console to cause the X display to lock, even if there is activity
+on other virtual consoles.  If you want that, then set this option to False.
+(Or just lock the X console manually.)
+.TP 8
 .B overlayStderr\fP (class \fBBoolean\fP)
 If \fBcaptureStderr\fP is True, and your server supports ``overlay'' visuals,
 then the text will be written into one of the higher layers instead of into
@@ -517,6 +537,12 @@ Same as setting the \fIxidleExtension\fP resource to \fItrue\fP.
 .TP 8
 .B \-no\-xidle\-extension
 Same as setting the \fIxidleExtension\fP resource to \fIfalse\fP.
+.TP 8
+.B \-proc\-interrupts
+Same as setting the \fIprocInterrupts\fP resource to \fItrue\fP.
+.TP 8
+.B \-no\-proc\-interrupts
+Same as setting the \fIprocInterrupts\fP resource to \fIfalse\fP.
 .TP 8
 .B \-xrm \fIresource-specification\fP
 As with all other Xt programs, you can specify X resources on the command-line
@@ -946,7 +972,7 @@ unlock the screen.
 
 This is a design flaw in PAM (there is no way for a client to tell the
 difference between PAM responding ``I have never heard of your module,''
-and responding, ``you typed the wrong password.''  As far as I can tell,
+and responding, ``you typed the wrong password.'')  As far as I can tell,
 there is no way for xss to automatically work around this, or
 detect the problem in advance, so if you have PAM, make sure it is
 configured correctly!
@@ -1026,17 +1052,6 @@ periodically, like
 or
 .BR xload (1).
 .TP 8
-.B Doom and Quake
-On some systems, Doom, Quake, and other games intercept the keyboard in
-ways that X programs can never detect.  Therefore, when running these games,
-xss might think the console is idle, and activate.  In the worst
-case, xss might blank the screen and mess up the game.  Alternately,
-xss might activate on the X display while leaving the game visible,
-and merely cause the game to slow down.
-
-I don't know how to fix this, because I don't know how to detect the kind 
-of keyboard activity that occurs during these games.  Suggestions are welcome.
-.TP 8
 .B Latency and Responsiveness
 If the subprocess is drawing too quickly and the connection to the X
 server is a slow one (such as an X terminal running over a phone line) then 
@@ -1048,6 +1063,30 @@ alleviated by inserting strategic calls to
 .BR XSync (3)
 in code intended for use as a screensaver.  This prevents too much graphics
 activity from being buffered up.
+.TP 8
+.B XFree86's Magic Keystrokes
+The XFree86 X server traps certain magic keystrokes before client programs ever
+see them.  Two that are of note are Ctrl+Alt+Backspace, which causes 
+the X server to exit; and Ctrl+Alt+F\fIn\fP, which switches virtual consoles.
+The X server will respond to these keystrokes even if xscreensaver has the
+screen locked.  Depending on your setup, you might consider this a problem.
+
+Unfortunately, there is no way for xscreensaver itself to override the
+interpretation of these keys.  If you want to disable Ctrl+Alt+Backspace
+globally, you need to set the \fIDontZap\fP flag in 
+your \fI/etc/X11/XF86Config\fP file.  See the
+.BR XF86Config (5)
+manual for details.
+
+There is no way (as far as I can tell) to disable the VT-switching keystrokes.
+
+Some Linux systems come with a VT_LOCKSWITCH ioctl, that one could 
+theoretically use to prevent VT-switching while the screen is locked; 
+but unfortunately, this ioctl can only be used by root, which means
+that xscreensaver can't use it (since xscreensaver disavows its privileges
+shortly after startup, for security reasons.)
+
+Any suggestions for other solutions to this problem are welcome.
 .TP 8
 .B XView Clients
 Apparently there are some problems with XView programs getting confused
@@ -1134,6 +1173,10 @@ time to do 3D.  But this means that accelerated 3D only happens in full-screen
 mode (you can't do it in a window, and you can't see the output of 3D and 2D
 programs simultaniously), and that 3D will probably drive your monitor at a
 lower resolution, as well.  It's bizarre.
+
+If you find that GL programs only work properly when run as root, and not
+as normal users, then the problem is that your \fI/dev/3dfx\fP file is not
+configured properly.  Check the Linux 3Dfx FAQ.
 .TP 8
 .B Extensions
 If you are not making use of one of the server extensions (\fBXIDLE\fP,
@@ -1272,7 +1315,7 @@ http://www.jwz.org/xscreensaver/
 .BR xv (1),
 .BR xwave (1).
 .SH COPYRIGHT
-Copyright \(co 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Copyright \(co 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999
 by Jamie Zawinski.  Permission to use, copy, modify, distribute, and sell
 this software and its documentation for any purpose is hereby granted without
 fee, provided that the above copyright notice appear in all copies and that

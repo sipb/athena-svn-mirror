@@ -14,15 +14,16 @@
 # include "config.h"
 #endif
 
-#ifdef HAVE_XPM		/* whole file */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <X11/Intrinsic.h>
-#include <X11/Xutil.h>
-#include <X11/xpm.h>
 
 extern char *progname;
+
+#ifdef HAVE_XPM		/* whole file */
+
+#include <X11/Xutil.h>
+#include <X11/xpm.h>
 
 static Bool
 bigendian (void)

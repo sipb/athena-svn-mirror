@@ -175,6 +175,7 @@ static const char * const prefs[] = {
   "sgiSaverExtension",
   "mitSaverExtension",
   "xidleExtension",
+  "procInterrupts",
   "overlayStderr",
   "overlayTextBackground",	/* not saved -- X resources only */
   "overlayTextForeground",	/* not saved -- X resources only */
@@ -635,6 +636,7 @@ write_init_file (saver_preferences *p, const char *version_string)
       CHECK("sgiSaverExtension")type = pref_bool, b=p->use_sgi_saver_extension;
       CHECK("mitSaverExtension")type = pref_bool, b=p->use_mit_saver_extension;
       CHECK("xidleExtension")	type = pref_bool, b = p->use_xidle_extension;
+      CHECK("procInterrupts")	type = pref_bool, b = p->use_proc_interrupts;
       CHECK("overlayStderr")	type = pref_bool, b = overlay_stderr_p;
       CHECK("overlayTextBackground") continue;  /* don't save */
       CHECK("overlayTextForeground") continue;  /* don't save */
@@ -795,6 +797,7 @@ load_init_file (saver_preferences *p)
 						     "Boolean");
   p->use_sgi_saver_extension = get_boolean_resource ("sgiSaverExtension",
 						     "Boolean");
+  p->use_proc_interrupts = get_boolean_resource ("procInterrupts", "Boolean");
 
   /* Throttle the various timeouts to reasonable values.
    */
