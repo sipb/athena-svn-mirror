@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.19 1990-11-15 13:38:51 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.20 1990-11-16 07:58:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.19 1990-11-15 13:38:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.20 1990-11-16 07:58:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -320,7 +320,9 @@ handle_response(response, req)
       return(ERROR);       
 
     case INSTANCE_NOT_FOUND:
-      fprintf(stderr,"Incorrect instance specified.\n");
+      fprintf(stderr,"Incorrect instance (%s [%d]) specified.\n",
+	      req->target.username,
+	      req->target.instance);
       return(ERROR);       
 
     case ERROR: 		
@@ -328,7 +330,7 @@ handle_response(response, req)
       return(ERROR); 	   
 
     case USER_NOT_FOUND:
-      fprintf(stderr,"User \"%s\" not found.\n",req->target.username);
+      fprintf(stderr,"User \"%s\" not found.\n", req->target.username);
       return(ERROR); 
 
     case NAME_NOT_UNIQUE:
