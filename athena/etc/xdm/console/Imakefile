@@ -1,9 +1,10 @@
-# $Id: Imakefile,v 1.2 1999-01-22 23:16:07 ghudson Exp $
+# $Id: Imakefile,v 1.2.4.1 1999-11-09 19:24:41 tb Exp $
 
 CFILES = config_console.c
 OBJS = config_console.o
 
-
+create_dir($(ATHBINDIR))
+create_dir($(ATHMANDIR)/man1)
 build_program(config_console,config_console.o,,)
 install_program(config_console,-m 4755 -o root,$(ATHBINDIR)/config_console)
 
