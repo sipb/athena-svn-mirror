@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.8 1997-04-01 01:02:28 ghudson Exp $
+ * $Id: attachtab.c,v 1.9 1998-01-08 06:06:20 ghudson Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.8 1997-04-01 01:02:28 ghudson Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.9 1998-01-08 06:06:20 ghudson Exp $";
 #endif lint
 
 #include "attach.h"
@@ -22,7 +22,6 @@ static int parse_attach();
 
 struct	_attachtab	*attachtab_first, *attachtab_last;
 
-extern char *sys_errlist[];
 static int debug_flag = 0;
 static char attachtab_fn[512];
 static char *abort_msg = "quota: aborting\n";
@@ -75,8 +74,7 @@ void lock_attachtab()
 	if (attach_lock_fd < 0) {
 	    attach_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 	    if (attach_lock_fd < 0) {
-		fprintf(stderr,"Can't open %s: %s\n", lockfn,
-			sys_errlist[errno]);
+		fprintf(stderr,"Can't open %s: %s\n", lockfn, sterror(errno));
 		fprintf(stderr, abort_msg);
 		exit(ERR_FATAL);
 	    }
@@ -92,8 +90,7 @@ void lock_attachtab()
 	status = flock(attach_lock_fd, LOCK_EX);
 #endif
 	if (status == -1) {
-	    fprintf(stderr, "Unable to lock attachtab: %s\n",
-		    sys_errlist[errno]);
+	    fprintf(stderr, "Unable to lock attachtab: %s\n", strerror(errno));
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
 	}
@@ -135,7 +132,7 @@ void get_attachtab()
     free_attachtab();
     if ((f = fopen(attachtab_fn, "r")) == NULL) {
 	fprintf(stderr, "Unable to open %s: %s\n",
-		attachtab_fn, sys_errlist[errno]);
+		attachtab_fn, strerror(errno));
 	return;
     }
 	
@@ -199,7 +196,7 @@ put_attachtab()
     (void) strcat(tempfn, ".temp");
     if (!(f = fopen(tempfn, "w"))) {
 	fprintf(stderr,"Can't open %s for write: %s\n", attachtab_fn,
-		sys_errlist[errno]);
+		strerror(errno));
 	fprintf(stderr, abort_msg);
 	exit(ERR_FATAL);
     }
