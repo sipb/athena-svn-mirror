@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.15 1989-03-23 09:31:59 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.16 1989-05-25 15:23:23 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.15 1989-03-23 09:31:59 jtkohl Exp $";
+static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.16 1989-05-25 15:23:23 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -22,6 +22,9 @@ static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/param.h>
+#ifdef KERBEROS
+#include "krb_err.h"
+#endif
 
 Code_t ZInitialize()
 {
