@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.19 1996-09-20 02:14:59 ghudson Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.20 1997-04-30 17:45:27 ghudson Exp $";
 #endif
 #endif
 
@@ -54,7 +54,6 @@ int has_question=FALSE;
 int init_screen=FALSE;
 int ask_screen=FALSE;
 int replay_screen=FALSE;
-int OLCR=0, OLC=0;
 
 /*
  *  Function:	main() is the startup for OLC.  It initializes the X display,
@@ -73,9 +72,7 @@ main(argc, argv)
 {  
   Arg args[10];
   int n = 0;
-#ifdef PUTENV
-  char buf[BUFSIZ];
-#endif
+  char *config;
 
   program = strrchr(*argv,'/');
   if(program == (char *) NULL)
@@ -83,16 +80,10 @@ main(argc, argv)
   if(*program == '/')
      ++program;
 
-  if(string_eq(program,"xolc"))
-    {
-      OLC = 1;
-    }
-  else
-    {
-      OLCR = 1;
-    }
-
-
+  config = getenv("OLXX_CONFIG");
+  if (! config)
+    config = OLC_CONFIG_PATH;
+ 
 /*
  *  First, try opening display.  If this fails, print a 'nice' error
  *  message and exit.
@@ -120,35 +111,38 @@ main(argc, argv)
 
   ++argv, --argc;
   while (argc > 0 && argv[0][0] == '-') {
-    if (!strcmp (argv[0], "-server")) {
+    if (!strcmp (argv[0], "-name") && (argc>1)) {
+      program = argv[1];
+      ++argv, --argc;
+    }
+    else if (!strcmp (argv[0], "-config") && (argc>1)) {
+      config = argv[1];
+      ++argv, --argc;
+    }
+    else if (!strcmp (argv[0], "-server") && (argc>1)) {
       /*
        * this is a kludge, but the other interface is already
        * there
        */
-#ifdef PUTENV
-      sprintf(buf,"OLCD_HOST=%s",argv[1]);
-      putenv(buf);
-#else
-      (void) setenv ("OLCD_HOST", argv[1], 1);
-#endif
+      set_env_var ("OLCD_HOST", argv[1]);
       ++argv, --argc;
     }
-    else if (!strcmp (argv[0], "-port")) {
-#ifdef PUTENV
-      sprintf(buf,"OLCD_PORT=%s", argv[1], 1);
-      putenv(buf);
-#else
-      (void) setenv ("OLCD_PORT", argv[1], 1);
-#endif
+    else if (!strcmp (argv[0], "-port") && (argc>1)) {
+      set_env_var ("OLCD_PORT", argv[1]);
       ++argv, --argc;
     }
     else {
-      fprintf (stderr, "%s: unknown control argument %s\n",
+      fprintf (stderr, "%s: flag unknown or its argument is missing: %s\n",
 	       program, argv[0]);
       exit (1);
     }
     ++argv;
     --argc;
+  }
+
+  if (incarnate(program, config) == FATAL) {
+    /* Fatal problem.  Messages indicating causes were already displayed... */
+    exit(1);
   }
 
   n=0;
@@ -184,6 +178,30 @@ main(argc, argv)
   XtMainLoop();
 }
 
+
+/* Set an environment variable.
+ * Arguments:	var: a string containing the name of the variable.
+ *		value: a string containing the new value.
+ * Returns:	nothing.
+ * Non-local returns: on some platforms, exits with code 1 if malloc fails.
+ */
+
+void
+set_env_var(const char *var, const char *value)
+{
+#ifdef PUTENV
+  char *buf = malloc(strlen(var)+strlen(value)+2);
+  if (buf == NULL)
+    {
+      fprintf(stderr, "Out of memory, can't expand environment.\n");
+      exit(1);
+    }
+  sprintf(buf, "%s=%s", var, value);
+  putenv(buf);
+#else
+  setenv (var, value, 1);
+#endif
+}
 
 /*
  * Function:    olc_init() completes the initialization process for
@@ -272,7 +290,7 @@ olc_init()
     }
 
   make_temp_name(file);
-  switch(x_get_motd(&Request,OLC,file,0))
+  switch(x_get_motd(&Request,0,file,FALSE))     /* NB: 2nd arg is irrelevant */
     {
     case FAILURE:
     case ERROR:
