@@ -167,7 +167,7 @@ installdirs:
 #	-test -d $(man3dir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(man3dir)
 	-test -d $(infodir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(infodir)
 	
-install: info installdirs
+install: installdirs
 	-$(INSTALL_DATA) $(srcdir)/bash.1 ${DESTDIR}$(man1dir)/bash.${man1ext}
 # uncomment the next line to install the readline man page
 #	-$(INSTALL_DATA) $(srcdir)/readline.3 $(man3dir)/readline.${man3ext}
