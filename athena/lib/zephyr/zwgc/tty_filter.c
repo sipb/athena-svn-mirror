@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/tty_filter.c,v $
- *      $Author: lwvanels $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.13 1992-08-26 04:21:45 lwvanels Exp $";
+static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.14 1994-08-19 14:15:26 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -88,7 +88,19 @@ char **argv;
 	    /* only complain if initializing tty mode, and would be first
 	       available port */
 	    ERROR("$TERM not set.  tty mode will be plain.\n");
-    } else {
+    }
+#ifdef _AIX
+    /* 
+     * This is a temporary KLUDGE to get around the problem where some people
+     * might start zwgc in their ~/.startup.X and it hangs on the RISC/6000.
+     * Apparently, the call to tgetent() with the Athena console window causes
+     * the process to get stopped on tty access.  Since the terminal type is
+     * "dumb" (set by tcsh), we can pretty much assume there isn't anything
+     * to setup from the termcap information.
+     */
+    else if (!strcmp(term, "dumb")) { }
+#endif
+    else {
 	tgetent(tc_buf, term);
     
 	/* Step 1: get all of {rv,bold,u,bell,blink} that are available. */
