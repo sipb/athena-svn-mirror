@@ -145,7 +145,7 @@ if [ "$out" ]; then
 		echo "xdpr: The following arguments will be ignored:"
 		echo $xprv $lprv
 	fi
-	/usr/bin/X11/xwd $xwdv
+	xwd $xwdv
 	exit 0
 fi
 
@@ -155,12 +155,12 @@ if [ "$infile" ]; then
 		echo "xdpr: The following arguments will be ignored:"
 		echo $xwdv
 	fi
-	/usr/bin/X11/xpr -header "$header" -trailer "$trailer" $xprv | $LP $lprv
+	xpr -header "$header" -trailer "$trailer" $xprv | $LP $lprv
 	exit 0
 fi
 
 # dump & print (default)
-/usr/bin/X11/xwd $xwdv | /usr/bin/X11/xpr -header "$header" -trailer "$trailer" $xprv | $LP $lprv
+xwd $xwdv | xpr -header "$header" -trailer "$trailer" $xprv | $LP $lprv
 exit 0	
 
 # EOF
