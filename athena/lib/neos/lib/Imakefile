@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.1 1991-06-30 15:29:12 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.2 1991-06-30 15:32:13 probe Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -42,8 +42,13 @@ FXCLOBJ = _fx_lengthen.o	fx_create.o		fx_move.o \
 	${ETSDIR}/krb_err.o	${ETSDIR}/rpc_err.o \
 	${PROTDIR}/fx_prot_clnt.o ${PROTDIR}/fx_prot_xdr.o
 
+#if defined(_IBMR2)
+INCLUDES = -I../include
+LIBS = -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err
+#else
 INCLUDES = -I../rpc3.9/usr/include -I../include
 LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err -lrpclib
+#endif
 
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
 
@@ -54,8 +59,8 @@ build_library(fxcl,${FXCLOBJ})
 llib-lfxcl.ln: ${FXCLSRC}
 	lint ${CFLAGS} -Cfxcl ${FXCLSRC}
 
-lint:	libfxcl.c
-	lint -u ${CFLAGS} libfxcl.c
+lint:	${FXCLSRC}
+	lint -u ${CFLAGS} ${FXCLSRC}
 
 saber_src:
 	/**/#suppress 287

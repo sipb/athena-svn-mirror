@@ -1,8 +1,8 @@
 /* 
  * Makefile for the FX (file exchange) protocol
  *
- * $Author: epeisach $
- * $Id: Imakefile,v 1.1 1991-06-24 16:16:05 epeisach Exp $
+ * $Author: probe $
+ * $Id: Imakefile,v 1.2 1991-06-30 15:32:10 probe Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -12,7 +12,13 @@
  *
  */
 
+#if defined(_IBMR2)
+RPCGEN=rpcgen
+INCLUDES = -I../include
+#else
+RPCGEN=../rpc3.9/usr/bin/rpcgen
 INCLUDES = -I../rpc3.9/usr/include -I../include
+#endif
 
 /* Define KERBEROS for Kerberos support */
 DEFKRB = -DKERBEROS
@@ -41,9 +47,9 @@ fx_prot_clnt.o: fx_prot_clnt.c
 fx_prot_xdr.o: fx_prot_xdr.c
 
 local_prot_clnt.c fx_prot_svc.c fx_prot_clnt.c fx_prot_xdr.c: fx_prot.x
-	../rpc3.9/usr/bin/rpcgen fx_prot.x
+	${RPCGEN} fx_prot.x
 	cat xdr_extras.c >> fx_prot_xdr.c
-	../rpc3.9/usr/bin/rpcgen -m fx_prot.x -o fx_prot_svc.c
+	${RPCGEN} -m fx_prot.x -o fx_prot_svc.c
 	rm -f local_prot_clnt.c fxtemp.c ../include/fx_prot.h
 	mv fx_prot.h ../include
 	grep -v "include <sys/time" < fx_prot_clnt.c > fxtemp.c
