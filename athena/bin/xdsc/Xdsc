@@ -1,5 +1,6 @@
 *loggingOn:	True
 *logfile:	/afs/athena.mit.edu/user/s/sao/scores/xdsc.log
+*BitmapFilePath:  /usr/athena/lib/X11/bitmaps:/usr/lib/X11/bitmaps:/usr/include/X11/bitmaps
 
 *font:					fixed
 
@@ -198,12 +199,12 @@ Ctrl<Key>Return:        TriggerAdd(Go) \n\
 <MapNotify>:		TriggerFocusMove(Here) \n\
 <Btn1Down>:		TriggerFocusMove(Here)
 
-*configurebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*modebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*showbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*gotobutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*enterbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*botbox.writebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*configurebutton.leftBitmap: menu12
+*modebutton.leftBitmap: menu12
+*showbutton.leftBitmap: menu12
+*gotobutton.leftBitmap: menu12
+*enterbutton.leftBitmap: menu12
+*botbox.writebutton.leftBitmap: menu12
 
 *warningpopup.pane.box.acknowledge.label:	dismiss
 *warningpopup.pane.label1.showGrip:		False
