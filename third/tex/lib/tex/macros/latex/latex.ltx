@@ -556,22 +556,6 @@
   \advance\count@\month
   \advance\count@-#2\relax}
 \expandafter\reserved@a\fmtversion\@nil
-\ifnum\count@>17
-  \typeout{^^J%
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
-!  You are attempting to make a LaTeX format from a source file^^J%
-!  That is more than one year old.^^J%
-!^^J%
-!  If you enter <return> to scroll past this message then the format^^J%
-!  will be built, but please consider obtaining newer source files^^J%
-!  before continuing to build LaTeX.^^J%
-!^^J%
-!  LaTeX is re-issued every 6 months, in June and December.^^J%
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
-}
-   \errhelp{To avoid this error message, obtain new LaTeX sources.}
-   \errmessage{LaTeX source files more than 1 year old!}
-\fi
 \let\reserved@a\relax
 \everyjob{\typeout{\fmtname
                                      \space<\fmtversion>}}
