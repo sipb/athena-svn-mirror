@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2005-03-31 22:12:43 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2005-04-02 03:59:14 ghudson Exp $
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -20,5 +20,5 @@ clean:
 
 install:
 	${MAKE} install DESTDIR="$$SRVD"
-	rm -f "$$DESTDIR/usr/athena/bin/evolution"
-	ln -s evolution-2.0 "$$DESTDIR/usr/athena/bin/evolution"
+	rm -f "$$SRVD/usr/athena/bin/evolution"
+	ln -s evolution-2.0 "$$SRVD/usr/athena/bin/evolution"
