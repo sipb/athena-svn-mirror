@@ -9,7 +9,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h".
  *
- *	$Id: Imakefile,v 1.1 1991-07-06 14:57:24 probe Exp $
+ *	$Id: Imakefile,v 1.2 1991-07-06 14:59:23 probe Exp $
  */
 
 SRCS=	   whatsup.c what_ifld.c what_itm.c  what_sel.c what_in.c what_sc.c \
@@ -23,7 +23,12 @@ LINTFLAGS= ${OLINTFLAGS}
 
 GDBLIB= -lgdb
 HESLIB= -lhesiod
+
+#if defined(vax) || defined(ibm032) || defined(ultrix)
 SCREENLIBS= -lcurses -ltermlib
+#else
+SCREENLIBS= -lcurses
+#endif
 
 SimpleProgram(whatsup,${OBJS} ${OTHEROBJ},${GDBLIB} ${HESLIB} \
 		${SCREENLIBS},$(ATHBINDIR))
