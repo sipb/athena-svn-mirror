@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2001-07-09 21:52:48 ghudson Exp $
+# $Id: Makefile,v 1.6 2001-10-23 18:06:47 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
@@ -26,10 +26,20 @@ install:
 	install -c -m 444 libafs-2.4.3-12.i586.o ${DESTDIR}${MODULES}
 	install -c -m 444 libafs-2.4.3-12smp.i386.mp.o ${DESTDIR}${MODULES}
 	install -c -m 444 libafs-2.4.3-12.i386.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6smp.i686.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6.i686.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6smp.i586.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6.i586.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6smp.i386.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.9-6.i386.o ${DESTDIR}${MODULES}
 	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
 	ln -s libafs-2.4.3-12smp.i386.mp.o ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
 	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12.i486.o
 	ln -s libafs-2.4.3-12.i386.o ${DESTDIR}${MODULES}/libafs-2.4.3-12.i486.o
+	rm -f ${DESTDIR}${MODULES}/libafs-2.4.9-6smp.i486.mp.o
+	ln -s libafs-2.4.9-6smp.i386.mp.o ${DESTDIR}${MODULES}/libafs-2.4.9-6smp.i486.mp.o
+	rm -f ${DESTDIR}${MODULES}/libafs-2.4.9-6.i486.o
+	ln -s libafs-2.4.9-6.i386.o ${DESTDIR}${MODULES}/libafs-2.4.9-6.i486.o
 	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
