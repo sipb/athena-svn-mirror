@@ -5,6 +5,7 @@ chfn		moira
 chpobox		moira
 chsh		moira
 dcmmaint	moira
+help		help
 kermit		modem
 klog		afsuser
 listmaint	moira
