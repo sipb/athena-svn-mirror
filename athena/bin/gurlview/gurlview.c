@@ -1,6 +1,6 @@
 /* Display a URL via the user's configured GNOME handler.
  *
- * $Id: gurlview.c,v 1.1 2002-06-24 13:32:31 rbasch Exp $
+ * $Id: gurlview.c,v 1.1.2.1 2002-06-26 22:43:15 ghudson Exp $
  */
 
 #include <libgnomeui/libgnomeui.h>
