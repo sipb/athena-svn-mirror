@@ -1,0 +1,141 @@
+! SCCS_data:    %Z% %M% %I% %E% %U%
+!
+!  Dialogs
+!  -------
+!
+! This example creates an instance of each type of Motif dialog
+!
+! A row column hold buttons, one for each dialog type.
+! Each button has a popup child, the dialog.
+! Pressing the button causes the dialog to pop-up,
+! pressing the OK buttons cause the dialogs to pop-down,
+! pressing the Help buttons cause the dialogs to print out their widget tree.
+
+Mri.wcCallback:		WcSetValue(this.title:Dialogs)
+Mri.wcChildren:		rc
+
+*rc.wcCreate:		XmRowColumn
+*rc.wcChildren:		bbd ed fsd fd id md pd qd sd td wad wod exit
+
+*WcCreate:		XmPushButton
+
+! Shared by all or some of the Dialogs:
+!
+*autoUnmanage:		false
+*Help.wcCreate:		XmPushButton
+*Help.activateCallback:	WcPrintTree(~)
+*helpCallback:		WcPrintTree(~)
+*OK.wcCreate:		XmPushButton
+*OK.activateCallback:	WcUnmanage(^)
+*okCallback:		WcUnmanage(this)
+
+*bbd.labelString:		BulletinBoardDialog
+*bbd.wcPopups:			bbDialog
+*bbDialog.wcCreate:		XmCreateBulletinBoardDialog
+*bbDialog.wcChildren:			OK Help
+*bbDialog.Help.y:			40
+*bbd.activateCallback:		WcManage(this*bbDialog)
+
+*ed.labelString:		ErrorDialog
+*ed.wcPopups:			errDialog
+*errDialog.wcCreate:		XmCreateErrorDialog
+! for old Motif 1.0
+!*ed.activateCallback:		WcManage(this.errDialog.errDialog)
+*ed.activateCallback:		WcManage(this*errDialog)
+
+*fsd.labelString:		FileSelectionDialog
+*fsd.wcPopups:			fsDialog
+*fsDialog.wcCreate:		XmCreateFileSelectionDialog
+! for old Motif 1.0
+!*fsd.activateCallback:		WcManage(this.fsDialog.fsDialog)
+*fsd.activateCallback:		WcManage(this*fsDialog)
+
+*fd.labelString:		FormDialog
+*fd.wcPopups:			fDialog
+*fDialog.wcCreate:		XmCreateFormDialog
+*fDialog.wcChildren:			OK Help
+*fDialog.XmPushButton.topAttachment:	ATTACH_FORM
+*fDialog.XmPushButton.bottomAttachment:	ATTACH_FORM
+*fDialog.OK.leftAttachment:		ATTACH_FORM
+*fDialog.Help.rightAttachment:		ATTACH_FORM
+*fDialog.Help.leftAttachment:		ATTACH_WIDGET
+*fDialog.Help.leftWidget:		^OK
+*fd.activateCallback:		WcManage(this*fDialog)
+
+*id.labelString:		InformationDialog
+*id.wcPopups:			iDialog
+*iDialog.wcCreate:		XmCreateInformationDialog
+! for old Motif 1.0
+!*id.activateCallback:		WcManage(this.iDialog.iDialog)
+*id.activateCallback:		WcManage(this*iDialog)
+
+*md.labelString:		MessageDialog
+*md.wcPopups:			mDialog
+*mDialog.wcCreate:		XmCreateMessageDialog
+! for old Motif 1.0
+!*md.activateCallback:		WcManage(this.mDialog.mDialog)
+*md.activateCallback:		WcManage(this*mDialog)
+
+*pd.labelString:		PromptDialog
+*pd.wcPopups:			pDialog
+*pDialog.wcCreate:		XmCreatePromptDialog
+! for old Motif 1.0
+!*pd.activateCallback:		WcManage(this.pDialog.pDialog)
+*pd.activateCallback:		WcManage(this*pDialog)
+
+*qd.labelString:		QuestionDialog
+*qd.wcPopups:			qDialog
+*qDialog.wcCreate:		XmCreateQuestionDialog
+! for old Motif 1.0
+!*qd.activateCallback:		WcManage(this.qDialog.qDialog)
+*qd.activateCallback:		WcManage(this*qDialog)
+
+*sd.labelString:		SelectionDialog
+*sd.wcPopups:			sDialog
+*sDialog.wcCreate:		XmCreateSelectionDialog
+*sd.activateCallback:		WcManage(this*sDialog)
+
+*td.labelString:		TableDialog
+*td.wcPopups:			tDialog
+*tDialog.wcCreate:		XmpCreateTableDialog
+*tDialog.wcChildren:		work sep ctrl
+*tDialog.marginWidth:		0
+*tDialog.marginHeight:		0
+*tDialog.layout:		work 0 0 ; sep 0 1 h; ctrl 0 2 h
+*tDialog.work.wcCreate:		XmpTable
+*tDialog.work.wcChildren:	I II III IV V VI VII VIII IX
+*tDialog.work*WcCreate:		XmPushButton
+*tDialog.work.XmPushButton.activateCallback:	WcUnmanage(this)
+!  A fanciful layout
+*tDialog.work.layout:		I  0 0 ;    III 2 0 1 2 ; IV 3 0 ; \
+				II 0 1 2 1 ; \
+					VI 1 2 1 2 ; VII 2 2 2 1 ; \
+				V 0 3 ;            VIII 2 3 ; IX 3 3
+*tDialog.work.sameWidth:	(I VI III IX)
+*tDialog.work.sameHeight:	(I II VII V)
+*tDialog.sep.wcCreate:		XmSeparator
+*tDialog.ctrl.wcCreate:		XmpTable
+*tDialog.ctrl.wcChildren:	OK Cancel Help
+*tDialog.ctrl.SameSize:		( OK Cancel Help )
+*tDialog.ctrl.wcAfterChildren:	WcSetValue(this.defaultButton: this.OK)
+*tDialog.ctrl.layout:		OK 0 0 ; Cancel 1 0 ; Help 2 0
+*tDialog*OK.activateCallback:		WcUnmanage(~tDialog)
+*tDialog*Cancel.activateCallback:	WcManageChildren( /*work \
+					    I II III IV V VI VII VIII IX )
+*td.activateCallback:		WcManage(this*tDialog)
+
+*wad.labelString:		WarningDialog
+*wad.wcPopups:			waDialog
+*waDialog.wcCreate:		XmCreateWarningDialog
+! for old Motif 1.0
+!*wad.activateCallback:		WcManage(this.waDialog.waDialog)
+*wad.activateCallback:		WcManage(this*waDialog)
+
+*wod.labelString:		WorkingDialog
+*wod.wcPopups:			woDialog
+*woDialog.wcCreate:		XmCreateWorkingDialog
+! for old Motif 1.0
+!*wod.activateCallback:		WcManage(this.woDialog.woDialog)
+*wod.activateCallback:		WcManage(this*woDialog)
+
+Mri.rc.exit.activateCallback:	WcExit

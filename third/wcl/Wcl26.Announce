@@ -1,0 +1,84 @@
+Wcl 2.6 is Now Available
+************************
+
+A new update of Wcl is now available.  A few enhancements have been
+made, and the never-ending-effort to make Wcl easier to build on a 
+wider range of platforms has resulted in a couple more minor tweaks.
+
+Consider this a bug fix and portability upgrade. 
+
+The README for this distribution says:
+
+
+Widget Creation Library Version 2.6 Distribution
+------------------------------------------------
+
+The distribution contains files which make up the Widget Creation
+Library (Wcl or libWc.a), and resource interpreters and utility
+libraries (which include Table widgets) for each of the following
+widget sets: Athena, Motif, and OpenLook.
+
+Wcl is completely widget set independent.  It provides mechanisms to
+allow an entire user interface to be specified in resource files.
+Basically, this amounts to providing new resources for specifying the
+types of the widgets and the widget heirarchy.  In addition, Wcl
+provides several callbacks and action functions which many programs
+need.
+
+See README20 for general information about Wcl version 2, and README22
+for additional features introduced in Wcl version 2.2 and version 2.1,
+and README23 for new features in Wcl 2.3, README24 for new features
+in Wcl 2.4, and README25 for new features in Wcl 2.5
+
+New Features of Wcl 2.6
+------------------------
+
+brokenXmTextShowPosition  When XmText widgets are used for Wcl messages
+			  via XmpMessageWidget, sometimes there can
+			  be a problem with XmTextShowPosition.  If so
+			  in specific cases, you can set this attribute
+			  to somewhat avoid the side effects.  Sigh.
+
+New Platform Support
+--------------------
+HP 'Snake' platforms	MakeByHand can be used to build the distribution
+			by using WcMake1.hp and WcMake2.hp.  Some people
+			had problems with CFLAGS for the silly HP cc...
+
+VMS			Better!!  Try the new VMSWcl.com.  Several changes
+			in libWc to deal with VMS file naming.  Thanks to
+			Peter Scott.
+
+OSF1			Pretty simple really - trivial changes to 
+			Wc/WcSetValues.c, and a few things in the
+			Imakefile and Wc.tmpl.  Use imake.  Thanks to 
+			danial@macsch.com (Danial Beck).
+
+Bug Fixes
+---------
+
+COPY -> COPY.h		The include files with the copyright notices
+			has been renamed to match normal include file
+			naming conventions.  For VMS, among others.
+
+Xmp/Table		Some geometry problems when used with XmForm
+			have been fixed.
+
+XmpPopupACT		Now avoids possible problems, and reports
+			specifically what the problems are if any.
+			For example, popups need to be posted using
+			button events, and menu panes must be XmRowCol's
+			with appropriate attributes.
+
+   _____________________________________________________________________
+  |  David E. Smyth                         David.E.Smyth@jpl.nasa.gov  |_
+  |_____________________________________________________________________| |
+  |  Project: Mars Pathfinder -- Low Cost Lander with "Rocky IV" Rover  | |
+  |  Team:    Flight Software -- Object-Oriented Software for Mars      | |
+  |_____________________________________________________________________| |
+  |  Voice:    (818) 393-7944                                           | |
+  |  FAX:      (818) 393-0530                                           | |
+  |  Office:   Space Flight Operations Facility 230/207a                | |
+  |  Snail:    JPL, MS 230-200, 4800 Oak Grove Dr., Pasadena, CA 91109  | |
+  |_____________________________________________________________________| |
+    |_____________________________________________________________________|

@@ -1,0 +1,143 @@
+#!/bin/ksh
+
+USAGE="usage: SniAp_SVR4 [sourceDirectory]"
+
+############################################################################
+# This is the root of where the libraries and includes will be installed.
+# During pre-release development, you probably want this to be something
+# else, like your home directory or the project's home directory
+############################################################################
+
+DEST=/GlobalTools/WCL
+WCL_VER=2.7
+
+############################################################################
+
+if (( $# == 1 ))
+then
+  ############################################################################
+  # Optionally do build in specified directory
+  ############################################################################
+  cd $1
+fi
+
+set -x
+
+############################################################################
+# Make sure the distribution is unpacked
+############################################################################
+
+if [[ ! -f README ]]
+then
+    zcat Wclx*Z | tar xf -
+fi
+
+
+############################################################################
+# First build static libraries
+############################################################################
+
+rm -rf _* ./Xmx/_* ./Xri/_*
+
+rm -f WcMake1.tmpl
+ln -s WcMake1.Svr4-a WcMake1.tmpl
+rm -f WcMake2.tmpl
+ln -s WcMake2.svr4-a WcMake2.tmpl
+
+rm -f _*
+
+./makeSV -f MakeByHand World
+
+############################################################################
+# Copy includes, static libraries, and Mri to new directories in DEST.     #
+##### Must be static Mri, because shared libs are not going to USRLIB, #####
+##### and svr4 shared lib Mri had LD_RUN_PATH specified to be USRLIB.  #####
+############################################################################
+
+rm -rf $DEST/inc.new $DEST/lib.new $DEST/bin.new
+
+if [[ ! -d $DEST ]]
+then
+    mkdir $DEST
+fi
+
+mkdir $DEST/inc.new
+mkdir $DEST/lib.new
+mkdir $DEST/bin.new
+
+cp -pr X11 $DEST/inc.new
+
+cp -p Wc/libWc.a   $DEST/lib.new
+cp -p Xmp/libXmp.a $DEST/lib.new
+cp -p Xmx/libXmx.a $DEST/lib.new
+
+cp -p Mri/Mri $DEST/bin.new
+cp -p Xri/Xri $DEST/bin.new
+
+############################################################################
+# Second, build shared libraries
+############################################################################
+
+rm -f WcMake1.tmpl
+ln -s WcMake1.Svr4 WcMake1.tmpl
+rm -f WcMake2.tmpl
+ln -s WcMake2.svr4 WcMake2.tmpl
+
+./makeSV -f MakeByHand World
+
+############################################################################
+# Copy shared libraries to new directory in DEST
+############################################################################
+
+cp -p Wc/libWc.so.$WCL_VER   $DEST/lib.new
+cp -p Xmp/libXmp.so.$WCL_VER $DEST/lib.new
+cp -p Xmx/libXmx.so.$WCL_VER $DEST/lib.new
+
+############################################################################
+# Swap existing with new
+############################################################################
+
+if [[ -d $DEST/inc ]]
+then
+    rm -rf  $DEST/inc.old
+    mv $DEST/inc $DEST/inc.old 
+fi
+
+mv $DEST/inc.new $DEST/inc
+
+if [[ -d $DEST/lib ]]
+then
+    rm -rf  $DEST/lib.old
+    mv $DEST/lib $DEST/lib.old 
+fi
+
+mv $DEST/lib.new $DEST/lib
+
+if [[ -d $DEST/bin ]]
+then
+    rm -rf  $DEST/bin.old
+    mv $DEST/bin $DEST/bin.old 
+fi
+
+mv $DEST/bin.new $DEST/bin
+
+############################################################################
+# Symbolic links for latest version of shared libraries
+############################################################################
+
+ln -s $DEST/lib/libWc.so.$WCL_VER  $DEST/lib/libWc.so
+ln -s $DEST/lib/libXmp.so.$WCL_VER $DEST/lib/libXmp.so
+ln -s $DEST/lib/libXmx.so.$WCL_VER $DEST/lib/libXmx.so
+
+############################################################################
+# Done installing in DEST
+############################################################################
+
+ls -l $DEST $DEST/lib $DEST/bin \
+      $DEST/inc $DEST/inc/X11 $DEST/inc/X11/Wc \
+      $DEST/inc/X11/Xmp $DEST/inc/X11/Xmx
+
+./makeSV -f MakeByHand install
+echo sleep for a minute so the log file names do not collide
+sleep 60
+./makeSV -f MakeByHand install.man

@@ -1,0 +1,197 @@
+###########################################################################
+# Hand-built makefile for systems without Imake.  You probably do not 
+# need to edit this file.
+#
+# Author:	David E. Smyth
+# SccsID:	%Z% %M%	%I% %E% %U%
+###########################################################################
+#
+# To build:
+#       1.	Choose the WcMake1.* and WcMake2.* files which most
+#               closely match your system (sun, svr4, svr4 with only
+#		static libraries, HP, etc).  The default WcMake?.tmpl
+#		files are the WcMake?.sun files.  For example, on an HP,
+#			rm WcMake1.tmpl WcMake2.tmpl
+#			ln -s WcMake1.hp WcMake1.tmpl
+#			ln -s WcMake2.hp WcMake2.tmpl
+#	2.	Edit these two files if necessary.
+#	3.	% make -f MakeByHand World
+#
+# To test distribution with Motif:
+#	        % setenv PATH ./Mri:$PATH
+#	                -or-
+#	        % PATH=./Mri:$PATH export PATH
+#	
+#	        % Mri -rf Mri/Demo
+#
+# To test distribution with OpenLook:
+#	        % setenv PATH ./Ori:$PATH
+#		% Ori -rf Ori/Demo
+#
+# To test distribution with Athena:
+#		% setenv PATH ./Ari:$PATH
+#                       -or-
+#               % PATH=./Ari:$PATH ; export PATH
+#
+#		% Ari -rf Ari/Demo
+#
+# If everything is OK, then install:
+#		% make -f MakeByHand install
+#
+
+include WcMake1.tmpl
+include WcMake2.tmpl
+
+  TARFILE  = Wcl-$(WCL_VER).tar
+  TARFILEX = Wclx-$(WCL_VER).tar
+
+  SUBDIRS = Wc $(WcATHENA) $(WcCORNELL) $(WcMOTIF) $(WcOPEN_LOOK) $(WcSTUFF)
+
+# "make all" builds the library and the applications without
+# installing anything.  However, "includes" must first be done!
+
+all:
+	for i in $(SUBDIRS) ;\
+	do \
+	(cd $$i ; echo "making" "in ./$$i..."; \
+	$(MAKE) all); \
+	done
+
+# Note that the Xp includes must be always be done so Xop and Xcp
+# can build XpTable
+#
+includes:: ./X11 $(LOCAL_STRINGS_H)
+	for i in $(SUBDIRS) Xp ;\
+	do \
+	(cd $$i ; echo "including" "in ./$$i..."; \
+	$(MAKE) includes); \
+	done
+
+./X11:
+	mkdir ./X11
+
+./strings.h:
+	$(GET_LOCAL_STRINGS_H)
+
+# Note we must install the Xp/Table include files always
+#
+$(DESTDIR)$(INCDIR)/Xp:
+	mkdir $(DESTDIR)$(INCDIR)/Xp
+	chown $(OWNER) $(DESTDIR)$(INCDIR)/Xp
+	chmod $(INSTDIRFLAGS) $(DESTDIR)$(INCDIR)/Xp
+
+install:
+	for i in $(SUBDIRS) ;\
+	do \
+	(cd $$i ; echo "installing" "in ./$$i..."; \
+	$(MAKE) install); \
+	done
+	echo "installing Xp include files..."
+	$(MAKE) $(DESTDIR)$(INCDIR)/Xp
+	for i in Xp/COPY.h Xp/Table.h Xp/TableP.h ; do \
+	rm -f $(DESTDIR)$(INCDIR)/$$i; \
+	cp $$i $(DESTDIR)$(INCDIR)/$$i; \
+	done
+	chown $(OWNER) $(DESTDIR)$(INCDIR)/Xp/*
+	chmod $(INSTINCFLAGS) $(DESTDIR)$(INCDIR)/Xp/*
+
+install.man:
+	for i in $(SUBDIRS) ;\
+	do \
+	(cd $$i ; echo "installing man pages" "in ./$$i..."; \
+	$(MAKE) install.man); \
+	done
+
+clean:
+	for i in $(SUBDIRS) ;\
+	do \
+	(cd $$i ; echo "cleaning" "in ./$$i..."; \
+	$(MAKE) clean); \
+	done
+
+World:
+	@echo ""
+	@echo Building Release $(WCL_VER) of Wcl - the Widget Creation Library
+	@echo ""
+	@echo "##########################################################"
+	@echo "# I trust you first edited WcMake1.tmpl and WcMake2.tmpl #"
+	@echo "##########################################################"
+	@echo ""
+	@date
+	@echo ""
+	$(MAKE) clean
+	$(MAKE) includes
+	$(MAKE) all
+	
+
+# Done only before final distribution
+
+DISTDIRS = Ari Mri Ori Stuff Wc Xmp Xop Xp
+
+distribution:
+	$(MAKE) clean
+	$(MAKE) sccsdelget
+	$(MAKE) scoman
+	$(MAKE) files
+
+sccsdelget:
+	echo "sccs delget ..."
+	sccs delget -y"for $(WCL_VER) distribution" `sccs tell` 
+	for i in $(DISTDIRS) ;\
+	do \
+	(cd $$i ; echo "sccs delget in ./$$i..."; \
+	sccs delget -y"for $(WCL_VER) distribution" `sccs tell` ); \
+	done
+
+scoman:
+	for i in $(DISTDIRS) ;\
+	do \
+	(cd $$i ; echo "making sco man pages in ./$$i..."; \
+	$(MAKE) scoman); \
+	done
+
+FORCE:
+
+files: FORCE
+	touch files
+	find . -name SCCS -prune -o -type f -print | sort > files
+
+# To make it easy to pass Wcl on to others
+
+tar:
+	rm -f $(TARFILE)
+	tar cf $(TARFILE) -I files
+	ls -l $(TARFILE)*
+
+tar.Z:
+	$(MAKE) tar
+	rm -f $(TARFILE).Z
+	compress $(TARFILE)
+	ls -l $(TARFILE)*
+
+tar.gz:
+	$(MAKE) tar
+	rm -f $(TARFILE).gz
+	gzip $(TARFILE)
+	ls -l $(TARFILE)*
+
+xtar:
+	rm -f $(TARFILEX)*
+	tar cf $(TARFILEX) -I files.WP
+	ls -l $(TARFILEX)*
+
+xtar.Z:
+	$(MAKE) xtar
+	compress $(TARFILEX)
+	ls -l $(TARFILEX)*
+
+	
+tar.Z.u:
+	$(MAKE) tar.Z
+	uuencode $(TARFILE).Z $(TARFILE).Z >$(TARFILE).Z.u
+	ls -l $(TARFILE)*
+
+tar.Z.u.split:
+	$(MAKE) tar.Z.u
+	split -790 $(TARFILE).Z.u $(TARFILE)Zu.
+	ls -l $(TARFILE)*

@@ -1,0 +1,26 @@
+! SCCS_data: @(#) Goodbye 1.1 92/12/10 13:30:38
+!
+! This is the second demo in the old OLIT Programmer's Guide--shows the
+! use of the composite control area widget.  Pushing the One button
+! causes its label to change to two.  This example uses one 
+! oblongButtonGadgetClass and one oblongButtonWidgetClass.
+
+!*wcTrace:               True
+Ori.wcChildren:		control
+Ori.wcCallback:		WcSetValue( this.title: Goodbye )
+
+*threeD:		True
+*background:		grey
+
+*control.wcCreate:	controlAreaWidgetClass
+*control.layoutType:	fixedcols
+*control.measure:	1
+*control.wcChildren:	quit, toggle
+
+*quit.wcCreate:		oblongButtonGadgetClass
+*quit.label:		Quit
+*quit.select:		WcExit
+
+*toggle.wcCreate:	oblongButtonWidgetClass
+*toggle.label:		One
+*toggle.select:         WcSetValue( this.label: Two )	WcSystem(echo Hit)

@@ -1,0 +1,17 @@
+! SCCS_data: @(#) ORi 1.2 92/12/11 16:23:14
+!
+! This file gets installed into /usr/lib/X11/app-defaults and is
+! the default resource file loaded when Ori is started.  If the user
+! does not provide a -rf command line option specifiying a user supplied
+! resource file, then Ori loads its Demo resources which provides a
+! simple interface for trying out all of the Ori examples in
+! /usr/lib/X11/app-defaults/Ori
+!
+! NOTE: Nothing but this single WclInitResFile specification should be here!
+! NOTE: Normal resource files should NOT use wclInitResFile resource.  This
+!       resource is set by the -rf command line option.  By using it here,
+!       I can cause the Demo file to be loaded ONLY when there is no
+!       -rf given on the command line.
+
+Ori*WclInitResFile:    Ori/Demo
+

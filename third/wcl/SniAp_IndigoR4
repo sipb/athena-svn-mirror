@@ -1,0 +1,123 @@
+#!/bin/ksh
+
+USAGE="usage: SniAp_IndigoR4 [sourceDirectory]"
+
+############################################################################
+# This is the root of where the libraries and includes will be installed.
+# During pre-release development, you probably want this to be something
+# else, like your home directory or the project's home directory
+############################################################################
+
+DEST=/GlobalTools/WCL
+WCL_VER=2.7
+
+############################################################################
+
+if (( $# == 1 ))
+then
+  ############################################################################
+  # Optionally do build in specified directory
+  ############################################################################
+  cd $1
+fi
+
+set -x
+
+############################################################################
+# Make sure the distribution is unpacked
+############################################################################
+
+if [[ ! -f README ]]
+then
+    zcat Wclx*Z | tar xf -
+fi
+
+############################################################################
+# Use Indigo templates and imake
+############################################################################
+
+rm -f Wc.tmpl
+ln -s Wc.tmpl.r4s Wc.tmpl
+
+xmkmf
+
+rm -rf ./X11
+./makeSun World
+
+############################################################################
+# Copy includes and libraries and Mri to new directories in DEST.
+############################################################################
+
+rm -rf $DEST/inc.new $DEST/lib.new $DEST/bin.new
+
+if [[ ! -d $DEST ]]
+then
+    mkdir $DEST
+fi
+
+mkdir $DEST/inc.new
+mkdir $DEST/lib.new
+mkdir $DEST/bin.new
+
+cp -r X11 $DEST/inc.new
+
+cp Wc/libWc*   $DEST/lib.new
+cp Xmp/libXmp* $DEST/lib.new
+cp Xmx/libXmx* $DEST/lib.new
+
+cp Mri/Mri $DEST/bin.new
+cp Xri/Xri $DEST/bin.new
+
+############################################################################
+# Swap existing with new
+############################################################################
+
+if [[ -d $DEST/inc ]]
+then
+    rm -rf  $DEST/inc.old
+    mv $DEST/inc $DEST/inc.old 
+fi
+
+mv $DEST/inc.new $DEST/inc
+
+if [[ -d $DEST/lib ]]
+then
+    rm -rf  $DEST/lib.old
+    mv $DEST/lib $DEST/lib.old 
+fi
+
+mv $DEST/lib.new $DEST/lib
+
+if [[ -d $DEST/bin ]]
+then
+    rm -rf  $DEST/bin.old
+    mv $DEST/bin $DEST/bin.old 
+fi
+
+mv $DEST/bin.new $DEST/bin
+
+############################################################################
+# All done!
+############################################################################
+ls -l $DEST $DEST/lib $DEST/bin \
+      $DEST/inc $DEST/inc/X11 $DEST/inc/X11/Wc \
+      $DEST/inc/X11/Xmp $DEST/inc/X11/Xmx
+
+# must get rid of old installation
+rm -rf /usr/include/X11/Wc
+rm -rf /usr/include/X11/Xmp
+rm -rf /usr/include/X11/Xp
+rm -rf /usr/include/X11/Xmx
+rm -rf /usr/lib/X11/app-defaults/Mri
+rm -rf /usr/lib/X11/app-defaults/Ari
+rm -rf /usr/lib/X11/app-defaults/Xri
+
+./makeSun install
+
+if [[ ! -d /usr/man/mann ]]
+then
+    mkdir /usr/man/mann
+    chmod ugo+rx /usr/man/mann
+fi
+
+./makeSun install.man
