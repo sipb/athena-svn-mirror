@@ -79,7 +79,7 @@ append()
 usage()
 {
   echo "Usage: syncconf\c"
-  for k in $ALL; do
+  for k in $USAGE; do
     echo " [$k]\c"
   done
   echo ""
@@ -90,8 +90,9 @@ if [ $debug = 1 ]; then
   RCTIME=/tmp/rc.conf.sync
 fi
 
-# ALL="TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
-ALL="timesrv afsclient nfssrv sendmail snmp savecore account quotas host"
+# ALL="TIMECLIENT TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
+ALL="timeclient timesrv afsclient nfssrv sendmail snmp savecore account quotas host"
+USAGE="timeclient|timehub timesrv afsclient nfssrv|nfsclient sendmail snmp savecore account quotas host|addr"
 
 if test -f $RCTIME; then
   update=`find $RCTIME -newer $RCCONF -print`
@@ -100,8 +101,6 @@ fi
 if test $update; then
   exit
 fi
-
-touch $RCTIME
 
 . $RCCONF
 
@@ -113,6 +112,10 @@ fi
 
 for i in $j; do
   case "$i" in
+  TIMECLIENT|timeclient|TIMEHUB|timehub)
+    syncvar timeclient ${TIMECLIENT}
+    syncvar timeclient.options ${TIMEHUB}
+    ;;
   TIMESRV|timesrv)
     # gettime and AFS time synchronization
     syncvar timed $TIMESRV
@@ -213,4 +216,7 @@ for i in $j; do
     usage
     exit
   esac
+
+touch $RCTIME
+
 done
