@@ -26,6 +26,7 @@ static char sccsid[] = "@(#)res_query.c	5.5 (Berkeley) 9/21/88";
 #include <ctype.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -64,7 +65,7 @@ res_query(name, class, type, answer, anslen)
 	u_char *answer;		/* buffer to put answer */
 	int anslen;		/* size of answer buffer */
 {
-	char buf[MAXPACKET];
+	unsigned char buf[MAXPACKET];
 	HEADER *hp;
 	int n;
 
@@ -142,7 +143,8 @@ res_search(name, class, type, answer, anslen)
 	u_char *answer;		/* buffer to put answer */
 	int anslen;		/* size of answer */
 {
-	register char *cp, **domain;
+	const char *cp;
+	char **domain;
 	int n, ret, got_nodata = 0;
 
 	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
@@ -217,7 +219,7 @@ res_querydomain(name, domain, class, type, answer, anslen)
 	int anslen;		/* size of answer */
 {
 	char nbuf[2*MAXDNAME+2];
-	char *longname = nbuf;
+	const char *longname = nbuf;
 	int n;
 
 #ifdef DEBUG
