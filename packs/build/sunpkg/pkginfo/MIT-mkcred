@@ -1,3 +1,0 @@
-PKG=MIT-mkcred
-NAME=Compile a knfs credentials file
-DESC=Compile an ASCII credentials file in the hashed db file used by the Kerberized NFS mountd.

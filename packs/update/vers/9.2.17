@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo "/etc/inet/inetd.conf"				>> $CONFCHG
-echo "112785-24"					>> $PATCHES
