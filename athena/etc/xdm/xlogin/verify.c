@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.48 1994-04-26 11:13:42 root Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.49 1994-04-30 13:21:51 vrt Exp $
  */
 
 #include <stdio.h>
@@ -30,7 +30,11 @@
 #include <ttyent.h>
 #endif
 #include <errno.h>
+#ifndef ultrix
 #include <syslog.h>
+#else
+#include <nsyslog.h>
+#endif
 
 #include <krb.h>
 #include <hesiod.h>
