@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.4 1989-08-04 11:11:15 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.5 1989-08-22 13:52:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -89,10 +89,13 @@ t_ask(Request,topic)
       break;
 
     case HAS_QUESTION:
-      printf("You already have a question, would you like to create\n");
-      get_prompted_input("another instance to ask another question? ",buf);
+      printf("Your current instance is busy, would you like to create\n");
+      get_prompted_input("another instance to ask your question? ",buf);
       if(string_equiv(buf,"yes",1))
-	set_option(Request->options, SPLIT_OPT);
+	{
+	  set_option(Request->options, SPLIT_OPT);
+	  t_ask(Request,topic);
+	}
       else
 	status = NO_ACTION;
       break;
