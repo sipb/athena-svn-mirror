@@ -68,7 +68,7 @@ config.h:	config.X Makefile
 
 clean:
 	rm -f *.o buildhash ispell core a.out mon.out hash.out \
-		*.stat *.cnt munchlist config.h icombine
+		*.stat *.cnt munchlist config.h icombine ispell.hash
 
 depend:
 	makedepend ${CFLAGS} ${SRCS}
