@@ -20,11 +20,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.14 1990-01-17 03:13:51 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.15 1990-02-06 02:27:29 raeburn Exp $";
 #endif 
 
 
@@ -202,12 +202,32 @@ main(argc, argv)
       HELP_EXT =  OLCR_HELP_EXT;
     }
 
-  if((argc > 1) && !strcmp(argv[1], "-prompt"))
-    {
-      argc -= 2;
-      prompt = argv[2];
-      ++argv; ++argv;
-    }
+  ++argv, --argc;
+  while (argc > 0 && argv[0][0] == '-') {
+      if (!strcmp (argv[0], "-prompt")) {
+	  prompt = argv[1];
+	  ++argv, --argc;
+      }
+      else if (!strcmp (argv[0], "-server")) {
+	  /*
+	   * this is a kludge, but the other interface is already
+	   * there
+	   */
+	  (void) setenv ("OLCD_HOST", argv[1], 1);
+	  ++argv, --argc;
+      }
+      else if (!strcmp (argv[0], "-port")) {
+	  (void) setenv ("OLCD_PORT", argv[1], 1);
+	  ++argv, --argc;
+      }
+      else {
+	  fprintf (stderr, "%s: unknown control argument %s\n",
+		   program, argv[0]);
+	  exit (1);
+      }
+      ++argv;
+      --argc;
+  }
 
   if ((tty = ttyname(fileno(stdin))) == (char *)NULL) 
     goto no_tty;
@@ -231,10 +251,10 @@ main(argc, argv)
 
 
   signal(SIGPIPE, SIG_IGN);
-  if (argc > 1) 
+  if (argc)
     {
       OInitialize();
-      do_command(Command_Table, ++argv);
+      do_command(Command_Table, argv);
       exit(SUCCESS);
     }
   else 
