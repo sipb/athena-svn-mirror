@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.17 1992-02-05 02:55:54 lwvanels Exp $
+ *	$Id: procs.h,v 1.18 1992-02-24 17:48:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -86,6 +86,8 @@ ERRCODE OGetDefaultInstance P((REQUEST *Request , int *instance ));
 ERRCODE send_request P((int fd , REQUEST *request ));
 ERRCODE read_list P((int fd , LIST *list ));
 ERRCODE open_connection_to_daemon P((REQUEST *request , int *fd ));
+ERRCODE open_connection_to_named_daemon P((REQUEST *request , int *fd,
+					   char *hostname ));
 ERRCODE open_connection_to_nl_daemon P((int *fd));
 
 /* list.c */
