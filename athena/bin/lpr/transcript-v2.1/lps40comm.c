@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.2 1987-08-07 14:54:25 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.3 1987-08-09 17:27:13 jtkohl Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.2 1987-08-07 14:54:25 jtkohl Exp $";
+static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.3 1987-08-09 17:27:13 jtkohl Exp $";
 #endif lint
 
 /* lps40comm.c
@@ -332,36 +332,35 @@ main(argc,argv)
 	    if (close(fdsend))		/* send EOF */
 		    debugp((stderr,"%s: laps close failure 1:%s\n",prog,errno));
 	    progress++;
-    }
-    pc1 = pc2 = -1; /* bogus initial values */
-    if ((psin = fdopen(fdlisten, "r")) == NULL) {
-	    pexit(prog, THROW_AWAY);
-    }
-    pb = pbuf;
-    *pb = '\0';
-    while (TRUE) {
-	    r = getc(psin);
-	    if (r == EOF) {
-		    break;
+	    pc1 = pc2 = -1; /* bogus initial values */
+	    if ((psin = fdopen(fdlisten, "r")) == NULL) {
+		    pexit(prog, THROW_AWAY);
 	    }
-	    *pb++ = r;
+	    pb = pbuf;
+	    *pb = '\0';
+	    while (TRUE) {
+		    r = getc(psin);
+		    if (r == EOF) {
+			    break;
+		    }
+		    *pb++ = r;
+	    }
+	    *pb = '\0';
+	    fclose(psin);
+	    close(fdlisten);
+	    open_lps40();
+	    if ((psin = fdopen(fdlisten, "r")) == NULL) {
+		    pexit(prog, THROW_AWAY);
+	    }
+	    if (pb = FindPattern(pb, pbuf, "%%[ pagecount: ")) {
+		    sc = sscanf(pb, "%%%%[ pagecount: %d ]%%%%\r", &pc1);
+	    }
+	    if ((pb == NULL) || (sc != 1)) {
+		    fprintf(stderr, "%s: accounting error 1 (%s)\n", prog,pbuf);
+		    VOIDC fflush(stderr);
+	    }
+	    debugp((stderr,"%s: accounting 1 (%s)\n",prog,pbuf));
     }
-    *pb = '\0';
-    fclose(psin);
-    close(fdlisten);
-    open_lps40();
-    if ((psin = fdopen(fdlisten, "r")) == NULL) {
-	    pexit(prog, THROW_AWAY);
-    }
-    if (pb = FindPattern(pb, pbuf, "%%[ pagecount: ")) {
-	    sc = sscanf(pb, "%%%%[ pagecount: %d ]%%%%\r", &pc1);
-    }
-    if ((pb == NULL) || (sc != 1)) {
-	    fprintf(stderr, "%s: accounting error 1 (%s)\n", prog,pbuf);
-	    VOIDC fflush(stderr);
-    }
-    debugp((stderr,"%s: accounting 1 (%s)\n",prog,pbuf));
-
     /* ship the magic number! */
     if ((!format) && (!reversing)) {
 	    VOIDC write(fdsend,magic,11);
@@ -509,21 +508,26 @@ private VOID open_lps40() {
 	if ((lpid = fork()) < 0) pexit2(prog, "laps fork",THROW_AWAY);
 	if (lpid == 0) { /* child */
 		/* set up child stdout & stderr to feed parent pipe */
-		if (close(0) || (dup(tolaps[0]) != 0)
-		    || close(1) || (dup(fromlaps[1]) != 1)
-		    || close(2) || (dup(1) != 2)
-		    || close(tolaps[1]) || close(tolaps[0])
-		    || close(fromlaps[1]) || close(fromlaps[0])) {
+		if (tolaps[0] < 3 || tolaps[1] < 3
+		    || fromlaps[0] < 3 || fromlaps[1] < 3) {
+			pexit2(prog, "laps pipe bad fds", THROW_AWAY);
+		}
+		if ((dup2(tolaps[0], 0) != 0) || (dup2(fromlaps[1], 1) != 1)
+		    || (dup2(1, 2) != 2)
+		    || close(tolaps[0]) || close(tolaps[1])
+		    || close(fromlaps[0]) || close(fromlaps[1])) {
 			pexit2(prog, "laps child",THROW_AWAY);
 		}
 		execl(envget("LAPS"), "laps", pname, 0);
 		pexit2(prog,"laps exec",THROW_AWAY);
 	}
-	if (close(tolaps[0]) || close(fromlaps[1])) {
+	/* set up fdsend & fdlisten */
+	if (((fdsend = dup(tolaps[1])) < 0)
+	    || ((fdlisten = dup(fromlaps[0])) < 0)
+	    || close(tolaps[0]) || close(tolaps[1])
+	    || close(fromlaps[0]) || close(fromlaps[1])) {
 		pexit2(prog, "laps pipe cleanup", THROW_AWAY);
 	}
-	fdsend = tolaps[1];		/* the printer (write) */
-	fdlisten = fromlaps[0];		/* the printer (read) */
 }
 
 /* interrupt during sending phase to sender process */
