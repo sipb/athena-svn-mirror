@@ -2,7 +2,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v $
 #	$Author: builder $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.3 1985-07-01 16:30:53 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.4 1985-10-15 20:16:38 builder Exp $
 #
 
 
@@ -22,7 +22,7 @@ mon: $(OBJS) mon.h
 	cc -o mon $(OBJS) -lcurses -ltermlib
 
 install:
-	install -c -s -g memory -m 2755 mon ${DESTDIR}${PHYSLOC}/usr/athena/mon
+	install -c -s -g kmem -m 2755 mon ${DESTDIR}${PHYSLOC}/usr/athena/mon
 
 clean:
 	rm -f core *.o mon a.out
