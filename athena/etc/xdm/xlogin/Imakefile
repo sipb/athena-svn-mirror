@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.1 1991-03-07 12:39:10 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.2 1991-06-28 20:20:50 probe Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -12,10 +12,15 @@ LINTFLAGS = $(CFLAGS) -b -h -u -v -z
 
   SRCS = xlogin.c AriRegAll.c verify.c
   OBJS = xlogin.o AriRegAll.o verify.o
+#if defined(_AIX) && (AIXV >= 30)
+  LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
+	 -lodm -lcfg
+#else
   LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod
+#endif
 
 create_dir(/etc/athena/login)
-SimpleProgram(timeout,timeout.o,,$(ATHDIR))
+SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
 SimpleProgram(xlogin,$(OBJS),$(LIBS),/etc/athena/xlogin)
 
 install_file(check,/etc/athena/login/check)
@@ -29,7 +34,11 @@ install_file(owleyes2.xbm,/etc/athena/login/owleyes2.xbm)
 install_file(owleyes3.xbm,/etc/athena/login/owleyes3.xbm)
 install_file(owleyes4.xbm,/etc/athena/login/owleyes4.xbm)
 install_file(owleyes5.xbm,/etc/athena/login/owleyes5.xbm)
+#if defined(_AIX) && defined(i386)
+install_file(Xlogin.ps2,/etc/athena/login/Xlogin)
+#else
 install_file(Xlogin,/etc/athena/login/Xlogin)
+#endif
 install_man(timeout.1,timeout.1)
 install_man(xlogin.8,xlogin.8)
 
