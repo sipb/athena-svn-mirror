@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.11 2003-06-10 15:26:18 ghudson Exp $
+# $Id: xsession,v 1.12 2003-07-02 19:49:09 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -156,10 +156,14 @@ else if ($?offer_gnome_upgrade) then
 endif
 
 if ( ! $?ATHENA_DASH_INTERFACE) then
+  # GNOME processes can apparently collide trying to start gconfd, so
+  # spawn one before we start any in the background.
+  gconftool-2 --spawn
+
   # Run the GNOME capplets unless the user has chosen to skip them.
   if (! $?skip_capplets) then
     if ($?verbose_login) echo "Initializing settings..."
-    (gnome-settings-daemon &)
+    (gnome-settings-daemon >& /dev/null &)
   endif
 
   # Run the GNOME panel unless the user has chosen to skip it.  For
