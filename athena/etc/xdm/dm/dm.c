@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.33 1993-08-04 13:03:31 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.34 1994-02-17 10:27:59 miki Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -60,7 +60,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.33 1993-08-04 13:03:31 vrt Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.34 1994-02-17 10:27:59 miki Exp $";
 #endif
 
 #ifndef NULL
@@ -1304,7 +1304,7 @@ char *login;
     if (!strcmp(login, "root")) return;
 
     for (count = 0; count < 10; count++)
-      if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0644)) == -1 &&
+      if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0600)) == -1 &&
 	  errno == EEXIST) {
 	  alarm(1);
 	  sigpause(0);
