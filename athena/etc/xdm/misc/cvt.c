@@ -35,6 +35,41 @@ int cvt_buf2vars(varlist *vl, buffer *buf)
   return 0;
 }
 
+int cvt_strings2buf(buffer **buf, char **strings)
+{
+  char **ptr, *copy;
+  int len = 0;
+  buffer *b;
+
+  if (buf == NULL || strings == NULL)
+    return 1;
+
+  b = malloc(sizeof(buffer));
+  if (b == NULL)
+    return 1;
+
+  for (ptr = strings; *ptr != NULL; ptr++)
+    len += strlen(*ptr) + 1;
+
+  b->buf = malloc(len);
+  if (b->buf == NULL)
+    {
+      free(b);
+      return 1;
+    }
+  b->len = len;
+
+  copy = b->buf;
+  for (ptr = strings; *ptr != NULL; ptr++)
+    {
+      strcpy(copy, *ptr);
+      copy += strlen(*ptr) + 1;
+    }
+
+  *buf = b;
+  return 0;
+}
+
 int cvt_vars2buf(buffer **buf, varlist *vl)
 {
   char **vlist, **ptr;
@@ -51,25 +86,22 @@ int cvt_vars2buf(buffer **buf, varlist *vl)
     return 1;
 
   var_listVars(vl, &vlist);
-  ptr = vlist;
-  while (*ptr)
+  for (ptr = vlist; *ptr != NULL; ptr++)
     {
       var_getValue(vl, *ptr, &data, &len);
       size += len + strlen(*ptr) + 1;
-      ptr++;
     }
 
   b->buf = malloc(size);
   if (b->buf == NULL)
     {
       free(b);
-      var_freeVars(vl, vlist);
+      var_freeList(vl, vlist);
       return 1;
     }
 
   b->len = size;
-  ptr = vlist;
-  while (*ptr)
+  for (ptr = vlist; *ptr != NULL; ptr++)
     {
       var_getValue(vl, *ptr, &data, &len);
       memcpy(b->buf + offset, *ptr, strlen(*ptr));
@@ -77,9 +109,8 @@ int cvt_vars2buf(buffer **buf, varlist *vl)
       b->buf[offset++] = '=';
       memcpy(b->buf + offset, data, len);
       offset += len;
-      ptr++;
     }
 
-  var_freeVars(vl, vlist);
+  var_freeList(vl, vlist);
   *buf = b;
 }
