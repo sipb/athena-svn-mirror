@@ -22,7 +22,7 @@ static char sccsid[] = "@(#)startdaemon.c	5.1 (Berkeley) 6/6/85";
 startdaemon(printer)
 	char *printer;
 {
-	struct sockaddr_un sun;
+	struct sockaddr_un sockun;
 	register int s, n;
 	char buf[BUFSIZ];
 
@@ -32,9 +32,9 @@ startdaemon(printer)
 		perr("socket");
 		return(0);
 	}
-	sun.sun_family = AF_UNIX;
-	strcpy(sun.sun_path, SOCKETNAME);
-	if (connect(s, &sun, strlen(sun.sun_path) + 2) < 0) {
+	sockun.sun_family = AF_UNIX;
+	strcpy(sockun.sun_path, SOCKETNAME);
+	if (connect(s, &sockun, strlen(sockun.sun_path) + 2) < 0) {
 		perr("connect");
 		(void) close(s);
 		return(0);

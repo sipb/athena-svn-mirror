@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.13 1991-07-02 16:51:56 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.14 1992-11-09 00:43:30 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.13 1991-07-02 16:51:56 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.14 1992-11-09 00:43:30 probe Exp $";
 #endif lint
 
 /*
@@ -95,7 +95,7 @@ main(argc, argv)
 	char **argv;
 {
 	int f, funix, finet, options=0, defreadfds, fromlen;
-	struct sockaddr_un sun, fromunix;
+	struct sockaddr_un sockun, fromunix;
 	struct sockaddr_in sin, frominet;
 	struct hostent *hp;
 	int omask, lfd;
@@ -193,9 +193,9 @@ main(argc, argv)
 	signal(SIGINT, mcleanup);
 	signal(SIGQUIT, mcleanup);
 	signal(SIGTERM, mcleanup);
-	sun.sun_family = AF_UNIX;
-	strcpy(sun.sun_path, SOCKETNAME);
-	if (bind(funix, &sun, strlen(sun.sun_path) + 2) < 0) {
+	sockun.sun_family = AF_UNIX;
+	strcpy(sockun.sun_path, SOCKETNAME);
+	if (bind(funix, &sockun, strlen(sockun.sun_path) + 2) < 0) {
 		syslog(LOG_ERR, "ubind: %m");
 		exit(1);
 	}
