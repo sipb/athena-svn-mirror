@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.12 1992-01-29 11:15:19 epeisach Exp $
+ *	$Author: miki $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.13 1992-07-17 11:33:07 miki Exp $
  */
 
 /*
@@ -29,7 +29,9 @@
 #if (defined(vax) && !defined(ultrix)) || defined(ibm032) || defined(i386)
 #define	RVD
 #endif
-
+#if defined(sun)
+#define NFSCLIENT
+#endif
 #if !defined(_AIX)
 #define	UFS
 #endif
@@ -78,7 +80,9 @@
 typedef void	sig_catch;
 #else
 typedef int	sig_catch;
+#if !defined(sun)
 char *malloc();
+#endif
 #endif
 
 #if defined(ultrix) && !defined(vax)
@@ -123,6 +127,10 @@ struct mntent {
 /* These are not defined or recognized by the system, but they are useful
    to allow common data structures with systems that do have these defines */
 #ifdef _AIX
+#define	MOUNT_UFS	1
+#define	MOUNT_NFS	2
+#endif
+#if defined(sun)
 #define	MOUNT_UFS	1
 #define	MOUNT_NFS	2
 #endif
