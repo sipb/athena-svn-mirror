@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.47 1991-10-31 15:07:02 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.47 1991-10-31 15:07:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -492,6 +492,7 @@ olc_done(fd, request)
 		  ? target->question->note
 		  : "No consultant present.");
 	  log_daemon(target, "User is done with question.");
+	  write_res_stats(target->question);
 	  terminate_log_answered(target);
 	  free((char *) target->question);
 	  target->question = (QUESTION *) NULL;
@@ -520,6 +521,7 @@ olc_done(fd, request)
 		      ? target->question->note
 		      : "No consultant present.");
 	      log_daemon(target, "User is done with question.");
+	      write_res_stats(target->question);
 	      terminate_log_answered(target);
 	      free_new_messages(target);
 	      free_new_messages(target->connected);
@@ -563,6 +565,7 @@ olc_done(fd, request)
       (void) write_message_to_user(target, msgbuf, NO_RESPOND);
     }
   
+  write_res_stats(target->question);
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
@@ -661,6 +664,7 @@ olc_cancel(fd, request)
 			? target->question->note
 			: "Cancelled question/No consultant present.");
 	  log_daemon(target,"User cancelled question.");
+	  write_res_stats(target->question);
 	  terminate_log_answered(target);
 	  free((char *) target->question);
 	  target->question = (QUESTION *) NULL;
@@ -690,6 +694,7 @@ olc_cancel(fd, request)
 			    ? target->question->note
 			    : "Cancelled question/No consultant present.");
 	      log_daemon(target,"User cancelled question.");
+	      write_res_stats(target->question);
 	      terminate_log_answered(target);
 	      free_new_messages(target);
 	      free_new_messages(consultant);
@@ -734,6 +739,7 @@ olc_cancel(fd, request)
       (void) write_message_to_user(target, msgbuf, NULL_FLAG);
     }
 
+  write_res_stats(target->question);
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
@@ -933,6 +939,9 @@ olc_ask(fd, request)
   log_status(msgbuf);
 #endif /* LOG */
 
+  write_ask_stats(target->user->username, topic, target->user->machine,
+		  requester->user->username);
+
   needs_backup = TRUE;
   return(SUCCESS);
 }
@@ -1021,6 +1030,7 @@ olc_forward(fd, request)
 		       ? target->question->note
 		       : target->question->topic);
 	(void) sprintf(target->question->topic, "oga");
+	write_res_stats(target->question);
 	terminate_log_unanswered(target);
 	free_new_messages(target);
 	free_new_messages(consultant);
@@ -1271,13 +1281,15 @@ olc_send(fd, request)
     else
       send_response(fd, SUCCESS);
   
-  if(owns_question(target))
+  if(owns_question(target)) {
     sprintf(mesg,
 	    "New message from %s %s.\nTo see it, type 'show' within %s.\n",
 	    requester->title, requester->user->username,DaemonInst);
-  else
+  }
+  else {
     sprintf(mesg,"New message from %s %s.\n",
 	    requester->title, requester->user->username);
+  }
 
   if(target != requester)
     if (write_message_to_user(target,mesg, NULL_FLAG) != SUCCESS)
@@ -1313,17 +1325,26 @@ olc_send(fd, request)
   log_status(mesg);
 #endif /* LOG */
 
-  if (owns_question(requester))
-    {
-      if (requester->status == PICKUP)
-	set_status(requester, PENDING);
-      if (! is_connected(target))
-	{
-	  sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
-		  target->user->username, target->instance);
-	  olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
-	}
+  if (owns_question(requester)) {
+    target->question->stats.n_urepl++;
+    if (requester->status == PICKUP)
+      set_status(requester, PENDING);
+    if (! is_connected(target))
+      {
+	sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
+		target->user->username, target->instance);
+	olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
+      }
+  } else {
+    if (target->question->stats.time_to_fr == -1) {
+      time_t now;
+      
+      now = time(0);
+      target->question->stats.time_to_fr = now - target->timestamp;
     }
+    target->question->stats.n_crepl++;
+  }
+
 
   if ( (!owns_question(target) && is_connected(target) &&
 	is_me(target,requester))
@@ -2124,6 +2145,7 @@ olc_mail(fd, request)
       if ((msgbuf = read_text_from_fd(fd)) != (char *)NULL) 
 	{
 	  send_response(fd, SUCCESS);
+	  target->question->stats.n_cmail++;
 	  log_mail(target,requester, msgbuf);
 	  return(SUCCESS);
 	}
