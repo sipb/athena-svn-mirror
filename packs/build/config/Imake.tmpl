@@ -12,8 +12,6 @@
  *   this is found prior to the minimal one in the global templates.
  */
 
-#include <site.def>
-
 /* 
  * WARNING - HACK HACK HACK
  * To allow xmkmf to work with our setup: set CONFDIR to be TOPDIR/config.
@@ -26,6 +24,8 @@
 #define UseInstalled
 #define ConfDir TOPDIR/config
 #endif
+
+#include <site.def>
 
 #ifndef ConfDir
 #define ConfDir ${TOP}/config
