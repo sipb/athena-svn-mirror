@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.1 1991-04-02 14:01:30 lwvanels Exp $
+ *      $Id: olcm.c,v 1.2 1991-04-08 21:21:48 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.1 1991-04-02 14:01:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.2 1991-04-08 21:21:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -96,11 +96,19 @@ main(argc,argv)
   extern char *optarg;
   extern int optind;
 
-#ifdef mips
-  openlog("olcm",LOG_PID);  /* Broken ultrix syslog.. */
+#if defined(ultrix)
+#ifdef LOG_CONS
+  openlog ("olcm", LOG_CONS | LOG_PID);
 #else
-  openlog("olcm",LOG_CONS | LOG_PID,SYSLOG_FACILITY);
-#endif
+  openlog ("olcm", LOG_PID);
+#endif /* LOG_CONS */
+#else
+#ifdef LOG_CONS
+  openlog ("olcm", LOG_CONS | LOG_PID,SYSLOG_FACILITY);
+#else
+  openlog ("olcm", LOG_PID, SYSLOG_FACILITY);
+#endif /* LOG_CONS */
+#endif /* ultrix */
 
   username[0] = '\0';
   strcpy(topic,DFLT_TOPIC);
