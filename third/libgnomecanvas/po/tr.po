@@ -3,13 +3,15 @@
 # Görkem Çetin <gorkem@gelecek.com.tr>, 2001.
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2001.
 # erkaN <erkaN@linux-sevenler.de>, 2003.
+# Baris Cicek <baris@teamforce.name.tr>, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas2\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
 "PO-Revision-Date: 2003-02-07 15:22+0000\n"
-"Last-Translator: erkaN <erkaN@linux-sevenler.de>\n"
+"Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -303,7 +305,7 @@ msgid "Cursor Visible"
 msgstr "Görünür İmleç"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+msgid "Is the cursor visible in this rich text item?"
 msgstr "İmleç, zengin metin öğesi içinde görünebilir mi?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -311,7 +313,7 @@ msgid "Cursor Blink"
 msgstr "İmleç Yanıp Sönmesi"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+msgid "Does the cursor blink in this rich text item?"
 msgstr "İmleç, bu metin içinde yanıp sönebilir mi?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281

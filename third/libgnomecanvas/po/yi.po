@@ -5,7 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
 "PO-Revision-Date: 2003-03-19\n"
 "Last-Translator: Raphael Finkel <raphael@cs.uky.edu>\n"
 "Language-Team: Yiddish <raphael@cs.uky.edu>\n"
@@ -25,11 +26,11 @@ msgstr "װ'"
 
 #: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
-msgstr ""
+msgstr "אַנטי־אַליִיִסירט"
 
 #: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
-msgstr ""
+msgstr "די אַנטי־אַליִיִסיר מאָדע פֿון דעם לײַװנט"
 
 #: libgnomecanvas/gnome-canvas-text.c:206
 #: libgnomecanvas/gnome-canvas-rich-text.c:209
@@ -46,7 +47,7 @@ msgstr "פֿאַרצײַכענונג"
 
 #: libgnomecanvas/gnome-canvas-text.c:216
 msgid "Marked up text to render"
-msgstr "פֿאַרצײַכענטער טעקסט צו פֿאָרמירן"
+msgstr "פֿאַרצײַכנטער טעקסט צו פֿאָרמירן"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
@@ -58,7 +59,7 @@ msgstr "שריפֿט באַשרײַבונג װי אַן אות־פֿאָדעם"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr ""
+msgstr "שריפֿט־באַשרײַבונג"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
@@ -134,11 +135,11 @@ msgstr "סטיל פֿון אונטערשטריך אין דעם טעקסט"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr ""
+msgstr "סקאַלירונג"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr ""
+msgstr "גרײס פֿון שריפֿט, רעלאַטיװ צו געװײנטלעכער גרײס"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
@@ -148,31 +149,31 @@ msgstr "פֿאַרב"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr ""
+msgstr "טעקסטפֿאַרב, װי אַן אות־פֿאָדעם"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr ""
+msgstr "טעקסטפֿאַרב, װי אַ GdkColor"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
+msgstr "טעקסטפֿאַרב, װי אַן R/G/B/A קאָמבינירטער גאַנצער נומער"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr ""
+msgstr "טעקסטברײט"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr ""
+msgstr "די ברײט פֿון דעם פֿאָרמירטן טעקסט"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr ""
+msgstr "טעסקטהײך"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr ""
+msgstr "די הײך פֿון דעם פֿאָרמירטן טעקסט"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
@@ -248,15 +249,15 @@ msgstr "צי דאָס הענטל איז משפּיע דעם אונטערשטרי
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr ""
+msgstr "באַשטעטיק סקאַלירונג"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr ""
+msgstr "צי דאָס הענטל איז משפּיע שריפֿט־סקאַלירונג"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
-msgstr ""
+msgstr "טעקסט צו װײַזן"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
@@ -272,7 +273,7 @@ msgstr "ברײט"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr ""
+msgstr "ברײט פֿאַר אַ טעקסטקעסטל"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
@@ -280,7 +281,7 @@ msgstr "הײך"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr ""
+msgstr "הײך פֿון טעקסטקעסטל"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
@@ -288,7 +289,7 @@ msgstr "רעדאַגירעװדיק"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr ""
+msgstr "צי לאָזט דער רײַכטעקסט־אײנס זיך רעדאַגירן?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
@@ -296,31 +297,33 @@ msgstr "זעעװדיק"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr ""
+msgstr "צי איז דער רײַכטעקסט־אײנס זעעװדיק?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
 msgstr "זעעװדיקער לױפֿער"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr ""
+#, fuzzy
+msgid "Is the cursor visible in this rich text item?"
+msgstr "צי איז דער לױפֿער זעעװדיק אין דעם רײַכטעקסט־אײנס?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "לױפֿער בליצלען"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr ""
+#, fuzzy
+msgid "Does the cursor blink in this rich text item?"
+msgstr "צי פּינטלט דער לױפֿער אױף דעם רײַכטעקסט־אײנס?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
-msgstr ""
+msgstr "הײכװוּקס"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr ""
+msgstr "צי זאָל די טעסקטקעסטל־הײך װאַקסן אױב דער טעקסט פּאַסט ניט אַרײַן?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
@@ -328,7 +331,7 @@ msgstr "שאַר־מאָדע"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr ""
+msgstr "שאַר־מאָדע פֿאַר מער־שורהדיקן טעקסט"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
@@ -336,11 +339,11 @@ msgstr "אױסגלײַכונג"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr ""
+msgstr "אױסגלײַכונג־מאָדע"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
-msgstr ""
+msgstr "ריכטונג"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
 msgid "Text direction"
@@ -348,11 +351,11 @@ msgstr "טעקסט ריכטונג"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"
-msgstr ""
+msgstr "אַנקאָר"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr ""
+msgstr "אַנקאָרפּונקט פֿאַר טעקסט"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
@@ -360,7 +363,7 @@ msgstr "בילדצעלן איבער די שורות"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr ""
+msgstr "װיפֿל בילדצעלן צו שטעלן איבער שורות"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
@@ -368,7 +371,7 @@ msgstr "בילדצעלן אונטער די שורות"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr ""
+msgstr "װיפֿל בילדצעלן צו שטעלן אונטער שורות"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
@@ -376,7 +379,7 @@ msgstr "בילדצעלן אין דרינען פֿון שאַר"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
-msgstr ""
+msgstr "צאָל פֿון בילדצעלן צו שטעלן אין דרינען פֿון דעם שאַר"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
@@ -384,7 +387,7 @@ msgstr "לינקער זאַפּאַס"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr ""
+msgstr "װיפֿל בילדצעלן אין דעם לינקן זאַפּאַס"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
@@ -392,7 +395,7 @@ msgstr "רעכטער זאַפּאַס"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr ""
+msgstr "װיפֿל בילדצעלן אין דעם רעכטן זאַפּאַס"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
@@ -400,4 +403,4 @@ msgstr "אײַנצײנדלונג"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "צאָל פֿון בילדצעלן אַר אײַנצײנדלונג"

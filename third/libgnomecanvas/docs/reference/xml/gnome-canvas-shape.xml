@@ -1,0 +1,226 @@
+<refentry id="GnomeCanvasShape">
+<refmeta>
+<refentrytitle>GnomeCanvasShape</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasShape</refname><refpurpose>Base class for canvas item shapes</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasShape-struct">GnomeCanvasShape</link>;
+<link linkend="void">void</link>        <link linkend="gnome-canvas-shape-set-path-def">gnome_canvas_shape_set_path_def</link> (<link linkend="GnomeCanvasShape">GnomeCanvasShape</link> *shape,
+                                             <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *def);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-shape-get-path-def">gnome_canvas_shape_get_path_def</link>
+                                            (<link linkend="GnomeCanvasShape">GnomeCanvasShape</link> *shape);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----GnomeCanvasShape
+                     +----<link linkend="GnomeCanvasBpath">GnomeCanvasBpath</link>
+                     +----<link linkend="GnomeCanvasRE">GnomeCanvasRE</link>
+                     +----<link linkend="GnomeCanvasPolygon">GnomeCanvasPolygon</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasShape--cap-style">cap-style</link>&quot;            <link linkend="GdkCapStyle">GdkCapStyle</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--dash">dash</link>&quot;                 <link linkend="gpointer">gpointer</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--fill-color">fill-color</link>&quot;           <link linkend="gchararray">gchararray</link>            : Write
+  &quot;<link linkend="GnomeCanvasShape--fill-color-gdk">fill-color-gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--fill-color-rgba">fill-color-rgba</link>&quot;      <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--fill-stipple">fill-stipple</link>&quot;         <link linkend="GdkDrawable">GdkDrawable</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--join-style">join-style</link>&quot;           <link linkend="GdkJoinStyle">GdkJoinStyle</link>          : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--miterlimit">miterlimit</link>&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--outline-color">outline-color</link>&quot;        <link linkend="gchararray">gchararray</link>            : Write
+  &quot;<link linkend="GnomeCanvasShape--outline-color-gdk">outline-color-gdk</link>&quot;    <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--outline-color-rgba">outline-color-rgba</link>&quot;   <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--outline-stipple">outline-stipple</link>&quot;      <link linkend="GdkDrawable">GdkDrawable</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--width-pixels">width-pixels</link>&quot;         <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasShape--width-units">width-units</link>&quot;          <link linkend="gdouble">gdouble</link>               : Write
+  &quot;<link linkend="GnomeCanvasShape--wind">wind</link>&quot;                 <link linkend="guint">guint</link>                 : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Provides a base class for canvas item shapes, including: <link linkend="GnomeCanvasBpath"><type>GnomeCanvasBpath</type></link>,
+<link linkend="GnomeCanvasEllipse"><type>GnomeCanvasEllipse</type></link>, <link linkend="GnomeCanvasRect"><type>GnomeCanvasRect</type></link>, and <link linkend="GnomeCanvasPolygon"><type>GnomeCanvasPolygon</type></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasShape-struct"/>struct GnomeCanvasShape</title>
+<indexterm><primary>GnomeCanvasShape</primary></indexterm><programlisting>struct GnomeCanvasShape;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+and functions for querying or changing its parameters.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-shape-set-path-def"/>gnome_canvas_shape_set_path_def ()</title>
+<indexterm><primary>gnome_canvas_shape_set_path_def</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_shape_set_path_def (<link linkend="GnomeCanvasShape">GnomeCanvasShape</link> *shape,
+                                             <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *def);</programlisting>
+<para>
+This function sets the the GnomeCanvasPathDef used by the
+GnomeCanvasShape. Notice, that it does not request updates, as
+it is meant to be used from item implementations, from inside
+update queue.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>shape</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasShape
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>def</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-shape-get-path-def"/>gnome_canvas_shape_get_path_def ()</title>
+<indexterm><primary>gnome_canvas_shape_get_path_def</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_shape_get_path_def
+                                            (<link linkend="GnomeCanvasShape">GnomeCanvasShape</link> *shape);</programlisting>
+<para>
+This function returns the <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link> that the shape
+currently uses.  It adds a reference to the <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link> and
+returns it, if there is not a <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link> set for the shape
+it returns NULL.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>shape</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasShape
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link> or NULL if none is set for the shape.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasShape--cap-style"/>The &quot;<literal>cap-style</literal>&quot; property</title>
+<programlisting>  &quot;cap-style&quot;            <link linkend="GdkCapStyle">GdkCapStyle</link>           : Read / Write</programlisting>
+<para>
+Cap (end point) style for the bpath.
+</para><para>Default value: GDK_CAP_BUTT</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--dash"/>The &quot;<literal>dash</literal>&quot; property</title>
+<programlisting>  &quot;dash&quot;                 <link linkend="gpointer">gpointer</link>              : Read / Write</programlisting>
+<para>
+Dashing pattern.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--fill-color"/>The &quot;<literal>fill-color</literal>&quot; property</title>
+<programlisting>  &quot;fill-color&quot;           <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>
+X color specification for fill color, or NULL pointer for no color
+(transparent).
+</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--fill-color-gdk"/>The &quot;<literal>fill-color-gdk</literal>&quot; property</title>
+<programlisting>  &quot;fill-color-gdk&quot;       <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>
+Allocated GdkColor for fill.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--fill-color-rgba"/>The &quot;<literal>fill-color-rgba</literal>&quot; property</title>
+<programlisting>  &quot;fill-color-rgba&quot;      <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+Fill color with an alpha component (in the format 0xRRGGBBAA).
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--fill-stipple"/>The &quot;<literal>fill-stipple</literal>&quot; property</title>
+<programlisting>  &quot;fill-stipple&quot;         <link linkend="GdkDrawable">GdkDrawable</link>           : Read / Write</programlisting>
+<para>
+Stipple pattern for fill.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--join-style"/>The &quot;<literal>join-style</literal>&quot; property</title>
+<programlisting>  &quot;join-style&quot;           <link linkend="GdkJoinStyle">GdkJoinStyle</link>          : Read / Write</programlisting>
+<para>
+Vertex join style for the bpath.
+</para><para>Default value: GDK_JOIN_MITER</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--miterlimit"/>The &quot;<literal>miterlimit</literal>&quot; property</title>
+<programlisting>  &quot;miterlimit&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Minimum angle between segments, where miter join rule is applied.
+</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--outline-color"/>The &quot;<literal>outline-color</literal>&quot; property</title>
+<programlisting>  &quot;outline-color&quot;        <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>
+X color specification for outline color, or NULL pointer for no color
+(transparent).
+</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--outline-color-gdk"/>The &quot;<literal>outline-color-gdk</literal>&quot; property</title>
+<programlisting>  &quot;outline-color-gdk&quot;    <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>
+Allocated GdkColor for outline.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--outline-color-rgba"/>The &quot;<literal>outline-color-rgba</literal>&quot; property</title>
+<programlisting>  &quot;outline-color-rgba&quot;   <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+Outline color with an alpha component (in the format 0xRRGGBBAA).
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--outline-stipple"/>The &quot;<literal>outline-stipple</literal>&quot; property</title>
+<programlisting>  &quot;outline-stipple&quot;      <link linkend="GdkDrawable">GdkDrawable</link>           : Read / Write</programlisting>
+<para>
+Stipple pattern for outline.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--width-pixels"/>The &quot;<literal>width-pixels</literal>&quot; property</title>
+<programlisting>  &quot;width-pixels&quot;         <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+Width of the outline in pixels. The outline will not be scaled when the
+canvas zoom factor is changed.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--width-units"/>The &quot;<literal>width-units</literal>&quot; property</title>
+<programlisting>  &quot;width-units&quot;          <link linkend="gdouble">gdouble</link>               : Write</programlisting>
+<para>
+Width of the outline in canvas units.  The outline will be scaled when
+the canvas zoom factor is changed.
+</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasShape--wind"/>The &quot;<literal>wind</literal>&quot; property</title>
+<programlisting>  &quot;wind&quot;                 <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+Winding rule for the bpath (ArtWindRule).
+</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

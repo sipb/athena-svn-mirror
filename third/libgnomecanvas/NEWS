@@ -1,37 +1,90 @@
-=============
-Version 2.2.1 (18.05.2003)
-=============
+libgnomecanvas 2.8.0
+--------------------
 
-Library:
-	* Fix crashes in the AA canvas. (Andreas Holzmann)
-	* Make affine transformations work for pixbuf items
-	  (Jim Evins)
-	* Fix rotation of outline widths for rect, ellipse and
-	  polygon items. (Jim Evins)
-	* Fix redrawing bugs (Tim Janik)
+What's new since 2.7.1
 
-Build:
+* Bug fixes:
+	- Various fixes (Sven Herzberg, Matthias Clasen)
 
-	* Fix localedir setup and random fixes to make it
-	  distcheck (Kjartan)
-	
-Docs:
-	* Completely revamped documentation (Josh Green)
-	* Some fixes from Sebasian Rittau.
-	
-Translations:
-	* cs (Miroslav Trmac), ga (Paul Duffy), ml (Guntupalli Karunkar)
-	sr (mdfk@root.co.yu), sr@lat (mdfk@root.co.yu), yi (Raphael Finkel),
+* Translations:
+        - New Norwegian Bookmal translation (Kjartan Maraas)
+	- New Bosnian translation (Kenan Hadžiavdić)
+	- Various updated translations (ang, bg, el, fi, gu, hu, ne,
+					pa, sq, tr)
 
+libgnomecanvas 2.7.1
+--------------------
 
-August 14, 2001:
-===============
+What's new since 2.6.1
 
-* Released libgnomecanvas 1.102.0 "Roswell".
+* Bug fixes:
+	- Doc fixes (Matthias Clasen)
 
-  This is the first library freeze release of libgnomeui.
+* Features:
+	- Update to automake 1.7 (James Henstridge)
 
-  Outstanding issues:
+libgnomecanvas 2.6.1 "Grizby"
+-----------------------------
 
-  - GnomeCanvasRichText: this may need some love.
+What's new since 2.6.0
 
+* Translations:
+	- Added Gujarati translation (Gujarati Team)
+	- Added Basque translation (Iñaki Larrañaga)
+	- Various updated translations (ca, he, nn, wa)
+
+libgnomecanvas 2.6.0 "Skree"
+----------------------------
+
+What's new since 2.4
+
+* Bug fixes:
+	- BPath fixes (David Boucher)
+	- Doc fixes (Richard Hult)
+	- Set methods for height and width in GnomeCanvasRichText
+	  (Kjartan Maraas)
+	- Build fixes ("The Written Word", Kjartan Maraas)
+
+* Translations:
+	- Added British English translation (Gareth Owen)
+	- Added Canadian English translation (Adam Weinberger)
+	- Added Lithuanian translation (Žygimantas Beručka, Tomas Kuliavas)
+	- Added Serbian Jekavian translation (Bojan Suzić)
+	- Added Punjabi translation (Amanpreet Singh Alam)
+
+	- Updated Albanian translation (Laurent Dhima)
+	- Updated Arabic translation (Arafat Medini)
+	- Updated Azerbaijani translation (Mətin Əmirov)
+	- Updated Belarusian translation (Ales Nyakhaychyk)
+	- Updated Bengali translation (Sayamindu Dasgupta)
+	- Updated Brazilian Portuguese translation (Medina)
+	- Updated Croatian translation (Robert Sedak)
+	- Updated Czech translation (Miloslav Trmac)
+ 	- Updated Danish translation (Ole Laursen)
+	- Updated Dutch translation (Vincent van Adrighem)
+	- Updated Finnish translation (Pauli Virtanen)
+	- Updated French translation (Christophe Merlet)
+	- Updated German translation (Christian Neumair)
+	- Updated Greek translation (Kostas Papadimas)
+	- Updated Hindi translation (Guntupalli Karunakar)
+	- Updated Hungarian translation (Andras Timar)
+	- Updated Irish translation (Paul Duffy)
+	- Updated Italian translation (Alesso Frusciante)
+	- Updated Japanese translation (Takeshi AIHANA)
+	- Updated Korean translation (Changwoo Ryu)
+	- Updated Malay translation (Hasbullah Bin Pit)
+	- Updated Mongolian translation (Sanlig Badral)
+	- Updated Norwegian translation (Kjartan Maraas)
+	- Updated Norwegian Nynorsk translation (Åsmund Skjæveland)
+	- Updated Polish translation (GNOME PL Team)
+	- Updated Portuguese translation (Duarte Loreto)
+	- Updated Romanian translation (Mişu Moldovan)
+	- Updated Russian translation (Russian Team)
+	- Updated Serbian translations (Branko Ivanovic, Danilo Šegan)
+	- Updated Simplified Chinese translation (Funda Wang)
+	- Updated Slovak translation (Marcel Telka)
+	- Updated Spanish translation (Francisco Javier F. Serrador)
+	- Updated Swedish translation (Christian Rose)
+	- Updated Tamil translation (Dinesh Nadarajah)
+	- Updated Ukrainian translation (Maxim Dziumanenko)
+	- Updated Welsh translation (Dafydd Harries)

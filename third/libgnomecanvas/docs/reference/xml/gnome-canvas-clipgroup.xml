@@ -1,0 +1,93 @@
+<refentry id="GnomeCanvasClipgroup">
+<refmeta>
+<refentrytitle>GnomeCanvasClipgroup</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasClipgroup</refname><refpurpose>Canvas group that implements clipping</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasClipgroup-struct">GnomeCanvasClipgroup</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link>
+                     +----GnomeCanvasClipgroup
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasClipgroup--path">path</link>&quot;                 <link linkend="gpointer">gpointer</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasClipgroup--wind">wind</link>&quot;                 <link linkend="guint">guint</link>                 : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A canvas group object that clips the view of its children to a shape defined by
+a <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasClipgroup-struct"/>struct GnomeCanvasClipgroup</title>
+<indexterm><primary>GnomeCanvasClipgroup</primary></indexterm><programlisting>struct GnomeCanvasClipgroup;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasClipgroup--path"/>The &quot;<literal>path</literal>&quot; property</title>
+<programlisting>  &quot;path&quot;                 <link linkend="gpointer">gpointer</link>              : Read / Write</programlisting>
+<para>
+Pointer to a <link linkend="GnomeCanvasPathDef"><type>GnomeCanvasPathDef</type></link> structure which can be created with
+<link linkend="gnome-canvas-path-def-new"><function>gnome_canvas_path_def_new()</function></link>.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasClipgroup--wind"/>The &quot;<literal>wind</literal>&quot; property</title>
+<programlisting>  &quot;wind&quot;                 <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+Winding rule (ArtWindRule) enumeration (ART_WIND_RULE_NONZERO,
+ART_WIND_RULE_INTERSECT, ART_WIND_RULE_ODDEVEN, and ART_WIND_RULE_POSITIVE),
+see libart for details. Defines the clipping intersection rule (FIXME?).
+</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

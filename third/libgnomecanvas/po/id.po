@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas HEAD\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
 "PO-Revision-Date: 2003-02-06 10:27+0700\n"
 "Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
 "Language-Team: Indonesia <id@li.org>\n"
@@ -304,7 +305,8 @@ msgid "Cursor Visible"
 msgstr "Kursor kelihatan"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+#, fuzzy
+msgid "Is the cursor visible in this rich text item?"
 msgstr "Apakah kursor dalam kotak teks ini akan kelihatan?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -312,7 +314,8 @@ msgid "Cursor Blink"
 msgstr "Kursor berkedip"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+#, fuzzy
+msgid "Does the cursor blink in this rich text item?"
 msgstr "Apakah kursor bisa berkedip dalam kotak teks ini?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281

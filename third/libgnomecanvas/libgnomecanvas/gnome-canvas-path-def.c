@@ -345,7 +345,7 @@ gnome_canvas_path_def_concat (const GSList * list)
 
 	for (l = list; l != NULL; l = l->next) {
 		c = (GnomeCanvasPathDef *) l->data;
-		memcpy (bp, c->bpath, c->end);
+		memcpy (bp, c->bpath, c->end * sizeof (ArtBpath));
 		bp += c->end;
 	}
 

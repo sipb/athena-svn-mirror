@@ -8,10 +8,8 @@ INCLUDES = \
         -DGNOMECANVASPIXMAPDIR=\""$(datadir)/pixmaps"\"	\
         -DGNOMECANVASBINDIR=\""$(bindir)"\" 		\
         -DGNOMECANVASLOCALSTATEDIR=\""$(localstatedir)"\" 	\
-        -DGNOMECANVASLOCALEDIR=\""$(gnomelocaledir)"\" 	\
 	-DGTK_VERSION=\""$(GTK_VERSION)"\"		\
-	-DG_LOG_DOMAIN=\"GnomeCanvas\"			\
-	-DVERSION=\"$(VERSION)\"
+	-DG_LOG_DOMAIN=\"GnomeCanvas\"
 
 LDADD =	\
 	$(top_builddir)/libgnomecanvas/libgnomecanvas-2.la \

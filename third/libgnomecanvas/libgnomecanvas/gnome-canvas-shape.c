@@ -1465,8 +1465,9 @@ gcbp_draw_ctx_unref (GCBPDrawCtx * ctx)
 			gdk_bitmap_unref (ctx->mask);
 		if (ctx->clip)
 			gdk_bitmap_unref (ctx->clip);
-
+		
 		g_object_set_data (G_OBJECT (ctx->canvas), "BpathDrawCtx", NULL);
+		g_free (ctx);
 	}
 }
 

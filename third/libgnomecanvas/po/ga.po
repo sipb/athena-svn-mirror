@@ -1,12 +1,13 @@
 # Irish Translation of libgnomecanvas
 # Copyright (C) 2003 Free Software Foundation, Inc.
-# Paul Duffy <dubhthach@frin.nuigalway.ie>, 2003.
-#
+# Paul Duffy <dubhthach@frink.nuigalway.ie>, 2003.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas HEAD\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2003-03-19 16:14+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2003-09-09 16:14+0000\n"
 "Last-Translator: Paul Duffy <dubhthach@frink.nuigalway.ie>\n"
 "Language-Team: Irish\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +35,7 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-text.c:206
 #: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
-msgstr "Téacs"
+msgstr "TÃ©acs"
 
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
@@ -50,60 +51,60 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "Clófhoireann"
+msgstr "ClÃ³fhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr ""
+msgstr "Cuir síos ar an Clófhoireann mar téad"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr ""
+msgstr "Cuir síos ar an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr ""
+msgstr "Cuir síos ar an Clófhoireann, mar struct PangoFontDescription"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "Clann Clófhoireann"
+msgstr "Clann ClÃ³fhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr ""
+msgstr "Ainm an Clófhoireann, e.g. Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr ""
+msgstr "Stíl an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr ""
+msgstr "Athraitheach an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr ""
+msgstr "Tromán an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr ""
+msgstr "an sín ag an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr ""
+msgstr "Méid an Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "pointe na Clófhoireann"
+msgstr "pointe na ClÃ³fhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr ""
+msgstr "Méid an Clófhoireann í pointe"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
@@ -132,7 +133,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr ""
+msgstr "Scála"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
@@ -142,15 +143,15 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-text.c:433
 #: libgnomecanvas/gnome-canvas-text.c:441
 msgid "Color"
-msgstr "Dáth"
+msgstr "DÃ¡th"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr ""
+msgstr "Dáth an Téasc, mar téad"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr ""
+msgstr "Dáth an Téasc, mar GDKColor"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
@@ -158,7 +159,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr ""
+msgstr "Leithead an Téasc"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
@@ -166,7 +167,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr ""
+msgstr "Ard an Téasc"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
@@ -174,7 +175,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr ""
+msgstr "Foireann do \"Clann an clófhoireann\""
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
@@ -182,7 +183,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr ""
+msgstr "Foireann do \"Stíl an Clófhoireann\""
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
@@ -190,7 +191,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr ""
+msgstr "Foireann do \"Athraitheach an Clófhoireann\""
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
@@ -198,7 +199,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr ""
+msgstr "Foireann do tromán an clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
@@ -206,7 +207,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr ""
+msgstr "Foireann do an an sín atá ag na Clófhoireann"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
@@ -214,7 +215,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr ""
+msgstr "Foireann do \"meid an clófhoireann\""
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
@@ -246,7 +247,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr ""
+msgstr "Foireann an Scála"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
@@ -254,23 +255,23 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
-msgstr ""
+msgstr "Téasc chun taispáint"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr ""
+msgstr "áit X"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr ""
+msgstr "áit Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr ""
+msgstr "Leithead"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr ""
+msgstr "An leithead le haighaidh an bosca téasc"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
@@ -278,7 +279,7 @@ msgstr "Airde"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr "Airde le haighaidh an bosca téacs"
+msgstr "Airde le haighaidh an bosca tÃ©acs"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
@@ -290,7 +291,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr ""
+msgstr "Infheicthe"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
@@ -301,7 +302,7 @@ msgid "Cursor Visible"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+msgid "Is the cursor visible in this rich text item?"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -309,7 +310,7 @@ msgid "Cursor Blink"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+msgid "Does the cursor blink in this rich text item?"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
@@ -330,11 +331,11 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
-msgstr "Comhfhadú"
+msgstr "ComhfhadÃº"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr "bealach Comhfhadú"
+msgstr "bealach ComhfhadÃº"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
@@ -342,15 +343,15 @@ msgstr "Bealach"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
 msgid "Text direction"
-msgstr "bealach an Téacs"
+msgstr "bealach an TÃ©acs"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"
-msgstr ""
+msgstr "Ancaire"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr ""
+msgstr "Áit Ancaire le haighaidh an téasc"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
@@ -378,24 +379,24 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr ""
+msgstr "An ciumhais ar an clé"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr ""
+msgstr "Uimhir na pixels sa ciumhais ar an cl"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr ""
+msgstr "An ciumhais ar an dheis"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr ""
+msgstr "Uimhir na pixels sa ciumhais ar an deis"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
-msgstr ""
+msgstr "Scoib"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "Uimhir na pixels le haighaidh an scoib"

@@ -239,27 +239,6 @@ libgnomecanvas
 
 @Returns: 
 
-<!-- ##### FUNCTION gnome_canvas_item_rotate ##### -->
-<para>
-
-</para>
-
-@item: 
-@x: 
-@y: 
-@angle: 
-
-<!-- ##### FUNCTION gnome_canvas_item_scale ##### -->
-<para>
-
-</para>
-
-@item: 
-@x: 
-@y: 
-@scale_x: 
-@scale_y: 
-
 <!-- ##### FUNCTION gnome_canvas_marshal_BOOLEAN__BOXED ##### -->
 <para>
 

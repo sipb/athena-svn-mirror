@@ -1,12 +1,13 @@
 # Catalan translation of libgnomecanvas.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Jordi Mallach <jordi@sindominio.net>, 2002.
+# Copyright © 2002, 2004 Free Software Foundation, Inc.
+# Jordi Mallach <jordi@sindominio.net>, 2002, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas 2.0.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-06-09 21:21+0200\n"
+"Project-Id-Version: libgnomecanvas 2.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-03-23 15:58+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <gnome@softcatala.net>\n"
 "MIME-Version: 1.0\n"
@@ -161,11 +162,11 @@ msgstr "Color del text, com un enter combinat R/G/B/A"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr "Amplària del text"
+msgstr "Amplada del text"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr "Amplària del text representat"
+msgstr "Amplada del text representat"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
@@ -269,11 +270,11 @@ msgstr "Posició Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr "Amplària"
+msgstr "Amplada"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr "Amplària per a la caixa de text"
+msgstr "Amplada per a la caixa de text"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
@@ -304,16 +305,16 @@ msgid "Cursor Visible"
 msgstr "Cursor visible"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "És el cursor visible en aquest element de text enriquit?"
+msgid "Is the cursor visible in this rich text item?"
+msgstr "És visible el cursor en aquest element de text enriquit?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr "Parpadeig del cursor"
+msgstr "Parpelleig del cursor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Parpadeja el cursor en aquest element de text enriquit?"
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Parpelleja el cursor en aquest element de text enriquit?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
@@ -321,7 +322,7 @@ msgstr "Creixement de l'alçada"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr "Hauria de crèixer l'alçada de la caixa de text si el text no cap?"
+msgstr "Hauria de créixer l'alçada de la caixa de text si el text no cap?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"

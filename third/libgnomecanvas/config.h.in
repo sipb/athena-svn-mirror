@@ -6,6 +6,9 @@
 /* Gettext package */
 #undef GETTEXT_PACKAGE
 
+/* Define the location where the catalogs will be installed */
+#undef GNOMECANVASLOCALEDIR
+
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 

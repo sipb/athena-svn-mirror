@@ -4,9 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas 2.2.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2003-05-07 12:24+0800\n"
+"Project-Id-Version: libgnomecanvas 2.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2003-05-07 12:29+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -301,7 +302,8 @@ msgid "Cursor Visible"
 msgstr "顯示游標"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+#, fuzzy
+msgid "Is the cursor visible in this rich text item?"
 msgstr "是否在該 rich text 中顯示游標？"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -309,7 +311,8 @@ msgid "Cursor Blink"
 msgstr "閃爍游標"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+#, fuzzy
+msgid "Does the cursor blink in this rich text item?"
 msgstr "該 rich text 中的游標會否閃爍？"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281

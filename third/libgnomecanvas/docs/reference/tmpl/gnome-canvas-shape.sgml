@@ -22,24 +22,6 @@ and functions for querying or changing its parameters.
 </para>
 
 
-<!-- ##### FUNCTION gnome_canvas_shape_set_path_def ##### -->
-<para>
-
-</para>
-
-@shape: 
-@def: 
-
-
-<!-- ##### FUNCTION gnome_canvas_shape_get_path_def ##### -->
-<para>
-
-</para>
-
-@shape: 
-@Returns: 
-
-
 <!-- ##### ARG GnomeCanvasShape:cap-style ##### -->
 <para>
 Cap (end point) style for the bpath.
@@ -118,4 +100,22 @@ the canvas zoom factor is changed.
 <para>
 Winding rule for the bpath (ArtWindRule).
 </para>
+
+<!-- ##### FUNCTION gnome_canvas_shape_set_path_def ##### -->
+<para>
+
+</para>
+
+@shape: 
+@def: 
+
+
+<!-- ##### FUNCTION gnome_canvas_shape_get_path_def ##### -->
+<para>
+
+</para>
+
+@shape: 
+@Returns: 
+
 

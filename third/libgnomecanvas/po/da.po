@@ -1,14 +1,15 @@
 # Danish translation of gnome-libs.
-# Copyright (C) 1998, 99, 2000, 01, 02 Free Software Foundation, Inc.
+# Copyright (C) 1998, 99, 2000, 01, 02, 04 Free Software Foundation, Inc.
 # Keld Simonsen <keld@dkuug.dk>, 2001.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2001.
-# Ole Laursen <olau@hardworking.dk>, 2002.
+# Ole Laursen <olau@hardworking.dk>, 2002, 04.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 2.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-05-18 12:55+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-01-31 23:30+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -303,16 +304,16 @@ msgid "Cursor Visible"
 msgstr "Synlig markør"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "Om markøren er synlig"
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Om markøren er synlig i dette rig tekst-element"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "Blinkende markør"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Om markøren blinker"
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Om markøren blinker i dette rig tekst-element"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
