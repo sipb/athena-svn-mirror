@@ -88,7 +88,7 @@ PTF *person;
     finger_port = service->s_port;
   }
   
-  host = gethostbyname(person->machine);
+  host = c_gethostbyname(person->machine);
   if (host == (struct hostent *) NULL) {
     syslog(LOG_WARNING,"locate_person: Can't resolve name of host `%s'",
 	   person->machine);
