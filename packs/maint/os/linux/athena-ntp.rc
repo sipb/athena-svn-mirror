@@ -1,11 +1,11 @@
 #!/bin/sh
 #
-# athena-xntp:	Start the Athena xntp time service.
+# athena-ntp:	Start the Athena ntp time service.
 #
 # chkconfig: 345 55 45
-# description: xntp time sync startup.
-# processname: xntpd
-# pidfile: /var/athena/xntpd.pid
+# description: ntp time sync startup.
+# processname: ntpd
+# pidfile: /var/athena/ntpd.pid
 # config: /etc/athena/ntp.conf
 
 # Source function library
@@ -22,7 +22,7 @@ then
 	exit 0
 fi
 
-[ -f /etc/athena/xntpd ] || exit 0
+[ -f /etc/athena/ntpd ] || exit 0
 
 RETVAL=0
 
@@ -31,24 +31,24 @@ case "$1" in
   start)
 	echo -n "Starting Athena NTP: "
 	gettime -s $TIMEHUB
-	daemon xntpd
+	daemon ntpd
 	RETVAL=$?
 
 	echo
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-xntp
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-ntp
 	;;
 
   stop)
 	echo -n "Stopping Athena NTP: "
-	killproc xntpd
+	killproc ntpd
 	RETVAL=$?
 
 	echo
-	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-xntp
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-ntp
 	;;
 
   status)
-	status xntpd
+	status ntpd
 	RETVAL=$?
 	;;
 
@@ -59,12 +59,12 @@ case "$1" in
 	;;
 
   reload)
-	killall -HUP xntpd
+	killall -HUP ntpd
 	RETVAL=$?
 	;;
 
   *)
-	echo "Usage: athena-xntp {start|stop|status|restart|reload}"
+	echo "Usage: athena-ntp {start|stop|status|restart|reload}"
 	exit 1
 esac
 
