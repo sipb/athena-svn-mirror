@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.7 1993-11-01 18:02:32 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.8 1993-11-12 12:13:12 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -53,6 +53,9 @@ extern int sys_nerr;
 #define sigmask(n)  ((unsigned int)1 << (((n) - 1) & (32 - 1)))
 #endif
 
+#ifdef SOLARIS
+#define SOLARIS_BROKEN_TTY
+#endif
 
 extern int DEBUG;
 
@@ -877,6 +880,7 @@ input(fd, name)
   close(fd);
 }
 
+
 int exec(info, what, data)
      MenuInfo *info;
      char *what;
@@ -891,6 +895,12 @@ int exec(info, what, data)
   int fd[2];
   int pipes;
   int num_fds;
+#ifdef SOLARIS_BROKEN_TTY
+  int xterm = 0, icon = 0, /* Prepare for the gross hack of the decade... */
+      title = 0;
+  char *tmpopt, *tmpname, *tmpend;
+#endif
+
 
   if (info != NULL &&		/* exec through menu item */
       info->null == NULL)
@@ -978,6 +988,59 @@ int exec(info, what, data)
 	  *ptr = '\0';
 	  ptr++;
 	}
+
+#ifdef SOLARIS_BROKEN_TTY
+      /*
+       * Cruft. For whatever obscure reasons, the command "xterm -e foo"
+       * results in a terminal where echoe is not set (deletes do not
+       * echo). The following was what I determined to be the most
+       * expedient fix (all available fixes are gross): If an xterm
+       * is being execed with the -e option, insert "inittty" in front
+       * of the program to be execed. That program will add echoe to
+       * the terminal characteristics and then exec the real program.
+       * Parsing for -T and -n are to counter side-effects of -e. Sigh.
+       */
+      if (xterm == 1)
+	{
+	  if (!strcmp(argv[argc-1], "-T") || !strcmp(argv[argc-1], "-title"))
+	    title = 1;
+
+	  if (!strcmp(argv[argc-1], "-n"))
+	    icon = 1;
+
+	  if (!strcmp(argv[argc-2], "-e")) /* xterm == 1 --> argc >= 2 */
+	    {
+	      tmpopt = argv[argc-2];
+	      tmpname = argv[argc-1];
+	      tmpend = strrchr(tmpname, '/');
+	      if (tmpend == NULL)
+		tmpend = tmpname;
+	      else
+		tmpend++;
+	      argc -= 2;
+
+	      if (!title)
+		{
+		  argv[argc++] = "-T";
+		  argv[argc++] = tmpend;
+		}
+
+	      if (!icon)
+		{
+		  argv[argc++] = "-n";
+		  argv[argc++] = tmpend;
+		}
+
+	      argv[argc++] = tmpopt;
+	      argv[argc++] = "inittty";
+	      argv[argc++] = tmpname;
+	      xterm = 0;
+	    }
+	}
+
+      if (argc == 1 && !strcmp(argv[0], "xterm"))
+	xterm = 1;
+#endif
     }
 
   argv[argc] = NULL;
@@ -1001,30 +1064,6 @@ int exec(info, what, data)
       _exit(42);
     }
   return 42;			/* never reached, but makes saber happy... */
-}
-
-#ifdef SOLARIS
-static char xtermstart[] = "xterm -e inittty ";
-#else
-static char xtermstart[] = "xterm -e ";
-#endif
-
-int xterm(info, what, data)
-     MenuInfo *info;
-     char *what;
-     caddr_t data;
-{
-  char *whatstring;
-  int ret;
-
-  whatstring = (char *)malloc(strlen(what) + sizeof(xtermstart) + 1);
-  if (whatstring == NULL)
-    return exec(info, what, data); /* Just go for it. */
-  strcpy(whatstring, xtermstart);
-  strcat(whatstring, what);
-  ret = exec(info, whatstring, data);
-  free(whatstring);
-  return ret;
 }
 
 int restart(info, what, data)
@@ -1666,7 +1705,6 @@ XjCallbackRec callbacks[] =
   /* misc */
   { "quit", quit },
   { "exec", exec },
-  { "xterm", xterm },
   { "sh", sh },
   { "toggleHelp", toggleHelp },
   { "toggleVerify", toggleVerify },
