@@ -7,7 +7,7 @@
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.8 1990-07-02 15:46:14 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.9 1990-07-12 14:01:36 epeisach Exp $
 # Generic one project, one target makefile.
 #
 
@@ -65,7 +65,7 @@ $(SERVER): message_daemon.o $(LIB)
 
 $(LIB):	$(ETOBJS) $(OBJS)
 	-rm -f $(LIB)
-	ar cqv $(LIB) $(OBJS) $(ETOBJS)
+	ar cruv $(LIB) $(OBJS) $(ETOBJS)
 	ranlib $(LIB)
 
 .SUFFIXES: .o .h .et
