@@ -39,6 +39,9 @@
 #ifndef NOCREATE
 #define NOCREATE "/etc/nocreate"
 #endif
+#ifndef NOREMOTE
+#define NOREMOTE "/etc/noremote"
+#endif
 #ifndef NOATTACH
 #define NOATTACH "/etc/noattach"
 #endif
@@ -102,7 +105,8 @@ int athena_localpasswd(user)
 int athena_notallowed(user)
      char *user;
 {
-  if ((!athena_localpasswd(user) && file_exists(NOCREATE)) ||
+  if ((!athena_localpasswd(user) &&
+       (file_exists(NOCREATE) || file_exists(NOREMOTE))) ||
       file_exists(NOLOGIN))
     return 1;
   return 0;
