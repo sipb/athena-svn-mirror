@@ -1,0 +1,80 @@
+Replied: Fri, 18 Jul 1997 23:12:29 -0400
+Replied: "schueman@ix.netcom.com "
+Return-Path: schueman@ix.netcom.com 
+Return-Path: <schueman@ix.netcom.com>
+Received: from dfw-ix5.ix.netcom.com (dfw-ix5.ix.netcom.com [206.214.98.5])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id QAA11863
+	for <stenn@whimsy.udel.edu>; Fri, 18 Jul 1997 16:48:33 GMT
+Received: (from smap@localhost)
+          by dfw-ix5.ix.netcom.com (8.8.4/8.8.4)
+	  id LAA25640 for <stenn@whimsy.udel.edu>; Fri, 18 Jul 1997 11:47:49 -0500 (CDT)
+Received: from pas-ca31-48.ix.netcom.com(207.94.96.176) by dfw-ix5.ix.netcom.com via smap (V1.3)
+	id sma025629; Fri Jul 18 11:47:27 1997
+Message-ID: <33CF9F1B.87CEF142@ix.netcom.com>
+Date: Fri, 18 Jul 1997 09:51:39 -0700
+From: Greg Schueman <schueman@ix.netcom.com>
+Reply-To: schueman@ix.netcom.com
+X-Mailer: Mozilla 4.01 [en] (Win95; U)
+MIME-Version: 1.0
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: XNTP 3-5.90.3 NT patches
+X-Priority: 3 (Normal)
+References: <9610272333.aa12869@whimsy.udel.edu>
+Content-Type: multipart/mixed; boundary="------------B7EA98BF2655AE603D0EDCA6"
+
+This is a multi-part message in MIME format.
+--------------B7EA98BF2655AE603D0EDCA6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Harlan,
+   I needed to add the dummy header "include/winnt/sys/param.h",
+and had to change both scripts/mkver.bat and
+scripts/wininstall/mksetup.bat
+to read the current version from "configure" whereas before I was
+reading
+it from configure.in.   Is there a better place to read it from?
+
+I've attached all three files.  The latest binaries should be available
+at
+ftp.drcoffsite.com within a day or two.
+
+-Greg
+
+
+
+--------------B7EA98BF2655AE603D0EDCA6
+Content-Type: application/x-gzip; name="mods.tar.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="mods.tar.gz"
+
+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
+vkz+BYGcFAwAKAAA
+--------------B7EA98BF2655AE603D0EDCA6--

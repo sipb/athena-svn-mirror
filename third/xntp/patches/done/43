@@ -1,0 +1,94 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa17252;
+          1 Dec 96 18:46 GMT
+Received: by Flinx.dialin.informatik.uni-erlangen.de (Smail3.1.29.0 #8)
+	id m0vUGsl-0005vMC; Sun, 1 Dec 1996 19:44:51 +0100
+Message-Id: <m0vUGsl-0005vMC@Flinx.dialin.informatik.uni-erlangen.de>
+Date: Sun, 1 Dec 1996 19:44:51 +0100
+From: Frank Kardel <kardel@Informatik.Uni-Erlangen.DE>
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+CC: mills@udel.edu
+Subject: minor trailing patches
+
+
+Hi, Harlan,
+
+here are some minor patches which should be included after
+Patch-1 and Patch-2 i sent you earlier this day.
+
+Frank Kardel
+
+Index: COPYRIGHT
+diff -c COPYRIGHT:1.29 COPYRIGHT:1.30
+*** COPYRIGHT:1.29	Sun Nov 24 21:08:48 1996
+--- COPYRIGHT	Sun Dec  1 19:40:04 1996
+***************
+*** 95,103 ****
+  
+  <br><li>Nick Sayer (mrapple@quack.kfu.com) SunOS streams modules
+  
+! <br><li>Frank Kardel (Frank.Kardel@informatik.uni-erlangen.de) PARSE
+! (GENERIC) driver, STREAMS modules for PARSE, support scripts, reference
+! clock configuration scripts, Makefile cleanup, syslog cleanup
+  
+  <br><li>Ray Schnitzler (schnitz@unipress.com) Unixware1 port
+  
+--- 95,104 ----
+  
+  <br><li>Nick Sayer (mrapple@quack.kfu.com) SunOS streams modules
+  
+! <br><li><a href="http://www4.informatik.uni-erlangen.de/~kardel">Frank Kardel</a>
+! <a href="mailto: Frank.Kardel@informatik.uni-erlangen.de"> &lt;Frank.Kardel@informatik.uni-erlangen.de&gt;</a>
+! PARSE &lt;GENERIC&gt; driver (14 reference clocks), STREAMS modules for PARSE, support
+! scripts, syslog cleanup
+  
+  <br><li>Ray Schnitzler (schnitz@unipress.com) Unixware1 port
+  
+Index: html/copyright.html
+diff -c html/copyright.html:1.1.1.2 html/copyright.html:1.2
+*** html/copyright.html:1.1.1.2	Sun Nov 24 20:42:50 1996
+--- html/copyright.html	Sun Dec  1 19:32:55 1996
+***************
+*** 100,109 ****
+  
+  <br><li>Nick Sayer &lt;mrapple@quack.kfu.com&gt; SunOS streams modules
+  
+! <br><li>Frank Kardel &lt;Frank.Kardel@informatik.uni-erlangen.de&gt;
+! PARSE &lt;GENERIC&gt; driver, STREAMS modules for PARSE, support
+! scripts, reference clock configuration scripts, Makefile cleanup, syslog
+! cleanup
+  
+  <br><li>Ray Schnitzler &lt;schnitz@unipress.com&gt; Unixware1 port
+  
+--- 100,109 ----
+  
+  <br><li>Nick Sayer &lt;mrapple@quack.kfu.com&gt; SunOS streams modules
+  
+! <br><li><a href="http://www4.informatik.uni-erlangen.de/~kardel">Frank Kardel</a>
+! <a href="mailto: Frank.Kardel@informatik.uni-erlangen.de"> &lt;Frank.Kardel@informatik.uni-erlangen.de&gt;</a>
+! PARSE &lt;GENERIC&gt; driver (14 reference clocks), STREAMS modules for PARSE, support
+! scripts, syslog cleanup
+  
+  <br><li>Ray Schnitzler &lt;schnitz@unipress.com&gt; Unixware1 port
+  
+Index: libparse/Makefile.am
+diff -c libparse/Makefile.am:1.4 libparse/Makefile.am:1.5
+*** libparse/Makefile.am:1.4	Sun Dec  1 14:00:57 1996
+--- libparse/Makefile.am	Sun Dec  1 19:33:30 1996
+***************
+*** 25,31 ****
+  kclk_trimtsip.o: clk_trimtsip.c
+  
+  parsestreams.o: parsestreams.c
+! 	$(CC) -c -DKERNEL -DVDDRV $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $?
+  
+  parsestreams.loadable_module.o: parsestreams.o libparse_kernel.a
+  	$(LD) -r -o $@ parsestreams.o libparse_kernel.a
+--- 25,31 ----
+  kclk_trimtsip.o: clk_trimtsip.c
+  
+  parsestreams.o: parsestreams.c
+! 	$(CC) -c -DKERNEL -DVDDRV $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) parsestreams.c
+  
+  parsestreams.loadable_module.o: parsestreams.o libparse_kernel.a
+  	$(LD) -r -o $@ parsestreams.o libparse_kernel.a
+

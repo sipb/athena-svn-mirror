@@ -1,0 +1,148 @@
+Resent: Tue, 08 Oct 1996 19:37:32 -0400
+Resent: "harlan@pfcs.com "
+Replied: Tue, 08 Oct 1996 19:31:21 -0400
+Replied: "Frank Vance <fvance@waii.com> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10721;
+          8 Oct 96 11:37 EDT
+Received: by horizon.waii.com; id KAA15932; Tue, 8 Oct 1996 10:37:36 -0500
+Received: from mail1.wg.waii.com(137.144.128.17) by horizon.waii.com via smap (V3.1.1)
+	id xma015926; Tue, 8 Oct 96 10:37:27 -0500
+Received: from yoda.wg.waii.com (yoda.wg.waii.com [137.144.129.91]) by mail1.wg.waii.com (8.7.5/8.7.3) with SMTP id KAA15498 for <stenn@whimsy.udel.edu>; Tue, 8 Oct 1996 10:37:23 -0500
+Received: by yoda.wg.waii.com id AA77060
+  (5.65c/IDA-1.4.4 for stenn@whimsy.udel.edu); Tue, 8 Oct 1996 10:37:23 -0500
+From: Frank Vance <fvance@waii.com>
+Message-Id: <199610081537.AA77060@yoda.wg.waii.com>
+Subject: ntp 3-5.86 minor nits....
+To: stenn@whimsy.udel.edu
+Date: Tue, 8 Oct 1996 10:37:22 -0500 (CDT)
+X-Mailer: ELM [version 2.4 PL25]
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+
+Harlan,
+
+  I have finally found time to begin compiling on various machines
+around here, and found the nits included in the patch below.  In
+each case, the nit involves moving the include for ntp_select.h
+to after an include which picks up the necessary defines.
+
+  Also in the patch is a modification I sent you earlier for
+config.guess.
+
+More later,
+-- 
+Frank Vance  +1 713 963 2426		Western Geophysical
+Frank.Vance@waii.com			10001 Richmond Avenue
+FAX: +1 713 963 2490			Houston, TX 77042   USA
+------------------------------------------------------------------------------
+diff -r -c xntp3-5.86.orig/config.guess xntp3-5.86/config.guess
+*** xntp3-5.86.orig/config.guess	Sun May 26 04:37:26 1996
+--- xntp3-5.86/config.guess	Tue Oct  8 10:05:35 1996
+***************
+*** 101,106 ****
+--- 101,109 ----
+      sun3*:SunOS:*:*)
+  	echo m68k-sun-sunos${UNAME_RELEASE}
+  	exit 0 ;;
++     aushp:SunOS:*:*)
++ 	echo sparc-auspex-sunos${UNAME_RELEASE}
++ 	exit 0 ;;
+      atari*:NetBSD:*:*)
+  	echo m68k-atari-netbsd${UNAME_RELEASE}
+  	exit 0 ;;
+***************
+*** 325,330 ****
+--- 328,338 ----
+  	exit 0 ;;
+      CRAY-2:*:*:*)
+  	echo cray2-cray-unicos
++         exit 0 ;;
++     F300:UNIX_System_V:*:*)
++         FUJITSU_SYS=`uname -p | tr [A-Z] [a-z] | sed -e 's/\///'`
++         FUJITSU_REL=`echo ${UNAME_RELEASE} | sed -e 's/ /_/'`
++         echo "f300-fujitsu-${FUJITSU_SYS}${FUJITSU_REL}"
+          exit 0 ;;
+      hp3[0-9][05]:NetBSD:*:*)
+  	echo m68k-hp-netbsd${UNAME_RELEASE}
+diff -r -c xntp3-5.86.orig/ntpdate/ntpdate.c xntp3-5.86/ntpdate/ntpdate.c
+*** xntp3-5.86.orig/ntpdate/ntpdate.c	Sun Jun 16 03:14:43 1996
+--- xntp3-5.86/ntpdate/ntpdate.c	Wed Sep 18 16:51:10 1996
+***************
+*** 24,30 ****
+  #include <utmp.h>
+  #endif
+  
+- #include "ntp_select.h"
+  #include "ntp_fp.h"
+  #include "ntp.h"
+  #include "ntp_io.h"
+--- 24,29 ----
+***************
+*** 33,38 ****
+--- 32,38 ----
+  #include "ntp_string.h"
+  #include "ntp_syslog.h"
+  #include "ntp_stdlib.h"
++ #include "ntp_select.h"
+  
+  #ifdef SYS_WINNT
+  #define TARGET_RESOLUTION 1  /* Try for 1-millisecond accuracy. */
+diff -r -c xntp3-5.86.orig/ntpq/ntpq.c xntp3-5.86/ntpq/ntpq.c
+*** xntp3-5.86.orig/ntpq/ntpq.c	Mon Sep  2 01:02:48 1996
+--- xntp3-5.86/ntpq/ntpq.c	Wed Sep 18 16:59:12 1996
+***************
+*** 15,26 ****
+  #include <tchar.h>
+  #endif
+  
+- #include "ntp_select.h"
+  #include "ntpq.h"
+  #include "ntp_unixtime.h"
+  #include "ntp_calendar.h"
+  #include "ntp_io.h"
+  #include "ntp_stdlib.h"
+  
+  #if defined(VMS)
+  extern char *getpass(const char *);
+--- 15,26 ----
+  #include <tchar.h>
+  #endif
+  
+  #include "ntpq.h"
+  #include "ntp_unixtime.h"
+  #include "ntp_calendar.h"
+  #include "ntp_io.h"
+  #include "ntp_stdlib.h"
++ #include "ntp_select.h"
+  
+  #if defined(VMS)
+  extern char *getpass(const char *);
+diff -r -c xntp3-5.86.orig/ntptrace/ntptrace.c xntp3-5.86/ntptrace/ntptrace.c
+*** xntp3-5.86.orig/ntptrace/ntptrace.c	Sun Jun 16 01:55:42 1996
+--- xntp3-5.86/ntptrace/ntptrace.c	Wed Sep 18 16:59:47 1996
+***************
+*** 31,37 ****
+  #include <utmp.h>
+  #endif
+  
+- #include "ntp_select.h"
+  #include "ntp_fp.h"
+  #include "ntp.h"
+  #include "ntp_io.h"
+--- 31,36 ----
+***************
+*** 40,45 ****
+--- 39,45 ----
+  #include "ntp_string.h"
+  #include "ntp_stdlib.h"
+  #include "ntp_syslog.h"
++ #include "ntp_select.h"
+  
+  /*
+   * Debugging flag
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------

@@ -1,0 +1,49 @@
+Replied: Mon, 10 Mar 1997 19:20:36 -0500
+Replied: ""Michael D. Johnson" <mikej@nw9000.rain.com> robs@sco.com, mills@udel.edu"
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa15120;
+          11 Mar 97 0:01 GMT
+Received: from Crosby.nw9000.rain.com (crosby.nw9000.rain.com [204.119.11.28]) by nw9000.rain.com (8.7.5/8.7.3) with SMTP id QAA16802 for <stenn@whimsy.udel.edu>; Mon, 10 Mar 1997 16:01:27 -0800
+Message-Id: <3.0.1.32.19970310160130.006ad9f0@nw9000.rain.com>
+X-Sender: mikej@nw9000.rain.com
+X-Mailer: Windows Eudora Light Version 3.0.1 (32)
+Date: Mon, 10 Mar 1997 16:01:30 -0800
+To: stenn@whimsy.udel.edu
+MMDF-Warning:  Parse error in original version of preceding line at whimsy.udel.edu
+From: "Michael D. Johnson" <mikej@nw9000.rain.com>
+Subject: info from SCO
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+Harlan,
+
+It looks like all of the SCO /unix sections do not have it. From what I saw
+on Config.guess, it was coming up with the right systems. I'll decompress
+config.guess and send it to Rob. I'll let you know as soon as we get a
+system up and running SCO here to test with.
+
+Mike
+
+>X-POP3-Rcpt: mikej@cain-9
+>Return-Path: robs@sco.COM
+>From: Renfrew von Diesel <robs@sco.COM>
+>To: mikej@nw9000.rain.com
+>Subject: re:Harlans message
+>Date: Mon, 10 Mar 1997 15:46:03 -0800 (PST)
+>
+>
+>
+>-|Config.guess is part of the compiling setup for the software. you should
+>-|find it in the tar file. 
+>
+>Hmmm...doesn't seem to be in the copy of ntp.latest.tar in /pub/incoming/xntp
+>on cupid. Did you mean in the source distribution?
+>
+>-|Please see if it "tick" is missing on 5.0.4 as
+>-|well. then let me know.
+>
+>Just had a look, no tick on 5.0.4.
+>
+>=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+>Rob Saul,  OSD                    *          De recta non tolerandum sunt
+>
+>

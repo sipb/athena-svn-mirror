@@ -1,0 +1,81 @@
+Received: from copland.udel.edu by huey.udel.edu id aa02356; 11 May 97 17:15 EDT
+Received: from paulus.helsinki.fi (paulus.helsinki.fi [128.214.145.56]) by copland.udel.edu (8.8.5/8.7.3) with ESMTP id RAA06271 for <mills@udel.edu>; Sun, 11 May 1997 17:15:39 -0400 (EDT)
+Received: from grotius.helsinki.fi (grotius.helsinki.fi [128.214.145.136]) by paulus.helsinki.fi (8.6.12/8.6.5) with SMTP id AAA03330 for <mills@udel.edu>; Mon, 12 May 1997 00:15:28 +0300
+Date: Mon, 12 May 1997 00:15:27 +0300 (EETDST)
+From: Tomas Vanhala <vanhala@paulus.helsinki.fi>
+X-Sender: vanhala@grotius.helsinki.fi
+To: mills@udel.edu
+Subject: Bugfix, xntp3-5.90-export
+Message-ID: <Pine.HPP.3.95q.970512000702.7892A-100000@grotius.helsinki.fi>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+Hello.
+
+The following patch will make xntp compile on UnixWare 2.03. The system
+is (correctly) recognized by configure as univel-sysv4.2MP. Hopefully
+this patch does not break xntp on any other platform.
+
+*** configure.orig	Mon Apr  7 07:46:54 1997
+--- configure	Fri May  9 22:16:49 1997
+***************
+*** 1430,1443 ****
+  
+  case "$check_libgen" in
+   yes)
+!     echo $ac_n "checking for openlog in -lgsn""... $ac_c" 1>&6
+! echo "configure:1435: checking for openlog in -lgsn" >&5
+! ac_lib_var=`echo gsn'_'openlog | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+    echo $ac_n "(cached) $ac_c" 1>&6
+  else
+    ac_save_LIBS="$LIBS"
+! LIBS="-lgsn  $LIBS"
+  cat > conftest.$ac_ext <<EOF
+  #line 1443 "configure"
+  #include "confdefs.h"
+--- 1430,1443 ----
+  
+  case "$check_libgen" in
+   yes)
+!     echo $ac_n "checking for openlog in -lgen""... $ac_c" 1>&6
+! echo "configure:1435: checking for openlog in -lgen" >&5
+! ac_lib_var=`echo gen'_'openlog | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+    echo $ac_n "(cached) $ac_c" 1>&6
+  else
+    ac_save_LIBS="$LIBS"
+! LIBS="-lgen  $LIBS"
+  cat > conftest.$ac_ext <<EOF
+  #line 1443 "configure"
+  #include "confdefs.h"
+***************
+*** 1465,1477 ****
+  fi
+  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+    echo "$ac_t""yes" 1>&6
+!     ac_tr_lib=HAVE_LIB`echo gsn | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+      -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
+    cat >> confdefs.h <<EOF
+  #define $ac_tr_lib 1
+  EOF
+  
+!   LIBS="-lgsn $LIBS"
+  
+  else
+    echo "$ac_t""no" 1>&6
+--- 1465,1477 ----
+  fi
+  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+    echo "$ac_t""yes" 1>&6
+!     ac_tr_lib=HAVE_LIB`echo gen | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+      -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
+    cat >> confdefs.h <<EOF
+  #define $ac_tr_lib 1
+  EOF
+  
+!   LIBS="-lgen $LIBS"
+  
+  else
+    echo "$ac_t""no" 1>&6
+

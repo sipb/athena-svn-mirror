@@ -1,0 +1,193 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa18134;
+          7 Dec 96 17:08 GMT
+Received: from Flinx.dialin.informatik.uni-erlangen.de (kardel.dialin.informatik.uni-erlangen.de [131.188.19.204]) by immd4.informatik.uni-erlangen.de with SMTP
+	id SAA23032 (8.7.6/7.5b-FAU); for <stenn@whimsy.udel.edu>; Sat, 7 Dec 1996 18:08:47 +0100 (MET)
+Received: by Flinx.dialin.informatik.uni-erlangen.de (Smail3.1.29.0 #8)
+	id m0vWQA3-0005vOC; Sat, 7 Dec 1996 18:03:35 +0100
+Message-Id: <m0vWQA3-0005vOC@Flinx.dialin.informatik.uni-erlangen.de>
+Date: Sat, 7 Dec 1996 18:03:35 +0100
+From: Frank Kardel <kardel@Informatik.Uni-Erlangen.DE>
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: another Solaris enhencement
+
+
+Hi, here comes an update for ChangeLog and a libparse/parsesolaris.c fix.
+
+Happy patching and chiming...
+
+Frank Kardel
+
+Index: ChangeLog
+RCS file: /src/NTP/REPOSITORY/v4/ChangeLog,v
+diff -c Changelog:1.1.1.2 ChangeLog:1.2
+*** ChangeLog	1996/12/07 09:56:48	1.1.1.2
+--- ChangeLog	1996/12/07 16:16:22	1.2
+***************
+*** 1,3 ****
+--- 1,9 ----
++ Sat Dec  7 15:46:40 1996  Frank Kardel  <kardel@Informatik.Uni-Erlangen.DE>
++ 
++ 	* libparse/parsesolaris.c: avoid CTTY on open
++ 
++ 	* libparse/Makefile.am, libparse/Makefile.in: READMES are now in html
++ 
+  Wed Dec  4 20:10:00 1996  Harlan Stenn  <stenn@whimsy.udel.edu>
+  
+  	Version 5.86.13.2
+***************
+*** 18,23 ****
+--- 24,69 ----
+  
+  	Version 5.86.13
+  
++ Sun Dec  1 18:40:04 1996  Frank Kardel  <kardel@Informatik.Uni-Erlangen.DE>
++ 
++ 	* COPYRIGHT: added URLs
++ 
++ 	* html/copyright.html: added URLs
++ 
++ 	* libparse/Attic/README.new_clocks,
++  	libparse/Attic/README.parse_clocks, html/parsedata.html,
++  	html/parsenew.html, html/driver8.html: documentation for PARSE
++  	clock is now in HTML
++ 
++ 	* kernel/sys/parsestreams.h:
++ 	support for updated parsesolaris.c implementation
++ 
++ 	* xntpd/refclock_parse.c: POP "parse" streams module at shutdown
++ 
++ 	* libntp/a_md5decrypt.c, libntp/a_md5encrypt.c, libntp/a_md512crypt.c:
++ 	correct casts for MD5 calls
++ 
++ 	* libparse/Makefile.in, libparse/Makefile.am:
++ 	appropriate compile time defines for parsesolaris.c
++ 
++ 	* libparse/parsesolaris.c: first working auto-configure version
++ 
++ 	* libparse/clk_trimtsip.c:
++ 	appropriate casts for conversion routine parameters
++ 
++ 	* libparse/clk_computime.c: more standard string escapes
++ 
++ Sat Nov 30 20:51:33 1996  Frank Kardel  <kardel@Informatik.Uni-Erlangen.DE>
++ 
++ 	* kernel/sys/parsestreams.h:
++ 	initial compilable SunOS 4 auto configure version
++ 
++ 	* xntpd/ntp_proto.c: fixed printf format
++ 
++ Sun Nov 24 23:16:49 1996  Frank Kardel  <kardel@Informatik.Uni-Erlangen.DE>
++ 
++ 	* libparse/clk_computime.c: updated copyright
++ 
+  Sun Nov 24 00:57:21 1996  Harlan Stenn  <stenn@whimsy.udel.edu>
+  
+  	* Various files: NT patches from Greg Schueman <schueman@ix.netcom.com>
+***************
+*** 109,114 ****
+--- 155,175 ----
+   	look for tick and tickadj.  First go for the kernel read, and only
+   	use the PRESET_ value if the kernel method failed.
+  
++ Sat Nov 16 19:44:36 1996  Frank Kardel  <kardel@Informatik.Uni-Erlangen.DE>
++ 
++ 	* libparse/clk_computime.c: Log entry added
++ 
++ 	* libparse/clk_computime.c: Credits and formatting
++ 
++ 	* libparse/clk_computime.c, xntpd/refclock_parse.c, libparse/parse_conf.c:
++ 	Added DIEM receiver
++ 
++ 	* libparse/parsesolaris.c: cleaned up version of parsesolaris.c
++ 	currently untested
++ 	remaining issues to be solved:
++ 	  how to de-install a zs interrupt
++ 	  safely not using splhigh()
++ 	
+  Fri Nov 15 00:47:45 1996  Harlan Stenn  <stenn@whimsy.udel.edu>
+  	
+  	* libntp/libntp.mak: New version from Greg Schueman
+Index: libparse/parsesolaris.c
+diff -c libparse/parsesolaris.c:3.25 libparse/parsesolaris.c:3.26
+*** libparse/parsesolaris.c:3.25	Sun Dec  1 17:04:21 1996
+--- libparse/parsesolaris.c	Sat Dec  7 16:46:40 1996
+***************
+*** 1,7 ****
+  /*
+!  * /src/NTP/REPOSITORY/v4/libparse/parsesolaris.c,v 3.25 1996/12/01 16:04:21 kardel Exp
+   *  
+!  * parsesolaris.c,v 3.25 1996/12/01 16:04:21 kardel Exp
+   *
+   * STREAMS module for reference clocks
+   *
+--- 1,7 ----
+  /*
+!  * /src/NTP/REPOSITORY/v4/libparse/parsesolaris.c,v 3.26 1996/12/07 15:46:40 kardel Exp
+   *  
+!  * parsesolaris.c,v 3.26 1996/12/07 15:46:40 kardel Exp
+   *
+   * STREAMS module for reference clocks
+   *
+***************
+*** 17,23 ****
+   */
+  
+  #ifndef lint
+! static char rcsid[] = "parsesolaris.c,v 3.25 1996/12/01 16:04:21 kardel Exp";
+  #endif
+  
+  /*
+--- 17,23 ----
+   */
+  
+  #ifndef lint
+! static char rcsid[] = "parsesolaris.c,v 3.26 1996/12/07 15:46:40 kardel Exp";
+  #endif
+  
+  /*
+***************
+*** 76,82 ****
+  /*ARGSUSED*/
+  int _init(void)
+  {
+!   static char revision[] = "3.25";
+    char *s, *S, *t;
+    
+    /*
+--- 76,82 ----
+  /*ARGSUSED*/
+  int _init(void)
+  {
+!   static char revision[] = "3.26";
+    char *s, *S, *t;
+    
+    /*
+***************
+*** 238,244 ****
+      {
+        struct stroptions *str = (struct stroptions *)mp->b_wptr;
+  
+!       str->so_flags   = SO_READOPT|SO_HIWAT|SO_LOWAT;
+        str->so_readopt = (mode == M_PARSE) ? RMSGD : RNORM;
+        str->so_hiwat   = (mode == M_PARSE) ? sizeof(parsetime_t) : 256;
+        str->so_lowat   = 0;
+--- 238,244 ----
+      {
+        struct stroptions *str = (struct stroptions *)mp->b_wptr;
+  
+!       str->so_flags   = SO_READOPT|SO_HIWAT|SO_LOWAT|SO_ISNTTY;
+        str->so_readopt = (mode == M_PARSE) ? RMSGD : RNORM;
+        str->so_hiwat   = (mode == M_PARSE) ? sizeof(parsetime_t) : 256;
+        str->so_lowat   = 0;
+***************
+*** 1057,1062 ****
+--- 1057,1065 ----
+   * History:
+   *
+   * parsesolaris.c,v
++  * Revision 3.26  1996/12/07 15:46:40  kardel
++  * avoid CTTY on open
++  *
+   * Revision 3.25  1996/12/01 16:04:21  kardel
+   * freeze for 5.86.12.2 PARSE-Patch
+   *

@@ -1,0 +1,87 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10864;
+          22 Apr 97 5:11 GMT
+Received: (from smap@localhost)
+          by dfw-ix2.ix.netcom.com (8.8.4/8.8.4)
+	  id AAA13283; Tue, 22 Apr 1997 00:10:51 -0500 (CDT)
+Received: from pas-ca13-24.ix.netcom.com(204.32.164.56) by dfw-ix2.ix.netcom.com via smap (V1.3)
+	id sma012481; Tue Apr 22 00:07:02 1997
+Message-ID: <335C47F0.4B72@ix.netcom.com>
+Date: Mon, 21 Apr 1997 22:09:05 -0700
+From: Greg Schueman <schueman@ix.netcom.com>
+Reply-To: schueman@ix.netcom.com
+X-Mailer: Mozilla 3.0Gold (Win95; U)
+MIME-Version: 1.0
+To: stenn@whimsy.udel.edu
+CC: mills@udel.edu
+Subject: 3-5.90 bug fixes
+References: <9704092143.aa02366@whimsy.udel.edu>
+Content-Type: multipart/mixed; boundary="------------74C6B427761"
+
+This is a multi-part message in MIME format.
+
+--------------74C6B427761
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Harlan,
+   Here are some diffs to XNTP 3-5.90 to fix bugs under Win NT.
+
+* REMOVE include/ntif.h (replaced by include/winnt/net/if.h)
+* Modified xntpd/ntp_config.c - WinNT BUG fclose() on NULL file PTR.
+* Modified xntpd/ntpd.c - WinNT BUG in Eventlogging, didn't display
+                          error text, if executable was in a 
+                          directory other than %WINDIR%\system32.
+* Modified libntp/msyslog.c - WinNT BUG when calling FormatMessage().
+* Modified include/ntp_machine.h - defined MCAST 
+* Modified xntpd/ntp_unixclock.c - declared 'hz' regardless of platform,
+                                   as it was being used in a DEBUG
+                                   statement.
+
+There is one reported BUG outstanding - 
+ when Day Light Savings time hit, the message 
+"time error -3599.75 is way too large (set clock manually)"
+was printed.  This was reported by Richard Mayston in Australia.
+I have yet to duplicate it, as I haven't had time.
+
+Attached are the diffs.
+
+-Greg
+
+--------------74C6B427761
+Content-Type: application/x-gzip; name="xntp-diff.tar.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="xntp-diff.tar.gz"
+
+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
+--------------74C6B427761--
+

@@ -1,0 +1,56 @@
+Replied: Mon, 06 Jan 1997 21:51:01 -0500
+Replied: "schueman@ix.netcom.com "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa13126;
+          6 Jan 97 4:27 GMT
+Received: from sverige (pas-ca14-19.ix.netcom.com [204.32.164.83]) by dfw-ix10.ix.netcom.com (8.6.13/8.6.12) with SMTP id UAA26006 for <stenn@whimsy.udel.edu>; Sun, 5 Jan 1997 20:27:11 -0800
+Message-ID: <32D07EC9.376A@ix.netcom.com>
+Date: Sun, 05 Jan 1997 20:25:45 -0800
+From: Greg Schueman <schueman@ix.netcom.com>
+Reply-To: schueman@ix.netcom.com
+X-Mailer: Mozilla 3.0Gold (Win95; U)
+MIME-Version: 1.0
+To: stenn@whimsy.udel.edu
+Subject: XNTP 3-5.87.6 WinNT changes
+References: <9612162124.aa12988@whimsy.udel.edu>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Harlan,
+
+I just compiled the latest XNTP test release on Windows NT smoothly.
+ (xntp 3-5.87.6)
+There are a couple of things that should be addressed:
+
+1. The ntpdate "man" (html) page does not mention the "-q"
+   option.	[HMS-960109: fixed poorly]
+
+2. In file ntpq.c at line 82
+	#define IN 6 /* stuff.... */
+   This conflicts with the use of IN as a #define in a number of
+   Windows headers dcerpc.h, winsock.h, and one other.
+   The name needs to be changed, otherwise this might break 
+   something as Microsoft uses IN inside the winsock.h header
+   similar to what you'd see in a Pascal parameter declaration.
+   Strange that I hadn't bothered with this before, but I figured\
+   that this should be changed.	[HMS-960109: fixed]
+
+3. The Quicksort VOID changes aren't being picked up properly yet.
+   I don't have time to figure this one out yet.  It's not
+   problematic at the moment. [Fixed in enxt message from Greg]
+
+
+On another note, I've been looking at some of the files with
+#ifdef SYS_WINNT and been able to find a number of places where
+it can be eliminated.  Specifically, putting dummy header files
+into the distribution for WinNT would clean up a couple of files.
+Also, changing close(fd) where fd is a socket descriptor to
+closesocket(fd) would allow a Macro to swap closesocket() to
+close() under Unix, and change nothing under WinNT.
+
+Some other areas can be cleaned up, setting errno, and a couple
+of Windows differences such as WSAEINTR instead of EINTR.
+
+I just wanted to pass these thoughts on.  
+
+Happy New Year,
+  Greg

@@ -1,0 +1,110 @@
+Replied: Thu, 29 May 1997 20:41:07 -0400
+Replied: "Todd Aven <Todd.Aven@BankersTrust.Com> "
+Return-Path: Todd.Aven@BankersTrust.Com 
+Return-Path: <Todd.Aven@BankersTrust.Com>
+Received: from NYXGATE1.btco.com (gate1.bankerstrust.com [198.83.51.2])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id TAA28122
+	for <stenn@whimsy.udel.edu>; Thu, 29 May 1997 19:42:24 GMT
+Received: (from mailer@localhost) by NYXGATE1.btco.com (8.7.1/1.8) id PAA05885 for <stenn@whimsy.udel.edu>; Thu, 29 May 1997 15:41:27 -0400 (EDT)
+Received: from nybtmxp001.btco.com (nybtmxp001.btco.com [138.93.80.201]) by NYXGATE1.btco.com (smap V1.3) with SMTP id xmab05798; Thu, 29 May 1997 15:41:07 -0400
+Received: from nycsew0188.btco.com by nybtmxp001.btco.com; Thu, 29 May 97 15:41:06 -0500
+Message-ID: <338DDBD1.CA1A35DB@BankersTrust.Com>
+Date: Thu, 29 May 1997 15:41:05 -0400
+From: Todd Aven <Todd.Aven@BankersTrust.Com>
+X-Mailer: Mozilla 4.0b4 [en] (WinNT; I)
+MIME-Version: 1.0
+To: stenn@whimsy.udel.edu, mills@udel.edu
+Subject: [Fwd: bugs in 3-5.90 on NT]
+X-Priority: 3 (Normal)
+Content-Type: multipart/mixed; boundary="------------E7BDBB39AA61CDACA10B5DBA"
+
+This is a multi-part message in MIME format.
+--------------E7BDBB39AA61CDACA10B5DBA
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+I posted this note to comp.protocols.time.ntp...
+
+Regards,
+Todd
+--------------E7BDBB39AA61CDACA10B5DBA
+Content-Type: message/rfc822
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Path: btco!newsadm
+From: Todd Aven <Todd.Aven@BankersTrust.Com>
+Newsgroups: comp.protocols.time.ntp
+Subject: bugs in 3-5.90 on NT
+Date: Thu, 29 May 1997 14:31:31 -0400
+Organization: Bankers Trust Company
+Distribution: inet
+Message-ID: <338DCB80.72BBD13A@BankersTrust.Com>
+NNTP-Posting-Host: nycsew0188.btco.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Mailer: Mozilla 4.0b4 [en] (WinNT; I)
+X-Priority: 3 (Normal)
+
+I've tracked down what appear to be two bugs in xntp3-5.90
+as built on NT.  I apologize if either of these is old news,
+but they've been plaguing us for a long while (we use NTPDATE
+on all our NT servers, running under a service controller).
+
+The first problem is that NTPDATE will never time out if it 
+doesn't get a response to its queries, because the select() 
+call has no timeout and the timer routine doesn't have any 
+timeout logic.  I changed my code to timeout after 60 seconds, 
+with favorable results.
+
+ntpdate.c OLD:
+  nfound = select(fd+1, &rdfdes, (fd_set *)0,
+                 (fd_set *)0, (struct timeval *)0);
+ntpdate.c NEW:
+  {
+    struct timeval tvzero;
+    tvzero.tv_sec = 60; /* Give up after 60 seconds) */
+    tvzero.tv_usec = 0;
+    nfound = select(fd+1, &rdfdes, (fd_set *)0,
+                    (fd_set *)0, &tvzero);
+  }
+
+The second problem is a combination of uninitialized variable
+and dereferenced NULL in msyslog.c.  The 'err' variable has to 
+be passed to FormatMessage by reference, since it will be given
+the allocated buffer upon return.  Since the return status for
+FormatMessage is not checked, it is not safe to assume that the
+'err' variable will be set to anything in the code which follows
+this snippet.  In the case where the select() times out, there is
+a call to msyslog to report that no servers were found.  Since
+GetLastError() in msyslog gets not error (there wasn't one, 
+actually), the FormatMessage fails and 'err' is not set.
+
+msyslog.c OLD:
+    FormatMessage(
+          FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+          NULL,
+          GetLastError(),
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language
+*/
+          (LPTSTR) err,
+          0, /* Indicates that func. allocates buffer */
+          NULL);
+
+msyslog.c NEW:
+    err = ""; // if FormatMessage fails, we don't want a bad buffer
+    FormatMessage(
+          FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+          NULL,
+          GetLastError(),
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language
+*/
+          (LPTSTR) &err,
+          0, /* Indicates that func. allocates buffer */
+          NULL);
+
+Regards,
+Todd
+
+--------------E7BDBB39AA61CDACA10B5DBA--

@@ -1,0 +1,32 @@
+Replied: Tue, 25 Mar 1997 00:51:00 -0500
+Replied: ""Michael M. Schruf" <michael@venus.gan.net> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa05940;
+          24 Mar 97 23:12 GMT
+Received: (from michael@localhost) by venus.gan.net (8.7.5/8.6.9) id RAA09199; Mon, 24 Mar 1997 17:12:12 -0600
+From: "Michael M. Schruf" <michael@venus.gan.net>
+Message-Id: <199703242312.RAA09199@venus.gan.net>
+Subject: xntpd-3.5.89.9 msyslog() drift value + newline
+To: stenn@whimsy.udel.edu
+Date: Mon, 24 Mar 1997 17:12:12 -0600 (CST)
+Cc: michael@gan.net
+X-Mailer: ELM [version 2.4 PL24]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+I'm sorry if this isn't the proper address for xntpd bug reports.  I
+found it in the ChangeLog.
+
+My quibble isn't a bug per se, just an aesthetic flaw.  When
+xntpd/ntp_util.c msyslog()s the drift value, the newline fgets() read
+into 'buf' also gets logged, resulting in broken lines, such as this
+one:
+
+24 Mar 16:31:49 xntpd[6632]: read drift of 68.462
+ from /var/lib/ntp/ntp.drift
+
+Thanks -
+-- 
+Michael M. Schruf                               Network Administrator
+michael@gan.net                                 Galaxy Access Network
+(214) 522-3300                                  Dallas, Texas

@@ -1,0 +1,980 @@
+Replied: Mon, 11 Nov 1996 21:42:43 -0500
+Replied: "Craig Leres <leres@ee.lbl.gov> Dave Mills <mills@udel.edu>"
+Received: from copland.udel.edu by huey.udel.edu id aa07848; 8 Nov 96 2:48 EST
+Received: from hot.ee.lbl.gov (hot.ee.lbl.gov [131.243.1.42]) by copland.udel.edu (8.7.6/8.7.3) with ESMTP id CAA19873 for <mills@udel.edu>; Fri, 8 Nov 1996 02:48:19 -0500 (EST)
+Received: by hot.ee.lbl.gov (8.7.5/1.43r)
+	id XAA14624; Thu, 7 Nov 1996 23:48:18 -0800 (PST)
+Message-Id: <199611080748.XAA14624@hot.ee.lbl.gov>
+To: Dave Mills <mills@udel.edu>
+Subject: xntp 5.86.8
+Date: Thu, 07 Nov 1996 23:48:18 PST
+From: Craig Leres <leres@ee.lbl.gov>
+
+I finally got around to bringing it up this week.
+
+You appear to be using the most recent version of autoconf (2.10) but
+some of your autoconf support scripts are out of date:
+
+    config.guess
+    install-sh
+
+It's important to keep these up to date or else people on bizarre
+systems will have trouble.
+
+Compiling with gcc 2.7.2.1 under SunOS 4.1.4 I get tons of warnings.
+The problem is you can't include both termios.h and sys/ioctl.h. I
+believe there to be 3 worlds out there, the HAVE_BSD_TTYS one which
+includes sgtty.h and sys/ioctl.h, the HAVE_SYSV_TTYS which includes
+termio.h and the HAVE_TERMIOS which includes termios.h. If more than
+one of these is defined at the same time, you're going to have
+problems.
+
+My fix is to only include sys/ioctl.h when HAVE_BSD_TTYS is defined.
+This works, at least under SunOS 4 and Solaris. Another approach would
+be to just remove all the sys/ioctl.h includes and see if this breaks
+any particular os.
+
+I also fixed a number of minor prototype problems. I had some trouble
+with the configure script, it was clearing the ntp_refclock variable at
+what appears to be the wrong place. I found no way to get REFCLOCK to
+be defined so I could run with the mx4200. My fix was to change where
+the variables get initialized. It works but I'm not sure if it's right.
+
+I also added autoconf tests for memory.h and string.h. There are a lot
+of places in the code where includes are hinged on OS defines instead
+of functionality. Hopefully we can clean these up later.
+
+I took a fresh look at the mx4200 module. I think you asked me to
+update it. I see major differenced between it and the Austron 2201A GPS
+module but I'm not clear on what I need to do. If you can get me some
+instruction, I should be able to bring the mx4200 model up to date (and
+test the changes too).
+
+One final thing I wanted to comment on is that in previous versions of
+xntp, I thought the binaries were installed in /usr/local/sbin instead
+of /usr/local/bin. I didn't give changes for these but if sbin is the
+proper place to put the binaries, then the various Makefile.am files
+need to have occurances of bin_PROGRAMS changed to sbin_PROGRAMS.
+
+		Craig
+
+------ At the top level:
+RCS file: RCS/configure.in,v
+retrieving revision 1.1
+diff -c -r1.1 configure.in
+*** /tmp/,RCSt1a09767	Thu Nov  7 23:36:36 1996
+--- configure.in	Thu Nov  7 23:36:30 1996
+***************
+*** 17,22 ****
+--- 17,27 ----
+  
+  rm -f conftest*
+  
++ ntp_libparse=no
++ ntp_parseutil=no
++ ntp_refclock=no
++ ntp_rawdcf=no
++ 
+  dnl # If we're using gcc and the user hasn't specified CFLAGS, add -O to CFLAGS.
+  dnl test -n "$GCC" && test -n "$auto_cflags" && CFLAGS="$CFLAGS -O"
+  
+***************
+*** 48,53 ****
+--- 53,59 ----
+  AC_CHECK_HEADERS(sys/mman.h sys/modem.h sys/param.h sys/ppsclock.h sys/proc.h)
+  AC_CHECK_HEADERS(sys/resource.h sys/select.h sys/sockio.h sys/stream.h)
+  AC_CHECK_HEADERS(sys/stropts.h sys/time.h sys/timex.h sys/tpro.h sys/types.h)
++ AC_CHECK_HEADERS(memory.h string.h)
+  AC_HEADER_TIME
+  case "$host" in
+  *-convex-*)
+***************
+*** 947,957 ****
+      ;;
+   *) ;;
+  esac
+- 
+- ntp_libparse=no
+- ntp_parseutil=no
+- ntp_refclock=no
+- ntp_rawdcf=no
+  
+  AC_MSG_CHECKING(ELV/DCF7000 clock)
+  AC_ARG_ENABLE(DCF7000,		[  --enable-DCF7000          - ELV/DCF7000 clock],
+--- 953,958 ----
+
+------ From include:
+RCS file: RCS/md5.h,v
+retrieving revision 1.1
+diff -c -r1.1 md5.h
+*** /tmp/,RCSt1a09493	Thu Nov  7 23:25:19 1996
+--- md5.h	Thu Nov  7 23:24:52 1996
+***************
+*** 45,53 ****
+    unsigned char digest[16];     /* actual digest after MD5Final call */
+  } MD5_CTX;
+  
+! void MD5Init ();
+! void MD5Update ();
+! void MD5Final ();
+  
+  /*
+   ***********************************************************************
+--- 45,53 ----
+    unsigned char digest[16];     /* actual digest after MD5Final call */
+  } MD5_CTX;
+  
+! void MD5Init P((MD5_CTX *mdContext));
+! void MD5Update P((MD5_CTX *, unsigned const char *, unsigned int));
+! void MD5Final P((MD5_CTX *));
+  
+  /*
+   ***********************************************************************
+RCS file: RCS/ntp.h,v
+retrieving revision 1.1
+diff -c -r1.1 ntp.h
+*** /tmp/,RCSt1a09487	Thu Nov  7 23:25:03 1996
+--- ntp.h	Thu Nov  7 23:24:53 1996
+***************
+*** 96,102 ****
+  	struct event *next;		/* next in chain */
+  	struct event *prev;		/* previous in chain */
+  	struct peer *peer;		/* peer this counter belongs to */
+! 	void (*event_handler)();	/* routine to call to handle event */
+  	u_long event_time;		/* expiry time of counter */
+  };
+  
+--- 96,103 ----
+  	struct event *next;		/* next in chain */
+  	struct event *prev;		/* previous in chain */
+  	struct peer *peer;		/* peer this counter belongs to */
+! 	void (*event_handler) P((struct peer *));
+! 					/* routine to call to handle event */
+  	u_long event_time;		/* expiry time of counter */
+  };
+  
+***************
+*** 549,555 ****
+  	struct interface *dstadr;	/* interface datagram arrived thru */
+  	int fd;				/* fd on which it was received */
+  	l_fp recv_time;			/* time of arrival */
+! 	void (*receiver)();		/* routine to receive buffer */
+  	int recv_length;		/* number of octets received */
+  	union {
+  		struct pkt X_recv_pkt;
+--- 550,556 ----
+  	struct interface *dstadr;	/* interface datagram arrived thru */
+  	int fd;				/* fd on which it was received */
+  	l_fp recv_time;			/* time of arrival */
+! 	void (*receiver) P((struct recvbuf *)); /* routine to receive buffer */
+  	int recv_length;		/* number of octets received */
+  	union {
+  		struct pkt X_recv_pkt;
+RCS file: RCS/ntp_refclock.h,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_refclock.h
+*** /tmp/,RCSt1a09508	Thu Nov  7 23:25:39 1996
+--- ntp_refclock.h	Thu Nov  7 23:25:34 1996
+***************
+*** 104,110 ****
+   */
+  struct refclockio {
+  	struct	refclockio *next; /* link to next structure */
+! 	void	(*clock_recv)();/* completion routine */
+  	caddr_t	srcclock;	/* pointer to clock structure */
+  	int	datalen;	/* lenth of data */
+  	int	fd;		/* file descriptor */
+--- 104,110 ----
+   */
+  struct refclockio {
+  	struct	refclockio *next; /* link to next structure */
+! 	void	(*clock_recv)P((struct recvbuf *)); /* completion routine */
+  	caddr_t	srcclock;	/* pointer to clock structure */
+  	int	datalen;	/* lenth of data */
+  	int	fd;		/* file descriptor */
+RCS file: RCS/ntp_string.h,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_string.h
+*** /tmp/,RCSt1a09527	Thu Nov  7 23:26:33 1996
+--- ntp_string.h	Thu Nov  7 23:26:18 1996
+***************
+*** 9,23 ****
+  # include <memory.h>
+  #endif
+  
+! #ifdef STDC_HEADERS
+  # include <string.h>
+! #else
+  # ifndef HAVE_STRCHR
+  #  include <strings.h>
+  #  define strchr index
+  #  define strrchr rindex
+  # endif
+  char *strchr(), *strrchr();
+  # ifndef HAVE_MEMCPY
+  #  define NTP_NEED_BOPS
+  # endif
+--- 9,27 ----
+  # include <memory.h>
+  #endif
+  
+! #ifdef HAVE_STRING_H
+  # include <string.h>
+! #endif
+! 
+! #ifndef STDC_HEADERS
+  # ifndef HAVE_STRCHR
+  #  include <strings.h>
+  #  define strchr index
+  #  define strrchr rindex
+  # endif
++ # ifndef __GNUC__
+  char *strchr(), *strrchr();
++ # endif
+  # ifndef HAVE_MEMCPY
+  #  define NTP_NEED_BOPS
+  # endif
+RCS file: RCS/ntp_stdlib.h,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_stdlib.h
+*** /tmp/,RCSt1a09548	Thu Nov  7 23:27:01 1996
+--- ntp_stdlib.h	Thu Nov  7 23:26:58 1996
+***************
+*** 51,56 ****
+--- 51,58 ----
+  extern	void	init_auth	P((void));
+  extern	void	init_lib	P((void));
+  extern	void	init_random	P((void));
++ extern	struct savekey *auth_findkey P((u_long));
++ extern	int	auth_moremem	P((void));
+  
+  #ifdef	DES
+  extern	void	DESauth1crypt	P((u_long, u_int32 *, int));
+***************
+*** 95,99 ****
+--- 97,103 ----
+  extern	char *	uinttoa		P((u_long));
+  
+  extern	int	decodenetnum	P((const char *, u_int32 *));
++ 
++ extern	char *	FindConfig	P((char *));
+  
+  extern RETSIGTYPE signal_no_reset P((int, RETSIGTYPE (*func)(int)));
+
+
+------ From libntp:
+RCS file: RCS/atoint.c,v
+retrieving revision 1.1
+diff -c -r1.1 atoint.c
+*** /tmp/,RCSt1a09575	Thu Nov  7 23:27:59 1996
+--- atoint.c	Thu Nov  7 23:27:52 1996
+***************
+*** 5,10 ****
+--- 5,11 ----
+  #include <ctype.h>
+  
+  #include "ntp_types.h"
++ #include "ntp_stdlib.h"
+  
+  int
+  atoint(str, ival)
+RCS file: RCS/atouint.c,v
+retrieving revision 1.1
+diff -c -r1.1 atouint.c
+*** /tmp/,RCSt1a09580	Thu Nov  7 23:28:05 1996
+--- atouint.c	Thu Nov  7 23:27:52 1996
+***************
+*** 5,10 ****
+--- 5,11 ----
+  #include <ctype.h>
+  
+  #include "ntp_types.h"
++ #include "ntp_stdlib.h"
+  
+  int
+  atouint(str, uval)
+RCS file: RCS/md5.c,v
+retrieving revision 1.1
+diff -c -r1.1 md5.c
+*** /tmp/,RCSt1a09614	Thu Nov  7 23:28:41 1996
+--- md5.c	Thu Nov  7 23:28:37 1996
+***************
+*** 51,57 ****
+   */
+  
+  /* forward declaration */
+! static void Transform ();
+  
+  #ifdef	__STDC__
+  static const
+--- 51,57 ----
+   */
+  
+  /* forward declaration */
+! static void Transform P((UINT4 *, UINT4 *));
+  
+  #ifdef	__STDC__
+  static const
+***************
+*** 136,142 ****
+   */
+  void MD5Update (mdContext, inBuf, inLen)
+  MD5_CTX *mdContext;
+! unsigned char *inBuf;
+  unsigned int inLen;
+  {
+    UINT4 in[16];
+--- 136,142 ----
+   */
+  void MD5Update (mdContext, inBuf, inLen)
+  MD5_CTX *mdContext;
+! unsigned const char *inBuf;
+  unsigned int inLen;
+  {
+    UINT4 in[16];
+RCS file: RCS/tvtoa.c,v
+retrieving revision 1.1
+diff -c -r1.1 tvtoa.c
+*** /tmp/,RCSt1a09619	Thu Nov  7 23:28:50 1996
+--- tvtoa.c	Thu Nov  7 23:28:32 1996
+***************
+*** 11,20 ****
+  #include "ntp_fp.h"
+  #endif /* VMS */
+  #include "ntp_stdlib.h"
+  
+  char *
+  tvtoa(tv)
+! 	struct timeval *tv;
+  {
+  	register char *buf;
+  	register u_long sec;
+--- 11,21 ----
+  #include "ntp_fp.h"
+  #endif /* VMS */
+  #include "ntp_stdlib.h"
++ #include "ntp_unixtime.h"
+  
+  char *
+  tvtoa(tv)
+! 	const struct timeval *tv;
+  {
+  	register char *buf;
+  	register u_long sec;
+RCS file: RCS/authreadkeys.c,v
+retrieving revision 1.1
+diff -c -r1.1 authreadkeys.c
+*** /tmp/,RCSt1a09641	Thu Nov  7 23:29:28 1996
+--- authreadkeys.c	Thu Nov  7 23:29:21 1996
+***************
+*** 27,32 ****
+--- 27,35 ----
+  #define	KEY_TYPE_MD5	4
+  #endif
+  
++ /* Forwards */
++ static char *nexttok P((char **));
++ 
+  /*
+   * nexttok - basic internal tokenizing routine
+   */
+RCS file: RCS/clocktypes.c,v
+retrieving revision 1.1
+diff -c -r1.1 clocktypes.c
+*** /tmp/,RCSt1a09707	Thu Nov  7 23:30:48 1996
+--- clocktypes.c	Thu Nov  7 23:30:25 1996
+***************
+*** 7,12 ****
+--- 7,13 ----
+  #include "ntp.h"
+  #include "lib_strbuf.h"
+  #include "ntp_refclock.h"
++ #include "ntp_stdlib.h"
+  
+  struct clktype clktypes[] = {
+  	{ REFCLK_NONE,		"unspecified type (0)",
+===================================================================
+RCS file: RCS/findconfig.c,v
+retrieving revision 1.1
+diff -c -r1.1 findconfig.c
+*** /tmp/,RCSt1a09707	Thu Nov  7 23:30:48 1996
+--- findconfig.c	Thu Nov  7 23:30:25 1996
+***************
+*** 53,58 ****
+--- 53,60 ----
+      return(result);
+  }
+  #else
++ #include "ntp_stdlib.h"
++ 
+  char *
+  FindConfig(base)
+      char *base;
+===================================================================
+RCS file: RCS/statestr.c,v
+retrieving revision 1.1
+diff -c -r1.1 statestr.c
+*** /tmp/,RCSt1a09707	Thu Nov  7 23:30:48 1996
+--- statestr.c	Thu Nov  7 23:30:25 1996
+***************
+*** 8,13 ****
+--- 8,14 ----
+  #include "lib_strbuf.h"
+  #include "ntp_refclock.h"
+  #include "ntp_control.h"
++ #include "ntp_string.h"
+  
+  /*
+   * Structure for turning various constants into a readable string.
+***************
+*** 112,117 ****
+--- 113,122 ----
+  #endif
+  	{ -1,				"event" }
+  };
++ 
++ /* Forwards */
++ static char *getcode P((int, struct codestring *));
++ static char *getevents P((int));
+  
+  /*
+   * getcode - return string corresponding to code
+===================================================================
+RCS file: RCS/syssignal.c,v
+retrieving revision 1.1
+diff -c -r1.1 syssignal.c
+*** /tmp/,RCSt1a09707	Thu Nov  7 23:30:49 1996
+--- syssignal.c	Thu Nov  7 23:30:26 1996
+***************
+*** 12,18 ****
+  void
+  signal_no_reset(sig, func)
+  int sig;
+! void (*func)();
+  {
+      int n;
+      struct sigaction vec;
+--- 12,18 ----
+  void
+  signal_no_reset(sig, func)
+  int sig;
+! void (*func) P((int));
+  {
+      int n;
+      struct sigaction vec;
+***************
+*** 40,46 ****
+  RETSIGTYPE
+  signal_no_reset(sig, func)
+  int sig;
+! RETSIGTYPE (*func)(int);
+  {
+      signal(sig, func);
+  
+--- 40,46 ----
+  RETSIGTYPE
+  signal_no_reset(sig, func)
+  int sig;
+! RETSIGTYPE (*func) P((int);
+  {
+      signal(sig, func);
+  
+===================================================================
+RCS file: RCS/utvtoa.c,v
+retrieving revision 1.1
+diff -c -r1.1 utvtoa.c
+*** /tmp/,RCSt1a09707	Thu Nov  7 23:30:49 1996
+--- utvtoa.c	Thu Nov  7 23:30:26 1996
+***************
+*** 11,20 ****
+  #include "ntp_fp.h"
+  #endif
+  #include "ntp_stdlib.h"
+  
+  char *
+  utvtoa(tv)
+! 	struct timeval *tv;
+  {
+  	register char *buf;
+  
+--- 11,21 ----
+  #include "ntp_fp.h"
+  #endif
+  #include "ntp_stdlib.h"
++ #include "ntp_unixtime.h"
+  
+  char *
+  utvtoa(tv)
+! 	const struct timeval *tv;
+  {
+  	register char *buf;
+  
+
+
+------ From ntpq:
+RCS file: RCS/ntpq.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntpq.c
+*** /tmp/,RCSt1a09747	Thu Nov  7 23:31:49 1996
+--- ntpq.c	Thu Nov  7 23:31:39 1996
+***************
+*** 216,221 ****
+--- 216,222 ----
+  static	int	sendpkt		P((char *, int));
+  static	int	getresponse	P((int, int, u_short *, int *, char **, int));
+  static	int	sendrequest	P((int, int, int, int, char *));
++ static	char *	tstflags	P((u_long));
+  static	void	getcmds		P((void));
+  static	RETSIGTYPE abortcmd	P((int));
+  static	void	docmd		P((char *));
+
+
+------ From libparse:
+RCS file: RCS/parse.c,v
+retrieving revision 1.1
+diff -c -r1.1 parse.c
+*** /tmp/,RCSt1a09804	Thu Nov  7 23:37:50 1996
+--- parse.c	Thu Nov  7 23:37:46 1996
+***************
+*** 24,29 ****
+--- 24,30 ----
+  #include <config.h>
+  #endif
+   
++ #ifdef NeXT
+  /*
+   * This is lame, but gets us a symbol for the libparse library so the NeXTstep
+   * ranlib doesn't stop the compile.
+***************
+*** 31,36 ****
+--- 32,38 ----
+  void token_libparse_symbol()
+  {
+  }
++ #endif
+  
+  #if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS))
+  
+
+------ From xntpd:
+RCS file: RCS/ntp_config.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_config.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:34 1996
+--- ntp_config.c	Thu Nov  7 23:38:30 1996
+***************
+*** 358,364 ****
+  #ifdef DEBUG
+  extern int debug;
+  #endif
+- extern	char	*FindConfig();
+  	char	*progname;
+  	char	sys_phone[MAXPHONE][MAXDIAL]; /* ACTS phone numbers */
+  static	char	*xntp_options = "abc:dD:f:gk:l:mp:r:s:t:v:V:x";
+--- 358,363 ----
+===================================================================
+RCS file: RCS/ntp_io.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_io.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:34 1996
+--- ntp_io.c	Thu Nov  7 23:38:37 1996
+***************
+*** 20,27 ****
+--- 20,29 ----
+  # include <netinet/in.h>
+  #endif
+  #ifdef HAVE_SYS_IOCTL_H		/* Was most BSDs and AIX - looking for what? */
++ #ifdef HAVE_BSD_TTYS
+  # include <sys/ioctl.h>
+  #endif
++ #endif
+  #ifdef HAVE_SYS_SOCKIO_H	/* Was SYS_UXPV: SIOC* #defines (Frank Vance <fvance@waii.com>) */
+  # include <sys/sockio.h>
+  #endif
+***************
+*** 172,185 ****
+  static	int	create_sockets	P((u_int));
+  static	int	open_socket	P((struct sockaddr_in *, int, int));
+  static	void	close_socket	P((int));
+  #ifdef HAVE_SIGNALED_IO
+! static  int	init_clock_sig	P(());
+  static  void	init_socket_sig P((int));
+- static  void	set_signal	P(());
+  static  RETSIGTYPE sigio_handler P((int));
+  static  void	block_sigio	P((void));
+! static  void	unblock_sigio	P(());
+  #endif
+  #ifndef STREAMS_TLI
+  # ifndef SYS_WINNT
+  extern	char	*inet_ntoa	P((struct in_addr));
+--- 174,188 ----
+  static	int	create_sockets	P((u_int));
+  static	int	open_socket	P((struct sockaddr_in *, int, int));
+  static	void	close_socket	P((int));
++ static	char *	fdbits		P((int, fd_set *));
+  #ifdef HAVE_SIGNALED_IO
+! static  int	init_clock_sig	P((struct refclockio *));
+  static  void	init_socket_sig P((int));
+  static  RETSIGTYPE sigio_handler P((int));
+  static  void	block_sigio	P((void));
+! static  void	unblock_sigio	P((void));
+  #endif
++ static  void	set_signal	P((void));
+  #ifndef STREAMS_TLI
+  # ifndef SYS_WINNT
+  extern	char	*inet_ntoa	P((struct in_addr));
+===================================================================
+RCS file: RCS/ntp_monitor.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_monitor.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:34 1996
+--- ntp_monitor.c	Thu Nov  7 23:38:44 1996
+***************
+*** 11,17 ****
+--- 11,19 ----
+  #include <errno.h>
+  #ifndef SYS_WINNT
+  #if !defined(VMS)
++ #ifdef HAVE_BSD_TTYS
+  #include <sys/ioctl.h>
++ #endif
+  #endif /* VMS */
+  #include <sys/time.h>
+  #endif /* SYS_WINNT */
+===================================================================
+RCS file: RCS/ntp_proto.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_proto.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:35 1996
+--- ntp_proto.c	Thu Nov  7 23:38:51 1996
+***************
+*** 15,20 ****
+--- 15,21 ----
+  #include "ntp_stdlib.h"
+  #include "ntp_unixtime.h"
+  #include "ntp_control.h"
++ #include "ntp_string.h"
+  
+  #if defined(VMS) && defined(VMS_LOCALUNIT)	/*wjm*/
+  #include "ntp_refclock.h"
+===================================================================
+RCS file: RCS/ntp_request.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_request.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:35 1996
+--- ntp_request.c	Thu Nov  7 23:40:33 1996
+***************
+*** 48,54 ****
+  	short request_code;	/* defined request code */
+  	short needs_auth;	/* true when authentication needed */
+  	short sizeofitem;	/* size of request data item */
+! 	void (*handler)();	/* routine to handle request */
+  };
+  
+  /*
+--- 48,55 ----
+  	short request_code;	/* defined request code */
+  	short needs_auth;	/* true when authentication needed */
+  	short sizeofitem;	/* size of request data item */
+! 	void (*handler) P((struct sockaddr_in *, struct interface *,
+! 	    struct req_pkt *));	/* routine to handle request */
+  };
+  
+  /*
+***************
+*** 1603,1609 ****
+   */
+  struct reset_entry {
+  	int flag;		/* flag this corresponds to */
+! 	void (*handler)();	/* routine to handle request */
+  };
+  
+  struct reset_entry reset_entries[] = {
+--- 1604,1610 ----
+   */
+  struct reset_entry {
+  	int flag;		/* flag this corresponds to */
+! 	void (*handler) P((void)); /* routine to handle request */
+  };
+  
+  struct reset_entry reset_entries[] = {
+===================================================================
+RCS file: RCS/ntp_unixclock.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_unixclock.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:35 1996
+--- ntp_unixclock.c	Thu Nov  7 23:40:46 1996
+***************
+*** 556,562 ****
+  
+  #ifdef	DEBUG
+  	if (debug)
+! 		printf("tick = %d, tickadj = %d\n", *ptick, *ptickadj);
+  #endif
+  }
+  #endif /* not VMS */
+--- 556,563 ----
+  
+  #ifdef	DEBUG
+  	if (debug)
+! 		printf("tick = %ld, tickadj = %ld\n",
+! 		    (long)*ptick, (long)*ptickadj);
+  #endif
+  }
+  #endif /* not VMS */
+===================================================================
+RCS file: RCS/ntp_util.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntp_util.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:36 1996
+--- ntp_util.c	Thu Nov  7 23:39:09 1996
+***************
+*** 11,17 ****
+--- 11,19 ----
+  #include <sys/types.h>
+  #ifndef SYS_WINNT
+  #if !defined(VMS)
++ #ifdef HAVE_BSD_TTYS
+  #include <sys/ioctl.h>
++ #endif
+  #endif /* VMS */
+  #include <sys/time.h>
+  #endif /* SYS_WINNT */
+===================================================================
+RCS file: RCS/ntpd.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntpd.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:36 1996
+--- ntpd.c	Thu Nov  7 23:39:03 1996
+***************
+*** 17,23 ****
+  # endif /* VMS */
+  # include <sys/signal.h>
+  # ifdef HAVE_SYS_IOCTL_H
+! /*#  include <sys/ioctl.h>	/* This loses under SunOS4; who needs it? */
+  # endif /* HAVE_SYS_IOCTL_H */
+  # include <sys/time.h>
+  # if !defined(VMS)	/*wjm*/
+--- 17,25 ----
+  # endif /* VMS */
+  # include <sys/signal.h>
+  # ifdef HAVE_SYS_IOCTL_H
+! #  ifdef notdef
+! #   include <sys/ioctl.h>	/* This loses under SunOS4; who needs it? */
+! #  endif
+  # endif /* HAVE_SYS_IOCTL_H */
+  # include <sys/time.h>
+  # if !defined(VMS)	/*wjm*/
+===================================================================
+RCS file: RCS/refclock_mx4200.c,v
+retrieving revision 1.1
+diff -c -r1.1 refclock_mx4200.c
+*** /tmp/,RCSt1a09918	Thu Nov  7 23:41:36 1996
+--- refclock_mx4200.c	Thu Nov  7 23:41:05 1996
+***************
+*** 69,75 ****
+   */
+  
+  /*
+!  * Definitions
+   */
+  #define	DEVICE		"/dev/gps%d"	/* device name and unit */
+  #define	SPEED232	B4800		/* baud */
+--- 69,75 ----
+   */
+  
+  /*
+!  * GPS Definitions
+   */
+  #define	DEVICE		"/dev/gps%d"	/* device name and unit */
+  #define	SPEED232	B4800		/* baud */
+***************
+*** 83,89 ****
+   * Radio interface parameters
+   */
+  #define	PRECISION	(-18)	/* precision assumed (about 4 us) */
+! #define	REFID	"GPS"		/* reference id */
+  #define	DESCRIPTION	"Magnavox MX4200 GPS Receiver" /* who we are */
+  #define	DEFFUDGETIME	0	/* default fudge time (ms) */
+  
+--- 83,89 ----
+   * Radio interface parameters
+   */
+  #define	PRECISION	(-18)	/* precision assumed (about 4 us) */
+! #define	REFID	"GPS\0"		/* reference id */
+  #define	DESCRIPTION	"Magnavox MX4200 GPS Receiver" /* who we are */
+  #define	DEFFUDGETIME	0	/* default fudge time (ms) */
+  
+***************
+*** 93,112 ****
+  static int leap_debug;
+  
+  /*
+!  * Imported from the timer module
+   */
+! extern u_long current_time;
+! extern struct event timerqueue[];
+  
+  /*
+!  * Imported from ntp_loopfilter module
+   */
+! extern int fdpps;		/* pps file descriptor */
+  
+  /*
+!  * Imported from ntpd module
+   */
+! extern int debug;		/* global debug flag */
+  
+  /*
+   * MX4200 unit control structure.
+--- 93,113 ----
+  static int leap_debug;
+  
+  /*
+!  * Imported from ntp_timer module
+   */
+! extern u_long current_time;	/* current time (s) */
+  
+  /*
+!  * Imported from ntpd module
+   */
+! extern int debug;		/* global debug flag */
+  
++ #ifdef PPS
+  /*
+!  * Imported from loop_filter module
+   */
+! extern int fdpps;		/* ppsclock file descriptor */
+! #endif /* PPS */
+  
+  /*
+   * MX4200 unit control structure.
+***************
+*** 115,121 ****
+  	u_long gpssamples[NSTAMPS];	/* the GPS time samples */
+  	l_fp unixsamples[NSTAMPS];	/* the UNIX time samples */
+  
+- 
+  	l_fp lastsampletime;		/* time of last estimate */
+  	u_int lastserial;		/* last pps serial number */
+  	u_long lasttime;		/* last time clock heard from */
+--- 116,121 ----
+***************
+*** 147,153 ****
+  static	int	mx4200_needconf	P((char *));
+  static	void	mx4200_config	P((struct peer *));
+  static	void	mx4200_send	P((int, char *, ...));
+! static	int	mx4200_cmpl_fp	P((void *, void *));
+  static	u_char	cksum		P((char *, u_int));
+  
+  /*
+--- 147,153 ----
+  static	int	mx4200_needconf	P((char *));
+  static	void	mx4200_config	P((struct peer *));
+  static	void	mx4200_send	P((int, char *, ...));
+! 	int	mx4200_cmpl_fp	P((void *, void *));
+  static	u_char	cksum		P((char *, u_int));
+  
+  /*
+***************
+*** 187,194 ****
+  	/*
+  	 * Allocate unit structure
+  	 */
+! 	if (!(up = (struct mx4200unit *)
+! 	    emalloc(sizeof(struct mx4200unit)))) {
+  		(void) close(fd);
+  		return (0);
+  	}
+--- 187,193 ----
+  	/*
+  	 * Allocate unit structure
+  	 */
+! 	if (!(up = (struct mx4200unit *)emalloc(sizeof(struct mx4200unit)))) {
+  		(void) close(fd);
+  		return (0);
+  	}
+***************
+*** 252,258 ****
+--- 251,262 ----
+  	    PMVXG_S_PORTCONF, 1);
+  	mx4200_send(pp->io.fd, "%s,%03d,,%d,,,,,,", pmvxg,
+  	    PMVXG_S_PORTCONF, 1);
++ 	/*
++ 	 * Request software configuration so we can syslog the firmware version
++ 	 */
++ 	mx4200_send(pp->io.fd, "%s,%03d", "CDGPQ", PMVXG_D_SOFTCONF);
+  
++ 
+  	/*
+  	 * Switch to 2d mode
+  	 */
+***************
+*** 334,339 ****
+--- 338,346 ----
+  	int valid, leapsec;
+  	register u_char ck;
+  
++ 	/*
++ 	 * Initialize pointers and read the timecode and timestamp.
++ 	 */
+  	peer = (struct peer *)rbufp->recv_srcclock;
+  	pp = peer->procptr;
+  	up = (struct mx4200unit *)pp->unitptr;
+***************
+*** 539,545 ****
+  }
+  
+  /* Compare two l_fp's, used with qsort() */
+! static int
+  mx4200_cmpl_fp(p1, p2)
+  	register void *p1, *p2;
+  {
+--- 546,552 ----
+  }
+  
+  /* Compare two l_fp's, used with qsort() */
+! int
+  mx4200_cmpl_fp(p1, p2)
+  	register void *p1, *p2;
+  {
+***************
+*** 669,676 ****
+  
+  	/* Record type */
+  	v = strtol(cp, &cp, 10);
+! 	if (v != PMVXG_D_STATUS)
+  		return (0);
+  	/*
+  	 * XXX
+  	 * Since we configure the receiver to not give us status
+--- 676,687 ----
+  
+  	/* Record type */
+  	v = strtol(cp, &cp, 10);
+! 	if (v != PMVXG_D_STATUS) {
+! 		if (v == PMVXG_D_SOFTCONF)
+! 			syslog(LOG_DEBUG,
+! 			    "mx4200_needconf: software config: %s", buf);
+  		return (0);
++ 	}
+  	/*
+  	 * XXX
+  	 * Since we configure the receiver to not give us status
+***************
+*** 680,686 ****
+  	 * indicates the reciever needs to be initialized; thus, it is
+  	 * not necessary to decode the status message.
+  	 */
+! 		return (1);
+  }
+  
+  /* Parse a mx4200 time recovery message. Returns a string if error */
+--- 691,697 ----
+  	 * indicates the reciever needs to be initialized; thus, it is
+  	 * not necessary to decode the status message.
+  	 */
+! 	return (1);
+  }
+  
+  /* Parse a mx4200 time recovery message. Returns a string if error */

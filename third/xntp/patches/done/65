@@ -1,0 +1,22 @@
+Replied: Mon, 20 Jan 1997 21:04:16 -0500
+Replied: "Mills@huey.udel.edu "
+Replied: Mon, 20 Jan 1997 20:21:44 -0500
+Replied: "Mills@huey.udel.edu "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10953;
+          21 Jan 97 1:19 GMT
+Date:     Mon, 20 Jan 97 20:12:43 EST
+From:     Mills@huey.udel.edu
+To:       stenn@whimsy.udel.edu
+cc:       mills@udel.edu, stenn@whimsy.udel.edu
+Subject:  Re:  xntpd -a
+Message-ID:  <9701202012.aa13522@huey.udel.edu>
+
+H,
+
+There is in fact a request to disable authentication via command line.
+It can of course be done using a configuration file, but some folks don't
+want that. I think your suggestion is great: -a turns it on (old versions,
+politely ignored in new) and -A turns it off. Some folks might disable
+it during configuration (the code is still there) and -a to turn it on.
+
+Dave

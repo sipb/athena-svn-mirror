@@ -1,0 +1,48 @@
+Received: from kalman.apl.washington.edu by huey.udel.edu id aa04033;
+          1 May 97 16:37 EDT
+Received: from kalman.apl.washington.edu (localhost [127.0.0.1])
+          by kalman.apl.washington.edu (8.8.4/8.8.4) with ESMTP
+	  id NAA31909 for <Mills@huey.udel.edu>; Thu, 1 May 1997 13:39:37 -0700
+Message-Id: <199705012039.NAA31909@kalman.apl.washington.edu>
+To: Mills@huey.udel.edu
+Subject: Re: xntpd patch. 
+In-reply-to: Your message of "Thu, 01 May 1997 14:47:00 EDT."
+             <9705011447.aa03792@huey.udel.edu> 
+Date: Thu, 01 May 1997 13:39:36 -0700
+From: Jeff Dairiki <dairiki@kalman.apl.washington.edu>
+
+Dave,
+
+Well, if you didn't like the last patch, here's another!
+From inspecting kernel source (Linux 2.0.29 and 1.2.13) it appears that
+tickadj = 500/HZ usec, allowing for 500ppm freq correction.
+(HZ = 100, for pc-linux (intel), but I believe it is different
+on other architectures.)
+
+Apparently, ntp_unixclock:clock_parms() reports an erroneously
+low value of 1 usec.  Man, don't take it personally, but that
+code is a mess!
+
+It looks like PRESET_TICKADJ is incorrectly set to 1 by configure.
+
+Here's my guess at a patch.  Be warned that I haven't tested it.
+At your request, I will test it though.
+
+(Distribution: xntp3-5.90; config.guess: i586-pc-linux-gnu)
+
+--- configure.in.orig   Thu May  1 13:13:37 1997
++++ configure.in        Thu May  1 13:22:18 1997
+@@ -1922,7 +1922,7 @@
+       ans=150
+       ;;
+    *-*-linux*)
+-      ans=1
++      ans='500/hz'
+       ;;
+    *-*-sco3.2v4*)
+       ans=1000000L/hz
+
+
+Jeff
+
+PS Is there a newer version of xntp which I should be using?

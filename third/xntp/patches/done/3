@@ -1,0 +1,46 @@
+From glen_call@ftw.paging.mot.com Sun Jun 16 03:33:11 1996
+From: Glen Call <glen_call@ftw.paging.mot.com>
+Date: Fri, 24 May 1996 11:19:11 -0500
+To: Mills@huey.udel.edu
+Subject: Re:  xntp 3.5 support for Motorola GPS
+Cc: orlando_perdomo@ftw.paging.mot.com
+X-Sun-Charset: US-ASCII
+
+
+| Drivers aren't hard to build at all. Your contribution/modification
+| of a driver would be much appreciated, if it isn't there already.
+
+David -
+
+I studied the NMEA driver, made a correction (2 pls, see below), and
+was able to drive the Motorola Oncore GPS.  I would be happy to supply
+the whole file if you wish.
+
+$ diff OLDrefclock_nmea.c refclock_nmea.c
+145c145
+< 	gps_send(pp->io.fd,"$PMOTG,RMC,0000\n", peer);
+---
+> 	gps_send(pp->io.fd,"$PMOTG,RMC,0000*1D\r\n", peer);
+353c353
+< 	gps_send(pp->io.fd,"$PMOTG,RMC,0\n", peer);
+---
+> 	gps_send(pp->io.fd,"$PMOTG,RMC,0000*1D\r\n", peer);
+$
+
+BTW, I am wondering if the daemon has the ability to issue an alarm if a
+reference clock drops out.  If not, I suppose my application could poll
+using logic borrowed from "ntpq" or similar utility.  Suggestions would
+be most welcome.
+
+Best regards,
+Glen
+
+PS: Do you know of any implementations of SNTP available on the Web?
+
+
+Glen Call           gcall@ftw.paging.mot.com
+Motorola Advanced Messaging Systems Division
+
+
+
+

@@ -1,0 +1,454 @@
+Replied: Mon, 16 Jun 1997 17:11:39 -0400
+Replied: "schueman@ix.netcom.com "
+Return-Path: schueman@ix.netcom.com 
+Return-Path: <schueman@ix.netcom.com>
+Received: from dfw-ix16.ix.netcom.com (dfw-ix16.ix.netcom.com [206.214.98.16])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id RAA01578
+	for <stenn@whimsy.udel.edu>; Mon, 9 Jun 1997 17:26:39 GMT
+Received: (from smap@localhost)
+          by dfw-ix16.ix.netcom.com (8.8.4/8.8.4)
+	  id MAA02070 for <stenn@whimsy.udel.edu>; Mon, 9 Jun 1997 12:25:42 -0500 (CDT)
+Received: from pas-ca23-59.ix.netcom.com(207.92.191.123) by dfw-ix16.ix.netcom.com via smap (V1.3)
+	id sma002039; Mon Jun  9 12:25:25 1997
+Message-ID: <339C3D1D.19DE@ix.netcom.com>
+Date: Mon, 09 Jun 1997 10:27:57 -0700
+From: Greg Schueman <schueman@ix.netcom.com>
+Reply-To: schueman@ix.netcom.com
+X-Mailer: Mozilla 3.0Gold (Win95; U)
+MIME-Version: 1.0
+To: stenn@whimsy.udel.edu
+Subject: One more fix for XNTP on NT
+References: <9706072250.aa15147@whimsy.udel.edu>
+Content-Type: multipart/mixed; boundary="------------149331545659"
+
+This is a multi-part message in MIME format.
+
+--------------149331545659
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Harlan,
+   Viraj Bais just sent me the fix to the Daylight Savings Time
+bug under NT.  The problem was the Microsoft _ftime() function.
+Anyhow, for bugs that leaves only one now:
+
+  The reported Mutex timeout that only 2 people have seen.
+
+I'm attaching the following files (overlay them on the distribution)
+
+ * libntp/machines.c
+ * scripts/wininstall/distrib/readme.nt
+
+-Greg
+
+--------------149331545659
+Content-Type: text/plain; charset=us-ascii; name="Machines.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="Machines.c"
+
+/* machines.c - provide special support for peculiar architectures
+ *
+ * Real bummers unite !
+ *
+ */
+
+#include "ntp_stdlib.h"
+
+
+#ifndef SYS_WINNT
+
+#ifdef SYS_PTX			/* Does PTX still need this? */
+/*#include <sys/types.h>	*/
+#include <sys/procstats.h>
+
+int
+gettimeofday(tvp)
+  struct timeval *tvp;
+{
+  /*
+   * hi, this is Sequents sneak path to get to a clock
+   * this is also the most logical syscall for such a function
+   */
+  return (get_process_stats(tvp, PS_SELF, (struct procstats *) 0,
+			    (struct procstats *) 0));
+}
+#endif /* SYS_PTX */
+
+#ifdef HAVE_SETTIMEOFDAY
+char *set_tod_using = "settimeofday";
+#else /* not HAVE_SETTIMEOFDAY */
+# ifdef HAVE_CLOCK_SETTIME
+char *set_tod_using = "clock_settime";
+
+/*#include <time.h>	*/
+
+int
+settimeofday(tvp, tzp)
+  struct timeval *tvp;
+  void *tzp;
+{
+  struct timespec ts;
+
+  /* Convert timeval to timespec */
+  ts.tv_sec = tvp->tv_sec;
+  ts.tv_nsec = 1000 *  tvp->tv_usec;
+
+  return clock_settime(CLOCK_REALTIME, &ts);
+}
+
+# else /* not (HAVE_SETTIMEOFDAY || HAVE_CLOCK_SETTIME) */
+#  ifdef HAVE_STIME
+char *set_tod_using = "stime";
+
+int
+settimeofday(tvp, tzp)
+  struct timeval *tvp;
+  void *tzp;
+{
+  return (stime(&tvp->tv_sec));	/* lie as bad as SysVR4 */
+}
+
+#  endif /* HAVE_STIME */
+# endif /* not (HAVE_SETTIMEOFDAY || HAVE_CLOCK_SETTIME) */
+#endif /* not HAVE_SETTIME */
+
+
+#else /* SYS_WINNT */
+
+
+#include <time.h>
+#include <sys\timeb.h>
+#include <conio.h>
+#include "ntp_syslog.h"
+
+char *	set_tod_using = "SetSystemTime";
+
+/* Windows NT versions of gettimeofday and settimeofday 
+ *
+ * ftime() has internal DayLightSavings related BUGS
+ * therefore switched to GetSystemTimeAsFileTime()
+ */
+
+/* 100ns intervals between 1/1/1601 and 1/1/1970 as reported by
+ * SystemTimeToFileTime()
+ */
+
+#define FILETIME_1970 0x019db1ded53e8000
+const BYTE DWLEN = sizeof(DWORD) * 8; /* number of bits in DWORD */
+
+int
+gettimeofday(tv)
+	struct timeval *tv;
+{
+	FILETIME ft;
+	__int64 msec;
+
+	GetSystemTimeAsFileTime(&ft); /* 100ns intervals since 1/1/1601 */
+	msec = (__int64) ft.dwHighDateTime << DWLEN | ft.dwLowDateTime;
+	msec = (msec - FILETIME_1970) / 10;
+	tv->tv_sec  = (long) (msec / 1000000);
+	tv->tv_usec = (long) (msec % 1000000);
+	return 0;
+}
+
+
+int
+settimeofday(tv)
+     struct timeval *tv;
+{
+  SYSTEMTIME st;
+  struct tm *gmtm;
+  long x = tv->tv_sec;
+  long y = tv->tv_usec;
+  
+  gmtm = gmtime((const time_t *) &x);
+  st.wSecond		= (WORD) gmtm->tm_sec;
+  st.wMinute		= (WORD) gmtm->tm_min;
+  st.wHour			= (WORD) gmtm->tm_hour;
+  st.wDay			= (WORD) gmtm->tm_mday;
+  st.wMonth			= (WORD) (gmtm->tm_mon  + 1);
+  st.wYear			= (WORD) (gmtm->tm_year + 1900);
+  st.wDayOfWeek		= (WORD) gmtm->tm_wday;
+  st.wMilliseconds	= (WORD) (y / 1000);
+
+  if (!SetSystemTime(&st)) { 
+    msyslog(LOG_ERR, "SetSystemTime failed: %m\n");
+    return -1;
+  }
+  return 0;
+}
+
+
+/* getpass is used in ntpq.c and ntpdc.c */
+
+char *
+getpass(const char * prompt)
+{
+	int c, i;
+	static char password[32];
+
+	fprintf(stderr, "%s", prompt); 
+	fflush(stderr);
+	for (i=0; i<sizeof(password)-1 && ((c=_getch())!='\n'); i++) {
+		password[i] = c;
+	}
+	password[i] = '\0';
+
+	return password;
+}
+
+#endif /* SYS_WINNT */
+
+#if !defined(HAVE_MEMSET) || defined(NTP_NEED_BOPS)
+void
+ntp_memset(a, x, c)
+	char *a;
+	int x, c;
+{
+	while (c-- > 0)
+		*a++ = x;
+}
+#endif /*POSIX*/
+
+--------------149331545659
+Content-Type: text/plain; charset=us-ascii; name="Readme.nt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="Readme.nt"
+
+----------------------------------------------------------------------------
+XNTP Release for Microsoft Windows NT
+						  
+----------------------------------------------------------------------------
+	This software is user supported freeware.
+
+	For support post to the UseNet newsgroup: comp.protocols.time.ntp
+
+	More detailed information can also be found at:
+		http://www.eecis.udel.edu/~ntp
+
+	Source is available at:
+		ftp://ftp.udel.edu/pub/ntp
+
+
+
+        NOTE: Don't run uninstall to remove or update the Network Time 
+              Protocol service to a new version, just run the setup program 
+              again.
+--------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------
+XNTP v3.5-90.1 Release for Microsoft Windows NT          June 8th, 1997
+
+----------------------------------------------------------------------------
+
+Several small bug fixes have been made, to XNTPD and NTPDATE.  No functionality 
+changes have occured since the last release.  
+
+Some people were experiencing a bug due to the Microsoft _ftime() function 
+returning incorrect values with timezones that do not adjust for Daylight 
+Savings Time.  The fix was contributed by Viraj Bais based on the same fix 
+that he made against the XNTP 3.5f code base.
+
+
+Possible enhancements and things left to do:
+*	Additional reference clock drivers for NT beyond just the Local Clock
+*	Control Panel Applet
+*	Lock NT task into memory, so that it can't be paged out.
+*	Integration with NT Performance Monitor
+*	SNMP integration
+
+
+Known problems:
+*	Mutex timeout failure occurs sporatically with only a few reports
+	of the problem.
+*	One report of problems in a multihomed configuration.
+*	Server precision has been reported at ~50ms, and should be able to 
+	achieve approximately 10ms.
+
+
+
+
+----------------------------------------------------------------------------
+XNTP v3.5-89.1 Release for Microsoft Windows NT          February 13th, 1997
+						  
+----------------------------------------------------------------------------
+Many minor documentation, bug fixes, and portability cleanups have been
+done to make the code base more maintainable.  No functionality changes have
+occured since the last release.
+
+
+Possible enhancements and things left to do:
+*	Additional reference clock drivers for NT beyond just the Local Clock
+*	Control Panel Applet
+*	Lock NT task into memory, so that it can't be paged out.
+*	Integration with NT Performance Monitor
+*	SNMP integration
+
+
+
+Known problems:
+	none
+
+
+
+----------------------------------------------------------------------------
+XNTP v3.5-87 Release for Microsoft Windows NT            December 14th, 1996
+						  
+----------------------------------------------------------------------------
+
+
+Brief Installation Instructions
+
+1.  If you currently have XNTP on this machine (any older version that was NOT
+    installed using this GUI) you must STOP NOW, and REMOVE IT from your system
+    before running this install program.  
+
+2.  This installation program will create what it thinks are sensible defaults
+    for the configuration files for XNTP.  If you have a tricky setup, let it 
+    finish, then go back and stop the service (try the control panel applet) 
+    and edit the configuration files.  The files will all be in the directory 
+    you install into (default is %windir%\) and will be named as follows:
+    
+    	ntp.conf  - 	the NTP configuration file.
+    	ntp.drift -	the NTP drift file
+	
+
+--------------------------------------------------------------------------------
+
+Building/compiling XNTP for Windows NT
+
+To automate the build run either bldrel.bat or blddbg.bat... then run the
+file install.bat in the scripts\wininstall\distrib directory for a 
+manual installation. Run scripts\wininstall\intel\disk1\setup.exe
+for the InstallShield based GUI installation.
+
+****YOU MUST ****** modify the directory line in the ntp.conf or ntp.ini 
+(it will accept either name)... and change the single slashes to double 
+slashes ie. c:\winnt\ntp.conf becomes c:\\winnt\\ntp.conf
+
+
+--------------------------------------------------------------------------------
+December 14 1996
+
+
+ANNOUNCE: Enhancements to the Windows NT port of XNTP 3.5-87
+                                    (Network Time Protocol)
+
+The Windows NT support works again after many changes to the 
+distribution.  The code compiles straight away using
+Microsoft Visual C++ 4.x.
+
+Enhancements:
+*	Local Clock reference clock now supported on NT
+*	InstallShield based installation works
+
+
+
+Possible enhancements and things left to do:
+*	Additional Reference clock drivers for NT
+*	Control Panel Applet
+*	Integration with NT Performance Monitor
+*	SNMP integration
+
+
+Known Problems:
+*	None
+
+
+Greg Schueman  [schueman@acm.org]
+
+
+
+--------------------------------------------------------------------------------
+May 07 1996
+
+
+ANNOUNCE: Enhancements to the Windows NT port of XNTP 3.5
+                                    (Network Time Protocol)
+
+
+
+This set of changes fixes all known bugs, and it includes 
+several major enhancements.
+
+Many changes have been made both to the build environment as
+well as the code.  There is no longer an ntp.mak file, instead
+there is a buildntall.bat file that will build the entire 
+release in one shot.  The batch file requires Perl.  Perl
+is easily available from the NT Resource Kit or on the Net.
+
+The multiple interface support was adapted from Larry Kahn's
+work on the BIND NT port.  I have not been able to test it
+adequately as I only have NT servers with one network 
+interfaces on which to test.  
+
+Enhancements:
+*	Event Logging now works correctly.
+*	Version numbers now work (requires Perl during build)
+*	Support for multiple network interface cards (untested)
+*	NTP.CONF now default, but supports ntp.ini if not found
+*	Installation procedure automated.
+*	All paths now allow environment variables such as %windir%
+
+Bug fixes:
+*	INSTSRV replaced, works correctly
+*	Cleaned up many warnings
+*	Corrected use of an uninitialized variable in XNTPD
+*	Fixed ntpdate -b option
+*	Fixed ntpdate to accept names as well as IP addresses
+        (Winsock WSAStartup was called after a gethostbyname())
+*	Fixed problem with "longjmp" in xntpdc/ntpdc.c that 
+        caused a software exception on doing a Control-C in xntpdc.
+	A Cntrl-C now terminates the program. 
+
+See below for more detail:
+
+      Note: SIGINT is not supported for any Win32 application including 
+      Windows NT and Windows 95. When a CTRL+C interrupt occurs, Win32 
+      operating systems generate a new thread to specifically handle that 
+      interrupt. This can cause a single-thread application such as UNIX, 
+      to become multithreaded, resulting in unexpected behavior. 
+
+
+Possible enhancements and things left to do:
+*	Reference clock drivers for NT (at least Local Clock support)
+*	Control Panel Applet
+*	InstallShield based installation, like NT BIND has
+*	Integration with NT Performance Monitor
+*	SNMP integration
+*	Fully test multiple interface support
+
+
+Known problems:
+*       bug in ntptrace - if no Stratum 1 servers are available,
+                such as on an IntraNet, the application crashes.
+
+
+
+Greg Schueman  [schueman@acm.org]
+
+
+--------------------------------------------------------------------------------
+
+Disclaimer of Warranties. THE SOFTWARE AND ASSOCIATED DOCUMENTATION ARE 
+PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, 
+INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR 
+ANY PARTICULAR PURPOSE, OR NON-INFRINGEMENT.  THE ENTIRE RISK AS TO THE 
+QUALITY AND PERFORMANCE OF THE SOFTWARE AND DOCUMENTATION IS WITH YOU. NO 
+ONE WARRANTS THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS OR THAT THE 
+OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR FREE, OR THAT DEFECTS 
+IN THE SOFTWARE WILL BE CORRECTED.
+
+Limitations of Warranty.  IN NO EVENT SHALL ANYONE INVOLVED IN THE CREATION, 
+PRODUCTION, OR DISTRIBUTION OF THE SOFTWARE BE LIABLE TO YOU ON ACCOUNT OF 
+ANY CLAIM FOR ANY SPECIAL EXEMPLARY OR PUNITIVE DAMAGES, INCLUDING ANY LOST 
+PROFITS, LOST SAVINGS, BUSINESS INTERRUPTION, LOSS OF BUSINESS OR PERSONAL 
+INFORMATION OR ANY OTHER INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF 
+THE USE, THE INABILITY TO USE, QUALITY, OR PERFORMANCE OF THE SOFTWARE AND 
+DOCUMENTATION, EVEN IF SAID AUTHORS, HAVE BEEN ADVISED OF THE POSSIBILITY 
+OF SUCH DAMAGES.
+
+--------------------------------------------------------------------------------
+
+--------------149331545659--

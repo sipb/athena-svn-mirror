@@ -1,0 +1,81 @@
+Replied: Sun, 17 Aug 1997 23:16:10 -0400
+Replied: ""David L. Mills" <mills@udel.edu> "
+Return-Path: <@backroom.udel.edu:mills@udel.edu> 
+Return-Path: <<@backroom.udel.edu:mills@udel.edu>>
+Received: from mail.eecis.udel.edu (8C/V2hnmVZfqiAoioDOK1cghuzl24uJ7@louie.cis.udel.edu [128.175.7.39])
+	by whimsy.udel.edu (8.8.5/8.8.5) with SMTP id QAA13092
+	for <stenn@whimsy.udel.edu>; Fri, 8 Aug 1997 16:15:17 GMT
+Received: from backroom.udel.edu by mail.eecis.udel.edu id aa22030;
+          8 Aug 1997 12:08 EDT
+Message-ID: <33EB3594.BA40037F@udel.edu>
+Date: Fri, 08 Aug 1997 16:04:52 +0100
+From: "David L. Mills" <mills@udel.edu>
+X-Mailer: Mozilla 4.01 [en] (Win95; I)
+MIME-Version: 1.0
+To: stenn@whimsy.udel.edu
+Subject: [Fwd: xntp bug on obscure platform (alpha-unkown-*bsd)]
+X-Priority: 3 (Normal)
+Content-Type: multipart/mixed; boundary="------------164C0BA20524EF88C827C811"
+
+This is a multi-part message in MIME format.
+--------------164C0BA20524EF88C827C811
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+
+--------------164C0BA20524EF88C827C811
+Content-Type: message/rfc822
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Received: from huey2.ee.udel.edu by mail.eecis.udel.edu id aa01792;
+          7 Aug 1997 22:56 EDT
+Received: from gatekeeper.zeitgeist.com by huey.udel.edu id aa18737;
+          7 Aug 1997 22:56 EDT
+Received: from wintermute.ny.zeitgeist.com (wintermute.ny.zeitgeist.com [192.124.49.10]) by gatekeeper.zeitgeist.com (8.8.3/8.6.9)
+           with ESMTP id WAA00222 for <mills@huey.udel.edu>; Thu, 7 Aug 1997 22:56:12 -0400
+Received: (from sdegler@localhost) by wintermute.ny.zeitgeist.com (8.8.3/8.7.2) id WAA28630; Thu, 7 Aug 1997 22:56:11 -0400
+From: Stephen K Degler <sdegler@zeitgeist.com>
+Message-Id: <199708080256.WAA28630@wintermute.ny.zeitgeist.com>
+Subject: Re: xntp bug on obscure platform (alpha-unkown-*bsd)
+To: Stephen Degler <sdegler@zeitgeist.com>
+Date: Thu, 7 Aug 1997 22:56:11 -0400 (EDT)
+Cc: mills@huey.udel.edu, sdegler@zeitgeist.com
+In-Reply-To: <33EA7C7F.D1D3EF2B@zeitgeist.com> from "Stephen Degler" at Aug 7, 97 09:55:12 pm
+Content-Type: text
+
+Hi,
+
+since tick and tickadj only appear int util/tickadj.c and
+xntpd/ntp_unixclock.c, I added K_TICKADJ_TYPE and K_TICK_TYPE
+to config.h (again I didn't attempt to figure out how ot do this
+with autoconf) and propagated these defines. xntp is working fine
+now for me.  I also had to fix two printf's but I used %ud and
+cast the arguments.  This should always win, given the ranges expected
+for tick and tickadj.
+
+> 
+> Hi,
+> 
+> First of all, thanks for all the years of quality software. I do however
+> have a problem with my
+> alpha under OpenBSD 2.1 (and I assume under NetBSD as well).  tick and
+> tickadj on these
+> OS'es are 32 bits but the kvm_read done by xntpd is 64.  xntp won't
+> start because the value
+> is out of range.  I'm going to fix this by creating two local vars with
+> the correct types
+> clock_parms and then casting to up to ptick and ptickadj to set things
+> right.  A real solution
+> might be to probe for the correct size of the kernel time things in
+> autoconf and use a few typedefs,
+> but I don't know autoconf yet :-(
+> 
+> This was with version 3.5.90.
+> 
+> skd
+> 
+> 
+
+
+--------------164C0BA20524EF88C827C811--

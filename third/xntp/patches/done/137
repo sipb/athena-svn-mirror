@@ -1,0 +1,101 @@
+Received: from copland.udel.edu by huey.udel.edu id aa24373; 7 Apr 97 16:35 EDT
+Received: from owlman.academ.com (sob@OWLMAN.ACADEM.COM [198.137.249.5]) by copland.udel.edu (8.8.5/8.7.3) with ESMTP id QAA07453 for <mills@udel.edu>; Mon, 7 Apr 1997 16:35:28 -0400 (EDT)
+Received: (from sob@localhost) by owlman.academ.com (8.8.5/8.6.9) id PAA00161; Mon, 7 Apr 1997 15:35:23 -0500 (CDT)
+Date: Mon, 7 Apr 1997 15:35:23 -0500 (CDT)
+From: Stan Barber <sob@owlman.academ.com>
+Message-Id: <199704072035.PAA00161@owlman.academ.com>
+To: mills@udel.edu
+Subject: xntp3-5.89 problems with BSD/OS 3.0
+Cc: sob@academ.com
+
+I had to make this patch for BSD/OS 3.0 becuase the semantics of
+getifaddrs changed between 2.1 and 3.0. config.guess says: i386-pc-bsdi3.0.
+
+*** xntpd/ntp_io.c      Mon Apr  7 14:49:26 1997
+--- xntpd/ntp_io.c.orig Mon Apr  7 14:52:34 1997
+***************
+*** 28,34 ****
+  #endif
+  
+  #if   _BSDI_VERSION >= 199510
+! # include <ifaddrs.h>
+  #endif
+  #include "ntpd.h"
+  #include "ntp_select.h"
+--- 28,34 ----
+  #endif
+  
+  #if   _BSDI_VERSION >= 199510
+! # include "ifaddrs.h"         /* XXX Why not <ifaddrs.h>? */
+  #endif
+  #include "ntpd.h"
+  #include "ntp_select.h"
+***************
+*** 258,270 ****
+       u_int port;
+  {
+  #if   _BSDI_VERSION >= 199510
+!   int i, j;
+!   struct ifaddrs *ifaddrs, *ifap;
+    struct sockaddr_in resmask;
+- #if     _BSDI_VERSION < 199701 
+-   struct ifaddrs *lp;
+-   int num_if;
+- #endif
+  #else /* _BSDI_VERSION >= 199510 */
+  # ifdef STREAMS_TLI
+    struct strioctl     ioc;
+--- 258,266 ----
+       u_int port;
+  {
+  #if   _BSDI_VERSION >= 199510
+!   int num_if, i, j;
+!   struct ifaddrs *ifaddrs, *ifap, *lp;
+    struct sockaddr_in resmask;
+  #else /* _BSDI_VERSION >= 199510 */
+  # ifdef STREAMS_TLI
+    struct strioctl     ioc;
+***************
+*** 294,318 ****
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+    inter_list[0].flags = INT_BROADCAST;
+  #if   _BSDI_VERSION >= 199510
+- #if     _BSDI_VERSION >= 199701 
+-   if (getifaddrs(&ifaddrs) < 0)
+-     {
+-       msyslog(LOG_ERR, "getifaddrs: %m");
+-       exit(1);
+-     }
+-   i = 1;
+-   for (ifap = ifaddrs; ifap != NULL; ifap = ifap->ifa_next)
+- #else
+    if (getifaddrs(&ifaddrs, &num_if) < 0)
+      {
+        msyslog(LOG_ERR, "getifaddrs: %m");
+        exit(1);
+      }
+    i = 1;
+  
+    for (ifap = ifaddrs, lp = ifap + num_if; ifap < lp; ifap++)
+- #endif
+      {
+        struct sockaddr_in *sin;
+  
+--- 290,306 ----
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+    inter_list[0].flags = INT_BROADCAST;
++ 
+  #if   _BSDI_VERSION >= 199510
+    if (getifaddrs(&ifaddrs, &num_if) < 0)
+      {
+        msyslog(LOG_ERR, "getifaddrs: %m");
+        exit(1);
+      }
++ 
+    i = 1;
+  
+    for (ifap = ifaddrs, lp = ifap + num_if; ifap < lp; ifap++)
+      {
+        struct sockaddr_in *sin;

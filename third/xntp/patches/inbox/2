@@ -1,0 +1,74 @@
+Replied: Thu, 17 Jul 1997 21:55:20 -0400
+Replied: "Walt Pesch <walt@solgrp.chi.il.us> "
+Return-Path: walt@solgrp.chi.il.us 
+Return-Path: <walt@solgrp.chi.il.us>
+Received: from mcfeely.interaccess.com (mcfeely.interaccess.com [207.70.126.131])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id PAA10353
+	for <stenn@whimsy.udel.edu>; Thu, 17 Jul 1997 15:09:55 GMT
+Received: from [167.16.41.126] ([167.16.41.126]) by mcfeely.interaccess.com (8.8.5/8.7.5) with ESMTP id KAA12168 for <stenn@whimsy.udel.edu>; Thu, 17 Jul 1997 10:09:28 -0500 (CDT)
+X-Sender: walt@pop.interaccess.com
+Message-Id: <v03102822aff3e504ac51@[167.16.41.126]>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 17 Jul 1997 10:05:22 -0500
+To: stenn@whimsy.udel.edu
+From: Walt Pesch <walt@solgrp.chi.il.us>
+Subject: xntp under DYNIX/ptx v4.2.1 & ptx/TCP/IP v4.2.0
+
+Hi David,
+
+Just keeping some notes since I am having to change some things to get xntp
+to compile.  config.guess says "i386-sequent-sysv4", and more explicitly I
+have DYNIX/ptx v4.2.1 & ptx/TCP/IP v4.2.0.  I am running
+xntp3-5.90.2.tar.gz.
+
+Two things of note.
+
+ONE:  I had to explicitly turn off multicasting since struct mcast was not
+found.  I did this by editing config.h, is there a better way?
+
+TWO:  On line 590 of xntpd/refclock_acts.c, I reeived an error that the
+variable ws not scalar.  Previous code:
+
+                        if (pp) {
+                          if (pp->lastcode) {
+                            (void)strncpy(str, strtok(pp->lastcode, " "),
+SMAX);
+                          } else {
+                            msyslog(LOG_ERR, "clock %s ACTS: pp->lastcode
+was NI
+L",
+                                    ntoa(&peer->srcadr));
+                            *str = '\0';
+                          }
+                        } else {
+                          /* pp was NIL */
+                          msyslog(LOG_ERR, "clock %s ACTS: pp was NIL",
+                                  ntoa(&peer->srcadr));
+                          *str = '\0';
+                        }
+
+So I changed the second line to:
+
+                          if (pp->lastcode != 0) {
+
+All seems copasetic, and the compile ran through to completion.
+
+I've since been running xntpd as client and ntptrace for the past day, all
+seems good.  The only interesting question I have is that I configured in
+/etc/ntp.conf both a stratum 8 & a stratum 9 server.  One one machine,
+ntptrace shows me both and on the second it only shows me the stratum 8.
+Is this simply because of the ordering of which responded the first time
+first?
+
+server pacificbb.1dc.com
+server fdt7000.1dc.com
+
+driftfile /etc/ntp.drift
+
+Thanks for the good software.
+
+
+
+   Walt
+

@@ -1,0 +1,147 @@
+Received: from copland.udel.edu by huey.udel.edu id aa24364; 27 Mar 97 9:45 EST
+Received: from solmu.ydi.vtt.fi (solmu.ydi.vtt.fi [130.188.61.93]) by copland.udel.edu (8.8.5/8.7.3) with ESMTP id JAA16409 for <mills@udel.edu>; Thu, 27 Mar 1997 09:45:01 -0500 (EST)
+Received: (from juha@localhost) by solmu.ydi.vtt.fi (8.8.5/8.7.3) id QAA30877; Thu, 27 Mar 1997 16:44:29 +0200
+Date: Thu, 27 Mar 1997 16:44:29 +0200
+Message-Id: <199703271444.QAA30877@solmu.ydi.vtt.fi>
+From: Juha Takala <juha@solmu.ydi.vtt.fi>
+To: mills@udel.edu
+Subject: xntp3-5.89 on Intel Linux with Trimble TSIP
+Reply-to: Juha.Takala@vtt.fi
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+
+
+Hi,
+
+I have had xntp running on my PC running Linux, for a long
+time already.  Last october or such, I got a Trimble Acutime
+II GPS receiver and atatched that to one serial port.  At
+that time I worked out the byte order dependencies in xntpd
+to make it understand TSIP.  I also sent my diffs to one of
+xntpd maintainers (as I understood) to Germany.
+
+After that time, there has been two new releases of xntpd,
+but I haven't seen these diffs included into the distributed
+versions.  I don't know the reason.  Maybe he wasn't one of
+the xntpd development team.  Now I'm sending these diffs to
+you.  If you are not the correct person, then maybe you can
+tell me who is, or forward these diffs.
+
+(You may want to drop those '#if 0 ... #else' parts away
+completely, I left them so that the file shows what has been
+changed).
+
+Thank you.
+
+	-juha
+
+*** libparse/clk_trimtsip.c~	Tue Jan 21 05:02:06 1997
+--- libparse/clk_trimtsip.c	Thu Mar 27 15:59:55 1997
+***************
+*** 453,462 ****
+--- 453,469 ----
+  getflt(bp)
+    u_char *bp;
+  {
++ #ifdef XNTP_BIG_ENDIAN
+    uval.bd[0] = *bp++;
+    uval.bd[1] = *bp++;
+    uval.bd[2] = *bp++;
+    uval.bd[3] = *bp;
++ #else  /* ! XNTP_BIG_ENDIAN */
++   uval.bd[3] = *bp++;
++   uval.bd[2] = *bp++;
++   uval.bd[1] = *bp++;
++   uval.bd[0] = *bp;
++ #endif /* ! XNTP_BIG_ENDIAN */
+    return uval.fv;
+  }
+  
+***************
+*** 464,469 ****
+--- 471,477 ----
+  getdbl(bp)
+    u_char *bp;
+  {
++ #ifdef XNTP_BIG_ENDIAN
+    uval.bd[0] = *bp++;
+    uval.bd[1] = *bp++;
+    uval.bd[2] = *bp++;
+***************
+*** 472,480 ****
+--- 480,499 ----
+    uval.bd[5] = *bp++;
+    uval.bd[6] = *bp++;
+    uval.bd[7] = *bp;
++ #else  /* ! XNTP_BIG_ENDIAN */
++   uval.bd[0] = *bp++;
++   uval.bd[1] = *bp++;
++   uval.bd[2] = *bp++;
++   uval.bd[3] = *bp++;
++   uval.bd[4] = *bp++;
++   uval.bd[5] = *bp++;
++   uval.bd[6] = *bp++;
++   uval.bd[7] = *bp;
++ #endif /* ! XNTP_BIG_ENDIAN */
+    return uval.dv;
+  }
+  
++ #if 0
+  static int
+  getint(bp)
+    u_char *bp;
+***************
+*** 487,492 ****
+--- 506,522 ----
+      uval.bd[0] = uval.bd[1] = 0;
+    return uval.iv;
+  }
++ #else  /* !0 */
++ static int
++ getint(bp)
++      u_char *bp;
++ {
++ 	if (*bp & 0x80)
++ 		return ((~0xffff) | (*bp<<8) | *(bp+1));
++ 	else
++ 		return ((*bp<<8) | *(bp+1));
++ }
++ #endif /* !0 */
+  
+  #else /* not (REFCLOCK && PARSE && CLOCK_TRIMTSIP && !PARSESTREAM) */
+  int clk_trimtsip_bs;
+*** xntpd/refclock_parse.c~	Tue Jan 21 05:37:28 1997
+--- xntpd/refclock_parse.c	Thu Mar 27 15:59:19 1997
+***************
+*** 4125,4133 ****
+--- 4125,4139 ----
+    struct txbuf *buf;
+    int a;
+  {
++ #if 0
+    uval.iv = a;
+    sendbyte(buf, uval.bd[2]);
+    sendbyte(buf, uval.bd[3]);
++ #else
++   /* send 16bit int, msbyte first */
++   sendbyte(buf, (a>>8) & 0xff);
++   sendbyte(buf, a & 0xff);
++ #endif
+  }
+  
+  void
+***************
+*** 4138,4144 ****
+--- 4144,4154 ----
+    int i;
+  
+    uval.fv = a;
++ #ifdef XNTP_BIG_ENDIAN
+    for (i=0; i<=3; i++)
++ #else
++   for (i=3; i>=0; i--)
++ #endif
+      sendbyte(buf, uval.bd[i]);
+  }
+  
+

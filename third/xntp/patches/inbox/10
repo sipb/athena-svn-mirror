@@ -1,0 +1,76 @@
+Replied: Wed, 24 Sep 1997 01:43:50 -0400
+Replied: "toralf.foerster@io-warnemuende.de (Toralf Foerster) "
+Replied: Sat, 06 Sep 1997 13:49:14 -0400
+Replied: "toralf.foerster@io-warnemuende.de (Toralf Foerster) "
+Return-Path: toralf@ws4geo.io-warnemuende.de 
+Return-Path: <toralf@ws4geo.io-warnemuende.de>
+Received: from sunnet.io-warnemuende.de (sunnet.io-warnemuende.de [192.124.245.170])
+	by whimsy.udel.edu (8.8.5/8.8.5) with SMTP id KAA00570
+	for <stenn@whimsy.udel.edu>; Sat, 6 Sep 1997 10:27:09 GMT
+Received: from ws4geo.io-warnemuende.de by sunnet.io-warnemuende.de; Sat, 6 Sep 97 12:27:03 +0200
+Received: by ws4geo.io-warnemuende.de (AIX 3.2/UCB 5.64/4.03)
+          id AA20295; Sat, 6 Sep 1997 12:27:02 +0200
+Date: Sat, 6 Sep 1997 12:27:02 +0200
+From: toralf.foerster@io-warnemuende.de (Toralf Foerster)
+Message-Id: <9709061027.AA20295@ws4geo.io-warnemuende.de>
+To: stenn@whimsy.udel.edu
+Subject: ntp_util.c and tickadj.c
+X-Mailer: [XMailTool v3.1.2b]
+
+
+Hi Harlan Stenn,
+
+Since Version xntp3-5.90.3 I cannot compile xntpd using cc.
+I got erreor messages. The xlC compiler produces more information, so here is
+the output from xlC.
+
+My machine : IBM RS/6000 AIX 3.2.5.
+configure : --disable-debugging --disable-all-clocks --disable-parse-clocks
+
+Here is the error message :
+
+/usr/local/src/NETWORK/xntp3-5.90.4-export/xntpd :
+
+xlC -DHAVE_CONFIG_H -I. -I/usr/local/src/NETWORK/xntp3-5.90.4-export/xntpd -I..
+ -I/usr/local/src/NETWORK/xntp3-5.90.4-export/include  -g -c ntp_util.c
+"/usr/include/sys/stream.h", line 387.9: 1506-236 (W) Macro name max has been
+redefined.
+"/usr/include/sys/stream.h", line 387.9: 1506-358 (I) "max" is defined on line
+641 of /usr/local/src/NETWORK/xntp3-5.90.4-export/include/ntp.h.
+"/usr/include/sys/stream.h", line 388.9: 1506-236 (W) Macro name min has been
+redefined.
+"/usr/include/sys/stream.h", line 388.9: 1506-358 (I) "min" is defined on line
+640 of /usr/local/src/NETWORK/xntp3-5.90.4-export/include/ntp.h.
+"/usr/include/sys/stropts.h", line 24.9: 1506-236 (W) Macro name _IO has been
+redefined.
+"/usr/include/sys/stropts.h", line 24.9: 1506-358 (I) "_IO" is defined on line
+150 of /usr/include/sys/ioctl.h.
+"ntp_util.c", line 483.1: 1506-343 (S) Redeclaration of record_loop_stats
+differs from previous declaration on line 194 of
+"/usr/local/src/NETWORK/xntp3-5.90.4-export/include/ntpd.h".
+
+May be this gives more help :
+
+/usr/local/src/NETWORK/xntp3-5.90.4-export/util :
+
+xlC -DHAVE_CONFIG_H -I. -I/usr/local/src/NETWORK/xntp3-5.90.4-export/util -I..
+-I/usr/local/src/NETWORK/xntp3-5.90.4-export/include  -g -c tickadj.c
+"/usr/local/src/NETWORK/xntp3-5.90.4-export/include/ntp_machine.h", line 511.9: 
+1506-236 (W) Macro name P has been redefined.
+"/usr/local/src/NETWORK/xntp3-5.90.4-export/include/ntp_machine.h", line 511.9: 
+1506-358 (I) "P" is defined on line 21 of
+/usr/local/src/NETWORK/xntp3-5.90.4-export/include/l_stdlib.h.
+
+
+Good bye
+-- toralf
+
+Toralf Foerster
+Institut fuer Ostseeforschung Warnemuende
+Sektion Marine Geologie                     
+Seestrasse 15
+D-18119 Rostock, Germany
+
+http://www.io-warnemuende.de              voice: +49 (381) 5197 373
+mailto:toralf.foerster@io-warnemuende.de  fax  : +49 (381) 5197 352
+ftp://ftp.io-warnemuende.de/pub/incoming

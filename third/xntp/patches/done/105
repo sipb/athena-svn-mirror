@@ -1,0 +1,37 @@
+Replied: Tue, 18 Mar 1997 19:40:11 -0500
+Replied: "Ulrich.Windl@rz.uni-regensburg.de "
+Replied: Tue, 18 Mar 1997 19:06:20 -0500
+Replied: "Ulrich.Windl@rz.uni-regensburg.de "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa06408;
+          18 Mar 97 8:38 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA01997
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Tue, 18 Mar 1997 09:37:48 +0100
+Received: from rz.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Tue, 18 Mar 97 09:37 MET
+Received: from rz.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Tue, 18 Mar 97 08:38 GMT
+Received: from localhost by rkdvmhp1.dvm.klinik.uni-regensburg.de with SMTP
+	(1.40.112.8/16.2-961007-2) id AA118254258; Tue, 18 Mar 1997 09:37:38 +0100
+Date: Tue, 18 Mar 1997 09:37:38 +0100 (MEZ)
+From: Ulrich Windl <windl@rkdvmhp1.dvm.klinik.uni-regensburg.de>
+Reply-To: Ulrich.Windl@rz.uni-regensburg.de
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: daemon version
+Message-Id: <Pine.HPP.3.94.970318093624.11808A-100000@rkdvmhp1.dvm.klinik.uni-regensburg.de>
+X-Pgp-Key: 0x[E8]43660D
+Mime-Version: 1.0
+Content-Length: 337
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+Harlan,
+
+maybe you find this tiny script useful to be included in the scripts
+directory...
+
+Ulrich
+
+#!/usr/bin/sh
+# print version string of NTP daemon
+# Copyright (c) 1997 by Ulrich Windl
+# usage: ntpver hostname
+ntpq -c "addvar daemon_version" -c rl $* |
+awk '/daemon_version/ { sub("daemon_version=", ""); gsub("\"", ""); print $0 }'
+

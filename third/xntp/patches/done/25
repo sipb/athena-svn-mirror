@@ -1,0 +1,78 @@
+Forwarded: Tue, 22 Oct 1996 18:15:27 -0400
+Forwarded: "mills@udel.edu "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa24515;
+          17 Oct 96 3:22 EDT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA27887
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Thu, 17 Oct 1996 09:22:55 +0100
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Thu, 17 Oct 96 09:23 GMT
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Thu, 17 Oct 96 07:20 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.21);
+    17 Oct 96 09:21:47 +0200
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.21); 17 Oct 96 09:21:40 +0200
+From: Ulrich Windl <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: mills@udel.edu, stenn@whimsy.udel.edu
+Date: Thu, 17 Oct 1996 09:21:37 +0200
+Mime-Version: 1.0
+Content-Length: 2567
+Content-Type: Multipart/Mixed; boundary=Message-Boundary-20827
+Subject: NTP: HTML patch, Linux
+Priority: normal
+X-Mailer: Pegasus Mail for Windows (v2.23)
+Message-Id: <4735FF5C6F@rkdvmks1.ngate.uni-regensburg.de>
+
+
+--Message-Boundary-20827
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+
+Hello,
+
+I volunteered to move the Linux implementation (odd "struct timex" in 
+timex.h) towards the standard. Linus Torvalds asked me to get your 
+opinion first. Well, I hope you don't reject; maybe you can send me 
+the main problems YOU have with Linux to make my ToDO list...
+
+Despite of that I read notes.html yesterday I found a few buglets. 
+I'll attach the patch (this is relative to my last patch, but you can 
+apply it even without that)
+
+Ulrich Windl
+
+--Message-Boundary-20827
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'mills.txt'
+
+--- notes.html.orig	Wed Oct  2 22:34:19 1996
++++ notes.html	Wed Oct 16 23:09:04 1996
+@@ -655,7 +655,7 @@
+ the same key ID.
+ <p>This facility requires some minor modifications to the basic packet
+ processing procedures, as required by the specification. These
+-modifications are enabled by the enable authenticate" configuration
++modifications are enabled by the <code>enable authenticate</code> configuration
+ declaration. In particular, in authenticated mode, peers which send
+ unauthenticated packets, peers which send authenticated packets which
+ the local server is unable to decrypt and peers which send authenticated
+@@ -1079,7 +1079,7 @@
+ ever be useful. As a concession to the need to sometimes transmit
+ additional information to clock drivers, an additional configuration
+ file is available: the  <code>fudge</code> statement. This enables one
+-to specify the values two time quantities, two integral values and two
++to specify the values of two time quantities, two integral values and two
+ flags, the use of which is dependent on the particular clock driver. For
+ example, to configure a PST radio clock which can be accessed through
+ the serial device <code>/dev/pst1</code>, with propagation delays to WWV
+@@ -1107,7 +1107,7 @@
+ synchronization in NTP subnets which need the highest quality time
+ available in the present technology. These issues are important in
+ subnets supporting real-time services such as distributed multimedia
+-conferencing and wide-are experiment control and monitoring.
++conferencing and wide-area experiment control and monitoring.
+ <p>In the Internet of today synchronization paths often span continents
+ and oceans with moderate to high variations in delay due to traffic
+ spasms. NTP is specifically designed to minimize timekeeping jitter due
+
+--Message-Boundary-20827--

@@ -1,0 +1,111 @@
+Replied: Mon, 28 Jul 1997 00:10:22 -0400
+Replied: "Phil Tait <Philip.Tait@phxase.allied.com> "
+Received: from copland.udel.edu by huey.udel.edu id aa22490; 16 Jul 97 18:14 EDT
+Received: from tmpil001.tmp.allied.com (tmpil001.tmp.allied.com [198.80.19.2]) by copland.udel.edu (8.8.5/8.7.3) with SMTP id SAA24221 for <mills@udel.edu>; Wed, 16 Jul 1997 18:14:02 -0400 (EDT)
+Received: by tmpil001.tmp.allied.com id AA23493
+  (InterLock SMTP Gateway 3.0 for mills@udel.edu);
+  Wed, 16 Jul 1997 15:13:52 -0700
+Received: by tmpil001.tmp.allied.com (Internal Mail Agent-1);
+  Wed, 16 Jul 1997 15:13:52 -0700
+Sender: b12635@phxase.allied.com
+Message-Id: <33CD4A15.7D72@phxase.allied.com>
+Date: Wed, 16 Jul 1997 15:24:21 -0700
+From: Phil Tait <Philip.Tait@phxase.allied.com>
+Organization: AlliedSignal Engines
+X-Mailer: Mozilla 3.01 (X11; I; HP-UX B.10.20 9000/715)
+Mime-Version: 1.0
+To: mills@udel.edu
+Subject: NTP patch submission
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Purpose:
+========
+Allow timezone switch on Spectracom clock to be set to timezone
+other than UTC.
+=======================================================================
+Context diff:
+=============
+diff -c xntpd/refclock_wwvb.c xntpd/refclock_wwvb.c.orig
+*** xntpd/refclock_wwvb.c       Mon Jul 15 10:55:22 1996
+--- xntpd/refclock_wwvb.c.orig  Mon Jul 15 10:42:57 1996
+***************
+*** 284,290 ****
+         * exit.
+         */
+        switch (pp->lencode) {
+-               int tz = 0;
+  
+                case LENWWVB0:
+  
+--- 284,289 ----
+***************
+*** 292,308 ****
+                 * Timecode format 0: "I  ddd hh:mm:ss  TZ=nn"
+                 */
+                qualchar = leapchar = ' ';
+!               if (sscanf(pp->lastcode, "%c %3d %2d:%2d:%2d TZ=%2d",
+                    &syncchar, &pp->day, &pp->hour, &pp->minute,
+!                   &pp->second, &tz) == 6)
+!               {
+!                       int hr;
+! 
+!                       hr = pp->hour + tz;
+!                       pp->day += hr / 24;
+!                       pp->hour = hr % 24;
+                        break;
+-               }
+  
+                case LENWWVB2:
+  
+--- 291,300 ----
+                 * Timecode format 0: "I  ddd hh:mm:ss  TZ=nn"
+                 */
+                qualchar = leapchar = ' ';
+!               if (sscanf(pp->lastcode, "%c %3d %2d:%2d:%2d",
+                    &syncchar, &pp->day, &pp->hour, &pp->minute,
+!                   &pp->second) == 5)
+                        break;
+  
+                case LENWWVB2:
+
+=======================================================================
+config.guess output:
+====================
+pmax-unknown-openbsd2.1
+=======================================================================
+Documentation patch:
+====================
+diff -c html/driver4.html html/driver4.html.orig
+*** html/driver4.html   Mon Jul 15 14:07:46 1996
+--- html/driver4.html.orig      Mon Jul 15 13:43:11 1996
+***************
+*** 25,32 ****
+  operating system.
+  
+  <p>The DIPswitches on this clock should be set to 24-hour display,
+AUTO
+! DST off, data format 0 or 2 (see below) and baud rate 9600. 
+! If this clock is to used as the source for the IRIG Audio Decoder
+  (refclock_irig.c in this distribution), set the DIPswitches for AM
+IRIG
+  output and IRIG format 1 (IRIG B with signature control).
+  
+--- 25,32 ----
+  operating system.
+  
+  <p>The DIPswitches on this clock should be set to 24-hour display,
+AUTO
+! DST off, time zone 0 (UTC), data format 0 or 2 (see below) and baud
+rate
+! 9600. If this clock is to used as the source for the IRIG Audio
+Decoder
+  (refclock_irig.c in this distribution), set the DIPswitches for AM
+IRIG
+  output and IRIG format 1 (IRIG B with signature control).
+=======================================================================
+
+-- 
+
+Philip J. Tait.....AlliedSignal Engines, Phoenix, Az.....+1.602.231.7104
+PJTait@iee.org

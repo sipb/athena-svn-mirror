@@ -1,0 +1,260 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa24162;
+          12 Nov 96 9:28 GMT
+Received: from mumps.pfcs.com (mumps.pfcs.com [192.52.69.11]) by pcpsj.pfcs.com (8.6.12/8.6.9) with SMTP id EAA27052 for <stenn@whimsy.udel.edu>; Tue, 12 Nov 1996 04:27:54 -0500
+Received: from localhost by mumps.pfcs.com with SMTP id AA21031
+  (5.67b/IDA-1.5 for <stenn@whimsy.udel.edu>); Tue, 12 Nov 1996 04:27:53 -0500
+Prev-Resent: Tue, 12 Nov 1996 04:27:50 -0400
+Prev-Resent: "stenn@whimsy.udel.edu "
+Received: from brown.pfcs.com by mumps.pfcs.com with SMTP id AA14881
+  (5.67b/IDA-1.5 for <harlan@mailhost.pfcs.com>); Mon, 11 Nov 1996 18:30:57 -0500
+Received: from mumps.pfcs.com (mumps.pfcs.com [192.52.69.11]) by brown.pfcs.com (8.7.5/8.6.9) with SMTP id SAA01955 for <harlan@brown.pfcs.com>; Mon, 11 Nov 1996 18:30:55 -0500 (EST)
+Received: from pcpsj.pfcs.com by mumps.pfcs.com with SMTP id AA14877
+  (5.67b/IDA-1.5 for <harlan@brown.pfcs.com>); Mon, 11 Nov 1996 18:30:53 -0500
+Received: from postman.osf.org (uucp@localhost) by pcpsj.pfcs.com (8.6.12/8.6.9) with UUCP id SAA25700 for harlan@brown.pfcs.com; Mon, 11 Nov 1996 18:30:52 -0500
+Received: from postman.osf.org (postman.osf.org [130.105.1.152]) by uustar.starnet.net (8.8.2/8.8.2) with ESMTP id RAA08636 for <harlan@brown.pfcs.com>; Mon, 11 Nov 1996 17:05:15 -0600 (CST)
+Received: from firebird.osf.org (firebird.osf.org [130.105.3.231]) by postman.osf.org (8.7.6/8.7.3) with SMTP id SAA11057; Mon, 11 Nov 1996 18:04:44 -0500 (EST)
+From: Dan Murphy <dlm@osf.org>
+Received: by firebird.osf.org (5.65/4.7) id AA12103; Mon, 11 Nov 96 18:04:43 -0500
+Date: Mon, 11 Nov 96 18:04:43 -0500
+Message-Id: <9611112304.AA12103@firebird.osf.org>
+To: Mills@huey.udel.edu
+Subject: Re:  NTP changes to upload
+Cc: harlan@mumps.pfcs.com
+Resent-To: stenn@whimsy.udel.edu
+Resent-Date: Tue, 12 Nov 1996 04:27:52 -0400
+Resent-Message-Id: <21029.847790872@mumps.pfcs.com>
+Resent-From: Harlan Stenn <Harlan.Stenn@pfcs.com>
+
+
+    Greetings again.
+    
+    Per your request, I grabbed the current testing version of NTP and
+    attempted to integrate our changes therein.  The effort was
+    successful in that I do indeed have a build which works and
+    supports our system.
+
+    Unfortunately, I could not generate what would seem to be the
+    "right" changes in all cases to recognize and support our
+    configuration, at least not in a few days of fooling around with
+    it.  We don't actually have all the tools installed here
+    apparently, in particular, the ones to process the Makefile.am
+    files.
+
+    So, the patches that follow are divided into three parts.  The
+    first is a straightforward set of patches to original files.  In
+    addition, we must patch two files that are produced by the
+    configure process.  Perhaps you'll see quickly how to fix
+    configure or configure.in to affect these same changes, but it was
+    not obvious to me.  Thus, the second part is to patch config.cache
+    *after* configure has been run once.  This fixes a few things that
+    configure sets incorrectly.  The third part is to fix config.h
+    (after configure has been run a second time).  This adds the
+    conditional symbol for our system and also turns on REFCLOCK.  I
+    find it odd that REFCLOCK isn't on as would be consistent with
+    including the whole bunch of reference clock drivers...
+    
+    So, cludgy as this may be, it does work.  I tested all of the
+    patch files below and they work correctly when applied at the root
+    of the xntp3-5.86.8 untarred distribution.
+    
+    Thanks for incorporating these changes.  I think this follows the
+    requirements in the patching procedure html document.  You're
+    welcome to include my name, etc. on the copyright page if you're
+    so inclined.
+    
+    
+    dlm
+=================================================================
+    
+    #1 - This fixes config.guess to recognize our particular system.
+    
+--- ../xntp3-5.86.8/./config.guess	Thu Oct 10 04:28:00 1996
++++ ./config.guess	Thu Nov  7 16:30:59 1996
+@@ -299,6 +299,13 @@
+     hp8??:OSF1:*:*)
+ 	echo hppa1.0-hp-osf
+ 	exit 0 ;;
++    i[345]86:OSF1:*:*)
++        if [ -x /usr/sbin/sysversion ] ; then
++            echo ${UNAME_MACHINE}-unknown-osf1mk
++        else
++            echo ${UNAME_MACHINE}-unknown-osf1
++        fi
++        exit 0 ;;
+     parisc*:Lites*:*:*)
+ 	echo hppa1.1-hp-lites
+ 	exit 0 ;;
+
+================================================================
+     #2 - This causes sys/types.h to be included earlier in the
+        sequence of include files and so avoid a problem where a
+        typedef attempts to override a macro definition.
+    
+--- ../xntp3-5.86.8/include/ntp_types.h	Mon Jan  8 23:24:54 1996
++++ include/ntp_types.h	Fri Nov  8 13:02:37 1996
+@@ -8,6 +8,8 @@
+ #ifndef _NTP_TYPES_
+ #define _NTP_TYPES_
+ 
++#include <sys/types.h>
++
+ /*
+  * This is another naming conflict.
+  * On NetBSD for MAC the macro "mac" is defined as 1
+
+================================================================
+    #3 - Two Makefiles need to be fixed to link in the library which
+        supports nlist.  Possibly this could/should be fixed in
+        Makefile.am.
+        
+--- ../xntp3-5.86.8/./xntpd/Makefile.in	Tue Oct 29 21:21:30 1996
++++ ./xntpd/Makefile.in	Fri Nov  8 12:46:44 1996
+@@ -42,7 +42,7 @@
+ bin_PROGRAMS = xntpd
+ INCLUDES = -I$(top_srcdir)/include -I$(srcdir)
+ # LDADD might need RESLIB and ADJLIB
+-LDADD =	version.o ../libntp/libntp.a @LIBPARSE@
++LDADD =	version.o ../libntp/libntp.a -lld @LIBPARSE@
+ DISTCLEANFILES = .version version.c
+ EXTRA_DIST = xntpd.mak
+ ETAGS_ARGS = Makefile.am
+        
+--- ../xntp3-5.86.8/./util/Makefile.in	Tue Oct 29 21:21:31 1996
++++ ./util/Makefile.in	Fri Nov  8 13:31:55 1996
+@@ -45,7 +45,7 @@
+ 
+ INCLUDES = -I$(top_srcdir)/include
+ # LDADD might need RESLIB and ADJLIB
+-LDADD =	../libntp/libntp.a
++LDADD =	../libntp/libntp.a -lld
+ #EXTRA_DIST = README TAGS
+ EXTRA_DIST = 
+ ETAGS_ARGS = Makefile.am
+                
+================================================================
+    #4 - The next three patches add modifications to support our very
+        fast get time library routine.  Two of the changes simply make
+        the existing precision code believe that a 2 usec gettime
+        isn't bogus!
+        
+--- ../xntp3-5.86.8/./include/ntp_unixtime.h	Sun Jun 16 02:54:23 1996
++++ ./include/ntp_unixtime.h	Fri Nov  8 18:01:27 1996
+@@ -14,6 +14,15 @@
+ 
+ /* gettimeofday() takes two args in BSD and only one in SYSV */
+ #ifndef SYS_WINNT
++#ifdef SYS_IX86OSF1_MK    /* use superfast lib routine */
++#include <sys/timers.h>
++#  define GETTIMEOFDAY(a, b)                \
++	( {                                   \
++	    getclock( TIMEOFDAY, (struct timespec *) (a)  );     \
++	    (a)->tv_usec /= 1000;             \
++	} )
++#  define SETTIMEOFDAY(a, b) (settimeofday(a, b))
++#else /* !SYS_IX86OSF1_MK */
+ # ifdef SYSV_TIMEOFDAY
+ #  define GETTIMEOFDAY(a, b) (gettimeofday(a))
+ #  define SETTIMEOFDAY(a, b) (settimeofday(a))
+@@ -21,6 +30,7 @@
+ #  define GETTIMEOFDAY(a, b) (gettimeofday(a, b))
+ #  define SETTIMEOFDAY(a, b) (settimeofday(a, b))
+ # endif /* SYSV_TIMEOFDAY */
++#endif /* SYS_IX86OSF1_MK */
+ #else /* SYS_WINNT */
+ extern int winnt_gettimeofday P((struct timeval *));
+ extern int winnt_settimeofday P((struct timeval *));
+
+--- ../xntp3-5.86.8/./xntpd/ntp_proto.c	Fri Sep 20 00:28:27 1996
++++ ./xntpd/ntp_proto.c	Fri Nov  8 18:07:09 1996
+@@ -2229,7 +2229,11 @@
+  */
+ #define	DUSECS	1000000	/* us in a s */
+ #define	HUSECS	(1 << 20) /* approx DUSECS for shifting etc */
++#ifdef SYS_IX86OSF1_MK  /* actually has a clock readable in 1 usec! */
++#define MINSTEP 0
++#else
+ #define	MINSTEP	5	/* minimum clock increment (ys) */
++#endif
+ #define MAXSTEP 20000	/* maximum clock increment (us) */
+ #define MINLOOPS 5	/* minimum number of step samples */
+ 
+--- ../xntp3-5.86.8/./util/precision.c	Mon Oct  3 06:04:37 1994
++++ ./util/precision.c	Mon Nov  4 15:15:40 1996
+@@ -48,9 +48,13 @@
+ 
+ #define	DUSECS	1000000
+ #define	HUSECS	(1024 * 1024)
++#ifdef SYS_IX86OSF1_MK  /* actually has a clock readable in 1 usec! */
++#define MINSTEP 0
++#else
+ #define	MINSTEP	5	/* some systems increment uS on each call */
+ 			/* Don't use "1" as some *other* process may read too*/
+ 			/*We assume no system actually *ANSWERS* in this time*/
++#endif
+ #define MAXSTEP 20000   /* maximum clock increment (us) */
+ #define MINLOOPS 5      /* minimum number of step samples */
+ #define	MAXLOOPS HUSECS	/* Assume precision < .1s ! */
+
+    
+================================================================
+    ************* STOP STOP STOP STOP STOP ******************
+    ************* RUN CONFIGURE BEFORE APPLYING NEXT PATCH **
+    
+    #5 - With the above set of patches applied, you now run configure.
+        Unfortunately, the config results aren't quite correct, so
+        this next patch fixes config.cache.
+        
+--- ../xntp3-5.86.8/./config.cache	Mon Nov 11 17:26:47 1996
++++ ./config.cache	Fri Nov  8 18:34:26 1996
+@@ -31,7 +31,7 @@
+ ac_cv_func_memmove=${ac_cv_func_memmove='yes'}
+ ac_cv_func_memset=${ac_cv_func_memset='yes'}
+ ac_cv_func_nice=${ac_cv_func_nice='yes'}
+-ac_cv_func_nlist=${ac_cv_func_nlist='no'}
++ac_cv_func_nlist=${ac_cv_func_nlist='yes'}
+ ac_cv_func_ntp_adjtime=${ac_cv_func_ntp_adjtime='yes'}
+ ac_cv_func_ntp_gettime=${ac_cv_func_ntp_gettime='yes'}
+ ac_cv_func_plock=${ac_cv_func_plock='yes'}
+@@ -112,7 +112,7 @@
+ ac_cv_struct_tm=${ac_cv_struct_tm='time.h'}
+ ac_cv_type_s_char=${ac_cv_type_s_char='no'}
+ ac_cv_type_signal=${ac_cv_type_signal='void'}
+-ac_cv_var_adjtime_is_accurate=${ac_cv_var_adjtime_is_accurate='no'}
++ac_cv_var_adjtime_is_accurate=${ac_cv_var_adjtime_is_accurate='yes'}
+ ac_cv_var_can_kmem=${ac_cv_var_can_kmem='yes'}
+ ac_cv_var_dtr_powers_dcf77=${ac_cv_var_dtr_powers_dcf77='no'}
+ ac_cv_var_gdt_surveying=${ac_cv_var_gdt_surveying='no'}
+
+================================================================
+    ******** STOP STOP STOP STOP STOP ******************
+    **** RUN CONFIGURE (AGAIN) BEFORE APPLYING THE NEXT PATCH ****
+        
+    #6 - With the above, config.h is *almost* right.  However, the
+        following patch needs to be applied.  Of course, this has to
+        be done anytime configure is run again.
+        
+--- ../xntp3-5.86.8/./config.h	Mon Nov 11 17:30:50 1996
++++ ./config.h	Mon Nov 11 13:46:20 1996
+@@ -1,6 +1,8 @@
+ /* config.h.  Generated automatically by configure.  */
+ /* config.h.in.  Generated automatically from configure.in by autoheader.  */
+ 
++#define SYS_IX86OSF1_MK 1
++
+ /* Define if on AIX 3.
+    System headers sometimes define this.
+    We just want to avoid a redefinition error message.  */
+@@ -58,6 +60,7 @@
+ #define DES 1
+ 
+ /* reference clock interface */
++#define REFCLOCK 1
+ /* #undef REFCLOCK */
+ 
+ /* ACTS modem service */
+
+================================================================
+    ******  Now the normal make will produce a working osf1mk system *****
+        
+        
+    dlm

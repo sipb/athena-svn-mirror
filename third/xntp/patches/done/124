@@ -1,0 +1,96 @@
+Replied: Sun, 04 May 1997 01:49:23 -0400
+Replied: "Stan Barber <sob@owlman.academ.com> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa04572;
+          16 Apr 97 20:26 GMT
+Received: (from sob@localhost) by owlman.academ.com (8.8.5/8.6.9) id PAA02249 for stenn@whimsy.udel.edu; Wed, 16 Apr 1997 15:26:44 -0500 (CDT)
+Date: Wed, 16 Apr 1997 15:26:44 -0500 (CDT)
+From: Stan Barber <sob@owlman.academ.com>
+Message-Id: <199704162026.PAA02249@owlman.academ.com>
+To: stenn@whimsy.udel.edu
+Subject: Patch to ntp_io.c for BSD/OS 3.0
+
+
+This patch make it possible to compile xntp3-5.90 on BSD/OS 3.0. This is 
+a context diff (in reverse).
+
+*** ntp_io.c	Wed Apr 16 13:52:51 1997
+--- ntp_io.c.orig	Sat Apr  5 01:20:33 1997
+***************
+*** 28,34 ****
+  #endif
+  
+  #if	_BSDI_VERSION >= 199510
+! # include <ifaddrs.h>
+  #endif
+  #include "ntpd.h"
+  #include "ntp_select.h"
+--- 28,34 ----
+  #endif
+  
+  #if	_BSDI_VERSION >= 199510
+! # include "ifaddrs.h"		/* XXX Why not <ifaddrs.h>? */
+  #endif
+  #include "ntpd.h"
+  #include "ntp_select.h"
+***************
+*** 260,272 ****
+       u_int port;
+  {
+  #if	_BSDI_VERSION >= 199510
+!   int i, j;
+!   struct ifaddrs *ifaddrs, *ifap;
+    struct sockaddr_in resmask;
+- #if     _BSDI_VERSION < 199701 
+-   struct ifaddrs *lp;
+-   int num_if;
+- #endif
+  #else	/* _BSDI_VERSION >= 199510 */
+  # ifdef STREAMS_TLI
+    struct strioctl	ioc;
+--- 260,268 ----
+       u_int port;
+  {
+  #if	_BSDI_VERSION >= 199510
+!   int num_if, i, j;
+!   struct ifaddrs *ifaddrs, *ifap, *lp;
+    struct sockaddr_in resmask;
+  #else	/* _BSDI_VERSION >= 199510 */
+  # ifdef STREAMS_TLI
+    struct strioctl	ioc;
+***************
+*** 296,311 ****
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+    inter_list[0].flags = INT_BROADCAST;
+  #if	_BSDI_VERSION >= 199510
+- #if     _BSDI_VERSION >= 199701 
+-    if (getifaddrs(&ifaddrs) < 0)
+-      {
+-        msyslog(LOG_ERR, "getifaddrs: %m");
+-        exit(1);
+-      }
+-    i = 1;
+-    for (ifap = ifaddrs; ifap != NULL; ifap = ifap->ifa_next)
+- #else
+    if (getifaddrs(&ifaddrs, &num_if) < 0)
+      {
+        msyslog(LOG_ERR, "create_sockets: getifaddrs() failed: %m");
+--- 292,299 ----
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+    inter_list[0].flags = INT_BROADCAST;
++ 
+  #if	_BSDI_VERSION >= 199510
+    if (getifaddrs(&ifaddrs, &num_if) < 0)
+      {
+        msyslog(LOG_ERR, "create_sockets: getifaddrs() failed: %m");
+***************
+*** 315,321 ****
+    i = 1;
+  
+    for (ifap = ifaddrs, lp = ifap + num_if; ifap < lp; ifap++)
+- #endif
+      {
+        struct sockaddr_in *sin;
+  
+--- 303,308 ----

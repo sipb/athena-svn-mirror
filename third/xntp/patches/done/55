@@ -1,0 +1,39 @@
+Replied: Mon, 06 Jan 1997 22:34:21 -0500
+Replied: "Marion Hakanson <hakanson@cse.ogi.edu> stenn"
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10014;
+          4 Jan 97 2:15 GMT
+Received: from weasel.cse.ogi.edu by weasel.cse.ogi.edu with smtp
+	(Smail3.1.29.1 #5) id m0vgLdT-0004xLC; Fri, 3 Jan 97 18:14 PST
+Message-Id: <m0vgLdT-0004xLC@weasel.cse.ogi.edu>
+X-Mailer: exmh version 1.6.9 8/22/96
+To: stenn@whimsy.udel.edu
+Cc: Dave Mills <mills@udel.edu>
+Bcc:  
+Subject: xntp3-5.87.6 vs SunOS-4's acc
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 03 Jan 1997 18:14:59 -0800
+From: Marion Hakanson <hakanson@cse.ogi.edu>
+
+Folks,
+
+In compiling xntp3-5.87.6 on our SunOS-4.1.3_U1B machines, while using
+the vendor-supplied unbundled compiler (SC-3.0.1) "acc", I found it
+necessary after "configure" was done to:
+
+bogart 52% mv config.h config.h.bak
+bogart 53% sed -e 's/#define DECL_STDIO_0 1/#undef DECL_STDIO_0/' \
+		< config.h.bak > config.h
+
+Without the above change, I got failures to compile due to redeclaration
+of various STDIO functions, which are declared in SC-3.0.1's "stdio.h".
+I don't think this was a problem in 3-5.85, which is the previous version
+we had tried on this OS.
+
+Happy New Year & Regards,
+
+-- 
+Marion Hakanson <hakanson@cse.ogi.edu>
+Systems Manager, CSE Computing Facilities.
+
+

@@ -1,0 +1,94 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa01448;
+          6 Apr 97 20:29 GMT
+Received: by Beasd.Echelon.nl; id <m0wDyYk-00002RC@Beasd.Echelon.nl>;
+	Sun, 6 Apr 1997 22:29:06 +0200 (MET DST) (Smail-3.2 1996-Jul-4 #15)
+Received: by Charlie.Echelon.nl; id <m0wDyYi-00001hC@Charlie.Echelon.nl>; 
+	Sun, 6 Apr 1997 22:29:04 +0200 (METDST) (Smail-3.2 1996-Jul-4 #9)
+Message-Id: <m0wDyYi-00001hC@Charlie.Echelon.nl>
+From: Kees Hendrikse <kees@echelon.nl>
+Subject: diffs for tickadj.c
+To: stenn@whimsy.udel.edu
+Date: Sun, 6 Apr 1997 22:29:04 +0200 (METDST)
+Cc: mailarchief Echelon <ech@echelon.nl>
+In-Reply-To:  <9704052034.aa00319@whimsy.udel.edu> from "stenn@whimsy.udel.edu" at Apr 5, 97 08:34:58 pm
+X-Mailer: ELM [version 2.4 PL22]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length: 3853      
+
+> 
+> Please send the diffs for tickadj.c and I'll bundle them in.
+> 
+
+Here they are, uuencoded context-gdiff output. There are four
+blocks of ifdef'ed code:
+
+- recommeded tickadj of 100 us/tick
+- user supplied tickadj value is truncated to 100's
+- values are scaled after reading from the kernel
+- values are scaled before writing to the kernel
+
+Another note:
+You probably should #undef "PRESET_TICKADJ" in config.h, if we
+have a real tickadj-like value. 
+
+
+begin 644 tickdiffs
+M*BHJ('1I8VMA9&HN;W)G"51H=2!-87(@,3,@,#(Z,C@Z-3D@,3DY-PHM+2T@
+M=&EC:V%D:BYC"5-U;B!!<'(@(#8@,C(Z,C8Z-#(@,3DY-PHJ*BHJ*BHJ*BHJ
+M*BHJ*BH**BHJ(#$V.2PQ-S0@*BHJ*@HM+2T@,38Y+#$X-" M+2TM"B @"0D)
+M(" @("!P<F]G;F%M92P@;G1P7V]P=&%R9RD["B @"2 @(" @(&5R<F9L9RLK
+M.PH@( D@(" @?0HK( HK("-I9B!D969I;F5D*%-#3S-?5$E#2T%$2BD@?'P@
+M9&5F:6YE9"A30T\U7U1)0TM!1$HI"BL@"2 @:68@*'=R:71E=&EC:V%D:B E
+M($A:*2 **R )(" @('L**R )(" @(" @=W)I=&5T:6-K861J(#T@*'=R:71E
+M=&EC:V%D:B O($A:*2 J($A:.PHK( D@(" @(" H=F]I9"D@9G!R:6YT9BAS
+M=&1E<G(L"BL@"0D)(" @(" B=&EC:V%D:B!T<G5N8V%T960@=&\Z("5D7&XB
+M+"!W<FET971I8VMA9&HI.PHK( D@(" @?0HK("-E;F1I9B O*B!30T\S7U1)
+M0TM!1$H@?'P@4T-/-5]424-+041*("HO"BL@"B @"2 @8G)E86L["B @"6-A
+M<V4@)T$G.@H@( D@('=R:71E;W!T=&EC:V%D:B ](#$["BHJ*BHJ*BHJ*BHJ
+M*BHJ*@HJ*BH@,C8X+#(W,R J*BHJ"BTM+2 R-S@L,CDS("TM+2T*(" @(&EF
+M("AT:6-K861J7V]F9G-E=" A/2 P*0H@(" @("!["B @(" @(" @<F5A9'9A
+M<BAF9"P@=&EC:V%D:E]O9F9S970L("9T:6-K861J*3L**R **R C:69D968@
+M4T-/,U]424-+041*"BL@(" @(" @+RH@<V-A;&4@9G)O;2!T:6-K<R]S96,@
+M=&\@=7-E8R]T:6-K("HO"BL@(" @(" @=&EC:V%D:B J/2 H,3 P,#!,("\@
+M2%HI.PHK("-E;F1I9B O*B!30T\S7U1)0TM!1$H@*B\**R C:69D968@4T-/
+M-5]424-+041*"BL@(" @(" @+RH@<V-A;&4@9G)O;2!N<V5C+W-E8R!T;R!U
+M<V5C+W1I8VL@*B\**R @(" @("!T:6-K861J("\]("@Q,# P3" J($A:*3L*
+M*R C96YD:68@+RI30T\U7U1)0TM!1$H@*B\**R *(" C:68@9&5F:6YE9"A4
+M24-+041*7TY!3D\I("8F(&1E9FEN960H2U]424-+041*7TY!344I"B @(" @
+M(" @:68@*"%Q=6EE="D*(" )*'9O:60I('!R:6YT9B@B2T523D5,("5S(#T@
+M)60@;G-E8UQN(BP@2U]424-+041*7TY!344L('1I8VMA9&HI.PHJ*BHJ*BHJ
+M*BHJ*BHJ*BH**BHJ(#,X-BPS.3$@*BHJ*@HM+2T@-# V+#0Q-2 M+2TM"B @
+M(" @(" @*'9O:60I('!R:6YT9B@B8V%L8W5L871E9"!H>B ]("5D+B4P,F0@
+M2'I<;B(L(&AZ7VEN="P*(" )"2 @("!H>E]H=6YD<F5D=&AS*3L*(" @(" @
+M?0HK( HK("-I9B!D969I;F5D*%-#3S-?5$E#2T%$2BD@?'P@9&5F:6YE9"A3
+M0T\U7U1)0TM!1$HI"BL@("!R96-O;6UE;F1?=&EC:V%D:B ](#$P,#L**R C
+M96QS92 O*B!30T\S7U1)0TM!1$H@*B\*(" @('1M<" ]("AL;VYG*2!T:6-K
+M("H@-3 P3#L*(" @(')E8V]M;65N9%]T:6-K861J(#T@*&EN="DH=&UP("\@
+M,3 P,# P,$PI.PH@(" @:68@*'1M<" E(#$P,# P,#!,(#X@,"D**BHJ*BHJ
+M*BHJ*BHJ*BHJ"BHJ*B S.3@L-# T("HJ*BH*(" @(" @>PH@(" @(" @(')E
+M8V]M;65N9%]T:6-K861J(#T@34E.7U)%0U]424-+041*.PH@(" @("!]"B$@
+M(V5N9&EF"B @"B @("!I9B H*"%Q=6EE="D@)B8@*'1I8VMA9&I?;V9F<V5T
+M("$](# I*0H@(" @("!["BTM+2 T,C(L-#,P("TM+2T*(" @(" @>PH@(" @
+M(" @(')E8V]M;65N9%]T:6-K861J(#T@34E.7U)%0U]424-+041*.PH@(" @
+M("!]"B$@(V5N9&EF("\J($U)3E]214-?5$E#2T%$2B J+PHA("-E;F1I9B O
+M*B!30T\S7U1)0TM!1$H@*B\*(2 @( H@( H@(" @:68@*"@A<75I970I("8F
+M("AT:6-K861J7V]F9G-E=" A/2 P*2D*(" @(" @>PHJ*BHJ*BHJ*BHJ*BHJ
+M*BH**BHJ(#0U.2PT-C0@*BHJ*@HM+2T@-#@U+#4P," M+2TM"B @"0D)('=R
+M:71E=&EC:V%D:BD["B @"2 @*'9O:60I(&9F;'5S:"AS=&1E<G(I.PH@( E]
+M"BL@"BL@(VEF9&5F(%-#3S-?5$E#2T%$2@HK(" @(" @("\J('-C86QE(&9R
+M;VT@=7-E8R]T:6-K('1O('1I8VMS+W-E8R J+PHK(" @(" @('=R:71E=&EC
+M:V%D:B O/2 H,3 P,#!,("\@2%HI.PHK("-E;F1I9B O*B!30T\S7U1)0TM!
+M1$H@*B\**R C:69D968@4T-/-5]424-+041*"BL@(" @(" @+RH@<V-A;&4@
+M9G)O;2!U<V5C+W1I8VL@=&\@;G-E8R]S96,@*B\**R @(" @("!W<FET971I
+M8VMA9&H@*CT@*#$P,#!,("H@2%HI.PHK("-E;F1I9B O*B!30T\U7U1)0TM!
+M1$H@*B\**R *(" @(" @("!W<FET979A<BAF9"P@=&EC:V%D:E]O9F9S970L
+I('=R:71E=&EC:V%D:BD["B @(" @(" @:68@*"%Q=6EE="D*(" )>PIS
+ 
+end
+-- 
+Kees Hendrikse                               | email:     kees@echelon.nl
+                                             |
+ECHELON consultancy and software development | phone: +31 (0)53 48 36 585
+PO Box 545, 7500AM Enschede, The Netherlands | fax:   +31 (0)53 43 37 415
