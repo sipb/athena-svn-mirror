@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.51 1997-12-10 20:20:33 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.52 1997-12-13 01:19:00 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -34,9 +34,10 @@ static sigset_t sig_cur;
 #include <termios.h>
 
 #include <X11/Xlib.h>
+#include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.51 1997-12-10 20:20:33 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.52 1997-12-13 01:19:00 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -70,7 +71,6 @@ volatile int xpid, x_running = NONEXISTENT;
 volatile int consolepid, console_running = NONEXISTENT;
 volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTENT;
-volatile int clflag;
 char *logintty;
 
 /* Programs */
@@ -86,12 +86,6 @@ char *wtmpf =	"/usr/adm/wtmp";
 #ifdef SOLARIS
 char *utmpfx =	"/etc/utmpx";
 char *wtmpfx =	"/usr/adm/wtmpx";
-#endif
-char *passwdf =	"/etc/passwd";
-char *passwdtf ="/etc/ptmp";
-#ifdef SOLARIS
-char *spasswdf =	"/etc/shadow";
-char *spasswdtf =	"/etc/stmp";
 #endif
 char *xpids =	"/var/athena/X%d.pid";
 char *xhosts =	"/etc/X%d.hosts";
@@ -147,7 +141,7 @@ main(argc, argv)
 int argc;
 char **argv;
 {
-    void die(), child(), catchalarm(), xready(), setclflag(), shutdown();
+    void die(), child(), catchalarm(), xready(), shutdown();
     void loginready(), clean_groups();
     char *consoletty, *conf, *p, *number(), *getconf();
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv, **parseargs();
@@ -303,8 +297,6 @@ char **argv;
     sigaction(SIGCHLD, &sigact, NULL);
     sigact.sa_handler = (void (*)())catchalarm;
     sigaction(SIGALRM, &sigact, NULL);
-    sigact.sa_handler = (void (*)())setclflag;
-    sigaction(SIGUSR2, &sigact, NULL);
     /* setup ttys */
     if ((file = open("/dev/tty", O_RDWR, 0622)) >= 0) {
 	ioctl(file, TIOCNOTTY, 0);
@@ -455,7 +447,6 @@ char **argv;
 #ifdef DEBUG
 	message("Starting X Login\n");
 #endif
-	clflag = FALSE;
 	login_running = STARTUP;
 	sigact.sa_handler = (void (*)())loginready;
         sigaction(SIGUSR1, &sigact, NULL);
@@ -926,6 +917,8 @@ char *tty;
     setutxent();
     utx_tmp = getutxline(&utmpx);
     if ( utx_tmp != NULL ) {
+      strncpy(login, utx_tmp->ut_name, 8);
+      login[8] = '\0';
       strcpy(utmpx.ut_line, utx_tmp->ut_line);
       strcpy(utmpx.ut_user,utx_tmp->ut_name);
       utmpx.ut_pid = getpid();
@@ -955,20 +948,11 @@ char *tty;
 #endif
     }
 #endif /* SOLARIS */
-    if (clflag) {
-      /* Clean up password file */
-      removepwent(login);
-#ifdef TRACE
-      trace("Just came back from removepwent\n");
-#endif
-#ifdef SOLARIS
-      removespwent(login);
-#ifdef TRACE
-      trace("Just came back from removespwent\n");
-#endif
-#endif
-    }
 
+    al_acct_revert(login, loginpid);
+#ifdef TRACE
+    trace("Just came back from al_acct_revert\n");
+#endif
 
     file = 0;
     ioctl(0, TIOCFLUSH, &file);
@@ -1059,15 +1043,6 @@ void loginready()
     login_running = RUNNING;
 }
 
-void setclflag()
-{
-#ifdef DEBUG
-    message("Received Clear Login Flag signal\n");
-#endif
-    clflag = TRUE;
-}
-
-
 /* When an alarm happens, just note it and return */
 
 void catchalarm()
@@ -1089,105 +1064,6 @@ void die()
     cleanup(logintty);
     _exit(0);
 }
-
-
-/* Remove a password entry.  Scans the password file for the specified
- * entry, and if found removes it.
- */
-
-removepwent(login)
-char *login;
-{
-    int count = 10;
-    int newfile, oldfile, cc;
-    char buf[BUFSIZ], *p, *start;
-    sigemptyset(&sig_zero);
-    if (!strcmp(login, "root")) return;
-
-    for (count = 0; count < 10; count++)
-      if ((newfile = open(passwdtf, O_RDWR|O_CREAT|O_EXCL, 0644)) == -1 &&
-	  errno == EEXIST) {
-	  alarm(1);
-
-	  sigsuspend(&sig_zero);
-      } else
-	break;
-    if (newfile == -1) {
-	if (count < 10)
-	  return(errno);
-	else
-	  (void) unlink(passwdtf);
-	return;
-    }
-    oldfile = open(passwdf, O_RDONLY, 0);
-    if (oldfile < 0) return;
-
-    /* process each line of file */
-    cc = read(oldfile, buf, BUFSIZ);
-    while (1) {
-	start = strchr(buf, '\n');
-	if (start == NULL || start > &buf[cc]) break;
-	start++; /* pointing at start of next line */
-	if (strncmp(buf, login, strlen(login)) ||
-	    buf[strlen(login)] != ':') {
-	    write(newfile, buf, start - buf);
-	}
-	cc -= start - buf;
-	memmove(buf, start, cc);
-	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
-    }
-    close(newfile);
-    close(oldfile);
-    rename(passwdtf, passwdf);
-}
-
-#ifdef SOLARIS
-removespwent(login)
-char *login;
-{
-    int count = 10;
-    int newfile, oldfile, cc;
-    char buf[BUFSIZ], *p, *start;
-
-    if (!strcmp(login, "root")) return;
-
-    for (count = 0; count < 10; count++)
-      if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0600)) == -1 &&
-	  errno == EEXIST) {
-	  alarm(1);
-	  sigsuspend(&sig_zero);
-      } else
-	break;
-    if (newfile == -1) {
-	if (count < 10)
-	  return(errno);
-	else
-	  (void) unlink(spasswdtf);
-	return;
-    }
-    oldfile = open(spasswdf, O_RDONLY, 0);
-    if (oldfile < 0) return;
-
-    /* process each line of file */
-    cc = read(oldfile, buf, BUFSIZ);
-    while (1) {
-	start = strchr(buf, '\n');
-	if (start == NULL || start > &buf[cc]) break;
-	start++; /* pointing at start of next line */
-	if (strncmp(buf, login, strlen(login)) ||
-	    buf[strlen(login)] != ':') {
-	    write(newfile, buf, start - buf);
-	}
-	cc -= start - buf;
-	memmove(buf, start, cc);
-	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
-    }
-    close(newfile);
-    close(oldfile);
-    rename(spasswdtf, spasswdf);
-}
-#endif 
-
 
 /* Takes a command line, returns an argv-style  NULL terminated array 
  * of strings.  The array is in malloc'ed memory.
