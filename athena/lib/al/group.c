@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.6 1998-01-23 21:21:01 danw Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.7 1998-05-31 15:33:05 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -36,7 +36,13 @@ static const char rcsid[] = "$Id: group.c,v 1.6 1998-01-23 21:21:01 danw Exp $";
 /* Maximum number of groups the user can be in, not counting the primary
  * group.  Use this value only to bound nentries, not for memory
  * allocation; some day on some system it may be quite large. */
+#idef sgi
+/* The SGI AFS client has a fencepost error right now (up to the eighth
+ * AFS 3.4a.patches release) and doesn't tolerate 13 groups. */
+#define MAX_GROUPS 12
+#else
 #define MAX_GROUPS 13
+#endif
 
 struct hesgroup {
   char *name;
@@ -411,6 +417,7 @@ static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
   /* Start off the list with the primary gid. */
   hesgroups[0].name = primary_name;
   hesgroups[0].gid = *primary_gid;
+  hesgroups[0].present = 0;
   n = 1;
   
   /* Now get the entries from grplistvec, if we got one. */
@@ -423,19 +430,22 @@ static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
       if (!q || q == p || !isdigit(*(q + 1)))
 	break;
 
-      hesgroups[n].name = malloc(q - p + 1);
-      if (!hesgroups[n].name)
+      if (atoi(q + 1) >= MIN_HES_GROUP)
 	{
-	  free_hesgroups(hesgroups, n);
-	  hesiod_free_list(hescontext, grplistvec);
-	  hesiod_end(hescontext);
-	  return -1;
+	  hesgroups[n].name = malloc(q - p + 1);
+	  if (!hesgroups[n].name)
+	    {
+	      free_hesgroups(hesgroups, n);
+	      hesiod_free_list(hescontext, grplistvec);
+	      hesiod_end(hescontext);
+	      return -1;
+	    }
+	  memcpy(hesgroups[n].name, p, q - p);
+	  hesgroups[n].name[q - p] = 0;
+	  hesgroups[n].gid = atoi(q + 1);
+	  hesgroups[n].present = 0;
+	  n++;
 	}
-      memcpy(hesgroups[n].name, p, q - p);
-      hesgroups[n].name[q - p] = 0;
-      hesgroups[n].gid = atoi(q + 1);
-      hesgroups[n].present = 0;
-      n++;
       p = strchr(q + 1, ':');
       if (p)
 	p++;
