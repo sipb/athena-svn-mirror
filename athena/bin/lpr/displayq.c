@@ -13,7 +13,9 @@ static char sccsid[] = "@(#)displayq.c	5.1 (Berkeley) 6/6/85";
  */
 
 #include "lp.h"
-
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h"   /* for flock() */
+#endif
 #define JOBCOL	40		/* column for job # in -l format */
 #define OWNCOL	7		/* start of Owner column in normal */
 #define SIZCOL	62		/* start of Size column in normal */
@@ -169,7 +171,7 @@ displayq(format)
 			while ((i = read(fd, line, sizeof(line))) > 0) {
 				(void) fwrite(line, 1, i, stdout);
 				for (tmpptr = line;
-				     tmpptr = index(tmpptr,'\n'); ) {
+				     tmpptr = strchr(tmpptr,'\n'); ) {
 					rem_fils++;
 					tmpptr++;
 				}
@@ -229,7 +231,7 @@ displayq(format)
 			if (sendtorem)
 				printf("%s: ", host);
 			printf("Warning: %s is down: ", printer);
-			fd = open(ST, O_RDONLY);
+			fd = open(ST, O_RDWR);
 			if (fd >= 0) {
 			        char tmp[1024];
 				(void) flock(fd, LOCK_SH);
@@ -291,7 +293,7 @@ displayq(format)
 			 */
 			if (sendtorem)
 				printf("\n%s: ", host);
-			fd = open(ST, O_RDONLY);
+			fd = open(ST, O_RDWR);
 			if (fd >= 0) {
 				(void) flock(fd, LOCK_SH);
 				while ((i = read(fd, line, sizeof(line))) > 0)
@@ -400,7 +402,7 @@ inform(cf)
 	fclose(cfp);
 	if (!lflag) {
 		blankfill(SIZCOL);
-		printf("%D bytes\n", totsize);
+		printf("%ld bytes\n", totsize);
 		totsize = 0;
 	}
 }
@@ -497,7 +499,7 @@ ldump(nfile, file, copies)
 	else
 		printf("%-32s", nfile);
 	if (*file && !stat(file, &lbuf))
-		printf(" %D bytes", lbuf.st_size);
+		printf(" %ld bytes", lbuf.st_size);
 	else
 		printf(" ??? bytes");
 	putchar('\n');
