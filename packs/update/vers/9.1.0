@@ -16,6 +16,9 @@ sun4)
   cat "$LIBDIR/solaris8.2-local"			> "$LOCALPACKAGES"
   cat "$LIBDIR/solaris8.2-nolocal"			> "$LINKPACKAGES"
   cat "$LIBDIR/solaris8-patches.9.1.0"			> "$PATCHES"
+
+  echo "/etc/mail/sendmail.cf"				>> "$CONFCHG"
+  echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
   ;;
 
 sgi)
