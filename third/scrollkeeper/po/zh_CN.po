@@ -1,0 +1,1086 @@
+# scrollkeeper.zh_CN.po.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Zipeco <Zipeco@btamail.net.cn>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: scrollkeeper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2002-05-15 01:39+0600\n"
+"Last-Translator: Zipeco <Zipeco@btamail.net.cn>\n"
+"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=GB2312\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cl/src/scrollkeeper-install.c:36
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
+msgstr ""
+"用法：scrollkeeper-install [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF 文件>\n"
+
+#: cl/src/scrollkeeper-install.c:104
+msgid "Could not create database.  Aborting install.\n"
+msgstr ""
+
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
+#, c-format
+msgid "Registering %s\n"
+msgstr ""
+
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
+#, c-format
+msgid "Unable to register %s\n"
+msgstr ""
+
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+msgstr "用法：scrollkeeper-preinstall <DOC 文件> <OMF 文件> <新 OMF 文件>\n"
+
+#: cl/src/preinstall.c:85
+#, fuzzy, c-format
+msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
+msgstr "url更新OMF文件%s失败\n"
+
+#: cl/src/scrollkeeper-uninstall.c:32
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
+msgstr ""
+"用法：scrollkeeper-uninstall [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF 文件>\n"
+
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
+#, c-format
+msgid "Unregistering %s\n"
+msgstr ""
+
+#: cl/src/update.c:109
+#, fuzzy, c-format
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr "用法：%s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+
+#: cl/src/update.c:221
+#, c-format
+msgid "%s: warning: %s overrides %s\n"
+msgstr "%s: 警告: %s 覆盖了 %s\n"
+
+#: cl/src/update.c:420
+msgid "Could not create database.  Aborting update.\n"
+msgstr ""
+
+#: cl/src/update.c:515
+#, c-format
+msgid "%s: %s: is not a directory\n"
+msgstr "%s: %s: 不是一个目录\n"
+
+#: cl/src/update.c:540
+#, c-format
+msgid "Updating %s\n"
+msgstr ""
+
+#: cl/src/update.c:543
+#, c-format
+msgid "Unable to complete update.  Could not register %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:63
+#, c-format
+msgid "Cannot stat %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+msgid "Unable to determine username."
+msgstr ""
+
+#: cl/src/get-cl.c:139
+#, fuzzy
+msgid "Cannot open temporary file.\n"
+msgstr "不能打开临时文件\n"
+
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "不能打开临时文件\n"
+
+#: cl/src/get-cl.c:188
+#, c-format
+msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
+msgstr "用法: %s [-v] <LOCALE> <目录树文件名>\n"
+
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "本locale没有内容列表!!!\n"
+
+#: libs/error.c:114
+#, c-format
+msgid "%s: out of memory: %s\n"
+msgstr "%s: 内存不足: %s\n"
+
+#: libs/error.c:262
+#, c-format
+msgid "OMF validation error: %s"
+msgstr ""
+
+#: libs/install.c:136
+#, c-format
+msgid ""
+"TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
+msgstr ""
+
+#: libs/install.c:177
+#, c-format
+msgid ""
+"OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
+msgstr ""
+
+#: libs/install.c:186
+#, c-format
+msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
+msgstr ""
+
+#: libs/install.c:194
+#, c-format
+msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
+msgstr ""
+
+#. This should not happen
+#: libs/install.c:211
+msgid "Failed to locate an <OMF> element.\n"
+msgstr ""
+
+#. This should not happen
+#: libs/install.c:216
+msgid "<OMF> node has no children.\n"
+msgstr ""
+
+#: libs/install.c:245
+#, c-format
+msgid ""
+"Content list file does not exist, is not readable, or is not well-formed "
+"XML: %s\n"
+msgstr ""
+
+#: libs/install.c:252
+#, c-format
+msgid ""
+"Extended content list file does not exist, is not readable, or is not well-"
+"formed XML: %s\n"
+msgstr ""
+
+#: libs/uninstall.c:97
+#, c-format
+msgid "wrong content list file %s\n"
+msgstr "错误的内容列表文件 %s\n"
+
+#: libs/uninstall.c:104
+#, c-format
+msgid "wrong extended content list file %s\n"
+msgstr "错误的扩展内容列表文件 %s\n"
+
+#: libs/uninstall.c:202
+#, c-format
+msgid "%s missing\n"
+msgstr "丢失%s\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "不能打开临时文件\n"
+
+#: libs/database.c:41
+#, c-format
+msgid "Could not create directory %s : %s\n"
+msgstr ""
+
+#: libs/update-url.c:40
+msgid "OMF file was not well-formed.\n"
+msgstr ""
+
+#: libs/update-url.c:48
+msgid "Could not find root element of OMF file.\n"
+msgstr ""
+
+#: libs/update-url.c:52
+msgid "Root element of OMF file is not <omf>.\n"
+msgstr ""
+
+#: libs/update-url.c:64
+msgid "OMF file does not have <resource> element.\n"
+msgstr ""
+
+#: extract/src/scrollkeeper-extract.c:30
+msgid ""
+"Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
+"<stylesheet 2> <output file 2> ...\n"
+msgstr ""
+"用法: scrollkeeper-extract <xml 文件> <样式表 1> <输出文件 1> <样式表 2> <输"
+"出文件 2> ...\n"
+
+#: extract/src/scrollkeeper-extract.c:61
+#, fuzzy, c-format
+msgid "Unrecognized file type: %s\n"
+msgstr "不可识别的文件类型\n"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:1
+msgid "3D Modelling"
+msgstr "正在进行3D造型"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:2
+msgid "3D Rendering"
+msgstr "正在进行3D渲染"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:3
+msgid "ADA"
+msgstr "ADA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:4
+msgid "Accessibility"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:5
+#, fuzzy
+msgid "Accessories"
+msgstr "处理器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:6
+msgid "Administration"
+msgstr "管理"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:7
+msgid "Amusement"
+msgstr "娱乐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:8
+msgid "Analysis"
+msgstr "分析"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:9
+msgid "AppleTalk"
+msgstr "AppleTalk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:10
+msgid "Applets"
+msgstr "Applets"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:11
+msgid "Applications"
+msgstr "应用"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:12
+msgid "Arcade"
+msgstr "Arcade"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:13
+msgid "Archiving"
+msgstr "归档"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:14
+msgid "Arts"
+msgstr "艺术"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:15
+msgid "Astronomy"
+msgstr "天文学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:16
+msgid "Astrophysics"
+msgstr "天体物理学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:17
+msgid "BIND"
+msgstr "BIND"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:18
+msgid "Backups"
+msgstr "备份"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:19
+msgid "Biology"
+msgstr "生物学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:20
+msgid "Board"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:21
+msgid "Build Tools"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:22
+msgid "C"
+msgstr "C"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:23
+msgid "C++"
+msgstr "C++"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:24
+msgid "CAD"
+msgstr "CAD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:25
+msgid "CD Mastering"
+msgstr "CD Mastering"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:26
+msgid "CDE"
+msgstr "CDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:27
+msgid "CLI"
+msgstr "CLI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:28
+msgid "Calculating"
+msgstr "正在计算"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:29
+#, fuzzy
+msgid "Caldera"
+msgstr "日历"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:30
+msgid "Calendar"
+msgstr "日历"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:31
+msgid "Capture"
+msgstr "捕捉"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:32
+msgid "Chat"
+msgstr "聊天"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:33
+msgid "Chemistry"
+msgstr "化学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:34
+msgid "Clock"
+msgstr "时钟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:35
+msgid "Clocks"
+msgstr "时钟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:36
+msgid "Code Generators"
+msgstr "代码生成器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:37
+msgid "Compression"
+msgstr "压缩"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:38
+msgid "Computer Science"
+msgstr "计算机科学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:39
+msgid "Config Files"
+msgstr "配置文件"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:40
+msgid "Configuration"
+msgstr "恭喜"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:41
+msgid "Configuration Tools"
+msgstr "配置工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:42
+msgid "Conversion"
+msgstr "变换"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:43
+msgid "Core Desktop"
+msgstr "核心桌面"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:44
+msgid "Cryptography"
+msgstr "密码术"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:45
+msgid "DNS"
+msgstr "DNS"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:46
+msgid "Data Processing"
+msgstr "正在处理数据"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:47
+msgid "Database"
+msgstr "数据库"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:48
+msgid "Databases"
+msgstr "数据库"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:49
+msgid "Debian"
+msgstr "Debian"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:50
+msgid "Debuggers"
+msgstr "调试器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:51
+#, fuzzy
+msgid "Desktop"
+msgstr "核心桌面"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:52
+msgid "Desktop Preferences"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:53
+msgid "Development"
+msgstr "开发"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:54
+msgid "Development Tools"
+msgstr "开发工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:55
+msgid "Display"
+msgstr "显示"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:56
+msgid "Distributions"
+msgstr "分发"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:57
+msgid "Drawing"
+msgstr "正在绘图"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:58
+msgid "EDA"
+msgstr "EDA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:59
+msgid "Editing"
+msgstr "正在编辑"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:60
+msgid "Education"
+msgstr "教育"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:61
+msgid "Email"
+msgstr "电子邮件"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:62
+msgid "English"
+msgstr "英语"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:63
+msgid "Environments"
+msgstr "环境"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:64
+msgid "FTP"
+msgstr "FTP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:65
+msgid "Fax"
+msgstr "传真"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:66
+#, fuzzy
+msgid "Fighting"
+msgstr "正在编辑"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:67
+msgid "File Sharing"
+msgstr "正在进行文件共享"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:68
+msgid "File Utilities"
+msgstr "文件工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:69
+msgid "Filesystems"
+msgstr "文件系统"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:70
+msgid "Financial"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:71
+msgid "Firewall"
+msgstr "防火墙"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:72
+msgid "First Person Shooters"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:73
+msgid "Fonts"
+msgstr "字体"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:74
+msgid "FreeBSD"
+msgstr "FreeBSD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:75
+msgid "GNOME"
+msgstr "GNOME"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:76
+msgid "GTK+"
+msgstr "GTK+"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:77
+msgid "GUI"
+msgstr "GUI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:78
+msgid "Games"
+msgstr "游戏"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:79
+msgid "General"
+msgstr "常规"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:80
+msgid "Genetics"
+msgstr "遗传学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:81
+msgid "Graphics"
+msgstr "制图学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:82
+msgid "HTTP"
+msgstr "HTTP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:83
+msgid "Hardware"
+msgstr "硬件"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:84
+msgid "IDEs"
+msgstr "IDEs"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:85
+msgid "Input Devices"
+msgstr "输入设备"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:86
+msgid "Internet"
+msgstr "互联网"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:87
+msgid "Internet Phone"
+msgstr "互联网电话"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:88
+msgid "Introductory"
+msgstr "简介"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:89
+msgid "Intrusion Detection"
+msgstr "入侵检测"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:90
+msgid "Java"
+msgstr "Java"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:91
+msgid "KDE"
+msgstr "KDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:92
+msgid "Kernels"
+msgstr "核心"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:93
+msgid "Language"
+msgstr "语言"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:94
+msgid "Libraries"
+msgstr "库"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:95
+msgid "Licenses"
+msgstr "许可证"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:96
+msgid "Linux"
+msgstr "Linux"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:97
+msgid "Local"
+msgstr "Local"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:98
+msgid "Login Managers"
+msgstr "登录管理器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:99
+msgid "MIDI"
+msgstr "MIDI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:100
+msgid "Mandrake"
+msgstr "Mandrake"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:101
+msgid "Math"
+msgstr "数学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:102
+msgid "Maths"
+msgstr "数学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:103
+msgid "Messaging"
+msgstr "正在发送消息"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:104
+msgid "Mixers"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:105
+msgid "Monitors"
+msgstr "监视器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:106
+msgid "Multimedia"
+msgstr "多媒体"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:107
+msgid "Music"
+msgstr "音乐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:108
+msgid "NetBSD"
+msgstr "NetBSD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:109
+msgid "Network"
+msgstr "网络"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:110
+#, fuzzy
+msgid "Networking"
+msgstr "网络"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:111
+msgid "News"
+msgstr "新闻"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:112
+msgid "Office"
+msgstr "办公"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:113
+msgid "Other"
+msgstr "其它"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:114
+msgid "PCI/ISA/PCMCIA"
+msgstr "PCI/ISA/PCMCIA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:115
+msgid "PIM"
+msgstr "PIM"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:116
+msgid "PPP"
+msgstr "PPP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:117
+msgid "Package Management"
+msgstr "打包管理器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:118
+msgid "Packaging"
+msgstr "正在打包"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:119
+msgid "Perl"
+msgstr "Perl"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:120
+msgid "Physics"
+msgstr "物理学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:121
+msgid "Players"
+msgstr "播放器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:122
+msgid "Plotting"
+msgstr "正在绘图"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:123
+msgid "Preferences"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:124
+msgid "Presentation"
+msgstr "演示"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:125
+msgid "Printing"
+msgstr "正在打印"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:126
+msgid "Processor"
+msgstr "处理器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:127
+#, fuzzy
+msgid "Profiling"
+msgstr "正在打印"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:128
+#, fuzzy
+msgid "Programming"
+msgstr "程序"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:129
+msgid "Programs"
+msgstr "程序"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:130
+msgid "Publishing"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:131
+msgid "Puzzles"
+msgstr "谜"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:132
+msgid "Python"
+msgstr "Python"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:133
+msgid "Qt"
+msgstr "Qt"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:134
+msgid "RAD"
+msgstr "RAD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:135
+msgid "Recording"
+msgstr "正在记录"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:136
+msgid "Red Flag"
+msgstr "红旗"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:137
+msgid "Red Hat"
+msgstr "红帽子"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:138
+msgid "Remote"
+msgstr "远端"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:139
+msgid "Role-Playing"
+msgstr "正在进行角色扮演"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:140
+msgid "SMB"
+msgstr "SMB"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:141
+msgid "SSH"
+msgstr "SSH"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:142
+msgid "Science"
+msgstr "科学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:143
+#, fuzzy
+msgid "Scientific"
+msgstr "科学"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:144
+msgid "Screensavers"
+msgstr "屏幕保护器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:145
+msgid "Security"
+msgstr "安全"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:146
+msgid "Services"
+msgstr "服务"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:147
+msgid "Settings"
+msgstr "设置"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:148
+msgid "Simulation"
+msgstr "模拟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:149
+msgid "Slackware"
+msgstr "Slackware"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:150
+msgid "Sound"
+msgstr "声音"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:151
+msgid "Sound and Video"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:152
+msgid "Speech"
+msgstr "语音"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:153
+msgid "Storage"
+msgstr "存储"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:154
+msgid "Strategy"
+msgstr "策略"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:155
+msgid "SuSE"
+msgstr "SuSE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:156
+msgid "Syslog"
+msgstr "Syslog"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:157
+msgid "System"
+msgstr "系统"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:158
+#, fuzzy
+msgid "System Administration"
+msgstr "管理"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:159
+msgid "System Calls"
+msgstr "系统调用"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:160
+#, fuzzy
+msgid "System Tools"
+msgstr "系统调用"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:161
+msgid "TCP/IP"
+msgstr "TCP/IP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:162
+msgid "Tcl/Tk"
+msgstr "Tcl/Tk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:163
+msgid "Technology"
+msgstr "技术"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:164
+msgid "Telnet"
+msgstr "Telnet"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:165
+msgid "Terminals"
+msgstr "终端"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:166
+msgid "Testing"
+msgstr "正在试验"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:167
+msgid "Text Editors"
+msgstr "文本编辑器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:168
+msgid "Text Utilities"
+msgstr "文本工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:169
+msgid "Tutorials"
+msgstr "教程"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:170
+#, fuzzy
+msgid "User Guides"
+msgstr "用户"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:171
+msgid "Users"
+msgstr "用户"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:172
+msgid "Utilities"
+msgstr "工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:173
+msgid "Utility"
+msgstr "工具"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:174
+msgid "Version Control"
+msgstr "版本控制"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:175
+msgid "Video"
+msgstr "视频"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:176
+msgid "Video Conferencing"
+msgstr "正在进行视频回忆"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:177
+msgid "Viewing"
+msgstr "正在观察"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:178
+msgid "Virus"
+msgstr "病毒"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:179
+msgid "Visualisation"
+msgstr "可视化"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:180
+msgid "Web"
+msgstr "Web"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:181
+msgid "Web Publishing"
+msgstr ""
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:182
+msgid "WebML"
+msgstr "WebML"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:183
+msgid "White Papers"
+msgstr "白皮书"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:184
+msgid "Window Managers"
+msgstr "窗口管理器"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:185
+msgid "Word Processing"
+msgstr "正在进行文字处理"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:186
+msgid "X"
+msgstr "X"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:187
+msgid "gtk++"
+msgstr "gtk++"
+
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr ""
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr ""
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr ""
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr ""
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr ""
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr ""
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, fuzzy, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "不能打开临时文件\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr ""
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr ""
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr ""
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr ""
+
+#: libs/extract.c:198
+#, fuzzy, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "不能打开临时文件\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr ""
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr ""
+
+#~ msgid "error while parsing %s\n"
+#~ msgstr "解析%s时出错\n"
+
+#~ msgid ""
+#~ "Usage:  toc <filename>\n"
+#~ "\n"
+#~ msgstr ""
+#~ "用法:  toc <文件名>\n"
+#~ "\n"
+
+#~ msgid "wrong omf file %s\n"
+#~ msgstr "错误的omf文件 %s\n"

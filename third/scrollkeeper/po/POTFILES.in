@@ -10,3 +10,6 @@ libs/database.c
 libs/update-url.c
 extract/src/scrollkeeper-extract.c
 cl/templates/scrollkeeper_cl.xml.in
+buildtools/separate.c
+libs/extract.c
+scripts/gen-docuid.c

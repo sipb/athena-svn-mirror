@@ -84,6 +84,7 @@ static void get_random_bytes(void *buf, int nbytes)
 			cp += i;
 			lose_counter = 0;
 		}
+		close (fd);
 	}
 	if (nbytes == 0)
 		return;
@@ -124,9 +125,15 @@ static int get_node_id(unsigned char *node_id)
 #define ifreq_size(i) sizeof(struct ifreq)
 #endif /* HAVE_SA_LEN*/
 
-	sd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
-	if (sd < 0) {
-		return -1;
+#ifdef AF_INET6
+	sd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_IP);
+	if (sd < 0)
+#endif
+	{
+		sd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+		if (sd < 0) {
+			return -1;
+		}
 	}
 	memset(buf, 0, sizeof(buf));
 	ifc.ifc_len = sizeof(buf);
@@ -263,8 +270,13 @@ void uuid_generate_random(uuid_t out)
  */
 void uuid_generate(uuid_t out)
 {
-	if (get_random_fd() >= 0)
+	int fd;
+
+	fd = get_random_fd();
+	if (fd >= 0) {
 		uuid_generate_random(out);
+		close (fd);
+	}
 	else
 		uuid_generate_time(out);
 }

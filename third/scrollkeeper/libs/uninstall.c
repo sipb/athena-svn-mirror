@@ -136,6 +136,7 @@ static void remove_doc_from_content_list(xmlNodePtr cl_node, struct IdTab *id_ta
 	{
 	    str_id = (char *)xmlGetProp(node, (xmlChar *)"docid");
 	    id = atoi(str_id);
+	    xmlFree(str_id);
 	    
 	    for(i = start; id_tab[i].id != id && i < end; i++)
 	        ;
@@ -205,6 +206,11 @@ static void remove_doc_from_scrollkeeper_docs(char *omf_name,
     snprintf(tmp, PATHLEN, "%s.tmp", scrollkeeper_docs);
     
     tmp_fid = fopen(tmp, "w");
+    if (tmp_fid == NULL)
+    {
+        sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(remove_doc_from_scrollkeeper_docs)", _("cannot create temporary file %s\n"), tmp);
+        return;
+    }
     
     count = 0;
         

@@ -95,8 +95,10 @@ static int find_sect_with_code(xmlNodePtr tree, xmlChar *sect_code,
 			if (code != NULL) {
 				if (!xmlStrcmp(sect_code, code)) {
 					*sect_return = sect_node;
+					xmlFree(code);
 					return 1;
 				}
+				xmlFree(code);
 			}
 			
 			if (find_sect_with_code(sect_node->children, 
@@ -138,6 +140,7 @@ static void merge_trees(xmlNodePtr tree, xmlDocPtr *tree_tab, int tree_num)
 			code = xmlGetProp(sect_node, (xmlChar *)"categorycode");
 			if (code != NULL) {
 				merge_sections(sect_node, code, tree_tab, tree_num);
+				xmlFree(code);
 			}
 			
 			merge_trees(sect_node->children, tree_tab, tree_num);

@@ -16,8 +16,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <config.h>
+#include <libintl.h>
+#include <locale.h>
 #include <stdio.h>
+#include <string.h>
 #include <uuid.h>
+#include <scrollkeeper.h>
 
 int
 main (int argc, char *argv[])
@@ -25,6 +30,21 @@ main (int argc, char *argv[])
 	char   str[256];
 	uuid_t uu;
 
+	if (argc > 1)
+	{
+	     setlocale (LC_ALL, "");
+	     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
+	     textdomain (PACKAGE);
+
+	     if (strcmp (argv[1], "--help") == 0)
+	     {
+		  printf (_("Usage: %s\n"), *argv);
+		  return 0;
+	     }
+	     fprintf (stderr, _("Usage: %s\n"), *argv);
+	     return 1;
+	}
+	
 	uuid_generate_time(uu);
 	
 	uuid_unparse(uu, str);

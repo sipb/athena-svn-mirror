@@ -1,9 +1,512 @@
-2002-07-24 Dan Mueth <muet@alumni.uchicago.edu>
+2003-12-06  Malcolm Tredinnick <malcolm@commsecure.com.au>
 
-	* configure.in: Changing to version 0.3.11 for release.
-	* cl/templates/scrollkeeper_cl.xml.in:
-		Updated to have GNOME categories in it from the Panel, thanks
-		to patch from Sander Vesik <Sander.Vesik@sun.com>
+	New release needed because 0.3.13 had serious intltool problems
+	and did not build for most people.
+
+	* configure.in: Require intltool >= 0.28. Bump version to
+	0.3.14.
+
+	* Makefile.am:
+	- Clean up the contents a little bit.
+	- Distribute extra file required by intltool scripts.
+
+	* cl/src/get-cl.c: The contents files were being written over
+	the top of one another. Fix the typo that caused this.
+
+	* scrollkeeper.spec.in: Mark some extra documentation files.
+
+	* .cvsignore: Shhhh....
+
+2003-12-05  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in: Post-release version bump (0.3.14-pre1).
+
+	* COPYING-DOCS, COPYING.DOC: Rename the former to the latter so
+	that automake will manage the file automatically.
+
+==================== 0.3.13 release ====================
+
+2003-12-05  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* autogen.sh: Run intltoolize.
+
+	* cl/src/get-cl.c: Beat a few bugs out of yesterday's
+	implementation.
+
+	* po/ru.po, po/az.po: Fix a couple of typos that were breaking
+	the build.
+
+	* TODO: Add another thing that needs doing.
+
+	* cl/templates/Makefile.am: Fix build for automake >= 1.6.
+
+	* configure.in: Define GETTEXT_PACKAGE in an attempt to fool
+	intltool. Doesn't quite work yet, though.
+
+	* Makefile.am: Help distcheck work.
+
+2003-12-02  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* NEWS: Updated in preparation for 0.3.13 release.
+
+	* configure.in: Bump version number to 0.3.13.
+
+	* cl/src/get-cl.c: Use a per-user directory for storing contents
+	files. Fixes bugs #614263 and #798614 and many mailing list
+	complaints.
+
+	* cl/templates/.cvsignore, cl/templates/Makefile.am: Add in a
+	couple of missing languages and ignore their generated
+	directories.
+
+	* intl/*, m4/*, po/*: Updated the included gettext to match GNU
+	gettext 0.12.1. This also introduces some new files into the po/
+	directory for the build support.
+
+	* autogen.sh: Overhaul a bit. Force the use of automake >= 1.6
+	(needed for the gettext upgrade).
+
+	* acconfig.h: Obsolete. Removed.
+
+	* libs/uninstall.c: Patch from Tim Waugh <twaugh@redhat.com> to
+	fix a crash due to some missing error handling (Sourceforge
+	patch tracker entry #839165).
+
+	* libs/Makefile.am: Fix a problem with the generation of
+	scrollkeeper.h.
+
+2003-11-02  Miloslav Trmac  <mitr@volny.cz>
+
+	* po/ja.po: Updated Japanese translation from
+	Yukihiro Nakai <nakai@gnome.gr.jp>.
+
+	* po/sr.po: Updated Serbian translation from
+	Danilo Segan <dsegan@gmx.net>.
+
+2003-09-11  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+	* cl/templates/Makefile.am: Added "sr" and "sr@Latn" to
+	TRANSLATED_LOCALES.
+
+	* po/sr.po, po/sr@Latn.po: Added Serbian translation from
+	Danilo Šegan <danilo@prevod.org>.
+
+2003-09-04  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libs/i18n.c: Fix an embarassing bug that caused a segfault
+	when retrieving the contents list.
+
+	* po/ja.po: Fix a problem where some msgstr entries were
+	permuted. Patch from Shun-ichi Tahara
+	<st-jado@users.sourceforge.net>. Fixes bug #778754.
+
+2003-09-03  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libs/install.c:
+	- Patch from Alex Larsson <alexl@redhat.com> to fix a segfault
+	  when attempting to install an invalid OMF file. Fixes bug
+	  #799679.
+	- Allow for the possibility of get_doc_property() returning
+	  NULL, which can happen on invalid documents. Also accomodate
+	  another xmlGetProp() instance returning NULL. This fixes a few
+	  more segfaults and bug #502684.
+
+	* NEWS: Updated.
+
+2003-09-02  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libs/install.c: When putting new documents into the contents
+	lists, we should be comparing against the categories, not the
+	titles. Fixes bugs #778749 and #794548 (patch from Laszlo Kovacs
+	<laszlo.kovacs@sun.com>).
+
+	* cl/src/update.c, cl/src/preinstall.c,
+	* cl/src/scrollkeeper-install.c: If the -n option is passed in
+	use the network to retrieve DTDs that are not in the XML
+	catalog. By default, the network is not used. Fixes bug
+	#684093 and some requests from the mailing list. Based on some
+	patches from Sun.
+
+	* man/man8/scrollkeeper-preinstall.8,
+	* man/man8/scrollkeeper-update.8:
+	Update to reflect the above changes.
+
+	* TODO: Updated.
+
+	* NEWS: Start to fill in preparing for the 0.3.13 release.
+
+2003-07-10  Miloslav Trmac  <mitr@volny.cz>
+
+	* po/sv.po: Updated Swedish translation from
+	Christian Rose <menthos@menthos.com>.
+
+2003-06-27  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* cl/src/update.c, libs/extract.c, libs/file.c, libs/install.c,
+	libuuid/gen_uuid.c: Applied a patch from Narayana Pattipati
+	<narayana.pattipati@wipro.com> to close various file descriptors
+	are using them. This prevents running out of resources on
+	Solaris, for example.
+
+2003-06-26  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* cl/src/get-cl.c: Tidy up some strings for the translators.
+
+	* AUTHORS: Added myself and Miloslav so that people know who to
+	flame about problems.
+
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files.xml:
+	* doc/writing_scrollkeeper_omf_files/C/writing_scrollkeeper_omf_files-C.omf:
+	Removed a couple of links that are out of date and updated the
+	OMF file appropriately.
+
+2003-06-25  Miloslav Trmac  <mitr@volny.cz>
+
+	Taking translations from gnome-i18n/extra-po/scrollkeeper...
+	* po/am.po: Added Amharic translation from
+	Ge'ez Frontier Foundation <locales@geez.org>.
+
+	* po/da.po: Updated Danish translation from
+	Ole Laursen <olau@hardworking.dk>.
+
+	* po/kn.po: Added Kannada translation from
+	Pramod <rpramod@postmaster.co.uk>.
+
+	* po/nl.po: Updated Dutch translation from
+	Tino Meinen <a.t.meinen@chello.nl>.
+
+	* po/no.po: Updated Norwegian translation from
+	Kjartan Maraas <kmaraas@gnome.org>.
+
+	* po/ru.po: Updated Russian translation from
+	Dmitry Mastrukov <dmitry@taurussoft.org>.
+
+	* po/sk.po: Updated Slovak translation from
+	Stanislav Visnovsky <visnovsky@kde.org>.
+
+	* po/sv.po: Updated Swedish translation from
+	Christian Rose <menthos@menthos.com>.
+
+	* po/tr.po: Updated Turkish translation from
+	Gorkem Cetin <gorkem@kde.org>.
+
+	* po/vi.po: Updated translation from pclouds <pclouds@gmx.net>.
+
+	* po/zh_TW.po: Updated tranditionial Chinese translation from
+	Abel Cheung <maddog@linux.org.hk>.
+
+	* configure.in: Added "am" and "kn" to ALL_LINGUAS.
+
+	* cl/templates/Makefile.am: Added "am" and "kn" to TRANSLATED_LOCALES.
+
+	* po/hu.po: Updated Hungarian translation from
+	Emese Kovacs <emese@gnome.hu>.
+
+	* po/ca.po: Updated Catalan translation from
+	Jordi Mallach <jordi@sindominio.net>.
+
+2003-06-25  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in: Bump version number to 0.3.13-pre1.
+
+2003-06-24  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* INSTALL: Update the comments about the DocBook DTDs and
+	stylesheets.
+
+	* configure.in: Tidying up...
+	- Remove unnecessary intltool tests.
+	- Remove some tests that are only used in the intl/ directory
+	  and if you are using that, they are tested for in
+	  AM_GNU_GETTEXT.
+
+	* Makefile.am: Move intl/ earlier in the subdirs list (since
+	libs/ depends upon it).
+
+2003-06-23  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libs/Makefile.am: Fix a small build problem that I introduced
+	yesterday.
+
+	* configure.in: Allow the location of the XML catalog file to be
+	specified (--with-xml-catalog=...) for systems were it is in
+	some non-standard location.
+
+	* extract/dtds/Makefile.am: Install the Scrollkeeper DTD in the
+	catalog determined by the 'configure' script. Fixes bug #596702.
+
+2003-06-22  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in:
+	- Try to detect version 4.2 and 4.1.2 of the DocBook XML DTDs(in
+	  that order). Fixes bug #731091.
+	- Define SCROLLKEEPERLOCALEDIR to be configurable (previously it
+	  was hardcoded and broken).
+	- Use libiconv when building intl/ (if necessary). Fixes bug
+	  #430208.
+	- Set SCROLLKEEPER_PARTIAL_DB_DIR appropriately for NetBSD and
+	  OpenBSD systems. Also allow this variable to be set via an
+	  option at configure time in case of emergencies. Fixes bug
+	  #687546.
+
+	* libs/extract.c:
+	- Substitute in the correct public and system identifiers for
+	  the DocBook version detected at configure time.
+	- Do XInclude processing on XML documents. Fixes bug #566794.
+	- Do some small code reformatting to make the strcmp() results
+	  clearer.
+
+	* libs/i18n.c: Since strndup() is a GNU extension, it is not
+	very portable and its use broke the build on (at least) Solaris,
+	FreeBSD and Max OS X. It has now been replaced (thanks to Julio
+	Merino Vidal for the patch). Fixes bug #671709.
+
+	* libs/install.c: Free the results from xmlGetProp() with
+	xmlFree(), not free(). Fixes bug #661486.
+
+	* libs/merge.c, libs/uninstall.c: Fix some memory leaks.
+
+	* configure.in, libs/Makefile.am: Apply a variation on a patch
+	from Mariano Suarez-Alvarez <msuarezalvarez@arnet.com.ar> to
+	generate the scrollkeeper.h file correctly. Fixes bugs #563187,
+	#595368 and #636360.
+
+	* cl/templates/Makefile.am: Remove nb and uk from
+	TRANSLATED_LOCALES.
+
+	* libs/scrollkeeper.h.in: Remove SCROLLKEEPERLOCALEDIR; it is
+	now in config.h.
+
+	* README: Updated a bit. Added the project homepage and bug
+	reporting address (fixes bug #573002).
+
+	* extract/dtds/scrollkeeper-omf.dtd: Apply patch from Nalin
+	Dahyabhai to make the "relation" element an optional, multiple
+	child element in the OMF file, rather than a compulsory, single
+	child. This conforms with the OMF specification. Fixes bug
+	#568355.
+
+	* Makefile.am: Use SCROLLKEEPER_PARTIAL_DB_DIR when constructing
+	scrollkeeper_localstate_dir. Fixes bug #687601.
+
+2003-06-21  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* po/ca.po: Updated Catalan translation from Jordi Mallach
+	<jordi@sindominio.net>.
+
+	* .cvsignore, cl/templates/.cvsignore, intl/.cvsignore:
+	Ignore a few generated files.
+
+	* configure.in:
+	- Fix up URL for intltool (sourceforge patch #648776).
+	- Various other small fixes to help distcheck pass.
+
+	* libuuid/gen_uuid.c: (get_node_id) It first attempts to create
+	a socket of AF_INET6 type, If it fails then it falls back to
+	create AF_INET socket as was done previously. Patch from Archana
+	Shah <archana.shah@wipro.com> (sourceforge patch #753167).
+
+	* Makefile.am: Install ChangeLog, COPYING, NEWS and README in
+	the documentation directory.
+
+	* Makefile.am, buildtools/Makefile.am, cl/src/Makefile.am,
+	extract/src/Makefile.am: Apply patch from Miloslav Trmac to try
+	and fix bug #676043.
+
+	* doc/xmldocs.make, doc/omf.make: Apply patch from Tim Waugh
+	to fix bug #757124. Helps 'make distcheck' succeed.
+
+	* autogen.sh: Force the use of automake-1.4 and aclocal-1.4 to
+	avoid version incompatibilities. Ultimately, we should upgrade
+	to automake 1.6 or 1.7, but let's do it in baby steps.
+
+	* intl/*: The ages of the files in here (especially
+	Makefile.in) were causing build problems. Updated to be
+	equivalent to gettext-0.10.40 (from 0.10.35). There are possibly
+	still some problems here interacting with intltool, for which
+	the simplest solution might be to go to gettext-0.11.x, but this
+	will do for now.
+
+2003-05-01  Miloslav Trmac  <mitr@volny.cz>
+
+	* scripts/gen-docuid.c: Recognize --help, print usage information
+	  when parameters are passed (bug #430498).
+	* scripts/Makefile.am: Add include directories to be able to use
+	  gettext in scripts/gen-docuid.c.
+	* man/man1/scrollkeeper-gen-seriesid.1: Document --help.
+	* po/POTFILES.in: Add scripts/gen-docuid.c.
+
+	* po/cs.po: Update Czech translation.
+
+2003-02-03  Miloslav Trmac  <mitr@volny.cz>
+
+	* po/cs.po: Update Czech translation.
+
+	* po/ro.po: Added ro translation from
+	Marius Andreiana <mandreiana@rdsnet.ro>.
+
+2003-01-22 Dan Mueth <muet@alumni.uchicago.edu>
+
+	This is the 0.3.12 release point.
+
+	(Applying patch which was in 0.3.11 but somehow didn't get committed
+	 to CVS.)
+        * cl/templates/scrollkeeper_cl.xml.in:
+                Updated to have GNOME categories in it from the Panel, thanks
+                to patch from Sander Vesik <Sander.Vesik@sun.com>
+
+2003-01-22 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Bumping to version 0.3.12.
+
+2003-01-22 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* scrollkeeper.spec.in: Fix duplication of *.mo files and 
+	  added removal of .../var files at end of build to satisfy 
+	  rpm >= 4.1
+
+2003-01-22 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* po/de.po: Updated German translations from Christian 
+	  Neumair <chris@gnome-de.org>
+	* po/da.po: Updated Danish translations from Ole 
+	  Laursen <olau@hardworking.dk>
+	* po/nl.po: Updated Dutch translations from Tino Meinen 
+	  <a.t.meinen@chello.nl>
+	* po/es.po: Updated Spanish translations from Pablo Gonzalo 
+	  del Campo <pablodc@bigfoot.com>
+
+2003-01-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing version to 0.3.12beta for a test release.
+
+2003-01-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* po/de.po: Updated German translation from Christian Neumair 
+	  <chris@gnome-de.org> 
+	* po/sv.po: Updated Swedish translation from Christian 
+	  Rose <menthos@menthos.com>
+	* po/zh_CN.po: New simplified Chinese translation by Zipeco 
+	  <Zipeco@btamail.net.cn>.
+	* configure.in: Added new 'zh_CN' locale.
+	* cl/templates/Makefile.am: Added new 'zh_CN' locale.
+	* po/fr.po: Updated French translation by Christophe Merlet (RedFox) 
+	  <redfox@redfoxcenter.org>
+
+2003-01-20 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* po/it.po: Updated Italian translation from Alessio 
+	  Frusciante <algol@firenze.linux.it>
+	* extract/stylesheets/toc.xsl: Patch from Guido Draheim 
+	  <guidod-2002-@gmx.de> to allow for <refentry> parts.
+	* po/da.po: Updated Danish translations by Ole Laursen 
+	  <olau@hardworking.dk>
+	* po/sk.po: Update Slovak translations by Stanislav Visnovsky 
+	  <visnovsky@nenya.ms.mff.cuni.cz>
+	* po/es.po: Updated Spanish translations by Pablo Gonzalo del 
+	  Campo <pablodc@bigfoot.com>
+	* po/ru.po: Updated Russian translations by Dmitry 
+	  Mastrukov <dmitry@taurussoft.org>
+	* po/be.po: New Belarusian translations by Vital Khilko 
+	  <dojlid@mova.org>
+	* configure.in: Added new 'be' locale.
+	* cl/templates/Makefile.am: Added new 'be' locale.
+	* po/ca.po: Updated Catalan translations by Jordi Mallach 
+	  <jordi@sindominio.net>
+
+2002-12-30  Miloslav Trmac  <mitr@volny.cz>
+
+	* cl/templates/Makefile.am: Added cs and ro to TRANSLATED_LOCALES
+
+2002-12-21  Miloslav Trmac  <mitr@volny.cz>
+
+	* po/ro.po: Added ro translation from
+	Marius Andreiana <mandreiana@rdsnet.ro>.
+	* configure.in: Added ro to ALL_LINGUAS
+
+2002-12-17  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added cs (Czech) to ALL_LINGUAS
+	* po/cs.po: Added Czech translation
+
+2002-12-07 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* scrollkeeper.spec.in: Adding an ldconfig for %postun
+
+2002-12-07 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Added some more items.
+
+2002-10-06  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* scrollkeeper.spec.in: s/Copyright/License/
+
+	* .cvsignore: Ignore some more rubbish.
+
+2002-09-22  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* po/POTFILES.in: Added a couple of files with translatable
+	strings noticed by Kjartan Maraas <kmaraas@online.no>.
+
+	* po/no.po: New Norwegian (bokmål) translation thanks to Kjartan
+	Maraas.
+
+	* po/nb.po: Removed. It was a duplicate of no.po.
+
+	* po/stamp-cat-id, po/cat-id-tbl.c: Removed. These should not be
+	in CVS.
+
+	* configure.in: Removed nb from ALL_LINGUAS.
+
+	* cl/src/update.c: Applied patch from Owen Taylor
+	<otaylor@redhat.com> to make scrollkeeper-update a bit quieter
+	in non-verbose mode. Useful for packaging tools (bug #574338).
+
+	* libs/extract.c, cl/src/get-cl.c: Applied patch from Alexander
+	Larsson <alexl@redhat.com> to fix the recent symlink-following
+	security problem.
+
+	* libs/.cvsignore, cl/src/.cvsignore, scripts/.cvsignore,
+	man/man?/.cvsignore, buildtools/.cvsignore, config/.cvsignore,
+	cv/templates/.cvsignore, extract/.cvsignore,
+	extract/dtds/.cvsignore, extract/src/.cvsignore,
+	extract/stylesheets/.cvsignore,
+	writing_scrollkeeper_omf_files/.cvsignore,
+	writing_scrollkeeper_omf_files/C/.cvsignore, libuuid/.cvsignore,
+	po/.cvsignore:
+	Ignore a truckload of generated files. Some of these files are
+	new, others have been updated.
+
+2002-09-09  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libs/i18n.c: Fallback through a range of possible locales if
+	the first choice is not found.
+
+	* man/man8/scrollkeeper-update.8: Fix a typo.
+
+	* Makefile.am, extract/dtds/Makefile.am, doc/omf.make:
+	Apply patch from Marcus Meissner (SuSE) to move comments outside
+	of command sections and fix problem with newer automakes (bug
+	#573006).
+
+	* cl/src/Makefile.am, cl/src/update.c: Respect the setting of
+	sysconfdir when reading the configuration file.
+
+	* libs/Makefile.am, libs/extract.c: Respect the setting of
+	statedir when creating temporary files.
+
+	* TODO: Removed a couple of items that have now been done.
+
+2002-08-04 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: added other sort of locale fallback
+
+2002-08-04 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* po/ru.po: Updated version by Dmitry G. Mastrukov
+			<dmitry@taurussoft.org>
 
 2002-07-09 Dan Mueth <muet@alumni.uchicago.edu>
 

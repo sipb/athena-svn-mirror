@@ -1,47 +1,51 @@
-# scrollkeeper fr.po.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Christophe Merlet (RedFox) <redfox@eikonex.org>, 2001.
+# French translation of scrollkeeper.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2001-2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ScrollKeeper  \n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
 "PO-Revision-Date: 2001-03-25 17:48+0200\n"
-"Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
 #, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
-"Usage : scrollkepper_install [-p <SCROLLKEEPER_DB_DIR>] <FICHIER OMF>\n"
+"Usage : scrollkepper_install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <FICHIER "
+"OMF>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr ""
+msgstr "Ne peut créer la base de données. Abandon de l'installation.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
 msgstr ""
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
 msgstr ""
 
-#: cl/src/preinstall.c:35
+#: cl/src/preinstall.c:34
 #, fuzzy
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
 "Usage : scrollkeeper_preinstall <ARCHIVE DOC> <ARCHIVE OMF> <NOUVELLE "
 "ARCHIVE OMF>\n"
 
-#: cl/src/preinstall.c:68
+#: cl/src/preinstall.c:85
 #, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr ""
@@ -54,53 +58,83 @@ msgid ""
 msgstr ""
 "Usage : scrollkeeper_uninstall [-p <SCROLLKEEPER_DB_DIR>] <ARCHIVE OMF>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
 msgstr ""
 
-#: cl/src/update.c:108
+#: cl/src/update.c:109
 #, fuzzy, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 msgstr ""
 "Usage : scrollkepper_install [-p <SCROLLKEEPER_DB_DIR>] <FICHIER OMF>\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
 msgstr ""
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
 msgstr ""
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
 msgstr ""
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
 msgstr ""
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
 msgstr ""
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:63
+#, c-format
+msgid "Cannot stat %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+msgid "Unable to determine username."
+msgstr ""
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
 msgstr ""
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
 msgstr ""
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
-msgstr ""
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "mavais fichier de contenu de liste %s\n"
 
 #: libs/error.c:114
 #, c-format
@@ -112,46 +146,46 @@ msgstr ""
 msgid "OMF validation error: %s"
 msgstr ""
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
 msgstr ""
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
 msgstr ""
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
 msgstr ""
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
 msgstr ""
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
@@ -168,10 +202,15 @@ msgstr "mavais fichier de contenu de liste %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "mauvais fichier de contenu de liste étendu %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "%s manquant\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "ne peut lire le répertoire %s !!!\n"
 
 #: libs/database.c:41
 #, fuzzy, c-format
@@ -219,12 +258,11 @@ msgstr "ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Accessibilité"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Processeur"
+msgstr "Accessoires"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -407,13 +445,12 @@ msgid "Debuggers"
 msgstr "Débogueurs"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
 msgstr "Bureau"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Préférences du bureau"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -697,7 +734,7 @@ msgstr "Graphique"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Préférences"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -716,9 +753,8 @@ msgid "Profiling"
 msgstr "Profilage"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Programmes"
+msgstr "Programmation"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -810,7 +846,7 @@ msgstr "Son"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Son et vidéo"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -837,18 +873,16 @@ msgid "System"
 msgstr "Système"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Administration"
+msgstr "Administration système"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Appels système"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Appels système"
+msgstr "Outils système"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -887,9 +921,8 @@ msgid "Tutorials"
 msgstr "Tutoriels"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Utilisateurs"
+msgstr "Guides utilisateur"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
@@ -959,8 +992,75 @@ msgstr "X"
 msgid "gtk++"
 msgstr "gtk++"
 
-#~ msgid "wrong omf file %s\n"
-#~ msgstr "mauvais fichier omf %s\n"
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr ""
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr ""
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr ""
+
+#: buildtools/separate.c:333
+#, fuzzy, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "ne peut lire le répertoire %s !!!\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr ""
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr ""
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, fuzzy, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "ne peut lire le répertoire %s !!!\n"
+
+#: libs/extract.c:98
+#, fuzzy, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "ne peut lire le répertoire %s !!!\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr ""
+
+#: libs/extract.c:175
+#, fuzzy, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "ne peut lire le répertoire %s !!!\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr ""
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr ""
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr ""
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr ""
 
 #~ msgid "error while parsing %s\n"
 #~ msgstr "erreur durand l'analyse de %s\n"
@@ -971,6 +1071,9 @@ msgstr "gtk++"
 #~ msgstr ""
 #~ "Usage :  toc <nombre d'archives>\n"
 #~ "\n"
+
+#~ msgid "wrong omf file %s\n"
+#~ msgstr "mauvais fichier omf %s\n"
 
 #~ msgid "Usage: scrollkeeper_update [-p <SCROLLKEEPER_DB_DIR>]\n"
 #~ msgstr "Usage : scrollkeeper_update [-p <SCROLLKEEPER_DB_DIR>]\n"

@@ -9,7 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: scrollkeeper\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
 "PO-Revision-Date: 2002-06-03 16:10+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -17,33 +18,37 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
+#, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
 "U¿ycie: scrollkeeper-install [-v] [-q] [-p "
 "<KATALOG_BAZY_DANYCH_SCROLLKEEPER>] <PLIK OMF>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
 msgstr "Nie mo¿na utworzyæ bazy danych. Przerwano instalacjê.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
 msgstr "Rejestrowanie %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
 msgstr "Nie mo¿na zarejestrowaæ %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
 "U¿ycie: scrollkeeper-preinstall <PLIK DOC> <PLIK OMF> <NOWY PLIK OMF>\n"
 
-#: cl/src/preinstall.c:68
+#: cl/src/preinstall.c:85
 #, fuzzy, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr "Aktualizacja URL-a w pliku OMF %s nie powiod³a siê\n"
@@ -56,54 +61,85 @@ msgstr ""
 "U¿ycie: scrollkeeper-uninstall [-v] [-q] [-p "
 "<KATALOG_BAZY_DANYCH_SCROLLKEEPER>] <PLIK OMF>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
 msgstr "Wyrejestrowywanie %s\n"
 
-#: cl/src/update.c:108
-#, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+#: cl/src/update.c:109
+#, fuzzy, c-format
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 msgstr ""
 "U¿ycie: %s [-v] [-q] [-p <KATALOG_BAZY_DANYCH_SCROLLKEEPER>] [-o "
 "<PLIK_OMF>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
 msgstr "%s: uwaga: %s nadpisuje %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
 msgstr "Nie mo¿na utworzyæ bazy danych. Przerwano aktualizacjê.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
 msgstr "%s: %s: nie jest katalogiem\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
 msgstr "Aktualizowanie %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
 msgstr "Nie mo¿na zakoñczyæ aktualizacji. Nie mo¿na zarejestrowaæ %s\n"
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:63
+#, c-format
+msgid "Cannot stat %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "Nie mo¿na zarejestrowaæ %s\n"
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
 msgstr "Nie mo¿na otworzyæ pliku tymczasowego.\n"
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Nie mo¿na otworzyæ pliku tymczasowego.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
 msgstr ""
 "U¿ycie: %s [-v] <KOD_USTAWIEÑ_NARODOWYCH> <NAZWA_PLIKU_Z_DRZEWEM_KATEGORII>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
 msgstr "Brak listy zawarto¶ci dla tych ustawieñ narodowych!\n"
 
 #: libs/error.c:114
@@ -116,7 +152,7 @@ msgstr "%s: brak pamiêci: %s\n"
 msgid "OMF validation error: %s"
 msgstr "B³±d przy sprawdzaniu pliku OMF: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
@@ -124,7 +160,7 @@ msgstr ""
 "Plik TOC nie istnieje, nie mo¿na go odczytaæ lub nie jest poprawnie "
 "zbudowanym plikem XML: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
@@ -132,27 +168,27 @@ msgstr ""
 "Plik OMF nie istnieje, nie mo¿na go odczytaæ lub nie jest poprawnie "
 "zbudowanym plikem XML: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
 msgstr "B³±d przy analizie ScrollKeeper-OMF DTD: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
 msgstr "Plik OMF [%s] nie jest zgodny z ScrollKeeper-OMF DTD: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
 msgstr "Nie mo¿na odnale¼æ elementu <OMF>.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
 msgstr "Wêze³ <OMF> nie ma wêz³ów podrzêdnych.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
@@ -161,7 +197,7 @@ msgstr ""
 "Lista zawarto¶ci nie istnieje, nie mo¿na jej odczytaæ lub nie jest poprawnie "
 "zbudowanym plikiem XML: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
@@ -180,10 +216,15 @@ msgstr "Niepoprawny plik listy zawarto¶ci %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "Niepoprawny rozszerzony plik listy zawarto¶ci %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "brak %s\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Nie mo¿na otworzyæ pliku tymczasowego.\n"
 
 #: libs/database.c:41
 #, c-format
@@ -972,3 +1013,74 @@ msgstr "X"
 #: cl/templates/scrollkeeper_cl.xml.in.h:187
 msgid "gtk++"
 msgstr "gtk++"
+
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr ""
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+
+#: buildtools/separate.c:320
+#, fuzzy
+msgid "File does not contain well-formed XML\n"
+msgstr "Plik OMF nie jest poprawnie zbudowany.\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr ""
+
+#: buildtools/separate.c:333
+#, fuzzy, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Nie mo¿na zakoñczyæ aktualizacji. Nie mo¿na zarejestrowaæ %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr ""
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr ""
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, fuzzy, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Nie mo¿na otworzyæ pliku tymczasowego.\n"
+
+#: libs/extract.c:98
+#, fuzzy, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Nie mo¿na utworzyæ katalogu %s: %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, fuzzy, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "Plik OMF nie jest poprawnie zbudowany.\n"
+
+#: libs/extract.c:175
+#, fuzzy, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Nie mo¿na utworzyæ katalogu %s: %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr ""
+
+#: libs/extract.c:198
+#, fuzzy, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "Nie mo¿na otworzyæ pliku tymczasowego.\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr ""
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, fuzzy, c-format
+msgid "Usage: %s\n"
+msgstr "Aktualizowanie %s\n"

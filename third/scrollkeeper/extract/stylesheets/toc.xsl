@@ -6,7 +6,7 @@
 <xsl:template match="/">
 	<toc>
 	<xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates select="book[@id]|part|article[@id]"> 
+        <xsl:apply-templates select="book[@id]|part|article[@id]|reference"> 
 		<xsl:with-param name="toclevel" select="0"/>
 	</xsl:apply-templates>
 	</toc>
@@ -15,6 +15,13 @@
 <xsl:template match="book">
 	<xsl:param name="toclevel"/>
         <xsl:apply-templates select="article[@id]|chapter[@id]|appendix[@id]|part[@id]">
+		<xsl:with-param name="toclevel" select="$toclevel+1"/>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="reference">
+	<xsl:param name="toclevel"/>
+	<xsl:apply-templates select="refentry[@id]">
 		<xsl:with-param name="toclevel" select="$toclevel+1"/>
 	</xsl:apply-templates>
 </xsl:template>
@@ -152,6 +159,19 @@
 		<xsl:text>&#10;</xsl:text>
 	</xsl:element>
 	<xsl:text>&#10;</xsl:text>
+</xsl:template>
+  
+<xsl:template match="refentry">
+	<xsl:param name="toclevel"/>
+	<xsl:element name="tocsect{$toclevel}">
+		<xsl:attribute name="linkid">
+                        <xsl:value-of select="@id"/>
+                </xsl:attribute>
+       		<xsl:value-of select="refmeta/refentrytitle"/>
+       		<!-- <xsl:value-of select="@id"/> -->
+		<xsl:text>&#10;</xsl:text>
+	</xsl:element>
+        <xsl:text>&#10;</xsl:text>
 </xsl:template>
   
 </xsl:stylesheet>

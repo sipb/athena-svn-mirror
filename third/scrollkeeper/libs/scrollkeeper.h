@@ -29,10 +29,9 @@
  * Paths
  *
  */
-#define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
-#define SCROLLKEEPERLOGFILE "/var/log/scrollkeeper.log"
-#define SCROLLKEEPERLOGFILE_ROT "/var/log/scrollkeeper.log.1"
-#define SCROLLKEEPER_OMF_DTD "/usr/share/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd"
+#define SCROLLKEEPERLOGFILE "/gnome/head/INSTALL/var/log/scrollkeeper.log"
+#define SCROLLKEEPERLOGFILE_ROT "/gnome/head/INSTALL/var/log/scrollkeeper.log.1"
+#define SCROLLKEEPER_OMF_DTD "/gnome/head/INSTALL/share/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd"
 #define PATHLEN		256
 
 /*

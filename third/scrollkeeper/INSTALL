@@ -8,22 +8,28 @@ Requirements:
   * libxslt
 	- See http://www.xmlsoft.org/
   * intltool >= 0.8.4
-  * docbook-dtd412-xml
+  * DocBook XML DTDS.
+	- Versions 4.1.2 and 4.2 are currently recognised by the configure
+	  script.
 	- Note that it is important that the DTD correctly registers its
 	  files with the XML catalog.  
         - If the following commands don't return paths to files which exist
-	  on your system, then you need to get new DocBook packages:
+	  on your system, then you need to check your DocBook installation:
 	   (a) xmlcatalog /etc/xml/catalog "-//OASIS//DTD DocBook XML V4.1.2//EN"
+	   (replace "V4.1.2" with "V4.2" if you are using the latter version of
+	   DocBook),
 	   (b) xmlcatalog /etc/xml/catalog
 		http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+	(Note that if your XML catalog is installed somewhere other than
+	/etc/xml/, you will need to pass the --with-xml-catalog=... option to
+	the configure script.)
 	- For more information and for tarballs which should work, see 
 	  http://scrollkeeper.sourceforge.net/docbook.shtml
-  * docbook-xsl-1.48
-	- See comments above for docbook-dtd412-xml
-  * (Note that openjade is no longer required.)
+  * DocBook XSLT stylesheets package.
+  	- versions later than 1.48 are known to work with Scrollkeeper.
 
   Note: Some people have had odd problems with building ScrollKeeper on certain
-  systems.  It appears to be because they have old versions of gettext,
+  systems. It appears to be because they have old versions of gettext,
   iconv, or the requirements listed above.  If you have problems, make sure
   you have recent versions of these packages.
  

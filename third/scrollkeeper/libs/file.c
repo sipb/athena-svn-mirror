@@ -54,6 +54,7 @@ int copy_file(char *old, char *new)
 	
 	new_fid = fopen(new, "w");
 	if (new_fid == NULL) {
+		fclose (old_fid);
 		return 0;
 	}
 	
@@ -62,11 +63,15 @@ int copy_file(char *old, char *new)
 		nitems = fread((void *)buf, sizeof(unsigned char), 1024, old_fid);
 		if (nitems == 0) {
 			if (ferror(old_fid)) {
+				fclose (old_fid);
+				fclose (new_fid);
 				return 1;
 			}
 		}
 		
 		if (fwrite((void *)buf, sizeof(unsigned char), nitems, new_fid) == 0) {
+			fclose (old_fid);
+			fclose (new_fid);
 			return 1;
 		}
 	}

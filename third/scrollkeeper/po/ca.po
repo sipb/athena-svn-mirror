@@ -1,50 +1,56 @@
 # scrollkeeper translation to Catalan.
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
-# Softcatal‡ <info@softcatala.org>, 2001.
-# Jordi Mallach <jordi@sindominio.net>, 2002.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+# Softcatal√† <info@softcatala.org>, 2001.
+# Jordi Mallach <jordi@sindominio.net>, 2002, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: scrollkeeper 0.3.9\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2002-06-10 16:34+0200\n"
+"Project-Id-Version: scrollkeeper 0.3.13-pre1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-06-24 18:28+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
+#, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
-"Sintaxi: scrollkeeper_install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <FITXER "
-"OMF>\n"
+"Forma d'√∫s: scrollkeeper_install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] "
+"<FITXER OMF>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr "No s'ha pogut crear la base de dades. Instal∑laciÛ abortada.\n"
+msgstr "No s'ha pogut crear la base de dades. Instal¬∑laci√≥ avortada.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
-msgstr "Registrant %s\n"
+msgstr "S'est√† registrant %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
 msgstr "No es pot registrar %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
-"Sintaxi: scrollkeeper-preinstall <FITXER DOC> <FITXER OMF> <FITXER OMF NOU>\n"
+"Forma d'√∫s: scrollkeeper-preinstall <FITXER DOC> <FITXER OMF> <FITXER OMF "
+"NOU>\n"
 
-#: cl/src/preinstall.c:68
+#: cl/src/preinstall.c:85
 #, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr ""
-"ha fallat l'actualitzaciÛ d'url en el fitxer OMF %s. Copiant el fitxer OMF "
+"ha fallat l'actualitzaci√≥ d'url en el fitxer OMF %s. Copiant el fitxer OMF "
 "sense modificar.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
@@ -52,117 +58,149 @@ msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
 msgstr ""
-"Sintaxi: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <FITXER "
-"OMF>\n"
+"Forma d'√∫s: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] "
+"<FITXER OMF>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
-msgstr "Deregistrant %s\n"
+msgstr "S'est√† deregistrant %s\n"
 
-#: cl/src/update.c:108
-#, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
-msgstr "Sintaxi: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+#: cl/src/update.c:109
+#, fuzzy, c-format
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr "Forma d'√∫s: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
-msgstr "%s: advertiment: %s substitueix %s\n"
+msgstr "%s: av√≠s: %s substitueix %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
-msgstr "No s'ha pogut crear la base de dates. ActualitzaciÛ abortada.\n"
+msgstr "No s'ha pogut crear la base de dates. Actualitzaci√≥ avortada.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
-msgstr "%s: %s: no Ès un directori\n"
+msgstr "%s: %s: no √©s un directori\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
-msgstr "Actualitzant %s\n"
+msgstr "S'est√† actualitzant %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
-msgstr "No s'ha pogut completar l'actualitzaciÛ. No s'ha pogut registrar %s\n"
+msgstr "No s'ha pogut completar l'actualitzaci√≥. No s'ha pogut registrar %s\n"
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "No es pot fer ¬´stat¬ª del fitxer: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "No es pot registrar %s\n"
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
 msgstr "No s'ha pogut obrir un fitxer temporal.\n"
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "No s'ha pogut obrir un fitxer temporal.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
-msgstr "Sintaxi: %s [-v] <LOCAL> <NOM DEL FITXER DE L'ARBRE DE CATEGORIES>\n"
+msgstr ""
+"Forma d'√∫s: %s [-v] <LOCAL> <NOM DEL FITXER DE L'ARBRE DE CATEGORIES>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
 msgstr "No hi ha cap llista de contingut per a aquest local!!!\n"
 
 #: libs/error.c:114
 #, c-format
 msgid "%s: out of memory: %s\n"
-msgstr "%s: sense memÚria: %s\n"
+msgstr "%s: mem√≤ria exhaurida: %s\n"
 
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr "Error de validaciÛ d'OMF: %s"
+msgstr "Error de validaci√≥ d'OMF: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
-"El fitxer TOC no existeix, no es pot llegir o no tÈ XML ben formatat: %s\n"
+"El fitxer TOC no existeix, no es pot llegir o no t√© XML ben formatat: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
-"El fitxer OMF no existeix, no es pot llegir o no tÈ XML ben formatat: %s\n"
+"El fitxer OMF no existeix, no es pot llegir o no t√© XML ben formatat: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
 msgstr "No s'ha pogut analitzar el DTD de ScrollKeeper-OMF: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
 msgstr "El fitxer OMF [%s] no valida amb el DTD de ScrollKeeper-OMF: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr "No s'ha pogut localitzar un element <OMF>.\n"
+msgstr "No s'ha pogut trobar un element <OMF>.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
 msgstr "El node <OMF> no te fills.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
-"El fitxer amb la llista de continguts no existeix, no es pot llegir o no tÈ "
+"El fitxer amb la llista de continguts no existeix, no es pot llegir o no t√© "
 "XML ben formatat: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
 "El fitxer amb la llista extesa de continguts no existeix, no es pot llegir o "
-"no tÈ XML ben formatat: %s\n"
+"no t√© XML ben formatat: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
@@ -174,10 +212,15 @@ msgstr "contingut incorrecte del fitxer de llista %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "contingut ampliat incorrecte del fitxer de llista %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "falta %s\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "No es pot crear un fitxer temporal: %s : %s\n"
 
 #: libs/database.c:41
 #, c-format
@@ -186,7 +229,7 @@ msgstr "No s'ha pogut crear el directori %s: %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr "El fitxer OMF no es va formar be.\n"
+msgstr "El fitxer OMF no es va formar b√©.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
@@ -194,7 +237,7 @@ msgstr "No s'ha pogut trobar l'element arrel del fitxer OMF.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr "L'elemet arrel del fitxer OMF no Ès <omf>.\n"
+msgstr "L'elemet arrel del fitxer OMF no √©s <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
@@ -205,7 +248,7 @@ msgid ""
 "Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
 "<stylesheet 2> <output file 2> ...\n"
 msgstr ""
-"Sintaxi: scrollkeeper-extract <fitxer xml> <fulla d'estil 1> <fitxer de "
+"Forma d'√∫s: scrollkeeper-extract <fitxer xml> <fulla d'estil 1> <fitxer de "
 "sortida 1> <fulla d'estil 2> <fitxer de sortida 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
@@ -219,7 +262,7 @@ msgstr "Modelatge en 3D"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:2
 msgid "3D Rendering"
-msgstr "RepresentaciÛ en 3D"
+msgstr "Representaci√≥ en 3D"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:3
 msgid "ADA"
@@ -227,16 +270,15 @@ msgstr "ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Accessibilitat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Processador"
+msgstr "Accessoris"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
-msgstr "AdministraciÛ"
+msgstr "Administraci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:7
 msgid "Amusement"
@@ -244,7 +286,7 @@ msgstr "Esbarjo"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:8
 msgid "Analysis"
-msgstr "An‡lisi"
+msgstr "An√†lisi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:9
 msgid "AppleTalk"
@@ -252,7 +294,7 @@ msgstr "AppleTalk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:10
 msgid "Applets"
-msgstr "Miniaplicacions"
+msgstr "Applets"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:11
 msgid "Applications"
@@ -276,7 +318,7 @@ msgstr "Astronomia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:16
 msgid "Astrophysics"
-msgstr "AstrofÌsica"
+msgstr "Astrof√≠sica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:17
 msgid "BIND"
@@ -284,7 +326,7 @@ msgstr "BIND"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:18
 msgid "Backups"
-msgstr "CÚpies de seguretat"
+msgstr "C√≤pies de seguretat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:19
 msgid "Biology"
@@ -324,7 +366,7 @@ msgstr "CLI"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:28
 msgid "Calculating"
-msgstr "C‡lcul"
+msgstr "C√†lcul"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:29
 msgid "Caldera"
@@ -344,7 +386,7 @@ msgstr "Xat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:33
 msgid "Chemistry"
-msgstr "QuÌmica"
+msgstr "Qu√≠mica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:34
 msgid "Clock"
@@ -360,27 +402,27 @@ msgstr "Generadors de codi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:37
 msgid "Compression"
-msgstr "CompressiÛ"
+msgstr "Compressi√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:38
 msgid "Computer Science"
-msgstr "Inform‡tica"
+msgstr "Inform√†tica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:39
 msgid "Config Files"
-msgstr "Fitxers de configuraciÛ"
+msgstr "Fitxers de configuraci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:40
 msgid "Configuration"
-msgstr "ConfiguraciÛ"
+msgstr "Configuraci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:41
 msgid "Configuration Tools"
-msgstr "Eines de configuraciÛ"
+msgstr "Eines de configuraci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:42
 msgid "Conversion"
-msgstr "ConversiÛ"
+msgstr "Conversi√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
 msgid "Core Desktop"
@@ -415,13 +457,12 @@ msgid "Debuggers"
 msgstr "Depuradors"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
-msgstr "Escriptori nucli"
+msgstr "Escriptori"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Prefer√®ncies de l'escriptori"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -433,7 +474,7 @@ msgstr "Eines de desenvolupament"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:55
 msgid "Display"
-msgstr "VisualitzaciÛ"
+msgstr "Visualitzaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:56
 msgid "Distributions"
@@ -449,19 +490,19 @@ msgstr "EDA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:59
 msgid "Editing"
-msgstr "EdiciÛ"
+msgstr "Edici√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:60
 msgid "Education"
-msgstr "EducaciÛ"
+msgstr "Educaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:61
 msgid "Email"
-msgstr "Correu electrÚnic"
+msgstr "Correu electr√≤nic"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:62
 msgid "English"
-msgstr "AnglËs"
+msgstr "Angl√®s"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:63
 msgid "Environments"
@@ -481,7 +522,7 @@ msgstr "Lluita"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:67
 msgid "File Sharing"
-msgstr "ComparticiÛ de fitxers"
+msgstr "Compartici√≥ de fitxers"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:68
 msgid "File Utilities"
@@ -533,11 +574,11 @@ msgstr "General"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:80
 msgid "Genetics"
-msgstr "GenËtica"
+msgstr "Gen√®tica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:81
 msgid "Graphics"
-msgstr "Grafics"
+msgstr "Gr√†fics"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:82
 msgid "HTTP"
@@ -561,7 +602,7 @@ msgstr "Internet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:87
 msgid "Internet Phone"
-msgstr "TelËfon per Internet"
+msgstr "Tel√®fon per Internet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:88
 msgid "Introductory"
@@ -569,7 +610,7 @@ msgstr "Introductori"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:89
 msgid "Intrusion Detection"
-msgstr "DetecciÛ d'intrusions"
+msgstr "Detecci√≥ d'intrusions"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:90
 msgid "Java"
@@ -593,7 +634,7 @@ msgstr "Biblioteques"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:95
 msgid "Licenses"
-msgstr "LlicËncies"
+msgstr "Llic√®ncies"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:96
 msgid "Linux"
@@ -617,11 +658,11 @@ msgstr "Mandrake"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:101
 msgid "Math"
-msgstr "Matem‡tiques"
+msgstr "Matem√†tiques"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:102
 msgid "Maths"
-msgstr "Matem‡tiques"
+msgstr "Matem√†tiques"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:103
 msgid "Messaging"
@@ -637,11 +678,11 @@ msgstr "Monitors"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:106
 msgid "Multimedia"
-msgstr "MultimËdia"
+msgstr "Multim√®dia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:107
 msgid "Music"
-msgstr "M˙sica"
+msgstr "M√∫sica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:108
 msgid "NetBSD"
@@ -657,11 +698,11 @@ msgstr "Xarxes"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:111
 msgid "News"
-msgstr "NotÌcies"
+msgstr "Not√≠cies"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:112
 msgid "Office"
-msgstr "Ofim‡tica"
+msgstr "Ofim√†tica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:113
 msgid "Other"
@@ -681,7 +722,7 @@ msgstr "PPP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:117
 msgid "Package Management"
-msgstr "GestiÛ de paquets"
+msgstr "Gesti√≥ de paquets"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:118
 msgid "Packaging"
@@ -693,7 +734,7 @@ msgstr "Perl"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:120
 msgid "Physics"
-msgstr "FÌsica"
+msgstr "F√≠sica"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:121
 msgid "Players"
@@ -705,15 +746,15 @@ msgstr "Diagrames"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Prefer√®ncies"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
-msgstr "PresentaciÛ"
+msgstr "Presentaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:125
 msgid "Printing"
-msgstr "ImpressiÛ"
+msgstr "Impressi√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:126
 msgid "Processor"
@@ -721,12 +762,11 @@ msgstr "Processador"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:127
 msgid "Profiling"
-msgstr "gestiÛ de perfils"
+msgstr "Perfilat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Programes"
+msgstr "Programaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -734,7 +774,7 @@ msgstr "Programes"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:130
 msgid "Publishing"
-msgstr "PublicaciÛ"
+msgstr "Publicaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:131
 msgid "Puzzles"
@@ -782,11 +822,11 @@ msgstr "SSH"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:142
 msgid "Science"
-msgstr "CiËncia"
+msgstr "Ci√®ncia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:143
 msgid "Scientific"
-msgstr "CientÌfic"
+msgstr "Cient√≠fic"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:144
 msgid "Screensavers"
@@ -802,7 +842,7 @@ msgstr "Serveis"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:147
 msgid "Settings"
-msgstr "Par‡metres"
+msgstr "Par√†metres"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:148
 msgid "Simulation"
@@ -818,7 +858,7 @@ msgstr "So"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "So i v√≠deo"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -830,7 +870,7 @@ msgstr "Emmagatzemament"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:154
 msgid "Strategy"
-msgstr "EstratËgia"
+msgstr "Estrat√®gia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:155
 msgid "SuSE"
@@ -845,18 +885,16 @@ msgid "System"
 msgstr "Sistema"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "AdministraciÛ"
+msgstr "Administraci√≥ del sistema"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Crides del sistema"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Crides del sistema"
+msgstr "Eines del sistema"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -895,9 +933,8 @@ msgid "Tutorials"
 msgstr "Tutorials"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Usuaris"
+msgstr "Guies d'usuari"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
@@ -917,15 +954,15 @@ msgstr "Control de versions"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:175
 msgid "Video"
-msgstr "VÌdeo"
+msgstr "V√≠deo"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:176
 msgid "Video Conferencing"
-msgstr "VideoconferËncia"
+msgstr "Videoconfer√®ncia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:177
 msgid "Viewing"
-msgstr "VisualitzaciÛ"
+msgstr "Visualitzaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:178
 msgid "Virus"
@@ -933,7 +970,7 @@ msgstr "Virus"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:179
 msgid "Visualisation"
-msgstr "VisualitzaciÛ"
+msgstr "Visualitzaci√≥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:180
 msgid "Web"
@@ -941,7 +978,7 @@ msgstr "Web"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:181
 msgid "Web Publishing"
-msgstr "PublicaciÛ web"
+msgstr "Publicaci√≥ web"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:182
 msgid "WebML"
@@ -967,21 +1004,77 @@ msgstr "X"
 msgid "gtk++"
 msgstr "gtk++"
 
-#~ msgid "error while parsing %s\n"
-#~ msgstr "s'ha produÔt un error en analitzar %s\n"
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Fitxer de categoria inv√†lid.\n"
 
-#~ msgid ""
-#~ "Usage:  toc <filename>\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Sintaxi:  toc <nom_de_fitxer>\n"
-#~ "\n"
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+"Forma d'√∫s: scrollkeeper-tree-separate <fitxer d'arbre> <directori "
+"d'eixida>\n"
 
-#~ msgid "wrong omf file %s\n"
-#~ msgstr "fitxer omf incorrecte %s\n"
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "El fitxer no cont√© XML ben format.\n"
 
-#~ msgid "scrollkeeper-install: out of memory: %s\n"
-#~ msgstr "scrollkeeper-install: sense memÚria: %s\n"
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "la separaci√≥ d'arbres ha fallat\n"
 
-#~ msgid "%s: warning: replacing %s with %s\n"
-#~ msgstr "%s: advertiment: s'est‡ reemplaÁant %s amb %s\n"
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "No s'ha pogut crear el fitxer de categories localitzades: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "S'est√† creant el fitxer de categories localitzades: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "No s'han pogut crear tots els fitxers de categories localitzades.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "No es pot crear un fitxer temporal: %s : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "No es pot llegir el fitxer: %s :%s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "El document no √©s XML ben format: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "No es pot fer ¬´stat¬ª del fitxer: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "No es pot aplicar la fulla d'estil a un document de tipus: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "No es pot obrir el fitxer d'eixida: %s :%s \n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "No es pot fer ¬´stat¬ª en el fitxer de fulla d'estil: %s : %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr "Forma d'√∫s: %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: No es pot obrir el fitxer temporal: %s\n"

@@ -5,14 +5,12 @@ Name:       scrollkeeper
 Version:    @VERSION@
 Release:    1
 Source0:    http://download.sourceforge.net/scrollkeeper/%{name}-%{version}.tar.gz
-Copyright:  LGPL
+License:    LGPL
 Group:      System Environment/Base
 BuildRoot:  %{_tmppath}/%{name}-buildroot
 URL:        http://scrollkeeper.sourceforge.net/
 Requires:   libxml2 >= @LIBXML2_REQUIRED@
-Requires:   intltool >= @INTLTOOL_REQUIRED@
 Requires:   libxslt
-Requires:   docbook-dtd412-xml
 BuildRequires:   libxml2-devel
 BuildRequires:   libxslt-devel
 
@@ -36,6 +34,9 @@ make %{?_smp_mflags}
 %install
 if [ ! $RPM_BUILD_ROOT = "/" ]; then rm -rf $RPM_BUILD_ROOT; fi
 %makeinstall
+if [ ! $RPM_BUILD_ROOT = "/" ]; then rm -rf $RPM_BUILD_ROOT/var; fi
+		# We must remove .../var b/c rpm >=4.1 doesn't allow
+		# files which are not packaged in the buildroot.
 
 %find_lang %{name}
 
@@ -47,7 +48,8 @@ rm -rf %{_datadir}/scrollkeeper/Templates || true
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc COPYING COPYING-DOCS AUTHORS README ChangeLog NEWS INSTALL 
+%doc COPYING COPYING.DOC AUTHORS README ChangeLog NEWS INSTALL TODO
+%doc scrollkeeper-spec.txt
 %config %{_sysconfdir}/*
 %{_datadir}/omf/scrollkeeper
 %{_bindir}/*
@@ -55,7 +57,6 @@ rm -rf %{_datadir}/scrollkeeper/Templates || true
 %{_mandir}/*/*
 %{_datadir}/xml/scrollkeeper
 %{_datadir}/scrollkeeper
-%{_datadir}/locale/*/*
 
 
 %post
@@ -83,9 +84,17 @@ if [ $1 = 0 ]; then
   /usr/bin/xmlcatalog --noout --del \
 	"%{_datadir}/xml/scrollkeeper/dtds/scrollkeeper-omf.dtd" %xmlcatalog
 fi
-
+/sbin/ldconfig
 
 %changelog
+* Sat Dec 6 2003 Malcolm Tredinnick <malcolm@commsecure.com.au>
+- Remove some needless Requires.
+- Add some more documentation.
+
+* Wed Jan 22 2003 Dan Mueth <muet@alumni.uchicago.edu>
+- Fix duplication of *.mo files and added removal of .../var files at end
+-  of build to satisfy rpm >= 4.1.
+
 * Sun Apr 7 2002 Dan Mueth <muet@alumni.uchicago.edu>
 - Adding DTD to %files and xmlcatalog registration scripts to %post and %postun
 

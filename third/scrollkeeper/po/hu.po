@@ -4,158 +4,199 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Scrollkeeper 0.05\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2001-02-15 11:39+01:00\n"
+"Project-Id-Version: scrollkeeper 0.3.13-pre1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-06-25 12:18+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
-"Language-Team: Hungarian <hu@gnome.hu>\n"
+"Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
 #, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
-"Használat: scrollkeeper_install [-p <SCROLLKEEPER_DB_DIR>] <OMF FÁJL>\n"
+"Használat: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF-"
+"FÁJL>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr ""
+msgstr "Adatbázis létrehozása sikertelen. Telepítés megszakítva.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
-msgstr ""
+msgstr "%s regisztrálása\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
-msgstr ""
+msgstr "%s regisztrálása sikertelen\n"
 
-#: cl/src/preinstall.c:35
+#: cl/src/preinstall.c:34
 #, fuzzy
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
-"Használat: scrollkeeper_preinstall <DOC FÁJL> <OMF FÁJL> <ÚJ OMF FÁJL>\n"
+"Használat: scrollkeeper-preinstall <DOC-FÁJL> <OMF-FÁJL> <ÚJ OMF-FÁJL>\n"
 
-#: cl/src/preinstall.c:68
+#: cl/src/preinstall.c:85
 #, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr ""
+"Nem sikerült frissíteni az URL-t a(z) %s OMF-fájlban. OMF-fájl változatlan "
+"másolása.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
 msgstr ""
-"Használat: scrollkeeper_uninstall [-p <SCROLLKEEPER_DB_DIR>] <OMF FÁJL>\n"
+"Használat: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF-"
+"FÁJL>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
-msgstr ""
+msgstr "Regisztráció törlése: %s\n"
 
-#: cl/src/update.c:108
+#: cl/src/update.c:109
 #, fuzzy, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
-msgstr ""
-"Használat: scrollkeeper_install [-p <SCROLLKEEPER_DB_DIR>] <OMF FÁJL>\n"
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr "Használat: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
-msgstr ""
+msgstr "%s: figyelem: %s felülbírálja %s-t\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
-msgstr ""
+msgstr "Adatbázis létrehozása sikertelen. Frissítés megszakítva.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
-msgstr ""
+msgstr "%s: %s: nem könyvtár\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
-msgstr ""
+msgstr "%s frissítése\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
+msgstr "Nem sikerült befejezni a frissítést. %s regisztrálása sikertelen\n"
+
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "A fájl adatainak lekérdezése sikertelen: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
 msgstr ""
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "%s regisztrálása sikertelen\n"
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
-msgstr ""
+msgstr "Nem sikerült megnyitni az ideiglenes fájlt.\n"
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Nem sikerült megnyitni az ideiglenes fájlt.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
-msgstr ""
+msgstr "Használat: %s [-v] <LOCALE> <KATEGÓRIAFA FÁJLNEVE>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
-msgstr ""
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "Ehhez a locale-hoz nincs tartalomlista!!!\n"
 
 #: libs/error.c:114
 #, c-format
 msgid "%s: out of memory: %s\n"
-msgstr ""
+msgstr "%s: elfogyott a memória: %s\n"
 
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr ""
+msgstr "OMF-érvényesítési hiba: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
-msgstr ""
+msgstr "A TOC-fájl nem létezik, nem olvasható, vagy nem jólformázott XML: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
+"Az OMF-fájl nem létezik, nem olvasható, vagy nem jólformázott XML: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Nem sikerült értelmezni a ScrollKeeper-OMF DTD-t: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Az OMF-fájl [%s] nem érvényes a ScrollKeeper-OMF DTD alapján: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr ""
+msgstr "Nem található egy <OMF> elem.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
-msgstr ""
+msgstr "Az <OMF> csomópontnak nincs gyermeke.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
+"A tartalomlista-fájl nem létezik, nem olvasható, vagy nem jólformázott XML: %"
+"s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
+"A kiterjesztett tartalomlista-fájl nem létezik, nem olvasható, vagy nem "
+"jólformázott XML: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
@@ -167,46 +208,53 @@ msgstr "Rossz tartalomjegyzékfájl %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "Rossz részletes tartalomjegyzékfájl %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "%s hiányzik\n"
 
-#: libs/database.c:41
+#: libs/uninstall.c:211
 #, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Ideiglenes fájl létrehozása sikertelen: %s : %s\n"
+
+#: libs/database.c:41
+#, c-format
 msgid "Could not create directory %s : %s\n"
-msgstr "%s könyvtár olvasása sikertelen\n"
+msgstr "%s könyvtár létrehozása sikertelen : %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr ""
+msgstr "Az OMF-fájl nem jólformázott.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr ""
+msgstr "Nem található a gyökérelem az OMF-fájlban.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr ""
+msgstr "Az OMF-fájl gyökéreleme nem <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr ""
+msgstr "Az OMF-fájlban nincs <resource> elem.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
 "Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
 "<stylesheet 2> <output file 2> ...\n"
 msgstr ""
+"Használat: scrollkeeper-extract <xml-fájl> <1. stíluslap> <1. kimeneti fájl> "
+"<2. stíluslap> <2. kimeneti fájl> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
 #, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr ""
+msgstr "Ismeretlen fájltípus: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
-msgstr "3D medellezés"
+msgstr "3D modellezés"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:2
 msgid "3D Rendering"
@@ -218,12 +266,11 @@ msgstr "ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Kisegítõ lehetõségek"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Processzor"
+msgstr "Kellékek"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -247,7 +294,7 @@ msgstr "Appletek"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:11
 msgid "Applications"
-msgstr "Alkalamzások"
+msgstr "Alkalmazások"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:12
 msgid "Arcade"
@@ -255,7 +302,7 @@ msgstr "Arcade"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:13
 msgid "Archiving"
-msgstr "Mentés"
+msgstr "Archiválás"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:14
 msgid "Arts"
@@ -283,11 +330,11 @@ msgstr "Biológia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:20
 msgid "Board"
-msgstr "Társasjátékok"
+msgstr "Táblás játékok"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:21
 msgid "Build Tools"
-msgstr "Forrásépítõ eszközök"
+msgstr "Programépítõ eszközök"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:22
 msgid "C"
@@ -303,7 +350,7 @@ msgstr "CAD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:25
 msgid "CD Mastering"
-msgstr "CD készítés"
+msgstr "CD-készítés"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:26
 msgid "CDE"
@@ -335,11 +382,11 @@ msgstr "Csevegés"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:33
 msgid "Chemistry"
-msgstr "Kémi"
+msgstr "Kémia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:34
 msgid "Clock"
-msgstr "Órák"
+msgstr "Óra"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:35
 msgid "Clocks"
@@ -375,7 +422,7 @@ msgstr "Átalakítás"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
 msgid "Core Desktop"
-msgstr "Alap GNOME munkafelület"
+msgstr "Munkaasztal"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:44
 msgid "Cryptography"
@@ -406,13 +453,12 @@ msgid "Debuggers"
 msgstr "Hibakeresõk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
-msgstr "Alap GNOME munkafelület"
+msgstr "Munkaasztal"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Munkaasztal beállításai"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -484,7 +530,7 @@ msgstr "Fájlrendszerek"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:70
 msgid "Financial"
-msgstr "Pényzügyi"
+msgstr "Pénzügyi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:71
 msgid "Firewall"
@@ -492,7 +538,7 @@ msgstr "Tûzfal"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:72
 msgid "First Person Shooters"
-msgstr "Lövöldözös"
+msgstr "Lövöldözõs"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:73
 msgid "Fonts"
@@ -512,7 +558,7 @@ msgstr "GTK+"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:77
 msgid "GUI"
-msgstr "Grafikusfelület"
+msgstr "Grafikus felület"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:78
 msgid "Games"
@@ -540,7 +586,7 @@ msgstr "Hardver"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:84
 msgid "IDEs"
-msgstr "IDEs"
+msgstr "IDE"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:85
 msgid "Input Devices"
@@ -552,7 +598,7 @@ msgstr "Internet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:87
 msgid "Internet Phone"
-msgstr "Internet-telefon"
+msgstr "Internetes telefon"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:88
 msgid "Introductory"
@@ -560,7 +606,7 @@ msgstr "Bevezetõ"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:89
 msgid "Intrusion Detection"
-msgstr "Behatoló-felismerés"
+msgstr "Behatolásfelismerés"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:90
 msgid "Java"
@@ -696,7 +742,7 @@ msgstr "Plottolás"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Beállítások"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -715,9 +761,8 @@ msgid "Profiling"
 msgstr "Profiling"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Programok"
+msgstr "Programozás"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -809,7 +854,7 @@ msgstr "Hang"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Hang és video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -836,18 +881,16 @@ msgid "System"
 msgstr "Rendszer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Adminisztráció"
+msgstr "Rendszeradminisztráció"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Rendszerhívások"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Rendszerhívások"
+msgstr "Rendszereszközök"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -886,9 +929,8 @@ msgid "Tutorials"
 msgstr "Tutorials"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Felhasználók"
+msgstr "Felhasználói kézikönyvek"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
@@ -900,7 +942,7 @@ msgstr "Segédprogramok"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:173
 msgid "Utility"
-msgstr "Segégprogramok"
+msgstr "Segédprogramok"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:174
 msgid "Version Control"
@@ -908,11 +950,11 @@ msgstr "Verziókövetés"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:175
 msgid "Video"
-msgstr "Videó"
+msgstr "Video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:176
 msgid "Video Conferencing"
-msgstr "Videókonferencia"
+msgstr "Videokonferencia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:177
 msgid "Viewing"
@@ -958,18 +1000,76 @@ msgstr "X"
 msgid "gtk++"
 msgstr "gtk++"
 
-#~ msgid "wrong omf file %s\n"
-#~ msgstr "Rossz omf fájl %s\n"
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Érvénytelen kategóriafájl.\n"
 
-#~ msgid "error while parsing %s\n"
-#~ msgstr "Hiba %s értlmezése közben\n"
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr "Használat: scrollkeeper-tree-separate <fafájl> <kimeneti könyvtár>\n"
 
-#~ msgid ""
-#~ "Usage:  toc <filename>\n"
-#~ "\n"
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "A fájl nem tartalmaz jólformázott XML-t\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "faszeparálás sikertelen\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Nem sikerült létrehozni a honosított kategóriafájlt: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Honosított kategóriafájl létrehozása: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Nem sikerült létrehozni az összes honosított kategóriafájlt.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Ideiglenes fájl létrehozása sikertelen: %s : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Fájl olvasása sikertelen: %s : %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "A dokumentum nem jólformázott XML: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "A fájl adatainak lekérdezése sikertelen: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "A következõ dokumentumtípusra nem lehet stíluslapot alkalmazni: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "A kimeneti fájl megnyitása sikertelen: %s : %s \n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "A stíluslapfájl adatainak lekérdezése sikertelen: %s : %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr "Használat: %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
 #~ msgstr ""
-#~ "Használat: toc <fájlnév>\n"
-#~ "\n"
-
-#~ msgid "Usage: scrollkeeper_update [-p <SCROLLKEEPER_DB_DIR>]\n"
-#~ msgstr "Használat: scrollkeeper_update [-p <SCROLLKEEPER_DB_DIR>]\n"
+#~ "scrollkeeper-get-cl: Nem sikerült megnyitni az ideiglenes fájlt: %s\n"
