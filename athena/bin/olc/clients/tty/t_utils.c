@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.32 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.33 1992-01-28 17:57:17 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.32 1992-01-10 19:57:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.33 1992-01-28 17:57:17 lwvanels Exp $";
 #endif
 #endif
 
@@ -495,10 +495,6 @@ get_prompted_input(prompt, buf, buflen, add_to_hist)
   p = index(line,'\n');
   if (p != NULL)
     *p = '\0';
-  if (line[0] == '\0') {
-    printf("\n");
-    exit(0);
-  }
   strncpy(buf,line,buflen);
   return(SUCCESS);
 }
