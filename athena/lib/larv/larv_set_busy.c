@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: larv_set_busy.c,v 1.1 1998-08-25 03:26:59 ghudson Exp $";
+static const char rcsid[] = "$Id: larv_set_busy.c,v 1.1.2.1 1998-09-24 13:54:51 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>

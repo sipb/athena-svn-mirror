@@ -1,4 +1,4 @@
-/* $Id: larvnet.h,v 1.1 1998-08-25 03:27:01 ghudson Exp $ */
+/* $Id: larvnet.h,v 1.1.2.1 1998-09-24 13:54:51 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *

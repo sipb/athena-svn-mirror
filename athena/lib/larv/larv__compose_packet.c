@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.2 1998-09-14 03:36:50 ghudson Exp $";
+static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.2.2.1 1998-09-24 13:54:49 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
