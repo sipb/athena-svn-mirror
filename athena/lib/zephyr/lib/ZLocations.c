@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.4 1987-06-29 00:55:02 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.5 1987-06-29 02:25:38 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -46,7 +46,7 @@ Code_t ZSetLocation()
 		return (retval);
 
 	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,0,
-			        ZCompareUID,(char *)&notice.z_uid)) !=
+			        ZCompareUIDPred,(char *)&notice.z_uid)) !=
 	    ZERR_NONE)
 		return (retval);
 

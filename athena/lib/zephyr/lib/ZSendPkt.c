@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.12 1987-06-26 03:36:25 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.13 1987-06-29 02:25:13 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -21,8 +21,6 @@ Code_t ZSendPacket(packet,len)
 	ZPacket_t	packet;
 	int		len;
 {
-	int findack();
-	
 	Code_t retval;
 	struct sockaddr_in dest;
 	struct timeval tv;
@@ -55,18 +53,12 @@ Code_t ZSendPacket(packet,len)
 	for (i=0;i<HM_TIMEOUT*2;i++) {
 		select(0,&t1,&t2,&t3,&tv);
 		retval = ZCheckIfNotice(ackpack,sizeof ackpack,&notice,
-					&auth,findack,(char *)&notice.z_uid);
+					&auth,ZCompareUIDPred,
+					(char *)&notice.z_uid);
 		if (retval == ZERR_NONE)
 			return (ZERR_NONE);
 		if (retval != ZERR_NONOTICE)
 			return (retval);
 	}
 	return (ZERR_HMDEAD);
-}
-
-static int findack(notice,uid)
-	ZNotice_t *notice;
-	ZUnique_Id_t *uid;
-{
-	return (ZCompareUID(uid,&notice->z_uid));
 }
