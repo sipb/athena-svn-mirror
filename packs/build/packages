@@ -1,4 +1,4 @@
-# $Id: packages,v 1.292 2004-10-14 16:39:53 ghudson Exp $
+# $Id: packages,v 1.293 2004-10-14 21:38:16 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -184,7 +184,7 @@ third/gnome2-user-docs		requires scrollkeeper
 third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,libxklavier,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libwnck,libglade2,gail
 third/gnome-audio
 third/gnome-desktop		requires gettext,intltool,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
-third/gnome-icon-theme		requires gettext,intltool
+third/gnome-icon-theme		requires gettext,intltool,hicolor-icon-theme
 third/gnome-keyring		requires gettext,glib2,gtk2
 third/gnome-libs		requires gtk,imlib,db,ORBit,esound
 third/gnome-mag			requires gettext,intltool,libbonobo,ORBit2,glib2,gtk2,at-spi
@@ -214,6 +214,7 @@ third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
 third/gtkhtml3			requires gettext,intltool,libgnomeui,libgnomeprint,libgnomeprintui,libglade2,gal2,libbonoboui,ORBit2,libsoup
 third/gtksourceview		requires gettext,intltool,gtk2,gnome-vfs2,libxml,libgnomeprint
 third/gucharmap			requires gettext,glib2,gtk2,pango,libgnome,libgnomeui
+third/hicolor-icon-theme
 third/ifplugd			on linux requires libdaemon
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
