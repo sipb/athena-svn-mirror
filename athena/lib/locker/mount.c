@@ -31,7 +31,7 @@
 #include "locker.h"
 #include "locker_private.h"
 
-static const char rcsid[] = "$Id: mount.c,v 1.1 1999-02-26 19:04:52 danw Exp $";
+static const char rcsid[] = "$Id: mount.c,v 1.2 1999-03-08 14:51:22 ghudson Exp $";
 
 static int domount(locker_context context, int mount,
 		   locker_attachent *at, char **argv);
@@ -84,9 +84,9 @@ static int domount(locker_context context, int mount,
    * blocking it. This makes waitpid work but still prevents the
    * caller from seeing SIGCHLDs.
    */
-  sigprocmask(SIG_NOP, NULL, &mask);
+  sigemptyset(&mask);
   sigaddset(&mask, SIGCHLD);
-  sigprocmask(SIG_SETMASK, &mask, &omask);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
 
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = 0;
