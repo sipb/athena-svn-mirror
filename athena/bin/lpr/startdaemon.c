@@ -17,6 +17,8 @@ static char sccsid[] = "@(#)startdaemon.c	5.1 (Berkeley) 6/6/85";
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <errno.h>
+#include <string.h>
 #include "lp.local.h"
 
 startdaemon(printer)
@@ -64,12 +66,8 @@ perr(msg)
 	char *msg;
 {
 	extern char *name;
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-	extern int errno;
 
 	syslog(LOG_DEBUG, "%s: %s: %m", name, msg);
 	printf("%s: %s: ", name, msg);
-	fputs(errno < sys_nerr ? sys_errlist[errno] : "Unknown error" , stdout);
-	putchar('\n');
+	puts(strerror(errno));
 }
