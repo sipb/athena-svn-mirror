@@ -12147,7 +12147,7 @@ echo "$ac_t""$ac_cv_lib_kerberos5" 1>&6
 #define HAVE_KRB5 1
 EOF
 
-		if test "$ac_cv_lib_kerberos5" == "$mitlibs"; then
+		if test "$ac_cv_lib_kerberos5" = "$mitlibs"; then
 			KRB5_CFLAGS="-I$with_krb5/include"
 			msg_krb5="yes (MIT)"
 			cat >> confdefs.h <<\EOF
