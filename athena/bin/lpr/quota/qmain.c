@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
- *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.6 1990-07-11 15:22:14 ilham Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.7 1990-08-21 20:36:10 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.6 1990-07-11 15:22:14 ilham Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.7 1990-08-21 20:36:10 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -388,12 +388,11 @@ int fd;
 	/* Frob the realms and instance properly... */
 	make_kname(princ, inst, realm, name);
 	parse_username(name, princ, inst, realm);
-	
 	if (QD) {
 	    /* Quota server is marked as down */
 	    /* Allow everyone to print */
 	    ret = ALLOWEDTOPRINT;
-	} else 	if (acct == (long)0) {
+	} else 	if ((acct == (long)0) || (acct > (long) 99999999) ) {
 	    /* Now lookup!!! */
 	    retval = quota_db_get_principal(princ, inst,
 					    service,
