@@ -41,6 +41,7 @@ xss - graphics hack and screen locker, launched when the user is idle
 [\-no\-xidle\-extension] \
 [\-proc\-interrupts] \
 [\-no\-proc\-interrupts] \
+[\-passwd \fIcrypted password\fP] \
 [\-xrm \fIresources\fP]
 .SH DESCRIPTION
 The \fIxss\fP program waits until the keyboard and mouse have been 
@@ -459,6 +460,21 @@ is true.  Default: Black.
 The pathname of the shell that \fIxss\fP uses to start subprocesses.
 This must be whatever your local variant of \fB/bin/sh\fP is: in particular,
 it must not be \fBcsh\fP.
+.TP 8
+.B passwd\fP (class \fBPasswd\fP)
+The
+.BR crypt (3)
+output of a password, which can be used to unlock the screen, instead
+of or in addition to your normal password.
+
+You can generate a password to use with this with the following perl
+command:
+
+perl -e 'print crypt(<>, "xx") . "\\n";'
+
+where \fIxx\fP can by any two-character alphanumeric string. Type the
+command and press return, then type a password and press return. It
+will output the crypted version.
 .SH COMMAND-LINE OPTIONS
 .I xss
 also accepts the following command line options.  Except for 
@@ -543,6 +559,9 @@ Same as setting the \fIprocInterrupts\fP resource to \fItrue\fP.
 .TP 8
 .B \-no\-proc\-interrupts
 Same as setting the \fIprocInterrupts\fP resource to \fIfalse\fP.
+.TP 8
+.B \-passwd \fIcrypted password\fP
+Same as setting the \fIpasswd\fP resource.
 .TP 8
 .B \-xrm \fIresource-specification\fP
 As with all other Xt programs, you can specify X resources on the command-line
