@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: opus $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.22 1987-09-28 01:24:29 opus Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.23 1987-09-28 16:06:36 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -42,6 +42,7 @@ static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/l
 
 int hmdebug = 0; /* %&*^@ kerberos stole debug variable!!! */
 int no_server = 1, timeout_type = 0, serv_loop = 0;
+int booting = 1;
 int nserv = 0, nclt = 0, nservchang = 0, sig_type = 0;
 long starttime;
 struct sockaddr_in cli_sin, serv_sin, from;
@@ -426,6 +427,7 @@ server_manager(notice)
 	    syslog (LOG_INFO, "Bad notice from port %u.", notice->z_port);
       } else {
 	    /* This is our server, handle the notice */
+	    booting = 0;
 	    DPR ("A notice came in from the server.\n");
 	    nserv++;
 	    switch(notice->z_kind) {
@@ -639,7 +641,10 @@ new_server(sugg_serv)
       syslog (LOG_INFO, "Server went down, finding new server.");
       send_flush_notice(HM_DETACH);
       find_next_server(sugg_serv);
-      send_boot_notice(HM_ATTACH);
+      if (booting)
+	      send_boot_notice(HM_BOOT);
+      else
+	      send_boot_notice(HM_ATTACH);
 }
 
 void handle_timeout()
