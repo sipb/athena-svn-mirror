@@ -180,17 +180,19 @@ install: install-exec install-data
 uninstall: uninstall-exec uninstall-data
 
 install-exec: $(lib)
-	$(SHELL) $(srcdir)/../mkdirchain $(libdir)
-	$(INSTALL_DATA) $(lib) $(libdir)/lib$(lib)
+	$(SHELL) $(srcdir)/../mkdirchain ${DESTDIR}$(libdir)
+	$(INSTALL_DATA) $(lib) ${DESTDIR}$(libdir)/lib$(lib)
 uninstall-exec:
 	rm -f $(libdir)/lib$(lib)
 
 install-data:
-	$(SHELL) $(srcdir)/../mkdirchain $(infodir) $(includedir) 
-	for f in kpathsea.info*; do $(INSTALL_DATA) $$f $(infodir)/$$f; done
+	$(SHELL) $(srcdir)/../mkdirchain ${DESTDIR}$(infodir) \
+	  ${DESTDIR}$(includedir) 
+	for f in kpathsea.info*; do $(INSTALL_DATA) $$f \
+	  ${DESTDIR}$(infodir)/$$f; done
 	for f in $(install_headers); do \
-	  $(INSTALL_DATA) $$f $(includedir)/$$f; done
-	rm -f $(includedir)/c-auto.h	  
+	  $(INSTALL_DATA) $$f ${DESTDIR}$(includedir)/$$f; done
+	rm -f ${DESTDIR}$(includedir)/c-auto.h
 uninstall-data:
 	rm -f $(infodir)/kpathsea.info*
 	for f in $(install_headers); do \
@@ -223,19 +225,6 @@ config.status: $(srcdir)/configure
 
 Makefile: $(srcdir)/Makefile.in config.status
 	$(SHELL) config.status
-
-# This rule isn't used for web2c or the top-level Makefile, but it
-# doesn't hurt.  We don't depend on config.status because configure
-# always rewrites config.status, even when it doesn't change. Thus it
-# might be newer than c-auto.h when we don't need to remake the latter.
-c-auto.h: $(srcdir)/c-auto.h.in
-	$(SHELL) config.status
-
-$(srcdir)/c-auto.h.in: $(configure_in)
-	echo '/* Used only when making the library standalone.  */' \
-	  >$(srcdir)/c-auto.h.in 
-	cd $(srcdir); autoheader configure.in >> c-auto.h.in
-
 
 dvi: kpathsea.dvi
 kpathsea.dvi: *.texi
