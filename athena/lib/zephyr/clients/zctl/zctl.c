@@ -22,7 +22,7 @@
 #include <sys/file.h>
 
 #ifndef lint
-static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.7 1988-06-24 10:56:32 jtkohl Exp $";
+static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.8 1988-06-25 17:47:25 jtkohl Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -176,6 +176,7 @@ wgc_control(argc,argv)
 		return;
 	}
 
+	(void) bzero((char *)&notice, sizeof(notice));
 	notice.z_kind = UNSAFE;
 	notice.z_port = 0;
 	notice.z_class = WG_CTL_CLASS;
@@ -213,6 +214,7 @@ hm_control(argc,argv)
 		return;
 	}
 	
+	(void) bzero((char *)&notice, sizeof(notice));
 	notice.z_kind = HMCTL;
 	notice.z_port = 0;
 	notice.z_class = HM_CTL_CLASS;
@@ -325,7 +327,10 @@ set_var(argc,argv)
 		if (!strcmp(exp_level,EXPOSE_NONE)) {
 			newargv[0] = "wg_shutdown";
 			wgc_control(1,newargv);
-		} 
+		} else {
+			newargv[0] = "wg_startup";
+			wgc_control(1,newargv);
+		}
 		return;
 	} 
 }
@@ -718,11 +723,9 @@ make_exist(filename)
 	if (!(fpout = fopen(filename,"w"))) {
 		(void) sprintf(errbuf,"while opening %s for write",filename);
 		ss_perror(sci_idx,errno,errbuf);
-		(void) fclose(fp);
 		return (1);
 	}
 
-	(void) fclose(fp);
 	if (fclose(fpout) == EOF) {
 		(void) sprintf(errbuf, "while closing %s", filename);
 		ss_perror(sci_idx, errno, errbuf);
