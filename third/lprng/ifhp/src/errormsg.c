@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: errormsg.c,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $";
+static char *const _id = "$Id: errormsg.c,v 1.1.1.2 1999-04-01 20:09:16 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -109,9 +109,9 @@ static void log_backend( int trace )
 
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
-void log ( char *msg,...)
+void logmsg( char *msg,...)
 #else
-void log(va_alist) va_dcl
+void logmsg(va_alist) va_dcl
 #endif
 {
 #ifndef HAVE_STDARGS
@@ -128,7 +128,7 @@ void log(va_alist) va_dcl
 		log_init();
 		n = strlen(log_buf); s = log_buf+n; n = sizeof(log_buf)-n;
 		(void) plp_vsnprintf(s, n, msg, ap);
-		log_backend(1);
+		log_backend(0);
 		in_log = 0;
 	}
     VA_END;
@@ -537,14 +537,8 @@ void setstatus( char *msg, char *details, int trace )
 				} else {
 					str = save;
 				}
-				if( lseek( Status_fd, (off_t)0, SEEK_SET ) < 0 ){
-					logerr_die( "setstatus: lseek failed '%s'",
-						Statusfile );
-				}
-				if( ftruncate( Status_fd, (off_t)0 ) < 0 ){
-					logerr_die( "setstatus: cannot truncate '%s'",
-						Statusfile );
-				}
+				close( Status_fd );
+				Status_fd = open( Statusfile, O_WRONLY|O_TRUNC, 0600 );
 				for( len = strlen(str);
 					len > 0 && (l = write( Status_fd, str, len ) ) > 0;
 					str += l, len -= l );
@@ -553,8 +547,8 @@ void setstatus( char *msg, char *details, int trace )
 			}
 		}
 		Status_fd = open( Statusfile, O_WRONLY|O_APPEND, 0600 );
-		stat( Statusfile, &statb );
 		/*
+		stat( Statusfile, &statb );
 		plp_snprintf(b,sizeof(b), "setstatus: new size %d\n", (int)(statb.st_size) );
 		Write_fd_str( 2, b );
 		*/
@@ -576,23 +570,24 @@ void setstatus( char *msg, char *details, int trace )
 		}
 		Write_fd_str( Status_fd, msg );
 	}
-	if( Summary_fd < 0  && Summaryfile  ){
-		if( strpbrk( Summaryfile, "@%") ){
-			Summary_fd = udp_open( Summaryfile );
-		} else {
-			Summary_fd = open( Summaryfile, O_RDWR|O_CREAT, 0755 );
+	if( Summaryfile  ){
+		int is_file = 0;
+		if( Summary_fd < 0 ){
+			if( strpbrk( Summaryfile, "@%") ){
+				Summary_fd = udp_open( Summaryfile );
+			} else {
+				Summary_fd = open( Summaryfile, O_RDWR|O_CREAT|O_TRUNC, 0755 );
+				is_file = 1;
+			}
 		}
-	}
-	if( Summary_fd >= 0 ){
-		char buffer[SMALLBUFFER];
-		if((s = Upperopts['P'-'A']) == 0 ) s = "?????";
-		/* truncate the file - note - must be open R/W */
-		(void)lseek(Summary_fd,SEEK_SET,0);
-		(void)ftruncate(Summary_fd,0);
-		plp_snprintf( buffer, sizeof(buffer), "PRINTER=%s %s", s, msg );
-		if( Write_fd_str(Summary_fd,buffer) < 0 ){
-			close( Summary_fd );
-			Summary_fd = -1;
+		if( Summary_fd >= 0 ){
+			char buffer[SMALLBUFFER];
+			if((s = Upperopts['P'-'A']) == 0 ) s = "?????";
+			plp_snprintf( buffer, sizeof(buffer), "PRINTER=%s %s", s, msg );
+			if( Write_fd_str(Summary_fd,buffer) < 0 || is_file ){
+				close( Summary_fd );
+				Summary_fd = -1;
+			}
 		}
 	}
 	--active;
@@ -611,13 +606,13 @@ int udp_open( char *device )
 	struct servent *servent;
 	char *s;
 
-	log( "udp_open: '%s'\n",device );
+	logmsg( "udp_open: '%s'\n",device );
 	if( (s = strpbrk( device, "@%" )) == 0 ){
-		log( "udp_open: missing port number '%s'\n",device );
+		logmsg( "udp_open: missing port number '%s'\n",device );
 		return( -1 );
 	}
 	if( strpbrk( s+1, "@%" ) ){
-		log( "udp_open: two '@' or '%' in name '%s'\n",
+		logmsg( "udp_open: two '@' or '%' in name '%s'\n",
 			device );
 		return( -1 );
 	}
@@ -629,7 +624,7 @@ int udp_open( char *device )
 		}
 	}
 	if( port <= 0 ){
-		log( "udp_open: bad port number '%s'\n",s+1 );
+		logmsg( "udp_open: bad port number '%s'\n",s+1 );
 		return( -1 );
 	}
 	i = *s;
@@ -642,7 +637,7 @@ int udp_open( char *device )
 		 * set up the address information
 		 */
 		if( hostent->h_addrtype != AF_INET ){
-			log( "udp_open: bad address type for host '%s'\n",
+			logmsg( "udp_open: bad address type for host '%s'\n",
 				device);
 		}
 		memcpy( &sin.sin_addr, hostent->h_addr, hostent->h_length );
@@ -651,23 +646,23 @@ int udp_open( char *device )
 	}
 	*s = i;
 	if( sin.sin_addr.s_addr == -1){
-		log("udp_open: unknown host '%s'\n", device);
+		logmsg("udp_open: unknown host '%s'\n", device);
 		return(-1);
 	}
 	sin.sin_port = htons( port );
-	log( "udp_open: destination '%s' port %d\n",
+	logmsg( "udp_open: destination '%s' port %d\n",
 		inet_ntoa( sin.sin_addr ), ntohs( sin.sin_port ) );
 	fd = socket (AF_INET, SOCK_DGRAM, 0);
 	err = errno;
 	if (fd < 0) {
-		log("udp_open: socket call failed - %s\n", Errormsg(err) );
+		logmsg("udp_open: socket call failed - %s\n", Errormsg(err) );
 		return( -1 );
 	}
 	i = connect (fd, (struct sockaddr *) & sin, sizeof (sin));
 	err = errno;
 
 	if( i < 0 ){
-		log("udp_open: connect to '%s port %d' failed - %s\n",
+		logmsg("udp_open: connect to '%s port %d' failed - %s\n",
 			inet_ntoa( sin.sin_addr ), ntohs( sin.sin_port ),
 			Errormsg(errno) );
 		close(fd);

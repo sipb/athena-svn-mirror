@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: vars.c,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $";
+static char *const _id = "$Id: vars.c,v 1.1.1.2 1999-04-01 20:09:05 mwhitson Exp $";
 
 #define EXTERN
 #include "ifhp.h"
@@ -19,7 +19,6 @@ struct keyvalue Valuelist[] = {
     {  "Banner_suppressed", "banner_suppressed", (char **)&Banner_suppressed, FLGV },
     {  "Banner_user", "banner_user", (char **)&Banner_user, FLGV },
     {  "Crlf", "crlf", (char **)&Crlf, FLGV },
-    {  "CTRL_D_at_start", "ctrl_d_at_start", (char **)&CTRL_D_at_start, FLGV },
     {  "Dev_retries", "dev_retries", (char **)&Dev_retries, INTV },
     {  "Dev_sleep", "dev_sleep", (char **)&Dev_sleep, INTV },
     {  "Device", "dev", &Device, STRV },
@@ -40,7 +39,8 @@ struct keyvalue Valuelist[] = {
     {  "Pjl", "pjl", (char **)&Pjl, FLGV },
     {  "Pjl_enter", "pjl_enter", (char **)&Pjl_enter, FLGV },
     {  "Ps", "ps", (char **)&Ps, FLGV },
-    {  "Pagecount_ps_code", "pagecount_ps_code", &Pagecount_ps_code, STRV },
+    {  "Ps_pagecount_code", "ps_pagecount_code", &Ps_pagecount_code, STRV },
+    {  "Ps_status_code", "ps_status_code", &Ps_status_code, STRV },
     {  "Psonly", "psonly", (char **)&Psonly, FLGV },
     {  "Remove_ctrl", "remove_ctrl", &Remove_ctrl, STRV  },
     {  "Status", "status", (char **)&Status, FLGV },
@@ -50,7 +50,7 @@ struct keyvalue Valuelist[] = {
     {  "Sync_timeout", "sync_timeout", (char **)&Sync_timeout, INTV },
     {  "Tbcp", "tbcp", (char **)&Tbcp, FLGV },
     {  "Text", "text", (char **)&Text, FLGV },
-    {  "Trace_on_stderr", "trace_on_stderr", (char **)&Trace_on_stderr, FLGV },
+    {  "Trace_on_stderr", "trace", (char **)&Trace_on_stderr, FLGV },
     {  "Waitend_interval", "waitend_interval", (char **)&Waitend_interval, INTV },
 
     { 0, 0, 0 }

@@ -1,7 +1,7 @@
 .TH IFHP 8 "_VERSION_"
 .SH NAME
 ifhp \- Almost Universal LPRng Print Filter
-.\" $Id: ifhp.n,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $
+.\" $Id: ifhp.n,v 1.1.1.2 1999-04-01 20:09:18 mwhitson Exp $
 .SH SYNOPSIS
 .B ifhp
 .br
@@ -101,7 +101,7 @@ Set the debugging level.
 A larger number causes more verbose error messages.
 You have been warned.
 .TP
-.BR trace_on_stderr
+.BR trace
 .br
 Sends out debugging and tracing information on STDERR as well as to the status
 log file.
@@ -116,7 +116,7 @@ configuration file
 .BR statusfile =/path
 entry.
 The
-.B trace_on_stderr
+.B trace
 flag will cause the information to be printed on STDERR.
 If the status file does not exist,  it will not be created.
 .LP

@@ -65,7 +65,7 @@ foreach option in -Toptions, -Zoptions do
     if( option = "debug=level"  and Debuglevel not set ){
         set Debuglevel = level;
     }
-    if( option = "trace_on_stderr" ){
+    if( option = "trace" ){
         output error and trace on STDERR
     }
     if( option = "config=pathlist" and from -Toption ){
@@ -399,7 +399,7 @@ command line option.</LI>
 </OL>
 <P>The option lists are scanned for values for the
 <CODE>debug</CODE>,
-<CODE>trace_on_stderr</CODE>,
+<CODE>trace</CODE>,
 <CODE>config</CODE>,
 and
 <CODE>model</CODE>
@@ -407,14 +407,34 @@ options.
 These options
 have the property that once they are set, then they cannot be modified
 (i.e. - sticky values).
-<H3><A NAME="trace_on_stderr"></A> <A NAME="debug"></A> Debug and Trace On Stderr</H3>
+<P>
+<A NAME="model_from_option"></A> 
+There is another,
+and rather bizarre way to specify the printer model,
+and that is the
+<CODE>model_from_option</CODE>
+option in the configuration file.
+This option causes the command line options to be scanned,
+and if there is a value for the command line option then it
+is used as the model.
+For example:
+<BLOCKQUOTE><CODE>
+<PRE>
+model_from_option=Q
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The above setting will cause the model to be taken from the
+<CODE>Q</CODE> option.
+This can be used to select a configuration for the printer
+based on values specifed by the user.
+<H3><A NAME="trace"></A> <A NAME="debug"></A> Debug and Trace On Stderr</H3>
 
 <P>The value of the
 <CODE>debug</CODE>
 option sets the debugging level.
 It can be increased, but not decreased.
 The
-<CODE>trace_on_stderr</CODE>
+<CODE>trace</CODE>
 flag causes debugging information to be sent to STDERR (file descriptor 2)
 as well as to the status file.
 <H3><A NAME="config"></A> <A NAME="configpaths"></A> Configuration File Paths</H3>
@@ -971,12 +991,26 @@ output if they are sent to the printer without being translated
 into PostScript.
 Also,
 while most PCL printers will accept text files and do a reasonable
-job of printing them,
+job of printing them
 some form of initialization strings or setup may need to be done.
-The following options control text file
-conversion:
+Finally,
+you might want to try using a
+<CODE>MagicFilter</CODE>
+that will convert just about any type of file into a PostScript file.
+<H3>Default Converter Program</H3>
+
+<P>This method specifies that the default file type
+will be
+<CODE>text</CODE>.
+If the simple <CODE>ifhp</CODE> type detection code cannot decide
+what type of file this is,
+it will invoke a converter program.
+This operation is controlled by the following options.
 <DL>
-<DT><B><CODE>file_util_path=/pathname</CODE></B><DD><P>The pathname of the UNIX file utility.
+<DT><B><CODE>default_language=text</CODE></B><DD><P>When the default lanague is <CODE>text</CODE>
+then the
+<CODE>text_converter</CODE> and
+<CODE>text_converter_output</CODE> options are used.
 <DT><B><CODE>text_converter=/pathname</CODE></B><DD><P>specifies the pathname of a text to language program.
 <DT><B><CODE>text_converter_output=language</CODE></B><DD><P>Specifies the output language of the conversion program.
 Language can be
@@ -985,7 +1019,8 @@ Language can be
 <CODE>text</CODE>,
 <CODE>raw</CODE>,
 <CODE>unknown</CODE>
-<DT><B><CODE>text_tempfile=/pathname</CODE></B><DD><P>A temporary file location.
+<DT><B><CODE>tempfile=/pathname</CODE></B><DD><P>A temporary file location,  used to store
+intermediate conversion results.
 The
 <CODE>/pathname</CODE>
 value has the string
@@ -1021,29 +1056,68 @@ are performed.
 These are the same checks that the UNIX
 <CODE>file</CODE>
 utility uses.</LI>
-<LI>If the file type is still
-<CODE>unknown</CODE>
+<LI>If the file type is 
+<CODE>text</CODE>
+then the
+<CODE>text_converter</CODE>
+program is run to translate the file and the results stored in
+the <CODE>tempfile</CODE>.</LI>
+</OL>
+<P>One technique used with varying degrees of sophistication is to
+use a general purpose file to PostScript conversion program.
+These have generally been known as
+<EM>MagicFilters</EM>, due to their high degree of flexibility. 
+<H3>Pseudo-MagicFilter Support</H3>
+
+<P>As described above,
+the various
+<EM>MagicFilter</EM> packages can do conversion.
+However, most of the time there is only a limited need for the
+general purpose conversions.
+This can be met by using the
+<CODE>file</CODE> program,  which will determine the type of a file based on
+its contents,
+and having <CODE>ifhp</CODE> invoke a program based on the type of file found.
+This method is used when
+<CODE>default_language=unknown</CODE>
 and the
 <CODE>file_util_path=/path</CODE>
-value is defined, then the
+and
+<CODE>file_output_match=[ ... ]</CODE>
+values are defined.
+A typical configuration is shown below.
+<BLOCKQUOTE><CODE>
+<PRE>
+Configuration:
+# 
+#  Method 2 -
+#    Use the file util and match the output
+# file reports format information
+#  glob text_output_format text_converter
+#  - you do a glob match against pattern and use the converter
+#
+default_language=unknown
+file_util_path=/usr/bin/file -
+file_output_match = [
+# glob   output converter
+ *text*  ps     /usr/local/bin/a2ps -q -B -o-
+ *gif*   ps     /usr/local/bin/gif2ps
+ ]
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The
+<CODE>file_output_match</CODE>
+entry consists of a list of lines containing
+a <I>glob</I> pattern,
+a language type (<CODE>ps</CODE>, <CODE>pcl</CODE>, or <CODE>raw</CODE>),
+and a program to invoke to do the conversions.
+<P>The
 <CODE>file</CODE>
-utility is run and is used to determine the file type.
-This will determine that the file is a
-<CODE>text</CODE>
-file
-or
-<CODE>unknown</CODE>.</LI>
-<LI>If the file is a
-<CODE>text</CODE>
-file and the
-<CODE>text_converter=/path</CODE>
-option has a value,
-then the specified program is run,
-and its output is used as the converted text file.
-The 
-<CODE>text_converter_output=language</CODE>
-value is used as the output language.</LI>
-</OL>
+utility is run and its output is matched against the specified
+glob patterns.
+When a match is found the specified program is run,
+with STDIN attached to the original input file and its
+STDOUT sent to the printer.
 <P>While this algorithm may appear to be overly complex, it
 will handle a wide range of desired configurations.
 <H3>No Textfile Conversion Needed</H3>

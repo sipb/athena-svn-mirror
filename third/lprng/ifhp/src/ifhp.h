@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****
-$Id: ifhp.h,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $
+$Id: ifhp.h,v 1.1.1.2 1999-04-01 20:09:10 mwhitson Exp $
  **** ENDHEADER ****/
 
 #ifndef _IFHP_H_
@@ -100,11 +100,11 @@ typedef	int (*Builtin_func)(char *, char*, char *, Wr_out);
 #define JIGNORE  36    /* ignore this job */
 /* from 1 - 31 are signal terminations */
 
-#define UNKNOWN 0
-#define PCL 1
-#define PS 2
-#define TEXT 3
-#define RAW 4
+EXTERN char *UNKNOWN DEFINE( = "UNKNOWN");
+EXTERN char *PCL DEFINE( = "PCL");
+EXTERN char *PS DEFINE( = "PS");
+EXTERN char *TEXT DEFINE( = "TEXT");
+EXTERN char *RAW DEFINE( = "RAW");
 
 /*
  * Standard function prototypes
@@ -182,7 +182,6 @@ EXTERN int
 	Banner_suppressed,	/* suppress banner generation */
 	Banner_user,	/* allow user to select a banner */
 	Crlf,		/* only do CRLF */
-	CTRL_D_at_start,	/* only do CRLF */
 	Dev_retries,	/* number of retries on open */
 	Dev_sleep,	/* wait between restries */
 	Errorcode,		/* exit value */
@@ -237,7 +236,8 @@ EXTERN char
  * set by routines
  */
 EXTERN char
-	*Pagecount_ps_code;		/* how to do pagecount */
+	*Ps_pagecount_code,		/* how to do pagecount */
+	*Ps_status_code;		/* how to get status */
 
 extern struct keyvalue Valuelist[], Builtin_values[];
 

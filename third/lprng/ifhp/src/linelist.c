@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: linelist.c,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $";
+static char *const _id = "$Id: linelist.c,v 1.1.1.2 1999-04-01 20:09:13 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -159,8 +159,8 @@ void Free_line_list( struct line_list *l )
 void Check_max( struct line_list *l, int incr )
 {
 	if( l->count+incr >= l->max ){
-		DEBUG5("Check_max: inc %d, count %d, max %d, list 0x%x",
-			incr, l->count, l->max, l->list );
+		DEBUG5("Check_max: inc %d, count %d, max %d, list 0x%lx",
+			incr, l->count, l->max, (long)l->list );
 		l->max += 100+incr;
 		if( !(l->list = realloc_or_die( l->list, l->max*sizeof(char *),
 			__FILE__,__LINE__)) ){
@@ -168,7 +168,7 @@ void Check_max( struct line_list *l, int incr )
 			logerr_die( "Check_max: realloc %d failed",
 				l->max*sizeof(char*) );
 		}
-		DEBUG5("Check_max: new max %d, list 0x%x", l->max, l->list );
+		DEBUG5("Check_max: new max %d, list 0x%lx", l->max, (long)l->list );
 	}
 }
 
@@ -188,8 +188,8 @@ void Add_line_list( struct line_list *l, char *str,
 	int c = 0, cmp, mid;
 	DEBUG5("Add_line_list: adding '%s', sep '%s', sort %d, uniq %d",
 		str, sep, sort, uniq );
-	DEBUG5("Add_line_list: max %d, count %d, list 0x%x",
-		l->count, l->max, l->list );
+	DEBUG5("Add_line_list: max %d, count %d, list 0x%lx",
+		l->count, l->max, (long)l->list );
 
 	Check_max(l, 2);
 	str = safestrdup( str,__FILE__,__LINE__);
@@ -288,8 +288,8 @@ void Split( struct line_list *l, char *str, char *sep,
 void Dump_line_list( char *title, struct line_list *l )
 {
 	int i;
-	logDebug("Dump_line_list: %s - count %d, max %d, list 0x%x",
-		title, l->count, l->max, l->list );
+	logDebug("Dump_line_list: %s - count %d, max %d, list 0x%lx",
+		title, l->count, l->max, (long)l->list );
 	for( i = 0; i < l->count; ++i ){
 		logDebug( "  [%2d]='%s'", i, l->list[i] );
 	}
@@ -739,3 +739,34 @@ char *Select_model_info( struct line_list *model, struct line_list *list,
 	if(DEBUGL4) Dump_line_list( "Select_model_info- end", model );
 	return(id);
 }
+
+void Remove_line_list( struct line_list *l, int n )
+{
+	if( l && n < l->count){
+		if( l->list[n] ) free(l->list[n]);  l->list[n] = 0;
+		--l->count;
+		while( n < l->count ){
+			l->list[n] = l->list[n+1];
+			++n;
+		}
+	}
+}
+
+/*
+ * Set_str_value( struct line_list *l, char *key, char *value )
+ *   set a string value in an ordered, sorted list
+ */
+void Set_str_value( struct line_list *l, char *key, const char *value )
+{
+	char *s = 0;
+	int mid;
+	if( key == 0 ) return;
+	if( value && *value ){
+		s = safestrdup3(key,"=",value,__FILE__,__LINE__);
+		Add_line_list(l,s,Value_sep,1,1);
+		if(s) free(s); s = 0;
+	} else if( !Find_first_key(l, key, Value_sep, &mid ) ){
+		Remove_line_list(l,mid);
+	}
+}
+

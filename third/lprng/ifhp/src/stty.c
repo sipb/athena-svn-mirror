@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: stty.c,v 1.1.1.1 1999-02-17 15:31:04 ghudson Exp $";
+static char *const _id = "$Id: stty.c,v 1.1.1.2 1999-04-01 20:09:07 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -237,7 +237,7 @@ void Do_stty( int fd, char *Stty_command )
 			}
 			continue;
 		}
-		log("Do_stty: unknown mode: %s", arg);
+		logmsg("Do_stty: unknown mode: %s", arg);
 	}
 	DEBUG4("Do_stty: after mode 0x%x, lmode 0x%x, speed 0x%x",
 			 mode.sg_flags, localmode, mode.sg_ispeed);
@@ -528,7 +528,7 @@ void Do_stty( int fd, char *Stty_command )
 			tio.c_cflag |= bauds[i].speed;
 			continue;
 		}
-		log("Do_stty: unknown mode: %s", arg);
+		logmsg("Do_stty: unknown mode: %s", arg);
 	}
 
 	DEBUG4("Do_stty: before imode 0x%x, omode 0x%x, cmode 0x%x, lmode 0x%x",
@@ -880,7 +880,7 @@ void Do_stty( int fd, char *Stty_command )
 			DEBUG4("Do_stty: special %s %s", arg, parm);
 			continue;
 		}
-		log("Do_stty: unknown mode: %s", arg);
+		logmsg("Do_stty: unknown mode: %s", arg);
 	}
 
 	if( (t_dat.c_lflag & ICANON) == 0 ){

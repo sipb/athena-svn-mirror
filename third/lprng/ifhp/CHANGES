@@ -1,3 +1,75 @@
+Version 3.2.1
+
+  Most of the code seems pretty stable,  so we start a new major release.
+  There are mostly minor changes in the code for this release.
+  
+  Added 'PseudoMagicFilter Support' and got text to PS conversion
+  working correctly.
+
+    #
+    # text conversion control
+    #
+    # control text to whatever conversion
+    #
+    # if you cannot find type, then try this file utility
+    #
+    # if the type is text and not supported on your system, do a conversion
+    #  Method 1 - set 'default_language' as text, and run
+    #    the program through a text to known converter
+    #
+    default_language=text
+    text_converter=/usr/local/bin/a2ps -q -B -o-
+    # output of the converter is pcl, ps, or raw
+    text_converter_output=ps
+
+    #
+    #  Method 2 -
+    #    Use the file util and match the output
+    # file reports format information
+    #  glob text_output_format text_converter
+    #  - you do a glob match against pattern and use the converter
+    #
+    default_language=unknown
+    file_util_path=/usr/bin/file -
+    file_output_match = [
+     *text*  ps /usr/local/bin/a2ps -q -B -o-
+     ]
+    # you need a temp file location
+    tempfile=/var/tmp/ifhp
+
+  Added a horrible horrible kludge that allows multiple fonts to be
+  loaded.  You need to use:
+    ifhp -Zfont=this,font=that,...
+  which gets translated into font=this,that and the font handling code
+  then works OK.
+
+  Added a QMS1725 entry that just might work.
+  Fixed up a couple of minor PostScript quirks.
+  Added PJL support for duplex.
+
+Version 3.1.20
+  Documentation.  More Documentation.  More ...
+  Sigh...
+  
+Version 3.1.19
+  Made status messages less verbose.
+  'trace_on_stderr' is now just 'trace' ... Sigh...
+
+Version 3.1.17
+  Changed CRLF back to not effective... Sigh.
+
+Version 3.1.16
+  Fixed a problem with testing short files for file type.
+  (Noted by: Mike Whitson <mwhitson@MIT.EDU>)
+
+  Added ledger paper types.  HP printers are very odd...
+    (John McCash thinks so too)
+
+  Made CRLF the default in ifhp.conf
+
+Version 3.1.15
+   Not distributed
+
 Version 3.1.14
 
  ifhp.conf:
@@ -25,4 +97,4 @@ Version 3.1.4
    approach.
       Patrick Powell papowell@astart.com
 
-$Id: CHANGES,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+$Id: CHANGES,v 1.1.1.2 1999-04-01 20:09:02 mwhitson Exp $
