@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: X_gram.c,v 1.23 2001-07-18 14:06:32 ghudson Exp $
+ *      $Id: X_gram.c,v 1.24 2004-08-03 01:21:00 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.23 2001-07-18 14:06:32 ghudson Exp $";
+static const char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.24 2004-08-03 01:21:00 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -297,7 +297,7 @@ void x_gram_create(dpy, gram, xalign, yalign, xpos, ypos, xsize, ysize,
     sizehints.height = ysize;
     sizehints.flags = USPosition|USSize;
 
-    wmhints.input = True;
+    wmhints.input = False;
     wmhints.initial_state = NormalState;
     if (set_transient) {
        wmhints.window_group = group_leader;
