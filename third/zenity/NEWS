@@ -1,0 +1,220 @@
+Zenity 1.8
+==========
+" Zenning into the new year "
+
+	* Fix quote and output bugs [Christian]
+	* New and updated translations 
+		- Sanlig Badral [mn]
+		- Tõivo Leedjärv, Priit Laes [et]
+		- Arafat Medini [ar]
+		- Christian Rose, Dhurba Gnawali [ne]
+		- Artur Flinta [pl]
+		- Danilo �| egan [sr, sr@Latn]
+		- Christian Rose [sv]
+		- Duarte Loreto [pt]
+		- Vincent van Adrighem [nl]
+		- Jordi Mallch [ca]
+		- Ole Laursen [da]
+		- Dafydd Harries [cy]
+		- Christophe Merlet [fr]
+		- Žygimantas Beru�~Mka, Tomas Kuliavas [lt]
+		- Pablo Gonzalo del Campo, Francisco Javier F. Serrador [es]
+		- Iñaki Larrañaga [eu]
+		- Marcel Telka [sk]
+		- Takeshi AIHANA [ja]
+		- Laurent Dhima [sq]
+		
+Zenity 1.7
+==========
+" Zen Revolutions "
+
+	* Hook up 'activate' on text entry [Glynn, raf@noduck.net]
+	* Fix up Solaris build [Damien]
+	* Fix up spec file [Glynn]
+	* Add locale header [Leonardo]
+	* Make dialogs resizable [Ingo]
+	* Unmark translation messages [Christian]
+	* Fix up gdialog wrapper [Peter]
+	* New and updated translations
+		- Fatih Demir [ta]
+		- Christian Rose [eu]
+		- Žygimantas Beručka, Tomas Kuliavas [lt]
+		- Sami Pesonen [fi]
+		- Pablo Saratxaga [vi]
+		- Andras Timar [hu]
+		- Guntupalli Karunakar [hi]
+		- Miloslav Trmac [cs]
+		- Jordi Mallach, Jordi Mas [ca]
+
+Zenity 1.6
+==========
+" Zen my ass "
+
+	* Fix up dialogs to use g_print instead of g_printerr [Mike]
+	* Put horizontal scrolling on automatic for list dialog [Glynn]
+	* Documentation updates [Nicholas]
+	* Fix gdialog wrapper [Buchan]
+	* Make i18n more zen [Toshi]
+	* New and updated translations
+		- Taneem Ahmed, Sayamindu [bn]
+		- Marcel Telka [sk]
+		- Takeshi AIHANA [ja]
+		- Dafydd Harries [cy]
+		- Francisco Javier F. Serrador [es]
+		- Andras Timar [hu]
+		- Jarkko Ranta [fi]
+		- Stefano Canepa [it]
+
+Zenity 1.5
+==========
+" Which came first, the zen or the mind. "
+
+	* Add call to setlocale to i18n --help [Mike]
+	* New and updated translations
+		- Guntupalli Karunakar [hi]
+		- Dmitry G. Mastrukov [ru]
+		- Paul Duffy [ga]
+		- Sam??el J??n Gunnarsson [is]
+		- Danilo ?| egan [sr, sr@Latn]
+		- Evandro Fernandes Giovanini [pt_BR]
+		- Metin Amiroff [az]
+		- Changwoo Ryu [ko]
+
+Zenity 1.4
+===========
+" There's no zen like home. "
+
+	* Implement autoclose for progress dialogs [Mike]
+	* Add --help option to gdialog wrapper [Mike]
+	* Fix up some build warnings [Ross, Glynn]
+	* Untranslate some silly strings [Kjartan, Glynn]
+	* Allow environmental variables to define return values [Mike]
+	* Allow environmental variables to define return values [Mike]
+	* Add --multiple for file selection dialogs [Mike]
+	* Update docs [Mike]
+	* Wrap gdialog with dialog if not in X window [Kevin]
+	* Allow the use of \t and \n in dialogs [Mike]
+	* Miscellaneous fixes [Glynn, Mike, Yann]
+	* New and updated translations 
+		- Changwoo Ryu [ko]
+		- Laurent Dhima [sq]
+		- Dafydd Harries [cy]
+		- Andras Timar [hu]
+		- Hasbullah Bin Pit [ms]
+		- Christophe Merlet [fr]
+		- Wang Jian [zh_CN]
+		- Dmitry G Mastrukov [be]
+		- Metin Amiroff [az]
+		- Vincent van Adrighem [nl]
+		- Jordi Mallach [ca]
+		- Christian Rose [sv]
+		- Kjartan Maraas [no]
+		- Miloslav Trmac [cs]
+		- Mike Newman [en_GB]
+		- Francisco Javier F Serrador [es]
+		- Duarte Loreto [pt]
+		- Ole Laursen [da]
+		- Artur Flinta [pl]
+		- Stefano Canepa [it]
+		- Kostas Papadimas [el]
+		- Abel Chung [zh_TW]
+		- Christian Neumair [de]
+		- Baptiste Mille-Mathias [fr]
+
+Zenity 1.3
+==========
+
+" Don't scale the mountain seeking wisdom, when the answer lies at your feet. "
+
+	* Fix support for --checklist and --radiolist in gdialog wrapper script [Mike]
+	* Add support for --menu in gdialog wrapper script [Mike]
+	* Fix support for --textbox and add support for --seperate-output in gdialog
+	  wrapper script [Mike]
+	* Correct help documentation to using --title [Dagmar]
+	* Send a SIGHUP to parent process when using the progress dialog [Glynn]
+	* Make OK button sensitive at 100% when using progress dialog [Mike]
+	* Indentation whitespace hacking [Mike]
+	* Add support for --width and --height  in gdialog wrapper script [Mike]
+	* Enable the installation of the gdialog wrapper script by default [Mike]
+	* Fix #113706 for the elastic resize in the progres dialog [Glynn]
+	* Update man page [Glynn]
+
+Zenity 1.2
+==========
+
+" Learning Zen is a phenomenon of gold and dung. Before you understand it, 
+  it's like gold; after you understand it, it's like dung. "
+
+  	* Make progress dialog handle stdin properly [Glynn]
+	* Update command line messages [Glynn]
+	* Add wrapping of text to error and info dialogs [Glynn]
+	* Miscellaneous list dialog fixes [Glynn]
+	* Updated help documentation [Glynn]
+	* Add gdialog wrapper script [Mike]
+	* New and updated translations
+		- Danilo Segan [sr, sr@Latn]
+		- KAMAGASAKO Masatoshi [ja]
+		- Miloslav Trmac [cs]
+		- Ole Laursen [da]
+		- Christian Rose [sv]
+		- Duarte Loreto [pt]
+		- Abel Cheung [zh_TW]
+		- Zbigniew Chyla [pl]
+		- Christian Neumair [de]
+		- Jordi Mallach [ca]
+
+Zenity 1.1
+==========
+
+" In life it is the not the destination that matters, but the journey."
+
+	* New spec file [Mihai, Glynn]
+	* Zen monk [Glynn]
+	* New man pages [Ross]
+	* Mass zen indentations [Glynn]
+	* Add new --width and --height options for dialogs [Glynn]
+	* Fix up radio list dialog so that it's more intuitive to use [Glynn]
+	* Make list dialog handle stdin [Glynn]
+	* New and updated translations
+		- Daniel Yacob [am]
+		- Christian Neumair [de]
+		- Yuriy Syrota [uk]
+		- Miloslav Trmac [cs]
+		- Takeshi AIHANA [ja]
+		- Duarte Loreto [pt]
+		- Zbigniew Chyla [pl]
+		- Evandro Fernandes Giovanini [pt_BR]
+		- Alessio Frusciante, Stefano Canepa [it]
+		- Jordi Mallach [ca]
+		- Duarte Loreto [pt]
+		- Zbigniew Chyla [pl]
+		- Kostas Papadimas [el]
+		- Abel Cheung [zh_TW]
+		- Francisco Javier Fernandez, Pablo Gonzalo del Campo [es]
+		- Vincent van Adrighem [nl]
+		- Ole Laursen [da]
+		- Christian Rose [sv]
+
+Zenity 1.0
+==========
+
+" The obstacle is the path. "
+
+Zen Dialogs -
+=============
+Calendar, Text Entry, Error, Informational, File Selection, List, Progress,
+Question, Text Information and Warning.
+
+See 'zenity --about' and Help for more details of how to use Zenity.
+
+Zen Thanks -
+============
+	* Mike Newman and John Fleck for their direct help.
+	* Jonathan Blandford, Anders Carlsson, James Henstridge, Havoc Pennington,
+	  Kristian Rietveld, Jakub Steiner and Tom Tromey for their indirect help.
+
+Zen Translations -
+==================
+	* Vincent van Adrighem, Pablo Gonzalo del Campo, Abel Cheung, Ole Laursen,
+	  Kjartan Maraas, Christian Rose and Pablo Saratxaga for their wonderful 
+	  translations.
