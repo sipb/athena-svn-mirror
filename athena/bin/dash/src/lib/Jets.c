@@ -10,8 +10,8 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.2 1991-12-17 11:14:04 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.3 1993-07-02 01:22:13 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -23,18 +23,21 @@ static char rcsid[] =
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/ioctl.h>
-#include <X11/X.h>		/* For DEBUG */
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xresource.h>
 #include "Jets.h"
 #include "fd.h"
 #include "hash.h"
 
+extern int StrToXFontStruct();
+extern int StrToXColor();
+extern int StrToPixmap();
+extern int StrToDirection();
+extern int StrToOrientation();
+extern int StrToBoolean();
+extern int StrToJustify();
+
 int DEBUG = 0;
 
 static XjCallbackProc checkSignals = NULL;
-struct hash *fonts = NULL;
 
 int global_argc;
 char **global_argv;
@@ -57,13 +60,7 @@ static XContext selectContext;
 #ifndef APPDEFDIR
 #define APPDEFDIR "/usr/lib/X11/app-defaults"
 #endif
-static char appdefdir[] = APPDEFDIR;
-
-#ifndef BITMAPDIR
-#define BITMAPDIR "/usr/lib/X11/bitmaps"
-#endif
-static char bitmapdir[] = BITMAPDIR;
-
+static char *appdefdir = APPDEFDIR;
 
 /*
 static XrmOptionDescRec opTable[] = {
@@ -122,19 +119,21 @@ static XjResource startupResources[] = {
 
 RootClassRec rootClassRec = {
 {
-    /* class name */	"Root",
-    /* jet size */	sizeof(RootRec),
-    /* initialize */	NULL,
-    /* prerealize */    NULL,
-    /* realize */	NULL,
-    /* event */		NULL,
-    /* expose */	NULL,
-    /* querySize */     NULL,
-    /* move */		NULL,
-    /* resize */        NULL,
-    /* destroy */       NULL,
-    /* resources */	NULL,
-    /* number of 'em */	0
+    /* class name */		"Root",
+    /* jet size */		sizeof(RootRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		NULL,
+    /* prerealize */		NULL,
+    /* realize */		NULL,
+    /* event */			NULL,
+    /* expose */		NULL,
+    /* querySize */		NULL,
+    /* move */			NULL,
+    /* resize */		NULL,
+    /* destroy */		NULL,
+    /* resources */		NULL,
+    /* number of 'em */		0
   }
 };
 
@@ -154,11 +153,18 @@ alarmEntry *freeAlarms = NULL;
 
 void XjLoadFromResources();
 
+void XjExit(exitcode)
+     int exitcode;
+{
+  /*  need to throw in some cleanup code here...  */
+  exit(exitcode);
+}
+
 void XjFatalError(message)
      char *message;
 {
   fprintf(stderr, "%s: %s\n", programName, message);
-  exit(-1);
+  XjExit(-1);
 }
 
 void XjWarning(string)
@@ -166,8 +172,6 @@ void XjWarning(string)
 {
   fprintf(stderr, "%s: %s\n", programName, string);
 }
-
-extern end, etext, edata;
 
 void XjUsage(s)
      char *s;
@@ -236,7 +240,8 @@ XjFree(ptr)
 #ifdef MEM
   accounting = 0;
 #endif
-  free(ptr);
+  if (ptr != NULL)
+    free(ptr);
 
 #ifdef MEM
   accounting = 1;
@@ -448,11 +453,12 @@ void XjResize(jet, size)
       jet->core.classRec->core_class.resize(jet, size);
 }
 
-void XjExpose(jet)
+void XjExpose(jet, event)
      Jet jet;
+     XEvent *event;
 {
   if (jet->core.classRec->core_class.expose != NULL)
-    jet->core.classRec->core_class.expose(jet);
+    jet->core.classRec->core_class.expose(jet, event);
 }
 
 XjCallback *XjConvertStringToCallback(address)
@@ -498,7 +504,7 @@ XjCallback *XjConvertStringToCallback(address)
   while (isspace(*ptr))
     ptr++;
 
-  if (isdigit(*ptr))
+  if (isdigit(*ptr)  ||  *ptr == '-')
     {
       intParam = atoi(ptr);
       type = argInt;
@@ -570,27 +576,17 @@ XjCallback *XjConvertStringToCallback(address)
 }
 
 
-static XFontStruct *XjLoadQueryFontCache(display, name)
-     Display *display;
-     char *name;
+XjCallbackRec cvt_callbacks[] =
 {
-  XrmQuark qname;
-  XFontStruct *fs;
+  { XjRFontStruct, StrToXFontStruct },
+  { XjRColor, StrToXColor },
+  { XjRJustify, StrToJustify },
+  { XjROrientation, StrToOrientation },
+  { XjRDirection, StrToDirection },
+  { XjRBoolean, StrToBoolean },
+  { XjRPixmap, StrToPixmap },
+};
 
-  if (fonts == NULL)
-    fonts = create_hash(13);
-
-  qname = XrmStringToQuark(name);
-  fs = (XFontStruct *)hash_lookup(fonts, qname);
-
-  if (fs == NULL)
-    fs = XLoadQueryFont(display, name);
-
-  if (fs != NULL)
-    (void)hash_store(fonts, qname, (caddr_t) fs);
-
-  return fs;
-}
 
 void XjFillInValue(display, window, where, resource, type, address)
      Display *display;
@@ -600,10 +596,6 @@ void XjFillInValue(display, window, where, resource, type, address)
      char *type;
      caddr_t address;
 {
-  XFontStruct *fontstr;
-  XjPixmap p;
-  char errtext[100];
-
   /*
    * Nonconversion
    */
@@ -617,6 +609,15 @@ void XjFillInValue(display, window, where, resource, type, address)
 
   if (!strcmp(type, XjRString))
     {
+      static int init = 1;
+      XjCallbackProc tmp;
+
+      if (init)
+	{
+	  XjRegisterCallbacks(cvt_callbacks, XjNumber(cvt_callbacks));
+	  init = 0;
+	}
+
       /*
        * string to integer conversion 
        */
@@ -639,208 +640,6 @@ void XjFillInValue(display, window, where, resource, type, address)
 	}
 
       /*
-       * string to XFontStruct conversion
-       */
-      if (!strcmp(resource->resource_type, XjRFontStruct))
-	{
-	  char *sub1 = "-*-*-medium-r-*-*-*-120-*-*-*-*-iso8859-1";
-	  char *trying = "trying to substitute `%s'.";
-
-	  if (strcmp(XjDefaultFont, address) != 0)
-	    {
-	      fontstr = XjLoadQueryFontCache(display, address);
-	      if (fontstr != NULL)
-		{
-		  *(XFontStruct **)
-		    ((char *)where + resource->resource_offset) =
-		      fontstr;
-		  return;
-		}
-	      else
-		{
-		  sprintf(errtext, "Unknown font: \"%s\"", address);
-		  XjWarning(errtext);
-		}
-	    }
-
-	  sprintf(errtext, trying, sub1);
-	  XjWarning(errtext);
-	  fontstr = XjLoadQueryFontCache(display, sub1);
-	      
-	  if (fontstr == NULL)
-	    {
-	      char *sub2 = "fixed";
-
-	      sprintf(errtext, trying, sub2);
-	      XjWarning(errtext);
-	      fontstr = XjLoadQueryFontCache(display, sub2);
-	    }
-
-	  if (fontstr == NULL)
-	    {
-	      XrmQuark key;
-	      fontstr = (XFontStruct *) hash_give_any_value(fonts, &key);
-	      if (fontstr != NULL)
-		{
-		  sprintf(errtext, "substituting font: `%s'",
-			  XrmQuarkToString(key));
-		  XjWarning(errtext);
-		}
-	    }
-
-	  if (fontstr == NULL)
-	    XjFatalError("couldn't get a font");
-	      
-	  *(XFontStruct **)((char *)where + resource->resource_offset) =
-	    fontstr;
-	  return;
-	}
-
-      /*
-       * string to Color conversion
-       */
-      if (!strcmp(resource->resource_type, XjRColor))
-	{
-	  XColor c;
-      
-	  if (strcasecmp(XjNone, address) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = -1;
-	      return;
-	    }
-
-	  if (strcmp(XjDefaultForeground, address) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) =
-		BlackPixel(display, DefaultScreen(display));
-	      return;
-	    }
-
-	  if (strcmp(XjDefaultBackground, address) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) =
-		WhitePixel(display, DefaultScreen(display));
-	      return;
-	    }
-
-	  /* we give black for foreground or white for background, in */
-	  /* case we can't figure something better out */
-
-	  if (resource->resource_class == XjCForeground)
-	    *((int *)((char *)where + resource->resource_offset)) =
-	      BlackPixel(display, DefaultScreen(display));
-	  else
-	    *((int *)((char *)where + resource->resource_offset)) =
-	      WhitePixel(display, DefaultScreen(display));
-
-	  if (!XParseColor(display,
-			   DefaultColormap(display, DefaultScreen(display)),
-			   address,
-			   &c))
-	    {
-	      sprintf(errtext, "couldn't parse color: %s", address);
-	      XjWarning(errtext);
-	      return;
-	    }
-
-	  if (!XAllocColor(display,
-			   DefaultColormap(display, DefaultScreen(display)),
-			   &c))
-	    {
-	      sprintf(errtext, "couldn't allocate color: %s", address);
-	      XjWarning(errtext);
-	      return;
-	    }
-
-	  *((int *)((char *)where + resource->resource_offset)) = c.pixel;
-
-	  return;
-	}
-
-      /*
-       * String to Justify conversion
-       */
-      if (!strcmp(resource->resource_type, XjRJustify))
-	{
-	  if (strcasecmp(address, XjLeftJustify) == 0  ||
-	      strcasecmp(address, XjTopJustify) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = Left;
-	      return;
-	    }
-
-	  if (strcasecmp(address, XjCenterJustify) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = Center;
-	      return;
-	    }
-
-	  if (strcasecmp(address, XjRightJustify) == 0  ||
-	      strcasecmp(address, XjBottomJustify) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = Right;
-	      return;
-	    }
-
-	  *((int *)((char *)where + resource->resource_offset)) = Center;
-
-	  sprintf(errtext, "bad justify value: %s", address);
-	  XjWarning(errtext);
-	  return;
-	}
-
-      /*
-       * String to Orientation conversion
-       */
-      if (!strcmp(resource->resource_type, XjROrientation))
-	{
-	  if (strcasecmp(address, XjVertical) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = Vertical;
-	      return;
-	    }
-
-	  if (strcasecmp(address, XjHorizontal) == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset))
-		= Horizontal;
-	      return;
-	    }
-
-	  *((int *)((char *)where + resource->resource_offset)) = Vertical;
-
-	  sprintf(errtext, "bad orientation value: %s", address);
-	  XjWarning(errtext);
-	  return;
-	}
-
-      /*
-       * String to Boolean conversion
-       */
-      if (!strcmp(resource->resource_type, XjRBoolean))
-	{
-	  if (strcasecmp(address, "true") == 0 ||
-	      strcasecmp(address, "yes") == 0 ||
-	      strcasecmp(address, "on") == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = True;
-	      return;
-	    }
-
-	  if (strcasecmp(address, "false") == 0 ||
-	      strcasecmp(address, "no") == 0 ||
-	      strcasecmp(address, "off") == 0)
-	    {
-	      *((int *)((char *)where + resource->resource_offset)) = False;
-	      return;
-	    }
-
-	  *((int *)((char *)where + resource->resource_offset))
-	    = atoi(address);
-	  return;
-	}
-
-      /*
        * String to Callback conversion
        */
       if (!strcmp(resource->resource_type, XjRCallback))
@@ -850,102 +649,19 @@ void XjFillInValue(display, window, where, resource, type, address)
 	  return;
 	}
 
-      /*
-       * String to Pixmap conversion
-       */
-      if (!strcmp(resource->resource_type, XjRPixmap))
+      if ((tmp = XjGetCallback(resource->resource_type)) != NULL)
 	{
-	  XjPixmap *newPixmap = NULL;
-
-	  if (address == NULL)
-	    {
-	      *((XjPixmap **)((char *)where + resource->resource_offset))
-		= NULL;
-	      return;
-	    }
-
-	  switch(XReadBitmapFile(display, window,
-				 (char *)address, &p.width, &p.height,
-				 &p.pixmap, &p.hot_x, &p.hot_y))
-	    {
-	    case BitmapOpenFailed:
-	    case BitmapFileInvalid:
-	      if (address[0] != '/')
-		{
-		  char *new_address;
-		  new_address = (char *) XjMalloc(strlen((char *) address)
-						  + strlen(bitmapdir) + 2);
-		  sprintf(new_address, "%s/%s", bitmapdir, address);
-		  switch(XReadBitmapFile(display, window,
-					 (char *)new_address,
-					 &p.width, &p.height,
-					 &p.pixmap, &p.hot_x, &p.hot_y))
-		    {
-		    case BitmapOpenFailed:
-		    case BitmapFileInvalid:
-		      sprintf(errtext, "error reading bitmap %s", address);
-		      XjWarning(errtext);
-		      break;
-
-		    case BitmapNoMemory:
-		      sprintf(errtext, "error reading bitmap %s, no memory",
-			      address);
-		      XjWarning(errtext);
-		      break;
-
-		    case BitmapSuccess:
-		      newPixmap = (XjPixmap *)XjMalloc((unsigned)
-						       sizeof(XjPixmap));
-		      bcopy((char *)&p, (char *)newPixmap, sizeof(XjPixmap));
-		      break;
-		    }
-		  XjFree(new_address);
-		}
-	      else
-		{
-		  sprintf(errtext, "error reading bitmap %s", address);
-		  XjWarning(errtext);
-		}
-	      break;
-
-	    case BitmapNoMemory:
-	      sprintf(errtext, "error reading bitmap %s, no memory",
-		      address);
-	      XjWarning(errtext);
-	      break;
-
-	    case BitmapSuccess:
-	      newPixmap = (XjPixmap *)XjMalloc((unsigned) sizeof(XjPixmap));
-	      bcopy((char *)&p, (char *)newPixmap, sizeof(XjPixmap));
-	      break;
-	    }
-
-	  *((XjPixmap **)((char *)where + resource->resource_offset)) =
-	    newPixmap;
-
+	  tmp(display, window, where, resource, type, address);
 	  return;
 	}
     }
 
-  sprintf(errtext, "unknown conversion: %s to %s",
-	  type, resource->resource_type); 
-  XjWarning(errtext);
-}
-
-/*
- * This function is broken...
- * In fact, lots of things are broken.
- * C is broken... Unix is broken... Why break such a fine tradition?
- * (Watch out for paradoxes!)
- */
-void XjCopyValue(where, resource, value)
-     Jet where;
-     XjResource *resource;
-     XjArgVal value;
-{
-  bcopy((char *)&value,
-	((char *)where + resource->resource_offset),
-	(resource->resource_size > 4) ? 4 : resource->resource_size);
+  {
+    char errtext[100];
+    sprintf(errtext, "unknown conversion: %s to %s",
+	    type, resource->resource_type);
+    XjWarning(errtext);
+  }
 }
 
 void XjSelectInput(display, window, mask)
@@ -971,7 +687,7 @@ long mask;
   if (XCNOMEM == XSaveContext(display, window, selectContext, (caddr_t)mask))
     {
       XjFatalError("out of memory in XSaveContext");
-      exit(-1);
+      XjExit(-1);
     }
 
   XSelectInput(display, window, mask);
@@ -998,7 +714,7 @@ Jet jet;
 			      registerContext, (caddr_t) jet))
     {
       XjFatalError("out of memory in XSaveContext");
-      exit(-1);
+      XjExit(-1);
     }
 }
 
@@ -1111,7 +827,7 @@ int appTableCount;
       sprintf(errtext, "could not open display %s", 
 	       (displayName == NULL) ? "(null)" : displayName);
       XjFatalError(errtext);
-      exit(-1);
+      XjExit(-1);
     }
 
   /*
@@ -1350,14 +1066,24 @@ static int waitForSomething(jet)
 
       nfds++;				/* indexed based on 1, not 0 */
 
+#ifdef notdefined
       if (checkSignals != NULL)
-	checkSignals(); /* this could cause a late wakeup... */
+	checkSignals();		/* this could cause a late wakeup... */
+#endif
+
+      if (checkSignals != NULL  &&  checkSignals())
+	continue;		/* this could cause a late wakeup... */
+
 
       if (DEBUG)
 	{
 	  printf("%d.%3.3d ", diff.tv_sec, diff.tv_usec);
 	  fflush(stdout);
 	}
+
+      if (XPending(jet->core.display))
+	break;
+
       n = select(nfds, &read, &empty, &empty,
 		 (alarmList == NULL) ? 0 : &diff);
       switch(n)
@@ -1409,7 +1135,7 @@ static int waitForSomething(jet)
 	  break;
 	}
     }
-  return 1; /* currently never happens */
+  return 1;			/* currently never happens */
 }
 
 void XjSetSignalChecker(proc)
@@ -1431,9 +1157,7 @@ void XjEventLoop(jet)
 	return; /* a signal arrived */
 
       XNextEvent(jet->core.display, &event);
-      if (DEBUG)
-	printf("event.xany.type = %d, event.xany.window = %d\n",
-	       event.xany.type, event.xany.window);
+
       if (XCNOENT != XFindContext(jet->core.display, event.xany.window,
 				  registerContext, (caddr_t *)&eventJet))
 	{
@@ -1459,6 +1183,8 @@ void XjEventLoop(jet)
 	      while (eventJet &&
 		     (eventJet->core.window == event.xany.window)
 		     && !taken);
+	      if (!taken  &&  event.type == MappingNotify)
+		XRefreshKeyboardMapping(&(event.xmapping));
 	    }
 	}
 #ifdef DEBUG
@@ -1518,14 +1244,13 @@ void XjRealizeJet(jet)
   thisJet = jet;
   while (thisJet != NULL)
     {
+      /* may get its own window when we realize it */
+      if (XjParent(thisJet) != NULL)
+	thisJet->core.window = (XjParent(thisJet))->core.window;
+
       /* first realize the jet we're at */
       if (thisJet->core.classRec->core_class.realize != NULL)
-	{
-	  /* may get its own window when we realize it */
-	  if (XjParent(thisJet) != NULL)
-	    thisJet->core.window = (XjParent(thisJet))->core.window;
-	  thisJet->core.classRec->core_class.realize(thisJet);
-	}
+	thisJet->core.classRec->core_class.realize(thisJet);
 
       /* now locate the next jet... */
       /* if this jet has a child, it's next. */
@@ -1550,9 +1275,6 @@ void XjRealizeJet(jet)
 }
 
 #define MAXNAMELEN 500
-static char className[MAXNAMELEN]; /* deserve to lose long before this */
-static char instanceName[MAXNAMELEN];
-
 static char resClass[MAXNAMELEN], resInstance[MAXNAMELEN];
 
 Jet XjFindJet(name, parent)
@@ -1581,7 +1303,6 @@ caddr_t destination;
 {
   char *type;
   XrmValue value;
-  Boolean foundRes;
   int resCount;
 
   for (resCount = 0; resCount < num_resources; resCount++)
@@ -1593,18 +1314,13 @@ caddr_t destination;
 	      resources[resCount].resource_name);
 
       if (XrmGetResource(rdb, resInstance, resClass, &type, &value))
-	foundRes = True;
-      else
-	foundRes = False;
-
-      if (foundRes)
-	XjFillInValue(display,
+	XjFillInValue(display,		/* found it, so load it... */
 		      window,
 		      destination,
 		      &resources[resCount],
 		      XjRString, value.addr);
       else
-	XjFillInValue(display,
+	XjFillInValue(display,		/* didn't find it, load default... */
 		      window,
 		      destination,
 		      &resources[resCount],
@@ -1613,149 +1329,51 @@ caddr_t destination;
     }
 }
 
-Jet XjVaCreateJet(name, class, parent, va_alist)
-char *name;
-JetClass class;
-Jet parent;
+
+static void GetVal(src, dst, size)
+     char *src;
+     caddr_t *dst;
+     int size;
+{
+  bcopy( (char*)src, (char*)*dst, (int)size );
+}
+
+
+void XjVaGetValues(jet, va_alist)
+Jet jet;
 va_dcl
 {
   va_list args;
-  char *classPtr, *instPtr;
   int resCount;
   char *valName;
-  XjArgVal val;
-
-  Jet jet, thisJet;
-  int len;
-  Boolean validName;
-
-  jet = (Jet)XjMalloc((unsigned) class->core_class.jetSize);
-
-  bzero((char *) jet, class->core_class.jetSize);
-
-  jet->core.classRec = class;
-  jet->core.name = XjNewString(name);
-  jet->core.display = parent->core.display;
-  jet->core.window = parent->core.window; /* may get its own window later */
-  jet->core.borderWidth = 0;	/* Jet must change this if desired; supplied
-				   for reasonable geometry management */
-  jet->core.need_expose = False; /* it'll get an expose soon enough... */
-
-  jet->core.parent = parent;
-  jet->core.sibling = parent->core.child;
-  jet->core.child = NULL;
-
-  parent->core.child = jet;
-
-  /* Generate the class and instance names */
-
-  /*
-   * Initialize the pointers to the place after the null, since
-   * inside the loop we backup the length + 1 of the string to
-   * add in order to skip over the '.' that we might want...
-   * This hack makes it unnecessary to special case inside the
-   * loop.
-   */
-  classPtr = className + MAXNAMELEN;
-  instPtr = instanceName + MAXNAMELEN;
-  classPtr[-1] = '\0'; instPtr[-1] = '\0';
-  thisJet = jet;
-  validName = True;
-
-  while (thisJet != NULL)
-    {
-      if (thisJet->core.name)
-	len = strlen(thisJet->core.name);
-      else
-	{
-	  validName = False;
-	  break;
-	}
-
-      if (len < (instPtr - instanceName)) /* includes '.' */
-	{
-	  instPtr -= len + 1;
-	  bcopy(thisJet->core.name, instPtr, len);
-	  instPtr[-1] = '.';
-	}
-      else
-	{
-	  XjWarning("Full jet instance name too long.");
-	  validName = False;
-	  break;
-	}
-
-      /* now do it all again for the class... */
-      if (thisJet->core.classRec->core_class.className)
-	len = strlen(thisJet->core.classRec->core_class.className);
-      else
-	{
-	  validName = False;
-	  break;
-	}
-
-      if (len < (classPtr - className)) /* includes . */
-	{
-	  classPtr -= len + 1;
-	  bcopy(thisJet->core.classRec->core_class.className, classPtr, len);
-	  classPtr[-1] = '.';
-	}
-      else
-	{
-	  XjWarning("Full jet class name too long.");
-	  validName = False;
-	  break;
-	}
-
-      thisJet = thisJet->core.parent;
-    }
-
-/*
-  fprintf(stdout, "%s\n%s\n",
-	  classPtr, instPtr);
-*/
-
-  if (validName)
-    XjLoadFromResources(jet->core.display,
-			jet->core.window,
-			classPtr,
-			instPtr,
-			jet->core.classRec->core_class.resources,
-			jet->core.classRec->core_class.num_resources,
-			(caddr_t) jet);
+  caddr_t val;
 
   va_start(args);
 
   while (NULL != (valName = va_arg(args, char *)))
     {
-      val = va_arg(args, XjArgVal);
-/*      fprintf(stdout, "%d\n", val); */
+      val = va_arg(args, caddr_t);
 
       for (resCount = 0;
 	   resCount < jet->core.classRec->core_class.num_resources;
 	   resCount++)
-	if (!strcmp(valName, jet->core.classRec->
-		    core_class.resources[resCount].resource_name))
-	  {
-	    XjCopyValue(jet,
-			&jet->core.classRec->core_class.resources[resCount],
-			val);
-	    break;
-	  }
+	{
+	  XjResource resource;
+	  resource = jet->core.classRec->core_class.resources[resCount];
 
-      if (resCount == jet->core.classRec->core_class.num_resources)
-	fprintf(stdout, "no such resource name: %s\n", valName);
+	  if (!strcmp(valName, resource.resource_name))
+	    {
+	      GetVal(((caddr_t)jet) + resource.resource_offset, &val,
+		     (resource.resource_size > 4)
+		     ? 4 : resource.resource_size);
+	      break;
+	    }
+	}
     }
-
-  val = va_arg(args, XjArgVal); /* pop the last one */
+  val = va_arg(args, caddr_t); /* pop the last one */
   va_end(args);
-
-  /* now call the initialize procedure */
-  if (jet->core.classRec->core_class.initialize != NULL)
-    jet->core.classRec->core_class.initialize(jet);
-
-  return jet;
 }
+
 
 /* this is gross. and there are memory leaks having to do with
    resource allocation that need to be plugged up. */
