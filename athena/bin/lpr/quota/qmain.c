@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.11 1991-01-05 15:28:20 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.12 1991-01-23 15:11:38 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.11 1991-01-05 15:28:20 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.12 1991-01-23 15:11:38 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -53,8 +53,9 @@ char pbuf[BUFSIZ/2];
 char *bp = pbuf;
 
 #ifdef DEBUG
-int quota_debug=0;
-int logger_debug=0;
+int quota_debug=1;
+int gquota_debug=1;
+int logger_debug=1;
 #endif
 
 char aclname[MAXPATHLEN];       /* Acl filename */
@@ -221,6 +222,10 @@ main(argc, argv)
 	exit(2);
     }
 
+#ifdef lint
+    syslog(LOG_DEBUG, "logger=%d child=%d", logger, child);
+#endif
+
     init_qncs();
     /* Should never return */
     exit(1);
@@ -345,7 +350,7 @@ int fd;
     char serv[SERV_SZ], princ[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
     unsigned char name[MAX_K_NAME_SZ];
     int more, retval, ret;
-    long acct;
+    u_long acct;
     char *service, *set_service();
     quota_rec quotarec;
     gquota_rec gquotarec;
@@ -401,6 +406,10 @@ int fd;
 	/* Frob the realms and instance properly... */
 	make_kname(princ, inst, realm, (char *)name);
 	parse_username(name, princ, inst, realm);
+#ifdef DEBUG
+	syslog(LOG_DEBUG, "Request: %s, %s, acct # %d\n", 
+	       princ, service, acct);
+#endif
 	if (QD) {
 	    /* Quota server is marked as down */
 	    /* Allow everyone to print */
@@ -422,7 +431,7 @@ int fd;
 		ret = NOALLOWEDTOPRINT;
 	    }
 	} else {
-	    retval = gquota_db_get_group(acct, service,
+	    retval = gquota_db_get_group((long) acct, service,
 					 &gquotarec, (unsigned int)1,
 					 &more);
 	    ret = ALLOWEDTOPRINT;
