@@ -16,6 +16,9 @@ sun4)
 	echo "/usr/ccs/lib/cpp"				>> "$DEADFILES"
 	cat "$LIBDIR/solaris26-7"			>> "$DEADFILES"
 
+	# This file will be inaccurate after we remove the OS links.
+	echo "/var/sadm/install/contents"		>> "$DEADFILES"
+
 	# Create list of old packages and old patches to be removed
 	# from the DB.
 	cat "$LIBDIR/solaris26-pkgs"			>> "$OLDPKGS"
