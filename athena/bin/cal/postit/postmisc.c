@@ -9,8 +9,8 @@
 /*	Revised:	9/1/87
 /*
 /*	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postmisc.c,v $
-/*	$Author: probe $
-/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postmisc.c,v 1.1 1992-11-08 19:05:01 probe Exp $
+/*	$Author: ghudson $
+/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postmisc.c,v 1.2 1996-09-19 22:15:45 ghudson Exp $
 /*
 /*	Copyright 1987 by the Massachusetts Institute of Technology.
 /*	For copying and distribution information, see the file mit-copyright.h
@@ -22,12 +22,12 @@
 /************************************************************************/
 
 #ifndef lint
-static char rcsid_postmisc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postmisc.c,v 1.1 1992-11-08 19:05:01 probe Exp $";
+static char rcsid_postmisc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postmisc.c,v 1.2 1996-09-19 22:15:45 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -64,7 +64,7 @@ init_times()
         * Unpack it into a structure
         */
 	
-	bcopy((char *)localtime(&clock), (char *)&today, sizeof(struct tm));
+	memcpy(&today, localtime(&clock), sizeof(struct tm));
 }
 
 	/*----------------------------------------------------------*/

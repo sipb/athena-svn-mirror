@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.11 1996-08-29 07:00:27 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.12 1996-09-19 22:19:56 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -410,10 +410,10 @@ int appendToBuffer(what, howmuch)
       moved = c - text;
       length -= moved;
 
-      bcopy(c, text, length);	/* depends on intelligent bcopy */
+      memmove(text, c, length);
     }
 
-  bcopy(what, text + length, howmuch);
+  memcpy(text + length, what, howmuch);
   length += howmuch;
   text[length] = '\0';		/* Null terminate the string... */
 				/* WARNING:  This can overflow!  Why? */
