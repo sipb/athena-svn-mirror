@@ -119,7 +119,7 @@ char *quote(string)
 	len = strlen(string)+1;
 	result = malloc(len+2);
 	result[0] = '"';
-	bcopy(string, &result[1], len-1);
+	memmove(&result[1], string, len-1);
 	result[len] = '"';
 	result[len+1] = '\0';
 	return(result);
@@ -132,6 +132,6 @@ char *ds(s)
 	register int len = strlen(s) + 1;
 	register char *new;
 	new = malloc(len);
-	bcopy(s, new, len);
+	memmove(new, s, len);
 	return(new);
 }
