@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.3 1987-03-05 18:56:11 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.4 1987-03-05 19:50:40 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.3 1987-03-05 18:56:11 rfrench Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.4 1987-03-05 19:50:40 rfrench Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -40,10 +40,10 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define DEF_SUB 	"sys_rvd"
 
 /* Default directory containing subscription lists under working dir */
-#define DEF_SUBDIR	""
+#define DEF_SUBDIR	"/slists"
 
 /* Default directory containing stat files under working dir */
-#define DEF_STATDIR	""
+#define DEF_STATDIR	"/stats"
 
 /* Default directory containing lock files under real root */
 #define DEF_LOCKDIR	"/tmp"
