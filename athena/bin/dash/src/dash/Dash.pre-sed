@@ -211,5 +211,5 @@
 !   - if only one color is given, it is used for all three visual classes.
 !
 
-*foreground:			black,black,midnightblue
-*background:			white,gray85,CadetBlue2
+*foreground:			FOREGROUND
+*background:			BACKGROUND

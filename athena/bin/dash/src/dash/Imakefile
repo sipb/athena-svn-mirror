@@ -83,10 +83,20 @@ InstallNonExec(Dash.xbm,${DASH_XBM_DIR}/Dash.xbm)
 
 DependTarget()
 
+#ifdef SGIArchitecture
+FOREGROUND=black
+BACKGROUND=\#9f9f9f
+#else
+FOREGROUND=black,black,midnightblue
+BACKGROUND=white,gray85,CadetBlue2
+#endif
+
 $(DASHRESOURCES): Dash.pre-sed
 	${RM} ${DASHRESOURCES}
 	sed -e "s,DASH_MENUS,$(DASH_MENUS)," Dash.pre-sed | \
-	sed -e "s,DASH_FALLBACK,$(DASH_FALLBACK)," > $(DASHRESOURCES)
+	sed -e "s,DASH_FALLBACK,$(DASH_FALLBACK)," | \
+	sed -e "s/FOREGROUND/$(FOREGROUND)/" | \
+	sed -e "s/BACKGROUND/$(BACKGROUND)/" > $(DASHRESOURCES)
 
 compile_menu.o:	compile_menu.c
 	${CC} -c -DMENU_COMPILER ${CFLAGS} compile_menu.c
