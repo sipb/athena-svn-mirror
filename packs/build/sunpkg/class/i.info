@@ -3,10 +3,22 @@
 # Process the info files in a package:  Copy in the file, and update
 # the dir file in the info directory.
 
-install_info=$PKG_INSTALL_ROOT/usr/athena/bin/install-info
+# Locate the install-info executable.  We prefer the Solaris-provided
+# version in /usr/sfw/bin, in case the athena version does not have its
+# prerequisite software installed yet.
+if [ -x /usr/sfw/bin/install-info ]; then
+  install_info=/usr/sfw/bin/install-info
+elif [ -x $PKG_INSTALL_ROOT/usr/sfw/bin/install-info ]; then
+  install_info=$PKG_INSTALL_ROOT/usr/sfw/bin/install-info
+elif [ -x /usr/athena/bin/install-info ]; then
+  install_info=/usr/athena/bin/install-info
+else
+  install_info=$PKG_INSTALL_ROOT/usr/athena/bin/install-info
+fi
 
 # pkgadd supplies file source/destination pairs on our standard input.
 while read src dest ; do
+  rm -f $dest
   cp -p $src $dest || exit 1
   $install_info --info-dir="`dirname $dest`" $dest
 done      
