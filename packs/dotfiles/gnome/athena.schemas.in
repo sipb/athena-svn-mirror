@@ -13,6 +13,10 @@
 [schemas/apps/gnome_settings_daemon/screensaver]
  start_screensaver = false
 
+# nautilus defaults
+[schemas/apps/nautilus/preferences]
+ show_desktop = false
+
 # gnome-panel defaults
 [schemas/apps/panel/default_profiles/medium]
  [general]
