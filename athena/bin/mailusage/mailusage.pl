@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mailusage.pl,v 1.1 2003-11-26 00:26:32 rbasch Exp $
+# $Id: mailusage.pl,v 1.2 2004-05-16 16:44:36 rbasch Exp $
 
 # Get the total size of, and number of messages in, mailboxes on an
 # IMAP server.
@@ -107,7 +107,7 @@ sub get_usage($) {
 			  -callback => \&number_callback,
 			  -rock => \$exists});
     # Select the mailbox for read-only operations.
-    send_command "EXAMINE $mbox";
+    send_command "EXAMINE \"$mbox\"";
     # If this mailbox has messages, fetch their size.
     if ($exists) {
 	# The fetch callback will update the values for totalsize and
