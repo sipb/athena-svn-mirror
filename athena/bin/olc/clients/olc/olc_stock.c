@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.5 1989-08-08 10:30:09 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.6 1989-08-22 13:48:35 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -47,14 +47,15 @@ do_olc_stock(arguments)
       char **arguments;
 {
   REQUEST Request;
-  char file[NAME_LENGTH]; /* Temporary file for text. */
-  char bfile[NAME_LENGTH];     /* Name of browser file. */
+  char file[NAME_SIZE]; /* Temporary file for text. */
+  char bfile[NAME_SIZE];     /* Name of browser file. */
   struct stat statbuf;        /* Ptr. to file status buffer. */
   char *topic;                /* Topic from daemon. */
-  char *dtopic = "/";         /* default topic */
+  char dtopic[TOPIC_SIZE];         /* default topic */
   int status;                 /* Status returned by whatnow */
   int find_topic=0;
   
+  dtopic[0] = '/';
 
   if (stat(MAGIC, &statbuf) < 0) 
     {
@@ -68,7 +69,7 @@ do_olc_stock(arguments)
 	}
     }
  
-  fill_request(&Request);
+  OFillRequest(&Request);
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
@@ -87,7 +88,7 @@ do_olc_stock(arguments)
 	break;
     }
     
-  topic = dtopic;
+  topic = &dtopic[0];
 
   if(find_topic)
     {
