@@ -881,7 +881,7 @@ nonguest: check_login
 			$$ = 0;
 		}
 		else
-			$$ = 1;
+			$$ = $1;
 	}
 	;
 %%
