@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.2 1989-11-17 14:53:11 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.3 1989-11-17 14:58:27 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -45,7 +45,7 @@ t_list_queue(Request,sort,queues,topics,users,stati,comments,file,display)
   switch (status)
     {
     case SUCCESS:
-      OSortListByUTime(list)
+      OSortListByUTime(list);
       OSortListByRule(list,sort);
       t_display_list(list,comments,file);
       if(display == TRUE)
