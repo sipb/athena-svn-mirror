@@ -1,14 +1,14 @@
 #!/sbin/sh
-# Copy some files and remove some files after the os pkgs were installed
-# $Id: oschanges,v 1.18 2003-11-21 15:41:06 miki Exp $
+# Undo any undesired changes resulting from the installation of OS pkgs.
+# $Id: oschanges,v 1.19 2004-03-30 23:56:06 rbasch Exp $
 
-# copied from AFS
-rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
-rm -f $UPDATE_ROOT/usr/ucblib/libucb.so
-cp -p /os/usr/ucblib/libucb.so.1 $UPDATE_ROOT/usr/ucblib
-ln -s libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
+# The SUNWcsr package undoes our inittab mod, so restore it.
+cp -p /srvd/etc/inittab $UPDATE_ROOT/etc && [ ${UPDATE_ROOT:-/} = / ] && \
+  /etc/telinit q
 
-
+# The SUNWcsr package installs the stock /etc/default/init when not in
+# UPDATE mode.
+cp -p /srvd/etc/default/init $UPDATE_ROOT/etc/default
 
 # removed
 rm -f $UPDATE_ROOT/etc/rc2.d/S25tsaldog
@@ -23,25 +23,8 @@ rm -f $UPDATE_ROOT/etc/rc2.d/S94skiserv
 rm -f $UPDATE_ROOT/etc/rc3.d/S76snmpdx
 rm -f $UPDATE_ROOT/etc/rc3.d/S77dmi
 
-rm -f $UPDATE_ROOT/usr/openwin/lib/X11/fonts/75dpi/*
-rm -f $UPDATE_ROOT/usr/openwin/lib/X11/fonts/misc/*
-cp -p -r /os/usr/openwin/lib/X11/fonts/75dpi/* $UPDATE_ROOT/usr/openwin/lib/X11/fonts/75dpi/
-cp -p -r /os/usr/openwin/lib/X11/fonts/misc/* $UPDATE_ROOT/usr/openwin/lib/X11/fonts/misc/
-rm -f $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so*
-rm -f $UPDATE_ROOT/usr/openwin/server/lib/libfont.so*
-cp -p /os/usr/openwin/server/lib/libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/
-cp -p /os/usr/openwin/server/lib/libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/
-ln -s ../libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/libfont.so
-ln -s ../libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
-
-# Turn off sgid bit due to unfixed security hole.
-chmod g-s $UPDATE_ROOT/usr/sbin/arp
-
 # Make sure /tmp is a symlink.  /var/rtmp is created by the install.
 if [ ! -h $UPDATE_ROOT/tmp ]; then
   rm -rf $UPDATE_ROOT/tmp
   ln -s var/rtmp $UPDATE_ROOT/tmp
 fi
-
-# Generate windex files so apropos works
-/usr/bin/catman -w -M $UPDATE_ROOT/usr/openwin/share/man:$UPDATE_ROOT/usr/dt/share/man:$UPDATE_ROOT/usr/share/man
