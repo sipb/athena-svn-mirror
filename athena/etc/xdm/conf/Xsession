@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.11 1993-08-13 22:18:12 cfields Exp $
+# $Id: Xsession,v 1.12 1995-01-10 07:27:11 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -31,7 +31,17 @@ esac
 
 # Set the tty characteristics of the parent (console window)
 # Redirect stdin since some versions of stty use it instead of stdout.
-stty dec 0<&1 2>/dev/null
+if [ "${hosttype}" = "decmips" ]; then
+  stty dec 0<&1 2>/dev/null
+else
+  stty sane 0<&1 2>/dev/null
+fi
+
+# Make random Athena modifications to keymap if required.
+
+test -f /usr/athena/lib/X11/keymaps/AthenaMods && \
+  xmodmap /usr/athena/lib/X11/keymaps/AthenaMods
+
 $session
 
 status=$?
