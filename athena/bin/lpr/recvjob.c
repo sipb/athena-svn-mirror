@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.6 1990-11-16 15:08:49 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.7 1990-12-12 13:12:06 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.6 1990-11-16 15:08:49 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.7 1990-12-12 13:12:06 epeisach Exp $";
 #endif lint
 
 /*
@@ -30,7 +30,7 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
 #include <ufs/ufsparam.h>
 #endif
 
-#if !defined(AIX) || !defined(i386)
+#if (!defined(AIX) || !defined(i386)) && (!defined(_IBMR2))
 #ifdef VFS
 #include <ufs/fs.h>
 #else
@@ -41,6 +41,10 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
 #ifdef PQUOTA
 #include "quota.h"
 #include <sys/time.h>
+#endif
+
+#ifdef _IBMR2
+#include <sys/select.h>
 #endif
 
 #if BUFSIZ != 1024
@@ -151,7 +155,11 @@ find_dev(dev, type)
 	register int type;
 {
 	register DIR *dfd = opendir("/dev");
+#ifdef _IBMR2
+	struct dirent *dir;
+#else
 	struct direct *dir;
+#endif
 	struct stat stb;
 	char devname[MAXNAMLEN+6];
 	char *dp;
@@ -461,7 +469,7 @@ noresponse()
 chksize(size)
 	int size;
 {
-#if defined(AIX) && defined(i386)
+#if (defined(AIX) && defined(i386)) || defined(_IBMR2)
 	/* This is really not appropriate, but maybe someday XXX */
 	return 1;
 #else
@@ -541,7 +549,7 @@ char file[];
     {
         struct hostent *hp;
 	char outbuf[BUFSIZ], inbuf[BUFSIZ];
-	int t, act, s1;
+	int t, act=0, s1;
 	FILE *cfp;
 	struct sockaddr_in sin_c;
 	int fd, retry;
