@@ -37,11 +37,11 @@ find $RPM_BUILD_ROOT -type f -or -type l |
   sort > rpm.filelist
 
 %post
-grep -q ZCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^ZCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZCLIENT=true;		export ZCLIENT		#  Zephyr client
 EOF
 
-grep -q ZSERVER /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^ZSERVER /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZSERVER=false;		export ZSERVER		#  Zephyr server
 EOF
 

@@ -45,7 +45,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 ) >> /etc/services
 
 %post
-grep -q MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 MRUPDATE=false;		export MRUPDATE		# Moira update daemon
 EOF
 

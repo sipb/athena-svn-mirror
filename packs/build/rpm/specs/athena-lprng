@@ -35,7 +35,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 
 
 %post
-grep -q LPD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^LPD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 LPD=false;		export LPD		#  Run line printer daemon?
 EOF
 

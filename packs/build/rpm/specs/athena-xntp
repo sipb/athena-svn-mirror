@@ -36,15 +36,15 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 echo "%dir /var/athena" >> rpm.filelist
 
 %post
-grep -q TIMESRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^TIMESRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMESRV=false;		export TIMESRV		#  Time server?
 EOF
 
-grep -q TIMECLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^TIMECLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMECLIENT=true;	export TIMECLIENT	#  Timed client?
 EOF
 
-grep -q TIMEHUB /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^TIMEHUB /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
 EOF
 

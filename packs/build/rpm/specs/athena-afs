@@ -36,15 +36,15 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 echo "%dir /usr/vice/cache" >> rpm.filelist	    
 
 %post
-grep -q AFSSRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^AFSSRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 AFSSRV=false;		export AFSSRV;		#  AFS server
 EOF
 
-grep -q AFSCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf 
+grep -q ^AFSCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf 
 AFSCLIENT=true;		export AFSCLIENT;	#  AFS client
 EOF
 
-grep -q AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 

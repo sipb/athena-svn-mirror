@@ -27,7 +27,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
     sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
 %post
-grep -q OLC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^OLC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 OLC=false;		export OLC		#  OLC daemon?
 EOF
 
