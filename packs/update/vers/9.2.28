@@ -15,4 +15,5 @@ echo "112621-11"					>> $PATCHES
 echo "112622-13"					>> $PATCHES
 echo "113476-11"					>> $PATCHES
 
+echo "/usr/athena/bin/netscape"				>> $DEADFILES
 echo "OSCHANGES=true"					>> $CONFVARS
