@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.16 1991-03-11 18:43:29 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.17 1991-06-04 18:57:58 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -45,7 +45,7 @@ extern time_t current_time;
 extern int errno;
 
 int space_total = 0;
-int dirsonly, recursive, yield, f_links, f_mounts;
+int dirsonly, recursive, yield, f_links, f_mounts, singlecolumn;
 time_t timev;
 
 main(argc, argv)
@@ -59,8 +59,29 @@ char *argv[];
      whoami = lastpart(argv[0]);
 
      dirsonly = recursive = timev = yield = f_links = f_mounts = 0;
-     while ((arg = getopt(argc, argv, "drt:ysm")) != -1) {
+     singlecolumn = -1;
+     while ((arg = getopt(argc, argv, "1Cdrt:ysm")) != -1) {
 	  switch (arg) {
+	  case '1':
+	       if ((singlecolumn != -1) && (! singlecolumn)) {
+		    fprintf(stderr,
+			    "%s: -1 and -C options are mutually exclusive\n",
+			    whoami);
+		    usage();
+		    exit(1);
+	       }
+	       singlecolumn = 1;
+	       break;
+	  case 'C':
+	       if ((singlecolumn != -1) && singlecolumn) {
+		    fprintf(stderr,
+			    "%s: -1 and -C options are mutually exclusive\n",
+			    whoami);
+		    usage();
+		    exit(1);
+	       }
+	       singlecolumn = 0;
+	       break;
 	  case 'd':
 	       dirsonly++;
 	       break;
@@ -84,6 +105,9 @@ char *argv[];
 	       exit(1);
 	  }
      }
+     if (singlecolumn == -1)
+	  singlecolumn = ! isatty(1);
+
      if (optind == argc) {
 	  char *cwd;
 
@@ -113,6 +137,9 @@ usage()
      fprintf(stderr, "     -y     report total space taken up by files\n");
      fprintf(stderr, "     -s     follow symbolic links to directories\n");
      fprintf(stderr, "     -m     follow mount points\n");
+     fprintf(stderr, "     -1     force single-column output\n");
+     fprintf(stderr, "     -C     force multi-column output (default when output is to a terminal)\n");
+     fprintf(stderr, "-1 and -C are mutually exclusive\n");
 }
 
 
@@ -291,8 +318,8 @@ list_files()
 	  return retval;
      }
      
-     if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0,
-			       1, stdout)) {
+     if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, singlecolumn,
+			       2, 1, 0, 1, stdout)) {
 	  error("column_array");
 	  return retval;
      }
