@@ -1,11 +1,11 @@
-# $Id: Makefile.athena,v 1.5 2004-04-08 18:05:18 rbasch Exp $
+# $Id: Makefile.athena,v 1.6 2004-04-16 04:14:44 ghudson Exp $
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
 
 prepare:
 	rm -f config.cache
-	CONFIG_SITE=`pwd`/config.site.athena ./configure
+	CONFIG_SITE=`pwd`/config.site.athena LEX=lex ./configure --disable-nls
 
 clean:
 	${MAKE} clean
