@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <libintl.h>
 #include <locale.h>
+#include <scrollkeeper.h>
 
 #define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
 

@@ -1,336 +1,398 @@
 <?xml version="1.0"?>
 <ScrollKeeperContentsList>
 
+<!--
+    ScrollKeeper Category Tree
+    Maintained by the ScrollKeeper project
+    http://scrollkeeper.sourceforge.net
+    Version: 0.1.0
+    Last Modified: Feb 14, 2001
+-->
+
   <sect>
-    <title>Applications</title>
+    <title>Programi</title>
     <sect>
-      <title>Amusement</title>
+      <title>Zabava</title>
     </sect>
     <sect>
-      <title>Education</title>
+      <title>Izobra¾evanje</title>
       <sect>
-        <title>Arts</title>
+        <title>Umetnost</title>
       </sect>
       <sect>
-        <title>English</title>
+        <title>Raèunalni¹tvo</title>
       </sect>
       <sect>
-        <title>Maths</title>
+        <title>Angle¹èina</title>
       </sect>
       <sect>
-        <title>Music</title>
+        <title>Jezik</title>
       </sect>
       <sect>
-        <title>Science</title>
+        <title>Matematika</title>
       </sect>
       <sect>
-        <title>Technology</title>
+        <title>Glasba</title>
       </sect>
       <sect>
-        <title>Testing</title>
+        <title>Znanost</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Tehnologija</title>
+      </sect>
+      <sect>
+        <title>Preizkusi</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Igre</title>
       <sect>
-        <title>Arcade</title>
+        <title>Arkadne</title>
       </sect>
       <sect>
-        <title>Board</title>
+        <title>Namizne</title>
       </sect>
       <sect>
-        <title>First Person Shooters</title>
+        <title>Prvoosebne streljaèine</title>
       </sect>
       <sect>
-        <title>Puzzles</title>
+        <title>Sestavljanke</title>
       </sect>
       <sect>
-        <title>Fighting</title>
+        <title>Voja¹ke</title>
       </sect>
       <sect>
-        <title>Role-Playing</title>
+        <title>Igranje vlog</title>
       </sect>
       <sect>
-        <title>Strategy</title>
+        <title>Simulacije</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Strategije</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
       <title>Internet</title>
       <sect>
-        <title>Chat</title>
+        <title>Pogovor</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>E-po¹ta</title>
       </sect>
       <sect>
         <title>Fax</title>
       </sect>
       <sect>
-        <title>File Sharing</title>
+        <title>Deljenje datotek</title>
       </sect>
       <sect>
         <title>FTP</title>
       </sect>
       <sect>
-        <title>Internet Phone</title>
+        <title>Internetni telefon</title>
       </sect>
       <sect>
-        <title>Messaging</title>
+        <title>Sporoèanje</title>
       </sect>
       <sect>
-        <title>News</title>
+        <title>Novice</title>
       </sect>
       <sect>
-        <title>Video Conferencing</title>
+        <title>Video konference</title>
       </sect>
       <sect>
-        <title>Web</title>
+        <title>Splet</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimedjia</title>
       <sect>
-        <title>Graphics</title>
+        <title>Grafika</title>
         <sect>
-          <title>3D Modelling</title>
+          <title>Modeliranje 3D</title>
         </sect>
         <sect>
-          <title>3D Modelling</title>
-        </sect>
-        <sect>
-          <title>3D Rendering</title>
+          <title>Senèenje 3D</title>
         </sect>
         <sect>
           <title>CAD</title>
         </sect>
         <sect>
-          <title>Capture</title>
+          <title>Zajem</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Pretvorba</title>
         </sect>
         <sect>
-          <title>Drawing</title>
+          <title>Risanje</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Urejanje</title>
         </sect>
         <sect>
-          <title>Viewing</title>
+          <title>Pregledovanje</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Drugo</title>
         </sect>
       </sect>
       <sect>
-        <title>Sound</title>
+        <title>Zvok</title>
         <sect>
-          <title>Analysis</title>
+          <title>Analiza</title>
         </sect>
         <sect>
-          <title>CD Mastering</title>
+          <title>Ustvarjanje CDjev</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Pretvorba</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Urejanje</title>
         </sect>
         <sect>
           <title>MIDI</title>
         </sect>
         <sect>
-          <title>Mixers</title>
+          <title>Me¹alke</title>
         </sect>
         <sect>
-          <title>Players</title>
+          <title>Predvajalci</title>
         </sect>
         <sect>
-          <title>Recording</title>
+          <title>Snemanje</title>
         </sect>
         <sect>
-          <title>Speech</title>
+          <title>Govor</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Drugo</title>
         </sect>
       </sect>
       <sect>
         <title>Video</title>
         <sect>
-          <title>Capture</title>
+          <title>Zajem</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Pretvorba</title>
         </sect>
         <sect>
-          <title>Display</title>
+          <title>Prikaz</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Urejanje</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Drugo</title>
         </sect>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Office</title>
+      <title>Pisarna</title>
       <sect>
-        <title>Calendar</title>
+        <title>Koledar</title>
       </sect>
       <sect>
-        <title>Data Processing</title>
+        <title>Obdelava podatkov</title>
       </sect>
       <sect>
-        <title>Database</title>
+        <title>Zbirka podatkov</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>E-po¹ta</title>
       </sect>
       <sect>
-        <title>Finantial</title>
+        <title>Finance</title>
       </sect>
       <sect>
-        <title>PIM</title>
+        <title>Osebne informacije</title>
       </sect>
       <sect>
-        <title>Plotting</title>
+        <title>Risanje</title>
       </sect>
       <sect>
-        <title>Presentation</title>
+        <title>Prezentacije</title>
       </sect>
       <sect>
-        <title>Publication</title>
+        <title>Zalo¾ni¹tvo</title>
+        <sect>
+          <title>Spletno zalo¾ni¹tvo</title>
+        </sect>
       </sect>
       <sect>
-        <title>Word Processing</title>
+        <title>Urejanje besedil</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Scientific</title>
+      <title>Znanost</title>
       <sect>
-        <title>Astronomy</title>
+        <title>Astronomija</title>
+      </sect>
+      <sect>
+        <title>Astrofizika</title>
+      </sect>
+      <sect>
+        <title>Biologija</title>
+      </sect>
+      <sect>
+        <title>Kemija</title>
       </sect>
       <sect>
         <title>EDA</title>
       </sect>
       <sect>
-        <title>Math</title>
+        <title>Genetika</title>
       </sect>
       <sect>
-        <title>Visualisation</title>
+        <title>Matematika</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Security</title>
-      <sect>
-        <title>Cryptography</title>
+        <title>Fizika</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Vizualizacija</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Text Editors</title>
+      <title>Varnost</title>
       <sect>
-        <title>CLI</title>
+        <title>Kriptografija</title>
       </sect>
       <sect>
-        <title>GUI</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Utilities</title>
+      <title>Urejevalniki besedil</title>
       <sect>
-        <title>Compression</title>
+        <title>Ukazna vrstica</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Grafièni</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
+      </sect>
+    </sect>
+    <sect>
+      <title>Pripomoèki</title>
+      <sect>
+        <title>Arhiviranje</title>
+      </sect>
+      <sect>
+        <title>Raèunanje</title>
+      </sect>
+      <sect>
+        <title>Ure</title>
+      </sect>
+      <sect>
+        <title>Komprimiranje</title>
+      </sect>
+      <sect>
+        <title>Pripomoèki pri datotekah</title>
+      </sect>
+      <sect>
+        <title>Nadzorniki</title>
+      </sect>
+      <sect>
+        <title>Tiskanje</title>
+      </sect>
+      <sect>
+        <title>Terminali</title>
+      </sect>
+      <sect>
+        <title>Orodja za delo z besedilom</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
       <title>X</title>
       <sect>
-        <title>Configuration</title>
+        <title>Nastavitve</title>
       </sect>
       <sect>
-        <title>Screensavers</title>
+        <title>Pisave</title>
       </sect>
       <sect>
-        <title>Window Managers</title>
+        <title>Upravljalniki prijav</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Ohranjevalniki zaslona </title>
+      </sect>
+      <sect>
+        <title>Upravljalniki oken</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
       </sect>
     </sect>
   </sect>
 
   <sect>
-        <title>CDE</title>
+    <title>CDE</title>
   </sect>
 
   <sect>
-    <title>Development</title>
+    <title>Razvoj</title>
     <sect>
-      <title>Databases</title>
+      <title>Podatkovne baze</title>
     </sect>
     <sect>
-      <title>Development Tools</title>
+      <title>Razvojna orodja</title>
       <sect>
-        <title>Build Tools</title>
+        <title>Orodja za izgradnjo</title>
       </sect>
       <sect>
-        <title>Code Generators</title>
+        <title>Generatorji kode</title>
       </sect>
       <sect>
-        <title>Configuration</title>
+        <title>Nastavitve</title>
       </sect>
       <sect>
-        <title>Debuggers</title>
+        <title>Razhro¹èevalniki</title>
       </sect>
       <sect>
-        <title>IDEs</title>
+        <title>Integriranja razvojna okolja</title>
       </sect>
       <sect>
-        <title>Packaging</title>
+        <title>Pakiranje</title>
       </sect>
       <sect>
-        <title>Profiling</title>
+        <title>Profiliranje</title>
       </sect>
       <sect>
-        <title>RAD</title>
+        <title>Rapiden razvoj programja</title>
       </sect>
       <sect>
-        <title>Version Control</title>
+        <title>Kontrola razlièic</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Environments</title>
+      <title>Okolja</title>
       <sect>
         <title>ADA</title>
       </sect>
@@ -350,10 +412,16 @@
         <title>gtk++</title>
       </sect>
       <sect>
+        <title>Java</title>
+      </sect>
+      <sect>
         <title>KDE</title>
       </sect>
       <sect>
         <title>Perl</title>
+      </sect>
+      <sect>
+        <title>Python</title>
       </sect>
       <sect>
         <title>Qt</title>
@@ -365,11 +433,11 @@
         <title>WebML</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Kernels</title>
+      <title>Jedra</title>
       <sect>
         <title>FreeBSD</title>
       </sect>
@@ -380,28 +448,28 @@
         <title>NetBSD</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Libraries</title>
+      <title>Knji¾nice</title>
     </sect>
     <sect>
-      <title>System Calls</title>
+      <title>Sistemski klici</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Drugo</title>
     </sect>
   </sect>
   <sect>
-    <title>General</title>
+    <title>Splo¹no</title>
     <sect>
-      <title>Licenses</title>
+      <title>Licence</title>
     </sect>
     <sect>
       <title>Linux</title>
       <sect>
-        <title>Distributions</title>
+        <title>Distribucije</title>
         <sect>
           <title>Caldera</title>
         </sect>
@@ -424,14 +492,14 @@
           <title>SuSE</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Druge</title>
         </sect>
       </sect>
       <sect>
-        <title>General</title>
+        <title>Splo¹no</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
@@ -442,128 +510,128 @@
   <sect>
     <title>GNOME</title>
     <sect>
-      <title>Core Desktop</title>
+      <title>Osnovno namizje</title>
     </sect>
     <sect>
-      <title>Applets</title>
+      <title>Vstavki</title>
       <sect>
-        <title>Amusement</title>
+        <title>Zabava</title>
       </sect>
       <sect>
-        <title>Clock</title>
+        <title>Ura</title>
       </sect>
       <sect>
-        <title>Monitors</title>
+        <title>Nadzorniki</title>
       </sect>
       <sect>
-        <title>Multimedia</title>
+        <title>Multimedija</title>
       </sect>
       <sect>
-        <title>Network</title>
+        <title>Mre¾a</title>
       </sect>
       <sect>
-        <title>Utility</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Applications</title>
-    </sect>
-    <sect>
-      <title>Utilities</title>
-    </sect>
-    <sect>
-      <title>Development</title>
-      <sect>
-        <title>Applications</title>
-      </sect>
-      <sect>
-        <title>Introductory</title>
-      </sect>
-      <sect>
-        <title>Tutorials</title>
-      </sect>
-      <sect>
-        <title>White Papers</title>
+        <title>Pripomoèki</title>
       </sect>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Programi</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Pripomoèki</title>
+    </sect>
+    <sect>
+      <title>Razvoj</title>
+      <sect>
+        <title>Programi</title>
+      </sect>
+      <sect>
+        <title>Uvod</title>
+      </sect>
+      <sect>
+        <title>Hitra navodila</title>
+      </sect>
+      <sect>
+        <title>Dokumenti</title>
+      </sect>
+    </sect>
+    <sect>
+      <title>Igre</title>
+    </sect>
+    <sect>
+      <title>Grafika</title>
     </sect>
     <sect>
       <title>Internet</title>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimedija</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>Nastavitve</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Sistem</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Drugo</title>
     </sect>
   </sect>
 
   <sect>
     <title>KDE</title>
     <sect>
-      <title>Utilities</title>
+      <title>Pripomoèki</title>
     </sect>
     <sect>
-      <title>Applications</title>
+      <title>Programi</title>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Igre</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Grafika</title>
     </sect>
     <sect>
       <title>Internet</title>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimedija</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>Nastavitve</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Sistem</title>
     </sect>
     <sect>
-      <title>Programs</title>
+      <title>Programi</title>
     </sect>
     <sect>
-      <title>Development</title>
+      <title>Razvoj</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Drugo</title>
     </sect>
   </sect>
 
   <sect>
-    <title>System</title>
+    <title>Sistem</title>
     <sect>
-      <title>Administration</title>
+      <title>Administracija</title>
       <sect>
-        <title>Backups</title>
+        <title>Varnostne kopije</title>
         <sect>
-          <title>Local</title>
+          <title>Krajevne</title>
         </sect>
         <sect>
-          <title>Remote</title>
+          <title>Oddaljene</title>
         </sect>
       </sect>
       <sect>
-        <title>Filesystems</title>
+        <title>Datoteèni sistemi</title>
       </sect>
       <sect>
-        <title>Networking</title>
+        <title>Mre¾e</title>
         <sect>
           <title>AppleTalk</title>
         </sect>
@@ -580,69 +648,72 @@
           <title>DNS</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Drugo</title>
         </sect>
       </sect>
       <sect>
-        <title>Users</title>
+        <title>Uporabniki</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Configuration</title>
+      <title>Nastavitve</title>
       <sect>
-        <title>Config Files</title>
+        <title>Datoteke z nastavitvami</title>
       </sect>
       <sect>
-        <title>Configuration Tools</title>
+        <title>Orodja za nastavljanje</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Hardware</title>
-      <sect>
-        <title>Processor</title>
-      </sect>
-      <sect>
-        <title>Hard Disk</title>
-      </sect>
-      <sect>
-        <title>Removable Storage</title>
-      </sect>
-      <sect>
-        <title>Memory</title>
-      </sect>
-      <sect>
-        <title>Ethernet/Modem</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Installation</title>
+      <title>Strojna oprema</title>
+      <sect>
+        <title>Procesor</title>
+      </sect>
+      <sect>
+        <title>Diski</title>
+      </sect>
+      <sect>
+        <title>Video</title>
+      </sect>
+      <sect>
+        <title>Vhodne naprave</title>
+      </sect>
+      <sect>
+        <title>Mre¾a</title>
+      </sect>
+      <sect>
+        <title>PCI/ISA/PCMCIA</title>
+      </sect>
+      <sect>
+        <title>Drugo</title>
+      </sect>
     </sect>
     <sect>
-      <title>Security</title>
+      <title>Upravljanje s paketi</title>
+    </sect>
+    <sect>
+      <title>Varnost</title>
       <sect>
-        <title>Firewall</title>
+        <title>Po¾arni zid</title>
       </sect>
       <sect>
-        <title>Intrusion Detection</title>
+        <title>Zaznava vdorov</title>
       </sect>
       <sect>
-        <title>Virus</title>
+        <title>Virusi</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Services</title>
+      <title>Storitve</title>
       <sect>
         <title>HTTP</title>
       </sect>
@@ -659,20 +730,20 @@
         <title>Telnet</title>
       </sect>
       <sect>
-        <title>Syslog</title>
+        <title>Sistemski dnevnik</title>
       </sect>
       <sect>
         <title>BIND</title>
       </sect>
       <sect>
-        <title>Printing</title>
+        <title>Tiskanje</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Drugo</title>
       </sect>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Drugo</title>
     </sect>
   </sect>
 </ScrollKeeperContentsList>

@@ -8,23 +8,26 @@
 
 const struct _msg_ent _msg_tbl[] = {
   {"", 1},
-  {"scrollkeeper-install: out of memory: %s\n", 2},
-  {"wrong content list file %s\n", 3},
-  {"wrong extended content list file %s\n", 4},
-  {"Usage: scrollkeeper_install [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n", 5},
-  {"wrong omf file %s\n", 6},
-  {"Usage: scrollkeeper_preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n", 7},
-  {"%s missing\n", 8},
-  {"Usage: scrollkeeper_uninstall [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n", 9},
-  {"%s: out of memory: %s\n", 10},
-  {"Usage: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n", 11},
+  {"wrong content list file %s\n", 2},
+  {"wrong extended content list file %s\n", 3},
+  {"\
+Usage: scrollkeeper_install [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n", 4},
+  {"wrong omf file %s\n", 5},
+  {"Usage: scrollkeeper_preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n", 6},
+  {"%s missing\n", 7},
+  {"\
+Usage: scrollkeeper_uninstall [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n", 8},
+  {"Usage: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n", 9},
+  {"%s: warning: %s overrides %s\n", 10},
+  {"Unable to create database directory: %s\n", 11},
   {"%s: %s: is not a directory\n", 12},
-  {"Usage: %s <LOCALE> <CATEGORY TREE FILE NAME>\n", 13},
+  {"Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n", 13},
   {"No Content List for this locale!!!\n", 14},
   {"error while parsing %s\n", 15},
   {"\
 Usage:  toc <filename>\n\
 \n", 16},
+  {"%s: out of memory: %s\n", 17},
 };
 
-int _msg_tbl_length = 16;
+int _msg_tbl_length = 17;

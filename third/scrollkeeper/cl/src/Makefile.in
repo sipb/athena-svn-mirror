@@ -59,15 +59,18 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
-CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 GENCAT = @GENCAT@
@@ -90,6 +93,7 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SCROLLKEEPER_PARTIAL_DB_DIR = @SCROLLKEEPER_PARTIAL_DB_DIR@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -98,10 +102,10 @@ XML_CONFIG = @XML_CONFIG@
 XML_LIBS = @XML_LIBS@
 l = @l@
 
-INCLUDES =          $(XML_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)/libs         $(XML_CFLAGS)
 
 
-LDADD =          $(XML_LIBS)
+LDADD =          $(XML_LIBS) 	$(top_builddir)/libs/libscrollkeeper.la
 
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
@@ -132,23 +136,28 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 scrollkeeper_preinstall_OBJECTS =  preinstall.o
 scrollkeeper_preinstall_LDADD = $(LDADD)
-scrollkeeper_preinstall_DEPENDENCIES = 
+scrollkeeper_preinstall_DEPENDENCIES =  \
+$(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_preinstall_LDFLAGS = 
 scrollkeeper_update_OBJECTS =  update.o
 scrollkeeper_update_LDADD = $(LDADD)
-scrollkeeper_update_DEPENDENCIES = 
+scrollkeeper_update_DEPENDENCIES =  \
+$(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_update_LDFLAGS = 
 scrollkeeper_install_OBJECTS =  install.o
 scrollkeeper_install_LDADD = $(LDADD)
-scrollkeeper_install_DEPENDENCIES = 
+scrollkeeper_install_DEPENDENCIES =  \
+$(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_install_LDFLAGS = 
 scrollkeeper_uninstall_OBJECTS =  uninstall.o
 scrollkeeper_uninstall_LDADD = $(LDADD)
-scrollkeeper_uninstall_DEPENDENCIES = 
+scrollkeeper_uninstall_DEPENDENCIES =  \
+$(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_uninstall_LDFLAGS = 
 scrollkeeper_get_cl_OBJECTS =  get-cl.o
 scrollkeeper_get_cl_LDADD = $(LDADD)
-scrollkeeper_get_cl_DEPENDENCIES = 
+scrollkeeper_get_cl_DEPENDENCIES =  \
+$(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_get_cl_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -303,6 +312,11 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+get-cl.o: get-cl.c ../../config.h ../../libs/scrollkeeper.h
+install.o: install.c ../../config.h ../../libs/scrollkeeper.h
+preinstall.o: preinstall.c ../../config.h ../../libs/scrollkeeper.h
+uninstall.o: uninstall.c ../../config.h ../../libs/scrollkeeper.h
+update.o: update.c ../../config.h ../../libs/scrollkeeper.h
 
 info-am:
 info: info-am

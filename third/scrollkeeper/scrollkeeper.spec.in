@@ -38,7 +38,7 @@ pushd ${RPM_BUILD_ROOT}%{_datadir}/scrollkeeper/Templates
 rm -rf en && ln -sf C en
 rm -rf no* && ln -sf nb no && ln -sf nn no_NY
 for lang in bg_BG bg_BG.cp1251 de_AT en_AU en_GB en_SE en_UK en_US es_DO \
-         es_ES es_GT es_HN es_MX es_PA es_PE es_SV ja_JP.eucJP pt_BR pt_PT \
+         es_ES es_GT es_HN es_MX es_PA es_PE es_SV ja_JP.eucJP pt_PT \
          sr_YU sv_SE zh_CN zh_CN.GB2312 zh_TW zh_TW.Big5 ; do
     l=${lang%_*}
     rm -rf $lang
@@ -49,11 +49,17 @@ popd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+if test -L %{_datadir}/scrollkeeper/Templates/pt_BR; then
+	rm %{_datadir}/scrollkeeper/Templates/pt_BR
+fi
+
 %files
 %defattr(-,root,root)
 %doc COPYING COPYING-DOCS AUTHORS README ChangeLog NEWS INSTALL 
 %{_datadir}/omf/scrollkeeper
 %{_bindir}/*
+%{_libdir}/*
 %{_mandir}/man8/*
 %{_datadir}/scrollkeeper
 %{_datadir}/locale/*/*

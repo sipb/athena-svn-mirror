@@ -59,15 +59,18 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
-CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 GENCAT = @GENCAT@
@@ -90,6 +93,7 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SCROLLKEEPER_PARTIAL_DB_DIR = @SCROLLKEEPER_PARTIAL_DB_DIR@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -99,7 +103,7 @@ XML_LIBS = @XML_LIBS@
 l = @l@
 
 scrollkeeper_data_dir = $(datadir)/scrollkeeper/Templates/pt_BR
-scrollkeeper_data_link_dir = $(datadir)/scrollkeeper/Templates/pt
+EXTRA_DIST = scrollkeeper_cl.xml
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -201,7 +205,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 install-data-local:
-	$(LN_S) -f -n $(DESTDIR)$(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
+	$(mkinstalldirs) $(DESTDIR)$(scrollkeeper_data_dir)
+	$(INSTALL_DATA) $(srcdir)/scrollkeeper_cl.xml $(DESTDIR)$(scrollkeeper_data_dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,3 +1,125 @@
+2001-03-28  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* Releasing 0.2 from what we have in the CVS
+	at this point in time
+
+2001-03-27  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/templates/da/scrollkeeper_cl.xml,
+	cl/templates/de/scrollkeeper_cl.xml,
+	cl/templates/es/scrollkeeper_cl.xml,
+	cl/templates/nb/scrollkeeper_cl.xml:
+	encoding added to header
+
+2001-03-27  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* po/ja.po, po/sl.po: created
+	* configure.in:
+	ja and sl added to ALL_LINGUAS
+	* cl/templates/sl/scrollkeeper_cl.xml:
+	Slovenian translation added
+	* cl/templates/ja/scrollkeeper_cl.xml:
+	Japanese translation added
+	* cl/templates/ru/scrollkeeper_cl.xml:
+	Russian translation added
+
+2001-03-26  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in: nl, uk  and fr added to ALL_LINGUAS
+	po/nl.po, po.fr.po, po/uk.po: added
+	po/ru.po: updated
+	* cl/templates/fr/scrollkeeper_cl.xml:
+	French tree added
+	* cl/templates/tr/scrollkeeper_cl.xml:
+	Turkish tree updated
+	* scrollkeeper.spec.in:
+	pt_BR symlink related package update problem fixed
+
+2001-03-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* configure.in:
+	version number raised to 0.2
+
+2001-03-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/Makefile.am:
+	scrollkeeper.h installation removed
+
+2001-03-21  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* po/ru.po: added
+	configure.in: Russian added to All_LINGUAS
+
+2001-03-21  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	*configure.in, omf-install/Makefile.am,
+	scripts/scrollkeeper-config.in,
+	scripts/scrollkeeper-get-toc-from-docpath.in,
+	scripts/scrollkeeper-get-toc-from-id.in:
+	platform dependent database directory setup added
+	(at the moment it sets it to 
+	$localstatedir/lib/scrollkeeper on Linux and
+	$localstatedir/db/scrollkeeper on FreeBSD)
+
+2001-03-19  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	*scripts/scrollkeeper-rebuilddb.in:
+	-v flag added
+
+2001-03-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/error.c:
+	log file size monitoring added to sk_warning()
+
+2001-03-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/Makefile.am, toc/src/Makefile.am:
+	libs include dir path fixed
+	* scrollkeeper.spec.in:
+	/usr/lib/* added
+
+2001-03-15  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/preinstall.c:
+	sk_warning() removed
+	* cl/src/*.c (apart form preinstall.c):
+	verbose flag implemented
+
+2001-03-14  Laszlo Kovacs <laslzo.kovacs@sun.com>
+	* toc/src/Makefile.am:
+	libscrollkeeper added
+	* toc/src/toc.c:
+	sk_warning() used to display messages
+
+2001-03-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs/scrollkeeper.h, libs/error.c:
+	check_ptr() added
+	* cl/src/*.c:
+	check_ptr() removed and sk_warning() used
+	to display messages
+	* po/POTFILES.in:
+	libs/error.c added
+
+2001-03-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* libs, Makefile.am, configure.in: 
+	private low level library created
+	* cl/src/Makefile.am:
+	libscrollkeeper added
+	* cl/src/update.c:
+	sk_warning() used for displaying messages
+
+2001-03-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/templates/sv/scrollkeeper_cl.xml:
+	Swedish translation added
+	* cl/templates/pt_BR/scrollkeeper_cl.xml,
+	  cl/templates/pt_BR/Makefile.am:
+	translated tree added
+	* po/pt_BR.po: added
+	* configure.in: pt_BR added
+	* scrollkeeper.spec.in: pt_BR removed from link
+	related cycle
+
+2001-03-13  Laszlo Kovacs <aszlo.kovacs@sun.com>
+	* cl/src/update.c:
+	fix bug 406982
+
+2001-03-12  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* cl/src/install.c:
+	fix for bug 406985
+
+2001-03-09  Dan Mueth  <dan@eazel.com>
+
+	* configure.in: Took out check for C++ since we don't need it.
+	Thanks to Karl Eichwalder <ke@suse.de> for pointing this out.
+
 2001-03-05  Dan Mueth  <dan@eazel.com>
 
 	Changing version number to 0.1.4 for release.

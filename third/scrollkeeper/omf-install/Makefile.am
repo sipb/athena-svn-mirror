@@ -1,5 +1,5 @@
 omf_dest_dir=$(datadir)/omf/scrollkeeper
-scrollkeeper_localstate_dir = $(localstatedir)/lib/scrollkeeper
+scrollkeeper_localstate_dir = $(localstatedir)/$(SCROLLKEEPER_PARTIAL_DB_DIR)
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(omf_dest_dir)

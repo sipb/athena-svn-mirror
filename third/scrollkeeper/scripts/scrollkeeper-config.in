@@ -2,7 +2,8 @@
 
 prefix=@prefix@
 localstatedir=@localstatedir@
-pkglocalstatedir=${localstatedir}/lib/scrollkeeper
+partial_db_dir=@SCROLLKEEPER_PARTIAL_DB_DIR@
+pkglocalstatedir=${localstatedir}/${partial_db_dir}
 pkgdatadir=${prefix}/share/scrollkeeper
 datadir=@datadir@
 
