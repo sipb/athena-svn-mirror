@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *	$Id: string_utils.c,v 1.14 1990-11-15 08:59:54 lwvanels Exp $
+ *	$Id: string_utils.c,v 1.15 1990-11-15 12:20:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.14 1990-11-15 08:59:54 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.15 1990-11-15 12:20:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -116,7 +116,7 @@ char *
 get_next_word(line, buf, func)
      char *line, *buf;
 #ifdef __STDC__
-     int (*func)(char c);
+     int (*func)(int c);
 #else
      int (*func)();
 #endif
@@ -142,14 +142,14 @@ get_next_word(line, buf, func)
 
 int
 IsAlpha(c)
-     char c;
+     int c;
 {
   return(isalpha(c));
 }
 
 int
 NotWhiteSpace(c)
-     char c;
+     int c;
 {
   return(c != ' ' && c != '\t' && c != '\n');
 }
