@@ -1,6 +1,6 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v $
 #	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.3 1988-06-30 17:22:14 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.4 1988-07-01 10:43:47 jtkohl Exp $
 #
 	command_table	zctl_cmds;
 
@@ -71,6 +71,12 @@
 
 	request		flush_locations, "Flush all location information.",
 			flush_locs;
+
+	request		do_hide, "Hide your location.",
+			hide;
+
+	request		do_hide, "Show (un-hide) your location.",
+			unhide;
 
 	request		ss_list_requests, "List available commands.",
 			list_requests, lr, "?";
