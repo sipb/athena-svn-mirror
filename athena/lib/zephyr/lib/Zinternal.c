@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.15 1988-07-10 19:23:11 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.16 1988-07-20 15:32:35 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.15 1988-07-10 19:23:11 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.16 1988-07-20 15:32:35 jtkohl Exp $";
 static char copyright[] = "Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.";
 #endif lint
 
@@ -199,7 +199,7 @@ Code_t Z_ReadWait()
      */
     if (!__Zephyr_server) {
 	if (notice.z_kind != HMACK && notice.z_kind != SERVACK &&
-	    notice.z_kind != SERVNAK) {
+	    notice.z_kind != SERVNAK && notice.z_kind != CLIENTACK) {
 	    ZNotice_t tmpnotice;
 	    ZPacket_t pkt;
 	    int len;
