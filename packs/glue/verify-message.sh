@@ -39,7 +39,7 @@ page=${PAGER-more}
 echo "Please make sure the following says the signature is good and that"
 echo "the message is addressed to you."
 
-/bin/athena/attachandrun pgp pgp $msgfile -o $outfile +verbose=0
+/bin/athena/attachandrun pgp pgp pgp $msgfile -o $outfile +verbose=0
 if [ $? = 0 ]; then
 	echo ""
 	echo $N "The message follows. Press ENTER to continue... $C"
