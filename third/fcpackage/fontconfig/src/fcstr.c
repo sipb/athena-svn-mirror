@@ -1,7 +1,7 @@
 /*
- * $XFree86: xc/lib/fontconfig/src/fcstr.c,v 1.10 2002/08/31 22:17:32 keithp Exp $
+ * $RCSId: xc/lib/fontconfig/src/fcstr.c,v 1.10 2002/08/31 22:17:32 keithp Exp $
  *
- * Copyright © 2000 Keith Packard, member of The XFree86 Project, Inc.
+ * Copyright © 2000 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -72,11 +72,7 @@ FcStrCmpIgnoreCase (const FcChar8 *s1, const FcChar8 *s2)
     {
 	c1 = *s1++;
 	c2 = *s2++;
-	if (!c1 || !c2)
-	    break;
-	c1 = FcToLower (c1);
-	c2 = FcToLower (c2);
-	if (c1 != c2)
+	if (!c1 || (c1 != c2 && (c1 = FcToLower(c1)) != (c2 = FcToLower(c2))))
 	    break;
     }
     return (int) c1 - (int) c2;
@@ -95,11 +91,7 @@ FcStrCmpIgnoreBlanksAndCase (const FcChar8 *s1, const FcChar8 *s2)
 	do
 	    c2 = *s2++;
 	while (c2 == ' ');
-	if (!c1 || !c2)
-	    break;
-	c1 = FcToLower (c1);
-	c2 = FcToLower (c2);
-	if (c1 != c2)
+	if (!c1 || (c1 != c2 && (c1 = FcToLower(c1)) != (c2 = FcToLower(c2))))
 	    break;
     }
     return (int) c1 - (int) c2;
@@ -116,9 +108,7 @@ FcStrCmp (const FcChar8 *s1, const FcChar8 *s2)
     {
 	c1 = *s1++;
 	c2 = *s2++;
-	if (!c1 || !c2)
-	    break;
-	if (c1 != c2)
+	if (!c1 || c1 != c2)
 	    break;
     }
     return (int) c1 - (int) c2;
@@ -283,7 +273,7 @@ FcUtf16ToUcs4 (const FcChar8	*src_orig,
 	if ((b & 0xfc00) != 0xdc00)
 	    return 0;
 	result = ((((FcChar32) a & 0x3ff) << 10) |
-		  ((FcChar32) b & 0x3ff)) | 0x10000;
+		  ((FcChar32) b & 0x3ff)) + 0x10000;
     }
     else
 	result = a;
@@ -420,6 +410,12 @@ FcStrBufData (FcStrBuf *buf, const FcChar8 *s, int len)
     return FcTrue;
 }
 
+FcBool
+FcStrUsesHome (const FcChar8 *s)
+{
+    return *s == '~';
+}
+
 FcChar8 *
 FcStrCopyFilename (const FcChar8 *s)
 {
@@ -427,10 +423,11 @@ FcStrCopyFilename (const FcChar8 *s)
     
     if (*s == '~')
     {
-	FcChar8	*home = (FcChar8 *) getenv ("HOME");
-	int	size = strlen ((char *) home) + strlen ((char *) s);
+	FcChar8	*home = FcConfigHome ();
+	int	size;
 	if (!home)
 	    return 0;
+	size = strlen ((char *) home) + strlen ((char *) s);
 	new = (FcChar8 *) malloc (size);
 	if (!new)
 	    return 0;
@@ -451,12 +448,31 @@ FcStrCopyFilename (const FcChar8 *s)
 }
 
 FcChar8 *
+FcStrLastSlash (const FcChar8  *path)
+{
+    FcChar8	    *slash;
+
+    slash = (FcChar8 *) strrchr ((const char *) path, '/');
+#ifdef _WIN32
+    {
+        FcChar8     *backslash;
+
+	backslash = (FcChar8 *) strrchr ((const char *) path, '\\');
+	if (!slash || (backslash && backslash > slash))
+	    slash = backslash;
+    }
+#endif
+
+    return slash;
+}
+  
+FcChar8 *
 FcStrDirname (const FcChar8 *file)
 {
     FcChar8 *slash;
     FcChar8 *dir;
 
-    slash = (FcChar8 *) strrchr ((char *) file, '/');
+    slash = FcStrLastSlash (file);
     if (!slash)
 	return FcStrCopy ((FcChar8 *) ".");
     dir = malloc ((slash - file) + 1);
@@ -473,7 +489,7 @@ FcStrBasename (const FcChar8 *file)
 {
     FcChar8 *slash;
 
-    slash = (FcChar8 *) strrchr ((char *) file, '/');
+    slash = FcStrLastSlash (file);
     if (!slash)
 	return FcStrCopy (file);
     return FcStrCopy (slash + 1);

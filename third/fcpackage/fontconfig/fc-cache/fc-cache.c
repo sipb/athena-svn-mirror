@@ -1,7 +1,7 @@
 /*
- * $XFree86: xc/lib/fontconfig/fc-cache/fc-cache.c,v 1.9 2002/09/18 17:11:46 tsi Exp $
+ * $RCSId: xc/lib/fontconfig/fc-cache/fc-cache.c,v 1.8tsi Exp $
  *
- * Copyright © 2002 Keith Packard, member of The XFree86 Project, Inc.
+ * Copyright © 2002 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -51,6 +51,7 @@
 #include <getopt.h>
 const struct option longopts[] = {
     {"force", 0, 0, 'f'},
+    {"system-only", 0, 0, 's'},
     {"version", 0, 0, 'V'},
     {"verbose", 0, 0, 'v'},
     {"help", 0, 0, '?'},
@@ -72,6 +73,7 @@ usage (char *program)
 	     "(all directories in font configuration by default).\n");
     fprintf (stderr, "\n");
     fprintf (stderr, "  -f, --force          scan directories with apparently valid caches\n");
+    fprintf (stderr, "  -s, --system-only    scan system-wide directories only\n");
     fprintf (stderr, "  -v, --verbose        display status information while busy\n");
     fprintf (stderr, "  -V, --version        display font config version and exit\n");
     fprintf (stderr, "  -?, --help           display this help and exit\n");
@@ -129,19 +131,31 @@ scanDirs (FcStrList *list, FcConfig *config, char *program, FcBool force, FcBool
 	    continue;
 	}
 	
-	if (stat ((char *) dir, &statb) == -1)
+	if (access ((char *) dir, W_OK) < 0)
 	{
-	    if (errno == ENOENT || errno == ENOTDIR)
-	    {
+	    switch (errno) {
+	    case ENOENT:
+	    case ENOTDIR:
 		if (verbose)
-		    printf ("no such directory, skipping\n");
-	    }
-	    else
-	    {
+		    printf ("skipping, no such directory\n");
+		break;
+	    case EACCES:
+	    case EROFS:
+		if (verbose)
+		    printf ("skipping, no write access\n");
+		break;
+	    default:
 		fprintf (stderr, "\"%s\": ", dir);
 		perror ("");
 		ret++;
 	    }
+	    continue;
+	}
+	if (stat ((char *) dir, &statb) == -1)
+	{
+	    fprintf (stderr, "\"%s\": ", dir);
+	    perror ("");
+	    ret++;
 	    continue;
 	}
 	if (!S_ISDIR (statb.st_mode))
@@ -194,6 +208,7 @@ main (int argc, char **argv)
     FcStrList	*list;
     FcBool    	verbose = FcFalse;
     FcBool	force = FcFalse;
+    FcBool	systemOnly = FcFalse;
     FcConfig	*config;
     int		i;
     int		ret;
@@ -209,6 +224,9 @@ main (int argc, char **argv)
 	switch (c) {
 	case 'f':
 	    force = FcTrue;
+	    break;
+	case 's':
+	    systemOnly = FcTrue;
 	    break;
 	case 'V':
 	    fprintf (stderr, "fontconfig version %d.%d.%d\n", 
@@ -226,6 +244,8 @@ main (int argc, char **argv)
     i = 1;
 #endif
 
+    if (systemOnly)
+	FcConfigEnableHome (FcFalse);
     config = FcInitLoadConfig ();
     if (!config)
     {
