@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: netparams.sh,v 1.1 1997-12-30 18:29:53 ghudson Exp $
+# $Id: netparams.sh,v 1.2 1998-05-17 03:25:03 ghudson Exp $
 
 # Usage: netparams [-d defaultbits] [-e] [-f file] address ...
 #
@@ -34,7 +34,7 @@
 # sure it lives in /bin or /sbin in BSD 4.4.
 
 # Regular expression to match things that looklike IP addresss.
-ipreg='^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$'
+ipreg='[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$'
 
 # Usage message
 usage="$0 [-f file] [-d defaultbits] [-e] address ..."
@@ -163,14 +163,14 @@ getnetmask() {
 	maskbits=""
 	while read addr sigbits mbits gw; do
 		# Ignore blank lines and comments.
-		if [ -z "$addr" -o `expr "$addr" : '^#'` -ne 0 ]; then
+		if [ -z "$addr" -o `expr "$addr" : '#'` -ne 0 ]; then
 			continue
 		fi
 
 		# Make sure the line is in the proper form.
 		if [ `expr "$addr" : "$ipreg"` -eq 0 \
-		     -o `expr "$sigbits" : '^[0-9][0-9]*$'` -eq 0 \
-		     -o `expr "$mbits" : '^[0-9][0-9]*$'` -eq 0 ]; then
+		     -o `expr "$sigbits" : '[0-9][0-9]*$'` -eq 0 \
+		     -o `expr "$mbits" : '[0-9][0-9]*$'` -eq 0 ]; then
 			echo "Bad line in $2: $addr $sigbits $mbits $gw" 1>&2
 			exit 1
 		fi
