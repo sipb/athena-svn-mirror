@@ -1,4 +1,4 @@
-# $Id: athena,v 1.8 1999-04-01 21:06:05 ghudson Exp $
+# $Id: athena,v 1.9 1999-05-12 18:29:51 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -302,6 +302,7 @@ if [ "$PUBLIC" = true ]; then
 	echo "Clearing out /mit... \c"
 	rm -f /mit/*
 	rmdir /mit/* 2>/dev/null
+	rm -f /var/athena/attachtab/directory/_=mit*
 	echo "done."
 fi
 
