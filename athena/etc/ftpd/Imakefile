@@ -1,0 +1,23 @@
+DEFINES		=	-DATHENA
+#ifdef _AIX
+LIBS		=	-lkrb -ldes -lhesiod -lodm -lcfg -ls
+#else
+LIBS		=	-lkrb -ldes -lhesiod
+#endif
+
+CFILES		=	ftpd.c athena_ftpd.c ftpcmd.y glob.c logwtmp.c\
+			popen.c vers.c
+OBJS		=	ftpd.o athena_ftpd.o ftpcmd.o glob.o logwtmp.o\
+			popen.o vers.o strpbrk.o strtok.o getusershell.o
+
+vers.c:		ftpd.c ftpcmd.y athena_ftpd.c
+		sh newvers.sh
+
+#ifdef ultrix
+glob.o:		glob.c
+		${CC} ${CFLAGS} -UPOSIX -c glob.c
+#endif
+
+SimpleProgram(ftpd,${OBJS},${LIBS},/etc/athena/ftpd)
+install_man(ftpd.8c,ftpd.8c)
+create_depend(${CFILES})
