@@ -26,7 +26,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
  *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.8 1991-02-25 10:07:44 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.9 1991-04-10 00:45:22 lwvanels Exp $
  */
 
 #ifndef lint
@@ -83,7 +83,6 @@ parse_contents()
   char *format_ptr;			/* Ptr. to text formatter string. */
   char *maintainer_ptr;			/* Ptr. to maintainer string. */
   char *delim_ptr;			/* Ptr. to place of delimiter*/
-  char error[ERRSIZE];			/* Error messages. */
   char line1[ERRSIZE];
   char line2[ERRSIZE];
   char *preserve_dir;                   /* Ptr. to Current_Dir string*/
