@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v $
- *      $Author: opus $
+ *      $Author: rfrench $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.2 1987-10-07 15:31:30 opus Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.3 1987-10-31 19:34:42 rfrench Exp $";
 #endif SABER
 #endif lint
 
@@ -37,12 +37,13 @@ transmission_tower(notice, packet, pak_len)
 	    if (!strcmp(notice->z_opcode, CLIENT_FLUSH)) {
 		  send_flush_notice(HM_FLUSH);
 		  deactivated = 1;
-	    }
+	  }
 	    else if (!strcmp(notice->z_opcode, CLIENT_NEW_SERVER))
-	      new_server(NULL);
+		    new_server(NULL);
 	    else
-	      syslog (LOG_INFO, "Bad control notice from client.");
-      } else
+		    syslog (LOG_INFO, "Bad control notice from client.");
+	    return;
+    } else
 	if (notice->z_kind != UNSAFE) {
 	      gack = *notice;
 	      gack.z_kind = HMACK;
