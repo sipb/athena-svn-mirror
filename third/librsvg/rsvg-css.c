@@ -4,16 +4,16 @@
    Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -21,17 +21,25 @@
    Author: Raph Levien <raph@artofcode.com>
 */
 
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
+#include "config.h"
+#include "rsvg-css.h"
 
 #include <glib.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <stdio.h>
 
-#include "rsvg-css.h"
+#define POINTS_PER_INCH (72.0)
+#define CM_PER_INCH     (2.54)
+#define MM_PER_INCH     (25.4)
+#define PICA_PER_INCH   (6.0)
 
 /**
  * rsvg_css_parse_length: Parse CSS2 length to a pixel value.
  * @str: Original string.
+ * @pixels_per_inch: Pixels per inch
  * @fixed: Where to store boolean value of whether length is fixed.
  *
  * Parses a CSS2 length into a pixel value.
@@ -39,35 +47,83 @@
  * Returns: returns the length.
  **/
 double
-rsvg_css_parse_length (const char *str, gint *fixed)
+rsvg_css_parse_length (const char *str, gdouble pixels_per_inch, 
+		       gint *percent, gint *em, gint *ex)
 {
-  char *p;
+  double length = 0.0;
+  char *p = NULL;
   
   /* 
    *  The supported CSS length unit specifiers are: 
-   *  em, ex, px, pt, pc, cm, mm, in, and percentages. 
+   *  em, ex, px, pt, pc, cm, mm, in, and %
    */
-  
-  *fixed = FALSE;
+  *percent = FALSE;
+  *em      = FALSE;
+  *ex      = FALSE;
 
-  p = strstr (str, "px");
-  if (p != NULL)
+  length = g_ascii_strtod (str, &p);
+  
+  /* todo: error condition - figure out how to best represent it */
+  if ((length == -HUGE_VAL || length == HUGE_VAL) && (ERANGE == errno))
     {
-      *fixed = TRUE;
-      return atof (str);
+      return 0.0;
     }
-  p = strstr (str, "in");
-  if (p != NULL)
+
+  /* test for either pixels or no unit, which is assumed to be pixels */
+  if (p && (strcmp(p, "px") != 0))
     {
-      *fixed = TRUE;
-      /* return svg->pixels_per_inch * atof (str); */
+      if (!strcmp(p, "pt"))
+	length *= (pixels_per_inch / POINTS_PER_INCH);
+      else if (!strcmp(p, "in"))
+	length *= pixels_per_inch;
+      else if (!strcmp(p, "cm"))
+	length *= (pixels_per_inch / CM_PER_INCH);
+      else if (!strcmp(p, "mm"))
+	length *= (pixels_per_inch / MM_PER_INCH);
+      else if (!strcmp(p, "pc"))
+	length *= (pixels_per_inch / PICA_PER_INCH);
+      else if (!strcmp(p, "em"))
+	*em = TRUE;
+      else if (!strcmp(p, "ex"))
+	*ex = TRUE;
+      else if (!strcmp(p, "%"))
+	{
+	  *percent = TRUE;
+	  length *= 0.01;
+	}
     }
-  p = strstr (str, "%");
-  if (p != NULL)
-    {
-      return 0.01 * atof (str);
-    }
-  return atof (str);
+
+  return length;
+}
+
+/**
+ * rsvg_css_parse_normalized_length: Parse CSS2 length to a pixel value.
+ * @str: Original string.
+ * @pixels_per_inch: Pixels per inch
+ * @normalize_to: Bounding box's width or height, as appropriate, or 0
+ *
+ * Parses a CSS2 length into a pixel value.
+ *
+ * Returns: returns the length.
+ */
+double
+rsvg_css_parse_normalized_length(const char *str, gdouble pixels_per_inch,
+				 gdouble width_or_height, gdouble font_size,
+				 gdouble x_height)
+{
+  double length;
+  gint percent, em, ex;
+  percent = em = ex = FALSE;
+
+  length = rsvg_css_parse_length (str, pixels_per_inch, &percent, &em, &ex);
+  if (percent)
+    return length * width_or_height;
+  else if (em)
+    return length * font_size;
+  else if (ex)
+    return length * x_height;
+  else
+    return length;
 }
 
 gboolean
@@ -92,22 +148,57 @@ rsvg_css_param_arg_offset (const char *str)
   return i;
 }
 
-/* Parse a CSS2 color, returning rgb */
+static gint
+rsvg_css_clip_rgb_percent (gint in_percent)
+{
+  /* spec says to clip these values */
+  if (in_percent > 100)
+    in_percent = 100;
+  else if (in_percent <= 0)
+    return 0;
+
+  return (gint)floor(255. * (double)in_percent / 100.);
+}
+
+static gint
+rsvg_css_clip_rgb (gint rgb)
+{
+  /* spec says to clip these values */
+  if (rgb > 255)
+    rgb = 255;
+  else if (rgb < 0)
+    rgb = 0;
+
+  return rgb;
+}
+
+typedef struct
+{
+  const char * name;
+  guint rgb;
+} ColorPair;
+
+/* compare function callback for bsearch */
+static int
+rsvg_css_color_compare (const void * a, const void * b)
+{
+  const char * needle = (const char *)a;
+  const ColorPair * haystack = (const ColorPair *)b;
+
+  return g_ascii_strcasecmp (needle, haystack->name);
+}
+
+/* pack 3 [0,255] ints into one 32 bit one */
+#define PACK_RGB(r,g,b) (((r) << 16) | ((g) << 8) | (b))
+
+/**
+ * Parse a CSS2 color specifier, return RGB value
+ */
 guint32
 rsvg_css_parse_color (const char *str)
 {
   gint val = 0;
-  static GHashTable *colors = NULL;
 
-  /* todo: better failure detection */
-
-  /* 
-   * todo: handle the rgb (r, g, b) and rgb ( r%, g%, b%), syntax 
-   * defined in http://www.w3.org/TR/REC-CSS2/syndata.html#color-units 
-   */
-#ifdef VERBOSE
-  g_print ("color = %s\n", str);
-#endif
   if (str[0] == '#')
     {
       int i;
@@ -132,43 +223,209 @@ rsvg_css_parse_color (const char *str)
 	    (val & 0x00f);
 	  val |= val << 4;
 	}
-#ifdef VERBOSE
-      printf ("val = %x\n", val);
-#endif
-    } 
-  else
+    }
+  /* i want to use g_str_has_prefix but it isn't in my gstrfuncs.h?? */
+  else if (strstr (str, "rgb") != NULL)
     {
-      GString * string;
-      if (!colors)
+      gint r, g, b;
+      r = g = b = 0;
+
+      if (strstr (str, "%") != 0)
 	{
-	  colors = g_hash_table_new (g_str_hash, g_str_equal);
-	  
-	  g_hash_table_insert (colors, "black",    GINT_TO_POINTER (0x000000));
-	  g_hash_table_insert (colors, "silver",   GINT_TO_POINTER (0xc0c0c0));
-	  g_hash_table_insert (colors, "gray",     GINT_TO_POINTER (0x808080));
-	  g_hash_table_insert (colors, "white",    GINT_TO_POINTER (0xFFFFFF));
-	  g_hash_table_insert (colors, "maroon",   GINT_TO_POINTER (0x800000));
-	  g_hash_table_insert (colors, "red",      GINT_TO_POINTER (0xFF0000));
-	  g_hash_table_insert (colors, "purple",   GINT_TO_POINTER (0x800080));
-	  g_hash_table_insert (colors, "fuchsia",  GINT_TO_POINTER (0xFF00FF));
-	  g_hash_table_insert (colors, "green",    GINT_TO_POINTER (0x008000));
-	  g_hash_table_insert (colors, "lime",     GINT_TO_POINTER (0x00FF00));
-	  g_hash_table_insert (colors, "olive",    GINT_TO_POINTER (0x808000));
-	  g_hash_table_insert (colors, "yellow",   GINT_TO_POINTER (0xFFFF00));
-	  g_hash_table_insert (colors, "navy",     GINT_TO_POINTER (0x000080));
-	  g_hash_table_insert (colors, "blue",     GINT_TO_POINTER (0x0000FF));
-	  g_hash_table_insert (colors, "teal",     GINT_TO_POINTER (0x008080));
-	  g_hash_table_insert (colors, "aqua",     GINT_TO_POINTER (0x00FFFF));
+	  /* assume "rgb (r%, g%, b%)" */
+	  if (3 == sscanf (str, " rgb ( %d %% , %d %% , %d %% ) ", &r, &g, &b))
+	    {
+	      r = rsvg_css_clip_rgb_percent (r);
+	      g = rsvg_css_clip_rgb_percent (g);
+	      b = rsvg_css_clip_rgb_percent (b);
+	    }
+	  else
+	      r = g = b = 0;
+	}
+      else
+	{
+	  /* assume "rgb (r, g, b)" */
+	  if (3 == sscanf (str, " rgb ( %d , %d , %d ) ", &r, &g, &b))
+	    {
+	      r = rsvg_css_clip_rgb (r);
+	      g = rsvg_css_clip_rgb (g);
+	      b = rsvg_css_clip_rgb (b);
+	    }
+	  else
+	    r = g = b = 0;
 	}
 
-      string = g_string_down (g_string_new (str));
+      val = PACK_RGB (r,g,b);
+    }
+  else
+    {
+      const static ColorPair color_list [] =
+	{
+	  { "aliceblue",            PACK_RGB (240,248,255) },
+	  { "antiquewhite",         PACK_RGB (250,235,215) },
+	  { "aqua",                 PACK_RGB (0,255,255) },
+	  { "aquamarine",           PACK_RGB (127,255,212) },
+	  { "azure",                PACK_RGB (240,255,255) },
+	  { "beige",                PACK_RGB (245,245,220) },
+	  { "bisque",               PACK_RGB (255,228,196) },
+	  { "black",                PACK_RGB (0,0,0) },
+	  { "blanchedalmond",       PACK_RGB (255,235,205) },
+	  { "blue",                 PACK_RGB (0,0,255) },
+	  { "blueviolet",           PACK_RGB (138,43,226) },
+	  { "brown",                PACK_RGB (165,42,42) },
+	  { "burlywood",            PACK_RGB (222,184,135) },
+	  { "cadetblue",            PACK_RGB (95,158,160) },
+	  { "chartreuse",           PACK_RGB (127,255,0) },
+	  { "chocolate",            PACK_RGB (210,105,30) },
+	  { "coral",                PACK_RGB (255,127,80) },
+	  { "cornflowerblue",       PACK_RGB (100,149,237) },
+	  { "cornsilk",             PACK_RGB (255,248,220) },
+	  { "crimson",              PACK_RGB (220,20,60) },
+	  { "cyan",                 PACK_RGB (0,255,255) },
+	  { "darkblue",             PACK_RGB (0,0,139) },
+	  { "darkcyan",             PACK_RGB (0,139,139) },
+	  { "darkgoldenrod",        PACK_RGB (184,132,11) },
+	  { "darkgray",             PACK_RGB (169,169,168) },
+	  { "darkgreen",            PACK_RGB (0,100,0) },
+	  { "darkgrey",             PACK_RGB (169,169,169) },
+	  { "darkkhaki",            PACK_RGB (189,183,107) },
+	  { "darkmagenta",          PACK_RGB (139,0,139) },
+	  { "darkolivegreen",       PACK_RGB (85,107,47) },
+	  { "darkorange",           PACK_RGB (255,140,0) },
+	  { "darkorchid",           PACK_RGB (153,50,204) },
+	  { "darkred",              PACK_RGB (139,0,0) },
+	  { "darksalmon",           PACK_RGB (233,150,122) },
+	  { "darkseagreen",         PACK_RGB (143,188,143) },
+	  { "darkslateblue",        PACK_RGB (72,61,139) },
+	  { "darkslategray",        PACK_RGB (47,79,79) },
+	  { "darkslategrey",        PACK_RGB (47,79,79) },
+	  { "darkturquoise",        PACK_RGB (0,206,209) },
+	  { "darkviolet",           PACK_RGB (148,0,211) },
+	  { "deeppink",             PACK_RGB (255,20,147) },
+	  { "deepskyblue",          PACK_RGB (0,191,255) },
+	  { "dimgray",              PACK_RGB (105,105,105) },
+	  { "dimgrey",              PACK_RGB (105,105,105) },
+	  { "dogerblue",            PACK_RGB (30,144,255) },
+	  { "firebrick",            PACK_RGB (178,34,34) },
+	  { "floralwhite" ,         PACK_RGB (255,255,240)},
+	  { "forestgreen",          PACK_RGB (34,139,34) },
+	  { "fuchsia",              PACK_RGB (255,0,255) },
+	  { "gainsboro",            PACK_RGB (220,220,220) },
+	  { "ghostwhite",           PACK_RGB (248,248,255) },
+	  { "gold",                 PACK_RGB (215,215,0) },
+	  { "goldenrod",            PACK_RGB (218,165,32) },
+	  { "gray",                 PACK_RGB (128,128,128) },
+	  { "grey",                 PACK_RGB (128,128,128) },
+	  { "green",                PACK_RGB (0,128,0)},
+	  { "greenyellow",          PACK_RGB (173,255,47) },
+	  { "honeydew",             PACK_RGB (240,255,240) },
+	  { "hotpink",              PACK_RGB (255,105,180) },
+	  { "indianred",            PACK_RGB (205,92,92) },
+	  { "indigo",               PACK_RGB (75,0,130) },
+	  { "ivory",                PACK_RGB (255,255,240) },
+	  { "khaki",                PACK_RGB (240,230,140) },
+	  { "lavender",             PACK_RGB (230,230,250) },
+	  { "lavenderblush",        PACK_RGB (255,240,245) },
+	  { "lawngreen",            PACK_RGB (124,252,0) },
+	  { "lemonchiffon",         PACK_RGB (255,250,205) },
+	  { "lightblue",            PACK_RGB (173,216,230) },
+	  { "lightcoral",           PACK_RGB (240,128,128) },
+	  { "lightcyan",            PACK_RGB (224,255,255) },
+	  { "lightgoldenrodyellow", PACK_RGB (250,250,210) },
+	  { "lightgray",            PACK_RGB (211,211,211) },
+	  { "lightgreen",           PACK_RGB (144,238,144) },
+	  { "lightgrey",            PACK_RGB (211,211,211) },
+	  { "lightpink",            PACK_RGB (255,182,193) },
+	  { "lightsalmon",          PACK_RGB (255,160,122) },
+	  { "lightseagreen",        PACK_RGB (32,178,170) },
+	  { "lightskyblue",         PACK_RGB (135,206,250) },
+	  { "lightslategray",       PACK_RGB (119,136,153) },
+	  { "lightslategrey",       PACK_RGB (119,136,153) },
+	  { "lightsteelblue",       PACK_RGB (176,196,222) },
+	  { "lightyellow",          PACK_RGB (255,255,224) },
+	  { "lime",                 PACK_RGB (0,255,0) },
+	  { "limegreen",            PACK_RGB (50,205,50) },
+	  { "linen",                PACK_RGB (250,240,230) },
+	  { "magenta",              PACK_RGB (255,0,255) },
+	  { "maroon",               PACK_RGB (128,0,0) },
+	  { "mediumaquamarine",     PACK_RGB (102,205,170) },
+	  { "mediumblue",           PACK_RGB (0,0,205) },
+	  { "mediumorchid",         PACK_RGB (186,85,211) },
+	  { "mediumpurple",         PACK_RGB (147,112,219) },
+	  { "mediumseagreen",       PACK_RGB (60,179,113) },
+	  { "mediumslateblue",      PACK_RGB (123,104,238) },
+	  { "mediumspringgreen",    PACK_RGB (0,250,154) },
+	  { "mediumturquoise",      PACK_RGB (72,209,204) },
+	  { "mediumvioletred",      PACK_RGB (199,21,133) },
+	  { "mediumnightblue",      PACK_RGB (25,25,112) },
+	  { "mintcream",            PACK_RGB (245,255,250) },
+	  { "mintyrose",            PACK_RGB (255,228,225) },
+	  { "moccasin",             PACK_RGB (255,228,181) },
+	  { "navajowhite",          PACK_RGB (255,222,173) },
+	  { "navy",                 PACK_RGB (0,0,128) },
+	  { "oldlace",              PACK_RGB (253,245,230) },
+	  { "olive",                PACK_RGB (128,128,0) },
+	  { "oliverab",             PACK_RGB (107,142,35) },
+	  { "orange",               PACK_RGB (255,165,0) },
+	  { "orangered",            PACK_RGB (255,69,0) },
+	  { "orchid",               PACK_RGB (218,112,214) },
+	  { "palegoldenrod",        PACK_RGB (238,232,170) },
+	  { "palegreen",            PACK_RGB (152,251,152) },
+	  { "paleturquoise",        PACK_RGB (175,238,238) },
+	  { "palevioletred",        PACK_RGB (219,112,147) },
+	  { "papayawhip",           PACK_RGB (255,239,213) },
+	  { "peachpuff",            PACK_RGB (255,218,185) },
+	  { "peru",                 PACK_RGB (205,133,63) },
+	  { "pink",                 PACK_RGB (255,192,203) },
+	  { "plum",                 PACK_RGB (221,160,203) },
+	  { "powderblue",           PACK_RGB (176,224,230) },
+	  { "purple",               PACK_RGB (128,0,128) },
+	  { "red",                  PACK_RGB (255,0,0) },
+	  { "rosybrown",            PACK_RGB (188,143,143) },
+	  { "royalblue",            PACK_RGB (65,105,225) },
+	  { "saddlebrown",          PACK_RGB (139,69,19) },
+	  { "salmon",               PACK_RGB (250,128,114) },
+	  { "sandybrown",           PACK_RGB (244,164,96) },
+	  { "seagreen",             PACK_RGB (46,139,87) },
+	  { "seashell",             PACK_RGB (255,245,238) },
+	  { "sienna",               PACK_RGB (160,82,45) },
+	  { "silver",               PACK_RGB (192,192,192) },
+	  { "skyblue",              PACK_RGB (135,206,235) },
+	  { "slateblue",            PACK_RGB (106,90,205) },
+	  { "slategray",            PACK_RGB (112,128,144) },
+	  { "slategrey",            PACK_RGB (112,128,114) },
+	  { "snow",                 PACK_RGB (255,255,250) },
+	  { "springgreen",          PACK_RGB (0,255,127) },
+	  { "steelblue",            PACK_RGB (70,130,180) },
+	  { "tan",                  PACK_RGB (210,180,140) },
+	  { "teal",                 PACK_RGB (0,128,128) },
+	  { "thistle",              PACK_RGB (216,191,216) },
+	  { "tomato",               PACK_RGB (255,99,71) },
+	  { "turquoise",            PACK_RGB (64,224,208) },
+	  { "violet",               PACK_RGB (238,130,238) },
+	  { "wheat",                PACK_RGB (245,222,179) },
+	  { "white",                PACK_RGB (255,255,255) },
+	  { "whitesmoke",           PACK_RGB (245,245,245) },
+	  { "yellow",               PACK_RGB (255,255,0) },
+	  { "yellowgreen",          PACK_RGB (154,205,50) }
+	};
 
-      /* this will default to black on a failed lookup */
-      val = GPOINTER_TO_INT (g_hash_table_lookup (colors, string->str)); 
+      ColorPair * result = bsearch (str, color_list, 
+				    sizeof (color_list)/sizeof (color_list[0]),
+				    sizeof (ColorPair),
+				    rsvg_css_color_compare);
+
+      /* default to black on failed lookup */
+      if (result == NULL)
+	val = 0;
+      else
+	val = result->rgb;
     }
 
   return val;
 }
+
+#undef PACK_RGB
 
 guint
 rsvg_css_parse_opacity (const char *str)
@@ -176,26 +433,10 @@ rsvg_css_parse_opacity (const char *str)
   char *end_ptr;
   double opacity;
 
-  opacity = strtod (str, &end_ptr);
+  opacity = g_ascii_strtod (str, &end_ptr);
 
-  if (end_ptr[0] == '%')
+  if (end_ptr && end_ptr[0] == '%')
     opacity *= 0.01;
 
-  return floor (opacity * 255 + 0.5);
+  return (guint)floor (opacity * 255 + 0.5);
 }
-
-double
-rsvg_css_parse_fontsize (const char *str)
-{
-  char *end_ptr;
-  double size;
-
-  /* todo: handle absolute-size and relative-size tags and proper units */
-  size = strtod (str, &end_ptr);
-
-  if (end_ptr[0] == '%')
-    size = (36 * size * 0.01); /* todo: egregious hack */
-
-  return size;
-}
-

@@ -1,3 +1,7 @@
+#include <glib/gtypes.h>
+#include <libart_lgpl/art_render_gradient.h>
+#include "rsvg-defs.h"
+
 typedef struct _RsvgGradientStop RsvgGradientStop;
 typedef struct _RsvgGradientStops RsvgGradientStops;
 typedef struct _RsvgLinearGradient RsvgLinearGradient;
@@ -8,6 +12,7 @@ typedef struct _RsvgPaintServer RsvgPaintServer;
 typedef struct _RsvgPSCtx RsvgPSCtx;
 
 struct _RsvgPSCtx {
+  int dummy;
 /* todo: we need to take in some context information, including:
 
    1. The global affine transformation.
@@ -64,3 +69,8 @@ rsvg_paint_server_ref (RsvgPaintServer *ps);
 void
 rsvg_paint_server_unref (RsvgPaintServer *ps);
 
+RsvgRadialGradient *
+rsvg_clone_radial_gradient (const RsvgRadialGradient *grad);
+
+RsvgLinearGradient *
+rsvg_clone_linear_gradient (const RsvgLinearGradient *grad);
