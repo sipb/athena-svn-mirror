@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendauth.c,v 1.1.1.2 1999-05-04 18:06:56 danw Exp $";
+"$Id: sendauth.c,v 1.1.1.2.2.1 1999-06-18 22:38:10 ghudson Exp $";
 
 
 #include "lp.h"
@@ -43,14 +43,16 @@ void Setup_auth_info( int tempfd, char *cmd )
 #if defined(HAVE_KRB5_H)
 	if( safestrcasecmp( Auth_DYN, KERBEROS5 ) == 0
 		|| safestrcasecmp( Auth_DYN, KERBEROS ) == 0 ){
-		if( Write_fd_str(tempfd,cmd) < 0 ||
-			Write_fd_str(tempfd,"\n") < 0 ){
-			Errorcode = JFAIL;
-			logerr_die(LOG_INFO,"Put_in_auth: cannot write to tempfilefile" );
+		if(cmd) {
+			if( Write_fd_str(tempfd,cmd) < 0 ||
+				Write_fd_str(tempfd,"\n") < 0 ){
+				Errorcode = JFAIL;
+				logerr_die(LOG_INFO,"Put_in_auth: cannot write to tempfilefile" );
+			}
 		}
 		if( Is_server ){
 			if( Write_fd_str(tempfd,Auth_client_id_DYN) < 0 ||
-				Write_fd_str(tempfd,"\n") < 0 ){
+				Write_fd_str(tempfd,"\n\n") < 0 ){
 				Errorcode = JFAIL;
 				logerr_die(LOG_INFO,"Put_in_auth: cannot write to tempfilefile" );
 			}
