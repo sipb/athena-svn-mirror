@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.68 1996-01-12 18:55:46 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.69 1996-03-08 21:56:23 cfields Exp $
  */
 
 #include <stdio.h>
@@ -82,7 +82,6 @@
 #define TRUE (!FALSE)
 #endif
 
-#define ROOT 0
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define PASSWORD_LEN 14
 #define TEMP_DIR_PERM 0710
@@ -120,7 +119,6 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
 #endif
-#define file_exists(f) (access((f), F_OK) == 0)
 
 #ifdef sgi
 extern FILE *xdmstream;
@@ -339,7 +337,7 @@ char *display;
 	cleanup(NULL);
 	return(errbuf);
     }
-#if !defined(SOLARIS) && !defined(sgi)
+#ifdef ultrix
     /* Make sure root login is on a secure tty */
     if (pwd->pw_uid == ROOT) {
 	struct ttyent *te;
@@ -592,11 +590,20 @@ char *display;
     if (initgroups(user, pwd->pw_gid) < 0)
 	prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
+#ifdef SOLARIS_MAE
+    /* If the login fails, lose() is called, setting a global flag
+       to indicate that xlogin will exit as soon as the user has
+       been notified of the error. xlogin will then restart, and
+       at the beginning of xlogin we chown netdev back to root. */
+    if (netspy)
+      chown(NETDEV, pwd->pw_uid, SYS);
+#endif
+
     i = setuid(pwd->pw_uid);
     if (i)
       return(lose("Unable to set your user ID.\n"));
 #endif
-#endif /* sgi */
+#endif /* not sgi */
 
     if (chdir(pwd->pw_dir))
       fprintf(stderr, "Unable to connect to your home directory.\n");
