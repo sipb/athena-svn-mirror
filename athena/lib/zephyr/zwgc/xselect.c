@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.4 1989-11-14 00:53:16 marc Exp $";
+static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.5 1989-11-14 15:30:52 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -131,7 +131,7 @@ void xselInitAtoms(dpy)
      *(ZAtom[i].patom)=XInternAtom(dpy,ZAtom[i].name,False);
    for (i=0;i<NumRequestAtoms;i++)
      if (pRequestAtoms[i]) 
-       RequestAtoms[i]=*(pRequestAtoms[i]);
+       RequestAtoms[i] = *(pRequestAtoms[i]);
 }
 
 int xselGetOwnership(dpy,w,time)

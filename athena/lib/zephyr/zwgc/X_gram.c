@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.3 1989-11-14 00:54:10 marc Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.4 1989-11-14 15:30:21 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -308,8 +308,8 @@ void x_gram_draw(dpy, w, gram, region)
 	 endpixel=STARTPIXEL;
       }
    } else {
-      startblock=-1;
-      endblock=-1;
+      startblock = -1;
+      endblock = -1;
    }
 
    SetFG(bg);
