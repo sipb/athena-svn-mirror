@@ -28,10 +28,10 @@
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
 #include <libnautilus/nautilus-undo.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <eel/eel-gtk-extensions.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
 
 
@@ -120,11 +120,12 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 
 	bookmarks = list;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gnome_dialog_new (_("Bookmarks"), _("Done"), NULL);
+	gnome_dialog_close_hides (GNOME_DIALOG (window), TRUE);
+	gnome_dialog_set_close (GNOME_DIALOG (window), TRUE);
+	
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (GTK_OBJECT (window), undo_manager_source);
-	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-	gtk_window_set_title (GTK_WINDOW (window), _("Bookmarks"));
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
@@ -134,7 +135,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_show (content_area);
-	gtk_container_add (GTK_CONTAINER (window), content_area);
+	gtk_box_pack_start (GTK_BOX ((GNOME_DIALOG (window))->vbox), content_area, FALSE, FALSE, 0);
 
 	list_scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (list_scroller);
@@ -188,7 +189,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
 
 	remove_button = gtk_button_new_with_label (_("Remove"));
-	nautilus_gtk_button_set_standard_padding (GTK_BUTTON (remove_button));
+	eel_gtk_button_set_standard_padding (GTK_BUTTON (remove_button));
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 
@@ -321,7 +322,7 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 
 	if (window_geometry != NULL) 
 	{	
-		nautilus_gtk_window_set_initial_geometry_from_string 
+		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), window_geometry, 
 			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT);
 
@@ -450,6 +451,11 @@ on_select_row (GtkCList	       *clist,
 
 	g_assert (GTK_IS_ENTRY (name_field));
 	g_assert (GTK_IS_ENTRY (uri_field));
+
+	/* Workaround for apparent GtkCList bug. See bugzilla.gnome.org 47846. */
+	if (clist->rows <= row) {
+		return;
+	}
 
 	selected = get_selected_bookmark ();
 	name = nautilus_bookmark_get_name (selected);
@@ -642,7 +648,7 @@ handle_close_accelerator (GtkWindow *window,
 	g_assert (event != NULL);
 	g_assert (user_data == NULL);
 
-	if (nautilus_gtk_window_event_is_close_accelerator (window, event)) {		
+	if (eel_gtk_window_event_is_close_accelerator (window, event)) {		
 		save_geometry_and_hide (window);
 		gtk_signal_emit_stop_by_name 
 			(GTK_OBJECT (window), "key_press_event");
@@ -655,7 +661,7 @@ handle_close_accelerator (GtkWindow *window,
 static void
 set_up_close_accelerator (GtkWidget *window)
 {
-	/* Note that we don't call nautilus_gtk_window_set_up_close_accelerator
+	/* Note that we don't call eel_gtk_window_set_up_close_accelerator
 	 * here because we have to handle saving geometry before hiding the
 	 * window.
 	 */

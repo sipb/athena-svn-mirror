@@ -22,7 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           Maciej Stachowiak <mjs@eazel.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -41,7 +41,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 enum {
 	HISTORY_CHANGED,
@@ -93,7 +93,7 @@ static void nautilus_view_initialize             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_initialize_class       (NautilusViewClass      *klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
 
 static POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
@@ -437,16 +437,45 @@ nautilus_view_construct (NautilusView   *view,
 		(view, bonobo_control_new (widget));
 }
 
+static void
+set_frame_callback (BonoboControl *control,
+		    gpointer callback_data)
+{
+	nautilus_bonobo_object_force_destroy_when_owner_disappears
+		(BONOBO_OBJECT (control),
+		 bonobo_control_get_control_frame (control));
+}
+
+static void
+widget_destroyed_callback (GtkWidget *widget,
+			   gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_VIEW (callback_data));
+
+	nautilus_bonobo_object_force_destroy_later
+		(BONOBO_OBJECT (callback_data));
+}
+
 NautilusView *
 nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 					     BonoboControl  *control)
 {
+	GtkWidget *widget;
+
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
 
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
+
+	gtk_signal_connect (GTK_OBJECT (control), "set_frame",
+			    set_frame_callback, NULL);
+
+	widget = bonobo_control_get_widget (control);
+	gtk_signal_connect_while_alive (GTK_OBJECT (widget), "destroy",
+					widget_destroyed_callback, view,
+					GTK_OBJECT (view));
 
 	return view;
 }
@@ -463,7 +492,7 @@ nautilus_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static Nautilus_ViewFrame
@@ -496,7 +525,7 @@ view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 	CORBA_exception_free (ev);
 }
 
-/* Can't use the one in libnautilus-extensions. */
+/* Can't use the one in libnautilus-private. */
 static GList *
 str_list_copy (GList *original)
 {

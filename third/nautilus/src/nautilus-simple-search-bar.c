@@ -33,12 +33,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus-extensions/nautilus-entry.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-entry.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <libnautilus-private/nautilus-search-uri.h>
+#include <eel/eel-string.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <stdio.h>
 
 struct NautilusSimpleSearchBarDetails {
@@ -58,7 +58,7 @@ static void  nautilus_simple_search_bar_initialize_class         (NautilusSimple
 static void  nautilus_simple_search_bar_initialize               (NautilusSimpleSearchBar      *bar);
 static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
 				   nautilus_simple_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -79,7 +79,7 @@ search_text_is_invalid (NautilusSimpleSearchBar *bar)
 	gboolean is_empty;
 
 	user_text = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	is_empty = nautilus_str_is_empty (user_text);
+	is_empty = eel_str_is_empty (user_text);
 	g_free (user_text);
 
 	return is_empty;
@@ -110,7 +110,7 @@ nautilus_simple_search_bar_destroy (GtkObject *object)
 
 	g_free (bar->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -137,7 +137,7 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   nautilus_gtk_button_auto_click, 
+				   eel_gtk_button_auto_click, 
 				   GTK_OBJECT (bar->details->find_button));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
 				   update_simple_find_button_state, GTK_OBJECT (bar));
@@ -202,7 +202,7 @@ nautilus_simple_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 char *
 nautilus_search_uri_to_simple_search_criteria (const char *uri)
 {
-	/* FIXME bugzilla.eazel.com 2511: Not yet implemented. */
+	/* FIXME bugzilla.gnome.org 42511: Not yet implemented. */
 	return g_strdup ("");
 }
 
@@ -215,7 +215,7 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	char *escaped_fragment;
 	int length, i; 
 
-	/* FIXME bugzilla.eazel.com 2512: 
+	/* FIXME bugzilla.gnome.org 42512: 
 	 * The logic here should be exactly the same as the logic for
 	 * a complex search-by-file-name. Currently the complex search doesn't
 	 * do the multi-word handling that this function does. They should use
@@ -224,14 +224,14 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	g_return_val_if_fail (search_criteria != NULL, NULL);
 
 	words = g_strsplit (search_criteria, " ", strlen (search_criteria));
-	/* FIXME bugzilla.eazel.com 2513: this should eventually be: length = strlen ("[file%3A%2F%2F%2F]"); */
+	/* FIXME bugzilla.gnome.org 42513: this should eventually be: length = strlen ("[file%3A%2F%2F%2F]"); */
 	length = strlen ("[file:///]");
 	/* Count total length */
 	for (i = 0; words[i] != NULL; i++) {
 		length += strlen (NAUTILUS_SEARCH_URI_TEXT_NAME) + strlen (" contains ") + strlen (words[i]) + strlen (" & ");
 	}
 	fragment = g_new0 (char, length + 1);
-	/* FIXME bugzilla.eazel.com 2513: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
+	/* FIXME bugzilla.gnome.org 42513: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
 	sprintf (fragment, "[file:///]");
 	if (words[0] != NULL) {
 		for (i = 0; words[i+1] != NULL; i++) {

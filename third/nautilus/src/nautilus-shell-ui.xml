@@ -12,27 +12,37 @@
 	 _tip="Go to the previous visited location"/>
 	<cmd name="Forward" accel="*Control*bracketright"
 	 _tip="Go to the next visited location"/>
+	<cmd name="Find" accel="*Control*f"
+	 _tip="Search this computer for files"/>
+	<cmd name="Toggle Find Mode" 
+	 _label="Find"
+	 _tip="Search this computer for files"/>
 	<cmd name="New Window"
 	 _label="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Stop"
 	 _tip="Stop loading this location"/>
-	<cmd name="Services"
-	 _tip="Go to Eazel Services"/>
 	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
         <cmd name="Cut" accel="*Control*x" sensitive="0"/>
         <cmd name="Copy" accel="*Control*c" sensitive="0"/>
         <cmd name="Paste" accel="*Control*v" sensitive="0"/>
         <cmd name="Clear" sensitive="0"/>
-	<cmd name="Up" accel="*Control*u"
-	 _tip="Go to the location that contains this one"/>
+	<cmd name="Up"
+	 _tip="Go up to the location that contains the displayed location"/>
 	<cmd name="Zoom In" _label="Zoom In"
 	 _tip="Show the contents in more detail"/>
 	<cmd name="Zoom Out" _label="Zoom Out"
 	 _tip="Show the contents in less detail"/>
 	<cmd name="Zoom Normal" _label="Normal Size"
 	 _tip="Show the contents at the normal size"/>
+	<cmd name="View as" _label="View as..."
+	 _tip="Choose a view for the current location, or modify the set of views"/>
 </commands>
+
+<keybindings>
+	<accel name="*Control*equal" verb="Zoom In"/>
+	<accel name="*Control**Shift*plus" verb="Zoom In"/>
+</keybindings>
 
 <menu>
 	<submenu name="File" _label="_File">
@@ -47,7 +57,6 @@
 		<menuitem name="Close"
 			  _label="_Close Window"
 			  _tip="Close this window"
-			  pixtype="stock" pixname="Close"
 			  accel="*Control*w"
 			  verb="Close"/>
 		<menuitem name="Close All Windows"
@@ -58,14 +67,13 @@
 
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
+		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
 
 		<separator/>
 
-		<menuitem name="Toggle Find Mode"
+		<menuitem name="Find"
 			  _label="_Find"
-			  _tip="Search this computer for files"
-			  accel="*Control*f"
-			  verb="Toggle Find Mode"/>
+			  verb="Find"/>
 		<menuitem name="Go to Web Search"
 			  _label="We_b Search"
 			  _tip="Search the World Wide Web"
@@ -77,7 +85,7 @@
 
 	<submenu name="Edit" _label="_Edit">
 
-<!-- FIXME bugzilla.eazel.com 3515
+<!-- FIXME bugzilla.gnome.org 43515
 
      Undo is disabled until we have a better implementation.
      Both here and in nautilus-undo-signal-handlers.c.
@@ -93,23 +101,19 @@
 -->
 
 		<menuitem name="Cut" 
-			  _label="Cut _Text" 
-			  _tip="Cut the selected text to the clipboard"
+			  _label="Cut _Text"
 			  pixtype="stock" pixname="Cut" 
 			  verb="Cut"/>
 		<menuitem name="Copy" 
-			  _label="_Copy Text" 
-			  _tip="Copy the selected text to the clipboard"
+			  _label="_Copy Text"
 			  pixtype="stock" pixname="Copy" 
 			  verb="Copy"/>
 		<menuitem name="Paste" 
-			  _label="_Paste Text" 
-			  _tip="Paste the text stored on the clipboard"
+			  _label="_Paste Text"
 			  pixtype="stock" pixname="Paste" 
 			  verb="Paste"/>
 		<menuitem name="Clear"
-			  _label="C_lear Text" 
-			  _tip="Removes the selected text without putting it on the clipboard"
+			  _label="C_lear Text"
 			  verb="Clear"/>
 
 		<separator/>
@@ -124,10 +128,6 @@
 			  _label="_Backgrounds and Emblems..." 
 			  _tip="Display patterns, colors, and emblems that can be used to customize appearance"
 			  verb="Customize"/>
-		<menuitem name="Change Appearance" 
-			  _label="_Nautilus Themes..." 
-			  _tip="Display the set of available appearance themes"
-			  verb="Change Appearance"/>
 
 		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
@@ -159,11 +159,12 @@
 				  _tip="Change the visibility of this window's status bar"
 				  verb="Show Hide Status Bar"/>
 		</placeholder>
+		<placeholder name="View Preferences Placeholder" delimit = "top"/>
 		<placeholder name="View Items Placeholder" delimit="top"/>
 		
 		<placeholder name="Zoom Items Placeholder" delimit="top">
 			<menuitem name="Zoom In" 
-				  _label="Zoom _In" accel="*Control*equal"
+				  _label="Zoom _In" accel="*Control*plus"
 				  verb="Zoom In"/>
 			<menuitem name="Zoom Out" 
 				  _label="Zoom _Out" accel="*Control*minus"
@@ -171,6 +172,13 @@
 			<menuitem name="Zoom Normal" 
 				  _label="_Normal Size" 
 				  verb="Zoom Normal"/>
+		</placeholder>
+		<placeholder name="View Choices">
+			<placeholder name="Extra Viewer" delimit="top"/>
+			<separator name="Before Short List"/>
+			<placeholder name="Short List"/>
+			<separator name="After Short List"/>
+			<menuitem name="View as" _label="_View as..." verb="View as"/>
 		</placeholder>
 	</submenu>
 
@@ -183,12 +191,21 @@
 			  verb="Forward"/>
 		<menuitem name="Up" 
 			  _label="_Up a Level" 
+			  accel="*Control*u"
 			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
 			  _tip="Go to the home location"
 			  accel="*Control*h"
 			  verb="Home"/>
+		<menuitem name="Start Here" 
+			  _label="_Start Here" 
+			  _tip="Go to the Start Here folder"
+			  verb="Start Here"/>
+		<menuitem name="Go to Location"
+			  _label="_Location..."
+			  accel="*Control*l"
+			  verb="Go to Location"/>
 
 		<separator/>
 
@@ -236,6 +253,29 @@
 			  verb="Report Profiling"/>
 	</submenu>
 
+	<submenu name="Preferences" _label="_Preferences">
+
+		<placeholder name="User Levels Placeholder" delimit="none">
+			<menuitem name="Switch to Beginner Level" 
+				  _label=" _Beginner"
+				  _tip="Use preferences appropriate for beginners"
+                                  verb="" pixtype="filename"/>
+			<menuitem name="Switch to Intermediate Level" 
+				  _label=" _Intermediate" 
+				  _tip="Use preferences appropriate for most people"
+                                  verb="" pixtype="filename"/>
+			<menuitem name="Switch to Advanced Level" 
+				  _label=" _Advanced" 
+				  _tip="Use preferences appropriate for experts"
+                                  verb="" pixtype="filename"/>
+		</placeholder>
+		<separator/>
+		<menuitem name="User Level Customization" 
+			  _label="_Edit Preferences..." 
+			  _tip="Edit various Nautilus preferences"
+			  verb="User Level Customization"/>
+	</submenu>
+
 	<submenu name="Help" _label="_Help">
 		<menuitem name="Nautilus Manual" 
 			  _label="Nautilus User _Manual" 
@@ -250,43 +290,15 @@
 			  _tip="Display release notes for Nautilus"
 			  verb="Nautilus Release Notes"/>
 		<separator/>
-		<menuitem name="Support" 
-			  _label="_Customer Support" 
-			  _tip="Display support information for Nautilus and Eazel Services"
-			  verb="Support"/>
 		<menuitem name="Nautilus Feedback" 
 			  _label="_Feedback" 
-			  _tip="Show a page from which you can send feedback about Nautilus and Eazel Services"
+			  _tip="Mailing list where you can send feedback about Nautilus"
 			  verb="Nautilus Feedback"/>
 		<separator/>
 		<menuitem name="About Nautilus" 
 			  _label="_About Nautilus..." 
 			  _tip="Display credits for the creators of Nautilus"
 			  verb="About Nautilus"/>
-	</submenu>
-
-
-	<submenu name="Preferences" _label="" pixtype="filename">
-
-		<placeholder name="User Levels Placeholder" delimit="none">
-			<menuitem name="Switch to Beginner Level" 
-				  _label=" Beginner"
-				  _tip="Use Beginner settings"
-                                  verb="" pixtype="filename"/>
-			<menuitem name="Switch to Intermediate Level" 
-				  _label=" Intermediate" 
-				  _tip="Use Intermediate settings"
-                                  verb="" pixtype="filename"/>
-			<menuitem name="Switch to Advanced Level" 
-				  _label=" Advanced" 
-				  _tip="Use Advanced settings"
-                                  verb="" pixtype="filename"/>
-		</placeholder>
-		<separator/>
-		<menuitem name="User Level Customization" 
-			  _label="Preferences..." 
-			  _tip="Edit various Nautilus preferences"
-			  verb="User Level Customization"/>
 	</submenu>
 </menu>
 
@@ -323,12 +335,10 @@
 	          pixtype="stock" pixname="Home"
 		  verb="Home"/>
 	<toolitem name="Toggle Find Mode"
-                  _label="Find"
-		  _tip="Search this computer for files"
 	          min_width="48"
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
-		  verb="Toggle Find Mode With State"/>
+		  verb="Toggle Find Mode"/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
 		  _tip="Search the World Wide Web"

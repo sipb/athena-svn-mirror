@@ -20,7 +20,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@bentspoon.com>
 */
 
 #ifndef FM_PROPERTIES_WINDOW_H
@@ -29,7 +29,7 @@
 #include "fm-directory-view.h"
 
 #include <gtk/gtkwindow.h>
-#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-private/nautilus-file.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
 

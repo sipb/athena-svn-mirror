@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -59,8 +59,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-AMMONITE_CFLAGS = @AMMONITE_CFLAGS@
-AMMONITE_LIBS = @AMMONITE_LIBS@
 APPLETS_CFLAGS = @APPLETS_CFLAGS@
 APPLETS_LIBS = @APPLETS_LIBS@
 AS = @AS@
@@ -70,6 +68,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -78,43 +77,44 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
-EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
-EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
-EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
-EAZEL_SERVICES = @EAZEL_SERVICES@
-ENABLE_INSTALLER = @ENABLE_INSTALLER@
+ECHO = @ECHO@
+EEL_CFLAGS = @EEL_CFLAGS@
+EEL_LIBS = @EEL_LIBS@
+EEL_REQUIRED = @EEL_REQUIRED@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
+FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
-FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GHTTP_CFLAGS = @GHTTP_CFLAGS@
-GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
+GNOMECANVASPIXBUF_CFLAGS = @GNOMECANVASPIXBUF_CFLAGS@
 GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
 GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DB2HTML3_FLAG = @GNOME_DB2HTML3_FLAG@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -127,6 +127,8 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
+HAVE_JW = @HAVE_JW@
+ICONV_LIBS = @ICONV_LIBS@
 IDL_CFLAGS = @IDL_CFLAGS@
 IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
@@ -134,8 +136,16 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
+LIBART_CFLAGS = @LIBART_CFLAGS@
+LIBART_CONFIG = @LIBART_CONFIG@
+LIBART_LIBS = @LIBART_LIBS@
+LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
+LIBRSVG_LIBS = @LIBRSVG_LIBS@
+LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
@@ -150,43 +160,59 @@ MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
 MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
-MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
 MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
+NAUTILUS_DEPENDENCY_CFLAGS = @NAUTILUS_DEPENDENCY_CFLAGS@
+NAUTILUS_DEPENDENCY_LIBS = @NAUTILUS_DEPENDENCY_LIBS@
+NAUTILUS_INCLUDEDIR = @NAUTILUS_INCLUDEDIR@
+NAUTILUS_LIBDIR = @NAUTILUS_LIBDIR@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
+NAUTILUS_PRIVATE_CFLAGS = @NAUTILUS_PRIVATE_CFLAGS@
+NAUTILUS_PRIVATE_LIBS = @NAUTILUS_PRIVATE_LIBS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
 OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
-PACKAGESYSTEM = @PACKAGESYSTEM@
-PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
-PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
-PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
 POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-RPM_LIBS = @RPM_LIBS@
-RPM_VERSION = @RPM_VERSION@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML2_CFLAGS = @XML2_CFLAGS@
+XML2_CONFIG = @XML2_CONFIG@
+XML2_LIBS = @XML2_LIBS@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 Z_LIBS = @Z_LIBS@
 gnomelocaledir = @gnomelocaledir@
@@ -200,10 +226,10 @@ bin_PROGRAMS = hyperbola
 modules_LTLIBRARIES = libvfs-help.la
 noinst_PROGRAMS = test-help-method
 
-INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	$(GNOMEUI_CFLAGS) 	$(BONOBO_CFLAGS) 	$(GCONF_CFLAGS) 	$(VFS_CFLAGS) 	$(XML_CFLAGS) 	-DPREFIX=\""$(prefix)"\" 	-DHYPERBOLA_DATADIR=\""$(datadir)/nautilus/components/hyperbola"\" 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DINFODIR=\"$(infodir)\" 	-DENABLE_SCROLLKEEPER_SUPPORT
+INCLUDES =  	-I$(top_srcdir) 	-DPREFIX=\""$(prefix)"\" 	-DHYPERBOLA_DATADIR=\""$(datadir)/nautilus/components/hyperbola"\" 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DINFODIR=\"$(infodir)\" 	-DENABLE_SCROLLKEEPER_SUPPORT 	$(NAUTILUS_PRIVATE_CFLAGS) 	$(GNOME_DB2HTML3_FLAG) 	$(NULL)
 
 
-LDADD =  	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la 	$(BONOBO_LIBS) 	$(GCONF_LIBS) 	$(GNOMEUI_LIBS) 	$(XML_LIBS)
+LDADD =  	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-private/libnautilus-private.la 	$(NAUTILUS_PRIVATE_LIBS) 
 
 
 hyperbola_SOURCES =  	hyperbola-nav.h			hyperbola-types.h		hyperbola-nav-tree.c 		hyperbola-main.c		hyperbola-filefmt.c		hyperbola-filefmt.h		hyperbola-nav-index.c		hyperbola-nav-search.c
@@ -228,12 +254,15 @@ modulesconf_DATA = help-methods.conf
 hyperboladir = $(datadir)/nautilus/components/hyperbola
 hyperbola_DATA = topleveldocs.xml
 
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-hyperbola-ui.xml
+
 oafdir = $(datadir)/oaf
 oaf_in_files =  	Nautilus_View_help.oaf.in			$(NULL)
 
 oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-EXTRA_DIST = pages.map $(oaf_in_files) $(oaf_DATA) help-methods.conf topleveldocs.xml
+EXTRA_DIST = pages.map $(oaf_in_files) $(oaf_DATA) $(modulesconf_DATA) $(hyperbola_DATA) $(ui_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -246,19 +275,22 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libvfs_help_la_DEPENDENCIES = 
 libvfs_help_la_OBJECTS =  help-method.lo
+bin_PROGRAMS =  hyperbola$(EXEEXT)
+noinst_PROGRAMS =  test-help-method$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-hyperbola_OBJECTS =  hyperbola-nav-tree.o hyperbola-main.o \
-hyperbola-filefmt.o hyperbola-nav-index.o hyperbola-nav-search.o
+hyperbola_OBJECTS =  hyperbola-nav-tree.$(OBJEXT) \
+hyperbola-main.$(OBJEXT) hyperbola-filefmt.$(OBJEXT) \
+hyperbola-nav-index.$(OBJEXT) hyperbola-nav-search.$(OBJEXT)
 hyperbola_LDADD = $(LDADD)
 hyperbola_DEPENDENCIES =  $(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+$(top_builddir)/libnautilus-private/libnautilus-private.la
 hyperbola_LDFLAGS = 
-test_help_method_OBJECTS =  test-help-method.o
+test_help_method_OBJECTS =  test-help-method.$(OBJEXT)
 test_help_method_LDADD = $(LDADD)
 test_help_method_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+$(top_builddir)/libnautilus-private/libnautilus-private.la
 test_help_method_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -266,7 +298,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(hyperbola_DATA) $(mapdata_DATA) $(modulesconf_DATA) \
-$(oaf_DATA)
+$(oaf_DATA) $(ui_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -280,7 +312,7 @@ OBJECTS = $(libvfs_help_la_OBJECTS) $(hyperbola_OBJECTS) $(test_help_method_OBJE
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps components/help/Makefile
 
@@ -317,6 +349,11 @@ uninstall-modulesLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -325,6 +362,7 @@ uninstall-modulesLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -389,12 +427,12 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-hyperbola: $(hyperbola_OBJECTS) $(hyperbola_DEPENDENCIES)
-	@rm -f hyperbola
+hyperbola$(EXEEXT): $(hyperbola_OBJECTS) $(hyperbola_DEPENDENCIES)
+	@rm -f hyperbola$(EXEEXT)
 	$(LINK) $(hyperbola_LDFLAGS) $(hyperbola_OBJECTS) $(hyperbola_LDADD) $(LIBS)
 
-test-help-method: $(test_help_method_OBJECTS) $(test_help_method_DEPENDENCIES)
-	@rm -f test-help-method
+test-help-method$(EXEEXT): $(test_help_method_OBJECTS) $(test_help_method_DEPENDENCIES)
+	@rm -f test-help-method$(EXEEXT)
 	$(LINK) $(test_help_method_LDFLAGS) $(test_help_method_OBJECTS) $(test_help_method_LDADD) $(LIBS)
 
 install-hyperbolaDATA: $(hyperbola_DATA)
@@ -471,6 +509,25 @@ uninstall-oafDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(oaf_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(oafdir)/$$p; \
+	done
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -587,6 +644,41 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+help-method.lo help-method.o : help-method.c ../../config.h \
+	help-method.h
+hyperbola-filefmt.o: hyperbola-filefmt.c ../../config.h \
+	hyperbola-filefmt.h hyperbola-types.h \
+	../../libnautilus-private/nautilus-theme.h \
+	../../libnautilus/libnautilus.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view.h
+hyperbola-main.o: hyperbola-main.c ../../config.h \
+	../../libnautilus-private/nautilus-global-preferences.h \
+	hyperbola-nav.h hyperbola-types.h \
+	../../libnautilus-private/nautilus-theme.h \
+	../../libnautilus/libnautilus.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view.h
+hyperbola-nav-index.o: hyperbola-nav-index.c \
+	../../libnautilus/libnautilus.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus-private/nautilus-bonobo-extensions.h \
+	hyperbola-filefmt.h hyperbola-types.h \
+	../../libnautilus-private/nautilus-theme.h hyperbola-nav.h
+hyperbola-nav-search.o: hyperbola-nav-search.c ../../config.h \
+	../../libnautilus/libnautilus.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view.h hyperbola-filefmt.h \
+	hyperbola-types.h ../../libnautilus-private/nautilus-theme.h \
+	hyperbola-nav.h
+hyperbola-nav-tree.o: hyperbola-nav-tree.c hyperbola-types.h \
+	../../libnautilus-private/nautilus-theme.h \
+	../../libnautilus/libnautilus.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view.h hyperbola-filefmt.h \
+	hyperbola-nav.h
+test-help-method.o: test-help-method.c
 
 info-am:
 info: info-recursive
@@ -601,7 +693,7 @@ install-exec: install-exec-recursive
 
 install-data-am: install-modulesLTLIBRARIES install-hyperbolaDATA \
 		install-mapdataDATA install-modulesconfDATA \
-		install-oafDATA
+		install-oafDATA install-uiDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -609,7 +701,8 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-modulesLTLIBRARIES uninstall-binPROGRAMS \
 		uninstall-hyperbolaDATA uninstall-mapdataDATA \
-		uninstall-modulesconfDATA uninstall-oafDATA
+		uninstall-modulesconfDATA uninstall-oafDATA \
+		uninstall-uiDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
 all-redirect: all-recursive
@@ -619,7 +712,8 @@ installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(modulesdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(hyperboladir) $(DESTDIR)$(mapdatadir) \
-		$(DESTDIR)$(modulesconfdir) $(DESTDIR)$(oafdir)
+		$(DESTDIR)$(modulesconfdir) $(DESTDIR)$(oafdir) \
+		$(DESTDIR)$(uidir)
 
 
 mostlyclean-generic:
@@ -674,11 +768,11 @@ distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-hyperbolaDATA \
 install-hyperbolaDATA uninstall-mapdataDATA install-mapdataDATA \
 uninstall-modulesconfDATA install-modulesconfDATA uninstall-oafDATA \
-install-oafDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+install-oafDATA uninstall-uiDATA install-uiDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

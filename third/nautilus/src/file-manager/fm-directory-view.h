@@ -20,7 +20,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Ettore Perazzoli
- * 	    Darin Adler <darin@eazel.com>
+ * 	    Darin Adler <darin@bentspoon.com>
  * 	    John Sullivan <sullivan@eazel.com>
  *          Pavel Cisler <pavel@eazel.com>
  */
@@ -32,38 +32,20 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwindow.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-icon-container.h>
-#include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
+#include <eel/eel-background.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-link.h>
+#include <eel/eel-string-list.h>
 #include <libnautilus/nautilus-view.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
-/* Paths to use when referring to bonobo menu items.
- * These are the new ones defined by FMDirectoryView. The
- * Nautilus-wide ones are in <libnautilus/nautilus-bonobo-ui.h>
- * Note that this may change as we complete the switchover to the
- * new Bonobo UI code.
- */
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN                      	"/commands/Open"
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW        	"/commands/OpenNew"
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH			"/commands/Open With"
-#define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER			"/commands/New Folder"
-#define FM_DIRECTORY_VIEW_COMMAND_DELETE                    	"/commands/Delete"
-#define FM_DIRECTORY_VIEW_COMMAND_TRASH                    	"/commands/Trash"
-#define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   "/commands/Empty Trash"
-#define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                	"/commands/Duplicate"
-#define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                	"/commands/Create Link"
-#define FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES         	"/commands/Show Properties"
-#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
-#define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS		"/commands/Remove Custom Icons"
-#define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    		"/commands/OtherApplication"
-#define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   		"/commands/OtherViewer"
 
+/* Bonobo command paths that are used by subclasses. Others are defined in fm-directory-view.c */
+#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
@@ -86,17 +68,19 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* clear) 		 (FMDirectoryView *view);
 	
-	/* The 'begin_adding_files' signal is emitted before a set of files
+	/* The 'begin_file_changes' signal is emitted before a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
 	 * necessary preparation for a set of new files. The default
 	 * implementation does nothing.
 	 */
-	void 	(* begin_adding_files) (FMDirectoryView *view);
+	void 	(* begin_file_changes) (FMDirectoryView *view);
 	
 	/* The 'add_file' signal is emitted to add one file to the view.
 	 * It must be replaced by each subclass.
 	 */
 	void    (* add_file) 		 (FMDirectoryView *view, 
+					  NautilusFile *file);
+	void    (* remove_file)		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
 	/* The 'file_changed' signal is emitted to signal a change in a file,
@@ -106,12 +90,12 @@ struct FMDirectoryViewClass {
 	void 	(* file_changed)         (FMDirectoryView *view, 
 					  NautilusFile *file);
 
-	/* The 'done_adding_files' signal is emitted after a set of files
+	/* The 'end_file_changes' signal is emitted after a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
-	 * necessary cleanup (typically, cleanup for code in begin_adding_files).
+	 * necessary cleanup (typically, cleanup for code in begin_file_changes).
 	 * The default implementation does nothing.
 	 */
-	void 	(* done_adding_files)    (FMDirectoryView *view);
+	void 	(* end_file_changes)    (FMDirectoryView *view);
 	
 	/* The 'begin_loading' signal is emitted before any of the contents
 	 * of a directory are added to the view. It can be replaced by a 
@@ -138,6 +122,12 @@ struct FMDirectoryViewClass {
 					  GnomeVFSResult result);
 
 	/* Function pointers that don't have corresponding signals */
+
+        /* reset_to_defaults is a function pointer that subclasses must 
+         * override to set sort order, zoom level, etc to match default
+         * values. 
+         */
+        void     (* reset_to_defaults)	         (FMDirectoryView *view);
 
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
@@ -190,7 +180,7 @@ struct FMDirectoryViewClass {
         void     (* reveal_selection)	 	(FMDirectoryView *view);
 
         /* get_background is a function pointer that subclasses must
-         * override to return the NautilusBackground for this view.
+         * override to return the EelBackground for this view.
          */
         GtkWidget * (* get_background_widget)	(FMDirectoryView *view);
 
@@ -207,21 +197,19 @@ struct FMDirectoryViewClass {
          */
         void    (* update_menus)         	(FMDirectoryView *view);
 
-	/* display_pending_files is a function pointer that subclasses can override
-	   to have files delivered in different sized "chunks" when they arrive from
-	   the directory model.  The default directory view method will deliver
-	   all available files at once.  The list of pending files added and changed
-	   may be modified by the subclass, to remove files that are no longer pending. */
-	gboolean (* display_pending_files)      (FMDirectoryView *view,
-						 GList           **pending_files_added,
-						 GList           **pending_files_changed);
+	/* sort_files is a function pointer that subclasses can override
+	 * to provide a sorting order to determine which files should be
+	 * presented when only a partial list is provided.
+	 */
+	void     (* sort_files)                 (FMDirectoryView *view,
+						 GList          **files);
 
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
 	 * be displayed with each file. By default, all emblems returned by
 	 * NautilusFile are displayed.
 	 */
-	NautilusStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
+	EelStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
 	/* file_limit_reached is a function pointer that subclasses may
 	 * override to control what happens when a directory is loaded
@@ -252,12 +240,12 @@ struct FMDirectoryViewClass {
 	 * default implementation checks the permissions of the
 	 * directory.
 	 */
-	gboolean (* is_read_only)	(FMDirectoryView *view);
+	gboolean (* is_read_only)	        (FMDirectoryView *view);
 
 	/* is_empty is a function pointer that subclasses must
 	 * override to report whether the view contains any items.
 	 */
-	gboolean (* is_empty)	(FMDirectoryView *view);
+	gboolean (* is_empty)                   (FMDirectoryView *view);
 
 	/* supports_creating_files is a function pointer that subclasses may
 	 * override to control whether or not new items can be created.
@@ -273,20 +261,24 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
 
-	void	(* start_renaming_item)	 	(FMDirectoryView *view,
+	void	 (* start_renaming_item)        (FMDirectoryView *view,
 					  	 const char *uri);
+
+	gboolean (* file_still_belongs)		(FMDirectoryView *view,
+						 NautilusFile	 *file);
 
 	/* Preference change callbacks, overriden by icon and list views. 
 	 * Icon and list views respond by synchronizing to the new preference
 	 * values and forcing an update if appropriate.
 	 */
-	void	(* text_attribute_names_changed)(FMDirectoryView *view);
-	void	(* embedded_text_policy_changed)(FMDirectoryView *view);
-	void	(* image_display_policy_changed)(FMDirectoryView *view);
-	void	(* font_family_changed)		(FMDirectoryView *view);
-	void	(* smooth_font_changed)		(FMDirectoryView *view);
-	void	(* click_policy_changed)	(FMDirectoryView *view);
-	void	(* smooth_graphics_mode_changed)(FMDirectoryView *view);
+	void	(* text_attribute_names_changed)   (FMDirectoryView *view);
+	void	(* embedded_text_policy_changed)   (FMDirectoryView *view);
+	void	(* image_display_policy_changed)   (FMDirectoryView *view);
+	void	(* click_policy_changed)	   (FMDirectoryView *view);
+	void	(* smooth_graphics_mode_changed)   (FMDirectoryView *view);
+	void	(* sort_directories_first_changed) (FMDirectoryView *view);
+
+	void	(* emblems_changed)                (FMDirectoryView *view);
 };
 
 /* GtkObject support */
@@ -313,6 +305,7 @@ void                fm_directory_view_zoom_to_level                    (FMDirect
 void                fm_directory_view_set_zoom_level                   (FMDirectoryView  *view,
 									int               zoom_level);
 void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
+void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
 void                fm_directory_view_set_selection                    (FMDirectoryView  *view,
 									GList            *selection);
@@ -356,11 +349,11 @@ void                fm_directory_view_queue_file_change                (FMDirect
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirectoryView  *view);
 BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
-NautilusStringList *fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
+EelStringList *     fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
-NautilusBackground *fm_directory_view_get_background                   (FMDirectoryView  *view);
+EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
@@ -368,6 +361,7 @@ void                fm_directory_view_pop_up_selection_context_menu    (FMDirect
 void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
+gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);

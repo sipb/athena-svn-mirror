@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -32,7 +32,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-toolbar-button-item.h>
-#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-private/nautilus-directory.h>
 
 typedef enum {
         NAUTILUS_LOCATION_CHANGE_STANDARD,
@@ -42,7 +42,7 @@ typedef enum {
         NAUTILUS_LOCATION_CHANGE_REDIRECT
 } NautilusLocationChangeType;
 
-/* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
+/* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
         /* Bonobo. */
@@ -74,9 +74,12 @@ struct NautilusWindowDetails
         NautilusLocationChangeType location_change_type;
         guint location_change_distance;
         char *pending_location;
-        NautilusDirectory *pending_location_as_directory;
         GList *pending_selection;
         NautilusDetermineViewHandle *determine_view_handle;
+
+        /* View As choices */
+        GList *short_list_viewers;
+        NautilusViewIdentifier *extra_viewer;
 
         /* Throbber. */
 	Bonobo_EventSource_ListenerId throbber_location_change_request_listener_id;
@@ -84,6 +87,9 @@ struct NautilusWindowDetails
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
         guint location_change_at_idle_id;
+
+        /* Location bar */
+        gboolean temporary_navigation_bar;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
@@ -118,11 +124,16 @@ struct NautilusWindowDetails
 
 void               nautilus_window_set_status                            (NautilusWindow    *window,
                                                                           const char        *status);
-void               nautilus_window_load_view_as_menu                     (NautilusWindow    *window);
-void               nautilus_window_synch_view_as_menu                    (NautilusWindow    *window);
+void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
+void               nautilus_window_synch_view_as_menus                   (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
 void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
+void		   nautilus_window_handle_ui_event_callback		 (BonoboUIComponent *ui,
+									  const char	    *id,
+									  Bonobo_UIComponent_EventType type,
+									  const char	    *state,
+									  NautilusWindow    *window);
 void               nautilus_window_go_back                               (NautilusWindow    *window);
 void               nautilus_window_go_forward                            (NautilusWindow    *window);
 void               nautilus_window_go_up                                 (NautilusWindow    *window);
@@ -138,6 +149,7 @@ void               nautilus_window_zoom_out                              (Nautil
 void               nautilus_window_zoom_to_level                         (NautilusWindow    *window,
                                                                           double             level);
 void               nautilus_window_zoom_to_fit                           (NautilusWindow    *window);
+void		   nautilus_window_show_view_as_dialog			 (NautilusWindow    *window);
 void               nautilus_window_set_content_view_widget               (NautilusWindow    *window,
                                                                           NautilusViewFrame *content_view);
 void               nautilus_window_add_sidebar_panel                     (NautilusWindow    *window,

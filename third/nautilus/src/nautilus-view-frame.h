@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -36,8 +36,8 @@
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
-#include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <eel/eel-generous-bin.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
 
 #define NAUTILUS_TYPE_VIEW_FRAME            (nautilus_view_frame_get_type ())
@@ -49,12 +49,12 @@
 typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
 
 typedef struct {
-        NautilusGenerousBin parent;
+        EelGenerousBin parent;
         NautilusViewFrameDetails *details;
 } NautilusViewFrame;
 
 typedef struct {
-        NautilusGenerousBinClass parent_spot;
+        EelGenerousBinClass parent_spot;
         
         /* These roughly correspond to CORBA calls, but in some cases they are higher level. */
 
@@ -99,6 +99,7 @@ typedef struct {
 GtkType            nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
                                                                   NautilusUndoManager *undo_manager);
+Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
 
 /* connecting to a Nautilus:View */
 void               nautilus_view_frame_load_view                 (NautilusViewFrame   *view,

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,12 +30,10 @@
 #include "nautilus-tree-expansion-state.h"
 #include "nautilus-tree-model.h"
 
-#include <libnautilus-extensions/nautilus-ctree.h>
+#include <eel/eel-ctree.h>
 #include <libnautilus/nautilus-view.h>
 
 typedef struct NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
-
-typedef void (*TreeViewCallback) (NautilusTreeView *view);
 
 #define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
 				 (clist)->row_list_end : \
@@ -47,6 +45,7 @@ typedef void (*TreeViewCallback) (NautilusTreeView *view);
 struct NautilusTreeViewDetails {
 	NautilusView *nautilus_view;
 
+	GtkWidget *scrolled_window;
 	GtkWidget *tree;
 
 	NautilusTreeModel *model;
@@ -67,10 +66,8 @@ struct NautilusTreeViewDetails {
 
 	GList *unparented_tree_nodes;
 
-	TreeViewCallback root_seen_callback;
 	char *wait_uri;
 	NautilusTreeNode *wait_node;
-	TreeViewCallback uri_loaded_or_parent_done_loading;
         GList *in_progress_select_uris;
         gboolean root_seen;
 
@@ -84,10 +81,10 @@ struct NautilusTreeViewDetails {
 };
 
 NautilusTreeNode  *nautilus_tree_view_node_to_model_node      (NautilusTreeView  *view,
-							       NautilusCTreeNode *node);
+							       EelCTreeNode *node);
 NautilusFile      *nautilus_tree_view_node_to_file            (NautilusTreeView  *view,
-							       NautilusCTreeNode *node);
-NautilusCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView  *view,
+							       EelCTreeNode *node);
+EelCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView  *view,
 							       NautilusTreeNode  *node);
 void               nautilus_tree_view_init_dnd                (NautilusTreeView *view);
 void               nautilus_tree_view_free_dnd                (NautilusTreeView *view);

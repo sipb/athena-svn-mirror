@@ -6,16 +6,9 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(top_srcdir)/cut-n-paste-code \
-	-I$(top_builddir)/cut-n-paste-code \
-	$(BONOBO_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
+	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
+	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -23,23 +16,12 @@ INCLUDES =\
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
-if EAZEL_SERVICES
-SERVICE_LIBS = $(AMMONITE_LIBS)
-endif
-
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
-	$(BONOBO_LIBS) \
-	$(OAF_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS) \
-	$(SERVICE_LIBS) \
+	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
+	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
@@ -52,46 +34,6 @@ if ENABLE_PROFILER
 profiler_headers = nautilus-profiler.h
 profiler_sources = nautilus-profiler.c
 endif
-
-noinst_HEADERS = \
-	nautilus-about.h			\
-	nautilus-applicable-views.h		\
-	nautilus-application.h			\
-	nautilus-bookmark-list.h		\
-	nautilus-bookmark-parsing.h		\
-	nautilus-bookmarks-window.h		\
-	nautilus-complex-search-bar.h		\
-	nautilus-component-adapter-factory.h	\
-	nautilus-desktop-window.h		\
-	nautilus-first-time-druid.h		\
-	nautilus-link-set-window.h		\
-	nautilus-location-bar.h			\
-	nautilus-main.h				\
-	nautilus-navigation-bar.h		\
-	nautilus-property-browser.h		\
-	nautilus-search-bar-private.h		\
-	nautilus-search-bar.h			\
-	nautilus-search-bar-criterion.h		\
-	nautilus-search-bar-criterion-private.h	\
-	nautilus-self-check-functions.h 	\
-	nautilus-shell.h			\
-	nautilus-sidebar-tabs.h			\
-	nautilus-sidebar-title.h		\
-	nautilus-sidebar.h			\
-	nautilus-signaller.h			\
-	nautilus-simple-search-bar.h		\
-	nautilus-switchable-navigation-bar.h	\
-	nautilus-switchable-search-bar.h	\
-	nautilus-theme-selector.h		\
-	nautilus-view-frame-private.h		\
-	nautilus-view-frame.h			\
-	nautilus-window-manage-views.h		\
-	nautilus-window-private.h		\
-	nautilus-window-service-ui.h		\
-	nautilus-window.h			\
-	nautilus-zoom-control.h			\
-	$(profiler_headers)			\
-	$(NULL)
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -109,9 +51,10 @@ nautilus_SOURCES = \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
+	nautilus-preferences-dialog.c		\
 	nautilus-property-browser.c     	\
-	nautilus-search-bar.c			\
 	nautilus-search-bar-criterion.c		\
+	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
 	nautilus-shell.c			\
 	nautilus-sidebar-tabs.c			\
@@ -126,17 +69,55 @@ nautilus_SOURCES = \
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
-	nautilus-window-service-ui.c		\
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
 	$(profiler_sources)			\
+	nautilus-about.h			\
+	nautilus-applicable-views.h		\
+	nautilus-application.h			\
+	nautilus-bookmark-list.h		\
+	nautilus-bookmark-parsing.h		\
+	nautilus-bookmarks-window.h		\
+	nautilus-complex-search-bar.h		\
+	nautilus-component-adapter-factory.h	\
+	nautilus-desktop-window.h		\
+	nautilus-first-time-druid.h		\
+	nautilus-link-set-window.h		\
+	nautilus-location-bar.h			\
+	nautilus-main.h				\
+	nautilus-navigation-bar.h		\
+	nautilus-preferences-dialog.h \
+	nautilus-property-browser.h		\
+	nautilus-search-bar-criterion-private.h	\
+	nautilus-search-bar-criterion.h		\
+	nautilus-search-bar-private.h		\
+	nautilus-search-bar.h			\
+	nautilus-self-check-functions.h 	\
+	nautilus-shell.h			\
+	nautilus-sidebar-tabs.h			\
+	nautilus-sidebar-title.h		\
+	nautilus-sidebar.h			\
+	nautilus-signaller.h			\
+	nautilus-simple-search-bar.h		\
+	nautilus-switchable-navigation-bar.h	\
+	nautilus-switchable-search-bar.h	\
+	nautilus-theme-selector.h		\
+	nautilus-view-frame-private.h		\
+	nautilus-view-frame.h			\
+	nautilus-window-manage-views.h		\
+	nautilus-window-private.h		\
+	nautilus-window.h			\
+	nautilus-zoom-control.h			\
+	$(profiler_headers)			\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
 	touch $@
+
+$(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
 
 TESTS=check-nautilus
 
@@ -148,7 +129,6 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = 					\
-	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
 
@@ -178,3 +158,6 @@ install-data-hook: run-nautilus
 	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)

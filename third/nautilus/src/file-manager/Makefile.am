@@ -4,15 +4,9 @@ noinst_LTLIBRARIES=libnautilus-file-manager.la
 
 INCLUDES = 					\
 	-I$(top_srcdir) 			\
-	-I$(top_builddir) 			\
-	-I$(top_srcdir)/cut-n-paste-code 	\
-	$(BONOBO_CFLAGS) 			\
+	$(NAUTILUS_PRIVATE_CFLAGS)		\
 	$(MEDUSA_CFLAGS)			\
-	$(OAF_CFLAGS) 				\
-	$(GNOMEUI_CFLAGS) 			\
-	$(VFS_CFLAGS) 				\
 	-DVERSION="\"$(VERSION)\"" 		\
-	-D_REENTRANT 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
 	$(NULL)	
@@ -22,19 +16,14 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
-	fm-icon-text-window.c		\
 	fm-icon-view.c			\
 	fm-list-view.c			\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
 	nautilus-indexing-info.c	\
-	$(NULL)
-
-noinst_HEADERS = 			\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
-	fm-icon-text-window.h 		\
 	fm-icon-view.h 			\
 	fm-list-view-private.h 		\
 	fm-list-view.h 			\

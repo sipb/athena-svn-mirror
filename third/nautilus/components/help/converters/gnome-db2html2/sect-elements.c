@@ -116,7 +116,7 @@ ElementInfo sect_elements[] = {
 	{ ANSWER, "answer", (startElementSAXFunc) sect_answer_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL /* charactersSAXFunc) sect_write_characters */},
 	{ CHAPTER, "chapter", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
-	{ TERM, "term", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ TERM, "term", (startElementSAXFunc) sect_term_start_element, (endElementSAXFunc) sect_term_end_element, (charactersSAXFunc) sect_write_characters},
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ DOCINFO, "docinfo", NULL, NULL, NULL},
 	{ GLOSSARY, "glossary", (startElementSAXFunc) glossary_start_element, NULL, NULL},
@@ -136,6 +136,7 @@ ElementInfo sect_elements[] = {
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
 	{ BRIDGEHEAD, "bridgehead", (startElementSAXFunc) sect_bridgehead_start_element, (endElementSAXFunc) sect_bridgehead_end_element, (charactersSAXFunc) sect_write_characters },
+	{ RELEASEINFO, "releaseinfo", NULL, NULL, NULL, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -266,7 +267,7 @@ sect_article_end_element (Context *context, const gchar *name)
 		}
 		g_print ("</TABLE>");
 	}
-	/* FIXME bugzilla.eazel.com 4408: Is the below needed now that we have the footer printed out */
+	/* FIXME bugzilla.gnome.org 44408: Is the below needed now that we have the footer printed out */
 /*	sect_print (context, "</BODY>\n</HEAD>\n"); */
 }
 
@@ -311,10 +312,10 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	case APPENDIX:
 	case SECTION:
 	case LEGALNOTICE:
+	case LISTITEM:
 		sect_print (context, "<P>\n");
 		break;
 	case FORMALPARA:
-	case LISTITEM:
 	case QUESTION:
 	case ANSWER:
 	default:
@@ -364,10 +365,10 @@ sect_para_end_element (Context *context, const gchar *name)
 	case APPENDIX:
 	case SECTION:
 	case LEGALNOTICE:
+	case LISTITEM:
 		sect_print (context, "</P>\n");
 		break;
 	case FORMALPARA:
-	case LISTITEM:
 	case QUESTION:
 	case ANSWER:
 	default:
@@ -1144,7 +1145,7 @@ sect_inlinegraphic_start_element (Context *context,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 4407: Should we put an 'ALT' tag here? */	
+	/* FIXME bugzilla.gnome.org 44407: Should we put an 'ALT' tag here? */	
 	if (format == NULL) {
 		/* Default is PNG */
 		sect_print (context, "<IMG SRC=\"file://%s%s.png\">", context->base_path, fileref);
@@ -1226,15 +1227,37 @@ sect_graphic_start_element (Context *context,
 }
 	
 
+static gboolean emphasis_bold = FALSE;
 void
 sect_em_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
 {
+	char **atrs_ptr;
+	char *role;
+
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<EM>");
+	atrs_ptr = (gchar **) atrs;
+	role = NULL;
+	while (atrs_ptr && *atrs_ptr) {
+		if (g_strcasecmp (*atrs_ptr, "role") == 0) {
+			atrs_ptr++;
+			role =  *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		}
+		atrs_ptr += 2;
+	}
+	
+	if (role) {
+		emphasis_bold = TRUE;
+		sect_print (context, "<B>");
+	}
+	else {	
+		sect_print (context, "<EM>");
+	}
 }
 
 void
@@ -1244,8 +1267,16 @@ sect_em_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "</EM>");
+	
+	if (emphasis_bold) {
+		sect_print (context, "</B>");
+		emphasis_bold = FALSE;
+	}
+	else {
+		sect_print (context, "</EM>");
+	}
 }
+
 
 void
 sect_tt_start_element (Context *context,
@@ -1451,7 +1482,7 @@ sect_variablelist_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<UL>");
+	sect_print (context, "<DL>");
 }
 
 void
@@ -1461,7 +1492,7 @@ sect_variablelist_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "</UL>");
+	sect_print (context, "</DL>");
 }
 
 void
@@ -1477,6 +1508,7 @@ sect_listitem_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ITEMIZEDLIST));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ORDEREDLIST));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARIABLELIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARLISTENTRY));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -1486,6 +1518,9 @@ sect_listitem_start_element (Context *context,
 	switch (stack_el->info->index) {
 	case VARIABLELIST:
 		return;
+	case VARLISTENTRY:
+		sect_print (context, "<DD>");
+		break;
 	case ITEMIZEDLIST:
 	case ORDEREDLIST:
 		sect_print (context, "<LI>");
@@ -1506,6 +1541,7 @@ sect_listitem_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ITEMIZEDLIST));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ORDEREDLIST));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARIABLELIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARLISTENTRY));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -1515,6 +1551,8 @@ sect_listitem_end_element (Context *context,
 	switch (stack_el->info->index) {
 	case VARIABLELIST:
 		return;
+	case VARLISTENTRY:
+		sect_print (context, "</DD>");
 	case ITEMIZEDLIST:
 	case ORDEREDLIST:
 		sect_print (context, "</LI>");
@@ -2187,20 +2225,14 @@ sect_varlistentry_start_element (Context *context,
 			     	 const gchar *name,
 			     	 const xmlChar **atrs)
 {
-	if (!IS_IN_SECT (context))
 		return;
-
-	sect_print (context, "<LI>");
 }
 
 void
 sect_varlistentry_end_element (Context *context,
 			       const gchar *name)
 {
-	if (!IS_IN_SECT (context))
-		return;
-
-	sect_print (context, "</LI>");
+	return;
 }
 
 void
@@ -2301,4 +2333,25 @@ sect_bridgehead_end_element (Context *context,
 		return;
 
 	sect_print (context, "</H2>");
+}
+
+void
+sect_term_start_element (Context *context,
+			     	  const gchar *name,
+			     	  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<DT>");
+}
+
+void
+sect_term_end_element (Context *context,
+			   	const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</DT>");
 }

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,8 +60,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-AMMONITE_CFLAGS = @AMMONITE_CFLAGS@
-AMMONITE_LIBS = @AMMONITE_LIBS@
 APPLETS_CFLAGS = @APPLETS_CFLAGS@
 APPLETS_LIBS = @APPLETS_LIBS@
 AS = @AS@
@@ -71,6 +69,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -79,43 +78,44 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
-EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
-EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
-EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
-EAZEL_SERVICES = @EAZEL_SERVICES@
-ENABLE_INSTALLER = @ENABLE_INSTALLER@
+ECHO = @ECHO@
+EEL_CFLAGS = @EEL_CFLAGS@
+EEL_LIBS = @EEL_LIBS@
+EEL_REQUIRED = @EEL_REQUIRED@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
+FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
-FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GHTTP_CFLAGS = @GHTTP_CFLAGS@
-GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
+GNOMECANVASPIXBUF_CFLAGS = @GNOMECANVASPIXBUF_CFLAGS@
 GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
 GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DB2HTML3_FLAG = @GNOME_DB2HTML3_FLAG@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -128,6 +128,8 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
+HAVE_JW = @HAVE_JW@
+ICONV_LIBS = @ICONV_LIBS@
 IDL_CFLAGS = @IDL_CFLAGS@
 IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
@@ -135,8 +137,16 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
+LIBART_CFLAGS = @LIBART_CFLAGS@
+LIBART_CONFIG = @LIBART_CONFIG@
+LIBART_LIBS = @LIBART_LIBS@
+LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
+LIBRSVG_LIBS = @LIBRSVG_LIBS@
+LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
@@ -151,43 +161,59 @@ MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
 MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
-MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
 MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
+NAUTILUS_DEPENDENCY_CFLAGS = @NAUTILUS_DEPENDENCY_CFLAGS@
+NAUTILUS_DEPENDENCY_LIBS = @NAUTILUS_DEPENDENCY_LIBS@
+NAUTILUS_INCLUDEDIR = @NAUTILUS_INCLUDEDIR@
+NAUTILUS_LIBDIR = @NAUTILUS_LIBDIR@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
+NAUTILUS_PRIVATE_CFLAGS = @NAUTILUS_PRIVATE_CFLAGS@
+NAUTILUS_PRIVATE_LIBS = @NAUTILUS_PRIVATE_LIBS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
 OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
-PACKAGESYSTEM = @PACKAGESYSTEM@
-PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
-PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
-PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
 POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-RPM_LIBS = @RPM_LIBS@
-RPM_VERSION = @RPM_VERSION@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML2_CFLAGS = @XML2_CFLAGS@
+XML2_CONFIG = @XML2_CONFIG@
+XML2_LIBS = @XML2_LIBS@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 Z_LIBS = @Z_LIBS@
 gnomelocaledir = @gnomelocaledir@
@@ -199,12 +225,10 @@ SUBDIRS = file-manager
 
 bin_PROGRAMS = nautilus
 
-INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	-I$(top_srcdir)/cut-n-paste-code 	-I$(top_builddir)/cut-n-paste-code 	$(BONOBO_CFLAGS) 	$(OAF_CFLAGS) 	$(GCONF_CFLAGS) 	$(GNOMEUI_CFLAGS) 	$(GNOMECANVASPIXBUF_INCLUDEDIR) 	$(VFS_CFLAGS) 	$(XML_CFLAGS) 	-DVERSION="\"$(VERSION)\"" 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	-DDATADIR=\""$(datadir)"\" 	$(NULL)
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox 	$(NAUTILUS_PRIVATE_CFLAGS) 	-DVERSION="\"$(VERSION)\"" 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	-DDATADIR=\""$(datadir)"\" 	$(NULL)
 
 
-@EAZEL_SERVICES_TRUE@SERVICE_LIBS = $(AMMONITE_LIBS)
-
-LDADD =  	$(top_builddir)/src/file-manager/libnautilus-file-manager.la 	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  	$(BONOBO_LIBS) 	$(OAF_LIBS) 	$(GCONF_LIBS) 	$(GNOMEUI_LIBS) 	$(GNOMECANVASPIXBUF_LIBS) 	$(VFS_LIBS) 	$(XML_LIBS) 	$(SERVICE_LIBS) 	$(NULL)
+LDADD =  	$(top_builddir)/src/file-manager/libnautilus-file-manager.la 	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la 	$(top_builddir)/libnautilus-private/libnautilus-private.la  	$(NAUTILUS_PRIVATE_LIBS) 	$(NULL)
 
 
 nautilus_shell_interface_idl_sources =  	nautilus-shell-interface-stubs.c		nautilus-shell-interface-skels.c		nautilus-shell-interface.h			nautilus-shell-interface-common.c
@@ -213,10 +237,7 @@ nautilus_shell_interface_idl_sources =  	nautilus-shell-interface-stubs.c		nauti
 @ENABLE_PROFILER_TRUE@profiler_headers = nautilus-profiler.h
 @ENABLE_PROFILER_TRUE@profiler_sources = nautilus-profiler.c
 
-noinst_HEADERS =  	nautilus-about.h				nautilus-applicable-views.h			nautilus-application.h				nautilus-bookmark-list.h			nautilus-bookmark-parsing.h			nautilus-bookmarks-window.h			nautilus-complex-search-bar.h			nautilus-component-adapter-factory.h		nautilus-desktop-window.h			nautilus-first-time-druid.h			nautilus-link-set-window.h			nautilus-location-bar.h				nautilus-main.h					nautilus-navigation-bar.h			nautilus-property-browser.h			nautilus-search-bar-private.h			nautilus-search-bar.h				nautilus-search-bar-criterion.h			nautilus-search-bar-criterion-private.h		nautilus-self-check-functions.h 		nautilus-shell.h				nautilus-sidebar-tabs.h				nautilus-sidebar-title.h			nautilus-sidebar.h				nautilus-signaller.h				nautilus-simple-search-bar.h			nautilus-switchable-navigation-bar.h		nautilus-switchable-search-bar.h		nautilus-theme-selector.h			nautilus-view-frame-private.h			nautilus-view-frame.h				nautilus-window-manage-views.h			nautilus-window-private.h			nautilus-window-service-ui.h			nautilus-window.h				nautilus-zoom-control.h				$(profiler_headers)				$(NULL)
-
-
-nautilus_SOURCES =  	$(nautilus_shell_interface_idl_sources)		nautilus-about.c				nautilus-applicable-views.c			nautilus-application.c				nautilus-bookmark-list.c			nautilus-bookmark-parsing.c			nautilus-bookmarks-window.c			nautilus-complex-search-bar.c			nautilus-component-adapter-factory.c		nautilus-desktop-window.c			nautilus-first-time-druid.c			nautilus-link-set-window.c			nautilus-location-bar.c         		nautilus-main.c 				nautilus-navigation-bar.c         		nautilus-property-browser.c     		nautilus-search-bar.c				nautilus-search-bar-criterion.c			nautilus-self-check-functions.c 		nautilus-shell.c				nautilus-sidebar-tabs.c				nautilus-sidebar-title.c			nautilus-sidebar.c				nautilus-signaller.c				nautilus-simple-search-bar.c			nautilus-switchable-navigation-bar.c		nautilus-switchable-search-bar.c		nautilus-theme-selector.c			nautilus-view-frame-corba.c			nautilus-view-frame.c				nautilus-window-manage-views.c			nautilus-window-menus.c         		nautilus-window-service-ui.c			nautilus-window-toolbars.c      		nautilus-window.c				nautilus-zoom-control.c				$(profiler_sources)				$(NULL)
+nautilus_SOURCES =  	$(nautilus_shell_interface_idl_sources)		nautilus-about.c				nautilus-applicable-views.c			nautilus-application.c				nautilus-bookmark-list.c			nautilus-bookmark-parsing.c			nautilus-bookmarks-window.c			nautilus-complex-search-bar.c			nautilus-component-adapter-factory.c		nautilus-desktop-window.c			nautilus-first-time-druid.c			nautilus-link-set-window.c			nautilus-location-bar.c         		nautilus-main.c 				nautilus-navigation-bar.c         		nautilus-preferences-dialog.c			nautilus-property-browser.c     		nautilus-search-bar-criterion.c			nautilus-search-bar.c				nautilus-self-check-functions.c 		nautilus-shell.c				nautilus-sidebar-tabs.c				nautilus-sidebar-title.c			nautilus-sidebar.c				nautilus-signaller.c				nautilus-simple-search-bar.c			nautilus-switchable-navigation-bar.c		nautilus-switchable-search-bar.c		nautilus-theme-selector.c			nautilus-view-frame-corba.c			nautilus-view-frame.c				nautilus-window-manage-views.c			nautilus-window-menus.c         		nautilus-window-toolbars.c      		nautilus-window.c				nautilus-zoom-control.c				$(profiler_sources)				nautilus-about.h				nautilus-applicable-views.h			nautilus-application.h				nautilus-bookmark-list.h			nautilus-bookmark-parsing.h			nautilus-bookmarks-window.h			nautilus-complex-search-bar.h			nautilus-component-adapter-factory.h		nautilus-desktop-window.h			nautilus-first-time-druid.h			nautilus-link-set-window.h			nautilus-location-bar.h				nautilus-main.h					nautilus-navigation-bar.h			nautilus-preferences-dialog.h 	nautilus-property-browser.h			nautilus-search-bar-criterion-private.h		nautilus-search-bar-criterion.h			nautilus-search-bar-private.h			nautilus-search-bar.h				nautilus-self-check-functions.h 		nautilus-shell.h				nautilus-sidebar-tabs.h				nautilus-sidebar-title.h			nautilus-sidebar.h				nautilus-signaller.h				nautilus-simple-search-bar.h			nautilus-switchable-navigation-bar.h		nautilus-switchable-search-bar.h		nautilus-theme-selector.h			nautilus-view-frame-private.h			nautilus-view-frame.h				nautilus-window-manage-views.h			nautilus-window-private.h			nautilus-window.h				nautilus-zoom-control.h				$(profiler_headers)				$(NULL)
 
 
 TESTS = check-nautilus
@@ -226,7 +247,7 @@ oaf_in_files = Nautilus_shell.oaf.in
 oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 uidir = $(datadir)/gnome/ui
-ui_DATA =  	nautilus-service-ui.xml				nautilus-shell-ui.xml				$(NULL)
+ui_DATA =  	nautilus-shell-ui.xml				$(NULL)
 
 
 CLEANFILES =  	$(nautilus_shell_interface_idl_sources)		nautilus_shell_interface_idl_stamp		$(NULL)
@@ -240,6 +261,7 @@ BUILT_SOURCES =  	$(nautilus_shell_interface_idl_sources) 	$(NULL)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  nautilus$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -247,79 +269,91 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-@ENABLE_PROFILER_TRUE@nautilus_OBJECTS =  \
-@ENABLE_PROFILER_TRUE@nautilus-shell-interface-stubs.o \
-@ENABLE_PROFILER_TRUE@nautilus-shell-interface-skels.o \
-@ENABLE_PROFILER_TRUE@nautilus-shell-interface-common.o \
-@ENABLE_PROFILER_TRUE@nautilus-about.o nautilus-applicable-views.o \
-@ENABLE_PROFILER_TRUE@nautilus-application.o nautilus-bookmark-list.o \
-@ENABLE_PROFILER_TRUE@nautilus-bookmark-parsing.o \
-@ENABLE_PROFILER_TRUE@nautilus-bookmarks-window.o \
-@ENABLE_PROFILER_TRUE@nautilus-complex-search-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-component-adapter-factory.o \
-@ENABLE_PROFILER_TRUE@nautilus-desktop-window.o \
-@ENABLE_PROFILER_TRUE@nautilus-first-time-druid.o \
-@ENABLE_PROFILER_TRUE@nautilus-link-set-window.o \
-@ENABLE_PROFILER_TRUE@nautilus-location-bar.o nautilus-main.o \
-@ENABLE_PROFILER_TRUE@nautilus-navigation-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-property-browser.o nautilus-search-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-search-bar-criterion.o \
-@ENABLE_PROFILER_TRUE@nautilus-self-check-functions.o nautilus-shell.o \
-@ENABLE_PROFILER_TRUE@nautilus-sidebar-tabs.o nautilus-sidebar-title.o \
-@ENABLE_PROFILER_TRUE@nautilus-sidebar.o nautilus-signaller.o \
-@ENABLE_PROFILER_TRUE@nautilus-simple-search-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-switchable-navigation-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-switchable-search-bar.o \
-@ENABLE_PROFILER_TRUE@nautilus-theme-selector.o \
-@ENABLE_PROFILER_TRUE@nautilus-view-frame-corba.o nautilus-view-frame.o \
-@ENABLE_PROFILER_TRUE@nautilus-window-manage-views.o \
-@ENABLE_PROFILER_TRUE@nautilus-window-menus.o \
-@ENABLE_PROFILER_TRUE@nautilus-window-service-ui.o \
-@ENABLE_PROFILER_TRUE@nautilus-window-toolbars.o nautilus-window.o \
-@ENABLE_PROFILER_TRUE@nautilus-zoom-control.o nautilus-profiler.o
 @ENABLE_PROFILER_FALSE@nautilus_OBJECTS =  \
-@ENABLE_PROFILER_FALSE@nautilus-shell-interface-stubs.o \
-@ENABLE_PROFILER_FALSE@nautilus-shell-interface-skels.o \
-@ENABLE_PROFILER_FALSE@nautilus-shell-interface-common.o \
-@ENABLE_PROFILER_FALSE@nautilus-about.o nautilus-applicable-views.o \
-@ENABLE_PROFILER_FALSE@nautilus-application.o nautilus-bookmark-list.o \
-@ENABLE_PROFILER_FALSE@nautilus-bookmark-parsing.o \
-@ENABLE_PROFILER_FALSE@nautilus-bookmarks-window.o \
-@ENABLE_PROFILER_FALSE@nautilus-complex-search-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-component-adapter-factory.o \
-@ENABLE_PROFILER_FALSE@nautilus-desktop-window.o \
-@ENABLE_PROFILER_FALSE@nautilus-first-time-druid.o \
-@ENABLE_PROFILER_FALSE@nautilus-link-set-window.o \
-@ENABLE_PROFILER_FALSE@nautilus-location-bar.o nautilus-main.o \
-@ENABLE_PROFILER_FALSE@nautilus-navigation-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-property-browser.o \
-@ENABLE_PROFILER_FALSE@nautilus-search-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-search-bar-criterion.o \
-@ENABLE_PROFILER_FALSE@nautilus-self-check-functions.o nautilus-shell.o \
-@ENABLE_PROFILER_FALSE@nautilus-sidebar-tabs.o nautilus-sidebar-title.o \
-@ENABLE_PROFILER_FALSE@nautilus-sidebar.o nautilus-signaller.o \
-@ENABLE_PROFILER_FALSE@nautilus-simple-search-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-switchable-navigation-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-switchable-search-bar.o \
-@ENABLE_PROFILER_FALSE@nautilus-theme-selector.o \
-@ENABLE_PROFILER_FALSE@nautilus-view-frame-corba.o \
-@ENABLE_PROFILER_FALSE@nautilus-view-frame.o \
-@ENABLE_PROFILER_FALSE@nautilus-window-manage-views.o \
-@ENABLE_PROFILER_FALSE@nautilus-window-menus.o \
-@ENABLE_PROFILER_FALSE@nautilus-window-service-ui.o \
-@ENABLE_PROFILER_FALSE@nautilus-window-toolbars.o nautilus-window.o \
-@ENABLE_PROFILER_FALSE@nautilus-zoom-control.o
+@ENABLE_PROFILER_FALSE@nautilus-shell-interface-stubs.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-shell-interface-skels.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-shell-interface-common.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-about.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-applicable-views.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-application.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-bookmark-list.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-bookmark-parsing.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-bookmarks-window.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-complex-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-component-adapter-factory.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-desktop-window.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-first-time-druid.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-link-set-window.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-location-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-main.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-navigation-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-preferences-dialog.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-property-browser.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-search-bar-criterion.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-self-check-functions.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-shell.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-sidebar-tabs.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-sidebar-title.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-sidebar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-signaller.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-simple-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-switchable-navigation-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-switchable-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-theme-selector.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-view-frame-corba.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-view-frame.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-window-manage-views.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-window-menus.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-window-toolbars.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-window.$(OBJEXT) \
+@ENABLE_PROFILER_FALSE@nautilus-zoom-control.$(OBJEXT)
+@ENABLE_PROFILER_TRUE@nautilus_OBJECTS =  \
+@ENABLE_PROFILER_TRUE@nautilus-shell-interface-stubs.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-shell-interface-skels.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-shell-interface-common.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-about.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-applicable-views.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-application.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-bookmark-list.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-bookmark-parsing.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-bookmarks-window.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-complex-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-component-adapter-factory.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-desktop-window.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-first-time-druid.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-link-set-window.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-location-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-main.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-navigation-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-preferences-dialog.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-property-browser.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-search-bar-criterion.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-self-check-functions.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-shell.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-sidebar-tabs.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-sidebar-title.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-sidebar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-signaller.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-simple-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-switchable-navigation-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-switchable-search-bar.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-theme-selector.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-view-frame-corba.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-view-frame.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-window-manage-views.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-window-menus.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-window-toolbars.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-window.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-zoom-control.$(OBJEXT) \
+@ENABLE_PROFILER_TRUE@nautilus-profiler.$(OBJEXT)
 nautilus_LDADD = $(LDADD)
-@EAZEL_SERVICES_TRUE@nautilus_DEPENDENCIES =  \
-@EAZEL_SERVICES_TRUE@$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
-@EAZEL_SERVICES_TRUE@$(top_builddir)/libnautilus/libnautilus.la \
-@EAZEL_SERVICES_TRUE@$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
-@EAZEL_SERVICES_TRUE@$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
-@EAZEL_SERVICES_FALSE@nautilus_DEPENDENCIES =  \
-@EAZEL_SERVICES_FALSE@$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
-@EAZEL_SERVICES_FALSE@$(top_builddir)/libnautilus/libnautilus.la \
-@EAZEL_SERVICES_FALSE@$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
-@EAZEL_SERVICES_FALSE@$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+nautilus_DEPENDENCIES =  \
+$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
+$(top_builddir)/libnautilus-private/libnautilus-private.la
 nautilus_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -327,8 +361,6 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(oaf_DATA) $(ui_DATA)
-
-HEADERS =  $(noinst_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -342,7 +374,7 @@ OBJECTS = $(nautilus_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.shared
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
 
@@ -379,6 +411,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -387,6 +424,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -414,8 +452,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-nautilus: $(nautilus_OBJECTS) $(nautilus_DEPENDENCIES)
-	@rm -f nautilus
+nautilus$(EXEEXT): $(nautilus_OBJECTS) $(nautilus_DEPENDENCIES)
+	@rm -f nautilus$(EXEEXT)
 	$(LINK) $(nautilus_LDFLAGS) $(nautilus_OBJECTS) $(nautilus_LDADD) $(LIBS)
 
 install-oafDATA: $(oaf_DATA)
@@ -570,6 +608,442 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+nautilus-about.o: nautilus-about.c ../config.h nautilus-about.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-theme.h
+nautilus-applicable-views.o: nautilus-applicable-views.c ../config.h \
+	nautilus-applicable-views.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-mime-actions.h
+nautilus-application.o: nautilus-application.c ../config.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	file-manager/fm-desktop-icon-view.h file-manager/fm-icon-view.h \
+	file-manager/fm-directory-view.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-icon-container.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-link.h \
+	../libnautilus/nautilus-view.h \
+	../libnautilus/nautilus-view-component.h \
+	file-manager/fm-list-view.h file-manager/fm-search-list-view.h \
+	nautilus-desktop-window.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	nautilus-sidebar.h nautilus-first-time-druid.h nautilus-main.h \
+	nautilus-shell-interface.h nautilus-shell.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-metafile-factory.h \
+	../libnautilus-private/nautilus-metafile-server.h \
+	../libnautilus-private/nautilus-sound.h \
+	../libnautilus-private/nautilus-volume-monitor.h \
+	../libnautilus-private/nautilus-authn-manager.h
+nautilus-bookmark-list.o: nautilus-bookmark-list.c ../config.h \
+	nautilus-bookmark-list.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	nautilus-bookmark-parsing.h \
+	../libnautilus-private/nautilus-file-utilities.h
+nautilus-bookmark-parsing.o: nautilus-bookmark-parsing.c ../config.h \
+	nautilus-bookmark-parsing.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h
+nautilus-bookmarks-window.o: nautilus-bookmarks-window.c ../config.h \
+	nautilus-bookmarks-window.h nautilus-bookmark-list.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus/nautilus-undo.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-undo-signal-handlers.h \
+	../libnautilus-private/nautilus-entry.h
+nautilus-complex-search-bar.o: nautilus-complex-search-bar.c ../config.h \
+	nautilus-complex-search-bar.h \
+	../libnautilus-private/nautilus-entry.h nautilus-search-bar.h \
+	nautilus-navigation-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-search-bar-criterion-private.h \
+	nautilus-search-bar-criterion.h nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus/nautilus-clipboard.h \
+	../libnautilus-private/nautilus-undo-signal-handlers.h \
+	../cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h \
+	../cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h
+nautilus-component-adapter-factory.o: \
+	nautilus-component-adapter-factory.c ../config.h \
+	nautilus-component-adapter-factory.h \
+	../libnautilus/nautilus-view-component.h \
+	../libnautilus-adapter/nautilus-adapter-factory.h
+nautilus-desktop-window.o: nautilus-desktop-window.c ../config.h \
+	nautilus-desktop-window.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-link.h
+nautilus-first-time-druid.o: nautilus-first-time-druid.c ../config.h \
+	nautilus-first-time-druid.h nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus-private/nautilus-druid-page-eazel.h \
+	../libnautilus-private/nautilus-druid.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-link.h \
+	../libnautilus-private/nautilus-file.h nautilus-main.h
+nautilus-link-set-window.o: nautilus-link-set-window.c ../config.h \
+	nautilus-link-set-window.h \
+	../libnautilus-private/nautilus-link-set.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-link.h \
+	../libnautilus-private/nautilus-metadata.h
+nautilus-location-bar.o: nautilus-location-bar.c ../config.h \
+	nautilus-location-bar.h nautilus-navigation-bar.h \
+	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-entry.h \
+	../libnautilus/nautilus-clipboard.h
+nautilus-main.o: nautilus-main.c ../config.h nautilus-main.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	nautilus-self-check-functions.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	../libnautilus-private/nautilus-directory-metafile.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-lib-self-check-functions.h
+nautilus-navigation-bar.o: nautilus-navigation-bar.c ../config.h \
+	nautilus-navigation-bar.h
+nautilus-preferences-dialog.o: nautilus-preferences-dialog.c ../config.h \
+	nautilus-preferences-dialog.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-sidebar-functions.h \
+	nautilus-theme-selector.h
+nautilus-property-browser.o: nautilus-property-browser.c ../config.h \
+	nautilus-property-browser.h nautilus-signaller.h \
+	../libnautilus-private/nautilus-customization-data.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-drag-window.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-metadata.h \
+	../libnautilus-private/nautilus-theme.h
+nautilus-search-bar-criterion.o: nautilus-search-bar-criterion.c \
+	../config.h nautilus-search-bar-criterion.h \
+	nautilus-complex-search-bar.h \
+	../libnautilus-private/nautilus-entry.h nautilus-search-bar.h \
+	nautilus-navigation-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-search-bar-criterion-private.h \
+	nautilus-signaller.h \
+	../libnautilus-private/nautilus-customization-data.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-search-uri.h \
+	../libnautilus-private/nautilus-undo-signal-handlers.h \
+	../cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h \
+	../cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h
+nautilus-search-bar.o: nautilus-search-bar.c ../config.h \
+	nautilus-search-bar.h nautilus-navigation-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h
+nautilus-self-check-functions.o: nautilus-self-check-functions.c \
+	../config.h nautilus-self-check-functions.h
+nautilus-shell-interface-common.o: nautilus-shell-interface-common.c \
+	nautilus-shell-interface.h \
+	../libnautilus/nautilus-view-component.h
+nautilus-shell-interface-skels.o: nautilus-shell-interface-skels.c \
+	nautilus-shell-interface.h \
+	../libnautilus/nautilus-view-component.h
+nautilus-shell-interface-stubs.o: nautilus-shell-interface-stubs.c \
+	nautilus-shell-interface.h \
+	../libnautilus/nautilus-view-component.h
+nautilus-shell.o: nautilus-shell.c ../config.h nautilus-shell.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	nautilus-desktop-window.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-main.h nautilus-shell-interface.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus/nautilus-bonobo-workarounds.h
+nautilus-sidebar-tabs.o: nautilus-sidebar-tabs.c ../config.h \
+	nautilus-sidebar-tabs.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-theme.h
+nautilus-sidebar-title.o: nautilus-sidebar-title.c ../config.h \
+	nautilus-sidebar-title.h ../libnautilus-private/nautilus-file.h \
+	nautilus-sidebar.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-application.h \
+	../libnautilus-private/nautilus-file-attributes.h \
+	../libnautilus-private/nautilus-font-factory.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-metadata.h \
+	../libnautilus-private/nautilus-search-uri.h \
+	../libnautilus-private/nautilus-theme.h
+nautilus-sidebar.o: nautilus-sidebar.c ../config.h nautilus-sidebar.h \
+	nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h \
+	nautilus-link-set-window.h \
+	../libnautilus-private/nautilus-link-set.h \
+	nautilus-sidebar-tabs.h nautilus-sidebar-title.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-file-dnd.h \
+	../libnautilus-private/nautilus-file-operations.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-keep-last-vertical-box.h \
+	../libnautilus-private/nautilus-metadata.h \
+	../libnautilus-private/nautilus-mime-actions.h \
+	../libnautilus-private/nautilus-program-choosing.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	../libnautilus-private/nautilus-sidebar-functions.h \
+	../libnautilus-private/nautilus-theme.h \
+	../libnautilus-private/nautilus-trash-monitor.h \
+	../libnautilus-private/nautilus-volume-monitor.h
+nautilus-signaller.o: nautilus-signaller.c ../config.h \
+	nautilus-signaller.h
+nautilus-simple-search-bar.o: nautilus-simple-search-bar.c ../config.h \
+	nautilus-simple-search-bar.h nautilus-search-bar.h \
+	nautilus-navigation-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-search-bar-criterion.h \
+	nautilus-complex-search-bar.h \
+	../libnautilus-private/nautilus-entry.h \
+	nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus/nautilus-clipboard.h \
+	../libnautilus-private/nautilus-search-uri.h \
+	../libnautilus-private/nautilus-undo-signal-handlers.h
+nautilus-switchable-navigation-bar.o: \
+	nautilus-switchable-navigation-bar.c ../config.h \
+	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
+	nautilus-location-bar.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-search-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-switchable-search-bar.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-search-uri.h
+nautilus-switchable-search-bar.o: nautilus-switchable-search-bar.c \
+	../config.h nautilus-switchable-search-bar.h \
+	nautilus-search-bar.h nautilus-navigation-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-window.h ../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-complex-search-bar.h \
+	../libnautilus-private/nautilus-entry.h \
+	nautilus-simple-search-bar.h \
+	../libnautilus-private/nautilus-directory.h
+nautilus-theme-selector.o: nautilus-theme-selector.c ../config.h \
+	nautilus-theme-selector.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-theme.h
+nautilus-view-frame-corba.o: nautilus-view-frame-corba.c ../config.h \
+	nautilus-view-frame-private.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-sidebar.h \
+	nautilus-application.h \
+	../libnautilus/nautilus-bonobo-workarounds.h \
+	../libnautilus/nautilus-view.h
+nautilus-view-frame.o: nautilus-view-frame.c ../config.h \
+	nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-application.h \
+	nautilus-component-adapter-factory.h nautilus-signaller.h \
+	nautilus-view-frame-private.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-sidebar.h \
+	../libnautilus-private/nautilus-bonobo-extensions.h \
+	../libnautilus/nautilus-bonobo-workarounds.h \
+	../libnautilus/nautilus-idle-queue.h \
+	../libnautilus/nautilus-view.h
+nautilus-window-manage-views.o: nautilus-window-manage-views.c \
+	../config.h nautilus-window-manage-views.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h nautilus-location-bar.h \
+	nautilus-navigation-bar.h nautilus-main.h \
+	nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	nautilus-zoom-control.h \
+	../libnautilus-private/nautilus-bonobo-extensions.h \
+	../libnautilus-private/nautilus-file-attributes.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-metadata.h \
+	../libnautilus-private/nautilus-mime-actions.h \
+	../libnautilus-private/nautilus-monitor.h \
+	../libnautilus-private/nautilus-search-uri.h \
+	nautilus-desktop-window.h
+nautilus-window-menus.o: nautilus-window-menus.c ../config.h \
+	nautilus-about.h nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	nautilus-bookmark-list.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	nautilus-bookmark-parsing.h nautilus-bookmarks-window.h \
+	nautilus-preferences-dialog.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-property-browser.h nautilus-signaller.h \
+	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
+	nautilus-location-bar.h nautilus-window.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-search-bar.h nautilus-window-manage-views.h \
+	nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-bonobo-extensions.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus/nautilus-bonobo-ui.h
+nautilus-window-toolbars.o: nautilus-window-toolbars.c ../config.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	nautilus-window-manage-views.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-window-private.h \
+	../libnautilus-private/nautilus-directory.h \
+	../libnautilus-private/nautilus-bonobo-extensions.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-theme.h \
+	nautilus-desktop-window.h
+nautilus-window.o: nautilus-window.c ../config.h \
+	nautilus-window-private.h nautilus-window.h \
+	../libnautilus-private/nautilus-bookmark.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-view-identifier.h \
+	nautilus-applicable-views.h nautilus-view-frame.h \
+	../libnautilus-private/nautilus-undo-manager.h \
+	../libnautilus/nautilus-view-component.h nautilus-sidebar.h \
+	nautilus-application.h \
+	../libnautilus-private/nautilus-directory.h \
+	nautilus-bookmarks-window.h nautilus-bookmark-list.h \
+	nautilus-main.h nautilus-signaller.h \
+	nautilus-switchable-navigation-bar.h nautilus-navigation-bar.h \
+	nautilus-location-bar.h nautilus-search-bar.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	nautilus-window-manage-views.h nautilus-zoom-control.h \
+	../libnautilus-private/nautilus-bonobo-extensions.h \
+	../libnautilus-private/nautilus-drag-window.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-file-attributes.h \
+	../libnautilus-private/nautilus-horizontal-splitter.h \
+	../cut-n-paste-code/widgets/e-paned/e-hpaned.h \
+	../cut-n-paste-code/widgets/e-paned/e-paned.h \
+	../libnautilus-private/nautilus-metadata.h \
+	../libnautilus-private/nautilus-mime-actions.h \
+	../libnautilus-private/nautilus-program-choosing.h \
+	../libnautilus-private/nautilus-sidebar-functions.h \
+	../libnautilus/nautilus-bonobo-ui.h \
+	../libnautilus/nautilus-clipboard.h \
+	../libnautilus/nautilus-undo.h nautilus-desktop-window.h
+nautilus-zoom-control.o: nautilus-zoom-control.c ../config.h \
+	nautilus-zoom-control.h \
+	../libnautilus-private/nautilus-global-preferences.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-theme.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
@@ -618,7 +1092,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-oafDATA uninstall-uiDATA
 uninstall: uninstall-recursive
-all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -689,6 +1163,8 @@ nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
 	touch $@
 
+$(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
+
 @XML_I18N_MERGE_OAF_RULE@
 
 install-data-hook: run-nautilus
@@ -699,6 +1175,9 @@ install-data-hook: run-nautilus
 	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

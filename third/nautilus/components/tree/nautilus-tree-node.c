@@ -27,9 +27,9 @@
 #include "nautilus-tree-node.h"
 
 #include "nautilus-tree-node-private.h"
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <eel/eel-gtk-macros.h>
 
 
 static void               nautilus_tree_node_destroy          (GtkObject   *object);
@@ -39,7 +39,7 @@ static void               nautilus_tree_node_initialize_class (gpointer     klas
 
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
 
 
 static void
@@ -80,7 +80,7 @@ nautilus_tree_node_destroy (GtkObject *object)
 	g_free (node->details->uri);
 	g_free (node->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusTreeNode *
@@ -168,7 +168,7 @@ nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 	g_return_if_fail (node->details->parent == NULL);
 
 	node->details->parent = parent;
-	parent->details->children = g_list_append (parent->details->children, node);
+	parent->details->children = g_list_prepend (parent->details->children, node);
 }
 
 gboolean

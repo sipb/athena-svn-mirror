@@ -39,6 +39,7 @@
 #include "mozilla-events.h"
 #include "gtkmozembed_internal.h"
 
+#include "nsIContentViewer.h"
 #include "nsIServiceManager.h"
 #include "nsComponentManagerUtils.h"
 #include "nsILocalFile.h"
@@ -60,18 +61,19 @@
 #include "nsIDocShellTreeOwner.h"
 #include "nsIDocument.h"
 #include "nsIContent.h"
+#include "nsIContentViewer.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLDocument.h"
 #include "nsIPresShell.h"
 #include "nsIMarkupDocumentViewer.h"
-
+#include "nsReadableUtils.h"
 
 static char *
 get_glib_str_from_ns_str (nsAutoString string)
 {
 
-	char *cstr = string.ToNewCString();
+	char *cstr = ToNewCString(string);
 	char *glib_str = g_strdup (cstr);
 
 	nsMemory::Free (cstr);

@@ -1,6 +1,14 @@
 NULL=
 
-SUBDIRS = ardmore arlo crux_eggplant gnome sidebar_tab_pieces villanova throbber
+SUBDIRS =\
+	crux_eggplant \
+	crux_teal \
+	gnome \
+	sidebar_tab_pieces \
+	sierra \
+	tahoe \
+	throbber \
+	$(NULL)
 
 icondir = $(datadir)/pixmaps/nautilus
 
@@ -134,6 +142,12 @@ icon_DATA =\
 	hand-72.png \
 	hand-96.png \
 	home.png \
+	hyperbola-book-closed.png \
+	hyperbola-book-open.png \
+	hyperbola-folder-closed.png \
+	hyperbola-folder-open.png \
+	hyperbola-section-closed.png \
+	hyperbola-section-open.png \
 	i-blockdev.png \
 	i-bookmark-20.png \
 	i-bookmark-missing-20.png \
@@ -221,6 +235,7 @@ icon_DATA =\
 	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \
+	note-indicator.png \
 	novice-selected.png \
 	novice.png \
 	number_strip.png \
@@ -230,6 +245,7 @@ icon_DATA =\
 	side_bar_image.png \
 	temp-home.png \
 	text-selection-frame.png \
+	text-selection-frame-aa.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \

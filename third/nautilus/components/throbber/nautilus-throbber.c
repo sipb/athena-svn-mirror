@@ -28,25 +28,23 @@
 #include <config.h>
 #include "nautilus-throbber.h"
 
-#include <libgnome/gnome-defs.h>
-#include <bonobo.h>
-
-#include <math.h>
-#include <gnome.h>
-#include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-graphic-effects.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <math.h>
 
 #define THROBBER_DEFAULT_TIMEOUT 100	/* Milliseconds Per Frame */
 
@@ -60,10 +58,13 @@ struct NautilusThrobberDetails {
 	int	max_frame;
 	int	delay;
 	int	current_frame;	
-	int	timer_task;
+	guint	timer_task;
 	
 	gboolean ready;
 	gboolean small_mode;
+
+	gboolean button_in;
+	gboolean button_down;
 };
 
 
@@ -76,6 +77,13 @@ static int      nautilus_throbber_expose 		 (GtkWidget *widget,
 							  GdkEventExpose *event);
 static gboolean nautilus_throbber_button_press_event	 (GtkWidget *widget, 
 							  GdkEventButton *event);
+static gboolean nautilus_throbber_button_release_event	 (GtkWidget *widget, 
+							  GdkEventButton *event);
+static gboolean nautilus_throbber_enter_notify_event	 (GtkWidget *widget, 
+							  GdkEventCrossing *event);
+static gboolean nautilus_throbber_leave_notify_event	 (GtkWidget *widget, 
+							  GdkEventCrossing *event);
+
 static void nautilus_throbber_map				 (GtkWidget *widget); 
 
 static void	nautilus_throbber_load_images		 (NautilusThrobber *throbber);
@@ -85,7 +93,7 @@ static void	nautilus_throbber_size_allocate		 (GtkWidget *widget, GtkAllocation 
 static void	nautilus_throbber_size_request		 (GtkWidget *widget, GtkRequisition *requisition);
 static void     nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
@@ -98,6 +106,9 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 	widget_class->draw = nautilus_throbber_draw;
 	widget_class->expose_event = nautilus_throbber_expose;
 	widget_class->button_press_event = nautilus_throbber_button_press_event;
+	widget_class->button_release_event = nautilus_throbber_button_release_event;
+	widget_class->enter_notify_event = nautilus_throbber_enter_notify_event;
+	widget_class->leave_notify_event = nautilus_throbber_leave_notify_event;
 	widget_class->size_allocate = nautilus_throbber_size_allocate;
 	widget_class->size_request = nautilus_throbber_size_request;	
 	widget_class->map = nautilus_throbber_map;
@@ -114,7 +125,7 @@ enum {
 static gboolean
 is_throbbing (NautilusThrobber *throbber)
 {
-	return throbber->details->timer_task > 0;
+	return throbber->details->timer_task != 0;
 }
 
 static void
@@ -129,7 +140,7 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 	switch (arg_id) {
 		case THROBBING:
 		{
-			BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task > 0);
+			BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task != 0);
 			break;
 		}
 
@@ -188,21 +199,23 @@ static void
 nautilus_throbber_destroy (GtkObject *object)
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
+
+	nautilus_bonobo_object_force_destroy_later (throbber->details->control);
 	
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_throbber_theme_changed,
-					      object);
-
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_throbber_theme_changed,
+					 object);
+	
 	if (throbber->details->property_bag) {
 		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
 	}
 	
 	g_free (throbber->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 BonoboObject*
@@ -247,6 +260,13 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 	*throbber_height = current_height;
 }
 
+static void
+null_pointer_callback (GtkObject *object,
+		       gpointer callback_data)
+{
+	* (gpointer *) callback_data = NULL;
+}
+
 /* initialize the throbber */
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
@@ -258,14 +278,12 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	GTK_WIDGET_UNSET_FLAGS (throbber, GTK_NO_WINDOW);
 
 	gtk_widget_set_events (widget, 
-			       gtk_widget_get_events (widget) | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+			       gtk_widget_get_events (widget)
+			       | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
+			       | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
 	
 	throbber->details = g_new0 (NautilusThrobberDetails, 1);
-	throbber->details->ready = FALSE;
 	
-	/* set up the instance variables to appropriate defaults */
-	throbber->details->timer_task = -1;
-
 	/* set up the delay from the theme */
 	delay_str = nautilus_theme_get_theme_data ("throbber", "delay");
 	
@@ -277,7 +295,12 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	}
 	
 	/* make the bonobo control */
-	throbber->details->control = (BonoboObject*) bonobo_control_new (widget);
+	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
+	gtk_signal_connect_while_alive (GTK_OBJECT (throbber->details->control),
+					"destroy",
+					null_pointer_callback,
+					&throbber->details->control,
+					GTK_OBJECT (throbber));
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
@@ -295,9 +318,9 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	gtk_widget_show (widget);
 	
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-					  nautilus_throbber_theme_changed,
-					  throbber);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+				      nautilus_throbber_theme_changed,
+				      throbber);
 }
 
 /* allocate a new throbber */
@@ -339,15 +362,17 @@ select_throbber_image (NautilusThrobber *throbber)
 {
 	GList *element;
 
-	if (throbber->details->timer_task == -1)
-		return throbber->details->quiescent_pixbuf;
+	if (throbber->details->timer_task == 0) {
+		return gdk_pixbuf_ref (throbber->details->quiescent_pixbuf);
+	}
 	
-	if (throbber->details->image_list == NULL)
+	if (throbber->details->image_list == NULL) {
 		return NULL;
+	}
 
 	element = g_list_nth (throbber->details->image_list, throbber->details->current_frame);
 	
-	return (GdkPixbuf*) element->data;
+	return gdk_pixbuf_ref (element->data);
 }
 
 /* draw the throbber into the passed-in rectangle */
@@ -356,7 +381,7 @@ static void
 draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 {
 	NautilusThrobber *throbber;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *massaged_pixbuf;
 	int window_width, window_height;
 	int x_offset, y_offset;
 		
@@ -378,11 +403,27 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 	}
 	
 	pixbuf = select_throbber_image (throbber);
+	if (pixbuf == NULL) {
+		return;
+	}
 
+	if (throbber->details->button_in) {
+		if (throbber->details->button_down) {
+			massaged_pixbuf = eel_create_darkened_pixbuf (pixbuf, 0.8 * 255, 0.8 * 255);
+		} else {
+			massaged_pixbuf = eel_create_spotlight_pixbuf (pixbuf);
+		}
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = massaged_pixbuf;
+	}
+	
 	/* center the throbber image in the gdk window */	
 	x_offset = (window_width - gdk_pixbuf_get_width (pixbuf)) / 2;
-	y_offset = (window_height - gdk_pixbuf_get_height (pixbuf)) / 2;		
+	y_offset = (window_height - gdk_pixbuf_get_height (pixbuf)) / 2;
+	
 	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
+	
+	gdk_pixbuf_unref (pixbuf);
 }
 
 static void
@@ -419,15 +460,18 @@ nautilus_throbber_map (GtkWidget *widget)
 	
 	throbber = NAUTILUS_THROBBER (widget);
 	
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 	throbber->details->ready = TRUE;
 }
 
 /* here's the actual timeout task to bump the frame and schedule a redraw */
 
-static int 
-bump_throbber_frame (NautilusThrobber *throbber)
+static gboolean 
+bump_throbber_frame (gpointer callback_data)
 {
+	NautilusThrobber *throbber;
+
+	throbber = NAUTILUS_THROBBER (callback_data);
 	if (!throbber->details->ready) {
 		return TRUE;
 	}
@@ -451,23 +495,25 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 		return;
 	}
 
-	if (throbber->details->timer_task != -1)
-		gtk_timeout_remove(throbber->details->timer_task);
+	if (throbber->details->timer_task != 0) {
+		gtk_timeout_remove (throbber->details->timer_task);
+	}
 	
 	/* reset the frame count */
 	throbber->details->current_frame = 0;
 	throbber->details->timer_task = gtk_timeout_add (throbber->details->delay,
-							(GtkFunction) bump_throbber_frame,
-							throbber);
+							 bump_throbber_frame,
+							 throbber);
 }
 
 static void
 nautilus_throbber_remove_update_callback (NautilusThrobber *throbber)
 {
-	if (throbber->details->timer_task != -1)
-		gtk_timeout_remove(throbber->details->timer_task);
+	if (throbber->details->timer_task != 0) {
+		gtk_timeout_remove (throbber->details->timer_task);
+	}
 	
-	throbber->details->timer_task = -1;
+	throbber->details->timer_task = 0;
 }
 
 void
@@ -552,6 +598,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	int index;
 	char *throbber_frame_name, *image_theme, *frames;
 	GdkPixbuf *pixbuf;
+	GList *image_list;
 	
 	nautilus_throbber_unload_images (throbber);
 
@@ -567,9 +614,9 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	} else {
 		throbber->details->max_frame = 16;
 	}
-	
-	index = 1;
-	while (index <= throbber->details->max_frame) {
+
+	image_list = NULL;
+	for (index = 1; index <= throbber->details->max_frame; index++) {
 		throbber_frame_name = make_throbber_frame_name (index);
 		pixbuf = load_themed_image (throbber_frame_name, image_theme, throbber->details->small_mode);
 		g_free (throbber_frame_name);
@@ -577,32 +624,93 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 			throbber->details->max_frame = index - 1;
 			break;
 		}
-		throbber->details->image_list = g_list_append (throbber->details->image_list, pixbuf);
-		index += 1;
-	}	
+		image_list = g_list_prepend (image_list, pixbuf);
+	}
+	throbber->details->image_list = g_list_reverse (image_list);
+
 	g_free (image_theme);
+}
+
+static gboolean
+nautilus_throbber_enter_notify_event (GtkWidget *widget, GdkEventCrossing *event)
+{
+	NautilusThrobber *throbber;
+
+	throbber = NAUTILUS_THROBBER (widget);
+
+	if (!throbber->details->button_in) {
+		throbber->details->button_in = TRUE;
+		gtk_widget_queue_draw (widget);
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, enter_notify_event, (widget, event));
+}
+
+static gboolean
+nautilus_throbber_leave_notify_event (GtkWidget *widget, GdkEventCrossing *event)
+{
+	NautilusThrobber *throbber;
+
+	throbber = NAUTILUS_THROBBER (widget);
+
+	if (throbber->details->button_in) {
+		throbber->details->button_in = FALSE;
+		gtk_widget_queue_draw (widget);
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, leave_notify_event, (widget, event));
 }
 
 /* handle button presses by posting a change on the "location" property */
 
 static gboolean
 nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
-{	
-	char *location;
+{
 	NautilusThrobber *throbber;
+
+	throbber = NAUTILUS_THROBBER (widget);
+
+	if (event->button == 1) {
+		throbber->details->button_down = TRUE;
+		throbber->details->button_in = TRUE;
+		gtk_widget_queue_draw (widget);
+		return TRUE;
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
+}
+
+static gboolean
+nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event)
+{	
+	NautilusThrobber *throbber;
+	char *location;
 	BonoboArg *location_arg;
 	
 	throbber = NAUTILUS_THROBBER (widget);
-	location = nautilus_theme_get_theme_data ("throbber", "url");
-	if (location != NULL) {
-		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
-		BONOBO_ARG_SET_STRING (location_arg, location);			
-		bonobo_property_bag_notify_listeners (throbber->details->property_bag, "location", location_arg, NULL);
-		bonobo_arg_release (location_arg);
-		g_free (location);
+
+	if (event->button == 1) {
+		if (throbber->details->button_in) {
+			location = nautilus_theme_get_theme_data ("throbber", "url");
+			if (location != NULL) {
+				location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+				BONOBO_ARG_SET_STRING (location_arg, location);			
+				bonobo_property_bag_notify_listeners
+					(throbber->details->property_bag, "location", location_arg, NULL);
+				bonobo_arg_release (location_arg);
+				g_free (location);
+			}
+		}
+		throbber->details->button_down = FALSE;
+		gtk_widget_queue_draw (widget);
+		return TRUE;
 	}
 	
-	return TRUE;
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 }
 
 void
@@ -627,7 +735,7 @@ nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	int throbber_width, throbber_height;
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	

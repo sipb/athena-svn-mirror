@@ -8,7 +8,7 @@
  * Author:        Espen Skoglund <espensk@stud.cs.uit.no>
  * Created at:    Fri Feb  5 23:50:33 1999
  *                
- * $Id: id3_frame_text.c,v 1.1.1.1 2001-02-03 22:47:49 ghudson Exp $
+ * $Id: id3_frame_text.c,v 1.1.1.2 2002-01-03 23:27:18 amb Exp $
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -137,7 +137,7 @@ char *id3_get_text(id3_frame_t *frame)
 	}
 	case ID3_ENCODING_UNICODE:
 	{
-	    gint16 *text16 = (gint16 *) ((int) frame->fr_data + 1);
+	    gint16 *text16 = GINT_TO_POINTER ((GPOINTER_TO_INT (frame->fr_data) + 1));
 
 	    while ( *text16 != 0 )
 		text16++;

@@ -27,7 +27,7 @@
  * bonobo-stream-vfs.c: Gnome VFS-based Stream implementation
  */
 
-/* FIXME bugzilla.eazel.com 4400: There's another copy of this file,
+/* FIXME bugzilla.gnome.org 44400: There's another copy of this file,
  * with a few subtle differences, in the Bonobo sources, although it's
  * currently not being compiled.  
  */
@@ -50,19 +50,74 @@ struct BonoboStreamVFSDetails {
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
 static POA_Bonobo_Stream__vepv vepv;
 
+
+static void
+bonobo_stream_vfs_storageinfo_from_file_info (Bonobo_StorageInfo *si,
+					      GnomeVFSFileInfo   *fi)
+{
+	g_return_if_fail (si != NULL);
+	g_return_if_fail (fi != NULL);
+
+	si->name = CORBA_string_dup (fi->name);
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE)
+		si->size = fi->size;
+	else
+		si->size = 0;
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_TYPE &&
+	    fi->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+		si->type = Bonobo_STORAGE_TYPE_DIRECTORY;
+	else
+		si->type = Bonobo_STORAGE_TYPE_REGULAR;
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE &&
+	    fi->mime_type)
+		si->content_type = CORBA_string_dup (fi->mime_type);
+	else
+		si->content_type = CORBA_string_dup ("");
+}
+
 static Bonobo_StorageInfo *
 vfs_get_info (BonoboStream *stream,
 	      Bonobo_StorageInfoFields mask,
 	      CORBA_Environment *ev)
 {
-	/* FIXME bugzilla.eazel.com 4402: Is it OK to have this
-	 * unimplemented? 
-	 */
-	g_warning ("BonoboStreamVFS:get_info not implemented");
-        CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-                             ex_Bonobo_Stream_IOError, NULL);
+	BonoboStreamVFS    *sfs = BONOBO_STREAM_VFS (stream);
+	Bonobo_StorageInfo *si;
+	GnomeVFSFileInfo    fi;
+	GnomeVFSResult      result;
 
-	return NULL;
+	if (mask & ~(Bonobo_FIELD_CONTENT_TYPE | Bonobo_FIELD_SIZE |
+		     Bonobo_FIELD_TYPE)) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
+				     ex_Bonobo_Storage_NotSupported, NULL);
+		return CORBA_OBJECT_NIL;
+	}
+
+	result = gnome_vfs_get_file_info_from_handle (
+			sfs->details->handle, &fi,
+			(mask & Bonobo_FIELD_CONTENT_TYPE) ?
+			GNOME_VFS_FILE_INFO_GET_MIME_TYPE :
+			GNOME_VFS_FILE_INFO_DEFAULT);
+
+	if (result != GNOME_VFS_OK) {
+		if (result == GNOME_VFS_ERROR_ACCESS_DENIED)
+			CORBA_exception_set 
+				(ev, CORBA_USER_EXCEPTION,
+				 ex_Bonobo_Stream_NoPermission, NULL);
+		else
+			CORBA_exception_set 
+				(ev, CORBA_USER_EXCEPTION,
+				 ex_Bonobo_Stream_IOError, NULL);
+		return NULL;
+	}
+
+	si = Bonobo_StorageInfo__alloc ();
+
+	bonobo_stream_vfs_storageinfo_from_file_info (si, &fi);
+
+	return si;
 }
 
 static void
@@ -71,7 +126,7 @@ vfs_set_info (BonoboStream *stream,
 	      Bonobo_StorageInfoFields mask,
 	      CORBA_Environment *ev)
 {
-	/* FIXME bugzilla.eazel.com 4403: Is it OK to have this
+	/* FIXME bugzilla.gnome.org 44403: Is it OK to have this
 	 * unimplemented? 
 	 */
 	g_warning ("BonoboStreamVFS:set_info not implemented");
@@ -92,7 +147,7 @@ vfs_write (BonoboStream *stream,
 
 	res = gnome_vfs_write (stream_vfs->details->handle, buffer->_buffer, buffer->_length, &written);
 	if (res != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 4396: We might need to
+		/* FIXME bugzilla.gnome.org 44396: We might need to
 		 * distinguish NoPermission from IOError.  
 		 */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
@@ -130,7 +185,7 @@ vfs_read (BonoboStream *stream,
 		CORBA_free (data);
 		CORBA_free (*buffer);
 		*buffer = NULL;
-		/* FIXME bugzilla.eazel.com 4396: We might need to
+		/* FIXME bugzilla.gnome.org 44396: We might need to
 		 * distinguish NoPermission from IOError.  
 		 */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
@@ -214,7 +269,7 @@ vfs_copy_to  (BonoboStream *stream,
 
 	res = gnome_vfs_create (&fd_out, dest, GNOME_VFS_OPEN_WRITE, FALSE, 0666);
 	if (res != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 4398: Need to set exception here. */
+		/* FIXME bugzilla.gnome.org 44398: Need to set exception here. */
 		return;
 	}
 
@@ -227,14 +282,14 @@ vfs_copy_to  (BonoboStream *stream,
 	do {
 		res = gnome_vfs_read (stream_vfs->details->handle, data, MIN (READ_CHUNK_SIZE, more), &rsize);
 		if (res != GNOME_VFS_OK) {
-			/* FIXME bugzilla.eazel.com 4398: Need to set exception here. */
+			/* FIXME bugzilla.gnome.org 44398: Need to set exception here. */
 			break;
 		}
 		*read_bytes += rsize;
 
 		res = gnome_vfs_write (fd_out, data, rsize, &wsize);
 		if (res != GNOME_VFS_OK) {
-			/* FIXME bugzilla.eazel.com 4398: Need to set exception here. */
+			/* FIXME bugzilla.gnome.org 44398: Need to set exception here. */
 			break;
 		}
 		*written_bytes += wsize;
@@ -272,7 +327,7 @@ vfs_destroy (GtkObject *object)
 
 	if (stream_vfs->details->handle != NULL) {
 		gnome_vfs_close (stream_vfs->details->handle);
-		/* FIXME bugzilla.eazel.com 4399: Errors that happen
+		/* FIXME bugzilla.gnome.org 44399: Errors that happen
 		 * only at flush time are lost here. Many gnome-vfs
 		 * modules return errors at close time about the
 		 * remaining flushed writes.  
@@ -437,7 +492,7 @@ bonobo_stream_vfs_open (const char *uri, Bonobo_Storage_OpenMode mode)
 	} else if (mode == Bonobo_Storage_WRITE) {
 		result = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_WRITE);
 	} else {
-		/* FIXME bugzilla.eazel.com 4401: Do we need to
+		/* FIXME bugzilla.gnome.org 44401: Do we need to
 		 * support CREATE, FAILIFEXIST, COMPRESSED,
 		 * TRANSACTED, or combinations?  
 		 */

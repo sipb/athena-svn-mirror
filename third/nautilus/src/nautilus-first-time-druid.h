@@ -33,7 +33,8 @@
 #include "nautilus-application.h"
 
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application,
-					   gboolean manage_desktop,
-					   const char *urls[]);
+					   const char          *urls[]);
+
+void       nautilus_set_first_time_file_flag (void);
 
 #endif /* NAUTILUS_FIRST_TIME_DRUID_H */

@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.0
-  Last modified: March 6, 2001
+  Version: 1.0.1
+  Last modified: March 7, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
                Eazel Inc.
@@ -66,7 +66,7 @@
 
   <!-- this is the version of manual, not application --> 
   <releaseinfo>
-   이것은 노틸러스 사용자 설명서의 1.0 버젼 입니다.
+   이것은 노틸러스 사용자 설명서의 1.0.1 버젼 입니다.
   </releaseinfo>
 
  </bookinfo>
@@ -172,7 +172,6 @@
      <para>
       도움말 탭은 설명서, 그놈 정보 페이지, 리눅스 설명서 페이지 등등
       의 모든 정보 자원에 빨리 접근할수 있도록 하여 줍니다
-      more
      </para>
     </listitem>
 
@@ -743,10 +742,6 @@
        <row>
         <entry><emphasis>음악</emphasis></entry>
         <entry>(하드디스크에 있는)MP3, AIFF, MPEG, WAV, RIFF</entry>
-       </row>
-       <row>
-        <entry><emphasis>꾸러미</emphasis></entry>
-        <entry>(하드디스크에 있는)RPM</entry>
        </row>
       </tbody>
      </tgroup>
@@ -2855,7 +2850,7 @@
    <simplelist>
     
     <member>
-     <link linkend="handler">파일 처리기란 무엇입니까?</link>
+     <link linkend="handlers">파일 처리기란 무엇입니까?</link>
     </member>
 
     <member>
@@ -2909,7 +2904,7 @@
     열수 있는 응용프로그램의 목록이 나타납니다. 또한 목록에 없는
     응용프로그램과 보기프로그램을 사용하기 위해 다른 응용프로그램
     과 다른 보기프로그램을 선택할수 있습니다.
-   <para>
+   </para>
 
    <para>
     다른 프로그램으로 열기를 선택하여 응용프로그램의 목록을 수정할 
@@ -3148,7 +3143,7 @@
      <para>
       <guimenu>그놈 주 메뉴</guimenu>를 열고 <menuchoice><guimenu>
       프로그램</guimenu> <guisubmenu>설정</guisubmenu> <guimenuitem>
-      그놈 조종 센터</guimenuitem>를 선택합니다.
+      그놈 조종 센터</guimenuitem></menuchoice>를 선택합니다.
      </para>
     </listitem> 
 

@@ -5,58 +5,36 @@
 # portable, and should be be expected to be used in any kind of
 # production capacity.
 
-quiet=no
 extreme=no
 medusa=no
+nokill=no
+quiet=no
 
-if [ $# -gt 0 ]
-then
-    arg=$1
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
-if [ $# -gt 1 ]
-then
-    arg=$2
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
-if [ $# -gt 2 ]
-then
-    arg=$3
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
+while ( [ $# -gt 0 ] )
+do
+    case "$1" in 
+        '-a')
+            quiet=yes
+            shift
+        ;;
+	'-m')
+	    medusa=yes
+	    shift
+	;;
+	'-n')
+	    nokill=yes
+	    shift
+	;;
+        '-x')
+            extreme=yes
+            shift
+        ;;
+        *)
+            echo "nautilus-clean.sh unknown option: $1"
+            shift
+        ;;
+    esac
+done
 
 echo_unless_quiet ()
 {
@@ -85,6 +63,7 @@ nautilus-inventory-view \
 nautilus-mozilla-content-view \
 nautilus-mpg123 \
 nautilus-music-view \
+nautilus-news \
 nautilus-notes \
 nautilus-rpm-view \
 nautilus-sample-content-view \
@@ -117,7 +96,7 @@ fi
 
 for NAME in $AUX_PROGS; do
     EGREP_PATTERN=`echo $NAME | sed -e 's/\(.\)\(.*\)/[\1]\2/' | sed -e 's/\[\\\^\]/\[\\^\]/'`
-    COUNT=`ps auxww | egrep $EGREP_PATTERN | grep -v emacs | grep -v egrep | wc -l`
+    COUNT=`ps auxww | egrep \ $EGREP_PATTERN | grep -v emacs | wc -l`
 
     if [ $COUNT -gt 0 ]; then
 	if [ -z $FOUND_ANY ]; then
@@ -126,11 +105,15 @@ for NAME in $AUX_PROGS; do
 	fi
 	echo_unless_quiet "$NAME: $COUNT"
 
-	if [ "$quiet" != "yes" ]
-	then
-	    $killcmd "$NAME"
-	else
-	    $killcmd "$NAME" > /dev/null 2>&1
+	if [ "$nokill" != "yes" ]; then
+	    if [ "$quiet" != "yes" ]; then
+		$killcmd "$NAME"
+	    else
+	        $killcmd "$NAME" > /dev/null 2>&1
+	    fi
+	    if [ "$NAME" = "gconfd-1" ]; then
+		rm -f "$HOME/.gconfd/saved_state"
+	    fi
 	fi
     fi
 done
@@ -146,5 +129,3 @@ if [ "$medusa" = "yes" ]; then
 	medusa-restart
     fi
 fi
-
-

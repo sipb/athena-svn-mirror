@@ -21,21 +21,24 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
  
 #include <config.h>
 
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-bookmark.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-private/nautilus-bookmark.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
+
+#define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"
+#define VIEW_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
 
 #define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
 #define NAUTILUS_HISTORY_VIEW(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryView))
@@ -64,7 +67,7 @@ static void    nautilus_history_view_initialize_class (NautilusHistoryViewClass 
 static void    nautilus_history_view_initialize       (NautilusHistoryView      *view);
 static void    nautilus_history_view_destroy          (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
 				   nautilus_history_view,
 				   NAUTILUS_TYPE_VIEW)
 
@@ -89,7 +92,7 @@ install_icon (GtkCList *list, int row, GdkPixbuf *pixbuf)
 
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 
-						   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+						   EEL_STANDARD_ALPHA_THRESHHOLD);
 	} else {
 		bookmark = get_bookmark_from_row (list, row);
 		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER,
@@ -325,22 +328,28 @@ nautilus_history_view_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (view->list));
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 int
 main (int argc, char *argv[])
 {
-	/* Initialize gettext support */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
 
-	return nautilus_view_standard_main ("nautilus_history-view", VERSION,
-					    argc, argv,
-					    "OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e",
-					    "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",
+	return nautilus_view_standard_main ("nautilus_history-view",
+					    VERSION,
+					    PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
+					    nautilus_global_preferences_initialize,
 					    nautilus_history_view_get_type);
 }
