@@ -1,4 +1,4 @@
-.\"	$Id: zwgc.1,v 1.27 2004-06-24 02:27:39 ghudson Exp $
+.\"	$Id: zwgc.1,v 1.28 2004-09-27 15:18:55 rbasch Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -810,6 +810,19 @@ entirely.
 .TP
 Transient
 Secondary transient determining value [default False]
+.TP
+allDesktops
+(logical) Primary value which determines if zephyrgram windows should
+appear on all desktops, for those window managers which support multiple
+desktops (sometimes referred to as workspaces).  When this resource is
+true (the default),
+.I zwgc
+sets the \fB_NET_WM_DESKTOP\fR property to 0xFFFFFFFF for each zephyrgram
+window, indicating that it should appear on all desktops.
+.TP
+AllDesktops
+Secondary value determining whether zephyrgram windows should appear
+on all desktops.
 .TP
 scrollDelete 
 (logical) If true, scrolling over a zgram will cause it
