@@ -527,6 +527,17 @@ int Receive_job( int *socket, char *input, int maxlen, int transfer_timeout )
 				ack = ACK_FAIL;
 				goto error;
 			}
+
+			/* If we got krb4 auth, fix up the auth
+			   structures in the LPRng cf structure now,
+			   before anyone notices the difference. */
+
+			if (k4flag) {
+				DEBUG0("poking krb4 auth: %s", k4name);
+				plp_snprintf( Cfp_static->auth_id, sizeof(Cfp_static->auth_id),
+					      "_%s", k4name);
+			}
+
 			if( Cfp_static->auth_id[0] && Auth_from == 0 ){
 				plp_snprintf(Cfp_static->error, sizeof(Cfp_static->error),
 		_("Receive_job: authorization in non-authorized transfer") );
@@ -592,7 +603,7 @@ int Receive_job( int *socket, char *input, int maxlen, int transfer_timeout )
 	if( !Sync_lpr ) Link_close( socket );
 
 	if( (status = Check_for_missing_files( Cfp_static, &Data_files,
-		orig_name, 0, &hold_fd, pc_entry ) ) ){
+		orig_name, k4flag ? k4name : 0, &hold_fd, pc_entry ) ) ){
 		goto error;
 	}
 
@@ -1173,11 +1184,6 @@ int Check_for_missing_files( struct control_file *cfp,
 			status = JFAIL;
 			goto error;
 		}
-		/* we fix up the authentication information - should be
-	     * '_'auth_id@auth_host line in control file
-		 */
-		safestrncpy( templine, cfp->auth_id );
-		(void)Insert_job_line( cfp, templine, 0, 0,__FILE__,__LINE__ );
 	} else if( Auth_from == 1 ){
 		char templine[LINEBUFFER];
 		plp_snprintf( templine, sizeof( templine ), "_%s", authentication );

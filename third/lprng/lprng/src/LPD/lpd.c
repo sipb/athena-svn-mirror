@@ -488,6 +488,32 @@ static void Service_connection( struct sockaddr *sin, int listen, int talk )
 		Write_fd_str( talk, _("\001no connect permissions\n") );
 		cleanup(0);
 	}
+
+	if( input[0] == REQ_K4AUTH ) {
+		Receive_k4auth( &talk, input, sizeof(input) );
+
+		/* Toss out the "kprinter" line and reset the input
+		   buffer for the "real" protocol request, since we
+		   have auth now. */
+
+		len = sizeof( input ) - 1;
+		memset(input,0,sizeof(input));
+		DEBUG0( "LPD: Starting Secondary Read" );
+		status = Link_line_read(ShortRemote,&talk,
+					Send_job_rw_timeout,input,&len);
+		DEBUG0( "Request '%s'", input );
+		if( len == 0 ){
+			DEBUG3( "LPD: zero length read" );
+			cleanup(0);
+		}
+		if( status ){
+			logerr_die( LOG_DEBUG, _("Service_connection: cannot read request") );
+		}
+		if( len < 3 ){
+			fatal( LOG_INFO, _("Service_connection: bad request line '%s'"), input );
+		}
+	}
+
 	switch( input[0] ){
 		default:
 			fatal( LOG_INFO, _("Service_connection: bad request line '\\%d'%s'"),
