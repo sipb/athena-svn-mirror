@@ -27,13 +27,13 @@
 #ifndef __GMODULE_H__
 #define __GMODULE_H__
 
+extern const char      *g_log_domain_gmodule;
 #include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-extern const char      *g_log_domain_gmodule;
 
 
 /* exporting and importing functions, this is special cased
