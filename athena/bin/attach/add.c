@@ -17,7 +17,7 @@
  * for attach.
  */
 
-static char rcsid[] = "$Id: add.c,v 1.5 1998-06-09 17:07:06 ghudson Exp $";
+static char rcsid[] = "$Id: add.c,v 1.6 1998-10-19 19:14:39 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -211,7 +211,7 @@ int addcmd(int argc, char **argv)
   dup2(STDERR_FILENO, STDOUT_FILENO);
 
   /* Parse the command line... */
-  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbqP:M:a")) != EOF)
+  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbqP:a")) != EOF)
     switch(c)
       {
       case 'v':
