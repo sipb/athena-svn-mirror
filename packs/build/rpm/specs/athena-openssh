@@ -2,6 +2,7 @@ Name: athena-openssh
 Summary: The Secure remote Shell program
 Copyright: BSD
 Group: Applications/Internet
+Provides: openssh = 3.0.2p1
 
 Requires: athena-krb5 athena-inetd athena-openssl
 
