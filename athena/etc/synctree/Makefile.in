@@ -1,0 +1,58 @@
+# $Id: Makefile.in,v 1.1 1997-10-14 05:22:55 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+YACC=@YACC@
+LEX=@LEX@
+
+OBJS=	synctree.o rules.o glob_match.o bool_exp.o vtable.o err.o util.o \
+	y.tab.o
+
+all: synctree
+
+synctree: ${OBJS}
+	${CC} ${LDFLAGS} -o synctree ${OBJS} ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+y.tab.o: y.tab.c lex.yy.c
+
+y.tab.c: readrules.y
+	${YACC} -d readrules.y
+
+lex.yy.c: readrules.l
+	${LEX} readrules.l
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL_PROGRAM} synctree ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/synctree.man ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f ${OBJS} y.tab.c lex.yy.c synctree
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
+
+bool_exp.o dates_dbm.o rules.o synctree.o vtable.o y.tab.o: synctree.h
+glob_match.o: regexp.h
