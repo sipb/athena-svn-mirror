@@ -1,10 +1,18 @@
-/*
- *	$Id: just.c,v 1.4 1999-01-22 23:10:32 ghudson Exp $
- */
+/* Copyright 1985, 1998 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
 
-#ifndef lint
-static char *rcsid_just_c = "$Id: just.c,v 1.4 1999-01-22 23:10:32 ghudson Exp $";
-#endif	lint
+static const char rcsid[] = "$Id: just.c,v 1.5 1999-02-15 15:29:42 ghudson Exp $";
 
 /*
  * fill/just filter
@@ -31,13 +39,14 @@ static char *rcsid_just_c = "$Id: just.c,v 1.4 1999-01-22 23:10:32 ghudson Exp $
 
 /* Macros to convert Version 6 cc and BBN library to 4.2bsd and V7 */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define seq(a,b)	(strcmp (a,b) == 0)
 #define scopy(a,b,c)	(strchr (strcpy (b,a), '\0'))
 #define slength		strlen
 #define errmsg		perror
-
-#include <stdio.h>
-#include <string.h>
 
 #define MAXLINE 512
 #define LINESIZE	65	/* default line_length */
@@ -60,12 +69,16 @@ char   *inptr = inbuf,
 
 char   *me;
 
+static int getword (void);
+static void putword (void);
+static void spread (void);
+static void arg_err (void);
+static int isbreak (int c);
+
 
 /* Next Page */
 
-main (argc, argv)
-int     argc;
-char   *argv[];
+int main (int argc, char **argv)
 {
     char   *fgets ();
 
@@ -146,7 +159,7 @@ char   *argv[];
  * getword -- returns true if it got a word; copies a word from inptr to outptr
  */
 
-getword ()
+static int getword (void)
 {
     wordptr = wordbuf;
     while (*inptr == ' ' || *inptr == '\t')
@@ -171,11 +184,11 @@ getword ()
  *	buffer as appropriate
  */
 
-putword ()
+static void putword (void)
 {
     char   *strcpy ();
-    register int    i = inval,
-                    sl = slength (wordbuf) + slength (outbuf);
+    int    i = inval;
+    int    sl = slength (wordbuf) + slength (outbuf);
 
     if (*(wordptr - 1) == ' ' && sl == line_width) {
 	*--wordptr = '\0';	/* get rid of space at end of line */
@@ -211,7 +224,7 @@ putword ()
  *	(1976 edition)
  */
 
-spread ()
+static void spread (void)
 {
     static int  dir = 0;
     int     nextra = line_width - slength (outbuf),
@@ -256,7 +269,7 @@ spread ()
  *	the user's entire input from disappearing in vi, pen, etc.
  */
 
-arg_err ()
+static void arg_err (void)
 {
     int     c;
 
@@ -273,8 +286,7 @@ arg_err ()
  * isbreak -- is a character a member of the "ends a sentence" set?
  */
 
-isbreak (c)
-    register char   c;
+static int isbreak (int c)
 {
     switch (c) {
 	case '.': 

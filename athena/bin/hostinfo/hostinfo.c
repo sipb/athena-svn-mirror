@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: hostinfo.c,v 1.13 1999-01-22 23:10:29 ghudson Exp $";
+static char rcsid[] = "$Id: hostinfo.c,v 1.14 1999-02-15 15:27:12 ghudson Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -155,11 +155,7 @@ main(argc, argv)
 	    }
 	}
 
-#ifdef SOLARIS
-      if(!host_entry)
-#else
-      if(host_entry == (struct hostent *)0)
-#endif
+      if (!host_entry)
 	{
 	  host_entry = hostinfo_gethostbyname(hostname);
 	  if(host_entry)
@@ -211,11 +207,6 @@ main(argc, argv)
 	{
 	  switch (h_errno) 
 	    {
-#ifdef ultrix
-	      /* it can return NULL, h_errno == 0 in some cases when
-		 there is no name */
-	    case 0:
-#endif
 	    case HOST_NOT_FOUND:
 	      printf("No such host '%s'.\n",hostname);
 	      status = ERROR;

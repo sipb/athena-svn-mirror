@@ -19,14 +19,7 @@
 static char sccsid[] = "@(#)gethostnamadr.c	6.36 (Berkeley) 10/7/88";
 #endif /* LIBC_SCCS and not lint */
 
-#ifdef _IBMR2
-#define BIT_ZERO_ON_LEFT
-#endif
-
-#ifdef _AUX_SOURCE    /* who's the shithead who think up these things? */
 #include <sys/types.h>
-#endif
-
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -220,11 +213,7 @@ getanswer(answer, anslen, iquery, info)
 		}
 		if (hap >= &h_addr_ptrs[MAXADDRS])
 			break;
-#ifdef POSIX
 		memmove(*hap++ = bp, cp, n);
-#else
-		bcopy(cp, *hap++ = bp, n);
-#endif
 		bp +=n;
 		cp += n;
 		haveanswer++;

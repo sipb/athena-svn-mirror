@@ -19,14 +19,7 @@
 static char sccsid[] = "@(#)res_query.c	5.5 (Berkeley) 9/21/88";
 #endif /* LIBC_SCCS and not lint */
 
-#ifdef _IBMR2
-#define BIT_ZERO_ON_LEFT
-#endif
-
-#ifdef _AUX_SOURCE
 #include <sys/types.h>
-#endif
-
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

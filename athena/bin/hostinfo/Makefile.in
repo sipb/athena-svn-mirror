@@ -1,0 +1,44 @@
+# $Id: Makefile.in,v 1.1 1999-02-15 15:27:09 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+OBJS=hostinfo.o gethostnamadr.o res_query.o
+
+all: hostinfo
+
+hostinfo: ${OBJS}
+	${CC} ${LDFLAGS} -o $@ ${OBJS} ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} hostinfo ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/hostinfo.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f hostinfo ${OBJS}
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
