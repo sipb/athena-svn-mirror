@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v $
- *	$Id: get_list.c,v 1.2 1991-01-16 13:30:26 lwvanels Exp $
+ *	$Id: get_list.c,v 1.3 1991-01-27 15:38:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.2 1991-01-16 13:30:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.3 1991-01-27 15:38:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -47,18 +47,13 @@ get_user_list(users,max_people)
       fscanf(f,"%s %s\n",users[n_people].username, users[n_people].machine);
       fgets(junk,BUF_SIZE,f); /* instance */
 
-      fgets(junk,BUF_SIZE,f); /* status */
-      p = index(junk,'\n');
-      if (p != NULL) *p = '\0';
-      if (strcmp(junk,"logout")== 0) {
-	users[n_people].status = LOGGED_OUT;
-      }
-      else if (strcmp(junk,"mach down") == 0) {
-	users[n_people].status = MACHINE_DOWN;
-      }
-      else
+      fgets(junk,BUF_SIZE,f); /* login status */
+      if (junk[0] == '+')
 	users[n_people].status = ACTIVE;
+      else
+	users[n_people].status = LOGGED_OUT;
 
+      fgets(junk,BUF_SIZE,f); /* knuckle status */
       fgets(junk,BUF_SIZE,f); /* connect consultant */
       fgets(junk,BUF_SIZE,f); /* consultant instance */
       fgets(junk,BUF_SIZE,f); /* consultant status */
