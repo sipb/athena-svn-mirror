@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.3 1990-11-16 15:07:05 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.4 1991-01-23 15:18:34 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -18,10 +18,10 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <gquota_db.h>
 
 /* This is the Uid Database section of the code. */
 
-typedef long Uid_num;
 #define UID_DB_MODE     0755    /* Mode for opening the uid database */
 
 extern int errno;
@@ -97,7 +97,7 @@ uid_read_strings()
 	return -1;
     }
 
-    if(fscanf(dbfno, "%5.5d\n", &num) < 1) {
+    if(fscanf(dbfno, "%5d\n", &num) < 1) {
 	/* Either end of file or something */
 	(void) uid_close_database();
 	return -1;
@@ -213,8 +213,12 @@ Uid_num num;
     return 0;
 }
 
+#ifdef __STDC__
+char *uid_num_to_string(Uid_num n)
+#else
 char *uid_num_to_string(n)
 Uid_num n;
+#endif
 {
     int i;
     i = (int) n;
@@ -222,9 +226,12 @@ Uid_num n;
     return( (*string)[i]); /* XXX */
 }
 
-Uid_num
-uid_string_to_num(str)
+#ifdef __STDC__
+Uid_num uid_string_to_num(char *str)
+#else
+Uid_num uid_string_to_num(str)
 char *str;
+#endif
 {
     /* As we are currently storing the strings in a pointer array, a linear 
      *  search is as efficient as anything else for now
