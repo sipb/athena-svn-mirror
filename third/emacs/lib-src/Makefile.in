@@ -88,10 +88,6 @@ INSTALL_DATA = @INSTALL_DATA@
 # By default, we uphold the dignity of our programs.
 INSTALL_STRIP =
 
-# =================== Utility Libraries for the Build =================
-
-KRBLIBS = @KRBLIBS@
-
 # ========================== Lists of Files ===========================
 
 # Things that a user might actually run,
@@ -187,10 +183,36 @@ MOVE_FLAGS=
 #define BLESSMAIL
 #endif
 
+#ifdef KERBEROS
+# ifdef HAVE_LIBKRB
+KRB4LIB = -lkrb
+# else
+#  ifdef HAVE_LIBKRB4
+KRB4LIB = -lkrb4
+#  endif
+# endif
+# ifdef HAVE_LIBDES
+DESLIB = -ldes
+# else
+#  ifdef HAVE_LIBDES425
+DESLIB = -ldes425
+#  endif
+# endif
+# ifdef HAVE_LIBKRB5
+KRB5LIB = -lkrb5
+# endif
+# ifdef HAVE_LIBCRYPTO
+CRYPTOLIB = -lcrypto
+# endif
+# ifdef HAVE_LIBCOM_ERR
+COM_ERRLIB = -lcom_err
+# endif
+#endif /* KERBEROS */
+
 /* If HESIOD is defined, set this to "-lhesiod". */
 HESIODLIB=-lhesiod
 
-MOVE_LIBS=$(KRBLIBS) $(HESIODLIB)
+MOVE_LIBS=$(KRB4LIB) $(DESLIB) $(KRB5LIB) $(CRYPTOLIB) $(COM_ERRLIB) $(HESIODLIB)
 
 #ifdef HAVE_LIBMAIL
 LIBMAIL=-lmail
