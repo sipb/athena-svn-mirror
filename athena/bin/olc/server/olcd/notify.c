@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.26 1990-12-05 21:24:24 lwvanels Exp $
+ *	$Id: notify.c,v 1.27 1990-12-09 16:53:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.26 1990-12-05 21:24:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.27 1990-12-09 16:53:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -162,7 +162,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
         alarm(OLCD_TIMEOUT);
         if(setjmp(env) != 0) {
                 sprintf(error, "Unable to contact writed on %s", tomachine);
-                log_error(error);
+                log_status(error);
 		if(tf!=NULL)
 		  fclose(tf);
 		close(fds);
