@@ -17,6 +17,7 @@ bboards		off
 cc		/usr/gcc/bin/gcc
 ln		ln -s
 options		ATHENA
+options		ATTVIBUG
 options		ATZ
 options		BERK
 options		BIND
