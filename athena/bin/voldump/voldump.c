@@ -13,7 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.1 1996-06-07 23:24:58 ghudson Exp $
+ * $Id: voldump.c,v 1.2 1996-06-20 15:25:27 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/voldump/voldump.c,v $
  */
 
@@ -21,6 +21,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <netdb.h>
 #include <signal.h>
@@ -52,6 +54,7 @@ static void print_diagnostics(const char *astring, int32 acode);
 static int UV_DumpVolume(int32 afromvol, int32 afromserver, int32 afrompart,
 			 int32 fromdate, int32 (*dumpfunc)(), char *rock);
 static void dump_sig_handler(void);
+static u_int32 get_volume_id(const char *name, int32 server, int32 part);
 
 int main(int argc, char **argv)
 {
@@ -409,7 +412,7 @@ static void dump_sig_handler()
 /* The normal way to convert a volume name to ID is via a VLDB lookup, but we
  * don't want to use the VLDB, so instead list the volumes on the given server
  * and partition. */
-u_int32 get_volume_id(const char *name, int32 server, int32 part)
+static u_int32 get_volume_id(const char *name, int32 server, int32 part)
 {
     int32 code, size, i;
     struct volintInfo *volumes;
