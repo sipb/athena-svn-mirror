@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.8 1993-07-02 17:18:55 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.9 1995-05-26 04:12:52 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -703,6 +703,13 @@ static Boolean parseMenuEntry(me, string, info)
 		  break;
 		}
 
+	      if (strncasecmp(ptr + 1, SGI, strlen(SGI)) == 0)
+		{
+		  info->u.i.machtype |= (SGINUM << ((*ptr == '+') ? 0 : 8));
+		  ptr += strlen(SGI) + 1;
+		  break;
+		}
+
 	      if (strncasecmp(ptr + 1, "verify", 6) == 0)
 		{
 		  info->flags |= verifyFLAG;
@@ -1067,7 +1074,7 @@ static Boolean addMenuEntry(me, info, i)
       (void)hash_store(me->menu.Names, info->name, i);
       bzero(i, sizeof(Item)); /* if new, init to zeroes */
       i->u.i.machtype =
-	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM;
+	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM | SGINUM;
       i->u.i.verify = True;
     }
 
