@@ -19,19 +19,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.17 1992-01-10 20:00:23 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_cmdloop.c,v 1.18 1997-04-30 17:59:46 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.17 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.18 1997-04-30 17:59:46 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
-#if defined(__STDC__) && !defined(ibm032)
+#if defined(__STDC__)
 #include <stdlib.h>
 #endif
 
@@ -252,7 +252,7 @@ expand_variable(Request,var)
   int uinfo, sinfo, tinfo;
   long time_now;
   struct tm *time_info;
-  char buf[BUF_SIZE];
+  static char buf[BUF_SIZE];
   LIST list;
 
   for (uinfo=0; uinfo < NUML; uinfo++)
