@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.24 1992-05-18 16:52:42 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.25 1992-05-18 17:03:59 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -32,6 +32,7 @@
 
 #ifdef ultrix
 #include <sys/mount.h>
+#include <sys/fs_types.h>
 #endif
 
 #define SETPAG
