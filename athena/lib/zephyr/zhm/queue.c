@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.6 1987-07-16 23:46:51 opus Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.7 1987-07-24 14:37:21 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -225,7 +225,7 @@ void resend_notices(sin)
       } else do {
 	    if (srch->q_data->timeout <= time(NULL)) {
 		  if (++(srch->q_data->retries) > MAXRETRIES) {
-			new_server();
+			new_server(NULL);
 			break;
 		  } else {
 			DPR ("notice:\n");
