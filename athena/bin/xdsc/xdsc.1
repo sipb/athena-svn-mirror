@@ -1,5 +1,5 @@
 .\" This file uses -man macros.
-.TH XDSC 1 "Feb 1, 1991"
+.TH XDSC 1 "August 6, 1991"
 .SH NAME
 \fIxdsc\fR \- X interface to the discuss system
 .SH SYNOPSIS
@@ -9,14 +9,10 @@ The
 .I xdsc
 program provides a window-oriented user interface to the discuss system.
 It currently uses an \fIedsc\fP co-process which does the actual
-communication with \fIdiscuss\fP, though this may change in the
-future.
-
-.SH INSTALLATION
-The current version of \fIxdsc\fR expects that there is an \fIedsc\fP
-executable available as '/mit/StaffTools/\fIfoo\fPbin/edsc'.  This
-is typically not a problem, as the stafftools locker must be attached
-in order to run \fIxdsc\fP in the first place.
+communication with \fIdiscuss\fP.  By default, \fIxdsc\fR
+runs '/usr/athena/etc/edsc'.  If you 
+want it to use a a different \fIedsc\fP, set the environment variable
+EDSC to its full pathname.
 
 .SH BASIC SCREEN LAYOUT
 \fIxdsc\fR displays a single window, divided into five areas:
