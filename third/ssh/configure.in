@@ -8,8 +8,14 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.12 1999-10-21 04:28:21 ghudson Exp $
+# $Id: configure.in,v 1.12.4.1 2001-07-10 16:40:31 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2001/07/09 13:42:04  ghudson
+# Force use of /usr/bin/passwd for expired passwords.
+#
+# Revision 1.12  1999/10/21 04:28:21  ghudson
+# crypto -> k5crypto
+#
 # Revision 1.11  1999/03/11 04:10:31  danw
 # liblockerize
 #
@@ -851,10 +857,7 @@ AC_PROGRAMS_CHECK(MAKEDEP, makedepend makedep, makedepend)
 
 AC_PATH_XTRA
 
-AC_PATH_PROG(PASSWD_PATH, passwd)
-if test -n "$PASSWD_PATH"; then
-  AC_DEFINE_UNQUOTED(PASSWD_PATH, "$PASSWD_PATH")
-fi
+AC_DEFINE_UNQUOTED(PASSWD_PATH, "/usr/bin/passwd")
 
 AC_PATH_PROG(XAUTH_PATH, xauth)
 if test -n "$XAUTH_PATH"; then
