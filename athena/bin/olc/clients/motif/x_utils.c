@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
- *	$Id: x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $
+ *	$Id: x_utils.c,v 1.5.1.1 1992-08-18 19:35:05 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.5.1.1 1992-08-18 19:35:05 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -96,6 +96,7 @@ handle_response(response, req)
 		req->target.username, req->target.instance);
 	MuError(message);
       }
+      x_next(req); /*added by Geetha Vijayan */
       return(NOT_CONNECTED);
 
     case HAS_QUESTION:
@@ -113,6 +114,7 @@ handle_response(response, req)
 	sprintf(message, "You are not connected to a %s.",
                 OLC?"consultant":"user");
 	MuError(message);
+	x_next(req); /* added by Geetha Vijayan 04/13/92 */;
       }
       else {
         sprintf(message,"%s (%d) is not connected nor is asking a question.",
@@ -139,7 +141,9 @@ handle_response(response, req)
       return(ERROR);
 
     case INSTANCE_NOT_FOUND:
-      MuError("Incorrect instance specified.");
+    /* added by Geetha Vijayan 04/13/92 */
+      x_next(req);
+      MuError("Incorrect instance specified.\n\n This instance is no longer available. \n\n This question has been resolved by a consultant");
       return(ERROR);
 
     case ERROR:
