@@ -654,13 +654,16 @@ try_convert524 (kcontext, me)
     krb524_init_ets(kcontext);
     /* cc->ccache, already set up */
     /* client->me, already set up */
-    if ((kpccode = krb5_build_principal(kcontext,
-				        &kpcserver, 
-				        krb5_princ_realm(kcontext, me)->length,
-				        krb5_princ_realm(kcontext, me)->data,
-				        "krbtgt",
-				        krb5_princ_realm(kcontext, me)->data,
-					NULL))) {
+    if ((kpccode =
+	 krb5_build_principal_ext(kcontext,
+				  &kpcserver, 
+				  krb5_princ_realm(kcontext, me)->length,
+				  krb5_princ_realm(kcontext, me)->data,
+				  6,
+				  "krbtgt",
+				  krb5_princ_realm(kcontext, me)->length,
+				  krb5_princ_realm(kcontext, me)->data,
+				  NULL))) {
       com_err("login/v4", kpccode,
 	      "while creating service principal name");
       return 0;
@@ -714,6 +717,7 @@ try_convert524 (kcontext, me)
 #endif
 
 #ifdef KRB4_GET_TICKETS
+#define KRB4_DEFAULT_LIFE 120 /* 10 hours */
 try_krb4 (me, user_pwstring)
     krb5_principal me;
     char *user_pwstring;
@@ -722,7 +726,7 @@ try_krb4 (me, user_pwstring)
 
     krbval = krb_get_pw_in_tkt(username, "", realm,
 			       "krbtgt", realm, 
-			       DEFAULT_TKT_LIFE,
+			       KRB4_DEFAULT_LIFE,
 			       user_pwstring);
 
     switch (krbval) {
