@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.25 1998-03-17 19:14:40 ghudson Exp $
+# $Id: phase3.sh,v 1.26 1998-03-18 15:12:34 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -116,7 +116,8 @@ echo $hostname >etc/nodename
 echo $hostname >etc/hostname.$if
 echo $gateway >etc/defaultrouter
 cp -p /os/etc/inet/hosts etc/inet/hosts
-cp -p /srvd/etc/inet/netmasks etc/inet/netmasks
+netmask=`cat /devices/cnbdrv:netmask`
+echo "$netaddr  $netmask" > etc/inet/netmasks
 cp -p /os/etc/dfs/dfstab etc/dfs/dfstab
 #cp -p /srvd/etc/inet/hosts etc/inet/hosts
 echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
