@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.32 1998-04-24 07:54:57 jweiss Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.33 1998-05-05 20:08:49 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -181,7 +181,7 @@ Y)
      partition 5 is /usr and needs 50MB;
      partition 6 is /var and needs at least 120MB "
      sleep 10
-     /usr/sbin/format
+     format
      echo "Done asking questions for custom install."
      ;;
 *)
@@ -189,32 +189,37 @@ Y)
      SUN0424)
         echo "formatting SUN0424"
         cat /util/format.input.SUN0424 | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
         ;;
      SUN0535)
         echo "formatting SUN0535"
         cat /util/format.input.SUN0535 | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
         ;;
     SUN1.05)
        echo "formatting SUN1.05"
        cat /util/format.input.SUN1.05 | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
        ;;
     SUN2.1G)
        echo "formatting SUN2.1G"
        cat /util/format.input.SUN2.1G | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
        ;;
     SUN4.2G)
        echo "formatting SUN4.2G"
        cat /util/format.input.SUN4.2G | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
+       ;;
+    Seagate*)
+       echo "formatting Segate Medalist"
+       cat /util/format.input.Seagate.medalist | \
+		format ${drive} >/dev/null 2>&1
        ;;
     SEAGATE*5660N)
        echo "formatting SEAGATE-ST5660N"
        cat /util/format.input.seagate.5660 | \
-		/usr/sbin/format ${drive} >/dev/null 2>&1
+		format ${drive} >/dev/null 2>&1
        ;;
     *)
        echo "can't format the disks - type unknown"
