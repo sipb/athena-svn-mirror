@@ -129,8 +129,8 @@ AUTH_DAT kdata;
 KTEXT_ST ticket;
 MSG_DAT msg_data;
 Key_schedule schedule;
-int kerb_ok;	/* Kerberos authentication and authorization succeeded */
 char *keyfile;
+static char *krb4_services[] = { "ftp", "rcmd", NULL };
 #endif /* KRB5_KRB4_COMPAT */
 
 #ifdef GSSAPI
@@ -139,12 +139,17 @@ char *keyfile;
 #include <krb5.h>
 gss_ctx_id_t gcontext;
 gss_buffer_desc client_name;
-int gss_ok;	/* GSSAPI authentication and userok authorization succeeded */
-char* gss_services[] = { "ftp", "host", 0 };
+static char *gss_services[] = { "ftp", "host", NULL };
+
+#include <krb5.h>
+krb5_context kcontext;
+krb5_ccache ccache;
 #endif /* GSSAPI */
 
 char *auth_type;	/* Authentication succeeded?  If so, what type? */
 static char *temp_auth_type;
+int authorized;		/* Auth succeeded and was accepted by krb4 or gssapi */
+int have_creds;		/* User has credentials on disk */
 
 #include <al.h>
 #include <krb5.h>
@@ -188,7 +193,8 @@ int	debug;
 int	timeout = 900;    /* timeout after 15 minutes of inactivity */
 int	maxtimeout = 7200;/* don't allow idle time to be set beyond 2 hours */
 int	logging;
-int	authenticate;
+int	authlevel;
+int	want_creds;
 int	guest;
 int	type;
 int	level;
@@ -212,6 +218,11 @@ char	rhost_addra[16];
 char	*rhost_sane;
 int	al_local_acct;
 int	encrypted_passwords;
+
+/* Defines for authlevel */
+#define AUTHLEVEL_NONE		0
+#define AUTHLEVEL_AUTHENTICATE	1
+#define AUTHLEVEL_AUTHORIZE	2
 
 /*
  * Timeout intervals for retrying connections
@@ -271,6 +282,13 @@ main(argc, argv, envp)
 	LastArgv = envp[-1] + strlen(envp[-1]);
 #endif /* SETPROCTITLE */
 
+#ifdef GSSAPI
+	krb5_init_context(&kcontext);
+#ifdef KRB5_KRB4_COMPAT
+	krb524_init_ets(kcontext);
+#endif
+#endif
+
 	argc--, argv++;
 	while (argc > 0 && *argv[0] == '-') {
 		for (cp = &argv[0][1]; *cp; cp++) switch (*cp) {
@@ -292,12 +310,16 @@ main(argc, argv, envp)
 			break;
 
 		case 'a':
-			if (argc > 1 && !strcmp(argv[1], "off")) {
-				argc--, argv++;
-				authenticate = -1;
-			} else
-				authenticate = 1;
+			authlevel = AUTHLEVEL_AUTHORIZE;
 			break;
+
+		case 'A':
+			authlevel = AUTHLEVEL_AUTHENTICATE;
+			break;
+
+		case 'C':
+			want_creds = 1;
+                        break;
 
 		case 'p':
 			if (*++cp != '\0')
@@ -632,20 +654,13 @@ user(name)
 {
 	register char *cp;
 	char *shell;
+	char buf[FTP_BUFSIZ];
 #ifdef HAVE_GETUSERSHELL
 	char *getusershell();
 #endif
 	char *errmem;
 	int status;
 
-	/* Some paranoid sites may want the client to authenticate
-	 * before accepting the USER command.  If so, uncomment this:
-
-	if (!auth_type) {
-		reply(530,
-			"Must perform authentication before identifying USER.");
-		return;
-	 */
 	if (logged_in) {
 		if (guest) {
 			reply(530, "Can't change user from guest login.");
@@ -654,7 +669,7 @@ user(name)
 		end_login();
 	}
 
-	guest = 0;
+	authorized = guest = 0;
 	if (strcmp(name, "ftp") == 0 || strcmp(name, "anonymous") == 0) {
 		if (checkuser("ftp") || checkuser("anonymous"))
 			reply(530, "User %s access denied.", name);
@@ -664,6 +679,16 @@ user(name)
 			reply(331, "Guest login ok, send ident as password.");
 		} else
 			reply(530, "User %s unknown.", name);
+		return;
+	}
+
+	/*
+	 * If authentication is required, check that before anything
+	 * else to avoid leaking information.
+	 */
+	if (authlevel && !auth_type) {
+		reply(530,
+		      "Must perform authentication before identifying USER.");
 		return;
 	}
 
@@ -706,76 +731,51 @@ user(name)
 		}
 	}
 
-	if (authenticate != -1) {
-#ifdef KRB5_KRB4_COMPAT
-		if (auth_type && strcmp(auth_type, "KERBEROS_V4") == 0) {
-			char buf[FTP_BUFSIZ];
-			kerb_ok = kuserok(&kdata,name) == 0;
-			if (! kerb_ok && authenticate) {
-				reply(530, "User %s access denied.", name);
-				if (logging)
-					syslog(LOG_NOTICE,
-					       "FTP KERBEROS LOGIN REFUSED FROM %s, %s",
-					       remotehost, name);
-				pw = (struct passwd *) NULL;
-				return;
-			}
-			sprintf(buf, "Kerberos user %s%s%s@%s is%s authorized as %s%s",
-				kdata.pname, *kdata.pinst ? "." : "",
-				kdata.pinst, kdata.prealm,
-				kerb_ok ? "" : " not",
-				name, kerb_ok ? "" : "; Password required.");
-			reply(kerb_ok ? 232 : 331, "%s", buf);
-			syslog(kerb_ok ? LOG_INFO : LOG_ERR, "%s", buf);
-		} else
-#endif /* KRB5_KRB4_COMPAT */
+	if (auth_type) {
+		int result;
 #ifdef GSSAPI
 		if (auth_type && strcmp(auth_type, "GSSAPI") == 0) {
-			char buf[FTP_BUFSIZ];
-			gss_ok = ftpd_userok(&client_name, name) == 0;
-			if (! gss_ok && authenticate) {
-				reply(530, "User %s access denied.", name);
-				if (logging)
-				    syslog(LOG_NOTICE,
-					   "FTP GSSAPI LOGIN REFUSED FROM %s, %s",
-					   remotehost, name);
-				pw = (struct passwd *) NULL;
-				return;
-			}
-			sprintf(buf, "GSSAPI user %s is%s authorized as %s%s",
-				client_name.value,
-				gss_ok ? "" : " not",
-				name, gss_ok ? "" : "; Password required.");
-			/* 232 is per draft-8, but why 331 not 53z? */
-			reply(gss_ok ? 232 : 331, "%s", buf);
-			syslog(gss_ok ? LOG_INFO : LOG_ERR, "%s", buf);
-		} else
+			authorized = ftpd_gss_userok(&client_name, name) == 0;
+			sprintf(buf, "GSSAPI user %s is%s authorized as %s",
+				client_name.value, authorized ? "" : " not",
+				name);
+		}
+#ifdef KRB5_KRB4_COMPAT
+		else
+#endif /* KRB5_KRB4_COMPAT */
 #endif /* GSSAPI */
-		/* Other auth types go here ... */
-		if (authenticate) {
-			reply(530, "User %s access denied: authentication required.",
-			      name);
-			if (logging)
-				syslog(LOG_NOTICE,
-				       "FTP LOGIN REFUSED FROM %s, %s",
-				       remotehost, name);
-			pw = (struct passwd *) NULL;
-			return;
+#ifdef KRB5_KRB4_COMPAT
+		if (auth_type && strcmp(auth_type, "KERBEROS_V4") == 0) {
+			authorized = kuserok(&kdata,name) == 0;
+			sprintf(buf, "Kerberos user %s%s%s@%s is%s authorized as %s",
+				kdata.pname, *kdata.pinst ? "." : "",
+				kdata.pinst, kdata.prealm,
+				authorized ? "" : " not", name);
+		}
+#endif /* KRB5_KRB4_COMPAT */
+
+		if (!authorized && authlevel == AUTHLEVEL_AUTHORIZE) {
+			strncat(buf, "; Access denied.",
+				sizeof(buf) - strlen(buf) - 1);
+			result = 530;
+			pw = NULL;
+		} else if (!authorized || (want_creds && !have_creds)) {
+			strncat(buf, "; Password required.",
+				sizeof(buf) - strlen(buf) - 1);
+			askpasswd = 1;
+			result = 331;
 		} else
-			reply(331, "Password required for %s.", name);
-	} else if (!encrypted_passwords || level == PROT_P)
-		reply(331, "Password required for %s.", name);
-	else {
-		reply(530, "Password required for %s, but you must encrypt the connection first.",
-		      name);
-		if (logging)
-			syslog(LOG_NOTICE,
-			       "FTP UNENCRYPTED LOGIN REFUSED FROM %s, %s",
-			       remotehost, name);
-		pw = (struct passwd *) NULL;
+			result = 232;
+		reply(result, "%s", buf);
+		syslog(authorized ? LOG_INFO : LOG_ERR, "%s", buf);
+
+		if (result == 232)
+			login(NULL);
 		return;
 	}
 
+	/* User didn't authenticate and authentication wasn't required. */
+	reply(331, "Password required for %s.", name);
 	askpasswd = 1;
 	/*
 	 * Delay before reading passwd after first failed
@@ -822,9 +822,14 @@ end_login()
 	if (pw)
 		al_acct_revert(pw->pw_name, getpid());
 	if (have_creds) {
+#ifdef GSSAPI
 		krb5_cc_destroy(kcontext, ccache);
+#endif
+#ifdef KRB5_KRB4_COMPAT
 		dest_tkt();
+#endif
 		try_afscall(ktc_ForgetAllTokens);
+		have_creds = 0;
 	}
 	pw = NULL;
 	logged_in = 0;
@@ -840,33 +845,44 @@ krb5_data tgtname = {
 kpass (name, passwd)
 char *name, *passwd;
 {
+#ifdef GSSAPI
 	krb5_error_code code;
 	krb5_principal server, me;
 	krb5_creds my_creds;
 	krb5_timestamp now;
-	char ccname[MAXPATHLEN];
+#endif /* GSSAPI */
 #ifdef KRB5_KRB4_COMPAT
 	char realm[REALM_SZ];
+#ifndef GSSAPI
+	char **service;
+	KTEXT_ST ticket;
+	AUTH_DAT authdata;
+	des_cblock key;
+	char instance[INST_SZ];
+	unsigned long faddr;
+	struct hostent *hp;
+#endif /* GSSAPI */
 #endif /* KRB5_KRB4_COMPAT */
+	char ccname[MAXPATHLEN];
 
 	if (al_local_acct)
 		return 0;
 
-	krb5_init_context(&kcontext);
+#ifdef GSSAPI
 	memset((char *)&my_creds, 0, sizeof(my_creds));
 	if (krb5_parse_name (kcontext, name, &me))
 		return 0;
 	my_creds.client = me;
 
-	sprintf(ccname, "FILE:/tmp/krb5cc_p%d", getpid());
+	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
-		return 0;
+		return(0);
 	if (krb5_cc_initialize (kcontext, ccache, me))
-		return 0;
+		return(0);
 	if (krb5_build_principal_ext(kcontext, &server,
 				     krb5_princ_realm(kcontext, me)->length,
 				     krb5_princ_realm(kcontext, me)->data,
-				     tgtname.length, tgtname.data,
+				     KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
 				     krb5_princ_realm(kcontext, me)->length,
 				     krb5_princ_realm(kcontext, me)->data,
 				     0))
@@ -887,25 +903,68 @@ char *name, *passwd;
 					  &my_creds, 0))
 		goto nuke_ccache;
 
+	if (!want_creds) {
+		krb5_cc_destroy(kcontext, ccache);
+		return(1);
+	}
+#endif /* GSSAPI */
+
 #ifdef KRB5_KRB4_COMPAT
 	if (krb_get_lrealm(realm, 1) != KSUCCESS)
 		goto nuke_ccache;
 
-	sprintf(ccname, "%s_p%d", TKT_ROOT, getpid());
+	sprintf(ccname, "%s_ftpd%d", TKT_ROOT, getpid());
 	krb_set_tkt_string(ccname);
 	setenv("KRBTKFILE", ccname, 1);
 
-	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 120, passwd)) {
+	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 120, passwd))
+		goto nuke_ccache;
+
+#ifndef GSSAPI
+	/* Verify the ticket since we didn't verify the krb5 one. */
+	strncpy(instance, krb_get_phost(hostname), sizeof(instance));
+
+	if ((hp = gethostbyname(instance)) == NULL)
+		goto nuke_ccache;
+	memcpy((char *) &faddr, (char *)hp->h_addr, sizeof(faddr));
+
+	for (service = krb4_services; *service; service++) {
+		if (!read_service_key(*service, instance,
+				      realm, 0, keyfile, key)) {
+			(void) memset(key, 0, sizeof(key));
+			if (krb_mk_req(&ticket, *service,
+				       instance, realm, 33) ||
+			    krb_rd_req(&ticket, *service, instance,
+				       faddr, &authdata,keyfile) ||
+			    kuserok(&authdata, name)) {
+				dest_tkt();
+				goto nuke_ccache;
+			} else
+				break;
+		}
+	}
+
+	if (!*service) {
 		dest_tkt();
 		goto nuke_ccache;
 	}
+
+	if (!want_creds) {
+		dest_tkt();
+		return(1);
+	}
+#endif /* GSSAPI */
 #endif /* KRB5_KRB4_COMPAT */
 
+#if defined(GSSAPI) || defined(KRB5_KRB4_COMPAT)
 	have_creds = 1;
 	return(1);
+#endif /* GSSAPI || KRB5_KRB4_COMPAT */
 
 nuke_ccache:
+#ifdef GSSAPI
 	krb5_cc_destroy(kcontext, ccache);
+#endif /* GSSAPI */
 	return(0);
 }
 
@@ -914,22 +973,17 @@ pass(passwd)
 {
 	char *xpasswd, *salt;
 
-	int status, *warnings;
-	char *errmem;
+	if (authorized && !want_creds || have_creds) {
+		reply(202, "PASS command superfluous.");
+		return;
+	}
 
 	if (logged_in || askpasswd == 0) {
 		reply(503, "Login with USER first.");
 		return;
 	}
-	askpasswd = 0;
-	if (
-#ifdef KRB5_KRB4_COMPAT
-	    !kerb_ok &&
-#endif /* KRB5_KRB4_COMPAT */
-#ifdef GSSAPI
-	    !gss_ok &&
-#endif /* GSSAPI */
-	    !guest) {		/* "ftp" is only account allowed no password */
+
+	if (!guest) {		/* "ftp" is only account allowed no password */
 		if (pw == NULL)
 			salt = "xx";
 		else
@@ -940,21 +994,37 @@ pass(passwd)
 #else
 		xpasswd = crypt(passwd, salt);
 #endif
-		if (pw == NULL ||
-		    (*pw->pw_passwd && !kpass(pw->pw_name, passwd) &&
-		     strcmp(xpasswd, pw->pw_passwd)) ||
-		    (!*pw->pw_passwd && !kpass(pw->pw_name, passwd))) {
-			reply(530, "Login incorrect.");
+		/* Fail if:
+		 *   pw is NULL
+		 *   kpass fails and we want_creds
+		 *   kpass fails and the user has no local password
+		 *   kpass fails and the provided password doesn't match pw
+		 */
+		if (pw == NULL || (!kpass(pw->pw_name, passwd) &&
+				   (want_creds || !*pw->pw_passwd ||
+				    strcmp(xpasswd, pw->pw_passwd)))) {
 			pw = NULL;
 			if (login_attempts++ >= 5) {
 				syslog(LOG_NOTICE,
 				       "repeated login failures from %s (%s)",
 				       rhost_addra, remotehost);
-				exit(0);
+				dologout(0);
 			}
+			reply(530, "Login incorrect.");
 			return;
 		}
 	}
+	login_attempts = 0;		/* this time successful */
+
+	login(passwd);
+	return;
+}
+
+login(passwd)
+	char *passwd;
+{
+	int status, *warnings;
+	char *errmem;
 
 	try_afscall(setpag);
 	status = al_acct_create(pw->pw_name, NULL, getpid(), 1, 0, &warnings);
@@ -976,12 +1046,15 @@ pass(passwd)
 	}
 
 	if (have_creds) {
+#ifdef GSSAPI
 		chown(krb5_cc_get_name(kcontext, ccache), pw->pw_uid,
 		      pw->pw_gid);
+#endif
+#ifdef KRB5_KRB4_COMPAT
 		chown(tkt_string(), pw->pw_uid, pw->pw_gid);
+#endif
 	}
 
-	login_attempts = 0;		/* this time successful */
 	(void) setegid((gid_t)pw->pw_gid);
 	(void) initgroups(pw->pw_name, pw->pw_gid);
 
@@ -1036,7 +1109,10 @@ pass(passwd)
 			       "ANONYMOUS FTP LOGIN FROM %s, %s (%s)",
 			       rhost_addra, remotehost, passwd);
 	} else {
-		reply(230, "User %s logged in.", pw->pw_name);
+		if (askpasswd) {
+			askpasswd = 0;
+			reply(230, "User %s logged in.", pw->pw_name);
+		}
 #ifdef SETPROCTITLE
 		sprintf(proctitle, "%s: %s", rhost_sane, pw->pw_name);
 		setproctitle(proctitle);
@@ -1886,8 +1962,12 @@ dologout(status)
 		al_acct_revert(pw->pw_name, getpid());
 	}
 	if (have_creds) {
+#ifdef GSSAPI
 		krb5_cc_destroy(kcontext, ccache);
+#endif
+#ifdef KRB5_KRB4_COMPAT
 		dest_tkt();
+#endif
 		try_afscall(ktc_ForgetAllTokens);
 	}
 	/* beware of flushing buffers after a SIGPIPE */
@@ -2111,7 +2191,7 @@ char *data;
 	if (strcmp(temp_auth_type, "GSSAPI") == 0) {
 		int replied = 0;
 		int found = 0;
-		gss_cred_id_t server_creds;     
+		gss_cred_id_t server_creds, deleg_creds;
 		gss_name_t client;
 		int ret_flags;
 		struct gss_channel_bindings_struct chan;
@@ -2198,7 +2278,7 @@ char *data;
 							    &out_tok, /* output_token */
 							    &ret_flags,
 							    NULL, 	/* ignore time_rec */
-							    NULL   /* ignore del_cred_handle */
+							    &deleg_creds /* forwarded credentials */
 							    );
 			if (accept_maj==GSS_S_COMPLETE||accept_maj==GSS_S_CONTINUE_NEEDED)
 				break;
@@ -2210,6 +2290,9 @@ char *data;
 						"accepting context");
 				syslog(LOG_ERR, "failed accepting context");
 				(void) gss_release_cred(&stat_min, &server_creds);
+				if (ret_flags & GSS_C_DELEG_FLAG)
+					(void) gss_release_cred(&stat_min,
+								&deleg_creds);
 				return 0;
 			}
 		} else {
@@ -2224,6 +2307,10 @@ char *data;
 				secure_error("Couldn't encode ADAT reply (%s)",
 					     radix_error(kerror));
 				syslog(LOG_ERR, "couldn't encode ADAT reply");
+				(void) gss_release_cred(&stat_min, &server_creds);
+				if (ret_flags & GSS_C_DELEG_FLAG)
+					(void) gss_release_cred(&stat_min,
+								&deleg_creds);
 				return(0);
 			}
 			if (stat_maj == GSS_S_COMPLETE) {
@@ -2249,18 +2336,34 @@ char *data;
 						"extracting GSSAPI identity name");
 				syslog(LOG_ERR, "gssapi error extracting identity");
 				(void) gss_release_cred(&stat_min, &server_creds);
+				if (ret_flags & GSS_C_DELEG_FLAG)
+					(void) gss_release_cred(&stat_min,
+								&deleg_creds);
 				return 0;
 			}
-			/* If the server accepts the security data, but does
-				   not require any additional data (i.e., the security
-				   data exchange has completed successfully), it must
-				   respond with reply code 235. */
-			if (!replied) reply(235, "GSSAPI Authentication succeeded");
-				
 			auth_type = temp_auth_type;
 			temp_auth_type = NULL;
-				
+
 			(void) gss_release_cred(&stat_min, &server_creds);
+			if (ret_flags & GSS_C_DELEG_FLAG) {
+			  if (want_creds)
+			    ftpd_gss_convert_creds(client_name.value,
+						   deleg_creds);
+			  (void) gss_release_cred(&stat_min, &deleg_creds);
+			}
+
+			/* If the server accepts the security data, but does
+			   not require any additional data (i.e., the security
+			   data exchange has completed successfully), it must
+			   respond with reply code 235. */
+			if (!replied)
+			  {
+			    if (ret_flags & GSS_C_DELEG_FLAG && !have_creds)
+			      reply(235, "GSSAPI Authentication succeeded, but could not accept forwarded credentials");
+			    else
+			      reply(235, "GSSAPI Authentication succeeded");
+			  }
+
 			return(1);
 		} else if (stat_maj == GSS_S_CONTINUE_NEEDED) {
 			/* If the server accepts the security data, and
@@ -2268,6 +2371,8 @@ char *data;
 				   reply code 335. */
 			reply(335, "more data needed");
 			(void) gss_release_cred(&stat_min, &server_creds);
+			if (ret_flags & GSS_C_DELEG_FLAG)
+			  (void) gss_release_cred(&stat_min, &deleg_creds);
 			return(0);
 		} else {
 			/* "If the server rejects the security data (if 
@@ -2277,6 +2382,8 @@ char *data;
 					"GSSAPI failed processing ADAT");
 			syslog(LOG_ERR, "GSSAPI failed processing ADAT");
 			(void) gss_release_cred(&stat_min, &server_creds);
+			if (ret_flags & GSS_C_DELEG_FLAG)
+			  (void) gss_release_cred(&stat_min, &deleg_creds);
 			return(0);
 		}
 	}
@@ -2486,6 +2593,7 @@ char *buf;
 		*p++ = ' ';
 }
 #endif /* SETPROCTITLE */
+
 #ifdef GSSAPI
 reply_gss_error(code, maj_stat, min_stat, s)
 int code;
@@ -2537,33 +2645,101 @@ char *s;
 }
 
 
-/* ftpd_userok -- hide details of getting the name and verifying it */
+/* ftpd_gss_userok -- hide details of getting the name and verifying it */
 /* returns 0 for OK */
-ftpd_userok(client_name, name)
+ftpd_gss_userok(client_name, name)
 	gss_buffer_t client_name;
 	char *name;
 {
 	int retval = -1;
-	krb5_boolean k5ret;
-	krb5_context kc;
 	krb5_principal p;
-	krb5_error_code kerr;
 	
-	kerr = krb5_init_context(&kc);
-	if (kerr)
+	if (krb5_parse_name(kcontext, client_name->value, &p) != 0)
 		return -1;
-
-	kerr = krb5_parse_name(kc, client_name->value, &p);
-	if (kerr) { retval = -1; goto fail; }
-	k5ret = krb5_kuserok(kc, p, name);
-	if (k5ret == TRUE)
+	if (krb5_kuserok(kcontext, p, name))
 		retval = 0;
 	else 
 		retval = 1;
-	krb5_free_principal(kc, p);
- fail:
-	krb5_free_context(kc);
+	krb5_free_principal(kcontext, p);
 	return retval;
+}
+
+/* ftpd_gss_convert_creds -- write out forwarded creds */
+/* (code lifted from login.krb5) */
+ftpd_gss_convert_creds(name, creds)
+	char *name;
+	gss_cred_id_t creds;
+{
+	OM_uint32 major_status, minor_status;
+	krb5_principal me;
+	char ccname[MAXPATHLEN];
+#ifdef KRB5_KRB4_COMPAT
+	krb5_principal kpcserver;
+	krb5_error_code kpccode;
+	int kpcval;
+	krb5_creds increds, *v5creds;
+	CREDENTIALS v4creds;
+#endif
+
+	/* Set up ccache */
+	if (krb5_parse_name(kcontext, name, &me))
+		return;
+
+	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
+	if (krb5_cc_resolve(kcontext, ccname, &ccache))
+		return;
+	if (krb5_cc_initialize(kcontext, ccache, me))
+		return;
+
+	/* Copy GSS creds into ccache */
+	major_status = gss_krb5_copy_ccache(&minor_status, creds, ccache);
+	if (major_status != GSS_S_COMPLETE)
+		goto cleanup;
+
+#ifdef KRB5_KRB4_COMPAT
+	/* Convert krb5 creds to krb4 */
+
+	if (krb5_build_principal_ext(kcontext, &kpcserver, 
+				     krb5_princ_realm(kcontext, me)->length,
+				     krb5_princ_realm(kcontext, me)->data,
+				     6, "krbtgt",
+				     krb5_princ_realm(kcontext, me)->length,
+				     krb5_princ_realm(kcontext, me)->data,
+				     NULL))
+		goto cleanup;
+
+	memset((char *) &increds, 0, sizeof(increds));
+	increds.client = me;
+	increds.server = kpcserver;
+	increds.times.endtime = 0;
+	increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+	if (krb5_get_credentials(kcontext, 0, ccache, &increds, &v5creds))
+		goto cleanup;
+	if (krb524_convert_creds_kdc(kcontext, v5creds, &v4creds))
+		goto cleanup;
+
+	sprintf(ccname, "%s_ftpd%d", TKT_ROOT, getpid());
+	krb_set_tkt_string(ccname);
+	setenv("KRBTKFILE", ccname, 1);
+
+	if (in_tkt(v4creds.pname, v4creds.pinst) != KSUCCESS)
+		goto cleanup;
+
+	if (krb_save_credentials(v4creds.service, v4creds.instance,
+				 v4creds.realm, v4creds.session,
+				 v4creds.lifetime, v4creds.kvno,
+				 &(v4creds.ticket_st), v4creds.issue_date))
+		goto cleanup_v4;
+#endif /* KRB5_KRB4_COMPAT */
+	have_creds = 1;
+	return;
+
+#ifdef KRB5_KRB4_COMPAT
+cleanup_v4:
+	dest_tkt();
+#endif
+cleanup:
+	krb5_cc_destroy(kcontext, ccache);
 }
 #endif /* GSSAPI */
 
