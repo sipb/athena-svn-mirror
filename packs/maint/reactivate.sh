@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.45 2000-01-21 15:35:43 ghudson Exp $
+# $Id: reactivate.sh,v 1.46 2000-02-07 22:31:35 ghudson Exp $
 
 trap "" 1 15
 
@@ -143,7 +143,7 @@ if [ "$full" = true ]; then
 	fi
 
 	# Perform an update if appropriate
-	/srvd/auto_update reactivate
+	update_ws -a reactivate
 
 	if [ "$PUBLIC" = true -a -f /srvd/.rvdinfo ]; then
 		NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`

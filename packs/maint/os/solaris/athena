@@ -1,4 +1,4 @@
-# $Id: athena,v 1.15 2000-01-11 19:08:34 ghudson Exp $
+# $Id: athena,v 1.16 2000-02-07 22:31:46 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -126,8 +126,8 @@ fi
 
 # Take a new release, if necessary.
 echo "Checking for a new release"
-if [ -x /srvd/auto_update ]; then
-	/srvd/auto_update rc
+if [ -x /etc/athena/update_ws ]; then
+	update_ws -a rc
 fi
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.

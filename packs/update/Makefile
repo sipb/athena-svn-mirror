@@ -1,6 +1,7 @@
-# $Id: Makefile,v 1.8 1998-12-26 15:51:54 ghudson Exp $
+# $Id: Makefile,v 1.9 2000-02-07 22:28:43 ghudson Exp $
 
 SHELL=/bin/sh
+ATHRETCDIR=/etc/athena
 UPDATE=/usr/athena/lib/update
 CFLAGS=-g
 
@@ -17,6 +18,7 @@ check:
 # scripts in vers; the alternative is editing this Makefile for every patch
 # release, which would make it very hard to track actual changes to this file.
 install:
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${UPDATE}
 	install -c -m 0555 do-update.sh ${DESTDIR}${UPDATE}/do-update
 	install -c -m 0555 finish-update.sh ${DESTDIR}${UPDATE}/finish-update
@@ -24,8 +26,8 @@ install:
 				${DESTDIR}${UPDATE}/update-environment
 	install -c -m 0555 update_ws.sh ${DESTDIR}/update_ws
 	install -c -m 0555 upvers ${DESTDIR}${UPDATE}
-	rm -f ${DESTDIR}/auto_update
-	ln -s update_ws ${DESTDIR}/auto_update
+	rm -f ${DESTDIR}${ATHRETCDIR}/update_ws
+	ln -s /srvd/update_ws ${DESTDIR}${ATHRETCDIR}/update_ws
 	cd os/${OS} && ${MAKE} $@
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
