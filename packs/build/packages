@@ -1,4 +1,4 @@
-# $Id: packages,v 1.201 2003-02-01 05:37:00 ghudson Exp $
+# $Id: packages,v 1.202 2003-02-01 05:47:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -174,7 +174,6 @@ third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,gnome-vf
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
-third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail
 third/gnome-mime-data		requires gettext
 third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
