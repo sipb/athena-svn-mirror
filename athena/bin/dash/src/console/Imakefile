@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -29,10 +29,9 @@ OBJS		=	console.o
 
 XJLIB		=	../lib/libXj.a
 #ifdef SOLARIS
-C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} /usr/ucblib/libucb.a
-#else
-C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
+OS_LIBS		=	-lbsd
 #endif
+C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} ${OS_LIBS}
 
 DEFINES         =       ${G_DEFINES}
 

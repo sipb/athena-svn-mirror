@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -48,14 +48,11 @@ SRCS		=	dash.c ${K_SRC}
 XJLIB		=	../lib/libXj.a
 
 #ifdef SOLARIS
-D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
-			${XMULIB} ${K_LIB} ${M_LIB} /usr/ucblib/libucb.a
-CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11 /usr/ucblib/libucb.a
-#else
-D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
-			${XMULIB} ${K_LIB} ${M_LIB}
-CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
+OS_LIBS		=	-lbsd
 #endif
+D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
+			${XMULIB} ${K_LIB} ${M_LIB} ${OS_LIBS}
+CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11 ${OS_LIBS}
 
 #if defined(MacIIArchitecture)
 M_LIB		=	-lmalloc
