@@ -135,7 +135,6 @@ read_file (SeekableMethodHandle *mh)
 			return GNOME_VFS_ERROR_NO_SPACE;
 		
 	} while (blk_read > 0);
-	//} while (blk_read == BLK_SIZE);
 
 	result = gnome_vfs_seek (mh->tmp_file, GNOME_VFS_SEEK_START, 0);
 
