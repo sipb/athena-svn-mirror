@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.3 1990-07-03 16:16:02 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.4 1990-11-14 17:05:19 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
 /* $Author: epeisach $ */
 
@@ -17,6 +17,7 @@
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
+#include <syslog.h>
 
 extern int errno;
 
@@ -27,6 +28,7 @@ static int dbopen = 0;
 static int dbfd = 0;
 
 char *malloc(), *realloc();
+off_t lseek();
 
 #define jpos(n) ((n) * sizeof(log_entity))
 int logger_journal_set_name(name)
@@ -107,18 +109,23 @@ Pointer n;
        num_ent field as it means we must read in the record. We could in 
        theory cache the header record, but I don;t like it.
      */
-
+    PROTECT();
     if(lseek(dbfd, jpos(n), L_SET) != jpos(n))
 	    {
 		(void) close_database();
+		UNPROTECT();
+		syslog(LOG_ERR, "get line %d", n);
 		return (log_entity *) NULL;
 	    }
 
     if(read(dbfd, (char *) &ret, sizeof(log_entity)) != sizeof(log_entity)) 
 	    {
 		(void) close_database();
+		UNPROTECT();
+		syslog(LOG_ERR, "get line read %d", n);
 		return (log_entity *) NULL;
 	    }
+    UNPROTECT();
     if(close_database()) return (log_entity *) NULL;
     return &ret;
 }
@@ -132,16 +139,19 @@ log_entity *ent;
 	return -1;
     }
     if(open_database(O_WRONLY)) return -1;
+    PROTECT();
     if(lseek(dbfd, jpos(n), L_SET) != jpos(n))
 	    {
 		(void) close_database();
+		UNPROTECT();
 		return -1;
 	    }
 
-    PROTECT();
     if(write(dbfd, (char *) ent, sizeof(log_entity)) != sizeof(log_entity)) 
 	    {
 		(void) close_database();
+		UNPROTECT();
+		syslog(LOG_ERR, "writing line %d", n);
 		return -1;
 	    }
     if(close_database()) {
@@ -156,11 +166,22 @@ int logger_journal_get_header(head)
 log_header *head;
 {
     if(open_database(O_RDONLY)) return -1;
+    PROTECT();
+    lseek(dbfd, (off_t) 0, L_SET);
     if(read(dbfd, (char *) head, sizeof(log_header)) != sizeof(log_header)) 
 	    {
 		(void) close_database();
+		UNPROTECT();
 		return -1;
 	    }
+    if(head->version != LOGGER_VERSION) 
+	    {
+		(void) close_database();
+		UNPROTECT();
+		syslog(LOG_ERR, "logger - get_header - vno not match %d", head->version);
+		return -1;
+	    }
+    UNPROTECT();
     return(close_database());
 }
 
@@ -168,8 +189,13 @@ int logger_journal_put_header(head)
 log_header *head;
 {
     int ret;
+    if(head->version != LOGGER_VERSION) {
+		syslog(LOG_ERR, "logger - put_header - vno not match %d", head->version);
+		return -1;
+	    }
     if(open_database(O_WRONLY)) return -1;
     PROTECT();
+    lseek(dbfd, (off_t) 0, L_SET);
     if(write(dbfd, (char *) head, sizeof(log_header)) != sizeof(log_header)) 
 	    {
 		(void) close_database();
@@ -211,9 +237,10 @@ Pointer qpos;
     log_header oldhead, newhead;
     User_str user;
     User_db *uret, udb;
-    Pointer num;		/* journal table position*/
+    Pointer num, oldlast;		/* journal table position*/
     log_entity *old_ent, new_ent;
 
+    PROTECT();
     /* Step 1 - Get entry from user_db */
 
     user.name = ent->user.name;
@@ -237,7 +264,11 @@ Pointer qpos;
     udb.last = uret->last;
 
     /* Step 2 - get the header */
-    if (logger_journal_get_header(&oldhead)) return -1; /* Failure 2 */
+    if (logger_journal_get_header(&oldhead)) {
+	UNPROTECT();
+	syslog(LOG_ERR, "Add entry - failure 2 %d", errno);
+	return -1; /* Failure 2 */
+    }
 
     (void) bcopy(&oldhead, &newhead, sizeof(log_header));
     if(qt) newhead.last_q_time = qt;
@@ -248,13 +279,18 @@ Pointer qpos;
     /* Step 3 - modify previous record */
     /* If user has old record then get it and modify */
     if (udb.last != 0) {
-	if((old_ent = logger_journal_get_line(udb.last)) == NULL) 
+	if((old_ent = logger_journal_get_line(udb.last)) == NULL) {
+	    UNPROTECT();
+	    syslog(LOG_ERR, "Add entry - failure 3 %d", errno);
 	    return -1; /* Mode 3 failure */
+	}
 	(void) bcopy(old_ent, &new_ent, sizeof(log_entity));
 	new_ent.next = num;
-	if(logger_journal_write_line(udb.last, &new_ent))
+	if(logger_journal_write_line(udb.last, &new_ent)) {
+	    UNPROTECT();
+	    syslog(LOG_ERR, "Add entry - failure 3b %d", errno);
 	    return -1; /* Failure */
-
+	}
     }
 
     /* Step 4 */
@@ -263,7 +299,9 @@ Pointer qpos;
     if(logger_journal_write_line(num, ent)) {
 	/* Failure mode 4 - back out 3 above */
 	new_ent.next = 0;
-	(void) logger_journal_write_line(udb.last, &new_ent);
+	if(udb.last) (void) logger_journal_write_line(udb.last, &new_ent);
+	UNPROTECT();
+	syslog(LOG_ERR, "Add entry - failure 4 %d", errno);
 	return -1;
     }
 
@@ -273,23 +311,29 @@ Pointer qpos;
     if(logger_journal_put_header(&newhead)) {
 	/* Failure mode 5 - back out 3 above */
 	new_ent.next = 0;
-	(void) logger_journal_write_line(udb.last, &new_ent);
+	if(udb.last) (void) logger_journal_write_line(udb.last, &new_ent);
+	UNPROTECT();
+	syslog(LOG_ERR, "Add entry - failure 5 %d", errno);
 	return -1;
     }
 	
     /* Step 6 */
 	    
     if(udb.first == 0) udb.first = num;
+    oldlast = udb.last;
     udb.last = num;
     if(logger_set_user(&user, &udb)) {
 	/* Failure mode 6 - back out 3 and 5 */
 	new_ent.next = 0;
-	(void) logger_journal_write_line(udb.last, &new_ent);
+	if(oldlast) (void) logger_journal_write_line(oldlast, &new_ent);
 	(void) logger_journal_put_header(&oldhead);
+	UNPROTECT();
+	syslog(LOG_ERR, "Add entry - failure 6 %d", errno);
 	return -1;
     }
        
     /* We made it ok */
+    UNPROTECT();
     return 0;
 }
 
