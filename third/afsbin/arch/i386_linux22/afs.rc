@@ -18,6 +18,24 @@ if [ -f /etc/sysconfig/afs ]; then
 	. /etc/sysconfig/afs
 fi
 
+# Athena addition
+athena_afsadjust () {
+	. /etc/athena/rc.conf
+	if [ "true" = $AFSADJUST -o "true" = $PUBLIC ] ; then
+		df -k /usr/vice/cache | awk '
+		  (NR == 2) {
+		    printf "/afs:/usr/vice/cache:";
+		    print int($2 * 3 / 4);
+		  }' > /usr/vice/etc/cacheinfo.new
+		  
+		if df -k /usr/vice/cache | grep /usr/vice/cache ; then
+			mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
+		else
+			rm /usr/vice/etc/cacheinfo.new
+		fi
+	fi
+}
+
 # is_on returns 1 if value of arg is "on"
 is_on() {
 	if  test "$1" = "on" ; then return 0
@@ -63,6 +81,8 @@ load_client() {
 
 case "$1" in 
   start)
+	athena_afsadjust
+
 	# Load kernel extensions
 	if  load_client  ; then :
 	else
