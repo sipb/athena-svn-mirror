@@ -629,7 +629,15 @@ getline(s, n, iop)
 		return (NULL);
 	*cs++ = '\0';
 	if (debug) {
-		syslog(LOG_DEBUG, "FTPD: command: %s", s);
+		cs = index(s, '\r');
+		if (cs)
+			*cs = '\0';
+		if (! strncasecmp(s, "pass", 4))
+			syslog(LOG_DEBUG, "FTPD: command: PASS xxx");
+		else
+			syslog(LOG_DEBUG, "FTPD: command: %s", s);
+		if (cs)
+			*cs = '\r';
 	}
 	return (s);
 }
