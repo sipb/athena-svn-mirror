@@ -1,22 +1,17 @@
-/* Iakefile for "track" automatic update program
- *
- *	$Id: Imakefile,v 1.3 1991-07-06 15:46:51 probe Exp $
-*/
+/*
+ * $Id: Imakefile,v 1.4 1991-07-17 10:15:42 epeisach Exp $
+ */
 
-LIBS= -ll
+#define ISUBDIRS doc
+
+OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
+LIBS= -ll $(OSLIBS)
 
 #ifdef _AUX_SOURCE
 OSLIBS= -lc -lPW
 #endif
 
-
-TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
-TRACK_SRCS= track.c y.tab.c stamp.c except.c files.c misc.c update.c cksum.c
-TRACK_DEP = track.h track.c stamp.c except.c files.c misc.c update.c nullmail.c
-
-#define ISUBDIRS doc
-
-SimpleProgram(track,$(TRACK_OBJS),$(LIBS) $(OSLIBS),$(ATHETCDIR))
+SimpleProgram(track,$(OBJS),$(LIBS),$(ATHETCDIR))
 
 y.tab.c : sub_gram.y 
 	yacc sub_gram.y
