@@ -20,13 +20,18 @@
 # include "config.h"
 #endif
 
-#include <stdio.h>
-
-#include "po-lex.h"
+/* Specification.  */
 #include "po-gram.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "str-list.h"
+#include "po-lex.h"
 #include "error.h"
-#include "system.h"
-#include "libgettext.h"
+#include "xmalloc.h"
+#include "gettext.h"
 #include "po.h"
 
 #define _(str) gettext (str)
@@ -85,13 +90,14 @@ static long plural_counter;
     po_gram_error_at_line (&(value2).pos, _("inconsistent use of #~"));
 
 
-#line 102 "po-gram-gen.y"
+#line 107 "po-gram-gen.y"
 typedef union
 {
-  struct { char *string; lex_pos_ty pos; int obsolete; } string;
-  struct { long number; lex_pos_ty pos; int obsolete; } number;
-  struct { lex_pos_ty pos; int obsolete; } pos;
-  struct { struct msgstr_def rhs; lex_pos_ty pos; int obsolete; } rhs;
+  struct { char *string; lex_pos_ty pos; bool obsolete; } string;
+  struct { string_list_ty stringlist; lex_pos_ty pos; bool obsolete; } stringlist;
+  struct { long number; lex_pos_ty pos; bool obsolete; } number;
+  struct { lex_pos_ty pos; bool obsolete; } pos;
+  struct { struct msgstr_def rhs; lex_pos_ty pos; bool obsolete; } rhs;
 } YYSTYPE;
 #include <stdio.h>
 
@@ -158,8 +164,8 @@ static const short yyrhs[] = {    -1,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-   120,   121,   122,   123,   124,   128,   135,   149,   164,   172,
-   180,   189,   200,   204,   219,   241,   245,   263
+   127,   128,   129,   130,   131,   135,   142,   160,   178,   186,
+   194,   203,   214,   218,   233,   255,   262,   273
 };
 #endif
 
@@ -219,7 +225,7 @@ static const short yycheck[] = {    12,
      0,    11,    15
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
-#line 3 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 3 "/usr/local/share/bison.simple"
 /* This file comes from bison-1.28.  */
 
 /* Skeleton output parser for bison,
@@ -433,7 +439,7 @@ __yy_memcpy (char *to, char *from, unsigned int count)
 #endif
 #endif
 
-#line 217 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 217 "/usr/local/share/bison.simple"
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
    into yyparse.  The argument should have type void *.
@@ -762,90 +768,97 @@ yyreduce:
   switch (yyn) {
 
 case 6:
-#line 129 "po-gram-gen.y"
+#line 136 "po-gram-gen.y"
 {
 		   po_callback_domain (yyvsp[0].string.string);
 		;
     break;}
 case 7:
-#line 136 "po-gram-gen.y"
+#line 143 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-3].pos, yyvsp[-2].string);
+		  char *string2 = string_list_concat_destroy (&yyvsp[-2].stringlist.stringlist);
+		  char *string4 = string_list_concat_destroy (&yyvsp[0].stringlist.stringlist);
+
+		  check_obsolete (yyvsp[-3].pos, yyvsp[-2].stringlist);
 		  check_obsolete (yyvsp[-3].pos, yyvsp[-1].pos);
-		  check_obsolete (yyvsp[-3].pos, yyvsp[0].string);
+		  check_obsolete (yyvsp[-3].pos, yyvsp[0].stringlist);
 		  if (!yyvsp[-3].pos.obsolete || pass_obsolete_entries)
-		    po_callback_message (yyvsp[-2].string.string, &yyvsp[-3].pos.pos, NULL,
-					 yyvsp[0].string.string, strlen (yyvsp[0].string.string) + 1, &yyvsp[-1].pos.pos);
+		    po_callback_message (string2, &yyvsp[-3].pos.pos, NULL,
+					 string4, strlen (string4) + 1, &yyvsp[-1].pos.pos,
+					 yyvsp[-3].pos.obsolete);
 		  else
 		    {
-		      free (yyvsp[-2].string.string);
-		      free (yyvsp[0].string.string);
+		      free (string2);
+		      free (string4);
 		    }
 		;
     break;}
 case 8:
-#line 150 "po-gram-gen.y"
+#line 161 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-3].pos, yyvsp[-2].string);
+		  char *string2 = string_list_concat_destroy (&yyvsp[-2].stringlist.stringlist);
+
+		  check_obsolete (yyvsp[-3].pos, yyvsp[-2].stringlist);
 		  check_obsolete (yyvsp[-3].pos, yyvsp[-1].string);
 		  check_obsolete (yyvsp[-3].pos, yyvsp[0].rhs);
 		  if (!yyvsp[-3].pos.obsolete || pass_obsolete_entries)
-		    po_callback_message (yyvsp[-2].string.string, &yyvsp[-3].pos.pos, yyvsp[-1].string.string,
-					 yyvsp[0].rhs.rhs.msgstr, yyvsp[0].rhs.rhs.msgstr_len, &yyvsp[0].rhs.pos);
+		    po_callback_message (string2, &yyvsp[-3].pos.pos, yyvsp[-1].string.string,
+					 yyvsp[0].rhs.rhs.msgstr, yyvsp[0].rhs.rhs.msgstr_len, &yyvsp[0].rhs.pos,
+					 yyvsp[-3].pos.obsolete);
 		  else
 		    {
-		      free (yyvsp[-2].string.string);
+		      free (string2);
 		      free (yyvsp[-1].string.string);
 		      free (yyvsp[0].rhs.rhs.msgstr);
 		    }
 		;
     break;}
 case 9:
-#line 165 "po-gram-gen.y"
+#line 179 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-2].pos, yyvsp[-1].string);
+		  check_obsolete (yyvsp[-2].pos, yyvsp[-1].stringlist);
 		  check_obsolete (yyvsp[-2].pos, yyvsp[0].string);
 		  po_gram_error_at_line (&yyvsp[-2].pos.pos, _("missing `msgstr[]' section"));
-		  free (yyvsp[-1].string.string);
+		  string_list_destroy (&yyvsp[-1].stringlist.stringlist);
 		  free (yyvsp[0].string.string);
 		;
     break;}
 case 10:
-#line 173 "po-gram-gen.y"
+#line 187 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-2].pos, yyvsp[-1].string);
+		  check_obsolete (yyvsp[-2].pos, yyvsp[-1].stringlist);
 		  check_obsolete (yyvsp[-2].pos, yyvsp[0].rhs);
 		  po_gram_error_at_line (&yyvsp[-2].pos.pos, _("missing `msgid_plural' section"));
-		  free (yyvsp[-1].string.string);
+		  string_list_destroy (&yyvsp[-1].stringlist.stringlist);
 		  free (yyvsp[0].rhs.rhs.msgstr);
 		;
     break;}
 case 11:
-#line 181 "po-gram-gen.y"
+#line 195 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-1].pos, yyvsp[0].string);
+		  check_obsolete (yyvsp[-1].pos, yyvsp[0].stringlist);
 		  po_gram_error_at_line (&yyvsp[-1].pos.pos, _("missing `msgstr' section"));
-		  free (yyvsp[0].string.string);
+		  string_list_destroy (&yyvsp[0].stringlist.stringlist);
 		;
     break;}
 case 12:
-#line 190 "po-gram-gen.y"
+#line 204 "po-gram-gen.y"
 {
-		  check_obsolete (yyvsp[-1].pos, yyvsp[0].string);
+		  check_obsolete (yyvsp[-1].pos, yyvsp[0].stringlist);
 		  plural_counter = 0;
-		  yyval.string.string = yyvsp[0].string.string;
+		  yyval.string.string = string_list_concat_destroy (&yyvsp[0].stringlist.stringlist);
 		  yyval.string.pos = yyvsp[-1].pos.pos;
 		  yyval.string.obsolete = yyvsp[-1].pos.obsolete;
 		;
     break;}
 case 13:
-#line 201 "po-gram-gen.y"
+#line 215 "po-gram-gen.y"
 {
 		  yyval.rhs = yyvsp[0].rhs;
 		;
     break;}
 case 14:
-#line 205 "po-gram-gen.y"
+#line 219 "po-gram-gen.y"
 {
 		  check_obsolete (yyvsp[-1].rhs, yyvsp[0].rhs);
 		  yyval.rhs.rhs.msgstr = (char *) xmalloc (yyvsp[-1].rhs.rhs.msgstr_len + yyvsp[0].rhs.rhs.msgstr_len);
@@ -859,12 +872,12 @@ case 14:
 		;
     break;}
 case 15:
-#line 220 "po-gram-gen.y"
+#line 234 "po-gram-gen.y"
 {
 		  check_obsolete (yyvsp[-4].pos, yyvsp[-3].pos);
 		  check_obsolete (yyvsp[-4].pos, yyvsp[-2].number);
 		  check_obsolete (yyvsp[-4].pos, yyvsp[-1].pos);
-		  check_obsolete (yyvsp[-4].pos, yyvsp[0].string);
+		  check_obsolete (yyvsp[-4].pos, yyvsp[0].stringlist);
 		  if (yyvsp[-2].number.number != plural_counter)
 		    {
 		      if (plural_counter == 0)
@@ -873,44 +886,40 @@ case 15:
 			po_gram_error_at_line (&yyvsp[-4].pos.pos, _("plural form has wrong index"));
 		    }
 		  plural_counter++;
-		  yyval.rhs.rhs.msgstr = yyvsp[0].string.string;
-		  yyval.rhs.rhs.msgstr_len = strlen (yyvsp[0].string.string) + 1;
+		  yyval.rhs.rhs.msgstr = string_list_concat_destroy (&yyvsp[0].stringlist.stringlist);
+		  yyval.rhs.rhs.msgstr_len = strlen (yyval.rhs.rhs.msgstr) + 1;
 		  yyval.rhs.pos = yyvsp[-4].pos.pos;
 		  yyval.rhs.obsolete = yyvsp[-4].pos.obsolete;
 		;
     break;}
 case 16:
-#line 242 "po-gram-gen.y"
+#line 256 "po-gram-gen.y"
 {
-		  yyval.string = yyvsp[0].string;
+		  string_list_init (&yyval.stringlist.stringlist);
+		  string_list_append (&yyval.stringlist.stringlist, yyvsp[0].string.string);
+		  yyval.stringlist.pos = yyvsp[0].string.pos;
+		  yyval.stringlist.obsolete = yyvsp[0].string.obsolete;
 		;
     break;}
 case 17:
-#line 246 "po-gram-gen.y"
+#line 263 "po-gram-gen.y"
 {
-		  size_t len1;
-		  size_t len2;
-
-		  check_obsolete (yyvsp[-1].string, yyvsp[0].string);
-		  len1 = strlen (yyvsp[-1].string.string);
-		  len2 = strlen (yyvsp[0].string.string);
-		  yyval.string.string = (char *) xmalloc (len1 + len2 + 1);
-		  stpcpy (stpcpy (yyval.string.string, yyvsp[-1].string.string), yyvsp[0].string.string);
-		  free (yyvsp[-1].string.string);
-		  free (yyvsp[0].string.string);
-		  yyval.string.pos = yyvsp[-1].string.pos;
-		  yyval.string.obsolete = yyvsp[-1].string.obsolete;
+		  check_obsolete (yyvsp[-1].stringlist, yyvsp[0].string);
+		  yyval.stringlist.stringlist = yyvsp[-1].stringlist.stringlist;
+		  string_list_append (&yyval.stringlist.stringlist, yyvsp[0].string.string);
+		  yyval.stringlist.pos = yyvsp[-1].stringlist.pos;
+		  yyval.stringlist.obsolete = yyvsp[-1].stringlist.obsolete;
 		;
     break;}
 case 18:
-#line 264 "po-gram-gen.y"
+#line 274 "po-gram-gen.y"
 {
 		  po_callback_comment (yyvsp[0].string.string);
 		;
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
-#line 543 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 543 "/usr/local/share/bison.simple"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1130,4 +1139,4 @@ yyerrhandle:
     }
   return 1;
 }
-#line 268 "po-gram-gen.y"
+#line 278 "po-gram-gen.y"

@@ -1,5 +1,5 @@
 /* Extracts strings from C source file to Uniforum style .po file.
-   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2002 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -23,87 +23,91 @@
 #include <ctype.h>
 #include <errno.h>
 #include <getopt.h>
-#include <sys/param.h>
-#include <pwd.h>
 #include <stdio.h>
 #include <time.h>
-#include <sys/types.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include <locale.h>
+#include <limits.h>
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifndef errno
-extern int errno;
-#endif
-
+#include "xgettext.h"
 #include "dir-list.h"
+#include "file-list.h"
+#include "str-list.h"
 #include "error.h"
-#include "hash.h"
-#include "getline.h"
-#include "system.h"
+#include "progname.h"
+#include "basename.h"
+#include "xerror.h"
+#include "xmalloc.h"
+#include "strstr.h"
+#include "xerror.h"
+#include "exit.h"
+#include "pathname.h"
+#include "strcase.h"
+#include "stpcpy.h"
 #include "po.h"
 #include "message.h"
+#include "po-time.h"
 #include "write-po.h"
-#include "xget-lex.h"
-#include "printf-parse.h"
-
-#include "libgettext.h"
-
-#ifndef _POSIX_VERSION
-struct passwd *getpwuid ();
-#endif
-
+#include "format.h"
+#include "gettext.h"
 
 /* A convenience macro.  I don't like writing gettext() every time.  */
 #define _(str) gettext (str)
 
 
-/* If nonzero add all comments immediately preceding one of the keywords. */
-static int add_all_comments;
+#include "x-c.h"
+#include "x-po.h"
+#include "x-python.h"
+#include "x-lisp.h"
+#include "x-elisp.h"
+#include "x-librep.h"
+#include "x-java.h"
+#include "x-awk.h"
+#include "x-ycp.h"
+#include "x-tcl.h"
+#include "x-rst.h"
+#include "x-glade.h"
 
-/* If nonzero add comments for file name and line number for each msgid.  */
-static int line_comment;
+
+/* If nonzero add all comments immediately preceding one of the keywords. */
+static bool add_all_comments = false;
 
 /* Tag used in comment of prevailing domain.  */
 static char *comment_tag;
 
+/* Compare tokens with keywords using substring matching instead of
+   equality.  */
+bool substring_match;
+
 /* Name of default domain file.  If not set defaults to messages.po.  */
-static char *default_domain;
+static const char *default_domain;
 
 /* If called with --debug option the output reflects whether format
    string recognition is done automatically or forced by the user.  */
 static int do_debug;
 
 /* Content of .po files with symbols to be excluded.  */
-static message_list_ty *exclude;
-
-/* If nonzero extract all strings.  */
-static int extract_all;
+message_list_ty *exclude;
 
 /* Force output of PO file even if empty.  */
 static int force_po;
 
-/* If nonzero a non GNU related user wants to use this.  Omit the FSF
-   copyright in the output.  */
-static int foreign_user;
+/* Copyright holder of the output file and the translations.  */
+static const char *copyright_holder = "THE PACKAGE'S COPYRIGHT HOLDER";
 
 /* String used as prefix for msgstr.  */
-static char *msgstr_prefix;
+static const char *msgstr_prefix;
 
 /* String used as suffix for msgstr.  */
-static char *msgstr_suffix;
+static const char *msgstr_suffix;
 
 /* Directory in which output files are created.  */
 static char *output_dir;
 
 /* If nonzero omit header with information about this run.  */
-static int omit_header;
-
-/* String containing name the program is called with.  */
-const char *program_name;
+int xgettext_omit_header;
 
 /* Long options.  */
 static const struct option long_options[] =
@@ -111,25 +115,28 @@ static const struct option long_options[] =
   { "add-comments", optional_argument, NULL, 'c' },
   { "add-location", no_argument, &line_comment, 1 },
   { "c++", no_argument, NULL, 'C' },
+  { "copyright-holder", required_argument, NULL, CHAR_MAX + 1 },
   { "debug", no_argument, &do_debug, 1 },
   { "default-domain", required_argument, NULL, 'd' },
   { "directory", required_argument, NULL, 'D' },
   { "escape", no_argument, NULL, 'E' },
   { "exclude-file", required_argument, NULL, 'x' },
-  { "extract-all", no_argument, &extract_all, 1 },
+  { "extract-all", no_argument, NULL, 'a' },
   { "files-from", required_argument, NULL, 'f' },
   { "force-po", no_argument, &force_po, 1 },
-  { "foreign-user", no_argument, &foreign_user, 1 },
+  { "foreign-user", no_argument, NULL, CHAR_MAX + 2 },
   { "help", no_argument, NULL, 'h' },
   { "indent", no_argument, NULL, 'i' },
   { "join-existing", no_argument, NULL, 'j' },
   { "keyword", optional_argument, NULL, 'k' },
+  { "keyword-substring", no_argument, NULL, 'K'},
   { "language", required_argument, NULL, 'L' },
   { "msgstr-prefix", optional_argument, NULL, 'm' },
   { "msgstr-suffix", optional_argument, NULL, 'M' },
   { "no-escape", no_argument, NULL, 'e' },
   { "no-location", no_argument, &line_comment, 0 },
-  { "omit-header", no_argument, &omit_header, 1 },
+  { "no-wrap", no_argument, NULL, CHAR_MAX + 3 },
+  { "omit-header", no_argument, &xgettext_omit_header, 1 },
   { "output", required_argument, NULL, 'o' },
   { "output-dir", required_argument, NULL, 'p' },
   { "sort-by-file", no_argument, NULL, 'F' },
@@ -143,55 +150,38 @@ static const struct option long_options[] =
 };
 
 
-/* Prototypes for local functions.  */
+/* The extractors must all be functions returning void and taking three
+   arguments designating the input stream and one message domain list argument
+   in which to add the messages.  */
+typedef void (*extractor_func) PARAMS ((FILE *fp, const char *real_filename,
+					const char *logical_filename,
+					msgdomain_list_ty *mdlp));
+
+
+/* Prototypes for local functions.  Needed to ensure compiler checking of
+   function argument counts despite of K&R C function definition syntax.  */
 static void usage PARAMS ((int status))
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ > 4) || __GNUC__ > 2)
 	__attribute__ ((noreturn))
 #endif
 ;
-static void error_print PARAMS ((void));
-static string_list_ty *read_name_from_file PARAMS ((const char *__file_name));
-static void exclude_directive_domain PARAMS ((po_ty *__pop, char *__name));
-static void exclude_directive_message PARAMS ((po_ty *__pop, char *__msgid,
-					       lex_pos_ty *__msgid_pos,
-					       char *__msgid_plural,
-					       char *__msgstr,
-					       size_t __msgstr_len,
-					       lex_pos_ty *__msgstr_pos));
-static void read_exclusion_file PARAMS ((char *__file_name));
-static message_ty *remember_a_message PARAMS ((message_list_ty *__mlp,
-					       xgettext_token_ty *__tp));
-static void remember_a_message_plural PARAMS ((message_ty *__mp,
-					       xgettext_token_ty *__tp));
-static void scan_c_file PARAMS ((const char *__file_name,
-				 message_list_ty *__mlp));
-static void extract_constructor PARAMS ((po_ty *__that));
-static void extract_directive_domain PARAMS ((po_ty *__that, char *__name));
-static void extract_directive_message PARAMS ((po_ty *__that, char *__msgid,
-					       lex_pos_ty *__msgid_pos,
-					       char *__msgid_plural,
-					       char *__msgstr,
-					       size_t __msgstr_len,
-					       lex_pos_ty *__msgstr_pos));
-static void extract_parse_brief PARAMS ((po_ty *__that));
-static void extract_comment PARAMS ((po_ty *__that, const char *__s));
-static void extract_comment_dot PARAMS ((po_ty *__that, const char *__s));
-static void extract_comment_filepos PARAMS ((po_ty *__that, const char *__name,
-					     int __line));
-static void extract_comment_special PARAMS ((po_ty *that, const char *s));
-static void read_po_file PARAMS ((const char *__file_name,
-				  message_list_ty *__mlp));
-static long difftm PARAMS ((const struct tm *__a, const struct tm *__b));
+static void exclude_directive_domain PARAMS ((po_ty *pop, char *name));
+static void exclude_directive_message PARAMS ((po_ty *pop, char *msgid,
+					       lex_pos_ty *msgid_pos,
+					       char *msgid_plural,
+					       char *msgstr, size_t msgstr_len,
+					       lex_pos_ty *msgstr_pos,
+					       bool obsolete));
+static void read_exclusion_file PARAMS ((char *file_name));
+static FILE *xgettext_open PARAMS ((const char *fn, char **logical_file_name_p,
+				    char **real_file_name_p));
+static void extract_from_file PARAMS ((const char *file_name,
+				       extractor_func extractor,
+				       msgdomain_list_ty *mdlp));
 static message_ty *construct_header PARAMS ((void));
-static enum is_c_format test_whether_c_format PARAMS ((const char *__s));
-
-
-/* The scanners must all be functions returning void and taking one
-   string argument and a message list argument.  */
-typedef void (*scanner_fp) PARAMS ((const char *, message_list_ty *));
-
-static const char *extension_to_language PARAMS ((const char *));
-static scanner_fp language_to_scanner PARAMS ((const char *));
+static void finalize_header PARAMS ((msgdomain_list_ty *mdlp));
+static extractor_func language_to_extractor PARAMS ((const char *name));
+static const char *extension_to_language PARAMS ((const char *extension));
 
 
 int
@@ -201,21 +191,21 @@ main (argc, argv)
 {
   int cnt;
   int optchar;
-  int do_help = 0;
-  int do_version = 0;
-  message_list_ty *mlp;
-  int join_existing = 0;
-  int sort_output = 0;
-  int sort_by_file = 0;
-  char *file_name;
+  bool do_help = false;
+  bool do_version = false;
+  msgdomain_list_ty *mdlp;
+  bool join_existing = false;
+  bool sort_by_msgid = false;
+  bool sort_by_filepos = false;
+  const char *file_name;
   const char *files_from = NULL;
   string_list_ty *file_list;
   char *output_file = NULL;
-  scanner_fp scanner = NULL;
+  extractor_func extractor = NULL;
 
   /* Set program name for messages.  */
-  program_name = argv[0];
-  error_print_progname = error_print;
+  set_program_name (argv[0]);
+  error_print_progname = maybe_print_progname;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -227,7 +217,6 @@ main (argc, argv)
   textdomain (PACKAGE);
 
   /* Set initial value of variables.  */
-  line_comment = -1;
   default_domain = MESSAGE_DOMAIN_DEFAULT;
 
   while ((optchar = getopt_long (argc, argv,
@@ -238,25 +227,33 @@ main (argc, argv)
       case '\0':		/* Long option.  */
 	break;
       case 'a':
-	extract_all = 1;
+	x_c_extract_all ();
+	x_python_extract_all ();
+	x_lisp_extract_all ();
+	x_elisp_extract_all ();
+	x_librep_extract_all ();
+	x_java_extract_all ();
+	x_awk_extract_all ();
+	x_tcl_extract_all ();
+	x_glade_extract_all ();
 	break;
       case 'c':
 	if (optarg == NULL)
 	  {
-	    add_all_comments = 1;
+	    add_all_comments = true;
 	    comment_tag = NULL;
 	  }
 	else
 	  {
-	    add_all_comments = 0;
+	    add_all_comments = false;
 	    comment_tag = optarg;
 	    /* We ignore leading white space.  */
-	    while (isspace (*comment_tag))
+	    while (isspace ((unsigned char) *comment_tag))
 	      ++comment_tag;
 	  }
 	break;
       case 'C':
-	scanner = language_to_scanner ("C++");
+	extractor = language_to_extractor ("C++");
 	break;
       case 'd':
 	default_domain = optarg;
@@ -265,35 +262,48 @@ main (argc, argv)
 	dir_list_append (optarg);
 	break;
       case 'e':
-	message_print_style_escape (0);
+	message_print_style_escape (false);
 	break;
       case 'E':
-	message_print_style_escape (1);
+	message_print_style_escape (true);
 	break;
       case 'f':
 	files_from = optarg;
 	break;
       case 'F':
-	sort_by_file = 1;
+	sort_by_filepos = true;
         break;
       case 'h':
-	do_help = 1;
+	do_help = true;
 	break;
       case 'i':
 	message_print_style_indent ();
 	break;
       case 'j':
-	join_existing = 1;
+	join_existing = true;
 	break;
       case 'k':
 	if (optarg == NULL || *optarg != '\0')
-	  xgettext_lex_keyword (optarg);
+	  {
+	    x_c_keyword (optarg);
+	    x_python_keyword (optarg);
+	    x_lisp_keyword (optarg);
+	    x_elisp_keyword (optarg);
+	    x_librep_keyword (optarg);
+	    x_java_keyword (optarg);
+	    x_awk_keyword (optarg);
+	    x_tcl_keyword (optarg);
+	    x_glade_keyword (optarg);
+	  }
+	break;
+      case 'K':
+	substring_match = true;
 	break;
       case 'l':
 	/* Accepted for backward compatibility with 0.10.35.  */
 	break;
       case 'L':
-	scanner = language_to_scanner (optarg);
+	extractor = language_to_extractor (optarg);
 	break;
       case 'm':
 	/* -m takes an optional argument.  If none is given "" is assumed. */
@@ -319,26 +329,20 @@ main (argc, argv)
 	  if (optarg[len - 1] == '/')
 	    output_dir = xstrdup (optarg);
 	  else
-	    {
-	      asprintf (&output_dir, "%s/", optarg);
-	      if (output_dir == NULL)
-		/* We are about to construct the absolute path to the
-		   directory for the output files but asprintf failed.  */
-		error (EXIT_FAILURE, errno, _("while preparing output"));
-	    }
+	    output_dir = xasprintf ("%s/", optarg);
 	}
 	break;
       case 's':
-	sort_output = 1;
+	sort_by_msgid = true;
 	break;
       case 'S':
 	message_print_style_uniforum ();
 	break;
       case 'T':
-	xgettext_lex_trigraphs ();
+	x_c_trigraphs ();
 	break;
       case 'V':
-	do_version = 1;
+	do_version = true;
 	break;
       case 'w':
 	{
@@ -352,33 +356,19 @@ main (argc, argv)
       case 'x':
 	read_exclusion_file (optarg);
 	break;
+      case CHAR_MAX + 1:	/* --copyright-holder */
+	copyright_holder = optarg;
+	break;
+      case CHAR_MAX + 2:	/* --foreign-user */
+	copyright_holder = "";
+	break;
+      case CHAR_MAX + 3:	/* --no-wrap */
+	message_page_width_ignore ();
+	break;
       default:
 	usage (EXIT_FAILURE);
 	/* NOTREACHED */
       }
-
-  /* Normalize selected options.  */
-  if (omit_header != 0 && line_comment < 0)
-    line_comment = 0;
-
-  if (!line_comment && sort_by_file)
-    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-	   "--no-location", "--sort-by-file");
-
-  if (sort_output && sort_by_file)
-    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
-	   "--sort-output", "--sort-by-file");
-
-  if (join_existing && strcmp (default_domain, "-") == 0)
-    error (EXIT_FAILURE, 0, _("\
---join-existing cannot be used when output is written to stdout"));
-
-  if (!xgettext_any_keywords ())
-    {
-      error (0, 0, _("\
-xgettext cannot work without keywords to look for"));
-      usage (EXIT_FAILURE);
-    }
 
   /* Version information requested.  */
   if (do_version)
@@ -389,7 +379,7 @@ xgettext cannot work without keywords to look for"));
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1998, 2000, 2001");
+	      "1995-1998, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -397,6 +387,26 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   /* Help is requested.  */
   if (do_help)
     usage (EXIT_SUCCESS);
+
+  /* Verify selected options.  */
+  if (!line_comment && sort_by_filepos)
+    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+	   "--no-location", "--sort-by-file");
+
+  if (sort_by_msgid && sort_by_filepos)
+    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+	   "--sort-output", "--sort-by-file");
+
+  if (join_existing && strcmp (default_domain, "-") == 0)
+    error (EXIT_FAILURE, 0, _("\
+--join-existing cannot be used when output is written to stdout"));
+
+  if (!x_c_any_keywords ())
+    {
+      error (0, 0, _("\
+xgettext cannot work without keywords to look for"));
+      usage (EXIT_FAILURE);
+    }
 
   /* Test whether we have some input files given.  */
   if (files_from == NULL && optind >= argc)
@@ -409,7 +419,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   if (msgstr_prefix != NULL && msgstr_suffix == NULL)
     msgstr_suffix = "";
   else if (msgstr_prefix == NULL && msgstr_suffix != NULL)
-    msgstr_prefix = NULL;
+    msgstr_prefix = "";
 
   /* Default output directory is the current directory.  */
   if (output_dir == NULL)
@@ -432,7 +442,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 
   /* Determine list of files we have to process.  */
   if (files_from != NULL)
-    file_list = read_name_from_file (files_from);
+    file_list = read_names_from_file (files_from);
   else
     file_list = string_list_alloc ();
   /* Append names from command line.  */
@@ -440,27 +450,35 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
     string_list_append_unique (file_list, argv[cnt]);
 
   /* Allocate a message list to remember all the messages.  */
-  mlp = message_list_alloc ();
+  mdlp = msgdomain_list_alloc (true);
 
   /* Generate a header, so that we know how and when this PO file was
      created.  */
-  if (!omit_header)
-      message_list_append (mlp, construct_header ());
+  if (!xgettext_omit_header)
+    message_list_append (mdlp->item[0]->messages, construct_header ());
 
   /* Read in the old messages, so that we can add to them.  */
   if (join_existing)
-    read_po_file (file_name, mlp);
+    {
+      /* Temporarily reset the directory list to empty, because file_name
+	 is an output file and therefore should not be searched for.  */
+      void *saved_directory_list = dir_list_save_reset ();
+
+      extract_from_file (file_name, extract_po, mdlp);
+
+      dir_list_restore (saved_directory_list);
+    }
 
   /* Process all input files.  */
   for (cnt = 0; cnt < file_list->nitems; ++cnt)
     {
       const char *fname;
-      scanner_fp scan_file;
+      extractor_func this_file_extractor;
 
       fname = file_list->item[cnt];
 
-      if (scanner)
-        scan_file = scanner;
+      if (extractor)
+        this_file_extractor = extractor;
       else
 	{
 	  const char *extension;
@@ -476,31 +494,35 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 	  else
 	    extension = "";
 
-	  /* derive the language from the extension, and the scanner
+	  /* Derive the language from the extension, and the extractor
 	     function from the language.  */
 	  language = extension_to_language (extension);
 	  if (language == NULL)
-	  {
-	    error (0, 0, _("\
+	    {
+	      error (0, 0, _("\
 warning: file `%s' extension `%s' is unknown; will try C"), fname, extension);
-	    language = "C";
-	  }
-	  scan_file = language_to_scanner (language);
+	      language = "C";
+	    }
+	  this_file_extractor = language_to_extractor (language);
 	}
 
-      /* Scan the file.  */
-      scan_file (fname, mlp);
+      /* Extract the strings from the file.  */
+      extract_from_file (fname, this_file_extractor, mdlp);
     }
   string_list_free (file_list);
 
+  /* Finalize the constructed header.  */
+  if (!xgettext_omit_header)
+    finalize_header (mdlp);
+
   /* Sorting the list of messages.  */
-  if (sort_by_file)
-    message_list_sort_by_filepos (mlp);
-  else if (sort_output)
-    message_list_sort_by_msgid (mlp);
+  if (sort_by_filepos)
+    msgdomain_list_sort_by_filepos (mdlp);
+  else if (sort_by_msgid)
+    msgdomain_list_sort_by_msgid (mdlp);
 
   /* Write the PO file.  */
-  message_list_print (mlp, file_name, force_po, do_debug);
+  msgdomain_list_print (mdlp, file_name, force_po, do_debug);
 
   exit (EXIT_SUCCESS);
 }
@@ -518,118 +540,102 @@ usage (status)
     {
       /* xgettext: no-wrap */
       printf (_("\
-Usage: %s [OPTION] INPUTFILE ...\n\
-Extract translatable string from given input files.\n\
-\n\
-Mandatory arguments to long options are mandatory for short options too.\n\
-  -a, --extract-all              extract all strings\n\
-  -c, --add-comments[=TAG]       place comment block with TAG (or those\n\
-                                 preceding keyword lines) in output file\n\
-  -C, --c++                      shorthand for --language=C++\n\
-      --debug                    more detailed formatstring recognision result\n\
-  -d, --default-domain=NAME      use NAME.po for output (instead of messages.po)\n\
-  -D, --directory=DIRECTORY      add DIRECTORY to list for input files search\n\
-  -e, --no-escape                do not use C escapes in output (default)\n\
-  -E, --escape                   use C escapes in output, no extended chars\n\
-  -f, --files-from=FILE          get list of input files from FILE\n\
-      --force-po                 write PO file even if empty\n\
-      --foreign-user             omit FSF copyright in output for foreign user\n\
-  -F, --sort-by-file             sort output by file location\n"),
-	      program_name);
+Usage: %s [OPTION] [INPUTFILE]...\n\
+"), program_name);
+      printf ("\n");
       /* xgettext: no-wrap */
       printf (_("\
-  -h, --help                     display this help and exit\n\
-  -i, --indent                   write the .po file using indented style\n\
-  -j, --join-existing            join messages with existing file\n\
-  -k, --keyword[=WORD]           additonal keyword to be looked for (without\n\
-                                 WORD means not to use default keywords)\n\
-  -L, --language=NAME            recognise the specified language (C, C++, PO),\n\
-                                 otherwise is guessed from file extension\n\
-  -m, --msgstr-prefix[=STRING]   use STRING or \"\" as prefix for msgstr entries\n\
-  -M, --msgstr-suffix[=STRING]   use STRING or \"\" as suffix for msgstr entries\n\
-      --no-location              do not write '#: filename:line' lines\n"));
+Extract translatable strings from given input files.\n\
+"));
+      printf ("\n");
       /* xgettext: no-wrap */
-      fputs (_("\
-  -n, --add-location             generate '#: filename:line' lines (default)\n\
-      --omit-header              don't write header with `msgid \"\"' entry\n\
+      printf (_("\
+Mandatory arguments to long options are mandatory for short options too.\n\
+Similarly for optional arguments.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file location:\n\
+  INPUTFILE ...                  input files\n\
+  -f, --files-from=FILE          get list of input files from FILE\n\
+  -D, --directory=DIRECTORY      add DIRECTORY to list for input files search\n\
+If input file is -, standard input is read.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output file location:\n\
+  -d, --default-domain=NAME      use NAME.po for output (instead of messages.po)\n\
   -o, --output=FILE              write output to specified file\n\
   -p, --output-dir=DIR           output files will be placed in directory DIR\n\
-  -s, --sort-output              generate sorted output and remove duplicates\n\
-      --strict                   write out strict Uniforum conforming .po file\n\
+If output file is -, output is written to standard output.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Choice of input file language:\n\
+  -L, --language=NAME            recognise the specified language\n\
+                                   (C, C++, ObjectiveC, PO, Python, Lisp,\n\
+                                   EmacsLisp, librep, Java, awk, YCP, Tcl,\n\
+                                   RST, Glade)\n\
+  -C, --c++                      shorthand for --language=C++\n\
+By default the language is guessed depending on the input file name extension.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Operation mode:\n\
+  -j, --join-existing            join messages with existing file\n\
+  -x, --exclude-file=FILE.po     entries from FILE.po are not extracted\n\
+  -c, --add-comments[=TAG]       place comment block with TAG (or those\n\
+                                 preceding keyword lines) in output file\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Language=C/C++ specific options:\n\
+  -a, --extract-all              extract all strings\n\
+  -k, --keyword[=WORD]           additional keyword to be looked for (without\n\
+                                 WORD means not to use default keywords)\n\
   -T, --trigraphs                understand ANSI C trigraphs for input\n\
-  -V, --version                  output version information and exit\n\
+      --debug                    more detailed formatstring recognition result\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output details:\n\
+  -e, --no-escape                do not use C escapes in output (default)\n\
+  -E, --escape                   use C escapes in output, no extended chars\n\
+      --force-po                 write PO file even if empty\n\
+  -i, --indent                   write the .po file using indented style\n\
+      --no-location              do not write '#: filename:line' lines\n\
+  -n, --add-location             generate '#: filename:line' lines (default)\n\
+      --strict                   write out strict Uniforum conforming .po file\n\
   -w, --width=NUMBER             set output page width\n\
-  -x, --exclude-file=FILE        entries from FILE are not extracted\n\
-\n\
-If INPUTFILE is -, standard input is read.\n"), stdout);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"),
+      --no-wrap                  do not break long message lines, longer than\n\
+                                 the output page width, into several lines\n\
+  -s, --sort-output              generate sorted output\n\
+  -F, --sort-by-file             sort output by file location\n\
+      --omit-header              don't write header with `msgid \"\"' entry\n\
+      --copyright-holder=STRING  set copyright holder in output\n\
+      --foreign-user             omit FSF copyright in output for foreign user\n\
+  -m, --msgstr-prefix[=STRING]   use STRING or \"\" as prefix for msgstr entries\n\
+  -M, --msgstr-suffix[=STRING]   use STRING or \"\" as suffix for msgstr entries\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Informative output:\n\
+  -h, --help                     display this help and exit\n\
+  -V, --version                  output version information and exit\n\
+"));
+      printf ("\n");
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
 	     stdout);
     }
 
   exit (status);
-}
-
-
-/* The address of this function will be assigned to the hook in the error
-   functions.  */
-static void
-error_print ()
-{
-  /* We don't want the program name to be printed in messages.  */
-}
-
-
-/* Read list of files to process from file.  */
-static string_list_ty *
-read_name_from_file (file_name)
-     const char *file_name;
-{
-  size_t line_len = 0;
-  char *line_buf = NULL;
-  FILE *fp;
-  string_list_ty *result;
-
-  if (strcmp (file_name, "-") == 0)
-    fp = stdin;
-  else
-    {
-      fp = fopen (file_name, "r");
-      if (fp == NULL)
-	error (EXIT_FAILURE, errno,
-	       _("error while opening \"%s\" for reading"), file_name);
-    }
-
-  result = string_list_alloc ();
-
-  while (!feof (fp))
-    {
-      /* Read next line from file.  */
-      int len = getline (&line_buf, &line_len, fp);
-
-      /* In case of an error leave loop.  */
-      if (len < 0)
-	break;
-
-      /* Remove trailing '\n'.  */
-      if (len > 0 && line_buf[len - 1] == '\n')
-	line_buf[--len] = '\0';
-
-      /* Test if we have to ignore the line.  */
-      if (*line_buf == '\0' || *line_buf == '#')
-	continue;
-
-      string_list_append_unique (result, line_buf);
-    }
-
-  /* Free buffer allocated through getline.  */
-  if (line_buf != NULL)
-    free (line_buf);
-
-  /* Close input stream.  */
-  if (fp != stdin)
-    fclose (fp);
-
-  return result;
 }
 
 
@@ -638,13 +644,14 @@ exclude_directive_domain (pop, name)
      po_ty *pop;
      char *name;
 {
-  po_gram_error (_("this file may not contain domain directives"));
+  po_gram_error_at_line (&gram_pos,
+			 _("this file may not contain domain directives"));
 }
 
 
 static void
 exclude_directive_message (pop, msgid, msgid_pos, msgid_plural,
-			   msgstr, msgstr_len, msgstr_pos)
+			   msgstr, msgstr_len, msgstr_pos, obsolete)
      po_ty *pop;
      char *msgid;
      lex_pos_ty *msgid_pos;
@@ -652,18 +659,19 @@ exclude_directive_message (pop, msgid, msgid_pos, msgid_plural,
      char *msgstr;
      size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
+     bool obsolete;
 {
   message_ty *mp;
 
   /* See if this message ID has been seen before.  */
   if (exclude == NULL)
-    exclude = message_list_alloc ();
+    exclude = message_list_alloc (true);
   mp = message_list_search (exclude, msgid);
   if (mp != NULL)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid, msgid_plural);
+      mp = message_alloc (msgid, msgid_plural, "", 1, msgstr_pos);
       /* Do not free msgid.  */
       message_list_append (exclude, mp);
     }
@@ -703,32 +711,240 @@ read_exclusion_file (file_name)
   po_ty *pop;
 
   pop = po_alloc (&exclude_methods);
-  po_scan (pop, file_name);
+  po_scan_file (pop, file_name);
   po_free (pop);
 }
 
 
-static message_ty *
-remember_a_message (mlp, tp)
-     message_list_ty *mlp;
-     xgettext_token_ty *tp;
+void
+split_keywordspec (spec, endp, argnum1p, argnum2p)
+     const char *spec;
+     const char **endp;
+     int *argnum1p;
+     int *argnum2p;
 {
-  enum is_c_format is_c_format = undecided;
-  enum is_wrap do_wrap = undecided;
+  const char *p;
+
+  /* Start parsing from the end.  */
+  p = spec + strlen (spec);
+  if (p > spec && isdigit ((unsigned char) p[-1]))
+    {
+      const char *last_arg;
+
+      do
+	p--;
+      while (p > spec && isdigit ((unsigned char) p[-1]));
+
+      last_arg = p;
+
+      if (p > spec && p[-1] == ',')
+	{
+	  p--;
+
+	  if (p > spec && isdigit ((unsigned char) p[-1]))
+	    {
+	      const char *first_arg;
+
+	      do
+		p--;
+	      while (p > spec && isdigit ((unsigned char) p[-1]));
+
+	      first_arg = p;
+
+	      if (p > spec && p[-1] == ':')
+		{
+		  /* Parsed "KEYWORD:ARGNUM1,ARGNUM2".  */
+		  char *dummy;
+
+		  *endp = p - 1;
+		  *argnum1p = strtol (first_arg, &dummy, 10);
+		  *argnum2p = strtol (last_arg, &dummy, 10);
+		  return;
+		}
+	    }
+	}
+      else if (p > spec && p[-1] == ':')
+	{
+	  /* Parsed "KEYWORD:ARGNUM1.  */
+	  char *dummy;
+
+	  *endp = p - 1;
+	  *argnum1p = strtol (last_arg, &dummy, 10);
+	  *argnum2p = 0;
+	  return;
+	}
+    }
+  /* Parsed "KEYWORD".  */
+  *endp = p + strlen (p);
+  *argnum1p = 0;
+  *argnum2p = 0;
+}
+
+
+static string_list_ty *comment;
+
+void
+xgettext_comment_add (str)
+     const char *str;
+{
+  if (comment == NULL)
+    comment = string_list_alloc ();
+  string_list_append (comment, str);
+}
+
+const char *
+xgettext_comment (n)
+     size_t n;
+{
+  if (comment == NULL || n >= comment->nitems)
+    return NULL;
+  return comment->item[n];
+}
+
+void
+xgettext_comment_reset ()
+{
+  if (comment != NULL)
+    {
+      string_list_free (comment);
+      comment = NULL;
+    }
+}
+
+
+
+static FILE *
+xgettext_open (fn, logical_file_name_p, real_file_name_p)
+     const char *fn;
+     char **logical_file_name_p;
+     char **real_file_name_p;
+{
+  FILE *fp;
+  char *new_name;
+  char *logical_file_name;
+
+  if (strcmp (fn, "-") == 0)
+    {
+      new_name = xstrdup (_("standard input"));
+      logical_file_name = xstrdup (new_name);
+      fp = stdin;
+    }
+  else if (IS_ABSOLUTE_PATH (fn))
+    {
+      new_name = xstrdup (fn);
+      fp = fopen (fn, "r");
+      if (fp == NULL)
+	error (EXIT_FAILURE, errno, _("\
+error while opening \"%s\" for reading"), fn);
+      logical_file_name = xstrdup (new_name);
+    }
+  else
+    {
+      int j;
+
+      for (j = 0; ; ++j)
+	{
+	  const char *dir = dir_list_nth (j);
+
+	  if (dir == NULL)
+	    error (EXIT_FAILURE, ENOENT, _("\
+error while opening \"%s\" for reading"), fn);
+
+	  new_name = concatenated_pathname (dir, fn, NULL);
+
+	  fp = fopen (new_name, "r");
+	  if (fp != NULL)
+	    break;
+
+	  if (errno != ENOENT)
+	    error (EXIT_FAILURE, errno, _("\
+error while opening \"%s\" for reading"), new_name);
+	  free (new_name);
+	}
+
+      /* Note that the NEW_NAME variable contains the actual file name
+	 and the logical file name is what is reported by xgettext.  In
+	 this case NEW_NAME is set to the file which was found along the
+	 directory search path, and LOGICAL_FILE_NAME is is set to the
+	 file name which was searched for.  */
+      logical_file_name = xstrdup (fn);
+    }
+
+  *logical_file_name_p = logical_file_name;
+  *real_file_name_p = new_name;
+  return fp;
+}
+
+
+static void
+extract_from_file (file_name, extractor, mdlp)
+     const char *file_name;
+     extractor_func extractor;
+     msgdomain_list_ty *mdlp;
+{
+  char *logical_file_name;
+  char *real_file_name;
+  FILE *fp = xgettext_open (file_name, &logical_file_name, &real_file_name);
+
+  extractor (fp, real_file_name, logical_file_name, mdlp);
+
+  if (fp != stdin)
+    fclose (fp);
+  free (logical_file_name);
+  free (real_file_name);
+}
+
+
+
+/* Language dependent format string parser.
+   NULL if the language has no notion of format strings.  */
+static struct formatstring_parser *current_formatstring_parser;
+
+
+message_ty *
+remember_a_message (mlp, string, pos)
+     message_list_ty *mlp;
+     char *string;
+     lex_pos_ty *pos;
+{
+  enum is_format is_format[NFORMATS];
+  enum is_wrap do_wrap;
   char *msgid;
   message_ty *mp;
   char *msgstr;
+  size_t i;
 
-  msgid = tp->string;
+  msgid = string;
 
   /* See whether we shall exclude this message.  */
   if (exclude != NULL && message_list_search (exclude, msgid) != NULL)
     {
       /* Tell the lexer to reset its comment buffer, so that the next
 	 message gets the correct comments.  */
-      xgettext_lex_comment_reset ();
+      xgettext_comment_reset ();
 
       return NULL;
+    }
+
+  for (i = 0; i < NFORMATS; i++)
+    is_format[i] = undecided;
+  do_wrap = undecided;
+
+  if (msgid[0] == '\0' && !xgettext_omit_header)
+    {
+      char buffer[21];
+
+      error_with_progname = false;
+      if (pos->line_number == (size_t)(-1))
+	buffer[0] = '\0';
+      else
+	sprintf (buffer, ":%ld", (long) pos->line_number);
+      multiline_warning (xasprintf ("%s%s: warning: ", pos->file_name, buffer),
+			 xstrdup (_("\
+Empty msgid.  It is reserved by GNU gettext:\n\
+gettext(\"\") returns the header entry with\n\
+meta information, not the empty string.\n")));
+      error_with_progname = true;
     }
 
   /* See if we have seen this message before.  */
@@ -736,17 +952,13 @@ remember_a_message (mlp, tp)
   if (mp != NULL)
     {
       free (msgid);
-      is_c_format = mp->is_c_format;
+      for (i = 0; i < NFORMATS; i++)
+	is_format[i] = mp->is_format[i];
       do_wrap = mp->do_wrap;
     }
   else
     {
-      static lex_pos_ty pos = { __FILE__, __LINE__ };
-
-      /* Allocate a new message and append the message to the list.  */
-      mp = message_alloc (msgid, NULL);
-      /* Do not free msgid.  */
-      message_list_append (mlp, mp);
+      static lex_pos_ty dummypos = { __FILE__, __LINE__ };
 
       /* Construct the msgstr from the prefix and suffix, otherwise use the
 	 empty string.  */
@@ -760,8 +972,11 @@ remember_a_message (mlp, tp)
 	}
       else
 	msgstr = "";
-      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr,
-			      strlen (msgstr) + 1, &pos);
+
+      /* Allocate a new message and append the message to the list.  */
+      mp = message_alloc (msgid, NULL, msgstr, strlen (msgstr) + 1, &dummypos);
+      /* Do not free msgid.  */
+      message_list_append (mlp, mp);
     }
 
   /* Ask the lexer for the comments it has seen.  Only do this for the
@@ -770,63 +985,118 @@ remember_a_message (mlp, tp)
   if (!mp->comment_dot)
     {
       int j;
+      bool add_all_remaining_comments;
 
+      add_all_remaining_comments = add_all_comments;
       for (j = 0; ; ++j)
 	{
-	  const char *s = xgettext_lex_comment (j);
+	  const char *s = xgettext_comment (j);
+	  const char *t;
 	  if (s == NULL)
 	    break;
 
 	  /* To reduce the possibility of unwanted matches be do a two
-	     step match: the line must contains `xgettext:' and one of
+	     step match: the line must contain `xgettext:' and one of
 	     the possible format description strings.  */
-	  if (strstr (s, "xgettext:") != NULL)
+	  if ((t = strstr (s, "xgettext:")) != NULL)
 	    {
-	      is_c_format = parse_c_format_description_string (s);
-	      do_wrap = parse_c_width_description_string (s);
+	      bool tmp_fuzzy;
+	      enum is_format tmp_format[NFORMATS];
+	      enum is_wrap tmp_wrap;
+	      bool interesting;
 
-	      /* If we found a magic string we don't print it.  */
-	      if (is_c_format != undecided || do_wrap != undecided)
+	      t += strlen ("xgettext:");
+
+	      po_parse_comment_special (t, &tmp_fuzzy, tmp_format, &tmp_wrap);
+
+	      interesting = false;
+	      for (i = 0; i < NFORMATS; i++)
+		if (tmp_format[i] != undecided)
+		  {
+		    is_format[i] = tmp_format[i];
+		    interesting = true;
+		  }
+	      if (tmp_wrap != undecided)
+		{
+		  do_wrap = tmp_wrap;
+		  interesting = true;
+		}
+
+	      /* If the "xgettext:" marker was followed by an interesting
+		 keyword, and we updated our is_format/do_wrap variables,
+		 we don't print the comment as a #. comment.  */
+	      if (interesting)
 		continue;
 	    }
-	  if (add_all_comments
-	      || (comment_tag != NULL && strncmp (s, comment_tag,
-						  strlen (comment_tag)) == 0))
+	  /* When the comment tag is seen, it drags in not only the line
+	     which it starts, but all remaining comment lines.  */
+	  if (add_all_remaining_comments
+	      || (add_all_remaining_comments =
+		    (comment_tag != NULL
+		     && strncmp (s, comment_tag, strlen (comment_tag)) == 0)))
 	    message_comment_dot_append (mp, s);
 	}
     }
 
-  /* If not already decided, examine the msgid.  */
-  if (is_c_format == undecided)
-    is_c_format = test_whether_c_format (mp->msgid);
+  /* If it is not already decided, through programmer comments, whether the
+     msgid is a format string, examine the msgid.  This is a heuristic.  */
+  for (i = 0; i < NFORMATS; i++)
+    {
+      if (is_format[i] == undecided
+	  && formatstring_parsers[i] == current_formatstring_parser)
+	{
+	  struct formatstring_parser *parser = formatstring_parsers[i];
+	  void *descr = parser->parse (mp->msgid);
 
-  mp->is_c_format = is_c_format;
+	  if (descr != NULL)
+	    {
+	      /* msgid is a valid format string.  We mark only those msgids
+		 as format strings which contain at least one format directive
+		 and thus are format strings with a high probability.  We
+		 don't mark strings without directives as format strings,
+		 because that would force the programmer to add
+		 "xgettext: no-c-format" anywhere where a translator wishes
+		 to use a percent sign.  So, the msgfmt checking will not be
+		 perfect.  Oh well.  */
+	      if (parser->get_number_of_directives (descr) > 0)
+		is_format[i] = possible;
+
+	      parser->free (descr);
+	    }
+	  else
+	    /* msgid is not a valid format string.  */
+	    is_format[i] = impossible;
+	}
+      mp->is_format[i] = is_format[i];
+    }
+
   mp->do_wrap = do_wrap == no ? no : yes;	/* By default we wrap.  */
 
   /* Remember where we saw this msgid.  */
   if (line_comment)
-    message_comment_filepos (mp, tp->file_name, tp->line_number);
+    message_comment_filepos (mp, pos->file_name, pos->line_number);
 
   /* Tell the lexer to reset its comment buffer, so that the next
      message gets the correct comments.  */
-  xgettext_lex_comment_reset ();
+  xgettext_comment_reset ();
 
   return mp;
 }
 
 
-static void
-remember_a_message_plural (mp, tp)
+void
+remember_a_message_plural (mp, string, pos)
      message_ty *mp;
-     xgettext_token_ty *tp;
+     char *string;
+     lex_pos_ty *pos;
 {
   char *msgid_plural;
-  message_variant_ty *mvp;
   char *msgstr1;
   size_t msgstr1_len;
   char *msgstr;
+  size_t i;
 
-  msgid_plural = tp->string;
+  msgid_plural = string;
 
   /* See if the message is already a plural message.  */
   if (mp->msgid_plural == NULL)
@@ -836,465 +1106,48 @@ remember_a_message_plural (mp, tp)
       /* Construct the first plural form from the prefix and suffix,
 	 otherwise use the empty string.  The translator will have to
 	 provide additional plural forms.  */
-      mvp = message_variant_search (mp, MESSAGE_DOMAIN_DEFAULT);
-      if (mvp != NULL)
+      if (msgstr_prefix)
 	{
-	  if (msgstr_prefix)
-	    {
-	      msgstr1 = (char *) xmalloc (strlen (msgstr_prefix)
-					  + strlen (msgid_plural)
-					  + strlen (msgstr_suffix) + 1);
-	      stpcpy (stpcpy (stpcpy (msgstr1, msgstr_prefix), msgid_plural),
-		      msgstr_suffix);
-	    }
-	  else
-	    msgstr1 = "";
-	  msgstr1_len = strlen (msgstr1) + 1;
-	  msgstr = (char *) xmalloc (mvp->msgstr_len + msgstr1_len);
-	  memcpy (msgstr, mvp->msgstr, mvp->msgstr_len);
-	  memcpy (msgstr + mvp->msgstr_len, msgstr1, msgstr1_len);
-	  mvp->msgstr = msgstr;
-	  mvp->msgstr_len = mvp->msgstr_len + msgstr1_len;
+	  msgstr1 = (char *) xmalloc (strlen (msgstr_prefix)
+				      + strlen (msgid_plural)
+				      + strlen (msgstr_suffix) + 1);
+	  stpcpy (stpcpy (stpcpy (msgstr1, msgstr_prefix), msgid_plural),
+		  msgstr_suffix);
 	}
+      else
+	msgstr1 = "";
+      msgstr1_len = strlen (msgstr1) + 1;
+      msgstr = (char *) xmalloc (mp->msgstr_len + msgstr1_len);
+      memcpy (msgstr, mp->msgstr, mp->msgstr_len);
+      memcpy (msgstr + mp->msgstr_len, msgstr1, msgstr1_len);
+      mp->msgstr = msgstr;
+      mp->msgstr_len = mp->msgstr_len + msgstr1_len;
+
+      /* If it is not already decided, through programmer comments or
+	 the msgid, whether the msgid is a format string, examine the
+	 msgid_plural.  This is a heuristic.  */
+      for (i = 0; i < NFORMATS; i++)
+	if (formatstring_parsers[i] == current_formatstring_parser
+	    && (mp->is_format[i] == undecided || mp->is_format[i] == possible))
+	  {
+	    struct formatstring_parser *parser = formatstring_parsers[i];
+	    void *descr = parser->parse (mp->msgid_plural);
+
+	    if (descr != NULL)
+	      {
+		/* Same heuristic as in remember_a_message.  */
+		if (parser->get_number_of_directives (descr) > 0)
+		  mp->is_format[i] = possible;
+
+		parser->free (descr);
+	      }
+	    else
+	      /* msgid_plural is not a valid format string.  */
+	      mp->is_format[i] = impossible;
+	  }
     }
   else
     free (msgid_plural);
-}
-
-
-static void
-scan_c_file (filename, mlp)
-     const char *filename;
-     message_list_ty *mlp;
-{
-  int state;
-  int commas_to_skip = 0;	/* defined only when in states 1 and 2 */
-  int plural_commas = 0;	/* defined only when in states 1 and 2 */
-  message_ty *plural_mp = NULL;	/* defined only when in states 1 and 2 */
-  int paren_nesting = 0;	/* defined only when in state 2 */
-
-  /* The file is broken into tokens.  Scan the token stream, looking for
-     a keyword, followed by a left paren, followed by a string.  When we
-     see this sequence, we have something to remember.  We assume we are
-     looking at a valid C or C++ program, and leave the complaints about
-     the grammar to the compiler.
-
-     Normal handling: Look for
-       [A] keyword [B] ( ... [C] ... msgid ... ) [E]
-     Plural handling: Look for
-       [A] keyword [B] ( ... [C] ... msgid ... [D] ... msgid_plural ... ) [E]
-     At point [A]: state == 0.
-     At point [B]: state == 1, commas_to_skip set, plural_mp == NULL.
-     At point [C]: state == 2, commas_to_skip set, plural_mp == NULL.
-     At point [D]: state == 2, commas_to_skip set again, plural_mp != NULL.
-     At point [E]: state == 0.  */
-
-  xgettext_lex_open (filename);
-
-  /* Start state is 0.  */
-  state = 0;
-
-  while (1)
-   {
-     xgettext_token_ty token;
-
-     /* A state machine is used to do the recognising:
-        State 0 = waiting for something to happen
-        State 1 = seen one of our keywords
-        State 2 = waiting for part of an argument */
-     xgettext_lex (&token);
-     switch (token.type)
-       {
-       case xgettext_token_type_keyword:
-	 if (!extract_all && state == 2)
-	   {
-	     if (commas_to_skip == 0)
-	       {
-		 error (0, 0,
-			_("%s:%d: warning: keyword nested in keyword arg"),
-			token.file_name, token.line_number);
-		 continue;
-	       }
-
-	     /* Here we should nest properly, but this would require a
-		potentially unbounded stack.  We haven't run across an
-		example that needs this functionality yet.  For now,
-		we punt and forget the outer keyword.  */
-	     error (0, 0,
-		    _("%s:%d: warning: keyword between outer keyword and its arg"),
-		    token.file_name, token.line_number);
-	   }
-	 commas_to_skip = token.argnum1 - 1;
-	 plural_commas = (token.argnum2 > token.argnum1
-			  ? token.argnum2 - token.argnum1 : 0);
-	 plural_mp = NULL;
-	 state = 1;
-	 continue;
-
-       case xgettext_token_type_lparen:
-	 switch (state)
-	   {
-	   case 1:
-	     paren_nesting = 0;
-	     state = 2;
-	     break;
-	   case 2:
-	     paren_nesting++;
-	     break;
-	   }
-	 continue;
-
-       case xgettext_token_type_rparen:
-	 if (state == 2 && paren_nesting != 0)
-	   paren_nesting--;
-	 else
-	   state = 0;
-	 continue;
-
-       case xgettext_token_type_comma:
-	 if (state == 2 && commas_to_skip != 0)
-	   {
-	     if (paren_nesting == 0)
-	       commas_to_skip--;
-	   }
-	 else
-	   state = 0;
-	 continue;
-
-       case xgettext_token_type_string_literal:
-	 if (extract_all)
-	   remember_a_message (mlp, &token);
-	 else if (state == 2 && commas_to_skip == 0)
-	   {
-	     if (plural_mp == NULL)
-	       {
-		 /* Seen an msgid.  */
-		 if (plural_commas == 0)
-		   remember_a_message (mlp, &token);
-		 else
-		   {
-		     plural_mp = remember_a_message (mlp, &token);
-		     commas_to_skip = plural_commas;
-		     plural_commas = 0;
-		   }
-	       }
-	     else
-	       {
-		 /* Seen an msgid_plural.  */
-		 remember_a_message_plural (plural_mp, &token);
-		 plural_mp = NULL;
-	       }
-	   }
-	 else
-	   {
-	     free (token.string);
-	     if (state == 1)
-	       state = 0;
-	   }
-	 continue;
-
-       case xgettext_token_type_symbol:
-	 if (state == 1)
-	   state = 0;
-	 continue;
-
-       case xgettext_token_type_eof:
-	 break;
-
-       default:
-	 abort ();
-       }
-     break;
-   }
-
-  /* Close scanner.  */
-  xgettext_lex_close ();
-}
-
-
-typedef struct extract_class_ty extract_class_ty;
-struct extract_class_ty
-{
-  /* Inherited instance variables and methods.  */
-  PO_BASE_TY
-
-  /* Cumulative list of messages.  */
-  message_list_ty *mlp;
-
-  /* Cumulative comments for next message.  */
-  string_list_ty *comment;
-  string_list_ty *comment_dot;
-
-  int is_fuzzy;
-  enum is_c_format is_c_format;
-  enum is_wrap do_wrap;
-
-  int filepos_count;
-  lex_pos_ty *filepos;
-};
-
-
-static void
-extract_constructor (that)
-     po_ty *that;
-{
-  extract_class_ty *this = (extract_class_ty *) that;
-
-  this->mlp = NULL; /* actually set in read_po_file, below */
-  this->comment = NULL;
-  this->comment_dot = NULL;
-  this->is_fuzzy = 0;
-  this->is_c_format = undecided;
-  this->do_wrap = undecided;
-  this->filepos_count = 0;
-  this->filepos = NULL;
-}
-
-
-static void
-extract_directive_domain (that, name)
-     po_ty *that;
-     char *name;
-{
-  po_gram_error (_("this file may not contain domain directives"));
-}
-
-
-static void
-extract_directive_message (that, msgid, msgid_pos, msgid_plural,
-			   msgstr, msgstr_len, msgstr_pos)
-     po_ty *that;
-     char *msgid;
-     lex_pos_ty *msgid_pos;
-     char *msgid_plural;
-     char *msgstr;
-     size_t msgstr_len;
-     lex_pos_ty *msgstr_pos;
-{
-  extract_class_ty *this = (extract_class_ty *)that;
-  message_ty *mp;
-  message_variant_ty *mvp;
-  size_t j;
-
-  /* See whether we shall exclude this message.  */
-  if (exclude != NULL && message_list_search (exclude, msgid) != NULL)
-    goto discard;
-
-  /* If the msgid is the empty string, it is the old header.
-     Throw it away, we have constructed a new one.  */
-  if (*msgid == '\0')
-    {
-      discard:
-      free (msgid);
-      free (msgstr);
-      if (this->comment != NULL)
-	string_list_free (this->comment);
-      if (this->comment_dot != NULL)
-	string_list_free (this->comment_dot);
-      if (this->filepos != NULL)
-	free (this->filepos);
-      this->comment = NULL;
-      this->comment_dot = NULL;
-      this->filepos_count = 0;
-      this->filepos = NULL;
-      this->is_fuzzy = 0;
-      this->is_c_format = undecided;
-      this->do_wrap = undecided;
-      return;
-    }
-
-  /* See if this message ID has been seen before.  */
-  mp = message_list_search (this->mlp, msgid);
-  if (mp)
-    free (msgid);
-  else
-    {
-      mp = message_alloc (msgid, msgid_plural);
-      message_list_append (this->mlp, mp);
-    }
-
-  /* Add the accumulated comments to the message.  Clear the
-     accumulation in preparation for the next message. */
-  if (this->comment != NULL)
-    {
-      for (j = 0; j < this->comment->nitems; ++j)
-	message_comment_append (mp, this->comment->item[j]);
-      string_list_free (this->comment);
-      this->comment = NULL;
-    }
-  if (this->comment_dot != NULL)
-    {
-      for (j = 0; j < this->comment_dot->nitems; ++j)
-	message_comment_dot_append (mp, this->comment_dot->item[j]);
-      string_list_free (this->comment_dot);
-      this->comment_dot = NULL;
-    }
-  mp->is_fuzzy = this->is_fuzzy;
-  mp->is_c_format = this->is_c_format;
-  mp->do_wrap = this->do_wrap;
-  for (j = 0; j < this->filepos_count; ++j)
-    {
-      lex_pos_ty *pp;
-
-      pp = &this->filepos[j];
-      message_comment_filepos (mp, pp->file_name, pp->line_number);
-      free (pp->file_name);
-    }
-  if (this->filepos != NULL)
-    free (this->filepos);
-  this->filepos_count = 0;
-  this->filepos = NULL;
-  this->is_fuzzy = 0;
-  this->is_c_format = undecided;
-  this->do_wrap = undecided;
-
-  /* See if this domain has been seen for this message ID.  */
-  mvp = message_variant_search (mp, MESSAGE_DOMAIN_DEFAULT);
-  if (mvp != NULL
-      && (msgstr_len != mvp->msgstr_len
-	  || memcmp (msgstr, mvp->msgstr, msgstr_len) != 0))
-    {
-      po_gram_error_at_line (msgid_pos, _("duplicate message definition"));
-      po_gram_error_at_line (&mvp->pos, _("\
-...this is the location of the first definition"));
-      free (msgstr);
-    }
-  else
-    message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_len,
-			    msgstr_pos);
-}
-
-
-static void
-extract_parse_brief (that)
-     po_ty *that;
-{
-  po_lex_pass_comments (1);
-}
-
-
-static void
-extract_comment (that, s)
-     po_ty *that;
-     const char *s;
-{
-  extract_class_ty *this = (extract_class_ty *) that;
-
-  if (this->comment == NULL)
-    this->comment = string_list_alloc ();
-  string_list_append (this->comment, s);
-}
-
-
-static void
-extract_comment_dot (that, s)
-     po_ty *that;
-     const char *s;
-{
-  extract_class_ty *this = (extract_class_ty *) that;
-
-  if (this->comment_dot == NULL)
-    this->comment_dot = string_list_alloc ();
-  string_list_append (this->comment_dot, s);
-}
-
-
-static void
-extract_comment_filepos (that, name, line)
-     po_ty *that;
-     const char *name;
-     int line;
-{
-  extract_class_ty *this = (extract_class_ty *) that;
-  size_t nbytes;
-  lex_pos_ty *pp;
-
-  /* Write line numbers only if -n option is given.  */
-  if (line_comment != 0)
-    {
-      nbytes = (this->filepos_count + 1) * sizeof (this->filepos[0]);
-      this->filepos = xrealloc (this->filepos, nbytes);
-      pp = &this->filepos[this->filepos_count++];
-      pp->file_name = xstrdup (name);
-      pp->line_number = line;
-    }
-}
-
-
-static void
-extract_comment_special (that, s)
-     po_ty *that;
-     const char *s;
-{
-  extract_class_ty *this = (extract_class_ty *) that;
-
-  if (strstr (s, "fuzzy") != NULL)
-    this->is_fuzzy = 1;
-  this->is_c_format = parse_c_format_description_string (s);
-  this->do_wrap = parse_c_width_description_string (s);
-}
-
-
-/* So that the one parser can be used for multiple programs, and also
-   use good data hiding and encapsulation practices, an object
-   oriented approach has been taken.  An object instance is allocated,
-   and all actions resulting from the parse will be through
-   invocations of method functions of that object.  */
-
-static po_method_ty extract_methods =
-{
-  sizeof (extract_class_ty),
-  extract_constructor,
-  NULL, /* destructor */
-  extract_directive_domain,
-  extract_directive_message,
-  extract_parse_brief,
-  NULL, /* parse_debrief */
-  extract_comment,
-  extract_comment_dot,
-  extract_comment_filepos,
-  extract_comment_special
-};
-
-
-/* Read the contents of the specified .po file into a message list.  */
-
-static void
-read_po_file (file_name, mlp)
-     const char *file_name;
-     message_list_ty *mlp;
-{
-  po_ty *pop = po_alloc (&extract_methods);
-  ((extract_class_ty *) pop)->mlp = mlp;
-  po_scan (pop, file_name);
-  po_free (pop);
-}
-
-
-#define TM_YEAR_ORIGIN 1900
-
-/* Yield A - B, measured in seconds.  */
-static long
-difftm (a, b)
-     const struct tm *a;
-     const struct tm *b;
-{
-  int ay = a->tm_year + (TM_YEAR_ORIGIN - 1);
-  int by = b->tm_year + (TM_YEAR_ORIGIN - 1);
-  /* Some compilers cannot handle this as a single return statement.  */
-  long days = (
-               /* difference in day of year  */
-               a->tm_yday - b->tm_yday
-               /* + intervening leap days  */
-               + ((ay >> 2) - (by >> 2))
-               - (ay / 100 - by / 100)
-               + ((ay / 100 >> 2) - (by / 100 >> 2))
-               /* + difference in years * 365  */
-               + (long) (ay - by) * 365l);
-
-  return 60l * (60l * (24l * days + (a->tm_hour - b->tm_hour))
-                + (a->tm_min - b->tm_min))
-         + (a->tm_sec - b->tm_sec);
 }
 
 
@@ -1302,89 +1155,99 @@ static message_ty *
 construct_header ()
 {
   time_t now;
-  struct tm local_time;
+  char *timestring;
   message_ty *mp;
   char *msgstr;
   static lex_pos_ty pos = { __FILE__, __LINE__, };
-  char tz_sign;
-  long tz_min;
-
-  mp = message_alloc ("", NULL);
-
-  if (foreign_user)
-    message_comment_append (mp, "\
-SOME DESCRIPTIVE TITLE.\n\
-FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n");
-  else
-    message_comment_append (mp, "\
-SOME DESCRIPTIVE TITLE.\n\
-Copyright (C) YEAR Free Software Foundation, Inc.\n\
-FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n");
-
-  mp->is_fuzzy = 1;
 
   time (&now);
-  local_time = *localtime (&now);
-  tz_sign = '+';
-  tz_min = difftm (&local_time, gmtime (&now)) / 60;
-  if (tz_min < 0)
-    {
-      tz_min = -tz_min;
-      tz_sign = '-';
-    }
+  timestring = po_strftime (&now);
 
-  asprintf (&msgstr, "\
+  msgstr = xasprintf ("\
 Project-Id-Version: PACKAGE VERSION\n\
-POT-Creation-Date: %d-%02d-%02d %02d:%02d%c%02ld%02ld\n\
+POT-Creation-Date: %s\n\
 PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n\
 Last-Translator: FULL NAME <EMAIL@ADDRESS>\n\
 Language-Team: LANGUAGE <LL@li.org>\n\
 MIME-Version: 1.0\n\
 Content-Type: text/plain; charset=CHARSET\n\
 Content-Transfer-Encoding: 8bit\n",
-	    local_time.tm_year + TM_YEAR_ORIGIN,
-	    local_time.tm_mon + 1,
-	    local_time.tm_mday,
-	    local_time.tm_hour,
-	    local_time.tm_min,
-	    tz_sign, tz_min / 60, tz_min % 60);
+		      timestring);
+  free (timestring);
 
-  if (msgstr == NULL)
-    error (EXIT_FAILURE, errno, _("while preparing output"));
+  mp = message_alloc ("", NULL, msgstr, strlen (msgstr) + 1, &pos);
 
-  message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr,
-			  strlen (msgstr) + 1, &pos);
+  message_comment_append (mp,
+			  copyright_holder[0] != '\0'
+			  ? xasprintf ("\
+SOME DESCRIPTIVE TITLE.\n\
+Copyright (C) YEAR %s\n\
+This file is distributed under the same license as the PACKAGE package.\n\
+FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n",
+				       copyright_holder)
+			  : "\
+SOME DESCRIPTIVE TITLE.\n\
+This file is put in the public domain.\n\
+FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n");
+
+  mp->is_fuzzy = true;
 
   return mp;
 }
 
-
-/* We make a pessimistic guess whether the given string is a format
-   string or not.  Pessimistic means here that with the first
-   occurence of an unknown format element we say `impossible'.  */
-static enum is_c_format
-test_whether_c_format (s)
-     const char *s;
+static void
+finalize_header (mdlp)
+     msgdomain_list_ty *mdlp;
 {
-  struct printf_spec spec;
+  /* If the generated PO file has plural forms, add a Plural-Forms template
+     to the constructed header.  */
+  bool has_plural;
+  size_t i, j;
 
-  if (s == NULL || *(s = find_spec (s)) == '\0')
-    /* We return `possible' here because sometimes strings are used
-       with printf even if they don't contain any format specifier.
-       If the translation in this case would contain a specifier, this
-       would result in an error.  */
-    return impossible;
-
-  for (s = find_spec (s); *s != '\0'; s = spec.next_fmt)
+  has_plural = false;
+  for (i = 0; i < mdlp->nitems; i++)
     {
-      size_t dummy;
+      message_list_ty *mlp = mdlp->item[i]->messages;
 
-      (void) parse_one_spec (s, 0, &spec, &dummy);
-      if (strchr ("iduoxXeEfgGcspnm%", spec.info.spec) == NULL)
-	return impossible;
+      for (j = 0; j < mlp->nitems; j++)
+	{
+	  message_ty *mp = mlp->item[j];
+
+	  if (mp->msgid_plural != NULL)
+	    {
+	      has_plural = true;
+	      break;
+	    }
+	}
+      if (has_plural)
+	break;
     }
 
-  return possible;
+  if (has_plural)
+    {
+      message_ty *header = message_list_search (mdlp->item[0]->messages, "");
+      if (header != NULL
+	  && strstr (header->msgstr, "Plural-Forms:") == NULL)
+	{
+	  size_t insertpos = strlen (header->msgstr);
+	  const char *suffix;
+	  size_t suffix_len;
+	  char *new_msgstr;
+
+	  suffix = "\nPlural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n";
+	  if (insertpos == 0 || header->msgstr[insertpos-1] == '\n')
+	    suffix++;
+	  suffix_len = strlen (suffix);
+	  new_msgstr = (char *) xmalloc (header->msgstr_len + suffix_len);
+	  memcpy (new_msgstr, header->msgstr, insertpos);
+	  memcpy (new_msgstr + insertpos, suffix, suffix_len);
+	  memcpy (new_msgstr + insertpos + suffix_len,
+		  header->msgstr + insertpos,
+		  header->msgstr_len - insertpos);
+	  header->msgstr = new_msgstr;
+	  header->msgstr_len = header->msgstr_len + suffix_len;
+	}
+    }
 }
 
 
@@ -1392,31 +1255,47 @@ test_whether_c_format (s)
 #define ENDOF(a) ((a) + SIZEOF(a))
 
 
-static scanner_fp
-language_to_scanner (name)
-  const char *name;
+static extractor_func
+language_to_extractor (name)
+     const char *name;
 {
   typedef struct table_ty table_ty;
   struct table_ty
   {
     const char *name;
-    scanner_fp func;
+    extractor_func func;
+    struct formatstring_parser *formatstring_parser;
   };
 
   static table_ty table[] =
   {
-    { "C", scan_c_file, },
-    { "C++", scan_c_file, },
-    { "PO", read_po_file, },
-    /* Here will follow more languages and their scanners: awk, perl,
-       etc...  Make sure new scanners honor the --exlude-file option.  */
+    SCANNERS_C
+    SCANNERS_PO
+    SCANNERS_PYTHON
+    SCANNERS_LISP
+    SCANNERS_ELISP
+    SCANNERS_LIBREP
+    SCANNERS_JAVA
+    SCANNERS_AWK
+    SCANNERS_YCP
+    SCANNERS_TCL
+    SCANNERS_RST
+    SCANNERS_GLADE
+    /* Here will follow more languages and their scanners: perl, etc...
+       Make sure new scanners honor the --exclude-file option.  */
   };
 
   table_ty *tp;
 
   for (tp = table; tp < ENDOF(table); ++tp)
     if (strcasecmp (name, tp->name) == 0)
-      return tp->func;
+      {
+	/* XXX Ugly side effect.  */
+	current_formatstring_parser = tp->formatstring_parser;
+
+	return tp->func;
+      }
+
   error (EXIT_FAILURE, 0, _("language `%s' unknown"), name);
   /* NOTREACHED */
   return NULL;
@@ -1425,7 +1304,7 @@ language_to_scanner (name)
 
 static const char *
 extension_to_language (extension)
-  const char *extension;
+     const char *extension;
 {
   typedef struct table_ty table_ty;
   struct table_ty
@@ -1436,18 +1315,19 @@ extension_to_language (extension)
 
   static table_ty table[] =
   {
-    { "c",      "C",    },
-    { "C",      "C++",  },
-    { "c++",    "C++",  },
-    { "cc",     "C++",  },
-    { "cxx",    "C++",  },
-    { "cpp",    "C++",  },
-    { "h",      "C",    },
-    { "hpp",    "C++",  },
-    { "po",     "PO",   },
-    { "pot",    "PO",   },
-    { "pox",    "PO",   },
-    /* Here will follow more file extensions: sh, pl, tcl, lisp ... */
+    EXTENSIONS_C
+    EXTENSIONS_PO
+    EXTENSIONS_PYTHON
+    EXTENSIONS_LISP
+    EXTENSIONS_ELISP
+    EXTENSIONS_LIBREP
+    EXTENSIONS_JAVA
+    EXTENSIONS_AWK
+    EXTENSIONS_YCP
+    EXTENSIONS_TCL
+    EXTENSIONS_RST
+    EXTENSIONS_GLADE
+    /* Here will follow more file extensions: sh, pl ... */
   };
 
   table_ty *tp;

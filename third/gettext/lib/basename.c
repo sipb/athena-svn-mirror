@@ -1,5 +1,5 @@
 /* Return the name-within-directory of a file name.
-   Copyright (C) 1996-1999, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1996-1999, 2000-2002 Free Software Foundation, Inc.
 
    NOTE: The canonical source of this file is maintained with the GNU C Library.
    Bugs can be reported to bug-glibc@gnu.org.
@@ -23,8 +23,22 @@
 # include <config.h>
 #endif
 
+/* Specification.  */
+#include "basename.h"
+
+#if !(__GLIBC__ >= 2)
+
 #include <stdio.h>
 #include <assert.h>
+
+#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
+  /* Win32, OS/2, DOS */
+# define HAS_DEVICE(P) \
+    ((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
+     && (P)[1] == ':')
+# define FILESYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
+# define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#endif
 
 #ifndef FILESYSTEM_PREFIX_LEN
 # define FILESYSTEM_PREFIX_LEN(Filename) 0
@@ -37,6 +51,7 @@
 #ifndef _LIBC
 /* We cannot generally use the name `basename' since XPG defines an unusable
    variant of the function but we cannot use it.  */
+# undef basename
 # define basename gnu_basename
 #endif
 
@@ -70,3 +85,5 @@ basename (name)
 
   return (char *) base;
 }
+
+#endif

@@ -1,3 +1,489 @@
+2002-08-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.5 released.
+
+2002-07-31  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: Update from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* ja.po: Update from Masahito Yamaga <ma@yama-ga.com>.
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* ru.po: Update from Oleg S. Tihonov <tihonov@ffke-campus.mipt.ru>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+	* sv.po: Update from Update from Jan Djärv <jan.h.d@swipnet.se>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@superonline.com>.
+
+2002-07-26  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.4 released.
+
+2002-07-22  Bruno Haible  <bruno@clisp.org>
+
+	* zh_TW.po: Update from Pofeng Lee <pofeng@linux.org.tw>.
+
+2002-07-19  Bruno Haible  <bruno@clisp.org>
+
+	* ru.po: Update from Oleg S. Tihonov <tihonov@ffke-campus.mipt.ru>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2002-07-17  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.3 released.
+
+2002-07-16  Bruno Haible  <bruno@clisp.org>
+
+	* da.po: Update from Keld Simonsen <keld@dkuug.dk>.
+
+2002-06-27  Bruno Haible  <bruno@clisp.org>
+
+	* fi.po: New file, from Sami J. Laine <sami.laine@iki.fi>.
+	* LINGUAS: Add fi.
+
+2002-06-12  Bruno Haible  <bruno@clisp.org>
+
+	* es.po: Update from Max de Mendizábal <max@upn.mx>.
+
+2002-06-05  Bruno Haible  <bruno@clisp.org>
+
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sv.po: Update from Jan Djärv <jan.h.d@swipnet.se>.
+
+2002-05-14  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* ja.po: Update from Masahito Yamaga <ma@yama-ga.com>.
+
+2002-04-30  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: Update from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* sv.po: Update from Jan Djärv <jan.h.d@swipnet.se>.
+
+2002-04-29  Bruno Haible  <bruno@clisp.org>
+
+	* be.po: New file, from Ales Nyakhaychyk <nyakhaychyk@i18n.linux.by>.
+	* LINGUAS: Add be.
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+
+2002-04-25  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* ja.po: Update from Masahito Yamaga <ma@yama-ga.com>.
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* ru.po: Update from Oleg S. Tihonov <tihonov@ffke-campus.mipt.ru>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+
+2002-04-24  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.2 released.
+
+2002-04-22  Bruno Haible  <bruno@clisp.org>
+
+	* ja.po: Update from Masahito Yamaga <ma@yama-ga.com>.
+
+2002-04-02  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: Update from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* da.po: Update from Keld Simonsen <keld@dkuug.dk>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+
+2002-03-15  Bruno Haible  <bruno@clisp.org>
+
+	* ru.po: Update from Oleg S. Tihonov <tihonov@ffke-campus.mipt.ru>.
+
+2002-03-14  Bruno Haible  <bruno@clisp.org>
+
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+	* zh_TW.po: Update from Pofeng Lee <pofeng@linux.org.tw>.
+	* zh.po: Remove file.
+	* LINGUAS: Add zh_TW, remove zh.
+
+2002-03-13  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2002-03-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.1 released.
+
+2002-03-11  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in (.po.mo): Use a temporary .mo file, for robustness.
+	(.po.gmo): Likewise.
+	Reported by Jim Meyering <meyering@lucent.com>.
+
+2002-03-11  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+
+2002-02-19  Bruno Haible  <bruno@clisp.org>
+
+	* remove-potcdate.sin: New file.
+	* Makefile.in.in (DISTFILES.common): Add remove-potcdate.sin.
+	(.SUFFIXES): Add .sed and .sin.
+	(.sin.sed): New rule.
+	($(DOMAIN).pot-update): Depend on remove-potcdate.sed. If the old
+	POT file exists and the new POT file differs from it only in the
+	first POT-Creation-Date line, keep the old POT file. So the PO files
+	don't need to be remade, and automake's "distcheck" target succeeds.
+	(mostlyclean): Remove remove-potcdate.sed and additional temporary
+	files.
+	Reported by Jim Meyering.
+
+2002-02-13  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2002-02-12  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: Update from Ivan Vilata i Balaguer <ivan@selidor.net>.
+
+2002-02-11  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2002-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11 released.
+
+2002-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* da.po: Update from Keld Simonsen <keld@dkuug.dk>.
+
+2002-01-21  Bruno Haible  <bruno@clisp.org>
+
+	* da.po: Update from Keld Simonsen <keld@dkuug.dk>.
+
+2002-01-19  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in (install-data-yes): Avoid syntax error if
+	EXTRA_LOCALE_CATEGORIES is empty.
+	(installdirs-data-yes): Likewise.
+
+2002-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: New file, from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* LINGUAS: Add ca.
+
+2002-01-16  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars (EXTRA_LOCALE_CATEGORIES): New variable.
+	* Makefile.in.in (install-data-yes): For each EXTRA_LOCALE_CATEGORIES,
+	install a symlink to the catalog in the LC_MESSAGES subdirectory.
+	(installdirs-data-yes): Keep consistent with install-data-yes.
+	(uninstall-data-yes): Adjust for EXTRA_LOCALE_CATEGORIES.
+	(installdirs-data): Fix dependency.
+
+2002-01-15  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2002-01-14  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+
+2002-01-11  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2002-01-08  Bruno Haible  <bruno@clisp.org>
+
+	* POTFILES.in: Add src/format-elisp.c, src/x-elisp.c.
+
+2002-01-05  Bruno Haible  <bruno@clisp.org>
+
+	* Rules-quot (.insert-header.po-update-en): Set GETTEXTLIBDIR to an
+	absolute path, not a relative path.
+
+2002-01-05  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in ($(DOMAIN).pot-update): Renamed from target
+	$(srcdir)/$(DOMAIN).pot.
+	($(srcdir)/$(DOMAIN).pot): New rule, which normally does nothing.
+	($(POFILES)): Depend on $(srcdir)/$(DOMAIN).pot, not on 'force'.
+	(update-po): Update.
+
+2002-01-07  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+
+2002-01-04  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars: Update COPYRIGHT_HOLDER explanation.
+
+2002-01-03  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2002-01-02  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+	* es.po: Update from Max de Mendizábal <max@upn.mx>.
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+
+2001-12-19  Bruno Haible  <bruno@clisp.org>
+
+	* POTFILES.in: Add src/format-librep.c, src/urlget.c, src/x-librep.c,
+	src/x-lisp.c.
+
+2001-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars (COPYRIGHT_HOLDER): New variable.
+	* Makefile.in.in ($(DOMAIN).pot): Pass --copyright-holder option to
+	xgettext.
+
+2001-12-18  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2001-12-17  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+
+2001-12-15  Bruno Haible  <bruno@clisp.org>
+
+	* ja.po: Converted to EUC-JP. Reported by Iida Yosiaki <iida@gnu.org>.
+
+2001-12-13  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder <ke@suse.de>.
+
+2001-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+
+2001-12-11  Bruno Haible  <bruno@clisp.org>
+
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+
+2001-12-08  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in (MSGEXEC): Remove variable.
+	(MSGFILTER): New variable.
+	* Rules-quot (.insert-header.po-update-en): Use $(MSGFILTER) instead
+	of $(MSGEXEC).
+	* POTFILES.in: Add src/msgfilter.c.
+
+2001-12-06  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars (XGETTEXT_OPTIONS): New variable.
+	* Makefile.in.in ($(srcdir)/$(DOMAIN).pot): Use it.
+
+2001-12-05  Bruno Haible  <bruno@clisp.org>
+
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* tr.po: Update from Nilgün Belma Bugüner <nilgun@fide.org>.
+
+2001-12-04  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+
+2001-12-01  Bruno Haible  <bruno@clisp.org>
+
+	* Rules-quot (.insert-header.po-update-en): Set the GETTEXTLIBDIR
+	environment variable, so that msginit finds its project-id script.
+
+2001-12-03  Bruno Haible  <bruno@clisp.org>
+
+	* ko.po: Update from Changwoo Ryu <cwryu@debian.org>.
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+
+2001-11-30  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Karl Eichwalder.
+
+2001-11-28  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+
+2001-11-27  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from François Pinard <pinard@iro.umontreal.ca>.
+
+2001-11-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars: New file.
+	* quot.sed: New file.
+	* boldquot.sed: New file.
+	* en@quot.header: New file.
+	* en@boldquot.header: New file.
+	* insert-header.sin: Mew file.
+	* Rules-quot: New file.
+	* Makefile.in.in: Use $(DOMAIN) instead of $(PACKAGE) almost
+	everywhere.
+	(subdir, top_builddir): Move to Makevars.
+	(MSGINIT): New variable.
+	(MSGCONV): New variable.
+	(MSGEXEC): New variable.
+	(UPDATEPOFILES): New variable.
+	(DUMMYPOFILES): New variable.
+	(DISTFILES.common): New variable.
+	(DISTFILES): Use it.
+	(.SUFFIXES): Add .nop, .po-update.
+	(install-data): Install all of $(DISTFILES.common).
+	(uninstall-data): Uninstall all of $(DISTFILES.common).
+	(update-po): Split into a Makefile rule for each PO file update.
+	(.nop.po-update): New rule, extracted from update-po.
+	($(DUMMYPOFILES)): New trivial rules.
+
+2001-11-15  Bruno Haible  <haible@clisp.cons.org>
+
+	* sv.po: Update from Jan Djärv <Jan.Djarv@mbox200.swipnet.se>.
+
+2001-11-14  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (DISTFILES): Remove ChangeLog.
+	(dist2): Distribute ChangeLog only if it exists.
+
+2001-11-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* da.po: Update from Keld Simonsen <keld@dkuug.dk>.
+
+2001-11-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in: Always use sed with -e option.
+	(.po.gmo): Use 'echo' to make the command look prettier.
+	($(POFILES)): Likewise. Make it work in the case $builddir != $srcdir.
+	(dist2): Make it work in the case $(srcdir) is an absolute directory.
+
+2001-11-06  Paolo Bonzini <bonzini@gnu.org>
+            Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (update-po): Avoid writing in $(srcdir) unless
+	absolutely necessary. Writing in the builddir is allowed, though.
+
+2001-11-05  Bruno Haible  <haible@clisp.cons.org>
+
+	* de.po: Update from Karl Eichwalder.
+	* tr.po: Update from Nilgün Belma Bugüner.
+
+2001-10-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (dist2): Distribute LINGUAS if it exists.
+
+2001-10-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* et.po: Add Plural-Forms field.
+	* pt_BR.po: Likewise.
+	* zh.po: Likewise.
+	* ja.po: Change charset from sjis to SHIFT_JIS.
+	* ru.po: Add missing plural cases.
+
+2001-10-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add src/hostname.c, src/msginit.c.
+
+2001-10-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in ($(PACKAGE).pot): Don't extract all comments, only
+	those starting with "TRANSLATORS:".
+
+2001-09-27  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (install-strip, installdirs, installdirs-exec,
+	installdirs-data, installdirs-data-no, installdirs-data-yes): New
+	rules.
+
+2001-09-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (MSGMERGE_UPDATE): New variable.
+	(.SUFFIXES): Remove .pox.
+	(.po.pox): Remove rule.
+	($(POFILES)): New rule.
+	(mostlyclean): Don't remove *.pox.
+	(force): New target.
+
+2001-10-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* es.po: Update from Max de Mendizábal <max@upn.mx>.
+	* sk.po: New file, from Marcel Telka <marcel@telka.sk>.
+	* LINGUAS: Add sk.
+
+2001-08-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (.po.mo, .po.gmo): Add msgfmt option -c, to guarantee
+	the PO file is really valid.
+
+2001-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in (CC, DEFS, CFLAGS, CPPFLAGS, INCLUDES, COMPILE):
+	Remove variables.
+	(.SUFFIXES): Remove .c and .o.
+	(.c.o): Remove rule.
+
+2001-07-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* LINGUAS: New file, extracted from toplevel configure.in.
+
+2001-07-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in.in: Ensure @CATALOGS@ is not used if NLS is disabled.
+	(uninstall): Depend on uninstall-exec and uninstall-data.
+	(uninstall-exec, uninstall-data, uninstall-data-no,
+	uninstall-data-yes): New rules.
+
+2001-06-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add src/msgcat.c, src/msgconv.c, src/msgen.c,
+	src/msggrep.c, src/msgl-charset.c, src/msgl-iconv.c, src/msgsed.c.
+
+2001-06-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add lib/pipe-bidi.c, lib/pipe-in.c, lib/pipe-out.c,
+	lib/wait-process.c.
+
+2001-05-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* de.po: Update from Karl Eichwalder.
+
+2001-05-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add lib/xerror.c.
+
+2001-04-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add src/read-po.c.
+
+2001-04-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* POTFILES.in: Add src/po-charset.c.
+
 2001-09-13  Bruno Haible  <haible@clisp.cons.org>
 
 	* gettext-0.10.40 released.
@@ -344,7 +830,7 @@ Tue Aug 27 02:04:45 1996  Ulrich Drepper  <drepper@myware.rz.uni-karlsruhe.de>
 
 Tue Aug 20 01:40:28 1996  Ulrich Drepper  <drepper@myware.rz.uni-karlsruhe.de>
 
-	* fr.po: Update from Franc,ois of 960819.
+	* fr.po: Update from François of 960819.
 
 Sun Aug 18 20:47:47 1996  Ulrich Drepper  <drepper@myware.rz.uni-karlsruhe.de>
 
@@ -477,7 +963,7 @@ Tue Dec  5 11:57:35 1995  Ulrich Drepper  <drepper@myware>
 
 Sun Dec  3 01:21:55 1995  Ulrich Drepper  <drepper@myware>
 
-	* fr.po: Version for 0.10 by Franc,ois Pinard.
+	* fr.po: Version for 0.10 by François Pinard.
 
 Sun Nov 26 02:26:56 1995  Ulrich Drepper  <drepper@myware>
 
@@ -531,11 +1017,11 @@ Wed Nov  8 23:46:41 1995  Ulrich Drepper  <drepper@myware>
 Mon Nov  6 21:32:22 1995  Ulrich Drepper  <drepper@myware>
 
 	* Makefile.in.in (.po.gmo): Finally make ultimate rule which
-	places .gmo always on $(srcdir).  Patch by Franc,ois Pinard.
+	places .gmo always on $(srcdir).  Patch by François Pinard.
 
 Mon Nov  6 17:08:05 1995  Ulrich Drepper  <drepper@myware>
 
-	* Makefile.in.in: Some more cleanups by Franc,ois Pinard.
+	* Makefile.in.in: Some more cleanups by François Pinard.
 
 Mon Nov  6 16:46:24 1995  Ulrich Drepper  <drepper@myware>
 
@@ -545,7 +1031,7 @@ Mon Nov  6 16:46:24 1995  Ulrich Drepper  <drepper@myware>
 	($(PACKAGE).pot): Address $(PACKAGE).pot file in $(srcdir).
 	`rm -f' old file instead of using `mv -f'.
 
-	* fr.po: Translations for version 0.9.8 by Franc,ois Pinard.
+	* fr.po: Translations for version 0.9.8 by François Pinard.
 
 Mon Nov  6 00:46:30 1995  Ulrich Drepper  <drepper@myware>
 
@@ -592,11 +1078,11 @@ Fri Nov  3 00:37:26 1995  Ulrich Drepper  <drepper@myware>
 
 	* Makefile.in.in:
 	($(PACKAGE).pot): Keyword for marking string constants is now _C
-	instrad of _GTM.  Suggested by Franc,ois Pinard.
+	instrad of _GTM.  Suggested by François Pinard.
 
 Thu Nov  2 01:36:20 1995  Ulrich Drepper  <drepper@myware>
 
-	* fr.po: Version for 0.9.5 by Franc,ois.
+	* fr.po: Version for 0.9.5 by François.
 
 Wed Nov  1 10:58:59 1995  Ulrich Drepper  <drepper@myware>
 
@@ -674,7 +1160,7 @@ Fri Aug 18 23:43:39 1995  Ulrich Drepper  <drepper@myware>
 
 	* Makefile.in.in (install-data):
 	Added missing ';' and fix wrong variable reference.
-	Reported by Franc,ois Pinard.
+	Reported by François Pinard.
 
 Tue Aug 15 12:54:09 1995  Ulrich Drepper  <drepper@myware>
 
@@ -740,7 +1226,7 @@ Tue Jul 25 23:45:00 1995  Ulrich Drepper  <drepper@myware>
 Wed Jul 19 23:56:03 1995  Ulrich Drepper  <drepper@myware>
 
 	* POTFILES.in: Don't mention libiberty.
-  	Reported by Franc,ois Pinard.
+  	Reported by François Pinard.
 
 	* de.po:
 	Revert to 1.22, because messages are gone.  Some scripts still
@@ -752,7 +1238,7 @@ Tue Jul 18 16:20:35 1995  Ulrich Drepper  <drepper@myware>
 
 Sun Jul 16 00:58:09 1995  Ulrich Drepper  <drepper@myware>
 
-	* fr.po: Latest version (for 0.7.3) by Franc,ois.
+	* fr.po: Latest version (for 0.7.3) by François.
 
 Thu Jul 13 22:26:18 1995  Ulrich Drepper  <drepper@myware>
 

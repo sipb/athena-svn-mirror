@@ -1,5 +1,5 @@
 /* linebreak.c - line breaking of Unicode strings
-   Copyright (C) 2001 Free Software Foundation, Inc.
+   Copyright (C) 2001-2002 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
 This program is free software; you can redistribute it and/or modify
@@ -20,208 +20,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include <config.h>
 #endif
 
-#include <stddef.h>
-#include <string.h>
+/* Specification.  */
 #include "linebreak.h"
+
+#include <stdlib.h>
+#include <string.h>
 #include "c-ctype.h"
 
-
-/* Return the length (number of units) of the first character in S, putting
-   its 'ucs4_t' representation in *PUC.  */
-static int
-u8_mbtouc_aux (puc, s, n)
-     unsigned int *puc;
-     const unsigned char *s;
-     size_t n;
-{
-  unsigned char c = *s;
-
-  if (c >= 0xc2)
-    {
-      if (c < 0xe0)
-        {
-          if (n >= 2)
-            {
-              if ((s[1] ^ 0x80) < 0x40)
-                {
-                  *puc = ((unsigned int) (c & 0x1f) << 6)
-                         | (unsigned int) (s[1] ^ 0x80);
-                  return 2;
-                }
-              /* invalid multibyte character */
-            }
-          else
-            {
-              /* incomplete multibyte character */
-              *puc = 0xfffd;
-              return n;
-            }
-        }
-      else if (c < 0xf0)
-        {
-          if (n >= 3)
-            {
-              if ((s[1] ^ 0x80) < 0x40 && (s[2] ^ 0x80) < 0x40
-                  && (c >= 0xe1 || s[1] >= 0xa0))
-                {
-                  *puc = ((unsigned int) (c & 0x0f) << 12)
-                         | ((unsigned int) (s[1] ^ 0x80) << 6)
-                         | (unsigned int) (s[2] ^ 0x80);
-                  return 3;
-                }
-              /* invalid multibyte character */
-            }
-          else
-            {
-              /* incomplete multibyte character */
-              *puc = 0xfffd;
-              return n;
-            }
-        }
-      else if (c < 0xf8)
-        {
-          if (n >= 4)
-            {
-              if ((s[1] ^ 0x80) < 0x40 && (s[2] ^ 0x80) < 0x40
-                  && (s[3] ^ 0x80) < 0x40
-                  && (c >= 0xf1 || s[1] >= 0x90))
-                {
-                  *puc = ((unsigned int) (c & 0x07) << 18)
-                         | ((unsigned int) (s[1] ^ 0x80) << 12)
-                         | ((unsigned int) (s[2] ^ 0x80) << 6)
-                         | (unsigned int) (s[3] ^ 0x80);
-                  return 4;
-                }
-              /* invalid multibyte character */
-            }
-          else
-            {
-              /* incomplete multibyte character */
-              *puc = 0xfffd;
-              return n;
-            }
-        }
-#if 0
-      else if (c < 0xfc)
-        {
-          if (n >= 5)
-            {
-              if ((s[1] ^ 0x80) < 0x40 && (s[2] ^ 0x80) < 0x40
-                  && (s[3] ^ 0x80) < 0x40 && (s[4] ^ 0x80) < 0x40
-                  && (c >= 0xf9 || s[1] >= 0x88))
-                {
-                  *puc = ((unsigned int) (c & 0x03) << 24)
-                         | ((unsigned int) (s[1] ^ 0x80) << 18)
-                         | ((unsigned int) (s[2] ^ 0x80) << 12)
-                         | ((unsigned int) (s[3] ^ 0x80) << 6)
-                         | (unsigned int) (s[4] ^ 0x80);
-                  return 5;
-                }
-              /* invalid multibyte character */
-            }
-          else
-            {
-              /* incomplete multibyte character */
-              *puc = 0xfffd;
-              return n;
-            }
-        }
-      else if (c < 0xfe)
-        {
-          if (n >= 6)
-            {
-              if ((s[1] ^ 0x80) < 0x40 && (s[2] ^ 0x80) < 0x40
-                  && (s[3] ^ 0x80) < 0x40 && (s[4] ^ 0x80) < 0x40
-                  && (s[5] ^ 0x80) < 0x40
-                  && (c >= 0xfd || s[1] >= 0x84))
-                {
-                  *puc = ((unsigned int) (c & 0x01) << 30)
-                         | ((unsigned int) (s[1] ^ 0x80) << 24)
-                         | ((unsigned int) (s[2] ^ 0x80) << 18)
-                         | ((unsigned int) (s[3] ^ 0x80) << 12)
-                         | ((unsigned int) (s[4] ^ 0x80) << 6)
-                         | (unsigned int) (s[5] ^ 0x80);
-                  return 6;
-                }
-              /* invalid multibyte character */
-            }
-          else
-            {
-              /* incomplete multibyte character */
-              *puc = 0xfffd;
-              return n;
-            }
-        }
-#endif
-    }
-  /* invalid multibyte character */
-  *puc = 0xfffd;
-  return 1;
-}
-static inline int
-u8_mbtouc (puc, s, n)
-     unsigned int *puc;
-     const unsigned char *s;
-     size_t n;
-{
-  unsigned char c = *s;
-
-  if (c < 0x80)
-    {
-      *puc = c;
-      return 1;
-    }
-  else
-    return u8_mbtouc_aux (puc, s, n);
-}
+#include "utf8-ucs4.h"
 
 #ifdef unused
-static int
-u16_mbtouc_aux (puc, s, n)
-     unsigned int *puc;
-     const unsigned short *s;
-     size_t n;
-{
-  unsigned short c = *s;
-
-  if (c < 0xdc00)
-    {
-      if (n >= 2)
-        {
-          if (s[1] >= 0xdc00 && s[1] < 0xe000)
-            {
-              *puc = 0x10000 + ((c - 0xd800) << 10) + (s[1] - 0xdc00);
-              return 2;
-            }
-          /* invalid multibyte character */
-        }
-      else
-        {
-          /* incomplete multibyte character */
-          *puc = 0xfffd;
-          return n;
-        }
-    }
-  /* invalid multibyte character */
-  *puc = 0xfffd;
-  return 1;
-}
-static inline int
-u16_mbtouc (puc, s, n)
-     unsigned int *puc;
-     const unsigned short *s;
-     size_t n;
-{
-  unsigned short c = *s;
-
-  if (c < 0xd800 || c >= 0xe000)
-    {
-      *puc = c;
-      return 1;
-    }
-  else
-    return u16_mbtouc_aux (puc, s, n);
-}
+#include "utf16-ucs4.h"
 
 static inline int
 u32_mbtouc (puc, s, n)
@@ -417,11 +226,15 @@ int uc_width PARAMS ((unsigned int uc, const char *encoding));
 
 /*
  * Non-spacing attribute table.
- * See PropList.txt, or grep '^[^;]*;[^;]*;[^;]*;[^;]*;NSM;' UnicodeData.txt
- * Control characters are also marked non-spacing here, because they are not
- * printable. Zero width characters are also marked non-spacing here.
+ * Consists of:
+ * - Non-spacing characters; generated from PropList.txt or
+ *   "grep '^[^;]*;[^;]*;[^;]*;[^;]*;NSM;' UnicodeData.txt"
+ * - Format control characters; generated from
+ *   "grep '^[^;]*;[^;]*;Cf;' UnicodeData.txt"
+ * - Zero width characters; generated from
+ *   "grep '^[^;]*;ZERO WIDTH ' UnicodeData.txt"
  */
-static const unsigned char nonspacing_table_data[15*64] = {
+static const unsigned char nonspacing_table_data[16*64] = {
   /* 0x0000-0x01ff */
   0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, /* 0x0000-0x003f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, /* 0x0040-0x007f */
@@ -437,7 +250,7 @@ static const unsigned char nonspacing_table_data[15*64] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x0280-0x02bf */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x02c0-0x02ff */
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, /* 0x0300-0x033f */
-  0xff, 0x7f, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, /* 0x0340-0x037f */
+  0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, /* 0x0340-0x037f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x0380-0x03bf */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x03c0-0x03ff */
   /* 0x0400-0x05ff */
@@ -508,8 +321,8 @@ static const unsigned char nonspacing_table_data[15*64] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1640-0x167f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1680-0x16bf */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x16c0-0x16ff */
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1700-0x173f */
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1740-0x177f */
+  0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x1c, 0x00, /* 0x1700-0x173f */
+  0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x0c, 0x00, /* 0x1740-0x177f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3f, /* 0x1780-0x17bf */
   0x40, 0xfe, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x17c0-0x17ff */
   /* 0x1800-0x19ff */
@@ -523,9 +336,9 @@ static const unsigned char nonspacing_table_data[15*64] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x19c0-0x19ff */
   /* 0x2000-0x21ff */
   0x00, 0xf8, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00, /* 0x2000-0x203f */
-  0x00, 0x00, 0x00, 0x00, 0x00, 0xfc, 0x00, 0x00, /* 0x2040-0x207f */
+  0x00, 0x00, 0x00, 0x00, 0x0f, 0xfc, 0x00, 0x00, /* 0x2040-0x207f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x2080-0x20bf */
-  0x00, 0x00, 0xff, 0xff, 0x0f, 0x00, 0x00, 0x00, /* 0x20c0-0x20ff */
+  0x00, 0x00, 0xff, 0xff, 0xff, 0x07, 0x00, 0x00, /* 0x20c0-0x20ff */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x2100-0x213f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x2140-0x217f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x2180-0x21bf */
@@ -549,16 +362,25 @@ static const unsigned char nonspacing_table_data[15*64] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xfb80-0xfbbf */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xfbc0-0xfbff */
   /* 0xfe00-0xffff */
-  0x00, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, /* 0xfe00-0xfe3f */
+  0xff, 0xff, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, /* 0xfe00-0xfe3f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xfe40-0xfe7f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xfe80-0xfebf */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, /* 0xfec0-0xfeff */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xff00-0xff3f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xff40-0xff7f */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xff80-0xffbf */
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0e  /* 0xffc0-0xffff */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0e, /* 0xffc0-0xffff */
+  /* 0x1d000-0x1d1ff */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1d000-0x1d03f */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1d040-0x1d07f */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1d080-0x1d0bf */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1d0c0-0x1d0ff */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0x1d100-0x1d13f */
+  0x00, 0x00, 0x00, 0x00, 0x80, 0x03, 0x00, 0xf8, /* 0x1d140-0x1d17f */
+  0xe7, 0x0f, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, /* 0x1d180-0x1d1bf */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  /* 0x1d1c0-0x1d1ff */
 };
-static const signed char nonspacing_table_ind[128] = {
+static const signed char nonspacing_table_ind[240] = {
    0,  1,  2,  3,  4,  5,  6,  7, /* 0x0000-0x0fff */
    8, -1, -1,  9, 10, -1, -1, -1, /* 0x1000-0x1fff */
   11, -1, -1, -1, -1, -1, -1, -1, /* 0x2000-0x2fff */
@@ -574,7 +396,21 @@ static const signed char nonspacing_table_ind[128] = {
   -1, -1, -1, -1, -1, -1, -1, -1, /* 0xc000-0xcfff */
   -1, -1, -1, -1, -1, -1, -1, -1, /* 0xd000-0xdfff */
   -1, -1, -1, -1, -1, -1, -1, -1, /* 0xe000-0xefff */
-  -1, -1, -1, -1, -1, 13, -1, 14  /* 0xf000-0xffff */
+  -1, -1, -1, -1, -1, 13, -1, 14, /* 0xf000-0xffff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x10000-0x10fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x11000-0x11fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x12000-0x12fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x13000-0x13fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x14000-0x14fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x15000-0x15fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x16000-0x16fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x17000-0x17fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x18000-0x18fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x19000-0x19fff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x1a000-0x1afff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x1b000-0x1bfff */
+  -1, -1, -1, -1, -1, -1, -1, -1, /* 0x1c000-0x1cfff */
+  15, -1, -1, -1, -1, -1, -1, -1  /* 0x1d000-0x1dfff */
 };
 
 /* Determine number of column positions required for UC. */
@@ -583,18 +419,23 @@ uc_width (uc, encoding)
      unsigned int uc;
      const char *encoding;
 {
-  /* Test for non-spacing or control character. */
-  if ((uc >> 9) < 128)
+  /* Test for non-spacing or control character.  */
+  if ((uc >> 9) < 240)
     {
       int ind = nonspacing_table_ind[uc >> 9];
       if (ind >= 0)
-        if ((nonspacing_table_data[64*ind + ((uc >> 3) & 63)] >> (uc & 7)) & 1)
-          {
-            if (uc > 0 && uc < 0x100)
-              return -1;
-            else
-              return 0;
-          }
+	if ((nonspacing_table_data[64*ind + ((uc >> 3) & 63)] >> (uc & 7)) & 1)
+	  {
+	    if (uc > 0 && uc < 0x100)
+	      return -1;
+	    else
+	      return 0;
+	  }
+    }
+  else if ((uc >> 9) == (0xe0000 >> 9))
+    {
+      if (uc >= 0xe0020 ? uc <= 0xe007f : uc == 0xe0001)
+	return 0;
     }
   /* Test for double-width character.
    * Generated from "grep '^....;[WF]' EastAsianWidth.txt"
@@ -602,17 +443,20 @@ uc_width (uc, encoding)
    */
   if (uc >= 0x1100
       && ((uc < 0x1160) /* Hangul Jamo */
-          || (uc >= 0x2e80 && uc < 0xa4d0  /* CJK ... Yi */
-              && !((uc & ~0x0011) == 0x300a || uc == 0x303f))
-          || (uc >= 0xac00 && uc < 0xd7a4) /* Hangul Syllables */
-          || (uc >= 0xf900 && uc < 0xfb00) /* CJK Compatibility Ideographs */
-          || (uc >= 0xfe30 && uc < 0xfe70) /* CJK Compatibility Forms */
-          || (uc >= 0xff00 && uc < 0xff60) /* Fullwidth Forms */
-          || (uc >= 0xffe0 && uc < 0xffe7)))
+	  || (uc >= 0x2e80 && uc < 0xa4d0  /* CJK ... Yi */
+	      && !(uc == 0x303f))
+	  || (uc >= 0xac00 && uc < 0xd7a4) /* Hangul Syllables */
+	  || (uc >= 0xf900 && uc < 0xfb00) /* CJK Compatibility Ideographs */
+	  || (uc >= 0xfe30 && uc < 0xfe70) /* CJK Compatibility Forms */
+	  || (uc >= 0xff00 && uc < 0xff61) /* Fullwidth Forms */
+	  || (uc >= 0xffe0 && uc < 0xffe7)
+	  || (uc >= 0x20000 && uc <= 0x2a6d6) /* CJK */
+	  || (uc >= 0x2f800 && uc <= 0x2fa1d) /* CJK Compatibility Ideographs */
+     )   )
     return 2;
   /* In ancient CJK encodings, Cyrillic and most other characters are
-     double-width as well. */
-  if (uc >= 0x00A1 && uc < 0xFF60 && uc != 0x20A9
+     double-width as well.  */
+  if (uc >= 0x00A1 && uc < 0xFF61 && uc != 0x20A9
       && is_cjk_encoding (encoding))
     return 2;
   return 1;

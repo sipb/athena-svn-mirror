@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1998, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -21,10 +21,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include "config.h"
 #endif
 
-#include <stdio.h>
-
-#include "system.h"
+/* Specification.  */
 #include "str-list.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "xmalloc.h"
+
+
+/* Initialize an empty list of strings.  */
+void
+string_list_init (slp)
+     string_list_ty *slp;
+{
+  slp->item = NULL;
+  slp->nitems = 0;
+  slp->nitems_max = 0;
+}
 
 
 /* Return a fresh, empty list of strings.  */
@@ -91,6 +106,20 @@ string_list_append_unique (slp, s)
 }
 
 
+/* Destroy a list of strings.  */
+void
+string_list_destroy (slp)
+     string_list_ty *slp;
+{
+  size_t j;
+
+  for (j = 0; j < slp->nitems; ++j)
+    free ((char *) slp->item[j]);
+  if (slp->item != NULL)
+    free (slp->item);
+}
+
+
 /* Free a list of strings.  */
 void
 string_list_free (slp)
@@ -103,6 +132,56 @@ string_list_free (slp)
   if (slp->item != NULL)
     free (slp->item);
   free (slp);
+}
+
+
+/* Return a freshly allocated string obtained by concatenating all the
+   strings in the list.  */
+char *
+string_list_concat (slp)
+     const string_list_ty *slp;
+{
+  size_t len;
+  size_t j;
+  char *result;
+  size_t pos;
+
+  len = 1;
+  for (j = 0; j < slp->nitems; ++j)
+    len += strlen (slp->item[j]);
+  result = (char *) xmalloc (len);
+  pos = 0;
+  for (j = 0; j < slp->nitems; ++j)
+    {
+      len = strlen (slp->item[j]);
+      memcpy (result + pos, slp->item[j], len);
+      pos += len;
+    }
+  result[pos] = '\0';
+  return result;
+}
+
+
+/* Return a freshly allocated string obtained by concatenating all the
+   strings in the list, and destroy the list.  */
+char *
+string_list_concat_destroy (slp)
+     string_list_ty *slp;
+{
+  char *result;
+
+  /* Optimize the most frequent case.  */
+  if (slp->nitems == 1)
+    {
+      result = (char *) slp->item[0];
+      free (slp->item);
+    }
+  else
+    {
+      result = string_list_concat (slp);
+      string_list_destroy (slp);
+    }
+  return result;
 }
 
 
@@ -124,7 +203,7 @@ string_list_join (slp)
 	++len;
       len += strlen (slp->item[j]);
     }
-  result = xmalloc (len);
+  result = (char *) xmalloc (len);
   pos = 0;
   for (j = 0; j < slp->nitems; ++j)
     {
@@ -140,15 +219,15 @@ string_list_join (slp)
 
 
 /* Return 1 if s is contained in the list of strings, 0 otherwise.  */
-int
+bool
 string_list_member (slp, s)
      const string_list_ty *slp;
      const char *s;
 {
- size_t j;
+  size_t j;
 
   for (j = 0; j < slp->nitems; ++j)
     if (strcmp (slp->item[j], s) == 0)
-      return 1;
-  return 0;
+      return true;
+  return false;
 }

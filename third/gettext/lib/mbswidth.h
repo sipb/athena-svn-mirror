@@ -15,8 +15,10 @@
    along with this program; if not, write to the Free Software Foundation,
    Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
+#include <stddef.h>
+
 #ifndef PARAMS
-# if defined (__GNUC__) || __STDC__
+# if __STDC__ || defined __GNUC__ || defined __SUNPRO_C || defined __cplusplus || __PROTOTYPES
 #  define PARAMS(Args) Args
 # else
 #  define PARAMS(Args) ()

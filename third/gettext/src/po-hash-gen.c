@@ -15,14 +15,26 @@
 #line 20 "po-hash-gen.y"
 
 
+/* The bison generated parser uses alloca.  AIX 3 forces us to put this
+   declaration at the beginning of the file.  The declaration in bison's
+   skeleton file comes too late.  This must come before <config.h>
+   because <config.h> may include arbitrary system headers.  */
+#if defined _AIX && !defined __GNUC__
+ #pragma alloca
+#endif
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include <stdio.h>
-
-#include <system.h>
+/* Specification.  */
 #include "po-hash.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "xmalloc.h"
 #include "po.h"
 
 /* Remap normal yacc parser interface names (yyparse, yylex, yyerror, etc),
@@ -73,13 +85,13 @@
 #define yycheck  po_hash_yycheck
 
 
-#line 89 "po-hash-gen.y"
+#line 101 "po-hash-gen.y"
 typedef union
 {
   char *string;
-  int number;
+  size_t number;
 } YYSTYPE;
-#line 98 "po-hash-gen.y"
+#line 110 "po-hash-gen.y"
 
 
 static const char *cur;
@@ -154,20 +166,20 @@ static const char yytranslate[] = {     0,
 
 #if YYDEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     1,     4,     8,    16,    25
+     0,     1,     4,     8,    10,    18,    27
 };
 
 static const short yyrhs[] = {    -1,
-    10,    11,     0,     3,     5,     4,     0,     7,     5,     3,
-     6,     8,     5,     4,     0,     7,     5,     3,     6,     8,
-     9,     5,     4,     0,     7,     5,     4,     0
+    10,    11,     0,     3,     5,     4,     0,     3,     0,     7,
+     5,     3,     6,     8,     5,     4,     0,     7,     5,     3,
+     6,     8,     9,     5,     4,     0,     7,     5,     4,     0
 };
 
 #endif
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-   129,   130,   134,   140,   146,   152
+   141,   142,   146,   152,   158,   164,   170
 };
 #endif
 
@@ -181,16 +193,16 @@ static const char * const yytname[] = {   "$","error","$undefined.","STRING",
 #endif
 
 static const short yyr1[] = {     0,
-    10,    10,    11,    11,    11,    11
+    10,    10,    11,    11,    11,    11,    11
 };
 
 static const short yyr2[] = {     0,
-     0,     2,     3,     7,     8,     3
+     0,     2,     3,     1,     7,     8,     3
 };
 
 static const short yydefact[] = {     1,
-     0,     0,     0,     2,     0,     0,     3,     0,     6,     0,
-     0,     0,     0,     4,     0,     5,     0,     0
+     0,     4,     0,     2,     0,     0,     3,     0,     7,     0,
+     0,     0,     0,     5,     0,     6,     0,     0
 };
 
 static const short yydefgoto[] = {     1,
@@ -220,7 +232,7 @@ static const short yycheck[] = {     0,
      8,     4,     0,     5,     4
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
-#line 3 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 3 "/usr/local/share/bison.simple"
 /* This file comes from bison-1.28.  */
 
 /* Skeleton output parser for bison,
@@ -434,7 +446,7 @@ __yy_memcpy (char *to, char *from, unsigned int count)
 #endif
 #endif
 
-#line 217 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 217 "/usr/local/share/bison.simple"
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
    into yyparse.  The argument should have type void *.
@@ -763,7 +775,7 @@ yyreduce:
   switch (yyn) {
 
 case 3:
-#line 135 "po-hash-gen.y"
+#line 147 "po-hash-gen.y"
 {
 		  /* GNU style */
 		  po_callback_comment_filepos (yyvsp[-2].string, yyvsp[0].number);
@@ -771,23 +783,31 @@ case 3:
 		;
     break;}
 case 4:
-#line 141 "po-hash-gen.y"
+#line 153 "po-hash-gen.y"
+{
+		  /* GNU style, without line number (e.g. from Pascal .rst) */
+		  po_callback_comment_filepos (yyvsp[0].string, (size_t)(-1));
+		  free (yyvsp[0].string);
+		;
+    break;}
+case 5:
+#line 159 "po-hash-gen.y"
 {
 		  /* SunOS style */
 		  po_callback_comment_filepos (yyvsp[-4].string, yyvsp[0].number);
 		  free (yyvsp[-4].string);
 		;
     break;}
-case 5:
-#line 147 "po-hash-gen.y"
+case 6:
+#line 165 "po-hash-gen.y"
 {
 		  /* Solaris style */
 		  po_callback_comment_filepos (yyvsp[-5].string, yyvsp[0].number);
 		  free (yyvsp[-5].string);
 		;
     break;}
-case 6:
-#line 153 "po-hash-gen.y"
+case 7:
+#line 171 "po-hash-gen.y"
 {
 		  /* GNU style, but STRING is `file'.  Esoteric, but it
 		     happened.  */
@@ -796,7 +816,7 @@ case 6:
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
-#line 543 "/home/haible/gnu/arch/linuxlibc6/share/bison.simple"
+#line 543 "/usr/local/share/bison.simple"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1016,7 +1036,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 160 "po-hash-gen.y"
+#line 178 "po-hash-gen.y"
 
 
 
@@ -1026,7 +1046,7 @@ yylex ()
   static char *buf;
   static size_t bufmax;
   size_t bufpos;
-  int n;
+  size_t n;
   int c;
 
   for (;;)

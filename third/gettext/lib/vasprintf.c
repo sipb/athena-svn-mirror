@@ -1,6 +1,6 @@
 /* Like vsprintf but provides a pointer to malloc'd storage, which must
    be freed by the caller.
-   Copyright (C) 1994, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1994, 1998, 1999, 2000-2002 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,20 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include <config.h>
 #endif
 
+/* Specification.  */
+#include "vasprintf.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-#if __STDC__
-# include <stdarg.h>
-#else
-# include <varargs.h>
-#endif
-
 #include <math.h>
 
+#include "libstdarg.h"
+
 #ifdef TEST
-int global_total_width;
+size_t global_total_width;
 #endif
 
 static int
@@ -45,7 +43,7 @@ int_vasprintf (result, format, args)
   const char *p = format;
   /* Add one to make sure that it is never zero, which might cause malloc
      to return NULL.  */
-  int total_width = strlen (format) + 1;
+  size_t total_width = strlen (format) + 1;
   va_list ap;
 
   memcpy (&ap, args, sizeof (va_list));
@@ -123,7 +121,7 @@ int_vasprintf (result, format, args)
   if (*result != NULL)
     return vsprintf (*result, format, *args);
   else
-    return 0;
+    return -1;
 }
 
 int
@@ -136,25 +134,16 @@ vasprintf (result, format, args)
 }
 
 int
-asprintf
-#if __STDC__
-     (char **result, const char *format, ...)
-#else
-     (result, va_alist)
+asprintf VA_PARAMS ((char **result, const char *format, ...),
+		    (result, format, va_alist)
      char **result;
-     va_dcl
-#endif
+     const char *format;
+     va_dcl)
 {
   va_list args;
   int done;
 
-#if __STDC__
-  va_start (args, format);
-#else
-  char *format;
-  va_start (args);
-  format = va_arg (args, char *);
-#endif
+  VA_START (args, format);
   done = vasprintf (result, format, args);
   va_end (args);
 
@@ -168,30 +157,21 @@ asprintf
 #include <float.h>
 
 void
-checkit
-#if __STDC__
-     (const char* format, ...)
-#else
-     (va_alist)
-     va_dcl
-#endif
+checkit VA_PARAMS ((const char* format, ...),
+		   (format, va_alist)
+     const char *format;
+     va_dcl)
 {
   va_list args;
   char *result;
 
-#if __STDC__
-  va_start (args, format);
-#else
-  char *format;
-  va_start (args);
-  format = va_arg (args, char *);
-#endif
+  VA_START (args, format);
   vasprintf (&result, format, args);
   if (strlen (result) < global_total_width)
     printf ("PASS: ");
   else
     printf ("FAIL: ");
-  printf ("%d %s\n", global_total_width, result);
+  printf ("%lu %s\n", (unsigned long) global_total_width, result);
 }
 
 int

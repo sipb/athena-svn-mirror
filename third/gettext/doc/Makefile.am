@@ -1,5 +1,5 @@
 ## Makefile for the doc subdirectory of the GNU NLS Utilities
-## Copyright (C) 1995-1997, 2001 Free Software Foundation, Inc.
+## Copyright (C) 1995-1997, 2001-2002 Free Software Foundation, Inc.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -31,9 +31,14 @@ RM = rm -f
 MAKEINFO = env LANG= LANGUAGE= @MAKEINFO@
 
 info_TEXINFOS = gettext.texi
-gettext_TEXINFOS = iso-639.texi iso-3166.texi
+# List of texinfo sources @included by gettext.texi, excluding version.texi.
+gettext_TEXINFOS = \
+  xgettext.texi msginit.texi msgmerge.texi msgcat.texi msgconv.texi \
+  msggrep.texi msgfilter.texi msguniq.texi msgcomm.texi msgcmp.texi \
+  msgattrib.texi msgen.texi msgexec.texi msgfmt.texi msgunfmt.texi \
+  gettextize.texi autopoint.texi iso-639.texi iso-3166.texi
 
-EXTRA_DIST = iso-639.sed iso-3166.sed ISO_639 ISO_3166 nls.texi matrix.texi $(EXTRA_DIST_html)
+EXTRA_DIST = iso-639.sed iso-3166.sed ISO_639 ISO_3166 nls.texi matrix.texi texi2html
 
 iso-639.texi: ISO_639 iso-639.sed
 	$(SED) -f $(srcdir)/iso-639.sed $(srcdir)/ISO_639 > iso-639.tmp
@@ -56,12 +61,14 @@ all-local: html
 install-data-local: install-html
 installdirs-local: installdirs-html
 uninstall-local: uninstall-html
+# Hidden from automake, but really activated. Works around an automake-1.5 bug.
+#distdir: dist-html
 
 html: html-split
 install-html: install-html-split
 uninstall-html: uninstall-html-split
+dist-html: dist-html-split
 
-EXTRA_DIST_html = $(wildcard gettext_*.html)
 CLEANFILES = gettext.pdf gettext.html
 # gettext.dvi and gettext.ps are already known to automake.
 MAINTAINERCLEANFILES = gettext_*.html
@@ -78,6 +85,21 @@ installdirs-dvi:
 
 uninstall-dvi:
 	$(RM) $(DESTDIR)$(dvidir)/gettext.dvi
+
+# Temporary index files. automake doesn't remove them reliably by itself.
+MOSTLYCLEANFILES = \
+  gettext.am gettext.ams \
+  gettext.cp gettext.cps \
+  gettext.ef gettext.efs \
+  gettext.em gettext.ems \
+  gettext.ev gettext.evs \
+  gettext.fn gettext.fns \
+  gettext.kw gettext.kws \
+  gettext.ky gettext.kys \
+  gettext.op gettext.ops \
+  gettext.pg gettext.pgs \
+  gettext.tp gettext.tps \
+  gettext.vr gettext.vrs
 
 
 # Documentation in Postscript format.
@@ -124,7 +146,7 @@ uninstall-pdf:
 
 # Documentation in HTML format.
 
-TEXI2HTML = @TEXI2HTML@
+TEXI2HTML = @PERL@ $(srcdir)/texi2html
 
 html-monolithic: gettext.html
 html-split: gettext_toc.html
@@ -133,8 +155,8 @@ gettext.html: gettext.texi version.texi $(gettext_TEXINFOS)
 	$(TEXI2HTML) -expandinfo -number -monolithic `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi`
 
 gettext_toc.html: gettext.texi version.texi $(gettext_TEXINFOS)
-	case "$(TEXI2HTML)" in \
-	  *"/missing texi2html") \
+	case "@PERL@" in \
+	  *"/missing perl") \
 	     $(TEXI2HTML) -expandinfo -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` || exit 0 ;; \
 	  *) $(RM) gettext_*.html ; \
 	     $(TEXI2HTML) -expandinfo -number -split_chapter `if test -f gettext.texi; then echo gettext.texi; else echo $(srcdir)/gettext.texi; fi` ;; \
@@ -158,6 +180,21 @@ uninstall-html-monolithic:
 
 uninstall-html-split:
 	$(RM) $(DESTDIR)$(htmldir)/gettext_*.html
+
+dist-html-monolithic:
+	$(mkinstalldirs) $(distdir)/
+	file=gettext.html; \
+	if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	cp -p $$d/$$file $(distdir)/$$file || exit 1
+
+# We would like to put gettext_*.html into EXTRA_DIST, but it doesn't work.
+dist-html-split:
+	$(mkinstalldirs) $(distdir)/
+	file=gettext_toc.html; \
+	if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	for file in `cd $$d && echo gettext_*.html`; do \
+	  cp -p $$d/$$file $(distdir)/$$file || exit 1; \
+	done
 
 
 # One more automake bug.

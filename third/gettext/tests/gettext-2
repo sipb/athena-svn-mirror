@@ -2,13 +2,6 @@
 # One argument is required which is the path to the toplevel directory
 # of the distribution.
 
-TEXTDOMAINDIR=..
-LANGUAGE=tests
-LC_ALL=en
-LC_MESSAGES=
-LANG=
-export TEXTDOMAINDIR LANGUAGE LC_ALL LC_MESSAGES LANG
-
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
   # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
   if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
@@ -21,16 +14,18 @@ else
   ac_n= ac_c='\c' ac_t=
 fi
 
+tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
 # Create binary test file in correct position.
-tmpfiles="LC_MESSAGES"
+tmpfiles="$tmpfiles LC_MESSAGES"
 test -d LC_MESSAGES || mkdir LC_MESSAGES
 cp $top_srcdir/tests/test.mo LC_MESSAGES
 
 tmpfiles="$tmpfiles gt-test2.out"
 : ${GETTEXT=gettext}
-${GETTEXT} test 'error 3' > gt-test2.out
+TEXTDOMAINDIR=.. LANGUAGE=tests \
+${GETTEXT} --env LC_ALL=en test 'error 3' > gt-test2.out
 
 # Create correct file.
 tmpfile="$tmpfiles gtmf-test2.ok"

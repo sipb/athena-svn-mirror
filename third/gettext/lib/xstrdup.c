@@ -1,5 +1,5 @@
 /* xstrdup.c -- copy a string with out of memory checking
-   Copyright (C) 1990, 1996, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1990, 1996, 2000, 2001 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -19,17 +19,10 @@
 # include <config.h>
 #endif
 
-#if HAVE_STRING_H
-# include <string.h>
-#else
-# include <strings.h>
-#endif
+/* Specification.  */
+#include "xmalloc.h"
 
-#if defined (__GNUC__) || (defined (__STDC__) && __STDC__)
-extern char *xmalloc (size_t);
-#else
-extern char *xmalloc ();
-#endif
+#include <string.h>
 
 /* Return a newly allocated copy of STRING.  */
 

@@ -1,3 +1,658 @@
+2002-08-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.5 released.
+
+2002-08-03  Paul Eggert  <eggert@twinsun.com>
+
+	* gettextize.in: Use "read dummy" to avoid an error with Solaris
+	/bin/sh.
+
+2002-08-02  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Add ulonglong.m4 to m4filelist.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.4 released.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* add-to-archive: New file.
+	* add-to-autopoint-files: Remove file.
+	* cvsuser.c: New file.
+	* Makefile.am (EXTRA_DIST): Remove add-to-autopoint-files. Add
+	add-to-archive, cvsuser.c.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Unset also CVS_IGNORE_REMOTE_ROOT and CVSIGNORE.
+
+2002-07-23  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Add inttypes-pri.m4 to m4filelist.
+
+2002-07-21  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Add inttypes.m4, inttypes_h.m4, stdint_h.m4,
+	uintmax_t.m4 to m4filelist.
+
+2002-07-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Copy also intdiv0.m4.
+
+2002-07-17  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.3 released.
+
+2002-07-16  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-version-string): Bump to 2.01.
+
+2002-06-13  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-mode-line-entry...): Try harder to find a good place
+	for adding po-mode-line-entry into mode-line-format.
+	Reported by Sam Steingold <sds@gnu.org>.
+
+2002-05-12  Bruno Haible  <bruno@clisp.org>
+
+	* po-compat.el: Add ISO-8859-14, KOI8-T, GEORGIAN-PS to the list of
+	allowed encodings.
+
+2002-05-11  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Recognize AM_GNU_GETTEXT_VERSION(..) syntax.
+	* gettextize.in: Likewise.
+
+2002-05-03  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint.in: Unset all other environment variables which influence
+	cvs. Pass -d $CVSROOT explicitly.
+	(func_mkdir_for): New function.
+	(func_copy): Call it.
+
+2002-05-01  Bruno Haible  <bruno@clisp.org>
+
+	* autopoint-files: New directory.
+	* add-to-autopoint-files: New file.
+	* autopoint.in: New file.
+	* Makefile.am (EXTRA_DIST): Add add-to-autopoint-files, archive.tar.gz.
+	(DISTCLEANFILES): Add autopoint.
+	(gettextsrcdir): New variable.
+	(gettextsrc_DATA): New variable.
+	(archive.tar.gz): New rule.
+	* gettextize.in: Bump GETTEXT_VERSION value in configure.in.
+	Ask maintainer to acknowledge the remaining changes.
+
+2002-04-28  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Avoid the remarks about po/Makevars and config.guess
+	if they are not necessary.
+
+	* gettextize.in: New option -n/--dry-run.
+
+	* gettextize.in: Use functions for maintainability.
+	Remove undocumented option --run.
+
+	* gettextize.in: Use 'echo' instead of '$echo'.
+
+2002-04-29  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-menu-layout): Don't try to display tooltips
+	for XEmacs.
+	(po-subedit-mode-menu-layout): Likewise.
+
+2002-04-28  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Treat mkinstalldirs like config.rpath.
+
+2002-04-27  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-menu-layout): Add tooltips.
+	(po-subedit-mode-menu-layout): Likewise.
+
+	* po-mode.el (po-mode-menu-layout): Adopt terminology for editing
+	from Emacs (cut/copy/paste).
+
+2002-04-24  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.2 released.
+
+2002-04-22  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (lisp_LISP): Add po-compat.el.
+	(EXTRA_DIST): Use it.
+
+2002-03-17  Karl Eichwalder  <ke@suse.de>
+
+	* po-compat.el: New file, extracted from po-mode.el.
+	* po-mode.el (po-content-type-charset-alist, po-find-charset,
+	po-find-file-coding-system-guts, po-find-file-coding-system): Move to
+	po-compat.el.
+
+2002-04-19  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-team-name-to-code): Add Ido and Walloon. Change
+	Javanese from jw to jv.
+
+2002-03-15  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Use "sed -e 1q" instead of "head -1", for compliance
+	to pure naked POSIX 1003.1-2001 environments.
+	From Paul Eggert.
+
+2002-03-14  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-team-name-to-code): Add es_AR, zh_CN, and zh_TW.
+
+2002-03-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.1 released.
+
+2002-03-11  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-file-coding-system-guts): Checking
+	'insert-file-contents' must come first to avoid messing up with
+	arguments.
+	Reported by Neil Darlow; fixed by Andreas Schwab.
+
+2002-03-09  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-file-coding-system-guts): Don't try to
+	detect the coding system when filename does not exist.
+	(po-compute-counters): Search for "^msgid" not 'po-next-entry' if
+	we don't know for sure any entry will follow at all.
+
+2002-02-18  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode): Provide it.
+
+2002-02-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Mark all error messages which lead to failure with
+	asterisks and "*** Stop.".
+
+2002-02-11  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-ediff): When variants are equal don't call
+	'po-ediff-buffers-exit-recursive'.
+
+2002-02-09  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-send-mail): Set coding-system-for-read and
+	coding-system-for-write to the coding system of the po buffer;
+	otherwise Emacs will fall back to mule-utf-8 when the default coding
+	system is different from the po buffer and thus the following
+	'shell-command-on-region' will prepare an wrongly encoded file (e.g.,
+	mule-utf-8 instead of UTF-8).
+
+2002-02-09  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-translation-project-address): Convert it to a
+	customizable variable.
+	(po-translation-project-mail-label): New variable.
+	(po-send-mail): Use it.
+
+2002-02-01  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-version-string): New variable.
+	(po-mode-version): Use it instead of RCS/CVS Revision tag.
+
+2002-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11 released.
+
+2002-01-26  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: If directory intl was removed, remove it from SUBDIRS
+	in Makefile.am.
+	If intl/Makefile.in was removed, remove intl/Makefile from
+	AC_OUTPUT/AC_CONFIG_FILES statement in configure.in.
+	Remove intl/intlh.inst from AC_OUTPUT/AC_CONFIG_FILES statement in
+	configure.in.
+	Remove old-style "sed ... > po/Makefile" statement from configure.in.
+	Remove old-style AC_LINK_FILES statement from configure.in.
+	Recommend replacement for Makefile variables DATADIRNAME, INSTOBJEXT,
+	GENCAT, POSUB.
+	Recommend replacement for shell variables nls_cv_header_intl,
+	nls_cv_header_libgt.
+
+2002-01-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: New option --no-changelog.
+	Don't create ChangeLog entries for files that don't change.
+	Verify the existence of a configure.in line starting with "AC_OUTPUT("
+	before attempting to modify it.
+	Treat "AC_CONFIGURE_FILES(" like "AC_OUTPUT(".
+	Recommend replacement for INTLLIBS Makefile variable.
+
+2002-01-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Always recommend the full set of m4 files. Many
+	improvements for packages that use automake. Modify configure.in.
+
+2002-01-15  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Handle po/Makevars specially, don't overwrite the
+	previous customizations.
+
+2002-01-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Update year in --version output.
+
+2002-01-10  Bruno Haible  <bruno@clisp.org>
+
+	* po-mode.el (po-content-type-charset-alist): Add Emacs20/21 codepages.
+
+2001-11-20  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-ediff-buffers-exit-recursive): Kill ediff buffers
+	after quitting the ediff session.
+
+2002-01-03  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Recommend installation of gettext.h.
+
+2001-12-15  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-eval-requoted): Add \r to avoid additional quoting
+	during edit.  Reported by Santiago Vila.
+
+2001-12-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Install config.rpath in the directory specified
+	through AC_CONFIG_AUX_DIR, not necessarily in the toplevel dir.
+
+2001-12-02  Bruno Haible  <bruno@clisp.org>
+
+	* gettextize.in: Also copy config.rpath, and recommend to copy
+	lib-ld.m4, lib-link.m4, lib-prefix.m4.
+
+2001-11-25  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-guess-archive-name): Verify that versions provided by
+	file name and by Project-Id-Version field match.
+
+2001-11-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: New option --intl.
+	(intldir): New variable.
+	Don't populate intl subdirectory if --intl is omitted.
+
+2001-11-19  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-ediff-quit): New function.
+	(ediff-keymap-setup-hook): Assign key binding for 'po-ediff-quit'.
+	(po-ediff-buffers-exit-recursive): New function, in part derived
+	from 'po-subedit-ediff'.
+	(po-subedit-ediff): Use it.
+
+	* po-mode.el (po-subedit-ediff): Use meaningful buffer names,
+	derived from 'marker-regex'.
+	Cleanup: Follow docstring conventions.
+
+2001-11-19  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-map): Enable key binding for
+	'po-edit-comment-and-ediff' ('C-c C-c' and 'C-c C-#').
+
+2001-11-18  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-help-display-string): Adjust it.
+
+2001-11-18  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-team-name-to-code): Fix syntax for the last entry
+	(Zulu).
+
+2001-11-11  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-ediff): New function.
+	(po-edit-comment-and-ediff): New function.
+	(po-edit-msgstr-and-ediff): New function.
+	(po-subedit-mode-menu-layout): Add 'po-subedit-ediff'.
+	(po-subedit-mode-map): Add key binding for 'po-subedit-ediff'.
+	(po-mode-menu-layout): Add 'po-edit-comment-and-ediff' and
+	'po-edit-msgstr-and-ediff'.
+	(po-mode-map): Add key binding for 'po-edit-msgstr-and-ediff'.
+
+2001-11-12  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-mode-syntax-table): New variable.
+	(po-subedit-mode-map): Re-write according to po-mode-map and move
+	it to a better location.
+
+2001-11-10  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-file-coding-system-guts): Use
+	'po-with-temp-buffer' instead of 'with-temp-buffer'.
+	(po-msgfmt-version-check): Likewise.
+
+2001-11-09  Dave Love  <fx@gnu.org>
+            Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el: Doc fixes.
+	(po-mode-map): Put all in defvar.
+
+2001-08-23  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-map): Assign new Key bindings to avoid
+	clashes with moving actions:
+	'po-previous-fuzzy-entry' = 'F',
+	'po-previous-obsolete-entry' = 'O',
+	'po-previous-translated-entry' = 'T',
+	'po-previous-untranslated' = 'U',
+	'po-undo' = '_',
+	'po-other-window' = '0',
+	'po-select-auxiliary' = '\C-c\C-a'.
+	(po-help-display-string): Likewise.
+
+2001-08-23  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-next-translated-entry): Actually search for
+	'translated', not 'untranslated'.
+
+2001-11-01  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-msgfmt-version-check): Also accept pre-release
+	versions.
+
+2001-10-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Renamed COPYING.LIB-2 to COPYING.LIB-2.0.
+
+2001-10-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* po-mode.el (po-team-name-to-code): Extend the list using items from
+	src/msginit.c.
+
+2001-10-26  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Use a different wording about aclocal.m4 if the
+	package uses automake.
+
+2001-10-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Copy only ABOUT-NLS, intl/, po/.
+
+2001-09-25  Bruno Haible  <haible@clisp.cons.org>
+
+	Upgrade to automake-1.5.
+	* automake.diff: Remove file.
+
+2001-09-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Don't copy installed jar files.
+
+2001-08-23  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-compute-counters): First save `current'
+	po-start-of-msgstr; use it to set `position' while looping over all
+	entries.
+
+2001-08-20  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode): Add newlines to fix layout problem calling
+	'C-h m'.
+
+2001-08-18  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-ensure-source-references): Use 'string-to-number'
+	instead of 'string-to-int'.
+	(po-msgfmt-version-check): Likewise.
+
+2001-08-11  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-edit-string): Set indent-line-function to
+	indent-relative; useful for editing --help messages.
+
+2001-08-02  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-charset): Drop 'interactive'. Use
+	'insert-file-contents-literally' to avoid side effects. Correct off
+	by 1 error.
+
+2001-08-07  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-subedit-mode-menu-layout): New definition.
+	(po-edit-string): Use it to provide a menu for po-subedit-mode.
+
+2001-08-01  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-find-awk-string, po-mark-awk-string,
+	po-find-bash-string, po-mark-bash-string): New functions.
+	(po-preset-string-functions): Add awk and bash support.
+
+2001-08-02  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-find-file-coding-system-guts): Use ascii instead of
+	none.
+	(po-compute-counters): Don't start counting if there is not even a
+	header entry.
+
+2001-07-26  Bruno Haible  <haible@clisp.cons.org>
+
+	* automake.diff: Update for automake-1.4-p5.
+
+2001-08-01  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el: Optimize testing for XEmacs.
+	(po-auto-replace-revision-date): Do not quote t, as it evals to
+	itself.
+	(po-validate): Use the mode name instead of the constant PO to build
+	the validation buffer name.
+	(po-font-lock-keywords, po-find-charset,
+	po-find-file-coding-system-guts, po-find-file-coding-system): Adjust
+	some lines so they fit in 79 columns (pre-VT100).
+	(po-compute-counters): Use string-equal instead of string=, to be
+	consistent with the remainder of that code.
+	(po-find-charset): Avoid infinite loop on empty file.
+
+2000-05-31  Hrvoje Niksic  <hniksic@iskon.hr>
+
+	* po-mode.el (po-create-overlay, po-highlight, po-rehighlight,
+	po-dehighlight): Use XEmacs extent primitives.
+
+2001-07-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* automake.diff: New file.
+
+2001-08-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettextize.in: Change bug report address to
+	<bug-gnu-gettext@gnu.org>.
+
+2001-07-14  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode-abbrev-table): New variable.
+	(po-edit-string): Use it.
+
+2001-07-13  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-fade-out-entry): Replace yes-or-no-p by y-or-n-p;
+	obsoleting an entry isn't fatal.
+
+2000-01-18  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-ensure-source-references): Correctly imply the file
+	name from the last which has been explicitly given.
+
+2000-01-17  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-subedit-abort): Change variable names.
+	(po-seek-equivalent-translation): Call set-buffer instead of
+	select-buffer.
+	(po-subedit-cycle-auxiliary): Adapt to multiple edits.
+
+2001-08-12  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-find-charset, po-compute-counters,
+	po-check-file-header, po-set-msgstr): Emacs 19 portability matters.
+
+2000-01-03  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-check-file-header): Add a new line after default
+	header only for non-empty PO files.
+
+1999-12-10  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-send-mail): Clarify some prompts.
+	Reported by Laurent Bourbeau.
+
+1999-07-25  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-team-name-to-code): New variable.
+	(po-guess-archive-name): Use it.
+
+1999-06-01  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-guess-archive-name, po-guess-team-address): Accept
+	more addresses, do not restrict to necessarily @li.org.
+
+1998-12-06  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-guess-archive-name): Allow Free as well as GNU
+	for domain name prefix.
+
+1998-05-15  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-any-msgid-regexp, po-any-msgstr-regexp,
+	po-msgstr-idx-keyword-regexp, po-obsolete-msgstr-regexp,
+	po-set-msgstr, po-obsolete-comment-regexp, po-get-comment): Enforce
+	#~ for obsolete entries.  The tilde is not optional anymore.
+
+1998-05-09  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-after-entry-regexp): Check if at end of line, rather
+	than for any character not being quoted.  Else, M-u skips over
+	immediately previous untranslated entry, because backward pattern
+	extends beyond point.  Reported by Kalle Niemitalo.
+
+2001-07-13  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-validate): Check for 'null-device; if not available
+	use "NUL" for windows-nt and windows-95 and /dev/null as fallback.
+	From Eli Zaretskii and François Pinard.
+
+2000-01-03  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-preset-string-functions): New function.
+	(po-find-unknown-string, po-mark-unknown-string): New functions.
+	(po-find-c-string): Return a 3-element list.
+	(po-find-emacs-lisp-string): Likewise.
+	(po-mark-found-string): Simplify consequently.
+	(po-tags-loop-scan): Use po-preset-string-functions.
+
+	* po-mode.el (po-mark-c-string, po-mark-emacs-lisp-string): Have
+	marking functions to leave cursor after marked string.  Do not return
+	updated end anymore.
+
+	* po-mode.el (po-mark-found-string, po-mark-translatable,
+	po-select-mark-and-mark): Other changes.
+
+2000-01-02  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-tags-search): Better use the Emacs tags interface,
+	and simplified.  Nested tags tables should be handled now.
+	(po-tags-loop-scan, po-tags-loop-operate): New functions.
+	(po-string-contents, po-string-buffer): New buffer local variables.
+	(po-next-file-list): Deleted.  All usages adjusted.
+
+2001-01-04  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-extract-part-unquoted): New function.
+	(po-extract-unquoted, po-skip-over-python-string): Use it.
+
+	* po-mode.el (po-skip-over-python-string): Missing parentheses.
+	Reported by Andreas Schwab.
+
+	* po-mode.el (po-find-python-string, po-mark-python-string,
+	po-skip-over-python-string): New functions.
+	(po-tags-search, po-mark-found-string): Use them in Python mode.
+
+2001-08-13  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-mode): Issue message after running hooks rather than
+	before, augmenting the chances that the message does not get erased.
+
+1999-07-25  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el (po-match-string): New function.
+	(po-set-msgid): Use it.
+	(po-set-msgstr): Likewise.
+	(po-set-comment): Likewise.
+	(po-ensure-source-references): Likewise.
+	(po-guess-archive-name): Likewise.
+	(po-guess-team-address): Likewise.
+
+2000-08-11  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el: Move blocks of code around in view of later patches.
+	Do minor cosmetic changes.  Correct name-buffer into buffer-name
+	whenever needed.  Remove one case of spurious testing code.
+	Borrow the marking overlay if possible, do not creating a new one.
+
+2000-01-24  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el: Split portability matters in two.  A minimum for
+	customisation to work, and the rest after the customisation page.
+	Reported by Martin v. Löwis.
+
+2000-01-17  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el: To avoid compilation diagnostics, move customisation
+	before portability matters and add some variable declarations.
+
+1998-09-07  François Pinard  <pinard@iro.umontreal.ca>
+
+	* po-mode.el: Merge make-local-variable within set whenever possible.
+
+2001-07-06  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-msgfmt-version-check): Check for version strings with
+	a single dot (e.g. 0.11) correctly.
+
+2001-07-08  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el: Don't recommend to use po-mode for POT files.
+	(po-find-charset): New function.
+	(po-find-file-coding-system-guts): Use it to get rid of the 4096 limit.
+	If no charset found, use "none".
+
+2001-07-07  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-compute-counters): Don't count the header entry.
+	Reported by Bernd Schandl.
+
+2001-07-02  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-validate): Use private 'compile-command' and buffer
+	name for validation output.
+
+2001-07-01  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-mode): Use add-hook to call po-replace-revision-date
+	saving the buffer.
+	(po-quit): Don't call po-replace-revision-date.
+	(po-validate): Likewise.
+	Proposed by Bernd Schandl.
+
+	(po-auto-replace-revision-date): Change default to 't'; otherwise the
+	user will be asked too often.
+
+2001-06-04  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-edit-string): Set 'buffer-file-coding-system'
+	(for hints thanks to Eli Zaretskii).
+
+2001-06-04  Karl Eichwalder  <ke@suse.de>
+
+	* po-mode.el (po-msgfmt-version-check): New. Check for GNU gettext
+	0.10.36 or newer. Re-written by Stefan Monnier.
+	(po-validate): Use 'po-msgfmt-version-check'.
+	(po-validate): Use 'null-device' instead of literal "/dev/null".
+	Reported by Eli Zaretskii.
+
 2001-09-13  Bruno Haible  <haible@clisp.cons.org>
 
 	* gettext-0.10.40 released.
@@ -153,19 +808,19 @@
 
 	* gettextize.in: Remove code to test for version of the m4 files.
 
-	* po-mode.el: A few more changes by Fran^��ois Pinard.
+	* po-mode.el: A few more changes by François Pinard.
 
-1998-05-03  Fran^��ois Pinard  <pinard@iro.umontreal.ca>
+1998-05-03  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-create-overlay) [po-XEMACS]: No argument.
 	Reported by Ulrich Drepper.
 
-1997-10-18  Fran^��ois Pinard  <pinard@iro.umontreal.ca>
+1997-10-18  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-tags-search, po-mark-found-string): C++ as C.
 	(po-find-c-string): Skip C++ comments as well.
 
-1998-05-10  Fran^��ois Pinard  <pinard@iro.umontreal.ca>
+1998-05-10  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-mode) [po-XEMACS]: Explicitely add menus.
 	Reported by Hrvoje Niksic.
@@ -181,7 +836,7 @@
 
 	* gettext-0.10.35 released.
 
-1998-03-30  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1998-03-30  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-tags-search, po-mark-translatable,
 	po-select-mark-and-mark): Call interactive after the doc string,
@@ -194,7 +849,7 @@
 
 	* gettextize.in: Use aclocaldir from configuration.
 
-1997-09-04  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1997-09-04  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: Rename po-middle-of-entry to po-start-of-msgstr, add
 	variable po-start-of-msgid.  Use it whenever appropriate.
@@ -207,7 +862,7 @@
 	* po-mode.el (po-send-mail): Allow for mailing to the team.
 	(po-guess-team-address): New function.
 
-1997-09-02  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1997-09-02  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-set-comment): Unused variable buffer.
 	(po-edit-string): Unused variables start, middle, end and obsolete.
@@ -229,7 +884,7 @@
 	Translator comments were duplicated, when contents were unchanged.
 	Reported by Enrique Melero.
 
-1997-09-01  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1997-09-01  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-highlight, po-dehighlight): New functions.
 	New globals: po-highlight-p, po-highlight-face and po-overlay.
@@ -246,17 +901,17 @@
 	(po-guess-archive-name, po-send-mail): New functions.
 	Reported by Karl Eichwalder.
 
-1997-08-31  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1997-08-31  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el (po-replace-revision-date): Enforce ISO 8601 zones.
-	Reported by Enrique Melero G�mez, Karl Eichwalder, Max de
+	Reported by Enrique Melero Gómez, Karl Eichwalder, Max de
 	Mendizabal and Santiago Vila Doncel.
 
 	* po-mode.el (po-edit-string): Expand tabs while editing
-	translations.  Reported by G�ran Uddeborg.
+	translations.  Reported by Göran Uddeborg.
 
 	* po-mode.el: Accept C-c C-k to abort recursive edits.
-	Reported by G�ran Uddeborg and Hrvoje Niksic.
+	Reported by Göran Uddeborg and Hrvoje Niksic.
 
 1997-06-02  Ben Pfaff  <pfaffben@pilot.msu.edu>
 
@@ -268,7 +923,7 @@
 	* po-mode.el (po-help): To continue, also accept things like a
 	mouse press or an arrow key.
 
-1996-11-12  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-11-12  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: Alter po-font-lock-keywords to properly highlight C
 	formats, when using an upper case letter as formatting functor.
@@ -323,18 +978,18 @@
 
 	* locale.alias: Language for czech entry must be cs.
 
-1996-09-18 00:29  Fran�ois Pinard  <pinard@progiciels-bpi.ca>
+1996-09-18 00:29  François Pinard  <pinard@progiciels-bpi.ca>
 
 	* po-mode.el (po-font-lock-keywords): Correct highlighting of
 	formats like %3d.
 
-1996-08-19  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-08-19  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: Restructured to avoid all byte-compilation warnings.
 	Highlighting using `hilit19' is being deprecated, font lock code
 	should now automatically be activated whenever available.
 
-1996-07-15  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-07-15  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: po-mode.el (po-kill-msgstr): Ensure po-entry-type is
 	always defined before decreasing counter.
@@ -343,11 +998,11 @@
 
 	* gettextize.in (gettext_dir): Remove warning that files will be
 	removed.  It's not really necessary since the -f option is
-	necessary.  Suggested by Fran�ois Pinard.
+	necessary.  Suggested by François Pinard.
 
 1996-06-26 18:40  Ulrich Drepper  <drepper@cygnus.com>
 
-	* po-mode.el: Added ELisp support.  Patch by Fran�ois Pinard.
+	* po-mode.el: Added ELisp support.  Patch by François Pinard.
 
 1996-06-18 15:12  Ulrich Drepper  <drepper@cygnus.com>
 
@@ -389,14 +1044,14 @@
 
 1996-04-06 02:40  Ulrich Drepper  <drepper@myware>
 
-	* po-mode.el: Apply Fran�ois' patch for new default values of
+	* po-mode.el: Apply François' patch for new default values of
 	configuration variables and new header entry format.
 
 1996-04-02 18:56  Ulrich Drepper  <drepper@myware>
 
 	* Makefile.in (all-gettext): New goal.  Same as all.
 
-1996-04-02 03:18  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-04-02 03:18  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: * Let po-show-source-context update
 	po-reference-cursor itself, and display to the minibuffer the
@@ -411,7 +1066,7 @@
 	. Limit the search for source references to the msgstr line.  This
 	does not correct any bug, but is more consistent.
 
-1996-03-31 23:32  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-03-31 23:32  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: * Small corrections to the help page.  Reported by
 	Karl Eichwalder.
@@ -438,7 +1093,7 @@
 	* Makefile.in (datadir): Initialize from @datadir@.  Reported by
 	Karl Eichwalder.
 
-1996-03-25 09:52  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-03-25 09:52  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: * Correct documentation mistakes in short help.
 
@@ -450,7 +1105,7 @@
 
 1996-03-25 03:51  Ulrich Drepper  <drepper@myware>
 
-	* po-mode.el: Some last minute changes by Fran�ois Pinard.
+	* po-mode.el: Some last minute changes by François Pinard.
 
 1996-03-24 18:51  Ulrich Drepper  <drepper@myware>
 
@@ -460,7 +1115,7 @@
 	* Rephrase messages about location stack contents
 	* Clear out message when user refuses quitting.
 
-1996-03-23 14:34  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-03-23 14:34  François Pinard  <pinard@iro.umontreal.ca>
 
 	* Implement po-default-file-header.
 	Reported by Karl Eichwalder.
@@ -528,12 +1183,12 @@
 	* po-offer-validation disappears, as (buffer-modified-p) may
 	be used instead.
 
-1996-03-14 16:55  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-03-14 16:55  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: Inexact entries are now called fuzzy.  Change
 	regular expression and function names.
 
-1996-03-14 11:38  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-03-14 11:38  François Pinard  <pinard@iro.umontreal.ca>
 
 	* po-mode.el: Rename po-mode-hooks to po-mode-edit-hooks.
 
@@ -574,7 +1229,7 @@
 
 	* po-mode.el (po-keywords): Add N_.
 
-1996-01-15 02:58  Fran�ois Pinard  <pinard@iro.umontreal.ca>
+1996-01-15 02:58  François Pinard  <pinard@iro.umontreal.ca>
 
 	* gettextize.in: Better message about aclocal.m4 change.
 
@@ -620,7 +1275,7 @@
 	* po-mode.el: Add support for XEmacs' font-lock.el.
 
 	* po-mode.el:
-	Patches by Franc,ois: enable hilit, handle multi-line #: lines, and
+	Patches by François: enable hilit, handle multi-line #: lines, and
 	don't pass -v argument to msgfmt.
 
 1995-11-06 15:52  Ulrich Drepper  <drepper@myware>
@@ -658,13 +1313,13 @@
 
 	* po-mode.el (po-validate):
 	Protect the previous value of compile-command.
-	Change by Franc,ois Pinard.
+	Change by François Pinard.
 
 1995-10-29 12:11  Ulrich Drepper  <drepper@myware>
 
 	* gettextize.in:
 	Change text of trailing message about aclocal.m4 changing.  Suggested
-	by Franc,ois Pinard.
+	by François Pinard.
 
 	* Makefile.in (INSTALL_PROGRAM): Not used anymore.
 	(INSTALL_SCRIPT): New variable,
@@ -683,7 +1338,7 @@
 
 1995-10-28 18:08  Ulrich Drepper  <drepper@myware>
 
-	* po-mode.el: Apply latest patch by Franc,ois.
+	* po-mode.el: Apply latest patch by François.
 
 1995-09-23 14:34  Ulrich Drepper  <drepper@myware>
 
@@ -705,7 +1360,7 @@
 
 	* gettextize.in (usage):
 	Rearrange help message.  Now describe -f option.
-	Reported by Franc,ois Pinard.
+	Reported by François Pinard.
 
 1995-08-19 23:32  Ulrich Drepper  <drepper@myware>
 
@@ -721,14 +1376,14 @@
 1995-08-19 15:08  Ulrich Drepper  <drepper@myware>
 
 	* gettextize.in:
-	Some nicety changes of shell programming by Franc,ois Pinard.
+	Some nicety changes of shell programming by François Pinard.
 
 	* po-mode.el (po-search-path): Extend by "../".
 
 	* gettextize.in: Protect against relative source paths.
 	Avoid exit an second level shell.
 
-	* gettext-sh: Better comments:  By Franc,ois Pinard.
+	* gettext-sh: Better comments:  By François Pinard.
 
 	* Makefile.in (INSTALL_PRG): Don't define mode ourself.
 	(uninstall) Remove gettextize.
@@ -769,7 +1424,7 @@
 
 1995-08-10 22:18  Ulrich Drepper  <drepper@myware>
 
-	* gettext-sh: Fix typos.  Reported by Franc,ois Pinard.
+	* gettext-sh: Fix typos.  Reported by François Pinard.
 	(TEXTDOMAIN): Set value from ${PACKAGE-NAME} variable and document it.
 
 1995-08-08 21:45  Ulrich Drepper  <drepper@myware>
@@ -791,7 +1446,7 @@
 1995-08-04 22:38  Ulrich Drepper  <drepper@myware>
 
 	* Makefile.in (.el.elc):
-	Include Franc,ois' wonderful pun to highlight warning text.
+	Include François' wonderful pun to highlight warning text.
 
 	* Makefile.in (distclean): Remove makelinks.
 
@@ -808,7 +1463,7 @@
 1995-08-01 15:54  Ulrich Drepper  <drepper@myware>
 
 	* po-mode.el: Fixes to run on DEMACS.
-	Provided by Franc,ois Pinard.
+	Provided by François Pinard.
 
 	* Makefile.in (check): Make same as all.
 
@@ -824,7 +1479,7 @@
 	* makelinks-sh: Update for correct intl_files list.
 	Handle existing directories.
 	Handle non-existing ln and/or ln -s.
-	Mostly by Franc,ois Pinard.
+	Mostly by François Pinard.
 
 1995-07-22 01:14  Ulrich Drepper  <drepper@myware>
 
@@ -839,7 +1494,7 @@
 
 1995-07-18 23:53  Ulrich Drepper  <drepper@myware>
 
-	* po-mode.el: Latest version by Franc,ois.  This version allows
+	* po-mode.el: Latest version by François.  This version allows
 	scanning C source code for translatable strings and interactive
 	construction of the .po file.  The string matching heuristic is
 	due to Richard Stallman.

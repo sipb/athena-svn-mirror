@@ -2,23 +2,18 @@
 # One argument is required which is the path to the toplevel directory
 # of the distribution.
 
-TEXTDOMAINDIR=..
-LANGUAGE=tests
-LC_ALL=en
-LC_MESSAGES=
-LANG=
-export TEXTDOMAINDIR LANGUAGE LC_ALL LC_MESSAGES LANG
-
+tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
 # Create binary test file in correct position.
-tmpfiles="LC_MESSAGES"
+tmpfiles="$tmpfiles LC_MESSAGES"
 test -d LC_MESSAGES || mkdir LC_MESSAGES
 cp $top_srcdir/tests/test.mo LC_MESSAGES
 
 tmpfiles="$tmpfiles gt-test1.out"
 : ${GETTEXT=gettext}
-${GETTEXT} -e test 'SYS_(C)\n' > gt-test1.out
+TEXTDOMAINDIR=.. LANGUAGE=tests \
+${GETTEXT} --env LC_ALL=en -e test 'SYS_(C)\n' > gt-test1.out
 
 # Create correct file.
 tmpfile="$tmpfiles gtmf-test1.ok"

@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1996, 1998, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1996, 1998, 2000-2002 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -22,10 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "config.h"
 #endif
 
+/* Specification.  */
+#include "dir-list.h"
+
+#include <stddef.h>
 #include <stdlib.h>
 
-#include "system.h"
-#include "dir-list.h"
 #include "str-list.h"
 
 static string_list_ty *directory /* = NULL */;
@@ -54,4 +56,34 @@ dir_list_nth (n)
   if (n < 0 || n >= directory->nitems)
     return NULL;
   return directory->item[n];
+}
+
+
+/* Return the current list of directories, for later use with dir_list_restore.
+   Reset the list to empty.  */
+void *
+dir_list_save_reset ()
+{
+  void *saved_value = directory;
+
+  directory = NULL;
+  return saved_value;
+}
+
+
+/* Restore a previously saved list of directories.  */
+void
+dir_list_restore (saved_value)
+     void *saved_value;
+{
+  /* Don't free the contained strings, because they may have been returned
+     by dir_list_nth and may still be in use.  */
+  if (directory != NULL)
+    {
+      if (directory->item != NULL)
+	free (directory->item);
+      free (directory);
+    }
+
+  directory = saved_value;
 }

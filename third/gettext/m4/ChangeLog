@@ -1,3 +1,486 @@
+2002-08-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.5 released.
+
+2002-07-27  Andreas Schwab  <schwab@suse.de>
+
+	* gettext.m4: Avoid expanding ALL_LINGUAS in comment.
+
+2002-08-02  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (aclocal_DATA): Add ulonglong.m4.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.4 released.
+
+2002-07-24  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Ignore all gcj versions for now.
+
+2002-07-23  Bruno Haible  <bruno@clisp.org>
+
+	* inttypes-pri.m4: New file.
+	* gettext.m4 (AM_INTL_SUBDIR): Require gt_INTTYPES_PRI.
+	* Makefile.am (aclocal_DATA): Add inttypes-pri.m4.
+	(EXTRA_DIST): Likewise.
+
+2002-07-21  Bruno Haible  <bruno@clisp.org>
+
+	* stdint_h.m4 (jm_AC_HEADER_STDINT_H): Define
+	HAVE_STDINT_H_WITH_UINTMAX instead of HAVE_STDINT_H.
+	* inttypes_h.m4 (jm_AC_HEADER_INTTYPES_H): Define
+	HAVE_INTTYPES_H_WITH_UINTMAX instead of HAVE_INTTYPES_H.
+	* inttypes.m4: New file.
+	* gettext.m4 (AM_GNU_GETTEXT): Accept needsymbol =
+	need-formatstring-macros.
+	(AM_INTL_SUBDIR): Require jm_AC_TYPE_UINTMAX_T, gt_HEADER_INTTYPES_H.
+	* Makefile.am (aclocal_DATA): Add inttypes.m4, inttypes_h.m4,
+	stdint_h.m4, uintmax_t.m4.
+	(EXTRA_DIST): Add inttypes.m4.
+
+2002-07-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT_VERSION): New macro.
+	Reported by Akim Demaille <akim@epita.fr>.
+
+2002-07-17  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.3 released.
+
+2002-07-16  Bruno Haible  <bruno@clisp.org>
+
+	* gcj.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+	* javacomp.m4 (gt_JAVACOMP): Set HAVE_GCJ_C instead of HAVE_GCJ.
+
+2002-07-14  Bruno Haible  <bruno@clisp.org>
+
+	* libtool.m4 (_LT_AC_LTCONFIG_HACK): Add support for GNU/FreeBSD.
+
+2002-06-15  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Ignore gcj versions that start with
+	"3.0" or "3.1". (gcj 3.0.4 compiles GetURL.java to invalid bytecode,
+	that crashes with an IllegalAccessError when executed by gij 3.0.4 or
+	with a VerifyError when executed by Sun Java. Likewise for gcj 3.1.)
+
+2002-06-14  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_RPATH): New option --disable-rpath.
+	(AC_LIB_LINKFLAGS_BODY): Don't hardcode library paths if
+	--disable-rpath was given.
+
+2002-06-12  Bruno Haible  <bruno@clisp.org>
+
+	* lcmessage.m4 (AM_LC_MESSAGES): Don't test ac_cv_header_locale_h here.
+	* gettext.m4 (AM_INTL_SUBDIR): Test it here.
+
+2002-06-07  Bruno Haible  <bruno@clisp.org>
+
+	* intdiv0.m4: New file.
+	* gettext.m4 (AM_INTL_SUBDIR): Require gt_INTDIV0.
+	* Makefile.am (aclocal_DATA): Add intdiv0.m4.
+	(EXTRA_DIST): Add intdiv0.m4.
+
+2002-05-18  Bruno Haible  <bruno@clisp.org>
+
+	Make it possible to invoke AM_ICONV after AM_GNU_GETTEXT.
+	* iconv.m4 (AM_ICONV_LINKFLAGS_BODY): New macro.
+	(AM_ICONV_LINK): Require it.
+	(AM_ICONV): Invoke AM_ICONV_LINK. Requiring it is not sufficient,
+	because gettext.m4 invokes it inside an 'if'.
+	* gettext.m4 (AM_GNU_GETTEXT): Require AM_ICONV_LINKFLAGS_BODY.
+
+2002-05-04  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Ignore non-digits in the first line of
+	the output of "gcj --version". Needed for gcj 3.1.
+
+2002-04-30  Bruno Haible  <bruno@clisp.org>
+
+	* stdbool.m4 (gt_STDBOOL_H): If <stdbool.h> does not exist, check for
+	_Bool as a builtin primitive type. Needed for cc on OSF/1 5.1.
+
+2002-04-24  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.2 released.
+
+2002-04-08  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Don't use _nl_domain_bindings; its
+	linkage name has changed between gettext 0.10.35 and 0.10.36.
+	Reported by Albert Chin-A-Young <china@thewrittenword.com>.
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS_BODY): Handle -R options that appear
+	in $dependency_libs, for example on HP-UX 10.20 and OSF/1.
+	Reported by Albert Chin-A-Young <china@thewrittenword.com>
+	and Nelson H. F. Beebe <beebe@math.utah.edu>.
+
+	* javacomp.m4 (gt_JAVACOMP): Test whether "gcj -C" really works, to
+	protect against systems where libgcj.jar is missing or misinstalled.
+
+2002-03-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.1 released.
+
+2002-03-04  Bruno Haible  <bruno@clisp.org>
+
+	* setenv.m4 (gt_FUNC_SETENV): Also check whether unsetenv is missing.
+
+2002-03-02  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Set LIBINTL and LTLIBINTL to empty if
+	no preinstalled GNU gettext was found.
+	Reported by Paul Eggert.
+
+2002-02-10  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Don't prevent installation of libintl
+	on NetBSD.
+
+2002-02-06  Bruno Haible  <bruno@clisp.org>
+
+	* libtool.m4: Upgrade from libtool-1.4 to libtool-1.4.2.
+
+2002-02-02  Bruno Haible  <bruno@clisp.org>
+
+	* fnmatch.m4 (gt_FUNC_FNMATCH): Ensure directory lib exists.
+
+2002-02-04  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Use changequote to protect brackets.
+	Reported by Santiago Vila <sanvila@unex.es>.
+
+2002-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11 released.
+
+2002-01-30  Bruno Haible  <bruno@clisp.org>
+
+	* error.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2002-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS_BODY): Don't use AC_LIB_APPENDTOVAR
+	for LIB variables.
+
+2002-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS): Also define LTLIB${NAME}.
+	(AC_LIB_HAVE_LINKFLAGS): Likewise.
+	(AC_LIB_LINKFLAGS_BODY): Also define LTLIB${NAME}.
+	* iconv.m4 (AM_ICONV_LINK): Also define LTLIBICONV.
+	* gettext.m4 (AM_GNU_GETTEXT): Define LIBINTL and LTLIBINTL instead
+	of INTLLIBS.
+
+2002-01-20  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS): Fix quoting so that multiple
+	invocations of this macro work. Also set HAVE_LIBNAME for use by
+	AC_LIB_LINKFLAGS_BODY.
+	(AC_LIB_HAVE_LINKFLAGS): Fix quoting here as well.
+	(AC_LIB_LINKFLAGS_BODY): If a HAVE_LIBNAME macro is already set,
+	use the result of the corresponding previous AC_LIB_LINKFLAGS
+	invocation, don't look on the filesystem. Fix typo for /usr/lib.
+	Fix hardcode_libdir_flag_spec evaluation.
+
+2002-01-20  Bruno Haible  <bruno@clisp.org>
+
+	* libtool.m4 (_LT_AC_LTCONFIG_HACK): Remove two temporary files after
+	use.
+
+2002-01-19  Bruno Haible  <bruno@clisp.org>
+
+	* iconv.m4 (AM_ICONV_LINK): New macro, extracted from AM_ICONV.
+	(AM_ICONV): Call it.
+	* gettext.m4 (AM_GNU_GETTEXT): Call AM_ICONV_LINK instead of AM_ICONV.
+
+2002-01-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Don't consider that -liconv is
+	necessary for -lintl. Instead, use the $LIBICONV value determined by
+	the AM_ICONV macro.
+
+2002-01-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Remove shortcut check for <libintl.h>.
+
+2002-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Split preprocessing of POTFILES.in into
+	two separate sed calls, otherwise the backslash that terminates the
+	last line doesn't get removed if the last line of POTFILES.in is a
+	comment line or a blank line.
+
+2002-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Improve "found msgfmt program" message.
+
+2002-01-13  Bruno Haible  <bruno@clisp.org>
+
+	* *.m4: Add copyright notice.
+	* hostname.m4: Quote first argument of AC_DEFUN.
+
+2002-01-13  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS): Avoid macro interaction with
+	AC_LIB_LINKFLAGS_BODY. Undefine the macros after use.
+	(AC_LIB_HAVE_LINKFLAGS): New macro.
+
+2002-01-13  Bruno Haible  <bruno@clisp.org>
+
+	* lib-link.m4 (AC_LIB_LINKFLAGS): Fix mistake.
+
+2002-01-12  Bruno Haible  <bruno@clisp.org>
+
+	* libtool.m4: Add support for Intel icc.
+
+2002-01-12  Bruno Haible  <bruno@clisp.org>
+
+	* lib-prefix.m4 (AC_LIB_PREPARE_PREFIX): Fix shell programming mistake.
+	(AC_LIB_WITH_FINAL_PREFIX): New macro.
+	(AC_LIB_PREFIX): Use AC_LIB_WITH_FINAL_PREFIX. Remove
+	acl_final_exec_prefix assignment already done in AC_LIB_PREPARE_PREFIX.
+	* lib-link.m4 (AC_LIB_LINKFLAGS_BODY): Use AC_LIB_WITH_FINAL_PREFIX.
+	(AC_LIB_APPENDTOVAR): Likewise.
+
+2002-01-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Exclude FreeBSD's msgfmt and xgettext
+	programs. They give usage messages on stderr but then terminate with
+	exit code 0.
+
+2002-01-05  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Look for Rules-* files in the source dir,
+	not in the build dir.
+
+2002-01-04  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): If no intl directory exists and GNU
+	gettext was not found in libc or preinstalled libintl, don't define
+	ENABLE_NLS, and set USE_NLS to 'no'.
+
+2001-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Reject xgettext versions that don't
+	support the --copyright-holder option.
+
+2001-12-17  Bruno Haible  <bruno@clisp.org>
+
+	* fnmatch.m4: New file, inspired by autoconf-2.13 and autoconf-2.52.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-12-17  Bruno Haible  <bruno@clisp.org>
+
+	* getline.m4 (AM_FUNC_GETLINE): Include <stdlib.h>, not <sys/types.h>,
+	for declaring size_t and exit().  #define getline to a different
+	symbol at linkage level.
+
+2001-12-11  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Fix typo in jikes test.
+
+2001-12-11  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Don't insert obsolete Rules-* files into
+	the Makefile.
+
+2001-12-03  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Fix construction of Makefile if
+	builddir != srcdir.
+
+2001-12-02  Bruno Haible  <bruno@clisp.org>
+
+	* lib-ld.m4: New file, extracted from libtool-1.4 libtool.m4.
+	* lib-link.m4: New file.
+	* lib-prefix.m4: New file.
+	* Makefile.am (aclocal_DATA): Add them.
+	(EXTRA_DIST): Likewise.
+	* iconv.m4 (AM_ICONV): Remove AC_ARG_WITH call. Invoke
+	AC_LIB_LINKFLAGS_BODY. Use $LIBICONV instead of "-lintl". Add
+	$INCICONV to CPPFLAGS if appropriate.
+	* gettext.m4 (AM_WITH_LIBINTL): Remove macro.
+	(AM_GNU_GETTEXT): Invoke AC_LIB_LINKFLAGS_BODY. Use $LIBINTL instead
+	of "-lintl $LIBICONV". Add $INCINTL to CPPFLAGS if appropriate.
+
+2001-12-02  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Avoid an error message if there is
+	no Rules-* file.
+
+2001-12-04  Bruno Haible  <bruno@clisp.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Exclude at.dms.kjc.Main (KOPI) versions
+	released in 2000, because they can't compile intl-java. Version 1.4F
+	[May 2000] is buggy, version 1.5B [August 2001] is OK.
+
+2001-11-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettext.m4 (AM_PO_SUBDIRS): Also substitute UPDATEPOFILES and
+	DUMMYPOFILES into Makefile. Also insert Makevars and Rules-* into
+	Makefile.
+
+2001-11-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4: Split into submacros.
+	(AM_GNU_GETTEXT): Allow the first argument to be 'external'. Verify
+	the first two arguments. Add --with-libintl-prefix option.
+	(AM_WITH_LIBINTL, AM_PO_SUBDIRS, AM_INTL_SUBDIR): New macros.
+
+2001-11-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): For builds with $builddir != $srcdir,
+	prepend $(srcdir) to all elements of POFILES and GMOFILES.
+
+2001-11-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* javaexec.m4 (gt_JAVAEXEC): Use HAVE_JAVA instead of HAVE_JAVA_JVM.
+	The problem seen with automake-1.4 is gone with automake-1.5.
+
+2001-11-05  Bruno Haible  <haible@clisp.cons.org>
+
+	* stdint_h.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+	* uintmax_t.m4 (jm_AC_TYPE_UINTMAX_T): Require also
+	jm_AC_HEADER_STDINT_H.
+	* mkdtemp.m4 (gt_FUNC_MKDTEMP): Call jm_AC_HEADER_INTTYPES_H instead
+	of testing for inttypes.h. Call jm_AC_HEADER_STDINT_H instead of
+	testing for stdint.h.
+
+2001-11-01  Bruno Haible  <haible@clisp.cons.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Test for the existence of gcj, javac,
+	jikes in $PATH. Needed because the call of a program not found in PATH
+	yields return code 1 with SunOS 4 /bin/sh and is thus indistinguishable
+	from a successful call returning 1.
+	* javaexec.m4 (gt_JAVAEXEC): Likewise for gij, java, jre, jview.
+
+2001-10-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Make sure "make dist" works even when
+	configured with --disable-nls.
+
+2001-10-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* mkdtemp.m4 (gt_FUNC_MKDTEMP): Also check for <inttypes.h>.
+
+2001-10-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): In INTLLIBS, use ${top_builddir}
+	instead of $(top_builddir), so that the value can also be used in
+	shell scripts. Note that in Makefiles both ${top_builddir} and
+	$(top_builddir) are equivalent.
+
+2001-10-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Add check for getc_unlocked.
+
+2001-09-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* hostname.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-10-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* javacomp.m4 (gt_JAVACOMP): Ignore gcj version 2.xx, require at least
+	gcj 3.0.
+
+2001-09-27  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Inline AM_WITH_NLS call.
+	(AM_WITH_NLS): Remove macro.
+
+2001-09-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* siginfo.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-09-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Test for msgmerge which understands the
+	--update option.
+
+2001-10-20  Bruno Haible  <haible@clisp.cons.org>
+
+	Assume strchr() exists.
+	* gettext.m4 (AM_GNU_GETTEXT): Remove check for strchr.
+
+2001-09-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* backupfile.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-09-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* javacomp.m4: Recognize javac exit code 2.
+
+2001-09-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Capture not only the value of $LINGUAS,
+	but also whether it was set or unset.
+	Reported by Andreas Schwab <schwab@suse.de>.
+
+2001-08-12  Jim Meyering  <meyering@lucent.com>
+
+	* mbrtowc.m4: Quote first arg of AC_DEFUN.
+	* mbstate_t.m4: Likewise.
+	* mbswidth.m4: Likewise.
+
+2001-09-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* signalblocking.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-09-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* javacomp.m4: New file.
+	* javaexec.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2001-09-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* setenv.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-09-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* mkdtemp.m4: New file.
+	* tmpdir.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2001-09-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* flex.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-07-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Remove computation of CATALOGS.
+	(AM_WITH_NLS): Compute ALL_LINGUAS, GMOFILES, POFILES, CATALOGS while
+	creating po/Makefile from po/Makefile.in. Remove computation of
+	GMOFILES, POFILES during configure.
+
+2001-07-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Simplify the logic. Use the same tests
+	for MSGFMT and XGETTEXT in the case we use a preinstalled GNU libintl
+	and in the case of using the included libintl.
+
+2001-06-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* stdbool.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-06-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* ssize_t.m4: New file.
+	* unionwait.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add them.
+
 2001-09-13  Bruno Haible  <haible@clisp.cons.org>
 
 	* gettext-0.10.40 released.
@@ -255,7 +738,7 @@
 	* gettext.m4 (AM_WITH_NLS): Make the tests for gettext in libc and
 	in libintl similar. If found in libintl, add "-lintl" to $LIBS during
 	subsequent AC_TRY_LINKs and later to INTLLIBS.
-	Reported by Gaël Roualland <gael.roualland@dial.oleane.com>.
+	Reported by GaÃ«l Roualland <gael.roualland@dial.oleane.com>.
 
 2000-08-23  Bruno Haible  <haible@clisp.cons.org>
 
