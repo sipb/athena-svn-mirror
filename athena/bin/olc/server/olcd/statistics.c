@@ -10,12 +10,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.7 1990-07-16 08:31:00 lwvanels Exp $
+ *	$Id: statistics.c,v 1.8 1990-08-26 16:12:12 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.7 1990-07-16 08:31:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.8 1990-08-26 16:12:12 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -47,16 +47,17 @@ dump_request_stats(file)
     FILE *fp;
     int i;
     long current_time;
+    char time_buf[25];
 
     fp = fopen(file,"a");
     if (!fp)
 	return;
 
     time(&current_time);
-    fprintf(fp, "Daemon started at:  %s,\n",
-	    format_time(localtime(&start_time)));
-    fprintf(fp, "  stats dumped at:  %s.\n",
-	    format_time(localtime(&current_time)));
+    format_time(time_buf,localtime(&start_time));
+    fprintf(fp, "Daemon started at:  %s,\n",time_buf);
+    format_time(time_buf,localtime(&current_time));
+    fprintf(fp, "  stats dumped at:  %s.\n",time_buf);
     fprintf(fp, "%d requests, processed in %d seconds.\n",
 	    request_count, current_time - start_time);
 
