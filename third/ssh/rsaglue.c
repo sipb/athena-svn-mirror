@@ -18,8 +18,14 @@ using the --with-rsaref configure option.
 */
 
 /*
- * $Id: rsaglue.c,v 1.1.1.2 1999-03-08 17:43:18 danw Exp $
+ * $Id: rsaglue.c,v 1.1.1.2.6.1 2001-02-09 00:11:12 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2001/02/09 00:05:56  ghudson
+ * Fix a vulnerability which could allow an attacker to get a server's session key.
+ *
+ * Revision 1.1.1.2  1999/03/08 17:43:18  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.5  1997/03/19  21:29:59  kivinen
  * 	Added missing &.
  *
@@ -246,7 +252,15 @@ void rsa_private_decrypt(MP_INT *output, MP_INT *input, RSAPrivateKey *key)
   mpz_clear(&aux);
 
   if (value[0] != 0 || value[1] != 2)
-    fatal("Bad result from rsa_private_decrypt");
+    {
+      static time_t last_kill_time = 0;
+      if (time(NULL) - last_kill_time > 60 && getppid() != 1)
+       {
+         last_kill_time = time(NULL);
+         kill(SIGALRM, getppid());
+       }
+      fatal("Bad result from rsa_private_decrypt");
+    }
 
   for (i = 2; i < len && value[i]; i++)
     ;
