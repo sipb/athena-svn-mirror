@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "/etc/athena/attach.conf"				>> "$CONFCHG"
+
 case "$HOSTTYPE" in
 sun4)
 	echo "MINIROOT=true"				>> "$CONFVARS"
