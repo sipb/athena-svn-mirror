@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lprm.c,v 1.1.1.1 1999-05-04 18:06:59 danw Exp $";
+"$Id: lprm.c,v 1.2 1999-05-25 18:40:04 danw Exp $";
 
 
 /***************************************************************************
@@ -147,7 +147,11 @@ int main(int argc, char *argv[], char *envp[])
 
 	Add_line_list(&args,Logname_DYN,0,0,0);
 	for( i = Optind; argv[i]; ++i ){
-		Add_line_list(&args,argv[i],0,0,0);
+		/* Compatibility with BSD lprm */
+		if( !strcmp(argv[i], "-") )
+			Add_line_list(&args,Logname_DYN,0,0,0);
+		else
+			Add_line_list(&args,argv[i],0,0,0);
 	}
 	Check_max(&args,2);
 	args.list[args.count] = 0;
