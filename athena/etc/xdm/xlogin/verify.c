@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.100 1999-01-29 18:00:52 ghudson Exp $ */
+/* $Id: verify.c,v 1.101 1999-04-12 13:41:14 rbasch Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,6 +84,8 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 #endif
 #endif
 
+int al_pid;
+
 #ifdef sgi
 extern FILE *xdmstream;
 #endif
@@ -152,7 +154,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
   char *altext = NULL, *alerrmem;
   int status, *warnings, *warning;
   int tmp_homedir = 0;
-  int pid;
 
   /* 4.2 vs 4.3 style syslog */
 #ifndef  LOG_ODELAY
@@ -337,15 +338,15 @@ char *dologin(user, passwd, option, script, tty, session, display)
 #endif
 
 #ifdef sgi
-  if (nanny_getNannyPid(&pid))
+  if (nanny_getNannyPid(&al_pid))
     return lose("failed to get pid from nanny");
 #else
-  pid = getpid();
+  al_pid = getpid();
 #endif
 
   if (!local_acct)
     {
-      status = al_acct_create(user, encrypt, pid, !msg, 1, &warnings);
+      status = al_acct_create(user, encrypt, al_pid, !msg, 1, &warnings);
       if (status != AL_SUCCESS)
 	{
 	  switch(status)
@@ -738,7 +739,7 @@ cleanup(user)
 #endif
 
   if (user)
-    al_acct_revert(user, getpid());
+    al_acct_revert(user, al_pid);
 
   /* Set real uid to zero.  If this is impossible, exit.  The
    * current implementation of lose() will not print a message
