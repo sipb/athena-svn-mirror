@@ -82,6 +82,7 @@ for a description of the file layout.
 
 .ta \w'k0-k9  'u +\w'Type  'u +\w'``/usr/spool/lpd\'\'  'u
 \fBName Type    Default Description\fR
+ac	str	NULL	name of access control list file to restrict access
 af      str     NULL    name of accounting file
 br      num     none    if lp is a tty, set the baud rate (ioctl call)
 cf      str     NULL    cifplot data filter
@@ -94,7 +95,7 @@ gf      str     NULL    graph data filter (plot (3X) format)
 hl      bool    false   print the burst header page last
 ic      bool    false   driver supports (non-standard) ioctl to indent printout
 if      str     NULL    name of text filter which does accounting
-ka      bool    0       whether kerberos authtication is required
+ka      num     0       whether kerberos authentication is required
 lf      str     ``/dev/console''        error logging file name
 lo      str     ``lock''        name of lock file
 lp      str     ``/dev/lp''     device name to open for output
@@ -102,6 +103,7 @@ mx      num     1000    maximum file size (in BUFSIZ blocks), zero = unlimited
 nd      str     NULL    next directory for list of queues (unimplemented)
 nf      str     NULL    ditroff data filter (device independent troff)
 of      str     NULL    name of output filtering program
+pa	bool	false	specifies that ACL file should be positive access
 pc      num     200     price per foot or page in hundredths of cents
 pl      num     66      page length (in lines)
 pw      num     132     page width (in characters)
