@@ -76,7 +76,7 @@
 #include <assert.h>
 
 /*
- * $Id: accept_sec_context.c,v 1.4 2002-03-06 15:56:19 zacheiss Exp $
+ * $Id: accept_sec_context.c,v 1.5 2002-05-02 18:34:20 rbasch Exp $
  */
 
 /* Decode, decrypt and store the forwarded creds in the local ccache. */
@@ -91,7 +91,6 @@ rd_and_store_for_creds(context, auth_context, inbuf, out_cred)
     krb5_error_code retval;
     krb5_ccache ccache = NULL;
     krb5_gss_cred_id_t cred = NULL;
-    extern krb5_cc_ops krb5_mcc_ops;
     krb5_auth_context new_auth_ctx = NULL;
 	krb5_int32 flags_org;
 
@@ -129,7 +128,6 @@ rd_and_store_for_creds(context, auth_context, inbuf, out_cred)
     /* Lots of kludging going on here... Some day the ccache interface
        will be rewritten though */
 
-    krb5_cc_register(context, &krb5_mcc_ops, 0);
     if ((retval = krb5_cc_resolve(context, "MEMORY:GSSAPI", &ccache)))
         goto cleanup;
 
@@ -230,10 +228,8 @@ krb5_gss_accept_sec_context(minor_status, context_handle,
    krb5_ui_4 gss_flags = 0;
    int decode_req_message = 0;
    krb5_gss_ctx_id_rec *ctx = 0;
-   krb5_enctype enctype;
    krb5_timestamp now;
    gss_buffer_desc token;
-   int err;
    krb5_auth_context auth_context = NULL;
    krb5_ticket * ticket = NULL;
    int option_id;
@@ -244,10 +240,7 @@ krb5_gss_accept_sec_context(minor_status, context_handle,
    krb5_data scratch;
    gss_cred_id_t cred_handle = NULL;
    krb5_gss_cred_id_t deleg_cred = NULL;
-   int token_length;
-   int nctypes;
    krb5_cksumtype *ctypes = 0;
-   struct kg2_option fwcred;
 
    if (GSS_ERROR(kg_get_context(minor_status, &context)))
       return(GSS_S_FAILURE);
