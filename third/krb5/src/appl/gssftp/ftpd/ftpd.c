@@ -1079,12 +1079,13 @@ pass(passwd)
 #endif
 		/* Fail if:
 		 *   pw is NULL
-		 *   kpass fails and we want_creds
+		 *   kpass fails and we want_creds and the user isn't local
 		 *   kpass fails and the user has no local password
 		 *   kpass fails and the provided password doesn't match pw
 		 */
 		if (pw == NULL || (!kpass(pw->pw_name, passwd) &&
-				   (want_creds || !*pw->pw_passwd ||
+				   ((want_creds && !al_local_acct) ||
+				    !*pw->pw_passwd ||
 				    strcmp(xpasswd, pw->pw_passwd)))) {
 			pw = NULL;
 			sleep(5);
