@@ -111,18 +111,21 @@ void build_capplet(void) {
   gtk_container_add(GTK_CONTAINER(GTK_COMBO(combo)->list), item);
   gtk_widget_show(item);
 
+  item = gtk_list_item_new_with_label(_("Help browser"));
+  gtk_combo_set_item_string(GTK_COMBO(combo), GTK_ITEM(item),
+			    "gnome-help-browser '%s'");
+  gtk_container_add(GTK_CONTAINER(GTK_COMBO(combo)->list), item);
+  gtk_widget_show(item);
+
   app = gnome_is_program_in_path ("nautilus");
   if (app) {
 	  g_free (app);
-	  app = "nautilus '%s'";
-  } else
-	  app = "gnome-help-browser '%s'";
-
-  item = gtk_list_item_new_with_label(_("Help browser"));
-  gtk_combo_set_item_string(GTK_COMBO(combo), GTK_ITEM(item), app);
-
-  gtk_container_add(GTK_CONTAINER(GTK_COMBO(combo)->list), item);
-  gtk_widget_show(item);
+	  item = gtk_list_item_new_with_label(_("Nautilus"));
+	  gtk_combo_set_item_string(GTK_COMBO(combo), GTK_ITEM(item),
+				    "nautilus '%s'");
+	  gtk_container_add(GTK_CONTAINER(GTK_COMBO(combo)->list), item);
+	  gtk_widget_show(item);
+  }
 #if 0
   item = gtk_list_item_new_with_label(_("Help browser (new window)"));
 
@@ -183,12 +186,7 @@ void url_capplet_revert(void) {
   gboolean def = FALSE;
   char *app;
 
-  app = gnome_is_program_in_path ("nautilus");
-  if (app) {
-    g_free (app);
-    app = "nautilus \"%s\"";
-  } else
-    app = "gnome-help-browser \"%s\"";
+  app = "gnome-help-browser \"%s\"";
   
   /* see if the default is set.  If not, put in some sensible defaults.
    * Maybe this should pass a call through to gnome-url */
