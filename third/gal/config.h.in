@@ -25,9 +25,6 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -136,6 +133,12 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
+
+/* strftime supports use of l and k */
+#undef HAVE_LKSTRFTIME
 
 /* Have nl_langinfo (CODESET) */
 #undef HAVE_CODESET

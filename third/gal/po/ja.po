@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal CVS\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-10-01 23:06+0900\n"
 "Last-Translator: Takuo KITAME <kitame@debian.org>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -46,19 +46,19 @@ msgstr "%m/%d %p %l:%M"
 msgid "%b %d %Y"
 msgstr "%Y/%m/%d"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(昇順)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(降順)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "ストアされていない"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "グループなし"
 
@@ -188,51 +188,72 @@ msgstr "可能な項目"
 msgid "Show in this order"
 msgstr "順番に表示"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "表示の設定: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d 項目)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "現在ビューのカスタマイズ..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "昇順でソート"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "降順でソート"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "ソートを戻す"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "この項目でグループ化"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "ボックスをグループ化"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "このカラムを削除"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "カラムを追加..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "位置よせ"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "最大サイズ"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "カラムのフォーマット..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "現在ビューのカスタマイズ..."
 
@@ -625,17 +646,8 @@ msgstr "追加するカテゴリ(_C):"
 msgid "_Category to Modify:"
 msgstr "変更するカテゴリ(_C):"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d 項目)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d 項目)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "表示の設定: FIXME"
 
 #~ msgid "Table HERE"
 #~ msgstr "テーブル"

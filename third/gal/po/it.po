@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-07-02 03:18+02:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@softwarelibero.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -45,19 +45,19 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Crescente)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Decrescente)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Non ordinato"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Non raggruppato"
 
@@ -187,51 +187,72 @@ msgstr "Campi disponibili"
 msgid "Show in this order"
 msgstr "Mostra in questo ordine"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Configurazione vista: DA COMPLETARE"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Personalizza vista corrente..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Ordine ascendente"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Ordine decrescente"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Rimuovi ordine"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Raggruppa per questo campo"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Raggruppa per contenitore"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Rimuovi questa colonna"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Aggiungi una colonna..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Allineamento"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Adatta"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Formatta colonne..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Personalizza vista corrente..."
 
@@ -623,3 +644,6 @@ msgstr "_Categoria da aggiungere:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Categoria da modificare:"
+
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Configurazione vista: DA COMPLETARE"

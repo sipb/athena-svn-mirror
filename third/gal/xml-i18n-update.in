@@ -22,8 +22,8 @@
 
 ## Release information
 my $PROGRAM  = "xml-i18n-update";
-my $VERSION  = "0.8.4";
-my $_PACKAGE = "xml-i18n-tools";
+my $VERSION  = "0.9.5";
+my $_PACKAGE = "intltool";
 
 ## Loaded modules
 use strict;
@@ -55,7 +55,9 @@ my $xml_extension =
 "soundlist(\.in)+|".
 "keys(\.in)+|".
 "oaf(\.in)+|".
+"server(\.in)+|".
 "etspec|".
+"sheet(\.in)+|".
 "pong(\.in)+";
 
 my $PACKAGE = &find_package_name;
@@ -152,16 +154,13 @@ sub determine_type($) {
    if ($type =~ /\[type: (gettext\/[^\]].*)]/) {
         $gettext_type=$1;
    }
-   elsif ($type =~ /(?:xml(\.in)*|ui|oaf(?:\.in)+|pong(?:\.in)+|etspec)$/) {
+   elsif ($type =~ /(?:xml(\.in)*|ui|oaf(?:\.in)+|server(?:\.in)+|sheet(?:\.in)+|pong(?:\.in)+|etspec)$/) {
         $gettext_type="gettext\/xml";
    }
    elsif ($type =~ /glade(\.in)*$/) {
         $gettext_type="gettext\/glade";
    }
-   elsif ($type =~ /desktop(\.in)+$/) {
-        $gettext_type="gettext\/ini";
-   }
-   elsif ($type =~ /directory(\.in)+$/) {
+   elsif ($type =~ /(?:desktop(?:\.in)+|directory(?:\.in)+|soundlist(?:\.in)+)$/) {
         $gettext_type="gettext\/ini";
    }
    elsif ($type =~ /keys(\.in)+$/) {
@@ -360,7 +359,7 @@ sub generate_pot
                        ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
 
     system("xgettext", "--default-domain\=$PACKAGE", "--directory\=\.\.",
-	   "--add-comments", "--keyword\=\_", "--keyword\=N\_",
+	   "--add-comments", "--keyword\=\_", "--keyword\=N\_", "--keyword\=U\_",
 	   "--files-from\=\.\/POTFILES\.in");
 
     system($gettext_test);

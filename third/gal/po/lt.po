@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.11.2\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-09-11 18:44+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -45,19 +45,19 @@ msgstr "%b %d %H:%M"
 msgid "%b %d %Y"
 msgstr "%Y %b %d"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Didëjanèiai)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Maþëjanèiai)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Nerikiuoti"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Negrupuoti"
 
@@ -187,51 +187,72 @@ msgstr "Galimi laukai"
 msgid "Show in this order"
 msgstr "Rodyti ðia tvarka"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Prisitaikomas vaizdas: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d elementas)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elementø)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d elementas)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elementø)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Prisitaikyti esamà vaizdà..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Rikiuoti didëjanèiai"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Rikiuoti maþëjanèiai"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Nerikiuoti"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Grupuoti pagal ðá laukà"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Grupuoti pagal dëþutæ"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Paðalinti ðá stulpelá"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Pridëti stulpelá..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Lygiavimas"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Geriausiai telpantis"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Formatuoti stulpelius..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Prisitaikyti esamà vaizdà..."
 
@@ -624,17 +645,8 @@ msgstr "Pridedama _kategorija:"
 msgid "_Category to Modify:"
 msgstr "Taisoma _kategorija:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d elementas)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d elementø)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d elementas)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d elementø)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Prisitaikomas vaizdas: FIXME"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Laukai..."

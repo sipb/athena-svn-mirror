@@ -1,3 +1,66 @@
+2001-12-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-toggle.c (etog_set_value): Don't queue a redraw here.
+	the value changed signal will do that automatically.
+
+2001-12-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c (ect_stop_editing): Change to not editing before
+	committing values.  Then commit the values.
+
+2001-12-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c: Turn off idle handling in the unrealize function
+	instead of the destroy function.
+
+2001-12-06  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-config.c, e-table-config.h (setup_gui): Set the title of
+	the window here.
+
+	* e-table-header-item.c (ethi_popup_customize_view): Use a useful
+	string for the header here.
+
+2001-12-06  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-subset.c (etss_get_view_row): Removed incorrect calls to
+	e_table_model_row_changed here.
+
+2001-12-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header-item.c (ethi_find_col_by_x,
+	ethi_find_col_by_x_nearest): Made these return 0 to the left of
+	all columns and ethi_find_col_by_x return cols - 1 if to the right
+	of all columns.  Fixes Ximian bug #14414.
+
+2001-12-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c (e_tree_selection_model_change_cursor):
+	Unset selection->old_selection here.
+
+2001-11-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c, e-table-item.h: Handle selection_row_changed
+	signal.  Keep track of the old cursor row so that we only redraw
+	two rows when the cursor changes.
+
+	* e-table.c, e-tree.c: Handle selection_row_changed signal.
+
+	* e-tree-selection-model.c: Properly send selection_row_changed
+	signals if changing from a single row selected to a single other
+	row selected or if moving the selection_end by a single row.
+
+2001-12-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-group.c, e-table.c, e-tree.c: Changed some comments.
+	Added a bunch of documentation here.
+
+2001-11-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table.c (context_destroyed), e-tree.c (context_destroyed):
+	Check for et being destroyed here before doing anything.  Fixes
+	Ximian bug #15728.
+
 2001-11-14  Christopher James Lahey  <clahey@ximian.com>
 
 	* e-table-item.c (eti_event): Ungrab and set maybe_in_grab to

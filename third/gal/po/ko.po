@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.4.99.1 \n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-01-06 11:16+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -45,19 +45,19 @@ msgstr ""
 msgid "%b %d %Y"
 msgstr ""
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(증가)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(감소)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr ""
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr ""
 
@@ -188,51 +188,71 @@ msgstr "이용가능한 필드"
 msgid "Show in this order"
 msgstr "이 순서로 보기"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
 msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1302
+msgid "Customize Current View"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "증가하는 순서"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "감소하는 순서"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "정렬 안함"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "이 범위로 묶음"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "상자로 묶음"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "이 행을 제거"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "맞춤"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr ""
 

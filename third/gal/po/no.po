@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
-"PO-Revision-Date: 2001-07-30 00:03+0200\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"PO-Revision-Date: 2001-12-12 20:06+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,19 +45,19 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Stigende)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Synkende)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Ikke sortert"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Ingen gruppering"
 
@@ -187,51 +187,71 @@ msgstr "Tilgjengelige felter"
 msgid "Show in this order"
 msgstr "Vis i denne rekkefølgen"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Konfigurerer visning: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d oppføring)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d oppføringer)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d oppføring)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d oppføringer)"
+
+#: gal/e-table/e-table-header-item.c:1302
+msgid "Customize Current View"
+msgstr "Tilpass aktiv visning"
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Sorter stigende"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Sorter synkende"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Ikke sorter"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Grupper etter dette feltet"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Grupper etter boks"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Fjern denne kolonnen"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Legg til en kolonne..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Justering"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Beste tilpasning"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Formater kolonner..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Tilpass aktiv visning..."
 
@@ -310,7 +330,7 @@ msgstr "gyllen brun"
 
 #: gal/widgets/color-palette.c:595
 msgid "dark green #2"
-msgstr "mørk grønn #2"
+msgstr "mørk grønn #2"
 
 #: gal/widgets/color-palette.c:596
 msgid "navy"
@@ -318,7 +338,7 @@ msgstr "marine"
 
 #: gal/widgets/color-palette.c:597 gal/widgets/color-palette.c:653
 msgid "dark blue"
-msgstr "mørk blå"
+msgstr "mørk blå"
 
 #: gal/widgets/color-palette.c:598
 msgid "purple #2"
@@ -326,15 +346,15 @@ msgstr "lilla #2"
 
 #: gal/widgets/color-palette.c:599
 msgid "very dark gray"
-msgstr "meget mørk grå"
+msgstr "meget mørk grå"
 
 #: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:658
 msgid "dark red"
-msgstr "mørk rød"
+msgstr "mørk rød"
 
 #: gal/widgets/color-palette.c:603
 msgid "red-orange"
-msgstr "rød-oransje"
+msgstr "rød-oransje"
 
 #: gal/widgets/color-palette.c:604
 msgid "gold"
@@ -342,11 +362,11 @@ msgstr "gyllen"
 
 #: gal/widgets/color-palette.c:605
 msgid "dark green"
-msgstr "mørk grønn"
+msgstr "mørk grønn"
 
 #: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:659
 msgid "dull blue"
-msgstr "sløv blå"
+msgstr "sløv blå"
 
 #: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:660
 msgid "blue"
@@ -354,11 +374,11 @@ msgstr "blå"
 
 #: gal/widgets/color-palette.c:608
 msgid "dull purple"
-msgstr "sløv lilla"
+msgstr "sløv lilla"
 
 #: gal/widgets/color-palette.c:609
 msgid "dark grey"
-msgstr "mørk grå"
+msgstr "mørk grå"
 
 #: gal/widgets/color-palette.c:612
 msgid "red"
@@ -374,15 +394,15 @@ msgstr "lime"
 
 #: gal/widgets/color-palette.c:615
 msgid "dull green"
-msgstr "sløv grønn"
+msgstr "sløv grønn"
 
 #: gal/widgets/color-palette.c:616
 msgid "dull blue #2"
-msgstr "sløv blå #2"
+msgstr "sløv blå #2"
 
 #: gal/widgets/color-palette.c:617
 msgid "sky blue #2"
-msgstr "himmelblå #2"
+msgstr "himmelblå #2"
 
 #: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:657
 msgid "purple"
@@ -390,7 +410,7 @@ msgstr "lilla"
 
 #: gal/widgets/color-palette.c:619
 msgid "gray"
-msgstr "grå"
+msgstr "grå"
 
 #: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:654
 msgid "magenta"
@@ -414,15 +434,15 @@ msgstr "cyan"
 
 #: gal/widgets/color-palette.c:627
 msgid "bright blue"
-msgstr "lys blå"
+msgstr "lys blå"
 
 #: gal/widgets/color-palette.c:628 gal/widgets/color-palette.c:645
 msgid "red purple"
-msgstr "rød-lilla"
+msgstr "rød-lilla"
 
 #: gal/widgets/color-palette.c:629
 msgid "light grey"
-msgstr "lys grå"
+msgstr "lys grå"
 
 #: gal/widgets/color-palette.c:632 gal/widgets/color-palette.c:649
 msgid "pink"
@@ -438,7 +458,7 @@ msgstr "lys gul"
 
 #: gal/widgets/color-palette.c:635
 msgid "light green"
-msgstr "lys grønn"
+msgstr "lys grønn"
 
 #: gal/widgets/color-palette.c:636
 msgid "light cyan"
@@ -446,7 +466,7 @@ msgstr "lys cyan"
 
 #: gal/widgets/color-palette.c:637 gal/widgets/color-palette.c:647
 msgid "light blue"
-msgstr "lys blå"
+msgstr "lys blå"
 
 #: gal/widgets/color-palette.c:638 gal/widgets/color-palette.c:651
 msgid "light purple"
@@ -624,17 +644,8 @@ msgstr "_Kategori som skal legges til:"
 msgid "_Category to Modify:"
 msgstr "_Kategori som skal endres:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d oppføring)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d oppføringer)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d oppføring)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d oppføringer)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Konfigurerer visning: FIXME"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Felter..."

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nom_del_fitxer VERSION\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-01-21 20:34+0100\n"
 "Last-Translator: Softcatalà <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
@@ -47,19 +47,19 @@ msgstr ""
 msgid "%b %d %Y"
 msgstr ""
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Sentit ascendent)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Sentit descendent)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr ""
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr ""
 
@@ -191,52 +191,73 @@ msgstr "Camps disponibles"
 msgid "Show in this order"
 msgstr "Mostra en aquest ordre"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
 msgstr ""
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Personalitza la visualització actual..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Ordena en sentit ascendent"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Ordena en sentit descendent"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Desordena-ho"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Agrupa per aquest camp"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Agrupa per quadre"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Suprimeix aquesta columna"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 #, fuzzy
 msgid "Add a Column..."
 msgstr "Formata les columnes..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Alineació"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Encaix més adequat"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Formata les columnes..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Personalitza la visualització actual..."
 
@@ -274,7 +295,7 @@ msgstr "_Nou..."
 #: gal/menus/gal-view-factory-etable.c:38
 #, fuzzy
 msgid "Table"
-msgstr "Taula AQUÍ"
+msgstr "blau"
 
 #: gal/menus/gal-view-new-dialog.glade.h:1
 #, fuzzy
@@ -666,6 +687,9 @@ msgstr ""
 
 #~ msgid "File As (ascending)"
 #~ msgstr "Arxiva com a (ascendent)"
+
+#~ msgid "Table HERE"
+#~ msgstr "Taula AQUÍ"
 
 #~ msgid "File By"
 #~ msgstr "Arxiva per"

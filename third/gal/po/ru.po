@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-08-07 15:53+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -43,19 +43,19 @@ msgstr "%b %d %k:%M"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Возрастающая)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Убывающая)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Без сортировки"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Без группирования"
 
@@ -185,51 +185,72 @@ msgstr "Доступные поля"
 msgid "Show in this order"
 msgstr "Показывать в этом порядке"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Настройка окна: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d элемент)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d элементов)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d элемент)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d элементов)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Настроить текущий вид..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Возрастающая сортировка"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Убывающая сортировка"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Без сортировки"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Группировать по этому полю"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Группировать по ящику"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Удалить этот столбец"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Добавить столбец..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Выравнивание"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Лучшее заполнение"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Формат столбцов..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Настроить текущий вид..."
 
@@ -628,14 +649,5 @@ msgstr "Категория для изменения:"
 #~ msgid "label20"
 #~ msgstr "Метка2"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d элемент)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d элементов)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d элемент)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d элементов)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Настройка окна: FIXME"

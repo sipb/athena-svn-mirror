@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-07-18 09:14+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -55,23 +55,23 @@ msgstr "%b %d %Y"
 
 # gal/e-table/e-table-config.c:239
 # gal/e-table/e-table-config.c:278
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(遞增)"
 
 # gal/e-table/e-table-config.c:239
 # gal/e-table/e-table-config.c:278
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(遞減)"
 
 # gal/e-table/e-table-config.c:246
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "沒有排序"
 
 # gal/e-table/e-table-config.c:284
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "沒有分組"
 
@@ -226,63 +226,84 @@ msgstr "可用的欄位"
 msgid "Show in this order"
 msgstr "用這個次序顯示"
 
-# gal/e-table/e-table-header-item.c:1254
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "檢視設定："
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d 項目)"
+
+# gal/e-table/e-table-header-item.c:1283
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "自訂目前檢視..."
 
 # gal/e-table/e-table-header-item.c:1269
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "遞增排序"
 
 # gal/e-table/e-table-header-item.c:1270
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "遞減排序"
 
 # gal/e-table/e-table-header-item.c:1271
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "不排序"
 
 # gal/e-table/e-table-header-item.c:1273
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "使用此欄位分組"
 
 # gal/e-table/e-table-header-item.c:1274
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "使用方塊分組"
 
 # gal/e-table/e-table-header-item.c:1276
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "移除這列"
 
 # gal/e-table/e-table-header-item.c:1277
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "新增列..."
 
 # gal/e-table/e-table-header-item.c:1279
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "對齊"
 
 # gal/e-table/e-table-header-item.c:1280
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "最合適"
 
 # gal/e-table/e-table-header-item.c:1281
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "格式列..."
 
 # gal/e-table/e-table-header-item.c:1283
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "自訂目前檢視..."
 
@@ -787,14 +808,6 @@ msgstr "修改的類別 (_C)："
 #~ msgid "_Fields..."
 #~ msgstr "欄位 (_F)..."
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d 項目)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d 項目)"
+# gal/e-table/e-table-header-item.c:1254
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "檢視設定："

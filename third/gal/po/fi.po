@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.13.99.1\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-10-06 20:17+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -48,19 +48,19 @@ msgstr "%d. %b %H:%M"
 msgid "%b %d %Y"
 msgstr "%d. %b %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Nouseva)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Laskeva)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Ei j‰rjestyst‰"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Ei ryhmittely‰"
 
@@ -190,51 +190,72 @@ msgstr "Mahdolliset kent‰t"
 msgid "Show in this order"
 msgstr "N‰yt‰ t‰ss‰ j‰rjestyksess‰"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Asetetaan n‰kym‰: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d kohde)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d kohdetta)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d kohde)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d kohdetta)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Mukauta nykyist‰ n‰kym‰‰..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "J‰rjest‰ nousevasti"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "J‰rjest‰ laskevasti"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "ƒl‰ j‰rjest‰"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Ryhmittele t‰m‰n kent‰n mukaan"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Ryhmittele laatikon mukaan"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Poista t‰m‰ sarake"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Lis‰‰ sarake..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Tasaus"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Parhaiten sopiva"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Muotoile sarakkeita..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Mukauta nykyist‰ n‰kym‰‰..."
 
@@ -627,14 +648,5 @@ msgstr "_Lis‰tt‰v‰ luokka:"
 msgid "_Category to Modify:"
 msgstr "_Muokattava luokka:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d kohde)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d kohdetta)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d kohde)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d kohdetta)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Asetetaan n‰kym‰: FIXME"

@@ -1,29 +1,29 @@
 AC_INIT(README)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gal,0.18.1)
+AM_INIT_AUTOMAKE(gal,0.19)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
 dnl libtool versioning
 
-dnl gal-0.18.1 = 0
+dnl gal-0.19 = 0
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
 dnl AKA Micro
 GAL_AGE=0
 
-dnl gal-0.18.1 = 1
+dnl gal-0.19 = 0
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
 dnl AKA Minor
-GAL_REVISION=1
+GAL_REVISION=0
 
-dnl gal-0.18.1 = 18
+dnl gal-0.19 = 19
 dnl increment if the interface has additions, changes, removals.
 dnl AKA Major
-GAL_CURRENT=18
+GAL_CURRENT=19
 
 AC_SUBST(GAL_CURRENT)
 AC_SUBST(GAL_REVISION)
@@ -165,6 +165,33 @@ if test "$have_iconv" = no; then
 fi
 AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(ICONV_LIBS)
+
+dnl Check to see if strftime supports the use of %l and %k
+
+AC_MSG_CHECKING(for %l and %k support in strftime)
+AC_TRY_RUN([
+#include <string.h>
+#include <time.h>
+
+int main(int argc, char **argv)
+{
+	char buf[10];
+	time_t rawtime;
+	struct tm *timeinfo;
+
+	time(&rawtime);
+	timeinfo=localtime(&rawtime);
+	strftime(buf, 10, "%l %k", timeinfo);
+
+	if (strstr(buf, "%l") || strstr(buf, "%k"))
+		exit(1);
+	else
+		exit(0);
+}],[
+AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k])
+ac_cv_lkstrftime=yes
+],ac_cv_lkstrftime=no,ac_cv_lkstrftime=no])
+AC_MSG_RESULT($ac_cv_lkstrftime)
 
 dnl Check for nl_langinfo and CODESET
 

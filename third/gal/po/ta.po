@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.8.99.0\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
 "PO-Revision-Date: 2001-06-16 09:06+0300\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil GNOME <tamillinux.com>\n"
@@ -45,19 +45,19 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(§Á§ÄÚ¸¢ıÈĞ)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(­ÈíÌ¸¢ıÈĞ)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "ÅÃ¢¨ºÂ¡şì¸Å¢ø¨Ä"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "¦¾¡Ìò¾ø ¸¢¨¼Â¡Ğ"
 
@@ -188,51 +188,72 @@ msgstr "¦ÅüÈ¡É ÒÄí¸û"
 msgid "Show in this order"
 msgstr "­ó¾ ÅÃ¢¨ºôÀÊ ¸¡ñÀ¢¸×õ"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "¸¡ğº¢¨Â «¨ÁÅÊì¸¢ıÈĞ: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d ¯ÕôÀÊ)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d ¯ÕôÀÊ¸û)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d ¯ÕôÀÊ)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d ¯ÕôÀÊ¸û)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "¾ü§À¡¨¾Â ¸¡ğº¢¨Â ¾É¢ôÀÂÉ¡ìÌ..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "²ÚÓ¸õ ÅÃ¢¨ºÂ¡¸ ÅÃ¢¨ºôÀÎòĞ"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "­ÈíÌ ÅÃ¢¨ºÂ¡¸ ÅÃ¢¨ºôÀÎòĞ"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "ÅÃ¢¨ºôÀÎò¾ §Åñ¼¡õ"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "­ó¾ ÒÄõÀÊ ¦¾¡Ì¾¢î¦ºö"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "¦ÀğÊôÀÊ ¦¾¡Ì¾¢î¦ºö"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "­ó¾ ¦¿ÎÅ¡¢¨º¨Â ¸ÆğÎ"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "¦¿ÎÅ¡¢¨º ´ı¨Èî §º÷..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "§¿÷ôÀÎò¾õ"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "ºÃ¢Â¡É ¦À¡Õò¾õ"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "¦¿ÎÅ¡¢¨º¸¨Ç ÅÊÅ¨Á..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "¾ü§À¡¨¾Â ¸¡ğº¢¨Â ¾É¢ôÀÂÉ¡ìÌ..."
 
@@ -628,17 +649,8 @@ msgstr ""
 #~ msgid "_Fields..."
 #~ msgstr "_ÒÄí¸û..."
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d ¯ÕôÀÊ)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d ¯ÕôÀÊ¸û)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d ¯ÕôÀÊ)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d ¯ÕôÀÊ¸û)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "¸¡ğº¢¨Â «¨ÁÅÊì¸¢ıÈĞ: FIXME"
 
 #~ msgid "Simplified"
 #~ msgstr "ş"
