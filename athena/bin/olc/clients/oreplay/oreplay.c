@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.5 1990-12-02 13:33:23 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.6 1990-12-02 23:09:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -143,16 +143,22 @@ main(argc,argv)
   read(sock,&len,sizeof(len));
   len = ntohl(len);
   if (len < 0) {
-    switch (len) {
-    case -1:
-      fprintf(stderr,"No such question\n");
-      break;
-    case -2:
-      fprintf(stderr,"Error on the server\n");
-      break;
-    default:
-      fprintf(stderr,"Unknown error %d\n",len);
-    }
+    if (len >= -256)
+      switch (len) {
+      case -11:
+	fprintf(stderr,"No such question\n");
+	break;
+      case -12:
+	fprintf(stderr,"Error on the server\n");
+	break;
+      case -13:
+	fprintf(stderr,"Sorry, charlie, but you're not on the acl.\n");
+	break;
+      default:
+	fprintf(stderr,"%s\n",krb_err_txt[-len]);
+      }
+    else
+      fprintf(stderr,"Unknown error %d\n",-len);
     punt(output_fd,filename);
   }
   buf = malloc(len);
