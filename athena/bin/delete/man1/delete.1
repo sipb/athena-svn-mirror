@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.1 1989-01-26 09:55:51 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.2 1989-01-27 02:54:51 jik Exp $
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
 .\" the terms and conditions for redistribution.
@@ -27,13 +27,13 @@ delete \- a recoverable file-deletion utility
 ] [
 .B \-D
 ] [
-.B \-\-
-] file ...
+.B \-\|\-
+] filename ...
 .PP
 .SH DESCRIPTION
 .I Delete
-marks files and directories for later permanent removal by renaming
-them with a prefix of `.#'.  Files accidentally marked for deletion
+marks files and directories for later permanent removal (by renaming
+them with a prefix of \fI.#\fR).  Files accidentally marked for deletion
 can be recovered using
 .I undelete(1).
 Marked files are periodically
@@ -53,18 +53,18 @@ while still being able to recover accidentally removed files can do so
 by aliasing
 .I rm
 to
-.I delete -F
+.I delete \-F
 and
 .I rmdir
 to
-.I delete -D
+.I delete \-D
 (see below).
 .SH OPTIONS
 .I Delete
 accepts the following command-line options:
 .TP
 .B \-r
-If a designated file is a non-empty directory,
+If a designated filename is a non-empty directory,
 .I delete
 will signal an error unless the
 .B \-r
@@ -86,7 +86,7 @@ mode, whether to examine each directory.
 .B \-f
 Prevents
 .I delete
-from asking any questions or reporting any errors.
+from asking any questions and from reporting any errors.
 .TP
 .B \-n
 No file removals are performed.  Instead,
@@ -116,7 +116,7 @@ to emulate
 .I rmdir
 by preventing it from removing anything but empty directories.
 .TP
-.B \-\-
+.B \-\|\-
 Two dashes indicate that all the arguments following it are to be treated as
 file names, even if they start with a dash.
 .SH "SEE ALSO"

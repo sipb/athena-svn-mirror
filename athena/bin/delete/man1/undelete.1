@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v 1.1 1989-01-26 09:56:00 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v 1.2 1989-01-27 02:55:01 jik Exp $
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
 .\" the terms and conditions for redistribution.
@@ -25,16 +25,16 @@ undelete \- recover files removed by delete
 ] [
 .B \-R
 ] [
-.B \-\-
-] [ file [ ... ]]
+.B \-\|\-
+] [ filename [ ... ]]
 .PP
 .DESCRIPTION
 .I Undelete
-recovers files that have been marked for permanent removal by 
+recovers files and directories that have been marked for permanent removal by 
 \fIdelete\fR(1), but have not
 yet been removed.
 .PP
-Arguments passed to
+Filenames passed to
 .I undelete
 can be directories or deleted files.
 If a directory that is not deleted is passed to
@@ -104,7 +104,7 @@ Prevents
 .I undelete
 from restoring the contents of directories in any case.
 .TP
-.B \-\-
+.B \-\|\-
 Two dashes indicate that all arguments following it are to be treated as file
 names, even if they start with a dash.
 .SH "SEE ALSO"
