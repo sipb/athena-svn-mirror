@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.8 1988-11-14 11:50:30 jtkohl Exp $";
+static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.9 1990-12-21 09:21:08 jfc Exp $";
 #endif lint
 
 #include <sys/uio.h>
@@ -504,7 +504,6 @@ register int n;
 FILE *f;
 {
     register char *p;
-    int c;
 
     p = fgets(buf, n, f);
 
@@ -519,8 +518,8 @@ FILE *f;
     }
 
     p = buf + strlen(buf);
-    if (*--p == '\n') *p = NULL;
-    if (*--p == '\r') *p = NULL;
+    if (*--p == '\n') *p = '\0';
+    if (*--p == '\r') *p = '\0';
     return(OK);
 }
 
@@ -531,7 +530,7 @@ FILE *f;
 {
     if (getline(buf, n, f) != OK) return (NOTOK);
     if (*buf == '.') {
-	if (*(buf+1) == NULL) {
+	if (*(buf+1) == '\0') {
 	    return (DONE);
 	} else {
 	    (void) strcpy(buf, buf+1);
