@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.18 1990-11-15 22:39:38 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.19 1990-11-16 16:20:40 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -79,7 +79,7 @@ struct _fstypes fstypes[] = {
     { "AFS", TYPE_AFS, -1, FS_MNTPT | FS_PARENTMNTPT, "nrw", afs_attach, 
 	      afs_detach, afs_explicit },
 #endif
-    { "MUL", TYPE_MUL, -1, 0, "n", attach_mul, detach_mul, 0 },
+    { "MUL", TYPE_MUL, -1, 0, "-", attach_mul, detach_mul, 0 },
     { 0, -1, 0, 0, (char *) 0, 0, 0, 0 }
 };
 
@@ -482,7 +482,7 @@ attachcmd(argc, argv)
 			    strcat(optstr, ",perm");
 		    if (atp->status == STATUS_ATTACHED) {
 			    printf(attach_list_format, atp->hesiodname,
-				   atp->mntpt,
+				   (atp->fs->type&TYPE_MUL) ? "-" : atp->mntpt,
 				   atp->flags & FLAG_ANYONE ? '*' : ' ',
 				   ownerlist(atp), optstr);
 		    }
