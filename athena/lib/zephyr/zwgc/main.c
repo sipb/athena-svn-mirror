@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v 1.3 1989-11-08 15:00:50 jtkohl Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.4 1989-11-15 10:01:08 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -104,8 +104,7 @@ static void read_in_description_file()
 
 /*    var_clear_all_variables(); <<<>>> */
 
-    input_file = locate_file(description_filename_override, ".zwgc.desc",
- "/afs/athena.mit.edu/astaff/project/zephyr/src/zwgc/zwgc.dev/misc/zwgc.desc");
+    input_file = locate_file(description_filename_override, USRDESC, DEFDESC);
     if (input_file)
       program = parse_file(input_file);
     else
