@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.3 1987-06-29 03:10:47 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.4 1987-06-29 03:13:49 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -25,7 +25,7 @@ int ZReadAscii(ptr,len,field,num)
 	int i;
 	char bfr[3];
 
-	for (i=outlen=0;i<num;i++) {
+	for (i=0;i<num;i++) {
 		if (*ptr == ' ') {
 			ptr++;
 			if (--len < 1)
