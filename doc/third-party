@@ -210,8 +210,8 @@ LEIM
 ----
 
 LEIM (Library of Emacs Input Methods) is built as part of Emacs, but
-distributed separately. New versions of LEIM should be imported along
-with new versions of Emacs, in third/emacs/leim.
+distributed separately.  Untar both emacs and leim (leim will untar
+into emacs-xx.yy/leim) and import them both with one command.
 
 TeX
 ---
