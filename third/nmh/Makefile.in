@@ -1,7 +1,7 @@
 #
 # Makefile for top level of nmh distribution
 #
-# $Id: Makefile.in,v 1.4 1999-04-18 15:19:49 ghudson Exp $
+# $Id: Makefile.in,v 1.5 1999-12-01 16:31:01 danw Exp $
 #
 
 # nmh version
@@ -127,9 +127,6 @@ Makefile: Makefile.in config.status
 
 config.status: configure VERSION
 	./config.status --recheck
-
-configure: configure.in aclocal.m4
-	cd $(srcdir) && autoconf
 
 config.h: stamp-h
 stamp-h: config.h.in config.status
