@@ -163,24 +163,15 @@ getline(cfp)
  * creation time.
  * Return the number of entries and a pointer to the list.
  */
-#ifdef SOLARIS
 getq_(namelist)
 	struct queue_ *(*namelist[]);
-#else
-getq(namelist)
-	struct queue *(*namelist[]);
-#endif
 {
 #ifdef POSIX
 	register struct dirent *d;
 #else
 	register struct direct *d;
 #endif
-#ifdef SOLARIS
 	register struct queue_ *q, **queue;
-#else
-	register struct queue *q, **queue;
-#endif
 	register int nitems;
 	struct stat stbuf;
 	int arraysz, compar();
@@ -196,11 +187,7 @@ getq(namelist)
 	 * and dividing it by a multiple of the minimum size entry. 
 	 */
 	arraysz = (stbuf.st_size / 24);
-#ifdef SOLARIS
 	queue = (struct queue_ **)malloc(arraysz * sizeof(struct queue_ *));
-#else
-	queue = (struct queue **)malloc(arraysz * sizeof(struct queue *));
-#endif
 	if (queue == NULL)
 		goto errdone;
 
@@ -210,11 +197,7 @@ getq(namelist)
 			continue;	/* daemon control files only */
 		if (stat(d->d_name, &stbuf) < 0)
 			continue;	/* Doesn't exist */
-#ifdef SOLARIS
 		q = (struct queue_ *)malloc(sizeof(time_t)+strlen(d->d_name)+1);
-#else
-		q = (struct queue *)malloc(sizeof(time_t)+strlen(d->d_name)+1);
-#endif
 		if (q == NULL)
 			goto errdone;
 		q->q_time = stbuf.st_mtime;
@@ -233,11 +216,7 @@ getq(namelist)
 	}
 	closedir(dirp);
 	if (nitems)
-#ifdef SOLARIS
 		qsort(queue, nitems, sizeof(struct queue_ *), compar);
-#else
-		qsort(queue, nitems, sizeof(struct queue *), compar);
-#endif
 	*namelist = queue;
 	return(nitems);
 
@@ -251,11 +230,7 @@ errdone:
  */
 static
 compar(p1, p2)
-#ifdef SOLARIS
 	register struct queue_ **p1, **p2;
-#else
-	register struct queue **p1, **p2;
-#endif
 {
 	if ((*p1)->q_time < (*p2)->q_time)
 		return(-1);

@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: vrt $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.11 1993-06-30 17:49:42 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.12 1993-10-09 18:14:33 probe Exp $
  */
 
 /*
@@ -144,11 +144,7 @@ extern char     krealm[];
 /*
  * Structure used for building a sorted list of control files.
  */
-#ifdef SOLARIS
 struct queue_ {
-#else
-struct queue {
-#endif
 	time_t	q_time;			/* modification time */
 	char	q_name[MAXNAMLEN+1];	/* control file name */
 };
