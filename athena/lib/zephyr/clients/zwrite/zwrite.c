@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.4 1987-08-07 20:50:35 rfrench Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.5 1987-08-08 01:51:21 rfrench Exp $";
 #endif lint
 
 #define FUDGEFACTOR 20
@@ -145,7 +145,6 @@ main(argc,argv)
 		for (;;) {
 			if (!fgets(bfr,sizeof bfr,stdin))
 				break;
-			bfr[strlen(bfr)-1] = '\0';
 			if (bfr[0] == '.' && bfr[1] == '\0')
 				break;
 			if (strlen(bfr)+(ptr-message) > Z_MAXPKTLEN-len-FUDGEFACTOR) {
@@ -157,7 +156,6 @@ main(argc,argv)
 			}
 			strcpy(ptr,bfr);
 			ptr += strlen(ptr);
-			*ptr++ = '\n';
 		}
 
 		*ptr++ = '\0';
