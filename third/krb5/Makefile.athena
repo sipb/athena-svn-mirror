@@ -1,10 +1,10 @@
-# $Id: Makefile.athena,v 1.16 1999-03-04 16:40:46 danw Exp $
+# $Id: Makefile.athena,v 1.17 1999-10-11 03:40:57 ghudson Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f src/config.cache
-	cd src && CPPFLAGS=" " ./configure --with-krb4=yes
+	cd src && ./configure --without-hesiod
 
 clean:
 	cd src && ${MAKE} clean
