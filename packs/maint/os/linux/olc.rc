@@ -23,7 +23,7 @@ then
 	exit 0
 fi
 
-[ -f /etc/athena/xntpd ] || exit 0
+[ -f /usr/athena/etc/olcd ] || exit 0
 
 [ "$OLC" = true ] || exit 0
 
