@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2003-01-26 04:59:58 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2003-01-26 05:01:59 ghudson Exp $
 
 # Our build system's imake stuff is too old for this, so we'll use the
 # native stuff and bludgeon it into working.
@@ -9,7 +9,8 @@ prepare:
 	xmkmf -a
 
 clean:
-	${MAKE} clean
+	# This would blow away the result of "make includes", which is
+	# bogus, but oh well.  Just don't clean anything.
 
 all:
 	${MAKE} all CC=gcc CCOPTIONS=-g PICFLAGS=-fPIC \
