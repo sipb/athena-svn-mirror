@@ -889,7 +889,8 @@ pass(passwd)
 	}
 
 	if (have_creds) {
-		chown(krb5_ccname(kcontext, ccache)+5, pw->pw_uid, pw->pw_gid);
+		chown(krb5_cc_get_name(kcontext, ccache), pw->pw_uid,
+		      pw->pw_gid);
 		chown(tkt_string(), pw->pw_uid, pw->pw_gid);
 	}
 
