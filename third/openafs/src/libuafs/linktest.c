@@ -15,12 +15,21 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libuafs/linktest.c,v 1.1.1.1 2002-01-31 21:49:10 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libuafs/linktest.c,v 1.1.1.2 2005-03-10 20:44:32 zacheiss Exp $");
 
+#include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
-#include <rx/rx.h>
-#include <afs/afs_usrops.h>
 
+#include <netinet/in.h>
+#include <afs/sysincludes.h>
+#include <rx/rx.h>
+#include <afs_usrops.h>
+
+void uafs_Shutdown(void);
+
+int
 main(int argc, char **argv)
 {
     int port = 0;
@@ -45,9 +54,8 @@ main(int argc, char **argv)
     uafs_SetRxPort(port);
 
     uafs_Init("linktest", afsMount, confDir, cacheBaseDir, cacheBlocks,
-	      cacheFiles, cacheStatEntries, dCacheSize, vCacheSize,
-	      chunkSize, closeSynch, debug, nDaemons,
-	      memCache, logFile);
+	      cacheFiles, cacheStatEntries, dCacheSize, vCacheSize, chunkSize,
+	      closeSynch, debug, nDaemons, memCache, logFile);
 
     uafs_RxServerProc();
 

@@ -4,7 +4,7 @@
 #
 # Copyright:    Copyright (c) 2003 
 #
-# Header:       $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/packaging/HP-UX/psf-1.2.10-transarc-paths-11.22,v 1.1.1.1 2004-02-13 17:56:59 zacheiss Exp $
+# Header:       $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/packaging/HP-UX/psf-1.2.10-transarc-paths-11.22,v 1.1.1.2 2005-03-10 20:36:58 zacheiss Exp $
 #
 # Description:  This PSF contains a valid product definition which includes
 #               all attributes for OpenAFS installation via software Distributor

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: mountpoint.in,v 1.1.1.1 2002-01-31 21:33:54 zacheiss Exp $
+# $Id: mountpoint.in,v 1.1.1.2 2005-03-10 20:32:56 zacheiss Exp $
 FS=${FS:-${objdir}/../appl/fs/fs}
 ${FS} sa . system:anyuser all || exit 1
 ${FS} mkm no-such-volume no-such-volume 2>/dev/null || exit 1

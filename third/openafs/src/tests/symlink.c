@@ -47,7 +47,7 @@
 #include <err.h>
 
 #ifdef RCSID
-RCSID("$Id: symlink.c,v 1.1.1.1 2002-01-31 21:33:54 zacheiss Exp $");
+RCSID("$Id: symlink.c,v 1.1.1.2 2005-03-10 20:39:25 zacheiss Exp $");
 #endif
 
 int
@@ -57,16 +57,16 @@ main(int argc, char **argv)
     struct stat sb;
 
 
-    ret = symlink ("foo", "bar");
+    ret = symlink("foo", "bar");
     if (ret < 0)
-	err (1, "symlink foo,bar");
-    ret = lstat ("bar", &sb);
+	err(1, "symlink foo,bar");
+    ret = lstat("bar", &sb);
     if (ret < 0)
-	err (1, "lstat bar");
+	err(1, "lstat bar");
     if ((sb.st_mode & S_IFLNK) != S_IFLNK)
-	errx (1, "bar is not symlink");
-    ret = unlink ("bar");
+	errx(1, "bar is not symlink");
+    ret = unlink("bar");
     if (ret < 0)
-	err (1, "unlink bar");
+	err(1, "unlink bar");
     return 0;
 }

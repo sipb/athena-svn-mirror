@@ -13,12 +13,13 @@
  */
 
 #include <afsconfig.h>
-#include "../afs/param.h"
+#include "afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_misc.c,v 1.1.1.1 2002-01-31 21:48:49 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_misc.c,v 1.1.1.2 2005-03-10 20:39:45 zacheiss Exp $");
 
-#include "../afs/sysincludes.h"	/* Standard vendor system headers */
-#include "../afs/afsincludes.h"	/* Afs-based standard headers */
+#include "afs/sysincludes.h"	/* Standard vendor system headers */
+#include "afsincludes.h"	/* Afs-based standard headers */
 
 /*
  * afs_suser() returns true if the caller is superuser, false otherwise.
@@ -26,11 +27,12 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi
  * Note that it must NOT set errno.
  */
 
-afs_suser() {
+afs_suser(void *credp)
+{
     int error;
 
     if ((error = suser(u.u_cred, &u.u_acflag)) == 0) {
-	return(1);
+	return (1);
     }
-    return(0);
+    return (0);
 }

@@ -18,7 +18,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_logout.c,v 1.1.1.1 2002-01-31 21:50:13 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_logout.c,v 1.1.1.2 2005-03-10 20:38:30 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>
@@ -41,29 +42,28 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_
 /* 0 on failure, 1 on success */
 
 logout(line)
-	register char *line;
+     register char *line;
 {
-	register FILE *fp;
-	struct utmp ut;
-	int rval;
+    register FILE *fp;
+    struct utmp ut;
+    int rval;
 
-	if (!(fp = fopen(UTMPFILE, "r+")))
-		return(0);
-	rval = 0;
-	while (fread((char *)&ut, sizeof(struct utmp), 1, fp) == 1) {
-		if (!ut.ut_name[0] ||
-		    strncmp(ut.ut_line, line, sizeof(ut.ut_line)))
-			continue;
-		memset(ut.ut_name, 0, sizeof(ut.ut_name));
+    if (!(fp = fopen(UTMPFILE, "r+")))
+	return (0);
+    rval = 0;
+    while (fread((char *)&ut, sizeof(struct utmp), 1, fp) == 1) {
+	if (!ut.ut_name[0] || strncmp(ut.ut_line, line, sizeof(ut.ut_line)))
+	    continue;
+	memset(ut.ut_name, 0, sizeof(ut.ut_name));
 #if	!defined(AIX) && !defined(AFS_SUN5_ENV)
-		memset(ut.ut_host, 0, sizeof(ut.ut_host));
+	memset(ut.ut_host, 0, sizeof(ut.ut_host));
 #endif /* AIX */
-		(void)time(&ut.ut_time);
-		(void)fseek(fp, (long)-sizeof(struct utmp), L_INCR);
-		(void)fwrite((char *)&ut, sizeof(struct utmp), 1, fp);
-		(void)fseek(fp, (long)0, L_INCR);
-		rval = 1;
-	}
-	(void)fclose(fp);
-	return(rval);
+	(void)time(&ut.ut_time);
+	(void)fseek(fp, (long)-sizeof(struct utmp), L_INCR);
+	(void)fwrite((char *)&ut, sizeof(struct utmp), 1, fp);
+	(void)fseek(fp, (long)0, L_INCR);
+	rval = 1;
+    }
+    (void)fclose(fp);
+    return (rval);
 }

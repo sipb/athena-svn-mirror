@@ -33,7 +33,7 @@
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
-RCSID("$Id: vwarnx.c,v 1.1.1.1 2002-12-13 20:38:50 zacheiss Exp $");
+RCSID("$Id: vwarnx.c,v 1.1.1.2 2005-03-10 20:39:26 zacheiss Exp $");
 #endif
 
 #include <err.h>
@@ -43,4 +43,3 @@ vwarnx(const char *fmt, va_list ap)
 {
     warnerr(0, fmt, ap);
 }
-

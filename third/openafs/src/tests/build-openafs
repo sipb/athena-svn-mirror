@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build-openafs,v 1.1.1.2 2002-12-13 20:38:54 zacheiss Exp $
+# $Id: build-openafs,v 1.1.1.3 2005-03-10 20:33:10 zacheiss Exp $
 FS=${FS:-${objdir}/../appl/fs/fs}
 
 ${FS} sq . 0

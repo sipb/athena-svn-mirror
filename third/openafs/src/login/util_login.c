@@ -18,7 +18,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_login.c,v 1.1.1.1 2002-01-31 21:49:12 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_login.c,v 1.1.1.2 2005-03-10 20:38:30 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>
@@ -43,20 +44,20 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_
 
 void
 login(ut)
-	struct utmp *ut;
+     struct utmp *ut;
 {
-	register int fd;
-	int tty;
-	off_t lseek();
+    register int fd;
+    int tty;
+    off_t lseek();
 
-	tty = ttyslot();
-	if (tty > 0 && (fd = open(UTMPFILE, O_WRONLY, 0)) >= 0) {
-		(void)lseek(fd, (long)(tty * sizeof(struct utmp)), L_SET);
-		(void)write(fd, (char *)ut, sizeof(struct utmp));
-		(void)close(fd);
-	}
-	if ((fd = open(WTMPFILE, O_WRONLY|O_APPEND, 0)) >= 0) {
-		(void)write(fd, (char *)ut, sizeof(struct utmp));
-		(void)close(fd);
-	}
+    tty = ttyslot();
+    if (tty > 0 && (fd = open(UTMPFILE, O_WRONLY, 0)) >= 0) {
+	(void)lseek(fd, (long)(tty * sizeof(struct utmp)), L_SET);
+	(void)write(fd, (char *)ut, sizeof(struct utmp));
+	(void)close(fd);
+    }
+    if ((fd = open(WTMPFILE, O_WRONLY | O_APPEND, 0)) >= 0) {
+	(void)write(fd, (char *)ut, sizeof(struct utmp));
+	(void)close(fd);
+    }
 }

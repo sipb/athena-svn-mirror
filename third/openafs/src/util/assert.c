@@ -14,29 +14,39 @@
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/assert.c,v 1.1.1.2 2002-12-13 20:41:12 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/assert.c,v 1.1.1.3 2005-03-10 20:40:14 zacheiss Exp $");
 
 #include <stdio.h>
 #include "afsutil.h"
 
 #ifdef AFS_NT40_ENV
-void afs_NTAbort(void)
+void
+afs_NTAbort(void)
 {
-    _asm int 3h; /* always trap. */
+    _asm int 3h;		/* always trap. */
 }
 #endif
 
 
-void AssertionFailed(char *file, int line)
+void
+AssertionFailed(char *file, int line)
 {
     char tdate[26];
     time_t when;
 
     time(&when);
     afs_ctime(&when, tdate, 25);
-    fprintf(stderr, "%s: Assertion failed! file %s, line %d.\n",
-	tdate, file, line);
+    fprintf(stderr, "%s: Assertion failed! file %s, line %d.\n", tdate, file,
+	    line);
     fflush(stderr);
 #ifdef AFS_NT40_ENV
     afs_NTAbort();
@@ -44,4 +54,3 @@ void AssertionFailed(char *file, int line)
     abort();
 #endif
 }
-

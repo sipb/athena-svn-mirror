@@ -10,18 +10,21 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/test/background.c,v 1.1.1.1 2002-01-31 21:49:04 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/test/background.c,v 1.1.1.2 2005-03-10 20:38:13 zacheiss Exp $");
 
-main (argc, argv)
-  int   argc;
-  char *argv[];
-{   int pid;
+main(argc, argv)
+     int argc;
+     char *argv[];
+{
+    int pid;
 
-    if (argc == 1) exit (-1);
-    if (pid = fork ()) {		/* parent */
-	printf ("%d", pid);
-	exit (0);
+    if (argc == 1)
+	exit(-1);
+    if (pid = fork()) {		/* parent */
+	printf("%d", pid);
+	exit(0);
     }
-    execve (argv[1], argv+1, 0);
-    perror ("execve returned");
+    execve(argv[1], argv + 1, 0);
+    perror("execve returned");
 }

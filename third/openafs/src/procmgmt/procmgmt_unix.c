@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/procmgmt_unix.c,v 1.1.1.1 2002-01-31 21:49:16 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/procmgmt_unix.c,v 1.1.1.2 2005-03-10 20:38:41 zacheiss Exp $");
 
 #include <afs/stds.h>
 
@@ -37,9 +38,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/pr
  * ASSUMPTIONS: sargv[0] is the same as spath (or its last component).
  */
 pid_t
-pmgt_ProcessSpawnVE(const char *spath,
-		    char *sargv[],
-		    char *senvp[],
+pmgt_ProcessSpawnVE(const char *spath, char *sargv[], char *senvp[],
 		    int estatus)
 {
     pid_t pid;

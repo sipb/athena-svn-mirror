@@ -11,14 +11,15 @@
  * xdr_afsuuid.c, XDR routine for built in afsUUID data type.
  */
 
-#include "afs/param.h"
 #include <afsconfig.h>
+#include "afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_afsuuid.c,v 1.1.1.1 2002-01-31 21:50:18 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_afsuuid.c,v 1.1.1.2 2005-03-10 20:50:06 zacheiss Exp $");
 
 #if defined(KERNEL) && !defined(UKERNEL)
 #ifdef AFS_LINUX20_ENV
-#include "../h/string.h"
+#include "h/string.h"
 #if 0
 #define bzero(A, C) memset((A), 0, (C))
 #endif
@@ -37,27 +38,26 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_afsu
 #endif
 
 int
-xdr_afsUUID(xdrs, objp)
-	XDR *xdrs;
-	afsUUID *objp;
+xdr_afsUUID(XDR * xdrs, afsUUID * objp)
 {
-	if (!xdr_afs_uint32(xdrs, &objp->time_low)) {
-		return (FALSE);
-	}
-	if (!xdr_u_short(xdrs, &objp->time_mid)) {
-		return (FALSE);
-	}
-	if (!xdr_u_short(xdrs, &objp->time_hi_and_version)) {
-		return (FALSE);
-	}
-	if (!xdr_char(xdrs, &objp->clock_seq_hi_and_reserved)) {
-		return (FALSE);
-	}
-	if (!xdr_char(xdrs, &objp->clock_seq_low)) {
-		return (FALSE);
-	}
-	if (!xdr_vector(xdrs, (char *)objp->node, 6, sizeof(char), xdr_char)) {
-		return (FALSE);
-	}
-	return (TRUE);
+    if (!xdr_afs_uint32(xdrs, &objp->time_low)) {
+	return (FALSE);
+    }
+    if (!xdr_u_short(xdrs, &objp->time_mid)) {
+	return (FALSE);
+    }
+    if (!xdr_u_short(xdrs, &objp->time_hi_and_version)) {
+	return (FALSE);
+    }
+    if (!xdr_char(xdrs, &objp->clock_seq_hi_and_reserved)) {
+	return (FALSE);
+    }
+    if (!xdr_char(xdrs, &objp->clock_seq_low)) {
+	return (FALSE);
+    }
+    /* Cast needed here because xdrproc_t officially takes 3 args :-( */
+    if (!xdr_vector(xdrs, (char *)objp->node, 6, sizeof(char), (xdrproc_t)xdr_char)) {
+	return (FALSE);
+    }
+    return (TRUE);
 }
