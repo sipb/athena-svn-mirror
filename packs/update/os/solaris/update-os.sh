@@ -23,9 +23,11 @@ if [ "$TRACKOS" = true ]; then
 	rm -rf "/platform/$SUNPLATFORM"
 	cp -rp "/os/platform/$SUNPLATFORM" "/platform/$SUNPLATFORM"
 	if [ sun4u = "$SUNPLATFORM" ]; then
-		cp -rp /os/platform/SUNW,Ultra-250 /root/platform
-		cp -rp /os/platform/SUNW,Ultra-4 /root/platform
-		cp -rp /os/platform/SUNW,Ultra-Enterpris* /root/platform
+		rm -rf /platform/SUNW,Ultra-250 /platform/SUNW,Ultra-4
+		rm -rf /platform/SUNW,Ultra-Enterpris*
+		cp -rp /os/platform/SUNW,Ultra-250 /platform
+		cp -rp /os/platform/SUNW,Ultra-4 /platform
+		cp -rp /os/platform/SUNW,Ultra-Enterpris* /platform
 	fi
 fi
 
