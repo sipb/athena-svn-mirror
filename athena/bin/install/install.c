@@ -51,6 +51,14 @@ static char sccsid[] = "@(#)install.c	5.12 (Berkeley) 7/6/88";
 	perror(msg); \
 }
 
+#ifdef SOLARIS
+#define EXECSTRIP "/usr/ccs/bin/strip %s"
+#endif
+
+#ifdef sgi
+#define EXECSTRIP "/usr/bin/strip %s"
+#endif
+
 #define MAXARGS 1024
 
 #ifndef MAXBSIZE
@@ -74,7 +82,10 @@ static int	docopy = NO,
 static char	*group, *owner,
 		pathbuf[MAXPATHLEN];
 
+#ifdef ultrix
 char *strdup();
+#endif
+
 extern char *getenv();
 
 static install(), strip(), copy(), isnumber(), atoo(), bad(), usage();
@@ -282,7 +293,7 @@ install(from_name, to_name, isdir)
 			PERROR("install: open: ", from_name);
 			exit(1);
 		}
-#ifndef SOLARIS
+#ifndef EXECSTRIP
 		if (dostrip)
 			strip(from_fd, from_name, to_fd, to_name);
 		else
@@ -292,7 +303,7 @@ install(from_name, to_name, isdir)
 
 		      copy(from_fd, from_name, to_fd, to_name);
 		      (void)close(from_fd);
-		      sprintf(stripname, "/usr/ccs/bin/strip %s", to_name);
+		      sprintf(stripname, EXECSTRIP, to_name);
 		      system(stripname);
 		} else
 #endif
@@ -330,7 +341,7 @@ install(from_name, to_name, isdir)
  *	copy file, strip(1)'ing it at the same time
  *      This routine must know about the a.out architecture
  */
-#ifndef SOLARIS        /* Not yet done for Solaris */
+#if defined(ultrix) || defined(_IBMR2)
 static
 strip(from_fd, from_name, to_fd, to_name)
 	register int from_fd, to_fd;
@@ -368,7 +379,7 @@ strip(from_fd, from_name, to_fd, to_name)
 #if defined(_AUX_SOURCE)
 	    head.f_magic != MC68MAGIC
 #endif
-#if defined(mips)
+#if defined(ultrix)
 	    head.f_magic != MIPSEBMAGIC &&
 	    head.f_magic != MIPSELMAGIC &&
 	    head.f_magic != SMIPSEBMAGIC &&
@@ -385,7 +396,7 @@ strip(from_fd, from_name, to_fd, to_name)
 		copy(from_fd, from_name, to_fd, to_name);
 		return;
 	}
-#if defined(mips)
+#if defined(ultrix)
 	if (head.f_magic == SMIPSEBMAGIC || head.f_magic == SMIPSELMAGIC)
 		swapheader = 1;
 	if (swapheader) swap_filehdr(&head, gethostsex());
@@ -398,7 +409,7 @@ strip(from_fd, from_name, to_fd, to_name)
 		copy(from_fd, from_name, to_fd, to_name);
 		return;
 	}
-#if defined(mips) 
+#if defined(ultrix) 
 	if (swapheader) swap_filehdr(&head, gethostsex());
 #endif
 	if (write(to_fd, (char *)&head, sizeof(FILHDR)) != sizeof(FILHDR)) {
@@ -473,6 +484,7 @@ copy(from_fd, from_name, to_fd, to_name)
 	}
 }
 
+#ifdef ultrix
 /*
  * strdup --
  * 	Duplicate a string
@@ -486,6 +498,7 @@ char *strdup(string)
         strcpy(temp,string);
     return(temp);
 }
+#endif
 
 /*
  * isnumber --
