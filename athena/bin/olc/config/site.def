@@ -1,0 +1,183 @@
+/* Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h". */
+/*
+ * Set site-specific flags.
+ */
+
+#ifndef InstallNewLoc
+#define InstallNewLoc	1
+#endif
+#ifndef DebugBuild
+#define DebugBuild      1
+#endif
+#ifndef HaveGcc
+#define HaveGcc		0
+#endif
+#ifndef HaveZephyr
+#define HaveZephyr	1
+#endif
+#ifndef HaveKerberos
+#define HaveKerberos	1
+#endif
+#ifndef HaveHesiod
+#define HaveHesiod	1
+#endif
+#ifndef HaveDiscuss
+#define HaveDiscuss	1
+#endif
+#ifndef HaveMotif
+#define HaveMotif	1
+#endif
+#ifndef HaveSysWrited
+#define HaveSysWrited	1
+#endif
+#ifndef HaveSysWCL
+#define HaveSysWCL	1
+#endif
+#ifndef HaveSysLibMu
+#define HaveSysLibMu	1
+#endif
+#ifndef DoLogging
+#define DoLogging	1  /* Log requests to daemons */
+#endif
+#ifndef DoUsageLog
+#define DoUsageLog	1  /* Log usage of clients */
+#endif
+#ifndef DoNotify
+#define DoNotify	1  /* Server interactively notifies users */
+#endif
+#ifndef UseSyslog
+#define UseSyslog	1
+#endif
+#ifndef AthenaCompat
+#define AthenaCompat	1
+#endif
+
+/* 
+ * Operating System dependencies
+ *
+ *   (these should be set in the .cf files for each platform if they need to
+ *    be changed; this just provides default values)
+ */
+
+
+/*
+ * Not too much of the following should be site-specific, but it has
+ * to go here...
+ */
+
+#if HaveGcc
+#define CcCmd	gcc
+#endif
+
+#define PassCDebugFlags	CDEBUGFLAGS='$(CDEBUGFLAGS)' CC='$(CC)'
+
+#ifndef UseInstalled
+#define UseInstalled
+#endif
+
+#ifndef MachSpecDef
+#define MachSpecDef
+#endif
+
+#if InstallNewLoc
+#define InstallAltLoc
+#endif
+
+#if DebugBuild
+#define DefaultCDebugFlags 
+#else
+#define DefaultCDebugFlags -O
+#endif
+
+#if HaveZephyr
+#define ZephyrDef	-DZEPHYR
+ZephyrLib	=	-L/usr/athena/lib -lzephyr$(LIBSUFFIX)
+#else
+#define ZephyrDef
+#endif
+
+#if HaveKerberos
+#define	KerberosDef	-DKERBEROS
+KerberosLib	=	-L/usr/athena/lib -lkrb$(LIBSUFFIX) -ldes$(LIBSUFFIX)
+#else
+#define	KerberosDef
+#endif
+
+#if HaveHesiod
+#define	HesiodDef	-DHESIOD
+HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
+#else
+#define	HesiodDef
+#endif
+
+#if HaveDiscuss
+#define DiscussDef	-DDISCUSS
+#else
+#define DiscussDef
+#endif
+
+#if DoLogging
+#define LogDef		-DLOG
+#else
+#define LogDef
+#endif
+
+#if DoUsageLog
+#define ULogDef		-DLOG_USAGE
+#else
+#define ULogDef
+#endif
+
+#if DoNotify
+#define SilentDef
+#else
+#define SilentDef	-DSILENT
+#endif
+
+#if UseSyslog
+#define SyslogDef	-DSYSLOG
+#else
+#define SyslogDef
+#endif
+
+#if AthenaCompat
+#define	AthenaDef	-DATHENA
+#else
+#define	AthenaDef
+#endif
+
+#if HaveTermIO
+#define TermIODef	-DTERMIO
+#else
+#define TermIODef
+#endif
+
+
+/* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
+   depending on what you have installed.  */
+
+#if HaveSysWCL
+MotifWCLLib	=	-L/mit/motif/$(MACHINE)lib -lWcm
+#else
+MotifWCLLib	=	$(TOP)/wcl/libWcm$(LIBSUFFIX).a
+#endif
+
+#if HaveSysLibMu
+MotifUtilLib	=	-L/mit/motif/$(MACHINE)lib -lMu
+#else
+MotifUtilLib	=	$(TOP)/libMu/libMu$(LIBSUFFIX).a
+#endif
+
+CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
+ComErrLib	=	-L/usr/athena/lib -lcom_err$(LIBSUFFIX)
+MotifResLib	=	-L/mit/motif/$(MACHINE)lib -lMrm
+MotifLib	=	-L/mit/motif/$(MACHINE)lib -lXm
+MotifToolLib	=	-L/mit/motif/$(MACHINE)lib -lXtm
+XUtilLib	=	-L/usr/athena/lib -lXmu$(LIBSUFFIX)
+XtoolLib	=	-L/usr/athena/lib -lXt$(LIBSUFFIX)
+XLib		=	-L/usr/athena/lib -lX11$(LIBSUFFIX)
+
+#define StandardDefines	ZephyrDef HesiodDef KerberosDef AthenaDef \
+LogDef ULogDef SilentDef SyslogDef DiscussDef MachSpecDef
+
