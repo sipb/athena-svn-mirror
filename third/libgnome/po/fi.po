@@ -1,7 +1,7 @@
 # libgnome Finnish translation
 # Suomennos: http://gnome-fi.sourceforge.net/
 #
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002,2003 Free Software Foundation, Inc.
 # Ville Hautamäki <villeh@cs.joensuu.fi>, 1998.
 # Mikko Rauhala <mjr@iki.fi>, 1999.
 # Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2002.
@@ -9,58 +9,58 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome 1.109.1\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2002-12-05 22:34+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-08-19 02:04+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
-"Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
-"sourceforge.net>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
-msgstr "Virheviestit"
+msgid "Error message"
+msgstr "Virheviesti"
 
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "Gnomen järjestelmäviestit"
+msgid "Informational message"
+msgstr "Ilmoitus"
 
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "Ilmoitukset"
+msgid "Log in"
+msgstr "Sisäänkirjautuminen"
 
 #: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
-msgstr "Sisään kirjautuminen"
+msgid "Log out"
+msgstr "Uloskirjautuminen"
 
 #: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
-msgstr "Ulos kirjautuminen"
+msgid "Miscellaneous message"
+msgstr "Sekalainen viesti"
 
 #: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
-msgstr "Sekalaiset viestit"
+msgid "Question dialog"
+msgstr "Kysymysikkuna"
 
 #: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
-msgstr "Kysymysikkunat"
+msgid "System events"
+msgstr "Järjestelmäviesti"
 
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
-msgstr "Varoitusviestit"
+msgid "Warning message"
+msgstr "Varoitusviesti"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "Toimintonäppäimen napsautus"
+msgid "Choose menu item"
+msgstr "Valitse valikon kohta"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "Valintaruudun käyttö"
+msgid "Click on command button"
+msgstr "Napsauta komentopainiketta"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "Valikon kohdan käyttö"
+msgid "Select check box"
+msgstr "Valitse valintaruutu"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
@@ -88,7 +88,7 @@ msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
 "installation."
 msgstr ""
-"Ohjetta ei voi näyttää, koska %s ei ole hakemisto. Tarkista, että asennus on "
+"Ohjetta ei voi näyttää, koska %s ei ole kansio. Tarkista, että asennus on "
 "kunnossa."
 
 #: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
@@ -110,10 +110,6 @@ msgstr "Doc_id:tä %s ei löydy ohjepolusta"
 msgid "Help document %s/%s not found"
 msgstr "Ohjeasiakirjaa %s/%s ei löydy"
 
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr "Localella on liian monta alias-tasoa, ehkäpä kyseessä on silmukka"
-
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
 msgid "Bonobo Support"
@@ -123,182 +119,182 @@ msgstr "Bonobo-tuki"
 msgid "Bonobo activation Support"
 msgstr "Bonobo-aktivointituki"
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
-msgstr "Käyttäjän Gnome-asetushakemiston \"%s\" luonti epäonnistui: %s\n"
+msgstr "Käyttäjän Gnome-asetuskansion \"%s\" luonti epäonnistui: %s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
 "s': %s\n"
 msgstr ""
-"Käyttäjän yksityisen Gnome-asetushakemiston \"%s\" oikeuksien asettaminen "
+"Käyttäjän yksityisen Gnome-asetuskansion \"%s\" oikeuksien asettaminen "
 "arvoon 0700 epäonnistui: %s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
-msgstr "Gnomen pikanäppäinhakemiston \"%s\" luonti epäonnistui: %s\n"
+msgstr "Gnomen pikanäppäinkansion \"%s\" luonti epäonnistui: %s\n"
 
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
 msgstr "Älä käytä äänipalvelinta."
 
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
 msgstr "Käytä äänipalvelinta."
 
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
 msgstr "Host:portti, jolla käytettävä äänipalvelin on käynnissä"
 
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORTTI"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
 msgstr "GNOME-virtuaalitiedostojärjestelmä"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "GNOME-kirjasto"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "Popt-parametritaulu"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "Taulukko popt-asetuksista"
 
-#: libgnome/gnome-program.c:434
+#: libgnome/gnome-program.c:435
 msgid "Popt Flags"
 msgstr "Popt-liput"
 
-#: libgnome/gnome-program.c:435
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "Poptille välittyvät liput"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "Popt-konteksti"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
 msgstr "Popt-kontekstiosoitin, jota GnomeProgram käyttää."
 
-#: libgnome/gnome-program.c:452
+#: libgnome/gnome-program.c:453
 msgid "Human readable name"
 msgstr "Selväkielinen nimi"
 
-#: libgnome/gnome-program.c:453
+#: libgnome/gnome-program.c:454
 msgid "Human readable name of this application"
 msgstr "Tämän ohjelman selväkielinen nimi"
 
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "GNOME-polku"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "Mistä polusta etsiä asennettuja tiedostoja"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "Ohjelman ID"
 
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "Tämän ohjelman ID-merkkijono"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "Ohjelman versio"
 
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
 msgstr "Tämän ohjelman versio"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "GNOME-etuliite"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "Etuliite, jonne GNOME on asennettu"
 
-#: libgnome/gnome-program.c:498
-msgid "GNOME Libdir"
-msgstr "GNOME-kirjastohakemisto"
-
 #: libgnome/gnome-program.c:499
+msgid "GNOME Libdir"
+msgstr "GNOME-kirjastokansio"
+
+#: libgnome/gnome-program.c:500
 msgid "Library prefix where GNOME was installed"
 msgstr "Kirjastoetuliite, jonne GNOME on asennettu"
 
-#: libgnome/gnome-program.c:508
-msgid "GNOME Datadir"
-msgstr "GNOME-datahakemisto"
-
 #: libgnome/gnome-program.c:509
+msgid "GNOME Datadir"
+msgstr "GNOME-datakansio"
+
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "Dataetuliite, jonne GNOME on asennettu"
 
-#: libgnome/gnome-program.c:518
-msgid "GNOME Sysconfdir"
-msgstr "GNOME-järjestelmäasetushakemisto"
-
 #: libgnome/gnome-program.c:519
+msgid "GNOME Sysconfdir"
+msgstr "GNOME-järjestelmäasetuskansio"
+
+#: libgnome/gnome-program.c:520
 msgid "Configuration prefix where GNOME was installed"
 msgstr "Asetusetuliite, jonne GNOME on asennettu"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "GNOME-sovellusetuliite"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "Etuliite, jonne tämä sovellus on asennettu"
 
-#: libgnome/gnome-program.c:538
-msgid "GNOME App Libdir"
-msgstr "GNOME-ohjelman kirjastohakemisto"
-
 #: libgnome/gnome-program.c:539
+msgid "GNOME App Libdir"
+msgstr "GNOME-ohjelman kirjastokansio"
+
+#: libgnome/gnome-program.c:540
 msgid "Library prefix where this application was installed"
 msgstr "Kirjastoetuliite, jonne tämä sovellus on asennettu"
 
-#: libgnome/gnome-program.c:548
-msgid "GNOME App Datadir"
-msgstr "GNOME-ohjelman datahakemisto"
-
 #: libgnome/gnome-program.c:549
+msgid "GNOME App Datadir"
+msgstr "GNOME-ohjelman datakansio"
+
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "Dataetuliite, jonne tämä sovellus on asennettu"
 
-#: libgnome/gnome-program.c:558
-msgid "GNOME App Sysconfdir"
-msgstr "GNOME-ohjelman järjestelmäasetushakemisto"
-
 #: libgnome/gnome-program.c:559
+msgid "GNOME App Sysconfdir"
+msgstr "GNOME-ohjelman järjestelmäasetuskansio"
+
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr "Asetusetuliite, jonne tämä sovellus on asennettu"
 
-#: libgnome/gnome-program.c:568
-msgid "Create Directories"
-msgstr "Luo hakemistot"
-
 #: libgnome/gnome-program.c:569
-msgid "Create standard GNOME directories on startup"
-msgstr "Luo GNOMEn standardihakemistot käynnistyessä"
+msgid "Create Directories"
+msgstr "Luo kansiot"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:570
+msgid "Create standard GNOME directories on startup"
+msgstr "Luo GNOMEn standardikansiot käynnistyessä"
+
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "Käytä ääntä"
 
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "Käytä ääniä käynnistyttyä"
 
@@ -310,21 +306,63 @@ msgstr "Espeaker"
 msgid "How to connect to esd"
 msgstr "Miten saada yhteys esd:hen"
 
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "Ohjevalitsimet"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "Sovelluksen valitsimet"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "Ladattavat dynaamiset moduulit"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
 msgstr "MODUULI1,MODUULI2,..."
+
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "Tuntematon sisäinen virhe tämän sijainnin näyttämisessä."
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "Annettu sijainti ei ole kelvollinen."
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr ""
+"Tähän sijaintiin kytketyn oletustoiminnon komennon jäsentämisessä tapahtui "
+"virhe."
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr ""
+"Tähän sijaintiin kytketyn oletustoiminnon komennon käynnistämisessä tapahtui "
+"virhe."
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "Tähän sijaintiin ei ole kytketty oletusarvoista toimintoa."
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "Oletusarvoinen toiminto ei tue tätä protokollaa."
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "Tuntematon virhekoodi: %d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "Virhe URL:n näyttämisessä: %s\n"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
@@ -396,6 +434,16 @@ msgstr "pienin aikaväli millisekunteina"
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:11
 msgid "pixels per seconds"
 msgstr "pikseliä sekunnissa"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr "Luettelo sisään kirjauduttaessa käynnistyvistä esteettömyysohjelmista"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "Käynnistettävät esteettömyysohjelmat"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
@@ -612,7 +660,7 @@ msgid "Icon theme to use for the panel, nautilus etc."
 msgstr "Paneelin, Nautiluksen ja muiden vastaavien kuvakkeiden teema."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
+msgid "Length of the cursor blink cycle, in milliseconds"
 msgstr "Kohdistimen vilkkumisen aikaväli millisekunteina"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
@@ -628,53 +676,76 @@ msgid "Menus Have Tearoff"
 msgstr "Valikot voi irrottaa"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Module for GtkFileChooser"
+msgstr "GtkFileChooserin moduuli"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
+msgstr ""
+"Moduuli, jota käytetään tiedostojärjestelmän mallina GtkFileChooser-"
+"säätimessä. Mahdolliset arvot ovat \"gnome-vfs\" ja \"gtk+\"."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Monospace font"
+msgstr "Tasavälinen kirjasin"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
+msgstr "Tasavälisen kirjasinlajin nimi, jota käytetään mm. päätteissä."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
 msgid "Name of the GTK+ input method Preedit Style used by gtk+."
 msgstr "GTK+:n syöttötavan esimuokkaustyylin nimi"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:18
+#: schemas/desktop_gnome_interface.schemas.in.h:22
 msgid "Name of the GTK+ input method Status Style used by gtk+."
 msgstr "GTK+:n syöttötavan tilatyylin nimi."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:19
+#: schemas/desktop_gnome_interface.schemas.in.h:23
 msgid "Name of the default font used by gtk+."
 msgstr "Gtk+:n käyttämän oletuskirjasimen nimi."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:20
+#: schemas/desktop_gnome_interface.schemas.in.h:24
 msgid "Status Bar on Right"
 msgstr "Tilarivi oikealla"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:21
+#: schemas/desktop_gnome_interface.schemas.in.h:25
 msgid "This specifies the size of icons displayed in toolbars"
 msgstr "Tämä määrää työkalupalkkien kuvakkeiden koon"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:22
+#: schemas/desktop_gnome_interface.schemas.in.h:26
 msgid "Toolbar Detachable"
 msgstr "Irrotettava työkalupalkki"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:23
+#: schemas/desktop_gnome_interface.schemas.in.h:27
 msgid "Toolbar Icon Size"
 msgstr "Työkalupalkin kuvakekoko"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:24
+#: schemas/desktop_gnome_interface.schemas.in.h:28
 msgid "Toolbar Style"
 msgstr "Työkalupalkin tyyli"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
 msgstr ""
 "Työkalupalkin tyyli. Mahdollisia arvoja ovat \"both\" (kuva ja teksti), "
 "\"both_horiz\" (kuva ja teksti vaakasuunnassa), \"icon\" (kuvakkeet) ja "
 "\"text\" (teksti)."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:26
+#: schemas/desktop_gnome_interface.schemas.in.h:30
 msgid "Use Custom Font"
 msgstr "Käytä muuta kirjasinta."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:27
+#: schemas/desktop_gnome_interface.schemas.in.h:31
 msgid "Whether Applications should have accessibility support"
 msgstr "Ovatko ohjelmat ovat esteettömiä"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:28
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
@@ -682,39 +753,89 @@ msgstr ""
 "Näkyvätkö animaatiot. Huomautus: tämä on yleinen avain, joka vaikuttaa "
 "ikkunointiohjelman, paneelin sekä muidenkin osien toimintaan."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:29
+#: schemas/desktop_gnome_interface.schemas.in.h:33
 msgid "Whether menus may display an icon next to a menu entry"
 msgstr "Voiko valikoissa näkyä kuvake valikon kohdan vieressä"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:30
+#: schemas/desktop_gnome_interface.schemas.in.h:34
 msgid "Whether menus should have a tearoff"
 msgstr "Voiko valikot irrottaa"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:31
-msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
-"popped up"
-msgstr "Käyttäjä voi näppäillä avoimen valikon kohdalle uuden pikanäppäimen"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:32
+#: schemas/desktop_gnome_interface.schemas.in.h:35
 msgid "Whether the cursor should blink"
 msgstr "Vilkkuuko kohdistin"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:33
+#: schemas/desktop_gnome_interface.schemas.in.h:36
 msgid "Whether the user can detach menubars and move them around"
 msgstr "Voiko käyttäjä irrottaa valikkopalkit ja liikutella niitä"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:34
+#: schemas/desktop_gnome_interface.schemas.in.h:37
 msgid "Whether the user can detach toolbars and move them around"
 msgstr "Voiko käyttäjä irrottaa työkalupalkit ja liikutella niitä"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:35
+#: schemas/desktop_gnome_interface.schemas.in.h:38
+msgid ""
+"Whether the user can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr "Voiko käyttäjä näppäillä avoimen valikon kohdalle uuden pikanäppäimen"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:39
 msgid "Whether to display a status bar meter on the right"
 msgstr "Näkyykö tilarivin edistysmittari oikealla"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:36
+#: schemas/desktop_gnome_interface.schemas.in.h:40
 msgid "Whether to use a custom font in gtk+ applications."
 msgstr "Onko Gtk+-ohjelmien kirjasin käyttäjän määrittelemä."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "Poista komentorivi käytöstä"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "Poista tulostusasetukset käytöstä"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "Poista tulostus käytöstä"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "Poista tiedostojen levylle tallentaminen käytöstä"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
+msgstr ""
+"Estä käyttäjää käyttämästä päätettä tai antamasta suoritettavaa "
+"komentoriviä. Tämä poistaa esimerkiksi paneelin \"Suorita sovellus\"-"
+"toiminnon käytöstä."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"Estä käyttäjää muuttamasta tulostusasetuksia. Tämä poistaa esimerkiksi "
+"kaikkien sovellusten \"Tulostusasetukset\"-ikkunan käytöstä."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr ""
+"Estä käyttäjää tulostamasta. Tämä poistaa esimerkiksi kaikkien sovellusten "
+"\"Tulosta\"-ikkunat käytöstä."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"Estä käyttäjää tallentamasta tiedostoja levylle. Tämä poistaa esimerkiksi "
+"kaikkien sovellusten \"Tallenna nimellä\"-ikkunat käytöstä."
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
@@ -725,7 +846,7 @@ msgid "Keyboard Bell Custom Filename"
 msgstr "Näppäimistöpiippauksen tiedostonimi"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
+msgid "possible values are \"on\", \"off\", and \"custom\"."
 msgstr ""
 "mahdollisia arvoja ovat \"on\" (päällä), \"off\" (pois) ja \"custom\" (muu)."
 
@@ -740,26 +861,24 @@ msgid "Cursor font"
 msgstr "Osoittimen kirjasin"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
-#, fuzzy
 msgid "Cursor size"
-msgstr "Vilkkuva kohdistin"
+msgstr "Osoittimen koko"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
-#, fuzzy
 msgid "Cursor theme"
-msgstr "Osoittimen kirjasin"
+msgstr "Osoittimen teema"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
-#, fuzzy
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
-"Osoittimen kirjasimen nimi. Jos ei ole asetettu, niin oletuskirjasin on "
-"käytössä. Tämä arvo siirtyy X-palvelimelle vain joka istunnon alussa, joten "
-"sen muuttaminen kesken istunnon ei vaikuta ennen uutta sisään kirjautumista."
+"Osoitinteeman nimi. Tämä toimii vain Xcursoria tukevilla X-palvelimilla, "
+"kuten XFree86 4.3:lla ja uudemmilla. Tämä arvo välittyy X-palvelimelle vain "
+"joka istunnon alussa, joten sen muuttaminen kesken istunnon ei vaikuta ennen "
+"uutta sisäänkirjautumista."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
 msgid "Distance before a drag is started"
@@ -783,13 +902,13 @@ msgstr "Vetokynnys"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
 "Osoittimen kirjasimen nimi. Jos ei ole asetettu, niin oletuskirjasin on "
-"käytössä. Tämä arvo siirtyy X-palvelimelle vain joka istunnon alussa, joten "
-"sen muuttaminen kesken istunnon ei vaikuta ennen uutta sisään kirjautumista."
+"käytössä. Tämä arvo välittyy X-palvelimelle vain joka istunnon alussa, joten "
+"sen muuttaminen kesken istunnon ei vaikuta ennen uutta sisäänkirjautumista."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
 msgid ""
@@ -823,15 +942,14 @@ msgid "Single click to open icons"
 msgstr "Yksi napsautus avaa kuvakkeet"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
-#, fuzzy
 msgid ""
 "Size of the cursor referenced by cursor_theme. This value is only propagated "
 "to the X server start of each session, so changing it mid-session won't have "
 "an effect until the next time you log in."
 msgstr ""
-"Osoittimen kirjasimen nimi. Jos ei ole asetettu, niin oletuskirjasin on "
-"käytössä. Tämä arvo siirtyy X-palvelimelle vain joka istunnon alussa, joten "
-"sen muuttaminen kesken istunnon ei vaikuta ennen uutta sisään kirjautumista."
+"Osoitinteeman (cursor_theme) viittaaman osoittimen koko. Tämä arvo siirtyy X-"
+"palvelimelle vain joka istunnon alussa, joten sen muuttaminen kesken "
+"istunnon ei vaikuta ennen uutta sisäänkirjautumista."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
 msgid "Swap left and right mouse buttons for left-handed mice"
@@ -853,169 +971,126 @@ msgstr "Äänitapahtumat"
 msgid "Whether to play sounds on user events."
 msgstr "Soiko ääni käyttäjän määrittelemissä tapahtumissa."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr "URL:ien näyttämisen oletuskäsittelin"
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "Poista erilliset pienoiskuvien tuottajat käytöstä"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr "Miten käsitellä sovelluksien URL:eja"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr "Miten käsitellä ghelp-URL:eja"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr "Miten käsitellä info-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr "Miten käsitellä man-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr "Miten käsitellä asetus-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr "Miten käsitellä palvelinasetus-URL:eja"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr "Miten käsitellä \"käynnistä tästä\"-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr "Miten käsitellä järjestelmäasetus-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr "Miten käsitellä roska-URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr "Miten käsitellä tuntemattomia URL:eja<"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "Käynnistä ohjelma päätteessä"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
 msgstr ""
-"Aseta todeksi, jos haluat kohdassa applications/command määritellyn ohjelman "
-"käsittelevän sovellus-URL:eja"
+"Kun tämä on \"true\" (tosi), mitään erillisiä pienoiskuvien teko-ohjelmia ei "
+"käytetä, riippumatta siitä, mitä yksittäisissä kohdissa on valittu."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa preferences/command määritellyn ohjelman "
-"käsittelevän asetus-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "Salli taukojen lykkääminen"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa programs/ghelp määritellyn ohjelman "
-"käsittelevän ghelp-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "Taukoaika"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa programs/info määritellyn ohjelman "
-"käsittelevän info-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "Kirjoitusaika (minuutteja) ennen kuin taukovaihe alkaa."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa programs/man määritellyn ohjelman "
-"käsittelevän man-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "Kirjoitustauon pituus minuutteina."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa programs/unknown määritellyn ohjelman "
-"käsittelevän tuntemattomia URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "Kirjoitusaika"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa server-settings/command määritellyn "
-"ohjelman käsittelevän palvelinasetus-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "Lukkiutuuko näppäimistö"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa start-here/command määritellyn ohjelman "
-"käsittelevän \"käynnistä tästä\"-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "Lukkiutuuko näppäimistö."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa system-settings/command määritellyn "
-"ohjelman käsittelevän järjestelmäasetus-URL:eja"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "Voiko kirjoitustaukoja lykätä."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr ""
-"Aseta todeksi, jos haluat kohdassa trash/command määritellyn ohjelman "
-"käsittelevän roska-URL:eja"
+#~ msgid "Too many alias levels for a locale, may indicate a loop"
+#~ msgstr ""
+#~ "Maa-asetustolle on liian monta alias-tasoa, ehkäpä kyseessä on silmukka"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr ""
-"Tosi, jos tätä URL:ia käsittelevä ohjelma pitäisi käynnistää päätteessä"
+#~ msgid "How to handle ghelp URLs"
+#~ msgstr "Miten käsitellä ghelp-URL:eja"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr "URL-käsittelin sovellussivuja varten"
+#~ msgid "How to handle http URLs"
+#~ msgstr "Miten käsitellä HTTP-URL:eja"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr "URL-käsittelin ghelp-ssivuja varten"
+#~ msgid "How to handle https URLs"
+#~ msgstr "Miten käsitellä HTTPS-URL:eja"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr "URL-käsittelin info-sivuja varten"
+#~ msgid "How to handle info URLs"
+#~ msgstr "Miten käsitellä info-URL:eja<"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr "URL-käsittelin man-sivuja varten"
+#~ msgid "How to handle man URLs"
+#~ msgstr "Miten käsitellä man-URL:eja<"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr "URL-käsittelin asetussivuja varten"
+#~ msgid "How to handle trash URLs"
+#~ msgstr "Miten käsitellä roska-URL:eja<"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr "URL-käsittelin palvelinasetussivuja varten"
+#~ msgid "Run program in terminal"
+#~ msgstr "Käynnistä ohjelma päätteessä"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr "URL-käsittelin \"käynnistä tästä\"-sivuja varten"
+#~ msgid "Set to true to have a program specified in command handle http URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat määritellyn ohjelman käsittelevän HTTP-URL:eja"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr "URL-käsittelin järjestelmäasetussivuja varten"
+#~ msgid "Set to true to have a program specified in command handle https URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat määritellyn ohjelman käsittelevän HTTPS-URL:eja"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr "URL-käsittelin roskasivuja varten"
+#~ msgid ""
+#~ "Set to true to have a program specified in programs/ghelp handle ghelp "
+#~ "URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat kohdassa programs/ghelp määritellyn ohjelman "
+#~ "käsittelevän ghelp-URL:eja"
 
-#~ msgid "Name of icon theme"
-#~ msgstr "Kuvaketeeman nimi"
+#~ msgid ""
+#~ "Set to true to have a program specified in programs/info handle info URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat kohdassa programs/info määritellyn ohjelman "
+#~ "käsittelevän info-URL:eja"
+
+#~ msgid ""
+#~ "Set to true to have a program specified in programs/man handle man URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat kohdassa programs/man määritellyn ohjelman "
+#~ "käsittelevän man-URL:eja"
+
+#~ msgid ""
+#~ "Set to true to have a program specified in trash/command handle trash URLs"
+#~ msgstr ""
+#~ "Aseta todeksi, jos haluat kohdassa trash/command määritellyn ohjelman "
+#~ "käsittelevän roska-URL:eja"
+
+#~ msgid "True if the program to handle this URL should be run in a terminal"
+#~ msgstr ""
+#~ "Tosi, jos tätä URL:ia käsittelevä ohjelma pitäisi käynnistää päätteessä"
+
+#~ msgid "URL handler for ghelp pages"
+#~ msgstr "URL-käsittelin ghelp-sivuja varten"
+
+#~ msgid "URL handler for http uris"
+#~ msgstr "URL-käsittelin HTTP-URL:eja varten"
+
+#~ msgid "URL handler for https uris"
+#~ msgstr "URL-käsittelin HTTPS-URL:eja varten"
+
+#~ msgid "URL handler for info pages"
+#~ msgstr "URL-käsittelin info-sivuja varten"
+
+#~ msgid "URL handler for man pages"
+#~ msgstr "URL-käsittelin man-sivuja varten"
+
+#~ msgid "URL handler for trash pages"
+#~ msgstr "URL-käsittelin roskasivuja varten"

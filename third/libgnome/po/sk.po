@@ -1,12 +1,13 @@
 # libgnome sk.po
-# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
-# Marcel Telka <marcel@telka.sk>, 2001, 2002, 2003.
+# Copyright (C) 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+# Marcel Telka <marcel@telka.sk>, 2001, 2002, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2003-01-23 13:36+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-06-13 15:52+0200\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -14,48 +15,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
-msgstr "Chybové správy"
+msgid "Error message"
+msgstr "Chybová správa"
 
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "Systémové udalosti GNOME"
+msgid "Informational message"
+msgstr "Informačná správa"
 
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "Informačné správy"
-
-#: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
+msgid "Log in"
 msgstr "Prihlásenie"
 
-#: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
+#: gnome-data/gnome-2.soundlist.in.h:4
+msgid "Log out"
 msgstr "Odhlásenie"
 
-#: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
-msgstr "Rôzne správy"
+#: gnome-data/gnome-2.soundlist.in.h:5
+msgid "Miscellaneous message"
+msgstr "Rôzna správa"
 
-#: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
+#: gnome-data/gnome-2.soundlist.in.h:6
+msgid "Question dialog"
 msgstr "Dialógové okno s otázkou"
 
+#: gnome-data/gnome-2.soundlist.in.h:7
+msgid "System events"
+msgstr "Systémové udalosti"
+
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
-msgstr "Upozorňovacie správy"
+msgid "Warning message"
+msgstr "Upozorňovacia správa"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "Kliknutie akčného tlačítka"
+msgid "Choose menu item"
+msgstr "Zvoľte položku menu"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "Prepnuté zaškrtávacie políčko"
+msgid "Click on command button"
+msgstr "Kliknite na príkazové tlačidlo"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "Aktivovanie položky menu"
+msgid "Select check box"
+msgstr "Označte zaškrtávacie pole"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
@@ -105,10 +106,6 @@ msgstr "Nemôžem nájsť doc_id %s v ceste pomocníka"
 msgid "Help document %s/%s not found"
 msgstr "Dokument pomocníka %s/%s nebol nájdený"
 
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr "Príliš veľa úrovní prezývok pre locale, toto môže indikovať slučku"
-
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
 msgid "Bonobo Support"
@@ -118,12 +115,12 @@ msgstr "Podpora Bonobo"
 msgid "Bonobo activation Support"
 msgstr "Podpora Bonobo aktivácie"
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr "Nemôžem vytvoriť používateľský konfiguračný adresár gnome \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
@@ -132,168 +129,168 @@ msgstr ""
 "Nemôžem nastaviť mód 0700 na súkromnom používateľskom konfiguračnom adresári "
 "gnome \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
 msgstr "Nemôžem vytvoriť adresár akcelerátorov gnome \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
 msgstr "Zakázať použitie zvukového servera"
 
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
 msgstr "Povoliť použitie zvukového servera"
 
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
 msgstr "Hostiteľ:port, na ktorom beží zvukový server, ktorý chcete použiť"
 
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
 msgstr "HOSTITEĽ:PORT"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
 msgstr "Virtuálny súborový systém GNOME"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "Knižnica GNOME"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "Tabuľka popt"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "Tabuľka volieb pre popt"
 
-#: libgnome/gnome-program.c:434
+#: libgnome/gnome-program.c:435
 msgid "Popt Flags"
 msgstr "Príznaky popt"
 
-#: libgnome/gnome-program.c:435
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "Príznaky použiteľné s popt"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "Kontext popt"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
 msgstr "Ukazovateľ popt kontextu, ktorý používa GnomeProgram"
 
-#: libgnome/gnome-program.c:452
+#: libgnome/gnome-program.c:453
 msgid "Human readable name"
 msgstr "Názov čitateľný pre ľudí"
 
-#: libgnome/gnome-program.c:453
+#: libgnome/gnome-program.c:454
 msgid "Human readable name of this application"
 msgstr "Názov tejto aplikácie čitateľný pre ľudí"
 
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "Cesta GNOME"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "Cesta, na ktorej mám hľadať nainštalované súbory"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "ID aplikácie"
 
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "Identifikačný reťazec použitý pre túto aplikáciu"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "Verzia aplikácie"
 
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
 msgstr "Verzia tejto aplikácie"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "Predpona GNOME"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "Adresár, kde je nainštalované GNOME"
 
-#: libgnome/gnome-program.c:498
+#: libgnome/gnome-program.c:499
 msgid "GNOME Libdir"
 msgstr "Adresár knižníc GNOME"
 
-#: libgnome/gnome-program.c:499
+#: libgnome/gnome-program.c:500
 msgid "Library prefix where GNOME was installed"
 msgstr "Adresár knižníc, kde je nainštalované GNOME"
 
-#: libgnome/gnome-program.c:508
+#: libgnome/gnome-program.c:509
 msgid "GNOME Datadir"
 msgstr "Dátový adresár GNOME"
 
-#: libgnome/gnome-program.c:509
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "Dátový adresár, kde je nainštalované GNOME"
 
-#: libgnome/gnome-program.c:518
+#: libgnome/gnome-program.c:519
 msgid "GNOME Sysconfdir"
 msgstr "Adresár konfigurácie GNOME"
 
-#: libgnome/gnome-program.c:519
+#: libgnome/gnome-program.c:520
 msgid "Configuration prefix where GNOME was installed"
 msgstr "Adresár konfigurácie, kde je nainštalované GNOME"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "Adresár aplikácie GNOME"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "Adresár, kde bola nainštalovaná táto aplikácia"
 
-#: libgnome/gnome-program.c:538
+#: libgnome/gnome-program.c:539
 msgid "GNOME App Libdir"
 msgstr "Adresár knižníc aplikácie GNOME"
 
-#: libgnome/gnome-program.c:539
+#: libgnome/gnome-program.c:540
 msgid "Library prefix where this application was installed"
 msgstr "Adresár knižníc, kde bola nainštalovaná táto aplikácia"
 
-#: libgnome/gnome-program.c:548
+#: libgnome/gnome-program.c:549
 msgid "GNOME App Datadir"
 msgstr "Dátový adresár aplikácie GNOME"
 
-#: libgnome/gnome-program.c:549
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "Dátový adresár, kde bola nainštalovaná táto aplikácia"
 
-#: libgnome/gnome-program.c:558
+#: libgnome/gnome-program.c:559
 msgid "GNOME App Sysconfdir"
 msgstr "Adresár konfigurácie aplikácie GNOME"
 
-#: libgnome/gnome-program.c:559
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr "Adresár konfigurácie, kde bola nainštalovaná táto aplikácia"
 
-#: libgnome/gnome-program.c:568
+#: libgnome/gnome-program.c:569
 msgid "Create Directories"
 msgstr "Vytvoriť adresáre"
 
-#: libgnome/gnome-program.c:569
+#: libgnome/gnome-program.c:570
 msgid "Create standard GNOME directories on startup"
 msgstr "Vytvoriť štandardné adresáre GNOME pri štarte"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "Povoliť zvuk"
 
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "Povoliť zvuk pri štarte"
 
@@ -305,21 +302,63 @@ msgstr "Ereproduktor"
 msgid "How to connect to esd"
 msgstr "Ako sa pripojiť k esd"
 
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "Voľby pomocníka"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "Voľby aplikácie"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "Nahrať dynamické moduly"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
 msgstr "MODUL1,MODUL2,..."
+
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "Neznáma vnútorná chyba počas zobrazovania tejto lokality."
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "Zadaná lokalita je neplatná."
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr ""
+"Vyskytla sa chyba pri analýze štandardného príkazu akcie priradeného k tejto "
+"lokalite."
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr ""
+"Vyskytla sa chyba pri vykonaní štandardného príkazu akcie priradeného k "
+"tejto lokalite."
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "Nie je priradená štandardná akcia k tejto lokalite."
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "Štandardná akcia nepodporuje tento protokol."
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "Kód neznámej chyby: %d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "Chyba pri zobrazovaní url: %s\n"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
@@ -389,6 +428,18 @@ msgstr "minimálny interval v milisekundách"
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:11
 msgid "pixels per seconds"
 msgstr "bodov za sekundu"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr ""
+"Zoznam aplikácií pomocných technológií, ktoré sa majú spustiť pri prihlásení "
+"do pracovného prostredia GNOME"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "Štartovacie aplikácie pomocných technológií"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
@@ -607,7 +658,7 @@ msgid "Icon theme to use for the panel, nautilus etc."
 msgstr "Téma ikon, ktorú používa panel, nautilus atď."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
+msgid "Length of the cursor blink cycle, in milliseconds"
 msgstr "Dĺžka cyklu blikania kurzora v milisekundách"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
@@ -623,50 +674,77 @@ msgid "Menus Have Tearoff"
 msgstr "Menu majú odtrhovátko"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Module for GtkFileChooser"
+msgstr "Modul pre GtkFileChooser"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
+msgstr ""
+"Modul, ktorý použiť ako model súborového systému pre nástroj GtkFileChooser. "
+"Možné hodnoty sú \"gnome-vfs\" a \"gtk+\"."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Monospace font"
+msgstr "Písmo s rovnakým odstupom"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
+msgstr ""
+"Názov písma s rovnakým odstupom (s konštantnou šírkou) pre použitie na "
+"miestach ako terminál."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
 msgid "Name of the GTK+ input method Preedit Style used by gtk+."
 msgstr "Názov Preeditovacieho štýlu vstupnej metódy GTK+ použitého gtk+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:18
+#: schemas/desktop_gnome_interface.schemas.in.h:22
 msgid "Name of the GTK+ input method Status Style used by gtk+."
 msgstr "Názov Stavového štýlu vstupnej metódy GTK+ použitého gtk+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:19
+#: schemas/desktop_gnome_interface.schemas.in.h:23
 msgid "Name of the default font used by gtk+."
 msgstr "Názov predvoleného písma používaného gtk+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:20
+#: schemas/desktop_gnome_interface.schemas.in.h:24
 msgid "Status Bar on Right"
 msgstr "Stavová lišta vpravo"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:21
+#: schemas/desktop_gnome_interface.schemas.in.h:25
 msgid "This specifies the size of icons displayed in toolbars"
 msgstr "Toto určuje veľkosť ikon zobrazených v lištách nástrojov"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:22
+#: schemas/desktop_gnome_interface.schemas.in.h:26
 msgid "Toolbar Detachable"
 msgstr "Odpojiteľná lišta nástrojov"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:23
+#: schemas/desktop_gnome_interface.schemas.in.h:27
 msgid "Toolbar Icon Size"
 msgstr "Veľkosť ikon v lište nástrojov"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:24
+#: schemas/desktop_gnome_interface.schemas.in.h:28
 msgid "Toolbar Style"
 msgstr "Štýl lišty nástrojov"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
-msgstr "Štýl lišty nástrojov. Platné hodnoty sú: both, both_horiz, icon a text"
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
+msgstr ""
+"Štýl lišty nástrojov. Platné hodnoty sú: \"both\", \"both_horiz\", \"icon\" "
+"a \"text\""
 
-#: schemas/desktop_gnome_interface.schemas.in.h:26
+#: schemas/desktop_gnome_interface.schemas.in.h:30
 msgid "Use Custom Font"
 msgstr "Použiť používateľské písmo"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:27
+#: schemas/desktop_gnome_interface.schemas.in.h:31
 msgid "Whether Applications should have accessibility support"
 msgstr "Či aplikácie majú mať podporu pre postihnutých"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:28
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
@@ -674,40 +752,91 @@ msgstr ""
 "Či majú byť zobrazované animácie. Poznámka: Toto je globálne nastavenie a "
 "zmení správanie správcu okien, panelu atď."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:29
+#: schemas/desktop_gnome_interface.schemas.in.h:33
 msgid "Whether menus may display an icon next to a menu entry"
 msgstr "Či sa v menu môžu zobrazovať ikony vedľa položiek menu"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:30
+#: schemas/desktop_gnome_interface.schemas.in.h:34
 msgid "Whether menus should have a tearoff"
 msgstr "Či by menu mali mať odtrhovátko"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:31
+#: schemas/desktop_gnome_interface.schemas.in.h:35
+msgid "Whether the cursor should blink"
+msgstr "Či by mal kurzor blikať"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:36
+msgid "Whether the user can detach menubars and move them around"
+msgstr "Či používateľ môže odpojiť lišty menu a pohybovať nimi"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:37
+msgid "Whether the user can detach toolbars and move them around"
+msgstr "Či používateľ može odpojiť lišty nástrojov a pohybovať nimi"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:38
 msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
+"Whether the user can dynamically type a new accelerator when a menu is "
 "popped up"
 msgstr ""
 "Či môže používateľ dynamicky zadať nový akcelerátor keď je menu zobrazené"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:32
-msgid "Whether the cursor should blink"
-msgstr "Či by mal kurzor blikať"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:33
-msgid "Whether the user can detach menubars and move them around"
-msgstr "Či používateľ môže odpojiť lišty menu a pohybovať nimi"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:34
-msgid "Whether the user can detach toolbars and move them around"
-msgstr "Či používateľ može odpojiť lišty nástrojov a pohybovať nimi"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:35
+#: schemas/desktop_gnome_interface.schemas.in.h:39
 msgid "Whether to display a status bar meter on the right"
 msgstr "Či zobraziť merač stavového riadku vpravo"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:36
+#: schemas/desktop_gnome_interface.schemas.in.h:40
 msgid "Whether to use a custom font in gtk+ applications."
 msgstr "Či použiť používateľské písmo v gtk+ aplikáciách."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "Deaktivovať príkazový riadok"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "Deaktivovať nastavenie tlače"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "Deaktivovať tlač"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "Deaktivovať ukladanie súborov na disk"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
+msgstr ""
+"Nepovoliť používateľovi prístup k terminálu alebo zadať príkazový riadok na "
+"spustenie. Napríklad, toto by deaktivovalo prístup k dialógovému oknu panela "
+"\"Spustiť aplikáciu\"."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"Nepovoliť používateľovi upravovať nastavenia tlače. Napríklad, toto by "
+"deaktivovalo prístup k dialógovým oknám \"Nastavenie tlače\" všetkých "
+"aplikácií."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr ""
+"Nepovoliť používateľovi tlačiť. Napríklad, toto by znemožnilo prístup k "
+"dialógovým oknám \"Tlačiť\" všetkých aplikácií."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"Nepovoliť používateľovi ukladať súbory na disk. Napríklad, toto by "
+"znemožnilo prístup k dialógovým oknám \"Uložiť ako\" všetkých aplikácií."
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
@@ -718,8 +847,8 @@ msgid "Keyboard Bell Custom Filename"
 msgstr "Názov súboru používateľského zvukového návestia klávesnice"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
-msgstr "možné hodnoty sú: on, off a custom."
+msgid "possible values are \"on\", \"off\", and \"custom\"."
+msgstr "možné hodnoty sú: \"on\", \"off\" a \"custom\"."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
 msgid ""
@@ -744,11 +873,11 @@ msgstr "Téma kurzora"
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
-"Názov témy kurzora. Použité len Xserverami, ktoré podporujú Xcursor, ako "
+"Názov témy kurzora. Použité len Xservermi, ktoré podporujú Xcursor, ako "
 "napríklad XFree86 4.3 a novšie. Táto hodnota je len odovzdaná X serveru pri "
 "štarte každého sedenia. Jej zmena počas sedenia sa prejaví až pri vašom "
 "ďalšom prihlásení."
@@ -775,8 +904,8 @@ msgstr "Hranica ťahania"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
 "Názov písma pre kurzor. Ak je nenastavené, použije sa štandardné písmo. Táto "
@@ -844,166 +973,49 @@ msgstr "Zvuky pre udalosti"
 msgid "Whether to play sounds on user events."
 msgstr "Či zahrať zvuky pri používateľských udalostiach."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr "Predvolená obsluha pre zobrazenie URL"
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "Deaktivovať všetky externé vytvárače náhľadov"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr "Ako obsluhovať URL aplikácií"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr "Ako obsluhovať URL ghelp-u"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr "Ako obsluhovať URL systému info"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr "Ako obsluhovať URL manuálových stránok"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr "Ako obsluhovať URL predvolieb"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr "Ako obsluhovať URL nastavení servera"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr "Ako obsluhovať URL \"spustiť tu\""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr "Ako obsluhovať URL systémových nastavení"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr "Ako obsluhovať URL koša"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr "Ako obsluhovať neznáme URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "Spustiť program v termináli"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
 msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v aplikácie/príkaz na obsluhu "
-"aplikačných URL"
+"Nastaviť na true, aby sa deaktivovali všetky externé programy na tvorbu "
+"náhľadov, nezávisle od toho, či sú jednotlivo deaktivované/aktivované."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v predvoľby/príkaz na obsluhu "
-"URL predvolieb"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "Umožniť odloženie prerušení"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v programy/ghelp na obsluhu "
-"ghelp URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "Čas prerušenia"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v programy/info na obsluhu "
-"info URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "Počet minút písania pred spustením režimu prerušenia."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v programy/man na obsluhu man "
-"URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "Počet minút, po ktoré ma vydržať prerušenie písania."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v programy/neznámy na obsluhu "
-"neznámych URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "Čas písania"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v nastavenia-servera/príkaz "
-"na obsluhu URL nastavení servera"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "Či je alebo nie je povolené uzamykanie klávesnice"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v spustiť-tu/príkaz na "
-"obsluhu URL \"spustiť tu\""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "Či je alebo nie je povolené uzamykanie klávesnice."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v systémové-nastavenia/príkaz "
-"na obsluhu URL systémových nastavení"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "Či môže byť alebo nemôže byť odložená obrazovka prerušeného písania."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr ""
-"Nastaviť na true, aby sa použil program zadaný v kôš/príkaz na obsluhu URL "
-"koša"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr ""
-"Nastavené, ak program na obsluhu tohoto URL má byť spustený v termináli"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr "URL ovládač pre stránky aplikácií"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr "URL ovládač pre stránky ghelp"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr "URL ovládač pre stránky info"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr "URL ovládač pre stránky man"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr "URL ovládač pre stránky predvolieb"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr "URL ovládač pre stránky nastavení servera"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr "URL ovládač pre stránky \"spustiť tu\""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr "URL ovládač pre stránky nastavení systému"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr "URL ovládač pre stránky koša"
+#~ msgid "Too many alias levels for a locale, may indicate a loop"
+#~ msgstr "Príliš veľa úrovní prezývok pre locale, toto môže indikovať slučku"

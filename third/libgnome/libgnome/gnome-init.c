@@ -261,6 +261,25 @@ libgnome_option_cb (poptContext ctx, enum poptCallbackReason reason,
 	}
 }
 
+static int
+safe_mkdir (const char *pathname, mode_t mode)
+{
+	char *safe_pathname;
+	int len, ret;
+	
+	safe_pathname = g_strdup (pathname);
+	len = strlen (safe_pathname);
+	
+	if (len > 1 && safe_pathname[len - 1] == '/')
+		safe_pathname[len - 1] = '\0';
+
+	ret = mkdir (safe_pathname, mode);
+
+	g_free (safe_pathname);
+
+	return ret;
+}
+
 static void
 libgnome_userdir_setup (gboolean create_dirs)
 {
@@ -299,24 +318,24 @@ libgnome_userdir_setup (gboolean create_dirs)
 	if (!create_dirs)
 		return;
 	
-	if (mkdir (gnome_user_dir, 0700) < 0) { /* private permissions, but we
-						   don't check that we got them */
+	if (safe_mkdir (gnome_user_dir, 0700) < 0) { /* private permissions, but we
+							don't check that we got them */
 		if (errno != EEXIST) {
-			fprintf(stderr, _("Could not create per-user gnome configuration directory `%s': %s\n"),
+			g_printerr (_("Could not create per-user gnome configuration directory `%s': %s\n"),
 				gnome_user_dir, strerror(errno));
 			exit(1);
 		}
 	}
     
-	if (mkdir (gnome_user_private_dir, 0700) < 0) { /* This is private
-							   per-user info mode
-							   700 will be
-							   enforced!  maybe
-							   even other security
-							   meassures will be
-							   taken */
+	if (safe_mkdir (gnome_user_private_dir, 0700) < 0) { /* This is private
+								per-user info mode
+								700 will be
+								enforced!  maybe
+								even other security
+								meassures will be
+								taken */
 		if (errno != EEXIST) {
-			fprintf (stderr, _("Could not create per-user gnome configuration directory `%s': %s\n"),
+			g_printerr (_("Could not create per-user gnome configuration directory `%s': %s\n"),
 				 gnome_user_private_dir, strerror(errno));
 			exit(1);
 		}
@@ -325,14 +344,14 @@ libgnome_userdir_setup (gboolean create_dirs)
 
 	/* change mode to 0700 on the private directory */
 	if (chmod (gnome_user_private_dir, 0700) < 0) {
-		fprintf(stderr, _("Could not set mode 0700 on private per-user gnome configuration directory `%s': %s\n"),
+		g_printerr (_("Could not set mode 0700 on private per-user gnome configuration directory `%s': %s\n"),
 			gnome_user_private_dir, strerror(errno));
 		exit(1);
 	}
   
-	if (mkdir (gnome_user_accels_dir, 0700) < 0) {
+	if (safe_mkdir (gnome_user_accels_dir, 0700) < 0) {
 		if (errno != EEXIST) {
-			fprintf(stderr, _("Could not create gnome accelerators directory `%s': %s\n"),
+			g_printerr (_("Could not create gnome accelerators directory `%s': %s\n"),
 				gnome_user_accels_dir, strerror(errno));
 			exit(1);
 		}
@@ -373,13 +392,6 @@ libgnome_post_args_parse (GnomeProgram *program,
 
 	libgnome_userdir_setup (create_dirs_val);
 
-	setlocale (LC_ALL, "");
-	/* XXX todo - handle multiple installation dirs */
-	bindtextdomain (GETTEXT_PACKAGE, LIBGNOME_LOCALEDIR);
-#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-#endif
-
 }
 
 static struct poptOption gnomelib_options [] = {
@@ -398,9 +410,11 @@ static struct poptOption gnomelib_options [] = {
 				 " running"),
 	  N_("HOSTNAME:PORT")},                                                 
 
-	{"version", '\0', POPT_ARG_NONE, NULL, ARG_VERSION },
+	{"version", '\0', POPT_ARG_NONE,
+	 NULL, ARG_VERSION, VERSION, NULL},
 
-	{ NULL, '\0', 0, NULL, 0 }
+	{ NULL, '\0', 0,
+	  NULL, 0 , NULL, NULL}
 };
 
 static void
@@ -445,6 +459,10 @@ libgnome_module_info_get (void)
 	if (module_info.requirements == NULL) {
 		static GnomeModuleRequirement req[4];
 
+		bindtextdomain (GETTEXT_PACKAGE, LIBGNOME_LOCALEDIR);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
 		req[0].required_version = "0.9.1";
 		req[0].module_info = gnome_bonobo_activation_module_info_get ();
 

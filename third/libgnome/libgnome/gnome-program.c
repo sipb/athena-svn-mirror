@@ -41,6 +41,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <gmodule.h>
+#include <locale.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-value.h>
 #include <gconf/gconf-client.h>
@@ -247,7 +248,7 @@ gnome_program_get_property (GObject *object, guint param_id, GValue *value,
 	break;
     case PROP_GNOME_PATH:
 	if (program->_priv->gnome_path)
-	    g_value_set_string (value, g_strjoinv (":", program->_priv->gnome_path));
+	    g_value_take_string (value, g_strjoinv (":", program->_priv->gnome_path));
 	else
 	    g_value_set_string (value, NULL);
 	break;
@@ -578,8 +579,7 @@ gnome_program_class_init (GnomeProgramClass *class)
 			      _("Enable Sound"), 
 			      _("Enable sound on startup"),
 			       TRUE,
-			       (G_PARAM_READABLE | G_PARAM_WRITABLE |
-				G_PARAM_CONSTRUCT_ONLY)));
+			       (G_PARAM_READABLE | G_PARAM_WRITABLE)));
 
     g_object_class_install_property
 	(object_class,
@@ -588,8 +588,7 @@ gnome_program_class_init (GnomeProgramClass *class)
 			      _("Espeaker"), 
 			      _("How to connect to esd"),
 			      NULL,
-			      (G_PARAM_READABLE | G_PARAM_WRITABLE |
-			       G_PARAM_CONSTRUCT_ONLY)));
+			      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
 
     object_class->finalize  = gnome_program_finalize;
 }
@@ -603,6 +602,8 @@ gnome_program_instance_init (GnomeProgram *program)
 
     program->_priv->state = APP_CREATE_DONE;
 
+    program->_priv->prop_enable_sound = TRUE;
+    
     for (i = 0; i < program_modules->len; i++) {
 	GnomeModuleInfo *a_module = g_ptr_array_index (program_modules, i);
 
@@ -1292,7 +1293,8 @@ gnome_program_preinit (GnomeProgram *program,
      * there are those evil people out there that modify it.
      * Also, this may be some other argv, think 'fake argv' here */
     program->_priv->argv = g_new (char *, argc + 1);
-    memcpy (program->_priv->argv, argv, sizeof (char *) * argc);
+    for (i = 0; i < argc; i++)
+        program->_priv->argv[i] = g_strdup (argv[i]);
     program->_priv->argv[argc] = NULL;
 
     if (!program_modules) {
@@ -1339,8 +1341,9 @@ gnome_program_preinit (GnomeProgram *program,
 		   * NOT EVEN FUNNY.  For some reason it passes 'descrip'
 		   * as 'data' to the callback, and there is no other way
 		   * to pass data.  Fun, eh? */
-		  (const char *)program,
-		  NULL };
+		  NULL, NULL };
+
+	callback.descrip = (const char *)program;
 
 	program->_priv->top_options_table = g_array_new
 	    (TRUE, TRUE, sizeof (struct poptOption));
@@ -1349,12 +1352,12 @@ gnome_program_preinit (GnomeProgram *program,
 
 	/* Put the special popt table in first */
 	includer.arg = poptHelpOptions;
-	includer.descrip = N_("Help options");
+	includer.descrip = _("Help options");
 	g_array_append_val (program->_priv->top_options_table, includer);
 
 	if (program->_priv->prop_popt_table) {
 	    includer.arg = program->_priv->prop_popt_table;
-	    includer.descrip = N_("Application options");
+	    includer.descrip = _("Application options");
 	    g_array_append_val (program->_priv->top_options_table,
 				includer);
 	}
@@ -1370,8 +1373,8 @@ gnome_program_preinit (GnomeProgram *program,
 
 	includer.longName = "load-modules";
 	includer.argInfo = POPT_ARG_STRING;
-	includer.descrip = N_("Dynamic modules to load");
-	includer.argDescrip = N_("MODULE1,MODULE2,...");
+	includer.descrip = _("Dynamic modules to load");
+	includer.argDescrip = _("MODULE1,MODULE2,...");
 	g_array_append_val (program->_priv->top_options_table, includer);
     }
 
@@ -1445,6 +1448,10 @@ gnome_program_parse_args (GnomeProgram *program)
     if (program->_priv->state != APP_PREINIT_DONE)
 	return;
 
+    /* translate popt output by default */
+#ifdef ENABLE_NLS
+    setlocale (LC_ALL, "");
+#endif
     ctx = program->_priv->arg_context;
     while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
 	/* do nothing */ ;
@@ -1640,9 +1647,6 @@ gnome_program_postinit (GnomeProgram *program)
     /* Note! we cannot kill the program_modules array as that
      * may be needed later */
 
-    g_array_free (program->_priv->top_options_table, TRUE);
-    program->_priv->top_options_table = NULL;
-
     g_blow_chunks(); /* Try to compact memory usage a bit */
 
     program->_priv->state = APP_POSTINIT_DONE;
@@ -1684,31 +1688,14 @@ gnome_program_init (const char *app_id, const char *app_version,
     return program;
 }
 
-/**
- * gnome_program_initv:
- * @type: The type of application to be initialized (usually
- * #GNOME_TYPE_PROGRAM).
- * @app_id: Application ID string.
- * @app_version: Application version string.
- * @module_info: The modules to init with the application.
- * @argc: The number of command line arguments contained in @argv.
- * @argv: A string array of command line arguments.
- * @first_property_name: The first item in a %NULL-terminated list of attribute
- * name/value.
- * @args: The remaining elements in the %NULL terminated list (of which
- * @first_property_name is the first element).
- *
- * Provides a non-varargs form of gnome_program_init(). Users will rarely need
- * to call this function directly.
- *
- * Returns: A #GnomeProgram instance representing the current application.
- */
-GnomeProgram*
-gnome_program_initv (GType type,
-		     const char *app_id, const char *app_version,
-		     const GnomeModuleInfo *module_info,
-		     int argc, char **argv,
-		     const char *first_property_name, va_list args)
+
+static GnomeProgram*
+gnome_program_init_common (GType type,
+			   const char *app_id, const char *app_version,
+			   const GnomeModuleInfo *module_info,
+			   int argc, char **argv,
+			   const char *first_property_name, va_list args,
+			   gint nparams, GParameter *params)
 {
     GnomeProgram *program;
     GnomeProgramClass *klass;
@@ -1729,12 +1716,14 @@ gnome_program_initv (GType type,
 	const char *ctmp;
 	const GnomeModuleInfo *libgnome_module;
 
-	program_module_list = g_ptr_array_new ();
-	program_modules = g_ptr_array_new ();
-
-	/* keep array NULL terminated */
-	g_ptr_array_add (program_modules, NULL);
-
+	if (!program_module_list)
+	    program_module_list = g_ptr_array_new ();
+	
+	if (!program_modules) {
+	    program_modules = g_ptr_array_new ();
+	      /* keep array NULL terminated */
+	    g_ptr_array_add (program_modules, NULL);
+	}
 	/* Register the requested modules. */
 	gnome_program_module_register (module_info);
 
@@ -1858,8 +1847,11 @@ gnome_program_initv (GType type,
 	}
     }
 
-    program = (GnomeProgram *)g_object_new_valist (type,
-						   first_property_name, args);
+    if (nparams == -1)
+        program = (GnomeProgram *) g_object_new_valist (type,
+                                                        first_property_name, args);
+    else
+        program = (GnomeProgram *) g_object_newv (type, nparams, params);
 
     if (!program_initialized) {
 	global_program = program;
@@ -1879,4 +1871,63 @@ gnome_program_initv (GType type,
 #endif
 
     return program;
+}
+
+/**
+ * gnome_program_initv:
+ * @type: The type of application to be initialized (usually
+ * #GNOME_TYPE_PROGRAM).
+ * @app_id: Application ID string.
+ * @app_version: Application version string.
+ * @module_info: The modules to init with the application.
+ * @argc: The number of command line arguments contained in @argv.
+ * @argv: A string array of command line arguments.
+ * @first_property_name: The first item in a %NULL-terminated list of attribute
+ * name/value.
+ * @args: The remaining elements in the %NULL terminated list (of which
+ * @first_property_name is the first element).
+ *
+ * Provides a non-varargs form of gnome_program_init(). Users will rarely need
+ * to call this function directly.
+ *
+ * Returns: A #GnomeProgram instance representing the current application.
+ */
+GnomeProgram*
+gnome_program_initv (GType type,
+		     const char *app_id, const char *app_version,
+		     const GnomeModuleInfo *module_info,
+		     int argc, char **argv,
+		     const char *first_property_name, va_list args)
+{
+    return gnome_program_init_common (type, app_id, app_version, module_info,
+				      argc, argv, first_property_name, args,
+				      -1, NULL);
+}
+
+/**
+ * gnome_program_init_paramv:
+ * @type: The type of application to be initialized (usually
+ * #GNOME_TYPE_PROGRAM).
+ * @app_id: Application ID string.
+ * @app_version: Application version string.
+ * @module_info: The modules to init with the application.
+ * @argc: The number of command line arguments contained in @argv.
+ * @argv: A string array of command line arguments.
+ * @nparams: Number of parameters.
+ * @args: GParameter array.
+ *
+ * Provides a GParameter form of gnome_program_init(). Useful only for
+ * language bindings, mostly.
+ *
+ * Returns: A #GnomeProgram instance representing the current application.
+ */
+GnomeProgram*
+gnome_program_init_paramv (GType type,
+                           const char *app_id, const char *app_version,
+                           const GnomeModuleInfo *module_info,
+                           int argc, char **argv,
+                           guint nparams, GParameter *params)
+{
+    return gnome_program_init_common (type, app_id, app_version, module_info,
+				      argc, argv, NULL, 0, nparams, params);
 }

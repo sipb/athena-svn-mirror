@@ -82,6 +82,11 @@ gnome_help_error_get_type (void)
 /* enumerations from "gnome-url.h" */
 static const GEnumValue _gnome_url_error_values[] = {
   { GNOME_URL_ERROR_PARSE, "GNOME_URL_ERROR_PARSE", "parse" },
+  { GNOME_URL_ERROR_LAUNCH, "GNOME_URL_ERROR_LAUNCH", "launch" },
+  { GNOME_URL_ERROR_URL, "GNOME_URL_ERROR_URL", "url" },
+  { GNOME_URL_ERROR_NO_DEFAULT, "GNOME_URL_ERROR_NO_DEFAULT", "no-default" },
+  { GNOME_URL_ERROR_NOT_SUPPORTED, "GNOME_URL_ERROR_NOT_SUPPORTED", "not-supported" },
+  { GNOME_URL_ERROR_VFS, "GNOME_URL_ERROR_VFS", "vfs" },
   { 0, NULL, NULL }
 };
 

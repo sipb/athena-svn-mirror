@@ -1,0 +1,90 @@
+<refentry id="libgnome-gnome-gconf">
+<refmeta>
+<refentrytitle>gnome-gconf</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOME Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-gconf</refname><refpurpose>Provides access to the gconf module.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnome/libgnome.h&gt;
+
+
+<link linkend="gchar">gchar</link>*      <link linkend="gnome-gconf-get-gnome-libs-settings-relative">gnome_gconf_get_gnome_libs_settings_relative</link>
+                                            (const <link linkend="gchar">gchar</link> *subkey);
+<link linkend="gchar">gchar</link>*      <link linkend="gnome-gconf-get-app-settings-relative">gnome_gconf_get_app_settings_relative</link>
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const <link linkend="gchar">gchar</link> *subkey);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The gconf module provides a means for storing configuration parameters in a
+directory-like structure. This module supplies a couple of convenience wrappers
+for the most common ways an application will use gconf.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-gconf-get-gnome-libs-settings-relative"/>gnome_gconf_get_gnome_libs_settings_relative ()</title>
+<indexterm><primary>gnome_gconf_get_gnome_libs_settings_relative</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_gconf_get_gnome_libs_settings_relative
+                                            (const <link linkend="gchar">gchar</link> *subkey);</programlisting>
+<para>
+Gets the full key name for a GNOME desktop specific
+setting for a specific application. Those keys are used to store application-specific
+configuration, for example the history of a GnomeEntry. This
+config space should only be used by libraries.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>subkey</parameter>&nbsp;:</term>
+<listitem><simpara> key part below the gnome desktop settings directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A newly allocated string
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-gconf-get-app-settings-relative"/>gnome_gconf_get_app_settings_relative ()</title>
+<indexterm><primary>gnome_gconf_get_app_settings_relative</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_gconf_get_app_settings_relative
+                                            (<link linkend="GnomeProgram">GnomeProgram</link> *program,
+                                             const <link linkend="gchar">gchar</link> *subkey);</programlisting>
+<para>
+Gets the full key name for an application specific
+setting.  That is "/apps/&lt;application_id&gt;/<parameter>subkey</parameter>".</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeProgram"><type>GnomeProgram</type></link> pointer or <literal>NULL</literal> for the default
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subkey</parameter>&nbsp;:</term>
+<listitem><simpara> key part below the gnome desktop settings directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A newly allocated string
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,462 +1,69 @@
-<HTML
-><HEAD
-><TITLE
->gnome-triggers</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GNOME Library Reference Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="Miscellaneous"
-HREF="x3411.html"><LINK
-REL="PREVIOUS"
-TITLE="gnome-sound"
-HREF="libgnome-gnome-sound.html"><LINK
-REL="NEXT"
-TITLE="Lower level interactions"
-HREF="x4196.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><TABLE
-WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="libgnome-gnome-sound.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="x3411.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
-><TH
-WIDTH="100%"
-align="center"
->GNOME Library Reference Manual</TH
-><TD
-><A
-ACCESSKEY="n"
-HREF="x4196.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
-></TD
-></TR
-></TABLE
-><H1
-><A
-NAME="LIBGNOME-GNOME-TRIGGERS"
-></A
->gnome-triggers</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN4019"
-></A
-><H2
->Name</H2
->gnome-triggers&nbsp;--&nbsp;Hierarchical signal mechanism for GNOME events.</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN4022"
-></A
-><H2
->Synopsis</H2
-><PRE
-CLASS="SYNOPSIS"
->&#13;#include &lt;libgnome/libgnome.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-triggers</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s04.html" title="Miscellaneous"><link rel="previous" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="next" href="ch01s05.html" title="Lower level interactions"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-triggers.html#id2950738" title="Description"><link rel="section" href="libgnome-gnome-triggers.html#id2950780" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-sound.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s04.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s05.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-triggers"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-triggers</span></h2><p>gnome-triggers &#8212; Hierarchical signal mechanism for GNOME events.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnome/libgnome.h&gt;
 
 
-enum        <A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGERTYPE"
->GnomeTriggerType</A
->;
-void        (<A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGERACTIONFUNCTION"
->*GnomeTriggerActionFunction</A
->)   (char *msg,
+enum        <a href="libgnome-gnome-triggers.html#GnomeTriggerType">GnomeTriggerType</a>;
+void        (<a href="libgnome-gnome-triggers.html#GnomeTriggerActionFunction">*GnomeTriggerActionFunction</a>)   (char *msg,
                                              char *level,
                                              char *supinfo[]);
-struct      <A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
->;
-void        <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-ADD-TRIGGER"
->gnome_triggers_add_trigger</A
->      (<A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> *nt,
+struct      <a href="libgnome-gnome-triggers.html#GnomeTrigger">GnomeTrigger</a>;
+void        <a href="libgnome-gnome-triggers.html#gnome-triggers-add-trigger">gnome_triggers_add_trigger</a>      (<a href="libgnome-gnome-triggers.html#GnomeTrigger">GnomeTrigger</a> *nt,
                                              ...);
-void        <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-VADD-TRIGGER"
->gnome_triggers_vadd_trigger</A
->     (<A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> *nt,
+void        <a href="libgnome-gnome-triggers.html#gnome-triggers-vadd-trigger">gnome_triggers_vadd_trigger</a>     (<a href="libgnome-gnome-triggers.html#GnomeTrigger">GnomeTrigger</a> *nt,
                                              char *supinfo[]);
-void        <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-DO"
->gnome_triggers_do</A
->               (const char *msg,
+void        <a href="libgnome-gnome-triggers.html#gnome-triggers-do">gnome_triggers_do</a>               (const char *msg,
                                              const char *level,
                                              ...);
-void        <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-VDO"
->gnome_triggers_vdo</A
->              (const char *msg,
+void        <a href="libgnome-gnome-triggers.html#gnome-triggers-vdo">gnome_triggers_vdo</a>              (const char *msg,
                                              const char *level,
-                                             const char *supinfo[]);</PRE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN4034"
-></A
-><H2
->Description</H2
-><P
->The triggers API provides a way for applications to tell GNOME about
+                                             const char *supinfo[]);
+</pre></div><div class="refsect1" lang="en"><a name="id2950738"></a><h2>Description</h2><p>
+The triggers API provides a way for applications to tell GNOME about
 interesting events that then cause something to happen (for example, playing a
 sound). An event can either be a function that is called, a sound that is
-played or an external command that is run.</P
-><P
->Each trigger can optionally have a <I
-CLASS="WORDASWORD"
->level</I
-> associated
-with it and a <I
-CLASS="WORDASWORD"
->section</I
->. The
-<I
-CLASS="WORDASWORD"
->section</I
-> is a list of strings that help to classify the
+played or an external command that is run.
+</p><p>
+Each trigger can optionally have a <i class="wordasword">level</i> associated
+with it and a <i class="wordasword">section</i>. The
+<i class="wordasword">section</i> is a list of strings that help to classify the
 event, which imposes a hierarchy on the trigger system. For example, messages
 about the hard drive partition /dev/hda1 may come under the section ("system",
 "device", "disk", "/dev/hda1"). This means that an application could trigger
 all events for the ("system", "device") sections and include those events, or
 be more specific and just trigger those for ("system", "device", "disk",
-"/dev/hda1").</P
-><P
->At the present time, triggers are not widely used in GNOME, being mostly used
-to play sound events in response to certain actions.</P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN4042"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4044"
-></A
-><H3
-><A
-NAME="GNOMETRIGGERTYPE"
-></A
->enum GnomeTriggerType</H3
-><PRE
-CLASS="PROGRAMLISTING"
->typedef enum {
+"/dev/hda1").
+</p><p>
+At the present time, triggers are not widely used in GNOME, being mostly used
+to play sound events in response to certain actions.
+</p></div><div class="refsect1" lang="en"><a name="id2950780"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2950786"></a><h3><a name="GnomeTriggerType"></a>enum GnomeTriggerType</h3><a class="indexterm" name="id2950798"></a><pre class="programlisting">typedef enum {
 	GTRIG_NONE,
 	GTRIG_FUNCTION,
 	GTRIG_COMMAND,
 	GTRIG_MEDIAPLAY
-} GnomeTriggerType;</PRE
-><P
->These are the different types of triggers that can be activated by an
-application.</P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4050"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GTRIG_NONE</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->A null trigger type. Should never be used.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4055"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GTRIG_FUNCTION</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The trigger causes a function to be executed.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4060"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GTRIG_COMMAND</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The trigger causes a command to be executed (using execv()).</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4066"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GTRIG_MEDIAPLAY</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The trigger causes a sound to be played.&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4071"
-></A
-><H3
-><A
-NAME="GNOMETRIGGERACTIONFUNCTION"
-></A
->GnomeTriggerActionFunction ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        (*GnomeTriggerActionFunction)   (char *msg,
+} GnomeTriggerType;
+</pre><p>
+These are the different types of triggers that can be activated by an
+application.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GTRIG_NONE</tt></span></td><td>A null trigger type. Should never be used.
+</td></tr><tr><td><span class="term"><tt class="literal">GTRIG_FUNCTION</tt></span></td><td>The trigger causes a function to be executed.
+</td></tr><tr><td><span class="term"><tt class="literal">GTRIG_COMMAND</tt></span></td><td>The trigger causes a command to be executed (using <tt class="function">execv()</tt>).
+</td></tr><tr><td><span class="term"><tt class="literal">GTRIG_MEDIAPLAY</tt></span></td><td>The trigger causes a sound to be played.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2950892"></a><h3><a name="GnomeTriggerActionFunction"></a>GnomeTriggerActionFunction ()</h3><a class="indexterm" name="id2950904"></a><pre class="programlisting">void        (*GnomeTriggerActionFunction)   (char *msg,
                                              char *level,
-                                             char *supinfo[]);</PRE
-><P
->The signature of a function that can used as a target for GTRIG_FUNCTION
-types of <A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> instances.</P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4079"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->msg</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The human-readable message that was passed to <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-DO"
->gnome_triggers_do</A
->(). May be
-<TT
-CLASS="LITERAL"
->NULL</TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4086"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->level</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The severity level of the event. May be <TT
-CLASS="LITERAL"
->NULL</TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4092"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->supinfo</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The section in which the event belongs. This is a <TT
-CLASS="LITERAL"
->NULL</TT
-> terminated
+                                             char *supinfo[]);</pre><p>
+The signature of a function that can used as a target for <span class="type">GTRIG_FUNCTION</span>
+types of <a href="libgnome-gnome-triggers.html#GnomeTrigger"><span class="type">GnomeTrigger</span></a> instances.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td>The human-readable message that was passed to <a href="libgnome-gnome-triggers.html#gnome-triggers-do"><tt class="function">gnome_triggers_do()</tt></a>. May be
+<tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>level</tt></i> :</span></td><td>The severity level of the event. May be <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>supinfo</tt></i> :</span></td><td>The section in which the event belongs. This is a <tt class="literal">NULL</tt> terminated
 array.
-&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4098"
-></A
-><H3
-><A
-NAME="GNOMETRIGGER"
-></A
->struct GnomeTrigger</H3
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeTrigger {
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2951042"></a><h3><a name="GnomeTrigger"></a>struct GnomeTrigger</h3><a class="indexterm" name="id2951053"></a><pre class="programlisting">struct GnomeTrigger {
+
 	GnomeTriggerType type;
 	union {
 		/*
@@ -471,418 +78,42 @@ CLASS="PROGRAMLISTING"
 		} media;
 	} u;
         gchar *level;
-};</PRE
-><P
->This structure stores the information about an action that is triggered for
+};
+</pre><p>
+This structure stores the information about an action that is triggered for
 a particular event. A filled in instance of this structure is passed to
-<A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-ADD-TRIGGER"
->gnome_triggers_add_trigger</A
->() and <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-VADD-TRIGGER"
->gnome_triggers_vadd_trigger</A
->().</P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4105"
-></A
-><H3
-><A
-NAME="GNOME-TRIGGERS-ADD-TRIGGER"
-></A
->gnome_triggers_add_trigger ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_triggers_add_trigger      (<A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> *nt,
-                                             ...);</PRE
-><P
->Adds a new <A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> instance to the event hierarchy.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4114"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->nt</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Information on the new trigger to be added.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4119"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->...</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The section to add the trigger under.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4124"
-></A
-><H3
-><A
-NAME="GNOME-TRIGGERS-VADD-TRIGGER"
-></A
->gnome_triggers_vadd_trigger ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_triggers_vadd_trigger     (<A
-HREF="libgnome-gnome-triggers.html#GNOMETRIGGER"
->GnomeTrigger</A
-> *nt,
-                                             char *supinfo[]);</PRE
-><P
->This does the same as <A
-HREF="libgnome-gnome-triggers.html#GNOME-TRIGGERS-ADD-TRIGGER"
->gnome_triggers_add_trigger</A
->(), except the section is
-stored in the <TT
-CLASS="LITERAL"
->NULL</TT
-> terminated array <TT
-CLASS="PARAMETER"
-><I
->supinfo</I
-></TT
-> instead of as a variable
-length argument list.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4135"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->nt</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Information on the new trigger to be added.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4140"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->supinfo</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The section to add the trigger under.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4145"
-></A
-><H3
-><A
-NAME="GNOME-TRIGGERS-DO"
-></A
->gnome_triggers_do ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_triggers_do               (const char *msg,
+<a href="libgnome-gnome-triggers.html#gnome-triggers-add-trigger"><tt class="function">gnome_triggers_add_trigger()</tt></a> and <a href="libgnome-gnome-triggers.html#gnome-triggers-vadd-trigger"><tt class="function">gnome_triggers_vadd_trigger()</tt></a>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2951098"></a><h3><a name="gnome-triggers-add-trigger"></a>gnome_triggers_add_trigger ()</h3><a class="indexterm" name="id2951109"></a><pre class="programlisting">void        gnome_triggers_add_trigger      (<a href="libgnome-gnome-triggers.html#GnomeTrigger">GnomeTrigger</a> *nt,
+                                             ...);</pre><p>
+Adds a new <a href="libgnome-gnome-triggers.html#GnomeTrigger"><span class="type">GnomeTrigger</span></a> instance to the event hierarchy.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>nt</tt></i> :</span></td><td> Information on the new trigger to be added.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> The section to add the trigger under.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2951183"></a><h3><a name="gnome-triggers-vadd-trigger"></a>gnome_triggers_vadd_trigger ()</h3><a class="indexterm" name="id2951196"></a><pre class="programlisting">void        gnome_triggers_vadd_trigger     (<a href="libgnome-gnome-triggers.html#GnomeTrigger">GnomeTrigger</a> *nt,
+                                             char *supinfo[]);</pre><p>
+This does the same as <a href="libgnome-gnome-triggers.html#gnome-triggers-add-trigger"><tt class="function">gnome_triggers_add_trigger()</tt></a>, except the section is
+stored in the <tt class="literal">NULL</tt> terminated array <i class="parameter"><tt>supinfo</tt></i> instead of as a variable
+length argument list.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>nt</tt></i> :</span></td><td> Information on the new trigger to be added.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>supinfo</tt></i> :</span></td><td> The section to add the trigger under.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2951293"></a><h3><a name="gnome-triggers-do"></a>gnome_triggers_do ()</h3><a class="indexterm" name="id2951304"></a><pre class="programlisting">void        gnome_triggers_do               (const char *msg,
                                              const char *level,
-                                             ...);</PRE
-><P
->Notifies GNOME about an event happening, so that any appropriate handlers
-can be run.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4152"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->msg</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The human-readable message describing the event (can be <TT
-CLASS="LITERAL"
->NULL</TT
->).</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4158"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->level</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The level of severity of the event, or <TT
-CLASS="LITERAL"
->NULL</TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4164"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->...</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The classification of the event.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN4169"
-></A
-><H3
-><A
-NAME="GNOME-TRIGGERS-VDO"
-></A
->gnome_triggers_vdo ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_triggers_vdo              (const char *msg,
+                                             ...);</pre><p>
+Notifies GNOME about an event happening, so that any appropriate handlers
+can be run.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td> The human-readable message describing the event (can be <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>level</tt></i> :</span></td><td> The level of severity of the event, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> The classification of the event.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2951403"></a><h3><a name="gnome-triggers-vdo"></a>gnome_triggers_vdo ()</h3><a class="indexterm" name="id2951414"></a><pre class="programlisting">void        gnome_triggers_vdo              (const char *msg,
                                              const char *level,
-                                             const char *supinfo[]);</PRE
-><P
->Notifies GNOME about an event happening, so that any appropriate handlers
-can be run. This does the same as gnome_trigger_do() except that it takes a
-<TT
-CLASS="LITERAL"
->NULL</TT
-> terminated array instead of a varargs list.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4178"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->msg</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The human-readable message describing the event (can be <TT
-CLASS="LITERAL"
->NULL</TT
->).</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4184"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->level</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The level of severity of the event, or <TT
-CLASS="LITERAL"
->NULL</TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4190"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->supinfo</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The classification of the event (<TT
-CLASS="LITERAL"
->NULL</TT
-> terminated array).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-></DIV
-><TABLE
-CLASS="navigation"
-WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-ALIGN="left"
-><A
-ACCESSKEY="p"
-HREF="libgnome-gnome-sound.html"
-><B
->&lt;&lt;&lt;&nbsp;gnome-sound</B
-></A
-></TD
-><TD
-ALIGN="right"
-><A
-ACCESSKEY="n"
-HREF="x4196.html"
-><B
->Lower level interactions&nbsp;&gt;&gt;&gt;</B
-></A
-></TD
-></TR
-></TABLE
-></BODY
-></HTML
->
+                                             const char *supinfo[]);</pre><p>
+Notifies GNOME about an event happening, so that any appropriate handlers
+can be run. This does the same as <tt class="function">gnome_trigger_do()</tt> except that it takes a
+<tt class="literal">NULL</tt> terminated array instead of a varargs list.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td> The human-readable message describing the event (can be <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>level</tt></i> :</span></td><td> The level of severity of the event, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>supinfo</tt></i> :</span></td><td> The classification of the event (<tt class="literal">NULL</tt> terminated array).
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnome-gnome-sound.html"><b>&lt;&lt; gnome-sound</b></a></td><td align="right"><a accesskey="n" href="ch01s05.html"><b>Lower level interactions &gt;&gt;</b></a></td></tr></table></body></html>

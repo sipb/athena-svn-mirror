@@ -1,0 +1,160 @@
+<refentry id="libgnome-gnome-url">
+<refmeta>
+<refentrytitle>gnome-url</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOME Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-url</refname><refpurpose>Display urls using appropriate viewers.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnome/libgnome.h&gt;
+
+
+enum        <link linkend="GnomeURLError">GnomeURLError</link>;
+#define     <link linkend="GNOME-URL-ERROR-CAPS">GNOME_URL_ERROR</link>
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-url-show">gnome_url_show</link>                  (const <link linkend="char">char</link> *url,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-url-show-with-env">gnome_url_show_with_env</link>         (const <link linkend="char">char</link> *url,
+                                             <link linkend="char">char</link> **envp,
+                                             <link linkend="GError">GError</link> **error);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A GNOME user can configure which viewers they wish to use to view certain
+protocols. Protocols can include http, ftp (where "view" might mean
+"download"), ghelp, etc. This module provides a means for application to
+display a url without having to worry about which viewer is going to ultimately
+handle the job.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeURLError"/>enum GnomeURLError</title>
+<indexterm><primary>GnomeURLError</primary></indexterm><programlisting>typedef enum {
+  GNOME_URL_ERROR_PARSE,
+  GNOME_URL_ERROR_LAUNCH,
+  GNOME_URL_ERROR_URL,
+  GNOME_URL_ERROR_NO_DEFAULT,
+  GNOME_URL_ERROR_NOT_SUPPORTED,
+  GNOME_URL_ERROR_VFS
+} GnomeURLError;
+</programlisting>
+<para>
+The errors that can be returned due to bad parameters being pass to
+<link linkend="gnome-url-show"><function>gnome_url_show()</function></link>.</para>
+<para>
+
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_PARSE</literal></term>
+<listitem><simpara> The parsing of the handler failed.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_LAUNCH</literal></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_URL</literal></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_NO_DEFAULT</literal></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_NOT_SUPPORTED</literal></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_URL_ERROR_VFS</literal></term>
+<listitem><simpara>
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GNOME-URL-ERROR-CAPS"/>GNOME_URL_ERROR</title>
+<indexterm><primary>GNOME_URL_ERROR</primary></indexterm><programlisting>#define GNOME_URL_ERROR (gnome_url_error_quark ())
+</programlisting>
+<para>
+The class (domain) of errors raised by this module.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-url-show"/>gnome_url_show ()</title>
+<indexterm><primary>gnome_url_show</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_url_show                  (const <link linkend="char">char</link> *url,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Once the input has been converted into a fully qualified url this function
+calls gnome_vfs_url_show. Any error codes returned by gnome-vfs will be wrapped
+in the error parameter. All errors comes from the <literal>GNOME_URL_ERROR</literal>% domain.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>url</parameter>&nbsp;:</term>
+<listitem><simpara> The url or path to display. The path can be relative to the current working
+directory or the user's home directory. This function will convert it into a fully
+qualified url using the gnome_url_get_from_input function.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> Used to store any errors that result from trying to display the <parameter>url</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if everything went fine, <literal>FALSE</literal> otherwise (in which case
+<parameter>error</parameter> will contain the actual error).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-url-show-with-env"/>gnome_url_show_with_env ()</title>
+<indexterm><primary>gnome_url_show_with_env</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_url_show_with_env         (const <link linkend="char">char</link> *url,
+                                             <link linkend="char">char</link> **envp,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Like <link linkend="gnome-url-show"><function>gnome_url_show()</function></link>, but gnome_vfs_url_show_with_env
+will be called with the given envirnoment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>url</parameter>&nbsp;:</term>
+<listitem><simpara> The url or path to display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envp</parameter>&nbsp;:</term>
+<listitem><simpara> child's environment, or <literal>NULL</literal> to inherit parent's.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> Used to store any errors that result from trying to display the <parameter>url</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if everything went fine, <literal>FALSE</literal> otherwise (in which case
+<parameter>error</parameter> will contain the actual error).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,61 +1,63 @@
 # Ukrainian translation of libgnome.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Yuriy Syrota <rasta@renome.rovno.ua>, 2001.
+# Maxim Dziumanenko <mvd@mylinux.com.ua>, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2003-01-21 10:53--500\n"
-"Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-08-03 14:10+0200\n"
+"Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
-msgstr "Повідомлення про помилки"
+msgid "Error message"
+msgstr "Повідомлення про помилку"
 
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "Системні події GNOME"
+msgid "Informational message"
+msgstr "Інформаційне повідомлення"
 
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "Інформаційні повідомлення"
+msgid "Log in"
+msgstr "Вхід у сеанс"
 
 #: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
-msgstr "Вхід"
+msgid "Log out"
+msgstr "Вихід з сеансу"
 
 #: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
-msgstr "Вихід"
+msgid "Miscellaneous message"
+msgstr "Інше повідомлення"
 
 #: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
-msgstr "Різні повідомлення"
+msgid "Question dialog"
+msgstr "Питальний діалог"
 
 #: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
-msgstr "Питальні діалоги "
+msgid "System events"
+msgstr "Системні події"
 
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
-msgstr "Попереджувальні повідомлення"
+msgid "Warning message"
+msgstr "Попереджувальне повідомлення"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "Натиснення на кнопку"
+msgid "Choose menu item"
+msgstr "Вибір елемента меню"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "Перемикання кнопки"
+msgid "Click on command button"
+msgstr "Клацання на керуючій кнопці"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "Вибір пункта меню"
+msgid "Select check box"
+msgstr "Вибір поля для відмітки"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
@@ -64,19 +66,20 @@ msgstr "Події інтерфейсу користувача"
 #: libgnome/gnome-exec.c:441
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr ""
-"Неможливо знайти термінал, використовується xterm, навіть якщо він не працює"
+"Не вдається знайти термінал, використовується xterm, навіть якщо він не "
+"працює"
 
 #: libgnome/gnome-gconf.c:174
 msgid "GNOME GConf Support"
-msgstr "Підтримка GNOME GConf"
+msgstr "Підтримка системи GConf середовища GNOME"
 
 #: libgnome/gnome-help.c:159
 msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
-msgstr "Неможливо віднайти домен GNOME_FILE_DOMAIN_APP_HELP"
+msgstr "Не вдається знайти домен GNOME_FILE_DOMAIN_APP_HELP"
 
 #: libgnome/gnome-help.c:172
 msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
-msgstr "Неможливо віднайти домен GNOME_FILE_DOMAIN_HELP."
+msgstr "Не вдається знайти домен GNOME_FILE_DOMAIN_HELP."
 
 #: libgnome/gnome-help.c:185 libgnome/gnome-help.c:200
 #, c-format
@@ -84,7 +87,7 @@ msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
 "installation."
 msgstr ""
-"Неможливо відобразити довідку, бо %s не є каталогом.  Це може свідчити про "
+"Не вдається відобразити довідку, бо %s не є каталогом.  Це може свідчити про "
 "некоректне встановлення."
 
 #: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
@@ -93,22 +96,18 @@ msgid ""
 "Unable to find the help files in either %s or %s.  Please check your "
 "installation"
 msgstr ""
-"Неможливо віднайти файли довідки ні в %s, ні в %s.  Це може свідчити про "
+"Не вдається віднайти файли довідки ні в %s, ні в %s.  Це може свідчити про "
 "некоректне встановлення."
 
 #: libgnome/gnome-help.c:339
 #, c-format
 msgid "Unable to find doc_id %s in the help path"
-msgstr "Неможливо знайти doc_id %s за шляхом довідки"
+msgstr "Не вдається знайти doc_id %s за шляхом довідки"
 
 #: libgnome/gnome-help.c:360
 #, c-format
 msgid "Help document %s/%s not found"
-msgstr "Документа довідки %s/%s не знайдено"
-
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr "Надто багато рівнів псевдонімів для локалі, може свідчити про цикл"
+msgstr "Документ довідки %s/%s не знайдено"
 
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
@@ -119,184 +118,184 @@ msgstr "Підтримка Bonobo"
 msgid "Bonobo activation Support"
 msgstr "Підтримка активізації Bonobo"
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr ""
-"Не вдалось створити окремий конфіґураційний каталог користувача \"%s\": %s\n"
+"Не вдається створити окремий конфігураційний каталог користувача \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
 "s': %s\n"
 msgstr ""
-"Не вдалось встановити режим доступу 0700 на окремому приваткому "
-"конфіґураційному каталозі користувача \"%s\": %s\n"
+"Не вдається встановити режим доступу 0700 на окремий приватний "
+"конфігураційний каталог користувача \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
-msgstr "Не вдалось створити каталог комбінацій клавіш GNOME \"%s\": %s\n"
+msgstr "Не вдається створити каталог комбінацій клавіш GNOME \"%s\": %s\n"
 
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
 msgstr "Вимкнути використання звукового сервера"
 
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
 msgstr "Увімкнути використання звукового сервера"
 
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
-msgstr "Хост:порт, де запущено звуковий сервер"
+msgstr "Вузол:порт, де запущено звуковий сервер"
 
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
-msgstr "НАЗВАХОСТА:ПОРТ"
+msgstr "НАЗВАВУЗЛА:ПОРТ"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
 msgstr "Віртуальна файлова система GNOME"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "Бібліотека GNOME"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "Таблиця Popt"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "Таблиця параметрів Popt"
 
-#: libgnome/gnome-program.c:434
+#: libgnome/gnome-program.c:435
 msgid "Popt Flags"
 msgstr "Ознаки popt"
 
-#: libgnome/gnome-program.c:435
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "Ознаки, що використовуються для popt"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "Контекст popt"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
-msgstr "Drfpsdybr rjyntrce popt, що використовується GnomeProgram"
-
-#: libgnome/gnome-program.c:452
-msgid "Human readable name"
-msgstr "Пристосована для читання людиною назва"
+msgstr "Вказівник контексту popt, що використовується GnomeProgram"
 
 #: libgnome/gnome-program.c:453
-msgid "Human readable name of this application"
-msgstr "Пристосована для читання людиною назва цього додатка"
+msgid "Human readable name"
+msgstr "Призначена для читання людиною назва"
 
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:454
+msgid "Human readable name of this application"
+msgstr "Призначена для читання людиною назва програми"
+
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "Шлях GNOME"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "Шлях, в якому потрібно шукати встановлені файли"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "Ідентифікатор додатка"
 
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "Ідентифікаційний рядок додатка"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "Версія додатка"
 
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
 msgstr "Версія цього додатка"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "Префікс GNOME"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "Префікс, куди встановлено GNOME"
 
-#: libgnome/gnome-program.c:498
+#: libgnome/gnome-program.c:499
 msgid "GNOME Libdir"
 msgstr "Каталог бібліотек GNOME"
 
-#: libgnome/gnome-program.c:499
+#: libgnome/gnome-program.c:500
 msgid "Library prefix where GNOME was installed"
 msgstr "Префікс шляху, за яким було встановлено бібліотеки GNOME"
 
-#: libgnome/gnome-program.c:508
+#: libgnome/gnome-program.c:509
 msgid "GNOME Datadir"
 msgstr "Каталог даних GNOME"
 
-#: libgnome/gnome-program.c:509
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "Префікс шляху,за яким було встановлено дані GNOME"
 
-#: libgnome/gnome-program.c:518
-msgid "GNOME Sysconfdir"
-msgstr "Каталог конфіґурації системи GNOME"
-
 #: libgnome/gnome-program.c:519
-msgid "Configuration prefix where GNOME was installed"
-msgstr "Префікс шляху, за яким було встановлено файли налаштувань GNOME"
+msgid "GNOME Sysconfdir"
+msgstr "Каталог конфігурації системи GNOME"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:520
+msgid "Configuration prefix where GNOME was installed"
+msgstr "Префікс шляху, за яким було встановлено файли конфігурації GNOME"
+
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "Префікс додатків GNOME"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "Префікс шляху, за яким було встановлено додатки GNOME"
 
-#: libgnome/gnome-program.c:538
+#: libgnome/gnome-program.c:539
 msgid "GNOME App Libdir"
 msgstr "Каталог бібліотек додатків GNOME"
 
-#: libgnome/gnome-program.c:539
+#: libgnome/gnome-program.c:540
 msgid "Library prefix where this application was installed"
 msgstr "Префікс шляху, за яким було встановлено бібліотеки додатків GNOME"
 
-#: libgnome/gnome-program.c:548
+#: libgnome/gnome-program.c:549
 msgid "GNOME App Datadir"
 msgstr "Каталог даних додатків GNOME"
 
-#: libgnome/gnome-program.c:549
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "Префікс шляху, за яким було встановлено дані додатків GNOME"
 
-#: libgnome/gnome-program.c:558
-msgid "GNOME App Sysconfdir"
-msgstr "Каталог налаштувань додатків GNOME"
-
 #: libgnome/gnome-program.c:559
+msgid "GNOME App Sysconfdir"
+msgstr "Каталог параметрів додатків GNOME"
+
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr ""
-"Префікс шляху, за яким було встановлено файли налаштувань додатків GNOME"
+"Префікс шляху, за яким було встановлено файли конфігурації додатків GNOME"
 
-#: libgnome/gnome-program.c:568
+#: libgnome/gnome-program.c:569
 msgid "Create Directories"
 msgstr "Створити каталоги"
 
-#: libgnome/gnome-program.c:569
+#: libgnome/gnome-program.c:570
 msgid "Create standard GNOME directories on startup"
 msgstr "Створити типові каталоги GNOME під час запуску"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "Увімкнути звук"
 
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "Увімкнути звук під час запуску"
 
@@ -308,21 +307,59 @@ msgstr "Espeaker"
 msgid "How to connect to esd"
 msgstr "Як з'єднуватись з esd"
 
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "Параметри довідки"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "Параметри додатка"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "Динамічні модулі до завантаження"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
 msgstr "МОДУЛЬ1,МОДУЛЬ2..."
+
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "Невідома внутрішня помилка при відображенні цього розташування."
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "Вказане розташування неправильне."
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr "Помилка при аналізі типової команди, пов'язаної з цим розташуванням."
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr "Помилка при виконанні типової команди, пов'язаної з цим розташуванням."
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "Відсутня типова дія, пов'язана з цим розташуванням."
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "Типова команда не підтримує цей протокол."
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "Невідомий код помилки: %d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "Помилка відображення url: %s\n"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
@@ -343,11 +380,11 @@ msgstr "Невідомий тип"
 #: monikers/bonobo-moniker-conf-indirect.c:44
 #, c-format
 msgid "Key %s not found in configuration"
-msgstr "Ключа %s не знайдено в конфіґурації"
+msgstr "Ключ \"%s\" не знайдено в конфігурації"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:1
 msgid "Beep when a modifier is pressed"
-msgstr "Звукивий сигнал при натисканні модифікатора"
+msgstr "Подавати звуковий сигнал при натисканні модифікатора"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
 msgid "Disable if two keys are pressed at the same time."
@@ -357,31 +394,35 @@ msgstr "Вимкнути, якщо дві клавіші натиснуто од
 msgid ""
 "Do not accept a key as being pressed unless held for @delay milliseconds"
 msgstr ""
+"Не приймати натиснуту клавішу, якщо її не було утримано на протязі @delay "
+"мілісекунд"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:4
 msgid "How many milliseconds it takes to go from 0 to maximum speed"
-msgstr ""
+msgstr "Час розгону, в мілісекундах, від 0 до максимальної швидкості"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:5
 msgid ""
 "How many milliseconds to wait before mouse movement keys start to operate"
-msgstr ""
+msgstr "Затримка, в мілісекундах, перед початком опрацювання клавіш руху мишею"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:6
 msgid "How many pixels per second to move at the maximum speed"
-msgstr ""
+msgstr "Максимальна швидкість руху в точках на секунду"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:7
 msgid "Ignore multiple presses of the _same_ key within @delay milliseconds"
 msgstr ""
+"Не зважати на багаторазове натиснення однієї клавіші в межах @delay "
+"мілісекунд"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:8
 msgid "how long to accelerate in milliseconds"
-msgstr ""
+msgstr "як довго прискорюватися (в мілісекундах)"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:9
 msgid "initial delay in milliseconds"
-msgstr "початкова затрика у мілісекундах"
+msgstr "початкова затримка у мілісекундах"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:10
 msgid "minimum interval in milliseconds"
@@ -391,6 +432,18 @@ msgstr "мінімальний інтервал в мілісекундах"
 msgid "pixels per seconds"
 msgstr "точок на секунду"
 
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr ""
+"Перелік програм для людей с обмеженими можливостями, що запускаються при "
+"вході в сеанс середовища Гном"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "Виконувані при вході програми зі спеціальними можливостями"
+
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
 msgstr "Переглядач потребує термінала"
@@ -398,7 +451,7 @@ msgstr "Переглядач потребує термінала"
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:2
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:1
 msgid "Browser understands remote"
-msgstr ""
+msgstr "Переглядач підтримує віддалене керування"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:3
 msgid "Default browser"
@@ -410,36 +463,38 @@ msgstr "Типовий переглядач для всіх типів URL"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:5
 msgid "Whether the default browser needs a terminal to run"
-msgstr ""
+msgstr "Чи типовому переглядачу потрібен термінал для запуску"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:6
 msgid "Whether the default browser understands netscape remote"
 msgstr ""
+"Чи типовий переглядач підтримує інтерфейс віддаленого керування Netscape"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
 msgid "Default help viewer"
-msgstr ""
+msgstr "Типовий переглядач довідки"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
 msgid "Help viewer needs terminal"
-msgstr ""
+msgstr "Переглядачу довідки потрібен термінал"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:4
 msgid "Whether the default help viewer accepts URLs"
-msgstr ""
+msgstr "Чи типовий переглядач довідки приймає URL"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:5
 msgid "Whether the default help viewer needs a terminal to run"
-msgstr ""
+msgstr "Чи типовому переглядачу довідки потрібен термінал для запуску"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
 msgid ""
 "Argument used to execute programs in the terminal defined by the 'exec' key."
 msgstr ""
+"Аргумент, що буде передано програмі в терміналі через параметр \"exec\"."
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
 msgid "Exec Arguments"
-msgstr ""
+msgstr "Аргументи параметра exec"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:3
 msgid "Terminal application"
@@ -447,19 +502,21 @@ msgstr "Термінальна програма"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:4
 msgid "Terminal program to use when starting applications that require one"
-msgstr ""
+msgstr "Термінал, що використовуватиметься коли він потрібен додатку"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:1
 msgid "A list with names of the first window manager workspaces."
-msgstr ""
+msgstr "Список з назвами робочих областей першого віконного менеджера"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:2
 msgid "Fallback window manager"
-msgstr ""
+msgstr "Аварійний віконний менеджер"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:3
 msgid "Fallback window manager if user window manager can't be found"
 msgstr ""
+"Аварійний віконний менеджер, на випадок, коли не вдасться знайти вказаний "
+"користувачем"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:4
 msgid "Names of the workspaces"
@@ -475,39 +532,44 @@ msgstr "Кількість робочих областей, що має вико
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:7
 msgid "User window manager"
-msgstr "Користувацький віконний менеджер"
+msgstr "Віконний менеджер, визначений користувачем"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:8
 msgid "Window manager to try first"
-msgstr ""
+msgstr "Віконний менеджер, який буде випробуваний першим"
 
 #: schemas/desktop_gnome_background.schemas.in.h:1
 msgid "Color Shading Type"
-msgstr ""
+msgstr "Тип кольорового переходу"
 
 #: schemas/desktop_gnome_background.schemas.in.h:2
 msgid ""
 "Determines how the image set by wallpaper_filename is rendered. Possible "
 "values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
 msgstr ""
+"Визначає метод візуалізації зображення встановленого параметром "
+"\"wallpaper_filename\". Можливі значення: \"none\", \"wallpaper\", \"centered"
+"\", \"scaled\" і \"stretched\"."
 
 #: schemas/desktop_gnome_background.schemas.in.h:3
 msgid "Draw Desktop Background"
-msgstr ""
+msgstr "Малювати тло стільниці"
 
 #: schemas/desktop_gnome_background.schemas.in.h:4
 msgid "File to use for the background image"
-msgstr ""
+msgstr "Файл, що використовуватиметься для зображення тла"
 
 #: schemas/desktop_gnome_background.schemas.in.h:5
 msgid "Have GNOME draw the desktop background"
-msgstr ""
+msgstr "Чи має GNOME малювати тло стільниці"
 
 #: schemas/desktop_gnome_background.schemas.in.h:6
 msgid ""
 "How to shade the background color. Possible values are \"horizontal-gradient"
 "\", \"vertical-gradient\", and \"solid\""
 msgstr ""
+"Тип згасання кольору тла. Можливі значення: \"horizontal-gradient\", "
+"\"vertical-gradient\" і \"solid\""
 
 #: schemas/desktop_gnome_background.schemas.in.h:7
 msgid "Left or Top color when drawing gradients, or the solid color."
@@ -517,19 +579,19 @@ msgstr ""
 
 #: schemas/desktop_gnome_background.schemas.in.h:8
 msgid "Opacity with which to draw the background picture"
-msgstr ""
+msgstr "Прозорість зображення тла"
 
 #: schemas/desktop_gnome_background.schemas.in.h:9
 msgid "Picture Filename"
-msgstr ""
+msgstr "Файл малюнка"
 
 #: schemas/desktop_gnome_background.schemas.in.h:10
 msgid "Picture Opacity"
-msgstr ""
+msgstr "Прозорість малюнка"
 
 #: schemas/desktop_gnome_background.schemas.in.h:11
 msgid "Picture Options"
-msgstr ""
+msgstr "Параметри малюнка"
 
 #: schemas/desktop_gnome_background.schemas.in.h:12
 msgid "Primary Color"
@@ -547,19 +609,19 @@ msgstr "Вторинний колір"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:1
 msgid "File Icon Theme"
-msgstr ""
+msgstr "Тема файлових значків"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:2
 msgid "Theme used for displaying file icons"
-msgstr ""
+msgstr "Тема, що використовуватиметься для відображення значків фалів"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:1
 msgid "Basename of the default theme used by gtk+."
-msgstr ""
+msgstr "Базова назва типової теми для GTK+"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:2
 msgid "Can Change Accels"
-msgstr ""
+msgstr "Можливість зміни комбінацій клавіш"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:3
 msgid "Cursor Blink"
@@ -575,7 +637,7 @@ msgstr "Типовий шрифт"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:6
 msgid "Enable Accessibility"
-msgstr ""
+msgstr "Увімкнути спеціальні можливості"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:7
 msgid "Enable Animations"
@@ -583,11 +645,11 @@ msgstr "Увімкнути анімацію"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:8
 msgid "GTK IM Preedit Style"
-msgstr ""
+msgstr "Стиль передредагування методу GTK IM"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:9
 msgid "GTK IM Status Style"
-msgstr ""
+msgstr "Стиль стану методу GTK IM"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:10
 msgid "Gtk+ Theme"
@@ -595,204 +657,297 @@ msgstr "Тема GTK+"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:11
 msgid "Icon Theme"
-msgstr ""
+msgstr "Тема значків"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:12
 msgid "Icon theme to use for the panel, nautilus etc."
-msgstr ""
+msgstr "Тема значків, що використовуватиметься для панелі, \"Наутілуса\" тощо."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
-msgstr ""
+msgid "Length of the cursor blink cycle, in milliseconds"
+msgstr "Величина циклу блимання курсора (в мілісекундах)"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
 msgid "Menubar Detachable"
-msgstr ""
+msgstr "Панелі меню можна від'єднувати"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:15
 msgid "Menus Have Icons"
-msgstr ""
+msgstr "Меню містять значки"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:16
 msgid "Menus Have Tearoff"
-msgstr ""
+msgstr "Меню можна від'єднувати"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
-msgid "Name of the GTK+ input method Preedit Style used by gtk+."
-msgstr ""
+msgid "Module for GtkFileChooser"
+msgstr "Модуль для GtkFileChooser"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:18
-msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
 msgstr ""
+"Модуль, що використовуватиметься в якості моделі файлової системи для "
+"віджета GtkFileChooser. Можливими значеннями є \"gnome-vfs\" і \"gtk+\"."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:19
-msgid "Name of the default font used by gtk+."
-msgstr ""
+msgid "Monospace font"
+msgstr "Моноширинний шрифт"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:20
-msgid "Status Bar on Right"
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
 msgstr ""
+"Назва моноширинного шрифту (як у друкарської машинки), що використовується у "
+"програмах терміналу"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:21
-msgid "This specifies the size of icons displayed in toolbars"
-msgstr ""
+msgid "Name of the GTK+ input method Preedit Style used by gtk+."
+msgstr "Назва методу вводу \"Стиль передредагування\" пакету  GTK+."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:22
-msgid "Toolbar Detachable"
-msgstr ""
+msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgstr "Назва методу вводу \"Стиль стану\" пакету  GTK+."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:23
-msgid "Toolbar Icon Size"
-msgstr ""
+msgid "Name of the default font used by gtk+."
+msgstr "Назва типового шрифту GTK+."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:24
-msgid "Toolbar Style"
-msgstr "Стиль пеналу"
+msgid "Status Bar on Right"
+msgstr "Панель стану праворуч"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
-msgstr ""
+msgid "This specifies the size of icons displayed in toolbars"
+msgstr "Значення визначає розмір значків, що відображаються в панелях"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:26
-msgid "Use Custom Font"
-msgstr ""
+msgid "Toolbar Detachable"
+msgstr "Панелі інструментів можна від'єднувати"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:27
-msgid "Whether Applications should have accessibility support"
-msgstr ""
+msgid "Toolbar Icon Size"
+msgstr "Розмір значків в панелях"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:28
+msgid "Toolbar Style"
+msgstr "Стиль панелі інструментів"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
+msgstr ""
+"Стиль панелі інструментів. Правильними значеннями є \"both\", \"both_horiz"
+"\", \"icon\" і \"text\""
+
+#: schemas/desktop_gnome_interface.schemas.in.h:30
+msgid "Use Custom Font"
+msgstr "Використовувати інший шрифт"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:31
+msgid "Whether Applications should have accessibility support"
+msgstr "Чи мають додатки підтримувати спеціальні можливості"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:29
-msgid "Whether menus may display an icon next to a menu entry"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:30
-msgid "Whether menus should have a tearoff"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:31
-msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
-"popped up"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:32
-msgid "Whether the cursor should blink"
-msgstr ""
+"Чи потрібно відображати анімацію. Зауважте, що це глобальний ключ, його "
+"зміна вплине на поведінку віконного менеджера, панелі тощо."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:33
-msgid "Whether the user can detach menubars and move them around"
-msgstr ""
+msgid "Whether menus may display an icon next to a menu entry"
+msgstr "Чи можуть в меню відображатися значки поруч з елементом"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:34
-msgid "Whether the user can detach toolbars and move them around"
-msgstr ""
+msgid "Whether menus should have a tearoff"
+msgstr "Чи може користувач відривати меню від панелі"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:35
-msgid "Whether to display a status bar meter on the right"
-msgstr ""
+msgid "Whether the cursor should blink"
+msgstr "Чи має курсор блимати"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:36
-msgid "Whether to use a custom font in gtk+ applications."
+msgid "Whether the user can detach menubars and move them around"
+msgstr "Чи може користувач від'єднувати панелі меню і пересувати їх"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:37
+msgid "Whether the user can detach toolbars and move them around"
+msgstr "Чи може користувач від'єднувати панелі інструментів і пересувати їх"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:38
+msgid ""
+"Whether the user can dynamically type a new accelerator when a menu is "
+"popped up"
 msgstr ""
+"Чи може користувач динамічно вводити нову комбінацію клавіш, коли "
+"з'являється меню"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:39
+msgid "Whether to display a status bar meter on the right"
+msgstr "Чи відображати панель стану праворуч"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:40
+msgid "Whether to use a custom font in gtk+ applications."
+msgstr "Чи використовувати нетиповий шрифт у додатках GTK+."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "Вимкнути командний рядок"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "Вимкнути налаштовування друку"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "Вимкнути друк"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "Вимкнути збереження файлів на диск"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
+msgstr ""
+"Забороняє користувачу доступ до термінала або командного рядка. Наприклад "
+"доступ до діалогового вікна панелі \"Виконання програми\" буде вимкнено."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"Забороняє користувачу змінювати параметри друку. Наприклад, доступ до "
+"діалогового вікна \"Налаштовування друку\" буде вимкнено у всіх програмах."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr ""
+"Забороняє користувачу друк. Наприклад, доступ до діалогового вікна \"Друк\" "
+"буде вимкнено у всіх програмах."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"Забороняє користувачу збереження файлів на диск. Наприклад, доступ до "
+"діалогового вікна \"Зберегти як\" буде вимкнено у всіх програмах."
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
-msgstr ""
+msgstr "Назва файла звуку гудка"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:2
 msgid "Keyboard Bell Custom Filename"
-msgstr ""
+msgstr "Назва файла клавіатурного гудка"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
-msgstr ""
+msgid "possible values are \"on\", \"off\", and \"custom\"."
+msgstr "можливими значеннями є \"on\", \"off\" та \"custom\""
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
 msgid ""
 "Acceleration multiplier for mouse motion. A value of -1 is the system "
 "default."
-msgstr ""
+msgstr "Множник прискорення миші. Системним початковим значенням є -1."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:2
 msgid "Cursor font"
-msgstr ""
+msgstr "Шрифт курсора"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
 msgid "Cursor size"
-msgstr ""
+msgstr "Розмір курсора"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
 msgid "Cursor theme"
-msgstr ""
+msgstr "Тема курсора"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
+"Тема курсора. Використовується лише серверами системи  Xservers, які "
+"підтримують розширення Xcursor, такими як XFree86 4.3 і пізнішими версіями. "
+"Це значення передається системі X Window лише на початку кожного сеансу, так "
+"що зміни, внесені протягом сеансу, не матимуть ефекту до наступного входу в "
+"сеанс."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
 msgid "Distance before a drag is started"
-msgstr ""
+msgstr "Відстань, перш ніж почнеться процес перетягування"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:7
 msgid ""
 "Distance in pixels the pointer must move before accelerated mouse motion is "
 "activated. A value of -1 is the system default."
 msgstr ""
+"Відстань в точках, на яку має пересунутись вказівник, перед тим, як "
+"розпочнеться прискорення руху миші. Системним початковим значенням є -1."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:8
 msgid "Double Click Time"
-msgstr ""
+msgstr "Час подвійного клацання"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:9
 msgid "Drag Threshold"
-msgstr ""
+msgstr "Поріг початку переносу"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
+"Шрифт курсора. Якщо не встановлено, то буде використано типовий шрифт.Це "
+"значення передається системі X Window лише на початку кожного сеансу, так що "
+"зміни, внесені протягом сеансу, не матимуть ефекту до наступного входу в "
+"сеанс."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
 msgid ""
 "Highlights the current location of the pointer when the Control key is "
 "pressed and released"
 msgstr ""
+"Підсвічувати поточне положення вказівника, коли натиснуто і відпущено "
+"клавішу \"Control\""
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:12
 msgid "Length of a double click"
-msgstr ""
+msgstr "Величина подвійного клацання"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:13
 msgid "Locate Pointer"
-msgstr ""
+msgstr "Виявляти позицію вказівника"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:14
 msgid "Motion Threshold"
-msgstr ""
+msgstr "Поріг руху"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:15
 msgid "Mouse button orientation"
-msgstr ""
+msgstr "Орієнтація кнопок миші"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:16
 msgid "Single Click"
-msgstr ""
+msgstr "Одинарне клацання"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:17
 msgid "Single click to open icons"
-msgstr ""
+msgstr "Одинарне клацання для відкривання значків"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
 msgid ""
@@ -800,10 +955,13 @@ msgid ""
 "to the X server start of each session, so changing it mid-session won't have "
 "an effect until the next time you log in."
 msgstr ""
+"Розмір курсора, що визначається темою курсора(cursor_theme). Це значення "
+"передається системі X Window лише на початку кожного сеансу, так що зміни, "
+"внесені протягом сеансу, не матимуть ефекту до наступного входу в сеанс."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
 msgid "Swap left and right mouse buttons for left-handed mice"
-msgstr ""
+msgstr "Міняти місцями ліву і праву кнопки для мишей під ліву руку"
 
 #: schemas/desktop_gnome_sound.schemas.in.h:1
 msgid "Enable ESD"
@@ -819,147 +977,51 @@ msgstr "Звуки до подій"
 
 #: schemas/desktop_gnome_sound.schemas.in.h:4
 msgid "Whether to play sounds on user events."
-msgstr ""
+msgstr "Чи подавати звуки під час користувацьких подій."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr ""
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "Вимкнути всі зовнішні мініатюризатори"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "Запустити програму в терміналі"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
 msgstr ""
+"Відмітьте, для вимикання всіх зовнішніх програм мініатюризації, незалежно "
+"від того, чи вони ввімкнені іншими способами."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "Дозволити відкладання перерви"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "Період перерви"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "Кількість хвилин активності перед початком перерви."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "Тривалість перерви."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "Період активності"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "Чи дозволяється блокування клавіатури"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "Чи дозволяється блокування клавіатури."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "Чи дозволяється відкладати перерву."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr ""
+#~ msgid "Too many alias levels for a locale, may indicate a loop"
+#~ msgstr "Надто багато рівнів псевдонімів для локалі, може свідчити про цикл"

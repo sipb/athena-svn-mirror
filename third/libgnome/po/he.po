@@ -1,64 +1,68 @@
+# translation of libgnome.HEAD.po to Hebrew
 # translation of libgnome.HEAD.he.po to Hebrew
 # translation of libgnome.gnome-2-0.he.po to Hebrew
 # This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002,2003.
+# Gil Osher <dolfin@rpg.org.il>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome.HEAD.he\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2002-12-30 15:14+0200\n"
-"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-03-25 21:42+0000\n"
+"Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
-msgstr "הודעות שגיאה"
+msgid "Error message"
+msgstr "הודעת שגיאה"
 
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "אירועי מערכת של GNOME"
+msgid "Informational message"
+msgstr "הודעת מידע"
 
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "הודעות מידע"
-
-#: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
+msgid "Log in"
 msgstr "התחבר"
 
-#: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
+#: gnome-data/gnome-2.soundlist.in.h:4
+msgid "Log out"
 msgstr "התנתק"
 
-#: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
-msgstr "הודעות שונות"
+#: gnome-data/gnome-2.soundlist.in.h:5
+msgid "Miscellaneous message"
+msgstr "הודעה אחרת"
 
-#: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
+#: gnome-data/gnome-2.soundlist.in.h:6
+msgid "Question dialog"
 msgstr "דו-שיח שאלה"
 
+#: gnome-data/gnome-2.soundlist.in.h:7
+msgid "System events"
+msgstr "אירועי מערכת"
+
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
-msgstr "הודעות אזהרה"
+msgid "Warning message"
+msgstr "הודעת אזהרה"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "לחיצה על כפתור פעולה"
+msgid "Choose menu item"
+msgstr "בחר פריט תפריט"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "תיבת סימון סומנה"
+msgid "Click on command button"
+msgstr "לחץ על כפתור פקודה"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "הפעלת פריט תפריט"
+msgid "Select check box"
+msgstr "בחר תיבת סימון"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
@@ -104,10 +108,6 @@ msgstr "לא ניתן למצוא את doc_id %s בנתיב החיפוש"
 msgid "Help document %s/%s not found"
 msgstr "מסמך העזרה %s/%s לא נמצא"
 
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr ""
-
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
 msgid "Bonobo Support"
@@ -117,180 +117,180 @@ msgstr "תמיכת Bonobo"
 msgid "Bonobo activation Support"
 msgstr "תמיכת Bonobo activation"
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr "לא ניתן ליצור תיקיית הגדרות gnome לכל משתמש '%s': %s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
 "s': %s\n"
 msgstr "לא ניתן לקבוע מצב 0700 לתיקיית ההגדרות הפרטית לכל משתמש '%s': %s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
-msgstr "לא ניתן ליצור את סיפריית קיצורי GNOME '%s': %s\n"
+msgstr "לא ניתן ליצור את ספריית קיצורי GNOME '%s': %s\n"
 
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
 msgstr "כבה את השימוש בשרת קול"
 
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
 msgstr "אפשר שימוש בשרת קול"
 
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
-msgstr ""
+msgstr "מארח:פתחה לשרת הקול שבו יש להשתמש בזמן ההפעלה"
 
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
-msgstr ""
+msgstr "מארח:פתחה"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
 msgstr "מערכת קבצים וירטואלית של GNOME"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "ספריית GNOME"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "טבלת Popt"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "טבלת האפשרויות עבור popt"
 
-#: libgnome/gnome-program.c:434
+#: libgnome/gnome-program.c:435
 msgid "Popt Flags"
 msgstr "דגלי Popt"
 
-#: libgnome/gnome-program.c:435
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "הדגלים לשימוש עבור popt"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "תוכן Popt"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
 msgstr ""
 
-#: libgnome/gnome-program.c:452
+#: libgnome/gnome-program.c:453
 msgid "Human readable name"
 msgstr "שם אנושי קריא"
 
-#: libgnome/gnome-program.c:453
+#: libgnome/gnome-program.c:454
 msgid "Human readable name of this application"
 msgstr "שם קריא לבני אדם ליישום זה"
 
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "נתיב GNOME"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "נתיב לחיפוש קבצים מותקנים"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "זיהוי יישום"
 
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "מחרוזת זיהוי ליישום זה"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "גירסת יישום"
 
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
 msgstr "גירסת היישום הזה"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "נתיב GNOME"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "הנתיב בו GNOME מותקן"
 
-#: libgnome/gnome-program.c:498
-msgid "GNOME Libdir"
-msgstr "ספיריית GNOME"
-
 #: libgnome/gnome-program.c:499
-msgid "Library prefix where GNOME was installed"
-msgstr "הנתיב בו הותקנו סיפריות GNOME"
+msgid "GNOME Libdir"
+msgstr "ספריית GNOME"
 
-#: libgnome/gnome-program.c:508
-msgid "GNOME Datadir"
-msgstr "סיפריית נתונים GNOME"
+#: libgnome/gnome-program.c:500
+msgid "Library prefix where GNOME was installed"
+msgstr "הנתיב בו הותקנו ספריות GNOME"
 
 #: libgnome/gnome-program.c:509
+msgid "GNOME Datadir"
+msgstr "ספריית נתונים GNOME"
+
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "הנתיב בו נתוני GNOME הותקנו"
 
-#: libgnome/gnome-program.c:518
-msgid "GNOME Sysconfdir"
-msgstr "סיפריית הגדרות המערכת של GNOME"
-
 #: libgnome/gnome-program.c:519
+msgid "GNOME Sysconfdir"
+msgstr "ספריית הגדרות המערכת של GNOME"
+
+#: libgnome/gnome-program.c:520
 msgid "Configuration prefix where GNOME was installed"
 msgstr "הנתיב בו הגדרות GNOME הותקנו"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "נתיב יישום GNOME"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "הנתיב בו יישום זה הותקן"
 
-#: libgnome/gnome-program.c:538
-msgid "GNOME App Libdir"
-msgstr "סיפריית הסיפריות של יישום GNOME"
-
 #: libgnome/gnome-program.c:539
-msgid "Library prefix where this application was installed"
-msgstr "הנתיב בו סיפריות יישום זה הותקנו"
+msgid "GNOME App Libdir"
+msgstr "ספריית הספריות של יישום GNOME"
 
-#: libgnome/gnome-program.c:548
-msgid "GNOME App Datadir"
-msgstr "סיפריית הנתונים של יישום GNOME"
+#: libgnome/gnome-program.c:540
+msgid "Library prefix where this application was installed"
+msgstr "הנתיב בו ספריות יישום זה הותקנו"
 
 #: libgnome/gnome-program.c:549
+msgid "GNOME App Datadir"
+msgstr "ספריית הנתונים של יישום GNOME"
+
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "הנתיב בו הנתונים של יישום זה הותקנו"
 
-#: libgnome/gnome-program.c:558
-msgid "GNOME App Sysconfdir"
-msgstr "סיפריית הגדרות המערכת של יישום GNOME"
-
 #: libgnome/gnome-program.c:559
+msgid "GNOME App Sysconfdir"
+msgstr "ספריית הגדרות המערכת של יישום GNOME"
+
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr "הנתיב בו הגדרות יישום זה הותקנו"
 
-#: libgnome/gnome-program.c:568
-msgid "Create Directories"
-msgstr "צור סיפריות"
-
 #: libgnome/gnome-program.c:569
-msgid "Create standard GNOME directories on startup"
-msgstr "צור סיפיות GNOME רגילות בהפעלה"
+msgid "Create Directories"
+msgstr "צור ספריות"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:570
+msgid "Create standard GNOME directories on startup"
+msgstr "צור ספריות GNOME רגילות בהפעלה"
+
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "אפשר קול"
 
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "אפשר קול בהפעלה"
 
@@ -302,29 +302,67 @@ msgstr ""
 msgid "How to connect to esd"
 msgstr "איך להתחבר ל ESD"
 
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "אפשרויות עזרה"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "אפשרויות יישום"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "מודולים דינמיים לטעינה"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
 msgstr "מודול1,מודול2,..."
 
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "שגיאה פנימית לא ידועה בזמן הצגת מיקום זה."
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "המיקום המצוין אינו תקני."
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr "ארעה שגיאה בפירוק פעולה ברירת מחדל המשויכת עם מיקום זה."
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr "ארעה שגיאה בהפעלת פעולה ברירת מחדל המשויכת עם מיקום זה."
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "אין פעולה ברירת מחדל המשויכת עם מיקום זה."
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "הפעולה ברירת המחדל אינה תומכת בפרוטוקול זה."
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "קוד שגיאה לא ידוע: %d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "שגיאה בהצגת הכתובת: %s\n"
+
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
-msgstr ""
+msgstr "יצרן Moniker נוסף"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:2
 msgid "GConf moniker"
-msgstr ""
+msgstr "GConf moniker"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:3
 msgid "config indirect moniker"
@@ -341,49 +379,60 @@ msgstr "המפתח %s לא נמצא בהגדרות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:1
 msgid "Beep when a modifier is pressed"
-msgstr ""
+msgstr "צפצף כאשר מקש מערכת נלחץ"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
 msgid "Disable if two keys are pressed at the same time."
-msgstr ""
+msgstr "כבה אם שני מקשים נלחצים באותו הזמן."
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:3
 msgid ""
 "Do not accept a key as being pressed unless held for @delay milliseconds"
-msgstr ""
+msgstr "אל תקבל מקש הנלחץ אלמלא הוחזק ל @השהייה מילי-שניות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:4
 msgid "How many milliseconds it takes to go from 0 to maximum speed"
-msgstr ""
+msgstr "כמה מילי-שניות לוקח להגיע מ 0 למהירות המקסימלית"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:5
 msgid ""
 "How many milliseconds to wait before mouse movement keys start to operate"
-msgstr ""
+msgstr "כמה מילי-שניות לחכות לפני שתנועת מקשי העכבר תתחיל לפעול"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:6
 msgid "How many pixels per second to move at the maximum speed"
-msgstr ""
+msgstr "כמה פיקסלים לשניה לזוז במהירות המקסימלית"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:7
 msgid "Ignore multiple presses of the _same_ key within @delay milliseconds"
-msgstr ""
+msgstr "התעלם מלחיצות כפולות של _אותו_ המקש בתווך של @השהייה מילי-שניות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:8
 msgid "how long to accelerate in milliseconds"
-msgstr ""
+msgstr "כמה זמן להאיץ במילי-שניות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:9
 msgid "initial delay in milliseconds"
-msgstr ""
+msgstr "השהייה פנימית במילי-שניות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:10
 msgid "minimum interval in milliseconds"
-msgstr ""
+msgstr "מרווח מינימלי במילי-שניות"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:11
 msgid "pixels per seconds"
 msgstr "פיקסלים לשניות"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr ""
+"רשימה של יישומי טכנולוגיה מסייעת להפעלה כאשר מתחברים לשולחן העבודה GNOME"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "יישומי טכנולוגיה מסייעת להפעלה"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
@@ -392,7 +441,7 @@ msgstr "דפדפן צריך מסוף"
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:2
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:1
 msgid "Browser understands remote"
-msgstr ""
+msgstr "דפדפן מבין ריחוק"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:3
 msgid "Default browser"
@@ -400,15 +449,15 @@ msgstr "דפדפן ברירת מחדל"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:4
 msgid "Default browser for all URLs"
-msgstr ""
+msgstr "דפדפן ברירת מחדל לכל הכתובות"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:5
 msgid "Whether the default browser needs a terminal to run"
-msgstr ""
+msgstr "האם הדפדפן ברירת המחדל צריך מסוף כדי לפעול"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:6
 msgid "Whether the default browser understands netscape remote"
-msgstr ""
+msgstr "האם הדפדפן מבין ריחוק של נטסקייפ"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
 msgid "Default help viewer"
@@ -416,24 +465,24 @@ msgstr "מציג עזרה ברירת מחדל"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
 msgid "Help viewer needs terminal"
-msgstr ""
+msgstr "מציג עזרה צריך מסוף"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:4
 msgid "Whether the default help viewer accepts URLs"
-msgstr ""
+msgstr "האם מציג העזרה מקבל כתובות"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:5
 msgid "Whether the default help viewer needs a terminal to run"
-msgstr ""
+msgstr "האם מציג העזרה צריך מסוף כדי לפעול"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
 msgid ""
 "Argument used to execute programs in the terminal defined by the 'exec' key."
-msgstr ""
+msgstr "ארגומנט המשמש להפעלת תוכניות במסוף המוגדר על-ידי מפתח 'exec'."
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
 msgid "Exec Arguments"
-msgstr ""
+msgstr "ארגומנטי Exec"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:3
 msgid "Terminal application"
@@ -441,19 +490,19 @@ msgstr "יישום מסוף"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:4
 msgid "Terminal program to use when starting applications that require one"
-msgstr ""
+msgstr "תוכנית מסוף לשימוש כאשר מפעילים יישום שדורש אחת"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:1
 msgid "A list with names of the first window manager workspaces."
-msgstr ""
+msgstr "רשימה עם שמות סביבות העבודה של מנהל החלונות הראשון."
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:2
 msgid "Fallback window manager"
-msgstr ""
+msgstr "מנהל חלונות ראשוני"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:3
 msgid "Fallback window manager if user window manager can't be found"
-msgstr ""
+msgstr "מנהל החלונות הראשוני אם מנהל החלונות של המשתמש לא נמצא"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:4
 msgid "Names of the workspaces"
@@ -465,25 +514,27 @@ msgstr "מספר סביבות העבודה"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:6
 msgid "The number of workspaces the window manager should use"
-msgstr ""
+msgstr "מספר סביבות העבודה שבהם מנהל החלונות צריך להשתמש"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:7
 msgid "User window manager"
-msgstr ""
+msgstr "מנהל החלונות של המשתמש"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:8
 msgid "Window manager to try first"
-msgstr ""
+msgstr "מנהל החלונות לניסיון ראשון"
 
 #: schemas/desktop_gnome_background.schemas.in.h:1
 msgid "Color Shading Type"
-msgstr ""
+msgstr "סוג הצללת צבע"
 
 #: schemas/desktop_gnome_background.schemas.in.h:2
 msgid ""
 "Determines how the image set by wallpaper_filename is rendered. Possible "
 "values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
 msgstr ""
+"מציין כיצד התמונה הנקבעת על-ידי wallpaper_filename מעובדת. ערכים אפשריים הם "
+"\"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
 
 #: schemas/desktop_gnome_background.schemas.in.h:3
 msgid "Draw Desktop Background"
@@ -502,10 +553,12 @@ msgid ""
 "How to shade the background color. Possible values are \"horizontal-gradient"
 "\", \"vertical-gradient\", and \"solid\""
 msgstr ""
+"איך לשנות את גוון צבע הרקע בהדרגה. ערכים אפשריים הם \"horizontal-gradient\", "
+"\"vertical-gradient\", וגם \"solid\""
 
 #: schemas/desktop_gnome_background.schemas.in.h:7
 msgid "Left or Top color when drawing gradients, or the solid color."
-msgstr ""
+msgstr "צבע שמאלי או עילי כאשר מציירים שיפועים, או הצבע האחיד."
 
 #: schemas/desktop_gnome_background.schemas.in.h:8
 msgid "Opacity with which to draw the background picture"
@@ -529,7 +582,7 @@ msgstr "צבע ראשי"
 
 #: schemas/desktop_gnome_background.schemas.in.h:13
 msgid "Right or Bottom color when drawing gradients, not used for solid color."
-msgstr ""
+msgstr "צבע ימני או תחתי כאשר מציירים שיפועים, לא בשימוש לצבע אחד."
 
 #: schemas/desktop_gnome_background.schemas.in.h:14
 msgid "Secondary Color"
@@ -537,19 +590,19 @@ msgstr "צבע משני"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:1
 msgid "File Icon Theme"
-msgstr ""
+msgstr "ערכת נושא לסמלי קבצים"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:2
 msgid "Theme used for displaying file icons"
-msgstr ""
+msgstr "ערכת הנושא לשימוש בהצגת סמלי קבצים"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:1
 msgid "Basename of the default theme used by gtk+."
-msgstr ""
+msgstr "שם בסיסי של ערכת הנושא ברירת המחדל בשימוש על-ידי gtk+."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:2
 msgid "Can Change Accels"
-msgstr ""
+msgstr "ניתן לשנות מאיצים"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:3
 msgid "Cursor Blink"
@@ -573,11 +626,11 @@ msgstr "אפשר הנפשות"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:8
 msgid "GTK IM Preedit Style"
-msgstr ""
+msgstr "GTK IM Preedit Style"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:9
 msgid "GTK IM Status Style"
-msgstr ""
+msgstr "GTK IM Status Style"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:10
 msgid "Gtk+ Theme"
@@ -592,8 +645,8 @@ msgid "Icon theme to use for the panel, nautilus etc."
 msgstr "ערכת הנושא לסמלים בשימוש בלוח, נאוטילוס, וכו'"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
-msgstr "ארוך מחזור הבהוב הסמן, במילי-שניות"
+msgid "Length of the cursor blink cycle, in milliseconds"
+msgstr "אורך מחזור הבהוב הסמן, במילי-שניות"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
 msgid "Menubar Detachable"
@@ -608,128 +661,208 @@ msgid "Menus Have Tearoff"
 msgstr "לתפריטים יש אפשרות תלישה"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
-msgid "Name of the GTK+ input method Preedit Style used by gtk+."
-msgstr ""
+msgid "Module for GtkFileChooser"
+msgstr "מודול ל GtkFileChooser"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:18
-msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
 msgstr ""
+"מודול לשימוש כמודל מערכת הקבצים של הפריט GtkFileChooser. ערכים אפשריים הם "
+"\"gnome-vfs\" ו \"gtk+\"."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Monospace font"
+msgstr "גופן Monospace"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
+msgstr "שם של גופן monospace (רוחב קבוע) לשימוש במקומות כמו מסופים."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
+msgid "Name of the GTK+ input method Preedit Style used by gtk+."
+msgstr "שם שיטת הקלט Preedit Style של GTK+ בשימוש על-ידי gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:22
+msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgstr "שם שיטת הקלט Status Style של GTK+ בשימוש על-ידי gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:23
 msgid "Name of the default font used by gtk+."
 msgstr "שם גופן ברירת המחדל בשימוש על-ידי GTK+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:20
+#: schemas/desktop_gnome_interface.schemas.in.h:24
 msgid "Status Bar on Right"
 msgstr "שורת מצב בצד ימין"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:21
+#: schemas/desktop_gnome_interface.schemas.in.h:25
 msgid "This specifies the size of icons displayed in toolbars"
-msgstr ""
+msgstr "זה מציין את גודל הסמלים המוצגים בסרגלי הכלים"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:22
+#: schemas/desktop_gnome_interface.schemas.in.h:26
 msgid "Toolbar Detachable"
-msgstr ""
+msgstr "סרגל כלים יכול להינתק"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:23
+#: schemas/desktop_gnome_interface.schemas.in.h:27
 msgid "Toolbar Icon Size"
 msgstr "גדול סמל בסרגל הכלים"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:24
+#: schemas/desktop_gnome_interface.schemas.in.h:28
 msgid "Toolbar Style"
 msgstr "סגנון סרגל כלים"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
 msgstr ""
+"סגנון סרגל הכלים. ערכים אפשריים הם \"both\", \"both_horiz\", \"icon\", וגם "
+"\"text\""
 
-#: schemas/desktop_gnome_interface.schemas.in.h:26
+#: schemas/desktop_gnome_interface.schemas.in.h:30
 msgid "Use Custom Font"
 msgstr "השתמש בגופן מותאם אישית"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:27
+#: schemas/desktop_gnome_interface.schemas.in.h:31
 msgid "Whether Applications should have accessibility support"
-msgstr ""
+msgstr "האם ליישומים צריך להיות תמיכה בנגישות"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:28
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:29
-msgid "Whether menus may display an icon next to a menu entry"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:30
-msgid "Whether menus should have a tearoff"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:31
-msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
-"popped up"
-msgstr ""
-
-#: schemas/desktop_gnome_interface.schemas.in.h:32
-msgid "Whether the cursor should blink"
-msgstr ""
+"האם יש להציג הנפשות. הערה: זהו מפתח גלובלי, הוא משנה את התנהגות מנהל "
+"החלונות, הלוח וכו'."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:33
-msgid "Whether the user can detach menubars and move them around"
-msgstr ""
+msgid "Whether menus may display an icon next to a menu entry"
+msgstr "האם התפריטים יכולים להציג סמל ליד ערך התפריט"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:34
-msgid "Whether the user can detach toolbars and move them around"
-msgstr ""
+msgid "Whether menus should have a tearoff"
+msgstr "האם לתפריטים צריך להיות נתק"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:35
-msgid "Whether to display a status bar meter on the right"
-msgstr ""
+msgid "Whether the cursor should blink"
+msgstr "האם על הסמן להבהב"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:36
+msgid "Whether the user can detach menubars and move them around"
+msgstr "האם המשתמש יכול לנתק תפריטים ולהזיז אותם"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:37
+msgid "Whether the user can detach toolbars and move them around"
+msgstr "האם המשתמש יכול לנתק סרגלי כלים ולהזיז אותם"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:38
+msgid ""
+"Whether the user can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr "האם המשתמש יכול להקליד באופן דינמי מאיץ חדש כשאר התפריט מוקפץ"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:39
+msgid "Whether to display a status bar meter on the right"
+msgstr "האם להציג את מד שורת המצב בצד ימין"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:40
 msgid "Whether to use a custom font in gtk+ applications."
+msgstr "האם להשתמש בגופן מותאם אישית ביישומי gtk+."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "כבה שורת פקודה"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "כבה הגדרות הדפסה"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "כבה הדפסה"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "כבה שמירת קבצים לדיסק"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
 msgstr ""
+"מונע מהמשתמשים לגשת למסוף או לציין שורת פקודה לביצוע. לדוגמה, זה יכול לכבות "
+"את הגישה לתיבת הדו-שיח \"הפעל יישום\" מהלוח."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+#, fuzzy
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"מונע מהמשתמשים לשנות את הגדרות ההדפסה. לדוגמה, זה יכבה את הגישה לתיבת הדו-"
+"שיח \"הגדרות הדפסה\" בכל היישומים."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+#, fuzzy
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr ""
+"מונע מהמשתמשים להדפיס. לדוגמה, זה יכבה את הגישה לתיבות הדו-שיח \"הדפסה\" בכל "
+"היישומים."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+#, fuzzy
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"מונע מכל המשתמשים לכתוב קבצים לדיסק. לדוגמה, זה יכבה את הגישה לתיבות הדו-שיח "
+"\"שמירה בשם\" בכל היישומים."
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
-msgstr ""
+msgstr "שם הקובץ של צליל הפעמון לניגון"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:2
 msgid "Keyboard Bell Custom Filename"
-msgstr ""
+msgstr "שם קובץ מותאם אישית לפעמון המקלדת"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
-msgstr ""
+msgid "possible values are \"on\", \"off\", and \"custom\"."
+msgstr "ערכים אפשריים הם \"דולק\", \"כבוי\" ו\"מותאם אישית\"."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
 msgid ""
 "Acceleration multiplier for mouse motion. A value of -1 is the system "
 "default."
-msgstr ""
+msgstr "הכפלת האצה לתנועת העכבר. הערך -1 הוא ברירת המחדל של המערכת."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:2
 msgid "Cursor font"
-msgstr "גופן המצביע"
+msgstr "גופן הסמן"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
-#, fuzzy
 msgid "Cursor size"
-msgstr "הבהוב סמן"
+msgstr "גודל הסמן"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
-#, fuzzy
 msgid "Cursor theme"
-msgstr "גופן המצביע"
+msgstr "ערכת נושא הסמן"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
+"שם ערכת נושא לסמן. בשימוש רק בשרתי X שתומכים ב Xcursor, כמו XFree86 4.3 "
+"והלאה. ערך זה מופץ רק לתחילת שרת X בכל הפעלה, לכן שינוי באמצע ההפעלה לא "
+"ישפיע עד הפעם הבאה שתתחבר."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
 msgid "Distance before a drag is started"
@@ -740,6 +873,8 @@ msgid ""
 "Distance in pixels the pointer must move before accelerated mouse motion is "
 "activated. A value of -1 is the system default."
 msgstr ""
+"מרחק בפיקסלים שהסמן חייב לזוז לפני שהאצת תנועת העכבר מופעלת. הערך -1 הינו "
+"ברירת המחדל של המערכת."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:8
 msgid "Double Click Time"
@@ -751,16 +886,18 @@ msgstr "סף גרירה"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
+"שם הגופן לסמן. אם לא נקבע, הגופן ברירת המחדל יהיה בשימוש. ערך זה מופץ רק "
+"לתחילת שרת X בכל הפעלה, לכן שינוי באמצע ההפעלה לא ישפיע עד הפעם הבאה שתתחבר."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
 msgid ""
 "Highlights the current location of the pointer when the Control key is "
 "pressed and released"
-msgstr ""
+msgstr "הדגשת המיקום הנוכחי של הסמן כאשר המקש Control נלחץ ומשוחרר"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:12
 msgid "Length of a double click"
@@ -792,6 +929,8 @@ msgid ""
 "to the X server start of each session, so changing it mid-session won't have "
 "an effect until the next time you log in."
 msgstr ""
+"גודל הסמן המופנה ל cursor_theme. ערך זה מופץ רק לתחילת שרת X בכל הפעלה, לכן "
+"שינוי באמצע ההפעלה לא ישפיע עד הפעם הבאה שתתחבר."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
 msgid "Swap left and right mouse buttons for left-handed mice"
@@ -813,145 +952,46 @@ msgstr "צלילים לאירועים"
 msgid "Whether to play sounds on user events."
 msgstr "האם לנגן צלילים לאירועי משתמש."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr ""
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "כבה את כל התוכניות החיצוניות ליצירת דוגמיות"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr "כיצד להתמודד עם כתובות לא ידועות"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "הפעל יישום במסוף"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
 msgstr ""
+"קבע כאמת כדי לכבות את כל התוכניות החיצוניות ליצירת הדוגמיות, ללא קשר אם הם "
+"כובו/אופשרו עצמאית."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "אפשר דחיית הפסקות"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "זמן הפסקה"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "מספר דקות של זמן הקלדה לפני שמצב ההפסקה מתחיל."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "מספר הדקות שהפסקת ההקלדה צריכה להערך."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "זמן הקלדה"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "האם או לא נעילת מקלדת מאופשרת"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "האם או לא נעילת מקלדת מאופשרת."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr ""
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr ""
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "האם או לא מסך הפסקת ההקלדה יכול להדחות."
