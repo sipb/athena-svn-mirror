@@ -204,6 +204,12 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
+	cp -p /srvd/etc/shells /etc/shells
+	cp -p /srvd/etc/athena/newsyslog.conf /etc/athena/newsyslog.conf
+	cp -p /srvd/etc/ftpusers /etc/ftpusers
+	cp -p /srvd/etc/inet/netmasks /etc/inet/netmasks
+	cp -p /srvd/etc/inet/services /etc/inet/services
+	cp -p /srvd/etc/system /etc/system
 
 	cp /dev/null /etc/named.local
 	cp -p /srvd/etc/netspy /etc/netspy
