@@ -204,7 +204,7 @@ program: $(OBJS) $(DEPLIBS)						@@\
 									@@\
 SaberProgramTarget(program,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),)		@@\
 									@@\
-InstallProgram(program,$(BINDIR))					@@\
+InstallProgram(program,$(DESTDIR))					@@\
 InstallManPage(program,$(MANDIR))					@@\
 DependTarget()								@@\
 LintTarget()								@@\
@@ -232,7 +232,7 @@ program: $(OBJS1) $(DEPLIBS1)						@@\
 	RemoveTargetProgram($@)						@@\
 	$(CC) -o $@ $(OBJS1) locallib $(LDFLAGS) syslib $(EXTRA_LOAD_FLAGS) @@\
 									@@\
-InstallProgram(program,$(BINDIR))					@@\
+InstallProgram(program,$(DESTDIR))					@@\
 InstallManPage(program,$(MANDIR))					@@\
 									@@\
 SaberProgramTarget(program,$(SRCS1),$(OBJS1),locallib,syslib)		@@\
@@ -259,7 +259,7 @@ program: $(OBJS2) $(DEPLIBS2)						@@\
 									@@\
 SaberProgramTarget(program,$(SRCS2),$(OBJS2),locallib,syslib)		@@\
 									@@\
-InstallProgram(program,$(BINDIR))					@@\
+InstallProgram(program,$(DESTDIR))					@@\
 InstallManPage(program,$(MANDIR))
 #endif /* ComplexProgramTarget_2 */
 
@@ -278,7 +278,7 @@ program: $(OBJS3) $(DEPLIBS3)						@@\
 									@@\
 SaberProgramTarget(program,$(SRCS3),$(OBJS3),locallib,syslib)		@@\
 									@@\
-InstallProgram(program,$(BINDIR))					@@\
+InstallProgram(program,$(DESTDIR))					@@\
 InstallManPage(program,$(MANDIR))
 #endif /* ComplexProgramTarget_3 */
 
@@ -409,7 +409,12 @@ install:: program							@@\
 InstallProgramWithFlags(program,dest,/**/)
 #endif /* InstallProgram */
 
-
+#ifndef InstallLink
+#define InstallLink(program,link,dest)					@@\
+install:: program							@@\
+	$(INSTALL) -c $(INSTPGMFLAGS) program dest			@@\
+	(cd dest; $(RM) link; $(LN) program link)
+#endif /* InstallLink */
 
 /*
  * InstallScript - install a shell script using special install flags set in 
