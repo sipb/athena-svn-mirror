@@ -1,0 +1,315 @@
+# Lithuanian translation of gnome-keyring.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2004.
+# Žygimantas Beručka <uid0@akl.lt>, 2004.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-30 11:46+0100\n"
+"PO-Revision-Date: 2004-03-21 15:31+0200\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-keyring-ask.c:223
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+"Programa '%s' (%s) nori priėjimo prie įprasto raktų žiedo, bet jis yra "
+"užrakintas"
+
+#: gnome-keyring-ask.c:227
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Programa '%s' (%s) nori pasiekti raktų žiedą '%s', tačiau priėjimas yra "
+"blokuojamas."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:232
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+"Programa '%s' (%s) nori pasiekti nežinomą raktų žiedą, tačiau jis yra "
+"užrakintas."
+
+#: gnome-keyring-ask.c:238 gnome-keyring-ask.c:252
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+"Programa '%s' nori pasiekti įprastą raktų žiedą, tačiau jis yra užrakintas."
+
+#: gnome-keyring-ask.c:242 gnome-keyring-ask.c:257
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Programa '%s' nori pasiekti raktų žiedą '%s', tačiau jis yra užrakintas"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:246 gnome-keyring-ask.c:262
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Programa '%s' nori priėjimo prie nežinomo raktų žiedo, bet jis yra užrakintas"
+
+#: gnome-keyring-ask.c:268
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+"Nežinoma programa nori priėjimo prie įprasto raktų žiedo, bet jis yra "
+"užrakintas"
+
+#: gnome-keyring-ask.c:272
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Nežinoma programa nori priėjimo prie raktų žiedo '%s', bet jis yra užrakintas"
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:277
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+"Nežinoma programa nori priėjimo prie nežinomo raktų žiedo, bet jis yra "
+"užrakintas"
+
+#: gnome-keyring-ask.c:284
+msgid "Enter password for default keyring to unlock"
+msgstr "Įveskite įprasto raktų žiedo slaptažodį, kad jį atblokuoti"
+
+#: gnome-keyring-ask.c:286
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Įveskite raktų žiedo „%s“ slaptažodį, kad jį atblokuoti"
+
+#: gnome-keyring-ask.c:289
+msgid "Unlock Keyring"
+msgstr "Atrakinti raktų žiedą"
+
+#: gnome-keyring-ask.c:294 gnome-keyring-ask.c:374 gnome-keyring-ask.c:421
+#: gnome-keyring-ask.c:505
+msgid "_Deny"
+msgstr "_Uždrausti"
+
+#: gnome-keyring-ask.c:329
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+"Programa „%s“ (%s) nori sukurti naują raktų žiedą pavadintą „%s“. Jūs turite "
+"pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:333
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Programa „%s“ (%s) nori sukurti naują įprastą raktų žiedą. Jūs turite "
+"pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:339 gnome-keyring-ask.c:349
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Programa „%s“ nori sukurti naują raktų žiedą pavadintą „%s“. Jūs turite "
+"pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:343 gnome-keyring-ask.c:353
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Programa „%s“ nori sukurti naują įprastą raktų žiedą. Jūs turite pasirinkti "
+"su jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:359
+#, c-format
+msgid ""
+"An unkown application wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Nežinoma programa nori sukurti naują raktų žiedą pavadintą „%s“. Jūs turite "
+"pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:363
+msgid ""
+"An unkown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+"Nežinoma programa nori sukurti naują įprastą raktų žiedą. Jūs turite "
+"pasirinkti su jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:369
+msgid "New Keyring Password"
+msgstr "Naujas raktų žiedo slaptažodis"
+
+#: gnome-keyring-ask.c:370
+msgid "Choose password for new keyring"
+msgstr "Pasirinkite naujo raktų žiedo slaptažodį"
+
+#: gnome-keyring-ask.c:400
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Programa „%s“ (%s) nori išsaugoti slaptažodį, bet nerastas įprastas raktų "
+"žiedas. Norėdami jį sukurti, Jūs turite pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:404 gnome-keyring-ask.c:408
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Programa „%s“ nori išsaugoti slaptažodį, bet nerastas įprastas raktų žiedas. "
+"Norėdami jį sukurti, Jūs turite pasirinkti jam naudojamą slaptažodį."
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: gnome-keyring-ask.c:412
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+"Nežinoma programa nori išsaugoti slaptažodį, bet nerastas įprastas raktų "
+"žiedas. Norėdami jį sukurti, Jūs turite pasirinkti jam naudojamą slaptažodį."
+
+#: gnome-keyring-ask.c:416
+msgid "Create Default Keyring"
+msgstr "Sukurti standartinį raktų žiedą"
+
+#: gnome-keyring-ask.c:417
+msgid "Choose password for default keyring"
+msgstr "Pasirinkite įprasto raktų žiedo slaptažodį"
+
+#: gnome-keyring-ask.c:454
+msgid "Allow application access to keyring?"
+msgstr "Ar leisti programai pasiekti raktų žiedą?"
+
+#: gnome-keyring-ask.c:457
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr "Programa '%s' (%s) nori priėjimo prie „%s“ slaptažodžio esančio %s."
+
+#: gnome-keyring-ask.c:460
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+"Programa „%s“ (%s) nori priėjimo prie „%s“ slaptažodžio įprastame raktų "
+"žiede."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:463
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+"Programa „%s“ (%s) nori priėjimo prie „%s“ slaptažodžio nežinomame raktų "
+"žiede."
+
+#: gnome-keyring-ask.c:468 gnome-keyring-ask.c:479
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr "Programa „%s“ nori priėjimo prie „%s“ slaptažodžio esančio %s."
+
+#: gnome-keyring-ask.c:471 gnome-keyring-ask.c:482
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Programa „%s“ nori priėjimo prie „%s“ slaptažodžio įprastame raktų žiede."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:474 gnome-keyring-ask.c:485
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Programa „%s“ nori priėjimo prie „%s“ slaptažodžio nežinomame raktų žiede."
+
+#: gnome-keyring-ask.c:490
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr "Nežinoma programa nori priėjimo prie „%s“ slaptažodžio esančio %s."
+
+#: gnome-keyring-ask.c:493
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+"Nežinoma programa nori priėjimo prie „%s“ slaptažodžio esančio įprastame "
+"raktų žiede."
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: gnome-keyring-ask.c:496
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+"Nežinoma programa nori priėjimo prie „%s“ slaptažodžio esančio nežinomame "
+"raktų žiede."
+
+#: gnome-keyring-ask.c:501
+msgid "Allow access"
+msgstr "Leisti priėjimą"
+
+#: gnome-keyring-ask.c:506
+msgid "Allow _Once"
+msgstr "Leisti _tik šį kartą"
+
+#: gnome-keyring-ask.c:507
+msgid "_Always Allow"
+msgstr "_Visada leisti"
+
+#: gnome-keyring-ask.c:547
+msgid "You must specify the type of request to run\n"
+msgstr "Jūs turite nurodyti vykdomos užklausos tipą\n"
+
+#: gnome-keyring-ask.c:560
+msgid "Unknown request type\n"
+msgstr "Nežinomas užklausos tipas\n"
+
+#~ msgid "The application '%s' (%s)"
+#~ msgstr "Programa „%s“ (%s)"
+
+#~ msgid "The application '%s'"
+#~ msgstr "Programa „%s“"
+
+#~ msgid "The application %s"
+#~ msgstr "Programa %s"
+
+#~ msgid "the default keyring"
+#~ msgstr "įprastas raktų rinkinys"
+
+#~ msgid "the keyring '%s'"
+#~ msgstr "raktų rinkinys „%s“"
+
+#~ msgid "an unknown keyring"
+#~ msgstr "nežinomas raktų rinkinys"
