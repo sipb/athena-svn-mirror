@@ -53,14 +53,14 @@ grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 
-chkconfig --add afs
+chkconfig --add openafs
 # Force a reset to what's specified in the rc file; we changed it to
 # run after afs in 9.0.
-chkconfig --level 345 afs reset
+chkconfig --level 345 openafs reset
 
 [ -d /afs ] || mkdir -p /afs
 
 %preun
 if [ $1 = 0 ]; then
-  chkconfig --del afs
+  chkconfig --del openafs
 fi
