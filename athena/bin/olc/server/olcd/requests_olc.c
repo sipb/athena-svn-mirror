@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.51 1992-04-04 18:35:00 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: requests_olc.c,v 1.52 1993-04-28 14:36:42 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.51 1992-04-04 18:35:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.52 1993-04-28 14:36:42 vanharen Exp $";
 #endif
 #endif
 
@@ -1337,13 +1337,13 @@ olc_send(fd, request)
 	olc_broadcast_message("lonely_hearts",mesg, requester->question->topic);
       }
   } else {
-    if (requester->question->stats.time_to_fr == -1) {
+    if (target->question->stats.time_to_fr == -1) {
       time_t now;
       
       now = time(0);
-      requester->question->stats.time_to_fr = now - target->timestamp;
+      target->question->stats.time_to_fr = now - target->timestamp;
     }
-    requester->question->stats.n_crepl++;
+    target->question->stats.n_crepl++;
   }
 
 
