@@ -1,9 +1,9 @@
 #!/bin/sh
 
-glib_libs="@glib_libs@"
-glib_cflags="@glib_cflags@"
-glib_thread_libs="@glib_thread_libs@"
-glib_thread_cflags="@glib_thread_cflags@"
+glib_libs=`glib-config --libs gmodule glib`
+glib_cflags=`glib-config --cflags gmodule glib`
+glib_thread_libs=`glib-config --libs gmodule glib gthread`
+glib_thread_cflags=`glib-config --cflags gmodule glib gthread`
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
