@@ -1,7 +1,7 @@
 thisconfigdir=.
 myfulldir=.
 mydir=.
-MY_SUBDIRS=util include lib @krb524@ kdc kadmin slave clients appl tests \
+MY_SUBDIRS=util include lib @krb524@ kdc kadmin slave clients tests \
 	config-files gen-manpages
 BUILDTOP=$(REL)$(C)
 CFLAGS = $(CCOPTS) $(DEFS)
