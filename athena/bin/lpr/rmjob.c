@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.5 1991-06-28 13:35:42 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.6 1992-11-09 00:49:36 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.5 1991-06-28 13:35:42 epeisach Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.6 1992-11-09 00:49:36 probe Exp $";
 #endif lint
 
 /*
@@ -40,7 +40,7 @@ int	cur_daemon;		/* daemon's pid */
 char	current[40];		/* active control file name */
 int	assasinated = 0;	/* 1 means we've killed the lpd */
 
-#if defined(KERBEROS) && !defined(SERVER)
+#if defined(KERBEROS)
 extern int      use_kerberos;
 extern int      kerberos_override;
 short KA;
@@ -48,24 +48,20 @@ KTEXT_ST kticket;
 long kerror;
 #endif /* KERBEROS */
 
-#ifdef SERVER
 int	iscf();
-#endif /* SERVER */
 
 rmjob()
 {
-#ifndef SERVER
-	register int i;
-#else /* SERVER */
 	register int i, nitems;
 #ifdef POSIX
 	struct dirent **files;
 #else
 	struct direct **files;
 #endif
-#endif /* SERVER */
 
 	assasinated = 0;	/* Haven't killed it yet! */
+	nitems = 0;		/* Items in the local spool area */
+	
 #ifdef HESIOD
 	if ((i = pgetent(line, printer)) <= 0) {
 		if (pralias(alibuf, printer))
@@ -79,19 +75,17 @@ rmjob()
 	} else if (i == 0)
 		fatal("unknown printer");
 #endif /* HESIOD */
-#ifdef SERVER
 	if ((SD = pgetstr("sd", &bp)) == NULL)
 		SD = DEFSPOOL;
 	if ((LO = pgetstr("lo", &bp)) == NULL)
 		LO = DEFLOCK;
-#endif /* SERVER */
 	if ((LP = pgetstr("lp", &bp)) == NULL)
 		LP = DEFDEVLP;
 	if ((RP = pgetstr("rp", &bp)) == NULL)
 		RP = DEFLP;
 	RM = pgetstr("rm", &bp);
 
-#if defined(KERBEROS) && !defined(SERVER)
+#if defined(KERBEROS)
         KA = pgetnum("ka");
         if (KA > 0)
             use_kerberos = 1;
@@ -120,25 +114,13 @@ rmjob()
 		person = root;
 	}
 	
-#ifdef SERVER
-	if (chdir(SD) < 0)
-		fatal("cannot chdir to spool directory");
-	if ((nitems = scandir(".", &files, iscf, NULL)) < 0)
+	if (chdir(SD) < 0) {
+		if (RM == (char *)0)
+			fatal("cannot chdir to spool directory");
+	} else if ((nitems = scandir(".", &files, iscf, NULL)) < 0)
 		fatal("cannot access spool directory");
 
 	if (nitems) {
-#ifdef notdef
-		/*
-		 * Check for an active printer daemon (in which case we
-		 *  kill it if it is reading our file) then remove stuff
-		 *  (after which we have to restart the daemon).
-		 */
-		if (lockchk(LO) && chk(current)) {
-			assasinated = kill(cur_daemon, SIGINT) == 0;
-			if (!assasinated)
-				fatal("cannot kill printer daemon");
-		}
-#endif
 		/*
 		 * process the files
 		 */
@@ -151,13 +133,10 @@ rmjob()
 	 */
 	if (assasinated && !startdaemon(printer))
 		fatal("cannot restart printer daemon\n");
-#else /* SERVER */
-	chkremote();
-#endif /* SERVER */
+
 	exit(0);
 }
 
-#ifdef SERVER
 /*
  * Process a lock file: collect the pid of the active
  *  daemon and the file name of the active spool entry.
@@ -333,7 +312,6 @@ isowner(owner, file)
 	return(0);
 }
 
-#endif SERVER
 /*
  * Check to see if we are sending files to a remote machine. If we are,
  * then try removing files on the remote machine.
@@ -342,64 +320,39 @@ chkremote()
 {
 	register char *cp;
 	register int i, rem;
-#ifndef SERVER
 	register int resp;
 	int n;
-#endif
 	char buf[BUFSIZ];
-
-
-#ifndef SERVER
 	char name[255];
 	struct hostent *hp;
-#else /* SERVER */
-	/*
-	 * Figure out whether the local machine is the same as the remote 
-	 * machine entry (if it exists).  If not, then ignore the local
-	 * queue information.
-	 */
-#endif /* SERVER */
 
-#ifndef SERVER
-	if (RM == NULL) {
-		/* get the name of the local host */
-#else /* SERVER */
-	if (RM == (char *) NULL) return;
-	else {
-		char name[255];
-		struct hostent *hp;
+	/* get the name of the local host */
+	gethostname (name, sizeof(name) - 1);
+	name[sizeof(name)-1] = '\0';
 
-			/* get the name of the local host */
-#endif /* SERVER */
-		gethostname (name, sizeof(name) - 1);
-		name[sizeof(name)-1] = '\0';
-#ifndef SERVER
-		/* get the network standard name of the local host */
-		if (hp =gethostbyname(name))
-			strcpy (name, hp->h_name);
+	/* get the network standard name of the local host */
+	hp = gethostbyname (name);
+	if (hp == (struct hostent *) NULL) {
+	    printf ("unable to get hostname for local machine %s\n",
+			name);
+	    return;
+	} else strcpy (name, hp->h_name);
+
+	if (RM == (char *)0)
 		RM = name;
-#else /* SERVER */
-			/* get the network standard name of the local host */
-		hp = gethostbyname (name);
-		if (hp == (struct hostent *) NULL) {
-		    printf ("unable to get hostname for local machine %s\n",
-				name);
-		    return;
-		} else strcpy (name, hp->h_name);
-
-			/* get the network standard name of RM */
+	else {
+		/* get the network standard name of RM */
 		hp = gethostbyname (RM);
 		if (hp == (struct hostent *) NULL) {
-		    printf ("unable to get hostname for remote machine %s\n",
-		    		RM);
-		    return;
+			printf ("unable to get hostname for remote machine %s\n",
+				RM);
+			return;
 		}
-
-			/* if printer is not on local machine, ignore LP */
-		if (strcasecmp (name, hp->h_name) != 0) *LP = '\0';
-		else return;	/* local machine */
-#endif SERVER
 	}
+
+	/* if printer is not on local machine, ignore LP */
+	if (strcasecmp (name, hp->h_name) != 0) *LP = '\0';
+	else return;	/* local machine */
 
 	/*
 	 * Flush stdout so the user can see what has been deleted
@@ -425,7 +378,6 @@ chkremote()
 			printf("%s: ", host);
 		printf("connection to %s is down\n", RM);
 	} else {
-#ifndef SERVER
 #ifdef KERBEROS
 		if (use_kerberos) {
                         /* If we require kerberos authentication,
@@ -464,7 +416,6 @@ chkremote()
 			}
 		    }
 #endif /* KERBEROS */
-#endif /* !(SERVER) */
 		i = strlen(buf);
 		if (write(rem, buf, i) != i)
 			fatal("Lost connection");
@@ -474,7 +425,6 @@ chkremote()
 	}
 }
 
-#ifdef SERVER
 /*
  * Return 1 if the filename begins with 'cf'
  */
@@ -487,7 +437,6 @@ iscf(d)
 {
 	return(d->d_name[0] == 'c' && d->d_name[1] == 'f');
 }
-#endif SERVER
 
 /*
  * Check to make sure there have been no errors and that both programs
@@ -495,7 +444,6 @@ iscf(d)
  * Return non-zero if the connection was lost.
  */
 
-#if !defined(SERVER)
 static responser(fd)
 int fd;
 {
@@ -507,4 +455,3 @@ int fd;
 	}
 	return(resp);
 }
-#endif
