@@ -1,0 +1,10 @@
+#ifdef __NetBSD__
+OSLIBS=-lcompat
+#endif
+
+CFLAGS=-I${AFSDIR}/include
+LDDEFS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs
+LDLIBS=-lsys -lrx -llwp ${OSLIBS}
+
+SimpleProgram(listsuidcells, listsuidcells.o,,/etc/athena/)
+
