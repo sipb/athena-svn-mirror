@@ -1,0 +1,364 @@
+# gnome-print fr.po
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Vincent Renardias <vincent@ldsol.com>, 1999.
+# Christophe Merlet (RedFox) <christophe@merlet.net>, 2000.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print 0.23\n"
+"POT-Creation-Date: 2000-09-25 10:45+0200\n"
+"PO-Revision-Date: 2000-09-25 10:53+0200\n"
+"Last-Translator: Christophe Merlet (RedFox) <christophe@merlet.net>\n"
+"Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-font-install.c:574
+msgid "Print out debugging information"
+msgstr "Afficher les informations de débogage"
+
+#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
+msgid "Does nothing yet."
+msgstr "Ne fait rien pour le moment."
+
+#: gnome-font-install.c:585
+msgid "Use this path to write the fontmap file."
+msgstr "Utiliser ce chemin pour écrire le fichier fontmap."
+
+#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
+#: gnome-font-install.c:592 gnome-font-install.c:594
+msgid "PATH"
+msgstr "CHEMIN"
+
+#: gnome-font-install.c:587
+msgid "Use this path to search for relative afm files."
+msgstr "Utiliser ce chemin pour rechercher les fichiers afm en relation."
+
+#: gnome-font-install.c:589
+msgid "Use this path to search for relative pfb files."
+msgstr "Utiliser ce chemin pour rechercher les fichiers pfb en relation."
+
+#: gnome-font-install.c:592
+msgid "Use this to set up a key/value pair for afm files."
+msgstr "L'utiliser pour créer une paire clef/valeur pour les fichiers afm."
+
+#: gnome-font-install.c:594
+msgid "Use this to set up a key/value pair for pfb files."
+msgstr "L'utiliser pour créer une paire clef/valeur pour les fichiers pfb."
+
+#. Family frame
+#: libgnomeprint/gnome-font-dialog.c:138
+msgid "Font family"
+msgstr "Famille de police"
+
+#. Style frame
+#: libgnomeprint/gnome-font-dialog.c:171
+msgid "Style"
+msgstr "Style"
+
+#: libgnomeprint/gnome-font-dialog.c:233
+msgid "Font size:"
+msgstr "Taille de police :"
+
+#: libgnomeprint/gnome-font-dialog.c:754
+msgid "Font Selection"
+msgstr "Sélection de la police"
+
+#. We have latin encoding
+#: libgnomeprint/gnome-font-face.c:459
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps over the lazy dog."
+
+#: libgnomeprint/gnome-font-face.c:697
+#, c-format
+msgid "Couldn't open font file %s\n"
+msgstr "Ne peut ouvrir le fichier de police %s\n"
+
+#: libgnomeprint/gnome-font-face.c:1012
+#, c-format
+msgid "status loading %s = %d\n"
+msgstr "État du chargement de %s = %d\n"
+
+#: libgnomeprint/gnome-print-copies.c:232
+msgid "Copies"
+msgstr "Copies"
+
+#: libgnomeprint/gnome-print-copies.c:243
+msgid "N_umber of copies:"
+msgstr "N_ombre de copies :"
+
+#: libgnomeprint/gnome-print-copies.c:264
+msgid "_Collate"
+msgstr "_Rassembler"
+
+#: libgnomeprint/gnome-print-dialog.c:164
+msgid "Print Range"
+msgstr "Intervalle d'impression"
+
+#: libgnomeprint/gnome-print-dialog.c:185
+#: libgnomeprint/gnome-print-master-preview.c:680
+msgid "Print"
+msgstr "Imprimer"
+
+#: libgnomeprint/gnome-print-dialog.c:186
+msgid "Preview"
+msgstr "Aperçu"
+
+#: libgnomeprint/gnome-print-dialog.c:333
+msgid "_All"
+msgstr "_Tout"
+
+#: libgnomeprint/gnome-print-dialog.c:363
+#: libgnomeprint/gnome-print-dialog.c:377
+msgid "_Selection"
+msgstr "_Sélection"
+
+#: libgnomeprint/gnome-print-dialog.c:436
+msgid "from:"
+msgstr "de :"
+
+#: libgnomeprint/gnome-print-dialog.c:450
+msgid "to:"
+msgstr "à :"
+
+#: libgnomeprint/gnome-print-dialog.c:495
+msgid "f_rom:"
+msgstr "_de :"
+
+#: libgnomeprint/gnome-print-dialog.c:512
+msgid "_to:"
+msgstr "_à :"
+
+#: libgnomeprint/gnome-print-master-preview.c:625
+msgid "Page: "
+msgstr "Page : "
+
+#: libgnomeprint/gnome-print-master-preview.c:652
+msgid "_First page"
+msgstr "_Première page"
+
+#: libgnomeprint/gnome-print-master-preview.c:652
+#: libgnomeprint/gnome-print-master-preview.c:683
+msgid "Shows the first page"
+msgstr "Affiche la première page"
+
+#: libgnomeprint/gnome-print-master-preview.c:655
+msgid "_Previous page"
+msgstr "P_age précédente"
+
+#: libgnomeprint/gnome-print-master-preview.c:655
+#: libgnomeprint/gnome-print-master-preview.c:686
+msgid "Shows the previous page"
+msgstr "Affiche la page précédente"
+
+#: libgnomeprint/gnome-print-master-preview.c:658
+msgid "_Next page"
+msgstr "Page _suivante"
+
+#: libgnomeprint/gnome-print-master-preview.c:658
+#: libgnomeprint/gnome-print-master-preview.c:689
+msgid "Shows the next page"
+msgstr "Affiche la page suivante"
+
+#: libgnomeprint/gnome-print-master-preview.c:661
+msgid "_Last page"
+msgstr "_Dernière page"
+
+#: libgnomeprint/gnome-print-master-preview.c:661
+#: libgnomeprint/gnome-print-master-preview.c:692
+msgid "Shows the last page"
+msgstr "Affiche la dernière page"
+
+#: libgnomeprint/gnome-print-master-preview.c:666
+msgid "Zoom _in"
+msgstr "Zoom a_vant"
+
+#: libgnomeprint/gnome-print-master-preview.c:666
+msgid "Zooms in"
+msgstr "Zoom en avant"
+
+#: libgnomeprint/gnome-print-master-preview.c:667
+msgid "Zoom _out"
+msgstr "Zoom a_rrière"
+
+#: libgnomeprint/gnome-print-master-preview.c:667
+msgid "Zooms out"
+msgstr "Zoom en arrière"
+
+#: libgnomeprint/gnome-print-master-preview.c:674
+msgid "_View"
+msgstr "_Vue"
+
+#: libgnomeprint/gnome-print-master-preview.c:680
+msgid "Prints the current file"
+msgstr "Imprime le fichier en cours"
+
+#: libgnomeprint/gnome-print-master-preview.c:683
+msgid "First"
+msgstr "Première"
+
+#: libgnomeprint/gnome-print-master-preview.c:686
+msgid "Back"
+msgstr "Précédente"
+
+#: libgnomeprint/gnome-print-master-preview.c:689
+msgid "Next"
+msgstr "Suivante"
+
+#: libgnomeprint/gnome-print-master-preview.c:692
+msgid "Last"
+msgstr "Dernière"
+
+#: libgnomeprint/gnome-print-master-preview.c:695
+msgid "Zoom in"
+msgstr "Avant"
+
+#: libgnomeprint/gnome-print-master-preview.c:695
+msgid "Zooms the page in"
+msgstr "Agrandit la taille de la page"
+
+#: libgnomeprint/gnome-print-master-preview.c:696
+msgid "Zoom out"
+msgstr "Arrière"
+
+#: libgnomeprint/gnome-print-master-preview.c:696
+msgid "Zooms the page out"
+msgstr "Diminue la taille de la page"
+
+#: libgnomeprint/gnome-print-master-preview.c:697
+msgid "Fit"
+msgstr "Ajuster"
+
+#: libgnomeprint/gnome-print-master-preview.c:697
+msgid "Zooms to fit the whole page"
+msgstr "Affiche toute la page"
+
+#: libgnomeprint/gnome-print-master-preview.c:698
+msgid "Fit Wide"
+msgstr "En largeur"
+
+#: libgnomeprint/gnome-print-master-preview.c:698
+msgid "Zooms to fit the width of the page"
+msgstr "Ajuste en largeur la page"
+
+#: libgnomeprint/gnome-print-master-preview.c:699
+msgid "Fit Tall"
+msgstr "En hauteur"
+
+#: libgnomeprint/gnome-print-master-preview.c:699
+msgid "Zooms to fit the height of the page"
+msgstr "Ajuste en hauteur de la page"
+
+#: libgnomeprint/gnome-printer-dialog.c:180
+msgid "Select printer"
+msgstr "Sélection de l'imprimante"
+
+#.
+#. * Create the profile information display
+#.
+#: libgnomeprint/gnome-printer-dialog.c:189
+msgid "State:"
+msgstr "État :"
+
+#: libgnomeprint/gnome-printer-dialog.c:190
+msgid "Type:"
+msgstr "Type :"
+
+#: libgnomeprint/gnome-printer-dialog.c:191
+msgid "Location:"
+msgstr "Emplacement :"
+
+#: libgnomeprint/gnome-printer-dialog.c:192
+msgid "Comment:"
+msgstr "Commentaire :"
+
+#: libgnomeprint/gnome-printer-dialog.c:226
+msgid "_Name:"
+msgstr "_Nom :"
+
+#: libgnomeprint/gnome-printer-dialog.c:235
+msgid "_Printer"
+msgstr "_Imprimante"
+
+#: libgnomeprint/gnome-printer-dialog.c:248
+msgid "_File"
+msgstr "_Fichier"
+
+#: libgnomeprint/gnome-printer-dialog.c:489
+msgid "Select Printer"
+msgstr "Sélectionnez une imprimante"
+
+#: libgnomeprint/gnome-printer.c:117
+msgid "Printer is active"
+msgstr "L'imprimante est active"
+
+#: libgnomeprint/gnome-printer.c:120
+msgid "Printer is ready to print"
+msgstr "L'imprimante est prête à imprimer"
+
+#: libgnomeprint/gnome-printer.c:123
+msgid "Printer is off-line"
+msgstr "L'imprimante n'est pas prête"
+
+#: libgnomeprint/gnome-printer.c:126
+msgid "Can not communicate with printer"
+msgstr "Ne peut communiquer avec l'imprimante"
+
+#: libgnomeprint/gnome-printer.c:129
+msgid "Unknown status"
+msgstr "État inconnu"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr "extrait la première police de output.pdf et la place dans font.dump."
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "extrait l'en-tête de la police depuis font.dump"
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "extrait le corps de la police "
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "décrypte le corps de la police "
+
+#: tests/testprint.c:116 tests/testprint.c:124
+msgid "Gnome-print test page, rotated"
+msgstr "Page de test Gnome-print, pivoté"
+
+#: tests/testprint.c:131
+msgid "Gnome-print test page, slanted"
+msgstr "Page de test Gnome-print, incliné"
+
+#: tests/testprint.c:139
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Page de test Gnome-print, incliné. Petit"
+
+#~ msgid "Italic"
+#~ msgstr "Italique"
+
+#~ msgid "This is a 2-byte font and may not be displayed correctly."
+#~ msgstr ""
+#~ "Ceci est une police sur 2 octets et peut ne pas être affichée correctement."
+
+#~ msgid "scanning dir %s\n"
+#~ msgstr "Examen du répertoire %s\n"
+
+#~ msgid "checking file %s\n"
+#~ msgstr "Examen du fichier %s\n"
+
+#~ msgid "%s/%s"
+#~ msgstr "%s/%s"
+
+#~ msgid "gnome_font_new: font %s not found\n"
+#~ msgstr "gnome_font_new : police %s non trouvée\n"
+
+#~ msgid "gnome_font_unsized_closest: font family %s not found\n"
+#~ msgstr "gnome_font_unsized_closest : famille de police %s non trouvé.\n"
+
+#~ msgid "gnome_font_new_closest: font family %s not found\n"
+#~ msgstr "gnome_font_new_closest : famille de police %s non trouvé.\n"

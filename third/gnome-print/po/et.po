@@ -1,0 +1,170 @@
+# gnome-print Estonian tranlation
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Lauris Kaplinski <lauris@ariman.ee>, 1999.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print 0.8\n"
+"POT-Creation-Date: 1999-10-19 08:21-0500\n"
+"PO-Revision-Date: 1999-09-26 20:44+0300\n"
+"Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
+"Language-Team: Estonian <linux-l@eenet.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: gnome-font-install.c:555
+msgid "Print out debugging information"
+msgstr "Trüki debuging informatsiooni"
+
+#: gnome-font-install.c:557 gnome-font-install.c:559 gnome-font-install.c:561
+msgid "Does nothing yet."
+msgstr "Ei tee veel midagi."
+
+#: gnome-font-install.c:566
+msgid "Use this path to write the fontmap file."
+msgstr "Kasuta seda rada kirjutamaks fontmap faili."
+
+#: gnome-font-install.c:566 gnome-font-install.c:568 gnome-font-install.c:570
+#: gnome-font-install.c:573 gnome-font-install.c:575
+msgid "PATH"
+msgstr "PATH"
+
+#: gnome-font-install.c:568
+msgid "Use this path to search for relative afm files."
+msgstr "Alusta afm failide otsingut sellelt rajalt."
+
+#: gnome-font-install.c:570
+msgid "Use this path to search for relative pfb files."
+msgstr "Alusta pfb failide otsingut sellelt rajalt."
+
+#: gnome-font-install.c:573
+msgid "Use this to set up a key/value pair for afm files."
+msgstr "Määra võtme/väärtuse paar afm failide jaoks."
+
+#: gnome-font-install.c:575
+msgid "Use this to set up a key/value pair for pfb files."
+msgstr "Määra võtme/väärtuse paar pfb failide jaoks."
+
+#: libgnomeprint/gnome-font-dialog.c:192
+msgid "Italic"
+msgstr "Kursiiv"
+
+#: libgnomeprint/gnome-font-dialog.c:267
+msgid "This is a 2-byte font and may not be displayed correctly."
+msgstr "See on 2 baidine shrift ja võimalik, et teda ei näidata õigesti."
+
+#: libgnomeprint/gnome-font-dialog.c:423
+msgid "Select font"
+msgstr "Valige shrift"
+
+#: libgnomeprint/gnome-font-dialog.c:442
+msgid "Font Selection"
+msgstr "Shrifti valik"
+
+#: libgnomeprint/gnome-font.c:397
+#, c-format
+msgid "scanning dir %s\n"
+msgstr "kammime kataloogi %s\n"
+
+#: libgnomeprint/gnome-font.c:408
+#, c-format
+msgid "checking file %s\n"
+msgstr "uurime faili %s\n"
+
+#: libgnomeprint/gnome-font.c:410
+#, c-format
+msgid "%s/%s"
+msgstr "%s/%s"
+
+#: libgnomeprint/gnome-font.c:721
+#, c-format
+msgid "status loading %s = %d\n"
+msgstr "%s lugemise tulemus = %d\n"
+
+#: libgnomeprint/gnome-font.c:932
+#, c-format
+msgid "gnome_font_new: font %s not found\n"
+msgstr "gnome_font_new: ei leidnud shrifti %s\n"
+
+#. Why print anything here?  An application that does fancy stuff
+#. with fonts surely knows how to deal with an error like this.
+#: libgnomeprint/gnome-font.c:981
+#, c-format
+msgid "gnome_font_unsized_closest: font family %s not found\n"
+msgstr "gnome_font_unsized_closest: ei leidnud shriftiperet %s\n"
+
+#. Why print anything here?  An application that does fancy stuff
+#. with fonts surely knows how to deal with an error like this.
+#: libgnomeprint/gnome-font.c:1027
+#, c-format
+msgid "gnome_font_new_closest: font family %s not found\n"
+msgstr "gnome_font_new_closest: ei leidnud shriftiperet %s\n"
+
+#: libgnomeprint/gnome-font.c:1206
+#, c-format
+msgid "Couldn't open font file %s\n"
+msgstr "Ei õnnestunud avada shriftifaili %s\n"
+
+#: libgnomeprint/gnome-printer-dialog.c:141
+msgid "Select printer"
+msgstr "Valige printer"
+
+#.
+#. * Create the profile information display
+#.
+#: libgnomeprint/gnome-printer-dialog.c:150
+msgid "State:"
+msgstr "Seisund:"
+
+#: libgnomeprint/gnome-printer-dialog.c:151
+msgid "Type:"
+msgstr "Tüüp:"
+
+#: libgnomeprint/gnome-printer-dialog.c:152
+msgid "Location:"
+msgstr "Asukoht:"
+
+#: libgnomeprint/gnome-printer-dialog.c:153
+msgid "Comment:"
+msgstr "Kommentaar:"
+
+#: libgnomeprint/gnome-printer-dialog.c:186
+msgid "Name:"
+msgstr "Nimi:"
+
+#: libgnomeprint/gnome-printer-dialog.c:188
+msgid "Printer"
+msgstr "Printer"
+
+#: libgnomeprint/gnome-printer-dialog.c:199
+msgid "File"
+msgstr "Fail"
+
+#: libgnomeprint/gnome-printer-dialog.c:394
+msgid "Select Printer"
+msgstr "Valige printer"
+
+#: libgnomeprint/gnome-printer.c:119
+msgid "Printer is active"
+msgstr "Printer on aktiivne"
+
+#: libgnomeprint/gnome-printer.c:122
+msgid "Printer is ready to print"
+msgstr "Printer on valmis trükkima"
+
+#: libgnomeprint/gnome-printer.c:125
+msgid "Printer is off-line"
+msgstr "Printer on liinilt maas"
+
+#: libgnomeprint/gnome-printer.c:128
+msgid "Can not communicate with printer"
+msgstr "Ei õnnestu printeriga ühendust saada"
+
+#: libgnomeprint/gnome-printer.c:131
+msgid "Unknown status"
+msgstr "Tundmatu seisund"
+
+#: testprint.c:102 testprint.c:110
+msgid "Gnome-print test page"
+msgstr "Gnome-print proovilehekülg"
