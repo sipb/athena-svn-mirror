@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $
+/* $Id: dm.c,v 1.72.4.1 2000-02-05 06:56:18 tb Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -7,6 +7,7 @@
  * This is the top-level of the display manager and console control
  * for Athena's xlogin.
  */
+#define _GNU_SOURCE /* Make [UW]TMPX_FILE visible */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -27,6 +28,8 @@
 #ifdef SOLARIS
 #include <sys/strredir.h>
 #include <sys/stropts.h>
+#endif
+#if defined (SOLARIS) || defined (__linux__)
 #include <utmpx.h>
 #endif
 static sigset_t sig_zero;
@@ -38,7 +41,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.72.4.1 2000-02-05 06:56:18 tb Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -88,7 +91,7 @@ char *wtmpf = _PATH_WTMP;
 char *utmpf = "/var/adm/utmp";
 char *wtmpf = "/var/adm/wtmp";
 #endif
-#ifdef SOLARIS
+#if defined (SOLARIS) || defined (__linux__)
 char *utmpfx = UTMPX_FILE;
 char *wtmpfx = WTMPX_FILE;
 #endif
@@ -810,7 +813,7 @@ static void cleanup(char *tty)
 {
     int file, found;
     struct utmp utmp;    
-#ifdef SOLARIS
+#if defined (SOLARIS) || defined (__linux__)
     struct utmpx utmpx;    
     struct utmpx *utx_tmp;
     char new_id[20];
@@ -826,7 +829,7 @@ static void cleanup(char *tty)
       kill(xpid, SIGTERM);
 
     found = 0;
-#ifndef SOLARIS
+#if !defined (SOLARIS) && !defined (__linux__)
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))
