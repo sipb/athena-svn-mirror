@@ -5,6 +5,8 @@ specifications.
 
 Setting the process priority
 ----------------------------
+XXX this doesn't work on all platforms; this section needs revisiting.
+
 You should use the function nice() to change the process priority
 relative to its current value.  Avoid using setpriority() and
 getpriority().
