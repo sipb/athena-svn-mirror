@@ -1,5 +1,5 @@
-This is Info file standards.info, produced by Makeinfo-1.55 from the
-input file ./standards.texi.
+This is Info file standards.info, produced by Makeinfo version 1.68
+from the input file ./standards.texi.
 
 START-INFO-DIR-ENTRY
 * Standards: (standards).        GNU coding standards.
@@ -2813,7 +2813,7 @@ directories:
      The directory for installing read-only architecture independent
      data files.  This should normally be `/usr/local/share', but write
      it as `$(prefix)/share'.  (If you are using Autoconf, write it as
-     `@datadir@'.) As a special exception, see `$(infodir)' and
+     `@datadir@'.)  As a special exception, see `$(infodir)' and
      `$(includedir)' below.
 
 `sysconfdir'
@@ -3184,7 +3184,7 @@ programs in which they are useful.
 
    ---------- Footnotes ----------
 
-   (1)  `texi2dvi' uses TeX to do the real work of formatting. TeX is
+   (1) `texi2dvi' uses TeX to do the real work of formatting. TeX is
 not distributed with Texinfo.
 
 
@@ -3257,45 +3257,45 @@ know what other files to get.
 
 
 Tag Table:
-Node: Top968
-Node: Preface1482
-Node: Intellectual Property2525
-Node: Reading Non-Free Code2881
-Node: Contributions4613
-Node: Design Advice6211
-Node: Compatibility6694
-Node: Using Extensions8338
-Node: ANSI C9840
-Node: Source Language11076
-Node: Program Behavior12210
-Node: Semantics12802
-Node: Libraries16556
-Node: Errors17791
-Node: User Interfaces19014
-Node: Memory Usage36015
-Node: Writing C37012
-Node: Formatting37654
-Node: Comments40926
-Node: Syntactic Conventions43719
-Node: Names46617
-Node: System Portability47929
-Node: CPU Portability49705
-Node: System Functions51812
-Node: Documentation56684
-Node: GNU Manuals57228
-Node: Manual Structure Details59270
-Node: NEWS File60675
-Node: Change Logs61356
-Node: Man Pages65109
-Node: Reading other Manuals66728
-Node: Managing Releases67512
-Node: Configuration68218
-Node: Makefile Conventions75158
-Node: Makefile Basics75682
-Node: Utilities in Makefiles78153
-Node: Command Variables80027
-Node: Directory Variables82863
-Node: Standard Targets92968
-Node: Releases102716
+Node: Top976
+Node: Preface1490
+Node: Intellectual Property2533
+Node: Reading Non-Free Code2889
+Node: Contributions4621
+Node: Design Advice6219
+Node: Compatibility6702
+Node: Using Extensions8346
+Node: ANSI C9848
+Node: Source Language11084
+Node: Program Behavior12218
+Node: Semantics12810
+Node: Libraries16564
+Node: Errors17799
+Node: User Interfaces19022
+Node: Memory Usage36023
+Node: Writing C37020
+Node: Formatting37662
+Node: Comments40934
+Node: Syntactic Conventions43727
+Node: Names46625
+Node: System Portability47937
+Node: CPU Portability49713
+Node: System Functions51820
+Node: Documentation56692
+Node: GNU Manuals57236
+Node: Manual Structure Details59278
+Node: NEWS File60683
+Node: Change Logs61364
+Node: Man Pages65117
+Node: Reading other Manuals66736
+Node: Managing Releases67520
+Node: Configuration68226
+Node: Makefile Conventions75166
+Node: Makefile Basics75690
+Node: Utilities in Makefiles78161
+Node: Command Variables80035
+Node: Directory Variables82871
+Node: Standard Targets92977
+Node: Releases102724
 
 End Tag Table

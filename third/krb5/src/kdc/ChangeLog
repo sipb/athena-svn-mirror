@@ -1,3 +1,28 @@
+Tue Jul 21 20:29:38 1998  Tom Yu  <tlyu@mit.edu>
+
+	* replay.c (kdc_check_lookaside):
+	(kdc_insert_lookaside): Add code to originating address of packet,
+ 	as krb4 initial ticket requests don't contain an address.  This
+ 	would cause a subtle problem wherein two simultaneous krb4 initial
+ 	ticket requests for the same principal originating from different
+ 	addresses would result in both replies containing the same
+	address.
+
+	* kdc_util.h: Modify prototype for lookaside functions.
+
+	* dispatch.c (dispatch): Update to new calling conventions of the
+	lookaside functions.
+
+Fri May  8 18:46:59 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kerberos_v4.c (krb4_stime): Print 4 digit years in Krb4 log
+	 	entries to avoid Y2K issues.
+
+Fri Mar 20 17:13:46 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdc_util.c (add_to_transited): Check lengths, fix up comma
+	quoting somewhat (though things are still way broken).
+
 Thu Feb  5 19:09:06 1998  Tom Yu  <tlyu@mit.edu>
 
 	* kerberos_v4.c: Fix up call to klog, also delete logic to check
@@ -31,6 +56,11 @@ Wed Sep 24 11:56:50 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
 	* kdc_util.c (add_to_transited): Fix up memory leaks, clean out
         new memory allocated, allocate buffers to max size
         needed. [based on krb5-kdc/461 by Ken Hornstein].
+
+Wed Jul 30 18:29:19 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kdc_util.c: 
+	* main.c: Don't use an rcache.
 
 Tue Jul 15 01:55:56 1997  Tom Yu  <tlyu@mit.edu>
 
