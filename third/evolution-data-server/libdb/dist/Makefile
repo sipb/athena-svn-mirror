@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1.1.1 2004-12-17 17:30:50 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2005-03-10 18:53:55 ghudson Exp $
 
 srcdir=	./..
 builddir=.
@@ -56,7 +56,7 @@ CC=		$(LIBTOOL) --mode=compile cc
 CCLINK=		$(LIBTOOL) --mode=link cc
 
 LDFLAGS=	
-LIBS=		 -lpthread
+LIBS=		
 LIBSO_LIBS=	
 
 libdb=		libdb.a
@@ -152,7 +152,7 @@ DB185LIB=
 ##################################################
 # Object and utility lists.
 ##################################################
-C_OBJS= mut_pthread.lo    \
+C_OBJS= mut_tas.lo    \
 	bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo bt_delete.lo \
 	bt_method.lo bt_open.lo bt_put.lo bt_rec.lo bt_reclaim.lo \
 	bt_recno.lo bt_rsearch.lo bt_search.lo bt_split.lo bt_stat.lo \

@@ -1,3 +1,25 @@
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* src/libicalss/icalfileset.c (icalfileset_read_from_file)
+	(icalfileset_read_file): pass the icalfileset to the callback
+	rather than cast the fd to/from a pointer.
+
+2004-12-20  Rodrigo Moya <rodrigo@novell.com>
+
+	* src/libical/icaltime.c (set_tz): uncomment free() call that was
+	commented because of a crash that does not happen anymore.
+
+2004-10-27  Julio M. Merino Vidal <jmmv@menta.net>
+
+	* configure.in: search for unsetenv.
+ 
+	* src/libical/icaltime.c (unset_tz): use unsetenv when available.
+
+2004-10-15  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Call AC_CONFIG_AUX_DIR() before AM_INIT_AUTOMAKE
+	This is ordering is required by automake 1.9
+
 2004-09-03  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes crash in #57443

@@ -7548,18 +7548,6 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
      fi
    fi
 
-   dnl If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
-   dnl find the mkinstalldirs script in another subdir but ($top_srcdir).
-   dnl Try to locate is.
-   MKINSTALLDIRS=
-   if test -n "$ac_aux_dir"; then
-     MKINSTALLDIRS="$ac_aux_dir/mkinstalldirs"
-   fi
-   if test -z "$MKINSTALLDIRS"; then
-     MKINSTALLDIRS="\$(top_srcdir)/mkinstalldirs"
-   fi
-   AC_SUBST(MKINSTALLDIRS)
-
    dnl Generate list of files to be processed by xgettext which will
    dnl be included in po/Makefile.
    test -d po || mkdir po
@@ -8244,7 +8232,9 @@ AC_DEFUN([AM_GCONF_SOURCE_2],
   AC_MSG_RESULT([Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation])
 
   if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
-    GCONF_SCHEMA_FILE_DIR='$(sysconfdir)/gconf/schemas'
+    GCONF_SCHEMA_FILE_DIR='$(sysconfdir)/gconf/schemas/'
+  else
+    GCONF_SCHEMA_FILE_DIR=$GCONF_SCHEMA_FILE_DIR
   fi
 
   AC_ARG_WITH(gconf-schema-file-dir, 

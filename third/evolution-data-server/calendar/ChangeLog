@@ -1,3 +1,219 @@
+2005-02-15  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* libecal/e-cal.c (open_calendar): use e_return_error_if_fail instead
+	of g_return_val_if_fail.
+
+2005-01-31  Chenthill Palanisamy <pchenthill@novell.com>
+
+
+	Fixes #64682
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_create_appointment): If the appointment is
+	moved from another calendar, send a createItemsRequest with
+	the source as personal so that the server doesn't send updates
+	via mails.
+
+2005-01-27  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #67031
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Set the completed date
+	in the calendar component.
+
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* backends/http/e-cal-backend-http.c (retrieval_done): cast away warning.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_static_capabilities): remove the \'s
+	to join the strings, they get joined anyway.
+
+2004-01-17  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(from_uri) : use https always except
+        when use_ssl is "never". This change is part of the changes done to remove
+        separate settings for ssl for soap in account config
+
+2004-12-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #59904
+
+	* libecal/e-cal.[ch] (e_cal_get_objects_for_uid): new function
+	to retrieve objects and detached recurrences for that object.
+	(e_cal_get_object): deal with the backend returning a VCALENDAR
+	object. In that case, just get the first component of the same
+	type we are using.
+	(generate_instances): when we have an UID, use the new function
+	e_cal_get_objects_for_uid, avoiding countless calls to
+	e_cal_get_object_list.
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_get_object):
+	if we have detached instances, return a VCALENDAR with the master
+	object and any detached instance.
+
+2004-11-18 Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * backends/groupwise/e-cal-backend-groupwise.c
+       (populate_cache) : added "default" to
+       the view wherever we want to get complete item along
+       with iCalId
+       part of fix for #69624
+
+2004-10-07  JP Rosevear  <jpr@novell.com>
+ 
+ 	* libecal/e-cal.c (e_cal_new_system_tasks): load the correct type
+ 	of events
+	
+2004-10-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #62868
+	* e-cal-backend-groupwise-utils.c (e_gw_connection_send_appointment):
+	Send the Connection Status as Ok even if we get an error message from
+	the server for accepting the appointment more than once since it does
+	affect the functionality.
+	* e-cal-backend-groupwise.c (receive_objects):
+	Return the status immediately if the Item has not been modified. Now
+	the Permission Denied error message need not be sent.
+
+2004-10-04  JP Rosevear  <jpr@novell.com>
+
+	Fixes #67513
+	
+	* libecal/e-cal.c (cal_objects_sent_cb): deep copy the user list
+	data
+
+2004-09-28  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #66230
+
+	* backends/http/e-cal-backend-http.c (retrieval_done): do a more clever
+	update of the cache, so that we correctly notify listeners of updates,
+	additions and removals.
+
+2004-09-24  JP Rosevear  <jpr@novell.com>
+
+	Fixes #66383, From David Malcolm <dmalcolm@redhat.com>
+	
+	* libecal/e-cal.c (e_cal_get_alarms_in_range): return non void
+	values
+
+	* libecal/e-cal-component.c: kill warnings about struct
+	definitions
+	
+2004-09-24  JP Rosevear  <jpr@novell.com>
+	
+	Fixes #64955, Vincent Noel <vnoel@cox.net>
+	
+	* libecal/e-cal.c (e_cal_get_alarms_in_range): fix c99-ism
+
+2004-09-17  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #59904
+
+	* libecal/e-cal-component.[ch] (e_cal_component_new_from_string): new
+	function to avoid repeating the same code over and over.
+
+	* libedata-cal/e-data-cal-view.c: changed to keep a list of listeners,
+	not only one.
+	(listener_died_cb): remove the listener from the list of listeners.
+	(impl_EDataCalView_start): see if the query has already been started,
+	and if so, just notify correctly the listeners we need to notify.
+	(e_data_cal_view_init): create hash table for storing the objects we
+	have matching the live query.
+	(e_data_cal_view_set_property): add correctly the listeners to the list.
+	(e_data_cal_view_get_property): return always the first listener.
+	(e_data_cal_view_finalize): free all listeners and cached objects.
+	(add_object_to_cache, remove_object_from_cache):
+	new functions to manage the matched objects cache.
+	(e_data_cal_view_notify_objects_added,
+	e_data_cal_view_notify_objects_modified): add objects to our private
+	cache, and notify all listeners, now that we might have more than one.
+	(e_data_cal_view_notify_objects_removed,
+	e_data_cal_view_notify_progress, e_data_cal_view_notify_done): notify
+	all listeners.
+	(e_data_cal_view_add_listener, e_data_cal_view_get_matched_objects,
+	e_data_cal_view_is_started, e_data_cal_view_is_done,
+	e_data_cal_view_get_done_status): new functions.
+
+	* libedata-cal/e-data-cal.c: keep a cache of all queries.
+	(impl_Cal_getQuery): first look in the cache of queries. And when
+	creating a new query, add it to the cache.
+	(impl_Cal_getObjectList): use the query cache also.
+	(e_data_cal_finalize): destroy the live queries hash table.
+	(e_data_cal_init): create live queries hash table.
+
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_item_set_changes): Added the support for allday events.
+
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #65167
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(connect_to_server): Reload the default zone into
+	the cache after clearing it.
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_categories_for_gw_item), e_gw_item_to_cal_component),
+	(set_properties_from_cal_component): replaced the assert
+	statements with If conditions.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64685
+	* backends/groupwise/e-cal-backends-groupwise.c
+	(receive_object): Send the error message as 
+	Permission Denied when the attendee tries to accept the 
+	appointment more than once since we get the error message as
+	bad parameter from the server.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids. This is a partial fix.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64398
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(ECalBackendGroupwisePrivate): added an variable to store 
+	the timeout ids.
+	(e_cal_backend_groupwise_init): intialize the variable.
+	(e_cal_backend_groupwise_finalize): remove the timeout_add
+	function so that it will not called when backend dies.
+	(get_deltas): It should not crash in any case if handle is
+	NULL.
+
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids.
+	
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* libecal/e-cal-utils.h:
+       	defined two macros for the handling the static capabilities for 
+	backends which does not support the conversion of a non-recurring
+	appointment to a recurrence appointment and conversion of posted
+	task to group task.
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_static_capabilities): Added the 
+	two macros in this function.
+
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64688
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): store the default zone in
+	backend before populating the cache.
+	
 2004-08-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-sexp.c (func_has_alarms_in_range): new

@@ -1,3 +1,122 @@
+2005-02-14 Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * libebook/e-vcard.c (read_attribute_value) :
+       Make sure that we decode only hex digits followed
+       by '=' while decoding from quoted printable encoding.
+       (read_attribute) : Reset the encoding as RAW for values
+       which are encoded in Quoated printable encoding in the
+       original vcard. We are not going encodwe them again
+       using quoated printable
+       (e_vcard_to_string_vcard_30) : use utf-8 version
+       of strlen and other functions while folding lines
+       as some the chars may be represented by more than one byte
+
+	Fixes an issue related to data loss in 1.4 -> 2.0
+	migration
+
+2005-02-10  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * backends/ldap/e-book-backend-ldap.c
+       (e_book_backend_ldap_authenticate_user) : reconnect to
+       ldap server if simple bind returns LDAP_SERVER_DOWN
+
+       Fixes #67541
+
+2004-02-14 Sivaiah Nallagatla <snallagatla@novell.com>
+                                                                                                                             
+        * backend/groupwise/e-book-backend-groupwise.c (
+        e_book_backend_groupwise_create_contact)
+        (e_book_backend_groupwise_get_contact_list)
+        (book_view_thread) (e_book_backend_groupwise_authenticate_user)
+        : call the e_gw_connection_* api again if the retuned status
+        code is E_GW_CONNECTION_STATUS_INVALID_CONNECTION. Part of the fix
+        for #64298
+
+	
+2005-01-30  Sivaiah Nallagatla <snallagtla@novell.com>
+                                                                                                                             
+         * libebook/e-vcarc.c (skip_until) :
+         advancd to next char in the loop
+         (read_attribute_params) : If we reach
+         end of line after skipping invalid parameter
+         break out of loop
+         Fixes #70918
+
+2005-01-27  Rodney Dawes <dobey@novell.com>
+
+	* libebook/e-book-contact.c: #include <config.h>
+	(e_contact_pretty_name): Bind and set the textdomain for eds so that
+	we get translated strings when we call this outside of eds, as it is
+	public API
+
+	Fixes #66854 and #71116
+
+2004-12-19 Sivaiah Nallagatla    <snallagatla@novell.com>
+                                                                                                                             
+        * backends/ldap/e-book-backend-ldap.c
+        (e_book_backend_ldap_build_query) : add  filter
+        objectclass=person so that we don't get objects O, OU and other unwanted
+        objects in search results.
+                                                                                                                             
+        Fixes #68454
+
+2004-11-17  Diego Gonzalez <diego@pemas.net>
+
+	* backends/file/e-book-backend-file.c (e_book_backend_file_modify_contact):
+	 don't crash if the UID of the contact being commited is NULL.
+
+2004-11-17  Diego Gonzalez <diego@pemas.net>
+
+	* libebook/e-book.c (do_commit_contact): when doing a e_book_commit_contact,
+	several times, the first time that this funcion was called with the
+	sync flag it cleared the UID of the contact, in the next operation the
+	server would crash due to the UID being null. This fixes the client side
+	and seems to work without a glitch.
+
+	I just removed the e_contact_set as it seems (from visual inspection of
+	e_contact_set) that this operation doesn't cause any call in the backend,
+	and thus it will not force the previous operation to be completed.
+
+
+2004-10-04  Sivaiah Nallagatla <snallagatla@novell.com>
+
+        * backends/groupwise-ebook-backend-groupwise.c :
+        (e_book_backend_groupwise_build_gw_filter) : add an argument
+        to get the search string present in query
+        (book_view_thread) : create a gw filter with just firstName
+        and lastNmae in case of system address book. This is to simplify the
+        auto completion query. Server team believes that this improves scalability limit
+        (e_book_backend_groupwise_get_contact_list) : pass NULL to
+        extra arument added to e_book_backend_groupwise_build_gw_filter
+        . We do't need top get back serch string here
+
+2004-09-29  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes bug #66368.
+
+	* libebook/e-contact.c (e_contact_new_from_vcard): If the constructed
+	vcard does not have a file_as attribute, try to generate one.
+
+2004-09-22  Diego Gonzalez <diego@pemas.net>
+
+	Fixes #66574.
+
+	* libebook/e-book.c (e_book_get_self): open the book before
+	getting the contact.
+
+2004-09-22  William Jon McCann  <mccann@jhu.edu>
+
+	* libebook/e-book.c (emit_async_open_response)
+	(e_book_response_open): 
+	* libebook/e-book-view-listener.c (d): Disable debugging noise.
+
+2004-09-16 Sivaiah Nallagatla  <snallagatla@novell.com>
+
+        * backends/gropwise/e-book-backend-groupwise.c
+        (e_book_backend_groupwise_get_contact_list) :
+        don't try to search over summary in case of system addr book
+        as we don't maintain one.
+
 2004-09-09  Sivaiah Nallagatla  <snallagatla@novell.com>
 
 	Part of fix for #59582.
@@ -18,6 +137,33 @@
 	(e_book_dispose): Only disconnect the listener signal if it hasn't
 	already been done by GLib. Bug compatibility.
 
+2004-09-13  Hans Petter Jansson  <hpj@ximian.com>
+
+	* backends/ldap/e-book-backend-ldap.c: Revert the LDAP attribute names
+	changed by Sivaiah's last commit.
+
+2004-09-09  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes #63385.
+
+	* libebook/e-book.c (fetch_corba_book): Use g_signal_connect_object ()
+	to connect to the listener, so we won't be destroyed in another thread
+	while processing signals from it.
+	(e_book_dispose): Only disconnect the listener signal if it hasn't
+	already been done by GLib. Bug compatibility.
+
+2004-09-06  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/ldap/e-book-backend-ldap.c : Update 
+	the ldap attribute names for calendar ui and free busy uri
+	fileds to match with what is present in evolutionPerson.schema
+	(add_to_supported_fields) : add E_CONTACT_EMAIL_1 also to list of supported fields.
+	Also use e_contact_field_name function instead of hardcodring field names
+        (anniversary_populate) : correct incorrect contact date
+	parameter passing. Also free the contact date
+
+	Fixes some of the issues mentioned in #59582 	
+	
 2004-08-26  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

@@ -48,6 +48,34 @@ struct attendee {
 	icalparameter *language_param;
 };
 
+struct text {
+	icalproperty *prop;
+	icalparameter *altrep_param;
+};
+
+struct datetime {
+	icalproperty *prop;
+	icalparameter *tzid_param;
+};
+
+struct organizer {
+	icalproperty *prop;
+	icalparameter *sentby_param;
+	icalparameter *cn_param;
+	icalparameter *language_param;
+};
+
+struct period {
+	icalproperty *prop;
+	icalparameter *value_param;
+};
+
+struct recur_id {
+	struct datetime recur_time;
+	
+	icalparameter *range_param;
+};
+
 /* Private part of the CalComponent structure */
 struct _ECalComponentPrivate {
 	/* The icalcomponent we wrap */
@@ -64,11 +92,6 @@ struct _ECalComponentPrivate {
 
 	icalproperty *classification;
 
-	struct text {
-		icalproperty *prop;
-		icalparameter *altrep_param;
-	};
-
 	GSList *comment_list; /* list of struct text */
 
 	icalproperty *completed;
@@ -78,11 +101,6 @@ struct _ECalComponentPrivate {
 	icalproperty *created;
 
 	GSList *description_list; /* list of struct text */
-
-	struct datetime {
-		icalproperty *prop;
-		icalparameter *tzid_param;
-	};
 
 	struct datetime dtstart;
 	struct datetime dtend;
@@ -101,30 +119,12 @@ struct _ECalComponentPrivate {
 	GSList *exdate_list; /* list of struct datetime */
 	GSList *exrule_list; /* list of icalproperty objects */
 
-	struct organizer {
-		icalproperty *prop;
-		icalparameter *sentby_param;
-		icalparameter *cn_param;
-		icalparameter *language_param;
-	};
-
 	struct organizer organizer;
 	
 	icalproperty *geo;
 	icalproperty *last_modified;
 	icalproperty *percent;
 	icalproperty *priority;
-
-	struct period {
-		icalproperty *prop;
-		icalparameter *value_param;
-	};
-
-	struct recur_id {
-		struct datetime recur_time;
-		
-		icalparameter *range_param;
-	};
 
 	struct recur_id recur_id;
 	
@@ -434,6 +434,38 @@ ECalComponent *
 e_cal_component_new (void)
 {
 	return E_CAL_COMPONENT (g_object_new (E_TYPE_CAL_COMPONENT, NULL));
+}
+
+/**
+ * e_cal_component_new_from_string:
+ * @calobj: A string representation of an iCalendar component.
+ *
+ * Creates a new calendar component object from the given string.
+ *
+ * Return value: A calendar component representing the given iCalendar string on
+ * success, NULL if there was an error.
+ **/
+ECalComponent *
+e_cal_component_new_from_string (const char *calobj)
+{
+	ECalComponent *comp;
+	icalcomponent *icalcomp;
+
+	g_return_val_if_fail (calobj != NULL, NULL);
+
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return NULL;
+
+	comp = e_cal_component_new ();
+	if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+		icalcomponent_free (icalcomp);
+		g_object_unref (comp);
+
+		return NULL;
+	}
+
+	return comp;
 }
 
 /**

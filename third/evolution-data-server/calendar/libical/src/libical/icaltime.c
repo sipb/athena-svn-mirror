@@ -3,7 +3,7 @@
   FILE: icaltime.c
   CREATOR: eric 02 June 2000
   
-  $Id: icaltime.c,v 1.1.1.1 2004-12-17 17:29:38 ghudson Exp $
+  $Id: icaltime.c,v 1.1.1.2 2005-03-10 18:53:29 ghudson Exp $
   $Locker:  $
     
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -318,8 +318,8 @@ char* set_tz(const char* tzid)
     putenv(new_tz); 
 
     /* Free any previous TZ environment string we have used. */
-    //if (saved_tz)
-    //  free (saved_tz);
+    if (saved_tz)
+      free (saved_tz);
 
     /* Save a pointer to the TZ string we just set, so we can free it later. */
     saved_tz = new_tz;
@@ -334,7 +334,16 @@ void unset_tz(char *tzstr)
     if(tzstr!=0){
 	putenv(tzstr);
     } else {
-	putenv("TZ"); /* Delete from environment */
+	/* Delete from environment.  We prefer unsetenv(3) over putenv(3)
+	   because the former is POSIX and behaves consistently.  The later
+	   does not unset the variable in some systems (like NetBSD), leaving
+	   it with an empty value.  This causes problems later because further
+	   calls to time related functions in libc will treat times in UTC. */
+#ifdef HAVE_UNSETENV
+	unsetenv("TZ");
+#else
+	putenv("TZ");
+#endif
     } 
 
     /* Free any previous TZ environment string we have used. */

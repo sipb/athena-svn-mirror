@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mut_tas.c,v 1.1.1.1 2004-12-17 17:27:14 ghudson Exp $";
+static const char revid[] = "$Id: mut_tas.c,v 1.1.1.2 2005-03-10 18:53:22 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -17,6 +17,18 @@ static const char revid[] = "$Id: mut_tas.c,v 1.1.1.1 2004-12-17 17:27:14 ghudso
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#endif
+#ifdef HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY
+#include "alphalinux.gcc"
+#endif
+#ifdef HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY
+#include "sparc32linux.gcc"
+#endif
+#ifdef HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY
+#include "sparc64linux.gcc"
+#endif
+#ifdef HAVE_MUTEX_S390_LINUX_ASSEMBLY
+#include "s390linux.gcc"
 #endif
 
 /*

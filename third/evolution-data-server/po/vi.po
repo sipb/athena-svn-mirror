@@ -1,27 +1,27 @@
 # Copyright (C) 2002 Free Software Foundattion, Inc.
 # This file is distributed under the same license as the evolution package.
-# pclouds <pclouds@gmx.net>, 2002.
+# pclouds <pclouds@gmx.net>, 2002-2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:52-0400\n"
-"PO-Revision-Date: 2003-02-23 08:29+0700\n"
+"POT-Creation-Date: 2005-02-15 14:21-0500\n"
+"PO-Revision-Date: 2004-10-07 09:10+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/file/e-book-backend-file.c:443
 #: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Đang nạp..."
 
-#: addressbook/backends/file/e-book-backend-file.c:442
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3158
+#: addressbook/backends/file/e-book-backend-file.c:445
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1878
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3167
 #: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Đang tìm..."
@@ -36,28 +36,25 @@ msgstr "Dùng địa chỉ email"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:789
 msgid "Reconnecting to LDAP server..."
-msgstr "Đang kết nối tới LDAP server..."
+msgstr "Đang kết nối tới máy chủ LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1309
-#, fuzzy
 msgid "Adding contact to LDAP server..."
-msgstr "Đang thêm card vào LDAP server..."
+msgstr "Đang thêm liên lạc vào máy chủ LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1409
-#, fuzzy
 msgid "Removing contact from LDAP server..."
-msgstr "Đang loại bỏ card khỏi LDAP server..."
+msgstr "Đang loại bỏ liên lạc khỏi máy chủ LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1632
-#, fuzzy
 msgid "Modifying contact from LDAP server..."
-msgstr "Đang sửa card trong LDAP server..."
+msgstr "Đang hiệu chỉnh liên lạc trong máy chủ LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3070
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3079
 msgid "Receiving LDAP search results..."
 msgstr "Đang nhận kết quả tìm kiếm LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3178
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3187
 msgid "Error performing search"
 msgstr "Lỗi khi tìm kiếm"
 
@@ -67,97 +64,97 @@ msgstr "Lỗi khi tìm kiếm"
 #. * "e_book_open
 #: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
 #: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2985
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:577 addressbook/libebook/e-book.c:581
+#: addressbook/libebook/e-book.c:781 addressbook/libebook/e-book.c:786
+#: addressbook/libebook/e-book.c:961 addressbook/libebook/e-book.c:965
+#: addressbook/libebook/e-book.c:1106 addressbook/libebook/e-book.c:1110
+#: addressbook/libebook/e-book.c:1308 addressbook/libebook/e-book.c:1312
+#: addressbook/libebook/e-book.c:1513 addressbook/libebook/e-book.c:1517
+#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1744
+#: addressbook/libebook/e-book.c:1947 addressbook/libebook/e-book.c:1951
+#: addressbook/libebook/e-book.c:2984
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "\"%s\" trong \"%s\""
+msgstr "\"%s\" trong sổ trước \"%s\""
 
 #: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:590 addressbook/libebook/e-book.c:796
+#: addressbook/libebook/e-book.c:975 addressbook/libebook/e-book.c:1120
+#: addressbook/libebook/e-book.c:1321 addressbook/libebook/e-book.c:1526
+#: addressbook/libebook/e-book.c:1754 addressbook/libebook/e-book.c:1960
+#: addressbook/libebook/e-book.c:2298 addressbook/libebook/e-book.c:2494
 msgid "book busy"
-msgstr ""
+msgstr "sổ bạn"
 
 #: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
 #: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2994
+#: addressbook/libebook/e-book.c:619 addressbook/libebook/e-book.c:623
+#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:828
+#: addressbook/libebook/e-book.c:1007 addressbook/libebook/e-book.c:1010
+#: addressbook/libebook/e-book.c:1149 addressbook/libebook/e-book.c:1153
+#: addressbook/libebook/e-book.c:1357 addressbook/libebook/e-book.c:1361
+#: addressbook/libebook/e-book.c:1573 addressbook/libebook/e-book.c:1577
+#: addressbook/libebook/e-book.c:1786 addressbook/libebook/e-book.c:1790
+#: addressbook/libebook/e-book.c:1988 addressbook/libebook/e-book.c:1992
+#: addressbook/libebook/e-book.c:2239 addressbook/libebook/e-book.c:2326
+#: addressbook/libebook/e-book.c:2330 addressbook/libebook/e-book.c:2522
+#: addressbook/libebook/e-book.c:2526 addressbook/libebook/e-book.c:2993
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2221
+#: addressbook/libebook/e-book.c:2220
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Hủy tác vụ mail hiện thời"
 
-#: addressbook/libebook/e-book.c:2256
+#: addressbook/libebook/e-book.c:2255
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:2284 addressbook/libebook/e-book.c:2288
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" trong \"%s\""
+msgstr "\"%s\" trong  sổ sau \"%s\""
 
-#: addressbook/libebook/e-book.c:2355
+#: addressbook/libebook/e-book.c:2354
 #, fuzzy
 msgid "e_book_open: cancelled"
 msgstr "Thao tác bị hủy bỏ"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:2850
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:2858
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:2870
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2923
+#: addressbook/libebook/e-book.c:2922
 #, fuzzy, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "Không có bên nào cung cấp giao thức `%s'"
 
-#: addressbook/libebook/e-book.c:3081
+#: addressbook/libebook/e-book.c:3088
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:3192
+#: addressbook/libebook/e-book.c:3199
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
-msgstr ""
+msgstr "ID Duy nhất"
 
-#: addressbook/libebook/e-contact.c:101
+#: addressbook/libebook/e-contact.c:103
 msgid "File As"
 msgstr "Tập tin là"
 
@@ -165,523 +162,491 @@ msgstr "Tập tin là"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Full Name"
 msgstr "Tên đầy đủ"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Name"
 msgstr "Tên"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 #, fuzzy
 msgid "Given Name"
 msgstr "Tên trường"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:112
 msgid "Family Name"
 msgstr "Tên gia đình"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:113
 msgid "Nickname"
 msgstr "Tên hiệu"
 
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Name or Org"
-msgstr ""
+msgstr "Tên hoặc Tổ chức"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:115
-#, fuzzy
+#: addressbook/libebook/e-contact.c:117
 msgid "Address List"
-msgstr "Địa chỉ"
+msgstr "Danh sách địa chỉ"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:118
 msgid "Home Address"
 msgstr "Địa chỉ nhà"
 
-#: addressbook/libebook/e-contact.c:117
-#, fuzzy
+#: addressbook/libebook/e-contact.c:119
 msgid "Work Address"
-msgstr "Địa chỉ nhà"
+msgstr "Địa chỉ làm việc"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Other Address"
 msgstr "Địa chỉ khác"
 
-#: addressbook/libebook/e-contact.c:120
-#, fuzzy
-msgid "Home Address Label"
-msgstr "Nhãn địa chỉ"
-
-#: addressbook/libebook/e-contact.c:121
-#, fuzzy
-msgid "Work Address Label"
-msgstr "Nhãn địa chỉ"
-
 #: addressbook/libebook/e-contact.c:122
-#, fuzzy
-msgid "Other Address Label"
-msgstr "Nhãn địa chỉ"
+msgid "Home Address Label"
+msgstr "Nhãn địa chỉ nhà"
+
+#: addressbook/libebook/e-contact.c:123
+msgid "Work Address Label"
+msgstr "Nhãn địa chỉ làm việc"
 
 #: addressbook/libebook/e-contact.c:124
+msgid "Other Address Label"
+msgstr "Nhãn địa chỉ khác"
+
+#: addressbook/libebook/e-contact.c:126
 msgid "Assistant Phone"
 msgstr "Điện thoại phụ tá"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Phone"
 msgstr "Điện thoại kinh doanh"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
 msgstr "Điện thoại kinh doanh 2"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
 msgstr "Fax Kinh doanh"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Callback Phone"
 msgstr "Số gọi lại"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Car Phone"
 msgstr "Điện thoại xe"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Company Phone"
 msgstr "Điện thoại công ty"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Phone"
 msgstr "Điện thoại nhà"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
 msgstr "Điện thoại nhà 2"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
 msgstr "Fax ở Nhà"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Mobile Phone"
 msgstr "Điện thoại di động"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Other Phone"
 msgstr "Điện thoại khác"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
 msgstr "Fax khác"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Pager"
 msgstr "Bộ dàn trang"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "Primary Phone"
 msgstr "Điện thoại chính"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:142
 msgid "Radio"
 msgstr "Rađiô"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:143
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:145
-#, fuzzy
-msgid "Email List"
-msgstr "Email là"
-
-#: addressbook/libebook/e-contact.c:146
-#, fuzzy
-msgid "Email 1"
-msgstr "Email 3"
-
 #: addressbook/libebook/e-contact.c:147
+msgid "Email List"
+msgstr "Danh sách Email"
+
+#: addressbook/libebook/e-contact.c:148
+msgid "Email 1"
+msgstr "Email 1"
+
+#: addressbook/libebook/e-contact.c:149
 msgid "Email 2"
 msgstr "Email 2"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:150
 msgid "Email 3"
 msgstr "Email 3"
 
-#: addressbook/libebook/e-contact.c:149
-#, fuzzy
+#: addressbook/libebook/e-contact.c:151
 msgid "Email 4"
-msgstr "Email 3"
+msgstr "Email 4"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "Mailer"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:151
-#, fuzzy
+#: addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
-msgstr "Muốn HTML"
+msgstr "Muốn thư HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "AIM Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Groupwise Id List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:156
-#, fuzzy
+#: addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
-msgstr "Danh sách vô danh"
+msgstr "Danh sách ID Jabber"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "Yahoo! Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:160
 msgid "MSN Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:159
-#, fuzzy
-msgid "ICQ Id List"
-msgstr "Là danh sách mới"
-
 #: addressbook/libebook/e-contact.c:161
+msgid "ICQ Id List"
+msgstr "Danh sách ID ICQ"
+
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Groupwise Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Groupwise Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:173
-#, fuzzy
-msgid "Jabber Home Id 1"
-msgstr "Danh sách vô danh"
-
-#: addressbook/libebook/e-contact.c:174
-#, fuzzy
-msgid "Jabber Home Id 2"
-msgstr "Danh sách vô danh"
-
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
-msgid "Jabber Home Id 3"
-msgstr "Danh sách vô danh"
+msgid "Jabber Home Id 1"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
-msgid "Jabber Work Id 1"
-msgstr "Danh sách vô danh"
+msgid "Jabber Home Id 2"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
-msgid "Jabber Work Id 2"
-msgstr "Danh sách vô danh"
+msgid "Jabber Home Id 3"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
-msgid "Jabber Work Id 3"
-msgstr "Danh sách vô danh"
+msgid "Jabber Work Id 1"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:179
-msgid "Yahoo! Home Screen Name 1"
+msgid "Jabber Work Id 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:180
-msgid "Yahoo! Home Screen Name 2"
+msgid "Jabber Work Id 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:181
-msgid "Yahoo! Home Screen Name 3"
+msgid "Yahoo! Home Screen Name 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:182
-msgid "Yahoo! Work Screen Name 1"
+msgid "Yahoo! Home Screen Name 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:183
-msgid "Yahoo! Work Screen Name 2"
+msgid "Yahoo! Home Screen Name 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:184
-msgid "Yahoo! Work Screen Name 3"
+msgid "Yahoo! Work Screen Name 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:185
-msgid "MSN Home Screen Name 1"
+msgid "Yahoo! Work Screen Name 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:186
-msgid "MSN Home Screen Name 2"
+msgid "Yahoo! Work Screen Name 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:187
-msgid "MSN Home Screen Name 3"
+msgid "MSN Home Screen Name 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:188
-msgid "MSN Work Screen Name 1"
+msgid "MSN Home Screen Name 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:189
-msgid "MSN Work Screen Name 2"
+msgid "MSN Home Screen Name 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:190
-msgid "MSN Work Screen Name 3"
+msgid "MSN Work Screen Name 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:191
-msgid "ICQ Home Id 1"
+msgid "MSN Work Screen Name 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:192
-#, fuzzy
-msgid "ICQ Home Id 2"
-msgstr "Nhà 2"
+msgid "MSN Work Screen Name 3"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:193
-msgid "ICQ Home Id 3"
+msgid "ICQ Home Id 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:194
-msgid "ICQ Work Id 1"
+msgid "ICQ Home Id 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:195
-msgid "ICQ Work Id 2"
+msgid "ICQ Home Id 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:196
+msgid "ICQ Work Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:197
+msgid "ICQ Work Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
 msgstr ""
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "Organization"
 msgstr "Tổ chức"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
 msgstr "Đơn vị tổ chức"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Office"
 msgstr "Văn phòng"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Title"
 msgstr "Tựa đề"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Role"
 msgstr "Vai trò"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:207
 msgid "Manager"
 msgstr "Quản lý"
 
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:208
 msgid "Assistant"
 msgstr "Phụ tá"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:209
-msgid "Homepage URL"
-msgstr ""
-
-#: addressbook/libebook/e-contact.c:210
-msgid "Weblog URL"
-msgstr ""
-
 #: addressbook/libebook/e-contact.c:211
+msgid "Homepage URL"
+msgstr "URL Trang chủ"
+
+#: addressbook/libebook/e-contact.c:212
+msgid "Weblog URL"
+msgstr "URL Weblog"
+
+#: addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "URL Hội thảo trực tuyến"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:214
-#, fuzzy
+#: addressbook/libebook/e-contact.c:216
 msgid "Photo"
-msgstr "Porto"
+msgstr "Ảnh"
 
-#: addressbook/libebook/e-contact.c:215
-#, fuzzy
+#: addressbook/libebook/e-contact.c:217
 msgid "Logo"
-msgstr "Togo"
+msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:218
-#, fuzzy
+#: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
-msgstr "_ID Chứng nhận:"
+msgstr "Chứng nhận X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:223
 msgid "Category List"
 msgstr "Danh sách phân loại"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:224
 msgid "Categories"
 msgstr "Phân loại"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:227
 msgid "Calendar URI"
 msgstr "URI Lịch"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
-msgstr ""
+msgstr "URL Rảnh/Bận"
 
-#: addressbook/libebook/e-contact.c:227
-#, fuzzy
+#: addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
-msgstr "Lịch"
+msgstr "Lịch ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:230
-#, fuzzy
+#: addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
-msgstr "Vợ/Chồng"
+msgstr ""
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Note"
 msgstr "Ghi chú"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:235
 msgid "Birth Date"
 msgstr "Ngày sinh"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:236
 msgid "Anniversary"
 msgstr "Kỷ niệm"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:238
 msgid "List"
 msgstr "Danh sách"
 
-#: addressbook/libebook/e-contact.c:237
+#: addressbook/libebook/e-contact.c:239
 msgid "List Show Addresses"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:1206
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Danh sách vô danh"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:446
-#, fuzzy
 msgid "Birthday"
-msgstr "Ngày _sinh:"
+msgstr "Ngày sinh"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:470
-#, fuzzy, c-format
+#, c-format
 msgid "Birthday: %s"
-msgstr "Ngày _sinh:"
+msgstr "Ngày sinh: %s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:491
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "_Kỷ niệm"
+msgstr "Kỷ niệm: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Không thể lưu dữ liệu lịch: URI sai."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:283
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
 msgid "Invalid server URI"
-msgstr "Mục đích không hợp lệ"
+msgstr "URI Máy chủ sai"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:322
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:323
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:326
 msgid "Calendar"
 msgstr "Lịch"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:329
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:333
 msgid "Could not create cache file"
-msgstr ""
-"Không thể tạp tập tin `%s':\n"
-"%s"
+msgstr "Không thể tạo tập tin cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:354
-#: calendar/libecal/e-cal.c:4311
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:364
+#: calendar/libecal/e-cal.c:4471
 msgid "Authentication failed"
-msgstr "xác thực thất bại."
+msgstr "Xác thực thất bại"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
-#, fuzzy
+#: calendar/backends/http/e-cal-backend-http.c:239
 msgid "Redirected to Invalid URI"
-msgstr "URI sai"
+msgstr "Tái định hướng đến URI sai"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
-#, fuzzy
+#: calendar/backends/http/e-cal-backend-http.c:263
 msgid "Bad file format."
-msgstr "Dạng thức thời gian:"
+msgstr "Dạng thức tập tin sai."
 
-#: calendar/backends/http/e-cal-backend-http.c:255
-#, fuzzy
+#: calendar/backends/http/e-cal-backend-http.c:269
 msgid "Not a calendar."
-msgstr "Không có thư mục %s"
+msgstr "Không phải lịch."
 
-#: calendar/libecal/e-cal-component.c:1237
+#: calendar/libecal/e-cal-component.c:1269
 msgid "Untitled appointment"
 msgstr "Cuộc hẹn không tên"
 
@@ -827,84 +792,76 @@ msgid "Undefined"
 msgstr "Chưa biết"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
-#, fuzzy, c-format
+#: calendar/libecal/e-cal.c:1525
+#, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "%sNhập mật khẩu cho %s (người dùng %s)"
+msgstr "Nhập mật khẩu cho %s (người dùng %s)"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4445
 msgid "Invalid argument"
 msgstr "Đối số không hợp lệ"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4447
 msgid "Backend is busy"
-msgstr ""
+msgstr "Backend đang bận"
 
-#: calendar/libecal/e-cal.c:4289
-#, fuzzy
+#: calendar/libecal/e-cal.c:4449
 msgid "Repository is offline"
 msgstr "Kho ngoại tuyến"
 
-#: calendar/libecal/e-cal.c:4291
-#, fuzzy
+#: calendar/libecal/e-cal.c:4451
 msgid "No such calendar"
-msgstr "Không có thư mục %s"
+msgstr "Không có lịch như vậy."
 
-#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
-#, fuzzy
+#: calendar/libecal/e-cal.c:4453 servers/groupwise/e-gw-connection.c:154
 msgid "Object not found"
-msgstr "Không thể tìm thấy đối tượng\n"
+msgstr "Không thể tìm thấy đối tượng"
 
-#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
-#, fuzzy
+#: calendar/libecal/e-cal.c:4455 servers/groupwise/e-gw-connection.c:150
 msgid "Invalid object"
-msgstr "Mục đích không hợp lệ"
+msgstr "Đối tượng không hợp lệ"
 
-#: calendar/libecal/e-cal.c:4297
-#, fuzzy
+#: calendar/libecal/e-cal.c:4457
 msgid "URI not loaded"
-msgstr "Không nạp được EBook\n"
+msgstr "URI chưa được nạp"
 
-#: calendar/libecal/e-cal.c:4299
+#: calendar/libecal/e-cal.c:4459
 msgid "URI already loaded"
-msgstr ""
+msgstr "URI đã nạp rồi"
 
-#: calendar/libecal/e-cal.c:4301
+#: calendar/libecal/e-cal.c:4461
 msgid "Permission denied"
 msgstr "Không đủ quyền truy cập"
 
-#: calendar/libecal/e-cal.c:4303
-#, fuzzy
+#: calendar/libecal/e-cal.c:4463
 msgid "Object ID already exists"
-msgstr "Card ID đã tồn tại"
+msgstr "Object ID đã tồn tại"
 
-#: calendar/libecal/e-cal.c:4305
+#: calendar/libecal/e-cal.c:4465
 msgid "Protocol not supported"
 msgstr "Chưa hỗ trợ giao thức này"
 
-#: calendar/libecal/e-cal.c:4307
-#, fuzzy
+#: calendar/libecal/e-cal.c:4467
 msgid "Operation has been cancelled"
-msgstr "Thao tác bị hủy bỏ"
+msgstr "Thao tác đã bị hủy bỏ"
 
-#: calendar/libecal/e-cal.c:4309
-#, fuzzy
+#: calendar/libecal/e-cal.c:4469
 msgid "Could not cancel operation"
-msgstr "Hủy tác vụ"
+msgstr "Không thể hủy bỏ tác vụ"
 
-#: calendar/libecal/e-cal.c:4313
+#: calendar/libecal/e-cal.c:4473
 msgid "Authentication required"
 msgstr "Yêu cầu xác thực"
 
-#: calendar/libecal/e-cal.c:4315
+#: calendar/libecal/e-cal.c:4475
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4477 servers/groupwise/e-gw-connection.c:160
 msgid "Unknown error"
 msgstr "Lỗi lại"
 
-#: calendar/libecal/e-cal.c:4319
+#: calendar/libecal/e-cal.c:4479
 msgid "No error"
 msgstr "Không có lỗi"
 
@@ -912,39 +869,39 @@ msgstr "Không có lỗi"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
 #: calendar/libedata-cal/e-cal-backend-sexp.c:722
 #: calendar/libedata-cal/e-cal-backend-sexp.c:749
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "has-categories? cần ít nhất một đối số"
+msgstr "\"%s\" yêu cầu không có tham số"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
 #: calendar/libedata-cal/e-cal-backend-sexp.c:787
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects one argument"
-msgstr "contains cần hai đối số"
+msgstr "\"%s\" yêu cầu một tham số"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
 #: calendar/libedata-cal/e-cal-backend-sexp.c:88
 #: calendar/libedata-cal/e-cal-backend-sexp.c:245
 #: calendar/libedata-cal/e-cal-backend-sexp.c:473
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "contains? cần đối số thứ hai là chuỗi"
+msgstr "\"%s\" yêu cầu tham số đầu tiên là chuỗi"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "make-time cần đối số thứ nhất (là chuỗi thời gian theo ISO 8601)"
+msgstr "\"%s\" yêu cầu tham số đầu tiên là chuỗi ngày/giờ theo ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
 #: calendar/libedata-cal/e-cal-backend-sexp.c:561
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects two arguments"
-msgstr "contains cần hai đối số"
+msgstr "\"%s\" yêu cầu hai tham số"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:133
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
@@ -952,25 +909,25 @@ msgstr "contains cần hai đối số"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
 #: calendar/libedata-cal/e-cal-backend-sexp.c:567
 #: calendar/libedata-cal/e-cal-backend-sexp.c:793
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "time-day-end cần đối số thứ nhất là time_t"
+msgstr "\"%s\" yêu cầu tham số đầu tiên là time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:141
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "time-add-day cần đối số thứ hai là số nguyên"
+msgstr "\"%s\" yêu cầu tham số thứ hai là số nguyên"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
 #: calendar/libedata-cal/e-cal-backend-sexp.c:575
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "tine-add-dau cần đối số thứ nhất là time_t"
+msgstr "\"%s\" yêu cầu tham số thứ hai là time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:481
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "contains? cần đối số thứ hai là chuỗi"
+msgstr "\"%s\" yêu cầu tham số thứ hai là chuỗi"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, fuzzy, c-format
@@ -981,9 +938,9 @@ msgstr ""
 "contains? cần đối số thứ nhất là \"bất kỳ\", \"tóm tắt\", hoặc \"mô tả\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:624
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "has-categories? cần ít nhất một đối số"
+msgstr "\"%s\" yêu cầu ít nhất một tham số"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, fuzzy, c-format
@@ -994,19 +951,17 @@ msgstr ""
 "has-categories? cần mọi đối số đều là chuỗi và hoặc chỉ có một đối số và đối "
 "số đó là boolean sai (#f)"
 
-#: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
+#: servers/groupwise/e-gw-connection.c:148
 msgid "Invalid connection"
-msgstr "Mục đích không hợp lệ"
+msgstr "Kết nối không hợp lệ"
 
-#: servers/groupwise/e-gw-connection.c:84
-#, fuzzy
+#: servers/groupwise/e-gw-connection.c:152
 msgid "Invalid response from server"
-msgstr "Trả lời xác thực từ server sai."
+msgstr "Hồi đáp không hợp lệ từ máy chủ"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:156
 msgid "Bad parameter"
-msgstr ""
+msgstr "Tham số sai"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 #, fuzzy

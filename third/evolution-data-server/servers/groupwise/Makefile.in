@@ -163,7 +163,6 @@ LIBSOUP_REQUIRED = @LIBSOUP_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
@@ -216,8 +215,8 @@ create_account_LDADD = \
 
 soap_test_SOURCES = soap-test.c
 soap_test_LDADD = \
-	$(SOUP_LIBS)						\
-	$(top_builddir)/servers/groupwise/libegroupwise.la	\
+	$(SOUP_LIBS)					\
+	libegroupwise.la				\
 	$(E_DATA_SERVER_LIBS) 
 
 
@@ -279,8 +278,7 @@ create_account_DEPENDENCIES = \
 create_account_LDFLAGS =
 am_soap_test_OBJECTS = soap-test.$(OBJEXT)
 soap_test_OBJECTS = $(am_soap_test_OBJECTS)
-soap_test_DEPENDENCIES = \
-	$(top_builddir)/servers/groupwise/libegroupwise.la
+soap_test_DEPENDENCIES = libegroupwise.la
 soap_test_LDFLAGS =
 
 DEFS = @DEFS@
