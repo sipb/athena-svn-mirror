@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/07/15  18:11:49  tom
+ * malloc only what we need for variable size
+ * 
  * Revision 1.3  90/05/26  13:40:23  tom
  * athena release 7.0e
  * 
@@ -25,7 +28,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 1.4 1990-07-15 18:11:49 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 1.5 1990-07-17 14:21:28 tom Exp $";
 #endif
 
 
@@ -95,6 +98,8 @@ lu_rcvar(varnode, repl, instptr, reqflg)
     case N_RCNFSCLIENT:
       return(get_variable("NFSCLIENT", &(repl->val.value.str)));
     case N_RCAFSSRV:
+      return(get_variable("AFSSRV", &(repl->val.value.str)));
+    case N_RCAFSCLIENT:
       return(get_variable("AFSCLIENT", &(repl->val.value.str)));
     case N_RCRPC:
       return(get_variable("RPC",       &(repl->val.value.str)));
@@ -141,24 +146,29 @@ lu_rcvar(varnode, repl, instptr, reqflg)
 
 
 /*
- * Function:    return(get_variable()
+ * Function:    get_variable()
  * Description: gets var and puts size of it into string. 
  *               getenv() is a lousy copout.
  */
 
 static int 
-return(get_variable(var, str)
-  char *var;
-  str *str;    
+get_variable(var, s)
+  char  *var;
+  strng *s;    
 {
   char *ptr;
 
-  ptr = (char *) getenv(var);
-  if((str.str = (char *) malloc(strlen(ptr) * sizeof(char))) == (char *) NULL)
-	return(BUILD_ERR);
+  if((ptr = (char *) getenv(var)) == (char *) NULL)
+    {
+      s->str = (char *) NULL;
+      s->len = 0;
+      return(BUILD_SUCCESS);
+    }
+  if((s->str = (char *) malloc(strlen(ptr) * sizeof(char))) == (char *) NULL)
+    return(BUILD_ERR);
   
-  strcpy(str.str, ptr);      
-  str.len = strlen(ptr);
+  strcpy(s->str, ptr);      
+  s->len = strlen(ptr);
   return(BUILD_SUCCESS);
 }
 
