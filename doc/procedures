@@ -187,8 +187,21 @@ the Athena repository):
 	cd emacs-22.3
 	find . -name .cvsignore -print | xargs rm
 	perl $CVSROOT/CVSROOT/timestamps.pl
-	cvs import -d -m "Import of emacs version 22.3" third/emacs \
-		fsf emacs-22_3
+	cvs import -d -m "Import emacs 22.3." third/emacs fsf emacs-22_3
+
+After importing, you should take care of files which have been removed
+from one version to the next, since CVS doesn't do a good job.  Here
+is an example:
+
+	cd /tmp
+	cvs co -r fsf third/emacs
+	cd third/emacs
+	cvs update -j emacs-22_2 -j emacs-22_3
+	cvs ci -m "Not present in emacs 22.3."
+
+It is important to remove such files on the vendor branch, so that
+diffs against the vendor branch will work properly.  Locally modified
+files will also need to be removed on the mainline, during the merge.
 
 If you add a new piece of third-party software or import a new
 version, you should look over doc/third-party and see if any notes
