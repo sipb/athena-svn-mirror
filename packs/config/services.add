@@ -1,6 +1,7 @@
 #
 # Athena additions
 #
+
 klogin		543/tcp				# Kerberos authenticated rlogin
 kshell		544/tcp				# and remote shell
 kerberos	750/udp 	kdc		# Kerberos authentication--udp
@@ -14,12 +15,12 @@ kpop		1109/tcp			# Pop with Kerberos
 knetd		2053/tcp			# Kerberos de-multiplexor
 eklogin		2105/tcp			# Kerberos encrypted rlogin
 
-sms_db		775/tcp				# SMS database
-sms_update	777/tcp				# SMS update protocol.
-sms_ureg	779/udp				# SMS user registration.
-
-write		811/tcp 			# Athena remote write service
-andrewhelp	2016/tcp
+moira_db	775/tcp				# Moira database
+moira_update	777/tcp				# Moira update protocol.
+moira_ureg	779/udp				# Moira user registration.
+sms_db		775/tcp				# Moira database
+sms_update	777/tcp				# Moira update protocol.
+sms_ureg	779/udp				# Moira user registration.
 
 olc-locking	2051/tcp			# OLC locking daemon
 olc-query	2052/tcp			# OLC query daemon
@@ -30,24 +31,21 @@ zephyr-srv      2102/udp                        # Zephyr server
 zephyr-clt      2103/udp                        # Zephyr serv-hm connection
 zephyr-hm       2104/udp                        # Zephyr hostmanager
 
+write		811/tcp 			# Athena remote write service
+andrewhelp	2016/tcp			# Andrew help
 discuss		2100/tcp			# Networked conferencing.
 globalmessage	2106/udp			# Global message system
 rkinit		2108/tcp	rkinitd		# Remote ticket granting svc.
 
-# Athena LPR additions
-lpallow		3701/udp			# Query allowed to print
-lpquery		3702/udp			# Quota report and queries
-lplog		3703/udp			# Quota logger
-
+lpallow		3701/udp			# LPR Query allowed to print
+lpquery		3702/udp			# LPR Quota report and queries
+lplog		3703/udp			# LPR Quota logger
 cview		3704/tcp			# Cluster monitoring
-# 3705 reserved for SNMP/NOC
+					# 3705 reserved for SNMP/NOC
 afs-nfs		3706/tcp			# AFS-NFS translator
 athena-olh-ezviewer	3707/tcp
-# 3708 (free)
 calserver	3709/tcp			# Athena calendar server
 athena-timed	3710/udp			# Athena timed
-# 3711 (free)
-# 3712 (free)
 technotify	3713/udp			# TechNotify mail notification
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
@@ -65,7 +63,7 @@ afs3-errors		7006/udp	# error interpretation service
 afs3-bos		7007/udp	# basic overseer process
 afs3-update		7008/udp	# server-to-server updater
 afs3-rmtsys		7009/udp	# remote cache manager service
-# AFS 3 services (old names, from afs/cellconfig.h)
+# Old AFS 3 service names (from afs/cellconfig.h)
 afs			7000/udp	# file server itself
 afscb			7001/udp	# callbacks to cache managers
 afsprot			7002/udp	# users & groups database
