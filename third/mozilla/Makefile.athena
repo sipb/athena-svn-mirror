@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.6 2004-11-01 14:37:54 rbasch Exp $
+# $Id: Makefile.athena,v 1.7 2005-03-24 14:40:33 rbasch Exp $
 
 SHELL=/bin/sh
+ATHINCDIR=/usr/athena/include
+NSSINCDIR=${ATHINCDIR}/mozilla/nss
 common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
 	       --with-gssapi=/usr/athena
 
@@ -45,3 +47,6 @@ all:
 
 install:
 	${MAKE} install DESTDIR="$$SRVD"
+	mkdir -p "$$SRVD${NSSINCDIR}"
+	find security/nss/lib/ -name '*.h' -type f -exec install -m 644 {} \
+	  "$$SRVD${NSSINCDIR}" \;
