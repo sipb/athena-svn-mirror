@@ -99,6 +99,7 @@ install-makemap: makemap
 	mkdir -p ${DESTDIR}${ATHSBINDIR}
 	mkdir -p ${SBINDIR}
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} makemap ${DESTDIR}${ATHSBINDIR}
+	rm -f ${SBINDIR}/makemap
 	ln -s ${ATHSBINDIR}/makemap ${SBINDIR}/makemap
 
 install-docs: makemap.${MAN8SRC}

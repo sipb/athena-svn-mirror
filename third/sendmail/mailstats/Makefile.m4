@@ -86,6 +86,7 @@ install-mailstats: mailstats
 	mkdir -p ${DESTDIR}${ATHSBINDIR}
 	mkdir -p ${SBINDIR}
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} mailstats ${DESTDIR}${ATHSBINDIR}
+	rm -f ${SBINDIR}/mailstats
 	ln -s ${ATHSBINDIR}/mailstats ${SBINDIR}/mailstats
 
 install-docs: mailstats.${MAN8SRC}

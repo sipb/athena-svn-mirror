@@ -85,6 +85,7 @@ install-smrsh: smrsh
 	mkdir -p ${DESTDIR}${ATHEBINDIR}
 	mkdir -p ${EBINDIR}
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} smrsh ${DESTDIR}${ATHEBINDIR}
+	rm -f ${EBINDIR}/smrsh
 	ln -s ${ATHEBINDIR}/smrsh ${EBINDIR}/smrsh
 
 install-docs: smrsh.${MAN8SRC}
