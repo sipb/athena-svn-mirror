@@ -11,11 +11,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.32 1994-11-11 20:30:02 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.33 1994-12-19 07:55:50 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.32 1994-11-11 20:30:02 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.33 1994-12-19 07:55:50 ghudson Exp $";
 static char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -322,10 +322,11 @@ Code_t Z_ReadWait()
 	}
 	if (find_or_insert_uid(&notice.z_uid, notice.z_kind))
 	    return(ZERR_NONE);
+
+	/* Check authentication on the notice. */
+	notice.z_checked_auth = ZCheckAuthentication(&notice, &from);
     }
 
-    /* Check authentication on the notice. */
-    notice.z_checked_auth = ZCheckAuthentication(&notice, &from);
 
     /*
      * Parse apart the z_multinotice field - if the field is blank for
