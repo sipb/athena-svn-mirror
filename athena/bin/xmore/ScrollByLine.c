@@ -2,7 +2,7 @@
  * xman - X window system manual page display program.
  *
  * $XConsortium: ScrollByL.c,v 1.5 89/01/06 18:41:40 kit Exp $
- * $Id: ScrollByLine.c,v 1.5 1999-01-22 23:15:41 ghudson Exp $
+ * $Id: ScrollByLine.c,v 1.6 1999-07-09 22:56:51 rbasch Exp $
  *
  * Copyright 1987, 1988 Massachusetts Institute of Technology
  *
@@ -344,10 +344,11 @@ static XtGeometryResult GeometryManager(w, request, reply)
 } /* Geometery Manager */
 
 /* ARGSUSED */
-static void ChildExpose(w,junk,event)
+static void ChildExpose(w,junk,event,cont)
 Widget w;
-caddr_t junk;
+XtPointer junk;
 XEvent *event;
+Boolean *cont;
 {
 
 /* 
@@ -519,7 +520,7 @@ Boolean force_redisp;
 
   num_lines =  child->core.height / sblw->scroll_by_line.font_height;
 
-  gc = XCreateGC(XtDisplay( (Widget) sblw),XtWindow(child),NULL,0);
+  gc = XCreateGC(XtDisplay( (Widget) sblw),XtWindow(child),0,NULL);
   XSetGraphicsExposures(XtDisplay( (Widget) sblw),gc,TRUE);
 
  /* do not let the window extend out of bounds */
@@ -647,14 +648,15 @@ Boolean force_redisp;
  */
 
 static void
-VerticalThumb(w,junk,percent)
+VerticalThumb(w,junk,percentp)
 Widget w;
-caddr_t junk;
-float *percent;
+XtPointer junk;
+XtPointer percentp;
 {
   int new_line;			/* The new location for the line pointer. */
   float location;		/* The location of the thumb. */
   Widget vbar;
+  float *percent = (float *) percentp;
 
   ScrollByLineWidget sblw = (ScrollByLineWidget) w->core.parent;
 
@@ -681,14 +683,15 @@ float *percent;
  */
 
 static void
-VerticalScroll(w,junk,pos)
+VerticalScroll(w,junk,posp)
 Widget w;
-caddr_t junk;
-int pos;
+XtPointer junk;
+XtPointer posp;
 {
   int new_line;			/* The new location for the line pointer. */
   float location;		/* The new location of the thumb. */
   Widget vbar;
+  int pos = (int) posp;
 
   ScrollByLineWidget sblw = (ScrollByLineWidget) w->core.parent;
 
@@ -729,7 +732,7 @@ Cardinal *num_args;
   ScrollByLineWidget sblw = (ScrollByLineWidget) new;
   Widget window, s_bar;		/* Window widget, and scollbar. */
   Arg arglist[10];		/* an arglist. */
-  ArgList merged_list, XtMergeArgLists(); /* The merged arglist. */
+  ArgList merged_list;		/* The merged arglist. */
   Cardinal window_num, merged_num; /* The number of window args. */
 
   s_bar = XtCreateManagedWidget("verticalScrollBar", scrollbarWidgetClass,
@@ -755,7 +758,7 @@ Cardinal *num_args;
   window = XtCreateWidget("windowWithFile",widgetClass,(Widget) sblw,
 			  merged_list, merged_num);
   XtManageChild(window);
-  XtFree(merged_list);		/* done, free it. */
+  XtFree((char *) merged_list);		/* done, free it. */
 
 /*
  * We want expose (and graphic exposuer) events for this window also. 

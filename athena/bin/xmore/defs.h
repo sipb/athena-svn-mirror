@@ -5,7 +5,7 @@
  *	Created: 	October 23 1987
  *	By:		Chris D. Peterson
  *
- *      $Id: defs.h,v 1.3 1999-01-22 23:15:42 ghudson Exp $
+ *      $Id: defs.h,v 1.4 1999-07-09 22:56:52 rbasch Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -65,7 +65,8 @@ void PopdownHelp(),PopupHelp();
 
 /* main.c */
 
-void main(),Quit(),TextExit(),PrintWarning(),PrintError();
+int main();
+void Quit(),TextExit(),PrintWarning(),PrintError();
 Widget CreateScroll(),CreatePane();
 
 /* pages.c */

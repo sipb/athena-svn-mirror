@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Id: pages.c,v 1.2 1999-01-22 23:15:46 ghudson Exp $";
+  static char rcsid_module_c[] = "$Id: pages.c,v 1.3 1999-07-09 22:56:53 rbasch Exp $";
 #endif lint
 
 /*	This is the file pages.c for the Xmore, a file browsing utility
@@ -9,7 +9,7 @@
  *	Created: 	November 10, 1987
  *	By:		Chris D. Peterson
  *
- *      $Id: pages.c,v 1.2 1999-01-22 23:15:46 ghudson Exp $
+ *      $Id: pages.c,v 1.3 1999-07-09 22:56:53 rbasch Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -71,7 +71,7 @@ FILE * file;
  * Allocate a space for a list of pointer to the beginning of each line.
  */
 
-  nlines = fileinfo.st_size/CHAR_PER_LINE;
+  nlines = fileinfo.st_size/CHAR_PER_LINE + 1;
   line_pointer = (char**) malloc( nlines * sizeof(char *) );
   top_line = line_pointer;
 
@@ -96,14 +96,13 @@ FILE * file;
   while (*page != '\0') {
 
     if ( *page == '\n' ) {
-      *line_pointer++ = page + 1;
-
       if (line_pointer >= top_line + nlines) {
 	top_line = (char **) realloc( top_line, 
 			      (nlines + ADD_MORE_MEM) * sizeof(char *) );
 	line_pointer = top_line + nlines;
 	nlines += ADD_MORE_MEM;
       }
+      *line_pointer++ = page + 1;
     }
     page++;
   }
