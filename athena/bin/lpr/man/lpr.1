@@ -43,9 +43,23 @@ uses a spooling daemon to print the named files when facilities
 become available.  If no names appear, the standard input is assumed.
 The
 .B \-P
-option may be used to force output to a specific printer.  Normally,
-the default printer is used (site dependent), or the value of the
-environment variable APRINTER is used. (See
+option may be used to force output to a specific printer. 
+If no  
+.B \-P
+is specified, the printer name contained in the environment variable
+.B PRINTER 
+is used.  If 
+.B PRINTER
+is not set, the default printer for the
+cluster whose name is contained in the environment variable 
+.B LPR
+is
+used (see
+.IR getcluster (8)).
+If
+.B LPR
+is not set, the default printer for the local cluster is used.
+(See
 .IR printers (7)
 for more information on printer use, names, etc.)
 .PP
@@ -176,7 +190,7 @@ will construct a \fI.railmag\fR file referencing
 .nf
 .ta \w'/usr/spool/*/cf*       'u
 /etc/passwd	personal identification
-/etc/printcap	printer capabilities data base
+/etc/printcap	printer capabilities database
 /usr/lib/lpd*	line printer daemons
 /usr/spool/*	directories used for spooling
 /usr/spool/*/cf*	daemon control files

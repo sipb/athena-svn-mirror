@@ -44,7 +44,7 @@ command was invoked.
 .PP
 Specifying a user's name, or list of user names, will cause
 .I lprm
-to attempt to remove any jobs queued belonging to that user
+to attempt to remove any queued jobs belonging to that user
 (or users).  This form of invoking
 .I lprm
 is useful only to the super-user.
@@ -75,15 +75,28 @@ will kill off an active daemon, if necessary, before removing
 any spooling files.  If a daemon is killed, a new one is
 automatically restarted upon completion of file removals.
 .PP
-The
+The 
 .B \-P
-option may be usd to specify the queue associated with a specific
-printer (otherwise the default printer, or the value of the PRINTER
-variable in the environment is used).
+option may be used to specify a printer. If no  
+.B \-P
+is specified, the printer name contained in the environment variable
+.B PRINTER
+ is used.  If 
+.B PRINTER  
+is not set, the default printer for the
+cluster whose name is contained in the environment variable 
+.B LPR 
+is
+used (see
+.IR getcluster (8)).
+If
+.B LPR
+  is not set, the default printer for the local cluster is used.
+
 .SH FILES
 .nf
 .ta \w'/usr/spool/*/lock   'u
-/etc/printcap	printer characteristics file
+/etc/printcap	printer capabilities database
 /usr/spool/*	spooling directories
 /usr/spool/*/lock	lock file used to obtain the pid of the current
 	daemon and the job number of the currently active job
