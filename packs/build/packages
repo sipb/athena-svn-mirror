@@ -1,4 +1,4 @@
-# $Id: packages,v 1.108 2000-05-18 15:59:11 ghudson Exp $
+# $Id: packages,v 1.109 2000-09-02 14:34:33 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -146,6 +146,7 @@ third/nvi			on linux
 third/patch			on solaris
 third/perl
 third/rcs			on solaris
+third/read-edid			on linux
 third/readline
 third/rs
 third/sendmail			requires hesiod,tcp_wrappers
