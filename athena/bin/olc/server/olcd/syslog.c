@@ -7,12 +7,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.7 1990-08-25 23:51:50 lwvanels Exp $
+ *	$Id: syslog.c,v 1.8 1990-09-02 10:56:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.7 1990-08-25 23:51:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.8 1990-09-02 10:56:47 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -132,6 +132,7 @@ log_to_syslogd (level, text) char *text;
  *	First, open the error log file, printing an error message and dying 
  *	if an error occurs here.  Then, get the system time and print a
  *	formatted version in the error log, followed by the error message.  
+ *	Then, send a broadcase system error message.
  *	Finally, close the file and return.
  */
 
@@ -155,6 +156,45 @@ log_error (message) char *message;
 #endif
   olc_broadcast_message("syserror",message, "system");
 }
+
+/*
+ * Function:	log_zephyr_error() writes an error message into the daemon's
+ *              error log file, but doesn't try to send out a broadcast
+ *		zephyrgram.
+ * Arguments:	message:	Error message to be written.
+ * Returns:	nothing
+ * Notes:
+ *	First, open the error log file, printing an error message and dying 
+ *	if an error occurs here.  Then, get the system time and print a
+ *	formatted version in the error log, followed by the error message.  
+ *	Finally, close the file and return.
+ *	This could be merged with log_error with an additional argument, but
+ *	it's not that big of a deal.
+ */
+
+
+
+
+void
+#if __STDC__
+log_zephyr_error(const char *message)
+#else
+log_error (message) char *message;
+#endif
+{
+#ifdef SYSLOG
+
+  log_to_syslogd (LOG_ERR, message);
+
+#else
+
+  if (error_log == (FILE *)NULL) 
+      error_log = open_log (ERROR_LOG);
+
+  log_to_file (error_log, message);
+#endif
+}
+
 
 /*
  * Function:	log_status() writes a message to the olcd status log.
