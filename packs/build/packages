@@ -1,4 +1,4 @@
-# $Id: packages,v 1.110 2000-12-04 20:13:49 ghudson Exp $
+# $Id: packages,v 1.111 2000-12-11 23:09:50 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -140,7 +140,9 @@ third/krb5			requires et package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
+third/libglade			requires gtk,gnome-libs
 third/libpng			except linux requires zlib
+third/librep
 third/libungif			except linux
 third/look			on irix
 third/lprng/athena		package lprng-misc
@@ -157,7 +159,9 @@ third/perl
 third/rcs			on solaris
 third/read-edid			on linux
 third/readline
+third/rep-gtk			requires librep,libglade,gtk
 third/rs
+third/sawfish			requires rep-gtk
 third/sendmail			requires hesiod,tcp_wrappers
 third/ssh			requires krb5,tcp_wrappers
 third/sysinfo			on solaris,irix,linux
