@@ -16,11 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.13 1990-02-13 15:48:24 vanharen Exp $";
+static char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.14 1990-02-20 04:47:51 raeburn Exp $";
 #endif
 
 
@@ -67,6 +68,8 @@ static int was_connected ();
 void disconnect_knuckles ();
 #endif /* STDC */
 
+
+extern void bzero OPrototype ((void *, unsigned int));
 
 /*
  * Function:    create_user() 
@@ -240,7 +243,6 @@ insert_knuckle(knuckle)
   KNUCKLE **k_ptr;
   int n_knuckles=0;
   int n_inactive=0;
-  static struct timeval time;
   char mesg[BUF_SIZE];
 
   /*
@@ -476,9 +478,9 @@ delete_knuckle(knuckle,cont)
   KNUCKLE **k_ptr;
   int i;
 
-  for (n_knuckles=0; Knuckle_List[n_knuckles] != (KNUCKLE *)NULL; n_knuckles++)
-    if (Knuckle_List[n_knuckles] == knuckle)
-      knuckle_idx = n_knuckles;
+  for (n_knuckles=0; Knuckle_List[n_knuckles] != knuckle; n_knuckles++)
+      if (!Knuckle_List[n_knuckles])
+	  return;
 
   Knuckle_List[knuckle_idx]  = Knuckle_List[n_knuckles-1];
   Knuckle_List[n_knuckles-1] = (KNUCKLE *) NULL;
@@ -522,6 +524,7 @@ delete_knuckle(knuckle,cont)
 }
 
 
+int
 #ifdef __STDC__
 deactivate_knuckle(KNUCKLE *knuckle)
 #else
@@ -585,7 +588,7 @@ init_question(k,topic,text)
      char *text;
 #endif /* STDC */
 {
-  struct timeval tp, tp1;
+  struct timeval tp;
 
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
@@ -594,9 +597,9 @@ init_question(k,topic,text)
       return(ERROR);
     }
 
-  gettimeofday( &tp1, 0 );
+  gettimeofday( &tp, 0 );
 
-  k->timestamp = tp1.tv_sec;
+  k->timestamp = tp.tv_sec;
   k->question->owner = k;
   k->queue = ACTIVE_Q;
   k->question->nseen = 0;
@@ -621,8 +624,6 @@ get_user(person,user)
 #endif /* STDC */
 {
   KNUCKLE **k_ptr;  
-  int status = 0;
-  char mesg[BUF_SIZE];
 
   if (Knuckle_List == (KNUCKLE **) NULL)
     {
@@ -837,7 +838,7 @@ find_knuckle(person,knuckle)
   return(status);
 }
   
-
+int
 #ifdef __STDC__
 get_instance(char *user, int *instance)
 #else
@@ -871,6 +872,7 @@ get_instance(user,instance)
 }
 
 
+int
 #ifdef __STDC__
 verify_instance(KNUCKLE *knuckle, int instance)
 #else
@@ -1101,6 +1103,7 @@ disconnect_knuckles(a, b)
 }
 
 
+void
 #ifdef __STDC__
 free_new_messages(KNUCKLE *knuckle)
 #else
@@ -1117,11 +1120,35 @@ free_new_messages(knuckle)
 
 
 /*
- * Function:	find_available_consultant() finds an available consultant in
- *			the list.
- * Arguments:	user:	Ptr. to user structure for user needing a consultant.
- * Returns:	SUCCESS or FAILURE;
- * Notes:
+ * Function:	match_maker
+ * Arguments:	KNUCKLE* knuckle: The user or consultant who should be
+ *		connected to another person (of the opposite type),
+ *		subject to various constraints.
+ * Returns:	SUCCESS, FAILURE, or ERROR.
+ * Description:	If the `knuckle' in question is an unconnected user,
+ *		find her a consultant.  For unconnected consultants,
+ *		find unconnected users.  Constraints:
+ *
+ *		1. Candidates must be logged in, and not connected to
+ *		any other `knuckle'.  (This refers only to the
+ *		`knuckles' to be connected; other instances are
+ *		ignored.)
+ *		2. Consultants with status FIRST or SECOND will not be
+ *		automatically connected to questions with topics for
+ *		which the consultant is not a specialist.
+ *		3. Priority order for finding a consultant is: FIRST,
+ *		DUTY, SECOND, URGENT.  Consultants not signed on are
+ *		not automatically assigned questions.
+ *		4. A question in "pickup" or "refer" state should not
+ *		be connected to a consultant.
+ *		5. Older questions should get connected to available
+ *		consultants before newer ones.
+ *		6. If two or more consultants are available and
+ *		eligible for connection to a question, and they have
+ *		the same status, consultants with the question's topic
+ *		as a specialty have priority over others.
+ *		7. Consultants with a status of URGENT will be
+ *		connected only to UNSEEN questions.
  */
 
 int
@@ -1132,180 +1159,158 @@ match_maker(knuckle)
      KNUCKLE *knuckle;
 #endif /* STDC */
 {
-  KNUCKLE **k_ptr, *temp = (KNUCKLE *) NULL;	
-  int priority, queue, foo;
-  long t = 0;
-  char msgbuf[BUFSIZ];
-  int status;
-  
-  if(!has_question(knuckle))
-    {
-      if(is_logout(knuckle) ||
-	 is_connected(knuckle) ||
-	 !is_signed_on(knuckle))
-	return(FAILURE);
+    KNUCKLE *k, *match = (KNUCKLE *) NULL;	
+    int i, k_status = knuckle->status;
+    char msgbuf[BUFSIZ];
+    int status;
 
-      priority = CANCEL;   /* lowest connectable priority */
-      
-#ifdef TEST
-      printf("match_maker: %s [%d] has no question\n", 
-	     knuckle->user->username, knuckle->instance);
-#endif /* TEST */
-
-      for(k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	{
-
-#ifdef TEST
-	  printf("match_maker: status: %d   %d queue: %d   ts:  %d\n",
-		 (*k_ptr)->status, (*k_ptr)->user->status,
-		 (*k_ptr)->queue, (*k_ptr)->timestamp);
-	  printf("match_maker: status: %d   %d queue: %d   ts:  %d\n",
-		 knuckle->status, knuckle->user->status,
-		 knuckle->queue, knuckle->timestamp);
-#endif /* TEST */
-	  
-	  if(!has_question((*k_ptr)))
-	    continue;
-	  if(is_connected((*k_ptr)))
-	    continue;
-	  if(was_connected((*k_ptr),knuckle))
-	    continue;
-	  if(is_logout((*k_ptr)))
-	    continue;
-	  if((*k_ptr)->status > QUESTION_STATUS)
-	    continue;
-	  if((*k_ptr) == knuckle)
-	    continue;
-	  else
-	    if(((*k_ptr)->status & QUESTION_STATUS) > priority)
-	      continue;
-	    else
-	      if(((*k_ptr)->timestamp >= t) && 
-		 ((*k_ptr)->status == priority))
-		continue;
-		 
-	  switch(knuckle->status & SIGNED_ON)
-	    {
-	    case FIRST:
-	    case SECOND:
-	      if(is_specialty(knuckle->user,(*k_ptr)->question->topic_code))
-		{
-		  temp = *k_ptr;
-		  t = (*k_ptr)->timestamp;
-		  priority = (*k_ptr)->status;
-		}
-	      break;
-	    case DUTY:
-	    case URGENT:
-	      if(is_specialty(knuckle->user,(*k_ptr)->question->topic_code))
-		{
-		  temp = *k_ptr;
-		  t = (*k_ptr)->timestamp;
-		  foo = DUTY;
-		  priority = (*k_ptr)->status;
-		}
-	      else
-		if(foo != DUTY)
-		  {
-#ifdef TEST
-		    printf("match_maker: assigning to %s\n",
-			   (*k_ptr)->user->username);
-#endif TEST
-		    temp = *k_ptr;
-		    t = (*k_ptr)->timestamp;
-		    priority = (*k_ptr)->status;
-		  }
-	      break;
-	    default:
-	      break;
-	    }
-	}
-    }
-  else
-    {
-      if(is_logout(knuckle) ||
-	 is_pitted(knuckle) ||
-	 is_connected(knuckle) ||
-	 (knuckle->status > QUESTION_STATUS))
-	return(FAILURE);
-      
-      for(k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	{
-	  if((*k_ptr) == knuckle)
-	    continue;
-	  if(is_logout((*k_ptr)))
-	    continue;
-	  if(is_connected((*k_ptr)))
-	    continue;
-	  if(priority < (*k_ptr)->status & SIGNED_ON)
-	     continue;
-	  if((priority == is_signed_on((*k_ptr))) &&
-	     t >= (*k_ptr)->timestamp)
-	     continue;
-
-	  switch((*k_ptr)->status & SIGNED_ON)
-	    {
-	    case FIRST:
-	    case SECOND:
-	      if(!is_specialty((*k_ptr)->user,knuckle->question->topic_code))
-		break;
-	      priority = (*k_ptr)->status & SIGNED_ON;
-	      t = (*k_ptr)->timestamp;
-	      temp = *k_ptr;
-	      break;
-	    case DUTY:
-	    case URGENT:
-	      if(is_specialty((*k_ptr)->user,(knuckle)->question->topic_code))
-		{
-		  temp = *k_ptr;
-		  t = (*k_ptr)->timestamp;
-		  foo = DUTY;
-		  priority = (*k_ptr)->status & SIGNED_ON;
-		}
-	      else
-		if(foo != DUTY)
-		  {
-		    temp = *k_ptr;
-		    t = (*k_ptr)->timestamp;
-		    priority = (*k_ptr)->status & SIGNED_ON;
-		  }
-	      break;
-	    default:
-	      break;
-	    }
-	}
-    }
+    /* constraint 1 for this knuckle */
+    if (is_logout (knuckle) || is_connected (knuckle))
+	return FAILURE;
     
-  if(temp != (KNUCKLE *) NULL)
-    {
-      status = connect_knuckles(temp,knuckle);
-      if(status == SUCCESS)
-	{
-	  if(!owns_question(temp))
-	    (void) sprintf(msgbuf,"Connected to %s %s %s@%s [%d]",
-			   temp->title,
-			   temp->user->realname,
-			   temp->user->username, 
-			   temp->user->machine,
-			   temp->instance);
-	  else
-	    (void) sprintf(msgbuf,"Connected to %s %s %s@%s [%d]",
-			   knuckle->title,
-			   knuckle->user->realname,
-			   knuckle->user->username, 
-			   knuckle->user->machine,
-			   knuckle->instance);
-	  log_daemon(temp,msgbuf);
-	  return(SUCCESS);
+    if (!has_question (knuckle)) {
+	/* this is a consultant's knuckle; look for questions */
+	
+	k_status &= SIGNED_ON;
+	if (!is_signed_on (knuckle))
+	    return FAILURE;
+	
+	for (i = 0; Knuckle_List[i]; i++) {
+	    k = Knuckle_List[i];
+	    /* go through unconnected users, find a match */
+	    if(!has_question(k))
+		continue;
+	    if(is_connected(k))
+		continue;
+	    if(was_connected(k,knuckle))
+		continue;
+	    if(is_logout(k))
+		continue;
+	    switch (k->status) {
+	    case PICKUP:
+	    case REFERRED:
+		continue;
+	    case FIRST:
+	    case SECOND:
+	    case DUTY:
+	    case URGENT:
+		/* consultants? */
+		continue;
+	    default:
+		/* users */
+		break;
+	    }
+	    if (k == knuckle)
+		continue;		/* don't connect to oneself */
+#if 0
+	    {
+		printf ("<Cstatus=%x,", k_status);
+		printf ("Ustatus=%x,", k->status);
+		printf ("spec=(%d,%d)>\n",
+			k->question->topic_code,
+			is_specialty (knuckle->user, k->question->topic_code));
+	    }
+#endif
+	    if (k_status == URGENT
+		&& k->status != NOT_SEEN)
+		continue;
+	    else if ((k_status == FIRST
+		      || k_status == SECOND)
+		     && !is_specialty (knuckle->user, k->question->topic_code))
+		continue;
+	    /* last check: sort by time */
+	    if (match && k->timestamp >= match->timestamp)
+		continue;
+	    /*
+	     * XXX - When a consultant signs on, should specialty
+	     * questions get priority over older non-specialty questions?
+	     */
+	    
+	    match = k;
 	}
-      else
-	if(status == FAILURE)
-	  return(match_maker(knuckle));
-	else
-	  return(ERROR);
+	
     }
-  else
-    return(FAILURE);  
+    else {
+	/* unconnected user: find a consultant */
+	k_status &= QUESTION_STATUS;
+	switch (k_status) {
+	case PICKUP:
+	case REFERRED:
+	    return FAILURE;
+	case CANCEL:
+	case DONE:
+	    /* shouldn't get here */
+	    log_error (fmt ("unconnected user has status %d in match_maker",
+			    k_status));
+	    return ERROR;
+	default:
+	    /* ok */
+	    ;
+	}
+
+	for (i = 0; Knuckle_List[i]; i++) {
+	    k = Knuckle_List[i];
+	    /* check each consultant for availability */
+	    if (k == knuckle)
+		continue;
+	    if (is_logout(k))
+		continue;
+	    if (is_connected(k))
+		continue;
+	    switch (k->status) {
+	    case FIRST:
+	    case SECOND:
+		if (!is_specialty (k->user,
+				   knuckle->question->topic_code))
+		    continue;
+		break;
+	    case URGENT:
+		if (k_status != NOT_SEEN)
+		    continue;
+		break;
+	    case DUTY:
+		break;
+	    default:
+		/* non-consultants */
+		continue;
+	    }
+	    /* selection done; effect sorting when needed */
+	    if (match) {
+		int s1, s2;
+		s1 = match->status & SIGNED_ON;
+		s2 = k->status & SIGNED_ON;
+		if (s1 > s2)
+		    continue;
+		if ((s1 == s2)
+		    && is_specialty (match->user,
+				     knuckle->question->topic_code))
+		    continue;
+	    }
+	    /* if we get here, we won */
+	    match = k;
+	}
+    }
+
+    if (!match) /* oh well */
+	return FAILURE;
+
+    status = connect_knuckles(match,knuckle);
+    if (status == FAILURE) /* try it again... */
+	return match_maker (knuckle);
+    else if (status != SUCCESS) /* ??? */
+	return ERROR;
+
+    /* log a message in the log file */
+    if (!owns_question(match))
+	knuckle = match;	/* use knuckle for consultant name now */
+    (void) sprintf(msgbuf,"Connected to %s %s %s@%s [%d]",
+		   knuckle->title,
+		   knuckle->user->realname,
+		   knuckle->user->username, 
+		   knuckle->user->machine,
+		   knuckle->instance);
+    log_daemon(match, msgbuf);
+    return SUCCESS;
 }
 
 
@@ -1483,15 +1488,15 @@ is_topic(topics,code)
      int code;
 #endif /* STDC */
 {
-  while(topics != (int *) NULL)
-    {
-      if(*topics == code)
-	return(TRUE);
-      ++topics;
-      if((*topics == UNKNOWN_TOPIC) || (*topics <= 0))
-	break;
+    if (!topics)
+	return FALSE;
+    while (*topics != code) {
+	if((*topics == UNKNOWN_TOPIC) || (*topics <= 0)) {
+	    return FALSE;
+	}
+	++topics;
     }
-  return(FALSE);
+    return TRUE;
 }
 
 static int
