@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.14 1990-11-07 19:00:18 raeburn Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.15 1990-11-08 17:35:45 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -272,7 +272,7 @@ void x_gram_create(dpy, gram, xalign, yalign, xpos, ypos, xsize, ysize,
 
     XMapWindow(dpy, w);
 
-    while (beepcount--)
+    if (beepcount)
 	XBell(dpy, 0);
 
    if (reset_saver)
