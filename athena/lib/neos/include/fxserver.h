@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: vrt $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.3 1993-05-06 15:22:15 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.4 1997-11-14 22:22:39 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,6 +16,11 @@
  */
 
 #ifndef _fxserver_h_
+
+#ifdef SOLARIS
+/* To get backward compatibility declarations in <rpc/rpc.h>. */
+#define PORTMAP
+#endif
 
 #include <fxserver_err.h>
 #include <fx-internal.h>
