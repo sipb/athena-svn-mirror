@@ -1,12 +1,12 @@
 #
-# $Id: Imakefile,v 1.7 1990-11-27 14:34:25 lwvanels Exp $
+# $Id: Imakefile,v 1.8 1990-12-31 22:01:56 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
 #
 
 #define IHaveSubdirs
-SUBDIRS=replayer common clients man lib # server+
+SUBDIRS=common clients server+ replayer # man lib 
 RM=rm -f
 MV=mv -f
 
@@ -23,7 +23,11 @@ world2:
 
 install::
 	$(RM) $(DESTDIR)/usr/lib/olc
+	#if defined(ultrix)
+	ln -s /var/usr/lib/olc $(DESTDIR)/usr/lib/olc
+	#else
 	ln -s /site/usr/lib/olc $(DESTDIR)/usr/lib/olc
+	#endif
 
 tags::
 	make ${MFLAGS} olc_tags server_tags
