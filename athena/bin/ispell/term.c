@@ -92,7 +92,7 @@ terminit ()
 	int onstop();
 #ifndef _IBMR2
 /* Only fakes termcap- doesn't have ospeed. */
-	extern short ospeed; */
+	extern short ospeed; 
 #endif
 retry:
 	(void) sigsetmask(1<<SIGTSTP | 1<<SIGTTIN | 1<<SIGTTOU);
