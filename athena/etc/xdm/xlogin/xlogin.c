@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.21 1992-05-20 14:41:19 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.22 1992-05-26 19:06:04 cfields Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -13,10 +13,13 @@
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
+#include <X11/Xaw/Form.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Shell.h>
 #include <X11/Xmu/Drawing.h>
+#include <X11/Xmu/Converters.h>
+#include "owl.h"
 
 /* Define the following if restarting the X server does not restore
  * auto-repeat properly
@@ -36,7 +39,7 @@
 #endif
 
 #ifndef MOTD_FILENAME
-#define MOTD_FILENAME "/afs/athena.mit.edu/system/config/login_motd"
+#define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.74"
 #endif
 
 #define OWL_AWAKE 0
@@ -55,13 +58,14 @@
 
 gid_t def_grplist[] = { 101 };			/* default group list */
 
+
 /*
  * Function declarations.
  */
 extern void AriRegisterAthena ();
 extern unsigned long random();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
-static void blinkOwl(), initOwl(), catch_child(), setFontPath();
+static void blinkOwl(), initOwl(), adjustOwl(), catch_child(), setFontPath();
 static void setAutoRepeat();
 static int getAutoRepeat();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
@@ -310,6 +314,7 @@ main(argc, argv)
   XtRealizeWidget ( appShell );
 
   initOwl( appShell );		/* widget tree MUST be realized... */
+  adjustOwl( appShell );
 
   /* Put the hostname in the label of the host widget */
   gethostname(hname, sizeof(hname));
@@ -1371,6 +1376,86 @@ static void initOwl(search)
     fprintf(stderr, "number of owl bitmaps differs from number of IS bitmaps (%d != %d)\n", owlNumBitmaps, isNumBitmaps);
 }
 
+static short conditions[] =
+{
+  /*51,   82,  114,  144,  176,  206,  238,  269,*/299,  331,  362,  393,
+   552,  582,  616,  646,  677,  708,  739,  770,  799,  830,  862,  893,  924,
+  1083, 1113, 1147, 1177, 1208, 1239, 1270, 1301, 1331, 1363, 1394, 1425,
+  1584, 1615, 1648, 1679, 1710, 1740, 1772, 1802, 1832, 1864, 1895, 1926,
+  2085, 2116, 2149, 2179, 2211, 2241, 2270, 2302, 2332, 2362, 2394, 2424, 2456,
+  2615, 2646, 2679, 2710, 2742, 2772, 2803, 2834, 2864, 2895, 2926, 2957,
+  3116, 3147, 3180, 3211, 3243, 3273, 3305, 3335, 3366, 3397, 3427, 3459,
+  3617, 3647, 3682, 3711, 3742, 3774, 3804, 3836, 3866, 3897, 3928, 3959, 3990
+};
+
+static Boolean conditionsMet()
+{
+  time_t t;
+  struct tm *now;
+  short test;
+  int i;
+
+  t = time(0);
+  now = localtime(&t);
+  test = (now->tm_year - 92) * 512 + (now->tm_mon + 1) * 32 + now->tm_mday;
+
+  i = 0;
+  while ((i < sizeof(conditions)) && (test > conditions[i]))
+    i++;
+
+  if ((test == conditions[i]) && (now->tm_hour >= 18))
+    return True;
+
+  return False;
+}
+
+static void adjustOwl(search)
+     Widget search;
+{
+  Widget version, logo, eyes, Slogo, Sversion;
+  XtWidgetGeometry logoGeom, eyesGeom, versionGeom, SlogoGeom, SversionGeom;
+  Pixmap owlPix;
+  Arg args[2];
+  int newx;
+
+  if (conditionsMet())
+    {
+      /* Look up important widgets */
+      logo = WcFullNameToWidget(search, "*login*logo");
+      eyes = WcFullNameToWidget(search, "*eyes");
+      version = WcFullNameToWidget(search, "*login*version");
+
+      Slogo = WcFullNameToWidget(search, "*hitanykey*logo");
+      Sversion = WcFullNameToWidget(search, "*hitanykey*version");
+
+      /* Plug in the owl bitmap */
+      owlPix = XCreatePixmapFromBitmapData(dpy, DefaultRootWindow(dpy),
+					   owl_bits, owl_width, owl_height,
+					   1, 0, 1);
+      XtSetArg(args[0], XtNbitmap, owlPix);
+      XtSetValues(logo, args, 1);
+
+      XtSetValues(Slogo, args, 1);
+
+      /* Adjust eyes, version */
+      XtQueryGeometry(logo, NULL, &logoGeom);
+      XtQueryGeometry(eyes, NULL, &eyesGeom);
+      XtQueryGeometry(version, NULL, &versionGeom);
+
+      XtMoveWidget(eyes, (logoGeom.width -
+			  ((eyesGeom.x - logoGeom.x) + eyesGeom.width)) +
+		         logoGeom.x,
+		   eyesGeom.y);
+
+      newx = (logoGeom.width - ((versionGeom.x - logoGeom.x) +
+				versionGeom.width)) + logoGeom.x;
+      XtMoveWidget(version, newx, versionGeom.y);
+
+      /* Depends on the fact that both logos have the same geometry. */
+      XtSetArg(args[0], XtNhorizDistance, newx);
+      XtSetValues(Sversion, args, 1);
+    }
+}
 
 /* Called from within the toolkit */
 void localErrorHandler(s)
