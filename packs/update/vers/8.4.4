@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  ;;
+
+sgi)
+  rm -f /etc/rc2.d/S98midi /etc/rc2.d/s98midi
+  rm -f /etc/rc0.d/K02midi /etc/rc0.d/k02midi
+  ln -s ../init.d/midi /etc/rc2.d/S98midi
+  ln -s ../init.d/midi /etc/rc0.d/K02midi
+  ;;
+esac
