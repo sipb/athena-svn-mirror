@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.10 2004-04-15 17:41:43 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.11 2004-07-14 23:01:57 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -163,10 +163,10 @@ for locker in $lockers ; do
   /bin/athena/attach -h -n -q $locker
 done
 
-# Add fonts for MathML.
-infoagents_bindir=`athdir /mit/infoagents`
-if [ -x $infoagents_bindir/add-mathml-fonts ]; then
-  $infoagents_bindir/add-mathml-fonts
+# Configure fontconfig to use fonts for MathML.
+if [ -z "$FONTCONFIG_FILE" ]; then
+  FONTCONFIG_FILE=/mit/infoagents/share/fonts/fonts.conf
+  export FONTCONFIG_FILE
 fi
 
 # If the user specified a profile to use, is otherwise manipulating
