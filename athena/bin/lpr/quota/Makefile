@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.1 1990-04-16 16:26:31 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.2 1990-04-16 16:40:27 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -85,6 +85,12 @@ lint_s_chkaf:
 
 qdb_create: ${LOBJS}
 	cc -o qdb_create ${LOBJS} ${LIBS}
+
+install:
+	install -s -c lpquota ${DESTDIR}/usr/athena/lpquota
+	install -s -c lpqd ${DESTDIR}/usr/etc/lpqd
+	install -s -c s_chkaf ${DESTDIR}/usr/etc/s_chkaf
+
 clean:
 	rm -f quota_ncs_sstub.c quota_ncs_cswtch.c quota_ncs_cstub.c \
 		logger_ncs_sstub.c logger_ncs_cswtch.c logger_ncs_cstub.c \
