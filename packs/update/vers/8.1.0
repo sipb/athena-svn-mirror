@@ -57,7 +57,7 @@ sun4)
 
 sgi)
 	echo "TRACKOS=true"			>> "$CONFVARS"
-	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
 	echo "/etc/services"			>> "$CONFCHG"
 	echo "/etc/aliases"			>> "$CONFCHG"
