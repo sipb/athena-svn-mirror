@@ -26,7 +26,7 @@ cp athena-bind.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 %else
 mkdir -p $RPM_BUILD_ROOT/etc/init.d $RPM_BUILD_ROOT/etc/rc2.d
-cp athena-bind.rc $RPM_BUILD_ROOT/etc/init.d
+cp athena-bind.rc $RPM_BUILD_ROOT/etc/init.d/athena-bind
 chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-bind
 ln -s ../init.d/athena-bind $RPM_BUILD_ROOT/etc/rc2.d/S72athena-bind
 %endif
