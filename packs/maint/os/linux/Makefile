@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2002-12-30 15:57:45 rbasch Exp $
+# $Id: Makefile,v 1.10 2003-10-09 19:04:15 rbasch Exp $
 
 SHELL=/bin/sh
 
@@ -20,6 +20,7 @@ install:
 	install -c -m 0755 athena-verify.rc \
 		${DESTDIR}${RCINITDIR}/athena-verify
 	install -c -m 0755 fix-xconfig.sh ${DESTDIR}${ATHRETCDIR}/fix-xconfig
+	install -c -m 0555 syncclock.sh ${DESTDIR}${ATHRETCDIR}/syncclock
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 verify.sh ${DESTDIR}${ATHRETCDIR}/verify
