@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.8 1987-12-18 11:42:50 jtkohl Exp $";
+static char rcsid_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.9 1988-06-23 16:57:35 jtkohl Exp $";
 #endif SABER
 #endif lint
 

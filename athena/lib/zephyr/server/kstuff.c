@@ -1,11 +1,11 @@
 #ifdef KERBEROS
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.5 1988-06-16 09:43:59 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.6 1988-06-23 16:57:13 jtkohl Exp $
  */
 
 #ifndef lint
-static char *rcsid_kstuff_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.5 1988-06-16 09:43:59 jtkohl Exp $";
+static char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.6 1988-06-23 16:57:13 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"

@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.27 1988-06-22 14:19:17 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.28 1988-06-23 16:58:02 jtkohl Exp $";
 #endif SABER
 #endif lint
 

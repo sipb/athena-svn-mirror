@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.23 1988-06-22 14:22:39 jtkohl Exp $";
+static char rcsid_uloc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.24 1988-06-23 16:58:11 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"

@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.24 1988-06-22 14:05:58 jtkohl Exp $";
+static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.25 1988-06-23 16:57:27 jtkohl Exp $";
 #endif SABER
 #endif lint
 
