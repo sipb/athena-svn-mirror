@@ -22,6 +22,12 @@ free and in-use for each cluster, and displays that information for the
 cluster chosen.  Printer status for that cluster is also displayed, as
 well as phone number(s), where available.
 .PP
+Xcluster can also run in a non-interactive mode, where it cycles
+through the clusters automatically. It can also be made to cycle
+through a series of foreground and background colors, to prevent
+screen burn-in on the dedicated xcluster machines that run this
+program all the time.
+.PP
 .SH OPTIONS
 .PD 0
 .TP 21
@@ -40,6 +46,37 @@ seconds.
 .TP 21
 .B \-geometry
 specify an x,y location for placement of window
+.TP 21
+.B \-zoom
+causes the campus map to be moved and resized to the largest size such
+that all of the clusters still fit.
+.TP 21
+.B \-warp
+causes the pointer to be warped to the top, left corner of the screen
+when xcluster starts up.
+.TP 21
+.B \-color[012] colors
+specify a set of colors to be cycled through.
+.I colors
+should be a space-separated list of X colors.
+.TP 21
+.B \-fg color
+specifies the foreground color for the map and text. If
+.I color
+is one of the color sets
+.I color0\fP, \fIcolor1\fP, or \fIcolor2\fP,
+then the foreground color will cycle through the colors in that set.
+.TP 21
+.B \-bg color
+specifies the color or colors for the background.
+.TP 21
+.B \-circlecolor
+specifies the color or colors for the circles and arrows on the
+cluster map.
+.TP 21
+.B \-changetime time
+specifies how many seconds pass between color changes. The default is
+3600 (one hour).
 .PD 1
 .PP
 .SH X RESOURCES
