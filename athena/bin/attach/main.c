@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.9 1990-07-04 17:27:43 jfc Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.10 1990-07-06 10:52:41 jfc Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -138,18 +138,23 @@ main(argc, argv)
 	    } 
     }
 
-    if (!strncmp(progname, ATTACH_CMD, strlen(ATTACH_CMD)))
+    if (!strcmp(progname, ATTACH_CMD))
 	exit(attachcmd(argc, argv));
-    if (!strncmp(progname, DETACH_CMD, strlen(DETACH_CMD)))
+    if (!strcmp(progname, DETACH_CMD))
 	exit(detachcmd(argc, argv));
 #ifdef NFS
 #ifdef KERBEROS
-    if (!strncmp(progname, NFSID_CMD, strlen(NFSID_CMD)))
+    if (!strcmp(progname, NFSID_CMD))
+      {
+	filsys_type = "NFS";
 	exit(nfsidcmd(argc, argv));
+      } else if(!strcmp(progname, FSID_CMD)) {
+	exit(nfsidcmd(argc, argv));
+      }
 #endif
 #endif
 #ifdef ZEPHYR
-    if (!strncmp(progname, ZINIT_CMD, strlen(ZINIT_CMD)))
+    if (!strcmp(progname, ZINIT_CMD))
 	exit(zinitcmd(argc, argv));
 #endif
 
@@ -461,7 +466,6 @@ attachcmd(argc, argv)
     override_suid = -1;		/* -1 means use default */
     mount_options = "";
     error_status = ERR_NONE;
-    filsys_type = "NFS";
     map_anyway = 1;
     
     for (i=1;i<argc;i++) {
