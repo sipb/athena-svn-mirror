@@ -23,6 +23,7 @@
   <oaf_attribute name="description" type="string" _value="EOG Image Viewer"/>
   <oaf_attribute name="bonobo:editable" type="boolean" value="false"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="image/bmp"/>
     <item value="image/gif"/>
     <item value="image/jpeg"/>
     <item value="image/png"/>
@@ -40,7 +41,7 @@
     <item value="image/xpm"/>
     <item value="image/svg"/>
   </oaf_attribute>
-  <oaf_attribute name="nautilus:view_as_name" type="string" _value="EOG Image"/>
+  <oaf_attribute name="nautilus:view_as_name" type="string" _value="Image"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_EOG_Embeddable" type="factory"
@@ -57,6 +58,7 @@
   <oaf_attribute name="description" type="string" _value="Embeddable EOG Image"/>
   <oaf_attribute name="bonobo:editable" type="boolean" value="false"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="image/bmp"/>
     <item value="image/gif"/>
     <item value="image/jpeg"/>
     <item value="image/png"/>
@@ -89,6 +91,7 @@
   <oaf_attribute name="name" type="string" _value="EOG Image"/>
   <oaf_attribute name="description" type="string" _value="EOG Image"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="image/bmp"/>
     <item value="image/gif"/>
     <item value="image/jpeg"/>
     <item value="image/png"/>

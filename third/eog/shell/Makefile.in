@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -71,14 +71,13 @@ EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -88,16 +87,20 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBPREVIEW_CFLAGS = @LIBPREVIEW_CFLAGS@
+LIBPREVIEW_LIBS = @LIBPREVIEW_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -107,13 +110,15 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(GCONF_CFLAGS)							$(EXTRA_WARNING_CFLAGS)						$(EOG_CFLAGS)							-DDATADIR=\""$(datadir)"\"					-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
+INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(GCONF_CFLAGS)							$(EXTRA_WARNING_CFLAGS)						$(EOG_CFLAGS)							$(COLLECTION_FLAGS)						-DDATADIR=\""$(datadir)"\"					-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
 
 
 bin_PROGRAMS = eog
@@ -252,7 +257,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -278,10 +283,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-eog-preferences.o: eog-preferences.c ../config.h eog-preferences.h \
-	eog-window.h
-eog-window.o: eog-window.c ../config.h eog-preferences.h eog-window.h \
-	util.h ../libeog/zoom.h ../libeog/Eog.h
+eog-preferences.o: eog-preferences.c eog-preferences.h
+eog-window.o: eog-window.c ../config.h eog-window.h util.h \
+	../libeog/zoom.h ../libeog/Eog.h ../libeog/eog-file-selection.h
 main.o: main.c ../config.h eog-window.h session.h
 session.o: session.c ../config.h eog-window.h session.h
 util.o: util.c ../config.h util.h
@@ -356,6 +360,8 @@ install-am install uninstall-am uninstall all-redirect all-am all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+@ENABLE_COLLECTION_TRUE@ COLLECTION_FLAGS=-DHAVE_COLLECTION
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

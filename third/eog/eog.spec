@@ -2,9 +2,9 @@
 # Note that this is NOT a relocatable package
 #
 
-%define ver      1.0.4
+%define ver      2.2.0
 %define rel      1
-%define prefix   /opt/gnome
+%define prefix   /gnome/head/INSTALL/
 %define name	 eog
 
 Summary: Eye Of Gnome

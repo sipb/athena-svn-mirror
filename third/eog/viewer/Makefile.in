@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -71,14 +71,13 @@ EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -88,16 +87,20 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBPREVIEW_CFLAGS = @LIBPREVIEW_CFLAGS@
+LIBPREVIEW_LIBS = @LIBPREVIEW_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -107,6 +110,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -118,8 +123,10 @@ INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_
 
 libexec_PROGRAMS = eog-image-viewer
 
-eog_image_viewer_SOURCES =  	eog-image.c			eog-image.h			eog-image-io.c			eog-image-io.h			eog-image-view.c		eog-image-view.h		eog-control.c			eog-control.h			eog-full-screen.c		eog-full-screen.h		eog-preview.c			eog-preview.h			eog-preview-page.c		eog-preview-page.h		eog-print-setup.c		eog-print-setup.h		eog-util.h			eog-util.c			preferences.h			preferences.c			main.c
+eog_image_viewer_SOURCES =  	eog-image.c			eog-image.h			eog-image-io.c			eog-image-io.h			eog-image-view.c		eog-image-view.h		eog-control.c			eog-control.h			eog-full-screen.c		eog-full-screen.h		eog-preview.c			eog-preview.h			eog-preview-page.c		eog-preview-page.h		eog-util.h			eog-util.c			main.c
 
+#	 eog-print-setup.c	\
+#	 eog-print-setup.h	\
 #	 eog-embeddable.c	\
 #	 eog-embeddable.h	\
 #	 eog-embeddable-view.c	\
@@ -145,7 +152,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 eog_image_viewer_OBJECTS =  eog-image.o eog-image-io.o eog-image-view.o \
 eog-control.o eog-full-screen.o eog-preview.o eog-preview-page.o \
-eog-print-setup.o eog-util.o preferences.o main.o
+eog-util.o main.o
 eog_image_viewer_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -258,7 +265,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -284,31 +291,28 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-eog-control.o: eog-control.c ../config.h eog-control.h eog-image-view.h \
+eog-control.o: eog-control.c ../config.h ../libeog/ui-image.h \
+	../libeog/image-view.h eog-control.h eog-image-view.h \
 	eog-image.h ../libeog/Eog.h eog-util.h
 eog-full-screen.o: eog-full-screen.c ../config.h eog-full-screen.h \
 	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h \
 	../libeog/image-view.h ../libeog/ui-image.h
 eog-image-io.o: eog-image-io.c ../config.h eog-image-io.h eog-image.h \
 	../libeog/Eog.h eog-util.h
-eog-image-view.o: eog-image-view.c ../config.h eog-print-setup.h \
-	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h \
-	eog-full-screen.h ../libeog/image-view.h ../libeog/ui-image.h \
-	preferences.h
+eog-image-view.o: eog-image-view.c ../config.h eog-image-view.h \
+	eog-image.h ../libeog/Eog.h eog-util.h eog-full-screen.h \
+	../libeog/image-view.h ../libeog/ui-image.h \
+	../libeog/eog-file-selection.h ../libeog/eog-pixbuf-util.h
 eog-image.o: eog-image.c ../config.h eog-image.h ../libeog/Eog.h \
-	eog-util.h eog-control.h eog-image-view.h eog-image-io.h
+	eog-util.h eog-control.h eog-image-view.h eog-image-io.h \
+	../libeog/eog-pixbuf-util.h
 eog-preview-page.o: eog-preview-page.c ../config.h eog-preview-page.h \
 	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h
 eog-preview.o: eog-preview.c ../config.h eog-preview.h eog-image-view.h \
 	eog-image.h ../libeog/Eog.h eog-util.h eog-preview-page.h
-eog-print-setup.o: eog-print-setup.c ../config.h eog-image-view.h \
-	eog-image.h ../libeog/Eog.h eog-util.h eog-print-setup.h \
-	eog-preview.h
 eog-util.o: eog-util.c eog-util.h ../libeog/Eog.h
 main.o: main.c ../config.h eog-control.h eog-image-view.h eog-image.h \
 	../libeog/Eog.h eog-util.h
-preferences.o: preferences.c ../config.h eog-image-view.h eog-image.h \
-	../libeog/Eog.h eog-util.h ../libeog/access.h preferences.h
 
 info-am:
 info: info-am

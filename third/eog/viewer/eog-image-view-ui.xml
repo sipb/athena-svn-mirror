@@ -1,54 +1,25 @@
 <Root>
   
 <commands>
-        <cmd name="PrintSetup" _label="Print S_etup" 
+        <cmd name="PrintSetup" _label="Print Set_up" 
              _tip="Setup the page settings for your current printer" 
         	 pixtype="stock" pixname="Print"/>
-        <cmd name="PrintPreview" _label="Print Pre_view"
+        <cmd name="PrintPreview" _label="Print Previe_w..."
              _tip="Previews the image to be printed"
-        	 pixtype="pixbuf"/>
-        <cmd name="Print" _label="_Print"
+             pixtype="pixbuf" accel="*Control**Shift*P"/>
+        <cmd name="Print" _label="_Print..."
              _tip="Print image to the printer"
         	 pixtype="stock" pixname="Print" accel="*Control*P"/>
 
-	<cmd name="SaveAs" _label="_Save As..." 
+	<cmd name="SaveAs" _label="Save _As..." 
 	     pixtype="stock" pixname="Save As" accel="*Control**Shift*S"/>
 
-        <cmd name="InterpolationNearest" _label="Nea_rest Neighbour"
-             type="radio" group="Interpolation"/>
-        <cmd name="InterpolationTiles" _label="_Tiles"
-             type="radio" group="Interpolation"/>
-        <cmd name="InterpolationBilinear" _label="_Bilinear"
-             type="radio" group="Interpolation"/>
-        <cmd name="InterpolationHyperbolic" _label="_Hyperbolic"
-             type="radio" group="Interpolation"/>
-        
-        <cmd name="DitherNone" _label="_None" type="radio" group="Dither"/>
-        <cmd name="DitherNormal" _label="Normal (_pseudocolor)"
-             type="radio" group="Dither"/>
-        <cmd name="DitherMaximum" _label="_Maximum (high color)"
-             type="radio" group="Dither"/>
-        
-        <cmd name="CheckTypeDark" _label="_Dark"
-             type="radio" group="CheckType"/>
-        <cmd name="CheckTypeMidtone" _label="_Midtone"
-             type="radio" group="CheckType"/>
-        <cmd name="CheckTypeLight" _label="_Light"
-             type="radio" group="CheckType"/>
-        <cmd name="CheckTypeBlack" _label="_Black"
-             type="radio" group="CheckType"/>
-        <cmd name="CheckTypeGray" _label="_Gray"
-             type="radio" group="CheckType"/>
-        <cmd name="CheckTypeWhite" _label="_White"
-             type="radio" group="CheckType"/>
-        
-        <cmd name="CheckSizeSmall" _label="Small"
-             type="radio" group="CheckSize"/>
-        <cmd name="CheckSizeMedium" _label="Medium"
-             type="radio" group="CheckSize"/>
-        <cmd name="CheckSizeLarge" _label="Large"
-             type="radio" group="CheckSize"/> 
 	<cmd name="FullScreen"  _label="Full Screen" accel="F11"/>
+	<cmd name="FlipHorizontal" _label="Flip Horizontal"/>
+	<cmd name="FlipVertical" _label="Flip Vertical"/>
+        <cmd name="Rotate90cw" _label="Rotate Clockwise"/>
+	<cmd name="Rotate90ccw" _label="Rotate Counter Clockwise"/>
+	<cmd name="Rotate180" _label="Rotate 180 Degrees"/>
 </commands>
 
 <menu>
@@ -67,39 +38,19 @@
 
             </placeholder>
     </submenu>
+
+    <submenu name="Edit" _label="_Edit">
+           <placeholder name="Edit Items Placeholder">
+                  <menuitem name="FlipHorizontal" verb=""/>
+                  <menuitem name="FlipVertical" verb=""/>
+	          <separator/>
+                  <menuitem name="Rotate90cw" verb=""/>
+                  <menuitem name="Rotate90ccw" verb=""/>
+	          <menuitem name="Rotate180" verb=""/>
+           </placeholder>
+    </submenu>
   
-    <submenu name="View">
-
-            <placeholder name="View Preferences Placeholder">
-
-        	    <submenu name="Interpolation" _label="_Interpolation">
-        		    <menuitem name="InterpolationNearest" verb=""/>
-        		    <menuitem name="InterpolationTiles" verb=""/>
-        		    <menuitem name="InterpolationBilinear" verb=""/>
-        		    <menuitem name="InterpolationHyperbolic" verb=""/>
-        	     </submenu>
-          
-        	     <submenu name="Dither" _label="_Dither">
-        		    <menuitem name="DitherNone" verb=""/>
-        		    <menuitem name="DitherNormal" verb=""/>
-        		    <menuitem name="DitherMaximum" verb=""/>
-        	     </submenu>
-          
-        	     <submenu name="CheckType" _label="Check _type">
-        		    <menuitem name="CheckTypeDark" verb=""/>
-        		    <menuitem name="CheckTypeMidtone" verb=""/>
-        		    <menuitem name="CheckTypeLight" verb=""/>
-        		    <menuitem name="CheckTypeBlack" verb=""/>
-        		    <menuitem name="CheckTypeGray" verb=""/>
-        		    <menuitem name="CheckTypeWhite" verb=""/>
-        	     </submenu>
-          
-        	     <submenu name="CheckSize" _label="Check _size">
-        		    <menuitem name="CheckSizeSmall" verb=""/>
-        		    <menuitem name="CheckSizeMedium" verb=""/>
-        		    <menuitem name="CheckSizeLarge" verb=""/>
-        	     </submenu>
-            </placeholder>
+    <submenu name="View" _label="_View">
 
             <placeholder name="View Items Placeholder">
   	             <menuitem name="FullScreen" verb=""/>

@@ -1,287 +1,158 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
- * eog-preferences.c
- *
- * Authors:
- *   Martin Baulig (baulig@suse.de)
- *   Jens Finke (jens@triq.net)
- *
- * Copyright: 2000 SuSE GmbH.
- *            2002 Free Software Foundation
- */
-#include <config.h>
-#include <stdio.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmarshal.h>
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtknotebook.h>
-#include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-help.h>
-#include <eog-preferences.h>
+#include <gtk/gtk.h>
+#include <glade/glade.h>
+#include <libgnomeui/libgnomeui.h>
+#include "eog-preferences.h"
+
+#define EOG_VIEW_INTERPOLATE_IMAGE   "/apps/eog/view/interpolate"
+#define EOG_VIEW_TRANSPARENCY        "/apps/eog/view/transparency"
+#define EOG_VIEW_TRANS_COLOR         "/apps/eog/view/trans_color"
+#define GCONF_OBJECT_KEY             "GCONF_KEY"
+#define GCONF_OBJECT_VALUE           "GCONF_VALUE"
+
+static void
+check_toggle_cb (GtkWidget *widget, gpointer data)
+{
+	char *key = NULL;
+
+	key = g_object_get_data (G_OBJECT (widget), GCONF_OBJECT_KEY);
+	if (key == NULL) return;
+
+	gconf_client_set_bool (GCONF_CLIENT (data),
+			       key,
+			       gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
+			       NULL);
+}
 
 
-GNOME_CLASS_BOILERPLATE (EogPreferences,
-			 eog_preferences,
-			 GtkDialog,
-			 GTK_TYPE_DIALOG);
-
-struct _EogPreferencesPrivate {
-	EogWindow          *window;
+static void
+color_change_cb (GtkWidget *widget, guint red, guint green, guint blue, guint a, gpointer data)
+{
+	char *key = NULL;
+	char *value = NULL;
+	char *ptr;
 	
-	GtkWidget          *notebook;
+	value = g_strdup_printf ("#%2X%2X%2X",
+			     red / 256,
+			     green / 256,
+			     blue / 256);
+  
+	for (ptr = value; *ptr; ptr++)
+		if (*ptr == ' ')
+			*ptr = '0';
 
-	/* Destroy signal handler ID relative to the parent window */
-	guint parent_window_destroy_id;
-};
-
-static void eog_preferences_response (GtkDialog *dialog, gint id);
-
-static void
-eog_preferences_destroy (GtkObject *object)
-{
-	EogPreferences *preferences;
-	EogPreferencesPrivate *priv;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EOG_IS_PREFERENCES (object));
-
-	if (getenv ("DEBUG_EOG"))
-		g_message ("Destroying EogPreferences...");
-
-	preferences = EOG_PREFERENCES (object);
-	priv = preferences->priv;
-
-	if (priv->parent_window_destroy_id) {
-		g_assert (priv->window != NULL);
-		g_signal_handler_disconnect (G_OBJECT (priv->window), priv->parent_window_destroy_id);
-		priv->parent_window_destroy_id = 0;
-	}
-
-	if (priv->window) {
-		g_object_unref (priv->window);
-		priv->window = NULL;
-	}
-
-	GNOME_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
-eog_preferences_finalize (GObject *object)
-{
-	EogPreferences *preferences;
-
-	preferences = EOG_PREFERENCES (object);
-
-	g_free (preferences->priv);
-
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
-static void
-eog_preferences_class_init (EogPreferencesClass *class)
-{
-	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
-	GtkDialogClass *dialog_class;
-
-	gobject_class = (GObjectClass *) class;
-	object_class = (GtkObjectClass *) class;
-	dialog_class = (GtkDialogClass *) class;
-
-	gobject_class->finalize = eog_preferences_finalize;
-
-	object_class->destroy = eog_preferences_destroy;
-
-	dialog_class->response = eog_preferences_response;
-}
-
-static void
-eog_preferences_instance_init (EogPreferences *preferences)
-{
-	preferences->priv = g_new0 (EogPreferencesPrivate, 1);
-}
-
-static void
-add_property_control_page (EogPreferences *preferences,
-			   Bonobo_PropertyControl property_control,
-			   BonoboUIContainer *uic,
-			   CORBA_long page_num,
-			   CORBA_Environment *ev)
-{
-	GtkWidget *page;
-	GtkWidget *label;
-	Bonobo_PropertyBag property_bag;
-	Bonobo_Control control;
-	gchar *title = NULL;
-
-	control = Bonobo_PropertyControl_getControl (property_control,
-						     page_num, ev);
-	if (control == CORBA_OBJECT_NIL)
+	key = g_object_get_data (G_OBJECT (widget), GCONF_OBJECT_KEY);
+	if (key == NULL || value == NULL) 
 		return;
-	
-	/* Get title for page */
-	property_bag = Bonobo_Unknown_queryInterface (control, 
-						      "IDL:Bonobo/PropertyBag:1.0", 
-						      ev);
-	if (property_bag != CORBA_OBJECT_NIL) {
-		title = bonobo_pbclient_get_string (property_bag, 
-						    "bonobo:title", ev);
-		bonobo_object_release_unref (property_bag, NULL);
-	} else
-		title = g_strdup ("Unknown");
-	label = gtk_label_new (title);
-	g_free (title);
 
-	/* Get content for page */
-	page = bonobo_widget_new_control_from_objref (control, 
-						      BONOBO_OBJREF (uic));
-	gtk_widget_show_all (page);
-
-	gtk_notebook_append_page (GTK_NOTEBOOK (preferences->priv->notebook),
-				  page, label);
-
-	bonobo_object_release_unref (control, ev);
-}
-
-/* Opens the help browser with help for the preferences dialog */
-static void
-show_help (EogPreferences *preferences)
-{
-	GError *error;
-
-	error = NULL;
-
-	gnome_help_display ("eog", "eog-prefs", &error);
-	if (error) {
-		GtkWidget *dialog;
-
-		dialog = gtk_message_dialog_new (GTK_WINDOW (preferences),
-						 0,
-						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
-						 _("Could not display help for the "
-						   "preferences dialog.\n"
-						   "%s"),
-						 error->message);
-
-		g_signal_connect_swapped (dialog, "response",
-					  G_CALLBACK (gtk_widget_destroy),
-					  dialog);
-		gtk_widget_show (dialog);
-
-		g_error_free (error);
-	}
-}
-
-/* GtkDialog::response implementation */
-static void
-eog_preferences_response (GtkDialog *dialog, gint id)
-{
-	EogPreferences *preferences;
-
-	preferences = EOG_PREFERENCES (dialog);
-
-	switch (id) {
-	case GTK_RESPONSE_HELP:
-		show_help (preferences);
-		break;
-
-	default:
-		gtk_widget_destroy (GTK_WIDGET (dialog));
-		break;
-	}
-}
-
-EogPreferences *
-eog_preferences_construct (EogPreferences *preferences,
-			   EogWindow      *window)
-{
-	Bonobo_PropertyControl prop_control;
-	BonoboUIContainer *uic;
-	CORBA_Environment ev;
-	CORBA_long page_count, i;
-
-	g_return_val_if_fail (preferences != NULL, NULL);
-	g_return_val_if_fail (window != NULL, NULL);
-	g_return_val_if_fail (EOG_IS_PREFERENCES (preferences), NULL);
-	g_return_val_if_fail (EOG_IS_WINDOW (window), NULL);
-
-	preferences->priv->window = window;
-	g_object_ref (window);
-
-	gtk_window_set_resizable (GTK_WINDOW (preferences), FALSE);
-
-	gtk_window_set_title (GTK_WINDOW (preferences), _("Eye of Gnome Preferences"));
-	gtk_dialog_add_buttons (GTK_DIALOG (preferences),
-				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-				GTK_STOCK_HELP, GTK_RESPONSE_HELP,
-				NULL);
-	gtk_dialog_set_has_separator (GTK_DIALOG (preferences), FALSE);
-	preferences->priv->notebook = gtk_notebook_new ();
-	gtk_widget_show (preferences->priv->notebook);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (preferences)->vbox), 
-			   preferences->priv->notebook);
-
-	CORBA_exception_init (&ev);
-
-	prop_control = eog_window_get_property_control (window, &ev);
-
-	if (prop_control == CORBA_OBJECT_NIL) {
-		gtk_object_destroy (GTK_OBJECT (preferences));
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-
-	uic = bonobo_window_get_ui_container (BONOBO_WINDOW (window));
-
-	if (uic == NULL) {
-		gtk_object_destroy (GTK_OBJECT (preferences));
-		bonobo_object_release_unref (prop_control, &ev);
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-
-	page_count = Bonobo_PropertyControl__get_pageCount (prop_control, &ev);
-
-	if (page_count == 1) {
-		gtk_notebook_set_show_border (GTK_NOTEBOOK (preferences->priv->notebook), FALSE);
-		gtk_notebook_set_show_tabs (GTK_NOTEBOOK (preferences->priv->notebook), FALSE);
-	}
-	
-	for (i = 0; i < page_count; i++)
-		add_property_control_page (preferences, prop_control,
-					   uic, i, &ev);
-
-	bonobo_object_release_unref (prop_control, &ev);
-	CORBA_exception_free (&ev);
-
-	return preferences;
+	gconf_client_set_string (GCONF_CLIENT (data),
+				 key,
+				 value,
+				 NULL);
 }
 
 static void
-destroy_prefs_window (EogWindow *window,
-		      EogPreferences *preferences)
+radio_toggle_cb (GtkWidget *widget, gpointer data)
 {
-	gtk_widget_destroy (GTK_WIDGET (preferences));
+	char *key = NULL;
+	char *value = NULL;
+	
+
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) 
+	    return;
+
+	key = g_object_get_data (G_OBJECT (widget), GCONF_OBJECT_KEY);
+	value = g_object_get_data (G_OBJECT (widget), GCONF_OBJECT_VALUE);
+	if (key == NULL || value == NULL) 
+		return;
+
+	gconf_client_set_string (GCONF_CLIENT (data),
+				 key,
+				 value,
+				 NULL);
 }
 
-GtkWidget *
-eog_preferences_new (EogWindow *window)
+static gboolean
+key_press_cb (GtkWidget *dialog, GdkEventKey *event, gpointer user_data)
 {
-	EogPreferences *preferences;
-	EogPreferencesPrivate *priv;
-	
-	g_return_val_if_fail (EOG_IS_WINDOW (window), NULL);
-
-	preferences = g_object_new (eog_preferences_get_type (), NULL);
-
-	priv = preferences->priv;
-
-	/* Kind of hack, but can't seem to find a way to change
-	   a GtkDialog's flags after its been created */
-	priv->parent_window_destroy_id = g_signal_connect (G_OBJECT (window), "destroy",
-							   G_CALLBACK (destroy_prefs_window),
-							   preferences);
-	
-	return GTK_WIDGET (eog_preferences_construct (preferences, window));
+	if (event->keyval == GDK_Escape) {
+		gtk_widget_destroy (dialog);
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
 }
+
+void
+eog_preferences_show (GConfClient *client)
+{
+	GtkWidget *dlg;
+	GladeXML  *xml;
+	GtkWidget *widget;
+	char *value;
+	GdkColor color;
+
+	xml = glade_xml_new (DATADIR "/eog/glade/eog.glade", "Preferences Dialog", "eog");
+	g_assert (xml != NULL);
+
+	dlg = glade_xml_get_widget (xml, "Preferences Dialog");
+	g_signal_connect (G_OBJECT (dlg), "key-press-event",
+			  G_CALLBACK (key_press_cb), NULL);
+
+	widget = glade_xml_get_widget (xml, "close_button");
+	g_signal_connect_swapped (G_OBJECT (widget), "clicked", 
+				  G_CALLBACK (gtk_widget_destroy), dlg);
+
+	/* interpolate flag */
+	widget = glade_xml_get_widget (xml, "interpolate_check");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), 
+				      gconf_client_get_bool (client, EOG_VIEW_INTERPOLATE_IMAGE, NULL));
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_KEY, EOG_VIEW_INTERPOLATE_IMAGE);
+	g_signal_connect (G_OBJECT (widget), 
+			  "toggled", 
+			  G_CALLBACK (check_toggle_cb), 
+			  client);
+
+	/* Transparency radio group */
+	widget = glade_xml_get_widget (xml, "color_radio");
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_KEY, EOG_VIEW_TRANSPARENCY);
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_VALUE, "COLOR");
+	g_signal_connect (G_OBJECT (widget), 
+			  "toggled", 
+			  G_CALLBACK (radio_toggle_cb), 
+			  client);
+
+	widget = glade_xml_get_widget (xml, "checkpattern_radio");
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_KEY, EOG_VIEW_TRANSPARENCY);
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_VALUE, "CHECK_PATTERN");
+	g_signal_connect (G_OBJECT (widget), 
+			  "toggled", 
+			  G_CALLBACK (radio_toggle_cb), 
+			  client);
+	
+	value = gconf_client_get_string (client, EOG_VIEW_TRANSPARENCY, NULL);
+	if (g_strncasecmp (value, "COLOR") == 0) {
+		widget = glade_xml_get_widget (xml, "color_radio");
+	}
+	else {
+		widget = glade_xml_get_widget (xml, "checkpattern_radio");
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
+
+	/* color picker */
+	value = gconf_client_get_string (client, EOG_VIEW_TRANS_COLOR, NULL);
+	widget = glade_xml_get_widget (xml, "colorpicker");
+	if (gdk_color_parse (value, &color)) {
+		gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (widget),
+					    color.red,
+					    color.green,
+					    color.blue,
+					    255);
+	}
+	g_object_set_data (G_OBJECT (widget), GCONF_OBJECT_KEY, EOG_VIEW_TRANS_COLOR);
+	g_signal_connect (G_OBJECT (widget),
+			  "color-set",
+			  G_CALLBACK (color_change_cb),
+			  client);
+}
+

@@ -53,32 +53,38 @@ create_app_list (gpointer data)
 }
 
 static GnomeVFSURI*
-make_canonical_uri (const gchar *path)
+make_canonical_uri (const char *path)
 {
-	GnomeVFSURI *uri;
-	gchar *current_dir;
-	gchar *canonical;
-	gchar *concat_path;
+	GnomeVFSURI *uri = NULL;
+	char *plain;
+	char *current_dir;
+	char *canonical;
+	char *concat_path;
 
 	g_return_val_if_fail (path != NULL, NULL);
 
-	if (strchr (path, ':') != NULL)
-		return gnome_vfs_uri_new (path);
+	plain = gnome_vfs_unescape_string (path, "/");
 
-	if (path[0] == '/')
-		return gnome_vfs_uri_new (path);
-
-	current_dir = g_get_current_dir ();
-	/* g_get_current_dir returns w/o trailing / */
-	concat_path = g_strconcat (current_dir, "/", path, NULL);
-	canonical = gnome_vfs_make_path_name_canonical (concat_path);
+	if (strchr (plain, ':') != NULL) {
+		uri = gnome_vfs_uri_new (plain);
+	}
+	else if (plain[0] == '/') {
+		uri = gnome_vfs_uri_new (plain);
+	}
+	else {
+		current_dir = g_get_current_dir ();
+		/* g_get_current_dir returns w/o trailing / */
+		concat_path = g_build_filename (current_dir, plain, NULL);
+		canonical = gnome_vfs_make_path_name_canonical (concat_path);
 	
-	uri = gnome_vfs_uri_new (canonical);
+		uri = gnome_vfs_uri_new (canonical);
 
-	g_free (current_dir);
-	g_free (canonical);
-	g_free (concat_path);
+		g_free (current_dir);
+		g_free (canonical);
+		g_free (concat_path);
+	}
 
+	g_free (plain);
 	return uri;
 }
 
@@ -157,8 +163,7 @@ enum {
  *
  * @Return value: TRUE, if a collection should be used, else FALSE.
  * */
-#ifdef EOG_COLLECTION_WORKS
-
+#ifdef HAVE_COLLECTION
 static gint
 user_wants_collection (gint n_windows)
 {
@@ -213,7 +218,7 @@ user_wants_collection (gint n_windows)
 
 	return ret;
 }
-#endif /* EOG_COLLECTION WORKS */
+#endif /* HAVE_COLLECTION */
 
 /* Concatenates the strings in a list and separates them with newlines.  If the
  * list is empty, returns the empty string.  Returns the number of list elements in n.
@@ -272,8 +277,8 @@ error_dialog_response_cb (GtkDialog *dialog, gint response_id)
 static void
 show_nonexistent_files (GList *error_list)
 {
-	char *str;
 	char *msg;
+	char *str;
 	int n;
 	GtkWidget *dialog;
 
@@ -282,25 +287,23 @@ show_nonexistent_files (GList *error_list)
 	str = concat_string_list_with_newlines (error_list, &n);
 
 	if (n == 1)
-		msg = g_strdup_printf (_("Could not access %s\n"
-					 "Eye of Gnome will not be able to display this file."),
-				       str);
+		msg = _("Could not access %s\n"
+			"Eye of Gnome will not be able to display this file.");
 	else
-		msg = g_strdup_printf (_("The following files cannot be displayed "
-					 "because Eye of Gnome was not able to "
-					 "access them:\n"
-					 "%s"),
-				       str);
-
-	g_free (str);
+		msg = _("The following files cannot be displayed "
+			"because Eye of Gnome was not able to "
+			"access them:\n"
+			"%s");
 
 	dialog = gtk_message_dialog_new (
 		NULL,
 		0,
 		GTK_MESSAGE_ERROR,
 		GTK_BUTTONS_CANCEL,
-		msg);
-	g_free (msg);
+		msg,
+		str);
+
+	g_free (str);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (error_dialog_response_cb),

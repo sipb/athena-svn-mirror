@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -71,14 +71,13 @@ EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -88,16 +87,20 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBPREVIEW_CFLAGS = @LIBPREVIEW_CFLAGS@
+LIBPREVIEW_LIBS = @LIBPREVIEW_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -107,6 +110,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -115,7 +120,7 @@ cxxflags_set = @cxxflags_set@
 
 SUBDIRS = cursors
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						-DDATADIR=\""$(datadir)"\"					-I$(srcdir) -I$(top_srcdir)					-I$(top_srcdir)/src						-I$(top_builddir)						$(EOG_CFLAGS)							$(EXTRA_WARNING_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						$(COLLECTION_FLAGS)						-DDATADIR=\""$(datadir)"\"					-I$(srcdir) -I$(top_srcdir)					-I$(top_srcdir)/src						-I$(top_builddir)						$(EOG_CFLAGS)							$(EXTRA_WARNING_CFLAGS)
 
 
 CORBA_SOURCES =  	Eog.h				Eog-common.c			Eog-stubs.c			Eog-skels.c
@@ -123,7 +128,7 @@ CORBA_SOURCES =  	Eog.h				Eog-common.c			Eog-stubs.c			Eog-skels.c
 
 noinst_LIBRARIES = libeog.a
 
-libeog_a_SOURCES =  	$(CORBA_SOURCES)			access.c				access.h			        accessible-image-view-factory.h	        accessible-image-view-factory.c	        accessible-image-view.h		        accessible-image-view.c			image-view.c				image-view.h				uta.c					uta.h					cursors.c				cursors.h				ui-image.c				ui-image.h				zoom.c					zoom.h
+libeog_a_SOURCES =  	$(CORBA_SOURCES)			access.c				access.h			        accessible-image-view-factory.h	        accessible-image-view-factory.c	        accessible-image-view.h		        accessible-image-view.c			eog-file-selection.h			eog-file-selection.c			eog-pixbuf-util.h			eog-pixbuf-util.c			image-view.c				image-view.h				uta.c					uta.h					cursors.c				cursors.h				ui-image.c				ui-image.h				zoom.c					zoom.h
 
 
 idls =  	$(top_srcdir)/idl/Eog.idl
@@ -137,7 +142,7 @@ serverdir = $(libdir)/bonobo/servers
 server_DATA = $(server_in_files:.server.in.in=.server)
 
 BUILT_SOURCES = $(CORBA_SOURCES)
-CLEANFILES =  $(BUILT_SOURCES) $(server_DATA)
+CLEANFILES = $(BUILT_SOURCES) $(server_DATA)
 
 EXTRA_DIST = $(server_in_files)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -150,8 +155,9 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 libeog_a_LIBADD = 
 libeog_a_OBJECTS =  Eog-common.o Eog-stubs.o Eog-skels.o access.o \
-accessible-image-view-factory.o accessible-image-view.o image-view.o \
-uta.o cursors.o ui-image.o zoom.o
+accessible-image-view-factory.o accessible-image-view.o \
+eog-file-selection.o eog-pixbuf-util.o image-view.o uta.o cursors.o \
+ui-image.o zoom.o
 AR = ar
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -309,7 +315,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -356,6 +362,9 @@ cursors.o: cursors.c ../config.h cursors.h cursors/hand-open-data.xbm \
 	cursors/hand-open-mask.xbm cursors/hand-closed-data.xbm \
 	cursors/hand-closed-mask.xbm
 Eog-common.o: Eog-common.c Eog.h
+eog-file-selection.o: eog-file-selection.c ../config.h \
+	eog-file-selection.h
+eog-pixbuf-util.o: eog-pixbuf-util.c eog-pixbuf-util.h
 Eog-skels.o: Eog-skels.c Eog.h
 Eog-stubs.o: Eog-stubs.c Eog.h
 image-view.o: image-view.c ../config.h cursors.h image-view.h uta.h
@@ -441,6 +450,8 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+@ENABLE_COLLECTION_TRUE@ COLLECTION_FLAGS=-DHAVE_COLLECTION
 
 $(CORBA_SOURCES): $(idls)
 	$(ORBIT_IDL)   $(top_srcdir)/idl/Eog.idl $(idl_flags)
