@@ -1,5 +1,5 @@
 .\" @(#)quota.1 1.1 85/12/28 SMI; from UCB 4.2
-.TH QUOTA 1  "21 August 1985"
+.TH QUOTA 1  "23 May 1990"
 .UC 4
 .SH NAME
 quota \- display disk usage and limits
@@ -8,44 +8,41 @@ quota \- display disk usage and limits
 [
 .B \-v
 ] [
-.B \-i
-] [
-.B \-g
-] [
-user|group
-]
+\-g group | user ]
 .SH DESCRIPTION
 .IX "quota command"  ""  "\fLquota\fP \(em display disk usage and limits"
 .IX "file system"  "display disk usage and limits quota" ""  "display disk usage and limits \(em \fLquota\fP"
 .IX display  "disk usage and limits quota"  ""  "disk usage and limits \(em \fLquota\fP"
 .IX  "limits of disk space quota"  ""  "limits of disk space \(em \fLquota\fP"
 .I Quota
-displays users' and groups' disk usage and limits. 
-Only the super-user may use the optional
-.I user
-or
-.I group
-argument to view the limits of users other than himself.
+displays users' and groups' disk usage and limits.  If a user or group
+is specified (by name or by id), then only those usages and limits on
+locally mounted filesystems for the given user or group are displayed.
 .LP
 .I Quota
 without options displays only warnings 
 about mounted file systems where usage is over quota.
 .SH OPTIONS
 .IP \fB\-v\fP
-Without a username or UID after the -v, this option will display disk
-block usage and quotas for the user and any groups the user is a member
-of on all mounted file systems where quotas exist.
+Without a username or user id after the -v, this option will display
+usages and limits for the user and any groups the user is a member of
+on all mounted file systems where quotas exist.
 
-With a username or UID, this option will display user disk block and
-inode usages and quotas for the given user on locally mounted file
-systems.
-.IP \fB\-i\fP
-In combination with the -v option above, this will cause inode usages
-and quotas to be displayed instead of disk block.
+With a username or UID, this option will display usages and limits for
+the given user on locally mounted file systems running user quotas.
+If the user is not the super-user, then he can specify only his own
+username here or else get a 'permission denied' error.
+
 .IP \fB\-g\fP
-With a group name or GID, this option will display group disk block
-and inode usages and limits for the given group on locally mounted
-file systems.  This option is useful only to the super-user.
+A group name or group id must be present with this option.  Without
+the -v option, warnings about usages which are over quota on locally
+mounted filesystems are displayed for the specified group.  With the
+-v flag, all usages and limits are displayed for the group on locally
+mounted filesystems.
+
+The user must either be the super-user or be a member of the
+specified group.
+
 .SH FILES
 .ta 2i
 \fIquotas\fP	quota file at the file system root
