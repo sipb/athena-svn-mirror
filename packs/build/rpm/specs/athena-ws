@@ -108,6 +108,17 @@ if [ -f /etc/X11/XF86Config ]; then
   mv /etc/X11/XF86Config.new /etc/X11/XF86Config
 fi
 
+# kernel-headers-2.2.16-3 from Red Hat moved /usr/include/{linux,asm}
+# from the file list so the post script.  Since new versions of RPMs
+# are installed before old ones are uninstalled, the uninstallation of
+# the older kernel-headers RPM would nuke those symlinks.  Red Hat has
+# promised to fix this packaging error in the next version of
+# kernel-headers.  Until they do, we need this workaround.
+if [ ! -e /usr/include/linux -a ! -e /usr/include/asm ]; then
+  ln -s ../src/linux/include/linux /usr/include/linux
+  ln -s ../src/linux/include/asm /usr/include/asm
+fi
+
 if grep -q ^HOST /etc/athena/rc.conf ; then true ; else
   HOST=`hostname`  
   cat << EOF >> /etc/athena/rc.conf
