@@ -1,11 +1,6 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.5 1990-07-17 13:43:52 probe Exp $
+ * $Id: track.h,v 4.6 1991-07-22 01:27:20 probe Exp $
  */
-
-#ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.5 1990-07-17 13:43:52 probe Exp $";
-#endif /* lint */
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
@@ -21,19 +16,19 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <stdio.h>
 
 /* Default working directory - under to- or from- root */
-#define DEF_WORKDIR	"/etc/athena/lib"
+#define DEF_WORKDIR	"/usr/athena/lib"
 
 /* Default administrator */
-#define DEF_ADM		"don"
+#define DEF_ADM		"root"
 
 /* Default binary directory - under real root */
-#define DEF_BINDIR	"/etc/athena"
+#define DEF_BINDIR	"/usr/athena/etc"
 
 /* Default root for source of transfer */
 #define DEF_FROMROOT	"/srvd"
 
 /* Default subscription list */
-#define DEF_LOG 	"/usr/adm/TRACKLOG"
+#define DEF_LOG 	"/usr/tmp/TRACKLOG"
 
 /* Default root for destination of transfer: "" == root. */
 #define DEF_TOROOT	""
