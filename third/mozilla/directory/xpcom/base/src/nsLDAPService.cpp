@@ -74,13 +74,6 @@ nsLDAPServiceEntry::~nsLDAPServiceEntry()
 //
 PRBool nsLDAPServiceEntry::Init()
 {
-    nsresult rv;
-
-    rv = NS_NewISupportsArray(getter_AddRefs(mListeners));
-    if (NS_FAILED(rv)) {
-        return PR_FALSE;
-    }
-
     return PR_TRUE;
 }
 
@@ -120,7 +113,7 @@ PRUint32 nsLDAPServiceEntry::GetLeases()
 
 // Get/Set the nsLDAPServer object for this entry.
 //
-nsILDAPServer *nsLDAPServiceEntry::GetServer()
+already_AddRefed<nsILDAPServer> nsLDAPServiceEntry::GetServer()
 {
     nsILDAPServer *server;
 
@@ -139,7 +132,7 @@ PRBool nsLDAPServiceEntry::SetServer(nsILDAPServer *aServer)
 
 // Get/Set/Clear the nsLDAPConnection object for this entry.
 //
-nsILDAPConnection *nsLDAPServiceEntry::GetConnection()
+already_AddRefed<nsILDAPConnection> nsLDAPServiceEntry::GetConnection()
 {
     nsILDAPConnection *conn;
 
@@ -153,7 +146,7 @@ void nsLDAPServiceEntry::SetConnection(nsILDAPConnection *aConnection)
 
 // Get/Set the nsLDAPMessage object for this entry (it's a "cache").
 //
-nsILDAPMessage *nsLDAPServiceEntry::GetMessage()
+already_AddRefed<nsILDAPMessage> nsLDAPServiceEntry::GetMessage()
 {
     nsILDAPMessage *message;
 
@@ -168,31 +161,26 @@ void nsLDAPServiceEntry::SetMessage(nsILDAPMessage *aMessage)
 // Push/Pop pending listeners/callback for this server entry. This is
 // implemented as a "stack" on top of the nsVoidArrays, since we can
 // potentially have more than one listener waiting for the connection
-// to be avilable for consumption.
+// to be available for consumption.
 //
-nsILDAPMessageListener *nsLDAPServiceEntry::PopListener()
+already_AddRefed<nsILDAPMessageListener> nsLDAPServiceEntry::PopListener()
 {
     nsILDAPMessageListener *listener;
-    PRUint32 count;
-
-    mListeners->Count(&count);
+    PRInt32 count = mListeners.Count();
     if (!count) {
         return 0;
     }
 
-    listener = NS_STATIC_CAST(nsILDAPMessageListener *,
-                              mListeners->ElementAt(0));
-    mListeners->RemoveElementAt(0);
+    listener = mListeners[0];
+    NS_ADDREF(listener); // keep it alive
+    mListeners.RemoveObjectAt(0);
 
     return listener;
 }
 PRBool nsLDAPServiceEntry::PushListener(nsILDAPMessageListener *listener)
 {
     PRBool ret;
-    PRUint32 count;
-
-    mListeners->Count(&count);
-    ret = mListeners->InsertElementAt(listener, count);
+    ret = mListeners.InsertObjectAt(listener, mListeners.Count());
 
     return ret;
 }
@@ -236,7 +224,6 @@ nsLDAPService::nsLDAPService()
       mServers(0),
       mConnections(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 // destructor
@@ -402,7 +389,7 @@ NS_IMETHODIMP nsLDAPService::GetServer(const PRUnichar *aKey,
         *_retval = 0;
         return NS_ERROR_FAILURE;
     }
-    if (!(*_retval = entry->GetServer())) {
+    if (!(*_retval = entry->GetServer().get())) {
         return NS_ERROR_FAILURE;
     }
 
@@ -436,8 +423,8 @@ NS_IMETHODIMP nsLDAPService::RequestConnection(const PRUnichar *aKey,
         }
         entry->SetTimestamp();
 
-        conn = getter_AddRefs(entry->GetConnection());
-        message = getter_AddRefs(entry->GetMessage());
+        conn = entry->GetConnection();
+        message = entry->GetMessage();
     }
 
     if (conn) {
@@ -494,7 +481,7 @@ NS_IMETHODIMP nsLDAPService::GetConnection(const PRUnichar *aKey,
     }
     entry->SetTimestamp();
     entry->IncrementLeases();
-    if (!(*_retval = entry->GetConnection())){
+    if (!(*_retval = entry->GetConnection().get())){
         return NS_ERROR_FAILURE;
     }
 
@@ -649,7 +636,7 @@ nsLDAPService::OnLDAPMessage(nsILDAPMessage *aMessage)
                 return NS_ERROR_FAILURE;
             }
 
-            message = getter_AddRefs(entry->GetMessage());
+            message = entry->GetMessage();
             if (message) {
                 // We already have a message, lets keep that one.
                 //
@@ -723,7 +710,7 @@ nsLDAPService::EstablishConnection(nsLDAPServiceEntry *aEntry,
     PRUint32 options;
     nsresult rv;
 
-    server = getter_AddRefs(aEntry->GetServer());
+    server = aEntry->GetServer();
     if (!server) {
         return NS_ERROR_FAILURE;
     }
@@ -796,8 +783,8 @@ nsLDAPService::EstablishConnection(nsLDAPServiceEntry *aEntry,
     {
         nsAutoLock lock(mLock);
 
-        conn2 = getter_AddRefs(aEntry->GetConnection());
-        message = getter_AddRefs(aEntry->GetMessage());
+        conn2 = aEntry->GetConnection();
+        message = aEntry->GetMessage();
     }
 
     if (conn2) {

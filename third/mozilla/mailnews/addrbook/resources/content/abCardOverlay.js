@@ -94,6 +94,8 @@ function OnLoadNewCard()
       if (editCard.card.displayName.length)
         editCard.generateDisplayName = false;
     }
+    if ("aimScreenName" in window.arguments[0])
+      editCard.card.aimScreenName = window.arguments[0].aimScreenName;
   }
 
   // set popup with address book names
@@ -127,11 +129,15 @@ function OnLoadNewCard()
   // FIX ME - looks like we need to focus on both the text field and the tab widget
   // probably need to do the same in the addressing widget
 
-  // focus on first name
-  var firstName = document.getElementById('FirstName');
-  if ( firstName ) {
+  // focus on first or last name based on the pref
+  var focus;
+  if (editCard.displayLastNameFirst)
+    focus = document.getElementById('LastName');
+  else
+    focus = document.getElementById('FirstName');
+  if ( focus ) {
     // XXX Using the setTimeout hack until bug 103197 is fixed
-    setTimeout( function(firstTextBox) { firstTextBox.focus(); }, 0, firstName );
+    setTimeout( function(firstTextBox) { firstTextBox.focus(); }, 0, focus );
   }
   moveToAlertPosition();
 }
@@ -285,8 +291,35 @@ function NotifySaveListeners()
   }
 }
 
+function InitPhoneticFields()
+{
+  var showPhoneticFields =
+        gPrefs.getComplexValue("mail.addr_book.show_phonetic_fields", 
+                               Components.interfaces.nsIPrefLocalizedString).data;
+
+  // hide phonetic fields if indicated by the pref
+  if (showPhoneticFields == "true")
+  {
+    var element = document.getElementById("PhoneticLastName");
+    element.setAttribute("hidden", "false");
+    element = document.getElementById("PhoneticLabel1");
+    element.setAttribute("hidden", "false");
+    element = document.getElementById("PhoneticSpacer1");
+    element.setAttribute("hidden", "false");
+
+    element = document.getElementById("PhoneticFirstName");
+    element.setAttribute("hidden", "false");
+    element = document.getElementById("PhoneticLabel2");
+    element.setAttribute("hidden", "false");
+    element = document.getElementById("PhoneticSpacer2");
+    element.setAttribute("hidden", "false");
+  }
+}
+
 function InitEditCard()
 {
+  InitPhoneticFields();
+
   gAddressBookBundle = document.getElementById("bundle_addressBook");
   // create editCard object that contains global variables for editCard.js
   editCard = new Object;
@@ -295,7 +328,10 @@ function InitEditCard()
 
   // get specific prefs that editCard will need
   try {
-    editCard.displayLastNameFirst = gPrefs.getBoolPref("mail.addr_book.displayName.lastnamefirst");
+    var displayLastNameFirst =
+        gPrefs.getComplexValue("mail.addr_book.displayName.lastnamefirst", 
+                               Components.interfaces.nsIPrefLocalizedString).data;
+    editCard.displayLastNameFirst = (displayLastNameFirst == "true");
     editCard.generateDisplayName = gPrefs.getBoolPref("mail.addr_book.displayName.autoGeneration");
   }
   catch (ex) {
@@ -382,6 +418,13 @@ function GetCardValues(cardproperty, doc)
     doc.getElementById('Custom3').value = cardproperty.custom3;
     doc.getElementById('Custom4').value = cardproperty.custom4;
     doc.getElementById('Notes').value = cardproperty.notes;
+
+    // get phonetic fields if exist
+    try {
+      doc.getElementById('PhoneticFirstName').value = cardproperty.phoneticFirstName;
+      doc.getElementById('PhoneticLastName').value = cardproperty.phoneticLastName;
+    }
+    catch (ex) {}
   }
 }
 
@@ -433,6 +476,13 @@ function SetCardValues(cardproperty, doc)
     cardproperty.custom3 = doc.getElementById('Custom3').value;
     cardproperty.custom4 = doc.getElementById('Custom4').value;
     cardproperty.notes = doc.getElementById('Notes').value;
+
+    // set phonetic fields if exist
+    try {
+      cardproperty.phoneticFirstName = doc.getElementById('PhoneticFirstName').value;
+      cardproperty.phoneticLastName = doc.getElementById('PhoneticLastName').value;
+    }
+    catch (ex) {}
   }
 }
 

@@ -131,9 +131,9 @@ nsSecureBrowserUIImpl::nsSecureBrowserUIImpl()
   : mIsViewSource(PR_FALSE),
     mPreviousSecurityState(lis_no_security)
 {
-  NS_INIT_ISUPPORTS();
   mTransferringRequests.ops = nsnull;
   mNewToplevelSecurityState = STATE_IS_INSECURE;
+  mNewToplevelSecurityStateKnown = PR_TRUE;
   ResetStateTracking();
   
 #if defined(PR_LOGGING)
@@ -539,6 +539,22 @@ nsSecureBrowserUIImpl::OnStateChange(nsIWebProgress* aWebProgress,
         // If a document loading gets triggered, we will see more events.
         return NS_OK;
       }
+
+      if (NS_SUCCEEDED(uri->SchemeIs("wyciwyg", &vs)) && vs)
+      {
+        // We ignore everything caused by wycywig == document.write/writeln
+        // and assume the same security status
+        // Unfortunately, this results in different lock icon states
+        // when using "back".
+        // 1) goto secure page => secure lock icon
+        // 2) trigger document.writeln() => still secure lock icon
+        //    (because we not change lock icon)
+        // 3) go to a different insecure page => insecure lock icon
+        // 4) press "back" button => still insecure lock icon
+        // To fix this, we could try to remember the security state in the 
+        // wyciwyg channel object.
+        return NS_OK;
+      }
     }
   }
 
@@ -752,6 +768,7 @@ nsSecureBrowserUIImpl::OnStateChange(nsIWebProgress* aWebProgress,
               ));
 
       ResetStateTracking();
+      mNewToplevelSecurityStateKnown = PR_FALSE;
     }
 
     // By using a counter, this code also works when the toplevel
@@ -831,6 +848,10 @@ nsSecureBrowserUIImpl::OnStateChange(nsIWebProgress* aWebProgress,
           mNewToplevelSecurityState = nsIWebProgressListener::STATE_IS_INSECURE;
         }
 
+        // assume mNewToplevelSecurityState was set in this scope!
+        // see code that is directly above
+        
+        mNewToplevelSecurityStateKnown = PR_TRUE;
         return UpdateSecurityState(aRequest);
       }
     }
@@ -884,8 +905,19 @@ nsSecureBrowserUIImpl::OnStateChange(nsIWebProgress* aWebProgress,
          ("SecureUI:%p: OnStateChange: subreq INSECURE\n", this));
         ++mSubRequestsNoSecurity;
       }
+      
+      // Care for the following scenario:
+      // A new top level document load might have already started,
+      // but the security state of the new top level document might not yet been known.
+      // 
+      // At this point, we are learning about the security state of a sub-document.
+      // We must not update the security state based on the sub content,
+      // if the new top level state is not yet known.
+      //
+      // We skip updating the security state in this case.
 
-      return UpdateSecurityState(aRequest);
+      if (mNewToplevelSecurityStateKnown)
+        return UpdateSecurityState(aRequest);
     }
 
     return NS_OK;
@@ -1030,19 +1062,19 @@ nsresult nsSecureBrowserUIImpl::UpdateSecurityState(nsIRequest* aRequest)
       {
         case lis_no_security:
         case lis_broken_security:
-          AlertLeavingSecure();
+          ConfirmLeavingSecure();
           break;
 
         case lis_mixed_security:
-          AlertMixedMode();
+          ConfirmMixedMode();
           break;
 
         case lis_low_security:
-          AlertEnteringWeak();
+          ConfirmEnteringWeak();
           break;
 
         case lis_high_security:
-          AlertEnteringSecure();
+          ConfirmEnteringSecure();
           break;
       }
     }
@@ -1255,7 +1287,6 @@ NS_IMPL_ISUPPORTS1(nsUIContext, nsIInterfaceRequestor)
 nsUIContext::nsUIContext(nsIDOMWindow *aWindow)
 : mWindow(aWindow)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsUIContext::~nsUIContext()
@@ -1308,68 +1339,68 @@ GetNSSDialogs(nsISecurityWarningDialogs **result)
   return CallQueryInterface(proxiedResult, result);
 }
 
-void nsSecureBrowserUIImpl::
-AlertEnteringSecure()
+PRBool nsSecureBrowserUIImpl::
+ConfirmEnteringSecure()
 {
   nsCOMPtr<nsISecurityWarningDialogs> dialogs;
 
   GetNSSDialogs(getter_AddRefs(dialogs));
-  if (!dialogs) return;
+  if (!dialogs) return PR_FALSE;  // Should this allow PR_TRUE for unimplemented?
 
   nsCOMPtr<nsIInterfaceRequestor> ctx = new nsUIContext(mWindow);
 
-  PRBool canceled;
-  dialogs->AlertEnteringSecure(ctx, &canceled);
+  PRBool confirms;
+  dialogs->ConfirmEnteringSecure(ctx, &confirms);
 
-  return;
+  return confirms;
 }
 
-void nsSecureBrowserUIImpl::
-AlertEnteringWeak()
+PRBool nsSecureBrowserUIImpl::
+ConfirmEnteringWeak()
 {
   nsCOMPtr<nsISecurityWarningDialogs> dialogs;
 
   GetNSSDialogs(getter_AddRefs(dialogs));
-  if (!dialogs) return;
+  if (!dialogs) return PR_FALSE;  // Should this allow PR_TRUE for unimplemented?
 
   nsCOMPtr<nsIInterfaceRequestor> ctx = new nsUIContext(mWindow);
 
-  PRBool canceled;
-  dialogs->AlertEnteringWeak(ctx, &canceled);
+  PRBool confirms;
+  dialogs->ConfirmEnteringWeak(ctx, &confirms);
 
-  return;
+  return confirms;
 }
 
-void nsSecureBrowserUIImpl::
-AlertLeavingSecure()
+PRBool nsSecureBrowserUIImpl::
+ConfirmLeavingSecure()
 {
   nsCOMPtr<nsISecurityWarningDialogs> dialogs;
 
   GetNSSDialogs(getter_AddRefs(dialogs));
-  if (!dialogs) return;
+  if (!dialogs) return PR_FALSE;  // Should this allow PR_TRUE for unimplemented?
 
   nsCOMPtr<nsIInterfaceRequestor> ctx = new nsUIContext(mWindow);
 
-  PRBool canceled;
-  dialogs->AlertLeavingSecure(ctx, &canceled);
+  PRBool confirms;
+  dialogs->ConfirmLeavingSecure(ctx, &confirms);
 
-  return;
+  return confirms;
 }
 
-void nsSecureBrowserUIImpl::
-AlertMixedMode()
+PRBool nsSecureBrowserUIImpl::
+ConfirmMixedMode()
 {
   nsCOMPtr<nsISecurityWarningDialogs> dialogs;
 
   GetNSSDialogs(getter_AddRefs(dialogs));
-  if (!dialogs) return;
+  if (!dialogs) return PR_FALSE;  // Should this allow PR_TRUE for unimplemented?
 
   nsCOMPtr<nsIInterfaceRequestor> ctx = new nsUIContext(mWindow);
 
-  PRBool canceled;
-  dialogs->AlertMixedMode(ctx, &canceled);
+  PRBool confirms;
+  dialogs->ConfirmMixedMode(ctx, &confirms);
 
-  return;
+  return confirms;
 }
 
 /**

@@ -53,10 +53,8 @@
 #include "nsILocalFile.h"
 #include "nsFilePicker.h"
 #include "nsLookAndFeel.h"
-#include "nsScrollbar.h"
 #include "nsSound.h"
 #include "nsToolkit.h"
-#include "nsModule.h"
 
 // Drag & Drop, Clipboard
 #include "nsClipboard.h"
@@ -117,101 +115,6 @@ static NS_IMETHODIMP nsAppShellConstructor (nsISupports *aOuter, REFNSIID aIID, 
   return rv;
 }
 
-static NS_IMETHODIMP nsWidgetModuleDataConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-
-  // we need to create an object, store it in a global
-  // pointer and call its init method. This object is only
-  // instantiated in the embedding case - for the retail
-  // browser this is done in NS_CreateAppshell
-  gWidgetModuleData = new nsWidgetModuleData();
-  gWidgetModuleData->Init(nsnull);
-  inst = (nsISupports*)gWidgetModuleData;
-
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static NS_IMETHODIMP nsHorizScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports*)(nsBaseWidget*)(nsWindow*)new nsScrollbar(PR_FALSE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static NS_IMETHODIMP nsVertScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports*)(nsBaseWidget*)(nsWindow*)new nsScrollbar(PR_TRUE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-
 // component definition, will be exported using XPCOM
 static const nsModuleComponentInfo components[] =
 {
@@ -219,10 +122,6 @@ static const nsModuleComponentInfo components[] =
     NS_APPSHELL_CID,
     "@mozilla.org/widget/appshell/os2;1",
     nsAppShellConstructor },
-  { "OS/2 Embedded Module Data Init",
-    NS_MODULEDATAOS2_CID,
-    "@mozilla.org/widget/widgetmoduledata/os2;1",
-    nsWidgetModuleDataConstructor },
   { "OS/2 Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
@@ -251,14 +150,6 @@ static const nsModuleComponentInfo components[] =
     NS_LOOKANDFEEL_CID,
     "@mozilla.org/widget/lookandfeel/os2;1",
     nsLookAndFeelConstructor },
-  { "OS/2 Horiz Scrollbar",
-    NS_HORZSCROLLBAR_CID,
-    "@mozilla.org/widget/horizscroll/os2;1",
-    nsHorizScrollbarConstructor },
-  { "OS/2 Vert Scrollbar",
-    NS_VERTSCROLLBAR_CID,
-    "@mozilla.org/widget/vertscroll/os2;1",
-    nsVertScrollbarConstructor },
   { "OS/2 Sound",
     NS_SOUND_CID,
     "@mozilla.org/sound;1",
@@ -284,7 +175,7 @@ static const nsModuleComponentInfo components[] =
 PR_STATIC_CALLBACK(void)
 nsWidgetOS2ModuleDtor(nsIModule *self)
 {
-  OS2Uni::FreeUconvObjects();
+  nsWindow::ReleaseGlobals();
 }
 
 NS_IMPL_NSGETMODULE_WITH_DTOR(nsWidgetOS2Module,

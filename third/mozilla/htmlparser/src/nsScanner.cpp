@@ -43,8 +43,12 @@
 #include "nsIServiceManager.h"
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetAlias.h"
-#include "nsFileSpec.h"
 #include "nsReadableUtils.h"
+#include "nsIInputStream.h"
+#include "nsILocalFile.h"
+#include "nsNetUtil.h"
+
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
 
 nsScannerString::nsScannerString(PRUnichar* aStorageStart, 
                                  PRUnichar* aDataEnd, 
@@ -84,8 +88,8 @@ nsReadEndCondition::nsReadEndCondition(const PRUnichar* aTerminateChars) :
 
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 
-const char* kBadHTMLText="<H3>Oops...</H3>You just tried to read a non-existent document: <BR>";
-const char* kUnorderedStringError = "String argument must be ordered. Don't you read API's?";
+static const char kBadHTMLText[] ="<H3>Oops...</H3>You just tried to read a non-existent document: <BR>";
+static const char kUnorderedStringError[] = "String argument must be ordered. Don't you read API's?";
 
 #ifdef __INCREMENTAL
 const int   kBufsize=1;
@@ -116,8 +120,6 @@ nsScanner::nsScanner(const nsAString& anHTMLString, const nsString& aCharset, PR
   mSlidingBuffer->BeginReading(mCurrentPosition);
   mMarkPosition = mCurrentPosition;
   mIncremental=PR_FALSE;
-  mOwnsStream=PR_FALSE;
-  mInputStream=0;
   mUnicodeDecoder = 0;
   mCharsetSource = kCharsetUninitialized;
   SetDocumentCharset(aCharset, aSource);
@@ -138,13 +140,24 @@ nsScanner::nsScanner(nsString& aFilename,PRBool aCreateStream, const nsString& a
   MOZ_COUNT_CTOR(nsScanner);
 
   mSlidingBuffer = nsnull;
+  // XXX This is a big hack.  We want to initialize the iterators in the
+  // constructor.  So, we temporarily use the mFileName string for this
+  // purpose.  This fixes bug 182067.
+  mFilename.BeginReading(mCurrentPosition);
+  mMarkPosition = mCurrentPosition;
+  mEndPosition = mCurrentPosition;
   mIncremental=PR_TRUE;
   mCountRemaining = 0;
   mTotalRead=0;
-  mOwnsStream=aCreateStream;
-  mInputStream=0;
+
   if(aCreateStream) {
-		mInputStream = new nsInputFileStream(nsFileSpec(aFilename));
+    nsCOMPtr<nsILocalFile> file;
+    nsCOMPtr<nsIInputStream> fileStream;
+    
+    NS_NewLocalFile(aFilename, PR_TRUE, getter_AddRefs(file));
+    if (file)
+      NS_NewLocalFileInputStream(getter_AddRefs(mInputStream), file);
+
   } //if
   mUnicodeDecoder = 0;
   mCharsetSource = kCharsetUninitialized;
@@ -160,17 +173,22 @@ nsScanner::nsScanner(nsString& aFilename,PRBool aCreateStream, const nsString& a
  *  @param   aFilename --
  *  @return  
  */
-nsScanner::nsScanner(const nsAString& aFilename,nsInputStream& aStream,const nsString& aCharset, PRInt32 aSource) :
+nsScanner::nsScanner(const nsAString& aFilename,nsIInputStream* aStream,const nsString& aCharset, PRInt32 aSource) :
     mFilename(aFilename)
 {  
   MOZ_COUNT_CTOR(nsScanner);
 
   mSlidingBuffer = nsnull;
+  // XXX This is a big hack.  We want to initialize the iterators in the
+  // constructor.  So, we temporarily use the mFileName string for this
+  // purpose.  This fixes bug 182067.
+  mFilename.BeginReading(mCurrentPosition);
+  mMarkPosition = mCurrentPosition;
+  mEndPosition = mCurrentPosition;
   mIncremental=PR_FALSE;
   mCountRemaining = 0;
   mTotalRead=0;
-  mOwnsStream=PR_FALSE;
-  mInputStream=&aStream;
+  mInputStream=aStream;
   mUnicodeDecoder = 0;
   mCharsetSource = kCharsetUninitialized;
   SetDocumentCharset(aCharset, aSource);
@@ -240,11 +258,10 @@ nsScanner::~nsScanner() {
   MOZ_COUNT_DTOR(nsScanner);
 
   if(mInputStream) {
-    mInputStream->close();
-    if(mOwnsStream)
-      delete mInputStream;
+    mInputStream->Close();
+    mInputStream = 0;
   }
-  mInputStream=0;
+
   NS_IF_RELEASE(mUnicodeDecoder);
 }
 
@@ -410,14 +427,13 @@ nsresult nsScanner::FillBuffer(void) {
     result=kEOF;
   }
   else {
-    PRInt32 numread=0;
-    char* buf = new char[kBufsize+1];
+    PRUint32 numread=0;
+    char buf[kBufsize+1];
     buf[kBufsize]=0;
 
     if(mInputStream) {
-    	numread = mInputStream->read(buf, kBufsize);
+    	result = mInputStream->Read(buf, kBufsize, &numread);
       if (0 == numread) {
-        delete [] buf;
         return kEOF;
       }
     }
@@ -427,7 +443,6 @@ nsresult nsScanner::FillBuffer(void) {
       PRUnichar* unichars = ToNewUnicode(str);
       AppendToBuffer(unichars, unichars+numread, unichars+kBufsize+1);
     }
-    delete [] buf;
     mTotalRead+=numread;
   }
 

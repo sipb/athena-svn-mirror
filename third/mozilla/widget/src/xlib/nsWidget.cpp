@@ -25,7 +25,7 @@
  *   Quy Tonthat <quy@igelaus.com.au>
  *   B.J. Rossiter <bj@igelaus.com.au>
  *   Tony Tsui <tony@igelaus.com.au>
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *   Tim Copperfield <timecop@network.email.ne.jp>
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
  *
@@ -73,7 +73,7 @@ PRLogModuleInfo *XlibScrollingLM = PR_NewLogModule("XlibScrolling");
 nsHashtable *nsWidget::gsWindowList = nsnull; // WEAK references to nsWidget*
 
 // cursors hash table
-Cursor nsWidget::gsXlibCursorCache[eCursor_count_up_down + 1];
+Cursor nsWidget::gsXlibCursorCache[eCursorCount];
 
 // this is for implemention the WM_PROTOCOL code
 PRBool nsWidget::WMProtocolsInitialized = PR_FALSE;
@@ -862,7 +862,7 @@ nsWidget::DeleteWindowCallback(Window aWindow)
 #ifdef DEBUG_CURSORCACHE
     printf("freeing cursor cache\n");
 #endif
-    for (int i = 0; i < eCursor_count_up_down; i++)
+    for (int i = 0; i < eCursorCount; i++)
       if (gsXlibCursorCache[i])
         XFreeCursor(nsAppShell::mDisplay, gsXlibCursorCache[i]);
   }
@@ -1239,7 +1239,7 @@ NS_IMETHODIMP nsWidget::DispatchEvent(nsGUIEvent * aEvent,
     aStatus = mEventListener->ProcessEvent(*aEvent);
   }
 
-  NS_RELEASE(aEvent->widget);
+  NS_IF_RELEASE(aEvent->widget);
 
   return NS_OK;
 }
@@ -1448,6 +1448,12 @@ Cursor nsWidget::XlibCreateCursor(nsCursor aCursorType)
       // XXX: these CSS3 cursors need to be implemented
       // I simply have no idea how they should look like
       xcursor = XCreateFontCursor(mDisplay, XC_left_ptr);
+      break;
+    case eCursor_zoom_in:
+      newType = XLIB_ZOOM_IN;
+      break;
+    case eCursor_zoom_out:
+      newType = XLIB_ZOOM_OUT;
       break;
     default:
       break;

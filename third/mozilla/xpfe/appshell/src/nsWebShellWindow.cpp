@@ -54,7 +54,6 @@
 #include "nsIPref.h"
 #include "nsReadableUtils.h"
 
-#include "nsINameSpaceManager.h"
 #include "nsEscape.h"
 #include "nsVoidArray.h"
 #include "nsIScriptGlobalObject.h"
@@ -65,7 +64,6 @@
 #include "nsIWebNavigation.h"
 #include "nsIWindowWatcher.h"
 
-#include "nsIXULPopupListener.h"
 #include "nsIDOMXULElement.h"
 
 #include "nsGUIEvent.h"
@@ -145,19 +143,11 @@
 /* Define Class IDs */
 static NS_DEFINE_CID(kWindowCID,           NS_WINDOW_CID);
 static NS_DEFINE_CID(kWebShellCID,         NS_WEB_SHELL_CID);
-static NS_DEFINE_CID(kAppShellServiceCID,  NS_APPSHELL_SERVICE_CID);
-static NS_DEFINE_CID(kAppShellCID,         NS_APPSHELL_CID);
 
 #include "nsWidgetsCID.h"
 static NS_DEFINE_CID(kMenuBarCID,          NS_MENUBAR_CID);
 static NS_DEFINE_CID(kMenuCID,             NS_MENU_CID);
 static NS_DEFINE_CID(kMenuItemCID,         NS_MENUITEM_CID);
-
-static NS_DEFINE_CID(kPrefCID,             NS_PREF_CID);
-static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-
-static NS_DEFINE_CID(kLayoutDocumentLoaderFactoryCID, NS_LAYOUT_DOCUMENT_LOADER_FACTORY_CID);
-static NS_DEFINE_CID(kXULPopupListenerCID, NS_XULPOPUPLISTENER_CID);
 
 
 #ifdef DEBUG_rods
@@ -165,8 +155,6 @@ static NS_DEFINE_CID(kXULPopupListenerCID, NS_XULPOPUPLISTENER_CID);
 #endif
 
 #include "nsIWebShell.h"
-
-static NS_DEFINE_CID(kStringBundleServiceCID,     NS_STRINGBUNDLESERVICE_CID);
 
 #define SIZE_PERSISTENCE_TIMEOUT 500 // msec
 
@@ -200,8 +188,6 @@ struct nsWebShellInfo {
 
 nsWebShellWindow::nsWebShellWindow() : nsXULWindow()
 {
-  NS_INIT_ISUPPORTS();
-
   mWebShell = nsnull;
   mWindow   = nsnull;
   mLockedUntilChromeLoad = PR_FALSE;
@@ -340,7 +326,7 @@ nsresult nsWebShellWindow::Initialize(nsIXULWindow* aParent,
                          nsnull,
                          nsnull,
                          nsnull);
-    NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
+    NS_ENSURE_SUCCESS(rv, rv);
   }
                      
   return rv;
@@ -1525,41 +1511,11 @@ PRBool nsWebShellWindow::ExecuteCloseHandler()
 //----------------------------------------------------------------
 //-- nsIDocumentObserver
 //----------------------------------------------------------------
-NS_IMETHODIMP
-nsWebShellWindow::BeginUpdate(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::EndUpdate(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::BeginLoad(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::EndLoad(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::BeginReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::EndReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-  return NS_OK;
-}
+NS_IMPL_NSIDOCUMENTOBSERVER_CORE_STUB(nsWebShellWindow)
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsWebShellWindow)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsWebShellWindow)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsWebShellWindow)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsWebShellWindow)
 
 ///////////////////////////////////////////////////////////////
 // nsIDocumentObserver
@@ -1569,15 +1525,6 @@ NS_IMETHODIMP
 nsWebShellWindow::ContentChanged(nsIDocument *aDocument,
                                  nsIContent* aContent,
                                  nsISupports* aSubContent)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::ContentStatesChanged(nsIDocument *aDocument,
-                                       nsIContent* aContent1,
-                                       nsIContent* aContent2,
-                                       PRInt32 aStateMask)
 {
   return NS_OK;
 }
@@ -1645,59 +1592,6 @@ nsWebShellWindow::ContentRemoved(nsIDocument *aDocument,
                            nsIContent* aContainer,
                            nsIContent* aChild,
                            PRInt32 aIndexInContainer)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleSheetAdded(nsIDocument *aDocument,
-                            nsIStyleSheet* aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleSheetRemoved(nsIDocument *aDocument,
-                              nsIStyleSheet* aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleSheetDisabledStateChanged(nsIDocument *aDocument,
-                                           nsIStyleSheet* aStyleSheet,
-                                           PRBool aDisabled)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleRuleChanged(nsIDocument *aDocument,
-                             nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule,
-                             nsChangeHint aHint)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleRuleAdded(nsIDocument *aDocument,
-                           nsIStyleSheet* aStyleSheet,
-                           nsIStyleRule* aStyleRule)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::StyleRuleRemoved(nsIDocument *aDocument,
-                             nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsWebShellWindow::DocumentWillBeDestroyed(nsIDocument *aDocument)
 {
   return NS_OK;
 }

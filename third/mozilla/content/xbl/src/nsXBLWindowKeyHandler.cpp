@@ -39,8 +39,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLWindowKeyHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
 #include "nsIAtom.h"
 #include "nsIDOMNSUIEvent.h"
@@ -50,48 +51,30 @@
 #include "nsXBLService.h"
 #include "nsIServiceManager.h"
 #include "nsHTMLAtoms.h"
-#include "nsINameSpaceManager.h"
 #include "nsIXBLDocumentInfo.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDOMElement.h"
 #include "nsXBLAtoms.h"
 
-PRUint32 nsXBLWindowKeyHandler::gRefCnt = 0;
-nsIAtom* nsXBLWindowKeyHandler::kKeyDownAtom = nsnull;
-nsIAtom* nsXBLWindowKeyHandler::kKeyUpAtom = nsnull;
-nsIAtom* nsXBLWindowKeyHandler::kKeyPressAtom = nsnull;
-
 
 nsXBLWindowKeyHandler::nsXBLWindowKeyHandler(nsIDOMElement* aElement, nsIDOMEventReceiver* aReceiver)
   : nsXBLWindowHandler(aElement, aReceiver)
 {
-  NS_INIT_ISUPPORTS();
-
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kKeyUpAtom = NS_NewAtom("keyup");
-    kKeyDownAtom = NS_NewAtom("keydown");
-    kKeyPressAtom = NS_NewAtom("keypress");
-  }
 }
 
 nsXBLWindowKeyHandler::~nsXBLWindowKeyHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kKeyUpAtom);
-    NS_RELEASE(kKeyDownAtom);
-    NS_RELEASE(kKeyPressAtom);
-  }
+  // If mElement is non-null, we created a prototype handler.
+  if (mElement)
+    delete mHandler;
 }
 
 NS_IMPL_ISUPPORTS1(nsXBLWindowKeyHandler, nsIDOMKeyListener)
 
 static void
-BuildHandlerChain(nsIContent* aContent, nsIXBLPrototypeHandler** aResult)
+BuildHandlerChain(nsIContent* aContent, nsXBLPrototypeHandler** aResult)
 {
-  nsCOMPtr<nsIXBLPrototypeHandler> firstHandler;
-  nsCOMPtr<nsIXBLPrototypeHandler> currHandler;
+  nsXBLPrototypeHandler *firstHandler = nsnull, *currHandler = nsnull;
   
   PRInt32 handlerCount;
   aContent->ChildCount(handlerCount);
@@ -99,8 +82,7 @@ BuildHandlerChain(nsIContent* aContent, nsIXBLPrototypeHandler** aResult)
     nsCOMPtr<nsIContent> handler;
     aContent->ChildAt(j, *getter_AddRefs(handler));
     
-    nsCOMPtr<nsIXBLPrototypeHandler> newHandler;
-    NS_NewXULKeyHandler(handler, getter_AddRefs(newHandler));
+    nsXBLPrototypeHandler* newHandler = new nsXBLPrototypeHandler(handler);
     
     if (newHandler) {
       if (currHandler)
@@ -111,7 +93,6 @@ BuildHandlerChain(nsIContent* aContent, nsIXBLPrototypeHandler** aResult)
   }
 
   *aResult = firstHandler;
-  NS_IF_ADDREF(*aResult);
 }
 
 //
@@ -128,7 +109,7 @@ nsXBLWindowKeyHandler::EnsureHandlers()
     if (mHandler)
       return NS_OK;
     nsCOMPtr<nsIContent> content(do_QueryInterface(mElement));
-    BuildHandlerChain(content, getter_AddRefs(mHandler));
+    BuildHandlerChain(content, &mHandler);
   }
   else // We are an XBL file of handlers.
     nsXBLWindowHandler::EnsureHandlers();
@@ -185,17 +166,17 @@ nsXBLWindowKeyHandler::WalkHandlers(nsIDOMEvent* aKeyEvent, nsIAtom* aEventType)
 
 nsresult nsXBLWindowKeyHandler::KeyUp(nsIDOMEvent* aKeyEvent)
 {
-  return WalkHandlers(aKeyEvent, kKeyUpAtom);
+  return WalkHandlers(aKeyEvent, nsXBLAtoms::keyup);
 }
 
 nsresult nsXBLWindowKeyHandler::KeyDown(nsIDOMEvent* aKeyEvent)
 {
-  return WalkHandlers(aKeyEvent, kKeyDownAtom);
+  return WalkHandlers(aKeyEvent, nsXBLAtoms::keydown);
 }
 
 nsresult nsXBLWindowKeyHandler::KeyPress(nsIDOMEvent* aKeyEvent)
 {
-  return WalkHandlers(aKeyEvent, kKeyPressAtom);
+  return WalkHandlers(aKeyEvent, nsXBLAtoms::keypress);
 }
 
 
@@ -205,15 +186,14 @@ nsresult nsXBLWindowKeyHandler::KeyPress(nsIDOMEvent* aKeyEvent)
 // See if the given handler cares about this particular key event
 //
 PRBool
-nsXBLWindowKeyHandler :: EventMatched ( nsIXBLPrototypeHandler* inHandler, nsIAtom* inEventType, nsIDOMEvent* inEvent )
+nsXBLWindowKeyHandler::EventMatched(nsXBLPrototypeHandler* inHandler,
+                                    nsIAtom* inEventType, nsIDOMEvent* inEvent)
 {
-  PRBool matched = PR_FALSE;
-  
-  nsCOMPtr<nsIDOMKeyEvent> keyEvent ( do_QueryInterface(inEvent) );
-  if ( keyEvent )
-    inHandler->KeyEventMatched(inEventType, keyEvent, &matched);
-  
-  return matched;
+  nsCOMPtr<nsIDOMKeyEvent> keyEvent(do_QueryInterface(inEvent));
+  if (keyEvent)
+    return inHandler->KeyEventMatched(inEventType, keyEvent);
+
+  return PR_FALSE;
 }
 
  

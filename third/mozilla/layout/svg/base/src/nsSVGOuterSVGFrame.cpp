@@ -79,7 +79,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   
   NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
@@ -279,7 +279,7 @@ NS_IMETHODIMP
 nsSVGOuterSVGFrame::Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow)
 {
   nsresult rv;
@@ -791,20 +791,15 @@ nsSVGOuterSVGFrame::Paint(nsIPresContext* aPresContext,
 {
   
 //    if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
-//      const nsStyleDisplay* disp = (const nsStyleDisplay*)
-//        mStyleContext->GetStyleData(eStyleStruct_Display);
-//      if (disp->IsVisible() && mRect.width && mRect.height) {
+//      if (GetStyleDisplay()->IsVisible() && mRect.width && mRect.height) {
 //        // Paint our background and border
-//        const nsStyleBorder* border = (const nsStyleBorder*)
-//          mStyleContext->GetStyleData(eStyleStruct_Border);
-//        const nsStylePadding* padding = (const nsStylePadding*)
-//          mStyleContext->GetStyleData(eStyleStruct_Padding);
-//        const nsStyleOutline* outline = (const nsStyleOutline*)
-//          mStyleContext->GetStyleData(eStyleStruct_Outline);
+//        const nsStyleBorder* border = GetStyleBorder();
+//        const nsStylePadding* padding = GetStylePadding();
+//        const nsStyleOutline* outline = GetStyleOutline();
 
 //        nsRect  rect(0, 0, mRect.width, mRect.height);
 // //       nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-// //                                       aDirtyRect, rect, *border, *padding, 0, 0);
+// //                                       aDirtyRect, rect, *border, *padding, PR_TRUE);
 //        nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
 //                                    aDirtyRect, rect, *border, mStyleContext, 0);
 //        nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,

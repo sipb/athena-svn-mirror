@@ -101,7 +101,7 @@ public:
   NS_IMETHOD Scale(float aSx, float aSy);
   NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
 
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
   NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
 
   NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -180,12 +180,6 @@ public:
                         PRInt32 aFontID,
                         const nscoord* aSpacing);
 
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                       nscoord aWidth, nscoord aHeight); 
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect);
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
-
   NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
                                const nsRect &aDestBounds, PRUint32 aCopyFlags);
   //~~~
@@ -231,14 +225,6 @@ protected:
 
   ~nsRenderingContextOS2();
 
-#if 0 // OS2TODO
-  /** ---------------------------------------------------
-   *  See documentation in nsIRenderingContextImpl.h
-   *	@update 4/01/00 dwc
-   */
-  virtual PRBool CanTile(nscoord aWidth,nscoord aHeight);
-#endif
-
   nsIDeviceContext    *mContext;         // device context
   nsDrawingSurfaceOS2 *mSurface;         // draw things here
   nsDrawingSurfaceOS2 *mMainSurface;     // if offscreen selected, this is original one that was set on init time
@@ -250,9 +236,6 @@ protected:
   nsVoidArray         *mStateCache;
   nsIFontMetrics      *mFontMetrics;     // current font
   nsIFontMetrics      *mCurrFontMetrics; // currently selected font
-  nscolor              mCurrTextColor;   // currently selected text color
-  nscolor              mCurrLineColor;   // currently selected line color
-  nsLineStyle          mCurrLineStyle;   // currently selected line style
   nscolor              mCurrFillColor;   // currently selected fill color
   PRBool               mPreservedInitialClipRegion;
   PRBool               mPaletteMode;     // GPI colors are indexes into selected palette
@@ -260,9 +243,7 @@ protected:
   nsIWidget           *mDCOwner;         // Parent widget
   FATTRS               mCurrFont;
 
-#ifdef IBMBIDI
   PRBool            mRightToLeftText;
-#endif // IBMBIDI
 };
 
 

@@ -200,6 +200,10 @@ interface nsMsgViewCommandType
   const nsMsgViewCommandTypeValue junk = 27;
   const nsMsgViewCommandTypeValue unjunk = 28;
   const nsMsgViewCommandTypeValue undeleteMsg = 29;
+
+  const nsMsgViewCommandTypeValue applyFilters = 30;
+  const nsMsgViewCommandTypeValue runJunkControls = 31;
+  const nsMsgViewCommandTypeValue deleteJunk = 32;
 };
 
 [scriptable, uuid(65903eb2-1dd2-11b2-ac45-c5b69c1618d7)]
@@ -258,6 +262,7 @@ interface nsIMsgDBView : nsISupports
     attribute nsMsgViewFlagsTypeValue viewFlags;
     readonly attribute nsMsgViewSortTypeValue sortType;
     readonly attribute nsMsgViewSortOrderValue sortOrder;
+    readonly attribute nsMsgKey keyForFirstSelectedMessage;
 
     /**
      * this method will automatically expand the destination thread, 
@@ -281,7 +286,8 @@ interface nsIMsgDBView : nsISupports
 
     readonly attribute string URIForFirstSelectedMessage;
     readonly attribute nsIMsgDBHdr hdrForFirstSelectedMessage;
-    void loadMessageByMsgKey (in nsMsgKey aMsgKey);
+    void loadMessageByMsgKey(in nsMsgKey aMsgKey);
+    void loadMessageByUrl(in string aUrl);
     void reloadMessage();
     void reloadMessageWithAllParts();
 
@@ -290,6 +296,8 @@ interface nsIMsgDBView : nsISupports
     readonly attribute nsMsgViewIndex currentlyDisplayedMessage; 
 
     // used by "go to folder" feature
+	// and "remember last selected message" feature
+	// if key is not found, we don't select.
     void selectMsgByKey(in nsMsgKey key);
 
     // we'll suppress displaying messages if the message pane is collapsed
@@ -306,6 +314,9 @@ interface nsIMsgDBView : nsISupports
     readonly attribute boolean supportsThreading;
 
     attribute nsIMsgSearchSession searchSession;
+    readonly attribute boolean removeRowOnMoveOrDelete; 
+
+	nsMsgViewIndex findIndexFromKey(in nsMsgKey aMsgKey, in boolean aExpand);
 };
 
 /* this interface is rapidly morphing from a command updater interface into a more generic
@@ -326,4 +337,10 @@ interface nsIMsgDBViewCommandUpdater : nsISupports
 
 	/* displayed message has changed */
 	void displayMessageChanged(in nsIMsgFolder aFolder, in wstring aSubject, in string aKeywords);
+
+    /**
+	 * allows the backend to tell the front end to re-determine 
+	 * which message we should selet after a delete or move
+	 */
+	void updateNextMessageAfterDelete();
 };

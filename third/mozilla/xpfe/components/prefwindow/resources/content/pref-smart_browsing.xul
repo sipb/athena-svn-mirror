@@ -47,7 +47,7 @@
   
   var _elementIDs = ["browserGoBrowsingEnabled", "browserAutoCompleteEnabled",
                      "browserUrlbarAutoFill", "browserUrlbarShowPopup", "browserUrlbarShowSearch",
-                     "browserUrlbarMatchOnlyTyped"];
+                     "browserUrlbarMatchOnlyTyped", "domainGuessingEnabled"];
   
   ]]>
   </script>
@@ -75,7 +75,8 @@
                   accesskey="&autoCompleteEnabled.accesskey;"
                   prefstring="browser.urlbar.autocomplete.enabled"
                   oncommand="toggleAutoCompleteAdvancedButton()" flex="1"/>
-      <button label="&autoCompleteAdvanced.label;" oncommand="showACAdvanced()" id="autoCompleteAdvancedButton"/>
+      <button label="&autoCompleteAdvanced.label;" oncommand="showACAdvanced()" id="autoCompleteAdvancedButton"
+              accesskey="&autoCompleteAdvanced.accesskey;"/>
       <data id="browserUrlbarAutoFill" preftype="bool" prefattribute="value"
             prefstring="browser.urlbar.autoFill"/>
       <data id="browserUrlbarShowPopup" preftype="bool" prefattribute="value"
@@ -85,5 +86,13 @@
       <data id="browserUrlbarMatchOnlyTyped" preftype="bool" prefattribute="value"
             prefstring="browser.urlbar.matchOnlyTyped"/>
     </hbox>
+  </groupbox>
+
+  <groupbox>
+    <caption label="&domainGuessingHeader.label;"/>
+
+    <checkbox id="domainGuessingEnabled"
+              label="&domainGuessingEnabled.label;"
+              prefstring="browser.fixup.alternate.enabled"/>
   </groupbox>
 </page>

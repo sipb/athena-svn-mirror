@@ -47,7 +47,7 @@
  *
  */
 
-/* $Id: deflate.c,v 1.1.1.1 2003-02-14 20:52:23 rbasch Exp $ */
+/* $Id: deflate.c,v 1.1.1.2 2003-07-08 17:17:20 rbasch Exp $ */
 
 #include "deflate.h"
 

@@ -1865,7 +1865,7 @@ js_AllocSlot(JSContext *cx, JSObject *obj, uint32 *slotp)
         nslots += (nslots + 1) / 2;
 
         nbytes = (nslots + 1) * sizeof(jsval);
-#if defined(XP_PC) && defined _MSC_VER && _MSC_VER <= 800
+#if defined _MSC_VER && _MSC_VER <= 800
         if (nbytes > 60000U) {
             JS_ReportOutOfMemory(cx);
             return JS_FALSE;
@@ -1996,7 +1996,7 @@ js_ChangeNativePropertyAttrs(JSContext *cx, JSObject *obj,
                              JSPropertyOp getter, JSPropertyOp setter)
 {
     JSScope *scope;
-    
+
     JS_LOCK_OBJ(cx, obj);
     scope = js_GetMutableScope(cx, obj);
     if (!scope) {
@@ -2156,7 +2156,7 @@ resolving_MatchEntry(JSDHashTable *table,
     return entry->key.obj == key->obj && entry->key.id == key->id;
 }
 
-static JSDHashTableOps resolving_dhash_ops = {
+static const JSDHashTableOps resolving_dhash_ops = {
     JS_DHashAllocTable,
     JS_DHashFreeTable,
     resolving_GetKey,
@@ -2178,6 +2178,7 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
                   JSProperty **propp)
 #endif
 {
+    JSObject *start, *obj2, *proto;
     JSScope *scope;
     JSScopeProperty *sprop;
     JSClass *clasp;
@@ -2189,7 +2190,6 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
     JSNewResolveOp newresolve;
     uintN flags;
     uint32 format;
-    JSObject *obj2, *proto;
     JSBool ok;
 
     /*
@@ -2199,6 +2199,7 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
     CHECK_FOR_FUNNY_INDEX(id);
 
     /* Search scopes starting with obj and following the prototype link. */
+    start = obj;
     for (;;) {
         JS_LOCK_OBJ(cx, obj);
         SET_OBJ_INFO(obj, file, line);
@@ -2269,7 +2270,9 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
                             flags |= JSRESOLVE_ASSIGNING;
                         }
                     }
-                    obj2 = NULL;
+                    obj2 = (clasp->flags & JSCLASS_NEW_RESOLVE_GETS_START)
+                           ? start
+                           : NULL;
                     JS_UNLOCK_OBJ(cx, obj);
                     ok = newresolve(cx, obj, ID_TO_VALUE(id), flags, &obj2);
                     if (!ok)
@@ -2416,31 +2419,32 @@ js_FindProperty(JSContext *cx, jsid id, JSObject **objp, JSObject **pobjp,
     return JS_TRUE;
 }
 
-JSBool
-js_FindVariable(JSContext *cx, jsid id, JSObject **objp, JSObject **pobjp,
-                JSProperty **propp)
+JSObject *
+js_FindIdentifierBase(JSContext *cx, jsid id)
 {
-    JSObject *obj;
+    JSObject *obj, *pobj;
     JSProperty *prop;
 
     /*
-     * First look for id's property along the "with" statement and the
-     * statically-linked scope chains.
+     * Look for id's property along the "with" statement chain and the
+     * statically-linked scope chain.
      */
-    if (!js_FindProperty(cx, id, objp, pobjp, propp))
-        return JS_FALSE;
-    if (*propp)
-        return JS_TRUE;
+    if (!js_FindProperty(cx, id, &obj, &pobj, &prop))
+        return NULL;
+    if (prop) {
+        OBJ_DROP_PROPERTY(cx, pobj, prop);
+        return obj;
+    }
 
     /*
      * Use the top-level scope from the scope chain, which won't end in the
      * same scope as cx->globalObject for cross-context function calls.
      */
-    obj = *objp;
     JS_ASSERT(obj);
 
     /*
-     * Make a top-level variable.
+     * Property not found.  Give a strict warning if binding an undeclared
+     * top-level variable.
      */
     if (JS_HAS_STRICT_OPTION(cx)) {
         JSString *str = JSVAL_TO_STRING(ID_TO_VALUE(id));
@@ -2449,16 +2453,10 @@ js_FindVariable(JSContext *cx, jsid id, JSObject **objp, JSObject **pobjp,
                                           js_GetErrorMessage, NULL,
                                           JSMSG_UNDECLARED_VAR,
                                           JS_GetStringBytes(str))) {
-            return JS_FALSE;
+            return NULL;
         }
     }
-    if (!OBJ_DEFINE_PROPERTY(cx, obj, id, JSVAL_VOID, NULL, NULL,
-                             JSPROP_ENUMERATE, &prop)) {
-        return JS_FALSE;
-    }
-    *pobjp = obj;
-    *propp = prop;
-    return JS_TRUE;
+    return obj;
 }
 
 JSBool
@@ -2562,11 +2560,10 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
 {
     JSObject *pobj;
     JSScopeProperty *sprop;
-    JSRuntime *rt;
-    JSClass *clasp;
     JSScope *scope;
     uintN attrs, flags;
     intN shortid;
+    JSClass *clasp;
     JSPropertyOp getter, setter;
     jsval pval;
     uint32 slot;
@@ -2585,9 +2582,6 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         sprop = NULL;
     }
 
-    rt = cx->runtime;
-    clasp = OBJ_GET_CLASS(cx, obj);
-
     /*
      * Now either sprop is null, meaning id was not found in obj or one of its
      * prototypes; or sprop is non-null, meaning id was found in pobj's scope.
@@ -2599,28 +2593,11 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
     attrs = JSPROP_ENUMERATE;
     flags = 0;
     shortid = 0;
+    clasp = OBJ_GET_CLASS(cx, obj);
     getter = clasp->getProperty;
     setter = clasp->setProperty;
-    if (sprop) {
-        attrs = sprop->attrs;
-        if (attrs & JSPROP_READONLY) {
-            /* XXXbe ECMA violation: readonly proto-property stops set cold. */
-            OBJ_DROP_PROPERTY(cx, pobj, (JSProperty *)sprop);
-            if (!JSVERSION_IS_ECMA(cx->version)) {
-                JSString *str = js_DecompileValueGenerator(cx,
-                                                           JSDVG_IGNORE_STACK,
-                                                           ID_TO_VALUE(id),
-                                                           NULL);
-                if (str) {
-                    JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
-                                         JSMSG_READ_ONLY,
-                                         JS_GetStringBytes(str));
-                }
-                return JS_FALSE;
-            }
-            return JS_TRUE;
-        }
 
+    if (sprop) {
         /*
          * Set scope for use below.  It was locked by js_LookupProperty, and
          * we know pobj owns it (i.e., scope->object == pobj).  Therefore we
@@ -2628,28 +2605,48 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
          */
         scope = OBJ_SCOPE(pobj);
 
+        attrs = sprop->attrs;
+        if ((attrs & JSPROP_READONLY) || SCOPE_IS_SEALED(scope)) {
+            JS_UNLOCK_SCOPE(cx, scope);
+            if ((attrs & JSPROP_READONLY) && JSVERSION_IS_ECMA(cx->version))
+                return JS_TRUE;
+            goto read_only_error;
+        }
+
         if (pobj != obj) {
-            /* Don't clone a setter or shared prototype property. */
-            if (attrs & (JSPROP_SETTER | JSPROP_SHARED)) {
-                JS_UNLOCK_SCOPE(cx, scope);
-
-                return SPROP_SET(cx, sprop, obj, pobj, vp);
-            }
-
-            /* XXXbe ECMA violation: inherit attrs, getter, setter. */
-            flags = sprop->flags;
-            shortid = sprop->shortid;
-            getter = sprop->getter;
-            setter = sprop->setter;
+            /*
+             * We found id in a prototype object: prepare to share or shadow.
+             * NB: Thanks to the immutable, garbage-collected property tree
+             * maintained by jsscope.c in cx->runtime, we needn't worry about
+             * sprop going away behind our back after we've unlocked scope.
+             */
             JS_UNLOCK_SCOPE(cx, scope);
 
-            /* Recover watched setter *after* releasing scope's lock. */
-            if ((attrs & JSPROP_SETTER)
-                ? ((JSFunction *)JS_GetPrivate(cx, (JSObject *)setter))->native
-                  == js_watch_set_wrapper
-                : setter == js_watch_set) {
-                setter = js_GetWatchedSetter(rt, scope, sprop);
+            /* Don't clone a shared prototype property. */
+            if (attrs & JSPROP_SHARED)
+                return SPROP_SET(cx, sprop, obj, pobj, vp);
+
+            /* Restore attrs to the ECMA default for new properties. */
+            attrs = JSPROP_ENUMERATE;
+
+            /*
+             * Preserve the shortid, getter, and setter when shadowing any
+             * property that has a shortid.  An old API convention requires
+             * that the property's getter and setter functions receive the
+             * shortid, not id, when they are called on the shadow we are
+             * about to create in obj's scope.
+             */
+            if (sprop->flags & SPROP_HAS_SHORTID) {
+                flags = SPROP_HAS_SHORTID;
+                shortid = sprop->shortid;
+                getter = sprop->getter;
+                setter = sprop->setter;
             }
+
+            /*
+             * Forget we found the proto-property now that we've copied any
+             * needed member values.
+             */
             sprop = NULL;
         }
 #ifdef __GNUC__         /* suppress bogus gcc warnings */
@@ -2659,6 +2656,9 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
     }
 
     if (!sprop) {
+        if (SCOPE_IS_SEALED(OBJ_SCOPE(obj)))
+            goto read_only_error;
+
         /* Find or make a property descriptor with the right heritage. */
         JS_LOCK_OBJ(cx, obj);
         scope = js_GetMutableScope(cx, obj);
@@ -2686,7 +2686,7 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         if (SPROP_HAS_VALID_SLOT(sprop, scope))
             LOCKED_OBJ_SET_SLOT(obj, sprop->slot, JSVAL_VOID);
 
-        PROPERTY_CACHE_FILL(&rt->propertyCache, obj, id, sprop);
+        PROPERTY_CACHE_FILL(&cx->runtime->propertyCache, obj, id, sprop);
     }
 
     /* Get the current property value from its slot. */
@@ -2726,6 +2726,19 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
     }
     JS_UNLOCK_SCOPE(cx, scope);
     return JS_TRUE;
+
+  read_only_error: {
+    JSString *str = js_DecompileValueGenerator(cx,
+                                               JSDVG_IGNORE_STACK,
+                                               ID_TO_VALUE(id),
+                                               NULL);
+    if (str) {
+        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
+                             JSMSG_READ_ONLY,
+                             JS_GetStringBytes(str));
+    }
+    return JS_FALSE;
+  }
 }
 
 JSBool
@@ -3149,7 +3162,7 @@ js_CheckAccess(JSContext *cx, JSObject *obj, jsid id, JSAccessMode mode,
     OBJ_DROP_PROPERTY(cx, pobj, prop);
     return ok;
 }
- 
+
 #ifdef JS_THREADSAFE
 void
 js_DropProperty(JSContext *cx, JSObject *obj, JSProperty *prop)

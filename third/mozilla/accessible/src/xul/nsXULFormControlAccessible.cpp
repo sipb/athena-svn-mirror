@@ -19,9 +19,10 @@
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
+ * Original Author: John Gaunt (jgaunt@netscape.com)
  * Contributor(s):
- * Author: John Gaunt (jgaunt@netscape.com)
- *
+ *   Aaron Leventhal (aaronl@netscape.com)
+ *   Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,20 +39,12 @@
  * ***** END LICENSE BLOCK ***** */
 
 // NOTE: alphabetically ordered
-#include "nsIDocument.h"
-#include "nsIDOMNodeList.h"
+#include "nsXULFormControlAccessible.h"
 #include "nsIDOMXULButtonElement.h"
 #include "nsIDOMXULCheckboxElement.h"
-#include "nsIDOMXULDocument.h"
-#include "nsIDOMXULLabelElement.h"
 #include "nsIDOMXULMenuListElement.h"
-#include "nsIDOMXULSelectCntrlEl.h"
 #include "nsIDOMXULSelectCntrlItemEl.h"
-#include "nsReadableUtils.h"
-#include "nsString.h"
-#include "nsXULFormControlAccessible.h"
-#include "nsIAccessibilityService.h"
-#include "nsIServiceManager.h"
+#include "nsAccessibleTreeWalker.h"
 
 /**
   * XUL Button: can contain arbitrary HTML content
@@ -63,7 +56,7 @@
 
 // Don't inherit from nsFormControlAccessible - it doesn't allow children and a button can have a dropmarker child
 nsXULButtonAccessible::nsXULButtonAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 { 
 }
 
@@ -166,22 +159,25 @@ NS_IMETHODIMP nsXULButtonAccessible::GetAccState(PRUint32 *_retval)
   */
 NS_IMETHODIMP nsXULButtonAccessible::GetAccFirstChild(nsIAccessible **aResult)
 {
-  *aResult = nsnull;
+  if (!mFirstChild) {
+    nsAccessibleTreeWalker walker(mWeakShell, mDOMNode, PR_TRUE);
+    walker.GetLastChild();
 
-  nsCOMPtr<nsIAccessible> testAccessible;
-  nsAccessible::GetAccLastChild(getter_AddRefs(testAccessible));
+    // If the anonymous tree walker can find accessible children, 
+    // and the last one is a push button, then use it as the only accessible 
+    // child -- because this is the scenario where we have a dropmarker child
 
-  // If the anonymous tree walker can find accessible children, and the last one is a push button, 
-  // then use it as the only accessible child -- because this is the scenario where we have a dropmarker child
-
-  if (testAccessible) {    
-    PRUint32 role;
-    if (NS_SUCCEEDED(testAccessible->GetAccRole(&role)) && role == ROLE_PUSHBUTTON) {
-      *aResult = testAccessible;
-      NS_ADDREF(*aResult);
+    if (walker.mState.accessible) {    
+      PRUint32 role;
+      if (NS_SUCCEEDED(walker.mState.accessible->GetAccRole(&role)) && role == ROLE_PUSHBUTTON) {
+        mFirstChild = walker.mState.accessible;
+        mFirstChild->SetAccNextSibling(nsnull);
+      }
     }
   }
 
+  mAccChildCount = (mFirstChild != nsnull);
+  NS_IF_ADDREF(*aResult = mFirstChild);
   return NS_OK;
 }
 
@@ -192,12 +188,9 @@ NS_IMETHODIMP nsXULButtonAccessible::GetAccLastChild(nsIAccessible **aResult)
 
 NS_IMETHODIMP nsXULButtonAccessible::GetAccChildCount(PRInt32 *aResult)
 {
-  *aResult = 0;
-
   nsCOMPtr<nsIAccessible> accessible;
   GetAccFirstChild(getter_AddRefs(accessible));
-  if (accessible)
-    *aResult = 1;
+  *aResult = mAccChildCount;
 
   return NS_OK;
 }
@@ -351,7 +344,6 @@ NS_IMETHODIMP nsXULCheckboxAccessible::GetAccActionName(PRUint8 index, nsAString
 NS_IMETHODIMP nsXULCheckboxAccessible::AccDoAction(PRUint8 index)
 {
   if (index == eAction_Click) {
-    PRBool checked = PR_FALSE;
     nsCOMPtr<nsIDOMXULCheckboxElement> xulCheckboxElement(do_QueryInterface(mDOMNode));
     if (xulCheckboxElement) {
       xulCheckboxElement->Click();
@@ -392,7 +384,7 @@ NS_IMETHODIMP nsXULCheckboxAccessible::GetAccState(PRUint32 *_retval)
   */
 
 nsXULGroupboxAccessible::nsXULGroupboxAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 { 
 }
 
@@ -434,7 +426,7 @@ NS_IMETHODIMP nsXULGroupboxAccessible::GetAccName(nsAString& _retval)
 /**
   * progressmeter
   */
-NS_IMPL_ISUPPORTS_INHERITED1(nsXULProgressMeterAccessible, nsFormControlAccessible, nsIAccessibleValue)
+NS_IMPL_ISUPPORTS_INHERITED0(nsXULProgressMeterAccessible, nsFormControlAccessible)
 
 nsXULProgressMeterAccessible::nsXULProgressMeterAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
 nsFormControlAccessible(aNode, aShell)
@@ -464,55 +456,6 @@ NS_IMETHODIMP nsXULProgressMeterAccessible::GetAccValue(nsAString& _retval)
   if (!_retval.IsEmpty() && _retval.Last() != '%')
     _retval.Append(NS_LITERAL_STRING("%"));
   return NS_OK;
-}
-
-/* readonly attribute double maximumValue; */
-NS_IMETHODIMP nsXULProgressMeterAccessible::GetMaximumValue(double *aMaximumValue)
-{
-  *aMaximumValue = 1; // 100% = 1;
-  return NS_OK;
-}
-
-/* readonly attribute double minimumValue; */
-NS_IMETHODIMP nsXULProgressMeterAccessible::GetMinimumValue(double *aMinimumValue)
-{
-  *aMinimumValue = 0;
-  return NS_OK;
-}
-
-/* readonly attribute double currentValue; */
-NS_IMETHODIMP nsXULProgressMeterAccessible::GetCurrentValue(double *aCurrentValue)
-{
-  nsAutoString currentValue;
-  GetAccValue(currentValue);
-  PRInt32 error;
-  *aCurrentValue = currentValue.ToFloat(&error) / 100;
-  return NS_OK;
-}
-
-/* boolean setCurrentValue (in double value); */
-NS_IMETHODIMP nsXULProgressMeterAccessible::SetCurrentValue(double aValue, PRBool *_retval)
-{
-  //Here I do not suppose the min/max are 0/1.00 because I want
-  // these part of code to be more extensible.
-  *_retval = PR_FALSE;
-  double min, max;
-  GetMinimumValue(&min);
-  GetMaximumValue(&max);
-  if (aValue > max || aValue < min)
-    return NS_ERROR_INVALID_ARG;
-
-  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(mDOMNode));
-  NS_ASSERTION(element, "No element for DOM node!");
-  PRUint32 value = PRUint32(aValue * 100.0 + 0.5);
-  nsAutoString valueString;
-  valueString.AppendInt(value);
-  valueString.Append(NS_LITERAL_STRING("%"));
-  if (NS_SUCCEEDED(element->SetAttribute(NS_LITERAL_STRING("value"), valueString))) {
-    *_retval = PR_TRUE;
-    return NS_OK;
-  }
-  return NS_ERROR_INVALID_ARG;
 }
 
 /**
@@ -574,7 +517,7 @@ NS_IMETHODIMP nsXULRadioButtonAccessible::GetAccParent(nsIAccessible **  aAccPar
     nsCOMPtr<nsIAccessible> tempParent;
     nsAccessible::GetAccParent(getter_AddRefs(tempParent));
     if (tempParent)
-      tempParent->GetAccParent(getter_AddRefs(mParent));
+      tempParent->GetAccParent(&mParent);  // mParent is a weak pointer
   }
   NS_ASSERTION(mParent,"Whoa! This RadioButtonAcc doesn't have a parent! Better find out why.");
   *aAccParent = mParent;
@@ -593,7 +536,7 @@ NS_IMETHODIMP nsXULRadioButtonAccessible::GetAccParent(nsIAccessible **  aAccPar
 
 /** Constructor */
 nsXULRadioGroupAccessible::nsXULRadioGroupAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 { 
 }
 
@@ -620,7 +563,7 @@ NS_IMETHODIMP nsXULRadioGroupAccessible::GetAccState(PRUint32 *_retval)
   * Default Constructor
   */
 nsXULStatusBarAccessible::nsXULStatusBarAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 { 
 }
 
@@ -636,5 +579,48 @@ NS_IMETHODIMP nsXULStatusBarAccessible::GetAccRole(PRUint32 *_retval)
 NS_IMETHODIMP nsXULStatusBarAccessible::GetAccState(PRUint32 *_retval)
 {
   *_retval = 0;  // no special state flags for status bar
+  return NS_OK;
+}
+
+/**
+  * XUL ToolBar
+  */
+
+nsXULToolbarAccessible::nsXULToolbarAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
+nsAccessibleWrap(aNode, aShell)
+{ 
+}
+
+NS_IMETHODIMP nsXULToolbarAccessible::GetAccRole(PRUint32 *_retval)
+{
+  *_retval = ROLE_TOOLBAR;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsXULToolbarAccessible::GetAccState(PRUint32 *_retval)
+{
+  nsAccessible::GetAccState(_retval);
+  *_retval &= ~STATE_FOCUSABLE;  // toolbar is not focusable
+  return NS_OK;
+}
+
+/**
+  * XUL Toolbar Separator
+  */
+
+nsXULToolbarSeparatorAccessible::nsXULToolbarSeparatorAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
+nsLeafAccessible(aNode, aShell)
+{ 
+}
+
+NS_IMETHODIMP nsXULToolbarSeparatorAccessible::GetAccRole(PRUint32 *_retval)
+{
+  *_retval = ROLE_SEPARATOR;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsXULToolbarSeparatorAccessible::GetAccState(PRUint32 *_retval)
+{
+  *_retval = 0;  // no special state flags for toolbar separator
   return NS_OK;
 }

@@ -36,13 +36,13 @@
 #include "nsPKIParamBlock.h"
 #include "nsIServiceManager.h"
 #include "nsIDialogParamBlock.h"
+#include "nsIArray.h"
 
 NS_IMPL_THREADSAFE_ISUPPORTS2(nsPKIParamBlock, nsIPKIParamBlock,
                                                nsIDialogParamBlock)
 
 nsPKIParamBlock::nsPKIParamBlock()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsresult
@@ -87,6 +87,20 @@ nsPKIParamBlock::SetString(PRInt32 inIndex, const PRUnichar *inString)
 {
   return mDialogParamBlock->SetString(inIndex, inString);
 }
+
+NS_IMETHODIMP
+nsPKIParamBlock::GetObjects(nsIMutableArray * *aObjects)
+{
+  return mDialogParamBlock->GetObjects(aObjects);
+}
+
+NS_IMETHODIMP
+nsPKIParamBlock::SetObjects(nsIMutableArray * aObjects)
+{
+  return mDialogParamBlock->SetObjects(aObjects);
+}
+
+
 
 /* void setISupportAtIndex (in PRInt32 index, in nsISupports object); */
 NS_IMETHODIMP 

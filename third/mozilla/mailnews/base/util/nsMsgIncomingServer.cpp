@@ -49,6 +49,7 @@
 #include "nsReadableUtils.h"
 #include "nsEscape.h"
 #include "nsISupportsObsolete.h"
+#include "nsISupportsPrimitives.h"
 
 #include "nsMsgBaseCID.h"
 #include "nsMsgDBCID.h"
@@ -59,7 +60,7 @@
 #include "nsIMsgFilterService.h"
 #include "nsIMsgProtocolInfo.h"
 
-#include "nsIPref.h"
+#include "nsIPrefService.h"
 #include "nsIDocShell.h"
 #include "nsIWebShell.h"
 #include "nsIWebShellWindow.h"
@@ -80,30 +81,24 @@
 #include "nsMsgFolderFlags.h"
 #include "nsMsgUtils.h"
 
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
-static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
-
 #define PORT_NOT_SET -1
 
 MOZ_DECL_CTOR_COUNTER(nsMsgIncomingServer)
 
 nsMsgIncomingServer::nsMsgIncomingServer():
     m_rootFolder(0),
-    m_prefs(0),
+    m_prefBranch(0),
     m_biffState(nsIMsgFolder::nsMsgBiffState_NoMail),
     m_serverBusy(PR_FALSE),
     m_canHaveFilters(PR_FALSE),
     m_displayStartupPage(PR_TRUE),
     mPerformingBiff(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgIncomingServer::~nsMsgIncomingServer()
 {
-    if (m_prefs) nsServiceManager::ReleaseService(kPrefServiceCID,
-                                                  m_prefs,
-                                                  nsnull);
+    NS_IF_RELEASE(m_prefBranch);
 }
 
 
@@ -121,15 +116,13 @@ NS_IMPL_GETTER_STR(nsMsgIncomingServer::GetKey, m_serverKey.get())
 NS_IMETHODIMP
 nsMsgIncomingServer::SetKey(const char * serverKey)
 {
-    nsresult rv = NS_OK;
-    // in order to actually make use of the key, we need the prefs
-    if (!m_prefs)
-        rv = nsServiceManager::GetService(kPrefServiceCID,
-                                          NS_GET_IID(nsIPref),
-                                          (nsISupports**)&m_prefs);
-
     m_serverKey.Assign(serverKey);
-    return rv;
+
+    // in order to actually make use of the key, we need the prefs
+    if (m_prefBranch)
+        return NS_OK;
+
+    return CallGetService(NS_PREFSERVICE_CONTRACTID, &m_prefBranch);
 }
     
 NS_IMETHODIMP
@@ -142,19 +135,19 @@ nsMsgIncomingServer::SetRootFolder(nsIFolder * aRootFolder)
 NS_IMETHODIMP
 nsMsgIncomingServer::GetRootFolder(nsIFolder * *aRootFolder)
 {
-	if (!aRootFolder)
-		return NS_ERROR_NULL_POINTER;
-    if (m_rootFolder) {
-      *aRootFolder = m_rootFolder;
-      NS_ADDREF(*aRootFolder);
-    } else {
-      nsresult rv = CreateRootFolder();
-      if (NS_FAILED(rv)) return rv;
-      
-      *aRootFolder = m_rootFolder;
-      NS_IF_ADDREF(*aRootFolder);
-    }
-	return NS_OK;
+  if (!aRootFolder)
+    return NS_ERROR_NULL_POINTER;
+  if (m_rootFolder) {
+    *aRootFolder = m_rootFolder;
+    NS_ADDREF(*aRootFolder);
+  } else {
+    nsresult rv = CreateRootFolder();
+    if (NS_FAILED(rv)) return rv;
+    
+    *aRootFolder = m_rootFolder;
+    NS_IF_ADDREF(*aRootFolder);
+  }
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -173,31 +166,31 @@ NS_IMETHODIMP
 nsMsgIncomingServer::PerformExpand(nsIMsgWindow *aMsgWindow)
 {
 #ifdef DEBUG_sspitzer
-	printf("PerformExpand()\n");
+  printf("PerformExpand()\n");
 #endif
-	return NS_OK;
+  return NS_OK;
 }
 
   
 NS_IMETHODIMP
-nsMsgIncomingServer::PerformBiff()
+nsMsgIncomingServer::PerformBiff(nsIMsgWindow* aMsgWindow)
 {
-	//This had to be implemented in the derived class, but in case someone doesn't implement it
-	//just return not implemented.
-	return NS_ERROR_NOT_IMPLEMENTED;	
+  //This had to be implemented in the derived class, but in case someone doesn't implement it
+  //just return not implemented.
+  return NS_ERROR_NOT_IMPLEMENTED;	
 }
 
 
 NS_IMETHODIMP nsMsgIncomingServer::GetPerformingBiff(PRBool *aPerformingBiff)
 {
   NS_ENSURE_ARG_POINTER(aPerformingBiff);
-	*aPerformingBiff = mPerformingBiff;
-	return NS_OK;
+  *aPerformingBiff = mPerformingBiff;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgIncomingServer::SetPerformingBiff(PRBool aPerformingBiff)
 {
-	mPerformingBiff = aPerformingBiff;
+  mPerformingBiff = aPerformingBiff;
   return NS_OK;
 }
 
@@ -205,14 +198,14 @@ NS_IMPL_GETSET(nsMsgIncomingServer, BiffState, PRUint32, m_biffState);
 
 NS_IMETHODIMP nsMsgIncomingServer::WriteToFolderCache(nsIMsgFolderCache *folderCache)
 {
-	nsresult rv = NS_OK;
-	if (m_rootFolder)
-	{
-		nsCOMPtr <nsIMsgFolder> msgFolder = do_QueryInterface(m_rootFolder, &rv);
-		if (NS_SUCCEEDED(rv) && msgFolder)
-			rv = msgFolder->WriteToFolderCache(folderCache, PR_TRUE /* deep */);
-	}
-	return rv;
+  nsresult rv = NS_OK;
+  if (m_rootFolder)
+  {
+    nsCOMPtr <nsIMsgFolder> msgFolder = do_QueryInterface(m_rootFolder, &rv);
+    if (NS_SUCCEEDED(rv) && msgFolder)
+      rv = msgFolder->WriteToFolderCache(folderCache, PR_TRUE /* deep */);
+  }
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -367,7 +360,8 @@ nsMsgIncomingServer::CreateRootFolder()
   rv = GetServerURI(getter_Copies(serverUri));
   if (NS_FAILED(rv)) return rv;
 
-  nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
+  nsCOMPtr<nsIRDFService> rdf = do_GetService("@mozilla.org/rdf/rdf-service;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   // get the corresponding RDF resource
   // RDF will create the server resource if it doesn't already exist
@@ -411,7 +405,7 @@ nsMsgIncomingServer::GetBoolValue(const char *prefname,
 {
   nsCAutoString fullPrefName;
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
-  nsresult rv = m_prefs->GetBoolPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetBoolPref(fullPrefName.get(), val);
   
   if (NS_FAILED(rv))
     rv = getDefaultBoolPref(prefname, val);
@@ -425,7 +419,7 @@ nsMsgIncomingServer::getDefaultBoolPref(const char *prefname,
   
   nsCAutoString fullPrefName;
   getDefaultPrefName(prefname, fullPrefName);
-  nsresult rv = m_prefs->GetBoolPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetBoolPref(fullPrefName.get(), val);
 
   if (NS_FAILED(rv)) {
     *val = PR_FALSE;
@@ -445,11 +439,10 @@ nsMsgIncomingServer::SetBoolValue(const char *prefname,
   PRBool defaultValue;
   rv = getDefaultBoolPref(prefname, &defaultValue);
 
-  if (NS_SUCCEEDED(rv) &&
-      val == defaultValue)
-    m_prefs->ClearUserPref(fullPrefName.get());
+  if (NS_SUCCEEDED(rv) && val == defaultValue)
+    m_prefBranch->ClearUserPref(fullPrefName.get());
   else
-    rv = m_prefs->SetBoolPref(fullPrefName.get(), val);
+    rv = m_prefBranch->SetBoolPref(fullPrefName.get(), val);
   
   return rv;
 }
@@ -460,7 +453,7 @@ nsMsgIncomingServer::GetIntValue(const char *prefname,
 {
   nsCAutoString fullPrefName;
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
-  nsresult rv = m_prefs->GetIntPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetIntPref(fullPrefName.get(), val);
 
   if (NS_FAILED(rv))
     rv = getDefaultIntPref(prefname, val);
@@ -476,11 +469,13 @@ nsMsgIncomingServer::GetFileValue(const char* prefname,
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
   
   nsCOMPtr<nsILocalFile> prefLocal;
-  nsCOMPtr<nsIFileSpec> outSpec;
   
-  nsresult rv = m_prefs->GetFileXPref(fullPrefName.get(), getter_AddRefs(prefLocal));
+  nsresult rv = m_prefBranch->GetComplexValue(fullPrefName.get(),
+                                              NS_GET_IID(nsILocalFile),
+                                              getter_AddRefs(prefLocal));
   if (NS_FAILED(rv)) return rv;
 
+  nsCOMPtr<nsIFileSpec> outSpec;
   rv = NS_NewFileSpecFromIFile(prefLocal, getter_AddRefs(outSpec));
   if (NS_FAILED(rv)) return rv;
   
@@ -499,13 +494,15 @@ nsMsgIncomingServer::SetFileValue(const char* prefname,
   
   nsresult rv;
   nsFileSpec tempSpec;
-  nsCOMPtr<nsILocalFile> prefLocal;
-  
   rv = spec->GetFileSpec(&tempSpec);
   if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsILocalFile> prefLocal;
   rv = NS_FileSpecToIFile(&tempSpec, getter_AddRefs(prefLocal));
   if (NS_FAILED(rv)) return rv;
-  rv = m_prefs->SetFileXPref(fullPrefName.get(), prefLocal);
+
+  rv = m_prefBranch->SetComplexValue(fullPrefName.get(), NS_GET_IID(nsILocalFile),
+                                     prefLocal);
   if (NS_FAILED(rv)) return rv;
 
   return NS_OK;
@@ -517,7 +514,7 @@ nsMsgIncomingServer::getDefaultIntPref(const char *prefname,
   
   nsCAutoString fullPrefName;
   getDefaultPrefName(prefname, fullPrefName);
-  nsresult rv = m_prefs->GetIntPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetIntPref(fullPrefName.get(), val);
 
   if (NS_FAILED(rv)) {
     *val = 0;
@@ -539,9 +536,9 @@ nsMsgIncomingServer::SetIntValue(const char *prefname,
   rv = getDefaultIntPref(prefname, &defaultVal);
   
   if (NS_SUCCEEDED(rv) && defaultVal == val)
-    m_prefs->ClearUserPref(fullPrefName.get());
+    m_prefBranch->ClearUserPref(fullPrefName.get());
   else
-    rv = m_prefs->SetIntPref(fullPrefName.get(), val);
+    rv = m_prefBranch->SetIntPref(fullPrefName.get(), val);
   
   return rv;
 }
@@ -552,7 +549,7 @@ nsMsgIncomingServer::GetCharValue(const char *prefname,
 {
   nsCAutoString fullPrefName;
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
-  nsresult rv = m_prefs->CopyCharPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetCharPref(fullPrefName.get(), val);
   
   if (NS_FAILED(rv))
     rv = getDefaultCharPref(prefname, val);
@@ -566,21 +563,27 @@ nsMsgIncomingServer::GetUnicharValue(const char *prefname,
 {
   nsCAutoString fullPrefName;
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
-  nsresult rv = m_prefs->CopyUnicharPref(fullPrefName.get(), val);
+  nsCOMPtr<nsISupportsString> supportsString;
+  nsresult rv = m_prefBranch->GetComplexValue(fullPrefName.get(),
+                                              NS_GET_IID(nsISupportsString),
+                                              getter_AddRefs(supportsString));
   
   if (NS_FAILED(rv))
-    rv = getDefaultUnicharPref(prefname, val);
-  
+    return getDefaultUnicharPref(prefname, val);
+
+  if (supportsString)
+    rv = supportsString->ToString(val);
+
   return rv;
 }
 
 nsresult
 nsMsgIncomingServer::getDefaultCharPref(const char *prefname,
-                                        char **val) {
-  
+                                        char **val)
+{
   nsCAutoString fullPrefName;
   getDefaultPrefName(prefname, fullPrefName);
-  nsresult rv = m_prefs->CopyCharPref(fullPrefName.get(), val);
+  nsresult rv = m_prefBranch->GetCharPref(fullPrefName.get(), val);
 
   if (NS_FAILED(rv)) {
     *val = nsnull;              // null is ok to return here
@@ -595,13 +598,16 @@ nsMsgIncomingServer::getDefaultUnicharPref(const char *prefname,
   
   nsCAutoString fullPrefName;
   getDefaultPrefName(prefname, fullPrefName);
-  nsresult rv = m_prefs->CopyUnicharPref(fullPrefName.get(), val);
-
-  if (NS_FAILED(rv)) {
+  nsCOMPtr<nsISupportsString> supportsString;
+  nsresult rv = m_prefBranch->GetComplexValue(fullPrefName.get(),
+                                              NS_GET_IID(nsISupportsString),
+                                              getter_AddRefs(supportsString));
+  if (NS_FAILED(rv) || !supportsString) {
     *val = nsnull;              // null is ok to return here
-    rv = NS_OK;
+    return NS_OK;
   }
-  return rv;
+
+  return supportsString->ToString(val);
 }
 
 nsresult
@@ -613,20 +619,17 @@ nsMsgIncomingServer::SetCharValue(const char *prefname,
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
 
   if (!val) {
-    m_prefs->ClearUserPref(fullPrefName.get());
+    m_prefBranch->ClearUserPref(fullPrefName.get());
     return NS_OK;
   }
   
-  char *defaultVal=nsnull;
-  rv = getDefaultCharPref(prefname, &defaultVal);
+  nsXPIDLCString defaultVal;
+  rv = getDefaultCharPref(prefname, getter_Copies(defaultVal));
   
-  if (NS_SUCCEEDED(rv) &&
-      PL_strcmp(defaultVal, val) == 0)
-    m_prefs->ClearUserPref(fullPrefName.get());
+  if (NS_SUCCEEDED(rv) && defaultVal.Equals(val))
+    m_prefBranch->ClearUserPref(fullPrefName.get());
   else
-    rv = m_prefs->SetCharPref(fullPrefName.get(), val);
-  
-  PR_FREEIF(defaultVal);
+    rv = m_prefBranch->SetCharPref(fullPrefName.get(), val);
   
   return rv;
 }
@@ -640,7 +643,7 @@ nsMsgIncomingServer::SetUnicharValue(const char *prefname,
   getPrefName(m_serverKey.get(), prefname, fullPrefName);
 
   if (!val) {
-    m_prefs->ClearUserPref(fullPrefName.get());
+    m_prefBranch->ClearUserPref(fullPrefName.get());
     return NS_OK;
   }
 
@@ -648,10 +651,18 @@ nsMsgIncomingServer::SetUnicharValue(const char *prefname,
   rv = getDefaultUnicharPref(prefname, &defaultVal);
   if (defaultVal && NS_SUCCEEDED(rv) &&
       nsCRT::strcmp(defaultVal, val) == 0)
-    m_prefs->ClearUserPref(fullPrefName.get());
-  else
-    rv = m_prefs->SetUnicharPref(fullPrefName.get(), val);
-  
+    m_prefBranch->ClearUserPref(fullPrefName.get());
+  else {
+    nsCOMPtr<nsISupportsString> supportsString =
+      do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID, &rv);
+    if (supportsString) {
+      supportsString->SetData(nsDependentString(val));
+      rv = m_prefBranch->SetComplexValue(fullPrefName.get(),
+                                         NS_GET_IID(nsISupportsString),
+                                         supportsString);
+    }
+  }
+
   PR_FREEIF(defaultVal);
   
   return rv;
@@ -666,10 +677,10 @@ nsMsgIncomingServer::GetPrettyName(PRUnichar **retval) {
   if (NS_FAILED(rv)) return rv;
 
   // if there's no name, then just return the hostname
-  if (nsCRT::strlen(val) == 0) 
+  if (val.IsEmpty()) 
     return GetConstructedPrettyName(retval);
-  else
-    *retval = nsCRT::strdup(val);
+
+  *retval = nsCRT::strdup(val);
   return NS_OK;
 }
 
@@ -746,17 +757,15 @@ NS_IMETHODIMP nsMsgIncomingServer::SetPassword(const char * aPassword)
 
 NS_IMETHODIMP nsMsgIncomingServer::GetPassword(char ** aPassword)
 {
-    NS_ENSURE_ARG_POINTER(aPassword);
-
-	*aPassword = ToNewCString(m_password);
-
-    return NS_OK;
+  NS_ENSURE_ARG_POINTER(aPassword);
+  *aPassword = ToNewCString(m_password);
+  return NS_OK;
 }
 
-NS_IMETHODIMP nsMsgIncomingServer::GetServerRequiresPasswordForBiff(PRBool *_retval)
+NS_IMETHODIMP nsMsgIncomingServer::GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff)
 {
-    if (!_retval) return NS_ERROR_NULL_POINTER;
-	*_retval = PR_TRUE;
+  NS_ENSURE_ARG_POINTER(aServerRequiresPasswordForBiff);
+	*aServerRequiresPasswordForBiff = PR_TRUE;
 	return NS_OK;
 }
 
@@ -1012,13 +1021,21 @@ nsMsgIncomingServer::Equals(nsIMsgIncomingServer *server, PRBool *_retval)
 NS_IMETHODIMP
 nsMsgIncomingServer::ClearAllValues()
 {
-    nsresult rv;
     nsCAutoString rootPref("mail.server.");
     rootPref += m_serverKey;
 
-    rv = m_prefs->EnumerateChildren(rootPref.get(), clearPrefEnum, (void *)m_prefs);
+    PRUint32 childCount;
+    char**   childArray;
+    nsresult rv = m_prefBranch->GetChildList(rootPref.get(), &childCount, &childArray);
+    NS_ENSURE_SUCCESS(rv, rv);
 
-    return rv;
+    for (PRUint32 i = 0; i < childCount; ++i) {
+        m_prefBranch->ClearUserPref(childArray[i]);
+    }
+
+    NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(childCount, childArray);
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1058,14 +1075,6 @@ nsMsgIncomingServer::RemoveFiles()
 	return NS_OK;
 }
 
-
-void
-nsMsgIncomingServer::clearPrefEnum(const char *aPref, void *aClosure)
-{
-    nsIPref *prefs = (nsIPref *)aClosure;
-    prefs->ClearUserPref(aPref);
-}
-
 NS_IMETHODIMP
 nsMsgIncomingServer::SetFilterList(nsIMsgFilterList *aFilterList)
 {
@@ -1073,7 +1082,7 @@ nsMsgIncomingServer::SetFilterList(nsIMsgFilterList *aFilterList)
   return NS_OK;
 }
 
-nsresult
+NS_IMETHODIMP
 nsMsgIncomingServer::GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **aResult)
 {
   if (!mFilterList) {
@@ -1091,8 +1100,40 @@ nsMsgIncomingServer::GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **
       rv = mFilterFile->FromFileSpec(thisFolder);
       NS_ENSURE_SUCCESS(rv, rv);
 
-      mFilterFile->AppendRelativeUnixPath("rules.dat");
+      mFilterFile->AppendRelativeUnixPath("msgFilterRules.dat");
       
+      PRBool fileExists;
+      mFilterFile->Exists(&fileExists);
+      if (!fileExists)
+      {
+        nsCOMPtr<nsIFileSpec> oldFilterFile = do_CreateInstance(NS_FILESPEC_CONTRACTID, &rv);
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        rv = oldFilterFile->FromFileSpec(thisFolder);
+        NS_ENSURE_SUCCESS(rv, rv);
+        oldFilterFile->AppendRelativeUnixPath("rules.dat");
+        
+        oldFilterFile->Exists(&fileExists);
+        if (fileExists)  //copy rules.dat --> msgFilterRules.dat
+        {
+          nsFileSpec rootFolderSpec;
+          thisFolder->GetFileSpec(&rootFolderSpec);
+
+          nsCOMPtr<nsILocalFile> rootFolderDir;
+          rv = NS_FileSpecToIFile(&rootFolderSpec, getter_AddRefs(rootFolderDir));
+          NS_ENSURE_SUCCESS(rv, rv);
+
+          nsFileSpec oldFilterSpec;
+          oldFilterFile->GetFileSpec(&oldFilterSpec);
+
+          nsCOMPtr<nsILocalFile> localFilterFile;
+          rv = NS_FileSpecToIFile(&oldFilterSpec, getter_AddRefs(localFilterFile));
+          NS_ENSURE_SUCCESS(rv, rv);
+
+          rv = localFilterFile->CopyToNative(rootFolderDir, NS_LITERAL_CSTRING("msgFilterRules.dat"));
+          NS_ENSURE_SUCCESS(rv, rv);
+        }
+      }
       nsCOMPtr<nsIMsgFilterService> filterService =
           do_GetService(NS_MSGFILTERSERVICE_CONTRACTID, &rv);
       NS_ENSURE_SUCCESS(rv, rv);
@@ -1210,7 +1251,7 @@ nsMsgIncomingServer::GetRealHostName(char **aResult)
   nsresult rv;
   rv = GetCharValue("realhostname", aResult);
   NS_ENSURE_SUCCESS(rv, rv);
-  if (!*aResult || (strlen(*aResult) == 0))
+  if (!*aResult || !**aResult)
     return(GetHostName(aResult));
 
   if (PL_strchr(*aResult, ':'))
@@ -1228,7 +1269,7 @@ nsMsgIncomingServer::GetRealUsername(char **aResult)
   nsresult rv;
   rv = GetCharValue("realuserName", aResult);
   NS_ENSURE_SUCCESS(rv, rv);
-  if (!*aResult || (strlen(*aResult) == 0))
+  if (!*aResult || !**aResult)
     return(GetUsername(aResult));
 
   return rv;
@@ -1258,7 +1299,7 @@ nsMsgIncomingServer::GetDoBiff(PRBool *aDoBiff)
    
     nsCAutoString fullPrefName;
     getPrefName(m_serverKey.get(), BIFF_PREF_NAME, fullPrefName);
-    rv = m_prefs->GetBoolPref(fullPrefName.get(), aDoBiff);
+    rv = m_prefBranch->GetBoolPref(fullPrefName.get(), aDoBiff);
     if (NS_SUCCEEDED(rv)) return rv;
 
     // if the pref isn't set, use the default
@@ -1285,7 +1326,7 @@ nsMsgIncomingServer::SetDoBiff(PRBool aDoBiff)
     nsCAutoString fullPrefName;
     getPrefName(m_serverKey.get(), BIFF_PREF_NAME, fullPrefName);
 
-    rv = m_prefs->SetBoolPref(fullPrefName.get(), aDoBiff);
+    rv = m_prefBranch->SetBoolPref(fullPrefName.get(), aDoBiff);
     NS_ENSURE_SUCCESS(rv,rv);
     return NS_OK;
 }
@@ -1552,7 +1593,7 @@ nsMsgIncomingServer::GetFilterScope(nsMsgSearchScopeValue *filterScope)
 {
    NS_ENSURE_ARG_POINTER(filterScope);
 
-   *filterScope = nsMsgSearchScope::offlineMail;
+   *filterScope = nsMsgSearchScope::offlineMailFilter;
    return NS_OK;
 }
 
@@ -1569,6 +1610,7 @@ nsMsgIncomingServer::GetSearchScope(nsMsgSearchScopeValue *searchScope)
 NS_IMPL_SERVERPREF_STR(nsMsgIncomingServer, Username, "userName");
 NS_IMPL_SERVERPREF_STR(nsMsgIncomingServer, PrefPassword, "password");
 NS_IMPL_SERVERPREF_BOOL(nsMsgIncomingServer, IsSecure, "isSecure");
+NS_IMPL_SERVERPREF_BOOL(nsMsgIncomingServer, UseSecAuth, "useSecAuth");
 NS_IMPL_SERVERPREF_INT(nsMsgIncomingServer, BiffMinutes, "check_time");
 NS_IMPL_SERVERPREF_STR(nsMsgIncomingServer, Type, "type");
 // in 4.x, this was "mail.pop3_gets_new_mail" for pop and 
@@ -1669,7 +1711,8 @@ nsMsgIncomingServer::GetIsAuthenticated(PRBool *isAuthenticated)
       rv = passwordMgrInt->FindPasswordEntry(currServerUri, nsString(), nsString(),
                                              hostFound, userNameFound, passwordFound);
       if (NS_FAILED(rv)) {
-        return rv;
+        *isAuthenticated = PR_FALSE;
+        return NS_OK;
       }
 
       // If a match is found, password element is filled in. Convert the
@@ -1705,12 +1748,7 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
     rv = GetIntValue("incorporate_return_receipt", &incorp);
   else
   {
-    nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-    nsCOMPtr<nsIPrefBranch> prefBranch;
-    rv = prefs->GetBranch(nsnull, getter_AddRefs(prefBranch));
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = prefBranch->GetIntPref("mail.incorporate.return_receipt", &incorp);
+    rv = m_prefBranch->GetIntPref("mail.incorporate.return_receipt", &incorp);
   }
 
   PRBool enable = (incorp == nsIMsgMdnGenerator::eIncorporateSent);
@@ -1726,17 +1764,9 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
       newFilter->SetEnabled(enable);
   else if (enable)
   {
-    nsCOMPtr<nsIMsgFolder> rootFolder;
-    rv = GetRootMsgFolder(getter_AddRefs(rootFolder));
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    PRUint32 numFolders;
-    nsCOMPtr<nsIMsgFolder> sentFolder;
-
-    rootFolder->GetFoldersWithFlag(MSG_FOLDER_FLAG_SENTMAIL, 1,
-                                   &numFolders,
-                                   getter_AddRefs(sentFolder));
-    if (sentFolder)
+    nsXPIDLCString actionTargetFolderUri;
+    rv = identity->GetFccFolder(getter_Copies(actionTargetFolderUri));
+    if (!actionTargetFolderUri.IsEmpty())
     {
       filterList->CreateFilter(internalReturnReceiptFilterName.get(),
                                getter_AddRefs(newFilter));
@@ -1756,12 +1786,11 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
           rv = term->GetValue(getter_AddRefs(value));
           if (NS_SUCCEEDED(rv))
           {
-            // XXX todo
-            // determine if ::OtherHeader is the best way to do this.
-            // see nsMsgSearchOfflineMail::MatchTerms()
-            value->SetAttrib(nsMsgSearchAttrib::OtherHeader);
+            // we need to use OtherHeader + 1 so nsMsgFilter::GetTerm will
+            // return our custom header.
+            value->SetAttrib(nsMsgSearchAttrib::OtherHeader + 1);
             value->SetStr(NS_LITERAL_STRING("multipart/report").get());
-            term->SetAttrib(nsMsgSearchAttrib::OtherHeader);  
+            term->SetAttrib(nsMsgSearchAttrib::OtherHeader + 1);  
             term->SetOp(nsMsgSearchOp::Contains);
             term->SetBooleanAnd(PR_TRUE);
             term->SetArbitraryHeader("Content-Type");
@@ -1778,9 +1807,9 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
             // XXX todo
             // determine if ::OtherHeader is the best way to do this.
             // see nsMsgSearchOfflineMail::MatchTerms()
-            value->SetAttrib(nsMsgSearchAttrib::OtherHeader);
+            value->SetAttrib(nsMsgSearchAttrib::OtherHeader + 1);
             value->SetStr(NS_LITERAL_STRING("disposition-notification").get());
-            term->SetAttrib(nsMsgSearchAttrib::OtherHeader);
+            term->SetAttrib(nsMsgSearchAttrib::OtherHeader + 1);
             term->SetOp(nsMsgSearchOp::Contains);
             term->SetBooleanAnd(PR_TRUE);
             term->SetArbitraryHeader("Content-Type");
@@ -1788,18 +1817,50 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
             newFilter->AppendTerm(term);
           }
         }
-        newFilter->SetAction(nsMsgFilterAction::MoveToFolder);
-        nsXPIDLCString actionTargetFolderUri;
-        rv = sentFolder->GetURI(getter_Copies(actionTargetFolderUri));
-        if (NS_SUCCEEDED(rv))
-        {
-          newFilter->SetActionTargetFolderUri(actionTargetFolderUri);
+        nsCOMPtr<nsIMsgRuleAction> filterAction;
+        newFilter->CreateAction(getter_AddRefs(filterAction));
+        filterAction->SetType(nsMsgFilterAction::MoveToFolder);
+          filterAction->SetTargetFolderUri(actionTargetFolderUri);
+          newFilter->AppendAction(filterAction);
           filterList->InsertFilterAt(0, newFilter);
         }
       }
     }
-  }
   return rv;
+}
+
+NS_IMETHODIMP
+nsMsgIncomingServer::ClearTemporaryReturnReceiptsFilter()
+{
+  if (mFilterList)
+  {
+   nsCOMPtr<nsIMsgFilter> mdnFilter;
+   nsresult rv = mFilterList->GetFilterNamed(
+     NS_LITERAL_STRING("mozilla-temporary-internal-MDN-receipt-filter").get(),
+     getter_AddRefs(mdnFilter));
+   if (NS_SUCCEEDED(rv) && mdnFilter)
+     return mFilterList->RemoveFilter(mdnFilter);
+  }
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMsgIncomingServer::GetMsgFolderFromURI(nsIMsgFolder *aFolderResource, const char *aURI, nsIMsgFolder **aFolder)
+{
+  nsCOMPtr<nsIMsgFolder> rootMsgFolder;
+  nsresult rv = GetRootMsgFolder(getter_AddRefs(rootMsgFolder));
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!rootMsgFolder)
+    return NS_ERROR_UNEXPECTED;
+
+  nsCOMPtr <nsIMsgFolder> msgFolder;
+  rv = rootMsgFolder->GetChildWithURI(aURI, PR_TRUE, PR_TRUE /*caseInsensitive*/, getter_AddRefs(msgFolder));
+  if (NS_FAILED(rv) || !msgFolder) {
+    msgFolder = aFolderResource;
+  }
+  
+  NS_IF_ADDREF(*aFolder = msgFolder);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1816,12 +1877,24 @@ nsMsgIncomingServer::SetSpamSettings(nsISpamSettings *aSpamSettings)
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
-  nsXPIDLCString junkFolderURI;  
-  mSpamSettings->GetSpamFolderURI(getter_Copies(junkFolderURI));
-  nsCOMPtr<nsIMsgFolder> junkFolder;
-  rv = GetExistingFolder(junkFolderURI.get(), getter_AddRefs(junkFolder));
-  if (NS_SUCCEEDED(rv) && junkFolder)  //remove the MSG_FOLDER_FLAG_JUNK on old junk folder
-    junkFolder->SetFlag(~MSG_FOLDER_FLAG_JUNK);
+  nsXPIDLCString oldJunkFolderURI;
+  rv = mSpamSettings->GetSpamFolderURI(getter_Copies(oldJunkFolderURI));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  if (!oldJunkFolderURI.IsEmpty()) {
+    nsCOMPtr<nsIMsgFolder> oldJunkFolder;
+    rv = GetExistingFolder(oldJunkFolderURI.get(), getter_AddRefs(oldJunkFolder));
+    if (NS_SUCCEEDED(rv) && oldJunkFolder) 
+    {
+      // remove the MSG_FOLDER_FLAG_JUNK on the old junk folder
+      // XXX TODO
+      // JUNK MAIL RELATED
+      // in SetFlag, we need to make sure that this folder
+      // is not a the junk folder for another account
+      // the same goes for set flag.  have fun with all that.
+      oldJunkFolder->SetFlag(~MSG_FOLDER_FLAG_JUNK);
+    }
+  }
 
   rv = mSpamSettings->Clone(aSpamSettings);
   NS_ENSURE_SUCCESS(rv,rv);
@@ -1834,16 +1907,20 @@ nsMsgIncomingServer::SetSpamSettings(nsISpamSettings *aSpamSettings)
   NS_ENSURE_SUCCESS(rv,rv);
 
   PRBool moveOnSpam;
-  rv = mSpamSettings->GetMoveOnSpam(&moveOnSpam);
-  NS_ENSURE_SUCCESS(rv,rv);
-  rv = SetBoolValue("moveOnSpam", moveOnSpam);
-  NS_ENSURE_SUCCESS(rv,rv);
+  (void)mSpamSettings->GetMoveOnSpam(&moveOnSpam);
+  (void)SetBoolValue("moveOnSpam", moveOnSpam);
 
   PRInt32 moveTargetMode;
-  rv = mSpamSettings->GetMoveTargetMode(&moveTargetMode);
-  NS_ENSURE_SUCCESS(rv,rv);
-  rv = SetIntValue("moveTargetMode", moveTargetMode);
-  NS_ENSURE_SUCCESS(rv,rv);
+  (void)mSpamSettings->GetMoveTargetMode(&moveTargetMode);
+  (void)SetIntValue("moveTargetMode", moveTargetMode);
+
+  PRBool manualMark;
+  (void)mSpamSettings->GetManualMark(&manualMark);
+  (void)SetBoolValue("manualMark", manualMark);
+
+  PRInt32 manualMarkMode;
+  (void)mSpamSettings->GetManualMarkMode(&manualMarkMode);
+  (void)SetIntValue("manualMarkMode", manualMarkMode);
 
   nsXPIDLCString spamActionTargetAccount;
   rv = mSpamSettings->GetActionTargetAccount(getter_Copies(spamActionTargetAccount));
@@ -1857,13 +1934,22 @@ nsMsgIncomingServer::SetSpamSettings(nsISpamSettings *aSpamSettings)
   rv = SetCharValue("spamActionTargetFolder", spamActionTargetFolder.get());
   NS_ENSURE_SUCCESS(rv,rv);
 
-  junkFolder = nsnull; 
-  junkFolderURI.Assign("");
-  mSpamSettings->GetSpamFolderURI(getter_Copies(junkFolderURI));
-  rv = GetExistingFolder(junkFolderURI.get(), getter_AddRefs(junkFolder)); 
-  if (NS_SUCCEEDED(rv) && junkFolder)  //set MSG_FOLDER_FLAG_JUNK on new junk folder
-    junkFolder->SetFlag(MSG_FOLDER_FLAG_JUNK);
-  
+  nsXPIDLCString newJunkFolderURI;
+  rv = mSpamSettings->GetSpamFolderURI(getter_Copies(newJunkFolderURI));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  // only try to create the junk folder if we are moving junk
+  // and we have a non-empty uri
+  if (moveOnSpam && !newJunkFolderURI.IsEmpty()) {
+    // as the url listener, the spam settings will set the MSG_FOLDER_FLAG_JUNK folder flag
+    // on the junk mail folder, after it is created
+    nsCOMPtr <nsIUrlListener> listener = do_QueryInterface(mSpamSettings, &rv);
+    NS_ENSURE_SUCCESS(rv,rv);
+
+    rv = GetOrCreateFolder(newJunkFolderURI, listener);
+    NS_ENSURE_SUCCESS(rv,rv);
+  }
+
   PRBool useWhiteList;
   rv = mSpamSettings->GetUseWhiteList(&useWhiteList);
   NS_ENSURE_SUCCESS(rv,rv);
@@ -1895,9 +1981,10 @@ nsMsgIncomingServer::SetSpamSettings(nsISpamSettings *aSpamSettings)
   NS_ENSURE_SUCCESS(rv,rv);
 
   // flush these pref changes to disk
-  rv = m_prefs->SavePrefFile(nsnull);
-  NS_ENSURE_SUCCESS(rv,rv);
-  return NS_OK;
+  nsCOMPtr<nsIPrefService> prefService = do_QueryInterface(m_prefBranch);
+  NS_ENSURE_TRUE(prefService, NS_ERROR_FAILURE);
+
+  return prefService->SavePrefFile(nsnull);
 }
 
 NS_IMETHODIMP
@@ -1933,6 +2020,14 @@ nsMsgIncomingServer::GetSpamSettings(nsISpamSettings **aSpamSettings)
     rv = mSpamSettings->SetMoveTargetMode(moveTargetMode);
     NS_ENSURE_SUCCESS(rv,rv);
     
+    PRBool manualMark;
+    (void)GetBoolValue("manualMark", &manualMark);
+    (void)mSpamSettings->SetManualMark(manualMark);
+
+    PRInt32 manualMarkMode;
+    (void)GetIntValue("manualMarkMode", &manualMarkMode);
+    (void)mSpamSettings->SetManualMarkMode(manualMarkMode);
+
     nsXPIDLCString spamActionTargetAccount;
     rv = GetCharValue("spamActionTargetAccount", getter_Copies(spamActionTargetAccount));
     NS_ENSURE_SUCCESS(rv,rv);

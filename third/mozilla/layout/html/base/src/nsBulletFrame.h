@@ -38,7 +38,7 @@
 #define nsBulletFrame_h___
 
 #include "nsFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 
 #include "imgIRequest.h"
 #include "imgIDecoderObserver.h"
@@ -57,7 +57,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
   NS_IMETHOD Paint(nsIPresContext*      aCX,
@@ -80,19 +80,25 @@ public:
   PRInt32 SetListItemOrdinal(PRInt32 aNextOrdinal, PRBool* aChanged);
 
 
-  NS_IMETHOD OnStartContainer(imgIRequest *aRequest, nsIPresContext *aCX, imgIContainer *aImage);
-  NS_IMETHOD OnDataAvailable(imgIRequest *aRequest, nsIPresContext *aCX, gfxIImageFrame *aFrame, const nsRect * rect);
-  NS_IMETHOD OnStopDecode(imgIRequest *aRequest, nsIPresContext *aCX, nsresult aStatus, const PRUnichar *aStatusArg);
-  NS_IMETHOD FrameChanged(imgIContainer *aContainer, nsIPresContext *aCX, gfxIImageFrame *aNewframe, nsRect *aDirtyRect);
+  NS_IMETHOD OnStartContainer(imgIRequest *aRequest, imgIContainer *aImage);
+  NS_IMETHOD OnDataAvailable(imgIRequest *aRequest,
+                             gfxIImageFrame *aFrame,
+                             const nsRect * rect);
+  NS_IMETHOD OnStopDecode(imgIRequest *aRequest,
+                          nsresult aStatus,
+                          const PRUnichar *aStatusArg);
+  NS_IMETHOD FrameChanged(imgIContainer *aContainer,
+                          gfxIImageFrame *aNewframe,
+                          nsRect *aDirtyRect);
 
 protected:
   void GetDesiredSize(nsIPresContext* aPresContext,
                       const nsHTMLReflowState& aReflowState,
                       nsHTMLReflowMetrics& aMetrics);
 
-  void GetListItemText(nsIPresContext* aCX,
-                       const nsStyleList& aStyleList,
-                       nsString& aResult);
+  PRBool GetListItemText(nsIPresContext* aCX,
+                         const nsStyleList& aStyleList,
+                         nsString& aResult);
 
   void GetBaseURI(nsIURI **aURI);
   void GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGroup);
@@ -104,6 +110,7 @@ protected:
 
   nsSize mIntrinsicSize;
   nsSize mComputedSize;
+  nsIPresContext* mPresContext; // weak ref
 };
 
 #endif /* nsBulletFrame_h___ */

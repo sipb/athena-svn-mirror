@@ -42,10 +42,13 @@
 #include "nsHTMLAttributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsRuleNode.h"
+
+// use the same protection as ancient code did 
+// http://lxr.mozilla.org/classic/source/lib/layout/laytable.c#46
+#define MAX_COLSPAN 1000
 
 class nsHTMLTableColElement : public nsGenericHTMLContainerElement,
                               public nsIDOMHTMLTableColElement,
@@ -82,9 +85,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -181,19 +181,20 @@ nsHTMLTableColElement::StringToAttribute(nsIAtom* aAttribute,
   /* ignore these attributes, stored simply as strings ch */
   /* attributes that resolve to integers */
   if (aAttribute == nsHTMLAtoms::charoff) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::span) {
-    if (ParseValue(aValue, 1, aResult, eHTMLUnit_Integer)) {
+    /* protection from unrealistic large colspan values */
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 1, MAX_COLSPAN)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::width) {
     /* attributes that resolve to integers or percents or proportions */
 
-    if (ParseValueOrPercentOrProportional(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_TRUE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -235,7 +236,7 @@ nsHTMLTableColElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::width) {
-    if (ValueOrPercentOrProportionalToString(aValue, aResult)) {
+    if (aValue.ToString(aResult)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -326,16 +327,24 @@ nsHTMLTableColElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                                 PRInt32 aModType,
                                                 nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::width) ||
-      (aAttribute == nsHTMLAtoms::align) ||
-      (aAttribute == nsHTMLAtoms::valign) ||
-      ((aAttribute == nsHTMLAtoms::span) &&
-       !mNodeInfo->Equals(nsHTMLAtoms::col))) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  // we don't match "span" if we're a <col>
+  nsIAtom** matchSpan = mNodeInfo->Equals(nsHTMLAtoms::col) ?
+    nsnull : &nsHTMLAtoms::span;
+  
+  const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::valign, NS_STYLE_HINT_REFLOW },
+    { matchSpan, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -368,14 +377,3 @@ NS_METHOD nsHTMLTableColElement::GetSpanValue(PRInt32* aSpan)
 
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLTableColElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

@@ -54,7 +54,6 @@ static NS_DEFINE_CID(kUnicodeDecodeHelperCID, NS_UNICODEDECODEHELPER_CID);
 
 nsBasicDecoderSupport::nsBasicDecoderSupport() 
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsBasicDecoderSupport::~nsBasicDecoderSupport() 
@@ -256,7 +255,7 @@ NS_IMETHODIMP nsTableDecoderSupport::ConvertNoBuff(const char * aSrc,
 
 nsMultiTableDecoderSupport::nsMultiTableDecoderSupport(
                             PRInt32 aTableCount,
-                            uRange * aRangeArray, 
+                            const uRange * aRangeArray, 
                             uShiftTable ** aShiftTable, 
                             uMappingTable ** aMappingTable,
                             PRUint32 aMaxLengthFactor) 
@@ -358,7 +357,6 @@ NS_IMETHODIMP nsOneByteDecoderSupport::Reset()
 // Class nsBasicEncoder [implementation]
 nsBasicEncoder::nsBasicEncoder() 
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsBasicEncoder::~nsBasicEncoder() 

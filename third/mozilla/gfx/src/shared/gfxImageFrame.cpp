@@ -41,13 +41,10 @@ gfxImageFrame::gfxImageFrame() :
   mInitalized(PR_FALSE),
   mMutable(PR_TRUE),
   mHasBackgroundColor(PR_FALSE),
-  mHasTransparentColor(PR_FALSE),
   mTimeout(100),
   mBackgroundColor(0),
-  mTransparentColor(0),
   mDisposalMethod(0)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 }
 
@@ -124,9 +121,6 @@ NS_IMETHODIMP gfxImageFrame::Init(nscoord aX, nscoord aY, nscoord aWidth, nscoor
 
   rv = mImage->Init(aWidth, aHeight, depth, maskReq);
   if (NS_FAILED(rv)) return rv;
-
-  mImage->SetNaturalWidth(aWidth);
-  mImage->SetNaturalHeight(aHeight);
 
   mInitalized = PR_TRUE;
   return NS_OK;
@@ -273,9 +267,9 @@ NS_IMETHODIMP gfxImageFrame::SetImageData(const PRUint8 *aData, PRUint32 aLength
   PRInt32 imgLen = row_stride * mSize.height;
 
   PRInt32 newOffset;
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
   // Adjust: We need offset to be top-down rows & LTR within each row
-  //         On XP_PC, it's passed in as bottom-up rows & LTR within each row
+  //    On win32 & os/2, it's passed in as bottom-up rows & LTR within each row
   PRUint32 yOffset = ((PRUint32)(aOffset / row_stride)) * row_stride;
   newOffset = ((mSize.height - 1) * row_stride) - yOffset + (aOffset % row_stride);
 #else
@@ -287,15 +281,14 @@ NS_IMETHODIMP gfxImageFrame::SetImageData(const PRUint8 *aData, PRUint32 aLength
     return NS_ERROR_FAILURE;
   }
 
-  memcpy(imgData + newOffset, aData, aLength);
+  if (aData)
+    memcpy(imgData + newOffset, aData, aLength);
+  else
+    memset(imgData + newOffset, 0, aLength);
   mImage->UnlockImagePixels(PR_FALSE);
 
   PRInt32 row = (aOffset / row_stride);
 
-  PRInt32 decY2 = mImage->GetDecodedY2();
-  if (decY2 != mSize.height) {
-    mImage->SetDecodedRect(0, 0, mSize.width, row + 1);
-  }
   // adjust for aLength < row_stride
   PRInt32 numnewrows = ((aLength - 1) / row_stride) + 1;
   nsRect r(0, row, mSize.width, numnewrows);
@@ -373,9 +366,9 @@ NS_IMETHODIMP gfxImageFrame::SetAlphaData(const PRUint8 *aData, PRUint32 aLength
   PRInt32 alphaLen = row_stride * mSize.height;
 
   PRInt32 offset;
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
   // Adjust: We need offset to be top-down rows & LTR within each row
-  //         On XP_PC, it's passed in as bottom-up rows & LTR within each row
+  //    On win32 & os/2, it's passed in as bottom-up rows & LTR within each row
   PRUint32 yOffset = ((PRUint32)(aOffset / row_stride)) * row_stride;
   offset = ((mSize.height - 1) * row_stride) - yOffset + (aOffset % row_stride);
 #else
@@ -387,7 +380,10 @@ NS_IMETHODIMP gfxImageFrame::SetAlphaData(const PRUint8 *aData, PRUint32 aLength
     return NS_ERROR_FAILURE;
   }
 
-  memcpy(alphaData + offset, aData, aLength);
+  if (aData)
+    memcpy(alphaData + offset, aData, aLength);
+  else
+    memset(alphaData + offset, 0, aLength);
   mImage->UnlockImagePixels(PR_TRUE);
   return NS_OK;
 }
@@ -487,28 +483,6 @@ NS_IMETHODIMP gfxImageFrame::SetBackgroundColor(gfx_color aBackgroundColor)
   mHasBackgroundColor = PR_TRUE;
   return NS_OK;
 }
-
-/* attribute gfx_color transparentColor; */
-NS_IMETHODIMP gfxImageFrame::GetTransparentColor(gfx_color *aTransparentColor)
-{
-  if (!mInitalized || !mHasTransparentColor)
-    return NS_ERROR_NOT_INITIALIZED;
-    
-  *aTransparentColor = mTransparentColor;
-  return NS_OK;
-}
-NS_IMETHODIMP gfxImageFrame::SetTransparentColor(gfx_color aTransparentColor)
-{
-  if (!mInitalized)
-    return NS_ERROR_NOT_INITIALIZED;
-
-  mTransparentColor = aTransparentColor;
-  mHasTransparentColor = PR_TRUE;
-  return NS_OK;
-}
-
-
-
 
 NS_IMETHODIMP gfxImageFrame::GetInterface(const nsIID & aIID, void * *result)
 {

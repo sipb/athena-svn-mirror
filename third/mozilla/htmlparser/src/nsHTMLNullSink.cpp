@@ -65,7 +65,8 @@ public:
   NS_IMETHOD WillResume(void);
   NS_IMETHOD SetParser(nsIParser* aParser);
   NS_IMETHOD OpenContainer(const nsIParserNode& aNode);
-  NS_IMETHOD CloseContainer(const nsIParserNode& aNode);
+  NS_IMETHOD CloseContainer(const nsHTMLTag aTag);
+  NS_IMETHOD AddHeadContent(const nsIParserNode& aNode);
   NS_IMETHOD AddLeaf(const nsIParserNode& aNode);
   NS_IMETHOD AddProcessingInstruction(const nsIParserNode& aNode);
   NS_IMETHOD AddComment(const nsIParserNode& aNode);
@@ -77,18 +78,18 @@ public:
   // nsIHTMLContentSink
   NS_IMETHOD SetTitle(const nsString& aValue);
   NS_IMETHOD OpenHTML(const nsIParserNode& aNode);
-  NS_IMETHOD CloseHTML(const nsIParserNode& aNode);
+  NS_IMETHOD CloseHTML();
   NS_IMETHOD OpenHead(const nsIParserNode& aNode);
-  NS_IMETHOD CloseHead(const nsIParserNode& aNode);
+  NS_IMETHOD CloseHead();
   NS_IMETHOD OpenBody(const nsIParserNode& aNode); 
-  NS_IMETHOD CloseBody(const nsIParserNode& aNode);
+  NS_IMETHOD CloseBody();
   NS_IMETHOD OpenForm(const nsIParserNode& aNode);
-  NS_IMETHOD CloseForm(const nsIParserNode& aNode);
+  NS_IMETHOD CloseForm();
   NS_IMETHOD OpenMap(const nsIParserNode& aNode);
-  NS_IMETHOD CloseMap(const nsIParserNode& aNode);
+  NS_IMETHOD CloseMap();
   NS_IMETHOD OpenFrameset(const nsIParserNode& aNode);
-  NS_IMETHOD CloseFrameset(const nsIParserNode& aNode);
-  NS_IMETHOD GetPref(PRInt32 aTag,PRBool& aPref) { return NS_OK; }
+  NS_IMETHOD CloseFrameset();
+  NS_IMETHOD IsEnabled(PRInt32 aTag, PRBool* aReturn) { return NS_OK; }
   NS_IMETHOD_(PRBool) IsFormOnStack() { return PR_FALSE; }
 
   NS_IMETHOD WillProcessTokens(void) { return NS_OK; }
@@ -96,7 +97,6 @@ public:
   NS_IMETHOD WillProcessAToken(void) { return NS_OK; }
   NS_IMETHOD DidProcessAToken(void) { return NS_OK; }
 
-  NS_IMETHOD DoFragment(PRBool aFlag);
   NS_IMETHOD BeginContext(PRInt32 aPosition);
   NS_IMETHOD EndContext(PRInt32 aPosition);
 
@@ -134,7 +134,6 @@ NS_NewHTMLNullSink(nsIContentSink** aInstancePtrResult)
  *  @return  
  */
 nsHTMLNullSink::nsHTMLNullSink() : nsIHTMLContentSink() {
-  NS_INIT_ISUPPORTS();
   mNodeStackPos=0;
   memset(mNodeStack,0,sizeof(mNodeStack));
 }
@@ -234,14 +233,15 @@ nsHTMLNullSink::OpenHTML(const nsIParserNode& aNode){
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseHTML(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseHTML(){
 
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos-1)*2);
+  PRUnichar html[] = {'h','t','m','l','\0'};
+  DebugDump("</",nsDependentString(html),(mNodeStackPos-1)*2);
 #endif
 
   return NS_OK;
@@ -277,13 +277,14 @@ nsHTMLNullSink::OpenHead(const nsIParserNode& aNode) {
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseHead(const nsIParserNode& aNode) {
+nsHTMLNullSink::CloseHead() {
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  PRUnichar head[] = {'h','e','a','d','\0'};
+  DebugDump("</", nsDependentString(head), (mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -331,12 +332,13 @@ nsHTMLNullSink::OpenBody(const nsIParserNode& aNode) {
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseBody(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseBody(){
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  PRUnichar body[] = {'b','o','d','y','\0'};
+  DebugDump("</", nsDependentString(body), (mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -370,13 +372,14 @@ nsHTMLNullSink::OpenForm(const nsIParserNode& aNode) {
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseForm(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseForm(){
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  PRUnichar form[] = {'f','o','r','m','\0'};
+  DebugDump("</", nsDependentString(form),(mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -410,13 +413,14 @@ nsHTMLNullSink::OpenMap(const nsIParserNode& aNode) {
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseMap(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseMap(){
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  PRUnichar map[] = {'m','a','p','\0'};
+  DebugDump("</", nsDependentString(map), (mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -450,13 +454,14 @@ nsHTMLNullSink::OpenFrameset(const nsIParserNode& aNode) {
  *  @return  
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseFrameset(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseFrameset(){
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  PRUnichar frameset[] = {'f','r','a','m','e', 's', 'e','t','\0'};
+  DebugDump("</", nsDependentString(frameset),(mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -491,13 +496,24 @@ nsHTMLNullSink::OpenContainer(const nsIParserNode& aNode){
  *  @return 
  */
 NS_IMETHODIMP
-nsHTMLNullSink::CloseContainer(const nsIParserNode& aNode){
+nsHTMLNullSink::CloseContainer(const nsHTMLTag aTag){
   NS_PRECONDITION(mNodeStackPos > 0, "node stack empty");
 
   mNodeStack[--mNodeStackPos]=eHTMLTag_unknown;
 
 #ifdef VERBOSE_DEBUG
-  DebugDump("</",aNode.GetText(),(mNodeStackPos)*2);
+  const PRUnichar* name = nsHTMLTags::GetStringValue(aTag);
+  DebugDump("</", nsDependentString(name), (mNodeStackPos)*2);
+#endif
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLNullSink::AddHeadContent(const nsIParserNode& aNode){
+
+#ifdef VERBOSE_DEBUG
+  DebugDump("<",aNode.GetText(),(mNodeStackPos)*2);
 #endif
 
   return NS_OK;
@@ -622,17 +638,6 @@ nsHTMLNullSink::WillResume(void) {
 
 NS_IMETHODIMP
 nsHTMLNullSink::SetParser(nsIParser* aParser) 
-{
-  return NS_OK;
-}
-
-/**
- * 
- * @update	gpk03/14/99
- * @param 
- * @return
- */
-nsresult nsHTMLNullSink::DoFragment(PRBool aFlag) 
 {
   return NS_OK;
 }

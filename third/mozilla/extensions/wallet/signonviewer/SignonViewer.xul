@@ -24,10 +24,9 @@
 
 <!-- CHANGE THIS WHEN MOVING FILES -->
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 
 <!-- CHANGE THIS WHEN MOVING FILES -->
-<!DOCTYPE window SYSTEM "chrome://communicator/locale/wallet/SignonViewer.dtd" >
+<!DOCTYPE dialog SYSTEM "chrome://communicator/locale/wallet/SignonViewer.dtd" >
 
 <dialog id="signonviewer"
         title="&windowtitle.label;"
@@ -107,7 +106,7 @@
           <description>&spiel.nopreview.label;</description>
           <separator class="thin"/>
           <tree id="nopreviewsTree" flex="1" style="height: 10em;"
-                seltype="multiple" hidecolumnpicker="true"
+                hidecolumnpicker="true"
                 onkeypress="HandleNopreviewKeyPress(event)"
                 onselect="NopreviewSelected();">
             <treecols>
@@ -130,7 +129,7 @@
           <description>&spiel.nocapture.label;</description>
           <separator class="thin"/>
           <tree id="nocapturesTree" flex="1" style="height: 10em;"
-                seltype="multiple" hidecolumnpicker="true"
+                hidecolumnpicker="true"
                 onkeypress="HandleNocaptureKeyPress(event)"
                 onselect="NocaptureSelected();">
             <treecols>

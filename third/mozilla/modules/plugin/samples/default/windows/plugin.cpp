@@ -37,6 +37,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <assert.h>
 
 #include "resource.h"
 
@@ -126,28 +127,28 @@ CPlugin::CPlugin(HINSTANCE hInst,
   assert(m_hInst != NULL);
   assert(m_pNPInstance != NULL);
 
-  if((pluginType != NULL) && (lstrlen((LPSTR)pluginType) != 0))
+  if(pluginType && *pluginType)
   {
     m_pNPMIMEType = (NPMIMEType)new char[lstrlen((LPSTR)pluginType) + 1];
     if(m_pNPMIMEType != NULL)
       lstrcpy((LPSTR)m_pNPMIMEType, pluginType);
   }
 
-  if((szPageURL != NULL) && (lstrlen(szPageURL) != 0))
+  if(szPageURL && *szPageURL)
   {
     m_szPageURL = new char[lstrlen(szPageURL) + 1];
     if(m_szPageURL != NULL)
       lstrcpy(m_szPageURL, szPageURL);
   }
   
-  if((szFileURL != NULL) && (lstrlen(szFileURL) != 0))
+  if(szFileURL && *szFileURL)
   {
     m_szFileURL = new char[lstrlen(szFileURL) + 1];
     if(m_szFileURL != NULL)
       lstrcpy(m_szFileURL, szFileURL);
   }
 
-  if((szFileExtension != NULL) && (lstrlen(szFileExtension) != 0))
+  if(szFileExtension && *szFileExtension)
   {
     m_szFileExtension = new char[lstrlen(szFileExtension) + 1];
     if(m_szFileExtension != NULL)
@@ -158,7 +159,7 @@ CPlugin::CPlugin(HINSTANCE hInst,
 
   char szString[1024] = {'\0'};
   LoadString(m_hInst, IDS_CLICK_TO_GET, szString, sizeof(szString));
-  if(lstrlen(szString) != 0)
+  if(*szString)
   {
     m_szCommandMessage = new char[lstrlen(szString) + 1];
     if(m_szCommandMessage != NULL)
@@ -453,7 +454,7 @@ void CPlugin::getPluginSmart()
 
   dbgOut3("%#08x '%s'", m_pNPInstance, szJSString);
 
-  assert(lstrlen(szJSString) > 0);
+  assert(*szJSString);
 
   NPN_GetURL(m_pNPInstance, szJSString, "smartupdate_plugin_finder");
 */
@@ -474,12 +475,16 @@ void CPlugin::showGetPluginDialog()
 
   m_bOnline = !bOffline;
 
+#ifdef OJI
   if(m_bOnline && m_bJavaScript && m_bSmartUpdate && useDefaultURL_P())
   {
     JRIEnv *penv = NPN_GetJavaEnv();
     m_bJava = (penv != NULL);
   }
-  
+#else
+  m_bJava = FALSE;
+#endif
+
   dbgOut1("Environment:");
   dbgOut2("%s", m_bOnline ? "On-line" : "Off-line");
   dbgOut2("Java %s", m_bJava ? "Enabled" : "Disabled");
@@ -507,7 +512,7 @@ void CPlugin::getPlugin()
 
   char szString[1024] = {'\0'};
   LoadString(m_hInst, IDS_CLICK_WHEN_DONE, szString, sizeof(szString));
-  if(lstrlen(szString) != 0)
+  if(*szString)
   {
     m_szCommandMessage = new char[lstrlen(szString) + 1];
     if(m_szCommandMessage != NULL)
@@ -715,9 +720,12 @@ void CPlugin::onPaint(HWND hWnd)
     DeletePen(hPen3DDKShadow);
     DeletePen(hPen3DShadow);
     DeletePen(hPen3DLight);
+    
+    DrawCommandMessage(hDC, m_szCommandMessage, &rc);
   }
-
-  DrawCommandMessage(hDC, m_szCommandMessage, &rc);
+  else
+    if(m_hIcon != NULL)
+      DrawIconEx(hDC, x, y, m_hIcon, rc.right - rc.left, rc.bottom - rc.top, 0, NULL, DI_NORMAL);
 
   EndPaint (hWnd, &ps);
 }

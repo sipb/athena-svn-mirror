@@ -75,7 +75,6 @@ private:
 
 nsSplashScreenBeOS::nsSplashScreenBeOS()
 		: window( NULL ) , bitmap( NULL ), textView(NULL) {
-	NS_INIT_ISUPPORTS();
 #ifdef DEBUG_SPLASH
 	puts("nsSplashScreenBeOS::nsSlpashScreenBeOS()");
 #endif
@@ -149,6 +148,7 @@ nsSplashScreenBeOS::Observe(nsISupports *aSubject,
                             const char *aTopic,
                             const PRUnichar *someData)
 {
+	if (!bitmap) return NS_OK;
 	nsCAutoString statusString;
 	statusString.AssignWithConversion(someData);
 	if (textView == NULL) {

@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -77,9 +76,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -162,7 +158,7 @@ nsHTMLTableCaptionElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_STRING_ATTR(nsHTMLTableCaptionElement, Align, align)
 
 
-static nsGenericHTMLElement::EnumTable kCaptionAlignTable[] = {
+static nsHTMLValue::EnumTable kCaptionAlignTable[] = {
   { "left",  NS_SIDE_LEFT },
   { "right", NS_SIDE_RIGHT },
   { "top",   NS_SIDE_TOP},
@@ -176,7 +172,7 @@ nsHTMLTableCaptionElement::StringToAttribute(nsIAtom* aAttribute,
                                       nsHTMLValue&    aResult)
 {
   if (aAttribute == nsHTMLAtoms::align) {
-    if (ParseEnumValue(aValue, kCaptionAlignTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kCaptionAlignTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -190,7 +186,7 @@ nsHTMLTableCaptionElement::AttributeToString(nsIAtom* aAttribute,
 {
   if (aAttribute == nsHTMLAtoms::align) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kCaptionAlignTable, aResult);
+      aValue.EnumValueToString(kCaptionAlignTable, aResult);
 
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
@@ -221,12 +217,17 @@ NS_IMETHODIMP
 nsHTMLTableCaptionElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                     nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::align) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -239,14 +240,3 @@ nsHTMLTableCaptionElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLTableCaptionElement::SizeOf(nsISizeOfHandler* aSizer,
-                                  PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

@@ -41,7 +41,6 @@
 #include "nsIPresContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsINameSpaceManager.h"
 
@@ -106,8 +105,7 @@ SpacerFrame::Reflow(nsIPresContext*          aPresContext,
   aMetrics.ascent = 0;
   aMetrics.descent = 0;
 
-  const nsStylePosition*  position;
-  GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)position);
+  const nsStylePosition* position = GetStylePosition();
 
   PRUint8 type = GetType();
   switch (type) {
@@ -161,9 +159,8 @@ SpacerFrame::Reflow(nsIPresContext*          aPresContext,
     if (!aMetrics.height) aMetrics.height = 1;
   }
 
-  if (nsnull != aMetrics.maxElementSize) {
-    aMetrics.maxElementSize->width = aMetrics.width;
-    aMetrics.maxElementSize->height = aMetrics.height;
+  if (aMetrics.mComputeMEW) {
+    aMetrics.mMaxElementWidth = aMetrics.width;
   }
 
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aMetrics);

@@ -85,7 +85,6 @@ public:
   virtual PRInt32 GetWidth(HDC aDC, const PRUnichar* aString,
                            PRUint32 aLength) = 0;
 
-  // XXX return width from DrawString
   virtual void DrawString(HDC aDC, PRInt32 aX, PRInt32 aY,
                           const PRUnichar* aString, PRUint32 aLength) = 0;
 
@@ -228,10 +227,10 @@ public:
   virtual nsFontWin* FindGlobalFont(HDC aDC, PRUint32 aChar);
   virtual nsFontWin* FindSubstituteFont(HDC aDC, PRUint32 aChar);
 
-  virtual nsFontWin* LoadFont(HDC aDC, nsString* aName);
-  virtual nsFontWin* LoadGenericFont(HDC aDC, PRUint32 aChar, nsString* aName);
+  virtual nsFontWin* LoadFont(HDC aDC, const nsString& aName);
+  virtual nsFontWin* LoadGenericFont(HDC aDC, PRUint32 aChar, const nsString& aName);
   virtual nsFontWin* LoadGlobalFont(HDC aDC, nsGlobalFont* aGlobalFontItem);
-  virtual nsFontWin* LoadSubstituteFont(HDC aDC, nsString* aName);
+  virtual nsFontWin* LoadSubstituteFont(HDC aDC, const nsString& aName);
 
   virtual nsFontWin* GetFontFor(HFONT aHFONT);
 
@@ -267,7 +266,7 @@ public:
   static int SameAsPreviousMap(int aIndex);
 
   // These functions create possibly adjusted fonts
-  HFONT CreateFontHandle(HDC aDC, nsString* aName, LOGFONT* aLogFont);
+  HFONT CreateFontHandle(HDC aDC, const nsString& aName, LOGFONT* aLogFont);
   HFONT CreateFontHandle(HDC aDC, nsGlobalFont* aGlobalFont, LOGFONT* aLogFont);
   HFONT CreateFontAdjustHandle(HDC aDC, LOGFONT* aLogFont);
   void InitMetricsFor(HDC aDC, nsFontWin* aFontWin);
@@ -288,12 +287,12 @@ protected:
   // what font weight to pass in the LOGFONT structure.
 
   // Utility methods for managing font weights.
-  PRUint16 LookForFontWeightTable(HDC aDc, nsString* aName);
+  PRUint16 LookForFontWeightTable(HDC aDc, const nsString& aName);
   PRInt32  GetBolderWeight(PRInt32 aWeight, PRInt32 aDistance, PRUint16 aWeightTable);
   PRInt32  GetLighterWeight(PRInt32 aWeight, PRInt32 aDistance, PRUint16 aWeightTable);
   PRInt32  GetFontWeight(PRInt32 aWeight, PRUint16 aWeightTable);
   PRInt32  GetClosestWeight(PRInt32 aWeight, PRUint16 aWeightTable);
-  PRUint16 GetFontWeightTable(HDC aDC, nsString* aFontName);
+  PRUint16 GetFontWeightTable(HDC aDC, const nsString& aFontName);
   nsFontWin* LocateFont(HDC aDC, PRUint32 aChar, PRInt32 & aCount);
 
   nsresult RealizeFont();
@@ -338,39 +337,8 @@ public:
 
 // The following is a workaround for a Japanse Windows 95 problem.
 
-class nsFontWinA;
+class nsFontSubset;
 class nsFontMetricsWinA;
-
-class nsFontSubset : public nsFontWin
-{
-public:
-  nsFontSubset();
-  virtual ~nsFontSubset();
-
-  virtual PRInt32 GetWidth(HDC aDC, const PRUnichar* aString,
-                           PRUint32 aLength);
-  virtual void DrawString(HDC aDC, PRInt32 aX, PRInt32 aY,
-                          const PRUnichar* aString, PRUint32 aLength);
-#ifdef MOZ_MATHML
-  virtual nsresult
-  GetBoundingMetrics(HDC                aDC, 
-                     const PRUnichar*   aString,
-                     PRUint32           aLength,
-                     nsBoundingMetrics& aBoundingMetrics);
-#ifdef NS_DEBUG
-  virtual void DumpFontInfo();
-#endif // NS_DEBUG
-#endif
-
-  int Load(HDC aDC, nsFontMetricsWinA* aFontMetricsWin, nsFontWinA* aFont);
-
-  // convert a Unicode string to ANSI within our codepage
-  virtual void Convert(const PRUnichar* aString, PRUint32 aLength,
-                       char** aResult /*IN/OUT*/, int* aResultLength /*IN/OUT*/);
-
-  BYTE     mCharset;
-  PRUint16 mCodePage;
-};
 
 class nsFontWinA : public nsFontWin
 {
@@ -420,13 +388,13 @@ class nsFontMetricsWinA : public nsFontMetricsWin
 {
 public:
   virtual nsFontWin* FindLocalFont(HDC aDC, PRUint32 aChar);
-  virtual nsFontWin* LoadGenericFont(HDC aDC, PRUint32 aChar, nsString* aName);
+  virtual nsFontWin* LoadGenericFont(HDC aDC, PRUint32 aChar, const nsString& aName);
   virtual nsFontWin* FindGlobalFont(HDC aDC, PRUint32 aChar);
   virtual nsFontWin* FindSubstituteFont(HDC aDC, PRUint32 aChar);
 
-  virtual nsFontWin* LoadFont(HDC aDC, nsString* aName);
+  virtual nsFontWin* LoadFont(HDC aDC, const nsString& aName);
   virtual nsFontWin* LoadGlobalFont(HDC aDC, nsGlobalFont* aGlobalFontItem);
-  virtual nsFontWin* LoadSubstituteFont(HDC aDC, nsString* aName);
+  virtual nsFontWin* LoadSubstituteFont(HDC aDC, const nsString& aName);
 
   virtual nsFontWin* GetFontFor(HFONT aHFONT);
 

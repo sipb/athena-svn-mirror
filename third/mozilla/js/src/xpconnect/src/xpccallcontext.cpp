@@ -54,8 +54,6 @@ XPCCallContext::XPCCallContext(XPCContext::LangType callerLanguage,
         mDestroyJSContextInDestructor(JS_FALSE),
         mCallerLanguage(callerLanguage)
 {
-    NS_INIT_ISUPPORTS();
-
     if(!mXPC)
         return;
 
@@ -168,6 +166,9 @@ XPCCallContext::SetName(jsval name)
 
     mName = name;
 
+#ifdef XPC_IDISPATCH_SUPPORT
+    mIDispatchMember = nsnull;
+#endif
     if(mTearOff)
     {
         mSet = nsnull;
@@ -220,6 +221,9 @@ XPCCallContext::SetCallInfo(XPCNativeInterface* iface, XPCNativeMember* member,
 
     if(mState < HAVE_NAME)
         mState = HAVE_NAME;
+#ifdef XPC_IDISPATCH_SUPPORT
+    mIDispatchMember = nsnull;
+#endif
 }
 
 void
@@ -333,6 +337,10 @@ XPCCallContext::~XPCCallContext()
         
             JS_DestroyContext(mJSContext);
             mXPC->SyncJSContexts();
+        }
+        else
+        {
+            JS_ClearNewbornRoots(mJSContext);
         }
     }
 
@@ -476,6 +484,7 @@ XPCCallContext::SetIDispatchInfo(XPCNativeInterface* iface,
 
     mSet = nsnull;
     mInterface = iface;
+    mMember = nsnull;
     mIDispatchMember = member;
     mName = NS_REINTERPRET_CAST(XPCDispInterface::Member*,member)->GetName();
 

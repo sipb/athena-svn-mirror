@@ -46,7 +46,6 @@
 #include "nsIAtom.h"
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMMouseEvent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -64,7 +63,6 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
@@ -77,10 +75,12 @@
 #include "nsIDOMScrollListener.h"
 #include "nsIDOMFormListener.h"
 #include "nsXBLAtoms.h"
+#include "nsIDOMEventGroup.h"
+#include "nsIDOM3EventTarget.h"
 
-nsXBLEventHandler::nsXBLEventHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandler)
+nsXBLEventHandler::nsXBLEventHandler(nsIDOMEventReceiver* aEventReceiver,
+                                     nsXBLPrototypeHandler* aHandler)
 {
-  NS_INIT_ISUPPORTS();
   mEventReceiver = aEventReceiver;
   mProtoHandler = aHandler;
   mNextHandler = nsnull;
@@ -102,14 +102,12 @@ nsXBLEventHandler::RemoveEventHandlers()
   if (!mProtoHandler)
     return;
 
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
+  nsCOMPtr<nsIAtom> eventName = mProtoHandler->GetEventName();
 
   nsAutoString type;
   eventName->ToString(type);
   
-  PRUint8 phase;
-  mProtoHandler->GetPhase(&phase);
+  PRUint8 phase = mProtoHandler->GetPhase();
   PRBool useCapture = (phase == NS_PHASE_CAPTURING);
   
   PRBool found = PR_FALSE;
@@ -118,8 +116,15 @@ nsXBLEventHandler::RemoveEventHandlers()
 
   nsCOMPtr<nsIDOMEventListener> listener(do_QueryInterface(this));
 
-  if (found && listener)
-    mEventReceiver->RemoveEventListener(type, listener, useCapture);
+  // are we in the system event group?
+  nsCOMPtr<nsIDOMEventGroup> eventGroup;
+  if (mProtoHandler->GetType() & NS_HANDLER_TYPE_XBL_COMMAND)
+    mEventReceiver->GetSystemEventGroup(getter_AddRefs(eventGroup));
+
+  if (found && listener) {
+    nsCOMPtr<nsIDOM3EventTarget> target = do_QueryInterface(mEventReceiver);
+    target->RemoveGroupedEventListener(type, listener, useCapture, eventGroup);
+  }
 }
 
 /// Helpers that are relegated to the end of the file /////////////////////////////
@@ -149,7 +154,8 @@ nsXBLEventHandler::GetTextData(nsIContent *aParent, nsAString& aResult)
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLEventHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLEventHandler(nsIDOMEventReceiver* aRec,
+                      nsXBLPrototypeHandler* aHandler,
                       nsXBLEventHandler** aResult)
 {
   *aResult = new nsXBLEventHandler(aRec, aHandler);

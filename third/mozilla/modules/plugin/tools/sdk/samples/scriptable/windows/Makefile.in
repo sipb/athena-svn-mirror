@@ -30,22 +30,31 @@ LIBRARY_NAME = npscriptable
 
 NO_DIST_INSTALL = 1
 
+REQUIRES = plugin \
+           java \
+           xpcom \
+           $(NULL)
+
 CPPSRCS = plugin.cpp \
           nsScriptablePeer.cpp \
           $(NULL)
 
 XPIDLSRCS = nsIScriptablePluginSample.idl
 
-SHARED_LIBRARY_LIBS = ../../common/plugingate_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS = ../../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
 
-DEFFILE = npscriptable.def
+DEFFILE = $(srcdir)/npscriptable.def
 RESFILE = npscriptable.res
+
+ifdef GNU_CC
+OS_LIBS	+= -lgdi32
+endif
 
 include $(topsrcdir)/config/rules.mk
 
 DEFINES += -DMOZILLA_STRICT_API
 
-LOCAL_INCLUDES = -I$(srcdir)/$(XPIDL_GEN_DIR) \
+LOCAL_INCLUDES = -I./$(XPIDL_GEN_DIR) \
                  -I$(srcdir)/../../include \
                  -I$(srcdir)/../../../include \
                  $(NULL)

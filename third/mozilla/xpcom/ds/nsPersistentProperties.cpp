@@ -105,7 +105,7 @@ getPropertyKey(PLDHashTable*, PLDHashEntryHdr* aHdr)
   return entry->mKey;
 }
 
-struct PLDHashTableOps property_HashTableOps = {
+static const struct PLDHashTableOps property_HashTableOps = {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
     getPropertyKey,
@@ -119,8 +119,6 @@ struct PLDHashTableOps property_HashTableOps = {
 
 nsPersistentProperties::nsPersistentProperties()
 {
-  NS_INIT_ISUPPORTS();
-
   mIn = nsnull;
   mSubclass = NS_STATIC_CAST(nsIPersistentProperties*, this);
   PL_DHashTableInit(&mTable, &property_HashTableOps, nsnull,
@@ -357,17 +355,10 @@ nsPersistentProperties::Enumerate(nsISimpleEnumerator** aResult)
   // Step through hash entries populating a transient array
   PRUint32 n =
       PL_DHashTableEnumerate(&mTable, AddElemToArray, (void *)propArray);
-   if ( n < (PRIntn) mTable.entryCount )
+  if ( n < (PRIntn) mTable.entryCount )
       return NS_ERROR_OUT_OF_MEMORY;
 
-  // Convert array into enumerator
-  rv = NS_NewISupportsArrayEnumerator(propArray, getter_AddRefs(iterator));
-  if (NS_FAILED(rv)) return rv;
-  
-  // Convert nsIEnumerator into nsISimpleEnumerator
-  rv = NS_NewAdapterEnumerator(aResult, iterator);
-
-  return rv;
+  return NS_NewArrayEnumerator(aResult, propArray); 
 }
 
 
@@ -378,7 +369,7 @@ nsPersistentProperties::Read()
   PRUint32  nRead;
   nsresult  ret;
 
-  ret = mIn->Read(&c, 0, 1, &nRead);
+  ret = mIn->Read(&c, 1, &nRead);
   if (ret == NS_OK && nRead == 1) {
     return c;
   }

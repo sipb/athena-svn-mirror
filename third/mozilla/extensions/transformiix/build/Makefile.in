@@ -47,33 +47,25 @@ REQUIRES	= xpcom \
 		  webshell \
 		  docshell \
 		  layout \
+		  uconv \
 		  $(NULL)
 IS_COMPONENT	= 1
 MODULE_NAME	= TransformiixModule
 
 
 CPPSRCS = XSLTProcessorModule.cpp
-LOBJS =../source/base/ArrayList.$(OBJ_SUFFIX) \
-  ../source/base/Double.$(OBJ_SUFFIX) \
+LOBJS = ../source/base/Double.$(OBJ_SUFFIX) \
   ../source/base/List.$(OBJ_SUFFIX) \
-  ../source/base/Map.$(OBJ_SUFFIX) \
-  ../source/base/NamedMap.$(OBJ_SUFFIX) \
   ../source/base/SimpleErrorObserver.$(OBJ_SUFFIX) \
-  ../source/base/Stack.$(OBJ_SUFFIX) \
-  ../source/base/StringList.$(OBJ_SUFFIX) \
-  ../source/base/Tokenizer.$(OBJ_SUFFIX) \
   ../source/base/txAtoms.$(OBJ_SUFFIX) \
   ../source/base/txExpandedNameMap.$(OBJ_SUFFIX) \
+  ../source/base/txNamespaceMap.$(OBJ_SUFFIX) \
   ../source/base/txURIUtils.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaAttr.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaDocument.$(OBJ_SUFFIX) \
-  ../source/xml/dom/mozImpl/MozillaDocumentType.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaElement.$(OBJ_SUFFIX) \
-  ../source/xml/dom/mozImpl/MozillaEntity.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaNamedNodeMap.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaNode.$(OBJ_SUFFIX) \
-  ../source/xml/dom/mozImpl/MozillaNodeList.$(OBJ_SUFFIX) \
-  ../source/xml/dom/mozImpl/MozillaNotation.$(OBJ_SUFFIX) \
   ../source/xml/dom/mozImpl/MozillaProcInstruction.$(OBJ_SUFFIX) \
   ../source/xpath/AdditiveExpr.$(OBJ_SUFFIX) \
   ../source/xpath/AttributeValueTemplate.$(OBJ_SUFFIX) \
@@ -93,6 +85,7 @@ LOBJS =../source/base/ArrayList.$(OBJ_SUFFIX) \
   ../source/xpath/nsXPathExpression.$(OBJ_SUFFIX) \
   ../source/xpath/nsXPathNSResolver.$(OBJ_SUFFIX) \
   ../source/xpath/nsXPathResult.$(OBJ_SUFFIX) \
+  ../source/xpath/nsXPath1Scheme.$(OBJ_SUFFIX) \
   ../source/xpath/NumberExpr.$(OBJ_SUFFIX) \
   ../source/xpath/NumberFunctionCall.$(OBJ_SUFFIX) \
   ../source/xpath/NumberResult.$(OBJ_SUFFIX) \
@@ -112,21 +105,27 @@ LOBJS =../source/base/ArrayList.$(OBJ_SUFFIX) \
   ../source/xpath/VariableRefExpr.$(OBJ_SUFFIX) \
   ../source/xml/XMLUtils.$(OBJ_SUFFIX) \
   ../source/xml/XMLDOMUtils.$(OBJ_SUFFIX) \
-  ../source/xml/parser/XMLParser.$(OBJ_SUFFIX) \
+  ../source/xml/parser/txXMLParser.$(OBJ_SUFFIX) \
+  ../source/xslt/txBufferingHandler.$(OBJ_SUFFIX) \
   ../source/xslt/txOutputFormat.$(OBJ_SUFFIX) \
-  ../source/xslt/Names.$(OBJ_SUFFIX) \
-  ../source/xslt/ProcessorState.$(OBJ_SUFFIX) \
+  ../source/xslt/txExecutionState.$(OBJ_SUFFIX) \
+  ../source/xslt/txInstructions.$(OBJ_SUFFIX) \
+  ../source/xslt/txMozillaStylesheetCompiler.$(OBJ_SUFFIX) \
   ../source/xslt/txMozillaTextOutput.$(OBJ_SUFFIX) \
   ../source/xslt/txMozillaXSLTProcessor.$(OBJ_SUFFIX) \
   ../source/xslt/txMozillaXMLOutput.$(OBJ_SUFFIX) \
   ../source/xslt/txRtfHandler.$(OBJ_SUFFIX) \
+  ../source/xslt/txStylesheet.$(OBJ_SUFFIX) \
+  ../source/xslt/txStylesheetCompileHandlers.$(OBJ_SUFFIX) \
+  ../source/xslt/txStylesheetCompiler.$(OBJ_SUFFIX) \
   ../source/xslt/txTextHandler.$(OBJ_SUFFIX) \
+  ../source/xslt/txToplevelItems.$(OBJ_SUFFIX) \
   ../source/xslt/txUnknownHandler.$(OBJ_SUFFIX) \
   ../source/xslt/txXSLTNumber.$(OBJ_SUFFIX) \
   ../source/xslt/txXSLTNumberCounters.$(OBJ_SUFFIX) \
   ../source/xslt/txXSLTPatterns.$(OBJ_SUFFIX) \
+  ../source/xslt/txXSLTProcessor.$(OBJ_SUFFIX) \
   ../source/xslt/txPatternParser.$(OBJ_SUFFIX) \
-  ../source/xslt/XSLTProcessor.$(OBJ_SUFFIX) \
   ../source/xslt/functions/CurrentFunctionCall.$(OBJ_SUFFIX) \
   ../source/xslt/functions/DocumentFunctionCall.$(OBJ_SUFFIX) \
   ../source/xslt/functions/ElementAvailableFnCall.$(OBJ_SUFFIX) \
@@ -151,12 +150,3 @@ INCLUDES += -I$(srcdir)/../source/xslt -I$(srcdir)/../source/base \
   -I$(srcdir)/../source/xml -I$(srcdir)/../source/xml/dom \
   -I$(srcdir)/../source/xml/parser -I$(srcdir)/../source/xpath \
   -I$(srcdir)/../source/xslt/util -I$(srcdir)/../source/xslt/functions
-
-_T_VERSION = $(shell date +%Y%m%d%H)
-
-GARBAGE += install.js $(wildcard transformiix*.xpi)
-
-xpi:
-	$(PERL) $(topsrcdir)/xpinstall/packager/unix/makejs.pl $(srcdir)/transformiix.jst $(_T_VERSION) . install.js
-	zip transformiix$(_T_VERSION).xpi install.js
-	cd $(DIST); zip -u ../extensions/transformiix/build/transformiix$(_T_VERSION).xpi bin/components/$(LIB_PREFIX)transformiix.$(LIB_SUFFIX)

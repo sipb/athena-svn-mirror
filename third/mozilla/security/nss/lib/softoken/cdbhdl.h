@@ -34,7 +34,7 @@
  * cdbhdl.h - certificate database handle
  *   private to the certdb module
  *
- * $Id: cdbhdl.h,v 1.1.1.1 2003-02-14 19:25:26 rbasch Exp $
+ * $Id: cdbhdl.h,v 1.1.1.2 2003-07-08 16:49:42 rbasch Exp $
  */
 #ifndef _CDBHDL_H_
 #define _CDBHDL_H_
@@ -49,6 +49,7 @@
 struct NSSLOWCERTCertDBHandleStr {
     DB *permCertDB;
     PZMonitor *dbMon;
+    PRBool dbVerify;
 };
 
 #ifdef DBM_USING_NSPR
@@ -63,15 +64,19 @@ struct NSSLOWCERTCertDBHandleStr {
 
 typedef DB * (*rdbfunc)(const char *appName, const char *prefix, 
 				const char *type, int flags);
+typedef int (*rdbstatusfunc)(void);
+
+#define RDB_FAIL 1
+#define RDB_RETRY 2
 
 DB * rdbopen(const char *appName, const char *prefix, 
-				const char *type, int flags);
+				const char *type, int flags, int *status);
 
 DB *dbsopen (const char *dbname , int flags, int mode, DBTYPE type, 
 						const void * appData);
 SECStatus db_Copy(DB *dest,DB *src);
 int db_BeginTransaction(DB *db);
 int db_FinishTransaction(DB *db, PRBool abort);
-
+int db_InitComplete(DB *db);
 
 #endif

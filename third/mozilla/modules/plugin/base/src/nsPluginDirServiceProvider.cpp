@@ -44,6 +44,8 @@
 #include "nsDependentString.h"
 #include "nsXPIDLString.h"
 #include "prmem.h"
+#include "nsCOMArray.h"
+#include "nsArrayEnumerator.h"
 
 #if defined (XP_WIN)
 #include <windows.h>
@@ -185,7 +187,6 @@ static int CompareVersion(verBlock vbVersionOld, verBlock vbVersionNew)
 
 nsPluginDirServiceProvider::nsPluginDirServiceProvider()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPluginDirServiceProvider::~nsPluginDirServiceProvider()
@@ -256,8 +257,10 @@ nsPluginDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFil
   } else if (nsCRT::strcmp(prop, NS_WIN_JRE_SCAN_KEY) == 0) {
     PRBool isJavaEnabled;
     nsXPIDLCString strVer;
+#ifdef OJI
     if ((NS_FAILED(prefs->GetBoolPref("security.enable_java", &isJavaEnabled)) || !isJavaEnabled) ||
         NS_FAILED(prefs->GetCharPref(prop, getter_Copies(strVer))))
+#endif /* OJI */
       return NS_ERROR_FAILURE;
     verBlock minVer;
     TranslateVersionStr(strVer.get(), &minVer);
@@ -440,4 +443,77 @@ nsPluginDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFil
 
   return rv;
 }
+
+#ifdef XP_WIN
+nsresult
+nsPluginDirServiceProvider::GetPLIDDirectories(nsISimpleEnumerator **aEnumerator)
+{
+  NS_ENSURE_ARG_POINTER(aEnumerator);
+  *aEnumerator = nsnull;
+
+  nsCOMArray<nsILocalFile> dirs;
+
+  HKEY baseloc;
+  HKEY keyloc;
+  char curKey[_MAX_PATH] = "Software\\MozillaPlugins";
+
+  LONG result = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, curKey, 0, KEY_READ, &baseloc);
+
+  DWORD index = 0;
+  while (ERROR_SUCCESS == result) {
+    DWORD numChars = _MAX_PATH;
+    FILETIME modTime;
+    DWORD type;
+    char path[_MAX_PATH];
+    DWORD pathlen = sizeof(path);
+
+    result = ::RegEnumKeyEx(baseloc, index++, curKey, &numChars, NULL, NULL, NULL, &modTime);
+
+    if (ERROR_SUCCESS == ::RegOpenKeyEx(baseloc, curKey, 0, KEY_QUERY_VALUE, &keyloc)) {
+      if (ERROR_SUCCESS == ::RegQueryValueEx(keyloc, "Path", NULL, &type, (LPBYTE)&path, &pathlen)) {
+        
+        nsCOMPtr<nsILocalFile> localFile;
+        if (NS_SUCCEEDED(NS_NewNativeLocalFile(nsDependentCString(path), PR_TRUE, getter_AddRefs(localFile))) &&
+            localFile) {
+          
+          // Some vendors use a path directly to the DLL so chop off the filename
+          PRBool isDir = PR_FALSE;
+          if (NS_SUCCEEDED(localFile->IsDirectory(&isDir)) && !isDir) {
+            nsCOMPtr<nsIFile> temp;
+            localFile->GetParent(getter_AddRefs(temp));
+            if (temp)
+              localFile = do_QueryInterface(temp);
+          }
+
+          // now we check to make sure it's actually on disk and
+          // to see if we already have this directory in the array
+          PRBool isFileThere = PR_FALSE;
+          PRBool isDupEntry = PR_FALSE;
+          if (NS_SUCCEEDED(localFile->Exists(&isFileThere)) && isFileThere) {
+            PRInt32 c = dirs.Count();
+            for (PRInt32 i = 0; i < c; i++) {
+              nsIFile *dup = NS_STATIC_CAST(nsIFile*, dirs[i]);
+              if (dup &&
+                  NS_SUCCEEDED(dup->Equals(localFile, &isDupEntry)) &&
+                  isDupEntry) {
+                break;
+              }
+            }
+
+            if (!isDupEntry) {
+              dirs.AppendObject(localFile);
+            }
+          }
+        }
+      }
+      ::RegCloseKey(keyloc);
+    }
+  }
+
+  ::RegCloseKey(baseloc);
+  
+  return NS_NewArrayEnumerator(aEnumerator, dirs);
+}
+
+#endif
 

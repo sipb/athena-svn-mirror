@@ -105,6 +105,22 @@ class nsAutoRangeLock
     ~nsAutoRangeLock() { nsRange::Unlock(); }
 };
 
+// NS_ERROR_DOM_NOT_OBJECT_ERR is not the correct one to throw, but spec doesn't say
+// what is
+#define VALIDATE_ACCESS(node_)                                                     \
+  PR_BEGIN_MACRO                                                                   \
+    if (!node_) {                                                                  \
+      return NS_ERROR_DOM_NOT_OBJECT_ERR;                                          \
+    }                                                                              \
+    if (!nsContentUtils::CanCallerAccess(node_)) {                                 \
+      return NS_ERROR_DOM_SECURITY_ERR;                                            \
+    }                                                                              \
+    if (IsDetached()) {                                                            \
+      return NS_ERROR_DOM_INVALID_STATE_ERR;                                       \
+    }                                                                              \
+  PR_END_MACRO
+
+
 
 // Returns -1 if point1 < point2, 1, if point1 > point2,
 // 0 if error or if point1 == point2. 
@@ -178,10 +194,11 @@ PRBool IsNodeIntersectsRange(nsIContent* aNode, nsIDOMRange* aRange)
 // Note that both of the above might be true.
 // If neither are true, the node is contained inside of the range.
 // XXX - callers responsibility to ensure node in same doc as range! 
-nsresult CompareNodeToRange(nsIContent* aNode, 
-                        nsIDOMRange* aRange,
-                        PRBool *outNodeBefore,
-                        PRBool *outNodeAfter)
+
+// static
+nsresult
+nsRange::CompareNodeToRange(nsIContent* aNode, nsIDOMRange* aRange,
+                            PRBool *outNodeBefore, PRBool *outNodeAfter)
 {
   // create a pair of dom points that expresses location of node:
   //     NODE(start), NODE(end)
@@ -306,14 +323,14 @@ PRBool GetNodeBracketPoints(nsIContent* aNode,
 nsresult
 NS_NewRangeUtils(nsIRangeUtils** aResult)
 {
-  NS_PRECONDITION(aResult != nsnull, "null ptr");
-  if (! aResult)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_ARG_POINTER(aResult);
 
   nsRangeUtils* rangeUtil = new nsRangeUtils();
-  if (rangeUtil)
-    return rangeUtil->QueryInterface(NS_GET_IID(nsIRangeUtils), (void**) aResult);
-  return NS_ERROR_OUT_OF_MEMORY;
+  if (!rangeUtil) {
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+
+  return CallQueryInterface(rangeUtil, aResult);
 }
 
 /******************************************************
@@ -322,7 +339,6 @@ NS_NewRangeUtils(nsIRangeUtils** aResult)
 
 nsRangeUtils::nsRangeUtils()
 {
-  NS_INIT_ISUPPORTS();
 } 
 
 nsRangeUtils::~nsRangeUtils() 
@@ -378,12 +394,11 @@ nsRangeUtils::IsNodeIntersectsRange(nsIContent* aNode, nsIDOMRange* aRange)
 }
 
 NS_IMETHODIMP
-nsRangeUtils::CompareNodeToRange(nsIContent* aNode, 
-                                nsIDOMRange* aRange,
-                                PRBool *outNodeBefore,
-                                PRBool *outNodeAfter)
+nsRangeUtils::CompareNodeToRange(nsIContent* aNode, nsIDOMRange* aRange,
+                                 PRBool *outNodeBefore, PRBool *outNodeAfter)
 {
-  return ::CompareNodeToRange(aNode, aRange, outNodeBefore, outNodeAfter);
+  return nsRange::CompareNodeToRange(aNode, aRange, outNodeBefore,
+                                     outNodeAfter);
 }
 
 #ifdef XP_MAC
@@ -400,15 +415,16 @@ nsRangeUtils::CompareNodeToRange(nsIContent* aNode,
 nsresult
 NS_NewRange(nsIDOMRange** aResult)
 {
-  NS_PRECONDITION(aResult != nsnull, "null ptr");
-  if (! aResult)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_ARG_POINTER(aResult);
 
   nsRange * range = new nsRange();
-  if (range)
-    return range->QueryInterface(NS_GET_IID(nsIDOMRange), (void**) aResult);
-  return NS_ERROR_OUT_OF_MEMORY;
+  if (!range) {
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+
+  return CallQueryInterface(range, aResult);
 }
+
 /******************************************************
  * constructor/destructor
  ******************************************************/
@@ -421,7 +437,6 @@ nsRange::nsRange() :
   mStartParent(),
   mEndParent()
 {
-  NS_INIT_ISUPPORTS();
 } 
 
 nsRange::~nsRange() 
@@ -608,10 +623,9 @@ nsresult nsRange::AddToListOf(nsIDOMNode* aNode)
 {
   if (!aNode) 
     return NS_ERROR_NULL_POINTER;
-  
-  nsCOMPtr<nsIContent> cN;
 
-  nsresult res = aNode->QueryInterface(NS_GET_IID(nsIContent), getter_AddRefs(cN));
+  nsresult res;
+  nsCOMPtr<nsIContent> cN = do_QueryInterface(aNode, &res);
   if (NS_FAILED(res)) 
     return res;
 
@@ -624,10 +638,9 @@ nsresult nsRange::RemoveFromListOf(nsIDOMNode* aNode)
 {
   if (!aNode) 
     return NS_ERROR_NULL_POINTER;
-  
-  nsCOMPtr<nsIContent> cN;
 
-  nsresult res = aNode->QueryInterface(NS_GET_IID(nsIContent), getter_AddRefs(cN));
+  nsresult res;
+  nsCOMPtr<nsIContent> cN = do_QueryInterface(aNode, &res);
   if (NS_FAILED(res)) 
     return res;
 
@@ -836,29 +849,26 @@ PRBool nsRange::IsIncreasing(nsIDOMNode* aStartN, PRInt32 aStartOffset,
 
 PRInt32 nsRange::IndexOf(nsIDOMNode* aChildNode)
 {
-  nsCOMPtr<nsIDOMNode> parentNode;
-  nsCOMPtr<nsIContent> contentChild;
-  nsCOMPtr<nsIContent> contentParent;
-  PRInt32    theIndex = nsnull;
-  
   if (!aChildNode) 
     return 0;
 
   // get the parent node
+  nsCOMPtr<nsIDOMNode> parentNode;
   nsresult res = aChildNode->GetParentNode(getter_AddRefs(parentNode));
   if (NS_FAILED(res)) 
     return 0;
   
   // convert node and parent to nsIContent, so that we can find the child index
-  res = parentNode->QueryInterface(NS_GET_IID(nsIContent), getter_AddRefs(contentParent));
+  nsCOMPtr<nsIContent> contentParent = do_QueryInterface(parentNode, &res);
   if (NS_FAILED(res)) 
     return 0;
 
-  res = aChildNode->QueryInterface(NS_GET_IID(nsIContent), getter_AddRefs(contentChild));
+  nsCOMPtr<nsIContent> contentChild = do_QueryInterface(aChildNode, &res);
   if (NS_FAILED(res)) 
     return 0;
   
   // finally we get the index
+  PRInt32 theIndex = 0;
   res = contentParent->IndexOf(contentChild,theIndex); 
   if (NS_FAILED(res)) 
     return 0;
@@ -961,7 +971,7 @@ nsresult nsRange::GetStartContainer(nsIDOMNode** aStartParent)
     return NS_ERROR_NOT_INITIALIZED;
   if (!aStartParent)
     return NS_ERROR_NULL_POINTER;
-  //NS_IF_RELEASE(*aStartParent); don't think we should be doing this
+
   *aStartParent = mStartParent;
   NS_IF_ADDREF(*aStartParent);
   return NS_OK;
@@ -1024,15 +1034,8 @@ nsresult nsRange::GetCommonAncestorContainer(nsIDOMNode** aCommonParent)
 
 nsresult nsRange::SetStart(nsIDOMNode* aParent, PRInt32 aOffset)
 {
-  NS_ENSURE_ARG_POINTER(aParent);
-
-  if (!nsContentUtils::CanCallerAccess(aParent)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-
+  VALIDATE_ACCESS(aParent);
+  
   PRInt32 len = GetNodeLength(aParent);
   if ( (aOffset < 0) || (len < 0) || (aOffset > len) )
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
@@ -1058,15 +1061,8 @@ nsresult nsRange::SetStart(nsIDOMNode* aParent, PRInt32 aOffset)
 
 nsresult nsRange::SetStartBefore(nsIDOMNode* aSibling)
 {
-  if (!nsContentUtils::CanCallerAccess(aSibling)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-  if (nsnull == aSibling)// Not the correct one to throw, but spec doesn't say what is
-    return NS_ERROR_DOM_NOT_OBJECT_ERR;
-
+  VALIDATE_ACCESS(aSibling);
+  
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
   if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
@@ -1076,14 +1072,7 @@ nsresult nsRange::SetStartBefore(nsIDOMNode* aSibling)
 
 nsresult nsRange::SetStartAfter(nsIDOMNode* aSibling)
 {
-  if (!nsContentUtils::CanCallerAccess(aSibling)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-  if (nsnull == aSibling)// Not the correct one to throw, but spec doesn't say what is
-    return NS_ERROR_DOM_NOT_OBJECT_ERR;
+  VALIDATE_ACCESS(aSibling);
 
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
@@ -1094,21 +1083,14 @@ nsresult nsRange::SetStartAfter(nsIDOMNode* aSibling)
 
 nsresult nsRange::SetEnd(nsIDOMNode* aParent, PRInt32 aOffset)
 {
-  if (!nsContentUtils::CanCallerAccess(aParent)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-
+  VALIDATE_ACCESS(aParent);
+  
   PRInt32 len = GetNodeLength(aParent);
   if ( (aOffset < 0) || (len < 0) || (aOffset > len) )
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
     
   nsresult res;
   
-  if (!aParent) return NS_ERROR_NULL_POINTER;
-
   nsCOMPtr<nsIDOMNode>theParent( do_QueryInterface(aParent) );
   
   // must be in same document as startpoint, else 
@@ -1130,15 +1112,8 @@ nsresult nsRange::SetEnd(nsIDOMNode* aParent, PRInt32 aOffset)
 
 nsresult nsRange::SetEndBefore(nsIDOMNode* aSibling)
 {
-  if (!nsContentUtils::CanCallerAccess(aSibling)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-  if (nsnull == aSibling)// Not the correct one to throw, but spec doesn't say what is
-    return NS_ERROR_DOM_NOT_OBJECT_ERR;
-
+  VALIDATE_ACCESS(aSibling);
+  
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
   if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
@@ -1148,15 +1123,8 @@ nsresult nsRange::SetEndBefore(nsIDOMNode* aSibling)
 
 nsresult nsRange::SetEndAfter(nsIDOMNode* aSibling)
 {
-  if (!nsContentUtils::CanCallerAccess(aSibling)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-  if (nsnull == aSibling)// Not the correct one to throw, but spec doesn't say what is
-    return NS_ERROR_DOM_NOT_OBJECT_ERR;
-
+  VALIDATE_ACCESS(aSibling);
+  
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
   if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
@@ -1177,22 +1145,10 @@ nsresult nsRange::Collapse(PRBool aToStart)
     return DoSetRange(mEndParent,mEndOffset,mEndParent,mEndOffset);
 }
 
-nsresult nsRange::Unposition()
-{
-  return DoSetRange(nsCOMPtr<nsIDOMNode>(),0,nsCOMPtr<nsIDOMNode>(),0); 
-  // note that "nsCOMPtr<nsIDOMmNode>()" is the moral equivalent of null
-}
-
 nsresult nsRange::SelectNode(nsIDOMNode* aN)
 {
-  if (!nsContentUtils::CanCallerAccess(aN)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-
-  if (!aN) return NS_ERROR_NULL_POINTER;
+  VALIDATE_ACCESS(aN);
+  
   nsCOMPtr<nsIDOMNode> parent;
   PRInt32 start, end;
 
@@ -1237,14 +1193,8 @@ nsresult nsRange::SelectNode(nsIDOMNode* aN)
 
 nsresult nsRange::SelectNodeContents(nsIDOMNode* aN)
 {
-  if (!nsContentUtils::CanCallerAccess(aN)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-  NS_ENSURE_ARG_POINTER(aN);
-
+  VALIDATE_ACCESS(aN);
+  
   nsCOMPtr<nsIDOMNode> theNode( do_QueryInterface(aN) );
   nsCOMPtr<nsIDOMNodeList> aChildNodes;
   
@@ -1755,8 +1705,9 @@ nsresult nsRange::DeleteContents()
   return CollapseRangeAfterDelete(this);
 }
 
-nsresult nsRange::CompareBoundaryPoints(PRUint16 how, nsIDOMRange* srcRange,
-                                   PRInt32* aCmpRet)
+NS_IMETHODIMP
+nsRange::CompareBoundaryPoints(PRUint16 how, nsIDOMRange* srcRange,
+                               PRInt16* aCmpRet)
 {
   if(IsDetached())
     return NS_ERROR_DOM_INVALID_STATE_ERR;
@@ -2107,15 +2058,8 @@ nsresult nsRange::CloneRange(nsIDOMRange** aReturn)
 
 nsresult nsRange::InsertNode(nsIDOMNode* aN)
 {
-  if (!nsContentUtils::CanCallerAccess(aN)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-
-  NS_ENSURE_ARG_POINTER(aN);
- 
+  VALIDATE_ACCESS(aN);
+  
   nsresult res;
   PRInt32 tStartOffset;
   this->GetStartOffset(&tStartOffset);
@@ -2123,18 +2067,20 @@ nsresult nsRange::InsertNode(nsIDOMNode* aN)
   nsCOMPtr<nsIDOMNode> tStartContainer;
   res = this->GetStartContainer(getter_AddRefs(tStartContainer));
   if(NS_FAILED(res)) return res;
-  
-  PRUint16 tNodeType;
-  aN->GetNodeType(&tNodeType);
-  if( (nsIDOMNode::CDATA_SECTION_NODE == tNodeType) ||
-      (nsIDOMNode::TEXT_NODE == tNodeType) )
+
+  nsCOMPtr<nsIDOMText> startTextNode(do_QueryInterface(tStartContainer));
+  if (startTextNode)
   {
     nsCOMPtr<nsIDOMNode> tSCParentNode;
     res = tStartContainer->GetParentNode(getter_AddRefs(tSCParentNode));
     if(NS_FAILED(res)) return res;
 
+    nsCOMPtr<nsIDOMText> secondPart;
+    res = startTextNode->SplitText(tStartOffset, getter_AddRefs(secondPart));
+    if (NS_FAILED(res)) return res;
+    
     nsCOMPtr<nsIDOMNode> tResultNode;
-    return tSCParentNode->InsertBefore(aN, tSCParentNode, getter_AddRefs(tResultNode));
+    return tSCParentNode->InsertBefore(aN, secondPart, getter_AddRefs(tResultNode));
   }  
 
   nsCOMPtr<nsIDOMNodeList>tChildList;
@@ -2145,32 +2091,18 @@ nsresult nsRange::InsertNode(nsIDOMNode* aN)
   if(NS_FAILED(res)) return res;
 
   // find the insertion point in the DOM and insert the Node
-  if(tStartOffset == (PRInt32)tChildListLength)
-  {
-    nsCOMPtr<nsIDOMNode> tNode;
-    return tStartContainer->AppendChild(aN, getter_AddRefs(tNode));
-  }
-  else
-  {
-    nsCOMPtr<nsIDOMNode>tChildNode;
-    res = tChildList->Item(tStartOffset, getter_AddRefs(tChildNode));
-    if(NS_FAILED(res)) return res;
-
-    nsCOMPtr<nsIDOMNode> tResultNode;
-    return tStartContainer->InsertBefore(aN, tChildNode, getter_AddRefs(tResultNode));
-  }
+  nsCOMPtr<nsIDOMNode>tChildNode;
+  res = tChildList->Item(tStartOffset, getter_AddRefs(tChildNode));
+  if(NS_FAILED(res)) return res;
+  
+  nsCOMPtr<nsIDOMNode> tResultNode;
+  return tStartContainer->InsertBefore(aN, tChildNode, getter_AddRefs(tResultNode));
 }
 
 nsresult nsRange::SurroundContents(nsIDOMNode* aN)
 {
-  if (!nsContentUtils::CanCallerAccess(aN)) {
-    return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
-  if(IsDetached())
-    return NS_ERROR_DOM_INVALID_STATE_ERR;
-
-  NS_ENSURE_ARG_POINTER(aN);
+  VALIDATE_ACCESS(aN);
+  
   nsresult res;
 
   //get start offset, and start container
@@ -2270,7 +2202,7 @@ nsresult nsRange::SurroundContents(nsIDOMNode* aN)
     if(tFound)
     {
       nsCOMPtr<nsIDOMNode> tChild;
-      tChildList->Item(i-1, getter_AddRefs(tChild));
+      tChildList->Item(i, getter_AddRefs(tChild));
       tAncestorContainer->InsertBefore(aN, tChild, getter_AddRefs(tempNode));
     }
     else // there is an error this may need to be updated later
@@ -2585,168 +2517,152 @@ NS_IMETHODIMP
 nsRange::CreateContextualFragment(const nsAString& aFragment, 
                                   nsIDOMDocumentFragment** aReturn)
 {
-  nsresult result = NS_OK;
-  nsCOMPtr<nsIParser> parser;
-  nsVoidArray tagStack;
-
   if (!mIsPositioned) {
     return NS_ERROR_FAILURE;
   }
 
   // Create a new parser for this entire operation
-  result = nsComponentManager::CreateInstance(kCParserCID, 
-                                              nsnull, 
-                                              NS_GET_IID(nsIParser), 
-                                              (void **)getter_AddRefs(parser));
-  if (NS_SUCCEEDED(result)) {
+  nsresult result;
+  nsCOMPtr<nsIParser> parser = do_CreateInstance(kCParserCID, &result);
+  NS_ENSURE_SUCCESS(result, result);
 
-    nsCOMPtr<nsIDOMNode> parent;
-    nsCOMPtr<nsIContent> content(do_QueryInterface(mStartParent, &result));
+  nsCOMPtr<nsIDocument> document;
+  nsCOMPtr<nsIDOMDocument> domDocument;
 
-    if (NS_SUCCEEDED(result)) {
-      nsCOMPtr<nsIDocument> document;
-      nsCOMPtr<nsIDOMDocument> domDocument;
-      
-      result = content->GetDocument(*getter_AddRefs(document));
-      if (document && NS_SUCCEEDED(result)) {
-        domDocument = do_QueryInterface(document, &result);
+  result = mStartParent->GetOwnerDocument(getter_AddRefs(domDocument));
+  if (domDocument && NS_SUCCEEDED(result)) {
+    document = do_QueryInterface(domDocument, &result);
+  }
+
+  nsVoidArray tagStack;
+  nsCOMPtr<nsIDOMNode> parent = mStartParent;
+  while (parent && 
+         (parent != domDocument) && 
+         NS_SUCCEEDED(result)) {
+    PRUint16 nodeType;
+    
+    parent->GetNodeType(&nodeType);
+    if (nsIDOMNode::ELEMENT_NODE == nodeType) {
+      nsAutoString tagName;
+      parent->GetNodeName(tagName);
+      // XXX Wish we didn't have to allocate here
+      PRUnichar* name = ToNewUnicode(tagName);
+      if (name) {
+        tagStack.AppendElement(name);
+        nsCOMPtr<nsIDOMNode> temp = parent;
+        result = temp->GetParentNode(getter_AddRefs(parent));
       }
-
-      parent = mStartParent;
-      while (parent && 
-             (parent != domDocument) && 
-             NS_SUCCEEDED(result)) {
-        nsCOMPtr<nsIDOMNode> temp;
-        nsAutoString tagName;
-        PRUnichar* name = nsnull;
-        PRUint16 nodeType;
-        
-        parent->GetNodeType(&nodeType);
-        if (nsIDOMNode::ELEMENT_NODE == nodeType) {
-          parent->GetNodeName(tagName);
-          // XXX Wish we didn't have to allocate here
-          name = ToNewUnicode(tagName);
-          if (name) {
-            tagStack.AppendElement(name);
-            temp = parent;
-            result = temp->GetParentNode(getter_AddRefs(parent));
-          }
-          else {
-            result = NS_ERROR_OUT_OF_MEMORY;
-          }
-        }
-        else {
-          temp = parent;
-          result = temp->GetParentNode(getter_AddRefs(parent));
-        }
-      }
-      
-      if (NS_SUCCEEDED(result)) {
-        nsCAutoString contentType;
-        nsIHTMLFragmentContentSink* sink;
-        
-        result = NS_NewHTMLFragmentContentSink(&sink);
-        if (NS_SUCCEEDED(result)) {
-          parser->SetContentSink(sink);
-          nsCOMPtr<nsIDOMNSDocument> domnsDocument(do_QueryInterface(document));
-          if (domnsDocument) {
-            nsAutoString buf;
-            domnsDocument->GetContentType(buf);
-            CopyUCS2toASCII(buf, contentType);
-          }
-          else {
-            // Who're we kidding. This only works for html.
-            contentType = NS_LITERAL_CSTRING("text/html");
-          }
-
-          // If there's no JS or system JS running,
-          // push the current document's context on the JS context stack
-          // so that event handlers in the fragment do not get 
-          // compiled with the system principal.
-          nsCOMPtr<nsIJSContextStack> ContextStack;
-          nsCOMPtr<nsIScriptSecurityManager> secMan;
-          secMan = do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &result);
-          if (document && NS_SUCCEEDED(result)) {
-            nsCOMPtr<nsIPrincipal> sysPrin;
-            nsCOMPtr<nsIPrincipal> subjectPrin;
-
-            // Just to compare, not to use!
-            result = secMan->GetSystemPrincipal(getter_AddRefs(sysPrin));
-            if (NS_SUCCEEDED(result))
-                result = secMan->GetSubjectPrincipal(getter_AddRefs(subjectPrin));
-            // If there's no subject principal, there's no JS running, so we're in system code.
-            // (just in case...null subject principal will probably never happen)
-            if (NS_SUCCEEDED(result) &&
-               (!subjectPrin || sysPrin.get() == subjectPrin.get())) {
-              nsCOMPtr<nsIScriptGlobalObject> globalObj;
-              result = document->GetScriptGlobalObject(getter_AddRefs(globalObj));
-
-              nsCOMPtr<nsIScriptContext> scriptContext;
-              if (NS_SUCCEEDED(result) && globalObj) {
-                result = globalObj->GetContext(getter_AddRefs(scriptContext));
-              }
-
-              JSContext* cx = nsnull;
-              if (NS_SUCCEEDED(result) && scriptContext) {
-                cx = (JSContext*)scriptContext->GetNativeContext();
-              }
-
-              if(cx) {
-                ContextStack = do_GetService("@mozilla.org/js/xpc/ContextStack;1", &result);
-                if(NS_SUCCEEDED(result)) {
-                  result = ContextStack->Push(cx);
-                }
-              }
-            }
-          }
-          
-          nsDTDMode mode = eDTDMode_autodetect;
-          nsCOMPtr<nsIDOMDocument> ownerDoc;
-          mStartParent->GetOwnerDocument(getter_AddRefs(ownerDoc));
-          nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(ownerDoc));
-          if (htmlDoc) {
-            nsCompatibility compatMode;
-            htmlDoc->GetCompatibilityMode(compatMode);
-            switch (compatMode) {
-              case eCompatibility_NavQuirks:
-                mode = eDTDMode_quirks;
-                break;
-              case eCompatibility_AlmostStandards:
-                mode = eDTDMode_almost_standards;
-                break;
-              case eCompatibility_FullStandards:
-                mode = eDTDMode_full_standards;
-                break;
-              default:
-                NS_NOTREACHED("unknown mode");
-                break;
-            }
-          }
-          result = parser->ParseFragment(aFragment, (void*)0,
-                                         tagStack,
-                                         0, contentType, mode);
-
-          if (ContextStack) {
-            JSContext *notused;
-            ContextStack->Pop(&notused);
-          }
-          
-          if (NS_SUCCEEDED(result)) {
-            sink->GetFragment(aReturn);
-          }
-          
-          NS_RELEASE(sink);
-        }
+      else {
+        result = NS_ERROR_OUT_OF_MEMORY;
       }
     }
-      
-    // XXX Ick! Delete strings we allocated above.
-    PRInt32 count = tagStack.Count();
-    for (PRInt32 i = 0; i < count; i++) {
-      PRUnichar* str = (PRUnichar*)tagStack.ElementAt(i);
-      if (str) {
-        nsCRT::free(str);
+    else {
+      nsCOMPtr<nsIDOMNode> temp = parent;
+      result = temp->GetParentNode(getter_AddRefs(parent));
+    }
+  }
+
+  if (NS_SUCCEEDED(result)) {
+    nsCAutoString contentType;
+    nsCOMPtr<nsIHTMLFragmentContentSink> sink;
+
+    result = NS_NewHTMLFragmentContentSink(getter_AddRefs(sink));
+    if (NS_SUCCEEDED(result)) {
+      sink->SetTargetDocument(document);
+      parser->SetContentSink(sink);
+      nsCOMPtr<nsIDOMNSDocument> domnsDocument(do_QueryInterface(document));
+      if (domnsDocument) {
+        nsAutoString buf;
+        domnsDocument->GetContentType(buf);
+        CopyUCS2toASCII(buf, contentType);
       }
+      else {
+        // Who're we kidding. This only works for html.
+        contentType = NS_LITERAL_CSTRING("text/html");
+      }
+
+      // If there's no JS or system JS running,
+      // push the current document's context on the JS context stack
+      // so that event handlers in the fragment do not get 
+      // compiled with the system principal.
+      nsCOMPtr<nsIJSContextStack> ContextStack;
+      nsCOMPtr<nsIScriptSecurityManager> secMan;
+      secMan = do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &result);
+      if (document && NS_SUCCEEDED(result)) {
+        nsCOMPtr<nsIPrincipal> sysPrin;
+        nsCOMPtr<nsIPrincipal> subjectPrin;
+
+        // Just to compare, not to use!
+        result = secMan->GetSystemPrincipal(getter_AddRefs(sysPrin));
+        if (NS_SUCCEEDED(result))
+            result = secMan->GetSubjectPrincipal(getter_AddRefs(subjectPrin));
+        // If there's no subject principal, there's no JS running, so we're in system code.
+        // (just in case...null subject principal will probably never happen)
+        if (NS_SUCCEEDED(result) &&
+           (!subjectPrin || sysPrin.get() == subjectPrin.get())) {
+          nsCOMPtr<nsIScriptGlobalObject> globalObj;
+          result = document->GetScriptGlobalObject(getter_AddRefs(globalObj));
+
+          nsCOMPtr<nsIScriptContext> scriptContext;
+          if (NS_SUCCEEDED(result) && globalObj) {
+            result = globalObj->GetContext(getter_AddRefs(scriptContext));
+          }
+
+          JSContext* cx = nsnull;
+          if (NS_SUCCEEDED(result) && scriptContext) {
+            cx = (JSContext*)scriptContext->GetNativeContext();
+          }
+
+          if(cx) {
+            ContextStack = do_GetService("@mozilla.org/js/xpc/ContextStack;1", &result);
+            if(NS_SUCCEEDED(result)) {
+              result = ContextStack->Push(cx);
+            }
+          }
+        }
+      }
+
+      nsDTDMode mode = eDTDMode_autodetect;
+      nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(domDocument));
+      if (htmlDoc) {
+        nsCompatibility compatMode;
+        htmlDoc->GetCompatibilityMode(compatMode);
+        switch (compatMode) {
+          case eCompatibility_NavQuirks:
+            mode = eDTDMode_quirks;
+            break;
+          case eCompatibility_AlmostStandards:
+            mode = eDTDMode_almost_standards;
+            break;
+          case eCompatibility_FullStandards:
+            mode = eDTDMode_full_standards;
+            break;
+          default:
+            NS_NOTREACHED("unknown mode");
+            break;
+        }
+      }
+      result = parser->ParseFragment(aFragment, (void*)0,
+                                     tagStack,
+                                     0, contentType, mode);
+
+      if (ContextStack) {
+        JSContext *notused;
+        ContextStack->Pop(&notused);
+      }
+
+      if (NS_SUCCEEDED(result)) {
+        sink->GetFragment(aReturn);
+      }
+    }
+  }
+
+  // XXX Ick! Delete strings we allocated above.
+  PRInt32 count = tagStack.Count();
+  for (PRInt32 i = 0; i < count; i++) {
+    PRUnichar* str = (PRUnichar*)tagStack.ElementAt(i);
+    if (str) {
+      nsCRT::free(str);
     }
   }
 

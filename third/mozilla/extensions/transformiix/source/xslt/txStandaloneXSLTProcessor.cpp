@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -39,23 +39,27 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "txStandaloneXSLTProcessor.h"
-#include "txURIUtils.h"
-#include "XMLParser.h"
-#include "txSingleNodeContext.h"
-#include "Names.h"
-#include "txUnknownHandler.h"
+#include "txStandaloneStylesheetCompiler.h"
+#include "nsCRT.h"
+#include "nsReadableUtils.h"
 #include "txHTMLOutput.h"
+#include "txSingleNodeContext.h"
 #include "txTextOutput.h"
+#include "txUnknownHandler.h"
+#include "txURIUtils.h"
+#include "txXMLParser.h"
+
+TX_IMPL_DOM_STATICS;
 
 /**
  * Output Handler Factory
  */
-class txStandaloneHandlerFactory : public txIOutputHandlerFactory
+class txStandaloneHandlerFactory : public txAOutputHandlerFactory
 {
 public:
-    txStandaloneHandlerFactory(ProcessorState* aPs,
+    txStandaloneHandlerFactory(txExecutionState* aEs,
                                ostream* aStream)
-        : mPs(aPs), mStream(aStream)
+        : mEs(aEs), mStream(aStream)
     {
     }
 
@@ -63,16 +67,16 @@ public:
     {
     };
 
-    TX_DECL_TXIOUTPUTHANDLERFACTORY;
+    TX_DECL_TXAOUTPUTHANDLERFACTORY;
 
 private:
-    ProcessorState* mPs;
+    txExecutionState* mEs;
     ostream* mStream;
 };
 
 nsresult
 txStandaloneHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                              txIOutputXMLEventHandler** aHandler)
+                                              txAOutputXMLEventHandler** aHandler)
 {
     *aHandler = 0;
     switch (aFormat->mMethod) {
@@ -89,7 +93,7 @@ txStandaloneHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
             break;
 
         case eMethodNotSet:
-            *aHandler = new txUnknownHandler(mPs);
+            *aHandler = new txUnknownHandler(mEs);
             break;
     }
     NS_ENSURE_TRUE(*aHandler, NS_ERROR_OUT_OF_MEMORY);
@@ -98,9 +102,9 @@ txStandaloneHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
 
 nsresult
 txStandaloneHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                              const String& aName,
+                                              const nsAString& aName,
                                               PRInt32 aNsID,
-                                              txIOutputXMLEventHandler** aHandler)
+                                              txAOutputXMLEventHandler** aHandler)
 {
     *aHandler = 0;
     NS_ASSERTION(aFormat->mMethod != eMethodNotSet,
@@ -120,7 +124,7 @@ txStandaloneHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
  * or an error is returned.
  */
 nsresult
-txStandaloneXSLTProcessor::transform(String& aXMLPath, ostream& aOut,
+txStandaloneXSLTProcessor::transform(nsACString& aXMLPath, ostream& aOut,
                                      ErrorObserver& aErr)
 {
     Document* xmlDoc = parsePath(aXMLPath, aErr);
@@ -141,23 +145,26 @@ txStandaloneXSLTProcessor::transform(String& aXMLPath, ostream& aOut,
  * stylesheet.
  */
 nsresult
-txStandaloneXSLTProcessor::transform(String& aXMLPath, String& aXSLPath,
-                                     ostream& aOut, ErrorObserver& aErr)
+txStandaloneXSLTProcessor::transform(nsACString& aXMLPath,
+                                     nsACString& aXSLPath, ostream& aOut,
+                                     ErrorObserver& aErr)
 {
     Document* xmlDoc = parsePath(aXMLPath, aErr);
     if (!xmlDoc) {
         return NS_ERROR_FAILURE;
     }
-    Document* xslDoc = parsePath(aXSLPath, aErr);
-    if (!xslDoc) {
+    txParsedURL path;
+    path.init(NS_ConvertASCIItoUCS2(aXSLPath));
+    nsRefPtr<txStylesheet> style;
+    nsresult rv = TX_CompileStylesheetPath(path, getter_AddRefs(style));
+    if (NS_FAILED(rv)) {
         delete xmlDoc;
-        return NS_ERROR_FAILURE;
+        return rv;
     }
     // transform
-    nsresult rv = transform(xmlDoc, xslDoc, aOut, aErr);
+    rv = transform(xmlDoc, style, aOut, aErr);
 
     delete xmlDoc;
-    delete xslDoc;
 
     return rv;
 }
@@ -176,18 +183,21 @@ txStandaloneXSLTProcessor::transform(Document* aXMLDoc, ostream& aOut,
     }
 
     // get stylesheet path
-    String stylePath;
+    nsAutoString stylePath, basePath;
+    aXMLDoc->getBaseURI(basePath);
     getHrefFromStylesheetPI(*aXMLDoc, stylePath);
+    txParsedURL base, ref, resolved;
+    base.init(basePath);
+    ref.init(stylePath);
+    base.resolve(ref, resolved);
 
-    Document* xslDoc = parsePath(stylePath, aErr);
-    if (!xslDoc) {
-        return NS_ERROR_FAILURE;
-    }
+    nsRefPtr<txStylesheet> style;
+    nsresult rv = TX_CompileStylesheetPath(resolved, getter_AddRefs(style));
+    NS_ENSURE_SUCCESS(rv, rv);
 
     // transform
-    nsresult rv = transform(aXMLDoc, xslDoc, aOut, aErr);
+    rv = transform(aXMLDoc, style, aOut, aErr);
 
-    delete xslDoc;
     return rv;
 }
 
@@ -196,165 +206,174 @@ txStandaloneXSLTProcessor::transform(Document* aXMLDoc, ostream& aOut,
  * and prints the results to the given ostream argument
  */
 nsresult
-txStandaloneXSLTProcessor::transform(Document* aSource, Node* aStylesheet,
+txStandaloneXSLTProcessor::transform(Document* aSource,
+                                     txStylesheet* aStylesheet,
                                      ostream& aOut, ErrorObserver& aErr)
 {
-    // Create a new ProcessorState
-    Document* stylesheetDoc = 0;
-    Element* stylesheetElem = 0;
-    if (aStylesheet->getNodeType() == Node::DOCUMENT_NODE) {
-        stylesheetDoc = (Document*)aStylesheet;
-    }
-    else {
-        stylesheetElem = (Element*)aStylesheet;
-        stylesheetDoc = aStylesheet->getOwnerDocument();
-    }
-    ProcessorState ps(aSource, stylesheetDoc);
+    // Create a new txEvalState
+    txExecutionState es(aStylesheet);
 
-    ps.addErrorObserver(aErr);
+    // XXX todo es.addErrorObserver(aErr);
 
-    txSingleNodeContext evalContext(aSource, &ps);
-    ps.setEvalContext(&evalContext);
-
-    // Index templates and process top level xsl elements
-    nsresult rv = NS_OK;
-    if (stylesheetElem) {
-        rv = processTopLevel(stylesheetElem, 0, &ps);
-    }
-    else {
-        rv = processStylesheet(stylesheetDoc, 0, &ps);
-    }
-    if (NS_FAILED(rv)) {
-        return rv;
-    }
-
-    txStandaloneHandlerFactory handlerFactory(&ps, &aOut);
-    ps.mOutputHandlerFactory = &handlerFactory;
+    txStandaloneHandlerFactory handlerFactory(&es, &aOut);
 
 #ifndef XP_WIN
     bool sync = aOut.sync_with_stdio(false);
 #endif
+    es.mOutputHandlerFactory = &handlerFactory;
+
+    es.init(aSource, nsnull);
+
     // Process root of XML source document
-    txXSLTProcessor::transform(&ps);
+    nsresult rv = txXSLTProcessor::execute(es);
+    es.end();
+
 #ifndef XP_WIN
     aOut.sync_with_stdio(sync);
 #endif
 
-    return NS_OK;
+    return rv;
 }
 
 /**
- * Parses all XML Stylesheet PIs associated with the
- * given XML document. If any stylesheet PIs are found with
- * type="text/xsl" the href psuedo attribute value will be
- * added to the given href argument. If multiple text/xsl stylesheet PIs
- * are found, the one closest to the end of the document is used.
+ * Parses the XML Stylesheet PIs associated with the
+ * given XML document. If a stylesheet PIs is found with type="text/xsl"
+ * or type="text/xml" the href psuedo attribute value will be appended to
+ * the given href argument. If multiple text/xsl stylesheet PIs
+ * are found, the first one is used.
  */
 void txStandaloneXSLTProcessor::getHrefFromStylesheetPI(Document& xmlDocument,
-                                                        String& href)
+                                                        nsAString& href)
 {
     Node* node = xmlDocument.getFirstChild();
-    String type;
-    String tmpHref;
+    nsAutoString type;
+    nsAutoString tmpHref;
     while (node) {
         if (node->getNodeType() == Node::PROCESSING_INSTRUCTION_NODE) {
-            String target = ((ProcessingInstruction*)node)->getTarget();
-            if (STYLESHEET_PI.isEqual(target) ||
-                STYLESHEET_PI_OLD.isEqual(target)) {
-                String data = ((ProcessingInstruction*)node)->getData();
-                type.clear();
-                tmpHref.clear();
+            nsAutoString target;
+            node->getNodeName(target);
+            if (target.Equals(NS_LITERAL_STRING("xml-stylesheet"))) {
+                nsAutoString data;
+                node->getNodeValue(data);
+                type.Truncate();
+                tmpHref.Truncate();
                 parseStylesheetPI(data, type, tmpHref);
-                if (XSL_MIME_TYPE.isEqual(type)) {
-                    href.clear();
-                    URIUtils::resolveHref(tmpHref, node->getBaseURI(), href);
+                if (type.Equals(NS_LITERAL_STRING("text/xsl")) ||
+                    type.Equals(NS_LITERAL_STRING("text/xml"))) {
+                    href = tmpHref;
+                    return;
                 }
             }
         }
         node = node->getNextSibling();
     }
-
 }
 
 /**
  * Parses the contents of data, and returns the type and href pseudo attributes
+ * (Based on code copied from nsParserUtils)
  */
-void txStandaloneXSLTProcessor::parseStylesheetPI(String& data,
-                                                  String& type,
-                                                  String& href)
-{
-    PRUint32 size = data.length();
-    NamedMap bufferMap;
-    bufferMap.put(String("type"), &type);
-    bufferMap.put(String("href"), &href);
-    PRUint32 ccount = 0;
-    MBool inLiteral = MB_FALSE;
-    char matchQuote = '"';
-    String sink;
-    String* buffer = &sink;
+#define SKIP_WHITESPACE(iter, end_iter)                          \
+  while ((iter) != (end_iter) && nsCRT::IsAsciiSpace(*(iter))) { \
+    ++(iter);                                                    \
+  }                                                              \
+  if ((iter) == (end_iter))                                      \
+    break
 
-    for (ccount = 0; ccount < size; ccount++) {
-        char ch = data.charAt(ccount);
-        switch ( ch ) {
-            case ' ':
-                if (inLiteral) {
-                    buffer->append(ch);
-                }
-                break;
-            case '=':
-                if (inLiteral) {
-                    buffer->append(ch);
-                }
-                else if (buffer->length() > 0) {
-                    buffer = (String*)bufferMap.get(*buffer);
-                    if (!buffer) {
-                        sink.clear();
-                        buffer = &sink;
-                    }
-                }
-                break;
-            case '"':
-            case '\'':
-                if (inLiteral) {
-                    if (matchQuote == ch) {
-                        inLiteral = MB_FALSE;
-                        sink.clear();
-                        buffer = &sink;
-                    }
-                    else {
-                        buffer->append(ch);
-                    }
-                }
-                else {
-                    inLiteral = MB_TRUE;
-                    matchQuote = ch;
-                }
-                break;
-            default:
-                buffer->append(ch);
-                break;
-        }
+#define SKIP_ATTR_NAME(iter, end_iter)                            \
+  while ((iter) != (end_iter) && !nsCRT::IsAsciiSpace(*(iter)) && \
+         *(iter) != '=') {                                        \
+    ++(iter);                                                     \
+  }                                                               \
+  if ((iter) == (end_iter))                                       \
+    break
+
+void txStandaloneXSLTProcessor::parseStylesheetPI(const nsAFlatString& aData,
+                                                  nsAString& aType,
+                                                  nsAString& aHref)
+{
+  nsAFlatString::const_char_iterator start, end;
+  aData.BeginReading(start);
+  aData.EndReading(end);
+  nsAFlatString::const_char_iterator iter;
+  PRInt8 found = 0;
+
+  while (start != end) {
+    SKIP_WHITESPACE(start, end);
+    iter = start;
+    SKIP_ATTR_NAME(iter, end);
+
+    // Remember the attr name.
+    const nsAString & attrName = Substring(start, iter);
+
+    // Now check whether this is a valid name="value" pair.
+    start = iter;
+    SKIP_WHITESPACE(start, end);
+    if (*start != '=') {
+      // No '=', so this is not a name="value" pair.  We don't know
+      // what it is, and we have no way to handle it.
+      break;
     }
+
+    // Have to skip the value.
+    ++start;
+    SKIP_WHITESPACE(start, end);
+    PRUnichar q = *start;
+    if (q != QUOTE && q != APOSTROPHE) {
+      // Not a valid quoted value, so bail.
+      break;
+    }
+
+    ++start;  // Point to the first char of the value.
+    iter = start;
+    while (iter != end && *iter != q) {
+      ++iter;
+    }
+    if (iter == end) {
+      // Oops, unterminated quoted string.
+      break;
+    }
+    
+    // At this point attrName holds the name of the "attribute" and
+    // the value is between start and iter.
+    if (attrName.Equals(NS_LITERAL_STRING("type"))) {
+      aType = Substring(start, iter);
+      ++found;
+    }
+    else if (attrName.Equals(NS_LITERAL_STRING("href"))) {
+      aHref = Substring(start, iter);
+      ++found;
+    }
+
+    // Stop if we found both attributes
+    if (found == 2) {
+      break;
+    }
+
+    // Resume scanning after the end of the attribute value.
+    start = iter;
+    ++start;  // To move past the quote char.
+  }
 }
 
 Document*
-txStandaloneXSLTProcessor::parsePath(const String& aPath, ErrorObserver& aErr)
+txStandaloneXSLTProcessor::parsePath(const nsACString& aPath, ErrorObserver& aErr)
 {
-    ifstream xmlInput(NS_LossyConvertUCS2toASCII(aPath).get(), ios::in);
+    NS_ConvertASCIItoUCS2 path(aPath);
+
+    ifstream xmlInput(PromiseFlatCString(aPath).get(), ios::in);
     if (!xmlInput) {
-        String err("Couldn't open ");
-        err.append(aPath);
-        aErr.receiveError(err);
+        aErr.receiveError(NS_LITERAL_STRING("Couldn't open ") + path);
         return 0;
     }
     // parse source
-    XMLParser xmlParser;
-    Document* xmlDoc = xmlParser.parse(xmlInput, aPath);
+    Document* xmlDoc;
+    nsAutoString errors;
+    nsresult rv = txParseFromStream(xmlInput, path, errors, &xmlDoc);
     xmlInput.close();
-    if (!xmlDoc) {
-        String err("Parsing error in ");
-        err.append(aPath);
-        aErr.receiveError(err);
+    if (NS_FAILED(rv) || !xmlDoc) {
+        aErr.receiveError(NS_LITERAL_STRING("Parsing error \"") + errors +
+                          NS_LITERAL_STRING("\""));
     }
     return xmlDoc;
 }

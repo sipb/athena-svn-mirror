@@ -95,6 +95,9 @@
     {0xad, 0x26, 0x11, 0x3f, 0x2c, 0x02, 0xd0, 0xfe} \
 }
 
+#define JSDS_MAJOR_VERSION 1
+#define JSDS_MINOR_VERSION 1
+
 #define NS_CATMAN_CTRID   "@mozilla.org/categorymanager;1"
 #define NS_JSRT_CTRID     "@mozilla.org/js/xpc/RuntimeService;1"
 
@@ -107,8 +110,9 @@ jsds_GCCallbackProc (JSContext *cx, JSGCStatus status);
 
 /*******************************************************************************
  * global vars
- *******************************************************************************/
+ ******************************************************************************/
 
+const char implementationString[] = "Mozilla JavaScript Debugger Service";
 static NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
@@ -860,7 +864,6 @@ jsdProperty::jsdProperty (JSDContext *aCx, JSDProperty *aProperty) :
 {
     DEBUG_CREATE ("jsdProperty", gPropertyCount);
     mValid = (aCx && aProperty);
-    NS_INIT_ISUPPORTS();
     mLiveListEntry.value = this;
     jsds_InsertEphemeral (&gLiveProperties, &mLiveListEntry);
 }
@@ -966,7 +969,6 @@ jsdScript::jsdScript (JSDContext *aCx, JSDScript *aScript) : mValid(PR_FALSE),
                                                              mFirstPC(0)
 {
     DEBUG_CREATE ("jsdScript", gScriptCount);
-    NS_INIT_ISUPPORTS();
 
     if (mScript) {
         /* copy the script's information now, so we have it later, when it
@@ -1219,6 +1221,33 @@ jsdScript::GetFunctionName(char **_rval)
 }
 
 NS_IMETHODIMP
+jsdScript::GetFunctionObject(jsdIValue **_rval)
+{
+    JSFunction *fun = JSD_GetJSFunction(mCx, mScript);
+    if (!fun)
+        return NS_ERROR_NOT_AVAILABLE;
+    
+    JSObject *obj = JS_GetFunctionObject(fun);
+    if (!obj)
+        return NS_ERROR_FAILURE;
+
+    JSDContext *cx;
+    gJsds->GetJSDContext (&cx);
+
+    JSDValue *jsdv = JSD_NewValue(cx, OBJECT_TO_JSVAL(obj));
+    if (!jsdv)
+        return NS_ERROR_FAILURE;
+
+    *_rval = jsdValue::FromPtr(cx, jsdv);
+    if (!*_rval) {
+        JSD_DropValue(cx, jsdv);
+        return NS_ERROR_FAILURE;
+    }
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
 jsdScript::GetFunctionSource(nsAString & aFunctionSource)
 {
     ASSERT_VALID_EPHEMERAL;
@@ -1430,7 +1459,6 @@ jsdContext::jsdContext (JSDContext *aJSDCx, JSContext *aJSCx,
                                               mJSCx(aJSCx), mISCx(aISCx)
 {
     DEBUG_CREATE ("jsdContext", gContextCount);
-    NS_INIT_ISUPPORTS();
     mLiveListEntry.value = this;
     mLiveListEntry.key   = NS_STATIC_CAST (void *, aJSCx);
     jsds_InsertEphemeral (&gLiveContexts, &mLiveListEntry);
@@ -1600,7 +1628,6 @@ jsdStackFrame::jsdStackFrame (JSDContext *aCx, JSDThreadState *aThreadState,
 {
     DEBUG_CREATE ("jsdStackFrame", gFrameCount);
     mValid = (aCx && aThreadState && aStackFrameInfo);
-    NS_INIT_ISUPPORTS();
     if (mValid) {
         mLiveListEntry.key = aStackFrameInfo;
         mLiveListEntry.value = this;
@@ -1838,6 +1865,10 @@ jsdStackFrame::Eval (const nsAString &bytes, const char *fileName,
                      PRUint32 line, jsdIValue **result, PRBool *_rval)
 {
     ASSERT_VALID_EPHEMERAL;
+
+    if (bytes.IsEmpty())
+        return NS_ERROR_INVALID_ARG;
+
     const nsSharedBufferHandle<PRUnichar> *h = bytes.GetSharedBufferHandle();
     const jschar *char_bytes = NS_REINTERPRET_CAST(const jschar *,
                                                    h->DataStart());
@@ -1890,7 +1921,6 @@ jsdValue::jsdValue (JSDContext *aCx, JSDValue *aValue) : mValid(PR_TRUE),
                                                          mValue(aValue)
 {
     DEBUG_CREATE ("jsdValue", gValueCount);
-    NS_INIT_ISUPPORTS();
     mLiveListEntry.value = this;
     jsds_InsertEphemeral (&gLiveValues, &mLiveListEntry);
 }
@@ -2345,6 +2375,29 @@ NS_IMETHODIMP
 jsdService::SetFlags (PRUint32 flags)
 {
     JSD_SetContextFlags (mCx, flags);
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+jsdService::GetImplementationString(char **_rval)
+{
+    *_rval = PL_strdup(implementationString);
+    if (!*_rval)
+        return NS_ERROR_OUT_OF_MEMORY;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+jsdService::GetImplementationMajor(PRUint32 *_rval)
+{
+    *_rval = JSDS_MAJOR_VERSION;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+jsdService::GetImplementationMinor(PRUint32 *_rval)
+{
+    *_rval = JSDS_MINOR_VERSION;
     return NS_OK;
 }
 
@@ -3151,6 +3204,14 @@ jsdService::GetFunctionHook (jsdICallHook **aHook)
     return NS_OK;
 }
 
+/* virtual */
+jsdService::~jsdService()
+{
+    ClearFilters();
+    Off();
+    gJsds = nsnull;
+}
+
 jsdService *
 jsdService::GetService ()
 {
@@ -3175,7 +3236,6 @@ class jsdASObserver : public nsIObserver
 
     jsdASObserver ()
     {
-        NS_INIT_ISUPPORTS();
     }    
 };
 
@@ -3187,7 +3247,10 @@ jsdASObserver::Observe (nsISupports *aSubject, const char *aTopic,
 {
     nsresult rv;
 
-    jsdService *jsds = jsdService::GetService();
+    // Hmm.  Why is the app-startup observer called multiple times?
+    //NS_ASSERTION(!gJsds, "app startup observer called twice");
+    nsCOMPtr<jsdIDebuggerService> jsds = do_GetService(jsdServiceCtrID, &rv);
+
     PRBool on;
     rv = jsds->GetIsOn(&on);
     if (NS_FAILED(rv) || on)

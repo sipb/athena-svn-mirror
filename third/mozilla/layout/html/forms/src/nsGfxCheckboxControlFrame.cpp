@@ -43,7 +43,6 @@
 #include "nsIContent.h"
 #include "nsIComponentManager.h"
 #include "nsHTMLAtoms.h"
-#include "nsINameSpaceManager.h"
 #include "nsIPresState.h"
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
@@ -83,7 +82,8 @@ nsGfxCheckboxControlFrame::nsGfxCheckboxControlFrame()
 
 nsGfxCheckboxControlFrame::~nsGfxCheckboxControlFrame()
 {
-  NS_IF_RELEASE(mCheckButtonFaceStyle);
+  if (mCheckButtonFaceStyle)
+    mCheckButtonFaceStyle->Release();
 }
 
 
@@ -121,53 +121,43 @@ NS_IMETHODIMP nsGfxCheckboxControlFrame::GetAccessible(nsIAccessible** aAccessib
 
 //--------------------------------------------------------------
 NS_IMETHODIMP
-nsGfxCheckboxControlFrame::SetCheckboxFaceStyleContext(nsIStyleContext *aCheckboxFaceStyleContext)
+nsGfxCheckboxControlFrame::SetCheckboxFaceStyleContext(nsStyleContext *aCheckboxFaceStyleContext)
 {
   mCheckButtonFaceStyle = aCheckboxFaceStyleContext;
-  NS_ADDREF(mCheckButtonFaceStyle);
+  mCheckButtonFaceStyle->AddRef();
   return NS_OK;
 }
 
 
 //--------------------------------------------------------------
-NS_IMETHODIMP
-nsGfxCheckboxControlFrame::GetAdditionalStyleContext(PRInt32 aIndex, 
-                                                     nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsGfxCheckboxControlFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aStyleContext, "null OUT parameter pointer");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
-  *aStyleContext = nsnull;
   switch (aIndex) {
   case NS_GFX_CHECKBOX_CONTROL_FRAME_FACE_CONTEXT_INDEX:
-    *aStyleContext = mCheckButtonFaceStyle;
-    NS_IF_ADDREF(*aStyleContext);
+    return mCheckButtonFaceStyle;
     break;
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
 
 
 //--------------------------------------------------------------
-NS_IMETHODIMP
+void
 nsGfxCheckboxControlFrame::SetAdditionalStyleContext(PRInt32 aIndex, 
-                                                     nsIStyleContext* aStyleContext)
+                                                     nsStyleContext* aStyleContext)
 {
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
   switch (aIndex) {
   case NS_GFX_CHECKBOX_CONTROL_FRAME_FACE_CONTEXT_INDEX:
-    NS_IF_RELEASE(mCheckButtonFaceStyle);
+    if (mCheckButtonFaceStyle)
+      mCheckButtonFaceStyle->Release();
     mCheckButtonFaceStyle = aStyleContext;
-    NS_IF_ADDREF(aStyleContext);
+    if (aStyleContext)
+      aStyleContext->AddRef();
     break;
   }
-  return NS_OK;
 }
 
 
@@ -188,7 +178,7 @@ nsGfxCheckboxControlFrame::PaintCheckBox(nsIPresContext* aPresContext,
                                          const nsRect& aDirtyRect,
                                          nsFramePaintLayer aWhichLayer)
 {
-  const nsStyleDisplay* disp = (const nsStyleDisplay*)mStyleContext->GetStyleData(eStyleStruct_Display);
+  const nsStyleDisplay* disp = GetStyleDisplay();
   if (disp->mAppearance) {
     nsCOMPtr<nsITheme> theme;
     aPresContext->GetTheme(getter_AddRefs(theme));
@@ -207,8 +197,7 @@ nsGfxCheckboxControlFrame::PaintCheckBox(nsIPresContext* aPresContext,
   nsRect checkRect(0,0, mRect.width, mRect.height);
   checkRect.Deflate(borderPadding);
 
-  const nsStyleColor* color = (const nsStyleColor*)
-                                  mStyleContext->GetStyleData(eStyleStruct_Color);
+  const nsStyleColor* color = GetStyleColor();
   aRenderingContext.SetColor(color->mColor);
 
   // Get current checked state through content model.
@@ -240,16 +229,12 @@ nsGfxCheckboxControlFrame::Paint(nsIPresContext*   aPresContext,
     PRBool doDefaultPainting = PR_TRUE;
     // Paint the checkmark
     if (!mCheckButtonFaceStyle && GetCheckboxState()) {
-      const nsStyleBackground* myColor = (const nsStyleBackground*)
-          mCheckButtonFaceStyle->GetStyleData(eStyleStruct_Background);
+      const nsStyleBackground* myColor = mCheckButtonFaceStyle->GetStyleBackground();
 
       if (myColor->mBackgroundImage.Length() > 0) {
-        const nsStyleBorder* myBorder = (const nsStyleBorder*)
-            mCheckButtonFaceStyle->GetStyleData(eStyleStruct_Border);
-        const nsStylePadding* myPadding = (const nsStylePadding*)
-            mCheckButtonFaceStyle->GetStyleData(eStyleStruct_Padding);
-        const nsStylePosition* myPosition = (const nsStylePosition*)
-            mCheckButtonFaceStyle->GetStyleData(eStyleStruct_Position);
+        const nsStyleBorder* myBorder = mCheckButtonFaceStyle->GetStyleBorder();
+        const nsStylePadding* myPadding = mCheckButtonFaceStyle->GetStylePadding();
+        const nsStylePosition* myPosition = mCheckButtonFaceStyle->GetStylePosition();
 
         nscoord width = myPosition->mWidth.GetCoordValue();
         nscoord height = myPosition->mHeight.GetCoordValue();
@@ -260,7 +245,7 @@ nsGfxCheckboxControlFrame::Paint(nsIPresContext*   aPresContext,
 
         nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
                                         aDirtyRect, rect, *myBorder, *myPadding,
-                                        0, 0);
+                                        PR_FALSE);
         nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
                                     aDirtyRect, rect, *myBorder, mCheckButtonFaceStyle, 0);
         doDefaultPainting = PR_FALSE;

@@ -41,6 +41,7 @@
 #include <windows.h>
 #include "IPalmSync.h"
 #include "nspr.h"
+#include "nsString.h"
 
 const CLSID CLSID_CPalmSyncImp = { 0xb20b4521, 0xccf8, 0x11d6, { 0xb8, 0xa5, 0x0, 0x0, 0x64, 0x65, 0x73, 0x74 } };
 
@@ -66,29 +67,34 @@ public :
 
     // Get the list of Address Books for the currently logged in user profile
     STDMETHODIMP nsGetABList(BOOL aIsUnicode, short * aABListCount,
-                            lpnsMozABDesc * aABList, long ** aABCatIDList, BOOL ** aFirstTimeSyncList);
+                            lpnsMozABDesc * aABList, long ** aABCatIndexList, BOOL ** aFirstTimeSyncList);
 
-    // Synchronize the Address Book represented by the aCategoryId and/or corresponding aABName in Mozilla
-    STDMETHODIMP nsSynchronizeAB(BOOL aIsUnicode, unsigned long aCategoryId, LPTSTR aABName,
+    // Synchronize the Address Book represented by the aCategoryIndex and/or corresponding aABName in Mozilla
+    STDMETHODIMP nsSynchronizeAB(BOOL aIsUnicode, long aCategoryIndex, long aCategoryId, LPTSTR aABName,
                         int aModRemoteRecCount, lpnsABCOMCardStruct aModRemoteRecList,
                         int * aModMozRecCount, lpnsABCOMCardStruct * aModMozRecList);
 
-    STDMETHODIMP nsAddAllABRecords(BOOL aIsUnicode, unsigned long aCategoryId, LPTSTR aABName,
+    STDMETHODIMP nsAddAllABRecords(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName,
                             int aRemoteRecCount, lpnsABCOMCardStruct aRemoteRecList);
 
 
-    STDMETHODIMP nsGetAllABCards(BOOL aIsUnicode, unsigned long aCategoryId, LPTSTR aABName,
+    STDMETHODIMP nsGetAllABCards(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName,
                             int * aMozRecCount, lpnsABCOMCardStruct * aMozRecList);
 
-    STDMETHODIMP nsAckSyncDone(BOOL aIsSuccess, int aCatID, int aNewRecCount, unsigned long * aNewPalmRecIDList);
+    STDMETHODIMP nsAckSyncDone(BOOL aIsSuccess, long aCatIndex, int aNewRecCount, unsigned long * aNewPalmRecIDList);
+
+    STDMETHODIMP nsUpdateABSyncInfo(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName);
+
+    STDMETHODIMP nsDeleteAB(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName, LPTSTR aABUrl);
+ 
+    STDMETHODIMP nsRenameAB(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName, LPTSTR aABUrl);
  
 private :
     PRInt32 m_cRef;
 
     void * m_PalmHotSync;
-    lpnsMozABDesc m_ServerDescList;
-    BOOL * m_FirstTimeSyncList;
-    long * m_CatIDList;
+    void CopyUnicodeString(LPTSTR *destStr, nsString srcStr);
+    void CopyCString(LPTSTR *destStr, nsCString srcStr);
 };
 
 #endif // MSG_MAPI_IMP_H

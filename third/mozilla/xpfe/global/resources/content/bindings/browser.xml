@@ -44,7 +44,7 @@
         <getter>
           <![CDATA[
             var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createIFrameAccessible(this);
+            return accService.createOuterDocAccessible(this);
           ]]>
         </getter>
       </property>
@@ -283,6 +283,18 @@
         null
       </field>
 
+      <field name="userTypedClear">
+        true
+      </field>
+
+      <field name="_userTypedValue">
+        null
+      </field>
+
+      <property name="userTypedValue"
+                onget="return this._userTypedValue;"
+                onset="this.userTypedClear = false; return this._userTypedValue = val;"/>
+     
       <constructor>
         <![CDATA[
           try {
@@ -300,7 +312,7 @@
           }
           try {
             this.mDragDropHandler = Components.classes["@mozilla.org:/content/content-area-dragdrop;1"].createInstance(Components.interfaces.nsIDragDropHandler);
-            this.mDragDropHandler.hookupTo(this, null, null, null);
+            this.mDragDropHandler.hookupTo(this, null);
           }
           catch (e) {
           }

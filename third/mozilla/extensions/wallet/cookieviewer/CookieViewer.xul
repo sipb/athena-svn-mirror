@@ -26,7 +26,7 @@
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?> 
 
 <!-- CHANGE THIS WHEN MOVING FILES -->
-<!DOCTYPE window SYSTEM "chrome://communicator/locale/wallet/CookieViewer.dtd" >
+<!DOCTYPE dialog SYSTEM "chrome://communicator/locale/wallet/CookieViewer.dtd" >
 
 <dialog id="cookieviewer"
         buttons="accept,help"
@@ -35,7 +35,8 @@
         style="width: 30em;"
         onload="Startup()"
         onunload="Shutdown()"
-        ondialoghelp="doHelpButton();">
+        ondialoghelp="doHelpButton();"
+        persist="screenX screenY width height">
 
   <script src="chrome://communicator/content/wallet/CookieViewer.js"/>
   <script src="chrome://global/content/strres.js"/>
@@ -55,18 +56,18 @@
       <vbox class="tabpanel" id="system" flex="1">
           <label value="&div.cookiesonsystem.label;"/>
           <separator class="thin"/>
-          <tree id="cookiesTree" flex="1" style="height: 10em;" multiple="true"
+          <tree id="cookiesTree" flex="1" style="height: 10em;"
                     onkeypress="HandleCookieKeyPress(event)"
                     onselect="CookieSelected();">
             <treecols>
               <treecol id="domainCol" label="&treehead.cookiedomain.label;" flex="6"
-                           onclick="CookieColumnSort('rawHost');"/>
+                           onclick="CookieColumnSort('rawHost', true);"/>
               <splitter class="tree-splitter"/>
               <treecol id="nameCol" label="&treehead.cookiename.label;" flex="14"
-                           onclick="CookieColumnSort('name');"/>
+                           onclick="CookieColumnSort('name', true);"/>
               <splitter class="tree-splitter"/>
               <treecol id="statusCol" label="&treehead.cookiestatus.label;" flex="1"
-                           hidden="true" onclick="CookieColumnSort('status');"/>
+                           hidden="true" onclick="CookieColumnSort('status', true);"/>
             </treecols>
             <treechildren/>
           </tree>
@@ -79,34 +80,56 @@
                 <column flex="1"/>
               </columns>
               <rows>
+
                 <row align="center">
-                  <label value="&props.name.label;"/>
-                  <textbox id="ifl_name" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.name.label;"/>
+                  </hbox>
+                  <textbox id="ifl_name" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center">
-                  <label value="&props.value.label;"/>
-                  <textbox id="ifl_value" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.value.label;"/>
+                  </hbox>
+                  <textbox id="ifl_value" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center">
-                  <label id="ifl_isDomain" value="&props.domain.label;"/>
-                  <textbox id="ifl_host" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label id="ifl_isDomain" value="&props.domain.label;"/>
+                  </hbox>
+                  <textbox id="ifl_host" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center">
-                  <label value="&props.path.label;"/>
-                  <textbox id="ifl_path" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.path.label;"/>
+                  </hbox>
+                  <textbox id="ifl_path" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center">
-                  <label value="&props.secure.label;"/>
-                  <textbox id="ifl_isSecure" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.secure.label;"/>
+                  </hbox>
+                  <textbox id="ifl_isSecure" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center">
-                  <label value="&props.expires.label;"/>
-                  <textbox id="ifl_expires" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.expires.label;"/>
+                  </hbox>
+                  <textbox id="ifl_expires" readonly="true" class="plain"/>
                 </row>
+
                 <row align="center" id="policyField" hidden="true">
-                  <label value="&props.policy.label;"/>
-                  <textbox id="ifl_policy" readonly="true"/>
+                  <hbox align="center" pack="end">
+                    <label value="&props.policy.label;"/>
+                  </hbox>
+                  <textbox id="ifl_policy" readonly="true" class="plain"/>
                 </row>
+
               </rows>
             </grid>
           </groupbox>
@@ -129,15 +152,15 @@
           <description id="permissionsText" value="&div.bannedservers.label;"/>
           <separator class="thin"/>
           <tree id="permissionsTree" flex="1" style="height: 10em;"
-                seltype="multiple" hidecolumnpicker="true"
+                hidecolumnpicker="true"
                 onkeypress="HandlePermissionKeyPress(event)"
                 onselect="PermissionSelected();">
             <treecols>
               <treecol id="siteCol" label="&treehead.sitename.label;" flex="5"
-                           onclick="PermissionColumnSort('rawHost');"/>
+                           onclick="PermissionColumnSort('rawHost', true);"/>
               <splitter class="tree-splitter"/>
               <treecol id="statusCol" label="&treehead.status.label;" flex="5"
-                           onclick="PermissionColumnSort('capability');"/>
+                           onclick="PermissionColumnSort('capability', true);"/>
             </treecols>
             <treechildren/>
           </tree>

@@ -81,22 +81,10 @@ public:
   */
   virtual PRInt32     GetBytesPix()       { return mNumBytesPixel; }
   virtual PRInt32     GetHeight()         { return mBHead->biHeight; }
-  virtual PRBool      GetIsRowOrderTopToBottom() { return mIsTopToBottom; }
+  virtual PRBool      GetIsRowOrderTopToBottom() { return PR_FALSE; }
   virtual PRInt32     GetWidth()          { return mBHead->biWidth; }
   virtual PRUint8*    GetBits() ;
   virtual PRInt32     GetLineStride()     { return mRowBytes; }
-
-  NS_IMETHOD     SetNaturalWidth(PRInt32 naturalwidth) { mNaturalWidth= naturalwidth; return NS_OK;}
-  NS_IMETHOD     SetNaturalHeight(PRInt32 naturalheight) { mNaturalHeight= naturalheight; return NS_OK;}
-  virtual PRInt32     GetNaturalWidth() {return mNaturalWidth; }
-  virtual PRInt32     GetNaturalHeight() {return mNaturalHeight; }
-
- 
-  NS_IMETHOD          SetDecodedRect(PRInt32 x1, PRInt32 y1, PRInt32 x2, PRInt32 y2);        
-  virtual PRInt32     GetDecodedX1() { return mDecodedX1;}
-  virtual PRInt32     GetDecodedY1() { return mDecodedY1;}
-  virtual PRInt32     GetDecodedX2() { return mDecodedX2;}
-  virtual PRInt32     GetDecodedY2() { return mDecodedY2;}
 
   virtual PRBool      GetHasAlphaMask()   { return mAlphaBits != nsnull; }
 
@@ -105,18 +93,13 @@ public:
   NS_IMETHOD          Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface, PRInt32 aSX, PRInt32 aSY,
                            PRInt32 aSWidth, PRInt32 aSHeight,
                            PRInt32 aDX, PRInt32 aDY, PRInt32 aDWidth, PRInt32 aDHeight);
-#ifdef USE_IMG2
   NS_IMETHOD          DrawToImage(nsIImage* aDstImage, nscoord aDX, nscoord aDY,
                                   nscoord aDWidth, nscoord aDHeight);
-#endif
   virtual nsColorMap* GetColorMap() {return mColorMap;}
   virtual void        ImageUpdated(nsIDeviceContext *aContext, PRUint8 aFlags, nsRect *aUpdateRect);
   virtual nsresult    Init(PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth, nsMaskRequirements aMaskRequirements);
-  virtual PRBool      IsOptimized()       { return mIsOptimized; }
   virtual nsresult    Optimize(nsIDeviceContext* aContext);
   virtual PRUint8*    GetAlphaBits()      { return mAlphaBits; }
-  virtual PRInt32     GetAlphaWidth()   { return mAlphaWidth;}
-  virtual PRInt32     GetAlphaHeight()   {return mAlphaHeight;}
   virtual PRInt32     GetAlphaLineStride(){ return mARowBytes; }
 
 
@@ -124,24 +107,6 @@ public:
                       nsDrawingSurface aSurface,
                       PRInt32 aSXOffset, PRInt32 aSYOffset,
                       const nsRect &aTileRect);
-
-  /** 
-   * Progressivly double the bitmap size as we blit.. very fast way to tile
-   * @update - dwc 4/160/02
-   * @param aSurface  the surface to blit to
-   * @param aDestBufferWidth   Width of buffer
-   * @param aDestBufferHeight  Height of buffer
-   * @param aScaledTileWidth   Width of tile
-   * @param aScaledTileHeight  Height of tile
-   * @param aX0,aY0,aX1,aY1    Coordinates of screen to blit to
-   * @return if TRUE, no errors
-  */
-
-  PRBool ProgressiveDoubleBlit(nsDrawingSurface aSurface,
-                              PRInt32 aDestBufferWidth, PRInt32 aDestBufferHeight,
-                              PRInt32 aScaledTileWidth,PRInt32 aScaledTileHeight,
-                              PRInt32 aX0,PRInt32 aY0,
-                              PRInt32 aX1,PRInt32 aY1);
 
    /** 
    * Return the header size of the Device Independent Bitmap(DIB).
@@ -162,15 +127,6 @@ public:
    * @return the number of bytes in this span
    */
   PRInt32  CalcBytesSpan(PRUint32  aWidth);
-
-  virtual void  SetAlphaLevel(PRInt32 aAlphaLevel) {mAlphaLevel=aAlphaLevel;}
-
-  /** 
-   * Get the alpha level assigned.
-   * @update dc - 10/29/98
-   * @return The alpha level from 0 to 1
-   */
-  virtual PRInt32 GetAlphaLevel() {return(mAlphaLevel);}
 
   /**
    * Get the alpha depth for the image mask
@@ -206,8 +162,6 @@ private:
    */
   void CleanUpDDB();
 
-  void CleanUpDIBSection();
-
   void CreateImageWithAlphaBits(HDC TheHDC);
 
   /** 
@@ -242,19 +196,37 @@ private:
   nsresult PrintDDB(nsDrawingSurface aSurface,PRInt32 aX,PRInt32 aY,PRInt32 aWidth,PRInt32 aHeight,PRUint32  aROP);
 
 
-  
-  /** ---------------------------------------------------
-   *  A bit blitter to tile images to the background recursively
-   *	@update 3/29/00 dwc
-   *  @param aDS -- Target drawing surface for the rendering context
-   *  @param aSrcRect -- Rectangle we are build with the image
-   *  @param aHeight -- height of the tile
-   *  @param aWidth -- width of the tile
+  /** 
+   * Progressively double the bitmap size as we blit.. very fast way to tile
+   * @return if TRUE, no errors
    */
-  void  BuildTile(HDC SrcDestDC,nsRect &aSrcRect,PRInt16 aWidth,PRInt16 aHeight,PRInt32 aCopyMode);
+  PRBool ProgressiveDoubleBlit(nsDrawingSurface aSurface,
+                               PRInt32 aSXOffset, PRInt32 aSYOffset,
+                               nsRect aDestRect);
 
-
-
+  /**
+   * Draw Image and Mask (if one exists) to another set of DCs
+   * @param aDstDC     Where aSrcDC will be drawn to
+   * @param aDstMaskDC Where aMaskDC will be drawn to.  If same as aDstDC and
+                       there's a aSrcMaskDC, blending occurs. 
+   * @param aDstX      x-pos of where to start drawing to
+   * @param aDstY      y-pos of where to start drawing to
+   * @param aWidth     Width to copy from src to dst
+   * @param aHeight    Height to copy from src to dst
+   * @param aSrcDC     Source Image
+   * @param aSrcMaskDC Source Mask. If nsnull, aDstMaskDC will be ignored
+   * @param aSrcX      copy src starting at this x position
+   * @param aSrcY      copy src starting at this y position
+   * @param aUseAlphaBlend  When True, aDstSrc is a 32-bit DC storing alpha
+                            information in the 4th byte, so use AlphaBlend API
+                            instead of BitBlt.
+                            When False, BitBlt is used.
+   */
+  void BlitImage(HDC aDstDC, HDC aDstMaskDC, PRInt32 aDstX, PRInt32 aDstY,
+                 PRInt32 aWidth, PRInt32 aHeight,
+                 HDC aSrcDC, HDC aSrcMaskDC, PRInt32 aSrcX, PRInt32 aSrcY,
+                 PRBool aUseAlphaBlend);
+  
   /** 
    * Get an index in the palette that matches as closly as possible the passed in RGB colors
    * @update dc - 4/20/2000
@@ -265,35 +237,28 @@ private:
    */
   PRUint8 PaletteMatch(PRUint8 r, PRUint8 g, PRUint8 b);
 
+  PRPackedBool        mInitialized;
+  PRPackedBool        mIsOptimized;       // Did we convert our DIB to a HBITMAP
+  PRPackedBool        mIsLocked;          // variable to keep track of the locking
+  PRPackedBool        mDIBTemp;           // boolean to let us know if DIB was created as temp
   PRInt8              mNumBytesPixel;     // number of bytes per pixel
-  PRBool              mIsTopToBottom;     // rows in image are top to bottom 
   PRInt16             mNumPaletteColors;  // Number of colors in the pallete 256 
   PRInt32             mSizeImage;         // number of bytes
   PRInt32             mRowBytes;          // number of bytes per row
   PRUint8*            mImageBits;         // starting address of DIB bits
-  PRBool              mIsOptimized;       // Did we convert our DIB to a HBITMAP
   nsColorMap*         mColorMap;          // Redundant with mColorTable, but necessary
 
-  PRInt32             mDecodedX1;			    //Keeps track of what part of image
-  PRInt32             mDecodedY1;			    // has been decoded.
+  PRInt32             mDecodedX1;         //Keeps track of what part of image
+  PRInt32             mDecodedY1;         // has been decoded.
   PRInt32             mDecodedX2; 
   PRInt32             mDecodedY2; 
-  PRBool              mIsLocked;			    // variable to keep track of the locking
-  PRBool              mDIBTemp;           // boolean to let us know if DIB was created as temp
 
-  PRInt32		          mNaturalWidth;
-  PRInt32		          mNaturalHeight;
-    
   // alpha layer members
   PRUint8             *mAlphaBits;        // alpha layer if we made one
   PRInt8              mAlphaDepth;        // alpha layer depth
   PRInt16             mARowBytes;         // number of bytes per row in the image for tha alpha
-  PRInt16             mAlphaWidth;        // alpha layer width
-  PRInt16             mAlphaHeight;       // alpha layer height
   PRInt8              mImageCache;        // place to save off the old image for fast animation
-  PRInt16             mAlphaLevel;        // an alpha level every pixel uses
   HBITMAP             mHBitmap;           // the GDI bitmaps
-  HBITMAP             mDIBSection;
   LPBITMAPINFOHEADER  mBHead;             // BITMAPINFOHEADER
 
   static ALPHABLENDPROC gAlphaBlend;      // AlphaBlend function pointer

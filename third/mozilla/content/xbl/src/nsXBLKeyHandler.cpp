@@ -38,13 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLKeyHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsIDOMKeyEvent.h"
-#include "nsIDOMMouseEvent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -61,72 +58,42 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLKeyHandler::gRefCnt = 0;
-nsIAtom* nsXBLKeyHandler::kKeyDownAtom = nsnull;
-nsIAtom* nsXBLKeyHandler::kKeyUpAtom = nsnull;
-nsIAtom* nsXBLKeyHandler::kKeyPressAtom = nsnull;
-
-nsXBLKeyHandler::nsXBLKeyHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLKeyHandler::nsXBLKeyHandler(nsIDOMEventReceiver* aReceiver,
+                                 nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kKeyUpAtom = NS_NewAtom("keyup");
-    kKeyDownAtom = NS_NewAtom("keydown");
-    kKeyPressAtom = NS_NewAtom("keypress");
-  }
 }
 
 nsXBLKeyHandler::~nsXBLKeyHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kKeyUpAtom);
-    NS_RELEASE(kKeyDownAtom);
-    NS_RELEASE(kKeyPressAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLKeyHandler, nsXBLEventHandler, nsIDOMKeyListener)
 
-static inline nsresult DoKey(nsIAtom* aEventType, nsIXBLPrototypeHandler* aHandler, nsIDOMEvent* aKeyEvent,
-                             nsIDOMEventReceiver* aReceiver)
-{
-  if (!aHandler)
-    return NS_OK;
-
-  PRBool matched = PR_FALSE;
-  nsCOMPtr<nsIDOMKeyEvent> key(do_QueryInterface(aKeyEvent));
-  aHandler->KeyEventMatched(aEventType, key, &matched);
-  if (matched)
-    aHandler->ExecuteHandler(aReceiver, aKeyEvent);
-  return NS_OK;
-}
-
 nsresult nsXBLKeyHandler::KeyUp(nsIDOMEvent* aKeyEvent)
 {
-  return DoKey(kKeyUpAtom, mProtoHandler, aKeyEvent, mEventReceiver);
+  return DoKey(nsXBLAtoms::keyup, aKeyEvent);
 }
 
 nsresult nsXBLKeyHandler::KeyDown(nsIDOMEvent* aKeyEvent)
 {
-  return DoKey(kKeyDownAtom, mProtoHandler, aKeyEvent, mEventReceiver);
+  return DoKey(nsXBLAtoms::keydown, aKeyEvent);
 }
 
 nsresult nsXBLKeyHandler::KeyPress(nsIDOMEvent* aKeyEvent)
 {
-  return DoKey(kKeyPressAtom, mProtoHandler, aKeyEvent, mEventReceiver);
+  return DoKey(nsXBLAtoms::keypress, aKeyEvent);
 }
  
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLKeyHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLKeyHandler(nsIDOMEventReceiver* aRec,
+                    nsXBLPrototypeHandler* aHandler,
                     nsXBLKeyHandler** aResult)
 {
   *aResult = new nsXBLKeyHandler(aRec, aHandler);

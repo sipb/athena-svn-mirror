@@ -81,17 +81,9 @@ NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_MAILNEWS, value)
 #define NS_MSG_SUCCESS NS_MSG_GENERATE_SUCCESS(0)
 #define NS_MSG_FAILURE NS_MSG_GENERATE_FAILURE(0)
 
-// mscott I should look into moving this into raptor base so everyone can use it...
-#define IS_SPACE(VAL)                \
-    (((((intn)(VAL)) & 0x7f) == ((intn)(VAL))) && isspace((intn)(VAL)) )
-
-#define IS_DIGIT(i) ((((unsigned int) (i)) > 0x7f) ? (int) 0 : isdigit(i))
-
-#if defined(XP_WIN) || defined(XP_OS2)
-#define IS_ALPHA(VAL)  (isascii((int)(VAL)) && isalpha((int)(VAL)))
-#else
-#define IS_ALPHA(VAL) ((((unsigned int) (VAL)) > 0x7f) ? FALSE : isalpha((int)(VAL)))
-#endif
+#define IS_SPACE(VAL) NS_IS_SPACE(VAL)
+#define IS_DIGIT(i)   NS_IS_DIGIT(i)
+#define IS_ALPHA(VAL) NS_IS_ALPHA(VAL)
 
 
 /* for retrieving information out of messenger nsresults */
@@ -173,15 +165,21 @@ NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_MAILNEWS, value)
 
 #ifdef XP_WIN
 
+#ifdef MOZ_STATIC_MAIL_BUILD
+#define NS_MSG_BASE
+#else
+
 #ifdef _IMPL_NS_MSG_BASE
 #define NS_MSG_BASE NS_EXPORT
 #else
 #define NS_MSG_BASE NS_IMPORT
 #endif
 
+#endif // MOZ_STATIC_MAIL_BUILD
+
 #else
 #define NS_MSG_BASE
-#endif
+#endif  // XP_WIN
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utilities 

@@ -16,8 +16,12 @@
  * Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
- * Contributor(s): 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
+ * Contributor(s):
  *	Dr Stephen Henson <stephen.henson@gemplus.com>
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -61,7 +65,11 @@
 
 #include "keydbi.h" 
 
- 
+#ifdef NSS_ENABLE_ECC
+extern SECStatus EC_FillParams(PRArenaPool *arena, 
+    const SECItem *encodedParams, ECParams *params);
+#endif
+
 /*
  * ******************** Static data *******************************
  */
@@ -208,7 +216,7 @@ static const unsigned char parityTable[256] = {
 /* Mechanisms */
 struct mechanismList {
     CK_MECHANISM_TYPE	type;
-    CK_MECHANISM_INFO	domestic;
+    CK_MECHANISM_INFO	info;
     PRBool		privkey;
 };
 
@@ -226,6 +234,10 @@ struct mechanismList {
 #define CKF_SN_VR_RE		CKF_SN_VR       | CKF_SN_RE
 #define CKF_DUZ_IT_ALL		CKF_EN_DE_WR_UN | CKF_SN_VR_RE
 
+#define CKF_EC_PNU		CKF_EC_FP | CKF_EC_NAMEDCURVE | CKF_EC_UNCOMPRESS
+
+#define CKF_EC_BPNU		CKF_EC_F_2M | CKF_EC_PNU
+
 #define CK_MAX 0xffffffff
 
 static const struct mechanismList mechanisms[] = {
@@ -236,11 +248,11 @@ static const struct mechanismList mechanisms[] = {
       * The first argument is the PKCS #11 Mechanism we support.
       * The second argument is Mechanism info structure. It includes:
       *    The minimum key size,
-      *       in bits for RSA, DSA, DH, KEA, RC2 and RC4 * algs.
+      *       in bits for RSA, DSA, DH, EC*, KEA, RC2 and RC4 * algs.
       *       in bytes for RC5, AES, and CAST*
       *       ignored for DES*, IDEA and FORTEZZA based
       *    The maximum key size,
-      *       in bits for RSA, DSA, DH, KEA, RC2 and RC4 * algs.
+      *       in bits for RSA, DSA, DH, EC*, KEA, RC2 and RC4 * algs.
       *       in bytes for RC5, AES, and CAST*
       *       ignored for DES*, IDEA and FORTEZZA based
       *     Flags
@@ -261,6 +273,9 @@ static const struct mechanismList mechanisms[] = {
      {CKM_MD2_RSA_PKCS,		{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
      {CKM_MD5_RSA_PKCS,		{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
      {CKM_SHA1_RSA_PKCS,	{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
+     {CKM_SHA256_RSA_PKCS,	{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
+     {CKM_SHA384_RSA_PKCS,	{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
+     {CKM_SHA512_RSA_PKCS,	{128,CK_MAX,CKF_SN_VR}, 	PR_TRUE},
      /* ------------------------- DSA Operations --------------------------- */
      {CKM_DSA_KEY_PAIR_GEN,	{512, 1024, CKF_GENERATE_KEY_PAIR}, PR_TRUE},
      {CKM_DSA,			{512, 1024, CKF_SN_VR},		PR_TRUE},
@@ -269,6 +284,13 @@ static const struct mechanismList mechanisms[] = {
      /* no diffie hellman yet */
      {CKM_DH_PKCS_KEY_PAIR_GEN,	{128, 1024, CKF_GENERATE_KEY_PAIR}, PR_TRUE}, 
      {CKM_DH_PKCS_DERIVE,	{128, 1024, CKF_DERIVE}, 	PR_TRUE}, 
+#ifdef NSS_ENABLE_ECC
+     /* -------------------- Elliptic Curve Operations --------------------- */
+     {CKM_EC_KEY_PAIR_GEN,      {112, 571, CKF_GENERATE_KEY_PAIR|CKF_EC_BPNU}, PR_TRUE}, 
+     {CKM_ECDH1_DERIVE,         {112, 571, CKF_DERIVE|CKF_EC_BPNU}, PR_TRUE}, 
+     {CKM_ECDSA,                {112, 571, CKF_SN_VR|CKF_EC_BPNU}, PR_TRUE}, 
+     {CKM_ECDSA_SHA1,           {112, 571, CKF_SN_VR|CKF_EC_BPNU}, PR_TRUE}, 
+#endif /* NSS_ENABLE_ECC */
      /* ------------------------- RC2 Operations --------------------------- */
      {CKM_RC2_KEY_GEN,		{1, 128, CKF_GENERATE},		PR_TRUE},
      {CKM_RC2_ECB,		{1, 128, CKF_EN_DE_WR_UN},	PR_TRUE},
@@ -317,6 +339,15 @@ static const struct mechanismList mechanisms[] = {
      {CKM_SHA_1,		{0,   0, CKF_DIGEST},		PR_FALSE},
      {CKM_SHA_1_HMAC,		{1, 128, CKF_SN_VR},		PR_TRUE},
      {CKM_SHA_1_HMAC_GENERAL,	{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA256,		{0,   0, CKF_DIGEST},		PR_FALSE},
+     {CKM_SHA256_HMAC,		{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA256_HMAC_GENERAL,	{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA384,		{0,   0, CKF_DIGEST},		PR_FALSE},
+     {CKM_SHA384_HMAC,		{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA384_HMAC_GENERAL,	{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA512,		{0,   0, CKF_DIGEST},		PR_FALSE},
+     {CKM_SHA512_HMAC,		{1, 128, CKF_SN_VR},		PR_TRUE},
+     {CKM_SHA512_HMAC_GENERAL,	{1, 128, CKF_SN_VR},		PR_TRUE},
      {CKM_TLS_PRF_GENERAL,	{0, 512, CKF_SN_VR},		PR_FALSE},
      /* ------------------------- CAST Operations --------------------------- */
 #ifdef NSS_SOFTOKEN_DOES_CAST
@@ -342,8 +373,8 @@ static const struct mechanismList mechanisms[] = {
 #endif
 #if NSS_SOFTOKEN_DOES_RC5
      /* ------------------------- RC5 Operations --------------------------- */
-     {CKM_RC5_KEY_GEN,		{1, 32, CKF_GENERATE}, 	PR_TRUE},
-     	{CKM_RC5_ECB,		{1, 32, CKF_EN_DE_WR_UN},	PR_TRUE},
+     {CKM_RC5_KEY_GEN,		{1, 32, CKF_GENERATE},          PR_TRUE},
+     {CKM_RC5_ECB,		{1, 32, CKF_EN_DE_WR_UN},	PR_TRUE},
      {CKM_RC5_CBC,		{1, 32, CKF_EN_DE_WR_UN},	PR_TRUE},
      {CKM_RC5_MAC,		{1, 32, CKF_SN_VR},  		PR_TRUE},
      {CKM_RC5_MAC_GENERAL,	{1, 32, CKF_SN_VR},  		PR_TRUE},
@@ -394,8 +425,11 @@ static const struct mechanismList mechanisms[] = {
      {CKM_NETSCAPE_PBE_SHA1_HMAC_KEY_GEN,    {20,20, CKF_GENERATE}, PR_TRUE},
      {CKM_NETSCAPE_PBE_MD5_HMAC_KEY_GEN,     {16,16, CKF_GENERATE}, PR_TRUE},
      {CKM_NETSCAPE_PBE_MD2_HMAC_KEY_GEN,     {16,16, CKF_GENERATE}, PR_TRUE},
+     /* ------------------ AES Key Wrap (also encrypt)  ------------------- */
+     {CKM_NETSCAPE_AES_KEY_WRAP,	{16, 32, CKF_EN_DE_WR_UN},  PR_TRUE},
+     {CKM_NETSCAPE_AES_KEY_WRAP_PAD,	{16, 32, CKF_EN_DE_WR_UN},  PR_TRUE},
 };
-static CK_ULONG mechanismCount = sizeof(mechanisms)/sizeof(mechanisms[0]);
+static const CK_ULONG mechanismCount = sizeof(mechanisms)/sizeof(mechanisms[0]);
 
 static char *
 pk11_setStringName(const char *inString, char *buffer, int buffer_length)
@@ -966,7 +1000,11 @@ pk11_handleCrlObject(PK11Session *session,PK11Object *object)
 	    return CKR_DEVICE_ERROR;
 	}
 
-	object->handle = pk11_mkHandle(slot,&derSubj,
+	/* if we overwrote the existing CRL, poison the handle entry so we get
+	 * a new object handle */
+	(void) pk11_poisonHandle(slot, &derSubj,
+			isKRL ? PK11_TOKEN_KRL_HANDLE : PK11_TOKEN_TYPE_CRL);
+	object->handle = pk11_mkHandle(slot, &derSubj,
 			isKRL ? PK11_TOKEN_KRL_HANDLE : PK11_TOKEN_TYPE_CRL);
     	pk11_FreeAttribute(subject);
     }
@@ -974,7 +1012,6 @@ pk11_handleCrlObject(PK11Session *session,PK11Object *object)
     return CKR_OK;
 }
 
-NSSLOWKEYPublicKey * pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key);
 /*
  * check the consistancy and initialize a Public Key Object 
  */
@@ -1023,6 +1060,21 @@ pk11_handlePublicKeyObject(PK11Session *session, PK11Object *object,
 	recover = CK_FALSE;
 	wrap = CK_FALSE;
 	break;
+#ifdef NSS_ENABLE_ECC
+    case CKK_EC:
+	if ( !pk11_hasAttribute(object, CKA_EC_PARAMS)) {
+	    return CKR_TEMPLATE_INCOMPLETE;
+	}
+	if ( !pk11_hasAttribute(object, CKA_EC_POINT)) {
+	    return CKR_TEMPLATE_INCOMPLETE;
+	}
+	derive = CK_TRUE;    /* for ECDH */
+	verify = CK_TRUE;    /* for ECDSA */
+	encrypt = CK_FALSE;
+	recover = CK_FALSE;
+	wrap = CK_FALSE;
+	break;
+#endif /* NSS_ENABLE_ECC */
     default:
 	return CKR_ATTRIBUTE_VALUE_INVALID;
     }
@@ -1042,7 +1094,10 @@ pk11_handlePublicKeyObject(PK11Session *session, PK11Object *object,
     crv = pk11_defaultAttribute(object,CKA_DERIVE,&derive,sizeof(CK_BBOOL));
     if (crv != CKR_OK)  return crv; 
 
-    object->objectInfo = pk11_GetPubKey(object,key_type);
+    object->objectInfo = pk11_GetPubKey(object,key_type, &crv);
+    if (object->objectInfo == NULL) {
+	return crv;
+    }
     object->infoFree = (PK11Free) nsslowkey_DestroyPublicKey;
 
     if (pk11_isTrue(object,CKA_TOKEN)) {
@@ -1081,7 +1136,9 @@ pk11_handlePublicKeyObject(PK11Session *session, PK11Object *object,
     return CKR_OK;
 }
 
-static NSSLOWKEYPrivateKey * pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key);
+static NSSLOWKEYPrivateKey * 
+pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key, CK_RV *rvp);
+
 /*
  * check the consistancy and initialize a Private Key Object 
  */
@@ -1092,6 +1149,7 @@ pk11_handlePrivateKeyObject(PK11Session *session,PK11Object *object,CK_KEY_TYPE 
     CK_BBOOL encrypt = CK_TRUE;
     CK_BBOOL recover = CK_TRUE;
     CK_BBOOL wrap = CK_TRUE;
+    CK_BBOOL derive = CK_FALSE;
     CK_BBOOL ckfalse = CK_FALSE;
     SECItem mod;
     CK_RV crv;
@@ -1153,6 +1211,20 @@ pk11_handlePrivateKeyObject(PK11Session *session,PK11Object *object,CK_KEY_TYPE 
 	recover = CK_FALSE;
 	wrap = CK_FALSE;
 	break;
+#ifdef NSS_ENABLE_ECC
+    case CKK_EC:
+	if ( !pk11_hasAttribute(object, CKA_EC_PARAMS)) {
+	    return CKR_TEMPLATE_INCOMPLETE;
+	}
+	if ( !pk11_hasAttribute(object, CKA_VALUE)) {
+	    return CKR_TEMPLATE_INCOMPLETE;
+	}
+	encrypt = CK_FALSE;
+	recover = CK_FALSE;
+	wrap = CK_FALSE;
+	derive = CK_TRUE;
+	break;
+#endif /* NSS_ENABLE_ECC */
     default:
 	return CKR_ATTRIBUTE_VALUE_INVALID;
     }
@@ -1170,6 +1242,8 @@ pk11_handlePrivateKeyObject(PK11Session *session,PK11Object *object,CK_KEY_TYPE 
 							     sizeof(CK_BBOOL));
     if (crv != CKR_OK)  return crv; 
     crv = pk11_defaultAttribute(object,CKA_UNWRAP,&wrap,sizeof(CK_BBOOL));
+    if (crv != CKR_OK)  return crv; 
+    crv = pk11_defaultAttribute(object,CKA_DERIVE,&derive,sizeof(CK_BBOOL));
     if (crv != CKR_OK)  return crv; 
     /* the next two bits get modified only in the key gen and token cases */
     crv = pk11_forceAttribute(object,CKA_ALWAYS_SENSITIVE,
@@ -1192,8 +1266,8 @@ pk11_handlePrivateKeyObject(PK11Session *session,PK11Object *object,CK_KEY_TYPE 
 	    return CKR_TOKEN_WRITE_PROTECTED;
 	}
 
-	privKey=pk11_mkPrivKey(object,key_type);
-	if (privKey == NULL) return CKR_HOST_MEMORY;
+	privKey=pk11_mkPrivKey(object,key_type,&crv);
+	if (privKey == NULL) return crv;
 	label = pk11_getString(object,CKA_LABEL);
 
 	crv = pk11_Attribute2SSecItem(NULL,&pubKey,object,CKA_NETSCAPE_DB);
@@ -1225,8 +1299,8 @@ fail:
 	nsslowkey_DestroyPrivateKey(privKey);
 	if (rv != SECSuccess) return CKR_DEVICE_ERROR;
     } else {
-	object->objectInfo = pk11_mkPrivKey(object,key_type);
-	if (object->objectInfo == NULL) return CKR_HOST_MEMORY;
+	object->objectInfo = pk11_mkPrivKey(object,key_type,&crv);
+	if (object->objectInfo == NULL) return crv;
 	object->infoFree = (PK11Free) nsslowkey_DestroyPrivateKey;
 	/* now NULL out the sensitive attributes */
 	if (pk11_isTrue(object,CKA_SENSITIVE)) {
@@ -1701,13 +1775,15 @@ pk11_handleObject(PK11Object *object, PK11Session *session)
  * ******************** Public Key Utilities ***************************
  */
 /* Generate a low public key structure from an object */
-NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key_type)
+NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key_type, 
+								CK_RV *crvp)
 {
     NSSLOWKEYPublicKey *pubKey;
     PLArenaPool *arena;
     CK_RV crv;
 
     if (object->objclass != CKO_PUBLIC_KEY) {
+	*crvp = CKR_KEY_TYPE_INCONSISTENT;
 	return NULL;
     }
 
@@ -1717,17 +1793,22 @@ NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key_type)
 
     /* If we already have a key, use it */
     if (object->objectInfo) {
+	*crvp = CKR_OK;
 	return (NSSLOWKEYPublicKey *)object->objectInfo;
     }
 
     /* allocate the structure */
     arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
-    if (arena == NULL) return NULL;
+    if (arena == NULL) {
+	*crvp = CKR_HOST_MEMORY;
+	return NULL;
+    }
 
     pubKey = (NSSLOWKEYPublicKey *)
 			PORT_ArenaAlloc(arena,sizeof(NSSLOWKEYPublicKey));
     if (pubKey == NULL) {
     	PORT_FreeArena(arena,PR_FALSE);
+	*crvp = CKR_HOST_MEMORY;
 	return NULL;
     }
 
@@ -1764,13 +1845,32 @@ NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key_type)
 	crv = pk11_Attribute2SSecItem(arena,&pubKey->u.dh.base,
 							object,CKA_BASE);
     	if (crv != CKR_OK) break;
-    	crv = pk11_Attribute2SSecItem(arena,&pubKey->u.dsa.publicValue,
+    	crv = pk11_Attribute2SSecItem(arena,&pubKey->u.dh.publicValue,
 							object,CKA_VALUE);
 	break;
+#ifdef NSS_ENABLE_ECC
+    case CKK_EC:
+	pubKey->keyType = NSSLOWKEYECKey;
+	crv = pk11_Attribute2SSecItem(arena,
+	                              &pubKey->u.ec.ecParams.DEREncoding,
+	                              object,CKA_EC_PARAMS);
+	if (crv != CKR_OK) break;
+
+	/* Fill out the rest of the ecParams structure 
+	 * based on the encoded params
+	 */
+	if (EC_FillParams(arena, &pubKey->u.ec.ecParams.DEREncoding,
+	    &pubKey->u.ec.ecParams) != SECSuccess) break;
+	    
+	crv = pk11_Attribute2SSecItem(arena,&pubKey->u.ec.publicValue,
+	                              object,CKA_EC_POINT);
+	break;
+#endif /* NSS_ENABLE_ECC */
     default:
 	crv = CKR_KEY_TYPE_INCONSISTENT;
 	break;
     }
+    *crvp = crv;
     if (crv != CKR_OK) {
     	PORT_FreeArena(arena,PR_FALSE);
 	return NULL;
@@ -1783,7 +1883,7 @@ NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,CK_KEY_TYPE key_type)
 
 /* make a private key from a verified object */
 static NSSLOWKEYPrivateKey *
-pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
+pk11_mkPrivKey(PK11Object *object, CK_KEY_TYPE key_type, CK_RV *crvp)
 {
     NSSLOWKEYPrivateKey *privKey;
     PLArenaPool *arena;
@@ -1792,12 +1892,16 @@ pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
 
     PORT_Assert(!pk11_isToken(object->handle));
     arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
-    if (arena == NULL) return NULL;
+    if (arena == NULL) {
+	*crvp = CKR_HOST_MEMORY;
+	return NULL;
+    }
 
     privKey = (NSSLOWKEYPrivateKey *)
 			PORT_ArenaZAlloc(arena,sizeof(NSSLOWKEYPrivateKey));
     if (privKey == NULL)  {
 	PORT_FreeArena(arena,PR_FALSE);
+	*crvp = CKR_HOST_MEMORY;
 	return NULL;
     }
 
@@ -1868,10 +1972,35 @@ pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
     	crv = pk11_Attribute2SSecItem(arena,&privKey->u.dh.publicValue,
 							object,CKA_NETSCAPE_DB);
 	break;
+
+#ifdef NSS_ENABLE_ECC
+    case CKK_EC:
+	privKey->keyType = NSSLOWKEYECKey;
+	crv = pk11_Attribute2SSecItem(arena, 
+	                              &privKey->u.ec.ecParams.DEREncoding,
+	                              object,CKA_EC_PARAMS);
+    	if (crv != CKR_OK) break;
+
+	/* Fill out the rest of the ecParams structure
+	 * based on the encoded params
+	 */
+	if (EC_FillParams(arena, &privKey->u.ec.ecParams.DEREncoding,
+	    &privKey->u.ec.ecParams) != SECSuccess) break;
+	crv = pk11_Attribute2SSecItem(arena,&privKey->u.ec.privateValue,
+							object,CKA_VALUE);
+	if (crv != CKR_OK) break;
+	/* XXX Why does this break handlePrivateKeyObject ? 
+	crv = pk11_Attribute2SSecItem(arena,&privKey->u.ec.publicValue,
+				      object,CKA_NETSCAPE_DB);
+	*/
+	break;
+#endif /* NSS_ENABLE_ECC */
+
     default:
 	crv = CKR_KEY_TYPE_INCONSISTENT;
 	break;
     }
+    *crvp = crv;
     if (crv != CKR_OK) {
 	PORT_FreeArena(arena,PR_FALSE);
 	return NULL;
@@ -1882,14 +2011,16 @@ pk11_mkPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
 
 /* Generate a low private key structure from an object */
 NSSLOWKEYPrivateKey *
-pk11_GetPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
+pk11_GetPrivKey(PK11Object *object,CK_KEY_TYPE key_type, CK_RV *crvp)
 {
     NSSLOWKEYPrivateKey *priv = NULL;
 
     if (object->objclass != CKO_PRIVATE_KEY) {
+	*crvp = CKR_KEY_TYPE_INCONSISTENT;
 	return NULL;
     }
     if (object->objectInfo) {
+	*crvp = CKR_OK;
 	return (NSSLOWKEYPrivateKey *)object->objectInfo;
     }
 
@@ -1901,8 +2032,9 @@ pk11_GetPrivKey(PK11Object *object,CK_KEY_TYPE key_type)
 	PORT_Assert(object->slot->keyDB);	
 	priv = nsslowkey_FindKeyByPublicKey(object->slot->keyDB, &to->dbKey,
 				       object->slot->password);
+	*crvp = priv ? CKR_OK : CKR_DEVICE_ERROR;
     } else {
-	priv = pk11_mkPrivKey(object, key_type);
+	priv = pk11_mkPrivKey(object, key_type, crvp);
     }
     object->objectInfo = priv;
     object->infoFree = (PK11Free) nsslowkey_DestroyPrivateKey;
@@ -1973,7 +2105,7 @@ pk11_IsWeakKey(unsigned char *key,CK_KEY_TYPE key_type)
 static NSSLOWKEYPrivateKey *
 pk11_mkSecretKeyRep(PK11Object *object)
 {
-    NSSLOWKEYPrivateKey *privKey;
+    NSSLOWKEYPrivateKey *privKey = 0;
     PLArenaPool *arena = 0;
     CK_RV crv;
     SECStatus rv;
@@ -2111,7 +2243,7 @@ pk11_getDefSlotName(CK_SLOT_ID slotID)
     switch (slotID) {
     case NETSCAPE_SLOT_ID:
 	return 
-	 "NSS Internal Cryptographic Services Version 3.4                 ";
+	 "NSS Internal Cryptographic Services                             ";
     case PRIVATE_KEY_SLOT_ID:
 	return 
 	 "NSS User Private Key and Certificate Services                   ";
@@ -2222,6 +2354,41 @@ PK11Slot * pk11_NewSlotFromID(CK_SLOT_ID slotID, int moduleIndex)
     return slot;
 }
 
+static SECStatus
+pk11_set_user(NSSLOWCERTCertificate *cert, SECItem *dummy, void *arg)
+{
+    PK11Slot  *slot = (PK11Slot *)arg;
+    NSSLOWCERTCertTrust trust = *cert->trust;
+
+    if (nsslowkey_KeyForCertExists(slot->keyDB,cert)) {
+	trust.sslFlags |= CERTDB_USER;
+	trust.emailFlags |= CERTDB_USER;
+	trust.objectSigningFlags |= CERTDB_USER;
+    } else {
+	trust.sslFlags &= ~CERTDB_USER;
+	trust.emailFlags &= ~CERTDB_USER;
+	trust.objectSigningFlags &= ~CERTDB_USER;
+    }
+
+    if (PORT_Memcmp(&trust,cert->trust, sizeof (trust)) != 0) {
+	nsslowcert_ChangeCertTrust(slot->certDB,cert, &trust);
+    }
+
+    /* should check for email address and make sure we have an s/mime profile */
+    return SECSuccess;
+}
+
+static  void
+pk11_DBVerify(PK11Slot *slot)
+{
+    /* walk through all the certs and check to see if there are any 
+     * user certs, and make sure there are s/mime profiles for all certs with
+     * email addresses */
+    nsslowcert_TraversePermCerts(slot->certDB,pk11_set_user,slot);
+
+    return;
+}
+
 /*
  * initialize one of the slot structures. figure out which by the ID
  */
@@ -2324,6 +2491,10 @@ PK11_SlotInit(char *configdir,pk11_token_parameters *params, int moduleIndex)
 	if (crv != CKR_OK) {
 	    /* shoutdown slot? */
 	    return crv;
+	}
+
+	if (nsslowcert_needDBVerify(slot->certDB)) {
+	    pk11_DBVerify(slot);
 	}
     }
     if (needLogin) {
@@ -2509,6 +2680,7 @@ pk11_closePeer(PRBool isFIPS)
 }
 
 static PRBool nsc_init = PR_FALSE;
+extern SECStatus secoid_Init(void);
 
 /* NSC_Initialize initializes the Cryptoki library. */
 CK_RV nsc_CommonInitialize(CK_VOID_PTR pReserved, PRBool isFIPS)
@@ -2518,6 +2690,22 @@ CK_RV nsc_CommonInitialize(CK_VOID_PTR pReserved, PRBool isFIPS)
     CK_C_INITIALIZE_ARGS *init_args = (CK_C_INITIALIZE_ARGS *) pReserved;
     int i;
     int moduleIndex = isFIPS? NSC_FIPS_MODULE : NSC_NON_FIPS_MODULE;
+
+
+    if (isFIPS) {
+	/* make sure that our check file signatures are OK */
+	if (!BLAPI_VerifySelf(NULL) || 
+	    !BLAPI_SHVerify(SOFTOKEN_LIB_NAME, (PRFuncPtr) pk11_closePeer)) {
+	    crv = CKR_DEVICE_ERROR; /* better error code? checksum error? */
+	    return crv;
+	}
+    }
+
+    rv = secoid_Init();
+    if (rv != SECSuccess) {
+	crv = CKR_DEVICE_ERROR;
+	return crv;
+    }
 
     rv = RNG_RNGInit();         /* initialize random number generator */
     if (rv != SECSuccess) {
@@ -2583,6 +2771,8 @@ CK_RV NSC_Initialize(CK_VOID_PTR pReserved)
     return crv;
 }
 
+extern SECStatus SECOID_Shutdown(void);
+
 /* NSC_Finalize indicates that an application is done with the 
  * Cryptoki library.*/
 CK_RV nsc_CommonFinalize (CK_VOID_PTR pReserved, PRBool isFIPS)
@@ -2617,6 +2807,8 @@ CK_RV nsc_CommonFinalize (CK_VOID_PTR pReserved, PRBool isFIPS)
     pk11_CleanupFreeLists();
     /* tell freeBL to clean up after itself */
     BL_Cleanup();
+    /* clean up the default OID table */
+    SECOID_Shutdown();
     nsc_init = PR_FALSE;
 
     return CKR_OK;
@@ -2652,7 +2844,7 @@ CK_RV  NSC_GetInfo(CK_INFO_PTR pInfo)
     pInfo->cryptokiVersion.minor = 11;
     PORT_Memcpy(pInfo->manufacturerID,manufacturerID,32);
     pInfo->libraryVersion.major = 3;
-    pInfo->libraryVersion.minor = 6;
+    pInfo->libraryVersion.minor = 8;
     PORT_Memcpy(pInfo->libraryDescription,libraryDescription,32);
     pInfo->flags = 0;
     return CKR_OK;
@@ -2687,17 +2879,39 @@ CK_RV NSC_GetSlotInfo(CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 
     pInfo->firmwareVersion.major = 0;
     pInfo->firmwareVersion.minor = 0;
+
     PORT_Memcpy(pInfo->manufacturerID,manufacturerID,32);
     PORT_Memcpy(pInfo->slotDescription,slot->slotDescription,64);
     pInfo->flags = CKF_TOKEN_PRESENT;
     /* ok we really should read it out of the keydb file. */
     /* pInfo->hardwareVersion.major = NSSLOWKEY_DB_FILE_VERSION; */
     pInfo->hardwareVersion.major = 3;
-    pInfo->hardwareVersion.minor = 6;
+    pInfo->hardwareVersion.minor = 8;
     return CKR_OK;
 }
 
 #define CKF_THREAD_SAFE 0x8000 /* for now */
+/*
+ * check the current state of the 'needLogin' flag in case the database has
+ * been changed underneath us.
+ */
+static PRBool
+pk11_checkNeedLogin(PK11Slot *slot)
+{
+    if (slot->password) {
+	if (nsslowkey_CheckKeyDBPassword(slot->keyDB,slot->password) 
+							== SECSuccess) {
+	    return slot->needLogin;
+	} else {
+	    SECITEM_FreeItem(slot->password, PR_TRUE);
+	    slot->password = NULL;
+	    slot->isLoggedIn = PR_FALSE;
+	}
+    }
+    slot->needLogin = 
+		(PRBool)!pk11_hasNullPassword(slot->keyDB,&slot->password);
+    return (slot->needLogin);
+}
 
 /* NSC_GetTokenInfo obtains information about a particular token in 
  * the system. */
@@ -2741,7 +2955,7 @@ CK_RV NSC_GetTokenInfo(CK_SLOT_ID slotID,CK_TOKEN_INFO_PTR pInfo)
 	 */
 	if (nsslowkey_HasKeyDBPassword(handle) == SECFailure) {
 	    pInfo->flags = CKF_THREAD_SAFE | CKF_LOGIN_REQUIRED;
-	} else if (!slot->needLogin) {
+	} else if (!pk11_checkNeedLogin(slot)) {
 	    pInfo->flags = CKF_THREAD_SAFE | CKF_USER_PIN_INITIALIZED;
 	} else {
 	    pInfo->flags = CKF_THREAD_SAFE | 
@@ -2762,27 +2976,25 @@ CK_RV NSC_GetTokenInfo(CK_SLOT_ID slotID,CK_TOKEN_INFO_PTR pInfo)
     return CKR_OK;
 }
 
-
-
 /* NSC_GetMechanismList obtains a list of mechanism types 
  * supported by a token. */
 CK_RV NSC_GetMechanismList(CK_SLOT_ID slotID,
 	CK_MECHANISM_TYPE_PTR pMechanismList, CK_ULONG_PTR pulCount)
 {
-    int i;
+    CK_ULONG i;
 
     switch (slotID) {
     case NETSCAPE_SLOT_ID:
 	*pulCount = mechanismCount;
 	if (pMechanismList != NULL) {
-	    for (i=0; i < (int) mechanismCount; i++) {
+	    for (i=0; i < mechanismCount; i++) {
 		pMechanismList[i] = mechanisms[i].type;
 	    }
 	}
 	break;
      default:
 	*pulCount = 0;
-	for (i=0; i < (int) mechanismCount; i++) {
+	for (i=0; i < mechanismCount; i++) {
 	    if (mechanisms[i].privkey) {
 		(*pulCount)++;
 		if (pMechanismList != NULL) {
@@ -2802,7 +3014,7 @@ CK_RV NSC_GetMechanismInfo(CK_SLOT_ID slotID, CK_MECHANISM_TYPE type,
     					CK_MECHANISM_INFO_PTR pInfo)
 {
     PRBool isPrivateKey;
-    int i;
+    CK_ULONG i;
 
     switch (slotID) {
     case NETSCAPE_SLOT_ID:
@@ -2812,18 +3024,45 @@ CK_RV NSC_GetMechanismInfo(CK_SLOT_ID slotID, CK_MECHANISM_TYPE type,
 	isPrivateKey = PR_TRUE;
 	break;
     }
-    for (i=0; i < (int) mechanismCount; i++) {
+    for (i=0; i < mechanismCount; i++) {
         if (type == mechanisms[i].type) {
 	    if (isPrivateKey && !mechanisms[i].privkey) {
     		return CKR_MECHANISM_INVALID;
 	    }
-	    PORT_Memcpy(pInfo,&mechanisms[i].domestic,
-						sizeof(CK_MECHANISM_INFO));
+	    PORT_Memcpy(pInfo,&mechanisms[i].info, sizeof(CK_MECHANISM_INFO));
 	    return CKR_OK;
 	}
     }
     return CKR_MECHANISM_INVALID;
 }
+
+CK_RV pk11_MechAllowsOperation(CK_MECHANISM_TYPE type, CK_ATTRIBUTE_TYPE op)
+{
+    CK_ULONG i;
+    CK_FLAGS flags;
+
+    switch (op) {
+    case CKA_ENCRYPT:         flags = CKF_ENCRYPT;         break;
+    case CKA_DECRYPT:         flags = CKF_DECRYPT;         break;
+    case CKA_WRAP:            flags = CKF_WRAP;            break;
+    case CKA_UNWRAP:          flags = CKF_UNWRAP;          break;
+    case CKA_SIGN:            flags = CKF_SIGN;            break;
+    case CKA_SIGN_RECOVER:    flags = CKF_SIGN_RECOVER;    break;
+    case CKA_VERIFY:          flags = CKF_VERIFY;          break;
+    case CKA_VERIFY_RECOVER:  flags = CKF_VERIFY_RECOVER;  break;
+    case CKA_DERIVE:          flags = CKF_DERIVE;          break;
+    default:
+    	return CKR_ARGUMENTS_BAD;
+    }
+    for (i=0; i < mechanismCount; i++) {
+        if (type == mechanisms[i].type) {
+	    return (flags & mechanisms[i].info.flags) ? CKR_OK 
+	                                              : CKR_MECHANISM_INVALID;
+	}
+    }
+    return CKR_MECHANISM_INVALID;
+}
+
 
 static SECStatus
 pk11_TurnOffUser(NSSLOWCERTCertificate *cert, SECItem *k, void *arg)
@@ -3220,6 +3459,7 @@ CK_RV NSC_Login(CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
     PK11Slot *slot;
     PK11Session *session;
     NSSLOWKEYDBHandle *handle;
+    CK_FLAGS sessionFlags;
     SECItem *pin;
     char pinStr[PK11_MAX_PIN+1];
 
@@ -3229,10 +3469,10 @@ CK_RV NSC_Login(CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
 
     /* make sure the session is valid */
     session = pk11_SessionFromHandle(hSession);
-    if (session == NULL) {
-	if (session == NULL) return CKR_SESSION_HANDLE_INVALID;
-    }
+    if (session == NULL) return CKR_SESSION_HANDLE_INVALID;
+    sessionFlags = session->info.flags;
     pk11_FreeSession(session);
+    session = NULL;
 
     /* can't log into the Netscape Slot */
     if (slot->slotID == NETSCAPE_SLOT_ID)
@@ -3260,7 +3500,7 @@ CK_RV NSC_Login(CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
     if (nsslowkey_HasKeyDBPassword(handle) == SECFailure) {
 	/* allow SSO's to log in only if there is not password on the
 	 * key database */
-	if (((userType == CKU_SO) && (session->info.flags & CKF_RW_SESSION))
+	if (((userType == CKU_SO) && (sessionFlags & CKF_RW_SESSION))
 	    /* fips always needs to authenticate, even if there isn't a db */
 					|| (slot->slotID == FIPS_SLOT_ID)) {
 	    /* should this be a fixed password? */
@@ -3315,9 +3555,9 @@ CK_RV NSC_Logout(CK_SESSION_HANDLE hSession)
     SECItem *pw = NULL;
 
     session = pk11_SessionFromHandle(hSession);
-    if (session == NULL) {
-	if (session == NULL) return CKR_SESSION_HANDLE_INVALID;
-    }
+    if (session == NULL) return CKR_SESSION_HANDLE_INVALID;
+    pk11_FreeSession(session);
+    session = NULL;
 
     if (!slot->isLoggedIn) return CKR_USER_NOT_LOGGED_IN;
 

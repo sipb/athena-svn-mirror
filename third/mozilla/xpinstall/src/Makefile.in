@@ -29,21 +29,20 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-# Make this a true dynamic component even in static builds because
-# this component is shared by installer
-MOZ_STATIC_COMPONENT_LIBS=
-BUILD_STATIC_LIBS=
-BUILD_SHARED_LIBS=1
-
 MODULE		= xpinstall
 LIBRARY_NAME	= xpinstall
-EXPORT_LIBRARY = 1
+# Do not set EXPORT_LIBRARY as we do not want xpinstall in the static libs list
+#EXPORT_LIBRARY = 1
 SHORT_LIBNAME	= xpinstal
 IS_COMPONENT	= 1
 MODULE_NAME	= nsSoftwareUpdate
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  jar \
+		  caps \
 		  chrome \
 		  necko \
 		  intl \
@@ -59,6 +58,7 @@ REQUIRES	= xpcom \
 		  dom \
 		  windowwatcher \
 		  plugin \
+		  unicharutil \
 		  $(ZLIB_REQUIRES) \
 		  $(NULL)
 
@@ -66,6 +66,7 @@ REQUIRES	= xpcom \
 EXPORTS		= nsXPITriggerInfo.h
 
 CPPSRCS		= \
+		CertReader.cpp \
 		nsInstall.cpp \
 		nsInstallTrigger.cpp \
 		nsInstallVersion.cpp \
@@ -99,15 +100,27 @@ CPPSRCS		+= \
 		nsWinReg.cpp \
 		nsJSWinReg.cpp \
 		nsWinRegItem.cpp \
-		nsWinRegValue.cpp \
 		nsWinProfile.cpp \
 		nsJSWinProfile.cpp \
 		nsWinProfileItem.cpp \
 		nsWinShortcut.cpp \
 		$(NULL)
 
-OS_LIBS		+= ole32.lib version.lib
+OS_LIBS		+= $(call EXPAND_LIBNAME,ole32 version uuid)
 endif	
+
+# Support AppleSingle decoding on Mac OS X
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+REQUIRES	+= macmorefiles
+
+CPPSRCS		+= \
+		nsAppleSingleDecoder.cpp \
+		$(NULL)
+
+LIBS			+=	\
+		$(DEPTH)/dist/lib/libmacmorefiles_s.a	\
+		$(NULL)
+endif
 
 LOCAL_INCLUDES	= -I$(srcdir)/../public
 
@@ -116,12 +129,24 @@ EXTRA_DSO_LDOPTS = \
 		$(EXTRA_DSO_LIBS) \
 		$(MOZ_JS_LIBS) \
 		$(MOZ_COMPONENT_LIBS) \
+		$(MOZ_XPCOM_OBSOLETE_LIBS) \
+		$(MOZ_UNICHARUTIL_LIBS) \
 		$(ZLIB_LIBS) \
 		$(NULL)
+
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+EXTRA_DSO_LDOPTS += $(TK_LIBS)
+endif
+
+# Make this a true dynamic component even in static builds because
+# this component is shared by installer
+FORCE_SHARED_LIB	= 1
+MOZ_STATIC_COMPONENT_LIBS=
 
 include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 DEFINES		+= -DZLIB_DLL
 endif
+
 

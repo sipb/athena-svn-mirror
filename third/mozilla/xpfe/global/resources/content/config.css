@@ -30,33 +30,13 @@
 
 /* ::::: tree rows ::::: */
 
-tree:focus > .tree-bodybox
-{
-  border: 1px solid black;
-}
-
-tree > .tree-bodybox
-{
-  border: 1px solid transparent;
-}
-
-treechildren:-moz-tree-cell-text(prefCol)
+treechildren:-moz-tree-cell-text(user)
 {
   font-weight: bold;
 }
 
-treechildren:-moz-tree-cell-text(user)
-{
-  color: blue;
-}
-
-treechildren:-moz-tree-cell-text(default)
-{
-  color: green;
-}
-
 treechildren:-moz-tree-cell-text(locked)
 {
-  color: red;
+  font-style: italic;
 }
-                                 
+

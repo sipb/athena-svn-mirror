@@ -54,7 +54,7 @@ NS_MSG_BASE nsresult GetMessageServiceFromURI(const char *uri, nsIMsgMessageServ
 
 NS_MSG_BASE nsresult GetMsgDBHdrFromURI(const char *uri, nsIMsgDBHdr **msgHdr);
 
-NS_MSG_BASE nsresult CreateStartupUrl(char *uri, nsIURI** aUrl);
+NS_MSG_BASE nsresult CreateStartupUrl(const char *uri, nsIURI** aUrl);
 
 NS_MSG_BASE nsresult NS_MsgGetPriorityFromString(const char *priority, nsMsgPriorityValue *outPriority);
 
@@ -87,5 +87,15 @@ NS_MSG_BASE nsresult CreateServicesForPasswordManager();
 
 NS_MSG_BASE nsresult IsRFC822HeaderFieldName(const char *aHdr, PRBool *aResult);
 
+  /**
+   * this needs a listener, because we might have to create the folder
+   * on the server, and that is asynchronous
+   */
+NS_MSG_BASE nsresult GetOrCreateFolder(const nsACString & aURI, nsIUrlListener *aListener);
+
+// digest needs to be a pointer to a 16 byte buffer
+#define DIGEST_LENGTH 16
+
+NS_MSG_BASE nsresult MSGCramMD5(const char *text, PRInt32 text_len, const char *key, PRInt32 key_len, unsigned char *digest);
 #endif
 

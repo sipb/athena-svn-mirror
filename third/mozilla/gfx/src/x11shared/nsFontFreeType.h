@@ -40,33 +40,27 @@
 #ifndef nsFontFreeType_h__
 #define nsFontFreeType_h__
 
+#include "gfx-config.h"
 #include "nsFontMetricsGTK.h"
 #include "nsFreeType.h"
 
 #if (!defined(MOZ_ENABLE_FREETYPE2))
-class nsFreeTypeFace;
 class nsFreeTypeFont : public nsFontGTK {
 public:
-  static nsFreeTypeFont *NewFont(nsFreeTypeFace *, PRUint16, const char *);
+  static nsFreeTypeFont *NewFont(nsITrueTypeFontCatalogEntry*,
+                                 PRUint16, const char *);
 };
 #else
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_CACHE_H
-#include FT_CACHE_IMAGE_H
-#include FT_TRUETYPE_TABLES_H
-
-class nsFreeTypeFace;
 
 class nsFreeTypeFont : public nsFontGTK
 {
 public:
 
   nsFreeTypeFont();
-  nsFreeTypeFont(nsFreeTypeFace *, PRUint16, const char *);
+  nsFreeTypeFont(nsITrueTypeFontCatalogEntry *, PRUint16, const char *);
   virtual ~nsFreeTypeFont(void);
-  static nsFreeTypeFont *NewFont(nsFreeTypeFace *, PRUint16, const char *);
+  static nsFreeTypeFont *NewFont(nsITrueTypeFontCatalogEntry*,
+                                 PRUint16, const char *);
 
   void LoadFont(void);
 
@@ -114,9 +108,10 @@ public:
 
 protected:
   XImage *GetXImage(PRUint32 width, PRUint32 height);
-  nsFreeTypeFace *mFaceID;
+  nsITrueTypeFontCatalogEntry *mFaceID;
   PRUint16        mPixelSize;
   FTC_Image_Desc  mImageDesc;
+  nsCOMPtr<nsIFreeType2> mFt2;
 };
 
 void WeightTableInitCorrection(PRUint8*, PRUint8, double);

@@ -43,6 +43,7 @@
 #include "nsISelection.h"
 #include "nsEditor.h"
 #include "nsLayoutCID.h"
+#include "nsEditorUtils.h"
 
 static NS_DEFINE_CID(kCRangeCID, NS_RANGE_CID);
 
@@ -166,7 +167,7 @@ nsSelectionState::IsEqual(nsSelectionState *aSelState)
     itsItem->GetRange(address_of(itsRange));
     if (!myRange || !itsRange) return PR_FALSE;
   
-    PRInt32 compResult;
+    PRInt16 compResult;
     myRange->CompareBoundaryPoints(nsIDOMRange::START_TO_START, itsRange, &compResult);
     if (compResult) return PR_FALSE;
     myRange->CompareBoundaryPoints(nsIDOMRange::END_TO_END, itsRange, &compResult);
@@ -203,51 +204,18 @@ nsRangeUpdater::nsRangeUpdater() : mArray(), mLock(PR_FALSE) {}
 
 nsRangeUpdater::~nsRangeUpdater()
 {
-  // free any items in the array
-  nsRangeStore *item;
-  for (PRInt32 i = mArray.Count()-1; i >= 0; --i)
-  {
-    item = (nsRangeStore*)mArray.ElementAt(i);
-    delete item;
-  }
-  //mArray.Clear(); not really needed
+  // nothing to do, we don't own the items in our array.
 }
   
-void* 
-nsRangeUpdater::RegisterRange(nsIDOMRange *aRange)
-{
-  nsRangeStore *item = new nsRangeStore;
-  if (!item) return nsnull;
-  item->StoreRange(aRange);
-  mArray.AppendElement(item);
-  return item;
-}
-
-nsCOMPtr<nsIDOMRange> 
-nsRangeUpdater::ReclaimRange(void *aCookie)
-{
-  nsRangeStore *item = NS_STATIC_CAST(nsRangeStore*,aCookie);
-  if (!item) return nsnull;
-  nsCOMPtr<nsIDOMRange> outRange;
-  item->GetRange(address_of(outRange));
-  mArray.RemoveElement(aCookie);
-  delete item;
-  return outRange;
-}
-    
-void 
-nsRangeUpdater::DropRange(void *aCookie)
-{
-  nsRangeStore *item = NS_STATIC_CAST(nsRangeStore*,aCookie);
-  if (!item) return;
-  mArray.RemoveElement(aCookie);
-  delete item;
-}
-
 void 
 nsRangeUpdater::RegisterRangeItem(nsRangeStore *aRangeItem)
 {
   if (!aRangeItem) return;
+  if (mArray.IndexOf(aRangeItem) != -1)
+  {
+    NS_ERROR("tried to register an already registered range");
+    return;  // don't register it again.  It would get doubly adjusted.
+  }
   mArray.AppendElement(aRangeItem);
   return;
 }
@@ -327,27 +295,59 @@ nsRangeUpdater::SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition)
 
 
 nsresult
-nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset)
+nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode)
 {
   if (mLock) return NS_OK;  // lock set by Will/DidReplaceParent, etc...
   if (!aNode) return NS_ERROR_NULL_POINTER;
   PRInt32 i, count = mArray.Count();
   if (!count) return NS_OK;
 
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset = 0;
   nsRangeStore *item;
   
+  nsresult res = nsEditor::GetNodeLocation(aNode, address_of(parent), &offset);
+  NS_ENSURE_SUCCESS(res, res);
+  
+  // check for range endpoints that are after aNode and in the same parent
   for (i=0; i<count; i++)
   {
     item = (nsRangeStore*)mArray.ElementAt(i);
     if (!item) return NS_ERROR_NULL_POINTER;
     
-    if ((item->startNode.get() == aParent) && (item->startOffset > aOffset))
+    if ((item->startNode.get() == parent) && (item->startOffset > offset))
       item->startOffset--;
-    if ((item->endNode.get() == aParent) && (item->endOffset > aOffset))
+    if ((item->endNode.get() == parent) && (item->endOffset > offset))
       item->endOffset--;
+      
+    // check for range endpoints that are in aNode
+    if (item->startNode == aNode)
+    {
+      item->startNode   = parent;
+      item->startOffset = offset;
+    }
+    if (item->endNode == aNode)
+    {
+      item->endNode   = parent;
+      item->endOffset = offset;
+    }
+
+    // check for range endpoints that are in descendants of aNode
+    nsCOMPtr<nsIDOMNode> oldStart;
+    if (nsEditorUtils::IsDescendantOf(item->startNode, aNode))
+    {
+      oldStart = item->startNode;  // save for efficiency hack below.
+      item->startNode   = parent;
+      item->startOffset = offset;
+    }
+
+    // avoid having to call IsDescendantOf() for common case of range startnode == range endnode.
+    if ((item->endNode == oldStart) || nsEditorUtils::IsDescendantOf(item->endNode, aNode))
+    {
+      item->endNode   = parent;
+      item->endOffset = offset;
+    }
   }
-  // MOOSE: also check inside of aNode, expensive.  But in theory, we shouldn't
-  // actually hit this case in the usage i forsee for this.
   return NS_OK;
 }
 
@@ -423,9 +423,9 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
     item = (nsRangeStore*)mArray.ElementAt(i);
     if (!item) return NS_ERROR_NULL_POINTER;
     
-    // adjust endpoints in aParent
     if (item->startNode.get() == aParent)
     {
+      // adjust start point in aParent
       if (item->startOffset > aOffset)
       {
         item->startOffset--;
@@ -437,8 +437,20 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
         item->startOffset = aOldLeftNodeLength;
       }
     }
+    else if (item->startNode.get() == aRightNode)
+    {
+      // adjust start point in aRightNode
+      item->startOffset += aOldLeftNodeLength;
+    }
+    else if (item->startNode.get() == aLeftNode)
+    {
+      // adjust start point in aLeftNode
+      item->startNode = aRightNode;
+    }
+
     if (item->endNode.get() == aParent)
     {
+      // adjust end point in aParent
       if (item->endOffset > aOffset)
       {
         item->endOffset--;
@@ -450,11 +462,16 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
         item->endOffset = aOldLeftNodeLength;
       }
     }
-    // adjust endpoints in aRightNode
-    if (item->startNode.get() == aRightNode)
-      item->startOffset += aOldLeftNodeLength;
-    if (item->endNode.get() == aRightNode)
-      item->endOffset += aOldLeftNodeLength;
+    else if (item->endNode.get() == aRightNode)
+    {
+      // adjust end point in aRightNode
+       item->endOffset += aOldLeftNodeLength;
+    }
+    else if (item->endNode.get() == aLeftNode)
+    {
+      // adjust end point in aLeftNode
+      item->endNode = aRightNode;
+    }
   }
   
   return NS_OK;

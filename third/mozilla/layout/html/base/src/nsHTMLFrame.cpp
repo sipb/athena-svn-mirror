@@ -41,7 +41,7 @@
 #include "nsIDocument.h"
 #include "nsReflowPath.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsViewsCID.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
@@ -95,7 +95,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow);
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
 
@@ -158,7 +158,6 @@ public:
   
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
 #endif
   NS_IMETHOD GetContentForEvent(nsIPresContext* aPresContext,
                                 nsEvent* aEvent,
@@ -170,7 +169,7 @@ protected:
   // Data members
   PRPackedBool             mDoPaintFocus;
   nsCOMPtr<nsIViewManager> mViewManager;
-
+  nscoord                  mSavedChildWidth, mSavedChildHeight;
 
 private:
   NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
@@ -223,7 +222,7 @@ NS_IMETHODIMP
 CanvasFrame::Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsHTMLContainerFrame::Init(aPresContext,aContent,aParent,aContext,aPrevInFlow);
@@ -388,6 +387,22 @@ CanvasFrame::Paint(nsIPresContext*      aPresContext,
                    nsFramePaintLayer    aWhichLayer,
                    PRUint32             aFlags)
 {
+  // We are wrapping the root frame of a document. We
+  // need to check the pres shell to find out if painting is locked
+  // down (because we're still in the early stages of document
+  // and frame construction.  If painting is locked down, then we
+  // do not paint our children.  
+  PRBool paintingSuppressed = PR_FALSE;
+  nsCOMPtr<nsIPresShell> shell;
+  aPresContext->GetShell(getter_AddRefs(shell));
+  shell->IsPaintingSuppressed(&paintingSuppressed);
+  if (paintingSuppressed) {
+    if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
+      PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
+    }
+    return NS_OK;
+  }
+
   nsresult rv = nsHTMLContainerFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
 
   if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
@@ -489,7 +504,7 @@ CanvasFrame::Reflow(nsIPresContext*          aPresContext,
   DO_GLOBAL_REFLOW_COUNT("CanvasFrame", aReflowState.reason);
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
   NS_FRAME_TRACE_REFLOW_IN("CanvasFrame::Reflow");
-  //NS_PRECONDITION(nsnull == aDesiredSize.maxElementSize, "unexpected request");
+  //NS_PRECONDITION(!aDesiredSize.mComputeMEW, "unexpected request");
 
   // Initialize OUT parameter
   aStatus = NS_FRAME_COMPLETE;
@@ -556,10 +571,23 @@ CanvasFrame::Reflow(nsIPresContext*          aPresContext,
                                             NS_UNCONSTRAINEDSIZE),
                                      reason);
 
+    if (eReflowReason_Incremental == aReflowState.reason) {
+      // Restore original kid desired dimensions in case it decides to
+      // reuse them during incremental reflow.
+      nsRect r;
+      kidFrame->GetRect(r);
+      r.width = mSavedChildWidth;
+      r.height = mSavedChildHeight;
+      kidFrame->SetRect(aPresContext, r);
+    }
+
     // Reflow the frame
     ReflowChild(kidFrame, aPresContext, kidDesiredSize, kidReflowState,
                 kidReflowState.mComputedMargin.left, kidReflowState.mComputedMargin.top,
                 0, aStatus);
+
+    mSavedChildWidth = kidDesiredSize.width;
+    mSavedChildHeight = kidDesiredSize.height;
 
     // The document element's background should cover the entire canvas, so
     // take into account the combined area and any space taken up by
@@ -726,15 +754,5 @@ NS_IMETHODIMP
 CanvasFrame::GetFrameName(nsAString& aResult) const
 {
   return MakeFrameName(NS_LITERAL_STRING("Canvas"), aResult);
-}
-
-NS_IMETHODIMP
-CanvasFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
-  return NS_OK;
 }
 #endif

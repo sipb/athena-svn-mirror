@@ -45,6 +45,9 @@
 #include "nsIScriptContextOwner.h"
 #include "nsIScriptGlobalObject.h"
 
+#include "nsICategoryManager.h"
+#include "nsXPCOMCID.h"
+
 #include "mozXMLT.h"
 #include "mozXMLTermUtils.h"
 #include "mozXMLTermStream.h"
@@ -75,7 +78,6 @@ mozXMLTermStream::mozXMLTermStream() :
   mDOMHTMLDocument( nsnull )
 #endif // !NO_WORKAROUND
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -107,7 +109,7 @@ NS_IMETHODIMP mozXMLTermStream::Open(nsIDOMWindowInternal* aDOMWindow,
 
   mMaxResizeHeight = maxResizeHeight;
 
-  if (frameName && (strlen(frameName) > 0)) {
+  if (frameName && *frameName) {
     // Open stream in named subframe of current frame
     XMLT_LOG(mozXMLTermStream::Open,22,("frameName=%s\n", frameName));
 
@@ -205,13 +207,11 @@ NS_IMETHODIMP mozXMLTermStream::Open(nsIDOMWindowInternal* aDOMWindow,
     return result;
 
   // Create an input stream channel
-  PRInt32 contentLength = 1024;
   result = NS_NewInputStreamChannel(getter_AddRefs(mChannel),
                                     uri,
                                     inputStream,
                                     nsDependentCString(contentType),
-                                    NS_LITERAL_CSTRING(""),
-                                    contentLength);
+                                    NS_LITERAL_CSTRING(""));
   if (NS_FAILED(result))
     return result;
 
@@ -221,21 +221,25 @@ NS_IMETHODIMP mozXMLTermStream::Open(nsIDOMWindowInternal* aDOMWindow,
     return result;
 
   // Create document loader for specified command and content type
-  static const char command[] = "view";
-  nsCAutoString contractID(NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX);
-  contractID += command;
-  contractID += ";1?type=";
-  contractID += contentType;
+  nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &result));
+  if (NS_FAILED(result))
+    return result;
+
+  nsXPIDLCString contractID;
+  result = catMan->GetCategoryEntry("Gecko-Content-Viewers", contentType,
+                                    getter_Copies(contractID));
+  if (NS_FAILED(result))
+    return result;
 
   nsCOMPtr<nsIDocumentLoaderFactory> docLoaderFactory;
-  docLoaderFactory = do_CreateInstance(contractID.get(), &result);
+  docLoaderFactory = do_GetService(contractID.get(), &result);
   if (NS_FAILED(result))
     return result;
 
   nsCOMPtr<nsIContentViewerContainer> contViewContainer =
                                              do_QueryInterface(docShell);
   nsCOMPtr<nsIContentViewer> contentViewer;
-  result = docLoaderFactory->CreateInstance(command,
+  result = docLoaderFactory->CreateInstance("view",
                                             mChannel,
                                             mLoadGroup,
                                             contentType,

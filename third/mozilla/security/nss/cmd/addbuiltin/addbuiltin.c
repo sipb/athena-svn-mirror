@@ -34,7 +34,7 @@
 /*
  * Tool for converting builtin CA certs.
  *
- * $Id: addbuiltin.c,v 1.1.1.1 2003-02-14 20:15:43 rbasch Exp $
+ * $Id: addbuiltin.c,v 1.1.1.2 2003-07-08 17:00:11 rbasch Exp $
  */
 
 #include "nss.h"
@@ -194,7 +194,7 @@ printheader() {
      "# may use your version of this file under either the MPL or the\n"
      "# GPL.\n"
      "#\n"
-     "CVS_ID \"@(#) $RCSfile: addbuiltin.c,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 20:15:43 $ $Name: not supported by cvs2svn $\"\n"
+     "CVS_ID \"@(#) $RCSfile: addbuiltin.c,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 17:00:11 $ $Name: not supported by cvs2svn $\"\n"
      "\n"
      "#\n"
      "# certdata.txt\n"
@@ -349,7 +349,9 @@ main(int argc, char **argv)
 	exit(1);
     }
     
-    NSS_Shutdown();
+    if (NSS_Shutdown() != SECSuccess) {
+        exit(1);
+    }
 
     return(SECSuccess);
 }

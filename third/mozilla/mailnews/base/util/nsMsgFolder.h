@@ -96,7 +96,6 @@ public:
   NS_IMETHOD GetVisibleSubFolders(nsIEnumerator **_retval);
   NS_IMETHOD GetPrettiestName(PRUnichar * *aPrettiestName);
   NS_IMETHOD GetFolderURL(char * *aFolderURL);
-  NS_IMETHOD GetDeleteIsMoveToTrash(PRBool *aDeleteIsMoveToTrash);
   NS_IMETHOD GetShowDeletedMessages(PRBool *aShowDeletedMessages);
   NS_IMETHOD GetServer(nsIMsgIncomingServer * *aServer);
   NS_IMETHOD GetIsServer(PRBool *aIsServer);
@@ -143,13 +142,12 @@ public:
   NS_IMETHOD GetDisplayRecipients(PRBool *aDisplayRecipients);
   NS_IMETHOD GetRelativePathName(char * *aRelativePathName);
   NS_IMETHOD GetSizeOnDisk(PRUint32 *aSizeOnDisk);
+  NS_IMETHOD SetSizeOnDisk(PRUint32 aSizeOnDisk);
   NS_IMETHOD RememberPassword(const char *password);
   NS_IMETHOD GetRememberedPassword(char * *aRememberedPassword);
   NS_IMETHOD UserNeedsToAuthenticateForFolder(PRBool displayOnly, PRBool *_retval);
   NS_IMETHOD GetUsername(char * *aUsername);
   NS_IMETHOD GetHostname(char * *aHostname);
-  NS_IMETHOD SetDeleteIsMoveToTrash(PRBool bVal);
-  NS_IMETHOD RecursiveSetDeleteIsMoveToTrash(PRBool bVal);
   NS_IMETHOD SetFlag(PRUint32 flag);
   NS_IMETHOD SetPrefFlag();
   NS_IMETHOD ClearFlag(PRUint32 flag);
@@ -294,8 +292,9 @@ protected:
   // we don't want to do an expensive select until the user actually opens that folder
   PRInt32 mNumPendingUnreadMessages;
   PRInt32 mNumPendingTotalMessages;
+  PRUint32 mFolderSize;
 
-  PRInt32	mNumNewBiffMessages;
+  PRInt32 mNumNewBiffMessages;
   PRBool mIsCachable;
   //
   // stuff from the uri
@@ -305,7 +304,6 @@ protected:
   PRBool mIsServer;
   nsString mName;
   nsCOMPtr<nsIFileSpec> mPath;
-  PRBool mDeleteIsMoveToTrash;
   char * mBaseMessageURI; //The uri with the message scheme
 
   // static stuff for cross-instance objects like atoms
@@ -327,6 +325,7 @@ protected:
   static nsIAtom* kNewMessagesAtom;
   static nsIAtom* kNumNewBiffMessagesAtom;
   static nsIAtom* kTotalMessagesAtom;
+  static nsIAtom* kFolderSizeAtom;
   static nsIAtom* kStatusAtom;
   static nsIAtom* kFlaggedAtom;
   static nsIAtom* kNameAtom;

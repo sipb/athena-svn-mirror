@@ -69,7 +69,7 @@ class nsIPresState;
 class nsIScrollableView;
 class nsILayoutHistoryState;
 struct nsRect;
-
+struct nsSize;
 
 /**
  * A common superclass for HTML elements
@@ -163,7 +163,15 @@ public:
   nsresult GetOffsetRect(nsRect& aRect,
                          nsIContent** aOffsetParent);
   nsresult GetScrollInfo(nsIScrollableView **aScrollableView, float *aP2T,
-                         float *aT2P);
+                         float *aT2P, nsIFrame **aFrame = nsnull);
+
+  /**
+   * Get an element's client info if the element doesn't have a
+   * scrollable view.
+   * @param aFrame the frame for which to get the client area size
+   * @return the size of the frame's client area
+   */
+  static const nsSize GetClientAreaSize(nsIFrame *aFrame);
 
   // Implementation for nsIContent
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
@@ -212,7 +220,7 @@ public:
   NS_IMETHOD GetHTMLAttribute(nsIAtom* aAttribute, nsHTMLValue& aValue) const;
   NS_IMETHOD GetID(nsIAtom*& aResult) const;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
-  NS_IMETHOD HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
+  NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
   NS_IMETHOD GetBaseURL(nsIURI*& aBaseURL) const;
@@ -228,8 +236,6 @@ public:
 
 #ifdef DEBUG
   void ListAttributes(FILE* out) const;
-
-  PRUint32 BaseSizeOf(nsISizeOfHandler* aSizer) const;
 #endif
 
   /**
@@ -264,154 +270,6 @@ public:
   }
 
   //----------------------------------------
-
-  // Attribute parsing utilities
-
-  /**
-   * Structure for a mapping from int (enum) values to strings.  When you use
-   * it you generally create an array of them.
-   * Instantiate like this:
-   * EnumTable myTable[] = {
-   *   { "string1", 1 },
-   *   { "string2", 2 },
-   *   { 0 }
-   * }
-   */
-  struct EnumTable {
-    /** The string the value maps to */
-    const char* tag;
-    /** The enum value that maps to this string */
-    PRInt32 value;
-  };
-
-  /**
-   * Map a string to its enum value and return result as HTMLValue
-   * (case-insensitive matching)
-   *
-   * @param aValue the string to find the value for
-   * @param aTable the enumeration to map with
-   * @param aResult the enum mapping [OUT]
-   * @return whether the enum value was found or not
-   */
-  static PRBool ParseEnumValue(const nsAString& aValue,
-                               EnumTable* aTable,
-                               nsHTMLValue& aResult);
-
-  /**
-   * Map a string to its enum value and return result as HTMLValue
-   *
-   * @param aValue the string to find the value for
-   * @param aTable the enumeration to map with
-   * @param aResult the enum mapping [OUT]
-   * @return whether the enum value was found or not
-   */
-  static PRBool ParseCaseSensitiveEnumValue(const nsAString& aValue,
-                                            EnumTable* aTable,
-                                            nsHTMLValue& aResult);
-
-  /**
-   * Map an enum HTMLValue to its string
-   *
-   * @param aValue the HTMLValue with the int in it
-   * @param aTable the enumeration to map with
-   * @param aResult the string the value maps to [OUT]
-   * @return whether the enum value was found or not
-   */
-  static PRBool EnumValueToString(const nsHTMLValue& aValue,
-                                  EnumTable* aTable,
-                                  nsAString& aResult);
-
-  /**
-   * Parse a string into an integer or a percentage (n or n%)
-   *
-   * @param aString the string to convert
-   * @param aResult the resulting HTMLValue [OUT]
-   * @param aValueUnit the unit to use if it is not a percentage
-   *        (eHTMLUnit_Pixel or an integer type)
-   */
-  static PRBool ParseValueOrPercent(const nsAString& aString,
-                                    nsHTMLValue& aResult,
-                                    nsHTMLUnit aValueUnit);
-
-  /**
-   * Parse a string into an integer, proportional or a percentage (n, n* or n%)
-   *
-   * @param aString the string to convert
-   * @param aResult the resulting HTMLValue [OUT]
-   * @param aValueUnit the unit to use if it is not a percentage / proportional
-   *        (eHTMLUnit_Pixel or an integer type)
-   */
-  static PRBool ParseValueOrPercentOrProportional(const nsAString& aString,
-                                                  nsHTMLValue& aResult, 
-                                                  nsHTMLUnit aValueUnit);
-
-  /**
-   * Convert an integer, pixel or percent to string (n, n or n%)
-   * @param aValue the value to convert
-   * @param aResult the resulting string [OUT]
-   * @return whether it was able to be converted (if it was the proper type)
-   * XXX It is absolutely pointless to have this when we have
-   * ValueOrPercentOrProportionalToString.
-   */
-  static PRBool ValueOrPercentToString(const nsHTMLValue& aValue,
-                                       nsAString& aResult);
-
-  /**
-   * Convert an integer, pixel percent or proportional to string
-   * (n, n, n% or n*)
-   * @param aValue the value to convert
-   * @param aResult the resulting string [OUT]
-   * @return whether it was able to be converted (if it was the proper type)
-   */
-  static PRBool ValueOrPercentOrProportionalToString(const nsHTMLValue& aValue,
-                                                     nsAString& aResult);
-
-  /**
-   * Parse a string value into an int or pixel HTMLValue with minimum value
-   *
-   * @param aString the string to parse
-   * @param aMin the minimum value (if value is less it will be bumped up)
-   * @param aResult the resulting HTMLValue [OUT]
-   * @param aValueUnit the unit to use (eHTMLUnit_Pixel or Integer)
-   * @return whether the value could be parsed
-   */
-  static PRBool ParseValue(const nsAString& aString, PRInt32 aMin,
-                           nsHTMLValue& aResult, nsHTMLUnit aValueUnit);
-
-  /**
-   * Parse a string value into an int or pixel HTMLValue with minimum value
-   *
-   * @param aString the string to parse
-   * @param aMin the minimum value (if value is less it will be bumped up)
-   * @param aMin the maximum value (if value is greater it will be chopped down)
-   * @param aResult the resulting HTMLValue [OUT]
-   * @param aValueUnit the unit to use (eHTMLUnit_Pixel or Integer)
-   * @return whether the value could be parsed
-   */
-  static PRBool ParseValue(const nsAString& aString, PRInt32 aMin,
-                           PRInt32 aMax, nsHTMLValue& aResult,
-                           nsHTMLUnit aValueUnit);
-
-  /**
-   * Parse a string into a color HTMLValue (with hexes or color names)
-   *
-   * @param aString the string to parse
-   * @param aDocument the document (to find out whether we're in quirks mode)
-   * @param aResult the resulting HTMLValue [OUT]
-   * @return whether the value could be parsed
-   */
-  static PRBool ParseColor(const nsAString& aString,
-                           nsIDocument* aDocument, nsHTMLValue& aResult);
-
-  /**
-   * Parse a color into a string value (hex or color name)
-   *
-   * @param aValue the HTMLValue to parse
-   * @param aResult the resulting string
-   * @return whether the value could be converted
-   */
-  static PRBool ColorToString(const nsHTMLValue& aValue,
-                              nsAString& aResult);
 
   /**
    * Parse common attributes (currently dir and lang, may be more)
@@ -626,38 +484,32 @@ public:
    */
   static void MapCommonAttributesInto(const nsIHTMLMappedAttributes* aAttributes, 
                                       nsRuleData* aRuleData);
-  /**
-   * Get the style impact of common attributes (dir, lang and _baseHref
-   * currently).  To be called from GetMappedAttributeImpact().
-   *
-   * @param aAttribute the attribute to test for impact
-   * @param aHint the impact (NS_STYLE_HINT_*)
-   * @return whether the impact was set
-   */
-  static PRBool GetCommonMappedAttributesImpact(const nsIAtom* aAttribute,
-                                                nsChangeHint& aHint);
+  struct AttributeImpactEntry {
+    nsIAtom** attribute;
+    nsChangeHint hint;
+  };
 
+  static const AttributeImpactEntry sCommonAttributeMap[];
+  static const AttributeImpactEntry sImageAttributeMap[];
+  static const AttributeImpactEntry sImageBorderAttributeMap[];
+  static const AttributeImpactEntry sImageAlignAttributeMap[];
+  static const AttributeImpactEntry sBackgroundAttributeMap[];
+  
   /**
-   * Get the style impact of image attributes (width, height, hspace and vspace
-   * currently).  To be called from GetMappedAttributeImpact().
+   * A common method where you can just pass in a list of maps to
+   * check for impact. Most implementations of GetMappedAttributeImpact
+   * should use this function as a default handler.
    *
-   * @param aAttribute the attribute to test for impact
-   * @param aHint the impact (NS_STYLE_HINT_*)
-   * @return whether the impact was set
+   * @param aAttribute   attribute that we care about
+   * @param aHint the    resulting hint
+   * @param aImpactFlags the types of attributes that we care about - see the
+   *                     NS_*_ATTRIBUTE_IMPACT flags
    */
-  static PRBool GetImageMappedAttributesImpact(const nsIAtom* aAttribute,
-                                               nsChangeHint& aHint);
-  /**
-   * Get the style impact of image align attributes (align currently).  To be
-   * called from GetMappedAttributeImpact().
-   *
-   * @param aAttribute the attribute to test for impact
-   * @param aHint the impact (NS_STYLE_HINT_*)
-   * @return whether the impact was set
-   */
-  static PRBool GetImageAlignAttributeImpact(const nsIAtom* aAttribute,
-                                             nsChangeHint& aHint);
 
+  static void
+  FindAttributeImpact(const nsIAtom* aAttribute, nsChangeHint& aHint,
+                      const AttributeImpactEntry* const aMaps[],
+                      PRUint32 aMapCount);
   /**
    * Helper to map the align attribute into a style struct.
    *
@@ -707,17 +559,6 @@ public:
   static void MapImagePositionAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
                                             nsRuleData* aData);
   /**
-   * Get the style impact of image border attributes (border currently).  To be
-   * called from GetMappedAttributeImpact().
-   *
-   * @param aAttribute the attribute to test for impact
-   * @param aHint the impact (NS_STYLE_HINT_*)
-   * @return whether the impact was set
-   */
-  static PRBool GetImageBorderAttributeImpact(const nsIAtom* aAttribute,
-                                              nsChangeHint& aHint);
-
-  /**
    * Helper to map the background attributes (currently background and bgcolor)
    * into a style struct.
    *
@@ -727,17 +568,6 @@ public:
    */
   static void MapBackgroundAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
                                           nsRuleData* aData);
-  /**
-   * Get the style impact of background attributes (background and bgcolor
-   * currently).  To be called from GetMappedAttributeImpact().
-   *
-   * @param aAttribute the attribute to test for impact
-   * @param aHint the impact (NS_STYLE_HINT_*)
-   * @return whether the impact was set
-   */
-  static PRBool GetBackgroundAttributesImpact(const nsIAtom* aAttribute,
-                                              nsChangeHint& aHint);
-
   /**
    * Get the primary frame for a piece of content.
    *

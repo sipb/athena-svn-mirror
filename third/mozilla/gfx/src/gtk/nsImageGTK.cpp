@@ -39,12 +39,12 @@
 
 // Defining this will trace the allocation of images.  This includes
 // ctor, dtor and update.
-//#define TRACE_IMAGE_ALLOCATION
+// #define TRACE_IMAGE_ALLOCATION
 
 //#define CHEAP_PERFORMANCE_MEASURMENT 1
 
 // Define this to see tiling debug output
-//#define DEBUG_TILING
+// #define DEBUG_TILING
 
 /* XXX we are simply creating a GC and setting its function to Copy.
    we shouldn't be doing this every time this method is called.  this creates
@@ -59,27 +59,27 @@ NS_IMPL_ISUPPORTS1(nsImageGTK, nsIImage)
 //------------------------------------------------------------
 
 nsImageGTK::nsImageGTK()
+  : mImageBits(nsnull)
+  , mImagePixmap(nsnull)
+  , mTrueAlphaBits(nsnull)
+  , mAlphaBits(nsnull)
+  , mAlphaPixmap(nsnull)
+  , mAlphaXImage(nsnull)
+  , mWidth(0)
+  , mHeight(0)
+  , mRowBytes(0)
+  , mSizeImage(0)
+  , mDecodedX1(PR_INT32_MAX)
+  , mDecodedY1(PR_INT32_MAX)
+  , mDecodedX2(0)
+  , mDecodedY2(0)
+  , mAlphaDepth(0)
+  , mTrueAlphaDepth(0)
+  , mIsSpacer(PR_TRUE)
+  , mPendingUpdate(PR_FALSE)
+  , mDepth(0)
+  , mOptimized(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
-  mImageBits = nsnull;
-  mWidth = 0;
-  mHeight = 0;
-  mDepth = 0;
-  mAlphaBits = mTrueAlphaBits = nsnull;
-  mAlphaPixmap = nsnull;
-  mImagePixmap = nsnull;
-  mAlphaXImage = nsnull;
-  mAlphaDepth = mTrueAlphaDepth = 0;
-  mRowBytes = 0;
-  mSizeImage = 0;
-  mAlphaHeight = 0;
-  mAlphaWidth = 0;
-  mNaturalWidth = 0;
-  mNaturalHeight = 0;
-  mIsSpacer = PR_TRUE;
-  mPendingUpdate = PR_FALSE;
-  mOptimized = PR_FALSE;
-
 #ifdef TRACE_IMAGE_ALLOCATION
   printf("nsImageGTK::nsImageGTK(this=%p)\n",
          this);
@@ -124,50 +124,26 @@ nsImageGTK::~nsImageGTK()
 #endif
 }
 
+/* static */ void
+nsImageGTK::Shutdown()
+{
+  if (s1bitGC) {
+    gdk_gc_unref(s1bitGC);
+    s1bitGC = nsnull;
+  }
+  if (sXbitGC) {
+    gdk_gc_unref(sXbitGC);
+    sXbitGC = nsnull;
+  }
+}
+
 //------------------------------------------------------------
 
 nsresult nsImageGTK::Init(PRInt32 aWidth, PRInt32 aHeight,
                           PRInt32 aDepth, nsMaskRequirements aMaskRequirements)
 {
+  // Assumed: Init only gets called once by gfxIImageFrame
   g_return_val_if_fail ((aWidth != 0) || (aHeight != 0), NS_ERROR_FAILURE);
-
-  if (nsnull != mImageBits) {
-   delete[] mImageBits;
-   mImageBits = nsnull;
-  }
-
-  if (nsnull != mAlphaBits) {
-    delete[] mAlphaBits;
-    mAlphaBits = nsnull;
-  }
-
-  if (nsnull != mTrueAlphaBits) {
-    delete[] mTrueAlphaBits;
-    mTrueAlphaBits = nsnull;
-  }
-
-  if (nsnull != mAlphaPixmap) {
-    gdk_pixmap_unref(mAlphaPixmap);
-    mAlphaPixmap = nsnull;
-  }
-
-  if (nsnull != mAlphaXImage) {
-    mAlphaXImage->data = 0;
-    XDestroyImage(mAlphaXImage);
-    mAlphaXImage = nsnull;
-  }
-
-  SetDecodedRect(0,0,0,0);  //init
-  SetNaturalWidth(0);
-  SetNaturalHeight(0);
-
-  // mImagePixmap gets created once per unique image bits in Draw()
-  // ImageUpdated(nsImageUpdateFlags_kBitsChanged) can cause the
-  // image bits to change and mImagePixmap will be unrefed and nulled.
-  if (nsnull != mImagePixmap) {
-    gdk_pixmap_unref(mImagePixmap);
-    mImagePixmap = nsnull;
-  }
 
   if (24 == aDepth) {
     mNumBytesPixel = 3;
@@ -179,7 +155,6 @@ nsresult nsImageGTK::Init(PRInt32 aWidth, PRInt32 aHeight,
   mWidth = aWidth;
   mHeight = aHeight;
   mDepth = aDepth;
-  mIsTopToBottom = PR_TRUE;
 
 #ifdef TRACE_IMAGE_ALLOCATION
   printf("nsImageGTK::Init(this=%p,%d,%d,%d,%d)\n",
@@ -197,12 +172,6 @@ nsresult nsImageGTK::Init(PRInt32 aWidth, PRInt32 aHeight,
 
   switch(aMaskRequirements)
   {
-    case nsMaskRequirements_kNoMask:
-      mAlphaBits = nsnull;
-      mAlphaWidth = 0;
-      mAlphaHeight = 0;
-      break;
-
     case nsMaskRequirements_kNeeds8Bit:
       mTrueAlphaRowBytes = aWidth;
       mTrueAlphaDepth = 8;
@@ -223,9 +192,10 @@ nsresult nsImageGTK::Init(PRInt32 aWidth, PRInt32 aHeight,
 
       mAlphaBits = new PRUint8[mAlphaRowBytes * aHeight];
       memset(mAlphaBits, 0, mAlphaRowBytes*aHeight);
-      mAlphaWidth = aWidth;
-      mAlphaHeight = aHeight;
       break;
+
+    default:
+      break; // avoid compiler warning
   }
 
   if (aMaskRequirements == nsMaskRequirements_kNeeds8Bit)
@@ -266,27 +236,12 @@ nsColorMap *nsImageGTK::GetColorMap()
   return nsnull;
 }
 
-PRBool nsImageGTK::IsOptimized()
-{
-  return PR_TRUE;
-}
-
 PRUint8 *nsImageGTK::GetAlphaBits()
 {
   if (mTrueAlphaBits)
     return mTrueAlphaBits;
   else
     return mAlphaBits;
-}
-
-PRInt32 nsImageGTK::GetAlphaWidth()
-{
-  return mAlphaWidth;
-}
-
-PRInt32 nsImageGTK::GetAlphaHeight()
-{
-  return mAlphaHeight;
 }
 
 PRInt32
@@ -298,38 +253,27 @@ nsImageGTK::GetAlphaLineStride()
     return mAlphaRowBytes;
 }
 
-nsIImage *nsImageGTK::DuplicateImage()
-{
-  return nsnull;
-}
-
-void nsImageGTK::SetAlphaLevel(PRInt32 aAlphaLevel)
-{
-}
-
-PRInt32 nsImageGTK::GetAlphaLevel()
-{
-  return 0;
-}
-
-void nsImageGTK::MoveAlphaMask(PRInt32 aX, PRInt32 aY)
-{
-}
-
 void nsImageGTK::ImageUpdated(nsIDeviceContext *aContext,
                               PRUint8 aFlags,
                               nsRect *aUpdateRect)
 {
   mPendingUpdate = PR_TRUE;
   mUpdateRegion.Or(mUpdateRegion, *aUpdateRect);
+
+  mDecodedX1 = PR_MIN(mDecodedX1, aUpdateRect->x);
+  mDecodedY1 = PR_MIN(mDecodedY1, aUpdateRect->y);
+
+  if (aUpdateRect->YMost() > mDecodedY2)
+    mDecodedY2 = aUpdateRect->YMost();
+  if (aUpdateRect->XMost() > mDecodedX2)
+    mDecodedX2 = aUpdateRect->XMost();
 }
 
 void nsImageGTK::UpdateCachedImage()
 {
 #ifdef TRACE_IMAGE_ALLOCATION
-  printf("nsImageGTK::ImageUpdated(this=%p,%d)\n",
-         this,
-         aFlags);
+  printf("nsImageGTK::ImageUpdated(this=%p)\n",
+         this);
 #endif
 
   nsRegionRectIterator ri(mUpdateRegion);
@@ -467,7 +411,7 @@ void nsImageGTK::UpdateCachedImage()
     }
   }
   
-  mUpdateRegion.Empty();
+  mUpdateRegion.SetEmpty();
   mPendingUpdate = PR_FALSE;
   mFlags = nsImageUpdateFlags_kBitsChanged; // this should be 0'd out by Draw()
 }
@@ -661,6 +605,9 @@ nsImageGTK::Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
     UpdateCachedImage();
 
   if ((mAlphaDepth==1) && mIsSpacer)
+    return NS_OK;
+
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
     return NS_OK;
 
 #ifdef TRACE_IMAGE_ALLOCATION
@@ -1124,10 +1071,10 @@ nsImageGTK::DrawCompositedGeneral(PRBool isLSB, PRBool flipBytes,
   greenFill = 0xff>>visual->green_prec;
   blueFill =  0xff>>visual->blue_prec;
 
-  for (int row=0; row<height; row++) {
+  for (unsigned row=0; row<height; row++) {
     unsigned char *ptr = srcData + row*ximage->bytes_per_line;
     unsigned char *target = readData+3*row*ximage->width;
-    for (int col=0; col<width; col++) {
+    for (unsigned col=0; col<width; col++) {
       unsigned pix;
       switch (ximage->bits_per_pixel) {
       case 1:
@@ -1362,7 +1309,8 @@ nsImageGTK::DrawCompositeTile(nsIRenderingContext &aContext,
   drawing->GetDimensions(&surfaceWidth, &surfaceHeight);
   
   int readX, readY;
-  unsigned readWidth, readHeight, destX, destY;
+  unsigned readWidth, readHeight;
+  PRInt32 destX, destY;
 
   if ((aDY>=(int)surfaceHeight) || (aDX>=(int)surfaceWidth) ||
       (aDY+aDHeight<=0) || (aDX+aDWidth<=0)) {
@@ -1424,7 +1372,7 @@ nsImageGTK::DrawCompositeTile(nsIRenderingContext &aContext,
   if (destY==mHeight)
     destY = 0;
 
-  for (PRInt32 y=0; y<readHeight; y+=compY) {
+  for (unsigned y=0; y<readHeight; y+=compY) {
     if (y==0) {
       compY = PR_MIN(mHeight-destY, readHeight-y);
     } else {
@@ -1435,7 +1383,7 @@ nsImageGTK::DrawCompositeTile(nsIRenderingContext &aContext,
     compTarget = readData + 3*y*ximage->width;
     compSource = (unsigned char *)ximage->data + y*ximage->bytes_per_line;
 
-    for (PRInt32 x=0; x<readWidth; x+=compX) {
+    for (unsigned x=0; x<readWidth; x+=compX) {
       if (x==0) {
         compX = PR_MIN(mWidth-destX, readWidth-x);
         imageOrigin = mImageBits + destY*mRowBytes + 3*destX;
@@ -1634,11 +1582,13 @@ NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
          aTileRect.x, aTileRect.y,
          aTileRect.width, aTileRect.height, this);
 #endif
-
   if (mPendingUpdate)
     UpdateCachedImage();
 
   if ((mAlphaDepth==1) && mIsSpacer)
+    return NS_OK;
+
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
     return NS_OK;
 
   nsDrawingSurfaceGTK *drawing = (nsDrawingSurfaceGTK*)aSurface;
@@ -1685,8 +1635,9 @@ NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
     // Set up clipping and call Draw().
     PRBool clipState;
     aContext.PushState();
-    aContext.SetClipRect(aTileRect, nsClipCombine_kIntersect,
-                         clipState);
+    ((nsRenderingContextGTK&)aContext).SetClipRectInPixels(
+      aTileRect, nsClipCombine_kIntersect, clipState);
+    ((nsRenderingContextGTK&)aContext).UpdateGC();
 
     if (mAlphaDepth==8) {
       DrawCompositeTile(aContext, aSurface,
@@ -1885,23 +1836,6 @@ nsImageGTK::UnlockImagePixels(PRBool aMaskPixels)
   return NS_OK;
 } 
 
-// ---------------------------------------------------
-//	Set the decoded dimens of the image
-//
-NS_IMETHODIMP
-nsImageGTK::SetDecodedRect(PRInt32 x1, PRInt32 y1, PRInt32 x2, PRInt32 y2 )
-{
-    
-  mDecodedX1 = x1; 
-  mDecodedY1 = y1; 
-  mDecodedX2 = x2; 
-  mDecodedY2 = y2; 
-
-
-  return NS_OK;
-}
-
-#ifdef USE_IMG2
 NS_IMETHODIMP nsImageGTK::DrawToImage(nsIImage* aDstImage,
                                       nscoord aDX, nscoord aDY,
                                       nscoord aDWidth, nscoord aDHeight)
@@ -2009,4 +1943,3 @@ NS_IMETHODIMP nsImageGTK::DrawToImage(nsIImage* aDstImage,
 
   return NS_OK;
 }
-#endif

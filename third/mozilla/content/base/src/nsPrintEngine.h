@@ -191,9 +191,7 @@ public:
                                 nsIPrintProgressParams* aParams);
   void ElipseLongString(PRUnichar *& aStr, const PRUint32 aLen, PRBool aDoFront);
   nsresult CheckForPrinters(nsIPrintOptions*  aPrintOptions,
-                            nsIPrintSettings* aPrintSettings,
-                            PRUint32          aErrorCode,
-                            PRBool            aIsPrinting);
+                            nsIPrintSettings* aPrintSettings);
   void CleanupDocTitleArray(PRUnichar**& aArray, PRInt32& aCount);
   void CheckForHiddenFrameSetFrames();
 
@@ -291,6 +289,25 @@ protected:
                                             nsIFrame*&      aSeqFrame,
                                             PRInt32&        aCount);
 
+  static nsresult FindSelectionBoundsWithList(nsIPresContext* aPresContext,
+                                              nsIRenderingContext& aRC,
+                                              nsIAtom*        aList,
+                                              nsIFrame *      aParentFrame,
+                                              nsRect&         aRect,
+                                              nsIFrame *&     aStartFrame,
+                                              nsRect&         aStartRect,
+                                              nsIFrame *&     aEndFrame,
+                                              nsRect&         aEndRect);
+
+  static nsresult FindSelectionBounds(nsIPresContext* aPresContext,
+                                      nsIRenderingContext& aRC,
+                                      nsIFrame *      aParentFrame,
+                                      nsRect&         aRect,
+                                      nsIFrame *&     aStartFrame,
+                                      nsRect&         aStartRect,
+                                      nsIFrame *&     aEndFrame,
+                                      nsRect&         aEndRect);
+
   static nsresult GetPageRangeForSelection(nsIPresShell *        aPresShell,
                                            nsIPresContext*       aPresContext,
                                            nsIRenderingContext&  aRC,
@@ -354,4 +371,3 @@ private:
 #endif
 
 #endif /* nsPrintEngine_h___ */
-

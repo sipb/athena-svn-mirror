@@ -74,7 +74,8 @@ protected:
     nsresult CloneNodeWithFixedUpURIAttributes(
         nsIDOMNode *aNodeIn, nsIDOMNode **aNodeOut);
     nsresult SaveURIInternal(
-        nsIURI *aURI, nsIInputStream *aPostData, nsIURI *aFile,
+        nsIURI *aURI, nsISupports *aCacheKey, nsIURI *aReferrer,
+        nsIInputStream *aPostData, const char *aExtraHeaders, nsIURI *aFile,
         PRBool aCalcFileExt);
     nsresult SaveDocumentInternal(
         nsIDOMDocument *aDocument, nsIURI *aFile, nsIURI *aDataPath);
@@ -101,7 +102,7 @@ private:
     nsresult MakeOutputStreamFromURI(nsIURI *aURI, nsIOutputStream  **aOutStream);
     nsresult CreateChannelFromURI(nsIURI *aURI, nsIChannel **aChannel);
     nsresult StartUpload(nsIStorageStream *aOutStream, nsIURI *aDestinationURI,
-        const char *aContentType);
+        const nsACString &aContentType);
     nsresult CalculateAndAppendFileExt(nsIURI *aURI, nsIChannel *aChannel,
         nsIURI *aOriginalURIWithExtension);
     nsresult CalculateUniqueFilename(nsIURI *aURI);
@@ -122,13 +123,13 @@ private:
     nsresult FixupURI(nsAString &aURI);
     nsresult FixupNodeAttribute(nsIDOMNode *aNode, const char *aAttribute);
     nsresult FixupAnchor(nsIDOMNode *aNode);
-    nsresult FixupXMLStyleSheetLink(nsIDOMProcessingInstruction *aPI, nsAString &aHref);
+    nsresult FixupXMLStyleSheetLink(nsIDOMProcessingInstruction *aPI, const nsAString &aHref);
     nsresult GetXMLStyleSheetLink(nsIDOMProcessingInstruction *aPI, nsAString &aHref);
 
     nsresult StoreAndFixupStyleSheet(nsIStyleSheet *aStyleSheet);
     nsresult SaveDocumentWithFixup(
         nsIDocument *pDocument, nsIDocumentEncoderNodeFixup *pFixup,
-        nsIURI *aFile, PRBool aReplaceExisting, const char *aFormatType,
+        nsIURI *aFile, PRBool aReplaceExisting, const nsACString &aFormatType,
         const nsString &aSaveCharset, PRUint32  aFlags);
     nsresult SaveSubframeContent(
         nsIDOMDocument *aFrameContent, URIData *aData);

@@ -48,6 +48,7 @@
 #include "nsIOutputStream.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
+#include "nsNetSegmentUtils.h"
 #include "nsCRT.h"
 #include "nsEscape.h"
 
@@ -56,8 +57,6 @@ static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
 // nsDataChannel methods
 nsDataChannel::nsDataChannel() {
-    NS_INIT_ISUPPORTS();
-
     mStatus = NS_OK;
     mContentLength = -1;
     mLoadFlags = nsIRequest::LOAD_NORMAL;
@@ -195,7 +194,11 @@ nsDataChannel::ParseData() {
     writeData* dataToWrite = nsnull;
     PRUint32 dataLen = PL_strlen(dataBuffer);
     
-    rv = NS_NewPipe(getter_AddRefs(bufInStream), getter_AddRefs(bufOutStream));
+    // create an unbounded pipe.
+    rv = NS_NewPipe(getter_AddRefs(bufInStream),
+                    getter_AddRefs(bufOutStream),
+                    NET_DEFAULT_SEGMENT_SIZE, PR_UINT32_MAX,
+                    PR_TRUE, PR_TRUE);
     if (NS_FAILED(rv))
         goto cleanup;
 

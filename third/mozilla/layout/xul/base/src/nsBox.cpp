@@ -40,7 +40,6 @@
 #include "nsBoxLayoutState.h"
 #include "nsBox.h"
 #include "nsBoxFrame.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsCOMPtr.h"
 #include "nsIContent.h"
@@ -99,7 +98,7 @@ nsBox::ListBox(nsAutoString& aResult)
     GetBoxName(name);
 
     char addr[100];
-    sprintf(addr, "[@%p] ", frame);
+    sprintf(addr, "[@%p] ", NS_STATIC_CAST(void*, frame));
 
     aResult.AppendWithConversion(addr);
     aResult.Append(name);
@@ -216,28 +215,37 @@ void Coelesced()
 
 #endif
 
-PRUint32 nsBox::gRefCnt = 0;
+PRBool nsBox::gGotTheme = PR_FALSE;
 nsITheme* nsBox::gTheme = nsnull;
+
+MOZ_DECL_CTOR_COUNTER(nsBox)
 
 nsBox::nsBox(nsIPresShell* aShell):mMouseThrough(unset),
                                    mNextChild(nsnull),
                                    mParentBox(nsnull)
                                    
 {
+  MOZ_COUNT_CTOR(nsBox);
   //mX = 0;
   //mY = 0;
-  gRefCnt++;
-  if (gRefCnt == 1)
-    nsServiceManager::GetService("@mozilla.org/chrome/chrome-native-theme;1",
-                                 NS_GET_IID(nsITheme),
-                                 (nsISupports**)&gTheme);
+  if (!gGotTheme) {
+    gGotTheme = PR_TRUE;
+    CallGetService("@mozilla.org/chrome/chrome-native-theme;1", &gTheme);
+  }
 }
 
 nsBox::~nsBox()
 {
-  gRefCnt--;
-  if (gRefCnt == 0 && gTheme)
-    nsServiceManager::ReleaseService("@mozilla.org/chrome/chrome-native-theme;1", gTheme);
+  // NOTE:  This currently doesn't get called for |nsBoxToBlockAdaptor|
+  // objects, so don't rely on putting anything here.
+  MOZ_COUNT_DTOR(nsBox);
+}
+
+/* static */ void
+nsBox::Shutdown()
+{
+  gGotTheme = PR_FALSE;
+  NS_IF_RELEASE(gTheme);
 }
 
 NS_IMETHODIMP 
@@ -255,7 +263,7 @@ nsBox::IsDirty(PRBool& aDirty)
   GetFrame(&frame);
   frame->GetFrameState(&state);
 
-  aDirty = (state & NS_FRAME_IS_DIRTY);  
+  aDirty = (state & NS_FRAME_IS_DIRTY) != 0;
   return NS_OK;
 }
 
@@ -267,7 +275,7 @@ nsBox::HasDirtyChildren(PRBool& aDirty)
   GetFrame(&frame);
   frame->GetFrameState(&state);
 
-  aDirty = (state & NS_FRAME_HAS_DIRTY_CHILDREN);  
+  aDirty = (state & NS_FRAME_HAS_DIRTY_CHILDREN) != 0;
   return NS_OK;
 }
 
@@ -659,12 +667,9 @@ nsBox::GetBorder(nsMargin& aMargin)
 
   aMargin.SizeTo(0,0,0,0);
     
-  const nsStyleDisplay* disp;
-  frame->GetStyleData(eStyleStruct_Display,
-                      (const nsStyleStruct*&) disp);
+  const nsStyleDisplay* disp = frame->GetStyleDisplay();
   if (disp->mAppearance && gTheme) {
     // Go to the theme for the border.
-    nsSize size;
     nsCOMPtr<nsIContent> content;
     frame->GetContent(getter_AddRefs(content));
     if (content) {
@@ -693,16 +698,9 @@ nsBox::GetBorder(nsMargin& aMargin)
     }
   }
 
-  const nsStyleBorder* border;
-  nsresult rv = frame->GetStyleData(eStyleStruct_Border,
-        (const nsStyleStruct*&) border);
+  frame->GetStyleBorder()->GetBorder(aMargin);
 
-  if (NS_FAILED(rv))
-    return rv;
-
-  border->GetBorder(aMargin);
-
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -711,17 +709,10 @@ nsBox::GetPadding(nsMargin& aMargin)
   nsIFrame* frame = nsnull;
   GetFrame(&frame);
 
-  const nsStylePadding* padding;
-  nsresult rv = frame->GetStyleData(eStyleStruct_Padding,
-        (const nsStyleStruct*&) padding);
-
- if (NS_FAILED(rv))
-    return rv;
-
   aMargin.SizeTo(0,0,0,0);
-  padding->GetPadding(aMargin);
+  frame->GetStylePadding()->GetPadding(aMargin);
 
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -730,17 +721,10 @@ nsBox::GetMargin(nsMargin& aMargin)
   nsIFrame* frame = nsnull;
   GetFrame(&frame);
 
-  const nsStyleMargin* margin;
-        nsresult rv = frame->GetStyleData(eStyleStruct_Margin,
-        (const nsStyleStruct*&) margin);
-  
-  if (NS_FAILED(rv))
-     return rv;
-
   aMargin.SizeTo(0,0,0,0);
-  margin->GetMargin(aMargin);
+  frame->GetStyleMargin()->GetMargin(aMargin);
 
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
@@ -824,7 +808,7 @@ nsBox::GetWasCollapsed(nsBoxLayoutState& aState)
   nsFrameState state;
   frame->GetFrameState(&state);
  
-  return (state & NS_STATE_IS_COLLAPSED);
+  return (state & NS_STATE_IS_COLLAPSED) != 0;
 }
 
 void
@@ -1075,7 +1059,7 @@ nsBox::GetOrientation(PRBool& aIsHorizontal)
    GetFrame(&frame);
    nsFrameState state;
    frame->GetFrameState(&state);
-   aIsHorizontal = (state & NS_STATE_IS_HORIZONTAL);
+   aIsHorizontal = (state & NS_STATE_IS_HORIZONTAL) != 0;
    return NS_OK;
 }
 
@@ -1086,7 +1070,7 @@ nsBox::GetDirection(PRBool& aIsNormal)
    GetFrame(&frame);
    nsFrameState state;
    frame->GetFrameState(&state);
-   aIsNormal = (state & NS_STATE_IS_DIRECTION_NORMAL);
+   aIsNormal = (state & NS_STATE_IS_DIRECTION_NORMAL) != 0;
    return NS_OK;
 }
 
@@ -1191,10 +1175,8 @@ nsBox::Redraw(nsBoxLayoutState& aState,
 
   // Checks to see if the damaged rect should be infalted 
   // to include the outline
-  const nsStyleOutline* outline;
-  frame->GetStyleData(eStyleStruct_Outline, (const nsStyleStruct*&)outline);
   nscoord width;
-  outline->GetOutlineWidth(width);
+  frame->GetStyleOutline()->GetOutlineWidth(width);
   if (width > 0) {
     damageRect.Inflate(width, width);
   }
@@ -1230,9 +1212,7 @@ nsIBox::AddCSSPrefSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
     aBox->GetFrame(&frame);
 
     // add in the css min, max, pref
-    const nsStylePosition* position;
-    frame->GetStyleData(eStyleStruct_Position,
-                  (const nsStyleStruct*&) position);
+    const nsStylePosition* position = frame->GetStylePosition();
 
     // see if the width or height was specifically set
     if (position->mWidth.GetUnit() == eStyleUnit_Coord)  {
@@ -1248,7 +1228,10 @@ nsIBox::AddCSSPrefSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
     nsCOMPtr<nsIContent> content;
     frame->GetContent(getter_AddRefs(content));
 
-    if (content) {
+    // ignore 'height' and 'width' attributes if the actual element is not XUL
+    // For example, we might be magic XUL frames whose primary content is an HTML
+    // <select>
+    if (content && content->IsContentOfType(nsIContent::eXUL)) {
         nsIPresContext* presContext = aState.GetPresContext();
 
         nsAutoString value;
@@ -1293,9 +1276,7 @@ nsIBox::AddCSSMinSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
     aBox->GetFrame(&frame);
 
     // See if a native theme wants to supply a minimum size.
-    const nsStyleDisplay* display;
-    frame->GetStyleData(eStyleStruct_Display,
-                  (const nsStyleStruct*&) display);
+    const nsStyleDisplay* display = frame->GetStyleDisplay();
     if (display->mAppearance) {
       nsCOMPtr<nsITheme> theme;
       aState.GetPresContext()->GetTheme(getter_AddRefs(theme));
@@ -1307,20 +1288,20 @@ nsIBox::AddCSSMinSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
                                       display->mAppearance, &size, &canOverride);
           float p2t;
           aState.GetPresContext()->GetScaledPixelsToTwips(&p2t);
-          aSize.width = NSIntPixelsToTwips(size.width, p2t);
-          aSize.height = NSIntPixelsToTwips(size.height, p2t);
-          if (aSize.width)
+          if (size.width) {
+            aSize.width = NSIntPixelsToTwips(size.width, p2t);
             widthSet = PR_TRUE;
-          if (aSize.height)
+          }
+          if (size.height) {
+            aSize.height = NSIntPixelsToTwips(size.height, p2t);
             heightSet = PR_TRUE;
+          }
         }
       }
     }
 
     // add in the css min, max, pref
-    const nsStylePosition* position;
-    frame->GetStyleData(eStyleStruct_Position,
-                  (const nsStyleStruct*&) position);
+    const nsStylePosition* position = frame->GetStylePosition();
 
     // same for min size. Unfortunately min size is always set to 0. So for now
     // we will assume 0 means not set.
@@ -1391,9 +1372,7 @@ nsIBox::AddCSSMaxSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
     aBox->GetFrame(&frame);
 
     // add in the css min, max, pref
-    const nsStylePosition* position;
-    frame->GetStyleData(eStyleStruct_Position,
-                  (const nsStyleStruct*&) position);
+    const nsStylePosition* position = frame->GetStylePosition();
 
     // and max
     if (position->mMaxWidth.GetUnit() == eStyleUnit_Coord) {
@@ -1470,8 +1449,7 @@ nsIBox::AddCSSFlex(nsBoxLayoutState& aState, nsIBox* aBox, nscoord& aFlex)
         }
         else {
           // No attribute value.  Check CSS.
-          const nsStyleXUL* boxInfo;
-          frame->GetStyleData(eStyleStruct_XUL, (const nsStyleStruct*&)boxInfo);
+          const nsStyleXUL* boxInfo = frame->GetStyleXUL();
           if (boxInfo->mBoxFlex > 0.0f) {
             // The flex was defined in CSS.
             aFlex = (nscoord)boxInfo->mBoxFlex;
@@ -1488,9 +1466,8 @@ nsIBox::AddCSSCollapsed(nsBoxLayoutState& aState, nsIBox* aBox, PRBool& aCollaps
 {
   nsIFrame* frame = nsnull;
   aBox->GetFrame(&frame);
-  const nsStyleVisibility* vis;
-  frame->GetStyleData(eStyleStruct_Visibility, ((const nsStyleStruct *&)vis));
-  aCollapsed = vis->mVisible == NS_STYLE_VISIBILITY_COLLAPSE;
+  aCollapsed = frame->GetStyleVisibility()->mVisible ==
+               NS_STYLE_VISIBILITY_COLLAPSE;
   return PR_TRUE;
 }
 
@@ -1516,8 +1493,7 @@ nsIBox::AddCSSOrdinal(nsBoxLayoutState& aState, nsIBox* aBox, PRUint32& aOrdinal
     }
     else {
       // No attribute value.  Check CSS.
-      const nsStyleXUL* boxInfo;
-      frame->GetStyleData(eStyleStruct_XUL, (const nsStyleStruct*&)boxInfo);
+      const nsStyleXUL* boxInfo = frame->GetStyleXUL();
       if (boxInfo->mBoxOrdinal > 1) {
         // The ordinal group was defined in CSS.
         aOrdinal = (nscoord)boxInfo->mBoxOrdinal;

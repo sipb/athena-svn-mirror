@@ -67,7 +67,6 @@ NS_IMPL_ISUPPORTS5(nsFolderCompactState, nsIMsgFolderCompactor, nsIRequestObserv
 
 nsFolderCompactState::nsFolderCompactState()
 {
-  NS_INIT_ISUPPORTS();
   m_baseMessageUri = nsnull;
   m_fileStream = nsnull;
   m_size = 0;
@@ -172,8 +171,8 @@ NS_IMETHODIMP nsFolderCompactState::CompactAll(nsISupportsArray *aArrayOfFolders
     m_offlineFolderArray = do_QueryInterface(aOfflineFolderArray);
 
   m_folderIndex = 0;
-  nsCOMPtr<nsISupports> supports = getter_AddRefs(m_folderArray->ElementAt(m_folderIndex));
-  nsCOMPtr<nsIMsgFolder> firstFolder = do_QueryInterface(supports, &rv);
+  nsCOMPtr<nsIMsgFolder> firstFolder = do_QueryElementAt(m_folderArray,
+                                                         m_folderIndex, &rv);
 
   if (NS_SUCCEEDED(rv) && firstFolder)
     Compact(firstFolder, aMsgWindow);   //start with first folder from here.
@@ -262,6 +261,12 @@ nsFolderCompactState::Init(nsIMsgFolder *folder, const char *baseMsgUri, nsIMsgD
     return NS_ERROR_OUT_OF_MEMORY;
 
   pathSpec->GetFileSpec(&m_fileSpec);
+
+  // need to make sure the temp file goes in the same real directory
+  // as the original file, so resolve sym links.
+  PRBool ignored;
+  m_fileSpec.ResolveSymlink(ignored);
+
   m_fileSpec.SetLeafName("nstmp");
   m_fileSpec.MakeUnique();   //make sure we are not crunching existing nstmp file
   m_window = aMsgWindow;
@@ -365,11 +370,16 @@ nsFolderCompactState::FinishCompact()
   rv = m_folder->GetPath(getter_AddRefs(pathSpec));
   pathSpec->GetFileSpec(&fileSpec);
 
+  // need to make sure we put the .msf file in the same directory
+  // as the original mailbox, so resolve symlinks.
+  PRBool ignored;
+  fileSpec.ResolveSymlink(ignored);
+
   nsLocalFolderSummarySpec summarySpec(fileSpec);
-  nsXPIDLCString idlName;
+  nsXPIDLCString leafName;
   nsCAutoString dbName(summarySpec.GetLeafName());
 
-  pathSpec->GetLeafName(getter_Copies(idlName));
+  pathSpec->GetLeafName(getter_Copies(leafName));
 
     // close down the temp file stream; preparing for deleting the old folder
     // and its database; then rename the temp folder and database
@@ -397,7 +407,7 @@ nsFolderCompactState::FinishCompact()
   summarySpec.Delete(PR_FALSE);
     // rename the copied folder and database to be the original folder and
     // database 
-  m_fileSpec.Rename((const char*) idlName);
+  m_fileSpec.Rename(leafName.get());
   newSummarySpec.Rename(dbName.get());
  
   rv = ReleaseFolderLock();
@@ -437,8 +447,8 @@ nsFolderCompactState::CompactNextFolder()
    {
      if (m_compactOfflineAlso)
      {
-       nsCOMPtr<nsISupports> supports = getter_AddRefs(m_folderArray->ElementAt(m_folderIndex-1));
-       nsCOMPtr<nsIMsgFolder> folder = do_QueryInterface(supports, &rv);
+       nsCOMPtr<nsIMsgFolder> folder = do_QueryElementAt(m_folderArray,
+                                                         m_folderIndex-1, &rv);
        if (NS_SUCCEEDED(rv) && folder)
          folder->CompactAllOfflineStores(m_window, m_offlineFolderArray);
      }
@@ -446,8 +456,8 @@ nsFolderCompactState::CompactNextFolder()
        return rv;
        
    } 
-   nsCOMPtr<nsISupports> supports = getter_AddRefs(m_folderArray->ElementAt(m_folderIndex));
-   nsCOMPtr<nsIMsgFolder> folder = do_QueryInterface(supports, &rv);
+   nsCOMPtr<nsIMsgFolder> folder = do_QueryElementAt(m_folderArray,
+                                                     m_folderIndex, &rv);
 
    if (NS_SUCCEEDED(rv) && folder)
      rv = Compact(folder, m_window);                    
@@ -633,9 +643,9 @@ nsOfflineStoreCompactState::FinishCompact()
   rv = m_folder->GetPath(getter_AddRefs(pathSpec));
   pathSpec->GetFileSpec(&fileSpec);
 
-  nsXPIDLCString idlName;
+  nsXPIDLCString leafName;
 
-  pathSpec->GetLeafName(getter_Copies(idlName));
+  pathSpec->GetLeafName(getter_Copies(leafName));
 
     // close down the temp file stream; preparing for deleting the old folder
     // and its database; then rename the temp folder and database
@@ -657,7 +667,7 @@ nsOfflineStoreCompactState::FinishCompact()
   fileSpec.Delete(PR_FALSE);
 
     // rename the copied folder to be the original folder 
-  m_fileSpec.Rename((const char*) idlName);
+  m_fileSpec.Rename(leafName.get());
 
   PRUnichar emptyStr = 0;
   ShowStatusMsg(&emptyStr);
@@ -680,8 +690,10 @@ nsFolderCompactState::StartMessage()
   NS_ASSERTION(m_fileStream, "Fatal, null m_fileStream...\n");
   if (m_fileStream)
   {
+    // this will force an internal flush, but not a sync. Tell should really do an internal flush,
+    // but it doesn't, and I'm afraid to change that nsIFileStream.cpp code anymore.
+    m_fileStream->seek(PR_SEEK_CUR, 0);
     // record the new message key for the message
-    m_fileStream->flush();
     m_startOfNewMsg = m_fileStream->tell();
     rv = NS_OK;
   }

@@ -23,6 +23,7 @@ viewer:chrome:en-win.jar
 ; US 
 viewer:chrome:US.jar
 viewer:defaults:profile:US:*
+viewer:defaults:messenger:US:*
 viewer:Search Plugins:*
 
 [deflenus]
@@ -33,6 +34,7 @@ viewer:defaults:profile:panels.rdf
 viewer:defaults:profile:localstore.rdf
 viewer:defaults:profile:search.rdf
 viewer:defaults:profile:mimeTypes.rdf
+viewer:defaults:messenger:mailViews.dat
 
 [xpcom]
 viewer:Components:libjar.shlb 
@@ -97,8 +99,9 @@ viewer:Components:universalchardet.shlb
 viewer:Components:ChomeRegistry.shlb 
 viewer:Components:chrome.xpt
 viewer:Components:Composer.shlb 
-viewer:Components:content.shlb
-viewer:Components:content.xpt
+viewer:Components:composer.xpt
+viewer:Components:content_htmldoc.xpt
+viewer:Components:content_xmldoc.xpt
 viewer:Components:cookie.xpt 
 viewer:Components:Cookie.shlb 
 viewer:Components:appcomps.shlb 
@@ -122,6 +125,7 @@ viewer:Components:dom_xul.xpt
 viewer:Components:editor.xpt 
 viewer:Components:HTMLEditor.shlb 
 viewer:Components:EditorTxmgr.shlb 
+viewer:Components:EmbedBase.xpt
 viewer:Components:EmbedComponents.xpt
 viewer:Components:EmbedComponents.shlb
 viewer:Components:FindComponent.shlb 
@@ -132,7 +136,6 @@ viewer:Components:htmlparser.shlb
 viewer:Components:jsconsole-clhandler.js
 viewer:Components:jsdService.shlb
 viewer:Components:jsdservice.xpt
-viewer:Components:jsurl.shlb 
 viewer:Components:jsurl.xpt
 viewer:Components:layout.shlb 
 viewer:Components:layout.xpt
@@ -166,21 +169,17 @@ viewer:Components:profile.shlb
 viewer:Components:profileservices.xpt 
 viewer:Components:rdf.xpt 
 viewer:Components:RDFLibrary.shlb 
-viewer:Components:RegViewer.shlb 
-viewer:Components:RegViewer.xpt 
 viewer:Components:related.xpt 
 viewer:Components:search.xpt 
-viewer:Components:shistory.shlb 
 viewer:Components:shistory.xpt 
 viewer:Components:tmbm.xpt
+viewer:Components:txtsvc.xpt 
 viewer:Components:txmgr.xpt 
 viewer:Components:uconv.shlb 
 viewer:Components:uconv.xpt 
 viewer:Components:unicharutil.xpt 
-viewer:Components:uriloader.shlb 
 viewer:Components:uriloader.xpt 
 viewer:Components:urlbarhistory.xpt
-viewer:Components:view.shlb 
 viewer:Components:Wallet.shlb 
 viewer:Components:wallet.xpt 
 viewer:Components:WalletViewers.shlb 
@@ -200,13 +199,13 @@ viewer:Components:nsProxyAutoConfig.js
 viewer:Components:nsXmlRpcClient.js
 viewer:Components:xmlextras.xpt
 viewer:Components:xmlextras.shlb
-viewer:Components:xmlsoap.xpt
-viewer:Components:xmlschema.xpt
 viewer:Components:nsHelperAppDlg.js
 viewer:Components:nsProgressDialog.js
 viewer:Components:nsDownloadProgressListener.js
 viewer:Components:transformiix.shlb
 viewer:Components:nsCloseAllWindows.js
+viewer:Components:websrvcs.shlb
+viewer:Components:websrvcs.xpt
 
 viewer:Components:libimg2.shlb
 viewer:Components:icondecoder.shlb
@@ -227,11 +226,14 @@ viewer:Components:mozldap.xpt
 viewer:Components:ldapAutoComplete.xpt
 viewer:Essential Files:LDAPClient.shlb
 
+; p3p
+viewer:Components:p3p.xpt
+viewer:Components:p3p.shlb
+
 viewer:chrome:help.jar
 viewer:chrome:comm.jar
 viewer:chrome:content-packs.jar
 viewer:chrome:toolkit.jar
-viewer:chrome:forms.jar
 viewer:chrome:modern.jar
 viewer:chrome:classic.jar
 viewer:chrome:pippki.jar
@@ -263,6 +265,7 @@ viewer:res:html:*
 viewer:res:html.css
 viewer:res:quirk.css
 viewer:res:viewsource.css
+viewer:res:EditorOverride.css
 viewer:res:maccharset.properties 
 viewer:res:rdf:article.gif
 viewer:res:rdf:collapser.gif
@@ -305,6 +308,7 @@ viewer:res:strres-test.xul
 viewer:res:throbber:*
 viewer:res:ua.css
 viewer:res:forms.css
+viewer:res:platform-forms.css
 
 ; MathML
 viewer:res:mathml.css
@@ -338,8 +342,6 @@ viewer:Components:msgImportText.shlb
 viewer:Components:msgImportEudora.shlb
 viewer:Components:msgImportComm4xM.shlb
 viewer:Components:msgImportComm4xM.xpt
-viewer:Components:AbSyncSvc.shlb 
-viewer:Components:AbSyncSvc.xpt
 viewer:Components:nsLDAPPrefsService.js 
 viewer:Components:msgsmime.shlb
 viewer:Components:msgsmime.xpt
@@ -347,6 +349,9 @@ viewer:Components:smime-service.js
 viewer:Components:msgmdn.shlb
 viewer:Components:msgmdn.xpt
 viewer:Components:mdn-service.js
+viewer:Components:bayesianFilter.shlb
+viewer:Components:mailviews.xpt
+viewer:Components:mailviews.shlb
 
 [chatzilla]
 viewer:Components:chatzilla-service.js
@@ -362,6 +367,7 @@ viewer:Components:QFA.xpt
 viewer:TalkBack:*
 
 [inspector]
+viewer:Components:inspector-cmdline.js
 viewer:Components:inspector.shlb
 viewer:Components:inspector.xpt
 viewer:chrome:inspector.jar

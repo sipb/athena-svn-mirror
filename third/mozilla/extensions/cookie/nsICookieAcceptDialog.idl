@@ -47,15 +47,7 @@ interface nsICookieAcceptDialog: nsISupports {
 
   const short ACCEPT_COOKIE=0;
   const short REMEMBER_DECISION=1;
-  const short MESSAGETEXT=2;
-  const short COOKIE_NAME=3;
-  const short COOKIE_VALUE=4;
-  const short COOKIE_HOST=5;
-  const short COOKIE_PATH=6;
-    // Continue at a lower number, as > 7 gives problems (max int number is 8),
-    // And you the next items are Int's and not Strings.
-    // Int's and Strings are separate, thay can have the same index
-  const short COOKIE_IS_SECURE=3;
-  const short COOKIE_EXPIRES=4;
-  const short COOKIE_IS_DOMAIN=5;
+  const short HOSTNAME=2;
+  const short COOKIESFROMHOST=3;
+  const short CHANGINGCOOKIE=4;
 };

@@ -79,7 +79,6 @@ static PRLogModuleInfo* gLog;
 nsXULCommandDispatcher::nsXULCommandDispatcher(nsIDocument* aDocument)
     : mFocusController(nsnull), mDocument(aDocument), mUpdaters(nsnull)
 {
-	NS_INIT_ISUPPORTS();
 
 #ifdef PR_LOGGING
   if (! gLog)
@@ -158,7 +157,7 @@ nsXULCommandDispatcher::GetFocusedWindow(nsIDOMWindow** aWindow)
   nsresult rv = mFocusController->GetFocusedWindow(getter_AddRefs(window));
   NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && window, rv);
 
-  return window->QueryInterface(NS_GET_IID(nsIDOMWindow), (void **)aWindow);
+  return CallQueryInterface(window, aWindow);
 }
 
 NS_IMETHODIMP

@@ -27,10 +27,9 @@ VPATH       = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE      = gfx
-EXPORTS         = nsFontList.h \
-                  nsRegion.h
 LIBRARY_NAME    = gkgfx
 EXPORT_LIBRARY = 1
+GRE_MODULE	= 1
 REQUIRES	= xpcom \
 		  windowwatcher \
 		  dom \
@@ -44,6 +43,10 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 DIRS        = shared
+
+ifdef MOZ_ENABLE_FREETYPE2
+DIRS        += freetype
+endif
 
 ifdef MOZ_ENABLE_POSTSCRIPT
 DIRS        += ps
@@ -62,25 +65,20 @@ ifneq (,$(filter xlib,$(MOZ_WIDGET_TOOLKIT))$(MOZ_ENABLE_XLIB)$(MOZ_ENABLE_XPRIN
 DIRS        += xlibrgb
 endif
 
+ifdef MOZ_ENABLE_XPRINT
+DIRS        += xprintutil xprint 
+endif
 ifdef MOZ_ENABLE_GTK
 DIRS        += gtk
 endif
 ifdef MOZ_ENABLE_GTK2
 DIRS        += gtk
 endif
-ifdef MOZ_ENABLE_QT
-DIRS        += qt
-endif
 ifdef MOZ_ENABLE_XLIB
 DIRS        += xlib
 endif
-
 ifdef MOZ_ENABLE_PHOTON
 DIRS        += photon
-endif
-
-ifdef MOZ_ENABLE_XPRINT
-DIRS        += xprint 
 endif
 
 CPPSRCS = \
@@ -122,6 +120,22 @@ CPPSRCS += \
         $(NULL)
 endif
 
+ifeq ($(OS_ARCH),OS2)
+CPPSRCS += \
+        os2/nsOS2Uni.cpp \
+        os2/nsPaletteOS2.cpp \
+        $(NULL)
+EXPORTS += \
+        os2/nsOS2Uni.h \
+        os2/nsPaletteOS2.h \
+        $(NULL)
+ifeq ($(MOZ_OS2_TOOLS),VACPP)
+OS_LIBS += libconv.lib
+else
+OS_LIBS += -luconv
+endif
+endif
+
 EXTRA_DSO_LDOPTS = \
         $(DIST)/lib/$(LIB_PREFIX)mozutil_s.$(LIB_SUFFIX) \
         $(MOZ_UNICHARUTIL_LIBS) \
@@ -134,13 +148,10 @@ EXTRA_DSO_LDOPTS += \
         $(NULL)
 endif
 
+# This library is used by other shared libs in a static build
+FORCE_USE_PIC = 1
+
 include $(topsrcdir)/config/rules.mk
 
 DEFINES     += -D_IMPL_NS_GFX
-
-libs:: icon_0.gif icon_1.gif
-	$(INSTALL) -m 555 $^ $(DIST)/bin/res/gfx
-
-install:: icon_0.gif icon_1.gif
-	$(SYSINSTALL) -m 555 $^ $(DESTDIR)$(mozappdir)/res/gfx
 

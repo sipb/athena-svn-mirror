@@ -24,13 +24,12 @@
    -   Aaron Kaluszka (ask@swva.net)
 -->
 
-<!DOCTYPE window SYSTEM "chrome://editor/locale/editorOverlay.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://editor/locale/editorOverlay.dtd">
 
 <overlay id="editorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
-<script type="application/x-javascript" src="chrome://editor/content/editorOverlay.js"/>
 <script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/>
 
   <keyset id="editorKeys">
@@ -74,6 +73,8 @@
     <key id="removenamedanchorskb" key="&formatremovenamedanchors.keybinding;"    observes="cmd_removeNamedAnchors"  modifiers="accel, shift"/>
     <key id="decreasefontsizekb"   key="&decreaseFontSize.keybinding;"     observes="cmd_decreaseFont"  modifiers="accel"/>
     <key id="increasefontsizekb"   key="&increaseFontSize.keybinding;"     observes="cmd_increaseFont"  modifiers="accel"/>
+    <key                           key="&increaseFontSize.keybinding;"     observes="cmd_increaseFont"  modifiers="accel,shift"/>
+    <key                           key="&increaseFontSize.keybinding2;"    observes="cmd_increaseFont"  modifiers="accel"/>
 
     <key id="insertlinkkb"         key="&insertlink.keybinding;"           observes="cmd_link"          modifiers="accel"/>
   </keyset>
@@ -121,7 +122,7 @@
     <command id="cmd_isindex"          oncommand="goDoCommand('cmd_isindex')"/>
     <command id="cmd_objectProperties" oncommand="goDoCommand('cmd_objectProperties')"/>
     <command id="cmd_insertChars"      oncommand="goDoCommand('cmd_insertChars')"    label="&insertCharsCmd.label;"/>
-    <command id="cmd_insertHTML"       oncommand="goDoCommand('cmd_insertHTML')"     label="&insertHTMLCmd.label;"/>
+    <command id="cmd_insertHTMLWithDialog" oncommand="goDoCommand('cmd_insertHTMLWithDialog')"  label="&insertHTMLCmd.label;"/>
 
     <command id="cmd_insertBreak"      oncommand="goDoCommand('cmd_insertBreak')"/>
     <command id="cmd_insertBreakAll"   oncommand="goDoCommand('cmd_insertBreakAll')"/>
@@ -191,7 +192,7 @@
     <command id="cmd_italic"        state="false"     oncommand="doStyleUICommand('cmd_italic')"/>
     <command id="cmd_underline"     state="false"     oncommand="doStyleUICommand('cmd_underline')"/>
     <command id="cmd_tt"            state="false"     oncommand="doStyleUICommand('cmd_tt')"/>
-    <command id="cmd_smiley"        state=""  />
+    <command id="cmd_smiley"/>
 
     <command id="cmd_strikethrough" state="false"     oncommand="doStyleUICommand('cmd_strikethrough');"/>
     <command id="cmd_superscript"   state="false"     oncommand="doStyleUICommand('cmd_superscript');"/>
@@ -218,11 +219,11 @@
     <command id="cmd_fontFace"        state=""         oncommand="doStatefulCommand('cmd_fontFace', event.target.value)"/>
 
     <!-- No "oncommand", use EditorSelectColor() to bring up color dialog -->
-    <command id="cmd_fontColor"       state="x"/>
+    <command id="cmd_fontColor"       state=""/>
     <command id="cmd_backgroundColor" state=""/>
     <command id="cmd_highlight"       state="transparent"  oncommand="EditorSelectColor('Highlight', event);"/>
 
-    <command id="cmd_fontSize"        state=""         oncommand="goDoCommand('cmd_fontSize')"/>
+    <command id="cmd_fontSize"                         oncommand="goDoCommand('cmd_fontSize')"/>
     <command id="cmd_align"           state=""/>
     
     <command id="cmd_advancedProperties"              oncommand="goDoCommand('cmd_advancedProperties')"/>
@@ -313,7 +314,8 @@
       </menu>
       <menuitem accesskey="&fileopenremote.accesskey;"      key="openremoteeditorkb" observes="cmd_openRemote"/>
       <menuitem accesskey="&fileopen.accesskey;"            key="openeditorkb"       observes="cmd_open" label="&openFileCmd.label;"/>
-      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;" onpopupshowing="BuildRecentMenu()">
+      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
+            onpopupshowing="BuildRecentPagesMenu();">
         <menupopup id="menupopup_RecentFiles" oncommand="editPage(event.target.getAttribute('value'), window, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
@@ -398,18 +400,34 @@
   <!-- Insert menu -->
   <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup">
-      <menuitem accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
-      <menuitem accesskey="&inserttable.accesskey;"      observes="cmd_InsertTable" label="&insertTableCmd.label;"/>
-      <menuitem accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
-      <menuitem accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/>
-      <menuitem accesskey="&inserthline.accesskey;"      observes="cmd_hline"       label="&insertHLineCmd.label;"/>
-      <menuitem accesskey="&HTMLSourceMode.accesskey;"   observes="cmd_insertHTML"  key="inserthtmlkb"/>
-      <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" />
+      <menuitem id="insertImage" accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
+      <menuitem id="insertTable" accesskey="&inserttable.accesskey;"      observes="cmd_InsertTable" label="&insertTableCmd.label;"/>
+      <menuitem id="insertLink" accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
+      <menuitem id="insertAnchor" accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/>
+      <menuitem id="insertHline" accesskey="&inserthline.accesskey;"      observes="cmd_hline"       label="&insertHLineCmd.label;"/>
+      <menuitem id="insertHTMLSource" accesskey="&HTMLSourceMode.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
+      <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" id="insertChars"/>
+      <menu id="insertTOC" label="&tocMenu.label;" accesskey="&tocMenu.accesskey;">
+        <menupopup onpopupshowing="InitTOCMenu()">
+          <menuitem id="insertTOCMenuitem"
+                    label="&insertTOC.label;"
+                    accesskey="&insertTOC.accesskey;"
+                    oncommand="UpdateTOC()"/>
+          <menuitem id="updateTOCMenuitem"
+                    label="&updateTOC.label;"
+                    accesskey="&updateTOC.accesskey;"
+                    oncommand="UpdateTOC()"/>
+          <menuitem id="removeTOCMenuitem"
+                    label="&removeTOC.label;"
+                    accesskey="&removeTOC.accesskey;"
+                    oncommand="RemoveTOC()"/>
+        </menupopup>
+      </menu>
       <menuseparator id="insertMenuSeparator"/>
 <!-- Activate this after Enter key inserts P tag and not BR
       <menuitem accesskey="&insertbreak.accesskey;"      observes="cmd_insertBreak"      label="&insertBreakCmd.label;"/>
 -->
-      <menuitem accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
+      <menuitem id="insertBreakAll" accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
     </menupopup>
   </menu>
     
@@ -425,13 +443,16 @@
     <!-- Font face submenu -->
     <menu id="fontFaceMenu" label="&fontfaceMenu.label;" accesskey="&formatfontmenu.accesskey;" 
           position="1">
-      <menupopup oncommand="doStatefulCommand('cmd_fontFace', event.target.value)" onpopupshowing="initFontFaceMenu(this)">
+      <menupopup oncommand="if (event.target.localName == 'menuitem') doStatefulCommand('cmd_fontFace', event.target.getAttribute('value'));"
+                 onpopupshowing="initFontFaceMenu(this);">
         <menuitem label="&fontVarWidth.label;"      accesskey="&fontvarwidth.accesskey;"    value=""    type="radio" name="1" observes="cmd_renderedHTMLEnabler"/>
         <menuitem label="&fontFixedWidth.label;"    accesskey="&fontfixedwidth.accesskey;"  value="tt"  type="radio" name="1" observes="cmd_renderedHTMLEnabler"/>
         <menuseparator/>
         <menuitem label="&fontHelveticaFont.label;" accesskey="&fonthelvetica.accesskey;"   value="Helvetica, Arial, sans-serif"    type="radio" name="2" observes="cmd_renderedHTMLEnabler"/>
         <menuitem label="&fontTimes.label;"         accesskey="&fonttimes.accesskey;"       value="Times New Roman, Times, serif"   type="radio" name="2" observes="cmd_renderedHTMLEnabler"/>
         <menuitem label="&fontCourier.label;"       accesskey="&fontcourier.accesskey;"     value="Courier New, Courier, monospace" type="radio" name="2" observes="cmd_renderedHTMLEnabler"/>
+        <menuseparator/>
+          <!-- Local font face items added here by initLocalFontFaceMenu() -->
       </menupopup>
     </menu>
 
@@ -617,29 +638,6 @@
     </menupopup>
   </menu>
 
-
-  <!-- smiley menu -->
-  <toolbarbutton type="menu" id="smileButtonMenu"
-                 observes="cmd_smiley"
-                 tooltiptext="&SmileButton.tooltip;">
-       <menupopup id="smilyPopup">
-               <menuitem class="smiley insert-smile menuitem-iconic"       label="&smiley1Cmd.label;" 
-						oncommand="doStatefulCommand('cmd_smiley', ':-)'  )"  />
-               <menuitem class="smiley insert-frown menuitem-iconic"       label="&smiley2Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ':-('  )" />                                              
-               <menuitem class="smiley insert-wink menuitem-iconic"        label="&smiley3Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ';-)'  )"  />                       
-               <menuitem class="smiley insert-tongue menuitem-iconic"      label="&smiley4Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ':-P'  )" />
-               <menuitem class="smiley insert-laughing menuitem-iconic"    label="&smiley5Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ':-D'  )" />
-               <menuitem class="smiley insert-embarrassed menuitem-iconic" label="&smiley6Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ':-['  )" />
-               <menuitem class="smiley insert-undecided menuitem-iconic"   label="&smiley7Cmd.label;"
-						oncommand="doStatefulCommand('cmd_smiley', ':-\\' )" />           
-       </menupopup>
-   </toolbarbutton>
-
   <!-- this is only used in messengercompose.xul -->
   <toolbarbutton type="menu" id="AlignPopupButton" observes="cmd_align"
               tooltiptext="&AlignPopupButton.tooltip;">
@@ -656,7 +654,7 @@
   </toolbarbutton>
 
   <!-- InsertPopupButton is used by messengercompose.xul -->
-  <toolbarbutton type="menu" id="InsertPopupButton" observes="cmd_insert"
+  <toolbarbutton type="menu" id="InsertPopupButton" observes="cmd_renderedHTMLEnabler"
               tooltiptext="&InsertPopupButton.tooltip;">
     <menupopup id="InsertPopup">
       <menuitem id="InsertLinkItem" class="menuitem-iconic" observes="cmd_link"
@@ -688,6 +686,15 @@
   <toolbarbutton id="previewButton" class="toolbarbutton-1"
                  label="&previewToolbarCmd.label;" observes="cmd_preview"
                  tooltiptext="&previewToolbarCmd.tooltip;"/>
+  <toolbarbutton id="cutButton" class="toolbarbutton-1"
+                 label="&cutCmd.label;" command="cmd_cut"
+                 tooltiptext="&cutCmd.label;"/>
+  <toolbarbutton id="copyButton" class="toolbarbutton-1"
+                 label="&copyCmd.label;" command="cmd_copy"
+                 tooltiptext="&copyCmd.label;"/>
+  <toolbarbutton id="pasteButton" class="toolbarbutton-1"
+                 label="&pasteCmd.label;" command="cmd_paste"
+                 tooltiptext="&pasteCmd.label;"/>
 
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
@@ -723,7 +730,8 @@
                  tooltiptext="&anchorToolbarCmd.tooltip;"/>
 
   <!-- Formatting toolbar items. "value" are HTML tagnames, don't translate -->
-  <menulist class="toolbar-focustarget" id="ParagraphSelect" tooltiptext="&ParagraphSelect.tooltip;" crop="right">
+  <menulist class="toolbar-focustarget" id="ParagraphSelect" observes="cmd_renderedHTMLEnabler"
+    tooltiptext="&ParagraphSelect.tooltip;" crop="right">
     <observes element="cmd_paragraphState" attribute="state" onbroadcast="onParagraphFormatChange(this.parentNode, 'cmd_paragraphState')"/>
     <menupopup id="ParagraphPopup" oncommand="doStatefulCommand('cmd_paragraphState', event.target.value)">
       <menuitem label="&bodyTextCmd.label;"            value=""/>
@@ -740,7 +748,8 @@
   </menulist>
 
   <!-- "value" are HTML tagnames, don't translate -->
-  <menulist class="toolbar-focustarget" id="FontFaceSelect" tooltiptext="&FontFaceSelect.tooltip;" crop="right">
+  <menulist class="toolbar-focustarget" id="FontFaceSelect" observes="cmd_renderedHTMLEnabler"
+    tooltiptext="&FontFaceSelect.tooltip;" crop="right">
     <observes element="cmd_fontFace" attribute="state" onbroadcast="onFontFaceChange(this.parentNode, 'cmd_fontFace')"/>
     <menupopup id="FontFacePopup" oncommand="doStatefulCommand('cmd_fontFace', event.target.value)">
       <menuitem label="&fontVarWidth.label;"      value=""/>
@@ -749,6 +758,7 @@
       <menuitem label="&fontHelveticaFont.label;" value="Helvetica, Arial, sans-serif"/>
       <menuitem label="&fontTimes.label;"         value="Times New Roman, Times, serif"/>
       <menuitem label="&fontCourier.label;"       value="Courier New, Courier, monospace"/>
+      <menuseparator/>
     </menupopup>
   </menulist>  
   
@@ -857,7 +867,6 @@
   <menuitem id="menu_pasteQuote" accesskey="&editpastequotation.accesskey;" observes="cmd_pasteQuote"/>
 
   <!-- DEBUG only -->
-  <!--
   <menu id="debugMenu" label="&debugMenu.label;">
   <menupopup>
     <menuitem label="&newEditorTestPage.label;" oncommand="window.openDialog('chrome://editor/content','_blank','chrome,all,dialog=no','chrome://editor/content/EditorInitPage.html')"/>
@@ -911,6 +920,10 @@
            oncommand="DumpUndoStack()"/>
     <menuitem label="&dumpRedoStack.label;"
            oncommand="DumpRedoStack()"/>
+    <menuitem label="&executeJSTransactionViaTxmgr.label;"
+           oncommand="ExecuteJSTransactionViaTxmgr()"/>
+    <menuitem label="&executeJSTransactionViaEditor.label;"
+           oncommand="ExecuteJSTransactionViaEditor()"/>
     <menuseparator />
     <menuitem label="&startLogCmd.label;"
            oncommand="EditorStartLog()"/>
@@ -924,7 +937,6 @@
             oncommand="window.focus()"/>
   </menupopup>
   </menu>
-  -->
   <!-- end DEBUG only -->
 
 </overlay>

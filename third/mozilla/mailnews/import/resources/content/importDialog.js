@@ -62,6 +62,12 @@ function OnLoadImportDialog()
   }
 
   SetUpImportType();
+
+  // on startup, set the focus to the control element
+  // for accessibility reasons.
+  // if we used the wizardOverlay, we would get this for free.
+  // see bug #101874
+  document.getElementById("importFields").focus();
 }
 
 
@@ -442,10 +448,13 @@ function ShowResults(doesWantProgress, result)
 
 function ShowImportResults(good, module)
 {
+  // The callers seem to set 'good' to true even if there's something
+  // in the error log. So we should only make it a success case if
+  // error log/str is empty.
   var modSuccess = 'Import' + module + 'Success';
   var modFailed = 'Import' + module + 'Failed';
   var results, title;
-  if (good) {
+  if (good && !errorStr.data) {
     title = gImportMsgsBundle.getFormattedString(modSuccess, [ selectedModuleName ? selectedModuleName : '' ]);
     results = successStr.data;
   }
@@ -691,7 +700,9 @@ function ImportMail( module, success, error) {
             }
             if (!errorValue) {
               var profileDir = comm4xprofile.getMailDir(profileList[selected.value]);
-              mailInterface.SetData( "mailLocation", CreateNewFileSpecFromPath( profileDir));
+              var localfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+              localfile.initWithPath(profileDir);
+              mailInterface.SetData( "mailLocation", localfile);
             }
           } // profileList
         } // comm4xprofile
@@ -711,7 +722,7 @@ function ImportMail( module, success, error) {
             filePicker.appendFilters( Components.interfaces.nsIFilePicker.filterAll);
             filePicker.show();
             if (filePicker.file && (filePicker.file.path.length > 0))
-              mailInterface.SetData( "mailLocation", CreateNewFileSpecFromPath( filePicker.file.path));
+              mailInterface.SetData( "mailLocation", filePicker.file);
             else
               return( false);
           } catch( ex) {
@@ -814,7 +825,7 @@ function ImportAddress( module, success, error) {
         filePicker.appendFilters( Components.interfaces.nsIFilePicker.filterAll);
         filePicker.show();
         if (filePicker.file && (filePicker.file.path.length > 0))
-          file = filePicker.file.path;
+          file = filePicker.file;
         else
           file = null;
       } catch( ex) {
@@ -829,9 +840,9 @@ function ImportAddress( module, success, error) {
 		filePicker.appendFilter(gImportMsgsBundle.getString('Comm4xFiles'),"*.na2");
         else {
           var addressbookBundle = GetStringBundle("chrome://messenger/locale/addressbook/addressBook.properties");
-          filePicker.appendFilter(addressbookBundle.GetStringFromName('LDIFFiles'), "*.ldi;*.ldif");
+          filePicker.appendFilter(addressbookBundle.GetStringFromName('LDIFFiles'), "*.ldi; *.ldif");
           filePicker.appendFilter(addressbookBundle.GetStringFromName('CSVFiles'), "*.csv");
-          filePicker.appendFilter(addressbookBundle.GetStringFromName('TABFiles'), "*.tab;*.txt");
+          filePicker.appendFilter(addressbookBundle.GetStringFromName('TABFiles'), "*.tab; *.txt");
           filePicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
         }
 
@@ -839,7 +850,7 @@ function ImportAddress( module, success, error) {
           return false;
 
         if (filePicker.file && (filePicker.file.path.length > 0))
-          file = filePicker.file.path;
+          file = filePicker.file;
         else
           file = null;
       } catch( ex) {
@@ -854,9 +865,7 @@ function ImportAddress( module, success, error) {
       return( false);
     }
 
-    file = CreateNewFileSpecFromPath( file);
-
-    addInterface.SetData( "addressLocation", file);
+    addInterface.SetData("addressLocation", file);
   }
 
   // no need to use the fieldmap for 4.x import since we are using separate dialog

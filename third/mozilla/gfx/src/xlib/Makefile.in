@@ -33,6 +33,7 @@ LIBRARY_NAME	= gfx_xlib
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsGfxXlibModule
+GRE_MODULE	= 1
 
 REQUIRES	= xpcom \
 		  string \
@@ -54,6 +55,10 @@ REQUIRES	= xpcom \
 # Sun's Complex Text Layout support
 ifdef SUNCTL
 REQUIRES	+= ctl
+endif
+
+ifdef MOZ_ENABLE_XPRINT
+REQUIRES	+= xprintutil
 endif
 
 # Code shared between GTK+, Xlib and Xprint gfx modules
@@ -82,17 +87,7 @@ ifdef HAVE_XIE
 CSRCS		+= XIE.c
 endif
 
-# If not primary toolkit, install in secondary path
-ifneq (xlib,$(MOZ_GFX_TOOLKIT))
-INACTIVE_COMPONENT = 1
-endif
-
-ifdef MOZ_ENABLE_XPRINT
-XPU_LCSRCS	 = xprintutil.c
-CSRCS           += $(XPU_LCSRCS)
-endif
-
-GARBAGE         += $(X11SHARED_LCPPSRCS) $(XPU_LCSRCS) $(wildcard *.$(OBJ_SUFFIX))
+GARBAGE         += $(X11SHARED_LCPPSRCS) $(wildcard *.$(OBJ_SUFFIX))
 
 include $(topsrcdir)/config/rules.mk
 
@@ -105,6 +100,7 @@ GFX_XIE_LIBS    += $(MOZ_XIE_LIBS)
 endif
 
 EXTRA_DSO_LDOPTS += \
+		$(LIBS_DIR)     \
 		$(NSPR_LIBS)	\
 		-lxpcom		\
 		-lgkgfx		\
@@ -114,20 +110,19 @@ EXTRA_DSO_LDOPTS += \
 
 DEFINES		+= -DUSE_MOZILLA_TYPES
 
-ifeq ($(OS_ARCH), Linux)
-DEFINES         += -D_BSD_SOURCE
-endif
-
 ifdef MOZ_ENABLE_POSTSCRIPT
 DEFINES         += -DUSE_POSTSCRIPT
 endif
 
 ifdef MOZ_ENABLE_XPRINT
 DEFINES         += -DUSE_XPRINT
-EXTRA_DSO_LDOPTS += $(MOZ_XPRINT_LDFLAGS)
+EXTRA_DSO_LDOPTS += \
+		-lxprintutil \
+		$(MOZ_XPRINT_LDFLAGS)
 endif
 
 LOCAL_INCLUDES	+= \
+		-I../.. \
 		-I$(srcdir)/. \
 		-I$(srcdir)/.. \
 		-I$(srcdir)/../shared \
@@ -135,8 +130,8 @@ LOCAL_INCLUDES	+= \
 		$(NULL)
 
 ifdef MOZ_ENABLE_XPRINT
-export:: $(addprefix $(srcdir)/../xprint/,$(XPU_LCSRCS)) $(addprefix $(srcdir)/../x11shared/,$(X11SHARED_LCPPSRCS))
-	$(INSTALL) $^ .
+#export:: $(addprefix $(srcdir)/../x11shared/,$(X11SHARED_LCPPSRCS))
+#	$(INSTALL) $^ .
 else
 # disabled until X11SHARED_LCPPSRCS becomes non-empty
 # export:: $(addprefix $(srcdir)/../x11shared/,$(X11SHARED_LCPPSRCS))

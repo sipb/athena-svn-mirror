@@ -39,6 +39,7 @@
 
 #include "nsIDOMMouseEvent.h"
 #include "nsIDOMEventTarget.h"
+#include "nsIDOMDocument.h"
 #include "nsIDOMXULDocument.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDocument.h"
@@ -46,9 +47,13 @@
 #include "nsIPresShell.h"
 #include "nsIFrame.h"
 #include "nsIPopupBoxObject.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
+#include "nsIPrefService.h"
 #include "nsIServiceManager.h"
+#ifdef MOZ_XUL
 #include "nsITreeView.h"
+#endif
 #include "nsGUIEvent.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIPresContext.h"
@@ -60,24 +65,27 @@
 //// nsISupports
 
 nsXULTooltipListener::nsXULTooltipListener()
-  : mSourceNode(nsnull), mTargetNode(nsnull),
-    mCurrentTooltip(nsnull),
-    mMouseClientX(0), mMouseClientY(0),
-    mIsSourceTree(PR_FALSE), mNeedTitletip(PR_FALSE),
-    mLastTreeRow(-1)
+  : mSourceNode(nsnull)
+  , mTargetNode(nsnull)
+  , mCurrentTooltip(nsnull)
+  , mMouseClientX(0)
+  , mMouseClientY(0)
+#ifdef MOZ_XUL
+  , mIsSourceTree(PR_FALSE)
+  , mNeedTitletip(PR_FALSE)
+  , mLastTreeRow(-1)
+#endif
 {
-	 NS_INIT_ISUPPORTS();
 }
 
 nsXULTooltipListener::~nsXULTooltipListener()
 {
   HideTooltip();
 
-  // unregister the prefs callback
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID));
-  if (prefs) {
-    // register the callback so we get notified of updates
-    prefs->UnregisterCallback("browser.chrome.toolbar_tips", (PrefChangedFunc)sTooltipPrefChanged, (void*)this);
+  nsCOMPtr<nsIPrefBranchInternal> prefInternal(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (prefInternal) {
+    // Unregister our pref observer
+    prefInternal->RemoveObserver("browser.chrome.toolbar_tips", this);
   }
 }
 
@@ -89,6 +97,7 @@ NS_INTERFACE_MAP_BEGIN(nsXULTooltipListener)
   NS_INTERFACE_MAP_ENTRY(nsIDOMMouseMotionListener)
   NS_INTERFACE_MAP_ENTRY(nsIDOMKeyListener)
   NS_INTERFACE_MAP_ENTRY(nsIDOMXULListener)
+  NS_INTERFACE_MAP_ENTRY(nsIObserver)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMEventListener, nsIDOMMouseListener)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMMouseMotionListener)
 NS_INTERFACE_MAP_END
@@ -116,8 +125,10 @@ nsXULTooltipListener::MouseOut(nsIDOMEvent* aMouseEvent)
     return NS_OK;
   }
 
+#ifdef DEBUG_crap
   if (mNeedTitletip)
     return NS_OK;
+#endif
 
   // check to see if the mouse left the targetNode, and if so,
   // hide the tooltip
@@ -140,12 +151,13 @@ nsXULTooltipListener::MouseOut(nsIDOMEvent* aMouseEvent)
     // close the tooltip.
     if (tooltipNode == targetNode) {
       HideTooltip();
-
+#ifdef MOZ_XUL
       // reset special tree tracking
       if (mIsSourceTree) {
         mLastTreeRow = -1;
         mLastTreeCol.Truncate();
       }
+#endif
     }
   }
 
@@ -174,8 +186,10 @@ nsXULTooltipListener::MouseMove(nsIDOMEvent* aMouseEvent)
   mMouseClientX = newMouseX;
   mMouseClientY = newMouseY;
 
+#ifdef MOZ_XUL
   if (mIsSourceTree)
     CheckTreeBodyMove(mouseEvent);
+#endif
 
   // as the mouse moves, we want to make sure we reset the timer to show it, 
   // so that the delay is from when the mouse stops moving, not when it enters
@@ -231,6 +245,26 @@ nsXULTooltipListener::HandleEvent(nsIDOMEvent* aEvent)
 }
 
 //////////////////////////////////////////////////////////////////////////
+//// nsIObserver
+
+NS_IMETHODIMP
+nsXULTooltipListener::Observe(nsISupports* aSubject, 
+                              const char* aTopic,
+                              const PRUnichar* aData)
+{
+  if (nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID)) {
+    NS_ERROR("unknown nsIObserver topic!");
+    return NS_ERROR_UNEXPECTED;
+  }
+
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_QueryInterface(aSubject));
+  NS_ASSERTION(prefBranch, "Pref change topic with no pref subject?");
+  prefBranch->GetBoolPref("browser.chrome.toolbar_tips", &sShowTooltips);
+
+  return NS_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////
 //// nsXULTooltipListener
 
 NS_IMETHODIMP
@@ -252,23 +286,26 @@ nsXULTooltipListener::Init(nsIContent* aSourceNode, nsIRootBox* aRootBox)
   mSourceNode = aSourceNode;
   AddTooltipSupport(aSourceNode);
   
+#ifdef MOZ_XUL
   // if the target is an treechildren, we may have some special
   // case handling to do
   nsCOMPtr<nsIAtom> tag;
   mSourceNode->GetTag(*getter_AddRefs(tag));
   mIsSourceTree = tag == nsXULAtoms::treechildren;
+#endif
 
   static PRBool prefChangeRegistered = PR_FALSE;
 
   // Only the first time, register the callback and get the initial value of the pref
   if (!prefChangeRegistered) {
-    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID));  
-    if (prefs) {
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));  
+    if (prefBranch) {
       // get the initial value of the pref
-      nsresult rv = prefs->GetBoolPref("browser.chrome.toolbar_tips", &sShowTooltips);
+      nsresult rv = prefBranch->GetBoolPref("browser.chrome.toolbar_tips", &sShowTooltips);
       if (NS_SUCCEEDED(rv)) {
         // register the callback so we get notified of updates
-        rv = prefs->RegisterCallback("browser.chrome.toolbar_tips", (PrefChangedFunc)sTooltipPrefChanged, nsnull);
+        nsCOMPtr<nsIPrefBranchInternal> prefInternal(do_QueryInterface(prefBranch));
+        rv = prefInternal->AddObserver("browser.chrome.toolbar_tips", this, PR_FALSE);
         if (NS_SUCCEEDED(rv))
           prefChangeRegistered = PR_TRUE;
       }
@@ -304,6 +341,7 @@ nsXULTooltipListener::RemoveTooltipSupport(nsIContent* aNode)
   return NS_OK;
 }
 
+#ifdef MOZ_XUL
 void
 nsXULTooltipListener::CheckTreeBodyMove(nsIDOMMouseEvent* aMouseEvent)
 {
@@ -321,7 +359,6 @@ nsXULTooltipListener::CheckTreeBodyMove(nsIDOMMouseEvent* aMouseEvent)
     // determine if we are going to need a titletip
     // XXX check the disabletitletips attribute on the tree content
     mNeedTitletip = PR_FALSE;
-#ifdef DEBUG_crap
     if (row >= 0 && obj.Equals(NS_LITERAL_STRING("text"))) {
       nsCOMPtr<nsITreeView> view;
       obx->GetView(getter_AddRefs(view));
@@ -329,7 +366,6 @@ nsXULTooltipListener::CheckTreeBodyMove(nsIDOMMouseEvent* aMouseEvent)
       obx->IsCellCropped(row, colId, &isCropped);
       mNeedTitletip = isCropped;
     }
-#endif
 
     if (mCurrentTooltip && 
         (row != mLastTreeRow || !mLastTreeCol.Equals(colId))) {
@@ -340,6 +376,7 @@ nsXULTooltipListener::CheckTreeBodyMove(nsIDOMMouseEvent* aMouseEvent)
     mLastTreeCol.Assign(colId);
   }
 }
+#endif
 
 nsresult
 nsXULTooltipListener::ShowTooltip()
@@ -359,10 +396,12 @@ nsXULTooltipListener::ShowTooltip()
     nsCOMPtr<nsIDocument> targetDoc;
     mSourceNode->GetDocument(*getter_AddRefs(targetDoc));
     if (targetDoc) {
+#ifdef MOZ_XUL
       if (!mIsSourceTree) {
         mLastTreeRow = -1;
         mLastTreeCol.Truncate();
       }
+#endif
 
       nsCOMPtr<nsIDOMNode> targetNode(do_QueryInterface(mTargetNode));
       xulDoc->SetTooltipNode(targetNode);
@@ -404,6 +443,7 @@ nsXULTooltipListener::ShowTooltip()
   return NS_OK;
 }
 
+#ifdef MOZ_XUL
 static void
 GetTreeCellCoords(nsITreeBoxObject* aTreeBox, nsIContent* aSourceNode, 
                   PRInt32 aRow, nsAutoString aCol, PRInt32* aX, PRInt32* aY)
@@ -431,14 +471,13 @@ SetTitletipLabel(nsITreeBoxObject* aTreeBox, nsIContent* aTooltip,
   nsAutoString label;
   view->GetCellText(aRow, aCol.get(), label);
   
-  aTooltip->SetAttr(nsnull, nsXULAtoms::label, label, PR_FALSE);
+  aTooltip->SetAttr(nsnull, nsXULAtoms::label, label, PR_TRUE);
 }
+#endif
 
 nsresult
 nsXULTooltipListener::LaunchTooltip(nsIContent* aTarget, PRInt32 aX, PRInt32 aY)
 {
-  nsresult rv = NS_OK;
-  
   if (!mCurrentTooltip)
     return NS_OK;
 
@@ -454,16 +493,20 @@ nsXULTooltipListener::LaunchTooltip(nsIContent* aTarget, PRInt32 aX, PRInt32 aY)
   if (popupBoxObject) {
     PRInt32 x = aX;
     PRInt32 y = aY;
+#ifdef MOZ_XUL
     if (mNeedTitletip) {
       nsCOMPtr<nsITreeBoxObject> obx;
       GetSourceTreeBoxObject(getter_AddRefs(obx));
+#ifdef DEBUG_crap
       GetTreeCellCoords(obx, mSourceNode,
                             mLastTreeRow, mLastTreeCol, &x, &y);
+#endif
 
       SetTitletipLabel(obx, mCurrentTooltip, mLastTreeRow, mLastTreeCol);
-      mCurrentTooltip->SetAttr(nsnull, nsXULAtoms::titletip, NS_LITERAL_STRING("true"), PR_FALSE);
+      mCurrentTooltip->SetAttr(nsnull, nsXULAtoms::titletip, NS_LITERAL_STRING("true"), PR_TRUE);
     } else
-      mCurrentTooltip->UnsetAttr(nsnull, nsXULAtoms::titletip, PR_FALSE);
+      mCurrentTooltip->UnsetAttr(nsnull, nsXULAtoms::titletip, PR_TRUE);
+#endif
 
     nsCOMPtr<nsIDOMElement> targetEl(do_QueryInterface(aTarget));
     popupBoxObject->ShowPopup(targetEl, xulTooltipEl, x, y,
@@ -557,17 +600,20 @@ nsXULTooltipListener::GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip)
           } else {
             if (!tooltipId.IsEmpty()) {
               // tooltip must be an id, use getElementById to find it
-              nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(document);
-              if (!xulDocument) {
-                NS_ERROR("tooltip attached to an element that isn't in XUL!");
+              nsCOMPtr<nsIDOMDocument> domDocument =
+                do_QueryInterface(document);
+              if (!domDocument) {
                 return NS_ERROR_FAILURE;
               }
 
               nsCOMPtr<nsIDOMElement> tooltipEl;
-              xulDocument->GetElementById(tooltipId, getter_AddRefs(tooltipEl));
+              domDocument->GetElementById(tooltipId,
+                                          getter_AddRefs(tooltipEl));
 
               if (tooltipEl) {
+#ifdef MOZ_XUL
                 mNeedTitletip = PR_FALSE;
+#endif
 
                 nsCOMPtr<nsIContent> tooltipContent(do_QueryInterface(tooltipEl));
                 *aTooltip = tooltipContent;
@@ -579,12 +625,14 @@ nsXULTooltipListener::GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip)
           }
         }
 
+#ifdef MOZ_XUL
         // titletips should just use the default tooltip
         if (mIsSourceTree && mNeedTitletip) {
           mRootBox->GetDefaultTooltip(aTooltip);
           NS_IF_ADDREF(*aTooltip);
           return NS_OK;
         }
+#endif
       }
     }
   }
@@ -671,16 +719,7 @@ nsXULTooltipListener::sAutoHideCallback(nsITimer *aTimer, void* aListener)
     self->HideTooltip();
 }
 
-int 
-nsXULTooltipListener::sTooltipPrefChanged(const char* aPref, void* aData)
-{
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID));
-  if (prefs)
-    prefs->GetBoolPref("browser.chrome.toolbar_tips", &sShowTooltips);
-
-  return NS_OK;
-}
-
+#ifdef MOZ_XUL
 nsresult
 nsXULTooltipListener::GetSourceTreeBoxObject(nsITreeBoxObject** aBoxObject)
 {
@@ -703,3 +742,4 @@ nsXULTooltipListener::GetSourceTreeBoxObject(nsITreeBoxObject** aBoxObject)
   }
   return NS_ERROR_FAILURE;
 }
+#endif

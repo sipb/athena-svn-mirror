@@ -787,7 +787,7 @@ public:
     xptiZipLoaderSink(xptiInterfaceInfoManager* aMgr,
                       xptiWorkingSet* aWorkingSet) :
         mManager(aMgr),
-        mWorkingSet(aWorkingSet) { NS_INIT_ISUPPORTS(); }
+        mWorkingSet(aWorkingSet) {}
     virtual ~xptiZipLoaderSink() {};
     
     NS_DECL_ISUPPORTS
@@ -884,7 +884,7 @@ public:
                     xptiWorkingSet* aWorkingSet = nsnull);
 
     PRBool GetApplicationDir(nsILocalFile** aDir);
-    PRBool GetCloneOfManifestDir(nsILocalFile** aDir);
+    PRBool GetCloneOfManifestLocation(nsILocalFile** aDir);
 
     void   GetSearchPath(nsISupportsArray** aSearchPath)
         {NS_ADDREF(*aSearchPath = mSearchPath);}
@@ -965,7 +965,6 @@ private:
     PRMonitor*                   mInfoMonitor;
     PRLock*                      mAdditionalManagersLock;
     nsSupportsArray              mAdditionalManagers;
-    nsCOMPtr<nsILocalFile>       mManifestDir;
     nsCOMPtr<nsISupportsArray>   mSearchPath;
 };
 

@@ -60,7 +60,7 @@
 #include "nsIDocument.h"
 #include "nsIScriptGlobalObject.h"
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #include <Resources.h>
 #endif
 
@@ -185,6 +185,7 @@ PR_BEGIN_EXTERN_C
   static void* NP_EXPORT
   _memalloc (uint32 size);
 
+#ifdef OJI
   static JRIEnv* NP_EXPORT
   _getJavaEnv(void);
 
@@ -197,6 +198,7 @@ PR_BEGIN_EXTERN_C
   _getJavaClass(void* handle);
 
 #endif
+#endif /* OJI */
 
 #if defined(XP_MAC) && !defined(powerc)
 #pragma pointers_in_A0
@@ -204,6 +206,44 @@ PR_BEGIN_EXTERN_C
 
 PR_END_EXTERN_C
 
+#ifdef XP_MACOSX
+
+static void* TV2FP(void *tvp)
+{
+    static uint32 glue[6] = { 0x3D800000, 0x618C0000, 0x800C0000, 0x804C0004, 0x7C0903A6, 0x4E800420 };
+    uint32* newGlue = NULL;
+
+    if (tvp != NULL) {
+        newGlue = (uint32*) malloc(sizeof(glue));
+        if (newGlue != NULL) {
+            memcpy(newGlue, glue, sizeof(glue));
+            newGlue[0] |= ((UInt32)tvp >> 16);
+            newGlue[1] |= ((UInt32)tvp & 0xFFFF);
+            MakeDataExecutable(newGlue, sizeof(glue));
+        }
+    }
+    return newGlue;
+}
+
+static void* FP2TV(void *fp)
+{
+    void **newGlue = NULL;
+    if (fp != NULL) {
+        newGlue = (void**) malloc(2 * sizeof(void *));
+        if (newGlue != NULL) {
+            newGlue[0] = fp;
+            newGlue[1] = NULL;
+        }
+    }
+    return newGlue;
+}
+
+#else
+
+#define TV2FP(f) (f)
+#define FP2TV(f) (f)
+
+#endif /* XP_MACOSX */
 
 ////////////////////////////////////////////////////////////////////////
 // Globals
@@ -224,27 +264,29 @@ ns4xPlugin::CheckClassInitialized(void)
   CALLBACKS.size = sizeof(CALLBACKS);
   CALLBACKS.version = (NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR;
   
-  CALLBACKS.geturl           = NewNPN_GetURLProc(_geturl);
-  CALLBACKS.posturl          = NewNPN_PostURLProc(_posturl);
-  CALLBACKS.requestread      = NewNPN_RequestReadProc(_requestread);
-  CALLBACKS.newstream        = NewNPN_NewStreamProc(_newstream);
-  CALLBACKS.write            = NewNPN_WriteProc(_write);
-  CALLBACKS.destroystream    = NewNPN_DestroyStreamProc(_destroystream);
-  CALLBACKS.status           = NewNPN_StatusProc(_status);
-  CALLBACKS.uagent           = NewNPN_UserAgentProc(_useragent);
-  CALLBACKS.memalloc         = NewNPN_MemAllocProc(_memalloc);
-  CALLBACKS.memfree          = NewNPN_MemFreeProc(_memfree);
-  CALLBACKS.memflush         = NewNPN_MemFlushProc(_memflush);
-  CALLBACKS.reloadplugins    = NewNPN_ReloadPluginsProc(_reloadplugins);
-  CALLBACKS.getJavaEnv       = NewNPN_GetJavaEnvProc(_getJavaEnv);
-  CALLBACKS.getJavaPeer      = NewNPN_GetJavaPeerProc(_getJavaPeer);
-  CALLBACKS.geturlnotify     = NewNPN_GetURLNotifyProc(_geturlnotify);
-  CALLBACKS.posturlnotify    = NewNPN_PostURLNotifyProc(_posturlnotify);
-  CALLBACKS.getvalue         = NewNPN_GetValueProc(_getvalue);
-  CALLBACKS.setvalue         = NewNPN_SetValueProc(_setvalue);
-  CALLBACKS.invalidaterect   = NewNPN_InvalidateRectProc(_invalidaterect);
-  CALLBACKS.invalidateregion = NewNPN_InvalidateRegionProc(_invalidateregion);
-  CALLBACKS.forceredraw      = NewNPN_ForceRedrawProc(_forceredraw);
+  CALLBACKS.geturl           = NewNPN_GetURLProc(FP2TV(_geturl));
+  CALLBACKS.posturl          = NewNPN_PostURLProc(FP2TV(_posturl));
+  CALLBACKS.requestread      = NewNPN_RequestReadProc(FP2TV(_requestread));
+  CALLBACKS.newstream        = NewNPN_NewStreamProc(FP2TV(_newstream));
+  CALLBACKS.write            = NewNPN_WriteProc(FP2TV(_write));
+  CALLBACKS.destroystream    = NewNPN_DestroyStreamProc(FP2TV(_destroystream));
+  CALLBACKS.status           = NewNPN_StatusProc(FP2TV(_status));
+  CALLBACKS.uagent           = NewNPN_UserAgentProc(FP2TV(_useragent));
+  CALLBACKS.memalloc         = NewNPN_MemAllocProc(FP2TV(_memalloc));
+  CALLBACKS.memfree          = NewNPN_MemFreeProc(FP2TV(_memfree));
+  CALLBACKS.memflush         = NewNPN_MemFlushProc(FP2TV(_memflush));
+  CALLBACKS.reloadplugins    = NewNPN_ReloadPluginsProc(FP2TV(_reloadplugins));
+#ifdef OJI
+  CALLBACKS.getJavaEnv       = NewNPN_GetJavaEnvProc(FP2TV(_getJavaEnv));
+  CALLBACKS.getJavaPeer      = NewNPN_GetJavaPeerProc(FP2TV(_getJavaPeer));
+#endif
+  CALLBACKS.geturlnotify     = NewNPN_GetURLNotifyProc(FP2TV(_geturlnotify));
+  CALLBACKS.posturlnotify    = NewNPN_PostURLNotifyProc(FP2TV(_posturlnotify));
+  CALLBACKS.getvalue         = NewNPN_GetValueProc(FP2TV(_getvalue));
+  CALLBACKS.setvalue         = NewNPN_SetValueProc(FP2TV(_setvalue));
+  CALLBACKS.invalidaterect   = NewNPN_InvalidateRectProc(FP2TV(_invalidaterect));
+  CALLBACKS.invalidateregion = NewNPN_InvalidateRegionProc(FP2TV(_invalidateregion));
+  CALLBACKS.forceredraw      = NewNPN_ForceRedrawProc(FP2TV(_forceredraw));
 
   initialized = TRUE;
 
@@ -258,7 +300,6 @@ NS_IMPL_ISUPPORTS2(ns4xPlugin, nsIPlugin, nsIFactory);
 
 ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary, NP_PLUGINSHUTDOWN aShutdown, nsIServiceManagerObsolete* serviceMgr)
 {
-  NS_INIT_ISUPPORTS();
   memset((void*) &fCallbacks, 0, sizeof(fCallbacks));
   gServiceMgr = serviceMgr;
   fLibrary = nsnull;
@@ -300,6 +341,52 @@ ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary, NP_PLUGINS
   if(error != NPERR_NO_ERROR || ((fCallbacks.version >> 8) < NP_VERSION_MAJOR))
     return;
 
+#elif defined(XP_MACOSX) || (defined(XP_MAC) && TARGET_CARBON)
+  // call into the entry point
+  NP_MAIN pfnMain = (NP_MAIN) PR_FindSymbol(aLibrary, "main");
+  
+  if(pfnMain == NULL)
+    return;
+
+  NPP_ShutdownUPP pfnShutdown;
+  NPPluginFuncs np_callbacks;
+  memset((void*) &np_callbacks, 0, sizeof(np_callbacks));
+  np_callbacks.size = sizeof(np_callbacks);
+  NPError error;
+
+  NS_TRY_SAFE_CALL_RETURN(error, CallNPP_MainEntryProc(pfnMain, 
+                                                       &(ns4xPlugin::CALLBACKS), 
+                                                       &np_callbacks, 
+                                                       &pfnShutdown), aLibrary, nsnull);
+
+  NPP_PLUGIN_LOG(PLUGIN_LOG_BASIC, ("NPP MainEntryProc called: return=%d\n",error));
+
+  if(error != NPERR_NO_ERROR)
+    return;
+
+  // version is a uint16 so cast to int to avoid an invalid
+  // comparison due to limited range of the data type
+  int cb_version = np_callbacks.version;
+  if ((cb_version >> 8) < NP_VERSION_MAJOR)
+    return;
+
+  // wrap all plugin entry points tvectors as mach-o callable function pointers.
+  fCallbacks.size = sizeof(fCallbacks);
+  fCallbacks.version = np_callbacks.version;
+  fCallbacks.newp = (NPP_NewUPP) TV2FP(np_callbacks.newp);
+  fCallbacks.destroy = (NPP_DestroyUPP) TV2FP(np_callbacks.destroy);
+  fCallbacks.setwindow = (NPP_SetWindowUPP) TV2FP(np_callbacks.setwindow);
+  fCallbacks.newstream = (NPP_NewStreamUPP) TV2FP(np_callbacks.newstream);
+  fCallbacks.destroystream = (NPP_DestroyStreamUPP) TV2FP(np_callbacks.destroystream);
+  fCallbacks.asfile = (NPP_StreamAsFileUPP) TV2FP(np_callbacks.asfile);
+  fCallbacks.writeready = (NPP_WriteReadyUPP) TV2FP(np_callbacks.writeready);
+  fCallbacks.write = (NPP_WriteUPP) TV2FP(np_callbacks.write);
+  fCallbacks.print = (NPP_PrintUPP) TV2FP(np_callbacks.print);
+  fCallbacks.event = (NPP_HandleEventUPP) TV2FP(np_callbacks.event);
+  fCallbacks.urlnotify = (NPP_URLNotifyUPP) TV2FP(np_callbacks.urlnotify);
+  fCallbacks.getvalue = (NPP_GetValueUPP) TV2FP(np_callbacks.getvalue);
+  fCallbacks.setvalue = (NPP_SetValueUPP) TV2FP(np_callbacks.setvalue);
+  fShutdownEntry = (NP_PLUGINSHUTDOWN) TV2FP(pfnShutdown);
 #else // for everyone else
   memcpy((void*) &fCallbacks, (void*) callbacks, sizeof(fCallbacks));
   fShutdownEntry = aShutdown;
@@ -313,6 +400,33 @@ ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary, NP_PLUGINS
 ns4xPlugin::~ns4xPlugin(void)
 {
   //reset the callbacks list
+#if defined(XP_MACOSX)
+  // release all wrapped plugin entry points.
+  if (fCallbacks.newp)
+    free(fCallbacks.newp);
+  if (fCallbacks.destroy)
+    free(fCallbacks.destroy);
+  if (fCallbacks.setwindow)
+    free(fCallbacks.setwindow);
+  if (fCallbacks.newstream)
+    free(fCallbacks.newstream);
+  if (fCallbacks.asfile)
+    free(fCallbacks.asfile);
+  if (fCallbacks.writeready)
+    free(fCallbacks.writeready);
+  if (fCallbacks.write)
+    free(fCallbacks.write);
+  if (fCallbacks.print)
+    free(fCallbacks.print);
+  if (fCallbacks.event)
+    free(fCallbacks.event);
+  if (fCallbacks.urlnotify)
+    free(fCallbacks.urlnotify);
+  if (fCallbacks.getvalue)
+    free(fCallbacks.getvalue);
+  if (fCallbacks.setvalue)
+    free(fCallbacks.setvalue);
+#endif
   memset((void*) &fCallbacks, 0, sizeof(fCallbacks));
 }
 
@@ -324,19 +438,7 @@ void ns4xPlugin::ReleaseStatics()
 }
 
 
-#ifdef XP_MAC
-////////////////////////////////////////////////////////////////////////
-static char* p2cstrdup(StringPtr pstr)
-{
-  int len = pstr[0];
-  char* cstr = new char[len + 1];
-  if (cstr != NULL) {
-    ::BlockMoveData(pstr + 1, cstr, len);
-    cstr[len] = '\0';
-  }
-  return cstr;
-}
-
+#if defined(XP_MAC) || defined(XP_MACOSX)
 ////////////////////////////////////////////////////////////////////////
 void ns4xPlugin::SetPluginRefNum(short aRefNum)
 {
@@ -368,7 +470,7 @@ ns4xPlugin::CreatePlugin(nsIServiceManagerObsolete* aServiceMgr,
       aServiceMgr->GetService(kMemoryCID, kIMemoryIID, (nsISupports**)&gMalloc);
   }
 
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
 
   ns4xPlugin *plptr;
 
@@ -549,47 +651,20 @@ ns4xPlugin::CreatePlugin(nsIServiceManagerObsolete* aServiceMgr,
   }
 #endif
 
-#if defined(XP_MAC)
+#if defined(XP_MAC) || defined(XP_MACOSX)
   short appRefNum = ::CurResFile();
   short pluginRefNum;
-  
-  nsFileSpec pluginPath(aFullPath);
+
+  nsCOMPtr<nsILocalFile> pluginPath;
+  NS_NewNativeLocalFile(nsDependentCString(aFullPath), PR_TRUE,
+                        getter_AddRefs(pluginPath));
+
   nsPluginFile pluginFile(pluginPath);
   pluginRefNum = pluginFile.OpenPluginResource();
   if (pluginRefNum == -1)
     return NS_ERROR_FAILURE;
-  
-#if TARGET_CARBON
-  // call into the entry point
-  NP_MAIN pfnMain = (NP_MAIN) PR_FindSymbol(aLibrary, "main");
 
-  if(pfnMain == NULL)
-    return NS_ERROR_FAILURE;
-
-  NPP_ShutdownUPP pfnShutdown;
-  NPPluginFuncs callbacks;
-  memset((void*) &callbacks, 0, sizeof(callbacks));
-  callbacks.size = sizeof(callbacks);
-  NPError error;
-
-  NS_TRY_SAFE_CALL_RETURN(error, CallNPP_MainEntryProc(pfnMain, 
-                                                       &(ns4xPlugin::CALLBACKS), 
-                                                       &callbacks, 
-                                                       &pfnShutdown), fLibrary, nsnull);
-
-  NPP_PLUGIN_LOG(PLUGIN_LOG_BASIC, ("NPP MainEntryProc called: return=%d\n",error));
-
-  if(error != NPERR_NO_ERROR)
-    return NS_ERROR_FAILURE;
-
-  if ((callbacks.version >> 8) < NP_VERSION_MAJOR)
-    return NS_ERROR_FAILURE;
-
-  // create the new plugin handler
-  ns4xPlugin* plugin = new ns4xPlugin(&callbacks, aLibrary, (NP_PLUGINSHUTDOWN)pfnShutdown, aServiceMgr);
-#else // not carbon
   ns4xPlugin* plugin = new ns4xPlugin(nsnull, aLibrary, nsnull, aServiceMgr);
-#endif
   if(plugin == NULL)
     return NS_ERROR_OUT_OF_MEMORY;
 
@@ -603,7 +678,7 @@ ns4xPlugin::CreatePlugin(nsIServiceManagerObsolete* aServiceMgr,
   }
 
   plugin->SetPluginRefNum(pluginRefNum);
-#endif  // XP_MAC
+#endif  // XP_MAC || XP_MACOSX
 
 #ifdef XP_BEOS
   // I just copied UNIX version.
@@ -711,13 +786,17 @@ ns4xPlugin::Shutdown(void)
   NPP_PLUGIN_LOG(PLUGIN_LOG_BASIC, ("NPP Shutdown to be called: this=%p\n",this));
 
   if (nsnull != fShutdownEntry) {
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
     CallNPP_ShutdownProc(fShutdownEntry);
     ::CloseResFile(fPluginRefNum);
 #else
     NS_TRY_SAFE_CALL_VOID(fShutdownEntry(), fLibrary, nsnull);
 #endif
 
+#if defined(XP_MACOSX)
+    // release the wrapped plugin function.
+    free(fShutdownEntry);
+#endif
     fShutdownEntry = nsnull;
   }
 
@@ -730,9 +809,9 @@ ns4xPlugin::Shutdown(void)
 nsresult
 ns4xPlugin::GetMIMEDescription(const char* *resultingDesc)
 {
-  const char* (*npGetMIMEDescrpition)() = (const char* (*)()) PR_FindSymbol(fLibrary, "NP_GetMIMEDescription");
+  const char* (*npGetMIMEDescription)() = (const char* (*)()) PR_FindSymbol(fLibrary, "NP_GetMIMEDescription");
 
-  *resultingDesc = npGetMIMEDescrpition ? npGetMIMEDescrpition() : "";
+  *resultingDesc = npGetMIMEDescription ? npGetMIMEDescription() : "";
 
   PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("ns4xPlugin::GetMIMEDescription called: this=%p, result=%s\n",this, *resultingDesc));
 
@@ -1148,7 +1227,7 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
   nsresult res;
 
   switch(variable) {
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
   case NPNVxDisplay : {
 #if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
     // adobe nppdf calls XtGetApplicationNameAndClass(display, &instance, &class)
@@ -1170,7 +1249,7 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
     return NPERR_GENERIC_ERROR;
 #endif
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
   case NPNVnetscapeWindow: {
     if (!npp || !npp->ndata)
       return NPERR_INVALID_INSTANCE_ERROR;
@@ -1382,12 +1461,14 @@ _requestread(NPStream *pstream, NPByteRange *rangeList)
 #endif
 
 ////////////////////////////////////////////////////////////////////////
+#ifdef OJI
 JRIEnv* NP_EXPORT
 _getJavaEnv(void)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_GetJavaEnv\n"));
   return NULL;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////
 const char * NP_EXPORT
@@ -1420,7 +1501,7 @@ _memalloc (uint32 size)
   return gMalloc->Alloc(size);
 }
 
-
+#ifdef OJI
 ////////////////////////////////////////////////////////////////////////
 java_lang_Class* NP_EXPORT
 _getJavaClass(void* handle)
@@ -1437,3 +1518,5 @@ _getJavaPeer(NPP npp)
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_GetJavaPeer: npp=%p\n", (void*)npp));
   return NULL;
 }
+
+#endif /* OJI */

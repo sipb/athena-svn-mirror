@@ -19,7 +19,7 @@ Rights Reserved.
 --> 
 
 <!-- Title -->
-<!ENTITY addressbookWindow.title "Address Book">
+<!ENTITY addressbookWindow.title                        "Address Book">
 
 <!-- Menus:  the . means that the menu item isn't implemented yet -->
 
@@ -31,24 +31,27 @@ Rights Reserved.
 <!-- LOCALIZATION NOTE (newListCmd.accesskey) : DONT_TRANSLATE -->  
 <!ENTITY newListCmd.accesskey                           "L">  
 <!ENTITY newAddressBookCmd.label                        "Address Book..."> 
-<!-- LOCALIZATION NOTE (newAddressBookCmd.accesskey) : DONT_TRANSLATE --> 
-<!ENTITY newAddressBookCmd.accesskey                    "b">  
+<!ENTITY newAddressBookCmd.accesskey                    "B">  
+<!ENTITY renameAddressBookCmd.label                     "Rename Address Book..."> 
+<!ENTITY renameAddressBookCmd.accesskey                 "R">  
 <!ENTITY newLDAPDirectoryCmd.label                      "LDAP Directory...">
 <!-- LOCALIZATION NOTE (newLDAPDirectoryCmd.accesskey) : DONT_TRANSLATE -->
 <!ENTITY newLDAPDirectoryCmd.accesskey                  "D">
 <!ENTITY newIM.label                                    "IM">
 <!ENTITY importCmd.label                                "Import..."> 
-<!ENTITY importCmd.accesskey				"I"> 
+<!ENTITY importCmd.accesskey                            "I"> 
 <!ENTITY exportCmd.label                                "Export...">  
-<!ENTITY exportCmd.accesskey				"E"> 
+<!ENTITY exportCmd.accesskey                            "E"> 
 <!ENTITY printCardViewCmd.label                         "Print Card...">
 <!ENTITY printCardViewCmd.accesskey                     "p">
 <!ENTITY printPreviewCardViewCmd.label                  "Print Preview Card">
+<!ENTITY printPreviewCardViewCmd.accesskey              "v">
 <!-- LOCALIZATION NOTE (printCardViewCmd.key) : DONT_TRANSLATE -->  
 <!ENTITY printCardViewCmd.key                           "P">
 <!ENTITY printAddressBook.label                         "Print Address Book..."> 
 <!ENTITY printAddressBook.accesskey                     "A"> 
 <!ENTITY printPreviewAddressBook.label                  "Print Preview Address Book"> 
+<!ENTITY printPreviewAddressBook.accesskey              "B">
 <!ENTITY printSetupCmd.label                            "Page Setup...">
 <!ENTITY printSetupCmd.accesskey                        "u">
 
@@ -56,6 +59,8 @@ Rights Reserved.
 <!ENTITY deleteAbCmd.label                              "Delete Address Book">  
 <!ENTITY deleteCardCmd.label                            "Delete Card">  
 <!ENTITY deleteCardsCmd.label                           "Delete Selected Cards">  
+<!ENTITY swapFirstNameLastNameCmd.label                 "Swap First/Last Name">
+<!ENTITY swapFirstNameLastNameCmd.accesskey             "w">  
 <!ENTITY propertiesCmd.label                            "Properties...">
 <!-- LOCALIZATION NOTE (propertiesCmd.accesskey) : DONT_TRANSLATE -->  
 <!ENTITY propertiesCmd.accesskey                        "i">  
@@ -73,9 +78,9 @@ Rights Reserved.
 <!ENTITY firstLastCmd.label                             "First Last">  
 <!ENTITY firstLastCmd.accesskey                         "f"> 
 <!ENTITY lastFirstCmd.label                             "Last, First">  
-<!ENTITY lastFirstCmd.accesskey				"l"> 
-<!ENTITY displayNameCmd.label				"Display Name">  
-<!ENTITY displayNameCmd.accesskey			"d"> 
+<!ENTITY lastFirstCmd.accesskey                         "l"> 
+<!ENTITY displayNameCmd.label                           "Display Name">  
+<!ENTITY displayNameCmd.accesskey                       "d"> 
 
 <!ENTITY stopSearchingCmd.label                         ".Stop Searching"> 
 
@@ -104,4 +109,8 @@ Rights Reserved.
 <!ENTITY advancedButton.tooltip                         "Advanced address search">
 
 <!-- Status Bar -->  
-<!ENTITY  statusText.label "">
+<!ENTITY statusText.label                               "">
+
+<!-- LOCALIZATION NOTE (hideSwapFnLnUI) : DONT_TRANSLATE -->
+<!-- Swap FN/LN UI  Set to "false" to show swap fn/ln UI -->
+<!ENTITY  hideSwapFnLnUI                                "true">

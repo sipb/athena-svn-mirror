@@ -41,6 +41,7 @@
 #include "nsMsgDBView.h"
 #include "nsIMsgCopyServiceListener.h"
 #include "nsIMsgSearchNotify.h"
+#include "nsCOMArray.h"
 
 class nsMsgSearchDBView : public nsMsgDBView, public nsIMsgCopyServiceListener, public nsIMsgSearchNotify
 {
@@ -67,6 +68,8 @@ public:
   NS_IMETHOD GetFolderForViewIndex(nsMsgViewIndex index, nsIMsgFolder **folder);
 
   virtual nsresult GetFolders(nsISupportsArray **aFolders);
+  virtual nsresult GetFolderFromMsgURI(const char *aMsgURI, nsIMsgFolder **aFolder);
+
 protected:
   nsresult FetchLocation(PRInt32 aRow, PRUnichar ** aLocationString);
   virtual nsresult GetDBForViewIndex(nsMsgViewIndex index, nsIMsgDatabase **db);
@@ -85,7 +88,7 @@ protected:
   nsMsgViewIndex* mIndicesForChainedDeleteAndFile;
   nsUInt32Array* mTestIndices;
   PRInt32 mTotalIndices;
-  nsCOMPtr <nsISupportsArray> m_dbToUseList;
+  nsCOMArray<nsIMsgDatabase> m_dbToUseList;
   nsMsgViewCommandTypeValue mCommand;
   nsCOMPtr <nsIMsgFolder> mDestFolder;
   nsresult ProcessRequestsInOneFolder(nsIMsgWindow *window);

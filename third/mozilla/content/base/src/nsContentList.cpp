@@ -60,7 +60,6 @@ static nsIContentList *gCachedContentList;
 
 nsBaseContentList::nsBaseContentList()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsBaseContentList::~nsBaseContentList()
@@ -223,7 +222,6 @@ nsFormContentList::nsFormContentList(nsIDOMHTMLFormElement *aForm,
                                      nsBaseContentList& aContentList)
   : nsBaseContentList()
 {
-  NS_INIT_ISUPPORTS();
 
   // move elements that belong to mForm into this content list
 
@@ -599,6 +597,38 @@ nsContentList::NamedItem(const nsAString& aName, nsIDOMNode** aReturn)
   return NamedItem(aName, aReturn, PR_TRUE);
 }
 
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsContentList)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsContentList)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsContentList)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsContentList)
+
+NS_IMETHODIMP 
+nsContentList::BeginUpdate(nsIDocument *aDocument)
+{
+  return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsContentList::EndUpdate(nsIDocument *aDocument)
+{
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsContentList::ContentChanged(nsIDocument* aDocument, nsIContent* aContent,
+                              nsISupports* aSubContent)
+{
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsContentList::AttributeChanged(nsIDocument* aDocument, nsIContent* aContent,
+                                PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                                PRInt32 aModType, nsChangeHint aHint)
+{
+  return NS_OK;
+}
+
 NS_IMETHODIMP 
 nsContentList::ContentAppended(nsIDocument *aDocument, nsIContent* aContainer,
                                PRInt32 aNewIndexInContainer)
@@ -644,10 +674,10 @@ nsContentList::ContentAppended(nsIDocument *aDocument, nsIContent* aContainer,
         nsCOMPtr<nsIDOMNode> newNode(do_QueryInterface(firstAppendedContent));
         NS_ASSERTION(newNode, "Content being inserted is not a node.... why?");
         PRUint16 comparisonFlags;
-        nsresult rv = ourLastDOM3Node->CompareTreePosition(newNode,
-                                                           &comparisonFlags);
+        nsresult rv =
+          ourLastDOM3Node->CompareDocumentPosition(newNode, &comparisonFlags);
         if (NS_SUCCEEDED(rv) && 
-            (comparisonFlags & nsIDOMNode::TREE_POSITION_FOLLOWING)) {
+            (comparisonFlags & nsIDOMNode::DOCUMENT_POSITION_FOLLOWING)) {
           appendToList = PR_TRUE;
         }
       }

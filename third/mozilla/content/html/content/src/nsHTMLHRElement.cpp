@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -77,9 +76,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -164,7 +160,7 @@ NS_IMPL_BOOL_ATTR(nsHTMLHRElement, NoShade, noshade)
 NS_IMPL_STRING_ATTR(nsHTMLHRElement, Size, size)
 NS_IMPL_STRING_ATTR(nsHTMLHRElement, Width, width)
 
-static nsGenericHTMLElement::EnumTable kAlignTable[] = {
+static nsHTMLValue::EnumTable kAlignTable[] = {
   { "left", NS_STYLE_TEXT_ALIGN_LEFT },
   { "right", NS_STYLE_TEXT_ALIGN_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_CENTER },
@@ -177,12 +173,12 @@ nsHTMLHRElement::StringToAttribute(nsIAtom* aAttribute,
                                    nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::width) {
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::size) {
-    if (ParseValue(aValue, 1, 1000, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 1, 1000)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -191,7 +187,7 @@ nsHTMLHRElement::StringToAttribute(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   else if (aAttribute == nsHTMLAtoms::align) {
-    if (ParseEnumValue(aValue, kAlignTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kAlignTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -206,7 +202,7 @@ nsHTMLHRElement::AttributeToString(nsIAtom* aAttribute,
 {
   if (aAttribute == nsHTMLAtoms::align) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kAlignTable, aResult);
+      aValue.EnumValueToString(kAlignTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -277,18 +273,21 @@ NS_IMETHODIMP
 nsHTMLHRElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                           nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::noshade) {
-    aHint = NS_STYLE_HINT_VISUAL;
-  }
-  else if ((aAttribute == nsHTMLAtoms::align) ||
-             (aAttribute == nsHTMLAtoms::width) ||
-             (aAttribute == nsHTMLAtoms::size)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::noshade, NS_STYLE_HINT_VISUAL },
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::size, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+  
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
 
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+  
   return NS_OK;
 }
 
@@ -299,13 +298,3 @@ nsHTMLHRElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRule
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLHRElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

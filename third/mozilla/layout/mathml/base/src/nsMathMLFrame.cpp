@@ -36,6 +36,7 @@
 #include "nsNetUtil.h"
 #include "nsIURI.h"
 #include "nsContentCID.h"
+#include "nsAutoPtr.h"
 static NS_DEFINE_CID(kCSSStyleSheetCID, NS_CSS_STYLESHEET_CID);
 
 
@@ -107,18 +108,17 @@ nsMathMLFrame::UpdatePresentationData(nsIPresContext* aPresContext,
 /* static */ void
 nsMathMLFrame::ResolveMathMLCharStyle(nsIPresContext*  aPresContext,
                                       nsIContent*      aContent,
-                                      nsIStyleContext* aParentStyleContext,
+                                      nsStyleContext*  aParentStyleContext,
                                       nsMathMLChar*    aMathMLChar,
                                       PRBool           aIsMutableChar)
 {
   nsIAtom* fontAtom = (aIsMutableChar) ?
     nsMathMLAtoms::fontstyle_stretchy :
     nsMathMLAtoms::fontstyle_anonymous; // savings
-  nsCOMPtr<nsIStyleContext> newStyleContext;
-  nsresult rv = aPresContext->ResolvePseudoStyleContextFor(aContent, fontAtom, 
-                                             aParentStyleContext,
-                                             getter_AddRefs(newStyleContext));
-  if (NS_SUCCEEDED(rv) && newStyleContext)
+  nsRefPtr<nsStyleContext> newStyleContext;
+  newStyleContext = aPresContext->ResolvePseudoStyleContextFor(aContent, fontAtom, 
+							       aParentStyleContext);
+  if (newStyleContext)
     aMathMLChar->SetStyleContext(newStyleContext);
 }
 
@@ -176,8 +176,7 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
       break;
     content->GetTag(*getter_AddRefs(tag));
     if (tag.get() == nsMathMLAtoms::math) {
-      const nsStyleDisplay* display;
-      frame->GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&)display);
+      const nsStyleDisplay* display = frame->GetStyleDisplay();
       if (display->mDisplay == NS_STYLE_DISPLAY_BLOCK) {
         aPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
       }
@@ -403,7 +402,7 @@ nsMathMLFrame::ParseNumericValue(nsString&   aString,
 
 /* static */ nscoord
 nsMathMLFrame::CalcLength(nsIPresContext*   aPresContext,
-                          nsIStyleContext*  aStyleContext,
+                          nsStyleContext*   aStyleContext,
                           const nsCSSValue& aCSSValue)
 {
   NS_ASSERTION(aCSSValue.IsLengthUnit(), "not a length unit");
@@ -420,14 +419,12 @@ nsMathMLFrame::CalcLength(nsIPresContext*   aPresContext,
     return NSFloatPixelsToTwips(aCSSValue.GetFloatValue(), p2t);
   }
   else if (eCSSUnit_EM == unit) {
-    const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-      aStyleContext->GetStyleData(eStyleStruct_Font));
+    const nsStyleFont* font = aStyleContext->GetStyleFont();
     return NSToCoordRound(aCSSValue.GetFloatValue() * (float)font->mFont.size);
   }
   else if (eCSSUnit_XHeight == unit) {
     nscoord xHeight;
-    const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-      aStyleContext->GetStyleData(eStyleStruct_Font));
+    const nsStyleFont* font = aStyleContext->GetStyleFont();
     nsCOMPtr<nsIFontMetrics> fm;
     aPresContext->GetMetricsFor(font->mFont, getter_AddRefs(fm));
     fm->GetXHeight(xHeight);
@@ -556,6 +553,9 @@ GetMathMLAttributeStyleSheet(nsIPresContext* aPresContext,
   cssSheet->SetDefaultNameSpaceID(kNameSpaceID_MathML);
   nsCOMPtr<nsIStyleSheet> sheet(do_QueryInterface(cssSheet));
 
+  // all done, no further activity from the net involved, so we better do this
+  sheet->SetComplete();
+
   // insert the stylesheet into the styleset without notifying observers
   styleSet->AppendAgentStyleSheet(sheet);
   *aSheet = sheet;
@@ -612,9 +612,6 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
     if (attrValue.IsEmpty())
       continue;
 
-    const PRUnichar* attrName;
-    attrAtom->GetUnicode(&attrName);
-
     // don't add rules that are already in mathml.css
     // (this will also clean up whitespace before units - see bug 125303)
     if (attrAtom == nsMathMLAtoms::fontsize_ || attrAtom == nsMathMLAtoms::mathsize_) {
@@ -629,9 +626,12 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
     else
       cssProperty.Append(attrValue);
 
+    nsAutoString attrName;
+    attrAtom->ToString(attrName);
+
     // make a style rule that maps to the equivalent CSS property
     nsAutoString cssRule;
-    cssRule.Assign(NS_LITERAL_STRING("[")  + nsDependentString(attrName) +
+    cssRule.Assign(NS_LITERAL_STRING("[")  + attrName +
                    NS_LITERAL_STRING("='") + attrValue +
                    NS_LITERAL_STRING("']{") + cssProperty + NS_LITERAL_STRING("}"));
 
@@ -659,7 +659,7 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
     // XXX bug 142648 - GetSourceSelectorText is in the format *[color=blue] (i.e., no quotes...) 
     // XXXrbs need to keep this in sync with the fix for bug 142648
     nsAutoString selector;
-    selector.Assign(NS_LITERAL_STRING("*[") + nsDependentString(attrName) +
+    selector.Assign(NS_LITERAL_STRING("*[") + attrName +
                     NS_LITERAL_STRING("=") + attrValue +
                     NS_LITERAL_STRING("]"));
     PRInt32 k, count;
@@ -715,6 +715,13 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
       fm->ComputeStyleChangeFor(aPresContext, aFrame,
                                 kNameSpaceID_None, nsnull,
                                 changeList, minChange, maxChange);
+#ifdef DEBUG
+      // Use the parent frame to make sure we catch in-flows and such
+      nsIFrame* parentFrame;
+      aFrame->GetParent(&parentFrame);
+      fm->DebugVerifyStyleTree(aPresContext,
+                               parentFrame ? parentFrame : aFrame);
+#endif
     }
   }
 

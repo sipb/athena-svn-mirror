@@ -38,7 +38,8 @@
 #include "nsRDFCID.h"
 #include "nsIRDFXMLSink.h"
 
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsISoftwareUpdate.h"
 
 #define NC_RDF_NAME	         	"http://home.netscape.com/NC-rdf#name"
@@ -57,9 +58,6 @@
 
 static NS_DEFINE_CID(kRDFServiceCID,   NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kRDFContainerCID, NS_RDFCONTAINER_CID);
-static NS_DEFINE_IID(kPrefsIID, NS_IPREF_IID);
-static NS_DEFINE_IID(kPrefsCID,  NS_PREF_CID);
-
 
 nsIRDFResource* nsXPINotifierImpl::kXPI_NotifierSources = nsnull;
 nsIRDFResource* nsXPINotifierImpl::kXPI_NotifierPackages = nsnull;
@@ -78,8 +76,6 @@ nsIRDFResource* nsXPINotifierImpl::kNC_Child = nsnull;
 nsXPINotifierImpl::nsXPINotifierImpl()
     : mRDF(nsnull)
 {
-    NS_INIT_ISUPPORTS();
-
     mPendingRefreshes = 0;
 
     static NS_DEFINE_CID(kRDFInMemoryDataSourceCID, NS_RDFINMEMORYDATASOURCE_CID);
@@ -122,19 +118,13 @@ nsXPINotifierImpl::NotificationEnabled(PRBool* aReturn)
 {
     *aReturn = PR_FALSE;
 
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
 
-    nsIPref * prefs;
-    nsresult rv = nsServiceManager::GetService(kPrefsCID, 
-                                               kPrefsIID,
-                                               (nsISupports**) &prefs);
-
-    
-    
-    if ( NS_SUCCEEDED(rv) )
+    if ( prefBranch )
     {
         PRBool value;
         // check to see if we are on.
-        rv = prefs->GetBoolPref( (const char*) XPINSTALL_NOTIFICATIONS_ENABLE, &value);
+        nsresult rv = prefBranch->GetBoolPref( (const char*) XPINSTALL_NOTIFICATIONS_ENABLE, &value);
 
         if (NS_SUCCEEDED(rv) && value)
         {
@@ -149,15 +139,15 @@ nsXPINotifierImpl::NotificationEnabled(PRBool* aReturn)
 
             PRInt32 lastTime      = 0;
             
-            rv = prefs->GetIntPref(XPINSTALL_NOTIFICATIONS_INTERVAL, &intervalHours);
+            rv = prefBranch->GetIntPref(XPINSTALL_NOTIFICATIONS_INTERVAL, &intervalHours);
 
             if (NS_FAILED(rv))
             {
                 intervalHours = 7*24;  // default at once a week
-                rv = prefs->SetIntPref(XPINSTALL_NOTIFICATIONS_INTERVAL, intervalHours);
+                rv = prefBranch->SetIntPref(XPINSTALL_NOTIFICATIONS_INTERVAL, intervalHours);
             }
 
-            rv = prefs->GetIntPref(XPINSTALL_NOTIFICATIONS_LASTDATE, &lastTime);
+            rv = prefBranch->GetIntPref(XPINSTALL_NOTIFICATIONS_LASTDATE, &lastTime);
     
             now = PR_Now();
 
@@ -166,7 +156,7 @@ nsXPINotifierImpl::NotificationEnabled(PRBool* aReturn)
 
             if (NS_FAILED(rv) || lastTime == 0)
             {
-                rv = prefs->SetIntPref(XPINSTALL_NOTIFICATIONS_LASTDATE, nowSec);
+                rv = prefBranch->SetIntPref(XPINSTALL_NOTIFICATIONS_LASTDATE, nowSec);
                 return NS_OK;
             }
             
@@ -174,8 +164,6 @@ nsXPINotifierImpl::NotificationEnabled(PRBool* aReturn)
             {
                 *aReturn = PR_TRUE;
             }
-
-            NS_RELEASE(prefs);
         }
     }
     
@@ -551,7 +539,7 @@ nsXPINotifierImpl::OnEndLoad(nsIRDFXMLSink *aSink)
 					nsMemory::Free(regkeyCString);
 
                     // check to see if this software title should be "flashed"
-                    if (IsNewerOrUninstalled(NS_LossyConvertUCS2toASCII(regKeyString).get(), NS_LossyConvertUCS2toASCII(versionString).get()))
+                    if (IsNewerOrUninstalled(NS_ConvertUCS2toUTF8(regKeyString).get(), NS_ConvertUCS2toUTF8(versionString).get()))
                     {
                         //assert into flash
                         

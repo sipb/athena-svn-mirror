@@ -45,18 +45,18 @@
 #define nsHashtableEnumerator_h___
 
 #include "nscore.h"
-#include "nsIEnumerator.h"
 #include "nsHashtable.h"
 
-typedef NS_CALLBACK(NS_HASH_ENUMERATOR_CONVERTER) (nsHashKey *key, void *data,
+class nsISimpleEnumerator;
+
+typedef NS_CALLBACK(nsHashEnumeratorConverterFunc) (nsHashKey *key, void *data,
                                                    void *convert_data,
                                                    nsISupports **retval);
 
-extern "C" NS_COM nsresult
-NS_NewHashtableEnumerator (nsHashtable *aHash, 
-                           NS_HASH_ENUMERATOR_CONVERTER aConverter,
-                           void *aData, nsIEnumerator **retval);
-
+NS_COM nsresult
+NS_NewHashtableEnumerator(nsHashtable *aHash,
+                          nsHashEnumeratorConverterFunc aConverter,
+                          void *aData, nsISimpleEnumerator **retval);
 
 #endif /* nsHashtableEnumerator_h___ */
 

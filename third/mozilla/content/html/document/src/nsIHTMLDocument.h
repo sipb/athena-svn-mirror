@@ -67,12 +67,11 @@ public:
 
   NS_IMETHOD AddImageMap(nsIDOMHTMLMapElement* aMap) = 0;
 
-  NS_IMETHOD GetImageMap(const nsString& aMapName,
+  NS_IMETHOD GetImageMap(const nsAString& aMapName,
                          nsIDOMHTMLMapElement** aResult) = 0;
 
   NS_IMETHOD RemoveImageMap(nsIDOMHTMLMapElement* aMap) = 0;
 
-  NS_IMETHOD SetLastModified(const nsAString& aLastModified) = 0;
   NS_IMETHOD SetReferrer(const nsAString& aReferrer) = 0;
 
   /**
@@ -107,10 +106,7 @@ public:
    */
   NS_IMETHOD GetNumFormsSynchronous(PRInt32* aNumForms) = 0;
   
-  NS_IMETHOD GetBodyElement(nsIDOMHTMLBodyElement** aBody) = 0;
-
   NS_IMETHOD_(PRBool) IsWriting() = 0;
-
 };
 
 #endif /* nsIHTMLDocument_h___ */

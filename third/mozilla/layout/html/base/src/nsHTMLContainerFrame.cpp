@@ -38,11 +38,11 @@
 #include "nsIRenderingContext.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
-#include "nsCSSRendering.h"
 #include "nsIContent.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsIWidget.h"
 #include "nsILinkHandler.h"
 #include "nsHTMLValue.h"
@@ -60,6 +60,8 @@
 #include "nsWidgetsCID.h"
 #include "nsIStyleSet.h"
 #include "nsCOMPtr.h"
+#include "nsIDeviceContext.h"
+#include "nsIFontMetrics.h"
 #include "nsReflowPath.h"
 
 static NS_DEFINE_CID(kCChildCID, NS_CHILD_CID);
@@ -74,68 +76,229 @@ nsHTMLContainerFrame::Paint(nsIPresContext*      aPresContext,
   if (NS_FRAME_IS_UNFLOWABLE & mState) {
     return NS_OK;
   }
-  nsCOMPtr<nsIAtom> frameType;
-  GetFrameType(getter_AddRefs(frameType));
 
   // Paint inline element backgrounds in the foreground layer, but
-  // others in the background (bug 36710).
-  if (((frameType.get() == nsLayoutAtoms::inlineFrame)?NS_FRAME_PAINT_LAYER_FOREGROUND:NS_FRAME_PAINT_LAYER_BACKGROUND) == aWhichLayer) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)((nsIStyleContext*)mStyleContext)->GetStyleData(eStyleStruct_Visibility);
-    if (vis->IsVisible() && mRect.width && mRect.height) {
-      // Paint our background and border
-      PRIntn skipSides = GetSkipSides();
-      const nsStyleBorder* border = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* padding = (const nsStylePadding*)
-        mStyleContext->GetStyleData(eStyleStruct_Padding);
-      const nsStyleOutline* outline = (const nsStyleOutline*)
-        mStyleContext->GetStyleData(eStyleStruct_Outline);
+  // others in the background (bug 36710).  (nsInlineFrame::Paint does
+  // this differently.)
+  if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
+  }
+    
+  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
+  return NS_OK;
+}
 
-      nsRect  rect(0, 0, mRect.width, mRect.height);
-      nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                      aDirtyRect, rect, *border, *padding,
-                                      0, 0);
-      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *border, mStyleContext,
-                                  skipSides);
-      nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
-                                   aDirtyRect, rect, *border, *outline,
-                                   mStyleContext, 0);
-      
-      // The sole purpose of this is to trigger display
-      //  of the selection window for Named Anchors,
-      //  which don't have any children and normally don't
-      //  have any size, but in Editor we use CSS to display
-      //  an image to represent this "hidden" element.
-      if (!mFrames.FirstChild())
-      {
-        nsFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
-      }
+void
+nsHTMLContainerFrame::PaintDecorationsAndChildren(
+                                       nsIPresContext*      aPresContext,
+                                       nsIRenderingContext& aRenderingContext,
+                                       const nsRect&        aDirtyRect,
+                                       nsFramePaintLayer    aWhichLayer,
+                                       PRBool               aIsBlock,
+                                       PRUint32             aFlags)
+{
+  // Do standards mode painting of 'text-decoration's: under+overline
+  // behind children, line-through in front.  For Quirks mode, see
+  // nsTextFrame::PaintTextDecorations.  (See bug 1777.)
+  nscolor underColor, overColor, strikeColor;
+  PRUint8 decorations = NS_STYLE_TEXT_DECORATION_NONE;
+  nsCOMPtr<nsIFontMetrics> fm;
+  nsCompatibility mode;
+  aPresContext->GetCompatibilityMode(&mode);
+  PRBool isVisible;
+
+  if (eCompatibility_NavQuirks != mode && 
+      NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer &&
+      NS_SUCCEEDED(IsVisibleForPainting(aPresContext, aRenderingContext,
+                                        PR_TRUE, &isVisible)) &&
+      isVisible) {
+    GetTextDecorations(aPresContext, aIsBlock, decorations, underColor, 
+                       overColor, strikeColor);
+    if (decorations & (NS_STYLE_TEXT_DECORATION_UNDERLINE |
+                       NS_STYLE_TEXT_DECORATION_OVERLINE |
+                       NS_STYLE_TEXT_DECORATION_LINE_THROUGH)) {
+      const nsStyleFont* font = GetStyleFont();
+      NS_ASSERTION(font->mFont.decorations == NS_FONT_DECORATION_NONE,
+                   "fonts on style structs shouldn't have decorations");
+
+      // XXX This is relatively slow and shouldn't need to be used here.
+      nsCOMPtr<nsIDeviceContext> deviceContext;
+      aRenderingContext.GetDeviceContext(*getter_AddRefs(deviceContext));
+      nsCOMPtr<nsIFontMetrics> normalFont;
+      deviceContext->GetMetricsFor(font->mFont, *getter_AddRefs(fm));
+    }
+    if (decorations & NS_STYLE_TEXT_DECORATION_UNDERLINE) {
+      PaintTextDecorations(aRenderingContext, fm,
+                           NS_STYLE_TEXT_DECORATION_UNDERLINE, underColor);
+    }
+    if (decorations & NS_STYLE_TEXT_DECORATION_OVERLINE) {
+      PaintTextDecorations(aRenderingContext, fm,
+                           NS_STYLE_TEXT_DECORATION_OVERLINE, overColor);
     }
   }
 
-  if (frameType.get() == nsLayoutAtoms::canvasFrame) {
-    // We are wrapping the root frame of a document. We
-    // need to check the pres shell to find out if painting is locked
-    // down (because we're still in the early stages of document
-    // and frame construction.  If painting is locked down, then we
-    // do not paint our children.  
-    PRBool paintingSuppressed = PR_FALSE;
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    shell->IsPaintingSuppressed(&paintingSuppressed);
-    if (paintingSuppressed)
-      return NS_OK;
+  PaintChildren(aPresContext, aRenderingContext, aDirtyRect,
+                aWhichLayer, aFlags);
+
+  if (decorations & NS_STYLE_TEXT_DECORATION_LINE_THROUGH) {
+    PaintTextDecorations(aRenderingContext, fm,
+                         NS_STYLE_TEXT_DECORATION_LINE_THROUGH, strikeColor);
+  }
+}
+
+static PRBool 
+HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* parent);
+
+void
+nsHTMLContainerFrame::GetTextDecorations(nsIPresContext* aPresContext, 
+                                         PRBool aIsBlock,
+                                         PRUint8& aDecorations,
+                                         nscolor& aUnderColor, 
+                                         nscolor& aOverColor, 
+                                         nscolor& aStrikeColor)
+{
+  aDecorations = NS_STYLE_TEXT_DECORATION_NONE;
+  if (!mStyleContext->HasTextDecorations()) {
+    // This is a neccessary, but not sufficient, condition for text
+    // decorations.
+    return; 
   }
 
-  // Now paint the kids. Note that child elements have the opportunity to
-  // override the visibility property and display even if their parent is
-  // hidden
+  // A mask of all possible decorations.
+  PRUint8 decorMask = NS_STYLE_TEXT_DECORATION_UNDERLINE |
+                      NS_STYLE_TEXT_DECORATION_OVERLINE |
+                      NS_STYLE_TEXT_DECORATION_LINE_THROUGH; 
 
-  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
+  if (!aIsBlock) {
+    aDecorations = GetStyleTextReset()->mTextDecoration  & decorMask;
+    if (aDecorations) {
+      const nsStyleColor* styleColor = GetStyleColor();
+      aUnderColor = styleColor->mColor;
+      aOverColor = styleColor->mColor;
+      aStrikeColor = styleColor->mColor;
+    }
+  }
+  else {
+    // walk tree
+    for (nsIFrame *frame = this; frame && decorMask; frame->GetParent(&frame)) {
+      // find text-decorations.  "Inherit" from parent *block* frames
 
-  return NS_OK;
+      nsStyleContext* styleContext = frame->GetStyleContext();
+      const nsStyleDisplay* styleDisplay = styleContext->GetStyleDisplay();
+      if (!styleDisplay->IsBlockLevel() &&
+          styleDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
+        // If an inline frame is discovered while walking up the tree,
+        // we should stop according to CSS3 draft. CSS2 is rather vague
+        // about this.
+        break;
+      }
+
+      const nsStyleTextReset* styleText = styleContext->GetStyleTextReset();
+      PRUint8 decors = decorMask & styleText->mTextDecoration;
+      if (decors) {
+        // A *new* text-decoration is found.
+        nscolor color = styleContext->GetStyleColor()->mColor;
+
+        if (NS_STYLE_TEXT_DECORATION_UNDERLINE & decors) {
+          aUnderColor = color;
+          decorMask &= ~NS_STYLE_TEXT_DECORATION_UNDERLINE;
+          aDecorations |= NS_STYLE_TEXT_DECORATION_UNDERLINE;
+        }
+        if (NS_STYLE_TEXT_DECORATION_OVERLINE & decors) {
+          aOverColor = color;
+          decorMask &= ~NS_STYLE_TEXT_DECORATION_OVERLINE;
+          aDecorations |= NS_STYLE_TEXT_DECORATION_OVERLINE;
+        }
+        if (NS_STYLE_TEXT_DECORATION_LINE_THROUGH & decors) {
+          aStrikeColor = color;
+          decorMask &= ~NS_STYLE_TEXT_DECORATION_LINE_THROUGH;
+          aDecorations |= NS_STYLE_TEXT_DECORATION_LINE_THROUGH;
+        }
+      }
+    }
+  }
+  
+  if (aDecorations) {
+    // If this frame contains no text, we're required to ignore this property
+    if (!HasTextFrameDescendant(aPresContext, this)) {
+      aDecorations = NS_STYLE_TEXT_DECORATION_NONE;
+    }
+  }
+}
+
+static PRBool 
+HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* aParent)
+{
+  nsIFrame* kid = nsnull;
+  nsCOMPtr<nsIAtom> frameType;
+    
+  for (aParent->FirstChild(aPresContext, nsnull, &kid); kid; 
+       kid->GetNextSibling(&kid))
+  {
+    kid->GetFrameType(getter_AddRefs(frameType));
+    if (frameType == nsLayoutAtoms::textFrame) {
+      // This is only a candidate. We need to determine if this text
+      // frame is empty, as in containing only (non-pre) whitespace.
+      // See bug 20163.
+      nsCompatibility mode;
+      aPresContext->GetCompatibilityMode(&mode);
+      const nsStyleText* styleText = kid->GetStyleText();
+      // XXXldb This is the wrong way to set |isPre|.
+      PRBool isPre = NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace ||
+            NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == styleText->mWhiteSpace;
+      PRBool isEmpty;
+      kid->IsEmpty(mode, isPre, &isEmpty);
+      if (!isEmpty) {
+        return PR_TRUE;
+      }
+    }
+    if (HasTextFrameDescendant(aPresContext, kid)) {
+      return PR_TRUE;
+    }
+  }
+  return PR_FALSE;
+}
+
+/*virtual*/ void
+nsHTMLContainerFrame::PaintTextDecorationLines(
+                   nsIRenderingContext& aRenderingContext, 
+                   nscolor aColor, 
+                   nscoord aOffset, 
+                   nscoord aAscent, 
+                   nscoord aSize) 
+{
+  nsMargin bp;
+  CalcBorderPadding(bp);
+  aRenderingContext.SetColor(aColor);
+  nscoord innerWidth = mRect.width - bp.left - bp.right;
+  aRenderingContext.FillRect(bp.left, 
+                             bp.top + aAscent - aOffset, innerWidth, aSize);
+}
+
+void
+nsHTMLContainerFrame::PaintTextDecorations(
+                            nsIRenderingContext& aRenderingContext,
+                            nsIFontMetrics* aFontMetrics,
+                            PRUint8 aDecoration,
+                            nscolor aColor)
+{
+  nscoord ascent, offset, size;
+  aFontMetrics->GetMaxAscent(ascent);
+  if (aDecoration & 
+      (NS_STYLE_TEXT_DECORATION_UNDERLINE 
+       | NS_STYLE_TEXT_DECORATION_OVERLINE)) {
+    aFontMetrics->GetUnderline(offset, size);
+    if (NS_STYLE_TEXT_DECORATION_UNDERLINE & aDecoration) {
+      PaintTextDecorationLines(aRenderingContext, aColor, offset, ascent, size);
+    }
+    else if (NS_STYLE_TEXT_DECORATION_OVERLINE & aDecoration) {
+      PaintTextDecorationLines(aRenderingContext, aColor, ascent, ascent, size);
+    }
+  }
+  else if (NS_STYLE_TEXT_DECORATION_LINE_THROUGH & aDecoration) {
+    aFontMetrics->GetStrikeout(offset, size);
+    PaintTextDecorationLines(aRenderingContext, aColor, offset, ascent, size);
+  }
 }
 
 /**
@@ -207,29 +370,23 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
     // XXX Pretend this view is last of the parent's views in document order
     aViewManager->InsertChild(aNewParentView, view, nsnull, PR_TRUE);
   } else {
-    // Iterate the child frames, and check each child frame to see if it has
-    // a view
-    nsIFrame* childFrame;
-    aFrame->FirstChild(aPresContext, nsnull, &childFrame);
-    while (childFrame) {
-      ReparentFrameViewTo(aPresContext, childFrame, aViewManager, aNewParentView, aOldParentView);
-      childFrame->GetNextSibling(&childFrame);
-    }
+    PRInt32 listIndex = 0;
+    nsCOMPtr<nsIAtom> listName;
+    // This loop iterates through every child list name, and also
+    // executes once with listName == nsnull.
+    do {
+      aFrame->GetAdditionalChildListName(listIndex, getter_AddRefs(listName));
+      listIndex++;
 
-    // Also check the overflow-list
-    aFrame->FirstChild(aPresContext, nsLayoutAtoms::overflowList, &childFrame);
-    while (childFrame) {
-      ReparentFrameViewTo(aPresContext, childFrame, aViewManager, aNewParentView, aOldParentView);
-      childFrame->GetNextSibling(&childFrame);
-    }
-
-      // Also check the floater-list
-    aFrame->FirstChild(aPresContext, nsLayoutAtoms::floaterList, &childFrame);
-    while (childFrame) {
-      ReparentFrameViewTo(aPresContext, childFrame, aViewManager, aNewParentView, aOldParentView);
-      childFrame->GetNextSibling(&childFrame);
-    }
-
+      // Iterate the child frames, and check each child frame to see if it has
+      // a view
+      nsIFrame* childFrame;
+      aFrame->FirstChild(aPresContext, listName, &childFrame);
+      for (; childFrame; childFrame->GetNextSibling(&childFrame)) {
+        ReparentFrameViewTo(aPresContext, childFrame, aViewManager,
+                            aNewParentView, aOldParentView);
+      }
+    } while (listName);
   }
 
   return NS_OK;
@@ -433,7 +590,7 @@ nsHTMLContainerFrame::ReparentFrameViewList(nsIPresContext* aPresContext,
 nsresult
 nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
                                          nsIFrame* aFrame,
-                                         nsIStyleContext* aStyleContext,
+                                         nsStyleContext* aStyleContext,
                                          nsIFrame* aContentParentFrame,
                                          PRBool aForce)
 {
@@ -511,8 +668,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
 
   // XXX If it's fixed positioned, then create a widget so it floats
   // above the scrolling area
-  const nsStyleDisplay* display;
-  ::GetStyleData(aStyleContext, &display);
+  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
   if (NS_STYLE_POSITION_FIXED == display->mPosition) {
     view->CreateWidget(kCChildCID);
   }
@@ -527,100 +683,61 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
 }
 
 void
-nsHTMLContainerFrame::CheckInvalidateBorder(nsIPresContext* aPresContext,
-                                            nsHTMLReflowMetrics& aDesiredSize,
-                                            const nsHTMLReflowState& aReflowState)
+nsHTMLContainerFrame::CheckInvalidateSizeChange(nsIPresContext* aPresContext,
+                                                nsHTMLReflowMetrics& aDesiredSize,
+                                                const nsHTMLReflowState& aReflowState)
 {
-  // XXX This method ought to deal with padding as well
-  // If this is a style change reflow targeted at this frame, we must repaint
-  // everything (well, we really just have to repaint the borders but we're
-  // a bunch of lazybones).
-  if (aReflowState.reason == eReflowReason_Incremental) {
-    nsHTMLReflowCommand *command = aReflowState.path->mReflowCommand;
-    if (command) {
-      nsReflowType type;
-      command->GetType(type);
-      if (type == eReflowType_StyleChanged) {
+  if (aDesiredSize.width == mRect.width
+      && aDesiredSize.height == mRect.height)
+    return;
 
-#ifdef NOISY_BLOCK_INVALIDATE
-        printf("%p invalidate 1 (%d, %d, %d, %d)\n",
-               this, 0, 0, mRect.width, mRect.height);
-#endif
+  // Below, we invalidate the old frame area (or, in the case of
+  // outline, combined area) if the outline, border or background
+  // settings indicate that something other than the difference
+  // between the old and new areas needs to be painted. We are
+  // assuming that the difference between the old and new areas will
+  // be invalidated by some other means. That also means invalidating
+  // the old frame area is the same as invalidating the new frame area
+  // (since in either case the UNION of old and new areas will be
+  // invalidated)
 
-        // Lots of things could have changed so damage our entire bounds
-        nsRect damageRect(0, 0, mRect.width, mRect.height);
-        if (!damageRect.IsEmpty()) {
-          Invalidate(aPresContext,damageRect);
-        }
+  // Invalidate the entire old frame+outline if the frame has an outline
 
-        return;
-      }
+  // This assumes 'outline' is painted outside the element, as CSS2 requires.
+  // Currently we actually paint 'outline' inside the element so this code
+  // isn't strictly necessary. But we're trying to get ready to switch to
+  // CSS2 compliance.
+  const nsStyleOutline* outline = GetStyleOutline();
+  PRUint8 outlineStyle = outline->GetOutlineStyle();
+  if (outlineStyle != NS_STYLE_BORDER_STYLE_NONE
+      && outlineStyle != NS_STYLE_BORDER_STYLE_HIDDEN) {
+    nscoord width;
+    outline->GetOutlineWidth(width);
+    if (width > 0) {
+      nsRect r(0, 0, mRect.width, mRect.height);
+      r.Inflate(width, width);
+      Invalidate(aPresContext, r);
+      return;
     }
   }
 
-  // If we changed size, we must invalidate the parts of us that have changed
-  // to make the border show up.
-  if ((aReflowState.reason == eReflowReason_Incremental ||
-       aReflowState.reason == eReflowReason_Dirty)) {
-    nsMargin border = aReflowState.mComputedBorderPadding -
-                      aReflowState.mComputedPadding;
+  // Invalidate the old frame if the frame has borders. Those borders
+  // may be moving.
+  const nsStyleBorder* border = GetStyleBorder();
+  if (border->IsBorderSideVisible(NS_SIDE_LEFT)
+      || border->IsBorderSideVisible(NS_SIDE_RIGHT)
+      || border->IsBorderSideVisible(NS_SIDE_TOP)
+      || border->IsBorderSideVisible(NS_SIDE_BOTTOM)) {
+    Invalidate(aPresContext, nsRect(0, 0, mRect.width, mRect.height));
+    return;
+  }
 
-    // See if our width changed
-    if ((aDesiredSize.width != mRect.width) && (border.right > 0)) {
-      nsRect damageRect;
-
-      if (aDesiredSize.width < mRect.width) {
-        // Our new width is smaller, so we need to make sure that
-        // we paint our border in its new position
-        damageRect.x = aDesiredSize.width - border.right;
-        damageRect.width = border.right;
-        damageRect.y = 0;
-        damageRect.height = aDesiredSize.height;
-      } else {
-        // Our new width is larger, so we need to erase our border in its
-        // old position
-        damageRect.x = mRect.width - border.right;
-        damageRect.width = border.right;
-        damageRect.y = 0;
-        damageRect.height = mRect.height;
-      }
-
-#ifdef NOISY_BLOCK_INVALIDATE
-      printf("%p invalidate 2 (%d, %d, %d, %d)\n",
-             this, damageRect.x, damageRect.y, damageRect.width, damageRect.height);
-#endif
-      if (!damageRect.IsEmpty()) {
-        Invalidate(aPresContext, damageRect);
-      }
-    }
-
-    // See if our height changed
-    if ((aDesiredSize.height != mRect.height) && (border.bottom > 0)) {
-      nsRect  damageRect;
-
-      if (aDesiredSize.height < mRect.height) {
-        // Our new height is smaller, so we need to make sure that
-        // we paint our border in its new position
-        damageRect.x = 0;
-        damageRect.width = aDesiredSize.width;
-        damageRect.y = aDesiredSize.height - border.bottom;
-        damageRect.height = border.bottom;
-
-      } else {
-        // Our new height is larger, so we need to erase our border in its
-        // old position
-        damageRect.x = 0;
-        damageRect.width = mRect.width;
-        damageRect.y = mRect.height - border.bottom;
-        damageRect.height = border.bottom;
-      }
-#ifdef NOISY_BLOCK_INVALIDATE
-      printf("%p invalidate 3 (%d, %d, %d, %d)\n",
-             this, damageRect.x, damageRect.y, damageRect.width, damageRect.height);
-#endif
-      if (!damageRect.IsEmpty()) {
-        Invalidate(aPresContext, damageRect);
-      }
-    }
+  // Invalidate the old frame if the frame has a background
+  // whose position depends on the size of the frame
+  const nsStyleBackground* background = GetStyleBackground();
+  if (background->mBackgroundFlags &
+      (NS_STYLE_BG_X_POSITION_PERCENT | NS_STYLE_BG_Y_POSITION_PERCENT)) {
+    Invalidate(aPresContext, nsRect(0, 0, mRect.width, mRect.height));
+    return;
   }
 }

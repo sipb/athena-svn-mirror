@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu> (original author)
+ *   L. David Baron <dbaron@dbaron.org> (original author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -44,40 +44,39 @@
  */
 
 #ifndef STYLE_STRUCT_INHERITED
-#define STYLE_STRUCT_INHERITED(name, checkdata_cb) \
-  STYLE_STRUCT(name, checkdata_cb)
+#define STYLE_STRUCT_INHERITED(name, checkdata_cb, ctor_args) \
+  STYLE_STRUCT(name, checkdata_cb, ctor_args)
 #define UNDEF_STYLE_STRUCT_INHERITED
 #endif
 
 #ifndef STYLE_STRUCT_RESET
-#define STYLE_STRUCT_RESET(name, checkdata_cb) STYLE_STRUCT(name, checkdata_cb)
+#define STYLE_STRUCT_RESET(name, checkdata_cb, ctor_args) \
+  STYLE_STRUCT(name, checkdata_cb, ctor_args)
 #define UNDEF_STYLE_STRUCT_RESET
 #endif
 
-STYLE_STRUCT_INHERITED(Font, CheckFontCallback)
-STYLE_STRUCT_INHERITED(Color, nsnull)
-STYLE_STRUCT_RESET(Background, nsnull)
-STYLE_STRUCT_INHERITED(List, nsnull)
-STYLE_STRUCT_RESET(Position, nsnull)
-STYLE_STRUCT_INHERITED(Text, nsnull)
-STYLE_STRUCT_RESET(TextReset, nsnull)
-STYLE_STRUCT_RESET(Display, nsnull)
-STYLE_STRUCT_INHERITED(Visibility, nsnull)
-STYLE_STRUCT_RESET(Content, nsnull)
-STYLE_STRUCT_INHERITED(Quotes, nsnull)
-STYLE_STRUCT_INHERITED(UserInterface, nsnull)
-STYLE_STRUCT_RESET(UIReset, nsnull)
-STYLE_STRUCT_RESET(Table, nsnull)
-STYLE_STRUCT_INHERITED(TableBorder, nsnull)
-STYLE_STRUCT_RESET(Margin, nsnull)
-STYLE_STRUCT_RESET(Padding, nsnull)
-STYLE_STRUCT_RESET(Border, nsnull)
-STYLE_STRUCT_RESET(Outline, nsnull)
-#ifdef INCLUDE_XUL
-STYLE_STRUCT_RESET(XUL, nsnull)
-#endif
+STYLE_STRUCT_INHERITED(Font, CheckFontCallback, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_INHERITED(Color, nsnull, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_RESET(Background, nsnull, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_INHERITED(List, nsnull, ())
+STYLE_STRUCT_RESET(Position, nsnull, ())
+STYLE_STRUCT_INHERITED(Text, nsnull, ())
+STYLE_STRUCT_RESET(TextReset, nsnull, ())
+STYLE_STRUCT_RESET(Display, nsnull, ())
+STYLE_STRUCT_INHERITED(Visibility, nsnull, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_RESET(Content, nsnull, ())
+STYLE_STRUCT_INHERITED(Quotes, nsnull, ())
+STYLE_STRUCT_INHERITED(UserInterface, nsnull, ())
+STYLE_STRUCT_RESET(UIReset, nsnull, ())
+STYLE_STRUCT_RESET(Table, nsnull, ())
+STYLE_STRUCT_INHERITED(TableBorder, nsnull, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_RESET(Margin, nsnull, ())
+STYLE_STRUCT_RESET(Padding, nsnull, ())
+STYLE_STRUCT_RESET(Border, nsnull, ())
+STYLE_STRUCT_RESET(Outline, nsnull, (SSARG_PRESCONTEXT))
+STYLE_STRUCT_RESET(XUL, nsnull, ())
 #ifdef MOZ_SVG
-STYLE_STRUCT_INHERITED(SVG, nsnull)
+STYLE_STRUCT_INHERITED(SVG, nsnull, ())
 #endif
 
 #ifdef UNDEF_STYLE_STRUCT_INHERITED

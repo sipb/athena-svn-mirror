@@ -41,11 +41,12 @@
 #include <stdio.h>
 #include "nsISupports.h"
 #include "nsChangeHint.h"
+#include "nsCOMPtr.h"
 
 class nsIAtom;
 class nsIStyleRule;
 class nsIStyleSheet;
-class nsIStyleContext;
+class nsStyleContext;
 class nsIStyleRuleSupplier;
 class nsIStyleFrameConstruction;
 class nsIPresContext;
@@ -57,9 +58,9 @@ class nsIFrameManager;
 class nsISupportsArray;
 class nsRuleNode;
 struct nsFindFrameHint;
+struct nsCachedStyleData;
 
 #include "nsVoidArray.h"
-class nsISizeOfHandler;
 
 class nsICSSPseudoComparator;
 
@@ -109,13 +110,7 @@ public:
   virtual void ReplaceAgentStyleSheets(nsISupportsArray* aNewSheets) = 0;
   
   virtual nsresult GetRuleTree(nsRuleNode** aResult) = 0;
-  virtual nsresult ClearCachedDataInRuleTree(nsIStyleRule* aRule) = 0;
   
-  // This method is used to add a mapping from rule to rule node so that all the rule nodes
-  // in use for a given rule can be accessed efficiently.  This is currently only used
-  // for inline style rules in order to conserve footprint.
-  virtual nsresult AddRuleNodeMapping(nsRuleNode* aRuleNode) = 0;
-
   // The following two methods can be used to tear down and reconstruct a rule tree.  The idea
   // is to first call BeginRuleTreeReconstruct, which will set aside the old rule
   // tree.  The entire frame tree should then have ReResolveStyleContext
@@ -130,6 +125,10 @@ public:
   virtual nsresult BeginRuleTreeReconstruct()=0;
   virtual nsresult EndRuleTreeReconstruct()=0;
 
+  // For getting the cached default data in case we hit out-of-memory.
+  // To be used only by nsRuleNode.
+  virtual nsCachedStyleData* GetDefaultStyleData() = 0;
+
   virtual nsresult GetStyleFrameConstruction(nsIStyleFrameConstruction** aResult) = 0;
 
   // ClearCachedStyleData is used to invalidate portions of both the style context tree
@@ -138,22 +137,20 @@ public:
   // only on style contexts and rule nodes that use that rule.  If the rule is null, then
   // it is assumed that both trees are to be entirely wiped.
   //
-  // |aContext| provides an additional hint that a specific style context has changed, and
-  // that the entire rule tree need not be searched for occurrences of |aRule|.  It is
-  // only specified in the inline style case, i.e., when the inline style attribute changes.
-  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule, nsIStyleContext* aContext) = 0;
+  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule) = 0;
 
   // enable / disable the Quirk style sheet: 
   // returns NS_FAILURE if none is found, otherwise NS_OK
   NS_IMETHOD EnableQuirkStyleSheet(PRBool aEnable) = 0;
 
   
-  NS_IMETHOD NotifyStyleSheetStateChanged(PRBool aDisabled) = 0;
+  NS_IMETHOD NotifyStyleSheetStateChanged(PRBool aApplicable) = 0;
 
-  // get a style context for a non-pseudo frame
-  virtual nsIStyleContext* ResolveStyleFor(nsIPresContext* aPresContext,
-                                           nsIContent* aContent,
-                                           nsIStyleContext* aParentContext) = 0;
+  // get a style context for a non-pseudo frame.
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleFor(nsIPresContext* aPresContext,
+                  nsIContent* aContent,
+                  nsStyleContext* aParentContext) = 0;
 
   // Get a style context for a non-element (which no rules will match).
   // Eventually, this should go away and we shouldn't even create style
@@ -165,40 +162,54 @@ public:
   // it once to create a style context for the nsFirstLetterFrame that
   // represents everything except the first letter.)
   //
-  virtual nsIStyleContext* ResolveStyleForNonElement(
-                                           nsIPresContext* aPresContext,
-                                           nsIStyleContext* aParentContext) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleForNonElement(nsIPresContext* aPresContext,
+                            nsStyleContext* aParentContext) = 0;
 
   // get a style context for a pseudo-element (i.e.,
   // |aPseudoTag == nsCOMPtr<nsIAtom>(do_GetAtom(":first-line"))|;
-  virtual nsIStyleContext* ResolvePseudoStyleFor(nsIPresContext* aPresContext,
-                                                 nsIContent* aParentContent,
-                                                 nsIAtom* aPseudoTag,
-                                                 nsIStyleContext* aParentContext,
-                                                 nsICSSPseudoComparator* aComparator = nsnull) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleFor(nsIPresContext* aPresContext,
+                        nsIContent* aParentContent,
+                        nsIAtom* aPseudoTag,
+                        nsStyleContext* aParentContext,
+                        nsICSSPseudoComparator* aComparator = nsnull) = 0;
 
   // This funtions just like ResolvePseudoStyleFor except that it will
   // return nsnull if there are no explicit style rules for that
-  // pseudo element
-  virtual nsIStyleContext* ProbePseudoStyleFor(nsIPresContext* aPresContext,
-                                               nsIContent* aParentContent,
-                                               nsIAtom* aPseudoTag,
-                                               nsIStyleContext* aParentContext) = 0;
+  // pseudo element.
+  virtual already_AddRefed<nsStyleContext>
+  ProbePseudoStyleFor(nsIPresContext* aPresContext,
+                      nsIContent* aParentContent,
+                      nsIAtom* aPseudoTag,
+                      nsStyleContext* aParentContext) = 0;
 
-  NS_IMETHOD Shutdown()=0;
+  NS_IMETHOD BeginShutdown(nsIPresContext* aPresContext) = 0;
+
+  NS_IMETHOD Shutdown(nsIPresContext* aPresContext) = 0;
+
+  NS_IMETHOD NotifyStyleContextDestroyed(nsIPresContext* aPresContext,
+                                         nsStyleContext* aStyleContext) = 0;
 
   // Get a new style context that lives in a different parent
   // The new context will be the same as the old if the new parent == the old parent
-  NS_IMETHOD  ReParentStyleContext(nsIPresContext* aPresContext,
-                                   nsIStyleContext* aStyleContext, 
-                                   nsIStyleContext* aNewParentContext,
-                                   nsIStyleContext** aNewStyleContext) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ReParentStyleContext(nsIPresContext* aPresContext,
+                       nsStyleContext* aStyleContext, 
+                       nsStyleContext* aNewParentContext) = 0;
 
   // Test if style is dependent on content state
   NS_IMETHOD  HasStateDependentStyle(nsIPresContext* aPresContext,
                                      nsIContent*     aContent,
                                      PRInt32         aStateMask,
                                      PRBool*         aResult) = 0;
+
+  // Test if style is dependent on the presence of an attribute.
+  NS_IMETHOD  HasAttributeDependentStyle(nsIPresContext* aPresContext,
+                                         nsIContent*     aContent,
+                                         nsIAtom*        aAttribute,
+                                         PRInt32         aModType,
+                                         PRBool*         aResult) = 0;
 
   // Create frames for the root content element and its child content
   NS_IMETHOD  ConstructRootFrame(nsIPresContext* aPresContext,
@@ -309,20 +320,14 @@ public:
 
 #ifdef DEBUG
   virtual void List(FILE* out = stdout, PRInt32 aIndent = 0) = 0;
-  virtual void ListContexts(nsIStyleContext* aRootContext, FILE* out = stdout, PRInt32 aIndent = 0) = 0;
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize) = 0;
+  virtual void ListContexts(nsIFrame* aRootFrame, FILE* out = stdout, PRInt32 aIndent = 0) = 0;
 #endif
 
   virtual void ResetUniqueStyleItems(void) = 0;
-
-  // If changing the given attribute cannot affect style context, aAffects
-  // will be PR_FALSE on return.
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects) = 0;
 };
 
-extern NS_EXPORT nsresult
-  NS_NewStyleSet(nsIStyleSet** aInstancePtrResult);
+nsresult
+NS_NewStyleSet(nsIStyleSet** aInstancePtrResult);
 
 
 class nsUniqueStyleItems : private nsVoidArray

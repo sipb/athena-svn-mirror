@@ -34,7 +34,6 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIProgressEventSink.h"
-#include "nsIErrorService.h"
 #include "nsIStandardURL.h"
 #include "nsNetUtil.h"
 #include "prlog.h"
@@ -49,7 +48,6 @@ static NS_DEFINE_CID(kStandardURLCID, NS_STANDARDURL_CID);
 ////////////////////////////////////////////////////////////////////////////////
 
 nsGopherHandler::nsGopherHandler() {
-    NS_INIT_ISUPPORTS();
 #ifdef PR_LOGGING
     if (!gGopherLog)
         gGopherLog = PR_NewLogModule("nsGopherProtocol");
@@ -119,18 +117,18 @@ NS_IMETHODIMP
 nsGopherHandler::NewProxiedChannel(nsIURI* url, nsIProxyInfo* proxyInfo,
                                    nsIChannel* *result)
 {
-    nsresult rv;    
-    nsGopherChannel* channel;
-    rv = nsGopherChannel::Create(nsnull, NS_GET_IID(nsIChannel),
-                                 (void**)&channel);
-    if (NS_FAILED(rv)) return rv;
+    nsGopherChannel *chan = new nsGopherChannel();
+    if (!chan)
+        return NS_ERROR_OUT_OF_MEMORY;
+    NS_ADDREF(chan);
     
-    rv = channel->Init(url, proxyInfo);
+    nsresult rv = chan->Init(url, proxyInfo);
     if (NS_FAILED(rv)) {
+        NS_RELEASE(chan);
         return rv;
     }
 
-    *result = channel;
+    *result = chan;
     return rv;
 }
 

@@ -34,7 +34,8 @@ var pageTagPairs = {
   "chrome://messenger/content/am-smtp.xul": "mail_smtp",
   "chrome://messenger/content/am-smime.xul": "mail_security_settings",
   "chrome://messenger/content/am-serverwithnoidentities.xul": "mail_local_folders_settings",
-  "chrome://messenger/content/am-mdn.xul": "mail-account-receipts"
+  "chrome://messenger/content/am-mdn.xul": "mail-account-receipts",
+  "chrome://messenger/content/am-fakeaccount.xul": "fake_account"
 } 
 
 function doHelpButton() 
@@ -44,8 +45,8 @@ function doHelpButton()
   // Get the help tag corresponding to the page loaded.
   var helpTag = pageTagPairs[pageSourceURI];
 
-  // If the help tag is generic, check if there is a need to set tags per server type
-  if (helpTag == "mail") {
+  // If the help tag is generic or offline, check if there is a need to set tags per server type
+  if ((helpTag == "mail") || (helpTag == "mail-offline-accounts")) {
     // Get server type, as we may need to set help tags per server type for some pages
     var serverType = GetServerType();
   

@@ -52,7 +52,7 @@
 class inLayoutUtils
 {
 public:
-  static nsIDOMWindowInternal* GetWindowFor(nsIDOMElement* aElement);
+  static nsIDOMWindowInternal* GetWindowFor(nsIDOMNode* aNode);
   static nsIDOMWindowInternal* GetWindowFor(nsIDOMDocument* aDoc);
   static nsIPresShell* GetPresShellFor(nsISupports* aThing);
   static nsIFrame* GetFrameFor(nsIDOMElement* aElement, nsIPresShell* aShell);
@@ -64,7 +64,8 @@ public:
   static PRBool IsDocumentElement(nsIDOMNode* aNode);
   /**
    * This function returns the offset of a frame with respect to the
-   * root view (for use by inFlasher::DrawElementOutline and the like
+   * root view of the aPresContext's viewmanager (for use by
+   * inFlasher::DrawElementOutline and the like)   
    *
    * @param aFrame the frame whose offset we want
    * @param aPresContext the presentation context

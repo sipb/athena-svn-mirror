@@ -263,9 +263,6 @@ class nsScriptSecurityManager : public nsIScriptSecurityManager,
                                 public nsIObserver
 {
 public:
-    nsScriptSecurityManager();
-    virtual ~nsScriptSecurityManager();
-
     static void Shutdown();
     
     NS_DEFINE_STATIC_CID_ACCESSOR(NS_SCRIPTSECURITYMANAGER_CID)
@@ -292,10 +289,14 @@ public:
 
 private:
 
+    // GetScriptSecurityManager is the only call that can make one
+    nsScriptSecurityManager();
+    virtual ~nsScriptSecurityManager();
+
     static JSBool JS_DLL_CALLBACK
-    CheckJSFunctionCallerAccess(JSContext *cx, JSObject *obj,
-                                jsval id, JSAccessMode mode,
-                                jsval *vp);
+    CheckObjectAccess(JSContext *cx, JSObject *obj,
+                      jsval id, JSAccessMode mode,
+                      jsval *vp);
 
     static nsresult
     doGetObjectPrincipal(JSContext *cx, JSObject *obj, nsIPrincipal **result);
@@ -322,7 +323,8 @@ private:
     nsresult
     CheckSameOriginDOMProp(nsIPrincipal* aSubject, 
                            nsIPrincipal* aObject,
-                           PRUint32 aAction);
+                           PRUint32 aAction,
+                           PRBool aIsCheckConnect);
     
     PRInt32 
     GetSecurityLevel(nsIPrincipal *principal,
@@ -370,6 +372,9 @@ private:
                         const char* aObjectSecurityLevel);
 
     nsresult
+    Init();
+    
+    nsresult
     InitPrefs();
 
     static nsresult 
@@ -386,13 +391,18 @@ private:
     InitPrincipals(PRUint32 prefCount, const char** prefNames,
                    nsISecurityPref* securityPref);
 
+#ifdef XPC_IDISPATCH_SUPPORT
+    // While this header is included outside of caps, this class isn't 
+    // referenced so this should be fine.
+    nsresult
+    CheckComponentPermissions(JSContext *cx, const nsCID &aCID);
+#endif
 #ifdef DEBUG_mstoltz
     void
     PrintPolicyDB();
 #endif
 
     // JS strings we need to clean up on shutdown
-    static jsval sCallerID;
     static jsval sEnabledID;
 
     inline void
@@ -416,6 +426,10 @@ private:
     nsCOMPtr<nsIThreadJSContextStack> mJSContextStack;
     PRBool mNameSetRegistered;
     PRBool mPolicyPrefsChanged;
+#ifdef XPC_IDISPATCH_SUPPORT    
+    PRBool mXPCDefaultGrantAll;
+    static const char* sXPCDefaultGrantAllName;
+#endif
 };
 
 #endif /*_NS_SCRIPT_SECURITY_MANAGER_H_*/

@@ -43,12 +43,14 @@
 #include "nsIDOMCSSStyleDeclaration.h"
 #include "nsIDOMElementCSSInlineStyle.h"
 #include "nsIContent.h"
-#include "nsIEditProperty.h"
-#include "nsIParser.h"
+#include "nsEditProperty.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
 #include "nsIAtom.h"
+#include "nsIHTMLObjectResizer.h"
+
+#define kNullCh (PRUnichar('\0'))
 
 void
 ChangeCSSInlineStyleTxn::AppendDeclaration(nsAString & aOutputString,
@@ -363,4 +365,3 @@ ChangeCSSInlineStyleTxn::AddValueToMultivalueProperty(nsAString & aValues, const
   }
   return NS_OK;
 }
-

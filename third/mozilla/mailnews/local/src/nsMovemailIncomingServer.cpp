@@ -70,7 +70,6 @@ NS_IMPL_ISUPPORTS_INHERITED2(nsMovemailIncomingServer,
 
 nsMovemailIncomingServer::nsMovemailIncomingServer()
 {    
-  NS_INIT_ISUPPORTS();
   m_canHaveFilters = PR_TRUE;
 }
 
@@ -81,6 +80,14 @@ nsMovemailIncomingServer::~nsMovemailIncomingServer()
 /*NS_IMPL_SERVERPREF_BOOL(nsMovemailIncomingServer,
                         AdamIsASillyhead,
                         "adam_is_a_sillyhead")*/
+
+NS_IMETHODIMP
+nsMovemailIncomingServer::GetIsSecureServer(PRBool *aIsSecureServer)
+{
+    NS_ENSURE_ARG_POINTER(aIsSecureServer);
+    *aIsSecureServer = PR_FALSE;
+    return NS_OK;
+}
 
 nsresult
 nsMovemailIncomingServer::GetLocalStoreType(char **type)
@@ -108,6 +115,7 @@ nsMovemailIncomingServer::SetFlagsOnDefaultMailboxes()
                                             MSG_FOLDER_FLAG_DRAFTS |
                                             MSG_FOLDER_FLAG_TEMPLATES |
                                             MSG_FOLDER_FLAG_TRASH |
+                                            MSG_FOLDER_FLAG_JUNK |
                                             // hmm?
                                             MSG_FOLDER_FLAG_QUEUE);
     return NS_OK;

@@ -84,10 +84,10 @@
 ***********************************************************************/
 #ifdef WIN32
 /* These also work for __MWERKS__ */
-#define JS_EXTERN_API(__type) extern _declspec(dllexport) __type
-#define JS_EXPORT_API(__type) _declspec(dllexport) __type
-#define JS_EXTERN_DATA(__type) extern _declspec(dllexport) __type
-#define JS_EXPORT_DATA(__type) _declspec(dllexport) __type
+#define JS_EXTERN_API(__type) extern __declspec(dllexport) __type
+#define JS_EXPORT_API(__type) __declspec(dllexport) __type
+#define JS_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+#define JS_EXPORT_DATA(__type) __declspec(dllexport) __type
 
 #define JS_DLL_CALLBACK
 #define JS_STATIC_DLL_CALLBACK(__x) static __x
@@ -143,17 +143,17 @@
 #endif
 
 #ifdef _WIN32
-#  ifdef __MWERKS__
+#  if defined(__MWERKS__) || defined(__GNUC__)
 #    define JS_IMPORT_API(__x)      __x
 #  else
-#    define JS_IMPORT_API(__x)      _declspec(dllimport) __x
+#    define JS_IMPORT_API(__x)      __declspec(dllimport) __x
 #  endif
 #else
 #    define JS_IMPORT_API(__x)      JS_EXPORT_API (__x)
 #endif
 
 #if defined(_WIN32) && !defined(__MWERKS__)
-#    define JS_IMPORT_DATA(__x)      _declspec(dllimport) __x
+#    define JS_IMPORT_DATA(__x)      __declspec(dllimport) __x
 #else
 #    define JS_IMPORT_DATA(__x)     __x
 #endif
@@ -229,13 +229,13 @@
 #define JS_MIN(x,y)     ((x)<(y)?(x):(y))
 #define JS_MAX(x,y)     ((x)>(y)?(x):(y))
 
-#if (defined(XP_MAC) || (defined(XP_PC) && !defined(XP_OS2))) && !defined(CROSS_COMPILE)
+#if (defined(XP_MAC) || defined(XP_WIN)) && !defined(CROSS_COMPILE)
 #    include "jscpucfg.h"        /* Use standard Mac or Windows configuration */
 #elif defined(XP_UNIX) || defined(XP_BEOS) || defined(XP_OS2) || defined(CROSS_COMPILE)
 #    include "jsautocfg.h"       /* Use auto-detected configuration */
 #    include "jsosdep.h"         /* ...and platform-specific flags */
 #else
-#    error "Must define one of XP_PC, XP_MAC or XP_UNIX"
+#    error "Must define one of XP_BEOS, XP_MAC, XP_OS2, XP_WIN or XP_UNIX"
 #endif
 
 JS_BEGIN_EXTERN_C
@@ -304,7 +304,7 @@ typedef unsigned long JSUint64;
 #elif defined(WIN16)
 typedef __int64 JSInt64;
 typedef unsigned __int64 JSUint64;
-#elif defined(WIN32)
+#elif defined(WIN32) && !defined(__GNUC__)
 typedef __int64  JSInt64;
 typedef unsigned __int64 JSUint64;
 #else
@@ -374,7 +374,7 @@ typedef unsigned long JSUptrdiff;
 **  Use JSBool for variables and parameter types. Use JS_FALSE and JS_TRUE
 **      for clarity of target type in assignments and actual arguments. Use
 **      'if (bool)', 'while (!bool)', '(bool) ? x : y' etc., to test booleans
-**      juast as you would C int-valued conditions. 
+**      just as you would C int-valued conditions. 
 ************************************************************************/
 typedef JSIntn JSBool;
 #define JS_TRUE (JSIntn)1

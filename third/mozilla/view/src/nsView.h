@@ -39,9 +39,9 @@
 #define nsView_h___
 
 #include "nsIView.h"
+#include "nsIWidget.h"
 #include "nsRect.h"
 #include "nsCRT.h"
-#include "nsIWidget.h"
 #include "nsIFactory.h"
 #include "nsIViewObserver.h"
 #include "nsEvent.h"
@@ -122,6 +122,7 @@ public:
   PRBool      GetZIndexIsAuto() const { return (mVFlags & NS_VIEW_FLAG_AUTO_ZINDEX) != 0; }
   NS_IMETHOD  GetFloating(PRBool &aFloatingView) const;
   NS_IMETHOD  GetParent(nsIView *&aParent) const;
+  NS_IMETHOD  GetFirstChild(nsIView* &aChild) const;
   NS_IMETHOD  GetNextSibling(nsIView *&aNextSibling) const;
   NS_IMETHOD  GetOpacity(float &aOpacity) const;
   NS_IMETHOD  HasTransparency(PRBool &aTransparent) const;
@@ -132,7 +133,8 @@ public:
                            nsWidgetInitData *aWidgetInitData = nsnull,
                            nsNativeWidget aNative = nsnull,
                            PRBool aEnableDragDrop = PR_TRUE,
-                           PRBool aResetVisibility = PR_TRUE);
+                           PRBool aResetVisibility = PR_TRUE,
+                           nsContentType aContentType = eContentTypeInherit);
   NS_IMETHOD  GetWidget(nsIWidget *&aWidget) const;
   NS_IMETHOD  HasWidget(PRBool *aHasWidget) const;
   NS_IMETHOD  List(FILE* out = stdout, PRInt32 aIndent = 0) const;
@@ -294,6 +296,10 @@ public:
 
    // Helper function to determine if the view point is inside of a view
   PRBool PointIsInside(nsView& aView, nscoord x, nscoord y) const;
+
+  // Helper function to get mouse grabbing off this view (by moving it to the
+  // parent, if we can)
+  void DropMouseGrabbing();
 
 public: // NOT in nsIView, so only available in view module
   nsView* GetFirstChild() const { return mFirstChild; }

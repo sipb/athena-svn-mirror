@@ -37,6 +37,7 @@
 
 
 #if defined(_WIN32) && defined(_M_IX86) // WIN32 x86 stack walking code
+#include "nspr.h"
 #include <windows.h>
 #include <imagehlp.h>
 
@@ -94,6 +95,8 @@ extern  SYMGETLINEFROMADDRPROC _SymGetLineFromAddr;
 
 PRBool EnsureSymInitialized();
 
+PRBool EnsureImageHlpInitialized();
+
 /*
  * SymGetModuleInfoEspecial
  *
@@ -105,6 +108,9 @@ PRBool EnsureSymInitialized();
  * Line information is optional.
  */
 BOOL SymGetModuleInfoEspecial(HANDLE aProcess, DWORD aAddr, PIMAGEHLP_MODULE aModuleInfo, PIMAGEHLP_LINE aLineInfo);
+
+
+void DumpStackToFile(FILE* out);
 
 PR_END_EXTERN_C
 

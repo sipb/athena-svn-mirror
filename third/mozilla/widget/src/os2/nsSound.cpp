@@ -41,7 +41,6 @@ NS_IMPL_ISUPPORTS2(nsSound, nsISound, nsIStreamLoaderObserver)
 ////////////////////////////////////////////////////////////////////////
 nsSound::nsSound()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsSound::~nsSound()
@@ -170,27 +169,23 @@ NS_METHOD nsSound::Play(nsIURL *aURL)
   return rv;
 }
 
+NS_IMETHODIMP nsSound::Init()
+{
+  return NS_OK;
+}
+
 NS_IMETHODIMP nsSound::PlaySystemSound(const char *aSoundAlias)
 {
-  nsresult rv;
-  nsCAutoString prefName("system.sound.");
-  prefName += aSoundAlias;
-
-  nsXPIDLCString soundPrefValue;
-
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if (NS_SUCCEEDED(rv) && prefs)
-     rv = prefs->CopyCharPref(prefName.get(), getter_Copies(soundPrefValue));
-
-  if (NS_SUCCEEDED(rv) && soundPrefValue.Length() > 0) {
-    nsCOMPtr<nsIURI> soundURI;
-    rv = NS_NewURI(getter_AddRefs(soundURI), soundPrefValue);
-    nsCOMPtr<nsIURL> soundURL = do_QueryInterface(soundURI);
-    rv = Play(soundURL);
-    if (NS_SUCCEEDED(rv))
-      return NS_OK;
+  /* We don't have a default mail sound on OS/2, so just beep */
+  if (strcmp("_moz_mailbeep", aSoundAlias) == 0) {
+    Beep();
   }
-  Beep();
-  return NS_OK;
+  else {
+    HOBJECT hobject = WinQueryObject(aSoundAlias);
+    if (hobject)
+      WinSetObjectData(hobject, "OPEN=DEFAULT");
+    else 
+      Beep();
+  }
 }
 

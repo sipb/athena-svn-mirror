@@ -48,7 +48,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIURL.h"
 #include "nsIDocument.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsLayoutAtoms.h"
 #include "nsILookAndFeel.h"
 #include "nsWidgetsCID.h"
@@ -63,19 +63,20 @@
 #include "nsIDOMWindow.h"
 #include "nsNetUtil.h"
 #include "nsXPIDLString.h"
-
+#include "nsIWeakReferenceUtils.h"
+#include "nsCSSRendering.h"
 #include "prprf.h"
 #include "nsContentPolicyUtils.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDOMDocument.h"
+#include "nsAutoPtr.h"
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
 #endif // IBMBIDI
 
 // Needed for Start/Stop of Image Animation
 #include "imgIContainer.h"
-#include "nsIDOMHTMLImageElement.h"
-#include "nsIImageFrame.h"
+#include "nsIImageLoadingContent.h"
 
 //needed for resetting of image service color
 #include "nsLayoutCID.h"
@@ -153,9 +154,7 @@ nsPresContext::nsPresContext()
       NS_FONT_WEIGHT_NORMAL, 0, NSIntPointsToTwips(12)),
     mNoTheme(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
   mCompatibilityMode = eCompatibility_FullStandards;
-  mWidgetRenderingMode = eWidgetRendering_Gfx; 
   mImageAnimationMode = imgIContainer::kNormalAnimMode;
   mImageAnimationModePref = imgIContainer::kNormalAnimMode;
 
@@ -209,15 +208,8 @@ nsPresContext::~nsPresContext()
 {
   mImageLoaders.Enumerate(destroy_loads);
 
-  if (mShell) {
-    nsCOMPtr<nsIDocument> doc;
-    mShell->GetDocument(getter_AddRefs(doc));
-    if (doc) {
-      doc->RemoveCharSetObserver(this);
-    }
-  }
-
-  mShell = nsnull;
+  NS_PRECONDITION(!mShell, "Presshell forgot to clear our mShell pointer");
+  SetShell(nsnull);
 
   if (mEventManager)
     mEventManager->SetPresContext(nsnull);   // unclear if this is needed, but can't hurt
@@ -412,7 +404,7 @@ nsPresContext::GetDocumentColorPreferences()
   PRBool usePrefColors = PR_TRUE;
   PRBool boolPref;
   nsXPIDLCString colorStr;
-  nsCOMPtr<nsIDocShellTreeItem> docShell(do_QueryInterface(mContainer));
+  nsCOMPtr<nsIDocShellTreeItem> docShell(do_QueryReferent(mContainer));
   if (docShell) {
     PRInt32 docShellType;
     docShell->GetItemType(&docShellType);
@@ -456,10 +448,6 @@ nsPresContext::GetUserPreferences()
 
   if (NS_SUCCEEDED(mPrefs->GetIntPref("browser.display.base_font_scaler", &prefInt))) {
     mFontScaler = prefInt;
-  }
-
-  if (NS_SUCCEEDED(mPrefs->GetIntPref("nglayout.widget.mode", &prefInt))) {
-    mWidgetRenderingMode = (enum nsWidgetRendering)prefInt;  // bad cast
   }
 
   // * document colors
@@ -588,7 +576,7 @@ nsPresContext::ClearStyleDataAndReflow()
     // Clear out all our style data.
     nsCOMPtr<nsIStyleSet> set;
     mShell->GetStyleSet(getter_AddRefs(set));
-    set->ClearStyleData(this, nsnull, nsnull);
+    set->ClearStyleData(this, nsnull);
 
     // Force a reflow of the root frame
     // XXX We really should only do a reflow if a preference that affects
@@ -603,7 +591,7 @@ nsPresContext::ClearStyleDataAndReflow()
 void
 nsPresContext::PreferenceChanged(const char* aPrefName)
 {
-  nsCOMPtr<nsIDocShellTreeItem> docShell(do_QueryInterface(mContainer));
+  nsCOMPtr<nsIDocShellTreeItem> docShell(do_QueryReferent(mContainer));
   if (docShell) {
     PRInt32 docShellType;
     docShell->GetItemType(&docShellType);
@@ -663,8 +651,19 @@ nsPresContext::Init(nsIDeviceContext* aDeviceContext)
 NS_IMETHODIMP
 nsPresContext::SetShell(nsIPresShell* aShell)
 {
+  if (mShell) {
+    // Remove ourselves as the charset observer from the shell's doc, because
+    // this shell may be going away for good.
+    nsCOMPtr<nsIDocument> doc;
+    mShell->GetDocument(getter_AddRefs(doc));
+    if (doc) {
+      doc->RemoveCharSetObserver(this);
+    }
+  }    
+
   mShell = aShell;
-  if (nsnull != mShell) {
+
+  if (mShell) {
     nsCOMPtr<nsIDocument> doc;
     if (NS_SUCCEEDED(mShell->GetDocument(getter_AddRefs(doc)))) {
       NS_ASSERTION(doc, "expect document here");
@@ -779,23 +778,6 @@ nsPresContext::SetCompatibilityMode(nsCompatibility aMode)
   return NS_OK;
 }
 
-
-NS_IMETHODIMP
-nsPresContext::GetWidgetRenderingMode(nsWidgetRendering* aResult)
-{
-  NS_PRECONDITION(aResult, "null out param");
-  *aResult = mWidgetRenderingMode;
-  return NS_OK;
-}
-
- 
-NS_IMETHODIMP
-nsPresContext::SetWidgetRenderingMode(nsWidgetRendering aMode)
-{
-  mWidgetRenderingMode = aMode;
-  return NS_OK;
-}
-
 NS_IMETHODIMP
 nsPresContext::GetImageAnimationMode(PRUint16* aModeResult)
 {
@@ -807,7 +789,7 @@ nsPresContext::GetImageAnimationMode(PRUint16* aModeResult)
 // Helper function for setting Anim Mode on image
 static void SetImgAnimModeOnImgReq(imgIRequest* aImgReq, PRUint16 aMode)
 {
-  if (aImgReq != nsnull) {
+  if (aImgReq) {
     nsCOMPtr<imgIContainer> imgCon;
     aImgReq->GetImage(getter_AddRefs(imgCon));
     if (imgCon) {
@@ -834,20 +816,14 @@ PR_STATIC_CALLBACK(PRBool) set_animation_mode(nsHashKey *aKey, void *aData, void
 // this is a way to turn on/off image animations
 void nsPresContext::SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMode)
 {
-  nsCOMPtr<nsIDOMHTMLImageElement> imgContent(do_QueryInterface(aParent));
+  nsCOMPtr<nsIImageLoadingContent> imgContent(do_QueryInterface(aParent));
   if (imgContent) {
-    nsIFrame* frame;
-    mShell->GetPrimaryFrameFor(aParent, &frame);
-    if (frame != nsnull) {
-      nsIImageFrame* imgFrame = nsnull;
-      CallQueryInterface(frame, &imgFrame);
-      if (imgFrame != nsnull) {
-        nsCOMPtr<imgIRequest> imgReq;
-        imgFrame->GetImageRequest(getter_AddRefs(imgReq));
-        SetImgAnimModeOnImgReq(imgReq, aMode);
-      }
-    }
+    nsCOMPtr<imgIRequest> imgReq;
+    imgContent->GetRequest(nsIImageLoadingContent::CURRENT_REQUEST,
+                           getter_AddRefs(imgReq));
+    SetImgAnimModeOnImgReq(imgReq, aMode);
   }
+  
   PRInt32 count;
   aParent->ChildCount(count);
   for (PRInt32 i=0;i<count;i++) {
@@ -888,24 +864,42 @@ nsPresContext::SetImageAnimationMode(PRUint16 aMode)
   return NS_OK;
 }
 
-/* This function has now been deprecated.  It is no longer necesary to
- * hold on to presContext just to get a nsLookAndFeel.  nsLookAndFeel is
- * now a service provided by ServiceManager.
+/*
+ * It is no longer necesary to hold on to presContext just to get a
+ * nsILookAndFeel, which can now be obtained through the service
+ * manager.  However, this cached copy can be used when a pres context
+ * is available, for faster performance.
  */
 NS_IMETHODIMP
 nsPresContext::GetLookAndFeel(nsILookAndFeel** aLookAndFeel)
 {
   NS_PRECONDITION(aLookAndFeel, "null out param");
-  nsresult result = NS_OK;
   if (! mLookAndFeel) {
-    mLookAndFeel = do_GetService(kLookAndFeelCID,&result);
+    nsresult rv;
+    mLookAndFeel = do_GetService(kLookAndFeelCID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
   }
   *aLookAndFeel = mLookAndFeel;
-  NS_IF_ADDREF(*aLookAndFeel);
-  return result;
+  NS_ADDREF(*aLookAndFeel);
+  return NS_OK;
 }
 
-
+/*
+ * Get the cached IO service, faster than the service manager could.
+ */
+NS_IMETHODIMP
+nsPresContext::GetIOService(nsIIOService** aIOService)
+{
+  NS_PRECONDITION(aIOService, "null out param");
+  if (! mIOService) {
+    nsresult rv;
+    mIOService = do_GetIOService(&rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+  *aIOService = mIOService;
+  NS_ADDREF(*aIOService);
+  return NS_OK;
+}
 
 NS_IMETHODIMP
 nsPresContext::GetBaseURL(nsIURI** aResult)
@@ -916,106 +910,89 @@ nsPresContext::GetBaseURL(nsIURI** aResult)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+already_AddRefed<nsStyleContext>
 nsPresContext::ResolveStyleContextFor(nsIContent* aContent,
-                                      nsIStyleContext* aParentContext,
-                                      nsIStyleContext** aResult)
+                                      nsStyleContext* aParentContext)
 {
-  NS_PRECONDITION(aResult, "null out param");
-
-  nsIStyleContext* result = nsnull;
-  nsCOMPtr<nsIStyleSet> set;
-  nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
-  if (NS_SUCCEEDED(rv)) {
-    if (set) {
-      result = set->ResolveStyleFor(this, aContent, aParentContext);
-      if (nsnull == result) {
-        rv = NS_ERROR_OUT_OF_MEMORY;
-      }
-    }
-  }
-  *aResult = result;
-  return rv;
-}
-
-NS_IMETHODIMP
-nsPresContext::ResolveStyleContextForNonElement(
-                                      nsIStyleContext* aParentContext,
-                                      nsIStyleContext** aResult)
-{
-  NS_PRECONDITION(aResult, "null out param");
-
-  nsIStyleContext* result = nsnull;
   nsCOMPtr<nsIStyleSet> set;
   nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
   if (NS_SUCCEEDED(rv) && set) {
-    result = set->ResolveStyleForNonElement(this, aParentContext);
-    if (!result)
-      rv = NS_ERROR_OUT_OF_MEMORY;
+    // return the addref'd style context
+    return set->ResolveStyleFor(this, aContent, aParentContext);
   }
-  *aResult = result;
-  return rv;
+
+  return nsnull;
 }
 
-NS_IMETHODIMP
+already_AddRefed<nsStyleContext>
+nsPresContext::ResolveStyleContextForNonElement(nsStyleContext* aParentContext)
+{
+  nsCOMPtr<nsIStyleSet> set;
+  nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
+  if (NS_SUCCEEDED(rv) && set) {
+    // return addrefed style context
+    return set->ResolveStyleForNonElement(this, aParentContext);
+  }
+
+  return nsnull;
+}
+
+already_AddRefed<nsStyleContext>
 nsPresContext::ResolvePseudoStyleContextFor(nsIContent* aParentContent,
                                             nsIAtom* aPseudoTag,
-                                            nsIStyleContext* aParentContext,
-                                            nsIStyleContext** aResult)
+                                            nsStyleContext* aParentContext)
 {
-  return ResolvePseudoStyleWithComparator(aParentContent, aPseudoTag, aParentContext,
-                                          nsnull, aResult);
+  return ResolvePseudoStyleWithComparator(aParentContent, aPseudoTag,
+                                          aParentContext, nsnull);
 }
 
-NS_IMETHODIMP
+already_AddRefed<nsStyleContext>
 nsPresContext::ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
                                                 nsIAtom* aPseudoTag,
-                                                nsIStyleContext* aParentContext,
-                                                nsICSSPseudoComparator* aComparator,
-                                                nsIStyleContext** aResult)
+                                                nsStyleContext* aParentContext,
+                                                nsICSSPseudoComparator* aComparator)
 {
-  NS_PRECONDITION(aResult, "null out param");
-
-  nsIStyleContext* result = nsnull;
   nsCOMPtr<nsIStyleSet> set;
   nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
-  if (NS_SUCCEEDED(rv)) {
-    if (set) {
-      result = set->ResolvePseudoStyleFor(this, aParentContent, aPseudoTag,
-                                          aParentContext, aComparator);
-      if (nsnull == result) {
-        rv = NS_ERROR_OUT_OF_MEMORY;
-      }
-    }
+  if (NS_SUCCEEDED(rv) && set) {
+    // return addrefed style context
+    return set->ResolvePseudoStyleFor(this, aParentContent, aPseudoTag,
+                                      aParentContext, aComparator);
   }
-  *aResult = result;
-  return rv;
+
+  return nsnull;
+}
+
+already_AddRefed<nsStyleContext>
+nsPresContext::ProbePseudoStyleContextFor(nsIContent* aParentContent,
+                                          nsIAtom* aPseudoTag,
+                                          nsStyleContext* aParentContext)
+{
+  nsCOMPtr<nsIStyleSet> set;
+  nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
+  if (NS_SUCCEEDED(rv) && set) {
+    // return addrefed style context
+    return set->ProbePseudoStyleFor(this, aParentContent, aPseudoTag,
+                                    aParentContext);
+  }
+
+  return nsnull;
 }
 
 NS_IMETHODIMP
-nsPresContext::ProbePseudoStyleContextFor(nsIContent* aParentContent,
-                                          nsIAtom* aPseudoTag,
-                                          nsIStyleContext* aParentContext,
-                                          nsIStyleContext** aResult)
+nsPresContext::GetXBLBindingURL(nsIContent* aContent, nsAString& aResult)
 {
-  NS_PRECONDITION(aResult, "null out param");
+  nsRefPtr<nsStyleContext> sc;
+  sc = ResolveStyleContextFor(aContent, nsnull);
+  NS_ENSURE_TRUE(sc, NS_ERROR_FAILURE);
 
-  nsIStyleContext* result = nsnull;
-  nsCOMPtr<nsIStyleSet> set;
-  nsresult rv = mShell->GetStyleSet(getter_AddRefs(set));
-  if (NS_SUCCEEDED(rv)) {
-    if (set) {
-      result = set->ProbePseudoStyleFor(this, aParentContent, aPseudoTag,
-                                        aParentContext);
-    }
-  }
-  *aResult = result;
-  return rv;
+  aResult = sc->GetStyleDisplay()->mBinding;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsPresContext::ReParentStyleContext(nsIFrame* aFrame, 
-                                    nsIStyleContext* aNewParentContext)
+                                    nsStyleContext* aNewParentContext)
 {
   NS_PRECONDITION(aFrame, "null ptr");
   if (! aFrame) {
@@ -1498,7 +1475,7 @@ nsPresContext::GetLinkHandler(nsILinkHandler** aResult)
 NS_IMETHODIMP
 nsPresContext::SetContainer(nsISupports* aHandler)
 {
-  mContainer = aHandler;
+  mContainer = do_GetWeakReference(aHandler);
   if (mContainer) {
     GetDocumentColorPreferences();
   }
@@ -1509,18 +1486,18 @@ NS_IMETHODIMP
 nsPresContext::GetContainer(nsISupports** aResult)
 {
   NS_PRECONDITION(aResult, "null out param");
-  *aResult = mContainer;
-  NS_IF_ADDREF(mContainer);
-  return NS_OK;
+  if (!mContainer) {
+    *aResult = nsnull;
+    return NS_OK;
+  }
+
+  return CallQueryReferent(mContainer.get(), aResult);
 }
 
 NS_IMETHODIMP
 nsPresContext::GetEventStateManager(nsIEventStateManager** aManager)
 {
-  NS_PRECONDITION(nsnull != aManager, "null ptr");
-  if (nsnull == aManager) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_PRECONDITION(aManager, "null ptr");
 
   if (!mEventManager) {
     nsresult rv;
@@ -1528,10 +1505,10 @@ nsPresContext::GetEventStateManager(nsIEventStateManager** aManager)
     if (NS_FAILED(rv)) {
       return rv;
     }
-  }
 
-  //Not refcnted, set null in destructor
-  mEventManager->SetPresContext(this);
+    //Not refcnted, set null in destructor
+    mEventManager->SetPresContext(this);
+  }
 
   *aManager = mEventManager;
   NS_IF_ADDREF(*aManager);
@@ -1746,12 +1723,6 @@ nsPresContext::SysColorChanged()
 
   // Clear out all of the style data since it may contain RGB values
   // which originated from system colors.
-  if (mShell) {
-    // Clear out all our style data.
-    nsCOMPtr<nsIStyleSet> set;
-    mShell->GetStyleSet(getter_AddRefs(set));
-    set->ClearStyleData(this, nsnull, nsnull);
-  }
   nsCOMPtr<nsISelectionImageService> imageService;
   nsresult result;
   imageService = do_GetService(kSelectionImageService, &result);
@@ -1759,6 +1730,22 @@ nsPresContext::SysColorChanged()
   {
     imageService->Reset();
   }
+
+  // We need to do a full reflow (and view update) here. Clearing the style
+  // data without reflowing/updating views will lead to incorrect change hints
+  // later, because when generating change hints, any style structs which have
+  // been cleared and not reread are assumed to not be used at all.
+  return ClearStyleDataAndReflow();
+}
+
+NS_IMETHODIMP
+nsPresContext::FindFrameBackground(nsIFrame* aFrame,
+                                   const nsStyleBackground** aBackground,
+                                   PRBool* aIsCanvas,
+                                   PRBool* aFoundBackground)
+{
+  *aFoundBackground = nsCSSRendering::FindBackground(this, aFrame,
+                                                     aBackground, aIsCanvas);
   return NS_OK;
 }
 

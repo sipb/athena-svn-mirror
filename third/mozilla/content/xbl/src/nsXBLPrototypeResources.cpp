@@ -53,9 +53,9 @@
 
 static NS_DEFINE_CID(kCSSLoaderCID, NS_CSS_LOADER_CID);
 
-MOZ_DECL_CTOR_COUNTER(nsXBLPrototypeResources);
+MOZ_DECL_CTOR_COUNTER(nsXBLPrototypeResources)
 
-nsXBLPrototypeResources::nsXBLPrototypeResources(nsIXBLPrototypeBinding* aBinding)
+nsXBLPrototypeResources::nsXBLPrototypeResources(nsXBLPrototypeBinding* aBinding)
 :mStyleSheetList(nsnull)
 {
   MOZ_COUNT_CTOR(nsXBLPrototypeResources);
@@ -112,11 +112,8 @@ nsXBLPrototypeResources::FlushSkinSheets()
   // they'll still be in the chrome cache.
   mRuleProcessors->Clear();
 
-  nsCOMPtr<nsICSSLoader> loader;
-  nsresult rv = nsComponentManager::CreateInstance(kCSSLoaderCID,
-                                    nsnull,
-                                    NS_GET_IID(nsICSSLoader),
-                                    getter_AddRefs(loader));
+  nsresult rv;
+  nsCOMPtr<nsICSSLoader> loader = do_CreateInstance(kCSSLoaderCID, &rv);
   if (NS_FAILED(rv) || !loader) return rv;
   
   nsCOMPtr<nsISupportsArray> newSheets;
@@ -136,8 +133,7 @@ nsXBLPrototypeResources::FlushSkinSheets()
     oldSheet->GetURL(*getter_AddRefs(uri));
 
     if (IsChromeURI(uri)) {
-      PRBool complete;
-      if (NS_FAILED(loader->LoadAgentSheet(uri, *getter_AddRefs(newSheet), complete, nsnull)))
+      if (NS_FAILED(loader->LoadAgentSheet(uri, getter_AddRefs(newSheet))))
         continue;
     }
     else 

@@ -39,6 +39,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "plstr.h"
 #include "nscore.h"
 #include "prtypes.h"
@@ -48,7 +49,7 @@
 #  define NS_LINEBREAK             "\015"
 #  define NS_LINEBREAK_LEN 1
 #else
-#  ifdef XP_PC
+#  if defined(XP_WIN) || defined(XP_OS2)
 #    define NS_LINEBREAK           "\015\012"
 #    define NS_LINEBREAK_LEN       2
 #  else
@@ -56,7 +57,7 @@
 #      define NS_LINEBREAK         "\012"
 #      define NS_LINEBREAK_LEN     1
 #    endif /* XP_UNIX */
-#  endif /* XP_PC */
+#  endif /* XP_WIN || XP_OS2 */
 #endif /* XP_MAC */
 
 extern const PRUnichar kIsoLatin1ToUCS2[256];
@@ -282,6 +283,17 @@ public:
   #define FILE_ILLEGAL_CHARACTERS   ""
 #else
   #error need_to_define_your_file_path_separator_and_illegal_characters
+#endif
+
+#define NS_IS_SPACE(VAL) \
+  (((((intn)(VAL)) & 0x7f) == ((intn)(VAL))) && isspace((intn)(VAL)) )
+
+#define NS_IS_CNTRL(i)   ((((unsigned int) (i)) > 0x7f) ? (int) 0 : iscntrl(i))
+#define NS_IS_DIGIT(i)   ((((unsigned int) (i)) > 0x7f) ? (int) 0 : isdigit(i))
+#if defined(XP_WIN) || defined(XP_OS2)
+#define NS_IS_ALPHA(VAL) (isascii((int)(VAL)) && isalpha((int)(VAL)))
+#else
+#define NS_IS_ALPHA(VAL) ((((unsigned int) (VAL)) > 0x7f) ? (int) 0 : isalpha((int)(VAL)))
 #endif
 
 

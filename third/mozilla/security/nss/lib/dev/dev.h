@@ -41,7 +41,7 @@
  */
 
 #ifdef DEBUG
-static const char DEV_CVS_ID[] = "@(#) $RCSfile: dev.h,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:26:51 $ $Name: not supported by cvs2svn $";
+static const char DEV_CVS_ID[] = "@(#) $RCSfile: dev.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:06:26 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSCKT_H
@@ -321,6 +321,18 @@ nssSlot_Logout
 (
   NSSSlot *slot,
   nssSession *sessionOpt
+);
+
+NSS_EXTERN void
+nssSlot_EnterMonitor
+(
+  NSSSlot *slot
+);
+
+NSS_EXTERN void
+nssSlot_ExitMonitor
+(
+  NSSSlot *slot
 );
 
 #define NSSSLOT_ASK_PASSWORD_FIRST_TIME -1
@@ -732,8 +744,7 @@ nssCryptokiCertificate_GetAttributes
   NSSDER *encodingOpt,
   NSSDER *issuerOpt,
   NSSDER *serialOpt,
-  NSSDER *subjectOpt,
-  NSSASCII7 **emailOpt
+  NSSDER *subjectOpt
 );
 
 NSS_EXTERN PRStatus

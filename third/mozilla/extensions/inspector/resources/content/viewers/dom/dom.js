@@ -50,6 +50,7 @@ var gEntityConverter;
 
 const kDOMViewCID          = "@mozilla.org/inspector/dom-view;1";
 const kClipboardHelperCID  = "@mozilla.org/widget/clipboardhelper;1";
+const kPromptServiceCID    = "@mozilla.org/embedcomp/prompt-service;1";
 
 //////////////////////////////////////////////////
 
@@ -74,7 +75,7 @@ function DOMViewer() // implements inIViewer
   // prepare and attach the DOM DataSource
   this.mDOMView = XPCU.createInstance(kDOMViewCID, "inIDOMView");
   this.mDOMView.showSubDocuments = true;
-  this.mDOMView.removeFilterByType(Node.ATTRIBUTE_NODE); // hide attribute nodes
+  this.mDOMView.whatToShow &= ~(NodeFilter.SHOW_ATTRIBUTE); // hide attribute nodes
   this.mDOMTree.treeBoxObject.view = this.mDOMView;
 
   PrefUtils.addObserver("inspector", PrefChangeObserver);
@@ -125,10 +126,11 @@ DOMViewer.prototype =
     this.mPanel = aPane;
     aPane.notifyViewerReady(this);
 
-    this._toggleAnonContent(true, PrefUtils.getPref("inspector.dom.showAnon"));
+    this.setAnonContent(PrefUtils.getPref("inspector.dom.showAnon"), false);
+    this.setWhitespaceNodes(PrefUtils.getPref("inspector.dom.showWhitespaceNodes"));
     this.setFlashSelected(PrefUtils.getPref("inspector.blink.on"));
   },
-  
+
   destroy: function()
   {
     this.mDOMTree.treeBoxObject.view = null;
@@ -184,28 +186,52 @@ DOMViewer.prototype =
                          "_blank", "chrome,dependent", this.mFindType, this.mFindDir, this.mFindParams);
   },
 
-  toggleAnonContent: function(aExplicit, aValue)
+  toggleAnonContent: function(aRebuild)
   {
-    this._toggleAnonContent(aExplicit, aValue);
-    this.rebuild();
+    this.setAnonContent(!this.mDOMView.showAnonymousContent, aRebuild);
   },
   
-  _toggleAnonContent: function(aExplicit, aValue)
+  setAnonContent: function(aValue, aRebuild)
   {
-    var val = aExplicit ? aValue : !this.mDOMView.showAnonymousContent;
-    this.mDOMView.showAnonymousContent = val;
-    this.mPanel.panelset.setCommandAttribute("cmd:toggleAnon", "checked", val);
-    PrefUtils.setPref("inspector.dom.showAnon", val);
+    this.mDOMView.showAnonymousContent = aValue;
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleAnon", "checked", aValue);
+    PrefUtils.setPref("inspector.dom.showAnon", aValue);
+
+    if (aRebuild) {
+      this.rebuild();
+    }
   },
-  
-  toggleSubDocs: function(aExplicit, aValue)
+
+  toggleSubDocs: function()
   {
-    var val = aExplicit ? aValue : !this.mDOMView.showSubDocuments;
+    var val = !this.mDOMView.showSubDocuments;
     this.mDOMView.showSubDocuments = val;
     this.mPanel.panelset.setCommandAttribute("cmd:toggleSubDocs", "checked", val);
   },
-  
-  toggleAttributes: function(aExplicit, aValue)
+
+  setWhitespaceNodes: function(aValue)
+  {
+    // Do this first so we ensure the checkmark is set in the case
+    // we are starting with whitespace nodes enabled.
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleWhitespaceNodes", "checked", aValue);
+
+    // The rest of the stuff is redundant to do if we are not changing
+    // the value, so just bail here if we're setting the same value.
+    if (this.mDOMView.showWhitespaceNodes == aValue) {
+      return;
+    }
+
+    this.mDOMView.showWhitespaceNodes = aValue;
+    PrefUtils.setPref("inspector.dom.showWhitespaceNodes", aValue);
+    this.rebuild();
+  },
+
+  toggleWhitespaceNodes: function()
+  {
+    this.setWhitespaceNodes(!this.mDOMView.showWhitespaceNodes);
+  },
+
+  toggleAttributes: function()
   {
     alert("NOT YET IMPLEMENTED");
   },
@@ -307,8 +333,8 @@ DOMViewer.prototype =
       // html iframe or frame
       this.subject = node.contentDocument;
     } else if (n == "editor") {
-      // editor shell
-      this.subject = node.editorShell.editorDocument;
+      // editor
+      this.subject = node.contentDocument;
     }
   },
  
@@ -501,7 +527,12 @@ DOMViewer.prototype =
         this.selectElementInTree(result);
         this.mDOMTree.focus();
       } else {
-        alert("End of document reached."); // XXX localize
+        var bundle = this.mPanel.panelset.stringBundle;
+        var msg = bundle.getString("findNodesDocumentEnd.message");
+        var title = bundle.getString("findNodesDocumentEnd.title");
+
+        var promptService = XPCU.getService(kPromptServiceCID, "nsIPromptService");
+        promptService.alert(window, title, msg);
       }
     }
   },
@@ -671,10 +702,9 @@ DOMViewer.prototype =
     }
   },
 
-  toggleFlashSelected: function(aExplicit, aValue)
+  toggleFlashSelected: function()
   {
-    var val = aExplicit ? aValue : !this.mFlashSelected;
-    this.setFlashSelected(val);
+    this.setFlashSelected(!this.mFlashSelected);
   },
 
   setFlashSelected: function(aValue)
@@ -734,10 +764,7 @@ DOMViewer.prototype =
   {
     for (var i = 0; i < aKids.length; ++i) {
       try {
-        if (aKids[i].localName == "editor")
-          aArray.push(aKids[i].editorShell.editorDocument);
-        else
-          aArray.push(aKids[i].contentDocument);
+        aArray.push(aKids[i].contentDocument);
       } catch (ex) {
         // if we can't access the content document, skip it
       }
@@ -949,42 +976,42 @@ function dumpDOM2(aNode)
 
 function unicodeToEntity(text)
 {
+  const charTable = {
+    '&': "&amp;",
+    '<': "&lt;",
+    '>': "&gt;",
+    '"': "&quot;"
+  };
+
+  function charTableLookup(letter) {
+    return charTable[letter];
+  }
+
+  function convertEntity(letter) {
+    try {
+      return gEntityConverter.ConvertToEntity(letter, entityVersion);
+    } catch (ex) {
+      return letter;
+    }
+  }
+
   if (!gEntityConverter) {
     try {
-      gEntityConverter = Components.classes["@mozilla.org/intl/entityconverter;1"]
-                                   .createInstance(Components.interfaces.nsIEntityConverter);
+      gEntityConverter =
+        Components.classes["@mozilla.org/intl/entityconverter;1"]
+                  .createInstance(Components.interfaces.nsIEntityConverter);
     } catch (ex) { }
   }
-  var entityVersion = Components.interfaces.nsIEntityConverter.html40 |
-                      Components.interfaces.nsIEntityConverter.mathml20;
 
-  var str = '';
-  for (var i = 0; i < text.length; ++i) {
-    if ((text.charCodeAt(i) > 0x7F) && gEntityConverter) {
-      try {
-        str += gEntityConverter.ConvertToEntity(text[i], entityVersion);
-      } catch (ex) {
-        str += text[i];
-      }
-      continue;
-    }
-    switch (text[i]) {
-      case '<':
-        str += "&lt;";
-        break;
-      case '>':
-        str += "&gt;";
-        break;
-      case '&':
-        str += "&amp;";
-        break;
-      case '"':
-        str += "&quot;";
-        break;
-      default:
-        str += text[i];
-        break;
-    }
-  }
+  const entityVersion = Components.interfaces.nsIEntityConverter.entityW3C;
+
+  var str = text;
+
+  // replace chars in our charTable
+  str = str.replace(/[<>&"]/g, charTableLookup);
+
+  // replace chars > 0x7f via nsIEntityConverter
+  str = str.replace(/[^\0-\u007f]/g, convertEntity);
+
   return str;
 }

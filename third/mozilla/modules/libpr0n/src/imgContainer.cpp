@@ -33,7 +33,6 @@ imgContainer::imgContainer() :
   mSize(0,0),
   mFrame(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 //******************************************************************************
@@ -180,13 +179,6 @@ NS_IMETHODIMP imgContainer::EndFrameDecode(PRUint32 aFrameNum, PRUint32 aTimeout
 NS_IMETHODIMP imgContainer::DecodingComplete(void)
 {
   return NS_OK;
-}
-
-//******************************************************************************
-/* nsIEnumerator enumerate (); */
-NS_IMETHODIMP imgContainer::Enumerate(nsIEnumerator **_retval)
-{
-  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 //******************************************************************************

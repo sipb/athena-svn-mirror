@@ -27,27 +27,21 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 ifneq (,$(filter-out WINNT OS2,$(OS_ARCH)))
-ifdef CROSS_COMPILE
 HOST_PROGRAM	= nsinstall$(BIN_SUFFIX)
-else
-PROGRAM		= nsinstall$(BIN_SUFFIX)
-endif
+HOST_CSRCS	= nsinstall.c pathsub.c
 endif
 
 PLSRCS		= nfspwd.pl revdepth.pl
-ifdef CROSS_COMPILE
-HOST_CSRCS	= nsinstall.c pathsub.c
-else
-CSRCS		= nsinstall.c pathsub.c
-endif
 
-TARGETS		= $(HOST_PROGRAM) $(PROGRAM) $(PLSRCS:.pl=) $(SIMPLE_PROGRAMS)
+TARGETS		= $(HOST_PROGRAM) $(PLSRCS:.pl=) $(SIMPLE_PROGRAMS)
 
 # Generate the build number on the fly.
 TARGETS		+= build_number nsBuildID.h
 
+ifndef CROSS_COMPILE
 ifdef USE_ELF_DYNSTR_GC
 TARGETS		+= elf-dynstr-gc
+endif
 endif
 
 ifeq ($(OS_ARCH), Darwin)
@@ -69,9 +63,7 @@ endif
 
 ifndef COMPILER_DEPEND
 ifndef MOZ_NATIVE_MAKEDEPEND
-ifneq ($(OS_ARCH),OS2)
 DIRS		+= mkdepend
-endif
 endif
 endif
 
@@ -82,40 +74,35 @@ NO_INSTALL=1
 
 include $(topsrcdir)/config/rules.mk
 
-ifeq ($(OS_ARCH), Linux)
-DEFINES         += -D_BSD_SOURCE
-endif
-
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-LOCAL_INCLUDES	+= -I$(srcdir)/os2
-HSRCS		+= dirent.h
-endif
-
 ifeq ($(OS_CONFIG),SunOS4.1)
 NSPR_CFLAGS	+= -I$(srcdir)/../nsprpub/pr/include/md
 endif
 
 HEADERS		= nsBuildID.h $(DEPTH)/mozilla-config.h
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-HEADERS		+= $(srcdir)/os2/dirent.h
-endif
 
 export:: $(TARGETS) $(HEADERS)
-	$(INSTALL) -m 444 $(HEADERS) $(DIST)/include
+	$(INSTALL) $(IFLAGS1) $(HEADERS) $(DIST)/include
 	$(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/build-list.pl $(PUBLIC)/.headerlist $(HEADERS)
 	-rm -f $(FINAL_LINK_COMPS) $(FINAL_LINK_LIBS) $(FINAL_LINK_COMP_NAMES)
 	-rm -f $(DIST)/bin/chrome/chromelist.txt
-	$(NSINSTALL) -t -m 444 $(DEPTH)/mozilla-config.h $(DIST)/sdk/
+	$(NSINSTALL) -t $(IFLAGS1) $(HEADERS) $(DIST)/sdk/
 
 
 # Create mini-SDK directory for NSPR
 ifndef MOZ_NATIVE_NSPR
-_ABS_DIST=$(shell cd $(DIST) && pwd)
+ifeq ($(OS_ARCH),WINNT)
+_ABS_DIST = $(shell cd $(DIST) && cygpath -w `pwd` | sed -e 's|\\|/|g')
+else
+_ABS_DIST = $(shell cd $(DIST) && pwd)
+endif
 libs::
 	$(RM) -rf $(DIST)/sdk/nspr
 	$(MAKE) -C $(DEPTH)/nsprpub real_install prefix=$(_ABS_DIST)/sdk/nspr exec_prefix=$(_ABS_DIST)/sdk/nspr bindir=$(_ABS_DIST)/sdk/nspr/bin includedir=$(_ABS_DIST)/sdk/nspr/include libdir=$(_ABS_DIST)/sdk/nspr/lib datadir=$(_ABS_DIST)/sdk/nspr/share DESTDIR=
 	$(RM) -rf $(DIST)/sdk/nspr/bin $(DIST)/sdk/nspr/share
 	mv $(DIST)/sdk/nspr/lib $(DIST)/sdk/nspr/bin
+ifndef DISABLE_DIST_GRE
+	$(INSTALL) $(DIST)/sdk/nspr/bin/*$(DLL_SUFFIX) $(GRE_DIST)
+endif
 endif
 
 # we don't use an explicit dependency here because then we would
@@ -149,14 +136,16 @@ build_number: FORCE
 
 nsBuildID.h: nsBuildID.h.in build_number 
 	$(RM) $@
-	$(PERL) -I$(srcdir) $(srcdir)/aboutime.pl $@ build_number $(srcdir)/nsBuildID.h.in
+	$(PERL) -I$(srcdir) $(srcdir)/aboutime.pl -m $(srcdir)/milestone.txt $@ build_number $(srcdir)/nsBuildID.h.in
 
-elf-dynstr-gc: elf-dynstr-gc.c Makefile Makefile.in
-	$(CC) $(COMPILE_CFLAGS) $(GLIB_CFLAGS) $(GLIB_LIBS) $(LDFLAGS) -o $@ $<
-
+ifndef CROSS_COMPILE
 ifdef USE_ELF_DYNSTR_GC
+elf-dynstr-gc: elf-dynstr-gc.c Makefile Makefile.in
+	$(CC) $(COMPILE_CFLAGS) $(GLIB_CFLAGS) -o $@ $< $(LDFLAGS) $(GLIB_LIBS) 
+
 export:: elf-dynstr-gc
 	$(INSTALL) -m 555 elf-dynstr-gc $(DIST)/bin
+endif
 endif
 
 FORCE:

@@ -50,6 +50,7 @@
 #include "nsIFontMetrics.h"
 #include "nsWeakReference.h" //for service and presshell pointers
 #include "nsIScrollableViewProvider.h"
+#include "nsIPhonetic.h"
 
 class nsIPresState;
 class nsISupportsArray;
@@ -68,12 +69,15 @@ class nsIAccessible;
 class nsTextControlFrame : public nsStackFrame,
                            public nsIAnonymousContentCreator,
                            public nsITextControlFrame,
-                           public nsIScrollableViewProvider
+                           public nsIScrollableViewProvider,
+                           public nsIPhonetic
 
 {
 public:
   nsTextControlFrame(nsIPresShell* aShell);
   virtual ~nsTextControlFrame();
+
+  static void ReleaseGlobals();
 
   virtual void RemovedAsPrimaryFrame(nsIPresContext* aPresContext); 
 
@@ -110,7 +114,7 @@ public:
 #ifdef NS_DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const
   {
-    aResult = NS_LITERAL_STRING("nsGfxControlFrame2");
+    aResult = NS_LITERAL_STRING("nsTextControlFrame");
     return NS_OK;
   }
 #endif
@@ -126,7 +130,7 @@ public:
                                   nsIFrame*       aChildList);
 
 //==== BEGIN NSIFORMCONTROLFRAME
-  NS_IMETHOD GetType(PRInt32* aType) const; //*
+  NS_IMETHOD_(PRInt32) GetType() const; //*
   NS_IMETHOD GetName(nsAString* aName);//*
   virtual void SetFocus(PRBool aOn , PRBool aRepaint); 
   virtual void ScrollIntoView(nsIPresContext* aPresContext);
@@ -163,6 +167,9 @@ public:
   NS_IMETHOD    GetSelectionRange(PRInt32* aSelectionStart, PRInt32* aSelectionEnd);
   NS_IMETHOD    GetSelectionContr(nsISelectionController **aSelCon);
 
+  // nsIPhonetic
+  NS_DECL_NSIPHONETIC
+
 //==== END NSIGFXTEXTCONTROLFRAME2
 //==== OVERLOAD of nsIFrame
   NS_IMETHOD GetFrameType(nsIAtom** aType) const;
@@ -181,30 +188,32 @@ public:
 
 public: //for methods who access nsTextControlFrame directly
 
-  NS_IMETHOD InternalContentChanged();//notify that we have some kind of change.
+  void FireOnInput();//notify that we have some kind of change.
   /**
    * Find out whether this is a single line text control.  (text or password)
    * @return whether this is a single line text control
    */
-  virtual PRBool IsSingleLineTextControl() const;
+  PRBool IsSingleLineTextControl() const;
   /**
    * Find out whether this control is a textarea.
    * @return whether this is a textarea text control
    */
-  virtual PRBool IsTextArea() const;
+  PRBool IsTextArea() const;
   /**
    * Find out whether this control edits plain text.  (Currently always true.)
    * @return whether this is a plain text control
    */
-  virtual PRBool IsPlainTextControl() const;
+  PRBool IsPlainTextControl() const;
   /**
    * Find out whether this is a password control (input type=password)
    * @return whether this is a password ontrol
    */
-  virtual PRBool IsPasswordTextControl() const;
+  PRBool IsPasswordTextControl() const;
   void SetValueChanged(PRBool aValueChanged);
   /** Called when the frame is focused, to remember the value for onChange. */
   nsresult InitFocusedValue();
+  nsresult DOMPointToOffset(nsIDOMNode* aNode, PRInt32 aNodeOffset, PRInt32 *aResult);
+  nsresult OffsetToDOMPoint(PRInt32 aOffset, nsIDOMNode** aResult, PRInt32* aPosition);
 
 protected:
 
@@ -278,16 +287,12 @@ protected:
   PRInt32 GetWidthInCharacters() const;
 
   // nsIScrollableViewProvider
-  NS_IMETHOD GetScrollableView(nsIScrollableView** aView);
+  NS_IMETHOD GetScrollableView(nsIPresContext* aPresContext, nsIScrollableView** aView);
 
 private:
   //helper methods
-  enum {
-    eIgnoreSelect = -2,
-    eSelectToEnd  = -1  
-  };
-
-  NS_IMETHODIMP GetFirstTextNode(nsIDOMCharacterData* *aFirstTextNode);
+  nsresult SetSelectionInternal(nsIDOMNode *aStartNode, PRInt32 aStartOffset,
+                                nsIDOMNode *aEndNode, PRInt32 aEndOffset);
   nsresult SelectAllContents();
   nsresult SetSelectionEndPoints(PRInt32 aSelStart, PRInt32 aSelEnd);
   

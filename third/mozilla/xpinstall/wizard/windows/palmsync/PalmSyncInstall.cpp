@@ -39,6 +39,8 @@
 #include <windows.h>
 #include <io.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <tchar.h>
 
 #include "CondMgr.h"
 #include "HSAPI.h"
@@ -69,6 +71,7 @@ typedef int (WINAPI *CmRemoveConduitByCreatorIDPtr)(const char *pCreator);
 typedef int (WINAPI *CmRestoreHotSyncSettingsPtr)(BOOL bToDefaults);
 typedef int (WINAPI *CmSetCreatorRemotePtr)(const char *pCreator, const TCHAR *pRemote);
 typedef int (WINAPI *CmSetCreatorNamePtr)(const char *pCreator, const TCHAR *pConduitName);
+typedef int (WINAPI *CmSetCreatorTitlePtr)(const char *pCreator, const TCHAR *pConduitTitle);
 typedef int (WINAPI *CmSetCreatorPriorityPtr)(const char *pCreator, DWORD dwPriority);
 typedef int (WINAPI *CmSetCreatorIntegratePtr)(const char *pCreator, DWORD dwIntegrate);
 typedef int (WINAPI *CmSetCreatorValueDwordPtr)(const char *pCreator, TCHAR *pValue, DWORD dwValue);
@@ -83,24 +86,46 @@ typedef int (WINAPI *mozDllRegisterServerPtr)(void);
 typedef int (WINAPI *mozDllUnregisterServerPtr)(void);
 
 // forward declaration
-int  InstallConduit();
+int  InstallConduit(HINSTANCE hInstance);
 int UninstallConduit();
+void ConstructMessage(HINSTANCE hInstance, DWORD dwMessageId, TCHAR *formattedMsg);
+
+// Global vars
 BOOL    gWasHotSyncRunning = FALSE;
+
+void ConstructMessage(HINSTANCE hInstance, DWORD dwMessageId, TCHAR *formattedMsg)
+{
+  // Load brand name and the format string.
+  TCHAR brandName[MAX_LOADSTRING];
+  TCHAR formatString[MAX_LOADSTRING];
+  LoadString(hInstance, IDS_BRAND_NAME, brandName, MAX_LOADSTRING-1);
+  LoadString(hInstance, dwMessageId, formatString, MAX_LOADSTRING-1);
+
+  // A few msgs needs two brand name substitutions.
+  if ((dwMessageId == IDS_SUCCESS_INSTALL) ||
+      (dwMessageId == IDS_CONFIRM_INSTALL) ||
+      (dwMessageId == IDS_ERR_REGISTERING_MOZ_DLL))
+    _sntprintf(formattedMsg, MAX_LOADSTRING-1, formatString, brandName, brandName);
+  else
+    _sntprintf(formattedMsg, MAX_LOADSTRING-1, formatString, brandName);
+
+  formattedMsg[MAX_LOADSTRING-1]='\0';
+}
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-    TCHAR appTitle[128];
-    LoadString(hInstance, IDS_APP_TITLE, appTitle, MAX_LOADSTRING);
+    TCHAR appTitle[MAX_LOADSTRING];
+    TCHAR msgStr[MAX_LOADSTRING];
 
-    TCHAR msgStr[256];
     int strResource=0;
     int res=-1;
     if(!strcmp(lpCmdLine,"/u")) // un-install
     {
-        LoadString(hInstance, IDS_CONFIRM_UNINSTALL, msgStr, MAX_LOADSTRING);
+        ConstructMessage(hInstance, IDS_APP_TITLE_UNINSTALL, appTitle);
+        ConstructMessage(hInstance, IDS_CONFIRM_UNINSTALL, msgStr);
         if (MessageBox(NULL, msgStr, appTitle, MB_YESNO) == IDYES) 
         {
             res = UninstallConduit();
@@ -117,17 +142,18 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     }
     else if (!strcmp(lpCmdLine,"/s")) // silent install
     {
-        res = InstallConduit();
+        res = InstallConduit(hInstance);
         if(!res)
             return TRUE; // success
         return res;
     }
     else // install
     {
-        LoadString(hInstance, IDS_CONFIRM_INSTALL, msgStr, MAX_LOADSTRING);
+        ConstructMessage(hInstance, IDS_APP_TITLE_INSTALL, appTitle);
+        ConstructMessage(hInstance, IDS_CONFIRM_INSTALL, msgStr);
         if (MessageBox(NULL, msgStr, appTitle, MB_YESNO) == IDYES) 
         {
-            res = InstallConduit();
+            res = InstallConduit(hInstance);
             if(!res)
                 res = IDS_SUCCESS_INSTALL;
         }
@@ -139,7 +165,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     if(res > IDS_ERR_MAX || res < IDS_ERR_GENERAL)
         res = IDS_ERR_GENERAL;
-    LoadString(hInstance, res, msgStr, MAX_LOADSTRING);
+
+    ConstructMessage(hInstance, res, msgStr);
     MessageBox(NULL, msgStr, appTitle, MB_OK);
 
     return TRUE;
@@ -147,18 +174,44 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 // this function gets the install dir for installation
 int GetPalmDesktopInstallDirectory(TCHAR *pPDInstallDirectory, unsigned long *pSize)
-            {
+{
     HKEY   key;
     // open the key
-    LONG   rc = ::RegOpenKey(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\palm.exe", &key);
+    LONG rc = ::RegOpenKey(HKEY_CURRENT_USER, "Software\\U.S. Robotics\\Pilot Desktop\\Core", &key);
     if (rc == ERROR_SUCCESS) {
         // get key value
         rc = ::RegQueryValueEx(key, "Path", NULL, NULL, 
                                (LPBYTE)pPDInstallDirectory, pSize);
-        if (rc == ERROR_SUCCESS)
+        if (rc == ERROR_SUCCESS) {
+            *pSize = _tcslen(pPDInstallDirectory); // windows only
             rc=0; // 0 is success for us
+        }
         // close the key
         ::RegCloseKey(key);
+    }
+
+    if(rc) {
+        HKEY   key2;
+        // open the key
+        rc = ::RegOpenKey(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\palm.exe", &key2);
+        if (rc == ERROR_SUCCESS) {
+            // get the default key value
+            rc = ::RegQueryValueEx(key2, "", NULL, NULL, 
+                                   (LPBYTE)pPDInstallDirectory, pSize);
+            // get only the path (ie, strip out the exe name). note that we don't use string match
+            // for the exe name here since it's possilbe that the exe name in the default setting
+            // is different from the exe name in RegOpenKey() call. For example, the exe name in
+            // the default setting for "Software\\...\\App Paths\\pbrush.exe" is mspaint.exe.
+            if (rc == ERROR_SUCCESS) {
+              TCHAR *end = pPDInstallDirectory + _tcslen(pPDInstallDirectory);
+              while ((*end != '\\') && (end != pPDInstallDirectory))
+                end--;
+              *end = '\0';
+              rc=0; // 0 is success for us
+            }
+            // close the key
+            ::RegCloseKey(key2);
+        }
     }
     
     return rc;
@@ -334,7 +387,7 @@ int UnregisterMozPalmSyncDll()
 }
 
 // installs our Conduit
-int InstallConduit()
+int InstallConduit(HINSTANCE hInstance)
 { 
     int dwReturnCode;
     BOOL    bHotSyncRunning = FALSE;
@@ -389,6 +442,8 @@ int InstallConduit()
     lpfnCmSetCreatorRemote = (CmSetCreatorRemotePtr) GetProcAddress(hConduitManagerDLL, "CmSetCreatorRemote");
     CmSetCreatorNamePtr lpfnCmSetCreatorName;
     lpfnCmSetCreatorName = (CmSetCreatorNamePtr) GetProcAddress(hConduitManagerDLL, "CmSetCreatorName");
+    CmSetCreatorTitlePtr lpfnCmSetCreatorTitle;
+    lpfnCmSetCreatorTitle = (CmSetCreatorTitlePtr) GetProcAddress(hConduitManagerDLL, "CmSetCreatorTitle");
     CmSetCreatorPriorityPtr lpfnCmSetCreatorPriority;
     lpfnCmSetCreatorPriority = (CmSetCreatorPriorityPtr) GetProcAddress(hConduitManagerDLL, "CmSetCreatorPriority");
     CmSetCreatorIntegratePtr    lpfnCmSetCreatorIntegrate;
@@ -399,6 +454,7 @@ int InstallConduit()
     if( (lpfnCmInstallCreator == NULL) 
         || (lpfnCmSetCreatorRemote == NULL)
         || (lpfnCmSetCreatorName == NULL)
+        || (lpfnCmSetCreatorTitle == NULL)
         || (lpfnCmSetCreatorPriority == NULL)
         || (lpfnCmSetCreatorIntegrate == NULL)
         )
@@ -434,12 +490,17 @@ int InstallConduit()
             //free the library so that the existing AB Conduit is unloaded properly
             FreeLibrary(hConduitManagerDLL);
             FreeLibrary(hHsapiDLL);
-            return InstallConduit();
+            return InstallConduit(hInstance);
         }
     }
     if( dwReturnCode == 0 )
     {
         dwReturnCode = (*lpfnCmSetCreatorName)(CREATOR, szConduitPath);
+        if( dwReturnCode != 0 ) return dwReturnCode;
+        TCHAR title[MAX_LOADSTRING];
+        // Construct conduit title (the one displayed in HotSync Mgr's Custom...list)..
+        ConstructMessage(hInstance, IDS_CONDUIT_TITLE, title);
+        dwReturnCode = (*lpfnCmSetCreatorTitle)(CREATOR, title);
         if( dwReturnCode != 0 ) return dwReturnCode;
         dwReturnCode = (*lpfnCmSetCreatorRemote)(CREATOR, REMOTE_DB);
         if( dwReturnCode != 0 ) return dwReturnCode;
@@ -512,6 +573,14 @@ int UninstallConduit()
         dwReturnCode = (*lpfnCmRestoreHotSyncSettings)(TRUE);
     }
     
+    // this registry key is set by the RestoreHotSyncSettings to point incorrectly to Mozilla dir
+    // this should point to the Palm directory to enable sync with Palm Desktop.
+    HKEY key;
+    LONG rc = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\U.S. Robotics\\Pilot Desktop\\Core",
+                                0, KEY_ALL_ACCESS, &key);
+    if(rc == ERROR_SUCCESS)
+        ::RegSetValueEx(key, "Path", 0, REG_SZ, (const BYTE *) szPalmDesktopDir, size);
+ 
     // Re-start HotSync if it was running before
     if( bHotSyncRunning )
         StartHotSync(hHsapiDLL);

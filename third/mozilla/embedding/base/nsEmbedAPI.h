@@ -65,7 +65,7 @@
  *         other error codes indicate a failure during initialisation.
  *
  */
-extern nsresult NS_InitEmbedding(nsILocalFile *aMozBinDirectory,
+extern "C" nsresult NS_InitEmbedding(nsILocalFile *aMozBinDirectory,
                                  nsIDirectoryServiceProvider *aAppFileLocProvider);
 
 
@@ -83,7 +83,7 @@ extern nsresult NS_InitEmbedding(nsILocalFile *aMozBinDirectory,
  *
  * @return NS_OK
  */
-extern nsresult NS_TermEmbedding();
+extern "C" nsresult NS_TermEmbedding();
 
 /*---------------------------------------------------------------------------*/
 /* Event processing APIs. The native OS dependencies mean you must be        */
@@ -102,6 +102,19 @@ extern nsresult NS_TermEmbedding();
  * Embedding events are native <CODE>MSG</CODE> structs on Win32.
  */
 typedef MSG nsEmbedNativeEvent;
+#define MOZ_SUPPORTS_EMBEDDING_EVENT_PROCESSING
+#endif
+
+/* OS/2 specific stuff */
+#ifdef XP_OS2
+#include "os2.h"
+
+/**
+ * @var typedef MSG nsEmbedNativeEvent
+ * 
+ * Embedding events are native <CODE>QMSG</CODE> structs on OS/2.
+ */
+typedef QMSG nsEmbedNativeEvent;
 #define MOZ_SUPPORTS_EMBEDDING_EVENT_PROCESSING
 #endif
 
@@ -129,7 +142,7 @@ typedef MSG nsEmbedNativeEvent;
  *
  * @return NS_OK
  */
-extern nsresult NS_HandleEmbeddingEvent(nsEmbedNativeEvent &aEvent, PRBool &aWasHandled);
+extern "C" nsresult NS_HandleEmbeddingEvent(nsEmbedNativeEvent &aEvent, PRBool &aWasHandled);
 
 #endif /* MOZ_SUPPORTS_EMBEDDING_EVENT_PROCESSING */
 

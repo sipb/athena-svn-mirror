@@ -42,17 +42,14 @@
 
 #include "nsCOMPtr.h"
 #include "nsIAccessibleSelectable.h"
-#include "nsIDOMNode.h"
-#include "nsIWeakReference.h"
-#include "nsSelectAccessible.h"
 #include "nsXULMenuAccessible.h"
+
+class nsIWeakReference;
 
 /**
   * Selects, Listboxes and Comboboxes, are made up of a number of different
   *  widgets, some of which are shared between the two. This file contains 
-  *  all of the widgets for both of the Selects, for XUL only. Some of them
-  *  extend classes from nsSelectAccessible.cpp, which contains base classes 
-  *  that are also extended by the XUL Select Accessibility support.
+  *  all of the widgets for both of the Selects, for XUL only.
   *
   *  Listbox:
   *     - nsXULListboxAccessible
@@ -74,7 +71,7 @@
 /*
  * The basic implemetation of nsIAccessibleSelectable.
  */
-class nsXULSelectableAccessible : public nsAccessible,
+class nsXULSelectableAccessible : public nsAccessibleWrap,
                                   public nsIAccessibleSelectable
 {
 public:
@@ -84,6 +81,8 @@ public:
   nsXULSelectableAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsXULSelectableAccessible() {}
 
+  NS_IMETHOD GetAccName(nsAString& _retval);
+
 protected:
   NS_IMETHOD ChangeSelection(PRInt32 aIndex, PRUint8 aMethod, PRBool *aSelState);
 };
@@ -91,7 +90,7 @@ protected:
 /*
  * The list that contains all the options in the select.
  */
-class nsXULSelectListAccessible : public nsAccessible
+class nsXULSelectListAccessible : public nsAccessibleWrap
 {
 public:
   
@@ -116,8 +115,6 @@ public:
   /* ----- nsIAccessible ----- */
   NS_IMETHOD GetAccRole(PRUint32 *_retval);
   NS_IMETHOD GetAccState(PRUint32 *_retval);
-
-  static nsresult GetFocusedOptionNode(nsIWeakReference *aPresShell, nsIDOMNode *aListNode, nsCOMPtr<nsIDOMNode>& aFocusedOptionNode);
 };
 
 /** ------------------------------------------------------ */
@@ -176,7 +173,6 @@ public:
 
   /* ----- nsIAccessible ----- */
   NS_IMETHOD GetAccRole(PRUint32 *_retval);
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
   NS_IMETHOD GetAccState(PRUint32 *_retval);
 
   NS_IMETHOD GetAccValue(nsAString& _retval);

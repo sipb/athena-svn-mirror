@@ -40,9 +40,13 @@
 #include "nsISecretDecoderRing.h"
 #include "nsSDR.h"
 #include "nsNSSComponent.h"
+#include "nsNSSShutDown.h"
 
 #include "pk11func.h"
 #include "pk11sdr.h" // For PK11SDR_Encrypt, PK11SDR_Decrypt
+
+#include "nsNSSCleaner.h"
+NSSCleanupAutoPtrClass(PK11SlotInfo, PK11_FreeSlot)
 
 //
 // Implementation of an nsIInterfaceRequestor for use
@@ -63,7 +67,6 @@ NS_IMPL_ISUPPORTS1(nsSDRContext, nsIInterfaceRequestor)
 
 nsSDRContext::nsSDRContext()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsSDRContext::~nsSDRContext()
@@ -105,7 +108,6 @@ NS_IMPL_ISUPPORTS2(nsSecretDecoderRing, nsISecretDecoderRing, nsISecretDecoderRi
 nsSecretDecoderRing::nsSecretDecoderRing()
 {
   // initialize superclass
-  NS_INIT_ISUPPORTS();
 }
 
 // nsSecretDecoderRing destructor
@@ -117,8 +119,10 @@ nsSecretDecoderRing::~nsSecretDecoderRing()
 NS_IMETHODIMP nsSecretDecoderRing::
 Encrypt(unsigned char * data, PRInt32 dataLen, unsigned char * *result, PRInt32 *_retval)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv = NS_OK;
   PK11SlotInfo *slot = 0;
+  PK11SlotInfoCleaner tmpSlotCleaner(slot);
   SECItem keyid;
   SECItem request;
   SECItem reply;
@@ -150,7 +154,6 @@ Encrypt(unsigned char * data, PRInt32 dataLen, unsigned char * *result, PRInt32 
   *_retval = reply.len;
 
 loser:
-  if (slot) PK11_FreeSlot(slot);
   return rv;
 }
 
@@ -158,8 +161,10 @@ loser:
 NS_IMETHODIMP nsSecretDecoderRing::
 Decrypt(unsigned char * data, PRInt32 dataLen, unsigned char * *result, PRInt32 *_retval)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv = NS_OK;
   PK11SlotInfo *slot = 0;
+  PK11SlotInfoCleaner tmpSlotCleaner(slot);
   SECStatus s;
   SECItem request;
   SECItem reply;
@@ -190,7 +195,6 @@ Decrypt(unsigned char * data, PRInt32 dataLen, unsigned char * *result, PRInt32 
   *_retval = reply.len;
 
 loser:
-  if (slot) PK11_FreeSlot(slot);
   return rv;
 }
 
@@ -198,6 +202,7 @@ loser:
 NS_IMETHODIMP nsSecretDecoderRing::
 EncryptString(const char *text, char **_retval)
 {
+    nsNSSShutDownPreventionLock locker;
     nsresult rv = NS_OK;
     unsigned char *encrypted = 0;
     PRInt32 eLen;
@@ -222,6 +227,7 @@ loser:
 NS_IMETHODIMP nsSecretDecoderRing::
 DecryptString(const char *crypt, char **_retval)
 {
+    nsNSSShutDownPreventionLock locker;
     nsresult rv = NS_OK;
     char *r = 0;
     unsigned char *decoded = 0;
@@ -262,6 +268,7 @@ loser:
 NS_IMETHODIMP nsSecretDecoderRing::
 ChangePassword()
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   PK11SlotInfo *slot;
 
@@ -284,7 +291,15 @@ ChangePassword()
   nsCOMPtr<nsIInterfaceRequestor> ctx = new nsSDRContext();
   PRBool canceled;
 
-  rv = dialogs->SetPassword(ctx, tokenName.get(), &canceled);
+  {
+    nsPSMUITracker tracker;
+    if (tracker.isUIForbidden()) {
+      rv = NS_ERROR_NOT_AVAILABLE;
+    }
+    else {
+      rv = dialogs->SetPassword(ctx, tokenName.get(), &canceled);
+    }
+  }
 
   /* canceled is ignored */
 
@@ -292,12 +307,22 @@ ChangePassword()
   return rv;
 }
 
+static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
 /* void logout(); */
 NS_IMETHODIMP nsSecretDecoderRing::
 Logout()
 {
-  PK11_LogoutAll();
-  return NS_OK;
+  nsresult rv;
+  nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+
+  {
+    nsNSSShutDownPreventionLock locker;
+    PK11_LogoutAll();
+  }
+
+  return nssComponent->LogoutAuthenticatedPK11();
 }
 
 /* void setWindow(in nsISupports w); */

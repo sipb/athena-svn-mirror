@@ -68,7 +68,7 @@ struct nsGlobalNameStruct
 
   union {
     PRInt32 mDOMClassInfoID; // eTypeClassConstructor
-    nsIID mIID; // eTypeClassProto
+    nsIID mIID; // eTypeInterface, eTypeClassProto
     nsExternalDOMClassInfoData* mData; // eTypeExternalClassInfo
     ConstructorAlias* mAlias; // eTypeExternalConstructorAlias
     nsCID mCID; // All other types...
@@ -96,8 +96,11 @@ public:
   // Returns a nsGlobalNameStruct for aName, or null if one is not
   // found. The returned nsGlobalNameStruct is only guaranteed to be
   // valid until the next call to any of the methods in this class.
+  // It also returns a pointer to the string buffer of the classname
+  // in the nsGlobalNameStruct.
   nsresult LookupName(const nsAString& aName,
-                      const nsGlobalNameStruct **aNameStruct);
+                      const nsGlobalNameStruct **aNameStruct,
+                      const PRUnichar **aClassName = nsnull);
 
   nsresult RegisterClassName(const char *aClassName,
                              PRInt32 aDOMClassInfoID);
@@ -134,8 +137,8 @@ protected:
                     const char *aCategory,
                     nsGlobalNameStruct::nametype aType);
   nsresult FillHashWithDOMInterfaces();
-  nsresult RegisterInterface(nsIInterfaceInfo* aIfInfo,
-                             const char* aIfName,
+  nsresult RegisterInterface(const char* aIfName,
+                             const nsIID *aIfIID,
                              PRBool* aFoundOld);
 
   // Inline PLDHashTable, init with PL_DHashTableInit() and delete

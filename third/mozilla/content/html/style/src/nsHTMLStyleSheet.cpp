@@ -42,7 +42,7 @@
 #include "nsIStyleRuleProcessor.h"
 #include "nsIStyleRule.h"
 #include "nsIFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsIPresContext.h"
 #include "nsIEventStateManager.h"
@@ -56,11 +56,11 @@
 #include "nsLayoutCID.h"
 #include "nsIDOMHTMLDocument.h"
 #include "nsIDOMHTMLElement.h"
+#include "nsCSSAnonBoxes.h"
 
 #include "nsRuleWalker.h"
 
 #include "nsIStyleSet.h"
-#include "nsISizeOfHandler.h"
 
 static NS_DEFINE_CID(kCSSFrameConstructorCID, NS_CSSFRAMECONSTRUCTOR_CID);
 
@@ -78,8 +78,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize);
 #endif
 
   nscolor             mColor;
@@ -93,14 +91,6 @@ public:
 
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 
-#ifdef DEBUG
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize);
-#endif
-
-  void Reset() {
-    mInitialized = PR_FALSE;
-  }
-
 protected:
   void Initialize(nsIPresContext* aPresContext);
 
@@ -110,7 +100,6 @@ protected:
 HTMLColorRule::HTMLColorRule(nsIHTMLStyleSheet* aSheet)
   : mSheet(aSheet)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 HTMLColorRule::~HTMLColorRule()
@@ -143,49 +132,12 @@ HTMLColorRule::List(FILE* out, PRInt32 aIndent) const
 {
   return NS_OK;
 }
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as HTMLColorRule's size): 
-*    1) sizeof(*this) + 
-*
-*  Contained / Aggregated data (not reported as HTMLColorRule's size):
-*    1) delegate to the mSheet
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void HTMLColorRule::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-
-  if(! uniqueItems->AddItem((void*)this) ){
-    // object has already been accounted for
-    return;
-  }
-
-  // get or create a tag for this instance
-  nsCOMPtr<nsIAtom> tag = do_GetAtom("HTMLColorRule");
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  if(mSheet){
-    PRUint32 localSize=0;
-    mSheet->SizeOf(aSizeOfHandler, localSize);
-  }
-}
 #endif
 
 HTMLDocumentColorRule::HTMLDocumentColorRule(nsIHTMLStyleSheet* aSheet) 
-  : HTMLColorRule(aSheet)
+  : HTMLColorRule(aSheet),
+    mInitialized(PR_FALSE)
 {
-  Reset();
 }
 
 HTMLDocumentColorRule::~HTMLDocumentColorRule()
@@ -225,49 +177,8 @@ HTMLDocumentColorRule::Initialize(nsIPresContext* aPresContext)
   shell->GetPrimaryFrameFor(bodyContent, &bodyFrame);
   if (!bodyFrame)
     return;
-  const nsStyleColor *bodyColor;
-  ::GetStyleData(bodyFrame, &bodyColor);
-  mColor = bodyColor->mColor;
+  mColor = bodyFrame->GetStyleColor()->mColor;
 }
-
-#ifdef DEBUG
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as HTMLDocumentColorRule's size): 
-*    1) sizeof(*this)
-*
-*  Contained / Aggregated data (not reported as HTMLDocumentColorRule's size):
-*    1) Delegate to the mSheet
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void HTMLDocumentColorRule::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-
-  if(! uniqueItems->AddItem((void*)this) ){
-    // object has already been accounted for
-    return;
-  }
-
-  // get or create a tag for this instance
-  nsCOMPtr<nsIAtom> tag = do_GetAtom("HTMLDocumentColorRule");
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  if(mSheet){
-    PRUint32 localSize;
-    mSheet->SizeOf(aSizeOfHandler, localSize);
-  }
-}
-#endif
 
 class GenericTableRule: public nsIStyleRule {
 public:
@@ -283,20 +194,13 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize);
 #endif
-
-  void Reset()
-  {
-  }
 
   nsIHTMLStyleSheet*  mSheet; // not ref-counted, cleared by content
 };
 
 GenericTableRule::GenericTableRule(nsIHTMLStyleSheet* aSheet)
 {
-  NS_INIT_ISUPPORTS();
   mSheet = aSheet;
 }
 
@@ -326,43 +230,6 @@ GenericTableRule::List(FILE* out, PRInt32 aIndent) const
 {
   return NS_OK;
 }
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as GenericTableRule's size): 
-*    1) sizeof(*this) + 
-*
-*  Contained / Aggregated data (not reported as GenericTableRule's size):
-*    1) Delegate to the mSheet if it exists
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void GenericTableRule::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-
-  if(! uniqueItems->AddItem((void*)this) ){
-    // object has already been accounted for
-    return;
-  }
-
-  // get or create a tag for this instance
-  nsCOMPtr<nsIAtom> tag = do_GetAtom("GenericTableRule");
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  if(mSheet){
-    PRUint32 localSize;
-    mSheet->SizeOf(aSizeOfHandler, localSize);
-  }
-}
 #endif
 
 // -----------------------------------------------------------
@@ -372,11 +239,6 @@ class TableTHRule: public GenericTableRule {
 public:
   TableTHRule(nsIHTMLStyleSheet* aSheet);
   virtual ~TableTHRule();
-
-  void Reset()
-  {
-    GenericTableRule::Reset();
-  }
 
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 };
@@ -394,11 +256,10 @@ static void PostResolveCallback(nsStyleStruct* aStyleStruct, nsRuleData* aRuleDa
 {
   nsStyleText* text = (nsStyleText*)aStyleStruct;
   if (text->mTextAlign == NS_STYLE_TEXT_ALIGN_DEFAULT) {
-    nsCOMPtr<nsIStyleContext> parentContext = aRuleData->mStyleContext->GetParent();
+    nsStyleContext* parentContext = aRuleData->mStyleContext->GetParent();
 
     if (parentContext) {
-      const nsStyleText* parentStyleText = 
-          (const nsStyleText*)parentContext->GetStyleData(eStyleStruct_Text);
+      const nsStyleText* parentStyleText = parentContext->GetStyleText();
       PRUint8 parentAlign = parentStyleText->mTextAlign;
       text->mTextAlign = (NS_STYLE_TEXT_ALIGN_DEFAULT == parentAlign)
                               ? NS_STYLE_TEXT_ALIGN_CENTER : parentAlign;
@@ -427,7 +288,7 @@ ProcessTableRulesAttribute(nsStyleStruct* aStyleStruct,
 {
   if (!aStyleStruct || !aRuleData || !aRuleData->mPresContext) return;
 
-  nsCOMPtr<nsIStyleContext> tableContext = aRuleData->mStyleContext->GetParent();
+  nsStyleContext* tableContext = aRuleData->mStyleContext->GetParent();
   if (!tableContext)
     return;
   if (!aGroup) {
@@ -436,15 +297,11 @@ ProcessTableRulesAttribute(nsStyleStruct* aStyleStruct,
       return;
   } 
   
-  const nsStyleTable* tableData = 
-    (const nsStyleTable*)tableContext->GetStyleData(eStyleStruct_Table);
-  if (tableData && ((aRulesArg1 == tableData->mRules) ||
-                    (aRulesArg2 == tableData->mRules) ||
-                    (aRulesArg3 == tableData->mRules))) {
-    const nsStyleBorder* tableBorderData = 
-      (const nsStyleBorder*)tableContext->GetStyleData(eStyleStruct_Border);
-    if (!tableBorderData)
-      return;
+  const nsStyleTable* tableData = tableContext->GetStyleTable();
+  if (aRulesArg1 == tableData->mRules ||
+      aRulesArg2 == tableData->mRules ||
+      aRulesArg3 == tableData->mRules) {
+    const nsStyleBorder* tableBorderData = tableContext->GetStyleBorder();
     PRUint8 tableBorderStyle = tableBorderData->GetBorderStyle(aSide);
 
     nsStyleBorder* borderData = (nsStyleBorder*)aStyleStruct;
@@ -508,11 +365,6 @@ public:
   TableTbodyRule(nsIHTMLStyleSheet* aSheet);
   virtual ~TableTbodyRule();
 
-  void Reset()
-  {
-    GenericTableRule::Reset();
-  }
-
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 };
 
@@ -552,11 +404,6 @@ public:
   TableRowRule(nsIHTMLStyleSheet* aSheet);
   virtual ~TableRowRule();
 
-  void Reset()
-  {
-    GenericTableRule::Reset();
-  }
-
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 };
 
@@ -595,11 +442,6 @@ public:
   TableColgroupRule(nsIHTMLStyleSheet* aSheet);
   virtual ~TableColgroupRule();
 
-  void Reset()
-  {
-    GenericTableRule::Reset();
-  }
-
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 };
 
@@ -637,11 +479,6 @@ class TableColRule: public GenericTableRule {
 public:
   TableColRule(nsIHTMLStyleSheet* aSheet);
   virtual ~TableColRule();
-
-  void Reset()
-  {
-    GenericTableRule::Reset();
-  }
 
   NS_IMETHOD MapRuleInfoInto(nsRuleData* aRuleData);
 };
@@ -742,9 +579,13 @@ public:
   NS_IMETHOD GetMediumAt(PRInt32 aIndex, nsIAtom*& aMedium) const;
   NS_IMETHOD_(PRBool) UseForMedium(nsIAtom* aMedium) const;
 
-  NS_IMETHOD GetEnabled(PRBool& aEnabled) const;
+  NS_IMETHOD GetApplicable(PRBool& aApplicable) const;
+  
   NS_IMETHOD SetEnabled(PRBool aEnabled);
 
+  NS_IMETHOD GetComplete(PRBool& aComplete) const;
+  NS_IMETHOD SetComplete();
+  
   // style sheet owner info
   NS_IMETHOD GetParentSheet(nsIStyleSheet*& aParent) const;  // will be null
   NS_IMETHOD GetOwningDocument(nsIDocument*& aDocument) const;
@@ -765,6 +606,10 @@ public:
                                     nsIAtom* aMedium,
                                     PRBool* aResult);
 
+  NS_IMETHOD HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
+                                        nsIAtom* aMedium,
+                                        PRBool* aResult);
+
   // nsIHTMLStyleSheet api
   NS_IMETHOD Init(nsIURI* aURL, nsIDocument* aDocument);
   NS_IMETHOD Reset(nsIURI* aURL);
@@ -782,14 +627,8 @@ public:
 
 #ifdef DEBUG
   virtual void List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize);
 #endif
 
-  // If changing the given attribute cannot affect style context, aAffects
-  // will be PR_FALSE on return.
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects);
 private: 
   // These are not supported and are not implemented! 
   HTMLStyleSheetImpl(const HTMLStyleSheetImpl& aCopy); 
@@ -810,8 +649,6 @@ protected:
   TableColgroupRule*   mTableColgroupRule;
   TableColRule*        mTableColRule;
   TableTHRule*         mTableTHRule;
-    // NOTE: if adding more rules, be sure to update 
-    // the SizeOf method to include them
 
   PLDHashTable         mMappedAttrTable;
 };
@@ -827,7 +664,6 @@ HTMLStyleSheetImpl::HTMLStyleSheetImpl(void)
     mActiveRule(nsnull),
     mDocumentColorRule(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   mMappedAttrTable.ops = nsnull;
 }
 
@@ -1043,13 +879,50 @@ HTMLStyleSheetImpl::HasStateDependentStyle(StateRuleProcessorData* aData,
   return NS_OK;
 }
 
+NS_IMETHODIMP
+HTMLStyleSheetImpl::HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
+                                               nsIAtom* aMedium,
+                                               PRBool* aResult)
+{
+  // Result is true for |href| changes on HTML links if we have link rules.
+  nsIStyledContent *styledContent = aData->mStyledContent;
+  if (aData->mAttribute == nsHTMLAtoms::href &&
+      (mLinkRule || mVisitedRule || mActiveRule) &&
+      styledContent &&
+      styledContent->IsContentOfType(nsIContent::eHTML) &&
+      aData->mContentTag == nsHTMLAtoms::a) {
+    *aResult = PR_TRUE;
+    return NS_OK;
+  }
+
+  // Don't worry about the HTMLDocumentColorRule since it only applies
+  // to descendants of body, when we're already reresolving.
+
+  // Handle the content style rules.
+  if (styledContent) {
+    nsChangeHint hint = NS_STYLE_HINT_NONE;
+    styledContent->GetMappedAttributeImpact(aData->mAttribute,
+                                            aData->mModType, hint);
+    // This is the same test that nsGenericHTMLElement uses when calling
+    // nsHTMLAttributes::SetAttributeFor.
+    if ((hint & ~(nsChangeHint_AttrChange | nsChangeHint_Aural |
+                  nsChangeHint_Content)) != 0) {
+      *aResult = PR_TRUE;
+      return NS_OK;
+    }
+  }
+
+  *aResult = PR_FALSE;
+  return NS_OK;
+}
+
 
 NS_IMETHODIMP
 HTMLStyleSheetImpl::RulesMatching(PseudoRuleProcessorData* aData,
                                   nsIAtom* aMedium)
 {
   nsIAtom* pseudoTag = aData->mPseudoTag;
-  if (pseudoTag == nsHTMLAtoms::tableColPseudo) {
+  if (pseudoTag == nsCSSAnonBoxes::tableCol) {
     nsRuleWalker *ruleWalker = aData->mRuleWalker;
     if (ruleWalker) {
       ruleWalker->Forward(mTableColRule);
@@ -1104,15 +977,28 @@ HTMLStyleSheetImpl::UseForMedium(nsIAtom* aMedium) const
 
 
 NS_IMETHODIMP
-HTMLStyleSheetImpl::GetEnabled(PRBool& aEnabled) const
+HTMLStyleSheetImpl::GetApplicable(PRBool& aApplicable) const
 {
-  aEnabled = PR_TRUE;
+  aApplicable = PR_TRUE;
   return NS_OK;
 }
 
 NS_IMETHODIMP
 HTMLStyleSheetImpl::SetEnabled(PRBool aEnabled)
 { // these can't be disabled
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+HTMLStyleSheetImpl::GetComplete(PRBool& aComplete) const
+{
+  aComplete = PR_TRUE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+HTMLStyleSheetImpl::SetComplete()
+{
   return NS_OK;
 }
 
@@ -1173,18 +1059,20 @@ HTMLStyleSheetImpl::Reset(nsIURI* aURL)
     mActiveRule->mSheet = nsnull;
     NS_RELEASE(mActiveRule);
   }
-  mDocumentColorRule->Reset();
-
-  mTableTbodyRule->Reset();
-  mTableRowRule->Reset();
-  mTableColgroupRule->Reset();
-  mTableColRule->Reset();
-  mTableTHRule->Reset();
+  if (mDocumentColorRule) {
+    mDocumentColorRule->mSheet = nsnull;
+    NS_RELEASE(mDocumentColorRule);
+  }
 
   if (mMappedAttrTable.ops) {
     PL_DHashTableFinish(&mMappedAttrTable);
     mMappedAttrTable.ops = nsnull;
   }
+
+  mDocumentColorRule = new HTMLDocumentColorRule(this);
+  if (!mDocumentColorRule)
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(mDocumentColorRule);
 
   return NS_OK;
 }
@@ -1228,13 +1116,18 @@ HTMLStyleSheetImpl::GetVisitedLinkColor(nscolor& aColor)
 NS_IMETHODIMP
 HTMLStyleSheetImpl::SetLinkColor(nscolor aColor)
 {
-  if (!mLinkRule) {
-    mLinkRule = new HTMLColorRule(this);
-    if (!mLinkRule) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-    NS_ADDREF(mLinkRule);
+  if (mLinkRule) {
+    if (mLinkRule->mColor == aColor)
+      return NS_OK;
+    mLinkRule->mSheet = nsnull;
+    NS_RELEASE(mLinkRule);
   }
+
+  mLinkRule = new HTMLColorRule(this);
+  if (!mLinkRule)
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(mLinkRule);
+
   mLinkRule->mColor = aColor;
   return NS_OK;
 }
@@ -1243,13 +1136,18 @@ HTMLStyleSheetImpl::SetLinkColor(nscolor aColor)
 NS_IMETHODIMP
 HTMLStyleSheetImpl::SetActiveLinkColor(nscolor aColor)
 {
-  if (!mActiveRule) {
-    mActiveRule = new HTMLColorRule(this);
-    if (!mActiveRule) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-    NS_ADDREF(mActiveRule);
+  if (mActiveRule) {
+    if (mActiveRule->mColor == aColor)
+      return NS_OK;
+    mActiveRule->mSheet = nsnull;
+    NS_RELEASE(mActiveRule);
   }
+
+  mActiveRule = new HTMLColorRule(this);
+  if (!mActiveRule)
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(mActiveRule);
+
   mActiveRule->mColor = aColor;
   return NS_OK;
 }
@@ -1257,13 +1155,18 @@ HTMLStyleSheetImpl::SetActiveLinkColor(nscolor aColor)
 NS_IMETHODIMP
 HTMLStyleSheetImpl::SetVisitedLinkColor(nscolor aColor)
 {
-  if (!mVisitedRule) {
-    mVisitedRule = new HTMLColorRule(this);
-    if (!mVisitedRule) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-    NS_ADDREF(mVisitedRule);
+  if (mVisitedRule) {
+    if (mVisitedRule->mColor == aColor)
+      return NS_OK;
+    mVisitedRule->mSheet = nsnull;
+    NS_RELEASE(mVisitedRule);
   }
+
+  mVisitedRule = new HTMLColorRule(this);
+  if (!mVisitedRule)
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(mVisitedRule);
+
   mVisitedRule->mColor = aColor;
   return NS_OK;
 }
@@ -1332,179 +1235,10 @@ void HTMLStyleSheetImpl::List(FILE* out, PRInt32 aIndent) const
   }
   fputs("\n", out);
 }
-
-
-struct MappedAttributeSizeEnumData
-{
-  MappedAttributeSizeEnumData(nsISizeOfHandler *aSizeOfHandler, 
-                              nsUniqueStyleItems *aUniqueStyleItem)
-  {
-    aHandler = aSizeOfHandler;
-    uniqueItems = aUniqueStyleItem;
-  }
-
-  // weak references all 'round
-  nsISizeOfHandler  *aHandler;
-  nsUniqueStyleItems *uniqueItems;
-};
-
-PR_STATIC_CALLBACK(PLDHashOperator)
-MappedSizeAttributes(PLDHashTable *table, PLDHashEntryHdr *hdr,
-                     PRUint32 number, void *arg)
-{
-  MappedAttributeSizeEnumData *pData = (MappedAttributeSizeEnumData *)arg;
-  NS_ASSERTION(pData,"null closure is not supported");
-  MappedAttrTableEntry *entry = NS_STATIC_CAST(MappedAttrTableEntry*, hdr);
-  nsIHTMLMappedAttributes* mapped = entry->mAttributes;
-  NS_ASSERTION(mapped, "null item in enumeration fcn is not supported");
-  // if there is an attribute and it has not been counted, the get its size
-  if(mapped){
-    PRUint32 size=0;
-    mapped->SizeOf(pData->aHandler, size);
-  }  
-  return PL_DHASH_NEXT;
-}
-
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as HTMLStyleSheetImpl's size): 
-*    1) sizeof(*this)
-*
-*  Contained / Aggregated data (not reported as HTMLStyleSheetImpl's size):
-*    1) Not really delegated, but counted seperately:
-*       - mLinkRule
-*       - mVisitedRule
-*       - mActiveRule
-*       - mDocumentColorRule
-*       - mTableTbodyRule
-*       - mTableRowRule
-*       - mTableColgroupRule
-*       - mTableColRule
-*       - mTableTHRule
-*       - mMappedAttrTable
-*    2) Delegates (really) to the MappedAttributes in the mMappedAttrTable
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void
-HTMLStyleSheetImpl::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    // this style sheet is lared accounted for
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag = do_GetAtom("HTMLStyleSheet");
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(HTMLStyleSheetImpl);
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  // now gather up the sizes of the data members
-  // - mLinkRule : sizeof object
-  // - mVisitedRule  : sizeof object
-  // - mActiveRule  : sizeof object
-  // - mDocumentColorRule  : sizeof object
-  // - mTableTbodyRule : sizeof object
-  // - mTableRowRule : sizeof object
-  // - mTableColgroupRule : sizeof object
-  // - mTableColRule : sizeof object
-  // - mTableTHRule : sizeof object
-  // - mMappedAttrTable
-
-  if(mLinkRule && uniqueItems->AddItem((void*)mLinkRule)){
-    localSize = sizeof(*mLinkRule);
-    tag = do_GetAtom("LinkRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(mVisitedRule && uniqueItems->AddItem((void*)mVisitedRule)){
-    localSize = sizeof(*mVisitedRule);
-    tag = do_GetAtom("VisitedRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(mActiveRule && uniqueItems->AddItem((void*)mActiveRule)){
-    localSize = sizeof(*mActiveRule);
-    tag = do_GetAtom("ActiveRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mDocumentColorRule)){
-    localSize = sizeof(*mDocumentColorRule);
-    tag = do_GetAtom("DocumentColorRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mTableTbodyRule)){
-    localSize = sizeof(*mTableTbodyRule);
-    tag = do_GetAtom("TableTbodyRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mTableRowRule)){
-    localSize = sizeof(*mTableRowRule);
-    tag = do_GetAtom("TableRowRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mTableColgroupRule)){
-    localSize = sizeof(*mTableColgroupRule);
-    tag = do_GetAtom("TableColgroupRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mTableColRule)){
-    localSize = sizeof(*mTableColRule);
-    tag = do_GetAtom("TableColRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  if(uniqueItems->AddItem((void*)mTableTHRule)){
-    localSize = sizeof(*mTableTHRule);
-    tag = do_GetAtom("TableTHRule");
-    aSizeOfHandler->AddSize(tag,localSize);
-  }
-  
-  // for the AttrTable it is kindof sleezy: 
-  //  We want the hash table overhead as well as the entries it contains
-  //
-  //  we get the overall size of the hashtable, and if there are entries,
-  //  we calculate a rough overhead estimate as:
-  //   number of entries X sizeof each hash-entry 
-  //   + the size of a hash table (see plhash.h and nsHashTable.h)
-  //  then we add up the size of each unique attribute
-  if (mMappedAttrTable.ops) {
-    localSize =
-      PL_DHASH_TABLE_SIZE(&mMappedAttrTable) * mMappedAttrTable.entrySize;
-    tag = do_GetAtom("MappedAttrTable");
-    aSizeOfHandler->AddSize(tag,localSize);
-
-    // now get each unique attribute
-    MappedAttributeSizeEnumData sizeEnumData(aSizeOfHandler, uniqueItems);
-    PL_DHashTableEnumerate(&mMappedAttrTable, &MappedSizeAttributes,
-                           &sizeEnumData);
-  }
-
-  // that's it
-}
 #endif
 
-NS_IMETHODIMP
-HTMLStyleSheetImpl::AttributeAffectsStyle(nsIAtom *aAttribute,
-                                          nsIContent *aContent,
-                                          PRBool &aAffects)
-{
-  // XXX we should be checking to see if this is an href on an <A> being
-  // XXX tweaked, in which case we really want to restyle
-  aAffects = PR_FALSE;
-  return NS_OK;
-}
-
 // XXX For convenience and backwards compatibility
-NS_EXPORT nsresult
+nsresult
 NS_NewHTMLStyleSheet(nsIHTMLStyleSheet** aInstancePtrResult, nsIURI* aURL, 
                      nsIDocument* aDocument)
 {
@@ -1523,7 +1257,7 @@ NS_NewHTMLStyleSheet(nsIHTMLStyleSheet** aInstancePtrResult, nsIURI* aURL,
 }
 
 
-NS_EXPORT nsresult
+nsresult
 NS_NewHTMLStyleSheet(nsIHTMLStyleSheet** aInstancePtrResult)
 {
   NS_ASSERTION(aInstancePtrResult, "null out param");

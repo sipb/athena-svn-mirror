@@ -44,14 +44,10 @@ typedef int PRInt32;
 #include <os2.h>
 #include "nsINIParser.h"
 
-typedef long HRESULT;
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <direct.h>
-#include <tchar.h>
 #include "resource.h"
 
 #define CLASS_NAME                      "Uninstall"

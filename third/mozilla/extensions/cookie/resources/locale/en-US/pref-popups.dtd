@@ -1,16 +1,25 @@
-<!ENTITY title                          "Pop-ups">
+<!ENTITY title                          "Popup Windows">
 
-<!ENTITY popupBlocking.label            "Pop-up Window Policy">
+<!ENTITY popupBlocking.label            "Popup Windows">
 
-<!ENTITY popupDetails                   "When websites attempt to open new windows without being asked">
+<!ENTITY popupDesc.label                "Specify how to handle popup windows that appear on top of or under the current Navigator window:">
 
-<!ENTITY popupAllow.label               "Allow pop-up windows">
-<!ENTITY popupAllow.accesskey           "a">
-<!ENTITY popupReject.label              "Reject pop-up windows">
-<!ENTITY popupReject.accesskey          "r">
+<!ENTITY popupBlock.label               "Block unrequested popup windows">
+<!ENTITY popupBlock.accesskey           "B">
 
-<!ENTITY popupCustom.label              "Use custom settings">
-<!ENTITY popupCustom.accesskey          "c">
+<!ENTITY popupExceptions.label          "Allowed Sites...">
+<!ENTITY popupExceptions.accesskey      "A">
 
-<!ENTITY popupView.label                "Manage Pop-up Permissions">
-<!ENTITY popupView.accesskey            "m">
+<!ENTITY whenBlock.description          "When a popup window has been blocked:">
+<!ENTITY playSound.label                "Play a sound:">
+
+<!ENTITY selectSound.label              "Select...">
+<!ENTITY selectSound.accesskey          "e">
+<!ENTITY previewSound.label             "Preview">
+<!ENTITY previewSound.accesskey         "r">
+<!ENTITY selectSound.title              "Select Popup Block Sound">
+
+<!ENTITY displayIcon.label              "Display an icon in the Navigator status bar">
+
+<!ENTITY popupNote.description          "Note: Blocking all popups may prevent important features of some web sites from working, such as login windows for banks and shopping sites. For details of how to allow specific sites to use popups while blocking all others, click Help. Even if blocked, sites may use other methods to show popups.">
+

@@ -56,12 +56,9 @@
 #include "nsClipboardHelper.h"
 #include "nsHTMLFormatConverter.h"
 #include "nsDragService.h"
-#include "nsScrollBar.h"
 #include "nsSound.h"
 
-#ifdef IBMBIDI
 #include "nsBidiKeyboard.h"
-#endif
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindow)
 NS_GENERIC_FACTORY_CONSTRUCTOR(ChildWindow)
@@ -78,63 +75,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboardHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
-#ifdef IBMBIDI
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
-#endif
-
-static nsresult nsHorizScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( nsnull == aResult )
-  {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = nsnull;
-  if (nsnull != aOuter)
-  {
-    return NS_ERROR_NO_AGGREGATION;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_FALSE);
-  if (inst == nsnull)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static nsresult nsVertScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( nsnull == aResult )
-  {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = nsnull;
-  if (nsnull != aOuter)
-  {
-    return NS_ERROR_NO_AGGREGATION;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_TRUE);
-  if (inst == nsnull)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
 
 static const nsModuleComponentInfo components[] =
 {
@@ -154,14 +95,6 @@ static const nsModuleComponentInfo components[] =
     NS_CHECKBUTTON_CID,
     "@mozilla.org/widgets/checkbutton/xlib;1",
     nsCheckButtonConstructor },
-  { "Xlib Horiz Scrollbar",
-    NS_HORZSCROLLBAR_CID,
-    "@mozilla.org/widgets/horizscroll/xlib;1",
-    nsHorizScrollbarConstructor },
-  { "Xlib Vert Scrollbar",
-    NS_VERTSCROLLBAR_CID,
-    "@mozilla.org/widgets/vertscroll/xlib;1",
-    nsVertScrollbarConstructor },
   { "Xlib Text Widget",
     NS_TEXTFIELD_CID,
     "@mozilla.org/widgets/textwidget/xlib;1",
@@ -208,13 +141,11 @@ static const nsModuleComponentInfo components[] =
     NS_DRAGSERVICE_CID,
     //    "@mozilla.org/widget/dragservice/xlib;1",
     "@mozilla.org/widget/dragservice;1",
-    nsDragServiceConstructor }
-#ifdef IBMBIDI
-    , { "Xlib Bidi Keyboard",
+    nsDragServiceConstructor },
+  { "Xlib Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor }
-#endif // IBMBIDI
 };
 
 PR_STATIC_CALLBACK(void)

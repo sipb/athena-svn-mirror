@@ -77,9 +77,6 @@ public:
 
   NS_IMETHOD  GetScrollBarDimensions(float &aWidth, float &aHeight) const;
 
-  void               SetDrawingSurface(nsDrawingSurface  aSurface);
-  NS_IMETHOD         GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface);
-
   NS_IMETHOD         CheckFontExistence(const nsString& aFontName);
   NS_IMETHOD         ConvertPixel(nscolor aColor, PRUint32 & aPixel);
 
@@ -105,6 +102,9 @@ public:
 
   NS_IMETHOD         CreateFontCache();
 
+  virtual void GetFontMetricsContext(nsFontMetricsXlibContext *&aContext) { aContext = mFontMetricsContext; };
+  virtual void GetRCContext(nsRenderingContextXlibContext *&aContext) { aContext = mRCContext; };
+ 
 protected:
   virtual         ~nsDeviceContextXp();
   void             DestroyXPContext();
@@ -112,6 +112,8 @@ protected:
   nsCOMPtr<nsXPrintContext>      mPrintContext;  
   nsCOMPtr<nsIDeviceContextSpec> mSpec;
   nsCOMPtr<nsIDeviceContext>     mParentDeviceContext;
+  nsFontMetricsXlibContext      *mFontMetricsContext;
+  nsRenderingContextXlibContext *mRCContext;
 };
 
 #endif /* !nsDeviceContextXp_h___ */

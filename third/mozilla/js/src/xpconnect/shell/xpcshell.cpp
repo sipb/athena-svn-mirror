@@ -58,7 +58,7 @@
 // all this crap is needed to do the interactive shell stuff
 #include <stdlib.h>
 #include <errno.h>
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #include <io.h>     /* for isatty() */
 #elif defined(XP_UNIX) || defined(XP_BEOS)
 #include <unistd.h>     /* for isatty() */
@@ -72,8 +72,6 @@
 #include "jsscript.h"
 #include "jsarena.h"
 #include "jscntxt.h"
-
-#include "nsSpecialSystemDirectory.h"	// For exe dir
 
 #include "nsIJSContextStack.h"
 
@@ -196,7 +194,7 @@ Dump(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         return JS_FALSE;
 
     char *bytes = JS_GetStringBytes(str);
-    bytes = nsCRT::strdup(bytes);
+    bytes = strdup(bytes);
 
 #ifdef XP_MAC
     for (char *c = bytes; *c; c++)
@@ -411,7 +409,7 @@ GetLine(JSContext *cx, char *bufp, FILE *fh, const char *prompt) {
         char *linep;
         if ((linep = readline(prompt)) == NULL)
             return JS_FALSE;
-        if (strlen(linep) > 0)
+        if (*linep)
             add_history(linep);
         strcpy(bufp, linep);
         JS_free(cx, linep);
@@ -423,6 +421,7 @@ GetLine(JSContext *cx, char *bufp, FILE *fh, const char *prompt) {
     {
         char line[256];
         fprintf(gOutFile, prompt);
+        fflush(gOutFile);
         if (fgets(line, 256, fh) == NULL)
             return JS_FALSE;
         strcpy(bufp, line);
@@ -670,7 +669,6 @@ NS_IMPL_ISUPPORTS1(FullTrustSecMan, nsIXPCSecurityManager);
 
 FullTrustSecMan::FullTrustSecMan()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 NS_IMETHODIMP
@@ -741,7 +739,7 @@ public:
     NS_DECL_NSIXPCTESTNOISY
     NS_DECL_NSIXPCSCRIPTABLE
 
-    TestGlobal(){NS_INIT_ISUPPORTS();}
+    TestGlobal(){}
 
 };
 
@@ -782,7 +780,6 @@ NS_IMPL_ISUPPORTS1(nsXPCFunctionThisTranslator, nsIXPCFunctionThisTranslator)
 
 nsXPCFunctionThisTranslator::nsXPCFunctionThisTranslator()
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 }
 

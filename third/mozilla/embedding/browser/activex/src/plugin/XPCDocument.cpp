@@ -40,18 +40,97 @@
 #include "StdAfx.h"
 
 #include <mshtml.h>
+#include <hlink.h>
+
+// A barely documented interface called ITargetFrame from IE
+// This is needed for targeted Hlink* calls (e.g. HlinkNavigateString) to
+// work. During the call, the Hlink API QIs and calls ITargetFrame::FindFrame
+// to determine the named target frame before calling IHlinkFrame::Navigate.
+//
+// MS mentions the methods at the url below:
+//
+// http://msdn.microsoft.com/workshop/browser/browser/Reference/IFaces/ITargetFrame/ITargetFrame.asp
+//
+// The interface is defined in very recent versions of Internet SDK part of
+// the PlatformSDK, from Dec 2002 onwards.
+//
+// http://www.microsoft.com/msdownload/platformsdk/sdkupdate/ 
+//
+// Neither Visual C++ 6.0 or 7.0 ship with this interface.
+//
+#ifdef USE_HTIFACE
+#include <htiface.h>
+#endif
+#ifndef __ITargetFrame_INTERFACE_DEFINED__
+// No ITargetFrame so make a binary compatible one
+MIDL_INTERFACE("d5f78c80-5252-11cf-90fa-00AA0042106e")
+IMozTargetFrame : public IUnknown
+{
+public:
+    virtual HRESULT STDMETHODCALLTYPE SetFrameName(
+        /* [in] */ LPCWSTR pszFrameName) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetFrameName(
+        /* [out] */ LPWSTR *ppszFrameName) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetParentFrame(
+        /* [out] */ IUnknown **ppunkParent) = 0;
+    virtual HRESULT STDMETHODCALLTYPE FindFrame( 
+        /* [in] */ LPCWSTR pszTargetName,
+        /* [in] */ IUnknown *ppunkContextFrame,
+        /* [in] */ DWORD dwFlags,
+        /* [out] */ IUnknown **ppunkTargetFrame) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetFrameSrc( 
+        /* [in] */ LPCWSTR pszFrameSrc) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetFrameSrc( 
+        /* [out] */ LPWSTR *ppszFrameSrc) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetFramesContainer( 
+        /* [out] */ IOleContainer **ppContainer) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetFrameOptions( 
+        /* [in] */ DWORD dwFlags) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetFrameOptions( 
+        /* [out] */ DWORD *pdwFlags) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetFrameMargins( 
+        /* [in] */ DWORD dwWidth,
+        /* [in] */ DWORD dwHeight) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetFrameMargins( 
+        /* [out] */ DWORD *pdwWidth,
+        /* [out] */ DWORD *pdwHeight) = 0;
+    virtual HRESULT STDMETHODCALLTYPE RemoteNavigate( 
+        /* [in] */ ULONG cLength,
+        /* [size_is][in] */ ULONG *pulData) = 0;
+    virtual HRESULT STDMETHODCALLTYPE OnChildFrameActivate( 
+        /* [in] */ IUnknown *pUnkChildFrame) = 0;
+    virtual HRESULT STDMETHODCALLTYPE OnChildFrameDeactivate( 
+        /* [in] */ IUnknown *pUnkChildFrame) = 0;
+};
+#define __ITargetFrame_INTERFACE_DEFINED__
+#define ITargetFrame IMozTargetFrame
+#endif
+
+#include "npapi.h"
+
+#include "nsCOMPtr.h"
+#include "nsIInterfaceRequestorUtils.h"
+#include "nsString.h"
+#include "nsNetUtil.h"
+
+#include "nsIURI.h"
+#include "nsIDocument.h"
+#include "nsIDOMWindow.h"
+#include "nsIDOMElement.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMWindowInternal.h"
+#include "nsIDOMLocation.h"
+#include "nsIWebNavigation.h"
+#include "nsILinkHandler.h"
+#include "nsIScriptGlobalObject.h"
+#include "nsIScriptContext.h"
+#include "nsIPrincipal.h"
 
 #include "XPConnect.h"
 #include "XPCBrowser.h"
 #include "LegacyPlugin.h"
 
-#include "npapi.h"
-
-#include "nsCOMPtr.h"
-#include "nsString.h"
-#include "nsIDOMWindow.h"
-#include "nsIDOMWindowInternal.h"
-#include "nsIDOMLocation.h"
+#include "IHTMLLocationImpl.h"
 
 /*
  * This file contains partial implementations of various IE objects and
@@ -61,22 +140,78 @@
  * might want to initiate a load, or obtain the user agent.
  */
 
+class IELocation :
+    public CComObjectRootEx<CComSingleThreadModel>,
+    public IHTMLLocationImpl<IELocation>
+{
+public:
+BEGIN_COM_MAP(IELocation)
+    COM_INTERFACE_ENTRY(IDispatch)
+    COM_INTERFACE_ENTRY(IHTMLLocation)
+END_COM_MAP()
+
+    PluginInstanceData *mData;
+    nsCOMPtr<nsIDOMLocation> mDOMLocation;
+
+    IELocation() : mData(NULL)
+    {
+    }
+
+    HRESULT Init(PluginInstanceData *pData)
+    {
+	    NS_PRECONDITION(pData != nsnull, "null ptr");
+
+        mData = pData;
+
+        // Get the DOM window
+        nsCOMPtr<nsIDOMWindow> domWindow;
+        NPN_GetValue(mData->pPluginInstance, NPNVDOMWindow, 
+                     NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(domWindow)));
+        if (!domWindow)
+        {
+            return E_FAIL;
+        }
+        nsCOMPtr<nsIDOMWindowInternal> windowInternal = do_QueryInterface(domWindow);
+        if (windowInternal)
+        {
+            windowInternal->GetLocation(getter_AddRefs(mDOMLocation));
+        }
+        if (!mDOMLocation)
+            return E_FAIL;
+
+        return S_OK;
+    }
+
+    virtual nsresult GetDOMLocation(nsIDOMLocation **aLocation)
+    {
+        *aLocation = mDOMLocation;
+        NS_IF_ADDREF(*aLocation);
+        return NS_OK;
+    }
+};
+
 // Note: corresponds to the window.navigator property in the IE DOM
 class IENavigator :
     public CComObjectRootEx<CComSingleThreadModel>,
-    public IDispatchImpl<IOmNavigator, &IID_IOmNavigator, &LIBID_MSHTML>
+    public IDispatchImpl<IOmNavigator, &__uuidof(IOmNavigator), &LIBID_MSHTML>
 {
 public:
 BEGIN_COM_MAP(IENavigator)
     COM_INTERFACE_ENTRY(IDispatch)
     COM_INTERFACE_ENTRY(IOmNavigator)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser2)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowserApp)
-    COM_INTERFACE_ENTRY_BREAK(IServiceProvider)
 END_COM_MAP()
 
     PluginInstanceData *mData;
+    CComBSTR mUserAgent;
+
+    HRESULT Init(PluginInstanceData *pData)
+    {
+        mData = pData;
+        USES_CONVERSION;
+        const char *userAgent = NPN_UserAgent(mData->pPluginInstance);
+        mUserAgent.Attach(::SysAllocString(A2CW(userAgent)));
+        return S_OK;
+    }
 
 // IOmNavigator
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_appCodeName( 
@@ -100,9 +235,7 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_userAgent( 
         /* [out][retval] */ BSTR __RPC_FAR *p)
     {
-        USES_CONVERSION;
-        const char *userAgent = NPN_UserAgent(mData->pPluginInstance);
-        *p = ::SysAllocString(A2CW(userAgent));
+        *p = mUserAgent.Copy();
         return S_OK;
     }
 
@@ -207,14 +340,38 @@ END_COM_MAP()
 // Note: Corresponds to the window object in the IE DOM
 class IEWindow :
     public CComObjectRootEx<CComSingleThreadModel>,
-    public IDispatchImpl<IHTMLWindow2, &IID_IHTMLWindow2, &LIBID_MSHTML>
+    public IDispatchImpl<IHTMLWindow2, &__uuidof(IHTMLWindow2), &LIBID_MSHTML>
 {
 public:
     PluginInstanceData *mData;
     CComObject<IENavigator> *mNavigator;
+    CComObject<IELocation>  *mLocation;
 
-    IEWindow() : mNavigator(NULL)
+    IEWindow() : mNavigator(NULL), mLocation(NULL), mData(NULL)
     {
+    }
+
+    HRESULT Init(PluginInstanceData *pData)
+    {
+        mData = pData;
+
+        CComObject<IENavigator>::CreateInstance(&mNavigator);
+        if (!mNavigator)
+        {
+            return E_UNEXPECTED;
+        }
+        mNavigator->AddRef();
+        mNavigator->Init(mData);
+
+        CComObject<IELocation>::CreateInstance(&mLocation);
+        if (!mLocation)
+        {
+            return E_UNEXPECTED;
+        }
+        mLocation->AddRef();
+        mLocation->Init(mData);
+
+        return S_OK;
     }
 
 protected:
@@ -224,6 +381,10 @@ protected:
         {
             mNavigator->Release();
         }
+        if (mLocation)
+        {
+            mLocation->Release();
+        }
     }
 
 public:
@@ -232,10 +393,7 @@ BEGIN_COM_MAP(IEWindow)
     COM_INTERFACE_ENTRY(IDispatch)
     COM_INTERFACE_ENTRY(IHTMLWindow2)
     COM_INTERFACE_ENTRY(IHTMLFramesCollection2)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser2)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowserApp)
-    COM_INTERFACE_ENTRY_BREAK(IServiceProvider)
+    COM_INTERFACE_ENTRY_BREAK(IHlinkFrame)
 END_COM_MAP()
 
 //IHTMLFramesCollection2
@@ -328,7 +486,9 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_location( 
         /* [out][retval] */ IHTMLLocation __RPC_FAR *__RPC_FAR *p)
     {
-        return E_NOTIMPL;
+        if (mLocation)
+            return mLocation->QueryInterface(__uuidof(IHTMLLocation), (void **) p);
+        return E_FAIL;
     }
     
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_history( 
@@ -357,16 +517,9 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_navigator( 
         /* [out][retval] */ IOmNavigator __RPC_FAR *__RPC_FAR *p)
     {
-        if (!mNavigator)
-        {
-            CComObject<IENavigator>::CreateInstance(&mNavigator);
-            if (!mNavigator)
-            {
-                return E_UNEXPECTED;
-            }
-        }
-        mNavigator->mData = mData;
-        return mNavigator->QueryInterface(__uuidof(IOmNavigator), (void **) p);
+        if (mNavigator)
+            return mNavigator->QueryInterface(__uuidof(IOmNavigator), (void **) p);
+        return E_FAIL;
     }
     
     virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_name( 
@@ -384,7 +537,8 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_parent( 
         /* [out][retval] */ IHTMLWindow2 __RPC_FAR *__RPC_FAR *p)
     {
-        return E_NOTIMPL;
+        *p = NULL;
+        return S_OK;
     }
     
     virtual /* [id] */ HRESULT STDMETHODCALLTYPE open( 
@@ -394,7 +548,8 @@ END_COM_MAP()
         /* [in][defaultvalue] */ VARIANT_BOOL replace,
         /* [out][retval] */ IHTMLWindow2 __RPC_FAR *__RPC_FAR *pomWindowResult)
     {
-        return E_NOTIMPL;
+        *pomWindowResult = NULL;
+        return E_FAIL;
     }
     
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_self( 
@@ -406,13 +561,15 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_top( 
         /* [out][retval] */ IHTMLWindow2 __RPC_FAR *__RPC_FAR *p)
     {
-        return E_NOTIMPL;
+        *p = NULL;
+        return S_OK;
     }
     
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_window( 
         /* [out][retval] */ IHTMLWindow2 __RPC_FAR *__RPC_FAR *p)
     {
-        return E_NOTIMPL;
+        *p = NULL;
+        return S_OK;
     }
     
     virtual /* [id] */ HRESULT STDMETHODCALLTYPE navigate( 
@@ -637,14 +794,72 @@ END_COM_MAP()
         /* [in][defaultvalue] */ BSTR language,
         /* [out][retval] */ VARIANT __RPC_FAR *pvarRet)
     {
-        return E_NOTIMPL;
+        nsresult rv;
+
+        nsCOMPtr<nsIDOMWindow> domWindow;
+        NPN_GetValue(mData->pPluginInstance, NPNVDOMWindow, 
+                     NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(domWindow)));
+        if (!domWindow)
+        {
+            return E_UNEXPECTED;
+        }
+
+        // Now get the DOM Document.  Accessing the document will create one
+        // if necessary.  So, basically, this call ensures that a document gets
+        // created -- if necessary.
+        nsCOMPtr<nsIDOMDocument> domDocument;
+        rv = domWindow->GetDocument(getter_AddRefs(domDocument));
+        NS_ASSERTION(domDocument, "No DOMDocument!");
+        if (NS_FAILED(rv)) {
+            return E_UNEXPECTED;
+        }
+
+        nsCOMPtr<nsIScriptGlobalObject> globalObject(do_QueryInterface(domWindow));
+        if (!globalObject)
+            return E_UNEXPECTED;
+
+        nsCOMPtr<nsIScriptContext> scriptContext;
+        if (NS_FAILED(globalObject->GetContext(getter_AddRefs(scriptContext))) ||
+                !scriptContext)
+            return E_UNEXPECTED;
+
+        nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDocument));
+        if (!doc)
+            return E_UNEXPECTED;
+
+        nsCOMPtr<nsIPrincipal> principal;      
+        doc->GetPrincipal(getter_AddRefs(principal));
+        if (!principal)
+            return E_UNEXPECTED;
+
+        // Execute the script.
+        //
+        // Note: The script context takes care of the JS stack and of ensuring
+        //       nothing is executed when JS is disabled.
+        //
+        nsAutoString scriptString(code);
+        NS_NAMED_LITERAL_CSTRING(url, "javascript:axplugin");
+        nsAutoString result;
+        rv = scriptContext->EvaluateString(scriptString,
+                                           nsnull,      // obj
+                                           principal,
+                                           url.get(),   // url
+                                           1,           // line no
+                                           nsnull,
+                                           result,
+                                           nsnull);
+
+        if (NS_FAILED(rv))
+            return NS_ERROR_FAILURE;
+
+        return S_OK;
     }
     
     virtual /* [id] */ HRESULT STDMETHODCALLTYPE toString( 
         /* [out][retval] */ BSTR __RPC_FAR *String)
     {
         return E_NOTIMPL;
-            }
+    }
     
     virtual /* [id] */ HRESULT STDMETHODCALLTYPE scrollBy( 
         /* [in] */ long x,
@@ -696,27 +911,96 @@ END_COM_MAP()
         
 };
 
+
 // Note: Corresponds to the document object in the IE DOM
 class IEDocument :
     public CComObjectRootEx<CComSingleThreadModel>,
-    public IDispatchImpl<IHTMLDocument2, &IID_IHTMLDocument2, &LIBID_MSHTML>,
-    public IServiceProvider
+    public IDispatchImpl<IHTMLDocument2, &__uuidof(IHTMLDocument2), &LIBID_MSHTML>,
+    public IServiceProvider,
+    public IOleContainer,
+    public IBindHost,
+    public IHlinkFrame,
+    public ITargetFrame
 {
 public:
     PluginInstanceData *mData;
 
+    nsCOMPtr<nsIDOMWindow> mDOMWindow;
+    nsCOMPtr<nsIDOMDocument> mDOMDocument;
     CComObject<IEWindow> *mWindow;
     CComObject<IEBrowser> *mBrowser;
+    CComBSTR mURL;
+    BSTR mUseTarget;
 
     IEDocument() :
         mWindow(NULL),
-        mBrowser(NULL)
+        mBrowser(NULL),
+        mData(NULL),
+        mUseTarget(NULL)
     {
-        xpc_AddRef();
+        MozAxPlugin::AddRef();
+    }
+
+    HRESULT Init(PluginInstanceData *pData)
+    {
+        mData = pData;
+        nsCOMPtr<nsIDOMElement> element;
+
+        // Get the DOM document
+        NPN_GetValue(mData->pPluginInstance, NPNVDOMElement, 
+                     NS_STATIC_CAST(nsIDOMElement **, getter_AddRefs(element)));
+        if (element)
+        {
+            element->GetOwnerDocument(getter_AddRefs(mDOMDocument));
+        }
+
+        // Get the DOM window
+        NPN_GetValue(mData->pPluginInstance, NPNVDOMWindow, 
+                     NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(mDOMWindow)));
+        if (mDOMWindow)
+        {
+            nsCOMPtr<nsIDOMWindowInternal> windowInternal = do_QueryInterface(mDOMWindow);
+            if (windowInternal)
+            {
+                nsCOMPtr<nsIDOMLocation> location;
+                nsAutoString href;
+                windowInternal->GetLocation(getter_AddRefs(location));
+                if (location &&
+                    NS_SUCCEEDED(location->GetHref(href)))
+                {
+                    const PRUnichar *s = href.get();
+                    mURL.Attach(::SysAllocString(s));
+                }
+            }
+        }
+
+        CComObject<IEWindow>::CreateInstance(&mWindow);
+        ATLASSERT(mWindow);
+        if (!mWindow)
+        {
+            return E_OUTOFMEMORY;
+        }
+        mWindow->AddRef();
+        mWindow->Init(mData);
+
+        CComObject<IEBrowser>::CreateInstance(&mBrowser);
+        ATLASSERT(mBrowser);
+        if (!mBrowser)
+        {
+            return E_OUTOFMEMORY;
+        }
+        mBrowser->AddRef();
+        mBrowser->Init(mData);
+ 
+        return S_OK;
     }
 
     virtual ~IEDocument()
     {
+        if (mUseTarget)
+        {
+            SysFreeString(mUseTarget);
+        }
         if (mBrowser)
         {
             mBrowser->Release();
@@ -725,17 +1009,20 @@ public:
         {
             mWindow->Release();
         }
-        xpc_Release();
+        MozAxPlugin::Release();
     }
 
 BEGIN_COM_MAP(IEDocument)
+    COM_INTERFACE_ENTRY(IServiceProvider)
     COM_INTERFACE_ENTRY(IDispatch)
     COM_INTERFACE_ENTRY(IHTMLDocument)
     COM_INTERFACE_ENTRY(IHTMLDocument2)
-    COM_INTERFACE_ENTRY(IServiceProvider)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowser2)
-    COM_INTERFACE_ENTRY_BREAK(IWebBrowserApp)
+    COM_INTERFACE_ENTRY(IParseDisplayName)
+    COM_INTERFACE_ENTRY(IOleContainer)
+    COM_INTERFACE_ENTRY(IBindHost)
+    COM_INTERFACE_ENTRY_BREAK(IHlinkTarget)
+    COM_INTERFACE_ENTRY(IHlinkFrame)
+    COM_INTERFACE_ENTRY(ITargetFrame)
 END_COM_MAP()
 
 // IServiceProvider
@@ -751,11 +1038,6 @@ END_COM_MAP()
             IsEqualIID(riid, __uuidof(IWebBrowserApp)))
         {
             ATLTRACE(_T("  IWebBrowserApp\n"));
-            if (!mBrowser)
-            {
-                CComObject<IEBrowser>::CreateInstance(&mBrowser);
-                mBrowser->AddRef();
-            }
             if (mBrowser)
             {
                 return mBrowser->QueryInterface(riid, ppvObject);
@@ -764,10 +1046,18 @@ END_COM_MAP()
         else if (IsEqualIID(riid, __uuidof(IHTMLWindow2)))
         {
             ATLTRACE(_T("  IHTMLWindow2\n"));
+            if (mWindow)
+            {
+                return mWindow->QueryInterface(riid, ppvObject);
+            }
         }
         else if (IsEqualIID(riid, __uuidof(IHTMLDocument2)))
         {
             ATLTRACE(_T("  IHTMLDocument2\n"));
+        }
+        else if (IsEqualIID(riid, __uuidof(IBindHost)))
+        {
+            ATLTRACE(_T("  IBindHost\n"));
         }
         else
         {
@@ -785,7 +1075,8 @@ END_COM_MAP()
     virtual /* [nonbrowsable][hidden][id][propget] */ HRESULT STDMETHODCALLTYPE get_Script( 
         /* [out][retval] */ IDispatch **p)
     {
-        return E_NOTIMPL;
+        *p = NULL;
+        return S_OK;
     }
 
 // IHTMLDocument2
@@ -966,7 +1257,9 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_location( 
         /* [out][retval] */ IHTMLLocation **p)
     {
-        return E_NOTIMPL;
+        if (mWindow)
+            return mWindow->get_location(p);
+        return E_FAIL;
     }
     
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_lastModified( 
@@ -984,27 +1277,8 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_URL( 
         /* [out][retval] */ BSTR *p)
     {
-        *p = NULL;
-        nsCOMPtr<nsIDOMWindow> window;
-        NPN_GetValue(mData->pPluginInstance, NPNVDOMWindow, (void *) &window);
-        if (window)
-        {
-            nsCOMPtr<nsIDOMWindowInternal> windowInternal = do_QueryInterface(window);
-            if (windowInternal)
-            {
-                nsCOMPtr<nsIDOMLocation> location;
-                nsAutoString href;
-                windowInternal->GetLocation(getter_AddRefs(location));
-                if (location &&
-                    NS_SUCCEEDED(location->GetHref(href)))
-                {
-                    const PRUnichar *s = href.get();
-                    *p = ::SysAllocString(s);
-                    return S_OK;
-                }
-            }
-        }
-        return E_FAIL;
+        *p = mURL.Copy();
+        return S_OK;
     }
     
     virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_domain( 
@@ -1427,15 +1701,6 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_parentWindow( 
         /* [out][retval] */ IHTMLWindow2 **p)
     {
-        if (!mWindow)
-        {
-            CComObject<IEWindow>::CreateInstance(&mWindow);
-            if (!mWindow)
-            {
-                return E_UNEXPECTED;
-            }
-            mWindow->mData = mData;
-        }
         return mWindow->QueryInterface(_uuidof(IHTMLWindow2), (void **) p);
     }
     
@@ -1482,12 +1747,333 @@ END_COM_MAP()
     {
         return E_NOTIMPL;
     }
+
+// IParseDisplayName
+    virtual HRESULT STDMETHODCALLTYPE ParseDisplayName( 
+        /* [unique][in] */ IBindCtx *pbc,
+        /* [in] */ LPOLESTR pszDisplayName,
+        /* [out] */ ULONG *pchEaten,
+        /* [out] */ IMoniker **ppmkOut)
+    {
+        return E_NOTIMPL;
+    }
+
+// IOleContainer
+    virtual HRESULT STDMETHODCALLTYPE EnumObjects( 
+        /* [in] */ DWORD grfFlags,
+        /* [out] */ IEnumUnknown **ppenum)
+    {
+        return E_NOTIMPL;
+    }
+    
+    virtual HRESULT STDMETHODCALLTYPE LockContainer( 
+        /* [in] */ BOOL fLock)
+    {
+        return E_NOTIMPL;
+    }
+
+
+// IHlinkFrame
+    virtual HRESULT STDMETHODCALLTYPE SetBrowseContext( 
+        /* [unique][in] */ IHlinkBrowseContext *pihlbc)
+    {
+        return E_NOTIMPL;
+    }
+    
+    virtual HRESULT STDMETHODCALLTYPE GetBrowseContext( 
+        /* [out] */ IHlinkBrowseContext **ppihlbc)
+    {
+        return E_NOTIMPL;
+    }
+    
+    virtual HRESULT STDMETHODCALLTYPE Navigate( 
+        /* [in] */ DWORD grfHLNF,
+        /* [unique][in] */ LPBC pbc,
+        /* [unique][in] */ IBindStatusCallback *pibsc,
+        /* [unique][in] */ IHlink *pihlNavigate)
+    {
+        if (!pihlNavigate) return E_INVALIDARG;
+        // TODO check grfHLNF for type of link
+        LPWSTR szTarget = NULL;
+        LPWSTR szLocation = NULL;
+        LPWSTR szTargetFrame = NULL;
+        HRESULT hr;
+        hr = pihlNavigate->GetStringReference(HLINKGETREF_DEFAULT, &szTarget, &szLocation);
+        hr = pihlNavigate->GetTargetFrameName(&szTargetFrame);
+        if (szTarget && szTarget[0] != WCHAR('\0'))
+        {
+            nsCAutoString spec = NS_ConvertUCS2toUTF8(szTarget);
+            nsCOMPtr<nsIURI> uri;
+            nsresult rv = NS_NewURI(getter_AddRefs(uri), spec);
+            if (NS_SUCCEEDED(rv) && uri)
+            {
+                nsCOMPtr<nsIWebNavigation> webNav = do_GetInterface(mDOMWindow);
+                if (webNav)
+                {
+                    nsCOMPtr<nsILinkHandler> lh = do_QueryInterface(webNav);
+                    if (lh)
+                    {
+                        lh->OnLinkClick(nsnull, eLinkVerb_Replace,
+                            uri, szTargetFrame ? szTargetFrame : mUseTarget);
+                    }
+                }
+                hr = S_OK;
+            }
+            else
+            {
+                hr = E_FAIL;
+            }
+        }
+        else
+        {
+            hr = E_FAIL;
+        }
+        if (szTarget)
+            CoTaskMemFree(szTarget);
+        if (szLocation)
+            CoTaskMemFree(szLocation);
+        if (szTargetFrame)
+            CoTaskMemFree(szTargetFrame);
+        if (mUseTarget)
+        {
+            SysFreeString(mUseTarget);
+            mUseTarget = NULL;
+        }
+        return hr;
+    }
+    
+    virtual HRESULT STDMETHODCALLTYPE OnNavigate( 
+        /* [in] */ DWORD grfHLNF,
+        /* [unique][in] */ IMoniker *pimkTarget,
+        /* [unique][in] */ LPCWSTR pwzLocation,
+        /* [unique][in] */ LPCWSTR pwzFriendlyName,
+        /* [in] */ DWORD dwreserved)
+    {
+        return E_NOTIMPL;
+    }
+    
+    virtual HRESULT STDMETHODCALLTYPE UpdateHlink( 
+        /* [in] */ ULONG uHLID,
+        /* [unique][in] */ IMoniker *pimkTarget,
+        /* [unique][in] */ LPCWSTR pwzLocation,
+        /* [unique][in] */ LPCWSTR pwzFriendlyName)
+    {
+        return E_NOTIMPL;
+    }
+
+// IBindHost
+    virtual HRESULT STDMETHODCALLTYPE CreateMoniker( 
+        /* [in] */ LPOLESTR szName,
+        /* [in] */ IBindCtx *pBC,
+        /* [out] */ IMoniker **ppmk,
+        /* [in] */ DWORD dwReserved)
+    {
+    	if (!szName || !ppmk) return E_POINTER;
+		if (!*szName) return E_INVALIDARG;
+
+		*ppmk = NULL;
+
+        // Get the BASE url
+        CComPtr<IMoniker> baseURLMoniker;
+        nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDOMDocument));
+        if (doc)
+        {
+            nsCOMPtr<nsIURI> baseURI;
+            doc->GetBaseURL(*getter_AddRefs(baseURI));
+            nsCAutoString spec;
+            if (baseURI &&
+                NS_SUCCEEDED(baseURI->GetSpec(spec)))
+            {
+                USES_CONVERSION;
+                if (FAILED(CreateURLMoniker(NULL, T2CW(spec.get()), &baseURLMoniker)))
+                    return E_UNEXPECTED;
+            }
+        }
+
+        // Make the moniker
+		HRESULT hr = CreateURLMoniker(baseURLMoniker, szName, ppmk);
+		if (SUCCEEDED(hr) && !*ppmk)
+			hr = E_FAIL;
+		return hr;
+    }
+    
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE MonikerBindToStorage( 
+        /* [in] */ IMoniker *pMk,
+        /* [in] */ IBindCtx *pBC,
+        /* [in] */ IBindStatusCallback *pBSC,
+        /* [in] */ REFIID riid,
+        /* [out] */ void **ppvObj)
+    {
+		if (!pMk || !ppvObj) return E_POINTER;
+
+		*ppvObj = NULL;
+		HRESULT hr = S_OK;
+        CComPtr<IBindCtx> spBindCtx;
+		if (pBC)
+		{
+			spBindCtx = pBC;
+			if (pBSC)
+			{
+				hr = RegisterBindStatusCallback(spBindCtx, pBSC, NULL, 0);
+				if (FAILED(hr))
+					return hr;
+			}
+		}
+		else
+		{
+			if (pBSC)
+				hr = CreateAsyncBindCtx(0, pBSC, NULL, &spBindCtx);
+			else
+				hr = CreateBindCtx(0, &spBindCtx);
+			if (SUCCEEDED(hr) && !spBindCtx)
+				hr = E_FAIL;
+			if (FAILED(hr))
+				return hr;
+		}
+		return pMk->BindToStorage(spBindCtx, NULL, riid, ppvObj);
+    }
+    
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE MonikerBindToObject( 
+        /* [in] */ IMoniker *pMk,
+        /* [in] */ IBindCtx *pBC,
+        /* [in] */ IBindStatusCallback *pBSC,
+        /* [in] */ REFIID riid,
+        /* [out] */ void **ppvObj)
+    {
+        return E_NOTIMPL;
+    }
+
+// ITargetFrame
+    virtual HRESULT STDMETHODCALLTYPE SetFrameName(
+        /* [in] */ LPCWSTR pszFrameName)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::SetFrameName is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetFrameName(
+        /* [out] */ LPWSTR *ppszFrameName)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetFrameName is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetParentFrame(
+        /* [out] */ IUnknown **ppunkParent)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetParentFrame is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE FindFrame( 
+        /* [in] */ LPCWSTR pszTargetName,
+        /* [in] */ IUnknown *ppunkContextFrame,
+        /* [in] */ DWORD dwFlags,
+        /* [out] */ IUnknown **ppunkTargetFrame)
+    {
+        if (dwFlags & 0x1) // TODO test if the named frame exists and presumably return NULL if it doesn't
+        {
+        }
+
+        if (mUseTarget)
+        {
+            SysFreeString(mUseTarget);
+            mUseTarget = NULL;
+        }
+        if (pszTargetName)
+        {
+            mUseTarget = SysAllocString(pszTargetName);
+        }
+
+        QueryInterface(__uuidof(IUnknown), (void **) ppunkTargetFrame);
+        return S_OK;;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE SetFrameSrc( 
+        /* [in] */ LPCWSTR pszFrameSrc)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::SetFrameSrc is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetFrameSrc( 
+        /* [out] */ LPWSTR *ppszFrameSrc)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetFrameSrc is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetFramesContainer( 
+        /* [out] */ IOleContainer **ppContainer)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetFramesContainer is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE SetFrameOptions( 
+        /* [in] */ DWORD dwFlags)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::SetFrameOptions is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetFrameOptions( 
+        /* [out] */ DWORD *pdwFlags)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetFrameOptions is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE SetFrameMargins( 
+        /* [in] */ DWORD dwWidth,
+        /* [in] */ DWORD dwHeight)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::SetFrameMargins is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE GetFrameMargins( 
+        /* [out] */ DWORD *pdwWidth,
+        /* [out] */ DWORD *pdwHeight)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::GetFrameMargins is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE RemoteNavigate( 
+        /* [in] */ ULONG cLength,
+        /* [size_is][in] */ ULONG *pulData)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::RemoteNavigate is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE OnChildFrameActivate( 
+        /* [in] */ IUnknown *pUnkChildFrame)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::OnChildFrameActivate is not implemented");
+        return E_NOTIMPL;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE OnChildFrameDeactivate( 
+        /* [in] */ IUnknown *pUnkChildFrame)
+    {
+        NS_ASSERTION(FALSE, "ITargetFrame::OnChildFrameDeactivate is not implemented");
+        return E_NOTIMPL;
+    }
 };
 
-HRESULT xpc_GetServiceProvider(PluginInstanceData *pData, IServiceProvider **pSP)
+HRESULT MozAxPlugin::GetServiceProvider(PluginInstanceData *pData, IServiceProvider **pSP)
 {
+    // Note this should be called on the main NPAPI thread
     CComObject<IEDocument> *pDoc = NULL;
     CComObject<IEDocument>::CreateInstance(&pDoc);
-    pDoc->mData = pData;
+    ATLASSERT(pDoc);
+    if (!pDoc)
+    {
+        return E_OUTOFMEMORY;
+    }
+    pDoc->Init(pData);
+    // QI does the AddRef
     return pDoc->QueryInterface(_uuidof(IServiceProvider), (void **) pSP);
 }

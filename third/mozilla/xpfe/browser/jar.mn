@@ -21,16 +21,17 @@ comm.jar:
         content/navigator/linkToolbarItem.js           (resources/content/linkToolbarItem.js)
         content/navigator/linkToolbarOverlay.js        (resources/content/linkToolbarOverlay.js)
         content/navigator/linkToolbarOverlay.xul       (resources/content/linkToolbarOverlay.xul)
-        content/navigator/personalToolbar.js           (resources/content/personalToolbar.js)
         content/navigator/turboDialog.xul              (resources/content/turboDialog.xul)
         content/navigator/viewsource.js                (resources/content/viewsource.js)
         content/navigator/viewSource.xul               (resources/content/viewSource.xul)
         content/navigator/viewSourceOverlay.xul        (resources/content/viewSourceOverlay.xul)
         content/navigator/viewPartialSource.js         (resources/content/viewPartialSource.js)
         content/navigator/viewPartialSource.xul        (resources/content/viewPartialSource.xul)
+        content/navigator/mailNavigatorOverlay.xul     (resources/content/mailNavigatorOverlay.xul)
 en-US.jar:
         locale/en-US/navigator/contents.rdf                 (resources/locale/en-US/contents.rdf)
         locale/en-US/navigator/viewSource.dtd               (resources/locale/en-US/viewSource.dtd)
+        locale/en-US/navigator/viewSource.properties        (resources/locale/en-US/viewSource.properties)
         locale/en-US/navigator/pageInfo.dtd                 (resources/locale/en-US/pageInfo.dtd)
         locale/en-US/navigator/pageInfo.properties          (resources/locale/en-US/pageInfo.properties)
         locale/en-US/navigator/navigator.dtd                (resources/locale/en-US/navigator.dtd)
@@ -40,6 +41,7 @@ en-US.jar:
         locale/en-US/navigator/linkToolbar.dtd              (resources/locale/en-US/linkToolbar.dtd)
         locale/en-US/navigator/turboDialog.dtd              (resources/locale/en-US/turboDialog.dtd)
         locale/en-US/navigator/turboMenu.properties         (resources/locale/en-US/turboMenu.properties)
+        locale/en-US/navigator/mailNavigatorOverlay.dtd     (resources/locale/en-US/mailNavigatorOverlay.dtd)
 
 US.jar:
         locale/US/navigator-region/contents.rdf             (resources/locale/en-US/contents-region.rdf)

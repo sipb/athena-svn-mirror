@@ -32,7 +32,6 @@ static NS_DEFINE_CID(kSimpleURICID, NS_SIMPLEURI_CID);
 
 nsWyciwygProtocolHandler::nsWyciwygProtocolHandler() 
 {
-  NS_INIT_ISUPPORTS();
 
 #if defined(PR_LOGGING)
   gWyciwygLog = PR_NewLogModule("nsWyciwygChannel");
@@ -78,18 +77,15 @@ nsWyciwygProtocolHandler::NewURI(const nsACString &aSpec,
 {
   nsresult rv;
 
-  nsIURI* url;
-  rv = nsComponentManager::CreateInstance(kSimpleURICID, nsnull,
-                                            NS_GET_IID(nsIURI),
-                                            (void**)&url);
-  if (NS_FAILED(rv)) return rv;
+  nsCOMPtr<nsIURI> url = do_CreateInstance(kSimpleURICID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   rv = url->SetSpec(aSpec);
-  if (NS_FAILED(rv)) {
-    NS_RELEASE(url);
-    return rv;
-  }
+  NS_ENSURE_SUCCESS(rv, rv);
 
   *result = url;
+  NS_ADDREF(*result);
+
   return rv;
 }
 

@@ -41,7 +41,7 @@
 #include "nsTableCellFrame.h"
 #include "nsIRenderingContext.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIContent.h"
 #include "nsIView.h"
@@ -121,9 +121,7 @@ nsTableRowGroupFrame::GetRowCount()
   while (PR_TRUE) {
     if (!childFrame)
       break;
-    const nsStyleDisplay* childDisplay;
-    childFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)childDisplay));
-    if (NS_STYLE_DISPLAY_TABLE_ROW == childDisplay->mDisplay)
+    if (NS_STYLE_DISPLAY_TABLE_ROW == childFrame->GetStyleDisplay()->mDisplay)
       count++;
     GetNextFrame(childFrame, &childFrame);
   }
@@ -137,9 +135,7 @@ PRInt32 nsTableRowGroupFrame::GetStartRowIndex()
   while (PR_TRUE) {
     if (!childFrame)
       break;
-    const nsStyleDisplay *childDisplay;
-    childFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)childDisplay));
-    if (NS_STYLE_DISPLAY_TABLE_ROW == childDisplay->mDisplay) {
+    if (NS_STYLE_DISPLAY_TABLE_ROW == childFrame->GetStyleDisplay()->mDisplay) {
       result = ((nsTableRowFrame *)childFrame)->GetRowIndex();
       break;
     }
@@ -228,8 +224,7 @@ NS_METHOD nsTableRowGroupFrame::Paint(nsIPresContext*      aPresContext,
 #endif
   // Standards mode background painting removed.  See bug 4510
 
-  const nsStyleDisplay* disp = (const nsStyleDisplay*)
-    mStyleContext->GetStyleData(eStyleStruct_Display);
+  const nsStyleDisplay* disp = GetStyleDisplay();
   if (disp && (NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow)) {
     aRenderingContext.PushState();
     SetOverflowClipRect(aRenderingContext);
@@ -674,7 +669,7 @@ nsTableRowGroupFrame::CalculateRowHeights(nsIPresContext*          aPresContext,
         rowInfo[rowIndex].pctHeight = nsTableFrame::RoundToPixel(rowFrame->GetHeight(pctHeightBasis), p2t);
       }
       rowInfo[rowIndex].hasStyleHeight = rowFrame->HasStyleHeight();
-      nonPctHeight = PR_MAX(nonPctHeight, rowFrame->GetFixedHeight());
+      nonPctHeight = nsTableFrame::RoundToPixel(PR_MAX(nonPctHeight, rowFrame->GetFixedHeight()), p2t);
     }
     UpdateHeights(rowInfo[rowIndex], nonPctHeight, heightOfRows, heightOfUnStyledRows);
 
@@ -817,7 +812,8 @@ nsTableRowGroupFrame::CalculateRowHeights(nsIPresContext*          aPresContext,
   for (rowFrame = startRowFrame, rowIndex = 0; rowFrame && (extra > 0); rowFrame = rowFrame->GetNextRow(), rowIndex++) {
     RowInfo& rInfo = rowInfo[rowIndex];
     if (rInfo.hasPctHeight) {
-      nscoord rowExtra = PR_MAX(0, rInfo.pctHeight - rInfo.height);
+      nscoord rowExtra = (rInfo.pctHeight > rInfo.height)  
+                         ? rInfo.pctHeight - rInfo.height: 0;
       rowExtra = PR_MIN(rowExtra, extra);
       UpdateHeights(rInfo, rowExtra, heightOfRows, heightOfUnStyledRows);
       extra -= rowExtra;
@@ -1087,8 +1083,7 @@ nsTableRowGroupFrame::SplitRowGroup(nsIPresContext*          aPresContext,
   GET_PIXELS_TO_TWIPS(aPresContext, p2t);
   nscoord availWidth  = nsTableFrame::RoundToPixel(aReflowState.availableWidth, p2t);
   nscoord availHeight = nsTableFrame::RoundToPixel(aReflowState.availableHeight, p2t);
-  nscoord origAvailHeight = availHeight;
-
+  
   PRBool  borderCollapse = ((nsTableFrame*)aTableFrame->GetFirstInFlow())->IsBorderCollapse();
   nscoord cellSpacingY   = aTableFrame->GetCellSpacingY();
 
@@ -1283,6 +1278,7 @@ nsTableRowGroupFrame::SplitRowGroup(nsIPresContext*          aPresContext,
     }
     isTopOfPage = PR_FALSE; // after the 1st row, we can't be on top of the page any more.
   }
+  return NS_OK;
 }
 
 /** Layout the entire row group.
@@ -1611,9 +1607,7 @@ nsTableRowGroupFrame::GetHeightOfRows(nsIPresContext* aPresContext)
   rv = FirstChild(aPresContext, nsnull, &rowFrame);
   PRInt32 numRows = 0;
   while ((NS_SUCCEEDED(rv)) && rowFrame) {
-    const nsStyleDisplay* rowDisplay;
-    rowFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)rowDisplay));
-    if (NS_STYLE_DISPLAY_TABLE_ROW == rowDisplay->mDisplay) { 
+    if (NS_STYLE_DISPLAY_TABLE_ROW == rowFrame->GetStyleDisplay()->mDisplay) {
       nsRect rowRect;
       rowFrame->GetRect(rowRect);
       height += rowRect.height;
@@ -1735,8 +1729,7 @@ nsTableRowGroupFrame::IR_TargetIsChild(nsIPresContext*        aPresContext,
                                    kidAvailSize, aReflowState.reason);
   InitChildReflowState(*aPresContext, tableFrame->IsBorderCollapse(), p2t, kidReflowState);
 
-  nsSize              kidMaxElementSize;
-  nsHTMLReflowMetrics desiredSize(aDesiredSize.maxElementSize ? &kidMaxElementSize : nsnull,
+  nsHTMLReflowMetrics desiredSize(aDesiredSize.mComputeMEW,
                                   aDesiredSize.mFlags);
 
   // Pass along the reflow command
@@ -1873,7 +1866,7 @@ NS_IMETHODIMP
 nsTableRowGroupFrame::Init(nsIPresContext*  aPresContext,
                            nsIContent*      aContent,
                            nsIFrame*        aParent,
-                           nsIStyleContext* aContext,
+                           nsStyleContext*  aContext,
                            nsIFrame*        aPrevInFlow)
 {
   nsresult  rv;
@@ -1893,17 +1886,6 @@ NS_IMETHODIMP
 nsTableRowGroupFrame::GetFrameName(nsAString& aResult) const
 {
   return MakeFrameName(NS_LITERAL_STRING("TableRowGroup"), aResult);
-}
-
-NS_IMETHODIMP
-nsTableRowGroupFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  PRUint32 sum = sizeof(*this);
-  *aResult = sum;
-  return NS_OK;
 }
 #endif
 
@@ -2040,7 +2022,7 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
                                   PRBool*    aXIsBeforeFirstFrame, 
                                   PRBool*    aXIsAfterLastFrame)
 {
-  PRInt32 cellCount = 0;
+  PRInt32 colCount = 0;
   CellData* cellData;
   nsIFrame* tempFrame = nsnull;
   nsRect tempRect;
@@ -2053,15 +2035,19 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
   if(!cellMap)
      return NS_ERROR_FAILURE;
 
-  cellCount = cellMap->GetNumCellsOriginatingInRow(aLineNumber);
+  colCount = cellMap->GetColCount();
 
   *aXIsBeforeFirstFrame = PR_FALSE;
   *aXIsAfterLastFrame = PR_FALSE;
 
   PRBool gotParentRect = PR_FALSE;
-  for(int i =0;i < cellCount; i++)
+  for (PRInt32 i = 0; i < colCount; i++)
   {
     cellData = cellMap->GetDataAt(aLineNumber, i);
+    if (!cellData)
+      continue; // we hit a cellmap hole
+    if (!cellData->IsOrig())
+      continue;
     tempFrame = (nsIFrame*)cellData->GetCellFrame();
 
     if(!tempFrame)
@@ -2117,11 +2103,10 @@ nsTableRowGroupFrame::GetNextSiblingOnLine(nsIFrame*& aFrame,
   NS_ENSURE_ARG_POINTER(aFrame);
 
   nsITableCellLayout* cellFrame;
-  nsresult result = aFrame->QueryInterface(NS_GET_IID(nsITableCellLayout),(void**)&cellFrame);
-  
-  if(NS_FAILED(result) || !cellFrame)
-    return result?result:NS_ERROR_FAILURE;
-  
+  nsresult result = CallQueryInterface(aFrame, &cellFrame);
+  if(NS_FAILED(result)) 
+    return result;
+
   nsTableFrame* parentFrame = nsnull;
   result = nsTableFrame::GetTableFrame(this, parentFrame);
   nsTableCellMap* cellMap = parentFrame->GetCellMap();

@@ -159,38 +159,55 @@ nsMsgAccountManagerDataSource::nsMsgAccountManagerDataSource()
   
   // do per-class initialization here
   if (gAccountManagerResourceRefCnt++ == 0) {
-      getRDFService()->GetResource(NC_RDF_CHILD, &kNC_Child);
-      getRDFService()->GetResource(NC_RDF_NAME, &kNC_Name);
-      getRDFService()->GetResource(NC_RDF_FOLDERTREENAME, &kNC_FolderTreeName);
-      getRDFService()->GetResource(NC_RDF_FOLDERTREESIMPLENAME, &kNC_FolderTreeSimpleName);
-      getRDFService()->GetResource(NC_RDF_NAME_SORT, &kNC_NameSort);
-      getRDFService()->GetResource(NC_RDF_FOLDERTREENAME_SORT, &kNC_FolderTreeNameSort);
-      getRDFService()->GetResource(NC_RDF_PAGETAG, &kNC_PageTag);
-      getRDFService()->GetResource(NC_RDF_ISDEFAULTSERVER, &kNC_IsDefaultServer);
-      getRDFService()->GetResource(NC_RDF_SUPPORTSFILTERS, &kNC_SupportsFilters);
-      getRDFService()->GetResource(NC_RDF_CANGETMESSAGES, &kNC_CanGetMessages);
-      getRDFService()->GetResource(NC_RDF_CANGETINCOMINGMESSAGES, &kNC_CanGetIncomingMessages);
-      getRDFService()->GetResource(NC_RDF_ACCOUNT, &kNC_Account);
-      getRDFService()->GetResource(NC_RDF_SERVER, &kNC_Server);
-      getRDFService()->GetResource(NC_RDF_IDENTITY, &kNC_Identity);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_MAIN, &kNC_PageTitleMain);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_SERVER, &kNC_PageTitleServer);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_COPIES, &kNC_PageTitleCopies);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_OFFLINEANDDISKSPACE, &kNC_PageTitleOfflineAndDiskSpace);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_DISKSPACE, &kNC_PageTitleDiskSpace);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_ADDRESSING, &kNC_PageTitleAddressing);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_ADVANCED, &kNC_PageTitleAdvanced);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_SMTP, &kNC_PageTitleSMTP);
-      getRDFService()->GetResource(NC_RDF_PAGETITLE_FAKEACCOUNT, &kNC_PageTitleFakeAccount);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_CHILD), &kNC_Child);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_NAME), &kNC_Name);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_FOLDERTREENAME),
+                                   &kNC_FolderTreeName);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_FOLDERTREESIMPLENAME),
+                                   &kNC_FolderTreeSimpleName);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_NAME_SORT), &kNC_NameSort);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_FOLDERTREENAME_SORT),
+                                   &kNC_FolderTreeNameSort);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETAG), &kNC_PageTag);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_ISDEFAULTSERVER),
+                                   &kNC_IsDefaultServer);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_SUPPORTSFILTERS),
+                                   &kNC_SupportsFilters);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_CANGETMESSAGES),
+                                   &kNC_CanGetMessages);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_CANGETINCOMINGMESSAGES),
+                                   &kNC_CanGetIncomingMessages);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_ACCOUNT), &kNC_Account);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_SERVER), &kNC_Server);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_IDENTITY), &kNC_Identity);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_MAIN),
+                                   &kNC_PageTitleMain);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_SERVER),
+                                   &kNC_PageTitleServer);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_COPIES),
+                                   &kNC_PageTitleCopies);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_OFFLINEANDDISKSPACE),
+                                   &kNC_PageTitleOfflineAndDiskSpace);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_DISKSPACE),
+                                   &kNC_PageTitleDiskSpace);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_ADDRESSING),
+                                   &kNC_PageTitleAddressing);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_ADVANCED),
+                                   &kNC_PageTitleAdvanced);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_SMTP),
+                                   &kNC_PageTitleSMTP);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_PAGETITLE_FAKEACCOUNT),
+                                   &kNC_PageTitleFakeAccount);
       
-      getRDFService()->GetResource(NC_RDF_ACCOUNTROOT, &kNC_AccountRoot);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_ACCOUNTROOT),
+                                   &kNC_AccountRoot);
 
       getRDFService()->GetLiteral(NS_LITERAL_STRING("true").get(),
                                   &kTrueLiteral);
       
       // eventually these need to exist in some kind of array
       // that's easily extensible
-      getRDFService()->GetResource(NC_RDF_SETTINGS, &kNC_Settings);
+      getRDFService()->GetResource(NS_LITERAL_CSTRING(NC_RDF_SETTINGS), &kNC_Settings);
       
       kDefaultServerAtom = NS_NewAtom("DefaultServer");
    }
@@ -465,28 +482,28 @@ nsMsgAccountManagerDataSource::GetTarget(nsIRDFResource *source,
   else if ((property == kNC_NameSort) ||
            (property == kNC_FolderTreeNameSort)) {
 
+    // order for the folder pane
+    // and for the account manager tree is:
+    //
+    // - default mail account
+    // - <other mail accounts>
+    // - "Local Folders" account
+    // - news accounts
+    // - smtp settings (note, this is only in account manager tree)
+    // - fake account
+
     // make sure we're handling a root folder that is a server
     nsCOMPtr<nsIMsgIncomingServer> server;
     rv = getServerForFolderNode(source, getter_AddRefs(server));
 
-    // only answer for servers!
-    if (NS_FAILED(rv) || !server)
-        return NS_RDF_NO_VALUE;
-
-    // order is:
-    // - default account
-    // - <other servers>
-    // - Local Folders
-    // - news
-    
-    PRInt32 accountNum;
-    nsCOMPtr<nsIMsgAccountManager> am =
+    if (NS_SUCCEEDED(rv) && server) {     
+      PRInt32 accountNum;
+      nsCOMPtr<nsIMsgAccountManager> am =
         do_QueryReferent(mAccountManager);
-
-    if (isDefaultServer(server))
+      
+      if (isDefaultServer(server))
         str = NS_LITERAL_STRING("0000");
-    else {
-    
+      else {
         rv = am->FindServerIndex(server, &accountNum);
         if (NS_FAILED(rv)) return rv;
         
@@ -495,13 +512,52 @@ nsMsgAccountManagerDataSource::GetTarget(nsIRDFResource *source,
         server->GetType(getter_Copies(serverType));
         
         if (nsCRT::strcasecmp(serverType, "none")==0)
-            accountNum += 2000;
+          accountNum += 2000;
         else if (nsCRT::strcasecmp(serverType, "nntp")==0)
-            accountNum += 3000;
+          accountNum += 3000;
         else
-            accountNum += 1000;     // default is to appear at the top
+          accountNum += 1000;     // default is to appear at the top
         
         str.AppendInt(accountNum);
+      }
+    }
+    else {
+      const char *sourceValue;
+      rv = source->GetValueConst(&sourceValue);
+      NS_ENSURE_SUCCESS(rv, NS_RDF_NO_VALUE);
+      
+      // if this is a page (which we determine by the prefix of the URI)
+      // we want to generate a sort value
+      // so that we can sort the categories in the account manager tree
+      // (or the folder pane)
+      //
+      // otherwise, return NS_RDF_NO_VALUE
+      // so that the folder data source will take care of it.
+      if (sourceValue && (strncmp(sourceValue, NC_RDF_PAGETITLE_PREFIX, strlen(NC_RDF_PAGETITLE_PREFIX)) == 0)) {
+        if (source == kNC_PageTitleSMTP)
+          str = NS_LITERAL_STRING("4000");
+        else if (source == kNC_PageTitleFakeAccount)
+          str = NS_LITERAL_STRING("5000");
+        else if (source == kNC_PageTitleServer)
+          str = NS_LITERAL_STRING("1");
+        else if (source == kNC_PageTitleCopies)
+          str = NS_LITERAL_STRING("2");
+        else if (source == kNC_PageTitleAddressing)
+          str = NS_LITERAL_STRING("3");
+        else if (source == kNC_PageTitleOfflineAndDiskSpace)
+          str = NS_LITERAL_STRING("4");
+        else if (source == kNC_PageTitleDiskSpace)
+          str = NS_LITERAL_STRING("4");
+        else {
+          // allow for the accountmanager to be dynamically extended
+          // all the other pages come after the standard ones
+          // server, copies, addressing, disk space (or offline & disk space)
+          str.AssignWithConversion(sourceValue);
+        }
+      }
+      else {
+        return NS_RDF_NO_VALUE;
+      }
     }
   }
 
@@ -636,7 +692,7 @@ nsMsgAccountManagerDataSource::createRootResources(nsIRDFResource *property,
         printf("GetTargets(): added %d servers on %s\n", nodecount,
                (const char*)property_arc);
 #endif
-        // for the "settings" arc, we also want to do an SMTP tag
+        // for the "settings" arc, we also want to add SMTP setting and the fake account (if required)
         if (property == kNC_Settings) {
             aNodeArray->AppendElement(kNC_PageTitleSMTP);
             if (IsFakeAccountRequired())
@@ -719,7 +775,7 @@ nsMsgAccountManagerDataSource::appendGenericSetting(const char *name, nsISupport
   resourceStr = NC_RDF_PAGETITLE_PREFIX;
   resourceStr += name;
 
-  nsresult rv = getRDFService()->GetResource(resourceStr.get(), getter_AddRefs(resource));
+  nsresult rv = getRDFService()->GetResource(resourceStr, getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv,rv);
 
   // AppendElement will addref.
@@ -1012,7 +1068,7 @@ nsMsgAccountManagerDataSource::isDefaultServer(nsIMsgIncomingServer *aServer)
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
     if (!defaultAccount) return PR_FALSE;
 
-    // in some wierd case that there is no default and they asked
+    // in some weird case that there is no default and they asked
     // for the default
     nsCOMPtr<nsIMsgIncomingServer> defaultServer;
     rv = defaultAccount->GetIncomingServer(getter_AddRefs(defaultServer));

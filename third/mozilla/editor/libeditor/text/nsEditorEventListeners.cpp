@@ -55,14 +55,18 @@
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMMouseEvent.h"
 #include "nsIDOMNSUIEvent.h"
+#include "nsIPrivateDOMEvent.h"
 #include "nsIPrivateTextEvent.h"
 #include "nsIPrivateCompositionEvent.h"
 #include "nsIEditorMailSupport.h"
 #include "nsIDocumentEncoder.h"
 #include "nsIDOMNSUIEvent.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsILookAndFeel.h"
 #include "nsIPresContext.h"
+#include "nsGUIEvent.h"
+#include "nsICaret.h"
 // for repainting hack only
 #include "nsIView.h"
 #include "nsIViewManager.h"
@@ -82,10 +86,11 @@
 #include "nsISupportsPrimitives.h"
 #include "nsLayoutCID.h"
 #include "nsIDOMNSRange.h"
+#include "nsEditorUtils.h"
 
 // Drag & Drop, Clipboard Support
 static NS_DEFINE_CID(kLookAndFeelCID,          NS_LOOKANDFEEL_CID);
-static NS_DEFINE_CID(kPrefServiceCID,          NS_PREF_CID);
+static NS_DEFINE_CID(kCaretCID,                NS_CARET_CID);
 
 //#define DEBUG_IME
 
@@ -100,7 +105,6 @@ NS_IMPL_RELEASE(nsTextEditorKeyListener)
 
 nsTextEditorKeyListener::nsTextEditorKeyListener()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -171,6 +175,12 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
     return NS_OK;
   }
   
+  // DOM event handling happens in two passes, the client pass and the system
+  // pass.  We do all of our processing in the system pass, to allow client
+  // handlers the opporunity to cancel events and prevent typing in the editor.
+  // If the client pass cancelled the event, defaultPrevented will be true
+  // below.
+
   nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
   if(nsUIEvent) 
   {
@@ -202,7 +212,7 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
   if (!textEditor) return NS_ERROR_NO_INTERFACE;
 
   // if there is no charCode, then it's a key that doesn't map to a character,
-  // so look for special keys using keyCode
+  // so look for special keys using keyCode.
   if (0 != keyCode)
   {
     PRBool isAnyModifierKeyButShift;
@@ -267,7 +277,7 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
 
         // else we insert the tab straight through
         textEditor->HandleKeyPress(keyEvent);
-        aKeyEvent->PreventDefault(); // consumed
+        // let HandleKeyPress consume the event
         return NS_OK; 
 
       case nsIDOMKeyEvent::DOM_VK_RETURN:
@@ -285,7 +295,6 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
   }
 
   textEditor->HandleKeyPress(keyEvent);
-
   return NS_OK; // we don't PreventDefault() here or keybindings like control-x won't work 
 }
 
@@ -309,7 +318,6 @@ NS_IMPL_RELEASE(nsTextEditorMouseListener)
 
 nsTextEditorMouseListener::nsTextEditorMouseListener() 
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -382,11 +390,12 @@ nsTextEditorMouseListener::MouseClick(nsIDOMEvent* aMouseEvent)
   if (button == 1)
   {
     nsresult rv;
-    nsCOMPtr<nsIPref> prefService(do_GetService(kPrefServiceCID, &rv));
-    if (NS_SUCCEEDED(rv) && prefService)
+    nsCOMPtr<nsIPrefBranch> prefBranch =
+      do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv) && prefBranch)
     {
       PRBool doMiddleMousePaste = PR_FALSE;;
-      rv = prefService->GetBoolPref("middlemouse.paste", &doMiddleMousePaste);
+      rv = prefBranch->GetBoolPref("middlemouse.paste", &doMiddleMousePaste);
       if (NS_SUCCEEDED(rv) && doMiddleMousePaste)
       {
         // Set the selection to the point under the mouse cursor:
@@ -494,7 +503,6 @@ nsTextEditorTextListener::nsTextEditorTextListener()
 :   mCommitText(PR_FALSE),
    mInTransaction(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -583,46 +591,18 @@ nsTextEditorTextListener::HandleText(nsIDOMEvent* aTextEvent)
  * nsTextEditorDragListener implementation
  */
 
-NS_IMPL_ADDREF(nsTextEditorDragListener)
-
-NS_IMPL_RELEASE(nsTextEditorDragListener)
-
-
 nsTextEditorDragListener::nsTextEditorDragListener() 
+: mEditor(nsnull)
+, mPresShell(nsnull)
+, mCaretDrawn(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsTextEditorDragListener::~nsTextEditorDragListener() 
 {
 }
 
-nsresult
-nsTextEditorDragListener::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  if (aIID.Equals(NS_GET_IID(nsISupports))) {
-    *aInstancePtr = (void*)(nsISupports*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMEventListener))) {
-    *aInstancePtr = (void*)(nsIDOMEventListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMDragListener))) {
-    *aInstancePtr = (void*)(nsIDOMDragListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  return NS_NOINTERFACE;
-}
-
-
+NS_IMPL_ISUPPORTS2(nsTextEditorDragListener, nsIDOMEventListener, nsIDOMDragListener);
 
 nsresult
 nsTextEditorDragListener::HandleEvent(nsIDOMEvent* aEvent)
@@ -650,6 +630,20 @@ nsTextEditorDragListener::DragGesture(nsIDOMEvent* aDragEvent)
 nsresult
 nsTextEditorDragListener::DragEnter(nsIDOMEvent* aDragEvent)
 {
+  if (mPresShell)
+  {
+    if (!mCaret)
+    {
+      mCaret = do_CreateInstance(kCaretCID);
+      if (mCaret)
+      {
+        mCaret->Init(mPresShell);
+        mCaret->SetCaretReadOnly(PR_TRUE);
+      }
+      mCaretDrawn = PR_FALSE;
+    }
+  }
+  
   return DragOver(aDragEvent);
 }
 
@@ -657,124 +651,37 @@ nsTextEditorDragListener::DragEnter(nsIDOMEvent* aDragEvent)
 nsresult
 nsTextEditorDragListener::DragOver(nsIDOMEvent* aDragEvent)
 {
+  // XXX cache this between drag events?
   nsresult rv;
-  nsCOMPtr<nsIDragService> dragService = 
-           do_GetService( "@mozilla.org/widget/dragservice;1", &rv );
-  if ( NS_SUCCEEDED(rv) ) {
-    nsCOMPtr<nsIDragSession> dragSession;
-    dragService->GetCurrentSession(getter_AddRefs(dragSession));
-    if ( dragSession ) {
-      PRUint32 flags;
-      if (NS_SUCCEEDED(mEditor->GetFlags(&flags))) {
-        if ((flags & nsIPlaintextEditor::eEditorDisabledMask) || 
-            (flags & nsIPlaintextEditor::eEditorReadonlyMask)) {
-          dragSession->SetCanDrop(PR_FALSE);
-          aDragEvent->PreventDefault(); // consumed
-          return NS_OK;
-        }
-      }
-      PRBool flavorSupported = PR_FALSE;
-      dragSession->IsDataFlavorSupported(kUnicodeMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kHTMLMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kFileMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kJPEGImageMime, &flavorSupported);
-      if ( flavorSupported ) {
-        dragSession->SetCanDrop(PR_TRUE);
-        aDragEvent->PreventDefault();
-      }
-    } 
+  nsCOMPtr<nsIDragService> dragService = do_GetService("@mozilla.org/widget/dragservice;1", &rv);
+  if (!dragService) return rv;
+
+  // does the drag have flavors we can accept?
+  nsCOMPtr<nsIDragSession> dragSession;
+  dragService->GetCurrentSession(getter_AddRefs(dragSession));
+  if (!dragSession) return NS_ERROR_FAILURE;
+
+  PRBool canDrop = CanDrop(aDragEvent);
+  if (canDrop)
+  {
+    nsCOMPtr<nsIDOMDocument> domdoc;
+    mEditor->GetDocument(getter_AddRefs(domdoc));
+    canDrop = nsEditorHookUtils::DoAllowDropHook(domdoc, aDragEvent, dragSession);
   }
 
-  return NS_OK;
-}
+  dragSession->SetCanDrop(canDrop);
 
+  // We need to consume the event to prevent the browser's
+  // default drag listeners from being fired. (Bug 199133)
 
-nsresult
-nsTextEditorDragListener::DragExit(nsIDOMEvent* aDragEvent)
-{
-  return NS_OK;
-}
-
-
-
-nsresult
-nsTextEditorDragListener::DragDrop(nsIDOMEvent* aMouseEvent)
-{
-  if ( mEditor )
-  {
-    nsresult rv;
-    nsCOMPtr<nsIDragService> dragService = 
-             do_GetService("@mozilla.org/widget/dragservice;1", &rv);
-    if (NS_FAILED(rv)) return rv;
-
-    PRUint32 flags;
-    if (NS_SUCCEEDED(mEditor->GetFlags(&flags))
-        && ((flags & nsIPlaintextEditor::eEditorDisabledMask)
-           || (flags & nsIPlaintextEditor::eEditorReadonlyMask)) )
-    {
-      return aMouseEvent->StopPropagation(); // it was decided to "eat" the event as this is the "least surprise"
-                                      // since someone else handling it might be unintentional and the 
-                                      // user could probably re-drag to be not over the disabled/readonly 
-                                      // editfields if that is what is desired.
-    }
-
-    nsCOMPtr<nsIDragSession> dragSession;
-    dragService->GetCurrentSession(getter_AddRefs(dragSession));
-    if (dragSession)
-    {
-       PRBool flavorSupported = PR_FALSE;
-      dragSession->IsDataFlavorSupported(kUnicodeMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kHTMLMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kFileMime, &flavorSupported);
-      if ( !flavorSupported ) 
-        dragSession->IsDataFlavorSupported(kJPEGImageMime, &flavorSupported);
-      if (! flavorSupported ) 
-        return NS_OK;     
-    }
-
-    nsCOMPtr<nsIDOMNSUIEvent> nsuiEvent (do_QueryInterface(aMouseEvent));
-    if (!nsuiEvent) return NS_OK;
-
-    //some day we want to use another way to stop this from bubbling.
-    nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
-
-    if (nsevent) {
-      nsevent->PreventBubble();
-    }
-
-    aMouseEvent->PreventDefault();
-
-    /* for bug 47399, when dropping a drag session, if you are over your original
-       selection, nothing should happen. 
-       cmanske: But do this only if drag source is not the same as target (current) document!
-    */
-    nsCOMPtr<nsISelection> selection;
-    rv = mEditor->GetSelection(getter_AddRefs(selection));
-    if (NS_FAILED(rv))
-      return rv;
-    if (!selection)
-      return NS_ERROR_FAILURE;
+  aDragEvent->PreventDefault(); // consumed
     
-    nsCOMPtr<nsIDOMDocument> domdoc;
-    rv = mEditor->GetDocument(getter_AddRefs(domdoc));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIDOMDocument> sourceDoc;
-    rv = dragSession->GetSourceDocument(getter_AddRefs(sourceDoc));
-    if (NS_FAILED(rv)) return rv;
-    if (domdoc == sourceDoc)
+  if (canDrop)
+  {
+    if (mCaret)
     {
-      PRBool isCollapsed;
-      rv = selection->GetIsCollapsed(&isCollapsed);
-      if (NS_FAILED(rv)) return rv;
-  
-      // Don't bother if collapsed - can always drop
-      if (!isCollapsed)
+      nsCOMPtr<nsIDOMNSUIEvent> nsuiEvent (do_QueryInterface(aDragEvent));
+      if (nsuiEvent)
       {
         nsCOMPtr<nsIDOMNode> parent;
         rv = nsuiEvent->GetRangeParent(getter_AddRefs(parent));
@@ -785,40 +692,189 @@ nsTextEditorDragListener::DragDrop(nsIDOMEvent* aMouseEvent)
         rv = nsuiEvent->GetRangeOffset(&offset);
         if (NS_FAILED(rv)) return rv;
 
-        PRInt32 rangeCount;
-        rv = selection->GetRangeCount(&rangeCount);
-        if (NS_FAILED(rv)) return rv;
-
-        for (PRInt32 i = 0; i < rangeCount; i++)
-        {
-          nsCOMPtr<nsIDOMRange> range;
-
-          rv = selection->GetRangeAt(i, getter_AddRefs(range));
-          if (NS_FAILED(rv) || !range) 
-            continue;//dont bail yet, iterate through them all
-
-          nsCOMPtr<nsIDOMNSRange> nsrange(do_QueryInterface(range));
-          if (NS_FAILED(rv) || !nsrange) 
-            continue;//dont bail yet, iterate through them all
-
-          PRBool inrange;
-          rv = nsrange->IsPointInRange(parent, offset, &inrange);
-          if(inrange)
-            return NS_ERROR_FAILURE;//okay, now you can bail, we are over the orginal selection
-        }
+        // to avoid flicker, we could track the node and offset to see if we moved
+        if (mCaretDrawn)
+          mCaret->EraseCaret();
+        
+        //mCaret->SetCaretVisible(PR_TRUE);   // make sure it's visible
+        mCaret->DrawAtPosition(parent, offset);
+        mCaretDrawn = PR_TRUE;
       }
     }
-    // if we are not over orginal selection, drop that baby!
-    return mEditor->InsertFromDrop(aMouseEvent);
+  }
+  else
+  {
+    if (mCaret && mCaretDrawn)
+    {
+      mCaret->EraseCaret();
+      mCaretDrawn = PR_FALSE;
+    } 
   }
 
   return NS_OK;
 }
 
 
+nsresult
+nsTextEditorDragListener::DragExit(nsIDOMEvent* aDragEvent)
+{
+  if (mCaret)
+  {
+    if (mCaretDrawn)
+      mCaret->EraseCaret();
+    mCaretDrawn = PR_FALSE;
+  }
+
+  return NS_OK;
+}
+
+
+
+nsresult
+nsTextEditorDragListener::DragDrop(nsIDOMEvent* aMouseEvent)
+{
+  if (mCaret)
+  {
+    if (mCaretDrawn)
+      mCaret->EraseCaret();
+    mCaretDrawn = PR_FALSE;
+    mCaret->SetCaretVisible(PR_FALSE);    // hide it, so that it turns off its timer
+    mCaret = nsnull;      // release it
+  }
+
+  if (!mEditor)
+    return NS_ERROR_FAILURE;
+
+  PRBool canDrop = CanDrop(aMouseEvent);
+  if (!canDrop)
+  {
+    // was it because we're read-only?
+
+    PRUint32 flags;
+    if (NS_SUCCEEDED(mEditor->GetFlags(&flags))
+        && ((flags & nsIPlaintextEditor::eEditorDisabledMask) ||
+            (flags & nsIPlaintextEditor::eEditorReadonlyMask)) )
+    {
+      // it was decided to "eat" the event as this is the "least surprise"
+                                      // since someone else handling it might be unintentional and the 
+                                      // user could probably re-drag to be not over the disabled/readonly 
+                                      // editfields if that is what is desired.
+      return aMouseEvent->StopPropagation();
+    }
+    return NS_OK;
+  }
+
+  //some day we want to use another way to stop this from bubbling.
+  nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
+  if (nsevent)
+    nsevent->PreventBubble();
+
+  aMouseEvent->PreventDefault();
+  return mEditor->InsertFromDrop(aMouseEvent);
+}
+
+PRBool
+nsTextEditorDragListener::CanDrop(nsIDOMEvent* aEvent)
+{
+  // if the target doc is read-only, we can't drop
+  PRUint32 flags = 0;
+  nsresult rv = mEditor->GetFlags(&flags);
+  if (NS_FAILED(rv)) return PR_FALSE;
+
+  if ((flags & nsIPlaintextEditor::eEditorDisabledMask) || 
+      (flags & nsIPlaintextEditor::eEditorReadonlyMask)) {
+    return PR_FALSE;
+  }
+
+  // XXX cache this between drag events?
+  nsCOMPtr<nsIDragService> dragService = do_GetService("@mozilla.org/widget/dragservice;1", &rv);
+  if (!dragService) return PR_FALSE;
+
+  // does the drag have flavors we can accept?
+  nsCOMPtr<nsIDragSession> dragSession;
+  dragService->GetCurrentSession(getter_AddRefs(dragSession));
+  if (!dragSession) return PR_FALSE;
+
+  PRBool flavorSupported = PR_FALSE;
+  dragSession->IsDataFlavorSupported(kUnicodeMime, &flavorSupported);
+
+  // if we aren't plaintext editing, we can accept more flavors
+  if (!flavorSupported 
+     && (flags & nsIPlaintextEditor::eEditorPlaintextMask) == 0)
+  {
+    dragSession->IsDataFlavorSupported(kHTMLMime, &flavorSupported);
+    if (!flavorSupported)
+      dragSession->IsDataFlavorSupported(kFileMime, &flavorSupported);
+#if 0
+    if (!flavorSupported)
+      dragSession->IsDataFlavorSupported(kJPEGImageMime, &flavorSupported);
+#endif
+  }
+
+  if (!flavorSupported)
+    return PR_FALSE;     
+
+  nsCOMPtr<nsISelection> selection;
+  rv = mEditor->GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(rv) || !selection)
+    return PR_FALSE;
+    
+  nsCOMPtr<nsIDOMDocument> domdoc;
+  rv = mEditor->GetDocument(getter_AddRefs(domdoc));
+  if (NS_FAILED(rv)) return PR_FALSE;
+
+  nsCOMPtr<nsIDOMDocument> sourceDoc;
+  rv = dragSession->GetSourceDocument(getter_AddRefs(sourceDoc));
+  if (NS_FAILED(rv)) return PR_FALSE;
+  if (domdoc == sourceDoc)      // source and dest are the same document; disallow drops within the selection
+  {
+    PRBool isCollapsed;
+    rv = selection->GetIsCollapsed(&isCollapsed);
+    if (NS_FAILED(rv)) return PR_FALSE;
+  
+    // Don't bother if collapsed - can always drop
+    if (!isCollapsed)
+    {
+      nsCOMPtr<nsIDOMNSUIEvent> nsuiEvent (do_QueryInterface(aEvent));
+      if (!nsuiEvent) return PR_FALSE;
+
+      nsCOMPtr<nsIDOMNode> parent;
+      rv = nsuiEvent->GetRangeParent(getter_AddRefs(parent));
+      if (NS_FAILED(rv) || !parent) return PR_FALSE;
+
+      PRInt32 offset = 0;
+      rv = nsuiEvent->GetRangeOffset(&offset);
+      if (NS_FAILED(rv)) return PR_FALSE;
+
+      PRInt32 rangeCount;
+      rv = selection->GetRangeCount(&rangeCount);
+      if (NS_FAILED(rv)) return PR_FALSE;
+
+      for (PRInt32 i = 0; i < rangeCount; i++)
+      {
+        nsCOMPtr<nsIDOMRange> range;
+        rv = selection->GetRangeAt(i, getter_AddRefs(range));
+        if (NS_FAILED(rv) || !range) 
+        continue; //dont bail yet, iterate through them all
+
+        nsCOMPtr<nsIDOMNSRange> nsrange(do_QueryInterface(range));
+        if (NS_FAILED(rv) || !nsrange) 
+        continue; //dont bail yet, iterate through them all
+
+        PRBool inRange = PR_TRUE;
+        (void)nsrange->IsPointInRange(parent, offset, &inRange);
+        if (inRange)
+          return PR_FALSE;  //okay, now you can bail, we are over the orginal selection
+      }
+    }
+  }
+  
+  return PR_TRUE;
+}
+
+
 nsTextEditorCompositionListener::nsTextEditorCompositionListener()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsTextEditorCompositionListener::~nsTextEditorCompositionListener() 
@@ -987,7 +1043,7 @@ NS_NewEditorTextListener(nsIDOMEventListener** aInstancePtrResult, nsIEditor* aE
 
 
 nsresult
-NS_NewEditorDragListener(nsIDOMEventListener ** aInstancePtrResult, 
+NS_NewEditorDragListener(nsIDOMEventListener ** aInstancePtrResult, nsIPresShell* aPresShell,
                           nsIEditor *aEditor)
 {
   nsTextEditorDragListener* it = new nsTextEditorDragListener();
@@ -996,6 +1052,7 @@ NS_NewEditorDragListener(nsIDOMEventListener ** aInstancePtrResult,
   }
 
   it->SetEditor(aEditor);
+  it->SetPresShell(aPresShell);
 
   return it->QueryInterface(NS_GET_IID(nsIDOMEventListener), (void **) aInstancePtrResult);   
 }
@@ -1036,7 +1093,6 @@ NS_IMPL_RELEASE(nsTextEditorFocusListener)
 
 nsTextEditorFocusListener::nsTextEditorFocusListener() 
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsTextEditorFocusListener::~nsTextEditorFocusListener() 

@@ -41,13 +41,12 @@
 #include "nsISupports.h"
 #include "nsEvent.h"
 #include "nsAString.h"
-#include "nsString.h"
 #include "nsChangeHint.h"
+#include "nsCOMArray.h"
 
 class nsIAtom;
 class nsIArena;
 class nsIContent;
-class nsIDocumentContainer;
 class nsIDocumentObserver;
 class nsIPresContext;
 class nsIPresShell;
@@ -65,7 +64,6 @@ class nsIDOMEvent;
 class nsIDeviceContext;
 class nsIParser;
 class nsIDOMNode;
-class nsINameSpaceManager;
 class nsIDOMDocumentFragment;
 class nsILineBreaker;
 class nsIWordBreaker;
@@ -79,8 +77,8 @@ class nsIBindingManager;
 class nsIObserver;
 class nsISupportsArray;
 class nsIScriptLoader;
-class nsString;
 class nsIContentSink;
+class nsIScriptEventManager;
 
 // IID for the nsIDocument interface
 #define NS_IDOCUMENT_IID      \
@@ -92,6 +90,11 @@ class nsIContentSink;
 // assign a monotonically increasing ID to each content
 // object it creates
 #define NS_CONTENT_ID_COUNTER_BASE 10000
+
+
+// Flag for AddStyleSheet().
+#define NS_STYLESHEET_FROM_CATALOG                (1 << 0)
+
 
 //----------------------------------------------------------------------
 
@@ -118,7 +121,7 @@ public:
   /**
    * Return the title of the document. May return null.
    */
-  virtual const nsString* GetDocumentTitle() const = 0;
+  NS_IMETHOD GetDocumentTitle(nsAString& aTitle) const = 0;
 
   /**
    * Return the URL for the document. May return null.
@@ -143,7 +146,8 @@ public:
   NS_IMETHOD GetDocumentLoadGroup(nsILoadGroup** aGroup) const = 0;
 
   /**
-   * Return the base URL for relative URLs in the document. May return null (or the document URL).
+   * Return the base URL for relative URLs in the document. May return
+   * null (or the document URL).
    */
   NS_IMETHOD GetBaseURL(nsIURI*& aURL) const = 0;
   NS_IMETHOD SetBaseURL(nsIURI* aURL) = 0;
@@ -155,8 +159,9 @@ public:
   NS_IMETHOD SetBaseTarget(const nsAString &aBaseTarget)=0;
 
   /**
-   * Return a standard name for the document's character set. This will
-   * trigger a startDocumentLoad if necessary to answer the question.
+   * Return a standard name for the document's character set. This
+   * will trigger a startDocumentLoad if necessary to answer the
+   * question.
    */
   NS_IMETHOD GetDocumentCharacterSet(nsAString& oCharSetID) = 0;
   NS_IMETHOD SetDocumentCharacterSet(const nsAString& aCharSetID) = 0;
@@ -174,13 +179,22 @@ public:
   NS_IMETHOD RemoveCharSetObserver(nsIObserver* aObserver) = 0;
 
   /**
+   * Get the Content-Type of this document.
+   */
+  NS_IMETHOD GetContentType(nsAString& aContentType) = 0;
+
+  /**
+   * Set the Content-Type of this document.
+   */
+  NS_IMETHOD SetContentType(const nsAString& aContentType) = 0;
+
+  /**
    * Return the language of this document.
    */
   NS_IMETHOD GetContentLanguage(nsAString& aContentLanguage) const = 0;
 
-#ifdef IBMBIDI
-  // The state BidiEnabled should persist across multiple views (screen, print)
-  // of the same document.
+  // The state BidiEnabled should persist across multiple views
+  // (screen, print) of the same document.
 
   /**
    * Check if the document contains bidi data.
@@ -195,7 +209,6 @@ public:
    * the document no longer contains bidi data.
    */
   NS_IMETHOD SetBidiEnabled(PRBool aBidiEnabled) = 0;
-#endif // IBMBIDI
 
   /**
    * Return the Line Breaker for the document
@@ -206,15 +219,15 @@ public:
   NS_IMETHOD SetWordBreaker(nsIWordBreaker* aWordBreaker) = 0;
 
   /**
-   * Access HTTP header data (this may also get set from other sources, like
-   * HTML META tags).
+   * Access HTTP header data (this may also get set from other
+   * sources, like HTML META tags).
    */
   NS_IMETHOD GetHeaderData(nsIAtom* aHeaderField, nsAString& aData) const = 0;
   NS_IMETHOD SetHeaderData(nsIAtom* aheaderField, const nsAString& aData) = 0;
 
   /**
-   * Create a new presentation shell that will use aContext for
-   * it's presentation context (presentation context's <b>must not</b> be
+   * Create a new presentation shell that will use aContext for it's
+   * presentation context (presentation context's <b>must not</b> be
    * shared among multiple presentation shell's).
    */
   NS_IMETHOD CreateShell(nsIPresContext* aContext,
@@ -269,19 +282,79 @@ public:
   NS_IMETHOD GetChildCount(PRInt32& aCount) = 0;
 
   /**
-   * Get the style sheets owned by this document.
+   * Accessors to the collection of stylesheets owned by this document.
    * Style sheets are ordered, most significant last.
    */
-  NS_IMETHOD GetNumberOfStyleSheets(PRInt32* aCount) = 0;
-  NS_IMETHOD GetStyleSheetAt(PRInt32 aIndex, nsIStyleSheet** aSheet) = 0;
-  NS_IMETHOD GetIndexOfStyleSheet(nsIStyleSheet* aSheet, PRInt32* aIndex) = 0;
-  virtual void AddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags) = 0;
-  virtual void RemoveStyleSheet(nsIStyleSheet* aSheet) = 0;
-  NS_IMETHOD UpdateStyleSheets(nsISupportsArray* aOldSheets, nsISupportsArray* aNewSheets) = 0;
 
-  NS_IMETHOD InsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex, PRBool aNotify) = 0;
-  virtual void SetStyleSheetDisabledState(nsIStyleSheet* aSheet,
-                                          PRBool aDisabled) = 0;
+  /**
+   * Get the number of stylesheets
+   *
+   * @param aIncludeSpecialSheets if this is set to true, all sheets
+   *   that are document sheets (including "special" sheets like
+   *   attribute sheets and inline style sheets) will be returned.  If
+   *   false, only "normal" stylesheets will be returned   
+   * @return the number of stylesheets
+   * @throws no exceptions
+   */
+  NS_IMETHOD GetNumberOfStyleSheets(PRBool aIncludeSpecialSheets,
+                                    PRInt32* aCount) = 0;
+  
+  /**
+   * Get a particular stylesheet
+   * @param aIndex the index the stylesheet lives at.  This is zero-based
+   * @param aIncludeSpecialSheets see GetNumberOfStyleSheets.  If this
+   *   is false, not all sheets will be returnable
+   * @return the stylesheet at aIndex.  Null if aIndex is out of range.
+   * @throws no exceptions
+   */
+  NS_IMETHOD GetStyleSheetAt(PRInt32 aIndex, PRBool aIncludeSpecialSheets,
+                             nsIStyleSheet** aSheet) = 0;
+  
+  /**
+   * Insert a sheet at a particular spot in the stylesheet list (zero-based)
+   * @param aSheet the sheet to insert
+   * @param aIndex the index to insert at.  This index will be
+   *   adjusted for the "special" sheets.
+   * @throws no exceptions
+   */
+  NS_IMETHOD InsertStyleSheetAt(nsIStyleSheet* aSheet,
+                                PRInt32 aIndex) = 0;
+
+  /**
+   * Get the index of a particular stylesheet.  This will _always_
+   * consider the "special" sheets as part of the sheet list.
+   * @param aSheet the sheet to get the index of
+   * @return aIndex the index of the sheet in the full list
+   */
+  NS_IMETHOD GetIndexOfStyleSheet(nsIStyleSheet* aSheet, PRInt32* aIndex) = 0;
+
+  /**
+   * Replace the stylesheets in aOldSheets with the stylesheets in
+   * aNewSheets. The two lists must have equal length, and the sheet
+   * at positon J in the first list will be replaced by the sheet at
+   * position J in the second list.  Some sheets in the second list
+   * may be null; if so the corresponding sheets in the first list
+   * will simply be removed.
+   */
+  NS_IMETHOD UpdateStyleSheets(nsCOMArray<nsIStyleSheet>& aOldSheets,
+                               nsCOMArray<nsIStyleSheet>& aNewSheets) = 0;
+
+  /**
+   * Add a stylesheet to the document
+   */
+  virtual void AddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags) = 0;
+
+  /**
+   * Remove a stylesheet from the document
+   */
+  virtual void RemoveStyleSheet(nsIStyleSheet* aSheet) = 0;
+
+  /**
+   * Notify the document that the applicable state of the sheet changed
+   * and that observers should be notified and style sets updated
+   */
+  virtual void SetStyleSheetApplicableState(nsIStyleSheet* aSheet,
+                                            PRBool aApplicable) = 0;  
 
   /**
    * Set the object from which a document can get a script context.
@@ -290,11 +363,6 @@ public:
    */
   NS_IMETHOD GetScriptGlobalObject(nsIScriptGlobalObject** aGlobalObject) = 0;
   NS_IMETHOD SetScriptGlobalObject(nsIScriptGlobalObject* aGlobalObject) = 0;
-
-  /**
-   * Get the name space manager for this document
-   */
-  NS_IMETHOD GetNameSpaceManager(nsINameSpaceManager*& aManager) = 0;
 
   /**
    * Get the script loader for this document
@@ -368,8 +436,6 @@ public:
                             PRUint32 aFlags,
                             nsEventStatus* aEventStatus) = 0;
 
-  NS_IMETHOD_(PRBool) EventCaptureRegistration(PRInt32 aCapturerIncrement) = 0;
-  
   NS_IMETHOD FlushPendingNotifications(PRBool aFlushReflows=PR_TRUE,
                                        PRBool aUpdateViews=PR_FALSE) = 0;
 
@@ -394,40 +460,49 @@ public:
    * Get the container (docshell) for this document.
    */
   NS_IMETHOD GetContainer(nsISupports **aContainer) = 0;
+
+  NS_IMETHOD GetScriptEventManager(nsIScriptEventManager **aResult) = 0;
+
+  /**
+   * Set and get XML declaration. Notice that if version is empty,
+   * there can be no XML declaration (it is a required part).
+   */
+  NS_IMETHOD SetXMLDeclaration(const nsAString& aVersion,
+                               const nsAString& aEncoding,
+                               const nsAString& Standalone) = 0;
+  NS_IMETHOD GetXMLDeclaration(nsAString& aVersion,
+                               nsAString& aEncoding,
+                               nsAString& Standalone) = 0;
+
+  NS_IMETHOD_(PRBool) IsCaseSensitive() = 0;
 };
 
 
 // XXX These belong somewhere else
-extern NS_EXPORT nsresult
-   NS_NewHTMLDocument(nsIDocument** aInstancePtrResult);
+nsresult
+NS_NewHTMLDocument(nsIDocument** aInstancePtrResult);
 
-extern NS_EXPORT nsresult
-   NS_NewXMLDocument(nsIDocument** aInstancePtrResult);
+nsresult
+NS_NewXMLDocument(nsIDocument** aInstancePtrResult);
 
 #ifdef MOZ_SVG
-extern NS_EXPORT nsresult
-   NS_NewSVGDocument(nsIDocument** aInstancePtrResult);
+nsresult
+NS_NewSVGDocument(nsIDocument** aInstancePtrResult);
 #endif
 
-extern NS_EXPORT nsresult
-   NS_NewImageDocument(nsIDocument** aInstancePtrResult);
+nsresult
+NS_NewImageDocument(nsIDocument** aInstancePtrResult);
 
-extern NS_EXPORT nsresult
-   NS_NewDocumentFragment(nsIDOMDocumentFragment** aInstancePtrResult,
-                          nsIDocument* aOwnerDocument);
-extern NS_EXPORT nsresult
-   NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
-                     const nsAString& aNamespaceURI, 
-                     const nsAString& aQualifiedName, 
-                     nsIDOMDocumentType* aDoctype,
-                     nsIURI* aBaseURI);
-
-// Note: The buffer passed into NewPostData(...) becomes owned by the IPostData
-//       instance and is freed when the instance is destroyed...
-//
-#if 0
-extern NS_EXPORT nsresult
-   NS_NewPostData(PRBool aIsFile, char *aData, nsIPostData** aInstancePtrResult);
-#endif
+nsresult
+NS_NewDocumentFragment(nsIDOMDocumentFragment** aInstancePtrResult,
+                       nsIDocument* aOwnerDocument);
+nsresult
+NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
+                  const nsAString& aNamespaceURI, 
+                  const nsAString& aQualifiedName, 
+                  nsIDOMDocumentType* aDoctype,
+                  nsIURI* aBaseURI);
+nsresult
+NS_NewPluginDocument(nsIDocument** aInstancePtrResult);
 
 #endif /* nsIDocument_h___ */

@@ -42,11 +42,14 @@
 
 /* Implementations of nsIControllerCommand for composer commands */
 
+var gComposerJSCommandControllerID = 0;
+
+
 //-----------------------------------------------------------------------------------
 function SetupHTMLEditorCommands()
 {
-  var commandManager = GetComposerCommandManager();
-  if (!commandManager)
+  var commandTable = GetComposerCommandTable();
+  if (!commandTable)
     return;
   
   // Include everthing a text editor does
@@ -54,81 +57,84 @@ function SetupHTMLEditorCommands()
 
   //dump("Registering HTML editor commands\n");
 
-  commandManager.registerCommand("cmd_renderedHTMLEnabler",           nsDummyHTMLCommand);
+  commandTable.registerCommand("cmd_renderedHTMLEnabler", nsDummyHTMLCommand);
 
-  commandManager.registerCommand("cmd_listProperties",  nsListPropertiesCommand);
-  commandManager.registerCommand("cmd_pageProperties",  nsPagePropertiesCommand);
-  commandManager.registerCommand("cmd_colorProperties", nsColorPropertiesCommand);
-  commandManager.registerCommand("cmd_advancedProperties", nsAdvancedPropertiesCommand);
-  commandManager.registerCommand("cmd_objectProperties",   nsObjectPropertiesCommand);
-  commandManager.registerCommand("cmd_removeLinks",        nsRemoveLinksCommand);
-  commandManager.registerCommand("cmd_removeNamedAnchors", nsRemoveNamedAnchorsCommand);
-  commandManager.registerCommand("cmd_editLink",        nsEditLinkCommand);
+  commandTable.registerCommand("cmd_listProperties",  nsListPropertiesCommand);
+  commandTable.registerCommand("cmd_pageProperties",  nsPagePropertiesCommand);
+  commandTable.registerCommand("cmd_colorProperties", nsColorPropertiesCommand);
+  commandTable.registerCommand("cmd_advancedProperties", nsAdvancedPropertiesCommand);
+  commandTable.registerCommand("cmd_objectProperties",   nsObjectPropertiesCommand);
+  commandTable.registerCommand("cmd_removeNamedAnchors", nsRemoveNamedAnchorsCommand);
+  commandTable.registerCommand("cmd_editLink",        nsEditLinkCommand);
   
-  commandManager.registerCommand("cmd_form",          nsFormCommand);
-  commandManager.registerCommand("cmd_inputtag",      nsInputTagCommand);
-  commandManager.registerCommand("cmd_inputimage",    nsInputImageCommand);
-  commandManager.registerCommand("cmd_textarea",      nsTextAreaCommand);
-  commandManager.registerCommand("cmd_select",        nsSelectCommand);
-  commandManager.registerCommand("cmd_button",        nsButtonCommand);
-  commandManager.registerCommand("cmd_label",         nsLabelCommand);
-  commandManager.registerCommand("cmd_fieldset",      nsFieldSetCommand);
-  commandManager.registerCommand("cmd_isindex",       nsIsIndexCommand);
-  commandManager.registerCommand("cmd_image",         nsImageCommand);
-  commandManager.registerCommand("cmd_hline",         nsHLineCommand);
-  commandManager.registerCommand("cmd_link",          nsLinkCommand);
-  commandManager.registerCommand("cmd_anchor",        nsAnchorCommand);
-  commandManager.registerCommand("cmd_insertHTML",    nsInsertHTMLCommand);
-  commandManager.registerCommand("cmd_insertBreak",   nsInsertBreakCommand);
-  commandManager.registerCommand("cmd_insertBreakAll",nsInsertBreakAllCommand);
+  commandTable.registerCommand("cmd_form",          nsFormCommand);
+  commandTable.registerCommand("cmd_inputtag",      nsInputTagCommand);
+  commandTable.registerCommand("cmd_inputimage",    nsInputImageCommand);
+  commandTable.registerCommand("cmd_textarea",      nsTextAreaCommand);
+  commandTable.registerCommand("cmd_select",        nsSelectCommand);
+  commandTable.registerCommand("cmd_button",        nsButtonCommand);
+  commandTable.registerCommand("cmd_label",         nsLabelCommand);
+  commandTable.registerCommand("cmd_fieldset",      nsFieldSetCommand);
+  commandTable.registerCommand("cmd_isindex",       nsIsIndexCommand);
+  commandTable.registerCommand("cmd_image",         nsImageCommand);
+  commandTable.registerCommand("cmd_hline",         nsHLineCommand);
+  commandTable.registerCommand("cmd_link",          nsLinkCommand);
+  commandTable.registerCommand("cmd_anchor",        nsAnchorCommand);
+  commandTable.registerCommand("cmd_insertHTMLWithDialog", nsInsertHTMLWithDialogCommand);
+  commandTable.registerCommand("cmd_insertBreak",   nsInsertBreakCommand);
+  commandTable.registerCommand("cmd_insertBreakAll",nsInsertBreakAllCommand);
 
-  commandManager.registerCommand("cmd_table",              nsInsertOrEditTableCommand);
-  commandManager.registerCommand("cmd_editTable",          nsEditTableCommand);
-  commandManager.registerCommand("cmd_SelectTable",        nsSelectTableCommand);
-  commandManager.registerCommand("cmd_SelectRow",          nsSelectTableRowCommand);
-  commandManager.registerCommand("cmd_SelectColumn",       nsSelectTableColumnCommand);
-  commandManager.registerCommand("cmd_SelectCell",         nsSelectTableCellCommand);
-  commandManager.registerCommand("cmd_SelectAllCells",     nsSelectAllTableCellsCommand);
-  commandManager.registerCommand("cmd_InsertTable",        nsInsertTableCommand);
-  commandManager.registerCommand("cmd_InsertRowAbove",     nsInsertTableRowAboveCommand);
-  commandManager.registerCommand("cmd_InsertRowBelow",     nsInsertTableRowBelowCommand);
-  commandManager.registerCommand("cmd_InsertColumnBefore", nsInsertTableColumnBeforeCommand);
-  commandManager.registerCommand("cmd_InsertColumnAfter",  nsInsertTableColumnAfterCommand);
-  commandManager.registerCommand("cmd_InsertCellBefore",   nsInsertTableCellBeforeCommand);
-  commandManager.registerCommand("cmd_InsertCellAfter",    nsInsertTableCellAfterCommand);
-  commandManager.registerCommand("cmd_DeleteTable",        nsDeleteTableCommand);
-  commandManager.registerCommand("cmd_DeleteRow",          nsDeleteTableRowCommand);
-  commandManager.registerCommand("cmd_DeleteColumn",       nsDeleteTableColumnCommand);
-  commandManager.registerCommand("cmd_DeleteCell",         nsDeleteTableCellCommand);
-  commandManager.registerCommand("cmd_DeleteCellContents", nsDeleteTableCellContentsCommand);
-  commandManager.registerCommand("cmd_JoinTableCells",     nsJoinTableCellsCommand);
-  commandManager.registerCommand("cmd_SplitTableCell",     nsSplitTableCellCommand);
-  commandManager.registerCommand("cmd_TableOrCellColor",   nsTableOrCellColorCommand);
-  commandManager.registerCommand("cmd_NormalizeTable",     nsNormalizeTableCommand);
-  commandManager.registerCommand("cmd_smiley",             nsSetSmiley);
-  commandManager.registerCommand("cmd_buildRecentPagesMenu", nsBuildRecentPagesMenu);
-  commandManager.registerCommand("cmd_ConvertToTable",     nsConvertToTable);
+  commandTable.registerCommand("cmd_table",              nsInsertOrEditTableCommand);
+  commandTable.registerCommand("cmd_editTable",          nsEditTableCommand);
+  commandTable.registerCommand("cmd_SelectTable",        nsSelectTableCommand);
+  commandTable.registerCommand("cmd_SelectRow",          nsSelectTableRowCommand);
+  commandTable.registerCommand("cmd_SelectColumn",       nsSelectTableColumnCommand);
+  commandTable.registerCommand("cmd_SelectCell",         nsSelectTableCellCommand);
+  commandTable.registerCommand("cmd_SelectAllCells",     nsSelectAllTableCellsCommand);
+  commandTable.registerCommand("cmd_InsertTable",        nsInsertTableCommand);
+  commandTable.registerCommand("cmd_InsertRowAbove",     nsInsertTableRowAboveCommand);
+  commandTable.registerCommand("cmd_InsertRowBelow",     nsInsertTableRowBelowCommand);
+  commandTable.registerCommand("cmd_InsertColumnBefore", nsInsertTableColumnBeforeCommand);
+  commandTable.registerCommand("cmd_InsertColumnAfter",  nsInsertTableColumnAfterCommand);
+  commandTable.registerCommand("cmd_InsertCellBefore",   nsInsertTableCellBeforeCommand);
+  commandTable.registerCommand("cmd_InsertCellAfter",    nsInsertTableCellAfterCommand);
+  commandTable.registerCommand("cmd_DeleteTable",        nsDeleteTableCommand);
+  commandTable.registerCommand("cmd_DeleteRow",          nsDeleteTableRowCommand);
+  commandTable.registerCommand("cmd_DeleteColumn",       nsDeleteTableColumnCommand);
+  commandTable.registerCommand("cmd_DeleteCell",         nsDeleteTableCellCommand);
+  commandTable.registerCommand("cmd_DeleteCellContents", nsDeleteTableCellContentsCommand);
+  commandTable.registerCommand("cmd_JoinTableCells",     nsJoinTableCellsCommand);
+  commandTable.registerCommand("cmd_SplitTableCell",     nsSplitTableCellCommand);
+  commandTable.registerCommand("cmd_TableOrCellColor",   nsTableOrCellColorCommand);
+  commandTable.registerCommand("cmd_NormalizeTable",     nsNormalizeTableCommand);
+  commandTable.registerCommand("cmd_smiley",             nsSetSmiley);
+  commandTable.registerCommand("cmd_ConvertToTable",     nsConvertToTable);
 }
 
 function SetupTextEditorCommands()
 {
-  var commandManager = GetComposerCommandManager();
-  if (!commandManager)
+  var commandTable = GetComposerCommandTable();
+  if (!commandTable)
     return;
   
   //dump("Registering plain text editor commands\n");
   
-  commandManager.registerCommand("cmd_find",       nsFindCommand);
-  commandManager.registerCommand("cmd_findNext",   new nsFindAgainCommand(false));
-  commandManager.registerCommand("cmd_findPrev",   new nsFindAgainCommand(true));
-  commandManager.registerCommand("cmd_spelling",   nsSpellingCommand);
-  commandManager.registerCommand("cmd_validate",   nsValidateCommand);
-  commandManager.registerCommand("cmd_checkLinks", nsCheckLinksCommand);
-  commandManager.registerCommand("cmd_insertChars", nsInsertCharsCommand);
+  commandTable.registerCommand("cmd_find",       nsFindCommand);
+  commandTable.registerCommand("cmd_findNext",   new nsFindAgainCommand(false));
+  commandTable.registerCommand("cmd_findPrev",   new nsFindAgainCommand(true));
+  commandTable.registerCommand("cmd_rewrap",     nsRewrapCommand);
+  commandTable.registerCommand("cmd_spelling",   nsSpellingCommand);
+  commandTable.registerCommand("cmd_validate",   nsValidateCommand);
+  commandTable.registerCommand("cmd_checkLinks", nsCheckLinksCommand);
+  commandTable.registerCommand("cmd_insertChars", nsInsertCharsCommand);
 }
 
 function SetupComposerWindowCommands()
 {
+  // Don't need to do this if already done
+  if (gComposerWindowControllerID)
+    return;
+
   // Create a command controller and register commands
   //   specific to Web Composer window (file-related commands, HTML Source...)
   //   We can't use the composer controller created on the content window else
@@ -141,242 +147,113 @@ function SetupComposerWindowCommands()
 
   if (!windowControllers) return;
 
-  var composerController = Components.classes["@mozilla.org/editor/composercontroller;1"].createInstance();
-  if (!composerController)
+  var commandTable;
+  var composerController;
+  var editorController;
+  try {
+    composerController = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"].createInstance();
+
+    editorController = composerController.QueryInterface(Components.interfaces.nsIControllerContext);
+    editorController.init(null); // init it without passing in a command table
+
+    // Get the nsIControllerCommandTable interface we need to register commands
+    var interfaceRequestor = composerController.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+    commandTable = interfaceRequestor.getInterface(Components.interfaces.nsIControllerCommandTable);
+  }
+  catch (e)
   {
     dump("Failed to create composerController\n");
     return;
   }
 
-  var editorController;
-  try {
-    editorController = composerController.QueryInterface(Components.interfaces.nsIEditorController);
-  }
-  catch (e) {
-    dump("Failed to get interface for nsIEditorController\n");
-    return;
-  }
 
-  // editor is null at this point, but init also creates the commandManager
-  editorController.Init(null);
-
-  var interfaceRequestor;
-  var commandManager;
-  try {
-    interfaceRequestor = composerController.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
-    // Get the nsIControllerCommandManager interface we need to register commands
-    commandManager = interfaceRequestor.getInterface(Components.interfaces.nsIControllerCommandManager);
-  }
-  catch (e) {
-    dump("Failed to get iterfaceRequestor for composerController\n");
-    return;
-  }
-
-  if (!commandManager)
+  if (!commandTable)
   {
     dump("Failed to get interface for nsIControllerCommandManager\n");
     return;
   }
 
   // File-related commands
-  commandManager.registerCommand("cmd_open",           nsOpenCommand);
-  commandManager.registerCommand("cmd_save",           nsSaveCommand);
-  commandManager.registerCommand("cmd_saveAs",         nsSaveAsCommand);
-  commandManager.registerCommand("cmd_exportToText",   nsExportToTextCommand);
-  commandManager.registerCommand("cmd_saveAsCharset",  nsSaveAsCharsetCommand);
-  commandManager.registerCommand("cmd_publish",        nsPublishCommand);
-  commandManager.registerCommand("cmd_publishAs",      nsPublishAsCommand);
-  commandManager.registerCommand("cmd_publishSettings",nsPublishSettingsCommand);
-  commandManager.registerCommand("cmd_revert",         nsRevertCommand);
-  commandManager.registerCommand("cmd_openRemote",     nsOpenRemoteCommand);
-  commandManager.registerCommand("cmd_preview",        nsPreviewCommand);
-  commandManager.registerCommand("cmd_editSendPage",   nsSendPageCommand);
-  commandManager.registerCommand("cmd_print",          nsPrintCommand);
-  commandManager.registerCommand("cmd_printSetup",     nsPrintSetupCommand);
-  commandManager.registerCommand("cmd_quit",           nsQuitCommand);
-  commandManager.registerCommand("cmd_close",          nsCloseCommand);
-  commandManager.registerCommand("cmd_preferences",    nsPreferencesCommand);
+  commandTable.registerCommand("cmd_open",           nsOpenCommand);
+  commandTable.registerCommand("cmd_save",           nsSaveCommand);
+  commandTable.registerCommand("cmd_saveAs",         nsSaveAsCommand);
+  commandTable.registerCommand("cmd_exportToText",   nsExportToTextCommand);
+  commandTable.registerCommand("cmd_saveAsCharset",  nsSaveAsCharsetCommand);
+  commandTable.registerCommand("cmd_publish",        nsPublishCommand);
+  commandTable.registerCommand("cmd_publishAs",      nsPublishAsCommand);
+  commandTable.registerCommand("cmd_publishSettings",nsPublishSettingsCommand);
+  commandTable.registerCommand("cmd_revert",         nsRevertCommand);
+  commandTable.registerCommand("cmd_openRemote",     nsOpenRemoteCommand);
+  commandTable.registerCommand("cmd_preview",        nsPreviewCommand);
+  commandTable.registerCommand("cmd_editSendPage",   nsSendPageCommand);
+  commandTable.registerCommand("cmd_print",          nsPrintCommand);
+  commandTable.registerCommand("cmd_printSetup",     nsPrintSetupCommand);
+  commandTable.registerCommand("cmd_quit",           nsQuitCommand);
+  commandTable.registerCommand("cmd_close",          nsCloseCommand);
+  commandTable.registerCommand("cmd_preferences",    nsPreferencesCommand);
 
   // Edit Mode commands
-  if (window.editorShell.editorType == "html")
+  if (GetCurrentEditorType() == "html")
   {
-    commandManager.registerCommand("cmd_NormalMode",         nsNormalModeCommand);
-    commandManager.registerCommand("cmd_AllTagsMode",        nsAllTagsModeCommand);
-    commandManager.registerCommand("cmd_HTMLSourceMode",     nsHTMLSourceModeCommand);
-    commandManager.registerCommand("cmd_PreviewMode",        nsPreviewModeCommand);
-    commandManager.registerCommand("cmd_FinishHTMLSource",   nsFinishHTMLSource);
-    commandManager.registerCommand("cmd_CancelHTMLSource",   nsCancelHTMLSource);
-    commandManager.registerCommand("cmd_updateStructToolbar", nsUpdateStructToolbarCommand);
+    commandTable.registerCommand("cmd_NormalMode",         nsNormalModeCommand);
+    commandTable.registerCommand("cmd_AllTagsMode",        nsAllTagsModeCommand);
+    commandTable.registerCommand("cmd_HTMLSourceMode",     nsHTMLSourceModeCommand);
+    commandTable.registerCommand("cmd_PreviewMode",        nsPreviewModeCommand);
+    commandTable.registerCommand("cmd_FinishHTMLSource",   nsFinishHTMLSource);
+    commandTable.registerCommand("cmd_CancelHTMLSource",   nsCancelHTMLSource);
+    commandTable.registerCommand("cmd_updateStructToolbar", nsUpdateStructToolbarCommand);
   }
 
   windowControllers.insertControllerAt(0, editorController);
 
   // Store the controller ID so we can be sure to get the right one later
   gComposerWindowControllerID = windowControllers.getControllerId(editorController);
-
-
-  //XXX Creation of nsComposerController class automatically re-registers all these commands.
-  //  This is a kludge to avoid all the exception errors incurred during startup
-  //  because "oncreate" command enabling fails since the refCon isn't set in 
-  //  DoWindowCommandControllerSetting() in editor.js until after XUL window is created
-  //  What we really need is a controller class that doesn't automatically
-  //  register these commands as nsComposerCommands does
-  //  Suggestion: Add a new param to nsIEditorController::Init(), a bool to "bRegisterDefaultCommands"
-  unregisterCommand(commandManager, "cmd_indent");
-  unregisterCommand(commandManager, "cmd_outdent");
-  unregisterCommand(commandManager, "cmd_bold");
-  unregisterCommand(commandManager, "cmd_italic");
-  unregisterCommand(commandManager, "cmd_underline");
-  unregisterCommand(commandManager, "cmd_tt");
-  unregisterCommand(commandManager, "cmd_strikethrough");
-  unregisterCommand(commandManager, "cmd_superscript");
-  unregisterCommand(commandManager, "cmd_subscript");
-  unregisterCommand(commandManager, "cmd_nobreak");
-  unregisterCommand(commandManager, "cmd_em");
-  unregisterCommand(commandManager, "cmd_strong");
-  unregisterCommand(commandManager, "cmd_cite");
-  unregisterCommand(commandManager, "cmd_abbr");
-  unregisterCommand(commandManager, "cmd_acronym");
-  unregisterCommand(commandManager, "cmd_code");
-  unregisterCommand(commandManager, "cmd_samp");
-  unregisterCommand(commandManager, "cmd_var");
-  unregisterCommand(commandManager, "cmd_ol");
-  unregisterCommand(commandManager, "cmd_ul");
-  unregisterCommand(commandManager, "cmd_dt");
-  unregisterCommand(commandManager, "cmd_dd");
-  unregisterCommand(commandManager, "cmd_removeList");
-  unregisterCommand(commandManager, "cmd_paragraphState");
-  unregisterCommand(commandManager, "cmd_fontFace");
-  unregisterCommand(commandManager, "cmd_fontColor");
-  unregisterCommand(commandManager, "cmd_backgroundColor");
-  unregisterCommand(commandManager, "cmd_highlight");
-  unregisterCommand(commandManager, "cmd_align");
-  unregisterCommand(commandManager, "cmd_removeStyles");
-  unregisterCommand(commandManager, "cmd_increaseFont");
-  unregisterCommand(commandManager, "cmd_decreaseFont");
-}
-
-function unregisterCommand(commandManager, cmd)
-{
-  try {
-    commandManager.unregisterCommand(cmd, commandManager.findCommandHandler(cmd));
-  } catch (e) { dump( "XXXXX FAILED TO UNREGISTERCOMMAND: "+cmd+"\n"); }
 }
 
 //-----------------------------------------------------------------------------------
-function GetComposerCommandManager()
+function GetComposerCommandTable()
 {
-  try {
-    // Get the composer controller directly using ID
-    // We store the controller IDs in nsIEditingSession when they are created, 
-    // (XXX We should add an nsIEditorSession methods to get them via nsIControllers::GetControllerByID()
-    //  For now, we will get controller by index, which is "1" [eComposerController])
-    var controller = window._content.controllers.getControllerAt(1);
-    var interfaceRequestor = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+  var controller;
+  if (gComposerJSCommandControllerID)
+  {
+    try { 
+      controller = window.content.controllers.getControllerById(gComposerJSCommandControllerID);
+    } catch (e) {}
+  }
+  if (!controller)
+  {
+    //create it
+    controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"].createInstance();
 
-    // return the command manager interface for the controller
-    return interfaceRequestor.getInterface(Components.interfaces.nsIControllerCommandManager);
-  } catch (e) {}
+    var editorController = controller.QueryInterface(Components.interfaces.nsIControllerContext);
+    editorController.init(null);
+    window.content.controllers.insertControllerAt(0, controller);
+  
+    // Store the controller ID so we can be sure to get the right one later
+    gComposerJSCommandControllerID = window.content.controllers.getControllerId(controller);
+  }
+
+  if (controller)
+  {
+    var interfaceRequestor = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+    return interfaceRequestor.getInterface(Components.interfaces.nsIControllerCommandTable);
+  }
   return null;
 }
 
 //-----------------------------------------------------------------------------------
-
-// this function should go away when we move to nsICommandGroups for command handling
-function noUIStateUpdateNeeded(commandID)
+function goUpdateCommandState(command)
 {
-  if (commandID == "cmd_removeNamedAnchors"
-   || commandID == "cmd_removeLinks"
-   || commandID == "cmd_advancedProperties"
-   || commandID == "cmd_spelling"
-   || commandID == "cmd_validate"
-   || commandID == "cmd_findNext"
-   || commandID == "cmd_findPrev"
-   || commandID == "cmd_find"
-   || commandID == "cmd_preview"
-   || commandID == "cmd_revert"
-   || commandID == "cmd_publishAs"
-   || commandID == "cmd_publish"
-   || commandID == "cmd_saveAsCharset"
-   || commandID == "cmd_exportToText"
-   || commandID == "cmd_saveAs"
-   || commandID == "cmd_save"
-   || commandID == "cmd_renderedHTMLEnabler"
-   || commandID == "cmd_editLink"
-   || commandID == "cmd_checkLinks"
-   || commandID == "cmd_PreviewMode"
-   || commandID == "cmd_HTMLSourceMode"
-   || commandID == "cmd_AllTagsMode"
-   || commandID == "cmd_NormalMode"
-   || commandID == "cmd_insertBreakAll"
-   || commandID == "cmd_insertBreak"
-   || commandID == "cmd_insertHTML"
-   || commandID == "cmd_insertChars"
-   || commandID == "cmd_objectProperties" 
-   || commandID == "cmd_colorProperties"
-   || commandID == "cmd_pageProperties"
-   || commandID == "cmd_listProperties"
-   || commandID == "cmd_image"
-   || commandID == "cmd_link"  
-   || commandID == "cmd_anchor"
-   || commandID == "cmd_hline"
-   || commandID == "cmd_table"
-   || commandID == "cmd_form"
-   || commandID == "cmd_inputtag"
-   || commandID == "cmd_inputimage"
-   || commandID == "cmd_textarea"
-   || commandID == "cmd_select"
-   || commandID == "cmd_button"
-   || commandID == "cmd_label"
-   || commandID == "cmd_fieldset"
-   || commandID == "cmd_isindex"
-   || commandID == "cmd_editSendPage"
-   || commandID == "cmd_open"
-   || commandID == "cmd_openRemote"
-   || commandID == "cmd_close"
-   || commandID == "cmd_printSetup"
-   || commandID == "cmd_print"
-   || commandID == "cmd_quit"
-   || commandID == "cmd_publishSettings"
-   || commandID == "cmd_preferences")
-      return true;
-
-  return false;
-}
-
-function goUpdateCommandState(cmdController, command)
-{
-  // this code need to be trimmed down and possibly reworked 
-  // when we move to nsICommandGroup for command handling
-  if (noUIStateUpdateNeeded(command))
-    return;
-
-  // these commands need to go somewhere:
-  if (command == "cmd_smiley"
-   || command == "cmd_dt"
-   || command == "cmd_dd"
-   || command == "cmd_removeList"
-   || command == "cmd_cut"
-   || command == "cmd_copy"
-   || command == "cmd_paste"
-   || command == "cmd_pasteNoFormatting"
-   || command == "cmd_pasteQuote"
-   || command == "cmd_delete"
-   || command == "cmd_selectAll"
-   || command == "cmd_redo"
-   || command == "cmd_undo")
-     return;
-
   try
   {
+    var controller = top.document.commandDispatcher.getControllerForCommand(command);
+    if (!(controller instanceof Components.interfaces.nsICommandController))
+      return;
+
     var params = newCommandParams();
     if (!params) return;
 
-    try {
-      cmdController.getCommandStateWithParams(command, params);
-    } catch(e) {
-//      dump("getCommandStateWithParams error "+e+" updating "+command+"\n");
-    }
+    controller.getCommandStateWithParams(command, params);
 
     switch (command)
     {
@@ -401,14 +278,13 @@ function goUpdateCommandState(cmdController, command)
         pokeStyleUI(command, params.getBooleanValue("state_all"));
         break;
 
-      case "cmd_smiley":
       case "cmd_paragraphState":
       case "cmd_align":
       case "cmd_highlight":
       case "cmd_backgroundColor":
       case "cmd_fontColor":
       case "cmd_fontFace":
-      case "cmd_updateStructToolbar":
+      case "cmd_fontSize":
         pokeMultiStateUI(command, params);
         break;
 
@@ -425,37 +301,19 @@ function goUpdateCommandState(cmdController, command)
   catch (e) { dump("An error occurred updating the "+command+" command: \n"+e+"\n"); }
 }
 
-var gMenuControllers = [{key:null}];
-
 function goUpdateComposerMenuItems(commandset)
 {
-  // dump("Updating commands for " + commandset.id + "\n");
+  //dump("Updating commands for " + commandset.id + "\n");
 
-  for (var i = 0; i < commandset.childNodes.length; i++) {
-    var commandID = commandset.childNodes[i].id;
-    if (commandID) {
+  for (var i = 0; i < commandset.childNodes.length; i++)
+  {
+    var commandNode = commandset.childNodes[i];
+    var commandID = commandNode.id;
+    if (commandID)
+    {
       goUpdateCommand(commandID);  // enable or disable
-      var controller = top.document.commandDispatcher.getControllerForCommand(commandID);
-      if (controller) {
-        /* gMenuControllers contains a single entry buffer to allow for --j */
-        for (var j = gMenuControllers.length;
-             --j && gMenuControllers[j].key != controller;
-            );
-
-        if (!j) {
-          /* obj stores the controller for the command and whether the QI succeeded */
-          var obj = {key:controller, isCommandController:false};
-          try {
-            /* QI modifies the object including the one wrapped in obj.key */
-            controller.QueryInterface(Components.interfaces.nsICommandController);
-            obj.isCommandController = true;
-          } catch(e) {}
-          j = gMenuControllers.length;
-          gMenuControllers[j] = obj;
-        }
-        if (gMenuControllers[j].isCommandController)
-          goUpdateCommandState(controller, commandID);
-      }
+      if (commandNode.hasAttribute("state"))
+        goUpdateCommandState(commandID);
     }
   }
 }
@@ -468,19 +326,13 @@ function goDoCommandParams(command, params)
     var controller = top.document.commandDispatcher.getControllerForCommand(command);
     if (controller && controller.isCommandEnabled(command))
     {
-      var cmdController;
-      try
+      if (controller instanceof Components.interfaces.nsICommandController)
       {
-        cmdController = controller.QueryInterface(Components.interfaces.nsICommandController);
-      } catch(e) {}
-
-      if (cmdController)
-      {
-        cmdController.doCommandWithParams(command, params);
+        controller.doCommandWithParams(command, params);
 
         // the following two lines should be removed when we implement observers
         if (params)
-          cmdController.getCommandStateWithParams(command, params);
+          controller.getCommandStateWithParams(command, params);
       }
       else
       {
@@ -513,15 +365,6 @@ function pokeStyleUI(uiID, aDesiredState)
     commandNode.setAttribute("state", newState);
   }
  } catch(e) { dump("poking UI for "+uiID+" failed: "+e+"\n"); }
-}
-
-function newCommandParams()
-{
-  try {
-    return Components.classes["@mozilla.org/embedcomp/command-params;1"].createInstance(Components.interfaces.nsICommandParams);
-  }
-  catch(e) { dump("error thrown in newCommandParams: "+e+"\n"); }
-  return null;
 }
 
 function doStyleUICommand(cmdStr)
@@ -711,7 +554,7 @@ var nsSaveCommand =
     {
       FinishHTMLSource();
       result = SaveDocument(IsUrlAboutBlank(GetDocumentUrl()), false, editor.contentsMIMEType);
-      window._content.focus();
+      window.content.focus();
     }
     return result;
   }
@@ -734,7 +577,7 @@ var nsSaveAsCommand =
     {
       FinishHTMLSource();
       var result = SaveDocument(true, false, editor.contentsMIMEType);
-      window._content.focus();
+      window.content.focus();
       return result;
     }
     return false;
@@ -757,7 +600,7 @@ var nsExportToTextCommand =
     {
       FinishHTMLSource();
       var result = SaveDocument(true, true, "text/plain");
-      window._content.focus();
+      window.content.focus();
       return result;
     }
     return false;
@@ -798,7 +641,7 @@ var nsSaveAsCharsetCommand =
       }
     }
 
-    window._content.focus();
+    window.content.focus();
     return window.ok;
   }
 };
@@ -861,7 +704,7 @@ var nsPublishCommand =
         if (GetDocumentTitle() != oldTitle)
           UpdateWindowTitle();
 
-        window._content.focus();
+        window.content.focus();
         if (!window.ok)
           return false;
       }
@@ -899,7 +742,7 @@ var nsPublishAsCommand =
       if (GetDocumentTitle() != oldTitle)
         UpdateWindowTitle();
 
-      window._content.focus();
+      window.content.focus();
       if (window.ok)
         return Publish(publishData);
     }
@@ -1136,6 +979,7 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
                             | webPersist.PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS
                             | webPersist.PERSIST_FLAGS_REPLACE_EXISTING_FILES
                             | webPersist.PERSIST_FLAGS_DONT_FIXUP_LINKS
+                            | webPersist.PERSIST_FLAGS_DONT_CHANGE_FILENAMES
                             | webPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
     persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir, 
                             aMimeType, outputFlags, wrapColumn);
@@ -1149,7 +993,11 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
 // returns output flags based on mimetype, wrapCol and prefs
 function GetOutputFlags(aMimeType, aWrapColumn)
 {
-  var outputFlags = webPersist.ENCODE_FLAGS_ENCODE_ENTITIES;
+  var outputFlags = 0;
+  var editor = GetCurrentEditor();
+  var outputEntity = (editor && editor.documentCharacterSet == "ISO-8859-1")
+    ? webPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES
+    : webPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES;
   if (aMimeType == "text/plain")
   {
     // When saving in "text/plain" format, always do formatting
@@ -1157,14 +1005,24 @@ function GetOutputFlags(aMimeType, aWrapColumn)
   }
   else
   {
-    // Should we prettyprint? Check the pref
     try {
+      // Should we prettyprint? Check the pref
       var prefs = GetPrefs();
       if (prefs.getBoolPref("editor.prettyprint"))
         outputFlags |= webPersist.ENCODE_FLAGS_FORMATTED;
+
+      // How much entity names should we output? Check the pref
+      var encodeEntity = prefs.getCharPref("editor.encode_entity");
+      switch (encodeEntity) {
+        case "basic"  : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES; break;
+        case "latin1" : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES; break;
+        case "html"   : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_HTML_ENTITIES; break;
+        case "none"   : outputEntity = 0; break;
+      }
     }
     catch (e) {}
   }
+  outputFlags |= outputEntity;
 
   if (aWrapColumn > 0)
     outputFlags |= webPersist.ENCODE_FLAGS_WRAP;
@@ -1173,8 +1031,6 @@ function GetOutputFlags(aMimeType, aWrapColumn)
 }
 
 // returns number of column where to wrap
-const nsIPlaintextEditor = Components.interfaces.nsIPlaintextEditor;
-const nsIHTMLEditor = Components.interfaces.nsIHTMLEditor;
 const nsIWebBrowserPersist = Components.interfaces.nsIWebBrowserPersist;
 function GetWrapColumn()
 {
@@ -1322,7 +1178,7 @@ var gEditorOutputProgressListener =
 
         // Notify progress dialog that we're finished
         //  and keep open to show error
-        gProgressDialog.SetProgressFinished(null,0);
+        gProgressDialog.SetProgressFinished(null, 0);
 
         // We don't want to change location or reset mod count, etc.
         return;
@@ -1409,7 +1265,7 @@ var gEditorOutputProgressListener =
           // We previously aborted publishing because of error:
           //   Calling gPersistObj.cancelSave() resulted in a non-zero gPersistObj.result,
           //   so notify progress dialog we're finished
-          gProgressDialog.SetProgressFinished(null,0);
+          gProgressDialog.SetProgressFinished(null, 0);
         }
       }
     }
@@ -1560,7 +1416,7 @@ var gEditorOutputProgressListener =
                                       dlgTitle, text, pwObj, checkBoxLabel, savePWObj);
 
       if (!ret)
-        setTimeout(CancelPublishing,0);
+        setTimeout(CancelPublishing, 0);
 
       if (ret && gPublishData)
         UpdateUsernamePasswordFromPrompt(gPublishData, gPublishData.username, pwObj.value, savePWObj.value);
@@ -1572,7 +1428,7 @@ var gEditorOutputProgressListener =
   {
     var ret = PromptUsernameAndPassword(dlgTitle, text, savePWObj.value, userObj, pwObj);
     if (!ret)
-      setTimeout(CancelPublishing,0);
+      setTimeout(CancelPublishing, 0);
 
     return ret;
   },
@@ -1596,7 +1452,7 @@ var gEditorOutputProgressListener =
     var ret = promptServ.prompt(gProgressDialog ? gProgressDialog : window,
                                 dlgTitle, text, defaultText, pwrealm, savePWObj);
     if (!ret)
-      setTimeout(CancelPublishing,0);
+      setTimeout(CancelPublishing, 0);
     return ret;
   },
 
@@ -1604,7 +1460,7 @@ var gEditorOutputProgressListener =
   {
     var ret = PromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj);
     if (!ret)
-      setTimeout(CancelPublishing,0);
+      setTimeout(CancelPublishing, 0);
     return ret;
   },
 
@@ -1629,7 +1485,7 @@ var gEditorOutputProgressListener =
                                       dlgTitle, text, pwObj, GetString("SavePassword"), savePWObj);
 
       if (!ret)
-        setTimeout(CancelPublishing,0);
+        setTimeout(CancelPublishing, 0);
 
       if (ret && gPublishData)
         UpdateUsernamePasswordFromPrompt(gPublishData, gPublishData.username, pwObj.value, savePWObj.value);
@@ -1776,17 +1632,16 @@ const kSupportedTextMimeTypes =
   "text/plain",
   "text/css",
   "text/rdf",
-  "text/xml",
   "text/xsl",
-  "text/javascript",    // obsolete type
+  "text/javascript",
   "application/x-javascript",
-  "text/xul",           // obsolete type
+  "text/xul",
   "application/vnd.mozilla.xul+xml"
 ];
 
 function IsSupportedTextMimeType(aMimeType)
 {
-  for (var i = 0; i < kSupportedTextMimeTypes.count; i++)
+  for (var i = 0; i < kSupportedTextMimeTypes.length; i++)
   {
     if (kSupportedTextMimeTypes[i] == aMimeType)
       return true;
@@ -1806,14 +1661,14 @@ function SaveDocument(aSaveAs, aSaveCopy, aMimeType)
     throw NS_ERROR_NOT_INITIALIZED;
 
   // if we don't have the right editor type bail (we handle text and html)
-  //XXX We need to get this from the editingSession?
-  var editorType = window.editorShell.editorType;
-  if (editorType != "text" && editorType != "html" && editorType != "htmlmail")
+  var editorType = GetCurrentEditorType();
+  if (editorType != "text" && editorType != "html" 
+      && editorType != "htmlmail" && editorType != "textmail")
     throw NS_ERROR_NOT_IMPLEMENTED;
 
   var saveAsTextFile = IsSupportedTextMimeType(aMimeType);
 
-  // check if the file is to be saved in a format we don't understand; if so, bail
+  // check if the file is to be saved is a format we don't understand; if so, bail
   if (aMimeType != "text/html" && !saveAsTextFile)
     throw NS_ERROR_NOT_IMPLEMENTED;
 
@@ -1974,7 +1829,7 @@ function SetDocumentURI(uri)
 {
   try {
     // XXX WE'LL NEED TO GET "CURRENT" CONTENT FRAME ONCE MULTIPLE EDITORS ARE ALLOWED
-    document.getElementById("content-frame").docShell.setCurrentURI(uri);
+    GetCurrentEditorElement().docShell.setCurrentURI(uri);
   } catch (e) { dump("SetDocumentURI:\n"+e +"\n"); }
 }
 
@@ -2079,7 +1934,9 @@ function StartPublishing()
     OutputFileWithPersistAPI(editor.document, 
                              gPublishData.docURI, gPublishData.otherFilesURI, 
                              editor.contentsMIMEType);
+    return gPersistObj;
   }
+  return null;
 }
 
 function CancelPublishing()
@@ -2215,7 +2072,7 @@ var nsPublishSettingsCommand =
       // Launch Publish Settings dialog
 
       window.ok = window.openDialog("chrome://editor/content/EditorPublishSettings.xul","_blank", "chrome,close,titlebar,modal", "");
-      window._content.focus();
+      window.content.focus();
       return window.ok;
     }
     return false;
@@ -2257,7 +2114,7 @@ var nsRevertCommand =
       if(result == 0)
       {
         CancelHTMLSource();
-        window.editorShell.LoadUrl(GetDocumentUrl());
+        EditorLoadUrl(GetDocumentUrl());
       }
     }
   }
@@ -2319,7 +2176,7 @@ var nsOpenRemoteCommand =
 	     and loading into existing browser option is removed
 	   */
 	  window.openDialog( "chrome://communicator/content/openLocation.xul", "_blank", "chrome,modal,titlebar", 0);
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2329,7 +2186,7 @@ var nsPreviewCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     return (IsDocumentEditable() && 
-            isHTMLEditor() && 
+            IsHTMLEditor() && 
             (DocumentHasBeenSaved() || IsDocumentModified()));
   },
 
@@ -2448,7 +2305,7 @@ var nsPrintSetupCommand =
   {
     // In editor.js
     FinishHTMLSource();
-    goPageSetup();
+    NSPrintSetup();
   }
 };
 
@@ -2493,7 +2350,7 @@ var nsFindCommand =
     catch(ex) {
       dump("*** Exception: couldn't open Replace Dialog\n");
     }
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2519,8 +2376,7 @@ nsFindAgainCommand.prototype =
   doCommand: function(aCommand)
   {
     try {
-      var editorXUL = document.getElementById("content-frame");
-      var findInst = editorXUL.webBrowserFind;
+      var findInst = GetCurrentEditorElement().webBrowserFind;
       var findService = Components.classes["@mozilla.org/find/find_service;1"]
                              .getService(Components.interfaces.nsIFindService);    
       findInst.findBackwards = findService.findBackwards ^ this.isFindPrev;
@@ -2529,6 +2385,24 @@ nsFindAgainCommand.prototype =
       findInst.findBackwards = findService.findBackwards; 
     }
     catch (ex) {}
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var nsRewrapCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && !IsInHTMLSourceMode() &&
+            GetCurrentEditor() instanceof Components.interfaces.nsIEditorMailSupport);
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    GetCurrentEditor().QueryInterface(Components.interfaces.nsIEditorMailSupport).rewrap(false);
   }
 };
 
@@ -2548,11 +2422,12 @@ var nsSpellingCommand =
   {
     window.cancelSendMessage = false;
     try {
+      var skipBlockQuotes = (window.document.firstChild.getAttribute("windowtype") == "msgcompose");
       window.openDialog("chrome://editor/content/EdSpellCheck.xul", "_blank",
-              "chrome,close,titlebar,modal", false);
+              "chrome,close,titlebar,modal", false, skipBlockQuotes, true);
     }
     catch(ex) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2626,7 +2501,7 @@ var nsCheckLinksCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdLinkChecker.xul","_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2644,7 +2519,7 @@ var nsFormCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdFormProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2662,7 +2537,7 @@ var nsInputTagCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdInputProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2680,7 +2555,7 @@ var nsInputImageCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdInputImage.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2698,7 +2573,7 @@ var nsTextAreaCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdTextAreaProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2716,7 +2591,7 @@ var nsSelectCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdSelectProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2734,7 +2609,7 @@ var nsButtonCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdButtonProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2763,7 +2638,7 @@ var nsLabelCommand =
       if (labelElement) {
         // We only open the dialog for an existing label
         window.openDialog("chrome://editor/content/EdLabelProps.xul", "_blank", "chrome,close,titlebar,modal", labelElement);
-        window._content.focus();
+        window.content.focus();
       } else {
         EditorSetTextProperty(tagName, "", "");
       }
@@ -2785,7 +2660,7 @@ var nsFieldSetCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdFieldSetProps.xul", "_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2825,7 +2700,7 @@ var nsImageCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2858,7 +2733,7 @@ var nsHLineCommand =
     {
       // We only open the dialog for an existing HRule
       window.openDialog("chrome://editor/content/EdHLineProps.xul", "_blank", "chrome,close,titlebar,modal");
-      window._content.focus();
+      window.content.focus();
     } 
     else
     {
@@ -2918,7 +2793,7 @@ var nsLinkCommand =
       window.openDialog("chrome://editor/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal", null, true);
     else
       window.openDialog("chrome://editor/content/EdLinkProps.xul","_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2936,12 +2811,12 @@ var nsAnchorCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "_blank", "chrome,close,titlebar,modal", "");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
 //-----------------------------------------------------------------------------------
-var nsInsertHTMLCommand =
+var nsInsertHTMLWithDialogCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -2954,7 +2829,7 @@ var nsInsertHTMLCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdInsSrc.xul","_blank", "chrome,close,titlebar,modal,resizable", "");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -2963,7 +2838,7 @@ var nsInsertCharsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsDocumentEditable() && IsEditingRenderedHTML());
+    return (IsDocumentEditable());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3027,7 +2902,7 @@ var nsListPropertiesCommand =
   doCommand: function(aCommand)
   {
     window.openDialog("chrome://editor/content/EdListProps.xul","_blank", "chrome,close,titlebar,modal");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3053,7 +2928,7 @@ var nsPagePropertiesCommand =
     if (GetDocumentTitle() != oldTitle)
       UpdateWindowTitle();
 
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3149,7 +3024,7 @@ var nsObjectPropertiesCommand =
       if (element)
         goDoCommand("cmd_link");
     }
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3182,7 +3057,27 @@ var nsSetSmiley =
         break;
         case ":-[": strSml="s6";
         break;
-        case ":-\\": strSml="s7";
+        case ":-\\": 
+        case ":\\": strSml="s7";
+        break;
+        case "=-O": strSml="s8";
+        break;
+        case ":-*": strSml="s9";
+        break;
+        case ">:o":
+        case ">:-o": strSml="s10";
+        break;
+        case "8-)": strSml="s11";
+        break;
+        case ":-$": strSml="s12";
+        break;
+        case ":-!": strSml="s13";
+        break;
+        case "O:-)": strSml="s14";
+        break;
+        case ":'(": strSml="s15";
+        break;
+        case ":-X": strSml="s16";
         break;
         default:	strSml="";
         break;
@@ -3213,7 +3108,7 @@ var nsSetSmiley =
 
 
       editor.insertElementAtSelection(extElement,true);
-      window._content.focus();		
+      window.content.focus();		
 
     } 
     catch (e) 
@@ -3231,7 +3126,7 @@ function doAdvancedProperties(element)
   if (element)
   {
     window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", element);
-    window._content.focus();
+    window.content.focus();
   }
 }
 
@@ -3270,29 +3165,9 @@ var nsColorPropertiesCommand =
   {
     window.openDialog("chrome://editor/content/EdColorProps.xul","_blank", "chrome,close,titlebar,modal", ""); 
     UpdateDefaultColors(); 
-    window._content.focus();
+    window.content.focus();
   }
 };
-
-//-----------------------------------------------------------------------------------
-var nsRemoveLinksCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    // We could see if there's any link in selection, but it doesn't seem worth the work!
-    return (IsDocumentEditable() && IsEditingRenderedHTML());
-  },
-
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand)
-  {
-    EditorRemoveTextProperty("href", "");
-    window._content.focus();
-  }
-};
-
 
 //-----------------------------------------------------------------------------------
 var nsRemoveNamedAnchorsCommand =
@@ -3309,7 +3184,7 @@ var nsRemoveNamedAnchorsCommand =
   doCommand: function(aCommand)
   {
     EditorRemoveTextProperty("name", "");
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3333,7 +3208,7 @@ var nsEditLinkCommand =
       if (element)
         editPage(element.href, window, false);
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3343,7 +3218,7 @@ var nsNormalModeCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return isHTMLEditor() && IsDocumentEditable();
+    return IsHTMLEditor() && IsDocumentEditable();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3359,7 +3234,7 @@ var nsAllTagsModeCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsDocumentEditable() && isHTMLEditor());
+    return (IsDocumentEditable() && IsHTMLEditor());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3375,7 +3250,7 @@ var nsHTMLSourceModeCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsDocumentEditable() && isHTMLEditor());
+    return (IsDocumentEditable() && IsHTMLEditor());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3391,7 +3266,7 @@ var nsPreviewModeCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsDocumentEditable() && isHTMLEditor());
+    return (IsDocumentEditable() && IsHTMLEditor());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3454,9 +3329,9 @@ var nsSelectTableCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().selectTable();
+      GetCurrentTableEditor().selectTable();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3473,9 +3348,9 @@ var nsSelectTableRowCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().selectTableRow();
+      GetCurrentTableEditor().selectTableRow();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3492,9 +3367,9 @@ var nsSelectTableColumnCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().selectTableColumn();
+      GetCurrentTableEditor().selectTableColumn();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3511,9 +3386,9 @@ var nsSelectTableCellCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().selectTableCell();
+      GetCurrentTableEditor().selectTableCell();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3530,9 +3405,9 @@ var nsSelectAllTableCellsCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().selectAllTableCells();
+      GetCurrentTableEditor().selectAllTableCells();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3566,9 +3441,9 @@ var nsInsertTableRowAboveCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableRow(1, false);
+      GetCurrentTableEditor().insertTableRow(1, false);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3585,9 +3460,9 @@ var nsInsertTableRowBelowCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableRow(1, true);
+      GetCurrentTableEditor().insertTableRow(1, true);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3604,9 +3479,9 @@ var nsInsertTableColumnBeforeCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableColumn(1, false);
+      GetCurrentTableEditor().insertTableColumn(1, false);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3623,9 +3498,9 @@ var nsInsertTableColumnAfterCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableColumn(1, true);
+      GetCurrentTableEditor().insertTableColumn(1, true);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3642,9 +3517,9 @@ var nsInsertTableCellBeforeCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableCell(1, false);
+      GetCurrentTableEditor().insertTableCell(1, false);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3661,9 +3536,9 @@ var nsInsertTableCellAfterCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().insertTableCell(1, true);
+      GetCurrentTableEditor().insertTableCell(1, true);
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3681,9 +3556,9 @@ var nsDeleteTableCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().deleteTable();
+      GetCurrentTableEditor().deleteTable();
     } catch(e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3705,7 +3580,7 @@ var nsDeleteTableRowCommand =
       rows = 1;
 
     try {
-      var editor = GetCurrentEditor();
+      var editor = GetCurrentTableEditor();
       editor.beginTransaction();
 
       // Loop to delete all blocks of contiguous, selected rows
@@ -3715,7 +3590,7 @@ var nsDeleteTableRowCommand =
         rows = GetNumberOfContiguousSelectedRows();
       }
     } finally { editor.endTransaction(); }
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3737,7 +3612,7 @@ var nsDeleteTableColumnCommand =
       columns = 1;
 
     try {
-      var editor = GetCurrentEditor();
+      var editor = GetCurrentTableEditor();
       editor.beginTransaction();
 
       // Loop to delete all blocks of contiguous, selected columns
@@ -3747,7 +3622,7 @@ var nsDeleteTableColumnCommand =
         columns = GetNumberOfContiguousSelectedColumns();
       }
     } finally { editor.endTransaction(); }
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3764,9 +3639,9 @@ var nsDeleteTableCellCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().deleteTableCell(1);   
+      GetCurrentTableEditor().deleteTableCell(1);   
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3783,9 +3658,9 @@ var nsDeleteTableCellContentsCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().deleteTableCellContents();   
+      GetCurrentTableEditor().deleteTableCellContents();   
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3805,9 +3680,9 @@ var nsNormalizeTableCommand =
   {
     // Use nsnull to let editor find table enclosing current selection
     try {
-      GetCurrentEditor().normalizeTable(null);   
+      GetCurrentTableEditor().normalizeTable(null);   
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3819,7 +3694,7 @@ var nsJoinTableCellsCommand =
     if (IsDocumentEditable() && IsEditingRenderedHTML())
     {
       try {
-        var editor = GetCurrentEditor();
+        var editor = GetCurrentTableEditor();
         var tagNameObj = { value: "" };
         var countObj = { value: 0 };
         var cell = editor.getSelectedOrParentTableElement(tagNameObj, countObj);
@@ -3864,9 +3739,9 @@ var nsJoinTableCellsCommand =
   {
     // Param: Don't merge non-contiguous cells
     try {
-      GetCurrentEditor().joinTableCells(false);
+      GetCurrentTableEditor().joinTableCells(false);
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3881,7 +3756,7 @@ var nsSplitTableCellCommand =
       var countObj = { value: 0 };
       var cell;
       try {
-        cell = GetCurrentEditor().getSelectedOrParentTableElement(tagNameObj, countObj);
+        cell = GetCurrentTableEditor().getSelectedOrParentTableElement(tagNameObj, countObj);
       } catch (e) {}
 
       // We need a cell parent and there's just 1 selected cell 
@@ -3907,9 +3782,9 @@ var nsSplitTableCellCommand =
   doCommand: function(aCommand)
   {
     try {
-      GetCurrentEditor().splitTableCell();
+      GetCurrentTableEditor().splitTableCell();
     } catch (e) {}
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3944,7 +3819,7 @@ var nsPreferencesCommand =
   doCommand: function(aCommand)
   {
     goPreferences('editor', 'chrome://editor/content/pref-composer.xul','editor');
-    window._content.focus();
+    window.content.focus();
   }
 };
 
@@ -3980,24 +3855,6 @@ var nsCancelHTMLSource =
   {
     // In editor.js
     CancelHTMLSource();
-  }
-};
-
-var nsBuildRecentPagesMenu =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    return true;
-  },
-
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand)
-  {
-    // From editor.js, rebuild the menu and save to prefs
-    BuildRecentMenu();
-    SaveRecentFilesPrefs();
   }
 };
 
@@ -4050,7 +3907,7 @@ var nsConvertToTable =
     {
       window.openDialog("chrome://editor/content/EdConvertToTable.xul","_blank", "chrome,close,titlebar,modal")
     }
-    window._content.focus();
+    window.content.focus();
   }
 };
 

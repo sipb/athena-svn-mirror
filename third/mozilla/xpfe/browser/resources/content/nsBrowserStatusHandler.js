@@ -37,11 +37,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-const NS_ERROR_MODULE_NETWORK = 2152398848;
-const NS_NET_STATUS_READ_FROM = NS_ERROR_MODULE_NETWORK + 8;
-const NS_NET_STATUS_WROTE_TO  = NS_ERROR_MODULE_NETWORK + 9;
-
-
 function nsBrowserStatusHandler()
 {
   this.init();
@@ -49,40 +44,12 @@ function nsBrowserStatusHandler()
 
 nsBrowserStatusHandler.prototype =
 {
-  userTyped :
-  {
-    _value : false,
-    browser : null,
-
-    get value() {
-      if (this.browser != getBrowser().mCurrentBrowser)
-        this._value = false;
-      
-      return this._value;
-    },
-
-    set value(aValue) {
-      if (this._value != aValue) {
-        this._value = aValue;
-        this.browser = aValue ? getBrowser().mCurrentBrowser : null;
-      }
-
-      return aValue;
-    }
-  },
-
   // Stored Status, Link and Loading values
   status : "",
   defaultStatus : "",
   jsStatus : "",
   jsDefaultStatus : "",
   overLink : "",
-
-  statusTimeoutInEffect : false,
-
-  hideAboutBlank : true,
-
-  locationChanged : false,  
 
   QueryInterface : function(aIID)
   {
@@ -96,9 +63,6 @@ nsBrowserStatusHandler.prototype =
 
   init : function()
   {
-    // XXXjag is this still needed? It's currently just ""
-    this.defaultStatus = gNavigatorBundle.getString("defaultStatus");
-
     this.urlBar          = document.getElementById("urlbar");
     this.throbberElement = document.getElementById("navigator-throbber");
     this.statusMeter     = document.getElementById("statusbar-icon");
@@ -126,7 +90,6 @@ nsBrowserStatusHandler.prototype =
     this.statusTextField = null;
     this.isImage         = null;
     this.securityButton  = null;
-    this.userTyped       = null;
   },
 
   setJSStatus : function(status)
@@ -147,9 +110,12 @@ nsBrowserStatusHandler.prototype =
     this.updateStatusField();
   },
 
-  setOverLink : function(link, b)
+  setOverLink : function(link)
   {
     this.overLink = link;
+    // clear out 'Done' (or other message) on first hover
+    if (this.defaultStatus)
+      this.defaultStatus = "";
     this.updateStatusField();
     if (link)
       this.statusTextField.setAttribute('crop', 'center');
@@ -178,13 +144,16 @@ nsBrowserStatusHandler.prototype =
   onLinkIconAvailable : function(aHref) {
     if (gProxyFavIcon && pref.getBoolPref("browser.chrome.site_icons"))
     {
-      gProxyFavIcon.setAttribute("src", aHref);
+      var browser = getBrowser();
+
+      if (browser.userTypedValue === null)
+        gProxyFavIcon.setAttribute("src", aHref);
 
       // update any bookmarks with new icon reference
       if (!gBookmarksService)
         gBookmarksService = Components.classes["@mozilla.org/browser/bookmarks-service;1"]
                                       .getService(Components.interfaces.nsIBookmarksService);
-      gBookmarksService.updateBookmarkIcon(this.urlBar.value, aHref);
+      gBookmarksService.updateBookmarkIcon(browser.currentURI.spec, aHref);
     }
   },
 
@@ -223,8 +192,6 @@ nsBrowserStatusHandler.prototype =
       this.stopButton.disabled = false;
       this.stopMenu.removeAttribute('disabled');
       this.stopContext.removeAttribute('disabled');
-
-      this.locationChanged = false;        
     }
     else if (aStateFlags & nsIWebProgressListener.STATE_STOP) {
       if (aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
@@ -269,20 +236,11 @@ nsBrowserStatusHandler.prototype =
         this.status = "";
         this.setDefaultStatus(msg);
         
-        //if the location hasn't been changed, the document may be null(eg a full-page plugin),
-        //we may not be able to get the correct content-type. 
-        //so we need to skip the test and keep the menu status.
-        //otherwise(this.locationChanged = true), test normally.
-        if (channel && this.locationChanged) {
-          try {
-            ctype = channel.contentType;
-            if (this.mimeTypeIsTextBased(ctype))
-              this.isImage.removeAttribute('disabled');
-            else
-              this.isImage.setAttribute('disabled', 'true');
-          }
-          catch (e) {}
-        }
+        // Disable menu entries for images, enable otherwise
+        if (content.document && this.mimeTypeIsTextBased(content.document.contentType))
+          this.isImage.removeAttribute('disabled');
+        else
+          this.isImage.setAttribute('disabled', 'true');
       }
 
       // Turn the progress meter and throbber off.
@@ -299,9 +257,15 @@ nsBrowserStatusHandler.prototype =
 
   onLocationChange : function(aWebProgress, aRequest, aLocation)
   {
-    this.setOverLink("", null);
+    // XXX temporary hack for bug 104532.
+    // Depends heavily on setOverLink implementation
+    if (!aRequest)
+      this.status = this.jsStatus = this.jsDefaultStatus = "";
 
-    var location = "";
+    this.setOverLink("");
+
+    var locationURI = null;
+    var location = "";    
 
     if (aLocation) {
       try {
@@ -311,18 +275,17 @@ nsBrowserStatusHandler.prototype =
         // If the url has "wyciwyg://" as the protocol, strip it off.
         // Nobody wants to see it on the urlbar for dynamically generated
         // pages.
-        location = gURIFixup.createExposableURI(aLocation).spec;
+        locationURI = gURIFixup.createExposableURI(aLocation);
+        location = locationURI.spec;
+        
       }
       catch(ex) {
         location = aLocation.spec;
       }
     }
 
-    if (this.hideAboutBlank) {
-      this.hideAboutBlank = false;
-      if (location == "about:blank")
-        location = "";
-    }
+    if (!getWebNavigation().canGoBack && location == "about:blank")
+      location = "";
 
     // Disable menu entries for images, enable otherwise
     if (content.document && this.mimeTypeIsTextBased(content.document.contentType))
@@ -335,18 +298,48 @@ nsBrowserStatusHandler.prototype =
     // Update urlbar only if a new page was loaded on the primary content area
     // Do not update urlbar if there was a subframe navigation
 
+    var browser = getBrowser().mCurrentBrowser;
     if (aWebProgress.DOMWindow == content) {
-      if (!this.userTyped.value) {
-        this.urlBar.value = location;
-        // the above causes userTyped.value to become true, reset it
-        this.userTyped.value = false;
-      }
+      // The document loaded correctly, clear the value if we should
+      if (browser.userTypedClear)
+        browser.userTypedValue = null;
 
-      SetPageProxyState("valid", aLocation);
+      var userTypedValue = browser.userTypedValue;
+      if (userTypedValue === null) {
+        this.urlBar.value = location;
+        SetPageProxyState("valid", aLocation);
+        // Setting the urlBar value in some cases causes userTypedValue
+        // to become set because of oninput, reset it to null
+        browser.userTypedValue = null;
+      } else {
+        this.urlBar.value = userTypedValue;
+        SetPageProxyState("invalid", null);
+      }
     }
     UpdateBackForwardButtons();
 
-    this.locationChanged = true;    
+    var blank = (location == "about:blank") || (location == "");
+
+    //clear popupDomain accordingly so that icon will go away when visiting
+    //an unblocked site after a blocked site. note: if a popup is blocked 
+    //the icon will stay as long as we are in the same domain.    
+
+    if (blank ||
+        !("popupDomain" in browser)) {
+      browser.popupDomain = null;
+    }
+    else {
+      var hostPort = "";
+      try {
+        hostPort = locationURI.hostPort;
+      }
+      catch(ex) { }
+      if (hostPort != browser.popupDomain)
+        browser.popupDomain = null;
+    }
+
+    var popupIcon = document.getElementById("popupIcon");
+    popupIcon.hidden = !browser.popupDomain;
   },
 
   onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
@@ -384,9 +377,12 @@ nsBrowserStatusHandler.prototype =
 
   startDocumentLoad : function(aRequest)
   {
-    // Reset so we can see if the user typed after the document load
-    // starting and the location changing.
-    this.userTyped.value = false;
+    // It's okay to clear what the user typed when we start
+    // loading a document. If the user types, this flag gets
+    // set to false, if the document load ends without an
+    // onLocationChange, this flag also gets set to false
+    // (so we keep it while switching tabs after failed load
+    getBrowser().userTypedClear = true;
 
     const nsIChannel = Components.interfaces.nsIChannel;
     var urlStr = aRequest.QueryInterface(nsIChannel).URI.spec;
@@ -400,6 +396,10 @@ nsBrowserStatusHandler.prototype =
 
   endDocumentLoad : function(aRequest, aStatus)
   {
+    // The document is done loading, it's okay to clear
+    // the value again.
+    getBrowser().userTypedClear = false;
+
     const nsIChannel = Components.interfaces.nsIChannel;
     var urlStr = aRequest.QueryInterface(nsIChannel).originalURI.spec;
 

@@ -41,37 +41,13 @@
 #define _nsTextAccessible_H_
 
 #include "nsBaseWidgetAccessible.h"
-#include "nsIAccessibleText.h"
-#include "nsISelectionController.h"
-
-class nsAccessibleText : public nsIAccessibleText
-{
-public:
-  NS_DECL_ISUPPORTS
-  NS_DECL_NSIACCESSIBLETEXT
-
-  nsAccessibleText();
-  virtual ~nsAccessibleText();
-
-  void SetTextNode(nsIDOMNode *aNode);
-
-private:
-  nsCOMPtr<nsIDOMNode> mTextNode;
-
-  enum EGetTextType { eGetBefore=-1, eGetAt=0, eGetAfter=1 };
-
-  nsresult GetSelections(nsISelectionController **aSelCon, nsISelection **aDomSel);
-  nsresult GetTextHelper(EGetTextType aType, nsAccessibleTextBoundary aBoundaryType, 
-                         PRInt32 aOffset, PRInt32 *aStartOffset, PRInt32 *aEndOffset, nsAString & _retval);
-};
 
  /**
   * Text nodes have no children, but since double inheritance
   *  no-worky we have to re-impl the LeafAccessiblity blocks 
   *  this way.
   */
-class nsTextAccessible : public nsLinkableAccessible,
-                         public nsAccessibleText
+class nsTextAccessible : public nsLinkableAccessible
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED

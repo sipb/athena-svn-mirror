@@ -40,7 +40,7 @@
 #include "nscore.h"
   // for |PRUnichar|, |NS_REINTERPRET_CAST|
 
-#ifdef XP_WIN
+#ifdef _MSC_VER
   // VC++ erroneously warns about incompatible linkage in these templates
   //  It's a lie, and it's bothersome.  This |#pragma| quiets the warning.
 #pragma warning( disable: 4251 )
@@ -180,11 +180,6 @@ struct nsStringAllocatorTraits<PRUnichar>
 // end of string allocator stuff that needs to move
 
 
-
-  /**
-   *
-   * @status FROZEN
-   */
 template <class CharT>
 class nsSharedBufferHandle
     : public nsBufferHandle<CharT>
@@ -192,7 +187,6 @@ class nsSharedBufferHandle
     public:
       typedef PRUint32                          size_type;
 
-    protected:
       enum
         {
           kIsImmutable                    = 0x01000000, // if this is set, the buffer cannot be modified even if its refcount is 1

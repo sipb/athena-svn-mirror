@@ -42,7 +42,6 @@
 #ifndef nsRenderingContextXlib_h___
 #define nsRenderingContextXlib_h___
 
-#include "nsIImage.h"
 #include "nsIDeviceContext.h"
 #include "nsIWidget.h"
 #include "nsRenderingContextImpl.h"
@@ -67,7 +66,6 @@ class nsRenderingContextXlib : public nsRenderingContextImpl
 public:
   nsRenderingContextXlib();
   virtual ~nsRenderingContextXlib();
-  static nsresult Shutdown(); // release statics
 
   NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
 
@@ -115,7 +113,7 @@ public:
   NS_IMETHOD Scale(float aSx, float aSy);
   NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
 
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
   NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
 
   NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -192,11 +190,6 @@ public:
                                nsTextDimensions& aLastWordDimensions,
                                PRInt32*          aFontID = nsnull);
 
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                       nscoord aWidth, nscoord aHeight); 
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect);
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
   NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
                                const nsRect &aDestBounds, PRUint32 aCopyFlags);
   NS_IMETHOD RetrieveCurrentNativeGraphicData(PRUint32 * ngd);
@@ -225,6 +218,7 @@ public:
 
 #endif /* MOZ_MATHML */
 
+  void SetClipRectInPixels(const nsRect& aRect, nsClipCombine aCombine, PRBool &aClipEmpty);
 
   xGC *GetGC() { mGC->AddRef(); return mGC; }
   void UpdateGC();
@@ -278,8 +272,10 @@ protected:
       w  = 32766 - x;
     }
   }
-
-  static nsGCCacheXlib *gcCache;
 };
+
+/* Prototypes */
+nsresult CreateRenderingContextXlibContext(nsIDeviceContext *aDevice, nsRenderingContextXlibContext **aContext);
+void DeleteRenderingContextXlibContext(nsRenderingContextXlibContext *aContext);
 
 #endif /* !nsRenderingContextXlib_h___ */

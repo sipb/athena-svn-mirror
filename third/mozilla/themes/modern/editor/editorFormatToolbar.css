@@ -43,11 +43,16 @@
   background: url("chrome://global/skin/toolbar/tb-mid.gif") #C7D0D9 repeat-x top;
 }
 
+#FormatToolbar > toolbargrippy,
 #FormatToolbar > .toolbar-holder {
   border-top: 1px solid #CED6DD;
   border-right: 1px solid #95A0AD;
   border-bottom: 1px solid #95A0AD;
   border-left: 1px solid #DAE3ED;
+}
+
+#FormatToolbar > toolbargrippy:hover:active {
+  border-color: #67737E;
 }
 
 /* ::::: formatting buttons ::::: */
@@ -466,6 +471,43 @@
 .insert-undecided > .menu-iconic-left {
   list-style-image: url("chrome://editor/content/images/undecided_n.gif"); 
 }
+
+.insert-surprise > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/surprise_n.gif"); 
+}
+
+.insert-kiss > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/kiss_n.gif"); 
+}
+
+.insert-yell > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/yell_n.gif"); 
+}
+
+.insert-cool > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/cool_n.gif"); 
+}
+
+.insert-money > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/money_n.gif"); 
+}
+
+.insert-foot > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/foot_n.gif"); 
+}
+
+.insert-innocent > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/innocent_n.gif"); 
+}
+
+.insert-cry > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/cry_n.gif"); 
+}
+
+.insert-sealed > .menu-iconic-left {
+  list-style-image: url("chrome://editor/content/images/sealed_n.gif"); 
+}
+
 
 /* ::::: fg/bg color picker ::::: */
 

@@ -45,6 +45,7 @@ extern "C" {
 #include "nsCRT.h"
 #include "nsITokenDialogs.h"
 #include "nsIGenKeypairInfoDlg.h"
+#include "nsNSSShutDown.h"
 
 //These defines are taken from the PKCS#11 spec
 #define CKM_RSA_PKCS_KEY_PAIR_GEN     0x00000000
@@ -165,7 +166,6 @@ MOZ_DECL_CTOR_COUNTER(nsKeygenFormProcessor)
 
 nsKeygenFormProcessor::nsKeygenFormProcessor()
 { 
-   NS_INIT_ISUPPORTS();
    MOZ_COUNT_CTOR(nsKeygenFormProcessor);
    m_ctx = new PipUIContext();
 
@@ -198,6 +198,9 @@ nsKeygenFormProcessor::Init()
 {
   nsresult rv;
   nsAutoString str;
+
+  if (SECKeySizeChoiceList[0].name != NULL)
+    return NS_OK;
 
   // Get the key strings //
   nsCOMPtr<nsINSSComponent> nssComponent;
@@ -269,6 +272,7 @@ GetSlotWithMechanism(PRUint32 aMechanism,
                      nsIInterfaceRequestor *m_ctx,
                      PK11SlotInfo** aSlot)
 {
+    nsNSSShutDownPreventionLock locker;
     PK11SlotList * slotList = nsnull;
     PRUnichar** tokenNameList = nsnull;
     nsITokenDialogs * dialogs;
@@ -316,7 +320,15 @@ GetSlotWithMechanism(PRUint32 aMechanism,
 
 		if (NS_FAILED(rv)) goto loser;
 
-		rv = dialogs->ChooseToken(nsnull, (const PRUnichar**)tokenNameList, numSlots, &unicodeTokenChosen, &canceled);
+    {
+      nsPSMUITracker tracker;
+      if (tracker.isUIForbidden()) {
+        rv = NS_ERROR_NOT_AVAILABLE;
+      }
+      else {
+    		rv = dialogs->ChooseToken(nsnull, (const PRUnichar**)tokenNameList, numSlots, &unicodeTokenChosen, &canceled);
+      }
+    }
 		NS_RELEASE(dialogs);
 		if (NS_FAILED(rv)) goto loser;
 
@@ -355,6 +367,7 @@ nsKeygenFormProcessor::GetPublicKey(nsString& aValue, nsString& aChallenge,
 				    nsString& aKeyType,
 				    nsString& aOutPublicKey, nsString& aPqg)
 {
+    nsNSSShutDownPreventionLock locker;
     nsresult rv = NS_ERROR_FAILURE;
     char *keystring = nsnull;
     char *pqgString = nsnull, *str = nsnull;
@@ -480,11 +493,18 @@ found_match:
         runnable = do_QueryInterface(KeygenRunnable);
         
         if (runnable) {
-            rv = dialogs->DisplayGeneratingKeypairInfo(m_ctx, runnable);
-
-            // We call join on the thread, 
-            // so we can be sure that no simultaneous access to the passed parameters will happen.
-            KeygenRunnable->Join();
+            {
+              nsPSMUITracker tracker;
+              if (tracker.isUIForbidden()) {
+                rv = NS_ERROR_NOT_AVAILABLE;
+              }
+              else {
+                rv = dialogs->DisplayGeneratingKeypairInfo(m_ctx, runnable);
+                // We call join on the thread, 
+                // so we can be sure that no simultaneous access to the passed parameters will happen.
+                KeygenRunnable->Join();
+              }
+            }
 
             NS_RELEASE(dialogs);
             if (NS_SUCCEEDED(rv)) {
@@ -549,7 +569,6 @@ loser:
     if ( sec_rv != SECSuccess ) {
         if ( privateKey ) {
             PK11_DestroyTokenObject(privateKey->pkcs11Slot,privateKey->pkcs11ID);
-            SECKEY_DestroyPrivateKey(privateKey);
         }
         if ( publicKey ) {
             PK11_DestroyTokenObject(publicKey->pkcs11Slot,publicKey->pkcs11ID);
@@ -560,6 +579,9 @@ loser:
     }
     if ( publicKey ) {
         SECKEY_DestroyPublicKey(publicKey);
+    }
+    if ( privateKey ) {
+        SECKEY_DestroyPrivateKey(privateKey);
     }
     if ( arena ) {
       PORT_FreeArena(arena, PR_TRUE);

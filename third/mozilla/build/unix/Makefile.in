@@ -38,6 +38,10 @@ FULL_NSPR_CFLAGS=-I$(includedir)/nspr
 FULL_NSPR_LIBS=$(subst -L$(libdir),-L$(mozappdir),$(shell $(DEPTH)/nsprpub/config/nspr-config --libs))
 endif
 
+ifdef MOZ_ENABLE_GTK
+SUPERWIN_LIBS=-lgtksuperwin
+endif
+
 _DEFS = $(subst \,\\\\\,$(ACDEFINES))
 
 pkg_config_files=mozilla-nspr.pc mozilla-xpcom.pc mozilla-js.pc \
@@ -46,7 +50,7 @@ pkg_config_files=mozilla-nspr.pc mozilla-xpcom.pc mozilla-js.pc \
 
 GARBAGE	= $(pkg_config_files) mozilla-config
 
-mozilla-config:: mozilla-config.in Makefile.in Makefile
+mozilla-config:: mozilla-config.in Makefile.in Makefile $(DEPTH)/config/autoconf.mk
 	cat $< | sed \
 	-e "s|%prefix%|$(prefix)|" \
 	-e "s|%exec_prefix%|$(exec_prefix)|" \
@@ -57,13 +61,14 @@ mozilla-config:: mozilla-config.in Makefile.in Makefile
 	-e "s|%FULL_NSPR_LIBS%|$(FULL_NSPR_LIBS)|" \
 	-e "s|%FULL_NSPR_CFLAGS%|$(FULL_NSPR_CFLAGS)|" > $@
 
-%.pc : %.pc.in Makefile.in Makefile
+%.pc : %.pc.in Makefile.in Makefile $(DEPTH)/config/autoconf.mk
 	cat $< | sed \
 	-e "s|%prefix%|$(prefix)|" \
 	-e "s|%exec_prefix%|$(exec_prefix)|" \
 	-e "s|%includedir%|$(includedir)|" \
 	-e "s|%libdir%|$(mozappdir)|" \
 	-e "s|%MOZILLA_VERSION%|$(MOZILLA_VERSION)|" \
+	-e "s|%SUPERWIN_LIBS%|$(SUPERWIN_LIBS)|" \
 	-e "s|%DEFS%|$(_DEFS)|" \
 	-e "s|%FULL_NSPR_LIBS%|$(FULL_NSPR_LIBS)|" \
 	-e "s|%FULL_NSPR_CFLAGS%|$(FULL_NSPR_CFLAGS)|" > $@
@@ -74,6 +79,11 @@ libs:: mozilla-config
 
 libs:: $(srcdir)/run-mozilla.sh $(pkg_config_files)
 	$(INSTALL) $< $(DIST)/bin
+
+ifeq ($(OS_ARCH),OpenVMS)
+libs:: vms/mozilla.com vms/install.com vms/getinfo.com
+	$(INSTALL) $? $(DIST)/bin
+endif
 
 install:: run-mozilla.sh
 	$(SYSINSTALL) $(IFLAGS2) $< $(DESTDIR)$(mozappdir)

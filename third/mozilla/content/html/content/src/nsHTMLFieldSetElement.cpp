@@ -41,12 +41,10 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIForm.h"
 #include "nsIFormControl.h"
-#include "nsISizeOfHandler.h"
 
 
 class nsHTMLFieldSetElement : public nsGenericHTMLContainerFormElement,
@@ -72,15 +70,10 @@ public:
   NS_DECL_NSIDOMHTMLFIELDSETELEMENT
 
   // nsIFormControl
-  NS_IMETHOD GetType(PRInt32* aType);
+  NS_IMETHOD_(PRInt32) GetType() { return NS_FORM_FIELDSET; }
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
-
-#ifdef DEBUG
-  // nsIContent
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 // construction, destruction
@@ -173,27 +166,6 @@ nsHTMLFieldSetElement::GetForm(nsIDOMHTMLFormElement** aForm)
 }
 
 // nsIFormControl
-
-NS_IMETHODIMP
-nsHTMLFieldSetElement::GetType(PRInt32* aType)
-{
-  NS_ASSERTION(aType, "Null pointer bad");
-  *aType = NS_FORM_FIELDSET;
-  return NS_OK;
-}
-
-
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLFieldSetElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
 
 nsresult
 nsHTMLFieldSetElement::Reset()

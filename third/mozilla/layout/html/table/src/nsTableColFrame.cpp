@@ -37,7 +37,7 @@
 #include "nsCOMPtr.h"
 #include "nsTableColFrame.h"
 #include "nsContainerFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAtoms.h"
@@ -107,21 +107,16 @@ nsTableColFrame::SetIsAnonymous(PRBool aIsAnonymous)
 // XXX what about other style besides width
 nsStyleCoord nsTableColFrame::GetStyleWidth() const
 {
-  nsStylePosition* position = nsnull;
-  position = (nsStylePosition*)mStyleContext->GetStyleData(eStyleStruct_Position);
+  const nsStylePosition* position = GetStylePosition();
   nsStyleCoord styleWidth = position->mWidth;
-  // the following should not be necessary since html.css defines table-col and
-  // :table-col to inherit. However, :table-col is not inheriting properly
+  // the following is necessary because inheritance happens on computed
+  // values, which the style system does not know.
   if (eStyleUnit_Auto == styleWidth.GetUnit() ||
       eStyleUnit_Inherit == styleWidth.GetUnit()) {
     nsIFrame* parent;
     GetParent(&parent);
-    nsCOMPtr<nsIStyleContext> styleContext;
-    parent->GetStyleContext(getter_AddRefs(styleContext)); 
-    if (styleContext) {
-      position = (nsStylePosition*)styleContext->GetStyleData(eStyleStruct_Position);
-      styleWidth = position->mWidth;
-    }
+    position = parent->GetStylePosition();
+    styleWidth = position->mWidth;
   }
 
   nsStyleCoord returnWidth;
@@ -172,10 +167,9 @@ NS_METHOD nsTableColFrame::Reflow(nsIPresContext*          aPresContext,
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
   aDesiredSize.width=0;
   aDesiredSize.height=0;
-  if (nsnull!=aDesiredSize.maxElementSize)
+  if (aDesiredSize.mComputeMEW)
   {
-    aDesiredSize.maxElementSize->width=0;
-    aDesiredSize.maxElementSize->height=0;
+    aDesiredSize.mMaxElementWidth=0;
   }
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
@@ -183,10 +177,8 @@ NS_METHOD nsTableColFrame::Reflow(nsIPresContext*          aPresContext,
 }
 
 PRInt32 nsTableColFrame::GetSpan()
-{  
-  const nsStyleTable* tableStyle;
-  GetStyleData(eStyleStruct_Table, (const nsStyleStruct *&)tableStyle);
-  return tableStyle->mSpan;
+{
+  return GetStyleTable()->mSpan;
 }
 
 nscoord nsTableColFrame::GetWidth(PRUint32 aWidthType)
@@ -270,7 +262,7 @@ NS_IMETHODIMP
 nsTableColFrame::Init(nsIPresContext*  aPresContext,
                       nsIContent*      aContent,
                       nsIFrame*        aParent,
-                      nsIStyleContext* aContext,
+                      nsStyleContext*  aContext,
                       nsIFrame*        aPrevInFlow)
 {
   nsresult  rv;
@@ -315,16 +307,5 @@ NS_IMETHODIMP
 nsTableColFrame::GetFrameName(nsAString& aResult) const
 {
   return MakeFrameName(NS_LITERAL_STRING("TableCol"), aResult);
-}
-
-NS_IMETHODIMP
-nsTableColFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  PRUint32 sum = sizeof(*this);
-  *aResult = sum;
-  return NS_OK;
 }
 #endif

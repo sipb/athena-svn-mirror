@@ -85,12 +85,14 @@ private:
 
 
 
-nsBulletFrame::nsBulletFrame()
+nsBulletFrame::nsBulletFrame() :
+  mPresContext(nsnull)
 {
 }
 
 nsBulletFrame::~nsBulletFrame()
 {
+  NS_PRECONDITION(!mPresContext, "Never got destroyed properly!");
 }
 
 NS_IMETHODIMP
@@ -105,6 +107,8 @@ nsBulletFrame::Destroy(nsIPresContext* aPresContext)
   if (mListener)
     NS_REINTERPRET_CAST(nsBulletListener*, mListener.get())->SetFrame(nsnull);
 
+  mPresContext = nsnull; // clear weak pointer
+  
   // Let base class do the rest
   return nsFrame::Destroy(aPresContext);
 }
@@ -113,12 +117,14 @@ NS_IMETHODIMP
 nsBulletFrame::Init(nsIPresContext*  aPresContext,
                     nsIContent*      aContent,
                     nsIFrame*        aParent,
-                    nsIStyleContext* aContext,
+                    nsStyleContext*  aContext,
                     nsIFrame*        aPrevInFlow)
 {
+  mPresContext = aPresContext;
+  
   nsresult  rv = nsFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
 
-  const nsStyleList* myList = (const nsStyleList*)mStyleContext->GetStyleData(eStyleStruct_List);
+  const nsStyleList* myList = GetStyleList();
 
   if (!myList->mListStyleImage.IsEmpty()) {
     nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
@@ -192,13 +198,14 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
 
   PRBool isVisible;
   if (NS_SUCCEEDED(IsVisibleForPainting(aPresContext, aRenderingContext, PR_TRUE, &isVisible)) && isVisible) {
-    const nsStyleList* myList = (const nsStyleList*)mStyleContext->GetStyleData(eStyleStruct_List);
+    const nsStyleList* myList = GetStyleList();
     PRUint8 listStyleType = myList->mListStyleType;
 
-    if (myList->mListStyleImage.Length() > 0 && mImageRequest) {
+    if (!myList->mListStyleImage.IsEmpty() && mImageRequest) {
       PRUint32 status;
       mImageRequest->GetImageStatus(&status);
-      if (status & imgIRequest::STATUS_LOAD_COMPLETE) {
+      if (status & imgIRequest::STATUS_LOAD_COMPLETE &&
+          !(status & imgIRequest::STATUS_ERROR)) {
         nsCOMPtr<imgIContainer> imageCon;
         mImageRequest->GetImage(getter_AddRefs(imageCon));
         if (imageCon) {
@@ -213,8 +220,8 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
       }
     }
 
-    const nsStyleFont* myFont = (const nsStyleFont*)mStyleContext->GetStyleData(eStyleStruct_Font);
-    const nsStyleColor* myColor = (const nsStyleColor*)mStyleContext->GetStyleData(eStyleStruct_Color);
+    const nsStyleFont* myFont = GetStyleFont();
+    const nsStyleColor* myColor = GetStyleColor();
 
     nsCOMPtr<nsIFontMetrics> fm;
     aRenderingContext.SetColor(myColor->mColor);
@@ -223,7 +230,7 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
     nsCharType charType = eCharType_LeftToRight;
     PRUint8 level = 0;
     PRBool isBidiSystem = PR_FALSE;
-    const nsStyleVisibility* vis = (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
+    const nsStyleVisibility* vis = GetStyleVisibility();
     PRUint32 hints = 0;
 #endif // IBMBIDI
 
@@ -261,17 +268,22 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ARABIC_INDIC:
-      GetListItemText(aPresContext, *myList, text);
-      charType = eCharType_ArabicNumber;
+      if (GetListItemText(aPresContext, *myList, text))
+        charType = eCharType_ArabicNumber;
+      else
+        charType = eCharType_EuropeanNumber;
       break;
 
     case NS_STYLE_LIST_STYLE_HEBREW:
       aRenderingContext.GetHints(hints);
       isBidiSystem = (hints & NS_RENDERING_HINT_BIDI_REORDERING);
       if (!isBidiSystem) {
-        charType = eCharType_RightToLeft;
-        level = 1;
-        GetListItemText(aPresContext, *myList, text);
+        if (GetListItemText(aPresContext, *myList, text)) {
+          charType = eCharType_RightToLeft;
+          level = 1;
+        } else {
+          charType = eCharType_EuropeanNumber;
+        }
 
         if (NS_STYLE_DIRECTION_RTL == vis->mDirection) {
           text.Cut(0, 1);
@@ -335,7 +347,16 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ER:
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ET:
       aPresContext->GetMetricsFor(myFont->mFont, getter_AddRefs(fm));
+#ifdef IBMBIDI
+      // If we can't render our numeral using the chars in the numbering
+      // system, we'll be using "decimal"...
+      PRBool usedChars =
+#endif // IBMBIDI
       GetListItemText(aPresContext, *myList, text);
+#ifdef IBMBIDI
+      if (!usedChars)
+        charType = eCharType_EuropeanNumber;
+#endif
       aRenderingContext.SetFont(fm);
       nscoord ascent;
       fm->GetMaxAscent(ascent);
@@ -396,9 +417,6 @@ nsBulletFrame::SetListItemOrdinal(PRInt32 aNextOrdinal,
         if (eHTMLUnit_Integer == value.GetUnit()) {
           // Use ordinal specified by the value attribute
           mOrdinal = value.GetIntValue();
-          if (mOrdinal <= 0) {
-            mOrdinal = 1;
-          }
         }
       }
     }
@@ -413,35 +431,51 @@ nsBulletFrame::SetListItemOrdinal(PRInt32 aNextOrdinal,
 // XXX change roman/alpha to use unsigned math so that maxint and
 // maxnegint will work
 
-
-static void DecimalToText(PRInt32 ordinal, nsString& result)
+/**
+ * For all functions below, a return value of PR_TRUE means that we
+ * could represent mOrder in the desired numbering system.  PR_FALSE
+ * means we had to fall back to decimal
+ */
+static PRBool DecimalToText(PRInt32 ordinal, nsString& result)
 {
    char cbuf[40];
    PR_snprintf(cbuf, sizeof(cbuf), "%ld", ordinal);
    result.AppendWithConversion(cbuf);
+   return PR_TRUE;
 }
-static void DecimalLeadingZeroToText(PRInt32 ordinal, nsString& result)
+static PRBool DecimalLeadingZeroToText(PRInt32 ordinal, nsString& result)
 {
    char cbuf[40];
    PR_snprintf(cbuf, sizeof(cbuf), "%02ld", ordinal);
    result.AppendWithConversion(cbuf);
+   return PR_TRUE;
 }
-static void OtherDecimalToText(PRInt32 ordinal, PRUnichar zeroChar, nsString& result)
+static PRBool OtherDecimalToText(PRInt32 ordinal, PRUnichar zeroChar, nsString& result)
 {
    PRUnichar diff = zeroChar - PRUnichar('0');
-   DecimalToText(ordinal, result); 
-   PRUnichar* p = (PRUnichar*)result.get();
+   DecimalToText(ordinal, result);
+   PRUnichar* p = NS_CONST_CAST(PRUnichar*, result.get());
+   if (ordinal < 0) {
+     // skip the leading '-'
+     ++p;
+   }     
    for(; nsnull != *p ; p++) 
       *p += diff;
+   return PR_TRUE;
 }
-static void TamilToText(PRInt32 ordinal,  nsString& result)
+static PRBool TamilToText(PRInt32 ordinal,  nsString& result)
 {
    PRUnichar diff = 0x0BE6 - PRUnichar('0');
    DecimalToText(ordinal, result); 
+   if (ordinal < 1 || ordinal > 9999) {
+     // Can't do those in this system.
+     return PR_FALSE;
+   }
    PRUnichar* p = (PRUnichar*)result.get();
    for(; nsnull != *p ; p++) 
       if(*p != PRUnichar('0'))
          *p += diff;
+   return PR_TRUE;
 }
 
 
@@ -450,10 +484,11 @@ static const char* gUpperRomanCharsA = "IXCM";
 static const char* gLowerRomanCharsB = "vld?";
 static const char* gUpperRomanCharsB = "VLD?";
 
-static void RomanToText(PRInt32 ordinal, nsString& result, const char* achars, const char* bchars)
+static PRBool RomanToText(PRInt32 ordinal, nsString& result, const char* achars, const char* bchars)
 {
-  if (ordinal <= 0) {
-    ordinal = 1;
+  if (ordinal < 1) {
+    DecimalToText(ordinal, result);
+    return PR_FALSE;
   }
   nsAutoString addOn, decStr;
   decStr.AppendInt(ordinal, 10);
@@ -490,6 +525,7 @@ static void RomanToText(PRInt32 ordinal, nsString& result, const char* achars, c
     }
     result.Append(addOn);
   }
+  return PR_TRUE;
 }
 
 #define ALPHA_SIZE 26
@@ -664,17 +700,19 @@ static PRUnichar gEthiopicHalehameTiEtChars[ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE] 
 
 
 // We know cjk-ideographic need 31 characters to display 99,999,999,999,999,999
-// georgian and armenian need 6 at most
+// georgian needs 6 at most
+// armenian needs 12 at most
 // hebrew may need more...
 
 #define NUM_BUF_SIZE 34 
 
-static void CharListToText(PRInt32 ordinal, nsString& result, const PRUnichar* chars, PRInt32 aBase)
+static PRBool CharListToText(PRInt32 ordinal, nsString& result, const PRUnichar* chars, PRInt32 aBase)
 {
   PRUnichar buf[NUM_BUF_SIZE];
   PRInt32 idx = NUM_BUF_SIZE;
-  if (ordinal <= 0) {
-    ordinal = 1;
+  if (ordinal < 1) {
+    DecimalToText(ordinal, result);
+    return PR_FALSE;
   }
   do {
     ordinal--; // a == 0
@@ -683,6 +721,7 @@ static void CharListToText(PRInt32 ordinal, nsString& result, const PRUnichar* c
     ordinal /= aBase ;
   } while ( ordinal > 0);
   result.Append(buf+idx,NUM_BUF_SIZE-idx);
+  return PR_TRUE;
 }
 
 
@@ -722,10 +761,10 @@ static PRUnichar gCJKIdeographic10KUnit3[4] =
   0x000, 0x4E07, 0x5104, 0x5146
 };
 
-static void CJKIdeographicToText(PRInt32 ordinal, nsString& result, 
-                                 const PRUnichar* digits,
-                                 const PRUnichar *unit, 
-                                 const PRUnichar* unit10k)
+static PRBool CJKIdeographicToText(PRInt32 ordinal, nsString& result, 
+                                   const PRUnichar* digits,
+                                   const PRUnichar *unit, 
+                                   const PRUnichar* unit10k)
 {
 // In theory, we need the following if condiction,
 // However, the limit, 10 ^ 16, is greater than the max of PRUint32
@@ -737,6 +776,10 @@ static void CJKIdeographicToText(PRInt32 ordinal, nsString& result,
 // } 
 // else 
 // {
+  if (ordinal < 0) {
+    DecimalToText(ordinal, result);
+    return PR_FALSE;
+  }
   PRUnichar c10kUnit = 0;
   PRUnichar cUnit = 0;
   PRUnichar cDigit = 0;
@@ -775,12 +818,12 @@ static void CJKIdeographicToText(PRInt32 ordinal, nsString& result,
       c10kUnit =  0;
     }
     ordinal /= 10;
-    ud++;
+    ++ud;
 
   } while( ordinal > 0);
   result.Append(buf+idx,NUM_BUF_SIZE-idx);
 // }
-
+  return PR_TRUE;
 }
 
 #define HEBREW_THROSAND_SEP 0x0020
@@ -796,8 +839,22 @@ static PRUnichar gHebrewDigit[22] =
 0x05E7, 0x05E8, 0x05E9, 0x05EA
 };
 
-static void HebrewToText(PRInt32 ordinal, nsString& result)
+static PRBool HebrewToText(PRInt32 ordinal, nsString& result)
 {
+  if (ordinal < 0) {
+    DecimalToText(ordinal, result);
+    return PR_FALSE;
+  }
+  if (ordinal == 0) {
+    // This one is treated specially
+#ifdef IBMBIDI
+    static const PRUnichar hebrewZero[] = { 0x05D0, 0x05E4, 0x05E1 };
+#else
+    static const PRUnichar hebrewZero[] = { 0x05E1, 0x05E4, 0x05D0 };
+#endif // IBMBIDI
+    result.Append(hebrewZero);
+    return PR_TRUE;
+  }
   PRBool outputSep = PR_FALSE;
   PRUnichar buf[NUM_BUF_SIZE];
 #ifdef IBMBIDI
@@ -835,7 +892,7 @@ static void HebrewToText(PRInt32 ordinal, nsString& result)
 #else
           buf[--idx] = digit;
 #endif // IBMBIDI
-          d++;
+          ++d;
         } else { 
           // if this is the last digit
 #ifdef IBMBIDI
@@ -880,7 +937,7 @@ static void HebrewToText(PRInt32 ordinal, nsString& result)
 #else
         buf[--idx] = digit;
 #endif // IBMBIDI
-        d++;
+        ++d;
       } else {
         // if this is the last digit
 #ifdef IBMBIDI
@@ -923,30 +980,36 @@ static void HebrewToText(PRInt32 ordinal, nsString& result)
 #else
   result.Append(buf+idx,NUM_BUF_SIZE-idx);
 #endif // IBMBIDI
+  return PR_TRUE;
 }
 
 
-static void ArmenianToText(PRInt32 ordinal, nsString& result)
+static PRBool ArmenianToText(PRInt32 ordinal, nsString& result)
 {
-  if((0 == ordinal) || (ordinal > 9999)) { // zero or reach the limit of Armenain numbering system
+  // XXXbz this system goes out to a lot further than 9999... we should fix
+  // that.  This algorithm seems broken in general.  There's this business of
+  // "7000" being special and then there's the combining accent we're supposed
+  // to be using...
+  if (ordinal < 1 || ordinal > 9999) { // zero or reach the limit of Armenian numbering system
     DecimalToText(ordinal, result);
-    return;
-  } else {
-    PRUnichar buf[NUM_BUF_SIZE];
-    PRInt32 idx = NUM_BUF_SIZE;
-    PRInt32 d = 0;
-    do {
-      PRInt32 cur = ordinal % 10;
-      if( cur > 0)
-      {
-        PRUnichar u = 0x0530 + (d * 9) + cur;
-        buf[--idx] = u;
-      }
-      d++;
-      ordinal /= 10;
-    } while ( ordinal > 0);
-    result.Append(buf+idx,NUM_BUF_SIZE-idx);
+    return PR_FALSE;
   }
+
+  PRUnichar buf[NUM_BUF_SIZE];
+  PRInt32 idx = NUM_BUF_SIZE;
+  PRInt32 d = 0;
+  do {
+    PRInt32 cur = ordinal % 10;
+    if (cur > 0)
+    {
+      PRUnichar u = 0x0530 + (d * 9) + cur;
+      buf[--idx] = u;
+    }
+    ++d;
+    ordinal /= 10;
+  } while (ordinal > 0);
+  result.Append(buf + idx, NUM_BUF_SIZE - idx);
+  return PR_TRUE;
 }
 
 
@@ -962,27 +1025,28 @@ static PRUnichar gGeorgianValue [ 37 ] = { // 4 * 9 + 1 = 37
 //  10000
    0x10BF
 };
-static void GeorgianToText(PRInt32 ordinal, nsString& result)
+static PRBool GeorgianToText(PRInt32 ordinal, nsString& result)
 {
-  if((0 == ordinal) || (ordinal > 19999)) { // zero or reach the limit of Georgian numbering system
+  if (ordinal < 1 || ordinal > 19999) { // zero or reach the limit of Georgian numbering system
     DecimalToText(ordinal, result);
-    return;
-  } else {
-    PRUnichar buf[NUM_BUF_SIZE];
-    PRInt32 idx = NUM_BUF_SIZE;
-    PRInt32 d = 0;
-    do {
-      PRInt32 cur = ordinal % 10;
-      if( cur > 0)
-      {
-        PRUnichar u = gGeorgianValue[(d * 9 ) + ( cur - 1)];
-        buf[--idx] = u;
-      }
-      d++;
-      ordinal /= 10;
-    } while ( ordinal > 0);
-    result.Append(buf+idx,NUM_BUF_SIZE-idx);
+    return PR_FALSE;
   }
+
+  PRUnichar buf[NUM_BUF_SIZE];
+  PRInt32 idx = NUM_BUF_SIZE;
+  PRInt32 d = 0;
+  do {
+    PRInt32 cur = ordinal % 10;
+    if (cur > 0)
+    {
+      PRUnichar u = gGeorgianValue[(d * 9 ) + ( cur - 1)];
+      buf[--idx] = u;
+    }
+    ++d;
+    ordinal /= 10;
+  } while (ordinal > 0);
+  result.Append(buf + idx, NUM_BUF_SIZE - idx);
+  return PR_TRUE;
 }
 
 // Convert ordinal to Ethiopic numeric representation.
@@ -991,10 +1055,14 @@ static void GeorgianToText(PRInt32 ordinal, nsString& result)
 // the pseudo-code put up there by Daniel Yacob <yacob@geez.org>.
 // Another reference is Unicode 3.0 standard section 11.1. 
 
-static void EthiopicToText(PRInt32 ordinal, nsString& result)
+static PRBool EthiopicToText(PRInt32 ordinal, nsString& result)
 {  
   nsAutoString asciiNumberString;      // decimal string representation of ordinal
   DecimalToText(ordinal, asciiNumberString);
+  if (ordinal < 1) {
+    result.Append(asciiNumberString);
+    return PR_FALSE;
+  }
   PRInt32 n = asciiNumberString.Length() - 1;
 
   // Iterate from the lowest digit to higher digits
@@ -1039,213 +1107,246 @@ static void EthiopicToText(PRInt32 ordinal, nsString& result)
        ethioNumber += (PRUnichar) 0x137C;   // 0x137C = Ethiopic number ten thousand
 
      result.Insert(ethioNumber, 0);
-  }  
+  }
+  return PR_TRUE;
 }
 
 
-void
+PRBool
 nsBulletFrame::GetListItemText(nsIPresContext* aCX,
                                const nsStyleList& aListStyle,
                                nsString& result)
 {
 #ifdef IBMBIDI
-  const nsStyleVisibility* vis;
-  GetStyleData(eStyleStruct_Visibility, (const nsStyleStruct*&)vis);
+  const nsStyleVisibility* vis = GetStyleVisibility();
 
+  // XXX For some of these systems, "." is wrong!  This should really be
+  // pushed down into the individual cases!
   if (NS_STYLE_DIRECTION_RTL == vis->mDirection) {
     result.Append(NS_LITERAL_STRING("."));
   }
 #endif // IBMBIDI
 
+  PRBool success = PR_TRUE;
+  
   switch (aListStyle.mListStyleType) {
     case NS_STYLE_LIST_STYLE_DECIMAL:
     case NS_STYLE_LIST_STYLE_OLD_DECIMAL:
     default: // CSS2 say "A users  agent that does not recognize a numbering system
       // should use 'decimal'
-      DecimalToText(mOrdinal, result);
+      success = DecimalToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_DECIMAL_LEADING_ZERO:
-      DecimalLeadingZeroToText(mOrdinal, result);
+      success = DecimalLeadingZeroToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_LOWER_ROMAN:
     case NS_STYLE_LIST_STYLE_OLD_LOWER_ROMAN:
-      RomanToText(mOrdinal, result, gLowerRomanCharsA, gLowerRomanCharsB);
+      success = RomanToText(mOrdinal, result,
+                            gLowerRomanCharsA, gLowerRomanCharsB);
       break;
     case NS_STYLE_LIST_STYLE_UPPER_ROMAN:
     case NS_STYLE_LIST_STYLE_OLD_UPPER_ROMAN:
-      RomanToText(mOrdinal, result, gUpperRomanCharsA, gUpperRomanCharsB);
+      success = RomanToText(mOrdinal, result,
+                            gUpperRomanCharsA, gUpperRomanCharsB);
       break;
 
     case NS_STYLE_LIST_STYLE_LOWER_ALPHA:
     case NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA:
-      CharListToText(mOrdinal, result, gLowerAlphaChars, ALPHA_SIZE);
+      success = CharListToText(mOrdinal, result, gLowerAlphaChars, ALPHA_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_UPPER_ALPHA:
     case NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA:
-      CharListToText(mOrdinal, result, gUpperAlphaChars, ALPHA_SIZE);
+      success = CharListToText(mOrdinal, result, gUpperAlphaChars, ALPHA_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_KATAKANA:
-      CharListToText(mOrdinal, result, gKatakanaChars, KATAKANA_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gKatakanaChars,
+                               KATAKANA_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_HIRAGANA:
-      CharListToText(mOrdinal, result, gHiraganaChars, HIRAGANA_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gHiraganaChars,
+                               HIRAGANA_CHARS_SIZE);
       break;
     
     case NS_STYLE_LIST_STYLE_KATAKANA_IROHA:
-      CharListToText(mOrdinal, result, gKatakanaIrohaChars, KATAKANA_IROHA_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gKatakanaIrohaChars,
+                               KATAKANA_IROHA_CHARS_SIZE);
       break;
  
     case NS_STYLE_LIST_STYLE_HIRAGANA_IROHA:
-      CharListToText(mOrdinal, result, gHiraganaIrohaChars, HIRAGANA_IROHA_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gHiraganaIrohaChars,
+                               HIRAGANA_IROHA_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_LOWER_GREEK:
-      CharListToText(mOrdinal, result, gLowerGreekChars , LOWER_GREEK_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gLowerGreekChars ,
+                               LOWER_GREEK_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_CJK_IDEOGRAPHIC: 
     case NS_STYLE_LIST_STYLE_MOZ_TRAD_CHINESE_INFORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1, gCJKIdeographicUnit1, gCJKIdeographic10KUnit1);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1,
+                                     gCJKIdeographicUnit1,
+                                     gCJKIdeographic10KUnit1);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_TRAD_CHINESE_FORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit2, gCJKIdeographicUnit2, gCJKIdeographic10KUnit1);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit2,
+                                     gCJKIdeographicUnit2,
+                                     gCJKIdeographic10KUnit1);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_SIMP_CHINESE_INFORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1, gCJKIdeographicUnit1, gCJKIdeographic10KUnit2);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1,
+                                     gCJKIdeographicUnit1,
+                                     gCJKIdeographic10KUnit2);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_SIMP_CHINESE_FORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit3, gCJKIdeographicUnit2, gCJKIdeographic10KUnit2);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit3,
+                                     gCJKIdeographicUnit2,
+                                     gCJKIdeographic10KUnit2);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_JAPANESE_INFORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1, gCJKIdeographicUnit1, gCJKIdeographic10KUnit3);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit1,
+                                     gCJKIdeographicUnit1,
+                                     gCJKIdeographic10KUnit3);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_JAPANESE_FORMAL: 
-      CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit2, gCJKIdeographicUnit2, gCJKIdeographic10KUnit3);
+      success = CJKIdeographicToText(mOrdinal, result, gCJKIdeographicDigit2,
+                                     gCJKIdeographicUnit2,
+                                     gCJKIdeographic10KUnit3);
       break;
 
     case NS_STYLE_LIST_STYLE_HEBREW: 
-      HebrewToText(mOrdinal, result);
+      success = HebrewToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_ARMENIAN: 
-      ArmenianToText(mOrdinal, result);
+      success = ArmenianToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_GEORGIAN: 
-      GeorgianToText(mOrdinal, result);
+      success = GeorgianToText(mOrdinal, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_ARABIC_INDIC:
-      OtherDecimalToText(mOrdinal, 0x0660, result);
+      success = OtherDecimalToText(mOrdinal, 0x0660, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_PERSIAN:
     case NS_STYLE_LIST_STYLE_MOZ_URDU:
-      OtherDecimalToText(mOrdinal, 0x06f0, result);
+      success = OtherDecimalToText(mOrdinal, 0x06f0, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_DEVANAGARI:
-      OtherDecimalToText(mOrdinal, 0x0966, result);
+      success = OtherDecimalToText(mOrdinal, 0x0966, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_GURMUKHI:
-      OtherDecimalToText(mOrdinal, 0x0a66, result);
+      success = OtherDecimalToText(mOrdinal, 0x0a66, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_GUJARATI:
-      OtherDecimalToText(mOrdinal, 0x0AE6, result);
+      success = OtherDecimalToText(mOrdinal, 0x0AE6, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_ORIYA:
-      OtherDecimalToText(mOrdinal, 0x0B66, result);
+      success = OtherDecimalToText(mOrdinal, 0x0B66, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_KANNADA:
-      OtherDecimalToText(mOrdinal, 0x0CE6, result);
+      success = OtherDecimalToText(mOrdinal, 0x0CE6, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_MALAYALAM:
-      OtherDecimalToText(mOrdinal, 0x0D66, result);
+      success = OtherDecimalToText(mOrdinal, 0x0D66, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_THAI:
-      OtherDecimalToText(mOrdinal, 0x0E50, result);
+      success = OtherDecimalToText(mOrdinal, 0x0E50, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_LAO:
-      OtherDecimalToText(mOrdinal, 0x0ED0, result);
+      success = OtherDecimalToText(mOrdinal, 0x0ED0, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_MYANMAR:
-      OtherDecimalToText(mOrdinal, 0x1040, result);
+      success = OtherDecimalToText(mOrdinal, 0x1040, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_KHMER:
-      OtherDecimalToText(mOrdinal, 0x17E0, result);
+      success = OtherDecimalToText(mOrdinal, 0x17E0, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_BENGALI:
-      OtherDecimalToText(mOrdinal, 0x09E6, result);
+      success = OtherDecimalToText(mOrdinal, 0x09E6, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_TELUGU:
-      OtherDecimalToText(mOrdinal, 0x0C66, result);
+      success = OtherDecimalToText(mOrdinal, 0x0C66, result);
       break;
  
     case NS_STYLE_LIST_STYLE_MOZ_TAMIL:
-      TamilToText(mOrdinal, result);
+      success = TamilToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_CJK_HEAVENLY_STEM:
-      CharListToText(mOrdinal, result, gCJKHeavenlyStemChars, CJK_HEAVENLY_STEM_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gCJKHeavenlyStemChars,
+                               CJK_HEAVENLY_STEM_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_CJK_EARTHLY_BRANCH:
-      CharListToText(mOrdinal, result, gCJKEarthlyBranchChars, CJK_EARTHLY_BRANCH_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gCJKEarthlyBranchChars,
+                               CJK_EARTHLY_BRANCH_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_HANGUL:
-      CharListToText(mOrdinal, result, gHangulChars, HANGUL_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gHangulChars, HANGUL_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_HANGUL_CONSONANT:
-      CharListToText(mOrdinal, result, gHangulConsonantChars, HANGUL_CONSONANT_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gHangulConsonantChars,
+                               HANGUL_CONSONANT_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME:
-      CharListToText(mOrdinal, result, gEthiopicHalehameChars, ETHIOPIC_HALEHAME_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gEthiopicHalehameChars,
+                               ETHIOPIC_HALEHAME_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_NUMERIC:
-      EthiopicToText(mOrdinal, result);
+      success = EthiopicToText(mOrdinal, result);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_AM:
-      CharListToText(mOrdinal, result, gEthiopicHalehameAmChars, ETHIOPIC_HALEHAME_AM_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gEthiopicHalehameAmChars,
+                               ETHIOPIC_HALEHAME_AM_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ER:
-      CharListToText(mOrdinal, result, gEthiopicHalehameTiErChars, ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gEthiopicHalehameTiErChars,
+                               ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE);
       break;
 
     case NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ET:
-      CharListToText(mOrdinal, result, gEthiopicHalehameTiEtChars, ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE);
+      success = CharListToText(mOrdinal, result, gEthiopicHalehameTiEtChars,
+                               ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE);
       break;
   }
+  // XXX For some of these systems, "." is wrong!  This should really be
+  // pushed up into the cases...
 #ifdef IBMBIDI
   if (NS_STYLE_DIRECTION_RTL != vis->mDirection)
 #endif // IBMBIDI
   result.Append(NS_LITERAL_STRING("."));
+  return success;
 }
 
 #define MIN_BULLET_SIZE 5               // from laytext.c
@@ -1264,113 +1365,104 @@ nsBulletFrame::GetDesiredSize(nsIPresContext*  aCX,
                               const nsHTMLReflowState& aReflowState,
                               nsHTMLReflowMetrics& aMetrics)
 {
-  const nsStyleList* myList = (const nsStyleList*)mStyleContext->GetStyleData(eStyleStruct_List);
+  const nsStyleList* myList = GetStyleList();
   nscoord ascent;
 
-  if (!myList->mListStyleImage.IsEmpty()) {
-    nscoord widthConstraint = NS_INTRINSICSIZE;
-    nscoord heightConstraint = NS_INTRINSICSIZE;
-    PRBool fixedContentWidth = PR_FALSE;
-    PRBool fixedContentHeight = PR_FALSE;
+  if (!myList->mListStyleImage.IsEmpty() && mImageRequest) {
+    PRUint32 status;
+    mImageRequest->GetImageStatus(&status);
+    if (status & imgIRequest::STATUS_SIZE_AVAILABLE &&
+        !(status & imgIRequest::STATUS_ERROR)) {
+      nscoord widthConstraint = NS_INTRINSICSIZE;
+      nscoord heightConstraint = NS_INTRINSICSIZE;
+      PRBool fixedContentWidth = PR_FALSE;
+      PRBool fixedContentHeight = PR_FALSE;
 
-    nscoord minWidth, maxWidth, minHeight, maxHeight;
+      nscoord minWidth, maxWidth, minHeight, maxHeight;
+      
+      // Determine whether the image has fixed content width
+      widthConstraint = aReflowState.mComputedWidth;
+      minWidth = aReflowState.mComputedMinWidth;
+      maxWidth = aReflowState.mComputedMaxWidth;
+      if (widthConstraint != NS_INTRINSICSIZE) {
+        fixedContentWidth = PR_TRUE;
+      }
 
-    // Determine whether the image has fixed content width
-    widthConstraint = aReflowState.mComputedWidth;
-    minWidth = aReflowState.mComputedMinWidth;
-    maxWidth = aReflowState.mComputedMaxWidth;
-    if (widthConstraint != NS_INTRINSICSIZE) {
-      fixedContentWidth = PR_TRUE;
-    }
+      // Determine whether the image has fixed content height
+      heightConstraint = aReflowState.mComputedHeight;
+      minHeight = aReflowState.mComputedMinHeight;
+      maxHeight = aReflowState.mComputedMaxHeight;
+      if (heightConstraint != NS_UNCONSTRAINEDSIZE) {
+        fixedContentHeight = PR_TRUE;
+      }
 
-    // Determine whether the image has fixed content height
-    heightConstraint = aReflowState.mComputedHeight;
-    minHeight = aReflowState.mComputedMinHeight;
-    maxHeight = aReflowState.mComputedMaxHeight;
-    if (heightConstraint != NS_UNCONSTRAINEDSIZE) {
-      fixedContentHeight = PR_TRUE;
-    }
+      PRBool haveComputedSize = PR_FALSE;
+      PRBool needIntrinsicImageSize = PR_FALSE;
 
-    PRBool haveComputedSize = PR_FALSE;
-    PRBool needIntrinsicImageSize = PR_FALSE;
-
-    nscoord newWidth=0, newHeight=0;
-    if (fixedContentWidth) {
-      newWidth = MINMAX(widthConstraint, minWidth, maxWidth);
-      if (fixedContentHeight) {
-        newHeight = MINMAX(heightConstraint, minHeight, maxHeight);
-        haveComputedSize = PR_TRUE;
-      } else {
-        // We have a width, and an auto height. Compute height from
-        // width once we have the intrinsic image size.
-        if (mIntrinsicSize.height != 0) {
-          newHeight = (mIntrinsicSize.height * newWidth) / mIntrinsicSize.width;
+      nscoord newWidth=0, newHeight=0;
+      if (fixedContentWidth) {
+        newWidth = MINMAX(widthConstraint, minWidth, maxWidth);
+        if (fixedContentHeight) {
+          newHeight = MINMAX(heightConstraint, minHeight, maxHeight);
           haveComputedSize = PR_TRUE;
         } else {
-          newHeight = 0;
+          // We have a width, and an auto height. Compute height from
+          // width once we have the intrinsic image size.
+          if (mIntrinsicSize.height != 0) {
+            newHeight = (mIntrinsicSize.height * newWidth) / mIntrinsicSize.width;
+            haveComputedSize = PR_TRUE;
+          } else {
+            newHeight = 0;
+            needIntrinsicImageSize = PR_TRUE;
+          }
+        }
+      } else if (fixedContentHeight) {
+        // We have a height, and an auto width. Compute width from height
+        // once we have the intrinsic image size.
+        newHeight = MINMAX(heightConstraint, minHeight, maxHeight);
+        if (mIntrinsicSize.width != 0) {
+          newWidth = (mIntrinsicSize.width * newHeight) / mIntrinsicSize.height;
+          haveComputedSize = PR_TRUE;
+        } else {
+          newWidth = 0;
           needIntrinsicImageSize = PR_TRUE;
         }
-      }
-    } else if (fixedContentHeight) {
-      // We have a height, and an auto width. Compute width from height
-      // once we have the intrinsic image size.
-      newHeight = MINMAX(heightConstraint, minHeight, maxHeight);
-      if (mIntrinsicSize.width != 0) {
-        newWidth = (mIntrinsicSize.width * newHeight) / mIntrinsicSize.height;
-        haveComputedSize = PR_TRUE;
       } else {
-        newWidth = 0;
-        needIntrinsicImageSize = PR_TRUE;
+        // auto size the image
+        if (mIntrinsicSize.width == 0 && mIntrinsicSize.height == 0)
+          needIntrinsicImageSize = PR_TRUE;
+        else
+          haveComputedSize = PR_TRUE;
+
+        newWidth = mIntrinsicSize.width;
+        newHeight = mIntrinsicSize.height;
       }
-    } else {
-      // auto size the image
-      if (mIntrinsicSize.width == 0 && mIntrinsicSize.height == 0)
-        needIntrinsicImageSize = PR_TRUE;
-      else
-        haveComputedSize = PR_TRUE;
 
-      newWidth = mIntrinsicSize.width;
-      newHeight = mIntrinsicSize.height;
-    }
-
-    mComputedSize.width = newWidth;
-    mComputedSize.height = newHeight;
+      mComputedSize.width = newWidth;
+      mComputedSize.height = newHeight;
 
 #if 0 // don't do scaled images in bullets
-    if (mComputedSize == mIntrinsicSize) {
-      mTransform.SetToIdentity();
-    } else {
-      if (mComputedSize.width != 0 && mComputedSize.height != 0) {
-        mTransform.SetToScale(float(mIntrinsicSize.width) / float(mComputedSize.width),
-                              float(mIntrinsicSize.height) / float(mComputedSize.height));
+      if (mComputedSize == mIntrinsicSize) {
+        mTransform.SetToIdentity();
+      } else {
+        if (mComputedSize.width != 0 && mComputedSize.height != 0) {
+          mTransform.SetToScale(float(mIntrinsicSize.width) / float(mComputedSize.width),
+                                float(mIntrinsicSize.height) / float(mComputedSize.height));
+        }
       }
-    }
 #endif
 
-    aMetrics.width = mComputedSize.width;
-    aMetrics.height = mComputedSize.height;
+      aMetrics.width = mComputedSize.width;
+      aMetrics.height = mComputedSize.height;
 
-#if 0
-    mImageLoader.GetDesiredSize(aCX, &aReflowState, aMetrics);
-    if (!mImageLoader.GetLoadImageFailed()) {
-      nsHTMLContainerFrame::CreateViewForFrame(aCX, this, mStyleContext, nsnull,
-                                               PR_FALSE);
       aMetrics.ascent = aMetrics.height;
       aMetrics.descent = 0;
+
       return;
     }
-
-#endif
-
-    aMetrics.ascent = aMetrics.height;
-    aMetrics.descent = 0;
-
-    return;
-
   }
 
-  const nsStyleFont* myFont =
-    (const nsStyleFont*)mStyleContext->GetStyleData(eStyleStruct_Font);
+  const nsStyleFont* myFont = GetStyleFont();
   nsCOMPtr<nsIFontMetrics> fm;
   aCX->GetMetricsFor(myFont->mFont, getter_AddRefs(fm));
   nscoord bulletSize;
@@ -1495,7 +1587,7 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
     nsCOMPtr<nsIURI> baseURI;
     GetBaseURI(getter_AddRefs(baseURI));
 
-    const nsStyleList* myList = (const nsStyleList*)mStyleContext->GetStyleData(eStyleStruct_List);
+    const nsStyleList* myList = GetStyleList();
 
     if (!myList->mListStyleImage.IsEmpty()) {
 
@@ -1552,7 +1644,9 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
 
 
         // XXX: initialDocumentURI is NULL !
-        il->LoadImage(newURI, nsnull, documentURI, loadGroup, mListener, aPresContext, nsIRequest::LOAD_NORMAL, nsnull, nsnull, getter_AddRefs(mImageRequest));
+        il->LoadImage(newURI, nsnull, documentURI, loadGroup, mListener, doc,
+                      nsIRequest::LOAD_NORMAL, nsnull, nsnull,
+                      getter_AddRefs(mImageRequest));
       }
     }
   }
@@ -1568,9 +1662,8 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
   aMetrics.ascent += borderPadding.top;
   aMetrics.descent += borderPadding.bottom;
 
-  if (nsnull != aMetrics.maxElementSize) {
-    aMetrics.maxElementSize->width = aMetrics.width;
-    aMetrics.maxElementSize->height = aMetrics.height;
+  if (aMetrics.mComputeMEW) {
+    aMetrics.mMaxElementWidth = aMetrics.width;
   }
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aMetrics);
@@ -1578,16 +1671,25 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
 }
 
 
-NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest, nsIPresContext *aPresContext, imgIContainer *aImage)
+NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest,
+                                              imgIContainer *aImage)
 {
   if (!aImage) return NS_ERROR_INVALID_ARG;
+  if (!aRequest) return NS_ERROR_INVALID_ARG;
+  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
 
+  PRUint32 status;
+  aRequest->GetImageStatus(&status);
+  if (status & imgIRequest::STATUS_ERROR) {
+    return NS_OK;
+  }
+  
   nscoord w, h;
   aImage->GetWidth(&w);
   aImage->GetHeight(&h);
 
   float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
+  mPresContext->GetPixelsToTwips(&p2t);
 
   nsSize newsize(NSIntPixelsToTwips(w, p2t), NSIntPixelsToTwips(h, p2t));
 
@@ -1597,7 +1699,7 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest, nsIPresCont
     // Now that the size is available (or an error occurred), trigger
     // a reflow of the bullet frame.
     nsCOMPtr<nsIPresShell> shell;
-    nsresult rv = aPresContext->GetShell(getter_AddRefs(shell));
+    nsresult rv = mPresContext->GetShell(getter_AddRefs(shell));
     if (NS_SUCCEEDED(rv) && shell) {
       NS_ASSERTION(mParent, "No parent to pass the reflow request up to.");
       if (mParent) {
@@ -1606,7 +1708,7 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest, nsIPresCont
         // has no effect. The reflowing of the bullet frame is done 
         // indirectly.
         nsIFrame* frame = nsnull;
-        mParent->FirstChild(aPresContext, nsnull, &frame);
+        mParent->FirstChild(mPresContext, nsnull, &frame);
         NS_ASSERTION(frame, "No frame to mark dirty for bullet frame.");
         if (frame) {
           nsFrameState state;
@@ -1622,10 +1724,16 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest, nsIPresCont
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletFrame::OnDataAvailable(imgIRequest *aRequest, nsIPresContext *aPresContext, gfxIImageFrame *aFrame, const nsRect *aRect)
+NS_IMETHODIMP nsBulletFrame::OnDataAvailable(imgIRequest *aRequest,
+                                             gfxIImageFrame *aFrame,
+                                             const nsRect *aRect)
 {
   if (!aRect) return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
+  
 
+  // XXX Should we do anything here if an error occured in the decode?
+  
   nsRect r(*aRect);
 
   /* XXX Why do we subtract 1 here?  The rect is (for example): (0, 0, 600, 1)..
@@ -1638,24 +1746,29 @@ NS_IMETHODIMP nsBulletFrame::OnDataAvailable(imgIRequest *aRequest, nsIPresConte
   r.y -= 1;
 
   float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
+  mPresContext->GetPixelsToTwips(&p2t);
   r.x = NSIntPixelsToTwips(r.x, p2t);
   r.y = NSIntPixelsToTwips(r.y, p2t);
   r.width = NSIntPixelsToTwips(r.width, p2t);
   r.height = NSIntPixelsToTwips(r.height, p2t);
 
-  Invalidate(aPresContext, r, PR_FALSE);
+  Invalidate(mPresContext, r, PR_FALSE);
 
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletFrame::OnStopDecode(imgIRequest *aRequest, nsIPresContext *aPresContext, nsresult aStatus, const PRUnichar *aStatusArg)
+NS_IMETHODIMP nsBulletFrame::OnStopDecode(imgIRequest *aRequest,
+                                          nsresult aStatus,
+                                          const PRUnichar *aStatusArg)
 {
   // XXX should the bulletframe do anything if the image failed to load?
   //     it didn't in the old code...
+
 #if 0
+  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
+  
   nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
+  mPresContext->GetShell(getter_AddRefs(presShell));
 
 
   if (NS_FAILED(aStatus)) {
@@ -1669,18 +1782,22 @@ NS_IMETHODIMP nsBulletFrame::OnStopDecode(imgIRequest *aRequest, nsIPresContext 
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletFrame::FrameChanged(imgIContainer *aContainer, nsIPresContext *aPresContext, gfxIImageFrame *aNewFrame, nsRect *aDirtyRect)
+NS_IMETHODIMP nsBulletFrame::FrameChanged(imgIContainer *aContainer,
+                                          gfxIImageFrame *aNewFrame,
+                                          nsRect *aDirtyRect)
 {
+  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
+
   nsRect r(*aDirtyRect);
 
   float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
+  mPresContext->GetPixelsToTwips(&p2t);
   r.x = NSIntPixelsToTwips(r.x, p2t);
   r.y = NSIntPixelsToTwips(r.y, p2t);
   r.width = NSIntPixelsToTwips(r.width, p2t);
   r.height = NSIntPixelsToTwips(r.height, p2t);
 
-  Invalidate(aPresContext, r, PR_FALSE);
+  Invalidate(mPresContext, r, PR_FALSE);
 
   return NS_OK;
 }
@@ -1743,77 +1860,70 @@ NS_IMPL_ISUPPORTS2(nsBulletListener, imgIDecoderObserver, imgIContainerObserver)
 nsBulletListener::nsBulletListener() :
   mFrame(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsBulletListener::~nsBulletListener()
 {
 }
 
-NS_IMETHODIMP nsBulletListener::OnStartDecode(imgIRequest *aRequest, nsISupports *aContext)
+NS_IMETHODIMP nsBulletListener::OnStartDecode(imgIRequest *aRequest)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletListener::OnStartContainer(imgIRequest *aRequest, nsISupports *aContext, imgIContainer *aImage)
+NS_IMETHODIMP nsBulletListener::OnStartContainer(imgIRequest *aRequest,
+                                                 imgIContainer *aImage)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresContext> pc(do_QueryInterface(aContext));
-
-  NS_ASSERTION(pc, "not a pres context!");
-
-  return mFrame->OnStartContainer(aRequest, pc, aImage);
+  return mFrame->OnStartContainer(aRequest, aImage);
 }
 
-NS_IMETHODIMP nsBulletListener::OnStartFrame(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame)
+NS_IMETHODIMP nsBulletListener::OnStartFrame(imgIRequest *aRequest,
+                                             gfxIImageFrame *aFrame)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletListener::OnDataAvailable(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame, const nsRect *aRect)
+NS_IMETHODIMP nsBulletListener::OnDataAvailable(imgIRequest *aRequest,
+                                                gfxIImageFrame *aFrame,
+                                                const nsRect *aRect)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresContext> pc(do_QueryInterface(aContext));
-
-  NS_ASSERTION(pc, "not a pres context!");
-
-  return mFrame->OnDataAvailable(aRequest, pc, aFrame, aRect);
+  return mFrame->OnDataAvailable(aRequest, aFrame, aRect);
 }
 
-NS_IMETHODIMP nsBulletListener::OnStopFrame(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame)
+NS_IMETHODIMP nsBulletListener::OnStopFrame(imgIRequest *aRequest,
+                                            gfxIImageFrame *aFrame)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletListener::OnStopContainer(imgIRequest *aRequest, nsISupports *aContext, imgIContainer *aImage)
+NS_IMETHODIMP nsBulletListener::OnStopContainer(imgIRequest *aRequest,
+                                                imgIContainer *aImage)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsBulletListener::OnStopDecode(imgIRequest *aRequest, nsISupports *aContext, nsresult status, const PRUnichar *statusArg)
+NS_IMETHODIMP nsBulletListener::OnStopDecode(imgIRequest *aRequest,
+                                             nsresult status,
+                                             const PRUnichar *statusArg)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIPresContext> pc(do_QueryInterface(aContext));
-
-  NS_ASSERTION(pc, "not a pres context!");
-
-  return mFrame->OnStopDecode(aRequest, pc, status, statusArg);
+  
+  return mFrame->OnStopDecode(aRequest, status, statusArg);
 }
 
-NS_IMETHODIMP nsBulletListener::FrameChanged(imgIContainer *aContainer, nsISupports *aContext, gfxIImageFrame *newframe, nsRect * dirtyRect)
+NS_IMETHODIMP nsBulletListener::FrameChanged(imgIContainer *aContainer,
+                                             gfxIImageFrame *newframe,
+                                             nsRect * dirtyRect)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresContext> pc(do_QueryInterface(aContext));
-
-  NS_ASSERTION(pc, "not a pres context!");
-
-  return mFrame->FrameChanged(aContainer, pc, newframe, dirtyRect);
+  return mFrame->FrameChanged(aContainer, newframe, dirtyRect);
 }

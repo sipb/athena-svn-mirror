@@ -46,6 +46,7 @@
 #include "nsIPrompt.h"
 #include "nsICertificateDialogs.h"
 #include "nsArray.h"
+#include "nsNSSShutDown.h"
 
 #include "nsNSSCertHeader.h"
 
@@ -70,7 +71,6 @@ NS_IMPL_ISUPPORTS1(nsCRLManager, nsICRLManager)
 
 nsCRLManager::nsCRLManager()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsCRLManager::~nsCRLManager()
@@ -80,6 +80,7 @@ nsCRLManager::~nsCRLManager()
 NS_IMETHODIMP 
 nsCRLManager::ImportCrl (PRUint8 *aData, PRUint32 aLength, nsIURI * aURI, PRUint32 aType, PRBool doSilentDonwload, const PRUnichar* crlKey)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   PRArenaPool *arena = NULL;
   CERTCertificate *caCert;
@@ -191,18 +192,30 @@ done:
         message.Append(NS_LITERAL_STRING("\n").get());
         message.Append(temp);
      
-        if(prompter)
-          prompter->Alert(0, message.get());
+        if(prompter) {
+          nsPSMUITracker tracker;
+          if (!tracker.isUIForbidden()) {
+            prompter->Alert(0, message.get());
+          }
+        }
       }
     } else {
       nsCOMPtr<nsICertificateDialogs> certDialogs;
       // Not being able to display the success dialog should not
       // be a fatal error, so don't return a failure code.
-      if (NS_SUCCEEDED(::getNSSDialogs(getter_AddRefs(certDialogs),
-				       NS_GET_IID(nsICertificateDialogs),
-               NS_CERTIFICATEDIALOGS_CONTRACTID))) {
-	nsCOMPtr<nsIInterfaceRequestor> cxt = new PipUIContext();
-	certDialogs->CrlImportStatusDialog(cxt, crlData);
+      {
+        nsPSMUITracker tracker;
+        if (tracker.isUIForbidden()) {
+          rv = NS_ERROR_NOT_AVAILABLE;
+        }
+        else {
+          rv = ::getNSSDialogs(getter_AddRefs(certDialogs),
+            NS_GET_IID(nsICertificateDialogs), NS_CERTIFICATEDIALOGS_CONTRACTID);
+        }
+      }
+      if (NS_SUCCEEDED(rv)) {
+        nsCOMPtr<nsIInterfaceRequestor> cxt = new PipUIContext();
+        certDialogs->CrlImportStatusDialog(cxt, crlData);
       }
     }
   } else {
@@ -338,6 +351,7 @@ nsCRLManager::RescheduleCRLAutoUpdate(void)
 NS_IMETHODIMP 
 nsCRLManager::GetCrls(nsIArray ** aCrls)
 {
+  nsNSSShutDownPreventionLock locker;
   SECStatus sec_rv;
   CERTCrlHeadNode *head = nsnull;
   CERTCrlNode *node = nsnull;
@@ -378,6 +392,7 @@ loser:
 NS_IMETHODIMP 
 nsCRLManager::DeleteCrl(PRUint32 aCrlIndex)
 {
+  nsNSSShutDownPreventionLock locker;
   CERTSignedCrl *realCrl = nsnull;
   CERTCrlHeadNode *head = nsnull;
   CERTCrlNode *node = nsnull;

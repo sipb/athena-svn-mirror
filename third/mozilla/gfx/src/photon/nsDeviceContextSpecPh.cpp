@@ -42,61 +42,122 @@
 #include "plstr.h"
 #include "nsPhGfxLog.h"
 
+#include "nsGfxCIID.h"
+#include "nsIPrintOptions.h"
+#include "nsIDOMWindow.h"
+#include "nsIDialogParamBlock.h"
+#include "nsISupportsPrimitives.h"
+#include "nsIWindowWatcher.h"
+#include "nsIDOMWindowInternal.h"
+#include "nsVoidArray.h"
+#include "nsSupportsArray.h"
+
 #include "nsString.h"
 #include "nsIServiceManager.h"
 #include "nsReadableUtils.h"
 #include "nsIPref.h"
 
+static NS_DEFINE_CID( kPrintOptionsCID, NS_PRINTOPTIONS_CID );
+
 nsDeviceContextSpecPh :: nsDeviceContextSpecPh()
 {
 	NS_INIT_ISUPPORTS();
-	mPC = nsnull;
+	mPC = PpCreatePC();
 }
 
 nsDeviceContextSpecPh :: ~nsDeviceContextSpecPh()
 {
-	if (mPC)
-		PpPrintReleasePC(mPC);
+	PpPrintReleasePC(mPC);
 }
 
 NS_IMPL_ISUPPORTS1(nsDeviceContextSpecPh, nsIDeviceContextSpec)
 
 
+#define Pp_COLOR_CMYK			4
+#define Pp_COLOR_BW				1
+
 NS_IMETHODIMP nsDeviceContextSpecPh :: Init(nsIWidget* aWidget,
-                                             nsIPrintSettings* aPrintSettings,
+                                             nsIPrintSettings* aPS,
                                              PRBool aQuiet)
 {
 	nsresult rv = NS_OK;
-	int 		action;
-	PtWidget_t 	*parent;
+	PRUnichar *printer        = nsnull;
+	PRBool silent;
 
-  	mPrintSettings = aPrintSettings;
-  	parent = (PtWidget_t *) aWidget->GetNativeData(NS_NATIVE_WINDOW);
+	aPS->GetPrinterName(&printer);
+	aPS->GetPrintSilent( &silent );
 
-	if( !mPC ) 
-		mPC = PpCreatePC();
-
-	if (aQuiet) 
-	{
-		PpLoadDefaultPrinter(mPC);
-	}
-	else
-	{
-		PtSetParentWidget(parent);
-		action = PtPrintSelection(parent, NULL, NULL, mPC, Pt_PRINTSEL_DFLT_LOOK);
-		switch( action ) 
-		{
-			case Pt_PRINTSEL_PRINT:
-			case Pt_PRINTSEL_PREVIEW:
-				rv = NS_OK;
-				break;
-			case Pt_PRINTSEL_CANCEL:
-				rv = NS_ERROR_ABORT;
-				break;
+	if( printer ) {
+		int res = 111;
+		const char *pname = NS_ConvertUCS2toUTF8(printer).get();
+		if( !strcmp( pname, "<Preview>" ) ) {
+			char preview = 1;
+			PpSetPC( mPC, Pp_PC_DO_PREVIEW, &preview, 0 );
+			}
+		else res = PpLoadPrinter( mPC, pname );
 		}
-  	}
+	else PpLoadDefaultPrinter( mPC );
 
-  	return rv;
+	if( !silent ) 
+	{
+		PRBool tofile = PR_FALSE;
+		PRUnichar *printfile = nsnull;
+		PRInt32 copies = 1;
+		PRBool color = PR_FALSE;
+		PRInt32 orientation = nsIPrintSettings::kPortraitOrientation;
+		PRBool reversed = PR_FALSE;
+
+		aPS->GetPrintToFile(&tofile);
+		if( tofile == PR_TRUE ) {
+			aPS->GetToFileName(&printfile);
+			if( printfile ) PpSetPC( mPC, Pp_PC_FILENAME, NS_ConvertUCS2toUTF8(printfile).get(), 0 );
+			}
+
+		aPS->GetNumCopies(&copies);
+		char pcopies = ( char ) copies;
+		PpSetPC( mPC, Pp_PC_COPIES, (void *) &pcopies, 0 );
+
+		aPS->GetPrintInColor(&color);
+		char ink = color == PR_TRUE ? Pp_COLOR_CMYK : Pp_COLOR_BW;
+		PpSetPC( mPC, Pp_PC_INKTYPE, &ink, 0 );
+
+		aPS->GetOrientation(&orientation);
+		char paper_orientation = orientation == nsIPrintSettings::kPortraitOrientation ? 0 : 1;
+		PpSetPC( mPC, Pp_PC_ORIENTATION, &paper_orientation, 0 );
+
+		aPS->GetPrintReversed(&reversed);
+		char rev = reversed == PR_TRUE ? 1 : 0;
+		PpSetPC( mPC, Pp_PC_REVERSED, &rev, 0 );
+
+
+		PRInt16 unit;
+		double width, height;
+		aPS->GetPaperSizeUnit(&unit);
+		aPS->GetPaperWidth(&width);
+		aPS->GetPaperHeight(&height);
+
+		PhDim_t *pdim, dim;
+		PpGetPC( mPC, Pp_PC_PAPER_SIZE, &pdim );
+		dim = *pdim;
+		if( unit == nsIPrintSettings::kPaperSizeInches ) {
+		  dim.w  = width * 1000;
+		  dim.h = height * 1000;
+			}
+		else if( unit == nsIPrintSettings::kPaperSizeMillimeters ) {
+			dim.w = short(NS_TWIPS_TO_INCHES(NS_MILLIMETERS_TO_TWIPS(float(width*1000))));
+			dim.h = short(NS_TWIPS_TO_INCHES(NS_MILLIMETERS_TO_TWIPS(float(height*1000))));
+			}
+
+		PpSetPC( mPC, Pp_PC_PAPER_SIZE, &dim, 0 );
+  }
+	else { /* silent is set - used when the call is comming from the embedded version */
+		PRInt32 p;
+		aPS->GetEndPageRange( &p );
+		PpPrintReleasePC(mPC);
+		mPC = ( PpPrintContext_t *) p;
+		}
+
+ 	return rv;
 }
 
 //NS_IMETHODIMP nsDeviceContextSpecPh :: GetPrintContext(PpPrintContext_t *&aPrintContext) const
@@ -105,20 +166,12 @@ PpPrintContext_t *nsDeviceContextSpecPh :: GetPrintContext()
 	return (mPC);
 }
 
-void nsDeviceContextSpecPh :: SetPrintContext(PpPrintContext_t* pc)
-{
-	if (mPC)
-		PpPrintReleasePC(mPC);
-
-	mPC = pc; 
-}
-
 //***********************************************************
 //  Printer Enumerator
 //***********************************************************
 nsPrinterEnumeratorPh::nsPrinterEnumeratorPh()
 {
-  	NS_INIT_ISUPPORTS();
+		NS_INIT_ISUPPORTS();
 }
 
 nsPrinterEnumeratorPh::~nsPrinterEnumeratorPh()
@@ -139,8 +192,19 @@ nsPrinterEnumeratorPh::EnumeratePrinters(PRUint32* aCount, PRUnichar*** aResult)
 /* readonly attribute wstring defaultPrinterName; */
 NS_IMETHODIMP nsPrinterEnumeratorPh::GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName)
 {
+	char *printer;
+
   NS_ENSURE_ARG_POINTER(aDefaultPrinterName);
-  *aDefaultPrinterName = nsnull;
+
+	PpPrintContext_t *pc = PpCreatePC();
+	if( pc ) {
+		PpLoadDefaultPrinter( pc );
+		PpGetPC( pc, Pp_PC_NAME, &printer );
+
+  	*aDefaultPrinterName = ToNewUnicode( NS_LITERAL_STRING( printer ) );
+		PpReleasePC( pc );
+		}
+	else *aDefaultPrinterName = nsnull;
   return NS_OK;
 }
 
@@ -185,6 +249,9 @@ nsPrinterEnumeratorPh::DoEnumeratePrinters(PRBool aDoExtended, PRUint32* aCount,
 
 	for (pcount = 0; plist[pcount] != NULL; pcount++);
 
+	/* allow a fake <Preview> printer to do the photon native preview */
+	pcount++;
+
 	PRUnichar** array = (PRUnichar**) nsMemory::Alloc(pcount * sizeof(PRUnichar*));
 	if (!array)
 	{
@@ -195,7 +262,11 @@ nsPrinterEnumeratorPh::DoEnumeratePrinters(PRBool aDoExtended, PRUint32* aCount,
 	while (count < pcount) 
 	{
 		nsString newName;
-		newName.AssignWithConversion(plist[count]);
+
+		if( count < pcount-1 )
+			newName.AssignWithConversion(plist[count]);
+		else newName.AssignWithConversion( "<Preview>" );
+
 		PRUnichar *str = ToNewUnicode(newName);
 		if (!str) 
 		{
@@ -211,4 +282,3 @@ nsPrinterEnumeratorPh::DoEnumeratePrinters(PRBool aDoExtended, PRUint32* aCount,
 
 	return NS_OK;
 }
-

@@ -53,9 +53,9 @@
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
 
-static eHTMLTags gTags[] = 
+static const eHTMLTags gTags[] = 
 { eHTMLTag_instruction,
   eHTMLTag_unknown
 };
@@ -63,7 +63,6 @@ static eHTMLTags gTags[] =
 //-------------------------------------------------------------------------
 nsXMLEncodingObserver::nsXMLEncodingObserver()
 {
-  NS_INIT_ISUPPORTS();
   bXMLEncodingObserverStarted = PR_FALSE;
 }
 //-------------------------------------------------------------------------

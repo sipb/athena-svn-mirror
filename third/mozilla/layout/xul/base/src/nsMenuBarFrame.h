@@ -75,6 +75,10 @@ public:
   NS_IMETHOD SetActive(PRBool aActiveFlag); 
   NS_IMETHOD GetIsActive(PRBool& isActive) { isActive = IsActive(); return NS_OK; };
   NS_IMETHOD IsMenuBar(PRBool& isMenuBar) { isMenuBar = PR_TRUE; return NS_OK; };
+  NS_IMETHOD ConsumeOutsideClicks(PRBool& aConsumeOutsideClicks) \
+    {aConsumeOutsideClicks = PR_FALSE; return NS_OK;};
+  NS_IMETHOD ClearRecentlyRolledUp();
+  NS_IMETHOD RecentlyRolledUp(nsIMenuFrame *aMenuFrame, PRBool *aJustRolledUp);
 
   NS_IMETHOD SetIsContextMenu(PRBool aIsContextMenu) { return NS_OK; };
   NS_IMETHOD GetIsContextMenu(PRBool& aIsContextMenu) { aIsContextMenu = PR_FALSE; return NS_OK; }; 
@@ -100,7 +104,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
@@ -137,6 +141,10 @@ protected:
 
   PRBool mIsActive; // Whether or not the menu bar is active (a menu item is highlighted or shown).
   nsIMenuFrame* mCurrentMenu; // The current menu that is active.
+
+  // Can contain a menu that was rolled up via nsIMenuDismissalListener::Rollup()
+  // if nothing has happened since the last click. Otherwise, contains nsnull.
+  nsIMenuFrame* mRecentRollupMenu; 
 
   nsIDOMEventReceiver* mTarget;
 

@@ -28,8 +28,11 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= layout
 XPIDL_MODULE	= layout_base
+GRE_MODULE	= 1
 
 EXPORTS		= \
+nsBidiPresUtils.h \
+nsBidi.h \
 nsCompatibility.h \
 nsFrameList.h \
 nsFrameTraversal.h \
@@ -47,7 +50,6 @@ nsIFrameTraversal.h \
 nsIFrameUtil.h \
 nsIImageFrame.h \
 nsIImageMap.h \
-nsIIndependentSelection.h \
 nsILayoutDebugger.h \
 nsILayoutHistoryState.h \
 nsIMutableStyleContext.h \
@@ -63,22 +65,15 @@ nsIReflowCallback.h \
 nsIScrollableFrame.h \
 nsIScrollableViewProvider.h \
 nsIStatefulFrame.h \
-nsIStyleContext.h \
 nsIStyleFrameConstruction.h \
 nsIStyleSet.h \
+nsLayoutErrors.h \
+nsLayoutUtils.h \
 nsReflowType.h \
 nsStyleChangeList.h \
 nsStyleConsts.h \
 nsIFrameFrame.h \
 $(NULL)
-
-ifdef IBMBIDI
-EXPORTS		+= \
-		nsBidiPresUtils.h \
-		nsBidi.h \
-		nsITextFrame.h \
-		$(NULL)
-endif                
 
 XPIDLSRCS	= \
 		nsIChromeEventHandler.idl	\

@@ -58,6 +58,8 @@ class nsIWidget;
 0x80a98c80, 0x2036, 0x11d2, \
 {0xbd, 0x89, 0x00, 0x80, 0x5f, 0x8a, 0xe3, 0xf4} }
 
+#define NS_EVENT_NEEDS_FRAME(event) (!NS_IS_FOCUS_EVENT(event))
+
 class nsIEventStateManager : public nsISupports {
 
 public:
@@ -66,16 +68,16 @@ public:
   NS_IMETHOD Init() = 0;
 
   NS_IMETHOD PreHandleEvent(nsIPresContext* aPresContext, 
-                         nsEvent *aEvent, 
-                         nsIFrame* aTargetFrame,
-                         nsEventStatus* aStatus,
-                         nsIView* aView) = 0;
+                            nsEvent *aEvent, 
+                            nsIFrame* aTargetFrame,
+                            nsEventStatus* aStatus,
+                            nsIView* aView) = 0;
 
   NS_IMETHOD PostHandleEvent(nsIPresContext* aPresContext, 
-                         nsEvent *aEvent, 
-                         nsIFrame* aTargetFrame,
-                         nsEventStatus* aStatus,
-                         nsIView* aView) = 0;
+                             nsEvent *aEvent, 
+                             nsIFrame* aTargetFrame,
+                             nsEventStatus* aStatus,
+                             nsIView* aView) = 0;
 
   NS_IMETHOD SetPresContext(nsIPresContext* aPresContext) = 0;
   NS_IMETHOD ClearFrameRefs(nsIFrame* aFrame) = 0;
@@ -90,10 +92,13 @@ public:
   NS_IMETHOD GetFocusedContent(nsIContent **aContent) = 0;
   NS_IMETHOD SetFocusedContent(nsIContent* aContent) = 0;
 
+  NS_IMETHOD GetFocusedFrame(nsIFrame **aFrame) = 0;
+
   NS_IMETHOD ContentRemoved(nsIContent* aContent) = 0;
   NS_IMETHOD EventStatusOK(nsGUIEvent* aEvent, PRBool *aOK) = 0;
 
   // This is called when browse with caret changes on the fly
+  NS_IMETHOD GetBrowseWithCaret(PRBool *aBrowseWithCaret) = 0;
   NS_IMETHOD ResetBrowseWithCaret(PRBool *aBrowseWithCaret) = 0;
 
   // This is called after find text or when a cursor movement key is pressed
@@ -123,8 +128,9 @@ public:
 #define NS_EVENT_STATE_FOCUS        0x0002 // content has focus
 #define NS_EVENT_STATE_HOVER        0x0004 // mouse is hovering over content
 #define NS_EVENT_STATE_DRAGOVER     0x0008 // drag  is hovering over content
+#define NS_EVENT_STATE_URLTARGET    0x0010 // content is URL's target (ref)
 // The following states are used only for ContentStatesChanged
-#define NS_EVENT_STATE_CHECKED      0x0010
+#define NS_EVENT_STATE_CHECKED      0x0020
 
 enum EFocusedWithType {
   eEventFocusedByUnknown,     // focus gained via unknown method

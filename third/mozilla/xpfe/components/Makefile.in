@@ -26,15 +26,14 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+ifndef MOZ_THUNDERBIRD
 DIRS	= \
-			bookmarks \
 			directory \
 			filepicker \
 			find \
 			search \
 			sidebar \
 			related \
-			regviewer \
 			prefwindow \
 			shistory \
 			timebomb \
@@ -47,18 +46,51 @@ DIRS	= \
 			$(NULL)
 
 ifndef MOZ_PHOENIX
-DIRS += autocomplete history urlbarhistory download-manager
-endif
-
-ifdef MOZ_ENABLE_XREMOTE
-DIRS		+= xremote
+DIRS += \
+		autocomplete \
+		bookmarks \
+		download-manager \
+		history \
+		urlbarhistory \
+		$(NULL)
 endif
 
 ifeq ($(OS_ARCH),WINNT)
 DIRS		+= winhooks urlwidget alerts
 endif
 
+else
+
+DIRS    = \
+          intl \
+	  find \
+          download-manager \
+          autocomplete \
+          windowds \
+          prefwindow \
+          console \
+          sidebar/public \
+          history/public \
+          shistory/public \
+          bookmarks/public \
+          timebomb \
+          $(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+DIRS    += alerts winhooks
+endif
+
+endif
+
+ifdef MOZ_ENABLE_XREMOTE
+DIRS		+= xremote
+endif
+
+ifndef MOZ_THUNDERBIRD
 DIRS		+= build
+else
+DIRS	        += build2
+endif
 
 include $(topsrcdir)/config/rules.mk
 

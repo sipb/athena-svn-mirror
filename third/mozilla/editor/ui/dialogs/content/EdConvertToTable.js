@@ -62,8 +62,6 @@ function Startup()
   // Set initial enable state on character input and "collapse" checkbox
   SelectCharacter(gIndex);
 
-  SetTextboxFocus(gDialog.sepRadioGroup);
-
   SetWindowLocation();
 }
 
@@ -109,7 +107,6 @@ function onAccept()
   var str;
   try {
     // 1 = OutputSelectionOnly, 1024 = OutputLFLineBreak
-    // 256 = OutputEncodeEntities
     str = editor.outputToString("text/html", 1+1024);
   } catch (e) {}
   if (!str)

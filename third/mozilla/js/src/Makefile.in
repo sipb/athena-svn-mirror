@@ -41,6 +41,8 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= js
 LIBRARY_NAME	= mozjs
+LIB_IS_C_ONLY	= 1
+GRE_MODULE	= 1
 
 ifeq ($(OS_ARCH),WINNT)
 LIBRARY_NAME	= js$(MOZ_BITS)$(VERSION_NUMBER)
@@ -52,10 +54,6 @@ endif
 # the js code getting copied into xpinstall and jsd as well as mozilla-bin,
 # and then the static data cells used for locking no longer work.
 FORCE_SHARED_LIB = 1
-
-ifdef NS_TRACE_MALLOC
-REQUIRES	= xpcom
-endif
 
 CSRCS		= \
 		jsapi.c \
@@ -237,9 +235,14 @@ endif
 LDFLAGS		+= $(pathsubst -l%,$(NSPR_STATIC_PATH)/%.a,$(NSPR_LIBS))
 
 # BeOS and HP-UX do not require the extra linking of "-lm"
-ifeq (,$(filter BeOS HP-UX WINNT,$(OS_ARCH)))
+ifeq (,$(filter BeOS HP-UX WINNT OpenVMS,$(OS_ARCH)))
 LDFLAGS		+= -lm
 endif
+
+# Prevent floating point errors caused by VC++ optimizations
+ifeq ($(OS_ARCH)_$(GNU_CC),WINNT_)
+CFLAGS += /Op
+endif # WINNT
 
 ifeq ($(OS_ARCH),FreeBSD)
 LDFLAGS		+= -pthread
@@ -287,19 +290,21 @@ ifeq ($(OS_ARCH),IRIX)
 ifndef GNU_CC
 _COMPILE_CFLAGS  = $(patsubst -O%,-O1,$(COMPILE_CFLAGS))
 jsapi.o jsarena.o jsarray.o jsatom.o jsemit.o jsfun.o jsinterp.o jsregexp.o jsparse.o jsopcode.o jsscript.o: %.o: %.c Makefile.in
+	$(REPORT_BUILD)
+	@$(MAKE_DEPS_AUTO)
 	$(CC) -o $@ -c $(_COMPILE_CFLAGS) $<
 endif
 endif
 
 # On OS/2 & win32 we are already linking against fdlibm, so don't bother
 # creating jsmathtemp
-ifeq (,$(filter OS2 WINNT,$(OS_ARCH)))
+ifeq (,$(filter OS2 WINNT OpenVMS,$(OS_ARCH)))
 # special rule for jsmath.o since we want to incrementally link
 # against fdlibm to pull in only what is needed
 # Do this in a single step to avoid dependency problems
 jsmath.o: jsmath.c $(FDLIBM_LIBRARY) Makefile.in
 	$(REPORT_BUILD)
-	@$(MAKE_DEPS)
+	@$(MAKE_DEPS_AUTO)
 	$(ELOG) $(CC) $(OUTOPTION)$(JSMATH_PRELINK) -c $(COMPILE_CFLAGS) $<
 ifeq ($(OS_ARCH),QNX)
 ifneq ($(OS_TARGET),NTO)
@@ -320,22 +325,13 @@ endif
 # This suppresses optimization for this single compilation unit.
 ifeq ($(OS_ARCH),AIX)
 jsatom.o: jsatom.c Makefile.in
+	$(REPORT_BUILD)
+	@$(MAKE_DEPS_AUTO)
 	$(CC) -o $@ -c $(filter-out $(MOZ_OPTIMIZE_FLAGS), $(COMPILE_CFLAGS)) $<
 jsdtoa.o: jsdtoa.c Makefile.in
+	$(REPORT_BUILD)
+	@$(MAKE_DEPS_AUTO)
 	$(CC) -o $@ -c $(filter-out $(MOZ_OPTIMIZE_FLAGS), $(COMPILE_CFLAGS)) $<
-endif
-
-# MSVC '-Gy' optimization flag causes JS_GetArgument and JS_GetLocalVariable
-# to be folded to the same address by the linker, leading to a crash on
-# startup. bug 151066 So, make sure '-Gy' is not used, and for optimization
-# levels "O[12]?", use the flags for '-O1' except for '-Gy'.
-#
-# N.B.: 'identical COMDAT folding' that folds functions whose addresses
-# are taken violates the ISO C and C++ standards.
-ifeq (_WINNT,$(GNU_CC)_$(OS_ARCH))
-jsinterp.obj: jsinterp.c
-	$(CC) -o $@ -c $(shell echo '$(COMPILE_CFLAGS)' | sed 's/-Gy//g' \
-	      | sed 's/-O\([12]\)\?/-Og -Os -Oy -Ob1 -Gs -Gf/g') $(srcdir)/$*.c
 endif
 
 $(FDLIBM_LIBRARY):

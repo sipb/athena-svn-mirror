@@ -28,13 +28,15 @@
 #include "nscore.h"
 #include "nsCOMPtr.h"
 #include "nsString.h"
+#include "nsXPIDLString.h"
 #include "plstr.h"
 #include "nsReadableUtils.h"
 #include "prlog.h"
 #include "nsMemory.h"
 
 #include "nsIServiceManager.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIPrincipal.h"
 
 #include "nsIDocument.h"
@@ -47,7 +49,6 @@
 #define MAXCOL 4096            // Maximum columns in line buffer
 
 static NS_DEFINE_IID(kISupportsIID,     NS_ISUPPORTS_IID);
-static NS_DEFINE_CID(kPrefServiceCID,   NS_PREF_CID);
 
 static NS_DEFINE_IID(kILineTermIID,     MOZILINETERM_IID);
 static NS_DEFINE_IID(kILineTermAuxIID,  MOZILINETERMAUX_IID);
@@ -94,7 +95,7 @@ mozLineTerm::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
     mLoggingInitialized = PR_TRUE;
 
     char* logStr = (char*) PR_GetEnv("LTERM_LOG");
-    if (logStr && (strlen(logStr) > 0)) {
+    if (logStr && *logStr) {
       // Enable LineTerm logging
       mozLineTerm::mLoggingEnabled = PR_TRUE;
     }
@@ -114,7 +115,6 @@ mozLineTerm::mozLineTerm() :
   mCookie(nsAutoString()),
   mLastTime(LL_ZERO)
 {
-  NS_INIT_ISUPPORTS();
   mLTerm = lterm_new();
 }
 
@@ -139,15 +139,13 @@ NS_IMETHODIMP mozLineTerm::ArePrefsSecure(PRBool *_retval)
 
   *_retval = PR_FALSE;
 
-  nsIPref* prefService;
-  nsServiceManager::GetService(kPrefServiceCID, NS_GET_IID(nsIPref), 
-                               (nsISupports**) &prefService);
-  if (!prefService)
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (!prefBranch)
     return NS_ERROR_FAILURE;
 
   // Check if Components JS object is secure
   PRBool checkXPC;
-  result = prefService->GetBoolPref("security.checkxpconnect", &checkXPC);
+  result = prefBranch->GetBoolPref("security.checkxpconnect", &checkXPC);
   if (NS_FAILED(result))
     return NS_ERROR_FAILURE;
 
@@ -163,33 +161,30 @@ NS_IMETHODIMP mozLineTerm::ArePrefsSecure(PRBool *_retval)
 
   nsCAutoString secString ("security.policy.");
   /* Get global policy name. */
-  char *policyStr;
+  nsXPIDLCString policyStr;
 
-  result = prefService->CopyCharPref("javascript.security_policy", &policyStr);
-  if (NS_SUCCEEDED(result) && policyStr) {
+  result = prefBranch->GetCharPref("javascript.security_policy",
+                                   getter_Copies(policyStr));
+  if (NS_SUCCEEDED(result) && !policyStr.IsEmpty()) {
     secString.Append(policyStr);
-    nsMemory::Free(policyStr);
   } else {
     secString.Append("default");
   }
 
   secString.Append(".htmldocument.cookie");
 
-  char* prefStr = ToNewCString(secString);
-  XMLT_LOG(mozLineTerm::ArePrefsSecure,32, ("prefStr=%s\n", prefStr));
+  XMLT_LOG(mozLineTerm::ArePrefsSecure,32, ("prefStr=%s\n", secString.get()));
 
-  char *secLevelString;
-  result = prefService->CopyCharPref(prefStr, &secLevelString);
-  nsMemory::Free(prefStr);
+  nsXPIDLCString secLevelString;
+  result = prefBranch->GetCharPref(secString.get(), getter_Copies(secLevelString));
 
-  if (NS_FAILED(result) || !secLevelString)
+  if (NS_FAILED(result))
     return NS_ERROR_FAILURE;
 
   XMLT_LOG(mozLineTerm::ArePrefsSecure,32,
-           ("secLevelString=%s\n", secLevelString));
+           ("secLevelString=%s\n", secLevelString.get()));
 
-  *_retval = (PL_strcmp(secLevelString, "sameOrigin") == 0);
-  nsMemory::Free(secLevelString);
+  *_retval = secLevelString.Equals(NS_LITERAL_CSTRING("sameOrigin"));
 
   if (!(*_retval)) {
     XMLT_ERROR("mozLineTerm::ArePrefsSecure: Error - Please add the line\n"
@@ -308,7 +303,7 @@ NS_IMETHODIMP mozLineTerm::OpenAux(const PRUnichar *command,
   if (NS_FAILED(result))
     return NS_ERROR_FAILURE;
 
-  if (strlen(securePrincipal) == 0) {
+  if (!*securePrincipal) {
     nsMemory::Free(securePrincipal);
     XMLT_ERROR("mozLineTerm::OpenAux: Error - "
                "Failed to create LineTerm for insecure document principal\n");

@@ -29,18 +29,20 @@
 
 #include "nsIEnumerator.h"
 #include "prprf.h"
-#include "nsSpecialSystemDirectory.h"
 #include "nsCOMPtr.h"
 #include "nsIComponentManager.h"
-#include "nsFileStream.h"
 #include "nsEscape.h"
 #include "nsDirectoryServiceDefs.h"
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsILocalFile.h"
 #include "nsReadableUtils.h"
 
-#ifdef XP_MAC
+#include "nsIFileSpec.h"
+
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #include <Processes.h>
+#include <CFBundle.h>
+#include "nsILocalFileMac.h"
 #endif
 
 #ifdef XP_UNIX
@@ -50,6 +52,10 @@
 #include <signal.h>
 #include "prnetdb.h"
 #include "prsystem.h"
+#endif
+
+#ifdef VMS
+#include <rmsdef.h>
 #endif
 
 #include "nsICharsetConverterManager.h"
@@ -95,6 +101,7 @@ static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CI
 #define kRegistryVersionString (NS_LITERAL_STRING("Version"))
 #define kRegistryVersion_1_0 (NS_LITERAL_STRING("1.0"))
 #define kRegistryCurrentVersion (NS_LITERAL_STRING("1.0"))
+#define kRegistryStartWithLastString (NS_LITERAL_CSTRING("AutoStartWithLast"))
 
 // **********************************************************************
 // class nsProfileAccess
@@ -109,6 +116,7 @@ nsProfileAccess::nsProfileAccess()
     mProfileDataChanged  =  PR_FALSE;
     mForgetProfileCalled =  PR_FALSE;
     m4xProfilesAdded     =  PR_FALSE;
+    mStartWithLastProfile = PR_FALSE;
     mProfiles            =  new nsVoidArray();
 
     // Get the profile registry path
@@ -347,6 +355,14 @@ nsProfileAccess::FillProfileInfo(nsIFile* regName)
         mHavePREGInfo = kRegistryNoString;
         mProfileDataChanged = PR_TRUE;
     }
+    
+    // Get the StartWithLastProfile flag
+    PRInt32 tempLong;
+    rv = registry->GetInt(profilesTreeKey,
+                           kRegistryStartWithLastString.get(),
+                           &tempLong);
+    if (NS_SUCCEEDED(rv))
+        mStartWithLastProfile = tempLong;
 
     rv = registry->EnumerateSubtrees( profilesTreeKey, getter_AddRefs(enumKeys));
     if (NS_FAILED(rv)) return rv;
@@ -688,6 +704,12 @@ nsProfileAccess::UpdateRegistry(nsIFile* regName)
                              mHavePREGInfo.get());
     if (NS_FAILED(rv)) return rv;
 
+    // Set the StartWithLastProfile flag
+    rv = registry->SetInt(profilesTreeKey,
+                          kRegistryStartWithLastString.get(),
+                          mStartWithLastProfile);
+    if (NS_FAILED(rv)) return rv;
+
     rv = registry->EnumerateSubtrees(profilesTreeKey, getter_AddRefs(enumKeys));
     if (NS_FAILED(rv)) return rv;
 
@@ -913,6 +935,22 @@ nsProfileAccess::SetProfileLastModTime(const PRUnichar *profileName, PRInt64 las
     return NS_ERROR_FAILURE;
 }
 
+nsresult
+nsProfileAccess::GetStartWithLastUsedProfile(PRBool *aStartWithLastUsedProfile)
+{
+    NS_ENSURE_ARG_POINTER(aStartWithLastUsedProfile);
+    *aStartWithLastUsedProfile = mStartWithLastProfile;
+    return NS_OK;
+}
+
+nsresult
+nsProfileAccess::SetStartWithLastUsedProfile(PRBool aStartWithLastUsedProfile)
+{
+    mStartWithLastProfile = aStartWithLastUsedProfile;
+    mProfileDataChanged = PR_TRUE;
+    return NS_OK;
+}
+
 // Return the list of profiles, 4x, 5x, or both.
 nsresult
 nsProfileAccess::GetProfileList(PRInt32 whichKind, PRUint32 *length, PRUnichar ***result)
@@ -1015,7 +1053,7 @@ nsProfileAccess::ProfileExists(const PRUnichar *profileName)
 
 // Capture the 4x profile information from the old registry (4x)
 nsresult
-nsProfileAccess::Get4xProfileInfo(const char *registryName, PRBool fromImport)
+nsProfileAccess::Get4xProfileInfo(nsIFile *registryFile, PRBool fromImport)
 {
     nsresult rv = NS_OK;
     if (fromImport && m4xProfilesAdded)
@@ -1025,12 +1063,8 @@ nsProfileAccess::Get4xProfileInfo(const char *registryName, PRBool fromImport)
     rv = GetPlatformCharset(charSet);
     if (NS_FAILED(rv)) return rv;
 
-#if defined(XP_PC) || defined(XP_MAC) || defined(XP_MACOSX)
-    NS_ASSERTION(registryName, "Invalid registryName");
-
-    nsCOMPtr<nsILocalFile> registryFile;
-    rv = NS_NewNativeLocalFile(nsDependentCString(registryName), PR_TRUE, getter_AddRefs(registryFile));
-    if (NS_FAILED(rv)) return rv;
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_MAC) || defined(XP_MACOSX)
+    NS_ENSURE_ARG(registryFile);
 
     nsCOMPtr<nsIRegistry> oldReg(do_CreateInstance(NS_REGISTRY_CONTRACTID, &rv));
     if (NS_FAILED(rv)) return rv;
@@ -1386,7 +1420,29 @@ nsresult ProfileStruct::InternalizeLocation(nsIRegistry *aRegistry, nsRegistryKe
 #endif
 
         // Now we have a unicode path - make it into a file
+#if defined(XP_MACOSX)
+        // This is an HFS style path, which can't be used with nsIFile, so convert it.
+        rv = NS_ERROR_FAILURE;
+        CFStringRef pathStrRef = ::CFStringCreateWithCharacters(NULL,
+                                      convertedProfLoc.get(), convertedProfLoc.Length());
+        if (pathStrRef)
+        {
+            CFURLRef pathURLRef = ::CFURLCreateWithFileSystemPath(NULL, pathStrRef, kCFURLHFSPathStyle, true);
+            if (pathURLRef)
+            {
+                rv = NS_NewNativeLocalFile(nsCString(), PR_TRUE, getter_AddRefs(tempLocal));
+                if (NS_SUCCEEDED(rv))
+                {
+                    nsCOMPtr<nsILocalFileMac> tempLocalMac(do_QueryInterface(tempLocal));
+                    rv = tempLocalMac->InitWithCFURL(pathURLRef);
+                }
+                ::CFRelease(pathURLRef);
+            }
+            ::CFRelease(pathStrRef);
+        }
+#else        
         rv = NS_NewLocalFile(convertedProfLoc, PR_TRUE, getter_AddRefs(tempLocal));
+#endif
     }
     else
     {
@@ -1399,17 +1455,12 @@ nsresult ProfileStruct::InternalizeLocation(nsIRegistry *aRegistry, nsRegistryKe
         regLocationData = regData;
 
 #if defined(XP_MAC) || defined(XP_MACOSX)
-        // For a brief time, this was a unicode path
-        PRInt32 firstColon = regLocationData.FindChar(PRUnichar(':'));
-        if (firstColon == -1)
-        {
             rv = NS_NewNativeLocalFile(nsCString(), PR_TRUE, getter_AddRefs(tempLocal));
-            if (NS_SUCCEEDED(rv)) // XXX this only works on XP_MAC because regLocationData is ASCII
-                rv = tempLocal->SetPersistentDescriptor(NS_ConvertUCS2toUTF8(regLocationData));
-        }
-        else
-#endif
+        if (NS_SUCCEEDED(rv)) // regLocationData is ASCII so no loss
+            rv = tempLocal->SetPersistentDescriptor(NS_LossyConvertUCS2toASCII(regLocationData));
+#else
         rv = NS_NewLocalFile(regLocationData, PR_TRUE, getter_AddRefs(tempLocal));
+#endif
     }
 
     if (NS_SUCCEEDED(rv) && tempLocal)
@@ -1537,556 +1588,3 @@ nsresult ProfileStruct::EnsureDirPathExists(nsILocalFile *aDir, PRBool *wasCreat
     return rv;
 }
 
-
-// **********************************************************************
-// class nsProfileLock
-// **********************************************************************
-
-nsProfileLock::nsProfileLock() :
-    mHaveLock(PR_FALSE)
-#if defined (XP_WIN)
-    ,mLockFileHandle(INVALID_HANDLE_VALUE)
-#elif defined (XP_OS2)
-    ,mLockFileHandle(-1)
-#elif defined (XP_UNIX)
-    ,mPidLockFileName(nsnull)
-    ,mLockFileDesc(-1)
-#endif
-{
-#if defined (XP_UNIX)
-    next = prev = this;
-#endif
-}
-
-
-nsProfileLock::nsProfileLock(nsProfileLock& src)
-{
-    *this = src;
-}
-
-
-nsProfileLock& nsProfileLock::operator=(nsProfileLock& rhs)
-{
-    Unlock();
-
-    mHaveLock = rhs.mHaveLock;
-    rhs.mHaveLock = PR_FALSE;
-
-#if defined (XP_MAC)
-    mLockFile = rhs.mLockFile;
-    rhs.mLockFile = nsnull;
-#elif defined (XP_WIN)
-    mLockFileHandle = rhs.mLockFileHandle;
-    rhs.mLockFileHandle = INVALID_HANDLE_VALUE;
-#elif defined (XP_OS2)
-    mLockFileHandle = rhs.mLockFileHandle;
-    rhs.mLockFileHandle = -1;
-#elif defined (XP_UNIX)
-    mLockFileDesc = rhs.mLockFileDesc;
-    rhs.mLockFileDesc = -1;
-    mPidLockFileName = rhs.mPidLockFileName;
-    rhs.mPidLockFileName = nsnull;
-    if (mPidLockFileName)
-    {
-        // rhs had a symlink lock, therefore it was on the list.
-        PR_REMOVE_LINK(&rhs);
-        PR_APPEND_LINK(this, &mPidLockList);
-    }
-#endif
-
-    return *this;
-}
-
-
-nsProfileLock::~nsProfileLock()
-{
-    Unlock();
-}
-
-
-#if defined (XP_UNIX)
-
-static int setupPidLockCleanup;
-
-PRCList nsProfileLock::mPidLockList =
-    PR_INIT_STATIC_CLIST(&nsProfileLock::mPidLockList);
-
-void nsProfileLock::RemovePidLockFiles()
-{
-    while (!PR_CLIST_IS_EMPTY(&mPidLockList))
-    {
-        nsProfileLock *lock = NS_STATIC_CAST(nsProfileLock*, mPidLockList.next);
-        lock->Unlock();
-    }
-}
-
-static struct sigaction SIGHUP_oldact;
-static struct sigaction SIGINT_oldact;
-static struct sigaction SIGQUIT_oldact;
-static struct sigaction SIGILL_oldact;
-static struct sigaction SIGABRT_oldact;
-static struct sigaction SIGSEGV_oldact;
-static struct sigaction SIGTERM_oldact;
-
-#ifdef HAVE_SIGINFO_T
-// There is no standard type definition for the type of sa_sigaction.
-extern "C" {
-typedef void (*my_sigaction_t)(int, siginfo_t*, void*);
-}
-
-void nsProfileLock::FatalSignalHandler(int signo, siginfo_t* info,
-                                       void* context)
-#else
-void nsProfileLock::FatalSignalHandler(int signo)
-#endif
-{
-    // Remove any locks still held.
-    RemovePidLockFiles();
-
-    // Chain to the old handler, which may exit.
-    struct sigaction *oldact = nsnull;
-
-    switch (signo) {
-      case SIGHUP:
-        oldact = &SIGHUP_oldact;
-        break;
-      case SIGINT:
-        oldact = &SIGINT_oldact;
-        break;
-      case SIGQUIT:
-        oldact = &SIGQUIT_oldact;
-        break;
-      case SIGILL:
-        oldact = &SIGILL_oldact;
-        break;
-      case SIGABRT:
-        oldact = &SIGABRT_oldact;
-        break;
-      case SIGSEGV:
-        oldact = &SIGSEGV_oldact;
-        break;
-      case SIGTERM:
-        oldact = &SIGTERM_oldact;
-        break;
-      default:
-        NS_NOTREACHED("bad signo");
-        break;
-    }
-
-    if (oldact) {
-#ifdef HAVE_SIGINFO_T
-        if (oldact->sa_flags & SA_SIGINFO) {
-            if (oldact->sa_sigaction &&
-                oldact->sa_sigaction != (my_sigaction_t) SIG_DFL &&
-                oldact->sa_sigaction != (my_sigaction_t) SIG_IGN)
-            {
-                oldact->sa_sigaction(signo, info, context);
-            }
-        } else
-#endif
-        {
-            if (oldact->sa_handler &&
-                oldact->sa_handler != SIG_DFL &&
-                oldact->sa_handler != SIG_IGN)
-            {
-                oldact->sa_handler(signo);
-            }
-        }
-    }
-
-    // Backstop exit call, just in case.
-    _exit(signo);
-}
-
-#endif /* XP_UNIX */
-
-
-nsresult nsProfileLock::Lock(nsILocalFile* aFile)
-{
-#if defined (XP_UNIX)
-    NS_NAMED_LITERAL_STRING(OLD_LOCKFILE_NAME, "lock");
-    NS_NAMED_LITERAL_STRING(LOCKFILE_NAME, ".parentlock");
-#else
-    NS_NAMED_LITERAL_STRING(LOCKFILE_NAME, "parent.lock");
-#endif
-
-    nsresult rv;
-    NS_ENSURE_STATE(!mHaveLock);
-
-    PRBool isDir;
-    rv = aFile->IsDirectory(&isDir);
-    if (NS_FAILED(rv))
-        return rv;
-    if (!isDir)
-        return NS_ERROR_FILE_NOT_DIRECTORY;
-
-    nsCOMPtr<nsILocalFile> lockFile;
-    rv = aFile->Clone((nsIFile **)((void **)getter_AddRefs(lockFile)));
-    if (NS_FAILED(rv))
-        return rv;
-
-    rv = lockFile->Append(LOCKFILE_NAME);
-    if (NS_FAILED(rv))
-        return rv;
-
-#if defined(XP_MAC)
-    struct LockProcessInfo
-    {
-        ProcessSerialNumber psn;
-        unsigned long launchDate;
-    };
-
-    PRFileDesc *fd = nsnull;
-    PRInt32 ioBytes;
-    ProcessInfoRec processInfo;
-    LockProcessInfo lockProcessInfo;
-
-    rv = lockFile->OpenNSPRFileDesc(PR_RDONLY, 0, &fd);
-    if (NS_SUCCEEDED(rv))
-    {
-        ioBytes = PR_Read(fd, &lockProcessInfo, sizeof(LockProcessInfo));
-        PR_Close(fd);
-
-        if (ioBytes == sizeof(LockProcessInfo))
-        {
-            processInfo.processAppSpec = nsnull;
-            processInfo.processName = nsnull;
-            processInfo.processInfoLength = sizeof(ProcessInfoRec);
-            if (::GetProcessInformation(&lockProcessInfo.psn, &processInfo) == noErr &&
-                processInfo.processLaunchDate == lockProcessInfo.launchDate)
-            {
-                return NS_ERROR_FILE_ACCESS_DENIED;
-            }
-        }
-        else
-        {
-            NS_WARNING("Could not read lock file - ignoring lock");
-        }
-    }
-
-    rv = lockFile->OpenNSPRFileDesc(PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE, 0, &fd);
-    if (NS_FAILED(rv))
-        return rv;
-
-    static LockProcessInfo sSelfInfo;
-    static PRBool sSelfInfoInited;
-
-    if (!sSelfInfoInited)
-    {
-        ProcessSerialNumber psn;
-        if (::GetCurrentProcess(&psn) == noErr)
-        {
-            processInfo.processAppSpec = nsnull;
-            processInfo.processName = nsnull;
-            processInfo.processInfoLength = sizeof(ProcessInfoRec);
-            if (::GetProcessInformation(&psn, &processInfo) == noErr)
-            {
-                sSelfInfo.psn = processInfo.processNumber;
-                sSelfInfo.launchDate = processInfo.processLaunchDate;
-                sSelfInfoInited = PR_TRUE;
-            }
-        }
-    }
-    if (!sSelfInfoInited)
-    {
-        PR_Close(fd);
-        return NS_ERROR_FAILURE;
-    }
-
-    ioBytes = PR_Write(fd, &sSelfInfo, sizeof(LockProcessInfo));
-    PR_Close(fd);
-    if (ioBytes != sizeof(LockProcessInfo))
-        return NS_ERROR_FAILURE;
-    mLockFile = lockFile;
-
-#elif defined(XP_WIN)
-    nsCAutoString filePath;
-    rv = lockFile->GetNativePath(filePath);
-    if (NS_FAILED(rv))
-        return rv;
-    mLockFileHandle = CreateFile(filePath.get(),
-                                 GENERIC_READ | GENERIC_WRITE,
-                                 0, // no sharing - of course
-                                 nsnull,
-                                 OPEN_ALWAYS,
-                                 FILE_FLAG_DELETE_ON_CLOSE,
-                                 nsnull);
-    if (mLockFileHandle == INVALID_HANDLE_VALUE)
-        return NS_ERROR_FILE_ACCESS_DENIED;
-#elif defined(XP_OS2)
-    nsCAutoString filePath;
-    rv = lockFile->GetNativePath(filePath);
-    if (NS_FAILED(rv))
-        return rv;
-
-    ULONG   ulAction = 0;
-    APIRET  rc;
-    rc = DosOpen(filePath.get(),
-                  &mLockFileHandle,
-                  &ulAction,
-                  0,
-                  FILE_NORMAL,
-                  OPEN_ACTION_CREATE_IF_NEW | OPEN_ACTION_OPEN_IF_EXISTS,
-                  OPEN_ACCESS_READWRITE | OPEN_SHARE_DENYREADWRITE | OPEN_FLAGS_NOINHERIT,
-                  0 );
-    if (rc != NO_ERROR)
-    {
-        mLockFileHandle = -1;
-        return NS_ERROR_FILE_ACCESS_DENIED;
-    }
-#elif defined(VMS)
-    nsCAutoString filePath;
-    rv = lockFile->GetNativePath(filePath);
-    if (NS_FAILED(rv))
-        return rv;
-
-    remove(filePath.get());
-    mLockFileDesc = open(filePath.get(), O_WRONLY | O_CREAT | O_EXCL, 0666);
-    if (mLockFileDesc == -1)
-    {
-        NS_ERROR("Failed to open lock file.");
-        return NS_ERROR_FAILURE;
-    }
-#elif defined(XP_UNIX)
-#ifdef USE_SYMLINK_LOCKING
-    nsCOMPtr<nsILocalFile> oldLockFile;
-    rv = aFile->Clone((nsIFile **)((void **)getter_AddRefs(oldLockFile)));
-    if (NS_FAILED(rv))
-        return rv;
-
-    rv = oldLockFile->Append(OLD_LOCKFILE_NAME);
-    if (NS_FAILED(rv))
-        return rv;
-    nsCAutoString oldFilePath;
-    rv = oldLockFile->GetNativePath(oldFilePath);
-    if (NS_FAILED(rv))
-        return rv;
-
-    // First, try the 4.x-compatible symlink technique, which works with NFS
-    // without depending on (broken or missing, too often) lockd.
-    struct in_addr inaddr;
-    inaddr.s_addr = INADDR_LOOPBACK;
-
-    char hostname[256];
-    PRStatus status = PR_GetSystemInfo(PR_SI_HOSTNAME, hostname, sizeof hostname);
-    if (status == PR_SUCCESS)
-    {
-        char netdbbuf[PR_NETDB_BUF_SIZE];
-        PRHostEnt hostent;
-        status = PR_GetHostByName(hostname, netdbbuf, sizeof netdbbuf, &hostent);
-        if (status == PR_SUCCESS)
-            memcpy(&inaddr, hostent.h_addr, sizeof inaddr);
-    }
-
-    char *signature =
-        PR_smprintf("%s:%lu", inet_ntoa(inaddr), (unsigned long)getpid());
-    const char *oldFileName = oldFilePath.get();
-    int symlink_rv, symlink_errno, tries = 0;
-
-    // use ns4.x-compatible symlinks if the FS supports them
-    while ((symlink_rv = symlink(signature, oldFileName)) < 0)
-    {
-        symlink_errno = errno;
-        if (symlink_errno != EEXIST)
-            break;
-
-        // the link exists; see if it's from this machine, and if
-        // so if the process is still active
-        char buf[1024];
-        int len = readlink(oldFileName, buf, sizeof buf - 1);
-        if (len > 0)
-        {
-            buf[len] = '\0';
-            char *colon = strchr(buf, ':');
-            if (colon)
-            {
-                *colon++ = '\0';
-                unsigned long addr = inet_addr(buf);
-                if (addr != (unsigned long) -1)
-                {
-                    char *after = nsnull;
-                    pid_t pid = strtol(colon, &after, 0);
-                    if (pid != 0 && *after == '\0')
-                    {
-                        if (addr != inaddr.s_addr)
-                        {
-                            // Remote lock: give up even if stuck.
-                            break;
-                        }
-
-                        // kill(pid,0) is a neat trick to check if a
-                        // process exists
-                        if (kill(pid, 0) == 0 || errno != ESRCH)
-                        {
-                            // Local process appears to be alive, ass-u-me it
-                            // is another Mozilla instance, or a compatible
-                            // derivative, that's currently using the profile.
-                            // XXX need an "are you Mozilla?" protocol
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Lock seems to be bogus: try to claim it.  Give up after a large
-        // number of attempts (100 comes from the 4.x codebase).
-        (void) unlink(oldFileName);
-        if (++tries > 100)
-            break;
-    }
-
-    PR_smprintf_free(signature);
-    signature = nsnull;
-
-    if (symlink_rv == 0)
-    {
-        // We exclusively created the symlink: record its name for eventual
-        // unlock-via-unlink.
-        mPidLockFileName = strdup(oldFileName);
-        if (mPidLockFileName)
-        {
-            PR_APPEND_LINK(this, &mPidLockList);
-            if (!setupPidLockCleanup++)
-            {
-                // Clean up on normal termination.
-                atexit(RemovePidLockFiles);
-
-                // Clean up on abnormal termination, using POSIX sigaction.
-                // Don't arm a handler if the signal is being ignored, e.g.,
-                // because mozilla is run via nohup.
-                struct sigaction act, oldact;
-#ifdef HAVE_SIGINFO_T
-                act.sa_sigaction = FatalSignalHandler;
-                act.sa_flags = SA_SIGINFO;
-#else
-                act.sa_handler = FatalSignalHandler;
-                act.sa_flags = 0;
-#endif
-                sigfillset(&act.sa_mask);
-
-#ifdef HAVE_SIGINFO_T
-
-#define CATCH_SIGNAL(signame)                                                 \
-    PR_BEGIN_MACRO                                                            \
-        if (sigaction(signame, NULL, &oldact) == 0 &&                         \
-            ((oldact.sa_flags & SA_SIGINFO) ?                                 \
-               (oldact.sa_sigaction != (my_sigaction_t) SIG_IGN) :            \
-               (oldact.sa_handler != SIG_IGN)))                               \
-        {                                                                     \
-            sigaction(signame, &act, &signame##_oldact);                      \
-        }                                                                     \
-    PR_END_MACRO
-
-#else
-
-#define CATCH_SIGNAL(signame)                                                 \
-    PR_BEGIN_MACRO                                                            \
-        if (sigaction(signame, NULL, &oldact) == 0 &&                         \
-            (oldact.sa_handler != SIG_IGN))                                   \
-        {                                                                     \
-            sigaction(signame, &act, &signame##_oldact);                      \
-        }                                                                     \
-    PR_END_MACRO
-
-#endif
-
-                CATCH_SIGNAL(SIGHUP);
-                CATCH_SIGNAL(SIGINT);
-                CATCH_SIGNAL(SIGQUIT);
-                CATCH_SIGNAL(SIGILL);
-                CATCH_SIGNAL(SIGABRT);
-                CATCH_SIGNAL(SIGSEGV);
-                CATCH_SIGNAL(SIGTERM);
-
-#undef CATCH_SIGNAL
-            }
-        }
-    }
-    else if (symlink_errno != EEXIST)
-#endif /* USE_SYMLINK_LOCKING */
-    {
-        // Symlinks aren't supported (for example, on Win32 SAMBA servers).
-        // F_SETLK is not well supported on all NFS servers, which is why we
-        // try symlinks first.
-        nsCAutoString filePath;
-        rv = lockFile->GetNativePath(filePath);
-        if (NS_FAILED(rv))
-            return rv;
-
-        mLockFileDesc = open(filePath.get(), O_WRONLY | O_CREAT | O_TRUNC, 0666);
-        if (mLockFileDesc == -1)
-        {
-            NS_ERROR("Failed to open lock file.");
-            return NS_ERROR_FAILURE;
-        }
-        struct flock lock;
-        lock.l_start = 0;
-        lock.l_len = 0; // len = 0 means entire file
-        lock.l_type = F_WRLCK;
-        lock.l_whence = SEEK_SET;
-        if (fcntl(mLockFileDesc, F_SETLK, &lock) == -1)
-        {
-            if (errno == EAGAIN || errno == EACCES)
-                return NS_ERROR_FILE_ACCESS_DENIED;
-            return NS_ERROR_FAILURE;
-        }
-    }
-#ifdef USE_SYMLINK_LOCKING
-    else
-    {
-        // Couldn't create the symlink (but symlink(2) is supported).
-        // This error code will cause the right dialog to be displayed.
-        return NS_ERROR_FILE_ACCESS_DENIED;
-    }
-#endif /* USE_SYMLINK_LOCKING */
-#endif /* XP_UNIX */
-
-    mHaveLock = PR_TRUE;
-
-    return rv;
-}
-
-
-nsresult nsProfileLock::Unlock()
-{
-    nsresult rv = NS_OK;
-
-    if (mHaveLock)
-    {
-#if defined (XP_MAC)
-        if (mLockFile)
-            rv = mLockFile->Remove(PR_FALSE);
-#elif defined (XP_WIN)
-        if (mLockFileHandle != INVALID_HANDLE_VALUE)
-        {
-            CloseHandle(mLockFileHandle);
-            mLockFileHandle = INVALID_HANDLE_VALUE;
-        }
-#elif defined (XP_OS2)
-        if (mLockFileHandle != -1)
-        {
-            DosClose(mLockFileHandle);
-            mLockFileHandle = -1;
-        }
-#elif defined (XP_UNIX)
-        if (mPidLockFileName)
-        {
-            PR_REMOVE_LINK(this);
-            (void) unlink(mPidLockFileName);
-            free(mPidLockFileName);
-            mPidLockFileName = nsnull;
-        }
-        else if (mLockFileDesc != -1)
-        {
-            close(mLockFileDesc);
-            mLockFileDesc = -1;
-            // Don't remove it
-        }
-#endif
-
-        mHaveLock = PR_FALSE;
-    }
-
-    return rv;
-}

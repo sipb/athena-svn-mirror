@@ -42,11 +42,11 @@
 #include "nsILineInputStream.h"
 #include "nsReadableUtils.h"
 #include "nsIPrefMigration.h"
+#include "nsNetCID.h"
 
 
 nsComm4xProfile::nsComm4xProfile()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsComm4xProfile::~nsComm4xProfile()
@@ -70,7 +70,7 @@ nsComm4xProfile::GetProfileList(PRUint32 *length, PRUnichar ***profileNames)
 #define PREF_LENGTH 29
 #define PREF_END "\")"
 NS_IMETHODIMP
-nsComm4xProfile::GetMailDir(const PRUnichar *profileName, char **_retval)
+nsComm4xProfile::GetMailDir(const PRUnichar *profileName, PRUnichar **_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
     *_retval = nsnull;
@@ -95,32 +95,32 @@ nsComm4xProfile::GetMailDir(const PRUnichar *profileName, char **_retval)
         rv = profileLocation->Exists(&exists);
         if (NS_FAILED(rv)) return rv;
         if (exists) {
-            nsXPIDLCString prefValue;
+            nsXPIDLString prefValue;
             rv = GetPrefValue(profileLocation, PREF_NAME, PREF_END, getter_Copies(prefValue));
             if (NS_FAILED(rv)) return rv;
             if (prefValue) {
-#ifdef XP_MAC
-                rv = profileLocation->SetPersistentDescriptor(prefValue);
+#if defined(XP_MAC) || defined(XP_MACOSX)
+                rv = profileLocation->SetPersistentDescriptor(NS_ConvertUCS2toUTF8(prefValue));
                 if (NS_FAILED(rv)) return rv;
-                nsCAutoString nativePath;
-                rv = profileLocation->GetNativePath(nativePath);
+                nsAutoString path;
+                rv = profileLocation->GetPath(path);
                 if (NS_FAILED(rv)) return rv;
-                *_retval = ToNewCString(nativePath);
+                *_retval = ToNewUnicode(path);
 #else
-                *_retval = ToNewCString(prefValue);
+                *_retval = ToNewUnicode(prefValue);
 #endif
             }
-#if defined(XP_PC) || defined(XP_MAC)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_MAC) || defined(XP_MACOSX)
             else {
                 nsCOMPtr <nsIFile> mailLocation;
                 rv =  resolvedLocation->Clone(getter_AddRefs(mailLocation));
                 if (NS_FAILED(rv)) return rv;
                 rv = mailLocation->AppendNative(NS_LITERAL_CSTRING("Mail"));
                 if (NS_FAILED(rv)) return rv;
-                nsCAutoString nativePath;
-                rv = mailLocation->GetNativePath(nativePath);
+                nsAutoString path;
+                rv = mailLocation->GetPath(path);
                 if (NS_FAILED(rv)) return rv;
-                *_retval = ToNewCString(nativePath);
+                *_retval = ToNewUnicode(path);
             }
 #endif
         }
@@ -128,7 +128,7 @@ nsComm4xProfile::GetMailDir(const PRUnichar *profileName, char **_retval)
     return rv;
 }
 
-nsresult nsComm4xProfile::GetPrefValue(nsILocalFile *filePath, const char * prefName, const char * prefEnd, char ** retval)
+nsresult nsComm4xProfile::GetPrefValue(nsILocalFile *filePath, const char * prefName, const char * prefEnd, PRUnichar ** retval)
 {
    nsString buffer;
    PRBool more = PR_TRUE;
@@ -155,11 +155,10 @@ nsresult nsComm4xProfile::GetPrefValue(nsILocalFile *filePath, const char * pref
        if (offset != kNotFound) {
            endOffset = buffer.Find(prefEnd,PR_FALSE, 0, -1);
            if (endOffset != kNotFound) {
-               nsString prefValue;
+               nsAutoString prefValue;
                buffer.Mid(prefValue, offset + PREF_LENGTH, endOffset-(offset + PREF_LENGTH));
                found = PR_TRUE;
-               NS_ConvertUCS2toUTF8 utf8Pref(prefValue.get());
-               *retval = ToNewCString(utf8Pref);
+               *retval = ToNewUnicode(prefValue);
                break;
            }
        }

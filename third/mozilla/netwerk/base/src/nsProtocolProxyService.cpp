@@ -46,9 +46,46 @@
 #include "nsReadableUtils.h"
 #include "nsNetUtil.h"
 #include "nsCRT.h"
+#include "prnetdb.h"
 
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
+
+#define IS_ASCII_SPACE(_c) ((_c) == ' ' || (_c) == '\t')
+
+//
+// apply mask to address (zeros out excluded bits).
+//
+// NOTE: we do the byte swapping here to minimize overall swapping.
+//
+static void MaskIPv6Addr(PRIPv6Addr &addr, PRUint16 mask_len)
+{
+    if (mask_len == 128)
+        return;
+
+    if (mask_len > 96) {
+        addr.pr_s6_addr32[3] = PR_htonl(
+                PR_ntohl(addr.pr_s6_addr32[3]) & (~0L << (128 - mask_len)));
+    }
+    else if (mask_len > 64) {
+        addr.pr_s6_addr32[3] = 0;
+        addr.pr_s6_addr32[2] = PR_htonl(
+                PR_ntohl(addr.pr_s6_addr32[2]) & (~0L << (96 - mask_len)));
+    }
+    else if (mask_len > 32) {
+        addr.pr_s6_addr32[3] = 0;
+        addr.pr_s6_addr32[2] = 0;
+        addr.pr_s6_addr32[1] = PR_htonl(
+                PR_ntohl(addr.pr_s6_addr32[1]) & (~0L << (64 - mask_len)));
+    }
+    else {
+        addr.pr_s6_addr32[3] = 0;
+        addr.pr_s6_addr32[2] = 0;
+        addr.pr_s6_addr32[1] = 0;
+        addr.pr_s6_addr32[0] = PR_htonl(
+                PR_ntohl(addr.pr_s6_addr32[0]) & (~0L << (32 - mask_len)));
+    }
+}
 
 static const char PROXY_PREFS[] = "network.proxy";
 static PRInt32 PR_CALLBACK ProxyPrefsCallback(const char* pref, void* instance)
@@ -59,14 +96,12 @@ static PRInt32 PR_CALLBACK ProxyPrefsCallback(const char* pref, void* instance)
     return 0;
 }
 
-
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsProtocolProxyService, nsIProtocolProxyService);
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsProtocolProxyService::nsProxyInfo, nsIProxyInfo);
 
 
 nsProtocolProxyService::nsProtocolProxyService()
-    : mArrayLock(PR_NewLock())
-    , mUseProxy(0)
+    : mUseProxy(0)
     , mHTTPProxyPort(-1)
     , mFTPProxyPort(-1)
     , mGopherProxyPort(-1)
@@ -74,26 +109,21 @@ nsProtocolProxyService::nsProtocolProxyService()
     , mSOCKSProxyPort(-1)
     , mSOCKSProxyVersion(4)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsProtocolProxyService::~nsProtocolProxyService()
 {
-    if(mArrayLock)
-        PR_DestroyLock(mArrayLock);
-
     if (mFiltersArray.Count() > 0) {
-        mFiltersArray.EnumerateForwards(
-                (nsVoidArrayEnumFunc)this->CleanupFilterArray, nsnull);
+        mFiltersArray.EnumerateForwards(CleanupFilterArray, nsnull);
         mFiltersArray.Clear();
     }
 }
 
 // nsProtocolProxyService methods
-NS_IMETHODIMP
-nsProtocolProxyService::Init() {
-    nsresult rv = NS_OK;
-
+nsresult
+nsProtocolProxyService::Init()
+{
+    nsresult rv;
     mPrefs = do_GetService(kPrefServiceCID, &rv);
     if (NS_FAILED(rv)) return rv;
 
@@ -105,26 +135,8 @@ nsProtocolProxyService::Init() {
     return NS_OK;
 }
 
-NS_METHOD
-nsProtocolProxyService::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult) {
-    nsresult rv;
-    if (aOuter) return NS_ERROR_NO_AGGREGATION;
-
-    nsProtocolProxyService* serv = new nsProtocolProxyService();
-    if (!serv) return NS_ERROR_OUT_OF_MEMORY;
-    NS_ADDREF(serv);
-    rv = serv->Init();
-    if (NS_FAILED(rv)) {
-        delete serv;
-        return rv;
-    }
-    rv = serv->QueryInterface(aIID, aResult);
-    NS_RELEASE(serv);
-    return rv;
-}
-
 void
-nsProtocolProxyService::LoadStringPref(const char *aPref, nsCString &aResult)
+nsProtocolProxyService::GetStringPref(const char *aPref, nsCString &aResult)
 {
     nsXPIDLCString temp;
     nsresult rv;
@@ -141,7 +153,7 @@ nsProtocolProxyService::LoadStringPref(const char *aPref, nsCString &aResult)
 }
 
 void
-nsProtocolProxyService::LoadIntPref(const char *aPref, PRInt32 &aResult)
+nsProtocolProxyService::GetIntPref(const char *aPref, PRInt32 &aResult)
 {
     PRInt32 temp;
     nsresult rv;
@@ -184,38 +196,38 @@ nsProtocolProxyService::PrefsChanged(const char* pref)
     }
 
     if (!pref || !strcmp(pref, "network.proxy.http"))
-        LoadStringPref("network.proxy.http", mHTTPProxyHost);
+        GetStringPref("network.proxy.http", mHTTPProxyHost);
 
     if (!pref || !strcmp(pref, "network.proxy.http_port"))
-        LoadIntPref("network.proxy.http_port", mHTTPProxyPort);
+        GetIntPref("network.proxy.http_port", mHTTPProxyPort);
 
     if (!pref || !strcmp(pref, "network.proxy.ssl"))
-        LoadStringPref("network.proxy.ssl", mHTTPSProxyHost);
+        GetStringPref("network.proxy.ssl", mHTTPSProxyHost);
 
     if (!pref || !strcmp(pref, "network.proxy.ssl_port"))
-        LoadIntPref("network.proxy.ssl_port", mHTTPSProxyPort);
+        GetIntPref("network.proxy.ssl_port", mHTTPSProxyPort);
 
     if (!pref || !strcmp(pref, "network.proxy.ftp"))
-        LoadStringPref("network.proxy.ftp", mFTPProxyHost);
+        GetStringPref("network.proxy.ftp", mFTPProxyHost);
 
     if (!pref || !strcmp(pref, "network.proxy.ftp_port"))
-        LoadIntPref("network.proxy.ftp_port", mFTPProxyPort);
+        GetIntPref("network.proxy.ftp_port", mFTPProxyPort);
 
     if (!pref || !strcmp(pref, "network.proxy.gopher"))
-        LoadStringPref("network.proxy.gopher", mGopherProxyHost);
+        GetStringPref("network.proxy.gopher", mGopherProxyHost);
 
     if (!pref || !strcmp(pref, "network.proxy.gopher_port"))
-        LoadIntPref("network.proxy.gopher_port", mGopherProxyPort);
+        GetIntPref("network.proxy.gopher_port", mGopherProxyPort);
 
     if (!pref || !strcmp(pref, "network.proxy.socks"))
-        LoadStringPref("network.proxy.socks", mSOCKSProxyHost);
+        GetStringPref("network.proxy.socks", mSOCKSProxyHost);
     
     if (!pref || !strcmp(pref, "network.proxy.socks_port"))
-        LoadIntPref("network.proxy.socks_port", mSOCKSProxyPort);
+        GetIntPref("network.proxy.socks_port", mSOCKSProxyPort);
 
     if (!pref || !strcmp(pref, "network.proxy.socks_version")) {
         PRInt32 version;
-        LoadIntPref("network.proxy.socks_version", version);
+        GetIntPref("network.proxy.socks_version", version);
         // make sure this preference value remains sane
         if (version == 5)
             mSOCKSProxyVersion = 5;
@@ -239,50 +251,54 @@ nsProtocolProxyService::PrefsChanged(const char* pref)
 }
 
 // this is the main ui thread calling us back, load the pac now
-void PR_CALLBACK nsProtocolProxyService::HandlePACLoadEvent(PLEvent* aEvent)
+void* PR_CALLBACK
+nsProtocolProxyService::HandlePACLoadEvent(PLEvent* aEvent)
 {
     nsresult rv = NS_OK;
 
     nsProtocolProxyService *pps = 
-        (nsProtocolProxyService*) PL_GetEventOwner(aEvent);
+        (nsProtocolProxyService *) PL_GetEventOwner(aEvent);
     if (!pps) {
         NS_ERROR("HandlePACLoadEvent owner is null");
-        return;
+        return NULL;
     }
 
     // create pac js component
-    pps->mPAC = do_CreateInstance(NS_PROXY_AUTO_CONFIG_CONTRACTID, &rv);
+    pps->mPAC = do_CreateInstance(NS_PROXYAUTOCONFIG_CONTRACTID, &rv);
     if (!pps->mPAC || NS_FAILED(rv)) {
         NS_ERROR("Cannot load PAC js component");
-        return;
+        return NULL;
     }
 
     if (pps->mPACURL.IsEmpty()) {
         NS_ERROR("HandlePACLoadEvent: js PACURL component is empty");
-        return;
+        return NULL;
     }
 
     nsCOMPtr<nsIIOService> pIOService(do_GetService(kIOServiceCID, &rv));
     if (!pIOService || NS_FAILED(rv)) {
         NS_ERROR("Cannot get IO Service");
-        return;
+        return NULL;
     }
 
-    nsCOMPtr<nsIURI> pURL;
-    rv = pIOService->NewURI(pps->mPACURL, nsnull, nsnull, getter_AddRefs(pURL));
+    nsCOMPtr<nsIURI> pURI;
+    rv = pIOService->NewURI(pps->mPACURL, nsnull, nsnull, getter_AddRefs(pURI));
     if (NS_FAILED(rv)) {
         NS_ERROR("New URI failed");
-        return;
+        return NULL;
     }
      
-    rv = pps->mPAC->LoadPACFromURL(pURL, pIOService);
+    rv = pps->mPAC->LoadPACFromURI(pURI, pIOService);
     if (NS_FAILED(rv)) {
         NS_ERROR("Load PAC failed");
-        return;
+        return NULL;
     }
+
+    return NULL;
 }
 
-void PR_CALLBACK nsProtocolProxyService::DestroyPACLoadEvent(PLEvent* aEvent)
+void PR_CALLBACK
+nsProtocolProxyService::DestroyPACLoadEvent(PLEvent* aEvent)
 {
     nsProtocolProxyService *pps = 
         (nsProtocolProxyService*) PL_GetEventOwner(aEvent);
@@ -291,45 +307,162 @@ void PR_CALLBACK nsProtocolProxyService::DestroyPACLoadEvent(PLEvent* aEvent)
 }
 
 PRBool
-nsProtocolProxyService::CanUseProxy(nsIURI* aURI) 
+nsProtocolProxyService::CanUseProxy(nsIURI *aURI, PRInt32 defaultPort) 
 {
     if (mFiltersArray.Count() == 0)
         return PR_TRUE;
 
     PRInt32 port;
     nsCAutoString host;
-    
+ 
     nsresult rv = aURI->GetAsciiHost(host);
     if (NS_FAILED(rv) || host.IsEmpty())
         return PR_FALSE;
-    
+
     rv = aURI->GetPort(&port);
-    if (NS_FAILED(rv)) {
+    if (NS_FAILED(rv))
         return PR_FALSE;
+    if (port == -1)
+        port = defaultPort;
+
+    PRNetAddr addr;
+    PRBool is_ipaddr = (PR_StringToNetAddr(host.get(), &addr) == PR_SUCCESS);
+
+    PRIPv6Addr ipv6;
+    if (is_ipaddr) {
+        // convert parsed address to IPv6
+        if (addr.raw.family == PR_AF_INET) {
+            // convert to IPv4-mapped address
+            PR_ConvertIPv4AddrToIPv6(addr.inet.ip, &ipv6);
+        }
+        else if (addr.raw.family == PR_AF_INET6) {
+            // copy the address
+            memcpy(&ipv6, &addr.ipv6.ip, sizeof(PRIPv6Addr));
+        }
+        else {
+            NS_WARNING("unknown address family");
+            return PR_TRUE; // allow proxying
+        }
     }
     
     PRInt32 index = -1;
-    int host_len = host.Length();
-    int filter_host_len;
-    
     while (++index < mFiltersArray.Count()) {
-        host_port* hp = (host_port*) mFiltersArray[index];
-        
-        // only if port doesn't exist or matches
-        if (((hp->port == -1) || (hp->port == port)) && hp->host) {
-            filter_host_len = hp->host->Length();
-            if ((host_len >= filter_host_len) && 
-                (0 == PL_strncasecmp(host.get() + host_len - filter_host_len, 
-                                     hp->host->get(), filter_host_len)))
-                return PR_FALSE;
+        HostInfo *hinfo = (HostInfo *) mFiltersArray[index];
+
+        if (is_ipaddr != hinfo->is_ipaddr)
+            continue;
+        if (hinfo->port && hinfo->port != port)
+            continue;
+
+        if (is_ipaddr) {
+            // generate masked version of target IPv6 address
+            PRIPv6Addr masked;
+            memcpy(&masked, &ipv6, sizeof(PRIPv6Addr));
+            MaskIPv6Addr(masked, hinfo->ip.mask_len);
+
+            // check for a match
+            if (memcmp(&masked, &hinfo->ip.addr, sizeof(PRIPv6Addr)) == 0)
+                return PR_FALSE; // proxy disallowed
+        }
+        else {
+            PRUint32 host_len = host.Length();
+            PRUint32 filter_host_len = hinfo->name.host_len;
+
+            if (host_len >= filter_host_len) {
+                //
+                // compare last |filter_host_len| bytes of target hostname.
+                //
+                const char *host_tail = host.get() + host_len - filter_host_len;
+                if (!PL_strncasecmp(host_tail, hinfo->name.host, filter_host_len))
+                    return PR_FALSE; // proxy disallowed
+            }
         }
     }
     return PR_TRUE;
 }
 
+static const char kProxyType_HTTP[]   = "http";
+static const char kProxyType_PROXY[]  = "proxy";
+static const char kProxyType_SOCKS[]  = "socks";
+static const char kProxyType_SOCKS4[] = "socks4";
+static const char kProxyType_SOCKS5[] = "socks5";
+static const char kProxyType_DIRECT[] = "direct";
+
+const char *
+nsProtocolProxyService::ExtractProxyInfo(const char *start, PRBool permitHttp, nsProxyInfo **result)
+{
+    // see BNF in nsIProxyAutoConfig.idl
+
+    *result = nsnull;
+
+    // find end of proxy info delimiter
+    const char *end = start;
+    while (*end && *end != ';') ++end;
+
+    // find end of proxy type delimiter
+    const char *sp = start;
+    while (sp < end && *sp != ' ' && *sp != '\t') ++sp;
+
+    PRUint32 len = sp - start;
+    const char *type = nsnull;
+    switch (len) {
+    case 5:
+        if (permitHttp && PL_strncasecmp(start, kProxyType_PROXY, 5) == 0)
+            type = kProxyType_HTTP;
+        else if (PL_strncasecmp(start, kProxyType_SOCKS, 5) == 0)
+            type = kProxyType_SOCKS4; // assume v4 for 4x compat
+        break;
+    case 6:
+        if (PL_strncasecmp(start, kProxyType_DIRECT, 6) == 0)
+            type = kProxyType_DIRECT;
+        else if (PL_strncasecmp(start, kProxyType_SOCKS4, 6) == 0)
+            type = kProxyType_SOCKS4;
+        else if (PL_strncasecmp(start, kProxyType_SOCKS5, 6) == 0)
+            type = kProxyType_SOCKS5;
+        break;
+    }
+    if (type) {
+        const char *host = nsnull, *hostEnd = nsnull;
+        PRInt32 port = -1;
+        // extract host:port
+        start = sp;
+        while ((*start == ' ' || *start == '\t') && start < end)
+            start++;
+        if (start < end) {
+            host = start;
+            hostEnd = strchr(host, ':');
+            if (!hostEnd || hostEnd > end) {
+                hostEnd = end;
+                // no port, so assume default
+                if (type == kProxyType_HTTP)
+                    port = 80;
+                else
+                    port = 1080;
+            }
+            else
+                port = atoi(hostEnd + 1);
+        }
+        nsProxyInfo *pi = new nsProxyInfo;
+        if (pi) {
+            pi->mType = type;
+            // YES, it is ok to specify a null proxy host.
+            if (host) {
+                pi->mHost = PL_strndup(host, hostEnd - host);
+                pi->mPort = port;
+            }
+            NS_ADDREF(*result = pi);
+        }
+    }
+
+    while (*end == ';' || *end == ' ' || *end == '\t')
+        ++end;
+    return end;
+}
+
 // nsIProtocolProxyService
 NS_IMETHODIMP
-nsProtocolProxyService::ExamineForProxy(nsIURI *aURI, nsIProxyInfo* *aResult) {
+nsProtocolProxyService::ExamineForProxy(nsIURI *aURI, nsIProxyInfo **aResult)
+{
     nsresult rv = NS_OK;
     
     NS_ASSERTION(aURI, "need a uri folks.");
@@ -341,7 +474,8 @@ nsProtocolProxyService::ExamineForProxy(nsIURI *aURI, nsIProxyInfo* *aResult) {
     if (NS_FAILED(rv)) return rv;
 
     PRUint32 flags;
-    rv = GetProtocolFlags(scheme.get(), &flags);
+    PRInt32 defaultPort;
+    rv = GetProtocolInfo(scheme.get(), flags, defaultPort);
     if (NS_FAILED(rv)) return rv;
 
     if (!(flags & nsIProtocolHandler::ALLOWS_PROXY))
@@ -349,7 +483,7 @@ nsProtocolProxyService::ExamineForProxy(nsIURI *aURI, nsIProxyInfo* *aResult) {
 
     // if proxies are enabled and this host:port combo is
     // supposed to use a proxy, check for a proxy.
-    if (0 == mUseProxy || (1 == mUseProxy && !CanUseProxy(aURI)))
+    if (0 == mUseProxy || (1 == mUseProxy && !CanUseProxy(aURI, defaultPort)))
         return NS_OK;
 
     // proxy info values
@@ -364,33 +498,26 @@ nsProtocolProxyService::ExamineForProxy(nsIURI *aURI, nsIProxyInfo* *aResult) {
             return NS_OK; // assume DIRECT connection for now
         }
 
-        nsXPIDLCString rawType; // XXX an enum might make better sense here
-
-        rv = mPAC->ProxyForURL(aURI, &host, &port, getter_Copies(rawType));
-        if (NS_SUCCEEDED(rv) && rawType && host) {
-            //
-            // Accept only known values for the proxy type
-            //
-            if (PL_strcasecmp(rawType, "http") == 0) {
-                if (flags & nsIProtocolHandler::ALLOWS_PROXY_HTTP)
-                    type = "http";
+        nsCAutoString proxyStr;
+        rv = mPAC->GetProxyForURI(aURI, proxyStr);
+        if (NS_SUCCEEDED(rv)) {
+            PRBool permitHttp = (flags & nsIProtocolHandler::ALLOWS_PROXY_HTTP);
+            nsProxyInfo *pi, *last = nsnull;
+            const char *p = proxyStr.get();
+            while (*p) {
+                p = ExtractProxyInfo(p, permitHttp, &pi);
+                if (pi) {
+                    if (last)
+                        last->mNext = pi;
+                    else
+                        NS_ADDREF(*aResult = pi);
+                    last = pi;
+                }
             }
-            else if (PL_strcasecmp(rawType, "socks") == 0)
-                type = "socks";
-            else if (PL_strcasecmp(rawType, "socks4") == 0)
-                type = "socks4";
+            // if only DIRECT was specified then return no proxy info.
+            if (last && *aResult == last && last->mType == kProxyType_DIRECT)
+                NS_RELEASE(*aResult);
         }
-
-        if (type) {
-            if (port <= 0)
-                port = -1;
-            return NewProxyInfo_Internal(type, host, port, aResult);
-        }
-
-        // assume errors mean direct - its better than just failing, and
-        // the js conosle will have the specific error
-        if (host)
-            nsMemory::Free(host);
         return NS_OK;
     }
 
@@ -442,11 +569,11 @@ nsProtocolProxyService::NewProxyInfo(const char *aType,
     const char *type = nsnull;
 
     // canonicalize type
-    if (PL_strcasecmp(aType, "http"))
+    if (PL_strcasecmp(aType, "http") == 0)
         type = "http";
-    else if (PL_strcasecmp(aType, "socks"))
+    else if (PL_strcasecmp(aType, "socks") == 0)
         type = "socks";
-    else if (PL_strcasecmp(aType, "socks4"))
+    else if (PL_strcasecmp(aType, "socks4") == 0)
         type = "socks4";
     else
         return NS_ERROR_INVALID_ARG;
@@ -489,11 +616,8 @@ nsProtocolProxyService::ConfigureFromPAC(const char *url)
     // AddRef this because it is being placed in the PLEvent struct
     // It will be Released when DestroyPACLoadEvent is called
     NS_ADDREF_THIS();
-    PL_InitEvent(event, 
-            this,
-            (PLHandleEventProc) 
+    PL_InitEvent(event, this,
             nsProtocolProxyService::HandlePACLoadEvent,
-            (PLDestroyEventProc) 
             nsProtocolProxyService::DestroyPACLoadEvent);
 
     // post the event into the ui event queue
@@ -507,118 +631,156 @@ nsProtocolProxyService::ConfigureFromPAC(const char *url)
 }
 
 NS_IMETHODIMP
-nsProtocolProxyService::GetProxyEnabled(PRBool* o_Enabled)
+nsProtocolProxyService::GetProxyEnabled(PRBool *enabled)
 {
-    if (!o_Enabled)
-        return NS_ERROR_NULL_POINTER;
-    *o_Enabled = mUseProxy;
+    NS_ENSURE_ARG_POINTER(enabled);
+    *enabled = mUseProxy;
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsProtocolProxyService::AddNoProxyFor(const char* iHost, PRInt32 iPort)
+PRBool PR_CALLBACK
+nsProtocolProxyService::CleanupFilterArray(void *aElement, void *aData) 
 {
-    if (!iHost)
-        return NS_ERROR_NULL_POINTER;
+    if (aElement)
+        delete (HostInfo *) aElement;
 
-    host_port* hp = new host_port();
-    if (!hp)
-        return NS_ERROR_OUT_OF_MEMORY;
-    hp->host = new nsCString(iHost);
-    if (!hp->host) {
-        delete hp;
-        return NS_ERROR_OUT_OF_MEMORY;
-    }
-    hp->port = iPort;
-    
-    nsAutoLock lock(mArrayLock);
-    return (mFiltersArray.AppendElement(hp)) ? NS_OK : NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsProtocolProxyService::RemoveNoProxyFor(const char* iHost, PRInt32 iPort)
-{
-    if (!iHost)
-        return NS_ERROR_NULL_POINTER;
-    
-    nsAutoLock lock(mArrayLock);
-
-    if (mFiltersArray.Count()==0)
-        return NS_ERROR_FAILURE;
-
-    PRInt32 index = -1;
-    while (++index < mFiltersArray.Count()) {
-        host_port* hp = (host_port*) mFiltersArray[index];
-        if ((hp && hp->host) && (iPort == hp->port) && 
-            (0 == PL_strcasecmp((const char*)hp->host, iHost))) {
-            delete hp->host;
-            delete hp;
-            mFiltersArray.RemoveElementAt(index);
-            return NS_OK;
-        }
-    }
-    return NS_ERROR_FAILURE; // not found
-}
-
-PRBool 
-nsProtocolProxyService::CleanupFilterArray(void* aElement, void* aData) 
-{
-    if (aElement) {
-        host_port* hp = (host_port*)aElement;
-        delete hp->host;
-        delete hp;
-    }
     return PR_TRUE;
 }
 
 void
-nsProtocolProxyService::LoadFilters(const char* filters)
+nsProtocolProxyService::LoadFilters(const char *filters)
 {
-    host_port* hp;
     // check to see the owners flag? /!?/ TODO
     if (mFiltersArray.Count() > 0) {
-        mFiltersArray.EnumerateForwards(
-            (nsVoidArrayEnumFunc)this->CleanupFilterArray, nsnull);
+        mFiltersArray.EnumerateForwards(CleanupFilterArray, nsnull);
         mFiltersArray.Clear();
     }
 
     if (!filters)
-        return ;//fail silently...
+        return; // fail silently...
 
-    char* np = (char*)filters;
-    while (*np) {
+    //
+    // filter  = ( host | domain | ipaddr ["/" mask] ) [":" port] 
+    // filters = filter *( "," LWS filter)
+    //
+    while (*filters) {
         // skip over spaces and ,
-        while (*np && (*np == ',' || nsCRT::IsAsciiSpace(*np)))
-            np++;
+        while (*filters && (*filters == ',' || IS_ASCII_SPACE(*filters)))
+            filters++;
 
-        char* endproxy = np+1; // at least that...
-        char* portLocation = 0; 
-        PRInt32 nport = 0; // no proxy port
-        while (*endproxy && (*endproxy != ',' && !nsCRT::IsAsciiSpace(*endproxy))) {
-            if (*endproxy == ':')
-                portLocation = endproxy;
-            endproxy++;
+        const char *starthost = filters;
+        const char *endhost = filters + 1; // at least that...
+        const char *portLocation = 0; 
+        const char *maskLocation = 0;
+
+        //
+        // XXX this needs to be fixed to support IPv6 address literals,
+        // which in this context will need to be []-escaped.
+        //
+        while (*endhost && (*endhost != ',' && !IS_ASCII_SPACE(*endhost))) {
+            if (*endhost == ':')
+                portLocation = endhost;
+            else if (*endhost == '/')
+                maskLocation = endhost;
+            endhost++;
         }
-        if (portLocation)
-            nport = atoi(portLocation+1);
 
-        hp = new host_port();
-        if (!hp)
+        filters = endhost; // advance iterator up front
+
+        HostInfo *hinfo = new HostInfo();
+        if (!hinfo)
             return; // fail silently
-        hp->host = new nsCString(np, endproxy-np);
-        if (!hp->host) {
-            delete hp;
-            return;
-        }
-        hp->port = nport>0 ? nport : -1;
+        hinfo->port = portLocation ? atoi(portLocation + 1) : 0;
 
-        mFiltersArray.AppendElement(hp);
-        np = endproxy;
+        // locate end of host
+        const char *end = maskLocation ? maskLocation :
+                          portLocation ? portLocation :
+                          endhost;
+
+        nsCAutoString str(starthost, end - starthost);
+
+        PRNetAddr addr;
+        if (PR_StringToNetAddr(str.get(), &addr) == PR_SUCCESS) {
+            hinfo->is_ipaddr   = PR_TRUE;
+            hinfo->ip.family   = PR_AF_INET6; // we always store address as IPv6
+            hinfo->ip.mask_len = maskLocation ? atoi(maskLocation + 1) : 128;
+
+            if (hinfo->ip.mask_len == 0) {
+                NS_WARNING("invalid mask");
+                goto loser;
+            }
+
+            if (addr.raw.family == PR_AF_INET) {
+                // convert to IPv4-mapped address
+                PR_ConvertIPv4AddrToIPv6(addr.inet.ip, &hinfo->ip.addr);
+                // adjust mask_len accordingly
+                if (hinfo->ip.mask_len <= 32)
+                    hinfo->ip.mask_len += 96;
+            }
+            else if (addr.raw.family == PR_AF_INET6) {
+                // copy the address
+                memcpy(&hinfo->ip.addr, &addr.ipv6.ip, sizeof(PRIPv6Addr));
+            }
+            else {
+                NS_WARNING("unknown address family");
+                goto loser;
+            }
+
+            // apply mask to IPv6 address
+            MaskIPv6Addr(hinfo->ip.addr, hinfo->ip.mask_len);
+        }
+        else {
+            PRUint32 startIndex, endIndex;
+            if (str.First() == '*')
+                startIndex = 1; // *.domain -> .domain
+            else
+                startIndex = 0;
+            endIndex = (portLocation ? portLocation : endhost) - starthost;
+
+            hinfo->is_ipaddr = PR_FALSE;
+            hinfo->name.host = ToNewCString(Substring(str, startIndex, endIndex));
+
+            if (!hinfo->name.host)
+                goto loser;
+
+            hinfo->name.host_len = endIndex - startIndex;
+        }
+
+//#define DEBUG_DUMP_FILTERS
+#ifdef DEBUG_DUMP_FILTERS
+        printf("loaded filter[%u]:\n", mFiltersArray.Count());
+        printf("  is_ipaddr = %u\n", hinfo->is_ipaddr);
+        printf("  port = %u\n", hinfo->port);
+        if (hinfo->is_ipaddr) {
+            printf("  ip.family = %x\n", hinfo->ip.family);
+            printf("  ip.mask_len = %u\n", hinfo->ip.mask_len);
+
+            PRNetAddr netAddr;
+            PR_SetNetAddr(PR_IpAddrNull, PR_AF_INET6, 0, &netAddr);
+            memcpy(&netAddr.ipv6.ip, &hinfo->ip.addr, sizeof(hinfo->ip.addr));
+
+            char buf[256];
+            PR_NetAddrToString(&netAddr, buf, sizeof(buf));
+
+            printf("  ip.addr = %s\n", buf);
+        }
+        else {
+            printf("  name.host = %s\n", hinfo->name.host);
+        }
+#endif
+
+        mFiltersArray.AppendElement(hinfo);
+        hinfo = NULL;
+loser:
+        if (hinfo)
+            delete hinfo;
     }
 }
 
 nsresult
-nsProtocolProxyService::GetProtocolFlags(const char *aScheme, PRUint32 *aFlags)
+nsProtocolProxyService::GetProtocolInfo(const char *aScheme,
+                                        PRUint32 &aFlags,
+                                        PRInt32 &defaultPort)
 {
     nsresult rv;
 
@@ -631,7 +793,10 @@ nsProtocolProxyService::GetProtocolFlags(const char *aScheme, PRUint32 *aFlags)
     rv = mIOService->GetProtocolHandler(aScheme, getter_AddRefs(handler));
     if (NS_FAILED(rv)) return rv;
 
-    return handler->GetProtocolFlags(aFlags);
+    rv = handler->GetProtocolFlags(&aFlags);
+    if (NS_FAILED(rv)) return rv;
+
+    return handler->GetDefaultPort(&defaultPort);
 }
 
 nsresult

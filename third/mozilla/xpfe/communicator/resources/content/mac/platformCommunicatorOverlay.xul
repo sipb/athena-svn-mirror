@@ -25,7 +25,7 @@
          insertbefore="printMenuItem"
          label="&printSetupCmd.label;"
          accesskey="&printSetupCmd.accesskey;"
-         command="Browser:PrintSetup"/>
+         command="cmd_printSetup"/>
     <!-- quit -->
     <menuseparator id="menu_FileQuitSeparator"/>
     <menuitem label="&quitApplicationCmd.label;" id="menu_FileQuitItem"
@@ -51,7 +51,19 @@
          insertafter="printMenuItemToolbar"
          label="&printSetupCmd.label;"
          accesskey="&printSetupCmd.accesskey;"
-         command="Browser:PrintSetup"/>
+         command="cmd_printSetup"/>
   </menupopup>
+
+  <!-- Find As You Type Keys -->
+  <key id="key_findTypeText"
+       key="&findTypeTextCmd.key;"/>
+  <key id="key_findTypeLinks"
+       key="&findTypeLinksCmd.key;"/>
+
+  <menuitem id="printPreviewMenuItem" hidden="true"/>
+  <menuitem id="printPreviewMenuItemToolbar" hidden="true"/>
+  <menuitem id="printPreviewAddressBook" hidden="true"/>
+  <menuitem id="threadPaneContext-printpreview" hidden="true"/>
+  <menuitem id="messagePaneContext-printpreview" hidden="true"/>
 
 </overlay>    

@@ -55,9 +55,6 @@ class nsFrameWindow : public nsWindow
                               nsIAppShell *aAppShell,
                               nsWidgetInitData *aInitData, HWND hwndO);
 
-   // hook so dialog can be created looking like a dialog
-   virtual ULONG GetFCFlags();
-
    // So correct sizing behaviour happens
    PRBool OnReposition( PSWP pSwp);
 
@@ -75,7 +72,6 @@ class nsFrameWindow : public nsWindow
    NS_IMETHOD GetClientBounds( nsRect &aRect);
 
    friend MRESULT EXPENTRY fnwpFrame( HWND, ULONG, MPARAM, MPARAM);
-   virtual ULONG WindowStyle();
    static BOOL fHiddenWindowCreated;
 };
 

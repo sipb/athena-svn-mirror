@@ -40,8 +40,11 @@
 
 #include "nsView.h"
 #include "nsIScrollableView.h"
+#include "nsCOMPtr.h"
+#include "nsITimer.h"
 
 class nsISupportsArray;
+class SmoothScroll;
 
 //this is a class that acts as a container for other views and provides
 //automatic management of scrolling of the views it contains.
@@ -80,7 +83,7 @@ public:
   NS_IMETHOD  SetLineHeight(nscoord aHeight);
   NS_IMETHOD  GetLineHeight(nscoord *aHeight);
   NS_IMETHOD  ScrollByLines(PRInt32 aNumLinesX, PRInt32 aNumLinesY);
-  NS_IMETHOD  ScrollByPages(PRInt32 aNumPages);
+  NS_IMETHOD  ScrollByPages(PRInt32 aNumPagesX, PRInt32 aNumPagesY);
   NS_IMETHOD  ScrollByWhole(PRBool aTop);
   
   NS_IMETHOD  GetClipView(const nsIView** aClipView) const;
@@ -99,6 +102,15 @@ public:
 private:
   NS_IMETHOD_(nsrefcnt) AddRef(void);
   NS_IMETHOD_(nsrefcnt) Release(void);
+  NS_IMETHOD  ScrollToImpl(nscoord aX, nscoord aY, PRUint32 aUpdateFlags);
+
+  // data members
+  SmoothScroll* mSmoothScroll;
+
+  // methods
+  void        IncrementalScroll();
+  PRBool      IsSmoothScrollingEnabled();
+  static void SmoothScrollAnimationCallback(nsITimer *aTimer, void* aESM);
 
 protected:
   virtual ~nsScrollPortView();
@@ -107,7 +119,7 @@ protected:
   void AdjustChildWidgets(nsScrollPortView *aScrolling, nsView *aView, nscoord aDx, nscoord aDy, float aScale);
   void Scroll(nsView *aScrolledView, PRInt32 aDx, PRInt32 aDy, float scale, PRUint32 aUpdateFlags);
   PRBool CannotBitBlt(nsView* aScrolledView);
-protected:
+
   nscoord             mOffsetX, mOffsetY;
   nscoord             mOffsetXpx, mOffsetYpx;
   PRUint32            mScrollProperties;

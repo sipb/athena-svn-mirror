@@ -106,7 +106,6 @@ public:
 
 Observer::Observer()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(Observer, nsIRDFObserver)
@@ -240,13 +239,13 @@ Observer::OnMove(nsIRDFDataSource* aDataSource,
 }
 
 NS_IMETHODIMP
-Observer::BeginUpdateBatch(nsIRDFDataSource* aDataSource)
+Observer::OnBeginUpdateBatch(nsIRDFDataSource* aDataSource)
 {
     return NS_OK;
 }
 
 NS_IMETHODIMP
-Observer::EndUpdateBatch(nsIRDFDataSource* aDataSource)
+Observer::OnEndUpdateBatch(nsIRDFDataSource* aDataSource)
 {
     return NS_OK;
 }

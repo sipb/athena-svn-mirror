@@ -47,9 +47,12 @@
 #include "nsReadableUtils.h"
 #include "nsStaticNameTable.h"
 
+// required to make the symbol external, so that TestCSSPropertyLookup.cpp can link with it
+extern const char* const kCSSRawProperties[];
+
 // define an array of all CSS properties
 #define CSS_PROP(_name, _id, _method, _hint) #_name,
-const char* kCSSRawProperties[] = {
+const char* const kCSSRawProperties[] = {
 #include "nsCSSPropList.h"
 };
 #undef CSS_PROP
@@ -105,8 +108,14 @@ nsCSSProps::LookupProperty(const nsACString& aProperty)
 
 nsCSSProperty 
 nsCSSProps::LookupProperty(const nsAString& aProperty) {
-  nsCAutoString theProp; theProp.AssignWithConversion(aProperty);
-  return LookupProperty(theProp);
+  // This is faster than converting and calling
+  // LookupProperty(nsACString&).  The table will do its own
+  // converting and avoid a PromiseFlatCString() call.
+  NS_ASSERTION(gPropertyTable, "no lookup table, needs addref");
+  if (gPropertyTable) {
+    return nsCSSProperty(gPropertyTable->Lookup(aProperty));
+  }  
+  return eCSSProperty_UNKNOWN;
 }
 
 const nsAFlatCString& 
@@ -129,6 +138,9 @@ const PRInt32 nsCSSProps::kAppearanceKTable[] = {
   eCSSKeyword_button,                 NS_THEME_BUTTON,
   eCSSKeyword_radio,                  NS_THEME_RADIO,
   eCSSKeyword_checkbox,               NS_THEME_CHECKBOX,
+  eCSSKeyword_radio_small,            NS_THEME_RADIO_SMALL,
+  eCSSKeyword_checkbox_small,         NS_THEME_CHECKBOX_SMALL,
+  eCSSKeyword_button_small,           NS_THEME_BUTTON_SMALL,
   eCSSKeyword_toolbox,                NS_THEME_TOOLBOX,
   eCSSKeyword_toolbar,                NS_THEME_TOOLBAR,
   eCSSKeyword_toolbarbutton,          NS_THEME_TOOLBAR_BUTTON,
@@ -225,6 +237,13 @@ const PRInt32 nsCSSProps::kBackgroundColorKTable[] = {
 const PRInt32 nsCSSProps::kBackgroundClipKTable[] = {
   eCSSKeyword_border,     NS_STYLE_BG_CLIP_BORDER,
   eCSSKeyword_padding,    NS_STYLE_BG_CLIP_PADDING,
+  -1,-1
+};
+
+const PRInt32 nsCSSProps::kBackgroundInlinePolicyKTable[] = {
+  eCSSKeyword_each_box,     NS_STYLE_BG_INLINE_POLICY_EACH_BOX,
+  eCSSKeyword_continuous,   NS_STYLE_BG_INLINE_POLICY_CONTINUOUS,
+  eCSSKeyword_bounding_box, NS_STYLE_BG_INLINE_POLICY_BOUNDING_BOX,
   -1,-1
 };
 
@@ -384,6 +403,8 @@ const PRInt32 nsCSSProps::kCursorKTable[] = {
   eCSSKeyword__moz_count_up, NS_STYLE_CURSOR_COUNT_UP,
   eCSSKeyword__moz_count_down, NS_STYLE_CURSOR_COUNT_DOWN,
   eCSSKeyword__moz_count_up_down, NS_STYLE_CURSOR_COUNT_UP_DOWN,
+  eCSSKeyword__moz_zoom_in, NS_STYLE_CURSOR_MOZ_ZOOM_IN,
+  eCSSKeyword__moz_zoom_out, NS_STYLE_CURSOR_MOZ_ZOOM_OUT,
   -1,-1
 };
 
@@ -802,7 +823,6 @@ const PRInt32 nsCSSProps::kWhitespaceKTable[] = {
   -1,-1
 };
 
-#ifdef INCLUDE_XUL
 // Specific keyword tables for XUL.properties
 const PRInt32 nsCSSProps::kBoxAlignKTable[] = {
   eCSSKeyword_stretch,  NS_STYLE_BOX_ALIGN_STRETCH,
@@ -834,7 +854,6 @@ const PRInt32 nsCSSProps::kBoxPackKTable[] = {
   eCSSKeyword_justify, NS_STYLE_BOX_PACK_JUSTIFY, 
   -1,-1
 };
-#endif
 
 #ifdef MOZ_SVG
 // keyword tables for SVG properties
@@ -936,6 +955,9 @@ static const PRInt32 kBackgroundYPositionKTable[] = {
   case eCSSProperty__moz_background_clip:
     return SearchKeywordTable(aValue, kBackgroundClipKTable);
 
+  case eCSSProperty__moz_background_inline_policy:
+    return SearchKeywordTable(aValue, kBackgroundInlinePolicyKTable);
+
   case eCSSProperty__moz_background_origin:
     return SearchKeywordTable(aValue, kBackgroundOriginKTable);
 
@@ -954,7 +976,6 @@ static const PRInt32 kBackgroundYPositionKTable[] = {
   case eCSSProperty_border_collapse:
     return SearchKeywordTable(aValue, kBorderCollapseKTable);
 
-#ifdef INCLUDE_XUL
   case eCSSProperty_box_align:
     return SearchKeywordTable(aValue, kBoxAlignKTable);
   case eCSSProperty_box_direction:
@@ -963,7 +984,6 @@ static const PRInt32 kBackgroundYPositionKTable[] = {
     return SearchKeywordTable(aValue, kBoxOrientKTable);
   case eCSSProperty_box_pack:
     return SearchKeywordTable(aValue, kBoxPackKTable);
-#endif
 
 #ifdef MOZ_SVG
   case eCSSProperty_fill:

@@ -35,3 +35,6 @@
 
 <!ENTITY downloadManagerCmd.label "Download Manager">
 <!ENTITY downloadManagerCmd.accesskey "D">
+
+<!ENTITY switchProfileCmd.label "Switch Profile...">
+<!ENTITY switchProfileCmd.accesskey "h">

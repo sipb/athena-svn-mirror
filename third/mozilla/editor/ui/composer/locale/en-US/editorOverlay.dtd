@@ -239,7 +239,8 @@
 <!ENTITY decreaseFontSize.keybinding "-">
 <!ENTITY increaseFontSize.label "Larger">
 <!ENTITY increasefontsize.accesskey "g">
-<!ENTITY increaseFontSize.keybinding "=">
+<!ENTITY increaseFontSize.keybinding "+">
+<!ENTITY increaseFontSize.keybinding2 "="> <!-- + is above this key on many keyboards -->
 
 <!ENTITY fontsizeMenu.label "Size">
 <!ENTITY formatsizemenu.accesskey "z">
@@ -442,7 +443,7 @@
 <!ENTITY tablecellafter.accesskey "f">
 <!-- Delete SubMenu -->
 <!ENTITY tableDeleteMenu.label "Delete">
-<!ENTITY tabledeletemenu.accesskey "e">
+<!ENTITY tabledeletemenu.accesskey "D">
 
 <!ENTITY tableFix.label "Fix Table Layout">
 <!ENTITY tablefix.accesskey "f">
@@ -473,7 +474,6 @@
 <!ENTITY textEditorCmd.label "Plaintext Editor">
 <!ENTITY outputTextCmd.label "Output Text">
 <!ENTITY outputHTMLCmd.label "Output HTML">
-<!ENTITY outputXIFCmd.label "Output XIF">
 <!ENTITY insertTextCmd.label "Insert Text">
 <!ENTITY testSelectionCmd.label "Test Selection">
 <!ENTITY testTableLayoutCmd.label "Test Table Layout">
@@ -483,6 +483,8 @@
 <!ENTITY runUnitTestsCmd.label "Run Unit Tests">
 <!ENTITY dumpUndoStack.label "Dump Undo Stack">
 <!ENTITY dumpRedoStack.label "Dump Redo Stack">
+<!ENTITY executeJSTransactionViaTxmgr.label "Execute JS Transaction Via Transaction Manager">
+<!ENTITY executeJSTransactionViaEditor.label "Execute JS Transaction Via Editor">
 <!ENTITY startLogCmd.label "Start Log">
 <!ENTITY stopLogCmd.label "Stop Log">
 <!ENTITY runLogCmd.label "Run Log">
@@ -575,16 +577,6 @@
 -->
 <!ENTITY SourceTabDirection "ltr">
 
-<!-- Smiley Menu items -->
-<!ENTITY smiley1Cmd.label "Smile">
-<!ENTITY smiley2Cmd.label "Frown">
-<!ENTITY smiley3Cmd.label "Wink">
-<!ENTITY smiley4Cmd.label "Tongue-out">
-<!ENTITY smiley5Cmd.label "Laughing">
-<!ENTITY smiley6Cmd.label "Embarrassed">
-<!ENTITY smiley7Cmd.label "Undecided">
-<!ENTITY SmileButton.tooltip "Choose smiley face">
-
 <!-- Structure Toolbar Context Menu items -->
 <!ENTITY structSelect.label         "Select">
 <!ENTITY structSelect.accesskey     "s">
@@ -592,3 +584,13 @@
 <!ENTITY structRemoveTag.accesskey  "r">
 <!ENTITY structChangeTag.label      "Change tag">
 <!ENTITY structChangeTag.accesskey  "c">
+
+<!-- TOC manipulation -->
+<!ENTITY insertTOC.label          "Insert">
+<!ENTITY insertTOC.accesskey      "i">
+<!ENTITY updateTOC.label          "Update">
+<!ENTITY updateTOC.accesskey      "u">
+<!ENTITY removeTOC.label          "Remove">
+<!ENTITY removeTOC.accesskey      "r">
+<!ENTITY tocMenu.label            "Table of Contents...">
+<!ENTITY tocMenu.accesskey        "b">

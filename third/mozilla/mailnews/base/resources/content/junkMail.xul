@@ -1,37 +1,79 @@
 <?xml version="1.0"?>
 
-<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is mozilla.org code.
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corp.
+   - Portions created by the Initial Developer are Copyright (C) 2002
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Seth Spitzer <sspitzer@netscape.com>
+   -   Dan Mosedale <dmose@netscape.com>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
 
-<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 
 <?xul-overlay href="chrome://messenger/content/msgFolderPickerOverlay.xul"?>
 
 <!DOCTYPE window SYSTEM "chrome://messenger/locale/junkMail.dtd">
 
-<window id="junkMail"
+<dialog id="junkMail"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         xmlns:nc="http://home.netscape.com/NC-rdf#"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         windowtype="mailnews:junk"
         title="&window.title;"
-        onload="onJunkMailLoad()"
-        persist="screenX screenY width height">
+        onload="onJunkMailLoad();"
+        buttons="accept,cancel,help"
+	ondialogaccept="return onAccept();"
+	ondialoghelp="return doHelpButton();">
 
-<stringbundleset id="stringbundleset">
-  <stringbundle id="bundle_messenger" src="chrome://messenger/locale/messenger.properties"/>
-</stringbundleset>
+  <script type="application/x-javascript" src="chrome://messenger/content/junkMail.js"/>
+  <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
 
-<script type="application/x-javascript" src="chrome://messenger/content/junkMail.js"/>
-<script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="bundle_messenger" src="chrome://messenger/locale/messenger.properties"/>
+  </stringbundleset>
 
-<vbox>
   <hbox align="center">
     <label value="&account.label;" accesskey="&account.accesskey;"/>
     <menulist oncommand="onServerClick(event);" id="server">
       <menupopup datasources="rdf:msgaccountmanager rdf:mailnewsfolders"
-                   containment="http://home.netscape.com/NC-rdf#child" ref="msgaccounts:/">
+                 sortResource="http://home.netscape.com/NC-rdf#FolderTreeName"
+                 sortDirection="ascending" ref="msgaccounts:/">
         <template>
-          <rule nc:CanGetIncomingMessages="true">
+		  <rule nc:IsServer="true" nc:ServerType="nntp">
+		    <!-- no support for news yet -->
+		  </rule>
+          <rule nc:IsServer="true">
             <menuitem uri="..." value="..."
                  class="folderMenuItem menuitem-iconic"
                  IsServer="rdf:http://home.netscape.com/NC-rdf#IsServer"
@@ -47,8 +89,8 @@
     <button label="&viewLog.label;" accesskey="&viewLog.accesskey;" oncommand="junkLog()"/>
   </hbox>
 
-  <description>&info1.label;</description>
-  <description>&info2.label;</description>
+  <description width="1">&info1.label;</description>
+  <description width="1">&info2.label;</description>
 
   <checkbox id="level" oncommand="conditionallyEnableUI(null);" accesskey="&level.accesskey;" label="&level.label;"/>
 
@@ -58,8 +100,11 @@
     <hbox>
       <spacer width="20px"/>
       <menulist id="whiteListAbURI">
-       <menupopup id="abPopup-menupopup" ref="moz-abdirectory://"
-          datasources="rdf:addressdirectory">
+       <menupopup id="abPopup-menupopup" ref="moz-abdirectory://" 
+                 datasources="rdf:addressdirectory"
+                 sortActive="true"
+                 sortDirection="ascending"
+                 sortResource="http://home.netscape.com/NC-rdf#DirTreeNameSort">
           <template>
           <rule nc:IsWriteable="false"/>
             <rule nc:IsMailList="false">
@@ -96,7 +141,7 @@
       </grid>
     </radiogroup>
     
-    <hbox autostretch="never" align="center">
+    <hbox align="center">
       <spacer width="20px"/>
       <checkbox id="purge" oncommand="conditionallyEnableUI('purge')" accesskey="&purge1.accesskey;" label="&purge1.label;"/>
       <textbox size="3" id="purgeInterval" />
@@ -104,10 +149,15 @@
     </hbox>
   </vbox>
 
-  <separator/>
+  <vbox align="start">
+    <checkbox id="manualMark" oncommand="conditionallyEnableUI('manualMark')" label="&manualMark.label;"/>
+    <hbox>
+      <spacer width="20px"/>
+      <radiogroup id="manualMarkMode">
+        <radio id="manualMarkMode0" value="0" label="&manualMarkModeMove.label;"/> 
+        <radio id="manualMarkMode1" value="1" label="&manualMarkModeDelete.label;"/> 
+      </radiogroup>
+    </hbox>   
+  </vbox>
 
-  <hbox id="okCancelHelpButtonsRight"/>
-
-</vbox>
-
-</window>
+</dialog>

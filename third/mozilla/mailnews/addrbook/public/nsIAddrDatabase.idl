@@ -57,6 +57,9 @@ interface nsIMdbRow;
 // Get / Set CardValue in nsAbCardProperty.cpp
 #define kFirstNameColumn          "FirstName"
 #define kLastNameColumn           "LastName"
+#define kPhoneticFirstNameColumn  "PhoneticFirstName"
+#define kPhoneticLastNameColumn   "PhoneticLastName"
+#define kPhoneticNameColumn       "_PhoneticName"
 #define kDisplayNameColumn        "DisplayName"
 #define kNicknameColumn           "NickName"
 #define kPriEmailColumn           "PrimaryEmail"
@@ -115,7 +118,8 @@ interface nsIMdbRow;
 #define kMailListNickName         "ListNickName"
 #define kMailListDescription      "ListDescription"
 #define kMailListTotalAddresses   "ListTotalAddresses"
-
+// not shown in the UI
+#define kLowerPriEmailColumn      "LowercasePrimaryEmail"
 %}
 
 [scriptable, uuid(ca536e0e-1dd1-11b2-951a-e02b86e4f60e)]
@@ -165,7 +169,6 @@ interface nsIAddrDatabase : nsIAddrDBAnnouncer {
 	PRBool findMailListbyUnicodeName(in wstring listName);
 
 	void getCardCount(out PRUint32 count);
-	void removeExtraCardsInCab(in PRUint32 cardTotal, in PRUint32 cabMax);
 
 	[noscript] readonly attribute nsIMdbRow newRow;
 	[noscript] readonly attribute nsIMdbRow newListRow;
@@ -173,6 +176,8 @@ interface nsIAddrDatabase : nsIAddrDBAnnouncer {
 	[noscript] void addLdifListMember(in nsIMdbRow row, in string value);
 	[noscript] void addFirstName(in nsIMdbRow row, in string value);
 	[noscript] void addLastName(in nsIMdbRow row, in string value);
+	[noscript] void addPhoneticFirstName(in nsIMdbRow row, in string value);
+	[noscript] void addPhoneticLastName(in nsIMdbRow row, in string value);
 	[noscript] void addDisplayName(in nsIMdbRow row, in string value);
 	[noscript] void addNickName(in nsIMdbRow row, in string value);
 	[noscript] void addPrimaryEmail(in nsIMdbRow row, in string value);

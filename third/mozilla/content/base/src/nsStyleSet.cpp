@@ -49,7 +49,8 @@
 #include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsIStyleFrameConstruction.h"
-#include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
+#include "nsCSSPseudoElements.h"
 #include "nsTimer.h"
 #include "nsICSSStyleSheet.h"
 #include "nsNetUtil.h"
@@ -58,7 +59,6 @@
 #include "nsRuleWalker.h"
 #include "nsIHTMLDocument.h"
 #include "nsIDOMHTMLBodyElement.h"
-#include "nsHTMLAtoms.h"
 #include "nsHashtable.h"
 
 #ifdef MOZ_PERF_METRICS
@@ -71,8 +71,6 @@
   #define STYLESET_START_TIMER(a) ((void)0)
   #define STYLESET_STOP_TIMER(a) ((void)0)
 #endif
-
-#include "nsISizeOfHandler.h"
 
 // =====================================================
 // nsRuleNodeList
@@ -150,26 +148,32 @@ public:
 
   NS_IMETHOD NotifyStyleSheetStateChanged(PRBool aDisabled);
 
-  virtual nsIStyleContext* ResolveStyleFor(nsIPresContext* aPresContext,
-                                           nsIContent* aContent,
-                                           nsIStyleContext* aParentContext);
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleFor(nsIPresContext* aPresContext,
+                  nsIContent* aContent,
+                  nsStyleContext* aParentContext);
 
-  virtual nsIStyleContext* ResolveStyleForNonElement(
-                                           nsIPresContext* aPresContext,
-                                           nsIStyleContext* aParentContext);
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleForNonElement(nsIPresContext* aPresContext,
+                            nsStyleContext* aParentContext);
 
-  virtual nsIStyleContext* ResolvePseudoStyleFor(nsIPresContext* aPresContext,
-                                                 nsIContent* aParentContent,
-                                                 nsIAtom* aPseudoTag,
-                                                 nsIStyleContext* aParentContext,
-                                                 nsICSSPseudoComparator* aComparator = nsnull);
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleFor(nsIPresContext* aPresContext,
+                        nsIContent* aParentContent,
+                        nsIAtom* aPseudoTag,
+                        nsStyleContext* aParentContext,
+                        nsICSSPseudoComparator* aComparator = nsnull);
 
-  virtual nsIStyleContext* ProbePseudoStyleFor(nsIPresContext* aPresContext,
-                                               nsIContent* aParentContent,
-                                               nsIAtom* aPseudoTag,
-                                               nsIStyleContext* aParentContext);
+  virtual already_AddRefed<nsStyleContext>
+  ProbePseudoStyleFor(nsIPresContext* aPresContext,
+                      nsIContent* aParentContent,
+                      nsIAtom* aPseudoTag,
+                      nsStyleContext* aParentContext);
 
-  NS_IMETHOD Shutdown();
+  NS_IMETHOD BeginShutdown(nsIPresContext* aPresContext);
+  NS_IMETHOD Shutdown(nsIPresContext* aPresContext);
+  NS_IMETHOD NotifyStyleContextDestroyed(nsIPresContext* aPresContext,
+                                         nsStyleContext* aStyleContext);
 
   // The following two methods can be used to tear down and reconstruct a rule tree.  The idea
   // is to first call BeginRuleTreeReconstruct, which will set aside the old rule
@@ -185,12 +189,13 @@ public:
   virtual nsresult BeginRuleTreeReconstruct();
   virtual nsresult EndRuleTreeReconstruct();
   
-  virtual nsresult GetRuleTree(nsRuleNode** aResult);
-  virtual nsresult ClearCachedDataInRuleTree(nsIStyleRule* aRule);
-  
-  virtual nsresult AddRuleNodeMapping(nsRuleNode* aRuleNode);
+  // For getting the cached default data in case we hit out-of-memory.
+  // To be used only by nsRuleNode.
+  virtual nsCachedStyleData* GetDefaultStyleData();
 
-  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule, nsIStyleContext* aContext);
+  virtual nsresult GetRuleTree(nsRuleNode** aResult);
+  
+  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule);
 
   virtual nsresult GetStyleFrameConstruction(nsIStyleFrameConstruction** aResult) {
     *aResult = mFrameConstructor;
@@ -198,15 +203,21 @@ public:
     return NS_OK;
   }
 
-  NS_IMETHOD ReParentStyleContext(nsIPresContext* aPresContext,
-                                  nsIStyleContext* aStyleContext, 
-                                  nsIStyleContext* aNewParentContext,
-                                  nsIStyleContext** aNewStyleContext);
+  virtual already_AddRefed<nsStyleContext>
+  ReParentStyleContext(nsIPresContext* aPresContext,
+                       nsStyleContext* aStyleContext, 
+                       nsStyleContext* aNewParentContext);
 
   NS_IMETHOD HasStateDependentStyle(nsIPresContext* aPresContext,
                                     nsIContent*     aContent,
                                     PRInt32         aStateMask,
                                     PRBool*         aResult);
+
+  NS_IMETHOD HasAttributeDependentStyle(nsIPresContext* aPresContext,
+                                        nsIContent*     aContent,
+                                        nsIAtom*        aAtribute,
+                                        PRInt32         aModType,
+                                        PRBool*         aResult);
 
   NS_IMETHOD ConstructRootFrame(nsIPresContext* aPresContext,
                                 nsIContent*     aContent,
@@ -289,17 +300,12 @@ public:
 
 #ifdef DEBUG
   virtual void List(FILE* out = stdout, PRInt32 aIndent = 0);
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize);
 #endif
   virtual void ResetUniqueStyleItems(void);
 
 #ifdef MOZ_PERF_METRICS
   NS_DECL_NSITIMERECORDER
 #endif
-
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects);
 
 private:
   static nsrefcnt gInstances;
@@ -315,6 +321,9 @@ protected:
   void RecycleArray(nsCOMPtr<nsISupportsArray> &aArray);
   
   void EnsureRuleWalker(nsIPresContext* aPresContext);
+
+  // Returns false on out-of-memory.
+  PRBool BuildDefaultStyleData(nsIPresContext* aPresContext);
 
   void ClearRuleProcessors(void);
   void ClearAgentRuleProcessors(void);
@@ -336,13 +345,13 @@ protected:
   void WalkRuleProcessors(nsISupportsArrayEnumFunc aFunc,
                           RuleProcessorData* aData);
 
-  nsIStyleContext* GetContext(nsIPresContext* aPresContext, 
-                              nsIStyleContext* aParentContext,
-                              nsIAtom* aPseudoTag);
+  already_AddRefed<nsStyleContext> GetContext(nsIPresContext* aPresContext, 
+                                              nsStyleContext* aParentContext,
+                                              nsIAtom* aPseudoTag);
 
 #ifdef DEBUG
   void  List(FILE* out, PRInt32 aIndent, nsISupportsArray* aSheets);
-  void  ListContexts(nsIStyleContext* aRootContext, FILE* out, PRInt32 aIndent);
+  void  ListContexts(nsIFrame* aRootFrame, FILE* out, PRInt32 aIndent);
 #endif
 
   nsCOMPtr<nsISupportsArray> mOverrideSheets;  // most significant first
@@ -362,12 +371,20 @@ protected:
 
   nsCOMPtr<nsIStyleRuleSupplier> mStyleRuleSupplier; 
 
+  // To be used only in case of emergency, such as being out of memory
+  // or operating on a deleted rule node.  The latter should never
+  // happen, of course.
+  nsCachedStyleData mDefaultStyleData;
+
   nsRuleNode* mRuleTree; // This is the root of our rule tree.  It is a lexicographic tree of
                          // matched rules that style contexts use to look up properties.
   nsRuleNode* mOldRuleTree; // Used during rule tree reconstruction.
   nsRuleWalker* mRuleWalker;   // This is an instance of a rule walker that can be used
                                // to navigate through our tree.
-  nsHashtable mRuleMappings; // A hashtable from rules to rule node lists.
+
+  PRBool mInShutdown;
+  PRInt32 mDestroyedCount;
+  nsVoidArray mRoots; // style contexts with no parent
 
   MOZ_TIMER_DECLARE(mStyleResolutionWatch)
 
@@ -386,12 +403,12 @@ StyleSetImpl::StyleSetImpl()
     mRuleTree(nsnull),
     mOldRuleTree(nsnull),
     mRuleWalker(nsnull),
-    mRuleMappings(32)
+    mInShutdown(PR_FALSE),
+    mDestroyedCount(0)
 #ifdef MOZ_PERF_METRICS
     ,mTimerEnabled(PR_FALSE)
 #endif
 {
-  NS_INIT_ISUPPORTS();
   if (gInstances++ == 0)
   {
     static const char kQuirk_href[] = "resource:/res/quirk.css";
@@ -569,6 +586,11 @@ StyleSetImpl::GatherRuleProcessors(void)
 void StyleSetImpl::AppendOverrideStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mOverrideSheets)) {
     mOverrideSheets->RemoveElement(aSheet);
     mOverrideSheets->AppendElement(aSheet);
@@ -580,6 +602,11 @@ void StyleSetImpl::InsertOverrideStyleSheetAfter(nsIStyleSheet* aSheet,
                                                  nsIStyleSheet* aAfterSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mOverrideSheets)) {
     mOverrideSheets->RemoveElement(aSheet);
     PRInt32 index = mOverrideSheets->IndexOf(aAfterSheet);
@@ -592,6 +619,11 @@ void StyleSetImpl::InsertOverrideStyleSheetBefore(nsIStyleSheet* aSheet,
                                                   nsIStyleSheet* aBeforeSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mOverrideSheets)) {
     mOverrideSheets->RemoveElement(aSheet);
     PRInt32 index = mOverrideSheets->IndexOf(aBeforeSheet);
@@ -603,7 +635,11 @@ void StyleSetImpl::InsertOverrideStyleSheetBefore(nsIStyleSheet* aSheet,
 void StyleSetImpl::RemoveOverrideStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
-
+#ifdef DEBUG
+  PRBool complete = PR_TRUE;
+  aSheet->GetComplete(complete);
+  NS_ASSERTION(complete, "Incomplete sheet being removed from style set");
+#endif
   if (nsnull != mOverrideSheets) {
     mOverrideSheets->RemoveElement(aSheet);
     ClearOverrideRuleProcessors();
@@ -635,6 +671,11 @@ nsIStyleSheet* StyleSetImpl::GetOverrideStyleSheetAt(PRInt32 aIndex)
 void StyleSetImpl::AddDocStyleSheet(nsIStyleSheet* aSheet, nsIDocument* aDocument)
 {
   NS_PRECONDITION((nsnull != aSheet) && (nsnull != aDocument), "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mDocSheets)) {
     mDocSheets->RemoveElement(aSheet);
     // lowest index last
@@ -671,7 +712,11 @@ void StyleSetImpl::AddDocStyleSheet(nsIStyleSheet* aSheet, nsIDocument* aDocumen
 void StyleSetImpl::RemoveDocStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
-
+#ifdef DEBUG
+  PRBool complete = PR_TRUE;
+  aSheet->GetComplete(complete);
+  NS_ASSERTION(complete, "Incomplete sheet being removed from style set");
+#endif
   if (nsnull != mDocSheets) {
     mDocSheets->RemoveElement(aSheet);
     ClearDocRuleProcessors();
@@ -703,6 +748,11 @@ nsIStyleSheet* StyleSetImpl::GetDocStyleSheetAt(PRInt32 aIndex)
 void StyleSetImpl::AppendUserStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mUserSheets)) {
     mUserSheets->RemoveElement(aSheet);
     mUserSheets->AppendElement(aSheet);
@@ -714,6 +764,11 @@ void StyleSetImpl::InsertUserStyleSheetAfter(nsIStyleSheet* aSheet,
                                              nsIStyleSheet* aAfterSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mUserSheets)) {
     mUserSheets->RemoveElement(aSheet);
     PRInt32 index = mUserSheets->IndexOf(aAfterSheet);
@@ -726,6 +781,11 @@ void StyleSetImpl::InsertUserStyleSheetBefore(nsIStyleSheet* aSheet,
                                               nsIStyleSheet* aBeforeSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mUserSheets)) {
     mUserSheets->RemoveElement(aSheet);
     PRInt32 index = mUserSheets->IndexOf(aBeforeSheet);
@@ -737,7 +797,11 @@ void StyleSetImpl::InsertUserStyleSheetBefore(nsIStyleSheet* aSheet,
 void StyleSetImpl::RemoveUserStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
-
+#ifdef DEBUG
+  PRBool complete = PR_TRUE;
+  aSheet->GetComplete(complete);
+  NS_ASSERTION(complete, "Incomplete sheet being removed from style set");
+#endif
   if (nsnull != mUserSheets) {
     mUserSheets->RemoveElement(aSheet);
     ClearUserRuleProcessors();
@@ -776,6 +840,11 @@ StyleSetImpl::ReplaceUserStyleSheets(nsISupportsArray* aNewUserSheets)
 void StyleSetImpl::AppendAgentStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mAgentSheets)) {
     mAgentSheets->RemoveElement(aSheet);
     mAgentSheets->AppendElement(aSheet);
@@ -787,6 +856,11 @@ void StyleSetImpl::InsertAgentStyleSheetAfter(nsIStyleSheet* aSheet,
                                               nsIStyleSheet* aAfterSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mAgentSheets)) {
     mAgentSheets->RemoveElement(aSheet);
     PRInt32 index = mAgentSheets->IndexOf(aAfterSheet);
@@ -799,6 +873,11 @@ void StyleSetImpl::InsertAgentStyleSheetBefore(nsIStyleSheet* aSheet,
                                                nsIStyleSheet* aBeforeSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
+#ifdef DEBUG
+  PRBool applicable = PR_TRUE;
+  aSheet->GetApplicable(applicable);
+  NS_ASSERTION(applicable, "Inapplicable sheet being placed in style set");
+#endif
   if (EnsureArray(mAgentSheets)) {
     mAgentSheets->RemoveElement(aSheet);
     PRInt32 index = mAgentSheets->IndexOf(aBeforeSheet);
@@ -810,7 +889,11 @@ void StyleSetImpl::InsertAgentStyleSheetBefore(nsIStyleSheet* aSheet,
 void StyleSetImpl::RemoveAgentStyleSheet(nsIStyleSheet* aSheet)
 {
   NS_PRECONDITION(nsnull != aSheet, "null arg");
-
+#ifdef DEBUG
+  PRBool complete = PR_TRUE;
+  aSheet->GetComplete(complete);
+  NS_ASSERTION(complete, "Incomplete sheet being removed from style set");
+#endif
   if (nsnull != mAgentSheets) {
     mAgentSheets->RemoveElement(aSheet);
     ClearAgentRuleProcessors();
@@ -840,8 +923,7 @@ NS_IMETHODIMP StyleSetImpl::EnableQuirkStyleSheet(PRBool aEnable)
       nsCOMPtr<nsIStyleSheet> sheet;
       sheet = getter_AddRefs(GetAgentStyleSheetAt(i));
       if (sheet) {
-        nsCOMPtr<nsICSSStyleSheet> cssSheet;
-        sheet->QueryInterface(NS_GET_IID(nsICSSStyleSheet), getter_AddRefs(cssSheet));
+        nsCOMPtr<nsICSSStyleSheet> cssSheet = do_QueryInterface(sheet);
         if (cssSheet) {
           nsCOMPtr<nsIStyleSheet> quirkSheet;
           PRBool bHasSheet = PR_FALSE;
@@ -867,15 +949,15 @@ NS_IMETHODIMP StyleSetImpl::EnableQuirkStyleSheet(PRBool aEnable)
 #if defined(DEBUG_warren) || defined(DEBUG_attinasi)
     printf( "%s Quirk StyleSheet\n", aEnable ? "Enabling" : "Disabling" );
 #endif
-#ifdef DEBUG_dbaron // XXX Make this |DEBUG| once it stops firing.
+#ifdef DEBUG_dbaron_off // XXX Make this |DEBUG| once it stops firing.
     PRUint32 count = 0;
     if (mAgentRuleProcessors)
       mAgentRuleProcessors->Count(&count);
-    PRBool enabledNow;
-    mQuirkStyleSheet->GetEnabled(enabledNow);
-    NS_ASSERTION(count == 0 || aEnable == enabledNow,
-                 "enabling/disabling quirk stylesheet too late");
-    if (count != 0 && aEnable == enabledNow)
+    PRBool applicableNow;
+    mQuirkStyleSheet->GetApplicable(applicableNow);
+    NS_ASSERTION(count == 0 || aEnable == applicableNow,
+                 "enabling/disabling quirk stylesheet too late or incomplete quirk stylesheet");
+    if (count != 0 && aEnable == applicableNow)
       printf("WARNING: We set the quirks mode too many times.\n"); // we do!
 #endif
     mQuirkStyleSheet->SetEnabled(aEnable);
@@ -900,7 +982,7 @@ StyleSetImpl::ReplaceAgentStyleSheets(nsISupportsArray* aNewAgentSheets)
 }
 
 NS_IMETHODIMP 
-StyleSetImpl::NotifyStyleSheetStateChanged(PRBool aDisabled)
+StyleSetImpl::NotifyStyleSheetStateChanged(PRBool aApplicable)
 {
   ClearRuleProcessors();
   GatherRuleProcessors();
@@ -936,15 +1018,16 @@ EnumRulesMatching(nsISupports* aProcessor, void* aData)
  * generation.  (It works for cousins of the same generation since
  * |aParentContext| could itself be a shared context.)
  */
-nsIStyleContext* StyleSetImpl::GetContext(nsIPresContext* aPresContext, 
-                                          nsIStyleContext* aParentContext, 
-                                          nsIAtom* aPseudoTag)
+already_AddRefed<nsStyleContext>
+StyleSetImpl::GetContext(nsIPresContext* aPresContext, 
+                         nsStyleContext* aParentContext, 
+                         nsIAtom* aPseudoTag)
 {
-  nsIStyleContext* result = nsnull;
+  nsStyleContext* result = nsnull;
   nsRuleNode* ruleNode = mRuleWalker->GetCurrentNode();
       
   if (aParentContext)
-    aParentContext->FindChildWithRules(aPseudoTag, ruleNode, result);
+    result = aParentContext->FindChildWithRules(aPseudoTag, ruleNode).get();
 
 #ifdef NOISY_DEBUG
   if (result)
@@ -953,9 +1036,12 @@ nsIStyleContext* StyleSetImpl::GetContext(nsIPresContext* aPresContext,
     fprintf(stdout, "+++ NewSC %d +++\n", ++gNewCount);
 #endif
 
-  if (!result)
-    NS_NewStyleContext(&result, aParentContext, aPseudoTag, ruleNode,
-                       aPresContext);
+  if (!result) {
+    result = NS_NewStyleContext(aParentContext, aPseudoTag, ruleNode,
+                                aPresContext).get();
+    if (!aParentContext && result)
+      mRoots.AppendElement(result);
+  }
 
   return result;
 }
@@ -1068,33 +1154,64 @@ StyleSetImpl::WalkRuleProcessors(nsISupportsArrayEnumFunc aFunc,
     mOverrideRuleProcessors->EnumerateForwards(aFunc, aData);
 }
 
-#ifdef NS_DEBUG
-#define NS_ASSERT_REFCOUNT(ptr,cnt,msg) { \
-  nsrefcnt  count = ptr->AddRef();        \
-  ptr->Release();                         \
-  NS_ASSERTION(--count == cnt, msg);      \
-}
-#else
-#define NS_ASSERT_REFCOUNT(ptr,cnt,msg) {}
-#endif
-
 void StyleSetImpl::EnsureRuleWalker(nsIPresContext* aPresContext)
-{ 
+{
   if (mRuleWalker)
     return;
 
-  nsRuleNode::CreateRootNode(aPresContext, &mRuleTree);
+  if (!mDefaultStyleData.mResetData && !BuildDefaultStyleData(aPresContext)) {
+    mDefaultStyleData.Destroy(0, aPresContext);
+    return;
+  }
+
+  mRuleTree = nsRuleNode::CreateRootNode(aPresContext);
+  if (!mRuleTree)
+    return;
   mRuleWalker = new nsRuleWalker(mRuleTree);
 }
 
-nsIStyleContext* StyleSetImpl::ResolveStyleFor(nsIPresContext* aPresContext,
-                                               nsIContent* aContent,
-                                               nsIStyleContext* aParentContext)
+PRBool StyleSetImpl::BuildDefaultStyleData(nsIPresContext* aPresContext)
+{
+  NS_ASSERTION(!mDefaultStyleData.mResetData &&
+               !mDefaultStyleData.mInheritedData,
+               "leaking default style data");
+  mDefaultStyleData.mResetData = new (aPresContext) nsResetStyleData;
+  if (!mDefaultStyleData.mResetData)
+    return PR_FALSE;
+  mDefaultStyleData.mInheritedData = new (aPresContext) nsInheritedStyleData;
+  if (!mDefaultStyleData.mInheritedData)
+    return PR_FALSE;
+
+#define SSARG_PRESCONTEXT aPresContext
+
+#define CREATE_DATA(name, type, args) \
+  if (!(mDefaultStyleData.m##type##Data->m##name##Data = \
+          new (aPresContext) nsStyle##name args)) \
+    return PR_FALSE;
+
+#define STYLE_STRUCT_INHERITED(name, checkdata_cb, ctor_args) \
+  CREATE_DATA(name, Inherited, ctor_args)
+#define STYLE_STRUCT_RESET(name, checkdata_cb, ctor_args) \
+  CREATE_DATA(name, Reset, ctor_args)
+
+#include "nsStyleStructList.h"
+
+#undef STYLE_STRUCT_INHERITED
+#undef STYLE_STRUCT_RESET
+#undef SSARG_PRESCONTEXT
+
+  return PR_TRUE;
+}
+
+already_AddRefed<nsStyleContext>
+StyleSetImpl::ResolveStyleFor(nsIPresContext* aPresContext,
+                              nsIContent* aContent,
+                              nsStyleContext* aParentContext)
 {
   MOZ_TIMER_DEBUGLOG(("Start: StyleSetImpl::ResolveStyleFor(), this=%p\n", this));
   STYLESET_START_TIMER(NS_TIMER_STYLE_RESOLUTION);
 
-  nsIStyleContext*  result = nsnull;
+  nsStyleContext*  result = nsnull;
 
   NS_ASSERTION(aContent, "must have content");
   NS_ASSERTION(aPresContext, "must have pres context");
@@ -1108,11 +1225,12 @@ nsIStyleContext* StyleSetImpl::ResolveStyleFor(nsIPresContext* aPresContext,
         mDocRuleProcessors   ||
         mOverrideRuleProcessors) {
       EnsureRuleWalker(aPresContext);
+      NS_ENSURE_TRUE(mRuleWalker, nsnull);
       nsCOMPtr<nsIAtom> medium;
       aPresContext->GetMedium(getter_AddRefs(medium));
       RulesMatchingData data(aPresContext, medium, aContent, mRuleWalker);
       FileRules(EnumRulesMatching, &data);
-      result = GetContext(aPresContext, aParentContext, nsnull);
+      result = GetContext(aPresContext, aParentContext, nsnull).get();
      
       // Now reset the walker back to the root of the tree.
       mRuleWalker->Reset();
@@ -1124,14 +1242,14 @@ nsIStyleContext* StyleSetImpl::ResolveStyleFor(nsIPresContext* aPresContext,
   return result;
 }
 
-nsIStyleContext* StyleSetImpl::ResolveStyleForNonElement(
-                                               nsIPresContext* aPresContext,
-                                               nsIStyleContext* aParentContext)
+already_AddRefed<nsStyleContext>
+StyleSetImpl::ResolveStyleForNonElement(nsIPresContext* aPresContext,
+                                        nsStyleContext* aParentContext)
 {
   MOZ_TIMER_DEBUGLOG(("Start: StyleSetImpl::ResolveStyleForNonElement(), this=%p\n", this));
   STYLESET_START_TIMER(NS_TIMER_STYLE_RESOLUTION);
 
-  nsIStyleContext* result = nsnull;
+  nsStyleContext* result = nsnull;
 
   NS_ASSERTION(aPresContext, "must have pres context");
 
@@ -1142,8 +1260,9 @@ nsIStyleContext* StyleSetImpl::ResolveStyleForNonElement(
         mDocRuleProcessors   ||
         mOverrideRuleProcessors) {
       EnsureRuleWalker(aPresContext);
+      NS_ENSURE_TRUE(mRuleWalker, nsnull);
       result = GetContext(aPresContext, aParentContext,
-                          nsHTMLAtoms::mozNonElementPseudo);
+                          nsCSSAnonBoxes::mozNonElement).get();
       NS_ASSERTION(mRuleWalker->AtRoot(), "rule walker must be at root");
     }
   }
@@ -1179,16 +1298,17 @@ EnumPseudoRulesMatching(nsISupports* aProcessor, void* aData)
   return PR_TRUE;
 }
 
-nsIStyleContext* StyleSetImpl::ResolvePseudoStyleFor(nsIPresContext* aPresContext,
-                                                     nsIContent* aParentContent,
-                                                     nsIAtom* aPseudoTag,
-                                                     nsIStyleContext* aParentContext,
-                                                     nsICSSPseudoComparator* aComparator)
+already_AddRefed<nsStyleContext>
+StyleSetImpl::ResolvePseudoStyleFor(nsIPresContext* aPresContext,
+                                    nsIContent* aParentContent,
+                                    nsIAtom* aPseudoTag,
+                                    nsStyleContext* aParentContext,
+                                    nsICSSPseudoComparator* aComparator)
 {
   MOZ_TIMER_DEBUGLOG(("Start: StyleSetImpl::ResolvePseudoStyleFor(), this=%p\n", this));
   STYLESET_START_TIMER(NS_TIMER_STYLE_RESOLUTION);
 
-  nsIStyleContext*  result = nsnull;
+  nsStyleContext*  result = nsnull;
 
   NS_ASSERTION(aPseudoTag, "must have pseudo tag");
   NS_ASSERTION(aPresContext, "must have pres context");
@@ -1205,11 +1325,12 @@ nsIStyleContext* StyleSetImpl::ResolvePseudoStyleFor(nsIPresContext* aPresContex
       nsCOMPtr<nsIAtom> medium;
       aPresContext->GetMedium(getter_AddRefs(medium));
       EnsureRuleWalker(aPresContext);
+      NS_ENSURE_TRUE(mRuleWalker, nsnull);
       PseudoRulesMatchingData data(aPresContext, medium, aParentContent, 
                                    aPseudoTag, aComparator, mRuleWalker);
       FileRules(EnumPseudoRulesMatching, &data);
 
-      result = GetContext(aPresContext, aParentContext, aPseudoTag);
+      result = GetContext(aPresContext, aParentContext, aPseudoTag).get();
      
       // Now reset the walker back to the root of the tree.
       mRuleWalker->Reset();
@@ -1221,15 +1342,16 @@ nsIStyleContext* StyleSetImpl::ResolvePseudoStyleFor(nsIPresContext* aPresContex
   return result;
 }
 
-nsIStyleContext* StyleSetImpl::ProbePseudoStyleFor(nsIPresContext* aPresContext,
-                                                   nsIContent* aParentContent,
-                                                   nsIAtom* aPseudoTag,
-                                                   nsIStyleContext* aParentContext)
+already_AddRefed<nsStyleContext>
+StyleSetImpl::ProbePseudoStyleFor(nsIPresContext* aPresContext,
+                                  nsIContent* aParentContent,
+                                  nsIAtom* aPseudoTag,
+                                  nsStyleContext* aParentContext)
 {
   MOZ_TIMER_DEBUGLOG(("Start: StyleSetImpl::ProbePseudoStyleFor(), this=%p\n", this));
   STYLESET_START_TIMER(NS_TIMER_STYLE_RESOLUTION);
 
-  nsIStyleContext*  result = nsnull;
+  nsStyleContext*  result = nsnull;
 
   NS_ASSERTION(aPseudoTag, "must have pseudo tag");
   NS_ASSERTION(aPresContext, "must have pres context");
@@ -1246,15 +1368,32 @@ nsIStyleContext* StyleSetImpl::ProbePseudoStyleFor(nsIPresContext* aPresContext,
       nsCOMPtr<nsIAtom> medium;
       aPresContext->GetMedium(getter_AddRefs(medium));
       EnsureRuleWalker(aPresContext);
+      NS_ENSURE_TRUE(mRuleWalker, nsnull);
       PseudoRulesMatchingData data(aPresContext, medium, aParentContent, 
                                    aPseudoTag, nsnull, mRuleWalker);
       FileRules(EnumPseudoRulesMatching, &data);
 
       if (!mRuleWalker->AtRoot())
-        result = GetContext(aPresContext, aParentContext, aPseudoTag);
+        result = GetContext(aPresContext, aParentContext, aPseudoTag).get();
  
       // Now reset the walker back to the root of the tree.
       mRuleWalker->Reset();
+    }
+  }
+
+  // For :before and :after pseudo-elements, having display: none or no
+  // 'content' property is equivalent to not having the pseudo-element
+  // at all.
+  if (result &&
+      (aPseudoTag == nsCSSPseudoElements::before ||
+       aPseudoTag == nsCSSPseudoElements::after)) {
+    const nsStyleDisplay *display = result->GetStyleDisplay();
+    const nsStyleContent *content = result->GetStyleContent();
+    // XXXldb What is contentCount for |content: ""|?
+    if (display->mDisplay == NS_STYLE_DISPLAY_NONE ||
+        content->ContentCount() == 0) {
+      result->Release();
+      result = nsnull;
     }
   }
   
@@ -1271,17 +1410,63 @@ PRBool PR_CALLBACK DeleteRuleNodeLists(nsHashKey* aKey, void* aData, void* aClos
 }
 
 NS_IMETHODIMP
-StyleSetImpl::Shutdown()
+StyleSetImpl::BeginShutdown(nsIPresContext* aPresContext)
 {
-  mRuleMappings.Enumerate(DeleteRuleNodeLists);
-  mRuleMappings.Reset();
+  mInShutdown = PR_TRUE;
+  mRoots.Clear(); // no longer valid, since we won't keep it up to date
+  return NS_OK;
+}
 
+NS_IMETHODIMP
+StyleSetImpl::Shutdown(nsIPresContext* aPresContext)
+{
   delete mRuleWalker;
+  mRuleWalker = nsnull;
   if (mRuleTree)
   {
     mRuleTree->Destroy();
     mRuleTree = nsnull;
   }
+
+  mDefaultStyleData.Destroy(0, aPresContext);
+
+  return NS_OK;
+}
+
+static const PRInt32 kGCInterval = 1000;
+
+NS_IMETHODIMP
+StyleSetImpl::NotifyStyleContextDestroyed(nsIPresContext* aPresContext,
+                                          nsStyleContext* aStyleContext)
+{
+  if (mInShutdown)
+    return NS_OK;
+
+  if (!aStyleContext->GetParent()) {
+    mRoots.RemoveElement(aStyleContext);
+  }
+
+  if (++mDestroyedCount == kGCInterval) {
+    mDestroyedCount = 0;
+
+    // Mark the style context tree by marking all roots, which will mark
+    // all descendants.  This will reach style contexts in the
+    // undisplayed map and "additional style contexts" since they are
+    // descendants of the root.
+    for (PRInt32 i = mRoots.Count() - 1; i >= 0; --i) {
+      NS_STATIC_CAST(nsStyleContext*,mRoots[i])->Mark();
+    }
+
+    // Sweep the rule tree.
+    if (mRuleTree->Sweep()) {
+      // On the rare occasion that we have no style contexts, the root
+      // will be destroyed, so delete it.
+      mRuleTree = nsnull;
+      delete mRuleWalker;
+      mRuleWalker = nsnull;
+    }
+  }
+
   return NS_OK;
 }
 
@@ -1292,17 +1477,6 @@ StyleSetImpl::GetRuleTree(nsRuleNode** aResult)
   return NS_OK;
 }
 
-nsresult 
-StyleSetImpl::AddRuleNodeMapping(nsRuleNode* aRuleNode)
-{
-  nsVoidKey key(aRuleNode->Rule());
-  nsRuleNodeList* ruleList = 
-    new (aRuleNode->PresContext()) nsRuleNodeList(aRuleNode, 
-                                                  NS_STATIC_CAST(nsRuleNodeList*, mRuleMappings.Get(&key)));
-  mRuleMappings.Put(&key, ruleList);
-  return NS_OK;
-}
-
 nsresult
 StyleSetImpl::BeginRuleTreeReconstruct()
 {
@@ -1310,8 +1484,6 @@ StyleSetImpl::BeginRuleTreeReconstruct()
   mRuleWalker = nsnull;
   mOldRuleTree = mRuleTree;
   mRuleTree = nsnull;
-  mRuleMappings.Enumerate(DeleteRuleNodeLists);
-  mRuleMappings.Reset();
   return NS_OK;
 }
 
@@ -1325,118 +1497,71 @@ StyleSetImpl::EndRuleTreeReconstruct()
   return NS_OK;
 }
 
-nsresult
-StyleSetImpl::ClearCachedDataInRuleTree(nsIStyleRule* aInlineStyleRule)
+nsCachedStyleData*
+StyleSetImpl::GetDefaultStyleData()
 {
+  return &mDefaultStyleData;
+}
+
+nsresult
+StyleSetImpl::ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule)
+{
+  // XXXdwh This is not terribly fast, but fortunately this case is rare (and often a full tree
+  // invalidation anyway).  Improving performance here would involve a footprint
+  // increase.  Mappings from rule nodes to their associated style contexts as well as
+  // mappings from rules to their associated rule nodes would enable us to avoid the two
+  // tree walks that occur here.
+  
+  // Crawl the entire rule tree and blow away all data for rule nodes (and their descendants)
+  // that have the given rule.
   if (mRuleTree)
-    mRuleTree->ClearCachedDataInSubtree(aInlineStyleRule);
-  return NS_OK;
-}
-
-nsresult
-StyleSetImpl::ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule, nsIStyleContext* aContext)
-{
-  // XXXdwh.  If we're willing to *really* optimize this
-  // invalidation, we could only invalidate the struct data
-  // that actually changed.  For example, if someone changes
-  // style.left, we really only need to blow away cached
-  // data in the position struct.
-  if (aContext) {
-    // |aRule| should never be null, but we'll sanity check it just in case.
-    if (aRule) {
-      // Obtain our rule node list and clear out the cached data in all rule nodes
-      // that correspond to this rule.  See bug 99344 for more details as to how
-      // inline style rules can end up with multiple rule nodes in a rule tree.
-      nsVoidKey key(aRule);
-      nsRuleNodeList* ruleList = NS_STATIC_CAST(nsRuleNodeList*, mRuleMappings.Get(&key));
-      for ( ; ruleList; ruleList = ruleList->mNext)
-        ruleList->mRuleNode->ClearCachedData(aRule);
-    }
-    
-    // XXXdwh I'm just being paranoid here.  Also clear out the data starting at the style
-    // context's rule node.  This really should always be done in the for loop above,
-    // but I'm going to leave this here just in case (for now).
-    nsRuleNode* ruleNode;
-    aContext->GetRuleNode(&ruleNode);
-    ruleNode->ClearCachedData(aRule); 
-
-    // XXX We need to clear style data here in case there's a style context
-    // that inherits a struct from its parent where the parent uses data
-    // that's cached on the rule node.  Otherwise we could crash while
-    // doing checks comparing old data to new data during reresolution.
-    // This could make some of those checks incorrect.
-    aContext->ClearStyleData(aPresContext, nsnull);
-  }
-  else {
-    // XXXdwh This is not terribly fast, but fortunately this case is rare (and often a full tree
-    // invalidation anyway).  Improving performance here would involve a footprint
-    // increase.  Mappings from rule nodes to their associated style contexts as well as
-    // mappings from rules to their associated rule nodes would enable us to avoid the two
-    // tree walks that occur here.
-
-    // Crawl the entire rule tree and blow away all data for rule nodes (and their descendants)
-    // that have the given rule.
-    if (mRuleTree)
-      mRuleTree->ClearCachedDataInSubtree(aRule);
-
-    // We need to crawl the entire style context tree, and for each style context we need 
-    // to see if the specified rule is matched.  If so, that context and all its descendant
-    // contexts must have their data wiped.
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    nsIFrame* rootFrame;
-    shell->GetRootFrame(&rootFrame);
-    if (rootFrame) {
-      nsCOMPtr<nsIStyleContext> rootContext;
-      rootFrame->GetStyleContext(getter_AddRefs(rootContext));
-      if (rootContext)
-        rootContext->ClearStyleData(aPresContext, aRule);
-    }
+    mRuleTree->ClearCachedDataInSubtree(aRule);
+  
+  // We need to crawl the entire style context tree, and for each style context we need 
+  // to see if the specified rule is matched.  If so, that context and all its descendant
+  // contexts must have their data wiped.
+  nsCOMPtr<nsIPresShell> shell;
+  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIFrame* rootFrame;
+  shell->GetRootFrame(&rootFrame);
+  if (rootFrame) {
+    nsStyleContext* rootContext = rootFrame->GetStyleContext();
+    if (rootContext)
+      rootContext->ClearStyleData(aPresContext, aRule);
   }
 
   return NS_OK;
 }
 
-NS_IMETHODIMP
+already_AddRefed<nsStyleContext>
 StyleSetImpl::ReParentStyleContext(nsIPresContext* aPresContext,
-                                   nsIStyleContext* aStyleContext, 
-                                   nsIStyleContext* aNewParentContext,
-                                   nsIStyleContext** aNewStyleContext)
+                                   nsStyleContext* aStyleContext, 
+                                   nsStyleContext* aNewParentContext)
 {
   NS_ASSERTION(aPresContext, "must have pres context");
   NS_ASSERTION(aStyleContext, "must have style context");
-  NS_ASSERTION(aNewStyleContext, "must have new style context");
 
-  nsresult result = NS_ERROR_NULL_POINTER;
-
-  if (aPresContext && aStyleContext && aNewStyleContext) {
-    nsCOMPtr<nsIStyleContext> oldParent = aStyleContext->GetParent();
-
-    if (oldParent == aNewParentContext) {
-      result = NS_OK;
-      NS_ADDREF(aStyleContext);   // for return
-      *aNewStyleContext = aStyleContext;
+  if (aPresContext && aStyleContext) {
+    if (aStyleContext->GetParent() == aNewParentContext) {
+      aStyleContext->AddRef();
+      return aStyleContext;
     }
     else {  // really a new parent
-      nsIStyleContext*  newChild = nsnull;
-      nsCOMPtr<nsIAtom>  pseudoTag;
-      aStyleContext->GetPseudoType(*getter_AddRefs(pseudoTag));
+      nsCOMPtr<nsIAtom>  pseudoTag = aStyleContext->GetPseudoType();
 
       nsRuleNode* ruleNode;
       aStyleContext->GetRuleNode(&ruleNode);
-      if (aNewParentContext) {
-        result = aNewParentContext->FindChildWithRules(pseudoTag, ruleNode, newChild);
-      }
-      if (newChild) { // new parent already has one
-        *aNewStyleContext = newChild;
-      }
-      else {  // need to make one in the new parent
-        result = NS_NewStyleContext(aNewStyleContext, aNewParentContext, pseudoTag,
-                                    ruleNode, aPresContext);
-      }
+      EnsureRuleWalker(aPresContext);
+      NS_ENSURE_TRUE(mRuleWalker, nsnull);
+      mRuleWalker->SetCurrentNode(ruleNode);
+
+      already_AddRefed<nsStyleContext> result =
+          GetContext(aPresContext, aNewParentContext, pseudoTag);
+      mRuleWalker->Reset();
+      return result;
     }
   }
-  return result;
+  return nsnull;
 }
 
 struct StatefulData : public StateRuleProcessorData {
@@ -1444,20 +1569,20 @@ struct StatefulData : public StateRuleProcessorData {
                nsIContent* aContent, PRInt32 aStateMask)
     : StateRuleProcessorData(aPresContext, aContent, aStateMask),
       mMedium(aMedium),
-      mStateful(PR_FALSE)
+      mHasStyle(PR_FALSE)
   {}
   nsIAtom*        mMedium;
-  PRBool          mStateful;
+  PRBool          mHasStyle;
 }; 
 
 static PRBool SheetHasStatefulStyle(nsISupports* aProcessor, void *aData)
 {
   nsIStyleRuleProcessor* processor = (nsIStyleRuleProcessor*)aProcessor;
   StatefulData* data = (StatefulData*)aData;
-  PRBool hasStateful;
-  processor->HasStateDependentStyle(data, data->mMedium, &hasStateful);
-  if (hasStateful) {
-    data->mStateful = PR_TRUE;
+  PRBool hasStyle;
+  processor->HasStateDependentStyle(data, data->mMedium, &hasStyle);
+  if (hasStyle) {
+    data->mHasStyle = PR_TRUE;
     // Stop iteration.  Note that StyleSetImpl::WalkRuleProcessors uses
     // this to stop its own iteration in some cases, but not all (the
     // style rule supplier case).  Since this optimization is only for
@@ -1482,12 +1607,67 @@ StyleSetImpl::HasStateDependentStyle(nsIPresContext* aPresContext,
        mUserRuleProcessors  ||
        mDocRuleProcessors   ||
        mOverrideRuleProcessors)) {  
-    nsIAtom* medium = nsnull;
-    aPresContext->GetMedium(&medium);
+    nsCOMPtr<nsIAtom> medium;
+    aPresContext->GetMedium(getter_AddRefs(medium));
     StatefulData data(aPresContext, medium, aContent, aStateMask);
     WalkRuleProcessors(SheetHasStatefulStyle, &data);
-    NS_IF_RELEASE(medium);
-    *aResult = data.mStateful;
+    *aResult = data.mHasStyle;
+  } else {
+    *aResult = PR_FALSE;
+  }
+
+  return NS_OK;
+}
+
+struct AttributeData : public AttributeRuleProcessorData {
+  AttributeData(nsIPresContext* aPresContext, nsIAtom* aMedium,
+               nsIContent* aContent, nsIAtom* aAttribute, PRInt32 aModType)
+    : AttributeRuleProcessorData(aPresContext, aContent, aAttribute, aModType),
+      mMedium(aMedium),
+      mHasStyle(PR_FALSE)
+  {}
+  nsIAtom*        mMedium;
+  PRBool          mHasStyle;
+}; 
+
+static PRBool SheetHasAttributeStyle(nsISupports* aProcessor, void *aData)
+{
+  nsIStyleRuleProcessor* processor = (nsIStyleRuleProcessor*)aProcessor;
+  AttributeData* data = (AttributeData*)aData;
+  PRBool hasStyle;
+  processor->HasAttributeDependentStyle(data, data->mMedium, &hasStyle);
+  if (hasStyle) {
+    data->mHasStyle = PR_TRUE;
+    // Stop iteration.  Note that StyleSetImpl::WalkRuleProcessors uses
+    // this to stop its own iteration in some cases, but not all (the
+    // style rule supplier case).  Since this optimization is only for
+    // the case where we have a lot more work to do, it's not worth the
+    // code needed to make the stopping perfect.
+    return PR_FALSE;
+  }
+  return PR_TRUE; // continue
+}
+
+// Test if style is dependent on content state
+NS_IMETHODIMP
+StyleSetImpl::HasAttributeDependentStyle(nsIPresContext* aPresContext,
+                                         nsIContent*     aContent,
+                                         nsIAtom*        aAttribute,
+                                         PRInt32         aModType,
+                                         PRBool*         aResult)
+{
+  GatherRuleProcessors();
+
+  if (aContent->IsContentOfType(nsIContent::eELEMENT) &&
+      (mAgentRuleProcessors ||
+       mUserRuleProcessors  ||
+       mDocRuleProcessors   ||
+       mOverrideRuleProcessors)) {  
+    nsCOMPtr<nsIAtom> medium;
+    aPresContext->GetMedium(getter_AddRefs(medium));
+    AttributeData data(aPresContext, medium, aContent, aAttribute, aModType);
+    WalkRuleProcessors(SheetHasAttributeStyle, &data);
+    *aResult = data.mHasStyle;
   } else {
     *aResult = PR_FALSE;
   }
@@ -1525,7 +1705,7 @@ NS_IMETHODIMP StyleSetImpl::ContentInserted(nsIPresContext* aPresContext,
                                             nsIContent*     aChild,
                                             PRInt32         aIndexInContainer)
 {
-  return mFrameConstructor->ContentInserted(aPresContext, aContainer,
+  return mFrameConstructor->ContentInserted(aPresContext, aContainer, nsnull,
                                             aChild, aIndexInContainer, 
                                             nsnull, PR_FALSE);
 }
@@ -1699,27 +1879,23 @@ void StyleSetImpl::List(FILE* out, PRInt32 aIndent)
 }
 
 
-void StyleSetImpl::ListContexts(nsIStyleContext* aRootContext, FILE* out, PRInt32 aIndent)
+void StyleSetImpl::ListContexts(nsIFrame* aRootFrame, FILE* out, PRInt32 aIndent)
 {
-  aRootContext->List(out, aIndent);
+  nsStyleContext* sc = aRootFrame->GetStyleContext();
+  if (sc)
+    sc->List(out, aIndent);
 }
 #endif
 
 
-NS_EXPORT nsresult
+nsresult
 NS_NewStyleSet(nsIStyleSet** aInstancePtrResult)
 {
-  if (aInstancePtrResult == nsnull) {
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  StyleSetImpl  *it = new StyleSetImpl();
-
-  if (nsnull == it) {
+  StyleSetImpl *it = new StyleSetImpl();
+  if (!it)
     return NS_ERROR_OUT_OF_MEMORY;
-  }
 
-  return it->QueryInterface(NS_GET_IID(nsIStyleSet), (void **) aInstancePtrResult);
+  return CallQueryInterface(it, aInstancePtrResult);
 }
 
 // nsITimeRecorder implementation
@@ -1757,17 +1933,18 @@ StyleSetImpl::DisableTimer(PRUint32 aTimerID)
 NS_IMETHODIMP
 StyleSetImpl::IsTimerEnabled(PRBool *aIsEnabled, PRUint32 aTimerID)
 {
-  NS_ASSERTION(aIsEnabled != nsnull, "aIsEnabled paramter cannot be null" );
+  NS_ASSERTION(aIsEnabled, "aIsEnabled parameter cannot be null" );
   nsresult rv = NS_OK;
 
   if (NS_TIMER_STYLE_RESOLUTION == aTimerID) {
-	  if (*aIsEnabled != nsnull) {
+    if (*aIsEnabled) {
       *aIsEnabled = mTimerEnabled;		
-	  }
+    }
   }
-  else 
+  else {
     rv = NS_ERROR_NOT_IMPLEMENTED;
-  
+  }
+
   return rv;
 }
 
@@ -1853,242 +2030,3 @@ void StyleSetImpl::ResetUniqueStyleItems(void)
   UNIQUE_STYLE_ITEMS(uniqueItems);
   uniqueItems->Clear();  
 }
-
-struct AttributeContentPair {
-  nsIAtom *attribute;
-  nsIContent *content;
-};
-
-static PRBool
-EnumAffectsStyle(nsISupports *aElement, void *aData)
-{
-  nsIStyleSheet *sheet = NS_STATIC_CAST(nsIStyleSheet *, aElement);
-  AttributeContentPair *pair = (AttributeContentPair *)aData;
-  PRBool affects;
-  nsresult res =
-      sheet->AttributeAffectsStyle(pair->attribute, pair->content, affects);
-  if (NS_FAILED(res) || affects)
-    return PR_FALSE;            // stop checking
-
-  return PR_TRUE;
-}
-
-NS_IMETHODIMP
-StyleSetImpl::AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                    PRBool &aAffects)
-{
-  AttributeContentPair pair;
-  pair.attribute = aAttribute;
-  pair.content = aContent;
-
-  /* scoped sheets should be checked first, since - if present - they will contain
-     the bulk of the applicable rules for the content node. */
-  if (mStyleRuleSupplier)
-    mStyleRuleSupplier->AttributeAffectsStyle(EnumAffectsStyle, &pair, aContent, &aAffects);
-
-  if (!aAffects) {
-    /* check until we find a sheet that will be affected */
-    if ((mDocSheets && !mDocSheets->EnumerateForwards(EnumAffectsStyle, &pair)) ||
-        (mOverrideSheets && !mOverrideSheets->EnumerateForwards(EnumAffectsStyle,
-                                                                &pair)) ||
-        (mUserSheets && !mUserSheets->EnumerateForwards(EnumAffectsStyle,
-                                                                &pair)) ||
-        (mAgentSheets && !mAgentSheets->EnumerateForwards(EnumAffectsStyle,
-                                                                &pair))) {
-      aAffects = PR_TRUE;
-    } else {
-      aAffects = PR_FALSE;
-    }
-  }
-
-  return NS_OK;
-}
-
-#ifdef DEBUG
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as StyleSetImpl's size): 
-*    1) sizeof(*this) + sizeof (overhead only) each collection that exists
-*       and the FrameConstructor overhead
-*
-*  Contained / Aggregated data (not reported as StyleSetImpl's size):
-*    1) Override Sheets, DocSheets, UserSheets, AgentSheets, RuleProcessors, Recycler
-*       are all delegated to.
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void StyleSetImpl::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-
-  if(! uniqueItems->AddItem((void*)this) ){
-    NS_ASSERTION(0, "StyleSet has already been conted in SizeOf operation");
-    // styleset has already been accounted for
-    return;
-  }
-  // get or create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("StyleSet"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(StyleSetImpl);
-
-  // Next get the size of the OVERHEAD of objects we will delegate to:
-  if (mOverrideSheets && uniqueItems->AddItem(mOverrideSheets)){
-    aSize += sizeof(*mOverrideSheets);
-  }
-  if (mDocSheets && uniqueItems->AddItem(mDocSheets)){
-    aSize += sizeof(*mDocSheets);
-  }
-  if (mUserSheets && uniqueItems->AddItem(mUserSheets)){
-    aSize += sizeof(*mUserSheets);
-  }
-  if (mAgentSheets && uniqueItems->AddItem(mAgentSheets)){
-    aSize += sizeof(*mAgentSheets);
-  }
-  if (mAgentRuleProcessors && uniqueItems->AddItem(mAgentRuleProcessors)){
-    aSize += sizeof(*mAgentRuleProcessors);
-  }
-  if (mUserRuleProcessors && uniqueItems->AddItem(mUserRuleProcessors)){
-    aSize += sizeof(*mUserRuleProcessors);
-  }
-  if (mDocRuleProcessors && uniqueItems->AddItem(mDocRuleProcessors)){
-    aSize += sizeof(*mDocRuleProcessors);
-  }
-  if (mOverrideRuleProcessors && uniqueItems->AddItem(mOverrideRuleProcessors)){
-    aSize += sizeof(*mOverrideRuleProcessors);
-  }
-  if (mRecycler && uniqueItems->AddItem(mRecycler)){
-    aSize += sizeof(*mRecycler);
-  }
-  if (mQuirkStyleSheet) {
-    aSize += sizeof(mQuirkStyleSheet);  // just the pointer: the sheet is counted elsewhere
-  }
-  ///////////////////////////////////////////////
-  // now the FrameConstructor
-  if(mFrameConstructor && uniqueItems->AddItem((void*)mFrameConstructor)){
-    aSize += sizeof(mFrameConstructor);
-  }
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  ///////////////////////////////////////////////
-  // Now travers the collections and delegate
-  PRInt32 numSheets, curSheet;
-  PRUint32 localSize=0;
-  numSheets = GetNumberOfOverrideStyleSheets();
-  for(curSheet=0; curSheet < numSheets; curSheet++){
-    nsIStyleSheet* pSheet = GetOverrideStyleSheetAt(curSheet); //addref
-    if(pSheet){
-      localSize=0;
-      pSheet->SizeOf(aSizeOfHandler, localSize);
-    }
-    NS_IF_RELEASE(pSheet);
-  }
-
-  numSheets = GetNumberOfDocStyleSheets();
-  for(curSheet=0; curSheet < numSheets; curSheet++){
-    nsIStyleSheet* pSheet = GetDocStyleSheetAt(curSheet);
-    if(pSheet){
-      localSize=0;
-      pSheet->SizeOf(aSizeOfHandler, localSize);
-    }
-    NS_IF_RELEASE(pSheet);
-  }
-
-  numSheets = GetNumberOfUserStyleSheets();
-  for(curSheet=0; curSheet < numSheets; curSheet++){
-    nsIStyleSheet* pSheet = GetUserStyleSheetAt(curSheet);
-    if(pSheet){
-      localSize=0;
-      pSheet->SizeOf(aSizeOfHandler, localSize);
-    }
-    NS_IF_RELEASE(pSheet);
-  }
-
-  numSheets = GetNumberOfAgentStyleSheets();
-  for(curSheet=0; curSheet < numSheets; curSheet++){
-    nsIStyleSheet* pSheet = GetAgentStyleSheetAt(curSheet);
-    if(pSheet){
-      localSize=0;
-      pSheet->SizeOf(aSizeOfHandler, localSize);
-    }
-    NS_IF_RELEASE(pSheet);
-  }
-  ///////////////////////////////////////////////
-  // rule processors
-  PRUint32 numRuleProcessors,curRuleProcessor;
-  if(mAgentRuleProcessors){
-    mAgentRuleProcessors->Count(&numRuleProcessors);
-    for(curRuleProcessor=0; curRuleProcessor < numRuleProcessors; curRuleProcessor++){
-      nsIStyleRuleProcessor* processor = 
-        (nsIStyleRuleProcessor* )mAgentRuleProcessors->ElementAt(curRuleProcessor);
-      if(processor){
-        localSize=0;
-        processor->SizeOf(aSizeOfHandler, localSize);
-      }
-      NS_IF_RELEASE(processor);
-    }
-  }
-  if(mUserRuleProcessors){
-    mUserRuleProcessors->Count(&numRuleProcessors);
-    for(curRuleProcessor=0; curRuleProcessor < numRuleProcessors; curRuleProcessor++){
-      nsIStyleRuleProcessor* processor = 
-        (nsIStyleRuleProcessor* )mUserRuleProcessors->ElementAt(curRuleProcessor);
-      if(processor){
-        localSize=0;
-        processor->SizeOf(aSizeOfHandler, localSize);
-      }
-      NS_IF_RELEASE(processor);
-    }
-  }
-  if(mDocRuleProcessors){
-    mDocRuleProcessors->Count(&numRuleProcessors);
-    for(curRuleProcessor=0; curRuleProcessor < numRuleProcessors; curRuleProcessor++){
-      nsIStyleRuleProcessor* processor = 
-        (nsIStyleRuleProcessor* )mDocRuleProcessors->ElementAt(curRuleProcessor);
-      if(processor){
-        localSize=0;
-        processor->SizeOf(aSizeOfHandler, localSize);
-      }
-      NS_IF_RELEASE(processor);
-    }
-  }
-  if(mOverrideRuleProcessors){
-    mOverrideRuleProcessors->Count(&numRuleProcessors);
-    for(curRuleProcessor=0; curRuleProcessor < numRuleProcessors; curRuleProcessor++){
-      nsIStyleRuleProcessor* processor = 
-        (nsIStyleRuleProcessor* )mOverrideRuleProcessors->ElementAt(curRuleProcessor);
-      if(processor){
-        localSize=0;
-        processor->SizeOf(aSizeOfHandler, localSize);
-      }
-      NS_IF_RELEASE(processor);
-    }
-  }
-  
-  ///////////////////////////////////////////////
-  // and the recycled ones too
-  if(mRecycler){
-    mRecycler->Count(&numRuleProcessors);
-    for(curRuleProcessor=0; curRuleProcessor < numRuleProcessors; curRuleProcessor++){
-      nsIStyleRuleProcessor* processor = 
-        (nsIStyleRuleProcessor* )mRecycler->ElementAt(curRuleProcessor);
-      if(processor && uniqueItems->AddItem((void*)processor)){
-        localSize=0;
-        processor->SizeOf(aSizeOfHandler, localSize);
-      }
-      NS_IF_RELEASE(processor);
-    }
-  }
-
-  // XXX - do the stylecontext cache too
-
-  // now delegate the sizeof to the larger or more complex aggregated objects
-  // - none
-}
-#endif

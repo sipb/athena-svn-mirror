@@ -52,11 +52,12 @@
 
 #ifndef RICKG_TESTBED
 #include "prdtoa.h"
-#include "nsISizeOfHandler.h"
 #endif
 
+#ifdef DEBUG
 static const char* kPossibleNull = "Error: possible unintended null in string";
 static const char* kNullPointerError = "Error: unexpected null ptr";
+#endif
 static const char* kWhitespace="\b\t\r\n ";
 
 const nsBufferHandle<char>*
@@ -139,14 +140,6 @@ nsCString::nsCString( const nsACString& aReadable ) {
   nsStrPrivate::Initialize(*this,eOneByte);
   Assign(aReadable);
 }
-
-#ifdef DEBUG
-void nsCString::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const {
-  if (aResult) {
-    *aResult = sizeof(*this) + GetCapacity() * GetCharSize();
-  }
-}
-#endif
 
 /**
  * This method truncates this string to given length.
@@ -464,19 +457,25 @@ nsCString::CompressWhitespace( PRBool aEliminateLeading,PRBool aEliminateTrailin
  * @return  float rep of string value
  */
 float nsCString::ToFloat(PRInt32* aErrorCode) const {
-  char buf[100];
-  if (mLength > PRInt32(sizeof(buf)-1)) {
-    *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
-    return 0.0f;
+  float res = 0.0f;
+  if (mLength > 0) {
+    char *conv_stopped;
+    const char *str = get();
+    // Use PR_strtod, not strtod, since we don't want locale involved.
+    res = (float)PR_strtod(str, &conv_stopped);
+    if (conv_stopped == str+mLength) {
+      *aErrorCode = (PRInt32) NS_OK;
+    }
+    else {
+      /* Not all the string was scanned */
+      *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
+    }
   }
-  char *cp = strncpy(buf, get(), sizeof(buf) - 1);
-  buf[sizeof(buf)-1] = '\0';
-  float f = (float) PR_strtod(cp, &cp);
-  if (*cp != 0) {
+  else {
+    /* The string was too short (0 characters) */
     *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
   }
-  *aErrorCode = (PRInt32) NS_OK;
-  return f;
+  return res;
 }
 
 /**
@@ -1266,12 +1265,3 @@ nsCAutoString::nsCAutoString(const CBufDescriptor& aBuffer) : nsCString() {
   if(!aBuffer.mIsConst)
     AddNullTerminator(*this); //this isn't really needed, but it guarantees that folks don't pass string constants.
 }
-
-
-#ifdef DEBUG
-void nsCAutoString::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const {
-  if (aResult) {
-    *aResult = sizeof(*this) + GetCapacity() * GetCharSize();
-  }
-}
-#endif

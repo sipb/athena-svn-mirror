@@ -46,6 +46,7 @@
 #define ENABLE_X_FONT_BANNING 1
 
 #include <sys/types.h>
+#include "gfx-config.h"
 #include "nscore.h"
 #include "nsQuickSort.h"
 #include "nsFontMetricsXlib.h"
@@ -114,7 +115,7 @@ static PRBool                 FreeNode(nsHashKey* aKey, void* aData, void* aClos
 #ifdef USE_FREETYPE
 static void                   CharSetNameToCodeRangeBits(const char*, PRUint32*, PRUint32*);
 #endif /* USE_FREETYPE */
-static nsFontCharSetMapXlib  *GetCharSetMap(const char *aCharSetName);
+static const nsFontCharSetMapXlib *GetCharSetMap(nsFontMetricsXlibContext *aFmctx, const char *aCharSetName);
 
 // the font catalog is so expensive to generate
 // always tell the user what is happening
@@ -126,6 +127,105 @@ struct nsFontPropertyNameXlib;
 struct nsFontStyleXlib;
 struct nsFontWeightXlib;
 struct nsFontLangGroupXlib;
+
+/* Container to hold per-device data (not per nsIDeviceContext data - one 
+ * nsFontMetricsXlibContext instance may be used by multiple nsIDeviceContext
+ * as long they map to the same physical device) for fontmetrics code
+ */
+class nsFontMetricsXlibContext
+{
+public:
+  nsFontMetricsXlibContext();
+  nsresult Init(nsIDeviceContext *aDevice, PRBool printermode);
+  ~nsFontMetricsXlibContext();
+
+  XlibRgbHandle                        *mXlibRgbHandle;
+#ifdef USE_XPRINT
+  /* Does this nsFont(Metrics)Xlib class operate on a Xprt (X11 print server) */
+  PRPackedBool                          mPrinterMode;
+#endif /* USE_XPRINT */  
+  PRPackedBool                          mAllowDoubleByteSpecialChars;
+  PRPackedBool                          mForceOutlineScaledFonts;
+
+  PRPackedBool                          mScaleBitmapFontsWithDevScale;
+  float                                 mDevScale;
+
+  nsCOMPtr<nsIPref>                     mPref;
+
+  nsCOMPtr<nsICharsetConverterManager2> mCharSetManager;
+  nsCOMPtr<nsIUnicodeEncoder>           mUserDefinedConverter;
+
+  nsHashtable                           mAliases;
+  nsHashtable                           mCharSetMaps;
+  nsHashtable                           mFamilies;
+  nsHashtable                           mFFRENodes;
+  nsHashtable                           mAFRENodes;
+
+  // mCachedFFRESearches holds the "already looked up"
+  // FFRE (Foundry Family Registry Encoding) font searches
+  nsHashtable                           mCachedFFRESearches;
+  nsHashtable                           mSpecialCharSets;
+  nsHashtable                           mStretches;
+  nsHashtable                           mWeights;
+  nsCOMPtr<nsISaveAsCharset>            mFontSubConverter;
+
+  PRBool                                mGlobalListInitalised;
+  nsFontNodeArrayXlib                   mGlobalList;
+
+  nsFontCharSetInfoXlib                *mUnknown,
+                                       *mSpecial,
+                                       *mISO106461;
+  
+  nsCOMPtr<nsIAtom>                     mUnicode;
+  nsCOMPtr<nsIAtom>                     mUserDefined;
+  nsCOMPtr<nsIAtom>                     mUsersLocale;
+  nsCOMPtr<nsIAtom>                     mWesternLocale;
+
+  const nsFontCharSetMapXlib           *mCharSetMap;
+  const nsFontCharSetMapXlib           *mNoneCharSetMap;
+  const nsFontCharSetMapXlib           *mSpecialCharSetMap;
+
+  PRUint16                             *mUserDefinedCCMap;
+  PRUint16                             *mEmptyCCMap;
+  PRUint16                             *mDoubleByteSpecialCharsCCMap;
+
+  // Controls for Outline Scaled Fonts (okay looking)
+
+  PRInt32                               mOutlineScaleMinimum;
+#ifdef USE_AASB
+// Controls for Anti-Aliased Scaled Bitmaps (okay looking)
+  PRBool                                mAABitmapScaleEnabled;
+  PRBool                                mAABitmapScaleAlways;
+  PRInt32                               mAABitmapScaleMinimum;
+  double                                mAABitmapOversize;
+  double                                mAABitmapUndersize;
+#endif /* USE_AASB */
+
+// Controls for (regular) Scaled Bitmaps (very ugly)
+  PRInt32                               mBitmapScaleMinimum;
+  double                                mBitmapOversize;
+  double                                mBitmapUndersize;
+
+#ifdef USE_AASB
+  PRInt32                               mAntiAliasMinimum;
+#endif /* USE_AASB */
+  PRInt32                               mEmbeddedBitmapMaximumHeight;
+
+#ifdef USE_FREETYPE
+  PRBool                                mEnableFreeType2;
+  PRBool                                mFreeType2Autohinted;
+  PRBool                                mFreeType2Unhinted;
+#endif /* USE_FREETYPE */
+#ifdef USE_AASB
+  PRUint8                               mAATTDarkTextMinValue;
+  double                                mAATTDarkTextGain;
+#endif /* USE_AASB */
+
+#ifdef ENABLE_X_FONT_BANNING
+  regex_t                              *mFontRejectRegEx,
+                                       *mFontAcceptRegEx;
+#endif /* ENABLE_X_FONT_BANNING */
+};
 
 struct nsFontCharSetInfoXlib
 {
@@ -172,78 +272,7 @@ struct nsFontPropertyNameXlib
 static NS_DEFINE_CID(kCharSetManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_CID(kSaveAsCharsetCID, NS_SAVEASCHARSET_CID);
-static void SetCharsetLangGroup(nsFontCharSetInfoXlib* aCharSetInfo);
-
-static int gFontMetricsXlibCount = 0;
-static PRBool gInitialized = PR_FALSE;
-static PRBool gForceOutlineScaledFonts = PR_FALSE;
-static XlibRgbHandle *gXlibRgbHandle = nsnull;
-static PRBool gAllowDoubleByteSpecialChars = PR_TRUE;
-
-// XXX many of these statics need to be freed at shutdown time
-
-static nsIPref* gPref = nsnull;
-static float gDevScale = 0.0f; /* Scaler value from |GetCanonicalPixelScale()| */
-static PRBool gScaleBitmapFontsWithDevScale = PR_FALSE;
-static nsICharsetConverterManager2* gCharSetManager = nsnull;
-static nsIUnicodeEncoder* gUserDefinedConverter = nsnull;
-
-static nsHashtable* gAliases = nsnull;
-static nsHashtable* gCharSetMaps = nsnull;
-static nsHashtable* gFamilies = nsnull;
-static nsHashtable* gFFRENodes = nsnull;
-static nsHashtable* gAFRENodes = nsnull;
-// gCachedFFRESearches holds the "already looked up"
-// FFRE (Foundry Family Registry Encoding) font searches
-static nsHashtable* gCachedFFRESearches = nsnull;
-static nsHashtable* gSpecialCharSets = nsnull;
-static nsHashtable* gStretches = nsnull;
-static nsHashtable* gWeights = nsnull;
-static nsISaveAsCharset* gFontSubConverter = nsnull;
-
-static nsFontNodeArrayXlib* gGlobalList = nsnull;
-
-static nsIAtom* gUnicode = nsnull;
-static nsIAtom* gUserDefined = nsnull;
-static nsIAtom* gUsersLocale = nsnull;
-static nsIAtom* gWesternLocale = nsnull;
-
-// Controls for Outline Scaled Fonts (okay looking)
-
-static PRInt32 gOutlineScaleMinimum = 6;
-#ifdef USE_AASB
-// Controls for Anti-Aliased Scaled Bitmaps (okay looking)
-static PRBool  gAABitmapScaleEnabled = PR_TRUE;
-static PRBool  gAABitmapScaleAlways = PR_FALSE;
-static PRInt32 gAABitmapScaleMinimum = 6;
-static double  gAABitmapOversize = 1.1;
-static double  gAABitmapUndersize = 0.9;
-#endif /* USE_AASB */
-
-// Controls for (regular) Scaled Bitmaps (very ugly)
-static PRInt32 gBitmapScaleMinimum = 10;
-static double  gBitmapOversize = 1.2;
-static double  gBitmapUndersize = 0.8;
-
-#ifdef USE_AASB
-static PRInt32 gAntiAliasMinimum = 8;
-#endif /* USE_AASB */
-static PRInt32 gEmbeddedBitmapMaximumHeight = 1000000;
-
-#ifdef USE_FREETYPE
-static PRBool  gEnableFreeType2 = PR_TRUE;
-static PRBool  gFreeType2Autohinted = PR_FALSE;
-static PRBool  gFreeType2Unhinted = PR_TRUE;
-#endif /* USE_FREETYPE */
-#ifdef USE_AASB
-static PRUint8 gAATTDarkTextMinValue = 64;
-static double  gAATTDarkTextGain = 0.8;
-#endif /* USE_AASB */
-
-#ifdef ENABLE_X_FONT_BANNING
-static regex_t *gFontRejectRegEx = nsnull,
-               *gFontAcceptRegEx = nsnull;
-#endif /* ENABLE_X_FONT_BANNING */
+static void SetCharsetLangGroup(nsFontMetricsXlibContext *aFmctx, nsFontCharSetInfoXlib* aCharSetInfo);
 
 static int SingleByteConvert(nsFontCharSetInfoXlib* aSelf, XFontStruct* aFont,
   const PRUnichar* aSrcBuf, PRInt32 aSrcLen, char* aDestBuf, PRInt32 aDestLen);
@@ -258,6 +287,11 @@ static nsFontCharSetInfoXlib Special = { nsnull };
 static nsFontCharSetInfoXlib CP1251 =
   { "windows-1251", SingleByteConvert, 0,
     TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN };
+static nsFontCharSetInfoXlib USASCII =
+  { "us-ascii", SingleByteConvert, 0,
+    TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
+    TT_OS2_CPR2_CA_FRENCH |  TT_OS2_CPR2_PORTUGESE
+    | TT_OS2_CPR2_WE_LATIN1 |  TT_OS2_CPR2_US };
 static nsFontCharSetInfoXlib ISO88591 =
   { "ISO-8859-1", SingleByteConvert, 0,
     TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
@@ -280,6 +314,9 @@ static nsFontCharSetInfoXlib ISO88596 =
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfoXlib ISO885968x =
   { "x-iso-8859-6-8-x", SingleByteConvert, 0,
+      TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
+static nsFontCharSetInfoXlib ISO8859616 =
+  { "x-iso-8859-6-16", SingleByteConvert, 0,
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfoXlib ISO88597 =
   { "ISO-8859-7", SingleByteConvert, 0,
@@ -364,7 +401,7 @@ static nsFontCharSetInfoXlib GBK =
     TT_OS2_CPR1_CHINESE_SIMP, 0 };
 static nsFontCharSetInfoXlib HKSCS =
   { "hkscs-1", DoubleByteConvert, 1,
-    TT_OS2_CPR1_CHINESE_SIMP, 0 };
+    TT_OS2_CPR1_CHINESE_TRAD, 0 };
 static nsFontCharSetInfoXlib JISX0208 =
   { "jis_0208-1983", DoubleByteConvert, 1,
     TT_OS2_CPR1_JAPANESE, 0 };
@@ -380,6 +417,12 @@ static nsFontCharSetInfoXlib X11Johab =
 static nsFontCharSetInfoXlib JohabNoAscii =
   { "x-johab-noascii", DoubleByteConvert, 1,
     TT_OS2_CPR1_KO_WANSUNG | TT_OS2_CPR1_KO_JOHAB, 0 };
+static nsFontCharSetInfoXlib JamoTTF =
+  { "x-koreanjamo-0", DoubleByteConvert, 1,
+    TT_OS2_CPR1_KO_WANSUNG | TT_OS2_CPR1_KO_JOHAB, 0 };
+static nsFontCharSetInfoXlib TamilTTF =
+  { "x-tamilttf-0", DoubleByteConvert, 1,
+    0, 0 };
 
 #ifdef SUNCTL
 /* Hindi range currently unsupported in FT2 range. Change TT* once we 
@@ -431,7 +474,10 @@ static nsFontLangGroupXlib FLG_ZHCN    = { "zh-CN",         nsnull };
 static nsFontLangGroupXlib FLG_ZHTW    = { "zh-TW",         nsnull };
 static nsFontLangGroupXlib FLG_JA      = { "ja",            nsnull };
 static nsFontLangGroupXlib FLG_KO      = { "ko",            nsnull };
-static nsFontLangGroupXlib FLG_INDIC   = { "hi-IN",         nsnull };
+#ifdef SUNCTL
+static nsFontLangGroupXlib FLG_INDIC   = { "x-devanagari",  nsnull };
+#endif
+static nsFontLangGroupXlib FLG_TAMIL   = { "x-tamil",       nsnull };
 static nsFontLangGroupXlib FLG_NONE    = { nsnull,          nsnull };
 
 /*
@@ -460,7 +506,7 @@ static nsFontLangGroupXlib FLG_NONE    = { nsnull,          nsnull };
  * These cases can be distinguished by looking at the FOUNDRY field, but a
  * better way is to look at XFontStruct.min_byte1.
  */
-static nsFontCharSetMapXlib gCharSetMap[] =
+static const nsFontCharSetMapXlib gConstCharSetMap[] =
 {
   { "-ascii",             &FLG_NONE,    &Unknown       },
   { "-ibm pc",            &FLG_NONE,    &Unknown       },
@@ -475,6 +521,7 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { "big5.hku-1",         &FLG_ZHTW,    &Big5          },
   { "big5.pc-0",          &FLG_ZHTW,    &Big5          },
   { "big5.shift-0",       &FLG_ZHTW,    &Big5          },
+  { "big5hkscs-0",        &FLG_ZHTW,    &HKSCS         },
   { "cns11643.1986-1",    &FLG_ZHTW,    &CNS116431     },
   { "cns11643.1986-2",    &FLG_ZHTW,    &CNS116432     },
   { "cns11643.1992-1",    &FLG_ZHTW,    &CNS116431     },
@@ -509,7 +556,7 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { "gb18030.2000-0",     &FLG_ZHCN,    &GB18030_0     },
   { "gb18030.2000-1",     &FLG_ZHCN,    &GB18030_1     },
   { "gbk-0",              &FLG_ZHCN,    &GBK           },
-  { "gbk1988.1989-0",     &FLG_ZHCN,    &GBK           },
+  { "gbk1988.1989-0",     &FLG_ZHCN,    &USASCII       },
   { "hkscs-1",            &FLG_ZHTW,    &HKSCS         },
   { "hp-japanese15",      &FLG_NONE,    &Unknown       },
   { "hp-japaneseeuc",     &FLG_NONE,    &Unknown       },
@@ -543,6 +590,7 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { "iso8859-5",          &FLG_RUSSIAN, &ISO88595      },
   { "iso8859-6",          &FLG_ARABIC,  &ISO88596      },
   { "iso8859-6.8x",       &FLG_ARABIC,  &ISO885968x    },
+  { "iso8859-6.16",       &FLG_ARABIC,  &ISO8859616    },
   { "iso8859-7",          &FLG_GREEK,   &ISO88597      },
   { "iso8859-8",          &FLG_HEBREW,  &ISO88598      },
   { "iso8859-9",          &FLG_TURKISH, &ISO88599      },
@@ -559,6 +607,7 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { "johabsh-1",          &FLG_KO,      &X11Johab      },
   { "ksc5601.1987-0",     &FLG_KO,      &KSC5601       },
   { "ksc5601.1992-3",     &FLG_KO,      &JohabNoAscii  },
+  { "koreanjamo-0",       &FLG_KO,      &JamoTTF       },
   { "microsoft-cp1251",   &FLG_RUSSIAN, &CP1251        },
   { "misc-fontspecific",  &FLG_NONE,    &Unknown       },
   { "sgi-fontspecific",   &FLG_NONE,    &Unknown       },
@@ -571,9 +620,13 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { "tis620.2533-1",      &FLG_THAI,    &TIS620        },
   { "tis620-0",           &FLG_THAI,    &TIS620        },
   { "iso8859-11",         &FLG_THAI,    &TIS620        },
-  { "ucs2.cjk-0",         &FLG_NONE,    &Unknown       },
-  { "ucs2.cjk_japan-0",   &FLG_NONE,    &Unknown       },
-  { "ucs2.cjk_taiwan-0",  &FLG_NONE,    &Unknown       },
+  { "ucs2.cjk-0",         &FLG_NONE,    &ISO106461     },
+  { "ucs2.cjk_china-0",   &FLG_ZHCN,    &ISO106461     },
+  { "ucs2.cjk_japan-0",   &FLG_JA,      &ISO106461     },
+  { "ucs2.cjk_korea-0",   &FLG_KO,      &ISO106461     },
+  { "ucs2.cjk_taiwan-0",  &FLG_ZHTW,    &ISO106461     },
+  { "ucs2.thai-0",        &FLG_THAI,    &ISO106461     },
+  { "tamilttf-0",         &FLG_TAMIL,   &TamilTTF      },
 #ifdef SUNCTL
   { "sun.unicode.india-0",&FLG_INDIC,   &SunIndic      },
 #endif /* SUNCTL */
@@ -581,7 +634,7 @@ static nsFontCharSetMapXlib gCharSetMap[] =
   { nsnull,               nsnull,       nsnull         }
 };
 
-static nsFontFamilyNameXlib gFamilyNameTable[] =
+static const nsFontFamilyNameXlib gFamilyNameTable[] =
 {
   { "arial",           "helvetica" },
   { "courier new",     "courier" },
@@ -597,9 +650,9 @@ static nsFontFamilyNameXlib gFamilyNameTable[] =
   { nsnull, nsnull }
 };
 
-static nsFontCharSetMapXlib gNoneCharSetMap[] = { { nsnull }, };
+static const nsFontCharSetMapXlib gConstNoneCharSetMap[] = { { nsnull }, };
 
-static nsFontCharSetMapXlib gSpecialCharSetMap[] =
+static const nsFontCharSetMapXlib gConstSpecialCharSetMap[] =
 {
   { "symbol-adobe-fontspecific", &FLG_NONE, &AdobeSymbol  },
   { "euromono-adobe-fontspecific",  &FLG_NONE, &AdobeEuro },
@@ -628,7 +681,7 @@ static nsFontCharSetMapXlib gSpecialCharSetMap[] =
   { nsnull,                      nsnull        }
 };
 
-static nsFontPropertyNameXlib gStretchNames[] =
+static const nsFontPropertyNameXlib gStretchNames[] =
 {
   { "block",         5 }, // XXX
   { "bold",          7 }, // XXX
@@ -642,7 +695,7 @@ static nsFontPropertyNameXlib gStretchNames[] =
   { nsnull,          0 }
 };
 
-static nsFontPropertyNameXlib gWeightNames[] =
+static const nsFontPropertyNameXlib gWeightNames[] =
 {
   { "black",    900 },
   { "bold",     700 },
@@ -656,55 +709,188 @@ static nsFontPropertyNameXlib gWeightNames[] =
   { nsnull,     0 }
 };
 
+#ifdef DEBUG_copyfontcharsetmap
+void DumpFontCharSetMap(const nsFontCharSetMapXlib *fcsm)
+{
+  printf("fcsm = %lx\n", fcsm);
+  printf("{\n");
+
+  for( ; fcsm->mName ; fcsm++ )
+  {
+#define STRNULL(s) ((s)?(s):("nsnull"))
+    printf("  { mName='%s', \tmFontLangGroup=%lx {mFontLangGroupName='%s'}, \tmInfo=%lx {mCharSet='%s'}}\n",
+           STRNULL(fcsm->mName),
+           fcsm->mFontLangGroup,
+           STRNULL(fcsm->mFontLangGroup->mFontLangGroupName),
+           fcsm->mInfo,
+           STRNULL(fcsm->mInfo->mCharSet)); 
+#undef STRNULL
+  }
+  printf("}\n");
+}
+#endif /* DEBUG_copyfontcharsetmap */
+
+/* Copy nsFontCharSetMapXlib structures to the appropriate members of
+ * |aFmctx|:
+ * |gConstCharSetMap|        --> |aFmctx->mCharSetMap|
+ * |gConstNoneCharSetMap|    --> |aFmctx->mNoneCharSetMap|
+ * |gConstSpecialCharSetMap| --> |aFmctx->mSpecialCharSetMap|
+ * When copying, we ensure that structures with identical content 
+ * have identical pointers (since fontmetrics code uses such pointers
+ * for |equal|, |not equal| comparisons etc.).
+ */
+static
+PRBool CopyFontCharSetMapXlib(nsFontMetricsXlibContext *aFmctx)
+{
+  long                        size1[3],
+                              size2[3],
+                              size3[3];
+  int                         i,
+                              j,
+                              k,
+                              l,
+                              count[3];
+  char                       *s;
+  const nsFontCharSetMapXlib *fcsm[3];
+  nsFontCharSetMapXlib       *copy[3];
+  nsFontLangGroupXlib        *langgroup;
+  nsFontCharSetInfoXlib      *charsetinfo;
+
+  fcsm[0] = gConstCharSetMap;
+  fcsm[1] = gConstNoneCharSetMap;
+  fcsm[2] = gConstSpecialCharSetMap; 
+  
+  size1[0] = size2[0] = size3[0] = 0;
+  size1[1] = size2[1] = size3[1] = 0;
+  size1[2] = size2[2] = size3[2] = 0;
+
+/* Alignment macros to force memory alignment required by most RISC platforms
+ * MAX_ALIGN_BYTES = sizeof(pointer) incl. the doubleword alignment required
+ * by some platforms, ALIGN_PTR() aligns the given pointer to match
+ * MAX_ALIGN_BYTES alignment
+ * XXX: NSPR should define that...
+ */
+#define MAX_ALIGN_BYTES (sizeof(void *) * 2)
+#define ALIGN_PTR(ptr) ((void *)(((PRUptrdiff)(ptr) & ~(MAX_ALIGN_BYTES-1L)) + MAX_ALIGN_BYTES))
+
+  for( l = 0 ; l < 3 ; l++ )
+  {  
+    /* Count entries in fcsm */
+    for( count[l]=0 ; fcsm[l][count[l]].mName ; count[l]++ ) ;
+
+    count[l]++;
+    size1[l] = sizeof(nsFontCharSetMapXlib)   * count[l] + MAX_ALIGN_BYTES;
+    size2[l] = sizeof(nsFontLangGroupXlib)    * count[l] + MAX_ALIGN_BYTES;
+    size3[l] = sizeof(nsFontCharSetInfoXlib)  * count[l] + MAX_ALIGN_BYTES;
+    count[l]--;
+  }
+  
+  s = (char *)calloc(1, size1[0]+size2[0]+size3[0]+
+                        size1[1]+size2[1]+size3[1]+
+                        size1[2]+size2[2]+size3[2]);
+  if (!s)
+    return PR_FALSE;
+
+  /* Note that the pointer in |copy[0]| is stored in |mCharSetMap| later which
+   * is finally passed to |free()| when the nsFontMetricsXlibContext destructor
+   * is called. */
+  copy[0]     = (nsFontCharSetMapXlib *)s;             s += size1[0];
+  copy[1]     = (nsFontCharSetMapXlib *)ALIGN_PTR(s);  s += size1[1];
+  copy[2]     = (nsFontCharSetMapXlib *)ALIGN_PTR(s);  s += size1[2];
+  langgroup   = (nsFontLangGroupXlib  *)ALIGN_PTR(s);  s += size2[0] + size2[1] + size2[2];
+  charsetinfo = (nsFontCharSetInfoXlib *)ALIGN_PTR(s);
+
+  for( l = 0 ; l < 3 ; l++ )
+  { 
+    for( i = 0 ; i < count[l] ; i++ )
+    {
+      copy[l][i].mName = fcsm[l][i].mName;
+
+      if (!copy[l][i].mFontLangGroup)
+      {
+        nsFontLangGroupXlib *slot = langgroup++;
+        *slot = *fcsm[l][i].mFontLangGroup;
+        copy[l][i].mFontLangGroup = slot;
+
+        for( k = 0 ; k < 3 ; k++ )
+        {
+          for( j = 0 ; j < count[k] ; j++ )
+          {
+            if ((!copy[k][j].mFontLangGroup) && 
+                (fcsm[k][j].mFontLangGroup == fcsm[l][i].mFontLangGroup))
+            {
+              copy[k][j].mFontLangGroup = slot;
+            }
+          }
+        }
+      }
+
+      if (!copy[l][i].mInfo)
+      {
+        nsFontCharSetInfoXlib *slot = charsetinfo++;
+
+        if (fcsm[l][i].mInfo == &Unknown)
+        {
+          aFmctx->mUnknown = slot;
+        }
+        else if (fcsm[l][i].mInfo == &Special)
+        {
+          aFmctx->mSpecial = slot;
+        }
+        else if (fcsm[l][i].mInfo == &ISO106461)
+        {
+          aFmctx->mISO106461 = slot;
+        }
+
+        *slot = *fcsm[l][i].mInfo;
+
+        copy[l][i].mInfo = slot;
+
+        for( k = 0 ; k < 3 ; k++ )
+        {
+          for( j = 0 ; j < count[k] ; j++ )
+          {
+            if ((!copy[k][j].mInfo) && 
+                (fcsm[k][j].mInfo == fcsm[l][i].mInfo))
+            {
+              copy[k][j].mInfo = slot;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  aFmctx->mCharSetMap        = copy[0];
+  aFmctx->mNoneCharSetMap    = copy[1];
+  aFmctx->mSpecialCharSetMap = copy[2];
+
+#ifdef DEBUG_copyfontcharsetmap
+  DumpFontCharSetMap(aFmctx->mCharSetMap);
+  DumpFontCharSetMap(aFmctx->mNoneCharSetMap);
+  DumpFontCharSetMap(aFmctx->mSpecialCharSetMap);
+#endif /* DEBUG_copyfontcharsetmap */
+  
+  return PR_TRUE; 
+}
+
 static char*
 atomToName(nsIAtom* aAtom)
 {
-  const PRUnichar *namePRU;
-  aAtom->GetUnicode(&namePRU);
-  return ToNewUTF8String(nsDependentString(namePRU));
+  const char *namePRU;
+  aAtom->GetUTF8String(&namePRU);
+  return ToNewCString(nsDependentCString(namePRU));
 }
-
-static PRUint16* gUserDefinedCCMap = nsnull;
-static PRUint16* gEmptyCCMap = nsnull;
-static PRUint16* gDoubleByteSpecialCharsCCMap = nsnull;
 
 //
 // smart quotes (and other special chars) in Asian (double byte)
 // fonts are too large to use is western fonts.
-// Here we define those characters.
+// To update the list, see one of files included below. (bug 180266)
 //
-static const PRUnichar gDoubleByteSpecialChars[] = {
-  0x0152, /* LATIN CAPITAL LIGATURE OE */
-  0x0153, /* LATIN SMALL LIGATURE OE */
-  0x0160, /* LATIN CAPITAL LETTER S WITH CARON */
-  0x0161, /* LATIN SMALL LETTER S WITH CARON */
-  0x0178, /* LATIN CAPITAL LETTER Y WITH DIAERESIS */
-  0x017D, /* LATIN CAPITAL LETTER Z WITH CARON */
-  0x017E, /* LATIN SMALL LETTER Z WITH CARON */
-  0x0192, /* LATIN SMALL LETTER F WITH HOOK */
-  0x02C6, /* MODIFIER LETTER CIRCUMFLEX ACCENT */
-  0x02DC, /* SMALL TILDE */
-  0x2013, /* EN DASH */
-  0x2014, /* EM DASH */
-  0x2018, /* LEFT SINGLE QUOTATION MARK */
-  0x2019, /* RIGHT SINGLE QUOTATION MARK */
-  0x201A, /* SINGLE LOW-9 QUOTATION MARK */
-  0x201C, /* LEFT DOUBLE QUOTATION MARK */
-  0x201D, /* RIGHT DOUBLE QUOTATION MARK */
-  0x201E, /* DOUBLE LOW-9 QUOTATION MARK */
-  0x2020, /* DAGGER */
-  0x2021, /* DOUBLE DAGGER */
-  0x2022, /* BULLET */
-  0x2026, /* HORIZONTAL ELLIPSIS */
-  0x2030, /* PER MILLE SIGN */
-  0x2039, /* SINGLE LEFT-POINTING ANGLE QUOTATION MARK */
-  0x203A, /* SINGLE RIGHT-POINTING ANGLE QUOTATION MARK */
-  0x20AC, /* EURO SIGN */
-  0x2122, /* TRADE MARK SIGN */
-  0
+static const PRUint16 gDoubleByteSpecialCharsCCMap[] = {
+#include "dbyte_special_chars.ccmap"
 };
-
-
+	  
 static PRBool
 FreeCharSetMap(nsHashKey* aKey, void* aData, void* aClosure)
 {
@@ -804,29 +990,26 @@ FreeNodeArray(nsHashKey* aKey, void* aData, void* aClosure)
   return PR_TRUE;
 }
 
-/* static */
-void
-nsFontMetricsXlib::FreeGlobals(void)
-{
-  // XXX complete this
+/* This is only required for the main display */
+static nsFontMetricsXlibContext *global_fmctx = nsnull;
 
-  gInitialized = PR_FALSE;
+nsFontMetricsXlibContext::~nsFontMetricsXlibContext()
+{
+  PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("# nsFontMetricsXlibContext destroy()\n"));
 
 #ifdef USE_FREETYPE
   nsFreeTypeFreeGlobals();
 #endif /* USE_FREETYPE */
 
 #ifdef ENABLE_X_FONT_BANNING
-  if (gFontRejectRegEx) {
-    regfree(gFontRejectRegEx);
-    delete gFontRejectRegEx;
-    gFontRejectRegEx = nsnull;
+  if (mFontRejectRegEx) {
+    regfree(mFontRejectRegEx);
+    delete mFontRejectRegEx;
   }
   
-  if (gFontAcceptRegEx) {
-    regfree(gFontAcceptRegEx);
-    delete gFontAcceptRegEx;
-    gFontAcceptRegEx = nsnull;
+  if (mFontAcceptRegEx) {
+    regfree(mFontAcceptRegEx);
+    delete mFontAcceptRegEx;
   }  
 #endif /* ENABLE_X_FONT_BANNING */
 
@@ -835,185 +1018,258 @@ nsFontMetricsXlib::FreeGlobals(void)
   nsX11AlphaBlendFreeGlobals();
 #endif /* USE_AASB */
 
-  if (gAliases) {
-    delete gAliases;
-    gAliases = nsnull;
-  }
-  NS_IF_RELEASE(gCharSetManager);
-  if (gCharSetMaps) {
-    gCharSetMaps->Reset(FreeCharSetMap, nsnull);
-    delete gCharSetMaps;
-    gCharSetMaps = nsnull;
-  }
-  if (gFamilies) {
-    gFamilies->Reset(FreeFamily, nsnull);
-    delete gFamilies;
-    gFamilies = nsnull;
-  }
-  if (gGlobalList) {
-    delete gGlobalList;
-    gGlobalList = nsnull;
-  }
-  if (gCachedFFRESearches) {
-    gCachedFFRESearches->Reset(FreeNodeArray, nsnull);
-    delete gCachedFFRESearches;
-    gCachedFFRESearches = nsnull;
-  }
-  if (gFFRENodes) {
-    gFFRENodes->Reset(FreeNode, nsnull);
-    delete gFFRENodes;
-    gFFRENodes = nsnull;
-  }
-  if (gAFRENodes) {
-    gAFRENodes->Reset(FreeNode, nsnull);
-    delete gAFRENodes;
-    gAFRENodes = nsnull;
-  }
-  NS_IF_RELEASE(gPref);
-  if (gSpecialCharSets) {
-    delete gSpecialCharSets;
-    gSpecialCharSets = nsnull;
-  }
-  if (gStretches) {
-    delete gStretches;
-    gStretches = nsnull;
-  }
-  NS_IF_RELEASE(gUnicode);
-  NS_IF_RELEASE(gUserDefined);
-  NS_IF_RELEASE(gUserDefinedConverter);
-  NS_IF_RELEASE(gUsersLocale);
-  NS_IF_RELEASE(gWesternLocale);
-  NS_IF_RELEASE(gFontSubConverter);
-  if (gWeights) {
-    delete gWeights;
-    gWeights = nsnull;
-  }
-  nsFontCharSetMapXlib* charSetMap;
-  for (charSetMap=gCharSetMap; charSetMap->mFontLangGroup; charSetMap++) {
-    NS_IF_RELEASE(charSetMap->mFontLangGroup->mFontLangGroupAtom);
-    charSetMap->mFontLangGroup->mFontLangGroupAtom = nsnull;
-  }
-  FreeCCMap(gUserDefinedCCMap);
-  FreeCCMap(gEmptyCCMap);
-  FreeCCMap(gDoubleByteSpecialCharsCCMap);
+  mCharSetMaps.Reset(FreeCharSetMap, nsnull);
+  mFamilies.Reset(FreeFamily, nsnull);
+  mCachedFFRESearches.Reset(FreeNodeArray, nsnull); 
+  mFFRENodes.Reset(FreeNode, nsnull);
+  mAFRENodes.Reset(FreeNode, nsnull);
+  mSpecialCharSets.Reset(FreeCharSetMap, nsnull);
 
-  gXlibRgbHandle = nsnull;
+  const nsFontCharSetMapXlib* charSetMap;
+  for (charSetMap=mCharSetMap; charSetMap->mFontLangGroup; charSetMap++) {
+    NS_IF_RELEASE(charSetMap->mFontLangGroup->mFontLangGroupAtom);
+  }
+  FreeCCMap(mUserDefinedCCMap);
+  FreeCCMap(mEmptyCCMap);
+  PR_Free(mDoubleByteSpecialCharsCCMap);
+  
+  /* Free memory allocated by |CopyFontCharSetMapXlib()| */
+  if (mCharSetMap) {
+    free((void *)mCharSetMap);
+  }
 }
 
 /*
  * Initialize all the font lookup hash tables and other globals
  */
-/* static */
-nsresult
-nsFontMetricsXlib::InitGlobals(nsIDeviceContext *aDevice)
+
+nsresult CreateFontMetricsXlibContext(nsIDeviceContext *aDevice, PRBool aPrintermode, nsFontMetricsXlibContext **aFontMetricsXlibContext)
 {
+  nsresult                  rv;
+  nsFontMetricsXlibContext *fmctx;
+  
+  *aFontMetricsXlibContext = nsnull;
+  
+  fmctx = new nsFontMetricsXlibContext();
+  if (!fmctx)
+    return NS_ERROR_OUT_OF_MEMORY;
+  
+  rv = fmctx->Init(aDevice, aPrintermode);
+  if ((NS_FAILED(rv))) {
+    delete fmctx;
+    return rv;
+  }
+  
+  *aFontMetricsXlibContext = fmctx;
+  
+  return rv;
+}
+
+void DeleteFontMetricsXlibContext(nsFontMetricsXlibContext *aFontMetricsXlibContext)
+{
+  if (aFontMetricsXlibContext) {
+    delete aFontMetricsXlibContext;
+  }
+}
+
+
+nsFontMetricsXlibContext::nsFontMetricsXlibContext()
+{
+}
+
+nsresult
+nsFontMetricsXlibContext::Init(nsIDeviceContext *aDevice, PRBool aPrintermode)
+{
+  PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("# nsFontMetricsXlibContext new() for device=%p\n", aDevice));
+
+  NS_ENSURE_TRUE(aDevice != nsnull, NS_ERROR_NULL_POINTER);
+
+#ifdef USE_XPRINT
+  mPrinterMode = aPrintermode;
+#endif /* USE_XPRINT */
+
+  mForceOutlineScaledFonts = PR_FALSE;
+  mXlibRgbHandle = nsnull;
+  mAllowDoubleByteSpecialChars = PR_TRUE;
+
+  // XXX many of these statics need to be freed at shutdown time
+
+  mDevScale = 0.0f; /* Scaler value from |GetCanonicalPixelScale()| */
+  mScaleBitmapFontsWithDevScale = PR_FALSE;
+
+  mGlobalListInitalised = PR_FALSE;
+
+  mUserDefinedCCMap            = nsnull;
+  mEmptyCCMap                  = nsnull;
+  mDoubleByteSpecialCharsCCMap = nsnull;
+
+  mCharSetMap        = nsnull;
+  mNoneCharSetMap    = nsnull;
+  mSpecialCharSetMap = nsnull;
+  
+  // Controls for Outline Scaled Fonts (okay looking)
+
+  mOutlineScaleMinimum = 6;
+#ifdef USE_AASB
+// Controls for Anti-Aliased Scaled Bitmaps (okay looking)
+  mAABitmapScaleEnabled = PR_TRUE;
+  mAABitmapScaleAlways = PR_FALSE;
+  mAABitmapScaleMinimum = 6;
+  mAABitmapOversize = 1.1;
+  mAABitmapUndersize = 0.9;
+#endif /* USE_AASB */
+
+// Controls for (regular) Scaled Bitmaps (very ugly)
+  mBitmapScaleMinimum = 10;
+  mBitmapOversize = 1.2;
+  mBitmapUndersize = 0.8;
+
+#ifdef USE_AASB
+  mAntiAliasMinimum = 8;
+#endif /* USE_AASB */
+  mEmbeddedBitmapMaximumHeight = 1000000;
+
+#ifdef USE_FREETYPE
+  mEnableFreeType2 = PR_TRUE;
+  mFreeType2Autohinted = PR_FALSE;
+  mFreeType2Unhinted = PR_TRUE;
+#endif /* USE_FREETYPE */
+#ifdef USE_AASB
+  mAATTDarkTextMinValue = 64;
+  mAATTDarkTextGain = 0.8;
+#endif /* USE_AASB */
+
+#ifdef ENABLE_X_FONT_BANNING
+  mFontRejectRegEx = nsnull;
+  mFontAcceptRegEx = nsnull;
+#endif /* ENABLE_X_FONT_BANNING */
+
+  PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("## CopyFontCharSetMapXlib start.\n"));
+
+  if (!CopyFontCharSetMapXlib(this)) {
+    PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("## CopyFontCharSetMapXlib FAILED.\n"));
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+  PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("## CopyFontCharSetMapXlib done.\n"));
+
 #ifdef NS_FONT_DEBUG
-  const char* debug = PR_GetEnv("NS_FONT_DEBUG");
+  /* First check gfx/src/xlib/-specific env var "NS_FONT_DEBUG_XLIB" (or
+  * "NS_FONT_DEBUG_XPRINT" if the device is a printer),
+   * then the more general "NS_FONT_DEBUG" if 
+   * "NS_FONT_DEBUG_XLIB"/"NS_FONT_DEBUG_XPRINT" is not present */
+  const char *debug;
+#ifdef USE_XPRINT
+  if (mPrinterMode) {
+    debug = PR_GetEnv("NS_FONT_DEBUG_XPRINT");
+  }
+  else
+#endif /* USE_XPRINT */
+  {
+    debug = PR_GetEnv("NS_FONT_DEBUG_XLIB");
+  }
+
+  if (!debug) {
+    debug = PR_GetEnv("NS_FONT_DEBUG");
+  }
+  
   if (debug) {
     PR_sscanf(debug, "%lX", &gFontDebug);
   }
 #endif /* NS_FONT_DEBUG */
 
-  NS_ENSURE_TRUE(nsnull != aDevice, NS_ERROR_NULL_POINTER);
-  NS_STATIC_CAST(nsDeviceContextX *, aDevice)->GetXlibRgbHandle(gXlibRgbHandle);
+  NS_STATIC_CAST(nsDeviceContextX *, aDevice)->GetXlibRgbHandle(mXlibRgbHandle);
 
-  aDevice->GetCanonicalPixelScale(gDevScale);
+  aDevice->GetCanonicalPixelScale(mDevScale);
 
-  nsServiceManager::GetService(kCharSetManagerCID,
-    NS_GET_IID(nsICharsetConverterManager2), (nsISupports**) &gCharSetManager);
-  if (!gCharSetManager) {
-    FreeGlobals();
+  mCharSetManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID);
+  if (!mCharSetManager) {
     return NS_ERROR_FAILURE;
   }
-  nsServiceManager::GetService(kPrefCID, NS_GET_IID(nsIPref),
-    (nsISupports**) &gPref);
-  if (!gPref) {
-    FreeGlobals();
+    
+  mPref = do_GetService(NS_PREF_CONTRACTID);  
+  if (!mPref) {
     return NS_ERROR_FAILURE;
   }
 
   nsCompressedCharMap empty_ccmapObj;
-  gEmptyCCMap = empty_ccmapObj.NewCCMap();
-  if (!gEmptyCCMap)
+  mEmptyCCMap = empty_ccmapObj.NewCCMap();
+  if (!mEmptyCCMap)
     return NS_ERROR_OUT_OF_MEMORY;
 
   // get the "disable double byte font special chars" setting
   PRBool val = PR_TRUE;
-  nsresult rv = gPref->GetBoolPref("font.allow_double_byte_special_chars", &val);
+  nsresult rv = mPref->GetBoolPref("font.allow_double_byte_special_chars", &val);
   if (NS_SUCCEEDED(rv))
-    gAllowDoubleByteSpecialChars = val;
+    mAllowDoubleByteSpecialChars = val;
 
-  // setup the double byte font special chars glyph map
-  nsCompressedCharMap specialchars_ccmapObj;
-  for (int i=0; gDoubleByteSpecialChars[i]; i++) {
-    specialchars_ccmapObj.SetChar(gDoubleByteSpecialChars[i]);
-  }
-  gDoubleByteSpecialCharsCCMap = specialchars_ccmapObj.NewCCMap();
-  if (!gDoubleByteSpecialCharsCCMap)
+  PRUint32 dbmapSize = sizeof(gDoubleByteSpecialCharsCCMap);
+  mDoubleByteSpecialCharsCCMap = (PRUint16*)PR_Malloc(dbmapSize);
+  if (!mDoubleByteSpecialCharsCCMap)
     return NS_ERROR_OUT_OF_MEMORY;
+  memcpy(mDoubleByteSpecialCharsCCMap, gDoubleByteSpecialCharsCCMap, dbmapSize);
 
   PRInt32 scale_minimum = 0;
-  rv = gPref->GetIntPref("font.scale.outline.min", &scale_minimum);
+  rv = mPref->GetIntPref("font.scale.outline.min", &scale_minimum);
   if (NS_SUCCEEDED(rv)) {
-    gOutlineScaleMinimum = scale_minimum;
-    SIZE_FONT_PRINTF(("gOutlineScaleMinimum = %d", gOutlineScaleMinimum));
+    mOutlineScaleMinimum = scale_minimum;
+    SIZE_FONT_PRINTF(("mOutlineScaleMinimum = %d", mOutlineScaleMinimum));
   }
 
   PRInt32 int_val = 0;
   PRInt32 percent = 0;
 #ifdef USE_AASB
   val = PR_TRUE;
-  rv = gPref->GetBoolPref("font.scale.aa_bitmap.enable", &val);
+  rv = mPref->GetBoolPref("font.scale.aa_bitmap.enable", &val);
   if (NS_SUCCEEDED(rv)) {
-    gAABitmapScaleEnabled = val;
-    SIZE_FONT_PRINTF(("gAABitmapScaleEnabled = %d", gAABitmapScaleEnabled));
+    mAABitmapScaleEnabled = val;
+    SIZE_FONT_PRINTF(("mAABitmapScaleEnabled = %d", mAABitmapScaleEnabled));
   }
 
   val = PR_FALSE;
-  rv = gPref->GetBoolPref("font.scale.aa_bitmap.always", &val);
+  rv = mPref->GetBoolPref("font.scale.aa_bitmap.always", &val);
   if (NS_SUCCEEDED(rv)) {
-    gAABitmapScaleAlways = val;
-    SIZE_FONT_PRINTF(("gAABitmapScaleAlways = %d", gAABitmapScaleAlways));
+    mAABitmapScaleAlways = val;
+    SIZE_FONT_PRINTF(("mAABitmapScaleAlways = %d", mAABitmapScaleAlways));
   }
 
-  rv = gPref->GetIntPref("font.scale.aa_bitmap.min", &scale_minimum);
+  rv = mPref->GetIntPref("font.scale.aa_bitmap.min", &scale_minimum);
   if (NS_SUCCEEDED(rv)) {
-    gAABitmapScaleMinimum = scale_minimum;
-    SIZE_FONT_PRINTF(("gAABitmapScaleMinimum = %d", gAABitmapScaleMinimum));
+    mAABitmapScaleMinimum = scale_minimum;
+    SIZE_FONT_PRINTF(("mAABitmapScaleMinimum = %d", mAABitmapScaleMinimum));
   }
 
   percent = 0;
-  rv = gPref->GetIntPref("font.scale.aa_bitmap.undersize", &percent);
+  rv = mPref->GetIntPref("font.scale.aa_bitmap.undersize", &percent);
   if ((NS_SUCCEEDED(rv)) && (percent)) {
-    gAABitmapUndersize = percent/100.0;
-    SIZE_FONT_PRINTF(("gAABitmapUndersize = %g", gAABitmapUndersize));
+    mAABitmapUndersize = percent/100.0;
+    SIZE_FONT_PRINTF(("mAABitmapUndersize = %g", mAABitmapUndersize));
   }
   percent = 0;
-  rv = gPref->GetIntPref("font.scale.aa_bitmap.oversize", &percent);
+  rv = mPref->GetIntPref("font.scale.aa_bitmap.oversize", &percent);
   if ((NS_SUCCEEDED(rv)) && (percent)) {
-    gAABitmapOversize = percent/100.0;
-    SIZE_FONT_PRINTF(("gAABitmapOversize = %g", gAABitmapOversize));
+    mAABitmapOversize = percent/100.0;
+    SIZE_FONT_PRINTF(("mAABitmapOversize = %g", mAABitmapOversize));
   }
   int_val = 0;
-  rv = gPref->GetIntPref("font.scale.aa_bitmap.dark_text.min", &int_val);
+  rv = mPref->GetIntPref("font.scale.aa_bitmap.dark_text.min", &int_val);
   if (NS_SUCCEEDED(rv)) {
     gAASBDarkTextMinValue = int_val;
     SIZE_FONT_PRINTF(("gAASBDarkTextMinValue = %d", gAASBDarkTextMinValue));
   }
   nsXPIDLCString str;
-  rv = gPref->GetCharPref("font.scale.aa_bitmap.dark_text.gain",
+  rv = mPref->GetCharPref("font.scale.aa_bitmap.dark_text.gain",
                            getter_Copies(str));
   if (NS_SUCCEEDED(rv)) {
     gAASBDarkTextGain = atof(str.get());
     SIZE_FONT_PRINTF(("gAASBDarkTextGain = %g", gAASBDarkTextGain));
   }
   int_val = 0;
-  rv = gPref->GetIntPref("font.scale.aa_bitmap.light_text.min", &int_val);
+  rv = mPref->GetIntPref("font.scale.aa_bitmap.light_text.min", &int_val);
   if (NS_SUCCEEDED(rv)) {
     gAASBLightTextMinValue = int_val;
     SIZE_FONT_PRINTF(("gAASBLightTextMinValue = %d", gAASBLightTextMinValue));
   }
-  rv = gPref->GetCharPref("font.scale.aa_bitmap.light_text.gain",
+  rv = mPref->GetCharPref("font.scale.aa_bitmap.light_text.gain",
                            getter_Copies(str));
   if (NS_SUCCEEDED(rv)) {
     gAASBLightTextGain = atof(str.get());
@@ -1021,204 +1277,161 @@ nsFontMetricsXlib::InitGlobals(nsIDeviceContext *aDevice)
   }
 #endif /* USE_AASB */
 
-  rv = gPref->GetIntPref("font.scale.bitmap.min", &scale_minimum);
+  rv = mPref->GetIntPref("font.scale.bitmap.min", &scale_minimum);
   if (NS_SUCCEEDED(rv)) {
-    gBitmapScaleMinimum = scale_minimum;
-    SIZE_FONT_PRINTF(("gBitmapScaleMinimum = %d", gBitmapScaleMinimum));
+    mBitmapScaleMinimum = scale_minimum;
+    SIZE_FONT_PRINTF(("mBitmapScaleMinimum = %d", mBitmapScaleMinimum));
   }
   percent = 0;
-  gPref->GetIntPref("font.scale.bitmap.oversize", &percent);
+  mPref->GetIntPref("font.scale.bitmap.oversize", &percent);
   if (percent) {
-    gBitmapOversize = percent/100.0;
-    SIZE_FONT_PRINTF(("gBitmapOversize = %g", gBitmapOversize));
+    mBitmapOversize = percent/100.0;
+    SIZE_FONT_PRINTF(("mBitmapOversize = %g", mBitmapOversize));
   }
   percent = 0;
-  gPref->GetIntPref("font.scale.bitmap.undersize", &percent);
+  mPref->GetIntPref("font.scale.bitmap.undersize", &percent);
   if (percent) {
-    gBitmapUndersize = percent/100.0;
-    SIZE_FONT_PRINTF(("gBitmapUndersize = %g", gBitmapUndersize));
+    mBitmapUndersize = percent/100.0;
+    SIZE_FONT_PRINTF(("mBitmapUndersize = %g", mBitmapUndersize));
   }
 
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    gForceOutlineScaledFonts = PR_TRUE;
+  if (mPrinterMode) {
+    mForceOutlineScaledFonts = PR_TRUE;
   }
 #endif /* USE_XPRINT */
 
- PRBool force_outline_scaled_fonts = gForceOutlineScaledFonts;
+ PRBool force_outline_scaled_fonts = mForceOutlineScaledFonts;
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    rv = gPref->GetBoolPref("print.xprint.font.force_outline_scaled_fonts", &force_outline_scaled_fonts);
+  if (mPrinterMode) {
+    rv = mPref->GetBoolPref("print.xprint.font.force_outline_scaled_fonts", &force_outline_scaled_fonts);
   }  
-  if (!nsFontMetricsXlib::mPrinterMode || NS_FAILED(rv)) {
+  if (!mPrinterMode || NS_FAILED(rv)) {
 #endif /* USE_XPRINT */
-    rv = gPref->GetBoolPref("font.x11.force_outline_scaled_fonts", &force_outline_scaled_fonts);
+    rv = mPref->GetBoolPref("font.x11.force_outline_scaled_fonts", &force_outline_scaled_fonts);
 #ifdef USE_XPRINT
   }
 #endif /* USE_XPRINT */
   if (NS_SUCCEEDED(rv)) {
-    gForceOutlineScaledFonts = force_outline_scaled_fonts;
+    mForceOutlineScaledFonts = force_outline_scaled_fonts;
   }
 
 #ifdef USE_FREETYPE
   PRBool enable_freetype2 = PR_TRUE;
-  rv = gPref->GetBoolPref("font.FreeType2.enable", &enable_freetype2);
+  rv = mPref->GetBoolPref("font.FreeType2.enable", &enable_freetype2);
   if (NS_SUCCEEDED(rv)) {
-    gEnableFreeType2 = enable_freetype2;
-    FREETYPE_FONT_PRINTF(("gEnableFreeType2 = %d", gEnableFreeType2));
+    mEnableFreeType2 = enable_freetype2;
+    FREETYPE_FONT_PRINTF(("mEnableFreeType2 = %d", mEnableFreeType2));
   }
 
   PRBool freetype2_autohinted = PR_FALSE;
-  rv = gPref->GetBoolPref("font.FreeType2.autohinted", &freetype2_autohinted);
+  rv = mPref->GetBoolPref("font.FreeType2.autohinted", &freetype2_autohinted);
   if (NS_SUCCEEDED(rv)) {
-    gFreeType2Autohinted = freetype2_autohinted;
-    FREETYPE_FONT_PRINTF(("gFreeType2Autohinted = %d", gFreeType2Autohinted));
+    mFreeType2Autohinted = freetype2_autohinted;
+    FREETYPE_FONT_PRINTF(("mFreeType2Autohinted = %d", mFreeType2Autohinted));
   }
 
   PRBool freetype2_unhinted = PR_TRUE;
-  rv = gPref->GetBoolPref("font.FreeType2.unhinted", &freetype2_unhinted);
+  rv = mPref->GetBoolPref("font.FreeType2.unhinted", &freetype2_unhinted);
   if (NS_SUCCEEDED(rv)) {
-    gFreeType2Unhinted = freetype2_unhinted;
-    FREETYPE_FONT_PRINTF(("gFreeType2Unhinted = %d", gFreeType2Unhinted));
+    mFreeType2Unhinted = freetype2_unhinted;
+    FREETYPE_FONT_PRINTF(("mFreeType2Unhinted = %d", mFreeType2Unhinted));
   }
 #endif /* USE_FREETYPE */
 
 #ifdef USE_AASB
   PRInt32 antialias_minimum = 8;
-  rv = gPref->GetIntPref("font.antialias.min", &antialias_minimum);
+  rv = mPref->GetIntPref("font.antialias.min", &antialias_minimum);
   if (NS_SUCCEEDED(rv)) {
-    gAntiAliasMinimum = antialias_minimum;
-    FREETYPE_FONT_PRINTF(("gAntiAliasMinimum = %d", gAntiAliasMinimum));
+    mAntiAliasMinimum = antialias_minimum;
+    FREETYPE_FONT_PRINTF(("mAntiAliasMinimum = %d", mAntiAliasMinimum));
   }
 #endif /* USE_AASB */
 
   PRInt32 embedded_bitmaps_maximum = 1000000;
-  rv = gPref->GetIntPref("font.embedded_bitmaps.max",&embedded_bitmaps_maximum);
+  rv = mPref->GetIntPref("font.embedded_bitmaps.max",&embedded_bitmaps_maximum);
   if (NS_SUCCEEDED(rv)) {
-    gEmbeddedBitmapMaximumHeight = embedded_bitmaps_maximum;
-    FREETYPE_FONT_PRINTF(("gEmbeddedBitmapMaximumHeight = %d",
-                             gEmbeddedBitmapMaximumHeight));
+    mEmbeddedBitmapMaximumHeight = embedded_bitmaps_maximum;
+    FREETYPE_FONT_PRINTF(("mEmbeddedBitmapMaximumHeight = %d",
+                          mEmbeddedBitmapMaximumHeight));
   }
   int_val = 0;
 #ifdef USE_AASB
-  rv = gPref->GetIntPref("font.scale.tt_bitmap.dark_text.min", &int_val);
+  rv = mPref->GetIntPref("font.scale.tt_bitmap.dark_text.min", &int_val);
   if (NS_SUCCEEDED(rv)) {
-    gAATTDarkTextMinValue = int_val;
-    SIZE_FONT_PRINTF(("gAATTDarkTextMinValue = %d", gAATTDarkTextMinValue));
+    mAATTDarkTextMinValue = int_val;
+    SIZE_FONT_PRINTF(("mAATTDarkTextMinValue = %d", mAATTDarkTextMinValue));
   }
-  rv = gPref->GetCharPref("font.scale.tt_bitmap.dark_text.gain",
+  rv = mPref->GetCharPref("font.scale.tt_bitmap.dark_text.gain",
                            getter_Copies(str));
   if (NS_SUCCEEDED(rv)) {
-    gAATTDarkTextGain = atof(str.get());
-    SIZE_FONT_PRINTF(("gAATTDarkTextGain = %g", gAATTDarkTextGain));
+    mAATTDarkTextGain = atof(str.get());
+    SIZE_FONT_PRINTF(("mAATTDarkTextGain = %g", mAATTDarkTextGain));
   }
 #endif /* USE_AASB */
 
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    gScaleBitmapFontsWithDevScale = PR_TRUE;
+  if (mPrinterMode) {
+    mScaleBitmapFontsWithDevScale = PR_TRUE;
   }
 #endif /* USE_XPRINT */
 
- PRBool scale_bitmap_fonts_with_devscale = gScaleBitmapFontsWithDevScale;
+ PRBool scale_bitmap_fonts_with_devscale = mScaleBitmapFontsWithDevScale;
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    rv = gPref->GetBoolPref("print.xprint.font.scale_bitmap_fonts_with_devscale", &scale_bitmap_fonts_with_devscale);
+  if (mPrinterMode) {
+    rv = mPref->GetBoolPref("print.xprint.font.scale_bitmap_fonts_with_devscale", &scale_bitmap_fonts_with_devscale);
   }  
-  if (!nsFontMetricsXlib::mPrinterMode || NS_FAILED(rv)) {
+  if (!mPrinterMode || NS_FAILED(rv)) {
 #endif /* USE_XPRINT */
-    rv = gPref->GetBoolPref("font.x11.scale_bitmap_fonts_with_devscale", &scale_bitmap_fonts_with_devscale);
+    rv = mPref->GetBoolPref("font.x11.scale_bitmap_fonts_with_devscale", &scale_bitmap_fonts_with_devscale);
 #ifdef USE_XPRINT
   }
 #endif /* USE_XPRINT */
   if (NS_SUCCEEDED(rv)) {
-    gScaleBitmapFontsWithDevScale = scale_bitmap_fonts_with_devscale;
+    mScaleBitmapFontsWithDevScale = scale_bitmap_fonts_with_devscale;
   }
 
-  gFFRENodes = new nsHashtable();
-  if (!gFFRENodes) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  gAFRENodes = new nsHashtable();
-  if (!gAFRENodes) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  gCachedFFRESearches = new nsHashtable();
-  if (!gCachedFFRESearches) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  gFamilies = new nsHashtable();
-  if (!gFamilies) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  gAliases = new nsHashtable();
-  if (!gAliases) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  nsFontFamilyNameXlib* f = gFamilyNameTable;
+  const nsFontFamilyNameXlib* f = gFamilyNameTable;
   while (f->mName) {
     nsCStringKey key(f->mName);
-    gAliases->Put(&key, (void *)f->mXName);
+    mAliases.Put(&key, (void *)f->mXName);
     f++;
   }
-  gWeights = new nsHashtable();
-  if (!gWeights) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  nsFontPropertyNameXlib* p = gWeightNames;
+
+  const nsFontPropertyNameXlib* p = gWeightNames;
   while (p->mName) {
     nsCStringKey key(p->mName);
-    gWeights->Put(&key, (void*) p->mValue);
+    mWeights.Put(&key, (void*) p->mValue);
     p++;
   }
-  gStretches = new nsHashtable();
-  if (!gStretches) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
+
   p = gStretchNames;
   while (p->mName) {
     nsCStringKey key(p->mName);
-    gStretches->Put(&key, (void*) p->mValue);
+    mStretches.Put(&key, (void*) p->mValue);
     p++;
   }
-  gCharSetMaps = new nsHashtable();
-  if (!gCharSetMaps) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  nsFontCharSetMapXlib* charSetMap = gCharSetMap;
+
+  const nsFontCharSetMapXlib* charSetMap = mCharSetMap;
   while (charSetMap->mName) {
     nsCStringKey key(charSetMap->mName);
-    gCharSetMaps->Put(&key, charSetMap);
+    mCharSetMaps.Put(&key, (void *)charSetMap);
     charSetMap++;
   }
-  gSpecialCharSets = new nsHashtable();
-  if (!gSpecialCharSets) {
-    FreeGlobals();
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  nsFontCharSetMapXlib* specialCharSetMap = gSpecialCharSetMap;
+
+  const nsFontCharSetMapXlib* specialCharSetMap = mSpecialCharSetMap;
   while (specialCharSetMap->mName) {
     nsCStringKey key(specialCharSetMap->mName);
-    gSpecialCharSets->Put(&key, specialCharSetMap);
+    mSpecialCharSets.Put(&key, (void *)specialCharSetMap);
     specialCharSetMap++;
   }
 
-  gUnicode = NS_NewAtom("x-unicode");
-  if (!gUnicode) {
-    FreeGlobals();
+  mUnicode = NS_NewAtom("x-unicode");
+  if (!mUnicode) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  gUserDefined = NS_NewAtom(USER_DEFINED);
-  if (!gUserDefined) {
-    FreeGlobals();
+  mUserDefined = NS_NewAtom(USER_DEFINED);
+  if (!mUserDefined) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
@@ -1226,26 +1439,27 @@ nsFontMetricsXlib::InitGlobals(nsIDeviceContext *aDevice)
   nsCOMPtr<nsILanguageAtomService> langService;
   langService = do_GetService(NS_LANGUAGEATOMSERVICE_CONTRACTID);
   if (langService) {
-    langService->GetLocaleLanguageGroup(&gUsersLocale);
+    nsIAtom *atom;
+    langService->GetLocaleLanguageGroup(&atom);
+    mUsersLocale = atom;
   }
-  if (!gUsersLocale) {
-    gUsersLocale = NS_NewAtom("x-western");
+  if (!mUsersLocale) {
+    mUsersLocale = NS_NewAtom("x-western");
   }
-  gWesternLocale = NS_NewAtom("x-western");
-  if (!gUsersLocale) {
-    FreeGlobals();
+  mWesternLocale = NS_NewAtom("x-western");
+  if (!mUsersLocale) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
 #ifdef USE_AASB
-  rv = nsX11AlphaBlendInitGlobals(xxlib_rgb_get_display(gXlibRgbHandle));
+  rv = nsX11AlphaBlendInitGlobals(xxlib_rgb_get_display(mXlibRgbHandle));
   if (NS_FAILED(rv) || (!nsX11AlphaBlend::CanAntiAlias())) {
-    gAABitmapScaleEnabled = PR_FALSE;
+    mAABitmapScaleEnabled = PR_FALSE;
   }
 
-  if (gAABitmapScaleEnabled) {
-      gAABitmapScaleEnabled = nsXFontAAScaledBitmap::InitGlobals(xxlib_rgb_get_display(gXlibRgbHandle),
-                                                                 xxlib_rgb_get_screen(gXlibRgbHandle));
+  if (mAABitmapScaleEnabled) {
+      mAABitmapScaleEnabled = nsXFontAAScaledBitmap::InitGlobals(xxlib_rgb_get_display(mXlibRgbHandle),
+                                                                 xxlib_rgb_get_screen(mXlibRgbHandle));
   }
 #endif /* USE_AASB */
   
@@ -1253,59 +1467,55 @@ nsFontMetricsXlib::InitGlobals(nsIDeviceContext *aDevice)
   /* get the font banning pattern */
   nsXPIDLCString fbpattern;
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    rv = gPref->GetCharPref("print.xprint.font.rejectfontpattern", getter_Copies(fbpattern));
+  if (mPrinterMode) {
+    rv = mPref->GetCharPref("print.xprint.font.rejectfontpattern", getter_Copies(fbpattern));
   }  
-  if (!nsFontMetricsXlib::mPrinterMode || NS_FAILED(rv)) {
+  if (!mPrinterMode || NS_FAILED(rv)) {
 #endif /* USE_XPRINT */
-    rv = gPref->GetCharPref("font.x11.rejectfontpattern", getter_Copies(fbpattern));
+    rv = mPref->GetCharPref("font.x11.rejectfontpattern", getter_Copies(fbpattern));
 #ifdef USE_XPRINT
   }
 #endif /* USE_XPRINT */
   if (NS_SUCCEEDED(rv)) {
-    gFontRejectRegEx = new regex_t;
-    if (!gFontRejectRegEx) {
-      FreeGlobals();
+    mFontRejectRegEx = new regex_t;
+    if (!mFontRejectRegEx) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
     
     /* Compile the pattern - and return an error if we get an invalid pattern... */
-    if (regcomp(gFontRejectRegEx, fbpattern.get(), REG_EXTENDED|REG_NOSUB) != REG_OK) {
+    if (regcomp(mFontRejectRegEx, fbpattern.get(), REG_EXTENDED|REG_NOSUB) != REG_OK) {
       PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("Invalid rejectfontpattern '%s'\n", fbpattern.get()));
       BANNED_FONT_PRINTF(("Invalid font.x11.rejectfontpattern '%s'", fbpattern.get()));
-      delete gFontRejectRegEx;
-      gFontRejectRegEx = nsnull;
+      delete mFontRejectRegEx;
+      mFontRejectRegEx = nsnull;
       
-      FreeGlobals();
       return NS_ERROR_INVALID_ARG;
     }    
   }
 
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
-    rv = gPref->GetCharPref("print.xprint.font.acceptfontpattern", getter_Copies(fbpattern));
+  if (mPrinterMode) {
+    rv = mPref->GetCharPref("print.xprint.font.acceptfontpattern", getter_Copies(fbpattern));
   }  
-  if (!nsFontMetricsXlib::mPrinterMode || NS_FAILED(rv)) {
+  if (!mPrinterMode || NS_FAILED(rv)) {
 #endif /* USE_XPRINT */
-    rv = gPref->GetCharPref("font.x11.acceptfontpattern", getter_Copies(fbpattern));
+    rv = mPref->GetCharPref("font.x11.acceptfontpattern", getter_Copies(fbpattern));
 #ifdef USE_XPRINT
   }
 #endif /* USE_XPRINT */
   if (NS_SUCCEEDED(rv)) {
-    gFontAcceptRegEx = new regex_t;
-    if (!gFontAcceptRegEx) {
-      FreeGlobals();
+    mFontAcceptRegEx = new regex_t;
+    if (!mFontAcceptRegEx) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
     
     /* Compile the pattern - and return an error if we get an invalid pattern... */
-    if (regcomp(gFontAcceptRegEx, fbpattern.get(), REG_EXTENDED|REG_NOSUB) != REG_OK) {
+    if (regcomp(mFontAcceptRegEx, fbpattern.get(), REG_EXTENDED|REG_NOSUB) != REG_OK) {
       PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("Invalid acceptfontpattern '%s'\n", fbpattern.get()));
       BANNED_FONT_PRINTF(("Invalid font.x11.acceptfontpattern '%s'", fbpattern.get()));
-      delete gFontAcceptRegEx;
-      gFontAcceptRegEx = nsnull;
+      delete mFontAcceptRegEx;
+      mFontAcceptRegEx = nsnull;
       
-      FreeGlobals();
       return NS_ERROR_INVALID_ARG;
     }    
   }
@@ -1314,12 +1524,9 @@ nsFontMetricsXlib::InitGlobals(nsIDeviceContext *aDevice)
 #ifdef USE_FREETYPE
   rv = nsFreeTypeInitGlobals();
   if (NS_FAILED(rv)) {
-    FreeGlobals();
     return NS_ERROR_OUT_OF_MEMORY;
   }
 #endif /* USE_FREETYPE */
-
-  gInitialized = PR_TRUE;
 
   return NS_OK;
 }
@@ -1452,8 +1659,6 @@ nsFontMetricsXlib::nsFontMetricsXlib()
   // XXX mFontIsGeneric will generally need to be the same size; right now
   // it's an nsAutoVoidArray.  If the average is under 8, that's ok.
 {
-  NS_INIT_ISUPPORTS();
-  gFontMetricsXlibCount++;
 }
 
 nsFontMetricsXlib::~nsFontMetricsXlib()
@@ -1482,23 +1687,7 @@ nsFontMetricsXlib::~nsFontMetricsXlib()
     mDeviceContext->FontMetricsDeleted(this);
     mDeviceContext = nsnull;
   }
-
-  if (!--gFontMetricsXlibCount) {
-    FreeGlobals();
-  }
 }
-
-#ifdef USE_XPRINT
-/* does this nsFont(Metrics)Xlib class operate on a Xprt (X11 print server) ? */
-PRPackedBool nsFontMetricsXlib::mPrinterMode = PR_FALSE;
-
-void 
-nsFontMetricsXlib::EnablePrinterMode(PRBool printermode)
-{
-  mPrinterMode = printermode;
-}
-#endif /* USE_XPRINT */
-
 
 NS_IMPL_ISUPPORTS1(nsFontMetricsXlib, nsIFontMetrics)
 
@@ -1553,17 +1742,13 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
 
   nsresult res;
   mDocConverterType = nsnull;
-
-  if (!gInitialized) {
-    res = InitGlobals(aContext);
-    if (NS_FAILED(res))
-      return res;
-  }
-
+  
+  mDeviceContext = aContext;
+ 
+  NS_STATIC_CAST(nsDeviceContextX *, mDeviceContext)->GetFontMetricsContext(mFontMetricsContext);
+  
   mFont = new nsFont(aFont);
   mLangGroup = aLangGroup;
-
-  mDeviceContext = aContext;
 
   float app2dev;
   mDeviceContext->GetAppUnitsToDevUnits(app2dev);
@@ -1571,7 +1756,7 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
   mPixelSize = NSToIntRound(app2dev * mFont->size);
   // Make sure to clamp the pixel size to something reasonable so we
   // don't make the X server blow up.
-  mPixelSize = PR_MIN(XHeightOfScreen(xxlib_rgb_get_screen(gXlibRgbHandle)) * FONT_MAX_FONT_SCALE, mPixelSize);
+  mPixelSize = PR_MIN(XHeightOfScreen(xxlib_rgb_get_screen(mFontMetricsContext->mXlibRgbHandle)) * FONT_MAX_FONT_SCALE, mPixelSize);
 
   mStretchIndex = 4; // Normal
   mStyleIndex = mFont->style;
@@ -1579,7 +1764,7 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
   mFont->EnumerateFamilies(FontEnumCallback, this);
   nsXPIDLCString value;
   if (!mGeneric) {
-    gPref->CopyCharPref("font.default", getter_Copies(value));
+    mFontMetricsContext->mPref->CopyCharPref("font.default", getter_Copies(value));
     if (value.get()) {
       mDefaultFont = value.get();
     }
@@ -1598,13 +1783,13 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
       name.Append("variable");
     }
     name.Append(char('.'));
-    const PRUnichar* langGroup = nsnull;
-    mLangGroup->GetUnicode(&langGroup);
-    name.AppendWithConversion(langGroup);
+    const char* langGroup = nsnull;
+    mLangGroup->GetUTF8String(&langGroup);
+    name.Append(langGroup);
     PRInt32 minimum = 0;
-    res = gPref->GetIntPref(name.get(), &minimum);
+    res = mFontMetricsContext->mPref->GetIntPref(name.get(), &minimum);
     if (NS_FAILED(res)) {
-      gPref->GetDefaultIntPref(name.get(), &minimum);
+      mFontMetricsContext->mPref->GetDefaultIntPref(name.get(), &minimum);
     }
     if (minimum < 0) {
       minimum = 0;
@@ -1614,22 +1799,23 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
     }
   }
 
-  if (mLangGroup.get() == gUserDefined) {
-    if (!gUserDefinedConverter) {
+  if (mLangGroup.get() == mFontMetricsContext->mUserDefined) {
+    if (!mFontMetricsContext->mUserDefinedConverter) {
       nsCOMPtr<nsIAtom> charset;
-      res = gCharSetManager->GetCharsetAtom2("x-user-defined",
+      res = mFontMetricsContext->mCharSetManager->GetCharsetAtom2("x-user-defined",
         getter_AddRefs(charset));
       if (NS_SUCCEEDED(res)) {
-        res = gCharSetManager->GetUnicodeEncoder(charset,
-                                                 &gUserDefinedConverter);
+        nsIUnicodeEncoder *ud_conv;
+        res = mFontMetricsContext->mCharSetManager->GetUnicodeEncoder(charset, &ud_conv);
         if (NS_SUCCEEDED(res)) {
-          res = gUserDefinedConverter->SetOutputErrorBehavior(
-            gUserDefinedConverter->kOnError_Replace, nsnull, '?');
+          mFontMetricsContext->mUserDefinedConverter = ud_conv;
+          res = mFontMetricsContext->mUserDefinedConverter->SetOutputErrorBehavior(
+            mFontMetricsContext->mUserDefinedConverter->kOnError_Replace, nsnull, '?');
           nsCOMPtr<nsICharRepresentable> mapper =
-            do_QueryInterface(gUserDefinedConverter);
+            do_QueryInterface(mFontMetricsContext->mUserDefinedConverter);
           if (mapper) {
-            gUserDefinedCCMap = MapperToCCMap(mapper);
-            if (!gUserDefinedCCMap)
+            mFontMetricsContext->mUserDefinedCCMap = MapperToCCMap(mapper);
+            if (!mFontMetricsContext->mUserDefinedCCMap)
               return NS_ERROR_OUT_OF_MEMORY;          
           }
         }
@@ -1646,7 +1832,7 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
     name.Append(*mGeneric);
     name.Append(char('.'));
     name.Append(USER_DEFINED);
-    gPref->CopyCharPref(name.get(), getter_Copies(value));
+    mFontMetricsContext->mPref->CopyCharPref(name.get(), getter_Copies(value));
     if (value.get()) {
       mUserDefined = value.get();
       mIsUserDefined = 1;
@@ -1665,6 +1851,7 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
 NS_IMETHODIMP  nsFontMetricsXlib::Destroy()
 {
   mDeviceContext = nsnull;
+  mFontMetricsContext = nsnull;
   return NS_OK;
 }
 
@@ -1796,7 +1983,7 @@ void nsFontMetricsXlib::RealizeFont()
   mAveCharWidth = NSToCoordRound(rawAverage * f);
 
   unsigned long pr = 0;
-  if (xFont->GetXFontProperty(XA_X_HEIGHT, &pr) &&
+  if (xFont->GetXFontProperty(XA_X_HEIGHT, &pr) && pr != 0 &&
       pr < 0x00ffffff)  // Bug 43214: arbitrary to exclude garbage values
   {
     mXHeight = nscoord(pr * f);
@@ -2348,7 +2535,7 @@ ISO10646Convert(nsFontCharSetInfoXlib* aSelf, XFontStruct* aFont,
 #ifdef DEBUG
 
 static void
-CheckMap(nsFontCharSetMapXlib* aEntry)
+CheckMap(nsFontMetricsXlibContext *aFmctx, const nsFontCharSetMapXlib* aEntry)
 {
   while (aEntry->mName) {
     if (aEntry->mInfo->mCharSet) {
@@ -2357,7 +2544,7 @@ CheckMap(nsFontCharSetMapXlib* aEntry)
         getter_AddRefs(NS_NewAtom(aEntry->mInfo->mCharSet));
       if (charset) {
         nsCOMPtr<nsIUnicodeEncoder> converter;
-        res = gCharSetManager->GetUnicodeEncoder(charset,
+        res = aFmctx->mCharSetManager->GetUnicodeEncoder(charset,
           getter_AddRefs(converter));
         if (NS_FAILED(res)) {
           printf("=== %s failed (%s)\n", aEntry->mInfo->mCharSet, __FILE__);
@@ -2369,25 +2556,25 @@ CheckMap(nsFontCharSetMapXlib* aEntry)
 }
 
 static void
-CheckSelf(void)
+CheckSelf(nsFontMetricsXlibContext *aFmctx)
 {
-  CheckMap(gCharSetMap);
+  CheckMap(aFmctx, aFmctx->mCharSetMap);
 
 #ifdef MOZ_MATHML
   // For this to pass, the ucvmath module must be built as well
-  CheckMap(gSpecialCharSetMap);
+  CheckMap(aFmctx, aFmctx->mSpecialCharSetMap);
 #endif /* MOZ_MATHML */
 }
 
 #endif /* DEBUG */
 
 static PRBool
-SetUpFontCharSetInfo(nsFontCharSetInfoXlib* aSelf)
+SetUpFontCharSetInfo(nsFontMetricsXlibContext *aFmctx, nsFontCharSetInfoXlib* aSelf)
 {
 #ifdef DEBUG
   static PRBool checkedSelf = PR_FALSE;
   if (!checkedSelf) {
-    CheckSelf();
+    CheckSelf(aFmctx);
     checkedSelf = PR_TRUE;
   }
 #endif /* DEBUG */
@@ -2396,7 +2583,7 @@ SetUpFontCharSetInfo(nsFontCharSetInfoXlib* aSelf)
   nsCOMPtr<nsIAtom> charset = getter_AddRefs(NS_NewAtom(aSelf->mCharSet));
   if (charset) {
     nsIUnicodeEncoder* converter = nsnull;
-    res = gCharSetManager->GetUnicodeEncoder(charset, &converter);
+    res = aFmctx->mCharSetManager->GetUnicodeEncoder(charset, &converter);
     if (NS_SUCCEEDED(res)) {
       aSelf->mConverter = converter;
       res = converter->SetOutputErrorBehavior(converter->kOnError_Replace,
@@ -2425,10 +2612,17 @@ SetUpFontCharSetInfo(nsFontCharSetInfoXlib* aSelf)
            * special chars are found in.
            */
           if ((aSelf->Convert == DoubleByteConvert) 
-              && (!gAllowDoubleByteSpecialChars)) {
+              && (!aFmctx->mAllowDoubleByteSpecialChars)) {
             PRUint16* ccmap = aSelf->mCCMap;
-            for (int i=0; gDoubleByteSpecialChars[i]; i++) {
-              CCMAP_UNSET_CHAR(ccmap, gDoubleByteSpecialChars[i]);
+            PRUint32 page = CCMAP_BEGIN_AT_START_OF_MAP;
+            const PRUint16* specialmap = aFmctx->mDoubleByteSpecialCharsCCMap;
+            while (NextNonEmptyCCMapPage(specialmap, &page)) {
+              PRUint32 pagechar = page;
+              for (int i=0; i < CCMAP_BITS_PER_PAGE; i++) {
+                if (CCMAP_HAS_CHAR(specialmap, pagechar)) 
+                    CCMAP_UNSET_CHAR(ccmap, pagechar);
+                pagechar++;
+              }
             }
           }
           return PR_TRUE;
@@ -2516,7 +2710,7 @@ DumpFamilyEnum(nsHashKey* hashKey, void *aData, void* closure)
 static void
 DumpTree(void)
 {
-  gFamilies->Enumerate(DumpFamilyEnum, nsnull);
+  aFmctx->mFamilies.Enumerate(DumpFamilyEnum, nsnull);
 }
 #endif /* DEBUG_DUMP_TREE */
 
@@ -2617,10 +2811,10 @@ nsFontXlib::LoadFont(void)
   if (mAlreadyCalledLoadFont)
     return;
 
-  Display *aDisplay = xxlib_rgb_get_display(gXlibRgbHandle);
+  Display *aDisplay = xxlib_rgb_get_display(mFontMetricsContext->mXlibRgbHandle);
 
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode)
+  if (mFontMetricsContext->mPrinterMode)
   {
     if (XpGetContext(aDisplay) == None)
     {
@@ -2660,8 +2854,8 @@ nsFontXlib::LoadFont(void)
   else {
     NS_ASSERTION(mFontHolder, "mFontHolder should be loaded");
     xlibFont = mFontHolder;
-    mXFont = new nsXFontAAScaledBitmap(xxlib_rgb_get_display(gXlibRgbHandle),
-                                       xxlib_rgb_get_screen(gXlibRgbHandle),
+    mXFont = new nsXFontAAScaledBitmap(xxlib_rgb_get_display(mFontMetricsContext->mXlibRgbHandle),
+                                       xxlib_rgb_get_screen(mFontMetricsContext->mXlibRgbHandle),
                                        xlibFont, mSize, mAABaseSize);
   }
 #endif /* USE_AASB */
@@ -2690,7 +2884,7 @@ nsFontXlib::LoadFont(void)
     mMaxAscent = xFont->ascent;
     mMaxDescent = xFont->descent;
 
-    if (mCharSetInfo == &ISO106461) {
+    if (mCharSetInfo == mFontMetricsContext->mISO106461) {
       mCCMap = GetMapFor10646Font(xFont_with_per_char);
       if (!mCCMap) {
         mXFont->UnloadFont();
@@ -2759,7 +2953,7 @@ nsFontXlib::GetXFont(void)
 PRBool
 nsFontXlib::GetXFontIs10646(void)
 {
-  return ((PRBool) (mCharSetInfo == &ISO106461));
+  return ((PRBool) (mCharSetInfo == mFontMetricsContext->mISO106461));
 }
 
 #ifdef USE_FREETYPE
@@ -2788,9 +2982,9 @@ nsFontXlib::~nsFontXlib()
       && (mAABaseSize==0)
 #endif /* USE_AASB */
       ) {
-    XFreeFont(xxlib_rgb_get_display(gXlibRgbHandle), mFont);
+    XFreeFont(xxlib_rgb_get_display(mFontMetricsContext->mXlibRgbHandle), mFont);
   }
-  if (mCharSetInfo == &ISO106461) {
+  if (mCharSetInfo == mFontMetricsContext->mISO106461) {
     FreeCCMap(mCCMap);
   }
   if (mName) {
@@ -2801,7 +2995,7 @@ nsFontXlib::~nsFontXlib()
 class nsFontXlibNormal : public nsFontXlib
 {
 public:
-  nsFontXlibNormal();
+  nsFontXlibNormal(nsFontMetricsXlibContext *aFontMetricsContext);
   nsFontXlibNormal(nsFontXlib*);
   virtual ~nsFontXlibNormal();
 
@@ -2817,13 +3011,16 @@ public:
 #endif /* MOZ_MATHML */
 };
 
-nsFontXlibNormal::nsFontXlibNormal()
+nsFontXlibNormal::nsFontXlibNormal(nsFontMetricsXlibContext *aFontMetricsContext)
 {
   mFontHolder = nsnull;
+  mFontMetricsContext = aFontMetricsContext;
 }
 
 nsFontXlibNormal::nsFontXlibNormal(nsFontXlib *aFont)
 {
+  mFontMetricsContext = aFont->mFontMetricsContext;
+
 #ifdef USE_AASB
   mAABaseSize = aFont->mSize;
 #endif /* USE_AASB */
@@ -2979,6 +3176,7 @@ public:
 nsFontXlibSubstitute::nsFontXlibSubstitute(nsFontXlib* aFont)
 {
   mSubstituteFont = aFont;
+  mFontMetricsContext = aFont->mFontMetricsContext;
 }
 
 nsFontXlibSubstitute::~nsFontXlibSubstitute()
@@ -2991,25 +3189,24 @@ nsFontXlibSubstitute::Convert(const PRUnichar* aSrc, PRUint32 aSrcLen,
   PRUnichar* aDest, PRUint32 aDestLen)
 {
   nsresult res;
-  if (!gFontSubConverter) {
-    nsComponentManager::CreateInstance(kSaveAsCharsetCID, nsnull,
-      NS_GET_IID(nsISaveAsCharset), (void**) &gFontSubConverter);
-    if (gFontSubConverter) {
-      res = gFontSubConverter->Init("ISO-8859-1",
+  if (!mFontMetricsContext->mFontSubConverter) {
+    mFontMetricsContext->mFontSubConverter = do_CreateInstance(NS_SAVEASCHARSET_CONTRACTID);
+    if (mFontMetricsContext->mFontSubConverter) {
+      res = mFontMetricsContext->mFontSubConverter->Init("ISO-8859-1",
                              nsISaveAsCharset::attr_FallbackQuestionMark +
                                nsISaveAsCharset::attr_EntityAfterCharsetConv,
                              nsIEntityConverter::transliterate);
       if (NS_FAILED(res))
-        NS_RELEASE(gFontSubConverter);
+        mFontMetricsContext->mFontSubConverter = nsnull; // destroy converter
     }
   }
 
-  if (gFontSubConverter) {
+  if (mFontMetricsContext->mFontSubConverter) {
     nsAutoString tmp(aSrc, aSrcLen);
     char* conv = nsnull;
 
     /* timecop revisit with nsXPIDLCString */
-    res = gFontSubConverter->Convert(tmp.get(), &conv);
+    res = mFontMetricsContext->mFontSubConverter->Convert(tmp.get(), &conv);
     if (NS_SUCCEEDED(res) && conv) {
       char *p = conv;
       PRUint32 i;
@@ -3133,7 +3330,7 @@ nsFontXlibSubstitute::GetXFontIs10646(void)
 class nsFontXlibUserDefined : public nsFontXlib
 {
 public:
-  nsFontXlibUserDefined();
+  nsFontXlibUserDefined(nsFontMetricsXlibContext *aFontMetricsContext);
   virtual ~nsFontXlibUserDefined();
 
   virtual PRBool Init(nsFontXlib* aFont);
@@ -3151,8 +3348,9 @@ public:
                            char* aDest, PRInt32 aDestLen);
 };
 
-nsFontXlibUserDefined::nsFontXlibUserDefined()
+nsFontXlibUserDefined::nsFontXlibUserDefined(nsFontMetricsXlibContext *aFontMetricsContext)
 {
+  mFontMetricsContext = aFontMetricsContext;
 }
 
 nsFontXlibUserDefined::~nsFontXlibUserDefined()
@@ -3166,12 +3364,12 @@ nsFontXlibUserDefined::Init(nsFontXlib* aFont)
   if (!aFont->GetXFont()) {
     aFont->LoadFont();
     if (!aFont->GetXFont()) {
-      mCCMap = gEmptyCCMap;
+      mCCMap = mFontMetricsContext->mEmptyCCMap;
       return PR_FALSE;
     }
   }
   mXFont = aFont->GetXFont();
-  mCCMap = gUserDefinedCCMap;
+  mCCMap = mFontMetricsContext->mUserDefinedCCMap;
   mName = aFont->mName;
 
   return PR_TRUE;
@@ -3184,7 +3382,7 @@ nsFontXlibUserDefined::Convert(const PRUnichar* aSrc, PRInt32 aSrcLen,
   if (aSrcLen > aDestLen) {
     aSrcLen = aDestLen;
   }
-  gUserDefinedConverter->Convert(aSrc, &aSrcLen, aDest, &aDestLen);
+  mFontMetricsContext->mUserDefinedConverter->Convert(aSrc, &aSrcLen, aDest, &aDestLen);
 
   return aSrcLen;
 }
@@ -3195,7 +3393,7 @@ nsFontXlibUserDefined::GetWidth(const PRUnichar* aString, PRUint32 aLength)
   char buf[1024];
   char *p;
   PRInt32 bufLen;
-  ENCODER_BUFFER_ALLOC_IF_NEEDED(p, gUserDefinedConverter,
+  ENCODER_BUFFER_ALLOC_IF_NEEDED(p, mFontMetricsContext->mUserDefinedConverter,
                          aString, aLength, buf, sizeof(buf), bufLen);
   PRUint32 len = Convert(aString, aLength, p, bufLen);
 
@@ -3217,7 +3415,7 @@ nsFontXlibUserDefined::DrawString(nsRenderingContextXlib* aContext,
   char  buf[1024];
   char *p;
   PRInt32 bufLen;
-  ENCODER_BUFFER_ALLOC_IF_NEEDED(p, gUserDefinedConverter,
+  ENCODER_BUFFER_ALLOC_IF_NEEDED(p, mFontMetricsContext->mUserDefinedConverter,
                          aString, aLength, buf, sizeof(buf), bufLen);
   PRUint32 len = Convert(aString, aLength, p, bufLen);
   xGC *gc = aContext->GetGC();
@@ -3252,7 +3450,7 @@ nsFontXlibUserDefined::GetBoundingMetrics(const PRUnichar*   aString,
     char  buf[1024];
     char *p;
     PRInt32 bufLen;
-    ENCODER_BUFFER_ALLOC_IF_NEEDED(p, gUserDefinedConverter,
+    ENCODER_BUFFER_ALLOC_IF_NEEDED(p, mFontMetricsContext->mUserDefinedConverter,
                          aString, aLength, buf, sizeof(buf), bufLen);
     PRUint32 len = Convert(aString, aLength, p, bufLen);
     if (mXFont->IsSingleByte()) {
@@ -3353,7 +3551,7 @@ SetFontCharsetInfo(nsFontXlib *aFont, nsFontCharSetInfoXlib* aCharSet,
     }
   }
   else {
-    if (aCharSet == &ISO106461) {
+    if (aCharSet == aFont->mFontMetricsContext->mISO106461) {
       aFont->LoadFont();
       if (!aFont->GetXFont()) {
         return PR_FALSE;
@@ -3364,10 +3562,10 @@ SetFontCharsetInfo(nsFontXlib *aFont, nsFontCharSetInfoXlib* aCharSet,
 }
 
 static nsFontXlib*
-SetupUserDefinedFont(nsFontXlib *aFont)
+SetupUserDefinedFont(nsFontMetricsXlibContext *aFmctx, nsFontXlib *aFont)
 {
   if (!aFont->mUserDefinedFont) {
-    aFont->mUserDefinedFont = new nsFontXlibUserDefined();
+    aFont->mUserDefinedFont = new nsFontXlibUserDefined(aFmctx);
     if (!aFont->mUserDefinedFont) {
       return nsnull;
     }
@@ -3422,10 +3620,10 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
       delete ftfont;
       return nsnull;
     }
-    SetCharsetLangGroup(aCharSet);
+    SetCharsetLangGroup(mFontMetricsContext, aCharSet);
     ftfont->mSize = mPixelSize;
     ftfont->LoadFont();
-    ftfont->mCharSetInfo = &ISO106461;
+    ftfont->mCharSetInfo = mFontMetricsContext->mISO106461;
     //FREETYPE_FONT_PRINTF(("add the ftfont"));
     return AddToLoadedFontsList(ftfont);
   }
@@ -3450,7 +3648,7 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
  * Therefore: force use of scalable fonts to get rid of 
  * manually scaled bitmap fonts...
  */
- if (mPrinterMode)
+ if (mFontMetricsContext->mPrinterMode)
  {
    use_scaled_font = PR_TRUE;
  }
@@ -3472,7 +3670,7 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
   //
   // If the user says always try to aasb (anti alias scaled bitmap) scale
   //
-  if (gAABitmapScaleEnabled && aCharSet->mAABitmapScaleAlways) {
+  if (mFontMetricsContext->mAABitmapScaleEnabled && aCharSet->mAABitmapScaleAlways) {
     base_aafont = GetAASBBaseFont(aStretch, aCharSet);
     if (base_aafont) {
       use_scaled_font = PR_TRUE;
@@ -3504,7 +3702,7 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
 #ifdef USE_AASB
     // see if we can aasb (anti alias scaled bitmap)
     if (!use_scaled_font 
-        && (bitmap_size<NOT_FOUND_FONT_SIZE) && gAABitmapScaleEnabled) {
+        && (bitmap_size<NOT_FOUND_FONT_SIZE) && mFontMetricsContext->mAABitmapScaleEnabled) {
       // if we do not have a near-the-right-size font or scalable font
       // see if we can anti-alias bitmap scale one
       scale_size = PR_MAX(mPixelSize, aCharSet->mAABitmapScaleMin);
@@ -3577,16 +3775,16 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
         if (!SetFontCharsetInfo(base_aafont, aCharSet, aChar))
           return nsnull;
         if (mIsUserDefined) {
-          base_aafont = SetupUserDefinedFont(base_aafont);
+          base_aafont = SetupUserDefinedFont(mFontMetricsContext, base_aafont);
           if (!base_aafont)
             return nsnull;
         }
-        font = new nsFontXlibNormal(base_aafont);
+        font = new nsFontXlibNormal(aFmctx, base_aafont);
       }
       else
 #endif /* USE_AASB */
       {
-        font = new nsFontXlibNormal;
+        font = new nsFontXlibNormal(mFontMetricsContext);
       }
 
       if (font) {
@@ -3628,7 +3826,7 @@ nsFontMetricsXlib::PickASizeAndLoad(nsFontStretchXlib* aStretch,
     return nsnull;
 
   if (mIsUserDefined) {
-    font = SetupUserDefinedFont(font);
+    font = SetupUserDefinedFont(mFontMetricsContext, font);
     if (!font)
       return nsnull;
   }
@@ -3837,17 +4035,17 @@ nsFontNodeXlib::FillStyleHoles(void)
 }
 
 static void
-SetCharsetLangGroup(nsFontCharSetInfoXlib* aCharSetInfo)
+SetCharsetLangGroup(nsFontMetricsXlibContext *aFmctx, nsFontCharSetInfoXlib* aCharSetInfo)
 {
   if (!aCharSetInfo->mCharSet || aCharSetInfo->mLangGroup)
     return;
 
   nsCOMPtr<nsIAtom> charset;
-  nsresult res = gCharSetManager->GetCharsetAtom2(aCharSetInfo->mCharSet,
-                                             getter_AddRefs(charset));
+  nsresult res = aFmctx->mCharSetManager->GetCharsetAtom2(aCharSetInfo->mCharSet,
+                                                         getter_AddRefs(charset));
   if (NS_SUCCEEDED(res)) {
-    res = gCharSetManager->GetCharsetLangGroup(charset,
-                                             &aCharSetInfo->mLangGroup);
+    res = aFmctx->mCharSetManager->GetCharsetLangGroup(charset,
+                                                       &aCharSetInfo->mLangGroup);
     if (NS_FAILED(res)) {
       aCharSetInfo->mLangGroup = NS_NewAtom("");
 #ifdef NOISY_FONTS
@@ -3894,12 +4092,12 @@ nsFontMetricsXlib::SearchNode(nsFontNodeXlib* aNode, PRUnichar aChar)
       }
     }
     else {
-      if (!SetUpFontCharSetInfo(charSetInfo))
+      if (!SetUpFontCharSetInfo(mFontMetricsContext, charSetInfo))
         return nsnull;
     }
   }
   else {
-    if ((!mIsUserDefined) && (charSetInfo == &Unknown)) {
+    if ((!mIsUserDefined) && (charSetInfo == mFontMetricsContext->mUnknown)) {
       return nsnull;
     }
   }
@@ -3957,7 +4155,7 @@ nsFontMetricsXlib::SearchNode(nsFontNodeXlib* aNode, PRUnichar aChar)
 }
 
 static void 
-SetFontLangGroupInfo(nsFontCharSetMapXlib* aCharSetMap)
+SetFontLangGroupInfo(nsFontMetricsXlibContext *aFmctx, const nsFontCharSetMapXlib* aCharSetMap)
 {
   nsFontLangGroupXlib *fontLangGroup = aCharSetMap->mFontLangGroup;
   if (!fontLangGroup)
@@ -3985,87 +4183,87 @@ SetFontLangGroupInfo(nsFontCharSetMapXlib* aCharSetMap)
     nsresult rv;
     name.Assign("font.scale.outline.min.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &charSetInfo->mOutlineScaleMin);
+    rv = aFmctx->mPref->GetIntPref(name.get(), &charSetInfo->mOutlineScaleMin);
     if (NS_SUCCEEDED(rv))
       SIZE_FONT_PRINTF(("%s = %d", name.get(), charSetInfo->mOutlineScaleMin));
     else
-      charSetInfo->mOutlineScaleMin = gOutlineScaleMinimum;
+      charSetInfo->mOutlineScaleMin = aFmctx->mOutlineScaleMinimum;
 
 #ifdef USE_AASB
     name.Assign("font.scale.aa_bitmap.min.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &charSetInfo->mAABitmapScaleMin);
+    rv = aFmctx->mPref->GetIntPref(name.get(), &charSetInfo->mAABitmapScaleMin);
     if (NS_SUCCEEDED(rv))
       SIZE_FONT_PRINTF(("%s = %d", name.get(), charSetInfo->mAABitmapScaleMin));
     else
-      charSetInfo->mAABitmapScaleMin = gAABitmapScaleMinimum;
+      charSetInfo->mAABitmapScaleMin = aFmctx->mAABitmapScaleMinimum;
 #endif /* USE_AASB */
 
     name.Assign("font.scale.bitmap.min.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &charSetInfo->mBitmapScaleMin);
+    rv = aFmctx->mPref->GetIntPref(name.get(), &charSetInfo->mBitmapScaleMin);
     if (NS_SUCCEEDED(rv))
       SIZE_FONT_PRINTF(("%s = %d", name.get(), charSetInfo->mBitmapScaleMin));
     else
-      charSetInfo->mBitmapScaleMin = gBitmapScaleMinimum;
+      charSetInfo->mBitmapScaleMin = aFmctx->mBitmapScaleMinimum;
 
     PRInt32 percent = 0;
 #ifdef USE_AASB
     name.Assign("font.scale.aa_bitmap.oversize.");
     name.Append(langGroup);
     percent = 0;
-    rv = gPref->GetIntPref(name.get(), &percent);
+    rv = mFontMetricsContext->mPref->GetIntPref(name.get(), &percent);
     if (NS_SUCCEEDED(rv)) {
       charSetInfo->mAABitmapOversize = percent/100.0;
       SIZE_FONT_PRINTF(("%s = %g", name.get(), charSetInfo->mAABitmapOversize));
     }
     else
-      charSetInfo->mAABitmapOversize = gAABitmapOversize;
+      charSetInfo->mAABitmapOversize = aFmctx->mAABitmapOversize;
 
     percent = 0;
     name.Assign("font.scale.aa_bitmap.undersize.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &percent);
+    rv = mFontMetricsContext->mPref->GetIntPref(name.get(), &percent);
     if (NS_SUCCEEDED(rv)) {
       charSetInfo->mAABitmapUndersize = percent/100.0;
       SIZE_FONT_PRINTF(("%s = %g", name.get(),charSetInfo->mAABitmapUndersize));
     }
     else
-      charSetInfo->mAABitmapUndersize = gAABitmapUndersize;
+      charSetInfo->mAABitmapUndersize = aFmctx->mAABitmapUndersize;
 
     PRBool val = PR_TRUE;
     name.Assign("font.scale.aa_bitmap.always.");
     name.Append(langGroup);
-    rv = gPref->GetBoolPref(name.get(), &val);
+    rv = mFontMetricsContext->mPref->GetBoolPref(name.get(), &val);
     if (NS_SUCCEEDED(rv)) {
       charSetInfo->mAABitmapScaleAlways = val;
       SIZE_FONT_PRINTF(("%s = %d", name.get(),charSetInfo->mAABitmapScaleAlways));
     }
     else
-      charSetInfo->mAABitmapScaleAlways = gAABitmapScaleAlways;
+      charSetInfo->mAABitmapScaleAlways = aFmctx->mAABitmapScaleAlways;
 #endif /* USE_AASB */
 
     percent = 0;
     name.Assign("font.scale.bitmap.oversize.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &percent);
+    rv = aFmctx->mPref->GetIntPref(name.get(), &percent);
     if (NS_SUCCEEDED(rv)) {
       charSetInfo->mBitmapOversize = percent/100.0;
       SIZE_FONT_PRINTF(("%s = %g", name.get(), charSetInfo->mBitmapOversize));
     }
     else
-      charSetInfo->mBitmapOversize = gBitmapOversize;
+      charSetInfo->mBitmapOversize = aFmctx->mBitmapOversize;
 
     percent = 0;
     name.Assign("font.scale.bitmap.undersize.");
     name.Append(langGroup);
-    rv = gPref->GetIntPref(name.get(), &percent);
+    rv = aFmctx->mPref->GetIntPref(name.get(), &percent);
     if (NS_SUCCEEDED(rv)) {
       charSetInfo->mBitmapUndersize = percent/100.0;
       SIZE_FONT_PRINTF(("%s = %g", name.get(), charSetInfo->mBitmapUndersize));
     }
     else
-      charSetInfo->mBitmapUndersize = gBitmapUndersize;
+      charSetInfo->mBitmapUndersize = aFmctx->mBitmapUndersize;
   }
 }
 
@@ -4166,7 +4364,8 @@ NodeAddScalable(nsFontStretchXlib* aStretch,
 }
 
 static PRBool
-NodeAddSize(nsFontStretchXlib* aStretch, 
+NodeAddSize(nsFontMetricsXlibContext *aFmctx,
+            nsFontStretchXlib* aStretch, 
             int aPixelSize, int aPointSize,
             float scaler,
             int aResX,      int aResY,
@@ -4215,7 +4414,7 @@ NodeAddSize(nsFontStretchXlib* aStretch,
     if (!name) {
       return PR_FALSE;
     }
-    nsFontXlib* size = new nsFontXlibNormal();
+    nsFontXlib* size = new nsFontXlibNormal(aFmctx);
     if (!size) {
       return PR_FALSE;
     }
@@ -4231,10 +4430,10 @@ NodeAddSize(nsFontStretchXlib* aStretch,
 }
 
 static void
-GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaledFonts, nsFontNodeArrayXlib* aNodes)
+GetFontNames(nsFontMetricsXlibContext *aFmctx, const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaledFonts, nsFontNodeArrayXlib* aNodes)
 {
-  Display *dpy = xxlib_rgb_get_display(gXlibRgbHandle);
-  Screen  *scr = xxlib_rgb_get_screen (gXlibRgbHandle);
+  Display *dpy = xxlib_rgb_get_display(aFmctx->mXlibRgbHandle);
+  Screen  *scr = xxlib_rgb_get_screen (aFmctx->mXlibRgbHandle);
 
 #ifdef NS_FONT_DEBUG_CALL_TRACE
   if (gFontDebug & NS_FONT_DEBUG_CALL_TRACE) {
@@ -4244,22 +4443,22 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
 
 #ifdef USE_FREETYPE
   // get FreeType fonts
-  nsFT2FontCatalog::GetFontNames(aPattern, aNodes);
+  nsFT2FontCatalog::GetFontNames(aFmctx, aPattern, aNodes);
 #endif /* USE_FREETYPE */
 
   nsCAutoString previousNodeName;
   nsHashtable* node_hash;
   if (aAnyFoundry) {
     NS_ASSERTION(aPattern[1] == '*', "invalid 'anyFoundry' pattern");
-    node_hash = gAFRENodes;
+    node_hash = &aFmctx->mAFRENodes;
   }
   else {
-    node_hash = gFFRENodes;
+    node_hash = &aFmctx->mFFRENodes;
   }
 
 #ifdef USE_XPRINT
 #ifdef DEBUG
-  if(nsFontMetricsXlib::mPrinterMode)
+  if (aFmctx->mPrinterMode)
   {
     if (!dpy)
     {
@@ -4287,7 +4486,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
    * using its DPI value ...
    */
 #ifdef USE_XPRINT
-  if (nsFontMetricsXlib::mPrinterMode) {
+  if (aFmctx->mPrinterMode) {
     Bool success;
     long dpi = 0;
     success = XpuGetResolution(dpy, XpGetContext(dpy), &dpi);
@@ -4434,7 +4633,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
      * but this test is good enough (except when someone installs 1200DPI
      * bitmap (!!) fonts on a system... =:-)
      */
-    if (nsFontMetricsXlib::mPrinterMode &&
+    if (aFmctx->mPrinterMode &&
         averageWidth[0] == '0' && 
         resX > screen_xres && 
         resY > screen_yres) {
@@ -4485,7 +4684,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
 
 #ifdef ENABLE_X_FONT_BANNING
 #define BOOL2STR(b) ((b)?("true"):("false"))    
-    if (gFontRejectRegEx || gFontAcceptRegEx) {
+    if (aFmctx->mFontRejectRegEx || aFmctx->mFontAcceptRegEx) {
       char fmatchbuf[512]; /* See sprintf() below. */
            
       sprintf(fmatchbuf, "fname=%s;scalable=%s;outline_scaled=%s;xdisplay=%s;xdpy=%d;ydpy=%d;xdevice=%s",
@@ -4496,23 +4695,23 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
               screen_xres,
               screen_yres,
 #ifdef USE_XPRINT
-              nsFontMetricsXlib::mPrinterMode?("printer"):
+              aFmctx->mPrinterMode?("printer"):
 #endif /* USE_XPRINT */
               ("display")
               );
 #undef BOOL2STR
                   
-      if (gFontRejectRegEx) {
+      if (aFmctx->mFontRejectRegEx) {
         /* reject font if reject pattern matches it... */        
-        if (regexec(gFontRejectRegEx, fmatchbuf, 0, nsnull, 0) == REG_OK) {
+        if (regexec(aFmctx->mFontRejectRegEx, fmatchbuf, 0, nsnull, 0) == REG_OK) {
           PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("rejecting font '%s' (via reject pattern)\n", fmatchbuf));
           BANNED_FONT_PRINTF(("rejecting font '%s' (via reject pattern)", fmatchbuf));
           continue;
         }  
       }
 
-      if (gFontAcceptRegEx) {
-        if (regexec(gFontAcceptRegEx, fmatchbuf, 0, nsnull, 0) == REG_NOMATCH) {
+      if (aFmctx->mFontAcceptRegEx) {
+        if (regexec(aFmctx->mFontAcceptRegEx, fmatchbuf, 0, nsnull, 0) == REG_NOMATCH) {
           PR_LOG(FontMetricsXlibLM, PR_LOG_DEBUG, ("rejecting font '%s' (via accept pattern)\n", fmatchbuf));
           BANNED_FONT_PRINTF(("rejecting font '%s' (via accept pattern)", fmatchbuf));
           continue;
@@ -4521,27 +4720,27 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
     }    
 #endif /* ENABLE_X_FONT_BANNING */    
 
-    nsFontCharSetMapXlib *charSetMap = GetCharSetMap(charSetName);
+    const nsFontCharSetMapXlib *charSetMap = GetCharSetMap(aFmctx, charSetName);
     nsFontCharSetInfoXlib* charSetInfo = charSetMap->mInfo;
     // indirection for font specific charset encoding 
-    if (charSetInfo == &Special) {
+    if (charSetInfo == aFmctx->mSpecial) {
       nsCAutoString familyCharSetName(familyName);
       familyCharSetName.Append('-');
       familyCharSetName.Append(charSetName);
       nsCStringKey familyCharSetKey(familyCharSetName);
-      charSetMap = NS_STATIC_CAST(nsFontCharSetMapXlib*, gSpecialCharSets->Get(&familyCharSetKey));
+      charSetMap = NS_STATIC_CAST(nsFontCharSetMapXlib*, aFmctx->mSpecialCharSets.Get(&familyCharSetKey));
       if (!charSetMap)
-        charSetMap = gNoneCharSetMap;
+        charSetMap = aFmctx->mNoneCharSetMap;
       charSetInfo = charSetMap->mInfo;
     }
     if (!charSetInfo) {
 #ifdef NOISY_FONTS
       printf("cannot find charset %s\n", charSetName);
 #endif
-      charSetInfo = &Unknown;
+      charSetInfo = aFmctx->mUnknown;
     }
-    SetCharsetLangGroup(charSetInfo);
-    SetFontLangGroupInfo(charSetMap);
+    SetCharsetLangGroup(aFmctx, charSetInfo);
+    SetFontLangGroupInfo(aFmctx, charSetMap);
 
     nsCAutoString nodeName;
     if (aAnyFoundry)
@@ -4595,7 +4794,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
       continue;
 
     nsCStringKey weightKey(weightName);
-    int weightNumber = NS_PTR_TO_INT32(gWeights->Get(&weightKey));
+    int weightNumber = NS_PTR_TO_INT32(aFmctx->mWeights.Get(&weightKey));
     if (!weightNumber) {
 #ifdef NOISY_FONTS
       printf("cannot find weight %s\n", weightName);
@@ -4608,7 +4807,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
       continue;
   
     nsCStringKey setWidthKey(setWidth);
-    int stretchIndex = NS_PTR_TO_INT32(gStretches->Get(&setWidthKey));
+    int stretchIndex = NS_PTR_TO_INT32(aFmctx->mStretches.Get(&setWidthKey));
     if (!stretchIndex) {
 #ifdef NOISY_FONTS
       printf("cannot find stretch %s\n", setWidth);
@@ -4637,21 +4836,21 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
     points = atoi(pointSize);
 
     if (pixels) {
-      if (gScaleBitmapFontsWithDevScale && (gDevScale > 1.0f)) {
+      if (aFmctx->mScaleBitmapFontsWithDevScale && (aFmctx->mDevScale > 1.0f)) {
         /* Add a font size which is exactly scaled as the scaling factor ... */
-        if (!NodeAddSize(stretch, pixels, points, gDevScale, resX, resY, name, familyName, weightName, 
+        if (!NodeAddSize(aFmctx, stretch, pixels, points, aFmctx->mDevScale, resX, resY, name, familyName, weightName, 
                          slant, setWidth, addStyle, spacing, charSetName, charSetInfo))
           continue;
 
         /* ... and offer a range of scaled fonts with integer scaling factors
          * (we're taking half steps between integers, too - to avoid too big
          * steps between font sizes) */
-        float minScaler = PR_MAX(gDevScale / 2.0f, 1.5f),
-              maxScaler = gDevScale * 2.f,
+        float minScaler = PR_MAX(aFmctx->mDevScale / 2.0f, 1.5f),
+              maxScaler = aFmctx->mDevScale * 2.f,
               scaler;
         for( scaler = minScaler ; scaler <= maxScaler ; scaler += 0.5f )
         {
-          if (!NodeAddSize(stretch, pixels, points, scaler, resX, resY, name, familyName, weightName, 
+          if (!NodeAddSize(aFmctx, stretch, pixels, points, scaler, resX, resY, name, familyName, weightName, 
                            slant, setWidth, addStyle, spacing, charSetName, charSetInfo))
             break;
         }
@@ -4661,7 +4860,7 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
       }
       else
       {
-        if (!NodeAddSize(stretch, pixels, points, 1.0f, resX, resY, name, familyName, weightName, 
+        if (!NodeAddSize(aFmctx, stretch, pixels, points, 1.0f, resX, resY, name, familyName, weightName, 
                          slant, setWidth, addStyle, spacing, charSetName, charSetInfo))
           continue;     
       }
@@ -4675,36 +4874,34 @@ GetFontNames(const char* aPattern, PRBool aAnyFoundry, PRBool aOnlyOutlineScaled
 }
 
 static nsresult
-GetAllFontNames(void)
+GetAllFontNames(nsFontMetricsXlibContext *aFmctx)
 {
-  if (!gGlobalList) {
+  if (!aFmctx->mGlobalListInitalised) {
+    aFmctx->mGlobalListInitalised = PR_TRUE;
     // This may well expand further (families * sizes * styles?), but it's
     // only created once.
-    gGlobalList = new nsFontNodeArrayXlib;
-    if (!gGlobalList) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
+
     /* Using "-*" instead of the full-qualified "-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
      * because it's faster and "smarter" - see bug 34242 for details. */
-    GetFontNames("-*", PR_FALSE, PR_FALSE, gGlobalList);
+    GetFontNames(aFmctx, "-*", PR_FALSE, PR_FALSE, &aFmctx->mGlobalList);
   }
 
   return NS_OK;
 }
 
 static nsFontFamilyXlib*
-FindFamily(nsCString* aName)
+FindFamily(nsFontMetricsXlibContext *aFmctx, nsCString* aName)
 {
   nsCStringKey key(*aName);
-  nsFontFamilyXlib* family = (nsFontFamilyXlib*) gFamilies->Get(&key);
+  nsFontFamilyXlib* family = (nsFontFamilyXlib*) aFmctx->mFamilies.Get(&key);
   if (!family) {
     family = new nsFontFamilyXlib();
     if (family) {
       char pattern[256];
       PR_snprintf(pattern, sizeof(pattern), "-*-%s-*-*-*-*-*-*-*-*-*-*-*-*",
         aName->get());
-      GetFontNames(pattern, PR_TRUE, gForceOutlineScaledFonts, &family->mNodes);
-      gFamilies->Put(&key, family);
+      GetFontNames(aFmctx, pattern, PR_TRUE, aFmctx->mForceOutlineScaledFonts, &family->mNodes);
+      aFmctx->mFamilies.Put(&key, family);
     }
   }
 
@@ -4712,12 +4909,10 @@ FindFamily(nsCString* aName)
 }
 
 nsresult
-nsFontMetricsXlib::FamilyExists(nsIDeviceContext *aDevice, const nsString& aName)
+nsFontMetricsXlib::FamilyExists(nsFontMetricsXlibContext *aFontMetricsContext, const nsString& aName)
 {
-  if (!gInitialized) {
-    nsresult res = InitGlobals(aDevice);
-    if (NS_FAILED(res))
-      return res;
+  if (!global_fmctx) {
+    global_fmctx = aFontMetricsContext;
   }
 
   if (!IsASCIIFontName(aName)) {
@@ -4727,7 +4922,7 @@ nsFontMetricsXlib::FamilyExists(nsIDeviceContext *aDevice, const nsString& aName
   nsCAutoString name;
   name.AssignWithConversion(aName.get());
   ToLowerCase(name);
-  nsFontFamilyXlib* family = FindFamily(&name);
+  nsFontFamilyXlib* family = FindFamily(aFontMetricsContext, &name);
   if (family && family->mNodes.Count()) {
     return NS_OK;
   }
@@ -4789,15 +4984,15 @@ nsFontMetricsXlib::TryNodes(nsACString &aFFREName, PRUnichar aChar)
   const char *FFREName = PromiseFlatCString(aFFREName).get();
   nsCStringKey key(FFREName);
   PRBool anyFoundry = (FFREName[0] == '*');
-  nsFontNodeArrayXlib* nodes = (nsFontNodeArrayXlib*) gCachedFFRESearches->Get(&key);
+  nsFontNodeArrayXlib* nodes = (nsFontNodeArrayXlib*) mFontMetricsContext->mCachedFFRESearches.Get(&key);
   if (!nodes) {
     nsCAutoString pattern;
     FFREToXLFDPattern(aFFREName, pattern);
     nodes = new nsFontNodeArrayXlib;
     if (!nodes)
       return nsnull;
-    GetFontNames(pattern.get(), anyFoundry, gForceOutlineScaledFonts, nodes);
-    gCachedFFRESearches->Put(&key, nodes);
+    GetFontNames(mFontMetricsContext, pattern.get(), anyFoundry, mFontMetricsContext->mForceOutlineScaledFonts, nodes);
+    mFontMetricsContext->mCachedFFRESearches.Put(&key, nodes);
   }
   int i, cnt = nodes->Count();
   for (i=0; i<cnt; i++) {
@@ -4823,13 +5018,13 @@ nsFontMetricsXlib::TryNode(nsCString* aName, PRUnichar aChar)
   nsFontXlib* font;
  
   nsCStringKey key(*aName);
-  nsFontNodeXlib* node = (nsFontNodeXlib*) gFFRENodes->Get(&key);
+  nsFontNodeXlib* node = (nsFontNodeXlib*) mFontMetricsContext->mFFRENodes.Get(&key);
   if (!node) {
     nsCAutoString pattern;
     FFREToXLFDPattern(*aName, pattern);
     nsFontNodeArrayXlib nodes;
-    GetFontNames(pattern.get(), PR_FALSE, gForceOutlineScaledFonts, &nodes);
-    // no need to call gFFRENodes->Put() since GetFontNames already did
+    GetFontNames(mFontMetricsContext, pattern.get(), PR_FALSE, mFontMetricsContext->mForceOutlineScaledFonts, &nodes);
+    // no need to call mFontMetricsContext->mFFRENodes.Put() since GetFontNames already did
     if (nodes.Count() > 0) {
       // This assertion is not spurious; when searching for an FFRE
       // like -*-courier-iso8859-1 TryNodes should be called not TryNode
@@ -4842,7 +5037,7 @@ nsFontMetricsXlib::TryNode(nsCString* aName, PRUnichar aChar)
       if (!node) {
         return nsnull;
       }
-      gFFRENodes->Put(&key, node);
+      mFontMetricsContext->mFFRENodes.Put(&key, node);
       node->mDummy = 1;
     }
   }
@@ -4894,7 +5089,7 @@ nsFontMetricsXlib::TryFamily(nsCString* aName, PRUnichar aChar)
   //
   // check the patterh "*-familyname-registry-encoding" for language
   //
-  nsFontFamilyXlib* family = FindFamily(aName);
+  nsFontFamilyXlib* family = FindFamily(mFontMetricsContext, aName);
   if (family) {
     // try family name of language group first
     nsCAutoString FFREName("*-");
@@ -4926,7 +5121,7 @@ nsFontXlib*
 nsFontMetricsXlib::TryAliases(nsCString* aAlias, PRUnichar aChar)
 {
   nsCStringKey key(*aAlias);
-  char* name = (char*) gAliases->Get(&key);
+  char* name = (char*) mFontMetricsContext->mAliases.Get(&key);
   if (name) {
     nsCAutoString str(name);
     return TryFamily(&str, aChar);
@@ -4941,6 +5136,7 @@ nsFontMetricsXlib::FindUserDefinedFont(PRUnichar aChar)
   if (mIsUserDefined) {
     FIND_FONT_PRINTF(("        FindUserDefinedFont"));
     nsFontXlib* font = TryNode(&mUserDefined, aChar);
+    mIsUserDefined = PR_FALSE;
     if (font) {
       NS_ASSERTION(font->SupportsChar(aChar), "font supposed to support this char");
       return font;
@@ -4993,11 +5189,6 @@ nsFontMetricsXlib::FindStyleSheetSpecificFont(PRUnichar aChar)
         NS_ASSERTION(font->SupportsChar(aChar), "font supposed to support this char");
         return font;
       }
-      font = TryLangGroup(mLangGroup, familyName, aChar);
-      if (font) {
-        NS_ASSERTION(font->SupportsChar(aChar), "font supposed to support this char");
-        return font;
-      }
     }
     else {
       font = TryFamily(familyName, aChar);
@@ -5022,12 +5213,14 @@ static void
 PrefEnumCallback(const char* aName, void* aClosure)
 {
   nsFontSearch* s = (nsFontSearch*) aClosure;
+  nsFontMetricsXlibContext *aFmctx = s->mMetrics->mFontMetricsContext;
+
   if (s->mFont) {
     NS_ASSERTION(s->mFont->SupportsChar(s->mChar), "font supposed to support this char");
     return;
   }
   nsXPIDLCString value;
-  gPref->CopyCharPref(aName, getter_Copies(value));
+  aFmctx->mPref->CopyCharPref(aName, getter_Copies(value));
   nsCAutoString name;
   if (value.get()) {
     name = value;
@@ -5043,7 +5236,7 @@ PrefEnumCallback(const char* aName, void* aClosure)
       return;
     }
   }
-  gPref->CopyDefaultCharPref(aName, getter_Copies(value));
+  aFmctx->mPref->CopyDefaultCharPref(aName, getter_Copies(value));
   if (value.get() && (!name.Equals(value))) {
     name = value;
     FIND_FONT_PRINTF(("       PrefEnumCallback:default"));
@@ -5083,9 +5276,9 @@ nsFontMetricsXlib::FindStyleSheetGenericFont(PRUnichar aChar)
   // possibly find them in double byte fonts
   //
   // (risk management: since we are close to a ship point we have a 
-  //  control (gAllowDoubleByteSpecialChars) to disable this new feature)
+  //  control (mAllowDoubleByteSpecialChars) to disable this new feature)
   //
-if (gAllowDoubleByteSpecialChars) {
+if (mFontMetricsContext->mAllowDoubleByteSpecialChars) {
   if (!mDocConverterType) {
     if (mLoadedFontsCount) {
       FIND_FONT_PRINTF(("just use the 1st converter type"));
@@ -5109,8 +5302,8 @@ if (gAllowDoubleByteSpecialChars) {
       // to get the EURO sign (hack)
 
       nsFontXlib* western_font = nsnull;
-      if (mLangGroup != gWesternLocale)
-        western_font = FindLangGroupPrefFont(gWesternLocale, aChar);
+      if (mLangGroup != mFontMetricsContext->mWesternLocale)
+        western_font = FindLangGroupPrefFont(mFontMetricsContext->mWesternLocale, aChar);
 
       // add the symbol font before the early transliterator
       // to get the bullet (hack)
@@ -5127,7 +5320,7 @@ if (gAllowDoubleByteSpecialChars) {
       nsFontXlib* sub_font = FindSubstituteFont(aChar);
       NS_ASSERTION(sub_font, "failed to get a special chars substitute font");
       if (sub_font) {
-        sub_font->mCCMap = gDoubleByteSpecialCharsCCMap;
+        sub_font->mCCMap = mFontMetricsContext->mDoubleByteSpecialCharsCCMap;
         AddToLoadedFontsList(sub_font);
       }
       if (western_font && CCMAP_HAS_CHAR(western_font->mCCMap, aChar)) {
@@ -5150,23 +5343,13 @@ if (gAllowDoubleByteSpecialChars) {
   //
   // find font based on user's locale's lang group
   // if different from documents locale
-  if (gUsersLocale != mLangGroup) {
+  if (mFontMetricsContext->mUsersLocale != mLangGroup) {
     FIND_FONT_PRINTF(("      find font based on user's locale's lang group"));
-    font = FindLangGroupPrefFont(gUsersLocale, aChar);
+    font = FindLangGroupPrefFont(mFontMetricsContext->mUsersLocale, aChar);
     if (font) {
       NS_ASSERTION(font->SupportsChar(aChar), "font supposed to support this char");
       return font;
     }
-  }
-
-  // If this is is the 'unknown' char (ie: converter could not 
-  // convert it) there is no sense in searching any further for 
-  // a font.  This test shows up in several locations; if we did
-  // this test earlier in the search we would only need to do it
-  // once but we don't want to slow down the typical search.
-  if (aChar == UCS2_NOMAPPING) {
-    FIND_FONT_PRINTF(("      ignore the 'UCS2_NOMAPPING' character"));
-    return nsnull;
   }
 
   //
@@ -5176,7 +5359,7 @@ if (gAllowDoubleByteSpecialChars) {
   prefix.Append(*mGeneric);
   nsFontSearch search = { this, aChar, nsnull };
   FIND_FONT_PRINTF(("      Search all font prefs for generic"));
-  gPref->EnumerateChildren(prefix.get(), PrefEnumCallback, &search);
+  mFontMetricsContext->mPref->EnumerateChildren(prefix.get(), PrefEnumCallback, &search);
   if (search.mFont) {
     NS_ASSERTION(search.mFont->SupportsChar(aChar), "font supposed to support this char");
     return search.mFont;
@@ -5189,7 +5372,7 @@ if (gAllowDoubleByteSpecialChars) {
   nsCAutoString allPrefs("font.name.");
   search.mFont = nsnull;
   FIND_FONT_PRINTF(("      Search all font prefs"));
-  gPref->EnumerateChildren(allPrefs.get(), PrefEnumCallback, &search);
+  mFontMetricsContext->mPref->EnumerateChildren(allPrefs.get(), PrefEnumCallback, &search);
   if (search.mFont) {
     NS_ASSERTION(search.mFont->SupportsChar(aChar), "font supposed to support this char");
     return search.mFont;
@@ -5203,15 +5386,6 @@ nsFontXlib*
 nsFontMetricsXlib::FindAnyFont(PRUnichar aChar)
 {
   FIND_FONT_PRINTF(("    FindAnyFont"));
-  // If this is is the 'unknown' char (ie: converter could not 
-  // convert it) there is no sense in searching any further for 
-  // a font.  This test shows up in several locations; if we did
-  // this test earlier in the search we would only need to do it
-  // once but we don't want to slow down the typical search.
-  if (aChar == UCS2_NOMAPPING) {
-    FIND_FONT_PRINTF(("      ignore the 'UCS2_NOMAPPING' character"));
-    return nsnull;
-  }
 
   // XXX If we get to this point, that means that we have exhausted all the
   // families in the lists. Maybe we should try a list of fonts that are
@@ -5221,13 +5395,13 @@ nsFontMetricsXlib::FindAnyFont(PRUnichar aChar)
   /*
    * Try all the fonts on the system.
    */
-  nsresult res = GetAllFontNames();
+  nsresult res = GetAllFontNames(mFontMetricsContext);
   if (NS_FAILED(res))
     return nsnull;
 
-  PRInt32 n = gGlobalList->Count();
+  PRInt32 n = mFontMetricsContext->mGlobalList.Count();
   for (PRInt32 i = 0; i < n; i++) {
-    nsFontXlib* font = SearchNode(gGlobalList->GetElement(i), aChar);
+    nsFontXlib* font = SearchNode(mFontMetricsContext->mGlobalList.GetElement(i), aChar);
     if (font && font->SupportsChar(aChar)) {
       // XXX We should probably write this family name out to disk, so that
       // we can use it next time. I.e. prefs file or something.
@@ -5292,11 +5466,11 @@ nsFontMetricsXlib::FindLangGroupPrefFont(nsIAtom* aLangGroup, PRUnichar aChar)
     // check user set pref
     nsCAutoString pref = prefix;
     pref.Append(char('.'));
-    const PRUnichar* langGroup = nsnull;
-    aLangGroup->GetUnicode(&langGroup);
-    pref.AppendWithConversion(langGroup);
+    const char* langGroup = nsnull;
+    aLangGroup->GetUTF8String(&langGroup);
+    pref.Append(langGroup);
     nsXPIDLCString value;
-    gPref->CopyCharPref(pref.get(), getter_Copies(value));
+    mFontMetricsContext->mPref->CopyCharPref(pref.get(), getter_Copies(value));
     nsCAutoString str;
     nsCAutoString str_user;
     if (value.get()) {
@@ -5315,7 +5489,7 @@ nsFontMetricsXlib::FindLangGroupPrefFont(nsIAtom* aLangGroup, PRUnichar aChar)
       }
     }
     // check factory set pref
-    gPref->CopyDefaultCharPref(pref.get(), getter_Copies(value));
+    mFontMetricsContext->mPref->CopyDefaultCharPref(pref.get(), getter_Copies(value));
     if (value.get()) {
       str = value.get();
       // check if we already tried this name
@@ -5355,9 +5529,9 @@ nsFontMetricsXlib::FindLangGroupFont(nsIAtom* aLangGroup, PRUnichar aChar, nsCSt
 
   FIND_FONT_PRINTF(("      lang group = %s", atomToName(aLangGroup)));
 
-  //  scan gCharSetMap for encodings with matching lang groups
-  nsFontCharSetMapXlib* charSetMap;
-  for (charSetMap=gCharSetMap; charSetMap->mName; charSetMap++) {
+  //  scan mCharSetMap for encodings with matching lang groups
+  const nsFontCharSetMapXlib* charSetMap;
+  for (charSetMap=mFontMetricsContext->mCharSetMap; charSetMap->mName; charSetMap++) {
     nsFontLangGroupXlib* mFontLangGroup = charSetMap->mFontLangGroup;
 
     if ((!mFontLangGroup) || (!mFontLangGroup->mFontLangGroupName)) {
@@ -5365,11 +5539,11 @@ nsFontMetricsXlib::FindLangGroupFont(nsIAtom* aLangGroup, PRUnichar aChar, nsCSt
     }
 
     if (!charSetMap->mInfo->mLangGroup) {
-      SetCharsetLangGroup(charSetMap->mInfo);
+      SetCharsetLangGroup(mFontMetricsContext, charSetMap->mInfo);
     }
 
     if (!mFontLangGroup->mFontLangGroupAtom) {
-      SetFontLangGroupInfo(charSetMap);
+      SetFontLangGroupInfo(mFontMetricsContext, charSetMap);
     }
 
     if ((aLangGroup != mFontLangGroup->mFontLangGroupAtom) 
@@ -5428,6 +5602,14 @@ nsFontMetricsXlib::FindFont(PRUnichar aChar)
 {
   FIND_FONT_PRINTF(("\nFindFont(%c/0x%04x)", aChar, aChar));
 
+  // If this is is the 'unknown' char (ie: converter could not 
+  // convert it) there is no sense in searching any further for 
+  // a font. Just returing mWesternFont
+  if (aChar == UCS2_NOMAPPING) {
+    FIND_FONT_PRINTF(("      ignore the 'UCS2_NOMAPPING' character, return mWesternFont"));
+    return mWesternFont;
+  }
+
   nsFontXlib* font = FindUserDefinedFont(aChar);
   if (!font) {
     font = FindStyleSheetSpecificFont(aChar);
@@ -5466,7 +5648,6 @@ nsFontMetricsXlib::FindFont(PRUnichar aChar)
 
 nsFontEnumeratorXlib::nsFontEnumeratorXlib()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(nsFontEnumeratorXlib, nsIFontEnumerator)
@@ -5476,6 +5657,7 @@ typedef struct EnumerateNodeInfo
   PRUnichar** mArray;
   int         mIndex;
   nsIAtom*    mLangGroup;
+  nsFontMetricsXlibContext *mFontMetricsContext;
 } EnumerateNodeInfo;
 
 static PRIntn
@@ -5483,11 +5665,12 @@ EnumerateNode(void* aElement, void* aData)
 {
   nsFontNodeXlib* node = (nsFontNodeXlib*) aElement;
   EnumerateNodeInfo* info = (EnumerateNodeInfo*) aData;
-  if (info->mLangGroup != gUserDefined) {
-    if (node->mCharSetInfo == &Unknown) {
+  nsFontMetricsXlibContext *aFmctx = info->mFontMetricsContext;
+  if (info->mLangGroup != aFmctx->mUserDefined) {
+    if (node->mCharSetInfo == aFmctx->mUnknown) {
       return PR_TRUE; // continue
     }
-    else if (info->mLangGroup != gUnicode) {
+    else if (info->mLangGroup != aFmctx->mUnicode) {
       if (node->mCharSetInfo->mLangGroup != info->mLangGroup) {
         return PR_TRUE; // continue
       }
@@ -5538,20 +5721,20 @@ CompareFontNames(const void* aArg1, const void* aArg2, void* aClosure)
 PR_END_EXTERN_C
 
 static nsresult
-EnumFonts(nsIAtom* aLangGroup, const char* aGeneric, PRUint32* aCount,
+EnumFonts(nsFontMetricsXlibContext *aFmctx, nsIAtom* aLangGroup, const char* aGeneric, PRUint32* aCount,
   PRUnichar*** aResult)
 {
-  nsresult res = GetAllFontNames();
+  nsresult res = GetAllFontNames(aFmctx);
   if (NS_FAILED(res))
     return res;
 
   PRUnichar** array =
-    (PRUnichar**) nsMemory::Alloc(gGlobalList->Count() * sizeof(PRUnichar*));
+    (PRUnichar**) nsMemory::Alloc(aFmctx->mGlobalList.Count() * sizeof(PRUnichar*));
   if (!array)
     return NS_ERROR_OUT_OF_MEMORY;
 
-  EnumerateNodeInfo info = { array, 0, aLangGroup };
-  if (!gGlobalList->EnumerateForwards(EnumerateNode, &info)) {
+  EnumerateNodeInfo info = { array, 0, aLangGroup, aFmctx };
+  if (!aFmctx->mGlobalList.EnumerateForwards(EnumerateNode, &info)) {
     nsMemory::Free(array);
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -5578,7 +5761,7 @@ nsFontEnumeratorXlib::EnumerateAllFonts(PRUint32* aCount, PRUnichar*** aResult)
   NS_ENSURE_ARG_POINTER(aCount);
   *aCount = 0;
 
-  return EnumFonts(nsnull, nsnull, aCount, aResult);
+  return EnumFonts(global_fmctx, nsnull, nsnull, aCount, aResult);
 }
 
 NS_IMETHODIMP
@@ -5589,13 +5772,18 @@ nsFontEnumeratorXlib::EnumerateFonts(const char* aLangGroup,
   *aResult = nsnull;
   NS_ENSURE_ARG_POINTER(aCount);
   *aCount = 0;
-  NS_ENSURE_ARG_POINTER(aGeneric);
-  NS_ENSURE_ARG_POINTER(aLangGroup);
 
-  nsCOMPtr<nsIAtom> langGroup = getter_AddRefs(NS_NewAtom(aLangGroup));
+  // aLangGroup=null or ""  means any (i.e., don't care)
+  // aGeneric=null or ""  means any (i.e, don't care)
+  nsCOMPtr<nsIAtom> langGroup;
+  if (aLangGroup && *aLangGroup)
+    langGroup = do_GetAtom(aLangGroup);
+  const char* generic = nsnull;
+  if (aGeneric && *aGeneric)
+    generic = aGeneric;
 
   // XXX still need to implement aLangGroup and aGeneric
-  return EnumFonts(langGroup, aGeneric, aCount, aResult);
+  return EnumFonts(global_fmctx, langGroup, generic, aCount, aResult);
 }
 
 NS_IMETHODIMP
@@ -5611,6 +5799,19 @@ nsFontEnumeratorXlib::HaveFontFor(const char* aLangGroup, PRBool* aResult)
 }
 
 NS_IMETHODIMP
+nsFontEnumeratorXlib::GetDefaultFont(const char *aLangGroup, 
+  const char *aGeneric, PRUnichar **aResult)
+{
+  // aLangGroup=null or ""  means any (i.e., don't care)
+  // aGeneric=null or ""  means any (i.e, don't care)
+
+  NS_ENSURE_ARG_POINTER(aResult);
+  *aResult = nsnull;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsFontEnumeratorXlib::UpdateFontList(PRBool *updateFontList)
 {
   *updateFontList = PR_FALSE; // always return false for now
@@ -5618,12 +5819,12 @@ nsFontEnumeratorXlib::UpdateFontList(PRBool *updateFontList)
 }
 
 static
-nsFontCharSetMapXlib *GetCharSetMap(const char *aCharSetName)
+const nsFontCharSetMapXlib *GetCharSetMap(nsFontMetricsXlibContext *aFmctx, const char *aCharSetName)
 {
   nsCStringKey charSetKey(aCharSetName);
-  nsFontCharSetMapXlib* charSetMap =  (nsFontCharSetMapXlib*) gCharSetMaps->Get(&charSetKey);
+  const nsFontCharSetMapXlib* charSetMap = (const nsFontCharSetMapXlib *) aFmctx->mCharSetMaps.Get(&charSetKey);
   if (!charSetMap)
-    charSetMap = gNoneCharSetMap;
+    charSetMap = aFmctx->mNoneCharSetMap;
   return charSetMap;
 }
 
@@ -5632,7 +5833,7 @@ static
 void CharSetNameToCodeRangeBits(const char *aCharset,
                                 PRUint32 *aCodeRange1, PRUint32 *aCodeRange2)
 {
-  nsFontCharSetMapXlib  *charSetMap  = GetCharSetMap(aCharset);
+  nsFontCharSetMapXlib  *charSetMap  = GetCharSetMap(aFmctx, aCharset);
   nsFontCharSetInfoXlib *charSetInfo = charSetMap->mInfo;
 
   *aCodeRange1 = charSetInfo->mCodeRange1Bits;

@@ -40,28 +40,33 @@ function ThreadPaneOnClick(event)
     if (t.localName == "treecol") {
        HandleColumnClick(t.id);
     }
-    else if (event.detail == 2 && t.localName == "treechildren") {
-       var row = new Object;
-       var colID = new Object;
-       var childElt = new Object;
+    else if (t.localName == "treechildren") {
+      var row = new Object;
+      var colID = new Object;
+      var childElt = new Object;
 
-       var tree = GetThreadTree();
-       // figure out what cell the click was in
-       tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, colID, childElt);
-       if (row.value == -1)
-         return;
+      var tree = GetThreadTree();
+      // figure out what cell the click was in
+      tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, colID, childElt);
+      if (row.value == -1)
+       return;
 
-       // if the cell is in a "cycler" column
-       // or if the user double clicked on the twisty,
-       // don't open the message in a new window
-       var col = document.getElementById(colID.value);
-       if (col && col.getAttribute("cycler") != "true" && (childElt.value != "twisty")) {
-         ThreadPaneDoubleClick();
-         // double clicking should not toggle the open / close state of the 
-         // thread.  this will happen if we don't prevent the event from
-         // bubbling to the default handler in tree.xml
-	 event.preventBubble();
-       }
+      // if the cell is in a "cycler" column
+      // or if the user double clicked on the twisty,
+      // don't open the message in a new window
+      var col = document.getElementById(colID.value);
+      if (col) {
+        if (event.detail == 2 && col.getAttribute("cycler") != "true" && (childElt.value != "twisty")) {
+          ThreadPaneDoubleClick();
+          // double clicking should not toggle the open / close state of the 
+          // thread.  this will happen if we don't prevent the event from
+          // bubbling to the default handler in tree.xml
+          event.preventBubble();
+        }
+        else if (colID.value == "junkStatusCol") {
+          MsgJunkMailInfo(true);
+        }
+      }      
     }
 }
 
@@ -82,6 +87,12 @@ nsMsgDBViewCommandUpdater.prototype =
     setTitleFromFolder(aFolder, aSubject);
     gHaveLoadedMessage = true;
     SetKeywords(aKeywords);
+    goUpdateCommand("button_junk");
+  },
+
+  updateNextMessageAfterDelete : function()
+  {
+    SetNextMessageAfterDelete();
   },
 
   QueryInterface : function(iid)
@@ -258,27 +269,28 @@ function MsgSortDescending()
 
 function UpdateSortIndicators(sortType, sortOrder)
 {
-  var colID = ConvertSortTypeToColumnID(sortType);
-  var sortedColumn;
+  // show the twisties if the view is threaded
+  var currCol = document.getElementById("subjectCol");
+  var primary = (sortType == nsMsgViewSortType.byThread) && gDBView.supportsThreading;
+  currCol.setAttribute("primary", primary);
+
+  // remove the sort indicator from all the columns
+  currCol = document.getElementById("threadCol");
+  while (currCol) {
+    currCol.removeAttribute("sortDirection");
+    currCol = currCol.nextSibling;
+  }
 
   // set the sort indicator on the column we are sorted by
+  var colID = ConvertSortTypeToColumnID(sortType);
   if (colID) {
-    sortedColumn = document.getElementById(colID);
+    var sortedColumn = document.getElementById(colID);
     if (sortedColumn) {
       if (sortOrder == nsMsgViewSortOrder.ascending) {
         sortedColumn.setAttribute("sortDirection","ascending");
       }
       else {
         sortedColumn.setAttribute("sortDirection","descending");
-      }
-
-      // remove the sort indicator from all the columns
-      // except the one we are sorted by
-      var currCol = sortedColumn.parentNode.firstChild;
-      while (currCol) {
-        if (currCol != sortedColumn && currCol.localName == "treecol")
-          currCol.removeAttribute("sortDirection");
-        currCol = currCol.nextSibling;
       }
     }
   }

@@ -37,15 +37,19 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifndef nsXBLPrototypeBinding_h__
+#define nsXBLPrototypeBinding_h__
+
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeBinding.h"
-#include "nsIXBLPrototypeHandler.h"
 #include "nsXBLPrototypeResources.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsICSSStyleSheet.h"
 #include "nsICSSLoaderObserver.h"
 #include "nsWeakReference.h"
+#include "nsIContent.h"
+#include "nsHashtable.h"
+#include "nsIXBLDocumentInfo.h"
 
-class nsIContent;
 class nsIAtom;
 class nsIDocument;
 class nsIScriptContext;
@@ -53,97 +57,117 @@ class nsISupportsArray;
 class nsSupportsHashtable;
 class nsIXBLService;
 class nsFixedSizeAllocator;
+class nsXBLProtoImpl;
+class nsIXBLBinding;
 
 // *********************************************************************/
 // The XBLPrototypeBinding class
 
-class nsXBLPrototypeBinding: public nsIXBLPrototypeBinding, public nsSupportsWeakReference
+// References to the prototype binding are held by each nsXBLBinding instance
+// that uses this prototype binding, and also by the XBLDocumentInfo's
+// binding table (with the XUL cache disabled).
+
+class nsXBLPrototypeBinding
 {
-  NS_DECL_ISUPPORTS
+public:
+  already_AddRefed<nsIContent> GetBindingElement();
+  void SetBindingElement(nsIContent* aElement);
 
-  // nsIXBLPrototypeBinding
-  NS_IMETHOD GetBindingElement(nsIContent** aResult);
-  NS_IMETHOD SetBindingElement(nsIContent* aElement);
+  nsresult GetBindingURI(nsCString& aResult);
+  nsresult GetDocURI(nsCString& aResult);
+  nsresult GetID(nsCString& aResult) { aResult = mID; return NS_OK; }
 
-  NS_IMETHOD GetBindingURI(nsCString& aResult);
-  NS_IMETHOD GetDocURI(nsCString& aResult);
-  NS_IMETHOD GetID(nsCString& aResult);
+  nsresult GetAllowScripts(PRBool* aResult);
 
-  NS_IMETHOD GetAllowScripts(PRBool* aResult);
+  nsresult BindingAttached(nsIDOMEventReceiver* aRec);
+  nsresult BindingDetached(nsIDOMEventReceiver* aRec);
 
-  NS_IMETHOD BindingAttached(nsIDOMEventReceiver* aRec);
-  NS_IMETHOD BindingDetached(nsIDOMEventReceiver* aRec);
+  PRBool LoadResources();
+  nsresult AddResource(nsIAtom* aResourceType, const nsAString& aSrc);
 
-  NS_IMETHOD LoadResources(PRBool* aResult);
-  NS_IMETHOD AddResource(nsIAtom* aResourceType, const nsAString& aSrc);
+  PRBool InheritsStyle() { return mInheritStyle; }
 
-  NS_IMETHOD InheritsStyle(PRBool* aResult);
+  nsXBLPrototypeHandler* GetPrototypeHandlers() { return mPrototypeHandler; }
+  void SetPrototypeHandlers(nsXBLPrototypeHandler* aHandler) { mPrototypeHandler = aHandler; }
 
-  NS_IMETHOD GetPrototypeHandlers(nsIXBLPrototypeHandler** aHandler);
-  NS_IMETHOD SetPrototypeHandlers(nsIXBLPrototypeHandler* aHandler);
+  nsXBLPrototypeHandler* GetConstructor();
+  nsresult SetConstructor(nsXBLPrototypeHandler* aConstructor);
+  nsXBLPrototypeHandler* GetDestructor();
+  nsresult SetDestructor(nsXBLPrototypeHandler* aDestructor);
 
-  NS_IMETHOD GetConstructor(nsIXBLPrototypeHandler** aResult);
-  NS_IMETHOD SetConstructor(nsIXBLPrototypeHandler* aConstructor);
-  NS_IMETHOD GetDestructor(nsIXBLPrototypeHandler** aResult);
-  NS_IMETHOD SetDestructor(nsIXBLPrototypeHandler* aDestructor);
-
-  NS_IMETHOD InitClass(const nsCString& aClassName, nsIScriptContext * aContext, void * aScriptObject, void ** aClassObject);
+  nsresult InitClass(const nsCString& aClassName, nsIScriptContext * aContext, void * aScriptObject, void ** aClassObject);
   
-  NS_IMETHOD ConstructInterfaceTable(const nsAString& aImpls);
+  nsresult ConstructInterfaceTable(const nsAString& aImpls);
   
-  NS_IMETHOD SetImplementation(nsXBLProtoImpl* aImpl) { mImplementation = aImpl; return NS_OK; };
-  NS_IMETHOD InstallImplementation(nsIContent* aBoundElement);
+  void SetImplementation(nsXBLProtoImpl* aImpl) { mImplementation = aImpl; }
+  nsresult InstallImplementation(nsIContent* aBoundElement);
 
-  NS_IMETHOD AttributeChanged(nsIAtom* aAttribute, PRInt32 aNameSpaceID,
-                              PRBool aRemoveFlag, nsIContent* aChangedElement,
-                              nsIContent* aAnonymousContent, PRBool aNotify);
+  void AttributeChanged(nsIAtom* aAttribute, PRInt32 aNameSpaceID,
+                        PRBool aRemoveFlag, nsIContent* aChangedElement,
+                        nsIContent* aAnonymousContent, PRBool aNotify);
 
-  NS_IMETHOD SetBasePrototype(nsIXBLPrototypeBinding* aBinding);
-  NS_IMETHOD GetBasePrototype(nsIXBLPrototypeBinding** aResult);
+  void SetBasePrototype(nsXBLPrototypeBinding* aBinding);
+  nsXBLPrototypeBinding* GetBasePrototype() { return mBaseBinding; }
 
-  NS_IMETHOD GetXBLDocumentInfo(nsIContent* aBoundElement, nsIXBLDocumentInfo** aResult);
+  already_AddRefed<nsIXBLDocumentInfo>
+  GetXBLDocumentInfo(nsIContent* aBoundElement);
   
-  NS_IMETHOD HasBasePrototype(PRBool* aResult);
-  NS_IMETHOD SetHasBasePrototype(PRBool aHasBase);
+  PRBool HasBasePrototype() { return mHasBaseProto; }
+  void SetHasBasePrototype(PRBool aHasBase) { mHasBaseProto = aHasBase; }
 
-  NS_IMETHOD SetInitialAttributes(nsIContent* aBoundElement, nsIContent* aAnonymousContent);
+  void SetInitialAttributes(nsIContent* aBoundElement, nsIContent* aAnonymousContent);
 
-  NS_IMETHOD GetRuleProcessors(nsISupportsArray** aResult);
-  NS_IMETHOD GetStyleSheets(nsISupportsArray** aResult);
+  already_AddRefed<nsISupportsArray> GetRuleProcessors();
+  already_AddRefed<nsISupportsArray> GetStyleSheets();
 
-  NS_IMETHOD HasInsertionPoints(PRBool* aResult) { *aResult = (mInsertionPointTable != nsnull); return NS_OK; };
+  PRBool HasInsertionPoints() { return mInsertionPointTable != nsnull; }
   
-  NS_IMETHOD HasStyleSheets(PRBool* aResult) 
-  { *aResult = (mResources && mResources->mStyleSheetList); return NS_OK; };
+  PRBool HasStyleSheets() { return mResources && mResources->mStyleSheetList; }
 
-  NS_IMETHOD FlushSkinSheets();
+  nsresult FlushSkinSheets();
 
-  NS_IMETHOD InstantiateInsertionPoints(nsIXBLBinding* aBinding);
+  void InstantiateInsertionPoints(nsIXBLBinding* aBinding);
 
-  NS_IMETHOD GetInsertionPoint(nsIContent* aBoundElement, nsIContent* aCopyRoot,
-                               nsIContent* aChild, nsIContent** aResult, PRUint32* aIndex,
+  void GetInsertionPoint(nsIContent* aBoundElement, nsIContent* aCopyRoot,
+                         nsIContent* aChild, nsIContent** aResult,
+                         PRUint32* aIndex, nsIContent** aDefaultContent);
+
+  void GetSingleInsertionPoint(nsIContent* aBoundElement,
+                               nsIContent* aCopyRoot, nsIContent** aResult,
+                               PRUint32* aIndex, PRBool* aMultiple,
                                nsIContent** aDefaultContent);
 
-  NS_IMETHOD GetSingleInsertionPoint(nsIContent* aBoundElement, nsIContent* aCopyRoot,
-                                     nsIContent** aResult, PRUint32* aIndex, PRBool* aMultiple,
-                                     nsIContent** aDefaultContent);
+  void GetBaseTag(PRInt32* aNamespaceID, nsIAtom** aTag);
+  void SetBaseTag(PRInt32 aNamespaceID, nsIAtom* aTag);
 
-  NS_IMETHOD GetBaseTag(PRInt32* aNamespaceID, nsIAtom** aTag);
-  NS_IMETHOD SetBaseTag(PRInt32 aNamespaceID, nsIAtom* aTag);
+  PRBool ImplementsInterface(REFNSIID aIID);
 
-  NS_IMETHOD ImplementsInterface(REFNSIID aIID, PRBool* aResult);
+  PRBool ShouldBuildChildFrames();
 
-  NS_IMETHOD ShouldBuildChildFrames(PRBool* aResult);
+  nsresult AddResourceListener(nsIContent* aBoundElement);
 
-  NS_IMETHOD AddResourceListener(nsIContent* aBoundElement);
-
-  NS_IMETHOD Initialize();
+  void Initialize();
 
 public:
   nsXBLPrototypeBinding(const nsACString& aRef, nsIXBLDocumentInfo* aInfo, nsIContent* aElement);
-  virtual ~nsXBLPrototypeBinding();
+  ~nsXBLPrototypeBinding();
 
-  
+  nsrefcnt AddRef() {
+    ++mRefCnt;
+    NS_LOG_ADDREF(this, mRefCnt, "nsXBLPrototypeBinding", sizeof(nsXBLPrototypeBinding));
+    return mRefCnt;
+  }
+
+  nsrefcnt Release() {
+    --mRefCnt;
+    NS_LOG_RELEASE(this, mRefCnt, "nsXBLPrototypeBinding");
+    if (mRefCnt == 0) {
+      delete this;
+      return 0;
+    }
+    return mRefCnt;
+  }
+
 // Static members
   static PRUint32 gRefCnt;
  
@@ -152,15 +176,21 @@ public:
 
 // Internal member functions
 public:
-  void GetImmediateChild(nsIAtom* aTag, nsIContent** aResult);
-  void LocateInstance(nsIContent* aBoundElt, nsIContent* aTemplRoot, nsIContent* aCopyRoot,
-                      nsIContent* aTemplChild, nsIContent** aCopyResult);
+  already_AddRefed<nsIContent> GetImmediateChild(nsIAtom* aTag);
+  already_AddRefed<nsIContent> LocateInstance(nsIContent* aBoundElt,
+                                              nsIContent* aTemplRoot,
+                                              nsIContent* aCopyRoot,
+                                              nsIContent* aTemplChild);
 
 protected:  
   void ConstructAttributeTable(nsIContent* aElement);
   void ConstructInsertionTable(nsIContent* aElement);
-  void GetNestedChildren(nsIAtom* aTag, nsIContent* aContent, nsISupportsArray** aList);
-  
+  void GetNestedChildren(nsIAtom* aTag, nsIContent* aContent,
+                         nsISupportsArray** aList);
+
+  // This should never be called, but is necessary to satisfy nsRefPtr.
+  nsXBLPrototypeBinding() { NS_NOTREACHED("nsXBLPrototypeBinding default ctor"); }
+
 protected:
   // Internal helper class for managing our IID table.
   class nsIIDKey : public nsHashKey {
@@ -190,12 +220,12 @@ protected:
   char* mID;
 
   nsCOMPtr<nsIContent> mBinding; // Strong. We own a ref to our content element in the binding doc.
-  nsCOMPtr<nsIXBLPrototypeHandler> mPrototypeHandler; // Strong. DocInfo owns us, and we own the handlers.
+  nsXBLPrototypeHandler* mPrototypeHandler; // Strong. DocInfo owns us, and we own the handlers.
   
   nsXBLProtoImpl* mImplementation; // Our prototype implementation (includes methods, properties, fields,
                                    // the constructor, and the destructor).
 
-  nsCOMPtr<nsIXBLPrototypeBinding> mBaseBinding; // Strong. We own the base binding in our explicit inheritance chain.
+  nsXBLPrototypeBinding* mBaseBinding; // Weak.  The docinfo will own our base binding.
   PRPackedBool mInheritStyle;
   PRPackedBool mHasBaseProto;
  
@@ -203,14 +233,19 @@ protected:
                                       
   nsWeakPtr mXBLDocInfoWeak; // A pointer back to our doc info.  Weak, since it owns us.
 
-  nsSupportsHashtable* mAttributeTable; // A table for attribute entries.  Used to efficiently
-                                        // handle attribute changes.
+  nsObjectHashtable* mAttributeTable; // A table for attribute entries.  Used to efficiently
+                                      // handle attribute changes.
 
-  nsSupportsHashtable* mInsertionPointTable; // A table of insertion points for placing explicit content
-                                             // underneath anonymous content.
+  nsObjectHashtable* mInsertionPointTable; // A table of insertion points for placing explicit content
+                                           // underneath anonymous content.
 
   nsSupportsHashtable* mInterfaceTable; // A table of cached interfaces that we support.
 
   PRInt32 mBaseNameSpaceID;    // If we extend a tagname/namespace, then that information will
   nsCOMPtr<nsIAtom> mBaseTag;  // be stored in here.
+
+  nsAutoRefCnt mRefCnt;
 };
+
+#endif
+

@@ -123,7 +123,7 @@ JS_DHashFinalizeStub(JSDHashTable *table)
 {
 }
 
-static JSDHashTableOps stub_ops = {
+static const JSDHashTableOps stub_ops = {
     JS_DHashAllocTable,
     JS_DHashFreeTable,
     JS_DHashGetKeyStub,
@@ -135,14 +135,14 @@ static JSDHashTableOps stub_ops = {
     NULL
 };
 
-JS_PUBLIC_API(JSDHashTableOps *)
+JS_PUBLIC_API(const JSDHashTableOps *)
 JS_DHashGetStubOps(void)
 {
     return &stub_ops;
 }
 
 JS_PUBLIC_API(JSDHashTable *)
-JS_NewDHashTable(JSDHashTableOps *ops, void *data, uint32 entrySize,
+JS_NewDHashTable(const JSDHashTableOps *ops, void *data, uint32 entrySize,
                  uint32 capacity)
 {
     JSDHashTable *table;
@@ -165,7 +165,7 @@ JS_DHashTableDestroy(JSDHashTable *table)
 }
 
 JS_PUBLIC_API(JSBool)
-JS_DHashTableInit(JSDHashTable *table, JSDHashTableOps *ops, void *data,
+JS_DHashTableInit(JSDHashTable *table, const JSDHashTableOps *ops, void *data,
                   uint32 entrySize, uint32 capacity)
 {
     int log2;
@@ -379,16 +379,6 @@ SearchTable(JSDHashTable *table, const void *key, JSDHashNumber keyHash,
 
         entry = ADDRESS_ENTRY(table, hash1);
         if (JS_DHASH_ENTRY_IS_FREE(entry)) {
-#ifdef DEBUG_brendan
-            extern char *getenv(const char *);
-            static JSBool gotFirstRemovedEnvar = JS_FALSE;
-            static char *doFirstRemoved = NULL;
-            if (!gotFirstRemovedEnvar) {
-                doFirstRemoved = getenv("DHASH_DO_FIRST_REMOVED");
-                gotFirstRemovedEnvar = JS_TRUE;
-            }
-            if (!doFirstRemoved) return entry;
-#endif
             METER(table->stats.misses++);
             return (firstRemoved && op == JS_DHASH_ADD) ? firstRemoved : entry;
         }
@@ -569,6 +559,7 @@ JS_DHashTableRawRemove(JSDHashTable *table, JSDHashEntryHdr *entry)
 {
     JSDHashNumber keyHash;      /* load first in case clearEntry goofs it */
 
+    JS_ASSERT(JS_DHASH_ENTRY_IS_LIVE(entry));
     keyHash = entry->keyHash;
     table->ops->clearEntry(table, entry);
     if (keyHash & COLLISION_FLAG) {
@@ -586,6 +577,7 @@ JS_DHashTableEnumerate(JSDHashTable *table, JSDHashEnumerator etor, void *arg)
 {
     char *entryAddr, *entryLimit;
     uint32 i, capacity, entrySize;
+    JSBool didRemove;
     JSDHashEntryHdr *entry;
     JSDHashOperator op;
 
@@ -594,6 +586,7 @@ JS_DHashTableEnumerate(JSDHashTable *table, JSDHashEnumerator etor, void *arg)
     capacity = JS_DHASH_TABLE_SIZE(table);
     entryLimit = entryAddr + capacity * entrySize;
     i = 0;
+    didRemove = JS_FALSE;
     while (entryAddr < entryLimit) {
         entry = (JSDHashEntryHdr *)entryAddr;
         if (ENTRY_IS_LIVE(entry)) {
@@ -601,6 +594,7 @@ JS_DHashTableEnumerate(JSDHashTable *table, JSDHashEnumerator etor, void *arg)
             if (op & JS_DHASH_REMOVE) {
                 METER(table->stats.removeEnums++);
                 JS_DHashTableRawRemove(table, entry);
+                didRemove = JS_TRUE;
             }
             if (op & JS_DHASH_STOP)
                 break;
@@ -611,11 +605,14 @@ JS_DHashTableEnumerate(JSDHashTable *table, JSDHashEnumerator etor, void *arg)
     /*
      * Shrink or compress if a quarter or more of all entries are removed, or
      * if the table is underloaded according to the configured minimum alpha,
-     * and is not minimal-size already.
+     * and is not minimal-size already.  Do this only if we removed above, so
+     * non-removing enumerations can count on stable table->entryStore until
+     * the next non-lookup-Operate or removing-Enumerate.
      */
-    if (table->removedCount >= capacity >> 2 ||
-        (capacity > JS_DHASH_MIN_SIZE &&
-         table->entryCount <= MIN_LOAD(table, capacity))) {
+    if (didRemove &&
+        (table->removedCount >= capacity >> 2 ||
+         (capacity > JS_DHASH_MIN_SIZE &&
+          table->entryCount <= MIN_LOAD(table, capacity)))) {
         METER(table->stats.enumShrinks++);
         capacity = table->entryCount;
         capacity += capacity >> 1;

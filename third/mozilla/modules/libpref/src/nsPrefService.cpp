@@ -43,8 +43,8 @@
 #include "nsDirectoryServiceDefs.h"
 #include "nsICategoryManager.h"
 #include "nsCategoryManagerUtils.h"
+#include "nsNetUtil.h"
 #include "nsIFile.h"
-#include "nsIFileStreams.h"
 #include "nsILocalFile.h"
 #include "nsIObserverService.h"
 #include "nsPrefBranch.h"
@@ -63,11 +63,20 @@
 
 #include "nsITimelineService.h"
 
+#ifdef MOZ_PROFILESHARING
+#include "nsIProfileSharingSetup.h"
+#include "nsSharedPrefHandler.h"
+#endif
+
 // Definitions
 #define INITIAL_MAX_DEFAULT_PREF_FILES 10
 
 
 // Prototypes
+#ifdef MOZ_PROFILESHARING
+static PRBool isSharingEnabled();
+#endif
+
 static nsresult openPrefFile(nsIFile* aFile, PRBool aIsErrorFatal,
                              PRBool aIsGlobalContext, PRBool aSkipFirstLine);
 
@@ -75,21 +84,25 @@ static nsresult openPrefFile(nsIFile* aFile, PRBool aIsErrorFatal,
   // needed so we can still get the JS Runtime Service during XPCOM shutdown
 static nsIJSRuntimeService* gJSRuntimeService = nsnull; // owning reference
 
+//-----------------------------------------------------------------------------
 
 /*
  * Constructor/Destructor
  */
 
 nsPrefService::nsPrefService()
-: mCurrentFile(nsnull)
+: mCurrentFile(nsnull),
+  mErrorOpeningUserPrefs(PR_FALSE)
 {
   nsPrefBranch *rootBranch;
 
-  NS_INIT_ISUPPORTS();
-
   rootBranch = new nsPrefBranch("", PR_FALSE); 
   mRootBranch = (nsIPrefBranch *)rootBranch;
-
+  
+#if MOZ_PROFILESHARING
+  mCurrentSharedFile = nsnull;
+  mErrorOpeningSharedUserPrefs = PR_FALSE;
+#endif
 }
 
 nsPrefService::~nsPrefService()
@@ -97,6 +110,11 @@ nsPrefService::~nsPrefService()
   PREF_Cleanup();
   NS_IF_RELEASE(mCurrentFile);
   NS_IF_RELEASE(gJSRuntimeService);
+
+#ifdef MOZ_PROFILESHARING
+  NS_IF_RELEASE(mCurrentSharedFile);
+  NS_IF_RELEASE(gSharedPrefHandler);
+#endif
 }
 
 
@@ -151,6 +169,11 @@ nsresult nsPrefService::Init()
       rv = observerService->AddObserver(this, "profile-do-change", PR_TRUE);
     }
   }
+
+#ifdef MOZ_PROFILESHARING  
+  rv = NS_CreateSharedPrefHandler(this);
+#endif
+
   return(rv);
 }
 
@@ -166,10 +189,22 @@ NS_IMETHODIMP nsPrefService::Observe(nsISupports *aSubject, const char *aTopic, 
       }
     } else {
       rv = SavePrefFile(nsnull);
+#ifdef MOZ_PROFILESHARING
+      if (isSharingEnabled())
+        rv = gSharedPrefHandler->OnSessionEnd();
+#endif
     }
   } else if (!nsCRT::strcmp(aTopic, "profile-do-change")) {
-    ResetUserPrefs();
-    rv = ReadUserPrefs(nsnull);
+  
+#ifdef MOZ_PROFILESHARING
+    if (isSharingEnabled())
+      rv = gSharedPrefHandler->OnSessionBegin();
+    else
+#endif
+    {
+      ResetUserPrefs();
+      rv = ReadUserPrefs(nsnull);
+    }
   }
   return rv;
 }
@@ -184,19 +219,10 @@ NS_IMETHODIMP nsPrefService::ReadUserPrefs(nsIFile *aFile)
     UseUserPrefFile();
 
     NotifyServiceObservers(NS_PREFSERVICE_READ_TOPIC_ID);
-    
+
     JS_MaybeGC(gMochaContext);
   } else {
-    if (mCurrentFile == aFile)
-      return NS_OK;
-
-    NS_IF_RELEASE(mCurrentFile);
-    mCurrentFile = aFile;
-    NS_ADDREF(mCurrentFile);
-    
-    gErrorOpeningUserPrefs = PR_FALSE;
-
-    rv = openPrefFile(mCurrentFile, PR_TRUE, PR_FALSE, PR_TRUE);
+    rv = ReadAndOwnUserPrefFile(aFile);
   }
   return rv;
 }
@@ -220,12 +246,12 @@ NS_IMETHODIMP nsPrefService::ResetUserPrefs()
 
 NS_IMETHODIMP nsPrefService::SavePrefFile(nsIFile *aFile)
 {
-  if (nsnull == aFile) {
-    // It's possible that we never got a prefs file.
-    return mCurrentFile ? WritePrefFile(mCurrentFile) : NS_OK;
-  } else {
-    return WritePrefFile(aFile);
-  }
+#ifdef MOZ_PROFILESHARING
+  // sharing only applies to the default prefs file
+  if (aFile == nsnull && isSharingEnabled())
+    return gSharedPrefHandler->OnSavePrefs();
+#endif
+  return SavePrefFileInternal(aFile);
 }
 
 NS_IMETHODIMP nsPrefService::GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval)
@@ -300,29 +326,39 @@ nsresult nsPrefService::NotifyServiceObservers(const char *aTopic)
 
 nsresult nsPrefService::UseDefaultPrefFile()
 {
-  nsresult rv;
+  nsresult rv, rv2;
   nsCOMPtr<nsIFile> aFile;
 
-  // Anything which calls NS_InitXPCOM will have this
-  rv = NS_GetSpecialDirectory(NS_APP_PREFS_50_FILE, getter_AddRefs(aFile));
-
-  if (!aFile) {
-    // We know we have XPCOM directory services, but we might not have a provider which
-    // knows about NS_APP_PREFS_50_FILE. Put the file in NS_XPCOM_CURRENT_PROCESS_DIR.
-    rv = NS_GetSpecialDirectory(NS_XPCOM_CURRENT_PROCESS_DIR, getter_AddRefs(aFile));
-    if (NS_FAILED(rv)) return rv;
-    rv = aFile->AppendNative(NS_LITERAL_CSTRING("default_prefs.js"));
-    if (NS_FAILED(rv)) return rv;
-  } 
-
-  rv = ReadUserPrefs(aFile);
-  if (NS_SUCCEEDED(rv)) {
-    return rv;
+#ifdef MOZ_PROFILESHARING
+  // First, read the shared file.
+  if (isSharingEnabled()) {
+    rv = NS_GetSpecialDirectory(NS_SHARED NS_APP_PREFS_50_FILE, getter_AddRefs(aFile));
+    if (NS_SUCCEEDED(rv)) {
+      rv = ReadAndOwnSharedUserPrefFile(aFile);
+      // Most likely cause of failure here is that the file didn't
+      // exist, so save a new one. mSharedUserPrefReadFailed will be
+      // used to catch an error in actually reading the file.
+      if (NS_FAILED(rv)) {
+        rv2 = SavePrefFileInternal(aFile);
+        NS_ASSERTION(NS_SUCCEEDED(rv2), "Failed to save new shared pref file");
+      }
+    }
   }
+  // Continue on to read the nonshared file.
+#endif
 
-  // need to save the prefs now
-  SavePrefFile(aFile); 
-
+  rv = NS_GetSpecialDirectory(NS_APP_PREFS_50_FILE, getter_AddRefs(aFile));
+  if (NS_SUCCEEDED(rv)) {
+    rv = ReadAndOwnUserPrefFile(aFile);
+    // Most likely cause of failure here is that the file didn't
+    // exist, so save a new one. mUserPrefReadFailed will be
+    // used to catch an error in actually reading the file.
+    if (NS_FAILED(rv)) {
+      rv2 = SavePrefFileInternal(aFile);
+      NS_ASSERTION(NS_SUCCEEDED(rv2), "Failed to save new shared pref file");
+    }
+  }
+  
   return rv;
 }
 
@@ -331,7 +367,15 @@ nsresult nsPrefService::UseUserPrefFile()
   nsresult rv = NS_OK;
   nsCOMPtr<nsIFile> aFile;
 
-  rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR, getter_AddRefs(aFile));
+#ifdef MOZ_PROFILESHARING
+  nsCAutoString prefsDirProp(NS_APP_PREFS_50_DIR);
+  if (isSharingEnabled())
+    prefsDirProp.Insert(NS_SHARED, 0); // Prepend modifier so we get shared file
+#else
+  nsDependentCString prefsDirProp(NS_APP_PREFS_50_DIR);
+#endif
+
+  rv = NS_GetSpecialDirectory(prefsDirProp.get(), getter_AddRefs(aFile));
   if (NS_SUCCEEDED(rv) && aFile) {
     rv = aFile->AppendNative(NS_LITERAL_CSTRING("user.js"));
     if (NS_SUCCEEDED(rv)) {
@@ -341,13 +385,117 @@ nsresult nsPrefService::UseUserPrefFile()
   return rv;
 }
 
+nsresult nsPrefService::ReadAndOwnUserPrefFile(nsIFile *aFile)
+{
+  NS_ENSURE_ARG(aFile);
+  
+  if (mCurrentFile == aFile)
+    return NS_OK;
+  NS_IF_RELEASE(mCurrentFile);
+  mCurrentFile = aFile;
+  NS_ADDREF(mCurrentFile);
+
+#ifdef MOZ_PROFILESHARING
+  // We don't want prefs set here to cause transactions
+  gSharedPrefHandler->ReadingUserPrefs(PR_TRUE);
+#endif
+
+  // We need to track errors in reading the shared and the
+  // non-shared files independently. Clear gErrorOpeningUserPrefs
+  // and set the appropriate member variable from it after reading.
+  gErrorOpeningUserPrefs = PR_FALSE;
+  nsresult rv = openPrefFile(mCurrentFile, PR_TRUE, PR_FALSE, PR_TRUE);
+  mErrorOpeningUserPrefs = gErrorOpeningUserPrefs;
+
+#ifdef MOZ_PROFILESHARING
+  gSharedPrefHandler->ReadingUserPrefs(PR_FALSE);
+#endif
+
+  return rv;
+}
+
+#ifdef MOZ_PROFILESHARING
+nsresult nsPrefService::ReadAndOwnSharedUserPrefFile(nsIFile *aFile)
+{
+  NS_ENSURE_ARG(aFile);
+
+  if (mCurrentSharedFile == aFile)
+    return NS_OK;
+  NS_IF_RELEASE(mCurrentSharedFile);
+  mCurrentSharedFile = aFile;
+  NS_ADDREF(mCurrentSharedFile);
+
+#ifdef MOZ_PROFILESHARING
+  // We don't want prefs set here to cause transactions
+  gSharedPrefHandler->ReadingUserPrefs(PR_TRUE);
+#endif
+
+  // We need to track errors in reading the shared and the
+  // non-shared files independently. Clear gErrorOpeningUserPrefs
+  // and set the appropriate member variable from it after reading.
+  gErrorOpeningUserPrefs = PR_FALSE;
+  nsresult rv = openPrefFile(mCurrentSharedFile, PR_TRUE, PR_FALSE, PR_TRUE);
+  mErrorOpeningSharedUserPrefs = gErrorOpeningUserPrefs;
+  
+#ifdef MOZ_PROFILESHARING
+  gSharedPrefHandler->ReadingUserPrefs(PR_FALSE);
+#endif
+
+  return rv;
+}
+#endif
+
+nsresult nsPrefService::SavePrefFileInternal(nsIFile *aFile)
+{
+  if (nsnull == aFile) {
+    // the gDirty flag tells us if we should write to mCurrentFile
+    // we only check this flag when the caller wants to write to the default
+    if (!gDirty)
+      return NS_OK;
+    
+    // It's possible that we never got a prefs file.
+    nsresult rv = NS_OK;
+    if (mCurrentFile)
+      rv = WritePrefFile(mCurrentFile);
+
+#ifdef MOZ_PROFILESHARING
+    if (mCurrentSharedFile) {
+      nsresult rv2 = WritePrefFile(mCurrentSharedFile);
+      if (NS_SUCCEEDED(rv))
+        rv = rv2;
+    }
+#endif
+
+    return rv;
+  } else {
+    return WritePrefFile(aFile);
+  }
+}
+
 nsresult nsPrefService::WritePrefFile(nsIFile* aFile)
 {
-  const char                outHeader[] = "# Mozilla User Preferences" 
-                                          NS_LINEBREAK 
-                                          "// This is a generated file!" 
-                                          NS_LINEBREAK 
-                                          NS_LINEBREAK;
+  const char                outHeader[] =
+    "# Mozilla User Preferences"
+    NS_LINEBREAK
+    NS_LINEBREAK
+    "/* Do not edit this file."
+    NS_LINEBREAK
+    " *"
+    NS_LINEBREAK
+    " * If you make changes to this file while the browser is running,"
+    NS_LINEBREAK
+    " * the changes will be overwritten when the browser exits."
+    NS_LINEBREAK
+    " *"
+    NS_LINEBREAK
+    " * To make a manual change to preferences, you can visit the URL about:config"
+    NS_LINEBREAK
+    " * For more information, see http://www.mozilla.org/unix/customizing.html#prefs"
+    NS_LINEBREAK
+    " */"
+    NS_LINEBREAK
+    NS_LINEBREAK;
+
   nsCOMPtr<nsIOutputStream> outStream;
   PRUint32                  writeAmount;
   nsresult                  rv;
@@ -356,8 +504,12 @@ nsresult nsPrefService::WritePrefFile(nsIFile* aFile)
     return NS_ERROR_NOT_INITIALIZED;
 
   /* ?! Don't save (blank) user prefs if there was an error reading them */
-  if (gErrorOpeningUserPrefs)
+  if (aFile == mCurrentFile && mErrorOpeningUserPrefs)
     return NS_OK;
+#if MOZ_PROFILESHARING
+  if (aFile == mCurrentSharedFile && mErrorOpeningSharedUserPrefs)
+    return NS_OK;
+#endif
 
   // execute a "safe" save by saving through a tempfile
   PRInt32 numCopies = 1;
@@ -375,12 +527,25 @@ nsresult nsPrefService::WritePrefFile(nsIFile* aFile)
   rv = NS_NewLocalFileOutputStream(getter_AddRefs(outStream), aFile);
   if (NS_FAILED(rv)) 
       return rv;
-
+  
   // write out the file header
   rv = outStream->Write(outHeader, sizeof(outHeader) - 1, &writeAmount);
 
+  pref_saveArgs saveArgs;
+  saveArgs.prefArray = valueArray;
+  saveArgs.saveTypes = SAVE_ALL;
+  
+#if MOZ_PROFILESHARING
+  if (isSharingEnabled()) {
+    if (aFile == mCurrentSharedFile)
+      saveArgs.saveTypes = SAVE_SHARED;
+    else if (aFile == mCurrentFile)
+      saveArgs.saveTypes = SAVE_NONSHARED;
+  }
+#endif
+  
   // get the lines that we're supposed to be writing to the file
-  PL_DHashTableEnumerate(&gHashTable, pref_savePref, valueArray);
+  PL_DHashTableEnumerate(&gHashTable, pref_savePref, &saveArgs);
     
   /* Sort the preferences to make a readable file on disk */
   NS_QuickSort(valueArray, gHashTable.entryCount, sizeof(char *), pref_CompareStrings, NULL);
@@ -409,8 +574,26 @@ nsresult nsPrefService::WritePrefFile(nsIFile* aFile)
       rv = NS_OK;
     }
   }
+  if (NS_SUCCEEDED(rv))
+    gDirty = PR_FALSE;
   return rv;
 }
+
+#ifdef MOZ_PROFILESHARING
+static PRBool isSharingEnabled()
+{
+  static PRBool gSharingEnabled = PR_FALSE;
+  
+  // If FALSE, query again. It may not have been set yet.
+  if (!gSharingEnabled) {
+    nsCOMPtr<nsIProfileSharingSetup> sharingSetup =
+        do_GetService("@mozilla.org/embedcomp/profile-sharing-setup;1");
+    if (sharingSetup)
+      sharingSetup->GetIsSharingEnabled(&gSharingEnabled);
+  }
+  return gSharingEnabled;
+}
+#endif
 
 static nsresult openPrefFile(nsIFile* aFile, PRBool aIsErrorFatal,
                              PRBool aIsGlobalContext, PRBool aSkipFirstLine)
@@ -434,6 +617,12 @@ static nsresult openPrefFile(nsIFile* aFile, PRBool aIsErrorFatal,
     return rv;        
   LL_L2UI(fileSize, llFileSize); // Converting 64 bit structure to unsigned int
 
+  // Now that we know the file exists, set this flag until we have
+  // successfully read and evaluated the prefs file. This will
+  // prevent us from writing an empty or partial prefs.js.
+  
+  gErrorOpeningUserPrefs = aIsErrorFatal;
+
   rv = NS_NewLocalFileInputStream(getter_AddRefs(inStr), aFile);
   if (NS_FAILED(rv)) 
     return rv;        
@@ -447,22 +636,23 @@ static nsresult openPrefFile(nsIFile* aFile, PRBool aIsErrorFatal,
   PRUint32 amtRead = 0;
   rv = inStr->Read(readBuf, fileSize, &amtRead);
   NS_ASSERTION((amtRead == fileSize), "failed to read the entire prefs file!!");
+  if (amtRead != fileSize)
+    return NS_ERROR_FAILURE;
  #ifdef XP_OS2 /* OS/2 workaround - our system editor adds an EOF character */
      if (readBuf[amtRead - 1] == 0x1A) {
         amtRead--;
      }
  #endif
   if (NS_SUCCEEDED(rv)) {
-    if (!PREF_EvaluateConfigScript(readBuf, amtRead, nsnull, aIsGlobalContext, PR_TRUE,
+    nsCAutoString leafName;
+    aFile->GetNativeLeafName(leafName);
+    if (PREF_EvaluateConfigScript(readBuf, amtRead, leafName.get(), aIsGlobalContext, PR_TRUE,
                                    aSkipFirstLine))
-    {
+      gErrorOpeningUserPrefs = PR_FALSE;
+    else
       rv = NS_ERROR_FAILURE;
-      if (aIsErrorFatal)
-        // If the user prefs file exists but generates an error,
-        // don't clobber the file when we try to save it
-        gErrorOpeningUserPrefs = PR_TRUE;
-    }
   }
+
   PR_Free(readBuf);
   JS_EndRequest(gMochaContext);
 
@@ -521,6 +711,8 @@ JSBool pref_InitInitialObjects()
       "unix.js"
 #if defined(VMS)
       , "openvms.js"
+#elif defined(_AIX)
+      , "aix.js"
 #endif
 #if defined(MOZ_WIDGET_PHOTON)
 	  , "photon.js"

@@ -36,7 +36,11 @@
 #        ie: perl makejs.pl xpcom.jst 5.0.0.99256
 #
 
-# Make sure there are at least two arguments
+use File::Copy;
+use File::Basename;
+use Cwd;
+
+# Make sure there are at least three arguments
 if($#ARGV < 2)
 {
   die "usage: $0 <.jst file> <default version> <staging path>
@@ -46,10 +50,12 @@ if($#ARGV < 2)
                                 form of: major.minor.release.yydoy
                                 ie: 5.0.0.99256
        component staging path : path to where this component is staged at
-                                ie: z:\\stage\\windows\\32bit\\en\\5.0\\xpcom
+                                ie: z:/stage/windows/32bit/en/5.0/xpcom
        \n";
 }
 
+$DEPTH = "../../..";
+$topsrcdir        = GetTopSrcDir();
 $inJstFile        = $ARGV[0];
 $inVersion        = $ARGV[1];
 $inStagePath      = $ARGV[2];
@@ -60,9 +66,12 @@ $userAgentShort   = $ENV{WIZ_userAgentShort};
 $xpinstallVersion = $ENV{WIZ_xpinstallVersion};
 $nameCompany      = $ENV{WIZ_nameCompany};
 $nameProduct      = $ENV{WIZ_nameProduct};
-$nameProductNoVersion = $ENV{WIZ_nameProductNoVersion};
+$nameProductInternal = $ENV{WIZ_nameProductInternal};
 $fileMainExe      = $ENV{WIZ_fileMainExe};
 $fileUninstall    = $ENV{WIZ_fileUninstall};
+$greBuildID       = $ENV{WIZ_greBuildID};
+$greFileVersion   = $ENV{WIZ_greFileVersion};
+$greUniqueID      = $ENV{WIZ_greUniqueID};
 
 # Get the name of the file replacing the .jst extension with a .js extension
 @inJstFileSplit   = split(/\./,$inJstFile);
@@ -72,9 +81,9 @@ $outTempFile      = $inJstFileSplit[0];
 $outTempFile     .= ".template";
 $foundLongFiles   = 0;
 
-print "copy \"$ENV{MOZ_SRC}\\mozilla\\xpinstall\\packager\\common\\share.t\" $outTempFile\n";
-system("copy \"$ENV{MOZ_SRC}\\mozilla\\xpinstall\\packager\\common\\share.t\" $outTempFile");
-system("type $inJstFile >> $outTempFile");
+print " copy \"$topsrcdir/xpinstall/packager/common/share.t\" $outTempFile\n";
+copy("$topsrcdir/xpinstall/packager/common/share.t", "$outTempFile");
+system("cat $inJstFile >> $outTempFile");
 
 # Open the input .template file
 open(fpInTemplate, $outTempFile) || die "\ncould not open $outTempFile: $!\n";
@@ -95,7 +104,7 @@ while($line = <fpInTemplate>)
     {
       @semiColonSplit = split(/;/, $colonSplit[1]);
       $subDir         = $semiColonSplit[0];
-      $spaceRequired  = GetSpaceRequired("$inStagePath\\$subDir");
+      $spaceRequired  = GetSpaceRequired("$inStagePath/$subDir");
       $line =~ s/\$SpaceRequired\$:$subDir/$spaceRequired/i;
     }
     else
@@ -112,9 +121,12 @@ while($line = <fpInTemplate>)
     $line =~ s/\$XPInstallVersion\$/$xpinstallVersion/i;
     $line =~ s/\$CompanyName\$/$nameCompany/i;
     $line =~ s/\$ProductName\$/$nameProduct/i;
-    $line =~ s/\$ProductNameNoVersion\$/$nameProductNoVersion/i;
+    $line =~ s/\$ProductNameInternal\$/$nameProductInternal/gi;
     $line =~ s/\$MainExeFile\$/$fileMainExe/i;
     $line =~ s/\$UninstallFile\$/$fileUninstall/i;
+    $line =~ s/\$GreBuildID\$/$greBuildID/gi;
+    $line =~ s/\$GreFileVersion\$/$greFileVersion/gi;
+    $line =~ s/\$GreUniqueID\$/$greUniqueID/gi;
   }
 
   print fpOutJs $line;
@@ -130,7 +142,7 @@ sub GetSpaceRequired()
   my($spaceRequired);
 
   print "   calculating size for $inPath\n";
-  $spaceRequired    = `\"$ENV{MOZ_TOOLS}\\bin\\ds32.exe\" /D /L0 /A /S /C 32768 $inPath`;
+  $spaceRequired    = `\"$ENV{WIZ_distInstallPath}/ds32.exe\" /D /L0 /A /S /C 32768 $inPath`;
   $spaceRequired    = int($spaceRequired / 1024);
   $spaceRequired   += 1;
   return($spaceRequired);
@@ -148,5 +160,16 @@ sub ParseUserAgentShort()
   }
 
   return($aUserAgentShort);
+}
+
+sub GetTopSrcDir
+{
+  my($rootDir) = dirname($0) . "/$DEPTH";
+  my($savedCwdDir) = cwd();
+
+  chdir($rootDir);
+  $rootDir = cwd();
+  chdir($savedCwdDir);
+  return($rootDir);
 }
 

@@ -31,7 +31,6 @@
 
 nsDocShellLoadInfo::nsDocShellLoadInfo()
 {
-	NS_INIT_ISUPPORTS();
    mLoadType = nsIDocShellLoadInfo::loadNormal;
    mInheritOwner = PR_FALSE;
 }
@@ -148,9 +147,7 @@ NS_IMETHODIMP nsDocShellLoadInfo::SetTarget(const PRUnichar* aTarget)
 NS_IMETHODIMP
 nsDocShellLoadInfo::GetPostDataStream(nsIInputStream **aResult)
 {
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_ENSURE_ARG_POINTER(aResult);
 
   *aResult = mPostDataStream;
 
@@ -166,6 +163,19 @@ nsDocShellLoadInfo::SetPostDataStream(nsIInputStream *aStream)
   return NS_OK;
 }
 
+/* attribute nsIInputStream headersStream; */
+NS_IMETHODIMP nsDocShellLoadInfo::GetHeadersStream(nsIInputStream * *aHeadersStream)
+{
+  NS_ENSURE_ARG_POINTER(aHeadersStream);
+  *aHeadersStream = mHeadersStream;
+  NS_IF_ADDREF(*aHeadersStream);
+  return NS_OK;
+}
+NS_IMETHODIMP nsDocShellLoadInfo::SetHeadersStream(nsIInputStream * aHeadersStream)
+{
+  mHeadersStream = aHeadersStream;
+  return NS_OK;
+}
 
 //*****************************************************************************
 // nsDocShellLoadInfo: Helpers

@@ -26,7 +26,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -201,9 +201,7 @@ nsMathMLmsubsupFrame::PlaceSubSupScript(nsIPresContext*      aPresContext,
   // subScriptShift1 = subscriptshift attribute * x-height
   nscoord subScriptShift1, subScriptShift2;
 
-  const nsStyleFont* font;
-  baseFrame->GetStyleData(eStyleStruct_Font, (const nsStyleStruct *&)font);
-  aRenderingContext.SetFont(font->mFont, nsnull);
+  aRenderingContext.SetFont(baseFrame->GetStyleFont()->mFont, nsnull);
   nsCOMPtr<nsIFontMetrics> fm;
   aRenderingContext.GetFontMetrics(*getter_AddRefs(fm));
 

@@ -94,8 +94,6 @@ nsIRDFResource		*LocalSearchDataSource::kRDF_type;
 
 LocalSearchDataSource::LocalSearchDataSource(void)
 {
-	NS_INIT_ISUPPORTS();
-
 	if (gRefCnt++ == 0)
 	{
 		nsresult rv = nsServiceManager::GetService(kRDFServiceCID,
@@ -104,14 +102,21 @@ LocalSearchDataSource::LocalSearchDataSource(void)
 
 		PR_ASSERT(NS_SUCCEEDED(rv));
 
-		gRDFService->GetResource(NC_NAMESPACE_URI "child",       &kNC_Child);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Name",        &kNC_Name);
-		gRDFService->GetResource(NC_NAMESPACE_URI "URL",         &kNC_URL);
-		gRDFService->GetResource(NC_NAMESPACE_URI "FindObject",  &kNC_FindObject);
-		gRDFService->GetResource(NC_NAMESPACE_URI "pulse",       &kNC_pulse);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "child"),
+                             &kNC_Child);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Name"),
+                             &kNC_Name);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "URL"),
+                             &kNC_URL);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "FindObject"),
+                             &kNC_FindObject);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "pulse"),
+                             &kNC_pulse);
 
-		gRDFService->GetResource(RDF_NAMESPACE_URI "instanceOf", &kRDF_InstanceOf);
-		gRDFService->GetResource(RDF_NAMESPACE_URI "type",       &kRDF_type);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "instanceOf"),
+                             &kRDF_InstanceOf);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "type"),
+                             &kRDF_type);
 
 		gLocalSearchDataSource = this;
 	}
@@ -575,7 +580,7 @@ LocalSearchDataSource::parseFindURL(nsIRDFResource *u, nsISupportsArray *array)
       continue;
 
     nsCOMPtr<nsIRDFResource> property;
-    rv = gRDFService->GetUnicodeResource(tokens[1].value.get(),
+    rv = gRDFService->GetUnicodeResource(tokens[1].value,
     getter_AddRefs(property));
 
     if (NS_FAILED(rv) || (rv == NS_RDF_NO_VALUE) || !property)
@@ -956,15 +961,6 @@ LocalSearchDataSource::RemoveObserver(nsIRDFObserver *n)
 
 
 NS_IMETHODIMP
-LocalSearchDataSource::GetAllCommands(nsIRDFResource* source,nsIEnumerator/*<nsIRDFResource>*/** commands)
-{
-	NS_NOTYETIMPLEMENTED("write me!");
-	return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-
-
-NS_IMETHODIMP
 LocalSearchDataSource::GetAllCmds(nsIRDFResource* source, nsISimpleEnumerator/*<nsIRDFResource>*/** commands)
 {
 	return(NS_NewEmptyEnumerator(commands));
@@ -989,4 +985,20 @@ LocalSearchDataSource::DoCommand(nsISupportsArray/*<nsIRDFResource>*/* aSources,
 				nsISupportsArray/*<nsIRDFResource>*/* aArguments)
 {
 	return(NS_ERROR_NOT_IMPLEMENTED);
+}
+
+
+
+NS_IMETHODIMP
+LocalSearchDataSource::BeginUpdateBatch()
+{
+	return NS_OK;
+}
+
+
+
+NS_IMETHODIMP
+LocalSearchDataSource::EndUpdateBatch()
+{
+	return NS_OK;
 }

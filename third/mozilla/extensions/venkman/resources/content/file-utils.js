@@ -171,12 +171,33 @@ function pickSaveAs (title, typeList, defaultFile, defaultDir)
     picker.init (window, title ? title : futils.MSG_SAVE_AS,
                  Components.interfaces.nsIFilePicker.modeSave);
 
-    var rv = picker.show();
+    var reason;
     
-    if (rv != PICK_CANCEL)
+    try
+    {
+        reason = picker.show();
+    }
+    catch (ex)
+    {
+        dd ("caught exception from file picker: " + ex);
+    }
+    
+    var obj = new Object();
+    
+    obj.reason = reason;
+    obj.picker = picker;
+    
+    if (reason != PICK_CANCEL)
+    {
+        obj.file = picker.file;
         futils.lastSaveAsDir = picker.file.parent;
+    }
+    else
+    {
+        obj.file = null;
+    }
 
-    return {reason: rv, file: picker.file, picker: picker};
+    return obj;
 }
 
 function pickOpen (title, typeList, defaultFile, defaultDir)
@@ -220,7 +241,25 @@ function LocalFile(file, mode, perms, tmp)
     
     if (typeof perms == "undefined")
         perms = 0666 & ~futils.umask;
-    
+
+    if (typeof mode == "string")
+    {
+        switch (mode)
+        {
+            case ">":
+                mode = MODE_WRONLY | MODE_CREATE | MODE_TRUNCATE;
+                break;
+            case ">>":
+                mode = MODE_WRONLY | MODE_CREATE | MODE_APPEND;
+                break;
+            case "<":
+                mode = MODE_RDONLY;
+                break;
+            default:
+                throw "Invalid mode ``" + mode + "''";
+        }
+    }
+        
     if (typeof file == "string")
     {
         this.localFile = classes[LOCALFILE_CTRID].createInstance(nsILocalFile);

@@ -21,8 +21,20 @@
  *   Stuart Parmenter <pavlov@netscape.com>
  */
 
+#ifdef XP_MAC
+#define IMG_BUILD_gif 1
+#define IMG_BUILD_bmp 1
+#define IMG_BUILD_png 1
+#define IMG_BUILD_jpeg 1
+#define IMG_BUILD_xbm 1
+#define IMG_BUILD_ppm 1
+#endif
+
 #include "nsIGenericFactory.h"
 #include "nsIModule.h"
+#include "nsICategoryManager.h"
+#include "nsXPCOMCID.h"
+#include "nsIServiceManagerUtils.h"
 
 #include "imgCache.h"
 #include "imgContainer.h"
@@ -30,26 +42,37 @@
 #include "imgRequest.h"
 #include "imgRequestProxy.h"
 
+#ifdef IMG_BUILD_gif
 // gif
 #include "imgContainerGIF.h"
 #include "nsGIFDecoder2.h"
+#endif
 
-
+#ifdef IMG_BUILD_bmp
 // bmp/ico
 #include "nsBMPDecoder.h"
 #include "nsICODecoder.h"
+#endif
 
+#ifdef IMG_BUILD_png
 // png
 #include "nsPNGDecoder.h"
+#endif
 
+#ifdef IMG_BUILD_jpeg
 // jpeg
 #include "nsJPEGDecoder.h"
+#endif
 
+#ifdef IMG_BUILD_xbm
 // xbm
 #include "nsXBMDecoder.h"
+#endif
 
+#ifdef IMG_BUILD_ppm
 // ppm
 #include "nsPPMDecoder.h"
+#endif
 
 // objects that just require generic constructors
 
@@ -58,25 +81,97 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(imgContainer)
 NS_GENERIC_FACTORY_CONSTRUCTOR(imgLoader)
 NS_GENERIC_FACTORY_CONSTRUCTOR(imgRequestProxy)
 
+#ifdef IMG_BUILD_gif
 // gif
 NS_GENERIC_FACTORY_CONSTRUCTOR(imgContainerGIF)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsGIFDecoder2)
+#endif
 
+#ifdef IMG_BUILD_jpeg
 // jpeg
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsJPEGDecoder)
+#endif
 
+#ifdef IMG_BUILD_bmp
 // bmp
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsICODecoder)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBMPDecoder)
+#endif
 
+#ifdef IMG_BUILD_png
 // png
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsPNGDecoder)
+#endif
 
+#ifdef IMG_BUILD_xbm
 // xbm
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsXBMDecoder)
+#endif
 
+#ifdef IMG_BUILD_ppm
 // ppm
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsPPMDecoder)
+#endif
+
+static const char* gImageMimeTypes[] = {
+#ifdef IMG_BUILD_gif
+  "image/gif",
+#endif
+#ifdef IMG_BUILD_jpeg
+  "image/jpeg",
+  "image/pjpeg",
+  "image/jpg",
+#endif
+#ifdef IMG_BUILD_bmp
+  "image/x-icon",
+  "image/bmp",
+#endif
+#ifdef IMG_BUILD_png
+  "image/png",
+  "image/x-png",
+#endif
+#ifdef IMG_BUILD_xbm
+  "image/x-xbitmap",
+  "image/x-xbm",
+  "image/xbm",
+#endif
+#ifdef IMG_BUILD_ppm
+  "image/x-portable-bitmap",
+  "image/x-portable-graymap",
+  "image/x-portable-pixmap"
+#endif
+};
+
+static NS_METHOD ImageRegisterProc(nsIComponentManager *aCompMgr,
+                                   nsIFile *aPath,
+                                   const char *registryLocation,
+                                   const char *componentType,
+                                   const nsModuleComponentInfo *info) {
+  nsresult rv;
+  nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+  for (int i = 0; i < sizeof(gImageMimeTypes)/sizeof(*gImageMimeTypes); i++) {
+    catMan->AddCategoryEntry("Gecko-Content-Viewers", gImageMimeTypes[i],
+                             "@mozilla.org/content/document-loader-factory;1",
+                             PR_TRUE, PR_TRUE, nsnull);
+  }
+  return NS_OK;
+}
+
+static NS_METHOD ImageUnregisterProc(nsIComponentManager *aCompMgr,
+                                     nsIFile *aPath,
+                                     const char *registryLocation,
+                                     const nsModuleComponentInfo *info) {
+  nsresult rv;
+  nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+  for (int i = 0; i < sizeof(gImageMimeTypes)/sizeof(*gImageMimeTypes); i++)
+    catMan->DeleteCategoryEntry("Gecko-Content-Viewers", gImageMimeTypes[i], PR_TRUE);
+
+  return NS_OK;
+}
 
 static const nsModuleComponentInfo components[] =
 {
@@ -91,12 +186,15 @@ static const nsModuleComponentInfo components[] =
   { "image loader",
     NS_IMGLOADER_CID,
     "@mozilla.org/image/loader;1",
-    imgLoaderConstructor, },
+    imgLoaderConstructor,
+    ImageRegisterProc, /* register the decoder mime types here */
+    ImageUnregisterProc, },
   { "image request proxy",
     NS_IMGREQUESTPROXY_CID,
     "@mozilla.org/image/request;1",
     imgRequestProxyConstructor, },
 
+#ifdef IMG_BUILD_gif
   // gif
   { "GIF image container",
     NS_GIFCONTAINER_CID,
@@ -106,7 +204,9 @@ static const nsModuleComponentInfo components[] =
      NS_GIFDECODER2_CID,
      "@mozilla.org/image/decoder;2?type=image/gif",
      nsGIFDecoder2Constructor, },
-  
+#endif
+
+#ifdef IMG_BUILD_jpeg
   // jpeg
   { "JPEG decoder",
     NS_JPEGDECODER_CID,
@@ -120,7 +220,9 @@ static const nsModuleComponentInfo components[] =
     NS_JPEGDECODER_CID,
     "@mozilla.org/image/decoder;2?type=image/jpg",
     nsJPEGDecoderConstructor, },
-  
+#endif
+
+#ifdef IMG_BUILD_bmp
   // bmp
   { "ICO Decoder",
      NS_ICODECODER_CID,
@@ -130,7 +232,9 @@ static const nsModuleComponentInfo components[] =
      NS_BMPDECODER_CID,
      "@mozilla.org/image/decoder;2?type=image/bmp",
      nsBMPDecoderConstructor, },
-  
+#endif
+
+#ifdef IMG_BUILD_png
   // png
   { "PNG Decoder",
     NS_PNGDECODER_CID,
@@ -140,7 +244,9 @@ static const nsModuleComponentInfo components[] =
     NS_PNGDECODER_CID,
     "@mozilla.org/image/decoder;2?type=image/x-png",
     nsPNGDecoderConstructor, },
+#endif
 
+#ifdef IMG_BUILD_xbm
   // xbm
   { "XBM Decoder",
      NS_XBMDECODER_CID,
@@ -154,7 +260,10 @@ static const nsModuleComponentInfo components[] =
      NS_XBMDECODER_CID,
      "@mozilla.org/image/decoder;2?type=image/xbm",
      nsXBMDecoderConstructor, },
-  
+#endif
+
+
+#ifdef IMG_BUILD_ppm
   // ppm
   { "pbm decoder",
     NS_PPMDECODER_CID,
@@ -168,6 +277,7 @@ static const nsModuleComponentInfo components[] =
     NS_PPMDECODER_CID,
     "@mozilla.org/image/decoder;2?type=image/x-portable-pixmap",
     nsPPMDecoderConstructor, },
+#endif
 };
 
 PR_STATIC_CALLBACK(nsresult)
@@ -181,7 +291,9 @@ PR_STATIC_CALLBACK(void)
 imglib_Shutdown(nsIModule* aSelf)
 {
   imgCache::Shutdown();
+#ifdef IMG_BUILD_gif
   nsGifShutdown();
+#endif
 }
 
 NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(nsImageLib2Module, components,

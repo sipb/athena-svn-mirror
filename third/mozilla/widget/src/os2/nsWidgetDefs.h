@@ -33,10 +33,13 @@
 #define INCL_WINSTDFILE
 #define INCL_DOSERRORS
 #include <os2.h>
-#include <uconv.h>  // Rather not have to include these two, but need types...
-#include <unikbd.h> // 
 
-#include "nsModule.h"
+// TODO: The following two headers are required for their typedefs, although it
+//  would be best to only include <uconv.h>.  For EMX, we actually want to
+//  include 'uniapi.h', but that results in an error without the #define
+#include <uconv.h>
+#define UNICHAR_TYPE_DEFINED    // work around for EMX multiple typedef issue
+#include <unikbd.h> 
 
 #ifndef MAX_PATH
 #define MAX_PATH CCHMAXPATH
@@ -96,8 +99,6 @@ extern "C" BOOL APIENTRY DaxOpenSave(BOOL, LONG *, LPOPENFILENAME, PFNWP);
 
 class nsDragService;
 class nsIAppShell;
-
-extern nsWidgetModuleData *gWidgetModuleData;
 
 // messages - here to avoid duplication
 #define WMU_CALLMETHOD   (WM_USER + 1)
@@ -193,23 +194,5 @@ typedef struct _WZDROPXFER
 
 // can be used as an lvalue too.
 #define lastchar(s) *((s) + strlen((s)) - 1)
-
-struct nsUconvInfo
-{
-  PRUint16 mCodePage;
-  UconvObject  mConverter;
-  nsUconvInfo* pNext;
-};
-
-class OS2Uni {
-public:
-  static UconvObject GetUconvObject(int CodePage);
-  static FreeUconvObjects();
-private:
-  static nsHashtable gUconvObjects;
-};
-
-int WideCharToMultiByte( int CodePage, const PRUnichar *pText, ULONG ulLength, char* szBuffer, ULONG ulSize );
-int MultiByteToWideChar( int CodePage, const char*pText, ULONG ulLength, PRUnichar *szBuffer, ULONG ulSize );
 
 #endif

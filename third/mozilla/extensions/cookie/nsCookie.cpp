@@ -38,60 +38,54 @@
 
 #include "nsCookie.h"
 #include "nsString.h"
-#include "nsCRT.h"
-#include "prmem.h"
 
 // nsCookie Implementation
 
 NS_IMPL_ISUPPORTS2(nsCookie, nsICookie, nsISupportsWeakReference);
 
-nsCookie::nsCookie() {
-  NS_INIT_ISUPPORTS();
+nsCookie::nsCookie()
+: cookieName(0),
+  cookieValue(0),
+  cookieIsDomain(PR_FALSE),
+  cookieHost(0),
+  cookiePath(0),
+  cookieIsSecure(PR_FALSE)
+{
 }
 
 nsCookie::nsCookie
-  (char * name,
-   char * value,
+  (const nsACString &name,
+   const nsACString &value,
    PRBool isDomain,
-   char * host,
-   char * path,
+   const nsACString &host,
+   const nsACString &path,
    PRBool isSecure,
    PRUint64 expires,
    nsCookieStatus status,
-   nsCookiePolicy policy) {
-  cookieName = name;
-  cookieValue = value;
-  cookieIsDomain = isDomain;
-  cookieHost = host;
-  cookiePath = path;
-  cookieIsSecure = isSecure;
+   nsCookiePolicy policy)
+: cookieName(name),
+  cookieValue(value),
+  cookieIsDomain(isDomain),
+  cookieHost(host),
+  cookiePath(path),
+  cookieIsSecure(isSecure)
+{
   cookieExpires = expires;
   cookieStatus = status;
   cookiePolicy = policy;
-  NS_INIT_ISUPPORTS();
 }
 
 nsCookie::~nsCookie(void) {
-  nsCRT::free(cookieName);
-  nsCRT::free(cookieValue);
-  nsCRT::free(cookieHost);
-  nsCRT::free(cookiePath);
 }
 
 NS_IMETHODIMP nsCookie::GetName(nsACString& aName) {
-  if (cookieName) {
-    aName = cookieName;
-    return NS_OK;
-  }
-  return NS_ERROR_NULL_POINTER;
+  aName = cookieName;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsCookie::GetValue(nsACString& aValue) {
-  if (cookieValue) {
-    aValue = cookieValue;
-    return NS_OK;
-  }
-  return NS_ERROR_NULL_POINTER;
+  aValue = cookieValue;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsCookie::GetIsDomain(PRBool *aIsDomain) {
@@ -100,23 +94,13 @@ NS_IMETHODIMP nsCookie::GetIsDomain(PRBool *aIsDomain) {
 }
 
 NS_IMETHODIMP nsCookie::GetHost(nsACString& aHost) {
-//NS_IMETHODIMP nsCookie::GetHost(nsAUTF8String& aHost) {
-// using nsACString above instead of nsAUTF8String because the latter doesn't exist yet
-  if (cookieHost) {
-    aHost = cookieHost;
-    return NS_OK;
-  }
-  return NS_ERROR_NULL_POINTER;
+  aHost = cookieHost;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsCookie::GetPath(nsACString& aPath) {
-//NS_IMETHODIMP nsCookie::GetPath(nsAUTF8String& aPath) {
-// using nsACString above instead of nsAUTF8String because the latter doesn't exist yet
-  if (cookiePath) {
-    aPath = cookiePath;
-    return NS_OK;
-  }
-  return NS_ERROR_NULL_POINTER;
+  aPath = cookiePath;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsCookie::GetIsSecure(PRBool *aIsSecure) {

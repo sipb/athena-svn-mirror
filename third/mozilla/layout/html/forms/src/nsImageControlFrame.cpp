@@ -44,7 +44,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsLeafFrame.h"
 #include "nsCSSRendering.h"
 #include "nsIViewManager.h"
@@ -91,7 +91,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
@@ -121,7 +121,7 @@ public:
 
   virtual void MouseClicked(nsIPresContext* aPresContext);
 
-  NS_IMETHOD GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
 
   NS_IMETHOD GetName(nsAString* aName);
 
@@ -260,7 +260,7 @@ NS_IMETHODIMP
 nsImageControlFrame::Init(nsIPresContext*  aPresContext,
                           nsIContent*      aContent,
                           nsIFrame*        aParent,
-                          nsIStyleContext* aContext,
+                          nsStyleContext*  aContext,
                           nsIFrame*        aPrevInFlow)
 {
   // call our base class
@@ -325,8 +325,7 @@ nsImageControlFrame::HandleEvent(nsIPresContext* aPresContext,
   }
 
   // do we have user-input style?
-  const nsStyleUserInterface* uiStyle;
-  GetStyleData(eStyleStruct_UserInterface,  (const nsStyleStruct *&)uiStyle);
+  const nsStyleUserInterface* uiStyle = GetStyleUserInterface();
   if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE || uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED)
     return nsFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
 
@@ -392,11 +391,10 @@ nsImageControlFrame::GetTranslatedRect(nsIPresContext* aPresContext, nsRect& aRe
   aRect = nsRect(viewOffset.x, viewOffset.y, mRect.width, mRect.height);
 }
 
-NS_IMETHODIMP
-nsImageControlFrame::GetType(PRInt32* aType) const
+NS_IMETHODIMP_(PRInt32)
+nsImageControlFrame::GetType() const
 {
-  *aType = NS_FORM_INPUT_IMAGE;
-  return NS_OK;
+  return NS_FORM_INPUT_IMAGE;
 }
 
 NS_IMETHODIMP
@@ -412,13 +410,8 @@ nsImageControlFrame::GetCursor(nsIPresContext* aPresContext,
 {
   // Use style defined cursor if one is provided, otherwise when
   // the cursor style is "auto" we use the pointer cursor.
-  const nsStyleUserInterface* ui = (const nsStyleUserInterface*) mStyleContext->GetStyleData(eStyleStruct_UserInterface);
-  if (ui) {
-    aCursor = ui->mCursor;
-    if (NS_STYLE_CURSOR_AUTO == aCursor) {
-      aCursor = NS_STYLE_CURSOR_POINTER;
-    }
-  } else {
+  aCursor = GetStyleUserInterface()->mCursor;
+  if (NS_STYLE_CURSOR_AUTO == aCursor) {
     aCursor = NS_STYLE_CURSOR_POINTER;
   }
   return NS_OK;

@@ -40,19 +40,43 @@
 #define nsIDNService_h__
 
 #include "nsIIDNService.h"
+#include "nsCOMPtr.h"
+#include "nsIObserver.h"
+#include "nsWeakReference.h"
+#include "nsIUnicodeNormalizer.h"
+#include "nsIDNKitInterface.h"
 
 //-----------------------------------------------------------------------------
 // nsIDNService
 //-----------------------------------------------------------------------------
 
-class nsIDNService : public nsIIDNService
+#define kACEPrefixLen 4 
+
+class nsIDNService : public nsIIDNService,
+                     public nsIObserver,
+                     public nsSupportsWeakReference
 {
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIIDNSERVICE
+  NS_DECL_NSIOBSERVER
 
   nsIDNService();
   virtual ~nsIDNService();
+
+  nsresult Init();
+
+private:
+  void normalizeFullStops(nsAString& s);
+  nsresult stringPrepAndACE(const nsAString& in, nsACString& out);
+  nsresult encodeToACE(const nsAString& in, nsACString& out);
+  nsresult stringPrep(const nsAString& in, nsAString& out);
+  nsresult decodeACE(const nsACString& in, nsACString& out);
+  
+  PRBool mMultilingualTestBed;  // if true generates extra node for mulitlingual testbed 
+  idn_nameprep_t mNamePrepHandle;
+  nsCOMPtr<nsIUnicodeNormalizer> mNormalizer;
+  char mACEPrefix[kACEPrefixLen+1];
 };
 
 #endif  // nsIDNService_h__

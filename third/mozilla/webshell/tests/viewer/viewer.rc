@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 #include "resources.h"
 #include "jsconsres.h"
-#include <winres.h>
+#include <winresrc.h>
 
 
 VIEWER MENU DISCARDABLE
@@ -122,10 +122,6 @@ VIEWER MENU DISCARDABLE
     MENUITEM "Dump &Style Sheets", VIEWER_DUMP_STYLE_SHEETS
     MENUITEM "Dump &Style Contexts", VIEWER_DUMP_STYLE_CONTEXTS
     MENUITEM SEPARATOR
-    MENUITEM "Show Content Size", VIEWER_SHOW_CONTENT_SIZE
-    MENUITEM "Show Frame Size", VIEWER_SHOW_FRAME_SIZE
-    MENUITEM "Show Style Size", VIEWER_SHOW_STYLE_SIZE
-    MENUITEM SEPARATOR
     MENUITEM "Debug Save", VIEWER_DEBUGSAVE
     MENUITEM "Debug Display Text", VIEWER_DISPLAYTEXT
     MENUITEM "Debug Display HTML", VIEWER_DISPLAYHTML
@@ -185,8 +181,8 @@ VIEWER MENU DISCARDABLE
     }
     POPUP    "Editor Tests"
     {
-      MENUITEM  "Set Background RED" VIEWER_EDIT_SET_BGCOLOR_RED
-      MENUITEM  "Set Background YELLOW" VIEWER_EDIT_SET_BGCOLOR_YELLOW
+      MENUITEM  "Set Background RED", VIEWER_EDIT_SET_BGCOLOR_RED
+      MENUITEM  "Set Background YELLOW", VIEWER_EDIT_SET_BGCOLOR_YELLOW
     }
   }
 #if defined(PURIFY)

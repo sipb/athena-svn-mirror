@@ -35,7 +35,6 @@
 #include "plevent.h"
 
 #include "nsString.h"
-#include "nsFileSpec.h"
 #include "nsVoidArray.h"
 #include "nsHashtable.h"
 #include "nsCOMPtr.h"
@@ -58,13 +57,14 @@
 #include "nsIEnumerator.h"
 #include "nsIZipReader.h"
 #include "nsIChromeRegistry.h"
+#include "nsIPrincipal.h"
 
 #define XPINSTALL_BUNDLE_URL "chrome://communicator/locale/xpinstall/xpinstall.properties"
 
 //file and directory name length maximums
 #ifdef XP_MAC
 #define MAX_FILENAME 31
-#elif defined (XP_PC)
+#elif defined (XP_WIN) || defined(XP_OS2)
 #define MAX_FILENAME 128
 #else
 #define MAX_FILENAME 1024
@@ -78,6 +78,7 @@ class nsInstallInfo
                    nsIFile*         aFile,
                    const PRUnichar* aURL,
                    const PRUnichar* aArgs,
+                   nsIPrincipal*    mPrincipal,
                    PRUint32         aFlags,
                    nsIXPIListener*  aListener,
                    nsIXULChromeRegistry*   aChromeReg);
@@ -91,6 +92,8 @@ class nsInstallInfo
     PRUint32            GetType()               { return mType; }
     nsIXPIListener*     GetListener()           { return mListener.get(); }
     nsIXULChromeRegistry*  GetChromeRegistry()  { return mChromeRegistry.get(); }
+
+    nsCOMPtr<nsIPrincipal>      mPrincipal;
 
   private:
 
@@ -106,7 +109,7 @@ class nsInstallInfo
     nsCOMPtr<nsIXULChromeRegistry> mChromeRegistry;
 };
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #define FILESEP '\\'
 #elif defined XP_MAC
 #define FILESEP ':'
@@ -179,6 +182,8 @@ class nsInstall
             KEY_ACCESS_DENIED           = -241,
             KEY_DOES_NOT_EXIST          = -242,
             VALUE_DOES_NOT_EXIST        = -243,
+
+            INVALID_SIGNATURE           = -260,
 
             OUT_OF_MEMORY               = -299,
 

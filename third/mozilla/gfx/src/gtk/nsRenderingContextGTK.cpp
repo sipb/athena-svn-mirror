@@ -74,8 +74,6 @@ static nsGCCache *gcCache = nsnull;
 
 nsRenderingContextGTK::nsRenderingContextGTK()
 {
-  NS_INIT_ISUPPORTS();
-
   mFontMetrics = nsnull;
   mContext = nsnull;
   mSurface = nsnull;
@@ -186,6 +184,7 @@ NS_IMETHODIMP nsRenderingContextGTK::Init(nsIDeviceContext* aContext,
 
   mSurface = (nsDrawingSurfaceGTK *) aSurface;
   NS_ADDREF(mSurface);
+  mOffscreenSurface = mSurface;
 
   return (CommonInit());
 }
@@ -227,7 +226,7 @@ NS_IMETHODIMP nsRenderingContextGTK::LockDrawingSurface(PRInt32 aX, PRInt32 aY,
   PushState();
 
   return mSurface->Lock(aX, aY, aWidth, aHeight,
-  			aBits, aStride, aWidthBytes, aFlags);
+                        aBits, aStride, aWidthBytes, aFlags);
 }
 
 NS_IMETHODIMP nsRenderingContextGTK::UnlockDrawingSurface(void)
@@ -417,22 +416,13 @@ NS_IMETHODIMP nsRenderingContextGTK::GetClipRect(nsRect &aRect, PRBool &aClipVal
 }
 
 #ifdef DEBUG
-#undef TRACE_SET_CLIP
+// #define TRACE_SET_CLIP
 #endif
 
 #ifdef TRACE_SET_CLIP
 static char *
 nsClipCombine_to_string(nsClipCombine aCombine)
 {
-#ifdef TRACE_SET_CLIP
-  printf("nsRenderingContextGTK::SetClipRect(x=%d,y=%d,w=%d,h=%d,%s)\n",
-         trect.x,
-         trect.y,
-         trect.width,
-         trect.height,
-         nsClipCombine_to_string(aCombine));
-#endif // TRACE_SET_CLIP
-
   switch(aCombine)
     {
       case nsClipCombine_kIntersect:
@@ -460,9 +450,17 @@ NS_IMETHODIMP nsRenderingContextGTK::SetClipRect(const nsRect& aRect,
                                                  nsClipCombine aCombine,
                                                  PRBool &aClipEmpty)
 {
+  nsRect trect = aRect;
+  mTranMatrix->TransformCoord(&trect.x, &trect.y,
+                              &trect.width, &trect.height);
+  SetClipRectInPixels(trect, aCombine, aClipEmpty);
+  return NS_OK;
+}
 
-
-
+void nsRenderingContextGTK::SetClipRectInPixels(const nsRect& aRect,
+                                                nsClipCombine aCombine,
+                                                PRBool &aClipEmpty)
+{
   PRUint32 cnt = mStateCache.Count();
   nsGraphicsState *state = nsnull;
 
@@ -482,29 +480,24 @@ NS_IMETHODIMP nsRenderingContextGTK::SetClipRect(const nsRect& aRect,
 
   CreateClipRegion();
 
-  nsRect trect = aRect;
-
 #ifdef TRACE_SET_CLIP
   printf("nsRenderingContextGTK::SetClipRect(%s)\n",
          nsClipCombine_to_string(aCombine));
 #endif // TRACE_SET_CLIP
 
-  mTranMatrix->TransformCoord(&trect.x, &trect.y,
-                           &trect.width, &trect.height);
-
   switch(aCombine)
   {
     case nsClipCombine_kIntersect:
-      mClipRegion->Intersect(trect.x,trect.y,trect.width,trect.height);
+      mClipRegion->Intersect(aRect.x,aRect.y,aRect.width,aRect.height);
       break;
     case nsClipCombine_kUnion:
-      mClipRegion->Union(trect.x,trect.y,trect.width,trect.height);
+      mClipRegion->Union(aRect.x,aRect.y,aRect.width,aRect.height);
       break;
     case nsClipCombine_kSubtract:
-      mClipRegion->Subtract(trect.x,trect.y,trect.width,trect.height);
+      mClipRegion->Subtract(aRect.x,aRect.y,aRect.width,aRect.height);
       break;
     case nsClipCombine_kReplace:
-      mClipRegion->SetTo(trect.x,trect.y,trect.width,trect.height);
+      mClipRegion->SetTo(aRect.x,aRect.y,aRect.width,aRect.height);
       break;
   }
 #if 0
@@ -514,8 +507,6 @@ NS_IMETHODIMP nsRenderingContextGTK::SetClipRect(const nsRect& aRect,
   SetColor(color);
 #endif
   aClipEmpty = mClipRegion->IsEmpty();
-
-  return NS_OK;
 }
 
 void nsRenderingContextGTK::UpdateGC()
@@ -777,7 +768,7 @@ NS_IMETHODIMP nsRenderingContextGTK::GetCurrentTransform(nsTransform2D *&aTransf
   return NS_OK;
 }
 
-NS_IMETHODIMP nsRenderingContextGTK::CreateDrawingSurface(nsRect *aBounds,
+NS_IMETHODIMP nsRenderingContextGTK::CreateDrawingSurface(const nsRect &aBounds,
                                                           PRUint32 aSurfFlags,
                                                           nsDrawingSurface &aSurface)
 {
@@ -786,8 +777,7 @@ NS_IMETHODIMP nsRenderingContextGTK::CreateDrawingSurface(nsRect *aBounds,
     return NS_ERROR_FAILURE;
   }
 
-  g_return_val_if_fail (aBounds != NULL, NS_ERROR_FAILURE);
-  g_return_val_if_fail ((aBounds->width > 0) && (aBounds->height > 0), NS_ERROR_FAILURE);
+  g_return_val_if_fail ((aBounds.width > 0) && (aBounds.height > 0), NS_ERROR_FAILURE);
  
   nsresult rv = NS_OK;
   nsDrawingSurfaceGTK *surf = new nsDrawingSurfaceGTK();
@@ -795,8 +785,12 @@ NS_IMETHODIMP nsRenderingContextGTK::CreateDrawingSurface(nsRect *aBounds,
   if (surf)
   {
     NS_ADDREF(surf);
+    PushState();
+    mClipRegion = nsnull;
     UpdateGC();
-    rv = surf->Init(mGC, aBounds->width, aBounds->height, aSurfFlags);    
+    rv = surf->Init(mGC, aBounds.width, aBounds.height, aSurfFlags);
+    PRBool empty;
+    PopState(empty);
   } else {
     rv = NS_ERROR_FAILURE;
   }
@@ -879,7 +873,7 @@ NS_IMETHODIMP nsRenderingContextGTK::DrawPolyline(const nsPoint aPoints[], PRInt
   g_return_val_if_fail(mSurface != NULL, NS_ERROR_FAILURE);
 
   GdkPoint *pts = new GdkPoint[aNumPoints];
-	for (i = 0; i < aNumPoints; i++)
+  for (i = 0; i < aNumPoints; i++)
   {
     nsPoint p = aPoints[i];
     mTranMatrix->TransformCoord(&p.x,&p.y);
@@ -1025,13 +1019,13 @@ NS_IMETHODIMP nsRenderingContextGTK::DrawPolygon(const nsPoint aPoints[], PRInt3
   g_return_val_if_fail(mSurface != NULL, NS_ERROR_FAILURE);
 
   GdkPoint *pts = new GdkPoint[aNumPoints];
-	for (PRInt32 i = 0; i < aNumPoints; i++)
+  for (PRInt32 i = 0; i < aNumPoints; i++)
   {
     nsPoint p = aPoints[i];
-		mTranMatrix->TransformCoord(&p.x,&p.y);
-		pts[i].x = p.x;
+    mTranMatrix->TransformCoord(&p.x,&p.y);
+    pts[i].x = p.x;
     pts[i].y = p.y;
-	}
+  }
 
   UpdateGC();
 
@@ -1048,13 +1042,13 @@ NS_IMETHODIMP nsRenderingContextGTK::FillPolygon(const nsPoint aPoints[], PRInt3
   g_return_val_if_fail(mSurface != NULL, NS_ERROR_FAILURE);
 
   GdkPoint *pts = new GdkPoint[aNumPoints];
-	for (PRInt32 i = 0; i < aNumPoints; i++)
+  for (PRInt32 i = 0; i < aNumPoints; i++)
   {
     nsPoint p = aPoints[i];
-		mTranMatrix->TransformCoord(&p.x,&p.y);
-		pts[i].x = p.x;
+    mTranMatrix->TransformCoord(&p.x,&p.y);
+    pts[i].x = p.x;
     pts[i].y = p.y;
-	}
+  }
 
   UpdateGC();
 
@@ -1335,96 +1329,6 @@ nsRenderingContextGTK::DrawString(const nsString& aString,
 {
   return DrawString(aString.get(), aString.Length(),
                     aX, aY, aFontID, aSpacing);
-}
-
-NS_IMETHODIMP nsRenderingContextGTK::DrawImage(nsIImage *aImage,
-                                               nscoord aX, nscoord aY)
-{
-  nscoord width, height;
-
-  // we have to do this here because we are doing a transform below
-  width = NSToCoordRound(mP2T * aImage->GetWidth());
-  height = NSToCoordRound(mP2T * aImage->GetHeight());
-
-  return DrawImage(aImage, aX, aY, width, height);
-}
-
-NS_IMETHODIMP nsRenderingContextGTK::DrawImage(nsIImage *aImage, const nsRect& aRect)
-{
-  return DrawImage(aImage,
-                   aRect.x,
-                   aRect.y,
-                   aRect.width,
-                   aRect.height);
-}
-
-NS_IMETHODIMP nsRenderingContextGTK::DrawImage(nsIImage *aImage,
-                                               nscoord aX, nscoord aY,
-                                               nscoord aWidth, nscoord aHeight)
-{
-  nscoord x, y, w, h;
-
-  x = aX;
-  y = aY;
-  w = aWidth;
-  h = aHeight;
-
-  mTranMatrix->TransformCoord(&x, &y, &w, &h);
-
-#if 0
-  //  gdk_window_clear_area(mSurface->GetDrawable(), x, y, w, h);
-  PRInt32 xx, yy, ww, hh;
-  mClipRegion->GetBoundingBox(&xx,&yy,&ww,&hh);
-  printf("clip bounds: x = %i, y = %i, w = %i, h = %i\n", xx, yy, ww, hh);
-
-  nscolor color = mCurrentColor;
-  SetColor(NS_RGB(255,   0,   0));
-  FillRect(xx, yy, ww, hh);
-  SetColor(color);
-#endif
-
-  UpdateGC();
-
-  return aImage->Draw(*this, mSurface,
-                      x, y, w, h);
-}
-
-NS_IMETHODIMP nsRenderingContextGTK::DrawImage(nsIImage *aImage,
-                                               const nsRect& aSRect,
-                                               const nsRect& aDRect)
-{
-  nsRect	sr,dr;
-
-  sr = aSRect;
-  mTranMatrix->TransformCoord(&sr.x, &sr.y,
-                            &sr.width, &sr.height);
-  sr.x -= mTranMatrix->GetXTranslationCoord();
-  sr.y -= mTranMatrix->GetYTranslationCoord();
-
-  dr = aDRect;
-  mTranMatrix->TransformCoord(&dr.x, &dr.y,
-                           &dr.width, &dr.height);
-
-#if 0
-  PRInt32 x, y, w, h;
-  mClipRegion->GetBoundingBox(&x,&y,&w,&h);
-  printf("clip bounds: x = %i, y = %i, w = %i, h = %i\n", x, y, w, h);
-
-  //  gdk_window_clear_area(mSurface->GetDrawable(), sr.x, sr.y, sr.width, sr.height);
-
-  nscolor color = mCurrentColor;
-  SetColor(NS_RGB(255,   0,   0));
-  FillRect(x, y, w, h);
-  SetColor(color);
-#endif
-
-  UpdateGC();
-
-  return aImage->Draw(*this, mSurface,
-                      sr.x, sr.y,
-                      sr.width, sr.height,
-                      dr.x, dr.y,
-                      dr.width, dr.height);
 }
 
 NS_IMETHODIMP

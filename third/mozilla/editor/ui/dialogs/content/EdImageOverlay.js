@@ -303,8 +303,8 @@ function PreviewImageLoaded()
       gDialog.PreviewWidth.setAttribute("value", gActualWidth);
       gDialog.PreviewHeight.setAttribute("value", gActualHeight);
 
-      gDialog.PreviewSize.setAttribute("collapsed", "false");
-      gDialog.ImageHolder.setAttribute("collapsed", "false");
+      gDialog.PreviewSize.collapsed = false;
+      gDialog.ImageHolder.collapsed = false;
 
       SetSizeWidgets(gDialog.widthInput.value, gDialog.heightInput.value);
     }
@@ -316,7 +316,7 @@ function PreviewImageLoaded()
 
 function LoadPreviewImage()
 {
-  gDialog.PreviewSize.setAttribute("collapsed", "true");
+  gDialog.PreviewSize.collapsed = true;
 
   var imageSrc = TrimString(gDialog.srcInput.value);
   if (!imageSrc)
@@ -357,9 +357,11 @@ function LoadPreviewImage()
   gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:img");
   if (gDialog.PreviewImage)
   {
-    gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
+    // set the src before appending to the document -- see bug 198435 for why
+    // this is needed.
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
     gDialog.PreviewImage.src = imageSrc;
+    gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
   }
 }
 

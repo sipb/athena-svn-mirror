@@ -50,7 +50,7 @@
 #include "plstr.h"
 #include "prmem.h"
 #include "nsReadableUtils.h"
-
+#include "nsString.h"
 
 #include <File.h>
 #include <AppFileInfo.h>
@@ -115,14 +115,8 @@ static nsresult GetMimeExtensions(const char *mimeType, char *extensions, int ex
 
 /* nsPluginsDir implementation */
 
-PRBool nsPluginsDir::IsPluginFile(const nsFileSpec& fileSpec)
+PRBool nsPluginsDir::IsPluginFile(nsIFile* file)
 {
-    const char* pathname = fileSpec.GetCString();
-
-#ifdef NS_DEBUG
-	printf("IsPluginFile(%s)\n", pathname);
-#endif
-
 	return PR_TRUE;
 }
 
@@ -130,8 +124,8 @@ PRBool nsPluginsDir::IsPluginFile(const nsFileSpec& fileSpec)
 
 /* nsPluginFile implementation */
 
-nsPluginFile::nsPluginFile(const nsFileSpec& spec)
-	:	nsFileSpec(spec)
+nsPluginFile::nsPluginFile(nsIFile* spec)
+:	mPlugin(spec)
 {
 	// nada
 }
@@ -147,8 +141,12 @@ nsPluginFile::~nsPluginFile()
  */
 nsresult nsPluginFile::LoadPlugin(PRLibrary* &outLibrary)
 {
-        const char* path = this->GetCString();
-        pLibrary = outLibrary = PR_LoadLibrary(path);
+        nsCAutoString path;
+        nsresult rv = mPlugin->GetNativePath(path);
+        if (NS_OK != rv) {
+            return rv;
+        }
+        pLibrary = outLibrary = PR_LoadLibrary(path.get());
 
 #ifdef NS_DEBUG
         printf("LoadPlugin() %s returned %lx\n",path,(unsigned long)pLibrary);
@@ -165,7 +163,12 @@ typedef char* (*BeOS_Plugin_GetMIMEDescription)();
  */
 nsresult nsPluginFile::GetPluginInfo(nsPluginInfo& info)
 {
-	const char *path = this->GetCString();
+    nsCAutoString fpath;
+    nsresult rv = mPlugin->GetNativePath(fpath);
+    if (NS_OK != rv) {
+        return rv;
+    }
+    const char *path = fpath.get();
     int i;
 
 #ifdef NS_PLUGIN_BEOS_DEBUG
@@ -228,7 +231,7 @@ nsresult nsPluginFile::GetPluginInfo(nsPluginInfo& info)
     // get name and description of this plugin
     version_info vinfo;
     if (appinfo.GetVersionInfo(&vinfo, B_APP_VERSION_KIND) == B_OK
-        && strlen(vinfo.short_info) > 0) {
+        && *vinfo.short_info) {
         // XXX convert UTF-8 2byte chars to 1 byte chars, to avoid string corruption
         info.fName = ToNewCString(NS_ConvertUTF8toUCS2(vinfo.short_info));
         info.fDescription = ToNewCString(NS_ConvertUTF8toUCS2(vinfo.long_info));

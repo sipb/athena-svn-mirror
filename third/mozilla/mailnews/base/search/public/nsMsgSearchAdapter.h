@@ -204,6 +204,7 @@ protected:
   // object makes cleanup of these tables (at shutdown-time) automagic.
 
   nsCOMPtr<nsIMsgSearchValidityTable> m_offlineMailTable;
+  nsCOMPtr<nsIMsgSearchValidityTable> m_offlineMailFilterTable;
   nsCOMPtr<nsIMsgSearchValidityTable> m_onlineMailTable;
   nsCOMPtr<nsIMsgSearchValidityTable> m_onlineMailFilterTable;
 
@@ -213,25 +214,32 @@ protected:
 #endif
   nsCOMPtr<nsIMsgSearchValidityTable> m_localNewsTable; // used for local news searching or offline news searching...
   nsCOMPtr<nsIMsgSearchValidityTable> m_ldapTable;
+  nsCOMPtr<nsIMsgSearchValidityTable> m_ldapAndTable;
   nsCOMPtr<nsIMsgSearchValidityTable> m_localABTable;
+  nsCOMPtr<nsIMsgSearchValidityTable> m_localABAndTable;
+  nsCOMPtr<nsIMsgSearchValidityTable> m_newsFilterTable;
 
   nsresult NewTable (nsIMsgSearchValidityTable **);
 
-  nsresult InitOfflineMailTable ();
-  nsresult InitOnlineMailTable ();
-  nsresult InitOnlineMailFilterTable ();
-  nsresult InitNewsTable ();
+  nsresult InitOfflineMailTable();
+  nsresult InitOfflineMailFilterTable();
+  nsresult InitOnlineMailTable();
+  nsresult InitOnlineMailFilterTable();
+  nsresult InitNewsTable();
   nsresult InitLocalNewsTable(); 
+  nsresult InitNewsFilterTable();
 
 #ifdef DOING_EXNEWSSEARCH
-  nsresult InitNewsExTable (nsINntpIncomingServer *host = nsnull);
+  nsresult InitNewsExTable(nsINntpIncomingServer *host = nsnull);
 #endif
   //set the custom headers in the table, changes whenever "mailnews.customHeaders" pref changes.
   nsresult SetOtherHeadersInTable(nsIMsgSearchValidityTable *table, const char *customHeaders); 
 
   nsresult InitLdapTable();
+  nsresult InitLdapAndTable();
   nsresult InitLocalABTable();
-  nsresult SetUpABTable(nsIMsgSearchValidityTable *aTable, PRBool isLocal);
+  nsresult InitLocalABAndTable();
+  nsresult SetUpABTable(nsIMsgSearchValidityTable *aTable, PRBool isOrTable);
   nsresult EnableDirectoryAttribute(nsIMsgSearchValidityTable *table, nsMsgSearchAttribValue aSearchAttrib);
 };
 

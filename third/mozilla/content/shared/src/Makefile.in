@@ -35,7 +35,6 @@ REQUIRES	= xpcom \
 		  widget \
 		  locale \
 		  dom \
-		  webshell \
 		  necko \
 		  htmlparser \
 		  unicharutil \
@@ -43,7 +42,10 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 CPPSRCS		= \
-		nsCSSAtoms.cpp \
+		nsAtomListUtils.cpp \
+		nsCSSAnonBoxes.cpp \
+		nsCSSPseudoClasses.cpp \
+		nsCSSPseudoElements.cpp \
 		nsCSSKeywords.cpp \
 		nsCSSProps.cpp \
 		nsHTMLAtoms.cpp \

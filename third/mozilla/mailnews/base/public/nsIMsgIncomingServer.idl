@@ -49,13 +49,13 @@ interface nsIMsgRetentionSettings;
 interface nsIMsgDownloadSettings;
 interface nsISpamSettings;
 interface nsIMsgFilterPlugin;
+
 /*
  * Interface for incoming mail/news host
  * this is the base interface for all mail server types (imap, pop, nntp, etc)
  * often you will want to add extra interfaces that give you server-specific
  * attributes and methods.
  */
-
 [scriptable, uuid(60dcb100-e3f2-11d2-b7fc-00805f05ffa5)]
 interface nsIMsgIncomingServer : nsISupports {
 
@@ -167,6 +167,9 @@ interface nsIMsgIncomingServer : nsISupports {
   /* should we use a secure channel? */
   attribute boolean isSecure;
 
+  /* should we use secure authentication? */
+  attribute boolean useSecAuth;
+
   /* can server support a secure channel? */
   readonly attribute boolean isSecureServer;
 
@@ -179,14 +182,14 @@ interface nsIMsgIncomingServer : nsISupports {
   /* get filter list */
   nsIMsgFilterList getFilterList(in nsIMsgWindow aMsgWindow);
 
-  /*set filter list */
+  /* set filter list */
   void setFilterList(in nsIMsgFilterList aFilterList);
 
   /* we use this to set the default local path.  we use this when migrating prefs */
   void SetDefaultLocalPath(in nsIFileSpec aDefaultLocalPath);
 
   /* do a biff */
-  void PerformBiff();
+  void PerformBiff(in nsIMsgWindow aMsgWindow);
   
   /* this checks if a server needs a password to do biff */
   readonly attribute boolean serverRequiresPasswordForBiff;
@@ -364,10 +367,19 @@ interface nsIMsgIncomingServer : nsISupports {
   void configureTemporaryReturnReceiptsFilter(in nsIMsgFilterList filterList);
 
   /**
+   * If Sent folder pref is changed we need to clear the temporary 
+   * return receipt filter so that the new return receipt filter can
+   * be recreated (by ConfigureTemporaryReturnReceiptsFilter()).
+   */
+  void clearTemporaryReturnReceiptsFilter();
+
+  /**
    * spam settings
    */
   attribute nsISpamSettings spamSettings;
   readonly attribute nsIMsgFilterPlugin spamFilterPlugin;
+
+  nsIMsgFolder getMsgFolderFromURI(in nsIMsgFolder aFolderResource, in string aURI);
 };
 
 %{C++

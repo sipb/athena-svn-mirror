@@ -33,7 +33,7 @@ interface nsILocalFile;
  */
 
 /**
- * Interface for persisting DOM documents and URIs to local storage.
+ * Interface for persisting DOM documents and URIs to local or remote storage.
  */
 [scriptable, uuid(814ba433-a816-4785-9f95-ad3ba0a43dab)]
 interface nsIWebBrowserPersist : nsISupports
@@ -58,12 +58,20 @@ interface nsIWebBrowserPersist : nsISupports
   const unsigned long PERSIST_FLAGS_FIXUP_ORIGINAL_DOM = 128;
   /** Fix links relative to destination location (not origin) */
   const unsigned long PERSIST_FLAGS_FIXUP_LINKS_TO_DESTINATION = 256;
-  /** Don't do any adjustments to links */
+  /** Don't make any adjustments to links */
   const unsigned long PERSIST_FLAGS_DONT_FIXUP_LINKS = 512;
   /** Force serialization of output (one file at a time; not concurrent) */
   const unsigned long PERSIST_FLAGS_SERIALIZE_OUTPUT = 1024;
+  /** Don't make any adjustments to filenames */
+  const unsigned long PERSIST_FLAGS_DONT_CHANGE_FILENAMES = 2048;
+  /** Fail on broken inline links */
+  const unsigned long PERSIST_FLAGS_FAIL_ON_BROKEN_LINKS = 4096;
 
-  /** Flags governing how data is fetched from the network. */
+  /**
+   * Flags governing how data is fetched and saved from the network. 
+   * It is best to set this value explicitly unless you are prepared
+   * to accept the default values.
+   */
   attribute unsigned long persistFlags;
     
   /** Persister is ready to save data */
@@ -105,17 +113,28 @@ interface nsIWebBrowserPersist : nsISupports
    * @param aURI       URI to save to file. Some implementations of this interface
    *                   may also support <CODE>nsnull</CODE> to imply the currently
    *                   loaded URI.
-   * @param aPostData  Data to pass with in an HTTP request or nsnull.
-   * @param aFile      Target local file. This may be a nsILocalFile object or an
-   *                   nsIURI object with a file scheme.
+   * @param aCacheKey  An object representing the URI in the cache or
+   *                   <CODE>nsnull</CODE>.
+   * @param aReferrer  The referrer URI to pass with an HTTP request or
+   *                   <CODE>nsnull</CODE>.
+   * @param aPostData  Post data to pass with an HTTP request or
+   *                   <CODE>nsnull</CODE>.
+   * @param aExtraHeaders Additional headers to supply with an HTTP request
+   *                   or <CODE>nsnull</CODE>.
+   * @param aFile      Target file. This may be a nsILocalFile object or an
+   *                   nsIURI object with a file scheme or a scheme that
+   *                   supports uploading (e.g. ftp).
    *
    * @see nsILocalFile
    * @see nsIURI
+   * @see nsIInputStream
    *
    * @return NS_OK Operation has been started.
    * @return NS_ERROR_INVALID_ARG One or more arguments was invalid.
    */
-  void saveURI(in nsIURI aURI, in nsIInputStream aPostData, in nsISupports aFile);
+  void saveURI(in nsIURI aURI, in nsISupports aCacheKey,
+      in nsIURI aReferrer, in nsIInputStream aPostData,
+      in string aExtraHeaders, in nsISupports aFile);
 
   /** Output only the current selection as opposed to the whole document. */
   const unsigned long ENCODE_FLAGS_SELECTION_ONLY = 1;
@@ -145,8 +164,15 @@ interface nsIWebBrowserPersist : nsISupports
   const unsigned long ENCODE_FLAGS_FORMAT_FLOWED = 64;
   /** Convert links to absolute links where possible. */
   const unsigned long ENCODE_FLAGS_ABSOLUTE_LINKS = 128;
-  /** Encode entities, e.g. output &nbsp; instead of character code 0xa0. */
-  const unsigned long ENCODE_FLAGS_ENCODE_ENTITIES = 256;
+
+  /** 
+   * Attempt to encode entities standardized at W3C (HTML, MathML, etc).
+   * This is a catch-all flag for documents with mixed contents. Beware of
+   * interoperability issues. See below for other flags which might likely
+   * do what you want.
+   */
+  const unsigned long ENCODE_FLAGS_ENCODE_W3C_ENTITIES = 256;
+
   /**
    * Output with carriage return line breaks. May also be combined with
    * ENCODE_FLAGS_LF_LINEBREAKS and if neither is specified, the platform
@@ -165,6 +191,23 @@ interface nsIWebBrowserPersist : nsISupports
   const unsigned long ENCODE_FLAGS_NOFRAMES_CONTENT = 4096;
 
   /**
+   * Encode basic entities, e.g. output &nbsp; instead of character code 0xa0. 
+   * The basic set is just &nbsp; &amp; &lt; &gt; &quot; for interoperability
+   * with older products that don't support &alpha; and friends.
+   */
+  const unsigned long ENCODE_FLAGS_ENCODE_BASIC_ENTITIES = 8192;
+  /**
+   * Encode Latin1 entities. This includes the basic set and
+   * accented letters between 128 and 255.
+   */
+  const unsigned long ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES = 16384;
+  /**
+   * Encode HTML4 entities. This includes the basic set, accented
+   * letters, greek letters and certain special markup symbols.
+   */
+  const unsigned long ENCODE_FLAGS_ENCODE_HTML_ENTITIES = 32768;
+
+  /**
    * Save the specified DOM document to file and optionally all linked files
    * (e.g. images, CSS, JS & subframes). Do not call this method until the
    * document has finished loading!
@@ -173,7 +216,8 @@ interface nsIWebBrowserPersist : nsISupports
    *                           this interface may also support <CODE>nsnull</CODE>
    *                           to imply the currently loaded document.
    * @param aFile              Target local file. This may be a nsILocalFile object or an
-   *                           nsIURI object with a file scheme.
+   *                           nsIURI object with a file scheme or a scheme that
+   *                           supports uploading (e.g. ftp).
    * @param aDataPath          Path to directory where URIs linked to the document
    *                           are saved or nsnull if no linked URIs should be saved.
    *                           This may be a nsILocalFile object or an nsIURI object

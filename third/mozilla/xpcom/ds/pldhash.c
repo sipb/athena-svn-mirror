@@ -124,7 +124,7 @@ PL_DHashFinalizeStub(PLDHashTable *table)
 {
 }
 
-static PLDHashTableOps stub_ops = {
+static const PLDHashTableOps stub_ops = {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
     PL_DHashGetKeyStub,
@@ -136,14 +136,14 @@ static PLDHashTableOps stub_ops = {
     NULL
 };
 
-PR_IMPLEMENT(PLDHashTableOps *)
+PR_IMPLEMENT(const PLDHashTableOps *)
 PL_DHashGetStubOps(void)
 {
     return &stub_ops;
 }
 
 PR_IMPLEMENT(PLDHashTable *)
-PL_NewDHashTable(PLDHashTableOps *ops, void *data, PRUint32 entrySize,
+PL_NewDHashTable(const PLDHashTableOps *ops, void *data, PRUint32 entrySize,
                  PRUint32 capacity)
 {
     PLDHashTable *table;
@@ -166,7 +166,7 @@ PL_DHashTableDestroy(PLDHashTable *table)
 }
 
 PR_IMPLEMENT(PRBool)
-PL_DHashTableInit(PLDHashTable *table, PLDHashTableOps *ops, void *data,
+PL_DHashTableInit(PLDHashTable *table, const PLDHashTableOps *ops, void *data,
                   PRUint32 entrySize, PRUint32 capacity)
 {
     int log2;
@@ -380,16 +380,6 @@ SearchTable(PLDHashTable *table, const void *key, PLDHashNumber keyHash,
 
         entry = ADDRESS_ENTRY(table, hash1);
         if (PL_DHASH_ENTRY_IS_FREE(entry)) {
-#ifdef DEBUG_brendan
-            extern char *getenv(const char *);
-            static PRBool gotFirstRemovedEnvar = PR_FALSE;
-            static char *doFirstRemoved = NULL;
-            if (!gotFirstRemovedEnvar) {
-                doFirstRemoved = getenv("DHASH_DO_FIRST_REMOVED");
-                gotFirstRemovedEnvar = PR_TRUE;
-            }
-            if (!doFirstRemoved) return entry;
-#endif
             METER(table->stats.misses++);
             return (firstRemoved && op == PL_DHASH_ADD) ? firstRemoved : entry;
         }
@@ -570,6 +560,7 @@ PL_DHashTableRawRemove(PLDHashTable *table, PLDHashEntryHdr *entry)
 {
     PLDHashNumber keyHash;      /* load first in case clearEntry goofs it */
 
+    PR_ASSERT(PL_DHASH_ENTRY_IS_LIVE(entry));
     keyHash = entry->keyHash;
     table->ops->clearEntry(table, entry);
     if (keyHash & COLLISION_FLAG) {
@@ -587,6 +578,7 @@ PL_DHashTableEnumerate(PLDHashTable *table, PLDHashEnumerator etor, void *arg)
 {
     char *entryAddr, *entryLimit;
     PRUint32 i, capacity, entrySize;
+    PRBool didRemove;
     PLDHashEntryHdr *entry;
     PLDHashOperator op;
 
@@ -595,6 +587,7 @@ PL_DHashTableEnumerate(PLDHashTable *table, PLDHashEnumerator etor, void *arg)
     capacity = PL_DHASH_TABLE_SIZE(table);
     entryLimit = entryAddr + capacity * entrySize;
     i = 0;
+    didRemove = PR_FALSE;
     while (entryAddr < entryLimit) {
         entry = (PLDHashEntryHdr *)entryAddr;
         if (ENTRY_IS_LIVE(entry)) {
@@ -602,6 +595,7 @@ PL_DHashTableEnumerate(PLDHashTable *table, PLDHashEnumerator etor, void *arg)
             if (op & PL_DHASH_REMOVE) {
                 METER(table->stats.removeEnums++);
                 PL_DHashTableRawRemove(table, entry);
+                didRemove = PR_TRUE;
             }
             if (op & PL_DHASH_STOP)
                 break;
@@ -612,11 +606,14 @@ PL_DHashTableEnumerate(PLDHashTable *table, PLDHashEnumerator etor, void *arg)
     /*
      * Shrink or compress if a quarter or more of all entries are removed, or
      * if the table is underloaded according to the configured minimum alpha,
-     * and is not minimal-size already.
+     * and is not minimal-size already.  Do this only if we removed above, so
+     * non-removing enumerations can count on stable table->entryStore until
+     * the next non-lookup-Operate or removing-Enumerate.
      */
-    if (table->removedCount >= capacity >> 2 ||
-        (capacity > PL_DHASH_MIN_SIZE &&
-         table->entryCount <= MIN_LOAD(table, capacity))) {
+    if (didRemove &&
+        (table->removedCount >= capacity >> 2 ||
+         (capacity > PL_DHASH_MIN_SIZE &&
+          table->entryCount <= MIN_LOAD(table, capacity)))) {
         METER(table->stats.enumShrinks++);
         capacity = table->entryCount;
         capacity += capacity >> 1;

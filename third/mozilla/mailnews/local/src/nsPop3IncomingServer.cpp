@@ -53,7 +53,6 @@
 #include "nsMsgFolderFlags.h"
 #include "nsIFileSpec.h"
 #include "nsPop3Protocol.h"
-#include "nsIMsgMailSession.h"
 #include "nsIMsgLocalMailFolder.h"
 
 static NS_DEFINE_CID(kCPop3ServiceCID, NS_POP3SERVICE_CID);
@@ -65,9 +64,9 @@ NS_IMPL_ISUPPORTS_INHERITED2(nsPop3IncomingServer,
 
 nsPop3IncomingServer::nsPop3IncomingServer()
 {    
-    NS_INIT_ISUPPORTS();
     m_capabilityFlags = 
-        POP3_AUTH_LOGIN_UNDEFINED |
+        POP3_AUTH_MECH_UNDEFINED |
+        POP3_HAS_AUTH_USER |               // should be always there
         POP3_XSENDER_UNDEFINED |
         POP3_GURL_UNDEFINED |
         POP3_UIDL_UNDEFINED |
@@ -120,7 +119,7 @@ nsPop3IncomingServer::GetLocalStoreType(char **type)
     return NS_OK;
 }
 
-NS_IMETHODIMP nsPop3IncomingServer::PerformBiff()
+NS_IMETHODIMP nsPop3IncomingServer::PerformBiff(nsIMsgWindow *aMsgWindow)
 {
   nsresult rv;
   nsCOMPtr<nsIPop3Service> pop3Service(do_GetService(kCPop3ServiceCID, &rv));
@@ -139,41 +138,41 @@ NS_IMETHODIMP nsPop3IncomingServer::PerformBiff()
     if (NS_FAILED(rv) || numFolders != 1) return rv;
   }
 
-  //Biff just needs to give status in one of the windows. so do it in topmost window.
-  nsCOMPtr<nsIMsgMailSession> mailSession = do_GetService(NS_MSGMAILSESSION_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) return rv;
-  
-  nsCOMPtr<nsIMsgWindow> msgWindow;
+  SetPerformingBiff(PR_TRUE);
+  urlListener = do_QueryInterface(inbox);
 
-  rv = mailSession->GetTopmostMsgWindow(getter_AddRefs(msgWindow));
-  if(NS_SUCCEEDED(rv))
+  PRBool downloadOnBiff = PR_FALSE;
+  rv = GetDownloadOnBiff(&downloadOnBiff);
+  if (downloadOnBiff)
   {
-    SetPerformingBiff(PR_TRUE);
-    urlListener = do_QueryInterface(inbox);
-
-    PRBool downloadOnBiff = PR_FALSE;
-    rv = GetDownloadOnBiff(&downloadOnBiff);
-    if (downloadOnBiff)
+    nsCOMPtr <nsIMsgLocalMailFolder> localInbox = do_QueryInterface(inbox, &rv);
+    if (localInbox && NS_SUCCEEDED(rv))
     {
-      nsCOMPtr <nsIMsgLocalMailFolder> localInbox = do_QueryInterface(inbox, &rv);
-      if (localInbox && NS_SUCCEEDED(rv))
+      PRBool valid =PR_FALSE;
+      nsCOMPtr <nsIMsgDatabase> db;
+      rv = inbox->GetMsgDatabase(aMsgWindow, getter_AddRefs(db));
+      if (NS_SUCCEEDED(rv) && db)
+        rv = db->GetSummaryValid(&valid);
+      if (NS_SUCCEEDED(rv) && valid)
+        rv = pop3Service->GetNewMail(aMsgWindow, urlListener, inbox, this, nsnull);
+      else
       {
-        PRBool valid =PR_FALSE;
-        nsCOMPtr <nsIMsgDatabase> db;
-        rv = inbox->GetMsgDatabase(msgWindow, getter_AddRefs(db));
-        if (NS_SUCCEEDED(rv) && db)
-          rv = db->GetSummaryValid(&valid);
-        if (NS_SUCCEEDED(rv) && valid)
-          rv = pop3Service->GetNewMail(msgWindow, urlListener, inbox, this, nsnull);
-        else
+        PRBool isLocked;
+        inbox->GetLocked(&isLocked);
+        if (!isLocked)
+        {
+          rv = localInbox->ParseFolder(aMsgWindow, urlListener);
+        }
+        if (NS_SUCCEEDED(rv))
           rv = localInbox->SetCheckForNewMessagesAfterParsing(PR_TRUE);
       }
     }
-    else
-      rv = pop3Service->CheckForNewMail(nsnull, urlListener, inbox, this, nsnull);
+  }
+  else
+    rv = pop3Service->CheckForNewMail(nsnull, urlListener, inbox, this, nsnull);
     // it's important to pass in null for the msg window if we are performing biff
         // this makes sure that we don't show any kind of UI during biff.
-  }
+
   return NS_OK;
 }
 
@@ -195,7 +194,8 @@ nsPop3IncomingServer::SetFlagsOnDefaultMailboxes()
                                             MSG_FOLDER_FLAG_SENTMAIL |
                                             MSG_FOLDER_FLAG_DRAFTS |
                                             MSG_FOLDER_FLAG_TEMPLATES |
-                                            MSG_FOLDER_FLAG_TRASH);
+                                            MSG_FOLDER_FLAG_TRASH |
+                                            MSG_FOLDER_FLAG_JUNK);
     return NS_OK;
 }
     
@@ -206,7 +206,7 @@ NS_IMETHODIMP nsPop3IncomingServer::CreateDefaultMailboxes(nsIFileSpec *path)
 	PRBool exists;
 	if (!path) return NS_ERROR_NULL_POINTER;
 
-  rv =path->AppendRelativeUnixPath("Inbox");
+  rv = path->AppendRelativeUnixPath("Inbox");
 	if (NS_FAILED(rv)) return rv;
 	rv = path->Exists(&exists);
 	if (!exists) {
@@ -255,19 +255,18 @@ NS_IMETHODIMP nsPop3IncomingServer::CreateDefaultMailboxes(nsIFileSpec *path)
 
 NS_IMETHODIMP nsPop3IncomingServer::GetNewMail(nsIMsgWindow *aMsgWindow, nsIUrlListener *aUrlListener, nsIMsgFolder *inbox, nsIURI **aResult)
 {
-	nsresult rv;
+  nsresult rv;
 
-	nsCOMPtr<nsIPop3Service> pop3Service = do_GetService(kCPop3ServiceCID, &rv);
-    NS_ENSURE_SUCCESS(rv,rv);
+  nsCOMPtr<nsIPop3Service> pop3Service = do_GetService(kCPop3ServiceCID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
 
-    rv = pop3Service->GetNewMail(aMsgWindow, aUrlListener, inbox, this, aResult);
-	return rv;
+  return pop3Service->GetNewMail(aMsgWindow, aUrlListener, inbox, this, aResult);
 }
 
 NS_IMETHODIMP
 nsPop3IncomingServer::GetDownloadMessagesAtStartup(PRBool *getMessagesAtStartup)
 {
-    // GetMessagese is not automatically done for pop servers at startup.
+    // GetMessages is not automatically done for pop servers at startup.
     // We need to trigger that action. Return true.
     *getMessagesAtStartup = PR_TRUE;
     return NS_OK;

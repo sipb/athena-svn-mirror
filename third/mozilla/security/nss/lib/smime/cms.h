@@ -34,7 +34,7 @@
 /*
  * Interfaces of the CMS implementation.
  *
- * $Id: cms.h,v 1.1.1.1 2003-02-14 19:46:42 rbasch Exp $
+ * $Id: cms.h,v 1.1.1.2 2003-07-08 17:30:16 rbasch Exp $
  */
 
 #ifndef _CMS_H_
@@ -130,6 +130,12 @@ NSS_CMSEncoder_Start(NSSCMSMessage *cmsg,
  */
 extern SECStatus
 NSS_CMSEncoder_Update(NSSCMSEncoderContext *p7ecx, const char *data, unsigned long len);
+
+/*
+ * NSS_CMSEncoder_Cancel - stop all encoding
+ */
+extern SECStatus
+NSS_CMSEncoder_Cancel(NSSCMSEncoderContext *p7ecx);
 
 /*
  * NSS_CMSEncoder_Finish - signal the end of data
@@ -853,8 +859,43 @@ NSS_CMSEnvelopedData_Decode_AfterEnd(NSSCMSEnvelopedData *envd);
 extern NSSCMSRecipientInfo *
 NSS_CMSRecipientInfo_Create(NSSCMSMessage *cmsg, CERTCertificate *cert);
 
+extern NSSCMSRecipientInfo *
+NSS_CMSRecipientInfo_CreateWithSubjKeyID(NSSCMSMessage   *cmsg, 
+                                         SECItem         *subjKeyID,
+                                         SECKEYPublicKey *pubKey);
+
+extern NSSCMSRecipientInfo *
+NSS_CMSRecipientInfo_CreateWithSubjKeyIDFromCert(NSSCMSMessage *cmsg, 
+                                                 CERTCertificate *cert);
+
+/*
+ * NSS_CMSRecipientInfo_CreateNew - create a blank recipientinfo for 
+ * applications which want to encode their own CMS structures and
+ * key exchange types.
+ */
+extern NSSCMSRecipientInfo *
+NSS_CMSRecipientInfo_CreateNew(void* pwfn_arg);
+
+/*
+ * NSS_CMSRecipientInfo_CreateFromDER - create a recipientinfo  from partially
+ * decoded DER data for applications which want to encode their own CMS 
+ * structures and key exchange types.
+ */
+extern NSSCMSRecipientInfo *
+NSS_CMSRecipientInfo_CreateFromDER(SECItem* input, void* pwfn_arg);
+
 extern void
 NSS_CMSRecipientInfo_Destroy(NSSCMSRecipientInfo *ri);
+
+/*
+ * NSS_CMSRecipientInfo_GetCertAndKey - retrieve the cert and key from the
+ * recipientInfo struct. If retcert or retkey are NULL, the cert or 
+ * key (respectively) would not be returned). This function is a no-op if both 
+ * retcert and retkey are NULL. Caller inherits ownership of the cert and key
+ * he requested (and is responsible to free them).
+ */
+SECStatus NSS_CMSRecipientInfo_GetCertAndKey(NSSCMSRecipientInfo *ri,
+   CERTCertificate** retcert, SECKEYPrivateKey** retkey);
 
 extern int
 NSS_CMSRecipientInfo_GetVersion(NSSCMSRecipientInfo *ri);
@@ -862,6 +903,12 @@ NSS_CMSRecipientInfo_GetVersion(NSSCMSRecipientInfo *ri);
 extern SECItem *
 NSS_CMSRecipientInfo_GetEncryptedKey(NSSCMSRecipientInfo *ri, int subIndex);
 
+/*
+ * NSS_CMSRecipientInfo_Encode - encode an NSS_CMSRecipientInfo as ASN.1
+ */
+SECStatus NSS_CMSRecipientInfo_Encode(PRArenaPool* poolp,
+                                      const NSSCMSRecipientInfo *src,
+                                      SECItem* returned);
 
 extern SECOidTag
 NSS_CMSRecipientInfo_GetKeyEncryptionAlgorithmTag(NSSCMSRecipientInfo *ri);

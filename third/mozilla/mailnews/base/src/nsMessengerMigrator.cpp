@@ -96,8 +96,6 @@
 #endif
 
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
-static NS_DEFINE_CID(kSmtpServiceCID, NS_SMTPSERVICE_CID);   
-static NS_DEFINE_CID(kAB4xUpgraderServiceCID, NS_AB4xUPGRADER_CID);
 static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
 
 #define IMAP_SCHEMA "imap:/"
@@ -130,7 +128,7 @@ static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
 #define DEFAULT_4X_TEMPLATES_FOLDER_NAME "Templates"
 #define UNSENT_MESSAGES_FOLDER_NAME "Unsent%20Messages"
 
-#define FILTER_FILE_NAME	"rules.dat"		/* this is XP in 5.x */
+#define FILTER_FILE_NAME	"msgFilterRules.dat"		/* this is XP in 5.x */
 
 /* we are going to clear these after migration */
 #define PREF_4X_MAIL_IDENTITY_USEREMAIL "mail.identity.useremail"
@@ -372,8 +370,6 @@ NS_IMPL_ISUPPORTS2(nsMessengerMigrator, nsIMessengerMigrator, nsIObserver)
 nsMessengerMigrator::nsMessengerMigrator() :
   m_haveShutdown(PR_FALSE)
 {
-
-  NS_INIT_ISUPPORTS();
 }
 
 nsMessengerMigrator::~nsMessengerMigrator()
@@ -494,7 +490,7 @@ nsMessengerMigrator::ProceedWithMigration()
     // otherwise, they don't really have anything to migrate
     rv = m_prefs->CopyCharPref(PREF_4X_MAIL_POP_NAME, &prefvalue);
     if (NS_SUCCEEDED(rv)) {
-	    if (!prefvalue || (PL_strlen(prefvalue) == 0)) {
+	    if (!prefvalue || !*prefvalue) {
 	      rv = NS_ERROR_FAILURE;
 	    }
     }
@@ -504,7 +500,7 @@ nsMessengerMigrator::ProceedWithMigration()
     // otherwise, they don't really have anything to migrate
     rv = m_prefs->CopyCharPref(PREF_4X_NETWORK_HOSTS_IMAP_SERVER, &prefvalue);
     if (NS_SUCCEEDED(rv)) {
-	    if (!prefvalue || (PL_strlen(prefvalue) == 0)) {
+	    if (!prefvalue || !*prefvalue) {
 	      rv = NS_ERROR_FAILURE;
 	    }
     }
@@ -679,11 +675,11 @@ nsMessengerMigrator::UpgradePrefs()
     rv = MigrateIdentity(identity);
     if (NS_FAILED(rv)) return rv;    
     
-    nsCOMPtr<nsISmtpServer> smtpServer;
     nsCOMPtr<nsISmtpService> smtpService = 
-             do_GetService(kSmtpServiceCID, &rv);
+             do_GetService(NS_SMTPSERVICE_CONTRACTID, &rv);
     if (NS_FAILED(rv)) return rv;    
 
+    nsCOMPtr<nsISmtpServer> smtpServer;
     rv = smtpService->CreateSmtpServer(getter_AddRefs(smtpServer));
     if (NS_FAILED(rv)) return rv;    
 
@@ -1023,7 +1019,7 @@ nsMessengerMigrator::Convert4XUri(const char *old_uri, PRBool for_news, const ch
   if (NS_SUCCEEDED(rv)) {
 	rv = mail_dir->GetUnixStyleFilePath(&mail_directory_value);
   }
-  if (NS_FAILED(rv) || !mail_directory_value || (PL_strlen(mail_directory_value) == 0)) {
+  if (NS_FAILED(rv) || !mail_directory_value || !*mail_directory_value) {
 #ifdef DEBUG_MIGRATOR
     printf("%s was not set, attempting to use %s instead.\n",PREF_PREMIGRATION_MAIL_DIRECTORY,PREF_MAIL_DIRECTORY);
 #endif
@@ -1034,7 +1030,7 @@ nsMessengerMigrator::Convert4XUri(const char *old_uri, PRBool for_news, const ch
 	rv = mail_dir->GetUnixStyleFilePath(&mail_directory_value);
     } 
 
-    if (NS_FAILED(rv) || !mail_directory_value || (PL_strlen(mail_directory_value) == 0)) {
+    if (NS_FAILED(rv) || !mail_directory_value || !*mail_directory_value) {
       NS_ASSERTION(0,"failed to get a base value for the mail.directory");
       return NS_ERROR_UNEXPECTED;
     }
@@ -1108,7 +1104,7 @@ nsMessengerMigrator::Convert4XUri(const char *old_uri, PRBool for_news, const ch
   // this meant it was reall <foobar>/<default folder name>
   // this insanity only happened on mac and windows.
   // Need to escape spaces in folder name (ie, "A Folder" --> "A%20Folder").
-  if (!folderPath || (PL_strlen(folderPath) == 0)) {
+  if (!folderPath || !*folderPath) {
     nsXPIDLCString escaped_default_folder;
     ESCAPE_FOLDER_NAME(escaped_default_folder, default_folder_name);
     *new_uri = PR_smprintf("%s/%s/%s",MAILBOX_SCHEMA,usernameAtHostname, escaped_default_folder.get());
@@ -1947,13 +1943,13 @@ nsMessengerMigrator::migrateAddressBookPrefEnum(const char *aPref, void *aClosur
   rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR, getter_AddRefs(ab4xFile));
   NS_ASSERTION(NS_SUCCEEDED(rv) && ab4xFile,"ab migration failed: failed to get profile dir");
   if (NS_FAILED(rv) || !ab4xFile) return;
+  
+  rv = ab4xFile->AppendNative(nsDependentCString(abFileName));
+  NS_ASSERTION(NS_SUCCEEDED(rv),"ab migration failed:  failed to append filename");
+  if (NS_FAILED(rv)) return;
 
   // TODO: Change users of nsIFileSpec to nsIFile and avoid this.
   rv = NS_NewFileSpecFromIFile(ab4xFile, getter_AddRefs(ab4xFileSpec));
-  if (NS_FAILED(rv)) return;
-  
-  rv = ab4xFileSpec->AppendRelativeUnixPath((const char *)abFileName);
-  NS_ASSERTION(NS_SUCCEEDED(rv),"ab migration failed:  failed to append filename");
   if (NS_FAILED(rv)) return;
 
   rv = NS_GetSpecialDirectory(NS_OS_TEMP_DIR, getter_AddRefs(tmpLDIFFile));
@@ -2032,9 +2028,11 @@ nsMessengerMigrator::migrateAddressBookPrefEnum(const char *aPref, void *aClosur
 #ifdef DEBUG_AB_MIGRATION
   printf("remove the tmp file\n");
 #endif /* DEBUG_AB_MIGRATION */
+  rv = ab4xFile->Remove(PR_FALSE);
+  NS_ASSERTION(NS_SUCCEEDED(rv),"failed to delete the na2 file");
+  if (NS_FAILED(rv)) return;
   rv = tmpLDIFFile->Remove(PR_TRUE);
   NS_ASSERTION(NS_SUCCEEDED(rv),"failed to delete the temp ldif file");
-  if (NS_FAILED(rv)) return;
   
   return;
 }
@@ -2323,7 +2321,8 @@ nsMessengerMigrator::MigrateNewsAccount(nsIMsgIdentity *identity, const char *ho
 
     // create the server
 	nsCOMPtr<nsIMsgIncomingServer> server;
-    rv = accountManager->CreateIncomingServer(nsnull, hostname.get(), "nntp",
+    // for news, username is always null
+    rv = accountManager->CreateIncomingServer(nsnull /* username */, hostname.get(), "nntp",
                               getter_AddRefs(server));
     NS_ENSURE_SUCCESS(rv,rv);
  

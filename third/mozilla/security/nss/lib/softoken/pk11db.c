@@ -273,7 +273,10 @@ secmod_getSecmodName(char *param, char **appName, char **filename,PRBool *rw)
    if (pk11_argHasFlag("flags","readOnly",save_params) ||
 	pk11_argHasFlag("flags","noModDB",save_params)) *rw = PR_FALSE;
 
-   if (!secmodName || *secmodName == '\0') secmodName = PORT_Strdup(SECMOD_DB);
+   if (!secmodName || *secmodName == '\0') {
+	if (secmodName) PORT_Free(secmodName);
+	secmodName = PORT_Strdup(SECMOD_DB);
+   }
    *filename = secmodName;
 
    lconfigdir = pk11_EvaluateConfigDir(configdir, appName);
@@ -448,6 +451,7 @@ secmod_EncodeData(DBT *data, char * module)
     pk11_argSetNewCipherFlags(&ssl[0], ciphers);
     SECMOD_PUTLONG(encoded->ssl,ssl[0]);
     SECMOD_PUTLONG(&encoded->ssl[4],ssl[1]);
+    if (ciphers) PORT_Free(ciphers);
 
     offset = (unsigned short) &(((secmodData *)0)->names[0]);
     SECMOD_PUTSHORT(encoded->nameStart,offset);
@@ -493,6 +497,7 @@ loser:
     if (dllName) PORT_Free(dllName);
     if (param) PORT_Free(param);
     if (slotInfo) PORT_Free(slotInfo);
+    if (nss) PORT_Free(nss);
     return rv;
 
 }
@@ -649,18 +654,24 @@ secmod_OpenDB(const char *appName, const char *filename, const char *dbName,
     if (appName) {
 	char *secname = PORT_Strdup(filename);
 	int len = strlen(secname);
+	int status = RDB_FAIL;
 
 	if (len >= 3 && PORT_Strcmp(&secname[len-3],".db") == 0) {
 	   secname[len-3] = 0;
 	}
-    	pkcs11db=rdbopen(appName, "", secname, readOnly ? NO_RDONLY:NO_CREATE);
+    	pkcs11db=
+	   rdbopen(appName, "", secname, readOnly ? NO_RDONLY:NO_RDWR, NULL);
 	if (update && !pkcs11db) {
 	    DB *updatedb;
 
-    	    pkcs11db = rdbopen(appName, "", secname, NO_CREATE);
+    	    pkcs11db = rdbopen(appName, "", secname, NO_CREATE, &status);
 	    if (!pkcs11db) {
+		if (status == RDB_RETRY) {
+ 		    pkcs11db= rdbopen(appName, "", secname, 
+					readOnly ? NO_RDONLY:NO_RDWR, NULL);
+		}
 		PORT_Free(secname);
-		return NULL;
+		return pkcs11db;
 	    }
 	    updatedb = dbopen(dbName, NO_RDONLY, 0600, DB_HASH, 0);
 	    if (updatedb) {

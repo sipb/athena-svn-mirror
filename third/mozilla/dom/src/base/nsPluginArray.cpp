@@ -57,7 +57,6 @@ PluginArrayImpl::PluginArrayImpl(NavigatorImpl* navigator,
                                  nsIDocShell *aDocShell)
 {
   nsresult rv;
-  NS_INIT_ISUPPORTS();
   mNavigator = navigator; // don't ADDREF here, needed for parent of script object.
   mPluginHost = do_GetService(kPluginManagerCID, &rv);
   mPluginCount = 0;
@@ -290,7 +289,6 @@ PluginArrayImpl::GetPlugins()
 
 PluginElementImpl::PluginElementImpl(nsIDOMPlugin* plugin)
 {
-  NS_INIT_ISUPPORTS();
   mPlugin = plugin;  // don't AddRef, see PluginArrayImpl::Item.
   mMimeTypeCount = 0;
   mMimeTypeArray = nsnull;
@@ -396,13 +394,12 @@ PluginElementImpl::GetMimeTypes()
     if (mMimeTypeArray == nsnull)
       return NS_ERROR_OUT_OF_MEMORY;
     for (PRUint32 i = 0; i < mMimeTypeCount; i++) {
-      nsIDOMMimeType* mimeType = nsnull;
-      rv = mPlugin->Item(i, &mimeType);
+      nsCOMPtr<nsIDOMMimeType> mimeType;
+      rv = mPlugin->Item(i, getter_AddRefs(mimeType));
       if (rv != NS_OK)
         break;
       mimeType = new MimeTypeElementImpl(this, mimeType);
-      NS_IF_ADDREF(mimeType);
-      mMimeTypeArray[i] = mimeType;
+      NS_IF_ADDREF(mMimeTypeArray[i] = mimeType);
     }
   }
   return rv;

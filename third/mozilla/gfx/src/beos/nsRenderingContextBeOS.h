@@ -19,7 +19,7 @@
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
- * Contributor(s): Daniel Switkin and Mathias Agopian
+ * Contributor(s): Daniel Switkin, Mathias Agopian, Sergei Dolgov
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -49,14 +49,11 @@
 #include "nsTransform2D.h"
 #include "nsIWidget.h"
 #include "nsRect.h"
-#include "nsIImage.h"
 #include "nsIDeviceContext.h"
 #include "nsVoidArray.h"
 #include "nsGfxCIID.h"
 #include "nsDrawingSurfaceBeOS.h"
 #include "nsRegionBeOS.h"
-
-#define USE_NATIVE_TILING 1
 
 class nsRenderingContextBeOS : public nsRenderingContextImpl
 {
@@ -107,7 +104,7 @@ public:
 	NS_IMETHOD Scale(float aSx, float aSy);
 	NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
 	
-	NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+	NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
 	NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
 	
 	NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -150,7 +147,25 @@ public:
 		nsTextDimensions &aDimensions);
 	NS_IMETHOD GetTextDimensions(const PRUnichar *aString, PRUint32 aLength,
 		nsTextDimensions &aDimensions, PRInt32 *aFontID);
-	
+	NS_IMETHOD GetTextDimensions(const char*       aString,
+								PRInt32           aLength,
+								PRInt32           aAvailWidth,
+								PRInt32*          aBreaks,
+								PRInt32           aNumBreaks,
+								nsTextDimensions& aDimensions,
+								PRInt32&          aNumCharsFit,
+								nsTextDimensions& aLastWordDimensions,
+								PRInt32*          aFontID = nsnull);
+	NS_IMETHOD GetTextDimensions(const PRUnichar*  aString,
+								PRInt32           aLength,
+								PRInt32           aAvailWidth,
+								PRInt32*          aBreaks,
+								PRInt32           aNumBreaks,
+								nsTextDimensions& aDimensions,
+								PRInt32&          aNumCharsFit,
+								nsTextDimensions& aLastWordDimensions,
+								PRInt32*          aFontID = nsnull);
+                               	
 	NS_IMETHOD DrawString(const char *aString, PRUint32 aLength, nscoord aX, nscoord aY,
 		const nscoord *aSpacing);
 	NS_IMETHOD DrawString(const PRUnichar *aString, PRUint32 aLength, nscoord aX, nscoord aY,
@@ -158,19 +173,6 @@ public:
 	NS_IMETHOD DrawString(const nsString &aString, nscoord aX, nscoord aY, PRInt32 aFontID,
 		const nscoord *aSpacing);
 	
-	NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-	NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY, nscoord aWidth,
-		nscoord aHeight); 
-	NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect &aRect);
-	NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect &aSRect, const nsRect &aDRect);
-	
-#ifdef USE_NATIVE_TILING
-	NS_IMETHOD DrawTile(nsIImage *aImage, nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1,
-		nscoord aWidth, nscoord aHeight);
-	NS_IMETHOD DrawTile(nsIImage *aImage, nscoord aSrcXOffset, nscoord aSrcYOffset,
-		const nsRect &aTileRect);
-#endif
-
 	NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
 		const nsRect &aDestBounds, PRUint32 aCopyFlags);
 	NS_IMETHOD RetrieveCurrentNativeGraphicData(PRUint32 *ngd);

@@ -70,6 +70,7 @@
 #include "nsIRDFContainer.h"
 #include "nsIRDFContainerUtils.h"
 #include "nsIRDFInMemoryDataSource.h"
+#include "nsIRDFPropagatableDataSource.h"
 #include "nsIRDFService.h"
 #include "nsIServiceManager.h"
 #include "nsRDFCID.h"
@@ -405,7 +406,6 @@ RDFContainerImpl::IndexOf(nsIRDFNode *aElement, PRInt32 *aIndex)
 RDFContainerImpl::RDFContainerImpl()
     : mDataSource(nsnull), mContainer(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -422,7 +422,8 @@ RDFContainerImpl::Init()
         NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get RDF service");
         if (NS_FAILED(rv)) return rv;
 
-        rv = gRDFService->GetResource(RDF_NAMESPACE_URI "nextVal", &kRDF_nextVal);
+        rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "nextVal"),
+                                      &kRDF_nextVal);
         if (NS_FAILED(rv)) return rv;
 
         rv = nsServiceManager::GetService(kRDFContainerUtilsCID,
@@ -542,16 +543,12 @@ RDFContainerImpl::Renumber(PRInt32 aStartIndex, PRInt32 aIncrement)
         i = count; // we're one-indexed.
     }
 
-    // Note: once we begin batch updates, don't exit this method until
-    // ending batch updates, otherwise viewers will get out of sync
-    nsCOMPtr<nsIRDFObserver>    dsObs;
-    if (mDataSource)
-    {
-        dsObs = do_QueryInterface(mDataSource);
-        if (dsObs)
-        {
-            dsObs->BeginUpdateBatch(mDataSource);
-        }
+    // Note: once we disable notifications, don't exit this method until
+    // enabling notifications
+    nsCOMPtr<nsIRDFPropagatableDataSource> propagatable =
+        do_QueryInterface(mDataSource);
+    if (propagatable) {
+        propagatable->SetPropagateChanges(PR_FALSE);
     }
 
     PRBool  err = PR_FALSE;
@@ -647,9 +644,10 @@ RDFContainerImpl::Renumber(PRInt32 aStartIndex, PRInt32 aIncrement)
         }
     }
 
-    // Note: MUST end update batching before exiting this method
-    // otherwise viewers will get out of sync
-    if (dsObs)  dsObs->EndUpdateBatch(mDataSource);
+    // Note: MUST enable notifications before exiting this method
+    if (propagatable) {
+        propagatable->SetPropagateChanges(PR_TRUE);
+    }
 
     if (err == PR_TRUE) return(rv);
 
@@ -740,7 +738,7 @@ RDFContainerImpl::GetNextValue(nsIRDFResource** aResult)
     nextValStr.Append("_");
     nextValStr.AppendInt(nextVal, 10);
 
-    rv = gRDFService->GetResource(nextValStr.get(), aResult);
+    rv = gRDFService->GetResource(nextValStr, aResult);
     if (NS_FAILED(rv)) return rv;
 
     // Now increment the RDF:nextVal property.
@@ -771,5 +769,3 @@ RDFContainerImpl::GetNextValue(nsIRDFResource** aResult)
 
     return NS_OK;
 }
-
-

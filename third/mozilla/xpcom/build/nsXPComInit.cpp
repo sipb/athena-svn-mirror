@@ -37,7 +37,6 @@
 
 #include "nsXPCOM.h"
 #include "nsXPCOMPrivate.h"
-#include "nsIRegistry.h"
 #include "nscore.h"
 #include "prlink.h"
 #include "nsCOMPtr.h"
@@ -48,6 +47,7 @@
 #include "nsIProperties.h"
 #include "nsPersistentProperties.h"
 #include "nsScriptableInputStream.h"
+#include "nsBinaryStream.h"
 
 #include "nsMemoryImpl.h"
 #include "nsErrorService.h"
@@ -80,8 +80,6 @@
 #include "nsThread.h"
 #include "nsProcess.h"
 
-#include "nsFileSpecImpl.h"
-#include "nsSpecialSystemDirectory.h"
 #include "nsEmptyEnumerator.h"
 
 #include "nsILocalFile.h"
@@ -110,23 +108,14 @@
 #endif
 #include "nsRecyclingAllocator.h"
 
-// seawood tells me there isn't a better way...
-#ifdef XP_PC
-#define XPCOM_DLL  "xpcom.dll"
-#else
-#ifdef XP_MAC
-#define XPCOM_DLL "XPCOM_DLL"
-#else
-#define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
-#endif
-#endif
+#include "SpecialSystemDirectory.h"
 
 // Registry Factory creation function defined in nsRegistry.cpp
 // We hook into this function locally to create and register the registry
 // Since noone outside xpcom needs to know about this and nsRegistry.cpp
 // does not have a local include file, we are putting this definition
 // here rather than in nsIRegistry.h
-extern "C" NS_EXPORT nsresult NS_RegistryGetFactory(nsIFactory** aFactory);
+extern nsresult NS_RegistryGetFactory(nsIFactory** aFactory);
 extern nsresult NS_CategoryManagerGetFactory( nsIFactory** );
 
 #ifdef DEBUG
@@ -183,6 +172,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAtomService);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsExceptionService);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerImpl);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerManager);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryOutputStream)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryInputStream)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsVariant);
 
@@ -210,7 +201,7 @@ nsXPTIInterfaceInfoManagerGetSingleton(nsISupports* outer,
 
 
 PR_STATIC_CALLBACK(nsresult)
-RegisterGenericFactory(nsIComponentManager* compMgr,
+RegisterGenericFactory(nsIComponentRegistrar* registrar,
                        const nsModuleComponentInfo *info)
 {
     nsresult rv;
@@ -218,14 +209,10 @@ RegisterGenericFactory(nsIComponentManager* compMgr,
     rv = NS_NewGenericFactory(&fact, info);
     if (NS_FAILED(rv)) return rv;
 
-    // what I want to do here is QI for a Component Registration Manager.  Since this
-    // has not been invented yet, QI to the obsolete manager.  Kids, don't do this at home.
-    nsCOMPtr<nsIComponentRegistrar> registrar = do_QueryInterface(compMgr, &rv);
-    if (registrar)
-        rv = registrar->RegisterFactory(info->mCID, 
-                                        info->mDescription,
-                                        info->mContractID, 
-                                        fact);
+    rv = registrar->RegisterFactory(info->mCID, 
+                                    info->mDescription,
+                                    info->mContractID, 
+                                    fact);
     NS_RELEASE(fact);
     return rv;
 }
@@ -300,6 +287,8 @@ static const nsModuleComponentInfo components[] = {
     COMPONENT(ARENA, ArenaImpl::Create),
     COMPONENT(BYTEBUFFER, ByteBufferImpl::Create),
     COMPONENT(SCRIPTABLEINPUTSTREAM, nsScriptableInputStream::Create),
+    COMPONENT(BINARYINPUTSTREAM, nsBinaryInputStreamConstructor),
+    COMPONENT(BINARYOUTPUTSTREAM, nsBinaryOutputStreamConstructor),
 
 #define NS_PROPERTIES_CLASSNAME  "Properties"
     COMPONENT(PROPERTIES, nsProperties::Create),
@@ -356,8 +345,6 @@ static const nsModuleComponentInfo components[] = {
 #define NS_DIRECTORY_SERVICE_CLASSNAME  "nsIFile Directory Service"
     COMPONENT(DIRECTORY_SERVICE, nsDirectoryService::Create),
     COMPONENT(PROCESS, nsProcessConstructor),
-    COMPONENT(FILESPEC, nsFileSpecImpl::Create),
-    COMPONENT(DIRECTORYITERATOR, nsDirectoryIteratorImpl::Create),
 
     COMPONENT(STRINGINPUTSTREAM, nsStringInputStreamConstructor),
     COMPONENT(MULTIPLEXINPUTSTREAM, nsMultiplexInputStreamConstructor),
@@ -461,14 +448,6 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
                 gDirectoryService->Set(NS_XPCOM_INIT_CURRENT_PROCESS_DIR, binDirectory);
                 binDirectory->Clone(getter_AddRefs(xpcomLib));
             }
-
-            //Since people are still using the nsSpecialSystemDirectory, we should init it.
-            nsCAutoString path;
-            binDirectory->GetNativePath(path);
-            nsFileSpec spec(path.get());
-
-            nsSpecialSystemDirectory::Set(nsSpecialSystemDirectory::Moz_BinDirectory, &spec);
-
         }
         else {
             gDirectoryService->Get(NS_XPCOM_CURRENT_PROCESS_DIR, 
@@ -520,20 +499,6 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
     // 2. Register the global services with the component manager so that
     //    clients can create new objects.
 
-    // Registry
-    nsIFactory *registryFactory = NULL;
-    rv = NS_RegistryGetFactory(&registryFactory);
-    if (NS_FAILED(rv)) return rv;
-
-    NS_DEFINE_CID(kRegistryCID, NS_REGISTRY_CID);
-
-    rv = compMgr->RegisterFactory(kRegistryCID,
-                                  NS_REGISTRY_CLASSNAME,
-                                  NS_REGISTRY_CONTRACTID,
-                                  registryFactory, PR_TRUE);
-    NS_RELEASE(registryFactory);
-    if (NS_FAILED(rv)) return rv;
-
     // Category Manager
     {
       nsCOMPtr<nsIFactory> categoryManagerFactory;
@@ -550,9 +515,14 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
       if ( NS_FAILED(rv) ) return rv;
     }
 
-    for (int i = 0; i < components_length; i++)
-        RegisterGenericFactory(compMgr, &components[i]);
-
+    // what I want to do here is QI for a Component Registration Manager.  Since this
+    // has not been invented yet, QI to the obsolete manager.  Kids, don't do this at home.
+    nsCOMPtr<nsIComponentRegistrar> registrar = do_QueryInterface(
+        NS_STATIC_CAST(nsIComponentManager*,compMgr), &rv);
+    if (registrar) {
+        for (int i = 0; i < components_length; i++)
+            RegisterGenericFactory(registrar, &components[i]);
+    }
     rv = nsComponentManagerImpl::gComponentManager->ReadPersistentRegistry();
 #ifdef DEBUG    
     if (NS_FAILED(rv)) {
@@ -577,12 +547,25 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
             nsCOMPtr<nsIFile> greDir;
             PRBool persistent = PR_TRUE;
 
-            appFileLocationProvider->GetFile(NS_GRE_DIR, &persistent, getter_AddRefs(greDir));
+            appFileLocationProvider->GetFile(NS_GRE_COMPONENT_DIR, &persistent, getter_AddRefs(greDir));
 
             if (greDir)
             {
+#ifdef DEBUG_dougt
+	printf("start - Registering GRE components\n");
+#endif
+                // If the GRE contains any loaders, we want to know about it so that we can cause another
+                // autoregistration of the applications component directory.
+                int loaderCount = nsComponentManagerImpl::gComponentManager->GetLoaderCount();
                 rv = nsComponentManagerImpl::gComponentManager->AutoRegister(greDir);
-                if (NS_FAILED(rv))
+                
+                if (loaderCount != nsComponentManagerImpl::gComponentManager->GetLoaderCount()) 
+                    nsComponentManagerImpl::gComponentManager->AutoRegisterNonNativeComponents(nsnull);        
+
+#ifdef DEBUG_dougt
+	printf("end - Registering GRE components\n");
+#endif          
+				if (NS_FAILED(rv))
                 {
                     NS_ERROR("Could not AutoRegister GRE components");
                     return rv;

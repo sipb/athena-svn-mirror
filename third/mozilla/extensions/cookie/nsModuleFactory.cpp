@@ -52,6 +52,8 @@
 #include "nsCookieHTTPNotify.h"
 #include "nsICategoryManager.h"
 #include "nsXPIDLString.h"
+#include "nsCookiePromptService.h"
+#include "nsCookiePermission.h"
 
 // Define the constructor function for the objects
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsCookie)
@@ -62,6 +64,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsImgManager, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPermissionManager, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPopupWindowManager, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsCookieHTTPNotify, Init)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsCookiePromptService)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsCookiePermission, Init)
 
 static NS_METHOD
 RegisterContentPolicy(nsIComponentManager *aCompMgr, nsIFile *aPath,
@@ -132,6 +136,16 @@ static const nsModuleComponentInfo components[] = {
       NS_POPUPWINDOWMANAGER_CID,
       NS_POPUPWINDOWMANAGER_CONTRACTID,
       nsPopupWindowManagerConstructor
+    },
+    { "CookiePromptService",
+      NS_COOKIEPROMPTSERVICE_CID,
+      NS_COOKIEPROMPTSERVICE_CONTRACTID,
+      nsCookiePromptServiceConstructor
+    },
+    { "CookiePermission",
+      NS_COOKIEPERMISSION_CID,
+      NS_COOKIEPERMISSION_CONTRACTID,
+      nsCookiePermissionConstructor
     },
     { NS_COOKIEHTTPNOTIFY_CLASSNAME,
       NS_COOKIEHTTPNOTIFY_CID,

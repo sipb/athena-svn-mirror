@@ -40,7 +40,7 @@
 #include "nsButtonBoxFrame.h"
 #include "nsIContent.h"
 #include "nsIDocument.h"
-#include "nsIDOMXULDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsIDOMNodeList.h"
 #include "nsHTMLAtoms.h"
 #include "nsINameSpaceManager.h"
@@ -181,21 +181,6 @@ nsButtonBoxFrame::MouseClicked (nsIPresContext* aPresContext, nsGUIEvent* aEvent
   nsCOMPtr<nsIPresShell> shell;
   rv = aPresContext->GetShell(getter_AddRefs(shell));
   if (NS_SUCCEEDED(rv) && shell) {
-    // See if we have a command elt.  If so, we execute on the command instead
-    // of on our content element.
-    nsAutoString command;
-    mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::command, command);
-    if (!command.IsEmpty()) {
-      nsCOMPtr<nsIDocument> doc;
-      mContent->GetDocument(*getter_AddRefs(doc));
-      nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(doc));
-      nsCOMPtr<nsIDOMElement> commandElt;
-      domDoc->GetElementById(command, getter_AddRefs(commandElt));
-      nsCOMPtr<nsIContent> commandContent(do_QueryInterface(commandElt));
-      if (commandContent)
-        shell->HandleDOMEventWithTarget(commandContent, &event, &status);
-    }
-    else
-      shell->HandleDOMEventWithTarget(mContent, &event, &status);
+    shell->HandleDOMEventWithTarget(mContent, &event, &status);
   }
 }

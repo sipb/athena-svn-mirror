@@ -60,7 +60,6 @@ NS_INTERFACE_MAP_END
 
 nsXPathExpression::nsXPathExpression(Expr* aExpression) : mExpression(aExpression)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsXPathExpression::~nsXPathExpression()
@@ -140,7 +139,7 @@ nsXPathExpression::Evaluate(nsIDOMNode *aContextNode,
             case ExprResult::NODESET:
                 resultType = nsIDOMXPathResult::UNORDERED_NODE_ITERATOR_TYPE;
                 break;
-            case ExprResult::TREE_FRAGMENT:
+            case ExprResult::RESULT_TREE_FRAGMENT:
                 NS_ERROR("Can't return a tree fragment!");
                 delete exprResult;
                 return NS_ERROR_FAILURE;
@@ -167,7 +166,7 @@ nsXPathExpression::Evaluate(nsIDOMNode *aContextNode,
  */
 
 nsresult nsXPathExpression::EvalContextImpl::getVariable(PRInt32 aNamespace, 
-                                                         txAtom* aLName,
+                                                         nsIAtom* aLName,
                                                          ExprResult*& aResult)
 {
     aResult = 0;
@@ -179,8 +178,14 @@ MBool nsXPathExpression::EvalContextImpl::isStripSpaceAllowed(Node* aNode)
     return MB_FALSE;
 }
 
-void nsXPathExpression::EvalContextImpl::receiveError(const String& aMsg,
-                                                       nsresult aRes)
+void* nsXPathExpression::EvalContextImpl::getPrivateContext()
+{
+    // we don't have a private context here.
+    return nsnull;
+}
+
+void nsXPathExpression::EvalContextImpl::receiveError(const nsAString& aMsg,
+                                                      nsresult aRes)
 {
     mLastError = aRes;
     // forward aMsg to console service?

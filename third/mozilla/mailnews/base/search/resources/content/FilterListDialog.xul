@@ -32,6 +32,7 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
   xmlns:nc="http://home.netscape.com/NC-rdf#"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   windowtype="mailnews:filterlist"
+  width="480" height="360"
   onload="onLoad();"
   onclose="return onFilterClose();"
   persist="width height screenX screenY"
@@ -48,20 +49,46 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
     <label value="&filtersForPrefix.label;" 
            accesskey="&filtersForPrefix.accesskey;" control="serverMenu"/>
 
-      <menulist oncommand="onServerClick(event);" id="serverMenu">
-        <menupopup datasources="rdf:msgaccountmanager rdf:mailnewsfolders"
-                   containment="http://home.netscape.com/NC-rdf#child" ref="msgaccounts:/">
+      <menulist oncommand="onServerClick(event);" id="serverMenu"
+          datasources="rdf:msgaccountmanager rdf:mailnewsfolders"
+          sortResource="http://home.netscape.com/NC-rdf#FolderTreeName"
+          sortDirection="ascending"
+          ref="msgaccounts:/">
           <template>
-            <rule nc:SupportsFilters="true">
-              <menuitem uri="..." value="..."
+            <rule iscontainer="true" isempty="false" nc:ServerType="nntp">
+              <menupopup>
+                <menu uri="..." 
+                                class="folderMenuItem menu-iconic" 
+                                IsServer="rdf:http://home.netscape.com/NC-rdf#IsServer"
+                                IsSecure="rdf:http://home.netscape.com/NC-rdf#IsSecure"
+                                ServerType="rdf:http://home.netscape.com/NC-rdf#ServerType"
+                                label="rdf:http://home.netscape.com/NC-rdf#Name">
+                  <menupopup class="menulist-menupopup"/>
+                </menu>
+              </menupopup>
+            </rule>
+            <rule nc:ServerType="nntp">
+              <menupopup>
+                <menuitem uri="..." value="..."  
                  class="folderMenuItem menuitem-iconic"
                  IsServer="rdf:http://home.netscape.com/NC-rdf#IsServer"
                  IsSecure="rdf:http://home.netscape.com/NC-rdf#IsSecure"
                  ServerType="rdf:http://home.netscape.com/NC-rdf#ServerType"
                  label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+              </menupopup>
+            </rule>
+            <rule nc:SupportsFilters="true">
+              <menupopup>
+                <menuitem uri="..." value="..."
+                 class="folderMenuItem menuitem-iconic"
+                 IsServer="rdf:http://home.netscape.com/NC-rdf#IsServer"
+                 IsSecure="rdf:http://home.netscape.com/NC-rdf#IsSecure"
+                 ServerType="rdf:http://home.netscape.com/NC-rdf#ServerType"
+                 label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+              </menupopup>
             </rule>
           </template>
-        </menupopup>
+          <menupopup/>
       </menulist>
       <spacer flex="1"/> 
       <vbox>
@@ -94,7 +121,7 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
 
             <treecols>
               <treecol id="nameColumn" flex="1" label="&nameColumn.label;" sort="?Name"/>
-              <treecol id="activeColumn" label="&activeColumn.label;"/>
+              <treecol id="activeColumn" label="&activeColumn.label;" cycler="true"/>
             </treecols>
 
             <template>
@@ -135,6 +162,8 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
                   oncommand="onEditFilter();"/>
           <button id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" 
                   oncommand="onDeleteFilter();"/>
+          <button label="&helpButton.label;" accesskey="&helpButton.accesskey;" 
+                  oncommand="openHelp('mail-filters');"/>
           <spacer flex="1"/>
           <button id="reorderUpButton" label="&reorderUpButton.label;" accesskey="&reorderUpButton.accesskey;" 
                   oncommand="onUp(event);"/>
@@ -160,7 +189,7 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
                   runlabel="&runFilters.label;" 
                   runaccesskey="&runFilters.accesskey;" 
                   stoplabel="&stopFilters.label;" 
-                  stopaccesskey="&stopFilters.label;" 
+                  stopaccesskey="&stopFilters.accesskey;"
                   oncommand="runSelectedFilters();" disabled="true"/>
         </vbox>
       </row>
@@ -169,10 +198,12 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
 
   <separator/>
 
-  <hbox id="statusContainerBox" align="center">
-    <spacer flex="1"/>
-    <label id="statusText" crop="right" flex="1"/> 
-    <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
-  </hbox>
+  <statusbar class="chromeclass-status" id="status-bar">    
+    <statusbarpanel class="statusbarpanel-progress">
+      <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
+    </statusbarpanel>
+    <statusbarpanel id="statusText" crop="right" flex="1"/>
+  </statusbar> 
+
 </window>
 

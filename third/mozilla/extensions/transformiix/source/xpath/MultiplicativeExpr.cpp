@@ -84,7 +84,7 @@ ExprResult* MultiplicativeExpr::evaluate(txIEvalContext* aContext)
     switch ( op ) {
         case DIVIDE:
             if (rightDbl == 0) {
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
                 /* XXX MSVC miscompiles such that (NaN == 0) */
                 if (Double::isNaN(rightDbl))
                     result = Double::NaN;
@@ -105,7 +105,7 @@ ExprResult* MultiplicativeExpr::evaluate(txIEvalContext* aContext)
                 result = Double::NaN;
             }
             else {
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
                 /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
                 if (!Double::isInfinite(leftDbl) && Double::isInfinite(rightDbl))
                     result = leftDbl;
@@ -129,24 +129,24 @@ ExprResult* MultiplicativeExpr::evaluate(txIEvalContext* aContext)
  * other #toString() methods for Expressions.
  * @return the String representation of this Expr.
 **/
-void MultiplicativeExpr::toString(String& str) {
+void MultiplicativeExpr::toString(nsAString& str) {
 
     if ( leftExpr ) leftExpr->toString(str);
-    else str.append("null");
+    else str.Append(NS_LITERAL_STRING("null"));
 
     switch ( op ) {
         case DIVIDE:
-            str.append(" div ");
+            str.Append(NS_LITERAL_STRING(" div "));
             break;
         case MODULUS:
-            str.append(" mod ");
+            str.Append(NS_LITERAL_STRING(" mod "));
             break;
         default:
-            str.append(" * ");
+            str.Append(NS_LITERAL_STRING(" * "));
             break;
     }
     if ( rightExpr ) rightExpr->toString(str);
-    else str.append("null");
+    else str.Append(NS_LITERAL_STRING("null"));
 
 } //-- toString
 

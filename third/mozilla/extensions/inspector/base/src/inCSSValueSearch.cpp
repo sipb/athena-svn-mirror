@@ -46,24 +46,26 @@
 static NS_DEFINE_CID(kInspectorCSSUtilsCID, NS_INSPECTORCSSUTILS_CID);
 
 ///////////////////////////////////////////////////////////////////////////////
-
 inCSSValueSearch::inCSSValueSearch()
+  : mResults(nsnull),
+    mProperties(nsnull),
+    mLastResult(nsnull),
+    mBaseURL(nsnull),
+    mTextCriteria(nsnull),
+    mResultCount(0),
+    mPropertyCount(0),
+    mIsActive(PR_FALSE),
+    mHoldResults(PR_TRUE),
+    mReturnRelativeURLs(PR_TRUE),
+    mNormalizeChromeURLs(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
-  
-  mHoldResults = PR_TRUE;
-  mReturnRelativeURLs = PR_FALSE;
-  mNormalizeChromeURLs = PR_FALSE;
-  mResultCount = 0;
-
   mProperties = new nsCSSProperty[100];
-  mPropertyCount = 0;
   mCSSUtils = do_GetService(kInspectorCSSUtilsCID);
 }
 
 inCSSValueSearch::~inCSSValueSearch()
 {
-  delete mProperties;
+  delete[] mProperties;
   delete mResults;
 }
 
@@ -108,10 +110,11 @@ inCSSValueSearch::SearchSync()
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
   if (doc) {
     PRInt32 count = 0;
-    doc->GetNumberOfStyleSheets(&count);
+    // we want all the sheets, including inline style and such
+    doc->GetNumberOfStyleSheets(PR_TRUE, &count);
     for (PRInt32 i = 0; i < count; i++) {
       nsCOMPtr<nsIStyleSheet> sheet;
-      doc->GetStyleSheetAt(i, getter_AddRefs(sheet));
+      doc->GetStyleSheetAt(i, PR_TRUE, getter_AddRefs(sheet));
       SearchStyleSheet(sheet);
     }
   }

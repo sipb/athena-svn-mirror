@@ -210,7 +210,6 @@ protected:
   PRBool WidgetVisible  (nsRect   &aBounds);
 
   PRBool         mIsShown;
-  PRBool mShown;
   int            mVisibility; // this is an int because that's the way X likes it
   PRUint32       mPreferredWidth;
   PRUint32       mPreferredHeight;
@@ -240,7 +239,7 @@ protected:
 protected:
   PRBool       mListenForResizes;     // If we're native we want to listen.
   static       nsHashtable *          gsWindowList;
-  static       Cursor                 gsXlibCursorCache[eCursor_count_up_down + 1];
+  static       Cursor                 gsXlibCursorCache[eCursorCount];
 
   // Variables for infomation about the current popup window and its listener
   static nsCOMPtr<nsIRollupListener> gRollupListener;

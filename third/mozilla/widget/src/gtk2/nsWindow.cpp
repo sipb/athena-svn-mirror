@@ -58,11 +58,20 @@
 #include "nsIPref.h"
 #include "nsIServiceManager.h"
 
+#ifdef ACCESSIBILITY
+#include "prenv.h"
+#include "stdlib.h"
+static PRBool sAccessibilityChecked = PR_FALSE;
+static PRBool sAccessibilityEnabled = PR_FALSE;
+static const char sGconfAccKey [] = "/desktop/gnome/interface/accessibility";
+static const char sAccEnv [] = "GNOME_ACCESSIBILITY";
+#endif
+
 /* For SetIcon */
-#include "nsSpecialSystemDirectory.h"
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsXPIDLString.h"
 #include "nsIFile.h"
+#include "nsILocalFile.h"
 
 /* utility functions */
 static PRBool     check_for_rollup(GdkWindow *aWindow,
@@ -79,6 +88,10 @@ static GdkCursor *get_gtk_cursor(nsCursor aCursor);
 static GdkWindow *get_inner_gdk_window (GdkWindow *aWindow,
                                         gint x, gint y,
                                         gint *retx, gint *rety);
+
+static inline PRBool is_context_menu_key(const nsKeyEvent& inKeyEvent);
+static void   key_event_to_context_menu_event(const nsKeyEvent* inKeyEvent,
+                                              nsMouseEvent* outCMEvent);
 
 /* callbacks from widgets */
 static gboolean expose_event_cb           (GtkWidget *widget,
@@ -115,9 +128,19 @@ static gboolean window_state_event_cb     (GtkWidget *widget,
                                            GdkEventWindowState *event);
 static gboolean property_notify_event_cb  (GtkWidget *widget,
                                            GdkEventProperty *event);
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 static GdkFilterReturn plugin_window_filter_func (GdkXEvent *gdk_xevent, 
                                                   GdkEvent *event, 
                                                   gpointer data);
+static GdkFilterReturn plugin_client_message_filter (GdkXEvent *xevent,
+                                                     GdkEvent *event,
+                                                     gpointer data);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 static gboolean drag_motion_event_cb      (GtkWidget *aWidget,
                                            GdkDragContext *aDragContext,
                                            gint aX,
@@ -145,41 +168,44 @@ static void    drag_data_received_event_cb(GtkWidget *aWidget,
 
 /* initialization static functions */
 static nsresult    initialize_prefs        (void);
-static nsresult    initialize_default_icon (void);
   
 // this is the last window that had a drag event happen on it.
 nsWindow *nsWindow::mLastDragMotionWindow = NULL;
 
+// This is the time of the last button press event.  The drag service
+// uses it as the time to start drags.
+guint32   nsWindow::mLastButtonPressTime = 0;
+
 static NS_DEFINE_IID(kCDragServiceCID,  NS_DRAGSERVICE_CID);
 
-static PRBool            gJustGotActivate      = PR_FALSE;
+// the current focus window
+static nsWindow         *gFocusWindow          = NULL;
 static PRBool            gGlobalsInitialized   = PR_FALSE;
 static PRBool            gRaiseWindows         = PR_TRUE;
+static nsWindow         *gPluginFocusWindow    = NULL;
 
 nsCOMPtr  <nsIRollupListener> gRollupListener;
 nsWeakPtr                     gRollupWindow;
 
 #ifdef USE_XIM
 
-struct nsXICLookupEntry {
-    PLDHashEntryHdr mKeyHash;
-    nsWindow*   mShellWindow;
-    GtkIMContext* mXIC;
-};
+static nsWindow    *gIMEFocusWindow = NULL;
+static GdkEventKey *gKeyEvent = NULL;
+static PRBool       gKeyEventCommitted = PR_FALSE;
+static PRBool       gKeyEventChanged = PR_FALSE;
 
-PLDHashTable nsWindow::gXICLookupTable;
-nsWindow *nsWindow::gFocusedWindow;
-
-static void IM_commit_cb              (GtkIMContext *context,
-                                       const gchar *str,
-                                       nsWindow *window);
-static void IM_preedit_changed_cb     (GtkIMContext *context,
-                                       nsWindow *window);
-static void IMSetTextRange            (const PRInt32 aLen,
+static void IM_commit_cb              (GtkIMContext *aContext,
+                                       const gchar *aString,
+                                       nsWindow *aWindow);
+static void IM_preedit_changed_cb     (GtkIMContext *aContext,
+                                       nsWindow *aWindow);
+static void IM_set_text_range         (const PRInt32 aLen,
                                        const gchar *aPreeditString,
                                        const PangoAttrList *aFeedback,
                                        PRUint32 *aTextRangeListLengthResult,
                                        nsTextRangeArray *aTextRangeListResult);
+
+static GtkIMContext *IM_get_input_context(MozDrawingarea *aArea);
 
 // If after selecting profile window, the startup fail, please refer to
 // http://bugzilla.gnome.org/show_bug.cgi?id=88940
@@ -188,11 +214,10 @@ static void IMSetTextRange            (const PRInt32 aLen,
 #define kWindowPositionSlop 20
 
 // cursor cache
-GdkCursor *gCursorCache[eCursor_count_up_down + 1];
+GdkCursor *gCursorCache[eCursorCount];
 
 nsWindow::nsWindow()
 {
-    mFocusChild          = nsnull;
     mContainer           = nsnull;
     mDrawingarea         = nsnull;
     mShell               = nsnull;
@@ -200,12 +225,12 @@ nsWindow::nsWindow()
     mContainerGotFocus   = PR_FALSE;
     mContainerLostFocus  = PR_FALSE;
     mContainerBlockFocus = PR_FALSE;
-    mHasFocus            = PR_FALSE;
     mInKeyRepeat         = PR_FALSE;
     mIsVisible           = PR_FALSE;
     mRetryPointerGrab    = PR_FALSE;
     mRetryKeyboardGrab   = PR_FALSE;
     mHasNonXembedPlugin  = PR_FALSE;
+    mActivatePending     = PR_FALSE;
     mTransientParent     = nsnull;
     mWindowType          = eWindowType_child;
     mSizeState           = nsSizeMode_Normal;
@@ -216,7 +241,6 @@ nsWindow::nsWindow()
 
         // It's OK if either of these fail, but it may not be one day.
         initialize_prefs();
-        initialize_default_icon();
     }
     
     if (mLastDragMotionWindow == this)
@@ -229,72 +253,14 @@ nsWindow::nsWindow()
     mDragMotionTimerID = 0;
 
 #ifdef USE_XIM
-    if (gXICLookupTable.ops == NULL) {
-        PL_DHashTableInit(&gXICLookupTable, PL_DHashGetStubOps(), nsnull,
-            sizeof(nsXICLookupEntry), PL_DHASH_MIN_SIZE);
-    }
-    mIMEShellWindow = nsnull;
+    mIMContext = nsnull;
+    mComposingText = PR_FALSE;
 #endif
 
 #ifdef ACCESSIBILITY
-    mTopLevelAccessible  = nsnull;
+    mRootAccessible  = nsnull;
 #endif
 }
-
-#ifdef USE_XIM
-void
-nsWindow::IMEGetShellWindow(void)
-{
-    GtkWidget* top_window = nsnull;
-    GetToplevelWidget(&top_window);
-    if (top_window) {
-        mIMEShellWindow = get_window_for_gtk_widget(top_window);
-    }
-}
-
-GtkIMContext*
-nsWindow::IMEGetContext()
-{
-    if (!mIMEShellWindow) {
-        return NULL;
-    }
-    PLDHashEntryHdr* hash_entry;
-    nsXICLookupEntry* entry;
-
-    hash_entry = PL_DHashTableOperate(&gXICLookupTable,
-                                      mIMEShellWindow, PL_DHASH_LOOKUP);
-
-    if (hash_entry) {
-        entry = NS_REINTERPRET_CAST(nsXICLookupEntry *, hash_entry);
-        if (entry->mXIC) {
-            return entry->mXIC;
-        }
-    }
-    return NULL;
-}
-
-void
-nsWindow::IMECreateContext(GdkWindow* aGdkWindow)
-{
-    PLDHashEntryHdr* hash_entry;
-    nsXICLookupEntry* entry;
-    GtkIMContext *im = gtk_im_multicontext_new();
-    if (im) {
-        hash_entry = PL_DHashTableOperate(&gXICLookupTable, this, PL_DHASH_ADD);
-        if (hash_entry) {
-            entry = NS_REINTERPRET_CAST(nsXICLookupEntry *, hash_entry);
-            entry->mShellWindow = this;
-            entry->mXIC = im;
-        }
-        gtk_im_context_set_client_window(im, aGdkWindow);
-        g_signal_connect(G_OBJECT(im), "commit",
-                         G_CALLBACK(IM_commit_cb), this);
-        g_signal_connect(G_OBJECT(im), "preedit_changed",
-                         G_CALLBACK(IM_preedit_changed_cb), this);
-        this->mIMEShellWindow = this;
-    }
-}
-#endif
 
 nsWindow::~nsWindow()
 {
@@ -319,9 +285,6 @@ nsWindow::Create(nsIWidget        *aParent,
 {
     nsresult rv = NativeCreate(aParent, nsnull, aRect, aHandleEventFunction,
                                aContext, aAppShell, aToolkit, aInitData);
-#ifdef ACCESSIBILITY
-    CreateTopLevelAccessible();
-#endif
     return rv;
 }
 
@@ -336,20 +299,18 @@ nsWindow::Create(nsNativeWidget aParent,
 {
     nsresult rv = NativeCreate(nsnull, aParent, aRect, aHandleEventFunction,
                                aContext, aAppShell, aToolkit, aInitData);
-#ifdef ACCESSIBILITY
-    CreateTopLevelAccessible();
-#endif
     return rv;
 }
 
 NS_IMETHODIMP
 nsWindow::Destroy(void)
 {
-    if (mIsDestroyed)
+    if (mIsDestroyed || !mCreated)
         return NS_OK;
 
     LOG(("nsWindow::Destroy [%p]\n", (void *)this));
     mIsDestroyed = PR_TRUE;
+    mCreated = PR_FALSE;
 
     // ungrab if required
     nsCOMPtr<nsIWidget> rollupWidget = do_QueryReferent(gRollupWindow);
@@ -380,29 +341,18 @@ nsWindow::Destroy(void)
     }
 
 #ifdef USE_XIM
-    GtkIMContext *im = IMEGetContext();
-    // unset focus before destroy
-    if (im && !mShell && mIMEShellWindow == gFocusedWindow) {
-        gtk_im_context_focus_out(im);
-    }
-    // if shell, delete GtkIMContext
-    if (im && mShell) {
-        gtk_im_context_reset(im);
-        PL_DHashTableOperate(&gXICLookupTable, this, PL_DHASH_REMOVE);
-        g_object_unref(G_OBJECT(im));
-    }
-    mIMEShellWindow = nsnull;
+    IMEDestroyContext();
 #endif
 
     // make sure that we remove ourself as the focus window
-    if (mHasFocus) {
-        LOG(("automatically losing focus...\n"));
-        mHasFocus = PR_FALSE;
-        // get the owning gtk widget and the nsWindow for that widget and
-        // remove ourselves as the focus widget tracked in that window
-        nsWindow *owningWindow =
-            get_owning_window_for_gdk_window(mDrawingarea->inner_window);
-        owningWindow->mFocusChild = nsnull;
+    if (gFocusWindow == this) {
+        LOGFOCUS(("automatically losing focus...\n"));
+        gFocusWindow = nsnull;
+    }
+
+    // make sure that we remove ourself as the plugin focus window
+    if (gPluginFocusWindow == this) {
+        gPluginFocusWindow->LoseNonXEmbedPluginFocus();
     }
 
     // Remove our reference to the window group.  If there was a window
@@ -429,9 +379,11 @@ nsWindow::Destroy(void)
     OnDestroy();
 
 #ifdef ACCESSIBILITY
-    if (mTopLevelAccessible) {
-        nsAccessibilityInterface::RemoveTopLevel(mTopLevelAccessible);
-        mTopLevelAccessible = nsnull;
+    if (mRootAccessible) {
+        nsCOMPtr<nsIAccessNode> accNode(do_QueryInterface(mRootAccessible));
+        if (accNode)
+            accNode->Shutdown();
+        mRootAccessible = nsnull;
     }
 #endif
 
@@ -498,14 +450,21 @@ nsWindow::ConstrainPosition(PRBool aAllowSlop, PRInt32 *aX, PRInt32 *aY)
 NS_IMETHODIMP
 nsWindow::Move(PRInt32 aX, PRInt32 aY)
 {
-    if (aX == mBounds.x && aY == mBounds.y)
-        return NS_OK;
-
     LOG(("nsWindow::Move [%p] %d %d\n", (void *)this,
          aX, aY));
 
+    // Since a popup window's x/y coordinates are in relation to to
+    // the parent, the parent might have moved so we always move a
+    // popup window.
+    if (aX == mBounds.x && aY == mBounds.y &&
+        mWindowType != eWindowType_popup)
+        return NS_OK;
+
     mBounds.x = aX;
     mBounds.y = aY;
+
+    if (!mCreated)
+        return NS_OK;
 
     if (mIsTopLevel) {
         if (mParent && mWindowType == eWindowType_popup) {
@@ -519,7 +478,7 @@ nsWindow::Move(PRInt32 aX, PRInt32 aY)
             gtk_window_move(GTK_WINDOW(mShell), aX, aY);
         }
     }
-    else {
+    else if (mDrawingarea) {
         moz_drawingarea_move(mDrawingarea, aX, aY);
     }
 
@@ -582,7 +541,10 @@ nsWindow::SetFocus(PRBool aRaise)
     // Make sure that our owning widget has focus.  If it doesn't try to
     // grab it.  Note that we don't set our focus flag in this case.
 
-    LOG(("SetFocus [%p]\n", (void *)this));
+    LOGFOCUS(("  SetFocus [%p]\n", (void *)this));
+
+    if (!mDrawingarea)
+        return NS_ERROR_FAILURE;
 
     GtkWidget *owningWidget =
         get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
@@ -603,8 +565,7 @@ nsWindow::SetFocus(PRBool aRaise)
         return NS_ERROR_FAILURE;
 
     if (!GTK_WIDGET_HAS_FOCUS(owningWidget)) {
-
-        LOG(("grabbing focus for the toplevel\n"));
+        LOGFOCUS(("  grabbing focus for the toplevel [%p]\n", (void *)this));
         owningWindow->mContainerBlockFocus = PR_TRUE;
         gtk_widget_grab_focus(owningWidget);
         owningWindow->mContainerBlockFocus = PR_FALSE;
@@ -612,8 +573,8 @@ nsWindow::SetFocus(PRBool aRaise)
         DispatchGotFocusEvent();
 
         // unset the activate flag
-        if (gJustGotActivate) {
-            gJustGotActivate = PR_FALSE;
+        if (owningWindow->mActivatePending) {
+            owningWindow->mActivatePending = PR_FALSE;
             DispatchActivateEvent();
         }
 
@@ -621,38 +582,46 @@ nsWindow::SetFocus(PRBool aRaise)
     }
 
     // If this is the widget that already has focus, return.
-    if (mHasFocus) {
-        LOG(("already have focus...\n"));
+    if (gFocusWindow == this) {
+        LOGFOCUS(("  already have focus [%p]\n", (void *)this));
         return NS_OK;
     }
 
-    // If there is already a focued child window, dispatch a LOSTFOCUS
+    // If there is already a focused child window, dispatch a LOSTFOCUS
     // event from that widget and unset its got focus flag.
-    if (owningWindow->mFocusChild) {
-        LOG(("removing focus child %p\n", (void *)owningWindow->mFocusChild));
-        owningWindow->mFocusChild->LoseFocus();
+    if (gFocusWindow) {
+#ifdef USE_XIM
+        // If the focus window and this window share the same input
+        // context we don't have to change the focus of the IME
+        // context
+        if (IM_get_input_context(this->mDrawingarea) !=
+            IM_get_input_context(gFocusWindow->mDrawingarea))
+            gFocusWindow->IMELoseFocus();
+#endif
+        gFocusWindow->LoseFocus();
     }
 
     // Set this window to be the focused child window, update our has
     // focus flag and dispatch a GOTFOCUS event.
-    owningWindow->mFocusChild = this;
-    mHasFocus = PR_TRUE;
+    gFocusWindow = this;
 
 #ifdef USE_XIM
-    GtkIMContext *im = IMEGetContext();
-    if (!mIsTopLevel && im && !mFocusChild) {
-        gFocusedWindow = this;
-        gtk_im_context_focus_in(im);
-    }
+    IMESetFocus();
 #endif
+
+    LOGFOCUS(("  widget now has focus - dispatching events [%p]\n", 
+              (void *)this));
 
     DispatchGotFocusEvent();
     
-    // make sure to unset the activate flag and send an activate event
-    if (gJustGotActivate) {
-        gJustGotActivate = PR_FALSE;
+    // unset the activate flag
+    if (owningWindow->mActivatePending) {
+        owningWindow->mActivatePending = PR_FALSE;
         DispatchActivateEvent();
     }
+
+    LOGFOCUS(("  done dispatching events in SetFocus() [%p]\n",
+              (void *)this));
 
     return NS_OK;
 }
@@ -698,7 +667,7 @@ nsWindow::SetCursor(nsCursor aCursor)
 {
     // if we're not the toplevel window pass up the cursor request to
     // the toplevel window to handle it.
-    if (!mContainer) {
+    if (!mContainer && mDrawingarea) {
         GtkWidget *widget =
             get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
         nsWindow *window = get_window_for_gtk_widget(widget);
@@ -713,7 +682,12 @@ nsWindow::SetCursor(nsCursor aCursor)
 
         if (nsnull != newCursor) {
             mCursor = aCursor;
+
+            if (!mContainer)
+                return NS_OK;
+
             gdk_window_set_cursor(GTK_WIDGET(mContainer)->window, newCursor);
+
             XFlush(GDK_DISPLAY());
         }
     }
@@ -727,6 +701,9 @@ nsWindow::Validate()
 {
     // Get the update for this window and, well, just drop it on the
     // floor.
+    if (!mDrawingarea)
+        return NS_OK;
+
     GdkRegion *region = gdk_window_get_update_area(mDrawingarea->inner_window);
 
     if (region)
@@ -745,8 +722,11 @@ nsWindow::Invalidate(PRBool aIsSynchronous)
     rect.width = mBounds.width;
     rect.height = mBounds.height;
 
-    LOG(("Invalidate (all) [%p]: %d %d %d %d\n", (void *)this,
-         rect.x, rect.y, rect.width, rect.height));
+    LOGDRAW(("Invalidate (all) [%p]: %d %d %d %d\n", (void *)this,
+             rect.x, rect.y, rect.width, rect.height));
+
+    if (!mDrawingarea)
+        return NS_OK;
 
     gdk_window_invalidate_rect(mDrawingarea->inner_window,
                                &rect, TRUE);
@@ -767,8 +747,11 @@ nsWindow::Invalidate(const nsRect &aRect,
     rect.width = aRect.width;
     rect.height = aRect.height;
 
-    LOG(("Invalidate (rect) [%p]: %d %d %d %d\n", (void *)this,
-         rect.x, rect.y, rect.width, rect.height));
+    LOGDRAW(("Invalidate (rect) [%p]: %d %d %d %d (sync: %d)\n", (void *)this,
+             rect.x, rect.y, rect.width, rect.height, aIsSynchronous));
+
+    if (!mDrawingarea)
+        return NS_OK;
 
     gdk_window_invalidate_rect(mDrawingarea->inner_window,
                                &rect, TRUE);
@@ -785,19 +768,20 @@ nsWindow::InvalidateRegion(const nsIRegion* aRegion,
     GdkRegion *region = nsnull;
     aRegion->GetNativeRegion((void *&)region);
 
-    if (region) {
+    if (region && mDrawingarea) {
         GdkRectangle rect;
         gdk_region_get_clipbox(region, &rect);
 
-        LOG(("Invalidate (region) [%p]: %d %d %d %d\n", (void *)this,
-             rect.x, rect.y, rect.width, rect.height));
+        LOGDRAW(("Invalidate (region) [%p]: %d %d %d %d (sync: %d)\n",
+                 (void *)this,
+                 rect.x, rect.y, rect.width, rect.height, aIsSynchronous));
 
         gdk_window_invalidate_region(mDrawingarea->inner_window,
                                      region, TRUE);
     }
     else {
-        LOG(("Invalidate (region) [%p] with empty region\n",
-             (void *)this));
+        LOGDRAW(("Invalidate (region) [%p] with empty region\n",
+                 (void *)this));
     }
 
     return NS_OK;
@@ -806,6 +790,9 @@ nsWindow::InvalidateRegion(const nsIRegion* aRegion,
 NS_IMETHODIMP
 nsWindow::Update()
 {
+    if (!mDrawingarea)
+        return NS_OK;
+
     gdk_window_process_updates(mDrawingarea->inner_window, TRUE);
     return NS_OK;
 }
@@ -821,6 +808,9 @@ nsWindow::Scroll(PRInt32  aDx,
                  PRInt32  aDy,
                  nsRect  *aClipRect)
 {
+    if (!mDrawingarea)
+        return NS_OK;
+
     moz_drawingarea_scroll(mDrawingarea, aDx, aDy);
 
     // Update bounds on our child windows
@@ -854,6 +844,9 @@ NS_IMETHODIMP
 nsWindow::ScrollWidgets(PRInt32 aDx,
                         PRInt32 aDy)
 {
+    if (!mDrawingarea)
+        return NS_OK;
+
     moz_drawingarea_scroll(mDrawingarea, aDx, aDy);
     return NS_OK;
 }
@@ -871,9 +864,13 @@ nsWindow::GetNativeData(PRUint32 aDataType)
 {
     switch (aDataType) {
     case NS_NATIVE_WINDOW:
-    case NS_NATIVE_WIDGET:
+    case NS_NATIVE_WIDGET: {
+        if (!mDrawingarea)
+            return nsnull;
+
         return mDrawingarea->inner_window;
         break;
+    }
 
     case NS_NATIVE_PLUGIN_PORT:
         return SetupPluginPort();
@@ -883,10 +880,11 @@ nsWindow::GetNativeData(PRUint32 aDataType)
         return GDK_DISPLAY();
         break;
 
-    case NS_NATIVE_GRAPHIC:
+    case NS_NATIVE_GRAPHIC: {
         NS_ASSERTION(nsnull != mToolkit, "NULL toolkit, unable to get a GC");
         return (void *)NS_STATIC_CAST(nsToolkit *, mToolkit)->GetSharedGC();
         break;
+    }
 
     default:
         NS_WARNING("nsWindow::GetNativeData called with bad value");
@@ -914,7 +912,7 @@ nsWindow::SetTitle(const nsString& aTitle)
 }
 
 NS_IMETHODIMP
-nsWindow::SetIcon(const nsAString& anIconSpec)
+nsWindow::SetIcon(const nsAString& aIconSpec)
 {
     if (!mShell)
         return NS_OK;
@@ -931,7 +929,7 @@ nsWindow::SetIcon(const nsAString& anIconSpec)
     chromeDir->GetPath(iconPath);
 
     // Now take input path...
-    nsAutoString iconSpec(anIconSpec);
+    nsAutoString iconSpec(aIconSpec);
     // ...append ".xpm" to it
     iconSpec.Append(NS_LITERAL_STRING(".xpm"));
 
@@ -941,7 +939,7 @@ nsWindow::SetIcon(const nsAString& anIconSpec)
     PRInt32 n = iconSpec.Find(key) + key.Length();
 
     // Append that to icon resource path.
-    iconPath.Append(iconSpec.get() + n - 1 );
+    iconPath.Append(iconSpec.get() + n - 1);
 
     nsCOMPtr<nsILocalFile> pathConverter;
     rv = NS_NewLocalFile(iconPath, PR_TRUE,
@@ -949,18 +947,10 @@ nsWindow::SetIcon(const nsAString& anIconSpec)
     if (NS_FAILED(rv))
         return rv;
 
-    nsCAutoString aPath;
-    pathConverter->GetNativePath(aPath);
+    nsCAutoString path;
+    pathConverter->GetNativePath(path);
 
-    LOG(("nsWindow::SetIcon using path %s\n", aPath.get()));
-
-    GdkPixbuf *iconPixbuf = gdk_pixbuf_new_from_file(aPath.get(), NULL);
-    if (!iconPixbuf)
-        return NS_ERROR_FAILURE;
-
-    gtk_window_set_icon(GTK_WINDOW(mShell), iconPixbuf);
-    g_object_unref(G_OBJECT(iconPixbuf));
-    return NS_OK;
+    return SetWindowIcon(path);
 }
 
 NS_IMETHODIMP
@@ -985,7 +975,7 @@ nsWindow::WidgetToScreen(const nsRect& aOldRect, nsRect& aNewRect)
                                    &x, &y);
         LOG(("WidgetToScreen (container) %d %d\n", x, y));
     }
-    else {
+    else if (mDrawingarea) {
         gdk_window_get_origin(mDrawingarea->inner_window, &x, &y);
         LOG(("WidgetToScreen (drawing) %d %d\n", x, y));
     }
@@ -1044,6 +1034,9 @@ nsWindow::CaptureMouse(PRBool aCapture)
 {
     LOG(("CaptureMouse %p\n", (void *)this));
 
+    if (!mDrawingarea)
+        return NS_OK;
+
     GtkWidget *widget = 
         get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
 
@@ -1064,6 +1057,9 @@ nsWindow::CaptureRollupEvents(nsIRollupListener *aListener,
                               PRBool             aDoCapture,
                               PRBool             aConsumeRollupEvent)
 {
+    if (!mDrawingarea)
+        return NS_OK;
+
     GtkWidget *widget = 
         get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
 
@@ -1105,26 +1101,14 @@ nsWindow::GetAttention()
 void
 nsWindow::LoseFocus(void)
 {
-#ifdef USE_XIM
-    GtkIMContext *im = IMEGetContext();
-    if (!mIsTopLevel && im && !mFocusChild) {
-        gtk_im_context_focus_out(im);
-        IMEComposeStart();
-        IMEComposeText(NULL, 0, NULL, NULL);
-        IMEComposeEnd();
-        LOG(("gtk_im_context_focus_out\n"));
-    }
-#endif
-
-    // we don't have focus
-    mHasFocus = PR_FALSE;
-
     // make sure that we reset our repeat counter so the next keypress
     // for this widget will get the down event
     mInKeyRepeat = PR_FALSE;
 
     // Dispatch a lostfocus event
     DispatchLostFocusEvent();
+
+    LOGFOCUS(("  widget lost focus [%p]\n", (void *)this));
 }
 
 gboolean
@@ -1136,16 +1120,19 @@ nsWindow::OnExposeEvent(GtkWidget *aWidget, GdkEventExpose *aEvent)
         return NS_OK;
     }
 
+    if (!mDrawingarea)
+        return FALSE;
+
     // handle exposes for the inner window only
     if (aEvent->window != mDrawingarea->inner_window)
         return FALSE;
 
-    LOG(("sending expose event [%p] %p 0x%lx\n\t%d %d %d %d\n",
-         (void *)this,
-         (void *)aEvent->window,
-         GDK_WINDOW_XWINDOW(aEvent->window),
-         aEvent->area.x, aEvent->area.y,
-         aEvent->area.width, aEvent->area.height));
+    LOGDRAW(("sending expose event [%p] %p 0x%lx\n\t%d %d %d %d\n",
+             (void *)this,
+             (void *)aEvent->window,
+             GDK_WINDOW_XWINDOW(aEvent->window),
+             aEvent->area.x, aEvent->area.y,
+             aEvent->area.width, aEvent->area.height));
 
     // ok, send out the paint event
     // XXX figure out the region/rect stuff!
@@ -1210,6 +1197,9 @@ nsWindow::OnSizeAllocate(GtkWidget *aWidget, GtkAllocation *aAllocation)
     mBounds.width = rect.width;
     mBounds.height = rect.height;
 
+    if (!mDrawingarea)
+        return;
+
     moz_drawingarea_resize (mDrawingarea, rect.width, rect.height);
 
     nsEventStatus status;
@@ -1241,24 +1231,6 @@ nsWindow::OnEnterNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 
     LOG(("OnEnterNotify: %p\n", (void *)this));
 
-    // if we have a non-xembed plugin (java, basically) dispatch focus
-    // to it because it's too dumb not to know how to do it itself.
-    if( mHasNonXembedPlugin ) {
-        Window curFocusWindow;
-        int    focusState;
-        XGetInputFocus(GDK_WINDOW_XDISPLAY (aEvent->window), 
-                       &curFocusWindow, 
-                       &focusState);
-        if(curFocusWindow != GDK_WINDOW_XWINDOW(aEvent->window)) {
-            mOldFocusWindow = curFocusWindow;
-            XSetInputFocus(GDK_WINDOW_XDISPLAY (aEvent->window),
-                           GDK_WINDOW_XWINDOW(aEvent->window),
-                           RevertToParent,
-                           gtk_get_current_event_time ());
-        }
-        gdk_flush();
-    }
-
     nsEventStatus status;
     DispatchEvent(&event, status);
 }
@@ -1274,16 +1246,6 @@ nsWindow::OnLeaveNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 
     LOG(("OnLeaveNotify: %p\n", (void *)this));
 
-    // if we have a non-xembed plugin (java, basically) take focus
-    // back since it's not going to give it up by itself.
-    if( mHasNonXembedPlugin ) {
-        XSetInputFocus(GDK_WINDOW_XDISPLAY (aEvent->window),
-                       mOldFocusWindow,
-                       RevertToParent,
-                       gtk_get_current_event_time ());
-        gdk_flush();
-    }
-
     nsEventStatus status;
     DispatchEvent(&event, status);
 }
@@ -1298,6 +1260,11 @@ nsWindow::OnMotionNotifyEvent(GtkWidget *aWidget, GdkEventMotion *aEvent)
                              GDK_WINDOW_XWINDOW(aEvent->window),
                              ButtonMotionMask, &xevent)) {
         synthEvent = PR_TRUE;
+    }
+
+    // if plugins still keeps the focus, get it back
+    if (gPluginFocusWindow && gPluginFocusWindow != this) {
+        gPluginFocusWindow->LoseNonXEmbedPluginFocus();
     }
 
     nsMouseEvent event;
@@ -1337,9 +1304,15 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
     PRUint32      eventType;
     nsEventStatus status;
 
+    // Always save the time of this event
+    mLastButtonPressTime = aEvent->time;
+
     // check to see if we should rollup
-    if (gJustGotActivate) {
-        gJustGotActivate = PR_FALSE;
+    nsWindow *containerWindow;
+    GetContainerWindow(&containerWindow);
+
+    if (!gFocusWindow) {
+        containerWindow->mActivatePending = PR_FALSE;
         DispatchActivateEvent();
     }
     if (check_for_rollup(aEvent->window, aEvent->x_root, aEvent->y_root,
@@ -1364,8 +1337,9 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 
     // right menu click on linux should also pop up a context menu
     if (eventType == NS_MOUSE_RIGHT_BUTTON_DOWN) {
-        InitButtonEvent(event, NS_CONTEXTMENU, aEvent);
-        DispatchEvent(&event, status);
+        nsMouseEvent contextMenuEvent;
+        InitButtonEvent(contextMenuEvent, NS_CONTEXTMENU, aEvent);
+        DispatchEvent(&contextMenuEvent, status);
     }
 }
 
@@ -1402,14 +1376,17 @@ nsWindow::OnButtonReleaseEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 void
 nsWindow::OnContainerFocusInEvent(GtkWidget *aWidget, GdkEventFocus *aEvent)
 {
+    LOGFOCUS(("OnContainerFocusInEvent [%p]\n", (void *)this));
     // Return if someone has blocked events for this widget.  This will
     // happen if someone has called gtk_widget_grab_focus() from
     // nsWindow::SetFocus() and will prevent recursion.
-    if (mContainerBlockFocus)
+    if (mContainerBlockFocus) {
+        LOGFOCUS(("Container focus is blocked [%p]\n", (void *)this));
         return;
+    }
 
     if (mIsTopLevel)
-        gJustGotActivate = PR_TRUE;
+        mActivatePending = PR_TRUE;
 
     // dispatch a got focus event
     DispatchGotFocusEvent();
@@ -1417,56 +1394,93 @@ nsWindow::OnContainerFocusInEvent(GtkWidget *aWidget, GdkEventFocus *aEvent)
     // send the activate event if it wasn't already sent via any
     // SetFocus() calls that were the result of the GOTFOCUS event
     // above.
-    if (gJustGotActivate) {
-        gJustGotActivate = PR_FALSE;
+    if (mActivatePending) {
+        mActivatePending = PR_FALSE;
         DispatchActivateEvent();
     }
 
-#ifdef USE_XIM
-    nsWindow * aTmpWindow;
-    aTmpWindow = this;
-
-    if (mFocusChild)
-        while (aTmpWindow->mFocusChild)
-            aTmpWindow = aTmpWindow->mFocusChild;
-
-    GtkIMContext *im = aTmpWindow->IMEGetContext();
-    if (!(aTmpWindow->mIsTopLevel) && im) {
-        gtk_im_context_focus_in(im);
-        LOG(("OnContainFocusIn-set IC focus in. aTmpWindow:%x\n", aTmpWindow));
-    }
-#endif
+    LOGFOCUS(("Events sent from focus in event [%p]\n", (void *)this));
 }
 
 void
 nsWindow::OnContainerFocusOutEvent(GtkWidget *aWidget, GdkEventFocus *aEvent)
 {
-    // send a lost focus event for the child window
-    if (mFocusChild) {
-        mFocusChild->LoseFocus();
-        mFocusChild->DispatchDeactivateEvent();
-        mFocusChild = nsnull;
-        gJustGotActivate = PR_TRUE;
+    LOGFOCUS(("OnContainerFocusOutEvent [%p]\n", (void *)this));
+
+    // plugin lose focus
+    if (gPluginFocusWindow) {
+        gPluginFocusWindow->LoseNonXEmbedPluginFocus();
     }
+
+    // Figure out if the focus widget is the child of this window.  If
+    // it is, send a focus out and deactivate event for it.
+    if (!gFocusWindow)
+        return;
+
+    GdkWindow *tmpWindow;
+    tmpWindow = (GdkWindow *)gFocusWindow->GetNativeData(NS_NATIVE_WINDOW);
+    nsWindow *tmpnsWindow = get_window_for_gdk_window(tmpWindow);
+
+    while (tmpWindow && tmpnsWindow) {
+        // found it!
+        if (tmpnsWindow == this)
+            goto foundit;
+
+        tmpWindow = gdk_window_get_parent(tmpWindow);
+        if (!tmpWindow)
+            break;
+
+        tmpnsWindow = get_owning_window_for_gdk_window(tmpWindow);
+    }
+
+    LOGFOCUS(("The focus widget was not a child of this window [%p]\n",
+              (void *)this));
+
+    return;
+
+ foundit:
+
+#ifdef USE_XIM
+    gFocusWindow->IMELoseFocus();
+#endif
+
+    gFocusWindow->LoseFocus();
+
+    // We only dispatch a deactivate event if we are a toplevel
+    // window, otherwise the embedding code takes care of it.
+    if (mIsTopLevel)
+        gFocusWindow->DispatchDeactivateEvent();
+
+    gFocusWindow = nsnull;
+
+    mActivatePending = PR_FALSE;
+
+    LOGFOCUS(("Done with container focus out [%p]\n", (void *)this));
 }
 
 gboolean
 nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
 {
+    LOGFOCUS(("OnKeyPressEvent [%p]\n", (void *)this));
+
 #ifdef USE_XIM
-    GtkIMContext *im = IMEGetContext();
-    if (im) {
-        if (gtk_im_context_filter_keypress(im, aEvent)) {
-            return TRUE;
-        }
-    }
+    // if we are in the middle of composing text, XIM gets to see it
+    // before mozilla does.
+   LOGIM(("key press [%p]: composing %d val %d\n",
+           (void *)this, mComposingText, aEvent->keyval));
+   if (IMEFilterEvent(aEvent))
+       return TRUE;
+   LOGIM(("sending as regular key press event\n"));
 #endif
-    
+
+    nsKeyEvent event;
+    nsEventStatus status;
+
     // work around for annoying things.
-    if (aEvent->keyval == GDK_Tab)
-        if (aEvent->state & GDK_CONTROL_MASK)
-            if (aEvent->state & GDK_MOD1_MASK)
-                return FALSE;
+    if (aEvent->keyval == GDK_Tab && aEvent->state & GDK_CONTROL_MASK &&
+        aEvent->state & GDK_MOD1_MASK) {
+        return TRUE;
+    }
 
     // Don't pass shift, control and alt as key press events
     if (aEvent->keyval == GDK_Shift_L
@@ -1474,9 +1488,9 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         || aEvent->keyval == GDK_Control_L
         || aEvent->keyval == GDK_Control_R
         || aEvent->keyval == GDK_Alt_L
-        || aEvent->keyval == GDK_Alt_R)
+        || aEvent->keyval == GDK_Alt_R) {
         return TRUE;
-
+    }
 
     // If the key repeat flag isn't set then set it so we don't send
     // another key down event on the next key press -- DOM events are
@@ -1486,15 +1500,12 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
 
     if (!mInKeyRepeat) {
         mInKeyRepeat = PR_TRUE;
+
         // send the key down event
-        nsEventStatus status;
-        nsKeyEvent event;
         InitKeyEvent(event, aEvent, NS_KEY_DOWN);
         DispatchEvent(&event, status);
     }
 
-    nsEventStatus status;
-    nsKeyEvent event;
     InitKeyEvent(event, aEvent, NS_KEY_PRESS);
     event.charCode = nsConvertCharCodeToUnicode(aEvent);
     if (event.charCode) {
@@ -1504,7 +1515,7 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         // if none of the other modifier keys are pressed then we need to
         // clear isShift so the character can be inserted in the editor
 
-        if ( event.isControl || event.isAlt || event.isMeta ) {
+        if (event.isControl || event.isAlt || event.isMeta) {
            // make Ctrl+uppercase functional as same as Ctrl+lowercase
            // when Ctrl+uppercase(eg.Ctrl+C) is pressed,convert the charCode
            // from uppercase to lowercase(eg.Ctrl+c),so do Alt and Meta Key
@@ -1512,30 +1523,47 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
            // Windows platform in widget/src/windows/nsWindow.cpp: See bug 16486
            // Note: if Shift is pressed at the same time, do not to_lower()
            // Because Ctrl+Shift has different function with Ctrl
-           if ( !event.isShift &&
-                event.charCode >= GDK_A &&
-                event.charCode <= GDK_Z )
+           if (!event.isShift &&
+               event.charCode >= GDK_A &&
+               event.charCode <= GDK_Z)
             event.charCode = gdk_keyval_to_lower(event.charCode);
-        } else        
-            event.isShift = PR_FALSE;
+        }
     }
 
-    // send the key press event
-    DispatchEvent(&event, status);
-    return TRUE;
+    // before we dispatch a key, check if it's the context menu key.
+    // If so, send a context menu key event instead.
+    if (is_context_menu_key(event)) {
+        nsMouseEvent contextMenuEvent;
+        key_event_to_context_menu_event(&event, &contextMenuEvent);
+        DispatchEvent(&contextMenuEvent, status);
+    }
+    else {
+        // send the key press event
+        DispatchEvent(&event, status);
+    }
+
+    // If the event was consumed, return.
+    LOGIM(("status %d\n", status));
+    if (status == nsEventStatus_eConsumeNoDefault) {
+        LOGIM(("key press consumed\n"));
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 gboolean
 nsWindow::OnKeyReleaseEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
 {
+    LOGFOCUS(("OnKeyReleaseEvent [%p]\n", (void *)this));
+
 #ifdef USE_XIM
-    GtkIMContext *im = IMEGetContext();
-    if (!mIsTopLevel && im && !mFocusChild) {
-        if (gtk_im_context_filter_keypress(im, aEvent)) {
-           return TRUE;
-        }
-    }
+    if (IMEFilterEvent(aEvent))
+        return TRUE;
 #endif
+
+    nsKeyEvent event;
+    nsEventStatus status;
     
     // unset the repeat flag
     mInKeyRepeat = PR_FALSE;
@@ -1547,16 +1575,21 @@ nsWindow::OnKeyReleaseEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         || aEvent->keyval == GDK_Control_L
         || aEvent->keyval == GDK_Control_R
         || aEvent->keyval == GDK_Alt_L
-        || aEvent->keyval == GDK_Alt_R)
+        || aEvent->keyval == GDK_Alt_R) {
         return TRUE;
+    }
 
-    nsKeyEvent event;
     InitKeyEvent(event, aEvent, NS_KEY_UP);
 
-    nsEventStatus status;
     DispatchEvent(&event, status);
 
-    return TRUE;
+    // If the event was consumed, return.
+    if (status == nsEventStatus_eConsumeNoDefault) {
+        LOGIM(("key release consumed\n"));
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 void
@@ -1568,7 +1601,6 @@ nsWindow::OnScrollEvent(GtkWidget *aWidget, GdkEventScroll *aEvent)
     // check to see if we should rollup
     if (check_for_rollup(aEvent->window, aEvent->x_root, aEvent->y_root,
                          PR_TRUE)) {
-        printf("ignoring event\n");
         return;
     }
 
@@ -1602,30 +1634,27 @@ nsWindow::OnWindowStateEvent(GtkWidget *aWidget, GdkEventWindowState *aEvent)
     nsSizeModeEvent event;
     InitSizeModeEvent(event);
 
-    // did we change to maximized?
-    if (aEvent->changed_mask & GDK_WINDOW_STATE_MAXIMIZED &&
-        aEvent->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) {
+    // We don't care about anything but changes in the maximized/icon
+    // states
+    if (aEvent->changed_mask &
+        (GDK_WINDOW_STATE_ICONIFIED|GDK_WINDOW_STATE_MAXIMIZED) == 0) {
+        return;
+    }
+
+    if (aEvent->new_window_state & GDK_WINDOW_STATE_ICONIFIED) {
+        LOG(("\tIconified\n"));
+        event.mSizeMode = nsSizeMode_Minimized;
+        mSizeState = nsSizeMode_Minimized;
+    }
+    else if (aEvent->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) {
         LOG(("\tMaximized\n"));
         event.mSizeMode = nsSizeMode_Maximized;
         mSizeState = nsSizeMode_Maximized;
     }
-    // did we change to iconified?
-    else if (aEvent->changed_mask & GDK_WINDOW_STATE_ICONIFIED &&
-             aEvent->new_window_state & GDK_WINDOW_STATE_ICONIFIED) {
-        LOG(("\tMinimized\n"));
-        event.mSizeMode = nsSizeMode_Minimized;
-        mSizeState = nsSizeMode_Minimized;
-    }
-    // are we now normal?
-    else if (aEvent->changed_mask == 0 && aEvent->new_window_state == 0) {
+    else {
         LOG(("\tNormal\n"));
         event.mSizeMode = nsSizeMode_Normal;
         mSizeState = nsSizeMode_Normal;
-    }
-    else {
-          // if we got here it means that it's not an event we want to
-          // dispatch
-          return;
     }
 
     nsEventStatus status;
@@ -1943,8 +1972,13 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
     BaseCreate(baseParent, aRect, aHandleEventFunction, aContext,
                aAppShell, aToolkit, aInitData);
 
+    // Do we need to listen for resizes?
+    PRBool listenForResizes = PR_FALSE;;
+    if (aNativeParent || (aInitData && aInitData->mListenForResizes))
+        listenForResizes = PR_TRUE;
+
     // and do our common creation
-    CommonCreate(aParent, aNativeParent);
+    CommonCreate(aParent, listenForResizes);
 
     // save our bounds
     mBounds = aRect;
@@ -2002,6 +2036,7 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         mIsTopLevel = PR_TRUE;
         if (mWindowType == eWindowType_dialog) {
             mShell = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+            SetDefaultIcon();
             gtk_window_set_type_hint(GTK_WINDOW(mShell),
                                      GDK_WINDOW_TYPE_HINT_DIALOG);
             gtk_window_set_transient_for(GTK_WINDOW(mShell),
@@ -2025,11 +2060,12 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         }
         else if (mWindowType == eWindowType_popup) {
             mShell = gtk_window_new(GTK_WINDOW_POPUP);
-            if(topLevelParent) {
+            if (topLevelParent) {
                 gtk_window_set_transient_for(GTK_WINDOW(mShell), 
                                             topLevelParent);
                 mTransientParent = topLevelParent;
-                if(topLevelParent->group) {
+
+                if (topLevelParent->group) {
                     gtk_window_group_add_window(topLevelParent->group,
                                             GTK_WINDOW(mShell));
                     mWindowGroup = topLevelParent->group;
@@ -2038,8 +2074,11 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         }
         else { // must be eWindowType_toplevel
             mShell = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+            SetDefaultIcon();
+
             // each toplevel window gets its own window group
             mWindowGroup = gtk_window_group_new();
+
             // and add ourselves to the window group
             LOG(("adding window %p to new group %p\n",
                  (void *)mShell, (void *)mWindowGroup));
@@ -2062,17 +2101,13 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         if (parentMozContainer) {
             mDrawingarea = moz_drawingarea_new(parentArea, parentMozContainer);
         }
-        else {
+        else if (parentGtkContainer) {
             mContainer = MOZ_CONTAINER(moz_container_new());
             gtk_container_add(parentGtkContainer, GTK_WIDGET(mContainer));
             gtk_widget_realize(GTK_WIDGET(mContainer));
 
             mDrawingarea = moz_drawingarea_new(nsnull, mContainer);
         }
-#ifdef USE_XIM
-        // get mIMEShellWindow and keep it
-        IMEGetShellWindow();
-#endif
     }
         break;
     default:
@@ -2080,7 +2115,7 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
     }
     // Disable the double buffer because it will make the caret crazy
     // For bug#153805 (Gtk2 double buffer makes carets misbehave) 
-    if( mContainer )
+    if (mContainer)
         gtk_widget_set_double_buffered (GTK_WIDGET(mContainer),FALSE);
 
     // label the drawing area with this object so we can find our way
@@ -2116,13 +2151,6 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         g_signal_connect(G_OBJECT(mShell), "property_notify_event",
                          G_CALLBACK(property_notify_event_cb), NULL);
     }
-
-#ifdef USE_XIM
-    if (mShell) {
-        // init GtkIMContext for shell
-        IMECreateContext(mShell->window);
-    }
-#endif
 
     if (mContainer) {
         g_signal_connect_after(G_OBJECT(mContainer), "size_allocate",
@@ -2166,6 +2194,13 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
                          G_CALLBACK(drag_drop_event_cb), NULL);
         g_signal_connect(G_OBJECT(mContainer), "drag_data_received",
                          G_CALLBACK(drag_data_received_event_cb), NULL);
+
+#ifdef USE_XIM
+        // We create input contexts for all containers, except for
+        // toplevel popup windows
+        if (mWindowType != eWindowType_popup)
+            IMECreateContext();
+#endif
     }
 
     LOG(("nsWindow [%p]\n", (void *)this));
@@ -2190,6 +2225,37 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
 
     // resize so that everything is set to the right dimensions
     Resize(mBounds.width, mBounds.height, PR_FALSE);
+
+#ifdef ACCESSIBILITY
+    nsresult rv;
+    if (!sAccessibilityChecked) {
+        sAccessibilityChecked = PR_TRUE;
+
+        //check if accessibility enabled/disabled by environment variable
+        const char *envValue = PR_GetEnv(sAccEnv);
+        if (envValue) {
+            sAccessibilityEnabled = atoi(envValue);
+            LOG(("Accessibility Env %s=%s\n", sAccEnv, envValue));
+        }
+        //check gconf-2 setting
+        else {
+            nsCOMPtr<nsIPrefBranch> sysPrefService =
+                do_GetService(sGconfAccKey, &rv);
+            if (NS_SUCCEEDED(rv) && sysPrefService) {
+
+                // do the work to get gconf setting.
+                // will be done soon later.
+                sysPrefService->GetBoolPref("accessibility.enabled",
+                                            &sAccessibilityEnabled);
+            }
+
+        }
+    }
+    if (sAccessibilityEnabled) {
+        LOG(("nsWindow:: Create Toplevel Accessibility\n"));
+        CreateRootAccessible();
+    }
+#endif
 
     return NS_OK;
 }
@@ -2253,7 +2319,7 @@ nsWindow::NativeResize(PRInt32 aX, PRInt32 aY,
         gtk_widget_size_allocate(GTK_WIDGET(mContainer), &allocation);
         moz_drawingarea_move_resize(mDrawingarea, aX, aY, aWidth, aHeight);
     }
-    else {
+    else if (mDrawingarea) {
         moz_drawingarea_move_resize(mDrawingarea, aX, aY, aWidth, aHeight);
     }
 }
@@ -2274,7 +2340,7 @@ nsWindow::NativeShow (PRBool  aAction)
             moz_drawingarea_set_visibility(mDrawingarea, TRUE);
             gtk_widget_show(GTK_WIDGET(mContainer));
         }
-        else {
+        else if (mDrawingarea) {
             moz_drawingarea_set_visibility(mDrawingarea, TRUE);
         }
     }
@@ -2287,7 +2353,9 @@ nsWindow::NativeShow (PRBool  aAction)
             gtk_widget_hide(GTK_WIDGET(mContainer));
             moz_drawingarea_set_visibility(mDrawingarea, FALSE);
         }
-        moz_drawingarea_set_visibility(mDrawingarea, FALSE);
+        if (mDrawingarea) {
+            moz_drawingarea_set_visibility(mDrawingarea, FALSE);
+        }
     }
 }
 
@@ -2317,6 +2385,9 @@ nsWindow::GrabPointer(void)
         mRetryPointerGrab = PR_TRUE;
         return;
     }
+
+    if (!mDrawingarea)
+        return;
 
     gint retval;
     retval = gdk_pointer_grab(mDrawingarea->inner_window, TRUE,
@@ -2358,8 +2429,10 @@ nsWindow::GrabKeyboard(void)
 
     if (mTransientParent)
         grabWindow = GTK_WIDGET(mTransientParent)->window;
-    else
+    else if (mDrawingarea)
         grabWindow = mDrawingarea->inner_window;
+    else
+        return;
 
     gint retval;
     retval = gdk_keyboard_grab(grabWindow, TRUE, GDK_CURRENT_TIME);
@@ -2393,12 +2466,27 @@ nsWindow::GetToplevelWidget(GtkWidget **aWidget)
         return;
     }
 
+    if (!mDrawingarea) 
+        return;
+
     GtkWidget *widget =
         get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
     if (!widget)
         return;
 
     *aWidget = gtk_widget_get_toplevel(widget);
+}
+
+void
+nsWindow::GetContainerWindow(nsWindow **aWindow)
+{
+    if (!mDrawingarea) 
+        return;
+
+    GtkWidget *owningWidget =
+        get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+
+    *aWindow = get_window_for_gtk_widget(owningWidget);
 }
 
 void *
@@ -2411,7 +2499,7 @@ nsWindow::SetupPluginPort(void)
         return nsnull;
 
     // we have to flush the X queue here so that any plugins that
-    // might be running on seperate X connections will be able to use
+    // might be running on separate X connections will be able to use
     // this window in case it was just created
     XWindowAttributes xattrs;
     XGetWindowAttributes(GDK_DISPLAY (),
@@ -2420,7 +2508,7 @@ nsWindow::SetupPluginPort(void)
     XSelectInput (GDK_DISPLAY (),
                   GDK_WINDOW_XWINDOW(mDrawingarea->inner_window),
                   xattrs.your_event_mask |
-                  SubstructureNotifyMask );
+                  SubstructureNotifyMask);
 
     gdk_window_add_filter(mDrawingarea->inner_window, 
                           plugin_window_filter_func,
@@ -2431,10 +2519,225 @@ nsWindow::SetupPluginPort(void)
     return (void *)GDK_WINDOW_XWINDOW(mDrawingarea->inner_window);
 }
 
+nsresult
+nsWindow::SetWindowIcon(nsCString &aPath)
+{
+    LOG(("window [%p] Loading icon from %s\n", (void *)this, aPath.get()));
+
+    GdkPixbuf *icon = gdk_pixbuf_new_from_file(aPath.get(), NULL);
+    if (!icon)
+        return NS_ERROR_FAILURE;
+
+    GList *list = NULL;
+    list = g_list_append(list, icon);
+    gtk_window_set_icon_list(GTK_WINDOW(mShell), list);
+    g_object_unref(G_OBJECT(icon));
+    g_list_free(list);
+
+    return NS_OK;
+}
+
+void
+nsWindow::SetDefaultIcon(void)
+{
+    // Set up the default window icon
+    nsresult rv;
+    nsCOMPtr<nsIFile> chromeDir;
+    rv = NS_GetSpecialDirectory(NS_APP_CHROME_DIR,
+                                getter_AddRefs(chromeDir));
+    if (NS_FAILED(rv))
+        return;
+
+    nsAutoString defaultPath;
+    chromeDir->GetPath(defaultPath);
+            
+    defaultPath.Append(NS_LITERAL_STRING("/icons/default/default.xpm"));
+
+    nsCOMPtr<nsILocalFile> defaultPathConverter;
+    rv = NS_NewLocalFile(defaultPath, PR_TRUE,
+                         getter_AddRefs(defaultPathConverter));
+    if (NS_FAILED(rv))
+        return;
+
+    nsCAutoString path;
+    defaultPathConverter->GetNativePath(path);
+
+    SetWindowIcon(path);
+}
+
 void
 nsWindow::SetPluginType(PRBool aIsXembed)
 {
     mHasNonXembedPlugin = !aIsXembed;
+}
+
+void
+nsWindow::SetNonXEmbedPluginFocus()
+{
+    if (gPluginFocusWindow == this) {
+        return;
+    }
+
+    if (gPluginFocusWindow) {
+        gPluginFocusWindow->LoseNonXEmbedPluginFocus();
+    }
+
+    LOGFOCUS(("nsWindow::SetNonXEmbedPluginFocus\n"));
+
+    Window curFocusWindow;
+    int focusState;
+
+    XGetInputFocus(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                   &curFocusWindow,
+                   &focusState);
+
+    LOGFOCUS(("\t curFocusWindow=%p\n", curFocusWindow));
+
+    GdkWindow* toplevel = gdk_window_get_toplevel
+                                (mDrawingarea->inner_window);
+    GdkWindow *gdkfocuswin = gdk_window_lookup(curFocusWindow);
+
+    // lookup with the focus proxy window is supposed to get the
+    // same GdkWindow as toplevel. If the current focused window
+    // is not the focus proxy, we return without any change.
+    if (gdkfocuswin != toplevel) {
+        return;
+    }
+
+    // switch the focus from the focus proxy to the plugin window
+    mOldFocusWindow = curFocusWindow;
+    XRaiseWindow(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                 GDK_WINDOW_XWINDOW(mDrawingarea->inner_window));
+    gdk_error_trap_push();
+    XSetInputFocus(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                   GDK_WINDOW_XWINDOW(mDrawingarea->inner_window),
+                   RevertToNone,
+                   CurrentTime);
+    gdk_flush();
+    gdk_error_trap_pop();
+    gPluginFocusWindow = this;
+    gdk_window_add_filter(NULL, plugin_client_message_filter, this);
+    
+    LOGFOCUS(("nsWindow::SetNonXEmbedPluginFocus oldfocus=%p new=%p\n",
+                mOldFocusWindow, 
+                GDK_WINDOW_XWINDOW(mDrawingarea->inner_window)));
+}
+
+void
+nsWindow::LoseNonXEmbedPluginFocus()
+{
+    LOGFOCUS(("nsWindow::LoseNonXEmbedPluginFocus\n"));
+
+    // This method is only for the nsWindow which contains a
+    // Non-XEmbed plugin, for example, JAVA plugin.
+    if (gPluginFocusWindow != this) {
+        return;
+    }
+
+    Window curFocusWindow;
+    int focusState;
+
+    XGetInputFocus(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                   &curFocusWindow,
+                   &focusState);
+
+    // we only switch focus between plugin window and focus proxy. If the 
+    // current focused window is not the plugin window, just removing the 
+    // event filter that blocks the WM_TAKE_FOCUS is enough. WM and gtk2
+    // will take care of the focus later.
+    if (!curFocusWindow || 
+        curFocusWindow == GDK_WINDOW_XWINDOW(mDrawingarea->inner_window)) {
+
+        gdk_error_trap_push();
+        XRaiseWindow(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                     mOldFocusWindow);
+        XSetInputFocus(GDK_WINDOW_XDISPLAY(mDrawingarea->inner_window),
+                       mOldFocusWindow,
+                       RevertToParent,
+                       CurrentTime);
+        gdk_flush();
+        gdk_error_trap_pop();
+    }
+    gPluginFocusWindow = NULL;
+    mOldFocusWindow = 0;
+    gdk_window_remove_filter(NULL, plugin_client_message_filter, this);
+
+    LOGFOCUS(("nsWindow::LoseNonXEmbedPluginFocus end\n"));
+}
+
+
+gint
+nsWindow::ConvertBorderStyles(nsBorderStyle aStyle)
+{
+    gint w = 0;
+
+    if (aStyle == eBorderStyle_default)
+        return -1;
+
+    if (aStyle & eBorderStyle_all)
+        w |= GDK_DECOR_ALL;
+    if (aStyle & eBorderStyle_border)
+        w |= GDK_DECOR_BORDER;
+    if (aStyle & eBorderStyle_resizeh)
+        w |= GDK_DECOR_RESIZEH;
+    if (aStyle & eBorderStyle_title)
+        w |= GDK_DECOR_TITLE;
+    if (aStyle & eBorderStyle_menu)
+        w |= GDK_DECOR_MENU;
+    if (aStyle & eBorderStyle_minimize)
+        w |= GDK_DECOR_MINIMIZE;
+    if (aStyle & eBorderStyle_maximize)
+        w |= GDK_DECOR_MAXIMIZE;
+    if (aStyle & eBorderStyle_close) {
+#ifdef DEBUG
+        printf("we don't handle eBorderStyle_close yet... please fix me\n");
+#endif /* DEBUG */
+    }
+
+    return w;
+}
+
+NS_IMETHODIMP
+nsWindow::HideWindowChrome(PRBool aShouldHide)
+{
+    if (!mShell) {
+        // Pass the request to the toplevel window
+        GtkWidget *topWidget = nsnull;
+        GetToplevelWidget(&topWidget);
+        nsWindow *topWindow = get_window_for_gtk_widget(topWidget);
+        return topWindow->HideWindowChrome(aShouldHide);
+    }
+
+    // Sawfish, metacity, and presumably other window managers get
+    // confused if we change the window decorations while the window
+    // is visible.
+#if GTK_CHECK_VERSION(2,2,0)
+    if (aShouldHide) 
+        gdk_window_fullscreen (mShell->window);
+    else 
+        gdk_window_unfullscreen (mShell->window);
+#else
+    gdk_window_hide(mShell->window);
+
+    gint wmd;
+    if (aShouldHide)
+        wmd = 0;
+    else
+        wmd = ConvertBorderStyles(mBorderStyle);
+
+    gdk_window_set_decorations(mShell->window, (GdkWMDecoration) wmd);
+
+    gdk_window_show(mShell->window);
+#endif
+
+    // For some window managers, adding or removing window decorations
+    // requires unmapping and remapping our toplevel window.  Go ahead
+    // and flush the queue here so that we don't end up with a BadWindow
+    // error later when this happens (when the persistence timer fires
+    // and GetWindowPos is called)
+    XSync(GDK_DISPLAY(), False);
+
+    return NS_OK;
 }
 
 PRBool
@@ -2500,7 +2803,7 @@ PRBool
 is_mouse_in_window (GdkWindow* aWindow, gdouble aMouseX, gdouble aMouseY)
 {
     gint x = 0;
-    gint y = y;
+    gint y = 0;
     gint w, h;
 
     gint offsetX = 0;
@@ -2533,8 +2836,8 @@ is_mouse_in_window (GdkWindow* aWindow, gdouble aMouseX, gdouble aMouseY)
 
     gdk_window_get_size(aWindow, &w, &h);
 
-    if ( aMouseX > x && aMouseX < x + w &&
-         aMouseY > y && aMouseY < y + h )
+    if (aMouseX > x && aMouseX < x + w &&
+        aMouseY > y && aMouseY < y + h)
         return PR_TRUE;
 
     return PR_FALSE;
@@ -2693,6 +2996,12 @@ get_gtk_cursor(nsCursor aCursor)
     case eCursor_count_up_down:
         // XXX: these CSS3 cursors need to be implemented
         gdkcursor = gdk_cursor_new(GDK_LEFT_PTR);
+        break;
+    case eCursor_zoom_in:
+        newType = MOZ_CURSOR_ZOOM_IN;
+        break;
+    case eCursor_zoom_out:
+        newType = MOZ_CURSOR_ZOOM_OUT;
         break;
     default:
         NS_ASSERTION(aCursor, "Invalid cursor type");
@@ -2900,28 +3209,80 @@ plugin_window_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
     {
         case CreateNotify:
         case ReparentNotify:
-            if(xevent->type==CreateNotify) {
+            if (xevent->type==CreateNotify) {
                 plugin_window = gdk_window_lookup(xevent->xcreatewindow.window);
             }
             else {
-                if(xevent->xreparent.event != xevent->xreparent.parent)
+                if (xevent->xreparent.event != xevent->xreparent.parent)
                     break;
                 plugin_window = gdk_window_lookup (xevent->xreparent.window);
             }
-            if(plugin_window) {
+            if (plugin_window) {
                 user_data = nsnull;
                 gdk_window_get_user_data(plugin_window, &user_data);
                 widget = GTK_WIDGET(user_data);
-                if(GTK_IS_SOCKET(widget)){
+
+                if (GTK_IS_SOCKET(widget)) {
                     break;
                 }
             }
             nswindow->SetPluginType(PR_FALSE);
             return_val = GDK_FILTER_REMOVE;
             break;
+        case EnterNotify:
+            // Currently we consider all plugins are non-xembed and calls
+            // SetNonXEmbedPluginFocus without any checking.
+            nswindow->SetNonXEmbedPluginFocus();
+            break;
+        case DestroyNotify:
+            gdk_window_remove_filter
+                ((GdkWindow*)(nswindow->GetNativeData(NS_NATIVE_WINDOW)),
+                 plugin_window_filter_func,
+                 nswindow);
+            // Currently we consider all plugins are non-xembed and calls
+            // LoseNonXEmbedPluginFocus without any checking.
+            nswindow->LoseNonXEmbedPluginFocus();
+            break;
         default:
             break;
     }
+    return return_val;
+}
+
+/* static */
+GdkFilterReturn   
+plugin_client_message_filter (GdkXEvent *gdk_xevent,
+                              GdkEvent *event,
+                              gpointer data)
+{
+    XEvent    *xevent;
+    xevent = (XEvent *)gdk_xevent;
+
+    GdkFilterReturn return_val;
+    return_val = GDK_FILTER_CONTINUE;
+
+    if (!gPluginFocusWindow || xevent->type!=ClientMessage) {
+        return return_val;
+    }
+
+    // When WM sends out WM_TAKE_FOCUS, gtk2 will use XSetInputFocus
+    // to set the focus to the focus proxy. To prevent this happen
+    // while the focus is on the plugin, we filter the WM_TAKE_FOCUS
+    // out.
+    Display *dpy ;
+    dpy = GDK_WINDOW_XDISPLAY((GdkWindow*)(gPluginFocusWindow->
+                GetNativeData(NS_NATIVE_WINDOW)));
+    if (gdk_x11_get_xatom_by_name("WM_PROTOCOLS") 
+            != xevent->xclient.message_type) {
+        return return_val;
+    }
+    
+    if ((Atom) xevent->xclient.data.l[0] == 
+            gdk_x11_get_xatom_by_name("WM_TAKE_FOCUS")) {
+        // block it from gtk2.0 focus proxy
+        return_val = GDK_FILTER_REMOVE;
+    }
+
     return return_val;
 }
 
@@ -2935,9 +3296,7 @@ key_press_event_cb (GtkWidget *widget, GdkEventKey *event)
     if (!window)
         return FALSE;
 
-    nsWindow *focusWindow = window->mFocusChild;
-    if (!focusWindow)
-        focusWindow = window;
+    nsWindow *focusWindow = gFocusWindow ? gFocusWindow : window;
 
     return focusWindow->OnKeyPressEvent(widget, event);
 }
@@ -2951,9 +3310,7 @@ key_release_event_cb (GtkWidget *widget, GdkEventKey *event)
     if (!window)
         return FALSE;
 
-    nsWindow *focusWindow = window->mFocusChild;
-    if (!focusWindow)
-        focusWindow = window;
+    nsWindow *focusWindow = gFocusWindow ? gFocusWindow : window;
 
     return focusWindow->OnKeyReleaseEvent(widget, event);
 }
@@ -3155,47 +3512,6 @@ initialize_prefs(void)
     return NS_OK;
 }
 
-/* static */
-nsresult
-initialize_default_icon(void)
-{
-    // Set up the default icon for all windows
-    nsresult rv;
-    nsCOMPtr<nsIFile> chromeDir;
-    rv = NS_GetSpecialDirectory(NS_APP_CHROME_DIR,
-                                getter_AddRefs(chromeDir));
-    if (NS_FAILED(rv))
-        return rv;
-
-    nsAutoString defaultPath;
-    chromeDir->GetPath(defaultPath);
-            
-    defaultPath.Append(NS_LITERAL_STRING("/icons/default/default.xpm"));
-
-    nsCOMPtr<nsILocalFile> defaultPathConverter;
-    rv = NS_NewLocalFile(defaultPath, PR_TRUE,
-                         getter_AddRefs(defaultPathConverter));
-    if (NS_FAILED(rv))
-        return rv;
-
-    nsCAutoString aPath;
-    defaultPathConverter->GetNativePath(aPath);
-
-    LOG(("Loading default icon from %s\n", aPath.get()));
-
-    GdkPixbuf *defaultIcon = gdk_pixbuf_new_from_file(aPath.get(), NULL);
-    if (!defaultIcon)
-        return NS_ERROR_FAILURE;
-
-    GList *list = NULL;
-    list = g_list_append(list, defaultIcon);
-    gtk_window_set_default_icon_list(list);
-    g_object_unref(G_OBJECT(defaultIcon));
-    g_list_free(list);
-
-    return NS_OK;
-}
-
 void
 nsWindow::ResetDragMotionTimer(GtkWidget *aWidget,
                                GdkDragContext *aDragContext,
@@ -3300,8 +3616,8 @@ get_inner_gdk_window (GdkWindow *aWindow,
         if (child) {
             GdkWindow * childWindow = (GdkWindow *) child->data;
             gdk_window_get_geometry (childWindow, &cx, &cy, &cw, &ch, &cd);
-            if (( cx < x ) && (x < (cx + cw)) &&
-                ( cy < y ) && (y < (cy + ch)) &&
+            if ((cx < x) && (x < (cx + cw)) &&
+                (cy < y) && (y < (cy + ch)) &&
                 gdk_window_is_visible (childWindow)) {
                 return get_inner_gdk_window (childWindow,
                                              x - cx, y - cy,
@@ -3314,25 +3630,42 @@ get_inner_gdk_window (GdkWindow *aWindow,
     return aWindow;
 }
 
+inline PRBool
+is_context_menu_key(const nsKeyEvent& aKeyEvent)
+{
+    return (aKeyEvent.keyCode == NS_VK_F10 && aKeyEvent.isShift &&
+            !aKeyEvent.isControl && !aKeyEvent.isMeta && !aKeyEvent.isAlt);
+}
+
+void
+key_event_to_context_menu_event(const nsKeyEvent* aKeyEvent,
+                                nsMouseEvent* aCMEvent)
+{
+    memcpy(aCMEvent, aKeyEvent, sizeof(nsInputEvent));
+    aCMEvent->eventStructType = NS_MOUSE_EVENT;
+    aCMEvent->message = NS_CONTEXTMENU_KEY;
+    aCMEvent->isShift = aCMEvent->isControl = PR_FALSE;
+    aCMEvent->isAlt = aCMEvent->isMeta = PR_FALSE;
+    aCMEvent->clickCount = 0;
+    aCMEvent->acceptActivation = PR_FALSE;
+}
+
 #ifdef ACCESSIBILITY
 /**
  * void
- * nsWindow::CreateTopLevelAccessible
+ * nsWindow::CreateRootAccessible
  *
  * request to create the nsIAccessible Object for the toplevel window
  **/
 void
-nsWindow::CreateTopLevelAccessible()
+nsWindow::CreateRootAccessible()
 {
-    if (mIsTopLevel && !mTopLevelAccessible &&
-        nsAccessibilityInterface::IsInitialized()) {
-
+    if (mIsTopLevel && !mRootAccessible) {
         nsCOMPtr<nsIAccessible> acc;
         DispatchAccessibleEvent(getter_AddRefs(acc));
 
         if (acc) {
-            mTopLevelAccessible = acc;
-            nsAccessibilityInterface::AddTopLevel(acc);
+            mRootAccessible = acc;
         }
     }
 }
@@ -3380,8 +3713,59 @@ nsChildWindow::~nsChildWindow()
 #ifdef USE_XIM
 
 void
+nsWindow::IMEDestroyContext(void)
+{
+    // If this is the focus window and we have an IM context we need
+    // to unset the focus on this window before we destroy the window.
+    if (gIMEFocusWindow == this) {
+        gIMEFocusWindow->IMELoseFocus();
+        gIMEFocusWindow = nsnull;
+    }
+
+    if (!mIMContext)
+        return;
+
+    gtk_im_context_set_client_window(mIMContext, NULL);
+    g_object_unref(G_OBJECT(mIMContext));
+    mIMContext = nsnull;
+}
+
+
+void
+nsWindow::IMESetFocus(void)
+{
+    LOGIM(("IMESetFocus %p\n", (void *)this));
+    GtkIMContext *im = IMEGetContext();
+    if (!im)
+        return;
+
+    gtk_im_context_focus_in(im);
+    gIMEFocusWindow = this;
+}
+
+void
+nsWindow::IMELoseFocus(void)
+{
+    LOGIM(("IMELoseFocus %p\n", (void *)this));
+    GtkIMContext *im = IMEGetContext();
+    if (!im)
+        return;
+
+    gtk_im_context_focus_out(im);
+}
+
+void
 nsWindow::IMEComposeStart(void)
 {
+    LOGIM(("IMEComposeStart [%p]\n", (void *)this));
+
+    if (mComposingText) {
+        NS_WARNING("tried to re-start text composition\n");
+        return;
+    }
+
+    mComposingText = PR_TRUE;
+
     nsCompositionEvent compEvent;
 
     compEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
@@ -3400,6 +3784,11 @@ nsWindow::IMEComposeText (const PRUnichar *aText,
                           const gchar *aPreeditString,
                           const PangoAttrList *aFeedback)
 {
+    // Send our start composition event if we need to
+    if (!mComposingText)
+        IMEComposeStart();
+
+    LOGIM(("IMEComposeText\n"));
     nsTextEvent textEvent;
 
     textEvent.time = 0;
@@ -3420,9 +3809,9 @@ nsWindow::IMEComposeText (const PRUnichar *aText,
         textEvent.rangeArray = nsnull;
 
         if (aPreeditString && aFeedback && (aLen > 0)) {
-            IMSetTextRange(aLen, aPreeditString, aFeedback,
-                           &(textEvent.rangeCount),
-                           &(textEvent.rangeArray));
+            IM_set_text_range(aLen, aPreeditString, aFeedback,
+                              &(textEvent.rangeCount),
+                              &(textEvent.rangeArray));
         }
     }
 
@@ -3437,6 +3826,15 @@ nsWindow::IMEComposeText (const PRUnichar *aText,
 void
 nsWindow::IMEComposeEnd(void)
 {
+    LOGIM(("IMEComposeEnd [%p]\n", (void *)this));
+
+    if (!mComposingText) {
+        NS_WARNING("tried to end text composition before it was started");
+        return;
+    }
+
+    mComposingText = PR_FALSE;
+
     nsCompositionEvent compEvent;
     compEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
     compEvent.point.x = compEvent.point.y = 0;
@@ -3448,31 +3846,90 @@ nsWindow::IMEComposeEnd(void)
     DispatchEvent(&compEvent, status);
 }
 
+GtkIMContext*
+nsWindow::IMEGetContext()
+{
+    return IM_get_input_context(this->mDrawingarea);
+}
+
+void
+nsWindow::IMECreateContext(void)
+{
+    GtkIMContext *im = gtk_im_multicontext_new();
+    if (!im)
+        return;
+
+    gtk_im_context_set_client_window(im, GTK_WIDGET(mContainer)->window);
+
+    g_signal_connect(G_OBJECT(im), "preedit_changed",
+                     G_CALLBACK(IM_preedit_changed_cb), this);
+    g_signal_connect(G_OBJECT(im), "commit",
+                     G_CALLBACK(IM_commit_cb), this);
+
+    mIMContext = im;
+}
+
+PRBool
+nsWindow::IMEFilterEvent(GdkEventKey *aEvent) 
+{
+    GtkIMContext *im = IMEGetContext();
+    if (!im)
+        return FALSE;
+
+    gKeyEvent = aEvent;
+    gboolean filtered = gtk_im_context_filter_keypress(im, aEvent);
+    gKeyEvent = NULL;
+
+    LOGIM(("key filtered: %d committed: %d changed: %d\n",
+           filtered, gKeyEventCommitted, gKeyEventChanged));
+
+    // We filter the key event if the event was not committed (because
+    // it's probably part of a composition) or if the key event was
+    // committed _and_ changed.  This way we still let key press
+    // events go through as simple key press events instead of
+    // composed characters.
+
+    PRBool retval = PR_FALSE;
+    if (filtered &&
+        (!gKeyEventCommitted || (gKeyEventCommitted && gKeyEventChanged)))
+        retval = PR_TRUE;
+
+    gKeyEventChanged = PR_FALSE;
+    gKeyEventCommitted = PR_FALSE;
+    gKeyEventChanged = PR_FALSE;
+
+    return retval;
+}
+
 /* static */
 void
-IM_preedit_changed_cb(GtkIMContext *context,
-                      nsWindow     *awindow)
+IM_preedit_changed_cb(GtkIMContext *aContext,
+                      nsWindow     *aWindow)
 {
     gchar *preedit_string;
     gint cursor_pos;
     PangoAttrList *feedback_list;
 
-    // call for focused window
-    nsWindow *window = awindow->gFocusedWindow;
-    if (!window) return;
+    // if gFocusWindow is null, use the last focused gIMEFocusWindow
+    nsWindow *window = gFocusWindow ? gFocusWindow : gIMEFocusWindow;
+    if (!window)
+        return;
   
     // Should use cursor_pos ?
-    gtk_im_context_get_preedit_string(context, &preedit_string,
+    gtk_im_context_get_preedit_string(aContext, &preedit_string,
                                       &feedback_list, &cursor_pos);
   
-    LOG(("preedit string is: %s   length is: %d\n",
-         preedit_string, strlen(preedit_string)));
+    LOGIM(("preedit string is: %s   length is: %d\n",
+           preedit_string, strlen(preedit_string)));
 
-    if ((preedit_string == NULL) || (0 == strlen(preedit_string))) {
-        window->IMEComposeStart();
+    if (!preedit_string || !*preedit_string) {
+        LOGIM(("preedit ended\n"));
         window->IMEComposeText(NULL, 0, NULL, NULL);
+        window->IMEComposeEnd();
         return;
     }
+
+    LOGIM(("preedit len %d\n", strlen(preedit_string)));
 
     gunichar2 * uniStr;
     glong uniStrLen;
@@ -3489,45 +3946,68 @@ IM_preedit_changed_cb(GtkIMContext *context,
         return;
     }
 
-    if (window && (uniStrLen > 0)) {
-        window->IMEComposeStart();
+    if (uniStrLen) {
         window->IMEComposeText(NS_STATIC_CAST(const PRUnichar *, uniStr),
                                uniStrLen, preedit_string, feedback_list);
     }
 
     g_free(preedit_string);
     g_free(uniStr);
+
     if (feedback_list)
         pango_attr_list_unref(feedback_list);
 }
 
 /* static */
 void
-IM_commit_cb (GtkIMContext *context,
-              const gchar  *utf8_str,
-              nsWindow   *awindow)
+IM_commit_cb (GtkIMContext *aContext,
+              const gchar  *aUtf8_str,
+              nsWindow     *aWindow)
 {
-    gunichar2 * uniStr;
+    gunichar2 *uniStr;
     glong uniStrLen;
 
-    // call for focused window
-    nsWindow *window = awindow->gFocusedWindow;
-    if (!window) return;
+    LOGIM(("IM_commit_cb\n"));
+
+    gKeyEventCommitted = PR_TRUE;
+
+    // if gFocusWindow is null, use the last focused gIMEFocusWindow
+    nsWindow *window = gFocusWindow ? gFocusWindow : gIMEFocusWindow;
+
+    if (!window)
+        return;
+
+    /* If IME doesn't change they keyevent that generated this commit,
+       don't send it through XIM - just send it as a normal key press
+       event. */
+
+    if (gKeyEvent) {
+        char keyval_utf8[8]; /* should have at least 6 bytes of space */
+        gint keyval_utf8_len;
+        guint32 keyval_unicode;
+
+        keyval_unicode = gdk_keyval_to_unicode(gKeyEvent->keyval);
+        keyval_utf8_len = g_unichar_to_utf8(keyval_unicode, keyval_utf8);
+        keyval_utf8[keyval_utf8_len] = '\0';
+
+        if (!strcmp(aUtf8_str, keyval_utf8)) {
+            gKeyEventChanged = PR_FALSE;
+            return;
+        }
+    }
+
+    gKeyEventChanged = PR_TRUE;
 
     uniStr = NULL;
     uniStrLen = 0;
-    uniStr = g_utf8_to_utf16(utf8_str, -1, NULL, &uniStrLen, NULL);
-
-    // Will free it in call function, don't need
-    // g_free((void *)utf8_str));
+    uniStr = g_utf8_to_utf16(aUtf8_str, -1, NULL, &uniStrLen, NULL);
 
     if (!uniStr) {
-        LOG(("utf80utf16 string tranfer failed!\n"));
+        LOGIM(("utf80utf16 string tranfer failed!\n"));
         return;
     }
 
-    if (window && (uniStrLen > 0)) {
-        window->IMEComposeStart();
+    if (uniStrLen) {
         window->IMEComposeText((const PRUnichar *)uniStr,
                                (PRInt32)uniStrLen, NULL, NULL);
         window->IMEComposeEnd();
@@ -3546,11 +4026,11 @@ IM_commit_cb (GtkIMContext *context,
 
 /* static */
 void
-IMSetTextRange (const PRInt32 aLen,
-                const gchar *aPreeditString,
-                const PangoAttrList *aFeedback,
-                PRUint32 *aTextRangeListLengthResult,
-                nsTextRangeArray *aTextRangeListResult)
+IM_set_text_range(const PRInt32 aLen,
+                  const gchar *aPreeditString,
+                  const PangoAttrList *aFeedback,
+                  PRUint32 *aTextRangeListLengthResult,
+                  nsTextRangeArray *aTextRangeListResult)
 {
     if (aLen == 0) {
         aTextRangeListLengthResult = 0;
@@ -3653,6 +4133,18 @@ IMSetTextRange (const PRInt32 aLen,
    *aTextRangeListLengthResult = count + 1;
 
    pango_attr_iterator_destroy(aFeedbackIterator);
+}
+
+/* static */
+GtkIMContext *
+IM_get_input_context(MozDrawingarea *aArea)
+{
+    GtkWidget *owningWidget =
+        get_gtk_widget_for_gdk_window(aArea->inner_window);
+
+    nsWindow *owningWindow = get_window_for_gtk_widget(owningWidget);
+
+    return owningWindow->mIMContext;
 }
 
 #endif

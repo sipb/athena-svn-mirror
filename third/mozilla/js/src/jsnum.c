@@ -47,7 +47,7 @@
  * JS number type and wrapper class.
  */
 #include "jsstddef.h"
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #include <float.h>
 #endif
 #include <math.h>
@@ -67,17 +67,6 @@
 #include "jsopcode.h"
 #include "jsprf.h"
 #include "jsstr.h"
-
-union dpun {
-    struct {
-#ifdef IS_LITTLE_ENDIAN
-	uint32 lo, hi;
-#else
-	uint32 hi, lo;
-#endif
-    } s;
-    jsdouble d;
-};
 
 static JSBool
 num_isNaN(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
@@ -425,7 +414,7 @@ enum nc_slot {
 /*
  * Some to most C compilers forbid spelling these at compile time, or barf
  * if you try, so all but MAX_VALUE are set up by js_InitRuntimeNumberState
- * using union dpun.
+ * using union jsdpun.
  */
 static JSConstDoubleSpec number_constants[] = {
     {0,                         js_NaN_str,          0,{0,0,0}},
@@ -438,7 +427,11 @@ static JSConstDoubleSpec number_constants[] = {
 
 static jsdouble NaN;
 
-#if !defined __MWERKS__ && defined XP_PC && (defined _M_IX86 || defined __GNUC__)
+
+#if (defined XP_WIN || defined XP_OS2) &&                                     \
+    !defined __MWERKS__ &&                                                    \
+    (defined _M_IX86 ||                                                       \
+    (defined __GNUC__ && !defined __MINGW32__ && !defined __EMX__))
 
 /*
  * Set the exception mask to mask all exceptions and set the FPU precision
@@ -457,7 +450,7 @@ JSBool
 js_InitRuntimeNumberState(JSContext *cx)
 {
     JSRuntime *rt;
-    union dpun u;
+    jsdpun u;
 
     rt = cx->runtime;
     JS_ASSERT(!rt->jsNaN);

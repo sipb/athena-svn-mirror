@@ -168,7 +168,9 @@ function Recipients2CompFields(msgCompFields)
           case "addr_reply"       : addrReply += reply_Sep + recipient; reply_Sep = ",";      break; 
           case "addr_newsgroups"  : addrNg += ng_Sep + fieldValue; ng_Sep = ",";              break;
           case "addr_followup"    : addrFollow += follow_Sep + fieldValue; follow_Sep = ",";  break;
-          case "addr_other"       : addrOther += awGetPopupElement(i).selectedItem.getAttribute("label") + " " + fieldValue + "\n";break;
+          // do CRLF, same as PUSH_NEWLINE() in nsMsgSend.h / nsMsgCompUtils.cpp
+          // see bug #195965
+          case "addr_other"       : addrOther += awGetPopupElement(i).selectedItem.getAttribute("label") + " " + fieldValue + "\r\n";break;
         }
       }
       i ++;
@@ -233,7 +235,6 @@ function CompFields2Recipients(msgCompFields, msgType)
     var parent = listbox.parentNode;
     parent.replaceChild(newListBoxNode, listbox);
     awFitDummyRows(2);
-    setTimeout("awFinishCopyNodes();", 0);
 
     gMimeHeaderParser = null; //Release the mime parser
   }
@@ -668,8 +669,6 @@ function _awSetFocus()
   //try
   //{
     var theNewRow = awGetListItem(top.awRow);
-    //temporary patch for bug 26344
-    awFinishCopyNode(theNewRow);
 
     //Warning: firstVisibleRow is zero base but top.awRow is one base!
     var firstVisibleRow = listbox.getIndexOfFirstVisibleRow();
@@ -683,8 +682,6 @@ function _awSetFocus()
         listbox.scrollToIndex(top.awRow - numOfVisibleRows);
 
     top.awInputElement.focus();
-    // stop supressing command updating and update the toolbar, since focus has changed
-    SuppressComposeCommandUpdating(false);
   /*}
   catch(ex)
   {
@@ -697,21 +694,6 @@ function _awSetFocus()
     else
       dump("_awSetFocus failed, forget about it!\n");
   }*/
-}
-
-
-//temporary patch for bug 26344 & 26528
-function awFinishCopyNode(node)
-{
-    gMsgCompose.ResetNodeEventHandlers(node);
-    return;
-}
-
-
-function awFinishCopyNodes()
-{
-  var listbox = document.getElementById('addressingWidget');
-  awFinishCopyNode(listbox);
 }
 
 function awTabFromRecipient(element, event)

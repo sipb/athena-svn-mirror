@@ -52,7 +52,6 @@
 #include "nsIServiceManager.h"
 #include "nsIDragSessionGTK.h"
 #include "nsIDragService.h"
-#include "nsFontMetricsGTK.h"
 
 #include "nsGtkUtils.h" // for nsGtkUtils::gdk_keyboard_get_modifiers()
 
@@ -224,6 +223,7 @@ nsWidget::nsWidget()
   mPreferredWidth  = 0;
   mPreferredHeight = 0;
   mShown = PR_FALSE;
+  mInternalShown = PR_FALSE;
   mBounds.x = 0;
   mBounds.y = 0;
   mBounds.width = 0;
@@ -438,20 +438,52 @@ NS_IMETHODIMP nsWidget::Show(PRBool bState)
   if (!mWidget)
     return NS_OK; // Will be null durring printing
 
-  if (bState) {
-    gtk_widget_show(mWidget);
-    gtk_widget_show(mMozBox);
-  }
-  else {
-    gtk_widget_hide(mMozBox);
-    gtk_widget_hide(mWidget);
-  }
-
   mShown = bState;
+
+  ResetInternalVisibility();
 
   return NS_OK;
 }
 
+void nsWidget::ResetInternalVisibility()
+{
+  PRBool show = mShown;
+  if (show) {
+    if (mParent != nsnull) {
+      nsRect parentBounds;
+      mParent->GetClientBounds(parentBounds);
+      parentBounds.x = parentBounds.y = 0;
+      nsRect myBounds;
+      GetBounds(myBounds);
+      if (!myBounds.Intersects(parentBounds)) {
+        show = PR_FALSE;
+      }
+    }
+  }
+
+  if (show == mInternalShown) {
+    return;
+  }
+
+  SetInternalVisibility(show);
+}
+
+void nsWidget::SetInternalVisibility(PRBool aVisible)
+{
+  mInternalShown = aVisible;
+
+  if (aVisible) {
+    if (mWidget)
+      gtk_widget_show(mWidget);
+    if (mMozBox)
+      gtk_widget_show(mMozBox);
+  } else {
+    if (mWidget)
+      gtk_widget_hide(mWidget);
+    if (mMozBox)
+      gtk_widget_hide(mMozBox);
+  }
+}
 
 NS_IMETHODIMP nsWidget::CaptureRollupEvents(nsIRollupListener * aListener, PRBool aDoCapture, PRBool aConsumeRollupEvent)
 {
@@ -548,11 +580,12 @@ NS_IMETHODIMP nsWidget::Move(PRInt32 aX, PRInt32 aY)
   mBounds.x = aX;
   mBounds.y = aY;
 
-
   if (mMozBox) 
   {
     gtk_mozbox_set_position(GTK_MOZBOX(mMozBox), aX, aY);
   }
+
+  ResetInternalVisibility();
 
   return NS_OK;
 }
@@ -570,6 +603,17 @@ NS_IMETHODIMP nsWidget::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
 
   if (mWidget)
     gtk_widget_set_usize(mWidget, aWidth, aHeight);
+
+  ResetInternalVisibility();
+  PRUint32 childCount, index;
+  if (NS_SUCCEEDED(mChildren->Count(&childCount))) {
+    for (index = 0; index < childCount; index++) {
+      nsCOMPtr<nsIWidget> childWidget;
+      if (NS_SUCCEEDED(mChildren->QueryElementAt(index, NS_GET_IID(nsIWidget), (void**)getter_AddRefs(childWidget)))) {
+        NS_STATIC_CAST(nsWidget*, NS_STATIC_CAST(nsIWidget*, childWidget.get()))->ResetInternalVisibility();
+      }
+    }
+  }
 
   return NS_OK;
 }
@@ -615,6 +659,8 @@ PRBool nsWidget::OnResize(nsRect &aRect)
   mBounds.width = aRect.width;
   mBounds.height = aRect.height;
 
+  ResetInternalVisibility();
+
   NS_ADDREF_THIS();
   PRBool result = OnResize(&event);
   NS_RELEASE_THIS();
@@ -635,6 +681,8 @@ PRBool nsWidget::OnMove(PRInt32 aX, PRInt32 aY)
 #endif
     mBounds.x = aX;
     mBounds.y = aY;
+
+    ResetInternalVisibility();
 
     nsGUIEvent event;
     InitEvent(event, NS_MOVE);
@@ -767,6 +815,9 @@ NS_IMETHODIMP nsWidget::SetBackgroundColor(const nscolor &aColor)
 //-------------------------------------------------------------------------
 NS_IMETHODIMP nsWidget::SetCursor(nsCursor aCursor)
 {
+#ifdef DEBUG
+  printf("nsWidget::SetCursor\n");
+#endif
   if (!mWidget || !mWidget->window)
     return NS_ERROR_FAILURE;
 
@@ -857,7 +908,7 @@ NS_IMETHODIMP nsWidget::SetCursor(nsCursor aCursor)
       case eCursor_context_menu:
         // XXX: these CSS3 cursors need to be implemented
         // For CSS3 Cursor Definitions, See:
-        // www.w3.org/TR/css3-userint
+        // http://www.w3.org/TR/css3-ui/
         break;
 
       case eCursor_cell:
@@ -877,6 +928,10 @@ NS_IMETHODIMP nsWidget::SetCursor(nsCursor aCursor)
       case eCursor_count_down:
       case eCursor_count_up_down:
         // XXX: these CSS3 cursors need to be implemented
+        break;
+
+      case eCursor_zoom_in:
+      case eCursor_zoom_out:
         break;
 
       default:
@@ -1452,7 +1507,7 @@ NS_IMETHODIMP nsWidget::DispatchEvent(nsGUIEvent *aEvent,
   if ((aStatus != nsEventStatus_eIgnore) && (nsnull != mEventListener)) {
     aStatus = mEventListener->ProcessEvent(*aEvent);
   }
-  NS_RELEASE(aEvent->widget);
+  NS_IF_RELEASE(aEvent->widget);
 
   return NS_OK;
 }
@@ -1676,12 +1731,6 @@ nsWidget::OnMotionNotifySignal(GdkEventMotion * aGdkMotionEvent)
   else
   {
     event.widget = this;
-
-    if (aGdkMotionEvent)
-    {
-      event.point.x = nscoord(x);
-      event.point.y = nscoord(y);
-    }
   }
 
   if (aGdkMotionEvent)
@@ -1868,9 +1917,9 @@ nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
   // if we're a right-button-down on linux, we're trying to
   // popup a context menu. send that event to gecko also.
   if (eventType == NS_MOUSE_RIGHT_BUTTON_DOWN) {
-    eventType = NS_CONTEXTMENU;
-    InitMouseEvent(aGdkButtonEvent, event, eventType);
-    DispatchMouseEvent(event);
+    nsMouseEvent contextMenuEvent;
+    InitMouseEvent(aGdkButtonEvent, contextMenuEvent, NS_CONTEXTMENU);
+    DispatchMouseEvent(contextMenuEvent);
   }
 
   Release();

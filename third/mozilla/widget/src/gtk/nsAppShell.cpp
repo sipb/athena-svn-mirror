@@ -48,10 +48,6 @@
 #include <stdlib.h>
 #include <gdk/gdkx.h>
 
-#ifdef MOZ_GLE
-#include <gle/gle.h>
-#endif
-
 #include "nsIWidget.h"
 #include "nsIPref.h"
 
@@ -139,7 +135,6 @@ static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 //-------------------------------------------------------------------------
 nsAppShell::nsAppShell()
 {
-  NS_INIT_ISUPPORTS();
 #ifdef DEBUG_APPSHELL
   printf("nsAppShell::nsAppShell()\n");
 #endif
@@ -157,8 +152,23 @@ nsAppShell::~nsAppShell()
 #ifdef DEBUG_APPSHELL
   printf("nsAppShell::~nsAppShell()\n");
 #endif
-  // XXX we need to free this hashtable
-  //  PL_HashTableDestroy(sQueueHashTable);
+}
+
+/* static */ void
+nsAppShell::ReleaseGlobals()
+{
+  if (sQueueHashTable) {
+    PL_HashTableDestroy(sQueueHashTable);
+    sQueueHashTable = nsnull;
+  }
+  if (sCountHashTable) {
+    PL_HashTableDestroy(sCountHashTable);
+    sCountHashTable = nsnull;
+  }
+  if (sEventQueueList) {
+    delete sEventQueueList;
+    sEventQueueList = nsnull;
+  }
 }
 
 //-------------------------------------------------------------------------
@@ -168,12 +178,6 @@ nsAppShell::~nsAppShell()
 //-------------------------------------------------------------------------
 
 NS_IMPL_ISUPPORTS1(nsAppShell, nsIAppShell)
-
-//-------------------------------------------------------------------------
-NS_IMETHODIMP nsAppShell::SetDispatchListener(nsDispatchListener* aDispatchListener)
-{
-  return NS_OK;
-}
 
 static void event_processor_callback(gpointer data,
                                      gint source,
@@ -223,14 +227,6 @@ NS_IMETHODIMP nsAppShell::Create(int *bac, char **bav)
   if (NS_SUCCEEDED(rv) && cmdResult) {
     gdk_rgb_set_install(TRUE);
   }
-
-  gtk_set_locale ();
-
-  gtk_init (&argc, &argv);
-
-#ifdef MOZ_GLE
-  gle_init (&argc, &argv);
-#endif
 
   gdk_rgb_init();
 

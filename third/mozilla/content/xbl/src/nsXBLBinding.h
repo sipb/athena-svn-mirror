@@ -39,14 +39,15 @@
 
 #include "nsCOMPtr.h"
 #include "nsIXBLBinding.h"
-#include "nsIXBLPrototypeBinding.h"
+#include "nsAutoPtr.h"
+#include "nsXBLPrototypeBinding.h"
 
 class nsIContent;
 class nsIAtom;
 class nsIDocument;
 class nsIScriptContext;
 class nsISupportsArray;
-class nsSupportsHashtable;
+class nsObjectHashtable;
 class nsIXBLService;
 class nsFixedSizeAllocator;
 class nsXBLEventHandler;
@@ -60,8 +61,8 @@ class nsXBLBinding: public nsIXBLBinding
   NS_DECL_ISUPPORTS
 
   // nsIXBLBinding
-  NS_IMETHOD GetPrototypeBinding(nsIXBLPrototypeBinding** aResult);
-  NS_IMETHOD SetPrototypeBinding(nsIXBLPrototypeBinding* aProtoBinding);
+  NS_IMETHOD GetPrototypeBinding(nsXBLPrototypeBinding** aResult);
+  NS_IMETHOD SetPrototypeBinding(nsXBLPrototypeBinding* aProtoBinding);
 
   NS_IMETHOD GetBaseBinding(nsIXBLBinding** aResult);
   NS_IMETHOD SetBaseBinding(nsIXBLBinding* aBinding);
@@ -98,7 +99,7 @@ class nsXBLBinding: public nsIXBLBinding
   NS_IMETHOD GetDocURI(nsCString& aResult);
   NS_IMETHOD GetID(nsCString& aResult);
 
-  NS_IMETHOD GetInsertionPointsFor(nsIContent* aParent, nsISupportsArray** aResult);
+  NS_IMETHOD GetInsertionPointsFor(nsIContent* aParent, nsVoidArray** aResult);
 
   NS_IMETHOD GetInsertionPoint(nsIContent* aChild, nsIContent** aResult, PRUint32* aIndex, nsIContent** aDefaultContent);
   NS_IMETHOD GetSingleInsertionPoint(nsIContent** aResult, PRUint32* aIndex, 
@@ -112,7 +113,6 @@ class nsXBLBinding: public nsIXBLBinding
 
   NS_IMETHOD InheritsStyle(PRBool* aResult);
   NS_IMETHOD WalkRules(nsISupportsArrayEnumFunc aFunc, void* aData);
-  NS_IMETHOD AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData, PRBool* aAffects);
 
   NS_IMETHOD MarkForDeath();
   NS_IMETHOD MarkedForDeath(PRBool* aResult);
@@ -124,7 +124,7 @@ class nsXBLBinding: public nsIXBLBinding
   NS_IMETHOD ShouldBuildChildFrames(PRBool* aResult);
 
 public:
-  nsXBLBinding(nsIXBLPrototypeBinding* aProtoBinding);
+  nsXBLBinding(nsXBLPrototypeBinding* aProtoBinding);
   virtual ~nsXBLBinding();
 
   NS_IMETHOD AddScriptEventListener(nsIContent* aElement, nsIAtom* aName, const nsString& aValue);
@@ -166,7 +166,8 @@ protected:
   
 // MEMBER VARIABLES
 protected:
-  nsCOMPtr<nsIXBLPrototypeBinding> mPrototypeBinding; // Strong. As long as we're around, the binding can't go away.
+
+  nsRefPtr<nsXBLPrototypeBinding> mPrototypeBinding; // Strong. We share ownership with other bindings and the docinfo.
   nsCOMPtr<nsIContent> mContent; // Strong. Our anonymous content stays around with us.
   nsCOMPtr<nsIXBLBinding> mNextBinding; // Strong. The derived binding owns the base class bindings.
   
@@ -175,7 +176,7 @@ protected:
 
   nsIContent* mBoundElement; // [WEAK] We have a reference, but we don't own it.
   
-  nsSupportsHashtable* mInsertionPointTable;    // A hash from nsIContent* -> (a sorted array of nsIXBLInsertionPoint*)
+  nsObjectHashtable* mInsertionPointTable;    // A hash from nsIContent* -> (a sorted array of nsXBLInsertionPoint*)
 
   PRPackedBool mIsStyleBinding;
   PRPackedBool mMarkedForDeath;

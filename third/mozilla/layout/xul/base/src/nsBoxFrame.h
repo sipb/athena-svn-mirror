@@ -135,7 +135,7 @@ public:
   NS_IMETHOD  Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        asPrevInFlow);
 
  
@@ -194,7 +194,7 @@ public:
  
   static nsresult CreateViewForFrame(nsIPresContext* aPresContext,
                                      nsIFrame* aChild,
-                                     nsIStyleContext* aStyleContext,
+                                     nsStyleContext* aStyleContext,
                                      PRBool aForce);
 
   NS_IMETHOD  Paint(nsIPresContext*      aPresContext,
@@ -231,9 +231,6 @@ protected:
                                const nsRect&        aDirtyRect,
                                nsFramePaintLayer    aWhichLayer,
                                PRUint32             aFlags = 0);
-
-    virtual PRIntn GetSkipSides() const { return 0; }
-
 
     virtual PRBool GetInitialEqualSize(PRBool& aEqualSize); 
     virtual void GetInitialOrientation(PRBool& aIsHorizontal);

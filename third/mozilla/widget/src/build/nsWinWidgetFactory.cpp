@@ -44,7 +44,6 @@
 
 #include "nsFilePicker.h"
 #include "nsLookAndFeel.h"
-#include "nsScrollbar.h"
 #include "nsToolkit.h"
 #include "nsWindow.h"
 #include "nsAppShell.h"
@@ -52,9 +51,7 @@
 #include "nsSound.h"
 #include "nsFullScreen.h"
 
-#ifdef IBMBIDI
 #include "nsBidiKeyboard.h"
-#endif
 
 
 // Drag & Drop, Clipboard
@@ -79,69 +76,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboard)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboardHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsFullScreen)
-#ifdef IBMBIDI
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
-#endif
-
-static NS_IMETHODIMP
-nsHorizScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWindow *)new nsScrollbar(PR_FALSE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static NS_IMETHODIMP
-nsVertScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWindow *)new nsScrollbar(PR_TRUE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
 
 static const nsModuleComponentInfo components[] =
 {
@@ -157,14 +92,6 @@ static const nsModuleComponentInfo components[] =
     NS_FILEPICKER_CID,
     "@mozilla.org/filepicker;1",
     nsFilePickerConstructor },
-  { "Horiz Scrollbar",
-    NS_HORZSCROLLBAR_CID,
-    "@mozilla.org/widgets/horizscroll/win;1",
-    nsHorizScrollbarConstructor },
-  { "Vert Scrollbar",
-    NS_VERTSCROLLBAR_CID,
-    "@mozilla.org/widgets/vertscroll/win;1",
-    nsVertScrollbarConstructor },
   { "AppShell",
     NS_APPSHELL_CID,
     "@mozilla.org/widget/appshell/win;1",
@@ -207,12 +134,10 @@ static const nsModuleComponentInfo components[] =
     nsDragServiceConstructor },
     { "Full Screen", NS_FULLSCREEN_SERVICE_CID,
       NS_FULLSCREEN_SERVICE_CONTRACTID, nsFullScreenConstructor },
-#ifdef IBMBIDI
   { "Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor },
-#endif // IBMBIDI
 };
 
 

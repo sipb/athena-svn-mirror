@@ -57,11 +57,13 @@
 #include "nsXBLAtoms.h"
 #include "nsINameSpaceManager.h"
 #include "nsIFrameManager.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
+#include "nsXBLPrototypeBinding.h"
 
 NS_IMPL_ISUPPORTS1(nsXBLResourceLoader, nsICSSLoaderObserver)
 
-nsXBLResourceLoader::nsXBLResourceLoader(nsIXBLPrototypeBinding* aBinding, nsXBLPrototypeResources* aResources)
+nsXBLResourceLoader::nsXBLResourceLoader(nsXBLPrototypeBinding* aBinding,
+                                         nsXBLPrototypeResources* aResources)
 :mBinding(aBinding),
  mResources(aResources),
  mResourceList(nsnull),
@@ -70,7 +72,6 @@ nsXBLResourceLoader::nsXBLResourceLoader(nsIXBLPrototypeBinding* aBinding, nsXBL
  mInLoadResourcesFunc(PR_FALSE),
  mPendingSheets(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsXBLResourceLoader::~nsXBLResourceLoader()
@@ -96,8 +97,7 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
   nsCOMPtr<imgILoader> il;
   nsCOMPtr<nsICSSLoader> cssLoader;
 
-  nsCOMPtr<nsIXBLDocumentInfo> info;
-  mBinding->GetXBLDocumentInfo(nsnull, getter_AddRefs(info));
+  nsCOMPtr<nsIXBLDocumentInfo> info = mBinding->GetXBLDocumentInfo(nsnull);
   if (!info) {
     mInLoadResourcesFunc = PR_FALSE;
     return;
@@ -143,24 +143,31 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
         continue;
 
       // Kick off the load of the stylesheet.
-      PRBool doneLoading;
-      nsAutoString empty;
-      PRInt32 numSheets = 0;
-      doc->GetNumberOfStyleSheets(&numSheets);
 
-#ifdef DEBUG
-      nsCOMPtr<nsILoadGroup> loadGroup;
-      doc->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
-      
-      NS_ASSERTION(loadGroup, "An XBL scoped stylesheet is unable to locate a load group. This means the onload is going to fire too early!");
-#endif
+      // Always load chrome synchronously
+      PRBool chrome;
+      if (NS_SUCCEEDED(url->SchemeIs("chrome", &chrome)) && chrome)
+      {
+        nsCOMPtr<nsICSSStyleSheet> sheet;
+        nsresult rv = cssLoader->LoadAgentSheet(url, getter_AddRefs(sheet));
+        NS_ASSERTION(NS_SUCCEEDED(rv), "Load failed!!!");
+        if (NS_SUCCEEDED(rv))
+        {
+          rv = StyleSheetLoaded(sheet, PR_TRUE);
+          NS_ASSERTION(NS_SUCCEEDED(rv), "Processing the style sheet failed!!!");
+        }
+      }
+      else
+      {
+        PRBool doneLoading;
+        NS_NAMED_LITERAL_STRING(empty, "");
+        nsresult rv = cssLoader->LoadStyleLink(nsnull, url, empty, empty, kNameSpaceID_Unknown,
+                                               nsnull, doneLoading, this);
+        NS_ASSERTION(NS_SUCCEEDED(rv), "Load failed!!!");
 
-      cssLoader->LoadStyleLink(nsnull, url, empty, empty, kNameSpaceID_Unknown,
-                               numSheets,
-                               nsnull,
-                               doneLoading, this);
-      if (!doneLoading)
-        mPendingSheets++;
+        if (!doneLoading)
+          mPendingSheets++;
+      }
     }
   }
 
@@ -288,8 +295,7 @@ nsXBLResourceLoader::NotifyBoundElements()
             // Check to see if it's in the undisplayed content map.
             nsCOMPtr<nsIFrameManager> frameManager;
             shell->GetFrameManager(getter_AddRefs(frameManager));
-            nsCOMPtr<nsIStyleContext> sc;
-            frameManager->GetUndisplayedContent(content, getter_AddRefs(sc));
+            nsStyleContext* sc = frameManager->GetUndisplayedContent(content);
             if (!sc) {
               nsCOMPtr<nsIDocumentObserver> obs(do_QueryInterface(shell));
               obs->ContentInserted(doc, parent, content, index);

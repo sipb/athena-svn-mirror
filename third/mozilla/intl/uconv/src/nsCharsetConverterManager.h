@@ -42,7 +42,8 @@
 #include "nsICharsetConverterManager.h"
 #include "nsIStringBundle.h"
 #include "nsISupportsArray.h"
-#include "nsIRegistry.h"
+
+#include "nsINativeUConvService.h"
 
 class nsCharsetConverterManager : public nsICharsetConverterManager, 
 public nsICharsetConverterManager2
@@ -65,6 +66,10 @@ private:
 
   nsIStringBundle * mDataBundle;
   nsIStringBundle * mTitleBundle;
+
+#ifdef MOZ_USE_NATIVE_UCONV
+  nsCOMPtr<nsINativeUConvService> mNativeUC;
+#endif
 
   nsresult LoadExtensibleBundle(const char * aRegistryKey, 
       nsIStringBundle ** aResult);

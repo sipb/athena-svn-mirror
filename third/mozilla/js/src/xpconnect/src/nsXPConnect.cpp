@@ -62,8 +62,6 @@ nsXPConnect::nsXPConnect()
         mDefaultSecurityManagerFlags(0),
         mShuttingDown(JS_FALSE)
 {
-    NS_INIT_ISUPPORTS();
-
     // Ignore the result. If the runtime service is not ready to rumble
     // then we'll set this up later as needed.
     CreateRuntime();
@@ -78,13 +76,12 @@ nsXPConnect::nsXPConnect()
 
 #ifdef XPC_TOOLS_SUPPORT
   {
-    nsDependentCString filename(PR_GetEnv("MOZILLA_JS_PROFILER_OUTPUT"));
-    if(!filename.IsEmpty())
+    char* filename = PR_GetEnv("MOZILLA_JS_PROFILER_OUTPUT");
+    if(filename && *filename)
     {
-
         mProfilerOutputFile = do_CreateInstance(NS_LOCAL_FILE_CONTRACTID);
         if(mProfilerOutputFile &&
-           NS_SUCCEEDED(mProfilerOutputFile->InitWithNativePath(filename)))
+           NS_SUCCEEDED(mProfilerOutputFile->InitWithNativePath(nsDependentCString(filename))))
         {
             mProfiler = do_GetService(XPCTOOLS_PROFILER_CONTRACTID);
             if(mProfiler)
@@ -93,7 +90,7 @@ nsXPConnect::nsXPConnect()
                 {
 #ifdef DEBUG
                     printf("***** profiling JavaScript. Output to: %s\n",
-                           filename.get());
+                           filename);
 #endif
                 }
             }
@@ -1066,6 +1063,7 @@ nsXPConnect::ReleaseJSContext(JSContext * aJSContext, PRBool noGC)
                    aJSContext);
 #endif
             ccx->SetDestroyJSContextInDestructor(JS_TRUE);
+            JS_ClearNewbornRoots(aJSContext);
             return NS_OK;
         }
         // else continue on and synchronously destroy the JSContext ...

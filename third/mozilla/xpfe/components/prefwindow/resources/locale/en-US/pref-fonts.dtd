@@ -10,7 +10,7 @@
 <!ENTITY  sizes.label                             "Size (pixels)">
 
 <!ENTITY  proportional.label                      "Proportional:">
-<!ENTITY  proportional.accesskey                  "p">
+<!ENTITY  proportional.accesskey                  "P">
 
 <!ENTITY  serif.label                             "Serif:">
 <!ENTITY  serif.accesskey                         "s">
@@ -41,7 +41,8 @@
 <!ENTITY  font.langGroup.thai                     "Thai">
 <!ENTITY  font.langGroup.hebrew                   "Hebrew">
 <!ENTITY  font.langGroup.arabic                   "Arabic">
-<!ENTITY  font.langGroup.hi-IN                    "Hindi">
+<!ENTITY  font.langGroup.devanagari               "Devanagari">
+<!ENTITY  font.langGroup.tamil                    "Tamil">
 <!-- Minimum font size -->
 <!ENTITY minSize.label                            "Minimum font size:">
 <!ENTITY minSize.accesskey                        "z">

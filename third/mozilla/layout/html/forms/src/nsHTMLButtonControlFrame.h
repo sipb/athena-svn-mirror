@@ -48,7 +48,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsLeafFrame.h"
 #include "nsCSSRendering.h"
 #include "nsISupports.h"
@@ -87,6 +87,8 @@ public:
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
 
+  NS_IMETHOD IsPercentageBase(PRBool& aBase) const;
+  
   NS_IMETHOD HandleEvent(nsIPresContext* aPresContext, 
                          nsGUIEvent* aEvent,
                          nsEventStatus* aEventStatus);
@@ -100,13 +102,12 @@ public:
   NS_IMETHOD  Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        asPrevInFlow);
 
-  NS_IMETHOD  GetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext** aStyleContext) const;
-  NS_IMETHOD  SetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext* aStyleContext);
+  virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
+  virtual void SetAdditionalStyleContext(PRInt32 aIndex, 
+                                         nsStyleContext* aStyleContext);
  
   NS_IMETHOD  AppendFrames(nsIPresContext* aPresContext,
                            nsIPresShell&   aPresShell,
@@ -126,7 +127,7 @@ public:
   virtual nsresult RequiresWidget(PRBool &aRequiresWidget);
 
 
-  NS_IMETHOD GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
   NS_IMETHOD GetName(nsAString* aName);
   NS_IMETHOD GetValue(nsAString* aName);
   virtual void MouseClicked(nsIPresContext* aPresContext);
@@ -155,6 +156,14 @@ public:
 protected:
   virtual PRBool IsReset(PRInt32 type);
   virtual PRBool IsSubmit(PRInt32 type);
+  void ReflowButtonContents(nsIPresContext* aPresContext,
+                            nsHTMLReflowMetrics& aDesiredSize,
+                            const nsHTMLReflowState& aReflowState,
+                            nsIFrame* aFirstKid,
+                            const nsSize& aAvailSize,
+                            nsReflowReason aReason,
+                            nsMargin aFocusPadding,
+                            nsReflowStatus& aStatus);
   NS_IMETHOD AddComputedBorderPaddingToDesiredSize(nsHTMLReflowMetrics& aDesiredSize,
                                                    const nsHTMLReflowState& aSuggestedReflowState);
   NS_IMETHOD_(nsrefcnt) AddRef(void);
@@ -170,7 +179,8 @@ protected:
 
   //Resize Reflow OpitmizationSize;
   nsSize                mCacheSize;
-  nsSize                mCachedMaxElementSize;
+  nscoord               mCachedAscent;
+  nscoord               mCachedMaxElementWidth;
 };
 
 #endif

@@ -140,10 +140,10 @@ public:
 };
 
 // XXX These belong elsewhere
-extern nsresult
-NS_NewTextNode(nsIContent** aResult);
+nsresult
+NS_NewTextNode(nsITextContent** aResult);
 
-extern nsresult
+nsresult
 NS_NewCommentNode(nsIContent** aResult);
 
 

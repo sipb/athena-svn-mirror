@@ -70,8 +70,8 @@
 #include "nsICategoryManager.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
-#include "nsIObservableInputStream.h"
-#include "nsIObservableOutputStream.h"
+#include "nsIAsyncInputStream.h"
+#include "nsIAsyncOutputStream.h"
 
 #define PREF_MAIL_DISPLAY_GLYPH "mail.display_glyph"
 #define PREF_MAIL_DISPLAY_STRUCT "mail.display_struct"
@@ -489,10 +489,17 @@ nsStreamConverter::DetermineOutputFormat(const char *url,  nsMimeOutputType *aNe
           mRealContentType = typeField + strlen("&type=");
         if (mRealContentType.Equals("message/rfc822"))
         {
-          mRealContentType = "text/plain";
+          mRealContentType = "x-message-display";
           CRTFREEIF(mOutputFormat);
-          mOutputFormat = nsCRT::strdup("raw");
-          *aNewType = nsMimeOutput::nsMimeMessageRaw;
+          mOutputFormat = nsCRT::strdup("text/html");
+          *aNewType = nsMimeOutput::nsMimeMessageBodyDisplay;
+        }
+        else if (mRealContentType.Equals("x-message-display"))
+        {
+          mRealContentType = "";
+          CRTFREEIF(mOutputFormat);
+          mOutputFormat = nsCRT::strdup("text/html");
+          *aNewType = nsMimeOutput::nsMimeMessageBodyDisplay;
         }
         else
         {
@@ -532,9 +539,6 @@ nsStreamConverter::InternalCleanup(void)
  */
 nsStreamConverter::nsStreamConverter()
 {
-  /* the following macro is used to initialize the ref counting data */
-  NS_INIT_ISUPPORTS();
-
   // Init member variables...
   mOverrideFormat = nsnull;
 
@@ -617,6 +621,7 @@ NS_IMETHODIMP nsStreamConverter::Init(nsIURI *aURI, nsIStreamListener * aOutList
       mOutputFormat = nsCRT::strdup("text/html");
       break;
       
+    case nsMimeOutput::nsMimeMessageDecrypt:  
     case nsMimeOutput::nsMimeMessageRaw:       // the raw RFC822 data (view source) and attachments
       CRTFREEIF(mOutputFormat);
       mOutputFormat = nsCRT::strdup("raw");
@@ -700,22 +705,6 @@ NS_IMETHODIMP nsStreamConverter::Init(nsIURI *aURI, nsIStreamListener * aOutList
                   NS_STREAM_CONVERTER_SEGMENT_SIZE,
                   NS_STREAM_CONVERTER_BUFFER_SIZE,
                   PR_TRUE, PR_TRUE);
-  
-  if (NS_SUCCEEDED(rv))
-  {
-    nsCOMPtr<nsIInputStreamObserver> inObs = do_GetInterface(mEmitter, &rv);
-    if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsIObservableInputStream> observableIn(do_QueryInterface(mInputStream, &rv));
-      if (NS_SUCCEEDED(rv))
-        observableIn->SetObserver(inObs);
-    }
-    nsCOMPtr<nsIOutputStreamObserver> outObs = do_GetInterface(mEmitter, &rv);
-    if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsIObservableOutputStream> observableOut(do_QueryInterface(mOutputStream, &rv));
-      if (NS_SUCCEEDED(rv))
-        observableOut->SetObserver(outObs);
-    }
-  }
   
   // initialize our emitter
   if (NS_SUCCEEDED(rv) && mEmitter)

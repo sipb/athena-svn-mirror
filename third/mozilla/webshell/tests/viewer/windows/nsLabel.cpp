@@ -73,7 +73,6 @@ NS_IMPL_RELEASE(nsLabel)
 //-------------------------------------------------------------------------
 nsLabel::nsLabel() : nsWindow(), nsILabel()
 {
-  NS_INIT_ISUPPORTS();
   mAlignment = eAlign_Left;
 }
 
@@ -177,7 +176,6 @@ PRBool nsLabel::OnResize(nsRect &aWindowRect)
     return PR_FALSE;
 }
 
-#ifdef MOZ_UNICODE
 //-------------------------------------------------------------------------
 //
 // return the window class name and initialize the class if needed
@@ -187,7 +185,6 @@ LPCWSTR nsLabel::WindowClassW()
 {
   return L"STATIC";
 }
-#endif /* MOZ_UNICODE */
 
 //-------------------------------------------------------------------------
 //

@@ -114,18 +114,13 @@
 #endif
 
 #ifdef XPC_IDISPATCH_SUPPORT
+// This goop was added because of EXCEPINFO in ThrowCOMError
+// This include is here, because it needs to occur before the undefines below
 #include <atlbase.h>
-#include <comdef.h>
-
-extern CComModule _Module;
-
-#include <atlcom.h>
-// MS clutters the global namespace with so many macro names :-(
-// I tried to keep these includes in the CPP's but it became too
-// convoluted
+#include "oaidl.h"
+// Nasty MS defines
 #undef GetClassInfo
 #undef GetClassName
-#undef interface
 #undef GetMessage
 #endif
 
@@ -134,7 +129,7 @@ extern CComModule _Module;
 
 // Note that one would not normally turn *any* of these on in a non-DEBUG build.
 
-#if defined(DEBUG_jband) || defined(DEBUG_jst) || defined(DEBUG_dbradley) || defined(DEBUG_shaver)
+#if defined(DEBUG_jband) || defined(DEBUG_jst) || defined(DEBUG_dbradley) || defined(DEBUG_shaver) || defined(DEBUG_dbaron) || defined(DEBUG_timeless)
 #define DEBUG_xpc_hacker
 #endif
 
@@ -240,7 +235,7 @@ extern const char XPC_XPCONNECT_CONTRACTID[];
 // Auto locking support class...
 
 // We PROMISE to never screw this up.
-#ifdef WIN32
+#ifdef _MSC_VER
 #pragma warning(disable : 4355) // OK to pass "this" in member initializer
 #endif
 
@@ -251,7 +246,7 @@ static inline void xpc_Wait(XPCLock* lock)
         NS_ASSERTION(lock, "xpc_Wait called with null lock!");
 #ifdef DEBUG
         PRStatus result = 
-#endif    
+#endif
         PR_Wait(lock, PR_INTERVAL_NO_TIMEOUT);
         NS_ASSERTION(PR_SUCCESS == result, "bad result from PR_Wait!");
     }
@@ -379,10 +374,6 @@ private:
     }
     static void operator delete(void* /*memory*/) {}
 };
-
-#ifdef XPC_IDISPATCH_SUPPORT
-class XPCIDispatchExtension;
-#endif
 
 /***************************************************************************
 ****************************************************************************
@@ -560,6 +551,10 @@ public:
         IDX_OBJECT                  ,
         IDX_PROTOTYPE               ,
         IDX_CREATE_INSTANCE         ,
+#ifdef XPC_IDISPATCH_SUPPORT
+        IDX_ACTIVEX_OBJECT          ,
+        IDX_COM_OBJECT              ,
+#endif
         IDX_TOTAL_COUNT // just a count of the above
     };
 
@@ -972,6 +967,10 @@ XPC_WN_GetterSetter(JSContext *cx, JSObject *obj,
 
 extern JSBool
 xpc_InitWrappedNativeJSOps();
+
+// Comes from xpcwrappednativeops.cpp
+extern void
+xpc_MarkForValidWrapper(JSContext *cx, XPCWrappedNative* wrapper, void *arg);
 
 /***************************************************************************/
 
@@ -1648,7 +1647,7 @@ protected:
                 const XPCNativeScriptableCreateInfo* scriptableCreateInfo);
 
 private:
-#ifdef DEBUG
+#if defined(DEBUG_xpc_hacker) || defined(DEBUG)
     static PRInt32 gDEBUG_LiveProtoCount;
 #endif
 
@@ -1682,12 +1681,11 @@ public:
     void SetNative(nsISupports*  Native)              {mNative = Native;}
     void SetJSObject(JSObject*  JSObj);
 
-    void JSObjectFinalized() {mJSObject = nsnull;}
+    void JSObjectFinalized() {SetJSObject(nsnull);}
 
     XPCWrappedNativeTearOff()
         : mInterface(nsnull), mNative(nsnull), mJSObject(nsnull) {}
-    ~XPCWrappedNativeTearOff()
-        {NS_ASSERTION(!(GetInterface()||GetNative()||GetJSObject()), "tearoff not empty in dtor");}
+    ~XPCWrappedNativeTearOff();
 
     void Mark()       {mJSObject = (JSObject*)(((jsword)mJSObject) | 1);}
     void Unmark()     {mJSObject = (JSObject*)(((jsword)mJSObject) & ~1);}
@@ -1700,7 +1698,6 @@ public:
         JSOBJECT_MASK = 3
     };
     void                SetIDispatch(JSContext* cx);
-    JSObject*           Get() const;
     JSBool              IsIDispatch() const;
     XPCDispInterface*   GetIDispatchInfo() const;
 #endif
@@ -2049,6 +2046,10 @@ public:
                                               nsIVariant** aResult);
 
     virtual ~nsXPCWrappedJSClass();
+
+    static nsresult CheckForException(XPCCallContext & ccx,
+                                      const char * aPropertyName,
+                                      const char * anInterfaceName);
 private:
     nsXPCWrappedJSClass();   // not implemented
     nsXPCWrappedJSClass(XPCCallContext& ccx, REFNSIID aIID,
@@ -2261,13 +2262,10 @@ public:
                                            const nsID* iid,
                                            JSObject* scope, nsresult* pErr);
 
-#ifdef XPC_IDISPATCH_SUPPORT
-    static JSBool NativeInterface2JSObject(XPCCallContext& ccx,
-                                           nsIXPConnectJSObjectHolder** dest,
-                                           IDispatch* src,
-                                           JSObject* scope, nsresult* pErr);
-#endif
-
+    static JSBool GetNativeInterfaceFromJSObject(XPCCallContext& ccx,
+                                                 void** dest, JSObject* src,
+                                                 const nsID* iid, 
+                                                 nsresult* pErr);
     static JSBool JSObject2NativeInterface(XPCCallContext& ccx,
                                            void** dest, JSObject* src,
                                            const nsID* iid,
@@ -2458,7 +2456,9 @@ public:
     static void ThrowBadResult(nsresult rv, nsresult result, XPCCallContext& ccx);
     static void ThrowBadParam(nsresult rv, uintN paramNum, XPCCallContext& ccx);
 #ifdef XPC_IDISPATCH_SUPPORT
-    static void ThrowCOMError(JSContext* cx, HRESULT COMErrorCode);
+    static void ThrowCOMError(JSContext* cx, unsigned long COMErrorCode, 
+                              nsresult rv = NS_ERROR_XPC_COM_ERROR,
+                              const EXCEPINFO * exception = nsnull);
 #endif
     static JSBool SetVerbosity(JSBool state)
         {JSBool old = sVerbose; sVerbose = state; return old;}
@@ -2670,7 +2670,7 @@ private:
     nsDeque     mStack;
     JSContext*  mSafeJSContext;
 
-    // If if non-null, we own it; same as mSafeJSContext if SetSafeJSContext
+    // If non-null, we own it; same as mSafeJSContext if SetSafeJSContext
     // not called.
     JSContext*  mOwnSafeJSContext;
 };
@@ -3079,8 +3079,46 @@ private:
     JSContext*        mCX;
     JSErrorReporter   mOldErrorReporter;
     JSExceptionState* mOldExceptionState;
- };
+};
 
+/******************************************************************************
+ * Handles pre/post script processing and the setting/resetting the error
+ * reporter
+ */
+class AutoScriptEvaluate
+{
+public:
+    /**
+     * Saves the JSContext as well as initializing our state
+     * @param cx The JSContext, this can be null, we don't do anything then
+     */
+    AutoScriptEvaluate(JSContext * cx)
+         : mJSContext(cx), mState(0), mEvaluated(PR_FALSE), 
+           mContextHasThread(0) {}
+
+    /**
+     * Does the pre script evaluation and sets the error reporter if given
+     * This function should only be called once, and will assert if called
+     * more than once
+     * @param errorReporter the error reporter callback function to set
+     */
+
+    void StartEvaluating(JSErrorReporter errorReporter = nsnull);
+    /**
+     * Does the post script evaluation and resets the error reporter
+     */
+    ~AutoScriptEvaluate();
+private:
+    JSContext* mJSContext;
+    JSExceptionState* mState;
+    JSErrorReporter mOldErrorReporter;
+    PRBool mEvaluated;
+    jsword mContextHasThread;
+
+    // No copying or assignment allowed
+    AutoScriptEvaluate(const AutoScriptEvaluate &);
+    AutoScriptEvaluate & operator =(const AutoScriptEvaluate &);
+};
 
 /***************************************************************************/
 class AutoResolveName
@@ -3105,6 +3143,23 @@ private:
     jsval mCheck;
 };
 
+/***************************************************************************/
+class XPCMarkableJSVal
+{
+public:
+    XPCMarkableJSVal(jsval val) : mVal(val), mValPtr(&mVal) {}
+    XPCMarkableJSVal(jsval *pval) : mVal(0), mValPtr(pval) {}
+    ~XPCMarkableJSVal() {}
+    void Mark() {}
+    void MarkBeforeJSFinalize(JSContext* cx)
+        {if(JSVAL_IS_GCTHING(*mValPtr))
+            JS_MarkGCThing(cx, JSVAL_TO_GCTHING(*mValPtr), 
+                           "XPCMarkableJSVal", nsnull);}
+private:
+    XPCMarkableJSVal(); // not implemented    
+    jsval  mVal;
+    jsval* mValPtr;
+}; 
 
 /***************************************************************************/
 // AutoMarkingPtr is the base class for the various AutoMarking pointer types 
@@ -3182,12 +3237,16 @@ DEFINE_AUTO_MARKING_PTR_TYPE(AutoMarkingNativeInterfacePtr, XPCNativeInterface)
 DEFINE_AUTO_MARKING_PTR_TYPE(AutoMarkingNativeSetPtr, XPCNativeSet)
 DEFINE_AUTO_MARKING_PTR_TYPE(AutoMarkingWrappedNativePtr, XPCWrappedNative)
 DEFINE_AUTO_MARKING_PTR_TYPE(AutoMarkingWrappedNativeProtoPtr, XPCWrappedNativeProto)
+DEFINE_AUTO_MARKING_PTR_TYPE(AutoMarkingJSVal, XPCMarkableJSVal)
                                     
 // Note: It looked like I would need one of these AutoMarkingPtr types for
 // XPCNativeScriptableInfo in order to manage marking its 
 // XPCNativeScriptableShared member during construction. But AFAICT we build
 // these and bind them to rooted things so immediately that this just is not
 // needed.
+
+#define AUTO_MARK_JSVAL(ccx, val) \
+    XPCMarkableJSVal _val(val); AutoMarkingJSVal _automarker(ccx, &_val)
 
 #ifdef XPC_USE_SECURITY_CHECKED_COMPONENT
 /***************************************************************************/
@@ -3242,8 +3301,6 @@ protected:
 /***************************************************************************/
 // Utilities
 
-JSExceptionState* xpc_DoPreScriptEvaluated(JSContext* cx);
-void xpc_DoPostScriptEvaluated(JSContext* cx, JSExceptionState* state);
 JSBool xpc_IsReportableErrorCode(nsresult code);
 
 /***************************************************************************/

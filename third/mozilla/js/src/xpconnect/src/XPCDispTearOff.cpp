@@ -1,4 +1,5 @@
-/* ***** BEGIN LICENSE BLOCK *****
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -34,55 +35,92 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/**
+ * \file XPCDispTearOff.cpp
+ * Contains the implementation of the XPCDispTearoff class
+ */
 #include "xpcprivate.h"
 
-static nsCString BuildMessage(nsIException * exception)
+/**
+ * Sets the COM error from a result code and text message. This is the base
+ * implementation for subsequent string based overrides
+ * @param hResult the COM error code to be used
+ * @param message the message to put in the error
+ * @return the error code passed in via hResult
+ */
+static HRESULT Error(HRESULT hResult, const CComBSTR & message)
 {
-    nsCString result;
-    char * msg;
-    if(NS_FAILED(exception->GetMessage(&msg)))
-        msg = "";
-    char * filename;
-    if(NS_FAILED(exception->GetFilename(&filename)))
-        filename = "";
+    CComPtr<ICreateErrorInfo> pCreateError;
+    CComPtr<IErrorInfo> pError;
+    HRESULT result = CreateErrorInfo(&pCreateError);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    result = pCreateError->QueryInterface(&pError);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    result = pCreateError->SetDescription(message);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    result = pCreateError->SetGUID(IID_IDispatch);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    CComBSTR source(L"@mozilla.XPCDispatchTearOff");
+    result = pCreateError->SetSource(source);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    result = SetErrorInfo(0, pError);
+    if(FAILED(result))
+        return E_NOTIMPL;
+    return hResult;
+}
+
+
+/**
+ * Sets the COM error from a result code and text message
+ * @param hResult the COM error code to be used
+ * @param message the message to put in the error
+ * @return the error code passed in via hResult
+ */
+inline
+HRESULT Error(HRESULT hResult, const char * message)
+{
+    CComBSTR someText(message);
+    return Error(hResult, someText);
+}
+
+/**
+ * Helper function that converts an exception to a string
+ * @param exception
+ * @return the description of the exception
+ */
+static void BuildMessage(nsIException * exception, nsCString & result)
+{
+    nsXPIDLCString msg;
+    exception->GetMessage(getter_Copies(msg));
+    nsXPIDLCString filename;
+    exception->GetFilename(getter_Copies(filename));
 
     PRUint32 lineNumber;
     if(NS_FAILED(exception->GetLineNumber(&lineNumber)))
         lineNumber = 0;
-    char lineNumberStr[32];
-    sprintf(lineNumberStr, "%d", lineNumber);
     result = "Error in file ";
     result += filename;
     result += ",#";
-    result += lineNumberStr;
+    result.AppendInt(lineNumber);
     result += " : ";
     result += msg;
-    return result; 
 }
 
+/**
+ * Sets the COM error given an nsIException
+ * @param exception the exception being set
+ */
+inline
 static void SetCOMError(nsIException * exception)
 {
-    nsCString message = BuildMessage(exception);
-
-    ICreateErrorInfo * newError;
-    if(FAILED(CreateErrorInfo(&newError)))
-        return;
-    _bstr_t bstrMsg(PromiseFlatCString(message).get());
-
-    if(SUCCEEDED(newError->SetGUID(IID_IDispatch)) && 
-        SUCCEEDED(newError->SetSource(L"@mozilla.org/nsIXPCWrappedJS")) &&
-        SUCCEEDED(newError->SetDescription(bstrMsg)))
-    {
-        IErrorInfo * error;
-        if(SUCCEEDED(newError->QueryInterface(IID_IErrorInfo, 
-                                               NS_REINTERPRET_CAST(void**,
-                                                                   &error))))
-        {
-            SetErrorInfo(0, error);
-            error->Release();
-        }
-    }
-    newError->Release();
+    nsCString message;
+    BuildMessage(exception, message);
+    Error(E_FAIL, message.get());
 }
 
 XPCDispatchTearOff::XPCDispatchTearOff(nsIXPConnectWrappedJS * wrappedJS) :
@@ -94,33 +132,24 @@ XPCDispatchTearOff::XPCDispatchTearOff(nsIXPConnectWrappedJS * wrappedJS) :
 
 XPCDispatchTearOff::~XPCDispatchTearOff()
 {
-    mCOMTypeInfo->Release();
+    NS_IF_RELEASE(mCOMTypeInfo);
 }
 
-ULONG XPCDispatchTearOff::AddRef()
-{
-    NS_PRECONDITION(PRInt32(mRefCnt) >= 0, "illegal refcnt");
-    nsrefcnt count;
-    count = PR_AtomicIncrement((PRInt32*)&mRefCnt);
-    NS_LOG_ADDREF(this, count, "XPCDispatchTearOff", sizeof(*this));
-    return count;
-}
+NS_COM_IMPL_ADDREF(XPCDispatchTearOff)
+NS_COM_IMPL_RELEASE(XPCDispatchTearOff)
 
-ULONG XPCDispatchTearOff::Release()
+// See bug 127982:
+//
+// Microsoft's InlineIsEqualGUID global function is multiply defined
+// in ATL and/or SDKs with varying namespace requirements. To save the control
+// from future grief, this method is used instead. 
+static inline BOOL _IsEqualGUID(REFGUID rguid1, REFGUID rguid2)
 {
-    nsrefcnt count;
-    NS_PRECONDITION(0 != mRefCnt, "dup release");
-    count = PR_AtomicDecrement((PRInt32 *)&mRefCnt);
-    NS_LOG_RELEASE(this, count, "XPCDispatchTearOff");
-    if(0 == count)
-    {
-        mRefCnt = 1; /* stabilize */
-        /* enable this to find non-threadsafe destructors: */
-        /* NS_ASSERT_OWNINGTHREAD(XPCDispatchTearOff); */
-        NS_DELETEXPCOM(this);
-        return 0;
-    }
-    return count;
+   return (
+	  ((PLONG) &rguid1)[0] == ((PLONG) &rguid2)[0] &&
+	  ((PLONG) &rguid1)[1] == ((PLONG) &rguid2)[1] &&
+	  ((PLONG) &rguid1)[2] == ((PLONG) &rguid2)[2] &&
+	  ((PLONG) &rguid1)[3] == ((PLONG) &rguid2)[3]);
 }
 
 STDMETHODIMP XPCDispatchTearOff::InterfaceSupportsErrorInfo(REFIID riid)
@@ -132,7 +161,7 @@ STDMETHODIMP XPCDispatchTearOff::InterfaceSupportsErrorInfo(REFIID riid)
 
     for(int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
     {
-        if(InlineIsEqualGUID(*arr[i],riid))
+        if(_IsEqualGUID(*arr[i],riid))
             return S_OK;
     }
     return S_FALSE;
@@ -143,20 +172,19 @@ STDMETHODIMP XPCDispatchTearOff::QueryInterface(const struct _GUID & guid,
 {
     if(IsEqualIID(guid, IID_IDispatch))
     {
-        *pPtr = NS_STATIC_CAST(IDispatch*, this);
-        NS_REINTERPRET_CAST(IUnknown*, *pPtr)->AddRef();
+        *pPtr = NS_STATIC_CAST(IDispatch*,this);
+        NS_ADDREF_THIS();
         return NS_OK;
     }
 
     if(IsEqualIID(guid, IID_ISupportErrorInfo))
     {
-        *pPtr = NS_STATIC_CAST(ISupportErrorInfo*, this);
-        NS_REINTERPRET_CAST(IUnknown*, *pPtr)->AddRef();
+        *pPtr = NS_STATIC_CAST(IDispatch*,this);
+        NS_ADDREF_THIS();
         return NS_OK;
     }
 
-    nsIID iid;
-    return mWrappedJS->QueryInterface(XPCDispGUID2nsIID(guid, iid), pPtr);
+    return mWrappedJS->QueryInterface(XPCDispIID2nsIID(guid), pPtr);
 }
 
 STDMETHODIMP XPCDispatchTearOff::GetTypeInfoCount(unsigned int FAR * pctinfo)
@@ -167,22 +195,18 @@ STDMETHODIMP XPCDispatchTearOff::GetTypeInfoCount(unsigned int FAR * pctinfo)
 
 XPCDispTypeInfo * XPCDispatchTearOff::GetCOMTypeInfo()
 {
-    if(!mCOMTypeInfo)
-    {
-        XPCCallContext ccx(NATIVE_CALLER);
-        if(ccx.IsValid())
-        {
-            JSObject* obj = GetJSObject();
-            if(obj)
-            {
-                mCOMTypeInfo = XPCDispTypeInfo::New(ccx, obj);
-                if(mCOMTypeInfo)
-                {
-                    mCOMTypeInfo->AddRef();
-                }
-            }
-        }
-    }
+    // If one was already created return it
+    if(mCOMTypeInfo)
+        return mCOMTypeInfo;
+    // Build a new one, save the pointer and return it
+    XPCCallContext ccx(NATIVE_CALLER);
+    if(!ccx.IsValid())
+        return nsnull;
+    JSObject* obj = GetJSObject();
+    if(!obj)
+        return nsnull;
+    mCOMTypeInfo = XPCDispTypeInfo::New(ccx, obj);
+    NS_IF_ADDREF(mCOMTypeInfo);
     return mCOMTypeInfo;
 }
 
@@ -190,7 +214,7 @@ STDMETHODIMP XPCDispatchTearOff::GetTypeInfo(unsigned int, LCID,
                                          ITypeInfo FAR* FAR* ppTInfo)
 {
     *ppTInfo = GetCOMTypeInfo();
-    (*ppTInfo)->AddRef();
+    NS_ADDREF(*ppTInfo);
     return S_OK;
 }
 
@@ -212,11 +236,11 @@ xpcWrappedJSErrorReporter(JSContext *cx, const char *message,
                           JSErrorReport *report);
 
 STDMETHODIMP XPCDispatchTearOff::Invoke(DISPID dispIdMember, REFIID riid, 
-                                    LCID lcid, WORD wFlags,
-                                    DISPPARAMS FAR* pDispParams, 
-                                    VARIANT FAR* pVarResult, 
-                                    EXCEPINFO FAR* pExcepInfo, 
-                                    unsigned int FAR* puArgErr)
+                                        LCID lcid, WORD wFlags,
+                                        DISPPARAMS FAR* pDispParams, 
+                                        VARIANT FAR* pVarResult, 
+                                        EXCEPINFO FAR* pExcepInfo, 
+                                        unsigned int FAR* puArgErr)
 {
     XPCDispTypeInfo* pTypeInfo = GetCOMTypeInfo();
     if(!pTypeInfo)
@@ -236,12 +260,15 @@ STDMETHODIMP XPCDispatchTearOff::Invoke(DISPID dispIdMember, REFIID riid,
         xpcc = nsnull;
         cx = nsnull;
     }
-    const nsACString & xname = pTypeInfo->GetNameForDispID(dispIdMember);
-    const nsPromiseFlatCString & name = PromiseFlatCString(xname);
+    // Get the name as a flat string
+    // This isn't that efficient, but we have to make the conversion somewhere
+    NS_LossyConvertUCS2toASCII name(pTypeInfo->GetNameForDispID(dispIdMember));
     if(name.IsEmpty())
         return E_FAIL;
+    // Decide if this is a getter or setter
     PRBool getter = (wFlags & DISPATCH_PROPERTYGET) != 0;
     PRBool setter = (wFlags & DISPATCH_PROPERTYPUT) != 0;
+    // It's a property
     if(getter || setter)
     {
         jsval val;
@@ -249,21 +276,40 @@ STDMETHODIMP XPCDispatchTearOff::Invoke(DISPID dispIdMember, REFIID riid,
         JSObject* obj;
         if(getter)
         {
+            // Get the property and convert the value
             obj = GetJSObject();
             if(!obj)
                 return E_FAIL;
-            JS_GetProperty(cx, obj, name.get(), &val);
+            if(!JS_GetProperty(cx, obj, name.get(), &val))
+            {
+                nsCString msg("Unable to retrieve property ");
+                msg += name;
+                return Error(E_FAIL, msg.get());
+            }
             if(!XPCDispConvert::JSToCOM(ccx, val, *pVarResult, err))
-                return E_FAIL;
+            {
+                nsCString msg("Failed to convert value from JS property ");
+                msg += name;
+                return Error(E_FAIL, msg.get());
+            }
         }
         else if(pDispParams->cArgs > 0)
         {
-            if(XPCDispConvert::COMToJS(ccx, pDispParams->rgvarg[0], val, err))
+            // Convert the property and then set it
+            if(!XPCDispConvert::COMToJS(ccx, pDispParams->rgvarg[0], val, err))
             {
-                obj = GetJSObject();
-                if(!obj)
-                    return E_FAIL;
-                JS_SetProperty(cx, obj, name.get(), &val);
+                nsCString msg("Failed to convert value for JS property ");
+                msg += name;
+                return Error(E_FAIL, msg.get());
+            }
+            obj = GetJSObject();
+            if(!obj)
+                return Error(E_FAIL, "The JS wrapper did not return a JS object");
+            if(!JS_SetProperty(cx, obj, name.get(), &val))
+            {
+                nsCString msg("Unable to set property ");
+                msg += name;
+                return Error(E_FAIL, msg.get());
             }
         }
     }
@@ -272,36 +318,30 @@ STDMETHODIMP XPCDispatchTearOff::Invoke(DISPID dispIdMember, REFIID riid,
         jsval* stackbase;
         jsval* sp = nsnull;
         uint8 i;
-        uint8 argc=pDispParams->cArgs;
+        uint8 argc = pDispParams->cArgs;
         uint8 stack_size;
         jsval result;
         uint8 paramCount=0;
         nsresult retval = NS_ERROR_FAILURE;
         nsresult pending_result = NS_OK;
-        JSErrorReporter older;
         JSBool success;
         JSBool readyToDoTheCall = JS_FALSE;
         uint8 outConversionFailedIndex;
         JSObject* obj;
         jsval fval;
         nsCOMPtr<nsIException> xpc_exception;
-        jsval js_exception;
         void* mark;
         JSBool foundDependentParam;
         JSObject* thisObj;
-        JSExceptionState* saved_exception = nsnull;
+        AutoScriptEvaluate scriptEval(ccx);
         XPCJSRuntime* rt = ccx.GetRuntime();
 
         thisObj = obj = GetJSObject();;
 
-        if(cx)
-            older = JS_SetErrorReporter(cx, xpcWrappedJSErrorReporter);
-
-        // dispID's for us are 1 based not zero
         if(!cx || !xpcc)
             goto pre_call_clean_up;
 
-        saved_exception = xpc_DoPreScriptEvaluated(cx);
+        scriptEval.StartEvaluating(xpcWrappedJSErrorReporter);
 
         xpcc->SetPendingResult(pending_result);
         xpcc->SetException(nsnull);
@@ -410,7 +450,7 @@ pre_call_clean_up:
             fp = oldfp = cx->fp;
             if(!fp)
             {
-                memset(&frame, 0, sizeof frame);
+                memset(&frame, 0, sizeof(frame));
                 cx->fp = fp = &frame;
             }
             oldsp = fp->sp;
@@ -446,122 +486,11 @@ pre_call_clean_up:
                 JS_smprintf_free(sz);
         }
 
-        /* this one would be set by our error reporter */
-        xpcc->GetException(getter_AddRefs(xpc_exception));
-        if(xpc_exception)
-            xpcc->SetException(nsnull);
-
-        // get this right away in case we do something below to cause JS code
-        // to run on this JSContext
-        pending_result = xpcc->GetPendingResult();
-
-        /* JS might throw an expection whether the reporter was called or not */
-        if(JS_GetPendingException(cx, &js_exception))
+        if (!success)
         {
-            if(!xpc_exception)
-                XPCConvert::JSValToXPCException(ccx, js_exception, "IDispatch",
-                                                name.get(), getter_AddRefs(xpc_exception));
-
-            /* cleanup and set failed even if we can't build an exception */
-            if(!xpc_exception)
-            {
-                ccx.GetThreadData()->SetException(nsnull); // XXX necessary?
-                success = JS_FALSE;
-            }
-            JS_ClearPendingException(cx);
-        }
-
-        if(xpc_exception)
-        {
-            nsresult e_result;
-            if(NS_SUCCEEDED(xpc_exception->GetResult(&e_result)))
-            {
-                if(xpc_IsReportableErrorCode(e_result))
-                {
-
-                    // Log the exception to the JS Console, so that users can do
-                    // something with it.
-                    nsCOMPtr<nsIConsoleService> consoleService
-                        (do_GetService(XPC_CONSOLE_CONTRACTID));
-                    if(nsnull != consoleService)
-                    {
-                        nsresult rv;
-                        nsCOMPtr<nsIScriptError> scriptError;
-                        nsCOMPtr<nsISupports> errorData;
-                        rv = xpc_exception->GetData(getter_AddRefs(errorData));
-                        if(NS_SUCCEEDED(rv))
-                            scriptError = do_QueryInterface(errorData);
-
-                        if(nsnull == scriptError)
-                        {
-                            // No luck getting one from the exception, so
-                            // try to cook one up.
-                            scriptError = do_CreateInstance(XPC_SCRIPT_ERROR_CONTRACTID);
-                            if(nsnull != scriptError)
-                            {
-                                char* exn_string;
-                                rv = xpc_exception->ToString(&exn_string);
-                                if(NS_SUCCEEDED(rv))
-                                {
-                                    // use toString on the exception as the message
-                                    nsAutoString newMessage;
-                                    newMessage.AssignWithConversion(exn_string);
-                                    nsMemory::Free((void *) exn_string);
-
-                                    // try to get filename, lineno from the first
-                                    // stack frame location.
-                                    PRUnichar* sourceNameUni = nsnull;
-                                    PRInt32 lineNumber = 0;
-                                    nsXPIDLCString sourceName;
-
-                                    nsCOMPtr<nsIStackFrame> location;
-                                    xpc_exception->
-                                        GetLocation(getter_AddRefs(location));
-                                    if(location)
-                                    {
-                                        // Get line number w/o checking; 0 is ok.
-                                        location->GetLineNumber(&lineNumber);
-
-                                        // get a filename.
-                                        rv = location->GetFilename(getter_Copies(sourceName));
-                                    }
-
-                                    rv = scriptError->Init(newMessage.get(),
-                                                           NS_ConvertASCIItoUCS2(sourceName).get(),
-                                                           nsnull,
-                                                           lineNumber, 0, 0,
-                                                           "XPConnect JavaScript");
-                                    if(NS_FAILED(rv))
-                                        scriptError = nsnull;
-                                }
-                            }
-                        }
-                        if(nsnull != scriptError)
-                            consoleService->LogMessage(scriptError);
-                    }
-                }
-                // Whether or not it passes the 'reportable' test, it might
-                // still be an error and we have to do the right thing here...
-                if(NS_FAILED(e_result))
-                {
-                    ccx.GetThreadData()->SetException(xpc_exception);
-                    SetCOMError(xpc_exception);
-                    retval = e_result;
-                }
-            }
-            success = JS_FALSE;
-        }
-        else
-        {
-            // see if JS code signaled failure result without throwing exception
-            if(NS_FAILED(pending_result))
-            {
-                retval = pending_result;
-                success = JS_FALSE;
-            }
-        }
-        if(!success)
+            retval = nsXPCWrappedJSClass::CheckForException(ccx, name.get(), "IDispatch");
             goto done;
+        }
 
         ccx.GetThreadData()->SetException(nsnull); // XXX necessary?
 
@@ -600,7 +529,7 @@ pre_call_clean_up:
             {
                 if((pDispParams->rgvarg[index].vt & VT_BYREF) != 0)
                 {
-                    XPCDispObject::CleanupVariant(pDispParams->rgvarg[i]);
+                    VariantClear(pDispParams->rgvarg + i);
                 }
             }
         }
@@ -614,11 +543,6 @@ done:
         if(sp)
             js_FreeStack(cx, mark);
 
-        if(cx)
-        {
-            JS_SetErrorReporter(cx, older);
-            xpc_DoPostScriptEvaluated(cx, saved_exception);
-        }
         // TODO: I think we may need to translate this error, 
         // for now we'll pass through
         return retval;

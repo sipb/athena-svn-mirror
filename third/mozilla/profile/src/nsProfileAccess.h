@@ -25,7 +25,6 @@
 #include "nsIRegistry.h"
 #include "nsXPIDLString.h"
 #include "nsVoidArray.h"
-#include "nsIFileSpec.h"
 #include "nsIFile.h"
 #include "nsILocalFile.h"
 
@@ -33,8 +32,10 @@
 #include <windows.h>
 #endif
 
-#ifdef XP_UNIX
-#include <signal.h>
+#ifdef XP_OS2
+#define INCL_DOSERRORS
+#define INCL_DOSFILEMGR
+#include <os2.h>
 #endif
 
 class ProfileStruct
@@ -121,7 +122,7 @@ private:
     nsString      mCurrentProfile;
     nsString      mHavePREGInfo;
     PRBool        m4xProfilesAdded;
-    
+    PRBool        mStartWithLastProfile;
 public:
     PRBool        mProfileDataChanged;
     PRBool        mForgetProfileCalled;
@@ -138,10 +139,12 @@ public:
     nsresult GetOriginalProfileDir(const PRUnichar *profileName, nsILocalFile **orginalDir);
     nsresult SetMigratedFromDir(const PRUnichar *profileName, nsILocalFile *orginalDir);
     nsresult SetProfileLastModTime(const PRUnichar *profileName, PRInt64 lastModTime);
-
+    nsresult GetStartWithLastUsedProfile(PRBool *aStartWithLastUsedProfile);
+    nsresult SetStartWithLastUsedProfile(PRBool aStartWithLastUsedProfile);
+    
     // if fromImport is true all the 4.x profiles will be added to mProfiles with the isImportType flag set.
     // pass fromImport as True only if you are calling from the Import Module.
-    nsresult Get4xProfileInfo(const char *registryName, PRBool fromImport);
+    nsresult Get4xProfileInfo(nsIFile *registryFile, PRBool fromImport);
 
     void SetCurrentProfile(const PRUnichar *profileName);
     void GetCurrentProfile(PRUnichar **profileName);
@@ -172,48 +175,6 @@ private:
     nsresult ResetProfileMembers();
 };
 
-
-#include "prclist.h"
-
-class nsProfileLock
-#if defined (XP_UNIX)
-  : public PRCList
-#endif
-{
-public:
-                            nsProfileLock();
-                            nsProfileLock(nsProfileLock& src);
-
-                            ~nsProfileLock();
- 
-    nsProfileLock&          operator=(nsProfileLock& rhs);
-                       
-    nsresult                Lock(nsILocalFile* aFile);
-    nsresult                Unlock();
-        
-private:
-    PRPackedBool            mHaveLock;
-
-#if defined (XP_MAC)
-    nsCOMPtr<nsILocalFile>  mLockFile;
-#elif defined (XP_WIN)
-    HANDLE                  mLockFileHandle;
-#elif defined (XP_OS2)
-    LHANDLE                 mLockFileHandle;
-#elif defined (XP_UNIX)
-    static void             RemovePidLockFiles();
-#ifdef HAVE_SIGINFO_T
-    static void             FatalSignalHandler(int signo, siginfo_t* info,
-                                               void* context);
-#else
-    static void             FatalSignalHandler(int signo);
-#endif
-    static PRCList          mPidLockList;
-    char*                   mPidLockFileName;
-    int                     mLockFileDesc;
-#endif
-
-};
 
 #endif // __nsProfileAccess_h___
 

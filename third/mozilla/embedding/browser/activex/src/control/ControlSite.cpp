@@ -39,10 +39,134 @@
 
 #include "StdAfx.h"
 
+#include <Objsafe.h>
+
 #include "ControlSite.h"
 
-
 std::list<CControlSite *> CControlSite::m_cControlList;
+
+class CDefaultControlSiteSecurityPolicy : public CControlSiteSecurityPolicy
+{
+    // Test if the specified class id implements the specified category
+    BOOL ClassImplementsCategory(const CLSID & clsid, const CATID &catid, BOOL &bClassExists);
+public:
+    // Test if the class is safe to host
+    virtual BOOL IsClassSafeToHost(const CLSID & clsid);
+    // Test if the specified class is marked safe for scripting
+    virtual BOOL IsClassMarkedSafeForScripting(const CLSID & clsid, BOOL &bClassExists);
+    // Test if the instantiated object is safe for scripting on the specified interface
+    virtual BOOL IsObjectSafeForScripting(IUnknown *pObject, const IID &iid);
+};
+
+BOOL
+CDefaultControlSiteSecurityPolicy::ClassImplementsCategory(const CLSID &clsid, const CATID &catid, BOOL &bClassExists)
+{
+    bClassExists = FALSE;
+
+    // Test if there is a CLSID entry. If there isn't then obviously
+    // the object doesn't exist and therefore doesn't implement any category.
+    // In this situation, the function returns REGDB_E_CLASSNOTREG.
+
+    CRegKey key;
+    if (key.Open(HKEY_CLASSES_ROOT, _T("CLSID"), KEY_READ) != ERROR_SUCCESS)
+    {
+        // Must fail if we can't even open this!
+        return FALSE;
+    }
+    LPOLESTR szCLSID = NULL;
+    if (FAILED(StringFromCLSID(clsid, &szCLSID)))
+    {
+        return FALSE;
+    }
+    USES_CONVERSION;
+    CRegKey keyCLSID;
+    LONG lResult = keyCLSID.Open(key, W2CT(szCLSID), KEY_READ);
+    CoTaskMemFree(szCLSID);
+    if (lResult != ERROR_SUCCESS)
+    {
+        // Class doesn't exist
+        return FALSE;
+    }
+    keyCLSID.Close();
+
+    // CLSID exists, so try checking what categories it implements
+    bClassExists = TRUE;
+    CIPtr(ICatInformation) spCatInfo;
+    HRESULT hr = CoCreateInstance(CLSID_StdComponentCategoriesMgr, NULL, CLSCTX_INPROC_SERVER, IID_ICatInformation, (LPVOID*) &spCatInfo);
+    if (spCatInfo == NULL)
+    {
+        // Must fail if we can't open the category manager
+        return FALSE;
+    }
+    
+    // See what categories the class implements
+    CIPtr(IEnumCATID) spEnumCATID;
+    if (FAILED(spCatInfo->EnumImplCategoriesOfClass(clsid, &spEnumCATID)))
+    {
+        // Can't enumerate classes in category so fail
+        return FALSE;
+    }
+
+    // Search for matching categories
+    BOOL bFound = FALSE;
+    CATID catidNext = GUID_NULL;
+    while (spEnumCATID->Next(1, &catidNext, NULL) == S_OK)
+    {
+        if (::IsEqualCATID(catid, catidNext))
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// Test if the class is safe to host
+BOOL CDefaultControlSiteSecurityPolicy::IsClassSafeToHost(const CLSID & clsid)
+{
+    return TRUE;
+}
+
+// Test if the specified class is marked safe for scripting
+BOOL CDefaultControlSiteSecurityPolicy::IsClassMarkedSafeForScripting(const CLSID & clsid, BOOL &bClassExists)
+{
+    // Test the category the object belongs to
+    return ClassImplementsCategory(clsid, CATID_SafeForScripting, bClassExists);
+}
+
+// Test if the instantiated object is safe for scripting on the specified interface
+BOOL CDefaultControlSiteSecurityPolicy::IsObjectSafeForScripting(IUnknown *pObject, const IID &iid)
+{
+    if (!pObject) {
+        return FALSE;
+    }
+    // Ask the control if its safe for scripting
+    CComQIPtr<IObjectSafety> spObjectSafety = pObject;
+    if (!spObjectSafety)
+    {
+        return FALSE;
+    }
+
+    DWORD dwSupported = 0; // Supported options (mask)
+    DWORD dwEnabled = 0; // Enabled options
+
+    // Assume scripting via IDispatch
+    if (FAILED(spObjectSafety->GetInterfaceSafetyOptions(
+            iid, &dwSupported, &dwEnabled)))
+    {
+        // Interface is not safe or failure.
+        return FALSE;
+    }
+
+    // Test if safe for scripting
+    if (!(dwEnabled & dwSupported) & INTERFACESAFE_FOR_UNTRUSTED_CALLER)
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 // Constructor
 CControlSite::CControlSite()
@@ -50,7 +174,7 @@ CControlSite::CControlSite()
     NG_TRACE_METHOD(CControlSite::CControlSite);
 
     m_hWndParent = NULL;
-    m_clsid = CLSID_NULL;
+    m_CLSID = CLSID_NULL;
     m_bSetClientSiteFirst = FALSE;
     m_bVisibleAtRuntime = TRUE;
     memset(&m_rcObjectPos, 0, sizeof(m_rcObjectPos));
@@ -61,6 +185,8 @@ CControlSite::CControlSite()
     m_bWindowless = FALSE;
     m_bSupportWindowlessActivation = TRUE;
     m_bSafeForScriptingObjectsOnly = FALSE;
+    m_pDefaultSecurityPolicy = new CDefaultControlSiteSecurityPolicy;
+    m_pSecurityPolicy = m_pDefaultSecurityPolicy;
 
     // Initialise ambient properties
     m_nAmbientLocale = 0;
@@ -88,76 +214,172 @@ CControlSite::~CControlSite()
     NG_TRACE_METHOD(CControlSite::~CControlSite);
     Detach();
     m_cControlList.remove(this);
+
+    if (m_pDefaultSecurityPolicy)
+        delete m_pDefaultSecurityPolicy;
 }
-
-// Helper method checks whether a class implements a particular category
-HRESULT CControlSite::ClassImplementsCategory(const CLSID &clsid, const CATID &catid)
-{
-    CIPtr(ICatInformation) spCatInfo;
-    HRESULT hr = CoCreateInstance(CLSID_StdComponentCategoriesMgr, NULL, CLSCTX_INPROC_SERVER, IID_ICatInformation, (LPVOID*) &spCatInfo);
-    if (spCatInfo == NULL)
-    {
-        // Must fail if we can't open the category manager
-        return E_FAIL;
-    }
-    
-    // See what categories the class implements
-    CIPtr(IEnumCATID) spEnumCATID;
-    if (FAILED(spCatInfo->EnumImplCategoriesOfClass(clsid, &spEnumCATID)))
-    {
-        // Can't enumerate classes in category so fail
-        return E_FAIL;
-    }
-
-    // Search for matching categories
-    BOOL bFound = FALSE;
-    CATID catidNext = GUID_NULL;
-    while (spEnumCATID->Next(1, &catidNext, NULL) == S_OK)
-    {
-        if (::IsEqualCATID(catid, catidNext))
-        {
-            bFound = TRUE;
-        }
-    }
-    if (!bFound)
-    {
-        return S_FALSE;
-    }
-
-    return S_OK;
-}
-
-
-#if 0
-// For use when the SDK does not define it (which isn't the case these days)
-static const CATID CATID_SafeForScripting = 
-{ 0x7DD95801, 0x9882, 0x11CF, { 0x9F, 0xA9, 0x00, 0xAA, 0x00, 0x6C, 0x42, 0xC4 } };
-#endif
 
 // Create the specified control, optionally providing properties to initialise
 // it with and a name.
-HRESULT CControlSite::Create(REFCLSID clsid, PropertyList &pl)
+HRESULT CControlSite::Create(REFCLSID clsid, PropertyList &pl,
+    LPCWSTR szCodebase, IBindCtx *pBindContext)
 {
     NG_TRACE_METHOD(CControlSite::Create);
 
-    m_clsid = clsid;
+    m_CLSID = clsid;
     m_ParameterList = pl;
 
-    // See if object is script safe
-    if (m_bSafeForScriptingObjectsOnly &&
-        ClassImplementsCategory(clsid, CATID_SafeForScripting) != S_OK)
+    // See if security policy will allow the control to be hosted
+    if (m_pSecurityPolicy && !m_pSecurityPolicy->IsClassSafeToHost(clsid))
     {
         return E_FAIL;
+    }
+
+    // See if object is script safe
+    BOOL checkForObjectSafety = FALSE;
+    if (m_pSecurityPolicy && m_bSafeForScriptingObjectsOnly)
+    {
+        BOOL bClassExists = FALSE;
+        BOOL bIsSafe = m_pSecurityPolicy->IsClassMarkedSafeForScripting(clsid, bClassExists);
+        if (!bClassExists && szCodebase)
+        {
+            // Class doesn't exist, so allow code below to fetch it
+        }
+        else if (!bIsSafe)
+        {
+            // The class is not flagged as safe for scripting, so
+            // we'll have to create it to ask it if its safe.
+            checkForObjectSafety = TRUE;
+        }
     }
 
     // Create the object
-    HRESULT hr = CoCreateInstance(clsid, NULL, CLSCTX_ALL, IID_IUnknown, (void **) &m_spObject);
-    if (FAILED(hr))
+    CComPtr<IUnknown> spObject;
+    HRESULT hr = CoCreateInstance(clsid, NULL, CLSCTX_ALL, IID_IUnknown, (void **) &spObject);
+    if (SUCCEEDED(hr) && checkForObjectSafety)
     {
-        return E_FAIL;
+        // Assume scripting via IDispatch
+        if (!m_pSecurityPolicy->IsObjectSafeForScripting(spObject, __uuidof(IDispatch)))
+        {
+            return E_FAIL;
+        }
+        // Drop through, success!
     }
 
-    return S_OK;
+    // Do we need to download the control?
+    if (FAILED(hr) && szCodebase)
+    {
+        wchar_t *szURL = NULL;
+
+        // Test if the code base ends in #version=a,b,c,d
+        DWORD dwFileVersionMS = 0xffffffff;
+        DWORD dwFileVersionLS = 0xffffffff;
+        wchar_t *szHash = wcsrchr(szCodebase, wchar_t('#'));
+        if (szHash)
+        {
+            if (wcsnicmp(szHash, L"#version=", 9) == 0)
+            {
+                int a, b, c, d;
+                if (swscanf(szHash + 9, L"%d,%d,%d,%d", &a, &b, &c, &d) == 4)
+                {
+                    dwFileVersionMS = MAKELONG(b,a);
+                    dwFileVersionLS = MAKELONG(d,c);
+                }
+            }
+            szURL = _wcsdup(szCodebase);
+            // Terminate at the hash mark
+            if (szURL)
+                szURL[szHash - szCodebase] = wchar_t('\0');
+        }
+        else
+        {
+            szURL = _wcsdup(szCodebase);
+        }
+        if (!szURL)
+            return E_OUTOFMEMORY;
+
+        CComPtr<IBindCtx> spBindContext; 
+        CComPtr<IBindStatusCallback> spBindStatusCallback;
+        CComPtr<IBindStatusCallback> spOldBSC;
+
+        // Create our own bind context or use the one provided?
+        BOOL useInternalBSC = FALSE;
+        if (!pBindContext)
+        {
+            useInternalBSC = TRUE;
+            hr = CreateBindCtx(0, &spBindContext);
+            if (FAILED(hr))
+            {
+                free(szURL);
+                return hr;
+            }
+            spBindStatusCallback = dynamic_cast<IBindStatusCallback *>(this);
+            hr = RegisterBindStatusCallback(spBindContext, spBindStatusCallback, &spOldBSC, 0);
+            if (FAILED(hr))
+            {
+                free(szURL);
+                return hr;
+            }
+        }
+        else
+        {
+            spBindContext = pBindContext;
+        }
+
+        hr = CoGetClassObjectFromURL(clsid, szURL, dwFileVersionMS, dwFileVersionLS,
+            NULL, spBindContext, CLSCTX_ALL, NULL, IID_IUnknown, (void **) &m_spObject);
+        
+        free(szURL);
+        
+        // Handle the internal binding synchronously so the object exists
+        // or an error code is available when the method returns.
+        if (useInternalBSC)
+        {
+            if (MK_S_ASYNCHRONOUS == hr)
+            {
+                m_bBindingInProgress = TRUE;
+                m_hrBindResult = E_FAIL;
+
+                // Spin around waiting for binding to complete
+                HANDLE hFakeEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+                while (m_bBindingInProgress)
+                {
+                    MSG msg;
+                    // Process pending messages
+                    while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+                    {
+                        if (!::GetMessage(&msg, NULL, 0, 0))
+                        {
+                            m_bBindingInProgress = FALSE;
+                            break;
+                        }
+                        ::TranslateMessage(&msg);
+                        ::DispatchMessage(&msg);
+                    }
+                    if (!m_bBindingInProgress)
+                        break;
+                    // Sleep for a bit or the next msg to appear
+                    ::MsgWaitForMultipleObjects(1, &hFakeEvent, FALSE, 500, QS_ALLEVENTS);
+                }
+                ::CloseHandle(hFakeEvent);
+
+                // Set the result
+                hr = m_hrBindResult;
+            }
+
+            // Destroy the bind status callback & context
+            if (spBindStatusCallback)
+            {
+                RevokeBindStatusCallback(spBindContext, spBindStatusCallback);
+                spBindContext.Release();
+            }
+        }
+    }
+
+    if (spObject)
+        m_spObject = spObject;
+
+    return hr;
 }
 
 
@@ -178,7 +400,6 @@ HRESULT CControlSite::Attach(HWND hwndParent, const RECT &rcPos, IUnknown *pInit
     // Object must have been created
     if (m_spObject == NULL)
     {
-        NG_ASSERT(0);
         return E_UNEXPECTED;
     }
 
@@ -212,13 +433,14 @@ HRESULT CControlSite::Attach(HWND hwndParent, const RECT &rcPos, IUnknown *pInit
     // If there is a parameter list for the object and no init stream then
     // create one here.
     CPropertyBagInstance *pPropertyBag = NULL;
-    if (pInitStream == NULL && m_ParameterList.size() >= 1)
+    if (pInitStream == NULL && m_ParameterList.GetSize() > 0)
     {
         CPropertyBagInstance::CreateInstance(&pPropertyBag);
         pPropertyBag->AddRef();
-        for (PropertyList::const_iterator i = m_ParameterList.begin(); i != m_ParameterList.end(); i++)
+        for (unsigned long i = 0; i < m_ParameterList.GetSize(); i++)
         {
-            pPropertyBag->Write((*i).szName, (VARIANT *) &(*i).vValue);
+            pPropertyBag->Write(m_ParameterList.GetNameOf(i),
+                const_cast<VARIANT *>(m_ParameterList.GetValueOf(i)));
         }
         pInitStream = (IPersistPropertyBag *) pPropertyBag;
     }
@@ -419,6 +641,37 @@ void CControlSite::SetAmbientUserMode(BOOL bUserMode)
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// CControlSiteSecurityPolicy implementation
+
+// Test if the class is safe to host
+BOOL CControlSite::IsClassSafeToHost(const CLSID & clsid)
+{
+    if (m_pSecurityPolicy)
+        return m_pSecurityPolicy->IsClassSafeToHost(clsid);
+    return TRUE;
+}
+
+// Test if the specified class is marked safe for scripting
+BOOL CControlSite::IsClassMarkedSafeForScripting(const CLSID & clsid, BOOL &bClassExists)
+{
+    if (m_pSecurityPolicy)
+        return m_pSecurityPolicy->IsClassMarkedSafeForScripting(clsid, bClassExists);
+    return TRUE;
+}
+
+// Test if the instantiated object is safe for scripting on the specified interface
+BOOL CControlSite::IsObjectSafeForScripting(IUnknown *pObject, const IID &iid)
+{
+    if (m_pSecurityPolicy)
+        return m_pSecurityPolicy->IsObjectSafeForScripting(pObject, iid);
+    return TRUE;
+}
+
+BOOL CControlSite::IsObjectSafeForScripting(const IID &iid)
+{
+    return IsObjectSafeForScripting(m_spObject, iid);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // IServiceProvider implementation
@@ -584,7 +837,13 @@ HRESULT STDMETHODCALLTYPE CControlSite::GetMoniker(/* [in] */ DWORD dwAssign, /*
 
 HRESULT STDMETHODCALLTYPE CControlSite::GetContainer(/* [out] */ IOleContainer __RPC_FAR *__RPC_FAR *ppContainer)
 {
-    return E_NOINTERFACE;
+    if (!ppContainer) return E_INVALIDARG;
+    *ppContainer = m_spContainer;
+    if (*ppContainer)
+    {
+        (*ppContainer)->AddRef();
+    }
+    return (*ppContainer) ? S_OK : E_NOINTERFACE;
 }
 
 
@@ -685,6 +944,11 @@ HRESULT STDMETHODCALLTYPE CControlSite::DeactivateAndUndo(void)
 
 HRESULT STDMETHODCALLTYPE CControlSite::OnPosRectChange(/* [in] */ LPCRECT lprcPosRect)
 {
+    if (lprcPosRect == NULL)
+    {
+        return E_INVALIDARG;
+    }
+    SetPosition(m_rcObjectPos);
     return S_OK;
 }
 
@@ -1073,4 +1337,76 @@ HRESULT STDMETHODCALLTYPE CControlSite::ShowPropertyFrame(void)
 {
     return E_NOTIMPL;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// IBindStatusCallback implementation
+
+HRESULT STDMETHODCALLTYPE CControlSite::OnStartBinding(DWORD dwReserved, 
+                                                       IBinding __RPC_FAR *pib)
+{
+    return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CControlSite::GetPriority(LONG __RPC_FAR *pnPriority)
+{
+    return S_OK;
+}
+    
+HRESULT STDMETHODCALLTYPE CControlSite::OnLowResource(DWORD reserved)
+{
+    return S_OK;
+}
+    
+HRESULT STDMETHODCALLTYPE CControlSite::OnProgress(ULONG ulProgress, 
+                                        ULONG ulProgressMax, 
+                                        ULONG ulStatusCode, 
+                                        LPCWSTR szStatusText)
+{
+    return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CControlSite::OnStopBinding(HRESULT hresult, LPCWSTR szError)
+{
+    m_bBindingInProgress = FALSE;
+    m_hrBindResult = hresult;
+    return S_OK;
+}
+    
+HRESULT STDMETHODCALLTYPE CControlSite::GetBindInfo(DWORD __RPC_FAR *pgrfBINDF, 
+                                                    BINDINFO __RPC_FAR *pbindInfo)
+{
+    *pgrfBINDF = BINDF_ASYNCHRONOUS | BINDF_ASYNCSTORAGE |
+                 BINDF_GETNEWESTVERSION | BINDF_NOWRITECACHE;
+    pbindInfo->cbSize = sizeof(BINDINFO);
+    pbindInfo->szExtraInfo = NULL;
+    memset(&pbindInfo->stgmedData, 0, sizeof(STGMEDIUM));
+    pbindInfo->grfBindInfoF = 0;
+    pbindInfo->dwBindVerb = 0;
+    pbindInfo->szCustomVerb = NULL;
+    return S_OK;
+}
+    
+HRESULT STDMETHODCALLTYPE CControlSite::OnDataAvailable(DWORD grfBSCF, 
+                                                        DWORD dwSize, 
+                                                        FORMATETC __RPC_FAR *pformatetc, 
+                                                        STGMEDIUM __RPC_FAR *pstgmed)
+{
+    return E_NOTIMPL;
+}
+  
+HRESULT STDMETHODCALLTYPE CControlSite::OnObjectAvailable(REFIID riid, 
+                                                          IUnknown __RPC_FAR *punk)
+{
+    return S_OK;
+}
+
+// IWindowForBindingUI
+HRESULT STDMETHODCALLTYPE CControlSite::GetWindow(
+    /* [in] */ REFGUID rguidReason,
+    /* [out] */ HWND *phwnd)
+{
+    *phwnd = NULL;
+    return S_OK;
+}
+
 

@@ -55,7 +55,7 @@
 #include "nsIDocumentViewer.h"
 #include "nsIDocumentObserver.h"
 
-#include "nsIDOMXULDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsWidgetAtoms.h"
 
 #include <Menus.h>
@@ -88,8 +88,6 @@ EventHandlerUPP nsMenuBarX::sCommandEventHandler = nsnull;
 nsMenuBarX::nsMenuBarX()
   : mNumMenus(0), mParent(nsnull), mIsMenuBarAdded(PR_FALSE), mDocument(nsnull), mCurrentCommandID(1)
 {
-  NS_INIT_ISUPPORTS();
-
   OSStatus status = ::CreateNewMenu(0, 0, &mRootMenu);
   NS_ASSERTION(status == noErr, "nsMenuBarX::nsMenuBarX:  creation of root menu failed.");
   
@@ -339,10 +337,10 @@ nsMenuBarX :: CommandEventHandler ( EventHandlerCallRef inHandlerChain, EventRef
           // the 'about' command is special because we don't have a nsIMenu or nsIMenuItem
           // for the apple menu. Grovel for the content node with an id of "aboutName" 
           // and call it directly.
-          nsCOMPtr<nsIDOMXULDocument> xulDoc = do_QueryInterface(self->mDocument);
-	        if ( xulDoc ) {
+          nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(self->mDocument);
+	        if ( domDoc ) {
       	    nsCOMPtr<nsIDOMElement> domElement;
-      	    xulDoc->GetElementById(NS_LITERAL_STRING("aboutName"), getter_AddRefs(domElement));
+      	    domDoc->GetElementById(NS_LITERAL_STRING("aboutName"), getter_AddRefs(domElement));
       	    nsCOMPtr<nsIContent> aboutContent ( do_QueryInterface(domElement) );
       	    self->ExecuteCommand(aboutContent);
           }
@@ -726,6 +724,10 @@ NS_METHOD nsMenuBarX::Paint()
 // this is needed for menubar changes
 //
 
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsMenuBarX)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsMenuBarX)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsMenuBarX)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsMenuBarX)
 
 NS_IMETHODIMP
 nsMenuBarX::BeginUpdate( nsIDocument * aDocument )
@@ -740,38 +742,7 @@ nsMenuBarX::EndUpdate( nsIDocument * aDocument )
 }
 
 NS_IMETHODIMP
-nsMenuBarX::BeginLoad( nsIDocument * aDocument )
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::EndLoad( nsIDocument * aDocument )
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::BeginReflow(  nsIDocument * aDocument, nsIPresShell * aShell)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::EndReflow( nsIDocument * aDocument, nsIPresShell * aShell)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 nsMenuBarX::ContentChanged( nsIDocument * aDocument, nsIContent * aContent, nsISupports * aSubContent)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::ContentStatesChanged( nsIDocument * aDocument, nsIContent  * aContent1,
-                                  nsIContent  * aContent2, PRInt32 aStateMask)
 {
   return NS_OK;
 }
@@ -805,46 +776,6 @@ nsMenuBarX::ContentAppended( nsIDocument * aDocument, nsIContent  * aContainer,
 NS_IMETHODIMP
 nsMenuBarX::ContentReplaced( nsIDocument * aDocument, nsIContent * aContainer, nsIContent * aOldChild,
                           nsIContent * aNewChild, PRInt32 aIndexInContainer)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleSheetAdded( nsIDocument * aDocument, nsIStyleSheet * aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleSheetRemoved(nsIDocument * aDocument, nsIStyleSheet * aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleSheetDisabledStateChanged(nsIDocument * aDocument, nsIStyleSheet * aStyleSheet,
-                                            PRBool aDisabled)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleRuleChanged( nsIDocument * aDocument, nsIStyleSheet * aStyleSheet,
-                              nsIStyleRule * aStyleRule, nsChangeHint aHint)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleRuleAdded( nsIDocument * aDocument, nsIStyleSheet * aStyleSheet,
-                            nsIStyleRule * aStyleRule)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMenuBarX::StyleRuleRemoved(nsIDocument * aDocument, nsIStyleSheet * aStyleSheet,
-                              nsIStyleRule  * aStyleRule)
 {
   return NS_OK;
 }

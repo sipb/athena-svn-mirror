@@ -51,6 +51,9 @@
 #include "nsVoidArray.h"
 #include "nsTSDNotifier.h"
 #include "nsISelectionController.h"
+#include "nsITextServicesFilter.h"
+
+class nsIWordBreaker;
 
 /** implementation of a text services object.
  *
@@ -109,6 +112,10 @@ private:
   PRInt32                         mSelEndIndex;
   PRInt32                         mSelEndOffset;
 
+  nsCOMPtr<nsIDOMRange>           mExtent;
+
+  nsCOMPtr<nsITextServicesFilter> mTxtSvcFilter;
+
 public:
 
   /** The default constructor.
@@ -125,6 +132,11 @@ public:
   /* nsITextServicesDocument method implementations. */
   NS_IMETHOD InitWithDocument(nsIDOMDocument *aDOMDocument, nsIPresShell *aPresShell);
   NS_IMETHOD InitWithEditor(nsIEditor *aEditor);
+  NS_IMETHOD GetDocument(nsIDOMDocument **aDoc);
+  NS_IMETHOD SetExtent(nsIDOMRange* aDOMRange);
+  NS_IMETHOD GetExtent(nsIDOMRange** aDOMRange);
+  NS_IMETHOD ExpandRangeToWordBoundaries(nsIDOMRange *aRange);
+  NS_IMETHOD SetFilter(nsITextServicesFilter *aFilter);
   NS_IMETHOD CanEdit(PRBool *aCanEdit);
   NS_IMETHOD GetCurrentTextBlock(nsString *aStr);
   NS_IMETHOD FirstBlock();
@@ -152,6 +164,11 @@ public:
                      nsIDOMNode  *aRightNode,
                      nsIDOMNode  *aParent);
 
+  /* Helper functions */
+  static nsresult ComparePoints(nsIDOMNode *aParent1, PRInt32 aOffset1, nsIDOMNode *aParent2, PRInt32 aOffset2, PRInt32 *aResult);
+  static nsresult GetRangeEndPoints(nsIDOMRange *aRange, nsIDOMNode **aParent1, PRInt32 *aOffset1, nsIDOMNode **aParent2, PRInt32 *aOffset2);
+  static nsresult CreateRange(nsIDOMNode *aStartParent, PRInt32 aStartOffset, nsIDOMNode *aEndParent, PRInt32 aEndOffset, nsIDOMRange **aRange);
+
 private:
 
   /* nsTextServicesDocument private methods. */
@@ -165,17 +182,24 @@ private:
 
   nsresult AdjustContentIterator();
 
-  nsresult FirstTextNodeInCurrentBlock(nsIContentIterator *aIterator);
-  nsresult FirstTextNodeInPrevBlock(nsIContentIterator *aIterator);
-  nsresult FirstTextNodeInNextBlock(nsIContentIterator *aIterator);
+  static nsresult FirstTextNode(nsIContentIterator *aIterator, TSDIteratorStatus *IteratorStatus);
+  static nsresult LastTextNode(nsIContentIterator *aIterator, TSDIteratorStatus *IteratorStatus);
+
+  static nsresult FirstTextNodeInCurrentBlock(nsIContentIterator *aIterator);
+  static nsresult FirstTextNodeInPrevBlock(nsIContentIterator *aIterator);
+  static nsresult FirstTextNodeInNextBlock(nsIContentIterator *aIterator);
+
   nsresult GetFirstTextNodeInPrevBlock(nsIContent **aContent);
   nsresult GetFirstTextNodeInNextBlock(nsIContent **aContent);
 
-  PRBool IsBlockNode(nsIContent *aContent);
-  PRBool IsTextNode(nsIContent *aContent);
-  PRBool IsTextNode(nsIDOMNode *aNode);
+  static PRBool IsBlockNode(nsIContent *aContent);
+  static PRBool IsTextNode(nsIContent *aContent);
+  static PRBool IsTextNode(nsIDOMNode *aNode);
 
-  PRBool HasSameBlockNodeParent(nsIContent *aContent1, nsIContent *aContent2);
+  static PRBool DidSkip(nsIContentIterator* aFilteredIter);
+  static void   ClearDidSkip(nsIContentIterator* aFilteredIter);
+
+  static PRBool HasSameBlockNodeParent(nsIContent *aContent1, nsIContent *aContent2);
 
   nsresult SetSelectionInternal(PRInt32 aOffset, PRInt32 aLength, PRBool aDoUpdate);
   nsresult GetSelection(TSDBlockSelectionStatus *aSelStatus, PRInt32 *aSelOffset, PRInt32 *aSelLength);
@@ -185,21 +209,34 @@ private:
   PRBool SelectionIsCollapsed();
   PRBool SelectionIsValid();
 
-  nsresult ComparePoints(nsIDOMNode *aParent1, PRInt32 aOffset1, nsIDOMNode *aParent2, PRInt32 aOffset2, PRInt32 *aResult);
-  nsresult GetRangeEndPoints(nsIDOMRange *aRange, nsIDOMNode **aParent1, PRInt32 *aOffset1, nsIDOMNode **aParent2, PRInt32 *aOffset2);
-  nsresult CreateRange(nsIDOMNode *aStartParent, PRInt32 aStartOffset, nsIDOMNode *aEndParent, PRInt32 aEndOffset, nsIDOMRange **aRange);
+  static nsresult CreateOffsetTable(nsVoidArray *aOffsetTable,
+                             nsIContentIterator *aIterator,
+                             TSDIteratorStatus *aIteratorStatus,
+                             nsIDOMRange *aIterRange,
+                             nsString *aStr);
+  static nsresult ClearOffsetTable(nsVoidArray *aOffsetTable);
+
+  static nsresult NodeHasOffsetEntry(nsVoidArray *aOffsetTable,
+                                     nsIDOMNode *aNode,
+                                     PRBool *aHasEntry,
+                                     PRInt32 *aEntryIndex);
 
   nsresult RemoveInvalidOffsetEntries();
-  nsresult CreateOffsetTable(nsString *aStr=0);
-  nsresult ClearOffsetTable();
   nsresult SplitOffsetEntry(PRInt32 aTableIndex, PRInt32 aOffsetIntoEntry);
 
-  nsresult NodeHasOffsetEntry(nsIDOMNode *aNode, PRBool *aHasEntry, PRInt32 *aEntryIndex);
+  static nsresult GetWordBreaker(nsIWordBreaker **aWordBreaker);
+  static nsresult FindWordBounds(nsVoidArray *offsetTable, nsString *blockStr,
+                                 nsIWordBreaker *aWordBreaker,
+                                 nsIDOMNode *aNode, PRInt32 aNodeOffset,
+                                 nsIDOMNode **aWordStartNode,
+                                 PRInt32 *aWordStartOffset,
+                                 nsIDOMNode **aWordEndNode,
+                                 PRInt32 *aWordEndOffset);
 
-  /* DEBUG */
+#ifdef DEBUG_kin
   void PrintOffsetTable();
   void PrintContentNode(nsIContent *aContent);
-
+#endif
 };
 
 #endif // nsTextServicesDocument_h__

@@ -20,6 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Makoto Kato  <m_kato@ga2.so-net.ne.jp>
+ *   Dean Tessman <dean_tessman@hotmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -57,6 +59,7 @@ class nsIWidget;
 class nsIMenuItem;
 class nsIAccessible;
 class nsIContent;
+class nsIURI;
 
 /**
  * Event Struct Types
@@ -84,6 +87,8 @@ class nsIContent;
 #define NS_FORM_EVENT         21
 #define NS_FOCUS_EVENT        22
 #define NS_POPUP_EVENT        23
+#define NS_APPCOMMAND_EVENT   24
+#define NS_POPUPBLOCKED_EVENT 25
 
 
 #define NS_EVENT_FLAG_NONE                0x0000
@@ -97,6 +102,9 @@ class nsIContent;
 #define NS_PRIV_EVENT_FLAG_SCRIPT         0x0080
 #define NS_EVENT_FLAG_NO_CONTENT_DISPATCH 0x0100
 #define NS_EVENT_FLAG_SYSTEM_EVENT        0x0200
+
+#define NS_EVENT_CAPTURE_MASK             (~(NS_EVENT_FLAG_INIT | NS_EVENT_FLAG_BUBBLE | NS_EVENT_FLAG_NO_CONTENT_DISPATCH))
+#define NS_EVENT_BUBBLE_MASK              (~(NS_EVENT_FLAG_INIT | NS_EVENT_FLAG_CAPTURE | NS_EVENT_FLAG_NO_CONTENT_DISPATCH))
 
 #define NS_APP_EVENT_FLAG_NONE      0x0000
 #define NS_APP_EVENT_FLAG_HANDLED   0x0001 // Similar to NS_EVENT_FLAG_NO_DEFAULT, but it allows focus
@@ -134,6 +142,8 @@ struct nsEvent {
   nsEvent()
     : eventStructType(NS_EVENT),
       message(NS_EVENT_TYPE_NULL),
+      point(0, 0),
+      refPoint(0, 0),
       time(0),
       flags(NS_EVENT_FLAG_NONE),
       internalAppFlags(NS_APP_EVENT_FLAG_NONE),
@@ -376,6 +386,23 @@ struct nsFocusEvent : public nsGUIEvent {
   PRBool isMozWindowTakingFocus;
 };
 
+/**
+ * App Command event
+ *
+ * Custom commands from the operating system.  eg. WM_APPCOMMAND on Windows
+ */
+
+struct nsAppCommandEvent : public nsInputEvent {
+    PRUint32     appCommand;
+};
+
+/**
+ * blocked popup window event
+ */
+struct nsPopupBlockedEvent : public nsEvent {
+  nsIURI* mRequestingWindowURI; // owning reference
+  nsIURI* mPopupWindowURI;      // owning reference
+};
 
 /**
  * Event status for D&D Event
@@ -394,6 +421,8 @@ enum nsDragDropEventStatus {
  * GUI MESSAGES
  */
  //@{
+#define NS_EVENT_NULL                   0
+
 
 #define NS_WINDOW_START                 100
 
@@ -552,6 +581,17 @@ enum nsDragDropEventStatus {
 
 #define NS_USER_DEFINED_EVENT         2000
 
+// custom OS events
+#define NS_APPCOMMAND_START           2100
+#define NS_APPCOMMAND                 (NS_APPCOMMAND_START)
+#define NS_APPCOMMAND_BACK            (NS_APPCOMMAND_START + 1)
+#define NS_APPCOMMAND_FORWARD         (NS_APPCOMMAND_START + 2)
+#define NS_APPCOMMAND_REFRESH         (NS_APPCOMMAND_START + 3)
+#define NS_APPCOMMAND_STOP            (NS_APPCOMMAND_START + 4)
+#define NS_APPCOMMAND_SEARCH          (NS_APPCOMMAND_START + 5)
+#define NS_APPCOMMAND_FAVORITES       (NS_APPCOMMAND_START + 6)
+#define NS_APPCOMMAND_HOME            (NS_APPCOMMAND_START + 7)
+ 
 #define NS_IS_MOUSE_EVENT(evnt) \
        (((evnt)->message == NS_MOUSE_LEFT_BUTTON_DOWN) || \
         ((evnt)->message == NS_MOUSE_LEFT_BUTTON_UP) || \

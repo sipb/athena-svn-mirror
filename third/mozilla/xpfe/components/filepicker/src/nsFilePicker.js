@@ -52,6 +52,9 @@ const nsIFilePicker         = Components.interfaces.nsIFilePicker;
 const nsIInterfaceRequestor = Components.interfaces.nsIInterfaceRequestor
 const nsIDOMWindow          = Components.interfaces.nsIDOMWindow;
 const nsIStringBundleService = Components.interfaces.nsIStringBundleService;
+const nsIWebNavigation      = Components.interfaces.nsIWebNavigation;
+const nsIDocShellTreeItem   = Components.interfaces.nsIDocShellTreeItem;
+const nsIBaseWindow         = Components.interfaces.nsIBaseWindow;
 
 var   bundle                = null;
 var   lastDirectory         = null;
@@ -82,7 +85,7 @@ nsFilePicker.prototype = {
 
   /* readonly attribute nsILocalFile file; */
   set file(a) { throw "readonly property"; },
-  get file()  { return this.mFile; },
+  get file()  { return this.mFilesEnumerator.mFiles[0]; },
 
   /* readonly attribute nsISimpleEnumerator files; */
   set files(a) { throw "readonly property"; },
@@ -91,10 +94,10 @@ nsFilePicker.prototype = {
   /* readonly attribute nsIFileURL fileURL; */
   set fileURL(a) { throw "readonly property"; },
   get fileURL()  { 
-    if (this.mFile) {
+    if (this.mFilesEnumerator) {
       var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                     .getService(Components.interfaces.nsIIOService);
-      var url       = ioService.newFileURI(this.mFile);
+      var url       = ioService.newFileURI(this.file);
       return url;
     }
     return null;
@@ -113,7 +116,6 @@ nsFilePicker.prototype = {
   get filterIndex() { return this.mFilterIndex; },
 
   /* members */
-  mFile: undefined,
   mFilesEnumerator: undefined,
   mParentWindow: null,
 
@@ -195,12 +197,25 @@ nsFilePicker.prototype = {
       }
     }
 
+    var parentWin = null;
     try {
+      parentWin = parent.QueryInterface(nsIInterfaceRequestor)
+                        .getInterface(nsIWebNavigation)
+                        .QueryInterface(nsIDocShellTreeItem)
+                        .treeOwner
+                        .QueryInterface(nsIInterfaceRequestor)
+                        .getInterface(nsIBaseWindow);
+    } catch(ex) {
+      dump("file picker couldn't get base window\n"+ex+"\n");
+    }
+    try {
+      if (parentWin)
+        parentWin.blurSuppression = true;
       parent.openDialog("chrome://global/content/filepicker.xul",
                         "",
                         "chrome,modal,titlebar,resizable=yes,dependent=yes",
                         o);
-      this.mFile = o.retvals.file;
+
       this.mFilterIndex = o.retvals.filterIndex;
       this.mFilesEnumerator = o.retvals.files;
       lastDirectory = o.retvals.directory;

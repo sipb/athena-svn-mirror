@@ -97,9 +97,9 @@ inline PRBool ContainsGroup(CGroupMembers& aGroupSet,CGroupMembers& aGroup) {
   return result;
 }
 
-inline PRBool ListContainsTag(eHTMLTags* aTagList,eHTMLTags aTag) {
+inline PRBool ListContainsTag(const eHTMLTags* aTagList,eHTMLTags aTag) {
   if(aTagList) {
-    eHTMLTags *theNextTag=aTagList;
+    const eHTMLTags *theNextTag=aTagList;
     while(eHTMLTag_unknown!=*theNextTag) {
       if(aTag==*theNextTag) {
         return PR_TRUE;
@@ -117,7 +117,7 @@ inline PRBool ListContainsTag(eHTMLTags* aTagList,eHTMLTags aTag) {
 class CElement {
 public:
 
-    //break this struct out seperately so that lame compilers don't gack.
+    //break this struct out separately so that lame compilers don't gack.
   struct CFlags {
     PRUint32  mOmitEndTag:1;
     PRUint32  mIsContainer:1;
@@ -305,11 +305,9 @@ public:
     this gets called after each tag is opened in the given context
    **********************************************************/
   virtual nsresult  OpenContext(nsCParserNode *aNode,eHTMLTags aTag,nsDTDContext *aContext,nsIHTMLContentSink *aSink) {
-    
-    aContext->Push(aNode);
-
-    CElement *theElement=(aTag==mTag) ? this : GetElement(aTag);
-    theElement->NotifyOpen(aNode,aTag,aContext,aSink);
+    aContext->Push(aNode, 0, PR_FALSE);
+    CElement *theElement = (aTag == mTag) ? this : GetElement(aTag);
+    theElement->NotifyOpen(aNode, aTag, aContext,aSink);
     return NS_OK;
   }
 
@@ -325,7 +323,7 @@ public:
     this gets called to close a given tag in the sink
    **********************************************************/
   virtual nsresult  CloseContainer(nsIParserNode *aNode,eHTMLTags aTag,nsDTDContext *aContext,nsIHTMLContentSink *aSink) {
-    return aSink->CloseContainer(*aNode);
+    return aSink->CloseContainer(aTag);
   }
 
   /**********************************************************
@@ -364,9 +362,9 @@ public:
   eHTMLTags       mDelegate;
   CGroupMembers   mGroup;
   CGroupMembers   mContainsGroups;
-  eHTMLTags       *mIncludeKids;
-  eHTMLTags       *mExcludeKids;
-  eHTMLTags       *mAutoClose;    //other start tags that close this container
+  const eHTMLTags       *mIncludeKids;
+  const eHTMLTags       *mExcludeKids;
+  const eHTMLTags       *mAutoClose;    //other start tags that close this container
 };
 
 
@@ -877,6 +875,13 @@ public:
     to handle it.
    **********************************************************/
   virtual PRInt32 FindAutoCloseTargetForEndTag(nsIParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink, PRInt32& anIndex) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     PRInt32 result=kNotFound;
 
     switch(aTag) {
@@ -1013,11 +1018,11 @@ public:
     
     nsresult result=NS_OK;
     PRInt32   theCount=aContext->GetCount();
-    eHTMLTags theGrandParentTag=aContext->TagAt(theCount-2);
 
     nsCParserNode *theNode = (nsCParserNode*)aNode;
 
 #ifdef DEBUG
+    eHTMLTags theGrandParentTag=aContext->TagAt(theCount-2);
     nsAutoString  theNumber;
     aContext->IncrementCounter(theGrandParentTag,*theNode,theNumber);
 
@@ -1157,6 +1162,13 @@ public:
   }
 
   virtual nsresult OpenContext(nsIParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     NS_ASSERTION(aContext!=nsnull,"cannot make a decision without a context");
 
     nsresult result=NS_OK;
@@ -1170,12 +1182,19 @@ public:
   }
 
   virtual nsresult CloseContext(nsIParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     NS_ASSERTION(aContext!=nsnull,"cannot make a decision without a context");
 
     nsresult result=NS_OK;
     if(aSink && aContext) {
       if(aContext->mFlags.mHasOpenHead==PR_TRUE) {
-        result=aSink->CloseHead(*aNode);
+        result = aSink->CloseHead();
         aContext->mFlags.mHasOpenHead=PR_FALSE;
       }
     }
@@ -1241,6 +1260,13 @@ public:
     Textcontainer handles the opening of it's own children
    **********************************************************/
   virtual nsresult HandleStartToken(nsIParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
 
     switch(aTag) {
@@ -1256,6 +1282,13 @@ public:
   }
 
   virtual nsresult HandleEndToken(nsIParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
     return result;
   }
@@ -1281,6 +1314,13 @@ public:
     Call this for each element as it get's closed
    **********************************************************/
   virtual nsresult  NotifyClose(nsCParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsCParserNode| rather than
+    // |nsIParserNode| so it doesn't override the member function of
+    // CTextContainer.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
     CElement* theHead=GetElement(eHTMLTag_head);
     if(theHead) {
@@ -1377,6 +1417,13 @@ public:
     Call this for each element as it get's closed
    **********************************************************/
   virtual nsresult  NotifyClose(nsCParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsCParserNode| rather than
+    // |nsIParserNode| so it doesn't override the member function of
+    // CTextContainer.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
     CElement* theHead=GetElement(eHTMLTag_head);
     if(theHead) {
@@ -1424,6 +1471,13 @@ public:
     this gets called to close a tag in the given context
    **********************************************************/
   virtual nsresult  CloseContext(nsIParserNode *aNode,eHTMLTags aTag,nsDTDContext *aContext,nsIHTMLContentSink *aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsIParserNode| rather than
+    // |nsCParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsEntryStack* theStack=0;
     nsIParserNode *theNode=aContext->Pop(theStack);
 
@@ -1437,6 +1491,13 @@ public:
     Call this for each element as it get's closed
    **********************************************************/
   virtual nsresult  NotifyClose(nsCParserNode* aNode,eHTMLTags aTag,nsDTDContext* aContext,nsIHTMLContentSink* aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsCParserNode| rather than
+    // |nsIParserNode| so it doesn't override the member function of
+    // CTextContainer.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
 
     if(aContext->HasOpenContainer(eHTMLTag_body)) {
@@ -1668,14 +1729,14 @@ public:
     switch(aTag) {
       case eHTMLTag_html:
         if(aContext->HasOpenContainer(aTag)) {
-          result=aSink->CloseHTML(*aNode);
+          result=aSink->CloseHTML();
           CloseContext(aNode,aTag,aContext,aSink);
         }
         break;
 
       case eHTMLTag_body:
         if(aContext->HasOpenContainer(aTag)) {
-          result=aSink->CloseBody(*aNode);
+          result=aSink->CloseBody();
           CloseContext(aNode,aTag,aContext,aSink);
         }
         break;
@@ -1839,18 +1900,18 @@ public:
 
     switch(aTag) {
       case eHTMLTag_body:
-        aSink->CloseBody(*aNode);
+        aSink->CloseBody();
         result=CloseContext(aNode,aTag,aContext,aSink);
         break;
 
       case eHTMLTag_frameset:
-        aSink->CloseFrameset(*aNode);
+        aSink->CloseFrameset();
         result=CloseContext(aNode,aTag,aContext,aSink);
         break;
 
       case eHTMLTag_object:
         result=CloseContainerInContext(aNode,aTag,aContext,aSink);
-        aSink->CloseHead(*aNode);
+        aSink->CloseHead();
         break;
 
       case eHTMLTag_script:
@@ -1871,8 +1932,8 @@ public:
 /**********************************************************
   This is for the body element...
  **********************************************************/
-static eHTMLTags gBodyKids[] = {eHTMLTag_button, eHTMLTag_del, eHTMLTag_ins, eHTMLTag_map,eHTMLTag_script, eHTMLTag_unknown};
-static eHTMLTags gBodyExcludeKids[] = {eHTMLTag_applet, eHTMLTag_button, eHTMLTag_iframe, eHTMLTag_object, eHTMLTag_unknown};
+static const eHTMLTags gBodyKids[] = {eHTMLTag_button, eHTMLTag_del, eHTMLTag_ins, eHTMLTag_map,eHTMLTag_script, eHTMLTag_unknown};
+static const eHTMLTags gBodyExcludeKids[] = {eHTMLTag_applet, eHTMLTag_button, eHTMLTag_iframe, eHTMLTag_object, eHTMLTag_unknown};
 
 class CBodyElement: public CElement {
 public:
@@ -1905,6 +1966,13 @@ public:
 
    //this gets called after each tag is opened in the given context
   virtual nsresult  OpenContainer(nsCParserNode *aNode,eHTMLTags aTag,nsDTDContext *aContext,nsIHTMLContentSink *aSink) {
+
+    // XXXldb This method is completely unused because the |aNode|
+    // parameter is declared as |nsCParserNode| rather than
+    // |nsIParserNode| so it doesn't override the member function of
+    // CElement.
+    NS_NOTREACHED("This isn't used.  Should it be?");
+
     nsresult result=NS_OK;
     if(mTag==aTag) {
       // Close the head before opening a body.
@@ -1948,7 +2016,6 @@ public:
 
     nsresult result=CElement::HandleStartToken(aNode,aTag,aContext,aSink);
 
-    CElement *theElement=GetElement(aTag);    
     if(NS_SUCCEEDED(result)) {
       if(aNode) {
         nsCParserNode*  theNode=(nsCParserNode*)aNode;
@@ -2073,27 +2140,27 @@ public:
 
 static CElementTable *gElementTable = 0;
 
-static eHTMLTags kDLKids[]={eHTMLTag_dd,eHTMLTag_dt,eHTMLTag_unknown};
-static eHTMLTags kAutoCloseDD[]={eHTMLTag_dd,eHTMLTag_dt,eHTMLTag_dl,eHTMLTag_unknown};
-static eHTMLTags kButtonExcludeKids[]={ eHTMLTag_a,eHTMLTag_button,eHTMLTag_select,eHTMLTag_textarea,
+static const eHTMLTags kDLKids[]={eHTMLTag_dd,eHTMLTag_dt,eHTMLTag_unknown};
+static const eHTMLTags kAutoCloseDD[]={eHTMLTag_dd,eHTMLTag_dt,eHTMLTag_dl,eHTMLTag_unknown};
+static const eHTMLTags kButtonExcludeKids[]={ eHTMLTag_a,eHTMLTag_button,eHTMLTag_select,eHTMLTag_textarea,
                                         eHTMLTag_input,eHTMLTag_iframe,eHTMLTag_form,eHTMLTag_isindex,
                                         eHTMLTag_fieldset,eHTMLTag_unknown};
-static eHTMLTags kColgroupKids[]={eHTMLTag_col,eHTMLTag_unknown};
-static eHTMLTags kDirKids[]={eHTMLTag_li,eHTMLTag_unknown};
-static eHTMLTags kOptionGroupKids[]={eHTMLTag_option,eHTMLTag_unknown};
-static eHTMLTags kFieldsetKids[]={eHTMLTag_legend,eHTMLTag_unknown};
-static eHTMLTags kFormKids[]={eHTMLTag_script,eHTMLTag_unknown};
-static eHTMLTags kLIExcludeKids[]={eHTMLTag_dir,eHTMLTag_menu,eHTMLTag_unknown};
-static eHTMLTags kMapKids[]={eHTMLTag_area,eHTMLTag_unknown};
-static eHTMLTags kPreExcludeKids[]={eHTMLTag_image,eHTMLTag_object,eHTMLTag_applet,
+static const eHTMLTags kColgroupKids[]={eHTMLTag_col,eHTMLTag_unknown};
+static const eHTMLTags kDirKids[]={eHTMLTag_li,eHTMLTag_unknown};
+static const eHTMLTags kOptionGroupKids[]={eHTMLTag_option,eHTMLTag_unknown};
+static const eHTMLTags kFieldsetKids[]={eHTMLTag_legend,eHTMLTag_unknown};
+static const eHTMLTags kFormKids[]={eHTMLTag_script,eHTMLTag_unknown};
+static const eHTMLTags kLIExcludeKids[]={eHTMLTag_dir,eHTMLTag_menu,eHTMLTag_unknown};
+static const eHTMLTags kMapKids[]={eHTMLTag_area,eHTMLTag_unknown};
+static const eHTMLTags kPreExcludeKids[]={eHTMLTag_image,eHTMLTag_object,eHTMLTag_applet,
                                     eHTMLTag_big,eHTMLTag_small,eHTMLTag_sub,eHTMLTag_sup,
                                     eHTMLTag_font,eHTMLTag_basefont,eHTMLTag_unknown};
-static eHTMLTags kSelectKids[]={eHTMLTag_optgroup,eHTMLTag_option,eHTMLTag_unknown};
-static eHTMLTags kBlockQuoteKids[]={eHTMLTag_script,eHTMLTag_unknown};
-static eHTMLTags kFramesetKids[]={eHTMLTag_noframes,eHTMLTag_unknown};
-static eHTMLTags kObjectKids[]={eHTMLTag_param,eHTMLTag_unknown};
-static eHTMLTags kTBodyKids[]={eHTMLTag_tr,eHTMLTag_unknown};
-static eHTMLTags kUnknownKids[]={eHTMLTag_html,eHTMLTag_unknown};
+static const eHTMLTags kSelectKids[]={eHTMLTag_optgroup,eHTMLTag_option,eHTMLTag_unknown};
+static const eHTMLTags kBlockQuoteKids[]={eHTMLTag_script,eHTMLTag_unknown};
+static const eHTMLTags kFramesetKids[]={eHTMLTag_noframes,eHTMLTag_unknown};
+static const eHTMLTags kObjectKids[]={eHTMLTag_param,eHTMLTag_unknown};
+static const eHTMLTags kTBodyKids[]={eHTMLTag_tr,eHTMLTag_unknown};
+static const eHTMLTags kUnknownKids[]={eHTMLTag_html,eHTMLTag_unknown};
 
 
 inline CElement* CElement::GetElement(eHTMLTags aTag) {
@@ -2429,7 +2496,7 @@ void CElementTable::DebugDumpGroups(CElement* aTag){
 
     if(aTag->mIncludeKids) {
       printf("\n%s",prefix);
-      eHTMLTags *theKid=aTag->mIncludeKids;
+      const eHTMLTags *theKid=aTag->mIncludeKids;
       printf("+ ");
       while(eHTMLTag_unknown!=*theKid){
         const PRUnichar *t = nsHTMLTags::GetStringValue(*theKid++);
@@ -2439,7 +2506,7 @@ void CElementTable::DebugDumpGroups(CElement* aTag){
 
     if(aTag->mExcludeKids) {
       printf("\n%s",prefix);
-      eHTMLTags *theKid=aTag->mExcludeKids;
+      const eHTMLTags *theKid=aTag->mExcludeKids;
       printf("- ");
       while(eHTMLTag_unknown!=*theKid){
         const PRUnichar *t = nsHTMLTags::GetStringValue(*theKid++);

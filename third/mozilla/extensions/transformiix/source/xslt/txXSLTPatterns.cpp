@@ -36,16 +36,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "nsReadableUtils.h"
+#include "txExecutionState.h"
 #include "txXSLTPatterns.h"
 #include "txNodeSetContext.h"
 #include "txForwardContext.h"
+#include "XMLUtils.h"
 #include "XSLTFunctions.h"
-#include "ProcessorState.h"
 #ifndef TX_EXE
-#include "nsReadableUtils.h"
 #include "nsIContent.h"
 #include "nsINodeInfo.h"
-#include "XMLUtils.h"
 #endif
 
 /*
@@ -135,20 +135,20 @@ nsresult txUnionPattern::getSimplePatterns(txList& aList)
  * destination String, to allow cascading calls to other
  * toString() methods for mLocPathPatterns.
  */
-void txUnionPattern::toString(String& aDest)
+void txUnionPattern::toString(nsAString& aDest)
 {
 #ifdef DEBUG
-    aDest.append("txUnionPattern{");
+    aDest.Append(NS_LITERAL_STRING("txUnionPattern{"));
 #endif
     txListIterator iter(&mLocPathPatterns);
     if (iter.hasNext())
         ((txPattern*)iter.next())->toString(aDest);
     while (iter.hasNext()) {
-        aDest.append(" | ");
+        aDest.Append(NS_LITERAL_STRING(" | "));
         ((txPattern*)iter.next())->toString(aDest);
     }
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 } // toString
 
@@ -255,11 +255,11 @@ double txLocPathPattern::getDefaultPriority()
     return ((Step*)mSteps.get(0))->pattern->getDefaultPriority();
 }
 
-void txLocPathPattern::toString(String& aDest)
+void txLocPathPattern::toString(nsAString& aDest)
 {
     txListIterator iter(&mSteps);
 #ifdef DEBUG
-    aDest.append("txLocPathPattern{");
+    aDest.Append(NS_LITERAL_STRING("txLocPathPattern{"));
 #endif
     Step* step;
     step = (Step*)iter.next();
@@ -268,13 +268,13 @@ void txLocPathPattern::toString(String& aDest)
     }
     while ((step = (Step*)iter.next())) {
         if (step->isChild)
-            aDest.append("/");
+            aDest.Append(PRUnichar('/'));
         else
-            aDest.append("//");
+            aDest.Append(NS_LITERAL_STRING("//"));
         step->pattern->toString(aDest);
     }
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 } // txLocPathPattern::toString
 
@@ -298,15 +298,15 @@ double txRootPattern::getDefaultPriority()
     return 0.5;
 }
 
-void txRootPattern::toString(String& aDest)
+void txRootPattern::toString(nsAString& aDest)
 {
 #ifdef DEBUG
-    aDest.append("txRootPattern{");
+    aDest.Append(NS_LITERAL_STRING("txRootPattern{"));
 #endif
     if (mSerialize)
-        aDest.append("/");
+        aDest.Append(PRUnichar('/'));
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 }
 
@@ -318,27 +318,21 @@ void txRootPattern::toString(String& aDest)
  * This looks like the id() function, but may only have LITERALs as
  * argument.
  */
-txIdPattern::txIdPattern(const String& aString)
+txIdPattern::txIdPattern(const nsAString& aString)
 {
-#ifdef TX_EXE
-    mIds = aString;
-#else
-    const nsString& ids = aString.getConstNSString();
     nsAString::const_iterator pos, begin, end;
-    ids.BeginReading(begin);
-    ids.EndReading(end);
+    aString.BeginReading(begin);
+    aString.EndReading(end);
     pos = begin;
     while (pos != end) {
         while (pos != end && XMLUtils::isWhitespace(*pos))
             ++pos;
         begin = pos;
-        if (!mIds.IsEmpty())
-            mIds += PRUnichar(' ');
         while (pos != end && !XMLUtils::isWhitespace(*pos))
             ++pos;
-        mIds += Substring(begin, pos);
+        // this can fail, XXX move to a Init(aString) method
+        mIds.AppendString(Substring(begin, pos));
     }
-#endif
 }
 
 txIdPattern::~txIdPattern()
@@ -347,15 +341,16 @@ txIdPattern::~txIdPattern()
 
 MBool txIdPattern::matches(Node* aNode, txIMatchContext* aContext)
 {
-#ifdef TX_EXE
-    return MB_FALSE; // not implemented
-#else
     if (aNode->getNodeType() != Node::ELEMENT_NODE) {
         return MB_FALSE;
     }
 
     // Get a ID attribute, if there is
-
+    nsAutoString value;
+#ifdef TX_EXE
+    if (!((Element*)aNode)->getIDValue(value))
+        return MB_FALSE;
+#else
     nsCOMPtr<nsIContent> content = do_QueryInterface(aNode->getNSObj());
     NS_ASSERTION(content, "a Element without nsIContent");
     if (!content) {
@@ -371,31 +366,12 @@ MBool txIdPattern::matches(Node* aNode, txIMatchContext* aContext)
     if (!idAttr) {
         return MB_FALSE; // no ID for this element defined, can't match
     }
-    nsAutoString value;
     nsresult rv = content->GetAttr(kNameSpaceID_None, idAttr, value);
     if (rv != NS_CONTENT_ATTR_HAS_VALUE) {
         return MB_FALSE; // no ID attribute given
     }
-    nsAString::const_iterator pos, begin, end;
-    mIds.BeginReading(begin);
-    mIds.EndReading(end);
-    pos = begin;
-    const PRUnichar space = PRUnichar(' ');
-    PRBool found = FindCharInReadable(space, pos, end);
-
-    while (found) {
-        if (value.Equals(Substring(begin, pos))) {
-            return MB_TRUE;
-        }
-        ++pos; // skip ' '
-        begin = pos;
-        found = FindCharInReadable(PRUnichar(' '), pos, end);
-    }
-    if (value.Equals(Substring(begin, pos))) {
-        return MB_TRUE;
-    }
-    return MB_FALSE;
 #endif // TX_EXE
+    return mIds.IndexOf(value) > -1;
 }
 
 double txIdPattern::getDefaultPriority()
@@ -403,20 +379,21 @@ double txIdPattern::getDefaultPriority()
     return 0.5;
 }
 
-void txIdPattern::toString(String& aDest)
+void txIdPattern::toString(nsAString& aDest)
 {
 #ifdef DEBUG
-    aDest.append("txIdPattern{");
+    aDest.Append(NS_LITERAL_STRING("txIdPattern{"));
 #endif
-    aDest.append("id('");
-#ifdef TX_EXE
-    aDest.append(mIds);
-#else
-    aDest.getNSString().Append(mIds);
-#endif
-    aDest.append("')");
+    aDest.Append(NS_LITERAL_STRING("id('"));
+    PRUint32 k, count = mIds.Count() - 1;
+    for (k = 0; k < count; ++k) {
+        aDest.Append(*mIds[k]);
+        aDest.Append(PRUnichar(' '));
+    }
+    aDest.Append(*mIds[count]);
+    aDest.Append(NS_LITERAL_STRING("')"));
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 }
 
@@ -435,14 +412,15 @@ txKeyPattern::~txKeyPattern()
 
 MBool txKeyPattern::matches(Node* aNode, txIMatchContext* aContext)
 {
+    txExecutionState* es = (txExecutionState*)aContext->getPrivateContext();
     Document* contextDoc;
     if (aNode->getNodeType() == Node::DOCUMENT_NODE)
         contextDoc = (Document*)aNode;
     else
         contextDoc = aNode->getOwnerDocument();
-    txXSLKey* key = mProcessorState->getKey(mName);
-    const NodeSet* nodes = key->getNodes(mValue, contextDoc);
-    if (!nodes || nodes->isEmpty())
+    const NodeSet* nodes = 0;
+    nsresult rv = es->getKeyNodes(mName, contextDoc, mValue, PR_TRUE, &nodes);
+    if (NS_FAILED(rv) || !nodes)
         return MB_FALSE;
     MBool isTrue = nodes->contains(aNode);
     return isTrue;
@@ -453,25 +431,25 @@ double txKeyPattern::getDefaultPriority()
     return 0.5;
 }
 
-void txKeyPattern::toString(String& aDest)
+void txKeyPattern::toString(nsAString& aDest)
 {
 #ifdef DEBUG
-    aDest.append("txKeyPattern{");
+    aDest.Append(NS_LITERAL_STRING("txKeyPattern{"));
 #endif
-    aDest.append("key('");
-    String tmp;
+    aDest.Append(NS_LITERAL_STRING("key('"));
+    nsAutoString tmp;
     if (mPrefix) {
-        TX_GET_ATOM_STRING(mPrefix, tmp);
-        aDest.append(tmp);
-        aDest.append(':');
+        mPrefix->ToString(tmp);
+        aDest.Append(tmp);
+        aDest.Append(PRUnichar(':'));
     }
-    TX_GET_ATOM_STRING(mName.mLocalName, tmp);
-    aDest.append(tmp);
-    aDest.append(", ");
-    aDest.append(mValue);
-    aDest.append("')");
+    mName.mLocalName->ToString(tmp);
+    aDest.Append(tmp);
+    aDest.Append(NS_LITERAL_STRING(", "));
+    aDest.Append(mValue);
+    aDest.Append(NS_LITERAL_STRING("')"));
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 }
 
@@ -603,18 +581,18 @@ double txStepPattern::getDefaultPriority()
     return 0.5;
 }
 
-void txStepPattern::toString(String& aDest)
+void txStepPattern::toString(nsAString& aDest)
 {
 #ifdef DEBUG
-    aDest.append("txStepPattern{");
+    aDest.Append(NS_LITERAL_STRING("txStepPattern{"));
 #endif
     if (mIsAttr)
-        aDest.append("@");
+        aDest.Append(PRUnichar('@'));
     if (mNodeTest)
         mNodeTest->toString(aDest);
 
     PredicateList::toString(aDest);
 #ifdef DEBUG
-    aDest.append("}");
+    aDest.Append(PRUnichar('}'));
 #endif
 }

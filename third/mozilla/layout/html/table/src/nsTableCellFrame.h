@@ -41,7 +41,7 @@
 #include "nscore.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsTableRowFrame.h"  // need to actually include this here to inline GetRowIndex
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIPercentHeightObserver.h"
 #include "nsLayoutAtoms.h"
 
@@ -85,7 +85,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
 #ifdef ACCESSIBILITY
@@ -162,7 +162,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
 
   virtual void VerticallyAlignChild(nsIPresContext*          aPresContext,
@@ -470,7 +469,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
 
 protected:

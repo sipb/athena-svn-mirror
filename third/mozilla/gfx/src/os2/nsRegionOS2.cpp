@@ -26,7 +26,6 @@ NS_IMPL_ISUPPORTS1(nsRegionOS2, nsIRegion)
 
 nsRegionOS2::nsRegionOS2() 
 {  
-  NS_INIT_ISUPPORTS();
 }
 
 // Do not use GetNativeRegion on OS/2. Regions are device specific. Use GetHRGN () instead.
@@ -81,7 +80,7 @@ HRGN nsRegionOS2::GetHRGN (PRUint32 DestHeight, HPS DestPS)
 nsresult nsRegionOS2::InitWithHRGN (HRGN SrcRegion, PRUint32 SrcHeight, HPS SrcPS)
 {
   PRUint32 NumRects = NumOfRects (SrcPS, SrcRegion);
-  mRegion.Empty ();
+  mRegion.SetEmpty ();
 
   if (NumRects > 0)
   {

@@ -58,6 +58,7 @@
 #include "pratom.h"
 #include "prprf.h"
 #include "nsIComponentManager.h"
+#include "nsCRT.h"
 
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
@@ -81,6 +82,7 @@
 #include "nsIIOService.h"
 #include "nsIWidget.h"
 #include "plevent.h"
+#include "plstr.h"
 
 #include "nsIAppShell.h"
 #include "nsIAppShellService.h"
@@ -93,25 +95,21 @@
 #include "nsIObserverService.h"
 
 #include "nsILocalFile.h"
-#include "nsIFileStreams.h"
+#include "nsDirectoryServiceDefs.h"
 
 #include "nsNetUtil.h"
 #include "nsICmdLineService.h"
 
 // Stuff to implement file download dialog.
-#include "nsFileStream.h"
 #include "nsIProxyObjectManager.h" 
 
 #ifdef MOZ_PHOENIX
 #include "nsToolkitCompsCID.h"
 #endif
 
-#include "nsBrowserStatusFilter.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserStatusFilter)
-
-// if DEBUG, NS_BUILD_REFCNT_LOGGING, or MOZ_PERF_METRICS is defined,
-// enable the PageCycler
-#if defined(DEBUG) || defined(NS_BUILD_REFCNT_LOGGING) || defined(MOZ_PERF_METRICS)
+// If DEBUG, NS_BUILD_REFCNT_LOGGING, MOZ_PERF_METRICS, or MOZ_JPROF is
+// defined, enable the PageCycler.
+#if defined(DEBUG) || defined(NS_BUILD_REFCNT_LOGGING) || defined(MOZ_PERF_METRICS) || defined(MOZ_JPROF)
 #define ENABLE_PAGE_CYCLER
 #endif
 
@@ -155,7 +153,6 @@ public:
 
   PageCycler(nsBrowserInstance* appCore, const char *aTimeoutValue = nsnull, const char *aWaitValue = nsnull)
     : mAppCore(appCore), mBuffer(nsnull), mCursor(nsnull), mTimeoutValue(0), mWaitValue(1 /*sec*/) { 
-    NS_INIT_ISUPPORTS();
     NS_ADDREF(mAppCore);
     if (aTimeoutValue){
       mTimeoutValue = atol(aTimeoutValue);
@@ -173,8 +170,14 @@ public:
   nsresult Init(const char* nativePath) {
     nsresult rv;
     if (!mFile) {
-      rv = NS_NewNativeLocalFile(nsDependentCString(nativePath),
-                                 PR_TRUE, getter_AddRefs(mFile));
+      nsCOMPtr<nsIFile> aFile;
+      rv = NS_GetSpecialDirectory(NS_XPCOM_CURRENT_PROCESS_DIR,
+                                  getter_AddRefs(aFile));
+      if (NS_FAILED(rv)) return rv;
+
+      mFile = do_QueryInterface(aFile);
+      NS_ASSERTION(mFile, "QI to nsILocalFile should not fail");
+      rv = mFile->AppendRelativeNativePath(nsDependentCString(nativePath));
       if (NS_FAILED(rv)) return rv;
     }
 
@@ -367,22 +370,18 @@ protected:
   PRIntervalTime        mIntervalTime;
 };
 
-NS_IMPL_ADDREF(PageCycler)
-NS_IMPL_RELEASE(PageCycler)
+NS_IMPL_ISUPPORTS1(PageCycler, nsIObserver)
 
-NS_INTERFACE_MAP_BEGIN(PageCycler)
-  NS_INTERFACE_MAP_ENTRY(nsIObserver)
-  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIObserver)
-NS_INTERFACE_MAP_END
-
-// TimesUp: callback for the PageCycler timer: called when we have waited too long
-// for the page to finish loading.
+// TimesUp: callback for the PageCycler timer: called when we have
+// waited too long for the page to finish loading.
 // 
-// The aClosure argument is actually the PageCycler, 
-// so use it to stop the timer and call the Observe fcn to move on to the next URL
-// Note that we pass the PageCycler instance as the aSubject argument to the Observe
-// function. This is our indication that the Observe method is being called after a
-// timeout, allowing the PageCycler to do any necessary processing before moving on.
+// The aClosure argument is actually the PageCycler, so use it to stop
+// the timer and call the Observe fcn to move on to the next URL.  Note
+// that we pass the PageCycler instance as the aSubject argument to the
+// Observe function. This is our indication that the Observe method is
+// being called after a timeout, allowing the PageCycler to do any
+// necessary processing before moving on.
+
 void TimesUp(nsITimer *aTimer, void *aClosure)
 {
   if(aClosure){
@@ -407,7 +406,6 @@ nsBrowserInstance::nsBrowserInstance() : mIsClosed(PR_FALSE)
 {
   mDOMWindow            = nsnull;
   mContentAreaDocShellWeak  = nsnull;
-  NS_INIT_ISUPPORTS();
 }
 
 nsBrowserInstance::~nsBrowserInstance()
@@ -578,13 +576,6 @@ nsBrowserInstance::StartPageCycler(PRBool* aIsPageCycling)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsBrowserInstance::Init()
-{
-  nsresult rv = NS_OK;
-
-  return rv;
-}
 
 NS_IMETHODIMP    
 nsBrowserInstance::SetWebShellWindow(nsIDOMWindowInternal* aWin)
@@ -657,7 +648,6 @@ NS_INTERFACE_MAP_END
 
 nsBrowserContentHandler::nsBrowserContentHandler()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsBrowserContentHandler::~nsBrowserContentHandler()

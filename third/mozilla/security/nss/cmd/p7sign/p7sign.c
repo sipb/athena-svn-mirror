@@ -35,7 +35,7 @@
  * p7sign -- A command to create a *detached* pkcs7 signature (over a given
  * input file).
  *
- * $Id: p7sign.c,v 1.1.1.1 2003-02-14 18:24:41 rbasch Exp $
+ * $Id: p7sign.c,v 1.1.1.2 2003-07-08 17:00:15 rbasch Exp $
  */
 
 #include "nspr.h"
@@ -282,6 +282,10 @@ main(int argc, char **argv)
     if (SignFile(outFile, inFile, cert, encapsulated)) {
 	SECU_PrintError(progName, "problem signing data");
 	return -1;
+    }
+
+    if (NSS_Shutdown() != SECSuccess) {
+        exit(1);
     }
 
     return 0;

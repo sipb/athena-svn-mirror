@@ -43,14 +43,18 @@
 #include "nsIDOMScriptObjectFactory.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptContext.h"
+#include "nsCOMArray.h"
+#include "nsIStatefulFrame.h"
 
 class nsIScriptGlobalObject;
 class nsIXPConnect;
 class nsIContent;
 class nsIDocument;
 class nsIDocShell;
+class nsINameSpaceManager;
 class nsIScriptSecurityManager;
 class nsIThreadJSContextStack;
+class nsIParserService;
 
 
 class nsContentUtils
@@ -131,13 +135,39 @@ public:
    * closest to the common ancestor, but not an ancestor of |aOther|.
    * The third, if present, is the ancestor node of |aOther| which is
    * closest to the common ancestor, but not an ancestor of |aNode|.
-   *
-   * These elements were |nsIDOMNode*|s before casting to void* and must
-   * be cast back to |nsIDOMNode*| on usage, or bad things will happen.
    */
   static nsresult GetFirstDifferentAncestors(nsIDOMNode *aNode,
                                              nsIDOMNode *aOther,
-                                             nsVoidArray* aDifferentNodes);
+                                             nsCOMArray<nsIDOMNode>& aDifferentNodes);
+
+  /**
+   * Compares the document position of nodes which may have parents.
+   * DO NOT pass in nodes that cannot have a parentNode. In other words:
+   * DO NOT pass in Attr, Document, DocumentFragment, Entity, or Notation!
+   * The results will be completely wrong!
+   *
+   * @param   aNode   The node to which you are comparing.
+   * @param   aOther  The reference node to which aNode is compared.
+   *
+   * @return  The document position flags of the nodes.
+   *
+   * @see nsIDOMNode
+   * @see nsIDOM3Node
+   */
+  static PRUint16 ComparePositionWithAncestors(nsIDOMNode *aNode,
+                                               nsIDOMNode *aOther);
+
+  /**
+   * Reverses the document position flags passed in.
+   *
+   * @param   aDocumentPosition   The document position flags to be reversed.
+   *
+   * @return  The reversed document position flags.
+   *
+   * @see nsIDOMNode
+   * @see nsIDOM3Node
+   */
+  static PRUint16 ReverseDocumentPosition(PRUint16 aDocumentPosition);
 
   // These are copied from nsJSUtils.h
 
@@ -168,6 +198,9 @@ public:
 
   static const nsDependentSubstring TrimCharsInSet(const char* aSet,
                                                    const nsAString& aValue);
+
+  static const nsDependentSubstring TrimWhitespace(const nsAString& aStr,
+                                                   PRBool aTrimTrailing = PR_TRUE);
 
   static void Shutdown();
   
@@ -204,7 +237,22 @@ public:
   // element.
   static PRBool InProlog(nsIDOMNode *aNode);
 
+  static nsIParserService* GetParserServiceWeakRef();
+  
+  static nsINameSpaceManager* GetNSManagerWeakRef()
+  {
+      return sNameSpaceManager;
+  };
+
+  static nsresult GenerateStateKey(nsIContent* aContent,
+                                   nsIStatefulFrame::SpecialStateID aID,
+                                   nsACString& aKey);
+
 private:
+  static nsresult GetDocumentAndPrincipal(nsIDOMNode* aNode,
+                                          nsIDocument** aDocument,
+                                          nsIPrincipal** aPrincipal);
+
   static nsresult doReparentContentWrapper(nsIContent *aChild,
                                            nsIDocument *aNewDocument,
                                            nsIDocument *aOldDocument,
@@ -219,6 +267,10 @@ private:
   static nsIScriptSecurityManager *sSecurityManager;
 
   static nsIThreadJSContextStack *sThreadJSContextStack;
+
+  static nsIParserService *sParserService;
+
+  static nsINameSpaceManager *sNameSpaceManager;
 };
 
 

@@ -109,7 +109,6 @@ public:
 
     // nsSimpleArrayEnumerator methods
     nsCOMArrayEnumerator() : mIndex(0) {
-        NS_INIT_ISUPPORTS();
     }
     virtual ~nsCOMArrayEnumerator(void);
 
@@ -132,8 +131,8 @@ NS_IMPL_ISUPPORTS1(nsCOMArrayEnumerator, nsISimpleEnumerator)
 nsCOMArrayEnumerator::~nsCOMArrayEnumerator()
 {
     // only release the entries that we haven't visited yet
-    while (mIndex < mArraySize) {
-        NS_IF_RELEASE(mValueArray[mIndex++]);
+    for (; mIndex < mArraySize; ++mIndex) {
+        NS_IF_RELEASE(mValueArray[mIndex]);
     }
 }
 

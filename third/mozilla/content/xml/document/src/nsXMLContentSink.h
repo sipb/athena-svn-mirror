@@ -43,13 +43,11 @@
 #include "nsIViewManager.h"
 #include "nsIScrollableView.h"
 #include "nsWeakReference.h"
-#include "nsITransformMediator.h"
 #include "nsIUnicharInputStream.h"
 #include "nsIStreamLoader.h"
 #include "nsISupportsArray.h"
 #include "nsINodeInfo.h"
 #include "nsIDOMHTMLTextAreaElement.h"
-class nsICSSStyleSheet;
 #include "nsICSSLoaderObserver.h"
 #include "nsIHTMLContent.h"
 #include "nsIDOMHTMLScriptElement.h"
@@ -58,18 +56,17 @@ class nsICSSStyleSheet;
 #include "nsSupportsArray.h"
 #include "nsIExpatSink.h"
 #include "nsIDocumentTransformer.h"
+#include "nsIDocShell.h"
 
+class nsICSSStyleSheet;
 class nsIDocument;
 class nsIURI;
-class nsIWebShell;
 class nsIContent;
 class nsAutoVoidArray;
-class nsIXMLDocument;
 class nsIUnicharInputStream;
 class nsIParser;
 class nsINameSpace;
 class nsICSSLoader;
-class nsINameSpaceManager;
 class nsIElementFactory;
 
 typedef enum {
@@ -93,7 +90,7 @@ public:
 
   nsresult Init(nsIDocument* aDoc,
                 nsIURI* aURL,
-                nsIWebShell* aContainer,
+                nsISupports* aContainer,
                 nsIChannel* aChannel);
 
   // nsISupports
@@ -121,20 +118,19 @@ protected:
   void StartLayout();
 
   nsresult PushNameSpacesFrom(const PRUnichar** aAttributes);
-  nsresult AddAttributes(const PRUnichar** aNode, nsIContent* aContent,PRBool aIsHTML);
+  nsresult AddAttributes(const PRUnichar** aNode, nsIContent* aContent);
   nsresult AddText(const PRUnichar* aString, PRInt32 aLength);
-  nsresult ProcessStartSCRIPTTag(PRUint32 aLineNo);
-  nsresult ProcessEndSCRIPTTag();
+  nsresult ProcessEndSCRIPTTag(nsIContent* aContent);
 
   virtual PRBool OnOpenContainer(const PRUnichar **aAtts, 
                                  PRUint32 aAttsCount, 
                                  PRInt32 aNameSpaceID, 
                                  nsIAtom* aTagName) { return PR_TRUE; }
-  virtual nsresult CreateElement(const PRUnichar** aAtts, 
-                                 PRUint32 aAttsCount, 
-                                 PRInt32 aNameSpaceID, 
-                                 nsINodeInfo* aNodeInfo, 
-                                 nsIContent** aResult);
+  virtual nsresult CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
+                                 nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
+                                 nsIContent** aResult, PRBool* aAppendContent);
+
+  virtual nsresult CloseElement(nsIContent* aContent, PRBool* aAppendContent);
 
   virtual nsresult FlushText(PRBool aCreateTextNode=PR_TRUE,
                              PRBool* aDidFlush=nsnull);
@@ -151,13 +147,12 @@ protected:
   nsIContent* PopContent();
 
 
-  nsresult ProcessBASETag();
-  nsresult ProcessMETATag();
-  nsresult ProcessLINKTag();
+  nsresult ProcessBASETag(nsIContent* aContent);
+  nsresult ProcessMETATag(nsIContent* aContent);
   nsresult ProcessHeaderData(nsIAtom* aHeader, const nsAString& aValue,
-                             nsIHTMLContent* aContent);
+                             nsIContent* aContent);
   nsresult ProcessHTTPHeaders(nsIChannel* aChannel);
-  nsresult ProcessLink(nsIHTMLContent* aElement, const nsAString& aLinkData);
+  nsresult ProcessLink(nsIContent* aElement, const nsAString& aLinkData);
 
   nsresult RefreshIfEnabled(nsIViewManager* vm);
   
@@ -169,22 +164,18 @@ protected:
                               const nsString& aMedia);
 
   nsresult LoadXSLStyleSheet(nsIURI* aUrl);
-  nsresult SetupTransformMediator();
 
   static void
   GetElementFactory(PRInt32 aNameSpaceID, nsIElementFactory** aResult);
 
-  void ScrollToRef();
+  void ScrollToRef(PRBool aReallyScroll);
   
   nsresult MaybePrettyPrint();
   
-  static nsINameSpaceManager* gNameSpaceManager;
-  static PRUint32 gRefCnt;
-
   nsIDocument*     mDocument;
   nsIURI*          mDocumentURL;
   nsIURI*          mDocumentBaseURL; // can be set via HTTP headers
-  nsIWebShell*     mWebShell;
+  nsCOMPtr<nsIDocShell> mDocShell;
   nsIParser*       mParser;
   nsIContent*      mDocElement;
   nsAutoVoidArray* mNameSpaceStack;
@@ -197,7 +188,6 @@ protected:
   nsString mRef; // ScrollTo #ref
   nsString mTitleText; 
   
-  PRInt32 mStyleSheetCount;
   PRInt32 mTextLength;
   PRInt32 mTextSize;
   PRUint32 mScriptLineNo;
@@ -208,13 +198,11 @@ protected:
   PRPackedBool mPrettyPrintXML;
   PRPackedBool mPrettyPrintHasSpecialRoot;
   PRPackedBool mPrettyPrintHasFactoredElements;
+  PRPackedBool mHasProcessedBase;
 
   nsCOMPtr<nsISupportsArray>          mContentStack;
   nsCOMPtr<nsINodeInfoManager>        mNodeInfoManager;
-  nsCOMPtr<nsITransformMediator>      mXSLTransformMediator;
-  nsCOMPtr<nsIHTMLContent>            mBaseElement;
-  nsCOMPtr<nsIHTMLContent>            mMetaElement;
-  nsCOMPtr<nsIHTMLContent>            mLinkElement;
+  nsCOMPtr<nsIDocumentTransformer>    mXSLTProcessor;
 };
 
 #endif // nsXMLContentSink_h__

@@ -68,10 +68,12 @@ struct RedirEntry {
 static RedirEntry kRedirMap[] = {
     { "credits", "http://www.mozilla.org/credits/", PR_TRUE },
     { "mozilla", "chrome://global/content/mozilla.xhtml", PR_TRUE },
-    { "plugins", "chrome://communicator/content/plugins.html", PR_TRUE },
-    { "config", "chrome://global/content/config.xul", PR_FALSE }
+    { "plugins", "chrome://communicator/content/plugins.html", PR_FALSE },
+    { "config", "chrome://global/content/config.xul", PR_FALSE },
+    { "logo", "chrome://global/content/logo.gif", PR_TRUE },
+    { "buildconfig", "chrome://global/content/buildconfig.html", PR_TRUE },
 };
-static const int kRedirTotal = 4; // sizeof(kRedirMap)/sizeof(*kRedirMap)
+static const int kRedirTotal = sizeof(kRedirMap)/sizeof(*kRedirMap);
 
 NS_IMETHODIMP
 nsAboutRedirector::NewChannel(nsIURI *aURI, nsIChannel **result)

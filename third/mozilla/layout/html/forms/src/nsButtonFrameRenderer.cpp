@@ -41,6 +41,7 @@
 #include "nsIView.h"
 #include "nsIViewManager.h"
 #include "nsHTMLAtoms.h"
+#include "nsCSSPseudoElements.h"
 #include "nsINameSpaceManager.h"
 
 #define ACTIVE   "active"
@@ -143,8 +144,7 @@ nsButtonFrameRenderer::PaintOutlineAndFocusBorders(nsIPresContext* aPresContext,
 
     GetButtonOuterFocusRect(aRect, rect);
 
-    const nsStyleBorder* border;
-    ::GetStyleData(NS_STATIC_CAST(nsIStyleContext*,mOuterFocusStyle), &border);
+    const nsStyleBorder* border = mOuterFocusStyle->GetStyleBorder();
     nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, mFrame,
                                 aDirtyRect, rect, *border, mOuterFocusStyle, 0);
   }
@@ -154,8 +154,7 @@ nsButtonFrameRenderer::PaintOutlineAndFocusBorders(nsIPresContext* aPresContext,
 
     GetButtonInnerFocusRect(aRect, rect);
 
-    const nsStyleBorder* border;
-    ::GetStyleData(NS_STATIC_CAST(nsIStyleContext*,mInnerFocusStyle), &border);
+    const nsStyleBorder* border = mInnerFocusStyle->GetStyleBorder();
     nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, mFrame,
                                 aDirtyRect, rect, *border, mInnerFocusStyle, 0);
   }
@@ -173,17 +172,14 @@ nsButtonFrameRenderer::PaintBorderAndBackground(nsIPresContext* aPresContext,
   nsRect buttonRect;
   GetButtonRect(aRect, buttonRect);
 
-  nsCOMPtr<nsIStyleContext> context;
-  mFrame->GetStyleContext(getter_AddRefs(context));
+  nsStyleContext* context = mFrame->GetStyleContext();
 
-  const nsStyleBorder* border =
-    (const nsStyleBorder*)context->GetStyleData(eStyleStruct_Border);
-  const nsStylePadding* padding =
-    (const nsStylePadding*)context->GetStyleData(eStyleStruct_Padding);
+  const nsStyleBorder* border = context->GetStyleBorder();
+  const nsStylePadding* padding = context->GetStylePadding();
 
   nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, mFrame,
                                   aDirtyRect, buttonRect, *border, *padding,
-                                  0, 0);
+                                  PR_FALSE);
   nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, mFrame,
                               aDirtyRect, buttonRect, *border, context, 0);
 }
@@ -246,8 +242,7 @@ nsButtonFrameRenderer::GetButtonOuterFocusBorderAndPadding()
 nsMargin
 nsButtonFrameRenderer::GetButtonBorderAndPadding()
 {
-  nsCOMPtr<nsIStyleContext> context;
-  mFrame->GetStyleContext(getter_AddRefs(context));
+  nsStyleContext* context = mFrame->GetStyleContext();
 
   nsMargin innerFocusBorderAndPadding(0,0,0,0);
   nsStyleBorderPadding  bPad;
@@ -268,7 +263,7 @@ nsButtonFrameRenderer::GetButtonInnerFocusMargin()
 
   if (mInnerFocusStyle) {
     // get the outer focus border and padding
-    const nsStyleMargin* margin = (const nsStyleMargin*)mInnerFocusStyle ->GetStyleData(eStyleStruct_Margin);
+    const nsStyleMargin* margin = mInnerFocusStyle->GetStyleMargin();
     margin->GetMargin(innerFocusMargin);
   }
 
@@ -323,52 +318,38 @@ nsButtonFrameRenderer::ReResolveStyles(nsIPresContext* aPresContext)
   // get all the styles
   nsCOMPtr<nsIContent> content;
   mFrame->GetContent(getter_AddRefs(content));
-  nsCOMPtr<nsIStyleContext> context;
-  mFrame->GetStyleContext(getter_AddRefs(context));
+  nsStyleContext* context = mFrame->GetStyleContext();
 
 
   // style for the inner such as a dotted line (Windows)
-  aPresContext->ProbePseudoStyleContextFor(content, nsHTMLAtoms::mozFocusInnerPseudo, context,
-                                          getter_AddRefs(mInnerFocusStyle));
+  mInnerFocusStyle = aPresContext->ProbePseudoStyleContextFor(content,
+                                                              nsCSSPseudoElements::mozFocusInner,
+                                                              context);
 
   // style for outer focus like a ridged border (MAC).
-  aPresContext->ProbePseudoStyleContextFor(content, nsHTMLAtoms::mozFocusOuterPseudo, context,
-                                          getter_AddRefs(mOuterFocusStyle));
+  mOuterFocusStyle = aPresContext->ProbePseudoStyleContextFor(content,
+                                                              nsCSSPseudoElements::mozFocusOuter,
+                                                              context);
 
 }
 
-nsresult 
-nsButtonFrameRenderer::GetStyleContext(PRInt32 aIndex, nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsButtonFrameRenderer::GetStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aStyleContext, "null OUT parameter pointer");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
-  *aStyleContext = nsnull;
   switch (aIndex) {
-
   case NS_BUTTON_RENDERER_FOCUS_INNER_CONTEXT_INDEX:
-    *aStyleContext = mInnerFocusStyle;
-    NS_IF_ADDREF(*aStyleContext);
-    break;
+    return mInnerFocusStyle;
   case NS_BUTTON_RENDERER_FOCUS_OUTER_CONTEXT_INDEX:
-    *aStyleContext = mOuterFocusStyle;
-    NS_IF_ADDREF(*aStyleContext);
-    break;
+    return mOuterFocusStyle;
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
-nsresult 
-nsButtonFrameRenderer::SetStyleContext(PRInt32 aIndex, nsIStyleContext* aStyleContext)
+void 
+nsButtonFrameRenderer::SetStyleContext(PRInt32 aIndex, nsStyleContext* aStyleContext)
 {
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
   switch (aIndex) {
- 
   case NS_BUTTON_RENDERER_FOCUS_INNER_CONTEXT_INDEX:
     mInnerFocusStyle = aStyleContext;
     break;
@@ -376,5 +357,4 @@ nsButtonFrameRenderer::SetStyleContext(PRInt32 aIndex, nsIStyleContext* aStyleCo
     mOuterFocusStyle = aStyleContext;
     break;
   }
-  return NS_OK;
 }

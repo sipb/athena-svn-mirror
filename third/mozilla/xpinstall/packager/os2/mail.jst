@@ -6,6 +6,7 @@ function upgradeCleanup()
   deleteThisFile("Components", "signed.dll");
   deleteThisFile("Components", "smimestb.dll");
   deleteThisFile("Components", "nsMapiRegistry.dll");
+  deleteThisFile("Components", "absyncsv.dll");
 }
 
 // main
@@ -46,6 +47,12 @@ if(verifyDiskSpace(fProgram, srDest))
     registerChrome(CONTENT | DELAYED_CHROME,
                    getFolder("Chrome","messenger.jar"),
                    "content/messenger-smime/");
+    registerChrome(CONTENT | DELAYED_CHROME,
+                   getFolder("Chrome","messenger.jar"),
+                   "content/messenger-mdn/");
+    registerChrome(CONTENT | DELAYED_CHROME,
+                   getFolder("Chrome","messenger.jar"),
+                   "content/messenger-views/");
 
     // check return value
     err = getLastError();

@@ -44,7 +44,7 @@
 #include "nsMacLocale.h"
 #include "nsLocaleCID.h"
 #include "prprf.h"
-#include <script.h>
+#include <Script.h>
 
 NS_DEFINE_IID(kMacLocaleCID, NS_MACLOCALE_CID);
 
@@ -57,7 +57,7 @@ struct iso_lang_map
 };
 typedef struct iso_lang_map iso_lang_map;
 
-iso_lang_map lang_list[] = {
+const iso_lang_map lang_list[] = {
 	{ "sq", langAlbanian, smRoman },
 	{ "am", langAmharic, smEthiopic	},
 	{ "ar", langArabic, smArabic },
@@ -166,7 +166,7 @@ struct iso_country_map
 
 typedef struct iso_country_map iso_country_map;
 
-iso_country_map country_list[] = {
+const iso_country_map country_list[] = {
 	{ "US", verUS},
 	{ "EG", verArabic},
 	{ "DZ", verArabic},
@@ -222,7 +222,6 @@ NS_IMPL_ISUPPORTS1(nsMacLocale,nsIMacLocale)
 
 nsMacLocale::nsMacLocale(void)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMacLocale::~nsMacLocale(void)

@@ -42,7 +42,6 @@ nsArrayEnumerator::nsArrayEnumerator(nsISupportsArray* aValueArray)
     : mValueArray(aValueArray),
       mIndex(0)
 {
-    NS_INIT_ISUPPORTS();
     NS_IF_ADDREF(mValueArray);
 }
 
@@ -111,7 +110,6 @@ NS_NewArrayEnumerator(nsISimpleEnumerator* *result,
 nsSingletonEnumerator::nsSingletonEnumerator(nsISupports* aValue)
     : mValue(aValue)
 {
-    NS_INIT_ISUPPORTS();
     NS_IF_ADDREF(mValue);
     mConsumed = (mValue ? PR_FALSE : PR_TRUE);
 }
@@ -157,94 +155,6 @@ NS_NewSingletonEnumerator(nsISimpleEnumerator* *result,
                           nsISupports* singleton)
 {
     nsSingletonEnumerator* enumer = new nsSingletonEnumerator(singleton);
-    if (enumer == nsnull)
-        return NS_ERROR_OUT_OF_MEMORY;
-    *result = enumer; 
-    NS_ADDREF(*result);
-    return NS_OK;
-}
-
-////////////////////////////////////////////////////////////////////////
-
-
-nsAdapterEnumerator::nsAdapterEnumerator(nsIEnumerator* aEnum)
-    : mEnum(aEnum), mCurrent(0), mStarted(PR_FALSE)
-{
-    NS_INIT_ISUPPORTS();
-    NS_ADDREF(mEnum);
-}
-
-
-nsAdapterEnumerator::~nsAdapterEnumerator()
-{
-    NS_RELEASE(mEnum);
-    NS_IF_RELEASE(mCurrent);
-}
-
-
-NS_IMPL_ISUPPORTS1(nsAdapterEnumerator, nsISimpleEnumerator)
-
-NS_IMETHODIMP
-nsAdapterEnumerator::HasMoreElements(PRBool* aResult)
-{
-    nsresult rv;
-
-    if (mCurrent) {
-        *aResult = PR_TRUE;
-        return NS_OK;
-    }
-
-    if (! mStarted) {
-        mStarted = PR_TRUE;
-        rv = mEnum->First();
-        if (rv == NS_OK) {
-            mEnum->CurrentItem(&mCurrent);
-            *aResult = PR_TRUE;
-        }
-        else {
-            *aResult = PR_FALSE;
-        }
-    }
-    else {
-        *aResult = PR_FALSE;
-
-        rv = mEnum->IsDone();
-        if (rv != NS_OK) {
-            // We're not done. Advance to the next one.
-            rv = mEnum->Next();
-            if (rv == NS_OK) {
-                mEnum->CurrentItem(&mCurrent);
-                *aResult = PR_TRUE;
-            }
-        }
-    }
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsAdapterEnumerator::GetNext(nsISupports** aResult)
-{
-    nsresult rv;
-
-    PRBool hasMore;
-    rv = HasMoreElements(&hasMore);
-    if (NS_FAILED(rv)) return rv;
-
-    if (! hasMore)
-        return NS_ERROR_UNEXPECTED;
-
-    // No need to addref, we "transfer" the ownership to the caller.
-    *aResult = mCurrent;
-    mCurrent = 0;
-    return NS_OK;
-}
-
-extern "C" NS_COM nsresult
-NS_NewAdapterEnumerator(nsISimpleEnumerator* *result,
-                        nsIEnumerator* enumerator)
-{
-    nsAdapterEnumerator* enumer = new nsAdapterEnumerator(enumerator);
     if (enumer == nsnull)
         return NS_ERROR_OUT_OF_MEMORY;
     *result = enumer; 

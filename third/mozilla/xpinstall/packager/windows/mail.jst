@@ -5,13 +5,11 @@ function IsWinnt()
    */
   var winreg = getWinRegistry();
   var subkey;
-  var valname;
   var szCurrentVersion;
 
   winreg.setRootKey(winreg.HKEY_LOCAL_MACHINE);
   subkey              = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
-  valname             = "CurrentVersion";
-  szCurrentVersion    = winreg.getValueString(subkey, valname);
+  szCurrentVersion    = winreg.getValueString(subkey, "CurrentVersion");
   logComment("szCurrentVersion: " + szCurrentVersion);
   if((szCurrentVersion == "") || (szCurrentVersion == null))
   {
@@ -26,37 +24,26 @@ function IsWinnt()
 function registerProgramFolderKey(winreg, fFolderPath)
 {
   var subkey;
-  var valname;
-  var value;
   var err;
 
   /* set the Program Folder Path in the Mozilla key in the Windows Registry */
-  subkey  = "SOFTWARE\\$CompanyName$";
-  winreg.createKey(subkey,"");
+  winreg.createKey("SOFTWARE\\$CompanyName$", "");
 
-  valname = "CurrentVersion";
   subkey  = "SOFTWARE\\$CompanyName$\\$ProductName$";
   winreg.createKey(subkey,"");
-
-  valname = "CurrentVersion";
-  value   = "$UserAgent$";
-  err     = winreg.setValueString(subkey, valname, value);
+  err     = winreg.setValueString(subkey, "CurrentVersion", "$UserAgent$");
 
   subkey  = "SOFTWARE\\$CompanyName$\\$ProductName$\\$UserAgent$";
   winreg.createKey(subkey,"");
 
   subkey  = "SOFTWARE\\$CompanyName$\\$ProductName$\\$UserAgent$\\Main";
   winreg.createKey(subkey,"");
-
-  valname = "Program Folder Path";
-  value   = fFolderPath;
-  err     = winreg.setValueString(subkey, valname, value);
+  err     = winreg.setValueString(subkey, "Program Folder Path", fFolderPath);
 }
 
 function createShortcuts() 
 {
   var subkey;
-  var valname;
   var szStartMenuPrograms;
   var szStartMenu;
   var szFolderDesktop;
@@ -84,6 +71,7 @@ function createShortcuts()
   var filePalmSyncInstallExe;
   var scDescPalmSyncInstall;
   var scDescPalmSyncUninstall;
+  var folderPalmSyncName;
 
   winreg                    = getWinRegistry();
   fWindows                  = getFolder("Windows");
@@ -92,9 +80,13 @@ function createShortcuts()
   filePalmSyncInstallExe    = getFolder("Program", "PalmSyncInstall.exe");
   scDescPalmSyncInstall     = "Address Book Palm Sync Install";
   scDescPalmSyncUninstall   = "Address Book Palm Sync Uninstall";
+  filePalmSyncReadme        = getFolder("Program", "palm.html");
+  scDescPalmSyncReadme      = "Palm Sync User Guide";
+  fileMailIcon              = getFolder("Chrome", "icons/default/messengerWindow.ico");
   scExeDesc                 = "Mail";
   scParam                   = "-mail";
   scFolderName              = "$ProductName$";
+  folderPalmSyncName        = "Palm Tools";
   if(winreg != null) 
   {
     /* This will check to see if the user has restricted access or not.
@@ -116,8 +108,7 @@ function createShortcuts()
     /* determine if the script is running under NT or not */
     winreg.setRootKey(winreg.HKEY_LOCAL_MACHINE);
     subkey              = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
-    valname             = "CurrentVersion";
-    szCurrentVersion    = winreg.getValueString(subkey, valname);
+    szCurrentVersion    = winreg.getValueString(subkey, "CurrentVersion");
     logComment("szCurrentVersion: " + szCurrentVersion);
     if((szCurrentVersion == "") || (szCurrentVersion == null))
     {
@@ -134,33 +125,25 @@ function createShortcuts()
     {
       winreg.setRootKey(winreg.HKEY_CURRENT_USER);
       subkey              = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders";
-      valname             = "Programs";
-      szStartMenuPrograms = winreg.getValueString(subkey, valname);
-      valname             = "Start Menu";
-      szStartMenu         = winreg.getValueString(subkey, valname);
-      valname             = "Desktop";
-      szFolderDesktop     = winreg.getValueString(subkey, valname);
+      szStartMenuPrograms = winreg.getValueString(subkey, "Programs");
+      szStartMenu         = winreg.getValueString(subkey, "Start Menu");
+      szFolderDesktop     = winreg.getValueString(subkey, "Desktop");
     }
     else
     {
       winreg.setRootKey(winreg.HKEY_LOCAL_MACHINE);
       subkey              = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders";
-      valname             = "Common Programs";
-      szStartMenuPrograms = winreg.getValueString(subkey, valname);
-      valname             = "Common Start Menu";
-      szStartMenu         = winreg.getValueString(subkey, valname);
-      valname             = "Common Desktop";
-      szFolderDesktop     = winreg.getValueString(subkey, valname);
+      szStartMenuPrograms = winreg.getValueString(subkey, "Common Programs");
+      szStartMenu         = winreg.getValueString(subkey, "Common Start Menu");
+      szFolderDesktop     = winreg.getValueString(subkey, "Common Desktop");
     }
 
     winreg.setRootKey(winreg.HKEY_CURRENT_USER);
     subkey              = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders";
-    valname             = "SendTo";
-    szFolderSendTo      = winreg.getValueString(subkey, valname);
+    szFolderSendTo      = winreg.getValueString(subkey, "SendTo");
 
     subkey              = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders";
-    valname             = "AppData";
-    szFolderAppData     = winreg.getValueString(subkey, valname);
+    szFolderAppData     = winreg.getValueString(subkey, "AppData");
 
     // locate the Quick Launch folder
     szFolderQuickLaunch     = szFolderAppData + "\\Microsoft\\Internet Explorer\\Quick Launch";
@@ -169,8 +152,7 @@ function createShortcuts()
     if(!folderQuickLaunchExists)
     {
       subkey                  = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GrpConv\\MapGroups";
-      valname                 = "Quick Launch";
-      szFolderQuickLaunch     = winreg.getValueString(subkey, valname);
+      szFolderQuickLaunch     = winreg.getValueString(subkey, "Quick Launch");
       folderQuickLaunchExists = File.isDirectory(fFolderPath);
       if(folderQuickLaunchExists)
         fFolderQuickLaunch = getFolder("file:///", szFolderQuickLaunch);
@@ -178,8 +160,7 @@ function createShortcuts()
     logComment("folderQuickLaunchExists: " + folderQuickLaunchExists);
 
     subkey              = "SOFTWARE\\$CompanyName$\\$ProductName$\\$UserAgent$\\Main";
-    valname             = "Program Folder Path";
-    fFolderPathStr      = winreg.getValueString(subkey, valname);
+    fFolderPathStr      = winreg.getValueString(subkey, "Program Folder Path");
     if((fFolderPathStr == "") || (fFolderPathStr == null))
     {
       fTemp       = szStartMenuPrograms + "\\" + scFolderName;
@@ -209,13 +190,30 @@ function createShortcuts()
       File.dirCreate(fFolderPath);
 
     /* create the shortcuts */
-    File.windowsShortcut(fileExe, fFolderPath, scExeDesc, fProgram, scParam, fileExe, 0);
+    File.windowsShortcut(fileExe, fFolderPath, scExeDesc, fProgram, scParam, fileMailIcon, 0);
 
     // only create these two shortcuts if the files exist
     if(File.exists(filePalmSyncInstallExe))
     {
-      File.windowsShortcut(filePalmSyncInstallExe, fFolderPath, scDescPalmSyncInstall, fProgram, "", filePalmSyncInstallExe, 0);
-      File.windowsShortcut(filePalmSyncInstallExe, fFolderPath, scDescPalmSyncUninstall, fProgram, "/u", filePalmSyncInstallExe, 0);
+      /* build the path to the sub folder to Palm Sync files */
+      var fStartMenuPalmSync = getFolder("file:///", fFolderPath + "/" + folderPalmSyncName);
+      if(!File.exists(fStartMenuPalmSync))
+        File.dirCreate(fStartMenuPalmSync);
+
+      /* clean up the shortcuts in the old place */
+      deleteThisFile("file:///", fFolderPath + "/" + scDescPalmSyncInstall);
+      deleteThisFile("file:///", fFolderPath + "/" + scDescPalmSyncUninstall);
+
+      /* create the shortcuts in the new sub folder */
+      File.windowsShortcut(filePalmSyncInstallExe, fStartMenuPalmSync, scDescPalmSyncInstall, fProgram, "", filePalmSyncInstallExe, 0);
+      File.windowsShortcut(filePalmSyncInstallExe, fStartMenuPalmSync, scDescPalmSyncUninstall, fProgram, "/u", filePalmSyncInstallExe, 1);
+
+      // only create the palm sync readme shortcut if the file exist
+      if(File.exists(filePalmSyncReadme))
+      {
+        /* create the shortcuts in the new sub folder */
+        File.windowsShortcut(filePalmSyncReadme, fStartMenuPalmSync, scDescPalmSyncReadme, fProgram, "", filePalmSyncReadme, 0);
+      }
     }
 
     //
@@ -237,7 +235,7 @@ function createShortcuts()
     // Register as a windows XP mail application
     if( IsWinnt() )
     {
-      subkey = "Software\\Clients\\Mail\\$ProductNameNoVersion$";
+      subkey = "Software\\Clients\\Mail\\$ProductNameInternal$";
       winreg.setRootKey(winreg.HKEY_LOCAL_MACHINE);
 
       winreg.createKey(subkey,"");
@@ -247,34 +245,26 @@ function createShortcuts()
       winreg.createKey(subkey + "\\shell\\open\\command", "");
       winreg.createKey(subkey + "\\InstallInfo","");
 
-      valname = "";
-      data = "$ProductName$ Mail";
-      winreg.setValueString(subkey, valname, data);
+      winreg.setValueString(subkey, "", "$ProductName$ Mail");
 
-      valname = "";
       // path does not need to be quoted per MS doc
       data = fProgram + "chrome\\icons\\default\\messengerWindow.ico,0";
-      winreg.setValueString(subkey + "\\DefaultIcon", valname, data);
+      winreg.setValueString(subkey + "\\DefaultIcon", "", data);
 
-      valname = "";
       data = "\"" + fProgram + "$MainExeFile$\" -mail";
-      winreg.setValueString(subkey + "\\shell\\open\\command", valname, data);
+      winreg.setValueString(subkey + "\\shell\\open\\command", "", data);
 
-      valname = "HideIconsCommand";
-      data = "\"" + fProgram + "uninstall\\MozillaUninstall.exe\" /ms /ua \"$UserAgent$\" /hs mail";
-      winreg.setValueString(subkey + "\\InstallInfo", valname, data);
+      data = "\"" + fProgram + "uninstall\\$UninstallFile$\" /ua \"$UserAgent$\" /hs mail";
+      winreg.setValueString(subkey + "\\InstallInfo", "HideIconsCommand", data);
 
-      valname = "IconsVisible";
       // set this value to 0 because we're not creating the mail shortcuts yet.
-      winreg.setValueNumber(subkey + "\\InstallInfo", valname, 0);
+      winreg.setValueNumber(subkey + "\\InstallInfo", "IconsVisible", 0);
 
-      valname = "ReinstallCommand";
       data = "\"" + fProgram + "$MainExeFile$\" -silent -nosplash -setDefaultMail";
-      winreg.setValueString(subkey + "\\InstallInfo", valname, data);
+      winreg.setValueString(subkey + "\\InstallInfo", "ReinstallCommand", data);
 
-      valname = "ShowIconsCommand";
-      data = "\"" + fProgram + "uninstall\\MozillaUninstall.exe\" /ms /ua \"$UserAgent$\" /ss mail";
-      winreg.setValueString(subkey + "\\InstallInfo", valname, data);
+      data = "\"" + fProgram + "uninstall\\$UninstallFile$\" /ua \"$UserAgent$\" /ss mail";
+      winreg.setValueString(subkey + "\\InstallInfo", "ShowIconsCommand", data);
     }
   }
   else
@@ -296,7 +286,7 @@ function updateMapi()
   var winsysMapi32File;
   var mapiProxyFile;
   var subkey;
-  var mailDefaultDescription = "$ProductName$ $UserAgentShort$ Mail";
+  var mailDefaultDescription = "$ProductName$ Mail";
 
   winreg = getWinRegistry();
   if(winreg != null) 
@@ -367,6 +357,7 @@ function upgradeCleanup()
   deleteThisFile("Components", "signed.dll");
   deleteThisFile("Components", "smimestb.dll");
   deleteThisFile("Components", "nsMapiRegistry.dll");
+  deleteThisFile("Components", "absyncsv.dll");
 }
 
 function updateWinIni()
@@ -426,6 +417,12 @@ if(verifyDiskSpace(fProgram, srDest))
                    "content/messenger-smime/");
     registerChrome(CONTENT | DELAYED_CHROME,
                    getFolder("Chrome","messenger.jar"),
+                   "content/messenger-mdn/");
+    registerChrome(CONTENT | DELAYED_CHROME,
+                   getFolder("Chrome","messenger.jar"),
+                   "content/messenger-views/");
+    registerChrome(CONTENT | DELAYED_CHROME,
+                   getFolder("Chrome","messenger.jar"),
                    "content/messenger-mapi/");
 
     // log comments for uninstalling the registry keys created by mail for setting
@@ -454,12 +451,16 @@ if(verifyDiskSpace(fProgram, srDest))
       err = performInstall(); 
       logComment("performInstall() returned: " + err);
 
-      if(err == SUCCESS)
-      {
-        // Log the uninstall command to run PalmSyncInstall.exe to uninstall itself.
-        // This needs to be logged after all the files have been installed.
-        logComment("Uninstall Command: \"" + fProgram + "PalmSyncInstall.exe\" /us");
-      }
+      // Commenting this out for now until bug 182423 is fixed. This will at least prevent
+      // people who have not run PalmSyncInstall.exe to run into bug 182423.  However,
+      // if they run the PalmSync uninstall by hand via the Start menu, then they will
+      // still run into the bug.
+      //if(err == SUCCESS)
+      //{
+      //  // Log the uninstall command to run PalmSyncInstall.exe to uninstall itself.
+      //  // This needs to be logged after all the files have been installed.
+      //  logComment("Uninstall Command: \"" + fProgram + "PalmSyncInstall.exe\" /us");
+      //}
     }
     else
       cancelInstall(err);

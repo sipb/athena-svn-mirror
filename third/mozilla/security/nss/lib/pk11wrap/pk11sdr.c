@@ -41,7 +41,6 @@
 #include "pkcs11.h"
 #include "pk11func.h"
 #include "pk11sdr.h"
-#include "pk11init.h"
 
 /*
  * Data structure and template for encoding the result of an SDR operation
@@ -282,6 +281,9 @@ PK11SDR_Decrypt(SECItem *data, SECItem *result, void *cx)
   /* Find the slot and key for the given keyid */
   slot = PK11_GetInternalKeySlot();
   if (!slot) { rv = SECFailure; goto loser; }
+
+  rv = PK11_Authenticate(slot, PR_TRUE, cx);
+  if (rv != SECSuccess) goto loser;
 
   /* Use triple-DES (Should look up the algorithm) */
   type = CKM_DES3_CBC;

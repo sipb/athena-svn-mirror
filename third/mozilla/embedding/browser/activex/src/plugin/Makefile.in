@@ -33,6 +33,8 @@ MODULE          = npmozax
 LIBRARY_NAME    = npmozax
 RESFILE         = MozActiveX.res
 DEFFILE         = npmozax.def
+GRE_MODULE	= 1
+
 REQUIRES = \
     xpcom \
     java \
@@ -44,7 +46,19 @@ REQUIRES = \
     gfx \
     js \
     pref \
+    xpconnect \
+    docshell \
+    webshell \
+    necko \
+    windowwatcher \
     $(NULL)
+
+ifdef XPC_IDISPATCH_SUPPORT
+REQUIRES += \
+	caps \
+	embedstring \
+	$(NULL)
+endif
 XPIFILE         = mozactivex.xpi
 
 FORCE_SHARED_LIB = 1
@@ -90,24 +104,6 @@ MOZ_ACTIVEX_PLUGIN_XPCONNECT = 1
 
 # XPConnect support in (Netscape 6.1+/Mozilla)
 
-############
-# Windows Media Player settings
-
-# IMPORTANT NOTE - WMP is being used as a real world test harness to exercise
-#                  some of the site-side interfaces. Don't enable this option 
-#                  in normal use.
-
-# WMP support needs XPConnect
-ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-# MOZ_ACTIVEX_PLUGIN_WMPSUPPORT = 1
-
-# Path to the WMP SDK
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-WMP_SDK = C:/m/WMSDK/WMPSDK9
-endif
-
-endif
-
 
 ###############################################################################
 
@@ -115,10 +111,6 @@ ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
 XPIDLSRCS = \
     ./nsIMozAxPlugin.idl \
     $(NULL)
-endif
-
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-XPIDLSRCS += nsWMP.idl
 endif
 
 _CONTROL_CPPSRCS = \
@@ -136,7 +128,6 @@ CPPSRCS = \
     StdAfx.cpp             \
     LegacyPlugin.cpp       \
     MozActiveX.cpp         \
-    PrefObserver.cpp       \
     npwin.cpp              \
     $(_CONTROL_CPPSRCS)    \
     $(NULL)
@@ -150,11 +141,11 @@ CPPSRCS += LiveConnect.cpp
 CSRCS += javastubs.c
 endif
 
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-CPPSRCS += XPCMediaPlayer.cpp
+ifdef XPC_IDISPATCH_SUPPORT
+CPPSRCS += PrefObserver.cpp
 endif
 
-LOCAL_INCLUDES = -I$(MOZCTLSRC)
+LOCAL_INCLUDES = -I$(srcdir) -I$(MOZCTLSRC)
 
 ifdef MOZ_ACTIVEX_PLUGIN_LIVECONNECT
 LOCAL_INCLUDES += -I./_java
@@ -162,11 +153,6 @@ endif
 
 ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
 LOCAL_INCLUDES += -I$(XPIDL_GEN_DIR)
-endif
-
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-LOCAL_INCLUDES += -I$(WMP_SDK)/include
-DEFINES += -DMOZ_ACTIVEX_PLUGIN_WMPSUPPORT
 endif
 
 OS_LIBS += \
@@ -191,25 +177,35 @@ endif
 EXTRA_DSO_LDOPTS = \
     $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
+    $(DIST)/lib/$(LIB_PREFIX)embedstring_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX) \
     $(MOZ_COMPONENT_LIBS) \
     $(NSPR_LIBS) \
     $(NULL)
 
+ifdef XPC_IDISPATCH_SUPPORT
+EXTRA_DSO_LDOPTS += \
+	$(MOZ_JS_LIBS) \
+	$(NULL)
+endif
+
 LIBS = \
     $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
+    $(DIST)/lib/$(LIB_PREFIX)embedstring_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX) \
     $(NSPR_LIBS) \
     $(NULL)
 endif
+
+SRCS_IN_OBJDIR	= 1
 
 include $(topsrcdir)/config/rules.mk
 
 CXXFLAGS += -GX
 
 copy-sources: $(addprefix $(MOZCTLSRC)/,$(_CONTROL_CPPSRCS))
-	$(INSTALL) $^ $(srcdir)
+	$(INSTALL) $^ .
 
 export:: copy-sources
 
@@ -224,12 +220,14 @@ install-class: MozAxPlugin.class
 install-typelib: $(XPIDL_GEN_DIR)/nsIMozAxPlugin.xpt
 	$(INSTALL) $< $(DIST)/bin/plugins
 
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-install-wmp-typelib: $(XPIDL_GEN_DIR)/nsWMP.xpt
-	$(INSTALL) $< $(DIST)/bin/plugins
-endif
+install-securitypolicy: nsAxSecurityPolicy.js
+	$(INSTALL) $< $(DIST)/bin/components
 
-libs:: install-plugin
+install-prefs: activex.js
+	$(INSTALL) $< $(DIST)/bin/defaults/pref
+
+ifdef MOZ_USE_ACTIVEX_PLUGIN
+libs:: install-plugin install-prefs
 
 ifdef MOZ_ACTIVEX_PLUGIN_LIVECONNECT
 libs:: install-class
@@ -239,28 +237,26 @@ ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
 libs:: install-typelib
 endif
 
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-libs:: install-wmp-typelib
+ifdef XPC_IDISPATCH_SUPPORT
+libs:: install-securitypolicy
+endif
 endif
 
 ## Note: Ensure you create the redist dir containing the correct runtime dlls
 
 xpi:: install.js $(SHARED_LIBRARY)
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $<
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $(SHARED_LIBRARY)
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $(topsrcdir)/../redist/microsoft/system/msvcrt.dll
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $(topsrcdir)/../redist/microsoft/system/msvcp60.dll
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) $<
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) $(SHARED_LIBRARY)
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) $(topsrcdir)/../redist/microsoft/system/msvcrt.dll
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) $(topsrcdir)/../redist/microsoft/system/msvcp60.dll
 ifdef MOZ_ACTIVEX_PLUGIN_LIVECONNECT
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) MozAxPlugin.class
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) MozAxPlugin.class
 endif
 ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $(XPIDL_GEN_DIR)/nsIMozAxPlugin.xpt
-endif
-ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-	$(ZIP_PROG) -9 -j $(DIST)/bin/$(XPIFILE) $(XPIDL_GEN_DIR)/nsWMP.xpt
+	$(ZIP) -9 -j $(DIST)/bin/$(XPIFILE) $(XPIDL_GEN_DIR)/nsIMozAxPlugin.xpt
 endif
 
-$(SHARED_LIBRARY) : $(DEFFILE) copy-sources
+$(SHARED_LIBRARY) : $(DEFFILE)
 
 $(DEFFILE):
 	-rm -f $@

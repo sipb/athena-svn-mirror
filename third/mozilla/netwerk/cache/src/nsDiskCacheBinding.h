@@ -52,12 +52,14 @@ public:
     nsDiskCacheBinding(nsCacheEntry* entry, nsDiskCacheRecord * record);
     virtual ~nsDiskCacheBinding();
 
+    nsresult EnsureStreamIO();
+    PRBool   IsActive() { return mCacheEntry != nsnull;}
 
 // XXX make friends
 public:
     nsCacheEntry*           mCacheEntry;    // back pointer to parent nsCacheEntry
     nsDiskCacheRecord       mRecord;
-    nsCOMPtr<nsIStreamIO>   mStreamIO;
+    nsDiskCacheStreamIO*    mStreamIO;
     PRBool                  mDoomed;        // record is not stored in cache map
     PRUint8                 mGeneration;    // possibly just reservation
 };
@@ -113,9 +115,11 @@ public:
     nsDiskCacheBinding *    FindBinding(nsDiskCacheRecord * record);
     nsresult                AddBinding(nsDiskCacheBinding * binding);
     void                    RemoveBinding(nsDiskCacheBinding * binding);
+    PRBool                  ActiveBindings();
 
     
 private:
+
     // member variables
     static PLDHashTableOps ops;
     PLDHashTable           table;

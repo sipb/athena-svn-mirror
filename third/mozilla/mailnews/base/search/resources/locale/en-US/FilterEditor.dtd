@@ -15,13 +15,13 @@
 <!ENTITY body.label "body">
 <!ENTITY contains.label "contains">
 <!ENTITY nocontains.label "doesn't contain">
-<!ENTITY moveToFolder.label "Move to folder">
-<!ENTITY changePriority.label "Change the priority to">
+<!ENTITY moveToFolder.label "Move to folder:">
+<!ENTITY changePriority.label "Change the priority to:">
 <!ENTITY delete.label "Delete the message">
 <!ENTITY markRead.label "Mark the message as read">
 <!ENTITY markFlagged.label "Flag the message">
-<!ENTITY label.label "Label the message">
-<!ENTITY ignoreThread.label "Ignore thread">
+<!ENTITY label.label "Label the message:">
+<!ENTITY killThread.label "Ignore thread">
 <!ENTITY watchThread.label "Watch thread">
 <!ENTITY filterName.label "Filter name:">
 <!ENTITY filterName.accesskey "i">
@@ -33,9 +33,9 @@
 <!ENTITY highestPriorityCmd.label "highest">
 
 <!ENTITY conditionDesc.label "For incoming messages that:">
-<!ENTITY filterActionDesc.label "Perform this action:">
+<!ENTITY filterActionDesc.label "Perform these actions:">
 <!ENTITY filterActionDesc.accesskey "P">
 
-<!ENTITY newFolderButton.label "New folder...">
+<!ENTITY newFolderButton.label "New Folder...">
 <!ENTITY newFolderButton.accesskey "N">
 

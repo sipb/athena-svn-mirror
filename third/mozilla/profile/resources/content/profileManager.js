@@ -20,6 +20,7 @@
  *
  * Contributor(s):
  *   Ben Goodger <ben@netscape.com>
+ *   Brant Gurganus <brantgurganus2001@cherokeescouting.org>
  */
 
 //NOTE: This script expects gBrandBundle and gProfileManagerBundle to be
@@ -51,15 +52,16 @@ function CreateProfile( aProfName, aProfDir )
 // rename the selected profile
 function RenameProfile()
 {
-  renameButton = document.getElementById("renbutton");
-  if( renameButton.getAttribute("disabled") == "true" )
-    return;
+  var lString, oldName, newName;
+  var renameButton = document.getElementById("renbutton");
+  if (renameButton.getAttribute("disabled") == "true" )
+    return false;
   var profileList = document.getElementById( "profiles" );
   var selected = profileList.selectedItems[0];
   var profilename = selected.getAttribute("profile_name");
   if( selected.getAttribute("rowMigrate") == "no" ) {
     // migrate if the user wants to
-    var lString = gProfileManagerBundle.getString("migratebeforerename");
+    lString = gProfileManagerBundle.getString("migratebeforerename");
     lString = lString.replace(/\s*<html:br\/>/g,"\n");
     lString = lString.replace(/%brandShortName%/, gBrandBundle.getString("brandShortName"));
     var title = gProfileManagerBundle.getString("migratetitle");
@@ -82,15 +84,15 @@ function RenameProfile()
       return false;
   }
   else {
-    var oldName = selected.getAttribute("rowName");
-    var newName = {value:oldName};
+    oldName = selected.getAttribute("rowName");
+    newName = {value:oldName};
     var dialogTitle = gProfileManagerBundle.getString("renameprofiletitle");
     var msg = gProfileManagerBundle.getString("renameProfilePrompt");
     msg = msg.replace(/%oldProfileName%/gi, oldName);
     while (1) {
       var rv = promptService.prompt(window, dialogTitle, msg, newName, null, {value:0});
       if (rv) {
-        var newName = newName.value;
+        newName = newName.value;
         if (!newName) return false;
         var invalidChars = ["/", "\\", "*", ":"];
         for( var i = 0; i < invalidChars.length; i++ )
@@ -99,7 +101,7 @@ function RenameProfile()
             var aString = gProfileManagerBundle.getString("invalidCharA");
             var bString = gProfileManagerBundle.getString("invalidCharB");
             bString = bString.replace(/\s*<html:br\/>/g,"\n");
-            var lString = aString + invalidChars[i] + bString;
+            lString = aString + invalidChars[i] + bString;
             alert( lString );
             return false;
           }
@@ -113,7 +115,7 @@ function RenameProfile()
           selected.setAttribute( "profile_name", newName );
         }
         catch(e) {
-          var lString = gProfileManagerBundle.getString("profileExists");
+          lString = gProfileManagerBundle.getString("profileExists");
           var profileExistsTitle = gProfileManagerBundle.getString("profileExistsTitle");
           promptService.alert(window, profileExistsTitle, lString);
           continue;
@@ -123,13 +125,14 @@ function RenameProfile()
     }
   }
   // set the button state
-  DoEnabling();  
+  DoEnabling(); 
+  return true; 
 }
 
 
 function ConfirmDelete()
 {
-  deleteButton = document.getElementById("delbutton");
+  var deleteButton = document.getElementById("delbutton");
   if( deleteButton.getAttribute("disabled") == "true" )
     return;
   var profileList = document.getElementById( "profiles" );
@@ -279,10 +282,24 @@ function DoEnabling()
   else {
     if( renbutton.getAttribute( "disabled" ) == "true" )
       renbutton.removeAttribute( "disabled", "true" );
-    if( delbutton.getAttribute( "disabled" ) == "true" )
-      delbutton.removeAttribute( "disabled", "true" );
     if( start.getAttribute( "disabled" ) == "true" )
       start.removeAttribute( "disabled", "true" );
+    
+    var canDelete = true;
+    if (!gStartupMode) {  
+      var selected = profileList.selectedItems[0];
+      var profileName = selected.getAttribute("profile_name");
+      var currentProfile = profile.currentProfile;
+      if (currentProfile && (profileName == currentProfile))
+        canDelete = false;      
+    }
+    if (canDelete) {
+      if ( delbutton.getAttribute( "disabled" ) == "true" )
+        delbutton.removeAttribute( "disabled" );
+    }
+    else
+      delbutton.setAttribute( "disabled", "true" );
+      
   }
 }
 
@@ -312,5 +329,6 @@ function HandleClickEvent( aEvent )
     window.close();
     return true;
   }
+  return false;
 }
 

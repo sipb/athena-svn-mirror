@@ -29,9 +29,15 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= content
 
 EXPORTS		= \
+nsAtomListUtils.h \
+nsBidiUtils.h \
 nsChangeHint.h \
-nsCSSAtomList.h \
-nsCSSAtoms.h \
+nsCSSAnonBoxList.h \
+nsCSSAnonBoxes.h \
+nsCSSPseudoClassList.h \
+nsCSSPseudoClasses.h \
+nsCSSPseudoElementList.h \
+nsCSSPseudoElements.h \
 nsCSSKeywordList.h \
 nsCSSKeywords.h \
 nsCSSPropList.h \
@@ -45,6 +51,7 @@ nsLayoutAtomList.h \
 nsLayoutAtoms.h \
 nsRuleNode.h \
 nsRuleWalker.h \
+nsStyleContext.h \
 nsStyleCoord.h \
 nsStyleStruct.h \
 nsStyleStructList.h \
@@ -57,10 +64,6 @@ $(NULL)
 
 ifdef MOZ_SVG
 EXPORTS += nsSVGAtomList.h nsSVGAtoms.h
-endif
-
-ifdef IBMBIDI
-EXPORTS += nsBidiUtils.h
 endif
 
 include $(topsrcdir)/config/rules.mk

@@ -36,7 +36,6 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsIGenericFactory.h"
 #include "nsICategoryManager.h"
-#include "nsBookmarksService.h"
 #include "nsDirectoryViewer.h"
 #include "rdf.h"
 #include "nsTimeBomb.h"
@@ -50,6 +49,7 @@
 #include "nsRDFCID.h"
 #ifndef MOZ_PHOENIX
 #include "nsAutoComplete.h"
+#include "nsBookmarksService.h"
 #include "nsGlobalHistory.h"
 #include "nsUrlbarHistory.h"
 #include "nsDownloadManager.h"
@@ -69,7 +69,6 @@
 #include "nsCURILoader.h"
 
 // Factory constructors
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsBookmarksService, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsHTTPIndex, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDirectoryViewerFactory)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(LocalSearchDataSource, Init)
@@ -81,6 +80,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsWindowDataSource, Init)
 #ifndef MOZ_PHOENIX
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteItem)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteResults)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsBookmarksService, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUrlbarHistory)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsGlobalHistory, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsDownloadManager, Init)
@@ -96,7 +96,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindowsHooks)
 #endif // Windows
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserStatusFilter)
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsBrowserInstance, Init)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserInstance)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserContentHandler)
 
 
@@ -115,22 +115,11 @@ RegisterProc(nsIComponentManager *aCompMgr,
     // add the MIME types layotu can handle to the handlers category.
     // this allows users of layout's viewers (the docshell for example)
     // to query the types of viewers layout can create.
-    nsXPIDLCString previous;
-    rv = catman->AddCategoryEntry("Gecko-Content-Viewers", "application/http-index-format",
-                                   NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=application/http-index-format",
-                                   PR_TRUE,
-                                   PR_TRUE,
-                                   getter_Copies(previous));
-    if (NS_FAILED(rv)) return rv;
-
-    rv = catman->AddCategoryEntry("Gecko-Content-Viewers", "application/http-index-format; x-view-type=view-source",
-                                  NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=application/http-index-format; x-view-type=view-source",
-                                  PR_TRUE,
-                                  PR_TRUE,
-                                  getter_Copies(previous));
-
-    return rv;
+    return catman->AddCategoryEntry("Gecko-Content-Viewers", "application/http-index-format",
+                                    "@mozilla.org/xpfe/http-index-format-factory-constructor",
+                                    PR_TRUE, PR_TRUE, nsnull);
 }
+
 static NS_METHOD
 UnregisterProc(nsIComponentManager *aCompMgr,
                nsIFile *aPath,
@@ -141,32 +130,23 @@ UnregisterProc(nsIComponentManager *aCompMgr,
     nsCOMPtr<nsICategoryManager> catman = do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
     if (NS_FAILED(rv)) return rv;
 
-    rv = catman->DeleteCategoryEntry("Gecko-Content-Viewers",
-                                     "application/http-index-format", PR_TRUE);
-    if (NS_FAILED(rv)) return rv;
-
-    rv = catman->DeleteCategoryEntry("Gecko-Content-Viewers",
-                                     "application/http-index-format; x-view-type=view-source", PR_TRUE);
-
-    return rv;
+    return catman->DeleteCategoryEntry("Gecko-Content-Viewers",
+                                       "application/http-index-format", PR_TRUE);
 }
 
 static const nsModuleComponentInfo components[] = {
-    { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_SERVICE_CONTRACTID,
-      nsBookmarksServiceConstructor },
-    { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_DATASOURCE_CONTRACTID,
-      nsBookmarksServiceConstructor },
-    { "Directory Viewer", NS_DIRECTORYVIEWERFACTORY_CID,
-      NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=application/http-index-format",
+  { "Directory Viewer", NS_DIRECTORYVIEWERFACTORY_CID,
+      "@mozilla.org/xpfe/http-index-format-factory-constructor",
       nsDirectoryViewerFactoryConstructor, RegisterProc, UnregisterProc  },
-    { "Directory Viewer", NS_DIRECTORYVIEWERFACTORY_CID,
-      NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=application/http-index-format; x-view-type=view-source",
-      nsDirectoryViewerFactoryConstructor }, // Let the standard type do the registration
     { "Directory Viewer", NS_HTTPINDEX_SERVICE_CID, NS_HTTPINDEX_SERVICE_CONTRACTID,
       nsHTTPIndexConstructor },
     { "Directory Viewer", NS_HTTPINDEX_SERVICE_CID, NS_HTTPINDEX_DATASOURCE_CONTRACTID,
       nsHTTPIndexConstructor },
 #ifndef MOZ_PHOENIX
+    { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_SERVICE_CONTRACTID,
+      nsBookmarksServiceConstructor },
+    { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_DATASOURCE_CONTRACTID,
+      nsBookmarksServiceConstructor },
     { "Download Manager", NS_DOWNLOADMANAGER_CID, NS_DOWNLOADMANAGER_CONTRACTID,
       nsDownloadManagerConstructor },
     { "Download", NS_DOWNLOAD_CID, NS_DOWNLOAD_CONTRACTID,

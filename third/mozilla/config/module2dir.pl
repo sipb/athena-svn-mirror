@@ -22,7 +22,6 @@ END_USAGE
 }
 
 my %map = (
-  'absyncsvc',          'mailnews/absync',
   'access-proxy',       'extensions/access-builtin/accessproxy',
   'accessibility',      'accessible',
   'addrbook',           'mailnews/addrbook',
@@ -80,7 +79,7 @@ my %map = (
   'intl',               'intl',
   'intlcmpt',           'intl/compatibility',
   'jar',                'modules/libjar',
-  'java',               'sun-java/stubs js/jsd/classes',
+  'java',               'sun-java/stubs',
   'jpeg',               'jpeg',
   'jprof',              'tools/jprof',
   'js',                 'js/src/fdlibm js/src',
@@ -93,7 +92,6 @@ my %map = (
   'liveconnect',        'js/src/liveconnect',
   'locale',             'intl/locale',
   'lwbrk',              'intl/lwbrk',
-  'mai',                'widget/src/gtk2/mai',
   'mailnews',           'mailnews',
   'MapiProxy',          'mailnews/mapi/mapihook/build',
   'mfcEmbed',           'embedding/tests/winEmbed',
@@ -111,7 +109,6 @@ my %map = (
   'mozpango-dvngx',     'intl/ctl/src/hindiShaper',
   'mozucth',            'xpfe/components/ucth',
   'mozxfer',            'xpfe/components/xfer',
-  'mpfilelocprovider',  'modules/mpfilelocprovider',
   'msgbase',            'mailnews/base',
   'msgbaseutil',        'mailnews/base/util',
   'msgcompose',         'mailnews/compose',
@@ -144,7 +141,6 @@ my %map = (
   'rdf',                'rdf',
   'rdfutil',            'rdf/util',
   'rdfldapds',          'directory/xpcom/tests',
-  'regviewer',          'xpfe/components/regviewer',
   'SanePlugin',         'modules/plugin/samples/SanePlugin',
   'shistory',           'xpfe/components/shistory',
   'sidebar',            'xpfe/components/sidebar',

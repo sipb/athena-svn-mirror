@@ -38,11 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLLoadHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -52,106 +51,47 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLLoadHandler::gRefCnt = 0;
-nsIAtom* nsXBLLoadHandler::kLoadAtom = nsnull;
-nsIAtom* nsXBLLoadHandler::kUnloadAtom = nsnull;
-nsIAtom* nsXBLLoadHandler::kAbortAtom = nsnull;
-nsIAtom* nsXBLLoadHandler::kErrorAtom = nsnull;
-
-nsXBLLoadHandler::nsXBLLoadHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLLoadHandler::nsXBLLoadHandler(nsIDOMEventReceiver* aReceiver,
+                                   nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kAbortAtom = NS_NewAtom("abort");
-    kErrorAtom = NS_NewAtom("error");
-    kLoadAtom = NS_NewAtom("load");
-    kUnloadAtom = NS_NewAtom("unload");
-  }
 }
 
 nsXBLLoadHandler::~nsXBLLoadHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kAbortAtom);
-    NS_RELEASE(kLoadAtom);
-    NS_RELEASE(kUnloadAtom);
-    NS_RELEASE(kErrorAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLLoadHandler, nsXBLEventHandler, nsIDOMLoadListener)
 
 nsresult nsXBLLoadHandler::Load(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kLoadAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::load, aEvent);
 }
 
 nsresult nsXBLLoadHandler::Unload(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kUnloadAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::unload, aEvent);
 }
 
 nsresult nsXBLLoadHandler::Error(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kErrorAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::error, aEvent);
 }
 
 nsresult nsXBLLoadHandler::Abort(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kAbortAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::abort, aEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLLoadHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLLoadHandler(nsIDOMEventReceiver* aRec,
+                     nsXBLPrototypeHandler* aHandler,
                      nsXBLLoadHandler** aResult)
 {
   *aResult = new nsXBLLoadHandler(aRec, aHandler);

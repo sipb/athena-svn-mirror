@@ -54,6 +54,8 @@
 
  ******/
 
+// OUTPUT_CLASS=nsLayoutAtoms
+// MACRO_NAME=LAYOUT_ATOM
 
   // Alphabetical list of media type atoms
 LAYOUT_ATOM(all, "all")  // Media atoms must be lower case
@@ -83,20 +85,9 @@ LAYOUT_ATOM(floaterList, "Floater-list")
 LAYOUT_ATOM(overflowList, "Overflow-list")
 LAYOUT_ATOM(popupList, "Popup-list")
 
-  // Alphabetical list of pseudo tag names for non-element content
-LAYOUT_ATOM(canvasPseudo, ":-moz-canvas")
 LAYOUT_ATOM(commentTagName, "__moz_comment")
-LAYOUT_ATOM(dummyOptionPseudo, ":-moz-dummy-option")
 LAYOUT_ATOM(textTagName, "__moz_text")
-LAYOUT_ATOM(pageBreakPseudo, ":-moz-pagebreak")
-LAYOUT_ATOM(pagePseudo, ":-moz-page")
-LAYOUT_ATOM(pageContentPseudo, ":-moz-pagecontent")
-LAYOUT_ATOM(pageSequencePseudo, ":-moz-page-sequence")
 LAYOUT_ATOM(processingInstructionTagName, "__moz_pi")
-LAYOUT_ATOM(scrolledContentPseudo, ":-moz-scrolled-content")
-LAYOUT_ATOM(viewportPseudo, ":-moz-viewport")
-LAYOUT_ATOM(viewportScrollPseudo, ":-moz-viewport-scroll")
-LAYOUT_ATOM(selectScrolledContentPseudo, ":-moz-select-scrolled-content")
 
   // Alphabetical list of frame types
 LAYOUT_ATOM(areaFrame, "AreaFrame")
@@ -105,6 +96,7 @@ LAYOUT_ATOM(blockFrame, "BlockFrame")
 LAYOUT_ATOM(boxFrame, "BoxFrame")
 LAYOUT_ATOM(brFrame, "BRFrame")
 LAYOUT_ATOM(bulletFrame, "BulletFrame")
+LAYOUT_ATOM(fieldSetFrame, "FieldSetFrame")
 LAYOUT_ATOM(gfxButtonControlFrame, "gfxButtonControlFrame")
 LAYOUT_ATOM(hrFrame, "HRFrame")
 LAYOUT_ATOM(htmlFrameInnerFrame, "htmlFrameInnerFrame")
@@ -112,6 +104,7 @@ LAYOUT_ATOM(htmlFrameOuterFrame, "htmlFrameOuterFrame")
 LAYOUT_ATOM(imageFrame, "ImageFrame")
 LAYOUT_ATOM(imageControlFrame, "ImageControlFrame")
 LAYOUT_ATOM(inlineFrame, "InlineFrame")
+LAYOUT_ATOM(legendFrame, "LegendFrame")
 LAYOUT_ATOM(letterFrame, "LetterFrame")
 LAYOUT_ATOM(lineFrame, "LineFrame")
 LAYOUT_ATOM(listControlFrame,"ListControlFrame")
@@ -138,13 +131,15 @@ LAYOUT_ATOM(textFrame, "TextFrame")
 LAYOUT_ATOM(viewportFrame, "ViewportFrame")
 
   // Alphabetical list of frame property names
+LAYOUT_ATOM(changeListProperty, "ChangeListProperty") // void*
 LAYOUT_ATOM(collapseOffsetProperty, "CollapseOffsetProperty")  // nsPoint*
 LAYOUT_ATOM(IBSplitSpecialPrevSibling, "IBSplitSpecialPrevSibling")// nsIFrame*
 LAYOUT_ATOM(IBSplitSpecialSibling, "IBSplitSpecialSibling")    // nsIFrame*
-LAYOUT_ATOM(maxElementSizeProperty, "MaxElementSizeProperty")  // nsSize*
+LAYOUT_ATOM(maxElementWidthProperty, "MaxElementWidthProperty")  // nscoord*
 LAYOUT_ATOM(overflowAreaProperty, "OverflowArea")              // nsRect*
 LAYOUT_ATOM(overflowProperty, "OverflowProperty")              // list of nsIFrame*
 LAYOUT_ATOM(overflowLinesProperty, "OverflowLinesProperty")    // list of nsLineBox*
+LAYOUT_ATOM(overflowPlaceholdersProperty, "OverflowPlaceholdersProperty")  // nsPlaceholder*
 LAYOUT_ATOM(rowUnpaginatedHeightProperty, "RowUnpaginatedHeightProperty")  // nscoord*
 LAYOUT_ATOM(spaceManagerProperty, "SpaceManagerProperty")      // the space manager for a block
 LAYOUT_ATOM(tableBCProperty, "TableBCProperty")                // table border collapsing info (e.g. damage area, table border widths)
@@ -213,15 +208,15 @@ LAYOUT_ATOM(wildcard, "*")
 LAYOUT_ATOM(mozdirty, "_moz_dirty")
 LAYOUT_ATOM(stylesheet, "stylesheet")
 LAYOUT_ATOM(transform, "transform")
+LAYOUT_ATOM(show, "show")
+LAYOUT_ATOM(actuate, "actuate")
 
-#ifdef IBMBIDI
 LAYOUT_ATOM(directionalFrame, "DirectionalFrame")
 LAYOUT_ATOM(baseLevel, "BaseLevel")                            // PRUint8
 LAYOUT_ATOM(embeddingLevel, "EmbeddingLevel")                  // PRUint8
 LAYOUT_ATOM(endsInDiacritic, "EndsInDiacritic")                // PRUint32
 LAYOUT_ATOM(nextBidi, "NextBidi")                              // nsIFrame*
 LAYOUT_ATOM(charType, "charType")                              // PRUint8
-#endif
 
 #ifdef DEBUG
   // Alphabetical list of atoms used by debugging code

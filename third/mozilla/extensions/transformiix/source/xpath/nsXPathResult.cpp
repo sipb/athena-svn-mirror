@@ -45,8 +45,8 @@
 #include "nsIContent.h"
 #include "nsIDOMClassInfo.h"
 #include "nsIDOMNode.h"
-#include "nsSupportsArray.h"
 #include "nsXPathException.h"
+#include "nsIDOMDocument.h"
 
 NS_IMPL_ADDREF(nsXPathResult)
 NS_IMPL_RELEASE(nsXPathResult)
@@ -64,7 +64,6 @@ nsXPathResult::nsXPathResult() : mNumberValue(0),
                                  mResultType(ANY_TYPE),
                                  mInvalidIteratorState(PR_TRUE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsXPathResult::~nsXPathResult()
@@ -151,9 +150,9 @@ nsXPathResult::GetSnapshotLength(PRUint32 *aSnapshotLength)
         return NS_ERROR_DOM_TYPE_ERR;
 
     NS_ENSURE_ARG(aSnapshotLength);
-    if (mElements)
-        return mElements->Count(aSnapshotLength);
     *aSnapshotLength = 0;
+    if (mElements)
+        *aSnapshotLength = mElements->Count();
     return NS_OK;
 }
 
@@ -171,14 +170,10 @@ nsXPathResult::IterateNext(nsIDOMNode **aResult)
         return NS_ERROR_DOM_INVALID_STATE_ERR;
 
     NS_ENSURE_ARG(aResult);
-    if (mElements) {
-        PRUint32 count;
-        mElements->Count(&count);
-        if (mCurrentPos < count) {
-            return mElements->QueryElementAt(mCurrentPos++,
-                                             NS_GET_IID(nsIDOMNode),
-                                             (void**)aResult);
-        }
+    if (mElements && mCurrentPos < mElements->Count()) {
+        *aResult = mElements->ObjectAt(mCurrentPos++);
+        NS_ADDREF(*aResult);
+        return NS_OK;
     }
     *aResult = nsnull;
     return NS_OK;
@@ -192,71 +187,27 @@ nsXPathResult::SnapshotItem(PRUint32 aIndex, nsIDOMNode **aResult)
         return NS_ERROR_DOM_TYPE_ERR;
 
     NS_ENSURE_ARG(aResult);
-    if (mElements) {
-        PRUint32 count;
-        mElements->Count(&count);
-        if (aIndex < count) {
-            return mElements->QueryElementAt(aIndex,
-                                             NS_GET_IID(nsIDOMNode),
-                                             (void**)aResult);
-        }
+    if (mElements && aIndex < mElements->Count()) {
+        *aResult = mElements->ObjectAt(aIndex);
+        NS_ADDREF(*aResult);
+        return NS_OK;
     }
     *aResult = nsnull;
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXPathResult::BeginUpdate(nsIDocument* aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::EndUpdate(nsIDocument* aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::BeginLoad(nsIDocument* aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::EndLoad(nsIDocument* aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::BeginReflow(nsIDocument* aDocument,
-                           nsIPresShell* aShell)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::EndReflow(nsIDocument* aDocument,
-                         nsIPresShell* aShell)
-{
-    return NS_OK;
-}
+NS_IMPL_NSIDOCUMENTOBSERVER_CORE_STUB(nsXPathResult)
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsXPathResult)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsXPathResult)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsXPathResult)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsXPathResult)
 
 NS_IMETHODIMP
 nsXPathResult::ContentChanged(nsIDocument* aDocument,
                               nsIContent *aContent,
                               nsISupports *aSubContent)
 {
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::ContentStatesChanged(nsIDocument* aDocument,
-                                    nsIContent* aContent1,
-                                    nsIContent* aContent2,
-                                    PRInt32 aStateMask)
-{
+    Invalidate();
     return NS_OK;
 }
 
@@ -313,60 +264,6 @@ nsXPathResult::ContentRemoved(nsIDocument* aDocument,
 }
 
 NS_IMETHODIMP
-nsXPathResult::StyleSheetAdded(nsIDocument* aDocument,
-                               nsIStyleSheet* aStyleSheet)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::StyleSheetRemoved(nsIDocument* aDocument,
-                                 nsIStyleSheet* aStyleSheet)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::StyleSheetDisabledStateChanged(nsIDocument* aDocument,
-                                              nsIStyleSheet* aStyleSheet,
-                                              PRBool aDisabled)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::StyleRuleChanged(nsIDocument* aDocument,
-                                nsIStyleSheet* aStyleSheet,
-                                nsIStyleRule* aStyleRule,
-                                nsChangeHint aHint)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::StyleRuleAdded(nsIDocument* aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::StyleRuleRemoved(nsIDocument* aDocument,
-                                nsIStyleSheet* aStyleSheet,
-                                nsIStyleRule* aStyleRule)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXPathResult::DocumentWillBeDestroyed(nsIDocument* aDocument)
-{
-    Invalidate();
-    return NS_OK;
-}
-
-NS_IMETHODIMP
 nsXPathResult::SetExprResult(ExprResult* aExprResult, PRUint16 aResultType)
 {
     Reset();
@@ -379,7 +276,7 @@ nsXPathResult::SetExprResult(ExprResult* aExprResult, PRUint16 aResultType)
     }
 
     if (mResultType == STRING_TYPE) {
-        mStringValue = new String;
+        mStringValue = new nsString;
         NS_ENSURE_TRUE(mStringValue, NS_ERROR_OUT_OF_MEMORY);
         aExprResult->stringValue(*mStringValue);
         return NS_OK;
@@ -410,23 +307,28 @@ nsXPathResult::SetExprResult(ExprResult* aExprResult, PRUint16 aResultType)
             if (count == 0)
                 return NS_OK;
 
-            NS_NewISupportsArray(&mElements);
+            mElements = new nsCOMArray<nsIDOMNode>;
             NS_ENSURE_TRUE(mElements, NS_ERROR_OUT_OF_MEMORY);
 
-            nsISupports* mozNode = nsnull;
+            nsCOMPtr<nsIDOMNode> node;
             int i;
             for (i = 0; i < count; ++i) {
-                mozNode = nodeSet->get(i)->getNSObj();
-                mElements->AppendElement(mozNode);
-                NS_ADDREF(mozNode);
+                node = do_QueryInterface(nodeSet->get(i)->getNSObj());
+                NS_ASSERTION(node, "node isn't an nsIDOMNode");
+                mElements->AppendObject(node);
             }
+
+            // If we support the document() function in DOM-XPath we need to
+            // observe all documents that we have resultnodes in.
             if (mResultType == UNORDERED_NODE_ITERATOR_TYPE ||
                 mResultType == ORDERED_NODE_ITERATOR_TYPE) {
-                nsCOMPtr<nsIContent> content = do_QueryInterface(mozNode);
-                if (content)
-                    content->GetDocument(*getter_AddRefs(mDocument));
+                nsCOMPtr<nsIDOMDocument> document;
+                node->GetOwnerDocument(getter_AddRefs(document));
+                if (document)
+                    mDocument = do_QueryInterface(document);
                 else
-                    mDocument = do_QueryInterface(mozNode);
+                    mDocument = do_QueryInterface(node);
+
                 NS_ASSERTION(mDocument, "We need a document!");
                 if (mDocument)
                     mDocument->AddObserver(this);
@@ -461,7 +363,7 @@ nsXPathResult::Reset()
              mResultType == ORDERED_NODE_ITERATOR_TYPE ||
              mResultType == UNORDERED_NODE_SNAPSHOT_TYPE ||
              mResultType == ORDERED_NODE_SNAPSHOT_TYPE) {
-        NS_IF_RELEASE(mElements);
+        delete mElements;
         mCurrentPos = 0;
     }
     else if (mResultType == FIRST_ORDERED_NODE_TYPE ||

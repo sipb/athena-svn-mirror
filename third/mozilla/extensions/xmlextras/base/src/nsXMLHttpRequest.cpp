@@ -39,7 +39,6 @@
 #include "nsXMLHttpRequest.h"
 #include "nsISimpleEnumerator.h"
 #include "nsIXPConnect.h"
-#include "nsIByteArrayInputStream.h"
 #include "nsIUnicodeEncoder.h"
 #include "nsIServiceManager.h"
 #include "nsICharsetConverterManager.h"
@@ -65,19 +64,9 @@
 #include "nsIDOMEventListener.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
-#include "nsICodebasePrincipal.h"
 #include "nsWeakPtr.h"
 #include "nsICharsetAlias.h"
-#ifdef IMPLEMENT_SYNC_LOAD
-#include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
-#include "nsIDocShell.h"
-#include "nsIDocShellTreeItem.h"
-#include "nsIDocShellTreeOwner.h"
-#include "nsIEventQueueService.h"
-#include "nsIInterfaceRequestor.h"
-#include "nsIInterfaceRequestorUtils.h"
-#endif
 #include "nsIDOMClassInfo.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMWindow.h"
@@ -86,17 +75,42 @@
 #include "nsLoadListenerProxy.h"
 #include "nsIWindowWatcher.h"
 #include "nsIAuthPrompt.h"
+#include "nsIStringStream.h"
 
 static const char* kLoadAsData = "loadAsData";
 #define LOADSTR NS_LITERAL_STRING("load")
 #define ERRORSTR NS_LITERAL_STRING("error")
 
 // CIDs
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
 static NS_DEFINE_CID(kIDOMDOMImplementationCID, NS_DOM_IMPLEMENTATION_CID);
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
-#ifdef IMPLEMENT_SYNC_LOAD
-static NS_DEFINE_IID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-#endif
+static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
+
+// State
+#define XML_HTTP_REQUEST_UNINITIALIZED    1 // 0
+#define XML_HTTP_REQUEST_OPENED           2 // 1 aka LOADING
+#define XML_HTTP_REQUEST_LOADED           4 // 2
+#define XML_HTTP_REQUEST_INTERACTIVE      8 // 3
+#define XML_HTTP_REQUEST_COMPLETED       16 // 4
+#define XML_HTTP_REQUEST_SENT            32 // Internal, LOADING in IE and external view
+#define XML_HTTP_REQUEST_STOPPED         64 // Internal, INTERACTIVE in IE and external view
+// The above states are mutually exclusing, change with ChangeState() only.
+// The states below can be combined.
+#define XML_HTTP_REQUEST_ABORTED        128 // Internal
+#define XML_HTTP_REQUEST_ASYNC          256 // Internal
+#define XML_HTTP_REQUEST_PARSEBODY      512 // Internal
+#define XML_HTTP_REQUEST_XSITEENABLED  1024 // Internal
+#define XML_HTTP_REQUEST_SYNCLOOPING   2048 // Internal
+
+#define XML_HTTP_REQUEST_LOADSTATES         \
+  (XML_HTTP_REQUEST_UNINITIALIZED |         \
+   XML_HTTP_REQUEST_OPENED |                \
+   XML_HTTP_REQUEST_LOADED |                \
+   XML_HTTP_REQUEST_INTERACTIVE |           \
+   XML_HTTP_REQUEST_COMPLETED |             \
+   XML_HTTP_REQUEST_SENT |                  \
+   XML_HTTP_REQUEST_STOPPED)
 
 static void
 GetCurrentContext(nsIScriptContext **aScriptContext)
@@ -139,23 +153,20 @@ GetCurrentContext(nsIScriptContext **aScriptContext)
 /////////////////////////////////////////////
 
 nsXMLHttpRequest::nsXMLHttpRequest()
+  : mState(XML_HTTP_REQUEST_UNINITIALIZED)
 {
-  NS_INIT_ISUPPORTS();
-  ChangeState(XML_HTTP_REQUEST_UNINITIALIZED,PR_FALSE);
-  mAsync = PR_TRUE;
-  mCrossSiteAccessEnabled = PR_FALSE;
 }
 
 nsXMLHttpRequest::~nsXMLHttpRequest()
 {
-  if (XML_HTTP_REQUEST_SENT == mStatus) {
+  if (mState & (XML_HTTP_REQUEST_STOPPED | 
+                XML_HTTP_REQUEST_SENT | 
+                XML_HTTP_REQUEST_INTERACTIVE)) {
     Abort();
   }    
-#ifdef IMPLEMENT_SYNC_LOAD
-  if (mChromeWindow) {
-    mChromeWindow->ExitModalEventLoop(NS_OK);
-  }
-#endif
+  
+  NS_ABORT_IF_FALSE(!(mState & XML_HTTP_REQUEST_SYNCLOOPING), "we rather crash than hang");
+  mState &= ~XML_HTTP_REQUEST_SYNCLOOPING;
 }
 
 
@@ -253,6 +264,7 @@ nsXMLHttpRequest::GetOnreadystatechange(nsIOnReadystatechangeHandler * *aOnready
   NS_ENSURE_ARG_POINTER(aOnreadystatechange);
 
   *aOnreadystatechange = mOnReadystatechangeListener;
+  NS_IF_ADDREF(*aOnreadystatechange);
 
   return NS_OK;
 }
@@ -275,6 +287,7 @@ nsXMLHttpRequest::GetOnload(nsIDOMEventListener * *aOnLoad)
   NS_ENSURE_ARG_POINTER(aOnLoad);
 
   *aOnLoad = mOnLoadListener;
+  NS_IF_ADDREF(*aOnLoad);
 
   return NS_OK;
 }
@@ -296,6 +309,7 @@ nsXMLHttpRequest::GetOnerror(nsIDOMEventListener * *aOnerror)
   NS_ENSURE_ARG_POINTER(aOnerror);
 
   *aOnerror = mOnErrorListener;
+  NS_IF_ADDREF(*aOnerror);
 
   return NS_OK;
 }
@@ -325,7 +339,7 @@ NS_IMETHODIMP nsXMLHttpRequest::GetResponseXML(nsIDOMDocument **aResponseXML)
 {
   NS_ENSURE_ARG_POINTER(aResponseXML);
   *aResponseXML = nsnull;
-  if ((XML_HTTP_REQUEST_COMPLETED == mStatus) && mDocument) {
+  if ((XML_HTTP_REQUEST_COMPLETED & mState) && mDocument) {
     *aResponseXML = mDocument;
     NS_ADDREF(*aResponseXML);
   }
@@ -458,8 +472,8 @@ NS_IMETHODIMP nsXMLHttpRequest::GetResponseText(PRUnichar **aResponseText)
   NS_ENSURE_ARG_POINTER(aResponseText);
   *aResponseText = nsnull;
   
-  if ((XML_HTTP_REQUEST_COMPLETED == mStatus) ||
-      (XML_HTTP_REQUEST_INTERACTIVE == mStatus)) {
+  if (mState & (XML_HTTP_REQUEST_COMPLETED |
+                XML_HTTP_REQUEST_INTERACTIVE)) {
     // First check if we can represent the data as a string - if it contains
     // nulls we won't try. 
     if (mResponseBody.FindChar('\0') >= 0)
@@ -517,7 +531,11 @@ nsXMLHttpRequest::Abort()
   if (mChannel) {
     mChannel->Cancel(NS_BINDING_ABORTED);
   }
-  
+  mDocument = nsnull;
+  mState |= XML_HTTP_REQUEST_ABORTED;
+
+  ClearEventListeners();
+
   return NS_OK;
 }
 
@@ -593,6 +611,44 @@ nsXMLHttpRequest::GetLoadGroup(nsILoadGroup **aLoadGroup)
   return NS_OK;
 }
 
+nsresult 
+nsXMLHttpRequest::GetBaseURI(nsIURI **aBaseURI)
+{
+  NS_ENSURE_ARG_POINTER(aBaseURI);
+  *aBaseURI = nsnull;
+
+  if (!mScriptContext) {
+    GetCurrentContext(getter_AddRefs(mScriptContext));
+    if (!mScriptContext) {
+      return NS_OK;
+    }
+  }
+
+  nsCOMPtr<nsIScriptGlobalObject> global;
+  mScriptContext->GetGlobalObject(getter_AddRefs(global));
+  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(global);
+  if (window) {
+    nsCOMPtr<nsIDOMDocument> domdoc;
+    window->GetDocument(getter_AddRefs(domdoc));
+    nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
+    if (doc) {
+      doc->GetBaseURL(*aBaseURI);
+    }
+  }
+
+  return NS_OK;
+}
+
+void
+nsXMLHttpRequest::ClearEventListeners()
+{
+  mLoadEventListeners = nsnull;
+  mErrorEventListeners = nsnull;
+  mOnLoadListener = nsnull;
+  mOnErrorListener = nsnull;
+  mOnReadystatechangeListener = nsnull;
+}
+
 /* noscript void openRequest (in string method, in string url, in boolean async, in string user, in string password); */
 NS_IMETHODIMP 
 nsXMLHttpRequest::OpenRequest(const char *method, 
@@ -608,12 +664,30 @@ nsXMLHttpRequest::OpenRequest(const char *method,
   nsCOMPtr<nsIURI> uri; 
   PRBool authp = PR_FALSE;
 
-  // Return error if we're already processing a request
-  if (XML_HTTP_REQUEST_SENT == mStatus) {
-    return NS_ERROR_FAILURE;
+  if (mState & XML_HTTP_REQUEST_ABORTED) {
+    // Proceed as normal
+  } else if (mState & (XML_HTTP_REQUEST_OPENED | 
+                       XML_HTTP_REQUEST_LOADED |
+                       XML_HTTP_REQUEST_INTERACTIVE |
+                       XML_HTTP_REQUEST_SENT |
+                       XML_HTTP_REQUEST_STOPPED)) {
+    // IE aborts as well
+    Abort();
+  
+    // XXX We should probably send a warning to the JS console
+    //     that load was aborted and event listeners were cleared
+    //     since this looks like a situation that could happen
+    //     by accident and you could spend a lot of time wondering
+    //     why things didn't work.
+
+    return NS_OK;
   }
 
-  mAsync = async;
+  if (async) {
+    mState |= XML_HTTP_REQUEST_ASYNC;
+  } else {
+    mState &= ~XML_HTTP_REQUEST_ASYNC;
+  }
 
   rv = NS_NewURI(getter_AddRefs(uri), url, mBaseURI);
   if (NS_FAILED(rv)) return rv;
@@ -681,21 +755,14 @@ nsXMLHttpRequest::Open(const char *method, const char *url)
     rv = cc->GetJSContext(&cx);
     if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIScriptSecurityManager> secMan = 
-             do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIPrincipal> principal;
-    rv = secMan->GetSubjectPrincipal(getter_AddRefs(principal));
-    if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsICodebasePrincipal> codebase = do_QueryInterface(principal);
-      if (codebase) {
-        codebase->GetURI(getter_AddRefs(mBaseURI));
-      }
-    }
+    GetBaseURI(getter_AddRefs(mBaseURI));
 
     nsCOMPtr<nsIURI> targetURI;
     rv = NS_NewURI(getter_AddRefs(targetURI), url, mBaseURI);
+    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIScriptSecurityManager> secMan = 
+             do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
 
     rv = secMan->CheckConnect(cx, targetURI, "XMLHttpRequest","open");
@@ -711,7 +778,11 @@ nsXMLHttpRequest::Open(const char *method, const char *url)
     rv = secMan->IsCapabilityEnabled("UniversalBrowserRead",
                                      &crossSiteAccessEnabled);
     if (NS_FAILED(rv)) return rv;
-    mCrossSiteAccessEnabled = crossSiteAccessEnabled;
+    if (crossSiteAccessEnabled) {
+      mState |= XML_HTTP_REQUEST_XSITEENABLED;
+    } else {
+      mState &= ~XML_HTTP_REQUEST_XSITEENABLED;
+    }
 
     if (argc > 2) {
       JSBool asyncBool;
@@ -791,10 +862,13 @@ nsXMLHttpRequest::GetStreamForWString(const PRUnichar* aStr,
   nsCAutoString header;
   if( NS_FAILED(httpChannel->GetRequestHeader(NS_LITERAL_CSTRING("Content-Type"), header)) )  
     httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Content-Type"),
-                                  NS_LITERAL_CSTRING("text/xml") );
+                                  NS_LITERAL_CSTRING("text/xml"),
+                                  PR_FALSE);
 
   // set the content length header
-  httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Content-Length"), nsPrintfCString("%d", charLength) );
+  httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Content-Length"),
+                                nsPrintfCString("%d", charLength),
+                                PR_FALSE);
 
   // Shove in the trailing and leading CRLF
   postData[0] = nsCRT::CR;
@@ -803,15 +877,18 @@ nsXMLHttpRequest::GetStreamForWString(const PRUnichar* aStr,
   postData[2+charLength+1] = nsCRT::LF;
   postData[2+charLength+2] = '\0';
 
-  // The new stream takes ownership of the buffer
-  rv = NS_NewByteArrayInputStream((nsIByteArrayInputStream**)aStream, 
-                                  postData, 
-                                  charLength+4);
-  if (NS_FAILED(rv)) {
-    nsMemory::Free(postData);
-    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIStringInputStream> inputStream(do_CreateInstance("@mozilla.org/io/string-input-stream;1", &rv));
+  if (NS_SUCCEEDED(rv)) {
+    rv = inputStream->AdoptData(postData, charLength +4);
+    if (NS_SUCCEEDED(rv)) {
+      return CallQueryInterface(inputStream, aStream);
+    }
   }
-  return NS_OK;
+
+  // If we got here then something went wrong before the stream was
+  // adopted the buffer.
+  nsMemory::Free(postData);
+  return NS_ERROR_FAILURE;
 }
 
 
@@ -837,7 +914,7 @@ nsXMLHttpRequest::StreamReaderFunc(nsIInputStream* in,
 
   nsresult rv = NS_OK;
 
-  if (xmlHttpRequest->mParseResponseBody) {
+  if (xmlHttpRequest->mState & XML_HTTP_REQUEST_PARSEBODY) {
     // Give the same data to the parser.
 
     // We need to wrap the data in a new lightweight stream and pass that
@@ -886,7 +963,7 @@ nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
 {
   mReadRequest = request;
   mContext = ctxt;
-  mParseResponseBody = PR_TRUE;
+  mState |= XML_HTTP_REQUEST_PARSEBODY;
   ChangeState(XML_HTTP_REQUEST_LOADED);
   if (mOverrideMimeType.IsEmpty()) {
     // If we are not overriding the mime type, we can gain a huge performance
@@ -899,7 +976,7 @@ nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
     type.BeginReading(start);
     type.EndReading(end);
     if (!FindInReadable(NS_LITERAL_CSTRING("xml"), start, end)) {
-      mParseResponseBody = PR_FALSE;
+      mState &= ~XML_HTTP_REQUEST_PARSEBODY;
     }
   } else {
     nsresult status;
@@ -910,7 +987,8 @@ nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
     }
   }
 
-  return mParseResponseBody ? mXMLParserStreamListener->OnStartRequest(request,ctxt) : NS_OK;
+  return (mState & XML_HTTP_REQUEST_PARSEBODY) ? 
+    mXMLParserStreamListener->OnStartRequest(request,ctxt) : NS_OK;
 }
 
 /* void onStopRequest (in nsIRequest request, in nsISupports ctxt, in nsresult status, in wstring statusArg); */
@@ -920,10 +998,12 @@ nsXMLHttpRequest::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult
   nsCOMPtr<nsIParser> parser(do_QueryInterface(mXMLParserStreamListener));
   NS_ABORT_IF_FALSE(parser, "stream listener was expected to be a parser");
 
-  nsresult rv = mParseResponseBody ? mXMLParserStreamListener->OnStopRequest(request,ctxt,status) : NS_OK;
+  nsresult rv = (mState & XML_HTTP_REQUEST_PARSEBODY) ? 
+    mXMLParserStreamListener->OnStopRequest(request, ctxt, status) : NS_OK;
   mXMLParserStreamListener = nsnull;
   mReadRequest = nsnull;
   mContext = nsnull;
+  mChannel->SetNotificationCallbacks(nsnull);
 
   if (NS_FAILED(status)) {
     // This can happen if the user leaves the page while the request was still
@@ -932,6 +1012,11 @@ nsXMLHttpRequest::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult
     // the only active network connection on the page the throbber nor the STOP
     // button are active.
     Abort();
+    // By nulling out channel here we make it so that Send() can test for that
+    // and throw. Also calling the various status methods/members will not throw.
+    // This matches what IE does.
+    mChannel = nsnull;
+    ChangeState(XML_HTTP_REQUEST_COMPLETED, PR_FALSE); // IE also seems to set this
   } else if (parser && parser->IsParserEnabled()) {
     // The parser needs to be enabled for us to safely call RequestCompleted().
     // If the parser is not enabled, it means it was blocked, by xml-stylesheet PI
@@ -942,6 +1027,8 @@ nsXMLHttpRequest::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult
     ChangeState(XML_HTTP_REQUEST_STOPPED, PR_FALSE);
   }
 
+  mState &= ~XML_HTTP_REQUEST_SYNCLOOPING;
+
   return rv;
 }
 
@@ -950,11 +1037,13 @@ nsXMLHttpRequest::RequestCompleted()
 {
   nsresult rv = NS_OK;
 
+  mState &= ~XML_HTTP_REQUEST_SYNCLOOPING;
+
   // If we're uninitialized at this point, we encountered an error
   // earlier and listeners have already been notified. Also we do
   // not want to do this if we already completed.
-  if ((mStatus == XML_HTTP_REQUEST_UNINITIALIZED) ||
-      (mStatus == XML_HTTP_REQUEST_COMPLETED)) {
+  if (mState & (XML_HTTP_REQUEST_UNINITIALIZED |
+                XML_HTTP_REQUEST_COMPLETED)) {
     return NS_OK;
   }
 
@@ -985,6 +1074,7 @@ nsXMLHttpRequest::RequestCompleted()
     return NS_ERROR_FAILURE;
   }
   privevent->SetTarget(this);
+  privevent->SetCurrentTarget(this);
 
   // We might have been sent non-XML data. If that was the case,
   // we should null out the document member. The idea in this
@@ -999,13 +1089,6 @@ nsXMLHttpRequest::RequestCompleted()
   }
 
   ChangeState(XML_HTTP_REQUEST_COMPLETED);
-
-#ifdef IMPLEMENT_SYNC_LOAD
-  if (mChromeWindow) {
-    mChromeWindow->ExitModalEventLoop(NS_OK);
-    mChromeWindow = 0;
-  }
-#endif
 
   nsCOMPtr<nsIJSContextStack> stack;
   JSContext *cx = nsnull;
@@ -1043,6 +1126,8 @@ nsXMLHttpRequest::RequestCompleted()
     }
   }
 
+  ClearEventListeners();
+
   if (cx) {
     stack->Pop(&cx);
   }
@@ -1057,14 +1142,18 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
   nsresult rv;
   
   // Return error if we're already processing a request
-  if (XML_HTTP_REQUEST_SENT == mStatus) {
+  if (XML_HTTP_REQUEST_SENT & mState) {
     return NS_ERROR_FAILURE;
   }
   
   // Make sure we've been opened
-  if (!mChannel || XML_HTTP_REQUEST_OPENED != mStatus) {
+  if (!mChannel || !(XML_HTTP_REQUEST_OPENED & mState)) {
     return NS_ERROR_NOT_INITIALIZED;
   }
+
+  // XXX We should probably send a warning to the JS console
+  //     if there are no event listeners set and we are doing
+  //     an asynchronous call.
 
   // Ignore argument if method is GET, there is no point in trying to upload anything
   nsCAutoString method;
@@ -1148,7 +1237,7 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
       nsCOMPtr<nsIUploadChannel> uploadChannel(do_QueryInterface(httpChannel));
       NS_ASSERTION(uploadChannel, "http must support nsIUploadChannel");
 
-      rv = uploadChannel->SetUploadStream(postDataStream, nsnull, -1);
+      rv = uploadChannel->SetUploadStream(postDataStream, NS_LITERAL_CSTRING(""), -1);
       // Reset the method to its original value
       if (httpChannel) {
           httpChannel->SetRequestMethod(method);
@@ -1168,7 +1257,7 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
   }
 
   // Create an empty document from it (resets current document as well)
-  nsAutoString emptyStr;
+  nsString emptyStr;
   rv = implementation->CreateDocument(emptyStr, 
                                       emptyStr, 
                                       nsnull, 
@@ -1199,59 +1288,21 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
     return NS_ERROR_FAILURE;
   }
 
-#ifdef IMPLEMENT_SYNC_LOAD
   nsCOMPtr<nsIEventQueue> modalEventQueue;
-  nsCOMPtr<nsIEventQueueService> eventQService;
-  
-  if (!mAsync) { 
-    nsCOMPtr<nsIXPCNativeCallContext> cc;
-    nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
-    if(NS_SUCCEEDED(rv)) {
-      rv = xpc->GetCurrentNativeCallContext(getter_AddRefs(cc));
+
+  if (!(mState & XML_HTTP_REQUEST_ASYNC)) {
+    if(!mEventQService) {
+      mEventQService = do_GetService(kEventQueueServiceCID, &rv);
+      NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
     }
 
-    if (NS_SUCCEEDED(rv) && cc) {
-      JSContext* cx;
-      rv = cc->GetJSContext(&cx);
-      if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
+    mState |= XML_HTTP_REQUEST_SYNCLOOPING;
 
-      // We can only do this if we're called from a DOM script context
-      nsIScriptContext* scriptCX = (nsIScriptContext*)JS_GetContextPrivate(cx);
-      if (!scriptCX) return NS_OK;
-
-      // Get the nsIDocShellTreeOwner associated with the window
-      // containing this script context
-      // XXX Need to find a better way to do this rather than
-      // chaining through a bunch of getters and QIs
-      nsCOMPtr<nsIScriptGlobalObject> global;
-      scriptCX->GetGlobalObject(getter_AddRefs(global));
-      if (!global) return NS_ERROR_FAILURE;
-
-      nsCOMPtr<nsIDocShell> docshell;
-      rv = global->GetDocShell(getter_AddRefs(docshell));
-      if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-      
-      nsCOMPtr<nsIDocShellTreeItem> item = do_QueryInterface(docshell);
-      if (!item) return NS_ERROR_FAILURE;
-
-      nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
-      rv = item->GetTreeOwner(getter_AddRefs(treeOwner));
-      if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-
-      nsCOMPtr<nsIInterfaceRequestor> treeRequestor(do_GetInterface(treeOwner));
-      if (!treeRequestor) return NS_ERROR_FAILURE;
-
-      treeRequestor->GetInterface(NS_GET_IID(nsIWebBrowserChrome), getter_AddRefs(mChromeWindow));
-      if (!mChromeWindow) return NS_ERROR_FAILURE;
-
-      eventQService = do_GetService(kEventQueueServiceCID);
-      if(!eventQService || 
-         NS_FAILED(eventQService->PushThreadEventQueue(getter_AddRefs(modalEventQueue)))) {
-        return NS_ERROR_FAILURE;
-      }
+    rv = mEventQService->PushThreadEventQueue(getter_AddRefs(modalEventQueue));
+    if (NS_FAILED(rv)) {
+      return rv;
     }
   }
-#endif
 
   if (!mScriptContext) {
     // We need a context to check if redirect (if any) is allowed
@@ -1264,18 +1315,14 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
   rv = document->StartDocumentLoad(kLoadAsData, mChannel, 
                                    loadGroup, nsnull, 
                                    getter_AddRefs(listener),
-                                   PR_FALSE);
+                                   PR_TRUE);
 
-#ifdef IMPLEMENT_SYNC_LOAD
   if (NS_FAILED(rv)) {
     if (modalEventQueue) {
-      eventQService->PopThreadEventQueue(modalEventQueue);
+      mEventQService->PopThreadEventQueue(modalEventQueue);
     }
     return NS_ERROR_FAILURE;
   }
-#else
-  if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-#endif
 
   // Hook us up to listen to redirects and the like
   mChannel->SetNotificationCallbacks(this);
@@ -1285,28 +1332,26 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
   mXMLParserStreamListener = listener;
   rv = mChannel->AsyncOpen(this, nsnull);
 
-#ifdef IMPLEMENT_SYNC_LOAD
   if (NS_FAILED(rv)) {
     if (modalEventQueue) {
-      eventQService->PopThreadEventQueue(modalEventQueue);
+      mEventQService->PopThreadEventQueue(modalEventQueue);
     }
     return NS_ERROR_FAILURE;
   }  
-#else
-  if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-#endif
 
-#ifdef IMPLEMENT_SYNC_LOAD
   // If we're synchronous, spin an event loop here and wait
-  if (!mAsync && mChromeWindow) {
-    rv = mChromeWindow->ShowAsModal();
-    
-    eventQService->PopThreadEventQueue(modalEventQueue);
-    
-    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;      
+  if (!(mState & XML_HTTP_REQUEST_ASYNC)) {
+    while (mState & XML_HTTP_REQUEST_SYNCLOOPING) {
+      modalEventQueue->ProcessPendingEvents();
+    }
+
+    mEventQService->PopThreadEventQueue(modalEventQueue);
   }
-#endif
   
+  if (!mChannel) {
+    return NS_ERROR_FAILURE;
+  }
+
   return NS_OK;
 }
 
@@ -1320,15 +1365,10 @@ nsXMLHttpRequest::SetRequestHeader(const char *header, const char *value)
   nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(mChannel));
 
   if (httpChannel) {
-    // We need to set, not add to, the header. Using empty value will
-    // clear existing header.
-    nsresult rv = httpChannel->SetRequestHeader(nsDependentCString(header),
-                                                nsCString());
-    if (NS_FAILED(rv))
-      return rv;
-    // Now set it for real
+    // We need to set, not add to, the header.
     return httpChannel->SetRequestHeader(nsDependentCString(header),
-                                         nsDependentCString(value));
+                                         nsDependentCString(value),
+                                         PR_FALSE);
   }
   
   return NS_OK;
@@ -1340,17 +1380,20 @@ nsXMLHttpRequest::GetReadyState(PRInt32 *aState)
 {
   NS_ENSURE_ARG_POINTER(aState);
   // Translate some of our internal states for external consumers
-  switch (mStatus) {
-    case XML_HTTP_REQUEST_SENT:
-      *aState = XML_HTTP_REQUEST_OPENED;
-      break;
-    case XML_HTTP_REQUEST_STOPPED:
-      *aState = XML_HTTP_REQUEST_INTERACTIVE;
-      break;
-    default:
-      *aState = mStatus;
-      break;
+  if (mState & XML_HTTP_REQUEST_UNINITIALIZED) {
+    *aState = 0; // UNINITIALIZED
+  } else  if (mState & (XML_HTTP_REQUEST_OPENED | XML_HTTP_REQUEST_SENT)) {
+    *aState = 1; // LOADING
+  } else if (mState & XML_HTTP_REQUEST_LOADED) {
+    *aState = 2; // LOADED
+  } else if (mState & (XML_HTTP_REQUEST_INTERACTIVE | XML_HTTP_REQUEST_STOPPED)) {
+    *aState = 3; // INTERACTIVE
+  } else if (mState & XML_HTTP_REQUEST_COMPLETED) {
+    *aState = 4; // COMPLETED
+  } else {
+    NS_ERROR("Should not happen");
   }
+  
   return NS_OK;
 }
 
@@ -1388,7 +1431,7 @@ nsXMLHttpRequest::Load(nsIDOMEvent* aEvent)
   // the document. In that case, we obviously should not fire the event
   // in OnStopRequest(). For those documents, we must wait for the load
   // event from the document to fire our RequestCompleted().
-  if (mStatus == XML_HTTP_REQUEST_STOPPED) {
+  if (mState & XML_HTTP_REQUEST_STOPPED) {
     RequestCompleted();
   }
   return NS_OK;
@@ -1403,20 +1446,11 @@ nsXMLHttpRequest::Unload(nsIDOMEvent* aEvent)
 nsresult
 nsXMLHttpRequest::Abort(nsIDOMEvent* aEvent)
 {
-  if (mReadRequest) {
-    mReadRequest->Cancel(NS_BINDING_ABORTED);
-  }
-  if (mChannel) {
-    mChannel->Cancel(NS_BINDING_ABORTED);
-  }
-  mDocument = nsnull;
+  Abort();
+
   ChangeState(XML_HTTP_REQUEST_UNINITIALIZED);
-#ifdef IMPLEMENT_SYNC_LOAD
-  if (mChromeWindow) {
-    mChromeWindow->ExitModalEventLoop(NS_OK);
-    mChromeWindow = 0;
-  }
-#endif
+
+  mState &= ~XML_HTTP_REQUEST_SYNCLOOPING;
 
   return NS_OK;
 }
@@ -1426,12 +1460,8 @@ nsXMLHttpRequest::Error(nsIDOMEvent* aEvent)
 {
   mDocument = nsnull;
   ChangeState(XML_HTTP_REQUEST_UNINITIALIZED);
-#ifdef IMPLEMENT_SYNC_LOAD
-  if (mChromeWindow) {
-    mChromeWindow->ExitModalEventLoop(NS_OK);
-    mChromeWindow = 0;
-  }
-#endif
+  
+  mState &= ~XML_HTTP_REQUEST_SYNCLOOPING;
 
   nsCOMPtr<nsIJSContextStack> stack;
   JSContext *cx = nsnull;
@@ -1469,6 +1499,8 @@ nsXMLHttpRequest::Error(nsIDOMEvent* aEvent)
     }
   }
 
+  ClearEventListeners();
+
   if (cx) {
     stack->Pop(&cx);
   }
@@ -1477,11 +1509,19 @@ nsXMLHttpRequest::Error(nsIDOMEvent* aEvent)
 }
 
 nsresult
-nsXMLHttpRequest::ChangeState(nsXMLHttpRequestState aState, PRBool aBroadcast)
+nsXMLHttpRequest::ChangeState(PRUint32 aState, PRBool aBroadcast)
 {
-  mStatus = aState;
+  // If we are setting one of the mutually exclusing states,
+  // unset those state bits first.
+  if (aState & XML_HTTP_REQUEST_LOADSTATES) {
+    mState &= ~XML_HTTP_REQUEST_LOADSTATES;
+  }
+  mState |= aState;
   nsresult rv = NS_OK;
-  if (mAsync && aBroadcast && mOnReadystatechangeListener) {
+  if ((mState & XML_HTTP_REQUEST_ASYNC) &&
+      (aState & XML_HTTP_REQUEST_LOADSTATES) && // Broadcast load states only
+      aBroadcast && 
+      mOnReadystatechangeListener) {
     nsCOMPtr<nsIJSContextStack> stack;
     JSContext *cx = nsnull;
 
@@ -1515,7 +1555,7 @@ nsXMLHttpRequest::OnRedirect(nsIHttpChannel *aHttpChannel, nsIChannel *aNewChann
 {
   NS_ENSURE_ARG_POINTER(aNewChannel);
 
-  if (mScriptContext && !mCrossSiteAccessEnabled) {
+  if (mScriptContext && !(mState & XML_HTTP_REQUEST_XSITEENABLED)) {
     nsresult rv = NS_ERROR_FAILURE;
 
     nsCOMPtr<nsIJSContextStack> stack(do_GetService("@mozilla.org/js/xpc/ContextStack;1", & rv));

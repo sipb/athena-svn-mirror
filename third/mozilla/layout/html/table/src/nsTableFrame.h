@@ -42,7 +42,6 @@
 #include "nsHTMLContainerFrame.h"
 #include "nsStyleCoord.h"
 #include "nsStyleConsts.h"
-#include "nsIStyleContext.h"
 #include "nsITableLayout.h"
 #include "nsTableColFrame.h"
 #include "nsTableColGroupFrame.h"
@@ -56,6 +55,7 @@ class nsTableRowFrame;
 class nsTableColGroupFrame;
 class nsITableLayoutStrategy;
 class nsHTMLValue;
+class nsStyleContext;
 
 struct nsTableReflowState;
 struct nsStylePosition;
@@ -203,7 +203,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
 
@@ -293,7 +293,7 @@ public:
                                       nsIAtom*        aChildType);
   PRBool IsAutoWidth(PRBool* aIsPctWidth = nsnull);
   PRBool IsAutoHeight();
-  static PRBool IsPctHeight(nsIStyleContext* aStyleContext);
+  static PRBool IsPctHeight(nsStyleContext* aStyleContext);
   
   /** @return PR_TRUE if aDisplayType represents a rowgroup of any sort
     * (header, footer, or body)
@@ -386,11 +386,13 @@ public:
                        PRBool&                  aDidBalance,
                        nsReflowStatus&          aStatus);
 
-  static nsMargin GetPadding(const nsHTMLReflowState& aReflowState,
-                             const nsTableCellFrame*  aCellFrame);
+  static nsMargin GetBorderPadding(const nsHTMLReflowState& aReflowState,
+                                   float                    aPixelToTwips,
+                                   const nsTableCellFrame*  aCellFrame);
 
-  static nsMargin GetPadding(const nsSize&           aBasis,
-                             const nsTableCellFrame* aCellFrame);
+  static nsMargin GetBorderPadding(const nsSize&           aBasis,
+                                   float                   aPixelToTwips,
+                                   const nsTableCellFrame* aCellFrame);
 
   nsFrameList& GetColGroups();
 
@@ -408,7 +410,6 @@ public:
 #ifdef DEBUG
   /** @see nsIFrame::GetFrameName */
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
 
   /** return the width of the column at aColIndex    */
@@ -590,7 +591,7 @@ protected:
 public:
   /** first pass of ResizeReflow.  
     * lays out all table content with aMaxSize(NS_UNCONSTRAINEDSIZE,NS_UNCONSTRAINEDSIZE) and
-    * a non-null aMaxElementSize so we get all the metrics we need to do column balancing.
+    * a true mComputeMEW so we get all the metrics we need to do column balancing.
     * Pass 1 only needs to be executed once no matter how many times the table is resized, 
     * as long as content and style don't change.  This is managed in the member variable mFirstPassIsValid.
     * The layout information for each cell is cached in mColumLayoutData.

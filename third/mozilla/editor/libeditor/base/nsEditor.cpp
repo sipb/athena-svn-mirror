@@ -40,7 +40,8 @@
 
 #include "pratom.h"
 #include "nsIDOMDocument.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsUnicharUtils.h"
 #include "nsReadableUtils.h"
 
@@ -48,6 +49,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMAttr.h"
 #include "nsIDOMNode.h"
+#include "nsIDOMDocumentFragment.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMRange.h"
@@ -64,7 +66,6 @@
 #include "nsIEnumerator.h"
 #include "nsIAtom.h"
 #include "nsICaret.h"
-#include "nsIStyleContext.h"
 #include "nsIEditActionListener.h"
 #include "nsIEditorObserver.h"
 #include "nsIKBStateControl.h"
@@ -112,16 +113,6 @@ static NS_DEFINE_CID(kCDOMRangeCID,         NS_RANGE_CID);
 // transaction manager
 static NS_DEFINE_CID(kCTransactionManagerCID, NS_TRANSACTIONMANAGER_CID);
 
-#ifdef XP_PC
-#define TRANSACTION_MANAGER_DLL "txmgr.dll"
-#else
-#ifdef XP_MAC
-#define TRANSACTION_MANAGER_DLL "TRANSACTION_MANAGER_DLL"
-#else // XP_UNIX || XP_BEOS
-#define TRANSACTION_MANAGER_DLL "libtxmgr"MOZ_DLL_SUFFIX
-#endif
-#endif
-
 #define NS_ERROR_EDITOR_NO_SELECTION NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,1)
 #define NS_ERROR_EDITOR_NO_TEXTNODE  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,2)
 
@@ -166,13 +157,14 @@ nsEditor::nsEditor()
 ,  mIMETextNode(nsnull)
 ,  mIMETextOffset(0)
 ,  mIMEBufferLength(0)
+,  mIsIMEComposing(PR_FALSE)
 ,  mActionListeners(nsnull)
 ,  mEditorObservers(nsnull)
 ,  mDocDirtyState(-1)
 ,  mDocWeak(nsnull)
+,  mPhonetic(nsnull)
 {
   //initialize member variables here
-  NS_INIT_ISUPPORTS();
 
   PR_AtomicIncrement(&gInstanceCount);
 
@@ -248,6 +240,8 @@ nsEditor::~nsEditor()
   /* shut down all classes that needed initialization */
   InsertTextTxn::ClassShutdown();
   IMETextTxn::ClassShutdown();
+
+  delete mPhonetic;
  
   PR_AtomicDecrement(&gInstanceCount);
 
@@ -259,7 +253,7 @@ nsEditor::~nsEditor()
 
 NS_IMPL_ADDREF(nsEditor)
 NS_IMPL_RELEASE(nsEditor)
-NS_IMPL_QUERY_INTERFACE3(nsEditor, nsIEditor, nsIEditorIMESupport, nsISupportsWeakReference)
+NS_IMPL_QUERY_INTERFACE4(nsEditor, nsIEditor, nsIEditorIMESupport, nsISupportsWeakReference, nsIPhonetic)
 
 #ifdef XP_MAC
 #pragma mark -
@@ -458,9 +452,9 @@ nsEditor::GetSelection(nsISelection **aSelection)
 }
 
 NS_IMETHODIMP 
-nsEditor::Do(nsITransaction *aTxn)
+nsEditor::DoTransaction(nsITransaction *aTxn)
 {
-  if (gNoisy) { printf("Editor::Do ----------\n"); }
+  if (gNoisy) { printf("Editor::DoTransaction ----------\n"); }
   
   nsresult result = NS_OK;
   
@@ -486,9 +480,9 @@ nsEditor::Do(nsITransaction *aTxn)
     plcTxn->Init(mPlaceHolderName, mSelState, this);
     mSelState = nsnull;  // placeholder txn took ownership of this pointer
 
-    // finally we QI to an nsITransaction since that's what Do() expects
+    // finally we QI to an nsITransaction since that's what DoTransaction() expects
     nsCOMPtr<nsITransaction> theTxn = do_QueryInterface(plcTxn);
-    Do(theTxn);  // we will recurse, but will not hit this case in the nested call
+    DoTransaction(theTxn);  // we will recurse, but will not hit this case in the nested call
 
     if (mTxnMgr)
     {
@@ -515,6 +509,25 @@ nsEditor::Do(nsITransaction *aTxn)
 
   if (aTxn)
   {  
+    // XXX: Why are we doing selection specific batching stuff here?
+    // XXX: Most entry points into the editor have auto variables that
+    // XXX: should trigger Begin/EndUpdateViewBatch() calls that will make
+    // XXX: these selection batch calls no-ops.
+    // XXX:
+    // XXX: I suspect that this was placed here to avoid multiple
+    // XXX: selection changed notifications from happening until after
+    // XXX: the transaction was done. I suppose that can still happen
+    // XXX: if an embedding application called DoTransaction() directly
+    // XXX: to pump its own transactions through the system, but in that
+    // XXX: case, wouldn't we want to use Begin/EndUpdateViewBatch() or
+    // XXX: its auto equivalent nsAutoUpdateViewBatch to ensure that
+    // XXX: selection listeners have access to accurate frame data?
+    // XXX:
+    // XXX: Note that if we did add Begin/EndUpdateViewBatch() calls
+    // XXX: we will need to make sure that they are disabled during
+    // XXX: the init of the editor for text widgets to avoid layout
+    // XXX: re-entry during initial reflow. - kin
+
     // get the selection and start a batch change
     nsCOMPtr<nsISelection>selection;
     result = GetSelection(getter_AddRefs(selection));
@@ -523,6 +536,7 @@ nsEditor::Do(nsITransaction *aTxn)
     nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
 
     selPrivate->StartBatchChanges();
+
     if (mTxnMgr) {
       result = mTxnMgr->DoTransaction(aTxn);
     }
@@ -532,7 +546,7 @@ nsEditor::Do(nsITransaction *aTxn)
     if (NS_SUCCEEDED(result)) {
       result = DoAfterDoTransaction(aTxn);
     }
-  
+
     selPrivate->EndBatchChanges(); // no need to check result here, don't lose result of operation
   }
  
@@ -742,10 +756,39 @@ nsEditor::EndPlaceHolderTransaction()
   NS_PRECONDITION(mPlaceHolderBatch > 0, "zero or negative placeholder batch count when ending batch!");
   if (mPlaceHolderBatch == 1)
   {
+#ifdef USE_CARET_FRAME_OFFSET_CACHE
+// XXX: Ifdef'd out caret frame offset caching code because it breaks
+//      JA IME (bug 204434) on the 1.4 branch.
+
+    nsCOMPtr<nsISelection>selection;
+    nsresult rv = GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(rv))
+      return rv;
+
+    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
+
+   // By making the assumption that no reflow happens during the calls
+   // to EndUpdateViewBatch and ScrollSelectionIntoView, we are able to
+   // allow the selection to cache a frame offset which is used by the
+   // caret drawing code. We only enable this cache here; at other times,
+   // we have no way to know whether reflow invalidates it
+   // See bugs 35296 and 199412.
+    if (selPrivate) {
+      selPrivate->SetCanCacheFrameOffset(PR_TRUE);
+    }
+#endif // USE_CARET_FRAME_OFFSET_CACHE
+    
     // time to turn off the batch
     EndUpdateViewBatch();
     // make sure selection is in view
     ScrollSelectionIntoView(PR_FALSE);
+
+#ifdef USE_CARET_FRAME_OFFSET_CACHE
+    // cached for frame offset are Not available now
+    if (selPrivate) {
+      selPrivate->SetCanCacheFrameOffset(PR_FALSE);
+    }
+#endif // USE_CARET_FRAME_OFFSET_CACHE
 
     if (mSelState)
     {
@@ -970,9 +1013,10 @@ nsEditor::GetWrapWidth(PRInt32 *aWrapColumn)
   *aWrapColumn = 72;
 
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if (NS_SUCCEEDED(rv) && prefs)
-    (void) prefs->GetIntPref("editor.htmlWrapColumn", aWrapColumn);
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv) && prefBranch)
+    (void) prefBranch->GetIntPref("editor.htmlWrapColumn", aWrapColumn);
   return NS_OK;
 }
 
@@ -1037,7 +1081,7 @@ nsEditor::SetAttribute(nsIDOMElement *aElement, const nsAString & aAttribute, co
   ChangeAttributeTxn *txn;
   nsresult result = CreateTxnForSetAttribute(aElement, aAttribute, aValue, &txn);
   if (NS_SUCCEEDED(result))  {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
   }
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
@@ -1073,7 +1117,7 @@ nsEditor::RemoveAttribute(nsIDOMElement *aElement, const nsAString& aAttribute)
   ChangeAttributeTxn *txn;
   nsresult result = CreateTxnForRemoveAttribute(aElement, aAttribute, &txn);
   if (NS_SUCCEEDED(result))  {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
   }
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
@@ -1122,7 +1166,7 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
   nsresult result = CreateTxnForCreateElement(aTag, aParent, aPosition, &txn);
   if (NS_SUCCEEDED(result)) 
   {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
     if (NS_SUCCEEDED(result)) 
     {
       result = txn->GetNewNode(aNewNode);
@@ -1169,7 +1213,7 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
   InsertElementTxn *txn;
   nsresult result = CreateTxnForInsertElement(aNode, aParent, aPosition, &txn);
   if (NS_SUCCEEDED(result))  {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
   }
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
@@ -1213,7 +1257,7 @@ nsEditor::SplitNode(nsIDOMNode * aNode,
   nsresult result = CreateTxnForSplitNode(aNode, aOffset, &txn);
   if (NS_SUCCEEDED(result))  
   {
-    result = Do(txn);
+    result = DoTransaction(txn);
     if (NS_SUCCEEDED(result))
     {
       result = txn->GetNewNode(aNewLeftNode);
@@ -1274,7 +1318,7 @@ nsEditor::JoinNodes(nsIDOMNode * aLeftNode,
   JoinElementTxn *txn;
   result = CreateTxnForJoinNode(aLeftNode, aRightNode, &txn);
   if (NS_SUCCEEDED(result))  {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
   }
 
   // The transaction system (if any) has taken ownwership of txn
@@ -1320,14 +1364,12 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   DeleteElementTxn *txn;
   result = CreateTxnForDeleteElement(aElement, &txn);
   if (NS_SUCCEEDED(result))  {
-    result = Do(txn);  
+    result = DoTransaction(txn);  
   }
 
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
 
-  mRangeUpdater.SelAdjDeleteNode(aElement, parent, offset);
-  
   if (mActionListeners)
   {
     for (i = 0; i < mActionListeners->Count(); i++)
@@ -1912,6 +1954,8 @@ nsEditor::BeginComposition(nsTextEventReply* aReply)
 #endif
   nsresult ret = QueryComposition(aReply);
   mInIMEMode = PR_TRUE;
+  if (mPhonetic)
+    mPhonetic->Truncate(0);
   return ret;
 }
 
@@ -1940,6 +1984,7 @@ nsEditor::EndComposition(void)
   mIMETextOffset = 0;
   mIMEBufferLength = 0;
   mInIMEMode = PR_FALSE;
+  mIsIMEComposing = PR_FALSE;
 
   // notify editor observers of action
   NotifyEditorObservers();
@@ -1952,6 +1997,18 @@ nsEditor::SetCompositionString(const nsAString& aCompositionString, nsIPrivateTe
 {
   return NS_ERROR_NOT_IMPLEMENTED;
 }
+
+NS_IMETHODIMP
+nsEditor::GetPhonetic(nsAString& aPhonetic)
+{
+  if (mPhonetic)
+    aPhonetic = *mPhonetic;
+  else
+    aPhonetic.Truncate(0);
+
+  return NS_OK;
+}
+
 
 static nsresult
 GetEditorContentWindow(nsIPresShell *aPresShell, nsIDOMElement *aRoot, nsIWidget **aResult)
@@ -2031,7 +2088,7 @@ nsEditor::ForceCompositionEnd()
 // flag for Unix.
 // We should use nsILookAndFeel to resolve this
 
-#if defined(XP_MAC) || defined(XP_PC)
+#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_WIN) || defined(XP_OS2)
   if(! mInIMEMode)
     return NS_OK;
 #endif
@@ -2405,6 +2462,44 @@ NS_IMETHODIMP nsEditor::InsertTextIntoTextNodeImpl(const nsAString& aStringToIns
       mIMETextNode = aTextNode;
       mIMETextOffset = aOffset;
     }
+    PRUint16 len ;
+    result = mIMETextRangeList->GetLength(&len);
+    if (NS_SUCCEEDED(result) && len > 0)
+    {
+      nsCOMPtr<nsIPrivateTextRange> range;
+      for (PRUint16 i = 0; i < len; i++) 
+      {
+        result = mIMETextRangeList->Item(i, getter_AddRefs(range));
+        if (NS_SUCCEEDED(result) && range)
+        {
+          PRUint16 type;
+          result = range->GetRangeType(&type);
+          if (NS_SUCCEEDED(result)) 
+          {
+            if (type == nsIPrivateTextRange::TEXTRANGE_RAWINPUT) 
+            {
+              PRUint16 start, end;
+              result = range->GetRangeStart(&start);
+              if (NS_SUCCEEDED(result)) 
+              {
+                result = range->GetRangeEnd(&end);
+                if (NS_SUCCEEDED(result)) 
+                {
+                  if (!mPhonetic)
+                    mPhonetic = new nsString();
+                  if (mPhonetic)
+                  {
+                    nsAutoString tmp(aStringToInsert);                  
+                    tmp.Mid(*mPhonetic, start, end-start);
+                  }
+                }
+              }
+            } // if
+          }
+        } // if
+      } // for
+    } // if
+
     result = CreateTxnForIMEText(aStringToInsert, (IMETextTxn**)&txn);
   }
   else
@@ -2428,7 +2523,7 @@ NS_IMETHODIMP nsEditor::InsertTextIntoTextNodeImpl(const nsAString& aStringToIns
   
   // XXX we may not need these view batches anymore.  This is handled at a higher level now I believe
   BeginUpdateViewBatch();
-  result = Do(txn);
+  result = DoTransaction(txn);
   EndUpdateViewBatch();
 
   mRangeUpdater.SelAdjInsertText(aTextNode, aOffset, aStringToInsert);
@@ -2552,8 +2647,8 @@ nsEditor::NotifyDocumentListeners(TDocumentListenerNotification aNotificationTyp
     case eDocumentCreated:
       for (i = 0; i < numListeners;i++)
       {
-        nsCOMPtr<nsISupports> iSupports = getter_AddRefs(mDocStateListeners->ElementAt(i));
-        nsCOMPtr<nsIDocumentStateListener> thisListener = do_QueryInterface(iSupports);
+        nsCOMPtr<nsIDocumentStateListener> thisListener =
+          do_QueryElementAt(mDocStateListeners, i);
         if (thisListener)
         {
           rv = thisListener->NotifyDocumentCreated();
@@ -2566,8 +2661,8 @@ nsEditor::NotifyDocumentListeners(TDocumentListenerNotification aNotificationTyp
     case eDocumentToBeDestroyed:
       for (i = 0; i < numListeners;i++)
       {
-        nsCOMPtr<nsISupports> iSupports = getter_AddRefs(mDocStateListeners->ElementAt(i));
-        nsCOMPtr<nsIDocumentStateListener> thisListener = do_QueryInterface(iSupports);
+        nsCOMPtr<nsIDocumentStateListener> thisListener =
+          do_QueryElementAt(mDocStateListeners, i);
         if (thisListener)
         {
           rv = thisListener->NotifyDocumentWillBeDestroyed();
@@ -2590,8 +2685,8 @@ nsEditor::NotifyDocumentListeners(TDocumentListenerNotification aNotificationTyp
         
         for (i = 0; i < numListeners;i++)
         {
-          nsCOMPtr<nsISupports> iSupports = getter_AddRefs(mDocStateListeners->ElementAt(i));
-          nsCOMPtr<nsIDocumentStateListener> thisListener = do_QueryInterface(iSupports);
+          nsCOMPtr<nsIDocumentStateListener> thisListener =
+            do_QueryElementAt(mDocStateListeners, i);
           if (thisListener)
           {
             rv = thisListener->NotifyDocumentStateChanged(mDocDirtyState);
@@ -2648,10 +2743,8 @@ NS_IMETHODIMP nsEditor::DeleteText(nsIDOMCharacterData *aElement,
       }
     }
     
-    result = Do(txn); 
+    result = DoTransaction(txn); 
     
-    mRangeUpdater.SelAdjDeleteText(aElement, aOffset, aLength);
-
     // let listeners know what happened
     if (mActionListeners)
     {
@@ -2679,7 +2772,7 @@ NS_IMETHODIMP nsEditor::CreateTxnForDeleteText(nsIDOMCharacterData *aElement,
   {
     result = TransactionFactory::GetNewTransaction(DeleteTextTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result))  {
-      result = (*aTxn)->Init(this, aElement, aOffset, aLength);
+      result = (*aTxn)->Init(this, aElement, aOffset, aLength, &mRangeUpdater);
     }
   }
   return result;
@@ -3533,9 +3626,9 @@ nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag)
   {
     nsAutoString tag;
     element->GetTagName(tag);
-    const PRUnichar *unicodeString;
-    aTag->GetUnicode(&unicodeString);
-    if (tag.Equals(unicodeString, nsCaseInsensitiveStringComparator()))
+    const char *tagStr;
+    aTag->GetUTF8String(&tagStr);
+    if (tag.EqualsIgnoreCase(tagStr))
     {
       return PR_TRUE;
     }
@@ -4040,12 +4133,7 @@ nsEditor::GetEndNodeAndOffset(nsISelection *aSelection,
 nsresult 
 nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
 {
-  nsresult result;
   nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-  nsIFrame *frame;
-  nsCOMPtr<nsIStyleContext> styleContext;
-  const nsStyleText* styleText;
-  PRBool bPreformatted;
   
   if (!aResult || !content) return NS_ERROR_NULL_POINTER;
   
@@ -4053,11 +4141,12 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
   if (!ps) return NS_ERROR_NOT_INITIALIZED;
   
-  result = ps->GetPrimaryFrameFor(content, &frame);
+  nsIFrame *frame;
+  nsresult result = ps->GetPrimaryFrameFor(content, &frame);
   if (NS_FAILED(result)) return result;
-  
-  result = ps->GetStyleContextFor(frame, getter_AddRefs(styleContext));
-  if (NS_FAILED(result))
+
+  NS_ASSERTION(frame, "no frame, see bug #188946");
+  if (!frame)
   {
     // Consider nodes without a style context to be NOT preformatted:
     // For instance, this is true of JS tags inside the body (which show
@@ -4066,12 +4155,10 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
     return NS_OK;
   }
 
-  styleText = (const nsStyleText*)styleContext->GetStyleData(eStyleStruct_Text);
+  const nsStyleText* styleText = frame->GetStyleText();
 
-  bPreformatted = (NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace) ||
-    (NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == styleText->mWhiteSpace);
-
-  *aResult = bPreformatted;
+  *aResult = NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace ||
+             NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == styleText->mWhiteSpace;
   return NS_OK;
 }
 
@@ -4238,28 +4325,37 @@ nsEditor::JoinNodeDeep(nsIDOMNode *aLeftNode,
 
 nsresult nsEditor::BeginUpdateViewBatch()
 {
-  NS_PRECONDITION(mUpdateCount>=0, "bad state");
+  NS_PRECONDITION(mUpdateCount >= 0, "bad state");
 
-  nsCOMPtr<nsISelection>selection;
-  nsresult rv = GetSelection(getter_AddRefs(selection));
-  if (NS_SUCCEEDED(rv) && selection) 
-  {
-    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
-    selPrivate->StartBatchChanges();
-  }
 
-  if (nsnull!=mViewManager)
+  if (0 == mUpdateCount)
   {
-    if (0==mUpdateCount)
+    // Turn off selection updates and notifications.
+
+    nsCOMPtr<nsISelection> selection;
+    GetSelection(getter_AddRefs(selection));
+
+    if (selection) 
     {
-      mViewManager->BeginUpdateViewBatch();
-      nsCOMPtr<nsIPresShell> presShell;
-      rv = GetPresShell(getter_AddRefs(presShell));
-      if (NS_SUCCEEDED(rv) && presShell)
-        presShell->BeginReflowBatching();
+      nsCOMPtr<nsISelectionPrivate> selPrivate(do_QueryInterface(selection));
+      selPrivate->StartBatchChanges();
     }
-    mUpdateCount++;
+
+    // Turn off view updating.
+
+    if (mViewManager)
+      mViewManager->BeginUpdateViewBatch();
+
+    // Turn off reflow.
+
+    nsCOMPtr<nsIPresShell> presShell;
+    GetPresShell(getter_AddRefs(presShell));
+
+    if (presShell)
+      presShell->BeginReflowBatching();
   }
+
+  mUpdateCount++;
 
   return NS_OK;
 }
@@ -4267,63 +4363,58 @@ nsresult nsEditor::BeginUpdateViewBatch()
 
 nsresult nsEditor::EndUpdateViewBatch()
 {
-  NS_PRECONDITION(mUpdateCount>0, "bad state");
+  NS_PRECONDITION(mUpdateCount > 0, "bad state");
   
-  nsresult rv;
-  nsCOMPtr<nsISelectionController> selCon = do_QueryReferent(mSelConWeak,&rv);
-  if (NS_FAILED(rv))
-    return rv;
-  if (!selCon)
+  if (mUpdateCount <= 0)
+  {
+    mUpdateCount = 0;
     return NS_ERROR_FAILURE;
-    
-  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
-  nsCOMPtr<nsICaret> caret;
-  if (!ps)
-    return NS_ERROR_FAILURE;
-
-  rv = ps->GetCaret(getter_AddRefs(caret));
-  if (NS_FAILED(rv))
-    return rv;
-  if (!caret)
-    return NS_ERROR_FAILURE;
-
-  StCaretHider caretHider(caret);
-        
-  nsCOMPtr<nsISelection>selection;
-  nsresult selectionResult = GetSelection(getter_AddRefs(selection));
-  if (NS_SUCCEEDED(selectionResult) && selection) {
-    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
-    selPrivate->EndBatchChanges();
   }
 
-  if (mViewManager)
+  mUpdateCount--;
+
+  if (0 == mUpdateCount)
   {
-    mUpdateCount--;
-    if (0==mUpdateCount)
+    // Hide the caret with an StCaretHider. By the time it goes out
+    // of scope and tries to show the caret, reflow and selection changed
+    // notifications should've happened so the caret should have enough info
+    // to draw at the correct position.
+
+    nsCOMPtr<nsICaret> caret;
+    nsCOMPtr<nsIPresShell> presShell;
+    GetPresShell(getter_AddRefs(presShell));
+
+    if (presShell)
+      presShell->GetCaret(getter_AddRefs(caret));
+
+    StCaretHider caretHider(caret);
+        
+    PRUint32 flags = 0;
+
+    GetFlags(&flags);
+
+    // Turn reflow back on.
+    //
+    // Make sure we enable reflowing before we call
+    // mViewManager->EndUpdateViewBatch().  This will make sure that any
+    // new updates caused by a reflow, that may happen during the
+    // EndReflowBatching(), get included if we force a refresh during
+    // the mViewManager->EndUpdateViewBatch() call.
+
+    if (presShell)
     {
-      PRUint32 flags = 0;
-
-      rv = GetFlags(&flags);
-
-      if (NS_FAILED(rv))
-        return rv;
-
-      // Make sure we enable reflowing before we call
-      // mViewManager->EndUpdateViewBatch().  This will make sure that any
-      // new updates caused by a reflow, that may happen during the
-      // EndReflowBatching(), get included if we force a refresh during
-      // the mViewManager->EndUpdateViewBatch() call.
-
       PRBool forceReflow = PR_TRUE;
 
       if (flags & nsIPlaintextEditor::eEditorUseAsyncUpdatesMask)
         forceReflow = PR_FALSE;
 
-      nsCOMPtr<nsIPresShell>    presShell;
-      rv = GetPresShell(getter_AddRefs(presShell));
-      if (NS_SUCCEEDED(rv) && presShell)
-        presShell->EndReflowBatching(forceReflow);
+      presShell->EndReflowBatching(forceReflow);
+    }
 
+    // Turn view updating back on.
+
+    if (mViewManager)
+    {
       PRUint32 updateFlag = NS_VMREFRESH_IMMEDIATE;
 
       if (flags & nsIPlaintextEditor::eEditorUseAsyncUpdatesMask)
@@ -4331,7 +4422,17 @@ nsresult nsEditor::EndUpdateViewBatch()
 
       mViewManager->EndUpdateViewBatch(updateFlag);
     }
-  }  
+
+    // Turn selection updating and notifications back on.
+
+    nsCOMPtr<nsISelection>selection;
+    GetSelection(getter_AddRefs(selection));
+
+    if (selection) {
+      nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
+      selPrivate->EndBatchChanges();
+    }
+  }
 
   return NS_OK;
 }
@@ -4377,7 +4478,7 @@ nsEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
       }
     }
 
-    res = Do(txn);  
+    res = DoTransaction(txn);  
 
     if (mActionListeners)
     {
@@ -4427,6 +4528,49 @@ nsEditor::DeleteSelectionAndCreateNode(const nsAString& aTag,
 
 
 /* Non-interface, protected methods */
+
+nsresult
+nsEditor::GetIMEBufferLength(PRInt32* length)
+{
+  *length = mIMEBufferLength;
+  return NS_OK;
+}
+
+void
+nsEditor::SetIsIMEComposing(){  
+  // We set mIsIMEComposing according to mIMETextRangeList.
+  nsCOMPtr<nsIPrivateTextRange> rangePtr;
+  PRUint16 listlen, type;
+
+  mIsIMEComposing = PR_FALSE;
+  nsresult result = mIMETextRangeList->GetLength(&listlen);
+  if (NS_FAILED(result)) return;
+
+  for (PRUint16 i = 0; i < listlen; i++)
+  {
+      result = mIMETextRangeList->Item(i, getter_AddRefs(rangePtr));
+      if (NS_FAILED(result)) continue;
+      result = rangePtr->GetRangeType(&type);
+      if (NS_FAILED(result)) continue;
+      if ( type == nsIPrivateTextRange::TEXTRANGE_RAWINPUT ||
+           type == nsIPrivateTextRange::TEXTRANGE_CONVERTEDTEXT ||
+           type == nsIPrivateTextRange::TEXTRANGE_SELECTEDRAWTEXT ||
+           type == nsIPrivateTextRange::TEXTRANGE_SELECTEDCONVERTEDTEXT )
+      {
+        mIsIMEComposing = PR_TRUE;
+#ifdef DEBUG_IME
+        printf("nsEditor::mIsIMEComposing = PR_TRUE\n");
+#endif
+        break;
+      }
+  }
+  return;
+}
+
+PRBool
+nsEditor::IsIMEComposing() {
+  return mIsIMEComposing;
+}
 
 NS_IMETHODIMP
 nsEditor::DeleteSelectionAndPrepareToCreateNode(nsCOMPtr<nsIDOMNode> &parentSelectedNode, PRInt32& offsetOfNewNode)
@@ -4641,7 +4785,7 @@ NS_IMETHODIMP nsEditor::CreateTxnForDeleteElement(nsIDOMNode * aElement,
   {
     result = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result)) {
-      result = (*aTxn)->Init(aElement);
+      result = (*aTxn)->Init(aElement, &mRangeUpdater);
     }
   }
   return result;
@@ -4786,7 +4930,7 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
             result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
             if ((NS_SUCCEEDED(result)) && (nsnull!=txn))
             {
-              txn->Init(this, range);
+              txn->Init(this, range, &mRangeUpdater);
               (*aTxn)->AppendChild(txn);
               NS_RELEASE(txn);
             }
@@ -4814,10 +4958,9 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
 
 //XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
 NS_IMETHODIMP
-nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange, 
-                                           nsIEditor::EDirection
-                                             aAction,
-                                           EditAggregateTxn    *aTxn)
+nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange          *aRange, 
+                                           nsIEditor::EDirection aAction,
+                                           EditAggregateTxn     *aTxn)
 {
   nsCOMPtr<nsIDOMNode> node;
   PRBool isFirst;
@@ -4852,8 +4995,8 @@ nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange,
   isFirst = (0==offset);
   isLast  = (count==(PRUint32)offset);
 
-// XXX: if isFirst && isLast, then we'll need to delete the node 
-  //    as well as the 1 child
+  // XXX: if isFirst && isLast, then we'll need to delete the node 
+  //      as well as the 1 child
 
   // build a transaction for deleting the appropriate data
   // XXX: this has to come from rule section
@@ -5123,4 +5266,56 @@ nsEditor::RemoveAttributeOrEquivalent(nsIDOMElement * aElement,
 {
   return RemoveAttribute(aElement, aAttribute);
 }
-
+#if DEBUG_JOE
+void
+nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
+{
+  PRInt32 i;
+  for (i=0; i<indent; i++)
+    printf("  ");
+  
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
+  
+  if (element || docfrag)
+  { 
+    if (element)
+    {
+      nsAutoString tag;
+      char ctag[40];
+      element->GetTagName(tag);
+      tag.ToCString(ctag,40);
+      ctag[40]=0;
+      printf("<%s>\n", ctag);
+    }
+    else
+    {
+      printf("<document fragment>\n");
+    }
+    nsCOMPtr<nsIDOMNodeList> childList;
+    aNode->GetChildNodes(getter_AddRefs(childList));
+    if (!childList) return NS_ERROR_NULL_POINTER;
+    PRUint32 numChildren;
+    childList->GetLength(&numChildren);
+    nsCOMPtr<nsIDOMNode> child, tmp;
+    aNode->GetFirstChild(getter_AddRefs(child));
+    for (i=0; i<numChildren; i++)
+    {
+      DumpNode(child, indent+1);
+      child->GetNextSibling(getter_AddRefs(tmp));
+      child = tmp;
+    }
+  }
+  else if (IsTextNode(aNode))
+  {
+    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
+    nsAutoString str;
+    textNode->GetData(str);
+    char theText[30], *c;
+    str.ToCString(theText,30);
+    theText[30]=0;
+    while (c=strchr(theText,'\n')) (*c) = ' ';
+    printf("<textnode> %s\n", theText);
+  }
+}
+#endif

@@ -76,10 +76,10 @@ public:
   NS_IMETHOD          Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface, PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight);
   NS_IMETHOD          Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface, PRInt32 aSX, PRInt32 aSY, PRInt32 aSWidth,  \
   						PRInt32 aSHeight, PRInt32 aDX, PRInt32 aDY, PRInt32 aDWidth, PRInt32 aDHeight);
-#ifdef USE_IMG2
+
   NS_IMETHOD DrawToImage(nsIImage* aDstImage, nscoord aDX, nscoord aDY,
              nscoord aDWidth, nscoord aDHeight);
-#endif
+
   NS_IMETHOD 		DrawTile(nsIRenderingContext &aContext, nsDrawingSurface aSurface, 
   						nsRect &aSrcRect, nsRect &aTileRect);
 
@@ -146,10 +146,14 @@ private:
   PRInt16             mAlphaLevel;        // an alpha level every pixel uses
   PhImage_t           mPhImage;
   PhImage_t           *mPhImageZoom;			// the zoomed version of mPhImage
-  PdOffscreenContext_t *mPhImageCache;	  // Cache for the image offscreen
+	PRInt32							mDecodedY2_when_scaled;
 
-  PRUint8             mFlags;             // flags set by ImageUpdated
-  PRUint8             mImageFlags;             // flags set by ImageUpdated
+#ifdef ALLOW_PHIMAGE_CACHEING
+  PdOffscreenContext_t *mPhImageCache;	  // Cache for the image offscreen
+#endif
+
+  PRUint8             mImageFlags;
+	PRUint8							mDirtyFlags;
   PRInt32 mNaturalWidth;
   PRInt32 mNaturalHeight;
 };

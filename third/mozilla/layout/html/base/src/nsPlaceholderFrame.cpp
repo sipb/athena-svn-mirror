@@ -39,7 +39,6 @@
 #include "nsIContent.h"
 #include "nsIPresContext.h"
 #include "nsIRenderingContext.h"
-#include "nsIStyleContext.h"
 #include "nsLayoutAtoms.h"
 
 nsresult
@@ -78,9 +77,8 @@ nsPlaceholderFrame::Reflow(nsIPresContext*          aPresContext,
   aDesiredSize.height = 0;
   aDesiredSize.ascent = 0;
   aDesiredSize.descent = 0;
-  if (nsnull != aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = 0;
-    aDesiredSize.maxElementSize->height = 0;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = 0;
   }
 
   aStatus = NS_FRAME_COMPLETE;
@@ -159,15 +157,4 @@ nsPlaceholderFrame::List(nsIPresContext* aPresContext, FILE* out, PRInt32 aInden
   fputs("\n", out);
   return NS_OK;
 }
-
-NS_IMETHODIMP
-nsPlaceholderFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
-  return NS_OK;
-}
-
 #endif

@@ -67,8 +67,12 @@
 #include "nsIAppShellService.h"
 #include "nsAppShellCIDs.h"
 static NS_DEFINE_CID(kAppShellServiceCID,   NS_APPSHELL_SERVICE_CID);
+#elif defined(LINUX)
+#if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)
+#include <string.h>
 #else
 extern "C" char * strsignal(int);
+#endif
 #endif
 
 #ifdef MOZ_WIDGET_PHOTON
@@ -114,6 +118,7 @@ void abnormal_exit_handler(int signum)
 
 #include <unistd.h>
 #include "nsISupportsUtils.h"
+#include "nsStackFrameUnix.h"
 
 void
 ah_crap_handler(int signum)
@@ -134,7 +139,7 @@ ah_crap_handler(int signum)
 #endif
   
   printf("Stack:\n");
-  nsTraceRefcnt::WalkTheStack(stdout);
+  DumpStackToFile(stdout);
 
   printf("Sleeping for 5 minutes.\n");
   printf("Type 'gdb %s %d' to attatch your debugger to this thread.\n",

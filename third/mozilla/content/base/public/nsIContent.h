@@ -42,6 +42,7 @@
 #include "nsISupports.h"
 #include "nsEvent.h"
 #include "nsAString.h"
+#include "nsContentErrors.h"
 
 // Forward declarations
 class nsIAtom;
@@ -52,7 +53,6 @@ class nsIDOMEvent;
 class nsIContent;
 class nsISupportsArray;
 class nsIDOMRange;
-class nsISizeOfHandler;
 class nsINodeInfo;
 class nsIEventListenerManager;
 
@@ -514,23 +514,6 @@ public:
 
 #ifdef DEBUG
   /**
-   * Get the size of the content object. The size value should include
-   * all subordinate data referenced by the content that is not
-   * accounted for by child content. However, this value should not
-   * include the frame objects, style contexts, views or other data
-   * that lies logically outside the content model.
-   *
-   * If the implementation so chooses, instead of returning the total
-   * subordinate data it may instead use the sizeof handler to store
-   * away subordinate data under its own key so that the subordinate
-   * data may be tabulated independently of the frame itself.
-   *
-   * The caller is responsible for recursing over all children that
-   * the content contains.
-   */
-  NS_IMETHOD  SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const = 0;
-
-  /**
    * List the content (and anything it contains) out to the given
    * file stream. Use aIndent as the base indent during formatting.
    * Returns NS_OK unless a file error occurs.
@@ -545,17 +528,5 @@ public:
   NS_IMETHOD DumpContent(FILE* out = stdout, PRInt32 aIndent = 0,PRBool aDumpAll=PR_TRUE) const = 0;
 #endif
 };
-
-// nsresult codes for GetAttr
-/** Returned if the attr exists and has a value */
-#define NS_CONTENT_ATTR_HAS_VALUE NS_OK
-
-/** Returned if the attr exists but has no value */
-#define NS_CONTENT_ATTR_NO_VALUE \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT,0)
-
-/** Returned if the attr does not exist */
-#define NS_CONTENT_ATTR_NOT_THERE \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT,1)
 
 #endif /* nsIContent_h___ */

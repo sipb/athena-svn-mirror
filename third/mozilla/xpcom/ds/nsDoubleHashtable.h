@@ -16,7 +16,7 @@
  *
  * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998
+ * Portions created by the Initial Developer are Copyright (C) 2002
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -35,6 +35,10 @@
  * the terms of any one of the NPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+
+/**
+ * nsDoubleHashtable.h is OBSOLETE. Use nsTHashtable or a derivative instead.
+ */
 
 #ifndef __nsDoubleHashtable_h__
 #define __nsDoubleHashtable_h__

@@ -44,8 +44,6 @@ NS_IMPL_ISUPPORTS1(nsDialogParamBlock, nsIDialogParamBlock)
 
 nsDialogParamBlock::nsDialogParamBlock() : mNumStrings(0), mString(NULL)
 {
-  NS_INIT_ISUPPORTS();
-
   for(PRInt32 i = 0; i < kNumInts; i++)
     mInt[i] = 0;
 }
@@ -104,4 +102,20 @@ NS_IMETHODIMP nsDialogParamBlock::SetString(PRInt32 inIndex, const PRUnichar *in
     mString[inIndex]= inString;
   return rv;
 }
+
+NS_IMETHODIMP
+nsDialogParamBlock::GetObjects(nsIMutableArray * *aObjects)
+{
+  NS_ENSURE_ARG_POINTER(aObjects);
+  NS_IF_ADDREF(*aObjects = mObjects);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDialogParamBlock::SetObjects(nsIMutableArray * aObjects)
+{
+  mObjects = aObjects;
+  return NS_OK;
+}
+
 

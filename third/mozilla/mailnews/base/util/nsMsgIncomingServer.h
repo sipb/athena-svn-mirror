@@ -40,7 +40,7 @@
 #define nsMsgIncomingServer_h__
 
 #include "nsIMsgIncomingServer.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
 #include "nsIMsgFilterList.h"
 #include "msgCore.h"
 #include "nsIFolder.h"
@@ -70,7 +70,7 @@ class NS_MSG_BASE nsMsgIncomingServer : public nsIMsgIncomingServer,
 
   NS_DECL_ISUPPORTS
   NS_DECL_NSIMSGINCOMINGSERVER
-  
+
 protected:
   nsCString m_serverKey;
   void getPrefName(const char *serverKey, const char *pref, nsCString& fullPrefName);
@@ -97,11 +97,9 @@ protected:
   nsresult getProtocolInfo(nsIMsgProtocolInfo **aResult);
   nsCOMPtr <nsIFileSpec> mFilterFile;
   nsCOMPtr <nsIMsgFilterList> mFilterList;
-  // pref callback to clear the user prefs
-  static void clearPrefEnum(const char  *aPref, void *aClosure);
 
 private:
-  nsIPref *m_prefs;
+  nsIPrefBranch *m_prefBranch;
   nsCString m_password;
   PRUint32 m_biffState;
   PRPackedBool m_serverBusy;
@@ -109,10 +107,7 @@ private:
   nsCOMPtr<nsIMsgFilterPlugin> mFilterPlugin;  // XXX should be a list
 
 protected:
-  // member variable for canHaveFilters
   PRPackedBool m_canHaveFilters;
-
-  // member variable for to check if we need display startup page
   PRPackedBool m_displayStartupPage;
   PRPackedBool mPerformingBiff;
 };

@@ -52,13 +52,11 @@
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
 #include "nsDOMClassInfo.h"
-
 //
 //  History class implementation 
 //
 HistoryImpl::HistoryImpl(nsIDocShell* aDocShell) : mDocShell(aDocShell)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 HistoryImpl::~HistoryImpl()
@@ -68,7 +66,7 @@ HistoryImpl::~HistoryImpl()
 
 // QueryInterface implementation for HistoryImpl
 NS_INTERFACE_MAP_BEGIN(HistoryImpl)
-  NS_INTERFACE_MAP_ENTRY(nsISupports)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMHistory)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHistory)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHistory)
   NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(History)
@@ -216,7 +214,7 @@ HistoryImpl::Forward()
 }
 
 NS_IMETHODIMP
-HistoryImpl::GoIndex(PRInt32 aDelta)
+HistoryImpl::Go(PRInt32 aDelta)
 {
   nsCOMPtr<nsISHistory> session_history;
 
@@ -234,62 +232,11 @@ HistoryImpl::GoIndex(PRInt32 aDelta)
   
   PRInt32 index = curIndex + aDelta;
   if (index > -1  &&  index < len)
-     webnav->GotoIndex(index);
+    webnav->GotoIndex(index);
   // We always want to return a NS_OK, since returning errors 
   // from GotoIndex() can lead to exceptions and a possible leak
   // of history length
   return NS_OK;
-}
-
-NS_IMETHODIMP
-HistoryImpl::GoUri(const nsAString& aUriSubstring)
-{
-  nsCOMPtr<nsISHistory> session_history;
-
-  GetSessionHistoryFromDocShell(mDocShell, getter_AddRefs(session_history));
-  NS_ENSURE_TRUE(session_history, NS_ERROR_FAILURE);
-
-  // QI SHistory to nsIWebNavigation
-  nsCOMPtr<nsIWebNavigation> webnav(do_QueryInterface(session_history));
-  NS_ENSURE_TRUE(webnav, NS_ERROR_FAILURE);
-
-  nsresult rv = NS_OK;
-  PRInt32 i, count;
-
-  rv = session_history->GetCount(&count);
-
-  for (i = 0; (i < count) && NS_SUCCEEDED(rv); i++) {
-    nsCOMPtr<nsIHistoryEntry> sh_entry;
-
-    rv = session_history->GetEntryAtIndex(i, PR_FALSE,
-                                          getter_AddRefs(sh_entry));
-    if (sh_entry) {
-      nsCOMPtr<nsIURI> uri;
-
-      rv = sh_entry->GetURI(getter_AddRefs(uri));
-
-      if (uri) {
-        nsCAutoString urlCString;
-        rv = uri->GetSpec(urlCString);
-
-        NS_ConvertUTF8toUCS2 url(urlCString);
-
-        nsReadingIterator<PRUnichar> start;
-        nsReadingIterator<PRUnichar> end;
-
-        url.BeginReading(start);
-        url.EndReading(end);
-
-        if (FindInReadable(aUriSubstring, start, end)) {
-          rv = webnav->GotoIndex(i);
-
-          break;
-        }
-      }
-    }
-  }
-
-  return rv;
 }
 
 NS_IMETHODIMP
@@ -308,34 +255,26 @@ HistoryImpl::Go()
     return NS_ERROR_NOT_AVAILABLE;
 
   PRUint32 argc;
-
   ncc->GetArgc(&argc);
 
-  if (argc == 0) {
-    return NS_OK;
+  PRInt32 delta = 0;
+
+  if (argc > 0) {
+    jsval *argv = nsnull;
+
+    ncc->GetArgvPtr(&argv);
+    NS_ENSURE_TRUE(argv, NS_ERROR_UNEXPECTED);
+
+    if (!JSVAL_IS_INT(argv[0])) {
+      // Not an index, don't do anything.
+
+      return NS_OK;
+    }
+
+    delta = JSVAL_TO_INT(argv[0]);
   }
 
-  jsval *argv = nsnull;
-
-  ncc->GetArgvPtr(&argv);
-  NS_ENSURE_TRUE(argv, NS_ERROR_UNEXPECTED);
-
-  JSContext *cx = nsnull;
-
-  rv = ncc->GetJSContext(&cx);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  if (JSVAL_IS_INT(argv[0])) {
-    PRInt32 delta = JSVAL_TO_INT(argv[0]);
- 
-    return GoIndex(delta);
-  }
-
-  JSString* jsstr = JS_ValueToString(cx, argv[0]);
-
-  return GoUri(nsDependentString(NS_REINTERPRET_CAST(const PRUnichar *,
-                                                   ::JS_GetStringChars(jsstr)),
-                               ::JS_GetStringLength(jsstr)));
+  return Go(delta);
 }
 
 NS_IMETHODIMP

@@ -82,19 +82,24 @@ typedef struct
 
 nsMsgSearchAttribEntry SearchAttribEntryTable[] =
 {
-    {nsMsgSearchAttrib::Subject,		"subject"},
-    {nsMsgSearchAttrib::Sender,		"from"},
-    {nsMsgSearchAttrib::Body,		"body"},
-    {nsMsgSearchAttrib::Date,		"date"},
-    {nsMsgSearchAttrib::Priority,	"priority"},
-    {nsMsgSearchAttrib::MsgStatus,	"status"},	
-    {nsMsgSearchAttrib::To,			"to"},
-    {nsMsgSearchAttrib::CC,			"cc"},
-    {nsMsgSearchAttrib::ToOrCC,		"to or cc"},
-    {nsMsgSearchAttrib::AgeInDays,   "age in days"},
-    {nsMsgSearchAttrib::Label,       "label"},
-    {nsMsgSearchAttrib::SenderInAddressBook,		"from in ab"},
-    {nsMsgSearchAttrib::JunkStatus,       "junk status"},
+    {nsMsgSearchAttrib::Subject,    "subject"},
+    {nsMsgSearchAttrib::Sender,     "from"},
+    {nsMsgSearchAttrib::Body,       "body"},
+    {nsMsgSearchAttrib::Date,       "date"},
+    {nsMsgSearchAttrib::Priority,   "priority"},
+    {nsMsgSearchAttrib::MsgStatus,  "status"},
+    {nsMsgSearchAttrib::To,         "to"},
+    {nsMsgSearchAttrib::CC,         "cc"},
+    {nsMsgSearchAttrib::ToOrCC,     "to or cc"},
+    {nsMsgSearchAttrib::AgeInDays,  "age in days"},
+    {nsMsgSearchAttrib::Label,      "label"},
+    // this used to be nsMsgSearchAttrib::SenderInAddressBook
+    // we used to have two Sender menuitems
+    // for backward compatability, we can still parse
+    // the old style.  see bug #179803
+    {nsMsgSearchAttrib::Sender,     "from in ab"}, 
+    {nsMsgSearchAttrib::JunkStatus, "junk status"},
+    {nsMsgSearchAttrib::HasAttachmentStatus, "has attachment status"},
 };
 
 // Take a string which starts off with an attribute
@@ -150,29 +155,15 @@ nsresult NS_MsgGetAttributeFromString(const char *string, PRInt16 *attrib)
         if (nsCRT::strcasecmp(token, string) == 0)
         {
           *attrib += i; //we found custom header in the pref
-          return NS_OK;
+          found = PR_TRUE;
+          break;
         }
         token = nsCRT::strtok(newStr,":", &newStr);
         i++;
-
-        //we know we can have a max of 50 custom headers
-        if ( nsMsgSearchAttrib::OtherHeader + i >= nsMsgSearchAttrib::kNumMsgSearchAttributes -1)
-        {
-           NS_ASSERTION(0, "pref has more headers than the table can hold");
-           return NS_MSG_CUSTOM_HEADERS_OVERFLOW;
-        }
       }
-
-      *attrib += i; //this is *attrib for the new custom header 
-      headers.Append(": "); //Adding additonal header to the pref so append the separator
     }
-
-    headers.Append(string);
-    prefBranch->SetCharPref(MAILNEWS_CUSTOM_HEADERS, headers);
-
-    prefService->SavePrefFile(nsnull); //save customHeader pref - we have added a new header
-  }	
-	return NS_OK;      // we always succeed now
+  }
+	return (found) ? NS_OK : NS_ERROR_INVALID_ARG;
 }
 
 nsresult NS_MsgGetStringForAttribute(PRInt16 attrib, const char **string)
@@ -194,7 +185,6 @@ nsresult NS_MsgGetStringForAttribute(PRInt16 attrib, const char **string)
 	}
 	// we no longer return invalid attribute. If we cannot find the string in the table, 
 	// then it is an arbitrary header. Return success regardless if found or not
-//	return (found) ? SearchError_Success : SearchError_InvalidAttribute;
 	return NS_OK;
 }
 
@@ -206,21 +196,21 @@ typedef struct
 
 nsMsgSearchOperatorEntry SearchOperatorEntryTable[] =
 {
-	{nsMsgSearchOp::Contains,	"contains"},
-    {nsMsgSearchOp::DoesntContain,"doesn't contain"},
-    {nsMsgSearchOp::Is,           "is"},
-    {nsMsgSearchOp::Isnt,		"isn't"},
-    {nsMsgSearchOp::IsEmpty,		"is empty"},
-	{nsMsgSearchOp::IsBefore,    "is before"},
-    {nsMsgSearchOp::IsAfter,		"is after"},
-    {nsMsgSearchOp::IsHigherThan, "is higher than"},
-    {nsMsgSearchOp::IsLowerThan,	"is lower than"},
-    {nsMsgSearchOp::BeginsWith,  "begins with"},
-	{nsMsgSearchOp::EndsWith,	"ends with"},
-    {nsMsgSearchOp::IsInAB,	 "is in ab"},
-    {nsMsgSearchOp::IsntInAB,	"isn't in ab"},
-    {nsMsgSearchOp::IsGreaterThan, "is greater than"},
-    {nsMsgSearchOp::IsLessThan, "is less than"}
+  {nsMsgSearchOp::Contains,	"contains"},
+  {nsMsgSearchOp::DoesntContain,"doesn't contain"},
+  {nsMsgSearchOp::Is,           "is"},
+  {nsMsgSearchOp::Isnt,		"isn't"},
+  {nsMsgSearchOp::IsEmpty,		"is empty"},
+  {nsMsgSearchOp::IsBefore,    "is before"},
+  {nsMsgSearchOp::IsAfter,		"is after"},
+  {nsMsgSearchOp::IsHigherThan, "is higher than"},
+  {nsMsgSearchOp::IsLowerThan,	"is lower than"},
+  {nsMsgSearchOp::BeginsWith,  "begins with"},
+  {nsMsgSearchOp::EndsWith,	"ends with"},
+  {nsMsgSearchOp::IsInAB,	 "is in ab"},
+  {nsMsgSearchOp::IsntInAB,	"isn't in ab"},
+  {nsMsgSearchOp::IsGreaterThan, "is greater than"},
+  {nsMsgSearchOp::IsLessThan, "is less than"}
 };
 
 nsresult NS_MsgGetOperatorFromString(const char *string, PRInt16 *op)
@@ -312,15 +302,15 @@ void NS_MsgGetUntranslatedStatusName (uint32 s, nsCString *outName)
 
 PRInt32 NS_MsgGetStatusValueFromName(char *name)
 {
-	if (PL_strcmp("read", name))
+	if (!strcmp("read", name))
 		return MSG_FLAG_READ;
-	if (PL_strcmp("replied", name))
+	if (!strcmp("replied", name))
 		return MSG_FLAG_REPLIED;
-	if (PL_strcmp("forwarded", name))
+	if (!strcmp("forwarded", name))
 		return MSG_FLAG_FORWARDED;
-	if (PL_strcmp("replied and forwarded", name))
+	if (!strcmp("replied and forwarded", name))
 		return MSG_FLAG_FORWARDED|MSG_FLAG_REPLIED;
-	if (PL_strcmp("new", name))
+	if (!strcmp("new", name))
 		return MSG_FLAG_NEW;
 	return 0;
 }
@@ -329,8 +319,6 @@ PRInt32 NS_MsgGetStatusValueFromName(char *name)
 // Needed for DeStream method.
 nsMsgSearchTerm::nsMsgSearchTerm()
 {
-    NS_INIT_ISUPPORTS();
-
     // initialize this to zero
     m_value.string=nsnull;
     m_value.attribute=0;
@@ -347,7 +335,6 @@ nsMsgSearchTerm::nsMsgSearchTerm (
 	nsMsgSearchBooleanOperator boolOp,
 	const char * arbitraryHeader) 
 {
-    NS_INIT_ISUPPORTS();
 	m_operator = op;
 	m_attribute = attrib;
 	m_booleanOp = boolOp;
@@ -468,6 +455,11 @@ nsresult nsMsgSearchTerm::OutputValue(nsCString &outputStr)
 			outputStr.AppendWithConversion(priority);
 			break;
 		}
+                case nsMsgSearchAttrib::HasAttachmentStatus:
+                {
+                    outputStr.Append("true");  // don't need anything here, really
+                    break;
+                }
 		default:
 			NS_ASSERTION(PR_FALSE, "trying to output invalid attribute");
 			break;
@@ -553,6 +545,9 @@ nsresult nsMsgSearchTerm::ParseValue(char *inStream)
     case nsMsgSearchAttrib::JunkStatus:
       m_value.u.junkStatus = atoi(inStream); // only if we read from disk, right?
       break;
+    case nsMsgSearchAttrib::HasAttachmentStatus:
+      m_value.u.msgStatus = MSG_FLAG_ATTACHMENT;
+      break; // this should always be true.
 		default:
 			NS_ASSERTION(PR_FALSE, "invalid attribute parsing search term value");
 			break;
@@ -563,12 +558,11 @@ nsresult nsMsgSearchTerm::ParseValue(char *inStream)
 }
 
 // find the operator code for this operator string.
-nsMsgSearchOpValue
-nsMsgSearchTerm::ParseOperator(char *inStream)
+nsresult
+nsMsgSearchTerm::ParseOperator(char *inStream, nsMsgSearchOpValue *value)
 {
+  NS_ENSURE_ARG_POINTER(value);
 	PRInt16				operatorVal;
-	nsresult		err;
-
 	while (nsString::IsSpace(*inStream))
 		inStream++;
 
@@ -577,45 +571,42 @@ nsMsgSearchTerm::ParseOperator(char *inStream)
 	if (commaSep)
 		*commaSep = '\0';
 
-	err = NS_MsgGetOperatorFromString(inStream, &operatorVal);
-	return (nsMsgSearchOpValue) operatorVal;
+	nsresult err = NS_MsgGetOperatorFromString(inStream, &operatorVal);
+  *value = (nsMsgSearchOpValue) operatorVal;
+  return err;
 }
 
 // find the attribute code for this comma-delimited attribute. 
 nsresult
 nsMsgSearchTerm::ParseAttribute(char *inStream, nsMsgSearchAttribValue *attrib)
-{
-	nsCAutoString			attributeStr;
-	PRInt16				attributeVal;
-	nsresult		err;
+{   
+    while (nsString::IsSpace(*inStream))
+        inStream++;
+    
+    // if we are dealing with an arbitrary header, it may be quoted....
+    PRBool quoteVal = PR_FALSE;
+    if (*inStream == '"')
+    {
+        quoteVal = PR_TRUE;
+        inStream++;
+    }
+    
+    // arbitrary headers are quoted
+    char *separator = strchr(inStream, quoteVal ? '"' : ',');
 
-	while (nsString::IsSpace(*inStream))
-		inStream++;
-
-	// if we are dealing with an arbitrary header, it may be quoted....
-	PRBool quoteVal = PR_FALSE;
-	if (*inStream == '"')
-	{
-		quoteVal = PR_TRUE;
-		inStream++;
-	}
-
-	char *separator;
-	if (quoteVal)      // arbitrary headers are quoted...
-		separator = PL_strchr(inStream, '"');
-	else
-		separator = PL_strchr(inStream, ',');
-	
-	if (separator)
-		*separator = '\0';
-
-	err = NS_MsgGetAttributeFromString(inStream, &attributeVal);
-	*attrib = (nsMsgSearchAttribValue) attributeVal;
-	
-	if (*attrib > nsMsgSearchAttrib::OtherHeader && *attrib < nsMsgSearchAttrib::kNumMsgSearchAttributes)  // if we are dealing with an arbitrary header....
-		m_arbitraryHeader =  inStream;
-	
-	return err;
+    if (separator)
+        *separator = '\0';
+    
+    PRInt16 attributeVal;
+    nsresult rv = NS_MsgGetAttributeFromString(inStream, &attributeVal);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    *attrib = (nsMsgSearchAttribValue) attributeVal;
+    
+    if (*attrib > nsMsgSearchAttrib::OtherHeader && *attrib < nsMsgSearchAttrib::kNumMsgSearchAttributes)  // if we are dealing with an arbitrary header....
+        m_arbitraryHeader = inStream;
+    
+    return rv;
 }
 
 // De stream one search term. If the condition looks like
@@ -633,7 +624,8 @@ nsresult nsMsgSearchTerm::DeStreamNew (char *inStream, PRInt16 /*length*/)
 		return NS_ERROR_INVALID_ARG;
 	char *secondCommaSep = PL_strchr(commaSep + 1, ',');
 	if (commaSep)
-		m_operator = ParseOperator(commaSep + 1);
+		rv = ParseOperator(commaSep + 1, &m_operator);
+  NS_ENSURE_SUCCESS(rv, rv);
 	if (secondCommaSep)
 		ParseValue(secondCommaSep + 1);
 	return NS_OK;
@@ -865,7 +857,7 @@ nsresult nsMsgSearchTerm::InitializeAddressBook()
     nsXPIDLCString dirURI;
     mDirectory->GetDirUri(getter_Copies(dirURI));
     if (strcmp(dirURI.get(), m_value.string))
-      mDirectory = NULL; // clear out the directory....we are no longer pointing to the right one
+      mDirectory = nsnull; // clear out the directory....we are no longer pointing to the right one
   }
   if (!mDirectory)
   {  
@@ -873,7 +865,7 @@ nsresult nsMsgSearchTerm::InitializeAddressBook()
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr <nsIRDFResource> resource;
-    rv = rdfService->GetResource(m_value.string, getter_AddRefs(resource));
+    rv = rdfService->GetResource(nsDependentCString(m_value.string), getter_AddRefs(resource));
     NS_ENSURE_SUCCESS(rv, rv);
 
     mDirectory = do_QueryInterface(resource, &rv);
@@ -915,7 +907,9 @@ nsresult nsMsgSearchTerm::MatchRfc2047String (const char *rfc2047string,
                                                    charset, charsetOverride,
                                                    PR_FALSE);
 
-    if (nsMsgSearchAttrib::SenderInAddressBook == m_attribute)
+    if (m_attribute == nsMsgSearchAttrib::Sender && 
+        (m_operator == nsMsgSearchOp::IsInAB ||
+         m_operator == nsMsgSearchOp::IsntInAB))
     {
       res = MatchInAddressBook(stringToMatch ? stringToMatch : rfc2047string, pResult);
     }
@@ -923,7 +917,7 @@ nsresult nsMsgSearchTerm::MatchRfc2047String (const char *rfc2047string,
 	  res = MatchString(stringToMatch ? stringToMatch : rfc2047string,
                       nsnull, pResult);
 
-    PR_FREEIF(stringToMatch);
+    PR_Free(stringToMatch);
 
 	return res;
 }
@@ -1078,7 +1072,9 @@ nsresult nsMsgSearchTerm::MatchRfc822String (const char *string, const char *cha
 		{
 			walkNames = names + namePos;
 			walkAddresses = addresses + addressPos;
-            if (nsMsgSearchAttrib::SenderInAddressBook == m_attribute)
+            if (m_attribute == nsMsgSearchAttrib::Sender && 
+                (m_operator == nsMsgSearchOp::IsInAB ||
+                 m_operator == nsMsgSearchOp::IsntInAB))
             {
               err = MatchRfc2047String (walkAddresses.get(), charset, charsetOverride, &result);
             }
@@ -1093,8 +1089,8 @@ nsresult nsMsgSearchTerm::MatchRfc822String (const char *string, const char *cha
 			addressPos += walkAddresses.Length() + 1;
 		}
 
-		PR_FREEIF(names);
-		PR_FREEIF(addresses);
+		PR_Free(names);
+		PR_Free(addresses);
 	}
 	*pResult = result;
 	return err;
@@ -1252,8 +1248,12 @@ nsresult nsMsgSearchTerm::MatchJunkStatus(const char *aJunkScore, PRBool *pResul
           junkStatus = nsIJunkMailPlugin::GOOD;
       }
   }
-  else
-    junkStatus = nsIJunkMailPlugin::UNCLASSIFIED;
+  else {
+    // the in UI, we only show "junk" or "not junk"
+    // unknown, or nsIJunkMailPlugin::UNCLASSIFIED is shown as not junk
+    // so for the search to work as expected, treat unknown as not junk
+    junkStatus = nsIJunkMailPlugin::GOOD;
+  }
 
   nsresult rv = NS_OK;
 	PRBool matches = (junkStatus == m_value.u.junkStatus);
@@ -1310,7 +1310,7 @@ nsresult nsMsgSearchTerm::MatchStatus(PRUint32 statusToMatch, PRBool *pResult)
 		break;
 	default:
 		rv = NS_ERROR_FAILURE;
-		NS_ASSERTION(PR_FALSE, "invalid compare op for msg status");
+    NS_ERROR("invalid compare op for msg status");
 	}
 
   *pResult = matches;
@@ -1430,7 +1430,6 @@ nsMsgSearchScopeTerm::nsMsgSearchScopeTerm (nsIMsgSearchSession *session,
                                             nsMsgSearchScopeValue attribute,
                                             nsIMsgFolder *folder)
 {
-	NS_INIT_ISUPPORTS();
 	m_attribute = attribute;
 	m_folder = folder;
 	m_searchServer = PR_TRUE;
@@ -1439,7 +1438,6 @@ nsMsgSearchScopeTerm::nsMsgSearchScopeTerm (nsIMsgSearchSession *session,
 
 nsMsgSearchScopeTerm::nsMsgSearchScopeTerm ()
 {
-	NS_INIT_ISUPPORTS();
 	m_searchServer = PR_TRUE;
 }
 
@@ -1581,6 +1579,7 @@ nsresult nsMsgResultElement::AssignValues (nsIMsgSearchValue *src, nsMsgSearchVa
 	case nsMsgSearchAttrib::Date:
         err = src->GetDate(&dst->u.date);
 		break;
+        case nsMsgSearchAttrib::HasAttachmentStatus:
 	case nsMsgSearchAttrib::MsgStatus:
         err = src->GetStatus(&dst->u.msgStatus);
 		break;

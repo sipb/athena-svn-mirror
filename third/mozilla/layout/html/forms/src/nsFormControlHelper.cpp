@@ -41,7 +41,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsLeafFrame.h"
 #include "nsCSSRendering.h"
 #include "nsIView.h"
@@ -62,7 +62,6 @@
 #include "nsStyleConsts.h"
 #include "nsUnitConversion.h"
 #include "nsIContent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsNetCID.h"
 
@@ -251,7 +250,7 @@ nsFormControlHelper::GetTextSize(nsIPresContext* aPresContext, nsIFormControlFra
 nsresult  
 nsFormControlHelper::GetFont(nsIFormControlFrame * aFormFrame,
                              nsIPresContext*       aPresContext, 
-                             nsIStyleContext *     aStyleContext, 
+                             nsStyleContext *      aStyleContext, 
                              const nsFont*&        aFont)
 {
   const nsStyleFont* styleFont = (const nsStyleFont*)aStyleContext->GetStyleData(eStyleStruct_Font);
@@ -443,15 +442,11 @@ nsFormControlHelper::GetName(nsIContent* aContent, nsAString* aResult)
   return rv;
 }
 
-nsresult
-nsFormControlHelper::GetType(nsIContent* aContent, PRInt32* aType)
+PRInt32
+nsFormControlHelper::GetType(nsIContent* aContent)
 {
-  NS_PRECONDITION(aType, "Null pointer bad!");
   nsCOMPtr<nsIFormControl> formControl(do_QueryInterface(aContent));
-  if (!formControl)
-    return NS_ERROR_FAILURE;
-
-  return formControl->GetType(aType);
+  return formControl->GetType();
 }
 
 nsresult

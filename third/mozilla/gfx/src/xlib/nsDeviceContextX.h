@@ -44,6 +44,7 @@
 #include "xlibrgb.h"
 
 class nsFontMetricsXlibContext;
+class nsRenderingContextXlibContext;
 
 /* common baseclass for |nsDeviceContextXlib| and |nsDeviceContextXp| */
 class nsDeviceContextX : public DeviceContextImpl
@@ -59,18 +60,8 @@ public:
 
   NS_IMETHOD GetXlibRgbHandle(XlibRgbHandle *&aHandle) = 0;
 
-  virtual void SetFontMetricsContext(nsFontMetricsXlibContext *aContext)
-  {
-    mFontMetricsContext = aContext;
-  }
-
-  virtual void GetFontMetricsContext(nsFontMetricsXlibContext *&aContext)
-  {
-    aContext = mFontMetricsContext;
-  }
-
-private:
-  nsFontMetricsXlibContext *mFontMetricsContext;
+  virtual void GetFontMetricsContext(nsFontMetricsXlibContext *&aContext) = 0;
+  virtual void GetRCContext(nsRenderingContextXlibContext *&aContext) = 0;
 };
 
 #endif /* !nsDeviceContextX_h__ */

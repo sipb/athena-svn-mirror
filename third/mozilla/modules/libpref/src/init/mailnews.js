@@ -61,9 +61,15 @@ pref("mailnews.logComposePerformance", false);
 pref("mail.wrap_long_lines",                true);
 pref("news.wrap_long_lines",                true);
 pref("mail.inline_attachments",             true);
+pref("mailnews.auto_unzip_saved_attachments", false);
+
 // hidden pref for controlling if the user agent string
 // is displayed in the message pane or not...
 pref("mailnews.headers.showUserAgent",       false);
+
+// hidden pref for controlling if the organization string
+// is displayed in the message pane or not...
+pref("mailnews.headers.showOrganization",    false);
 
 // Mail server preferences, pop by default
 pref("mail.server_type",	0); 	// 0 pop, 1 imap,
@@ -126,15 +132,19 @@ pref("mail.addr_book.mapit_url.format", "chrome://messenger-region/locale/region
 //
 // note, changing this might require a change to SearchNameOrEmail.label
 // in messenger.dtd
-pref("mail.addr_book.quicksearchquery.format","?(or(PrimaryEmail,c,@V)(DisplayName,c,@V)(FirstName,c,@V)(LastName,c,@V))");
+pref("mail.addr_book.quicksearchquery.format", "chrome://messenger/locale/messenger.properties");
 
 // values for "mail.addr_book.lastnamefirst" are:
 //0=displayname, 1=lastname first, 2=firstname first
 pref("mail.addr_book.lastnamefirst", 0); 
 pref("mail.addr_book.displayName.autoGeneration", true);
-pref("mail.addr_book.displayName.lastnamefirst", false); // generate display names in last first order
+pref("mail.addr_book.displayName.lastnamefirst", "chrome://messenger/locale/messenger.properties");
+pref("mail.addr_book.show_phonetic_fields", "chrome://messenger/locale/messenger.properties");
 pref("mail.attach_vcard",                   false);
 pref("mail.html_compose",                   true);
+// you can specify one, option header
+// this will show up in the address picker in the compose window
+// examples: "X-Face" or "Approved"
 pref("mail.compose.other.header",	    "");
 pref("mail.fcc_folder",                     "");
 pref("mail.encrypt_outgoing_mail",          false);
@@ -191,11 +201,13 @@ pref("mailnews.send_default_charset",       "chrome://messenger/locale/messenger
 pref("mailnews.view_default_charset",       "chrome://messenger/locale/messenger.properties");
 pref("mailnews.force_charset_override",     false);
 
+pref("mailnews.search_date_format",        "chrome://messenger/locale/messenger.properties");
+pref("mailnews.search_date_separator",     "chrome://messenger/locale/messenger.properties");
+
 pref("mailnews.language_sensitive_font",    true);
 
 pref("offline.news.download.unread_only",   true);
 pref("offline.news.download.by_date",       true);
-pref("offline.news.download.use_days",      false);
 pref("offline.news.download.days",          30);    // days
 pref("offline.news.download.increments",    3); // 0-yesterday, 1-1 wk ago, 2-2 wk ago,
                                                 // 3-1 month ago, 4-6 month ago, 5-1 year ago
@@ -275,11 +287,13 @@ pref("mailnews.start_page.enabled", true);
 
 pref("mailnews.remember_selected_message", true);
 
-pref("mail.toolbars.showbutton.file", true);
+/* file, print, and stop hidden by default.  
+   see http://bugzilla.mozilla.org/show_bug.cgi?id=197729#c3 */
+pref("mail.toolbars.showbutton.file", false);
 pref("mail.toolbars.showbutton.next", true);
-/* not ready yet: pref("mail.toolbars.showbutton.junk", false); */
-pref("mail.toolbars.showbutton.print", true);
-pref("mail.toolbars.showbutton.stop", true);
+pref("mail.toolbars.showbutton.junk", true);
+pref("mail.toolbars.showbutton.print",false);
+pref("mail.toolbars.showbutton.stop", false);
 
 pref("mailnews.account_central_page.url", "chrome://messenger/locale/messenger.properties");
 
@@ -321,6 +335,7 @@ pref("mail.server.default.delete_mail_left_on_server", false);
 pref("mail.server.default.valid", true);
 pref("mail.server.default.abbreviate",true);
 pref("mail.server.default.isSecure", false);
+pref("mail.server.default.useSecAuth", false);
 pref("mail.server.default.override_namespaces", true);
 
 pref("mail.server.default.delete_model", 1);
@@ -346,7 +361,7 @@ pref("mail.server.default.store_read_mail_in_pfc", false);
 pref("mail.server.default.store_sent_mail_in_pfc", false);  
 
 // for spam
-pref("mail.server.default.spamLevel",0);  // 0 off, 100 on.  not doing bool since we might have real levels one day.
+pref("mail.server.default.spamLevel",100);  // 0 off, 100 on.  not doing bool since we might have real levels one day.
 pref("mail.server.default.moveOnSpam",false);
 pref("mail.server.default.moveTargetMode",0); // 0 == "Junk" on server, 1 == specific folder
 pref("mail.server.default.spamActionTargetAccount","");
@@ -356,6 +371,8 @@ pref("mail.server.default.whiteListAbURI","moz-abmdbdirectory://abook.mab");  //
 pref("mail.server.default.purgeSpam",false);
 pref("mail.server.default.purgeSpamInterval",14); // 14 days
 pref("mail.server.default.spamLoggingEnabled",false);
+pref("mail.server.default.manualMark",false);
+pref("mail.server.default.manualMarkMode",0); // 0 == "move to junk folder", 1 == "delete"
 
 pref("mail.smtpserver.default.auth_method", 1); // auth any
 pref("mail.smtpserver.default.try_ssl", 0);
@@ -367,7 +384,7 @@ pref("mail.send_struct", false);   // HTML->HTML *bold* etc. during Send; ditto
 // For the next 4 prefs, see <http://www.bucksch.org/1/projects/mozilla/108153>
 pref("mailnews.display.prefer_plaintext", false);  // Ignore HTML parts in multipart/alternative
 pref("mailnews.display.html_as", 0);  // How to display HTML parts. 0 = Render the sender's HTML; 1 = HTML->TXT->HTML; 2 = Show HTML source; 3 = Sanitize HTML
-pref("mailnews.display.html_sanitizer.allowed_tags", "html head title body p br div(lang,title) h1 h2 h3 h4 h5 h6 ul ol li(value,start,compact) dl dt dd blockquote(type,cite) pre noscript noframes strong em sub sup span(lang,title) acronym(title) abbr(title) del(title,cite,datetime) ins(title,cite,datetime) q(cite) a(href,name,title) img(alt,title,longdesc) base(href) area(alt) applet(alt) object(alt) var samp dfn address kbd code cite s strike tt b i table(align) caption tr(align,valign) td(rowspan,colspan,align,valign) th(rowspan,colspan,align,valign)");
+pref("mailnews.display.html_sanitizer.allowed_tags", "html head title body p br div(lang,title) h1 h2 h3 h4 h5 h6 ul ol li(value,start,compact) dl dt dd blockquote(type,cite) pre noscript noframes strong em sub sup span(lang,title) acronym(title) abbr(title) del(title,cite,datetime) ins(title,cite,datetime) q(cite) a(href,name,title) img(alt,title,longdesc,src) base(href) area(alt) applet(alt) object(alt) var samp dfn address kbd code cite s strike tt b i table(align) caption tr(align,valign) td(rowspan,colspan,align,valign) th(rowspan,colspan,align,valign)");
 pref("mailnews.display.disallow_mime_handlers", 0);  /* Let only a few classes process incoming data. This protects from bugs (e.g. buffer overflows) and from security loopholes (e.g. allowing unchecked HTML in some obscure classes, although the user has html_as > 0).
 This option is mainly for the UI of html_as.
 0 = allow all available classes
@@ -428,6 +445,8 @@ pref("mail.content_disposition_type", 0);
 pref("mailnews.show_send_progress", true); //Will show a progress dialog when saving or sending a message
 pref("mail.server.default.retainBy", 1);
 
+pref("mailnews.ui.junk.firstuse", true);
+
 // for manual upgrades of certain UI features.
 // 1 -> 2 is for the folder pane tree landing, to hide the
 // unread and total columns, see msgMail3PaneWindow.js
@@ -436,7 +455,8 @@ pref("mail.ui.folderpane.version", 1);
 // for manual upgrades of certain UI features.
 // 1 -> 2 is for the thread pane tree landing, to hide the
 // labels column, see msgMail3PaneWindow.js
-pref("mailnews.ui.threadpane.version", 1);                                          
+// 2 -> 3 is for the junk status column
+pref("mailnews.ui.threadpane.version", 1);
 // for manual upgrades of certain UI features.
 // 1 -> 2 is for the ab results pane tree landing
 // to hide the non default columns in the addressbook dialog
@@ -494,3 +514,25 @@ pref("mailnews.fakeaccount.server", "");
 // message display properties
 pref("mailnews.message_display.disable_remote_image", false);
 pref("mailnews.message_display.allow.plugins", true);
+
+// default msg compose font prefs
+pref("msgcompose.font_face",                "");
+pref("msgcompose.font_size",                "medium");
+pref("msgcompose.text_color",               "#000000");
+pref("msgcompose.background_color",         "#FFFFFF");
+
+// When there is no disclosed recipients (only bcc), we should address the message to empty group
+// to prevent some mail server to disclose the bcc recipients
+pref("mail.compose.add_undisclosed_recipients", true);
+
+// these prefs (in minutes) are here to help QA test this feature
+// "mail.purge.min_delay", never purge a junk folder more than once every 480 minutes (60 mins/hour * 8 hours)
+// "mail.purge.timer_interval", fire the purge timer every 5 minutes, starting 5 minutes after we load accounts
+pref("mail.purge.min_delay",480);
+pref("mail.purge.timer_interval",5); 
+
+// to reduce forking in the js / C++
+// overridden by stand alone mail
+pref("mail.standalone", false);
+
+pref("mailnews.view.last",0); // 0 == "all" view

@@ -50,6 +50,7 @@
 #include "nsIDOMAttr.h"
 #include "nsIDocument.h"
 #include "nsIDOMEventReceiver.h" 
+#include "nsIDOM3EventTarget.h" 
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMKeyListener.h" 
 #include "nsIDOMMouseListener.h"
@@ -60,8 +61,8 @@
 #include "nsIDOMHTMLImageElement.h"
 #include "nsISelectionController.h"
 #include "nsGUIEvent.h"
-
-#include "nsIIndependentSelection.h" //domselections answer to frameselection
+#include "nsIDOMEventGroup.h"
+#include "nsCRT.h"
 
 #include "nsIDocumentObserver.h"
 #include "nsIDocumentStateListener.h"
@@ -75,8 +76,6 @@
 #include "nsIDOMNSRange.h"
 #include "nsISupportsArray.h"
 #include "nsVoidArray.h"
-#include "nsFileSpec.h"
-#include "nsIFile.h"
 #include "nsIURL.h"
 #include "nsIComponentManager.h"
 #include "nsIServiceManager.h"
@@ -85,8 +84,6 @@
 #include "nsIDOMDocumentFragment.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
-#include "nsIParser.h"
-#include "nsParserCIID.h"
 #include "nsIImage.h"
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
@@ -97,9 +94,8 @@
 
 // Misc
 #include "nsEditorUtils.h"
-#include "nsIPref.h"
-#include "nsStyleConsts.h"
-#include "nsIStyleContext.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsUnicharUtils.h"
 
 #include "nsAOLCiter.h"
@@ -117,7 +113,6 @@ const PRUnichar nbsp = 160;
 static NS_DEFINE_CID(kCContentIteratorCID, NS_CONTENTITERATOR_CID);
 static NS_DEFINE_CID(kCRangeCID,      NS_RANGE_CID);
 static NS_DEFINE_CID(kCDOMSelectionCID,      NS_DOMSELECTION_CID);
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 // Drag & Drop, Clipboard Support
 static NS_DEFINE_CID(kCClipboardCID,    NS_CLIPBOARD_CID);
 static NS_DEFINE_CID(kCTransferableCID, NS_TRANSFERABLE_CID);
@@ -135,14 +130,11 @@ nsPlaintextEditor::nsPlaintextEditor()
 : nsEditor()
 , mIgnoreSpuriousDragEvent(PR_FALSE)
 , mRules(nsnull)
-, mIsComposing(PR_FALSE)
 , mWrapToWindow(PR_FALSE)
 , mWrapColumn(0)
 , mMaxTextLength(-1)
 , mInitTriggerCounter(0)
 {
-// Done in nsEditor
-// NS_INIT_ISUPPORTS();
 } 
 
 nsPlaintextEditor::~nsPlaintextEditor()
@@ -152,13 +144,18 @@ nsPlaintextEditor::~nsPlaintextEditor()
   nsCOMPtr<nsIEditActionListener> mListener = do_QueryInterface(mRules);
   RemoveEditActionListener(mListener);
   
+  // Remove event listeners. Note that if we had an HTML editor,
+  //  it installed its own instead of these
   nsCOMPtr<nsIDOMEventReceiver> erP;
   nsresult result = GetDOMEventReceiver(getter_AddRefs(erP));
   if (NS_SUCCEEDED(result) && erP) 
   {
-    if (mKeyListenerP) {
-      erP->RemoveEventListenerByIID(mKeyListenerP, NS_GET_IID(nsIDOMKeyListener));
+    nsCOMPtr<nsIDOM3EventTarget> dom3Targ(do_QueryInterface(erP));
+    nsCOMPtr<nsIDOMEventGroup> sysGroup;
+    if (NS_SUCCEEDED(erP->GetSystemEventGroup(getter_AddRefs(sysGroup)))) {
+      result = dom3Targ->RemoveGroupedEventListener(NS_LITERAL_STRING("keypress"), mKeyListenerP, PR_FALSE, sysGroup);
     }
+
     if (mMouseListenerP) {
       erP->RemoveEventListenerByIID(mMouseListenerP, NS_GET_IID(nsIDOMMouseListener));
     }
@@ -175,9 +172,6 @@ nsPlaintextEditor::~nsPlaintextEditor()
         erP->RemoveEventListenerByIID(mDragListenerP, NS_GET_IID(nsIDOMDragListener));
     }
   }
-  else
-    NS_NOTREACHED("~nsTextEditor");
-
 }
 
 NS_IMPL_ADDREF_INHERITED(nsPlaintextEditor, nsEditor)
@@ -362,6 +356,8 @@ nsPlaintextEditor::InstallEventListeners()
   NS_ASSERTION(mDocWeak, "no document set on this editor");
   if (!mDocWeak) return NS_ERROR_NOT_INITIALIZED;
 
+  if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
+
   nsresult result;
   // get a key listener
   result = NS_NewEditorKeyListener(getter_AddRefs(mKeyListenerP), this);
@@ -398,7 +394,8 @@ printf("nsTextEditor.cpp: failed to get TextEvent Listener\n");
   }
 
   // get a drag listener
-  result = NS_NewEditorDragListener(getter_AddRefs(mDragListenerP), this);
+  nsCOMPtr<nsIPresShell> presShell = do_QueryReferent(mPresShellWeak);
+  result = NS_NewEditorDragListener(getter_AddRefs(mDragListenerP), presShell, this);
   if (NS_FAILED(result)) {
     HandleEventListenerError();
     return result;
@@ -421,8 +418,13 @@ printf("nsTextEditor.cpp: failed to get TextEvent Listener\n");
   }
 
   // register the event listeners with the DOM event reveiver
-  result = erP->AddEventListenerByIID(mKeyListenerP, NS_GET_IID(nsIDOMKeyListener));
-  NS_ASSERTION(NS_SUCCEEDED(result), "failed to register key listener");
+  nsCOMPtr<nsIDOM3EventTarget> dom3Targ(do_QueryInterface(erP));
+  nsCOMPtr<nsIDOMEventGroup> sysGroup;
+  if (NS_SUCCEEDED(erP->GetSystemEventGroup(getter_AddRefs(sysGroup)))) {
+    result = dom3Targ->AddGroupedEventListener(NS_LITERAL_STRING("keypress"), mKeyListenerP, PR_FALSE, sysGroup);
+    NS_ASSERTION(NS_SUCCEEDED(result), "failed to register key listener in system group");
+  }
+
   if (NS_SUCCEEDED(result))
   {
     result = erP->AddEventListenerByIID(mMouseListenerP, NS_GET_IID(nsIDOMMouseListener));
@@ -514,12 +516,11 @@ PRBool nsPlaintextEditor::IsModifiable()
 NS_IMETHODIMP nsPlaintextEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
 {
   PRUint32 keyCode, character;
-  PRBool   isShift, ctrlKey, altKey, metaKey;
+  PRBool   ctrlKey, altKey, metaKey;
 
   if (!aKeyEvent) return NS_ERROR_NULL_POINTER;
 
   if (NS_SUCCEEDED(aKeyEvent->GetKeyCode(&keyCode)) && 
-      NS_SUCCEEDED(aKeyEvent->GetShiftKey(&isShift)) &&
       NS_SUCCEEDED(aKeyEvent->GetCtrlKey(&ctrlKey)) &&
       NS_SUCCEEDED(aKeyEvent->GetAltKey(&altKey)) &&
       NS_SUCCEEDED(aKeyEvent->GetMetaKey(&metaKey)))
@@ -538,7 +539,7 @@ NS_IMETHODIMP nsPlaintextEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
       return TypedText(empty, eTypedText);
     }
     
-    if (character && !altKey && !ctrlKey && !isShift && !metaKey)
+    if (character && !altKey && !ctrlKey && !metaKey)
     {
       aKeyEvent->PreventDefault();
       nsAutoString key(character);
@@ -1008,6 +1009,14 @@ NS_IMETHODIMP nsPlaintextEditor::InsertText(const nsAString &aStringToInsert)
   return result;
 }
 
+NS_IMETHODIMP nsPlaintextEditor::GetCanModify(PRBool *aCanModify)
+{
+  NS_ENSURE_ARG_POINTER(aCanModify);
+
+  *aCanModify = IsModifiable();
+  return NS_OK;
+}
+ 
 
 NS_IMETHODIMP nsPlaintextEditor::InsertLineBreak()
 {
@@ -1189,24 +1198,6 @@ nsPlaintextEditor::GetMaxTextLength(PRInt32* aMaxTextLength)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsPlaintextEditor::GetBodyStyleContext(nsIStyleContext** aStyleContext)
-{
-  nsCOMPtr<nsIDOMElement> body;
-  nsresult res = GetRootElement(getter_AddRefs(body));
-  if (NS_FAILED(res)) return res;
-  nsCOMPtr<nsIContent> content = do_QueryInterface(body);
-
-  nsIFrame *frame;
-  if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
-  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
-  if (!ps) return NS_ERROR_NOT_INITIALIZED;
-  res = ps->GetPrimaryFrameFor(content, &frame);
-  if (NS_FAILED(res)) return res;
-  
-  return ps->GetStyleContextFor(frame, aStyleContext);
-}
-
 //
 // Get the wrap width
 //
@@ -1294,9 +1285,11 @@ nsPlaintextEditor::SetWrapWidth(PRInt32 aWrapColumn)
   if (flags & eEditorMailMask)
   {
     nsresult rv;
-    nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
+    nsCOMPtr<nsIPrefBranch> prefBranch =
+      do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
     if (NS_SUCCEEDED(rv))
-      prefs->GetBoolPref("mail.compose.wrap_to_window_width", &mWrapToWindow);
+      prefBranch->GetBoolPref("mail.compose.wrap_to_window_width",
+                              &mWrapToWindow);
   }
 
   // and now we're ready to set the new whitespace/wrapping style.
@@ -1381,7 +1374,7 @@ NS_IMETHODIMP nsPlaintextEditor::Cut()
 
   PRBool isCollapsed;
   if (NS_SUCCEEDED(selection->GetIsCollapsed(&isCollapsed)) && isCollapsed)
-    return NS_ERROR_NOT_AVAILABLE;
+    return NS_OK;  // just return ok so no JS error is thrown
 
   res = Copy();
   if (NS_SUCCEEDED(res))
@@ -1497,9 +1490,9 @@ nsPlaintextEditor::GetAndInitDocEncoder(const nsAString& aFormatType,
       if (!selection) return NS_ERROR_FAILURE;
 
       // get the independent selection interface
-      nsCOMPtr<nsIIndependentSelection> indSel = do_QueryInterface(selection);
-      if (indSel)
-        indSel->SetPresShell(presShell);
+      nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
+      if (selPriv)
+        selPriv->SetPresShell(presShell);
 
       nsCOMPtr<nsIContent> content(do_QueryInterface(rootElement));
       if (content)
@@ -1668,11 +1661,12 @@ static nsICiter* MakeACiter()
   // Make a citer of an appropriate type
   nsICiter* citer = 0;
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   if (NS_FAILED(rv)) return 0;
 
   char *citationType = 0;
-  rv = prefs->CopyCharPref("mail.compose.citationType", &citationType);
+  rv = prefBranch->GetCharPref("mail.compose.citationType", &citationType);
                           
   if (NS_SUCCEEDED(rv) && citationType[0])
   {
@@ -1961,12 +1955,15 @@ nsPlaintextEditor::SetCompositionString(const nsAString& aCompositionString, nsI
   {
     nsAutoPlaceHolderBatch batch(this, gIMETxnName);
 
+    SetIsIMEComposing(); // We set mIsIMEComposing properly.
+
     result = InsertText(aCompositionString);
 
     mIMEBufferLength = aCompositionString.Length();
 
     ps->GetCaret(getter_AddRefs(caretP));
-    caretP->SetCaretDOMSelection(selection);
+    if (caretP)
+      caretP->SetCaretDOMSelection(selection);
 
     // second part of 23558 fix:
     if (aCompositionString.IsEmpty()) 

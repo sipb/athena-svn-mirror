@@ -1166,11 +1166,18 @@ int DownloadFiles(char *szInputIniFile,
         PrintError(szBuf, ERROR_CODE_HIDE);
       }
 
-      /* Set return value and break out of for() loop.
-       * We don't want to continue if there were too
-       * many network errors on any file. */
-      rv = WIZ_TOO_MANY_NETWORK_ERRORS;
-      break;
+      iFileDownloadRetries = 0; // reset the file download retries counter since
+                                // we'll be restarting the download again.
+      bDownloadInitiated = FALSE; // restart the download using new socket connection
+      CloseSocket(szProxyServer, szProxyPort);
+      --giIndex; // Decrement the file index counter because we'll be trying to
+                 // download the same file again.  We don't want to go to the next
+                 // file just yet.
+
+      /* Let's make sure we're in a paused state. */
+      /* The pause state will be unset by DownloadDlgProc(). */
+      gdwDownloadDialogStatus = CS_PAUSE;
+      PauseTheDownload(rv, &iFileDownloadRetries);
     }
     else if(bIgnoreAllNetworkErrors || iIgnoreFileNetworkError)
       rv = nsFTPConn::OK;
@@ -1190,7 +1197,7 @@ int ProgressCB(int aBytesSoFar, int aTotalFinalSize)
   double dPercentSoFar;
   int    iRv = nsFTPConn::OK;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     SetStatusUrl();
 
@@ -1222,23 +1229,6 @@ int ProgressCB(int aBytesSoFar, int aTotalFinalSize)
   return(iRv);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// Progress bar
-// Centers the specified window over the desktop. Assumes the window is
-// smaller both horizontally and vertically than the desktop
-static void
-CenterWindow(HWND hWndDlg)
-{
-	RECT	rect;
-	int		iLeft, iTop;
-
-	GetWindowRect(hWndDlg, &rect);
-	iLeft = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
-	iTop  = (GetSystemMetrics(SM_CYSCREEN) - (rect.bottom - rect.top)) / 2;
-
-	SetWindowPos(hWndDlg, NULL, iLeft, iTop, -1, -1, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
 // Window proc for dialog
 LRESULT CALLBACK
 DownloadDlgProc(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -1253,7 +1243,7 @@ DownloadDlgProc(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
                               sizeof(gszFileInfo),
                               szFileIniConfig);
       DisableSystemMenuItems(hWndDlg, FALSE);
-      CenterWindow(hWndDlg);
+      RepositionWindow(hWndDlg, BANNER_IMAGE_DOWNLOAD);
       if(gbShowDownloadRetryMsg)
         SetDlgItemText(hWndDlg, IDC_MESSAGE0, diDownload.szMessageRetry0);
       else
@@ -1278,7 +1268,6 @@ DownloadDlgProc(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
       SendDlgItemMessage (hWndDlg, IDC_STATUS_FILE, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L);
       SendDlgItemMessage (hWndDlg, IDC_STATUS_URL, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L);
       SendDlgItemMessage (hWndDlg, IDC_STATUS_TO, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L);
-
       return FALSE;
 
     case WM_SIZE:
@@ -1347,7 +1336,7 @@ UpdateGaugeFileProgressBar(double value)
 	int	        nBars;
   static long lModLastValue = 0;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     if(!CheckInterval(&lModLastValue, UPDATE_INTERVAL_PROGRESS_BAR))
       return;
@@ -1506,7 +1495,7 @@ void InitDownloadDlg(void)
 {
 	WNDCLASS	wc;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     memset(&wc, 0, sizeof(wc));
     wc.style          = CS_GLOBALCLASS;
@@ -1525,8 +1514,9 @@ void InitDownloadDlg(void)
 
 void DeInitDownloadDlg()
 {
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
+    SaveWindowPosition(dlgInfo.hWndDlg);
     DestroyWindow(dlgInfo.hWndDlg);
     UnregisterClass("GaugeFile", hInst);
   }

@@ -38,7 +38,7 @@
 
 
 /*
- *  npapi.h $Revision: 1.1.1.1 $
+ *  npapi.h $Revision: 1.1.1.2 $
  *  Netscape client plug-in API spec
  */
 
@@ -76,7 +76,9 @@
 #ifndef NO_NSPR_10_SUPPORT
 #define NO_NSPR_10_SUPPORT
 #endif
+#ifdef OJI
 #include "jri.h"                /* Java Runtime Interface */
+#endif
 
 #if defined (__OS2__ ) || defined (OS2)
 #	ifndef XP_OS2
@@ -85,6 +87,7 @@
 #endif /* __OS2__ */
 
 #ifdef _WINDOWS
+#	include <windef.h>
 #	ifndef XP_WIN
 #		define XP_WIN 1
 #	endif /* XP_WIN */
@@ -101,18 +104,21 @@
 #		undef NULL
 #		ifndef XP_WIN
 #			define XP_WIN 1
-#		endif /* __INTEL__ */
-#	endif /* XP_PC */
+#		endif /* XP_WIN */
+#	endif /* __INTEL__ */
 #endif /* __MWERKS__ */
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 	#include <Quickdraw.h>
 	#include <Events.h>
 #endif
 
-#if defined(XP_UNIX) && !defined(NO_X11)
-	#include <X11/Xlib.h>
-	#include <X11/Xutil.h>
+#if defined(XP_UNIX) 
+#	include <stdio.h>
+#	if defined(MOZ_X11)
+#		include <X11/Xlib.h>
+#		include <X11/Xutil.h>
+#	endif
 #endif
 
 /*----------------------------------------------------------------------*/
@@ -125,7 +131,7 @@
 
 /* The OS/2 version of Netscape uses RC_DATA to define the
    mime types, file extentions, etc that are required.
-   Use a vertical bar to seperate types, end types with \0.
+   Use a vertical bar to separate types, end types with \0.
    FileVersion and ProductVersion are 32bit ints, all other
    entries are strings the MUST be terminated wwith a \0.
 
@@ -305,7 +311,7 @@ typedef struct
 typedef struct
 {
   int32        type;
-#ifndef NO_X11
+#ifdef MOZ_X11
   Display*     display;
   Visual*      visual;
   Colormap     colormap;
@@ -321,6 +327,49 @@ typedef struct
 
 #endif /* XP_UNIX */
 
+
+/*
+ *   The following masks are applied on certain platforms to NPNV and 
+ *   NPPV selectors that pass around pointers to COM interfaces. Newer 
+ *   compilers on some platforms may generate vtables that are not 
+ *   compatible with older compilers. To prevent older plugins from 
+ *   not understanding a new browser's ABI, these masks change the 
+ *   values of those selectors on those platforms. To remain backwards
+ *   compatible with differenet versions of the browser, plugins can 
+ *   use these masks to dynamically determine and use the correct C++
+ *   ABI that the browser is expecting. This does not apply to Windows 
+ *   as Microsoft's COM ABI will likely not change.
+ */
+
+#define NP_ABI_GCC3_MASK  0x10000000
+/*
+ *   gcc 3.x generated vtables on UNIX and OSX are incompatible with 
+ *   previous compilers.
+ */
+#if (defined (XP_UNIX) && defined(__GNUC__) && (__GNUC__ >= 3))
+#define _NP_ABI_MIXIN_FOR_GCC3 NP_ABI_GCC3_MASK
+#else
+#define _NP_ABI_MIXIN_FOR_GCC3 0
+#endif
+
+
+#define NP_ABI_MACHO_MASK 0x01000000
+/*
+ *   On OSX, the Mach-O executable format is significantly
+ *   different than CFM. In addition to having a different
+ *   C++ ABI, it also has has different C calling convention.
+ *   You must use glue code when calling between CFM and
+ *   Mach-O C functions. 
+ */
+#if (defined(TARGET_RT_MAC_MACHO))
+#define _NP_ABI_MIXIN_FOR_MACHO NP_ABI_MACHO_MASK
+#else
+#define _NP_ABI_MIXIN_FOR_MACHO 0
+#endif
+
+
+#define NP_ABI_MASK (_NP_ABI_MIXIN_FOR_GCC3 | _NP_ABI_MIXIN_FOR_MACHO)
+
 /*
  * List of variable names for which NPP_GetValue shall be implemented
  */
@@ -333,7 +382,7 @@ typedef enum {
   NPPVpluginWindowSize,
   NPPVpluginTimerInterval,
 
-  NPPVpluginScriptableInstance = 10,
+  NPPVpluginScriptableInstance = (10 | NP_ABI_MASK),
   NPPVpluginScriptableIID = 11,
 
   /* 12 and over are available on Mozilla builds starting with 0.9.9 */
@@ -353,9 +402,9 @@ typedef enum {
   NPNVisOfflineBool,
 
   /* 10 and over are available on Mozilla builds starting with 0.9.4 */
-  NPNVserviceManager = 10,
-  NPNVDOMElement     = 11,   /* available in Mozilla 1.2 */
-  NPNVDOMWindow      = 12
+  NPNVserviceManager = (10 | NP_ABI_MASK),
+  NPNVDOMElement     = (11 | NP_ABI_MASK),   /* available in Mozilla 1.2 */
+  NPNVDOMWindow      = (12 | NP_ABI_MASK)
 } NPNVariable;
 
 /*
@@ -378,7 +427,7 @@ typedef struct _NPWindow
   uint32 height;
   NPRect clipRect; /* Clipping rectangle in port coordinates */
                    /* Used by MAC only.			  */
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
   void * ws_info; /* Platform-dependent additonal data */
 #endif /* XP_UNIX */
   NPWindowType type; /* Is this a window or a drawable? */
@@ -408,7 +457,7 @@ typedef struct _NPPrint
   } print;
 } NPPrint;
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 typedef EventRecord	NPEvent;
 #elif defined(XP_WIN)
 typedef struct _NPEvent
@@ -424,23 +473,23 @@ typedef struct _NPEvent
   uint32 wParam;
   uint32 lParam;
 } NPEvent;
-#elif defined (XP_UNIX) && !defined(NO_X11)
+#elif defined (XP_UNIX) && defined(MOZ_X11)
 typedef XEvent NPEvent;
 #else
 typedef void*			NPEvent;
 #endif /* XP_MAC */
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 typedef RgnHandle NPRegion;
 #elif defined(XP_WIN)
 typedef HRGN NPRegion;
-#elif defined(XP_UNIX) && !defined(NO_X11)
+#elif defined(XP_UNIX) && defined(MOZ_X11)
 typedef Region NPRegion;
 #else
 typedef void *NPRegion;
 #endif /* XP_MAC */
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 /*
  *  Mac-specific structures and definitions.
  */
@@ -590,7 +639,9 @@ void    NP_LOADDS NPP_Print(NPP instance, NPPrint* platformPrint);
 int16   NP_LOADDS NPP_HandleEvent(NPP instance, void* event);
 void    NP_LOADDS NPP_URLNotify(NPP instance, const char* url,
                                 NPReason reason, void* notifyData);
+#ifdef OJI
 jref    NP_LOADDS NPP_GetJavaClass(void);
+#endif
 NPError NP_LOADDS NPP_GetValue(NPP instance, NPPVariable variable, void *value);
 NPError NP_LOADDS NPP_SetValue(NPP instance, NPNVariable variable, void *value);
 
@@ -621,8 +672,10 @@ void*   NP_LOADDS NPN_MemAlloc(uint32 size);
 void    NP_LOADDS NPN_MemFree(void* ptr);
 uint32  NP_LOADDS NPN_MemFlush(uint32 size);
 void    NP_LOADDS NPN_ReloadPlugins(NPBool reloadPages);
+#ifdef OJI
 JRIEnv* NP_LOADDS NPN_GetJavaEnv(void);
 jref    NP_LOADDS NPN_GetJavaPeer(NPP instance);
+#endif
 NPError NP_LOADDS NPN_GetValue(NPP instance, NPNVariable variable, void *value);
 NPError NP_LOADDS NPN_SetValue(NPP instance, NPPVariable variable, void *value);
 void    NP_LOADDS NPN_InvalidateRect(NPP instance, NPRect *invalidRect);

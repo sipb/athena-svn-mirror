@@ -107,6 +107,10 @@ SECStatus PK11_CreateNewObject(PK11SlotInfo *slot, CK_SESSION_HANDLE session,
 SECStatus pbe_PK11AlgidToParam(SECAlgorithmID *algid,SECItem *mech);
 SECStatus PBE_PK11ParamToAlgid(SECOidTag algTag, SECItem *param, 
 				PRArenaPool *arena, SECAlgorithmID *algId);
+
+extern void pk11sdr_Init(void);
+extern void pk11sdr_Shutdown(void);
+
 SEC_END_PROTOS
 
 #endif

@@ -1,8 +1,4 @@
 mailnews/Makefile
-mailnews/absync/build/Makefile
-mailnews/absync/Makefile
-mailnews/absync/public/Makefile
-mailnews/absync/src/Makefile
 mailnews/addrbook/Makefile
 mailnews/addrbook/build/Makefile
 mailnews/addrbook/public/Makefile
@@ -18,6 +14,7 @@ mailnews/base/search/src/Makefile
 mailnews/base/resources/Makefile
 mailnews/base/resources/content/Makefile
 mailnews/base/resources/content/unix/Makefile
+mailnews/build/Makefile
 mailnews/db/Makefile
 mailnews/db/msgdb/Makefile
 mailnews/db/msgdb/public/Makefile
@@ -54,6 +51,7 @@ mailnews/compose/src/Makefile
 mailnews/compose/build/Makefile
 mailnews/public/Makefile
 mailnews/import/Makefile
+mailnews/import/build/Makefile
 mailnews/import/public/Makefile
 mailnews/import/src/Makefile
 mailnews/import/text/Makefile
@@ -76,6 +74,12 @@ mailnews/extensions/mdn/src/Makefile
 mailnews/extensions/bayesian-spam-filter/Makefile
 mailnews/extensions/bayesian-spam-filter/src/Makefile
 mailnews/extensions/bayesian-spam-filter/build/Makefile
+mailnews/extensions/mailviews/Makefile
+mailnews/extensions/mailviews/public/Makefile
+mailnews/extensions/mailviews/src/Makefile
+mailnews/extensions/mailviews/build/Makefile
+mailnews/extensions/mailviews/resources/Makefile
+mailnews/extensions/mailviews/resources/content/Makefile
 mailnews/mapi/Makefile
 mailnews/mapi/resources/content/Makefile
 mailnews/mapi/resources/locale/en-US/Makefile

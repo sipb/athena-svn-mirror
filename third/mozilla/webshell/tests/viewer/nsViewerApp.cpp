@@ -62,7 +62,6 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsWebCrawler.h"
-#include "nsSpecialSystemDirectory.h"    // For exe dir
 #include "prprf.h"
 #include "plstr.h"
 #include "prenv.h"
@@ -105,13 +104,13 @@
 #define DIALOG_FONT_SIZE 10
 
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
 #include "JSConsole.h"
 #ifdef NGPREFS
 #include "ngprefs.h"
 #endif
 #endif
-#ifdef XP_WIN
+#if defined(XP_WIN) && !defined(__MINGW32__)
 #include <crtdbg.h>
 #endif
 
@@ -119,7 +118,6 @@ extern nsresult NS_NewXPBaseWindowFactory(nsIFactory** aFactory);
 
 static NS_DEFINE_IID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_IID(kAppShellCID, NS_APPSHELL_CID);
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_IID(kXPBaseWindowCID, NS_XPBASE_WINDOW_CID);
 static NS_DEFINE_IID(kCookieServiceCID, NS_COOKIESERVICE_CID);
 
@@ -135,10 +133,16 @@ static NS_DEFINE_IID(kIDOMHTMLSelectElementIID, NS_IDOMHTMLSELECTELEMENT_IID);
 #define DEFAULT_WIDTH 620
 #define DEFAULT_HEIGHT 400
 
+
+#ifdef _BUILD_STATIC_BIN
+#include "nsStaticComponent.h"
+nsresult PR_CALLBACK
+app_getModuleInfo(nsStaticModuleInfo **info, PRUint32 *count);
+#endif
+
+
 nsViewerApp::nsViewerApp()
 {
-  NS_INIT_ISUPPORTS(); 
-
   char * text = PR_GetEnv("NGLAYOUT_HOME");
   mStartURL.AssignWithConversion(text ? text : "resource:/res/samples/test0.html");
 
@@ -202,9 +206,7 @@ nsViewerApp::Destroy()
     NS_RELEASE(mCrawler);
   }
 
-  if (nsnull != mPrefs) {
-    NS_RELEASE(mPrefs);
-  }
+  NS_IF_RELEASE(mPrefService);
 }
 
 class nsTestFormProcessor : public nsIFormProcessor {
@@ -226,7 +228,6 @@ NS_IMPL_ISUPPORTS1(nsTestFormProcessor, nsIFormProcessor);
 
 nsTestFormProcessor::nsTestFormProcessor()
 {
-   NS_INIT_ISUPPORTS();
 }
 
 NS_METHOD 
@@ -296,6 +297,11 @@ nsViewerApp::Initialize(int argc, char** argv)
 {
   nsresult rv;
 
+#ifdef _BUILD_STATIC_BIN
+  // Initialize XPCOM's module info table
+  NSGetStaticModuleInfo = app_getModuleInfo;
+#endif
+
   rv = SetupRegistry();
   if (NS_OK != rv) {
     return rv;
@@ -310,15 +316,13 @@ nsViewerApp::Initialize(int argc, char** argv)
     return rv;
   }
   mAppShell->Create(&argc, argv);
-  mAppShell->SetDispatchListener((nsDispatchListener*) this);
 
   // Load preferences
-  rv = nsComponentManager::CreateInstance(kPrefCID, NULL, kIPrefIID,
-                                          (void **) &mPrefs);
+  rv = CallGetService(NS_PREFSERVICE_CONTRACTID, &mPrefService);
   if (NS_OK != rv) {
     return rv;
   }
-  mPrefs->ReadUserPrefs(nsnull);
+  mPrefService->ReadUserPrefs(nsnull);
 
   // Finally process our arguments
   rv = ProcessArguments(argc, argv);
@@ -398,7 +402,7 @@ static void
 AddTestDocsFromFile(nsWebCrawler* aCrawler, const nsString& aFileName)
 {
   NS_LossyConvertUCS2toASCII cfn(aFileName);
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
   FILE* fp = fopen(cfn.get(), "rb");
 #else
   FILE* fp = fopen(cfn.get(), "r");
@@ -455,7 +459,7 @@ nsViewerApp::ProcessArguments(int argc, char** argv)
       if (PL_strcmp(argv[i], "-x") == 0) {
         mJustShutdown = PR_TRUE;
       }
-#if defined(NS_DEBUG) && defined(XP_WIN)
+#if defined(NS_DEBUG) && defined(XP_WIN) && !defined(__MINGW32__)
       else if (PL_strcmp(argv[i], "-md") == 0) {
         int old = _CrtSetDbgFlag(0);
         old |= _CRTDBG_CHECK_ALWAYS_DF;
@@ -746,22 +750,13 @@ nsViewerApp::OpenWindow(PRUint32 aNewChromeMask, nsBrowserWindow*& aNewWindow)
 
 //----------------------------------------
 
-// nsDispatchListener implementation
-
-void
-nsViewerApp::AfterDispatch()
-{
-}
-
-//----------------------------------------
-
 #include "prenv.h"
 #include "resources.h"
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
 #include "nsIURL.h"
 
-#ifndef XP_PC
+#if !defined(XP_WIN) && !defined(XP_OS2)
 #ifndef XP_MAC
 #define _MAX_PATH 512
 #endif
@@ -820,7 +815,7 @@ static void* GetWidgetNativeData(nsISupports* aObject)
 
 
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
 extern JSConsole *gConsole;
 // XXX temporary robot code until it's made XP
 extern HINSTANCE gInstance, gPrevInstance;
@@ -1112,7 +1107,7 @@ nsViewerApp::CreateRobot(nsBrowserWindow* aWindow)
             tempStr->Assign(NS_ConvertUTF8toUCS2(str));
           gWorkList->AppendElement(tempStr);
         }
-#if defined(XP_PC) && defined(NS_DEBUG) && !defined(XP_OS2)
+#if defined(XP_WIN) && defined(NS_DEBUG)
         DebugRobot( 
           gWorkList, 
           gVisualDebug ? aWindow->mDocShell : nsnull, 
@@ -1547,7 +1542,7 @@ nsViewerApp::CreateSiteWalker(nsBrowserWindow* aWindow)
 //----------------------------------------
 
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
 #include "jsconsres.h"
 
 static void DestroyConsole()
@@ -1595,7 +1590,7 @@ static void ShowConsole(nsBrowserWindow* aWindow)
 NS_IMETHODIMP
 nsViewerApp::CreateJSConsole(nsBrowserWindow* aWindow)
 {
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
   if (nsnull == gConsole) {
     ShowConsole(aWindow);
   }
@@ -1606,7 +1601,7 @@ nsViewerApp::CreateJSConsole(nsBrowserWindow* aWindow)
 NS_IMETHODIMP
 nsViewerApp::DoPrefs(nsBrowserWindow* aWindow)
 {
-#if defined(XP_PC) && defined(NGPREFS) && !defined(XP_OS2)
+#if defined(XP_WIN) && defined(NGPREFS)
 
   INGLayoutPrefs *pPrefs;
   CoInitialize(NULL);

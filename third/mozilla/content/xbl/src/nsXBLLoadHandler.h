@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLLoadHandler : public nsIDOMLoadListener, 
                          public nsXBLEventHandler
 {
 public:
-  nsXBLLoadHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLLoadHandler(nsIDOMEventReceiver* aReceiver,
+                   nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLLoadHandler();
   
   // nsIDOMetc.
@@ -69,18 +70,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kLoadAtom;
-  static nsIAtom* kUnloadAtom;
-  static nsIAtom* kAbortAtom;
-  static nsIAtom* kErrorAtom;
-  
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLLoadHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLLoadHandler(nsIDOMEventReceiver* aEventReceiver,
+                     nsXBLPrototypeHandler* aHandlerElement,
                      nsXBLLoadHandler** aResult);
 
 

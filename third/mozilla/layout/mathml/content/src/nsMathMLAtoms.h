@@ -23,10 +23,7 @@
 #ifndef nsMathMLAtoms_h___
 #define nsMathMLAtoms_h___
 
-#include "prtypes.h"
 #include "nsIAtom.h"
-
-class nsINameSpaceManager;
 
 /**
  * This class wraps up the creation and destruction of the standard
@@ -38,7 +35,6 @@ class nsMathMLAtoms {
 public:
 
   static void AddRefAtoms();
-  static void ReleaseAtoms();
 
   /* Declare all atoms
 

@@ -27,6 +27,8 @@ LIBRARY_NAME	= widget_gtk
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsWidgetGTKModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  appshell \
@@ -40,6 +42,9 @@ REQUIRES	= xpcom \
 		  util \
 		  unicharutil \
 		  $(NULL)
+ifdef NS_TRACE_MALLOC
+REQUIRES	+= tracemalloc
+endif
 
 CSRCS		= \
 		keysym2ucs.c
@@ -56,7 +61,6 @@ CPPSRCS		= \
 		nsKeyboardUtils.cpp \
 		nsLabel.cpp \
 		nsLookAndFeel.cpp \
-		nsScrollbar.cpp \
 		nsSound.cpp \
 		nsTextHelper.cpp \
 		nsTextWidget.cpp \
@@ -70,18 +74,20 @@ CPPSRCS		= \
 
 SHARED_LIBRARY_LIBS = $(DIST)/lib/libxpwidgets_s.a
 
+EXTRA_DSO_LIBS	= gkgfx
+
+ifdef NS_TRACE_MALLOC
+EXTRA_DSO_LIBS	+= tracemalloc
+endif
+
 EXTRA_DSO_LDOPTS = \
+		$(LIBS_DIR) \
+		$(EXTRA_DSO_LIBS) \
 		$(MOZ_COMPONENT_LIBS) \
-		-lgkgfx \
 		$(MOZ_JS_LIBS) \
 		$(NULL)
 
 EXTRA_DSO_LDOPTS +=  -L$(DIST)/lib -lgtksuperwin $(MOZ_GTK_LDFLAGS)
-
-# If not primary toolkit, install in secondary path
-ifneq (gtk,$(MOZ_WIDGET_TOOLKIT))
-INACTIVE_COMPONENT = 1
-endif
 
 include $(topsrcdir)/config/rules.mk
 
@@ -90,9 +96,6 @@ CFLAGS		+= $(MOZ_GTK_CFLAGS)
 
 DEFINES		+= -D_IMPL_NS_WIDGET -DUSE_XIM
 
-ifeq ($(OS_ARCH), Linux)
-DEFINES		+= -D_BSD_SOURCE
-endif
 ifeq ($(OS_ARCH), SunOS)
 ifndef GNU_CC
 # When using Sun's WorkShop compiler, including
@@ -102,6 +105,10 @@ ifndef GNU_CC
 # So, this gets around the problem.
 DEFINES		+= -D_TIME_H=1
 endif
+endif
+
+ifeq ($(OS_ARCH), OpenVMS)
+DEFINES		+= -DGENERIC_MOTIF_REDEFINES
 endif
 
 LOCAL_INCLUDES	= \

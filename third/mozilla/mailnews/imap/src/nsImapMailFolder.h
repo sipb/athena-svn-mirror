@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Lorenzo Colitti <lorenzo@colitti.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -344,10 +345,11 @@ public:
   
   nsresult MoveIncorporatedMessage(nsIMsgDBHdr *mailHdr, 
                              nsIMsgDatabase *sourceDB, 
-                             const char *destFolder,
+                             const nsACString& destFolder,
                              nsIMsgFilter *filter,
                              nsIMsgWindow *msgWindow);
-  virtual nsresult SpamFilterClassifyMessage(const char *aURI, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessage(const char *aURI, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessages(const char **aURIArray, PRUint32 aURICount, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
 
   static nsresult  AllocateUidStringFromKeys(nsMsgKey *keys, PRInt32 numKeys, nsCString &msgIds);
 protected:
@@ -363,6 +365,8 @@ protected:
 	void TweakHeaderFlags(nsIImapProtocol* aProtocol, nsIMsgDBHdr *tweakMe);
 
 	nsresult SyncFlags(nsIImapFlagAndUidState *flagState);
+  nsresult HandleCustomFlags(nsMsgKey uidOfMessage, nsIMsgDBHdr *dbHdr, nsXPIDLCString &keywords);
+  nsresult NotifyMessageFlagsFromHdr(nsIMsgDBHdr *dbHdr, nsMsgKey msgKey, PRUint32 flags);
 
   nsresult SetupHeaderParseStream(PRUint32 size, const char *content_type, nsIMailboxSpec *boxSpec);
   nsresult  ParseAdoptedHeaderLine(const char *messageLine, PRUint32 msgKey);
@@ -435,6 +439,8 @@ protected:
 
   nsresult CopyOfflineMsgBody(nsIMsgFolder *srcFolder, nsIMsgDBHdr *destHdr, nsIMsgDBHdr *origHdr);
 
+  void GetTrashFolderName(nsAString &aFolderName);
+
   PRBool m_initialized;
   PRBool m_haveDiscoveredAllFolders;
   PRBool m_haveReadNameFromDB;
@@ -473,6 +479,8 @@ protected:
   PRPackedBool m_folderNeedsAdded;
   PRPackedBool m_folderNeedsACLListed;
   PRPackedBool m_performingBiff;
+  PRPackedBool m_folderQuotaCommandIssued;
+  PRPackedBool m_folderQuotaDataIsValid;
 
   nsMsgIMAPFolderACL *m_folderACL;
 
@@ -483,6 +491,11 @@ protected:
   // offline imap support
   PRBool m_downloadMessageForOfflineUse;
   PRBool m_downloadingFolderForOfflineUse;
+
+  // Quota support
+  nsCString m_folderQuotaRoot;
+  PRUint32 m_folderQuotaUsedKB;
+  PRUint32 m_folderQuotaMaxKB;
 };
 
 

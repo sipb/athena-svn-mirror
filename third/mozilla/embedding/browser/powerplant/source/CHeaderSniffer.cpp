@@ -67,7 +67,6 @@ CHeaderSniffer::CHeaderSniffer(nsIWebBrowserPersist* aPersist, nsIFile* aFile, n
 , mBypassCache(aBypassCache)
 , mSaveFormat(aSaveFormat)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 CHeaderSniffer::~CHeaderSniffer()
@@ -300,13 +299,14 @@ nsresult CHeaderSniffer::PerformSave(nsIURI* inOriginalURI, const ESaveFormat in
 
     {
         Str255          defaultName;
-        char            tempBuf1[256], tempBuf2[64];
         bool            result;
 
         CPlatformUCSConversion::GetInstance()->UCSToPlatform(defaultFileName, defaultName);
-        ::CopyPascalStringToC(defaultName, tempBuf1);
+#ifndef XP_MACOSX
+        char            tempBuf1[256], tempBuf2[64];
+        ::CopyPascalStringToC(defaultName, tempBuf1);        
         ::CopyCStringToPascal(NS_TruncNodeName(tempBuf1, tempBuf2), defaultName);
-
+#endif
         if (isHTML) {
             ESaveFormat saveFormat = SaveFormatFromPrefValue(filterIndex);
             UNavServicesDialogs::LCustomFileDesignator customDesignator;
@@ -405,7 +405,7 @@ nsresult CHeaderSniffer::InitiateDownload(nsISupports* inSourceData, nsILocalFil
     
   if (sourceURI)
   {
-    rv = webPersist->SaveURI(sourceURI, mPostData, inDestFile);
+    rv = webPersist->SaveURI(sourceURI, nsnull, nsnull, mPostData, nsnull, inDestFile);
   }
   else
   {

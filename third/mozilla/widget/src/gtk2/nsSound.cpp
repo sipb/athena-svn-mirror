@@ -64,7 +64,6 @@ NS_IMPL_ISUPPORTS2(nsSound, nsISound, nsIStreamLoaderObserver);
 ////////////////////////////////////////////////////////////////////////
 nsSound::nsSound()
 {
-    NS_INIT_ISUPPORTS();
     mInited = PR_FALSE;
 }
 
@@ -78,7 +77,8 @@ nsSound::~nsSound()
     }
 }
 
-nsresult nsSound::Init()
+NS_IMETHODIMP
+nsSound::Init()
 {
     /* we don't need to do esd_open_sound if we are only going to play files
        but we will if we want to do things like streams, etc
@@ -147,8 +147,8 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
 
     int fd, mask = 0;
     long samples_per_sec, avg_bytes_per_sec;
-    long rate;
-    int format, channels = 1, block_align, bits_per_sample;
+    long rate = 0;
+    int format, channels = 1, block_align, bits_per_sample = 0;
 
     if (PL_strncmp(string, "RIFF", 4)) {
 #ifdef DEBUG

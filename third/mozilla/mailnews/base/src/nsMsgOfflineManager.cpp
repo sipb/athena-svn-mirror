@@ -55,7 +55,6 @@
 #include "nsINntpService.h"
 #include "nsXPIDLString.h"
 
-static NS_DEFINE_CID(kCImapService, NS_IMAPSERVICE_CID);
 static NS_DEFINE_CID(kMsgSendLaterCID, NS_MSGSENDLATER_CID); 
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
@@ -76,7 +75,6 @@ nsMsgOfflineManager::nsMsgOfflineManager() :
   m_curState(eNoState),
   m_curOperation(eNoOp)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgOfflineManager::~nsMsgOfflineManager()
@@ -201,7 +199,7 @@ nsresult nsMsgOfflineManager::AdvanceToNextState(nsresult exitStatus)
 nsresult nsMsgOfflineManager::SynchronizeOfflineImapChanges()
 {
   nsresult rv = NS_OK;
-	nsCOMPtr<nsIImapService> imapService(do_GetService(kCImapService, &rv));
+	nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   return imapService->PlaybackAllOfflineOperations(m_window, this, getter_AddRefs(mOfflineImapSync));
 }
@@ -314,7 +312,7 @@ nsresult nsMsgOfflineManager::DownloadMail()
 {
   nsresult rv = NS_OK;
   ShowStatus("downloadingMail");
-	nsCOMPtr<nsIImapService> imapService(do_GetService(kCImapService, &rv));
+	nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   return imapService->DownloadAllOffineImapFolders(m_window, this);
   // ### we should do get new mail on pop servers, and download imap messages for offline use.
@@ -340,7 +338,6 @@ NS_IMETHODIMP nsMsgOfflineManager::GoOnline(PRBool sendUnsentMessages, PRBool pl
 NS_IMETHODIMP nsMsgOfflineManager::SynchronizeForOffline(PRBool downloadNews, PRBool downloadMail, PRBool sendUnsentMessages, PRBool goOfflineWhenDone, nsIMsgWindow *aMsgWindow)
 {
   m_curOperation = eDownloadingForOffline;
-	nsresult rv = NS_OK;
   m_downloadNews = downloadNews;
   m_downloadMail = downloadMail;
   m_sendUnsentMessages = sendUnsentMessages;

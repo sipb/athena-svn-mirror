@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu> (original author)
+ *   L. David Baron <dbaron@dbaron.org> (original author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -41,10 +41,13 @@
 #include "nsRuleNode.h"
 #include "nsString.h"
 #include "nsLayoutAtoms.h"
+#include "nsIDocument.h"
+#include "nsIPresShell.h"
+#include "nsAutoPtr.h"
+#include "nsIFrame.h"
 
 nsInspectorCSSUtils::nsInspectorCSSUtils()
 {
-    NS_INIT_ISUPPORTS();
     nsCSSProps::AddRefTable();
 }
 
@@ -85,8 +88,7 @@ nsInspectorCSSUtils::IsRuleNodeRoot(nsRuleNode *aNode, PRBool *aIsRoot)
 NS_IMETHODIMP
 nsInspectorCSSUtils::AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect)
 {
-  const nsStyleMargin* margins;
-  ::GetStyleData(aFrame, &margins);
+  const nsStyleMargin* margins = aFrame->GetStyleMargin();
   
   // adjust coordinates for margins
   nsStyleCoord coord;
@@ -112,20 +114,12 @@ nsInspectorCSSUtils::AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsInspectorCSSUtils::GetStyleContextForFrame(nsIFrame* aFrame,
-                                             nsIStyleContext** aStyleContext)
+nsStyleContext*
+nsInspectorCSSUtils::GetStyleContextForFrame(nsIFrame* aFrame)
 {
-    NS_PRECONDITION(aFrame, "We'd better have a frame!");
-
-    nsCOMPtr<nsIStyleContext> styleContext;
-    aFrame->GetStyleContext(getter_AddRefs(styleContext));
-    if (!styleContext) {
-        // Caller returns rv on through, and this does not seem
-        // exception-worthy.
-        *aStyleContext = nsnull;
-        return NS_OK;
-    }
+    nsStyleContext* styleContext = aFrame->GetStyleContext();
+    if (!styleContext)
+        return nsnull;
 
     /* For tables the primary frame is the "outer frame" but the style
      * rules are applied to the "inner frame".  Luckily, the "outer
@@ -134,11 +128,59 @@ nsInspectorCSSUtils::GetStyleContextForFrame(nsIFrame* aFrame,
      */
     nsCOMPtr<nsIAtom> frameType;
     aFrame->GetFrameType(getter_AddRefs(frameType));
-    if (frameType == nsLayoutAtoms::tableOuterFrame) {
-        *aStyleContext = styleContext->GetParent().get();
-    } else {
-        *aStyleContext = styleContext;
-        NS_ADDREF(*aStyleContext);
-    }
-    return NS_OK;
+    if (frameType == nsLayoutAtoms::tableOuterFrame)
+        return styleContext->GetParent();
+
+    return styleContext;
 }    
+
+already_AddRefed<nsStyleContext>
+nsInspectorCSSUtils::GetStyleContextForContent(nsIContent* aContent,
+                                               nsIPresShell* aPresShell)
+{
+    nsIFrame* frame = nsnull;
+    aPresShell->GetPrimaryFrameFor(aContent, &frame);
+    if (frame) {
+        nsStyleContext* result = GetStyleContextForFrame(frame);
+        // this function returns an addrefed style context
+        if (result)
+            result->AddRef();
+        return result;
+    }
+
+    // No frame has been created, so resolve the style ourselves
+    nsRefPtr<nsStyleContext> parentContext;
+    nsCOMPtr<nsIContent> parent;
+    aContent->GetParent(*getter_AddRefs(parent));
+    if (parent)
+        parentContext = GetStyleContextForContent(parent, aPresShell);
+
+    nsCOMPtr<nsIPresContext> presContext;
+    aPresShell->GetPresContext(getter_AddRefs(presContext));
+    if (!presContext)
+        return nsnull;
+
+    if (aContent->IsContentOfType(nsIContent::eELEMENT))
+        return presContext->ResolveStyleContextFor(aContent, parentContext);
+
+    return presContext->ResolveStyleContextForNonElement(parentContext);
+}
+
+NS_IMETHODIMP
+nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
+                                           nsRuleNode** aRuleNode)
+{
+    *aRuleNode = nsnull;
+
+    nsCOMPtr<nsIDocument> doc;
+    aContent->GetDocument(*getter_AddRefs(doc));
+    NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
+
+    nsCOMPtr<nsIPresShell> presShell;
+    doc->GetShellAt(0, getter_AddRefs(presShell));
+    NS_ENSURE_TRUE(presShell, NS_ERROR_UNEXPECTED);
+
+    nsRefPtr<nsStyleContext> sContext = GetStyleContextForContent(aContent, presShell);
+    sContext->GetRuleNode(aRuleNode);
+    return NS_OK;
+}

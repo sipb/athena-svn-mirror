@@ -54,7 +54,6 @@ static NS_DEFINE_CID(kWindowMediatorCID, NS_WINDOWMEDIATOR_CID);
 
 nsChromeTreeOwner::nsChromeTreeOwner() : mXULWindow(nsnull)
 {
-	NS_INIT_ISUPPORTS();
 }
 
 nsChromeTreeOwner::~nsChromeTreeOwner()
@@ -369,6 +368,16 @@ NS_IMETHODIMP nsChromeTreeOwner::GetEnabled(PRBool *aEnabled)
 NS_IMETHODIMP nsChromeTreeOwner::SetEnabled(PRBool aEnable)
 {
    return mXULWindow->SetEnabled(aEnable);
+}
+
+NS_IMETHODIMP nsChromeTreeOwner::GetBlurSuppression(PRBool *aBlurSuppression)
+{
+  return mXULWindow->GetBlurSuppression(aBlurSuppression);
+}
+
+NS_IMETHODIMP nsChromeTreeOwner::SetBlurSuppression(PRBool aBlurSuppression)
+{
+  return mXULWindow->SetBlurSuppression(aBlurSuppression);
 }
 
 NS_IMETHODIMP nsChromeTreeOwner::GetMainWidget(nsIWidget** aMainWidget)

@@ -33,22 +33,12 @@ PRUint32 gEntryID=0;
 
 nsSHEntry::nsSHEntry() 
 {
-   NS_INIT_ISUPPORTS();
    mParent = nsnull;
    mID = gEntryID++;
 }
 
 nsSHEntry::~nsSHEntry() 
 {
-  // Release the references to any child entries...
-  PRInt32 i, childCount = mChildren.Count();
-  for (i=0; i<childCount; i++) {
-    nsISHEntry* child;
-
-    child = (nsISHEntry*) mChildren.ElementAt(i);
-    NS_IF_RELEASE(child);
-  }
-
   mChildren.Clear();
 }
 
@@ -363,7 +353,7 @@ nsSHEntry::AddChild(nsISHEntry * aChild, PRInt32 aOffset)
     NS_ENSURE_TRUE(aChild, NS_ERROR_FAILURE);
 
 	NS_ENSURE_SUCCESS(aChild->SetParent(this), NS_ERROR_FAILURE);
-	PRInt32 childCount = mChildren.Count();
+
     //
     // Bug 52670: Ensure children are added in order.
     //
@@ -373,12 +363,10 @@ nsSHEntry::AddChild(nsISHEntry * aChild, PRInt32 aOffset)
     //
     //  Assert that aOffset will not be so high as to grow us a lot.
     //
-    NS_ASSERTION(aOffset < (childCount + 1023), "Large frames array!\n");
+    NS_ASSERTION(aOffset < (mChildren.Count()+1023), "Large frames array!\n");
 
     // This implicitly extends the array to include aOffset
-    mChildren.ReplaceElementAt(aChild, aOffset);
-
-	NS_ADDREF(aChild);
+    mChildren.ReplaceObjectAt(aChild, aOffset);
 
     return NS_OK;
 }
@@ -387,10 +375,9 @@ NS_IMETHODIMP
 nsSHEntry::RemoveChild(nsISHEntry * aChild)
 {
     NS_ENSURE_TRUE(aChild, NS_ERROR_FAILURE);
-	PRBool childRemoved = mChildren.RemoveElement((void *)aChild);
+	PRBool childRemoved = mChildren.RemoveObject(aChild);
 	if (childRemoved) {
 	  aChild->SetParent(nsnull);
-	  NS_RELEASE(aChild);
 	}
     return NS_OK;
 }
@@ -400,7 +387,10 @@ NS_IMETHODIMP
 nsSHEntry::GetChildAt(PRInt32 aIndex, nsISHEntry ** aResult)
 {
 	NS_ENSURE_ARG_POINTER(aResult);
-    *aResult = (nsISHEntry*) mChildren.SafeElementAt(aIndex);
+    *aResult = nsnull;
+    if (aIndex >= 0 && aIndex < mChildren.Count()) {
+        *aResult = mChildren[aIndex];
+    }
     NS_IF_ADDREF(*aResult);
     return NS_OK;
 }

@@ -69,7 +69,6 @@
 #include "nsIFrameSelection.h"
 #include "nsISupportsArray.h"
 #include "nsIParserService.h"
-#include "nsParserCIID.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptSecurityManager.h"
@@ -78,7 +77,6 @@
 
 static NS_DEFINE_CID(kCharsetConverterManagerCID,
                      NS_ICHARSETCONVERTERMANAGER_CID);
-static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
 
 nsresult NS_NewDomSelection(nsISelection **aDomSelection);
 
@@ -109,6 +107,7 @@ public:
   // Inherited methods from nsIDocumentEncoder
   NS_IMETHOD SetSelection(nsISelection* aSelection);
   NS_IMETHOD SetRange(nsIDOMRange* aRange);
+  NS_IMETHOD SetNode(nsIDOMNode* aNode);
   NS_IMETHOD SetWrapColumn(PRUint32 aWC);
   NS_IMETHOD SetCharset(const nsAString& aCharset);
   NS_IMETHOD GetMimeType(nsAString& aMimeType);
@@ -145,6 +144,7 @@ protected:
   nsCOMPtr<nsIDocument>          mDocument;
   nsCOMPtr<nsISelection>         mSelection;
   nsCOMPtr<nsIDOMRange>          mRange;
+  nsCOMPtr<nsIDOMNode>           mNode;
   nsCOMPtr<nsIOutputStream>      mStream;
   nsCOMPtr<nsIContentSerializer> mSerializer;
   nsCOMPtr<nsIUnicodeEncoder>    mUnicodeEncoder;
@@ -184,7 +184,6 @@ NS_INTERFACE_MAP_END
 
 nsDocumentEncoder::nsDocumentEncoder()
 {
-  NS_INIT_ISUPPORTS();
 
   mMimeType.Assign(NS_LITERAL_STRING("text/plain"));
 
@@ -263,6 +262,13 @@ NS_IMETHODIMP
 nsDocumentEncoder::SetRange(nsIDOMRange* aRange)
 {
   mRange = aRange;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocumentEncoder::SetNode(nsIDOMNode* aNode)
+{
+  mNode = aNode;
   return NS_OK;
 }
 
@@ -529,7 +535,7 @@ static nsresult ChildAt(nsIDOMNode* aNode, PRInt32 aIndex, nsIDOMNode*& aChild)
   node->ChildAt(aIndex, *getter_AddRefs(child));
 
   if (child)
-    child->QueryInterface(NS_GET_IID(nsIDOMNode), (void **)&aChild);
+    return CallQueryInterface(child, &aChild);
 
   return NS_OK;
 }
@@ -944,6 +950,9 @@ nsDocumentEncoder::EncodeToString(nsAString& aOutputString)
       rv = SerializeRangeToString(mRange, aOutputString);
 
       mRange = nsnull;
+  } else if (mNode) {
+    rv = SerializeToStringRecursive(mNode, aOutputString);
+    mNode = nsnull;
   } else {
     nsCOMPtr<nsIDOMDocument> domdoc(do_QueryInterface(mDocument));
     rv = mSerializer->AppendDocumentStart(domdoc, aOutputString);
@@ -1075,7 +1084,6 @@ protected:
   PRBool IsEmptyTextContent(nsIDOMNode* aNode);
   virtual PRBool IncludeInContext(nsIDOMNode *aNode);
 
-  nsCOMPtr<nsIParserService> mParserService;
   PRBool mIsTextWidget;
 };
 
@@ -1113,9 +1121,7 @@ nsHTMLCopyEncoder::Init(nsIDocument* aDocument,
   if (!IsScriptEnabled(mDocument))
     mFlags |= OutputNoScriptContent;
 
-  nsresult rv;
-  mParserService = do_GetService(kParserServiceCID, &rv);
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1483,6 +1489,10 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
       rv = GetNodeLocation(node, address_of(parent), &offset);
       NS_ENSURE_SUCCESS(rv, rv);
       if (offset == -1) return NS_OK; // we hit generated content; STOP
+      nsIParserService *parserService =
+        nsContentUtils::GetParserServiceWeakRef();
+      if (!parserService)
+        return NS_ERROR_OUT_OF_MEMORY;
       while ((IsFirstNode(node)) && (!IsRoot(parent)) && (parent != common))
       {
         if (bResetPromotion)
@@ -1496,8 +1506,8 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
             PRInt32 id;
             content->GetTag(*getter_AddRefs(atom));
             atom->ToString(tag);
-            mParserService->HTMLStringTagToId(tag, &id);
-            mParserService->IsBlock(id, isBlock);
+            parserService->HTMLStringTagToId(tag, &id);
+            parserService->IsBlock(id, isBlock);
             if (isBlock)
             {
               bResetPromotion = PR_FALSE;
@@ -1568,6 +1578,10 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
       rv = GetNodeLocation(node, address_of(parent), &offset);
       NS_ENSURE_SUCCESS(rv, rv);
       if (offset == -1) return NS_OK; // we hit generated content; STOP
+      nsIParserService *parserService =
+        nsContentUtils::GetParserServiceWeakRef();
+      if (!parserService)
+        return NS_ERROR_OUT_OF_MEMORY;
       while ((IsLastNode(node)) && (!IsRoot(parent)) && (parent != common))
       {
         if (bResetPromotion)
@@ -1581,8 +1595,8 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
             PRInt32 id;
             content->GetTag(*getter_AddRefs(atom));
             atom->ToString(tag);
-            mParserService->HTMLStringTagToId(tag, &id);
-            mParserService->IsBlock(id, isBlock);
+            parserService->HTMLStringTagToId(tag, &id);
+            parserService->IsBlock(id, isBlock);
             if (isBlock)
             {
               bResetPromotion = PR_FALSE;

@@ -43,7 +43,7 @@
 //
 
 #include "nsDeckFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsIContent.h"
 #include "nsCOMPtr.h"
@@ -115,10 +115,9 @@ nsDeckFrame::CreateWidget(nsIPresContext* aPresContext, nsIBox* aBox)
   frame->GetView(aPresContext, &view);
   
   if (!view) {
-     nsCOMPtr<nsIStyleContext> context;
-     frame->GetStyleContext(getter_AddRefs(context));
-     nsHTMLContainerFrame::CreateViewForFrame(aPresContext,frame,context,nsnull,PR_TRUE); 
-     frame->GetView(aPresContext, &view);
+    nsStyleContext* context = frame->GetStyleContext();
+    nsHTMLContainerFrame::CreateViewForFrame(aPresContext,frame,context,nsnull,PR_TRUE); 
+    frame->GetView(aPresContext, &view);
   }
 
   nsCOMPtr<nsIWidget> widget;
@@ -204,7 +203,7 @@ NS_IMETHODIMP
 nsDeckFrame::Init(nsIPresContext*  aPresContext,
                     nsIContent*      aContent,
                     nsIFrame*        aParent,
-                    nsIStyleContext* aStyleContext,
+                    nsStyleContext*  aStyleContext,
                     nsIFrame*        aPrevInFlow)
 {
   nsresult  rv = nsBoxFrame::Init(aPresContext, aContent,
@@ -316,27 +315,12 @@ nsDeckFrame::Paint(nsIPresContext*      aPresContext,
                    PRUint32             aFlags)
 {
   // if a tab is hidden all its children are too.
- 	const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-	if (!vis->mVisible)
-		return NS_OK;
+
+  if (!GetStyleVisibility()->mVisible)
+    return NS_OK;
 
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
-    if (vis->IsVisible() && mRect.width && mRect.height) {
-      // Paint our background and border
-      PRIntn skipSides = GetSkipSides();
-      const nsStyleBorder* border = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* padding = (const nsStylePadding*)
-        mStyleContext->GetStyleData(eStyleStruct_Padding);
-
-      nsRect  rect(0, 0, mRect.width, mRect.height);
-      nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                      aDirtyRect, rect, *border, *padding,
-                                      0, 0);
-      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *border, mStyleContext, skipSides);
-    }
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
   }
 
   // only paint the seleced box

@@ -28,10 +28,13 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= ucvmath
 LIBRARY_NAME	= ucvmath
-EXPORT_LIBRARY = 1
+EXPORT_LIBRARY  = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsUCvMathModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  uconv \
 		  $(NULL)
@@ -66,10 +69,9 @@ CPPSRCS		+= \
 
 EXPORTS		= nsUCvMathCID.h
 
-SHARED_LIBRARY_LIBS = \
+EXTRA_DSO_LDOPTS += \
 		$(DIST)/lib/$(LIB_PREFIX)ucvutil_s.$(LIB_SUFFIX) \
+		$(MOZ_COMPONENT_LIBS) \
 		$(NULL)
-
-EXTRA_DSO_LDOPTS += $(MOZ_COMPONENT_LIBS)
 
 include $(topsrcdir)/config/rules.mk

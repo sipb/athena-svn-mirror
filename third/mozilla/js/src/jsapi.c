@@ -1022,7 +1022,7 @@ JS_ToggleOptions(JSContext *cx, uint32 options)
 JS_PUBLIC_API(const char *)
 JS_GetImplementationVersion(void)
 {
-    return "JavaScript-C 1.5 pre-release 4a 2002-03-21";
+    return "JavaScript-C 1.5 pre-release 5 2003-01-10";
 }
 
 
@@ -1477,6 +1477,7 @@ JS_NewNumberValue(JSContext *cx, jsdouble d, jsval *rval)
     return js_NewNumberValue(cx, d, rval);
 }
 
+#undef JS_AddRoot
 JS_PUBLIC_API(JSBool)
 JS_AddRoot(JSContext *cx, void *rp)
 {
@@ -1517,6 +1518,7 @@ JS_ClearNewbornRoots(JSContext *cx)
 
     for (i = 0; i < GCX_NTYPES; i++)
         cx->newborn[i] = NULL;
+    cx->lastAtom = NULL;
 }
 
 #include "jshash.h" /* Added by JSIFY */
@@ -2016,6 +2018,100 @@ JS_NewObject(JSContext *cx, JSClass *clasp, JSObject *proto, JSObject *parent)
     if (!clasp)
         clasp = &js_ObjectClass;    /* default class is Object */
     return js_NewObject(cx, clasp, proto, parent);
+}
+
+JS_PUBLIC_API(JSBool)
+JS_SealObject(JSContext *cx, JSObject *obj, JSBool deep)
+{
+    JSScope *scope;
+    JSIdArray *ida;
+    uint32 nslots;
+    jsval v, *vp, *end;
+
+    if (!OBJ_IS_NATIVE(obj)) {
+        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
+                             JSMSG_CANT_SEAL_OBJECT,
+                             OBJ_GET_CLASS(cx, obj)->name);
+        return JS_FALSE;
+    }
+
+    /* Nothing to do if obj's scope is already sealed. */
+    scope = OBJ_SCOPE(obj);
+#ifdef JS_THREADSAFE
+    JS_ASSERT(scope->ownercx == cx);
+#endif
+    if (SCOPE_IS_SEALED(scope))
+        return JS_TRUE;
+
+    /* XXX Enumerate lazy properties now, as they can't be added later. */
+    ida = JS_Enumerate(cx, obj);
+    if (!ida)
+        return JS_FALSE;
+    JS_DestroyIdArray(cx, ida);
+
+    /* Ensure that obj has its own, mutable scope, and seal that scope. */
+    JS_LOCK_OBJ(cx, obj);
+    scope = js_GetMutableScope(cx, obj);
+    if (scope)
+        SCOPE_SET_SEALED(scope);
+    JS_UNLOCK_SCOPE(cx, scope);
+    if (!scope)
+        return JS_FALSE;
+
+    /* If we are not sealing an entire object graph, we're done. */
+    if (!deep)
+        return JS_TRUE;
+
+    /* Walk obj->slots and if any value is a non-null object, seal it. */
+    nslots = JS_MIN(scope->map.freeslot, scope->map.nslots);
+    for (vp = obj->slots, end = vp + nslots; vp < end; vp++) {
+        v = *vp;
+        if (JSVAL_IS_PRIMITIVE(v))
+            continue;
+        if (!JS_SealObject(cx, JSVAL_TO_OBJECT(v), deep))
+            return JS_FALSE;
+    }
+    return JS_TRUE;
+}
+
+JS_PUBLIC_API(JSBool)
+JS_UnsealObject(JSContext *cx, JSObject *obj, JSBool deep)
+{
+    JSScope *scope;
+    uint32 nslots;
+    jsval v, *vp, *end;
+
+    if (!OBJ_IS_NATIVE(obj)) {
+        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
+                             JSMSG_CANT_UNSEAL_OBJECT,
+                             OBJ_GET_CLASS(cx, obj)->name);
+        return JS_FALSE;
+    }
+
+    scope = OBJ_SCOPE(obj);
+#ifdef JS_THREADSAFE
+    JS_ASSERT(scope->ownercx == cx);
+#endif
+    if (!SCOPE_IS_SEALED(scope))
+        return JS_TRUE;
+
+    JS_ASSERT(scope == OBJ_SCOPE(obj));
+    JS_LOCK_SCOPE(cx, scope);
+    SCOPE_CLR_SEALED(scope);
+    JS_UNLOCK_SCOPE(cx, scope);
+
+    if (!deep)
+        return JS_TRUE;
+
+    nslots = JS_MIN(scope->map.freeslot, scope->map.nslots);
+    for (vp = obj->slots, end = vp + nslots; vp < end; vp++) {
+        v = *vp;
+        if (JSVAL_IS_PRIMITIVE(v))
+            continue;
+        if (!JS_UnsealObject(cx, JSVAL_TO_OBJECT(v), deep))
+            return JS_FALSE;
+    }
+    return JS_TRUE;
 }
 
 JS_PUBLIC_API(JSObject *)
@@ -3191,7 +3287,7 @@ JS_CompileUCFunctionForPrincipals(JSContext *cx, JSObject *obj,
         fun = NULL;
         goto out;
     }
-    if (funAtom) {
+    if (obj && funAtom) {
         if (!OBJ_DEFINE_PROPERTY(cx, obj, (jsid)funAtom,
                                  OBJECT_TO_JSVAL(fun->object),
                                  NULL, NULL, 0, NULL)) {
@@ -3470,7 +3566,7 @@ JS_IsAssigning(JSContext *cx)
         continue;
     if (!fp || !(pc = fp->pc))
         return JS_FALSE;
-    return (js_CodeSpec[*pc].format & JOF_SET) != 0;
+    return (js_CodeSpec[*pc].format & JOF_ASSIGNING) != 0;
 }
 
 JS_PUBLIC_API(void)
@@ -3980,13 +4076,13 @@ JS_ErrorFromException(JSContext *cx, jsval v)
 }
 
 #ifdef JS_THREADSAFE
-JS_PUBLIC_API(intN)
+JS_PUBLIC_API(jsword)
 JS_GetContextThread(JSContext *cx)
 {
     return cx->thread;
 }
 
-JS_PUBLIC_API(intN)
+JS_PUBLIC_API(jsword)
 JS_SetContextThread(JSContext *cx)
 {
     intN old = cx->thread;
@@ -4005,10 +4101,9 @@ JS_ClearContextThread(JSContext *cx)
 
 /************************************************************************/
 
-#ifdef XP_PC
 #if defined(XP_OS2)
 /*DSR031297 - the OS/2 equiv is dll_InitTerm, but I don't see the need for it*/
-#else
+#elif defined(XP_WIN)
 #include <windows.h>
 /*
  * Initialization routine for the JS DLL...
@@ -4042,5 +4137,4 @@ BOOL CALLBACK __loadds WEP(BOOL fSystemExit)
 }
 
 #endif /* !_WIN32 */
-#endif /* XP_OS2 */
-#endif /* XP_PC */
+#endif /* XP_OS2 || XP_WIN */

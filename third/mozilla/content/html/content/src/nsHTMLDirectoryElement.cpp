@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -48,7 +47,7 @@
 
 // XXX nav4 has type= start= (same as OL/UL)
 
-extern nsGenericHTMLElement::EnumTable kListTypeTable[];
+extern nsHTMLValue::EnumTable kListTypeTable[];
 
 
 class nsHTMLDirectoryElement : public nsGenericHTMLContainerElement,
@@ -82,9 +81,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -172,12 +168,12 @@ nsHTMLDirectoryElement::StringToAttribute(nsIAtom* aAttribute,
                                           nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    if (ParseEnumValue(aValue, kListTypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kListTypeTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::start) {
-    if (ParseValue(aValue, 1, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 1)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -194,7 +190,7 @@ nsHTMLDirectoryElement::AttributeToString(nsIAtom* aAttribute,
                                           nsAString& aResult) const
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    EnumValueToString(aValue, kListTypeTable, aResult);
+    aValue.EnumValueToString(kListTypeTable, aResult);
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
@@ -226,15 +222,19 @@ NS_IMETHODIMP
 nsHTMLDirectoryElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                  nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::type) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (aAttribute == nsHTMLAtoms::compact) {
-    aHint = NS_STYLE_HINT_CONTENT;  // XXX
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::type, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::compact, NS_STYLE_HINT_CONTENT}, // XXX
+    { nsnull, NS_STYLE_HINT_NONE} 
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+  
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+
   return NS_OK;
 }
 
@@ -245,13 +245,3 @@ nsHTMLDirectoryElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& a
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLDirectoryElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

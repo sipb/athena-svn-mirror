@@ -44,10 +44,14 @@ Rights Reserved.
 
   <hbox align="center" valign="center">
 
-    <label control="abPopup" value="&chooseAddressBook.label;"/>
+    <label control="abPopup" value="&chooseAddressBook.label;" accesskey="&chooseAddressBook.accesskey;"/>
     <menulist id="abPopup">
-      <menupopup id="abPopup-menupopup" ref="moz-abdirectory://" 
-        datasources="rdf:addressdirectory">
+      <menupopup id="abPopup-menupopup" 
+                 ref="moz-abdirectory://" 
+                 datasources="rdf:addressdirectory"
+                 sortActive="true"
+                 sortDirection="ascending"
+                 sortResource="http://home.netscape.com/NC-rdf#DirTreeNameSort">
         <template> 
         <rule nc:IsWriteable="false"/>
         <rule nc:IsMailList="false">

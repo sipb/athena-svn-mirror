@@ -28,10 +28,11 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= necko
 XPIDL_MODULE	= necko_jar
+GRE_MODULE	= 1
 
-XPIDLSRCS	= nsIJARChannel.idl \
-		  nsIJARURI.idl	    \
-		  nsIJARProtocolHandler.idl
+XPIDLSRCS	= nsIJARURI.idl	\
+		      nsIJARChannel.idl \
+		      nsIJARProtocolHandler.idl
 
 include $(topsrcdir)/config/rules.mk
 

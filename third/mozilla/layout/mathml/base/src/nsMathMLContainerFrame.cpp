@@ -27,9 +27,9 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsHTMLAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsINameSpaceManager.h"
 #include "nsIRenderingContext.h"
@@ -45,6 +45,9 @@
 #include "nsMathMLParts.h"
 #include "nsMathMLChar.h"
 #include "nsMathMLContainerFrame.h"
+#include "nsAutoPtr.h"
+
+NS_DEFINE_CID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
 //
 // nsMathMLContainerFrame implementation
@@ -74,9 +77,7 @@ nsMathMLContainerFrame::ReflowError(nsIPresContext*      aPresContext,
 
   ///////////////
   // Set font
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
-  aRenderingContext.SetFont(font->mFont, nsnull);
+  aRenderingContext.SetFont(GetStyleFont()->mFont, nsnull);
 
   // bounding metrics
   nsAutoString errorMsg; errorMsg.AssignWithConversion("invalid-markup");
@@ -98,9 +99,8 @@ nsMathMLContainerFrame::ReflowError(nsIPresContext*      aPresContext,
   aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
   aDesiredSize.width = mBoundingMetrics.width;
 
-  if (aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
   // Also return our bounding metrics
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
@@ -118,9 +118,7 @@ nsMathMLContainerFrame::PaintError(nsIPresContext*      aPresContext,
     NS_ASSERTION(NS_MATHML_HAS_ERROR(mPresentationData.flags),
                  "There is nothing wrong with this frame!");
     // Set color and font ...
-    const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-      mStyleContext->GetStyleData(eStyleStruct_Font));
-    aRenderingContext.SetFont(font->mFont, nsnull);
+    aRenderingContext.SetFont(GetStyleFont()->mFont, nsnull);
 
     aRenderingContext.SetColor(NS_RGB(255,0,0));
     aRenderingContext.FillRect(0, 0, mRect.width, mRect.height);
@@ -491,9 +489,8 @@ nsMathMLContainerFrame::FinalizeReflow(nsIPresContext*      aPresContext,
               defaultSize, aDesiredSize);
     }
   }
-  if (aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
   // Also return our bounding metrics
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
@@ -594,9 +591,8 @@ nsMathMLContainerFrame::PropagateScriptStyleFor(nsIPresContext* aPresContext,
     // the one to use when we will propagate the recursion
     aParentScriptLevel = presentationData.scriptLevel;
 
-    nsCOMPtr<nsIStyleContext> oldStyleContext;
-    aFrame->GetStyleContext(getter_AddRefs(oldStyleContext));
-    nsCOMPtr<nsIStyleContext> parentContext(oldStyleContext->GetParent());
+    nsStyleContext* oldStyleContext = aFrame->GetStyleContext();
+    nsStyleContext* parentContext = oldStyleContext->GetParent();
 
     nsCOMPtr<nsIContent> content;
     aFrame->GetContent(getter_AddRefs(content));
@@ -647,8 +643,7 @@ nsMathMLContainerFrame::PropagateScriptStyleFor(nsIPresContext* aPresContext,
       }
       fontsize.AppendInt(gap, 10);
       // we want to make sure that the size will stay readable
-      const nsStyleFont* font = NS_STATIC_CAST(const nsStyleFont*,
-        parentContext->GetStyleData(eStyleStruct_Font));
+      const nsStyleFont* font = parentContext->GetStyleFont();
       nscoord newFontSize = font->mFont.size;
       while (0 < gap--) {
         newFontSize = (nscoord)((float)(newFontSize) * scriptsizemultiplier);
@@ -674,6 +669,13 @@ nsMathMLContainerFrame::PropagateScriptStyleFor(nsIPresContext* aPresContext,
         fm->ComputeStyleChangeFor(aPresContext, aFrame,
                                   kNameSpaceID_None, nsMathMLAtoms::fontsize,
                                   changeList, minChange, maxChange);
+#ifdef DEBUG
+        // Use the parent frame to make sure we catch in-flows and such
+        nsIFrame* parentFrame;
+        aFrame->GetParent(&parentFrame);
+        fm->DebugVerifyStyleTree(aPresContext,
+                                 parentFrame ? parentFrame : aFrame);
+#endif
       }
     }
   }
@@ -717,7 +719,7 @@ nsMathMLContainerFrame::WrapForeignFrames(nsIPresContext* aPresContext)
     nsIFrame* child = next;
     next->GetNextSibling(&next);
     nsInlineFrame* inlineFrame;
-    child->QueryInterface(nsInlineFrame::kInlineFrameCID, (void**)&inlineFrame);
+    child->QueryInterface(kInlineFrameCID, (void**)&inlineFrame);
     if (inlineFrame) {
       // create a new wrapper frame to wrap this child
       nsCOMPtr<nsIPresShell> shell;
@@ -725,16 +727,16 @@ nsMathMLContainerFrame::WrapForeignFrames(nsIPresContext* aPresContext)
       nsIFrame* wrapper;
       nsresult rv = NS_NewMathMLForeignFrameWrapper(shell, &wrapper);
       if (NS_FAILED(rv)) return rv;
-      nsCOMPtr<nsIStyleContext> newStyleContext;
-      aPresContext->ResolvePseudoStyleContextFor(mContent, nsHTMLAtoms::mozAnonymousBlock,
-                                                 mStyleContext,
-                                                 getter_AddRefs(newStyleContext));
+      nsRefPtr<nsStyleContext> newStyleContext;
+      newStyleContext = aPresContext->ResolvePseudoStyleContextFor(mContent,
+								   nsCSSAnonBoxes::mozAnonymousBlock,
+								   mStyleContext);
       rv = wrapper->Init(aPresContext, mContent, this, newStyleContext, nsnull);
       if (NS_FAILED(rv)) {
         wrapper->Destroy(aPresContext);
         return rv;
       }
-      mFrames.ReplaceFrame(this, child, wrapper);
+      mFrames.ReplaceFrame(aPresContext, this, child, wrapper, PR_FALSE);
       child->SetParent(wrapper);
       child->SetNextSibling(nsnull);
       aPresContext->ReParentStyleContext(child, newStyleContext);
@@ -792,7 +794,7 @@ NS_IMETHODIMP
 nsMathMLContainerFrame::Init(nsIPresContext*  aPresContext,
                              nsIContent*      aContent,
                              nsIFrame*        aParent,
-                             nsIStyleContext* aContext,
+                             nsStyleContext*  aContext,
                              nsIFrame*        aPrevInFlow)
 {
   MapAttributesIntoCSS(aPresContext, aContent);
@@ -1013,13 +1015,7 @@ nsMathMLContainerFrame::ReplaceFrame(nsIPresContext* aPresContext,
     return NS_ERROR_INVALID_ARG;
   }
   // Replace the old frame with the new frame in the list
-  mFrames.ReplaceFrame(this, aOldFrame, aNewFrame);
-
-  // XXX now destroy the old frame, really? the usage of ReplaceFrame() vs.
-  // XXX ReplaceFrameAndDestroy() is ambiguous - see bug 122748
-  // XXX The style system doesn't call ReplaceFrame() and that's why
-  // XXX nobody seems to have been biten by the ambiguity yet
-  aOldFrame->Destroy(aPresContext);
+  mFrames.ReplaceFrame(aPresContext, this, aOldFrame, aNewFrame, PR_TRUE);
 
   return ChildListChanged(aPresContext, nsIDOMMutationEvent::MODIFICATION);
 }
@@ -1098,7 +1094,7 @@ printf("\n");
 
   nsReflowStatus childStatus;
   nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
-  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.maxElementSize,
+  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mComputeMEW,
                       aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
   nsIFrame* childFrame = mFrames.FirstChild();
   while (childFrame) {
@@ -1162,6 +1158,10 @@ printf("\n");
       }
       childFrame->GetNextSibling(&childFrame);
     }
+  }
+
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = childDesiredSize.mMaxElementWidth;
   }
 
   /////////////
@@ -1308,8 +1308,7 @@ nsMathMLContainerFrame::Place(nsIPresContext*      aPresContext,
   mBoundingMetrics.Clear();
 
   // cache away thinspace
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
+  const nsStyleFont* font = GetStyleFont();
   nscoord thinSpace = NSToCoordRound(float(font->mFont.size)*float(3) / float(18));
 
   PRInt32 count = 0;
@@ -1442,10 +1441,8 @@ GetInterFrameSpacingFor(nsIPresContext* aPresContext,
       prevFrameType, childFrameType, &fromFrameType, &carrySpace);
     if (aChildFrame == childFrame) {
       // get thinspace
-      nsCOMPtr<nsIStyleContext> parentContext;
-      aParentFrame->GetStyleContext(getter_AddRefs(parentContext));
-      const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-        parentContext->GetStyleData(eStyleStruct_Font));
+      nsStyleContext* parentContext = aParentFrame->GetStyleContext();
+      const nsStyleFont* font = parentContext->GetStyleFont();
       nscoord thinSpace = NSToCoordRound(float(font->mFont.size)*float(3) / float(18));
       // we are done
       return space * thinSpace;

@@ -22,7 +22,7 @@
    Contributor(s): 
   -->
 
-<!DOCTYPE window SYSTEM "chrome://cookie/locale/cookieNavigatorOverlay.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://cookie/locale/cookieNavigatorOverlay.dtd">
 
 <overlay id="cookieNavigatorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -34,15 +34,13 @@
 
     // both are necessary. popupmanager is just a special case
     // of permissionmanager but does extra work on add/remove
+    const nsIPermissionManager = Components.interfaces.nsIPermissionManager;
     var permissionmanager;
     var popupmanager;
 
     // Remove the image entries from the task menu
     function HideImage() {
-      var element;
-      element = document.getElementById("image");
-      element.setAttribute("style","display: none;" );
-      element.setAttribute("disabled","true" );
+      document.getElementById("image").hidden = true;
     }
 
     // for some unexplainable reason, CheckForImage() keeps getting called repeatedly
@@ -54,6 +52,7 @@
     // determine which items we need to hide or disable from the task menu
     function CheckForVisibility()
     {
+      var uri = getBrowser().currentURI;
 
       // obtain access to permissionmanager and popupmanager
       // (popup manager is a wrapper around permission that does extra work)
@@ -69,18 +68,18 @@
       }
 
       // determine current state (blocked or unblocked) and hide appropriate menu item
-      var blocked;
-
+      var blocked = nsIPermissionManager.UNKNOWN_ACTION;
+      
       blocked = 
-        permissionmanager.testForBlocking(window._content.location, COOKIEPERMISSION);
-      enableElement("AllowCookies", blocked);
-      enableElement("BlockCookies", !blocked);
+        permissionmanager.testPermission(uri, nsIPermissionManager.COOKIE_TYPE);
+      enableElement("AllowCookies", blocked != nsIPermissionManager.ALLOW_ACTION);
+      enableElement("BlockCookies", blocked != nsIPermissionManager.DENY_ACTION);
 
       blocked =
-        permissionmanager.testForBlocking(window._content.location, IMAGEPERMISSION);
-      enableElement("AllowImages", blocked);
-      enableElement("BlockImages", !blocked);
-
+        permissionmanager.testPermission(uri, nsIPermissionManager.IMAGE_TYPE);
+      enableElement("AllowImages", blocked != nsIPermissionManager.ALLOW_ACTION);
+      enableElement("BlockImages", blocked != nsIPermissionManager.DENY_ACTION);
+      
       SetPopupMenuEnabledState();
 
       var pref;
@@ -104,21 +103,20 @@
     }
 
     function SetPopupMenuEnabledState() {
-      // use care choosing which nsIPopupWindowManager constant to compare
-      // against. the allow/disallow/sometimes relationship can be subtle.
-      var useManager = !pref.getBoolPref("dom.disable_open_during_load") &&
-                       pref.getIntPref("privacy.popups.policy") == Components.interfaces.nsIPopupWindowManager.ALLOW_POPUP &&
-                       pref.getBoolPref("privacy.popups.usecustom");
-      var suitable = false;
-      var enableBlock = false;
-      if (useManager) {
-        suitable = popupmanager.testSuitability(getBrowser().currentURI);
-        if (suitable)
-          enableBlock = popupmanager.testPermission(getBrowser().currentURI) != Components.interfaces.nsIPopupWindowManager.DENY_POPUP;
+      var blocked = nsIPermissionManager.UNKNOWN_ACTION;
+      var policy = pref.getBoolPref("dom.disable_open_during_load");
+
+      blocked = permissionmanager.testPermission(getBrowser().currentURI, nsIPermissionManager.POPUP_TYPE);
+      
+      document.getElementById("AboutPopups").hidden = policy;
+      document.getElementById("ManagePopups").hidden = !policy;
+
+      if (policy) {
+        enableElement("AllowPopups", blocked != nsIPermissionManager.ALLOW_ACTION);
+        return;
       }
-      enableElement("BlockPopups", useManager && suitable && enableBlock);
-      enableElement("AllowPopups", useManager && suitable && !enableBlock);
-      enableElement("ManagePopups", useManager);
+
+      enableElement("AllowPopups", false);
     }
 
     function enableElement(elementID, enable) {
@@ -137,40 +135,52 @@
         return;
       }
       var element;
+      var uri = getBrowser().currentURI;
       switch (action) {
         case "cookieAllow":
-          permissionmanager.add(window._content.location, true, COOKIEPERMISSION);
+          permissionmanager.add(uri, nsIPermissionManager.COOKIE_TYPE, nsIPermissionManager.ALLOW_ACTION);
           element = document.getElementById("AllowCookies");
           alert(element.getAttribute("msg"));
           break;
         case "cookieBlock":
-          permissionmanager.add(window._content.location, false, COOKIEPERMISSION);
+          permissionmanager.add(uri, nsIPermissionManager.COOKIE_TYPE, nsIPermissionManager.DENY_ACTION);
           element = document.getElementById("BlockCookies");
           alert(element.getAttribute("msg"));
           break;
         case "imageAllow":
-          permissionmanager.add(window._content.location, true, IMAGEPERMISSION);
+          permissionmanager.add(uri, nsIPermissionManager.IMAGE_TYPE, nsIPermissionManager.ALLOW_ACTION);
           element = document.getElementById("AllowImages");
           alert(element.getAttribute("msg"));
           break;
         case "imageBlock":
-          permissionmanager.add(window._content.location, false, IMAGEPERMISSION);
+          permissionmanager.add(uri, nsIPermissionManager.IMAGE_TYPE, nsIPermissionManager.DENY_ACTION);
           element = document.getElementById("BlockImages");
-          alert(element.getAttribute("msg"));
-          break;
-        case "popupAllow":
-          popupmanager.add(getBrowser().currentURI, true);
-          element = document.getElementById("AllowPopups");
-          alert(element.getAttribute("msg"));
-          break;
-        case "popupBlock":
-          popupmanager.add(getBrowser().currentURI, false);
-          element = document.getElementById("BlockPopups");
           alert(element.getAttribute("msg"));
           break;
         default:
       }
-    }  
+    }
+
+    function PopupAction() {
+      var hostPort = getBrowser().currentURI.hostPort;
+      window.openDialog("chrome://communicator/content/popupManager.xul", "",
+                        "chrome,resizable=yes,modal=yes",
+                        hostPort,
+                        false);
+    }
+
+    function OpenAboutPopups() {
+      window.openDialog("chrome://communicator/content/aboutPopups.xul", "", 
+                        "chrome,centerscreen,resizable=yes", 
+                        false);
+    }
+
+    function OpenManagePopups() {
+      window.openDialog("chrome://communicator/content/popupManager.xul", "",
+                        "chrome,resizable=yes", 
+                        "",
+                        false);
+    }
 
   ]]>
   </script>         
@@ -214,26 +224,23 @@
                   oncommand="viewImages();"/> 
       </menupopup>
     </menu>
-<!--
     <menu label="&cookiePopupManager.label;"
           accesskey="&cookiePopupManager.accesskey;"
           id="popup"
           insertbefore="navBeginGlobalItems">
       <menupopup>
-        <menuitem id="BlockPopups" label="&cookieBlockPopupsCmd.label;"
-                  accesskey="&cookieBlockPopupsCmd.accesskey;" 
-                  msg="&cookieBlockPopupsMsg.label;"
-                  oncommand="CookieImageAction('popupBlock');"/> 
         <menuitem id="AllowPopups" label="&cookieAllowPopupsCmd.label;"
                   accesskey="&cookieAllowPopupsCmd.accesskey;" 
-                  msg="&cookieAllowPopupsMsg.label;"
-                  oncommand="CookieImageAction('popupAllow');"/> 
-        <menuseparator/>
-        <menuitem id="ManagePopups" label="&cookieDisplayPopupsCmd.label;"
-                  accesskey="&cookieDisplayPopupsCmd.accesskey;" 
-                  oncommand="viewPopups();"/> 
+                  oncommand="PopupAction();"/>
+        <menuitem id="AboutPopups" label="&cookieAboutPopupBlocking.label;"
+                  accesskey="&cookieAboutPopupBlocking.accesskey;"
+                  oncommand="OpenAboutPopups();"
+                  hidden="true"/>
+        <menuitem id="ManagePopups" label="&cookieManagePopups.label;"
+                  accesskey="&cookieManagePopups.accesskey;"
+                  oncommand="OpenManagePopups();"
+                  hidden="true"/>
       </menupopup>
     </menu>
--->
   </menupopup>
 </overlay>

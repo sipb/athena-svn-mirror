@@ -57,7 +57,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   // Called to set the one and only child frame. Returns NS_ERROR_INVALID_ARG
@@ -120,7 +120,6 @@ public:
 
 protected:
   nsScrollBoxFrame(nsIPresShell* aShell);
-  virtual PRIntn GetSkipSides() const;
 
    // Creation of the widget for the scrolling view is factored into a virtual method so
    // that sub-classes may control widget creation.

@@ -42,8 +42,6 @@
   <overlaytarget id="scripts-overlay-target">
 
     <script src="chrome://global/content/strres.js"/>
-    <script src="chrome://global/content/nsJSSupportsUtils.js"/>
-    <script src="chrome://global/content/nsJSComponentManager.js"/>
     <script src="chrome://global/content/nsUserSettings.js"/>
     <script src="chrome://global/content/nsTransferable.js"/>
     <script src="chrome://global/content/nsClipboard.js"/>
@@ -60,8 +58,8 @@
     <script src="chrome://chatzilla/content/lib/xul/munger.js"/>
 
     <script src="chrome://chatzilla/content/commands.js"/>
-    <script src="chrome://chatzilla/content/readprefs.js"/>
     <script src="chrome://chatzilla/content/static.js"/>
+    <script src="chrome://chatzilla/content/readprefs.js"/>
     <script src="chrome://chatzilla/content/handlers.js"/>
     <script src="chrome://chatzilla/content/rdf.js"/>
 

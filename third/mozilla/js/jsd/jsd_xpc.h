@@ -71,7 +71,6 @@ class jsdObject : public jsdIObject
     jsdObject (JSDContext *aCx, JSDObject *aObject) :
         mCx(aCx), mObject(aObject)
     {
-        NS_INIT_ISUPPORTS();
     }
 
     static jsdIObject *FromPtr (JSDContext *aCx,
@@ -280,14 +279,9 @@ class jsdService : public jsdIDebuggerService
                    mInterruptHook(0), mScriptHook(0), mThrowHook(0),
                    mTopLevelHook(0), mFunctionHook(0)
     {
-        NS_INIT_ISUPPORTS();
     }
 
-    virtual ~jsdService()
-    {
-        ClearFilters();
-        Off();
-    }
+    virtual ~jsdService();
     
     static jsdService *GetService ();
     
@@ -333,7 +327,6 @@ class jsdContext : public jsdIContext
     /* you'll normally use use FromPtr() instead of directly constructing one */
     jsdContext (JSDContext *aCx) : mCx(aCx)
     {
-        NS_INIT_ISUPPORTS();
         printf ("++++++ jsdContext\n");
     }
 
@@ -375,7 +368,6 @@ class jsdThreadState : public jsdIThreadState
     jsdThreadState (JSDContext *aCx, JSDThreadState *aThreadState) :
         mCx(aCx), mThreadState(aThreadState)
     {
-        NS_INIT_ISUPPORTS();
     }
 
     /* XXX These things are only valid for a short period of time, they reflect

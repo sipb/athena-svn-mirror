@@ -115,8 +115,8 @@ function bov_scrollto (line, align)
     }
     else if (align > 0)
     {
-        if (line < viz) /* underscroll, can't put a row from the first page at */
-            line = 0;   /* the bottom. */
+        if (line < viz) /* underscroll, can't put a row from the first page */
+            line = 0;   /* at the bottom. */
         else
             line = line - viz + headerRows;
         
@@ -167,15 +167,18 @@ BasicOView.prototype.rowCount = 0;
 
 BasicOView.prototype.getCellProperties =
 function bov_cellprops (row, colID, properties)
-{}
+{
+}
 
 BasicOView.prototype.getColumnProperties =
 function bov_colprops (colID, elem, properties)
-{}
+{
+}
 
 BasicOView.prototype.getRowProperties =
 function bov_rowprops (index, properties)
-{}
+{
+}
 
 BasicOView.prototype.isContainer =
 function bov_isctr (index)
@@ -228,6 +231,9 @@ function bov_drop (index, orientation)
 BasicOView.prototype.getParentIndex =
 function bov_getpi (index)
 {
+    if (index < 0)
+        return -1;
+
     return 0;
 }
 
@@ -313,6 +319,82 @@ function bov_setct (row, colID, value)
 {
 }
 
+BasicOView.prototype.onRouteFocus =
+function bov_rfocus (event)
+{
+    if ("onFocus" in this)
+        this.onFocus(event);
+}
+
+BasicOView.prototype.onRouteBlur =
+function bov_rblur (event)
+{
+    if ("onBlur" in this)
+        this.onBlur(event);
+}
+
+BasicOView.prototype.onRouteDblClick =
+function bov_rdblclick (event)
+{
+    if (!("onRowCommand" in this) || event.target.localName != "treechildren")
+        return;
+
+    var rowIndex = this.tree.selection.currentIndex;
+    if (rowIndex == -1 || rowIndex > this.rowCount)
+        return;
+    var rec = this.childData.locateChildByVisualRow(rowIndex);
+    if (!rec)
+    {
+        ASSERT (0, "bogus row index " + rowIndex);
+        return;
+    }
+
+    this.onRowCommand(rec, event);
+}
+
+BasicOView.prototype.onRouteKeyPress =
+function bov_rkeypress (event)
+{
+    var rec;
+    
+    if ("onRowCommand" in this && (event.keyCode == 13 || event.charCode == 32))
+    {
+        if (!this.selection)
+            return;
+        
+        var rowIndex = this.tree.selection.currentIndex;
+        if (rowIndex == -1 || rowIndex > this.rowCount)
+            return;
+        rec = this.childData.locateChildByVisualRow(rowIndex);
+        if (!rec)
+        {
+            ASSERT (0, "bogus row index " + rowIndex);
+            return;
+        }
+
+        this.onRowCommand(rec, event);
+    }
+    else if ("onKeyPress" in this)
+    {
+        var rowIndex = this.tree.selection.currentIndex;
+        if (rowIndex != -1 && rowIndex < this.rowCount)
+        {
+            var rec = this.childData.locateChildByVisualRow(rowIndex);
+            if (!rec)
+            {
+                ASSERT (0, "bogus row index " + rowIndex);
+                return;
+            }
+        }
+        else
+        {
+            rec = null;
+        }
+        
+        this.onKeyPress(rec, event);
+    }
+}
+
 BasicOView.prototype.performAction =
 function bov_pact (action)
 {
@@ -329,9 +411,9 @@ function bov_pactcell (action)
 }
 
 /*
- * record for the XULTreeView.  these things take care of keeping the XULTreeView
- * properly informed of changes in value and child count.  you shouldn't have
- * to maintain tree state at all.
+ * record for the XULTreeView.  these things take care of keeping the
+ * XULTreeView properly informed of changes in value and child count.  you 
+ * shouldn't have to maintain tree state at all.
  *
  * |share| should be an otherwise empty object to store cache data.
  * you should use the same object as the |share| for the XULTreeView that you
@@ -697,19 +779,15 @@ function xtvr_remchild (index)
     //for (var i = index + 1; i < this.childData.length; ++i)
     //    --this.childData[i].childIndex;
     
-    var fpDelta = -this.childData[index].visualFootprint;
-    var changeStart = this.childData[index].calculateVisualRow();
+    var orphan = this.childData[index];
+    var fpDelta = -orphan.visualFootprint;
+    var changeStart = orphan.calculateVisualRow();
     //this.childData[index].childIndex = -1;
-    delete this.childData[index].parentRecord;
+    delete orphan.parentRecord;
     arrayRemoveAt (this.childData, index);
-    if ("isContainerOpen" in this && this.isContainerOpen)
+    
+    if (!orphan.isHidden && "isContainerOpen" in this && this.isContainerOpen)
     {
-        //XXX why would we need to resort on a remove?
-        //if (this.calculateVisualRow() >= 0)
-        //{
-        //    this.resort(true); /* resort, don't invalidate.  we're going to do
-        //                        * that in the onVisualFootprintChanged call. */
-        // }
         this.onVisualFootprintChanged (changeStart, fpDelta);
     }
 }
@@ -745,12 +823,13 @@ function xtvr_uhide ()
     this.isHidden = false;
     this.invalidateCache();
     var row = this.calculateVisualRow();
-    this.parentRecord.onVisualFootprintChanged (row, this.visualFootprint);
+    if (this.parentRecord)
+        this.parentRecord.onVisualFootprintChanged (row, this.visualFootprint);
 }
 
 /*
- * open this record, exposing it's children.  DONT call this method if the record
- * has no children.
+ * open this record, exposing it's children.  DONT call this method if the
+ * record has no children.
  */
 XULTreeViewRecord.prototype.open =
 function xtvr_open ()
@@ -774,9 +853,10 @@ function xtvr_open ()
     this.visualFootprint += delta;
     if ("parentRecord" in this)
     {
-        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow(), 0);
-        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow() + 1,
-                                                   delta);
+        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow(),
+                                                   0);
+        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow() +
+                                                   1, delta);
     }
 }
 
@@ -795,9 +875,10 @@ function xtvr_close ()
     this.visualFootprint += delta;
     if ("parentRecord" in this)
     {
-        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow(), 0);
-        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow() + 1,
-                                                   delta);
+        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow(),
+                                                   0);
+        this.parentRecord.onVisualFootprintChanged(this.calculateVisualRow() +
+                                                   1, delta);
     }
 
     if ("onPostClose" in this)
@@ -879,7 +960,6 @@ function xtvr_calcrow ()
     this._share.lastIndexOwner = this;
     this._share.lastComputedIndex = vrow;
 
-    //@DEBUG-cvr dd ("cvr: returning " + vrow);
     return vrow;
 }
 
@@ -893,24 +973,6 @@ function xtvr_find (targetRow, myRow)
 {
     if (targetRow in this._share.rowCache)
         return this._share.rowCache[targetRow];
-
-    else if (0) {
-        /* XXX take this out later */
-        if (typeof myRow == "undefined")
-            myRow = this.calculateVisualRow();
-        else
-        {
-            ASSERT (myRow == this.calculateVisualRow(), "someone lied to me, " +
-                    myRow + " != " + this.calculateVisualRow());
-        }
-    
-        if (targetRow < myRow || targetRow > myRow + this.visualFootprint)
-        {
-            ASSERT (0, "I don't contain visual row " + targetRow + ", only " +
-                    myRow + "..." + (myRow + this.visualFootprint));
-            return null;
-        }
-    }
 
     /* if this is true, we *are* the index */
     if (targetRow == myRow)
@@ -942,12 +1004,6 @@ function xtvr_find (targetRow, myRow)
         childStart += child.visualFootprint;
     }
 
-    if (0) {
-    /* XXX take this out later */
-    ASSERT (0, "locateChildByVisualRow() failed.  Asked for row " + targetRow +
-            ", record only contains " + myRow + "..." +
-            (myRow + this.visualFootprint));
-    }
     return null;
 }   
 
@@ -985,8 +1041,8 @@ function tolr_getshare()
     return null;
 }
 
-/* XTRootRecord is used internally by XULTreeView, you probably don't need to make
- * any of these */ 
+/* XTRootRecord is used internally by XULTreeView, you probably don't need to 
+ * make any of these */ 
 function XTRootRecord (tree, share)
 {
     this._share = share;
@@ -1016,7 +1072,8 @@ function torr_calcrow ()
 XTRootRecord.prototype.resort =
 function torr_resort ()
 {
-    if ("_treeView" in this && this._treeView.frozen) {
+    if ("_treeView" in this && this._treeView.frozen)
+    {
         this._treeView.needsResort = true;
         return;
     }
@@ -1180,7 +1237,6 @@ function xtv_thaw ()
     
     delete this.changeStart;
     delete this.changeAmount;
-
 }
 
 XULTreeView.prototype.saveBranchState =
@@ -1340,8 +1396,13 @@ function xtv_isseparator (index)
 XULTreeView.prototype.getParentIndex =
 function xtv_getpi (index)
 {
+    if (index < 0)
+        return -1;
+    
     var row = this.childData.locateChildByVisualRow (index);
-    //ASSERT(row, "bogus row " + index);
+    //if (!ASSERT(row, "bogus row " + index))
+    //    return -1;
+    
     var rv = row.parentRecord.calculateVisualRow();
     //dd ("getParentIndex: row " + index + " returning " + rv);
     return (rv != null) ? rv : -1;
@@ -1390,7 +1451,7 @@ function xtv_getprgmode (index, colID)
 XULTreeView.prototype.getCellValue =
 function xtv_getcellval (index, colID)
 {
- }
+}
 
 XULTreeView.prototype.getCellText =
 function xtv_getcelltxt (index, colID)
@@ -1499,7 +1560,83 @@ function xtv_pactcell (action)
 {
 }
 
-/*******************************************************************************/
+XULTreeView.prototype.onRouteFocus =
+function xtv_rfocus (event)
+{
+    if ("onFocus" in this)
+        this.onFocus(event);
+}
+
+XULTreeView.prototype.onRouteBlur =
+function xtv_rblur (event)
+{
+    if ("onBlur" in this)
+        this.onBlur(event);
+}
+
+XULTreeView.prototype.onRouteDblClick =
+function xtv_rdblclick (event)
+{
+    if (!("onRowCommand" in this) || event.target.localName != "treechildren")
+        return;
+
+    var rowIndex = this.tree.selection.currentIndex;
+    if (rowIndex == -1 || rowIndex > this.rowCount)
+        return;
+    var rec = this.childData.locateChildByVisualRow(rowIndex);
+    if (!rec)
+    {
+        ASSERT (0, "bogus row index " + rowIndex);
+        return;
+    }
+
+    this.onRowCommand(rec, event);
+}
+
+XULTreeView.prototype.onRouteKeyPress =
+function xtv_rkeypress (event)
+{
+    var rec;
+    
+    if ("onRowCommand" in this && (event.keyCode == 13 || event.charCode == 32))
+    {
+        if (!this.selection)
+            return;
+        
+        var rowIndex = this.tree.selection.currentIndex;
+        if (rowIndex == -1 || rowIndex > this.rowCount)
+            return;
+        rec = this.childData.locateChildByVisualRow(rowIndex);
+        if (!rec)
+        {
+            ASSERT (0, "bogus row index " + rowIndex);
+            return;
+        }
+
+        this.onRowCommand(rec, event);
+    }
+    else if ("onKeyPress" in this)
+    {
+        var rowIndex = this.tree.selection.currentIndex;
+        if (rowIndex != -1 && rowIndex < this.rowCount)
+        {
+            var rec = this.childData.locateChildByVisualRow(rowIndex);
+            if (!rec)
+            {
+                ASSERT (0, "bogus row index " + rowIndex);
+                return;
+            }
+        }
+        else
+        {
+            rec = null;
+        }
+        
+        this.onKeyPress(rec, event);
+    }
+}
+
+/******************************************************************************/
 
 function xtv_formatRecord (rec, indent)
 {

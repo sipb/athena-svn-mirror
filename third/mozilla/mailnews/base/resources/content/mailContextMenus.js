@@ -31,6 +31,16 @@
 // (onpopuphiding).
 function RestoreSelectionWithoutContentLoad(tree)
 {
+    // If a delete or move command had been issued, then we should
+    // reset gRightMouseButtonDown and gThreadPaneDeleteOrMoveOccurred
+    // and return (see bug 142065).
+    if(gThreadPaneDeleteOrMoveOccurred)
+    {
+      gRightMouseButtonDown = false;
+      gThreadPaneDeleteOrMoveOccurred = false;
+      return;
+    }
+
     var treeBoxObj = tree.treeBoxObject;
     var treeSelection = treeBoxObj.selection;
 
@@ -49,7 +59,7 @@ function RestoreSelectionWithoutContentLoad(tree)
         if(tree.id == "threadTree")
           gThreadPaneCurrentSelectedIndex = treeSelection.currentIndex;
     }
-    else if(!gThreadPaneDeleteOrMoveOccurred && (treeSelection.currentIndex < 0))
+    else if(treeSelection.currentIndex < 0)
         // Clear the selection in the case of when a folder has just been
         // loaded where the message pane does not have a message loaded yet.
         // When right-clicking a message in this case and dismissing the
@@ -107,6 +117,7 @@ function fillThreadPaneContextMenu()
   SetupCopyMenuItem("threadPaneContext-copyMenu", numSelected, false);
   SetupMoveMenuItem("threadPaneContext-moveMenu", numSelected, isNewsgroup, false);
   EnableMenuItem("threadPaneContext-labels", (numSelected >= 1));
+  EnableMenuItem("threadPaneContext-mark", (numSelected >= 1));
   SetupSaveAsMenuItem("threadPaneContext-saveAs", numSelected, false);
   SetupPrintMenuItem("threadPaneContext-print", numSelected, false);
   SetupDeleteMenuItem("threadPaneContext-delete", numSelected, false);
@@ -189,6 +200,12 @@ function SetupLabelsMenuItem(menuID, numSelected, forceHide)
   EnableMenuItem(menuID, (numSelected == 1));
 }
 
+function SetupMarkMenuItem(menuID, numSelected, forceHide)
+{
+  ShowMenuItem(menuID, (numSelected <= 1) && !forceHide);
+  EnableMenuItem(menuID, (numSelected == 1));
+}
+
 function SetupSaveAsMenuItem(menuID, numSelected, forceHide)
 {
   ShowMenuItem(menuID, (numSelected <= 1) && !forceHide);
@@ -250,12 +267,12 @@ function fillFolderPaneContextMenu()
   var isNewsgroup = !isServer && serverType == 'nntp';
   var canGetMessages =  (isServer && (serverType != "nntp") && (serverType !="none")) || isNewsgroup;
 
-  EnableMenuItem("folderPaneContext-properties", !isServer);
+  EnableMenuItem("folderPaneContext-properties", true);
   ShowMenuItem("folderPaneContext-getMessages", (numSelected <= 1) && canGetMessages);
   EnableMenuItem("folderPaneContext-getMessages", true);
 
   ShowMenuItem("folderPaneContext-openNewWindow", (numSelected <= 1) && !isServer);
-  EnableMenuItem("folderPaneContext-openNewWindow", (true));
+  EnableMenuItem("folderPaneContext-openNewWindow", true);
 
   SetupRenameMenuItem(folderResource, numSelected, isServer, serverType, specialFolder);
   SetupRemoveMenuItem(folderResource, numSelected, isServer, serverType, specialFolder);
@@ -296,12 +313,14 @@ function fillFolderPaneContextMenu()
 
 function SetupRenameMenuItem(folderResource, numSelected, isServer, serverType, specialFolder)
 {
-  var isSpecialFolder = specialFolder != 'none';
+  var msgFolder = folderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
   var isMail = serverType != 'nntp';
   var folderTree = GetFolderTree();
+  var isSpecialFolder = !(specialFolder == "none" || (specialFolder == "Junk" && CanRenameDeleteJunkMail(msgFolder.URI)));
   var canRename = GetFolderAttribute(folderTree, folderResource, "CanRename") == "true";
+  canRename = canRename || !isSpecialFolder;
 
-  ShowMenuItem("folderPaneContext-rename", (numSelected <= 1) && !isServer && (specialFolder == "none") && canRename);
+  ShowMenuItem("folderPaneContext-rename", (numSelected <= 1) && !isServer && !isSpecialFolder && canRename);
   var folder = GetMsgFolderFromResource(folderResource);
   EnableMenuItem("folderPaneContext-rename", !isServer && folder.isCommandEnabled("cmd_renameFolder"));
 
@@ -313,8 +332,9 @@ function SetupRenameMenuItem(folderResource, numSelected, isServer, serverType, 
 
 function SetupRemoveMenuItem(folderResource, numSelected, isServer, serverType, specialFolder)
 {
+  var msgFolder = folderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
   var isMail = serverType != 'nntp';
-  var isSpecialFolder = specialFolder != "none";
+  var isSpecialFolder = !(specialFolder == "none" || (specialFolder == "Junk" && CanRenameDeleteJunkMail(msgFolder.URI)));
   //Can't currently delete Accounts or special folders.
   var showRemove = (numSelected <=1) && (isMail && !isSpecialFolder) && !isServer;
 
@@ -427,6 +447,7 @@ function fillMessagePaneContextMenu()
   SetupCopyMenuItem("messagePaneContext-copyMenu", numSelected, (numSelected == 0 || hideMailItems));
   SetupMoveMenuItem("messagePaneContext-moveMenu", numSelected, isNewsgroup, (numSelected == 0 || hideMailItems));
   SetupLabelsMenuItem("messagePaneContext-labels", numSelected, (numSelected == 0 || hideMailItems));
+  SetupMarkMenuItem("messagePaneContext-mark", numSelected, (numSelected == 0 || hideMailItems));
   SetupSaveAsMenuItem("messagePaneContext-saveAs", numSelected, (numSelected == 0 || hideMailItems));
   SetupPrintMenuItem("messagePaneContext-print", numSelected, (numSelected == 0 || hideMailItems));
   if (numSelected == 0 || hideMailItems)

@@ -25,8 +25,8 @@ Rights Reserved.
 <?xul-overlay href="chrome://messenger/content/threadPane.xul"?>
 <?xul-overlay href="chrome://messenger/content/searchTermOverlay.xul"?>
 <?xul-overlay href="chrome://messenger/content/msgFolderPickerOverlay.xul"?>
-<?xul-overlay href="chrome://messenger/content/mailWindowOverlay.xul"?>
 <?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+<?xul-overlay href="chrome://messenger/content/platformMailnewsOverlay.xul"?>
 
 <!DOCTYPE window SYSTEM "chrome://messenger/locale/SearchDialog.dtd" >
 
@@ -65,8 +65,18 @@ Rights Reserved.
       <command id="button_delete" oncommand="goDoCommand('button_delete')" disabled="true"/>
       <command id="goto_folder_button" oncommand="goDoCommand('goto_folder_button')" disabled="true"/>
       <command id="file_message_button"/>
+      <command id="cmd_delete"/>
     </commandset>
   </commands>
+
+  <keyset id="mailKeys">
+    <key id="key_delete" oncommand="goDoCommand('cmd_delete');"/>
+    <key id="cmd_shiftDelete" oncommand="goDoCommand('cmd_shiftDelete');"/>
+  </keyset>
+
+  <broadcasterset id="mailBroadcasters">
+    <broadcaster id="Communicator:WorkMode"/>
+  </broadcasterset>
 
   <dummy class="usesMailWidgets"/>
     
@@ -104,7 +114,6 @@ Rights Reserved.
     <vbox flex="1">
        <vbox id="searchResultListBox" flex="1" >
             <tree id="threadTree" flex="1" context="threadPaneContext"/>
-
        </vbox>
        <hbox align="start">
             
@@ -185,5 +194,12 @@ Rights Reserved.
     </hbox>      
   </vbox>
 
-  <statusbar class="chromeclass-status" id="status-bar"/>
+  <statusbar class="chromeclass-status" id="status-bar"> 
+    <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
+    <statusbarpanel class="statusbarpanel-progress">
+      <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0" oncommand="dumpProgress()"/>
+    </statusbarpanel>
+    <statusbarpanel id="statusText" crop="right" flex="1"/>
+  </statusbar> 
+
 </window>

@@ -42,6 +42,7 @@
 #include "nsIComponentManager.h"
 #include "nsCOMPtr.h"
 #include "nsReadableUtils.h"
+#include "nsString.h"
 #include "nsIFactory.h"
 #include "nsIGenericFactory.h"
 #include "nsIModule.h"
@@ -49,7 +50,6 @@
 #include "nsII18nCompatibility.h"
 #include "nsI18nCompatibility.h"
 #include "nsIFile.h"
-#include "nsFileSpec.h"
 
 static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 static NS_DEFINE_CID(kI18nCompatibilityCID, NS_I18NCOMPATIBILITY_CID);
@@ -64,7 +64,7 @@ class nsI18nCompatibility : public nsII18nCompatibility {
   /* wstring CSIDtoCharsetName (in unsigned short csid); */
   NS_IMETHOD  CSIDtoCharsetName(PRUint16 csid, PRUnichar **_retval);
 
-  nsI18nCompatibility() {NS_INIT_ISUPPORTS();}
+  nsI18nCompatibility() {}
   virtual ~nsI18nCompatibility() {}
 };
 

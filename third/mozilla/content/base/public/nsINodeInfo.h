@@ -64,7 +64,6 @@
 
 // Forward declarations
 class nsINodeInfoManager;
-class nsINameSpaceManager;
 class nsIDocument;
 class nsIURI;
 class nsIPrincipal;
@@ -270,7 +269,8 @@ public:
                              const nsAString& aPrefix,
                              PRInt32 aNamespaceID) const = 0;
   NS_IMETHOD_(PRBool) NamespaceEquals(const nsAString& aNamespaceURI) const = 0;
-  NS_IMETHOD_(PRBool) QualifiedNameEquals(const nsAString& aQualifiedName) const = 0;
+  // switch to UTF8 - this allows faster access for consumers
+  NS_IMETHOD_(PRBool) QualifiedNameEquals(const nsACString& aQualifiedName) const = 0;
 
   /*
    * This is a convinience method that creates a new nsINodeInfo that differs
@@ -335,11 +335,9 @@ public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_INODEINFOMANAGER_IID)
 
   /*
-   * Initialize the nodeinfo manager with a namespace manager, this should
-   * allways be done.
+   * Initialize the nodeinfo manager with a document.
    */
-  NS_IMETHOD Init(nsIDocument *aDocument,
-                  nsINameSpaceManager *aNameSpaceManager) = 0;
+  NS_IMETHOD Init(nsIDocument *aDocument) = 0;
 
   /*
    * Release the reference to the document, this will be called when
@@ -364,11 +362,6 @@ public:
                          nsINodeInfo*& aNodeInfo) = 0;
 
   /*
-   * Getter for the namespace manager used by this nodeinfo manager.
-   */
-  NS_IMETHOD GetNamespaceManager(nsINameSpaceManager*& aNameSpaceManager) = 0;
-
-  /*
    * Retrieve a pointer to the document that owns this node info
    * manager.
    */
@@ -391,6 +384,7 @@ public:
   NS_IMETHOD GetNodeInfoArray(nsISupportsArray** aArray) = 0;
 };
 
-extern nsresult NS_NewNodeInfoManager(nsINodeInfoManager** aResult);
+nsresult
+NS_NewNodeInfoManager(nsINodeInfoManager** aResult);
 
 #endif /* nsINodeInfo_h___ */

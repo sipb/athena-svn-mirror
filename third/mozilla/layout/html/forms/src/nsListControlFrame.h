@@ -48,10 +48,11 @@
 //#define DO_PIXELS
 #endif
 
-#include "nsScrollFrame.h"
+#include "nsGfxScrollFrame.h"
 #include "nsIFormControlFrame.h"
 #include "nsIListControlFrame.h"
 #include "nsISelectControlFrame.h"
+#include "nsIStatefulFrame.h"
 #include "nsIDOMMouseListener.h"
 #include "nsIDOMMouseMotionListener.h"
 #include "nsIDOMKeyListener.h"
@@ -60,7 +61,7 @@
 #include "nsIContent.h"
 
 class nsIDOMHTMLSelectElement;
-class nsIDOMHTMLCollection;
+class nsIDOMHTMLOptionsCollection;
 class nsIDOMHTMLOptionElement;
 class nsIComboboxControlFrame;
 class nsIViewManager;
@@ -169,9 +170,10 @@ protected:
  * Frame-based listbox.
  */
 
-class nsListControlFrame : public nsScrollFrame, 
+class nsListControlFrame : public nsGfxScrollFrame,
                            public nsIFormControlFrame, 
                            public nsIListControlFrame,
+                           public nsIStatefulFrame,
                            public nsIDOMMouseListener,
                            public nsIDOMMouseMotionListener,
                            public nsIDOMKeyListener,
@@ -201,7 +203,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD DidReflow(nsIPresContext*           aPresContext, 
@@ -229,7 +231,7 @@ public:
 #endif
 
     // nsIFormControlFrame
-  NS_IMETHOD GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
   NS_IMETHOD GetName(nsAString* aName);
   NS_IMETHOD SetProperty(nsIPresContext* aPresContext, nsIAtom* aName, const nsAString& aValue);
   NS_IMETHOD GetProperty(nsIAtom* aName, nsAString& aValue); 
@@ -250,6 +252,8 @@ public:
                                              nscoord aInnerWidth,
                                              nscoord aCharWidth) const;
   virtual nsresult RequiresWidget(PRBool &aRequiresWidget);
+
+  virtual ScrollbarStyles GetScrollbarStyles() const;
 
     // for accessibility purposes
 #ifdef ACCESSIBILITY
@@ -288,6 +292,10 @@ public:
   NS_IMETHOD GetDummyFrame(nsIFrame** aFrame);
   NS_IMETHOD SetDummyFrame(nsIFrame* aFrame);
 
+  //nsIStatefulFrame
+  NS_IMETHOD SaveState(nsIPresContext* aPresContext, nsIPresState** aState);
+  NS_IMETHOD RestoreState(nsIPresContext* aPresContext, nsIPresState* aState);
+
   //nsIDOMEventListener
   NS_IMETHOD MouseDown(nsIDOMEvent* aMouseEvent);
   NS_IMETHOD MouseUp(nsIDOMEvent* aMouseEvent);
@@ -308,9 +316,11 @@ public:
 
   // Static Methods
   static nsIDOMHTMLSelectElement* GetSelect(nsIContent * aContent);
-  static nsIDOMHTMLCollection*    GetOptions(nsIContent * aContent, nsIDOMHTMLSelectElement* aSelect = nsnull);
-  static nsIDOMHTMLOptionElement* GetOption(nsIDOMHTMLCollection& aOptions, PRInt32 aIndex);
-  static nsIContent* GetOptionAsContent(nsIDOMHTMLCollection* aCollection,PRInt32 aIndex);
+  static nsIDOMHTMLOptionsCollection* GetOptions(nsIContent * aContent, nsIDOMHTMLSelectElement* aSelect = nsnull);
+  static nsIDOMHTMLOptionElement* GetOption(nsIDOMHTMLOptionsCollection* aOptions, PRInt32 aIndex);
+  static nsIContent* GetOptionAsContent(nsIDOMHTMLOptionsCollection* aCollection,PRInt32 aIndex);
+
+  static void ComboboxFocusSet();
 
   // Weak Reference
   nsCWeakReferent *WeakReferent()
@@ -335,16 +345,9 @@ protected:
                                        PRInt32 aNumOptions, PRInt32 aDoAdjustInc, PRInt32 aDoAdjustIncNext);
   virtual void ResetList(nsIPresContext* aPresContext, nsVoidArray * aInxList = nsnull);
 
-  nsListControlFrame();
+  nsListControlFrame(nsIPresShell* aShell, nsIDocument* aDocument);
   virtual ~nsListControlFrame();
 
-  // nsScrollFrame overrides
-  // Override the widget created for the list box so a Borderless top level
-  // widget is created for drop-down lists.
-  virtual  nsresult CreateScrollingViewWidget(nsIView* aView, const nsStyleDisplay* aDisplay);
-  virtual  nsresult GetScrollingParentView(nsIPresContext* aPresContext,
-                                           nsIFrame* aParent,
-                                           nsIView** aParentView);
   // Utility methods
   nsresult GetSizeAttribute(PRInt32 *aSize);
   nsIContent* GetOptionFromContent(nsIContent *aContent);
@@ -357,11 +360,10 @@ protected:
   PRBool   CheckIfAllFramesHere();
   PRInt32  GetIndexFromContent(nsIContent *aContent);
   PRBool   IsLeftButton(nsIDOMEvent* aMouseEvent);
-  void     GetScrollableView(nsIScrollableView*& aScrollableView);
 
   // Dropped down stuff
   void     SetComboboxItem(PRInt32 aIndex);
-  PRBool   IsInDropDownMode();
+  PRBool   IsInDropDownMode() const;
 
   // Selection
   PRBool   SetOptionsSelectedFromFrame(PRInt32 aStartIndex,
@@ -369,14 +371,13 @@ protected:
                                        PRBool aValue,
                                        PRBool aClearAll);
   PRBool   ToggleOptionSelectedFromFrame(PRInt32 aIndex);
-  PRBool   SingleSelection(PRInt32 aSelectedIndex, PRBool aDoToggle);
-  PRBool   ExtendedSelection(PRInt32 aStartIndex,
-                             PRInt32 aEndIndex,
+  PRBool   SingleSelection(PRInt32 aClickedIndex, PRBool aDoToggle);
+  PRBool   ExtendedSelection(PRInt32 aStartIndex, PRInt32 aEndIndex,
                              PRBool aClearAll);
-  PRBool   PerformSelection(PRInt32 aSelectedIndex,
-                            PRBool aIsShift,
+  PRBool   PerformSelection(PRInt32 aClickedIndex, PRBool aIsShift,
                             PRBool aIsControl);
   PRBool   HandleListSelection(nsIDOMEvent * aDOMEvent, PRInt32 selectedIndex);
+  void     InitSelectionRange(PRInt32 aClickedIndex);
 
   // Timer Methods
   nsresult StartUpdateTimer(nsIPresContext * aPresContext);
@@ -412,7 +413,7 @@ protected:
   PRPackedBool mIsScrollbarVisible;
 
   PRInt16 mPassId;
-  nsSize mCachedDesiredMaxSize;
+  nscoord mCachedDesiredMEW;
 
   // Update timer
   nsSelectUpdateTimer * mUpdateTimer;
@@ -421,7 +422,8 @@ protected:
 
   //Resize Reflow OpitmizationSize;
   nsSize       mCacheSize;
-  nsSize       mCachedMaxElementSize;
+  nscoord      mCachedAscent;
+  nscoord      mCachedMaxElementWidth;
   nsSize       mCachedUnconstrainedSize;
   nsSize       mCachedAvailableSize;
 
@@ -437,6 +439,7 @@ private:
 
   // for incremental typing navigation
   static nsAString& GetIncrementalString ();
+  static DOMTimeStamp gLastKeyTime;
 };
 
 #endif /* nsListControlFrame_h___ */

@@ -90,6 +90,8 @@
 #include "nsIPref.h"
 #include "nsIStreamConverterService.h"
 #include "nsIDirectoryListing.h"
+#include "nsICategoryManager.h"
+#include "nsXPCOMCID.h"
 
 //----------------------------------------------------------------------
 //
@@ -315,7 +317,7 @@ nsHTTPIndex::OnStartRequest(nsIRequest *request, nsISupports* aContext)
     uri->GetSpec(entryuriC);
 
     nsCOMPtr<nsIRDFResource> entry;
-    rv = mDirRDF->GetResource(entryuriC.get(), getter_AddRefs(entry));
+    rv = mDirRDF->GetResource(entryuriC, getter_AddRefs(entry));
     
     NS_ConvertUTF8toUCS2 uriUnicode(entryuriC);
 
@@ -439,7 +441,7 @@ nsHTTPIndex::OnIndexAvailable(nsIRequest* aRequest, nsISupports *aContext,
   }
 
   nsCOMPtr<nsIRDFResource> entry;
-  rv = mDirRDF->GetResource(entryuriC.get(), getter_AddRefs(entry));
+  rv = mDirRDF->GetResource(entryuriC, getter_AddRefs(entry));
 
   // At this point, we'll (hopefully) have found the filename and
   // constructed a resource for it, stored in entry. So now take a
@@ -549,7 +551,6 @@ nsHTTPIndex::nsHTTPIndex()
   : mBindToGlobalObject(PR_TRUE),
     mRequestor(nsnull)
 {
-	NS_INIT_ISUPPORTS();
 }
 
 
@@ -557,7 +558,6 @@ nsHTTPIndex::nsHTTPIndex(nsIInterfaceRequestor* aRequestor)
   : mBindToGlobalObject(PR_TRUE),
     mRequestor(aRequestor)
 {
-	NS_INIT_ISUPPORTS();
 }
 
 
@@ -605,17 +605,26 @@ nsHTTPIndex::CommonInit()
     if (NS_FAILED(rv))
       return rv;
 
-    mDirRDF->GetResource(NC_NAMESPACE_URI "child",   getter_AddRefs(kNC_Child));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "loading", getter_AddRefs(kNC_Loading));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "Comment", getter_AddRefs(kNC_Comment));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "URL", getter_AddRefs(kNC_URL));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "Name", getter_AddRefs(kNC_Description));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "Content-Length", getter_AddRefs(kNC_ContentLength));
-    mDirRDF->GetResource("http://home.netscape.com/WEB-rdf#LastModifiedDate",
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "child"),
+                         getter_AddRefs(kNC_Child));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "loading"),
+                         getter_AddRefs(kNC_Loading));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Comment"),
+                         getter_AddRefs(kNC_Comment));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "URL"),
+                         getter_AddRefs(kNC_URL));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Name"),
+                         getter_AddRefs(kNC_Description));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Content-Length"),
+                         getter_AddRefs(kNC_ContentLength));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(WEB_NAMESPACE_URI "LastModifiedDate"),
                          getter_AddRefs(kNC_LastModified));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "Content-Type", getter_AddRefs(kNC_ContentType));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "File-Type", getter_AddRefs(kNC_FileType));
-    mDirRDF->GetResource(NC_NAMESPACE_URI "IsContainer", getter_AddRefs(kNC_IsContainer));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Content-Type"),
+                         getter_AddRefs(kNC_ContentType));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "File-Type"),
+                         getter_AddRefs(kNC_FileType));
+    mDirRDF->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "IsContainer"),
+                         getter_AddRefs(kNC_IsContainer));
 
     rv = mDirRDF->GetLiteral(NS_LITERAL_STRING("true").get(), getter_AddRefs(kTrueLiteral));
     if (NS_FAILED(rv)) return(rv);
@@ -669,7 +678,7 @@ nsHTTPIndex::Init(nsIURI* aBaseURL)
   
   // Mark the base url as a container
   nsCOMPtr<nsIRDFResource> baseRes;
-  mDirRDF->GetResource(mBaseURL.get(), getter_AddRefs(baseRes));
+  mDirRDF->GetResource(mBaseURL, getter_AddRefs(baseRes));
   Assert(baseRes, kNC_IsContainer, kTrueLiteral, PR_TRUE);
 
   return NS_OK;
@@ -1283,17 +1292,6 @@ nsHTTPIndex::GetAllResources(nsISimpleEnumerator **_retval)
 }
 
 NS_IMETHODIMP
-nsHTTPIndex::GetAllCommands(nsIRDFResource *aSource, nsIEnumerator **_retval)
-{
-	nsresult	rv = NS_ERROR_UNEXPECTED;
-	if (mInner)
-	{
-		rv = mInner->GetAllCommands(aSource, _retval);
-	}
-	return(rv);
-}
-
-NS_IMETHODIMP
 nsHTTPIndex::IsCommandEnabled(nsISupportsArray *aSources, nsIRDFResource *aCommand,
 				nsISupportsArray *aArguments, PRBool *_retval)
 {
@@ -1318,6 +1316,18 @@ nsHTTPIndex::DoCommand(nsISupportsArray *aSources, nsIRDFResource *aCommand,
 }
 
 NS_IMETHODIMP
+nsHTTPIndex::BeginUpdateBatch()
+{
+        return mInner->BeginUpdateBatch();
+}
+
+NS_IMETHODIMP
+nsHTTPIndex::EndUpdateBatch()
+{
+        return mInner->EndUpdateBatch();
+}
+
+NS_IMETHODIMP
 nsHTTPIndex::GetAllCmds(nsIRDFResource *aSource, nsISimpleEnumerator **_retval)
 {
 	nsresult	rv = NS_ERROR_UNEXPECTED;
@@ -1336,7 +1346,6 @@ nsHTTPIndex::GetAllCmds(nsIRDFResource *aSource, nsISimpleEnumerator **_retval)
 //
 nsDirectoryViewerFactory::nsDirectoryViewerFactory()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -1393,12 +1402,16 @@ nsDirectoryViewerFactory::CreateInstance(const char *aCommand,
     // load in its place.
     
     // Create a dummy loader that will load a stub XUL document.
-    nsCOMPtr<nsIDocumentLoaderFactory> factory;
+    nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv));
+    if (NS_FAILED(rv))
+      return rv;
+    nsXPIDLCString contractID;
+    rv = catMan->GetCategoryEntry("Gecko-Content-Viewers", "application/vnd.mozilla.xul+xml",
+                                  getter_Copies(contractID));
+    if (NS_FAILED(rv))
+      return rv;
 
-    rv = nsComponentManager::CreateInstance(NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=application/vnd.mozilla.xul+xml",
-                                            nsnull,
-                                            NS_GET_IID(nsIDocumentLoaderFactory),
-                                            getter_AddRefs(factory));
+    nsCOMPtr<nsIDocumentLoaderFactory> factory(do_GetService(contractID, &rv));
     if (NS_FAILED(rv)) return rv;
     
     nsCOMPtr<nsIURI> uri;
@@ -1443,20 +1456,16 @@ nsDirectoryViewerFactory::CreateInstance(const char *aCommand,
   }
   
   // Otherwise, lets use the html listing
-  nsCOMPtr<nsIDocumentLoaderFactory> factory;
+  nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+  nsXPIDLCString contractID;
+  rv = catMan->GetCategoryEntry("Gecko-Content-Viewers", "text/html",
+                                getter_Copies(contractID));
+  if (NS_FAILED(rv))
+    return rv;
 
-  if (viewSource) {
-    rv = nsComponentManager::CreateInstance(NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=text/html; x-view-type=view-source",
-                                            nsnull,
-                                            NS_GET_IID(nsIDocumentLoaderFactory),
-                                            getter_AddRefs(factory));
-  } else {
-    rv = nsComponentManager::CreateInstance(NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX "view;1?type=text/html",
-                                            nsnull,
-                                            NS_GET_IID(nsIDocumentLoaderFactory),
-                                            getter_AddRefs(factory));
-  }
-  
+  nsCOMPtr<nsIDocumentLoaderFactory> factory(do_GetService(contractID, &rv));
   if (NS_FAILED(rv)) return rv;
   
   nsCOMPtr<nsIStreamListener> listener;

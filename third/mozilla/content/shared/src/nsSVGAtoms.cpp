@@ -22,61 +22,23 @@
  * Contributor(s): 
  */
 
-#include "nsString.h"
-#include "nsINameSpaceManager.h"
 #include "nsSVGAtoms.h"
-#include "nsLayoutCID.h"
-
-static const char kSVGNameSpace[] = "http://www.w3.org/2000/svg";
-
-PRInt32  nsSVGAtoms::nameSpaceID;
+#include "nsStaticAtom.h"
+#include "nsMemory.h"
 
 // define storage for all atoms
 #define SVG_ATOM(_name, _value) nsIAtom* nsSVGAtoms::_name;
 #include "nsSVGAtomList.h"
 #undef SVG_ATOM
 
-
-static nsrefcnt gRefCnt = 0;
-static nsINameSpaceManager* gNameSpaceManager;
+static const nsStaticAtom SVGAtoms_info[] = {
+#define SVG_ATOM(name_, value_) { value_, &nsSVGAtoms::name_ },
+#include "nsSVGAtomList.h"
+#undef SVG_ATOM
+};
 
 void nsSVGAtoms::AddRefAtoms() {
 
-  if (gRefCnt == 0) {
-    /* SVG Atoms registers the SVG name space ID because it's a convenient
-       place to do this, if you don't want a permanent, "well-known" ID.
-    */
-
-    NS_DEFINE_CID(kNameSpaceManagerCID, NS_NAMESPACEMANAGER_CID);
-    nsCOMPtr<nsINameSpaceManager> nsmgr =
-      do_CreateInstance(kNameSpaceManagerCID);
-
-    if (nsmgr) {
-      nsmgr->RegisterNameSpace(NS_ConvertASCIItoUCS2(kSVGNameSpace),
-                               nameSpaceID);
-
-      gNameSpaceManager = nsmgr;
-      NS_ADDREF(gNameSpaceManager);
-    } else {
-      NS_ASSERTION(0, "failed to create SVG atoms namespace manager");
-    }
-
-    // now register the atoms
-#define SVG_ATOM(_name, _value) _name = NS_NewPermanentAtom(_value);
-#include "nsSVGAtomList.h"
-#undef SVG_ATOM
-  }
-  ++gRefCnt;
+  NS_RegisterStaticAtoms(SVGAtoms_info, NS_ARRAY_LENGTH(SVGAtoms_info));
 }
 
-void nsSVGAtoms::ReleaseAtoms() {
-
-  NS_PRECONDITION(gRefCnt != 0, "bad release of SVG atoms");
-  if (--gRefCnt == 0) {
-#define SVG_ATOM(_name, _value) NS_RELEASE(_name);
-#include "nsSVGAtomList.h"
-#undef SVG_ATOM
-
-    NS_IF_RELEASE(gNameSpaceManager);
-  }
-}

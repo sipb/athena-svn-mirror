@@ -40,30 +40,16 @@
 #include "nsMemory.h"
 #include "nsXPCOMPrivate.h"
 
-#if defined(XP_WIN32)
-#include <windows.h>   // for SetProcessWorkingSetSize()
-#include <malloc.h>    // for _heapmin()
-#endif
+#include "nsGREDirServiceProvider.h"
 
 static PRLibrary *xpcomLib = nsnull;
 static XPCOMFunctions *xpcomFunctions = nsnull;
-
-#ifdef DEBUG_dougt
-#define XPCOM_GLUE_FLUSH_HEAP
-#endif
+static nsIMemory* xpcomMemory = nsnull;
 
 //#define XPCOM_GLUE_NO_DYNAMIC_LOADING
 
-// seawood tells me there isn't a better way...
-#ifdef XP_PC
-#define XPCOM_DLL  "xpcom.dll"
-#else
-#ifdef XP_MAC
-#define XPCOM_DLL "XPCOM_DLL"
-#else
-#define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
-#endif
-#endif
+extern nsresult GlueStartupMemory();
+extern void GlueShutdownMemory();
 
 extern "C"
 nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
@@ -72,13 +58,15 @@ nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
     return NS_OK;
 #else
     nsresult rv;
-    const char* libFile;
+    PRLibSpec libSpec;
+
+    libSpec.type = PR_LibSpec_Pathname;
     if (!xpcomFile)
-        libFile = XPCOM_DLL;
+        libSpec.value.pathname = XPCOM_DLL;
     else
-        libFile = xpcomFile;
+        libSpec.value.pathname = xpcomFile;
            
-    xpcomLib = PR_LoadLibrary(libFile);
+    xpcomLib = PR_LoadLibraryWithFlags(libSpec, PR_LD_LAZY|PR_LD_GLOBAL);
     if (!xpcomLib)
         return NS_ERROR_FAILURE;
     
@@ -101,7 +89,7 @@ nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
     xpcomFunctions->version = XPCOM_GLUE_VERSION;
     xpcomFunctions->size    = sizeof(XPCOMFunctions);
 
-    rv = (*function)(xpcomFunctions, libFile);
+    rv = (*function)(xpcomFunctions, libSpec.value.pathname);
     if (NS_FAILED(rv)) {
         free(xpcomFunctions);
         xpcomFunctions = nsnull;  
@@ -109,51 +97,11 @@ nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
         xpcomLib = nsnull;
         return NS_ERROR_FAILURE;
     }
-    return NS_OK;
-#endif
-}
-#ifdef XPCOM_GLUE_FLUSH_HEAP
-static void FlushHeap()
-{
 
-#if defined(XP_WIN32)
-    // Heap compaction and shrink working set now 
-#ifdef DEBUG_dougt
-    PRIntervalTime start = PR_IntervalNow();
-    int ret = 
+    // startup the nsMemory
+    return GlueStartupMemory();
 #endif
-        _heapmin();
-#ifdef DEBUG_dougt
-    printf("DEBUG: HeapCompact() %s - %d ms\n", (!ret ? "success" : "FAILED"),
-           PR_IntervalToMilliseconds(PR_IntervalNow()-start));
-#endif
-    
-    // shrink working set if we can
-    // This function call is available only on winnt and above.
-    typedef BOOL WINAPI SetProcessWorkingSetProc(HANDLE hProcess, SIZE_T dwMinimumWorkingSetSize,
-                                                 SIZE_T dwMaximumWorkingSetSize);
-    SetProcessWorkingSetProc *setProcessWorkingSetSizeP = NULL;
-    
-    HMODULE kernel = GetModuleHandle("kernel32.dll");
-    if (kernel) {
-        setProcessWorkingSetSizeP = (SetProcessWorkingSetProc *)
-            GetProcAddress(kernel, "SetProcessWorkingSetSize");
-    }
-    
-    if (setProcessWorkingSetSizeP) {
-        // shrink working set
-#ifdef DEBUG_dougt
-        start = PR_IntervalNow();
-#endif
-        (*setProcessWorkingSetSizeP)(GetCurrentProcess(), -1, -1);
-#ifdef DEBUG_dougt
-        printf("DEBUG: Honey! I shrunk the resident-set! - %d ms\n",
-               PR_IntervalToMilliseconds(PR_IntervalNow() - start));
-#endif
-    }
-#endif 
 }
-#endif 
 
 extern "C"
 nsresult NS_COM XPCOMGlueShutdown()
@@ -166,15 +114,13 @@ nsresult NS_COM XPCOMGlueShutdown()
         xpcomFunctions = nsnull;
     }
 
+    GlueShutdownMemory();
+
     if (xpcomLib) {
         PR_UnloadLibrary(xpcomLib);
         xpcomLib = nsnull;
     }
-#ifdef XPCOM_GLUE_FLUSH_HEAP
-    // should the application do this instead of us?
-    FlushHeap();
-#endif 
-
+    
     return NS_OK;
 #endif
 }
@@ -262,3 +208,51 @@ NS_UnregisterXPCOMExitRoutine(XPCOMExitRoutine exitRoutine)
     return xpcomFunctions->unregisterExitRoutine(exitRoutine);
 }
 #endif // #ifndef  XPCOM_GLUE_NO_DYNAMIC_LOADING
+
+
+// Default GRE startup/shutdown code
+
+extern "C"
+nsresult NS_COM GRE_Startup()
+{
+    char* xpcomLocation = nsGREDirServiceProvider::GetXPCOMPath();
+    
+    // Startup the XPCOM Glue that links us up with XPCOM.
+    nsresult rv = XPCOMGlueStartup(xpcomLocation);
+    
+    if (xpcomLocation)
+        free(xpcomLocation);
+
+    if (NS_FAILED(rv)) {
+        NS_WARNING("gre: XPCOMGlueStartup failed");
+        return rv;
+    }
+
+    nsGREDirServiceProvider *provider = new nsGREDirServiceProvider();
+    if ( !provider ) {
+        NS_WARNING("GRE_Startup failed");
+        XPCOMGlueShutdown();
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+    nsCOMPtr<nsIServiceManager> servMan;
+    NS_ADDREF( provider );
+    rv = NS_InitXPCOM2(getter_AddRefs(servMan), nsnull, provider);
+    NS_RELEASE(provider);
+
+    if ( NS_FAILED(rv) || !servMan) {
+        NS_WARNING("gre: NS_InitXPCOM failed");
+        XPCOMGlueShutdown();
+        return rv;
+    }
+
+    return NS_OK;
+}
+
+extern "C"
+nsresult NS_COM GRE_Shutdown()
+{
+    NS_ShutdownXPCOM(nsnull);
+    XPCOMGlueShutdown();
+    return NS_OK;
+}

@@ -42,7 +42,6 @@
 #include "nsBaseWidget.h"
 #include "nsLookAndFeel.h"
 #include "nsWindow.h"
-#include "nsScrollbar.h"
 #include "nsGtkMozRemoteHelper.h"
 #include "nsTransferable.h"
 #include "nsClipboardHelper.h"
@@ -50,86 +49,20 @@
 #include "nsClipboard.h"
 #include "nsDragService.h"
 #include "nsSound.h"
-#ifdef IBMBIDI
 #include "nsBidiKeyboard.h"
-#endif
-
-#ifdef ACCESSIBILITY
-#include "nsAccessibilityInterface.h"
-#endif
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindow)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsChildWindow)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAppShell)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsLookAndFeel)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTransferable)
-#ifdef IBMBIDI
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
-#endif
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsGtkXRemoteWidgetHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboardHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsClipboard, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
-
-static
-nsresult nsHorizScrollbarConstructor (nsISupports *aOuter,
-                                      REFNSIID     aIID,
-                                      void       **aResult)
-{
-    nsresult rv;
-    nsISupports *inst = nsnull;
-
-    if (!aResult)
-        return NS_ERROR_NULL_POINTER;
-
-    *aResult = nsnull;
-
-    if (aOuter)
-        return NS_ERROR_NO_AGGREGATION;
-
-    inst = (nsISupports *)(nsBaseWidget *)(nsCommonWidget *)
-        new nsScrollbar(PR_FALSE);
-
-    if (!inst)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(inst);
-    rv = inst->QueryInterface(aIID, aResult);
-    NS_RELEASE(inst);
-
-    return rv;
-}
-
-static
-nsresult nsVertScrollbarConstructor   (nsISupports *aOuter,
-                                       REFNSIID     aIID,
-                                       void       **aResult)
-{
-    nsresult rv;
-    nsISupports *inst = nsnull;
-
-    if (!aResult)
-        return NS_ERROR_NULL_POINTER;
-
-    *aResult = nsnull;
-
-    if (aOuter)
-        return NS_ERROR_NO_AGGREGATION;
-
-    inst = (nsISupports *)(nsBaseWidget *)(nsCommonWidget *)
-        new nsScrollbar(PR_TRUE);
-
-    if (!inst)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(inst);
-    rv = inst->QueryInterface(aIID, aResult);
-    NS_RELEASE(inst);
-
-    return rv;
-}
 
 static const nsModuleComponentInfo components[] =
 {
@@ -149,14 +82,6 @@ static const nsModuleComponentInfo components[] =
       NS_LOOKANDFEEL_CID,
       "@mozilla.org/widget/lookandfeel/gtk;1",
       nsLookAndFeelConstructor },
-    { "Gtk2 Horiz Scrollbar",
-      NS_HORZSCROLLBAR_CID,
-      "@mozilla.org/widgets/hoizscroll/gtk;1",
-      nsHorizScrollbarConstructor },
-    { "Gtk2 Vert Scrollbar",
-      NS_VERTSCROLLBAR_CID,
-      "@mozilla.org/widgets/vertscroll/gtk;1",
-      nsVertScrollbarConstructor },
     { "Gtk2 Sound",
       NS_SOUND_CID,
       "@mozilla.org/sound;1",
@@ -185,20 +110,15 @@ static const nsModuleComponentInfo components[] =
     NS_HTMLFORMATCONVERTER_CID,
     "@mozilla.org/widget/htmlformatconverter/gtk;1",
     nsHTMLFormatConverterConstructor },
-#ifdef IBMBIDI
-    { "Gtk2 Bidi Keyboard",
-      NS_BIDIKEYBOARD_CID,
-      "@mozilla.org/widget/bidikeyboard;1",
-      nsBidiKeyboardConstructor },
-#endif /* IBMBIDI */
+  { "Gtk2 Bidi Keyboard",
+    NS_BIDIKEYBOARD_CID,
+    "@mozilla.org/widget/bidikeyboard;1",
+    nsBidiKeyboardConstructor },
 };
 
 PR_STATIC_CALLBACK(void)
 nsWidgetGtk2ModuleDtor(nsIModule *aSelf)
 {
-#ifdef ACCESSIBILITY
-    nsAccessibilityInterface::ShutDown();
-#endif
 }
 
 NS_IMPL_NSGETMODULE_WITH_DTOR(nsWidgetGtk2Module,

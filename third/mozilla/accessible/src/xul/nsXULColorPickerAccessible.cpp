@@ -39,9 +39,6 @@
 
 // NOTE: alphabetically ordered
 #include "nsXULColorPickerAccessible.h"
-#include "nsReadableUtils.h"
-#include "nsString.h"
-#include "nsXULFormControlAccessible.h"
 #include "nsIDOMElement.h"
 
 
@@ -93,8 +90,7 @@ NS_IMETHODIMP nsXULColorPickerTileAccessible::GetAccState(PRUint32 *_retval)
 
 NS_IMETHODIMP nsXULColorPickerTileAccessible::GetAccName(nsAString& _retval)
 {
-  _retval.Assign(NS_LITERAL_STRING(""));
-  return NS_OK;
+  return GetXULAccName(_retval);
 }
 
 NS_IMETHODIMP nsXULColorPickerTileAccessible::GetAccValue(nsAString& _retval)

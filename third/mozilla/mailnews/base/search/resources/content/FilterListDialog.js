@@ -18,6 +18,8 @@
  * Rights Reserved.
  */
 
+const MSG_FOLDER_FLAG_INBOX = 0x1000
+
 var gRDF = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
 
 var gEditButton;
@@ -141,8 +143,30 @@ function onCancel()
 
 function onServerClick(event)
 {
+    // Return if same server is selected.
     var item = event.target;
-    setServer(item.id);
+    if (item.id == gCurrentServerURI)
+      return;
+
+    // Save the current filters to disk before switching because
+    // the dialog may be closed and we'll lose current filters.
+    var filterList = currentFilterList();
+    if (filterList) 
+      filterList.saveToDefaultFile();
+
+    var item = event.target;
+    selectServer(item.id);
+}
+
+function CanRunFiltersAfterTheFact(aServer)
+{
+  // can't manually run news filters yet
+  if (aServer.type == "nntp")
+    return false;
+
+  // filter after the fact is implement using search
+  // so if you can't search, you can't filter after the fact
+  return aServer.canSearchMessages;
 }
 
 // roots the tree at the specified server
@@ -165,10 +189,26 @@ function setServer(uri)
    
    // root the folder picker to this server
    gRunFiltersFolderPicker.setAttribute("ref", uri);
-   // select the first folder., for POP3 and IMAP, the INBOX
-   gRunFiltersFolderPicker.selectedIndex = 0;
-   SetFolderPicker(gRunFiltersFolderPicker.selectedItem.getAttribute("id"),"runFiltersFolder");
+ 
+   // run filters after the fact not supported by news
+   if (CanRunFiltersAfterTheFact(msgFolder.server)) {
+     gRunFiltersFolderPicker.removeAttribute("hidden");
+     gRunFiltersButton.removeAttribute("hidden");
+     gRunFiltersFolderPickerLabel.removeAttribute("hidden");
 
+     // for POP3 and IMAP, select the first folder, which is the INBOX
+     gRunFiltersFolderPicker.selectedIndex = 0;
+   }
+   else {
+     gRunFiltersFolderPicker.setAttribute("hidden", "true");
+     gRunFiltersButton.setAttribute("hidden", "true");
+     gRunFiltersFolderPickerLabel.setAttribute("hidden", "true");
+   }
+
+   // Get the first folder uri for this server. INBOX for
+   // imap and pop accts and 1st news group for news.
+   var firstFolderURI = getFirstFolderURI(msgFolder);
+   SetFolderPicker(firstFolderURI, "runFiltersFolder");
    updateButtons();
 
    gCurrentServerURI = uri;
@@ -179,6 +219,12 @@ function toggleFilter(aFilterURI)
     var filterResource = gRDF.GetResource(aFilterURI);
     var filter = filterResource.GetDelegate("filter",
                                             Components.interfaces.nsIMsgFilter);
+    if (filter.unparseable)
+    {
+      var str = gFilterBundle.getString("cannotEnableFilter");
+      window.alert(str);
+      return;
+    }
     filter.enabled = !filter.enabled;
     refresh();
 }
@@ -188,8 +234,24 @@ function selectServer(uri)
 {
     // update the server menu
     var serverMenu = document.getElementById("serverMenu");
-    var menuitems = serverMenu.getElementsByAttribute("id", uri);
-    serverMenu.selectedItem = menuitems[0];
+    
+    var resource = gRDF.GetResource(uri);
+    var msgFolder = resource.QueryInterface(Components.interfaces.nsIMsgFolder);
+
+    // XXX todo
+    // See msgFolderPickerOverlay.js, SetFolderPicker()
+    // why do we have to do this?  seems like a hack to work around a bug.
+    // the bug is that the (deep) content isn't there
+    // and so this won't work:
+    //
+    //   var menuitems = serverMenu.getElementsByAttribute("id", uri);
+    //   serverMenu.selectedItem = menuitems[0];
+    //
+    // we might need help from a XUL template expert to help out here.
+    // see bug #XXXXXX
+    serverMenu.setAttribute("label", msgFolder.name);
+    serverMenu.setAttribute("uri",uri);
+
     setServer(uri);
 }
 
@@ -218,8 +280,8 @@ function currentFilter()
 
 function currentFilterList()
 {
-    var serverMenu = document.getElementById("serverMenu");
-    var serverUri = serverMenu.value;
+    // note, serverUri might be a newsgroup
+    var serverUri = document.getElementById("serverMenu").getAttribute("uri");
     var filterList = gRDF.GetResource(serverUri).GetDelegate("filter", Components.interfaces.nsIMsgFilterList);
     return filterList;
 }
@@ -406,8 +468,11 @@ function updateButtons()
     var numFiltersSelected = gFilterTree.view.selection.count;
     var oneFilterSelected = (numFiltersSelected == 1);
 
-    // "edit" and "delete" only enabled when one filter selected
-    gEditButton.disabled = !oneFilterSelected;
+    var filter = currentFilter();
+    // "edit" only enabled when one filter selected or if we couldn't parse the filter
+    gEditButton.disabled = !oneFilterSelected || filter.unparseable;
+    
+    // "delete" only enabled when one filter selected
     gDeleteButton.disabled = !oneFilterSelected;
 
     // we can run multiple filters on a folder
@@ -430,7 +495,7 @@ function getSelectedServerForFilters()
     var firstItem = null;
     var args = window.arguments;
     var selectedFolder = args[0].folder;
-
+  
     if (args && args[0] && selectedFolder)
     {
         var msgFolder = selectedFolder.QueryInterface(Components.interfaces.nsIMsgFolder);
@@ -443,7 +508,9 @@ function getSelectedServerForFilters()
 
                 if (server.canHaveFilters)
                 {
-                    firstItem = rootFolder.URI;
+                    // for news, select the news folder
+                    // for everything else, select the folder's server
+                    firstItem = (server.type == "nntp") ? msgFolder.URI : rootFolder.URI;
                 }
             }
         }
@@ -544,3 +611,34 @@ function doHelpButton()
   openHelp("mail-filters");
 }
 
+/**
+  * For a given server folder, get the uri for the first folder. For imap
+  * and pop it's INBOX and it's the very first group for news accounts.
+  */
+function getFirstFolderURI(msgFolder)
+{
+  // Sanity check.
+  if (! msgFolder.isServer)
+    return msgFolder.URI;
+
+  try {
+    // Find Inbox for imap and pop
+    if (msgFolder.server.type != "nntp")
+    {
+      var outNumFolders = new Object();
+      var inboxFolder = msgFolder.getFoldersWithFlag(MSG_FOLDER_FLAG_INBOX, 1, outNumFolders);
+      if (inboxFolder)
+        return inboxFolder.URI;
+      else
+        // If inbox does not exist then use the server uri as default.
+        return msgFolder.URI;
+    }
+    else
+      // XXX TODO: For news, we should find the 1st group/folder off the news groups. For now use server uri.
+      return msgFolder.URI;
+  }
+  catch (ex) {
+    dump(ex + "\n");
+  }
+  return msgFolder.URI;
+}

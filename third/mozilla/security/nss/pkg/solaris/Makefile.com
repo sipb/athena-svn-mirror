@@ -2,16 +2,16 @@
 # Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: Makefile.com,v 1.1.1.1 2003-02-14 19:55:10 rbasch Exp $"
+#ident	"$Id: Makefile.com,v 1.1.1.2 2003-07-08 17:17:58 rbasch Exp $"
 #
 
 MACH = $(shell mach)
 
 PUBLISH_ROOT = $(DIST)
 ifeq ($(CORE_DEPTH),../../..)
-ROOT = ROOT-$(OBJDIR_NAME)
+ROOT = ROOT
 else
-ROOT = $(subst ../../../,,$(CORE_DEPTH))/ROOT-$(OBJDIR_NAME)
+ROOT = $(subst ../../../,,$(CORE_DEPTH))/ROOT
 endif
 
 PKGARCHIVE = $(PUBLISH_ROOT)/pkgarchive
@@ -20,8 +20,8 @@ FILES = $(DATAFILES) pkginfo
 
 PACKAGE = $(shell basename `pwd`)
 
-PRODUCT_VERSION = 3.3.2
-PRODUCT_NAME = NSS_3_3_2_RTM
+PRODUCT_VERSION = $(shell grep NSS_VERSION $(CORE_DEPTH)/../dist/public/nss/nss.h \
+	| sed -e 's/"$$//' -e 's/.*"//' -e 's/ .*//')
 
 LN = /usr/bin/ln
 

@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -40,31 +40,39 @@
 #include "txMozillaXSLTProcessor.h"
 #include "nsContentCID.h"
 #include "nsDOMError.h"
+#include "nsIChannel.h"
 #include "nsIContent.h"
+#include "nsIDOMText.h"
 #include "nsIDocument.h"
 #include "nsIDOMClassInfo.h"
+#include "nsIIOService.h"
+#include "nsILoadGroup.h"
 #include "nsIScriptLoader.h"
+#include "nsIStringBundle.h"
+#include "nsIURI.h"
 #include "nsNetUtil.h"
-#include "ProcessorState.h"
+#include "txExecutionState.h"
 #include "txMozillaTextOutput.h"
 #include "txMozillaXMLOutput.h"
 #include "txSingleNodeContext.h"
 #include "txURIUtils.h"
 #include "XMLUtils.h"
 #include "txUnknownHandler.h"
-#include "nsIHTMLDocument.h"
+#include "txXSLTProcessor.h"
+
+static NS_DEFINE_CID(kXMLDocumentCID, NS_XMLDOCUMENT_CID);
 
 /**
  * Output Handler Factories
  */
-class txToDocHandlerFactory : public txIOutputHandlerFactory
+class txToDocHandlerFactory : public txAOutputHandlerFactory
 {
 public:
-    txToDocHandlerFactory(ProcessorState* aPs,
+    txToDocHandlerFactory(txExecutionState* aEs,
                           nsIDOMDocument* aSourceDocument,
                           nsIDOMDocument* aResultDocument,
                           nsITransformObserver* aObserver)
-        : mPs(aPs), mSourceDocument(aSourceDocument),
+        : mEs(aEs), mSourceDocument(aSourceDocument),
           mResultDocument(aResultDocument), mObserver(aObserver)
     {
     }
@@ -73,16 +81,16 @@ public:
     {
     }
 
-    TX_DECL_TXIOUTPUTHANDLERFACTORY;
+    TX_DECL_TXAOUTPUTHANDLERFACTORY
 
 private:
-    ProcessorState* mPs;
+    txExecutionState* mEs;
     nsCOMPtr<nsIDOMDocument> mSourceDocument;
     nsCOMPtr<nsIDOMDocument> mResultDocument;
     nsCOMPtr<nsITransformObserver> mObserver;
 };
 
-class txToFragmentHandlerFactory : public txIOutputHandlerFactory
+class txToFragmentHandlerFactory : public txAOutputHandlerFactory
 {
 public:
     txToFragmentHandlerFactory(nsIDOMDocumentFragment* aFragment)
@@ -94,7 +102,7 @@ public:
     {
     }
 
-    TX_DECL_TXIOUTPUTHANDLERFACTORY;
+    TX_DECL_TXAOUTPUTHANDLERFACTORY
 
 private:
     nsCOMPtr<nsIDOMDocumentFragment> mFragment;
@@ -102,20 +110,21 @@ private:
 
 nsresult
 txToDocHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                         txIOutputXMLEventHandler** aHandler)
+                                         txAXMLEventHandler** aHandler)
 {
     *aHandler = nsnull;
     switch (aFormat->mMethod) {
         case eMethodNotSet:
         case eXMLOutput:
         {
-            *aHandler = new txUnknownHandler(mPs);
+            *aHandler = new txUnknownHandler(mEs);
             break;
         }
 
         case eHTMLOutput:
         {
-            *aHandler = new txMozillaXMLOutput(String(), kNameSpaceID_None,
+            *aHandler = new txMozillaXMLOutput(nsString(),
+                                               kNameSpaceID_None,
                                                aFormat, mSourceDocument,
                                                mResultDocument, mObserver);
             break;
@@ -135,9 +144,9 @@ txToDocHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
 
 nsresult
 txToDocHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                         const String& aName,
+                                         const nsAString& aName,
                                          PRInt32 aNsID,
-                                         txIOutputXMLEventHandler** aHandler)
+                                         txAXMLEventHandler** aHandler)
 {
     *aHandler = nsnull;
     switch (aFormat->mMethod) {
@@ -171,7 +180,7 @@ txToDocHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
 
 nsresult
 txToFragmentHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                              txIOutputXMLEventHandler** aHandler)
+                                              txAXMLEventHandler** aHandler)
 {
     *aHandler = nsnull;
     switch (aFormat->mMethod) {
@@ -179,13 +188,17 @@ txToFragmentHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
         {
             txOutputFormat format;
             format.merge(*aFormat);
-            nsCOMPtr<nsIDOMDocument> doc;
-            mFragment->GetOwnerDocument(getter_AddRefs(doc));
-            NS_ASSERTION(doc, "unable to get ownerdocument");
-            // Need a way for testing xhtml vs. html. But this is the best
-            // we can do for now.
-            nsCOMPtr<nsIHTMLDocument> htmldoc = do_QueryInterface(doc);
-            format.mMethod = htmldoc ? eHTMLOutput : eXMLOutput;
+            nsCOMPtr<nsIDOMDocument> domdoc;
+            mFragment->GetOwnerDocument(getter_AddRefs(domdoc));
+            NS_ASSERTION(domdoc, "unable to get ownerdocument");
+            nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
+
+            if (!doc && doc->IsCaseSensitive()) {
+                format.mMethod = eXMLOutput;
+            } else {
+                format.mMethod = eHTMLOutput;
+            }
+
             *aHandler = new txMozillaXMLOutput(&format, mFragment);
             break;
         }
@@ -209,9 +222,9 @@ txToFragmentHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
 
 nsresult
 txToFragmentHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
-                                              const String& aName,
+                                              const nsAString& aName,
                                               PRInt32 aNsID,
-                                              txIOutputXMLEventHandler** aHandler)
+                                              txAXMLEventHandler** aHandler)
 {
     *aHandler = nsnull;
     NS_ASSERTION(aFormat->mMethod != eMethodNotSet,
@@ -224,25 +237,29 @@ txToFragmentHandlerFactory::createHandlerWith(txOutputFormat* aFormat,
  * txMozillaXSLTProcessor
  */
 
-NS_DEFINE_CID(kNameSpaceManagerCID, NS_NAMESPACEMANAGER_CID);
-
 NS_IMPL_ADDREF(txMozillaXSLTProcessor)
 NS_IMPL_RELEASE(txMozillaXSLTProcessor)
 NS_INTERFACE_MAP_BEGIN(txMozillaXSLTProcessor)
     NS_INTERFACE_MAP_ENTRY(nsIXSLTProcessor)
     NS_INTERFACE_MAP_ENTRY(nsIXSLTProcessorObsolete)
     NS_INTERFACE_MAP_ENTRY(nsIDocumentTransformer)
+    NS_INTERFACE_MAP_ENTRY(nsIDocumentObserver)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIXSLTProcessor)
     NS_INTERFACE_MAP_ENTRY_EXTERNAL_DOM_CLASSINFO(XSLTProcessor)
 NS_INTERFACE_MAP_END
 
-txMozillaXSLTProcessor::txMozillaXSLTProcessor() : mVariables(PR_TRUE)
+txMozillaXSLTProcessor::txMozillaXSLTProcessor() : mStylesheetDocument(nsnull),
+                                                   mTransformResult(NS_OK),
+                                                   mCompileResult(NS_OK),
+                                                   mVariables(PR_TRUE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 txMozillaXSLTProcessor::~txMozillaXSLTProcessor()
 {
+    if (mStylesheetDocument) {
+        mStylesheetDocument->RemoveObserver(this);
+    }
 }
 
 NS_IMETHODIMP
@@ -262,149 +279,143 @@ txMozillaXSLTProcessor::TransformDocument(nsIDOMNode* aSourceDOM,
         return NS_ERROR_DOM_SECURITY_ERR;
     }
 
+    PRUint16 type = 0;
+    aStyleDOM->GetNodeType(&type);
+    NS_ENSURE_TRUE(type == nsIDOMNode::ELEMENT_NODE ||
+                   type == nsIDOMNode::DOCUMENT_NODE,
+                   NS_ERROR_INVALID_ARG);
+
+    nsresult rv = TX_CompileStylesheet(aStyleDOM, getter_AddRefs(mStylesheet));
+    NS_ENSURE_SUCCESS(rv, rv);
     // Create wrapper for the source document.
+    mSource = aSourceDOM;
     nsCOMPtr<nsIDOMDocument> sourceDOMDocument;
-    aSourceDOM->GetOwnerDocument(getter_AddRefs(sourceDOMDocument));
+    mSource->GetOwnerDocument(getter_AddRefs(sourceDOMDocument));
     if (!sourceDOMDocument) {
-        sourceDOMDocument = do_QueryInterface(aSourceDOM);
-        NS_ENSURE_TRUE(sourceDOMDocument, NS_ERROR_FAILURE);
+        sourceDOMDocument = do_QueryInterface(mSource);
     }
+    NS_ENSURE_TRUE(sourceDOMDocument, NS_ERROR_FAILURE);
     Document sourceDocument(sourceDOMDocument);
-    Node* sourceNode = sourceDocument.createWrapper(aSourceDOM);
+    Node* sourceNode = sourceDocument.createWrapper(mSource);
     NS_ENSURE_TRUE(sourceNode, NS_ERROR_FAILURE);
 
-    // Create wrapper for the style document.
-    nsCOMPtr<nsIDOMDocument> styleDOMDocument;
-    aStyleDOM->GetOwnerDocument(getter_AddRefs(styleDOMDocument));
-    if (!styleDOMDocument) {
-        styleDOMDocument = do_QueryInterface(aStyleDOM);
-    }
-    Document xslDocument(styleDOMDocument);
-
-    // Create a new ProcessorState. Must be done after creating the documents
-    // so that C++ will ensure that it is destroyed before the documents.
-    ProcessorState ps(&sourceDocument, &xslDocument);
-
-    // XXX Need to add error observers
-
-    // Set current txIEvalContext
-    txSingleNodeContext evalContext(&sourceDocument, &ps);
-    ps.setEvalContext(&evalContext);
-
-    // Index templates and process top level xslt elements
-    nsCOMPtr<nsIDOMDocument> styleDoc = do_QueryInterface(aStyleDOM);
-    nsresult rv;
-    if (styleDoc) {
-        rv = txXSLTProcessor::processStylesheet(&xslDocument,
-                                                &mVariables, &ps);
-    }
-    else {
-        nsCOMPtr<nsIDOMElement> styleElem = do_QueryInterface(aStyleDOM);
-        NS_ENSURE_TRUE(styleElem, NS_ERROR_FAILURE);
-        Element* element = xslDocument.createElement(styleElem);
-        NS_ENSURE_TRUE(element, NS_ERROR_OUT_OF_MEMORY);
-        rv = txXSLTProcessor::processTopLevel(element, &mVariables,
-                                              &ps);
-    }
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    txToDocHandlerFactory handlerFactory(&ps, sourceDOMDocument, aOutputDoc,
+    txExecutionState es(mStylesheet);
+    txToDocHandlerFactory handlerFactory(&es, sourceDOMDocument, aOutputDoc,
                                          nsnull);
-    ps.mOutputHandlerFactory = &handlerFactory;
+    es.mOutputHandlerFactory = &handlerFactory;
+
+    es.init(sourceNode, &mVariables);
 
     // Process root of XML source document
-    txXSLTProcessor::transform(&ps);
+    rv = txXSLTProcessor::execute(es);
+    // XXX setup exception context, bug 204658
+    es.end();
+
+    return rv;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::SetTransformObserver(nsITransformObserver* aObserver)
+{
+    mObserver = aObserver;
+    return NS_OK;
+}
+
+nsresult
+txMozillaXSLTProcessor::SetSourceContentModel(nsIDOMNode* aSourceDOM)
+{
+    if (NS_FAILED(mTransformResult)) {
+        notifyError();
+        return NS_OK;
+    }
+
+    mSource = aSourceDOM;
+
+    if (mStylesheet) {
+        return DoTransform();
+    }
 
     return NS_OK;
 }
 
-NS_IMETHODIMP
-txMozillaXSLTProcessor::TransformDocument(nsIDOMNode* aSourceDOM,
-                                          nsIDOMNode* aStyleDOM,
-                                          nsITransformObserver* aObserver,
-                                          nsIDOMDocument** aOutputDoc)
+nsresult
+txMozillaXSLTProcessor::DoTransform()
 {
-    NS_ENSURE_ARG(aSourceDOM);
-    NS_ENSURE_ARG(aStyleDOM);
-    NS_ASSERTION(aObserver, "no observer");
-    NS_ENSURE_ARG_POINTER(aOutputDoc);
+    NS_ENSURE_TRUE(mSource, NS_ERROR_UNEXPECTED);
+    NS_ENSURE_TRUE(mStylesheet, NS_ERROR_UNEXPECTED);
+    NS_ASSERTION(mObserver, "no observer");
 
     // Create wrapper for the source document.
     nsCOMPtr<nsIDOMDocument> sourceDOMDocument;
-    aSourceDOM->GetOwnerDocument(getter_AddRefs(sourceDOMDocument));
+    mSource->GetOwnerDocument(getter_AddRefs(sourceDOMDocument));
     if (!sourceDOMDocument) {
-        sourceDOMDocument = do_QueryInterface(aSourceDOM);
+        sourceDOMDocument = do_QueryInterface(mSource);
     }
     NS_ENSURE_TRUE(sourceDOMDocument, NS_ERROR_FAILURE);
     Document sourceDocument(sourceDOMDocument);
-    Node* sourceNode = sourceDocument.createWrapper(aSourceDOM);
+    Node* sourceNode = sourceDocument.createWrapper(mSource);
     NS_ENSURE_TRUE(sourceNode, NS_ERROR_FAILURE);
 
-    // Create wrapper for the style document.
-    nsCOMPtr<nsIDOMDocument> styleDOMDocument;
-    aStyleDOM->GetOwnerDocument(getter_AddRefs(styleDOMDocument));
-    if (!styleDOMDocument) {
-        styleDOMDocument = do_QueryInterface(aStyleDOM);
-    }
-    Document xslDocument(styleDOMDocument);
-
-    // Create a new ProcessorState. Must be done after creating the documents
-    // so that C++ will ensure that it is destroyed before the documents.
-    ProcessorState ps(&sourceDocument, &xslDocument);
+    txExecutionState es(mStylesheet);
 
     // XXX Need to add error observers
 
-    // Set current txIEvalContext
-    txSingleNodeContext evalContext(&sourceDocument, &ps);
-    ps.setEvalContext(&evalContext);
+    txToDocHandlerFactory handlerFactory(&es, sourceDOMDocument, nsnull,
+                                         mObserver);
+    es.mOutputHandlerFactory = &handlerFactory;
 
-    // Index templates and process top level xslt elements
-    nsCOMPtr<nsIDOMDocument> styleDoc = do_QueryInterface(aStyleDOM);
-    nsresult rv;
-    if (styleDoc) {
-        rv = txXSLTProcessor::processStylesheet(&xslDocument,
-                                                &mVariables, &ps);
-    }
-    else {
-        nsCOMPtr<nsIDOMElement> styleElem = do_QueryInterface(aStyleDOM);
-        NS_ENSURE_TRUE(styleElem, NS_ERROR_FAILURE);
-        Element* element = xslDocument.createElement(styleElem);
-        NS_ENSURE_TRUE(element, NS_ERROR_OUT_OF_MEMORY);
-        rv = txXSLTProcessor::processTopLevel(element, &mVariables,
-                                              &ps);
-    }
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    txToDocHandlerFactory handlerFactory(&ps, sourceDOMDocument, nsnull,
-                                         aObserver);
-    ps.mOutputHandlerFactory = &handlerFactory;
+    es.init(sourceNode, &mVariables);
 
     // Process root of XML source document
-    txXSLTProcessor::transform(&ps);
+    nsresult rv = txXSLTProcessor::execute(es);
+    if (NS_FAILED(rv) && mObserver) {
+        // XXX set up context information, bug 204655
+        reportError(rv, nsnull, nsnull);
+    }
+    es.end();
 
-    ps.mOutputHandler->getOutputDocument(aOutputDoc);
-
-    return NS_OK;
+    return rv;
 }
 
 NS_IMETHODIMP
 txMozillaXSLTProcessor::ImportStylesheet(nsIDOMNode *aStyle)
 {
+    NS_ENSURE_TRUE(aStyle, NS_ERROR_NULL_POINTER);
+    
+    // We don't support importing multiple stylesheets yet.
+    NS_ENSURE_TRUE(!mStylesheetDocument && !mStylesheet,
+                   NS_ERROR_NOT_IMPLEMENTED);
+
     if (!URIUtils::CanCallerAccess(aStyle)) {
         return NS_ERROR_DOM_SECURITY_ERR;
     }
     
-    if (mStylesheet) {
-        return NS_ERROR_NOT_IMPLEMENTED;
-    }
-
     PRUint16 type = 0;
     aStyle->GetNodeType(&type);
     NS_ENSURE_TRUE(type == nsIDOMNode::ELEMENT_NODE ||
                    type == nsIDOMNode::DOCUMENT_NODE,
                    NS_ERROR_INVALID_ARG);
 
-    mStylesheet = aStyle;
+    nsresult rv = TX_CompileStylesheet(aStyle, getter_AddRefs(mStylesheet));
+    // XXX set up exception context, bug 204658
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (type == nsIDOMNode::ELEMENT_NODE) {
+        nsCOMPtr<nsIDOMDocument> domDoc;
+        aStyle->GetOwnerDocument(getter_AddRefs(domDoc));
+        NS_ENSURE_TRUE(domDoc, NS_ERROR_UNEXPECTED);
+
+        nsCOMPtr<nsIDocument> styleDoc = do_QueryInterface(domDoc);
+        mStylesheetDocument = styleDoc;
+        mEmbeddedStylesheetRoot = do_QueryInterface(aStyle);
+    }
+    else {
+        nsCOMPtr<nsIDocument> styleDoc = do_QueryInterface(aStyle);
+        mStylesheetDocument = styleDoc;
+    }
+
+    mStylesheetDocument->AddObserver(this);
+
     return NS_OK;
 }
 
@@ -414,11 +425,14 @@ txMozillaXSLTProcessor::TransformToDocument(nsIDOMNode *aSource,
 {
     NS_ENSURE_ARG(aSource);
     NS_ENSURE_ARG_POINTER(aResult);
-    NS_ENSURE_TRUE(mStylesheet, NS_ERROR_NOT_INITIALIZED);
+    NS_ENSURE_SUCCESS(mCompileResult, mCompileResult);
 
     if (!URIUtils::CanCallerAccess(aSource)) {
         return NS_ERROR_DOM_SECURITY_ERR;
     }
+
+    nsresult rv = ensureStylesheet();
+    NS_ENSURE_SUCCESS(rv, rv);
 
     // Create wrapper for the source document.
     nsCOMPtr<nsIDOMDocument> sourceDOMDocument;
@@ -431,51 +445,28 @@ txMozillaXSLTProcessor::TransformToDocument(nsIDOMNode *aSource,
     Node* sourceNode = sourceDocument.createWrapper(aSource);
     NS_ENSURE_TRUE(sourceNode, NS_ERROR_FAILURE);
 
-    // Create wrapper for the style document.
-    nsCOMPtr<nsIDOMDocument> styleDOMDocument;
-    mStylesheet->GetOwnerDocument(getter_AddRefs(styleDOMDocument));
-    if (!styleDOMDocument) {
-        styleDOMDocument = do_QueryInterface(mStylesheet);
-    }
-    Document xslDocument(styleDOMDocument);
-
-    // Create a new ProcessorState. Must be done after creating the documents
-    // so that C++ will ensure that it is destroyed before the documents.
-    ProcessorState ps(&sourceDocument, &xslDocument);
+    txExecutionState es(mStylesheet);
 
     // XXX Need to add error observers
 
-    // Set current txIEvalContext
-    txSingleNodeContext evalContext(&sourceDocument, &ps);
-    ps.setEvalContext(&evalContext);
-
-    // Index templates and process top level xslt elements
-    nsCOMPtr<nsIDOMDocument> styleDoc = do_QueryInterface(mStylesheet);
-    nsresult rv;
-    if (styleDoc) {
-        rv = txXSLTProcessor::processStylesheet(&xslDocument,
-                                                &mVariables, &ps);
-    }
-    else {
-        nsCOMPtr<nsIDOMElement> styleElem = do_QueryInterface(mStylesheet);
-        NS_ENSURE_TRUE(styleElem, NS_ERROR_FAILURE);
-        Element* element = xslDocument.createElement(styleElem);
-        NS_ENSURE_TRUE(element, NS_ERROR_OUT_OF_MEMORY);
-        rv = txXSLTProcessor::processTopLevel(element, &mVariables,
-                                              &ps);
-    }
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    txToDocHandlerFactory handlerFactory(&ps, sourceDOMDocument, nsnull,
+    txToDocHandlerFactory handlerFactory(&es, sourceDOMDocument, nsnull,
                                          nsnull);
-    ps.mOutputHandlerFactory = &handlerFactory;
+    es.mOutputHandlerFactory = &handlerFactory;
+
+    es.init(sourceNode, &mVariables);
 
     // Process root of XML source document
-    txXSLTProcessor::transform(&ps);
+    rv = txXSLTProcessor::execute(es);
+    // XXX setup exception context, bug 204658
+    es.end();
 
-    ps.mOutputHandler->getOutputDocument(aResult);
+    if (NS_SUCCEEDED(rv)) {
+        txAOutputXMLEventHandler* handler =
+            NS_STATIC_CAST(txAOutputXMLEventHandler*, es.mOutputHandler);
+        handler->getOutputDocument(aResult);
+    }
 
-    return NS_OK;
+    return rv;
 }
 
 NS_IMETHODIMP
@@ -486,12 +477,15 @@ txMozillaXSLTProcessor::TransformToFragment(nsIDOMNode *aSource,
     NS_ENSURE_ARG(aSource);
     NS_ENSURE_ARG(aOutput);
     NS_ENSURE_ARG_POINTER(aResult);
-    NS_ENSURE_TRUE(mStylesheet, NS_ERROR_NOT_INITIALIZED);
+    NS_ENSURE_SUCCESS(mCompileResult, mCompileResult);
 
     if (!URIUtils::CanCallerAccess(aSource) ||
         !URIUtils::CanCallerAccess(aOutput)) {
         return NS_ERROR_DOM_SECURITY_ERR;
     }
+
+    nsresult rv = ensureStylesheet();
+    NS_ENSURE_SUCCESS(rv, rv);
 
     // Create wrapper for the source document.
     nsCOMPtr<nsIDOMDocument> sourceDOMDocument;
@@ -504,50 +498,23 @@ txMozillaXSLTProcessor::TransformToFragment(nsIDOMNode *aSource,
     Node* sourceNode = sourceDocument.createWrapper(aSource);
     NS_ENSURE_TRUE(sourceNode, NS_ERROR_FAILURE);
 
-    // Create wrapper for the style document.
-    nsCOMPtr<nsIDOMDocument> styleDOMDocument;
-    mStylesheet->GetOwnerDocument(getter_AddRefs(styleDOMDocument));
-    if (!styleDOMDocument) {
-        styleDOMDocument = do_QueryInterface(mStylesheet);
-    }
-    Document xslDocument(styleDOMDocument);
-
-    // Create a new ProcessorState. Must be done after creating the documents
-    // so that C++ will ensure that it is destroyed before the documents.
-    ProcessorState ps(&sourceDocument, &xslDocument);
+    txExecutionState es(mStylesheet);
 
     // XXX Need to add error observers
-
-    // Set current txIEvalContext
-    txSingleNodeContext evalContext(&sourceDocument, &ps);
-    ps.setEvalContext(&evalContext);
-
-    // Index templates and process top level xslt elements
-    nsCOMPtr<nsIDOMDocument> styleDoc = do_QueryInterface(mStylesheet);
-    nsresult rv;
-    if (styleDoc) {
-        rv = txXSLTProcessor::processStylesheet(&xslDocument,
-                                                &mVariables, &ps);
-    }
-    else {
-        nsCOMPtr<nsIDOMElement> styleElem = do_QueryInterface(mStylesheet);
-        NS_ENSURE_TRUE(styleElem, NS_ERROR_FAILURE);
-        Element* element = xslDocument.createElement(styleElem);
-        NS_ENSURE_TRUE(element, NS_ERROR_OUT_OF_MEMORY);
-        rv = txXSLTProcessor::processTopLevel(element, &mVariables,
-                                              &ps);
-    }
-    NS_ENSURE_SUCCESS(rv, rv);
 
     rv = aOutput->CreateDocumentFragment(aResult);
     NS_ENSURE_SUCCESS(rv, rv);
     txToFragmentHandlerFactory handlerFactory(*aResult);
-    ps.mOutputHandlerFactory = &handlerFactory;
+    es.mOutputHandlerFactory = &handlerFactory;
+
+    es.init(sourceNode, &mVariables);
 
     // Process root of XML source document
-    txXSLTProcessor::transform(&ps);
+    rv = txXSLTProcessor::execute(es);
+    // XXX setup exception context, bug 204658
+    es.end();
 
-    return NS_OK;
+    return rv;
 }
 
 NS_IMETHODIMP
@@ -602,13 +569,8 @@ txMozillaXSLTProcessor::SetParameter(const nsAString & aNamespaceURI,
         }        
     }
 
-    nsresult rv;
-    nsCOMPtr<nsINameSpaceManager> namespaceManager =
-        do_GetService(kNameSpaceManagerCID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-
     PRInt32 nsId = kNameSpaceID_Unknown;
-    rv = namespaceManager->RegisterNameSpace(aNamespaceURI, nsId);
+    nsresult rv = gTxNameSpaceManager->RegisterNameSpace(aNamespaceURI, nsId);
     NS_ENSURE_SUCCESS(rv, rv);
     nsCOMPtr<nsIAtom> localName = do_GetAtom(aLocalName);
     txExpandedName varName(nsId, localName);
@@ -630,13 +592,8 @@ txMozillaXSLTProcessor::GetParameter(const nsAString& aNamespaceURI,
                                      const nsAString& aLocalName,
                                      nsIVariant **aResult)
 {
-    nsresult rv;
-    nsCOMPtr<nsINameSpaceManager> namespaceManager =
-        do_GetService(kNameSpaceManagerCID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-
     PRInt32 nsId = kNameSpaceID_Unknown;
-    rv = namespaceManager->RegisterNameSpace(aNamespaceURI, nsId);
+    nsresult rv = gTxNameSpaceManager->RegisterNameSpace(aNamespaceURI, nsId);
     NS_ENSURE_SUCCESS(rv, rv);
     nsCOMPtr<nsIAtom> localName = do_GetAtom(aLocalName);
     txExpandedName varName(nsId, localName);
@@ -652,13 +609,9 @@ NS_IMETHODIMP
 txMozillaXSLTProcessor::RemoveParameter(const nsAString& aNamespaceURI,
                                         const nsAString& aLocalName)
 {
-    nsresult rv;
-    nsCOMPtr<nsINameSpaceManager> namespaceManager =
-        do_GetService(kNameSpaceManagerCID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-
     PRInt32 nsId = kNameSpaceID_Unknown;
-    rv = namespaceManager->RegisterNameSpace(aNamespaceURI, nsId);
+    nsresult rv = gTxNameSpaceManager->RegisterNameSpace(aNamespaceURI, nsId);
+    NS_ENSURE_SUCCESS(rv, rv);
     nsCOMPtr<nsIAtom> localName = do_GetAtom(aLocalName);
     txExpandedName varName(nsId, localName);
 
@@ -671,6 +624,312 @@ txMozillaXSLTProcessor::ClearParameters()
 {
     mVariables.clear();
 
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::Reset()
+{
+    if (mStylesheetDocument) {
+        mStylesheetDocument->RemoveObserver(this);
+    }
+    mStylesheet = nsnull;
+    mStylesheetDocument = nsnull;
+    mEmbeddedStylesheetRoot = nsnull;
+    mCompileResult = NS_OK;
+    mVariables.clear();
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::LoadStyleSheet(nsIURI* aUri, nsILoadGroup* aLoadGroup,
+                                       nsIURI* aReferrerUri)
+{
+    nsresult rv = TX_LoadSheet(aUri, this, aLoadGroup, aReferrerUri);
+    if (NS_FAILED(rv) && mObserver) {
+        // This is most likely a network or security error, just
+        // use the uri as context.
+        nsCAutoString spec;
+        if (aUri) {
+            aUri->GetSpec(spec);
+            // XXX use CopyUTF8toUCS2 once it's there
+            mSourceText = NS_ConvertUTF8toUCS2(spec);
+        }
+        reportError(rv, nsnull, nsnull);
+    }
+    return rv;
+}
+
+nsresult
+txMozillaXSLTProcessor::setStylesheet(txStylesheet* aStylesheet)
+{
+    mStylesheet = aStylesheet;
+    if (mSource) {
+        return DoTransform();
+    }
+    return NS_OK;
+}
+
+void
+txMozillaXSLTProcessor::reportError(nsresult aResult,
+                                    const PRUnichar *aErrorText,
+                                    const PRUnichar *aSourceText)
+{
+    if (!mObserver) {
+        return;
+    }
+
+    mTransformResult = aResult;
+
+    if (aErrorText) {
+        mErrorText.Assign(aErrorText);
+    }
+    else {
+        nsCOMPtr<nsIStringBundleService> sbs =
+            do_GetService(NS_STRINGBUNDLE_CONTRACTID);
+        if (sbs) {
+            nsXPIDLString errorText;
+            sbs->FormatStatusMessage(aResult, nsString().get(),
+                                     getter_Copies(errorText));
+
+            nsXPIDLString errorMessage;
+            nsCOMPtr<nsIStringBundle> bundle;
+            sbs->CreateBundle(XSLT_MSGS_URL, getter_AddRefs(bundle));
+
+            if (bundle) {
+                const PRUnichar* error[] = { errorText.get() };
+                if (mStylesheet) {
+                    bundle->FormatStringFromName(NS_LITERAL_STRING("TransformError").get(),
+                                                 error, 1,
+                                                 getter_Copies(errorMessage));
+                }
+                else {
+                    bundle->FormatStringFromName(NS_LITERAL_STRING("LoadingError").get(),
+                                                 error, 1,
+                                                 getter_Copies(errorMessage));
+                }
+            }
+            mErrorText.Assign(errorMessage);
+        }
+    }
+
+    if (aSourceText) {
+        mSourceText.Assign(aSourceText);
+    }
+
+    if (mSource) {
+        notifyError();
+    }
+}
+
+void
+txMozillaXSLTProcessor::notifyError()
+{
+    nsresult rv;
+    nsCOMPtr<nsIDOMDocument> errorDocument = do_CreateInstance(kXMLDocumentCID,
+                                                               &rv);
+    if (NS_FAILED(rv)) {
+        return;
+    }
+
+    nsCOMPtr<nsIDOMDocument> sourceDOMDocument;
+    mSource->GetOwnerDocument(getter_AddRefs(sourceDOMDocument));
+    if (!sourceDOMDocument) {
+        sourceDOMDocument = do_QueryInterface(mSource);
+    }
+    nsCOMPtr<nsIDocument> sourceDoc = do_QueryInterface(sourceDOMDocument);
+
+    // Set up the document
+    nsCOMPtr<nsIDocument> document = do_QueryInterface(errorDocument);
+    if (!document) {
+        return;
+    }
+
+    nsCOMPtr<nsILoadGroup> loadGroup;
+    nsCOMPtr<nsIChannel> channel;
+    sourceDoc->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+    nsCOMPtr<nsIIOService> serv = do_GetService(NS_IOSERVICE_CONTRACTID);
+    if (serv) {
+        // Create a temporary channel to get nsIDocument->Reset to
+        // do the right thing. We want the output document to get
+        // much of the input document's characteristics.
+        nsCOMPtr<nsIURI> docURL;
+        sourceDoc->GetDocumentURL(getter_AddRefs(docURL));
+        serv->NewChannelFromURI(docURL, getter_AddRefs(channel));
+    }
+    document->Reset(channel, loadGroup);
+    nsCOMPtr<nsIURI> baseURL;
+    sourceDoc->GetBaseURL(*getter_AddRefs(baseURL));
+    document->SetBaseURL(baseURL);
+
+    NS_NAMED_LITERAL_STRING(ns, "http://www.mozilla.org/newlayout/xml/parsererror.xml");
+
+    nsCOMPtr<nsIDOMElement> element;
+    rv = errorDocument->CreateElementNS(ns, NS_LITERAL_STRING("parsererror"),
+                                        getter_AddRefs(element));
+    if (NS_FAILED(rv)) {
+        return;
+    }
+
+    nsCOMPtr<nsIContent> rootContent = do_QueryInterface(element);
+    if (!rootContent) {
+        return;
+    }
+
+    rootContent->SetDocument(document, PR_FALSE, PR_TRUE);
+    document->SetRootContent(rootContent);
+
+    nsCOMPtr<nsIDOMText> text;
+    rv = errorDocument->CreateTextNode(mErrorText, getter_AddRefs(text));
+    if (NS_FAILED(rv)) {
+        return;
+    }
+
+    nsCOMPtr<nsIDOMNode> resultNode;
+    rv = element->AppendChild(text, getter_AddRefs(resultNode));
+    if (NS_FAILED(rv)) {
+        return;
+    }
+
+    if (!mSourceText.IsEmpty()) {
+        nsCOMPtr<nsIDOMElement> sourceElement;
+        rv = errorDocument->CreateElementNS(ns,
+                                            NS_LITERAL_STRING("sourcetext"),
+                                            getter_AddRefs(sourceElement));
+        if (NS_FAILED(rv)) {
+            return;
+        }
+    
+        rv = element->AppendChild(sourceElement, getter_AddRefs(resultNode));
+        if (NS_FAILED(rv)) {
+            return;
+        }
+
+        rv = errorDocument->CreateTextNode(mSourceText, getter_AddRefs(text));
+        if (NS_FAILED(rv)) {
+            return;
+        }
+    
+        rv = sourceElement->AppendChild(text, getter_AddRefs(resultNode));
+        if (NS_FAILED(rv)) {
+            return;
+        }
+    }
+
+    mObserver->OnTransformDone(mTransformResult, errorDocument);
+}
+
+nsresult
+txMozillaXSLTProcessor::ensureStylesheet()
+{
+    if (mStylesheet) {
+        return NS_OK;
+    }
+
+    NS_ENSURE_TRUE(mStylesheetDocument, NS_ERROR_NOT_INITIALIZED);
+
+    nsCOMPtr<nsIDOMNode> style = do_QueryInterface(mEmbeddedStylesheetRoot);
+    if (!style) {
+        style = do_QueryInterface(mStylesheetDocument);
+    }
+    return TX_CompileStylesheet(style, getter_AddRefs(mStylesheet));
+}
+
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(txMozillaXSLTProcessor)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(txMozillaXSLTProcessor)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(txMozillaXSLTProcessor)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(txMozillaXSLTProcessor)
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::BeginUpdate(nsIDocument* aDocument)
+{
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::EndUpdate(nsIDocument* aDocument)
+{
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::DocumentWillBeDestroyed(nsIDocument* aDocument)
+{
+    if (NS_FAILED(mCompileResult)) {
+        return NS_OK;
+    }
+
+    mCompileResult = ensureStylesheet();
+    mStylesheetDocument = nsnull;
+    mEmbeddedStylesheetRoot = nsnull;
+
+    // This might not be neccesary, but just in case some element ends up
+    // causing a notification as the document goes away we don't want to
+    // invalidate the stylesheet.
+    aDocument->RemoveObserver(this);
+    
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::ContentChanged(nsIDocument* aDocument,
+                                       nsIContent *aContent,
+                                       nsISupports *aSubContent)
+{
+    mStylesheet = nsnull;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::AttributeChanged(nsIDocument* aDocument,
+                                         nsIContent* aContent,
+                                         PRInt32 aNameSpaceID,
+                                         nsIAtom* aAttribute,
+                                         PRInt32 aModType,
+                                         nsChangeHint aHint)
+{
+    mStylesheet = nsnull;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::ContentAppended(nsIDocument* aDocument,
+                                        nsIContent* aContainer,
+                                        PRInt32 aNewIndexInContainer)
+{
+    mStylesheet = nsnull;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::ContentInserted(nsIDocument* aDocument,
+                                        nsIContent* aContainer,
+                                        nsIContent* aChild,
+                                        PRInt32 aIndexInContainer)
+{
+    mStylesheet = nsnull;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::ContentReplaced(nsIDocument* aDocument,
+                                        nsIContent* aContainer,
+                                        nsIContent* aOldChild,
+                                        nsIContent* aNewChild,
+                                        PRInt32 aIndexInContainer)
+{
+    mStylesheet = nsnull;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+txMozillaXSLTProcessor::ContentRemoved(nsIDocument* aDocument,
+                                       nsIContent* aContainer,
+                                       nsIContent* aChild,
+                                       PRInt32 aIndexInContainer)
+{
+    mStylesheet = nsnull;
     return NS_OK;
 }
 
@@ -730,7 +989,7 @@ txVariable::Convert(nsIVariant *aValue, ExprResult** aResult)
         case nsIDataType::VTYPE_CSTRING:
         case nsIDataType::VTYPE_ASTRING:
         {
-            String value;
+            nsAutoString value;
             nsresult rv = aValue->GetAsAString(value);
             NS_ENSURE_SUCCESS(rv, rv);
 

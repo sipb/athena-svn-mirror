@@ -105,6 +105,7 @@
 
 #include "nsMsgProgress.h"
 #include "nsSpamSettings.h"
+#include "nsCidProtocolHandler.h"
 
 #ifdef XP_WIN
 #include "nsMessengerWinIntegration.h"
@@ -112,6 +113,9 @@
 #ifdef XP_OS2
 #include "nsMessengerOS2Integration.h"
 #endif
+
+#include "nsCURILoader.h"
+#include "nsMessengerContentHandler.h"
 
 // private factory declarations for each component we know how to produce
 
@@ -153,12 +157,14 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsMsgQuickSearchDBView);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMsgOfflineManager);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMsgProgress);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSpamSettings);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsCidProtocolHandler);
 #ifdef XP_WIN
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsMessengerWinIntegration, Init);
 #endif
 #ifdef XP_OS2
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsMessengerOS2Integration, Init);
 #endif
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsMessengerContentHandler);
 
 // The list of components we register
 static const nsModuleComponentInfo gComponents[] = {
@@ -169,7 +175,7 @@ static const nsModuleComponentInfo gComponents[] = {
     { "Netscape Messenger Window Service", NS_MESSENGERWINDOWSERVICE_CID,
       NS_MESSENGERWINDOWSERVICE_CONTRACTID,
       nsMessengerBootstrapConstructor,
-	},
+    },
     { "Mail Startup Handler", NS_MESSENGERBOOTSTRAP_CID,
       NS_MAILSTARTUPHANDLER_CONTRACTID,
       nsMessengerBootstrapConstructor,
@@ -296,8 +302,8 @@ static const nsModuleComponentInfo gComponents[] = {
       nsSubscribeDataSourceConstructor,
     },
     { "Mail/News Subscribable Server", NS_SUBSCRIBABLESERVER_CID,
-	  NS_SUBSCRIBABLESERVER_CONTRACTID,
-	  nsSubscribableServerConstructor,
+      NS_SUBSCRIBABLESERVER_CONTRACTID,
+      nsSubscribableServerConstructor,
     },
     { "Local folder compactor", NS_MSGLOCALFOLDERCOMPACTOR_CID,
       NS_MSGLOCALFOLDERCOMPACTOR_CONTRACTID,
@@ -339,6 +345,10 @@ static const nsModuleComponentInfo gComponents[] = {
       NS_SPAMSETTINGS_CONTRACTID,
       nsSpamSettingsConstructor,
     },
+    { "cid protocol", NS_CIDPROTOCOL_CID,
+      NS_CIDPROTOCOLHANDLER_CONTRACTID,
+      nsCidProtocolHandlerConstructor,
+    },
 #ifdef XP_WIN
     { "Windows OS Integration", NS_MESSENGERWININTEGRATION_CID,
       NS_MESSENGEROSINTEGRATION_CONTRACTID,
@@ -351,6 +361,11 @@ static const nsModuleComponentInfo gComponents[] = {
       nsMessengerOS2IntegrationConstructor,
     },
 #endif
+    { "x-message-display content handler",
+       NS_MESSENGERCONTENTHANDLER_CID,
+       NS_MESSENGERCONTENTHANDLER_CONTRACTID,
+       nsMessengerContentHandlerConstructor
+    },
 };
 
 NS_IMPL_NSGETMODULE(nsMsgBaseModule, gComponents)

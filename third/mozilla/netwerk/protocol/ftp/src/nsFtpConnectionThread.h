@@ -42,6 +42,7 @@
 #include "nsIThread.h"
 #include "nsIRunnable.h"
 #include "nsISocketTransportService.h"
+#include "nsISocketTransport.h"
 #include "nsIServiceManager.h"
 #include "nsIStreamListener.h"
 #include "nsIURI.h"
@@ -131,8 +132,10 @@ public:
 
     nsresult Connect();
 
-    // lets the data forwarder tell us when the the data pipe has been created. 
-    nsresult DataConnectionEstablished();    
+    // lets the data forwarder tell us when the the data pipe has been created
+    // and when the data pipe has finished.
+    void DataConnectionEstablished();    
+    void DataConnectionComplete();
 private:
     ///////////////////////////////////
     // BEGIN: STATE METHODS
@@ -186,7 +189,7 @@ private:
     PRPackedBool                    mTryingCachedControl;     // retrying the password
     PRPackedBool                    mWaitingForDConn;         // Are we wait for a data connection
     PRPackedBool                    mRETRFailed;              // Did we already try a RETR and it failed?
-    nsCOMPtr<nsITransport>          mDPipe;                   // the data transport
+    nsCOMPtr<nsISocketTransport>    mDPipe;                   // the data transport
     nsCOMPtr<nsIRequest>            mDPipeRequest;
     DataRequestForwarder*           mDRequestForwarder;
     PRUint32                        mFileSize;
@@ -221,6 +224,7 @@ private:
     PRUint32               mBufferMaxSize;
     PRLock                 *mLock;
     nsCOMPtr<nsIInputStream> mWriteStream; // This stream is written to the server.
+    PRUint32                 mWriteCount;
     PRPackedBool           mIPv6Checked;
     nsCOMPtr<nsIPrompt>    mPrompter;
     nsCOMPtr<nsIFTPEventSink>       mFTPEventSink;

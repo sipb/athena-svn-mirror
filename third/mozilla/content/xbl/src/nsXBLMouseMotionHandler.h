@@ -50,13 +50,14 @@ class nsIDOMUIEvent;
 class nsIDOMMouseEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLMouseMotionHandler : public nsIDOMMouseMotionListener, 
                                 public nsXBLEventHandler
 {
 public:
-  nsXBLMouseMotionHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLMouseMotionHandler(nsIDOMEventReceiver* aReceiver,
+                          nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLMouseMotionHandler();
   
   // nsIDOMetc.
@@ -72,15 +73,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kMouseMoveAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLMouseMotionHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLMouseMotionHandler(nsIDOMEventReceiver* aEventReceiver,
+                            nsXBLPrototypeHandler* aHandlerElement,
                             nsXBLMouseMotionHandler** aResult);
 
 

@@ -30,14 +30,28 @@ Rights Reserved.
 <!ENTITY linesColumn.label "Lines">
 <!ENTITY unreadColumn.label "Unread">
 <!ENTITY totalColumn.label "Total">
-<!ENTITY orderReceivedColumn.label "Order Received">
 <!ENTITY readColumn.label "Read">
 <!ENTITY flagColumn.label "Flag">
 <!ENTITY locationColumn.label "Location">
+<!ENTITY idColumn.label "Order Received">
 
 <!--Tooltips-->
-<!ENTITY threadColumnHeader.tooltip "Click to display message threads"> 
-<!ENTITY columnChooser.tooltip "Click to select columns to display"> 
+<!ENTITY columnChooser.tooltip "Click to select columns to display">
+<!ENTITY threadColumn.tooltip "Click to display message threads"> 
+<!ENTITY senderColumn.tooltip "Click to sort by sender">
+<!ENTITY subjectColumn.tooltip "Click to sort by subject">
+<!ENTITY dateColumn.tooltip "Click to sort by date">
+<!ENTITY priorityColumn.tooltip "Click to sort by priority">
+<!ENTITY labelColumn.tooltip "Click to sort by label">
+<!ENTITY statusColumn.tooltip "Click to sort by status">
+<!ENTITY sizeColumn.tooltip "Click to sort by size">
+<!ENTITY junkStatusColumn.tooltip "Click to sort by junk status">
+<!ENTITY unreadColumn.tooltip "Number of unread messages in thread">
+<!ENTITY totalColumn.tooltip "Total number of messages in thread">
+<!ENTITY readColumn.tooltip "Click to sort by read">
+<!ENTITY flagColumn.tooltip "Click to sort by flag">
+<!ENTITY locationColumn.tooltip "Click to sort by location">
+<!ENTITY idColumn.tooltip "Click to sort by order received">
 
 
 

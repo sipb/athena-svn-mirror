@@ -33,7 +33,7 @@
 /*
  * certi.h - private data structures for the certificate library
  *
- * $Id: certi.h,v 1.1.1.1 2003-02-14 19:58:04 rbasch Exp $
+ * $Id: certi.h,v 1.1.1.2 2003-07-08 16:57:42 rbasch Exp $
  */
 #ifndef _CERTI_H_
 #define _CERTI_H_
@@ -181,6 +181,33 @@ struct CRLCacheStr {
 
 SECStatus InitCRLCache(void);
 SECStatus ShutdownCRLCache(void);
+
+/* Returns a pointer to an environment-like string, a series of
+** null-terminated strings, terminated by a zero-length string.
+** This function is intended to be internal to NSS.
+*/
+extern char * cert_GetCertificateEmailAddresses(CERTCertificate *cert);
+
+/*
+ * These functions are used to map subjectKeyID extension values to certs.
+ */
+SECStatus
+cert_CreateSubjectKeyIDHashTable(void);
+
+SECStatus
+cert_AddSubjectKeyIDMapping(SECItem *subjKeyID, CERTCertificate *cert);
+
+/*
+ * Call this function to remove an entry from the mapping table.
+ */
+SECStatus
+cert_RemoveSubjectKeyIDMapping(SECItem *subjKeyID);
+
+SECStatus
+cert_DestroySubjectKeyIDHashTable(void);
+
+SECItem*
+cert_FindDERCertBySubjectKeyID(SECItem *subjKeyID);
 
 #endif /* _CERTI_H_ */
 

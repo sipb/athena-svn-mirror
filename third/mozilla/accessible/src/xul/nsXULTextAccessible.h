@@ -19,9 +19,10 @@
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
+ * Original Author: John Gaunt (jgaunt@netscape.com)
  * Contributor(s):
- * Author: John Gaunt (jgaunt@netscape.com)
- *
+ *   Aaron Leventhal (aaronl@netscape.com)
+ *   Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -40,17 +41,27 @@
 #ifndef _nsXULTextAccessible_H_
 #define _nsXULTextAccessible_H_
 
-#include "nsTextAccessible.h"
+#include "nsTextAccessibleWrap.h"
 
 class nsIWeakReference;
 
-class nsXULTextAccessible : public nsTextAccessible
+class nsXULTextAccessible : public nsTextAccessibleWrap
 {
 
 public:
   nsXULTextAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   NS_IMETHOD GetAccName(nsAString& _retval); 
   NS_IMETHOD GetAccState(PRUint32 *_retval);
+};
+
+class nsXULTooltipAccessible : public nsLeafAccessible
+{
+
+public:
+  nsXULTooltipAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
+  NS_IMETHOD GetAccName(nsAString& _retval); 
+  NS_IMETHOD GetAccState(PRUint32 *_retval);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval); 
 };
 
 #endif  

@@ -288,17 +288,13 @@ nsImapMailboxSpec::nsImapMailboxSpec()
 
 	onlineVerified = PR_FALSE;
 	namespaceForFolder = nsnull;
-	NS_INIT_ISUPPORTS ();
 }
 
 nsImapMailboxSpec::~nsImapMailboxSpec()
 {
-	if (allocatedPathName)
-		nsCRT::free(allocatedPathName);
-	if (unicharPathName)
-		nsCRT::free(unicharPathName);
-	if (hostName)
-		nsCRT::free(hostName);
+	nsCRT::free(allocatedPathName);
+	nsCRT::free(unicharPathName);
+	nsCRT::free(hostName);
 }
 
 NS_IMPL_GETSET(nsImapMailboxSpec, Folder_UIDVALIDITY, PRInt32, folder_UIDVALIDITY);
@@ -392,9 +388,9 @@ void AllocateImapUidString(PRUint32 *msgUids, PRUint32 msgCount, nsCString &retu
     }
     else if (curSequenceEnd > startSequence)
     {
-      returnString.AppendInt(startSequence, 10);
+      returnString.AppendInt(startSequence);
       returnString += ':';
-      returnString.AppendInt(curSequenceEnd, 10);
+      returnString.AppendInt(curSequenceEnd);
       if (!lastKey)
         returnString += ',';
 //      sprintf(currentidString, "%ld:%ld,", startSequence, curSequenceEnd);
@@ -405,7 +401,7 @@ void AllocateImapUidString(PRUint32 *msgUids, PRUint32 msgCount, nsCString &retu
     {
       startSequence = nextKey;
       curSequenceEnd = startSequence;
-      returnString.AppendInt(msgUids[keyIndex], 10);
+      returnString.AppendInt(msgUids[keyIndex]);
       if (!lastKey)
         returnString += ',';
 //      sprintf(currentidString, "%ld,", msgUids[keyIndex]);

@@ -73,9 +73,9 @@ ExprResult* FilterExpr::evaluate(txIEvalContext* aContext)
     }
     else if(!isEmpty()) {
         // We can't filter a non-nodeset
-        String err("Expecting nodeset as result of: ");
+        nsAutoString err(NS_LITERAL_STRING("Expecting nodeset as result of: "));
         expr->toString(err);
-        aContext->receiveError(err, NS_ERROR_XPATH_EVAL_FAILED);
+        aContext->receiveError(err, NS_ERROR_XSLT_NODESET_EXPECTED);
         delete exprResult;
         return new NodeSet;
     }
@@ -88,9 +88,9 @@ ExprResult* FilterExpr::evaluate(txIEvalContext* aContext)
  * @param str the destination String to append to
  * @see Expr
 **/
-void FilterExpr::toString(String& str) {
+void FilterExpr::toString(nsAString& str) {
     if ( expr ) expr->toString(str);
-    else str.append("null");
+    else str.Append(NS_LITERAL_STRING("null"));
     PredicateList::toString(str);
 } //-- toString
 

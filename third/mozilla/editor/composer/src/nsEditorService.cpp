@@ -38,10 +38,11 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsEditorService.h"
+#include "nsString.h"
+#include "plstr.h"
 
 nsEditorService::nsEditorService()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsEditorService::~nsEditorService()

@@ -43,6 +43,7 @@
 #include "nsAString.h"
 #include "nsIRequest.h"
 #include "nsCompatibility.h"
+#include "nsCOMPtr.h"
 #ifdef IBMBIDI
 class nsBidiPresUtils;
 #endif // IBMBIDI
@@ -61,15 +62,18 @@ class nsIImage;
 class nsILinkHandler;
 class nsIPresShell;
 class nsIPref;
-class nsIStyleContext;
+class nsStyleContext;
 class nsIAtom;
 class nsString;
 class nsIEventStateManager;
 class nsIURI;
 class nsILookAndFeel;
+class nsIIOService;
 class nsICSSPseudoComparator;
 class nsILanguageAtom;
 class nsITheme;
+struct nsStyleStruct;
+struct nsStyleBackground;
 
 #ifdef MOZ_REFLOW_PERF
 class nsIRenderingContext;
@@ -78,12 +82,6 @@ class nsIRenderingContext;
 #define NS_IPRESCONTEXT_IID   \
 { 0x0a5d12e0, 0x944e, 0x11d1, \
   {0x93, 0x23, 0x00, 0x80, 0x5f, 0x8a, 0xdd, 0x32} }
-
-enum nsWidgetRendering {
-  eWidgetRendering_Native   = 1,
-  eWidgetRendering_Gfx      = 2,
-  eWidgetRendering_PartialGfx = 3
-};
 
 enum nsWidgetType {
   eWidgetType_Button  	= 1,
@@ -144,12 +142,6 @@ public:
   NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode) = 0;
 
   /**
-   * Access the widget rendering mode for this context
-   */
-  NS_IMETHOD GetWidgetRenderingMode(nsWidgetRendering* aModeResult) = 0;
-  NS_IMETHOD SetWidgetRenderingMode(nsWidgetRendering aMode) = 0;
-
-  /**
    * Access the image animation mode for this context
    */
   NS_IMETHOD GetImageAnimationMode(PRUint16* aModeResult) = 0;
@@ -161,9 +153,14 @@ public:
   NS_IMETHOD GetImageLoadFlags(nsLoadFlags& aLoadFlags) = 0;
 
   /**
-   * Get look and feel object
+   * Get cached look and feel service.
    */
   NS_IMETHOD GetLookAndFeel(nsILookAndFeel** aLookAndFeel) = 0;
+
+  /**
+   * Get cached IO service.
+   */
+  NS_IMETHOD GetIOService(nsIIOService** aIOService) = 0;
 
   /** 
    * Get base url for presentation
@@ -184,9 +181,9 @@ public:
    * Resolve style for the given piece of content that will be a child
    * of the aParentContext. Don't use this for pseudo frames.
    */
-  NS_IMETHOD ResolveStyleContextFor(nsIContent* aContent,
-                                    nsIStyleContext* aParentContext,
-                                    nsIStyleContext** aResult) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleContextFor(nsIContent* aContent,
+                         nsStyleContext* aParentContext) = 0;
 
   /**
    * Resolve style for a non-element content node (i.e., one that is
@@ -200,19 +197,19 @@ public:
    * represents everything except the first letter.)
    *
    */
-  NS_IMETHOD ResolveStyleContextForNonElement(
-                                    nsIStyleContext* aParentContext,
-                                    nsIStyleContext** aResult) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleContextForNonElement(nsStyleContext* aParentContext) = 0;
 
   /**
    * Resolve style for a pseudo frame within the given aParentContent & aParentContext.
    * The tag should be lowercase and inclue the colon.
    * ie: NS_NewAtom(":first-line");
    */
-  NS_IMETHOD ResolvePseudoStyleContextFor(nsIContent* aParentContent,
-                                          nsIAtom* aPseudoTag,
-                                          nsIStyleContext* aParentContext,
-                                          nsIStyleContext** aResult) = 0;
+
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleContextFor(nsIContent* aParentContent,
+                               nsIAtom* aPseudoTag,
+                               nsStyleContext* aParentContext) = 0;
 
   /**
    * Resolve style for a pseudo frame within the given aParentContent & aParentContext.
@@ -222,11 +219,11 @@ public:
    * Instead of matching solely on aPseudoTag, a comparator function can be
    * passed in to test.
    */
-  NS_IMETHOD ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
-                                              nsIAtom* aPseudoTag,
-                                              nsIStyleContext* aParentContext,
-                                              nsICSSPseudoComparator* aComparator,
-                                              nsIStyleContext** aResult) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
+                                   nsIAtom* aPseudoTag,
+                                   nsStyleContext* aParentContext,
+                                   nsICSSPseudoComparator* aComparator) = 0;
 
   /**
    * Probe style for a pseudo frame within the given aParentContent & aParentContext.
@@ -234,17 +231,24 @@ public:
    * The tag should be lowercase and inclue the colon.
    * ie: NS_NewAtom(":first-line");
    */
-  NS_IMETHOD ProbePseudoStyleContextFor(nsIContent* aParentContent,
-                                        nsIAtom* aPseudoTag,
-                                        nsIStyleContext* aParentContext,
-                                        nsIStyleContext** aResult) = 0;
+  virtual already_AddRefed<nsStyleContext>
+  ProbePseudoStyleContextFor(nsIContent* aParentContent,
+                             nsIAtom* aPseudoTag,
+                             nsStyleContext* aParentContext) = 0;
+ 
+   /**
+    * Resolve a new style context for a content node and return the URL
+    * for its XBL binding, or the empty string if it has no binding
+    * specified in CSS.
+    */
+   NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsAString& aResult) = 0;
 
   /** 
    * For a given frame tree, get a new style context that is the equivalent
    * but within a new parent
    */
   NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
-                                  nsIStyleContext* aNewParentContext) = 0;
+                                  nsStyleContext* aNewParentContext) = 0;
 
 
   NS_IMETHOD AllocateFromShell(size_t aSize, void** aResult) = 0;
@@ -528,6 +532,16 @@ public:
    */
   NS_IMETHOD SysColorChanged() = 0;
 
+  /*
+   * Fill in an nsStyleBackground to be used to paint the background for an
+   * element.  This applies the rules for propagating backgrounds between
+   * BODY, the root element, and the canvas.
+   */
+  NS_IMETHOD FindFrameBackground(nsIFrame* aFrame,
+                                 const nsStyleBackground** aBackground,
+                                 PRBool* aIsCanavs,
+                                 PRBool* aFoundBackground) = 0;
+
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD CountReflows(const char * aName, PRUint32 aType, nsIFrame * aFrame) = 0;
   NS_IMETHOD PaintCount(const char * aName, nsIRenderingContext* aRendingContext, nsIFrame * aFrame, PRUint32 aColor) = 0;
@@ -541,8 +555,8 @@ public:
 
 // Factory method to create a "galley" presentation context (galley is
 // a kind of view that has no limit to the size of a page)
-extern NS_EXPORT nsresult
-  NS_NewGalleyContext(nsIPresContext** aInstancePtrResult);
+nsresult
+NS_NewGalleyContext(nsIPresContext** aInstancePtrResult);
 
 #ifdef MOZ_REFLOW_PERF
 

@@ -55,8 +55,6 @@ void OnBiffTimer(nsITimer *timer, void *aBiffManager)
 
 nsMsgBiffManager::nsMsgBiffManager()
 {
-  NS_INIT_ISUPPORTS();
-
   mBiffArray = nsnull;
   mHaveShutdown = PR_FALSE;
   mInited = PR_FALSE;
@@ -329,17 +327,15 @@ nsresult nsMsgBiffManager::PerformBiff()
     {
       PRBool serverBusy = PR_FALSE;
       PRBool serverRequiresPassword = PR_TRUE;
-      nsXPIDLCString password;
-      // we don't want to prompt the user for password UI so pass in false to
-      // the server->GetPassword method. If we don't already know the passsword then 
-      // we just won't biff this server
-      current->server->GetPassword(getter_Copies(password));
+      PRBool userAuthenticated; 
+      current->server->GetIsAuthenticated(&userAuthenticated);
       current->server->GetServerBusy(&serverBusy);
       current->server->GetServerRequiresPasswordForBiff(&serverRequiresPassword);
-      //Make sure we're logged on before doing a biff
+      // so if we need to be authenticated to biff, check that we are
+      // (since we don't want to prompt the user for password UI)
       // and make sure the server isn't already in the middle of downloading new messages
-      if(!serverBusy && (!serverRequiresPassword || (password.Length() > 0)))
-        current->server->PerformBiff();
+      if(!serverBusy && (!serverRequiresPassword || userAuthenticated))
+        current->server->PerformBiff(nsnull);
       mBiffArray->RemoveElementAt(i);
       i--; //Because we removed it we need to look at the one that just moved up.
       SetNextBiffTime(current, currentTime);

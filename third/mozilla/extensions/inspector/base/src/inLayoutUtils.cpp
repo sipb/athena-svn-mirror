@@ -52,18 +52,17 @@
 #include "nsIViewManager.h"
 #include "nsIWidget.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h" 
 #include "nsXULAtoms.h"
 #include "nsHTMLAtoms.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
 nsIDOMWindowInternal*
-inLayoutUtils::GetWindowFor(nsIDOMElement* aElement)
+inLayoutUtils::GetWindowFor(nsIDOMNode* aNode)
 {
   nsCOMPtr<nsIDOMDocument> doc1;
-  aElement->GetOwnerDocument(getter_AddRefs(doc1));
-  return GetWindowFor(doc1);
+  aNode->GetOwnerDocument(getter_AddRefs(doc1));
+  return GetWindowFor(doc1.get());
 }
 
 nsIDOMWindowInternal*
@@ -117,29 +116,29 @@ inLayoutUtils::GetRenderingContextFor(nsIPresShell* aShell)
 nsIEventStateManager*
 inLayoutUtils::GetEventStateManagerFor(nsIDOMElement *aElement)
 {
-  if (aElement) {
-    // get the document
-    nsCOMPtr<nsIDOMDocument> doc1;
-    aElement->GetOwnerDocument(getter_AddRefs(doc1));
-    nsCOMPtr<nsIDocument> doc;
-    doc = do_QueryInterface(doc1);
-  
-    // use the first PresShell
-    PRInt32 num = doc->GetNumberOfShells();
-    if (num > 0) {
-      nsCOMPtr<nsIPresShell> shell;
-      doc->GetShellAt(0, getter_AddRefs(shell));
-      nsCOMPtr<nsIPresContext> presContext;
-      shell->GetPresContext(getter_AddRefs(presContext));
-      
-      nsCOMPtr<nsIEventStateManager> esm;
-      presContext->GetEventStateManager(getter_AddRefs(esm));
-      
-      return esm;
-    }
-  }  
-  
-  return nsnull;
+  NS_PRECONDITION(aElement, "Passing in a null element is bad");
+
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  aElement->GetOwnerDocument(getter_AddRefs(domDoc));
+  nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+
+  if (!doc) {
+    NS_WARNING("Could not get an nsIDocument!");
+    return nsnull;
+  }
+
+  nsCOMPtr<nsIPresShell> shell;
+  doc->GetShellAt(0, getter_AddRefs(shell));
+  NS_ASSERTION(shell, "No pres shell");
+
+  nsCOMPtr<nsIPresContext> presContext;
+  shell->GetPresContext(getter_AddRefs(presContext));
+  NS_ASSERTION(presContext, "No pres context");
+
+  nsCOMPtr<nsIEventStateManager> esm;
+  presContext->GetEventStateManager(getter_AddRefs(esm));
+
+  return esm;
 }
 
 nsPoint
@@ -149,11 +148,21 @@ inLayoutUtils::GetClientOrigin(nsIPresContext* aPresContext,
   nsPoint result(0,0);
   nsIView* view;
   aFrame->GetOffsetFromView(aPresContext, result, &view);
+  nsIView* rootView = nsnull;
+  if (view) {
+      nsCOMPtr<nsIViewManager> viewManager;
+      view->GetViewManager(*getter_AddRefs(viewManager));
+      NS_ASSERTION(viewManager, "View must have a viewmanager");
+      viewManager->GetRootView(rootView);
+  }
   while (view) {
     nscoord x, y;
     view->GetPosition(&x, &y);
     result.x += x;
     result.y += y;
+    if (view == rootView) {
+      break;
+    }
     view->GetParent(view);
   }
   return result;

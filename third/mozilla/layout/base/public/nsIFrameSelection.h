@@ -51,7 +51,6 @@
 #include "nsISelection.h"
 #include "nsIContent.h"
 #include "nsCOMPtr.h"
-#include "nsIStyleContext.h"
 #include "nsISelectionController.h"
 
 
@@ -97,7 +96,8 @@ struct nsPeekOffsetStruct
                PRBool aEatingWS,
                PRBool aPreferLeft,
                PRBool aJumpLines,
-               PRBool aScrollViewStop)
+               PRBool aScrollViewStop,
+               PRBool aIsKeyboardSelect)
       {
        mTracker=aTracker;
        mDesiredX=aDesiredX;
@@ -108,6 +108,7 @@ struct nsPeekOffsetStruct
        mPreferLeft=aPreferLeft;
        mJumpLines = aJumpLines;
        mScrollViewStop = aScrollViewStop;
+       mIsKeyboardSelect = aIsKeyboardSelect;
       }
   nsIFocusTracker *mTracker;
   nscoord mDesiredX;
@@ -122,6 +123,7 @@ struct nsPeekOffsetStruct
   PRBool mPreferLeft;
   PRBool mJumpLines;
   PRBool mScrollViewStop;
+  PRBool mIsKeyboardSelect;
 };
 
 class nsIScrollableView;
@@ -130,7 +132,7 @@ class nsIScrollableView;
 class nsIFrameSelection : public nsISupports {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IFRAMESELECTION_IID)
-  enum HINT {HINTLEFT=0,HINTRIGHT=1}mHint;//end of this line or beginning of next
+  enum HINT { HINTLEFT = 0, HINTRIGHT = 1};  //end of this line or beginning of next
 
   /** Init will initialize the frame selector with the necessary focus tracker to 
    *  be used by most of the methods
@@ -155,16 +157,14 @@ public:
    */
   NS_IMETHOD ShutDown() = 0;
 
-  /** HandleKeyEvent will accept an event and frame and 
-   *  will return NS_OK if it handles the event or NS_COMFALSE if not.
+  /** HandleKeyEvent will accept an event.
    *  <P>DOES NOT ADDREF<P>
    *  @param aGuiEvent is the event that should be dealt with by aFocusFrame
    *  @param aFrame is the frame that MAY handle the event
    */
   NS_IMETHOD HandleTextEvent(nsGUIEvent *aGuiEvent) = 0;
 
-  /** HandleKeyEvent will accept an event and frame and 
-   *  will return NS_OK if it handles the event or NS_COMFALSE if not.
+  /** HandleKeyEvent will accept an event and a PresContext.
    *  <P>DOES NOT ADDREF<P>
    *  @param aGuiEvent is the event that should be dealt with by aFocusFrame
    *  @param aFrame is the frame that MAY handle the event

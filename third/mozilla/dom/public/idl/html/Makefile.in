@@ -28,8 +28,9 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= dom
 XPIDL_MODULE	= dom_html
+GRE_MODULE	= 1
 
-XPIDLSRCS =					\
+SDK_XPIDLSRCS =					\
 	nsIDOMHTMLAnchorElement.idl		\
 	nsIDOMHTMLAppletElement.idl		\
 	nsIDOMHTMLAreaElement.idl		\
@@ -70,6 +71,7 @@ XPIDLSRCS =					\
 	nsIDOMHTMLObjectElement.idl		\
 	nsIDOMHTMLOptGroupElement.idl		\
 	nsIDOMHTMLOptionElement.idl		\
+	nsIDOMHTMLOptionsCollection.idl		\
 	nsIDOMHTMLParagraphElement.idl		\
 	nsIDOMHTMLParamElement.idl		\
 	nsIDOMHTMLPreElement.idl		\
@@ -86,6 +88,9 @@ XPIDLSRCS =					\
 	nsIDOMHTMLTextAreaElement.idl		\
 	nsIDOMHTMLTitleElement.idl		\
 	nsIDOMHTMLUListElement.idl		\
+	$(NULL)
+
+XPIDLSRCS = 					\
 	nsIDOMNSHTMLAnchorElement.idl		\
 	nsIDOMNSHTMLAreaElement.idl		\
 	nsIDOMNSHTMLButtonElement.idl		\
@@ -96,7 +101,8 @@ XPIDLSRCS =					\
 	nsIDOMNSHTMLFrameElement.idl		\
 	nsIDOMNSHTMLImageElement.idl		\
 	nsIDOMNSHTMLInputElement.idl		\
-	nsIDOMNSHTMLOptionCollectn.idl	\
+	nsIDOMNSHTMLOptionCollectn.idl		\
+	nsIDOMNSHTMLOptionElement.idl		\
 	nsIDOMNSHTMLSelectElement.idl		\
 	nsIDOMNSHTMLTextAreaElement.idl		\
 	nsIDOMNSXBLFormControl.idl		\

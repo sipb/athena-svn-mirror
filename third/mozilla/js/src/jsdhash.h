@@ -183,7 +183,7 @@ struct JSDHashEntryHdr {
  * required, double hashing wins.
  */
 struct JSDHashTable {
-    JSDHashTableOps     *ops;           /* virtual operations, see below */
+    const JSDHashTableOps *ops;         /* virtual operations, see below */
     void                *data;          /* ops- and instance-specific data */
     int16               hashShift;      /* multiplicative hash shift */
     uint8               maxAlphaFrac;   /* 8-bit fixed point max alpha */
@@ -323,6 +323,8 @@ typedef void
  * newly created by the JS_DHASH_ADD call that just succeeded.  If placement
  * new or similar initialization is required, define an initEntry hook.  Of
  * course, the clearEntry hook must zero or null appropriately.
+ *
+ * XXX assumes 0 is null for pointer types.
  */
 struct JSDHashTableOps {
     /* Mandatory hooks.  All implementations must provide these. */
@@ -384,7 +386,7 @@ JS_DHashFinalizeStub(JSDHashTable *table);
  * if your entries move via memcpy and clear via memset(0), you can use these
  * stub operations.
  */
-extern JS_PUBLIC_API(JSDHashTableOps *)
+extern JS_PUBLIC_API(const JSDHashTableOps *)
 JS_DHashGetStubOps(void);
 
 /*
@@ -394,7 +396,7 @@ JS_DHashGetStubOps(void);
  * the ops->allocTable callback.
  */
 extern JS_PUBLIC_API(JSDHashTable *)
-JS_NewDHashTable(JSDHashTableOps *ops, void *data, uint32 entrySize,
+JS_NewDHashTable(const JSDHashTableOps *ops, void *data, uint32 entrySize,
                  uint32 capacity);
 
 /*
@@ -411,7 +413,7 @@ JS_DHashTableDestroy(JSDHashTable *table);
  * only to avoid inevitable early growth from JS_DHASH_MIN_SIZE).
  */
 extern JS_PUBLIC_API(JSBool)
-JS_DHashTableInit(JSDHashTable *table, JSDHashTableOps *ops, void *data,
+JS_DHashTableInit(JSDHashTable *table, const JSDHashTableOps *ops, void *data,
                   uint32 entrySize, uint32 capacity);
 
 /*
@@ -476,7 +478,7 @@ typedef enum JSDHashOperator {
  * Otherwise, entry->keyHash has been set so that JS_DHASH_ENTRY_IS_BUSY(entry)
  * is true, and it is up to the caller to initialize the key and value parts
  * of the entry sub-type, if they have not been set already (i.e. if entry was
- * not already in the table).
+ * not already in the table, and if the optional initEntry hook was not used).
  *
  * To remove an entry identified by key from table, call:
  *
@@ -520,8 +522,25 @@ JS_DHashTableRawRemove(JSDHashTable *table, JSDHashEntryHdr *entry);
  * that were enumerated so far.  Return the total number of live entries when
  * enumeration completes normally.
  *
- * If etor calls JS_DHashTableOperate on table, it must return JS_DHASH_STOP;
- * otherwise undefined behavior results.
+ * If etor calls JS_DHashTableOperate on table with op != JS_DHASH_LOOKUP, it
+ * must return JS_DHASH_STOP; otherwise undefined behavior results.
+ *
+ * If any enumerator returns JS_DHASH_REMOVE, table->entryStore may be shrunk
+ * or compressed after enumeration, but before JS_DHashTableEnumerate returns.
+ * Such an enumerator therefore can't safely set aside entry pointers, but an
+ * enumerator that never returns JS_DHASH_REMOVE can set pointers to entries
+ * aside, e.g., to avoid copying live entries into an array of the entry type.
+ * Copying entry pointers is cheaper, and safe so long as the caller of such a
+ * "stable" Enumerate doesn't use the set-aside pointers after any call either
+ * to PL_DHashTableOperate, or to an "unstable" form of Enumerate, which might
+ * grow or shrink entryStore.
+ *
+ * If your enumerator wants to remove certain entries, but set aside pointers
+ * to other entries that it retains, it can use JS_DHashTableRawRemove on the
+ * entries to be removed, returning JS_DHASH_NEXT to skip them.  Likewise, if
+ * you want to remove entries, but for some reason you do not want entryStore
+ * to be shrunk or compressed, you can call JS_DHashTableRawRemove safely on
+ * the entry being enumerated, rather than returning JS_DHASH_REMOVE.
  */
 typedef JSDHashOperator
 (* JS_DLL_CALLBACK JSDHashEnumerator)(JSDHashTable *table, JSDHashEntryHdr *hdr,

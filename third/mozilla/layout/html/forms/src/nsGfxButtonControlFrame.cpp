@@ -50,6 +50,7 @@
 #include "nsIDOMNode.h"
 #include "nsLayoutAtoms.h"
 #include "nsReflowPath.h"
+#include "nsAutoPtr.h"
 // MouseEvent suppression in PP
 #include "nsGUIEvent.h"
 
@@ -171,163 +172,6 @@ nsGfxButtonControlFrame::AddComputedBorderPaddingToDesiredSize(nsHTMLReflowMetri
   return NS_OK;
 }
 
-nsresult 
-nsGfxButtonControlFrame::DoNavQuirksReflow(nsIPresContext*          aPresContext, 
-                                           nsHTMLReflowMetrics&     aDesiredSize,
-                                           const nsHTMLReflowState& aReflowState, 
-                                           nsReflowStatus&          aStatus)
-{
-  nsIFrame* firstKid = mFrames.FirstChild();
-
-  nsCOMPtr<nsIFontMetrics> fontMet;
-  nsresult res = nsFormControlHelper::GetFrameFontFM(aPresContext, (nsIFormControlFrame *)this, getter_AddRefs(fontMet));
-  nsSize desiredSize;
-  if (NS_SUCCEEDED(res) && fontMet) {
-    aReflowState.rendContext->SetFont(fontMet);
-
-    // Get the text from the "value" attribute 
-    // for measuring the height, width of the text
-    nsAutoString value;
-    res = GetValue(&value);
-
-    if (res != NS_CONTENT_ATTR_HAS_VALUE && value.IsEmpty()) {
-      // Generate localized label.
-      // We can't make any assumption as to what the default would be
-      // because the value is localized for non-english platforms, thus
-      // it might not be the string "Reset", "Submit Query", or "Browse..."
-      res = GetDefaultLabel(value);
-      if (NS_FAILED(res)) {
-        return res;
-      }
-    }
-
-    const nsStyleText* textStyle;
-    GetStyleData(eStyleStruct_Text,  (const nsStyleStruct *&)textStyle);
-    if (!textStyle->WhiteSpaceIsSignificant()) {
-      value.CompressWhitespace();
-    }
-    
-    if (value.IsEmpty()) {
-      // Have to have _something_ or we won't be drawn
-      value.Assign(NS_LITERAL_STRING("  "));
-    }
-
-    CalcNavQuirkSizing(aPresContext, aReflowState.rendContext, value,
-                       desiredSize);
-
-    // Note: The Quirks sizing includes a 2px border in its calculation of "desiredSize"
-    // So we must subtract off the 2 pixel border.
-    // Quirk sizing also assumes a 0px padding
-    float   p2t;
-    aPresContext->GetPixelsToTwips(&p2t);
-    nscoord borderTwips = NSIntPixelsToTwips(4, p2t);
-    desiredSize.width  -= borderTwips;
-    desiredSize.height -= borderTwips;
-
-    // Now figure out how much vertical padding was added and 
-    // then subtract it, so we can add in the padding later
-    // horizontal pading is 0px;
-    nscoord hgt;
-    fontMet->GetHeight(hgt);
-    desiredSize.height -= PR_MAX(0, desiredSize.height - hgt);
-
-    // This calculates the reflow size
-    // get the css size and let the frame use or override it
-    nsSize styleSize;
-    nsFormControlFrame::GetStyleSize(aPresContext, aReflowState, styleSize);
-
-    if (CSS_NOTSET != styleSize.width) {  // css provides width
-      NS_ASSERTION(styleSize.width+aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right >= 0, "form control's computed width is < 0"); 
-      if (NS_INTRINSICSIZE != styleSize.width) {
-        desiredSize.width = styleSize.width;
-        desiredSize.width  += aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right;
-      }
-    } else {
-      desiredSize.width  += aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right;
-    }
-
-    if (CSS_NOTSET != styleSize.height) {  // css provides height
-      NS_ASSERTION(styleSize.height > 0, "form control's computed height is <= 0"); 
-      if (NS_INTRINSICSIZE != styleSize.height) {
-        desiredSize.height = styleSize.height;
-        desiredSize.height += aReflowState.mComputedBorderPadding.top + aReflowState.mComputedBorderPadding.bottom;
-      }
-    } else {
-      desiredSize.height += aReflowState.mComputedBorderPadding.top + aReflowState.mComputedBorderPadding.bottom;
-    }
-
-    aDesiredSize.width   = desiredSize.width;
-    aDesiredSize.height  = desiredSize.height;
-  } else {
-    // XXX ASSERT HERE
-    desiredSize.width = 0;
-    desiredSize.height = 0;
-  }
-
-  // remove it from the the desired size
-  // because the content need to fit inside of it
-  desiredSize.width  -= (aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right);
-  desiredSize.height -= (aReflowState.mComputedBorderPadding.top + aReflowState.mComputedBorderPadding.bottom);
-
-  // Ok, now we think we know what size we are so we can reflow our contents
-  // But we need to make sure we aren't smaller or larger then the min/max
-  if (desiredSize.width < aReflowState.mComputedMinWidth) {
-    desiredSize.width = aReflowState.mComputedMinWidth - (aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right);
-  } else if (desiredSize.width > aReflowState.mComputedMaxWidth) {
-    desiredSize.width = aReflowState.mComputedMaxWidth - (aReflowState.mComputedBorderPadding.left + aReflowState.mComputedBorderPadding.right);
-  }
-
-  if (desiredSize.height < aReflowState.mComputedMinHeight) {
-    desiredSize.height = aReflowState.mComputedMinHeight - (aReflowState.mComputedBorderPadding.top + aReflowState.mComputedBorderPadding.bottom);
-  } else if (desiredSize.height > aReflowState.mComputedMaxHeight) {
-    desiredSize.height = aReflowState.mComputedMaxHeight - (aReflowState.mComputedBorderPadding.top + aReflowState.mComputedBorderPadding.bottom);
-  }
-
-  // XXX Proper handling of incremental reflow...
-  nsReflowReason reason = aReflowState.reason;
-  if (eReflowReason_Incremental == reason) {
-    // See if it's targeted at us
-    nsHTMLReflowCommand *command = aReflowState.path->mReflowCommand;
-
-    if (command) {
-      Invalidate(aPresContext, nsRect(0,0,mRect.width,mRect.height), PR_FALSE);
-
-      nsReflowType  reflowType;
-      command->GetType(reflowType);
-      if (eReflowType_StyleChanged == reflowType) {
-        reason = eReflowReason_StyleChange;
-      }
-      else {
-        reason = eReflowReason_Resize;
-      }
-    }
-  }
-
-  // now reflow the first child (generated content)
-  nsHTMLReflowState reflowState(aPresContext, aReflowState, firstKid, desiredSize, reason);
-  reflowState.mComputedWidth  = desiredSize.width;
-  reflowState.mComputedHeight = desiredSize.height;
-
-  nsHTMLReflowMetrics childReflowMetrics(aDesiredSize);
-  nsRect kidRect;
-  firstKid->GetRect(kidRect);
-  ReflowChild(firstKid, aPresContext, childReflowMetrics, reflowState, kidRect.x, kidRect.y, 0, aStatus);
-
-  aDesiredSize.ascent = childReflowMetrics.ascent +
-    aReflowState.mComputedBorderPadding.top;
-  aDesiredSize.descent = aDesiredSize.height - aDesiredSize.ascent;
-
-  // Center the child and add back in the border and badding
-  // our inner area frame is already doing centering so we only need to center vertically.
-  nsRect rect = nsRect(aReflowState.mComputedBorderPadding.left, 
-                       aReflowState.mComputedBorderPadding.top, 
-                       desiredSize.width, 
-                       desiredSize.height);
-  firstKid->SetRect(aPresContext, rect);
-
-  return NS_OK;
-}
-
 // Create the text content used as label for the button.
 // The frame will be generated by the frame constructor.
 NS_IMETHODIMP
@@ -353,15 +197,27 @@ nsGfxButtonControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   }
 
   // Compress whitespace out of label if needed.
-  const nsStyleText* textStyle;
-  GetStyleData(eStyleStruct_Text,  (const nsStyleStruct *&)textStyle);
-  if (!textStyle->WhiteSpaceIsSignificant()) {
+  if (!GetStyleText()->WhiteSpaceIsSignificant()) {
     value.CompressWhitespace();
-  }
-
-  if (value.IsEmpty()) {
-    // Have to have _something_ or we won't be drawn
-    value.Assign(NS_LITERAL_STRING("  "));
+  } else if (value.Length() > 2 && value[0] == ' ' &&
+             value[value.Length() - 1] == ' '){
+    // This is a bit of a hack.  The reason this is here is as follows: we now
+    // have default padding on our buttons to make them non-ugly.
+    // Unfortunately, IE-windows does not have such padding, so people will
+    // stick values like " ok " (with the spaces) in the buttons in an attempt
+    // to make them look decent.  Unfortunately, if they do this the button
+    // looks way too big in Mozilla.  Worse yet, if they do this _and_ set a
+    // fixed width for the button we run into trouble because our focus-rect
+    // border/padding and outer border take up 10px of the horizontal button
+    // space or so; the result is that the text is misaligned, even with the
+    // recentering we do in nsHTMLButtonFrame::Reflow.  So to solve this, even
+    // if the whitespace is significant, single leading and trailing _spaces_
+    // (and not other whitespace) are removed.  The proper solution, of
+    // course, is to not have the focus rect painting taking up 6px of
+    // horizontal space. We should do that instead (via XBL form controls or
+    // changing the renderer) and remove this.
+    value.Cut(0, 1);
+    value.Truncate(value.Length() - 1);
   }
 
   // Add a child text content node for the label
@@ -396,17 +252,13 @@ nsGfxButtonControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
     aPresContext->GetShell(getter_AddRefs(shell));
 
     nsIFrame * parentFrame = mFrames.FirstChild();
-    nsCOMPtr<nsIStyleContext> styleContext;
-    parentFrame->GetStyleContext(getter_AddRefs(styleContext));
+    nsStyleContext* styleContext = parentFrame->GetStyleContext();
 
     rv = NS_NewTextFrame(shell, &newFrame);
     if (NS_FAILED(rv)) { return rv; }
     if (!newFrame)   { return NS_ERROR_NULL_POINTER; }
-    nsCOMPtr<nsIStyleContext> textStyleContext;
-    rv = aPresContext->ResolveStyleContextForNonElement(
-                                             styleContext,
-                                             getter_AddRefs(textStyleContext));
-    if (NS_FAILED(rv))     { return rv; }
+    nsRefPtr<nsStyleContext> textStyleContext;
+    textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
     if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
 
     if (styleContext) {
@@ -463,8 +315,7 @@ nsGfxButtonControlFrame::GetDefaultLabel(nsString& aString)
 {
   const char * propname = nsFormControlHelper::GetHTMLPropertiesFileName();
   nsresult rv = NS_OK;
-  PRInt32 type;
-  GetType(&type);
+  PRInt32 type = GetType();
   if (type == NS_FORM_INPUT_RESET) {
     rv = nsFormControlHelper::GetLocalizedString(propname, NS_LITERAL_STRING("Reset").get(), aString);
   } 
@@ -475,7 +326,7 @@ nsGfxButtonControlFrame::GetDefaultLabel(nsString& aString)
     rv = nsFormControlHelper::GetLocalizedString(propname, NS_LITERAL_STRING("Browse").get(), aString);
   }
   else {
-    aString.Assign(NS_LITERAL_STRING("  "));
+    aString.Assign(NS_LITERAL_STRING(""));
     rv = NS_OK;
   }
   return rv;
@@ -519,17 +370,6 @@ nsGfxButtonControlFrame::Reflow(nsIPresContext*          aPresContext,
   DO_GLOBAL_REFLOW_COUNT("nsGfxButtonControlFrame", aReflowState.reason);
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
 
-  nsresult rv = NS_OK;
-
-#if 0
-  nsresult skiprv = nsFormControlFrame::SkipResizeReflow(mCacheSize, mCachedMaxElementSize, aPresContext, 
-                                                         aDesiredSize, aReflowState, aStatus);
-
-  if (NS_SUCCEEDED(skiprv)) {
-    return skiprv;
-  }
-#endif
-
   if ((kSuggestedNotSet != mSuggestedWidth) || 
       (kSuggestedNotSet != mSuggestedHeight)) {
     nsHTMLReflowState suggestedReflowState(aReflowState);
@@ -543,76 +383,13 @@ nsGfxButtonControlFrame::Reflow(nsIPresContext*          aPresContext,
       suggestedReflowState.mComputedHeight = mSuggestedHeight;
     }
 
-    rv = nsHTMLButtonControlFrame::Reflow(aPresContext, aDesiredSize, suggestedReflowState, aStatus);
+    return nsHTMLButtonControlFrame::Reflow(aPresContext, aDesiredSize, suggestedReflowState, aStatus);
 
-  } else { // Normal reflow.
-
-#if 1
-    // nsHTMLButtonControlFrame::Reflow registers it for Standard Mode
-    // and sets up mPresContext
-    if (eReflowReason_Initial == aReflowState.reason) {
-      nsFormControlFrame::RegUnRegAccessKey(aPresContext, NS_STATIC_CAST(nsIFrame*, this), PR_TRUE);
-    }
-    // Do NavQuirks Sizing and layout
-    rv = DoNavQuirksReflow(aPresContext, aDesiredSize, aReflowState, aStatus); 
-    
-    // Make sure we obey min/max-width and min/max-height
-    if (aDesiredSize.width > aReflowState.mComputedMaxWidth) {
-      aDesiredSize.width = aReflowState.mComputedMaxWidth;
-    }
-    if (aDesiredSize.width < aReflowState.mComputedMinWidth) {
-      aDesiredSize.width = aReflowState.mComputedMinWidth;
-    } 
-
-    if (aDesiredSize.height > aReflowState.mComputedMaxHeight) {
-      aDesiredSize.height = aReflowState.mComputedMaxHeight;
-    }
-    if (aDesiredSize.height < aReflowState.mComputedMinHeight) {
-      aDesiredSize.height = aReflowState.mComputedMinHeight;
-    } 
-#else
-    // Do Standard mode sizing and layout
-    rv = nsHTMLButtonControlFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
-#endif
   }
+  
+  // Normal reflow.
 
-#ifdef DEBUG_rodsXXXX
-  COMPARE_QUIRK_SIZE("nsGfxButtonControlFrame", 84, 24) // with the text "Press Me" in it
-#endif
-  aStatus = NS_FRAME_COMPLETE;
-
-  nsFormControlFrame::SetupCachedSizes(mCacheSize, mCachedMaxElementSize, aDesiredSize);
-
-  if (aDesiredSize.maxElementSize != nsnull) {
-    aDesiredSize.maxElementSize->width  = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
-  }
-
-  NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
-  return rv;
-}
-
-void 
-nsGfxButtonControlFrame::CalcNavQuirkSizing(nsIPresContext* aPresContext, 
-                                            nsIRenderingContext* aRendContext,
-                                            nsString&       aLabel,
-                                            nsSize&         aSize)
-{
-  float p2t;
-  float t2p;
-  aPresContext->GetPixelsToTwips(&p2t);
-  aPresContext->GetTwipsToPixels(&t2p);
-
-  // Get text size, round to nearest pixel, multiply by 3/2
-  // XXX this algorithm seems suspect: rounding before multiply can't be good,
-  //     and 3/2 seems ... arbitrary
-  nsFormControlHelper::GetTextSize(aPresContext, this,
-                                   aLabel, aSize,
-                                   aRendContext);
-  aSize.width  = NSToCoordRound(aSize.width * t2p);
-  aSize.height = NSToCoordRound(aSize.height * t2p);
-  aSize.width  = NSIntPixelsToTwips(3 * aSize.width / 2, p2t);
-  aSize.height = NSIntPixelsToTwips(3 * aSize.height / 2, p2t);
+  return nsHTMLButtonControlFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
 }
 
 NS_IMETHODIMP 
@@ -643,8 +420,7 @@ nsGfxButtonControlFrame::HandleEvent(nsIPresContext* aPresContext,
   // takes cares of calling MouseClicked for us.
 
   // do we have user-input style?
-  const nsStyleUserInterface* uiStyle;
-  GetStyleData(eStyleStruct_UserInterface,  (const nsStyleStruct *&)uiStyle);
+  const nsStyleUserInterface* uiStyle = GetStyleUserInterface();
   if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE || uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED)
     return nsFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
   

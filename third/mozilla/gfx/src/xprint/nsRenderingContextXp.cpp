@@ -146,47 +146,11 @@ nsRenderingContextXp::GetDrawingSurface(nsDrawingSurface *aSurface)
 }
 
 NS_IMETHODIMP
-nsRenderingContextXp::CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
+nsRenderingContextXp::CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
 {
   PR_LOG(RenderingContextXpLM, PR_LOG_DEBUG, ("nsRenderingContextXp::CreateDrawingSurface()\n"));
   aSurface = nsnull;
   return NS_OK;
-}
-
-NS_IMETHODIMP
-nsRenderingContextXp::DrawImage(nsIImage *aImage, const nsRect& aRect)
-{
-  PR_LOG(RenderingContextXpLM, PR_LOG_DEBUG, ("nsRenderingContextXp::DrawImage()\n"));
-
-  nsRect tr;
-  tr = aRect;
-  mTranMatrix->TransformCoord(&tr.x, &tr.y, &tr.width, &tr.height);
-  UpdateGC();
-  return mPrintContext->DrawImage(mGC, aImage, tr.x, tr.y, tr.width, tr.height);
-}
-
-NS_IMETHODIMP
-nsRenderingContextXp::DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect)
-{
-  PR_LOG(RenderingContextXpLM, PR_LOG_DEBUG, ("nsRenderingContextXp::DrawImage()\n"));
-  nsRect sr,dr;
-  
-  sr = aSRect;
-  mTranMatrix->TransformCoord(&sr.x, &sr.y,
-                           &sr.width, &sr.height);
-  sr.x = aSRect.x;
-  sr.y = aSRect.y;
-  mTranMatrix->TransformNoXLateCoord(&sr.x, &sr.y);
-  
-  dr = aDRect;
-  mTranMatrix->TransformCoord(&dr.x, &dr.y,
-                           &dr.width, &dr.height);
-  UpdateGC();
-  return mPrintContext->DrawImage(mGC, aImage,
-                                  sr.x, sr.y,
-                                  sr.width, sr.height,
-                                  dr.x, dr.y,
-                                  dr.width, dr.height);
 }
 
 /* [noscript] void drawImage (in imgIContainer aImage, [const] in nsRect aSrcRect, [const] in nsPoint aDestPoint); */

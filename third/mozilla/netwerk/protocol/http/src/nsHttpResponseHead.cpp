@@ -34,16 +34,19 @@
 //-----------------------------------------------------------------------------
 
 nsresult
-nsHttpResponseHead::SetHeader(nsHttpAtom hdr, const nsACString &val)
+nsHttpResponseHead::SetHeader(nsHttpAtom hdr,
+                              const nsACString &val,
+                              PRBool merge)
 {
-    nsresult rv = mHeaders.SetHeader(hdr, val);
+    nsresult rv = mHeaders.SetHeader(hdr, val, merge);
     if (NS_FAILED(rv)) return rv;
 
-    // response to changes in these headers
+    // respond to changes in these headers.  we need to reparse the entire
+    // header since the change may have merged in additional values.
     if (hdr == nsHttp::Cache_Control)
-        ParseCacheControl(PromiseFlatCString(val).get());
+        ParseCacheControl(mHeaders.PeekHeader(hdr));
     else if (hdr == nsHttp::Pragma)
-        ParsePragma(PromiseFlatCString(val).get());
+        ParsePragma(mHeaders.PeekHeader(hdr));
 
     return NS_OK;
 }
@@ -53,9 +56,9 @@ nsHttpResponseHead::SetContentLength(PRInt32 len)
 {
     mContentLength = len;
     if (len < 0)
-        SetHeader(nsHttp::Content_Length, NS_LITERAL_CSTRING(""));
+        mHeaders.ClearHeader(nsHttp::Content_Length);
     else
-        SetHeader(nsHttp::Content_Length, nsPrintfCString("%d", len));
+        mHeaders.SetHeader(nsHttp::Content_Length, nsPrintfCString("%d", len));
 }
 
 void
@@ -64,19 +67,16 @@ nsHttpResponseHead::Flatten(nsACString &buf, PRBool pruneTransients)
     if (mVersion == NS_HTTP_VERSION_0_9)
         return;
 
-    buf.Append("HTTP/");
+    buf.Append(NS_LITERAL_CSTRING("HTTP/"));
     if (mVersion == NS_HTTP_VERSION_1_1)
-        buf.Append("1.1 ");
+        buf.Append(NS_LITERAL_CSTRING("1.1 "));
     else
-        buf.Append("1.0 ");
+        buf.Append(NS_LITERAL_CSTRING("1.0 "));
 
-    char b[32];
-    PR_snprintf(b, sizeof(b), "%u", PRUintn(mStatus));
-
-    buf.Append(b);
-    buf.Append(' ');
-    buf.Append(mStatusText);
-    buf.Append("\r\n");
+    buf.Append(nsPrintfCString("%u", PRUintn(mStatus)) +
+               NS_LITERAL_CSTRING(" ") +
+               mStatusText +
+               NS_LITERAL_CSTRING("\r\n"));
 
     if (!pruneTransients) {
         mHeaders.Flatten(buf, PR_FALSE);
@@ -104,10 +104,10 @@ nsHttpResponseHead::Flatten(nsACString &buf, PRBool pruneTransients)
             continue;
 
         // otherwise, write out the "header: value\r\n" line
-        buf.Append(header.get());
-        buf.Append(": ");
-        buf.Append(value);
-        buf.Append("\r\n");
+        buf.Append(nsDependentCString(header.get()) +
+                   NS_LITERAL_CSTRING(": ") +
+                   nsDependentCString(value) +
+                   NS_LITERAL_CSTRING("\r\n"));
     }
 }
 
@@ -183,7 +183,7 @@ nsHttpResponseHead::ParseStatusLine(char *line)
 void
 nsHttpResponseHead::ParseHeaderLine(char *line)
 {
-    nsHttpAtom hdr;
+    nsHttpAtom hdr = {0};
     char *val;
 
     mHeaders.ParseHeaderLine(line, &hdr, &val);
@@ -328,25 +328,6 @@ nsHttpResponseHead::MustValidate()
         return PR_TRUE;
     }
 
-    // Check the Vary header.  Per comments on bug 37609, most of the request
-    // headers that we generate do not vary with the exception of Accept-Charset
-    // and Accept-Language, so we force validation only if these headers or "*"
-    // are listed with the Vary response header.
-    //
-    // XXX this may not be sufficient if embedders start tweaking or adding HTTP
-    // request headers.
-    //
-    // XXX will need to add the Accept header to this list if we start sending
-    // a full Accept header, since the addition of plugins could change this
-    // header (see bug 58040).
-    val = PeekHeader(nsHttp::Vary);
-    if (val && (PL_strstr(val, "*") ||
-                PL_strcasestr(val, "accept-charset") ||
-                PL_strcasestr(val, "accept-language"))) {
-        LOG(("Must validate based on \"%s\" header\n", val));
-        return PR_TRUE;
-    }
-
     LOG(("no mandatory validation requirement\n"));
     return PR_FALSE;
 }
@@ -427,11 +408,8 @@ nsHttpResponseHead::UpdateHeaders(nsHttpHeaderArray &headers)
         else {
             LOG(("new response header [%s: %s]\n", header.get(), val));
 
-            // delete the current header value (if any)
-            mHeaders.SetHeader(header, NS_LITERAL_CSTRING(""));
-
-            // copy the new header value...
-            mHeaders.SetHeader(header, nsDependentCString(val));
+            // overwrite the current header value with the new value...
+            SetHeader(header, nsDependentCString(val));
         }
     }
 
@@ -520,7 +498,10 @@ nsHttpResponseHead::GetExpiresValue(PRUint32 *result)
         return NS_ERROR_NOT_AVAILABLE;
     }
 
-    *result = PRTimeToSeconds(time); 
+    if (LL_CMP(time, <, LL_Zero()))
+        *result = 0;
+    else
+        *result = PRTimeToSeconds(time); 
     return NS_OK;
 }
 
@@ -633,19 +614,18 @@ nsHttpResponseHead::ParseContentType(char *type)
 void
 nsHttpResponseHead::ParseCacheControl(const char *val)
 {
-    if (!val) {
-        // clear no-cache flag
+    if (!(val && *val)) {
+        // clear flags
         mCacheControlNoCache = PR_FALSE;
+        mCacheControlNoStore = PR_FALSE;
         return;
     }
-    else if (!*val)
-        return;
 
     const char *s = val;
 
     // search header value for occurance(s) of "no-cache" but ignore
     // occurance(s) of "no-cache=blah"
-    while (s = PL_strcasestr(s, "no-cache")) {
+    while ((s = PL_strcasestr(s, "no-cache")) != nsnull) {
         s += (sizeof("no-cache") - 1);
         if (*s != '=')
             mCacheControlNoCache = PR_TRUE;
@@ -661,15 +641,15 @@ nsHttpResponseHead::ParsePragma(const char *val)
 {
     LOG(("nsHttpResponseHead::ParsePragma [val=%s]\n", val));
 
-    if (!val) {
+    if (!(val && *val)) {
         // clear no-cache flag
         mPragmaNoCache = PR_FALSE;
         return;
     }
 
-    // Although 'Pragma:no-cache' is not a standard HTTP response header (it's
+    // Although 'Pragma: no-cache' is not a standard HTTP response header (it's
     // a request header), caching is inhibited when this header is present so
     // as to match existing Navigator behavior.
-    if (*val && PL_strcasestr(val, "no-cache"))
+    if (PL_strcasestr(val, "no-cache"))
         mPragmaNoCache = PR_TRUE;
 }

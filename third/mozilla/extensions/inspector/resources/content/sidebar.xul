@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE overlay [
+<!DOCTYPE window [
   <!ENTITY % dtd1 SYSTEM "chrome://inspector/locale/inspector.dtd"> %dtd1;
   <!ENTITY % dtd2 SYSTEM "chrome://inspector/content/util.dtd"> %dtd2;
 ]>
@@ -33,8 +33,8 @@
   <domi-panelset id="bxPanelSet" flex="1" viewercommandset="cmdsGlobalCommands">
     <tabbox flex="1" orient="vertical">
       <tabs>
-        <tab label="Document"/>
-        <tab label="Object"/>
+        <tab label="&bxDocPanel.title;"/>
+        <tab label="&bxObjectPanel.title;"/>
       </tabs>
       <tabpanels flex="1">
         <domi-panel id="bxDocPanel" title="&bxDocPanel.title;"/>

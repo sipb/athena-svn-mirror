@@ -22,7 +22,7 @@
  * Contributor(s):
  *   Steve Clark <buster@netscape.com>
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -101,7 +101,7 @@ public:
     return mReflowState.mComputedMargin;
   }
 
-  void UpdateMaxElementSize(const nsSize& aMaxElementSize);
+  void UpdateMaxElementWidth(nscoord aMaxElementWidth);
 
   void UpdateMaximumWidth(nscoord aMaximumWidth);
 
@@ -128,10 +128,6 @@ public:
   nsLineBox* NewLineBox(nsIFrame* aFrame, PRInt32 aCount, PRBool aIsBlock);
 
   void FreeLineBox(nsLineBox* aLine);
-
-  void StoreMaxElementSize(nsIFrame* aFloater, const nsSize& aSize) {
-    mBand.StoreMaxElementSize(mPresContext, aFloater, aSize);
-  }
 
   //----------------------------------------
 
@@ -188,19 +184,7 @@ public:
   // The combined area of all floaters placed so far
   nsRect mFloaterCombinedArea;
 
-  // The y-coordinate of the last floater placed. We keep this around
-  // to enforce 9.5.1 rule [2]
-  nscoord mLastFloaterY;
-
-  // For unconstained-width reflow, we keep the right floaters
-  // combined area stored seperately.
-  PRBool mHaveRightFloaters;
-  nsRect mRightFloaterCombinedArea;
-
   nsFloaterCacheFreeList mFloaterCacheFreeList;
-
-  // next-in-flows of incomplete floaters which get put into overflow lines
-  nsFrameList mOverflowFloaters; 
 
   // Previous child. This is used when pulling up a frame to update
   // the sibling list.
@@ -234,7 +218,7 @@ public:
   // being N^2.
   nsFloaterCacheFreeList mBelowCurrentLineFloaters;
 
-  nsSize mMaxElementSize;
+  nscoord mMaxElementWidth;
   nscoord mMaximumWidth;
 
   nscoord mMinLineHeight;
@@ -250,7 +234,7 @@ public:
 #define BRS_ISTOPMARGINROOT       0x00000020  // Is this frame a root for top/bottom margin collapsing?
 #define BRS_ISBOTTOMMARGINROOT    0x00000040
 #define BRS_APPLYTOPMARGIN        0x00000080  // See ShouldApplyTopMargin
-#define BRS_COMPUTEMAXELEMENTSIZE 0x00000100
+#define BRS_COMPUTEMAXELEMENTWIDTH 0x00000100
 #define BRS_COMPUTEMAXWIDTH       0x00000200
 #define BRS_DAMAGECONSTRAINED     0x00000400  // is the target of an incremental reflow command inside a text control
 #define BRS_LASTFLAG              BRS_DAMAGECONSTRAINED

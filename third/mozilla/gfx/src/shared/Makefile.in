@@ -36,6 +36,11 @@ REQUIRES= \
 		  string \
 		  imglib2 \
 		  widget \
+		  content \
+		  layout \
+		  necko \
+		  dom \
+		  locale \
 		  $(NULL)
 
 CPPSRCS = \
@@ -43,6 +48,12 @@ CPPSRCS = \
 	gfxImageFrame.cpp \
 	$(NULL)
 
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+CPPSRCS += nsNativeTheme.cpp
+endif
+
+LOCAL_INCLUDES = -I$(srcdir)/.. \
+                 $(NULL)
 
 include $(topsrcdir)/config/rules.mk
 

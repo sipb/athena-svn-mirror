@@ -262,6 +262,7 @@ NS_IMETHODIMP nsMailDatabase::EndBatch()
   {
     if (m_folderStream)
     {
+      m_folderStream->flush();
       m_folderStream->close();  
       delete m_folderStream;
     }
@@ -271,11 +272,9 @@ NS_IMETHODIMP nsMailDatabase::EndBatch()
   return NS_OK;
 }
 
-
 NS_IMETHODIMP nsMailDatabase::DeleteMessages(nsMsgKeyArray* nsMsgKeys, nsIDBChangeListener *instigator)
 {
-	nsresult ret = NS_OK;
-  if (!m_folderStream)
+  if (!m_folderStream && m_folder)
   {
     PRBool isLocked;
     m_folder->GetLocked(&isLocked);
@@ -284,31 +283,34 @@ NS_IMETHODIMP nsMailDatabase::DeleteMessages(nsMsgKeyArray* nsMsgKeys, nsIDBChan
       NS_ASSERTION(PR_FALSE, "Some other operation is in progress");
       return NS_MSG_FOLDER_BUSY;
     }
-	  m_folderStream = new nsIOFileStream(nsFileSpec(*m_folderSpec));
+    m_folderStream = new nsIOFileStream(nsFileSpec(*m_folderSpec));
     m_ownFolderStream = PR_TRUE;
   }
-	ret = nsMsgDatabase::DeleteMessages(nsMsgKeys, instigator);
+
+  nsresult rv = nsMsgDatabase::DeleteMessages(nsMsgKeys, instigator);
   if (m_ownFolderStream)//only if we own the stream, then we should close it
   {
-	  if (m_folderStream)
+    if (m_folderStream)
     {
+      m_folderStream->flush(); // this does a sync
       m_folderStream->close();
-	    delete m_folderStream;
+      delete m_folderStream;
     }
-	  m_folderStream = nsnull;
+    m_folderStream = nsnull;
     m_ownFolderStream = PR_FALSE;
   }
-	SetFolderInfoValid(m_folderSpec, 0, 0);
-	return ret;
+
+  SetFolderInfoValid(m_folderSpec, 0, 0);
+  return rv;
 }
 
 // Helper routine - lowest level of flag setting
 PRBool nsMailDatabase::SetHdrFlag(nsIMsgDBHdr *msgHdr, PRBool bSet, MsgFlags flag)
 {
-  nsIOFileStream *fileStream = NULL;
-  PRBool		ret = PR_FALSE;
+  nsIOFileStream *fileStream = nsnull;
+  PRBool ret = PR_FALSE;
 
-  if (!m_folderStream)  //we are going to create a stream, bail out if someone else has lock
+  if (!m_folderStream && m_folder)  //we are going to create a stream, bail out if someone else has lock
   {
     PRBool isLocked;
     m_folder->GetLocked(&isLocked);
@@ -323,6 +325,7 @@ PRBool nsMailDatabase::SetHdrFlag(nsIMsgDBHdr *msgHdr, PRBool bSet, MsgFlags fla
     UpdateFolderFlag(msgHdr, bSet, flag, &fileStream);
     if (fileStream)
     {
+      fileStream->flush();
       fileStream->close();
       delete fileStream;
       SetFolderInfoValid(m_folderSpec, 0, 0);
@@ -365,7 +368,7 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
   // mac file system only has one handle, and they compete for the file position.
   // Prevent closing the file from under the incorporate stuff. #82785.
   int32 savedPosition = -1;
-  if (!fid && gIncorporatePath && !XP_STRCMP(m_folderSpec, gIncorporatePath))
+  if (!fid && gIncorporatePath && !strcmp(m_folderSpec, gIncorporatePath))
   {
 		fid = gIncorporateFID;
                 savedPosition = ftell(gIncorporateFID); // so we can restore it.
@@ -426,7 +429,6 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
           PR_snprintf(buf, sizeof(buf), X_MOZILLA_STATUS_FORMAT,
             flags & 0x0000FFFF);
           fileStream->write(buf, PL_strlen(buf));
-          fileStream->flush();
           
           // time to upate x-mozilla-status2
           position = fileStream->tell();
@@ -443,7 +445,6 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
               fileStream->seek(position + MSG_LINEBREAK_LEN);
               PR_snprintf(buf, sizeof(buf), X_MOZILLA_STATUS2_FORMAT, dbFlags);
               fileStream->write(buf, PL_strlen(buf));
-              fileStream->flush();
             }
           }
         } else 
@@ -865,7 +866,6 @@ protected:
 nsMsgOfflineOpEnumerator::nsMsgOfflineOpEnumerator(nsMailDatabase* db)
     : mDB(db), mRowCursor(nsnull), mDone(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
   NS_ADDREF(mDB);
   mNextPrefetched = PR_FALSE;
 }

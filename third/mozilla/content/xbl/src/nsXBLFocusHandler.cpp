@@ -38,11 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLFocusHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -59,71 +58,38 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLFocusHandler::gRefCnt = 0;
-nsIAtom* nsXBLFocusHandler::kFocusAtom = nsnull;
-nsIAtom* nsXBLFocusHandler::kBlurAtom = nsnull;
-
-nsXBLFocusHandler::nsXBLFocusHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLFocusHandler::nsXBLFocusHandler(nsIDOMEventReceiver* aReceiver,
+                                     nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kFocusAtom = NS_NewAtom("focus");
-    kBlurAtom = NS_NewAtom("blur");
-  }
 }
 
 nsXBLFocusHandler::~nsXBLFocusHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kFocusAtom);
-    NS_RELEASE(kBlurAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLFocusHandler, nsXBLEventHandler, nsIDOMFocusListener)
 
 nsresult nsXBLFocusHandler::Focus(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kFocusAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::focus, aEvent);
 }
 
 
 nsresult nsXBLFocusHandler::Blur(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kBlurAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::blur, aEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLFocusHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLFocusHandler(nsIDOMEventReceiver* aRec,
+                      nsXBLPrototypeHandler* aHandler,
                       nsXBLFocusHandler** aResult)
 {
   *aResult = new nsXBLFocusHandler(aRec, aHandler);

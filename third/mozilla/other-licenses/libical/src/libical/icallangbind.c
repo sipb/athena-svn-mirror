@@ -5,7 +5,7 @@
   
   DESCRIPTION:
   
-  $Id: icallangbind.c,v 1.1.1.1 2003-02-14 19:31:52 rbasch Exp $
+  $Id: icallangbind.c,v 1.1.1.2 2003-07-08 17:26:17 rbasch Exp $
   $Locker:  $
 
   (C) COPYRIGHT 1999 Eric Busboom 
@@ -22,8 +22,13 @@
 #include "icalproperty.h"
 #include "icalerror.h"
 #include "icalmemory.h"
-#include <malloc.h>
 #include <string.h>
+#ifdef XP_MAC
+#include <extras.h> /* for malloc */
+#elif defined(HAVE_MALLOC_H)
+#include <malloc.h>
+#endif
+#include <stdlib.h> /* for free */
 
 #ifdef WIN32
 #define snprintf      _snprintf

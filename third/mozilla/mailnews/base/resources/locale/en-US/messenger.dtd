@@ -109,7 +109,7 @@ Rights Reserved.
 <!ENTITY selectInvertCmd.accesskey "I">
 <!ENTITY filtersCmd.label "Message Filters...">
 <!ENTITY filtersCmd.accesskey "F">
-<!ENTITY filtersApply.label "Run Filters on Selected Folder">
+<!ENTITY filtersApply.label "Run Filters on Folder">
 <!ENTITY filtersApply.accesskey "R">
 <!ENTITY folderPropsCmd.label "Properties...">
 <!ENTITY folderPropsFolderCmd.label "Folder Properties...">
@@ -166,8 +166,8 @@ Rights Reserved.
 <!ENTITY sortBySubjectCmd.label "Subject">
 <!ENTITY sortBySubjectCmd.accesskey "S">
 <!-- Sender / Recipient lives in messenger.properties, since that item is dynamic -->
-<!ENTITY sortByUnreadCmd.label "Unread">
-<!ENTITY sortByUnreadCmd.accesskey "n">
+<!ENTITY sortByUnreadCmd.label "Read">
+<!ENTITY sortByUnreadCmd.accesskey "R">
 <!ENTITY sortByThreadCmd.label "Thread">
 <!ENTITY sortByThreadCmd.accesskey "T">
 <!ENTITY sortByOrderReceivedCmd.label "Order Received">
@@ -178,6 +178,14 @@ Rights Reserved.
 <!ENTITY sortDescending.accesskey "D">
 <!ENTITY msgsMenu.label "Messages">
 <!ENTITY msgsMenu.accesskey "M">
+<!ENTITY viewAll.label "All">
+<!ENTITY viewUnread.label "Unread">
+<!ENTITY viewAll.accesskey "A">
+<!ENTITY viewUnread.accesskey "U">
+<!ENTITY viewCustomView.label "Customize...">
+<!ENTITY viewCustomView.accesskey "C">
+<!ENTITY threads.label "Threads">
+<!ENTITY threads.accesskey "e">
 <!ENTITY allMsgsCmd.label "All">
 <!ENTITY allMsgsCmd.accesskey "A">
 <!ENTITY expandOrCollapseMenu.label "Expand/Collapse">
@@ -187,10 +195,10 @@ Rights Reserved.
 <!ENTITY expandAllThreadsCmd.key "*">
 <!ENTITY collapseAllThreadsCmd.label "Collapse All Threads">
 <!ENTITY collapseAllThreadsCmd.accesskey "C">
-<!ENTITY collapseAllThreadsCmd.key "/">
+<!ENTITY collapseAllThreadsCmd.key "\">
 <!ENTITY unreadMsgsCmd.label "Unread">
 <!ENTITY unreadMsgsCmd.accesskey "U">
-<!ENTITY threadsWithUnreadCmd.label "Threads With Unread">
+<!ENTITY threadsWithUnreadCmd.label "Threads with Unread">
 <!ENTITY threadsWithUnreadCmd.accesskey "T">
 <!ENTITY watchedThreadsWithUnreadCmd.label "Watched Threads with Unread">
 <!ENTITY watchedThreadsWithUnreadCmd.accesskey "W">
@@ -205,14 +213,14 @@ Rights Reserved.
 <!ENTITY headersBriefCmd.label ".Brief">
 <!ENTITY headersBriefCmd.accesskey "B">
 <!ENTITY bodyMenu.label "Message Body As">
-<!ENTITY bodyMenu.accesskey "O">
+<!ENTITY bodyMenu.accesskey "B">
 <!ENTITY bodyAllowHTML.label "Original HTML">
 <!ENTITY bodyAllowHTML.accesskey "H">
 <!ENTITY bodySanitized.label "Simple HTML">
 <!ENTITY bodySanitized.accesskey "S">
 <!ENTITY bodyAsPlaintext.label "Plain Text">
 <!ENTITY bodyAsPlaintext.accesskey "P">
-<!ENTITY viewAttachmentsInlineCmd.label ".View Attachments Inline">
+<!ENTITY viewAttachmentsInlineCmd.label "Display Attachments Inline">
 <!ENTITY viewAttachmentsInlineCmd.accesskey "A">
 <!ENTITY reloadCmd.label "Reload">
 <!ENTITY reloadCmd.accesskey "R">
@@ -337,6 +345,8 @@ Rights Reserved.
 <!ENTITY watchThreadMenu.key "w">
 <!ENTITY fileHereMenu.label "File Here">
 <!ENTITY fileHereMenu.accesskey "F">
+<!ENTITY copyHereMenu.label "Copy Here">
+<!ENTITY copyHereMenu.accesskey "C">
 <!ENTITY addSenderToAddressBookCmd.label ".Add Sender to Address Book">
 <!ENTITY addSenderToAddressBookCmd.accesskey "S">
 <!ENTITY addAllToAddressBookCmd.label ".Add All to Address Book">
@@ -377,6 +387,10 @@ Rights Reserved.
 <!ENTITY markAllReadCmd.key "c">
 <!ENTITY markFlaggedCmd.label "Flag">
 <!ENTITY markFlaggedCmd.accesskey "F">
+<!ENTITY markAsJunkCmd.label "As Junk">
+<!ENTITY markAsJunkCmd.accesskey "J">
+<!ENTITY markAsNotJunkCmd.label "As Not Junk">
+<!ENTITY markAsNotJunkCmd.accesskey "N">
 <!ENTITY openMessageWindowCmd.label "Open Message">
 <!ENTITY openMessageWindowCmd.accesskey "O">
 <!ENTITY openMessageWindowCmd.key "o">
@@ -399,6 +413,7 @@ Rights Reserved.
 <!ENTITY printButton.label "Print">
 <!ENTITY stopButton.label "Stop">
 <!ENTITY junkButton.label "Junk">
+<!ENTITY notJunkButton.label "Not Junk">
 
 <!--Tooltips-->
 <!ENTITY menuBar.tooltip "Menu Bar">
@@ -417,7 +432,8 @@ Rights Reserved.
 <!ENTITY printButton.tooltip "Print this message">
 <!ENTITY stopButton.tooltip "Stop the current transfer">
 <!ENTITY throbber.tooltip "Go to the &vendorShortName; home page">
-<!ENTITY junkButton.tooltip "Mark the selected messages as junk (or not junk)">
+<!ENTITY junkButton.tooltip "Mark the selected messages as junk">
+<!ENTITY notJunkButton.tooltip "Mark the selected messages as not junk">
 
 <!-- Statusbar -->
 <!ENTITY  statusText.label "Done">
@@ -517,5 +533,14 @@ Rights Reserved.
 <!ENTITY junkMailCmd.label "Junk Mail Controls...">
 <!ENTITY junkMailCmd.accesskey "J">
 
-<!ENTITY runJunkControls.label "Run Junk Mail Controls on Selected Messages...">
+<!ENTITY runJunkControls.label "Run Junk Mail Controls on Folder">
 <!ENTITY runJunkControls.accesskey "u">
+
+<!ENTITY deleteJunk.label "Delete Mail Marked as Junk in Folder">
+<!ENTITY deleteJunk.accesskey "e">
+
+<!-- junk bar -->
+<!ENTITY junkBarMessage.label "&brandShortName; thinks this message is junk mail">
+<!ENTITY notJunkButton.label "This is Not Junk">
+<!ENTITY junkInfoButton.label "?">
+

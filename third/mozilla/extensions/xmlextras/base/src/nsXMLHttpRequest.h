@@ -39,8 +39,6 @@
 #ifndef nsXMLHttpRequest_h__
 #define nsXMLHttpRequest_h__
 
-#define IMPLEMENT_SYNC_LOAD
-
 #include "nsIXMLHttpRequest.h"
 #include "nsISupportsUtils.h"
 #include "nsCOMPtr.h"
@@ -52,9 +50,7 @@
 #include "nsIHttpChannel.h"
 #include "nsIDocument.h"
 #include "nsIStreamListener.h"
-#ifdef IMPLEMENT_SYNC_LOAD
-#include "nsIWebBrowserChrome.h"
-#endif
+#include "nsIEventQueueService.h"
 #include "nsWeakReference.h"
 #include "nsISupportsArray.h"
 #include "jsapi.h"
@@ -63,16 +59,6 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIHttpHeaderVisitor.h"
 class nsILoadGroup;
-
-enum nsXMLHttpRequestState {
-  XML_HTTP_REQUEST_UNINITIALIZED = 0,
-  XML_HTTP_REQUEST_OPENED, // aka LOADING
-  XML_HTTP_REQUEST_LOADED,
-  XML_HTTP_REQUEST_INTERACTIVE,
-  XML_HTTP_REQUEST_COMPLETED,
-  XML_HTTP_REQUEST_SENT, // This is Mozilla-internal only, LOADING in IE and external view
-  XML_HTTP_REQUEST_STOPPED // This is Mozilla-internal only, INTERACTIVE in IE and external view
-};
 
 class nsXMLHttpRequest : public nsIXMLHttpRequest,
                          public nsIJSXMLHttpRequest,
@@ -132,18 +118,17 @@ protected:
                 PRUint32 *writeCount);
   // Change the state of the object with this. The broadcast member determines
   // if the onreadystatechange listener should be called.
-  nsresult ChangeState(nsXMLHttpRequestState aState, PRBool aBroadcast = PR_TRUE);
+  nsresult ChangeState(PRUint32 aState, PRBool aBroadcast = PR_TRUE);
   nsresult RequestCompleted();
   nsresult GetLoadGroup(nsILoadGroup **aLoadGroup);
+  nsresult GetBaseURI(nsIURI **aBaseURI);
+  void ClearEventListeners();
 
   nsCOMPtr<nsISupports> mContext;
   nsCOMPtr<nsIChannel> mChannel;
   nsCOMPtr<nsIRequest> mReadRequest;
   nsCOMPtr<nsIDOMDocument> mDocument;
   nsCOMPtr<nsIURI> mBaseURI;
-#ifdef IMPLEMENT_SYNC_LOAD
-  nsCOMPtr<nsIWebBrowserChrome> mChromeWindow;
-#endif
 
   nsCOMPtr<nsISupportsArray> mLoadEventListeners;
   nsCOMPtr<nsISupportsArray> mErrorEventListeners;
@@ -154,12 +139,15 @@ protected:
 
   nsCOMPtr<nsIOnReadystatechangeHandler> mOnReadystatechangeListener;
 
+  nsCOMPtr<nsIStreamListener> mXMLParserStreamListener;
+  nsCOMPtr<nsIEventQueueService> mEventQService;
+
   // used to implement getAllResponseHeaders()
   class nsHeaderVisitor : public nsIHttpHeaderVisitor {
   public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSIHTTPHEADERVISITOR
-    nsHeaderVisitor() { NS_INIT_ISUPPORTS(); }
+    nsHeaderVisitor() { }
     virtual ~nsHeaderVisitor() {}
     const nsACString &Headers() { return mHeaders; }
   private:
@@ -167,14 +155,10 @@ protected:
   };
 
   nsCString mResponseBody;
-  
-  nsCOMPtr<nsIStreamListener> mXMLParserStreamListener;
 
-  PRInt32 mStatus;
-  PRPackedBool mAsync;
-  PRPackedBool mParseResponseBody;
-  PRPackedBool mCrossSiteAccessEnabled;
   nsCString mOverrideMimeType;
+  
+  PRUint32 mState;
 };
 
 #endif

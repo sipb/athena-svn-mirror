@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 /* This file was modified since it was taken from the zlib distribution */
-/* $Id: zutil.c,v 1.1.1.1 2003-02-14 20:52:32 rbasch Exp $ */
+/* $Id: zutil.c,v 1.1.1.2 2003-07-08 17:17:24 rbasch Exp $ */
 
 #include <stdio.h>
 

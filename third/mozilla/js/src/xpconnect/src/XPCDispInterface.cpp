@@ -1,4 +1,5 @@
-/* ***** BEGIN LICENSE BLOCK *****
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -53,57 +54,76 @@ PRBool IsReflectable(FUNCDESC * pFuncDesc)
            pFuncDesc->funckind == FUNC_DISPATCH;
 }
 
-/**
- * Counts the reflectable methods
- */
-PRUint32 GetReflectableCount(ITypeInfo * pTypeInfo, PRUint32 members)
+XPCDispInterface::Allocator::Allocator(JSContext * cx, ITypeInfo * pTypeInfo) :
+    mMemIDs(nsnull), mCount(0), mIDispatchMembers(0), mCX(cx), 
+    mTypeInfo(pTypeInfo)
 {
-    DISPID lastDispID = 0;
-    PRUint32 result = 0;
-    for(UINT iMethod = 0; iMethod < members; iMethod++ )
+    TYPEATTR * attr;
+    HRESULT hr = pTypeInfo->GetTypeAttr(&attr);
+    if(SUCCEEDED(hr))
+    {
+        mIDispatchMembers = attr->cFuncs;
+        mMemIDs = new DISPID[mIDispatchMembers];
+        pTypeInfo->ReleaseTypeAttr(attr);
+        // Bail if we couldn't create the buffer
+        if(!mMemIDs)
+            return;
+    }
+    for(UINT iMethod = 0; iMethod < mIDispatchMembers; iMethod++ )
     {
         FUNCDESC* pFuncDesc;
         if(SUCCEEDED(pTypeInfo->GetFuncDesc(iMethod, &pFuncDesc)))
         {
             // Only add the function to our list if it is at least at nesting level
             // 2 (i.e. defined in an interface derived from IDispatch).
-            if(lastDispID != pFuncDesc->memid && IsReflectable(pFuncDesc))
-            {
-                ++result;
-                lastDispID = pFuncDesc->memid;
-            }
+            if(IsReflectable(pFuncDesc))
+                Add(pFuncDesc->memid);
             pTypeInfo->ReleaseFuncDesc(pFuncDesc);
         }
     }
-    return result;
 }
 
-XPCDispInterface* XPCDispInterface::NewInstance(JSContext* cx, nsISupports * pIface)
+void XPCDispInterface::Allocator::Add(DISPID memID)
 {
-    IDispatch * pDispatch;
-    HRESULT hr = NS_REINTERPRET_CAST(IUnknown*,pIface)->QueryInterface(IID_IDispatch, (PVOID*)&pDispatch);
+    NS_ASSERTION(Valid(), "Add should never be called if out of memory");
+    // Start from the end and work backwards, the last item is the most
+    // likely to match
+    PRUint32 index = mCount;
+    while(index > 0)
+    {
+        if(mMemIDs[--index] == memID)
+            return;
+    };
+    NS_ASSERTION(Count() < mIDispatchMembers, "mCount should always be less "
+                                             "than the IDispatch member count "
+                                             "here");
+    mMemIDs[mCount++] = memID;
+    return;
+}
 
-    if(SUCCEEDED(hr) && pDispatch)
+inline
+PRUint32 XPCDispInterface::Allocator::Count() const 
+{
+    return mCount;
+}
+
+XPCDispInterface*
+XPCDispInterface::NewInstance(JSContext* cx, nsISupports * pIface)
+{
+    CComQIPtr<IDispatch> pDispatch(NS_REINTERPRET_CAST(IUnknown*,pIface));
+
+    if(pDispatch)
     {
         unsigned int count;
-        hr = pDispatch->GetTypeInfoCount(&count);
+        HRESULT hr = pDispatch->GetTypeInfoCount(&count);
         if(SUCCEEDED(hr) && count > 0)
         {
-            ITypeInfo* pPtr;
-            hr = pDispatch->GetTypeInfo(0,LOCALE_SYSTEM_DEFAULT, &pPtr);
             CComPtr<ITypeInfo> pTypeInfo;
-            pTypeInfo.Attach(pPtr);
+            hr = pDispatch->GetTypeInfo(0,LOCALE_SYSTEM_DEFAULT, &pTypeInfo);
             if(SUCCEEDED(hr))
             {
-                TYPEATTR * attr;
-                hr = pTypeInfo->GetTypeAttr(&attr);
-                if(SUCCEEDED(hr))
-                {
-                    UINT funcs = attr->cFuncs;
-                    pTypeInfo->ReleaseTypeAttr(attr);
-                    PRUint32 memberCount = GetReflectableCount(pTypeInfo, funcs);
-                    return new (memberCount) XPCDispInterface(cx, pTypeInfo, funcs);
-                }
+                Allocator allocator(cx, pTypeInfo);
+                return allocator.Allocate();
             }
         }
     }
@@ -142,60 +162,155 @@ void ConvertInvokeKind(INVOKEKIND invokeKind, XPCDispInterface::Member & member)
     }
 }
 
-void XPCDispInterface::InspectIDispatch(JSContext * cx, ITypeInfo * pTypeInfo, PRUint32 members)
+static
+PRBool InitializeMember(JSContext * cx, ITypeInfo * pTypeInfo,
+                        FUNCDESC * pFuncDesc, 
+                        XPCDispInterface::Member * pInfo)
+{
+    pInfo->SetMemID(pFuncDesc->memid);
+    BSTR name;
+    UINT nameCount;
+    if(FAILED(pTypeInfo->GetNames(
+        pFuncDesc->memid,
+        &name,
+        1,
+        &nameCount)))
+        return PR_FALSE;
+    if(nameCount != 1)
+        return PR_FALSE;
+    JSString* str = JS_InternUCStringN(cx, name, ::SysStringLen(name));
+    ::SysFreeString(name);
+    if(!str)
+        return PR_FALSE;
+    // Initialize
+    pInfo = new (pInfo) XPCDispInterface::Member;
+    if(!pInfo)
+        return PR_FALSE;
+    pInfo->SetName(STRING_TO_JSVAL(str));
+    pInfo->ResetType();
+    ConvertInvokeKind(pFuncDesc->invkind, *pInfo);
+    pInfo->SetTypeInfo(pFuncDesc->memid, pTypeInfo, pFuncDesc);
+    return PR_TRUE;
+}
+
+static
+XPCDispInterface::Member * FindExistingMember(XPCDispInterface::Member * first,
+                                              XPCDispInterface::Member * last,
+                                              MEMBERID memberID)
+{
+    // Iterate backward since the last one in is the most likely match
+    XPCDispInterface::Member * cur = last;
+    if (cur != first)
+    {
+        do 
+        {
+            --cur;
+            if(cur->GetMemID() == memberID)
+                return cur;
+        } while(cur != first);
+    } 
+    // no existing property, return the new one
+    return last;
+}
+
+PRBool XPCDispInterface::InspectIDispatch(JSContext * cx, ITypeInfo * pTypeInfo, PRUint32 members)
 {
     HRESULT hResult;
-    DISPID lastDispID = 0;
 
     XPCDispInterface::Member * pInfo = mMembers;
     mMemberCount = 0;
     for(PRUint32 index = 0; index < members; index++ )
     {
         FUNCDESC* pFuncDesc;
-        hResult = pTypeInfo->GetFuncDesc( index, &pFuncDesc );
-        if(SUCCEEDED( hResult ))
+        hResult = pTypeInfo->GetFuncDesc(index, &pFuncDesc );
+        if(FAILED(hResult))
+            continue;
+        if(IsReflectable(pFuncDesc))
         {
-            PRBool release = PR_TRUE;
-            if(IsReflectable(pFuncDesc))
+            switch(pFuncDesc->invkind)
             {
-                // Check and see if the previous dispid was the same
-                if(lastDispID != pFuncDesc->memid)
+                case INVOKE_PROPERTYPUT:
+                case INVOKE_PROPERTYPUTREF:
+                case INVOKE_PROPERTYGET:
                 {
-                    BSTR name;
-                    UINT nameCount;
-                    if(SUCCEEDED(pTypeInfo->GetNames(
-                        pFuncDesc->memid,
-                        &name,
-                        1,
-                        &nameCount)))
+                    XPCDispInterface::Member * pExisting = FindExistingMember(mMembers, pInfo, pFuncDesc->memid);
+                    if(pExisting == pInfo)
                     {
-                        JSString* str = JS_InternUCString(cx, name);
-                        ::SysFreeString(name);
-                        // Initialize
-                        pInfo = new (pInfo) Member;
-                        pInfo->SetName(STRING_TO_JSVAL(str));
-                        lastDispID = pFuncDesc->memid;
-                        pInfo->ResetType();
-                        ConvertInvokeKind(pFuncDesc->invkind, *pInfo);
-                        pInfo->SetTypeInfo(pFuncDesc->memid, pTypeInfo, pFuncDesc);
-                        release = PR_FALSE;
+                        if(InitializeMember(cx, pTypeInfo, pFuncDesc, pInfo))
+                        {
+                            ++pInfo;
+                            ++mMemberCount;
+                        }
+                    }
+                    else
+                    {
+                        ConvertInvokeKind(pFuncDesc->invkind, *pExisting);
+                    }
+                    if(pFuncDesc->invkind == INVOKE_PROPERTYGET)
+                    {
+                        pExisting->SetGetterFuncDesc(pFuncDesc);
+                    }
+                }
+                break;
+                case INVOKE_FUNC:
+                {
+                    if(InitializeMember(cx, pTypeInfo, pFuncDesc, pInfo))
+                    {
                         ++pInfo;
                         ++mMemberCount;
                     }
                 }
-                // if it was then we're on the second part of the
-                // property
-                else
-                {
-                    ConvertInvokeKind(pFuncDesc->invkind, *(pInfo - 1));
-                }
-            }
-            if(release)
-            {
-                pTypeInfo->ReleaseFuncDesc(pFuncDesc);
+                break;
+                default:
+                    pTypeInfo->ReleaseFuncDesc(pFuncDesc);
+                break;
             }
         }
+        else
+        {
+            pTypeInfo->ReleaseFuncDesc(pFuncDesc);
+        }
     }
+    return PR_TRUE;
+}
+
+/**
+ * Compares a PRUnichar and a JS string ignoring case
+ * @param ccx an XPConnect call context
+ * @param lhr the PRUnichar string to be compared
+ * @param lhsLength the length of the PRUnichar string
+ * @param rhs the JS value that is the other string to compare
+ * @return true if the strings are equal
+ */
+inline
+PRBool CaseInsensitiveCompare(XPCCallContext& ccx, const PRUnichar* lhs, size_t lhsLength, jsval rhs)
+{
+    if(lhsLength == 0)
+        return PR_FALSE;
+    size_t rhsLength;
+    PRUnichar* rhsString = xpc_JSString2PRUnichar(ccx, rhs, &rhsLength);
+    return rhsString && 
+        lhsLength == rhsLength &&
+        _wcsnicmp(lhs, rhsString, lhsLength) == 0;
+}
+
+const XPCDispInterface::Member* XPCDispInterface::FindMemberCI(XPCCallContext& ccx, jsval name) const
+{
+    size_t nameLength;
+    PRUnichar* sName = xpc_JSString2PRUnichar(ccx, name, &nameLength);
+    if(!sName)
+        return nsnull;
+    // Iterate backwards over the members array (more efficient)
+    const Member* member = mMembers + mMemberCount;
+    while(member > mMembers)
+    {
+        --member;
+        if(CaseInsensitiveCompare(ccx, sName, nameLength, member->GetName()))
+        {
+            return member;
+        }
+    }
+    return nsnull;
 }
 
 JSBool XPCDispInterface::Member::GetValue(XPCCallContext& ccx,
@@ -216,7 +331,8 @@ JSBool XPCDispInterface::Member::GetValue(XPCCallContext& ccx,
         intN argc;
         intN flags;
         JSNative callback;
-        if(IsFunction())
+        // Is this a function or a parameterized getter/setter
+        if(IsFunction() || IsParameterizedProperty())
         {
             argc = GetParamCount();
             flags = 0;

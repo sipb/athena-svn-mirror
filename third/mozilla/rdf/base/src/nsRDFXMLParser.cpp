@@ -50,7 +50,6 @@ nsRDFXMLParser::Create(nsISupports* aOuter, REFNSIID aIID, void** aResult)
 
 nsRDFXMLParser::nsRDFXMLParser()
 {
-    NS_INIT_ISUPPORTS();
     MOZ_COUNT_CTOR(nsRDFXMLParser);
 }
 
@@ -131,8 +130,7 @@ nsRDFXMLParser::ParseString(nsIRDFDataSource* aSink, nsIURI* aBaseURI, const nsA
     nsCOMPtr<nsIChannel> channel;
     rv = NS_NewInputStreamChannel(getter_AddRefs(channel), aBaseURI, stream,
                                   NS_LITERAL_CSTRING("text/xml"),
-                                  NS_LITERAL_CSTRING(""),
-                                  aString.Length());
+                                  NS_LITERAL_CSTRING(""));
     if (NS_FAILED(rv)) return rv;
 
     listener->OnStartRequest(channel, nsnull);

@@ -54,6 +54,13 @@
 
 #include "nsAutoLock.h"
 
+// _mbsstr isn't declared in w32api headers but it's there in the libs
+#ifdef __MINGW32__
+extern "C" {
+unsigned char *_mbsstr( const unsigned char *str,
+                        const unsigned char *substr );
+};
+#endif
 
 //----------------------------------------------------------------------------
 // short cut resolver
@@ -66,7 +73,7 @@ public:
     virtual ~ShortcutResolver();
 
     nsresult Init();
-    nsresult Resolve(const unsigned short* in, char* out);
+    nsresult Resolve(const WCHAR* in, char* out);
 
 private:
     PRLock*       mLock;
@@ -125,7 +132,7 @@ ShortcutResolver::Init()
 
 // |out| must be an allocated buffer of size MAX_PATH
 nsresult 
-ShortcutResolver::Resolve(const unsigned short* in, char* out)
+ShortcutResolver::Resolve(const WCHAR* in, char* out)
 {
     nsAutoLock lock(mLock);
     
@@ -250,6 +257,29 @@ myLL_L2II(PRInt64 result, PRInt32 *hi, PRInt32 *lo )
     LL_L2I(*lo, a64);
 }
 
+static PRBool IsShortcut(const char* workingPath, int filePathLen)
+{
+    // check to see if it is shortcut, i.e., it has ".lnk" in it
+    unsigned char* dest = _mbsstr((unsigned char*)workingPath,
+                                  (unsigned char*)".lnk");
+    if (!dest)
+        return PR_FALSE;
+
+    // find index of ".lnk"
+    int result = (int)(dest - (unsigned char*)workingPath);
+
+    // if ".lnk" is not at the leaf of this path, we need to make sure the
+    // next char after ".lnk" is a '\\'. e.g. "c:\\foo.lnk\\a.html" is valid,
+    // whereas "c:\\foo.lnkx" is not.
+    if (result + 4 < filePathLen)
+    {
+        if (workingPath[result + 4] != '\\')
+            return PR_FALSE;
+    }
+    return PR_TRUE;
+
+}
+
 
 //-----------------------------------------------------------------------------
 // nsDirEnumerator
@@ -263,7 +293,6 @@ class nsDirEnumerator : public nsISimpleEnumerator
 
         nsDirEnumerator() : mDir(nsnull) 
         {
-            NS_INIT_ISUPPORTS();
         }
 
         nsresult Init(nsILocalFile* parent) 
@@ -369,7 +398,6 @@ NS_IMPL_ISUPPORTS1(nsDirEnumerator, nsISimpleEnumerator);
 
 nsLocalFile::nsLocalFile()
 {
-    NS_INIT_ISUPPORTS();
     mLastResolution = PR_FALSE;
     mFollowSymlinks = PR_FALSE;
     MakeDirty();
@@ -425,8 +453,12 @@ nsLocalFile::ResolvePath(const char* workingPath, PRBool resolveTerminal, char**
 {
 
     nsresult rv = NS_OK;
+    PRBool isDir = PR_FALSE;
     
-    if (strstr(workingPath, ".lnk") == nsnull)
+    // check to see if it is shortcut, i.e., it has ".lnk" in it
+    int filePathLen = strlen(workingPath);
+    PRBool isShortcut = IsShortcut(workingPath, filePathLen);
+    if (!isShortcut)
         return NS_ERROR_FILE_INVALID_PATH;
 
 #ifdef DEBUG_dougt
@@ -434,10 +466,14 @@ nsLocalFile::ResolvePath(const char* workingPath, PRBool resolveTerminal, char**
 #endif
 
     // Get the native path for |this|
-    char* filePath = (char*) nsMemory::Clone( workingPath, strlen(workingPath)+1 );
+    // allocate extra bytes incase we need to append '\\' and '\0' to the 
+    // workingPath, if it is just a drive letter and a colon  
+    char *filePath = (char *) nsMemory::Alloc(filePathLen+2);
 
-    if (filePath == nsnull)
+    if (!filePath)
         return NS_ERROR_NULL_POINTER;
+
+    memcpy(filePath, workingPath, filePathLen + 1);
     
     // We are going to walk the native file path
     // and stop at each slash.  For each partial
@@ -446,141 +482,126 @@ nsLocalFile::ResolvePath(const char* workingPath, PRBool resolveTerminal, char**
     // if it is, we will resolve it and continue
     // with that resolved path.
     
-    // Get the first slash.          
-    char* slash = strchr(filePath, '\\');
-            
-    if (!slash && filePath[0] != nsnull && filePath[1] == ':' && filePath[2] == '\0')
+    // Get the first slash.
+    unsigned char* slash = _mbschr((unsigned char*) filePath, '\\');
+     
+    if (slash == nsnull)
     {
-        // we have a drive letter and a colon (eg 'c:'
-        // this is resolve already
-        
-        int filePathLen = strlen(filePath);
-        char* rp = (char*) nsMemory::Alloc( filePathLen + 2 );
-        if (!rp)
-            return NS_ERROR_OUT_OF_MEMORY;
-        memcpy( rp, filePath, filePathLen );
-        rp[filePathLen] = '\\';
-        rp[filePathLen+1] = 0;
-        *resolvedPath = rp;
-        
-        nsMemory::Free(filePath);
-        return NS_OK;
-    }
-    else
-    {
-        nsMemory::Free(filePath);
-        return NS_ERROR_FILE_INVALID_PATH;
+        if (nsCRT::IsAsciiAlpha(filePath[0]) && filePath[1] == ':' && filePath[2] == '\0')
+        {
+            // we have a drive letter and a colon (eg 'c:'
+            // this is resolve already
+            filePath[filePathLen] = '\\';
+            filePath[filePathLen+1] = '\0';
+
+            *resolvedPath = filePath;
+            return NS_OK;
+        }
+        else
+        {
+            nsMemory::Free(filePath);
+            return NS_ERROR_FILE_INVALID_PATH;
+        }
     }
         
 
     // We really cant have just a drive letter as
     // a shortcut, so we will skip the first '\\'
-    slash = strchr(++slash, '\\');
-    
+    slash = _mbschr(++slash, '\\');
+
     while (slash || resolveTerminal)
     {
         // Change the slash into a null so that
         // we can use the partial path. It is is 
         // null, we know it is the terminal node.
-        
         if (slash)
         {
             *slash = '\0';
         }
+        else if (resolveTerminal)
+        {
+            // this is our last time in this loop.
+            // set loop condition to false
+            resolveTerminal = PR_FALSE;
+        }
         else
         {
-            if (resolveTerminal)
-            {
-                // this is our last time in this loop.
-                // set loop condition to false
-
-                resolveTerminal = PR_FALSE;
-            }
-            else
-            {
-                // something is wrong.  we should not have
-                // both slash being null and resolveTerminal 
-                // not set!
-                nsMemory::Free(filePath);
-                return NS_ERROR_NULL_POINTER;
-            }
+            // something is wrong.  we should not have
+            // both slash being null and resolveTerminal 
+            // not set!
+            nsMemory::Free(filePath);
+            return NS_ERROR_NULL_POINTER;
         }
                 
-        WORD wsz[MAX_PATH];     // TODO, Make this dynamically allocated.
-
         // check to see the file is a shortcut by the magic .lnk extension.
         size_t offset = strlen(filePath) - 4;
         if ((offset > 0) && (strncmp( (filePath + offset), ".lnk", 4) == 0))
         {
-            MultiByteToWideChar(CP_ACP, 0, filePath, -1, wsz, MAX_PATH); 
-        }        
-        else
-        {
-            char linkStr[MAX_PATH];
-            strcpy(linkStr, filePath);
-            strcat(linkStr, ".lnk");
-
-            // Ensure that the string is Unicode. 
-            MultiByteToWideChar(CP_ACP, 0, linkStr, -1, wsz, MAX_PATH); 
-        }        
-
-        char *temp = (char*) nsMemory::Alloc( MAX_PATH );
-        if (temp == nsnull)
-            return NS_ERROR_NULL_POINTER;
-
-        if (gResolver)
-            rv = gResolver->Resolve(wsz, temp);
-        else
-            rv = NS_ERROR_FAILURE;
-
-        if (NS_SUCCEEDED(rv))
-        {
-            // found a new path.
-            
-            // addend a slash on it since it does not come out of GetPath()
-            // with one only if it is a directory.  If it is not a directory
-            // and there is more to append, than we have a problem.
-            
-            struct stat st;
-            int statrv = stat(temp, &st);
-            
-            if (0 == statrv && (_S_IFDIR & st.st_mode))
-                strcat(temp, "\\");
-            
-            if (slash)
+            nsAutoString ucsBuf;
+            NS_CopyNativeToUnicode(nsDependentCString(filePath), ucsBuf);
+            char *temp = (char*) nsMemory::Alloc( MAX_PATH );
+            if (temp == nsnull)
             {
-                // save where we left off.
-                char *carot= (temp + strlen(temp) -1 );
-                
-                // append all the stuff that we have not done.
-                strcat(temp, ++slash);
-                
-                slash = carot;
+                nsMemory::Free(filePath);
+                return NS_ERROR_NULL_POINTER;
             }
 
-            nsMemory::Free(filePath);
-            filePath = temp;
-            
-        }
+            if (gResolver)
+                rv = gResolver->Resolve(ucsBuf.get(), temp);
+            else
+                rv = NS_ERROR_FAILURE;
 
-        else
+            if (NS_SUCCEEDED(rv))
+            {
+                // found a new path.
+            
+                // addend a slash on it since it does not come out of GetPath()
+                // with one only if it is a directory.  If it is not a directory
+                // and there is more to append, than we have a problem.
+            
+                struct stat st;
+                int statrv = stat(temp, &st);
+            
+                if (0 == statrv && (_S_IFDIR & st.st_mode))
+                {
+                    strcat(temp, "\\");
+                    isDir = PR_TRUE;
+                }
+            
+                if (slash)
+                {
+                    // save where we left off.
+                    char *carot= (temp + strlen(temp) -1 );
+                
+                    // append all the stuff that we have not done.
+                    _mbscat((unsigned char*)temp, ++slash);
+                
+                    slash = (unsigned char*)carot;
+                }
+
+                nsMemory::Free(filePath);
+                filePath = temp;
+            
+            }
+            else
+            {
+                // could not resolve shortcut.  Return error;
+                nsMemory::Free(filePath);
+                return NS_ERROR_FILE_INVALID_PATH;
+            }
+        }
+        if (slash)
         {
-            // could not resolve shortcut.  Return error;
-            nsMemory::Free(filePath);
-            return NS_ERROR_FILE_INVALID_PATH;
+            *slash = '\\';
+            ++slash;
+            slash = _mbschr(slash, '\\');
         }
     }    
-    if (slash)
-    {
-        *slash = '\\';
-        ++slash;
-        slash = strchr(slash, '\\');
-    }
 
     // kill any trailing separator
     char* temp = filePath;
     int len = strlen(temp) - 1;
-    if(temp[len] == '\\')
+    if((temp[len] == '\\') && (!isDir))
         temp[len] = '\0';
     
     *resolvedPath = filePath;
@@ -739,10 +760,15 @@ nsLocalFile::InitWithNativePath(const nsACString &filePath)
 NS_IMETHODIMP  
 nsLocalFile::OpenNSPRFileDesc(PRInt32 flags, PRInt32 mode, PRFileDesc **_retval)
 {
-    if (mDirty)
+    // check to see if it is shortcut, i.e., it has ".lnk" in it
+    PRBool isShortcut = IsShortcut(mWorkingPath.get(), mWorkingPath.Length());
+
+    if (!isShortcut && mDirty)
     {  
-        // we will optimize here.  If we are opening a file and we are still
-        // dirty, assume that the working path is vaild and try to open it.
+        // we will optimize here. If we are not a shortcut and we are opening
+        // a file and we are still dirty, assume that the working path is vaild
+        // and try to open it. The working path will be different from its
+        // resolved path for a shortcut file.
         // If it does work, get the stat info via the file descriptor 
         mResolvedPath.Assign(mWorkingPath);
         *_retval = PR_Open(mResolvedPath.get(), flags, mode);
@@ -800,8 +826,31 @@ nsLocalFile::Create(PRUint32 type, PRUint32 attributes)
     if (NS_FAILED(rv) && rv != NS_ERROR_FILE_NOT_FOUND)
         return rv;  
     
-   // create nested directories to target
-    unsigned char* slash = _mbschr((const unsigned char*) mResolvedPath.get(), '\\');
+    // create directories to target
+    //
+    // A given local file can be either one of these forms:
+    //
+    //   - normal:    X:\some\path\on\this\drive
+    //                       ^--- start here
+    //
+    //   - UNC path:  \\machine\volume\some\path\on\this\drive
+    //                                     ^--- start here
+    //
+    // Skip the first 'X:\' for the first form, and skip the first full
+    // '\\machine\volume\' segment for the second form.
+
+    const unsigned char* path = (const unsigned char*) mResolvedPath.get();
+    if (path[0] == '\\' && path[1] == '\\')
+    {
+        // dealing with a UNC path here; skip past '\\machine\'
+        path = _mbschr(path + 2, '\\');
+        if (!path)
+            return NS_ERROR_FILE_INVALID_PATH;
+        ++path;
+    }
+
+    // search for first slash after the drive (or volume) name
+    unsigned char* slash = _mbschr(path, '\\');
 
     if (slash)
     {
@@ -815,7 +864,12 @@ nsLocalFile::Create(PRUint32 type, PRUint32 attributes)
         
             if (!CreateDirectoryA(mResolvedPath.get(), NULL)) {
                 rv = ConvertWinError(GetLastError());
-                if (rv != NS_ERROR_FILE_ALREADY_EXISTS) return rv;
+                // perhaps the base path already exists, or perhaps we don't have
+                // permissions to create the directory.  NOTE: access denied could
+                // occur on a parent directory even though it exists.
+                if (rv != NS_ERROR_FILE_ALREADY_EXISTS &&
+                    rv != NS_ERROR_FILE_ACCESS_DENIED)
+                    return rv;
             }
             *slash = '\\';
             ++slash;
@@ -973,9 +1027,59 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent, const nsAC
 
     if (!move)
         copyOK = CopyFile(filePath.get(), destPath.get(), PR_TRUE);
-    else
+    else 
+    {
+        // What we have to do is check to see if the destPath exists.  If it 
+        // does, we have to move it out of the say so that MoveFile will 
+        // succeed.  However, we don't want to just remove it since MoveFile 
+        // can fail leaving us without a file.
+        
+        nsCAutoString backup;
+        PRFileInfo64 fileInfo64;
+        PRStatus status = PR_GetFileInfo64(destPath.get(), &fileInfo64);
+        if (status == PR_SUCCESS)
+        {
+        
+            // the file exists.  Check to make sure it is not a directory,
+            // then move it out of the way.
+            if (fileInfo64.type == PR_FILE_FILE)
+            {
+                backup.Append(destPath);
+                backup.Append(".moztmp");
+
+                // remove any existing backup file that we may already have.
+                // maybe we should be doing some kind of unique naming here, 
+                // but why bother.
+                remove(backup.get());
+                
+                // move destination file to backup file
+                copyOK = MoveFile(destPath.get(), backup.get());
+                if (!copyOK)
+                {
+                    // I guess we can't do the backup copy, so return.
+                    rv = ConvertWinError(GetLastError());
+                    return rv;
+                }
+            }
+        }
+        // move source file to destination file
         copyOK = MoveFile(filePath.get(), destPath.get());
     
+        if (!backup.IsEmpty())
+        {
+            if (copyOK) 
+            {
+                // remove the backup copy.
+                (void) remove(backup.get());
+            }
+            else
+            {
+                // restore backup
+                int backupOk = MoveFile(backup.get(), destPath.get());
+                NS_ASSERTION(backupOk, "move backup failed");
+            }
+        }
+    }        
     if (!copyOK)  // CopyFile and MoveFile returns non-zero if succeeds (backward if you ask me).
         rv = ConvertWinError(GetLastError());
 
@@ -1013,7 +1117,7 @@ nsLocalFile::CopyMove(nsIFile *aParentDir, const nsACString &newName, PRBool fol
     // make sure it exists and is a directory.  Create it if not there.
     PRBool exists;
     newParentDir->Exists(&exists);
-    if (exists == PR_FALSE)
+    if (!exists)
     {
         rv = newParentDir->Create(DIRECTORY_TYPE, 0644);  // TODO, what permissions should we use
         if (NS_FAILED(rv))
@@ -1104,10 +1208,35 @@ nsLocalFile::CopyMove(nsIFile *aParentDir, const nsACString &newName, PRBool fol
             return rv;
 
         allocatedNewName.Truncate();
+        
+        // check if the destination directory already exists
+        target->Exists(&exists);
+        if (!exists)
+        {
+            // if the destination directory cannot be created, return an error
+            rv = target->Create(DIRECTORY_TYPE, 0644);  // TODO, what permissions should we use
+            if (NS_FAILED(rv))
+                return rv;
+        }
+        else
+        {
+            // check if the destination directory is writable and empty
+            PRBool isWritable;
 
-        target->Create(DIRECTORY_TYPE, 0644);  // TODO, what permissions should we use
-        if (NS_FAILED(rv))
-            return rv;
+            target->IsWritable(&isWritable);
+            if (!isWritable)
+                return NS_ERROR_FILE_ACCESS_DENIED;
+
+            nsCOMPtr<nsISimpleEnumerator> targetIterator;
+            rv = target->GetDirectoryEntries(getter_AddRefs(targetIterator));
+
+            PRBool more;
+            targetIterator->HasMoreElements(&more);
+            // return error if target directory is not empty
+            if (more)
+                return NS_ERROR_FILE_DIR_NOT_EMPTY;
+        }
+
         
         nsDirEnumerator* dirEnum = new nsDirEnumerator();
         if (!dirEnum)
@@ -1765,9 +1894,18 @@ nsLocalFile::IsHidden(PRBool *_retval)
     
     if (NS_FAILED(rv))
         return rv;
-    
-    const char *workingFilePath = mWorkingPath.get();
-    DWORD word = GetFileAttributes(workingFilePath);
+
+    DWORD word;
+    if (mFollowSymlinks)
+    {
+        const char *resolvedFilePath = mResolvedPath.get();
+        word = GetFileAttributes(resolvedFilePath);
+    }
+    else
+    {
+        const char *workingFilePath = mWorkingPath.get();
+        word = GetFileAttributes(workingFilePath);
+    }
 
     *_retval =  ((word & FILE_ATTRIBUTE_HIDDEN)  != 0); 
 
@@ -1843,7 +1981,7 @@ nsLocalFile::Contains(nsIFile *inFile, PRBool recur, PRBool *_retval)
     if ( NS_FAILED(inFile->GetNativeTarget(inFilePath)))
         inFile->GetNativePath(inFilePath);
 
-    if ( strncmp( myFilePath.get(), inFilePath.get(), myFilePathLen) == 0)
+    if ( strnicmp( myFilePath.get(), inFilePath.get(), myFilePathLen) == 0)
     {
         // now make sure that the |inFile|'s path has a trailing
         // separator.

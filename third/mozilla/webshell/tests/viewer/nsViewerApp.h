@@ -44,10 +44,10 @@
 #include "nsWebCrawler.h"
 
 class nsIEventQueueService;
-class nsIPref;
+class nsIPrefService;
 class nsBrowserWindow;
 
-class nsViewerApp : public nsISupports, public nsDispatchListener
+class nsViewerApp : public nsISupports
 {
 public:
   NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
@@ -56,9 +56,6 @@ public:
 
   // nsISupports
   NS_DECL_ISUPPORTS
-
-  // nsDispatchListener
-  virtual void AfterDispatch();
 
   // nsViewerApp
   NS_IMETHOD SetupRegistry();
@@ -84,7 +81,7 @@ protected:
   void Destroy();
 
   nsIAppShell* mAppShell;
-  nsIPref* mPrefs;
+  nsIPrefService* mPrefService;
   nsString mStartURL;
   PRBool mDoPurify;
   PRBool mLoadTestFromFile;

@@ -62,7 +62,7 @@
 #include "nsICategoryManager.h"
 #include "nsCategoryManagerUtils.h"
 #include "nsISpamSettings.h"
-
+#include "nsISignatureVerifier.h"
 
 static NS_DEFINE_CID(kImapUrlCID, NS_IMAPURL_CID);
 static NS_DEFINE_CID(kCMailboxUrl, NS_MAILBOXURL_CID);
@@ -115,7 +115,7 @@ nsresult GetMsgDBHdrFromURI(const char *uri, nsIMsgDBHdr **msgHdr)
   return msgMessageService->MessageURIToMsgHdr(uri, msgHdr);
 }
 
-nsresult CreateStartupUrl(char *uri, nsIURI** aUrl)
+nsresult CreateStartupUrl(const char *uri, nsIURI** aUrl)
 {
   nsresult rv = NS_ERROR_NULL_POINTER;
   if (!uri || !*uri || !aUrl) return rv;
@@ -537,12 +537,17 @@ PRBool WeAreOffline()
 
 nsresult GetExistingFolder(const char *aFolderURI, nsIMsgFolder **aFolder)
 {
+  NS_ENSURE_ARG_POINTER(aFolderURI);
+  NS_ENSURE_ARG_POINTER(aFolder);
+
+  *aFolder = nsnull;
+
   nsresult rv;
   nsCOMPtr<nsIRDFService> rdf(do_GetService("@mozilla.org/rdf/rdf-service;1", &rv));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIRDFResource> resource;
-  rv = rdf->GetResource(aFolderURI, getter_AddRefs(resource));
+  rv = rdf->GetResource(nsDependentCString(aFolderURI), getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr <nsIMsgFolder> thisFolder;
@@ -639,3 +644,171 @@ nsresult IsRFC822HeaderFieldName(const char *aHdr, PRBool *aResult)
   *aResult = PR_TRUE;
   return NS_OK;
 }
+
+nsresult
+GetOrCreateFolder(const nsACString &aURI, nsIUrlListener *aListener)
+{
+  nsresult rv;
+  nsCOMPtr <nsIRDFService> rdf = do_GetService("@mozilla.org/rdf/rdf-service;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  // get the corresponding RDF resource
+  // RDF will create the folder resource if it doesn't already exist
+  nsCOMPtr<nsIRDFResource> resource;
+  rv = rdf->GetResource(aURI, getter_AddRefs(resource));
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  nsCOMPtr <nsIMsgFolder> folderResource;
+  folderResource = do_QueryInterface(resource, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // don't check validity of folder - caller will handle creating it
+  nsCOMPtr<nsIMsgIncomingServer> server; 
+  // make sure that folder hierarchy is built so that legitimate parent-child relationship is established
+  rv = folderResource->GetServer(getter_AddRefs(server));
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!server)
+    return NS_ERROR_UNEXPECTED;
+
+  nsCOMPtr <nsIMsgFolder> msgFolder;
+  rv = server->GetMsgFolderFromURI(folderResource, nsCAutoString(aURI).get(), getter_AddRefs(msgFolder));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  nsCOMPtr <nsIFolder> parent;
+  rv = msgFolder->GetParent(getter_AddRefs(parent));
+  if (NS_FAILED(rv) || !parent)
+  {
+    nsCOMPtr <nsIFileSpec> folderPath;
+    // for local folders, path is to the berkeley mailbox. 
+    // for imap folders, path needs to have .msf appended to the name
+    msgFolder->GetPath(getter_AddRefs(folderPath));
+
+    nsXPIDLCString type;
+    rv = server->GetType(getter_Copies(type));
+    NS_ENSURE_SUCCESS(rv,rv);
+
+    PRBool isImapFolder = type.Equals("imap");
+    // if we can't get the path from the folder, then try to create the storage.
+    // for imap, it doesn't matter if the .msf file exists - it still might not
+    // exist on the server, so we should try to create it
+    PRBool exists = PR_FALSE;
+    if (!isImapFolder && folderPath)
+      folderPath->Exists(&exists);
+    if (!exists)
+    {
+      rv = msgFolder->CreateStorageIfMissing(aListener);
+      NS_ENSURE_SUCCESS(rv,rv);
+
+      // XXX TODO
+      // JUNK MAIL RELATED
+      // ugh, I hate this hack
+      // we have to do this (for now)
+      // because imap and local are different (one creates folder asynch, the other synch)
+      // one will notify the listener, one will not.
+      // I blame nsMsgCopy.  
+      // we should look into making it so no matter what the folder type
+      // we always call the listener
+      // this code should move into local folder's version of CreateStorageIfMissing()
+      if (!isImapFolder && aListener) {
+        rv = aListener->OnStartRunningUrl(nsnull);
+        NS_ENSURE_SUCCESS(rv,rv);
+        
+        rv = aListener->OnStopRunningUrl(nsnull, NS_OK);
+        NS_ENSURE_SUCCESS(rv,rv);
+      }
+    }
+  }
+  else {
+    // if the folder exists, we should set the junk flag on it
+    // which is what the listener will do
+    if (aListener) {
+      rv = aListener->OnStartRunningUrl(nsnull);
+      NS_ENSURE_SUCCESS(rv,rv);
+      
+      rv = aListener->OnStopRunningUrl(nsnull, NS_OK);
+      NS_ENSURE_SUCCESS(rv,rv);
+    }
+  }
+
+  return NS_OK;
+}
+
+// digest needs to be a pointer to a DIGEST_LENGTH (16) byte buffer
+nsresult MSGCramMD5(const char *text, PRInt32 text_len, const char *key, PRInt32 key_len, unsigned char *digest)
+{
+  nsresult rv;
+  unsigned char result[DIGEST_LENGTH];
+  unsigned char *presult = result;
+
+  nsCOMPtr<nsISignatureVerifier> verifier = do_GetService(SIGNATURE_VERIFIER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+
+  // this code adapted from http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc2104.html
+
+  char innerPad[65];    /* inner padding - key XORd with innerPad */
+  char outerPad[65];    /* outer padding - key XORd with outerPad */
+  int i;
+  /* if key is longer than 64 bytes reset it to key=MD5(key) */
+  if (key_len > 64) 
+  {
+
+    HASHContextStr      *tctx;
+    PRUint32 resultLen;
+
+    rv = verifier->HashBegin(nsISignatureVerifier::MD5, &tctx);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = verifier->HashUpdate(tctx, key, key_len);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = verifier->HashEnd(tctx, &presult, &resultLen, DIGEST_LENGTH);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    key = (const char *) result;
+    key_len = DIGEST_LENGTH;
+  }
+
+  /*
+   * the HMAC_MD5 transform looks like:
+   *
+   * MD5(K XOR outerPad, MD5(K XOR innerPad, text))
+   *
+   * where K is an n byte key
+   * innerPad is the byte 0x36 repeated 64 times
+   * outerPad is the byte 0x5c repeated 64 times
+   * and text is the data being protected
+   */
+
+  /* start out by storing key in pads */
+  memset(innerPad, 0, sizeof innerPad);
+  memset(outerPad, 0, sizeof outerPad);
+  memcpy(innerPad, key,  key_len);
+  memcpy(outerPad, key, key_len);
+
+  /* XOR key with innerPad and outerPad values */
+  for (i=0; i<64; i++)
+  {
+    innerPad[i] ^= 0x36;
+    outerPad[i] ^= 0x5c;
+  }
+  /*
+   * perform inner MD5
+   */
+  HASHContextStr      *context;
+  PRUint32 resultLen;
+
+  rv = verifier->HashBegin(nsISignatureVerifier::MD5, &context); /* init context for 1st pass */
+  rv = verifier->HashUpdate(context, innerPad, 64);      /* start with inner pad */
+  rv = verifier->HashUpdate(context, text, text_len); /* then text of datagram */
+  rv = verifier->HashEnd(context, &presult, &resultLen, DIGEST_LENGTH);          /* finish up 1st pass */
+  /*
+   * perform outer MD5
+   */
+  verifier->HashBegin(nsISignatureVerifier::MD5, &context);  /* init context for 2nd pass */
+  rv = verifier->HashUpdate(context, outerPad, 64);     /* start with outer pad */
+  rv = verifier->HashUpdate(context, (const char *) result, 16);     /* then results of 1st hash */
+  rv = verifier->HashEnd(context, &presult, &resultLen, DIGEST_LENGTH);  /* finish up 2nd pass */
+  memcpy(digest, result, DIGEST_LENGTH);
+  return rv;
+
+}
+

@@ -110,7 +110,6 @@
 #include "nsIFileURL.h"
 #include "nsNetUtil.h"
 #include "nsIChannel.h"
-#include "nsLayoutCID.h" // for NS_NAMESPACEMANAGER_CID.
 #include "nsRDFCID.h"
 #include "nsRDFBaseDataSources.h"
 #include "nsVoidArray.h"
@@ -150,7 +149,6 @@ private:
 public:
     ProxyStream(void) : mBuffer(nsnull)
     {
-        NS_INIT_ISUPPORTS();
     }
 
     virtual ~ProxyStream(void) {
@@ -186,9 +184,11 @@ public:
 
         *_retval = 0;
         nsresult rv = writer (this, closure, mBuffer+mIndex, mIndex, readCount, _retval);
-        mIndex += *_retval;
+        if (NS_SUCCEEDED(rv))
+            mIndex += *_retval;
 
-        return rv;
+        // do not propogate errors returned from writer!
+        return NS_OK;
     }
 
     NS_IMETHOD IsNonBlocking(PRBool *aNonBlocking) {
@@ -232,7 +232,6 @@ protected:
     nsVoidArray         mObservers;     // OWNER
     nsCOMPtr<nsIURI>    mURL;
     nsCOMPtr<nsIStreamListener> mListener;
-    nsXPIDLCString      mOriginalURLSpec;
     nsNameSpaceMap      mNameSpaces;
 
     // pseudo-constants
@@ -242,6 +241,7 @@ protected:
     nsresult Init();
     RDFXMLDataSourceImpl(void);
     virtual ~RDFXMLDataSourceImpl(void);
+    nsresult rdfXMLFlush(nsIURI *aURI);
 
     friend nsresult
     NS_NewRDFXMLDataSource(nsIRDFDataSource** aResult);
@@ -343,11 +343,6 @@ public:
         return mInner->GetAllResources(aResult);
     }
 
-    NS_IMETHOD GetAllCommands(nsIRDFResource* source,
-                              nsIEnumerator/*<nsIRDFResource>*/** commands) {
-        return mInner->GetAllCommands(source, commands);
-    }
-
     NS_IMETHOD GetAllCmds(nsIRDFResource* source,
                               nsISimpleEnumerator/*<nsIRDFResource>*/** commands) {
         return mInner->GetAllCmds(source, commands);
@@ -366,6 +361,14 @@ public:
         // XXX Uh oh, this could cause problems wrt. the "dirty" flag
         // if it changes the in-memory store's internal state.
         return mInner->DoCommand(aSources, aCommand, aArguments);
+    }
+
+    NS_IMETHOD BeginUpdateBatch() {
+        return mInner->BeginUpdateBatch();
+    }
+
+    NS_IMETHOD EndUpdateBatch() {
+        return mInner->EndUpdateBatch();
     }
 
     // nsIRDFRemoteDataSource interface
@@ -434,6 +437,10 @@ protected:
 PRInt32         RDFXMLDataSourceImpl::gRefCnt = 0;
 nsIRDFService*  RDFXMLDataSourceImpl::gRDFService;
 
+static const char kFileURIPrefix[] = "file:";
+static const char kResourceURIPrefix[] = "resource:";
+
+
 //----------------------------------------------------------------------
 
 nsresult
@@ -467,8 +474,6 @@ RDFXMLDataSourceImpl::RDFXMLDataSourceImpl(void)
       mIsDirty(PR_FALSE),
       mLoadState(eLoadState_Unloaded)
 {
-    NS_INIT_ISUPPORTS();
-
 #ifdef PR_LOGGING
     if (! gLog)
         gLog = PR_NewLogModule("nsRDFXMLDataSource");
@@ -629,9 +634,6 @@ RDFXMLDataSourceImpl::GetLoaded(PRBool* _result)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::Init(const char* uri)
 {
-static const char kFileURIPrefix[] = "file:";
-static const char kResourceURIPrefix[] = "resource:";
-
     NS_PRECONDITION(mInner != nsnull, "not initialized");
     if (! mInner)
         return NS_ERROR_OUT_OF_MEMORY;
@@ -641,14 +643,10 @@ static const char kResourceURIPrefix[] = "resource:";
     rv = NS_NewURI(getter_AddRefs(mURL), nsDependentCString(uri));
     if (NS_FAILED(rv)) return rv;
 
-    // Keep a 'cached' copy of the URL; opening it may cause the spec
-    // to be re-written.
-    mURL->GetSpec(mOriginalURLSpec);
-
     // XXX this is a hack: any "file:" URI is considered writable. All
     // others are considered read-only.
-    if ((PL_strncmp(mOriginalURLSpec, kFileURIPrefix, sizeof(kFileURIPrefix) - 1) != 0) &&
-        (PL_strncmp(mOriginalURLSpec, kResourceURIPrefix, sizeof(kResourceURIPrefix) - 1) != 0)) {
+    if ((PL_strncmp(uri, kFileURIPrefix, sizeof(kFileURIPrefix) - 1) != 0) &&
+        (PL_strncmp(uri, kResourceURIPrefix, sizeof(kResourceURIPrefix) - 1) != 0)) {
         mIsWritable = PR_FALSE;
     }
 
@@ -663,13 +661,17 @@ NS_IMETHODIMP
 RDFXMLDataSourceImpl::GetURI(char* *aURI)
 {
     *aURI = nsnull;
-    if (mOriginalURLSpec) {
-        // We don't use the mURL, because it might get re-written when
-        // it's actually opened.
-        *aURI = nsCRT::strdup(mOriginalURLSpec);
-        if (! *aURI)
-            return NS_ERROR_OUT_OF_MEMORY;
+    if (!mURL) {
+        return NS_OK;
     }
+    
+    nsCAutoString spec;
+    mURL->GetSpec(spec);
+    *aURI = ToNewCString(spec);
+    if (!*aURI) {
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
+    
     return NS_OK;
 }
 
@@ -786,18 +788,10 @@ RDFXMLDataSourceImpl::Move(nsIRDFResource* aOldSource,
     return rv;
 }
 
-NS_IMETHODIMP
-RDFXMLDataSourceImpl::Flush(void)
+
+nsresult
+RDFXMLDataSourceImpl::rdfXMLFlush(nsIURI *aURI)
 {
-    if (!mIsWritable || !mIsDirty)
-        return NS_OK;
-
-    NS_PRECONDITION(mOriginalURLSpec != nsnull, "not initialized");
-    if (! mOriginalURLSpec)
-        return NS_ERROR_NOT_INITIALIZED;
-
-    PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] flush(%s)", this, mOriginalURLSpec.get()));
 
     nsresult rv;
 
@@ -815,7 +809,7 @@ RDFXMLDataSourceImpl::Flush(void)
 
     // Is it a file? If so, we can write to it. Some day, it'd be nice
     // if we didn't care what kind of stream this was...
-    nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(mURL);
+    nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(aURI);
     
     if (fileURL) {
         nsCOMPtr<nsIFile> file;
@@ -836,11 +830,61 @@ RDFXMLDataSourceImpl::Flush(void)
         }
     }
 
-    mIsDirty = PR_FALSE;
-
 done:
     return NS_OK;
 }
+
+
+NS_IMETHODIMP
+RDFXMLDataSourceImpl::FlushTo(const char *aURI)
+{
+    NS_PRECONDITION(aURI != nsnull, "not initialized");
+    if (!aURI)
+        return NS_ERROR_NULL_POINTER;
+
+    // XXX this is a hack: any "file:" URI is considered writable. All
+    // others are considered read-only.
+    if ((PL_strncmp(aURI, kFileURIPrefix, sizeof(kFileURIPrefix) - 1) != 0) &&
+        (PL_strncmp(aURI, kResourceURIPrefix, sizeof(kResourceURIPrefix) - 1) != 0))
+    {
+        return NS_ERROR_ILLEGAL_VALUE;
+    }
+
+    nsCOMPtr<nsIURI>  url;
+    nsresult rv = NS_NewURI(getter_AddRefs(url), aURI);
+    if (NS_FAILED(rv))
+      return rv;
+    rv = rdfXMLFlush(url);
+    return rv;
+}
+
+
+NS_IMETHODIMP
+RDFXMLDataSourceImpl::Flush(void)
+{
+    if (!mIsWritable || !mIsDirty)
+        return NS_OK;
+
+    // while it is not fatal if mURL is not set,
+    // indicate failure since we can't flush back to an unknown origin
+    if (! mURL)
+        return NS_ERROR_NOT_INITIALIZED;
+
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    mURL->GetSpec(spec);
+    PR_LOG(gLog, PR_LOG_ALWAYS,
+           ("rdfxml[%p] flush(%s)", this, spec.get()));
+#endif
+
+    nsresult rv;
+    if (NS_SUCCEEDED(rv = rdfXMLFlush(mURL)))
+    {
+      mIsDirty = PR_FALSE;
+    }
+    return rv;
+}
+
 
 //----------------------------------------------------------------------
 //
@@ -869,14 +913,20 @@ RDFXMLDataSourceImpl::SetReadOnly(PRBool aIsReadOnly)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::Refresh(PRBool aBlocking)
 {
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    if (mURL) {
+        mURL->GetSpec(spec);
+    }
     PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] refresh(%s) %sblocking", this, mOriginalURLSpec.get(), (aBlocking ? "" : "non")));
-
+           ("rdfxml[%p] refresh(%s) %sblocking", this, spec.get(), (aBlocking ? "" : "non")));
+#endif
+    
     // If an asynchronous load is already pending, then just let it do
     // the honors.
     if (IsLoading()) {
         PR_LOG(gLog, PR_LOG_ALWAYS,
-               ("rdfxml[%p] refresh(%s) a load was pending", this, mOriginalURLSpec.get()));
+               ("rdfxml[%p] refresh(%s) a load was pending", this, spec.get()));
 
         if (aBlocking) {
             NS_WARNING("blocking load requested when async load pending");
@@ -887,12 +937,13 @@ RDFXMLDataSourceImpl::Refresh(PRBool aBlocking)
         }
     }
 
-    nsresult rv;
+    if (! mURL)
+        return NS_ERROR_FAILURE;
     nsCOMPtr<nsIRDFXMLParser> parser = do_CreateInstance("@mozilla.org/rdf/xml-parser;1");
     if (! parser)
         return NS_ERROR_FAILURE;
 
-    rv = parser->ParseAsync(this, mURL, getter_AddRefs(mListener));
+    nsresult rv = parser->ParseAsync(this, mURL, getter_AddRefs(mListener));
     if (NS_FAILED(rv)) return rv;
 
     if (aBlocking) {
@@ -920,9 +971,15 @@ RDFXMLDataSourceImpl::Refresh(PRBool aBlocking)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::BeginLoad(void)
 {
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    if (mURL) {
+        mURL->GetSpec(spec);
+    }
     PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] begin-load(%s)", this, mOriginalURLSpec.get()));
-
+           ("rdfxml[%p] begin-load(%s)", this, spec.get()));
+#endif
+    
     mLoadState = eLoadState_Loading;
     for (PRInt32 i = mObservers.Count() - 1; i >= 0; --i) {
         nsIRDFXMLSinkObserver* obs =
@@ -936,9 +993,15 @@ RDFXMLDataSourceImpl::BeginLoad(void)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::Interrupt(void)
 {
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    if (mURL) {
+        mURL->GetSpec(spec);
+    }
     PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] interrupt(%s)", this, mOriginalURLSpec.get()));
-
+           ("rdfxml[%p] interrupt(%s)", this, spec.get()));
+#endif
+    
     for (PRInt32 i = mObservers.Count() - 1; i >= 0; --i) {
         nsIRDFXMLSinkObserver* obs =
             NS_STATIC_CAST(nsIRDFXMLSinkObserver*, mObservers[i]);
@@ -951,9 +1014,15 @@ RDFXMLDataSourceImpl::Interrupt(void)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::Resume(void)
 {
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    if (mURL) {
+        mURL->GetSpec(spec);
+    }
     PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] resume(%s)", this, mOriginalURLSpec.get()));
-
+           ("rdfxml[%p] resume(%s)", this, spec.get()));
+#endif
+    
     for (PRInt32 i = mObservers.Count() - 1; i >= 0; --i) {
         nsIRDFXMLSinkObserver* obs =
             NS_STATIC_CAST(nsIRDFXMLSinkObserver*, mObservers[i]);
@@ -966,9 +1035,15 @@ RDFXMLDataSourceImpl::Resume(void)
 NS_IMETHODIMP
 RDFXMLDataSourceImpl::EndLoad(void)
 {
+#ifdef PR_LOGGING
+    nsCAutoString spec;
+    if (mURL) {
+        mURL->GetSpec(spec);
+    }
     PR_LOG(gLog, PR_LOG_ALWAYS,
-           ("rdfxml[%p] end-load(%s)", this, mOriginalURLSpec.get()));
-
+           ("rdfxml[%p] end-load(%s)", this, spec.get()));
+#endif
+    
     mLoadState = eLoadState_Loaded;
 
     // Clear out any unmarked assertions from the datasource.

@@ -38,6 +38,15 @@
 #define nscore_h___
 
 /**
+ * Make sure that we have the proper platform specific 
+ * c++ definitions needed by nscore.h
+ * Add ifdef to speed up compliation but mozilla-config.h is still required
+ */
+#ifndef _MOZILLA_CONFIG_H_
+#include "mozilla-config.h"
+#endif
+
+/**
  * Incorporate the core NSPR data types which XPCOM uses.
  */
 #include "prtypes.h"
@@ -69,6 +78,7 @@
 #define NS_IMETHODIMP_(type) type __stdcall
 #define NS_METHOD_(type) type __stdcall
 #define NS_CALLBACK_(_type, _name) _type (__stdcall * _name)
+#define NS_STDCALL __stdcall
 
 #elif defined(XP_MAC)
 
@@ -80,6 +90,7 @@
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
+#define NS_STDCALL
 
 #elif defined(XP_OS2)
 
@@ -91,6 +102,7 @@
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
+#define NS_STDCALL
 
 #else
 
@@ -102,6 +114,17 @@
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
+#define NS_STDCALL
+#endif
+
+/**
+ * Macro for creating function protoypes which use stdcall
+ */
+
+#ifdef __GNUC__
+#define NS_STDCALL_FUNCPROTO(func,args) (func) args NS_STDCALL
+#else
+#define NS_STDCALL_FUNCPROTO(func,args) (NS_STDCALL func) args
 #endif
 
 /**
@@ -168,7 +191,6 @@ typedef PRUint32 nsresult;
 
   /* under Metrowerks (Mac), we don't have autoconf yet */
 #ifdef __MWERKS__
-  #define HAVE_CPP_SPECIALIZATION
   #define HAVE_CPP_PARTIAL_SPECIALIZATION
   #define HAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX
 
@@ -185,8 +207,8 @@ typedef PRUint32 nsresult;
   /* under VC++ (Windows), we don't have autoconf yet */
 #if defined(_MSC_VER) && (_MSC_VER>=1100)
   /* VC++ 5.0 and greater implement template specialization, 4.2 is unknown */
-  #define HAVE_CPP_SPECIALIZATION
   #define HAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX
+  #define HAVE_CPP_EXTERN_INSTANTIATION
 
   #define HAVE_CPP_EXPLICIT
   #define HAVE_CPP_TYPENAME
@@ -201,15 +223,6 @@ typedef PRUint32 nsresult;
   #define HAVE_CPP_UNAMBIGUOUS_STD_NOTEQUAL
   #define HAVE_CPP_2BYTE_WCHAR_T
 #endif
-
-  /* until we get an autoconf test for this, we'll assume it's on (since we're using it already) */
-#define HAVE_CPP_TYPENAME
-
-  /* waiting to find out if OS/2 VisualAge participates in autoconf */
-#if defined(XP_OS2_VACPP) || defined(AIX_XLC_364) || (defined(IRIX) && !defined(__GNUC__))
-  #undef HAVE_CPP_TYPENAME
-#endif
-
 
 #ifndef __PRUNICHAR__
 #define __PRUNICHAR__
@@ -244,7 +257,9 @@ typedef PRUint32 nsresult;
 
 /* unix and beos now determine this automatically */
 #if ! defined XP_UNIX && ! defined XP_BEOS && !defined(XP_OS2)
-#define HAVE_CPP_NEW_CASTS /* we'll be optimistic. */
+#ifndef HAVE_CPP_NEW_CASTS
+#define HAVE_CPP_NEW_CASTS 1 /* we'll be optimistic. */
+#endif
 #endif
 
 #if defined(HAVE_CPP_NEW_CASTS)

@@ -38,12 +38,11 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLMouseMotionHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
 #include "nsIDOMMouseEvent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -60,59 +59,33 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLMouseMotionHandler::gRefCnt = 0;
-nsIAtom* nsXBLMouseMotionHandler::kMouseMoveAtom = nsnull;
-
-nsXBLMouseMotionHandler::nsXBLMouseMotionHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLMouseMotionHandler::nsXBLMouseMotionHandler(nsIDOMEventReceiver* aReceiver,
+                                                 nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kMouseMoveAtom = NS_NewAtom("mousemove");
-  }
 }
 
 nsXBLMouseMotionHandler::~nsXBLMouseMotionHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kMouseMoveAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLMouseMotionHandler, nsXBLEventHandler, nsIDOMMouseMotionListener)
 
-static inline nsresult DoMouse(nsIAtom* aEventType, nsIXBLPrototypeHandler* aHandler, nsIDOMEvent* aMouseEvent,
-                               nsIDOMEventReceiver* aReceiver)
-{
-  if (!aHandler)
-    return NS_OK;
-
-  PRBool matched = PR_FALSE;
-  nsCOMPtr<nsIDOMMouseEvent> mouse(do_QueryInterface(aMouseEvent));
-  aHandler->MouseEventMatched(aEventType, mouse, &matched);
-
-  if (matched)
-    aHandler->ExecuteHandler(aReceiver, aMouseEvent);
-  
-  return NS_OK;
-}
-
 nsresult nsXBLMouseMotionHandler::MouseMove(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kMouseMoveAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::mousemove, aMouseEvent);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLMouseMotionHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLMouseMotionHandler(nsIDOMEventReceiver* aRec,
+                            nsXBLPrototypeHandler* aHandler,
                             nsXBLMouseMotionHandler** aResult)
 {
   *aResult = new nsXBLMouseMotionHandler(aRec, aHandler);

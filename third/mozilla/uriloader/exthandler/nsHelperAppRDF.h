@@ -39,6 +39,7 @@
 // app data source. The helper app data source contains user specified helper
 // application override information.
 
+// See profile/defaults/mimeTypes.rdf for documentation on these properties
 
 #define NC_RDF_MIMETYPES				NC_NAMESPACE_URI"MIME-Types"
 // a mime type has the following properties...
@@ -61,6 +62,7 @@
 
 // handler properties
 #define NC_RDF_SAVETODISK				    NC_NAMESPACE_URI"saveToDisk"
+#define NC_RDF_USESYSTEMDEFAULT     NC_NAMESPACE_URI"useSystemDefault"
 #define NC_RDF_HANDLEINTERNAL       NC_NAMESPACE_URI"handleInternal"
 #define NC_RDF_ALWAYSASK            NC_NAMESPACE_URI"alwaysAsk"
 #define NC_RDF_EXTERNALAPPLICATION  NC_NAMESPACE_URI"externalApplication"

@@ -37,6 +37,7 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsCRT.h"
+#include "nsNSSShutDown.h"
 
 #include "ssl.h"
 #include "cert.h"
@@ -106,7 +107,6 @@ nsSSLStatus::GetCipherName(char** _result)
 nsSSLStatus::nsSSLStatus()
 : mKeyLength(0), mSecretKeyLength(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsSSLStatus, nsISSLStatus);
@@ -118,6 +118,7 @@ nsSSLStatus::~nsSSLStatus()
 
 char* PR_CALLBACK
 PK11PasswordPrompt(PK11SlotInfo* slot, PRBool retry, void* arg) {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv = NS_OK;
   PRUnichar *password = nsnull;
   PRBool value = PR_FALSE;
@@ -177,8 +178,17 @@ PK11PasswordPrompt(PK11SlotInfo* slot, PRBool retry, void* arg) {
   if (NS_FAILED(rv))
     return nsnull;
 
-  rv = proxyPrompt->PromptPassword(nsnull, promptString.get(),
-                                   &password, nsnull, nsnull, &value);
+  {
+    nsPSMUITracker tracker;
+    if (tracker.isUIForbidden()) {
+      rv = NS_ERROR_NOT_AVAILABLE;
+    }
+    else {
+      rv = proxyPrompt->PromptPassword(nsnull, promptString.get(),
+                                       &password, nsnull, nsnull, &value);
+    }
+  }
+  
   if (NS_SUCCEEDED(rv) && value) {
     char* str = ToNewCString(nsDependentString(password));
     Recycle(password);
@@ -189,6 +199,7 @@ PK11PasswordPrompt(PK11SlotInfo* slot, PRBool retry, void* arg) {
 }
 
 void PR_CALLBACK HandshakeCallback(PRFileDesc* fd, void* client_data) {
+  nsNSSShutDownPreventionLock locker;
   PRInt32 sslStatus;
   char* signer = nsnull;
   char* cipherName = nsnull;
@@ -248,7 +259,10 @@ void PR_CALLBACK HandshakeCallback(PRFileDesc* fd, void* client_data) {
     nsCOMPtr<nsSSLStatus> status = new nsSSLStatus();
 
     CERTCertificate *serverCert = SSL_PeerCertificate(fd);
-    if (serverCert) status->mServerCert = new nsNSSCertificate(serverCert);
+    if (serverCert) {
+      status->mServerCert = new nsNSSCertificate(serverCert);
+      CERT_DestroyCertificate(serverCert);
+    }
 
     status->mKeyLength = keyLength;
     status->mSecretKeyLength = encryptBits;
@@ -265,6 +279,8 @@ void PR_CALLBACK HandshakeCallback(PRFileDesc* fd, void* client_data) {
 
 SECStatus PR_CALLBACK AuthCertificateCallback(void* client_data, PRFileDesc* fd,
                                               PRBool checksig, PRBool isServer) {
+  nsNSSShutDownPreventionLock locker;
+
   // first the default action
   SECStatus rv = SSL_AuthCertificate(CERT_GetDefaultCertDB(), fd, checksig, isServer);
 

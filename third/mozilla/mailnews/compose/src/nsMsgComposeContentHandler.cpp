@@ -41,12 +41,12 @@
 #include "nsMsgCompCID.h"
 #include "nsIChannel.h"
 #include "nsIURI.h"
+#include "nsCRT.h"
 
 static NS_DEFINE_CID(kMsgComposeServiceCID, NS_MSGCOMPOSESERVICE_CID);
 
 nsMsgComposeContentHandler::nsMsgComposeContentHandler()
 {
-	NS_INIT_ISUPPORTS();
 }
 
 /* the following macro actually implement addref, release and query interface for our component. */
@@ -77,6 +77,9 @@ NS_IMETHODIMP nsMsgComposeContentHandler::HandleContent(const char * aContentTyp
       if (NS_SUCCEEDED(rv))
         rv = composeService->OpenComposeWindowWithURI(nsnull, aUri);
     }
+  } else {
+    // The content-type was not x-application-mailto...
+    return NS_ERROR_WONT_HANDLE_CONTENT;
   }
 
   return rv;

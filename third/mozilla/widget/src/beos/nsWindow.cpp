@@ -52,6 +52,7 @@
 #include "resource.h"
 #include "prtime.h"
 #include "nsReadableUtils.h"
+#include "nsVoidArray.h"
 
 #include <InterfaceDefs.h>
 #include <Region.h>
@@ -61,6 +62,7 @@
 #include <app/Message.h>
 #include <app/MessageRunner.h>
 #include <support/String.h>
+#include <Screen.h>
 
 #include <nsBeOSCursors.h>
 
@@ -97,6 +99,20 @@ static PRBool 			  gGotQuitShortcut = PR_FALSE;
 static BWindow           * gLastActiveWindow = NULL;
 static NS_DEFINE_IID(kIWidgetIID,       NS_IWIDGET_IID);
 
+// BCursor objects can't be created until they are used.  Some mozilla utilities, 
+// such as regxpcom, do not create a BApplication object, and therefor fail to run.,
+// since a BCursor requires a vaild BApplication (see Bug#129964).  But, we still want
+// to cache them for performance.  Currently, there are 18 cursors available;
+static nsVoidArray		gCursorArray(18);
+
+
+// Used in contrain position.  Specifies how much of a window must remain on screen
+#define kWindowPositionSlop 20
+
+// BeOS does not provide this information, so we must hard-code it
+#define kWindowBorderWidth 5
+#define kWindowTitleBarHeight 24
+
 //-------------------------------------------------------------------------
 //
 // nsWindow constructor
@@ -106,7 +122,6 @@ nsWindow::nsWindow() : nsBaseWidget()
 {
 	rgb_color	back = ui_color(B_PANEL_BACKGROUND_COLOR);
 
-	NS_INIT_ISUPPORTS();
 	mView               = 0;
 	mBackground         = NS_RGB(back.red, back.green, back.blue);
 	mForeground         = NS_RGB(0x00,0x00,0x00);
@@ -541,74 +556,20 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
 		SetBorderStyle(aInitData->mBorderStyle);
 	}
 
-	// NEED INPLEMENT
-	//  DWORD style = WindowStyle();
-	// NEED INPLEMENT
-	//  DWORD extendedStyle = WindowExStyle();
-
+	// Only popups have mBorderlessParents
 	mBorderlessParent = NULL;
-	if (mWindowType == eWindowType_popup)
-	{
-		mBorderlessParent = parent;
-		// Don't set the parent of a popup window.
-		parent = NULL;
-	}
-	else if (nsnull != aInitData)
-	{
-		// See if the caller wants to explictly set clip children and clip siblings
-		if (aInitData->clipChildren)
-		{
-			// NEED INPLEMENT
-			//  style |= WS_CLIPCHILDREN;
-		}
-		else
-		{
-			//		NEED INPLEMENT
-			//        style &= ~WS_CLIPCHILDREN;
-		}
-
-		if (aInitData->clipSiblings)
-		{
-			//		NEED INPLEMENT
-			//        style |= WS_CLIPSIBLINGS;
-		}
-	}
 
 	mView = CreateBeOSView();
 	if(mView)
 	{
-		if (mWindowType == eWindowType_dialog)
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+		printf("nsWindow::StandardWindowCreate : type = ");
+#endif
+		if (mWindowType == eWindowType_child)
 		{
-			// create window (dialog)
-			bool is_subset = (parent)? true : false;
-
-			// see bugzilla bug 66809 regarding this change -wade <guru@startrek.com>
-			//window_feel feel = (is_subset) ? B_MODAL_SUBSET_WINDOW_FEEL : B_MODAL_APP_WINDOW_FEEL;
-			window_feel feel = B_NORMAL_WINDOW_FEEL;
-
-			BRect winrect = BRect(aRect.x, aRect.y, aRect.x + aRect.width - 1, aRect.y + aRect.height - 1);
-
-			winrect.OffsetBy( 10, 30 );
-
-			nsWindowBeOS *w = new nsWindowBeOS(this, winrect,	"", B_TITLED_WINDOW_LOOK, feel,
-			                                   B_ASYNCHRONOUS_CONTROLS);
-			if(w)
-			{
-				w->AddChild(mView);
-				if (is_subset)
-				{
-					w->AddToSubset(parent->Window());
-				}
-
-				// FIXME: we have to use the window size because
-				// the window might not like sizes less then 30x30 or something like that
-				mView->MoveTo(0, 0);
-				mView->ResizeTo(w->Bounds().Width(), w->Bounds().Height());
-				mView->SetResizingMode(B_FOLLOW_ALL);
-			}
-		}
-		else if (mWindowType == eWindowType_child)
-		{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+			printf("child window\n");
+#endif			
 			// create view only
 			bool mustunlock=false;
 
@@ -625,42 +586,126 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
 			{
 				parent->UnlockLooper();
 			}
+
 		}
 		else
 		{
-			// create window (normal or popup)
-			BRect winrect = BRect(aRect.x, aRect.y,
-			                      aRect.x + aRect.width - 1, aRect.y + aRect.height - 1);
 			nsWindowBeOS *w;
-
-			if (mWindowType == eWindowType_popup)
+			BRect winrect = BRect(aRect.x, aRect.y, aRect.x + aRect.width - 1, aRect.y + aRect.height - 1);
+			window_look look = B_TITLED_WINDOW_LOOK;
+			window_feel feel = B_NORMAL_WINDOW_FEEL;
+			// Set all windows to use outline resize, since currently, the redraw of the window during resize
+			// is very "choppy"
+			uint32 flags = B_ASYNCHRONOUS_CONTROLS | B_OUTLINE_RESIZE;
+			
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+			printf("%s\n", (mWindowType == eWindowType_popup) ? "popup" :
+			               (mWindowType == eWindowType_dialog) ? "dialog" :
+			               (mWindowType == eWindowType_toplevel) ? "toplevel" : "unknown");
+#endif					
+			switch (mWindowType)
 			{
-				bool is_subset = (mBorderlessParent)? true : false;
-				window_feel feel = (is_subset) ? B_FLOATING_SUBSET_WINDOW_FEEL : B_FLOATING_APP_WINDOW_FEEL;
-
-				w = new nsWindowBeOS(this, winrect, "", B_NO_BORDER_WINDOW_LOOK, feel,
-				                     B_NOT_CLOSABLE | B_AVOID_FOCUS | B_ASYNCHRONOUS_CONTROLS
-				                     | B_NO_WORKSPACE_ACTIVATION);
-				if (w)
+				case eWindowType_popup:
 				{
-					// popup window : no border
-					if (is_subset)
-					{
-						w->AddToSubset(mBorderlessParent->Window());
-					}
+					mBorderlessParent = parent;
+					flags |= B_NOT_CLOSABLE | B_AVOID_FOCUS | B_NO_WORKSPACE_ACTIVATION;
+					look = B_NO_BORDER_WINDOW_LOOK;
+					break;
 				}
-			}
-			else
-			{
-				// normal window :normal look & feel
-				winrect.OffsetBy( 10, 30 );
-				w = new nsWindowBeOS(this, winrect, "", B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-				                     B_ASYNCHRONOUS_CONTROLS);
-			}
+					
+				case eWindowType_dialog:
+				{
+					if (mBorderStyle == eBorderStyle_default)
+					{
+						flags |= B_NOT_ZOOMABLE;
+					}
+					// don't break here
+				}
+				case eWindowType_toplevel:
+				{
+					// This was never documented, so I'm not sure why we do it, yet
+					winrect.OffsetBy( 10, 30 );
 
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+					printf("\tBorder Style : ");
+#endif					
+					// Set the border style(s)
+					switch (mBorderStyle)
+					{
+						case eBorderStyle_default:
+						{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+							printf("default\n");
+#endif							
+							break;
+						}
+						case eBorderStyle_all:
+						{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+							printf("all\n");
+#endif							
+							break;
+						}
+						
+						case eBorderStyle_none:
+						{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+							printf("none\n");
+#endif							
+							look = B_NO_BORDER_WINDOW_LOOK;
+							break;
+						}	
+						
+						default:
+						{
+							if (!(mBorderStyle & eBorderStyle_resizeh))
+							{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+								printf("no_resize ");
+#endif							
+								flags |= B_NOT_RESIZABLE;
+							}
+							if (!(mBorderStyle & eBorderStyle_title))
+							{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+								printf("no_titlebar ");
+#endif							
+								look = B_BORDERED_WINDOW_LOOK;
+							}
+							if (!(mBorderStyle & eBorderStyle_minimize) || !(mBorderStyle & eBorderStyle_maximize))
+							{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+								printf("no_zoom ");
+#endif							
+								flags |= B_NOT_ZOOMABLE;
+							}
+							if (!(mBorderStyle & eBorderStyle_close))
+							{
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+								printf("no_close ");
+#endif							
+								flags |= B_NOT_CLOSABLE;
+							}
+#ifdef MOZ_DEBUG_WINDOW_CREATE
+								printf("\n");
+#endif							
+						}
+					} // case (mBorderStyle)
+					break;
+				} // eWindowType_toplevel
+					
+				default:
+					break;
+			} // case (mWindowType)
+			
+			w = new nsWindowBeOS(this, winrect, "", look, feel, flags);
 			if(w)
 			{
 				w->AddChild(mView);
+				if (parent)
+				{
+					w->AddToSubset(parent->Window());
+				}
 
 				// FIXME: we have to use the window size because
 				// the window might not like sizes less then 30x30 or something like that
@@ -669,40 +714,6 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
 				mView->SetResizingMode(B_FOLLOW_ALL);
 			}
 		}
-
-#if 0
-		// Initial Drag & Drop Work
-#ifdef DRAG_DROP
-		if (!gOLEInited)
-		{
-			DWORD dwVer = ::OleBuildVersion();
-
-			if (FAILED(::OleInitialize(NULL)))
-			{
-				NS_WARNING("***** OLE has been initialized!");
-			}
-			gOLEInited = TRUE;
-		}
-
-		mDragDrop = new CfDragDrop();
-		//mDragDrop->AddRef();
-		mDragDrop->Initialize(this);
-
-		/*mDropTarget = new CfDropTarget(*mDragDrop);
-		mDropTarget->AddRef();
-
-		mDropSource = new CfDropSource(*mDragDrop);
-		mDropSource->AddRef();*/
-
-		/*mDropTarget = new nsDropTarget(this);
-		mDropTarget->AddRef();
-		if (S_OK == ::CoLockObjectExternal((LPUNKNOWN)mDropTarget,TRUE,FALSE)) {
-		  if (S_OK == ::RegisterDragDrop(mView, (LPDROPTARGET)mDropTarget)) {
-
-		  }
-	}*/
-#endif
-#endif
 
 		// call the event callback to notify about creation
 		DispatchStandardEvent(NS_CREATE);
@@ -770,8 +781,6 @@ NS_METHOD nsWindow::Destroy()
 		toolkit->CallMethod(&info);
 		return NS_ERROR_FAILURE;
 	}
-	if(eWindowType_popup != mWindowType && eWindowType_child != mWindowType)
-		DealWithPopups(DESTROY,nsPoint(0,0));
 	// disconnect from the parent
 	if (!mIsDestroying) {
 		nsBaseWidget::Destroy();
@@ -1030,7 +1039,45 @@ NS_METHOD nsWindow::IsVisible(PRBool & bState)
 //-------------------------------------------------------------------------
 NS_METHOD nsWindow::ConstrainPosition(PRBool aAllowSlop, PRInt32 *aX, PRInt32 *aY)
 {
-	NS_WARNING("nsWindow::ConstrainPosition - not implemented");
+	if (mIsTopWidgetWindow && mView->Window()) {
+		BScreen screen;
+		// If no valid screen, just return
+		if (! screen.IsValid()) return NS_OK;
+		
+		BRect screen_rect = screen.Frame();
+		BRect win_bounds = mView->Window()->Frame();
+
+#ifdef DEBUG_CONSTRAIN_POSITION
+		printf("ConstrainPosition: allowSlop=%s, x=%d, y=%d\n\tScreen :", (aAllowSlop?"T":"F"),*aX,*aY);
+		screen_rect.PrintToStream();
+		printf("\tWindow: ");
+		win_bounds.PrintToStream();
+#endif
+		
+		if (aAllowSlop) {
+			if (*aX < kWindowPositionSlop - win_bounds.IntegerWidth() + kWindowBorderWidth)
+				*aX = kWindowPositionSlop - win_bounds.IntegerWidth() + kWindowBorderWidth;
+			else if (*aX > screen_rect.IntegerWidth() - kWindowPositionSlop - kWindowBorderWidth)
+				*aX = screen_rect.IntegerWidth() - kWindowPositionSlop - kWindowBorderWidth;
+				
+			if (*aY < kWindowPositionSlop - win_bounds.IntegerHeight() + kWindowTitleBarHeight)
+				*aY = kWindowPositionSlop - win_bounds.IntegerHeight() + kWindowTitleBarHeight;
+			else if (*aY > screen_rect.IntegerHeight() - kWindowPositionSlop - kWindowBorderWidth)
+				*aY = screen_rect.IntegerHeight() - kWindowPositionSlop - kWindowBorderWidth;
+				
+		} else {
+			
+			if (*aX < kWindowBorderWidth)
+				*aX = kWindowBorderWidth;
+			else if (*aX > screen_rect.IntegerWidth() - win_bounds.IntegerWidth() - kWindowBorderWidth)
+				*aX = screen_rect.IntegerWidth() - win_bounds.IntegerWidth() - kWindowBorderWidth;
+				
+			if (*aY < kWindowTitleBarHeight)
+				*aY = kWindowTitleBarHeight;
+			else if (*aY > screen_rect.IntegerHeight() - win_bounds.IntegerHeight() - kWindowBorderWidth)
+				*aY = screen_rect.IntegerHeight() - win_bounds.IntegerHeight() - kWindowBorderWidth;
+		}
+	}
 	return NS_OK;
 }
 
@@ -1388,111 +1435,144 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
 		return NS_ERROR_FAILURE;
 
 	// Only change cursor if it's changing
-	if (aCursor != mCursor) {
+	if (aCursor != mCursor) 
+	{
 		BCursor const *newCursor = B_CURSOR_SYSTEM_DEFAULT;
-		bool doDelete = true;
-
-		switch (aCursor) {
-		case eCursor_standard:
-		case eCursor_wait:
-		case eCursor_move:
-			newCursor = B_CURSOR_SYSTEM_DEFAULT;
-			doDelete = false;
-			break;
-
-		case eCursor_select:
-			newCursor = B_CURSOR_I_BEAM;
-			doDelete = false;
-			break;
-
-		case eCursor_hyperlink:
-			newCursor = new BCursor(cursorHyperlink);
-			break;
-
-		case eCursor_sizeWE:
-			newCursor = new BCursor(cursorHorizontalDrag);
-			break;
-
-		case eCursor_sizeNS:
-			newCursor = new BCursor(cursorVerticalDrag);
-			break;
-
-		case eCursor_sizeNW:
-			newCursor = new BCursor(cursorUpperRight);
-			break;
-
-		case eCursor_sizeSE:
-			newCursor = new BCursor(cursorLowerLeft);
-			break;
-
-		case eCursor_sizeNE:
-			newCursor = new BCursor(cursorUpperLeft);
-			break;
-
-		case eCursor_sizeSW:
-			newCursor = new BCursor(cursorLowerRight);
-			break;
-
-		case eCursor_arrow_north:
-		case eCursor_arrow_north_plus:
-			newCursor = new BCursor(cursorTop);
-			break;
-
-		case eCursor_arrow_south:
-		case eCursor_arrow_south_plus:
-			newCursor = new BCursor(cursorBottom);
-			break;
-
-		case eCursor_arrow_east:
-		case eCursor_arrow_east_plus:
-			newCursor = new BCursor(cursorLeft);
-			break;
-
-		case eCursor_arrow_west:
-		case eCursor_arrow_west_plus:
-			newCursor = new BCursor(cursorRight);
-			break;
-
-		case eCursor_crosshair:
-			newCursor = new BCursor(cursorCrosshair);
-			break;
-
-		case eCursor_help:
-			newCursor = new BCursor(cursorHelp);
-			break;
-
-		case eCursor_grab:
-			newCursor = new BCursor(cursorGrab);
-			break;
-
-		case eCursor_grabbing:
-			newCursor = new BCursor(cursorGrabbing);
-			break;
-
-		case eCursor_copy:
-			newCursor = new BCursor(cursorCopy);
-			break;
-
-		case eCursor_alias:
-			newCursor = new BCursor(cursorAlias);
-			break;
-
-		case eCursor_spinning:
-			newCursor = new BCursor(cursorWatch2);
-			break;
-
-		default:
-			NS_ASSERTION(0, "Invalid cursor type");
-			doDelete = false;
-			break;
+		
+		// Check to see if the array has been loaded, if not, do it.
+		if (gCursorArray.Count() == 0) 
+		{
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorHyperlink),0);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorHorizontalDrag),1);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorVerticalDrag),2);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorUpperRight),3);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorLowerLeft),4);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorUpperLeft),5);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorLowerRight),6);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorTop),7);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorBottom),8);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorLeft),9);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorRight),10);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorCrosshair),11);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorHelp),12);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorGrab),13);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorGrabbing),14);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorCopy),15);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorAlias),16);
+			gCursorArray.InsertElementAt((void*) new BCursor(cursorWatch2),17);
 		}
 
-		if (mView && mView->LockLooper()) {
+		switch (aCursor) 
+		{
+			case eCursor_standard:
+			case eCursor_wait:
+			case eCursor_move:
+				newCursor = B_CURSOR_SYSTEM_DEFAULT;
+				break;
+	
+			case eCursor_select:
+				newCursor = B_CURSOR_I_BEAM;
+				break;
+	
+			case eCursor_hyperlink:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(0);
+				break;
+	
+			case eCursor_sizeWE:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(1);
+				break;
+	
+			case eCursor_sizeNS:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(2);
+				break;
+	
+			case eCursor_sizeNW:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(3);
+				break;
+	
+			case eCursor_sizeSE:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(4);
+				break;
+	
+			case eCursor_sizeNE:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(5);
+				break;
+	
+			case eCursor_sizeSW:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(6);
+				break;
+	
+			case eCursor_arrow_north:
+			case eCursor_arrow_north_plus:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(7);
+				break;
+	
+			case eCursor_arrow_south:
+			case eCursor_arrow_south_plus:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(8);
+				break;
+	
+			case eCursor_arrow_east:
+			case eCursor_arrow_east_plus:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(9);
+				break;
+	
+			case eCursor_arrow_west:
+			case eCursor_arrow_west_plus:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(10);
+				break;
+	
+			case eCursor_crosshair:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(11);
+				break;
+	
+			case eCursor_help:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(12);
+				break;
+	
+			case eCursor_copy:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(15);
+				break;
+	
+			case eCursor_alias:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(16);
+				break;
+
+			case eCursor_context_menu:
+			case eCursor_cell:
+				break;
+
+			case eCursor_grab:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(13);
+				break;
+	
+			case eCursor_grabbing:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(14);
+				break;
+	
+	
+			case eCursor_spinning:
+				newCursor = (BCursor *)gCursorArray.SafeElementAt(17);
+				break;
+	
+			case eCursor_count_up:
+			case eCursor_count_down:
+			case eCursor_count_up_down:
+			case eCursor_zoom_in:
+			case eCursor_zoom_out:
+				break;
+
+			default:
+				NS_ASSERTION(0, "Invalid cursor type");
+				break;
+		}
+		NS_ASSERTION(newCursor != nsnull, "Cursor not stored in array properly!");
+		if (mView && mView->LockLooper()) 
+		{
 			mCursor = aCursor;
 			mView->SetViewCursor(newCursor, true);
 			mView->UnlockLooper();
 		}
-		if (doDelete) delete newCursor;
 	}
 	return NS_OK;
 }
@@ -1719,11 +1799,13 @@ bool nsWindow::CallMethod(MethodInfo *info)
 		break;
 
 	case nsWindow::CLOSEWINDOW :
-		if(gGotQuitShortcut == PR_TRUE)
+		if (gGotQuitShortcut == PR_TRUE)
 		{
 			gGotQuitShortcut = PR_FALSE;
 			return false;
 		}
+		if (eWindowType_popup != mWindowType && eWindowType_child != mWindowType)
+			DealWithPopups(CLOSEWINDOW,nsPoint(0,0));
 		NS_ASSERTION(info->nArgs == 0, "Wrong number of arguments to CallMethod");
 		DispatchStandardEvent(NS_DESTROY);
 		break;
@@ -2210,7 +2292,6 @@ PRBool nsWindow::OnKeyDown(PRUint32 aEventType, const char *bytes,
 					}
 
 			aTranslatedKeyCode = 0;
-			mIsShiftDown = PR_FALSE;
 			break;
 		}
 	}
@@ -2647,6 +2728,7 @@ PRBool nsWindow::OnPaint(nsRect &r)
 			nsPaintEvent event;
 
 			InitEvent(event, NS_PAINT);
+			event.region = nsnull;
 			event.rect = &r;
 			event.eventStructType = NS_PAINT_EVENT;
 

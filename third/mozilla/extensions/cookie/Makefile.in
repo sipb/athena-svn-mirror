@@ -31,6 +31,8 @@ LIBRARY_NAME	= cookie
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsCookieModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  necko \
@@ -59,10 +61,9 @@ CPPSRCS		= \
 		nsPermissionManager.cpp \
 		nsPopupWindowManager.cpp \
 		nsCookies.cpp \
-		nsImages.cpp \
-		nsPermissions.cpp \
-		nsUtils.cpp \
 		nsCookieHTTPNotify.cpp \
+		nsCookiePromptService.cpp \
+		nsCookiePermission.cpp \
 		$(NULL)
 
 SDK_XPIDLSRCS   = \
@@ -75,7 +76,10 @@ XPIDLSRCS	= \
 		nsIImgManager.idl \
 		nsIPermissionManager.idl \
 		nsIPermission.idl \
-                nsICookieAcceptDialog.idl \
+		nsICookieAcceptDialog.idl \
+		nsICookiePromptService.idl \
+		nsICookieManager2.idl \
+		nsICookiePermission.idl \
 		$(NULL)
 
 EXPORTS		= \

@@ -41,7 +41,8 @@
 #include "nsNntpIncomingServer.h"
 #include "nsXPIDLString.h"
 #include "nsEscape.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIMsgNewsFolder.h"
 #include "nsIFolder.h"
 #include "nsIFileSpec.h"
@@ -82,7 +83,6 @@
 // operating system.
 #define HOSTINFO_FILE_BUFFER_SIZE 1024
 
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);                            
 static NS_DEFINE_CID(kSubscribableServerCID, NS_SUBSCRIBABLESERVER_CID);
 
 NS_IMPL_ADDREF_INHERITED(nsNntpIncomingServer, nsMsgIncomingServer)
@@ -97,8 +97,6 @@ NS_INTERFACE_MAP_END_INHERITING(nsMsgIncomingServer)
 
 nsNntpIncomingServer::nsNntpIncomingServer() : nsMsgLineBuffer(nsnull, PR_FALSE)
 {    
-  NS_INIT_ISUPPORTS();
-
   mNewsrcHasChanged = PR_FALSE;
   mGroupsEnumerator = nsnull;
   NS_NewISupportsArray(getter_AddRefs(m_connectionCache));
@@ -118,6 +116,11 @@ nsNntpIncomingServer::nsNntpIncomingServer() : nsMsgLineBuffer(nsnull, PR_FALSE)
   // these atoms are used for subscribe search
   mSubscribedAtom = getter_AddRefs(NS_NewAtom("subscribed"));
   mNntpAtom = getter_AddRefs(NS_NewAtom("nntp"));
+
+  // our filters are on the server, they are on a per newsgroup basis
+  // but this will make the filter UI enable for news accounts
+  // which is what we want
+  m_canHaveFilters = PR_TRUE;
 
   SetupNewsrcSaveTimer();
 }
@@ -229,14 +232,13 @@ nsNntpIncomingServer::SetNewsrcRootPath(nsIFileSpec *aNewsrcRootPath)
 {
     nsresult rv;
     
-    nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
-    if (NS_SUCCEEDED(rv) && prefs) {
-        rv = prefs->SetFilePref(PREF_MAIL_NEWSRC_ROOT,aNewsrcRootPath, PR_FALSE /* set default */);
-        return rv;
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
+    if (NS_SUCCEEDED(rv) && prefBranch) {
+        return prefBranch->SetComplexValue(PREF_MAIL_NEWSRC_ROOT, NS_GET_IID(nsIFileSpec),
+                                           aNewsrcRootPath);
     }
-    else {
-        return NS_ERROR_FAILURE;
-    }
+
+    return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
@@ -246,13 +248,14 @@ nsNntpIncomingServer::GetNewsrcRootPath(nsIFileSpec **aNewsrcRootPath)
     *aNewsrcRootPath = nsnull;
     
     nsresult rv;
-    nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
     if (NS_FAILED(rv)) return rv;
     
     PRBool havePref = PR_FALSE;
     nsCOMPtr<nsIFile> localFile;
     nsCOMPtr<nsILocalFile> prefLocal;
-    rv = prefs->GetFileXPref(PREF_MAIL_NEWSRC_ROOT, getter_AddRefs(prefLocal));
+    rv = prefBranch->GetComplexValue(PREF_MAIL_NEWSRC_ROOT, NS_GET_IID(nsILocalFile),
+                                     getter_AddRefs(prefLocal));
     if (NS_SUCCEEDED(rv)) {
         localFile = prefLocal;
         havePref = PR_TRUE;
@@ -262,7 +265,7 @@ nsNntpIncomingServer::GetNewsrcRootPath(nsIFileSpec **aNewsrcRootPath)
         if (NS_FAILED(rv)) return rv;
         havePref = PR_FALSE;
     }
-        
+
     PRBool exists;
     rv = localFile->Exists(&exists);
     if (NS_SUCCEEDED(rv) && !exists)
@@ -292,7 +295,7 @@ nsNntpIncomingServer::GetNewsrcRootPath(nsIFileSpec **aNewsrcRootPath)
 
 nsresult nsNntpIncomingServer::SetupNewsrcSaveTimer()
 {
-	nsInt64 ms(5000 * 60);   // hard code, 5 minutes.
+	nsInt64 ms(300000);   // hard code, 5 minutes.
 	//Convert biffDelay into milliseconds
 	PRUint32 timeInMSUint32 = (PRUint32)ms;
 	//Can't currently reset a timer when it's in the process of
@@ -433,7 +436,6 @@ nsNntpIncomingServer::CloseCachedConnections()
 {
   nsresult rv;
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
   nsCOMPtr<nsINNTPProtocol> connection;
 
   // iterate through the connection cache and close the connections.
@@ -443,8 +445,7 @@ nsNntpIncomingServer::CloseCachedConnections()
     if (NS_FAILED(rv)) return rv;
     for (PRUint32 i = 0; i < cnt; i++) 
 	  {
-      aSupport = getter_AddRefs(m_connectionCache->ElementAt(0));
-      connection = do_QueryInterface(aSupport);
+      connection = do_QueryElementAt(m_connectionCache, 0);
 		  if (connection)
       {
     	  rv = connection->CloseConnection();
@@ -542,7 +543,6 @@ nsNntpIncomingServer::GetNntpConnection(nsIURI * aUri, nsIMsgWindow *aMsgWindow,
   *aNntpConnection = nsnull;
   // iterate through the connection cache for a connection that can handle this url.
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
 
   rv = m_connectionCache->Count(&cnt);
   if (NS_FAILED(rv)) return rv;
@@ -551,8 +551,7 @@ nsNntpIncomingServer::GetNntpConnection(nsIURI * aUri, nsIMsgWindow *aMsgWindow,
 #endif
   for (PRUint32 i = 0; i < cnt && isBusy; i++) 
   {
-    aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-    connection = do_QueryInterface(aSupport);
+    connection = do_QueryElementAt(m_connectionCache, i);
     if (connection)
         rv = connection->GetIsBusy(&isBusy);
     if (NS_FAILED(rv)) 
@@ -616,22 +615,20 @@ nsNntpIncomingServer::PerformExpand(nsIMsgWindow *aMsgWindow)
   return NS_OK;
 }
 
-// fix this when news supports filters
 NS_IMETHODIMP
 nsNntpIncomingServer::GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **aResult)
 {
+  // news servers don't have filters, each newsgroup does.
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP 
 nsNntpIncomingServer::GetNumGroupsNeedingCounts(PRInt32 *aNumGroupsNeedingCounts)
 {
-    nsresult rv;
-
     nsCOMPtr<nsIEnumerator> subFolders;
     nsCOMPtr<nsIFolder> rootFolder;
  
-    rv = GetRootFolder(getter_AddRefs(rootFolder));
+    nsresult rv = GetRootFolder(getter_AddRefs(rootFolder));
     if (NS_FAILED(rv)) return rv;
 
     PRBool hasSubFolders = PR_FALSE;
@@ -702,7 +699,7 @@ nsNntpIncomingServer::DisplaySubscribedGroup(nsIMsgNewsFolder *aMsgFolder, PRInt
 }
 
 NS_IMETHODIMP
-nsNntpIncomingServer::PerformBiff()
+nsNntpIncomingServer::PerformBiff(nsIMsgWindow *aMsgWindow)
 {
 #ifdef DEBUG_NEWS
 	printf("PerformBiff for nntp\n");
@@ -710,15 +707,12 @@ nsNntpIncomingServer::PerformBiff()
 	return PerformExpand(nsnull);
 }
 
-NS_IMETHODIMP 
-nsNntpIncomingServer::GetServerRequiresPasswordForBiff(PRBool *_retval)
+NS_IMETHODIMP nsNntpIncomingServer::GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff)
 {
-    if (!_retval) return NS_ERROR_NULL_POINTER;
-
-	*_retval = PR_FALSE;
+  NS_ENSURE_ARG_POINTER(aServerRequiresPasswordForBiff);
+	*aServerRequiresPasswordForBiff = PR_FALSE;  // for news, biff is getting the unread counts
 	return NS_OK;
 }
-
 
 NS_IMETHODIMP
 nsNntpIncomingServer::OnStartRunningUrl(nsIURI *url)
@@ -1984,7 +1978,7 @@ nsNntpIncomingServer::GetFilterScope(nsMsgSearchScopeValue *filterScope)
 {
    NS_ENSURE_ARG_POINTER(filterScope);
 
-   *filterScope = nsMsgSearchScope::news;
+   *filterScope = nsMsgSearchScope::newsFilter;
    return NS_OK;
 }
 

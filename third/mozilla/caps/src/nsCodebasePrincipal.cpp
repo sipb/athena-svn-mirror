@@ -45,7 +45,8 @@
 #include "nsIURL.h"
 #include "nsIJARURI.h"
 #include "nsCOMPtr.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
@@ -69,26 +70,49 @@ NSBASEPRINCIPALS_RELEASE(nsCodebasePrincipal);
 NS_IMETHODIMP
 nsCodebasePrincipal::ToString(char **result)
 {
+    *result = nsnull;
+    PRBool isFile = PR_TRUE;
+    if(NS_FAILED(mURI->SchemeIs("file", &isFile)))
+        return NS_ERROR_FAILURE;
+
+    if (isFile)
+    {
+        nsCOMPtr<nsIURL> url(do_QueryInterface(mURI));
+        if (url)
+        {
+            nsCAutoString directory;
+            nsresult rv = url->GetDirectory(directory);
+            if (NS_FAILED(rv))
+                return rv;
+            nsCAutoString fileName;
+            rv = url->GetFileName(fileName);
+            if (NS_FAILED(rv))
+                return rv;
+            *result =
+                ToNewCString(NS_LITERAL_CSTRING("file://") + directory + fileName);
+            if (!*result)
+                return NS_ERROR_OUT_OF_MEMORY;
+            return NS_OK;
+        }
+    }
     return GetOrigin(result);
 }
 
 NS_IMETHODIMP
 nsCodebasePrincipal::ToUserVisibleString(char **result)
 {
-    return GetOrigin(result);
+    return ToString(result);
 }
 
 NS_IMETHODIMP 
 nsCodebasePrincipal::GetPreferences(char** aPrefName, char** aID, 
                                     char** aGrantedList, char** aDeniedList)
 {
-    if (!mPrefName)
+    if (mPrefName.IsEmpty())
 	{
-        nsCAutoString s;
-        s.Assign("capability.principal.codebase.p");
-        s.AppendInt(mCapabilitiesOrdinal++);
-        s.Append(".id");
-        mPrefName = ToNewCString(s);
+        mPrefName.Assign("capability.principal.codebase.p");
+        mPrefName.AppendInt(mCapabilitiesOrdinal++);
+        mPrefName.Append(".id");
     }
     return nsBasePrincipal::GetPreferences(aPrefName, aID, 
                                            aGrantedList, aDeniedList);
@@ -113,13 +137,12 @@ nsCodebasePrincipal::CanEnableCapability(const char *capability,
     if (!mTrusted)
     {
         static char pref[] = "signed.applets.codebase_principal_support";
-        nsresult rv;
-	    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-	    if (NS_FAILED(rv))
-		    return NS_ERROR_FAILURE;
-	    PRBool enabled;
-        if (NS_FAILED(prefs->GetBoolPref(pref, &enabled)) || !enabled) 
-	    {
+        nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+        if (!prefBranch)
+            return NS_ERROR_FAILURE;
+        PRBool enabled;
+        if (NS_FAILED(prefBranch->GetBoolPref(pref, &enabled)) || !enabled) 
+        {
             // Deny unless subject is executing from file: or resource: 
             PRBool isFile = PR_FALSE;
             PRBool isRes = PR_FALSE;
@@ -155,17 +178,24 @@ NS_IMETHODIMP
 nsCodebasePrincipal::GetOrigin(char **origin) 
 {
     nsresult rv;
-    nsCAutoString s;
-    if (NS_SUCCEEDED(mURI->GetHost(s)))
-        rv = mURI->GetPrePath(s);
-    else {
+    nsCAutoString hostPort;
+    if (NS_SUCCEEDED(mURI->GetHostPort(hostPort)))
+    {
+        nsCAutoString scheme;
+        rv = mURI->GetScheme(scheme);
+        NS_ENSURE_SUCCESS(rv, rv);
+        *origin = ToNewCString(scheme + NS_LITERAL_CSTRING("://") + hostPort);
+    }        
+    else
+    {
         // Some URIs (e.g., nsSimpleURI) don't support host. Just
         // get the full spec.
-        rv = mURI->GetSpec(s);
+        nsCAutoString spec;
+        rv = mURI->GetSpec(spec);
+        NS_ENSURE_SUCCESS(rv, rv);
+        *origin = ToNewCString(spec);
     }
-    if (NS_FAILED(rv)) return rv;
 
-    *origin = ToNewCString(s);
     return *origin ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
@@ -241,7 +271,6 @@ nsCodebasePrincipal::Write(nsIObjectOutputStream* aStream)
 
 nsCodebasePrincipal::nsCodebasePrincipal() : mTrusted(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsresult

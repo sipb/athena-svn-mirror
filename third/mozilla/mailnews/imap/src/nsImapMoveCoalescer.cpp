@@ -45,15 +45,12 @@
 #include "nsMsgBaseCID.h"
 #include "nsIMsgFolder.h" // TO include biffState enum. Change to bool later...
 
-static NS_DEFINE_CID(kCImapService, NS_IMAPSERVICE_CID);
-
 NS_IMPL_ISUPPORTS1(nsImapMoveCoalescer, nsISupports)
 
 nsImapMoveCoalescer::nsImapMoveCoalescer(nsIMsgFolder *sourceFolder, nsIMsgWindow *msgWindow)
 {
   m_sourceFolder = sourceFolder; 
   m_msgWindow = msgWindow;
-  NS_INIT_ISUPPORTS();
 }
 
 nsImapMoveCoalescer::~nsImapMoveCoalescer()
@@ -61,6 +58,11 @@ nsImapMoveCoalescer::~nsImapMoveCoalescer()
   for (PRInt32 i = 0; i < m_sourceKeyArrays.Count(); i++)
   {
     nsMsgKeyArray *keys = (nsMsgKeyArray *) m_sourceKeyArrays.ElementAt(i);
+    delete keys;
+  }
+  for (PRInt32 index = 0; index < m_keyBuckets.Count(); index++)
+  {
+    nsMsgKeyArray *keys = (nsMsgKeyArray *) m_keyBuckets.ElementAt(index);
     delete keys;
   }
 }
@@ -108,15 +110,18 @@ nsresult nsImapMoveCoalescer::PlaybackMoves()
   
   if (!m_destFolders)
     return NS_OK;	// nothing to do.
-  
+
   m_destFolders->Count(&numFolders);
   for (PRUint32 i = 0; i < numFolders; i++)
   {
-    nsCOMPtr <nsISupports> destSupports = getter_AddRefs(m_destFolders->ElementAt(i));
-    nsCOMPtr <nsIMsgFolder> destFolder(do_QueryInterface(destSupports));
+    // XXX TODO
+    // JUNK MAIL RELATED
+    // is this the right place to make sure dest folder exists
+    // (and has proper flags?), before we start copying?
+    nsCOMPtr <nsIMsgFolder> destFolder(do_QueryElementAt(m_destFolders, i));
     nsCOMPtr<nsIImapService> imapService = 
-      do_GetService(kCImapService, &rv);
-    if (NS_SUCCEEDED(rv) && imapService)
+      do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv))
     {
       nsMsgKeyArray *keysToAdd = (nsMsgKeyArray *) m_sourceKeyArrays.ElementAt(i);
       if (keysToAdd)
@@ -124,7 +129,7 @@ nsresult nsImapMoveCoalescer::PlaybackMoves()
         nsCAutoString messageIds;
         
         nsImapMailFolder::AllocateUidStringFromKeys(keysToAdd->GetArray(), keysToAdd->GetSize(), messageIds);
-        PRUint32 numKeysToAdd = keysToAdd->GetSize();
+        PRInt32 numKeysToAdd = keysToAdd->GetSize();
         if (numKeysToAdd == 0)
           continue;
         
@@ -167,3 +172,18 @@ nsresult nsImapMoveCoalescer::PlaybackMoves()
   return rv;
 }
 
+nsMsgKeyArray *nsImapMoveCoalescer::GetKeyBucket(PRInt32 keyArrayIndex)
+{
+  if (m_keyBuckets.Count() < keyArrayIndex + 1)
+  {
+    for (PRInt32 i = 0; i < keyArrayIndex + 1 - m_keyBuckets.Count(); i++)
+    {
+        nsMsgKeyArray *keysToAdd = new nsMsgKeyArray;
+        if (!keysToAdd)
+          return nsnull;
+        
+        m_keyBuckets.AppendElement(keysToAdd);
+    }
+  }
+  return (nsMsgKeyArray *) m_keyBuckets.SafeElementAt(keyArrayIndex);
+}

@@ -66,6 +66,7 @@
 #include "nsLayoutAtoms.h"
 #include "nsINameSpaceManager.h"
 #include "nsIContent.h"
+#include "nsINodeInfo.h"
 #include "nsIFrame.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
@@ -89,11 +90,18 @@
 #include "nsIDOMNSDocument.h"
 #include "nsIWidget.h"
 #include "nsContentUtils.h"
-
+#include "nsIDOMEventGroup.h"
+#include "nsContentCID.h"
 
 static NS_DEFINE_CID(kDOMScriptObjectFactoryCID,
                      NS_DOM_SCRIPT_OBJECT_FACTORY_CID);
+static NS_DEFINE_CID(kDOMEventGroupCID, NS_DOMEVENTGROUP_CID);
 
+// Strong references to event groups
+nsIDOMEventGroup* gSystemEventGroup;
+nsIDOMEventGroup* gDOM2EventGroup;
+
+PRUint32 nsEventListenerManager::mInstanceCount = 0;
 
 nsEventListenerManager::nsEventListenerManager() 
 {
@@ -105,7 +113,7 @@ nsEventListenerManager::nsEventListenerManager()
   mListenersRemoved = PR_FALSE;
 
   mTarget = nsnull;
-  NS_INIT_ISUPPORTS();
+  ++mInstanceCount;
 }
 
 static PRBool PR_CALLBACK
@@ -118,7 +126,7 @@ GenericListenersHashEnum(nsHashKey *aKey, void *aData, void* closure)
     PRBool* scriptOnly = NS_STATIC_CAST(PRBool*, closure);
     for (i = count-1; i >= 0; --i) {
       ls = (nsListenerStruct*)listeners->ElementAt(i);
-      if (ls != nsnull) {
+      if (ls) {
         if (*scriptOnly) {
           if (ls->mFlags & NS_PRIV_EVENT_FLAG_SCRIPT) {
             NS_RELEASE(ls->mListener);
@@ -139,10 +147,16 @@ GenericListenersHashEnum(nsHashKey *aKey, void *aData, void* closure)
   }
   return PR_TRUE;
 }
- 
+
 nsEventListenerManager::~nsEventListenerManager() 
 {
   RemoveAllListeners(PR_FALSE);
+
+  --mInstanceCount;
+  if(mInstanceCount == 0) {
+    NS_IF_RELEASE(gSystemEventGroup);
+    NS_IF_RELEASE(gDOM2EventGroup);
+  }
 }
 
 nsresult nsEventListenerManager::RemoveAllListeners(PRBool aScriptOnly)
@@ -198,6 +212,7 @@ NS_INTERFACE_MAP_BEGIN(nsEventListenerManager)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIEventListenerManager)
    NS_INTERFACE_MAP_ENTRY(nsIEventListenerManager)
    NS_INTERFACE_MAP_ENTRY(nsIDOMEventTarget)
+   NS_INTERFACE_MAP_ENTRY(nsIDOM3EventTarget)
    NS_INTERFACE_MAP_ENTRY(nsIDOMEventReceiver)
 NS_INTERFACE_MAP_END
 
@@ -360,7 +375,7 @@ void nsEventListenerManager::ReleaseListeners(nsVoidArray** aListeners, PRBool a
     nsListenerStruct *ls;
     for (i = 0; i < count; i++) {
       ls = (nsListenerStruct*)(*aListeners)->ElementAt(i);
-      if (ls != nsnull) {
+      if (ls) {
         if (aScriptOnly) {
           if (ls->mFlags & NS_PRIV_EVENT_FLAG_SCRIPT) {
             NS_RELEASE(ls->mListener);
@@ -392,7 +407,8 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
                                          EventArrayType aType, 
                                          PRInt32 aSubType,
                                          nsHashKey* aKey,
-                                         PRInt32 aFlags)
+                                         PRInt32 aFlags,
+                                         nsIDOMEventGroup* aEvtGrp)
 {
   NS_ENSURE_TRUE(aListener, NS_ERROR_FAILURE);
 
@@ -423,15 +439,28 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
       window->SetMutationListeners(aSubType);
     }
   }
+  
+  PRBool isSame = PR_FALSE;
+  PRUint16 group = 0;
+  nsCOMPtr<nsIDOMEventGroup> sysGroup;
+  GetSystemEventGroupLM(getter_AddRefs(sysGroup));
+  if (sysGroup) {
+    sysGroup->IsSameEventGroup(aEvtGrp, &isSame);
+    if (isSame) {
+      group = NS_EVENT_FLAG_SYSTEM_EVENT;
+    }
+  }
 
   PRBool found = PR_FALSE;
   nsListenerStruct* ls;
   nsresult rv;
+  
   nsCOMPtr<nsIScriptEventListener> sel = do_QueryInterface(aListener, &rv);
   
+
   for (int i=0; i<listeners->Count(); i++) {
     ls = (nsListenerStruct*)listeners->ElementAt(i);
-    if (ls->mListener == aListener && ls->mFlags == aFlags) {
+    if (ls->mListener == aListener && ls->mFlags == aFlags && ls->mGroupFlags == group) {
       ls->mSubType |= aSubType;
       found = PR_TRUE;
       break;
@@ -460,21 +489,9 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
       ls->mSubType = aSubType;
       ls->mSubTypeCapture = NS_EVENT_BITS_NONE;
       ls->mHandlerIsString = 0;
+      ls->mGroupFlags = group;
       listeners->AppendElement((void*)ls);
       NS_ADDREF(aListener);
-    }
-
-    if (aFlags & NS_EVENT_FLAG_CAPTURE) {
-      //If a capturer is set up on a content object it must register that with its doc
-      nsCOMPtr<nsIDocument> document;
-      nsCOMPtr<nsIContent> content(do_QueryInterface(mTarget));
-      if (content) {
-        content->GetDocument(*getter_AddRefs(document));
-        if (document) {
-          //Increment capturers by 1
-          document->EventCaptureRegistration(1);
-        }
-      }
     }
   }
 
@@ -486,7 +503,8 @@ nsEventListenerManager::RemoveEventListener(nsIDOMEventListener *aListener,
                                             EventArrayType aType, 
                                             PRInt32 aSubType,
                                             nsHashKey* aKey,
-                                            PRInt32 aFlags)
+                                            PRInt32 aFlags,
+                                            nsIDOMEventGroup* aEvtGrp)
 {
   nsVoidArray* listeners = GetListenersByType(aType, aKey, PR_FALSE);
 
@@ -530,26 +548,13 @@ nsEventListenerManager::RemoveEventListener(nsIDOMEventListener *aListener,
     }
   }
 
-  if (listenerRemoved && aFlags & NS_EVENT_FLAG_CAPTURE) {
-    //If a capturer is set up on a content object it must register that with its doc
-    nsCOMPtr<nsIDocument> document;
-    nsCOMPtr<nsIContent> content(do_QueryInterface(mTarget));
-    if (content) {
-      content->GetDocument(*getter_AddRefs(document));
-      if (document) {
-        //Decrement capturers by 1
-        document->EventCaptureRegistration(-1);
-      }
-    }
-  }
-
   return NS_OK;
 }
 
 nsresult nsEventListenerManager::AddEventListenerByIID(nsIDOMEventListener *aListener, 
                                                        const nsIID& aIID, PRInt32 aFlags)
 {
-  AddEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE, nsnull, aFlags);
+  AddEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE, nsnull, aFlags, nsnull);
   return NS_OK;
 }
 
@@ -558,7 +563,7 @@ nsEventListenerManager::RemoveEventListenerByIID(nsIDOMEventListener *aListener,
                                                  const nsIID& aIID,
                                                  PRInt32 aFlags)
 {
-  RemoveEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE, nsnull, aFlags);
+  RemoveEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE, nsnull, aFlags, nsnull);
   return NS_OK;
 }
 
@@ -765,20 +770,20 @@ nsresult nsEventListenerManager::GetIdentifiersForType(nsIAtom* aType, EventArra
 NS_IMETHODIMP
 nsEventListenerManager::AddEventListenerByType(nsIDOMEventListener *aListener, 
                                                const nsAString& aType,
-                                               PRInt32 aFlags)
+                                               PRInt32 aFlags,
+                                               nsIDOMEventGroup* aEvtGrp)
 {
   PRInt32 subType;
   EventArrayType arrayType;
-  nsCOMPtr<nsIAtom> atom =
-           dont_AddRef(NS_NewAtom(NS_LITERAL_STRING("on") + aType));
+  nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aType);
 
   if (NS_OK == GetIdentifiersForType(atom, &arrayType, &subType)) {
-    AddEventListener(aListener, arrayType, subType, nsnull, aFlags);
+    AddEventListener(aListener, arrayType, subType, nsnull, aFlags, aEvtGrp);
   }
   else {
     const nsPromiseFlatString& flatString = PromiseFlatString(aType); 
     nsStringKey key(flatString);
-    AddEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags);
+    AddEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags, aEvtGrp);
   }
 
   return NS_OK;
@@ -787,20 +792,20 @@ nsEventListenerManager::AddEventListenerByType(nsIDOMEventListener *aListener,
 NS_IMETHODIMP
 nsEventListenerManager::RemoveEventListenerByType(nsIDOMEventListener *aListener, 
                                                   const nsAString& aType,
-                                                  PRInt32 aFlags)
+                                                  PRInt32 aFlags,
+                                                  nsIDOMEventGroup* aEvtGrp)
 {
   PRInt32 subType;
   EventArrayType arrayType;
-  nsCOMPtr<nsIAtom> atom =
-           dont_AddRef(NS_NewAtom(NS_LITERAL_STRING("on") + aType));
+  nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aType);
 
   if (NS_OK == GetIdentifiersForType(atom, &arrayType, &subType)) {
-    RemoveEventListener(aListener, arrayType, subType, nsnull, aFlags);
+    RemoveEventListener(aListener, arrayType, subType, nsnull, aFlags, aEvtGrp);
   }
   else {
     const nsPromiseFlatString& flatString = PromiseFlatString(aType); 
     nsStringKey key(flatString);
-    RemoveEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags);
+    RemoveEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags, aEvtGrp);
   }
 
   return NS_OK;
@@ -852,7 +857,7 @@ nsEventListenerManager::SetJSEventListener(nsIScriptContext *aContext,
                                      getter_AddRefs(scriptListener));
     if (NS_SUCCEEDED(rv)) {
       AddEventListener(scriptListener, arrayType, NS_EVENT_BITS_NONE, nsnull,
-                       NS_EVENT_FLAG_BUBBLE | NS_PRIV_EVENT_FLAG_SCRIPT);
+                       NS_EVENT_FLAG_BUBBLE | NS_PRIV_EVENT_FLAG_SCRIPT, nsnull);
 
       ls = FindJSEventListener(arrayType);
     }
@@ -1166,7 +1171,7 @@ nsEventListenerManager::HandleEventSubType(nsListenerStruct* aListenerStruct,
         if (NS_SUCCEEDED(result)) {
           nsAutoString eventString;
           if (NS_SUCCEEDED(aDOMEvent->GetType(eventString))) {
-            nsCOMPtr<nsIAtom> atom = dont_AddRef(NS_NewAtom(NS_LITERAL_STRING("on") + eventString));
+            nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + eventString);
 
             result = CompileEventHandlerInternal(scriptCX, target, atom,
                                                  aListenerStruct, aSubType);
@@ -1205,6 +1210,10 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
   NS_ENSURE_ARG_POINTER(aEventStatus);
   nsresult ret = NS_OK;
 
+  if (aEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH) {
+    return ret;
+  }
+
   if (aFlags & NS_EVENT_FLAG_INIT) {
     aFlags |= (NS_EVENT_FLAG_BUBBLE | NS_EVENT_FLAG_CAPTURE);
   }
@@ -1212,6 +1221,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
   if (*aEventStatus == nsEventStatus_eConsumeNoDefault) {
     aEvent->flags |= NS_EVENT_FLAG_NO_DEFAULT;
   }
+  PRUint16 currentGroup = aFlags & NS_EVENT_FLAG_SYSTEM_EVENT;
 
   /* Without this addref, certain events, notably ones bound to
      keys which cause window deletion, can destroy this object
@@ -1230,7 +1240,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
         if (NS_SUCCEEDED(ret)) {
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               ret = HandleEventSubType(ls, *aDOMEvent, aCurrentTarget, NS_EVENT_BITS_NONE, aFlags);
             }
           }
@@ -1261,7 +1271,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
             
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMMouseListener> mouseListener (do_QueryInterface(ls->mListener));
               if (mouseListener) {
                 switch(aEvent->message) {
@@ -1366,7 +1376,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMMouseMotionListener> mousemlistener (do_QueryInterface(ls->mListener));
               if (mousemlistener) {
                 switch(aEvent->message) {
@@ -1461,7 +1471,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMContextMenuListener> contextMenuListener (do_QueryInterface(ls->mListener));
               if (contextMenuListener) {
                 switch(aEvent->message) {
@@ -1511,7 +1521,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for(int i=0; !mListenersRemoved && listeners && i<listeners->Count();i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMCompositionListener> compositionListener (do_QueryInterface(ls->mListener));
               if (compositionListener) {
                 switch (aEvent->message) {
@@ -1574,7 +1584,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMTextListener> textListener (do_QueryInterface(ls->mListener));
               if (textListener) {
                 ret = textListener->HandleText(*aDOMEvent);
@@ -1607,7 +1617,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMKeyListener> keyListener (do_QueryInterface(ls->mListener));
               if (keyListener) {
                 switch(aEvent->message) {
@@ -1670,7 +1680,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMFocusListener> focusListener (do_QueryInterface(ls->mListener));
               if (focusListener) {
                 switch(aEvent->message) {
@@ -1727,7 +1737,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMFormListener> formListener(do_QueryInterface(ls->mListener));
               if (formListener) {
                 switch(aEvent->message) {
@@ -1812,7 +1822,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMLoadListener> loadListener(do_QueryInterface(ls->mListener));
               if (loadListener) {
                 switch(aEvent->message) {
@@ -1881,7 +1891,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMPaintListener> paintListener(do_QueryInterface(ls->mListener));
               if (paintListener) {
                 switch(aEvent->message) {
@@ -1948,7 +1958,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *dragStruct = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (dragStruct->mFlags & aFlags) {
+            if (dragStruct->mFlags & aFlags && dragStruct->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMDragListener> dragListener ( do_QueryInterface(dragStruct->mListener) );
               if ( dragListener ) {
                 switch (aEvent->message) {
@@ -2021,7 +2031,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMScrollListener> scrollListener(do_QueryInterface(ls->mListener));
               if (scrollListener) {
                 switch(aEvent->message) {
@@ -2089,7 +2099,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMXULListener> xulListener(do_QueryInterface(ls->mListener));
               if (xulListener) {
                 switch(aEvent->message) {
@@ -2202,7 +2212,7 @@ nsresult nsEventListenerManager::HandleEvent(nsIPresContext* aPresContext,
           for (int i=0; !mListenersRemoved && listeners && i<listeners->Count(); i++) {
             nsListenerStruct *ls = (nsListenerStruct*)listeners->ElementAt(i);
 
-            if (ls->mFlags & aFlags) {
+            if (ls->mFlags & aFlags && ls->mGroupFlags == currentGroup) {
               nsCOMPtr<nsIDOMMutationListener> mutationListener = do_QueryInterface(ls->mListener);
               if (mutationListener) {
                 switch(aEvent->message) {
@@ -2317,9 +2327,13 @@ nsEventListenerManager::CreateEvent(nsIPresContext* aPresContext,
   *aDOMEvent = nsnull;
 
   nsAutoString str(aEventType);
-  if (!aEvent && !str.EqualsIgnoreCase("MouseEvents") && !str.EqualsIgnoreCase("KeyEvents") &&
-      !str.EqualsIgnoreCase("HTMLEvents") && !str.EqualsIgnoreCase("MutationEvents") &&
-      !str.EqualsIgnoreCase("MouseScrollEvents") && !str.EqualsIgnoreCase("Events")) {
+  if (!aEvent && !str.EqualsIgnoreCase("MouseEvents") &&
+                 !str.EqualsIgnoreCase("KeyEvents") &&
+                 !str.EqualsIgnoreCase("HTMLEvents") &&
+                 !str.EqualsIgnoreCase("MutationEvents") &&
+                 !str.EqualsIgnoreCase("MouseScrollEvents") &&
+                 !str.EqualsIgnoreCase("PopupBlockedEvents") &&
+                 !str.EqualsIgnoreCase("Events")) {
     return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
   }
 
@@ -2583,6 +2597,42 @@ nsEventListenerManager::SetListenerTarget(nsISupports* aTarget)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsEventListenerManager::GetSystemEventGroupLM(nsIDOMEventGroup **aGroup)
+{
+  if (!gSystemEventGroup) {
+    nsresult result;
+    nsCOMPtr<nsIDOMEventGroup> group(do_CreateInstance(kDOMEventGroupCID,&result));
+    if (NS_FAILED(result))
+      return result;
+
+    gSystemEventGroup = group;
+    NS_ADDREF(gSystemEventGroup);
+  }
+
+  *aGroup = gSystemEventGroup;
+  NS_ADDREF(*aGroup);
+  return NS_OK;
+}
+
+nsresult
+nsEventListenerManager::GetDOM2EventGroup(nsIDOMEventGroup **aGroup)
+{
+  if (!gDOM2EventGroup) {
+    nsresult result;
+    nsCOMPtr<nsIDOMEventGroup> group(do_CreateInstance(kDOMEventGroupCID,&result));
+    if (NS_FAILED(result))
+      return result;
+
+    gDOM2EventGroup = group;
+    NS_ADDREF(gDOM2EventGroup);
+  }
+
+  *aGroup = gDOM2EventGroup;
+  NS_ADDREF(*aGroup);
+  return NS_OK;
+}
+
 // nsIDOMEventTarget interface
 NS_IMETHODIMP 
 nsEventListenerManager::AddEventListener(const nsAString& aType, 
@@ -2591,7 +2641,7 @@ nsEventListenerManager::AddEventListener(const nsAString& aType,
 {
   PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
 
-  return AddEventListenerByType(aListener, aType, flags);
+  return AddEventListenerByType(aListener, aType, flags, nsnull);
 }
 
 NS_IMETHODIMP 
@@ -2601,40 +2651,85 @@ nsEventListenerManager::RemoveEventListener(const nsAString& aType,
 {
   PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
   
-  return RemoveEventListenerByType(aListener, aType, flags);
+  return RemoveEventListenerByType(aListener, aType, flags, nsnull);
 }
 
 NS_IMETHODIMP
 nsEventListenerManager::DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval)
 {
-  //If we don't have a target set this doesn't work.
-  if (mTarget) {
-    nsCOMPtr<nsIContent> targetContent(do_QueryInterface(mTarget));
-    if (targetContent) {
-      nsCOMPtr<nsIDocument> document;
-      targetContent->GetDocument(*getter_AddRefs(document));
+  nsCOMPtr<nsIContent> targetContent(do_QueryInterface(mTarget));
+  if (!targetContent) {
+    // nothing to dispatch on -- bad!
+    return NS_ERROR_FAILURE;
+  }
+  
+  nsCOMPtr<nsIDocument> document;
+  targetContent->GetDocument(*getter_AddRefs(document));
 
-      if (document) {
-        // Obtain a presentation context
-        PRInt32 count = document->GetNumberOfShells();
-        if (count == 0)
-          return NS_OK;
-
-        nsCOMPtr<nsIPresShell> shell;
-        document->GetShellAt(0, getter_AddRefs(shell));
-
-        // Retrieve the context
-        nsCOMPtr<nsIPresContext> aPresContext;
-        shell->GetPresContext(getter_AddRefs(aPresContext));
-
-        nsCOMPtr<nsIEventStateManager> esm;
-        if (NS_SUCCEEDED(aPresContext->GetEventStateManager(getter_AddRefs(esm)))) {
-          return esm->DispatchNewEvent(mTarget, aEvent, _retval);
-        }
-      }
+  if (!document) {
+    nsCOMPtr<nsINodeInfo> nodeInfo;
+    targetContent->GetNodeInfo(*getter_AddRefs(nodeInfo));
+    if (nodeInfo) {
+      nodeInfo->GetDocument(*getter_AddRefs(document));
     }
   }
-  return NS_ERROR_FAILURE;
+
+  // Do nothing if the element does not belong to a document
+  if (!document) {
+    return NS_OK;
+  }
+
+  // Obtain a presentation shell
+  nsCOMPtr<nsIPresShell> shell;
+  document->GetShellAt(0, getter_AddRefs(shell));
+  if (!shell) {
+    return NS_OK;
+  }
+  
+  // Retrieve the context
+  nsCOMPtr<nsIPresContext> aPresContext;
+  shell->GetPresContext(getter_AddRefs(aPresContext));
+
+  nsCOMPtr<nsIEventStateManager> esm;
+  nsresult rv = aPresContext->GetEventStateManager(getter_AddRefs(esm));
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  return esm->DispatchNewEvent(mTarget, aEvent, _retval);
+}
+
+// nsIDOM3EventTarget interface
+NS_IMETHODIMP 
+nsEventListenerManager::AddGroupedEventListener(const nsAString& aType, 
+                                                nsIDOMEventListener* aListener, 
+                                                PRBool aUseCapture,
+                                                nsIDOMEventGroup* aEvtGrp)
+{
+  PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
+
+  return AddEventListenerByType(aListener, aType, flags, aEvtGrp);
+}
+
+NS_IMETHODIMP 
+nsEventListenerManager::RemoveGroupedEventListener(const nsAString& aType, 
+                                            nsIDOMEventListener* aListener, 
+                                            PRBool aUseCapture,
+                                            nsIDOMEventGroup* aEvtGrp)
+{
+  PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
+  
+  return RemoveEventListenerByType(aListener, aType, flags, aEvtGrp);
+}
+
+NS_IMETHODIMP
+nsEventListenerManager::CanTrigger(const nsAString & type, PRBool *_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsEventListenerManager::IsRegisteredHere(const nsAString & type, PRBool *_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 // nsIDOMEventReceiver interface
@@ -2665,6 +2760,12 @@ nsEventListenerManager::HandleEvent(nsIDOMEvent *aEvent)
 {
   PRBool noDefault;
   return DispatchEvent(aEvent, &noDefault);
+}
+
+NS_IMETHODIMP
+nsEventListenerManager::GetSystemEventGroup(nsIDOMEventGroup **aGroup)
+{
+  return GetSystemEventGroupLM(aGroup);
 }
 
 void nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl, 

@@ -68,7 +68,6 @@
 
 nsAddbookProtocolHandler::nsAddbookProtocolHandler()
 {
-  NS_INIT_ISUPPORTS();
   mAddbookOperation = nsIAddbookUrlOperation::InvalidUrl;
 }
 
@@ -110,7 +109,7 @@ NS_IMETHODIMP nsAddbookProtocolHandler::NewURI(const nsACString &aSpec,
   nsCOMPtr <nsIURI> uri = do_QueryInterface(addbookUrl, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  NS_IF_ADDREF(*_retval = uri);
+  NS_ADDREF(*_retval = uri);
   return NS_OK;
 }
 
@@ -137,9 +136,7 @@ nsAddbookProtocolHandler::GenerateXMLOutputChannel( nsString &aOutput,
   NS_ENSURE_SUCCESS(rv, rv);
   
   rv = NS_NewInputStreamChannel(&channel, aURI, inStr,
-                                NS_LITERAL_CSTRING("text/xml"),
-                                NS_LITERAL_CSTRING(""),
-                                utf8String.Length());
+                                NS_LITERAL_CSTRING("text/xml"));
   NS_ENSURE_SUCCESS(rv, rv);
   
   *_retval = channel;
@@ -234,7 +231,7 @@ nsAddbookProtocolHandler::GeneratePrintOutput(nsIAddbookUrl *addbookUrl,
   uri.Insert(':', pos);
 
   nsCOMPtr <nsIRDFResource> resource;
-  rv = rdfService->GetResource(uri.get(), getter_AddRefs(resource));
+  rv = rdfService->GetResource(uri, getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv,rv);
   
   nsCOMPtr <nsIAbDirectory> directory = do_QueryInterface(resource, &rv);

@@ -160,11 +160,46 @@ interface jsdIDebuggerService : nsISupports
      * When this flag is set the internal call hook will collect profile data.
      */
     const unsigned long COLLECT_PROFILE_DATA     = 0x08;
+    /**
+     * When this flag is set, stack frames that are disabled for debugging
+     * will not appear in the call stack chain.
+     */
+    const unsigned long HIDE_DISABLED_FRAMES     = 0x10;
+    /**
+     * When this flag is set, the debugger will only check the
+     * JSD_SCRIPT_DEBUG_BIT on the top (most recent) stack frame.  This
+     * makes it possible to stop in an enabled frame which was called from
+     * a stack that contains a disabled frame.
+     *
+     * When this flag is *not* set, any stack that contains a disabled frame
+     * will not be debugged (the execution hook will not be invoked.)
+     *
+     * This only applies when the reason for calling the hook would have
+     * been TYPE_INTERRUPTED or TYPE_THROW.  TYPE_BREAKPOINT,
+     * TYPE_DEBUG_REQUESTED, and TYPE_DEBUGGER_KEYWORD always stop, regardless
+     * of this setting, as long as the top frame is not disabled.
+     *
+     * If HIDE_DISABLED_FRAMES is set, this is effectively set as well.
+     */
+    const unsigned long MASK_TOP_FRAME_ONLY     = 0x20;
     
     /**
      * Debugger service flags.
      */
     attribute unsigned long flags;
+    
+    /**
+     * Major version number of implementation.
+     */
+    readonly attribute unsigned long implementationMajor;
+    /**
+     * Minor version number of implementation.
+     */
+    readonly attribute unsigned long implementationMinor;
+    /**
+     * Free form string identifier for implementation.
+     */
+    readonly attribute string implementationString;
     
     /**
      * |true| if the debugger should register an app-start observer in order
@@ -272,7 +307,7 @@ interface jsdIDebuggerService : nsISupports
     /**
      * Enumerate registered filters.  This routine refreshes each filter before
      * passing them on to the enumeration function.  Calling this with a null
-     * |enumerator| is equivilant to jsdIService::refreshFilters.
+     * |enumerator| is equivalent to jsdIService::refreshFilters.
      *
      * @param enumerator jsdIFilterEnumerator instance to be called back for the
      *                   enumeration.
@@ -281,7 +316,7 @@ interface jsdIDebuggerService : nsISupports
     /**
      * Force the debugger to resync its internal filter cache with the
      * actual values in the jsdIFilter objects.  To refresh a single filter
-     * use jsdIService::swapFilters.  This method is equivilant to
+     * use jsdIService::swapFilters.  This method is equivalent to
      * jsdIService::enumerateFilters with a null enumerator.
      */
     void refreshFilters ();
@@ -867,6 +902,10 @@ interface jsdIScript : jsdIEphemeral
      * invalidated.
      */
     readonly attribute string        functionName;
+    /**
+     * Fetch the function object as a jsdIValue.
+     */
+    readonly attribute jsdIValue     functionObject;
     /**
      * Source code for this script, without function declaration.
      */

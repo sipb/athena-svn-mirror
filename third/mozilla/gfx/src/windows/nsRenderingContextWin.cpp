@@ -168,10 +168,8 @@ GraphicsState :: ~GraphicsState()
 #define NOT_SETUP 0x33
 static PRBool gIsWIN95 = NOT_SETUP;
 
-#ifdef IBMBIDI
 #define DONT_INIT 0
 static DWORD gBidiInfo = NOT_SETUP;
-#endif // IBMBIDI
 
 // A few of the stock objects are needed all the time, so we just get them
 // once
@@ -182,8 +180,6 @@ static HPEN   gStockWhitePen = (HPEN)::GetStockObject(WHITE_PEN);
 
 nsRenderingContextWin :: nsRenderingContextWin()
 {
-  NS_INIT_ISUPPORTS();
-
   // The first time in we initialize gIsWIN95 flag
   if (NOT_SETUP == gIsWIN95) {
     OSVERSIONINFO os;
@@ -196,7 +192,6 @@ nsRenderingContextWin :: nsRenderingContextWin()
     else {
       gIsWIN95 = PR_TRUE;
 
-#ifdef IBMBIDI
       if ( (os.dwMajorVersion < 4)
            || ( (os.dwMajorVersion == 4) && (os.dwMinorVersion == 0) ) ) {
         // Windows 95 or earlier: assume it's not Bidi
@@ -212,7 +207,6 @@ nsRenderingContextWin :: nsRenderingContextWin()
           gBidiInfo = GCP_REORDER;
         }
       }
-#endif // IBMBIDI
     }
   }
 
@@ -237,9 +231,7 @@ nsRenderingContextWin :: nsRenderingContextWin()
   mMainSurface = nsnull;
 
   mStateCache = new nsVoidArray();
-#ifdef IBMBIDI
   mRightToLeftText = PR_FALSE;
-#endif
 
   //create an initial GraphicsState
 
@@ -645,7 +637,6 @@ nsRenderingContextWin :: GetHints(PRUint32& aResult)
   if (gIsWIN95)
     result |= NS_RENDERING_HINT_FAST_8BIT_TEXT;
 
-#ifdef IBMBIDI
   if (NOT_SETUP == gBidiInfo) {
     InitBidiInfo();
   }
@@ -653,7 +644,6 @@ nsRenderingContextWin :: GetHints(PRUint32& aResult)
     result |= NS_RENDERING_HINT_BIDI_REORDERING;
   if (GCP_GLYPHSHAPE == (gBidiInfo & GCP_GLYPHSHAPE) )
     result |= NS_RENDERING_HINT_ARABIC_SHAPING;
-#endif // IBMBIDI
   
   aResult = result;
 
@@ -1038,7 +1028,7 @@ NS_IMETHODIMP nsRenderingContextWin :: GetCurrentTransform(nsTransform2D *&aTran
   return NS_OK;
 }
 
-NS_IMETHODIMP nsRenderingContextWin :: CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
+NS_IMETHODIMP nsRenderingContextWin :: CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
 {
   nsDrawingSurfaceWin *surf = new nsDrawingSurfaceWin();
 
@@ -1046,10 +1036,7 @@ NS_IMETHODIMP nsRenderingContextWin :: CreateDrawingSurface(nsRect *aBounds, PRU
   {
     NS_ADDREF(surf);
 
-    if (nsnull != aBounds)
-      surf->Init(mMainDC, aBounds->width, aBounds->height, aSurfFlags);
-    else
-      surf->Init(mMainDC, 0, 0, aSurfFlags);
+    surf->Init(mMainDC, aBounds.width, aBounds.height, aSurfFlags);
   }
 
   aSurface = (nsDrawingSurface)surf;
@@ -1827,7 +1814,8 @@ do_BreakGetTextDimensions(const nsFontSwitch* aFontSwitch,
       // Find the nearest place to break that is less than or equal to
       // the estimated break offset
       breakIndex = data->mPrevBreakState_BreakIndex;
-      while (data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
+      while (breakIndex + 1 < data->mNumBreaks &&
+             data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
         ++breakIndex;
       }
 
@@ -2349,12 +2337,10 @@ NS_IMETHODIMP nsRenderingContextWin :: DrawString(const PRUnichar *aString, PRUi
     mTranMatrix->TransformCoord(&data.mX, &data.mY);
   }
 
-#ifdef IBMBIDI
   if (mRightToLeftText) {
     metrics->ResolveBackwards(mDC, aString, aLength, do_DrawString, &data);
   }
   else
-#endif // IBMBIDI
   {
     metrics->ResolveForwards(mDC, aString, aLength, do_DrawString, &data);
   }
@@ -2518,90 +2504,6 @@ nsRenderingContextWin::GetBoundingMetrics(const PRUnichar*   aString,
   return rv;
 }
 #endif // MOZ_MATHML
-
-NS_IMETHODIMP nsRenderingContextWin :: DrawImage(nsIImage *aImage, nscoord aX, nscoord aY)
-{
-  NS_PRECONDITION(PR_TRUE == mInitialized, "!initialized");
-
-  nscoord width, height;
-
-  width = NSToCoordRound(mP2T * aImage->GetWidth());
-  height = NSToCoordRound(mP2T * aImage->GetHeight());
-
-  return DrawImage(aImage, aX, aY, width, height);
-}
-
-NS_IMETHODIMP nsRenderingContextWin :: DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                                        nscoord aWidth, nscoord aHeight) 
-{
-  nsRect  tr;
-
-  tr.x = aX;
-  tr.y = aY;
-  tr.width = aWidth;
-  tr.height = aHeight;
-
-  return DrawImage(aImage, tr);
-}
-
-NS_IMETHODIMP nsRenderingContextWin :: DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect)
-{
-  nsRect	sr,dr;
-
-	sr = aSRect;
-	mTranMatrix->TransformCoord(&sr.x, &sr.y, &sr.width, &sr.height);
-	sr.x = aSRect.x;
-	sr.y = aSRect.y;
-	mTranMatrix->TransformNoXLateCoord(&sr.x, &sr.y);
-
-  dr = aDRect;
-	mTranMatrix->TransformCoord(&dr.x, &dr.y, &dr.width, &dr.height);
-
-  return aImage->Draw(*this, mSurface, sr.x, sr.y, sr.width, sr.height, dr.x, dr.y, dr.width, dr.height);
-}
-
-NS_IMETHODIMP nsRenderingContextWin :: DrawImage(nsIImage *aImage, const nsRect& aRect)
-{
-  nsRect	tr;
-
-	tr = aRect;
-	mTranMatrix->TransformCoord(&tr.x, &tr.y, &tr.width, &tr.height);
-
-  return aImage->Draw(*this, mSurface, tr.x, tr.y, tr.width, tr.height);
-}
-
-
-/** ---------------------------------------------------
- *  See documentation in nsIRenderingContext.h
- *	@update 3/16/00 dwc
- */
-PRBool 
-nsRenderingContextWin::CanTile(nscoord aWidth,nscoord aHeight)
-{
-PRInt32 canRaster;
-
-  // find out if the surface is a printer.
-  ((nsDrawingSurfaceWin *)mSurface)->GetTECHNOLOGY(&canRaster);
-  if(canRaster != DT_RASPRINTER){
-    // XXX This may need tweaking for win98
-    if (PR_TRUE == gIsWIN95) {
-      // windows 98
-      if((aWidth<8)&&(aHeight<8)){
-        return PR_FALSE;    // this does not seem to work on win 98
-      }else{
-        return PR_FALSE;
-      }
-    }
-    else {
-      // windows NT
-      return PR_FALSE;
-    }
-  } else {
-    return PR_FALSE;
-  }
-  
-
-}
 
 NS_IMETHODIMP nsRenderingContextWin :: CopyOffScreenBits(nsDrawingSurface aSrcSurf,
                                                          PRInt32 aSrcX, PRInt32 aSrcY,
@@ -3039,7 +2941,6 @@ nsRenderingContextWin::ReleaseBackbuffer(void) {
   return DestroyCachedBackbuffer();
 }
 
-#ifdef IBMBIDI
 /**
  * Let the device context know whether we want text reordered with
  * right-to-left base direction. The Windows implementation does this
@@ -3079,7 +2980,11 @@ nsRenderingContextWin::InitBidiInfo()
     const PRUnichar one     = 0x0031;
 
     int distanceArray[2];
+#ifdef __MINGW32__
+    UINT glyphArray[2];
+#else
     PRUnichar glyphArray[2];
+#endif
     PRUnichar outStr[] = {0, 0};
 
     GCP_RESULTSW gcpResult;
@@ -3115,7 +3020,6 @@ nsRenderingContextWin::InitBidiInfo()
     }
   }
 }
-#endif // IBMBIDI
 
 
 

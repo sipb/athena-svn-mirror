@@ -52,7 +52,7 @@ endif
 platform::
 	@echo $(OBJDIR_NAME)
 
-ifeq (,$(filter-out WIN%,$(OS_TARGET)))
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 USE_NT_C_SYNTAX=1
 endif
 
@@ -87,6 +87,10 @@ import::
 		"$(XPHEADER_JAR)=$(IMPORT_XP_DIR)|$(SOURCE_XP_DIR)/public/|v" \
 		"$(MDHEADER_JAR)=$(IMPORT_MD_DIR)|$(SOURCE_MD_DIR)/include|"        \
 		"$(MDBINARY_JAR)=$(IMPORT_MD_DIR)|$(SOURCE_MD_DIR)|"
+# On Mac OS X ranlib needs to be rerun after static libs are moved.
+ifeq ($(OS_TARGET),Darwin)
+	find $(SOURCE_MD_DIR)/lib -name "*.a" -exec $(RANLIB) {} \;
+endif
 
 export:: 
 	+$(LOOP_OVER_DIRS)
@@ -106,9 +110,6 @@ ifdef LIBRARY
 endif
 ifdef SHARED_LIBRARY
 	$(INSTALL) -m 775 $(SHARED_LIBRARY) $(SOURCE_LIB_DIR)
-ifeq ($(OS_TARGET),OpenVMS)
-	$(INSTALL) -m 775 $(SHARED_LIBRARY:$(DLL_SUFFIX)=vms) $(SOURCE_LIB_DIR)
-endif
 endif
 ifdef IMPORT_LIBRARY
 	$(INSTALL) -m 775 $(IMPORT_LIBRARY) $(SOURCE_LIB_DIR)
@@ -284,7 +285,7 @@ endif
 
 $(PROGRAM): $(OBJS) $(EXTRA_LIBS)
 	@$(MAKE_OBJDIR)
-ifeq (,$(filter-out WIN%,$(OS_TARGET)))
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 	$(MKPROG) $(subst /,\\,$(OBJS)) -Fe$@ -link $(LDFLAGS) $(subst /,\\,$(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS))
 else
 ifdef XP_OS2_VACPP
@@ -309,9 +310,9 @@ endif
 
 
 ifeq ($(OS_TARGET),OS2)
-$(IMPORT_LIBRARY): $(SHARED_LIBRARY)
+$(IMPORT_LIBRARY): $(MAPFILE)
 	rm -f $@
-	$(IMPLIB) $@ $(patsubst %.lib,%.dll.def,$@)
+	$(IMPLIB) $@ $(MAPFILE)
 	$(RANLIB) $@
 endif
 
@@ -336,34 +337,18 @@ ifeq ($(OS_TARGET)$(OS_RELEASE), AIX4.1)
 	-bM:SRE -bnoentry $(OS_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS)
 else
 ifeq (,$(filter-out WIN%,$(OS_TARGET)))
-	$(LINK_DLL) -MAP $(DLLBASE) $(subst /,\\,$(OBJS) $(SUB_SHLOBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS) $(LD_LIBS) $(RES))
+ifdef NS_USE_GCC
+	$(LINK_DLL) $(OBJS) $(SUB_SHLOBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS) $(LD_LIBS) $(RES)
 else
-ifeq ($(OS_TARGET),OS2)
-	@cmd /C "echo LIBRARY $(notdir $(basename $(SHARED_LIBRARY))) INITINSTANCE TERMINSTANCE >$@.def"
-	@cmd /C "echo PROTMODE >>$@.def"
-	@cmd /C "echo CODE    LOADONCALL MOVEABLE DISCARDABLE >>$@.def"
-	@cmd /C "echo DATA    PRELOAD MOVEABLE MULTIPLE NONSHARED >>$@.def"	
-	@cmd /C "echo EXPORTS >>$@.def"
-	$(FILTER) $(OBJS) >>$@.def
-ifdef SUB_SHLOBJS
-	@echo Number of words in OBJ list = $(words $(SUB_SHLOBJS))
-	@echo If above number is over 100, need to reedit coreconf/rules.mk
-	-$(FILTER) $(wordlist 1,20,$(SUB_SHLOBJS)) >>$@.def
-	-$(FILTER) $(wordlist 21,40,$(SUB_SHLOBJS)) >>$@.def
-	-$(FILTER) $(wordlist 41,60,$(SUB_SHLOBJS)) >>$@.def
-	-$(FILTER) $(wordlist 61,80,$(SUB_SHLOBJS)) >>$@.def
-	-$(FILTER) $(wordlist 81,100,$(SUB_SHLOBJS)) >>$@.def
+	$(LINK_DLL) -MAP $(DLLBASE) $(subst /,\\,$(OBJS) $(SUB_SHLOBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS) $(LD_LIBS) $(RES))
 endif
-endif #OS2
+else
 ifdef XP_OS2_VACPP
-	$(MKSHLIB) $(DLLFLAGS) $(LDFLAGS) $(OBJS) $(SUB_SHLOBJS) $(LD_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $@.def
+	$(MKSHLIB) $(DLLFLAGS) $(LDFLAGS) $(OBJS) $(SUB_SHLOBJS) $(LD_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS)
 else
 	$(MKSHLIB) -o $@ $(OBJS) $(SUB_SHLOBJS) $(LD_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS)
 endif
 	chmod +x $@
-ifeq ($(OS_TARGET),OpenVMS)
-	@echo "`translate $@`" > $(@:$(DLL_SUFFIX)=vms)
-endif
 ifeq ($(OS_TARGET),Darwin)
 ifdef MAPFILE
 	nmedit -s $(MAPFILE) $@
@@ -376,7 +361,11 @@ ifeq (,$(filter-out WIN%,$(OS_TARGET)))
 $(RES): $(RESNAME)
 	@$(MAKE_OBJDIR)
 # The resource compiler does not understand the -U option.
+ifdef NS_USE_GCC
+	$(RC) $(filter-out -U%,$(DEFINES)) $(INCLUDES:-I%=--include-dir %) -o $@ $<
+else
 	$(RC) $(filter-out -U%,$(DEFINES)) $(INCLUDES) -Fo$@ $<
+endif
 	@echo $(RES) finished
 endif
 
@@ -387,7 +376,7 @@ $(MAPFILE): $(LIBRARY_NAME).def
 
 $(OBJDIR)/$(PROG_PREFIX)%$(PROG_SUFFIX): $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX)
 	@$(MAKE_OBJDIR)
-ifeq (,$(filter-out WIN%,$(OS_TARGET)))
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 	$(MKPROG) $(OBJDIR)/$(PROG_PREFIX)$*$(OBJ_SUFFIX) -Fe$@ -link \
 	$(LDFLAGS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
 else
@@ -399,25 +388,58 @@ WCCFLAGS1 := $(subst /,\\,$(CFLAGS))
 WCCFLAGS2 := $(subst -I,-i=,$(WCCFLAGS1))
 WCCFLAGS3 := $(subst -D,-d,$(WCCFLAGS2))
 
+# Translate source filenames to absolute paths. This is required for
+# debuggers under Windows & OS/2 to find source files automatically
+
+ifeq (,$(filter-out OS2%,$(OS_TARGET)))
+NEED_ABSOLUTE_PATH := 1
+PWD := $(shell pwd)
+endif
+
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
+NEED_ABSOLUTE_PATH := 1
+ifeq (,$(findstring ;,$(PATH)))
+PWD :=  $(subst \,/,$(shell cygpath -w `pwd`))
+else
+PWD := $(shell pwd)
+endif
+endif
+
+ifdef NEED_ABSOLUTE_PATH
+abspath = $(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))
+else
+abspath = $(1)
+endif
+
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.c
 	@$(MAKE_OBJDIR)
 ifdef USE_NT_C_SYNTAX
-	$(CC) -Fo$@ -c $(CFLAGS) $<
+	$(CC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+else
+ifdef NEED_ABSOLUTE_PATH
+	$(CC) -o $@ -c $(CFLAGS) $(call abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) $<
+endif
 endif
 
 $(PROG_PREFIX)%$(OBJ_SUFFIX): %.c
 ifdef USE_NT_C_SYNTAX
-	$(CC) -Fo$@ -c $(CFLAGS) $<
+	$(CC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+else
+ifdef NEED_ABSOLUTE_PATH
+	$(CC) -o $@ -c $(CFLAGS) $(call abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) $<
 endif
+endif
 
-ifneq (,$(filter-out WIN%,$(OS_TARGET)))
+ifndef XP_OS2_VACPP
+ifneq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.s
 	@$(MAKE_OBJDIR)
 	$(AS) -o $@ $(ASFLAGS) -c $<
+endif
 endif
 
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.asm
@@ -435,9 +457,13 @@ $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.S
 $(OBJDIR)/$(PROG_PREFIX)%: %.cpp
 	@$(MAKE_OBJDIR)
 ifdef USE_NT_C_SYNTAX
-	$(CCC) -Fo$@ -c $(CFLAGS) $<
+	$(CCC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+else
+ifdef NEED_ABSOLUTE_PATH
+	$(CCC) -o $@ -c $(CFLAGS) $(call abspath,$<)
 else
 	$(CCC) -o $@ -c $(CFLAGS) $<
+endif
 endif
 
 #
@@ -455,9 +481,13 @@ ifdef STRICT_CPLUSPLUS_SUFFIX
 	rm -f $(OBJDIR)/t_$*.cc
 else
 ifdef USE_NT_C_SYNTAX
-	$(CCC) -Fo$@ -c $(CFLAGS) $<
+	$(CCC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+else
+ifdef NEED_ABSOLUTE_PATH
+	$(CCC) -o $@ -c $(CFLAGS) $(call abspath,$<)
 else
 	$(CCC) -o $@ -c $(CFLAGS) $<
+endif
 endif
 endif #STRICT_CPLUSPLUS_SUFFIX
 
@@ -849,7 +879,7 @@ endif
 
 -include $(DEPENDENCIES)
 
-ifneq (,$(filter-out OS2 WIN%,$(OS_TARGET)))
+ifneq (,$(filter-out OpenVMS OS2 WIN%,$(OS_TARGET)))
 # Can't use sed because of its 4000-char line length limit, so resort to perl
 .DEFAULT:
 	@perl -e '                                                            \

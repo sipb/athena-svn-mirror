@@ -48,13 +48,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLCustomHandler : public nsIDOMEventListener, 
                            public nsXBLEventHandler
 {
 public:
-  nsXBLCustomHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLCustomHandler(nsIDOMEventReceiver* aReceiver,
+                     nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLCustomHandler();
   
   NS_DECL_NSIDOMEVENTLISTENER
@@ -64,9 +65,9 @@ protected:
   // Members
 };
 
-extern nsresult
+nsresult
 NS_NewXBLCustomHandler(nsIDOMEventReceiver* aEventReceiver,
-                       nsIXBLPrototypeHandler* aHandlerElement, 
+                       nsXBLPrototypeHandler* aHandlerElement,
                        nsXBLCustomHandler** aResult);
 
 

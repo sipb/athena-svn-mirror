@@ -48,7 +48,6 @@
 #include "nsIServiceManager.h"
 #include "nsIFrameManager.h"
 #include "nsBidiFrames.h"
-#include "nsITextFrame.h"
 #include "nsBidiUtils.h"
 
 static const PRUnichar kSpace            = 0x0020;
@@ -67,9 +66,9 @@ static const PRUnichar ALEF              = 0x05D0;
 #define CHAR_IS_HEBREW(c) ((0x0590 <= (c)) && ((c)<= 0x05FF))
 // Note: The above code are moved from gfx/src/windows/nsRenderingContextWin.cpp
 
-extern nsresult
+nsresult
 NS_NewContinuingTextFrame(nsIPresShell* aPresShell, nsIFrame** aResult);
-extern nsresult
+nsresult
 NS_NewDirectionalFrame(nsIFrame** aNewFrame, PRUnichar aChar);
 
 nsBidiPresUtils::nsBidiPresUtils() : mArraySize(8),
@@ -126,14 +125,13 @@ CreateBidiContinuation(nsIPresContext* aPresContext,
   if (!(*aNewFrame) ) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  nsCOMPtr<nsIStyleContext> styleContext;
-  aFrame->GetStyleContext(getter_AddRefs(styleContext) );
+  nsStyleContext* styleContext = aFrame->GetStyleContext();
 
-  NS_ASSERTION(presShell, "Frame has no styleContext in nsBidiPresUtils::CreateBidiContinuation");
+  NS_ASSERTION(styleContext, "Frame has no styleContext in nsBidiPresUtils::CreateBidiContinuation");
   
   aFrame->GetParent(&parent);
 
-  NS_ASSERTION(presShell, "Couldn't get frame parent in nsBidiPresUtils::CreateBidiContinuation");
+  NS_ASSERTION(parent, "Couldn't get frame parent in nsBidiPresUtils::CreateBidiContinuation");
 
   (*aNewFrame)->Init(aPresContext, aContent, parent, styleContext, nsnull);
 
@@ -159,15 +157,11 @@ nsBidiPresUtils::Resolve(nsIPresContext* aPresContext,
 
   // handle bidi-override being set on the block itself before calling
   // InitLogicalArray.
-  const nsStyleVisibility* vis;
-  aBlockFrame->GetStyleData(eStyleStruct_Visibility,
-                            NS_REINTERPRET_CAST(const nsStyleStruct*&, vis));
-  const nsStyleTextReset* text;
-  aBlockFrame->GetStyleData(eStyleStruct_TextReset,
-                            NS_REINTERPRET_CAST(const nsStyleStruct*&, text));
+  const nsStyleVisibility* vis = aBlockFrame->GetStyleVisibility();
+  const nsStyleTextReset* text = aBlockFrame->GetStyleTextReset();
 
   if (text->mUnicodeBidi == NS_STYLE_UNICODE_BIDI_OVERRIDE) {
-    nsresult rv;
+    nsresult rv = NS_OK;
     nsIFrame *directionalFrame = nsnull;
     if (NS_STYLE_DIRECTION_RTL == vis->mDirection) {
       rv = NS_NewDirectionalFrame(&directionalFrame, kRLO);
@@ -226,24 +220,21 @@ nsBidiPresUtils::Resolve(nsIPresContext* aPresContext,
   PRInt32                  temp;
   PRInt32                  frameIndex     = -1;
   PRInt32                  frameCount     = mLogicalFrames.Count();
-  PRInt32                  contentOffset;        // offset within current frame
+  PRInt32                  contentOffset  = 0;   // offset within current frame
   PRInt32                  lineOffset     = 0;   // offset within mBuffer
   PRInt32                  logicalLimit   = 0;
   PRInt32                  numRun         = -1;
   PRUint8                  charType;
   PRUint8                  prevType       = eCharType_LeftToRight;
-  PRBool                   isTextFrame;
+  PRBool                   isTextFrame    = PR_FALSE;
   nsIFrame*                frame = nsnull;
   nsIFrame*                nextBidi;
-  nsITextFrame*            textFrame;
   nsCOMPtr<nsIAtom>        frameType;
   nsCOMPtr<nsIContent>     content;
   nsCOMPtr<nsITextContent> textContent;
   const nsTextFragment*    fragment;
 
   for (; ;) {
-    textFrame = nsnull;
-
     if (fragmentLength <= 0) {
       if (++frameIndex >= frameCount) {
         break;
@@ -312,26 +303,12 @@ nsBidiPresUtils::Resolve(nsIPresContext* aPresContext,
                                       &nextBidi, frameIndex) ) {
             break;
           }
-          frame->QueryInterface(NS_GET_IID(nsITextFrame), (void**) &textFrame);
-          if (textFrame) {
-            textFrame->SetOffsets(contentOffset, contentOffset + runLength);
-            nsFrameState frameState;
-            frame->GetFrameState(&frameState);
-            frameState |= NS_FRAME_IS_BIDI;
-            frame->SetFrameState(frameState);
-          }
+          frame->AdjustOffsetsForBidi(contentOffset, contentOffset + runLength);
           frame = nextBidi;
           contentOffset += runLength;
         } // if (runLength < fragmentLength)
         else {
-          frame->QueryInterface(NS_GET_IID(nsITextFrame), (void**) &textFrame);
-          if (textFrame) {
-            textFrame->SetOffsets(contentOffset, contentOffset + fragmentLength);
-            nsFrameState frameState;
-            frame->GetFrameState(&frameState);
-            frameState |= NS_FRAME_IS_BIDI;
-            frame->SetFrameState(frameState);
-          }
+          frame->AdjustOffsetsForBidi(contentOffset, contentOffset + fragmentLength);
           frame->GetBidiProperty(aPresContext, nsLayoutAtoms::nextBidi,
                                  (void**) &nextBidi,sizeof(nextBidi));
           if (RemoveBidiContinuation(aPresContext, frame, nextBidi,
@@ -363,7 +340,6 @@ nsBidiPresUtils::InitLogicalArray(nsIPresContext* aPresContext,
   nsIFrame*             directionalFrame;
   nsIFrame*             kid;
   nsCOMPtr<nsIAtom>     frameType;
-  const nsStyleDisplay* display;
   nsresult              rv;
   nsresult              res = NS_OK;
 
@@ -372,15 +348,11 @@ nsBidiPresUtils::InitLogicalArray(nsIPresContext* aPresContext,
        frame->GetNextSibling(&frame) ) {
 
     rv = NS_ERROR_FAILURE;
-    frame->GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&) display);
+    const nsStyleDisplay* display = frame->GetStyleDisplay();
     
     if (aAddMarkers && !display->IsBlockLevel() ) {
-      const nsStyleVisibility* vis;
-      frame->GetStyleData(eStyleStruct_Visibility,
-                          NS_REINTERPRET_CAST(const nsStyleStruct*&, vis));
-      const nsStyleTextReset* text;
-      frame->GetStyleData(eStyleStruct_TextReset,
-                          NS_REINTERPRET_CAST(const nsStyleStruct*&, text));
+      const nsStyleVisibility* vis = frame->GetStyleVisibility();
+      const nsStyleTextReset* text = frame->GetStyleTextReset();
       switch (text->mUnicodeBidi) {
         case NS_STYLE_UNICODE_BIDI_NORMAL:
           break;
@@ -590,11 +562,13 @@ nsBidiPresUtils::RepositionInlineFrames(nsIPresContext*      aPresContext,
 #ifdef FIX_FOR_BUG_40882
   PRInt32 ch;
   PRInt32 charType;
-  nscoord width, dWidth, alefWidth = 0, dx = 0;
+  nscoord width, dWidth, alefWidth, dx;
   PRUnichar buf[2] = {ALEF, 0x0000};
 
   PRBool isBidiSystem;
   PRUint32 hints = 0;
+
+  dWidth = alefWidth = dx = 0;
   aRendContext->GetHints(hints);
   isBidiSystem = (hints & NS_RENDERING_HINT_BIDI_REORDERING);
 #endif // bug
@@ -650,8 +624,7 @@ nsBidiPresUtils::RepositionInlineFrames(nsIPresContext*      aPresContext,
     frame->GetBidiProperty(aPresContext, nsLayoutAtoms::baseLevel,
                            (void**) &alignRight,sizeof(alignRight));
     if (0 == (alignRight & 1) ) {
-      const nsStyleText* styleText;
-      frame->GetStyleData(eStyleStruct_Text, (const nsStyleStruct*&) styleText);
+      const nsStyleText* styleText = frame->GetStyleText();
       
       if (NS_STYLE_TEXT_ALIGN_RIGHT == styleText->mTextAlign
           || NS_STYLE_TEXT_ALIGN_MOZ_RIGHT == styleText->mTextAlign) {
@@ -917,6 +890,7 @@ nsBidiPresUtils::FormatUnicodeText(nsIPresContext*  aPresContext,
         HandleNumbers(aText,aTextLength,IBMBIDI_NUMERAL_ARABIC);
       break;
 
+    case IBMBIDI_NUMERAL_NOMINAL:
     default:
       break;
   }

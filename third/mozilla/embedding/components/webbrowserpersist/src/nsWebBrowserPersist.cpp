@@ -23,10 +23,6 @@
 
 #include "nspr.h"
 
-#define NO_XPCOM_FILE_STREAMS
-#include "nsIFileStream.h"        // Old XPCOM file streams
-#undef NO_XPCOM_FILE_STREAMS
-
 #include "nsIFileStreams.h"       // New Necko file streams
 
 #ifdef XP_MAC
@@ -35,11 +31,12 @@
 
 #include "nsNetUtil.h"
 #include "nsComponentManagerUtils.h"
-#include "nsIFileTransportService.h"
 #include "nsIStorageStream.h"
+#include "nsISeekableStream.h"
 #include "nsIHttpChannel.h"
 #include "nsIEncodedChannel.h"
 #include "nsIUploadChannel.h"
+#include "nsICachingChannel.h"
 #include "nsEscape.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
@@ -50,15 +47,19 @@
 #include "nsIFileURL.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMXMLDocument.h"
 #include "nsIDOMDocumentTraversal.h"
 #include "nsIDOMTreeWalker.h"
 #include "nsIDOMNode.h"
+#include "nsIDOMComment.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMNSDocument.h"
 #include "nsIWebProgressListener.h"
 #include "nsIAuthPrompt.h"
 #include "nsIPrompt.h"
+#include "nsISHEntry.h"
+#include "nsIWebPageDescriptor.h"
 
 #include "nsIDOMNodeFilter.h"
 #include "nsIDOMProcessingInstruction.h"
@@ -80,11 +81,13 @@
 #include "nsIDOMHTMLDocument.h"
 
 #include "ftpCore.h"
-#include "nsISocketTransportService.h"
+#include "nsISocketTransport.h"
 #include "nsIStringBundle.h"
 
 #include "nsWebBrowserPersist.h"
 
+
+#define NS_SUCCESS_DONT_FIXUP NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_GENERAL, 1)
 
 // Information about a DOM document
 struct DocData
@@ -104,6 +107,7 @@ struct URIData
     PRPackedBool mSaved;
     PRPackedBool mIsSubFrame;
     PRPackedBool mDataPathIsRelative;
+    PRPackedBool mNeedsFixup;
     nsString mFilename;
     nsString mSubFrameExt;
     nsCOMPtr<nsIURI> mFile;
@@ -204,7 +208,6 @@ nsWebBrowserPersist::nsWebBrowserPersist() :
     mWrapColumn(72),
     mEncodingFlags(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsWebBrowserPersist::~nsWebBrowserPersist()
@@ -335,9 +338,11 @@ NS_IMETHODIMP nsWebBrowserPersist::SetProgressListener(
     return NS_OK;
 }
 
-/* void saveURI (in nsIURI aURI, in string aFileName); */
+/* void saveURI (in nsIURI aURI, in nsIURI aReferrer,
+   in nsIInputStream aPostData, in wstring aExtraHeaders,
+   in nsISupports aFile); */
 NS_IMETHODIMP nsWebBrowserPersist::SaveURI(
-    nsIURI *aURI, nsIInputStream *aPostData, nsISupports *aFile)
+    nsIURI *aURI, nsISupports *aCacheKey, nsIURI *aReferrer, nsIInputStream *aPostData, const char *aExtraHeaders, nsISupports *aFile)
 {
     NS_ENSURE_TRUE(mFirstAndOnlyUse, NS_ERROR_FAILURE);
     mFirstAndOnlyUse = PR_FALSE; // Stop people from reusing this object!
@@ -347,9 +352,11 @@ NS_IMETHODIMP nsWebBrowserPersist::SaveURI(
     rv = GetValidURIFromObject(aFile, getter_AddRefs(fileAsURI));
     NS_ENSURE_SUCCESS(rv, NS_ERROR_INVALID_ARG);
 
-    return SaveURIInternal(aURI, aPostData, fileAsURI, PR_FALSE);
+    // SaveURI doesn't like broken uris.
+    mPersistFlags |= PERSIST_FLAGS_FAIL_ON_BROKEN_LINKS;
+    rv = SaveURIInternal(aURI, aCacheKey, aReferrer, aPostData, aExtraHeaders, fileAsURI, PR_FALSE);
+    return NS_FAILED(rv) ? rv : NS_OK;
 }
-
 
 /* void saveDocument (in nsIDOMDocument aDocument, in nsIURI aFileURI,
    in nsIURI aDataPathURI, in string aOutputContentType,
@@ -393,8 +400,14 @@ NS_IMETHODIMP nsWebBrowserPersist::SaveDocument(
         mEncodingFlags |= nsIDocumentEncoder::OutputFormatFlowed;
     if (aEncodingFlags & ENCODE_FLAGS_ABSOLUTE_LINKS)
         mEncodingFlags |= nsIDocumentEncoder::OutputAbsoluteLinks;
-    if (aEncodingFlags & ENCODE_FLAGS_ENCODE_ENTITIES)
-        mEncodingFlags |= nsIDocumentEncoder::OutputEncodeEntities;
+    if (aEncodingFlags & ENCODE_FLAGS_ENCODE_BASIC_ENTITIES)
+        mEncodingFlags |= nsIDocumentEncoder::OutputEncodeBasicEntities;
+    if (aEncodingFlags & ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES)
+        mEncodingFlags |= nsIDocumentEncoder::OutputEncodeLatin1Entities;
+    if (aEncodingFlags & ENCODE_FLAGS_ENCODE_HTML_ENTITIES)
+        mEncodingFlags |= nsIDocumentEncoder::OutputEncodeHTMLEntities;
+    if (aEncodingFlags & ENCODE_FLAGS_ENCODE_W3C_ENTITIES)
+        mEncodingFlags |= nsIDocumentEncoder::OutputEncodeW3CEntities;
     if (aEncodingFlags & ENCODE_FLAGS_CR_LINEBREAKS)
         mEncodingFlags |= nsIDocumentEncoder::OutputCRLineBreak;
     if (aEncodingFlags & ENCODE_FLAGS_LF_LINEBREAKS)
@@ -442,7 +455,7 @@ NS_IMETHODIMP nsWebBrowserPersist::CancelSave()
 
 nsresult
 nsWebBrowserPersist::StartUpload(nsIStorageStream *storStream, 
-    nsIURI *aDestinationURI, const char *aContentType)
+    nsIURI *aDestinationURI, const nsACString &aContentType)
 {
      // setup the upload channel if the destination is not local
     nsCOMPtr<nsIInputStream> inputstream;
@@ -604,7 +617,7 @@ NS_IMETHODIMP nsWebBrowserPersist::OnStartRequest(
 
     if (data && data->mFile)
     {
-        if (data->mCalcFileExt)
+        if (data->mCalcFileExt && !(mPersistFlags & PERSIST_FLAGS_DONT_CHANGE_FILENAMES))
         {
             // this is the first point at which the server can tell us the mimetype
             CalculateAndAppendFileExt(data->mFile, channel, data->mOriginalLocation);
@@ -658,15 +671,14 @@ NS_IMETHODIMP nsWebBrowserPersist::OnStopRequest(
     // 1) aren't canceling
     // 2) we haven't triggered the save (which we only want to trigger once)
     // 3) we aren't serializing (which will call it inside SerializeNextFile)
-    if (mOutputMap.Count() == 0 && !mCancel && !mStartSaving 
-    && !mSerializingOutput)
+    if (mOutputMap.Count() == 0 && !mCancel && !mStartSaving && !mSerializingOutput)
     {
         nsresult rv = SaveDocuments();
         NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
     }
 
     PRBool completed = PR_FALSE;
-    if (mOutputMap.Count() == 0 && mUploadList.Count() == 0)
+    if (mOutputMap.Count() == 0 && mUploadList.Count() == 0 && !mCancel)
     {
         // if no documents left in mDocList, --> done
         // if we have no files left to serialize and no error result, --> done
@@ -701,6 +713,17 @@ NS_IMETHODIMP nsWebBrowserPersist::OnStopRequest(
 // nsWebBrowserPersist::nsIStreamListener
 //*****************************************************************************
 
+static NS_METHOD DiscardSegments(nsIInputStream *input,
+                                 void *closure,
+                                 const char *buf,
+                                 PRUint32 offset,
+                                 PRUint32 count,
+                                 PRUint32 *countRead)
+{
+    *countRead = count;
+    return NS_OK;
+}
+
 NS_IMETHODIMP nsWebBrowserPersist::OnDataAvailable(
     nsIRequest* request, nsISupports *aContext, nsIInputStream *aIStream,
     PRUint32 aOffset, PRUint32 aLength)
@@ -717,8 +740,11 @@ NS_IMETHODIMP nsWebBrowserPersist::OnDataAvailable(
         nsCOMPtr<nsISupports> keyPtr = do_QueryInterface(request);
         nsISupportsKey key(keyPtr);
         OutputData *data = (OutputData *) mOutputMap.Get(&key);
-        if (!data)
-            return NS_OK;  // might be uploadData
+        if (!data) {
+            // might be uploadData; consume necko's buffer and bail...
+            PRUint32 n;
+            return aIStream->ReadSegments(DiscardSegments, nsnull, aLength, &n);
+        }
 
         PRBool readError = PR_TRUE;
 
@@ -800,7 +826,7 @@ NS_IMETHODIMP nsWebBrowserPersist::OnDataAvailable(
                 {
                     data->mStream->Close();
                     data->mStream = nsnull; // null out stream so we don't close it later
-                    rv = StartUpload(storStream, data->mFile, contentType.get());
+                    rv = StartUpload(storStream, data->mFile, contentType);
                     if (NS_FAILED(rv))
                     {
                         cancel = PR_TRUE;
@@ -889,7 +915,7 @@ NS_IMETHODIMP nsWebBrowserPersist::OnStatus(
         case NS_NET_STATUS_CONNECTED_TO:
         case NS_NET_STATUS_SENDING_TO:
         case NS_NET_STATUS_RECEIVING_FROM:
-        case NS_NET_STATUS_READ_FROM:
+        case NS_NET_STATUS_WAITING_FOR:
             break;
 
         default:
@@ -1063,7 +1089,9 @@ nsresult nsWebBrowserPersist::AppendPathToURI(nsIURI *aURI, const nsAString & aP
 }
 
 nsresult nsWebBrowserPersist::SaveURIInternal(
-    nsIURI *aURI, nsIInputStream *aPostData, nsIURI *aFile, PRBool aCalcFileExt)
+    nsIURI *aURI, nsISupports *aCacheKey, nsIURI *aReferrer,
+    nsIInputStream *aPostData, const char *aExtraHeaders,
+    nsIURI *aFile, PRBool aCalcFileExt)
 {
     NS_ENSURE_ARG_POINTER(aURI);
     NS_ENSURE_ARG_POINTER(aFile);
@@ -1080,6 +1108,34 @@ nsresult nsWebBrowserPersist::SaveURIInternal(
     else if (mPersistFlags & PERSIST_FLAGS_FROM_CACHE)
     {
         loadFlags |= nsIRequest::LOAD_FROM_CACHE;
+    }
+
+    // Extract the cache key
+    nsCOMPtr<nsISupports> cacheKey;
+    if (aCacheKey)
+    {
+        // Test if the cache key is actually a web page descriptor (docshell)
+        nsCOMPtr<nsIWebPageDescriptor> webPageDescriptor = do_QueryInterface(aCacheKey);
+        if (webPageDescriptor)
+        {
+            nsCOMPtr<nsISupports> currentDescriptor;
+            webPageDescriptor->GetCurrentDescriptor(getter_AddRefs(currentDescriptor));
+            if (currentDescriptor)
+            {
+                // Descriptor is actually a session history entry
+                nsCOMPtr<nsISHEntry> shEntry = do_QueryInterface(currentDescriptor);
+                NS_ASSERTION(shEntry, "The descriptor is meant to be a session history entry");
+                if (shEntry)
+                {
+                    shEntry->GetCacheKey(getter_AddRefs(cacheKey));
+                }
+            }
+        }
+        else
+        {
+            // Assume a plain cache key
+            cacheKey = aCacheKey;
+        }
     }
 
     // Open a channel to the URI
@@ -1104,11 +1160,18 @@ nsresult nsWebBrowserPersist::SaveURIInternal(
         }
     }
 
-    // Post data
-    if (aPostData)
+    // Set the referrer, post data and headers if any
+    nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(inputChannel));
+    if (httpChannel)
     {
-        nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(inputChannel));
-        if (httpChannel)
+        // Referrer
+        if (aReferrer)
+        {
+            httpChannel->SetReferrer(aReferrer);
+        }
+
+        // Post data
+        if (aPostData)
         {
             nsCOMPtr<nsISeekableStream> stream(do_QueryInterface(aPostData));
             if (stream)
@@ -1118,15 +1181,52 @@ nsresult nsWebBrowserPersist::SaveURIInternal(
                 nsCOMPtr<nsIUploadChannel> uploadChannel(do_QueryInterface(httpChannel));
                 NS_ASSERTION(uploadChannel, "http must support nsIUploadChannel");
                 // Attach the postdata to the http channel
-                uploadChannel->SetUploadStream(aPostData, nsnull, -1);
+                uploadChannel->SetUploadStream(aPostData, NS_LITERAL_CSTRING(""), -1);
+            }
+        }
+
+        // Cache key
+        nsCOMPtr<nsICachingChannel> cacheChannel(do_QueryInterface(httpChannel));
+        if (cacheChannel && cacheKey)
+        {
+            cacheChannel->SetCacheKey(cacheKey);
+        }
+
+        // Headers
+        if (aExtraHeaders)
+        {
+            nsCAutoString oneHeader;
+            nsCAutoString headerName;
+            nsCAutoString headerValue;
+            PRInt32 crlf = 0;
+            PRInt32 colon = 0;
+            const char *kWhitespace = "\b\t\r\n ";
+            nsCAutoString extraHeaders(aExtraHeaders);
+            while (PR_TRUE)
+            {
+                crlf = extraHeaders.Find("\r\n", PR_TRUE);
+                if (crlf == -1)
+                    break;
+                extraHeaders.Mid(oneHeader, 0, crlf);
+                extraHeaders.Cut(0, crlf + 2);
+                colon = oneHeader.Find(":");
+                if (colon == -1)
+                    break; // Should have a colon
+                oneHeader.Left(headerName, colon);
+                colon++;
+                oneHeader.Mid(headerValue, colon, oneHeader.Length() - colon);
+                headerName.Trim(kWhitespace);
+                headerValue.Trim(kWhitespace);
+                // Add the header (merging if required)
+                rv = httpChannel->SetRequestHeader(headerName, headerValue, PR_TRUE);
+                if (NS_FAILED(rv))
+                {
+                    EndDownload(NS_ERROR_FAILURE);
+                    return NS_ERROR_FAILURE;
+                }
             }
         }
     }
-
-    // Add the output transport to the output map with the channel as the key
-    nsCOMPtr<nsISupports> keyPtr = do_QueryInterface(inputChannel);
-    nsISupportsKey key(keyPtr);
-    mOutputMap.Put(&key, new OutputData(aFile, aURI, aCalcFileExt));
 
     // Read from the input channel
     rv = inputChannel->AsyncOpen(this, nsnull);
@@ -1134,11 +1234,24 @@ nsresult nsWebBrowserPersist::SaveURIInternal(
     {
         // Assume this is a protocol such as mailto: which does not feed out
         // data and just ignore it.
+        return NS_SUCCESS_DONT_FIXUP;
     }
     else if (NS_FAILED(rv))
     {
-        EndDownload(NS_ERROR_FAILURE);
-        return NS_ERROR_FAILURE;
+        // Opening failed, but do we care?
+        if (mPersistFlags & PERSIST_FLAGS_FAIL_ON_BROKEN_LINKS)
+        {
+            EndDownload(NS_ERROR_FAILURE);
+            return NS_ERROR_FAILURE;
+        }
+        return NS_SUCCESS_DONT_FIXUP;
+    }
+    else
+    {
+        // Add the output transport to the output map with the channel as the key
+        nsCOMPtr<nsISupports> keyPtr = do_QueryInterface(inputChannel);
+        nsISupportsKey key(keyPtr);
+        mOutputMap.Put(&key, new OutputData(aFile, aURI, aCalcFileExt));
     }
 
     return NS_OK;
@@ -1442,7 +1555,7 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
             nsnull,  // no dom fixup
             aFile,
             mReplaceExisting,
-            contentType.get(),
+            contentType,
             charType,
             mEncodingFlags);
         NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
@@ -1481,9 +1594,6 @@ nsresult nsWebBrowserPersist::SaveDocuments()
         if (nodeFixup)
             nodeFixup->mWebBrowserPersist = this;
 
-        // Remove document base so relative links work on the persisted version
-        SetDocumentBase(docData->mDocument, nsnull);
-
         nsCOMPtr<nsIDocument> docAsDoc = do_QueryInterface(docData->mDocument);
 
         // Get the content type
@@ -1501,12 +1611,9 @@ nsresult nsWebBrowserPersist::SaveDocuments()
             nodeFixup,
             docData->mFile,
             mReplaceExisting,
-            contentType.get(),
+            contentType,
             charType,
             mEncodingFlags);
-
-        // Restore the document's BASE URL
-        SetDocumentBase(docData->mDocument, docData->mBaseURI);
 
         if (NS_FAILED(rv))
             break;
@@ -1730,6 +1837,11 @@ nsWebBrowserPersist::MakeFilenameFromURI(nsIURI *aURI, nsString &aFilename)
     {
         nsCAutoString nameFromURL;
         url->GetFileName(nameFromURL);
+        if (mPersistFlags & PERSIST_FLAGS_DONT_CHANGE_FILENAMES)
+        {
+            fileName.AssignWithConversion(NS_UnescapeURL(nameFromURL).get());
+            goto end;
+        }
         if (!nameFromURL.IsEmpty())
         {
             // Unescape the file name (GetFileName escapes it)
@@ -1759,9 +1871,16 @@ nsWebBrowserPersist::MakeFilenameFromURI(nsIURI *aURI, nsString &aFilename)
         }
     }
 
-    // Note: Filename could be empty at this point, but we'll deal with that
-    //       problem later.
-
+    // Empty filenames can confuse the local file object later 
+    // when it attempts to set the leaf name in CalculateUniqueFilename
+    // for duplicates and ends up replacing the parent dir. To avoid
+    // the problem, all filenames are made at least one character long.
+    if (fileName.IsEmpty())
+    {
+        fileName.Append(PRUnichar('a')); // 'a' is for arbitrary
+    }
+ 
+end:
     aFilename = fileName;
     return NS_OK;
 }
@@ -2116,15 +2235,23 @@ nsWebBrowserPersist::EnumPersistURIs(nsHashKey *aKey, void *aData, void* closure
     rv = pthis->AppendPathToURI(fileAsURI, data->mFilename);
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
 
-    rv = pthis->SaveURIInternal(uri, nsnull, fileAsURI, PR_TRUE);
-
-    // Store the actual object because once it's persisted this
-    // will be fixed up with the right file extension.
-
-    data->mFile = fileAsURI;
-    data->mSaved = PR_TRUE;
-
+    rv = pthis->SaveURIInternal(uri, nsnull, nsnull, nsnull, nsnull, fileAsURI, PR_TRUE);
+    // if SaveURIInternal fails, then it will have called EndDownload,
+    // which means that |aData| is no longer valid memory.  we MUST bail.
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
+
+    if (rv == NS_OK)
+    {
+        // Store the actual object because once it's persisted this
+        // will be fixed up with the right file extension.
+
+        data->mFile = fileAsURI;
+        data->mSaved = PR_TRUE;
+    }
+    else
+    {
+        data->mNeedsFixup = PR_FALSE;
+    }
 
     if (pthis->mSerializingOutput)
         return PR_FALSE;
@@ -2166,6 +2293,13 @@ nsWebBrowserPersist::EnumCleanupURIMap(nsHashKey *aKey, void *aData, void* closu
 PRBool PR_CALLBACK
 nsWebBrowserPersist::EnumCleanupUploadList(nsHashKey *aKey, void *aData, void* closure)
 {
+    nsCOMPtr<nsISupports> keyPtr;
+    ((nsMyISupportsKey *) aKey)->GetISupports(getter_AddRefs(keyPtr));
+    nsCOMPtr<nsIChannel> channel = do_QueryInterface(keyPtr);
+    if (channel)
+    {
+        channel->Cancel(NS_BINDING_ABORTED);
+    }
     UploadData *data = (UploadData *) aData;
     if (data)
     {
@@ -2240,7 +2374,7 @@ nsWebBrowserPersist::GetQuotedAttributeValue(
     return PR_FALSE;
 }
 
-nsresult nsWebBrowserPersist::FixupXMLStyleSheetLink(nsIDOMProcessingInstruction *aPI, nsAString &aHref)
+nsresult nsWebBrowserPersist::FixupXMLStyleSheetLink(nsIDOMProcessingInstruction *aPI, const nsAString &aHref)
 {
     NS_ENSURE_ARG_POINTER(aPI);
     nsresult rv = NS_OK;
@@ -2250,28 +2384,26 @@ nsresult nsWebBrowserPersist::FixupXMLStyleSheetLink(nsIDOMProcessingInstruction
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
 
     nsAutoString href;
-    nsAutoString alternate;
-    nsAutoString charset;
-    nsAutoString title;
-    nsAutoString type;
-    nsAutoString media;
-
     GetQuotedAttributeValue(data, NS_LITERAL_STRING("href"), href);
-    GetQuotedAttributeValue(data, NS_LITERAL_STRING("alternate"), alternate);
-    GetQuotedAttributeValue(data, NS_LITERAL_STRING("charset"), charset);
-    GetQuotedAttributeValue(data, NS_LITERAL_STRING("title"), title);
-    GetQuotedAttributeValue(data, NS_LITERAL_STRING("type"), type);
-    GetQuotedAttributeValue(data, NS_LITERAL_STRING("media"), media);
 
     // Construct and set a new data value for the xml-stylesheet
-    if (!aHref.IsEmpty())
+    if (!aHref.IsEmpty() && !href.IsEmpty())
     {
+        nsAutoString alternate;
+        nsAutoString charset;
+        nsAutoString title;
+        nsAutoString type;
+        nsAutoString media;
+
+        GetQuotedAttributeValue(data, NS_LITERAL_STRING("alternate"), alternate);
+        GetQuotedAttributeValue(data, NS_LITERAL_STRING("charset"), charset);
+        GetQuotedAttributeValue(data, NS_LITERAL_STRING("title"), title);
+        GetQuotedAttributeValue(data, NS_LITERAL_STRING("type"), type);
+        GetQuotedAttributeValue(data, NS_LITERAL_STRING("media"), media);
+
         NS_NAMED_LITERAL_STRING(kCloseAttr, "\" ");
         nsAutoString newData;
-        if (!aHref.IsEmpty())
-        {
-            newData += NS_LITERAL_STRING("href=\"") + href + kCloseAttr;
-        }
+        newData += NS_LITERAL_STRING("href=\"") + aHref + kCloseAttr;
         if (!title.IsEmpty())
         {
             newData += NS_LITERAL_STRING("title=\"") + title + kCloseAttr;
@@ -2292,14 +2424,9 @@ nsresult nsWebBrowserPersist::FixupXMLStyleSheetLink(nsIDOMProcessingInstruction
         {
             newData += NS_LITERAL_STRING("alternate=\"") + alternate + kCloseAttr;
         }
-        if (newData.Length() > 0)
-        {
-            newData.Truncate(newData.Length() - 1);  // Remove the extra space on the end.
-        }
+        newData.Truncate(newData.Length() - 1);  // Remove the extra space on the end.
         aPI->SetData(newData);
     }
-
-    aHref = href;
 
     return rv;
 }
@@ -2535,6 +2662,34 @@ nsWebBrowserPersist::CloneNodeWithFixedUpURIAttributes(
         }
     }
 
+    // BASE elements are replaced by a comment so relative links are not hosed.
+
+    if (!(mPersistFlags & PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS))
+    {
+        nsCOMPtr<nsIDOMHTMLBaseElement> nodeAsBase = do_QueryInterface(aNodeIn);
+        if (nodeAsBase)
+        {
+            nsCOMPtr<nsIDOMDocument> ownerDocument;
+            nodeAsBase->GetOwnerDocument(getter_AddRefs(ownerDocument));
+            if (ownerDocument)
+            {
+                nsAutoString href;
+                nodeAsBase->GetHref(href); // Doesn't matter if this fails
+                nsCOMPtr<nsIDOMComment> comment;
+                nsAutoString commentText; commentText.Assign(NS_LITERAL_STRING(" base "));
+                if (!href.IsEmpty())
+                {
+                    commentText += NS_LITERAL_STRING("href=\"") + href + NS_LITERAL_STRING("\" ");
+                }
+                rv = ownerDocument->CreateComment(commentText, getter_AddRefs(comment));
+                if (comment)
+                {
+                    return comment->QueryInterface(NS_GET_IID(nsIDOMNode), (void **) aNodeOut);
+                }
+            }
+        }
+    }
+
     // Fix up href and file links in the elements
 
     nsCOMPtr<nsIDOMHTMLAnchorElement> nodeAsAnchor = do_QueryInterface(aNodeIn);
@@ -2761,7 +2916,7 @@ nsWebBrowserPersist::StoreURIAttribute(
         attrNode->GetNodeValue(oldValue);
         if (!oldValue.IsEmpty())
         {
-            nsCAutoString oldCValue; oldCValue.AssignWithConversion(oldValue);
+            NS_ConvertUCS2toUTF8 oldCValue(oldValue);
             return StoreURI(oldCValue.get(), aNeedsPersisting, aData);
         }
     }
@@ -2787,6 +2942,10 @@ nsWebBrowserPersist::FixupURI(nsAString &aURI)
         return NS_ERROR_FAILURE;
     }
     URIData *data = (URIData *) mURIMap.Get(&key);
+    if (!data->mNeedsFixup)
+    {
+        return NS_OK;
+    }
     nsCOMPtr<nsIURI> fileAsURI;
     if (data->mFile)
     {
@@ -2891,7 +3050,7 @@ nsWebBrowserPersist::FixupAnchor(nsIDOMNode *aNode)
     {
         nsString oldValue;
         attrNode->GetNodeValue(oldValue);
-        nsCString oldCValue; oldCValue.AssignWithConversion(oldValue);
+        NS_ConvertUCS2toUTF8 oldCValue(oldValue);
 
         // Skip empty values and self-referencing bookmarks
         if (oldCValue.IsEmpty() || oldCValue.CharAt(0) == '#')
@@ -2998,7 +3157,7 @@ nsWebBrowserPersist::CreateChannelFromURI(nsIURI *aURI, nsIChannel **aChannel)
 nsresult
 nsWebBrowserPersist::SaveDocumentWithFixup(
     nsIDocument *aDocument, nsIDocumentEncoderNodeFixup *aNodeFixup,
-    nsIURI *aFile, PRBool aReplaceExisting, const char *aFormatType,
+    nsIURI *aFile, PRBool aReplaceExisting, const nsACString &aFormatType,
     const nsString &aSaveCharset, PRUint32 aFlags)
 {
     NS_ENSURE_ARG_POINTER(aFile);
@@ -3034,7 +3193,7 @@ nsWebBrowserPersist::SaveDocumentWithFixup(
     nsCOMPtr<nsIDocumentEncoder> encoder = do_CreateInstance(contractID.get(), &rv);
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
 
-    nsAutoString newContentType; newContentType.AssignWithConversion(aFormatType);
+    NS_ConvertASCIItoUCS2 newContentType(aFormatType);
     rv = encoder->Init(aDocument, newContentType, aFlags);
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
 
@@ -3114,6 +3273,7 @@ nsWebBrowserPersist::MakeAndStoreLocalFilenameInURIMap(
     NS_ENSURE_TRUE(data, NS_ERROR_OUT_OF_MEMORY);
 
     data->mNeedsPersisting = aNeedsPersisting;
+    data->mNeedsFixup = PR_TRUE;
     data->mFilename = filename;
     data->mSaved = PR_FALSE;
     data->mIsSubFrame = PR_FALSE;
@@ -3133,7 +3293,98 @@ nsWebBrowserPersist::MakeAndStoreLocalFilenameInURIMap(
     return NS_OK;
 }
 
+struct SpecialXHTMLTags {
+    PRUnichar name[sizeof(PRUnichar)*11]; // strlen("blockquote")==10
+};
 
+static PRBool IsSpecialXHTMLTag(nsIDOMNode *aNode)
+{
+    nsAutoString ns;
+    aNode->GetNamespaceURI(ns);
+    if (!ns.Equals(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml")))
+        return PR_FALSE;
+
+    // Ordered so that typical documents work fastest
+    static SpecialXHTMLTags tags[] = {
+        {'b','o','d','y',0},
+        {'h','e','a','d',0},
+        {'i','m','g',0},
+        {'s','c','r','i','p','t',0},
+        {'a',0},
+        {'a','r','e','a',0},
+        {'l','i','n','k',0},
+        {'i','n','p','u','t',0},
+        {'f','r','a','m','e',0},
+        {'i','f','r','a','m','e',0},
+        {'o','b','j','e','c','t',0},
+        {'a','p','p','l','e','t',0},
+        {'f','o','r','m',0},
+        {'b','l','o','c','k','q','u','o','t','e',0},
+        {'q',0},
+        {'d','e','l',0},
+        {'i','n','s',0},
+        {0}};
+
+    nsAutoString localName;
+    aNode->GetLocalName(localName);
+    PRInt32 i;
+    for (i = 0; tags[i].name[0]; i++) {
+        if (localName.Equals(tags[i].name))
+        {
+            // XXX This element MAY have URI attributes, but
+            //     we are not actually checking if they are present.
+            //     That would slow us down further, and I am not so sure
+            //     how important that would be.
+            return PR_TRUE;
+        }
+    }
+
+    return PR_FALSE;
+}
+
+static PRBool HasSpecialXHTMLTags(nsIDOMNode *aParent)
+{
+    if (IsSpecialXHTMLTag(aParent))
+        return PR_TRUE;
+
+    nsCOMPtr<nsIDOMNodeList> list;
+    aParent->GetChildNodes(getter_AddRefs(list));
+    if (list)
+    {
+        PRUint32 count;
+        list->GetLength(&count);
+        PRUint32 i;
+        for (i = 0; i < count; i++) {
+            nsCOMPtr<nsIDOMNode> node;
+            list->Item(i, getter_AddRefs(node));
+            if (!node)
+                break;
+            PRUint16 nodeType;
+            node->GetNodeType(&nodeType);
+            if (nodeType == nsIDOMNode::ELEMENT_NODE) {
+                return HasSpecialXHTMLTags(node);
+            }
+        }
+    }
+
+    return PR_FALSE;
+}
+
+static PRBool NeedXHTMLBaseTag(nsIDOMDocument *aDocument)
+{
+    nsCOMPtr<nsIDOMElement> docElement;
+    aDocument->GetDocumentElement(getter_AddRefs(docElement));
+
+    nsCOMPtr<nsIDOMNode> node(do_QueryInterface(docElement));
+    if (node)
+    {
+        return HasSpecialXHTMLTags(node);
+    }
+
+    return PR_FALSE;
+}
+
+// Set document base. This could create an invalid XML document (still well-formed).
 nsresult
 nsWebBrowserPersist::SetDocumentBase(
     nsIDOMDocument *aDocument, nsIURI *aBaseURI)
@@ -3143,17 +3394,41 @@ nsWebBrowserPersist::SetDocumentBase(
         return NS_OK;
     }
 
+    NS_ENSURE_ARG_POINTER(aBaseURI);
+
+    nsCOMPtr<nsIDOMXMLDocument> xmlDoc;
     nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(aDocument);
     if (!htmlDoc)
     {
-        return NS_ERROR_FAILURE;
+        xmlDoc = do_QueryInterface(aDocument);
+        if (!xmlDoc)
+        {
+            return NS_ERROR_FAILURE;
+        }
     }
+
+    NS_NAMED_LITERAL_STRING(kXHTMLNS, "http://www.w3.org/1999/xhtml");
+    NS_NAMED_LITERAL_STRING(kHead, "head");
 
     // Find the head element
     nsCOMPtr<nsIDOMElement> headElement;
     nsCOMPtr<nsIDOMNodeList> headList;
-    aDocument->GetElementsByTagName(
-        NS_LITERAL_STRING("head"), getter_AddRefs(headList));
+    if (xmlDoc)
+    {
+        // First see if there is XHTML content that needs base 
+        // tags.
+        if (!NeedXHTMLBaseTag(aDocument))
+            return NS_OK;
+
+        aDocument->GetElementsByTagNameNS(
+            kXHTMLNS,
+            kHead, getter_AddRefs(headList));
+    }
+    else
+    {
+        aDocument->GetElementsByTagName(
+            kHead, getter_AddRefs(headList));
+    }
     if (headList)
     {
         nsCOMPtr<nsIDOMNode> headNode;
@@ -3165,10 +3440,24 @@ nsWebBrowserPersist::SetDocumentBase(
         // Create head and insert as first element
         nsCOMPtr<nsIDOMNode> firstChildNode;
         nsCOMPtr<nsIDOMNode> newNode;
-        aDocument->CreateElement(
-            NS_LITERAL_STRING("head"), getter_AddRefs(headElement));
-        aDocument->GetFirstChild(getter_AddRefs(firstChildNode));
-        aDocument->InsertBefore(headElement, firstChildNode, getter_AddRefs(newNode));
+        if (xmlDoc)
+        {
+            aDocument->CreateElementNS(
+                kXHTMLNS,
+                kHead, getter_AddRefs(headElement));
+        }
+        else
+        {
+            aDocument->CreateElement(
+                kHead, getter_AddRefs(headElement));
+        }
+        nsCOMPtr<nsIDOMElement> documentElement;
+        aDocument->GetDocumentElement(getter_AddRefs(documentElement));
+        if (documentElement)
+        {
+            documentElement->GetFirstChild(getter_AddRefs(firstChildNode));
+            documentElement->InsertBefore(headElement, firstChildNode, getter_AddRefs(newNode));
+        }
     }
     if (!headElement)
     {
@@ -3176,10 +3465,20 @@ nsWebBrowserPersist::SetDocumentBase(
     }
 
     // Find or create the BASE element
+    NS_NAMED_LITERAL_STRING(kBase, "base");
     nsCOMPtr<nsIDOMElement> baseElement;
     nsCOMPtr<nsIDOMNodeList> baseList;
-    headElement->GetElementsByTagName(
-        NS_LITERAL_STRING("base"), getter_AddRefs(baseList));
+    if (xmlDoc)
+    {
+        headElement->GetElementsByTagNameNS(
+            kXHTMLNS,
+            kBase, getter_AddRefs(baseList));
+    }
+    else
+    {
+        headElement->GetElementsByTagName(
+            kBase, getter_AddRefs(baseList));
+    }
     if (baseList)
     {
         nsCOMPtr<nsIDOMNode> baseNode;
@@ -3187,33 +3486,34 @@ nsWebBrowserPersist::SetDocumentBase(
         baseElement = do_QueryInterface(baseNode);
     }
 
-    // Add or remove the BASE element
-    if (aBaseURI)
+    // Add the BASE element
+    if (!baseElement)
     {
         if (!baseElement)
         {
             nsCOMPtr<nsIDOMNode> newNode;
-            aDocument->CreateElement(
-                NS_LITERAL_STRING("base"), getter_AddRefs(baseElement));
+            if (xmlDoc)
+            {
+                aDocument->CreateElementNS(
+                    kXHTMLNS,
+                    kBase, getter_AddRefs(baseElement));
+            }
+            else
+            {
+                aDocument->CreateElement(
+                    kBase, getter_AddRefs(baseElement));
+            }
             headElement->AppendChild(baseElement, getter_AddRefs(newNode));
         }
-        if (!baseElement)
-        {
-            return NS_ERROR_FAILURE;
-        }
-        nsCAutoString uriSpec;
-        aBaseURI->GetSpec(uriSpec);
-        NS_ConvertUTF8toUCS2 href(uriSpec);
-        baseElement->SetAttribute(NS_LITERAL_STRING("href"), href);
     }
-    else
+    if (!baseElement)
     {
-        if (baseElement)
-        {
-            nsCOMPtr<nsIDOMNode> node;
-            headElement->RemoveChild(baseElement, getter_AddRefs(node));
-        }
+        return NS_ERROR_FAILURE;
     }
+    nsCAutoString uriSpec;
+    aBaseURI->GetSpec(uriSpec);
+    NS_ConvertUTF8toUCS2 href(uriSpec);
+    baseElement->SetAttribute(NS_LITERAL_STRING("href"), href);
 
     return NS_OK;
 }
@@ -3223,7 +3523,6 @@ nsWebBrowserPersist::SetDocumentBase(
 
 nsEncoderNodeFixup::nsEncoderNodeFixup() : mWebBrowserPersist(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 

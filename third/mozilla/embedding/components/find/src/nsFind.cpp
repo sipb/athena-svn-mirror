@@ -49,6 +49,8 @@
 #include "nsISelection.h"
 #include "nsISelectionController.h"
 #include "nsIPresShell.h"
+#include "nsIFrame.h"
+#include "nsIDocument.h"
 #include "nsTextFragment.h"
 #include "nsString.h"
 #include "nsIAtom.h"
@@ -62,6 +64,7 @@
 #define CHAR_TO_UNICHAR(c) ((PRUnichar)(const unsigned char)c)
 
 static NS_DEFINE_CID(kCContentIteratorCID, NS_CONTENTITERATOR_CID);
+static NS_DEFINE_CID(kCPreContentIteratorCID, NS_PRECONTENTITERATOR_CID);
 static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
 static NS_DEFINE_IID(kRangeCID, NS_RANGE_CID);
 
@@ -85,8 +88,6 @@ nsFind::nsFind()
   , mCaseSensitive(PR_FALSE)
   , mIterOffset(0)
 {
-  NS_INIT_ISUPPORTS();
-
   // Initialize the atoms if they aren't already:
   if (sInstanceCount <= 0)
   {
@@ -165,10 +166,27 @@ nsFind::InitIterator(nsIDOMRange* aSearchRange)
   nsresult rv;
   if (!mIterator)
   {
-    rv = nsComponentManager::CreateInstance(kCContentIteratorCID,
-                                            nsnull,
-                                            NS_GET_IID(nsIContentIterator),
-                                            getter_AddRefs(mIterator));
+    if (mFindBackward) {
+      // Use post-order in the reverse case, so we get parents
+      // before children in case we want to prevent descending
+      // into a node.
+
+      rv = nsComponentManager::CreateInstance(kCContentIteratorCID,
+                                              nsnull,
+                                              NS_GET_IID(nsIContentIterator),
+                                              getter_AddRefs(mIterator));
+    }
+    else {
+      // Use pre-order in the forward case, so we get parents
+      // before children in case we want to prevent descending
+      // into a node.
+
+      rv = nsComponentManager::CreateInstance(kCPreContentIteratorCID,
+                                              nsnull,
+                                              NS_GET_IID(nsIContentIterator),
+                                              getter_AddRefs(mIterator));
+    }
+
     NS_ENSURE_SUCCESS(rv, rv);
     NS_ENSURE_ARG_POINTER(mIterator);
   }
@@ -181,16 +199,9 @@ nsFind::InitIterator(nsIDOMRange* aSearchRange)
 
   mIterator->Init(aSearchRange);
   if (mFindBackward) {
-    // Use post-order in the reverse case,
-    // so we get parents before children,
-    // in case we want to prevent descending into a node.
-    mIterator->MakePost();
     mIterator->Last();
   }
   else {
-    // Use pre-order in the forward case.
-    // Pre order is currently broken (will skip nodes!), so don't use it.
-    //mIterator->MakePre();
     mIterator->First();
   }
   return NS_OK;
@@ -233,7 +244,8 @@ nsFind::SetCaseSensitive(PRBool aCaseSensitive)
 NS_IMETHODIMP
 nsFind::GetWordBreaker(nsIWordBreaker** aWordBreaker)
 {
-  NS_ADDREF(*aWordBreaker = mWordBreaker);
+  *aWordBreaker = mWordBreaker;
+  NS_IF_ADDREF(*aWordBreaker);
   return NS_OK;
 }
 
@@ -337,7 +349,7 @@ nsFind::NextNode(nsIDOMRange* aSearchRange,
     printf(":::::: Got the first node "); DumpNode(dnode);
 #endif
     tc = do_QueryInterface(content);
-    if (tc)
+    if (tc && !SkipNode(content))
     {
       mIterNode = do_QueryInterface(content);
       // Also set mIterOffset if appropriate:
@@ -451,6 +463,32 @@ PRBool nsFind::IsTextNode(nsIDOMNode* aNode)
   if (atom.get() == sTextAtom)
     return PR_TRUE;
   return PR_FALSE;
+}
+
+PRBool nsFind::IsVisibleNode(nsIDOMNode *aDOMNode)
+{
+  nsCOMPtr<nsIContent> content(do_QueryInterface(aDOMNode));
+  if (!content)
+    return PR_FALSE;
+
+  nsCOMPtr<nsIDocument> doc;
+  content->GetDocument(*getter_AddRefs(doc));
+  if (!doc)
+    return PR_FALSE;
+
+  nsCOMPtr<nsIPresShell> presShell;
+  doc->GetShellAt(0, getter_AddRefs(presShell));
+  if (!presShell)
+    return PR_FALSE;
+
+  nsIFrame *frame = nsnull;
+  presShell->GetPrimaryFrameFor(content, &frame);
+  if (!frame) {
+    // No frame! Not visible then.
+    return PR_FALSE;
+  }
+
+  return frame->GetStyleVisibility()->IsVisible();
 }
 
 PRBool nsFind::SkipNode(nsIContent* aContent)
@@ -813,68 +851,72 @@ nsFind::Find(const PRUnichar *aPatText, nsIDOMRange* aSearchRange,
 #endif
 
         // Make the range:
-        if (aRangeRet)
+        nsCOMPtr<nsIDOMNode> startParent;
+        nsCOMPtr<nsIDOMNode> endParent;
+        nsCOMPtr<nsIDOMRange> range (do_CreateInstance(kRangeCID));
+        if (range)
         {
-          nsCOMPtr<nsIDOMRange> range (do_CreateInstance(kRangeCID));
-          if (range)
+          PRInt32 matchStartOffset, matchEndOffset;
+          // convert char index to range point:
+          PRInt32 mao = matchAnchorOffset + (mFindBackward ? 1 : 0);
+          if (mFindBackward)
           {
-            PRInt32 matchStartOffset, matchEndOffset;
-            if (range)
-            {
-              nsCOMPtr<nsIDOMNode> startParent;
-              nsCOMPtr<nsIDOMNode> endParent;
-              // convert char index to range point:
-              PRInt32 mao = matchAnchorOffset + (mFindBackward ? 1 : 0);
-              if (mFindBackward)
-              {
-                startParent = do_QueryInterface(tc);
-                endParent = matchAnchorNode;
-                matchStartOffset = findex;
-                matchEndOffset = mao;
-              }
-              else
-              {
-                startParent = matchAnchorNode;
-                endParent = do_QueryInterface(tc);
-                matchStartOffset = mao;
-                matchEndOffset = findex+1;
-              }
-              if (startParent && endParent)
-              {
-                range->SetStart(startParent, matchStartOffset);
-                range->SetEnd(endParent, matchEndOffset);
-                *aRangeRet = range.get();
-                NS_ADDREF(*aRangeRet);
-              }
-            }
+            startParent = do_QueryInterface(tc);
+            endParent = matchAnchorNode;
+            matchStartOffset = findex;
+            matchEndOffset = mao;
+          }
+          else
+          {
+            startParent = matchAnchorNode;
+            endParent = do_QueryInterface(tc);
+            matchStartOffset = mao;
+            matchEndOffset = findex+1;
+          }
+          if (startParent && endParent && 
+              IsVisibleNode(startParent) && IsVisibleNode(endParent))
+          {
+            range->SetStart(startParent, matchStartOffset);
+            range->SetEnd(endParent, matchEndOffset);
+            *aRangeRet = range.get();
+            NS_ADDREF(*aRangeRet);
+          }
+          else {
+            startParent = nsnull; // This match is no good -- invisible or bad range
           }
         }
 
-        // Reset the offset to the other end of the found string:
-        mIterOffset = findex + (mFindBackward ? 1 : 0);
-#ifdef DEBUG_FIND
-        printf("mIterOffset = %d, mIterNode = ", mIterOffset);
-        DumpNode(mIterNode);
-#endif
+        if (startParent) {
+          // If startParent == nsnull, we didn't successfully make range
+          // or, we didn't make a range because the start or end node were invisible
+          // Reset the offset to the other end of the found string:
+          mIterOffset = findex + (mFindBackward ? 1 : 0);
+  #ifdef DEBUG_FIND
+          printf("mIterOffset = %d, mIterNode = ", mIterOffset);
+          DumpNode(mIterNode);
+  #endif
 
-        ResetAll();
-        return NS_OK;
+          ResetAll();
+          return NS_OK;
+        }
+        matchAnchorNode = nsnull;  // This match is no good, continue on in document
       }
 
-      // Not done, but still matching.
-
-      // Advance and loop around for the next characters.
-      // But don't advance from a space to a non-space:
-      if (!inWhitespace || DONE_WITH_PINDEX || IsSpace(patStr[pindex+incr]))
-      {
-        pindex += incr;
-        inWhitespace = PR_FALSE;
+      if (matchAnchorNode) {
+        // Not done, but still matching.
+        // Advance and loop around for the next characters.
+        // But don't advance from a space to a non-space:
+        if (!inWhitespace || DONE_WITH_PINDEX || IsSpace(patStr[pindex+incr]))
+        {
+          pindex += incr;
+          inWhitespace = PR_FALSE;
 #ifdef DEBUG_FIND
-        printf("Advancing pindex to %d\n", pindex);
+          printf("Advancing pindex to %d\n", pindex);
 #endif
-      }
+        }
       
-      continue;
+        continue;
+      }
     }
 
 #ifdef DEBUG_FIND

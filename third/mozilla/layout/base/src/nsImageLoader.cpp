@@ -41,14 +41,13 @@
 
 #include "nsIViewManager.h"
 
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 
 NS_IMPL_ISUPPORTS2(nsImageLoader, imgIDecoderObserver, imgIContainerObserver)
 
 nsImageLoader::nsImageLoader() :
   mFrame(nsnull), mPresContext(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsImageLoader::~nsImageLoader()
@@ -116,24 +115,30 @@ nsImageLoader::Load(nsIURI *aURI)
     if (eq) {
       return NS_OK;
     }
+
+    // Now cancel the old request so it won't hold a stale ref to us.
+    mRequest->Cancel(NS_ERROR_FAILURE);
   }
 
   nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
   if (NS_FAILED(rv)) return rv;
 
   // XXX: initialDocumentURI is NULL!
-  return il->LoadImage(aURI, nsnull, documentURI, loadGroup, NS_STATIC_CAST(imgIDecoderObserver *, this), 
-                       nsnull, nsIRequest::LOAD_BACKGROUND, nsnull, nsnull, getter_AddRefs(mRequest));
+  return il->LoadImage(aURI, nsnull, documentURI, loadGroup,
+                       this, 
+                       doc, nsIRequest::LOAD_BACKGROUND, nsnull, nsnull,
+                       getter_AddRefs(mRequest));
 }
 
                     
 
-NS_IMETHODIMP nsImageLoader::OnStartDecode(imgIRequest *aRequest, nsISupports *aContext)
+NS_IMETHODIMP nsImageLoader::OnStartDecode(imgIRequest *aRequest)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnStartContainer(imgIRequest *aRequest, nsISupports *aContext, imgIContainer *aImage)
+NS_IMETHODIMP nsImageLoader::OnStartContainer(imgIRequest *aRequest,
+                                              imgIContainer *aImage)
 {
   if (aImage)
   {
@@ -150,12 +155,15 @@ NS_IMETHODIMP nsImageLoader::OnStartContainer(imgIRequest *aRequest, nsISupports
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnStartFrame(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame)
+NS_IMETHODIMP nsImageLoader::OnStartFrame(imgIRequest *aRequest,
+                                          gfxIImageFrame *aFrame)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnDataAvailable(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame, const nsRect *aRect)
+NS_IMETHODIMP nsImageLoader::OnDataAvailable(imgIRequest *aRequest,
+                                             gfxIImageFrame *aFrame,
+                                             const nsRect *aRect)
 {
   // Background images are not displayed incrementally, they are displayed after the entire 
   // image has been loaded.
@@ -163,7 +171,8 @@ NS_IMETHODIMP nsImageLoader::OnDataAvailable(imgIRequest *aRequest, nsISupports 
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnStopFrame(imgIRequest *aRequest, nsISupports *aContext, gfxIImageFrame *aFrame)
+NS_IMETHODIMP nsImageLoader::OnStopFrame(imgIRequest *aRequest,
+                                         gfxIImageFrame *aFrame)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
@@ -185,17 +194,22 @@ NS_IMETHODIMP nsImageLoader::OnStopFrame(imgIRequest *aRequest, nsISupports *aCo
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnStopContainer(imgIRequest *aRequest, nsISupports *aContext, imgIContainer *aImage)
+NS_IMETHODIMP nsImageLoader::OnStopContainer(imgIRequest *aRequest,
+                                             imgIContainer *aImage)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::OnStopDecode(imgIRequest *aRequest, nsISupports *aContext, nsresult status, const PRUnichar *statusArg)
+NS_IMETHODIMP nsImageLoader::OnStopDecode(imgIRequest *aRequest,
+                                          nsresult status,
+                                          const PRUnichar *statusArg)
 {
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImageLoader::FrameChanged(imgIContainer *aContainer, nsISupports *aContext, gfxIImageFrame *newframe, nsRect * dirtyRect)
+NS_IMETHODIMP nsImageLoader::FrameChanged(imgIContainer *aContainer,
+                                          gfxIImageFrame *newframe,
+                                          nsRect * dirtyRect)
 {
   if (!mFrame)
     return NS_ERROR_FAILURE;
@@ -241,9 +255,9 @@ nsImageLoader::RedrawDirtyFrame(const nsRect* aDamageRect)
   // Invalidate the entire frame only if the frame has a tiled background
   // image, otherwise just invalidate the intersection of the frame's bounds
   // with the damaged rect.
-  nsCOMPtr<nsIStyleContext> styleContext;
-  mFrame->GetStyleContext(getter_AddRefs(styleContext));
-  const nsStyleBackground* bg = (const nsStyleBackground*)styleContext->GetStyleData(eStyleStruct_Background);
+  nsStyleContext* styleContext;
+  mFrame->GetStyleContext(&styleContext);
+  const nsStyleBackground* bg = styleContext->GetStyleBackground();
 
   if ((bg->mBackgroundFlags & NS_STYLE_BG_IMAGE_NONE) ||
       (bg->mBackgroundRepeat == NS_STYLE_BG_REPEAT_OFF)) {

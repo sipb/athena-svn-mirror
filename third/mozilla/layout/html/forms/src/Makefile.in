@@ -50,6 +50,7 @@ REQUIRES	= xpcom \
 		  accessibility \
 		  xpconnect \
 		  unicharutil \
+		  commandhandler \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -81,4 +82,15 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../style/src \
 		-I$(srcdir)/../../../xul/base/src \
 		$(NULL)
+
+DEFINES += -D_IMPL_NS_LAYOUT
+
+# OS/2 Optimization bug
+# This suppresses optimization for this single compilation unit.
+ifeq ($(MOZ_OS2_TOOLS),VACPP)
+nsListControlFrame.obj: nsListControlFrame.cpp
+	$(REPORT_BUILD)
+	@$(MAKE_DEPS_AUTO)
+	$(ELOG) $(CCC) $(OUTOPTION)$@ -c $(filter-out /O+, $(COMPILE_CXXFLAGS)) $(_VPATH_SRCS)
+endif
 

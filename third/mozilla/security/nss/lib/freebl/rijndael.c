@@ -30,7 +30,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: rijndael.c,v 1.1.1.1 2003-02-14 19:44:01 rbasch Exp $
+ * $Id: rijndael.c,v 1.1.1.2 2003-07-08 16:50:59 rbasch Exp $
  */
 
 #include "prinit.h"
@@ -372,7 +372,7 @@ init_rijndael_tables(void)
  * For now, I'm implementing this case "dumbly", w/o any unrolling.
  */
 static SECStatus
-rijndael_key_expansion7(AESContext *cx, unsigned char *key, unsigned int Nk)
+rijndael_key_expansion7(AESContext *cx, const unsigned char *key, unsigned int Nk)
 {
     unsigned int i;
     PRUint32 *W;
@@ -400,7 +400,7 @@ rijndael_key_expansion7(AESContext *cx, unsigned char *key, unsigned int Nk)
  * Generate the expanded key from the key input by the user.
  */
 static SECStatus
-rijndael_key_expansion(AESContext *cx, unsigned char *key, unsigned int Nk)
+rijndael_key_expansion(AESContext *cx, const unsigned char *key, unsigned int Nk)
 {
     unsigned int i;
     PRUint32 *W;
@@ -464,7 +464,7 @@ rijndael_key_expansion(AESContext *cx, unsigned char *key, unsigned int Nk)
  * the user.
  */
 static SECStatus
-rijndael_invkey_expansion(AESContext *cx, unsigned char *key, unsigned int Nk)
+rijndael_invkey_expansion(AESContext *cx, const unsigned char *key, unsigned int Nk)
 {
     unsigned int r;
     PRUint32 *roundkeyw;
@@ -972,7 +972,8 @@ rijndael_decryptCBC(AESContext *cx, unsigned char *output,
  * create a new context for Rijndael operations
  */
 AESContext *
-AES_CreateContext(unsigned char *key, unsigned char *iv, int mode, int encrypt,
+AES_CreateContext(const unsigned char *key, const unsigned char *iv, 
+                  int mode, int encrypt,
                   unsigned int keysize, unsigned int blocksize)
 {
     AESContext *cx;

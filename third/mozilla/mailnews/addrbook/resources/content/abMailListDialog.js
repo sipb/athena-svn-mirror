@@ -45,6 +45,7 @@ var gOkCallback = null;
 var oldListName = "";
 var gAddressBookBundle;
 var rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
+var gPromptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 
 var gDragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
 gDragService = gDragService.QueryInterface(Components.interfaces.nsIDragService);
@@ -61,8 +62,9 @@ function mailingListExists(listname)
   var addressbook = Components.classes["@mozilla.org/addressbook;1"].createInstance(Components.interfaces.nsIAddressBook);
   if (addressbook.mailListNameExists(listname))
   {
-    var alertText = gAddressBookBundle.getString("mailListNameExists");
-    alert(alertText);
+    gPromptService.alert(window, 
+      gAddressBookBundle.getString("mailListNameExistsTitle"),
+      gAddressBookBundle.getString("mailListNameExistsMessage"));
     return true;
   }
   return false;
@@ -131,16 +133,16 @@ function GetListValue(mailList, doAdd)
       cardproperty = cardproperty.QueryInterface(Components.interfaces.nsIAbCard);
       if (cardproperty)
       {
-        var beginpos = fieldValue.search('<');
-        var endpos = fieldValue.search('>');
-        if (beginpos != -1)
-        {
-          beginpos++;
-          var newValue = fieldValue.slice(beginpos, endpos);
-          cardproperty.primaryEmail = newValue;
-        }
-        else
-          cardproperty.primaryEmail = fieldValue;
+        var msgHeaderParser = Components.classes["@mozilla.org/messenger/headerparser;1"]
+                                        .getService(Components.interfaces.nsIMsgHeaderParser);
+        var addresses = {};
+        var names = {};
+        var fullNames = {};
+        var numAddresses = msgHeaderParser.parseHeadersWithArray(fieldValue, addresses, names, fullNames);
+
+        cardproperty.primaryEmail = addresses.value[0];
+        cardproperty.displayName = names.value[0];
+
         if (doAdd || (doAdd == false && pos >= oldTotal))
           mailList.addressLists.AppendElement(cardproperty);
         pos++;
@@ -318,6 +320,8 @@ function OnLoadEditList()
 
   document.addEventListener("keypress", awDocumentKeyPress, true);
 
+  moveToAlertPosition();
+
   // workaround for bug 118337 - for mailing lists that have more rows than fits inside
   // the display, the value of the textbox inside the new row isn't inherited into the input -
   // the first row then appears to be duplicated at the end although it is actually empty.
@@ -334,8 +338,6 @@ function AppendLastRow()
   var listName = document.getElementById('ListName');
   if ( listName )
     listName.focus();
-
-  moveToAlertPosition();
 }
 
 function AppendNewRowAndSetFocus()
@@ -470,8 +472,6 @@ function _awSetFocus()
   try
   {
     var theNewRow = awGetListItem(top.awRow);
-    //temporary patch for bug 26344
-//    awFinishCopyNode(theNewRow);
 
     listbox.ensureElementIsVisible(theNewRow);
     top.awInputElement.focus();
@@ -489,14 +489,6 @@ function _awSetFocus()
   }
 }
 
-
-//temporary patch for bug 26344 & 26528
-function awFinishCopyNode(node)
-{
-    msgCompose.ResetNodeEventHandlers(node);
-    return;
-}
-
 function awTabFromRecipient(element, event)
 {
   //If we are the last element in the listbox, we don't want to create a new row.
@@ -511,16 +503,6 @@ function DragOverAddressListTree(event)
 
   // XXX add support for other flavors here
   if (dragSession.isDataFlavorSupported("text/x-moz-address")) {
-    validFlavor = true;
-  }
-
-  // touch the attribute on the rowgroup to trigger the repaint with the drop feedback.
-  if (validFlavor)
-  {
-    //XXX this is really slow and likes to refresh N times per second.
-    var rowGroup = event.target.parentNode.parentNode;
-    if (rowGroup)
-      rowGroup.setAttribute ( "dd-triggerrepaint", 0 );
     dragSession.canDrop = true;
   }
 }

@@ -38,7 +38,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "prlog.h"
 
 #include "msgCore.h"    // precompiled header...
@@ -100,7 +101,6 @@
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kCNewsDB, NS_NEWSDB_CID);
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 
 // ###tw  This really ought to be the most
 // efficient file reading size for the current
@@ -127,8 +127,6 @@ nsMsgNewsFolder::nsMsgNewsFolder(void) : nsMsgLineBuffer(nsnull, PR_FALSE),
   if (PL_strcmp(MSG_LINEBREAK, CRLF)) {
     SetLookingForCRLF(PR_FALSE);
   }
-
-//  NS_INIT_ISUPPORTS(); done by superclass
 }
 
 nsMsgNewsFolder::~nsMsgNewsFolder(void)
@@ -227,7 +225,7 @@ nsMsgNewsFolder::AddNewsgroup(const char *name, const char *setStr, nsIMsgFolder
   uri.Append(escapedName.get());
   
   nsCOMPtr<nsIRDFResource> res;
-  rv = rdf->GetResource(uri.get(), getter_AddRefs(res));
+  rv = rdf->GetResource(uri, getter_AddRefs(res));
   if (NS_FAILED(rv)) return rv;
   
   nsCOMPtr<nsIMsgFolder> folder(do_QueryInterface(res, &rv));
@@ -557,7 +555,7 @@ NS_IMETHODIMP nsMsgNewsFolder::CreateSubfolder(const PRUnichar *uninewsgroupname
   nsresult rv = NS_OK;
   
   NS_ENSURE_ARG_POINTER(uninewsgroupname);
-  if (nsCRT::strlen(uninewsgroupname) == 0) return NS_ERROR_FAILURE;
+  if (!*uninewsgroupname) return NS_ERROR_FAILURE;
   
   nsCAutoString newsgroupname; 
   newsgroupname.AssignWithConversion(uninewsgroupname);
@@ -904,7 +902,7 @@ NS_IMETHODIMP nsMsgNewsFolder::GetRequiresCleanup(PRBool *requiresCleanup)
 
 NS_IMETHODIMP nsMsgNewsFolder::GetSizeOnDisk(PRUint32 *size)
 {
-  NS_ASSERTION(0, "GetSizeOnDisk not implemented");
+//  NS_ASSERTION(0, "GetSizeOnDisk not implemented");
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
@@ -950,8 +948,7 @@ nsMsgNewsFolder::DeleteMessages(nsISupportsArray *messages, nsIMsgWindow *aMsgWi
   nsCOMPtr <nsINntpService> nntpService = do_GetService(NS_NNTPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  nsCOMPtr<nsISupports> msgSupports = getter_AddRefs(messages->ElementAt(0));
-  nsCOMPtr<nsIMsgDBHdr> msgHdr(do_QueryInterface(msgSupports));
+  nsCOMPtr<nsIMsgDBHdr> msgHdr(do_QueryElementAt(messages, 0));
 
   // for cancel, we need to
   // turn "newsmessage://sspitzer@news.mozilla.org/netscape.test#5428"
@@ -1609,17 +1606,19 @@ nsMsgNewsFolder::GetNntpServer(nsINntpIncomingServer **result)
 
     nsCOMPtr<nsIMsgIncomingServer> server;
     rv = GetServer(getter_AddRefs(server));
-    if (NS_FAILED(rv)) return rv;
-    if (!server) return NS_ERROR_NULL_POINTER;
+    if (NS_FAILED(rv)) 
+      return rv;
+
+    if (!server) 
+      return NS_ERROR_NULL_POINTER;
 
     nsCOMPtr<nsINntpIncomingServer> nntpServer;
     rv = server->QueryInterface(NS_GET_IID(nsINntpIncomingServer),
                                 getter_AddRefs(nntpServer));
-    if (NS_FAILED(rv)) return rv;
+    if (NS_FAILED(rv)) 
+      return rv;
 
-    *result = nntpServer;
-    NS_IF_ADDREF(*result);
-
+    NS_IF_ADDREF(*result = nntpServer);
     return NS_OK;
 }
 
@@ -1704,16 +1703,14 @@ NS_IMETHODIMP nsMsgNewsFolder::DownloadMessagesForOffline(nsISupportsArray *mess
   SetSaveArticleOffline(PR_TRUE); // ### TODO need to clear this when we've finished
   PRUint32 count = 0;
   PRUint32 i;
-  nsCOMPtr<nsISupports> msgSupports;
   nsresult rv = messages->Count(&count);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // build up message keys.
   for (i = 0; i < count; i++)
   {
-    msgSupports = getter_AddRefs(messages->ElementAt(i));
     nsMsgKey key;
-    nsCOMPtr <nsIMsgDBHdr> msgDBHdr = do_QueryInterface(msgSupports, &rv);
+    nsCOMPtr <nsIMsgDBHdr> msgDBHdr = do_QueryElementAt(messages, i, &rv);
     if (msgDBHdr)
       rv = msgDBHdr->GetMessageKey(&key);
     if (NS_SUCCEEDED(rv))
@@ -1829,19 +1826,75 @@ NS_IMETHODIMP nsMsgNewsFolder::GetPersistElided(PRBool *aPersistElided)
     return NS_OK;
   }
 
-  nsCOMPtr <nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  rv = prefs->GetBoolPref("news.persist_server_open_state_in_folderpane", aPersistElided);
+  rv = prefBranch->GetBoolPref("news.persist_server_open_state_in_folderpane", aPersistElided);
   NS_ENSURE_SUCCESS(rv,rv);
   return rv;
 }
 
-
 NS_IMETHODIMP nsMsgNewsFolder::Shutdown(PRBool shutdownChildren)
 {
+  if (mFilterList) 
+  {
+    // close the filter log stream
+    nsresult rv = mFilterList->SetLogStream(nsnull);
+    NS_ENSURE_SUCCESS(rv,rv);
+    mFilterList = nsnull;
+  }
+
   mInitialized = PR_FALSE;
   mReadSet = nsnull;
   return nsMsgDBFolder::Shutdown(shutdownChildren);
 }
 
+NS_IMETHODIMP
+nsMsgNewsFolder::SetFilterList(nsIMsgFilterList *aFilterList)
+{
+  mFilterList = aFilterList;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMsgNewsFolder::GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **aResult)
+{
+  if (!mFilterList) {
+    nsCOMPtr<nsIFileSpec> thisFolder;
+    nsresult rv = GetPath(getter_AddRefs(thisFolder));
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    mFilterFile = do_CreateInstance(NS_FILESPEC_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    // in 4.x, the news filter file was
+    // C:\Program Files\Netscape\Users\meer\News\host-news.mcom.com\mcom.test.dat
+    // where the summary file was 
+    // C:\Program Files\Netscape\Users\meer\News\host-news.mcom.com\mcom.test.snm
+    // we make the rules file ".dat" in mozilla, so that migration works.
+    rv = mFilterFile->FromFileSpec(thisFolder);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    // NOTE:
+    // we don't we need to call NS_MsgHashIfNecessary()
+    // it's already been hashed, if necessary
+    nsXPIDLCString filterFileName;
+    rv = mFilterFile->GetLeafName(getter_Copies(filterFileName));
+    NS_ENSURE_SUCCESS(rv,rv);
+    
+    filterFileName.Append(".dat");
+    
+    rv = mFilterFile->SetLeafName(filterFileName.get());
+    NS_ENSURE_SUCCESS(rv,rv);
+    
+    nsCOMPtr<nsIMsgFilterService> filterService =
+      do_GetService(NS_MSGFILTERSERVICE_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    rv = filterService->OpenFilterList(mFilterFile, this, aMsgWindow, getter_AddRefs(mFilterList));
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+  
+  NS_IF_ADDREF(*aResult = mFilterList);
+  return NS_OK;
+}

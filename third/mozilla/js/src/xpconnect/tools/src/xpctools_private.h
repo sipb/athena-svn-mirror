@@ -52,7 +52,6 @@
 #include "jsapi.h"
 #include "jshash.h"
 #include "jsprf.h"
-#include "jslong.h"
 #include "jsinterp.h"
 #include "jscntxt.h"
 #include "jsdbgapi.h"
@@ -121,10 +120,10 @@ public:
     void          IncrementCompileCount() {++mCompileCount;}
     PRUint32      GetCompileCount() {return mCompileCount;}
     PRUint32      NowInMilliSecs()
-        {PRUint64 now64;
+        {PRUint64 now64 = LL_INIT(0,1000);
          PRUint32 now32;
-         JSLL_DIV(now64,PR_Now(),JSLL_INIT(0,1000));
-         JSLL_L2UI(now32, now64);
+         LL_DIV(now64,PR_Now(),now64);
+         LL_L2UI(now32, now64);
          return now32;
         }
     void          SetStartTime() {mStartTime = NowInMilliSecs();}

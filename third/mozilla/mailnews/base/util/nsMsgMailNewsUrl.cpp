@@ -59,26 +59,22 @@
 #include "nsIFileSpec.h"
 #include <time.h>
 
-static NS_DEFINE_CID(kUrlListenerManagerCID, NS_URLLISTENERMANAGER_CID);
-static NS_DEFINE_CID(kStandardUrlCID, NS_STANDARDURL_CID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
 nsMsgMailNewsUrl::nsMsgMailNewsUrl()
 {
-    NS_INIT_ISUPPORTS();
- 
-	// nsIURI specific state
-	m_errorMessage = nsnull;
-	m_runningUrl = PR_FALSE;
-	m_updatingFolder = PR_FALSE;
+  // nsIURI specific state
+  m_errorMessage = nsnull;
+  m_runningUrl = PR_FALSE;
+  m_updatingFolder = PR_FALSE;
   m_addContentToCache = PR_FALSE;
   m_msgIsInLocalCache = PR_FALSE;
   m_suppressErrorMsgs = PR_FALSE;
-
-	nsComponentManager::CreateInstance(kUrlListenerManagerCID, nsnull, NS_GET_IID(nsIUrlListenerManager), (void **) getter_AddRefs(m_urlListeners));
-	nsComponentManager::CreateInstance(kStandardUrlCID, nsnull, NS_GET_IID(nsIURL), (void **) getter_AddRefs(m_baseURL));
+  
+  m_urlListeners = do_CreateInstance(NS_URLLISTENERMANAGER_CONTRACTID);
+  m_baseURL = do_CreateInstance(NS_STANDARDURL_CONTRACTID);
 }
- 
+
 nsMsgMailNewsUrl::~nsMsgMailNewsUrl()
 {
 	PR_FREEIF(m_errorMessage);
@@ -852,7 +848,6 @@ nsMsgSaveAsListener::nsMsgSaveAsListener(nsIFileSpec *aFileSpec, PRBool addDummy
   m_writtenData = PR_FALSE;
   m_addDummyEnvelope = addDummyEnvelope;
   m_leftOver = 0;
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgSaveAsListener::~nsMsgSaveAsListener()
@@ -901,7 +896,7 @@ NS_IMETHODIMP nsMsgSaveAsListener::OnDataAvailable(nsIRequest* request,
 
   while (count > 0)
   {
-      if (count < (PRInt32) maxReadCount)
+      if (count < maxReadCount)
           maxReadCount = count;
       rv = inStream->Read(m_dataBuffer + m_leftOver,
                           maxReadCount,
@@ -924,7 +919,7 @@ NS_IMETHODIMP nsMsgSaveAsListener::OnDataAvailable(nsIRequest* request,
       count -= readCount;
       maxReadCount = SAVE_BUF_SIZE - m_leftOver;
 
-      if (!end && count > (PRInt32) maxReadCount)
+      if (!end && count > maxReadCount)
           // must be a very very long line; sorry cannot handle it
           return NS_ERROR_FAILURE;
 

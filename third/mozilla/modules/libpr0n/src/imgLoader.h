@@ -54,7 +54,7 @@ public:
 
 private:
   nsresult CreateNewProxyForRequest(imgRequest *aRequest, nsILoadGroup *aLoadGroup,
-                                    imgIDecoderObserver *aObserver, nsISupports *cx,
+                                    imgIDecoderObserver *aObserver,
                                     nsLoadFlags aLoadFlags, imgIRequest *aRequestProxy,
                                     imgIRequest **_retval);
 };
@@ -90,11 +90,11 @@ private:
 
 #include "nsSupportsArray.h"
 
-class httpValidateChecker : public nsIStreamListener
+class imgCacheValidator : public nsIStreamListener
 {
 public:
-  httpValidateChecker(imgRequest *request, void *aContext);
-  virtual ~httpValidateChecker();
+  imgCacheValidator(imgRequest *request, void *aContext);
+  virtual ~imgCacheValidator();
 
   void AddProxy(imgRequestProxy *aProxy);
 

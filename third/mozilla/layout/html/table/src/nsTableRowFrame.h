@@ -69,7 +69,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
@@ -153,8 +153,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, 
-                    PRUint32*         aResult) const;
 #endif
  
   void UpdateHeight(nscoord           aHeight,
@@ -318,10 +316,14 @@ private:
     unsigned mFirstInserted:1;  // if true, then it was the top most newly inserted row 
   } mBits;
 
-  nscoord mContentHeight; // the desired height based on the content of the tallest cell in the row
-  nscoord mStyleHeight;   // the height based on a style pct on either the row or any cell if mHasPctHeight 
-                          // is set, otherwise the height based on a style pixel height on the row or any 
-                          // cell if mHasFixedHeight is set
+  // the desired height based on the content of the tallest cell in the row
+  nscoord mContentHeight;
+  // the height based on a style percentage height on either the row or any cell
+  // if mHasPctHeight is set
+  nscoord mStylePctHeight;
+  // the height based on a style pixel height on the row or any
+  // cell if mHasFixedHeight is set
+  nscoord mStyleFixedHeight;
 
   // max-ascent and max-descent amongst all cells that have 'vertical-align: baseline'
   nscoord mMaxCellAscent;  // does include cells with rowspan > 1
@@ -394,8 +396,8 @@ inline void nsTableRowFrame::SetContentHeight(nscoord aValue)
 
 inline nscoord nsTableRowFrame::GetFixedHeight() const
 {
-  if (mBits.mHasFixedHeight && !mBits.mHasPctHeight) 
-    return mStyleHeight;
+  if (mBits.mHasFixedHeight)
+    return mStyleFixedHeight;
   else
     return 0;
 }
@@ -403,7 +405,7 @@ inline nscoord nsTableRowFrame::GetFixedHeight() const
 inline float nsTableRowFrame::GetPctHeight() const
 {
   if (mBits.mHasPctHeight) 
-    return (float)mStyleHeight / 100.0f;
+    return (float)mStylePctHeight / 100.0f;
   else
     return 0.0f;
 }

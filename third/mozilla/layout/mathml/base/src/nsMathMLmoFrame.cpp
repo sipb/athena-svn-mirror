@@ -26,7 +26,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -256,6 +256,8 @@ nsMathMLmoFrame::ProcessTextData(nsIPresContext* aPresContext)
   if (1 == length) {
     PRUnichar ch = data[0];
     if ((ch == '+') || (ch == '=') || (ch == '*') ||
+        (ch == 0x2264) || // &le;
+        (ch == 0x2265) || // &ge;
         (ch == 0x00D7)) { // &times;
       mFlags |= NS_MATHML_OPERATOR_CENTERED;
     }
@@ -426,10 +428,8 @@ nsMathMLmoFrame::ProcessOperatorData(nsIPresContext* aPresContext)
       // cache the default values of lspace & rspace that we get from the dictionary.
       // since these values are relative to the 'em' unit, convert to twips now
       nscoord em;
-      const nsStyleFont* font;
-      GetStyleData(eStyleStruct_Font, (const nsStyleStruct *&)font);
       nsCOMPtr<nsIFontMetrics> fm;
-      aPresContext->GetMetricsFor(font->mFont, getter_AddRefs(fm));
+      aPresContext->GetMetricsFor(GetStyleFont()->mFont, getter_AddRefs(fm));
       GetEmHeight(fm, em);
 
       mEmbellishData.leftSpace = NSToCoordRound(lspace * em);
@@ -627,14 +627,20 @@ nsMathMLmoFrame::Stretch(nsIPresContext*      aPresContext,
   }
   mPresentationData.flags |= NS_MATHML_STRETCH_DONE;
 
+  nsIFrame* firstChild = mFrames.FirstChild();
+
   // get the axis height;
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
   nsCOMPtr<nsIFontMetrics> fm;
-  aRenderingContext.SetFont(font->mFont, nsnull);
+  aRenderingContext.SetFont(GetStyleFont()->mFont, nsnull);
   aRenderingContext.GetFontMetrics(*getter_AddRefs(fm));
-  nscoord leading = 0, axisHeight, height;
+  nscoord axisHeight, height;
   GetAxisHeight(aRenderingContext, fm, axisHeight);
+
+  // get the leading to be left at the top and the bottom of the stretched char
+  // this seems more reliable than using fm->GetLeading() on suspicious fonts               
+  nscoord em;
+  GetEmHeight(fm, em);
+  nscoord leading = NSToCoordRound(0.2f * em);
 
   // Operators that are stretchy, or those that are to be centered
   // to cater for fonts that are not math-aware, are handled by the MathMLChar
@@ -805,12 +811,6 @@ nsMathMLmoFrame::Stretch(nsIPresContext*      aPresContext,
           }
           mBoundingMetrics.ascent = height - mBoundingMetrics.descent;
         }
-
-        // get the leading to be left at the top and the bottom of the stretched char
-        // this seems more reliable than using fm->GetLeading() on suspicious fonts               
-        nscoord em;
-        GetEmHeight(fm, em);
-        leading = NSToCoordRound(0.2f * em); // so, leading remains 0 if we don't get here
       }
     }
   }
@@ -843,11 +843,17 @@ nsMathMLmoFrame::Stretch(nsIPresContext*      aPresContext,
         NS_MATHML_EMBELLISH_IS_ACCENTUNDER(parentData.flags)) &&
        parentData.coreFrame != this;
   }
-  if (isAccent) {
+  if (isAccent && firstChild) {
+    // see bug 188467 for what is going on here
+    nscoord dy = aDesiredStretchSize.ascent - (mBoundingMetrics.ascent + leading);
     aDesiredStretchSize.ascent = mBoundingMetrics.ascent + leading;
-    aDesiredStretchSize.descent = mBoundingMetrics.descent + leading;
+    aDesiredStretchSize.descent = mBoundingMetrics.descent;
+
+    nsPoint origin;
+    firstChild->GetOrigin(origin);
+    firstChild->MoveTo(aPresContext, origin.x, origin.y - dy);
   }
-  else {
+  else if (useMathMLChar) {
     nscoord ascent, descent;
     fm->GetMaxAscent(ascent);
     fm->GetMaxDescent(descent);
@@ -899,7 +905,7 @@ nsMathMLmoFrame::Stretch(nsIPresContext*      aPresContext,
         mMathMLChar.SetRect(nsRect(rect.x + leftSpace, rect.y, rect.width, rect.height));
       }
       else {
-        nsIFrame* childFrame = mFrames.FirstChild();
+        nsIFrame* childFrame = firstChild;
         while (childFrame) {
           childFrame->GetRect(rect);
           childFrame->MoveTo(aPresContext, rect.x + leftSpace, rect.y);
@@ -913,7 +919,6 @@ nsMathMLmoFrame::Stretch(nsIPresContext*      aPresContext,
     return NS_OK;
 
   nsRect rect;
-  nsIFrame* firstChild = mFrames.FirstChild();
   firstChild->GetRect(rect);
   if (useMathMLChar) {
     // even though our child text frame is not doing the rendering, we make it play
@@ -1021,36 +1026,24 @@ nsMathMLmoFrame::AttributeChanged(nsIPresContext* aPresContext,
 // ----------------------
 // No need to tract the style context given to our MathML char. 
 // the Style System will use these to pass the proper style context to our MathMLChar
-NS_IMETHODIMP
-nsMathMLmoFrame::GetAdditionalStyleContext(PRInt32           aIndex,
-                                           nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsMathMLmoFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(aStyleContext, "null OUT ptr");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
-  *aStyleContext = nsnull;
   switch (aIndex) {
   case NS_MATHML_CHAR_STYLE_CONTEXT_INDEX:
-    mMathMLChar.GetStyleContext(aStyleContext);
-    break;
+    return mMathMLChar.GetStyleContext();
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMathMLmoFrame::SetAdditionalStyleContext(PRInt32          aIndex,
-                                           nsIStyleContext* aStyleContext)
+                                           nsStyleContext*  aStyleContext)
 {
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
   switch (aIndex) {
   case NS_MATHML_CHAR_STYLE_CONTEXT_INDEX:
     mMathMLChar.SetStyleContext(aStyleContext);
     break;
   }
-  return NS_OK;
 }

@@ -44,7 +44,6 @@
 #include "nsIDOMHTMLElement.h"
 #include "nsIDOMText.h"
 #include "nsIDocumentTransformer.h"
-#include "TxString.h"
 #include "nsNetUtil.h"
 #include "nsIDOMNSDocument.h"
 
@@ -54,21 +53,17 @@ txMozillaTextOutput::txMozillaTextOutput(nsIDOMDocument* aSourceDocument,
                                          nsIDOMDocument* aResultDocument,
                                          nsITransformObserver* aObserver)
 {
-    NS_INIT_ISUPPORTS();
-
     mObserver = do_GetWeakReference(aObserver);
     createResultDocument(aSourceDocument, aResultDocument);
 }
 
 txMozillaTextOutput::txMozillaTextOutput(nsIDOMDocumentFragment* aDest)
 {
-    NS_INIT_ISUPPORTS();
-
     nsCOMPtr<nsIDOMDocument> doc;
     aDest->GetOwnerDocument(getter_AddRefs(doc));
     NS_ASSERTION(doc, "unable to get ownerdocument");
     nsCOMPtr<nsIDOMText> textNode;
-    nsresult rv = doc->CreateTextNode(NS_LITERAL_STRING(""),
+    nsresult rv = doc->CreateTextNode(nsString(),
                                       getter_AddRefs(textNode));
     if (NS_FAILED(rv)) {
         return;
@@ -87,21 +82,19 @@ txMozillaTextOutput::~txMozillaTextOutput()
 {
 }
 
-NS_IMPL_ISUPPORTS1(txMozillaTextOutput, txIOutputXMLEventHandler);
-
-void txMozillaTextOutput::attribute(const String& aName,
+void txMozillaTextOutput::attribute(const nsAString& aName,
                                     const PRInt32 aNsID,
-                                    const String& aValue)
+                                    const nsAString& aValue)
 {
 }
 
-void txMozillaTextOutput::characters(const String& aData)
+void txMozillaTextOutput::characters(const nsAString& aData, PRBool aDOE)
 {
     if (mTextNode)
         mTextNode->AppendData(aData);
 }
 
-void txMozillaTextOutput::comment(const String& aData)
+void txMozillaTextOutput::comment(const nsAString& aData)
 {
 }
 
@@ -113,13 +106,13 @@ void txMozillaTextOutput::endDocument()
     }
 }
 
-void txMozillaTextOutput::endElement(const String& aName,
+void txMozillaTextOutput::endElement(const nsAString& aName,
                                      const PRInt32 aNsID)
 {
 }
 
-void txMozillaTextOutput::processingInstruction(const String& aTarget,
-                                                const String& aData)
+void txMozillaTextOutput::processingInstruction(const nsAString& aTarget,
+                                                const nsAString& aData)
 {
 }
 
@@ -169,7 +162,7 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
 
     nsCOMPtr<nsIDOMNSDocument> nsDoc = do_QueryInterface(mDocument);
     if (nsDoc) {
-        nsDoc->SetTitle(NS_LITERAL_STRING(""));
+        nsDoc->SetTitle(nsString());
     }
 
     // Reset and set up document
@@ -190,7 +183,6 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     nsCOMPtr<nsIURI> baseURL;
     sourceDoc->GetBaseURL(*getter_AddRefs(baseURL));
     doc->SetBaseURL(baseURL);
-    // XXX We might want to call SetDefaultStylesheets here
 
     // Notify the contentsink that the document is created
     nsCOMPtr<nsITransformObserver> observer = do_QueryReferent(mObserver);
@@ -298,7 +290,7 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     }
 
     nsCOMPtr<nsIDOMText> textNode;
-    mDocument->CreateTextNode(NS_LITERAL_STRING(""),
+    mDocument->CreateTextNode(nsString(),
                               getter_AddRefs(textNode));
     NS_ASSERTION(textNode, "Failed to create the text node");
     if (!textNode) {
@@ -315,7 +307,7 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     mTextNode = textNode;
 }
 
-void txMozillaTextOutput::startElement(const String& aName,
+void txMozillaTextOutput::startElement(const nsAString& aName,
                                        const PRInt32 aNsID)
 {
 }

@@ -45,7 +45,7 @@
 #include "nsIAddrBookSession.h"
 #include "nsAddrDatabase.h"
 #include "nsIOutputStream.h"
-#include "nsIFileStreams.h"
+#include "nsNetUtil.h"
 #include "msgCore.h"
 #include "nsIImportService.h"
 #include "nsIStringBundle.h"
@@ -104,7 +104,7 @@
 //
 nsAddressBook::nsAddressBook()
 {
-  NS_INIT_ISUPPORTS();
+  mDocShell = nsnull;
 }
 
 nsAddressBook::~nsAddressBook()
@@ -130,7 +130,8 @@ NS_IMETHODIMP nsAddressBook::NewAddressBook(nsIAbDirectoryProperties *aPropertie
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIRDFResource> parentResource;
-    rv = rdfService->GetResource(kAllDirectoryRoot, getter_AddRefs(parentResource));
+    rv = rdfService->GetResource(NS_LITERAL_CSTRING(kAllDirectoryRoot),
+                                 getter_AddRefs(parentResource));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIAbDirectory> parentDir = do_QueryInterface(parentResource, &rv);
@@ -140,6 +141,34 @@ NS_IMETHODIMP nsAddressBook::NewAddressBook(nsIAbDirectoryProperties *aPropertie
     return rv;
 }
 
+NS_IMETHODIMP nsAddressBook::ModifyAddressBook
+(nsIRDFDataSource* aDS, nsIAbDirectory *aParentDir, nsIAbDirectory *aDirectory, nsIAbDirectoryProperties *aProperties)
+{
+  NS_ENSURE_ARG_POINTER(aDS);
+  NS_ENSURE_ARG_POINTER(aParentDir);
+  NS_ENSURE_ARG_POINTER(aDirectory);
+  NS_ENSURE_ARG_POINTER(aProperties);
+
+  nsresult rv;
+  nsCOMPtr<nsISupportsArray> parentArray (do_CreateInstance(NS_SUPPORTSARRAY_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsISupportsArray> resourceElement (do_CreateInstance(NS_SUPPORTSARRAY_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsISupportsArray> resourceArray (do_CreateInstance(NS_SUPPORTSARRAY_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  parentArray->AppendElement(aParentDir);
+
+  nsCOMPtr<nsIRDFResource> dirSource(do_QueryInterface(aDirectory, &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  resourceElement->AppendElement(dirSource);
+  resourceElement->AppendElement(aProperties);
+  resourceArray->AppendElement(resourceElement);
+
+  return DoCommand(aDS, NS_LITERAL_CSTRING(NC_RDF_MODIFY), parentArray, resourceArray);
+}
+
 NS_IMETHODIMP nsAddressBook::DeleteAddressBooks
 (nsIRDFDataSource* aDS, nsISupportsArray *aParentDir, nsISupportsArray *aResourceArray)
 {
@@ -147,11 +176,11 @@ NS_IMETHODIMP nsAddressBook::DeleteAddressBooks
   NS_ENSURE_ARG_POINTER(aParentDir);
   NS_ENSURE_ARG_POINTER(aResourceArray);
   
-  return DoCommand(aDS, NC_RDF_DELETE, aParentDir, aResourceArray);
+  return DoCommand(aDS, NS_LITERAL_CSTRING(NC_RDF_DELETE), aParentDir, aResourceArray);
 }
 
 nsresult nsAddressBook::DoCommand(nsIRDFDataSource* db,
-                                  const char *command,
+                                  const nsACString& command,
                                   nsISupportsArray *srcArray,
                                   nsISupportsArray *argumentArray)
 {
@@ -228,11 +257,10 @@ NS_IMETHODIMP nsAddressBook::GetAbDatabaseFromURI(const char *aURI, nsIAddrDatab
     do_GetService(NS_ADDRDATABASE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  rv = addrDBFactory->Open(dbPath, PR_TRUE, aDB, PR_TRUE);
-  NS_ENSURE_SUCCESS(rv,rv);
-
+  rv = addrDBFactory->Open(dbPath, PR_TRUE /* create */, aDB, PR_TRUE);
   delete dbPath;
-    
+  NS_ENSURE_SUCCESS(rv,rv);
+  
   return NS_OK;
 }
 
@@ -270,51 +298,39 @@ nsresult nsAddressBook::GetAbDatabaseFromFile(char* pDbFile, nsIAddrDatabase **d
     return NS_OK;
 }
 
-NS_IMETHODIMP nsAddressBook::MailListNameExistsInDB(const PRUnichar *name, const char *URI, PRBool *exist)
-{
-    *exist = PR_FALSE;
-
-    nsCOMPtr<nsIAddrDatabase> database;
-    nsresult rv = GetAbDatabaseFromURI(URI, getter_AddRefs(database));                
-    if (NS_SUCCEEDED(rv) && database)
-        database->FindMailListbyUnicodeName(name, exist);
-    return NS_OK;
-}
-
-//check for all address book
 NS_IMETHODIMP nsAddressBook::MailListNameExists(const PRUnichar *name, PRBool *exist)
 {
-    *exist = PR_FALSE;
-    nsVoidArray* pDirectories = DIR_GetDirectories();
-    if (pDirectories)
+  *exist = PR_FALSE;
+  nsVoidArray* pDirectories = DIR_GetDirectories();
+  if (pDirectories)
+  {
+    PRInt32 count = pDirectories->Count();
+    /* check: only show personal address book for now */
+    /* not showing 4.x address book unitl we have the converting done */
+    PRInt32 i;
+    for (i = 0; i < count; i++)
     {
-        PRInt32 count = pDirectories->Count();
-        /* check: only show personal address book for now */
-        /* not showing 4.x address book unitl we have the converting done */
-        PRInt32 i;
-        for (i = 0; i < count; i++)
+      DIR_Server *server = (DIR_Server *)pDirectories->ElementAt(i);
+      if (server->dirType == PABDirectory)
+      {
+        /* check: this is a 4.x file, remove when conversion is done */
+        PRUint32 fileNameLen = strlen(server->fileName);
+        if ((fileNameLen > kABFileName_PreviousSuffixLen) && 
+          strcmp(server->fileName + fileNameLen - kABFileName_PreviousSuffixLen, kABFileName_PreviousSuffix) == 0)
+          continue;
+        
+        nsCOMPtr<nsIAddrDatabase> database;
+        nsresult rv = GetAbDatabaseFromFile(server->fileName, getter_AddRefs(database));                
+        if (NS_SUCCEEDED(rv) && database)
         {
-            DIR_Server *server = (DIR_Server *)pDirectories->ElementAt(i);
-            if (server->dirType == PABDirectory)
-            {
-                /* check: this is a 4.x file, remove when conversion is done */
-                PRUint32 fileNameLen = strlen(server->fileName);
-                if ((fileNameLen > kABFileName_PreviousSuffixLen) && 
-                     strcmp(server->fileName + fileNameLen - kABFileName_PreviousSuffixLen, kABFileName_PreviousSuffix) == 0)
-                    continue;
-
-                nsCOMPtr<nsIAddrDatabase> database;
-                nsresult rv = GetAbDatabaseFromFile(server->fileName, getter_AddRefs(database));                
-                if (NS_SUCCEEDED(rv) && database)
-                {
-                    database->FindMailListbyUnicodeName(name, exist);
-                    if (*exist == PR_TRUE)
-                        return NS_OK;
-                }
-            }
+          database->FindMailListbyUnicodeName(name, exist);
+          if (*exist)
+            return NS_OK;
         }
+      }
     }
-    return NS_OK;
+  }
+  return NS_OK;
 }
 
 class AddressBookParser 
@@ -386,12 +402,11 @@ nsresult AddressBookParser::ParseFile()
     return ParseLDIFFile();
   }
  
+  // We are migrating 4.x profile
     /* Get database file name */
     char *leafName = nsnull;
-    nsAutoString fileString;
     if (mFileSpec) {
         mFileSpec->GetLeafName(&leafName);
-        fileString.AssignWithConversion(leafName);
 
         PRInt32 i = 0;
         while (leafName[i] != '\0')
@@ -435,27 +450,31 @@ nsresult AddressBookParser::ParseFile()
     nsCOMPtr<nsIRDFService> rdfService = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
     NS_ENSURE_SUCCESS(rv, rv);
     nsCOMPtr<nsIRDFResource> parentResource;
-    char *parentUri = PR_smprintf("%s", kAllDirectoryRoot);
-    rv = rdfService->GetResource(parentUri, getter_AddRefs(parentResource));
+    rv = rdfService->GetResource(NS_LITERAL_CSTRING(kAllDirectoryRoot),
+                                 getter_AddRefs(parentResource));
     nsCOMPtr<nsIAbDirectory> parentDir = do_QueryInterface(parentResource);
     if (!parentDir)
         return NS_ERROR_NULL_POINTER;
-    if (parentUri)
-        PR_smprintf_free(parentUri);
 
-    if (PL_strcmp(fileName, kPersonalAddressbook) == 0)
-    {
-        // This is the personal address book, get name from prefs
-        nsCOMPtr<nsIPref> pPref(do_GetService(NS_PREF_CONTRACTID, &rv)); 
-        if (NS_FAILED(rv) || !pPref) 
-            return nsnull;
-        
-            nsXPIDLString dirName;
+    // Get Pretty name from prefs.
+    nsCOMPtr<nsIPref> pPref(do_GetService(NS_PREF_CONTRACTID, &rv)); 
+    if (NS_FAILED(rv) || !pPref) 
+        return nsnull;
+
+    nsXPIDLString dirName;
+    if (strcmp(fileName, kPersonalAddressbook) == 0)
         rv = pPref->GetLocalizedUnicharPref("ldap_2.servers.pab.description", getter_Copies(dirName));
-        parentDir->CreateDirectoryByURI(dirName, mDbUri, mMigrating);
-    }
     else
-        parentDir->CreateDirectoryByURI(fileString.get(), mDbUri, mMigrating);
+    {
+      nsCAutoString prefName;
+      prefName = NS_LITERAL_CSTRING("ldap_2.servers.") + nsDependentCString(leafName) + NS_LITERAL_CSTRING(".description");
+      rv = pPref->GetLocalizedUnicharPref(prefName.get(), getter_Copies(dirName));
+    }
+
+    // If a name is found then use it, otherwise use the filename as last resort.
+    if (NS_FAILED(rv) || dirName.IsEmpty())
+      dirName = NS_ConvertASCIItoUCS2(leafName);
+    parentDir->CreateDirectoryByURI(dirName, mDbUri, mMigrating);
         
     rv = ParseLDIFFile();
 
@@ -1238,7 +1257,14 @@ NS_IMETHODIMP nsAddressBook::ConvertLDIFtoMAB(nsIFileSpec *fileSpec, PRBool migr
 #define TAB_FILE_EXTENSION ".tab"
 #define TXT_FILE_EXTENSION ".txt"
 #define LDIF_FILE_EXTENSION ".ldi"
-#define EXTENSION_LENGTH 4
+#define LDIF_FILE_EXTENSION2 ".ldif"
+
+enum ADDRESSBOOK_EXPORT_FILE_TYPE 
+{
+ LDIF_EXPORT_TYPE =  0,
+ CSV_EXPORT_TYPE = 1,
+ TAB_EXPORT_TYPE = 2,
+};
 
 NS_IMETHODIMP nsAddressBook::ExportAddressBook(nsIAbDirectory *aDirectory)
 {
@@ -1264,7 +1290,7 @@ NS_IMETHODIMP nsAddressBook::ExportAddressBook(nsIAbDirectory *aDirectory)
   rv = bundle->GetStringFromName(NS_LITERAL_STRING("LDIFFiles").get(), getter_Copies(filterString));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = filePicker->AppendFilter(filterString.get(), NS_LITERAL_STRING("*.ldi;*.ldif").get());
+  rv = filePicker->AppendFilter(filterString.get(), NS_LITERAL_STRING("*.ldi; *.ldif").get());
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = bundle->GetStringFromName(NS_LITERAL_STRING("CSVFiles").get(), getter_Copies(filterString));
@@ -1276,7 +1302,7 @@ NS_IMETHODIMP nsAddressBook::ExportAddressBook(nsIAbDirectory *aDirectory)
   rv = bundle->GetStringFromName(NS_LITERAL_STRING("TABFiles").get(), getter_Copies(filterString));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = filePicker->AppendFilter(filterString.get(), NS_LITERAL_STRING("*.tab;*.txt").get());
+  rv = filePicker->AppendFilter(filterString.get(), NS_LITERAL_STRING("*.tab; *.txt").get());
   NS_ENSURE_SUCCESS(rv, rv);
 
   PRInt16 dialogResult;
@@ -1299,36 +1325,55 @@ NS_IMETHODIMP nsAddressBook::ExportAddressBook(nsIAbDirectory *aDirectory)
     }
   }
 
-  nsCAutoString leafName;
-  rv = localFile->GetNativeLeafName(leafName);
+  // The type of export is determined by the drop-down in
+  // the file picker dialog.
+  PRInt32 exportType;
+  rv = filePicker->GetFilterIndex(&exportType);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  // we're looking for .tab, .txt, .csv, .ldi or .ldif
-  // since .ldif is the desired default, we can do this:
-  // get the last four characters of the filename.
-  // check if they equal .tab,.txt, or .csv, if so, use those
-  // otherwise, treat as LDIF
-  if (leafName.Length() > EXTENSION_LENGTH) {
-    nsCAutoString extension(Substring(leafName, leafName.Length() - EXTENSION_LENGTH, EXTENSION_LENGTH));
-
-    // treat .TXT, .Tab, .csV like .txt, .tab, and .csv
-    ToLowerCase(extension);
+  nsAutoString fileName;
+  rv = localFile->GetLeafName(fileName);
+  NS_ENSURE_SUCCESS(rv, rv);
     
-    if (extension.Equals(CSV_FILE_EXTENSION))
-      rv = ExportDirectoryToDelimitedText(aDirectory, CSV_DELIM, CSV_DELIM_LEN, localFile);
-    else if (extension.Equals(TAB_FILE_EXTENSION) || extension.Equals(TXT_FILE_EXTENSION)) {
-      // .tab and .txt are both tab seperated
-      rv = ExportDirectoryToDelimitedText(aDirectory, TAB_DELIM, TAB_DELIM_LEN, localFile);
+  switch ( exportType )
+  {
+    default:
+    case LDIF_EXPORT_TYPE: // ldif
+      // If filename does not have the correct ext, add one.
+      if ((fileName.RFind(LDIF_FILE_EXTENSION, PR_TRUE, -1, sizeof(LDIF_FILE_EXTENSION)-1) == kNotFound) &&
+       (fileName.RFind(LDIF_FILE_EXTENSION2, PR_TRUE, -1, sizeof(LDIF_FILE_EXTENSION2)-1) == kNotFound)) {
+
+       // Add the extenstion and build a new localFile.
+       fileName.Append(NS_LITERAL_STRING(LDIF_FILE_EXTENSION2));
+       localFile->SetLeafName(fileName);
     }
-    else {
-      // it's ".ldi", "ldif", or something else.  we default to LDIF
       rv = ExportDirectoryToLDIF(aDirectory, localFile);
+      break;
+
+    case CSV_EXPORT_TYPE: // csv
+      // If filename does not have the correct ext, add one.
+      if (fileName.RFind(CSV_FILE_EXTENSION, PR_TRUE, -1, sizeof(CSV_FILE_EXTENSION)-1) == kNotFound) {
+
+       // Add the extenstion and build a new localFile.
+       fileName.Append(NS_LITERAL_STRING(CSV_FILE_EXTENSION));
+       localFile->SetLeafName(fileName);
     }
+      rv = ExportDirectoryToDelimitedText(aDirectory, CSV_DELIM, CSV_DELIM_LEN, localFile);
+      break;
+
+    case TAB_EXPORT_TYPE: // tab & text
+      // If filename does not have the correct ext, add one.
+      if ( (fileName.RFind(TXT_FILE_EXTENSION, PR_TRUE, -1, sizeof(TXT_FILE_EXTENSION)-1) == kNotFound) &&
+          (fileName.RFind(TAB_FILE_EXTENSION, PR_TRUE, -1, sizeof(TAB_FILE_EXTENSION)-1) == kNotFound) ) {
+
+       // Add the extenstion and build a new localFile.
+       fileName.Append(NS_LITERAL_STRING(TXT_FILE_EXTENSION));
+       localFile->SetLeafName(fileName);
   }
-  else {
-    // the file name is too short for a proper extension, so default to LDIF
-    rv = ExportDirectoryToLDIF(aDirectory, localFile);
-  }
+      rv = ExportDirectoryToDelimitedText(aDirectory, TAB_DELIM, TAB_DELIM_LEN, localFile);
+      break;
+  };
+ 
   return rv;
 }
 
@@ -1416,6 +1461,25 @@ nsAddressBook::ExportDirectoryToDelimitedText(nsIAbDirectory *aDirectory, const 
               rv = card->GetCardValue(EXPORT_ATTRIBUTES_TABLE[i].abColName, getter_Copies(value));
               NS_ENSURE_SUCCESS(rv,rv);
 
+              // If a string contains at least one comma, tab or double quote then
+              // we need to quote the entire string. Also if double quote is part
+              // of the string we need to quote the double quote(s) as well.  
+              nsAutoString newValue(value);
+              PRBool needsQuotes = PR_FALSE;
+              if(newValue.FindChar('"') != kNotFound)
+              {
+                needsQuotes = PR_TRUE;
+                newValue.ReplaceSubstring(NS_LITERAL_STRING("\"").get(), NS_LITERAL_STRING("\"\"").get());
+              }
+              if (!needsQuotes && (newValue.FindChar(',') != kNotFound || newValue.FindChar('\x09') != kNotFound))
+                needsQuotes = PR_TRUE;
+
+              if (needsQuotes)
+              {
+                newValue.Insert(NS_LITERAL_STRING("\""), 0);
+                newValue.Append(NS_LITERAL_STRING("\""));
+              }
+
               // For notes, make sure CR/LF is converted to spaces 
               // to avoid creating multiple lines for a single card.
               //
@@ -1430,16 +1494,13 @@ nsAddressBook::ExportDirectoryToDelimitedText(nsIAbDirectory *aDirectory, const 
               // non-ASCII data is treated as base64 encoded UTF-8 in LDIF
               if (!strcmp(EXPORT_ATTRIBUTES_TABLE[i].abColName, kNotesColumn))
               {
-                nsAutoString tempStr(value.get());
-                if (!tempStr.IsEmpty())
+                if (!newValue.IsEmpty())
                 {
-                  tempStr.ReplaceChar(nsCRT::CR, ' ');
-                  tempStr.ReplaceChar(nsCRT::LF, ' ');
+                  newValue.ReplaceChar(nsCRT::CR, ' ');
+                  newValue.ReplaceChar(nsCRT::LF, ' ');
                 }
-                rv = importService->SystemStringFromUnicode(tempStr.get(), valueCStr);
               }
-              else
-                rv = importService->SystemStringFromUnicode(value.get(), valueCStr);
+              rv = importService->SystemStringFromUnicode(newValue.get(), valueCStr);
 
               if (NS_FAILED(rv)) {
                 NS_ASSERTION(0, "failed to convert string to system charset.  use LDIF");
@@ -1469,7 +1530,7 @@ nsAddressBook::ExportDirectoryToDelimitedText(nsIAbDirectory *aDirectory, const 
             }
           }
 
-          // write out the linebreak that seperates the cards
+          // write out the linebreak that separates the cards
           rv = outputStream->Write(MSG_LINEBREAK, MSG_LINEBREAK_LEN, &writeCount);
           NS_ENSURE_SUCCESS(rv,rv);
           if (MSG_LINEBREAK_LEN != writeCount)
@@ -1587,7 +1648,7 @@ nsAddressBook::ExportDirectoryToLDIF(nsIAbDirectory *aDirectory, nsILocalFile *a
             }
           }
         
-          // write out the linebreak that seperates the cards
+          // write out the linebreak that separates the cards
           rv = outputStream->Write(LDIF_LINEBREAK, LDIF_LINEBREAK_LEN, &writeCount);
           NS_ENSURE_SUCCESS(rv,rv);
           if (LDIF_LINEBREAK_LEN != writeCount)
@@ -1650,7 +1711,7 @@ nsresult nsAddressBook::AppendLDIFForMailList(nsIAbCard *aCard, nsACString &aRes
   NS_ENSURE_SUCCESS(rv,rv);
   
   nsCOMPtr <nsIRDFResource> resource;
-  rv = rdfService->GetResource(mailListURI.get(), getter_AddRefs(resource));
+  rv = rdfService->GetResource(mailListURI, getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv,rv);
     
   nsCOMPtr <nsIAbDirectory> mailList = do_QueryInterface(resource, &rv);
@@ -1664,9 +1725,7 @@ nsresult nsAddressBook::AppendLDIFForMailList(nsIAbCard *aCard, nsACString &aRes
     if (total) {
       PRUint32 i;
       for (i = 0; i < total; i++) {
-        nsCOMPtr <nsISupports> item = getter_AddRefs(addresses->ElementAt(i));
-        
-        nsCOMPtr <nsIAbCard> listCard = do_QueryInterface(item, &rv);
+        nsCOMPtr <nsIAbCard> listCard = do_QueryElementAt(addresses, i, &rv);
         NS_ENSURE_SUCCESS(rv,rv);
 
         rv = AppendDNForCard("member", listCard, aResult);

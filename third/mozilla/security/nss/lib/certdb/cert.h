@@ -34,7 +34,7 @@
 /*
  * cert.h - public data structures and prototypes for the certificate library
  *
- * $Id: cert.h,v 1.1.1.1 2003-02-14 19:58:04 rbasch Exp $
+ * $Id: cert.h,v 1.1.1.2 2003-07-08 17:52:15 rbasch Exp $
  */
 
 #ifndef _CERT_H_
@@ -266,6 +266,8 @@ extern KeyType CERT_GetCertKeyType (CERTSubjectPublicKeyInfo *spki);
 */
 extern SECStatus CERT_InitCertDB(CERTCertDBHandle *handle);
 
+extern int CERT_GetDBContentVersion(CERTCertDBHandle *handle);
+
 /*
 ** Default certificate database routines
 */
@@ -430,6 +432,10 @@ CERT_ImportCRL (CERTCertDBHandle *handle, SECItem *derCRL, char *url,
 
 extern void CERT_DestroyCrl (CERTSignedCrl *crl);
 
+/* this is a hint to flush the CRL cache. crlKey is the DER subject of
+   the issuer (CA). */
+void CERT_CRLCacheRefreshIssuer(CERTCertDBHandle* dbhandle, SECItem* crlKey);
+
 /*
 ** Decode a certificate and put it into the temporary certificate database
 */
@@ -471,6 +477,13 @@ CERT_FindCertByKeyID (CERTCertDBHandle *handle, SECItem *name, SECItem *keyID);
 */
 extern CERTCertificate *
 CERT_FindCertByIssuerAndSN (CERTCertDBHandle *handle, CERTIssuerAndSN *issuerAndSN);
+
+/*
+** Find a certificate in the database by a subject key ID
+**	"subjKeyID" is the subject Key ID to look for
+*/
+extern CERTCertificate *
+CERT_FindCertBySubjectKeyID (CERTCertDBHandle *handle, SECItem *subjKeyID);
 
 /*
 ** Find a certificate in the database by a nickname
@@ -559,6 +572,20 @@ extern SECStatus CERT_VerifySignedData(CERTSignedData *sd,
 				       CERTCertificate *cert,
 				       int64 t,
 				       void *wincx);
+/*
+** verify the signature of a signed data object with the given DER publickey
+*/
+extern SECStatus
+CERT_VerifySignedDataWithPublicKeyInfo(CERTSignedData *sd,
+                                       CERTSubjectPublicKeyInfo *pubKeyInfo,
+                                       void *wincx);
+
+/*
+** verify the signature of a signed data object with a SECKEYPublicKey.
+*/
+extern SECStatus
+CERT_VerifySignedDataWithPublicKey(CERTSignedData *sd,
+                                   SECKEYPublicKey *pubKey, void *wincx);
 
 /*
 ** NEW FUNCTIONS with new bit-field-FIELD SECCertificateUsage - please use
@@ -697,6 +724,11 @@ extern char *CERT_GetCertificateEmailAddress(CERTCertificate *cert);
 
 extern char *CERT_GetCertEmailAddress(CERTName *name);
 
+extern const char * CERT_GetFirstEmailAddress(CERTCertificate * cert);
+
+extern const char * CERT_GetNextEmailAddress(CERTCertificate * cert, 
+                                             const char * prev);
+
 extern char *CERT_GetCommonName(CERTName *name);
 
 extern char *CERT_GetCountryName(CERTName *name);
@@ -759,6 +791,11 @@ extern SECStatus CERT_EncodeAndAddExtension
 
 extern SECStatus CERT_EncodeAndAddBitStrExtension
    (void *exthandle, int idtag, SECItem *value, PRBool critical);
+
+
+extern SECStatus
+CERT_EncodeAltNameExtension(PRArenaPool *arena,  CERTGeneralName  *value, SECItem *encodedValue);
+
 
 /*
 ** Finish adding cert extensions.  Does final processing on extension
@@ -892,7 +929,7 @@ extern SECStatus CERT_FindKeyUsageExtension (CERTCertificate *cert,
 /* Return the decoded value of the subjectKeyID extension. The caller should 
 ** free up the storage allocated in retItem->data.
 */
-extern SECStatus CERT_FindSubjectKeyIDExten (CERTCertificate *cert, 
+extern SECStatus CERT_FindSubjectKeyIDExtension (CERTCertificate *cert, 
 							   SECItem *retItem);
 
 /*
@@ -1023,6 +1060,9 @@ CERT_IsCACert(CERTCertificate *cert, unsigned int *rettype);
 
 PRBool
 CERT_IsCADERCert(SECItem *derCert, unsigned int *rettype);
+
+PRBool
+CERT_IsRootDERCert(SECItem *derCert);
 
 SECStatus
 CERT_SaveSMimeProfile(CERTCertificate *cert, SECItem *emailProfile,
@@ -1441,7 +1481,7 @@ CERT_SPKDigestValueForCert(PRArenaPool *arena, CERTCertificate *cert,
 /*
  * fill in nsCertType field of the cert based on the cert extension
  */
-extern SECStatus CERT_GetCertType(CERTCertificate *cert);
+extern SECStatus cert_GetCertType(CERTCertificate *cert);
 
 
 SECStatus CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer,

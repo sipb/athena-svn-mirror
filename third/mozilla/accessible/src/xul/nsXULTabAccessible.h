@@ -42,8 +42,6 @@
 
 // NOTE: alphabetically ordered
 #include "nsBaseWidgetAccessible.h"
-#include "nsFormControlAccessible.h"
-#include "nsHTMLFormControlAccessible.h"
 
 /** An individual tab */
 class nsXULTabAccessible : public nsLeafAccessible
@@ -63,26 +61,23 @@ public:
   *    entity with relationships between tabs and content to
   *    be displayed in the tabpanels object
   */
-class nsXULTabBoxAccessible : public nsAccessible
+class nsXULTabBoxAccessible : public nsAccessibleWrap
 {
 public:
   nsXULTabBoxAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
   NS_IMETHOD GetAccState(PRUint32 *_retval); 
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
+  //NS_IMETHOD GetAccChildCount(PRInt32 *_retval); // aaronl remove this?
 };
 
 /** 
   * Represents the content area associated with the tabs object (when
   *   used together)
   */
-class nsXULTabPanelsAccessible : public nsAccessible
+class nsXULTabPanelsAccessible : public nsAccessibleWrap
 {
 public:
   nsXULTabPanelsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
-  NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval); 
-  NS_IMETHOD GetAccLastChild(nsIAccessible **_retval); 
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
   NS_IMETHOD GetAccName(nsAString& _retval); 
   NS_IMETHOD GetAccState(PRUint32 *_retval);
@@ -93,7 +88,6 @@ protected:
   // data members
   nsCOMPtr<nsIDOMNode> mGParentDOMNode;
   nsCOMPtr<nsIDOMNode> mParentDOMNode;
-  nsCOMPtr<nsIAccessibilityService> mAccService;
 };
 
 /** merely a container of tab obejcts */

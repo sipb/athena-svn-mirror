@@ -50,6 +50,7 @@
 #include "nsIEventStateManager.h"
 #include "nsIObserver.h"
 #include "nsILookAndFeel.h"
+#include "nsIIOService.h"
 #ifdef IBMBIDI
 #include "nsBidiUtils.h"
 #endif
@@ -57,6 +58,7 @@
 #include "nsHashtable.h"
 #include "nsIContent.h"
 #include "nsITheme.h"
+#include "nsWeakReference.h"
 
 // Base class for concrete presentation context classes
 class nsPresContext : public nsIPresContext, public nsIObserver {
@@ -72,35 +74,40 @@ public:
   NS_IMETHOD GetShell(nsIPresShell** aResult);
   NS_IMETHOD GetCompatibilityMode(nsCompatibility* aModeResult);
   NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode);
-  NS_IMETHOD GetWidgetRenderingMode(nsWidgetRendering* aModeResult);
-  NS_IMETHOD SetWidgetRenderingMode(nsWidgetRendering aMode);
   NS_IMETHOD GetImageAnimationMode(PRUint16* aModeResult);
   NS_IMETHOD SetImageAnimationMode(PRUint16 aMode);
   NS_IMETHOD GetImageLoadFlags(nsLoadFlags& aLoadFlags);
   NS_IMETHOD GetLookAndFeel(nsILookAndFeel** aLookAndFeel);
+  NS_IMETHOD GetIOService(nsIIOService** aIOService);
   NS_IMETHOD GetBaseURL(nsIURI** aURLResult);
   NS_IMETHOD GetMedium(nsIAtom** aMediumResult) = 0;
   NS_IMETHOD ClearStyleDataAndReflow(void);
-  NS_IMETHOD ResolveStyleContextFor(nsIContent* aContent,
-                                    nsIStyleContext* aParentContext,
-                                    nsIStyleContext** aResult);
-  NS_IMETHOD ResolveStyleContextForNonElement(nsIStyleContext* aParentContext,
-                                              nsIStyleContext** aResult);
-  NS_IMETHOD ResolvePseudoStyleContextFor(nsIContent* aParentContent,
-                                          nsIAtom* aPseudoTag,
-                                          nsIStyleContext* aParentContext,
-                                          nsIStyleContext** aResult);
-  NS_IMETHOD ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
-                                          nsIAtom* aPseudoTag,
-                                          nsIStyleContext* aParentContext,
-                                          nsICSSPseudoComparator* aComparator,
-                                          nsIStyleContext** aResult);
-  NS_IMETHOD ProbePseudoStyleContextFor(nsIContent* aParentContent,
-                                        nsIAtom* aPseudoTag,
-                                        nsIStyleContext* aParentContext,
-                                        nsIStyleContext** aResult);
+
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleContextFor(nsIContent* aContent, nsStyleContext* aParentContext);
+
+  virtual already_AddRefed<nsStyleContext>
+  ResolveStyleContextForNonElement(nsStyleContext* aParentContext);
+
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleContextFor(nsIContent* aParentContent,
+                               nsIAtom* aPseudoTag,
+                               nsStyleContext* aParentContext);
+
+  virtual already_AddRefed<nsStyleContext>
+  ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
+                                   nsIAtom* aPseudoTag,
+                                   nsStyleContext* aParentContext,
+                                   nsICSSPseudoComparator* aComparator);
+
+  virtual already_AddRefed<nsStyleContext>
+  ProbePseudoStyleContextFor(nsIContent* aParentContent,
+                             nsIAtom* aPseudoTag,
+                             nsStyleContext* aParentContext);
+
+  NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsAString& aResult);
   NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
-                                  nsIStyleContext* aNewParentContext);
+                                  nsStyleContext* aNewParentContext);
   NS_IMETHOD GetMetricsFor(const nsFont& aFont, nsIFontMetrics** aResult);
   NS_IMETHOD AllocateFromShell(size_t aSize, void** aResult);
   NS_IMETHOD FreeToShell(size_t aSize, void* aFreeChunk);
@@ -192,6 +199,10 @@ public:
   NS_IMETHOD GetTheme(nsITheme** aResult);
   NS_IMETHOD ThemeChanged();
   NS_IMETHOD SysColorChanged();
+  NS_IMETHOD FindFrameBackground(nsIFrame* aFrame,
+                                 const nsStyleBackground** aBackground,
+                                 PRBool* aIsCanvas,
+                                 PRBool* aFoundBackground);
 
 protected:
   nsPresContext();
@@ -211,8 +222,9 @@ protected:
   nsCOMPtr<nsILanguageAtom> mLanguage;
   nsLanguageSpecificTransformType mLanguageSpecificTransformType;
   nsILinkHandler*       mLinkHandler;   // [WEAK]
-  nsISupports*          mContainer;     // [WEAK]
+  nsWeakPtr             mContainer;
   nsCOMPtr<nsILookAndFeel> mLookAndFeel;
+  nsCOMPtr<nsIIOService> mIOService;
 
   nsFont                mDefaultVariableFont;
   nsFont                mDefaultFixedFont;
@@ -249,7 +261,6 @@ protected:
   nsCOMPtr<nsIURI>      mBaseURL;
 
   nsCompatibility       mCompatibilityMode;
-  nsWidgetRendering     mWidgetRenderingMode;
   PRPackedBool          mImageAnimationStopped;   // image animation stopped
 
   PRUint16              mImageAnimationMode;

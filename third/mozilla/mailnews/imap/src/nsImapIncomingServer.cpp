@@ -62,7 +62,8 @@
 #include "nsVoidArray.h"
 #include "nsCOMPtr.h"
 #include "nsImapStringBundle.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsMsgFolderFlags.h"
 #include "prmem.h"
 #include "plstr.h"
@@ -94,6 +95,9 @@
 #include "nsITimer.h"
 #include "nsMsgUtils.h"
 
+#define PREF_TRASH_FOLDER_NAME "trash_folder_name"
+#define DEFAULT_TRASH_FOLDER_NAME "Trash"
+
 static NS_DEFINE_CID(kCImapHostSessionList, NS_IIMAPHOSTSESSIONLIST_CID);
 static NS_DEFINE_CID(kImapProtocolCID, NS_IMAPPROTOCOL_CID);
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
@@ -116,7 +120,6 @@ NS_INTERFACE_MAP_END_INHERITING(nsMsgIncomingServer)
 
 nsImapIncomingServer::nsImapIncomingServer()
 {    
-  NS_INIT_ISUPPORTS();
   nsresult rv;
   rv = NS_NewISupportsArray(getter_AddRefs(m_connectionCache));
   rv = NS_NewISupportsArray(getter_AddRefs(m_urlQueue));
@@ -453,14 +456,17 @@ nsImapIncomingServer::GetImapConnectionAndLoadUrl(nsIEventQueue * aClientEventQu
   }
   else
   {   // unable to get an imap connection to run the url; add to the url
-      // queue
+    // queue
     PR_CEnterMonitor(this);
-	  nsCOMPtr <nsISupports> supports(do_QueryInterface(aImapUrl));
-	  if (supports)
-		  m_urlQueue->AppendElement(supports);
+    nsCOMPtr <nsISupports> supports(do_QueryInterface(aImapUrl));
+    if (supports)
+      m_urlQueue->AppendElement(supports);
     m_urlConsumers.AppendElement((void*)aConsumer);
     NS_IF_ADDREF(aConsumer);
     PR_CExitMonitor(this);
+    // let's try running it now - maybe the connection is free now.
+    PRBool urlRun;
+    rv = LoadNextQueuedUrl(&urlRun);
   }
 
   return rv;
@@ -476,14 +482,13 @@ nsImapIncomingServer::LoadNextQueuedUrl(PRBool *aResult)
   PRBool urlRun = PR_FALSE;
   PRBool keepGoing = PR_TRUE;
   
-  nsAutoCMonitor(this);
+  nsAutoCMonitor mon(this);
   m_urlQueue->Count(&cnt);
-  
+
   while (cnt > 0 && !urlRun && keepGoing)
   {
-    nsCOMPtr<nsISupports> aSupport(getter_AddRefs(m_urlQueue->ElementAt(0)));
-    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryInterface(aSupport, &rv));
-    nsCOMPtr<nsIMsgMailNewsUrl> aMailNewsUrl(do_QueryInterface(aSupport, &rv));
+    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryElementAt(m_urlQueue, 0, &rv));
+    nsCOMPtr<nsIMsgMailNewsUrl> aMailNewsUrl(do_QueryInterface(aImapUrl, &rv));
     
     PRBool removeUrlFromQueue = PR_FALSE;
     if (aImapUrl)
@@ -533,13 +538,12 @@ nsImapIncomingServer::AbortQueuedUrls()
   PRUint32 cnt = 0;
   nsresult rv = NS_OK;
   
-  nsAutoCMonitor(this);
+  nsAutoCMonitor mon(this);
   m_urlQueue->Count(&cnt);
   
   while (cnt > 0)
   {
-    nsCOMPtr<nsISupports> aSupport(getter_AddRefs(m_urlQueue->ElementAt(cnt - 1)));
-    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryInterface(aSupport, &rv));
+    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryElementAt(m_urlQueue, cnt - 1, &rv));
     PRBool removeUrlFromQueue = PR_FALSE;
     
     if (aImapUrl)
@@ -670,7 +674,7 @@ nsImapIncomingServer::CreateImapConnection(nsIEventQueue *aEventQueue,
   PR_CEnterMonitor(this);
 
   GetRedirectorType(getter_Copies(redirectorType));
-  PRBool redirectLogon = ((const char *) redirectorType && strlen((const char *) redirectorType) > 0);
+  PRBool redirectLogon = !redirectorType.IsEmpty();
 
   PRInt32 maxConnections = 5; // default to be five
   rv = GetMaximumConnectionsNumber(&maxConnections);
@@ -685,19 +689,18 @@ nsImapIncomingServer::CreateImapConnection(nsIEventQueue *aEventQueue,
       rv = SetMaximumConnectionsNumber(maxConnections);
   }
 
-  *aImapConnection = nsnull;
-	// iterate through the connection cache for a connection that can handle this url.
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
-  PRBool userCancelled = PR_FALSE;
-
   rv = m_connectionCache->Count(&cnt);
   if (NS_FAILED(rv)) return rv;
+
+  *aImapConnection = nsnull;
+	// iterate through the connection cache for a connection that can handle this url.
+  PRBool userCancelled = PR_FALSE;
+
   // loop until we find a connection that can run the url, or doesn't have to wait?
   for (PRUint32 i = 0; i < cnt && !canRunUrlImmediately && !canRunButBusy; i++) 
   {
-    aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-    connection = do_QueryInterface(aSupport);
+    connection = do_QueryElementAt(m_connectionCache, i);
     if (connection)
     {
       if (ConnectionTimeOut(connection))
@@ -715,6 +718,7 @@ nsImapIncomingServer::CreateImapConnection(nsIEventQueue *aEventQueue,
         rv = NS_OK; // don't want to return this error, just don't use the connection
         continue;
     }
+
     // if this connection is wrong, but it's not busy, check if we should designate
     // it as the free connection.
     if (!canRunUrlImmediately && !canRunButBusy && connection)
@@ -798,10 +802,7 @@ nsImapIncomingServer::CreateImapConnection(nsIEventQueue *aEventQueue,
   }
   else // cannot get anyone to handle the url queue it
   {
-#ifdef DEBUG_bienvenu
-    NS_ASSERTION(PR_FALSE, "no one will handle this, I don't think");
-#endif
-      // queue the url
+      // caller will queue the url
   }
 
   PR_CExitMonitor(this);
@@ -839,7 +840,6 @@ NS_IMETHODIMP nsImapIncomingServer::CloseConnectionForFolder(nsIMsgFolder *aMsgF
 {
     nsresult rv = NS_OK;
     nsCOMPtr<nsIImapProtocol> connection;
-    nsCOMPtr<nsISupports> aSupport;
     PRBool isBusy = PR_FALSE, isInbox = PR_FALSE;
     PRUint32 cnt = 0;
     nsXPIDLCString inFolderName;
@@ -857,8 +857,7 @@ NS_IMETHODIMP nsImapIncomingServer::CloseConnectionForFolder(nsIMsgFolder *aMsgF
     
     for (PRUint32 i=0; i < cnt; i++)
     {
-        aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-        connection = do_QueryInterface(aSupport);
+        connection = do_QueryElementAt(m_connectionCache, i);
         if (connection)
         {
             rv = connection->GetSelectedMailboxName(getter_Copies(connectionFolderName));
@@ -880,7 +879,6 @@ NS_IMETHODIMP nsImapIncomingServer::ResetConnection(const char* folderName)
 {
     nsresult rv = NS_OK;
     nsCOMPtr<nsIImapProtocol> connection;
-    nsCOMPtr<nsISupports> aSupport;
     PRBool isBusy = PR_FALSE, isInbox = PR_FALSE;
     PRUint32 cnt = 0;
     nsXPIDLCString curFolderName;
@@ -892,8 +890,7 @@ NS_IMETHODIMP nsImapIncomingServer::ResetConnection(const char* folderName)
     
     for (PRUint32 i=0; i < cnt; i++)
     {
-        aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-        connection = do_QueryInterface(aSupport);
+        connection = do_QueryElementAt(m_connectionCache, i);
         if (connection)
         {
             rv = connection->GetSelectedMailboxName(getter_Copies(curFolderName));
@@ -920,8 +917,7 @@ nsImapIncomingServer::PerformExpand(nsIMsgWindow *aMsgWindow)
     
     rv = GetPassword(getter_Copies(password));
     if (NS_FAILED(rv)) return rv;
-    if (!(const char*) password || 
-        strlen((const char*) password) == 0)
+    if (password.IsEmpty())
         return NS_OK;
 
     rv = ResetFoldersToUnverified(nsnull);
@@ -952,7 +948,7 @@ nsImapIncomingServer::PerformExpand(nsIMsgWindow *aMsgWindow)
  	return rv; 	
 }
 
-NS_IMETHODIMP nsImapIncomingServer::PerformBiff()
+NS_IMETHODIMP nsImapIncomingServer::PerformBiff(nsIMsgWindow* aMsgWindow)
 {
   nsresult rv;
 
@@ -961,7 +957,7 @@ NS_IMETHODIMP nsImapIncomingServer::PerformBiff()
 	if(NS_SUCCEEDED(rv))
 	{
     SetPerformingBiff(PR_TRUE);
-		rv = rootMsgFolder->GetNewMessages(nsnull, nsnull);
+		rv = rootMsgFolder->GetNewMessages(aMsgWindow, nsnull);
   }
   return rv;
 }
@@ -975,15 +971,13 @@ nsImapIncomingServer::CloseCachedConnections()
   
   // iterate through the connection cache closing open connections.
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
   
   nsresult rv = m_connectionCache->Count(&cnt);
   if (NS_FAILED(rv)) return rv;
   
   for (PRUint32 i = cnt; i>0; i--)
   {
-    aSupport = getter_AddRefs(m_connectionCache->ElementAt(i-1));
-    connection = do_QueryInterface(aSupport);
+    connection = do_QueryElementAt(m_connectionCache, i-1);
     if (connection)
       connection->TellThreadToDie(PR_TRUE);
   }
@@ -1057,16 +1051,19 @@ nsresult nsImapIncomingServer::GetPFCForStringId(PRBool createIfMissing, PRInt32
   if (!*aFolder && createIfMissing)
   {
 		// get the URI from the incoming server
-	  nsCOMPtr<nsIRDFResource> res;
-	  nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
-	  rv = rdf->GetResource(pfcMailUri.get(), getter_AddRefs(res));
+	  nsCOMPtr<nsIRDFService> rdf = do_GetService("@mozilla.org/rdf/rdf-service;1", &rv);
+    NS_ENSURE_SUCCESS(rv,rv);
+
+    nsCOMPtr<nsIRDFResource> res;
+	  rv = rdf->GetResource(pfcMailUri, getter_AddRefs(res));
 	  NS_ENSURE_SUCCESS(rv, rv);
+
     nsCOMPtr <nsIMsgFolder> parentToCreate = do_QueryInterface(res, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
+    
     parentToCreate->SetParent(pfcParent);
     parentToCreate->CreateStorageIfMissing(nsnull);
-    *aFolder = parentToCreate;
-    NS_IF_ADDREF(*aFolder);
+    NS_IF_ADDREF(*aFolder = parentToCreate);
   }
   return rv;
 }
@@ -1277,7 +1274,7 @@ NS_IMETHODIMP nsImapIncomingServer::PossibleImapMailbox(const char *folderPath, 
       if (hierarchyDelimiter != '/')
         nsImapUrl::UnescapeSlashes(NS_CONST_CAST(char*, dupFolderPath.get()));
       
-      if (! (onlineName.get()) || strlen(onlineName.get()) == 0
+      if (onlineName.IsEmpty()
         || nsCRT::strcmp(onlineName.get(), dupFolderPath.get()))
         imapFolder->SetOnlineName(dupFolderPath.get());
       if (hierarchyDelimiter != '/')
@@ -1302,20 +1299,20 @@ NS_IMETHODIMP nsImapIncomingServer::PossibleImapMailbox(const char *folderPath, 
 
         //make sure rv value is not crunched, it is used to SetPrettyName
         nsXPIDLCString redirectorType;
-        GetRedirectorType(getter_Copies(redirectorType)); //Sent mail folder as per netscape webmail
-        if (redirectorType.Equals(NS_LITERAL_CSTRING("netscape")) && onlineName.Equals(NS_LITERAL_CSTRING("Sent")))
+        GetRedirectorType(getter_Copies(redirectorType)); //Sent mail folder as per aol/netscape webmail
+        if ((redirectorType.Equals(NS_LITERAL_CSTRING("aol")) && onlineName.Equals(NS_LITERAL_CSTRING("Sent Items")))
+          || (redirectorType.Equals(NS_LITERAL_CSTRING("netscape")) && onlineName.Equals(NS_LITERAL_CSTRING("Sent"))))
           //we know that we don't allowConversion for netscape webmail so just use the onlineName
           child->SetFlag(MSG_FOLDER_FLAG_SENTMAIL);
 
         else if (redirectorType.Equals(NS_LITERAL_CSTRING("netscape")) && onlineName.Equals(NS_LITERAL_CSTRING("Draft")))
           child->SetFlag(MSG_FOLDER_FLAG_DRAFTS);
 
+        else if (redirectorType.Equals(NS_LITERAL_CSTRING("aol")) && onlineName.Equals(NS_LITERAL_CSTRING("RECYCLE")))
+          child->SetFlag(MSG_FOLDER_FLAG_TRASH);
+
         if (NS_SUCCEEDED(rv))
           child->SetPrettyName(convertedName);
-        if (onlineName.Equals("RECYCLE"))
-          child->SetFlag(MSG_FOLDER_FLAG_TRASH);
-        else if (onlineName.Equals("Sent Items"))
-          child->SetFlag(MSG_FOLDER_FLAG_SENTMAIL);
       }
     }
   }
@@ -1461,14 +1458,14 @@ NS_IMETHODIMP nsImapIncomingServer::GetTrashFolderByRedirectorType(char **specia
   if (NS_FAILED(rv)) 
     return NS_OK; // return if no redirector type
 
-  nsCOMPtr <nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  rv = prefs->GetCharPref(prefName.get(), specialTrashName);
+  rv = prefBranch->GetCharPref(prefName.get(), specialTrashName);
   if (NS_SUCCEEDED(rv) && ((!*specialTrashName) || (!**specialTrashName)))
     return NS_ERROR_FAILURE;
-  else
-    return rv;
+
+  return rv;
 }
 
 NS_IMETHODIMP nsImapIncomingServer::AllowFolderConversion(PRBool *allowConversion)
@@ -1476,7 +1473,6 @@ NS_IMETHODIMP nsImapIncomingServer::AllowFolderConversion(PRBool *allowConversio
   NS_ENSURE_ARG_POINTER(allowConversion);
 
   nsresult rv;
-  PRInt32 stringId = 0;
   *allowConversion = PR_FALSE;
 
   // See if the redirector type allows folder name conversion. The pref setting is like:
@@ -1487,11 +1483,11 @@ NS_IMETHODIMP nsImapIncomingServer::AllowFolderConversion(PRBool *allowConversio
   if (NS_FAILED(rv)) 
     return NS_OK; // return if no redirector type
 
-  nsCOMPtr <nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
   // In case this pref is not set we need to return NS_OK.
-  rv = prefs->GetBoolPref(prefName.get(), allowConversion);
+  prefBranch->GetBoolPref(prefName.get(), allowConversion);
   return NS_OK;
 }
 
@@ -1500,11 +1496,7 @@ NS_IMETHODIMP nsImapIncomingServer::ConvertFolderName(const char *originalName, 
   NS_ENSURE_ARG_POINTER(convertedName);
 
   nsresult rv = NS_OK;
-  PRInt32 stringId = 0;
   *convertedName = nsnull;
-
-  nsCOMPtr <nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-  NS_ENSURE_SUCCESS(rv,rv);
 
   // See if the redirector type allows folder name conversion.
   PRBool allowConversion;
@@ -1552,12 +1544,12 @@ NS_IMETHODIMP nsImapIncomingServer::HideFolderName(const char *folderName, PRBoo
   if (NS_FAILED(rv)) 
     return NS_OK; // return if no redirector type
 
-  nsCOMPtr <nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
   prefName.Append(folderName);
   // In case this pref is not set we need to return NS_OK.
-  prefs->GetBoolPref(prefName.get(), hideFolder);
+  prefBranch->GetBoolPref(prefName.get(), hideFolder);
   return NS_OK;
 }
 
@@ -1580,7 +1572,7 @@ nsresult nsImapIncomingServer::GetFolder(const char* name, nsIMsgFolder** pFolde
           nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
           if (NS_FAILED(rv)) return rv;
           nsCOMPtr<nsIRDFResource> res;
-          rv = rdf->GetResource(uriString.get(), getter_AddRefs(res));
+          rv = rdf->GetResource(uriString, getter_AddRefs(res));
           if (NS_SUCCEEDED(rv))
           {
               nsCOMPtr<nsIMsgFolder> folder(do_QueryInterface(res, &rv));
@@ -1594,7 +1586,6 @@ nsresult nsImapIncomingServer::GetFolder(const char* name, nsIMsgFolder** pFolde
     }
     return rv;
 }
-
 
 NS_IMETHODIMP  nsImapIncomingServer::OnlineFolderDelete(const char *aFolderName) 
 {
@@ -1692,11 +1683,6 @@ NS_IMETHODIMP nsImapIncomingServer::SetFolderAdminURL(const char *aFolderName, c
   return rv;
 }
 
-NS_IMETHODIMP  nsImapIncomingServer::SubscribeUpgradeFinished(PRBool bringUpSubscribeUI) 
-{
-	return NS_OK;
-}
-
 NS_IMETHODIMP  nsImapIncomingServer::FolderVerifiedOnline(const char *folderName, PRBool *aResult) 
 {
   NS_ENSURE_ARG_POINTER(aResult);
@@ -1735,7 +1721,37 @@ NS_IMETHODIMP nsImapIncomingServer::DiscoveryDone()
 	  if (NS_FAILED(rv)) return rv;
       nsCOMPtr<nsIMsgFolder> rootMsgFolder = do_QueryInterface(rootFolder, &rv);
       if (rootMsgFolder)
+      {
         rootMsgFolder->SetPrefFlag();
+      }
+
+      // Verify there is only one trash folder. Another might be present if 
+      // the trash name has been changed.
+      PRUint32 numFolders;
+      rv = rootMsgFolder->GetFoldersWithFlag(MSG_FOLDER_FLAG_TRASH, 0, &numFolders, NULL);
+      
+      if (NS_SUCCEEDED(rv) && numFolders > 1)
+      {
+          nsXPIDLString trashName;
+          if (NS_SUCCEEDED(GetTrashFolderName(getter_Copies(trashName))))
+          {
+              nsIMsgFolder *trashFolders[2];
+              if (NS_SUCCEEDED(rootMsgFolder->GetFoldersWithFlag(MSG_FOLDER_FLAG_TRASH, 2, 
+                  &numFolders, trashFolders)))
+              {
+                  for (PRUint32 i = 0; i < numFolders; i++)
+                  {
+                      nsXPIDLString folderName;
+                      if (NS_SUCCEEDED(trashFolders[i]->GetName(getter_Copies(folderName))) && 
+                          !folderName.Equals(trashName))
+                      {
+                          trashFolders[i]->ClearFlag(MSG_FOLDER_FLAG_TRASH);
+                      }
+                      NS_RELEASE(trashFolders[i]);
+                  }
+              }
+          }
+      }
   }
 
 	PRInt32 numUnverifiedFolders;
@@ -1855,13 +1871,14 @@ NS_IMETHODIMP nsImapIncomingServer::DiscoveryDone()
 
 nsresult nsImapIncomingServer::DeleteNonVerifiedFolders(nsIFolder *curFolder)
 {
-	PRBool autoUnsubscribeFromNoSelectFolders = PR_TRUE;
-	nsresult rv;
-    nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-	if(NS_SUCCEEDED(rv))
-	{
-		rv = prefs->GetBoolPref("mail.imap.auto_unsubscribe_from_noselect_folders", &autoUnsubscribeFromNoSelectFolders);
-	}
+    PRBool autoUnsubscribeFromNoSelectFolders = PR_TRUE;
+    nsresult rv;
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv))
+    {
+        prefBranch->GetBoolPref("mail.imap.auto_unsubscribe_from_noselect_folders", &autoUnsubscribeFromNoSelectFolders);
+    }
+
 //	return rv;
 	nsCOMPtr<nsIEnumerator> subFolders;
 
@@ -2398,11 +2415,11 @@ NS_IMETHODIMP nsImapIncomingServer::ForgetSessionPassword()
   return NS_OK;
 }
 
-NS_IMETHODIMP nsImapIncomingServer::GetServerRequiresPasswordForBiff(PRBool *_retval)
+NS_IMETHODIMP nsImapIncomingServer::GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff)
 {
-  NS_ENSURE_ARG_POINTER(_retval);
+  NS_ENSURE_ARG_POINTER(aServerRequiresPasswordForBiff);
   // if the user has already been authenticated, we've got the password
-  *_retval = !m_userAuthenticated;
+  *aServerRequiresPasswordForBiff = !m_userAuthenticated;
   return NS_OK;
 }
 
@@ -2427,11 +2444,7 @@ NS_IMETHODIMP nsImapIncomingServer::PromptForPassword(char ** aPassword,
     nsresult rv = CreatePrefNameWithRedirectorType(".hide_hostname_for_password", prefName);
     NS_ENSURE_SUCCESS(rv,rv);
 
-    nsCOMPtr <nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
-    NS_ENSURE_SUCCESS(rv,rv);
-
-    nsCOMPtr<nsIPrefBranch> prefBranch; 
-    rv = prefs->GetBranch(nsnull, getter_AddRefs(prefBranch)); 
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv,rv);
 
     PRBool hideHostnameForPassword = PR_FALSE;
@@ -2477,7 +2490,7 @@ NS_IMETHODIMP  nsImapIncomingServer::CommitNamespaces()
 
 }
 
-NS_IMETHODIMP nsImapIncomingServer::PseudoInterruptMsgLoad(nsIMsgFolder *aImapFolder, PRBool *interrupted)
+NS_IMETHODIMP nsImapIncomingServer::PseudoInterruptMsgLoad(nsIMsgFolder *aImapFolder, nsIMsgWindow *aMsgWindow, PRBool *interrupted)
 {
   nsresult rv = NS_OK;
   nsCOMPtr<nsIImapProtocol> connection;
@@ -2487,16 +2500,14 @@ NS_IMETHODIMP nsImapIncomingServer::PseudoInterruptMsgLoad(nsIMsgFolder *aImapFo
   // iterate through the connection cache for a connection that is loading
   // a message in this folder and should be pseudo-interrupted.
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
   
   rv = m_connectionCache->Count(&cnt);
   if (NS_FAILED(rv)) return rv;
   for (PRUint32 i = 0; i < cnt; i++) 
   {	
-    aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-    connection = do_QueryInterface(aSupport);
+    connection = do_QueryElementAt(m_connectionCache, i);
     if (connection)
-      rv = connection->PseudoInterruptMsgLoad(aImapFolder, interrupted);
+      rv = connection->PseudoInterruptMsgLoad(aImapFolder, aMsgWindow, interrupted);
   }
   
   PR_CExitMonitor(this);
@@ -2737,13 +2748,11 @@ NS_IMETHODIMP nsImapIncomingServer::OnLogonRedirectionReply(const PRUnichar *pHo
   m_urlQueue->Count(&cnt);
   if (cnt > 0)
   {
-    nsCOMPtr<nsISupports> aSupport(getter_AddRefs(m_urlQueue->ElementAt(0)));
-    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryInterface(aSupport, &rv));
+    nsCOMPtr<nsIImapUrl> aImapUrl(do_QueryElementAt(m_urlQueue, 0, &rv));
     
     if (aImapUrl)
     {
-      nsISupports *aConsumer = (nsISupports*)m_urlConsumers.ElementAt(0);
-      NS_IF_ADDREF(aConsumer);
+      nsCOMPtr<nsISupports> aConsumer = (nsISupports*)m_urlConsumers.ElementAt(0);
       
       nsCOMPtr <nsIImapProtocol>  protocolInstance ;
       rv = CreateImapConnection(aEventQueue, aImapUrl, getter_AddRefs(protocolInstance));
@@ -2761,8 +2770,6 @@ NS_IMETHODIMP nsImapIncomingServer::OnLogonRedirectionReply(const PRUnichar *pHo
         m_urlQueue->RemoveElementAt(0);
         m_urlConsumers.RemoveElementAt(0);
       }
-      
-      NS_IF_RELEASE(aConsumer);
     }    
   }
   else
@@ -3317,9 +3324,9 @@ nsImapIncomingServer::GetSupportsDiskSpace(PRBool *aSupportsDiskSpace)
   nsresult rv = CreateHostSpecificPrefName("default_supports_diskspace", prefName);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-  if(NS_SUCCEEDED(rv)) {
-     rv = prefs->GetBoolPref(prefName.get(), aSupportsDiskSpace);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+     rv = prefBranch->GetBoolPref(prefName.get(), aSupportsDiskSpace);
   }
 
   // Couldn't get the default value with the hostname.
@@ -3345,15 +3352,13 @@ nsImapIncomingServer::GetNumIdleConnections(PRInt32 *aNumIdleConnections)
   PR_CEnterMonitor(this);
   
   PRUint32 cnt;
-  nsCOMPtr<nsISupports> aSupport;
   
   rv = m_connectionCache->Count(&cnt);
   if (NS_FAILED(rv)) return rv;
   // loop counting idle connections
   for (PRUint32 i = 0; i < cnt; i++) 
   {
-    aSupport = getter_AddRefs(m_connectionCache->ElementAt(i));
-    connection = do_QueryInterface(aSupport);
+    connection = do_QueryElementAt(m_connectionCache, i);
     if (connection)
     {
       rv = connection->IsBusy(&isBusy, &isInboxConnection);
@@ -3403,9 +3408,9 @@ nsImapIncomingServer::GetOfflineSupportLevel(PRInt32 *aSupportLevel)
     rv = CreateHostSpecificPrefName("default_offline_support_level", prefName);
     NS_ENSURE_SUCCESS(rv,rv);
 
-    nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-    if(NS_SUCCEEDED(rv)) {
-      rv = prefs->GetIntPref(prefName.get(), aSupportLevel);
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv) && prefBranch) {
+      rv = prefBranch->GetIntPref(prefName.get(), aSupportLevel);
     } 
 
     // Couldn't get the pref value with the hostname. 
@@ -3538,7 +3543,7 @@ nsImapIncomingServer::GetPrefForServerAttribute(const char *prefSuffix, PRBool *
   NS_ENSURE_ARG_POINTER(prefSuffix);
   nsresult rv;
   nsCAutoString prefName;
-  nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
 
   nsXPIDLCString serverKey;
   rv = GetKey(getter_Copies(serverKey));
@@ -3548,7 +3553,7 @@ nsImapIncomingServer::GetPrefForServerAttribute(const char *prefSuffix, PRBool *
   nsMsgIncomingServer::getPrefName(serverKey, 
                                    prefSuffix, 
                                    prefName);
-  rv = prefs->GetBoolPref(prefName.get(), prefValue);
+  rv = prefBranch->GetBoolPref(prefName.get(), prefValue);
 
   // If the server pref is not set in then look at the 
   // pref set with redirector type
@@ -3560,8 +3565,8 @@ nsImapIncomingServer::GetPrefForServerAttribute(const char *prefSuffix, PRBool *
 
     rv = CreatePrefNameWithRedirectorType(redirectorType.get(), prefName);
 
-    if(NS_SUCCEEDED(rv)) 
-      rv = prefs->GetBoolPref(prefName.get(), prefValue);
+    if (NS_SUCCEEDED(rv)) 
+      rv = prefBranch->GetBoolPref(prefName.get(), prefValue);
   }
 
   return rv;
@@ -3685,6 +3690,19 @@ nsImapIncomingServer::GetArbitraryHeaders(char **aResult)
 }
 
 NS_IMETHODIMP
+nsImapIncomingServer::GetShowAttachmentsInline(PRBool *aResult)
+{
+  *aResult = PR_TRUE; // true per default
+ 
+  nsresult rv; 
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+  
+  prefBranch->GetBoolPref("mail.inline_attachments", aResult);
+  return NS_OK; // In case this pref is not set we need to return NS_OK.
+}
+
+NS_IMETHODIMP
 nsImapIncomingServer::OnUserOrHostNameChanged(const char *oldName, const char *newName)
 {
   nsresult rv;
@@ -3739,3 +3757,103 @@ nsImapIncomingServer::GetUriWithNamespacePrefixIfNecessary(PRInt32 namespaceType
   }
   return rv;
 }
+
+NS_IMETHODIMP nsImapIncomingServer::GetTrashFolderName(PRUnichar **retval)
+{
+  nsresult rv = GetUnicharValue(PREF_TRASH_FOLDER_NAME, retval);
+  if (NS_FAILED(rv))
+    return rv;
+
+  if (!*retval || !**retval)
+  {
+      // if GetUnicharValue() above returned allocated empty string, we must free it first
+      // before allocating space and assigning the default value
+      if (*retval)
+          nsMemory::Free(*retval);
+      *retval = ToNewUnicode(NS_LITERAL_STRING(DEFAULT_TRASH_FOLDER_NAME));
+  }
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsImapIncomingServer::SetTrashFolderName(const PRUnichar *chvalue)
+{
+  // clear trash flag from the old pref
+  nsXPIDLString oldTrashName;
+  nsresult rv = GetTrashFolderName(getter_Copies(oldTrashName));
+  if (NS_SUCCEEDED(rv))
+  {
+    char *oldTrashNameUtf7 = CreateUtf7ConvertedStringFromUnicode(oldTrashName);
+    if (oldTrashNameUtf7)
+    {
+      nsCOMPtr<nsIMsgFolder> oldFolder;
+      rv = GetFolder(oldTrashNameUtf7, getter_AddRefs(oldFolder));
+      if (NS_SUCCEEDED(rv) && oldFolder)
+      {
+        oldFolder->ClearFlag(MSG_FOLDER_FLAG_TRASH);
+      }
+      PR_Free(oldTrashNameUtf7);
+    }
+  }
+  
+  return SetUnicharValue(PREF_TRASH_FOLDER_NAME, chvalue);
+}
+
+NS_IMETHODIMP
+nsImapIncomingServer::GetMsgFolderFromURI(nsIMsgFolder *aFolderResource, const char *aURI, nsIMsgFolder **aFolder)
+{
+  nsCOMPtr<nsIMsgFolder> rootMsgFolder;
+  nsresult rv = GetRootMsgFolder(getter_AddRefs(rootMsgFolder));
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!rootMsgFolder)
+    return NS_ERROR_UNEXPECTED;
+
+  nsCOMPtr <nsIMsgFolder> msgFolder;
+  PRBool namespacePrefixAdded = PR_FALSE;
+
+  // Make sure an specific IMAP folder has correct personal namespace
+  // See bugzilla bug 90494 (http://bugzilla.mozilla.org/show_bug.cgi?id=90494)
+  nsXPIDLCString folderUriWithNamespace;
+  GetUriWithNamespacePrefixIfNecessary(kPersonalNamespace, aURI, getter_Copies(folderUriWithNamespace));
+  if (!folderUriWithNamespace.IsEmpty()) {
+    namespacePrefixAdded = PR_TRUE;
+    rv = rootMsgFolder->GetChildWithURI(folderUriWithNamespace, PR_TRUE, PR_FALSE, getter_AddRefs(msgFolder));
+  }
+  else {
+    rv = rootMsgFolder->GetChildWithURI(aURI, PR_TRUE, PR_FALSE, getter_AddRefs(msgFolder));
+  }
+
+  if (NS_FAILED(rv) || !msgFolder) {
+    // we didn't find the folder so we will have to create new one.
+    if (namespacePrefixAdded)
+    {
+      nsCOMPtr <nsIRDFService> rdf = do_GetService("@mozilla.org/rdf/rdf-service;1", &rv);
+      NS_ENSURE_SUCCESS(rv,rv);
+
+      nsCOMPtr<nsIRDFResource> resource;
+      rv = rdf->GetResource(folderUriWithNamespace, getter_AddRefs(resource));
+      NS_ENSURE_SUCCESS(rv,rv);
+      
+      nsCOMPtr <nsIMsgFolder> folderResource;
+      folderResource = do_QueryInterface(resource, &rv);
+      NS_ENSURE_SUCCESS(rv,rv);
+    }   
+    msgFolder = aFolderResource;
+  }
+
+  NS_IF_ADDREF(*aFolder = msgFolder);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsImapIncomingServer::CramMD5Hash(const char *decodedChallenge, const char *key, char **result)
+{
+  unsigned char resultDigest[DIGEST_LENGTH];
+  nsresult rv = MSGCramMD5(decodedChallenge, strlen(decodedChallenge), 
+        key, strlen(key), resultDigest);
+  NS_ENSURE_SUCCESS(rv, rv);
+  *result = (char *) malloc(DIGEST_LENGTH);
+  if (*result)
+    memcpy(*result, resultDigest, DIGEST_LENGTH);
+  return (*result) ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+}
+

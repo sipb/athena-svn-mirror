@@ -18,7 +18,11 @@
  * Copyright (C) 2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
  * Contributor(s):
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -32,7 +36,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: loader.h,v 1.1.1.1 2003-02-14 17:53:58 rbasch Exp $
+ * $Id: loader.h,v 1.1.1.2 2003-07-08 17:24:27 rbasch Exp $
  */
 
 #ifndef _LOADER_H_
@@ -40,7 +44,7 @@
 
 #include "blapi.h"
 
-#define FREEBL_VERSION 0x0302
+#define FREEBL_VERSION 0x0306
 
 struct FREEBLVectorStr {
 
@@ -98,7 +102,7 @@ struct FREEBLVectorStr {
 
  PRBool (* p_KEA_Verify)(SECItem *Y, SECItem *prime, SECItem *subPrime);
 
- RC4Context * (* p_RC4_CreateContext)(unsigned char *key, int len);
+ RC4Context * (* p_RC4_CreateContext)(const unsigned char *key, int len);
 
  void (* p_RC4_DestroyContext)(RC4Context *cx, PRBool freeit);
 
@@ -110,8 +114,9 @@ struct FREEBLVectorStr {
 			    unsigned int *outputLen, unsigned int maxOutputLen,
 			    const unsigned char *input, unsigned int inputLen);
 
- RC2Context * (* p_RC2_CreateContext)(unsigned char *key, unsigned int len,
-		     unsigned char *iv, int mode, unsigned effectiveKeyLen);
+ RC2Context * (* p_RC2_CreateContext)(const unsigned char *key, 
+                     unsigned int len, const unsigned char *iv, 
+		     int mode, unsigned effectiveKeyLen);
 
  void (* p_RC2_DestroyContext)(RC2Context *cx, PRBool freeit);
 
@@ -123,8 +128,8 @@ struct FREEBLVectorStr {
 			    unsigned int *outputLen, unsigned int maxOutputLen,
 			    const unsigned char *input, unsigned int inputLen);
 
- RC5Context *(* p_RC5_CreateContext)(SECItem *key, unsigned int rounds,
-                     unsigned int wordSize, unsigned char *iv, int mode);
+ RC5Context *(* p_RC5_CreateContext)(const SECItem *key, unsigned int rounds,
+                     unsigned int wordSize, const unsigned char *iv, int mode);
 
  void (* p_RC5_DestroyContext)(RC5Context *cx, PRBool freeit);
 
@@ -136,7 +141,8 @@ struct FREEBLVectorStr {
                             unsigned int *outputLen, unsigned int maxOutputLen,
                             const unsigned char *input, unsigned int inputLen);
 
- DESContext *(* p_DES_CreateContext)(unsigned char *key, unsigned char *iv,
+ DESContext *(* p_DES_CreateContext)(const unsigned char *key, 
+                                     const unsigned char *iv,
 				     int mode, PRBool encrypt);
 
  void (* p_DES_DestroyContext)(DESContext *cx, PRBool freeit);
@@ -149,7 +155,8 @@ struct FREEBLVectorStr {
 			    unsigned int *outputLen, unsigned int maxOutputLen,
 			    const unsigned char *input, unsigned int inputLen);
 
- AESContext * (* p_AES_CreateContext)(unsigned char *key, unsigned char *iv, 
+ AESContext * (* p_AES_CreateContext)(const unsigned char *key, 
+                            const unsigned char *iv, 
 			    int mode, int encrypt, unsigned int keylen, 
 			    unsigned int blocklen);
 
@@ -250,6 +257,8 @@ struct FREEBLVectorStr {
  SECStatus (* p_PQG_VerifyParams)(const PQGParams *params, 
                                   const PQGVerify *vfy, SECStatus *result);
 
+  /* Version 3.001 came to here */
+
   SECStatus (* p_RSA_PrivateKeyOpDoubleChecked)(RSAPrivateKey *key,
                               unsigned char *output,
                               const unsigned char *input);
@@ -257,6 +266,110 @@ struct FREEBLVectorStr {
   SECStatus (* p_RSA_PrivateKeyCheck)(RSAPrivateKey *key);
 
   void (* p_BL_Cleanup)(void);
+
+  /* Version 3.002 came to here */
+
+ SHA256Context *(* p_SHA256_NewContext)(void);
+ void (* p_SHA256_DestroyContext)(SHA256Context *cx, PRBool freeit);
+ void (* p_SHA256_Begin)(SHA256Context *cx);
+ void (* p_SHA256_Update)(SHA256Context *cx, const unsigned char *input,
+			unsigned int inputLen);
+ void (* p_SHA256_End)(SHA256Context *cx, unsigned char *digest,
+		     unsigned int *digestLen, unsigned int maxDigestLen);
+ SECStatus (* p_SHA256_HashBuf)(unsigned char *dest, const unsigned char *src,
+			      uint32 src_length);
+ SECStatus (* p_SHA256_Hash)(unsigned char *dest, const char *src);
+ void (* p_SHA256_TraceState)(SHA256Context *cx);
+ unsigned int (* p_SHA256_FlattenSize)(SHA256Context *cx);
+ SECStatus (* p_SHA256_Flatten)(SHA256Context *cx,unsigned char *space);
+ SHA256Context * (* p_SHA256_Resurrect)(unsigned char *space, void *arg);
+
+ SHA512Context *(* p_SHA512_NewContext)(void);
+ void (* p_SHA512_DestroyContext)(SHA512Context *cx, PRBool freeit);
+ void (* p_SHA512_Begin)(SHA512Context *cx);
+ void (* p_SHA512_Update)(SHA512Context *cx, const unsigned char *input,
+			unsigned int inputLen);
+ void (* p_SHA512_End)(SHA512Context *cx, unsigned char *digest,
+		     unsigned int *digestLen, unsigned int maxDigestLen);
+ SECStatus (* p_SHA512_HashBuf)(unsigned char *dest, const unsigned char *src,
+			      uint32 src_length);
+ SECStatus (* p_SHA512_Hash)(unsigned char *dest, const char *src);
+ void (* p_SHA512_TraceState)(SHA512Context *cx);
+ unsigned int (* p_SHA512_FlattenSize)(SHA512Context *cx);
+ SECStatus (* p_SHA512_Flatten)(SHA512Context *cx,unsigned char *space);
+ SHA512Context * (* p_SHA512_Resurrect)(unsigned char *space, void *arg);
+
+ SHA384Context *(* p_SHA384_NewContext)(void);
+ void (* p_SHA384_DestroyContext)(SHA384Context *cx, PRBool freeit);
+ void (* p_SHA384_Begin)(SHA384Context *cx);
+ void (* p_SHA384_Update)(SHA384Context *cx, const unsigned char *input,
+			unsigned int inputLen);
+ void (* p_SHA384_End)(SHA384Context *cx, unsigned char *digest,
+		     unsigned int *digestLen, unsigned int maxDigestLen);
+ SECStatus (* p_SHA384_HashBuf)(unsigned char *dest, const unsigned char *src,
+			      uint32 src_length);
+ SECStatus (* p_SHA384_Hash)(unsigned char *dest, const char *src);
+ void (* p_SHA384_TraceState)(SHA384Context *cx);
+ unsigned int (* p_SHA384_FlattenSize)(SHA384Context *cx);
+ SECStatus (* p_SHA384_Flatten)(SHA384Context *cx,unsigned char *space);
+ SHA384Context * (* p_SHA384_Resurrect)(unsigned char *space, void *arg);
+
+  /* Version 3.003 came to here */
+
+ AESKeyWrapContext * (* p_AESKeyWrap_CreateContext)(const unsigned char *key, 
+                   const unsigned char *iv, int encrypt, unsigned int keylen);
+
+ void (* p_AESKeyWrap_DestroyContext)(AESKeyWrapContext *cx, PRBool freeit);
+
+ SECStatus (* p_AESKeyWrap_Encrypt)(AESKeyWrapContext *cx, 
+            unsigned char *output,
+            unsigned int *outputLen, unsigned int maxOutputLen,
+            const unsigned char *input, unsigned int inputLen);
+
+ SECStatus (* p_AESKeyWrap_Decrypt)(AESKeyWrapContext *cx, 
+            unsigned char *output,
+            unsigned int *outputLen, unsigned int maxOutputLen,
+            const unsigned char *input, unsigned int inputLen);
+
+  /* Version 3.004 came to here */
+
+ PRBool (*p_BLAPI_SHVerify)(const char *name, PRFuncPtr addr);
+ PRBool (*p_BLAPI_VerifySelf)(const char *name);
+
+  /* Version 3.005 came to here */
+
+ SECStatus (* p_EC_NewKey)(ECParams *           params, 
+                           ECPrivateKey **	privKey);
+
+ SECStatus (* p_EC_NewKeyFromSeed)(ECParams *   params, 
+                             ECPrivateKey **	privKey,
+                             const unsigned char * seed,
+                             int                seedlen);
+
+ SECStatus (* p_EC_ValidatePublicKey)(ECParams *   params, 
+			     SECItem *	        publicValue);
+
+ SECStatus (* p_ECDH_Derive)(SECItem *          publicValue, 
+                             ECParams *         params,
+                             SECItem *          privateValue,
+                             PRBool             withCofactor,
+                             SECItem *          derivedSecret);
+
+ SECStatus (* p_ECDSA_SignDigest)(ECPrivateKey * key,
+                             SECItem *          signature,
+                             const SECItem *    digest);
+
+ SECStatus (* p_ECDSA_VerifyDigest)(ECPublicKey * key,
+                             const SECItem *    signature,
+                             const SECItem *    digest);
+
+ SECStatus (* p_ECDSA_SignDigestWithSeed)(ECPrivateKey * key,
+                             SECItem *          signature,
+                             const SECItem *    digest,
+                             const unsigned char * seed,
+                             const int          seedlen);
+
+  /* Version 3.006 came to here */
 
 };
 

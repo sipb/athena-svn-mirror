@@ -73,7 +73,7 @@ MozABHHManager::MozABHHManager(DWORD dwGenericFlags,
     m_dwType    = dwType;
     m_wFlags    = dbFlags;
     m_wVersion  = dbVersion;
-	m_CardNum = iCardNum;
+    m_CardNum = iCardNum;
 
     memset(&m_appInfo, 0, sizeof(CDbGenInfo));
 }
@@ -127,7 +127,8 @@ long MozABHHManager::GetInfoBlock(CDbGenInfo &info, BOOL bSortInfo)
     if (retval)
         return retval;
 
-    _tcscpy((char*)info.m_FileName, m_szName);
+    _tcsncpy((char*)info.m_FileName, m_szName, sizeof(info.m_FileName)-1);
+    info.m_FileName[sizeof(info.m_FileName)-1] = '\0';
     memset(info.m_pBytes, 0, info.m_TotalBytes);
 
     if (!bSortInfo) {
@@ -192,7 +193,8 @@ long MozABHHManager::SetName( char *pName)
     if (wLen >= sizeof(m_szName))
         return GEN_ERR_DATA_TOO_LARGE;
 
-    strcpy(m_szName, pName);
+    strncpy(m_szName, pName, sizeof(m_szName)-1);
+    m_szName[sizeof(m_szName)-1] = '\0';
     return 0;
 }
 
@@ -258,7 +260,10 @@ long MozABHHManager::DeleteCategory(DWORD dwCategory, BOOL bMoveToUnfiled)
     BYTE sCategory = LOBYTE(LOWORD(dwCategory));
 
     if (!bMoveToUnfiled)
+    {
         retval = SyncPurgeAllRecsInCategory(m_hhDB, sCategory);
+        m_pCatMgr->DeleteByIndex(dwCategory); // delete category itself
+    }
     else 
         retval = SyncChangeCategory(m_hhDB, sCategory, 0);
     return retval;
@@ -327,7 +332,8 @@ long MozABHHManager::OpenDB(BOOL bCreate)
         createInfo.m_Type        = m_dwType; 
         createInfo.m_Flags       = (eDbFlags) m_wFlags;
         createInfo.m_CardNo     = m_CardNum;  
-        strcpy(createInfo.m_Name, m_szName);
+        strncpy(createInfo.m_Name, m_szName, sizeof(createInfo.m_Name)-1);
+        createInfo.m_Name[sizeof(createInfo.m_Name)-1] = '\0';
         createInfo.m_Version    = m_wVersion;
 
         if ((retval = SyncCreateDB(createInfo)) == SYNCERR_NONE)
@@ -396,6 +402,8 @@ long MozABHHManager::LoadUpdatedRecords(DWORD catIndex, CPalmRecord ***ppRecordL
     memset(palmRecordList, 0, sizeof(CPalmRecord *) * dwRecCount);
     *ppRecordList = palmRecordList;
 
+    // SyncReadNextModifiedRecInCategory() does not seem to be returning
+    // deleted palm records, so SyncReadNextModifiedRec() is used instead.
     CPalmRecord *pPalmRec;
     *pListSize = 0;
     while ((!retval) && (*pListSize < dwRecCount))  {
@@ -403,13 +411,10 @@ long MozABHHManager::LoadUpdatedRecords(DWORD catIndex, CPalmRecord ***ppRecordL
         if(retval)
             break;
         m_rInfo.m_RecIndex = 0;
-        if(catIndex >= 0) {
-            m_rInfo.m_CatId = catIndex;
-            retval = SyncReadNextModifiedRecInCategory(m_rInfo);
-        }
-        else
-            retval = SyncReadNextModifiedRec(m_rInfo);
-        if (!retval) {
+        retval = SyncReadNextModifiedRec(m_rInfo);
+        // Does it belong to the category we care about?
+        if (!retval && m_rInfo.m_CatId == catIndex)
+        {
             pPalmRec = new CPalmRecord(m_rInfo);
             if (pPalmRec) {
                 *palmRecordList = pPalmRec;
@@ -723,3 +728,7 @@ long MozABHHManager::DeleteARecord(CPalmRecord & palmRec)
     return retval;
 }
 
+long MozABHHManager::PurgeDeletedRecs(void)
+{
+    return (SyncPurgeDeletedRecs(m_hhDB));
+}

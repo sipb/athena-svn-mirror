@@ -57,6 +57,32 @@
     {0x93, 0x37, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40} \
 }
 
+// service implementing nsIProtocolProxyService.
+#define NS_PROTOCOLPROXYSERVICE_CLASSNAME \
+    "nsProtocolProxyService"
+#define NS_PROTOCOLPROXYSERVICE_CONTRACTID \
+    "@mozilla.org/network/protocol-proxy-service;1"
+#define NS_PROTOCOLPROXYSERVICE_CID                  \
+{ /* E9B301C0-E0E4-11d3-A1A8-0050041CAF44 */         \
+    0xe9b301c0,                                      \
+    0xe0e4,                                          \
+    0x11d3,                                          \
+    {0xa1, 0xa8, 0x0, 0x50, 0x4, 0x1c, 0xaf, 0x44}   \
+}
+
+// service implementing nsIProxyAutoConfig.
+#define NS_PROXYAUTOCONFIG_CLASSNAME \
+    "nsProxyAutoConfig"
+#define NS_PROXYAUTOCONFIG_CONTRACTID \
+    "@mozilla.org/network/proxy-auto-config;1" 
+#define NS_PROXYAUTOCONFIG_CID                       \
+{ /* 63ac8c66-1dd2-11b2-b070-84d00d3eaece */         \
+    0x63ac8c66,                                      \
+    0x1dd2,                                          \
+    0x11b2,                                          \
+    {0xb0, 0x70, 0x84, 0xd0, 0x0d, 0x3e, 0xae, 0xce} \
+}
+
 // component implementing nsILoadGroup.
 #define NS_LOADGROUP_CLASSNAME \
     "nsLoadGroup"
@@ -152,32 +178,6 @@
     {0x9c, 0x46, 0xd0, 0x3f, 0xaa, 0x7b, 0x69, 0x6b} \
 }
 
-// component implementing nsIStreamListenerProxy.
-#define NS_STREAMLISTENERPROXY_CLASSNAME \
-    "nsStreamListenerProxy"
-#define NS_STREAMLISTENERPROXY_CONTRACTID \
-    "@mozilla.org/network/stream-listener-proxy;1"
-#define NS_STREAMLISTENERPROXY_CID                   \
-{ /* 96c48f15-aa8a-4da7-a9d5-e842bd76f015 */         \
-    0x96c48f15,                                      \
-    0xaa8a,                                          \
-    0x4da7,                                          \
-    {0xa9, 0xd5, 0xe8, 0x42, 0xbd, 0x76, 0xf0, 0x15} \
-}
-
-// component implementing nsIStreamProviderProxy.
-#define NS_STREAMPROVIDERPROXY_CLASSNAME \
-    "nsStreamProviderProxy"
-#define NS_STREAMPROVIDERPROXY_CONTRACTID \
-    "@mozilla.org/network/stream-provider-proxy;1"
-#define NS_STREAMPROVIDERPROXY_CID                   \
-{ /* ae964fcf-9c27-40f7-9bbd-78894bfc1f31 */         \
-    0xae964fcf,                                      \
-    0x9c27,                                          \
-    0x40f7,                                          \
-    {0x9b, 0xbd, 0x78, 0x89, 0x4b, 0xfc, 0x1f, 0x31} \
-}
-
 // component implementing nsISimpleStreamListener.
 #define NS_SIMPLESTREAMLISTENER_CLASSNAME \
     "nsSimpleStreamListener"
@@ -189,19 +189,6 @@
     0x4701,                                          \
     0x4ba1,                                          \
     {0xb1, 0xd6, 0x53, 0x88, 0xe0, 0x41, 0xfb, 0x67} \
-}
-
-// component implementing nsISimpleStreamProvider.
-#define NS_SIMPLESTREAMPROVIDER_CLASSNAME \
-    "nsSimpleStreamProvider"
-#define NS_SIMPLESTREAMPROVIDER_CONTRACTID \
-    "@mozilla.org/network/simple-stream-provider;1"
-#define NS_SIMPLESTREAMPROVIDER_CID                  \
-{ /* f9f6a519-4efb-4f36-af40-2a5ec3992710 */         \
-    0xf9f6a519,                                      \
-    0x4efb,                                          \
-    0x4f36,                                          \
-    {0xaf, 0x40, 0x2a, 0x5e, 0xc3, 0x99, 0x27, 0x10} \
 }
 
 // DEPRECATED component implementing nsIAsyncStreamListener.
@@ -230,31 +217,38 @@
     {0xb0, 0x2e, 0x77, 0xc8, 0x81, 0xcc, 0x57, 0x73} \
 }
 
-// A simple implementation of nsITransport that stores a segmented memory
-// buffer (4k chunks).  As long as the nsITransport is referenced, the data
-// remains in memory.  It can be read multiple times (only AsyncRead is
-// implemented).  There can be only one writer at a time (only OpenOutputStream
-// is implemented).  AsyncRead can be called while an output stream is still
-// being written to.  The readers will get notified automatically as more
-// data is written via the output stream.
-#define NS_STORAGETRANSPORT_CLASSNAME \
-    "nsStorageTransport"
-#define NS_STORAGETRANSPORT_CONTRACTID \
-    "@mozilla.org/network/storage-transport;1"
-#define NS_STORAGETRANSPORT_CID                      \
-{ /* 5e955cdb-1334-4b8f-86b5-3b0f4d54b9d2 */         \
-    0x5e955cdb,                                      \
-    0x1334,                                          \
-    0x4b8f,                                          \
-    {0x86, 0xb5, 0x3b, 0x0f, 0x4d, 0x54, 0xb9, 0xd2} \
+// component implementing nsIAsyncStreamCopier.
+#define NS_ASYNCSTREAMCOPIER_CLASSNAME \
+    "nsAsyncStreamCopier"
+#define NS_ASYNCSTREAMCOPIER_CONTRACTID \
+    "@mozilla.org/network/async-stream-copier;1"
+#define NS_ASYNCSTREAMCOPIER_CID                     \
+{ /* e746a8b1-c97a-4fc5-baa4-66607521bd08 */         \
+    0xe746a8b1,                                      \
+    0xc97a,                                          \
+    0x4fc5,                                          \
+    {0xba, 0xa4, 0x66, 0x60, 0x75, 0x21, 0xbd, 0x08} \
 }
 
-// component implementing nsIStreamIOChannel.
-#define NS_STREAMIOCHANNEL_CLASSNAME \
+// component implementing nsIInputStreamPump.
+#define NS_INPUTSTREAMPUMP_CLASSNAME \
+    "nsInputStreamPump"
+#define NS_INPUTSTREAMPUMP_CONTRACTID \
+    "@mozilla.org/network/input-stream-pump;1"
+#define NS_INPUTSTREAMPUMP_CID                       \
+{ /* ccd0e960-7947-4635-b70e-4c661b63d675 */         \
+    0xccd0e960,                                      \
+    0x7947,                                          \
+    0x4635,                                          \
+    {0xb7, 0x0e, 0x4c, 0x66, 0x1b, 0x63, 0xd6, 0x75} \
+}
+
+// component implementing nsIInputStreamChannel.
+#define NS_INPUTSTREAMCHANNEL_CLASSNAME \
     "nsInputStreamChannel"
-#define NS_STREAMIOCHANNEL_CONTRACTID \
-    "@mozilla.org/network/stream-io-channel;1"
-#define NS_STREAMIOCHANNEL_CID                       \
+#define NS_INPUTSTREAMCHANNEL_CONTRACTID \
+    "@mozilla.org/network/input-stream-channel;1"
+#define NS_INPUTSTREAMCHANNEL_CID                    \
 { /* 6ddb050c-0d04-11d4-986e-00c04fa0cf4a */         \
     0x6ddb050c,                                      \
     0x0d04,                                          \
@@ -327,6 +321,92 @@
     {0xb9, 0x5c, 0xe5, 0xd6, 0x7a, 0x34, 0xe6, 0xb3} \
 }     
 
+// service implementing nsIStreamTransportService
+#define NS_STREAMTRANSPORTSERVICE_CLASSNAME \
+    "nsStreamTransportService"
+#define NS_STREAMTRANSPORTSERVICE_CONTRACTID \
+    "@mozilla.org/network/stream-transport-service;1"
+#define NS_STREAMTRANSPORTSERVICE_CID \
+{ /* 0885d4f8-f7b8-4cda-902e-94ba38bc256e */         \
+    0x0885d4f8,                                      \
+    0xf7b8,                                          \
+    0x4cda,                                          \
+    {0x90, 0x2e, 0x94, 0xba, 0x38, 0xbc, 0x25, 0x6e} \
+}
+
+// service implementing nsISocketTransportService
+#define NS_SOCKETTRANSPORTSERVICE_CLASSNAME \
+    "nsSocketTransportService"
+#define NS_SOCKETTRANSPORTSERVICE_CONTRACTID \
+    "@mozilla.org/network/socket-transport-service;1"
+#define NS_SOCKETTRANSPORTSERVICE_CID                \
+{ /* c07e81e0-ef12-11d2-92b6-00105a1b0d64 */         \
+    0xc07e81e0,                                      \
+    0xef12,                                          \
+    0x11d2,                                          \
+    {0x92, 0xb6, 0x00, 0x10, 0x5a, 0x1b, 0x0d, 0x64} \
+}
+
+#define NS_FILETRANSPORTSERVICE_CLASSNAME \
+    "nsFileTransportService"
+#define NS_FILETRANSPORTSERVICE_CONTRACTID \
+    "@mozilla.org/network/file-transport-service;1"
+#define NS_FILETRANSPORTSERVICE_CID                  \
+{ /* 2bb2b250-ea35-11d2-931b-00104ba0fd40 */         \
+    0x2bb2b250,                                      \
+    0xea35,                                          \
+    0x11d2,                                          \
+    {0x93, 0x1b, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40} \
+}
+
+#define NS_LOCALFILEINPUTSTREAM_CLASSNAME \
+    "nsFileInputStream"
+#define NS_LOCALFILEINPUTSTREAM_CONTRACTID \
+    "@mozilla.org/network/file-input-stream;1"
+#define NS_LOCALFILEINPUTSTREAM_CID                  \
+{ /* be9a53ae-c7e9-11d3-8cda-0060b0fc14a3 */         \
+    0xbe9a53ae,                                      \
+    0xc7e9,                                          \
+    0x11d3,                                          \
+    {0x8c, 0xda, 0x00, 0x60, 0xb0, 0xfc, 0x14, 0xa3} \
+}
+
+#define NS_LOCALFILEOUTPUTSTREAM_CLASSNAME \
+    "nsFileOutputStream"
+#define NS_LOCALFILEOUTPUTSTREAM_CONTRACTID \
+    "@mozilla.org/network/file-output-stream;1"
+#define NS_LOCALFILEOUTPUTSTREAM_CID                 \
+{ /* c272fee0-c7e9-11d3-8cda-0060b0fc14a3 */         \
+    0xc272fee0,                                      \
+    0xc7e9,                                          \
+    0x11d3,                                          \
+    {0x8c, 0xda, 0x00, 0x60, 0xb0, 0xfc, 0x14, 0xa3} \
+}
+
+#define NS_BUFFEREDINPUTSTREAM_CLASSNAME \
+    "nsBufferedInputStream"
+#define NS_BUFFEREDINPUTSTREAM_CONTRACTID \
+    "@mozilla.org/network/buffered-input-stream;1"
+#define NS_BUFFEREDINPUTSTREAM_CID                   \
+{ /* 9226888e-da08-11d3-8cda-0060b0fc14a3 */         \
+    0x9226888e,                                      \
+    0xda08,                                          \
+    0x11d3,                                          \
+    {0x8c, 0xda, 0x00, 0x60, 0xb0, 0xfc, 0x14, 0xa3} \
+}
+
+#define NS_BUFFEREDOUTPUTSTREAM_CLASSNAME \
+    "nsBufferedOutputStream"
+#define NS_BUFFEREDOUTPUTSTREAM_CONTRACTID \
+    "@mozilla.org/network/buffered-output-stream;1"
+#define NS_BUFFEREDOUTPUTSTREAM_CID                  \
+{ /* 9868b4ce-da08-11d3-8cda-0060b0fc14a3 */         \
+    0x9868b4ce,                                      \
+    0xda08,                                          \
+    0x11d3,                                          \
+    {0x8c, 0xda, 0x00, 0x60, 0xb0, 0xfc, 0x14, 0xa3} \
+}
+
 
 /******************************************************************************
  * netwerk/cache/ classes
@@ -382,16 +462,94 @@
     {0xaa, 0xe3, 0xde, 0x6b, 0x92, 0xda, 0xb6, 0x20} \
 }
 
+#define NS_HTTPNTLMAUTH_CID \
+{ /* bbef8185-c628-4cc1-b53e-e61e74c2451a */         \
+    0xbbef8185,                                      \
+    0xc628,                                          \
+    0x4cc1,                                          \
+    {0xb5, 0x3e, 0xe6, 0x1e, 0x74, 0xc2, 0x45, 0x1a} \
+}
+
+#define NS_HTTPAUTHMANAGER_CLASSNAME \
+    "nsHttpAuthManager"
+#define NS_HTTPAUTHMANAGER_CONTRACTID \
+    "@mozilla.org/network/http-auth-manager;1"
+#define NS_HTTPAUTHMANAGER_CID \
+{ /* 36b63ef3-e0fa-4c49-9fd4-e065e85568f4 */         \
+    0x36b63ef3,                                      \
+    0xe0fa,                                          \
+    0x4c49,                                          \
+    {0x9f, 0xd4, 0xe0, 0x65, 0xe8, 0x55, 0x68, 0xf4} \
+}
+
+/******************************************************************************
+ * netwerk/protocol/ftp/ classes
+ */
+
+#define NS_FTPPROTOCOLHANDLER_CLASSNAME \
+    "nsFtpProtocolHandler"
+#define NS_FTPPROTOCOLHANDLER_CID \
+{ /* 25029490-F132-11d2-9588-00805F369F95 */         \
+    0x25029490,                                      \
+    0xf132,                                          \
+    0x11d2,                                          \
+    {0x95, 0x88, 0x0, 0x80, 0x5f, 0x36, 0x9f, 0x95}  \
+}
+
 /******************************************************************************
  * netwerk/protocol/res/ classes
  */
 
+#define NS_RESPROTOCOLHANDLER_CLASSNAME \
+    "nsResProtocolHandler"
 #define NS_RESPROTOCOLHANDLER_CID                    \
 { /* e64f152a-9f07-11d3-8cda-0060b0fc14a3 */         \
     0xe64f152a,                                      \
     0x9f07,                                          \
     0x11d3,                                          \
     {0x8c, 0xda, 0x00, 0x60, 0xb0, 0xfc, 0x14, 0xa3} \
+}
+
+/******************************************************************************
+ * netwerk/protocol/file/ classes
+ */
+
+#define NS_FILEPROTOCOLHANDLER_CLASSNAME \
+    "nsFileProtocolHandler"
+#define NS_FILEPROTOCOLHANDLER_CID                   \
+{ /* fbc81170-1f69-11d3-9344-00104ba0fd40 */         \
+    0xfbc81170,                                      \
+    0x1f69,                                          \
+    0x11d3,                                          \
+    {0x93, 0x44, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40} \
+}
+
+/******************************************************************************
+ * netwerk/protocol/data/ classes
+ */
+
+#define NS_DATAPROTOCOLHANDLER_CLASSNAME \
+    "nsDataProtocolHandler"
+#define NS_DATAPROTOCOLHANDLER_CID                   \
+{ /* {B6ED3030-6183-11d3-A178-0050041CAF44} */       \
+    0xb6ed3030,                                      \
+    0x6183,                                          \
+    0x11d3,                                          \
+    {0xa1, 0x78, 0x00, 0x50, 0x04, 0x1c, 0xaf, 0x44} \
+}
+
+/******************************************************************************
+ * netwerk/protocol/data/ classes
+ */
+
+#define NS_JARPROTOCOLHANDLER_CLASSNAME \
+    "nsJarProtocolHandler"
+#define NS_JARPROTOCOLHANDLER_CID					 \
+{ /* 0xc7e410d4-0x85f2-11d3-9f63-006008a6efe9 */     \
+    0xc7e410d4,                                      \
+    0x85f2,                                          \
+    0x11d3,                                          \
+    {0x9f, 0x63, 0x00, 0x60, 0x08, 0xa6, 0xef, 0xe9} \
 }
 
 

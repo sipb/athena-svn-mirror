@@ -149,9 +149,6 @@ static const char *event_names[] =
 
 nsAppShell::nsAppShell()  
 { 
-  NS_INIT_ISUPPORTS();
-  mDispatchListener = 0;
-
   if (!sEventQueueList)
     sEventQueueList = new nsVoidArray();
 
@@ -283,12 +280,6 @@ NS_METHOD nsAppShell::Create(int* bac, char ** bav)
   PR_LOG(XlibWidgetsLM, PR_LOG_DEBUG, ("nsAppShell::Create(dpy=%p)\n",
          mDisplay));
 
-  return NS_OK;
-}
-
-NS_METHOD nsAppShell::SetDispatchListener(nsDispatchListener* aDispatchListener) 
-{
-  mDispatchListener = aDispatchListener;
   return NS_OK;
 }
 
@@ -435,7 +426,7 @@ NS_IMETHODIMP nsAppShell::ListenToEventQueue(nsIEventQueue *aQueue,
                                 (XtPointer)mEventQueue);
 
 /* This hack would not be neccesary if we would have a hashtable function
- * which returns success/failure in a seperate var ...
+ * which returns success/failure in a separate var ...
  */
 #define NEVER_BE_ZERO_MAGIC (54321) 
       tag += NEVER_BE_ZERO_MAGIC; /* be sure that |tag| is _never_ 0 */
@@ -952,20 +943,6 @@ nsAppShell::HandleKeyPressEvent(XEvent *event, nsWidget *aWidget)
   keyEvent.message = NS_KEY_PRESS;
   keyEvent.widget = focusWidget;
   keyEvent.eventStructType = NS_KEY_EVENT;
-
-  if (keyEvent.charCode)
-  {
-    /* This is the comment from the GTK code. Hope it makes more sense to you 
-     * than it did for me.                                                    
-     *  
-     * if the control, meta, or alt key is down, then we should leave
-     * the isShift flag alone (probably not a printable character)
-     * if none of the other modifier keys are pressed then we need to
-     * clear isShift so the character can be inserted in the editor
-     */
-    if (!keyEvent.isControl && !keyEvent.isAlt && !keyEvent.isMeta)
-      keyEvent.isShift = PR_FALSE;
-  }
 
   focusWidget->DispatchKeyEvent(keyEvent);
 

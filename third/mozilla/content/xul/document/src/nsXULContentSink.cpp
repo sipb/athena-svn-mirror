@@ -66,6 +66,7 @@
 #include "nsIFormControl.h"
 #include "nsIHTMLContent.h"
 #include "nsIHTMLContentContainer.h"
+#include "nsIHTMLStyleSheet.h"
 #include "nsINameSpace.h"
 #include "nsINameSpaceManager.h"
 #include "nsINodeInfo.h"
@@ -83,6 +84,7 @@
 #include "nsIXULDocument.h"
 #include "nsIXULPrototypeDocument.h"
 #include "nsIXULPrototypeCache.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsLayoutCID.h"
 #include "nsNetUtil.h"
 #include "nsRDFCID.h"
@@ -103,6 +105,8 @@
 
 #include "nsIExpatSink.h"
 #include "nsUnicharUtils.h"
+#include "nsXULAtoms.h"
+#include "nsHTMLAtoms.h"
 
 static const char kNameSpaceSeparator = ':';
 static const char kNameSpaceDef[] = "xmlns";
@@ -111,12 +115,6 @@ static const char kNameSpaceDef[] = "xmlns";
 static PRLogModuleInfo* gLog;
 #endif
 
-// XXX This is sure to change. Copied from mozilla/layout/xul/content/src/nsXULAtoms.cpp
-#define XUL_NAMESPACE_URI "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-static const char kXULNameSpaceURI[] = XUL_NAMESPACE_URI;
-
-
-static NS_DEFINE_CID(kNameSpaceManagerCID,       NS_NAMESPACEMANAGER_CID);
 static NS_DEFINE_CID(kXULPrototypeCacheCID,      NS_XULPROTOTYPECACHE_CID);
 
 //----------------------------------------------------------------------
@@ -147,16 +145,7 @@ public:
 protected:
     // pseudo-constants
     static nsrefcnt               gRefCnt;
-    static nsINameSpaceManager*   gNameSpaceManager;
     static nsIXULPrototypeCache*  gXULCache;
-
-    static nsIAtom* kClassAtom;
-    static nsIAtom* kIdAtom;
-    static nsIAtom* kScriptAtom;
-    static nsIAtom* kStyleAtom;
-    static nsIAtom* kTemplateAtom;
-
-    static PRInt32 kNameSpaceID_XUL;
 
     PRUnichar* mText;
     PRInt32 mTextLength;
@@ -259,19 +248,11 @@ protected:
     nsString               mPreferredStyle;
     nsCOMPtr<nsICSSLoader> mCSSLoader;            // [OWNER]
     nsCOMPtr<nsICSSParser> mCSSParser;            // [OWNER]
+    nsCOMPtr<nsIScriptSecurityManager> mSecMan;
 };
 
 nsrefcnt XULContentSinkImpl::gRefCnt;
-nsINameSpaceManager* XULContentSinkImpl::gNameSpaceManager;
 nsIXULPrototypeCache* XULContentSinkImpl::gXULCache;
-
-nsIAtom* XULContentSinkImpl::kClassAtom;
-nsIAtom* XULContentSinkImpl::kIdAtom;
-nsIAtom* XULContentSinkImpl::kScriptAtom;
-nsIAtom* XULContentSinkImpl::kStyleAtom;
-nsIAtom* XULContentSinkImpl::kTemplateAtom;
-
-PRInt32 XULContentSinkImpl::kNameSpaceID_XUL;
 
 //----------------------------------------------------------------------
 
@@ -355,30 +336,9 @@ XULContentSinkImpl::XULContentSinkImpl(nsresult& rv)
       mState(eInProlog),
       mParser(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 
     if (gRefCnt++ == 0) {
-        rv = nsComponentManager::CreateInstance(kNameSpaceManagerCID,
-                                                nsnull,
-                                                NS_GET_IID(nsINameSpaceManager),
-                                                (void**) &gNameSpaceManager);
-
-        if (NS_FAILED(rv)) return;
-
-
-        rv = gNameSpaceManager->RegisterNameSpace(NS_ConvertASCIItoUCS2(kXULNameSpaceURI), kNameSpaceID_XUL);
-        NS_ASSERTION(NS_SUCCEEDED(rv), "unable to register XUL namespace");
-        if (NS_FAILED(rv)) return;
-
-        kClassAtom          = NS_NewAtom("class");
-        kIdAtom             = NS_NewAtom("id");
-        kScriptAtom         = NS_NewAtom("script");
-        kStyleAtom          = NS_NewAtom("style");
-        kTemplateAtom       = NS_NewAtom("template");
-
-        rv = nsServiceManager::GetService(kXULPrototypeCacheCID,
-                                          NS_GET_IID(nsIXULPrototypeCache),
-                                          (nsISupports**) &gXULCache);
+        rv = CallGetService(kXULPrototypeCacheCID, &gXULCache);
     }
 
 #ifdef PR_LOGGING
@@ -412,9 +372,7 @@ XULContentSinkImpl::~XULContentSinkImpl()
                 nsAutoString prefix;
                 if (prefixAtom)
                     {
-                        const PRUnichar *unicodeString;
-                        prefixAtom->GetUnicode(&unicodeString);
-                        prefix = unicodeString;
+                        prefixAtom->ToString(prefix);
                     }
                 else
                     {
@@ -465,18 +423,7 @@ XULContentSinkImpl::~XULContentSinkImpl()
     PR_FREEIF(mText);
 
     if (--gRefCnt == 0) {
-        NS_IF_RELEASE(gNameSpaceManager);
-
-        NS_IF_RELEASE(kClassAtom);
-        NS_IF_RELEASE(kIdAtom);
-        NS_IF_RELEASE(kScriptAtom);
-        NS_IF_RELEASE(kStyleAtom);
-        NS_IF_RELEASE(kTemplateAtom);
-
-        if (gXULCache) {
-            nsServiceManager::ReleaseService(kXULPrototypeCacheCID, gXULCache);
-            gXULCache = nsnull;
-        }
+        NS_IF_RELEASE(gXULCache);
     }
 }
 
@@ -541,14 +488,14 @@ XULContentSinkImpl::DidBuildModel(PRInt32 aQualityLevel)
 NS_IMETHODIMP 
 XULContentSinkImpl::WillInterrupt(void)
 {
-    // XXX Notify the webshell, if necessary
+    // XXX Notify the docshell, if necessary
     return NS_OK;
 }
 
 NS_IMETHODIMP 
 XULContentSinkImpl::WillResume(void)
 {
-    // XXX Notify the webshell, if necessary
+    // XXX Notify the docshell, if necessary
     return NS_OK;
 }
 
@@ -600,10 +547,9 @@ XULContentSinkImpl::ProcessStyleLink(nsIContent* aElement,
                 if (mPreferredStyle.IsEmpty()) {
                     mPreferredStyle = aTitle;
                     mCSSLoader->SetPreferredSheet(aTitle);
-                    nsIAtom* defaultStyle = NS_NewAtom("default-style");
+                    nsCOMPtr<nsIAtom> defaultStyle = do_GetAtom("default-style");
                     if (defaultStyle) {
                         mPrototype->SetHeaderData(defaultStyle, aTitle);
-                        NS_RELEASE(defaultStyle);
                     }
                 }
             }
@@ -617,10 +563,7 @@ XULContentSinkImpl::ProcessStyleLink(nsIContent* aElement,
             return NS_ERROR_FAILURE; // doc went away!
 
         PRBool doneLoading;
-        PRInt32 numSheets = 0;
-        doc->GetNumberOfStyleSheets(&numSheets);
         rv = mCSSLoader->LoadStyleLink(aElement, url, aTitle, aMedia, kNameSpaceID_Unknown,
-                                       numSheets,
                                        ((blockParser) ? mParser : nsnull),
                                        doneLoading, nsnull);
         if (NS_SUCCEEDED(rv) && blockParser && (! doneLoading)) {
@@ -664,7 +607,7 @@ XULContentSinkImpl::Init(nsIDocument* aDocument, nsIXULPrototypeDocument* aProto
 
     // XXX this presumes HTTP header info is already set in document
     // XXX if it isn't we need to set it here...
-    nsCOMPtr<nsIAtom> defaultStyle = dont_AddRef( NS_NewAtom("default-style") );
+    nsCOMPtr<nsIAtom> defaultStyle = do_GetAtom("default-style");
     if (! defaultStyle)
         return NS_ERROR_OUT_OF_MEMORY;
 
@@ -775,7 +718,7 @@ XULContentSinkImpl::NormalizeAttributeString(const nsAFlatString& aText,
     if (!FindCharInReadable(kNameSpaceSeparator, colon, end)) {
         colon = start; // No ':' found, reset colon
     } else if (start != colon) {
-        prefix = dont_AddRef(NS_NewAtom(Substring(start, colon)));
+        prefix = do_GetAtom(Substring(start, colon));
 
         nsCOMPtr<nsINameSpace> ns;
         GetTopNameSpace(address_of(ns));
@@ -1182,7 +1125,7 @@ XULContentSinkImpl::PushNameSpacesFrom(const PRUnichar** aAttributes)
         nameSpace =
             (nsINameSpace*)mNameSpaceStack.ElementAt(mNameSpaceStack.Count() - 1);
     } else {
-        gNameSpaceManager->CreateRootNameSpace(*getter_AddRefs(nameSpace));
+        nsContentUtils::GetNSManagerWeakRef()->CreateRootNameSpace(*getter_AddRefs(nameSpace));
         if (! nameSpace)
             return NS_ERROR_OUT_OF_MEMORY;
     }
@@ -1216,8 +1159,7 @@ XULContentSinkImpl::PushNameSpacesFrom(const PRUnichar** aAttributes)
                 start.advance(xmlns_len);
 
                 if (*start == ':' && ++start != end) {
-                    prefixAtom =
-                        dont_AddRef(NS_NewAtom(Substring(start, end)));
+                    prefixAtom = do_GetAtom(Substring(start, end));
                 } else {
                     NS_WARNING("Bad XML namespace declaration 'xmlns:' "
                                "found!");
@@ -1290,7 +1232,7 @@ XULContentSinkImpl::ParseTag(const PRUnichar* aText,
     if (!FindCharInReadable(kNameSpaceSeparator, colon, end)) {
         colon = start; // No ':' found, reset colon
     } else if (colon != start) {
-        prefix = dont_AddRef(NS_NewAtom(Substring(start, colon)));
+        prefix = do_GetAtom(Substring(start, colon));
 
         ++colon; // Step over ':'
     }
@@ -1327,8 +1269,8 @@ XULContentSinkImpl::OpenRoot(const PRUnichar** aAttributes,
 
     nsresult rv;
 
-    if (aNodeInfo->Equals(kScriptAtom, kNameSpaceID_XHTML) || 
-        aNodeInfo->Equals(kScriptAtom, kNameSpaceID_XUL)) {
+    if (aNodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XHTML) || 
+        aNodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XUL)) {
         PR_LOG(gLog, PR_LOG_ALWAYS,
                ("xul: script tag not allowed as root content element"));
 
@@ -1407,8 +1349,8 @@ XULContentSinkImpl::OpenTag(const PRUnichar** aAttributes,
 
     children->AppendElement(element);
 
-    if (aNodeInfo->Equals(kScriptAtom, kNameSpaceID_XHTML) || 
-        aNodeInfo->Equals(kScriptAtom, kNameSpaceID_XUL)) {
+    if (aNodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XHTML) || 
+        aNodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XUL)) {
         // Do scripty things now.  OpenScript will push the
         // nsPrototypeScriptElement onto the stack, so we're done after this.
         return OpenScript(aAttributes, aLineNumber);
@@ -1486,9 +1428,36 @@ XULContentSinkImpl::OpenScript(const PRUnichar** aAttributes,
       if (! src.IsEmpty()) {
           // Use the SRC attribute value to load the URL
           rv = NS_NewURI(getter_AddRefs(script->mSrcURI), src, nsnull, mDocumentURL);
+
+          // Check if this document is allowed to load a script from this source
+          if (NS_SUCCEEDED(rv)) {
+              if (!mSecMan)
+                  mSecMan = do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+              if (NS_SUCCEEDED(rv)) {
+                  rv = mSecMan->CheckLoadURI(mDocumentURL, script->mSrcURI,
+                                             nsIScriptSecurityManager::ALLOW_CHROME);
+              }
+          }
+
           if (NS_FAILED(rv)) {
               delete script;
               return rv;
+          }
+
+          // Attempt to deserialize an out-of-line script from the FastLoad
+          // file right away.  Otherwise we'll end up reloading the script and
+          // corrupting the FastLoad file trying to serialize it, in the case
+          // where it's already there.
+          nsCOMPtr<nsIDocument> doc(do_QueryReferent(mDocument));
+          if (doc) {
+              nsCOMPtr<nsIScriptGlobalObject> globalObject;
+              doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
+              if (globalObject) {
+                  nsCOMPtr<nsIScriptContext> scriptContext;
+                  globalObject->GetContext(getter_AddRefs(scriptContext));
+                  if (scriptContext)
+                      script->DeserializeOutOfLine(nsnull, scriptContext);
+              }
           }
       }
 
@@ -1576,7 +1545,7 @@ XULContentSinkImpl::AddAttributes(const PRUnichar** aAttributes,
       nsAutoString value;
 
       // Compute the element's class list if the element has a 'class' attribute.
-      rv = aElement->GetAttr(kNameSpaceID_None, kClassAtom, value);
+      rv = aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::clazz, value);
       if (NS_FAILED(rv)) return rv;
 
       if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
@@ -1585,15 +1554,12 @@ XULContentSinkImpl::AddAttributes(const PRUnichar** aAttributes,
       }
 
       // Parse the element's 'style' attribute
-      rv = aElement->GetAttr(kNameSpaceID_None, kStyleAtom, value);
+      rv = aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::style, value);
       if (NS_FAILED(rv)) return rv;
 
       if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
-          if (! mCSSParser) {
-              rv = nsComponentManager::CreateInstance(kCSSParserCID,
-                                                      nsnull,
-                                                      NS_GET_IID(nsICSSParser),
-                                                      getter_AddRefs(mCSSParser));
+          if (!mCSSParser) {
+              mCSSParser = do_CreateInstance(kCSSParserCID, &rv);
 
               if (NS_FAILED(rv)) return rv;
           }
