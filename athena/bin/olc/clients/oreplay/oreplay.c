@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.13 1991-01-15 18:05:42 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.14 1991-01-21 01:35:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -54,6 +54,7 @@ main(argc,argv)
   int temp_fd;
   int gimme_raw;
   int nuke;
+  int n_errors;
 #ifdef KERBEROS
   KTEXT_ST my_auth;
   int auth_result;
@@ -150,6 +151,7 @@ main(argc,argv)
   }
 
 /* Find out where the server is */
+redo:
 
   if (hp == NULL) {
 #ifdef HESIOD
@@ -200,7 +202,16 @@ main(argc,argv)
     punt(output_fd,filename);
   }
   
+  /* This is a hack; the connection is occasionally refused the first time */
+  /* for an unknown reason */
+  n_errors = 0;
+
   if (connect(sock,(struct sockaddr *)&sin,sizeof(sin)) < 0) {
+    n_errors++;
+    if (n_errors < 3) {
+      close(sock);
+      goto redo;
+    }
     perror(" connect");
     punt(output_fd,filename);
   }
@@ -296,6 +307,7 @@ main(argc,argv)
     int n;        /* number of users in this queue */
     int i,j;
     int len;
+    char obuf[100];
 
     p1 = buf;
     len = strlen(tusername);
@@ -310,11 +322,13 @@ main(argc,argv)
 	if (strncmp(tusername,p1,len) == 0) {
 	  /* username right, check instance */
 	  p1 = index(p1,'\n')+1;
-	  if (tinstance == atoi(p1)) {
-	    p1 = index(p1,'\n')+1;
-	    p2 = index(p1,'\n')+1;
-	    *p2 = '\0';
-	    write(output_fd,p1,strlen(p1));
+	  tinstance = atoi(p1);
+	  p1 = index(p1,'\n')+1;
+	  p2 = index(p1,'\n')+1;
+	  *p2 = '\0';
+	  if (strncmp(p1,"off",3) !=0 ) {
+	    sprintf(obuf,"%d\n%s\n",tinstance,p1);
+	    write(output_fd,obuf,strlen(obuf));
 	    goto done;               /* Get out of this whole mess */
 	  }
 	}
@@ -324,7 +338,7 @@ main(argc,argv)
 	for(j=0;j<7;j++)   /* Skip rest of information for this user */
 	  p1 = index(p1,'\n')+1;
       }
-      write(output_fd,"none\n",5);
+      write(output_fd,"off\n",4);
     }
   }
 
