@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.4 1997-11-20 22:18:35 ghudson Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.5 1998-02-28 17:59:20 danw Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -63,6 +63,9 @@ int al_login_allowed(const char *username, int isremote,
   char *retfname = NULL;
   FILE *retfile;
   void *hescontext = NULL;
+
+  if (filetext)
+    *filetext = NULL;
 
   if (!al__username_valid(username))
     return AL_ENOUSER;
@@ -128,7 +131,6 @@ cleanup:
     hesiod_end(hescontext);
   if (retfname && filetext)
     {
-      *filetext = NULL;
       retfile = fopen(retfname, "r");
       if (retfile)
 	{
