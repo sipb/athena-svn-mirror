@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.82 2004-10-26 16:25:00 ghudson Exp $
+# $Id: do.sh,v 1.83 2005-03-14 19:41:24 zacheiss Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -102,6 +102,11 @@ Linux\ 2.4.*\ i?86)
     exit 1
     ;;
   esac
+  ;;
+Linux\ 2.6.*\ i?86)
+  ATHENA_SYS=i386_rhel4
+  ATHENA_SYS_COMPAT=i386_rhel3:i386_rh9:i386_linux24:i386_linux22:i386_linux3
+  ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:i386_linux2:i386_linux1
   ;;
 *)
   echo "Unrecognized system type, aborting." 1>&2
