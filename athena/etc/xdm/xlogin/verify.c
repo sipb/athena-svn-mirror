@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.38 1993-02-08 13:59:13 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.39 1993-02-09 18:05:27 probe Exp $
  */
 
 #include <stdio.h>
@@ -152,6 +152,11 @@ char *display;
 	} else
 	  local_ok = TRUE;
     } else {
+	if (nocreate) {
+	    sprintf(errbuf, "You are not allowed to log into this workstation.  Contact the workstation's administrator or a consultant for further information.  (User \"%s\" is not in the password file and No_Create is set.)", user);
+	    return(errbuf);
+	}
+
  	pwd = hes_getpwnam(user);
  	if ((pwd == NULL) || pwd->pw_dir[0] == 0) {
 	    bzero(passwd, strlen(passwd));
@@ -160,14 +165,16 @@ char *display;
 		sprintf(errbuf, "Unknown user name entered (no hesiod information for \"%s\")", user);
 		return(errbuf);
 	    } else
-	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
+		return("Unable to find account information due to network failure.  Try another workstation or try again later.");
  	}
 	if (strcmp(pwd->pw_name, user))
-	  return("Unable to find account information (incorrect hesiod name found).");
+	    return("Unable to find account information (incorrect hesiod name found).");
 	if (getpwuid(pwd->pw_uid))
 	    return("This account conflicts with a locally defined account... aborting.");
 
 #if defined(_AIX)
+	/* Perhaps this should always be true??? */
+	
 	/*
 	 * Because the default shell is /bin/csh, and we wish to provide
 	 * users with the line-editing of tcsh, we will reset their shell.
@@ -175,11 +182,6 @@ char *display;
 	if (!strcmp(pwd->pw_shell, "/bin/csh"))
 	    pwd->pw_shell = "/bin/athena/tcsh";
 #endif
-    }
-
-    if (nocreate && !local_passwd) {
-	sprintf(errbuf, "You are not allowed to log into this workstation.  Contact the workstation's administrator or a consultant for further information.  (User \"%s\" is not in the password file and No_Create is set.)", user);
-	return(errbuf);
     }
 
     /* The terminal name on the Rios is likely to be something like pts/0; we */
