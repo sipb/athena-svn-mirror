@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: console.c,v 1.1 1998-12-17 16:26:02 ghudson Exp $";
+static const char rcsid[] = "$Id: console.c,v 1.2 1999-08-13 22:26:39 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -142,8 +142,8 @@ int length;
 #define FPE 1
 #define USR1 2
 #define USR2 3
-#define NUMSIGS 4
-int sigflags[NUMSIGS];
+#define MYSIGS 4
+int sigflags[MYSIGS];
 int val = 0;
 Jet root;
 WindowJet iconWindow;
@@ -671,7 +671,7 @@ main(argc, argv)
 
   openlog("console", 0, LOG_USER);
 
-  for (i = 0; i < NUMSIGS; i++)
+  for (i = 0; i < MYSIGS; i++)
     sigflags[i] = 0;
 
   act.sa_handler= sighandler;
