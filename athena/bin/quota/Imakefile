@@ -8,12 +8,12 @@ DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I$(AFSDIR)/include
 
 BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
-AFSLIBS= $(AFSDIR)/lib/afs/libsys.a
+AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx -llwp
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 LIBS = $(MACHLIBS) $(AFSLIBS)
 
-#if defined(vax) || defined(ibm032) || defined(sun)
+#if defined(vax) || defined(ibm032)
 BINDIR=/usr/ucb
 MACHDEFS= -DUW
 MACHLIBS= -lrpcsvc
@@ -23,11 +23,11 @@ MACHLIBS= -lrpcsvc
 MACHLIBS= -lrpclib
 #endif
 
-#if defined(_IBMR2)
+#if defined(_IBMR2) || defined(SOLARIS)
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 #endif
 
-#if defined(ultrix) || defined(i386) || defined(sun)
+#if defined(ultrix) || defined(i386)
 MACHOBJS=rcquotaxdr.o
 #endif
 
