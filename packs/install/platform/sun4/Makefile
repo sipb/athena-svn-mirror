@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1998-03-11 21:58:32 miki Exp $
+# $Id: Makefile,v 1.5 1998-11-17 19:44:53 miki Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -13,6 +13,8 @@ install:
 	install -c -m 0444 format.input.SUN0424 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.SUN0535 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.SUN1.05 ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST34342A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.label ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.seagate.5660 ${DESTDIR}${INSTALL}
 	install -c -m 0444 phase2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 phase3.sh ${DESTDIR}${INSTALL}
