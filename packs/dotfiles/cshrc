@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.2 2003-03-15 16:16:03 ghudson Exp $
+# $Id: cshrc,v 1.3 2003-04-02 15:36:51 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -67,8 +67,11 @@ if (! $?ENV_SET) then
   # Set other miscellaneous OS-specific environment variables
   switch ("$HOSTTYPE")
   case sun4:
-    setenv LD_LIBRARY_PATH /usr/openwin/lib
+    setenv LD_LIBRARY_PATH /usr/athena/lib:/usr/openwin/lib
     setenv OPENWINHOME /usr/openwin
+    breaksw
+  case linux:
+    setenv LD_LIBRARY_PATH /usr/athena/lib
     breaksw
   endsw
 

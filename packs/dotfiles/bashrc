@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.27 2003-03-15 16:16:03 ghudson Exp $
+# $Id: bashrc,v 1.28 2003-04-02 15:36:52 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -78,8 +78,11 @@ if [ "${ENV_SET:+set}" != set ]; then
 		export NOMSGSEVERITY=1
 		;;
 	sun4)
-		export LD_LIBRARY_PATH=/usr/openwin/lib
+		export LD_LIBRARY_PATH=/usr/athena/lib:/usr/openwin/lib
 		export OPENWINHOME=/usr/openwin
+		;;
+	linux)
+		export LD_LIBRARY_PATH=/usr/athena/lib
 		;;
 	esac
 	
