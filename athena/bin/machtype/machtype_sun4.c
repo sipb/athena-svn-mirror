@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.6 1994-01-20 09:00:15 miki Exp $
+ *    $Id: machtype_sun4.c,v 1.7 1994-02-17 10:13:30 miki Exp $
  *    $Locker:  $
  */
 
@@ -261,9 +261,17 @@ do_disk(kernel, mf)
 char *kernel;
 int mf;
 {
+    mydisk[6] = "\0";
+    mydisk[7] = "\0";
+
     mf = open ("/dev/dsk/c0t3d0s0", O_RDONLY);
     read (mf, &mydisk, sizeof(mydisk));
-    printf ("c0t3d0s0 : %s\n", &mydisk);
+    if (verbose)
+       printf ("c0t3d0s0 : %s\n", &mydisk);
+    else
+       printf("%c%c%c%c%c%c%c\n", mydisk[0], mydisk[1], mydisk[2], mydisk[3],
+           mydisk[4], mydisk[5], mydisk[6]);
+
     return;
 }
 
