@@ -1507,21 +1507,21 @@ test -n "$target_alias" &&
 
   PACKAGE=gstreamer
   GST_VERSION_MAJOR=0
-  GST_VERSION_MINOR=5
-  GST_VERSION_MICRO=2
+  GST_VERSION_MINOR=6
+  GST_VERSION_MICRO=0
   NANO=0
   GST_VERSION_NANO=$NANO
   if test "x$NANO" = "x" || test "x$NANO" = "x0";
   then
       { echo "$as_me:$LINENO: configuring gstreamer for release" >&5
 echo "$as_me: configuring gstreamer for release" >&6;}
-      VERSION=0.5.2
+      VERSION=0.6.0
       GST_VERSION_RELEASE=1
             GST_CVS="no"
   else
       { echo "$as_me:$LINENO: configuring gstreamer for development with nano $NANO" >&5
 echo "$as_me: configuring gstreamer for development with nano $NANO" >&6;}
-      VERSION=0.5.2.$NANO
+      VERSION=0.6.0.$NANO
       GST_VERSION_RELEASE=`date +%Y%m%d_%H%M%S`
             GST_CVS="yes"
   fi
@@ -7501,10 +7501,10 @@ fi
 
 
 
-  GST_CURRENT=3
+  GST_CURRENT=0
   GST_REVISION=0
   GST_AGE=0
-  GST_LIBVERSION=3:0:0
+  GST_LIBVERSION=0:0:0
 
 
 
@@ -7718,6 +7718,7 @@ else
     GST_ERROR="-Wall"
   fi
 fi
+GST_ERROR=
 
 
 echo "$as_me:$LINENO: checking for ANSI C header files" >&5
@@ -10905,7 +10906,7 @@ an installable build.
 fi
 
 
-ac_config_files="$ac_config_files Makefile include/Makefile gst/Makefile gst/gstversion.h gst/autoplug/Makefile gst/indexers/Makefile gst/elements/Makefile gst/parse/Makefile gst/schedulers/Makefile gst/types/Makefile gst/registries/Makefile libs/Makefile libs/gst/Makefile libs/gst/bytestream/Makefile libs/gst/getbits/Makefile libs/gst/putbits/Makefile libs/gst/control/Makefile libs/ext/Makefile tests/Makefile tests/bufspeed/Makefile tests/memchunk/Makefile tests/muxing/Makefile tests/seeking/Makefile tests/sched/Makefile tests/threadstate/Makefile testsuite/Makefile testsuite/bytestream/Makefile testsuite/caps/Makefile testsuite/cleanup/Makefile testsuite/clock/Makefile testsuite/dynparams/Makefile testsuite/elements/Makefile testsuite/indexers/Makefile testsuite/plugin/Makefile testsuite/refcounting/Makefile testsuite/threads/Makefile examples/Makefile examples/autoplug/Makefile examples/cutter/Makefile examples/helloworld/Makefile examples/helloworld2/Makefile examples/launch/Makefile examples/manual/Makefile examples/mixer/Makefile examples/pingpong/Makefile examples/plugins/Makefile examples/queue/Makefile examples/queue2/Makefile examples/queue3/Makefile examples/queue4/Makefile examples/thread/Makefile examples/typefind/Makefile examples/xml/Makefile tools/Makefile docs/Makefile docs/devhelp/Makefile docs/faq/Makefile docs/gst/Makefile docs/gst/gstreamer.types docs/libs/Makefile docs/manual/Makefile docs/pwg/Makefile docs/plugins/Makefile docs/plugins/gstreamer-plugins.types docs/xsl/Makefile stamp.h gstreamer.pc gstreamer-uninstalled.pc gstreamer.spec"
+ac_config_files="$ac_config_files Makefile include/Makefile gst/Makefile gst/gstversion.h gst/autoplug/Makefile gst/indexers/Makefile gst/elements/Makefile gst/parse/Makefile gst/schedulers/Makefile gst/types/Makefile gst/registries/Makefile libs/Makefile libs/gst/Makefile libs/gst/bytestream/Makefile libs/gst/getbits/Makefile libs/gst/putbits/Makefile libs/gst/control/Makefile libs/ext/Makefile tests/Makefile tests/bufspeed/Makefile tests/memchunk/Makefile tests/muxing/Makefile tests/seeking/Makefile tests/sched/Makefile tests/threadstate/Makefile testsuite/Makefile testsuite/bytestream/Makefile testsuite/caps/Makefile testsuite/cleanup/Makefile testsuite/clock/Makefile testsuite/dynparams/Makefile testsuite/elements/Makefile testsuite/indexers/Makefile testsuite/plugin/Makefile testsuite/refcounting/Makefile testsuite/threads/Makefile examples/Makefile examples/autoplug/Makefile examples/cutter/Makefile examples/helloworld/Makefile examples/helloworld2/Makefile examples/launch/Makefile examples/manual/Makefile examples/mixer/Makefile examples/pingpong/Makefile examples/plugins/Makefile examples/queue/Makefile examples/queue2/Makefile examples/queue3/Makefile examples/queue4/Makefile examples/thread/Makefile examples/typefind/Makefile examples/xml/Makefile tools/Makefile docs/Makefile docs/devhelp/Makefile docs/faq/Makefile docs/gst/Makefile docs/gst/gstreamer.types docs/libs/Makefile docs/manual/Makefile docs/pwg/Makefile docs/plugins/Makefile docs/plugins/gstreamer-plugins.types docs/xsl/Makefile pkgconfig/Makefile pkgconfig/gstreamer.pc pkgconfig/gstreamer-uninstalled.pc pkgconfig/gstreamer-control.pc pkgconfig/gstreamer-control-uninstalled.pc stamp.h gstreamer.spec"
 ac_config_commands="$ac_config_commands default"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -11700,9 +11701,12 @@ do
   "docs/plugins/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/plugins/Makefile" ;;
   "docs/plugins/gstreamer-plugins.types" ) CONFIG_FILES="$CONFIG_FILES docs/plugins/gstreamer-plugins.types" ;;
   "docs/xsl/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/xsl/Makefile" ;;
+  "pkgconfig/Makefile" ) CONFIG_FILES="$CONFIG_FILES pkgconfig/Makefile" ;;
+  "pkgconfig/gstreamer.pc" ) CONFIG_FILES="$CONFIG_FILES pkgconfig/gstreamer.pc" ;;
+  "pkgconfig/gstreamer-uninstalled.pc" ) CONFIG_FILES="$CONFIG_FILES pkgconfig/gstreamer-uninstalled.pc" ;;
+  "pkgconfig/gstreamer-control.pc" ) CONFIG_FILES="$CONFIG_FILES pkgconfig/gstreamer-control.pc" ;;
+  "pkgconfig/gstreamer-control-uninstalled.pc" ) CONFIG_FILES="$CONFIG_FILES pkgconfig/gstreamer-control-uninstalled.pc" ;;
   "stamp.h" ) CONFIG_FILES="$CONFIG_FILES stamp.h" ;;
-  "gstreamer.pc" ) CONFIG_FILES="$CONFIG_FILES gstreamer.pc" ;;
-  "gstreamer-uninstalled.pc" ) CONFIG_FILES="$CONFIG_FILES gstreamer-uninstalled.pc" ;;
   "gstreamer.spec" ) CONFIG_FILES="$CONFIG_FILES gstreamer.spec" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;

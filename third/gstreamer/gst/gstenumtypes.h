@@ -39,6 +39,11 @@ GType gst_bin_flags_get_type (void);
 GType gst_buffer_flag_get_type (void);
 #define GST_TYPE_BUFFER_FLAG (gst_buffer_flag_get_type())
 
+/* enumerations from "gstcaps.h" */
+
+GType gst_caps_flags_get_type (void);
+#define GST_TYPE_CAPS_FLAGS (gst_caps_flags_get_type())
+
 /* enumerations from "gstclock.h" */
 
 GType gst_clock_entry_status_get_type (void);
@@ -121,6 +126,9 @@ GType gst_pad_flags_get_type (void);
 GType gst_pad_presence_get_type (void);
 #define GST_TYPE_PAD_PRESENCE (gst_pad_presence_get_type())
 
+GType gst_pad_template_flags_get_type (void);
+#define GST_TYPE_PAD_TEMPLATE_FLAGS (gst_pad_template_flags_get_type())
+
 /* enumerations from "gstplugin.h" */
 
 GType gst_plugin_error_get_type (void);
@@ -130,6 +138,9 @@ GType gst_plugin_error_get_type (void);
 
 GType gst_props_type_get_type (void);
 #define GST_TYPE_PROPS_TYPE (gst_props_type_get_type())
+
+GType gst_props_flags_get_type (void);
+#define GST_TYPE_PROPS_FLAGS (gst_props_flags_get_type())
 
 /* enumerations from "gstquery.h" */
 

@@ -1,6 +1,6 @@
 Name: 		gstreamer
-Version: 	0.5.2
-Release: 	1
+Version: 	0.5.2.3
+Release: 	20030130_235633
 Summary: 	GStreamer streaming media framework runtime.
 
 Group: 		Libraries/Multimedia
@@ -10,7 +10,7 @@ Vendor:         GStreamer Backpackers Team <package@gstreamer.net>
 Source: 	http://gstreamer.net/releases/%{version}/src/%{name}-%{version}.tar.gz
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-root
 
-%define		majorminor	0.5
+%define		majorminor	0.6
 %define 	_glib2		2.0.1
 %define 	_libxml2	2.4.0
 
@@ -202,6 +202,7 @@ ln -sf %{_datadir}/gtk-doc/html/gstreamer-libs %{_datadir}/devhelp/books
 %{_libdir}/libgstreamer-%{majorminor}.so
 %{_libdir}/libgstcontrol-%{majorminor}.so
 %{_libdir}/pkgconfig/gstreamer-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-control-%{majorminor}.pc
 ## we specify the API docs as regular files since %docs doesn't fail when
 #  files aren't found anymore for RPM >= 4
 #  we list all of the files we really need to trap incomplete doc builds
@@ -258,12 +259,16 @@ ln -sf %{_datadir}/gtk-doc/html/gstreamer-libs %{_datadir}/devhelp/books
 
 
 %changelog
+* Tue Jan 28 2003 Thomas Vander Stichele <thomas at apestaart dot org>
+- added gstreamer-control.pc file
+
 * Sat Dec 07 2002 Thomas Vander Stichele <thomas at apestaart dot org>
 - define majorminor and use it everywhere
 - full parallel installability
 
 * Tue Nov 05 2002 Christian Schaller <Uraeus@linuxrising.org>
 - Add optwingo scheduler
+
 * Sat Oct 12 2002 Christian Schaller <Uraeus@linuxrising.org>
 - Updated to work better with default RH8 rpm
 - Added missing unspeced files

@@ -128,8 +128,8 @@ pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 pyexecdir = @pyexecdir@
 pythondir = @pythondir@
-testprogs = thread1 thread2 thread3 thread5 threadb
-testsfailing = threadc threadd threade threadf thread4
+testprogs = thread1 thread2 thread3 thread5
+testsfailing = threadb threadc threadd threade threadf thread4
 
 TESTS = $(testprogs)
 
@@ -159,9 +159,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = thread1$(EXEEXT) thread2$(EXEEXT) thread3$(EXEEXT) \
-	thread5$(EXEEXT) threadb$(EXEEXT)
-noinst_PROGRAMS = threadc$(EXEEXT) threadd$(EXEEXT) threade$(EXEEXT) \
-	threadf$(EXEEXT) thread4$(EXEEXT)
+	thread5$(EXEEXT)
+noinst_PROGRAMS = threadb$(EXEEXT) threadc$(EXEEXT) threadd$(EXEEXT) \
+	threade$(EXEEXT) threadf$(EXEEXT) thread4$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_thread1_OBJECTS = thread1-thread.$(OBJEXT)

@@ -3,7 +3,7 @@ AC_CANONICAL_TARGET([])
 
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AS_VERSION(gstreamer, GST_VERSION, 0, 5, 2, 0, GST_CVS="no", GST_CVS="yes")
+AS_VERSION(gstreamer, GST_VERSION, 0, 6, 0, 0, GST_CVS="no", GST_CVS="yes")
 
 dnl AM_MAINTAINER_MODE only provides the option to configure to enable it
 AM_MAINTAINER_MODE
@@ -18,11 +18,12 @@ dnl For interactive UNIX (a Sun thing)
 AC_ISC_POSIX
 
 dnl CURRENT, REVISION, AGE
-dnl - library source changed -> increment REVISION
+dnl - library source changed at all -> increment REVISION
 dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
-AS_LIBTOOL(GST, 3, 0, 0)
+dnl - major/minor got increased -> reset to 0,0,0
+AS_LIBTOOL(GST, 0, 0, 0)
 
 AC_CONFIG_SRCDIR([gst/gst.c])
 AM_CONFIG_HEADER(config.h)
@@ -46,6 +47,8 @@ else
     GST_ERROR="-Wall"
   fi
 fi
+dnl fix these error flags first, then reintroduce them
+GST_ERROR=
 
 dnl We disable static building for development, for time savings
 dnl *NOTE*: dnl this line before release, so release does static too
@@ -544,9 +547,12 @@ docs/pwg/Makefile
 docs/plugins/Makefile
 docs/plugins/gstreamer-plugins.types
 docs/xsl/Makefile
+pkgconfig/Makefile
+pkgconfig/gstreamer.pc
+pkgconfig/gstreamer-uninstalled.pc
+pkgconfig/gstreamer-control.pc
+pkgconfig/gstreamer-control-uninstalled.pc
 stamp.h
-gstreamer.pc
-gstreamer-uninstalled.pc
 gstreamer.spec,
 echo "$infomessages", infomessages="$infomessages"
 )
