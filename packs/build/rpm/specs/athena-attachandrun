@@ -6,5 +6,5 @@ Group: Applications/Internet
 Requires: athena-attach
 
 %description
-The athrun utility allows a script to robustly run a program from a
-specified locker.
+The attachandrun utility allows a script to robustly run a program
+from a specified locker.
