@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.10 2001-06-20 17:38:44 ghudson Exp $
+;; $Id: site-init.jl,v 1.11 2001-07-09 13:41:26 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -36,9 +36,9 @@
 				    '(frame-type . border-only))
 (add-window-matcher 'WM_NAME "Console" '(never-focus . t))
 
-;; Workaround for Maple 6.0, which otherwise comes up with no border
+;; Workaround for Maple, which otherwise comes up with no border
 ;; for some reason.
-(add-window-matcher 'WM_CLASS "xmaple.*" '(frame-type . normal))
+(add-window-matcher 'WM_CLASS "maple" '(frame-type . normal))
 
 ;; Menu customizations
 (require 'sawfish.wm.menus)
