@@ -1680,10 +1680,23 @@ do_find_directory (GnomeVFSMethod *method,
 		return GNOME_VFS_ERROR_CANCELLED;
 	}
 	
-	retval = stat (home_directory, &home_volume_stat);
+	/* First lstat() the home directory, so we can handle the
+	 * case where the near item is the home directory, and the
+	 * home directory is a symlink to another device.
+	 */
+	retval = lstat (home_directory, &home_volume_stat);
 	if (retval != 0) {
 		g_free (full_name_near);
 		return gnome_vfs_result_from_errno ();
+	}
+	if (S_ISLNK (home_volume_stat.st_mode) &&
+	    !(near_item_stat.st_dev == home_volume_stat.st_dev &&
+	      near_item_stat.st_ino == home_volume_stat.st_ino)) {
+		retval = stat (home_directory, &home_volume_stat);
+		if (retval != 0) {
+			g_free (full_name_near);
+			return gnome_vfs_result_from_errno ();
+		}
 	}
 	
 	if (gnome_vfs_context_check_cancellation (context)) {
