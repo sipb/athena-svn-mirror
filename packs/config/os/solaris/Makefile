@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.16 2003-11-02 21:43:19 zacheiss Exp $
+# $Id: Makefile,v 1.17 2004-03-06 17:20:29 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -13,6 +13,7 @@ INET=/etc/inet
 MAIL=/etc/mail
 CRONTABS=/var/spool/cron/crontabs
 USRLIB=/usr/lib
+TERMINFO=/usr/share/lib/terminfo
 
 OPENWINLIBS=libX.so.4 libX11.so.4 libXaw.so.4 libXaw.so.5 libXext.so.0 \
 	libXi.so.5 libXinput.so.0 libXmu.so.4 libXol.so.3 libXt.so.4 \
@@ -37,6 +38,7 @@ install:
 	mkdir -p ${DESTDIR}${CRONTABS}
 	mkdir -p ${DESTDIR}${USRLIB}
 	mkdir -p ${DESTDIR}${ATHLOGINDIR}
+	mkdir -p ${DESTDIR}${TERMINFO}
 	install -c -m 0644 ../../aliases ${DESTDIR}${MAIL}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
 	install -c -m 0644 Athena4.kt ${DESTDIR}${KEYTABLES}
@@ -78,6 +80,7 @@ install:
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 system ${DESTDIR}${ETCDIR}
 	install -c -m 0644 vfstab.std ${DESTDIR}${ETCDIR}
+	TERMINFO=${DESTDIR}${TERMINFO} tic xterm-color
 	rm -f ${DESTDIR}${ETCDIR}/sendmail.cf
 	ln -s mail/sendmail.cf ${DESTDIR}${ETCDIR}/sendmail.cf
 	rm -f ${DESTDIR}${ETCDIR}/shadow
