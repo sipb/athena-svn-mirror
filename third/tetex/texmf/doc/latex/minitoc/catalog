@@ -1,9 +1,0 @@
-Name: minitoc
-Problems-To: drucbert@onecert.fr
-Author: Jean-Pierre Drucbert <drucbert@onecert.fr>
-Date: 2000/12/13
-Version: 34
-Description: Mini tables of contents per chapter, part or section.
-Also mini lists of figures and tables. Titles are language
-dependent.
-Licence: LPPL
