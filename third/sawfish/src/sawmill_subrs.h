@@ -1,5 +1,5 @@
 /* sawmill_subrs.h -- prototypes
-   $Id: sawmill_subrs.h,v 1.2 2001-07-18 14:48:26 ghudson Exp $
+   $Id: sawmill_subrs.h,v 1.3 2002-03-20 05:07:13 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -261,6 +261,9 @@ extern repv Frestart (void);
 extern void add_hook (repv sym, repv fun);
 extern repv module_symbol_value (repv mod, repv sym);
 extern repv global_symbol_value (repv sym);
+
+/* from multihead.c */
+extern void multihead_init (int *argcp, char ***argvp);
 
 /* from pixmap-cache.c */
 #ifdef NEED_PIXMAP_CACHE

@@ -1,5 +1,5 @@
 /* functions.c -- useful window manager Lisp functions
-   $Id: functions.c,v 1.2 2001-07-05 16:33:19 ghudson Exp $
+   $Id: functions.c,v 1.3 2002-03-20 05:07:13 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -49,8 +49,6 @@ static int server_grabs;
 
 static int xinerama_heads;
 
-static int xinerama_event_base, xinerama_error_base;
-
 #ifdef HAVE_X11_EXTENSIONS_XINERAMA_H
 # include <X11/extensions/Xinerama.h>
   static XineramaScreenInfo *xinerama_head_info;
@@ -60,6 +58,8 @@ static int xinerama_event_base, xinerama_error_base;
      { 0, 512, 0, 512, 768 }
    };
    static int debug_nheads = 2;
+# else
+   static int xinerama_event_base, xinerama_error_base;
 # endif
 #endif
 
@@ -276,6 +276,7 @@ Set the dimensions of window object WINDOW to (WIDTH, HEIGHT).
     VWIN(win)->attr.width = rep_INT(width);
     VWIN(win)->attr.height = rep_INT(height);
     fix_window_size (VWIN(win));
+    VWIN (win)->pending_configure = 0;
     Fcall_window_hook (Qwindow_resized_hook, win, Qnil, Qnil);
     return win;
 }
@@ -303,7 +304,10 @@ Reconfigure the geometry of window object WINDOW as specified.
     VWIN(win)->attr.width = rep_INT(width);
     VWIN(win)->attr.height = rep_INT(height);
     if (resized)
+    {
 	fix_window_size (VWIN(win));
+	VWIN (win)->pending_configure = 0;
+    }
     if (moved && !resized)
     {
 	XMoveWindow (dpy, VWIN(win)->reparented ? VWIN(win)->frame
@@ -982,7 +986,6 @@ DEFUN ("head-count", Fhead_count, Shead_count, (void), rep_Subr0)
 
 DEFUN ("find-head", Ffind_head, Sfind_head, (repv x, repv y), rep_Subr2)
 {
-    int i;
     if (rep_CONSP (x) && y == Qnil)
     {
 	y = rep_CDR (x);
@@ -992,16 +995,19 @@ DEFUN ("find-head", Ffind_head, Sfind_head, (repv x, repv y), rep_Subr2)
     rep_DECLARE (2, y, rep_INTP (y));
 
 #ifdef HAVE_X11_EXTENSIONS_XINERAMA_H
-    for (i = 0; i < xinerama_heads; i++)
     {
-	if ((xinerama_head_info[i].x_org <= rep_INT (x))
-	    && (xinerama_head_info[i].y_org <= rep_INT (y))
-	    && (xinerama_head_info[i].x_org
-		+ xinerama_head_info[i].width > rep_INT (x))
-	    && (xinerama_head_info[i].y_org
-		+ xinerama_head_info[i].height > rep_INT (y)))
+	int i;
+	for (i = 0; i < xinerama_heads; i++)
 	{
-	    return rep_MAKE_INT (i);
+	    if ((xinerama_head_info[i].x_org <= rep_INT (x))
+		&& (xinerama_head_info[i].y_org <= rep_INT (y))
+		&& (xinerama_head_info[i].x_org
+		    + xinerama_head_info[i].width > rep_INT (x))
+		&& (xinerama_head_info[i].y_org
+		    + xinerama_head_info[i].height > rep_INT (y)))
+	    {
+		return rep_MAKE_INT (i);
+	    }
 	}
     }
 #endif

@@ -1,5 +1,5 @@
 /* events.c -- Event handling
-   $Id: events.c,v 1.2 2001-07-18 14:07:15 ghudson Exp $
+   $Id: events.c,v 1.3 2002-03-20 05:07:12 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -773,6 +773,10 @@ unmap_notify (XEvent *ev)
 
 	focus_off_window (w);
 	XDeleteProperty (dpy, w->id, xa_wm_state);
+
+	/* Changed the window-handling model, don't let windows exist
+	   while they're withdrawn */
+	remove_window (w, Qnil, Qnil);
     }
 }
 
@@ -1043,7 +1047,8 @@ configure_request (XEvent *ev)
 	{
 	    /* Be sure to send one (and only one) synthetic ConfigureNotify
 	       to the window. The ICCCM states that we should send the event
-	       even if the state of the window doesn't change */
+	       even if the state of the window doesn't change. But not
+	       if the window has been resized */
 
 	    Fsynthetic_configure_mutex (Qt);
 	    send_synthetic_configure (w);

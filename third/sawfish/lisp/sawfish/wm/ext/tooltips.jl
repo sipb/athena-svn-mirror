@@ -1,5 +1,5 @@
 ;; tooltips.jl -- display frame-part keymap descriptions
-;; $Id: tooltips.jl,v 1.2 2001-04-30 15:20:29 ghudson Exp $
+;; $Id: tooltips.jl,v 1.3 2002-03-20 05:07:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -69,7 +69,7 @@
   (defcustom tooltips-delay 500
     "Number of milliseconds before displaying tooltips."
     :type number
-    :range (0)
+    :range (1)
     :depends tooltips-enabled
     :group (misc tooltips))
 
@@ -77,7 +77,7 @@
     "Number of milliseconds before removing tooltips."
     :type number
     :user-level expert
-    :range (0)
+    :range (1)
     :depends tooltips-enabled
     :group (misc tooltips))
 

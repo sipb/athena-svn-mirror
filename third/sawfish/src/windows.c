@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.2 2001-07-18 14:07:15 ghudson Exp $
+   $Id: windows.c,v 1.3 2002-03-20 05:07:13 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -22,11 +22,6 @@
 #include "sawmill.h"
 #include <assert.h>
 #include <X11/extensions/shape.h>
-
-/* Work around for X11R5 and earlier */
-#ifndef XUrgencyHint
-#define XUrgencyHint (1 << 8)
-#endif
 
 Lisp_Window *window_list;
 int window_type;
@@ -127,7 +122,21 @@ focus_on_window (Lisp_Window *w)
 	    if (w->does_wm_take_focus)
 	    {
 		DB(("  sending WM_TAKE_FOCUS message\n"));
-		send_client_message (w->id, xa_wm_take_focus, last_event_time);
+
+		/* The -1 is an Ugly Hack. The problem is with the case
+		   where the window focuses itself after receiving the
+		   WM_TAKE_FOCUS message. If during the time between us
+		   sending the client message and the window focusing
+		   itself we focused another window using the same
+		   timestamp, the original window (that received the
+		   client message) will still get focused.
+
+		   I'm assuming that it's unlikely that two events will
+		   arrive generating focus changes with timestamps that
+		   only differ by one.. */
+
+		send_client_message (w->id, xa_wm_take_focus,
+				     last_event_time - 1);
 
 		/* Only focus on the window if accepts-input is true */
 		if (window_input_hint_p (w))
