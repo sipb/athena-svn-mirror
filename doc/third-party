@@ -112,7 +112,7 @@ Distribution sites for software under third
 	gtk		ftp.gtk.org:pub/gtk
 	gmake		ftp.gnu.org:pub/gnu/make
 	gmp		ftp.gnu.org:pub/gnu/gmp
-	gnome-core	ftp.gnome.org:pub/GNOME/stable/sources/gnome-core
+	gnome-core	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-core
 	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
 	gnome-vfs	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-vfs
 	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
