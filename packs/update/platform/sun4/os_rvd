@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.22 1998-06-02 17:46:40 ghudson Exp $
+## $Id: os_rvd,v 1.22.2.1 1998-08-18 21:45:33 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -395,7 +395,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> factor
 		-> fdetach
 		-> fdformat
-		-> fgrep
 		-> finger
 		-> fold
 		-> fmt
@@ -575,12 +574,13 @@ GLOBAL : *.CKP *.local *.pid :
 		-> libXol.so.3
 		-> libPEX5.so.2
 		-> C*
+		-> GL
 		-> Xol
-		-> a*
 		-> c*
 		-> h*
 		-> lib*.a
 		-> libxil*
+		-> libGL*
 		-> *.ln
 		-> locale
 		-> m*
@@ -589,6 +589,9 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xdm*
 		-> xil
 		-> xman.help
+		:
+	/usr/openwin/lib/app-defaults:::
+		-> *
 		:
 	/usr/openwin/lib/X11::::
 	/usr/openwin/lib/X11/fonts:::
@@ -625,6 +628,8 @@ GLOBAL : *.CKP *.local *.pid :
 		:
 	/usr/openwin/server/modules:::
 		*.old
+		-> *GLX*
+		-> *XIE.so.6
 		-> *cg1*
 		-> *cg2*
 		-> *cg4*
@@ -712,5 +717,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> S*
 		-> T*
 		-> UK*
+		:
+	/usr/openwin/platform/sun4u:::
+		-> lib
 		:
 	/var/sadm::::
