@@ -4,7 +4,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 /* Copyright (C) 1995 Transarc Corporation - All rights reserved. */
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/afs/RCS/afs.h,v 2.431 1996/12/23 22:05:40 zumach Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/afs/RCS/afs.h,v 2.453 1997/02/28 13:33:09 thakur Exp $ */
 
 /*
  * AFS system call opcodes
@@ -69,6 +69,8 @@
 #define	AFSOP_STOP_AFS		211	/* Stop AFS process */
 #define	AFSOP_STOP_BKG		212	/* Stop BKG process */
 #define	AFSOP_STOP_TRUNCDAEMON	213	/* Stop cache truncate daemon */
+/* #define AFSOP_STOP_RXEVENT   214     defined in osi.h	      */
+/* #define AFSOP_STOP_COMPLETE     215  defined in osi.h	      */
 
 /* Main afs syscall entry; this number may vary per system (i.e. defined in afs/param.h) */
 #ifndef	AFS_SYSCALL
@@ -1036,6 +1038,15 @@ extern int afs_WaitForCacheDrain;
 	 osi_Wakeup((char *)afs_CacheTruncateDaemon); \
     } while (0)
 
+
+/* 
+** these are defined in the AIX source code sys/fs_locks.h but are not
+** defined anywhere in the /usr/include directory
+*/
+#if	defined(AFS_AIX41_ENV)
+#define VN_LOCK(vp)             simple_lock(&(vp)->v_lock)
+#define VN_UNLOCK(vp)           simple_unlock(&(vp)->v_lock)
+#endif
 
 #endif	/* __AFS_CONFIG_INCL_ENV_ */
 
