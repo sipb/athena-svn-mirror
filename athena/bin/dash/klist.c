@@ -1,5 +1,5 @@
 /*
- * $Id: klist.c,v 1.3 1999-02-22 18:21:34 danw Exp $
+ * $Id: klist.c,v 1.4 2004-03-11 20:37:56 rbasch Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,11 +10,12 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: klist.c,v 1.3 1999-02-22 18:21:34 danw Exp $";
+"$Id: klist.c,v 1.4 2004-03-11 20:37:56 rbasch Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
@@ -25,9 +26,6 @@ static char *rcsid =
 #include <Jets/Button.h>
 #include <Jets/warn.h>
 
-
-char   *tkt_string();
-char   *getenv();
 
 #ifndef TICKET_GRANTING_TICKET
 #define TICKET_GRANTING_TICKET	"krbtgt"
