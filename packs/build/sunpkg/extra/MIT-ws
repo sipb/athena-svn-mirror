@@ -5,6 +5,7 @@ athretcdir=/etc/athena
 athx11lib=/usr/athena/lib/X11
 keymaps=$athx11lib/keymaps
 appdefs=$athx11lib/app-defaults
+owappdefs=/usr/openwin/lib/app-defaults
 athmandir=/usr/athena/man
 crontabs=/var/spool/cron/crontabs
 keytables=/usr/openwin/share/etc/keytables
@@ -16,6 +17,7 @@ mkdir -p $2$etcdir
 mkdir -p $2$athretcdir
 mkdir -p $2$athx11lib
 mkdir -p $2$appdefs
+mkdir -p $2$owappdefs
 mkdir -p $2$athmandir
 mkdir -p $2$crontabs
 mkdir -p $2$keytables
@@ -49,8 +51,8 @@ cp $1/packs/config/os/$OS/SunModifiers $2$keymaps
 chmod 644 $2$keymaps/SunModifiers
 cp $1/packs/config/os/$OS/SunType5Keypad $2$keymaps
 chmod 644 $2$keymaps/SunType5Keypad
-cp $1/packs/config/os/$OS/XTerm.ad $2$appdefs/XTerm
-chmod 644 $2$appdefs/XTerm
+cp $1/packs/config/os/$OS/XTerm.ad $2$owappdefs/XTerm
+chmod 644 $2$owappdefs/XTerm
 cp $1/packs/config/os/$OS/cron $2$default
 chmod 644 $2$default/cron
 cp $1/packs/config/os/$OS/crontab.root $2$crontabs/root
