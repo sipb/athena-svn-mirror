@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.7 1993-07-02 17:17:46 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.8 1995-05-26 04:16:13 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -431,7 +431,7 @@ static char *get_label(me)
 	  f[i] = (caddr_t) ((tp->tm_hour) > 11 ? "pm" : "am");
 	  break;
 	case 'z':
-#if defined (AIX_ARCH) || defined(MAC_ARCH) || defined(SOLARIS)
+#if defined (AIX_ARCH) || defined(MAC_ARCH) || defined(SOLARIS) || defined(sgi)
  	  f[i] = (caddr_t) tzname[tp->tm_isdst];
 #else
 #if defined (ULTRIX_ARCH)
