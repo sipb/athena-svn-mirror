@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.10 1990-07-16 08:17:48 lwvanels Exp $
+ *	$Id: utils.c,v 1.11 1990-08-20 15:28:19 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.10 1990-07-16 08:17:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.11 1990-08-20 15:28:19 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -404,9 +404,9 @@ zephyr_subscribe(class, instance, recipient)
   ZSubscription_t sub;
   Code_t retval;
 
-  sub.class = class;
-  sub.classinst = instance;
-  sub.recipient = recipient;
+  sub.zsub_class = class;
+  sub.zsub_classinst = instance;
+  sub.zsub_recipient = recipient;
 
   if ((retval = ZSubscribeTo(&sub, 1, 0)) != ZERR_NONE)
     {
