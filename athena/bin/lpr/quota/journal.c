@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.2 1990-04-25 11:47:07 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.3 1990-07-03 16:16:02 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,6 +10,9 @@
 #include "mit-copyright.h"
 #include "logger.h"
 #include <strings.h>
+#if defined(ultrix) && defined(NULL)
+#undef NULL
+#endif
 #include <sys/stat.h>
 #include <sys/param.h> 
 #include <errno.h>
