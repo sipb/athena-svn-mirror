@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <sys/resource.h>
 #include <termios.h>
 #include <sys/stropts.h>
 #include <fcntl.h>
@@ -44,6 +43,42 @@ cons_state *cons_init(void)
     }
 
   return c;
+}
+
+int cons_status(cons_state *c)
+{
+  if (c == NULL)
+    return CONS_DOWN;
+
+  return c->state;
+}
+
+int cons_fd(cons_state *c)
+{
+  if (c == NULL || c->gotpty == 0)
+    return -1;
+
+  return c->pty_fd;
+}
+
+char *cons_name(cons_state *c)
+{
+  if (c == NULL || c->gotpty == 0)
+    return NULL;
+
+  return c->ttydev;
+}
+
+void cons_io(cons_state *c)
+{
+  static char buf[512];
+  int len;
+
+  if (c == NULL || c->gotpty == 0)
+    return;
+
+  len = read(c->pty_fd, buf, sizeof(buf));
+  write(c->fd[1], buf, len);
 }
 
 int cons_getpty(cons_state *c)
@@ -114,6 +149,8 @@ int cons_start(cons_state *c)
       exit(1);
     }
 
+  c->state = CONS_UP;
+
   pidfile = fopen(conspid, "w");
   if (pidfile == NULL)
     {
@@ -134,7 +171,7 @@ static void cons_alarm(int sig, int code, struct sigcontext *sc)
 
 static void cons_cleanup(cons_state *c, int state)
 {
-  c->state = CONS_DOWN;
+  c->state = state;
   unlink(conspid);
 }
 
@@ -146,7 +183,8 @@ static void cons_cleanup(cons_state *c, int state)
 int cons_stop(cons_state *c)
 {
   int status;
-  void *handler;
+  struct sigaction sigact, osigact;
+  pid_t ret;
 
   if (c == NULL)
     return 1;
@@ -162,20 +200,28 @@ int cons_stop(cons_state *c)
     }
 
   alarm(0);
-  handler = sigset(SIGALRM, cons_alarm);
+
+  sigact.sa_flags = 0;
+  sigemptyset(&sigact.sa_mask);
+  sigact.sa_handler = cons_alarm;
+  sigaction(SIGALRM, &sigact, &osigact);
+
   alarm(5);
-  if (waitpid(c->pid, &status, 0) == -1)
+  while ((ret = waitpid(c->pid, &status, 0)) == -1)
     {
       if (errno == EINTR && cons_ding)
 	{
 	  kill(c->pid, SIGKILL);
 	  cons_cleanup(c, CONS_DOWN);
+	  break;
 	}
       /* ouch! */
     }
-  else
+
+  if (ret == c->pid)
     {
-      if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+      if ((WIFEXITED(status) && WEXITSTATUS(status) == 0) ||
+	  (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL))
 	cons_cleanup(c, CONS_DOWN);
       else
 	cons_cleanup(c, CONS_FROZEN);
@@ -183,12 +229,12 @@ int cons_stop(cons_state *c)
 
   alarm(0);
   cons_ding = 0;
-  sigset(SIGALRM, handler);
+  sigaction(SIGALRM, &osigact, NULL);
 
   return 0;
 }
 
-int cons_child(cons_state *c, void *s, pid_t pid)
+int cons_child(cons_state *c, pid_t pid, void *s)
 {
   int status;
 
@@ -197,10 +243,31 @@ int cons_child(cons_state *c, void *s, pid_t pid)
   if (c == NULL || c->pid != pid)
     return 1;
 
-  if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+  if ((WIFEXITED(status) && WEXITSTATUS(status) == 0) ||
+      (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL))
     cons_cleanup(c, CONS_DOWN);
   else
     cons_cleanup(c, CONS_FROZEN);
 
   return 0;
+}
+
+void cons_close(cons_state *c)
+{
+  if (c == NULL)
+    return;
+
+  if (c->state == CONS_UP)
+    cons_stop(c);
+
+  close(c->fd[0]);
+  close(c->fd[1]);
+
+  if (c->gotpty)
+    {
+      close(c->tty_fd);
+      close(c->pty_fd);
+    }
+
+  free(c);
 }
