@@ -152,7 +152,6 @@ static char *progname;
 
 int main(int argc, char **argv)
 {
-  Widget button;
   struct sigaction sa;
   int existing_server, status;
   pid_t check_pid;
@@ -212,10 +211,10 @@ int main(int argc, char **argv)
     split_and_exec(app_data.xscreensaver, &child);
 
   pixmap = get_pixmap(toplevel);
-  button = XtVaCreateManagedWidget("xss", menuButtonWidgetClass, toplevel,
-				   XtNmenuName, (XtArgVal)MENU_NAME,
-				   XtNbitmap, (XtArgVal)pixmap,
-				   NULL);
+  XtVaCreateManagedWidget("xss", menuButtonWidgetClass, toplevel,
+			  XtNmenuName, (XtArgVal)MENU_NAME,
+			  XtNbitmap, (XtArgVal)pixmap,
+			  NULL);
 
   create_menu(toplevel);
 
