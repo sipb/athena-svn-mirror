@@ -63,7 +63,7 @@
 #define DEFAULT_BIB_PATH ".:(texpooldir)/bib"
 #endif
 #ifndef DEFAULT_BST_PATH
-#define DEFAULT_BST_PATH ".:(texinput_dir)/bib"
+#define DEFAULT_BST_PATH ".:(texinputdir)/bib"
 #endif
 
 /* Dvips' configuration files.  */
