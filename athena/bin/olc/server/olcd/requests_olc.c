@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.37 1991-01-21 01:25:04 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.38 1991-01-21 11:50:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.37 1991-01-21 01:25:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.38 1991-01-21 11:50:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -1625,6 +1625,10 @@ olc_replay(fd, request)
   }
 
   send_response(fd, status);
+
+/* If no question, return now. */
+  if (status == NO_QUESTION)
+    return(SUCCESS);
 
   if (can_monitor)
     write_file_to_fd(fd, target->question->logfile);
