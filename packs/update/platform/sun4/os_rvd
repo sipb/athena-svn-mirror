@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.14 1998-03-18 20:18:29 miki Exp $
+## $Id: os_rvd,v 1.15 1998-04-11 15:37:55 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -548,6 +548,9 @@ GLOBAL : *.CKP *.local *.pid :
 		*so*.old
 		*a.old
 		libp/*.old
+		-> libxview.so.3
+		-> libXol.so.3
+		-> libPEX5.so.2
 		-> C*
 		-> Xol
 		-> a*
