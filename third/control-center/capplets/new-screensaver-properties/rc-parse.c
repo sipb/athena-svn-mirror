@@ -212,14 +212,14 @@ get_screensaver_dir_list (void)
 	if (screensaver_dir_list != NULL)
 		return screensaver_dir_list;
 
-	xss_name = gnome_is_program_in_path ("xscreensaver");
+	xss_name = gnome_is_program_in_path ("xss");
 	strings_name = gnome_is_program_in_path ("strings");
 	grep_name = gnome_is_program_in_path ("grep");
 
 	if (!xss_name || !strings_name || !grep_name) {
 		/* No grep or strings, so it's hopeless... */
 		screensaver_dir_list = 
-			g_list_append (NULL, "/usr/X11R6/lib/xscreensaver");
+			g_list_append (NULL, "/usr/athena/libexec/xscreensaver");
 		return screensaver_dir_list;
 	}
 
