@@ -81,7 +81,7 @@ SHLIB_MAJOR=		@SHLIB_MAJOR@
 SHLIB_MINOR=		.@SHLIB_MINOR@
 
 # For libraries which include headers from other libraries.
-INCLUDES = -I. -I.. -I$(topdir) -I$(includedir)
+INCLUDES = -I. -I.. -I$(topdir)
 
 CCFLAGS = $(DEFS) $(LOCAL_DEFS) $(CPPFLAGS) $(INCLUDES) $(LOCAL_CFLAGS) $(CFLAGS)
 
