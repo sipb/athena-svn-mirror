@@ -12,7 +12,7 @@
  *
  */
 
-#include "Xj.tmpl"
+#include "Xj.defs"
 
 #include "mit-copyright.h"
 
