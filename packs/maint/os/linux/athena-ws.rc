@@ -142,6 +142,20 @@ case "$1" in
 		rm -f /etc/nologin
 	fi && success nologin || failure nologin
 	echo
+
+	if [ "$PUBLIC" = true ] && modprobe imm 2> /dev/null; then
+		echo -n Adding ZIP250 support:
+		mkdir -p /zip
+		if ! grep -q ^/dev/sda /etc/fstab; then
+			cat << EOF >> /etc/fstab
+/dev/sda4		/zip		msdos	user,noauto	0 0
+EOF
+		fi
+		if grep -q '^/dev/sda4[	 ]*/zip[	 ]' /etc/fstab; then
+			chmod 666 /dev/sda
+		fi
+	fi && success ZIP250
+	echo
 	;;
   stop)
 	;;
