@@ -1,0 +1,14 @@
+#!/bin/sh -
+# Version-specific update script for 8.0A
+
+case ${MACH} in
+SUN*)
+	rm -f /sun4
+
+	echo "/etc/inet/inetd.conf"		>> ${CONFCHG}
+	;;
+
+INDY)
+	;;
+esac
+
