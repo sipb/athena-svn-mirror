@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
  *      $Author: jtkohl $
- *	$Id: main.h,v 1.3 1989-11-08 14:35:54 jtkohl Exp $
+ *	$Id: main.h,v 1.4 1989-11-15 10:00:51 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -28,5 +28,16 @@ extern char *subscriptions_filename_override;
  */
 
 extern void usage();
+
+/* USRDESC points to a file (relative to user's homedir) which has a user's
+   description file */
+
+#define USRDESC ".zwgc.desc"
+
+/* DEFDESC points to where the system default description is stored */
+
+#ifndef DEFDESC
+#define DEFDESC "/etc/athena/zwgc.desc"
+#endif
 
 #endif
