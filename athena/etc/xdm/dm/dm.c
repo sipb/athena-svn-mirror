@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.32 1993-04-22 15:00:57 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.33 1993-08-04 13:03:31 vrt Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -60,7 +60,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.32 1993-04-22 15:00:57 miki Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.33 1993-08-04 13:03:31 vrt Exp $";
 #endif
 
 #ifndef NULL
@@ -978,6 +978,7 @@ char *tty;
       kill(xpid, SIGTERM);
 
     found = 0;
+#ifndef SOLARIS
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))
@@ -1001,15 +1002,20 @@ char *tty;
 	}
 	close(file);
     }
-#ifdef SOLARIS
+#else
     if ((file = open(utmpfx, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmpx, sizeof(utmpx)) > 0) {
 	    if (!strncmp(utmpx.ut_line, tty, sizeof(utmpx.ut_line))
+		&& (utmpx.ut_type == USER_PROCESS)
 		) {
+		strncpy(login, utmpx.ut_name, 8);
+		login[8] = '\0';
 		if (utmpx.ut_name[0] != '\0') {
 		    strncpy(utmpx.ut_name, "", sizeof(utmpx.ut_name));
+	            utmpx.ut_type = EMPTY;
 		    lseek(file, (long) -sizeof(utmpx), L_INCR);
 		    write(file, (char *) &utmpx, sizeof(utmpx));
+		    found = 1;
 		}
 		break;
 	    }
@@ -1018,21 +1024,16 @@ char *tty;
     }
 #endif
     if (found) {
+#ifndef SOLARIS
 	if ((file = open(wtmpf, O_WRONLY|O_APPEND, 0644)) >= 0) {
 	    strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
 	    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-#ifndef SOLARIS
-	    strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
-#else
-	    strncpy(utmpx.ut_host, "", sizeof(utmpx.ut_host));
-#endif
+            strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
 	    time(&utmp.ut_time);
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
 	}
-    }
-#ifdef SOLARIS
-    if (found) {
+#else
 	if ((file = open(wtmpfx, O_WRONLY|O_APPEND, 0644)) >= 0) {
 	    strncpy(utmpx.ut_line, tty, sizeof(utmpx.ut_line));
 	    strncpy(utmpx.ut_name, "", sizeof(utmpx.ut_name));
@@ -1040,8 +1041,8 @@ char *tty;
 	    write(file, (char *) &utmpx, sizeof(utmpx));
 	    close(file);
 	}
-    }
 #endif
+    }
     if (clflag) {
 	/* Clean up password file */
 	removepwent(login);
