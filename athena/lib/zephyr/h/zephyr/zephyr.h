@@ -1,21 +1,21 @@
-#ifndef __ZEPHYR_H__
-#define __ZEPHYR_H__
 /* This file is part of the Project Athena Zephyr Notification System.
  * It contains global definitions
  *
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.4 1987-03-20 17:02:09 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.5 1987-06-10 12:36:18 rfrench Exp $ */
+
+#ifndef __ZEPHYR_H__
+#define __ZEPHYR_H__
 
 #include <zephyr/mit-copyright.h>
-
 
 #include <errno.h>
 #include <sys/types.h>
@@ -95,7 +95,9 @@ extern int errno;
 #define ZERR_BADPKT		1005	/* Bad incoming packet */
 #define ZERR_VERS		1006	/* Bad version # in packet */
 #define ZERR_NOPORT		1007	/* No port opened */
+#define ZERR_NONOTICE		1008	/* No notices selected */
 
 #define	ZERR_S_FIRST		2000	/* internal server error codes */
 #define	ZERR_S_LAST		3000
+
 #endif !__ZEPHYR_H__
