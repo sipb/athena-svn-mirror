@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.19 1992-06-26 15:17:18 probe Exp $
+ * $Id: aklog_main.c,v 1.20 1992-07-07 23:39:56 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.19 1992-06-26 15:17:18 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.20 1992-07-07 23:39:56 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -313,6 +313,28 @@ static int auth_to_cell(cell, realm)
 	    strcat (username, c.pinst);
 	}
 
+	atoken.kvno = c.kvno;
+	atoken.startTime = c.issue_date;
+	/* ticket lifetime is in five-minutes blocks. */
+	atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
+	bcopy (c.session, &atoken.sessionKey, 8);
+	atoken.ticketLen = c.ticket_st.length;
+	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
+	
+	if (!force &&
+	    !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
+	    atoken.kvno == btoken.kvno &&
+	    atoken.ticketLen == btoken.ticketLen &&
+	    !bcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
+	    !bcmp(atoken.ticket, btoken.ticket, atoken.ticketLen)) {
+
+	    if (dflag) {
+		sprintf(msgbuf, "Identical tokens already exist; skipping.\n");
+		params.pstdout(msgbuf);
+	    }
+	    return 0;
+	}
+
 	if (noprdb) {
 	    if (dflag) {
 		sprintf(msgbuf, "Not resolving name %s to id (-noprdb set)\n",
@@ -370,28 +392,6 @@ static int auth_to_cell(cell, realm)
 	strncpy(aclient.name, username, MAXKTCNAMELEN - 1);
 	strcpy(aclient.instance, "");
 	strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
-	
-	atoken.kvno = c.kvno;
-	atoken.startTime = c.issue_date;
-	/* ticket lifetime is in five-minutes blocks. */
-	atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
-	bcopy (c.session, &atoken.sessionKey, 8);
-	atoken.ticketLen = c.ticket_st.length;
-	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
-	
-	if (!force &&
-	    !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
-	    atoken.kvno == btoken.kvno &&
-	    atoken.ticketLen == btoken.ticketLen &&
-	    !bcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
-	    !bcmp(atoken.ticket, btoken.ticket, atoken.ticketLen)) {
-
-	    if (dflag) {
-		sprintf(msgbuf, "Identical tokens already exist; skipping.\n");
-		params.pstdout(msgbuf);
-	    }
-	    return 0;
-	}
 
 	if (dflag) {
 	    sprintf(msgbuf, "Getting tokens.\n");
