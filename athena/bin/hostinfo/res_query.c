@@ -54,6 +54,8 @@ extern struct in_addr server_addr;
 extern int errno;
 int h_errno;
 
+static char *local_hostalias (const char *);
+
 /*
  * Formulate a normal query, send, and await answer.
  * Returned answer is placed in supplied buffer "answer".
@@ -149,7 +151,6 @@ res_search(name, class, type, answer, anslen)
 {
 	register char *cp, **domain;
 	int n, ret, got_nodata = 0;
-	char *hostalias();
 
 	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
 		return (-1);
@@ -159,7 +160,7 @@ res_search(name, class, type, answer, anslen)
 	for (cp = name, n = 0; *cp; cp++)
 		if (*cp == '.')
 			n++;
-	if (n == 0 && (cp = hostalias(name)))
+	if (n == 0 && (cp = local_hostalias(name)))
 		return (res_query(cp, class, type, answer, anslen));
 
 	/*
@@ -249,8 +250,8 @@ res_querydomain(name, domain, class, type, answer, anslen)
 	return (res_query(longname, class, type, answer, anslen));
 }
 
-char *
-hostalias(name)
+static char *
+local_hostalias(name)
 	const char *name;
 {
 	register char *C1, *C2;
