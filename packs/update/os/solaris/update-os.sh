@@ -3,7 +3,9 @@
 CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
 . $CONFVARS
 
-cd $UPDATE_ROOT
+# drvconfig requires this.  In theory, nothing else should.
+cd ${UPDATE_ROOT-/}
+
 if [ "$NEWOS" = "true" ]; then
   echo "Removing the patch/pkg DB for a new OS major rev"
   pks="`cat $OLDPKGS`"
@@ -95,7 +97,6 @@ rm -f "$UPDATE_ROOT/var/spool/cron/crontabs/uucp"
 
 if [ "$NEWDEVS" = "true" ]; then
   echo "Create devices and dev"
-  cd "$UPDATE_ROOT"
   drvconfig -R $UPDATE_ROOT -r devices -p "$UPDATE_ROOT/etc/path_to_inst"
   chmod 755 "$UPDATE_ROOT/dev"
   chmod 755 "$UPDATE_ROOT/devices"
