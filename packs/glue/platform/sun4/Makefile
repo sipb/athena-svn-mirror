@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 1998-09-29 17:23:41 ghudson Exp $
+# $Id: Makefile,v 1.15 1998-12-25 19:17:32 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -38,6 +38,8 @@ install:
 	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
 	ln -s /usr/openwin/bin/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
+	rm -f ${DESTDIR}${ATHBINDIR}/vacation.real
+	ln -s /usr/bin/vacation ${DESTDIR}${ATHBINDIR}/vacation.real
 	rm -f ${DESTDIR}${USRLIBDIR}/cpp
 	ln -s /usr/ccs/lib/cpp ${DESTDIR}${USRLIBDIR}/cpp
 

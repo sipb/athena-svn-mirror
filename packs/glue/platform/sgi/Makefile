@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1998-11-03 17:21:10 rbasch Exp $
+# $Id: Makefile,v 1.12 1998-12-25 19:17:30 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -31,6 +31,8 @@ install:
 	ln -s /usr/freeware/bin/perl ${DESTDIR}${ATHBINDIR}/perl
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
 	ln -s /usr/bin/X11/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
+	rm -f ${DESTDIR}${ATHBINDIR}/vacation.real
+	ln -s /usr/sbin/vacation ${DESTDIR}${ATHBINDIR}/vacation.real
 	rm -f ${DESTDIR}${IAFLIBDIR}/scheme
 	ln -s /bin/login ${DESTDIR}${IAFLIBDIR}/scheme
 

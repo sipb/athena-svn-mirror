@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.29 1998-09-16 12:52:28 ghudson Exp $
+# $Id: Makefile,v 1.30 1998-12-25 19:17:28 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -92,6 +92,7 @@ install:
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
 	install -c -m 555 verify-message.sh \
 		${DESTDIR}${ATHBINDIR}/verify-message
 	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
