@@ -1,19 +1,22 @@
+# translation of mk.po to Macedonian
+# translation of mk.po to
+# translation of eel.gnome-2-2.mk.po to Macedonian
 # translation of eel.HEAD.mk.po to Macedonian
 # eel.HEAD.pot.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Ivan Stojmirov <stojmir@linux.net.mk>, 2002.
+# Copyright (C) 2002,2003 Free Software Foundation, Inc.
+# Ivan Stojmirov <stojmir@linux.net.mk>, 2002,2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eel.HEAD.mk\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
-"PO-Revision-Date: 2002-12-15 19:01+0100\n"
+"Project-Id-Version: mk\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
+"PO-Revision-Date: 2003-04-16 14:57+0200\n"
 "Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
-"Language-Team: Macedonian <mk@li.org>\n"
+"Language-Team: Macedonian <gnomk-main@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
+"X-Generator: KBabel 1.0.1\n"
 
 #: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
@@ -44,11 +47,11 @@ msgstr ""
 
 #: eel/eel-editable-label.c:376
 msgid "Line wrap"
-msgstr ""
+msgstr "Префрлање на линии"
 
 #: eel/eel-editable-label.c:377
 msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
+msgstr "Доколку е наместено, префли ги линиите ако текстот е премногу широк."
 
 #: eel/eel-editable-label.c:384
 msgid "Cursor Position"
@@ -56,7 +59,7 @@ msgstr "Позиција на Курсорот"
 
 #: eel/eel-editable-label.c:385
 msgid "The current position of the insertion cursor in chars."
-msgstr ""
+msgstr "Моменталната позиција на курсорот за вметнување во карактери."
 
 #: eel/eel-editable-label.c:394
 #, fuzzy
@@ -67,6 +70,7 @@ msgstr "Не е направен избор"
 msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr ""
+"Позицијата на спротивниот крај на селекцијата од курсорот во карактери."
 
 #: eel/eel-editable-label.c:3069
 msgid "Select All"
@@ -140,23 +144,23 @@ msgstr "_Лозинка:"
 msgid "Remember this password"
 msgstr "Запамети ја оваа лозинка"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "Инфо"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "Детали"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "Предупредување"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "Грешка"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "Прашање"
 

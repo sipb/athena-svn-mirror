@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
 "PO-Revision-Date: 2002-06-01 16:14+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <suso@trasno.net>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -142,23 +142,23 @@ msgstr "_Contrasinal:"
 msgid "Remember this password"
 msgstr "Lembrar este contrasinal"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "Detalles"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "Aviso"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "Erro"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "Cuestión"
 

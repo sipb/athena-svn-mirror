@@ -1680,6 +1680,38 @@ eel_vfs_has_capability (const char       *text_uri,
 	return ret;
 }
 
+void
+eel_filename_get_rename_region (const char           *filename,
+				int                  *start_offset,
+				int                  *end_offset)
+{
+	const char *end, *end2;
+
+	*start_offset = 0;
+	
+	end = strrchr (filename, '.');
+
+	if (end && end != filename) {
+		if (strcmp (end, ".gz") == 0 ||
+		    strcmp (end, ".bz2") == 0 ||
+		    strcmp (end, ".sit") == 0 ||
+		    strcmp (end, ".Z") == 0) {
+			end2 = end - 1;
+			while (end2 > filename &&
+			       *end2 != '.') {
+				end2--;
+			}
+			if (end2 != filename) {
+				end = end2;
+			}
+		}
+		*end_offset = g_utf8_pointer_to_offset (filename, end);
+	} else {
+		*end_offset = g_utf8_strlen (filename, -1);
+	}
+}
+
+
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 void

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
 "PO-Revision-Date: 2003-01-04 15:07+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -139,23 +139,23 @@ msgstr "_Heslo:"
 msgid "Remember this password"
 msgstr "Uložiť toto heslo"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "Detaily"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "Varovanie"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "Chyba"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "Otázka"
 

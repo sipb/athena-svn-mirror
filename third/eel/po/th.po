@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
 "PO-Revision-Date: 2003-02-21 16:12-0700\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@colorado.edu>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
@@ -138,23 +138,23 @@ msgstr "รหัสผ่าน (_P):"
 msgid "Remember this password"
 msgstr "จำรหัสผ่านนี้"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "ข้อมูล"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "รายระเอียด"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "คำเตือน"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "ผิดพลาด"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "คำถาม"
 

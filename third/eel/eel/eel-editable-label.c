@@ -1501,7 +1501,7 @@ eel_editable_label_expose (GtkWidget      *widget,
   eel_editable_label_ensure_layout (label, TRUE);
   
   if (GTK_WIDGET_VISIBLE (widget) && GTK_WIDGET_MAPPED (widget) &&
-      label->text && (*label->text != '\0'))
+      label->text)
     {
       get_layout_location (label, &x, &y);
       

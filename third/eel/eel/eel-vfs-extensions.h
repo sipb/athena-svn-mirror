@@ -105,6 +105,10 @@ gboolean           eel_vfs_has_capability                (const char           *
 gboolean           eel_vfs_has_capability_uri            (GnomeVFSURI          *uri,
 						          EelVfsCapability      capability);
 
+void               eel_filename_get_rename_region        (const char           *filename,
+							  int                  *start_offset,
+							  int                  *end_offset);
+
 G_END_DECLS
 
 #endif /* EEL_VFS_EXTENSIONS_H */

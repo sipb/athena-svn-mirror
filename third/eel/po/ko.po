@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel $VERSION\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
 "PO-Revision-Date: 2003-01-15 22:04+0900\n"
 "Last-Translator: Kang Jeong-Hee <Keizi@mail.co.kr>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
@@ -138,23 +138,23 @@ msgstr "비밀번호(_P): "
 msgid "Remember this password"
 msgstr "이 비밀번호 기억"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "정보"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "자세히"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "주의"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "오류"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "질문"
 

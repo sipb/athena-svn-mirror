@@ -1,5 +1,21 @@
-This is eel 2.2.2.  It is part of the Gnome 2 desktop and is used
+This is eel 2.2.4.  It is part of the Gnome 2 desktop and is used
 mainly by Nautilus.
+
+Major changes since 2.2.3 were:
+
+* Translation updates
+
+Major changes since 2.2.2 were:
+
+* New function eel_filename_get_rename_region
+
+* Accessibility updates
+
+* New eel-canvas that fixes zoom tearing
+
+* New functions for slave glade prefs widgets
+
+* Draw EelEditableLable frame even when text is empty
 
 Major changes since 2.2.1 were:
 

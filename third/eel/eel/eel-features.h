@@ -3,8 +3,8 @@
 
 #define EEL_MAJOR_VERSION (2)
 #define EEL_MINOR_VERSION (2)
-#define EEL_MICRO_VERSION (2)
-#define EEL_VERSION "2.2.2"
+#define EEL_MICRO_VERSION (4)
+#define EEL_VERSION "2.2.4"
 
 extern const unsigned int eel_major_version, eel_minor_version, eel_micro_version;
 extern const char *eel_version;
