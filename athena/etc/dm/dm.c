@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.10 1999-11-20 16:23:21 ghudson Exp $
+/* $Id: dm.c,v 1.11 1999-11-21 15:41:43 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.10 1999-11-20 16:23:21 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.11 1999-11-21 15:41:43 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -496,7 +496,7 @@ int main(int argc, char **argv)
 	  sigaction(SIGUSR1, &sigact, NULL);
 	  /* dm ignores sigpipe; because of this, all of the children (ie, */
 	  /* the entire session) inherit this unless we fix it now */
-	  sigact.sa_handler = SIG_DFL;;
+	  sigact.sa_handler = SIG_DFL;
 	  sigaction(SIGPIPE, &sigact, NULL);
 	  execv(loginargv[0], loginargv);
 	  fprintf(stderr, "dm: X login failed exec: %s\n", strerror(errno));
@@ -882,9 +882,9 @@ static char **parseargs(char *line, char *extra, char *extra1, char *extra2)
 
   while (*p)
     {
-      while (*p && isspace(*p))
+      while (*p && isspace((unsigned char)*p))
 	p++;
-      while (*p && !isspace(*p))
+      while (*p && !isspace((unsigned char)*p))
 	p++;
       i++;
     }
@@ -894,12 +894,12 @@ static char **parseargs(char *line, char *extra, char *extra1, char *extra2)
   i = 0;
   while (*p)
     {
-      while (*p && isspace(*p))
+      while (*p && isspace((unsigned char)*p))
 	p++;
       if (*p == 0)
 	break;
       ret[i++] = p;
-      while (*p && !isspace(*p))
+      while (*p && !isspace((unsigned char)*p))
 	p++;
       if (*p == 0)
 	break;
@@ -955,9 +955,9 @@ static char *getconf(char *file, char *name)
       if (strncmp(p, name, strlen(name)))
 	continue;
       p += strlen(name);
-      if (*p && !isspace(*p))
+      if (*p && !isspace((unsigned char)*p))
 	continue;
-      while (*p && isspace(*p))
+      while (*p && isspace((unsigned char)*p))
 	p++;
       if (*p == 0)
 	return (NULL);
@@ -1006,7 +1006,7 @@ static void x_stop_wait(void)
   sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
-/* Write a given pid (any number, really) to a given file */
+/* Write a pid to a file */
 static void writepid(char *file, pid_t pid)
 {
   FILE *fp;
@@ -1016,7 +1016,7 @@ static void writepid(char *file, pid_t pid)
   if (fp == NULL)
     return;
 
-  fprintf(fp, "%d\n", pid);
+  fprintf(fp, "%lu\n", (unsigned long)pid);
   fclose(fp);
 }
 
