@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.21 2003-10-26 19:46:43 ghudson Exp $
+# $Id: sendmail.cf,v 1.22 2003-11-02 21:42:49 zacheiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -187,7 +187,7 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
-R$*<@$+>$*		$#smtp$@$(athconf relay $&{f}$:$2$)$:$1<@$2>$3
+R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
 
 ######################################################################
 ###  authinfo: lookup authinfo in the access map
