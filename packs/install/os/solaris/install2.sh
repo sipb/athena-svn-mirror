@@ -203,9 +203,7 @@ echo "turn fs slow"
 
 echo "Initializing var/adm and spool files "
 cp /dev/null /root/var/adm/lastlog
-cp /dev/null /root/var/adm/utmp
 cp /dev/null /root/var/adm/utmpx
-cp /dev/null /root/var/adm/wtmp
 cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/adm/sulog
 cp /dev/null /root/var/spool/mqueue/syslog
