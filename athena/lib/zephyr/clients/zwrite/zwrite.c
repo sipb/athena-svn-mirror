@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.17 1988-06-29 18:29:01 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.18 1988-07-05 16:33:47 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -156,7 +156,14 @@ main(argc, argv)
     notice.z_recipient = "";
     if (filsys)
 	    notice.z_default_format = "@bold(Filesystem Operation Message for $instance:)\nFrom: @bold($sender)\n$message";
-    else notice.z_default_format = "Class $class, Instance $instance:\n@center(From: @bold($sender) To: @bold($recipient))\n$message";
+    else if (signature && auth == ZAUTH)
+	notice.z_default_format = "Class $class, Instance $instance:\n@center(To: @bold($recipient))\nFrom: $message";
+    else if (signature)
+	notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n@center(To: @bold($recipient))\nFrom: $message";
+    else if (auth == ZAUTH)
+	notice.z_default_format = "Class $class, Instance $instance:\n$message";
+    else
+	notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n$message";
 
     if (!nocheck && !msgarg && !filsys)
 	send_off(&notice, 0);
