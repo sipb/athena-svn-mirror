@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.1 1990-04-16 12:05:33 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.2 1990-04-16 12:06:19 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.1 1990-04-16 12:05:33 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.2 1990-04-16 12:06:19 epeisach Exp $";
 #endif lint
 
 /*
@@ -269,7 +269,7 @@ log_cmdline(argc, argv)
      char *argv[];
 {
 	struct passwd 	*pwentry;
-	char		*name, *type;
+	char		*name;
 	char 		logbuf[512];
 	register int	i;
 					/* note getuid() returns real uid */
