@@ -45,6 +45,11 @@ typedef struct {
   Boolean pressed;
   Boolean toggle;
   Boolean state;
+  int repeatDelay;
+  int initialDelay;
+  int timerid;
+  Boolean highlightOnEnter;
+  XjCallbackProc hilite, unhilite;
 } ButtonPart;
 
 typedef struct _ButtonRec {
@@ -65,5 +70,11 @@ typedef struct _ButtonClassRec *ButtonJetClass;
 #define XjNstate "state"
 #define XjCDeactivateProc "DeactivateProc"
 #define XjNdeactivateProc "deactivateProc"
+#define XjCInterval "Interval"
+#define XjNinterval "interval"
+#define XjNrepeatDelay "repeatDelay"
+#define XjNinitialDelay "initialDelay"
+#define XjCHighlightOnEnter "HighlightOnEnter"
+#define XjNhighlightOnEnter "highlightOnEnter"
 
 #endif /* _Xj_Button_h */
