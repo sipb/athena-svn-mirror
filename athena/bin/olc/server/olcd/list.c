@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.16 1991-01-20 23:19:52 lwvanels Exp $
+ *	$Id: list.c,v 1.17 1991-01-27 15:04:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.16 1991-01-20 23:19:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.17 1991-01-27 15:04:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -307,21 +307,13 @@ char *name;
 
   for(i=0;i<n;i++) {
     fprintf(f,"%s\n%s\n%d\n", q[i].username, q[i].machine, q[i].instance);
-    if (q[i].ustatus & LOGGED_OUT)
-      fprintf(f,"logout\n");
-    else if (q[i].ustatus & SERVICED) {
-      if (q[i].ustatus & PICKUP)
-	fprintf(f,"pickup\n");
-      else if (q[i].ustatus & REFERRED)
-	fprintf(f,"refer\n");
-    }
-    else {
-      OGetStatusString(q[i].kstatus,st);
-      if (q[i].ustatus & LOGGED_OUT)
-	fprintf(f,"logout\n");
-      else
-	fprintf(f,"%s\n",st);
-    }
+    if (q[i].ustatus & (LOGGED_OUT | MACHINE_DOWN))
+      fprintf(f," \n");
+    else
+      fprintf(f,"+\n");
+
+    OGetStatusString(q[i].kstatus,st);
+    fprintf(f,"%s\n",st);
 
     fprintf(f,"%s\n%d\n",q[i].cusername, q[i].cinstance);
     OGetStatusString(q[i].cstatus,st);
