@@ -24,9 +24,8 @@ Here are descriptions of the mailing lists related to the source tree:
 	* source-developers
 
 		For discussion of the policy and day-to-day
-		maintenance of the repository.  To be a member of this
-		mailing list, you must be a staff member, but there is
-		a public discuss archive on menelaus.
+		maintenance of the repository.  This is a public list,
+		and there is a public discuss archive on menelaus.
 
 	* source-reviewers
 
@@ -327,8 +326,11 @@ following guidelines should help the release go smoothly:
 	* Beta
 
 	  The beta phase involves outside testers.  System packs and
-	  os volumes should be replicated on multiple servers.
-	  Changes to the packs must be propagated by patch releases.
+	  os volumes should be replicated on multiple servers, and
+	  permissions should be set to avoid accidental changes
+	  (traditionally this means giving write access to
+	  system:packs, a normally empty group).  Changes to the packs
+	  must be propagated by patch releases.
 
 	  User release notes should be essentially finished by the end
 	  of this phase.  System release notes may continue to be
