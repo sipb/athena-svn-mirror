@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.9 1998-01-14 17:09:38 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.10 1998-01-21 22:01:01 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -41,6 +41,13 @@ static const char rcsid[] = "$Id: passwd.c,v 1.9 1998-01-14 17:09:38 ghudson Exp
 #define PTMP_MODE (S_IWUSR|S_IRUSR)
 #else
 #define PTMP_MODE (S_IWUSR|S_IRUSR|S_IRGRP|S_IROTH)
+#endif
+
+/* To update the home directory field, we have to know which field it is. */
+#ifdef HAVE_MASTER_PASSWD
+#define HOMEDIR_FIELD 9
+#else 
+#define HOMEDIR_FIELD 6
 #endif
 
 static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
@@ -438,9 +445,9 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
     {
       if (strncmp(username, buf, len) == 0 && buf[len] == ':')
 	{
-	  /* Skip to colon before homedir field (the fifth colon; we start
-	   * at the first one and skip four more). */
-	  for (ptr1 = buf + len, i = 0; ptr1 && i < 4;
+	  /* Skip to colon before homedir field.  We start on
+	   * the first colon and skip HOMEDIR_FIELD-2 more). */
+	  for (ptr1 = buf + len, i = 0; ptr1 && i < HOMEDIR_FIELD - 2;
 	       ptr1 = strchr(ptr1 + 1, ':'), i++)
 	      ;
 	  if (!ptr1)
