@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-10-28 15:40:02 kcr Exp $
+# $Id: Makefile.in,v 1.2 1999-10-28 15:56:01 kcr Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -26,7 +26,7 @@ LDFLAGS=@LDFLAGS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 LIBS=@X_LIBS@ -lWc -lXp -lXmu -lXaw -lXt -lX11 @X_EXTRA_LIBS@ \
-	-lal -llocker @HESIOD_LIBS@ -llarv \
+	-lal @HESIOD_LIBS@ -llarv \
 	@AFS_LIBS@ @KRB4_LIBS@ @KRB5_LIBS@ @LIBS@ 
 
 OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o

@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.1 1999-10-28 15:38:53 kcr Exp $ */
+/* $Id: xlogin.c,v 1.2 1999-10-28 15:56:02 kcr Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -34,11 +34,6 @@
 #include "owl.h"
 #include "environment.h"
 
-#ifdef SYSV
-#define random	lrand48
-#define srandom	srand48
-#endif
-
 #ifndef MIN
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
@@ -47,7 +42,7 @@
 #define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.77"
 #endif
 
-#ifdef sgi
+#ifdef NANNY
 char athconsole[64];
 FILE *xdmstream;
 int xdmfd;
@@ -257,13 +252,13 @@ int main(argc, argv)
   int i;
   unsigned acc = 0;
   int pid;
-#ifdef sgi
+#ifdef NANNY
   int fdflags;
 #endif
 
   sigemptyset(&sig_zero);
 
-#ifdef sgi
+#ifdef NANNY
   /* Get stderr and stdout for our own uses - we don't want them going
    * through various paths of xdm. Under Irix, xdm does a lot of the
    * actually logging-in; it calls xlogin with stdout a pipe it listens
@@ -338,7 +333,7 @@ int main(argc, argv)
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal)0);
 
-#ifndef sgi
+#ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
    * handshake. This code used to be right before XtMainLoop. However,
    * under Ultrix dm is required to open /dev/xcons and manually pipe
@@ -354,7 +349,7 @@ int main(argc, argv)
   sigaction(SIGUSR1, NULL, &osigact);
   if (osigact.sa_handler == SIG_IGN)
     kill(getppid(), SIGUSR1);
-#endif /* not sgi */
+#endif /* not NANNY */
 
 #ifdef SOLARIS_MAE
   /* Make sure the network device has the proper owner and protections.
@@ -452,8 +447,8 @@ int main(argc, argv)
   c = hname;
   while (*c)
     acc = (acc << 1) ^ *c++;
-  srandom(acc);
-  resources.reactivate_timeout += random() % resources.randomize;
+  srand48(acc);
+  resources.reactivate_timeout += lrand48() % resources.randomize;
   saver = WcFullNameToWidget(appShell, "*savershell");
   ins = WcFullNameToWidget(appShell, "*instructions");
   hitanykey = WcFullNameToWidget(appShell, "*hitanykey");
@@ -568,8 +563,8 @@ static void move_instructions(data, timerid)
 	y_max = HeightOfScreen(XtScreen(ins)) - y_max;
     }
 
-  x = random() % x_max;
-  y = random() % y_max;
+  x = lrand48() % x_max;
+  y = lrand48() % y_max;
   XtMoveWidget(ins, x, y);
 
   if (activation_state != REACTIVATING)
@@ -593,7 +588,7 @@ static void start_reactivate(data, timerid)
   struct utmp utmp;
   struct timeval now;
 
-#ifndef sgi /* Not our problem on the SGI. */
+#ifndef NANNY /* Not our problem on the SGI. */
   gettimeofday(&now, NULL);
   if (now.tv_sec - starttime.tv_sec > resources.restart_timeout)
     {
@@ -850,9 +845,9 @@ static void unsave(w, popdown, event, bool)
     XtRemoveTimeOut(curr_timerid);
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
-  blink_timerid = XtAddTimeOut(random() % (10 * 1000),
+  blink_timerid = XtAddTimeOut(lrand48() % (10 * 1000),
 			       blinkOwl, NULL);
-  is_timerid = XtAddTimeOut(random() % (10 * 1000),
+  is_timerid = XtAddTimeOut(lrand48() % (10 * 1000),
 			    blinkIs, NULL);
   if (react_timerid != 0)
     XtRemoveTimeOut(react_timerid);
@@ -940,7 +935,7 @@ void loginACT(w, event, p, n)
   else
     {
       setFontPath();
-#ifdef sgi
+#ifdef NANNY
       /* We obtained the tty earlier from nanny. */
       resources.tty = athconsole + 5;
 #endif
@@ -1072,7 +1067,7 @@ void runACT(w, event, p, n)
 {
   char **argv;
   int i;
-#ifdef sgi
+#ifdef NANNY
   extern char **environ;
 #endif
   struct passwd *pw;
@@ -1128,7 +1123,7 @@ void runACT(w, event, p, n)
   psetenv("SHELL", "/bin/sh", 1);
   psetenv("DISPLAY", ":0", 1);
 
-#ifdef sgi
+#ifdef NANNY
   psetenv("PRELOGIN", "true", 1);
   if (nanny_setupUser("nobody", environ, argv))
     {
@@ -1230,7 +1225,7 @@ void restartCB(w, s, unused)
      char *s;
      caddr_t unused;
 {
-#ifdef sgi
+#ifdef NANNY
   /* On IRIX, we must tell nanny to restart X. */
   nanny_restartX();
 #endif
@@ -1243,7 +1238,7 @@ void windowShutdownCB(w, s, unused)
      caddr_t unused;
 {
   larv_set_busy(1);
-#ifdef sgi
+#ifdef NANNY
   /* If this returns 0, the X server has been killed and it's time
    * to go. If not, we should probably pop up a dialog box.
    */
@@ -1261,7 +1256,7 @@ void windowShutdownACT(w, event, p, n)
      Cardinal *n;
 {
   larv_set_busy(1);
-#ifdef sgi
+#ifdef NANNY
   if (!nanny_setConsoleMode())
     exit(0);
 #else
@@ -1476,7 +1471,7 @@ static void blinkOwl(data, intervalid)
       updateOwl();
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
-	  owlTimeout = random() % (10 * 1000);
+	  owlTimeout = lrand48() % (10 * 1000);
 	  owlDelta = OWL_BLINKINGCLOSED;
 	}
       break;
@@ -1487,7 +1482,7 @@ static void blinkOwl(data, intervalid)
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
 	  owlDelta = OWL_BLINKINGCLOSED;
-	  owlTimeout = random() % (10 * 1000);
+	  owlTimeout = lrand48() % (10 * 1000);
 	}
       break;
 
@@ -1498,7 +1493,7 @@ static void blinkOwl(data, intervalid)
       if (owlCurBitmap == 0)
 	{
 	  owlDelta = OWL_BLINKINGCLOSED;
-	  owlTimeout = random() % (10 * 1000);
+	  owlTimeout = lrand48() % (10 * 1000);
 	}
       break;
 
@@ -1538,7 +1533,7 @@ static void blinkIs(data, intervalid)
       updateIs();
       if (isCurBitmap == 0)
 	{
-	  isTimeout = random() % (10 * 1000);
+	  isTimeout = lrand48() % (10 * 1000);
 	  isDelta = OWL_BLINKINGCLOSED;
 	}
       break;

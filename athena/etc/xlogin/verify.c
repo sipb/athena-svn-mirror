@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.1 1999-10-28 15:40:03 kcr Exp $ */
+/* $Id: verify.c,v 1.2 1999-10-28 15:56:02 kcr Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,9 +15,6 @@
 #ifdef HAVE_UTMPX_H
 #include <utmpx.h>
 #endif
-#ifdef HAVE_SYS_SYSMACROS_H
-#include <sys/sysmacros.h>
-#endif
 #include <grp.h>
 #include <string.h>
 #include <sys/types.h>
@@ -29,9 +26,6 @@
 #include <sys/time.h>
 #include <utmp.h>
 #include <netdb.h>
-#ifdef sgi
-#include <sys/statfs.h>
-#endif
 #include <errno.h>
 #include <syslog.h>
 #ifdef HAVE_UTIL_H
@@ -63,7 +57,7 @@
 #define MAXENVIRON 32
 
 #define MOTD "/etc/motd"
-#ifndef SYSV
+#ifndef HAVE_GETUTXENT
 #if defined(UTMP_FILE)
 #define UTMP UTMP_FILE
 #define WTMP WTMP_FILE
@@ -74,7 +68,7 @@
 #define UTMP "/var/adm/utmp"
 #define WTMP "/var/adm/wtmp"
 #endif
-#endif /* SYSV */
+#endif
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
@@ -92,7 +86,7 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 
 int al_pid;
 
-#ifdef sgi
+#ifdef NANNY
 extern FILE *xdmstream;
 #endif
 
@@ -150,7 +144,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   char encrypt[PASSWORD_LEN + 1];
   char **environment;
   char fixed_tty[16], *p;
-#ifdef sgi
+#ifdef NANNY
   char *newargv[4];
 #endif
   int i;
@@ -340,11 +334,11 @@ char *dologin(user, passwd, option, script, tty, session, display)
 		      "session or logout now?", abort_verify, NULL);
 	}
     }
-#if defined(HAVE_AFS) && !defined(sgi) /* not appropriate for SGI system */
+#if defined(HAVE_AFS) && !defined(NANNY) /* not appropriate for SGI system */
   setpag();
 #endif
 
-#ifdef sgi
+#ifdef NANNY
   if (nanny_getNannyPid(&al_pid))
     return lose("failed to get pid from nanny");
 #else
@@ -535,13 +529,13 @@ char *dologin(user, passwd, option, script, tty, session, display)
   environment[i++] = strsave(errbuf);
   PASSENV("TZ");
 
-#ifdef sgi
+#ifdef NANNY
   PASSENV("XAUTHORITY");
 #endif
 
   environment[i++] = NULL;
 
-#ifndef sgi /* nanny handles this on SGI */
+#ifndef NANNY /* nanny handles this on SGI */
   add_utmp(user, tty, display);
 #endif
   if (pwd->pw_uid == ROOT)
@@ -549,7 +543,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   else
     syslog(LOG_INFO, "%s LOGIN on tty %s", user, tty ? tty : "X");
 
-#ifndef sgi /* nanny/xdm does all this on SGI too... */
+#ifndef NANNY /* nanny/xdm does all this on SGI too... */
   /* Set the owner and modtime on the tty. */
   sprintf(errbuf, "/dev/%s", tty);
   gr = getgrnam("tty");
@@ -605,7 +599,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   i = setuid(pwd->pw_uid);
   if (i)
     return lose("Unable to set your user ID.\n");
-#endif /* not sgi */
+#endif /* not NANNY */
 
   if (chdir(pwd->pw_dir))
     fprintf(stderr, "Unable to connect to your home directory.\n");
@@ -613,7 +607,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   /* Stuff first arg for xsession into a string. */
   sprintf(errbuf, "%d", option);
 
-#ifdef sgi
+#ifdef NANNY
   /* Output username and environment information and let xdm log us in. */
   fprintf(xdmstream, "%s", pwd->pw_name);
   fputc(0, xdmstream);
@@ -627,7 +621,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   exit(0);
 #else
   execle(session, "sh", errbuf, script, NULL, environment);
-#endif /* sgi */
+#endif /* NANNY */
 
   return lose("Failed to start session.");
 }
@@ -771,22 +765,18 @@ char *strsave(s)
   return ret;
 }
 
+#ifdef HAVE_GETUTXENT
 void add_utmp(user, tty, display)
      char *user;
      char *tty;
      char *display;
 {
   struct utmp ut_entry;
-#ifndef SYSV
-  struct utmp ut_tmp;
-#else
   struct utmp *ut_tmp;
   struct utmpx utx_entry;
   struct utmpx *utx_tmp;
-#endif /* SYSV */
   int f;
 
-#ifdef SYSV
   memset(&utx_entry, 0, sizeof(utx_entry));
 
   strncpy(utx_entry.ut_line, tty, sizeof(utx_entry.ut_line));
@@ -815,20 +805,18 @@ void add_utmp(user, tty, display)
       break;
   pututxline(&utx_entry);
 
-  f = open(WTMP_FILE, O_WRONLY | O_APPEND);
-  if (f >= 0)
-    {
-      write(f, (char *)&ut_entry, sizeof(ut_entry));
-      close(f);
-    }
+  updwtmpx(WTMPX_FILE, &utx_entry);
+}
+#else /* HAVE_GETUTXENT */
+void add_utmp(user, tty, display)
+     char *user;
+     char *tty;
+     char *display;
+{
+  struct utmp ut_entry;
+  struct utmp ut_tmp;
+  int f;
 
-  f = open(WTMPX_FILE, O_WRONLY | O_APPEND);
-  if (f >= 0)
-    {
-      write(f, (char *)&utx_entry, sizeof(utx_entry));
-      close(f);
-    }
-#else /* !SYSV */
   memset(&ut_entry, 0, sizeof(ut_entry));
 
   strncpy(ut_entry.ut_line, tty, sizeof(ut_entry.ut_line));
@@ -867,9 +855,9 @@ void add_utmp(user, tty, display)
       write(f, (char *)&ut_entry, sizeof(ut_entry));
       close(f);
     }
-#endif /* HAVE_LOGIN */
-#endif /* SYSV */
+#endif
 }
+#endif /* GETUTXENT */
 
 #define MAXGNAMELENGTH	32
 
