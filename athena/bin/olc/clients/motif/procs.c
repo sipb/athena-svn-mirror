@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.15 1991-06-29 15:56:03 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.16 1991-06-30 12:23:19 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -125,6 +125,9 @@ olc_new_ques (w, tag, callback_data)
     exit(ERROR);
   
   STANDARD_CURSOR;
+#ifdef LOG_USAGE
+  log_view("question_start");
+#endif
 }
 
 
@@ -199,6 +202,9 @@ olc_send_newq (w, tag, callback_data)
   XtManageChild(w_contq_form);
   STANDARD_CURSOR;
   replay_screen = TRUE;
+#ifdef LOG_USAGE
+  log_view("question_ask");
+#endif
 }
 
 
@@ -236,6 +242,9 @@ olc_cont_ques (w, tag, callback_data)
   XtManageChild(w_contq_form);
   replay_screen = TRUE;
   STANDARD_CURSOR;
+#ifdef LOG_USAGE
+  log_view("question_continue");
+#endif
 }
 
 void
@@ -422,6 +431,9 @@ olc_savelog (w, tag, callback_data)
   sprintf(file, "%s/%s.%s", homedir, "OLC.log", current_topic);
   XmTextSetString(W,file);
   XtManageChild(w_save_dlg);
+#ifdef LOG_USAGE
+  log_view("log_save");
+#endif
 }
 
 void
@@ -527,13 +539,15 @@ olc_stock (w, tag, callback_data)
   }
   if (sa_pid == 0) {
     if (execl(SA_LOC,SA_ARGV0,"-signal",pidascii,0) == -1) {
-      fprintf(stderr,"Error in execl; cannot start stock answer browser");
+      perror("Error in execl; cannot start stock answer browser");
       _exit(1);
     }
   }
   signal(SIGCHLD,reaper);
   signal(SIGUSR1,view_ready);
-
+#ifdef LOG_USAGE
+  log_view("browser_start");
+#endif
 }
   
 void
