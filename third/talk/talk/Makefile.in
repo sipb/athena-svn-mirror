@@ -1,7 +1,6 @@
-# $Id: Makefile.in,v 1.2 1996-10-16 22:25:29 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1997-01-11 19:09:26 ghudson Exp $
 
 SHELL=/bin/sh
-CC=@CC@
 INSTALL=@INSTALL@
 VPATH=@srcdir@
 srcdir=@srcdir@
@@ -10,15 +9,23 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I.. ${CPPFLAGS} ${CFLAGS}
 OBJS=ctl.o ctl_transact.o display.o get_addrs.o get_names.o \
 	init_disp.o invite.o io.o look_up.o msgs.o talk.o
-LIBS=-lcurses @LIBS@
-CFLAGS=-I.. ${CDEBUGFLAGS}
 
 all: talk
 
 talk: ${OBJS}
-	${CC} ${LDFLAGS} -o talk ${OBJS} ${LIBS}
+	${CC} ${LDFLAGS} -o talk ${OBJS} -lcurses ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
 
 check:
 
