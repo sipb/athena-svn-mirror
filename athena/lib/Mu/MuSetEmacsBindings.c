@@ -16,6 +16,9 @@
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
  * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/08/23  13:27:24  vanharen
+ * fixed translation table.
+ * 
  * Revision 1.2  89/12/09  16:36:03  djf
  * 
  * changed arg in call to XtGetValues to &arg
@@ -80,7 +83,8 @@ static char SingleLineEmacsBindingsText[] =
         Meta<Key>B:             backward-word() \n\
 	~Shift Meta<Key><:	beginning-of-line() \n\
 	Shift Meta<Key><:	end-of-line() \n\
-	Meta<Key>>:		end-of-line()
+	Meta<Key>>:		end-of-line() \n\
+	<Key>Return:		activate()
 ";
 
 void MuSetEmacsBindings(w)
