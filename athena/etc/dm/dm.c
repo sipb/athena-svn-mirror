@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.12 2000-02-15 15:54:32 ghudson Exp $
+/* $Id: dm.c,v 1.13 2000-03-01 16:04:22 tb Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.12 2000-02-15 15:54:32 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.13 2000-03-01 16:04:22 tb Exp $";
 #endif
 
 /* Process states */
@@ -551,7 +551,8 @@ int main(int argc, char **argv)
 	  if (count > 0 && FD_ISSET(console_tty, &readfds))
 	    {
 	      file = read(console_tty, buf, sizeof(buf));
-	      write(1, buf, file);
+	      if (file != -1)
+		write(1, buf, file);
 	    }
 	}
       else
@@ -715,6 +716,7 @@ static void shutdown(int signo)
   int pgrp, i;
   struct termios tc;
   char buf[BUFSIZ];
+  int notused;
 
   syslog(LOG_DEBUG, "Received SIGFPE, performing shutdown");
   if (login_running == RUNNING)
@@ -734,10 +736,18 @@ static void shutdown(int signo)
 
   (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *) 0);
 
+  /* Make sure the slave side is open before we read from the master;
+   *  some systems will return EIO if there are no current writers.
+   */
+  sprintf(buf, "/dev/%s", logintty);
+  notused = open(buf, O_RDWR, 0);
   while (1)
     {
       i = read(console_tty, buf, sizeof(buf));
-      write(1, buf, i);
+      if (i == -1)
+	perror("console pty");
+      else
+	write(1, buf, i);
     }
 }
 
