@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.6 1990-12-09 16:49:28 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.7 1990-12-12 14:10:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.6 1990-12-09 16:49:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.7 1990-12-12 14:10:52 lwvanels Exp $";
 #endif
 #endif
 
@@ -48,6 +48,7 @@ main (argc, argv)
 
   char *temp;			/* pointer used for walking over title to */
 				/* remove 's */
+  char  prefix[128];		/* prefix for discuss meeting names */
 
 /*
  *  Set up syslogging
@@ -74,7 +75,7 @@ main (argc, argv)
  *  If we can't open/create the lock file and lock it, exit.
  */
 
-  if ((lock_fd = open(LOCKFILE, O_CREAT, 0)) <= 0)
+  if ((lock_fd = open(LOCKFILE, O_CREAT, 0)) < 0)
     {
       syslog(LOG_ERR,"open (lock file): %m");
       exit(-1);
@@ -85,6 +86,24 @@ main (argc, argv)
       close(lock_fd);
       exit(-1);
     }
+
+/*
+ * Find out where we're supposed to be putting these logs...
+ */
+  if ((fd = open(PREFIXFILE, O_RDONLY)) < 0) {
+    syslog(LOG_ERR,"open (prefix file): %m");
+    exit(-1);
+  }
+  retval = read(fd,prefix,128);
+  if (retval == -1) {
+    syslog(LOG_ERR,"read (prefix file): %m");
+    exit(-1);
+  }
+  close(fd);
+  temp = index(prefix,'\n');
+  if (temp != NULL) *temp = '\0';
+  temp = index(prefix,' ');
+  if (temp != NULL) *temp = '\0';
 
 /*
  *  Open the directory so we can get the entries out...
@@ -161,7 +180,7 @@ main (argc, argv)
  * discuss.
  */ 
 	  sprintf(syscmd, "%s %s%s -t \'%s: %s\' < %s",
-		  DSPIPE, PREFIX, topic, username, title, logname);
+		  DSPIPE, prefix, topic, username, title, logname);
 	  retval = system(syscmd);
 	  /* dspipe sometimes looses and returns a bogus error value (36096) */
 	  if (retval != 0) {
