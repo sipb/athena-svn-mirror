@@ -1,4 +1,4 @@
-/* $Id: quota.h,v 1.3 1999-06-03 14:54:24 danw Exp $ */
+/* $Id: quota.h,v 1.4 1999-08-09 19:49:07 mwhitson Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -40,6 +40,8 @@
 #endif
 
 #ifdef OSF
+#include <sys/types.h>
+#include <sys/mount.h>
 #include <ufs/quota.h>
 #define BSD_QUOTACTL
 #endif
