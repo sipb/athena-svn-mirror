@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.15 1987-11-07 15:47:22 rfrench Exp $";
+static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.16 1987-11-07 15:49:11 rfrench Exp $";
 #endif SABER
 #endif lint
 
@@ -511,12 +511,12 @@ struct sockaddr_in *who;
 	count = found / 5 + 1;		/* total # to be sent */
 	i = 0;				/* pkt # counter */
 	while (found > 0) {
+		(void) sprintf(buf, "%d/%d", ++i, count);
+		reply.z_opcode = buf; 
 		retval = ZFormatRawNoticeList(&reply,
 					      answer,
 					      ((found > 5) ? 5 : found) * NUM_FIELDS,
 					      reppacket, packlen, &packlen);
-		(void) sprintf(buf, "%d/%d", ++i, count);
-		reply.z_opcode = buf; 
 		if (retval != ZERR_NONE) {
 			syslog(LOG_ERR, "subscr_sendlist format: %s",
 			       error_message(retval));
