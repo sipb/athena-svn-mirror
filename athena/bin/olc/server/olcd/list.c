@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $
+ *	$Id: list.c,v 1.22.1.1 1992-01-07 15:52:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.22.1.1 1992-01-07 15:52:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -103,7 +103,7 @@ list_queue(data,topics,stati,name,size)
      char *name;
      int *size;
 {
-  KNUCKLE **k_ptr;
+  KNUCKLE *k_ptr;
   LIST *d;
   int page = 1;
   int n;
@@ -121,25 +121,25 @@ list_queue(data,topics,stati,name,size)
   printf("list ststu: %d %s\n",stati,name);
 #endif /* TEST */
 
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(!list_redundant(k_ptr) && is_active(k_ptr))
       {
-	if((stati != 0) && ((*k_ptr)->status != stati) && 
-	   ((*k_ptr)->user->status != stati))
+	if((stati != 0) && (k_ptr->status != stati) && 
+	   (k_ptr->user->status != stati))
 	  continue;
 
 	if(name != (char *) NULL)
 	  if(*name != '\0')
-	    if(!(string_equiv(name,(*k_ptr)->user->username,1)))
+	    if(!(string_equiv(name,k_ptr->user->username,1)))
 	      continue;
 
-	if((topics != (int *) NULL) && (has_question((*k_ptr))))
-	  if(!is_topic(topics,(*k_ptr)->question->topic_code))
+	if((topics != (int *) NULL) && (has_question(k_ptr)))
+	  if(!is_topic(topics,k_ptr->question->topic_code))
 	    continue;
 
-	get_list_info((*k_ptr),d);
+	get_list_info(k_ptr,d);
 #ifdef TEST
-	printf("putting %s %d\n",(*k_ptr)->user->username,n);
+	printf("putting %s %d\n",k_ptr->user->username,n);
 	printf("sizes: %d  %d\n",(1024 * NBLOCKS * page), ((n-1) * sizeof(LIST)));
 	printf("status: %d title %s\n",d->ukstatus, d->user.title);
         if(d->connected.uid >=0)
@@ -177,7 +177,7 @@ list_queue(data,topics,stati,name,size)
 void
 dump_list()
 {
-  KNUCKLE **k_ptr;
+  KNUCKLE *k_ptr;
   static D_LIST *active_q, *unseen_q, *pending_q, *pickup_q, *refer_q,
                 *on_q;
   static int mx_active, mx_unseen, mx_pending, mx_pickup, mx_refer,mx_on;
@@ -215,11 +215,11 @@ dump_list()
 
   n_active = n_unseen = n_pending = n_pickup = n_refer = n_on =0;
 
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next)
+    if(!list_redundant(k_ptr) && is_active(k_ptr))
       {
-	if ((*k_ptr)->connected != NULL) {
-	  get_dlist_info(&active_q[n_active],*k_ptr);
+	if (k_ptr->connected != NULL) {
+	  get_dlist_info(&active_q[n_active],k_ptr);
 	  n_active++;
 	  if (n_active == mx_active) {
 	    mx_active *= 2;
@@ -230,8 +230,8 @@ dump_list()
 	    }
 	  }
 	}
-	else if ((*k_ptr)->question == NULL) {
-	  get_dlist_info(&on_q[n_on],*k_ptr);
+	else if (k_ptr->question == NULL) {
+	  get_dlist_info(&on_q[n_on],k_ptr);
 	  n_on++;
 	  if (n_on == mx_on) {
 	    mx_on *= 2;
@@ -242,8 +242,8 @@ dump_list()
 	    }
 	  }
 	}
-	else if ((*k_ptr)->question->nseen == 0) {
-	  get_dlist_info(&unseen_q[n_unseen],*k_ptr);
+	else if (k_ptr->question->nseen == 0) {
+	  get_dlist_info(&unseen_q[n_unseen],k_ptr);
 	  n_unseen++;
 	  if (n_unseen == mx_unseen) {
 	    mx_unseen *= 2;
@@ -254,9 +254,9 @@ dump_list()
 	    }
 	  }
 	}
-	else if ((*k_ptr)->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED |
+	else if (k_ptr->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED |
 				DONE | CANCEL)) {
-	  get_dlist_info(&pending_q[n_pending],*k_ptr);
+	  get_dlist_info(&pending_q[n_pending],k_ptr);
 	  n_pending++;
 	  if (n_pending == mx_pending) {
 	    mx_pending *= 2;
@@ -267,8 +267,8 @@ dump_list()
 	    }
 	  }
 	}
-	else if ((*k_ptr)->status & PICKUP) {
-	  get_dlist_info(&pickup_q[n_pickup],*k_ptr);
+	else if (k_ptr->status & PICKUP) {
+	  get_dlist_info(&pickup_q[n_pickup],k_ptr);
 	  n_pickup++;
 	  if (n_pickup == mx_pickup) {
 	    mx_pickup *= 2;
@@ -280,7 +280,7 @@ dump_list()
 	  }
 	}
 	else {
-	  get_dlist_info(&refer_q[n_refer],*k_ptr);
+	  get_dlist_info(&refer_q[n_refer],k_ptr);
 	  n_refer++;
 	  if (n_refer == mx_refer) {
 	    mx_refer *= 2;
