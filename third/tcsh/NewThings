@@ -1,6 +1,46 @@
 This file contains visible (incompatible) changes to the users.
 This version of tcsh has the following new things:
 
+6.08
+* %$variables are now expanded in the prompt.
+* print_by_columns prints in a single column if the output is not a tty.
+* REMOTEHOST contains only the IP address, not the host name of the machine.
+* names in .cshdirs are quoted.
+* exit value from 0..255 not -128..127 as posix mandates.
+
+6.07
+* Implicit cd when the variable implicitcd is set or set to verbose
+
+6.06
+* NLS Message Catalog support.
+
+6.05
+* The bind, aliases, linedit builtins are not used anymore; they are
+  #ifdef'ed OBSOLETE and will be really removed in the next version
+* new filetest builtin
+* new hup builtin
+* =x obeys nonomatch
+* tcsh.man2html nroff to HTML converter for the tcsh manpage
+* prompt is now %# by default.
+* $REMOTEHOST contains the name of the remote host (optional)
+* $HOSTTYPE is going away. New variables $OSTYPE, $MACHTYPE, $VENDOR similar
+  to the gnu ones.
+* $< can be interrupted and takes modifiers. Does not quote args by default
+  like csh.
+
+6.04
+* Variable modifiers do not stop processing after the first one fails
+     > set i=aabbcc
+     > echo $i:s/a/A/:s/b/B/
+     AaBbcc
+     > echo $i:s/x/A/:s/b/B/
+     aabbcc
+* set -r makes variables readonly
+* set nonomatch, echo ~notaser returns ~notauser instead of an error
+* file operators: Changed -s == !-z and -S == socket
+* $?0 returns false now on interactive shells for csh compatibility.
+* %p%P include seconds in prompt strings.
+
 6.03
 * $%var contains the number of characters in $var.
 * Shell -w -x are now POSIX compliant on POSIX machines.

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.inputl.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.inputl.c,v 1.1.1.2 1998-10-03 21:09:46 danw Exp $ */
 /*
  * ed.inputl.c: Input line handling.
  */
@@ -36,15 +36,13 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.inputl.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $")
+RCSID("$Id: ed.inputl.c,v 1.1.1.2 1998-10-03 21:09:46 danw Exp $")
 
 #include "ed.h"
 #include "ed.defns.h"		/* for the function names */
 #include "tw.h"			/* for twenex stuff */
 
 #define OKCMD (INBUFSIZE+INBUFSIZE)
-extern CCRETVAL e_up_hist();
-extern CCRETVAL e_expand_history();
 
 /* ed.inputl -- routines to get a single line from the input. */
 
@@ -53,12 +51,33 @@ extern bool MapsAreInited;
 extern bool Tty_raw_mode;
 
 /* mismatched first character */
-static Char mismatch[] = {'!', '\\', '^', '-', '%', '\0'};
+static Char mismatch[] = 
+    {'!', '^' , '\\', '-', '%', '\0', '"', '\'', '`', '\0' };
 
+static	int	Repair		__P((void));
 static	int	GetNextCommand	__P((KEYCMD *, Char *));
 static	int	SpellLine	__P((int));
+static	int	CompleteLine	__P((void));
 static	void	RunCommand	__P((Char *));
-static void 	doeval1		__P((Char **));
+static  void 	doeval1		__P((Char **));
+
+static bool rotate = 0;
+
+
+static int
+Repair()
+{
+    if (NeedsRedraw) {
+	ClearLines();
+	ClearDisp();
+	NeedsRedraw = 0;
+    }
+    Refresh();
+    Argument = 1;
+    DoingArg = 0;
+    curchoice = -1;
+    return LastChar - InputBuf;
+}
 
 /* CCRETVAL */
 int
@@ -71,7 +90,7 @@ Inputl()
     Char    ch;
     int     num;		/* how many chars we have read at NL */
     int	    expnum;
-    struct varent *crct = adrof(STRcorrect);
+    struct varent *crct = inheredoc ? NULL : adrof(STRcorrect);
     struct varent *autol = adrof(STRautolist);
     struct varent *matchbeep = adrof(STRmatchbeep);
     struct varent *imode = adrof(STRinputmode);
@@ -79,6 +98,9 @@ Inputl()
     Char    Origin[INBUFSIZE], Change[INBUFSIZE];
     int     matchval;		/* from tenematch() */
     COMMAND fn;
+    int curlen = 0;
+    int newlen;
+    int idx;
 
     if (!MapsAreInited)		/* double extra just in case */
 	ed_InitMaps();
@@ -97,7 +119,15 @@ Inputl()
 
 #if defined(FIONREAD) && !defined(OREO)
     if (!Tty_raw_mode && MacroLvl < 0) {
-	long    chrs = 0;
+# ifdef SUNOS4
+	long chrs = 0;
+# else /* !SUNOS4 */
+	/* 
+	 * *Everyone* else has an int, but SunOS wants long!
+	 * This breaks where int != long (alpha)
+	 */
+	int chrs = 0;
+# endif /* SUNOS4 */
 
 	(void) ioctl(SHIN, FIONREAD, (ioctl_t) & chrs);
 	if (chrs == 0) {
@@ -148,7 +178,7 @@ Inputl()
 
 	if (cmdnum >= NumFuns) {/* BUG CHECK command */
 #ifdef DEBUG_EDIT
-	    xprintf("ERROR: illegal command from key 0%o\r\n", ch);
+	    xprintf(CGETS(6, 1, "ERROR: illegal command from key 0%o\r\n"), ch);
 #endif
 	    continue;		/* try again */
 	}
@@ -158,6 +188,9 @@ Inputl()
 
 	/* save the last command here */
 	LastCmd = cmdnum;
+
+	/* make sure fn is initialized */
+	fn = (retval == CC_COMPLETE_ALL) ? LIST_ALL : LIST;
 
 	/* use any return value */
 	switch (retval) {
@@ -171,9 +204,13 @@ Inputl()
 	    /*FALLTHROUGH*/
 	case CC_ARGHACK:	/* Suggested by Rich Salz */
 	    /* <rsalz@pineapple.bbn.com> */
+	    curchoice = -1;
+	    curlen = LastChar - InputBuf;
 	    break;		/* keep going... */
 
 	case CC_EOF:		/* end of file typed */
+	    curchoice = -1;
+	    curlen = LastChar - InputBuf;
 	    num = 0;
 	    break;
 
@@ -189,87 +226,167 @@ Inputl()
 	    break;
 
 	case CC_NEWLINE:	/* normal end of line */
+	    curlen = 0;
+	    curchoice = -1;
+	    matchval = 1;
 	    if (crct && (!Strcmp(*(crct->vec), STRcmd) ||
 			 !Strcmp(*(crct->vec), STRall))) {
+                PastBottom();
 		copyn(Origin, InputBuf, INBUFSIZE);
 		SaveChar = LastChar;
 		if (SpellLine(!Strcmp(*(crct->vec), STRcmd)) == 1) {
+                    PastBottom();
 		    copyn(Change, InputBuf, INBUFSIZE);
 		    *Strchr(Change, '\n') = '\0';
 		    CorrChar = LastChar;	/* Save the corrected end */
 		    LastChar = InputBuf;	/* Null the current line */
-		    Beep();
+		    SoundBeep();
 		    printprompt(2, short2str(Change));
 		    Refresh();
-		    (void) read(SHIN, (char *) &tch, 1);
+		    if (read(SHIN, (char *) &tch, 1) < 0)
+#ifdef convex
+		        /*
+			 * need to print error message in case file
+			 * is migrated
+			 */
+                        if (errno && errno != EINTR)
+                            stderror(ERR_SYSTEM, progname, strerror(errno));
+#else
+			break;
+#endif
 		    ch = tch;
 		    if (ch == 'y' || ch == ' ') {
 			LastChar = CorrChar;	/* Restore the corrected end */
-			xprintf("yes\n");
+			xprintf(CGETS(6, 2, "yes\n"));
 		    }
 		    else {
 			copyn(InputBuf, Origin, INBUFSIZE);
 			LastChar = SaveChar;
 			if (ch == 'e') {
-			    xprintf("edit\n");
+			    xprintf(CGETS(6, 3, "edit\n"));
 			    *LastChar-- = '\0';
 			    Cursor = LastChar;
 			    printprompt(3, NULL);
+			    ClearLines();
+			    ClearDisp();
 			    Refresh();
 			    break;
 			}
 			else if (ch == 'a') {
-			    xprintf("abort\n");
-			    *LastChar = '\0';
+			    xprintf(CGETS(6, 4, "abort\n"));
+		            LastChar = InputBuf;   /* Null the current line */
 			    Cursor = LastChar;
 			    printprompt(0, NULL);
 			    Refresh();
 			    break;
 			}
-			xprintf("no\n");
+			xprintf(CGETS(6, 5, "no\n"));
 		    }
 		    flush();
 		}
-	    }			/* end CORRECT code */
-	    tellwhat = 0;	/* just in case */
-	    Hist_num = 0;	/* for the history commands */
-	    num = LastChar - InputBuf;	/* return the number of chars read */
-	    /*
-	     * For continuation lines, we set the prompt to prompt 2
-	     */
-	    printprompt(1, NULL);
+	    } else if (crct && !Strcmp(*(crct->vec), STRcomplete)) {
+                if (LastChar > InputBuf && LastChar[-1] == '\n') {
+                    LastChar[-1] = '\0';
+                    LastChar--;
+                    Cursor = LastChar;
+                }
+                match_unique_match = 1;  /* match unique matches */
+		matchval = CompleteLine();
+                match_unique_match = 0;
+        	curlen = LastChar - InputBuf;
+		if (matchval != 1) {
+                    PastBottom();
+		}
+		if (matchval == 0) {
+		    xprintf(CGETS(6, 6, "No matching command\n"));
+		} else if (matchval == 2) {
+		    xprintf(CGETS(6, 7, "Ambiguous command\n"));
+		}
+	        if (NeedsRedraw) {
+		    ClearLines();
+		    ClearDisp();
+		    NeedsRedraw = 0;
+	        }
+	        Refresh();
+	        Argument = 1;
+	        DoingArg = 0;
+		if (matchval == 1) {
+                    PastBottom();
+                    *LastChar++ = '\n';
+                    *LastChar = '\0';
+		}
+        	curlen = LastChar - InputBuf;
+            }
+	    else
+		PastBottom();
+
+	    if (matchval == 1) {
+	        tellwhat = 0;	/* just in case */
+	        Hist_num = 0;	/* for the history commands */
+		/* return the number of chars read */
+	        num = LastChar - InputBuf;
+	        /*
+	         * For continuation lines, we set the prompt to prompt 2
+	         */
+	        printprompt(1, NULL);
+	    }
 	    break;
 
 	case CC_CORRECT:
 	    if (tenematch(InputBuf, Cursor - InputBuf, SPELL) < 0)
-		Beep();		/* Beep = No match/ambiguous */
-	    if (NeedsRedraw) {
-		ClearLines();
-		ClearDisp();
-		NeedsRedraw = 0;
-	    }
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();		/* Beep = No match/ambiguous */
+	    curlen = Repair();
 	    break;
 
 	case CC_CORRECT_L:
 	    if (SpellLine(FALSE) < 0)
-		Beep();		/* Beep = No match/ambiguous */
-	    if (NeedsRedraw) {
-		ClearLines();
-		ClearDisp();
-		NeedsRedraw = 0;
-	    }
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();		/* Beep = No match/ambiguous */
+	    curlen = Repair();
 	    break;
 
 
 	case CC_COMPLETE:
 	case CC_COMPLETE_ALL:
-	    fn = (retval == CC_COMPLETE_ALL) ? RECOGNIZE_ALL : RECOGNIZE;
+	case CC_COMPLETE_FWD:
+	case CC_COMPLETE_BACK:
+	    switch (retval) {
+	    case CC_COMPLETE:
+		fn = RECOGNIZE;
+		curlen = LastChar - InputBuf;
+		curchoice = -1;
+		rotate = 0;
+		break;
+	    case CC_COMPLETE_ALL:
+		fn = RECOGNIZE_ALL;
+		curlen = LastChar - InputBuf;
+		curchoice = -1;
+		rotate = 0;
+		break;
+	    case CC_COMPLETE_FWD:
+		fn = RECOGNIZE_SCROLL;
+		curchoice++;
+		rotate = 1;
+		break;
+	    case CC_COMPLETE_BACK:
+		fn = RECOGNIZE_SCROLL;
+		curchoice--;
+		rotate = 1;
+		break;
+	    default:
+		abort();
+	    }
+	    if (InputBuf[curlen] && rotate) {
+		newlen = LastChar - InputBuf;
+		for (idx = (Cursor - InputBuf); 
+		     idx <= newlen; idx++)
+			InputBuf[idx - newlen + curlen] =
+			InputBuf[idx];
+		LastChar = InputBuf + curlen;
+		Cursor = Cursor - newlen + curlen;
+	    }
+	    curlen = LastChar - InputBuf;
+
+
 	    if (adrof(STRautoexpand))
 		(void) e_expand_history(0);
 	    /*
@@ -282,30 +399,31 @@ Inputl()
 	    case 1:
 		if (non_unique_match && matchbeep &&
 		    (Strcmp(*(matchbeep->vec), STRnotunique) == 0))
-		    Beep();
+		    SoundBeep();
 		break;
 	    case 0:
 		if (matchbeep) {
 		    if (Strcmp(*(matchbeep->vec), STRnomatch) == 0 ||
 			Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
 			Strcmp(*(matchbeep->vec), STRnotunique) == 0)
-			Beep();
+			SoundBeep();
 		}
 		else
-		    Beep();
+		    SoundBeep();
 		break;
 	    default:
 		if (matchval < 0) {	/* Error from tenematch */
-		    Beep();
+		    curchoice = -1;
+		    SoundBeep();
 		    break;
 		}
 		if (matchbeep) {
 		    if ((Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
 			 Strcmp(*(matchbeep->vec), STRnotunique) == 0))
-			Beep();
+			SoundBeep();
 		}
 		else
-		    Beep();
+		    SoundBeep();
 		/*
 		 * Addition by David C Lawrence <tale@pawl.rpi.edu>: If an 
 		 * attempted completion is ambiguous, list the choices.  
@@ -333,10 +451,23 @@ Inputl()
 
 	case CC_LIST_CHOICES:
 	case CC_LIST_ALL:
+	    if (InputBuf[curlen] && rotate) {
+		newlen = LastChar - InputBuf;
+		for (idx = (Cursor - InputBuf); 
+		     idx <= newlen; idx++)
+			InputBuf[idx - newlen + curlen] =
+			InputBuf[idx];
+		LastChar = InputBuf + curlen;
+		Cursor = Cursor - newlen + curlen;
+	    }
+	    curlen = LastChar - InputBuf;
+	    if (curchoice >= 0)
+		curchoice--;
+
 	    fn = (retval == CC_LIST_ALL) ? LIST_ALL : LIST;
 	    /* should catch ^C here... */
 	    if (tenematch(InputBuf, Cursor - InputBuf, fn) < 0)
-		Beep();
+		SoundBeep();
 	    Refresh();
 	    Argument = 1;
 	    DoingArg = 0;
@@ -345,49 +476,32 @@ Inputl()
 
 	case CC_LIST_GLOB:
 	    if (tenematch(InputBuf, Cursor - InputBuf, GLOB) < 0)
-		Beep();
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();
+	    curlen = Repair();
 	    break;
 
 	case CC_EXPAND_GLOB:
 	    if (tenematch(InputBuf, Cursor - InputBuf, GLOB_EXPAND) <= 0)
-		Beep();		/* Beep = No match */
-	    if (NeedsRedraw) {
-		ClearLines();
-		ClearDisp();
-		NeedsRedraw = 0;
-	    }
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();		/* Beep = No match */
+	    curlen = Repair();
 	    break;
 
 	case CC_NORMALIZE_PATH:
 	    if (tenematch(InputBuf, Cursor - InputBuf, PATH_NORMALIZE) <= 0)
-		Beep();		/* Beep = No match */
-	    if (NeedsRedraw) {
-		ClearLines();
-		ClearDisp();
-		NeedsRedraw = 0;
-	    }
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();		/* Beep = No match */
+	    curlen = Repair();
 	    break;
 
 	case CC_EXPAND_VARS:
 	    if (tenematch(InputBuf, Cursor - InputBuf, VARS_EXPAND) <= 0)
-		Beep();		/* Beep = No match */
-	    if (NeedsRedraw) {
-		ClearLines();
-		ClearDisp();
-		NeedsRedraw = 0;
-	    }
-	    Refresh();
-	    Argument = 1;
-	    DoingArg = 0;
+		SoundBeep();		/* Beep = No match */
+	    curlen = Repair();
+	    break;
+
+	case CC_NORMALIZE_COMMAND:
+	    if (tenematch(InputBuf, Cursor - InputBuf, COMMAND_NORMALIZE) <= 0)
+		SoundBeep();		/* Beep = No match */
+	    curlen = Repair();
 	    break;
 
 	case CC_HELPME:
@@ -397,11 +511,13 @@ Inputl()
 	    Refresh();
 	    Argument = 1;
 	    DoingArg = 0;
+	    curchoice = -1;
+	    curlen = LastChar - InputBuf;
 	    break;
 
 	case CC_FATAL:		/* fatal error, reset to known state */
 #ifdef DEBUG_EDIT
-	    xprintf("*** editor fatal ERROR ***\r\n\n");
+	    xprintf(CGETS(7, 8, "*** editor fatal ERROR ***\r\n\n"));
 #endif				/* DEBUG_EDIT */
 	    /* put (real) cursor in a known place */
 	    ClearDisp();	/* reset the display stuff */
@@ -409,14 +525,18 @@ Inputl()
 	    Refresh();		/* print the prompt again */
 	    Argument = 1;
 	    DoingArg = 0;
+	    curchoice = -1;
+	    curlen = LastChar - InputBuf;
 	    break;
 
 	case CC_ERROR:
 	default:		/* functions we don't know about */
 	    DoingArg = 0;
 	    Argument = 1;
-	    Beep();
+	    SoundBeep();
 	    flush();
+	    curchoice = -1;
+	    curlen = LastChar - InputBuf;
 	    break;
 	}
     }
@@ -435,7 +555,7 @@ PushMacro(str)
 	KeyMacro[MacroLvl] = str;
     }
     else {
-	Beep();
+	SoundBeep();
 	flush();
     }
 }
@@ -552,18 +672,27 @@ GetNextCommand(cmdnum, ch)
 	    MetaNext = 0;
 	    *ch |= META;
 	}
-	cmd = CurrentKeyMap[(unsigned char) *ch];
+	/* XXX: This needs to be fixed so that we don't just truncate
+	 * the character, we unquote it.
+	 */
+	if (*ch < NT_NUM_KEYS)
+	    cmd = CurrentKeyMap[*ch];
+	else
+	    cmd = CurrentKeyMap[(unsigned char) *ch];
 	if (cmd == F_XKEY) {
 	    XmapVal val;
-	    switch (GetXkey(ch, &val)) {
+	    CStr cstr;
+	    cstr.buf = ch;
+	    cstr.len = Strlen(ch);
+	    switch (GetXkey(&cstr, &val)) {
 	    case XK_CMD:
 		cmd = val.cmd;
 		break;
 	    case XK_STR:
-		PushMacro(val.str);
+		PushMacro(val.str.buf);
 		break;
 	    case XK_EXE:
-		RunCommand(val.str);
+		RunCommand(val.str.buf);
 		break;
 	    default:
 		abort();
@@ -604,17 +733,36 @@ GetNextChar(cp)
     if (Rawmode() < 0)		/* make sure the tty is set up correctly */
 	return 0;		/* oops: SHIN was closed */
 
+#ifdef WINNT
+    __nt_want_vcode = 1;
+#endif /* WINNT */
     while ((num_read = read(SHIN, (char *) &tcp, 1)) == -1) {
 	if (errno == EINTR)
 	    continue;
 	if (!tried && fixio(SHIN, errno) != -1)
 	    tried = 1;
 	else {
+#ifdef convex
+            /* need to print error message in case the file is migrated */
+            if (errno != EINTR)
+                stderror(ERR_SYSTEM, progname, strerror(errno));
+#endif  /* convex */
+#ifdef WINNT
+	    __nt_want_vcode = 0;
+#endif /* WINNT */
 	    *cp = '\0';
 	    return -1;
 	}
     }
+#ifdef WINNT
+    if (__nt_want_vcode == 2)
+	*cp = __nt_vcode;
+    else
+	*cp = tcp;
+    __nt_want_vcode = 0;
+#else
     *cp = tcp;
+#endif /* WINNT */
     return num_read;
 }
 
@@ -653,19 +801,29 @@ SpellLine(cmdonly)
 		Cursor--;
 	    endflag = 0;
 	}
+	/* Obey current history character settings */
+	mismatch[0] = HIST;
+	mismatch[1] = HISTSUB;
 	if (!Strchr(mismatch, *argptr) &&
 	    (!cmdonly || starting_a_command(argptr, InputBuf))) {
-	    switch (tenematch(InputBuf, Cursor - InputBuf, SPELL)) {
-	    case 1:		/* corrected */
-		matchval = 1;
-		break;
-	    case -1:		/* couldn't be corrected */
-		if (!matchval)
-		    matchval = -1;
-		break;
-	    default:		/* was correct */
-		break;
-	    }
+#ifdef WINNT
+	    /*
+	     * This hack avoids correcting drive letter changes
+	     */
+	    if((Cursor - InputBuf) != 2 || (char)InputBuf[1] != ':')
+#endif /* WINNT */
+		switch (tenematch(InputBuf, Cursor - InputBuf, SPELL)) {
+		case 1:		/* corrected */
+		    matchval = 1;
+		    break;
+		case -1:		/* couldn't be corrected */
+		    if (!matchval)
+			matchval = -1;
+		    break;
+		default:		/* was correct */
+		    break;
+		}
+
 	    if (LastChar != OldLastChar) {
 		if (argptr < OldCursor)
 		    OldCursor += (LastChar - OldLastChar);
@@ -677,3 +835,55 @@ SpellLine(cmdonly)
     Cursor = OldCursor;
     return matchval;
 }
+
+/*
+ * CompleteLine - do command completion on the entire command line
+ * (which may have trailing newline).
+ * Return value:
+ *  0: No command matched or failure
+ *  1: One command matched
+ *  2: Several commands matched
+ */
+static int
+CompleteLine()
+{
+    int     endflag, tmatch;
+    Char   *argptr, *OldCursor, *OldLastChar;
+
+    OldLastChar = LastChar;
+    OldCursor = Cursor;
+    argptr = InputBuf;
+    endflag = 1;
+    do {
+	while (ismetahash(*argptr) || iscmdmeta(*argptr))
+	    argptr++;
+	for (Cursor = argptr;
+	     *Cursor != '\0' && ((Cursor != argptr && Cursor[-1] == '\\') ||
+				 (!ismetahash(*Cursor) && !iscmdmeta(*Cursor)));
+	     Cursor++)
+	     continue;
+	if (*Cursor == '\0') {
+	    Cursor = LastChar;
+	    if (LastChar[-1] == '\n')
+		Cursor--;
+	    endflag = 0;
+	}
+	if (!Strchr(mismatch, *argptr) && starting_a_command(argptr, InputBuf)) {
+	    tmatch = tenematch(InputBuf, Cursor - InputBuf, RECOGNIZE);
+	    if (tmatch <= 0) {
+                return 0;
+            } else if (tmatch > 1) {
+                return 2;
+	    }
+	    if (LastChar != OldLastChar) {
+		if (argptr < OldCursor)
+		    OldCursor += (LastChar - OldLastChar);
+		OldLastChar = LastChar;
+	    }
+	}
+	argptr = Cursor;
+    } while (endflag);
+    Cursor = OldCursor;
+    return 1;
+}
+

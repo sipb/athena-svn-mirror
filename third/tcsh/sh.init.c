@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.init.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.init.c,v 1.1.1.2 1998-10-03 21:10:03 danw Exp $ */
 /*
  * sh.init.c: Function and signal tables
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.init.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $")
+RCSID("$Id: sh.init.c,v 1.1.1.2 1998-10-03 21:10:03 danw Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -48,819 +48,878 @@ RCSID("$Id: sh.init.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $")
 #define	INF	0x7fffffff
 
 struct	biltins bfunc[] = {
-    { ":",		dozip,		0,	INF, },
-    { "@",		dolet,		0,	INF, },
-    { "alias",		doalias,	0,	INF, },
-    { "aliases",	doaliases,	0,	1, /* PWP */ },
-    { "alloc",		showall,	0,	1, },
-    { "bg",		dobg,		0,	INF, },
-    { "bind",		dobind,		0,	2, },
-    { "bindkey",	dobindkey,	0,	8, },
-    { "break",		dobreak,	0,	0, },
-    { "breaksw",	doswbrk,	0,	0, },
-    { "builtins", dobuiltins,	0,	0, },
-#if defined(IIASA) || defined(KAI)
-    { "bye",		goodbye,	0,	0, },
-#endif
-    { "case",		dozip,		0,	1, },
-    { "cd",		dochngd,	0,	INF, },
-    { "chdir",		dochngd,	0,	INF, },
-    { "complete",	docomplete,	0,	INF, },
-    { "continue",	docontin,	0,	0, },
-    { "default",	dozip,		0,	0, },
-    { "dirs",		dodirs,		0,	INF, },
-    { "echo",		doecho,		0,	INF, },
-    { "echotc",		doechotc,	0,	INF, },
-    { "else",		doelse,		0,	INF, },
-    { "end",		doend,		0,	0, },
-    { "endif",		dozip,		0,	0, },
-    { "endsw",		dozip,		0,	0, },
-    { "eval",		doeval,		0,	INF, },
-    { "exec",		execash,	1,	INF, },
-    { "exit",		doexit,		0,	INF, },
-    { "fg",		dofg,		0,	INF, },
-    { "foreach",	doforeach,	3,	INF, },
+    { ":",		dozip,		0,	INF	},
+    { "@",		dolet,		0,	INF	},
+    { "alias",		doalias,	0,	INF	},
+#ifdef OBSOLETE
+    { "aliases",	doaliases,	0,	1,	},
+#endif /* OBSOLETE */
+    { "alloc",		showall,	0,	1	},
+#if defined(_CX_UX)
+    { "att",		doatt,		0,	INF	},
+#endif /* _CX_UX */
+    { "bg",		dobg,		0,	INF	},
+#ifdef OBSOLETE
+    { "bind",		dobind,		0,	2	},
+#endif /* OBSOLETE */
+    { "bindkey",	dobindkey,	0,	8	},
+    { "break",		dobreak,	0,	0	},
+    { "breaksw",	doswbrk,	0,	0	},
+    { "builtins",	dobuiltins,	0,	0	},
+#ifdef KAI
+    { "bye",		goodbye,	0,	0	},
+#endif /* KAI */
+    { "case",		dozip,		0,	1	},
+    { "cd",		dochngd,	0,	INF	},
+    { "chdir",		dochngd,	0,	INF	},
+    { "complete",	docomplete,	0,	INF	},
+    { "continue",	docontin,	0,	0	},
+    { "default",	dozip,		0,	0	},
+    { "dirs",		dodirs,		0,	INF	},
+#if defined(_CRAY) && !defined(_CRAYMPP)
+    { "dmmode",		dodmmode,	0,	1	},
+#endif /* _CRAY && !_CRAYMPP */
+    { "echo",		doecho,		0,	INF	},
+    { "echotc",		doechotc,	0,	INF	},
+    { "else",		doelse,		0,	INF	},
+    { "end",		doend,		0,	0	},
+    { "endif",		dozip,		0,	0	},
+    { "endsw",		dozip,		0,	0	},
+    { "eval",		doeval,		0,	INF	},
+    { "exec",		execash,	1,	INF	},
+    { "exit",		doexit,		0,	INF	},
+    { "fg",		dofg,		0,	INF	},
+    { "filetest",	dofiletest,	2,	INF	},
+    { "foreach",	doforeach,	3,	INF	},
 #ifdef TCF
-    { "getspath",	dogetspath,	0,	0, },
-    { "getxvers",	 dogetxvers,	0,	0, },
+    { "getspath",	dogetspath,	0,	0	},
+    { "getxvers",	dogetxvers,	0,	0	},
 #endif /* TCF */
-#ifdef IIASA
-    { "gd",		dopushd,	0,	INF, },
-#endif
-    { "glob",		doglob,		0,	INF, },
-    { "goto",		dogoto,		1,	1, },
-#ifdef VFORK
-    { "hashstat",	hashstat,	0,	0, },
-#endif
-    { "history",	dohist,		0,	2, },
-    { "if",		doif,		1,	INF, },
+    { "glob",		doglob,		0,	INF	},
+    { "goto",		dogoto,		1,	1	},
+    { "hashstat",	hashstat,	0,	0	},
+    { "history",	dohist,		0,	2	},
+    { "hup",		dohup,		0,	INF	},
+    { "if",		doif,		1,	INF	},
 #ifdef apollo
-    { "inlib", 		doinlib,	1,	INF, },
-#endif
-    { "jobs",		dojobs,		0,	1, },
-    { "kill",		dokill,		1,	INF, },
+    { "inlib", 		doinlib,	1,	INF	},
+#endif /* apollo */
+    { "jobs",		dojobs,		0,	1	},
+    { "kill",		dokill,		1,	INF	},
 #ifndef HAVENOLIMIT
-    { "limit",		dolimit,	0,	3, },
-#endif /* ! HAVENOLIMIT */
-    { "linedit",	doecho,		0,	INF, },
+    { "limit",		dolimit,	0,	3	},
+#endif /* !HAVENOLIMIT */
+#ifdef OBSOLETE
+    { "linedit",	doecho,		0,	INF	},
+#endif /* OBSOLETE */
 #if !defined(HAVENOUTMP) && !defined(KAI)
-    { "log",		dolog,		0,	0, },
+    { "log",		dolog,		0,	0	},
 #endif /* !HAVENOUTMP && !KAI */
-    { "login",		dologin,	0,	1, },
-    { "logout",		dologout,	0,	0, },
-    { "ls-F",		dolist,		0,	INF, },
+    { "login",		dologin,	0,	1	},
+    { "logout",		dologout,	0,	0	},
+    { "ls-F",		dolist,		0,	INF	},
 #ifdef TCF
-    { "migrate",	domigrate,	1,	INF, },
+    { "migrate",	domigrate,	1,	INF	},
 #endif /* TCF */
 #ifdef NEWGRP
-    { "newgrp",		donewgrp,	1,	2, },
-#endif
-    { "nice",		donice,		0,	INF, },
-    { "nohup",		donohup,	0,	INF, },
-    { "notify",		donotify,	0,	INF, },
-    { "onintr",		doonintr,	0,	2, },
-    { "popd",		dopopd,		0,	INF, },
-    { "pushd",		dopushd,	0,	INF, },
-#ifdef IIASA
-    { "rd",		dopopd,		0,	INF, },
-#endif
-    { "rehash",		dohash,		0,	3, },
-    { "repeat",		dorepeat,	2,	INF, },
+    { "newgrp",		donewgrp,	1,	2	},
+#endif /* NEWGRP */
+    { "nice",		donice,		0,	INF	},
+    { "nohup",		donohup,	0,	INF	},
+    { "notify",		donotify,	0,	INF	},
+    { "onintr",		doonintr,	0,	2	},
+    { "popd",		dopopd,		0,	INF	},
+    { "printenv",	doprintenv,	0,	1	},
+    { "pushd",		dopushd,	0,	INF	},
+    { "rehash",		dohash,		0,	3	},
+    { "repeat",		dorepeat,	2,	INF	},
 #ifdef apollo
-    { "rootnode",	dorootnode,	1,	1, },
-#endif
-    { "sched",		dosched,	0,	INF, },
-    { "set",		doset,		0,	INF, },
-    { "setenv",		dosetenv,	0,	2, },
+    { "rootnode",	dorootnode,	1,	1	},
+#endif /* apollo */
+    { "sched",		dosched,	0,	INF	},
+    { "set",		doset,		0,	INF	},
+    { "setenv",		dosetenv,	0,	2	},
 #ifdef MACH
-    { "setpath",	dosetpath,	0,	INF, },
+    { "setpath",	dosetpath,	0,	INF	},
 #endif	/* MACH */
 #ifdef TCF
-    { "setspath",	dosetspath,	1,	INF, },
+    { "setspath",	dosetspath,	1,	INF	},
 #endif /* TCF */
-    { "settc",		dosettc,	2,	2, },
-    { "setty", 		dosetty,	0,      INF },
+    { "settc",		dosettc,	2,	2	},
+    { "setty", 		dosetty,	0,      INF	},
 #ifdef TCF
-    { "setxvers",	dosetxvers,	0,	1, },
+    { "setxvers",	dosetxvers,	0,	1	},
 #endif /* TCF */
-    { "shift",		shift,		0,	1, },
-    { "source",		dosource,	1,	INF, },
-    { "stop",		dostop,		1,	INF, },
-    { "suspend",	dosuspend,	0,	0, },
-    { "switch",		doswitch,	1,	INF, },
-    { "telltc",		dotelltc,	0,	INF, },
-    { "time",		dotime,		0,	INF, },
-    { "umask",		doumask,	0,	1, },
-    { "unalias",	unalias,	1,	INF, },
-    { "uncomplete",	douncomplete,	1,	INF, },
-    { "unhash",		dounhash,	0,	0, },
-#ifdef masscomp
-    { "universe",	douniverse,	0,	1, },
-#endif
+    { "shift",		shift,		0,	1	},
+    { "source",		dosource,	1,	INF	},
+    { "stop",		dostop,		1,	INF	},
+    { "suspend",	dosuspend,	0,	0	},
+    { "switch",		doswitch,	1,	INF	},
+    { "telltc",		dotelltc,	0,	INF	},
+    { "time",		dotime,		0,	INF	},
+#if defined(_CX_UX)
+    { "ucb",		doucb,		0,	INF	},
+#endif /* _CX_UX */
+    { "umask",		doumask,	0,	1	},
+    { "unalias",	unalias,	1,	INF	},
+    { "uncomplete",	douncomplete,	1,	INF	},
+    { "unhash",		dounhash,	0,	0	},
+#if defined(masscomp) || defined(_CX_UX)
+    { "universe",	douniverse,	0,	INF	},
+#endif /* masscomp || _CX_UX */
 #ifndef HAVENOLIMIT
-    { "unlimit",	dounlimit,	0,	INF, },
+    { "unlimit",	dounlimit,	0,	INF	},
 #endif /* !HAVENOLIMIT */
-    { "unset",		unset,		1,	INF, },
-    { "unsetenv",	dounsetenv,	1,	INF, },
+    { "unset",		unset,		1,	INF	},
+    { "unsetenv",	dounsetenv,	1,	INF	},
 #ifdef apollo
-    { "ver",		dover,		0,	INF, },
-#endif
-    { "wait",		dowait,		0,	0, },
+    { "ver",		dover,		0,	INF	},
+#endif /* apollo */
+    { "wait",		dowait,		0,	0	},
 #ifdef WARP
-    { "warp",		dowarp,		0,	2, },
-#endif
+    { "warp",		dowarp,		0,	2	},
+#endif /* WARP */
 #if !defined(HAVENOUTMP) && defined(KAI)
-    { "watchlog",	dolog,		0,	0, },
+    { "watchlog",	dolog,		0,	0	},
 #endif /* !HAVENOUTMP && KAI */
-    { "where",		dowhere,	1,	INF, },
-    { "which",		dowhich,	1,	INF, },
-    { "while",		dowhile,	1,	INF, },
+    { "where",		dowhere,	1,	INF	},
+    { "which",		dowhich,	1,	INF	},
+    { "while",		dowhile,	1,	INF	}
 };
 int nbfunc = sizeof bfunc / sizeof *bfunc;
 
 struct srch srchn[] = {
-    { "@",		TC_LET, },
-    { "break",		TC_BREAK, },
-    { "breaksw",	TC_BRKSW, },
-    { "case",		TC_CASE, },
-    { "default", 	TC_DEFAULT, },
-    { "else",		TC_ELSE, },
-    { "end",		TC_END, },
-    { "endif",		TC_ENDIF, },
-    { "endsw",		TC_ENDSW, },
-    { "exit",		TC_EXIT, },
-    { "foreach", 	TC_FOREACH, },
-    { "goto",		TC_GOTO, },
-    { "if",		TC_IF, },
-    { "label",		TC_LABEL, },
-    { "set",		TC_SET, },
-    { "switch",		TC_SWITCH, },
-    { "while",		TC_WHILE, },
+    { "@",		TC_LET		},
+    { "break",		TC_BREAK	},
+    { "breaksw",	TC_BRKSW	},
+    { "case",		TC_CASE		},
+    { "default", 	TC_DEFAULT	},
+    { "else",		TC_ELSE		},
+    { "end",		TC_END		},
+    { "endif",		TC_ENDIF	},
+    { "endsw",		TC_ENDSW	},
+    { "exit",		TC_EXIT		},
+    { "foreach", 	TC_FOREACH	},
+    { "goto",		TC_GOTO		},
+    { "if",		TC_IF		},
+    { "label",		TC_LABEL	},
+    { "set",		TC_SET		},
+    { "switch",		TC_SWITCH	},
+    { "while",		TC_WHILE	}
 };
 int nsrchn = sizeof srchn / sizeof *srchn;
 
-#ifdef SUSPENDED
-# define MSG_STOP		"Suspended (signal)"
-# define MSG_TSTP		"Suspended"
-# define MSG_TTIN		"Suspended (tty input)"
-# define MSG_TTOU		"Suspended (tty output)"
-#else /* STOPPED */
-# define MSG_STOP		"Stopped (signal)"
-# define MSG_TSTP		"Stopped"
-# define MSG_TTIN		"Stopped (tty input)"
-# define MSG_TTOU		"Stopped (tty output)"
-#endif /* SUSPENDED */
+
 /*
  * Note: For some machines, (hpux eg.)
  * NSIG = number of signals + 1...
- * so we define 33 signals for 
+ * so we define 33 or 65 (POSIX) signals for 
  * everybody
  */
-struct	mesg mesg[] = {
-/*  0 */	0,		"",
-/*  1 */	"HUP",		"Hangup",
-/*  2 */	"INT",		"Interrupt",	
-/*  3 */	"QUIT",		"Quit",
-/*  4 */	"ILL",		"Illegal instruction",
-/*  5 */	"TRAP",		"Trace/BPT trap",
-#if SYSVREL > 3 || defined(__EMX__) || defined(_VMS_POSIX)
-/*  6 */	"ABRT",		"Abort",
-#else /* SYSVREL < 3 */
-/*  6 */	"IOT",		"IOT trap",
-#endif /* SYSVREL > 3 || __EMX__ || _VMS_POSIX */
-#ifdef aiws
-/*  7 */	"DANGER", 	"System Crash Imminent",
-#else /* !aiws */
-# ifdef linux
-/*  7 */	0,		"Signal 7",
-# else /* !linux */
-#  ifdef _CRAY
-/*  7 */	"ERR",		"Error exit",
-#  else /* !_CRAY */
-/*  7 */	"EMT",		"EMT trap",
-#  endif /* _CRAY */
-# endif /* linux */
-#endif /* aiws */
-/*  8 */	"FPE",		"Floating exception",
-/*  9 */	"KILL",		"Killed",
-#ifdef linux
-/* 10 */	"USR1",		"User signal 1",
-/* 11 */	"SEGV",		"Segmentation fault",
-/* 12 */	"USR2",		"User signal 2",
-#else /* linux */
-# ifndef _CRAY
-/* 10 */	"BUS",		"Bus error",
-/* 11 */	"SEGV",		"Segmentation fault",
-# else /* _CRAY */
-/* 10 */	"PRE",		"Program range error",
-/* 11 */	"ORE",		"Operand range error",
-# endif /* !_CRAY */
-/* 12 */	"SYS",		"Bad system call",
-#endif /* linux */
-/* 13 */	"PIPE",		"Broken pipe",
-/* 14 */	"ALRM",		"Alarm clock",
-/* 15 */	"TERM",		"Terminated",
 
-#if (SYSVREL > 0) || defined(DGUX) || defined(IBMAIX) || defined(apollo) || defined(masscomp) || defined(ardent) || defined(linux)
+/* We define NUMSIG to avoid changing NSIG or MAXSIG */
+#ifdef POSIX
+# define NUMSIG 65
+#else /* !POSIX */
+# define NUMSIG 33
+#endif /* POSIX */
 
-# ifdef _sigextra_
-#  undef  _sigextra_
-# endif /* _sigextra_ */
+int	nsig = NUMSIG - 1;	/* This should be the number of real signals */
+				/* not counting signal 0 */
+struct	mesg mesg[NUMSIG];	/* Arrays start at [0] so we initialize from */
+				/* 0 to 32 or 64, the max real signal number */
 
-# if !defined(IBMAIX) && !defined(cray) && !defined(__EMX__) && !defined(linux)
-/* these are the real svid signals */
-/* 16 */	"USR1",		"User signal 1",
-/* 17 */	"USR2", 	"User signal 2",
-#  ifdef apollo
-/* 18 */	"CLD",		"Death of child",
-/* 19 */	"APOLLO",  	"Apollo-specific fault",
-#  else
-/* 18 */	"CHLD",		"Child exited",
-#  ifdef SOLARIS2
-/* 19 */	"LOST",  	"Resource Lost",
-#  else /* !SOLARIS2 */
-/* 19 */	"PWR",  	"Power failure",
-#  endif /* SOLARIS2 */
-#  endif /* apollo */
-# endif /* !IBMAIX && !cray && !__EMX__ && !linux */
+void
+mesginit()
+{
 
-# ifdef __EMX__
-#  define _sigextra_
-/* 16 */	0,		"Signal 16",
-/* 17 */	0,		"Signal 17",
-/* 18 */	"CLD",		"Child exited",
-/* 19 */	0,		"Signal 19",
-/* 20 */	0,		"Signal 20",
-/* 21 */	"BREAK",	"Break (Ctrl-Break)",
-# endif /* __EMX__ */
+#ifdef NLS_CATALOGS
+    int i;
 
+    for (i = 0; i < NUMSIG; i++) {
+	xfree((ptr_t) mesg[i].pname);
+	mesg[i].pname = NULL;
+    }
+#endif /* NLS_CATALOGS */
 
-# ifdef _CRAYCOM
-#  define _sigextra_
-/* 16 */	"IO",		"Input/output possible signal",
-/* 17 */	"URG",		"Urgent condition on I/O channel",
-/* 18 */	"CHLD",		"Child exited",
-/* 19 */	"PWR",		"Power failure",
-/* 20 */	"MT",		"Multitasking wake-up",
-/* 21 */	"MTKILL",	"Multitasking kill",
-/* 22 */	"BUFIO",	"Fortran asynchronous I/O completion",
-/* 23 */	"RECOVERY",	"Recovery",
-/* 24 */	"UME",		"Uncorrectable memory error",
-/* 25 */	0,		"Signal 25",
-/* 26 */	"CPULIM",	"CPU time limit exceeded",
-/* 27 */	"SHUTDN",	"System shutdown imminent",
-/* 28 */	"NOWAK", 	"micro-tasking group-no wakeup flag set",
-/* 29 */	"THERR",	"Thread error - (use cord -T for detailed info)",
-/* 30 */	0, 		"Signal 30",
-/* 31 */	0, 		"Signal 31",
-/* 32 */	0, 		"Signal 32",
-/* 33 */	0,		"Signal 33",
-/* 34 */	0,		"Signal 34",
-/* 35 */	0,		"Signal 35",
-/* 36 */	0,		"Signal 36",
-/* 37 */	0,		"Signal 37",
-/* 38 */	0,		"Signal 38",
-/* 39 */	0,		"Signal 39",
-/* 40 */	0,		"Signal 40",
-/* 41 */	0,		"Signal 41",
-/* 42 */	0,		"Signal 42",
-/* 43 */	0,		"Signal 43",
-/* 44 */	0,		"Signal 44",
-/* 45 */	0,		"Signal 45",
-/* 46 */	0,		"Signal 46",
-/* 47 */	0,		"Signal 47",
-/* 48 */	0,		"Signal 48",
-/* 49 */	0,		"Signal 49",
-/* 50 */	0,		"Signal 50",
-/* 51 */	0,		"Signal 51",
-/* 52 */	0,		"Signal 52",
-/* 53 */	0,		"Signal 53",
-/* 54 */	0,		"Signal 54",
-/* 55 */	0,		"Signal 55",
-/* 56 */	0,		"Signal 56",
-/* 57 */	0,		"Signal 57",
-/* 58 */	0,		"Signal 58",
-/* 59 */	0,		"Signal 59",
-/* 60 */	0,		"Signal 60",
-/* 61 */	0,		"Signal 61",
-/* 62 */	0,		"Signal 62",
-/* 63 */	0,	    	"Signal 63",
-/* 64 */	0,		"Signal 64",
-# endif /* _CRAYCOM */
+#if defined(SIGNULL) || defined(DECOSF1)
+# ifndef SIGNULL
+#  define SIGNULL 0
+# endif /* !SIGNULL */
+    if (mesg[SIGNULL].pname == NULL) {
+	mesg[SIGNULL].iname = "NULL";
+	mesg[SIGNULL].pname = CSAVS(2, 1, "Null signal");
+    }
+#endif /* SIGNULL || DECOSF1 */
 
-# if defined(cray) && !defined(_CRAYCOM)
-# define _sigextra_
-/* 16 */	"IO",		"Input/output possible signal",
-/* 17 */	"URG",		"Urgent condition on I/O channel",
-/* 18 */	"CHLD",		"Child exited",
-/* 19 */	"PWR",		"Power failure",
-/* 20 */	"MT",		"Multitasking wake-up",
-/* 21 */	"MTKILL",	"Multitasking kill",
-/* 22 */	"BUFIO",	"Fortran asynchronous I/O completion",
-/* 23 */	"RECOVERY",	"Recovery",
-/* 24 */	"UME",		"Uncorrectable memory error",
-/* 25 */	"DLK",		"True deadlock detected",
-/* 26 */	"CPULIM",	"CPU time limit exceeded",
-/* 27 */	"SHUTDN",	"System shutdown imminent",
-/* 28 */	"STOP", 	MSG_STOP,
-/* 29 */	"TSTP", 	MSG_TSTP,
-/* 30 */	"CONT",   	"Continue",
-/* 31 */	"TTIN",		MSG_TTIN,
-/* 32 */	"TTOU",		MSG_TTOU,
-/* 33 */	"WINCH",	"Window size changed",
-/* 34 */	"RPE",		"CRAY Y-MP register parity error",
-/* 35 */	0,		"Signal 35",
-/* 36 */	0,		"Signal 36",
-/* 37 */	0,		"Signal 37",
-/* 38 */	0,		"Signal 38",
-/* 39 */	0,		"Signal 39",
-/* 40 */	0,		"Signal 40",
-/* 41 */	0,		"Signal 41",
-/* 42 */	0,		"Signal 42",
-/* 43 */	0,		"Signal 43",
-/* 44 */	0,		"Signal 44",
-/* 45 */	0,		"Signal 45",
-/* 46 */	0,		"Signal 46",
-/* 47 */	0,		"Signal 47",
-/* 48 */	"INFO",		"Information signal",
-/* 49 */	"USR1",		"User-defined signal 1",
-/* 50 */	"USR2",		"User-defined signal 2",
-/* 51 */	0,		"Signal 51",
-/* 52 */	0,		"Signal 52",
-/* 53 */	0,		"Signal 53",
-/* 54 */	0,		"Signal 54",
-/* 55 */	0,		"Signal 55",
-/* 56 */	0,		"Signal 56",
-/* 57 */	0,		"Signal 57",
-/* 58 */	0,		"Signal 58",
-/* 59 */	0,		"Signal 59",
-/* 60 */	0,		"Signal 60",
-/* 61 */	0,		"Signal 61",
-/* 62 */	0,		"Signal 62",
-/* 63 */	0,	    	"Signal 63",
-/* 64 */	0,		"Signal 64",
-# endif /* cray */
+#ifdef SIGHUP
+    if (mesg[SIGHUP].pname == NULL) {
+	mesg[SIGHUP].iname = "HUP"; 
+	mesg[SIGHUP].pname = CSAVS(2, 2, "Hangup");
+    }
+#endif /* SIGHUP */
+
+#ifdef SIGINT
+    if (mesg[SIGINT].pname == NULL) {
+	mesg[SIGINT].iname = "INT";
+	mesg[SIGINT].pname = CSAVS(2, 3, "Interrupt");
+    }
+#endif /* SIGINT */
+
+#ifdef SIGQUIT
+    if (mesg[SIGQUIT].pname == NULL) {
+	mesg[SIGQUIT].iname = "QUIT";
+	mesg[SIGQUIT].pname = CSAVS(2, 4, "Quit");
+    }
+#endif /* SIGQUIT */
+
+#ifdef SIGILL
+    if (mesg[SIGILL].pname == NULL) {
+	mesg[SIGILL].iname = "ILL";
+	mesg[SIGILL].pname = CSAVS(2, 5, "Illegal instruction");
+    }
+#endif /* SIGILL */
+
+#ifdef SIGTRAP
+    if (mesg[SIGTRAP].pname == NULL) {
+	mesg[SIGTRAP].iname = "TRAP";
+	mesg[SIGTRAP].pname = CSAVS(2, 6, "Trace/BPT trap");
+    }
+#endif /* SIGTRAP */
+
+#ifdef SIGABRT
+    if (mesg[SIGABRT].pname == NULL) {
+	mesg[SIGABRT].iname = "ABRT";
+	mesg[SIGABRT].pname = CSAVS(2, 7, "Abort");
+    }
+#endif /* SIGABRT */
+
+#ifdef SIGIOT
+    if (mesg[SIGIOT].pname == NULL) {
+	mesg[SIGIOT].iname = "IOT";
+	mesg[SIGIOT].pname = CSAVS(2, 8, "IOT trap");
+    }
+#endif /* SIGIOT */
+
+#ifdef SIGDANGER
+    /* aiws */
+    if (mesg[SIGDANGER].pname == NULL) {
+	mesg[SIGDANGER].iname = "DANGER";
+	mesg[SIGDANGER].pname = CSAVS(2, 9, "System Crash Imminent");
+    }
+#endif /* SIGDANGER */
+
+#ifdef SIGERR
+    /* _CRAY */
+    if (mesg[SIGERR].pname == NULL) {
+	mesg[SIGERR].iname = "ERR";
+	mesg[SIGERR].pname = CSAVS(2, 10, "Error exit");
+    }
+#endif /* SIGERR */
+
+#ifdef SIGEMT
+    if (mesg[SIGEMT].pname == NULL) {
+	mesg[SIGEMT].iname = "EMT";
+	mesg[SIGEMT].pname = CSAVS(2, 11, "EMT trap");
+    }
+#endif /* SIGEMT */
+
+#ifdef SIGFPE
+    if (mesg[SIGFPE].pname == NULL) {
+	mesg[SIGFPE].iname = "FPE";
+	mesg[SIGFPE].pname = CSAVS(2, 12, "Floating exception");
+    }
+#endif /* SIGFPE */
+
+#ifdef SIGKILL
+    if (mesg[SIGKILL].pname == NULL) {
+	mesg[SIGKILL].iname = "KILL";
+	mesg[SIGKILL].pname = CSAVS(2, 13, "Killed");
+    }
+#endif /* SIGKILL */
+
+#ifdef SIGUSR1
+    if (mesg[SIGUSR1].pname == NULL) {
+	mesg[SIGUSR1].iname = "USR1";
+	mesg[SIGUSR1].pname = CSAVS(2, 14, "User signal 1");
+    }
+#endif /* SIGUSR1 */
+
+#ifdef SIGUSR2
+    if (mesg[SIGUSR2].pname == NULL) {
+	mesg[SIGUSR2].iname = "USR2";
+	mesg[SIGUSR2].pname = CSAVS(2, 15, "User signal 2");
+    }
+#endif /* SIGUSR2 */
+
+#ifdef SIGSEGV
+    if (mesg[SIGSEGV].pname == NULL) {
+	mesg[SIGSEGV].iname = "SEGV";
+	mesg[SIGSEGV].pname = CSAVS(2, 16, "Segmentation fault");
+    }
+#endif /* SIGSEGV */
+
+#ifdef SIGBUS
+    if (mesg[SIGBUS].pname == NULL) {
+	mesg[SIGBUS].iname = "BUS";
+	mesg[SIGBUS].pname = CSAVS(2, 17, "Bus error");
+    }
+#endif /* SIGBUS */
+
+#ifdef SIGPRE
+    /* _CRAY || IBMAIX */
+    if (mesg[SIGPRE].pname == NULL) {
+	mesg[SIGPRE].iname = "PRE";
+	mesg[SIGPRE].pname = CSAVS(2, 18, "Program range error");
+    }
+#endif /* SIGPRE */
+
+#ifdef SIGORE
+    /* _CRAY */
+    if (mesg[SIGORE].pname == NULL) {
+	mesg[SIGORE].iname = "ORE";
+	mesg[SIGORE].pname = CSAVS(2, 19, "Operand range error");
+    }
+#endif /* SIGORE */
+
+#ifdef SIGSYS
+    if (mesg[SIGSYS].pname == NULL) {
+	mesg[SIGSYS].iname = "SYS";
+	mesg[SIGSYS].pname = CSAVS(2, 20, "Bad system call");
+    }
+#endif /* SIGSYS */
+
+#ifdef SIGPIPE
+    if (mesg[SIGPIPE].pname == NULL) {
+	mesg[SIGPIPE].iname = "PIPE";
+	mesg[SIGPIPE].pname = CSAVS(2, 21, "Broken pipe");
+    }
+#endif /* SIGPIPE */
+
+#ifdef SIGALRM
+    if (mesg[SIGALRM].pname == NULL) {
+	mesg[SIGALRM].iname = "ALRM";
+	mesg[SIGALRM].pname = CSAVS(2, 22, "Alarm clock");
+    }
+#endif /* SIGALRM */
+
+#ifdef SIGTERM
+    if (mesg[SIGTERM].pname == NULL) {
+	mesg[SIGTERM].iname = "TERM";
+	mesg[SIGTERM].pname = CSAVS(2, 23, "Terminated");
+    }
+#endif /* SIGTERM */
+
+/* SIGCLD vs SIGCHLD */
+#if !defined(SIGCHLD) || defined(SOLARIS2) || defined(apollo) || defined(__EMX__)
+    /* If we don't define SIGCHLD, or our OS prefers SIGCLD to SIGCHLD, */
+    /* check for SIGCLD */
+# ifdef SIGCLD
+    if (mesg[SIGCLD].pname == NULL) {
+	mesg[SIGCLD].iname = "CLD";
+#  ifdef BSDJOBS
+	mesg[SIGCLD].pname = CSAVS(2, 24, "Child status change");
+#  else /* !BSDJOBS */
+	mesg[SIGCLD].pname = CSAVS(2, 25, "Death of child");
+#  endif /* BSDJOBS */
+    }
+# endif /* SIGCLD */
+#else /* !(!SIGCHLD || SOLARIS2 || apollo || __EMX__) */
+    /* We probably define SIGCHLD */
+# ifdef SIGCHLD
+    if (mesg[SIGCHLD].pname == NULL) {
+	mesg[SIGCHLD].iname = "CHLD";
+#  ifdef BSDJOBS
+	mesg[SIGCHLD].pname = CSAVS(2, 27, "Child stopped or exited");
+#  else /* !BSDJOBS */
+	mesg[SIGCHLD].pname = CSAVS(2, 28, "Child exited");
+#  endif /* BSDJOBS */
+    }
+# endif /* SIGCHLD */
+#endif /* !SIGCHLD || SOLARIS2 || apollo || __EMX__ */
+
+#ifdef SIGAPOLLO
+    /* apollo */
+    if (mesg[SIGAPOLLO].pname == NULL) {
+	mesg[SIGAPOLLO].iname = "APOLLO";
+	mesg[SIGAPOLLO].pname = CSAVS(2, 26, "Apollo-specific fault");
+    }
+#endif /* SIGAPOLLO */
+
+#ifdef SIGPWR
+    if (mesg[SIGPWR].pname == NULL) {
+	mesg[SIGPWR].iname = "PWR";
+	mesg[SIGPWR].pname = CSAVS(2, 29, "Power failure");
+    }
+#endif /* SIGPWR */
+
+#ifdef SIGLOST
+    if (mesg[SIGLOST].pname == NULL) {
+	mesg[SIGLOST].iname = "LOST";
+	mesg[SIGLOST].pname = CSAVS(2, 30, "Resource Lost");
+    }
+#endif /* SIGLOST */
+
+#ifdef SIGBREAK
+    /* __EMX__ */
+    if (mesg[SIGBREAK].pname == NULL) {
+	mesg[SIGBREAK].iname = "BREAK";
+	mesg[SIGBREAK].pname = CSAVS(2, 31, "Break (Ctrl-Break)");
+    }
+#endif /* SIGBREAK */
+
+#ifdef SIGIO
+# if !defined(SIGPOLL) || SIGPOLL != SIGIO
+    if (mesg[SIGIO].pname == NULL) {
+	mesg[SIGIO].iname = "IO";
+#  ifdef cray
+	mesg[SIGIO].pname = CSAVS(2, 32, "Input/output possible signal");
+#  else /* !cray */
+	mesg[SIGIO].pname = CSAVS(2, 33, "Asynchronous I/O (select)");
+#  endif /* cray */
+    }
+# endif /* !SIGPOLL || SIGPOLL != SIGIO */
+#endif /* SIGIO */
+
+#ifdef SIGURG
+    if (mesg[SIGURG].pname == NULL) {
+	mesg[SIGURG].iname = "URG";
+	mesg[SIGURG].pname = CSAVS(2, 34, "Urgent condition on I/O channel");
+    }
+#endif /* SIGURG */
+
+#ifdef SIGMT
+    /* cray */
+    if (mesg[SIGMT].pname == NULL) {
+	mesg[SIGMT].iname = "MT";
+	mesg[SIGMT].pname = CSAVS(2, 35, "Multitasking wake-up");
+    }
+#endif /* SIGMT */
+
+#ifdef SIGMTKILL
+    /* cray */
+    if (mesg[SIGMTKILL].pname == NULL) {
+	mesg[SIGMTKILL].iname = "MTKILL";
+	mesg[SIGMTKILL].pname = CSAVS(2, 36, "Multitasking kill");
+    }
+#endif /* SIGMTKILL */
+
+#ifdef SIGBUFIO
+    /* _CRAYCOM */
+    if (mesg[SIGBUFIO].pname == NULL) {
+	mesg[SIGBUFIO].iname = "BUFIO";
+	mesg[SIGBUFIO].pname = CSAVS(2, 37,
+				    "Fortran asynchronous I/O completion");
+    }
+#endif /* SIGBUFIO */
+
+#ifdef SIGRECOVERY
+    /* _CRAYCOM */
+    if (mesg[SIGRECOVERY].pname == NULL) {
+	mesg[SIGRECOVERY].iname = "RECOVERY";
+	mesg[SIGRECOVERY].pname = CSAVS(2, 38, "Recovery");
+    }
+#endif /* SIGRECOVERY */
+
+#ifdef SIGUME
+    /* _CRAYCOM */
+    if (mesg[SIGUME].pname == NULL) {
+	mesg[SIGUME].iname = "UME";
+	mesg[SIGUME].pname = CSAVS(2, 39, "Uncorrectable memory error");
+    }
+#endif /* SIGUME */
+
+#ifdef SIGCPULIM
+    /* _CRAYCOM */
+    if (mesg[SIGCPULIM].pname == NULL) {
+	mesg[SIGCPULIM].iname = "CPULIM";
+	mesg[SIGCPULIM].pname = CSAVS(2, 40, "CPU time limit exceeded");
+    }
+#endif /* SIGCPULIM */
+
+#ifdef SIGSHUTDN
+    /* _CRAYCOM */
+    if (mesg[SIGSHUTDN].pname == NULL) {
+	mesg[SIGSHUTDN].iname = "SHUTDN";
+	mesg[SIGSHUTDN].pname = CSAVS(2, 41, "System shutdown imminent");
+    }
+#endif /* SIGSHUTDN */
+
+#ifdef SIGNOWAK
+    /* _CRAYCOM */
+    if (mesg[SIGNOWAK].pname == NULL) {
+	mesg[SIGNOWAK].iname = "NOWAK";
+	mesg[SIGNOWAK].pname = CSAVS(2, 42,
+				    "Micro-tasking group-no wakeup flag set");
+    }
+#endif /* SIGNOWAK */
+
+#ifdef SIGTHERR
+    /* _CRAYCOM */
+    if (mesg[SIGTHERR].pname == NULL) {
+	mesg[SIGTHERR].iname = "THERR";
+	mesg[SIGTHERR].pname = CSAVS(2, 43, 
+			    "Thread error - (use cord -T for detailed info)");
+    }
+#endif /* SIGTHERR */
+
+#ifdef SIGRPE
+    /* cray */
+    if (mesg[SIGRPE].pname == NULL) {
+	mesg[SIGRPE].pname = CSAVS(2, 44, "CRAY Y-MP register parity error");
+	mesg[SIGRPE].iname = "RPE";
+    }
+#endif /* SIGRPE */
+
+#ifdef SIGINFO
+    if (mesg[SIGINFO].pname == NULL) {
+	mesg[SIGINFO].iname = "INFO";
+	mesg[SIGINFO].pname = CSAVS(2, 45, "Information request");
+    }
+#endif /* SIGINFO */
+
+#ifdef SIGSTOP
+    if (mesg[SIGSTOP].pname == NULL) {
+	mesg[SIGSTOP].iname = "STOP";
+# ifdef SUSPENDED
+	mesg[SIGSTOP].pname = CSAVS(2, 46, "Suspended (signal)");
+# else /* !SUSPENDED */
+	mesg[SIGSTOP].pname = CSAVS(2, 47, "Stopped (signal)");
+# endif /* SUSPENDED */
+    }
+#endif /* SIGSTOP */
+
+#ifdef SIGTSTP
+    if (mesg[SIGTSTP].pname == NULL) {
+	mesg[SIGTSTP].iname = "TSTP";
+# ifdef SUSPENDED
+	mesg[SIGTSTP].pname = CSAVS(2, 48, "Suspended");
+# else /* !SUSPENDED */
+	mesg[SIGTSTP].pname = CSAVS(2, 49, "Stopped");
+# endif /* SUSPENDED */
+    }
+#endif /* SIGTSTP */
+
+#ifdef SIGCONT
+    if (mesg[SIGCONT].pname == NULL) {
+	mesg[SIGCONT].iname = "CONT";
+	mesg[SIGCONT].pname = CSAVS(2, 50, "Continued");
+    }
+#endif /* SIGCONT */
+
+#ifdef SIGTTIN
+    if (mesg[SIGTTIN].pname == NULL) {
+	mesg[SIGTTIN].iname = "TTIN";
+# ifdef SUSPENDED
+	mesg[SIGTTIN].pname = CSAVS(2, 51, "Suspended (tty input)");
+# else /* !SUSPENDED */
+	mesg[SIGTTIN].pname = CSAVS(2, 52, "Stopped (tty input)");
+# endif /* SUSPENDED */
+    }
+#endif /* SIGTTIN */
+
+#ifdef SIGTTOU
+    if (mesg[SIGTTOU].pname == NULL) {
+	mesg[SIGTTOU].iname = "TTOU";
+# ifdef SUSPENDED
+	mesg[SIGTTOU].pname = CSAVS(2, 53, "Suspended (tty output)");
+# else /* SUSPENDED */
+	mesg[SIGTTOU].pname = CSAVS(2, 54, "Stopped (tty output)");
+# endif /* SUSPENDED */
+    }
+#endif /* SIGTTOU */
+
+#ifdef SIGWIND
+    /* UNIXPC */
+    if (mesg[SIGWIND].pname == NULL) {
+	mesg[SIGWIND].iname = "WIND";
+	mesg[SIGWIND].pname = CSAVS(2, 55, "Window status changed");
+    }
+#endif /* SIGWIND */
+
+#ifdef SIGWINDOW
+    if (mesg[SIGWINDOW].pname == NULL) {
+	mesg[SIGWINDOW].iname = "WINDOW";
+	mesg[SIGWINDOW].pname = CSAVS(2, 56, "Window size changed");
+    }
+#endif /* SIGWINDOW */
+
+#ifdef SIGWINCH
+    if (mesg[SIGWINCH].pname == NULL) {
+	mesg[SIGWINCH].iname = "WINCH";
+	mesg[SIGWINCH].pname = CSAVS(2, 56, "Window size changed");
+    }
+#endif /* SIGWINCH */
+
+#ifdef SIGPHONE
+    /* UNIXPC */
+    if (mesg[SIGPHONE].pname == NULL) {
+	mesg[SIGPHONE].iname = "PHONE";
+	mesg[SIGPHONE].pname = CSAVS(2, 57, "Phone status changed");
+    }
+# endif /* SIGPHONE */
+
+#ifdef SIGXCPU
+    if (mesg[SIGXCPU].pname == NULL) {
+	mesg[SIGXCPU].iname = "XCPU";
+	mesg[SIGXCPU].pname = CSAVS(2, 58, "Cputime limit exceeded");
+    }
+#endif /* SIGXCPU */
+
+#ifdef SIGXFSZ
+    if (mesg[SIGXFSZ].pname == NULL) {
+	mesg[SIGXFSZ].iname = "XFSZ";
+	mesg[SIGXFSZ].pname = CSAVS(2, 59, "Filesize limit exceeded");
+    }
+#endif /* SIGXFSZ */
+
+#ifdef SIGVTALRM
+    if (mesg[SIGVTALRM].pname == NULL) {
+	mesg[SIGVTALRM].iname = "VTALRM";
+	mesg[SIGVTALRM].pname = CSAVS(2, 60, "Virtual time alarm");
+    }
+#endif /* SIGVTALRM */
+
+#ifdef SIGPROF
+    if (mesg[SIGPROF].pname == NULL) {
+	mesg[SIGPROF].iname = "PROF";
+	mesg[SIGPROF].pname = CSAVS(2, 61, "Profiling time alarm");
+    }
+#endif /* SIGPROF */
+
+#ifdef SIGDIL
+    /* hpux */
+    if (mesg[SIGDIL].pname == NULL) {
+	mesg[SIGDIL].iname = "DIL";
+	mesg[SIGDIL].pname = CSAVS(2, 62, "DIL signal");
+    }
+#endif /* SIGDIL */
+
+#ifdef SIGPOLL
+    if (mesg[SIGPOLL].pname == NULL) {
+	mesg[SIGPOLL].iname = "POLL";
+	mesg[SIGPOLL].pname = CSAVS(2, 63, "Pollable event occured");
+    }
+#endif /* SIGPOLL */
+
+#ifdef SIGWAITING
+    /* solaris */
+    if (mesg[SIGWAITING].pname == NULL) {
+	mesg[SIGWAITING].iname = "WAITING";
+	mesg[SIGWAITING].pname = CSAVS(2, 64, "Process's lwps are blocked");
+    }
+#endif /* SIGWAITING */
+
+#ifdef SIGLWP
+    /* solaris */
+    if (mesg[SIGLWP].pname == NULL) {
+	mesg[SIGLWP].iname = "LWP";
+	mesg[SIGLWP].pname = CSAVS(2, 65, "Special LWP signal");
+    }
+#endif /* SIGLWP */
+
+#ifdef SIGFREEZE
+    /* solaris */
+    if (mesg[SIGFREEZE].pname == NULL) {
+	mesg[SIGFREEZE].iname = "FREEZE";
+	mesg[SIGFREEZE].pname = CSAVS(2, 66, "Special CPR Signal");
+    }
+#endif /* SIGFREEZE */
+
+#ifdef SIGTHAW
+    /* solaris */
+    if (mesg[SIGTHAW].pname == NULL) {
+	mesg[SIGTHAW].iname = "THAW";
+	mesg[SIGTHAW].pname = CSAVS(2, 67, "Special CPR Signal");
+    }
+#endif /* SIGTHAW */
 
 /*
-**  In the UNIXpc these signal *ARE* used!!
-*/
-# ifdef UNIXPC
-/* 20 */	"WIND",		"Window status changed",
-/* 21 */	"PHONE", 	"Phone status changed",
-# endif /* UNIXPC */
+ * Careful, some OS's (HP/UX 10.0) define these as -1
+ */
+#ifdef SIGRTMIN 
+    /*
+     * Cannot do this at compile time; Solaris2 uses _sysconf for these
+     */
+    if (SIGRTMIN > 0 && SIGRTMIN < NUMSIG) { 
+	if (mesg[SIGRTMIN].pname == NULL) {
+	    mesg[SIGRTMIN].iname = "RTMIN";
+	    mesg[SIGRTMIN].pname = CSAVS(2, 68, "First Realtime Signal");
+	}
 
-# ifdef OREO
-#  define _sigextra_
-/* 20 */	"TSTP",		MSG_TSTP,
-/* 21 */	"TTIN", 	MSG_TTIN,
-/* 22 */	"TTOU", 	MSG_TTOU,
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"XCPU",		"Cputime limit exceeded",
-/* 25 */	"XFSZ", 	"Filesize limit exceeded",
-/* 26 */	"VTALRM", 	"Virtual time alarm",
-/* 27 */	"PROF", 	"Profiling time alarm",
-/* 28 */	"WINCH", 	"Window changed",
-/* 29 */	"CONT",		"Continued",
-/* 30 */	"URG",		"Urgent condition on IO channel",
-/* 31 */	"IO",		"Asynchronous I/O (select)",
-/* 32 */	0,		"Signal 32",
-# endif /* OREO */
+	if (mesg[SIGRTMIN+1].pname == NULL) {
+	    mesg[SIGRTMIN+1].iname = "RTMIN+1";
+	    mesg[SIGRTMIN+1].pname = CSAVS(2, 69, "Second Realtime Signal");
+	}
 
-# ifdef hpux
-#  define _sigextra_
-/* 20 */	"VTALRM", 	"Virtual time alarm",
-/* 21 */	"PROF", 	"Profiling time alarm",
-/* 22 */	"IO", 		"Asynchronous I/O (select)",
-/* 23 */	"WINDOW", 	"Window changed",
-/* 24 */	"STOP",		MSG_STOP,
-/* 25 */	"TSTP",		MSG_TSTP,
-/* 26 */	"CONT",		"Continued",
-/* 27 */	"TTIN", 	MSG_TTIN,
-/* 28 */	"TTOU", 	MSG_TTOU,
-/* 29 */	"URG",		"Urgent condition on IO channel",
-/* 30 */	"LOST",		"Remote lock lost (NFS)",
-/* 31 */	0, 		"Reserved", /* Reserved */
-/* 32 */	"DIL",		"DIL signal",
-# endif /* hpux */
+	if (mesg[SIGRTMIN+2].pname == NULL) {
+	    mesg[SIGRTMIN+2].iname = "RTMIN+2";
+	    mesg[SIGRTMIN+2].pname = CSAVS(2, 70, "Third Realtime Signal");
+	}
 
-# ifdef stellar
-#  define _sigextra_
-/* 20 */	"WINDOW", 	"Window changed",
-/* 21 */	"URG",		"Urgent condition on IO channel",
-/* 22 */	"POLL", 	"Pollable event occured",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"CONT",		"Continued",
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	"IO", 		"Asynchronous I/O (select)",
-/* 29 */	"XCPU",		"Cputime limit exceeded",
-/* 30 */	"XFSZ", 	"Filesize limit exceeded",
-/* 31 */	"VTALRM", 	"Virtual time alarm",
-/* 32 */	"PROF", 	"Profiling time alarm",
-# endif /* stellar */
+	if (mesg[SIGRTMIN+3].pname == NULL) {
+	    mesg[SIGRTMIN+3].iname = "RTMIN+3";
+	    mesg[SIGRTMIN+3].pname = CSAVS(2, 71, "Fourth Realtime Signal");
+	}
+    }
+#endif /* SIGRTMIN */
 
-# ifdef ardent
-#  define _sigextra_
-/* 20 */	"WINDOW", 	"Window changed",
-/* 21 */	"URG",		"Urgent condition on IO channel",
-/* 22 */	"POLL", 	"Pollable event occured",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"TTIN", 	MSG_TTIN,
-/* 26 */	"TTOU", 	MSG_TTOU,
-/* 27 */	"CONT",		"Continued",
-/* 28 */	"XCPU",		"Cputime limit exceeded",
-/* 29 */	"XFSZ", 	"Filesize limit exceeded",
-/* 30 */	"VTALRM", 	"Virtual time alarm",
-/* 31 */	"PROF", 	"Profiling time alarm",
-# endif /* ardent */
+#ifdef SIGRTMAX
+    /*
+     * Cannot do this at compile time; Solaris2 uses _sysconf for these
+     */
+    if (SIGRTMAX > 0 && SIGRTMAX < NUMSIG) { 
+	if (mesg[SIGRTMAX-3].pname == NULL) {
+	    mesg[SIGRTMAX-3].iname = "RTMAX-3";
+	    mesg[SIGRTMAX-3].pname = CSAVS(2, 72,
+					   "Fourth Last Realtime Signal");
+	}
 
-# if SYSVREL > 3
-#  define _sigextra_
-/* 20 */	"WINCH", 	"Window change",
-/* 21 */	"URG", 		"Urgent socket condition",
-/* 22 */	"IO", 		"Socket I/O possible",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"CONT",		"Continued",
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	"VTALRM",	"Virtual timer expired",
-/* 29 */	"PROF",		"Profiling timer expired",
-/* 30 */	"XCPU",		"CPU time limit exceeded",
-/* 31 */	"XFSZ", 	"File size limit exceeded",
-#ifdef SOLARIS2
-/* 32 */	"WAITING",	"Process's lwps are blocked",
-/* 33 */	"LWP",		"Special LWP signal",
-/* 34 */	0,		"Maximum number of signals",
-#else /* !SOLARIS2 */
-/* 32 */	0,		"Maximum number of signals",
-#endif /* SOLARIS2 */
-# endif /* SYSVREL > 3 */
+	if (mesg[SIGRTMAX-2].pname == NULL) {
+	    mesg[SIGRTMAX-2].iname = "RTMAX-2";
+	    mesg[SIGRTMAX-2].pname = CSAVS(2, 73,
+					   "Third Last Realtime Signal");
+	}
 
-# if defined(ISC) && defined(POSIX) 
-#  define _sigextra_
-/* 20 */	"WINCH", 	"Window change",
-/* 21 */	0, 		"Unused", /* SIGPHONE used only for UNIXPC */
-/* 22 */	"POLL", 	"Pollable event occured",
-/* 23 */	"CONT", 	"Continued",
-/* 24 */	"STOP",		MSG_STOP,
-/* 25 */	"TSTP",		MSG_TSTP,
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	0,	  	"number of signals",
-/* 29 */	0,		"Reserved", /* Reserved */
-/* 30 */	0,		"Reserved", /* Reserved */
-/* 31 */	0, 		"Reserved", /* Reserved */
-/* 32 */	0,		"Maximum number of signals",
-# endif /* ISC && POSIX */
+	if (mesg[SIGRTMAX-1].pname == NULL) {
+	    mesg[SIGRTMAX-1].iname = "RTMAX-1";
+	    mesg[SIGRTMAX-1].pname = CSAVS(2, 74,
+					   "Second Last Realtime Signal");
+	}
 
-# if defined(SCO) && defined(POSIX) 
-#  define _sigextra_
-/* 20 */	"WINCH", 	"Window change",
-/* 21 */	0, 		"Unused", /* SIGPHONE used only for UNIXPC */
-/* 22 */	"POLL", 	"Pollable event occured",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"CONT", 	"Continued",
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	0,	  	"number of signals",
-/* 29 */	0,		"Reserved", /* Reserved */
-/* 30 */	0,		"Reserved", /* Reserved */
-/* 31 */	0, 		"Reserved", /* Reserved */
-/* 32 */	0,		"Maximum number of signals",
-# endif /* SCO && POSIX */
+	if (mesg[SIGRTMAX].pname == NULL) {
+	    mesg[SIGRTMAX].iname = "RTMAX";
+	    mesg[SIGRTMAX].pname = CSAVS(2, 75,
+					 "Last Realtime Signal");
+	}
+    }
+#endif /* SIGRTMAX */
 
-# ifdef IRIS4D
-#  define _sigextra_
-/* 20 */	"STOP",		MSG_STOP,
-/* 21 */	"TSTP",		MSG_TSTP,
-/* 22 */	"POLL", 	"Stream I/O pending",
-/* 23 */	"IO", 		"Asynchronous I/O (select)",
-/* 24 */	"URG",		"Urgent condition on IO channel",
-/* 25 */	"WINCH", 	"Window changed",
-/* 26 */	"VTALRM", 	"Virtual time alarm",
-/* 27 */	"PROF", 	"Profiling time alarm",
-/* 28 */	"CONT",		"Continued",
-/* 29 */	"TTIN", 	MSG_TTIN,
-/* 30 */	"TTOU", 	MSG_TTOU,
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-# endif /* IRIS4D */
 
-# ifdef IRIS3D
-#  define _sigextra_
-/* 20 */	0,		"Signal 20",
-/* 21 */	0,		"Signal 21",
-/* 22 */	0,		"Signal 22",
-/* 23 */	0,		"Signal 23",
-/* 24 */	0,		"Signal 24",
-/* 25 */	"WINCH", 	"Window changed",
-/* 26 */	"IO", 		"Asynchronous I/O (select)",
-/* 27 */	"URG",		"Urgent condition on IO channel",
-/* 28 */	"POLL", 	"Stream I/O pending",
-/* 29 */	0,		"Signal 29",
-/* 30 */	0,		"Signal 30",
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-# endif /* IRIS3D */
+#ifdef SIGAIO
+    /* aiws */
+    if (mesg[SIGAIO].pname == NULL) {
+	mesg[SIGAIO].iname = "AIO";
+	mesg[SIGAIO].pname = CSAVS(2, 76, "LAN Asyncronous I/O");
+    }
+#endif /* SIGAIO */
 
-# ifdef apollo
-#  define _sigextra_
-/* 20 */	"STOP",		MSG_STOP,
-/* 21 */	"TSTP",		MSG_TSTP,
-/* 22 */	"CONT",		"Continued",
-/* 23 */	"CHLD",		"Child stopped or exited",
-/* 24 */	"TTIN", 	MSG_TTIN,
-/* 25 */	"TTOU", 	MSG_TTOU,
-/* 26 */	"IO", 		"Asynchronous I/O (select)",
-/* 27 */	"XCPU",		"Cputime limit exceeded",
-/* 28 */	"XFSZ", 	"Filesize limit exceeded",
-/* 29 */	"VTALRM", 	"Virtual time alarm",
-/* 30 */	"PROF", 	"Profiling time alarm",
-/* 31 */	"URG",		"Urgent condition on IO channel",
-/* 32 */	"WINCH", 	"Window changed",
-# endif /* apollo */
+#ifdef SIGPTY
+    /* aiws */
+    if (mesg[SIGPTY].pname == NULL) {
+	mesg[SIGPTY].iname = "PTY";
+	mesg[SIGPTY].pname = CSAVS(2, 77, "PTY read/write availability");
+    }
+#endif /* SIGPTY */
 
-# ifdef masscomp
-#  define _sigextra_
-/* 20 */	"STOP",		MSG_STOP,
-/* 21 */	"TSTP",		MSG_TSTP,
-/* 22 */	"CONT",		"Continued",
-/* 23 */	"TTIN", 	MSG_TTIN,
-/* 24 */	"TTOU", 	MSG_TTOU,
-/* 25 */	"TINT", 	"New input character",
-/* 26 */	"XCPU",		"Cputime limit exceeded",
-/* 27 */	"XFSZ", 	"Filesize limit exceeded",
-/* 28 */	"WINCH", 	"Window changed",
-/* 29 */	"URG",		"Urgent condition on IO channel",
-/* 30 */	"VTALRM", 	"Virtual time alarm",
-/* 31 */	"PROF", 	"Profiling time alarm",
-/* 32 */	"IO", 		"Asynchronous I/O (select)",
-# endif /* masscomp */
+#ifdef SIGIOINT
+    /* aiws */
+    if (mesg[SIGIOINT].pname == NULL) {
+	mesg[SIGIOINT].iname = "IOINT";
+	mesg[SIGIOINT].pname = CSAVS(2, 78, "I/O intervention required");
+    }
+#endif /* SIGIOINT */
 
-# ifdef aiws
-#  define _sigextra_
-/* 20 */	0,		"Signal 20",
-/* 21 */	0,		"Signal 21",
-/* 22 */	0,		"Signal 22",
-/* 23 */	"AIO", 		"LAN Asyncronous I/O",
-/* 24 */	"PTY", 		"PTY read/write availability",
-/* 25 */	"IOINT", 	"I/O intervention required",
-/* 26 */	"GRANT", 	"monitor mode granted",
-/* 27 */	"RETRACT", 	"monitor mode retracted",
-/* 28 */	"WINCH",	"Window size changed",
-/* 29 */	0,		"Signal 29",
-/* 30 */	"SOUND", 	"sound completed",
-/* 31 */	"MSG", 		"input hft data pending",
-/* 32 */	0,		"Signal 32",
-# endif /* aiws */
+#ifdef SIGGRANT
+    /* aiws */
+    if (mesg[SIGGRANT].pname == NULL) {
+	mesg[SIGGRANT].iname = "GRANT";
+	mesg[SIGGRANT].pname = CSAVS(2, 79, "HFT monitor mode granted");
+    }
+#endif /* SIGGRANT */
 
-# if defined(m88k) || defined(__m88k__)	/* Motorola 88100: POSIX/BCS signals */
-#  define _sigextra_
-/* 20 */	"WINCH", 	"Window changed",
-/* 21 */	0,		"Signal 21",
-/* 22 */	"POLL", 	"Stream I/O pending",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"CONT",		"Continued",
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	0,		"Signal 28",
-/* 29 */	0,		"Signal 29",
-/* 30 */	0,		"Signal 30",
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-/* 33 */	"URG",		"Urgent condition on IO channel",
-/* 34 */	"IO", 		"Asynchronous I/O (select)",
-/* 35 */	"XCPU",		"Cputime limit exceeded",
-/* 36 */	"XFSZ", 	"Filesize limit exceeded",
-/* 37 */	"VTALRM", 	"Virtual time alarm",
-/* 38 */	"PROF",		"Profiling time alarm",
-/* 39 */	0,		"Signal 39",
-/* 40 */	"LOST",		"Resource lost",
-/* 41 */	0,		"Signal 41",
-/* 42 */	0,		"Signal 42",
-/* 43 */	0,		"Signal 43",
-/* 44 */	0,		"Signal 44",
-/* 45 */	0,		"Signal 45",
-/* 46 */	0,		"Signal 46",
-/* 47 */	0,		"Signal 47",
-/* 48 */	0,		"Signal 48",
-/* 49 */	0,		"Signal 49",
-/* 50 */	0,		"Signal 50",
-/* 51 */	0,		"Signal 51",
-/* 52 */	0,		"Signal 52",
-/* 53 */	0,		"Signal 53",
-/* 54 */	0,		"Signal 54",
-/* 55 */	0,		"Signal 55",
-/* 56 */	0,		"Signal 56",
-/* 57 */	0,		"Signal 57",
-/* 58 */	0,		"Signal 58",
-/* 59 */	0,		"Signal 59",
-/* 60 */	0,		"Signal 60",
-/* 61 */	0,		"Signal 61",
-/* 62 */	0,		"Signal 62",
-/* 63 */	0,		"Signal 63",
-/* 64 */	0,		"Signal 64",
-# endif /* m88k || __m88k__ */
+#ifdef SIGRETRACT
+    /* aiws */
+    if (mesg[SIGRETRACT].pname == NULL) {
+	mesg[SIGRETRACT].iname = "RETRACT";
+	mesg[SIGRETRACT].pname = CSAVS(2, 80,
+				  "HFT monitor mode should be relinguished");
+    }
+#endif /* SIGRETRACT */
 
-# ifdef IBMAIX
-#  define _sigextra_
-/* 16 */	"URG",		"Urgent condition on IO channel",
-/* 17 */	"STOP",		MSG_STOP,
-/* 18 */	"TSTP",		MSG_TSTP,
-/* 19 */	"CONT",		"Continued",
-/* 20 */	"CHLD",		"Child exited",
-/* 21 */	"TTIN", 	MSG_TTIN,
-/* 22 */	"TTOU", 	MSG_TTOU,
-/* 23 */	"IO",   	"IO possible interrupt",
-/* 24 */	"XCPU",		"Cputime limit exceeded",
-/* 25 */	"XFSZ", 	"Filesize limit exceeded",
-/* 26 */	0,		"Signal 26",
-/* 27 */	"MSG", 		"Data in HFT ring buffer",
-/* 28 */	"WINCH",	"Window size changed",
-/* 29 */	"PWR",		"Power failure",
-/* 30 */	"USR1",		"User signal 1",
-/* 31 */	"USR2", 	"User signal 2",
-/* 32 */	"PROF",		"Profiling time alarm",
-/* 33 */	"DANGER", 	"System Crash Imminent",
-/* 34 */	"VTALRM", 	"Virtual time alarm",
-/* 35 */	"MIGRATE",	"Migrate process",
-/* 36 */	"PRE",	  	"Programming exception",
-/* 37 */	0,		"Signal 37",
-/* 38 */	0,		"Signal 38",
-/* 39 */	0,		"Signal 39",
-/* 40 */	0,		"Signal 40",
-/* 41 */	0,		"Signal 41",
-/* 42 */	0,		"Signal 42",
-/* 43 */	0,		"Signal 43",
-/* 44 */	0,		"Signal 44",
-/* 45 */	0,		"Signal 45",
-/* 46 */	0,		"Signal 46",
-/* 47 */	0,		"Signal 47",
-/* 48 */	0,		"Signal 48",
-/* 49 */	0,		"Signal 49",
-/* 50 */	0,		"Signal 50",
-/* 51 */	0,		"Signal 51",
-/* 52 */	0,		"Signal 52",
-/* 53 */	0,		"Signal 53",
-/* 54 */	0,		"Signal 54",
-/* 55 */	0,		"Signal 55",
-/* 56 */	0,		"Signal 56",
-/* 57 */	0,		"Signal 57",
-/* 58 */	0,		"Signal 58",
-/* 59 */	0,		"Signal 59",
-/* 60 */	"GRANT", 	"HFT monitor mode granted",
-/* 61 */	"RETRACT", 	"HFT monitor mode should be relinguished",
-/* 62 */	"SOUND",	"HFT sound control has completed",
-#  ifdef SIGSAK
-/* 63 */	"SAK",    	"Secure attention key",
-#  else
-/* 63 */	0,	    	"Signal 63",
-#  endif
-/* 64 */	0,		"Signal 64",
-# endif /* IBMAIX */
+#ifdef SIGSOUND
+    /* aiws */
+    if (mesg[SIGSOUND].pname == NULL) {
+	mesg[SIGSOUND].iname = "SOUND";
+	mesg[SIGSOUND].pname = CSAVS(2, 81, "HFT sound control has completed");
+    }
+#endif /* SIGSOUND */
 
-# ifdef _SEQUENT_
-#  define _sigextra_
-/* 20 */	"WINCH", 	"Window changed",
-/* 21 */	0,		"Signal 21",
-/* 22 */	"POLL", 	"Stream I/O pending",
-/* 23 */	"STOP",		MSG_STOP,
-/* 24 */	"TSTP",		MSG_TSTP,
-/* 25 */	"CONT",		"Continued",
-/* 26 */	"TTIN", 	MSG_TTIN,
-/* 27 */	"TTOU", 	MSG_TTOU,
-/* 28 */	0, 		"Signal 28",
-/* 29 */	0,		"Signal 29",
-/* 30 */	0, 		"Signal 30",
-/* 31 */	0, 		"Signal 31",
-/* 32 */	0,		"Signal 32",
-# endif /* _SEQUENT_ */
+#ifdef SIGSMSG
+    /* aiws */
+    if (mesg[SIGSMSG].pname == NULL) {
+	mesg[SIGSMSG].iname = "SMSG";
+	mesg[SIGSMSG].pname = CSAVS(2, 82, "Data in HFT ring buffer");
+    }
+#endif /* SIGMSG */
 
-# ifdef linux
-#  define _sigextra_
-/* 16 */	0,		"Signal 16",
-/* 17 */	"CHLD",		"Child exited",
-/* 18 */	"CONT",		"Continued",
-/* 19 */	"STOP",		MSG_STOP,
-/* 20 */	"TSTP",		MSG_TSTP,
-/* 21 */	"TTIN", 	MSG_TTIN,
-/* 22 */	"TTOU", 	MSG_TTOU,
-/* 23 */	0,   		"Signal 23",
-/* 24 */	0,		"Signal 24",
-/* 25 */	0, 		"Signal 25",
-/* 26 */	0,	 	"Signal 26",
-/* 27 */	0,		"Signal 27",
-/* 28 */	"WINCH", 	"Window changed",
-/* 29 */	0,		"Signal 29",
-/* 30 */	0,		"Signal 30",
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-# endif /* linux */
+#ifdef SIGMIGRATE
+    /* IBMAIX */
+    if (mesg[SIGMIGRATE].pname == NULL) {
+	mesg[SIGMIGRATE].iname = "MIGRATE";
+	mesg[SIGMIGRATE].pname = CSAVS(2, 83, "Migrate process");
+    }
+#endif /* SIGMIGRATE */
 
-# ifndef _sigextra_
-#  ifndef UNIXPC
-/* 20 */	0,		"Signal 20",
-/* 21 */	0,		"Signal 21",
-#  endif /* !UNIXPC */
-/* 22 */	0,		"Signal 22",
-/* 23 */	0,		"Signal 23",
-/* 24 */	0,		"Signal 24",
-/* 25 */	0,		"Signal 25",
-/* 26 */	0,		"Signal 26",
-/* 27 */	0,		"Signal 27",
-/* 28 */	0,		"Signal 28",
-/* 29 */	0,		"Signal 29",
-/* 30 */	0,		"Signal 30",
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-# endif /* _sigextra_ */
+#ifdef SIGSAK
+    /* IBMAIX */
+    if (mesg[SIGSAK].pname == NULL) {
+	mesg[SIGSAK].iname = "SAK";
+	mesg[SIGSAK].pname = CSAVS(2, 84, "Secure attention key");
+    }
+#endif /* SIGSAK */
 
-#else /* bsd */
+#ifdef SIGRESCHED
+    /* CX/UX */
+    if (mesg[SIGRESCHED].pname == NULL) {
+	mesg[SIGRESCHED].iname = "RESCHED";
+	mesg[SIGRESCHED].pname = CSAVS(2, 85, "Reschedule");
+    }
+#endif /* SIGRESCHED */
 
-# ifdef _sigextra_
-#  undef  _sigextra_
-# endif /* _sigextra_ */
+#ifdef SIGDEBUG
+    /* VMS_POSIX */
+    if (mesg[SIGDEBUG].pname == NULL) {
+	mesg[SIGDEBUG].iname = "DEBUG";
+	mesg[SIGDEBUG].pname = CSAVS(2, 86, "Signaling SS$_DEBUG");
+    }
+#endif /* SIGDEBUG */
 
-# ifdef _VMS_POSIX
-#  define _sigextra_
-/* 16 */	0,		"Signal 16",
-/* 17 */	0,		"Signal 17",
-/* 18 */	"USR1",		"User defined signal 1",
-/* 19 */	"USR2",		"User defined signal 2",
-/* 20 */	"CHLD",		"Child exited",
-/* 21 */	"CONT",		"Continued",
-/* 22 */	"STOP",		MSG_STOP,
-/* 23 */	"TSTP",		MSG_TSTP,
-/* 24 */	"TTIN", 	MSG_TTIN,
-/* 25 */	"TTOU", 	MSG_TTOU,
-/* 26 */        "DEBUG",        "Signaling SS$_DEBUG", 
-# else /* BSD */
-/* 16 */	"URG",		"Urgent condition on IO channel",
-/* 17 */	"STOP",		MSG_STOP,
-/* 18 */	"TSTP",		MSG_TSTP,
-/* 19 */	"CONT",		"Continued",
-/* 20 */	"CHLD",		"Child exited",
-/* 21 */	"TTIN", 	MSG_TTIN,
-/* 22 */	"TTOU", 	MSG_TTOU,
-/* 23 */	"IO",   	"IO possible interrupt",
-/* 24 */	"XCPU",		"Cputime limit exceeded",
-/* 25 */	"XFSZ", 	"Filesize limit exceeded",
-/* 26 */	"VTALRM", 	"Virtual time alarm",
-/* 27 */	"PROF",		"Profiling time alarm",
-# endif /* _VMS_POSIX */
+#ifdef SIGPRIO
+    /* Lynx */
+    if (mesg[SIGPRIO].pname == NULL) {
+	mesg[SIGPRIO].iname = "PRIO";
+	mesg[SIGPRIO].pname = CSAVS(2, 87, "Priority changed");
+    }
+#endif /* SIGPRIO */
 
-# ifndef _sigextra_
-#  if defined(RENO) || defined(BSD4_4)
-#   define _sigextra_
-/* 28 */	"WINCH",	"Window size changed",
-/* 29 */	"INFO",		"Information request",
-/* 30 */	"USR1",		"User defined signal 1",
-/* 31 */	"USR2",		"User defined signal 2",
-/* 32 */	0,		"Signal 32",
-#  endif /* RENO || BSD4_4 */
-# endif /* !_sigextra_ */
+#ifdef SIGDLK
+    /* cray */
+    if (mesg[SIGDLK].pname == NULL) {
+	mesg[SIGDLK].iname = "DLK";
+	mesg[SIGDLK].pname = CSAVS(2, 88, "True deadlock detected");
+    }
+#endif /* SIGDLK */
 
-# ifndef _sigextra_
-#  if defined(SUNOS4) || defined(ultrix) || defined(hp9000) || defined(convex)
-#   define _sigextra_
-/* 28 */	"WINCH", 	"Window changed",
-/* 29 */	"LOST",		"Resource lost",
-/* 30 */	"USR1",		"User signal 1",
-/* 31 */	"USR2",		"User signal 2",
-/* 32 */	0,		"Signal 32",
-#  endif /* SUNOS4 || ultrix || hp9000 || convex */
-# endif /* !_sigextra_ */
+#ifdef SIGTINT
+    /* masscomp */
+    if (mesg[SIGTINT].pname == NULL) {
+	mesg[SIGTINT].iname = "TINT";
+	mesg[SIGTINT].pname = CSAVS(2, 89, "New input character");
+    }
+#endif /* SIGTINT */
 
-# ifndef _sigextra_
-#  ifdef pyr
-#   define _sigextra_
-/* 28 */	"USR1",		"User signal 1",
-/* 29 */	"USR2",		"User signal 2",
-/* 30 */	"PWR",		"Power failure",
-/* 31 */	0,		"Signal 31",
-/* 32 */	0,		"Signal 32",
-#  endif /* pyr */
-# endif /* !_sigextra_ */
+#ifdef SIGSTKFLT
+    if (mesg[SIGSTKFLT].pname == NULL) {
+	mesg[SIGSTKFLT].iname = "STKFLT";
+	mesg[SIGSTKFLT].pname = CSAVS(2, 90, "Stack limit exceeded");
+    }
+#endif /* SIGSTKFLT */
 
-# ifndef _sigextra_
-/* 28 */	"WINCH",	"Window size changed",
-/* 29 */	0,		"Signal 29",
-/* 30 */	"USR1",		"User defined signal 1",
-/* 31 */	"USR2",		"User defined signal 2",
-/* 32 */	0,		"Signal 32",
-# endif /* _sigextra_ */
-
-#endif /* (SYSVREL > 0) || DGUX || IBMAIX */
-
-/* These are here for systems with bad NSIG */
-#ifndef POSIX
-/* 33 */	0,		"Signal 33"
-#else /* POSIX */
-/* 65 */	0,		"Signal 65"
-#endif /* POSIX */
-};
+#ifdef SIGUNUSED
+    if (mesg[SIGUNUSED].pname == NULL) {
+	mesg[SIGUNUSED].iname = "UNUSED";
+	mesg[SIGUNUSED].pname = CSAVS(2, 91, "Stack limit exceeded");
+    }
+#endif /* SIGUNUSED */
+}

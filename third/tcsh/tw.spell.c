@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.spell.c,v 1.1.1.1 1996-10-02 06:09:25 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.spell.c,v 1.1.1.2 1998-10-03 21:10:23 danw Exp $ */
 /*
  * tw.spell.c: Spell check words
  */
@@ -36,15 +36,17 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.spell.c,v 1.1.1.1 1996-10-02 06:09:25 ghudson Exp $")
+RCSID("$Id: tw.spell.c,v 1.1.1.2 1998-10-03 21:10:23 danw Exp $")
 
 #include "tw.h"
 
 /* spell_me : return corrrectly spelled filename.  From K&P spname */
 int
-spell_me(oldname, oldsize, looking)
+spell_me(oldname, oldsize, looking, pat, suf)
     Char   *oldname;
     int     oldsize, looking;
+    Char   *pat;
+    int     suf;
 {
     /* The +1 is to fool hp's optimizer */
     Char    guess[FILSIZ + 1], newname[FILSIZ + 1];
@@ -85,7 +87,7 @@ spell_me(oldname, oldsize, looking)
 	/* (*should* say "looking for directory" whenever '/' is next...) */
 	retval = t_search(guess, p, SPELL, FILSIZ,
 			  looking == TW_COMMAND && (foundslash || *old != '/') ?
-			  TW_COMMAND : looking, 1, STRNULL, 0);
+			  TW_COMMAND : looking, 1, pat, suf);
 	if (retval >= 4 || retval < 0)
 	    return -1;		/* hopeless */
 	for (p = ws; (*new = *p++) != '\0'; new++)
@@ -135,28 +137,28 @@ spdist(s, t)
 }
 
 int
-spdir(extended_name, tilded_dir, entry, name)
+spdir(extended_name, tilded_dir, item, name)
     Char   *extended_name;
     Char   *tilded_dir;
-    Char   *entry;
+    Char   *item;
     Char   *name;
 {
     Char    path[MAXPATHLEN + 1];
     Char   *s;
     Char    oldch;
 
-    if (ISDOT(entry) || ISDOTDOT(entry))
+    if (ISDOT(item) || ISDOTDOT(item))
 	return 0;
 
-    for (s = name; *s != 0 && (*s & TRIM) == (*entry & TRIM); s++, entry++)
+    for (s = name; *s != 0 && (*s & TRIM) == (*item & TRIM); s++, item++)
 	continue;
-    if (*s == 0 || s[1] == 0 || *entry != 0)
+    if (*s == 0 || s[1] == 0 || *item != 0)
 	return 0;
 
     (void) Strcpy(path, tilded_dir);
     oldch = *s;
     *s = '/';
-    catn(path, name, sizeof(path) / sizeof(Char));
+    catn(path, name, (int) (sizeof(path) / sizeof(Char)));
     if (access(short2str(path), F_OK) == 0) {
 	(void) Strcpy(extended_name, name);
 	return 1;

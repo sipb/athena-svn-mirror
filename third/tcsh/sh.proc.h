@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.proc.h,v 1.1.1.1 1996-10-02 06:09:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.proc.h,v 1.1.1.2 1998-10-03 21:10:07 danw Exp $ */
 /*
  * sh.proc.h: Process data structures and variables
  */
@@ -53,7 +53,7 @@ struct process {
     struct process *p_friends;	/* next in job list (or self) */
     struct directory *p_cwd;	/* cwd of the job (only in head) */
     unsigned long p_flags;	/* various job status flags */
-    char    p_reason;		/* reason for entering this state */
+    unsigned char p_reason;	/* reason for entering this state */
     int     p_index;		/* shorthand job index */
     pid_t   p_procid;
     pid_t   p_jobid;		/* pid of job leader */
@@ -61,7 +61,7 @@ struct process {
 #ifdef BSDTIMES
     struct timeval p_btime;	/* begin time */
     struct timeval p_etime;	/* end time */
-    struct rusage p_rusage;
+    struct sysrusage p_rusage;
 #else				/* BSDTIMES */
 # ifdef _SEQUENT_
     timeval_t p_btime;		/* begin time */
@@ -105,6 +105,7 @@ struct process {
 #define	PPTIME		(1<<14)	/* time individual process */
 #define	PNEEDNOTE	(1<<15)	/* notify as soon as practical */
 #define PBACKQ		(1<<16)	/* Process is `` evaluation */
+#define PHUP		(1<<17)	/* Process is marked for SIGHUP on exit */
 
 #define	PMAXLEN		80
 
@@ -118,16 +119,16 @@ struct process {
 #define	JOBDIR		0100	/* print job's dir if not the same */
 #define	AREASON		0200
 
-EXTERN struct process proclist;	/* list head of all processes */
-EXTERN bool    pnoprocesses;	/* pchild found nothing to wait for */
+EXTERN struct process proclist IZERO_STRUCT;/* list head of all processes */
+EXTERN bool    pnoprocesses IZERO;	/* pchild found nothing to wait for */
 
-EXTERN struct process *pholdjob;/* one level stack of current jobs */
+EXTERN struct process *pholdjob IZERO;	/* one level stack of current jobs */
 
-EXTERN struct process *pcurrjob;/* current job */
-EXTERN struct process *pcurrent;/* current job in table */
-EXTERN struct process *pprevious;/* previous job in table */
+EXTERN struct process *pcurrjob IZERO;	/* current job */
+EXTERN struct process *pcurrent IZERO;	/* current job in table */
+EXTERN struct process *pprevious IZERO;	/* previous job in table */
 
-EXTERN int   pmaxindex;		/* current maximum job index */
+EXTERN int   pmaxindex IZERO;		/* current maximum job index */
 
 #ifndef BSDTIMES
 EXTERN bool    timesdone;	/* shtimes buffer full ? */

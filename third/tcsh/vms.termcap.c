@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/vms.termcap.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/vms.termcap.c,v 1.1.1.2 1998-10-03 21:10:24 danw Exp $ */
 /*
  *	termcap.c	1.1	20/7/87		agc	Joypace Ltd
  *
@@ -9,8 +9,8 @@
  *	A public domain implementation of the termcap(3) routines.
  */
 #include "sh.h"
-RCSID("$Id: vms.termcap.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
-#ifdef _VMS_POSIX
+RCSID("$Id: vms.termcap.c,v 1.1.1.2 1998-10-03 21:10:24 danw Exp $")
+#if defined(_VMS_POSIX) || defined(_OSD_POSIX)
 /*    efth      1988-Apr-29
 
     - Correct when TERM != name and TERMCAP is defined   [tgetent]
@@ -62,8 +62,9 @@ char	*name;
 	if (termfile == NULL ) termfile = "/etc/termcap";
 
 	if ((fp = fopen(termfile, "r")) == (FILE *) NULL) {
-		fprintf(stderr,"Can't open TERMCAP: [%s]\n", termfile);
-		fprintf(stderr,"Can't open %s.\n",termfile);
+		fprintf(stderr, CGETS(31, 1,
+		        "Can't open TERMCAP: [%s]\n"), termfile);
+		fprintf(stderr, CGETS(31, 2, "Can't open %s.\n"), termfile);
 		sleep(1);
 		return(-1);
 	}
@@ -89,7 +90,7 @@ sscanf to look at aliases.  These are delimited by '|'. */
 		if (strncmp(name, tmp, len) == 0) {
 			fclose(fp);
 #ifdef DEBUG
-	fprintf(stderr,"Found %s in %s.\n", name, termfile);
+	fprintf(stderr, CGETS(31, 3, "Found %s in %s.\n"), name, termfile);
 	sleep(1);
 #endif /* DEBUG */
 			return(1);
@@ -102,7 +103,7 @@ sscanf to look at aliases.  These are delimited by '|'. */
 			if (strncmp(name, tmp, len) == 0) {
 				fclose(fp);
 #ifdef DEBUG
-	fprintf(stderr,"Found %s in %s.\n", name, termfile);
+	fprintf(stderr,CGETS(31, 3, "Found %s in %s.\n"), name, termfile);
 	sleep(1);
 #endif /* DEBUG */
 				return(1);
@@ -112,7 +113,7 @@ sscanf to look at aliases.  These are delimited by '|'. */
 	/* If we get here, then we haven't found a match. */
 	fclose(fp);
 #ifdef DEBUG
-	fprintf(stderr,"No match found for %s in file %s\n",
+	fprintf(stderr,CGETS(31, 4, "No match found for %s in file %s\n"),
 		name, termfile);
 	sleep(1);
 #endif /* DEBUG */
@@ -214,7 +215,7 @@ char	**area;
 				case '\\' :
 					switch(*++cp) {
 					case 'E' :
-						**area = '\033';
+						**area = CTL_ESC('\033');
 						break;
 					case 'n' :
 						**area = '\n';

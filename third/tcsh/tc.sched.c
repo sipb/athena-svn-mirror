@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sched.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sched.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
 /*
  * tc.sched.c: Scheduled command execution
  *
@@ -38,7 +38,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.sched.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
+RCSID("$Id: tc.sched.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $")
 
 #include "ed.h"
 #include "tc.h"
@@ -73,26 +73,30 @@ dosched(v, c)
     Char   *cp;
     bool    relative;		/* time specified as +hh:mm */
     struct tm *ltp;
-    char   *timeline;
 
+    USE(c);
 /* This is a major kludge because of a gcc linker  */
 /* Problem.  It may or may not be needed for you   */
 #ifdef _MINIX
     char kludge[10];
     extern char *sprintf();
-    sprintf(kludge,"kludge");
+    sprintf(kludge, CGETS(24, 1, "kludge"));
 #endif /* _MINIX */
 
     v++;
     cp = *v++;
     if (cp == NULL) {
+	Char   *fmt;
+	if ((fmt = varval(STRsched)) == STRNULL)
+	    fmt = str2short("%h\t%T\t%R\n");
 	/* print list of scheduled events */
 	for (count = 1, tp = sched_ptr; tp; count++, tp = tp->t_next) {
-	    timeline = (char *) ctime(&tp->t_when);
-	    timeline[16] = '\0';
-	    xprintf("%6d\t%s\t", count, timeline);
-	    blkpr(tp->t_lex);
-	    xputchar('\n');
+	    Char buf[BUFSIZE], sbuf[BUFSIZE];
+	    blkexpand(tp->t_lex, buf);
+	    tprintf(FMT_SCHED, sbuf, fmt, sizeof(sbuf), 
+		    short2str(buf), tp->t_when, (ptr_t) &count);
+	    for (cp = sbuf; *cp;)
+		xputchar(*cp++);
 	}
 	return;
     }
@@ -189,8 +193,10 @@ dosched(v, c)
 /*
  * Execute scheduled events
  */
+/*ARGSUSED*/
 void
-sched_run()
+sched_run(n)
+    int n;
 {
     time_t   cur_time;
     register struct sched_event *tp, *tp1;
@@ -198,7 +204,6 @@ sched_run()
     struct command *t;
     Char  **v, *cp;
     extern Char GettingInput;
-
 #ifdef BSDSIGS
     sigmask_t omask;
 
@@ -206,6 +211,8 @@ sched_run()
 #else
     (void) sighold(SIGINT);
 #endif
+
+    USE(n);
 
     (void) time(&cur_time);
     tp = sched_ptr;

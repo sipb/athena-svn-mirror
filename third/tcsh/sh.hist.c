@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.1.1.2 1998-10-03 21:10:02 danw Exp $ */
 /*
  * sh.hist.c: Shell history expansions and substitutions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.hist.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $")
+RCSID("$Id: sh.hist.c,v 1.1.1.2 1998-10-03 21:10:02 danw Exp $")
 
 #include "tc.h"
 
@@ -44,6 +44,7 @@ extern bool histvalid;
 extern Char histline[];
 Char HistLit = 0;
 
+static	bool	heq	__P((struct wordent *, struct wordent *));
 static	void	hfree	__P((struct Hist *));
 static	void	dohist1	__P((struct Hist *, int *, int));
 static	void	phist	__P((struct Hist *, int));
@@ -53,23 +54,26 @@ static	void	phist	__P((struct Hist *, int));
 #define HIST_LOAD	0x04
 #define HIST_REV	0x08
 #define HIST_CLEAR	0x10
+#define HIST_MERGE	0x20
+#define HIST_TIME	0x40
 
 /*
  * C shell
  */
 
 void
-savehist(sp)
+savehist(sp, mflg)
     struct wordent *sp;
+    bool mflg;
 {
     register struct Hist *hp, *np;
     register int histlen = 0;
     Char   *cp;
 
     /* throw away null lines */
-    if (sp->next->word[0] == '\n')
+    if (sp && sp->next->word[0] == '\n')
 	return;
-    cp = value(STRhistory);
+    cp = varval(STRhistory);
     if (*cp) {
 	register Char *p = cp;
 
@@ -86,17 +90,72 @@ savehist(sp)
 	    hp->Hnext = np->Hnext, hfree(np);
 	else
 	    hp = np;
-    (void) enthist(++eventno, sp, 1);
+    if (sp)
+	(void) enthist(++eventno, sp, 1, mflg);
 }
 
+static bool
+heq(a0, b0)
+    struct wordent *a0, *b0;
+{
+    struct wordent *a = a0->next, *b = b0->next;
+
+    for (;;) {
+	if (Strcmp(a->word, b->word) != 0)
+	    return 0;
+	a = a->next;
+	b = b->next;
+	if (a == a0)
+	    return (b == b0) ? 1 : 0;
+	if (b == b0)
+	    return 0;
+    } 
+}
+
+
 struct Hist *
-enthist(event, lp, docopy)
+enthist(event, lp, docopy, mflg)
     int     event;
     register struct wordent *lp;
     bool    docopy;
+    bool    mflg;
 {
     extern time_t Htime;
-    register struct Hist *np = (struct Hist *) xmalloc((size_t) sizeof(*np));
+    struct Hist *p = NULL, *pp = &Histlist;
+    int n, r;
+    register struct Hist *np;
+    Char *dp;
+    
+    if ((dp = varval(STRhistdup)) != STRNULL) {
+	if (eq(dp, STRerase)) {
+	    /* masaoki@akebono.tky.hp.com (Kobayashi Masaoki) */
+	    struct Hist *px;
+	    for (p = pp; (px = p, p = p->Hnext) != NULL;)
+		if (heq(lp, &(p->Hlex))){
+		    px->Hnext = p->Hnext;
+		    n = p->Hnum + 1;
+		    hfree(p);
+		    for (p = px->Hnext; p != NULL; p = p->Hnext)
+			p->Href = n--;
+		    break;
+		}
+	}
+	else if (eq(dp, STRall)) {
+	    for (p = pp; (p = p->Hnext) != NULL;)
+		if (heq(lp, &(p->Hlex))) {
+		    eventno--;
+		    break;
+		}
+	}
+	else if (eq(dp, STRprev)) {
+	    if (pp->Hnext && heq(lp, &(pp->Hnext->Hlex))) {
+		p = pp->Hnext;
+		eventno--;
+	    }
+	}
+    }
+
+    np = p ? p : (struct Hist *) xmalloc((size_t) sizeof(*np));
 
     /* Pick up timestamp set by lex() in Htime if reading saved history */
     if (Htime != (time_t) 0) {
@@ -105,6 +164,9 @@ enthist(event, lp, docopy)
     }
     else
 	(void) time(&(np->Htime));
+
+    if (p == np)
+	return np;
 
     np->Hnum = np->Href = event;
     if (docopy) {
@@ -121,8 +183,30 @@ enthist(event, lp, docopy)
 	lp->prev->next = &np->Hlex;
 	np->histline = NULL;
     }
-    np->Hnext = Histlist.Hnext;
-    Histlist.Hnext = np;
+    if (mflg)
+      {
+        while ((p = pp->Hnext) && (p->Htime > np->Htime))
+	  pp = p;
+	while (p && p->Htime == np->Htime)
+	  {
+	    if (heq(&p->Hlex, &np->Hlex))
+	      {
+	        eventno--;
+		hfree(np);
+	        return (p);
+	      }
+	    pp = p;
+	    p = p->Hnext;
+	  }
+	for (p = Histlist.Hnext; p != pp->Hnext; p = p->Hnext)
+	  {
+	    n = p->Hnum; r = p->Href;
+	    p->Hnum = np->Hnum; p->Href = np->Href;
+	    np->Hnum = n; np->Href = r;
+	  }
+      }
+    np->Hnext = pp->Hnext;
+    pp->Hnext = np;
     return (np);
 }
 
@@ -146,7 +230,8 @@ dohist(vp, c)
 {
     int     n, hflg = 0;
 
-    if (getn(value(STRhistory)) == 0)
+    USE(c);
+    if (getn(varval(STRhistory)) == 0)
 	return;
     if (setintr)
 #ifdef BSDSIGS
@@ -174,8 +259,14 @@ dohist(vp, c)
 	    case 'L':
 		hflg |= HIST_LOAD;
 		break;
+	    case 'M':
+	    	hflg |= HIST_MERGE;
+		break;
+	    case 'T':
+	    	hflg |= HIST_TIME;
+		break;
 	    default:
-		stderror(ERR_HISTUS, "chrSL");
+		stderror(ERR_HISTUS, "chrSLMT");
 		break;
 	    }
     }
@@ -186,18 +277,18 @@ dohist(vp, c)
 	    hp->Hnext = np->Hnext, hfree(np);
     }
 
-    if (hflg & HIST_LOAD) {
-	loadhist(*vp);
+    if (hflg & (HIST_LOAD | HIST_MERGE)) {
+	loadhist(*vp, (hflg & HIST_MERGE) ? 1 : 0);
 	return;
     }
     else if (hflg & HIST_SAVE) {
-	rechist(*vp);
+	rechist(*vp, 1);
 	return;
     }
     if (*vp)
 	n = getn(*vp);
     else {
-	n = getn(value(STRhistory));
+	n = getn(varval(STRhistory));
     }
     dohist1(Histlist.Hnext, &n, hflg);
 }
@@ -228,53 +319,64 @@ phist(hp, hflg)
     register struct Hist *hp;
     int     hflg;
 {
+    extern bool output_raw;
+    if (hflg & HIST_ONLY) {
+       /*
+        * Control characters have to be written as is (output_raw).
+        * This way one can preserve special characters (like tab) in
+        * the history file.
+        * From: mveksler@vnet.ibm.com (Veksler Michael)
+        */
+        output_raw= 1;
+	if (hflg & HIST_TIME)
+	    /* 
+	     * Make file entry with history time in format:
+	     * "+NNNNNNNNNN" (10 digits, left padded with ascii '0') 
+	     */
 
-    if (hflg != HIST_ONLY) {
-	Char   *cp = str2short("%h\t%T\t%R\n");
-	Char buf[BUFSIZE];
-	struct varent *vp = adrof(STRhistory);
-
-	if (vp && vp->vec[0] && vp->vec[1])
-	    cp = vp->vec[1];
-
-	tprintf(FMT_HISTORY, buf, cp, BUFSIZE, NULL, hp->Htime, (ptr_t) hp);
-	for (cp = buf; *cp;)
-	    xputchar(*cp++);
-    }
-    else {
-	/* 
-	 * Make file entry with history time in format:
-	 * "+NNNNNNNNNN" (10 digits, left padded with ascii '0') 
-	 */
-	xprintf("#+%010lu\n", hp->Htime);
+	    xprintf("#+%010lu\n", hp->Htime);
 
 	if (HistLit && hp->histline)
 	    xprintf("%S\n", hp->histline);
 	else
 	    prlex(&hp->Hlex);
+        output_raw= 0;
+    }
+    else {
+	Char   *cp = str2short("%h\t%T\t%R\n");
+	Char buf[INBUFSIZE];
+	struct varent *vp = adrof(STRhistory);
+
+	if (vp && vp->vec[0] && vp->vec[1])
+	    cp = vp->vec[1];
+
+	tprintf(FMT_HISTORY, buf, cp, INBUFSIZE, NULL, hp->Htime, (ptr_t) hp);
+	for (cp = buf; *cp;)
+	    xputchar(*cp++);
     }
 }
 
 
 void
-fmthist(fmt, ptr, buf)
+fmthist(fmt, ptr, buf, bufsiz)
     int fmt;
     ptr_t ptr;
     char *buf;
+    size_t bufsiz;
 {
     struct Hist *hp = (struct Hist *) ptr;
     switch (fmt) {
     case 'h':
-	xsprintf(buf, "%6d", hp->Hnum);
+	(void) xsnprintf(buf, bufsiz, "%6d", hp->Hnum);
 	break;
     case 'R':
 	if (HistLit && hp->histline)
-	    xsprintf(buf, "%S", hp->histline);
+	    (void) xsnprintf(buf, bufsiz, "%S", hp->histline);
 	else {
-	    Char ibuf[BUFSIZE], *ip;
+	    Char ibuf[INBUFSIZE], *ip;
 	    char *p;
-	    (void) sprlex(ibuf, &hp->Hlex);
-	    for (p = buf, ip = ibuf; (*p++ = *ip++) != '\0'; )
+	    (void) sprlex(ibuf, sizeof(ibuf), &hp->Hlex);
+	    for (p = buf, ip = ibuf; (*p++ = (CHAR & *ip++)) != '\0'; )
 		continue;
 	}
 	break;
@@ -286,63 +388,86 @@ fmthist(fmt, ptr, buf)
 }
 
 void
-rechist(fname)
+rechist(fname, ref)
     Char *fname;
+    int ref;
 {
-    Char    buf[BUFSIZE], hbuf[BUFSIZE];
+    Char    *snum;
     int     fp, ftmp, oldidfds;
-    extern  int fast;
-    struct  varent *shist;
-    static Char   *dumphist[] = {STRhistory, STRmh, 0, 0};
+    struct varent *shist;
+    static Char   *dumphist[] = {STRhistory, STRmhT, 0, 0};
 
-    if (!fast) {
-	/*
-	 * If $savehist is just set, we use the value of $history
-	 * else we use the value in $savehist
-	 */
-	if ((shist = adrof(STRsavehist)) != NULL) {
-	    if (shist->vec[0][0] != '\0')
-		(void) Strcpy(hbuf, shist->vec[0]);
-	    else if ((shist = adrof(STRhistory)) != 0 && 
-		     shist->vec[0][0] != '\0')
-		(void) Strcpy(hbuf, shist->vec[0]);
-	    else
-		return;
-	}
+    if (fname == NULL && !ref) 
+	return;
+    /*
+     * If $savehist is just set, we use the value of $history
+     * else we use the value in $savehist
+     */
+    if (((snum = varval(STRsavehist)) == STRNULL) &&
+	((snum = varval(STRhistory)) == STRNULL))
+	snum = STRmaxint;
+
+
+    if (fname == NULL) {
+	if ((fname = varval(STRhistfile)) == STRNULL)
+	    fname = Strspl(varval(STRhome), &STRtildothist[1]);
 	else
-	    return;
-
-	if (fname == NULL) 
-	    if ((fname = value(STRhistfile)) == STRNULL) {
-		fname = Strcpy(buf, value(STRhome));
-		(void) Strcat(buf, &STRtildothist[1]);
-	    }
-
-	fp = creat(short2str(fname), 0600);
-	if (fp == -1) 
-	    return;
-	oldidfds = didfds;
-	didfds = 0;
-	ftmp = SHOUT;
-	SHOUT = fp;
-	dumphist[2] = hbuf;
-	dohist(dumphist, NULL);
-	(void) close(fp);
-	SHOUT = ftmp;
-	didfds = oldidfds;
+	    fname = Strsave(fname);
     }
+    else
+	fname = globone(fname, G_ERROR);
+
+    /*
+     * The 'savehist merge' feature is intended for an environment
+     * with numerous shells beeing in simultaneous use. Imagine
+     * any kind of window system. All these shells 'share' the same 
+     * ~/.history file for recording their command line history. 
+     * Currently the automatic merge can only succeed when the shells
+     * nicely quit one after another. 
+     *
+     * Users that like to nuke their environment require here an atomic
+     * 	loadhist-creat-dohist(dumphist)-close
+     * sequence.
+     *
+     * jw.
+     */ 
+    /*
+     * We need the didfds stuff before loadhist otherwise
+     * exec in a script will fail to print if merge is set.
+     * From: mveksler@iil.intel.com (Veksler Michael)
+     */
+    oldidfds = didfds;
+    didfds = 0;
+    if ((shist = adrof(STRsavehist)) != NULL)
+	if (shist->vec[1] && eq(shist->vec[1], STRmerge))
+	    loadhist(fname, 1);
+    fp = creat(short2str(fname), 0600);
+    if (fp == -1) {
+	didfds = oldidfds;
+	return;
+    }
+    ftmp = SHOUT;
+    SHOUT = fp;
+    dumphist[2] = snum;
+    dohist(dumphist, NULL);
+    (void) close(fp);
+    SHOUT = ftmp;
+    didfds = oldidfds;
+    xfree((ptr_t) fname);
 }
 
 
 void
-loadhist(fname)
+loadhist(fname, mflg)
     Char *fname;
+    bool mflg;
 {
-    static Char   *loadhist_cmd[] = {STRsource, STRmh, NULL, NULL};
+    static Char   *loadhist_cmd[] = {STRsource, NULL, NULL, NULL};
+    loadhist_cmd[1] = mflg ? STRmm : STRmh;
 
     if (fname != NULL)
 	loadhist_cmd[2] = fname;
-    else if ((fname = value(STRhistfile)) != STRNULL)
+    else if ((fname = varval(STRhistfile)) != STRNULL)
 	loadhist_cmd[2] = fname;
     else
 	loadhist_cmd[2] = STRtildothist;

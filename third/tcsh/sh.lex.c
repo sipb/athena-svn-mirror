@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.lex.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.lex.c,v 1.1.1.2 1998-10-03 21:10:04 danw Exp $ */
 /*
  * sh.lex.c: Lexical analysis into tokens
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.lex.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $")
+RCSID("$Id: sh.lex.c,v 1.1.1.2 1998-10-03 21:10:04 danw Exp $")
 
 #include "ed.h"
 /* #define DEBUG_INP */
@@ -58,6 +58,7 @@ static	void	 	 getexcl	__P((int));
 static	struct Hist 	*findev		__P((Char *, bool));
 static	void	 	 setexclp	__P((Char *));
 static	int	 	 bgetc		__P((void));
+static	void		 balloc		__P((int));
 static	void	 	 bfree		__P((void));
 static	struct wordent	*gethent	__P((int));
 static	int	 	 matchs		__P((Char *, Char *));
@@ -139,6 +140,12 @@ static Char getCtmp;
 time_t Htime = (time_t)0;
 static time_t a2time_t __P((Char *));
 
+/*
+ * for history event processing
+ * in the command 'echo !?foo?:1 !$' we want the !$ to expand from the line
+ * 'foo' was found instead of the last command
+ */
+static int uselastevent = 1;
 
 int
 lex(hp)
@@ -148,6 +155,7 @@ lex(hp)
     int     c;
 
 
+    uselastevent = 1;
     histvalid = 0;
     histlinep = histline;
     *histlinep = '\0';
@@ -196,7 +204,7 @@ lex(hp)
 
 static time_t
 a2time_t(word)
-    Char * word;
+    Char *word;
 {
     /* Attempt to distinguish timestamps from other possible entries.
      * Format: "+NNNNNNNNNN" (10 digits, left padded with ascii '0') */
@@ -283,7 +291,8 @@ word()
     Char c, c1;
     Char *wp;
     Char    wbuf[BUFSIZE];
-    Char    hbuf[12], h;
+    Char    hbuf[12];
+    int	    h;
     bool dolflg;
     int i;
 
@@ -385,7 +394,7 @@ loop:
 		break;
 	    }
 	}
-	else if (cmap(c, _META | _Q | _Q1 | _ESC)) {
+	else if (cmap(c, _META | _QF | _QB | _ESC)) {
 	    if (c == '\\') {
 		c = getC(0);
 		if (c == '\n') {
@@ -397,7 +406,7 @@ loop:
 		    *wp++ = '\\', --i;
 		c |= QUOTE;
 	    }
-	    else if (cmap(c, _Q | _Q1)) {	/* '"` */
+	    else if (cmap(c, _QF | _QB)) {	/* '"` */
 		c1 = c;
 		dolflg = c == '"' ? DOALL : DOEXCL;
 	    }
@@ -436,7 +445,7 @@ getC1(flag)
 	    if ((c = *lap++) == 0)
 		lap = 0;
 	    else {
-		if (cmap(c, _META | _Q | _Q1))
+		if (cmap(c, _META | _QF | _QB))
 		    c |= QUOTE;
 		return (c);
 	    }
@@ -455,6 +464,9 @@ getC1(flag)
 	    }
 	    exclp = 0;
 	    exclnxt = 0;
+	    /* this will throw away the dummy history entries */
+	    savehist(NULL, 0);
+
 	}
 	if (exclnxt) {
 	    exclnxt = exclnxt->next;
@@ -568,10 +580,11 @@ getdol()
 		seterror(ERR_VARILL);
 	    else {
 		ungetD(c);
-		*--np = 0;
-		addla(name);
-		return;
+		--np;
 	    }
+	    *np = 0;
+	    addla(name);
+	    return;
 	}
 	if (toolong) {
 	    seterror(ERR_VARTOOLONG);
@@ -646,7 +659,7 @@ getdol()
 	    if (c == 's') {
 		int delimcnt = 2;
 		int delim = getC(0);
-		*np++ = delim;
+		*np++ = (Char) delim;
 		
 		if (!delim || letter(delim)
 		    || Isdigit(delim) || any(" \t\n", delim)) {
@@ -736,7 +749,13 @@ getexcl(sc)
 	}
     }
     quesarg = -1;
-    lastev = eventno;
+
+    if (uselastevent) {
+	uselastevent = 0;
+	lastev = eventno;
+    }
+    else
+	lastev = eventno;
     hp = gethent(sc);
     if (hp == 0)
 	return;
@@ -837,6 +856,8 @@ getsub(en)
 	case 'r':
 	case 't':
 	case 'e':
+	case 'u':
+	case 'l':
 	    break;
 
 	case '&':
@@ -1007,7 +1028,7 @@ dosub(sc, en, global)
      * ANSI mode HP/UX compiler chokes on
      * return &enthist(HIST_PURGE, &lexi, 0)->Hlex;
      */
-    hst = enthist(HIST_PURGE, &lexi, 0);
+    hst = enthist(HIST_PURGE, &lexi, 0, 0);
     return &(hst->Hlex);
 }
 
@@ -1301,7 +1322,7 @@ gethent(sc)
 	    }
 	    np = lhsb;
 	    event = 0;
-	    while (!cmap(c, _ESC | _META | _Q | _Q1) && !any("${}:#", c)) {
+	    while (!cmap(c, _ESC | _META | _QF | _QB) && !any("^*-%${}:#", c)) {
 		if (event != -1 && Isdigit(c))
 		    event = event * 10 + c - '0';
 		else
@@ -1440,7 +1461,7 @@ void
 unreadc(c)
     int    c;
 {
-    peekread = c;
+    peekread = (Char) c;
 }
 
 int
@@ -1448,7 +1469,9 @@ readc(wanteof)
     bool    wanteof;
 {
     int c;
-    static  sincereal;
+    static  int sincereal;	/* Number of real EOFs we've seen */
+    Char *ptr;			/* For STRignoreeof */
+    int numeof = 0;		/* Value of STRignoreeof */
 
 #ifdef DEBUG_INP
     xprintf("readc\n");
@@ -1457,9 +1480,23 @@ readc(wanteof)
 	peekread = 0;
 	return (c);
     }
+
+    /* Compute the value of EOFs */
+    if ((ptr = varval(STRignoreeof)) != STRNULL) {
+	while (*ptr) {
+	    if (!Isdigit(*ptr)) {
+		numeof = 0;
+		break;
+	    }
+	    numeof = numeof * 10 + *ptr++ - '0';
+	}
+    } 
+    if (numeof < 1) numeof = 26;	/* Sanity check */
+
 top:
     aret = F_SEEK;
     if (alvecp) {
+	arun = 1;
 #ifdef DEBUG_INP
 	xprintf("alvecp %c\n", *alvecp & 0xff);
 #endif
@@ -1477,6 +1514,7 @@ top:
 	}
     }
     if (alvec) {
+	arun = 1;
 	if ((alvecp = *alvec) != 0) {
 	    alvec++;
 	    goto top;
@@ -1484,6 +1522,7 @@ top:
 	/* Infinite source! */
 	return ('\n');
     }
+    arun = 0;
     if (evalp) {
 	aret = E_SEEK;
 	if ((c = *evalp++) != 0)
@@ -1496,7 +1535,7 @@ top:
 	evalp = 0;
     }
     if (evalvec) {
-	if (evalvec == (Char **) 1) {
+	if (evalvec == INVPPTR) {
 	    doneinp = 1;
 	    reset();
 	}
@@ -1504,18 +1543,18 @@ top:
 	    evalvec++;
 	    goto top;
 	}
-	evalvec = (Char **) 1;
+	evalvec = INVPPTR;
 	return ('\n');
     }
     do {
-	if (arginp == (Char *) 1 || onelflg == 1) {
+	if (arginp == INVPTR || onelflg == 1) {
 	    if (wanteof)
 		return (-1);
 	    exitstat();
 	}
 	if (arginp) {
 	    if ((c = *arginp++) == 0) {
-		arginp = (Char *) 1;
+		arginp = INVPTR;
 		return ('\n');
 	    }
 	    return (c);
@@ -1525,37 +1564,43 @@ reread:
 #endif /* BSDJOBS */
 	c = bgetc();
 	if (c < 0) {
-#ifndef POSIX
-# ifdef TERMIO
+#ifndef WINNT
+# ifndef POSIX
+#  ifdef TERMIO
 	    struct termio tty;
-# else /* SGTTYB */
+#  else /* SGTTYB */
 	    struct sgttyb tty;
-# endif /* TERMIO */
-#else /* POSIX */
+#  endif /* TERMIO */
+# else /* POSIX */
 	    struct termios tty;
-#endif /* POSIX */
+# endif /* POSIX */
+#endif /* !WINNT */
 	    if (wanteof)
 		return (-1);
 	    /* was isatty but raw with ignoreeof yields problems */
-#ifndef POSIX
-# ifdef TERMIO
+#ifndef WINNT
+# ifndef POSIX
+#  ifdef TERMIO
 	    if (ioctl(SHIN, TCGETA, (ioctl_t) & tty) == 0 &&
 		(tty.c_lflag & ICANON))
-# else /* GSTTYB */
+#  else /* GSTTYB */
 	    if (ioctl(SHIN, TIOCGETP, (ioctl_t) & tty) == 0 &&
 		(tty.sg_flags & RAW) == 0)
-# endif /* TERMIO */
-#else /* POSIX */
+#  endif /* TERMIO */
+# else /* POSIX */
 	    if (tcgetattr(SHIN, &tty) == 0 &&
 		(tty.c_lflag & ICANON))
-#endif /* POSIX */
+# endif /* POSIX */
+#else /* WINNT */
+	    if (isatty(SHIN))
+#endif /* !WINNT */
 	    {
 		/* was 'short' for FILEC */
 #ifdef BSDJOBS
 		int     ctpgrp;
 #endif /* BSDJOBS */
 
-		if (++sincereal > 25)
+		if (++sincereal >= numeof)	/* Too many EOFs?  Bye! */
 		    goto oops;
 #ifdef BSDJOBS
 		if (tpgrp != -1 &&
@@ -1566,19 +1611,50 @@ reread:
 		    if (ctpgrp)
 # endif /* _SEQUENT */
 		    (void) killpg((pid_t) ctpgrp, SIGHUP);
-		    xprintf("Reset tty pgrp from %d to %d\n", ctpgrp, tpgrp);
+# ifdef notdef
+		    /*
+		     * With the walking process group fix, this message
+		     * is now obsolete. As the foreground process group
+		     * changes, the shell needs to adjust. Well too bad.
+		     */
+		    xprintf(CGETS(16, 1, "Reset tty pgrp from %d to %d\n"),
+			    ctpgrp, tpgrp);
+# endif /* notdef */
 		    goto reread;
 		}
 #endif /* BSDJOBS */
+		/* What follows is complicated EOF handling -- sterling@netcom.com */
+		/* First, we check to see if we have ignoreeof set */
 		if (adrof(STRignoreeof)) {
-		    if (loginsh)
-			xprintf("\nUse \"logout\" to logout.\n");
-		    else
-			xprintf("\nUse \"exit\" to leave tcsh.\n");
-		    reset();
+			/* If so, we check for any stopped jobs only on the first EOF */
+			if ((sincereal == 1) && (chkstop == 0)) {
+				panystop(1);
+			}
+		} else {
+			/* If we don't have ignoreeof set, always check for stopped jobs */
+			if (chkstop == 0) {
+				panystop(1);
+			}
 		}
-		if (chkstop == 0)
-		    panystop(1);
+		/* At this point, if there were stopped jobs, we would have already
+		 * called reset().  If we got this far, assume we can print an
+		 * exit/logout message if we ignoreeof, or just exit.
+		 */
+		if (adrof(STRignoreeof)) {
+			/* If so, tell the user to use exit or logout */
+		    if (loginsh) {
+				xprintf(CGETS(16, 2,
+					"\nUse \"logout\" to logout.\n"));
+		   	} else {
+				xprintf(CGETS(16, 3,
+					"\nUse \"exit\" to leave %s.\n"),
+					progname);
+			}
+			reset();
+		} else {
+			/* If we don't have ignoreeof set, just fall through */
+			;	/* EMPTY */
+		}
 	    }
     oops:
 	    doneinp = 1;
@@ -1593,13 +1669,30 @@ reread:
     return (c);
 }
 
+static void
+balloc(buf)
+    int buf;
+{
+    Char **nfbuf;
+
+    while (buf >= fblocks) {
+	nfbuf = (Char **) xcalloc((size_t) (fblocks + 2),
+			  sizeof(Char **));
+	if (fbuf) {
+	    (void) blkcpy(nfbuf, fbuf);
+	    xfree((ptr_t) fbuf);
+	}
+	fbuf = nfbuf;
+	fbuf[fblocks] = (Char *) xcalloc(BUFSIZE, sizeof(Char));
+	fblocks++;
+    }
+}
+
 static int
 bgetc()
 {
-    int buf;
-    int c;
+    int c, off, buf;
     int numleft = 0, roomleft;
-    extern Char InputBuf[];
     char    tbuf[BUFSIZE + 1];
 
     if (cantell) {
@@ -1614,91 +1707,71 @@ bgetc()
 	    do
 		c = read(SHIN, tbuf, BUFSIZE);
 	    while (c < 0 && errno == EINTR);
+#ifdef convex
+	    if (c < 0)
+		stderror(ERR_SYSTEM, progname, strerror(errno));
+#endif /* convex */
 	    if (c <= 0)
 		return (-1);
 	    for (i = 0; i < c; i++)
 		fbuf[0][i] = (unsigned char) tbuf[i];
 	    feobp += c;
 	}
+#ifndef WINNT
 	c = fbuf[0][fseekp - fbobp];
 	fseekp++;
+#else
+	do {
+	    c = fbuf[0][fseekp - fbobp];
+	    fseekp++;
+	} while(c == '\r');
+#endif /* !WINNT */
 	return (c);
     }
-again:
-    buf = (int) fseekp / BUFSIZE;
-    if (buf >= fblocks) {
-	Char **nfbuf =
-	(Char **) xcalloc((size_t) (fblocks + 2),
-			  sizeof(Char **));
 
-	if (fbuf) {
-	    (void) blkcpy(nfbuf, fbuf);
-	    xfree((ptr_t) fbuf);
-	}
-	fbuf = nfbuf;
-	fbuf[fblocks] = (Char *) xcalloc(BUFSIZE, sizeof(Char));
-	fblocks++;
-	if (!intty)
-	    goto again;
-    }
-    if (fseekp >= feobp) {
-	int off;
-	off = (int) feobp % BUFSIZE;
-	buf = (int) feobp / BUFSIZE;
-	roomleft = BUFSIZE - off;
-	for (;;) {
-	    if (editing && intty) {	/* then use twenex routine */
-		c = numleft ? numleft : Inputl();	/* PWP: get a line */
-		if (c > roomleft) {	/* No room in this buffer? */
-		    /* start with fresh buffer */
-		    feobp = fseekp = fblocks * BUFSIZE;
-		    numleft = c;
-		    goto again;
-		}
-		if (c > 0) {
-		    /* 
-		     * Cannot really happen, but it does! 
-		     * I really cannot explain why the following if 
-		     * statement can get executed, but at least when it
-		     * does we are not going to core-dump any more.
-		     * It has something to do with a weird interaction
-		     * with run-fg-editor or interrupts I think, but 
-		     * I have not been able to pin it down!
-		     */
-		    if (buf >= fblocks || off > BUFSIZE) {
-			/* start with fresh buffer */
-			feobp = fseekp = fblocks * BUFSIZE;
-			numleft = c;
-			goto again;
-		    }
-		    (void) memmove((ptr_t) (fbuf[buf] + off), (ptr_t) InputBuf,
-				   (size_t) (c * sizeof(Char)));
-		}
-		numleft = 0;
+    while (fseekp >= feobp) {
+	if (editing && intty) {		/* then use twenex routine */
+	    fseekp = feobp;		/* where else? */
+	    c = numleft = Inputl();	/* PWP: get a line */
+	    while (numleft > 0) {
+		off = (int) feobp % BUFSIZE;
+		buf = (int) feobp / BUFSIZE;
+		balloc(buf);
+		roomleft = BUFSIZE - off;
+		if (roomleft > numleft)
+		    roomleft = numleft;
+		(void) memmove((ptr_t) (fbuf[buf] + off), (ptr_t) (InputBuf + c - numleft), (size_t) (roomleft * sizeof(Char)));
+		numleft -= roomleft;
+		feobp += roomleft;
 	    }
-	    else {
-		c = read(SHIN, tbuf, (size_t) roomleft);
-		if (c > 0) {
-		    int     i;
-		    Char   *ptr = fbuf[buf] + off;
+	}
+	else {
+	    off = (int) feobp % BUFSIZE;
+	    buf = (int) feobp / BUFSIZE;
+	    balloc(buf);
+	    roomleft = BUFSIZE - off;
+	    c = read(SHIN, tbuf, (size_t) roomleft);
+	    if (c > 0) {
+		int     i;
+		Char   *ptr = fbuf[buf] + off;
 
-		    for (i = 0; i < c; i++)
-			ptr[i] = (unsigned char) tbuf[i];
-		}
+		for (i = 0; i < c; i++)
+		    ptr[i] = (unsigned char) tbuf[i];
+		feobp += c;
 	    }
-	    if (c >= 0)
-		break;
-	    if ((c = fixio(SHIN, errno)) == -1)
-		break;
 	}
-	if (c <= 0)
+	if (c == 0 || (c < 0 && fixio(SHIN, errno) == -1))
 	    return (-1);
-	feobp += c;
-	if (editing && !intty)
-	    goto again;
     }
-    c = fbuf[buf][(int) fseekp % BUFSIZE];
+#ifndef WINNT
+    c = fbuf[(int) fseekp / BUFSIZE][(int) fseekp % BUFSIZE];
     fseekp++;
+#else
+    do {
+	c = fbuf[(int) fseekp / BUFSIZE][(int) fseekp % BUFSIZE];
+	fseekp++;
+    } while(c == '\r');
+#endif /* !WINNT */
     return (c);
 }
 
@@ -1729,26 +1802,26 @@ bseek(l)
     switch (aret = l->type) {
     case E_SEEK:
 	evalvec = l->a_seek;
-	evalp = (Char *) l->f_seek;
+	evalp = l->c_seek;
 #ifdef DEBUG_SEEK
-	xprintf("seek to eval %x %x\n", evalvec, evalp);
+	xprintf(CGETS(16, 4, "seek to eval %x %x\n"), evalvec, evalp);
 #endif
 	return;
     case A_SEEK:
 	alvec = l->a_seek;
-	alvecp = (Char *) l->f_seek;
+	alvecp = l->c_seek;
 #ifdef DEBUG_SEEK
-	xprintf("seek to alias %x %x\n", alvec, alvecp);
+	xprintf(CGETS(16, 5, "seek to alias %x %x\n"), alvec, alvecp);
 #endif
 	return;
     case F_SEEK:	
 #ifdef DEBUG_SEEK
-	xprintf("seek to file %x\n", fseekp);
+	xprintf(CGETS(16, 6, "seek to file %x\n"), fseekp);
 #endif
 	fseekp = l->f_seek;
 	return;
     default:
-	xprintf("Bad seek type %d\n", aret);
+	xprintf(CGETS(16, 7, "Bad seek type %d\n"), aret);
 	abort();
     }
 }
@@ -1761,16 +1834,16 @@ struct Ain *l;
     switch (l->type = aret) {
     case E_SEEK:
 	l->a_seek = evalvec;
-	l->f_seek = (off_t) evalp;
+	l->c_seek = evalp;
 #ifdef DEBUG_SEEK
-	xprintf("tell eval %x %x\n", evalvec, evalp);
+	xprintf(CGETS(16, 8, "tell eval %x %x\n"), evalvec, evalp);
 #endif
 	return;
     case A_SEEK:
 	l->a_seek = alvec;
-	l->f_seek = (off_t) alvecp;
+	l->c_seek = alvecp;
 #ifdef DEBUG_SEEK
-	xprintf("tell alias %x %x\n", alvec, alvecp);
+	xprintf(CGETS(16, 9, "tell alias %x %x\n"), alvec, alvecp);
 #endif
 	return;
     case F_SEEK:
@@ -1778,11 +1851,11 @@ struct Ain *l;
 	l->f_seek = fseekp;
 	l->a_seek = NULL;
 #ifdef DEBUG_SEEK
-	xprintf("tell file %x\n", fseekp);
+	xprintf(CGETS(16, 10, "tell file %x\n"), fseekp);
 #endif
 	return;
     default:
-	xprintf("Bad seek type %d\n", aret);
+	xprintf(CGETS(16, 7, "Bad seek type %d\n"), aret);
 	abort();
     }
 }

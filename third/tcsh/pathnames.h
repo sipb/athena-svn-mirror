@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/pathnames.h,v 1.1.1.1 1996-10-02 06:09:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/pathnames.h,v 1.1.1.2 1998-10-03 21:09:54 danw Exp $ */
 /*
  * pathnames.h: Location of things to find
  */
@@ -37,13 +37,13 @@
 #ifndef _h_pathnames
 #define _h_pathnames
 
+#ifdef BSD4_4
+# include <paths.h>
+#endif
+
 #if defined(CMUCS) && !defined(_PATH_LOCAL)
 # define _PATH_LOCAL		"/usr/cs/bin"
 #endif /* CMUCS && !_PATH_LOCAL */
-
-#if defined(_CRAYCOM) && !defined(_PATH_LOCAL)
-# define _PATH_LOCAL		"/usr/lbin"
-#endif /* _CRAYCOM && !_PATH_LOCAL */
 
 #if defined(convex) || defined(stellar) || defined(INTEL)
 # ifndef _PATH_DOTLOGIN
@@ -69,13 +69,26 @@
 # endif /* !_PATH_DOTCSHRC */
 #endif /* NeXT */
 
+/* for sunos5.  */
+#if ((defined(sun) || defined(__sun__)) && (SYSVREL == 4))
+# ifndef _PATH_DOTLOGIN
+#  define _PATH_DOTLOGIN	"/etc/.login"
+# endif /* !_PATH_DOTLOGIN */
+# ifndef _PATH_DOTLOGOUT
+#  define _PATH_DOTLOGOUT	"/etc/.logout"
+# endif /* !_PATH_DOTLOGOUT */
+# ifndef _PATH_DOTCSHRC
+#  define _PATH_DOTCSHRC	"/etc/.cshrc"
+# endif /* !_PATH_DOTCSHRC */
+#endif /* sun & SVR4 */
+
 #if defined(sgi) || defined(OREO) || defined(cray) || defined(AMIX) || defined(CDC)
 # ifndef _PATH_DOTLOGIN
 #  define _PATH_DOTLOGIN	"/etc/cshrc"
 # endif /* !_PATH_DOTLOGIN */
 #endif /* sgi || OREO || cray || AMIX || CDC */
 
-#if defined(_CRAYCOM) && !defined(_PATH_TCSHELL)
+#if (defined(_CRAYCOM) || defined(Lynx)) && !defined(_PATH_TCSHELL)
 # define _PATH_TCSHELL		"/bin/tcsh"		/* 1st class shell */
 #endif /* _CRAYCOM && !_PATH_TCSHELL */
 
@@ -135,9 +148,13 @@
 #  define _PATH_TCSHELL		"/usr/local/bin/tcsh"
 #endif /* !_PATH_TCSHELL */
 
-#ifndef _PATH_LOGIN
-# define _PATH_LOGIN		"/bin/login"
-#endif /* !_PATH_LOGIN */
+#ifndef _PATH_BIN_LOGIN
+# define _PATH_BIN_LOGIN	"/bin/login"
+#endif /* !_PATH_BIN_LOGIN */
+
+#ifndef _PATH_USRBIN_LOGIN
+# define _PATH_USRBIN_LOGIN	"/usr/bin/login"
+#endif /* !_PATH_USRBIN_LOGIN */
 
 #ifndef _PATH_BIN_NEWGRP
 # define _PATH_BIN_NEWGRP	"/bin/newgrp"

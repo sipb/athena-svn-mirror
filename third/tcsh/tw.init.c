@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.1.1.2 1998-10-03 21:10:22 danw Exp $ */
 /*
  * tw.init.c: Handle lists of things to complete
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.init.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
+RCSID("$Id: tw.init.c,v 1.1.1.2 1998-10-03 21:10:22 danw Exp $")
 
 #include "tw.h"
 #include "ed.h"
@@ -214,12 +214,7 @@ tw_cmd_add(name)
 {
     int len;
 
-    if (name[0] == '#' || name[0] == '.')	/* emacs temp's, .files	*/
-	return;
-    len = Strlen(name) + 2;
-    if (name[len - 3] == '~')			/* No emacs backups */
-	return;
-    
+    len = (int) Strlen(name) + 2;
     (void) Strcpy(tw_str_add(&tw_cmd, len), name);
 } /* end tw_cmd_add */
 
@@ -247,6 +242,7 @@ tw_cmd_cmd()
     register Char **pv;
     struct varent *v = adrof(STRpath);
     struct varent *recexec = adrof(STRrecognize_only_executables);
+    int len;
 
 
     if (v == NULL) /* if no path */
@@ -268,7 +264,13 @@ tw_cmd_cmd()
 	    name = str2short(dp->d_name);
 	    if (dp->d_ino == 0 || (recexec && !executable(dir, name, 0)))
 		continue;
-	    tw_cmd_add(name);
+            len = (int) Strlen(name) + 2;
+            if (name[0] == '#' ||	/* emacs temp files	*/
+		name[0] == '.' ||	/* .files		*/
+		name[len - 3] == '~' ||	/* emacs backups	*/
+		name[len - 3] == '%')	/* textedit backups	*/
+                continue;		/* Ignore!		*/
+            tw_cmd_add(name);
 	}
 	(void) closedir(dirp);
 	if (recexec)
@@ -288,6 +290,11 @@ tw_cmd_builtin()
     for (bptr = bfunc; bptr < &bfunc[nbfunc]; bptr++)
 	if (bptr->bname)
 	    tw_cmd_add(str2short(bptr->bname));
+#ifdef WINNT
+    for (bptr = nt_bfunc; bptr < &nt_bfunc[nt_nbfunc]; bptr++)
+	if (bptr->bname)
+	    tw_cmd_add(str2short(bptr->bname));
+#endif /* WINNT*/
 } /* end tw_cmd_builtin */
 
 
@@ -361,6 +368,7 @@ tw_cmd_start(dfd, pat)
     Char *pat;
 {
     static Char *defpath[] = { STRNULL, 0 };
+    USE(pat);
     SETDIR(dfd)
     if ((tw_cmd_got & TW_FL_CMD) == 0) {
 	tw_cmd_free();
@@ -491,6 +499,8 @@ tw_shvar_next(dir, flags)
     register struct varent *c;
     register Char *cp;
 
+    USE(flags);
+    USE(dir);
     if ((p = tw_vptr) == NULL)
 	return (NULL);		/* just in case */
 
@@ -532,6 +542,8 @@ tw_envvar_next(dir, flags)
 {
     Char   *ps, *pd;
 
+    USE(flags);
+    USE(dir);
     if (tw_env == NULL || *tw_env == NULL)
 	return (NULL);
     for (ps = *tw_env, pd = tw_retname;
@@ -552,6 +564,7 @@ tw_var_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
     tw_vptr_start(&shvhed);
     tw_env = STR_environ;
@@ -567,6 +580,7 @@ tw_alias_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
     tw_vptr_start(&aliases);
     tw_env = NULL;
@@ -583,6 +597,8 @@ tw_complete_start(dfd, pat)
     Char *pat;
 {
     extern struct varent completions;
+
+    USE(pat);
     SETDIR(dfd)
     tw_vptr_start(&completions);
     tw_env = NULL;
@@ -616,10 +632,11 @@ tw_logname_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
-#ifndef _VMS_POSIX
+#if !defined(_VMS_POSIX) && !defined(WINNT)
     (void) setpwent();	/* Open passwd file */
-#endif /* atp vmsposix */
+#endif /* !_VMS_POSIX && !WINNT */
 } /* end tw_logname_start */
 
 
@@ -640,11 +657,15 @@ tw_logname_next(dir, flags)
      * and if we call endpwent() immediatetely after
      * (in pintr()) we may be freeing an invalid pointer
      */
+    USE(flags);
+    USE(dir);
     TW_HOLD();
-#ifndef _VMS_POSIX
+#if !defined(_VMS_POSIX) && !defined(WINNT)
     /* ISC does not declare getpwent()? */
     pw = (struct passwd *) getpwent();
-#endif /* atp vmsposix */
+#else /* _VMS_POSIX || WINNT */
+    pw = NULL;
+#endif /* !_VMS_POSIX && !WINNT */
     TW_RELS();
 
     if (pw == NULL) {
@@ -659,7 +680,7 @@ tw_logname_next(dir, flags)
 
 
 /* tw_logname_end():
- *	Close the passwd file to finish th logname list
+ *	Close the passwd file to finish the logname list
  */
 void
 tw_logname_end()
@@ -667,11 +688,80 @@ tw_logname_end()
 #ifdef YPBUGS
     fix_yp_bugs();
 #endif
-#ifndef _VMS_POSIX
+#if !defined(_VMS_POSIX) && !defined(WINNT)
    (void) endpwent();
-#endif /* atp vmsposix */
+#endif /* !_VMS_POSIX && !WINNT */
 } /* end tw_logname_end */
 
+
+/* tw_grpname_start():
+ *	Initialize grpnames to the beginning of the list
+ */
+/*ARGSUSED*/
+void 
+tw_grpname_start(dfd, pat)
+    DIR *dfd;
+    Char *pat;
+{
+    USE(pat);
+    SETDIR(dfd)
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+    (void) setgrent();	/* Open group file */
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+} /* end tw_grpname_start */
+
+
+/* tw_grpname_next():
+ *	Return the next entry from the group file
+ */
+/*ARGSUSED*/
+Char *
+tw_grpname_next(dir, flags)
+    Char *dir;
+    int  *flags;
+{
+    static Char retname[MAXPATHLEN];
+    struct group *gr;
+    /*
+     * We don't want to get interrupted inside getgrent()
+     * because the yellow pages code is not interruptible,
+     * and if we call endgrent() immediatetely after
+     * (in pintr()) we may be freeing an invalid pointer
+     */
+    USE(flags);
+    USE(dir);
+    TW_HOLD();
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+    gr = (struct group *) getgrent();
+#else /* _VMS_POSIX || _OSD_POSIX || WINNT */
+    gr = NULL;
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+    TW_RELS();
+
+    if (gr == NULL) {
+#ifdef YPBUGS
+	fix_yp_bugs();
+#endif
+	return (NULL);
+    }
+    (void) Strcpy(retname, str2short(gr->gr_name));
+    return (retname);
+} /* end tw_grpname_next */
+
+
+/* tw_grpname_end():
+ *	Close the group file to finish the groupname list
+ */
+void
+tw_grpname_end()
+{
+#ifdef YPBUGS
+    fix_yp_bugs();
+#endif
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+   (void) endgrent();
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+} /* end tw_grpname_end */
 
 /* tw_file_start():
  *	Initialize the directory for the file list
@@ -683,6 +773,7 @@ tw_file_start(dfd, pat)
     Char *pat;
 {
     struct varent *vp;
+    USE(pat);
     SETDIR(dfd)
     if ((vp = adrof(STRcdpath)) != NULL)
 	tw_env = vp->vec;
@@ -818,6 +909,7 @@ tw_wl_next(dir, flags)
     Char *dir;
     int *flags;
 {
+    USE(flags);
     if (tw_word == NULL || tw_word[0] == '\0')
 	return NULL;
     
@@ -840,6 +932,7 @@ tw_bind_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
     tw_bind = FuncNames;
 } /* end tw_bind_start */
@@ -855,8 +948,10 @@ tw_bind_next(dir, flags)
     int *flags;
 {
     char *ptr;
+    USE(flags);
     if (tw_bind && tw_bind->name) {
-	for (ptr = tw_bind->name, dir = tw_retname; (*dir++ = *ptr++) != '\0';)
+	for (ptr = tw_bind->name, dir = tw_retname;
+	     (*dir++ = (Char) *ptr++) != '\0';)
 	    continue;
 	tw_bind++;
 	return(tw_retname);
@@ -874,6 +969,7 @@ tw_limit_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
 #ifndef HAVENOLIMIT
     tw_limit = limits;
@@ -894,12 +990,13 @@ tw_limit_next(dir, flags)
     char *ptr;
     if (tw_limit && tw_limit->limname) {
 	for (ptr = tw_limit->limname, dir = tw_retname; 
-	     (*dir++ = *ptr++) != '\0';)
+	     (*dir++ = (Char) *ptr++) != '\0';)
 	    continue;
 	tw_limit++;
 	return(tw_retname);
     }
 #endif /* ! HAVENOLIMIT */
+    USE(flags);
     return NULL;
 } /* end tw_limit_next */
 
@@ -913,6 +1010,7 @@ tw_sig_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
     tw_index = 0;
 } /* end tw_sig_start */
@@ -928,13 +1026,15 @@ tw_sig_next(dir, flags)
     int *flags;
 {
     char *ptr;
-    for (;tw_index < NSIG; tw_index++) {
+    extern int nsig;
+    USE(flags);
+    for (;tw_index < nsig; tw_index++) {
 
 	if (mesg[tw_index].iname == NULL)
 	    continue;
 
 	for (ptr = mesg[tw_index].iname, dir = tw_retname; 
-	     (*dir++ = *ptr++) != '\0';)
+	     (*dir++ = (Char) *ptr++) != '\0';)
 	    continue;
 	tw_index++;
 	return(tw_retname);
@@ -952,6 +1052,7 @@ tw_job_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
+    USE(pat);
     SETDIR(dfd)
     tw_index = 1;
 } /* end tw_job_start */
@@ -968,6 +1069,8 @@ tw_job_next(dir, flags)
 {
     Char *ptr;
     struct process *j;
+
+    USE(flags);
     for (;tw_index <= pmaxindex; tw_index++) {
 	for (j = proclist.p_next; j != NULL; j = j->p_next)
 	    if (j->p_index == tw_index && j->p_procid == j->p_jobid)

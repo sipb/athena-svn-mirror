@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.misc.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.misc.c,v 1.1.1.2 1998-10-03 21:10:04 danw Exp $ */
 /*
  * sh.misc.c: Miscelaneous functions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.misc.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $")
+RCSID("$Id: sh.misc.c,v 1.1.1.2 1998-10-03 21:10:04 danw Exp $")
 
 static	int	renum	__P((int, int));
 static  Char  **blkend	__P((Char **));
@@ -79,9 +79,10 @@ strsave(s)
 
     if (s == NULL)
 	s = (const char *) "";
-    for (p = (char *) s; *p++;)
+    for (p = (char *) s; *p++ != '\0';)
 	continue;
-    n = p = (char *) xmalloc((size_t) ((p - s) * sizeof(char)));
+    n = p = (char *) xmalloc((size_t)
+			     ((((const char *) p) - s) * sizeof(char)));
     while ((*p++ = *s++) != '\0')
 	continue;
     return (n);
@@ -107,6 +108,19 @@ blkpr(av)
 	xprintf("%S", *av);
 	if (av[1])
 	    xprintf(" ");
+    }
+}
+
+void
+blkexpand(av, str)
+    register Char **av;
+    Char *str;
+{
+    *str = '\0';
+    for (; *av; av++) {
+	(void) Strcat(str, *av);
+	if (av[1])
+	    (void) Strcat(str, STRspace);
     }
 }
 
@@ -168,7 +182,7 @@ saveblk(v)
     return (onewv);
 }
 
-#ifndef POSIX
+#if !defined(SHORT_STRINGS) && !defined(POSIX)
 char   *
 strstr(s, t)
     register const char *s, *t;
@@ -185,7 +199,7 @@ strstr(s, t)
     return (NULL);
 }
 
-#endif /* POSIX */
+#endif /* !SHORT_STRINGS && !POSIX */
 
 #ifndef SHORT_STRINGS
 char   *
@@ -199,15 +213,19 @@ strspl(cp, dp)
 	cp = "";
     if (!dp)
 	dp = "";
-    for (p = cp; *p++;);
-    for (q = dp; *q++;);
+    for (p = cp; *p++ != '\0';)
+	continue;
+    for (q = dp; *q++ != '\0';)
+	continue;
     ep = (char *) xmalloc((size_t) (((p - cp) + (q - dp) - 1) * sizeof(char)));
-    for (p = ep, q = cp; *p++ = *q++;);
-    for (p--, q = dp; *p++ = *q++;);
+    for (p = ep, q = cp; (*p++ = *q++) != '\0';)
+	continue;
+    for (p--, q = dp; (*p++ = *q++) != '\0';)
+	continue;
     return (ep);
 }
 
-#endif
+#endif /* !SHORT_STRINGS */
 
 Char  **
 blkspl(up, vp)
@@ -247,7 +265,7 @@ closem()
 #ifdef YPBUGS
     /* suggested by Justin Bur; thanks to Karl Kleinpaste */
     fix_yp_bugs();
-#endif
+#endif /* YPBUGS */
     for (f = 0; f < NOFILE; f++)
 	if (f != SHIN && f != SHOUT && f != SHDIAG && f != OLDSTD &&
 	    f != FSHTTY 
@@ -255,7 +273,13 @@ closem()
 	    && f != 25
 #endif /* MALLOC_TRACE */
 	    )
+	  {
 	    (void) close(f);
+#ifdef NISPLUS
+	    if(f < 3)
+		(void) open(_PATH_DEVNULL, O_RDONLY);
+#endif /* NISPLUS */
+	  }
 }
 
 #ifndef CLOSE_ON_EXEC
@@ -293,6 +317,17 @@ donefds()
     (void) close(1);
     (void) close(2);
     didfds = 0;
+#ifdef NISPLUS
+    {
+	int fd = open(_PATH_DEVNULL, O_RDONLY);
+	(void) dup2(fd, 1);
+	(void) dup2(fd, 2);
+	if (fd != 0) {
+	    (void) dup2(fd, 0);
+	    (void) close(fd);
+	}
+    }
+#endif /*NISPLUS*/    
 }
 
 /*
@@ -423,7 +458,7 @@ strip(cp)
 
     if (!cp)
 	return (cp);
-    while (*dp++ &= TRIM)
+    while ((*dp++ &= TRIM) != '\0')
 	continue;
     return (cp);
 }
@@ -439,6 +474,21 @@ quote(cp)
     while (*dp != '\0')
 	*dp++ |= QUOTE;
     return (cp);
+}
+
+Char   *
+quote_meta(d, s)
+    Char   *d;
+    const Char   *s;
+{
+    Char *r = d;
+    while (*s != '\0') {
+	if (cmap(*s, _META | _DOL | _QF | _QB | _ESC | _GLOB))
+		*d++ = '\\';
+	*d++ = *s++;
+    }
+    *d = '\0';
+    return r;
 }
 
 void

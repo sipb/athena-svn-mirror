@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dir.h,v 1.1.1.1 1996-10-02 06:09:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dir.h,v 1.1.1.2 1998-10-03 21:09:57 danw Exp $ */
 /*
  * sh.dir.h: Directory data structures and globals
  */
@@ -45,7 +45,7 @@ struct directory {
     unsigned short *di_count;	/* refcount of processes */
     Char   *di_name;		/* actual name */
 };
-EXTERN struct directory *dcwd;	/* the one we are in now */
+EXTERN struct directory *dcwd IZERO_STRUCT;	/* the one we are in now */
 EXTERN int symlinks;
 
 #define SYM_CHASE	1

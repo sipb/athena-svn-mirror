@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.printf.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.printf.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $ */
 /*
  * tc.printf.c: A public-domain, minimal printf/sprintf routine that prints
  *	       through the putchar() routine.  Feel free to use for
@@ -38,7 +38,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.printf.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
+RCSID("$Id: tc.printf.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
 
 #ifdef lint
 #undef va_arg
@@ -54,13 +54,15 @@ static	void	doprnt		__P((void (*) __P((int)), const char *, va_list));
 
 static void
 doprnt(addchar, sfmt, ap)
-    void    (*addchar)();
+    void    (*addchar) __P((int));
     const char   *sfmt;
     va_list ap;
 {
     register char *bp;
     register const char *f;
+#ifdef SHORT_STRINGS
     register Char *Bp;
+#endif /* SHORT_STRINGS */
     register long l;
     register unsigned long u;
     register int i;
@@ -123,7 +125,7 @@ doprnt(addchar, sfmt, ap)
 	    }
 
 	    fmt = (unsigned char) *f;
-	    if (fmt != 'S' && Isupper(fmt)) {
+	    if (fmt != 'S' && fmt != 'Q' && Isupper(fmt)) {
 		do_long = 1;
 		fmt = Tolower(fmt);
 	    }
@@ -139,7 +141,7 @@ doprnt(addchar, sfmt, ap)
 		    l = -l;
 		}
 		do {
-		    *bp++ = l % 10 + '0';
+		    *bp++ = (char) (l % 10) + '0';
 		} while ((l /= 10) > 0);
 		if (sign)
 		    *bp++ = '-';
@@ -163,12 +165,12 @@ doprnt(addchar, sfmt, ap)
 		    u = (unsigned long) (va_arg(ap, unsigned int));
 		if (fmt == 'u') {	/* unsigned decimal */
 		    do {
-			*bp++ = u % 10 + '0';
+			*bp++ = (char) (u % 10) + '0';
 		    } while ((u /= 10) > 0);
 		}
 		else if (fmt == 'o') {	/* octal */
 		    do {
-			*bp++ = u % 8 + '0';
+			*bp++ = (char) (u % 8) + '0';
 		    } while ((u /= 8) > 0);
 		    if (hash)
 			*bp++ = '0';
@@ -204,7 +206,7 @@ doprnt(addchar, sfmt, ap)
 		break;
 
 	    case 'S':
-#ifdef SHORT_STRINGS
+	    case 'Q':
 		Bp = va_arg(ap, Char *);
 		if (!Bp) {
 		    bp = NULL;
@@ -215,21 +217,18 @@ doprnt(addchar, sfmt, ap)
 		    while (f_width-- > 0)
 			(*addchar) ((int) (pad | attributes));
 		for (i = 0; *Bp && i < prec; i++) {
-		    (*addchar) ((int) ((unsigned char)*Bp | attributes));
+		    if (fmt == 'Q' && *Bp & QUOTE)
+			(*addchar) ((int) ('\\' | attributes));
+		    (*addchar) ((int) ((*Bp & TRIM) | attributes));
 		    Bp++;
 		}
 		if (flush_left)
 		    while (f_width-- > 0)
 			(*addchar) ((int) (' ' | attributes));
 		break;
-#else
-		bp = va_arg(ap, Char *);
-		if (bp)
-		    (void) strip((Char *) bp);
-		goto lcase_s;
-#endif /* SHORT_STRINGS */
 
 	    case 's':
+	    case 'q':
 		bp = va_arg(ap, char *);
 lcase_s:
 		if (!bp)
@@ -239,13 +238,15 @@ lcase_s:
 		    while (f_width-- > 0)
 			(*addchar) ((int) (pad | attributes));
 		for (i = 0; *bp && i < prec; i++) {
-		    (*addchar) ((int) (((unsigned char) *bp) | attributes));
+		    if (fmt == 'q' && *bp & QUOTE)
+			(*addchar) ((int) ('\\' | attributes));
+		    (*addchar) ((int) (((unsigned char) *bp & TRIM) |
+				   	attributes));
 		    bp++;
 		}
 		if (flush_left)
 		    while (f_width-- > 0)
 			(*addchar) ((int) (' ' | attributes));
-
 		break;
 
 	    case 'a':
@@ -267,53 +268,61 @@ lcase_s:
 }
 
 
-static char *xstring;
+static char *xstring, *xestring;
 static void
 xaddchar(c)
     int     c;
 {
-    *xstring++ = (char) c;
+    if (xestring == xstring)
+	*xstring = '\0';
+    else
+	*xstring++ = (char) c;
 }
 
 
-void
+pret_t
 /*VARARGS*/
-#if __STDC__
-xsprintf(char *str, char *fmt, ...)
+#ifdef FUNCPROTO
+xsnprintf(char *str, size_t size, const char *fmt, ...)
 #else
-xsprintf(va_alist)
+xsnprintf(va_alist)
     va_dcl
 #endif
 {
     va_list va;
-#if __STDC__
+#ifdef FUNCPROTO
     va_start(va, fmt);
 #else
     char *str, *fmt;
+    size_t size;
 
     va_start(va);
     str = va_arg(va, char *);
+    size = va_arg(va, size_t);
     fmt = va_arg(va, char *);
 #endif
 
-    xstring = (char *) str;
+    xstring = str;
+    xestring = str + size - 1;
     doprnt(xaddchar, fmt, va);
     va_end(va);
     *xstring++ = '\0';
+#ifdef PURIFY
+    return 1;
+#endif
 }
 
-
-void
+pret_t
 /*VARARGS*/
-#if __STDC__
-xprintf(char *fmt, ...)
+#ifdef FUNCPROTO
+xprintf(const char *fmt, ...)
 #else
 xprintf(va_alist)
     va_dcl
 #endif
 {
     va_list va;
-#if __STDC__
+#ifdef FUNCPROTO
     va_start(va, fmt);
 #else
     char   *fmt;
@@ -323,26 +332,37 @@ xprintf(va_alist)
 #endif
     doprnt(xputchar, fmt, va);
     va_end(va);
+#ifdef PURIFY
+    return 1;
+#endif
 }
 
 
-void
+pret_t
 xvprintf(fmt, va)
-    char   *fmt;
+    const char   *fmt;
     va_list va;
 {
     doprnt(xputchar, fmt, va);
+#ifdef PURIFY
+    return 1;
+#endif
 }
 
-void
-xvsprintf(str, fmt, va)
+pret_t
+xvsnprintf(str, size, fmt, va)
     char   *str;
-    char   *fmt;
+    size_t size;
+    const char   *fmt;
     va_list va;
 {
-    xstring = (char *) str;
+    xstring = str;
+    xestring = str + size - 1;
     doprnt(xaddchar, fmt, va);
     *xstring++ = '\0';
+#ifdef PURIFY
+    return 1;
+#endif
 }
 
 
@@ -355,9 +375,11 @@ xvsprintf(str, fmt, va)
  * ones that do tcsh output directly - see dumb hook in doreaddirs()
  * (sh.dir.c) -sg
  */
+#ifndef FILE
 #define FILE int
+#endif
 int 
-#if __STDC__
+#ifdef FUNCPROTO
 fprintf(FILE *fp, const char* fmt, ...)
 #else
 fprintf(va_alist)
@@ -365,7 +387,7 @@ fprintf(va_alist)
 #endif
 {
     va_list va;
-#if __STDC__
+#ifdef FUNCPROTO
     va_start(va, fmt);
 #else
     FILE *fp;

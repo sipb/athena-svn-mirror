@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
 /*
  * tc.sig.c: Signal routine emulations
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.sig.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
+RCSID("$Id: tc.sig.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $")
 
 #include "tc.wait.h"
 
@@ -46,6 +46,8 @@ RCSID("$Id: tc.sig.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
  * we can handle up to MAX_CHLD outstanding children now;
  */
 #define MAX_CHLD 50
+
+# ifdef UNRELSIGS
 static struct mysigstack {
     int     s_w;		/* wait report			 */
     int     s_errno;		/* errno returned;		 */
@@ -54,7 +56,6 @@ static struct mysigstack {
 static int stk_ptr = -1;
 
 
-# ifdef UNRELSIGS
 /* queue child signals
  */
 static sigret_t
@@ -94,7 +95,7 @@ sig_ch_rel()
 sigret_t
 (*xsigset(a, b)) ()
     int     a;
-    sigret_t  (*b) __P((int));
+    signalfun_t  b;
 {
     return (signal(a, b));
 }
@@ -160,7 +161,7 @@ ourwait(w)
     pid_t pid;
 
 #  ifdef JOBDEBUG
-    xprintf("our wait %d\n", stk_ptr);
+    xprintf(CGETS(25, 1, "our wait %d\n", stk_ptr));
     flush();
 #  endif /* JOBDEBUG */
 
@@ -187,7 +188,7 @@ ourwait(w)
 sigret_t
 (*xsignal(a, b)) ()
     int     a;
-    sigret_t  (*b) __P((int));
+    signalfun_t  b;
 {
     if (a == SIGCHLD)
 	return SIG_DFL;
@@ -208,7 +209,7 @@ void
 sigpause(what)
 {
     if (what == SIGCHLD) {
-	bsd_sigpause(bsd_sigblock((sigmask_t) 0) & ~sigmask(SIGBSDCHLD));
+	(void) bsd_sigpause(bsd_sigblock((sigmask_t) 0) & ~sigmask(SIGBSDCHLD));
     }
     else if (what == 0) {
 	pause();
@@ -224,10 +225,10 @@ sigpause(what)
 
 #ifdef NEEDsignal
 /* turn into bsd signals */
-sigret_t(*
-	 xsignal(s, a)) ()
+sigret_t
+(*xsignal(s, a)) ()
     int     s;
-    sigret_t (*a) __P((int));
+    signalfun_t a;
 {
     sigvec_t osv, sv;
 
@@ -268,8 +269,7 @@ extern int errno;
 char   *show_sig_mask();
 #endif /* SHOW_SIGNALS */
 
-int     debug_signals = 0;
-
+#ifndef __PARAGON__
 /*
  * sigsetmask(mask)
  *
@@ -283,16 +283,17 @@ sigsetmask(mask)
     int     m;
     register int i;
 
-    sigemptyset(&set);
-    sigemptyset(&oset);
+    (void) sigemptyset(&set);
+    (void) sigemptyset(&oset);
 
     for (i = 1; i <= MAXSIG; i++)
 	if (ISSET(mask, i))
-	    sigaddset(&set, i);
+	    (void) sigaddset(&set, i);
 
-    if (sigprocmask(SIG_SETMASK, &set, &oset))
+    if ((sigprocmask(SIG_SETMASK, &set, &oset)) == -1) {
 	xprintf("sigsetmask(0x%x) - sigprocmask failed, errno %d",
 		mask, errno);
+    }
 
     m = 0;
     for (i = 1; i <= MAXSIG; i++)
@@ -301,7 +302,9 @@ sigsetmask(mask)
 
     return (m);
 }
+#endif /* __PARAGON__ */
 
+#ifndef __DGUX__
 /*
  * sigblock(mask)
  *
@@ -316,20 +319,20 @@ sigblock(mask)
     int     m;
     register int i;
 
-    sigemptyset(&set);
-    sigemptyset(&oset);
+    (void) sigemptyset(&set);
+    (void) sigemptyset(&oset);
 
     /* Get present set of signals. */
-    if (sigprocmask(SIG_SETMASK, NULL, &set))
-	xprintf("sigblock(0x%x) - sigprocmask failed, errno %d",
-		mask, errno);
+    if ((sigprocmask(SIG_SETMASK, NULL, &set)) == -1)
+	stderror(ERR_SYSTEM, "sigprocmask", strerror(errno));
 
     /* Add in signals from mask. */
     for (i = 1; i <= MAXSIG; i++)
 	if (ISSET(mask, i))
-	    sigaddset(&set, i);
+	    (void) sigaddset(&set, i);
 
-    sigprocmask(SIG_SETMASK, &set, &oset);
+    if ((sigprocmask(SIG_SETMASK, &set, &oset)) == -1)
+	stderror(ERR_SYSTEM, "sigprocmask", strerror(errno));
 
     /* Return old mask to user. */
     m = 0;
@@ -339,6 +342,7 @@ sigblock(mask)
 
     return (m);
 }
+#endif /* __DGUX__ */
 
 
 /*
@@ -354,12 +358,12 @@ bsd_sigpause(mask)
     sigset_t set;
     register int i;
 
-    sigemptyset(&set);
+    (void) sigemptyset(&set);
 
     for (i = 1; i <= MAXSIG; i++)
 	if (ISSET(mask, i))
-	    sigaddset(&set, i);
-    sigsuspend(&set);
+	    (void) sigaddset(&set, i);
+    (void) sigsuspend(&set);
 }
 
 /*
@@ -367,32 +371,34 @@ bsd_sigpause(mask)
  *
  * Emulate bsd style signal()
  */
-sigret_t (*bsd_signal(sig, func))()
+sigret_t (*bsd_signal(sig, func)) ()
         int sig;
-        sigret_t (*func)();
+        signalfun_t func;
 {
         struct sigaction act, oact;
         sigset_t set;
-        sigret_t (*r_func)();
+        signalfun_t r_func;
 
         if (sig < 0 || sig > MAXSIG) {
-                xprintf("error: bsd_signal(%d) signal out of range\n", sig);
-                return((sigret_t(*)()) SIG_IGN);
+                xprintf(CGETS(25, 2,
+			"error: bsd_signal(%d) signal out of range\n"), sig);
+                return((signalfun_t) SIG_IGN);
         }
 
-        sigemptyset(&set);
+        (void) sigemptyset(&set);
 
-        act.sa_handler = (sigret_t(*)()) func;      /* user function */
+        act.sa_handler = (signalfun_t) func; /* user function */
         act.sa_mask = set;                      /* signal mask */
         act.sa_flags = 0;                       /* no special actions */
 
         if (sigaction(sig, &act, &oact)) {
-                xprintf("error: bsd_signal(%d) - sigaction failed, errno %d\n",
-                    sig, errno);
-                return((sigret_t(*)()) SIG_IGN);
+                xprintf(CGETS(25, 3,
+			"error: bsd_signal(%d) - sigaction failed, errno %d\n"),
+			sig, errno);
+                return((signalfun_t) SIG_IGN);
         }
 
-        r_func = (sigret_t(*)()) oact.sa_handler;
+        r_func = (signalfun_t) oact.sa_handler;
         return(r_func);
 }
 #endif /* POSIXSIG */

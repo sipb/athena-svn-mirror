@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.h,v 1.1.1.1 1996-10-02 06:09:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.h,v 1.1.1.2 1998-10-03 21:09:46 danw Exp $ */
 /*
  * ed.h: Editor declarations and globals
  */
@@ -44,6 +44,13 @@
 #define TABSIZE		8	/* usually 8 spaces/tab */
 #define MAXMACROLEVELS	10	/* max number of nested kbd macros */
 
+#ifdef WINNT
+/* 256 + 24 (fkeys) +  4 (arrow) + 2 (ins/del) +2 (pgup/dn) +2 (home/end) */
+# define NT_NUM_KEYS	290
+#else /* !WINNT */
+# define NT_NUM_KEYS	256
+#endif /* !WINNT */
+
 extern int errno;
 
 /****************************************************************************/
@@ -61,7 +68,7 @@ typedef CCRETVAL(*PFCmd) __P((int));	/* pointer to function returning CCRETVAL *
 struct KeyFuncs {		/* for the "bind" shell command */
     char   *name;		/* function name for bind command */
     int     func;		/* function numeric value */
-    char   *description;	/* description of function */
+    char   *desc;		/* description of function */
 };
 
 extern PFCmd CcFuncTbl[];	/* table of available commands */
@@ -93,10 +100,18 @@ extern KEYCMD NumFuns;		/* number of KEYCMDs in above table */
 #define CC_NORMALIZE_PATH	16
 #define CC_LIST_ALL		17
 #define CC_COMPLETE_ALL		18
+#define CC_COMPLETE_FWD		19
+#define CC_COMPLETE_BACK	20
+#define CC_NORMALIZE_COMMAND	21
+
+typedef struct {
+    Char *buf;
+    int   len;
+} CStr;
 
 typedef union Xmapval {		/* value passed to the Xkey routines */
     KEYCMD cmd;
-    Char *str;
+    CStr str;
 } XmapVal;
 
 #define XK_NOD	-1		/* Internal tree node */
@@ -144,7 +159,6 @@ EXTERN Char CurrentHistLit;	/* Literal status of current show history line */
 /*
  * These are truly extern
  */
-extern Char PromptBuf[];
 extern int MacroLvl;
 
 EXTERN Char *KeyMacro[MAXMACROLEVELS];
@@ -179,29 +193,33 @@ EXTERN Char T_HasMeta;		/* true if we have a meta key */
  * Terminal dependend data structures
  */
 typedef struct {
-#if defined(POSIX) || defined(TERMIO)
-# ifdef POSIX
+#ifdef WINNT
+    int dummy;
+#else /* !WINNT */
+# if defined(POSIX) || defined(TERMIO)
+#  ifdef POSIX
     struct termios d_t;
-# else
+#  else
     struct termio d_t;
-# endif /* POSIX */
-#else /* SGTTY */
-# ifdef TIOCGETP
+#  endif /* POSIX */
+# else /* SGTTY */
+#  ifdef TIOCGETP
     struct sgttyb d_t;
-# endif /* TIOCGETP */
-# ifdef TIOCGETC
+#  endif /* TIOCGETP */
+#  ifdef TIOCGETC
     struct tchars d_tc;
-# endif /* TIOCGETC */
-# ifdef TIOCGPAGE
+#  endif /* TIOCGETC */
+#  ifdef TIOCGPAGE
     struct ttypagestat d_pc;
-# endif /* TIOCGPAGE */
-# ifdef TIOCLGET
+#  endif /* TIOCGPAGE */
+#  ifdef TIOCLGET
     int d_lb;
-# endif /* TIOCLGET */
-#endif /* POSIX || TERMIO */
-#ifdef TIOCGLTC
+#  endif /* TIOCLGET */
+# endif /* POSIX || TERMIO */
+# ifdef TIOCGLTC
     struct ltchars d_ltc;
-#endif /* TIOCGLTC */
+# endif /* TIOCGLTC */
+#endif /* WINNT */
 } ttydata_t;
 
 #define MODE_INSERT	0

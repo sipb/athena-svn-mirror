@@ -1,8 +1,8 @@
 
 Last Updated: 
-Thu Nov 12 22:43:19 EST 1992
+Thu Jun 11 21:24:11 EDT 1998
 
-This is for people that do not read the manual!
+This is for people who do not read the manual!
 
 So far people who don't read manuals don't read this either... I may
 call it README.*PLEASE* in the future, but then the same people won't
@@ -47,6 +47,9 @@ be able to get ftp it... :-)
     or
     /usr/etc/setsid dbxtool &
 
+    If that does not work, for dbxtool at least you can add "sh stty sane"
+    in your .dbxinit
+
 3.  I tried to compile tcsh and it cannot find <locale.h>?
 
     Your system does not support NLS. Undefine NLS in config_f.h and it
@@ -55,7 +58,7 @@ be able to get ftp it... :-)
 4.  Where can I get csh sources? 
 
     Csh sources are now available with the 4.4BSD networking distributions.
-    You don't need csh sources to compile tcsh-6.00.
+    You don't need csh sources to compile tcsh-6.0x.
 
 5.  I just made tcsh my login shell, and I cannot ftp any more?
 
@@ -64,7 +67,8 @@ be able to get ftp it... :-)
     shells is either hardcoded or it is usually in a file called
     /etc/shells. If it is hard-coded, then you are out of luck and
     your best bet is to get a newer version of ftpd. Otherwise add
-    tcsh to the list of shells. Remember that the full path is required.
+    tcsh to the list of shells. [For AIX this file is called 
+    /etc/security/login.cfg]. Remember that the full path is required.
     If there is no /etc/shells, and you are creating one, remember to
     add /bin/csh, /bin/sh, and any other valid shells for your system,
     so that other people can ftp too :-)
@@ -81,6 +85,17 @@ be able to get ftp it... :-)
 	1 Don't use suntools
 	2 Use shelltool instead of cmdtool.
 	3 Unset edit in tcsh.
+
+6b. On a SPARCstation running Solaris 2.x and OpenWindows 3.1,
+    inside a cmdtool, the short-cut key sequence to clear log
+    (i.e. Meta-e or Diamond-e) doesn't work: it just echos 'e'
+
+6c. On a SPARCstation running Solaris 2.x and OpenWindows 3.1,
+    maketool (within SPARCworks) doesn't work: it just does
+    a `cd' to the working directory then stops.
+
+    The workaround for 6b and 6c is doing "unset edit."
+    Using shelltool instead of cmdtool doesn't fix 6c.
 
 7.  I rlogin to another machine, and then no matter what I tell 'stty'
     I cannot get it to pass 8 bit characters?
@@ -117,6 +132,7 @@ be able to get ftp it... :-)
     endif
 
     Note that by doing that you cannot use pgup and pgdn to scroll...
+    Also if you are using termcap, replace "smkx" with "ks"...
 
 12. On POSIX machines ^C and ^Z will do not work when tcsh is a login
     shell?
@@ -137,11 +153,54 @@ be able to get ftp it... :-)
 14. On the cray, sometimes the CR/LF mapping gets screwed up.
 
     You are probably logged in to the cray via telnet. Cray's
-    telnetd implements line mode selection, but many telnet 
-    clients do not do that correctly, and the tty settings 
-    do not get propagated correctly. You can either compile
+    telnetd implements line mode selection the telnet client
+    you are using does not implement telnet line mode.
+    This cause the Cray's telnetd to try to use KLUDGELINEMODE.
+    You can turn off telnet line mode from the cray side by 
+    doing a "stty -extproc", or you can get the Cray AIC to build
+    a telnetd without KLUDGELINEMODE, or you can compile
     a new telnet client (from the BSD net2 tape), or at least
     on the suns use: 'mode character'.
+
+
+15. On AU/X, I made tcsh my startup shell, but the mac desktop is not
+    starting up (no X11 or Finder), and I only get console emulation.
+
+    This is another manifestation of item 5. Just add the pathname
+    to tcsh in /etc/shells and everything should work fine.
+
+16. On machines that use YP (NIS) tilde expansion might end up in /dev/null
+    If this happens complain to your vendor, to get a new version of NIS.
+    You can fix that in tcsh by defining YPBUGS in config.h
+
+17. Script on SGI 4.0.5 does not give us a tty, so we cannot have job
+    control. Their csh does not have job control either. Try:
+	% script
+	% cat > /dev/tty
+
+18. I start tcsh and it takes a couple of minutes to get the prompt.
+    You have defined REMOTEHOST and your DNS is not responding. Either
+    undefine REMOTEHOST and recompile or fix your DNS.
+
+19. If you need help generating your .cshrc file, check out:
+	http://www.imada.ou.dk/~blackie/dotfile/
+
+20. On POSIX systems the kernel will send hup signals to all the processes
+    in the foreground process group if 'stty hupcl' is set. For example
+    ./tcsh
+    echo $$
+    591
+    ./tcsh
+    kill -6 591
+
+    Will kill everything, since hup will be sent to all tcsh processes.
+    To avoid that you can set stty -hupcl, but it is not recommended.
+
+21. When I rsh the meta key stops working on the remote machine.
+
+    Try using rsh -8; this option is undocumented on some systems,
+    but it works. If that does not work, get and use ssh/sshd. You'll
+    be better off from a security point of view anyway.
 
 christos
 

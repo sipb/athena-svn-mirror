@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.h,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.h,v 1.1.1.2 1998-10-03 21:10:12 danw Exp $ */
 /*
  * tc.h: Tcsh includes
  */
@@ -37,7 +37,10 @@
 #ifndef _h_tc
 #define _h_tc
 
-#include "tc.const.h"
+#ifndef _h_tc_const
+/* Don't include it while we are making it. */
+# include "tc.const.h"
+#endif /* _h_tc_const */
 #include "tc.os.h"
 #include "tc.sig.h"
 #include "tc.decls.h"
@@ -45,5 +48,6 @@
 #define FMT_PROMPT	0
 #define FMT_WHO		1
 #define FMT_HISTORY	2
+#define FMT_SCHED	3
 
 #endif /* _h_tc */

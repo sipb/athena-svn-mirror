@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.decls.h,v 1.1.1.1 1996-10-02 06:09:25 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.decls.h,v 1.1.1.2 1998-10-03 21:09:44 danw Exp $ */
 /*
  * ed.decls.h: Editor external definitions
  */
@@ -46,10 +46,10 @@ extern	void	DeleteBack		__P((int));
 /*
  * ed.init.c
  */
-extern	void	check_window_size	__P((int));
 #ifdef SIG_WINDOW
+extern	void	check_window_size	__P((int));
 extern	sigret_t window_change		__P((int));
-#endif
+#endif /* SIG_WINDOW */
 extern	int	ed_Setup		__P((int));
 extern	void	ed_Init			__P((void));
 extern	int	Cookedmode		__P((void));
@@ -80,6 +80,7 @@ extern	void	tty_setdisc		__P((int, int));
 /*
  * ed.screen.c
  */
+extern	void	terminit		__P((void));
 extern	void	SetAttributes		__P((int));
 extern	void	so_write		__P((Char *, int));
 extern	void	ClearScreen		__P((void));
@@ -91,22 +92,26 @@ extern	void	DeleteChars		__P((int));
 extern	void	TellTC			__P((char *));
 extern	void	SetTC			__P((char *, char *));
 extern	void	EchoTC			__P((Char **));
-extern	int 	SetArrowKeys		__P((Char *, XmapVal *, int));
+extern	int 	SetArrowKeys		__P((CStr *, XmapVal *, int));
+extern	int 	IsArrowKey		__P((Char *));
 extern	void	ResetArrowKeys		__P((void));
 extern	void	DefaultArrowKeys	__P((void));
-extern	int 	ClearArrowKeys		__P((Char *));
-extern	void 	PrintArrowKeys		__P((Char *));
+extern	int 	ClearArrowKeys		__P((CStr *));
+extern	void 	PrintArrowKeys		__P((CStr *));
 extern	void	BindArrowKeys		__P((void));
-extern	void	Beep			__P((void));
+extern	void	SoundBeep		__P((void));
 extern	int	CanWeTab		__P((void));
 extern	void	ChangeSize		__P((int, int));
+#ifdef SIG_WINDOW
 extern	int	GetSize			__P((int *, int *));
+#endif /* SIG_WINDOW */
 extern	void	ClearToBottom		__P((void));
 extern	void	GetTermCaps		__P((void));
 
 /*
  * ed.defns.c
  */
+extern	void	editinit		__P((void));
 extern	void	ed_InitNLSMaps		__P((void));
 #ifdef DEBUG_EDIT
 extern	void	CheckMaps		__P((void));
@@ -122,7 +127,8 @@ extern	CCRETVAL	e_delprev		__P((int));
 extern	CCRETVAL	e_delnext		__P((int));
 /* added by mtk@ari.ncl.omron.co.jp (920818) */
 extern	CCRETVAL	e_delnext_eof		__P((int));	
-extern	CCRETVAL	e_list_delnext		__P((int));	/* for ^D */
+extern	CCRETVAL	e_delnext_list		__P((int));
+extern	CCRETVAL	e_delnext_list_eof	__P((int));	/* for ^D */
 extern	CCRETVAL	e_toend			__P((int));
 extern	CCRETVAL	e_tobeg			__P((int));
 extern	CCRETVAL	e_charback		__P((int));
@@ -221,9 +227,17 @@ extern	CCRETVAL	v_rchar_back		__P((int));
 extern  CCRETVAL        v_charto_fwd		__P((int));
 extern  CCRETVAL        v_charto_back		__P((int));
 extern  CCRETVAL        e_normalize_path	__P((int));
+extern  CCRETVAL        e_normalize_command	__P((int));
 extern  CCRETVAL        e_stuff_char		__P((int));
 extern  CCRETVAL        e_list_all		__P((int));
 extern  CCRETVAL        e_complete_all		__P((int));
+extern  CCRETVAL        e_complete_fwd		__P((int));
+extern  CCRETVAL        e_complete_back		__P((int));
+extern  CCRETVAL        e_dabbrev_expand	__P((int));
+extern  CCRETVAL	e_copy_to_clipboard	__P((int));
+extern  CCRETVAL	e_paste_from_clipboard	__P((int));
+extern  CCRETVAL	e_dosify_next		__P((int));
+extern  CCRETVAL	e_dosify_prev		__P((int));
 
 /*
  * ed.inputl.c
@@ -245,14 +259,16 @@ extern	void	PastBottom		__P((void));
 /*
  * ed.xmap.c
  */
-extern  XmapVal *XmapStr		__P((Char *));
+extern  XmapVal *XmapStr		__P((CStr *));
 extern  XmapVal *XmapCmd		__P((int));
-extern	void	 AddXkey		__P((Char *, XmapVal *, int));
-extern	void	 ClearXkey		__P((KEYCMD *, Char *));
-extern	int	 GetXkey		__P((Char *, XmapVal *));
+extern	void	 AddXkey		__P((CStr *, XmapVal *, int));
+extern	void	 ClearXkey		__P((KEYCMD *, CStr *));
+extern	int	 GetXkey		__P((CStr *, XmapVal *));
 extern	void	 ResetXmap		__P((void));
-extern	int	 DeleteXkey		__P((Char *));
-extern	void	 PrintXkey		__P((Char *));
-extern	int	 printOne		__P((Char *, XmapVal *, int));
+extern	int	 DeleteXkey		__P((CStr *));
+extern	void	 PrintXkey		__P((CStr *));
+extern	int	 printOne		__P((CStr *, XmapVal *, int));
+extern	int		  parseescape	__P((const Char **));
+extern	unsigned char    *unparsestring	__P((CStr *, unsigned char *, Char *));
 
 #endif /* _h_ed_decls */

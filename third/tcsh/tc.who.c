@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.who.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.who.c,v 1.1.1.2 1998-10-03 21:10:17 danw Exp $ */
 /*
  * tc.who.c: Watch logins and logouts...
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.who.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
+RCSID("$Id: tc.who.c,v 1.1.1.2 1998-10-03 21:10:17 danw Exp $")
 
 #include "tc.h"
 
@@ -59,7 +59,9 @@ RCSID("$Id: tc.who.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
 # define utmp utmpx
 # define ut_time ut_xtime
 #else /* !HAVEUTMPX */
-# include <utmp.h>
+# ifndef WINNT
+#  include <utmp.h>
+# endif /* WINNT */
 #endif /* HAVEUTMPX */
 
 #ifndef BROKEN_CC
@@ -110,10 +112,8 @@ struct who {
 };
 
 static struct who whohead, whotail;
-static int watch_period = 0;
+static time_t watch_period = 0;
 static time_t stlast = 0;
-extern char *month_list[];
-extern char *day_list[];
 #ifdef WHODEBUG
 static	void	debugwholist	__P((struct who *, struct who *));
 #endif
@@ -137,6 +137,7 @@ initwatch()
 {
     whohead.who_next = &whotail;
     whotail.who_prev = &whohead;
+    stlast = 1;
 #ifdef WHODEBUG
     debugwholist(NULL, NULL);
 #endif /* WHODEBUG */
@@ -154,21 +155,30 @@ resetwatch()
  * Watch /etc/utmp for login/logout changes.
  */
 void
-watch_login()
+watch_login(force)
+    int force;
 {
     int     utmpfd, comp = -1, alldone;
+    int	    firsttime = stlast == 1;
 #ifdef BSDSIGS
     sigmask_t omask;
 #endif				/* BSDSIGS */
     struct utmp utmp;
     struct who *wp, *wpnew;
     struct varent *v;
-    Char  **vp;
+    Char  **vp = NULL;
     time_t  t, interval = MAILINTVL;
     struct stat sta;
 #if defined(UTHOST) && defined(_SEQUENT_)
     char   *host, *ut_find_host();
 #endif
+#ifdef WINNT
+    static int ncbs_posted = 0;
+    USE(utmp);
+    USE(utmpfd);
+    USE(sta);
+    USE(wpnew);
+#endif /* WINNT */
 
     /* stop SIGINT, lest our login list get trashed. */
 #ifdef BSDSIGS
@@ -178,7 +188,7 @@ watch_login()
 #endif
 
     v = adrof(STRwatch);
-    if (v == NULL) {
+    if (v == NULL && !force) {
 #ifdef BSDSIGS
 	(void) sigsetmask(omask);
 #else
@@ -186,11 +196,29 @@ watch_login()
 #endif
 	return;			/* no names to watch */
     }
-    trim(vp = v->vec);
-    if (blklen(vp) % 2)		/* odd # args: 1st == # minutes. */
-	interval = (number(*vp)) ? getn(*vp++) : MAILINTVL;
+    if (!force) {
+	trim(vp = v->vec);
+	if (blklen(vp) % 2)		/* odd # args: 1st == # minutes. */
+	    interval = (number(*vp)) ? (getn(*vp++) * 60) : MAILINTVL;
+    }
+    else
+	interval = 0;
+	
     (void) time(&t);
-    if (t - watch_period < interval * 60) {
+#ifdef WINNT
+	/*
+	 * Since NCB_ASTATs take time, start em async at least 90 secs
+	 * before we are due -amol 6/5/97
+	 */
+	if (!ncbs_posted) {
+	    unsigned long tdiff = t - watch_period;
+	    if (!watch_period || ((tdiff  > 0) && (tdiff > (interval - 90)))) {
+		start_ncbs(vp);
+ 		ncbs_posted = 1;
+	    }
+	}
+#endif /* WINNT */
+    if (t - watch_period < interval) {
 #ifdef BSDSIGS
 	(void) sigsetmask(omask);
 #else
@@ -199,36 +227,41 @@ watch_login()
 	return;			/* not long enough yet... */
     }
     watch_period = t;
+#ifdef WINNT
+    ncbs_posted = 0;
+#else /* !WINNT */
 
     /*
      * From: Michael Schroeder <mlschroe@immd4.informatik.uni-erlangen.de>
      * Don't open utmp all the time, stat it first...
      */
     if (stat(_PATH_UTMP, &sta)) {
-	xprintf("cannot stat %s.  Please \"unset watch\".\n", _PATH_UTMP);
-#ifdef BSDSIGS
+	xprintf(CGETS(26, 1, "cannot stat %s.  Please \"unset watch\".\n"),
+		_PATH_UTMP);
+# ifdef BSDSIGS
 	(void) sigsetmask(omask);
-#else
+# else
 	(void) sigrelse(SIGINT);
-#endif
+# endif
 	return;
     }
     if (stlast == sta.st_mtime) {
-#ifdef BSDSIGS
+# ifdef BSDSIGS
 	(void) sigsetmask(omask);
-#else
+# else
 	(void) sigrelse(SIGINT);
-#endif
+# endif
 	return;
     }
     stlast = sta.st_mtime;
     if ((utmpfd = open(_PATH_UTMP, O_RDONLY)) < 0) {
-	xprintf("%s cannot be opened.  Please \"unset watch\".\n", _PATH_UTMP);
-#ifdef BSDSIGS
+	xprintf(CGETS(26, 2, "%s cannot be opened.  Please \"unset watch\".\n"),
+		_PATH_UTMP);
+# ifdef BSDSIGS
 	(void) sigsetmask(omask);
-#else
+# else
 	(void) sigrelse(SIGINT);
-#endif
+# endif
 	return;
     }
 
@@ -247,35 +280,35 @@ watch_login()
      */
     while (read(utmpfd, (char *) &utmp, sizeof utmp) == sizeof utmp) {
 
-#ifdef DEAD_PROCESS
-# ifndef IRIS4D
+# ifdef DEAD_PROCESS
+#  ifndef IRIS4D
 	if (utmp.ut_type != USER_PROCESS)
 	    continue;
-# else
+#  else
 	/* Why is that? Cause the utmp file is always corrupted??? */
 	if (utmp.ut_type != USER_PROCESS && utmp.ut_type != DEAD_PROCESS)
 	    continue;
-# endif /* IRIS4D */
-#endif /* DEAD_PROCESS */
+#  endif /* IRIS4D */
+# endif /* DEAD_PROCESS */
 
 	if (utmp.ut_name[0] == '\0' && utmp.ut_line[0] == '\0')
 	    continue;	/* completely void entry */
-#ifdef DEAD_PROCESS
+# ifdef DEAD_PROCESS
 	if (utmp.ut_type == DEAD_PROCESS && utmp.ut_line[0] == '\0')
 	    continue;
-#endif /* DEAD_PROCESS */
+# endif /* DEAD_PROCESS */
 	wp = whohead.who_next;
 	while (wp->who_next && (comp = strncmp(wp->who_tty, utmp.ut_line, UTLINLEN)) < 0)
 	    wp = wp->who_next;/* find that tty! */
 
 	if (wp->who_next && comp == 0) {	/* found the tty... */
-#ifdef DEAD_PROCESS
+# ifdef DEAD_PROCESS
 	    if (utmp.ut_type == DEAD_PROCESS) {
 		wp->who_time = utmp.ut_time;
 		wp->who_status = OFFLINE;
 	    }
 	    else
-#endif /* DEAD_PROCESS */
+# endif /* DEAD_PROCESS */
 	    if (utmp.ut_name[0] == '\0') {
 		wp->who_time = utmp.ut_time;
 		wp->who_status = OFFLINE;
@@ -287,17 +320,17 @@ watch_login()
 	    }
 	    else {
 		(void) strncpy(wp->who_new, utmp.ut_name, UTNAMLEN);
-#ifdef UTHOST
-# ifdef _SEQUENT_
+# ifdef UTHOST
+#  ifdef _SEQUENT_
 		host = ut_find_host(wp->who_tty);
 		if (host)
 		    (void) strncpy(wp->who_host, host, UTHOSTLEN);
 		else
 		    wp->who_host[0] = 0;
-# else
+#  else
 		(void) strncpy(wp->who_host, utmp.ut_host, UTHOSTLEN);
-# endif
-#endif /* UTHOST */
+#  endif
+# endif /* UTHOST */
 		wp->who_time = utmp.ut_time;
 		if (wp->who_name[0] == '\0')
 		    wp->who_status = ONLINE;
@@ -308,32 +341,32 @@ watch_login()
 	else {		/* new tty in utmp */
 	    wpnew = (struct who *) xcalloc(1, sizeof *wpnew);
 	    (void) strncpy(wpnew->who_tty, utmp.ut_line, UTLINLEN);
-#ifdef UTHOST
-# ifdef _SEQUENT_
+# ifdef UTHOST
+#  ifdef _SEQUENT_
 	    host = ut_find_host(wpnew->who_tty);
 	    if (host)
 		(void) strncpy(wpnew->who_host, host, UTHOSTLEN);
 	    else
 		wpnew->who_host[0] = 0;
-# else
+#  else
 	    (void) strncpy(wpnew->who_host, utmp.ut_host, UTHOSTLEN);
-# endif
-#endif /* UTHOST */
+#  endif
+# endif /* UTHOST */
 	    wpnew->who_time = utmp.ut_time;
-#ifdef DEAD_PROCESS
+# ifdef DEAD_PROCESS
 	    if (utmp.ut_type == DEAD_PROCESS)
 		wpnew->who_status = OFFLINE;
 	    else
-#endif /* DEAD_PROCESS */
+# endif /* DEAD_PROCESS */
 	    if (utmp.ut_name[0] == '\0')
 		wpnew->who_status = OFFLINE;
 	    else {
 		(void) strncpy(wpnew->who_new, utmp.ut_name, UTNAMLEN);
 		wpnew->who_status = ONLINE;
 	    }
-#ifdef WHODEBUG
+# ifdef WHODEBUG
 	    debugwholist(wpnew, wp);
-#endif /* WHODEBUG */
+# endif /* WHODEBUG */
 
 	    wpnew->who_next = wp;	/* link in a new 'who' */
 	    wpnew->who_prev = wp->who_prev;
@@ -342,9 +375,13 @@ watch_login()
 	}
     }
     (void) close(utmpfd);
-#if defined(UTHOST) && defined(_SEQUENT_)
+# if defined(UTHOST) && defined(_SEQUENT_)
     endutent();
-#endif
+# endif
+#endif /* !WINNT */
+
+    if (force || vp == NULL)
+	return;
 
     /*
      * The state of all logins is now known, so we can search the user's list
@@ -367,24 +404,28 @@ watch_login()
 		continue;	/* entry doesn't qualify */
 	    /* already printed or not right one to print */
 
+
 	    if (wp->who_time == 0)/* utmp entry was cleared */
 		wp->who_time = watch_period;
 
 	    if ((wp->who_status & OFFLINE) &&
 		(wp->who_name[0] != '\0')) {
-		print_who(wp);
+		if (!firsttime)
+		    print_who(wp);
 		wp->who_name[0] = '\0';
 		wp->who_status |= ANNOUNCE;
 		continue;
 	    }
 	    if (wp->who_status & ONLINE) {
-		print_who(wp);
+		if (!firsttime)
+		    print_who(wp);
 		(void) strcpy(wp->who_name, wp->who_new);
 		wp->who_status |= ANNOUNCE;
 		continue;
 	    }
 	    if (wp->who_status & CHANGED) {
-		print_who(wp);
+		if (!firsttime)
+		    print_who(wp);
 		(void) strcpy(wp->who_name, wp->who_new);
 		wp->who_status |= ANNOUNCE;
 		continue;
@@ -412,22 +453,22 @@ debugwholist(new, wp)
     }
     xprintf("TAIL\n");
     if (a != &whotail) {
-	xprintf("BUG! last element is not whotail!\n");
+	xprintf(CGETS(26, 3, "BUG! last element is not whotail!\n"));
 	abort();
     }
     a = whotail.who_prev;
-    xprintf("backward: ");
+    xprintf(CGETS(26, 4, "backward: "));
     while (a->who_prev != NULL) {
 	xprintf("%s/%s -> ", a->who_name, a->who_tty);
 	a = a->who_prev;
     }
     xprintf("HEAD\n");
     if (a != &whohead) {
-	xprintf("BUG! first element is not whohead!\n");
+	xprintf(CGETS(26, 5, "BUG! first element is not whohead!\n"));
 	abort();
     }
     if (new)
-	xprintf("new: %s/%s\n", new->who_name, new->who_tty);
+	xprintf(CGETS(26, 6, "new: %s/%s\n"), new->who_name, new->who_tty);
     if (wp)
 	xprintf("wp: %s/%s\n", wp->who_name, wp->who_tty);
 }
@@ -439,9 +480,9 @@ print_who(wp)
     struct who *wp;
 {
 #ifdef UTHOST
-    Char   *cp = str2short("%n has %a %l from %m.");
+    Char   *cp = str2short(CGETS(26, 7, "%n has %a %l from %m."));
 #else
-    Char   *cp = str2short("%n has %a %l.");
+    Char   *cp = str2short(CGETS(26, 8, "%n has %a %l."));
 #endif /* UTHOST */
     struct varent *vp = adrof(STRwho);
     Char buf[BUFSIZE];
@@ -456,11 +497,12 @@ print_who(wp)
 } /* end print_who */
 
 
-char *
-who_info(ptr, c, wbuf)
+const char *
+who_info(ptr, c, wbuf, wbufsiz)
     ptr_t ptr;
     int c;
     char *wbuf;
+    size_t wbufsiz;
 {
     struct who *wp = (struct who *) ptr;
 #ifdef UTHOST
@@ -485,11 +527,12 @@ who_info(ptr, c, wbuf)
     case 'a':
 	switch (wp->who_status & STMASK) {
 	case ONLINE:
-	    return "logged on";
+	    return CGETS(26, 9, "logged on");
 	case OFFLINE:
-	    return "logged off";
+	    return CGETS(26, 10, "logged off");
 	case CHANGED:
-	    xsprintf(wbuf, "replaced %s on", wp->who_name);
+	    xsnprintf(wbuf, wbufsiz, CGETS(26, 11, "replaced %s on"),
+		      wp->who_name);
 	    return wbuf;
 	default:
 	    break;
@@ -499,7 +542,7 @@ who_info(ptr, c, wbuf)
 #ifdef UTHOST
     case 'm':
 	if (wp->who_host[0] == '\0')
-	    return "local";
+	    return CGETS(26, 12, "local");
 	else {
 	    /* the ':' stuff is for <host>:<display>.<screen> */
 	    for (pb = wp->who_host, flg = Isdigit(*pb) ? '\0' : '.';
@@ -516,7 +559,7 @@ who_info(ptr, c, wbuf)
 
     case 'M':
 	if (wp->who_host[0] == '\0')
-	    return "local";
+	    return CGETS(26, 12, "local");
 	else {
 	    for (pb = wp->who_host; *pb != '\0'; pb++)
 		*wb++ = Isupper(*pb) ? Tolower(*pb) : *pb;
@@ -530,7 +573,7 @@ who_info(ptr, c, wbuf)
 
     default:
 	wbuf[0] = '%';
-	wbuf[1] = c;
+	wbuf[1] = (char) c;
 	wbuf[2] = '\0';
 	return wbuf;
     }
@@ -546,10 +589,11 @@ struct command *c;
     struct who *wp;
     struct varent *vp;
 
-    if ((vp = adrof(STRwatch)) == NULL)
+    USE(v);
+    USE(c);
+    vp = adrof(STRwatch);	/* lint insists vp isn't used unless we */
+    if (vp == NULL)		/* unless we assign it outside the if */
 	stderror(ERR_NOWATCH);
-    blkpr(vp->vec);
-    xputchar('\n');
     resetwatch();
     wp = whohead.who_next;
     while (wp->who_next != NULL) {
@@ -557,4 +601,79 @@ struct command *c;
 	wp = wp->who_next;
     }
 }
+
+# ifdef UTHOST
+char *
+utmphost()
+{
+    char *tty = short2str(varval(STRtty));
+    struct who *wp;
+    char *host = NULL;
+
+    watch_login(1);
+    
+    for (wp = whohead.who_next; wp->who_next != NULL; wp = wp->who_next) {
+	if (strcmp(tty, wp->who_tty) == 0)
+	    host = wp->who_host;
+	wp->who_name[0] = '\0';
+    }
+    resetwatch();
+    return host;
+}
+# endif /* UTHOST */
+
+#ifdef WINNT
+void add_to_who_list(name, mach_nm)
+    char *name;
+    char *mach_nm;
+{
+
+    struct who *wp, *wpnew;
+    int comp = -1;
+
+    wp = whohead.who_next;
+    while (wp->who_next && (comp = strncmp(wp->who_tty,mach_nm,UTLINLEN)) < 0)
+	wp = wp->who_next;/* find that tty! */
+
+    if (wp->who_next && comp == 0) {	/* found the tty... */
+
+	if (*name == '\0') {
+	    wp->who_time = 0;
+	    wp->who_status = OFFLINE;
+	}
+	else if (strncmp(name, wp->who_name, UTNAMLEN) == 0) {
+	    /* someone is logged in */ 
+	    wp->who_time = 0;
+	    wp->who_status = 0;	/* same guy */
+	}
+	else {
+	    (void) strncpy(wp->who_new, name, UTNAMLEN);
+	    wp->who_time = 0;
+	    if (wp->who_name[0] == '\0')
+		wp->who_status = ONLINE;
+	    else
+		wp->who_status = CHANGED;
+	}
+    }
+    else {
+	wpnew = (struct who *) xcalloc(1, sizeof *wpnew);
+	(void) strncpy(wpnew->who_tty, mach_nm, UTLINLEN);
+	wpnew->who_time = 0;
+	if (*name == '\0')
+	    wpnew->who_status = OFFLINE;
+	else {
+	    (void) strncpy(wpnew->who_new, name, UTNAMLEN);
+	    wpnew->who_status = ONLINE;
+	}
+#ifdef WHODEBUG
+	debugwholist(wpnew, wp);
+#endif /* WHODEBUG */
+
+	wpnew->who_next = wp;	/* link in a new 'who' */
+	wpnew->who_prev = wp->who_prev;
+	wpnew->who_prev->who_next = wpnew;
+	wp->who_prev = wpnew;	/* linked in now */
+    }
+}
+#endif /* WINNT */
 #endif /* HAVENOUTMP */
