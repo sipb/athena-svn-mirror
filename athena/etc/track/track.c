@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.9 1988-02-19 19:07:16 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 3.0 1988-03-09 13:18:05 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.9  88/02/19  19:07:16  don
+ * bug from punctuation error, causing unbounded growth of source pathname.
+ * 
  * Revision 2.8  88/01/29  18:24:10  don
  * bug fixes. also, now track can update the root.
  * 
@@ -73,7 +76,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.9 1988-02-19 19:07:16 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 3.0 1988-03-09 13:18:05 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -110,6 +113,7 @@ int writeflag = 0;	/* if set, translate subscription list -> statfile,
 int parseflag = 0;	/* if set, just parse the subscription list */
 int forceflag = 0;	/* if set, will over-ride lock files */
 int verboseflag = 0;	/* if set, files listed on stdout as they're updated */
+int cksumflag = 0;	/* if set, compare file checksums when updating */
 int dirflag = 0;	/* if set, create directories when necessary */
 int nopullflag = 0;	/* if set, find out the differences,
 			 *	   but don't pull anything */
@@ -128,6 +132,7 @@ int entnum = -1;		/* Current entry number */
 
 int (*statf)();			/* dec_entry() sets value to stat() or lstat(),
 				 * according to entries[].followlinks */
+char *statn = "";		/* name of statf's current value. */
 
 main(argc,argv)
 int argc;
@@ -168,13 +173,6 @@ char **argv;
 			}
 			else strcpy( fromroot, scratch);
 			break;
-		/* -p
-		 *    Parse only.  Display a detailed list of the fields in the
-		 * subscription file.
-		 */
-		case 'p':
-			parseflag = 1;
-			break;
 		/* -S stackmax
 		 *    Specify deeper path stacks
 		 */ 
@@ -193,6 +191,15 @@ char **argv;
 			}
 			else strcpy( toroot, scratch);
 			break;
+		/* -c
+		 *    compare checksums of regular files, when updating.
+		 *    the checksums are used to detect file-system
+		 *    corruption.
+		 */
+		case 'c':
+			cksumflag = 1;
+			break;
+
 		/* -d dirname
 		 *    Specify the working directory for
 		 *    accessing the subscription-list and statfile.
@@ -228,6 +235,13 @@ char **argv;
 			nopullflag = 1;
 			verboseflag = 1;
 			fprintf( stderr, "-n: what we WOULD do:\n");
+			break;
+		/* -p
+		 *    Parse only.  Display a detailed list of the fields in the
+		 * subscription file.
+		 */
+		case 'p':
+			parseflag = 1;
 			break;
 		/* -q
 		 *    Be quiet about warning messages.
@@ -353,23 +367,26 @@ char **argv;
 #define pathtail( p) p[1+*(int*)p[CNT]]
 
 readstat() {
-	struct stat *cmpstatp, *remstatp, treestat;
-	char statline[ LINELEN], remname[ LINELEN], remlink[ LINELEN];
+	struct currentness rem_currency, *cmp_currency, *entry_currency;
+	char statline[ LINELEN], *remname;
 	char **from, **to, **cmp;
-	char *cmplink, *tail;
+	char *tail = NULL;
 
 	from = initpath( fromroot);
 	to   = initpath(   toroot);
 	cmp  = initpath(   toroot);
+
+	/* prime the path-stacks for dec_entry() to
+	 * pop the "old" entry-names off.
+	 */
+	pushpath( from, ""); pushpath( to, ""); pushpath( cmp, "");
 
 	init_next_match();
 
 	while ( NULL != fgets( statline, sizeof statline, statfile)) {
 		/* extract the currency data from the statline:
 		 */
-		remstatp = dec_statfile( statline, remname, remlink);
-		if ( S_IFMT == TYPE( *remstatp))
-			continue;
+		remname = dec_statfile( statline, &rem_currency);
 
 		/* find the subscription entry corresponding to the
 		 * current pathname.
@@ -383,49 +400,30 @@ readstat() {
 
 		if ( ! ( tail = goodname( remname, entnum))) continue;
 
-		/* construct the current entry's full pathnames,
-		 * set statf to either stat or lstat,
-		 * and extract the corresponding currency data for
-		 * the local cmpfile:
-		 */
-		cmpstatp = dec_entry( entnum, from, to, cmp);
-
-		/* dec_entry pushes pathname-qualification onto
-		 * from, to, and cmp:
-		 * the element NAME of the path 'from' indicates the start of
-		 * entnum's fromfile-name;
-		 * the same holds for the corresp. elements of 'to' & 'cmp'.
+		/* loosely, tail == remname - fromfile, as
+		 * long as tail isn't in the exception-list.
+		 * the string remname begins with the string from[ PATH]:
+		 * for example: remname =            /usr/bin/foo.
+		 *          from[ PATH] =            /usr/bin.
+		 *          from[ ROOT] = /mountpoint/usr/bin.
+		 * in this example, we get tail == "foo".
 		 */
 
-		/* add the tail onto the pathnames:
-		 */
-		pushpath( from, tail);
+		cmp_currency = dec_entry( entnum, from, to, cmp, tail);
+
 		pushpath( to,  tail);
-		pushpath( cmp, tail);
+		pushpath( from, tail);
 
-		/* a directory can have a non-dir as its cmpfile:
-		 * we append tail to cmp only if cmp is a dir.
-		 * we change stat buffers, so as not to trash
-		 * dec_entry's value, which we'll need again.
-		 */
-		if ( S_IFDIR != TYPE( *cmpstatp) || ! *tail);
-		else if ( (*statf)( cmp[ ROOT], &treestat))
-			treestat.st_mode = S_IFMT;	/* XXX */
-		else cmpstatp = &treestat;
-
-		if ( S_IFLNK != TYPE( *cmpstatp) ||
-		     NULL == ( cmplink = follow_link( cmp[ ROOT])))
-			cmplink = "";
-
-		if ( ! update_file( remstatp, remlink, from[ ROOT],
-				    cmpstatp, cmplink,   to[ ROOT]));
-
-			/* do_cmds needs to be rewritten;
-			do_cmds( entries[entnum].cmdbuf, to[ ROOT]);
+		if ( ! update_file( cmp_currency, to,
+				   &rem_currency, from))
+			/* REWRITE:
+			do_cmds( entries[entnum].cmdbuf, to[ ROOT])
 			 */
-		poppath( from);
+			;
+		/* remove tail from each path:
+		 */
 		poppath( to);
-		poppath( cmp);
+		poppath( from);
 	}
 }
 
@@ -485,10 +483,15 @@ clearlocks()
 writestat()
 {
 	char **from, **cmp, **dummy = (char **) NULL;
-	struct stat *cmpstatp;
+	struct currentness *entry_currency;
 
 	from = initpath( fromroot);
 	cmp  = initpath( fromroot);
+
+	/* prime the path-stacks for dec_entry() to
+	 * pop the "old" entry-names off.
+	 */
+	pushpath( from, ""); pushpath( cmp, "");
 
 	for( entnum = 1; entnum < entrycnt; entnum++) {
 
@@ -496,15 +499,16 @@ writestat()
 		 * onto the paths 'from' & 'cmp',
 		 * and pops when appropriate.
 		 */
-		cmpstatp = dec_entry( entnum, from, dummy, cmp);
+		entry_currency = dec_entry( entnum, from, dummy, cmp, NULL);
 
-		/* write_statline returns fromfile's type:
+		/* write_statline returns fromfile's true type,
+		 * regardless of cmpfile's type:
 		 */
-		if      ( S_IFDIR != write_statline( from, cmpstatp));
-		else if ( S_IFDIR != TYPE( *cmpstatp ))
+		if      ( S_IFDIR != write_statline( from, entry_currency));
+		else if ( S_IFDIR != TYPE( entry_currency->sbuf))
 
-			walk_trees( from, dummy, cmpstatp);
-		else    walk_trees( from, cmp,   cmpstatp);
+			walk_trees( from, dummy, entry_currency);
+		else    walk_trees( from, cmp,   entry_currency);
 
 		/* WARNING: walk_trees alters ALL of its arguments */
 	}
@@ -522,9 +526,9 @@ writestat()
  * we take fromfile's subnode's pathname ( not including the prefix fromroot),
  * and we take the stat from cmpfile's corresponding subnode.
  */
-walk_trees( f, c, cmpstatp)
+walk_trees( f, c, currency)
 char *f[], *c[];
-struct stat *cmpstatp;
+struct currentness *currency;
 {
 	DIR *dirp;
 	struct direct *dp;
@@ -547,15 +551,15 @@ struct stat *cmpstatp;
 		if ( ! goodname( f[ NAME], entnum));
 			/* skip to poppath() */
 
-		else if ( c && (*statf)( c[ ROOT], cmpstatp)) {
-			sprintf(errmsg,"can't stat %s\n", c[ ROOT]);
-			do_gripe();
+		else if ( c && get_currentness( c, currency))
 			/* give up, goto poppath() calls */
-		}
+			sprintf(errmsg,"can't %s comparison-file %s.\n",
+				statn, c[ ROOT]);
+
 		/* write_statline returns fromfile's type:
 		 */
-		else if ( S_IFDIR == write_statline( f, cmpstatp))
-			walk_trees( f, c, cmpstatp);
+		else if ( S_IFDIR == write_statline( f, currency))
+			walk_trees( f, c, currency);
 
 		poppath( f);
 		poppath( c);

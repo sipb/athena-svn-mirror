@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.3 1988-01-29 18:23:59 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 3.0 1988-03-09 13:17:34 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.3  88/01/29  18:23:59  don
+ * bug fixes. also, now track can update the root.
+ * 
  * Revision 2.2  87/12/03  17:34:00  don
  * fixed lint warnings.
  * 
@@ -27,7 +30,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.3 1988-01-29 18:23:59 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 3.0 1988-03-09 13:17:34 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -43,7 +46,12 @@ printmsg()
 	int i;
 	char *s;
 
-	perror("system error is");
+	fprintf(stderr, "***%s: %s", prgname, errmsg);
+
+	if ( '\n' != errmsg[ strlen( errmsg) - 1])
+		putc('\n', stderr);
+
+	perror("errno is");
 
 	if	( entnum >= 0)	i = entnum;	/* passed parser */
 	else if ( entrycnt >= 0)i = entrycnt;	/* in parser */
@@ -53,11 +61,10 @@ printmsg()
 	else if ( *subfilename)	s = subfilename;
 	else			s = "<unknown>";
 
-	fprintf(stderr, "%s: %s\nWorking on list named %s",
-		prgname, errmsg, s);
+	fprintf(stderr, "Working on list named %s", s);
 
-	if ( i < 0)	fprintf(stderr," before parsing a list-elt.\n");
-	else		fprintf(stderr," & item %s\n", entries[ i].fromfile);
+	if ( i < 0) fprintf(stderr," before parsing a list-elt.\n");
+	else	    fprintf(stderr," & entry '%s'\n", entries[ i].fromfile);
 }
 
 do_gripe()
@@ -95,6 +102,8 @@ parseinit( subfile) FILE *subfile;
 clear_ent()
 {
 	int i;
+	struct currentness *c = &entries[ entrycnt].currency;
+
        *entries[ entrycnt].sortkey	=	'\0';
 	entries[ entrycnt].keylen	=	  0;
 	entries[ entrycnt].followlink	=         0;
@@ -102,6 +111,11 @@ clear_ent()
 	entries[ entrycnt].tofile	= (char*) 0;
 	entries[ entrycnt].cmpfile	= (char*) 0;
 	entries[ entrycnt].cmdbuf	= (char*) 0;
+       *c->name  =	  '\0';
+	c->link  =  (char*) 0;
+	c->cksum =	    0;
+	clear_stat( &c->sbuf);
+
 	/* add global exceptions
 	 */
 	for(i=0;i<WORDMAX;i++)

@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.2 1988-01-29 18:24:18 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 3.0 1988-03-09 13:17:18 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  88/01/29  18:24:18  don
+ * bug fixes. also, now track can update the root.
+ * 
  * Revision 2.1  87/12/03  17:33:18  don
  * fixed lint warnings.
  * 
@@ -28,7 +31,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.2 1988-01-29 18:24:18 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 3.0 1988-03-09 13:17:18 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -36,118 +39,259 @@ static char
 #include "track.h"
 #include <sys/errno.h>
 
-int
-update_file(r, remlink, remotename,
-	    l, loclink, localname)
-struct stat *r, *l;
-char *remlink, *loclink, *remotename, *localname;
-{
-	int exists, oumask;
-	int diff, type_diff;
-	struct timeval *timevec;
+#define DIFF( l, r, field) (short)(((l).sbuf.field) != ((r).sbuf.field))
 
-	diff =  UID( *r)  != UID( *l) ||
-		GID( *r)  != GID( *l) ||
-		MODE( *r) != MODE( *l);
+struct currentness *
+currency_diff( l, r) struct currentness *l, *r; {
+	static struct currentness d;
+	struct stat *s;
+	int diff;
 
-	type_diff = TYPE( *r) != TYPE( *l);
+	/* we fill the difference structure d with boolean flags,
+	 * a field being set indicating that l & r differ in that field.
+	 */
+	s = &d.sbuf;
 
-	switch ( TYPE( *r)) {
+	d.sbuf.st_mode =
+		   DIFF( *l, *r, st_mode & ~S_IFMT) |		/* prot bits */
+		   DIFF( *l, *r, st_mode &  S_IFMT) << 12;	/* type bits */
+	UID( *s) = DIFF( *l, *r, st_uid);
+	GID( *s) = DIFF( *l, *r, st_gid);
+
+	diff = UID( *s) || GID( *s) || d.sbuf.st_mode;
+
+	TIME( *s) = 0;
+	DEV( *s) = 0;
+	d.link = NULL;
+	d.cksum = 0;
+
+	switch ( TYPE( r->sbuf)) {
 
 	case S_IFREG:
-		diff |= (uflag     == DO_CLOBBER)  ||
-			 TIME( *r) != TIME( *l); /*    ||
-			 strcmp( remotename, localname); */
+		TIME( *s) = DIFF( *l, *r, st_mtime);
+		diff |= (uflag == DO_CLOBBER) || TIME( *s);
+		diff |= d.cksum = ( cksumflag && l->cksum != r->cksum);
 	case S_IFDIR: break;
+
+	case S_IFLNK:
+		d.link = (char *)( 0 != strcmp( r->link, l->link));
+		diff = (int) d.link;
+		break;
 
 	case S_IFCHR:
 	case S_IFBLK:
-		if (! incl_devs) return(-1);
-		type_diff |= ( DEV( *r) != DEV( *l));
+		if (! incl_devs) return( NULL);
+		DEV( *s) = DIFF( *l, *r, st_dev);
+		diff != DEV( *s);
 		break;
 
-	case S_IFLNK:
-		diff = strcmp( remlink, loclink);
-		break;
 	case S_IFMT:
-		return (-1);
+		return ( NULL);
 	default:
 		sprintf(errmsg,"bad string passed to update\n");
 		do_panic();
 		break;
 	}
 
-	if (!diff && !type_diff) return(-1);
+	return( diff? &d : NULL);
+}
+int
+update_file(l, lpath,
+	    r, rpath)
+char **lpath, **rpath;
+struct currentness *r, *l;
+{
+	char *remotename = rpath[ ROOT], *localname = lpath[ ROOT];
+	struct currentness *diff;
+	struct stat lstat;
+	struct timeval *timevec;
+	unsigned int oumask;
+	unsigned int exists, local_type, remote_type, same_name;
 
-	if ( verboseflag) {
-		fprintf(stderr,"Updating: source - %s\n",
-			make_name( remotename, r, remlink));
-		fprintf(stderr,"            dest - %s\n",
-			make_name( localname,  l, loclink));
+	/* if the cmpfile doesn't exist, and tofile != cmpfile,
+	 * give up, since we want to be conservative about updating.
+	 */
+	same_name = ! strcmp( lpath[ NAME], l->name);
+
+	if ( S_IFMT == TYPE( l->sbuf) && ! same_name) {
+		sprintf( errmsg, "nonexistent comparison-file %s\n", l->name);
+		errno = 0;
+		do_gripe();
+		return( -1);
 	}
-	if ( nopullflag)
-		return(-1);
+	/* either: cmpfile != tofile, and cmpfile exists,
+	 *     or: cmpfile == tofile, & the file might exist or not.
+	 */
+	local_type = same_name ? TYPE( l->sbuf) :
+		     (*statf)( lpath[ ROOT], &lstat) ? S_IFMT : TYPE( lstat);
 
-	exists = !access( localname, 0);
+	exists = S_IFMT != local_type;
 
-	if ( S_IFDIR != TYPE( *l) && !exists && findparent( localname)) {
+	diff = currency_diff( l, r);
+
+	/* that diff == NULL doesn't mean localname exists,
+	 * since l may represent a different file.
+	 */
+	if ( ! diff && exists) {
+		return( -1);
+	}
+
+	if ( verboseflag) banner( remotename, localname, r, l, diff);
+
+	/* if fromfile != the remote cmpfile, 
+	 * we need to extract fromfile's real currency info.
+	 * note that we compare the "unmounted" version of remotename,
+	 * since r->name comes from the statfile, and so doesn't
+	 * include the mountpoint path-component.
+	 */
+	if ( strcmp( r->name,    rpath[ NAME]))
+		get_currentness( rpath, r);
+
+	remote_type = TYPE( r->sbuf);
+
+	/* same_name == 1 means that we're updating the cmpfile.
+	 * if this cmpfile is the entry's top-level cmpfile,
+	 * then we need to update the entry's currency-info.
+	 */
+	if ( same_name && nopullflag) { /* simulate cmpfile's update */
+		l->sbuf.st_mode  = r->sbuf.st_mode;
+		l->sbuf.st_uid   = r->sbuf.st_uid;
+		l->sbuf.st_gid   = r->sbuf.st_gid;
+		l->sbuf.st_rdev  = r->sbuf.st_rdev;
+		l->sbuf.st_mtime = r->sbuf.st_mtime;
+		l->link		 = r->link;
+		l->cksum	 = r->cksum;
+	}
+	else if ( same_name) /* nopullflag off; usual case */
+		/* mark the currency as "out-of-date",
+		 * in case it's an entry's currency, because
+		 * dec_entry() reuses each entry's currencies repeatedly.
+		 * dec_entry() will refresh the entry's currency,
+		 * if it sees this mark.
+		 */
+		l->sbuf.st_mode = 0;
+
+	if ( nopullflag) return(-1);
+
+	/* if tofile is supposed to be a dir,
+	 * we can create its whole path if necessary;
+	 * otherwise, its parent must exist:
+	 */
+	if ( S_IFDIR == remote_type || exists);
+	else if ( findparent( localname)) {
 		sprintf(errmsg,"can't find parent directory for %s",
 			localname);
 		do_gripe();
 		return(-1);
 	}
+	/* if fromfile & tofile aren't of the same type,
+	 * delete tofile, and record the deed.
+	 */
+	if ( local_type == remote_type);
+	else if ( exists && removeit( localname, local_type)) return( -1);
+	else exists = 0;
 
-	if ( type_diff && exists && removeit( localname, TYPE( *l))) {
-		sprintf( errmsg,"can't remove %s\n",localname);
-		do_gripe();
-		return(-1);
-	}
+	/* at this stage, we know that if localfile still exists,
+	 * it has the same type as its remote counterpart.
+	 */
 
-	switch ( TYPE( *r)) {
+	switch ( TYPE( r->sbuf)) {
 
 	case S_IFREG:
 		/* the stat structure happens to contain
-		 * a timevec structure, becuse of the spare integers
+		 * a timevec structure, because of the spare integers
 		 * that follow each of the time fields:
 		 */
-		(*r).st_atime = TIME( *r);
-		timevec = (struct timeval *) &(*r).st_atime; /* XXX */
+		r->sbuf.st_atime = TIME( r->sbuf);
+		timevec = (struct timeval *) &r->sbuf.st_atime; /* XXX */
 
 		/* it's important to call utimes before set_prots:
 		 */
-		if ( copy_file( remotename, localname)) return( -1);
-		else    utimes(  localname, timevec);
-		return( set_prots( localname, r));
-
-	case S_IFDIR:
-		return( exists	? set_prots( localname, r)
-				: makepath(  localname, r));
-
-	case S_IFBLK:		/* XXX: stat.st_mode != MODE() macro */
-	case S_IFCHR:
-		if ( !exists &&
-		     mknod( localname, MODE( *r), DEV( *r))) {
-			sprintf(errmsg,"can't make device %s\n",localname);
-			do_gripe();
-			return(-1);
-		}
-		return( set_prots( localname, r));
+		if ( copy_file(   remotename, localname)) return( -1);
+		else    utimes(    localname, timevec);
+		return( set_prots( localname, &r->sbuf));
 
 	case S_IFLNK:
+                if ( exists && removeit( localname, S_IFLNK))
+			return( -1);
+
 		oumask = umask(0); /* Symlinks don't really have modes */
-		if ( symlink( remlink, localname)) {
+		if ( symlink( r->link, localname)) {
 			sprintf(errmsg, "can't create symbolic link %s -> %s\n",
-				localname, remlink);
+				localname, r->link);
 			do_gripe();
+			umask(oumask);
 			return(-1);
 		}
 		umask(oumask);
 		return( 0);
+
+	case S_IFDIR:
+		return( exists	? set_prots( localname, &r->sbuf)
+				: makepath(  localname, &r->sbuf));
+	case S_IFBLK:
+	case S_IFCHR:
+		if ( !exists && mknod( localname, remote_type, DEV( r->sbuf))) {
+			sprintf(errmsg, "can't make device %s\n", localname);
+			do_gripe();
+			return(-1);
+		}
+		return( set_prots( localname, &r->sbuf));
+
+	case S_IFMT: /* this message could ask the user whether to continue: */
+		sprintf( errmsg, "fromfile %s doesn't exist.\n", remotename);
+		do_gripe();
+		return( -1);
 	default:
 		sprintf(errmsg, "unknown file-type in update_file()\n");
 		do_gripe();
 		return(-1);
 	}
+	sprintf( errmsg, "ERROR (update_file): internal error.\n");
+	do_panic();
+	/*NOTREACHED*/
+	return( -1);
+}
+
+get_currentness( path, c) char **path; struct currentness *c; {
+        strcpy( c->name, path[ NAME]);
+        c->cksum = 0;
+        c->link = "";
+        if ( (*statf)( path[ ROOT], &c->sbuf)) {
+		clear_stat( &c->sbuf);
+                c->sbuf.st_mode = S_IFMT;       /* XXX */
+		if ( errno != ENOENT) {
+			sprintf( errmsg,"can't %s comparison-file %s\n",
+				 statn, path[ ROOT]);
+			do_gripe();
+		}
+                return( -1);
+        }
+        switch ( TYPE( c->sbuf)) {
+        case S_IFREG:
+		if ( writeflag || cksumflag)
+			c->cksum = in_cksum( path[ ROOT], &c->sbuf);
+                break;
+        case S_IFLNK:
+                if ( !( c->link = follow_link( path[ ROOT]))) {
+                        c->link = "";
+                        return( -1);
+                }
+                break;
+        default:
+                break;
+        }
+        return( 0);
+}
+
+clear_stat( sp) struct stat *sp; {
+	int *p;;
+
+	/* it happens that  a stat is 16 long integers;
+	 * we exploit this fact for speed.
+	 */
+	for ( p = (int *)sp + sizeof( struct stat) / 4; --p >= (int *)sp;)
+		*p = 0;
 }
 
 int
@@ -159,7 +303,7 @@ struct stat *r;
 	int error = 0;
 
 	if ( (*statf)( name, &sbuf)) {
-		sprintf( errmsg, "can't stat file &s\n", name);
+		sprintf( errmsg, "(set_prots) can't %s &s\n", statn, name);
 		do_gripe();
 		return(-1);
 	}
@@ -233,41 +377,74 @@ char *from,*to;
 	return (0);
 }
 
-/* can't be called twice in one printf,
- * because it stores its result in static buffer.
+/* this array converts stat()'s type-bits to a character string:
+ * to make the index, right-shift the st_mode field by 13 bits.
  */
-char *make_name( name, s, link)
-char *name, *link;
-struct stat *s;
+static char *type_str[] = { "ERROR", "char-device", "directory",
+	"block-device", "file", "symlink", "socket(ERROR)", "nonexistent"
+};
+
+banner( rname, lname, r, l, d)
+char *rname, *lname;
+struct currentness *r, *l, *d;
 {
-	static char buff[LINELEN];
+	unsigned int n = 0, m = 0;
+	struct stat *ds = &d->sbuf, *ls = &l->sbuf, *rs = &r->sbuf;
+	char *format, *ltype, *rtype, *p;
+	char fill[ LINELEN], *lfill = "", *rfill = "";
+	int dlen;
 
-	switch ( TYPE( *s)) {
-	case S_IFREG:
-		sprintf(buff,"file %s (uid %d, gid %d, mode %04o)",
-			name, UID( *s), GID( *s), MODE( *s));
-		break;
+	ltype = type_str[ TYPE( *ls) >> 13];
+	rtype = type_str[ TYPE( *rs) >> 13];
 
-	case S_IFDIR:
-		sprintf(buff,"dir %s (uid %d, gid %d, mode %04o)",
-			name, UID( *s), GID( *s), MODE( *s));
-		break;
-
-	case S_IFCHR:
-	case S_IFBLK:
-		sprintf( buff,
-			"device %s (uid %d, gid %d, mode %03o) maj %d min %d",
-			name, UID( *s), GID( *s), MODE( *s),
-			major( DEV( *s)), minor( DEV( *s)));
-		break;
-
-	case S_IFLNK:
-		sprintf(buff,"link %s pointing to %s", name, link);
-		break;
-
-	case S_IFMT:
-		sprintf(buff,"nonexistant %s",name);
-		break;
+	dlen =	strlen( lname) - strlen( rname) +
+		strlen( ltype) - strlen( rtype);
+	
+	/* we need to align the ends of the filenames,
+	 * "Updating ... lname" &
+	 * "    from ... rname".
+	 */
+	
+	if ( dlen < 0) {
+		dlen *= -1;
+		lfill = fill;
 	}
-	return (buff);
+	else	rfill = fill;
+
+	for ( p = fill ; dlen > 0; --dlen) *p++ = ' ';
+	*p = '\0';
+
+	if	  ( TYPE( *ds)) {
+		format =	"%s %s%s %s\n"; }
+	else if   ( TIME( *ds)) {
+		n = TIME( *ls);
+		m = TIME( *rs);
+		format =	"%s %s%s %s ( mod-time=%d)\n"; }
+	else if	  (      d->link) {
+		n = (int)l->link;
+		m = (int)r->link;
+		format =	"%s %s%s %s ( symlink -> %s)\n"; }
+	else if   ( d->cksum) {
+		n = l->cksum;
+		m = r->cksum;
+		format =	"%s %s%s %s ( file-cksum=%4.x)\n"; }
+	else if   ( MODE( *ds)) {
+		n = MODE( *ls);
+		m = MODE( *rs);
+		format =	"%s %s%s %s ( mode-bits=%4.o)\n"; }
+	else if   (  UID( *ds)) {
+		n =  UID( *ls);
+		m =  UID( *rs);
+		format =	"%s %s%s %s ( user-id=%d)\n"; }
+	else if   (  GID( *ds)) {
+		n =  GID( *ls);
+		m =  GID( *rs);
+		format =	"%s %s%s %s ( group-id=%d)\n"; }
+	else if   (  DEV( *ds)) {
+		n =  DEV( *ls);
+		m =  DEV( *rs);
+		format =	"%s %s%s %s ( device-type=%d)\n"; }
+
+	fprintf( stderr, format, "Updating", ltype, lfill, lname, n);
+	fprintf( stderr, format, "    from", rtype, rfill, rname, m);
 }

@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.5 1988-02-23 19:21:36 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 3.0 1988-03-09 13:17:47 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.5  88/02/23  19:21:36  don
+ * fixed pushpath() & poppath() so that pushing "" onto a path-stack
+ * doesn't push  a '/' as well. for example, pushpath( "/bin", "") should
+ * yield "/bin", instead of "/bin/". this was causing findparent() to fail
+ * when track needs to create bin under the subsciber's mount-point.
+ * 
  * Revision 2.4  88/01/29  18:24:02  don
  * bug fixes. also, now track can update the root.
  * 
@@ -33,7 +39,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.5 1988-02-23 19:21:36 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 3.0 1988-03-09 13:17:47 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -41,15 +47,37 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include "track.h"
 
 /* XXX
- * convert right-shifted st_mode type-bits to corresponding characters:
- * S_IFCHR = 0020000 gets mapped to elt 1 of the array, which is 'c'.
- * S_IFDIR = 0040000 => elt 2 of the array, which is 'd'.
- * S_IFBLK = 0060000 => elt 3 of the array, which is 'b'.
- * S_IFREG = 0100000 => elt 4 of the array, which is 'f'.
- * S_IFLNK = 0120000 => elt 5 of the array, which is 'l'.
- * S_IFSOCK= 0140000 => elt 6 of the array, which is 's' ( only for errors).
- * S_IFMT  = 0170000 => elt 7 of the array, which is '*' ( dropping 1 bit).
+ * convert right-shifted st_mode type-bits to corresponding formats:
+ * S_IFCHR = 0020000 gets mapped to elt 1 of the array,
+ * S_IFDIR = 0040000 => elt 2 of the array,
+ * S_IFBLK = 0060000 => elt 3 of the array,
+ * S_IFREG = 0100000 => elt 4 of the array,
+ * S_IFLNK = 0120000 => elt 5 of the array,
+ * S_IFSOCK= 0140000 => elt 6 of the array, ( only for error messagess),
+ * S_IFMT  = 0170000 => elt 7 of the array, ( dropping 1 bit).
  */
+static char *write_formats[] = {
+	"*ERROR (write_statline): %s's file type is 0.\n",
+	"c%s %c%d(%d.%d.%o)\n",		/* S_IFCHR */
+	"d%s %c%d(%d.%d.%o)\n",		/* S_IFDIR */
+	"b%s %c%d(%d.%d.%o)\n",		/* S_IFBLK */
+	"f%s %c%x(%d.%d.%o)%ld\n",	/* S_IFREG */
+	"l%s %c%s\n",			/* S_IFLNK */
+	"*ERROR (write_statline): can't track socket %s.\n",
+	"*ERROR (write_statline): bad type S_IFMT %s.\n"
+};
+
+static char *read_formats[] = {
+	"",
+	"%c%d(%d.%d.%o)\n",	/* S_IFCHR */
+	"%c%d(%d.%d.%o)\n",	/* S_IFDIR */
+	"%c%d(%d.%d.%o)\n",	/* S_IFBLK */
+	"%c%x(%d.%d.%o)%ld\n",	/* S_IFREG */
+	"",			/* S_IFLNK */
+	"",			/* S_IFSOCK */
+	""			/* S_IFMT */
+};
+
 char type_char[] = " cdbfls*89ABCDEF";
 
 /*
@@ -58,21 +86,14 @@ char type_char[] = " cdbfls*89ABCDEF";
  * or a suitable derivate thereof
  */
 
-write_statline( path, s)
-char **path; struct stat *s;
+write_statline( path, c)
+char **path; struct currentness *c;
 {
-	char  *linebuf, *linkval, *name, type;
-	struct stat fromstat;
-	unsigned size;
+	char  *format, *linebuf, *name, same_name;
+	unsigned int type;
+	struct stat fromstat, *s;
+	unsigned size, curr1 = 0, extra = 0;
 
-	if ( S_IFMT == TYPE( *s))	/* couldn't stat cmpfile */
-		s = &fromstat;
-
-	if ( (*statf)( path[ ROOT], &fromstat)) {
-		sprintf(errmsg,"can't stat %s\n", path[ ROOT]);
-		do_gripe();
-		return( S_IFMT);
-	}
 	if ( cur_line >= maxlines) {
 		maxlines += MAXLINES;
 		size = maxlines * sizeof statfilebufs[0];
@@ -86,7 +107,40 @@ char **path; struct stat *s;
 			do_panic();
 		}
 	}
-	/* root is a special case:
+	/*
+	 * set up type-dependent currency data:
+	 */
+
+	s = &c->sbuf;
+
+	switch( type = TYPE( *s)) {
+	case S_IFREG:
+		curr1 = c->cksum;
+		extra = TIME( *s);
+		break;
+	case S_IFLNK:
+		curr1 = (unsigned int) c->link;
+		break;
+	case S_IFDIR:
+		curr1 = 0;
+		break;
+	case S_IFBLK:
+		curr1 = DEV( *s);
+		break;
+	case S_IFCHR:
+		curr1 = DEV( *s);
+		break;
+	case S_IFMT:
+		sprintf( errmsg,"can't write statline for %s\n", path[ ROOT]);
+		do_panic();
+		break;
+	default:
+		sprintf( errmsg, "bad type for inode %d. apparent type = %c\n",
+		         c->sbuf.st_ino, type);
+		do_panic();
+	}
+	/* set up name & sortkey:
+	 * root is a special case:
 	 * its "relative path" is "", which dec_statfile() can't read.
 	 */
 	name = path[ NAME];
@@ -94,42 +148,31 @@ char **path; struct stat *s;
 
 	KEYCPY( statfilebufs[ cur_line].sortkey, name);
 
-	/* XXX: see type_char[]
-	 */
-	type = type_char[ TYPE( fromstat) >> 13 ];
-
 	linebuf = statfilebufs[ cur_line].line;
 
-	switch( TYPE( fromstat)) {
-	case S_IFREG:
-	case S_IFDIR:
-                sprintf( linebuf, "%c%s %d.%d.%o.%ld\n", type, name,
-		 	 UID( *s), GID( *s), MODE( *s), TIME( *s));
-		break;
-	case S_IFBLK:
-	case S_IFCHR:
-                sprintf( linebuf, "%c%s %d.%d.%o.%d\n", type, name,
-		 	 UID( *s), GID( *s), MODE( *s), DEV( *s));
-		break;
-	case S_IFLNK:
-		if ( ! ( linkval = follow_link( path[ ROOT]))) {
-			type = '*';	/* XXX */
-			linkval = "";
-		}
-		sprintf( linebuf, "%c%s %s\n", type, name, linkval);
-		break;
-	case S_IFMT:
-		sprintf( linebuf,"%c%s\n", type, name);
-		break;
-	default:
-		sprintf( errmsg, "bad type for inode %d. apparent type = %c\n",
-		         ( *s).st_ino, type);
-		do_panic();
-	}
+	/* if this entry's fromfile != cmpfile,
+	 * the subscribing machine needs to know:
+	 */
+	same_name = strcmp( path[ NAME], c->name) ? '~' : '=' ;
+
+	/* to choose printing format, convert type-bits to array-index:
+	 * the formats specify 3-7 arguments, according to type:
+	 */
+	format = write_formats[ type >> 13];
+
+	sprintf( linebuf, format, name, same_name, curr1,
+		 UID( *s), GID( *s), MODE( *s), extra);
+
+	cur_line++;
+
 	if ( verboseflag)
 		fputs( linebuf, stderr);
 
-	cur_line++;
+	if ((*statf)( path[ ROOT], &fromstat)) {
+		sprintf( errmsg, "(write_statline) can't %s %s\n",
+			 statn, path[ ROOT]);
+		do_panic();
+	}
 	return( TYPE( fromstat));
 }
 
@@ -201,14 +244,14 @@ sort_entries() {
  * setup TYPE(), UID(), GID(), MODE(), TIME(), & DEV() contents.
  */
 
-struct stat *
-dec_statfile( line, name, link)
-char *line, *name, *link;
+char *
+dec_statfile( line, c)
+char *line; struct currentness *c;
 {
-	static struct stat s;
-	char *time_format = "%*c%s %d.%d.%o.%ld";
-	char *dev_format  = "%*c%s %d.%d.%o.%d";
-	int d = 0, u = 0, g = 0, m = 0;
+	struct stat *s;
+	int dummy, *curr1 = &dummy, d = 0, u = 0, g = 0, m = 0;
+	int *extra = 0;
+	char *format, *name, same_name, type;
 
 	/* these long-int temps are necessary for pc/rt compatibility:
 	 * sscanf cannot scan into a short, though it may sometimes succeed
@@ -220,37 +263,11 @@ char *line, *name, *link;
 	 * longs to shorts, explicitly.
 	 */
 
-	*link = '\0';
+	type = *line++;
+	name = line;
+	line = index( line, ' ');
+	*line++ = '\0';
 
-	switch( *line) {
-	case 'f':
-		sscanf( line, time_format, name, &u, &g, &m, &s.st_mtime);
-		s.st_mode = S_IFREG;
-		break;
-	case 'l':	/* more common than dir's */
-		sscanf( line, "%*c%s %s", name, link);
-		s.st_mode = S_IFLNK;
-		break;
-	case 'd':
-		sscanf( line, time_format, name, &u, &g, &m, &s.st_mtime);
-		s.st_mode = S_IFDIR;
-		break;
-	case 'b':
-		sscanf( line, dev_format,  name, &u, &g, &m, &d);
-		s.st_mode = S_IFBLK;
-		break;
-	case 'c':
-		sscanf( line, dev_format,  name, &u, &g, &m, &d);
-		s.st_mode = S_IFCHR;
-		break;
-	case '*':
-		sscanf( line, "%*c%s", name);
-		s.st_mode = S_IFMT;
-		break;
-	default:
-		sprintf( errmsg, "garbled statfile: bad line = %s\n", line);
-		do_panic();
-	}
 	/* in the  statfile, which contains only relative pathnames,
 	 * "/" is the only pathname which can begin with a slash.
 	 * in entries[], the root appears as "", which is more natural,
@@ -265,11 +282,67 @@ char *line, *name, *link;
 			name);
 		do_gripe();
 	}
-	s.st_uid   = (short) u;
-	s.st_gid   = (short) g;
-	s.st_mode |= (short) m & 07777;
-	s.st_dev   = (short) d;
-	return( &s);
+	c->link = "";
+	c->cksum = 0;
+
+	/*
+	 * set up scanf arg's for type-dependent currency-data:
+	 */
+
+	s = &c->sbuf;
+	clear_stat( s);
+
+	switch( type) {
+	case 'f':
+		s->st_mode = S_IFREG;
+		curr1 = &c->cksum;
+		extra = &s->st_mtime;
+		break;
+	case 'l':	/* more common than dir's */
+		s->st_mode = S_IFLNK;
+		same_name = *line;
+		*index( line, '\n') = '\0';
+		c->link = line + 1;
+		break;
+	case 'd':
+		s->st_mode = S_IFDIR;
+		curr1 = &dummy;
+		break;
+	case 'b':
+		s->st_mode = S_IFBLK;
+		curr1 = &d;
+		break;
+	case 'c':
+		s->st_mode = S_IFCHR;
+		curr1 = &d;
+		break;
+	default:
+		sprintf( errmsg, "garbled statfile: bad line = %s\n", line);
+		do_panic();
+	}
+	/* if we've already parsed the line,
+	 * as in S_IFLNK case, skip the sscanf call:
+	 */
+	if ( *(format = read_formats[ s->st_mode >> 13]))
+		sscanf( line, format, &same_name, curr1, &u, &g, &m, extra);
+
+	/* the subscriber needs to know whether the currency-data
+	 * came from the remote fromfile or from the remote cmpfile.
+	 */
+	switch( same_name) {
+	case '=': strcpy( c->name, name);
+		  break;
+	case '~': *c->name = '\0';
+		  break;
+	default:
+		sprintf(errmsg,"garbled statfile: bad flag = %c\n",same_name);
+		do_panic();
+	}
+	s->st_uid   = (short) u;
+	s->st_gid   = (short) g;
+	s->st_mode |= (short) m & 07777;
+	s->st_rdev  = (short) d;
+	return( name);
 }
 
 /* the match abstractions implement a synchronized traversal
@@ -314,7 +387,7 @@ char *name;
  *	   |	matches			/a
  *	   |	is greater than		/a/a
  *	   \	matches			/a/b
- * a/b/c   <	is greater than		/a/b/a
+ * /a/b/c  <	is greater than		/a/b/a
  *	   /	matches			/a/b/c
  *	   |	is less than		/a/b/c/a
  *	   |	is less than		/a/b/d
@@ -360,30 +433,78 @@ keyncmp( r, i) char *r; int i; {
 	return( diff? diff: n ? ( (unsigned) r[n] > '\001') : 0);   /* XXX */
 }
 
-struct stat *dec_entry( entnum, fr, to, cmp)
-int entnum; char *fr[], *to[], *cmp[]; {
+struct currentness *
+dec_entry( entnum, fr, to, cmp, tail)
+int entnum; char *fr[], *to[], *cmp[], *tail; {
+        static struct currentness currency_buf, *entry_currency;
 	static int prev_ent = 0;
-	static struct stat sbuf;
+	unsigned int cmp_type = 0;
+	int i;
+	static int xref_flag = 0;
 
-	if ( entnum == prev_ent) return( &sbuf); /* usual case */
-	if ( prev_ent) {
-		poppath( fr); poppath( to); poppath( cmp);
-	}
-	pushpath( fr,  entries[ entnum].fromfile);
-	pushpath( to,  entries[ entnum].tofile);
-	pushpath( cmp, entries[ entnum].cmpfile);
-	
-	/* this function-var is global, and used generally.
+	/* this routine's main purpose is to transfer entnum's contents
+	 * to the paths fr, to, & cmp.
+	 * for efficiency and data-hiding reasons, we maintain various static
+	 * data, including the currentness data for readstat's last update.
 	 */
-	statf = entries[ entnum].followlink ? stat : lstat;
 
-	if ( (*statf)( cmp[ ROOT], &sbuf)) {
-		sbuf.st_mode = S_IFMT;	/* klooge for bad type */
-		sprintf( errmsg, "can't stat comparison-file %s", cmp[ ROOT]);
-		do_gripe();
+	/* we avoid calling get_currentness(cmp) redundantly, but not just
+	 * for efficiency reasons: this helps our update-simulation for
+	 * nopullflag-support. see update_file().
+	 * each cmpfile may get updated at most once;
+	 * if it does, update_file() will mark its currency "out-of-date".
+	 * xref_flag is set if any entry uses another entry's file
+	 * as a cmpfile. in this case, we have to search entries[]
+	 * to see if what we've modified is another entry's cmpfile.
+	 * if so, propagate the "out-of-date" mark to that entry.
+	 */
+	if ( xref_flag && ! TYPE( currency_buf.sbuf)) {
+		for ( i = 1; i <= entrycnt; i++) {
+			if ( !  entries[ i].currency.sbuf.st_mode) continue;
+			if ( ! strcmp(
+				entries[ i].cmpfile, currency_buf.name))
+				entries[ i].currency.sbuf.st_mode = 0;
+		}
 	}
-	prev_ent = entnum;
-	return( &sbuf);
+	currency_buf.sbuf.st_mode = S_IFMT;	/* kill short-term data. */
+
+	if (    prev_ent != entnum) {
+		prev_ent =  entnum;
+
+		/* a subtler, longer search would set this flag less often.
+		 */
+		xref_flag = strncmp( entries[ entnum].cmpfile,
+				     entries[ entnum].tofile,
+			     strlen( entries[ entnum].tofile));
+
+		poppath( fr); pushpath( fr,  entries[ entnum].fromfile);
+		poppath( to); pushpath( to,  entries[ entnum].tofile);
+		poppath(cmp); pushpath( cmp, entries[ entnum].cmpfile);
+		
+		/* this function-var is global, and used generally.
+		 */
+		statf = entries[ entnum].followlink ?  stat  :  lstat;
+		statn = entries[ entnum].followlink ? "stat" : "lstat";
+
+		entry_currency = &entries[ entnum].currency;
+	}
+	if ( ! TYPE( entry_currency->sbuf))
+		get_currentness( cmp, entry_currency);
+
+	if ( ! tail || ! *tail )
+		return( entry_currency);
+
+	if ( S_IFDIR == TYPE( entry_currency->sbuf)) { /* usual case */
+		pushpath( cmp, tail);
+		get_currentness( cmp, &currency_buf);
+		poppath( cmp);
+		return( &currency_buf);
+	}
+	/* rarely, a directory may have a non-dir as its cmpfile.
+	 * if the entry's cmpfile isn't a dir, then cmp[ ROOT],
+	 * is the comparison-file for each of the tofile's dependents.
+	 */
+	return( entry_currency);
 }
 
 /* these abstractions handle a stack of pointers into a character-string,

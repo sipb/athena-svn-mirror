@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.2 1988-01-29 18:23:52 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 3.0 1988-03-09 13:17:41 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  88/01/29  18:23:52  don
+ * bug fixes. also, now track can update the root.
+ * 
  * Revision 2.1  87/12/03  17:33:39  don
  * fixed lint warnings.
  * 
@@ -18,7 +21,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.2 1988-01-29 18:23:52 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 3.0 1988-03-09 13:17:41 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -226,7 +229,7 @@ struct stat *s;
 int
 removeit(name, type)
 char *name;
-int type;
+unsigned int type;
 {
 	struct direct *next;
 	DIR *dirp;
@@ -237,7 +240,7 @@ int type;
 	 */
 	if ( type != 0);
 	else if ( (*statf)( name, &sbuf)) {
-		sprintf( errmsg, "can't stat %s\n", name);
+		sprintf( errmsg, "(removeit) can't %s %s\n", statn, name);
 		do_gripe();
 		return(-1);
 	}
