@@ -2,8 +2,8 @@
 
 # Process the confignoreplace files in a package.
 # For a PUBLIC=true machine, we will always copy in the package version
-# of the file.  For non-PUBLIC machines, we always leave any existing
-# file in place.
+# of the file.  For non-PUBLIC machines, we leave the existing file in
+# place if the administrator has modified it.
 
 # Note whether this is a PUBLIC=true machine.
 if [ -s $PKG_INSTALL_ROOT/etc/athena/rc.conf ]; then
@@ -12,12 +12,12 @@ fi
 
 # pkgadd supplies file source/destination pairs on our standard input.
 while read src dest ; do
+  noreplace=false
   if [ "$PUBLIC" != true -a -f $dest ]; then
-    cmp -s $dest $dest.athena || \
+    cmp -s $dest $dest.athena || {
       echo "A new version of $dest is available in $dest.athena"
-    noreplace=true
-  else
-    noreplace=false
+      noreplace=true
+    }
   fi
   # Copy in the new version, with the .athena suffix.
   cp -p $src $dest.athena || exit 1
