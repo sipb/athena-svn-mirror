@@ -1,4 +1,4 @@
-/* $Id: listsuidcells.c,v 1.2 1996-03-25 18:33:01 ghudson Exp $
+/* $Id: listsuidcells.c,v 1.3 1996-03-25 19:58:25 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/etc/listsuidcells/listsuidcells.c,v $
  * Created by Greg Hudson.
  * Copyright (c) 1996 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
-#if defined(sun) && defined(__SVR4)
+#ifdef SOLARIS
 #include <sys/filio.h>
 #endif
 #include <netinet/in.h>
