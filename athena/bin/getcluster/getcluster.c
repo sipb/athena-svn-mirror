@@ -99,13 +99,7 @@ int main(int argc, char **argv)
   if (fallbackfile != NULL)
     {
       f = fopen(fallbackfile, "r");
-      if (f == NULL)
-	{
-	  perror("fopen");
-	  fprintf(stderr, "Could not open fallback cluster file %s\n",
-		  fallbackfile);
-	}
-      else
+      if (f)
 	{
 	  fp = readcluster(f);
 	  fclose(f);
@@ -116,12 +110,7 @@ int main(int argc, char **argv)
   if (localfile != NULL)
     {
       f = fopen(localfile, "r");
-      if (f == NULL)
-	{
-	  perror("fopen");
-	  fprintf(stderr, "Could not open local cluster file %s\n", localfile);
-	}
-      else
+      if (f)
 	{
 	  lp = readcluster(f);
 	  fclose(f);
