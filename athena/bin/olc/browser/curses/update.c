@@ -28,12 +28,12 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
  *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.14 1996-09-20 02:11:35 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.15 1997-04-30 17:29:58 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_update_c = "$Header: ";
+static char *rcsid_update_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.15 1997-04-30 17:29:58 ghudson Exp $";
 #endif
 #endif
 
@@ -48,8 +48,8 @@ static char *rcsid_update_c = "$Header: ";
 #include <fcntl.h>
 #include <ctype.h>			/* Character type macros. */
 
-#include "cref.h"			/* Finder defs. */
-#include "globals.h"			/* Global variables.  */
+#include <browser/cref.h>		/* Finder defs. */
+#include <browser/cur_globals.h>	/* Global variables.  */
 
 /* Function:	set_current_dir() updates the current directory and parses its
  *			index.
@@ -101,7 +101,8 @@ parse_contents()
   strcpy(contents_name, Current_Dir);
   strcat(contents_name, "/");
   strcat(contents_name, CONTENTS);
-  if ( (infile = fopen(contents_name, "r")) == NULL)
+  infile = fopen(contents_name, "r");
+  if (infile == NULL)
     {
       if ( open(contents_name, O_RDONLY, 0) < 0)
 	{
@@ -138,7 +139,8 @@ parse_contents()
 	continue;
       if (*ptr == (char) NULL)
 	continue;
-      if ( (delim_ptr = strchr(ptr, CONTENTS_DELIM)) == NULL)
+      delim_ptr = strchr(ptr, CONTENTS_DELIM);
+      if (delim_ptr == NULL)
 	{
 	  sprintf(line1, "Broken index file for entry: %s",Entry_Table[Current_Ind-1].title);
 	  messages(line1, "Please select another entry.");
@@ -152,7 +154,8 @@ parse_contents()
 	Entry_Table[i].type = CREF_FILE;
       else
 	Entry_Table[i].type = CREF_DIR;
-      if ( (delim_ptr = strchr(title_ptr, CONTENTS_DELIM)) == NULL)
+      delim_ptr = strchr(title_ptr, CONTENTS_DELIM);
+      if (delim_ptr == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid title field (field 2) in line %d",i+1);
@@ -165,7 +168,8 @@ parse_contents()
       *delim_ptr = (char) NULL;
       strcpy(Entry_Table[i].title, title_ptr);
       filename_ptr = delim_ptr + 1;
-      if ( (delim_ptr = strchr(filename_ptr, CONTENTS_DELIM)) == NULL)
+      delim_ptr = strchr(filename_ptr, CONTENTS_DELIM);
+      if (delim_ptr == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid filename field (field 3) in line %d",i+1);
@@ -180,7 +184,8 @@ parse_contents()
       strcat(Entry_Table[i].filename, "/");
       strcat(Entry_Table[i].filename, filename_ptr);
       format_ptr = delim_ptr + 1;
-      if ( (delim_ptr = strchr(format_ptr, CONTENTS_DELIM)) == NULL)
+      delim_ptr = strchr(format_ptr, CONTENTS_DELIM);
+      if (delim_ptr == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid formatter field (field 4) in line %d",i+1);
@@ -233,7 +238,8 @@ make_abbrev_table()
   FILE *fp;				/* Input FILE pointer. */
   char global_file[MAXPATHLEN];	/* Global abbrev. file. */
 
-  if ( (fp = fopen(Abbrev_File, "r")) != (FILE *) NULL)
+  fp = fopen(Abbrev_File, "r");
+  if (fp != NULL)
     {
       read_abbrevs(fp);
       fclose(fp);
@@ -241,7 +247,8 @@ make_abbrev_table()
   strcpy(global_file, Root_Dir);
   strcat(global_file, "/");
   strcat(global_file, GLOBAL_ABBREV);
-  if ( (fp = fopen(global_file, "r")) != (FILE *) NULL)
+  fp = fopen(global_file, "r");
+  if (fp != NULL)
     {
       read_abbrevs(fp);
       fclose(fp);
@@ -318,7 +325,7 @@ char *tail;
 }    
 
 
-/*Function copyn() - lifted verbatim from /src/bin/csh/sh.file.c
+/*Function copyn() - lifted from /src/bin/csh/sh.file.c
  *Like strncpy but always leave room for trailing \0
  *and always null terminate.
  */
@@ -327,8 +334,12 @@ copyn(des, src, count)
         register count;
 {
 
-        while (--count >= 0)
-                if ((*des++ = *src++) == 0)
-                        return;
-        *des = '\0';
+  while (--count >= 0) {
+    *des = *src;
+    if (*des == 0)
+      return;
+    des++;
+    src++;
+  }
+  *des = '\0';
 }
