@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-03-14 21:19:49 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1997-04-26 05:05:26 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -32,7 +32,7 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
-	${INSTALL_PROGRAM} -m 555 desync ${DESTDIR}${lsbindir}/rep
+	${INSTALL_PROGRAM} -m 555 desync ${DESTDIR}${lsbindir}
 	${INSTALL} -m 444 ${srcdir}/desync.8 ${DESTDIR}${mandir}/man8
 
 clean:
