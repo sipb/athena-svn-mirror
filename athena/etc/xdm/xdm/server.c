@@ -48,12 +48,6 @@ CatchUsr1 (n)
     ++receivedUsr1;
 }
 
-static char *_SysErrorMsg (n)
-    int n;
-{
-    return strerror (n);
-}
-
 StartServerOnce (d)
 struct display	*d;
 {
@@ -319,7 +313,7 @@ WaitForServer (d)
 	    	return 1;
 	    } else {
 	    	Debug ("OpenDisplay failed %d (%s) on \"%s\"\n",
-		       errno, _SysErrorMsg (errno), d->name);
+		       errno, strerror (errno), d->name);
 	    }
 	    Debug ("waiting for server to start %d\n", i);
 	    sleep ((unsigned) d->openDelay);
