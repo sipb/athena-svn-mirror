@@ -74,9 +74,11 @@ case $1 in
 	fi
 	echo "Removing old attach mount points..."		>/dev/console
 	/bin/athena/detach -O  -n -h -a
-	/bin/cp /dev/null /usr/tmp/attachtab
-	echo "done."						>/dev/console
-	echo ""							>/dev/console
+        echo "done."                                            >/dev/console
+        echo ""                                                 >/dev/console
+        if [ "${PUBLIC}" = "true" ]; then
+                /bin/cp /dev/null /usr/tmp/attachtab
+        fi
 	if [ "${RVDCLIENT}" = "true" ]; then
 		echo "Getting cluster information: "		>/dev/console
 		/etc/athena/save_cluster_info
@@ -166,10 +168,10 @@ EOF
 	# Start standard daemons
 	echo ""                                                 >/dev/console
 	echo  "Starting Athena daemons: "                    >/dev/console
-	if [ "${TIMECLIENT}" = "true" ]; then
-	        echo  "timed..."                             >/dev/console
-	        /etc/athena/timed &
-	fi
+#	if [ "${TIMECLIENT}" = "true" ]; then
+#	        echo  "timed..."                             >/dev/console
+#	        /etc/athena/timed &
+#	fi
 	if [ "${SNMP}" = "true" ]; then
         	echo  "snmpd..."                              >/dev/console
 	        /etc/athena/snmpd &
