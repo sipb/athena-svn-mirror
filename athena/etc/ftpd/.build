@@ -1,0 +1,6 @@
+set rule = simple
+
+if ($machine == "sgi") then
+	set rule = skip
+	echo "Athena ftpd is has not been ported to the SGI." >>& $outfile
+endif

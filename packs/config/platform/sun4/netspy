@@ -1,0 +1,5 @@
+#
+# The presence of this file indicates that /dev/le should be
+# owned by the user logged in on the X console, and later
+# chmoded 0600 and chowned root when the user logs out.
+#

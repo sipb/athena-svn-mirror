@@ -1,0 +1,6 @@
+set rule = simple
+
+if ($machine == "rsaix") then
+	set rule = skip
+	echo "inetd.new is used on the RISC/6000." >>& $outfile
+endif
