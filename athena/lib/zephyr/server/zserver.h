@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.34 1991-03-08 12:53:24 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.35 1991-03-13 10:28:30 raeburn Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -291,16 +291,6 @@ enum ZSentType {
 	NOT_FOUND			/* user not found for uloc */
 };
 
-class SignalBlock {
-    int old_mask;
-public:
-    SignalBlock (int mask) {
-	old_mask = sigblock (mask);
-    }
-    ~SignalBlock () {
-	(void) sigsetmask (old_mask);
-    }
-};
 const int dump_masks = sigmask (SIGFPE) | sigmask (SIGEMT);
 
 /* useful... */
