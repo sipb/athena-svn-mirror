@@ -1,3 +1,0 @@
-PKG=MIT-mitmaildel
-NAME=Delete messages in an IMAP folder
-DESC=The mitmaildel program marks messages in a folder on an IMAP server for deletion.

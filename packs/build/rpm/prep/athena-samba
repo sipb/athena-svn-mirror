@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cp $1/packs/config/smb.conf $2/smb.conf.athena
-cp $1/packs/maint/os/$OS/athena-samba.rc $2

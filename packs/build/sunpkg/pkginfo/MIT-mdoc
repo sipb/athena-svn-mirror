@@ -1,3 +1,0 @@
-PKG=MIT-mdoc
-NAME=troff macro parsing and documenting facilities
-DESC=Documentation utilities for troff macros.

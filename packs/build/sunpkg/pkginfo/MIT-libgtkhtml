@@ -1,3 +1,0 @@
-PKG=MIT-libgtkhtml
-NAME=An HTML widget, for Athena
-DESC=libgtkhtml contains a widget for displaying HTML pages.
