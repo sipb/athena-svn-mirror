@@ -204,6 +204,9 @@
 #ifdef CRAY2
 #define MACHINE                 "CRAY, CRAY2"
 #endif
+#ifdef SOLARIS
+#define MACHINE		"SOLARIS","sparc","sun,"
+#endif
 #if defined(AIX) && defined(_I386)
 #define MACHINE		"_AIX", "_I386", "NLS", "AIX", "i386"
 #endif

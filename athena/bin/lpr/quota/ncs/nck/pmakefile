@@ -165,7 +165,7 @@ EXTRASYS    = set_a0_hack.o
 
 #ifdef sun
 #ifdef sparc
-DEFS        = -Dsun -Dsparc -DBSD -DINET
+DEFS        = -Dsun -Dsparc -DSYS5 -DINET
 EXTRALIBS   =
 EXTRACFLAGS =
 #else
