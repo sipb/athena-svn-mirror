@@ -17,7 +17,8 @@ end		return END;
 [\t\n ]		;
 
 \"{PC}*\"	{ register char *p; yylval.dynstr = ds(yytext+1);
-		  if (p=strrchr(yylval.dynstr, '"')) *p='\0';
+		  p=strrchr(yylval.dynstr, '"');
+		  if (p) *p='\0';
 		  return QUOTED_STRING;
 		}
 
@@ -27,9 +28,7 @@ end		return END;
 
 .		{ return (*yytext); }
 %%
-#ifndef lint
-static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_lex.lex.l,v 1.4 1997-11-03 13:03:21 ghudson Exp $";
-#endif
+static const char l_rcsid[] = "$Id: et_lex.lex.l,v 1.5 1997-12-19 03:04:10 ghudson Exp $";
 
 int yywrap()
 {

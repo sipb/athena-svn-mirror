@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v 1.1 1993-10-12 02:37:14 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v 1.2 1997-12-19 03:04:11 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v $
  * $Locker:  $
  *
@@ -10,38 +10,28 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
 
-#ifndef __STDC__
-#define const
-#endif
-
-#ifndef	lint
-static const char rcsid_init_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/init_et.c,v 1.1 1993-10-12 02:37:14 probe Exp $";
-#endif
-
-extern char *malloc(), *realloc();
+static const char rcsid[] = "$Id: init_et.c,v 1.2 1997-12-19 03:04:11 ghudson Exp $";
 
 struct foobar {
     struct et_list etl;
     struct error_table et;
 };
 
-extern struct et_list * _et_list;
+extern struct et_list *_et_list;
 
-int init_error_table(msgs, base, count)
-    const char * const * msgs;
-    int base;
-    int count;
+int init_error_table(const char *const *msgs, int base, int count)
 {
     struct foobar * new_et;
 
     if (!base || !count || !msgs)
 	return 0;
 
-    new_et = (struct foobar *) malloc(sizeof(struct foobar));
+    new_et = malloc(sizeof(struct foobar));
     if (!new_et)
 	return errno;	/* oops */
     new_et->etl.table = &new_et->et;

@@ -6,22 +6,17 @@
 
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
-#include "internal.h"
 
-#ifndef	lint
 static const char copyright[] =
     "Copyright 1987,1988 by Student Information Processing Board, Massachusetts Institute of Technology";
-static const char rcsid_et_name_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_name.c,v 1.1 1993-10-12 02:37:11 probe Exp $";
-#endif
+static const char rcsid_et[] = "$Id: et_name.c,v 1.2 1997-12-19 03:04:11 ghudson Exp $";
 
 static const char char_set[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 
 static char buf[6];
 
-const char * error_table_name(num)
-    int num;
+const char *error_table_name(int num)
 {
     int ch;
     int i;

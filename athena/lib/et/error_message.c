@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.2 1989-01-25 09:08:57 shanzer Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.3 1997-12-19 03:04:09 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v $
  * $Locker:  $
  *
@@ -10,21 +10,19 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
-#include "internal.h"
 
-static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.2 1989-01-25 09:08:57 shanzer Exp $";
+static const char rcsid[] = "$Id: error_message.c,v 1.3 1997-12-19 03:04:09 ghudson Exp $";
 static const char copyright[] =
     "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
 
 static char buffer[25];
 
-struct et_list * _et_list = (struct et_list *) NULL;
+struct et_list *_et_list = NULL;
 
-const char * error_message (code)
-long	code;
+const char *error_message(long code)
 {
     int offset;
     struct et_list *et;
@@ -34,12 +32,8 @@ long	code;
 
     offset = code & ((1<<ERRCODE_RANGE)-1);
     table_num = code - offset;
-    if (!table_num) {
-	if (offset < sys_nerr)
-	    return(sys_errlist[offset]);
-	else
-	    goto oops;
-    }
+    if (!table_num)
+	return strerror(offset);
     for (et = _et_list; et; et = et->next) {
 	if (et->table->base == table_num) {
 	    /* This is the right table */
