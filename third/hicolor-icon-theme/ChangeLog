@@ -1,0 +1,61 @@
+2004-04-06  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.ac:
+	Update to 0.5
+
+2004-04-06  Ross Burton  <ross@burtonini.com>
+
+	* Makefile.in:
+	Create the stock/* directories.
+
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.in:
+	Added back COPYING
+	
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile:
+	* Makefile.in:
+	* configure.ac:
+	* install-sh:
+	Convert to autoconf
+	Patch from James Henstridge
+
+2004-02-10  Alexander Larsson  <alexl@redhat.com>
+
+	* COPYING: 
+	* Makefile (FILES):
+	Added GPL license.
+
+2004-02-04  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile:
+	Update version to 0.3
+	Add new dir sizes
+	
+	* index.theme:
+	Add stock icon dirs
+
+2002-12-02  Alexander Larsson  <alexl@redhat.com>
+
+	* index.theme:
+	Rename to hicolor. Add Hidden=true
+
+	* Makefile:
+	Rename to hicolor. Fix up
+
+	* README:
+	Update
+
+2002-05-14  Alex Larsson  <alexl@redhat.com>
+
+	* Makefile (tag):
+	Added a tag target.
+	
+2002-05-14  Alex Larsson  <alexl@redhat.com>
+
+	* Makefile (dist):
+	Added a dist target.
+	
+
