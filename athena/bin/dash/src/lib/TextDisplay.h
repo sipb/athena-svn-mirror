@@ -19,6 +19,8 @@ extern void SetText();
 extern void MoveText();
 extern int CountLines();
 extern int VisibleLines();
+extern void SetLine();
+extern void AddText();
 
 typedef struct {int littlefoo;} TextDisplayClassPart;
 
@@ -33,6 +35,7 @@ typedef struct {
   char *text;
   int topLine, numLines, visLines;
   int charWidth;
+  int charHeight;
   int columns;
   char **lineStarts;
   int lineStartsSize;
@@ -42,16 +45,21 @@ typedef struct {
   char *realStart, *realEnd;
   Boolean buttonDown;
   int whichButton;
-  GC gc, selectgc;
+  GC gc, selectgc, gc_clear, gc_fill;
   int foreground, background;
+  int hl_foreground, hl_background;
+  char *hl_fg_name, *hl_bg_name;
   Boolean reverseVideo;
   XFontStruct *font;
   XjCallback *resizeProc;
+  XjCallback *scrollProc;
   int realized;
   int internalBorder;
   int multiClickTime;
   Time lastUpTime;
   short clickTimes;
+  char *charClass;
+  int scrollDelay1, scrollDelay2;
 } TextDisplayPart;
 
 typedef struct _TextDisplayRec {
@@ -66,9 +74,18 @@ typedef struct _TextDisplayClassRec *TextDisplayJetClass;
 #define XjNtext "text"
 #define XjCResizeProc "ResizeProc"
 #define XjNresizeProc "resizeProc"
+#define XjCScrollProc "ScrollProc"
+#define XjNscrollProc "scrollProc"
 #define XjCBorderWidth "BorderWidth"
 #define XjNinternalBorder "internalBorder"
 #define XjCMultiClickTime "MultiClickTime"
 #define XjNmultiClickTime "multiClickTime"
+#define XjCCharClass "CharClass"
+#define XjNcharClass "charClass"
+#define XjCScrollDelay "ScrollDelay"
+#define XjNscrollDelay "scrollDelay"
+#define XjNscrollDelay2 "scrollDelay2"
+#define XjNhighlightForeground "highlightForeground"
+#define XjNhighlightBackground "highlightBackground"
 
 #endif /* _Xj_TextDisplay_h */
