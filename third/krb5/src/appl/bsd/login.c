@@ -2141,7 +2141,7 @@ term_init (do_rlogin)
 #endif
 }
 
-void getloginname(first)
+void getloginname(firsttime)
     int firsttime;
 {
 	register int ch;
