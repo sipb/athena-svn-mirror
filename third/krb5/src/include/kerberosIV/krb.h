@@ -478,4 +478,8 @@ typedef int (*key_proc_type) PROTOTYPE ((char *, char *, char *,
 typedef int (*decrypt_tkt_type) PROTOTYPE ((char *, char *, char *, char *,
 				     key_proc_type, KTEXT *));
 #define DECRYPT_TKT_TYPE_DEFINED
+
+/* Local Athena change: declare return values of functions returning
+   pointers.  */
+char *krb_get_phost(), *krb_realmofhost(), *tkt_string();
 #endif	/* KRB_DEFS */
