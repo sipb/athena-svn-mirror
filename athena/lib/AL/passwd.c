@@ -173,6 +173,10 @@ ALremovePasswdEntry(ALsession session)
   /* if we didn't find user via hesiod, we're done */
   if (!ALisTrue(session, ALdidGetHesiodPasswd)) return 0L;
 
+#ifdef SYSV
+  if (lckpwdf() == -1)
+    ALreturnError(session, ALerrNoLock, "for passwd remove");
+#endif
   if (ALlockPasswdFile(session) == -1)
     ALreturnError(session, ALerrNoLock, "for passwd remove");
 
@@ -187,5 +191,8 @@ ALremovePasswdEntry(ALsession session)
 #endif
 
   ALunlockPasswdFile(session);
+#ifdef SYSV
+  ulckpwdf();
+#endif
   return(code);
 }
