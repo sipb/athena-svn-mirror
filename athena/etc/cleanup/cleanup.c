@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.8 1990-11-30 16:37:56 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.9 1991-03-07 17:40:14 epeisach Exp $
  *
  * Cleanup script for dialup.
  *
@@ -21,13 +21,16 @@
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/proc.h>
 #include <signal.h>
 #include <strings.h>
 #include <utmp.h>
 #include <pwd.h>
+#ifdef _BSD
+#undef _BSD
+#endif
 #include <nlist.h>
 #include <hesiod.h>
 
@@ -40,7 +43,12 @@ extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
 #endif
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.8 1990-11-30 16:37:56 mar Exp $";
+#if defined(AIX) && (AIXV<30)
+extern char     *sys_errlist[];
+extern int      sys_nerr;
+#endif
+
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.9 1991-03-07 17:40:14 epeisach Exp $";
 
 #ifdef ultrix
 extern char *sys_errlist[];
@@ -48,11 +56,19 @@ extern char *sys_errlist[];
 
 struct nlist nl[] =
 {
+#ifdef _AIX
+#define PROC 0
+  { "proc" },
+#define NPROC 1
+  { "nproc" },
+  { ""}
+#else
 #define PROC 0
   { "_proc" },
 #define NPROC 1
   { "_nproc" },
   { ""}
+#endif
 };
 
 #define MAXUSERS 1024
@@ -229,7 +245,11 @@ int debug;
 int sig;
 #endif
 {
+#ifdef _AIX
+  char *kernel = "/unix";
+#else
   char *kernel = "/vmunix";
+#endif
   struct proc p[NPROCS];
   int i,j,k,nproc,procp;
   int kmem;
@@ -296,7 +316,7 @@ void make_passwd(int nuid, uid_t *uids, char (*plist)[16])
 void make_passwd(nuid, uids, plist)
 int nuid;
 uid_t *uids;
-char (*plist)[];
+char (*plist)[16];
 #endif
 {
   int fd;
