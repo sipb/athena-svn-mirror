@@ -43,7 +43,26 @@ for screen in $screens
 # also, "-f" in clogin means grab input focus
 if [ -x /etc/athena/xlogin ] ; then
 	/etc/athena/nanny -xup
-	exec /etc/athena/xlogin -config /etc/athena/login -display :0.0
+	# If xlogin exits with nonzero status three times within
+	# ten seconds, stop trying to run it. We use a low-tech
+	# time comparison and counter.
+	while true; do
+		sleep 10 &
+		sleeper=$!	
+		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+			then exit 0
+		fi
+		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+			then exit 0
+		fi
+		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+			then exit 0
+		fi
+		if kill -0 $sleeper 2>/dev/null ;
+			then exit 1
+		fi
+		wait
+	done
 fi
 
 if /etc/chkconfig visuallogin ; then
