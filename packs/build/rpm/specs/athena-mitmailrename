@@ -1,0 +1,9 @@
+Name: athena-mitmailrename
+Summary: Rename an IMAP mailbox
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailrename program renames a mailbox on an IMAP server.

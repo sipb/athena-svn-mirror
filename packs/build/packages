@@ -1,4 +1,4 @@
-# $Id: packages,v 1.277 2004-06-28 19:39:45 rbasch Exp $
+# $Id: packages,v 1.278 2004-06-30 17:55:08 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -81,6 +81,7 @@ athena/bin/mitmailcreate	requires cyrus-imapd,perl
 athena/bin/mitmaildel		requires cyrus-imapd,perl
 athena/bin/mitmailexp		requires cyrus-imapd,perl
 athena/bin/mitmailmove		requires cyrus-imapd,perl
+athena/bin/mitmailrename	requires cyrus-imapd,perl
 athena/bin/mitmailscan		requires cyrus-imapd,perl
 athena/bin/mitmailshow		requires cyrus-imapd,perl
 athena/bin/neos			requires fxcl,krb5,hesiod
