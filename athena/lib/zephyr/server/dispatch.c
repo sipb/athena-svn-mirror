@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.32 1989-12-13 10:31:44 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.33 1990-01-10 12:54:03 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -773,10 +773,17 @@ ZServerDesc_t *server;
 						      wantdefs)) != ZERR_NONE)
 			{
 				syslog(LOG_WARNING,
-				       "subscr. register failed: %s",
+				       "subscr. register %s/%s/%d failed: %s",
+				       notice->z_sender,
+				       inet_ntoa(who->sin_addr),
+				       ntohs(notice->z_port),
 				       error_message(retval));
-				if (server == me_server)
+				if (server == me_server) {
+				    if (retval == ZSRV_BADSUBPORT) {
+					clt_ack(notice, who, AUTH_FAILED);
+				    } else
 					hostm_deathgram(who, me_server);
+				}
 				return(ZERR_NONE);
 			}
 			if (!(client = client_which_client(who, notice))) {
