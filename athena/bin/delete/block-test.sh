@@ -42,7 +42,7 @@ main()
      }
      else {
 	  printf("You SHOULD NOT define USE_BLOCKS.\n");
-	  printf("However, you have an interesting machine that delete might be made to work\nbetter with.  Please contact the author (see the README file for an address)\nand tell him what kind of machine you have and what operating system it is\nrunning.");
+	  printf("However, you have an interesting machine that delete might be made to work\nbetter with.  Please contact the author (see the README file for an address)\nand tell him what kind of machine you have and what operating system it is\nrunning.\n");
      }
      exit(0);
 }
