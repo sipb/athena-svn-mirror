@@ -19,21 +19,22 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v $
- *	$Id: data.c,v 1.10 1990-12-13 16:46:22 lwvanels Exp $
+ *	$Id: data.c,v 1.11 1991-04-14 17:18:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.10 1990-12-13 16:46:22 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.11 1991-04-14 17:18:01 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
+#include <sys/param.h>
 
 PERSON User;
-char DaemonHost[NAME_SIZE];
+char DaemonHost[MAXHOSTNAMELEN];
 
 char REALM[40];
 char INSTANCE[40];
