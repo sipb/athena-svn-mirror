@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.17 1992-01-27 07:11:27 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.18 1992-04-27 19:27:07 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -14,6 +14,8 @@
 #include <X11/Xaw/Text.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Shell.h>
+#include <X11/Xmu/Drawing.h>
 
 /* Define the following if restarting the X server does not restore
  * auto-repeat properly
@@ -26,6 +28,14 @@
 
 #if defined(_IBMR2)
 #include <sys/id.h>
+#endif
+
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef MOTD_FILENAME
+#define MOTD_FILENAME "/afs/athena.mit.edu/system/config/login_motd"
 #endif
 
 #define OWL_AWAKE 0
@@ -57,6 +67,7 @@ void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
 char *malloc(), *strdup();
+extern void add_converter ();
 
 
 /*
@@ -78,6 +89,12 @@ typedef struct _XLoginResources {
   String session;
   String fontpath;
   String srvdcheck;
+  String loginName;
+  Boolean blankAll;
+  Boolean showMotd;
+#ifdef MOTD_TEST
+  String motdFile;
+#endif
 } XLoginResources;
 
 /*
@@ -99,6 +116,11 @@ static XrmOptionDescRec options[] = {
   {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
   {"-srvdcheck","*srvdCheck",		XrmoptionSepArg,	NULL},
   {"-fp",	"*fontPath",		XrmoptionSepArg,	NULL},
+  {"-blankall", "*blankAll",		XrmoptionNoArg,   (caddr_t) "on"},
+  {"-noblankall","*blankAll",		XrmoptionNoArg,   (caddr_t) "off"},
+#ifdef MOTD_TEST
+  {"-motdfile",	"*motdFile",		XrmoptionSepArg,	NULL},
+#endif
 };
 
 /*
@@ -134,7 +156,17 @@ static XtResource my_resources[] = {
   {"srvdcheck", XtCFile, XtRString, sizeof(String),
      Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
   {"fontPath", XtCString, XtRString, sizeof(String),
-     Offset(fontpath), XtRImmediate, "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/" },
+     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/" },
+  {"loginName", XtCString, XtRString, sizeof(String),
+     Offset(loginName), XtRImmediate, (caddr_t) "" },
+  {"blankAllScreens", XtCBoolean, XtRBoolean, sizeof(Boolean),
+     Offset(blankAll), XtRImmediate, (caddr_t) True},
+  {"showMotd", XtCBoolean, XtRBoolean, sizeof(Boolean),
+     Offset(showMotd), XtRImmediate, (caddr_t) True},
+#ifdef MOTD_TEST
+  {"motdFile", XtCString, XtRString, sizeof(String),
+     Offset(motdFile), XtRImmediate, (caddr_t) MOTD_FILENAME },
+#endif
 };
 
 #undef Offset
@@ -154,8 +186,12 @@ XtActionsRec actions[] = {
 
 
 
+#ifndef CONSOLEPID
 #define CONSOLEPID "/etc/athena/console.pid"
-char *utmpf = "/etc/utmp";
+#endif
+#ifndef UTMPF
+#define UTMPF "/etc/utmp"
+#endif
 
 /*
  * Globals.
@@ -163,6 +199,8 @@ char *utmpf = "/etc/utmp";
 XtIntervalId curr_timerid = 0, blink_timerid = 0, react_timerid = 0;
 Widget appShell;
 Widget saver, ins;
+Widget savershell[10];
+int num_screens;
 XLoginResources resources;
 GC owlGC, isGC;
 Display *dpy;
@@ -225,6 +263,7 @@ main(argc, argv)
   appShell = XtInitialize ("xlogin", "Xlogin",
 			   options, XtNumber(options),
 			   &argc, argv);
+  add_converter ();
   app = XtWidgetToApplicationContext(appShell);
   XtAppSetErrorHandler(app, localErrorHandler);
   dpy = XtDisplay(appShell);
@@ -233,6 +272,29 @@ main(argc, argv)
   XtGetApplicationResources(appShell, (caddr_t) &resources, 
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal) 0);
+  /*
+   * merge in the motd file, if one exists, and the "showMotd" resource
+   * is true...
+   */
+  if (resources.showMotd
+#ifdef MOTD_TEST
+      &&  resources.motdFile != NULL
+#endif
+      )
+    {
+      XrmDatabase motd_rdb, cur_rdb;
+
+#ifdef MOTD_TEST
+      if ((motd_rdb = XrmGetFileDatabase(resources.motdFile)) != NULL )
+#else
+      if ((motd_rdb = XrmGetFileDatabase(MOTD_FILENAME)) != NULL )
+#endif
+	{
+	  cur_rdb = XtDatabase(dpy);
+	  XrmMergeDatabases (motd_rdb, &cur_rdb);
+	}
+    }
+
   WcRegisterCallback(app, "UnsetFocus", unfocusACT, NULL);
   WcRegisterCallback(app, "runCB", runCB, NULL);
   WcRegisterCallback(app, "setfocusCB", focusCB, NULL);
@@ -277,8 +339,6 @@ main(argc, argv)
   XtSetArg(args[0], XtNlabel, hname);
   namew = WcFullNameToWidget(appShell, "*login*host");
   XtSetValues(namew, args, 1);
-  gethostname(hname, sizeof(hname));
-  XtSetArg(args[0], XtNlabel, hname);
   namew = WcFullNameToWidget(appShell, "*instructions*host");
   XtSetValues(namew, args, 1);
   /* Also seed random number generator with hostname */
@@ -318,6 +378,59 @@ main(argc, argv)
 
   setenv("PATH", defaultpath, 1);
 
+
+  /* create shells to blank out all other screens, if any... */
+  num_screens = 1;		/* cover ourselves by setting number of */
+				/* screens to one, and */
+  savershell[0] = saver;	/* fill in the saver shell for now... */
+
+  if (resources.blankAll  &&  ScreenCount(dpy) > 1)
+    {
+      int this_screen = XScreenNumberOfScreen(XtScreen(saver));
+      char *orig_dpy, *ptr;
+      Cardinal zero = (Cardinal) 0;
+
+      num_screens = MIN(ScreenCount(dpy), 10);
+      orig_dpy = XtNewString(DisplayString(dpy));
+
+      if (orig_dpy != NULL)	/* if the alloc worked, continue... */
+	{			/* we are counting on displaystring to */
+				/* always contain a period...  the */
+				/* displaystring is always canonicalized */
+				/* for us...  isn't that nice of them? */
+	  if ((ptr = rindex(orig_dpy, '.')) != NULL)
+	    {
+	      ptr++;
+
+	      for (i=0; i < ScreenCount(dpy) && i < 10; i++)
+		{		/* only does screens 0 thru 9... if you */
+				/* have more screens than that, you */
+				/* lose. */
+		  if (i == this_screen)
+		    savershell[i] = saver;
+		  else
+		    {
+		      Widget root;
+
+		      *ptr = (char) i + '0';
+		      dpy1 = XtOpenDisplay(app, orig_dpy, "xlogin", "Xlogin",
+					   NULL, 0, &zero, NULL);
+		      root = XtAppCreateShell("xlogin", "Xlogin",
+					      applicationShellWidgetClass,
+					      dpy1, NULL, 0);
+		      savershell[i] = XtCreatePopupShell("savershell",
+						 transientShellWidgetClass,
+						 root, NULL, 0);
+		      XtAddEventHandler(savershell[i], MASK,
+					FALSE, unsave, TRUE);
+		    }
+		}
+	    }
+	}
+      XtFree(orig_dpy);
+    }
+
+
   /* tell display manager we're ready, just like X server handshake */
   if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
     kill(getppid(), SIGUSR1);
@@ -332,7 +445,7 @@ move_instructions(data, timerid)
 {
   static Dimension x_max = 0, y_max = 0;
   Position x, y;
-  Window wins[3];
+  Window wins[2];
 
   if (!x_max)			/* get sizes, if we haven't done so already */
     {
@@ -376,7 +489,7 @@ start_reactivate(data, timerid)
 	exit(0);
     }
 
-    if ((file = open(utmpf, O_RDONLY, 0)) >= 0) {
+    if ((file = open(UTMPF, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (utmp.ut_name[0] != 0
 #if defined(_AIX)
@@ -457,13 +570,18 @@ screensave(data, timerid)
   Pixmap pixmap;
   Cursor cursor;
   XColor c;
+  int i;
 
   XtPopdown(WcFullNameToWidget(appShell, "*getSessionShell"));
   XtPopdown(WcFullNameToWidget(appShell, "*warningShell"));
   XtPopdown(WcFullNameToWidget(appShell, "*queryShell"));
-  XtPopup(saver, XtGrabNone);
+
+  for (i=0; i < num_screens; i++)
+    XtPopup(savershell[i], XtGrabNone);
+
   XtPopup(ins, XtGrabNone);
-  unfocusACT();
+  XRaiseWindow(XtDisplay(ins), XtWindow(ins));
+  unfocusACT(appShell, NULL, NULL, NULL);
   if (first_time)
     {
       /*
@@ -477,7 +595,8 @@ screensave(data, timerid)
       cursor = XCreatePixmapCursor(dpy, pixmap, pixmap, &c, &c,
 				   (unsigned int) 0, (unsigned int) 0);
       XFreePixmap(dpy, pixmap);
-      XDefineCursor(dpy, XtWindow(saver), cursor);
+      for (i=0; i < num_screens; i++)
+	XDefineCursor(dpy, XtWindow(savershell[i]), cursor);
       XDefineCursor(dpy, XtWindow(ins), cursor);
       XFreeCursor(dpy, cursor);
 
@@ -508,8 +627,11 @@ unsave(w, popdown, event, bool)
 
   if (popdown)
     {
+      int i;
+
       XtPopdown(ins);
-      XtPopdown(saver);
+      for (i=0; i < num_screens; i++)
+	XtPopdown(savershell[i]);
     }
 
   /* enable the real screensaver */
@@ -590,7 +712,7 @@ Cardinal *n;
      * the timers.
      */
     if (activation_state != ACTIVATED) {
-#ifdef POSIX
+#if (defined POSIX || defined sun)
 	void (*oldsig)();
 #else
 	int (*oldsig)();
@@ -611,9 +733,14 @@ Cardinal *n;
     else {
 	setAutoRepeat(autorep);
  	setFontPath();
+	XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
+		     0, 0, 0, 0, 300, 300);
  	XFlush(dpy);
 	tb.ptr = dologin(login, passwd, mode, script, resources.tty,
 			 resources.session, DisplayString(dpy));
+	XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
+		     0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,
+		     HeightOfScreen(DefaultScreenOfDisplay(dpy))/2);
 	setAutoRepeat(AutoRepeatModeOff);
     }
     XtMapWidget(appShell);
@@ -648,11 +775,10 @@ String *p;
 Cardinal *n;
 {
     Widget target;
-    static int done_once = 0;
-
-    target = WcFullNameToWidget(appShell, p[0]);
 
 #if defined(_AIX) && defined(_IBMR2)
+    static int done_once = 0;
+
     /* This crock works around the an invalid argument error on the
      * XSetInputFocus() call below the very first time it is called,
      * only when running on the RIOS.  We still don't know just what
@@ -665,6 +791,8 @@ Cardinal *n;
 	XSync(dpy, FALSE);
     }
 #endif
+
+    target = WcFullNameToWidget(appShell, p[0]);
     XSetInputFocus(dpy, XtWindow(target), RevertToPointerRoot, CurrentTime);
 }
 
@@ -894,6 +1022,7 @@ char *s;
 caddr_t unused;
 {
     XawTextBlock tb;
+    Widget name_input;
 
     if (exiting == TRUE)
       exit(0);
@@ -911,10 +1040,20 @@ caddr_t unused;
     tb.firstPos = tb.length = 0;
     tb.ptr = "";
     tb.format = FMT8BIT;
-    XawTextReplace(WcFullNameToWidget(appShell, "*name_input"), 0, 65536, &tb);
     XawTextReplace(WcFullNameToWidget(appShell, "*pword_input"), 0, 65536, &tb);
     XawTextReplace(WcFullNameToWidget(appShell, "*getsession*value"),
 		   0, 65536, &tb);
+
+    if (resources.loginName != NULL  &&  strlen(resources.loginName) != 0)
+      {
+	if (strlen(resources.loginName) > 8)
+	  resources.loginName[8] = '\0';
+	tb.ptr = resources.loginName;
+	tb.length = strlen(tb.ptr);
+      }
+    name_input = WcFullNameToWidget(appShell, "*name_input");
+    XawTextReplace(name_input, 0, 65536, &tb);
+    XawTextSetInsertionPoint(name_input, (XawTextPosition) tb.length);
 
     if (curr_timerid)
       XtRemoveTimeOut(curr_timerid);
@@ -1055,7 +1194,7 @@ static void initOwl(search)
 {
   Widget owl, is;
   Arg args[3];
-  int n, done, scratch;
+  int n, done;
   char *filenames, *ptr;
   XGCValues values;
   XtGCMask valuemask;
@@ -1089,13 +1228,22 @@ static void initOwl(search)
 	      else
 		*ptr = '\0';
 
+	      owlBitmaps[owlNumBitmaps] = XmuLocateBitmapFile(*(XtScreen(owl)),
+							      filenames,
+							      NULL, 0,
+							      &owlWidth,
+							      &owlHeight,
+							      NULL, NULL);
+	      if (owlBitmaps[owlNumBitmaps] == None)
+		return; /* abort */
+#ifdef notdef
 	      if (BitmapSuccess != XReadBitmapFile(dpy, owlWindow,
 						   filenames,
 						   &owlWidth, &owlHeight,
 						   &owlBitmaps[owlNumBitmaps],
 						   &scratch, &scratch))
 		return; /* abort */
-
+#endif
 	      owlNumBitmaps++;
 	      if (!done)
 		{
@@ -1142,13 +1290,22 @@ static void initOwl(search)
 	      else
 		*ptr = '\0';
 
+	      isBitmaps[isNumBitmaps] = XmuLocateBitmapFile(*(XtScreen(is)),
+							      filenames,
+							      NULL, 0,
+							      &isWidth,
+							      &isHeight,
+							      NULL, NULL);
+	      if (isBitmaps[isNumBitmaps] == None)
+		return; /* abort */
+#ifdef notdef
 	      if (BitmapSuccess != XReadBitmapFile(dpy, isWindow,
 						   filenames,
 						   &isWidth, &isHeight,
 						   &isBitmaps[isNumBitmaps],
 						   &scratch, &scratch))
 		return; /* abort */
-
+#endif
 	      isNumBitmaps++;
 	      if (!done)
 		{
@@ -1255,18 +1412,19 @@ static void setFontPath()
 static void setAutoRepeat(mode)
 int mode;
 {
-    XKeyboardControl cntrl;
 #ifdef DISABLE_AUTO_REP
+    XKeyboardControl cntrl;
     cntrl.auto_repeat_mode = mode;
     XChangeKeyboardControl(dpy,KBAutoRepeatMode,&cntrl);
 #endif
+    return;
 }
 
 #ifndef BROKEN_AUTO_REP
 static int getAutoRepeat()
 {
-    XKeyboardState st;
 #ifdef DISABLE_AUTO_REP
+    XKeyboardState st;
     XGetKeyboardControl(dpy, &st);
     return st.global_auto_repeat;
 #else
