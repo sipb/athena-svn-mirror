@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.9 1991-02-25 16:34:27 lwvanels Exp $
+ *	$Id: procs.h,v 1.10 1991-03-05 14:49:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -92,7 +92,6 @@ ERRCODE OReplayLog P((REQUEST *Request , char *file ));
 ERRCODE OShowMessageIntoFile P((REQUEST *Request , char *file ));
 int OShowMessage P((REQUEST *Request , char **buf ));
 ERRCODE OGetMessage P((REQUEST *Request , char *file , char **buf , int code ));
-int OWaitForMessage P((REQUEST *Request , char *file , char *sender ));
 
 /* misc.c */
 int ODump P((REQUEST *Request , int type , char *file ));
@@ -152,8 +151,6 @@ ERRCODE call_program P((char *program , char *argument ));
 void expand_hostname P((char *hostname , char *instance , char *realm ));
 int sendmail P((char **smargs ));
 int file_length P((char *file ));
-char *zephyr_get_opcode P((char *class , char *instance ));
-int zephyr_subscribe P((char *class , char *instance , char *recipient ));
 
 /* System: */
 

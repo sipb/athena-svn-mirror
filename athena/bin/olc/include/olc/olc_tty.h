@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.9 1991-01-21 17:22:27 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.10 1991-03-05 14:50:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -69,9 +69,6 @@ int t_set_default_instance P((REQUEST *Request ));
 ERRCODE t_list_queue P((REQUEST *Request , char **sort , char *queues , char *topics , char *users , int stati , int comments , char *file , int display ));
 void output_status_header P((FILE *file , const char *status ));
 ERRCODE t_display_list P((LIST *list , int comments , char *file ));
-
-/* t_live.c */
-ERRCODE t_live P((REQUEST *Request , char *file ));
 
 /* t_messages.c */
 ERRCODE t_replay P((REQUEST *Request , char *queues , char *topics , char *users , int stati , char *file , int display ));
