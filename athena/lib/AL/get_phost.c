@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char *rcsid_phost_c =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.5 1988-11-15 16:24:34 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.6 1989-01-23 09:25:40 jtkohl Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -37,7 +37,7 @@ char *index();
  * to the original "alias" argument is returned.
  */
 
-char * get_phost(alias)
+char * krb_get_phost(alias)
     char *alias;
 {
     struct hostent *h;
