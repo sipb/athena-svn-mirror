@@ -20,6 +20,8 @@ static char sccsid[] = "@(#)conf.c	8.452 (Berkeley) 1/26/1999";
 # include <sys/param.h>
 # include <limits.h>
 
+# include <hesiod.h>
+
 /*
 **  CONF.C -- Sendmail Configuration Tables.
 **
@@ -1947,7 +1949,7 @@ getla()
 
 /* Non Apollo stuff removed by Don Lewis 11/15/93 */
 #ifndef lint
-static char  rcsid[] = "@(#)$Id: conf.c,v 1.1.1.1 1999-02-23 21:41:58 danw Exp $";
+static char  rcsid[] = "@(#)$Id: conf.c,v 1.2 1999-02-26 23:28:09 danw Exp $";
 #endif /* !lint */
 
 #ifdef apollo
@@ -4197,7 +4199,25 @@ sm_getpwnam(user)
 
 	return _getpwnam_shadow(user, 0);
 #else
-	return getpwnam(user);
+	struct passwd *pw;
+	static struct passwd tmp;
+	void *hes_context;
+
+	pw = getpwnam(user);
+	if (!pw)
+	{
+		if (hesiod_init(&hes_context) != 0)
+			return pw;
+		pw = hesiod_getpwnam(hes_context, user);
+		if (pw)
+		{
+			memcpy(&tmp, pw, sizeof(struct passwd));
+			hesiod_free_passwd(hes_context);
+			pw = &tmp;
+		}
+		hesiod_end(hes_context);
+	}
+	return pw;
 #endif
 }
 
@@ -4210,7 +4230,25 @@ sm_getpwuid(uid)
 
 	return _getpwuid_shadow(uid,0);
 #else
-	return getpwuid(uid);
+	struct passwd *pw;
+	static struct passwd tmp;
+	void *hes_context;
+
+	pw = getpwuid(uid);
+	if (!pw)
+	{
+		if (hesiod_init(&hes_context) != 0)
+			return pw;
+		pw = hesiod_getpwuid(hes_context, uid);
+		if (pw)
+		{
+			memcpy(&tmp, pw, sizeof(struct passwd));
+			hesiod_free_passwd(hes_context);
+			pw = &tmp;
+		}
+		hesiod_end(hes_context);
+	}
+	return pw;
 #endif
 }
 /*
