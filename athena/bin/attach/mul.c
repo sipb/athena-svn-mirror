@@ -1,10 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.2 1991-07-19 07:16:00 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.3 1991-07-19 07:37:33 probe Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.2 1991-07-19 07:16:00 probe Exp $";
+static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.3 1991-07-19 07:37:33 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
@@ -14,9 +14,9 @@ struct _attachtab *atp;
 struct mntopts *mopt;
 int errorout;
 {
-	char mul_buf[BUFSIZ], *cp, *mp;
+	char mul_buf[BUFSIZ], *cp = mul_buf, *mp;
 	
-	strcpy(cp = &mul_buf[0], atp->hostdir);
+	strcpy(mul_buf, atp->hostdir);
 	while (mp = cp) {
 		cp = index(mp, ',');
 		if (cp)
