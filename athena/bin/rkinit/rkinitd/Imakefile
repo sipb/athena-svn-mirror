@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Imakefile,v 1.1 1991-05-13 16:00:15 epeisach Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Imakefile,v 1.2 1991-05-13 16:00:33 epeisach Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Imakefile,v $
 #  $Author: epeisach $
 #
@@ -36,4 +36,3 @@ $(RKERR_H) $(RKLIBDEP):
 depend::
 	makedepend $(CFLAGS) $(SSRCS)
 
-# DO NOT DELETE THIS LINE -- make depend depends on it.
