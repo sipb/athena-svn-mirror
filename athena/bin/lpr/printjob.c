@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.15 1990-11-07 14:16:56 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.16 1991-01-23 13:24:46 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.15 1990-11-07 14:16:56 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.16 1991-01-23 13:24:46 epeisach Exp $";
 #endif lint
 
 /*
@@ -543,7 +543,11 @@ print(format, file)
 	int fi, fo;
 	char *av[15], buf[BUFSIZ];
 	int pid, p[2], stopped = 0;
+#if defined(_IBMR2) && !defined(_BSD)
+	int status;
+#else
 	union wait status;
+#endif
 	struct stat stb;
 
 	if (lstat(file, &stb) < 0 || (fi = open(file, O_RDONLY)) < 0)
@@ -685,12 +689,21 @@ print(format, file)
 		write(ofd, "\031\1", 2);
 		while ((pid = wait3(&status, WUNTRACED, 0)) > 0 && pid != ofilter)
 			;
+#if defined(_IBMR2)
+		if (!WIFSTOPPED(status)) {
+			(void) close(fi);
+			syslog(LOG_WARNING, "%s: output filter died (%d)",
+				printer, status);
+			return(REPRINT);
+		}
+#else
 		if (status.w_stopval != WSTOPPED) {
 			(void) close(fi);
 			syslog(LOG_WARNING, "%s: output filter died (%d)",
 				printer, status.w_retcode);
 			return(REPRINT);
 		}
+#endif
 		stopped++;
 	}
 start:
@@ -708,7 +721,11 @@ start:
 	}
 	(void) close(fi);
 	if (child < 0)
+#if defined(_IBMR2) && !defined(_BSD)
+	        status= 100;
+#else
 		status.w_retcode = 100;
+#endif
 	else
 		while ((pid = wait(&status)) > 0 && pid != child)
 			;
@@ -722,19 +739,33 @@ start:
 	}
 	tof = 0;
 	if (!WIFEXITED(status)) {
+#ifndef _IBMR2
 		syslog(LOG_WARNING, "%s: Daemon filter '%c' terminated (%d)",
 			printer, format, status.w_termsig);
+#else
+		syslog(LOG_WARNING, "%s: Daemon filter '%c' terminated (%d)",
+			printer, format, WTERMSIG(status));
+#endif
 		return(ERROR);
 	}
+#ifdef _IBMR2
+	switch (WEXITSTATUS(status)) {
+#else
 	switch (status.w_retcode) {
+#endif
 	case 0:
 		tof = 1;
 		return(OK);
 	case 1:
 		return(REPRINT);
 	default:
+#ifdef _IBMR2
+		syslog(LOG_WARNING, "%s: Daemon filter '%c' exited (%d)",
+			printer, format, WEXITSTATUS(status));
+#else
 		syslog(LOG_WARNING, "%s: Daemon filter '%c' exited (%d)",
 			printer, format, status.w_retcode);
+#endif
 	case 2:
 		return(ERROR);
 	}
