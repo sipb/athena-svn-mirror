@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.8 1998-05-07 17:11:01 ghudson Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.9 1999-03-02 19:07:43 danw Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -63,7 +63,7 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
 		     char **text)
 {
   struct passwd *local_pwd;
-  int retval = AL_SUCCESS;
+  int retval = AL_SUCCESS, found_access;
   char *retfname = NULL;
   FILE *retfile;
 
@@ -93,20 +93,23 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
       goto cleanup;
     }
 
+  /* Try the access control file. (Do this first to avoid a Hesiod lookup
+   * if the user will just be rejected anyway.)
+   */
+  found_access = try_access(username, isremote, local_acct, text, &retval);
+  if (found_access && retval != AL_SUCCESS)
+    goto cleanup;
+
   /* Those without local passwd information must have Hesiod passwd
    * information or they don't exist.
    */
   if (!local_pwd && !good_hesiod(username, &retval))
     goto cleanup;
 
-  /* Try the access control file. */
-  if (try_access(username, isremote, local_acct, text, &retval))
-    goto cleanup;
-
-  /* There is no access control file.  Look at the nocreate and noremote
-   * files if the user has no local passwd information.
+  /* Look at the nocreate and noremote files if the user has no local
+   * passwd information and there's no access file.
    */
-  if (!local_pwd)
+  if (!local_pwd && !found_access)
     {
       if (!access(PATH_NOCREATE, F_OK))
 	{
