@@ -1,13 +1,17 @@
 #!./perl
 
-# $RCSfile: anydbm.t,v $$Revision: 1.1.1.2 $$Date: 2000-04-07 20:45:17 $
+# $RCSfile: anydbm.t,v $$Revision: 1.1.1.3 $$Date: 2002-02-07 21:12:22 $
 
 BEGIN {
     chdir 't' if -d 't';
-    unshift @INC, '../lib';
+    @INC = '../lib';
+    require Config; import Config;
+    if (($Config{'extensions'} !~ /\b(DB|[A-Z]DBM)_File\b/) ){
+      print "1..0 # Skipping (no DB_File or [A-Z]DBM_File)\n";
+      exit 0;
+    }
 }
 require AnyDBM_File;
-#If Fcntl is not available, try 0x202 or 0x102 for O_RDWR|O_CREAT
 use Fcntl;
 
 print "1..12\n";

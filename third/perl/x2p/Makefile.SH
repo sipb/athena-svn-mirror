@@ -27,17 +27,14 @@ esac
 echo "Extracting x2p/Makefile (with variable substitutions)"
 rm -f Makefile
 cat >Makefile <<!GROK!THIS!
-# $RCSfile: Makefile.SH,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:40 $
+# $RCSfile: Makefile.SH,v $$Revision: 1.1.1.4 $$Date: 2002-02-07 21:12:25 $
 #
 # $Log: not supported by cvs2svn $
 
 CC = $cc
 BYACC = $byacc
 LDFLAGS = $ldflags
-SMALL = $small
-LARGE = $large $split
-# XXX Perl malloc temporarily unusable (declaration collisions with
-# stdlib.h)
+# XXX Perl malloc temporarily unusable (declaration collisions with stdlib.h)
 #mallocsrc = $mallocsrc
 #mallocobj = $mallocobj
 shellflags = $shellflags
@@ -129,14 +126,17 @@ a2p.c: a2p.y
 
 a2p$(OBJ_EXT): a2p.c a2py.c a2p.h EXTERN.h util.h INTERN.h \
 		../handy.h ../config.h str.h hash.h
-	$(CCCMD) $(LARGE) a2p.c
+	$(CCCMD) a2p.c
 
 clean:
 	rm -f a2p *$(OBJ_EXT) $(plexe) $(plc) $(plm)
 
 realclean: clean
-	rm -f *.orig core $(addedbyconf) all malloc.c
+	rm -f core $(addedbyconf) all malloc.c
 	rm -f $(FIRSTMAKEFILE) $(FIRSTMAKEFILE).old
+
+veryclean: realclean
+	rm -f *~ *.orig
 
 # The following lint has practically everything turned on.  Unfortunately,
 # you have to wade through a lot of mumbo jumbo that can't be suppressed.

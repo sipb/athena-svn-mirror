@@ -1,6 +1,6 @@
 #!./perl
 #
-# $Id: soundex.t,v 1.1.1.2 2000-04-07 20:46:17 ghudson Exp $
+# $Id: soundex.t,v 1.1.1.3 2002-02-07 21:12:22 zacheiss Exp $
 #
 # test module for soundex.pl
 #
@@ -18,7 +18,7 @@
 
 BEGIN {
     chdir 't' if -d 't';
-    unshift @INC, '../lib';
+    @INC = '../lib';
 }
 
 use Text::Soundex;

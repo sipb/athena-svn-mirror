@@ -1,10 +1,10 @@
 #!./perl
 
-# $RCSfile: cpp.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:45:02 $
+# $RCSfile: cpp.t,v $$Revision: 1.1.1.4 $$Date: 2002-02-07 21:12:22 $
 
 BEGIN {
     chdir 't' if -d 't';
-    unshift @INC, '../lib';
+    @INC = '../lib';
 }
 
 use Config;
