@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.28 1997-04-30 04:44:03 ghudson Exp $
+# $Id: reactivate.sh,v 1.29 1997-05-02 00:55:41 ghudson Exp $
 
 trap "" 1 15
 
@@ -156,7 +156,7 @@ if [ "${RVDCLIENT}" = "true" ]; then
 fi
 
 # Perform an update if appropriate
-/srvd/auto_update
+/srvd/auto_update reactivate
 
 fi				# END time-consuming stuff
 
