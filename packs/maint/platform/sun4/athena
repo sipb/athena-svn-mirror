@@ -285,7 +285,7 @@ awk '{ prev = $0 }; END { print prev }' /etc/athena/version	> /tmp/t1
 if [ "${PUBLIC}" != "true" ]; then
 	awk '{ if ( NR > 1 ) print $0 }' /etc/motd		>>/tmp/t1
 fi
-mv /tmp/t1 /etc/motd
+mv -f /tmp/t1 /etc/motd
 chmod 644 /etc/motd
 echo "done."							>/dev/console
 
