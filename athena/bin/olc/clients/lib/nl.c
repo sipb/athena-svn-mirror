@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.1 1991-03-11 13:41:17 lwvanels Exp $
+ *	$Id: nl.c,v 1.2 1991-03-21 15:30:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.1 1991-03-11 13:41:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.2 1991-03-21 15:30:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -131,9 +131,10 @@ KTEXT_ST my_auth;
   if (len < 0)
     return(len);
 
-  if (*buflen < len) {
+  /* +1 for trailing \0 */
+  if (*buflen < len+1) {
 /* Need to re-allocate and resize buffer */
-    *buflen = MAX(len, 2*(*buflen));
+    *buflen = MAX(len+1, 2*(*buflen));
     free(*buf);
     *buf = malloc(*buflen);
     if (*buf == NULL) {
@@ -152,7 +153,8 @@ KTEXT_ST my_auth;
     total_read += i;
   }
   close(fd);
-  *outlen = len;
+  (*buf)[len] = '\0';
+  *outlen = len+1;
   return(SUCCESS);
 }
 
