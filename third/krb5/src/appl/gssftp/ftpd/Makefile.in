@@ -17,11 +17,11 @@ SRCS	= ftpd.c ftpcmd.y logwtmp.c popen.c vers.c \
 OBJS	= ftpd.o ftpcmd.o glob.o popen.o logwtmp.o vers.o radix.o \
 	  secure.o $(LIBOBJS) $(SETENVOBJ)
 
-KLIB = -lgssapi_krb5 -lkrb5 -lcrypto $(COMERRLIB)
+KLIB = @KRB4_LIB@ @KRB4_CRYPTO_LIB@ -lgssapi_krb5 -lkrb5 -lcrypto $(COMERRLIB)
 DEPKLIB = $(TOPLIBD)/gssapi/libgssapi_krb5.a $(TOPLIBD)/libkrb5.a \
 		$(TOPLIBD)/libcrypto.a $(COMERRLIB)
 
-LOCALINCLUDE = -I$(srcdir)/..
+LOCALINCLUDE = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@
 DEFINES = -DGSSAPI -DNOCONFIDENTIAL
 
 all::	ftpd
