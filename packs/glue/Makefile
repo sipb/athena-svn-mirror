@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.34 1999-05-05 17:00:39 danw Exp $
+# $Id: Makefile,v 1.35 1999-06-17 17:48:32 danw Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -82,6 +82,7 @@ install:
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
+	install -c -m 444 mh.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
