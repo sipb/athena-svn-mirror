@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.26 1992-02-04 19:56:09 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: s_io.c,v 1.27 1993-08-05 19:28:43 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.26 1992-02-04 19:56:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.27 1993-08-05 19:28:43 vanharen Exp $";
 #endif
 #endif
 
@@ -87,7 +87,7 @@ read_request(fd, request)
   while (len < sizeof(IO_REQUEST)) {
     size = sread(fd, (char *) &net_req, sizeof(IO_REQUEST)-len);
     if (size == -1) {
-      log_error("read_request: error reading io_request: %s");
+      log_error("read_request: error reading io_request: %m");
       return(ERROR);
     }
     len += size;
