@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.15 1994-07-26 19:08:46 cfields Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.16 1995-07-26 07:15:25 cfields Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -51,13 +51,13 @@ GLOBAL : *.CKP *.local *.pid :
 		-> security
 		shadow
 		srvtab
+		system
 		ups_data
 		utmp
 		utmpx
 		vfstab
 		wtmp
 		wtmpx
-		inet/services
 		inet/hosts
 		inet/inetd.conf
 		dfs/dfstab
