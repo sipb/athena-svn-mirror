@@ -15,12 +15,13 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.14 1991-06-27 13:46:44 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.15 1991-06-29 15:56:03 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include <signal.h>
+#include <sys/errno.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
