@@ -17,7 +17,7 @@
  * the generation of reports.
  */
 
-static const char rcsid[] = "$Id: report.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
+static const char rcsid[] = "$Id: report.c,v 1.3 1998-10-21 20:02:06 ghudson Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -203,8 +203,7 @@ static void report_printers(struct config *config)
       for (i = 0; i < config->nprinters; i++)
 	{
 	  printer = &config->printers[i];
-	  fprintf(fp, "%s %s %s %d\n", printer->name,
-		  config->clusters[printer->cluster].name,
+	  fprintf(fp, "%s %s %s %d\n", printer->name, printer->location,
 		  (printer->up) ? "up" : "down", printer->jobs);
 	}
       fclose(fp);

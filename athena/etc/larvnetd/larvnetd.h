@@ -1,4 +1,4 @@
-/* $Id: larvnetd.h,v 1.2 1998-10-13 17:12:58 ghudson Exp $ */
+/* $Id: larvnetd.h,v 1.3 1998-10-21 20:02:06 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -55,6 +55,7 @@ struct machine {
 struct printer {
   /* Configuration data */
   char *name;
+  char *location;
   int cluster;			/* Index into config.clusters */
 
   /* State information */

@@ -17,7 +17,7 @@
  * functions to read and reread the configuration file.
  */
 
-static const char rcsid[] = "$Id: config.c,v 1.2 1998-10-13 17:12:57 ghudson Exp $";
+static const char rcsid[] = "$Id: config.c,v 1.3 1998-10-21 20:02:05 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -277,6 +277,10 @@ static int read_config(const char *configfile, struct config *config)
 	  p = skip_spaces(p + 7);
 	  q = skip_nonspaces(p);
 	  printer->name = estrndup(p, q - p);
+	  p = skip_spaces(q);
+	  q = skip_nonspaces(p);
+	  printer->location = (*p) ? estrndup(p, q - p)
+	      : estrdup(config->clusters[cluster_index].name);
 	  printer->cluster = cluster_index;
 
 	  /* Initialize state variables. */
@@ -471,6 +475,7 @@ static void freeconfig(struct config *config)
   for (i = 0; i < config->nprinters; i++)
     {
       free(config->printers[i].name);
+      free(config->printers[i].location);
       if (config->printers[i].s != -1)
 	close(config->printers[i].s);
       if (config->printers[i].timer)

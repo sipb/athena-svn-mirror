@@ -1,4 +1,4 @@
-.\" $Id: larvnet.conf.5,v 1.2 1998-10-13 17:12:58 ghudson Exp $
+.\" $Id: larvnet.conf.5,v 1.3 1998-10-21 20:02:05 ghudson Exp $
 .\"
 .\" Copyright 1998 by the Massachusetts Institute of Technology.
 .\"
@@ -56,14 +56,12 @@ line.  The workstation name may include a numeric range in square
 brackets.  For example, "w20-575-[1-50]" would expand to fifty
 workstations.
 .TP 8
-\fBprinter\fP \fIname\fP
+\fBprinter\fP \fIname\fP [\fIlocation\fP]
 Lists a printer within a cluster.  This line must appear after a
 .B cluster
-line.  The printer name's
-.B pcap
-entry will be looked up in Hesiod to find the print server name, which
-will in turn be looked up in the DNS.  If either lookup fails, the
-printer entry will be ignored.
+line.  The
+.I location
+of the printer defaults to the name of the cluster.
 .TP 8
 \fBcgroup\fP \fIname\fP \fIx\fP \fIy\fP \fIcluster\fP ...
 Specifies a group of public clusters.  The
