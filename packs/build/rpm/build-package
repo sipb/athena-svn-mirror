@@ -10,23 +10,23 @@ destdir=/build
 makepackage=yes
 
 while getopts s:d:v:r: opt; do
-    case "$opt" in
-    n)
-	makepackage=no
-	;;
-    s)
-	sourcedir="$OPTARG"
-	;;
-    d)
-	destdir="$OPTARG"
-	;;
-    v)
-	version="$OPTARG"
-	;;
-    r)
-	release="$OPTARG"
-	;;
-    esac
+  case "$opt" in
+  n)
+    makepackage=no
+    ;;
+  s)
+    sourcedir="$OPTARG"
+    ;;
+  d)
+    destdir="$OPTARG"
+    ;;
+  v)
+    version="$OPTARG"
+    ;;
+  r)
+    release="$OPTARG"
+    ;;
+  esac
 done
 shift `expr $OPTIND - 1`
 
@@ -102,8 +102,8 @@ cd $destdir/SOURCES
 
 # Run the prep script, if any.
 if [ -f $sourcedir/packs/build/rpm/prep/$package_name ]; then
-    $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
-      || exit 1
+  $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
+    || exit 1
 fi
 
 # Copy in do.sh and run the "do dist" step to prepare a
@@ -194,7 +194,7 @@ mkdir $RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
+  sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
 EOF
 fi
@@ -210,7 +210,7 @@ if grep -q %post $sourcedir/packs/build/rpm/specs/$package_name; then true; else
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %post
 for file in `find /usr/athena/info -type f ! -name dir`; do
-    install-info --info-dir=/usr/athena/info $file 2>/dev/null
+  install-info --info-dir=/usr/athena/info $file 2>/dev/null
 done
 exit 0
 EOF
@@ -223,7 +223,7 @@ echo "==== build package"
 rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=$target \
  --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name
 if [ $? -ne 0 ]; then
-    exit 1
+  exit 1
 fi
 
 
