@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.17 2000-01-11 19:06:22 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.18 2003-10-03 18:36:35 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: passwd.c,v 1.17 2000-01-11 19:06:22 ghudson Ex
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 #include <hesiod.h>
 #ifdef HAVE_SHADOW
 #include <shadow.h>
@@ -51,8 +52,6 @@ static const char rcsid[] = "$Id: passwd.c,v 1.17 2000-01-11 19:06:22 ghudson Ex
 #define HOMEDIR_FIELD 6
 #endif
 
-static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
-				 const char *cryptpw);
 #ifdef HAVE_LCKPWDF
 static int safe_lckpwdf(void);
 #endif
@@ -197,17 +196,15 @@ static void discard_passwd_lockfile(FILE *fp)
  * type.
  */
 
-int al__add_to_passwd(const char *username, struct al_record *record,
-		      const char *cryptpw)
+int al__add_to_passwd(const char *username, struct al_record *record)
 {
   FILE *in = NULL, *out = NULL;
 #ifdef HAVE_SHADOW
   FILE *shadow_in = NULL, *shadow_out = NULL;
 #endif
   struct passwd *pwd, *tmppwd;
-  const char *passwd;
-  char buf[BUFSIZ];
-  int nbytes, retval, have_nocrack, fd;
+  char buf[BUFSIZ], *line = NULL;
+  int linesize, len, found, nbytes, retval, fd;
   void *hescontext = NULL;
 
   tmppwd = al__getpwnam(username);
@@ -241,12 +238,6 @@ int al__add_to_passwd(const char *username, struct al_record *record,
       return AL_EBADHES;
     }
 
-  have_nocrack = !access(PATH_NOCRACK, F_OK);
-  if (cryptpw && !have_nocrack)
-    passwd = cryptpw;
-  else
-    passwd = pwd->pw_passwd;
-
   out = lock_passwd();
   in = fopen(PATH_PASSWD, "r");
   if (!out || !in)
@@ -267,7 +258,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
 #ifdef HAVE_SHADOW
 	  "x",
 #else
-	  passwd,
+	  pwd->pw_passwd,
 #endif
 	  (unsigned long) pwd->pw_uid, (unsigned long) pwd->pw_gid,
 #ifdef HAVE_MASTER_PASSWD
@@ -278,6 +269,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
 	  pwd->pw_gecos, pwd->pw_dir, pwd->pw_shell);
 
 #ifdef HAVE_SHADOW
+  /* Prepare to copy shadow file to a temporary file. */
   fd = open(PATH_SHADOW_TMP, O_RDWR|O_CREAT, S_IWUSR|S_IRUSR);
   if (fd < 0)
     goto cleanup;
@@ -291,14 +283,27 @@ int al__add_to_passwd(const char *username, struct al_record *record,
   shadow_in = fopen(PATH_SHADOW, "r");
   if (!shadow_in)
     goto cleanup;
-  retval = copy_changing_cryptpw(shadow_in, shadow_out, username, passwd);
+
+  /* Copy shadow file, noting if there is an entry for username. */
+  found = 0;
+  len = strlen(username);
+  while ((retval = al__read_line(shadow_in, &line, &linesize)) == 0)
+    {
+      if (strncmp(username, line, len) == 0 && line[len] == ':')
+	found = 1;
+      fprintf(shadow_out, "%s\n", line);
+    }
+  free(line);
   if (retval == -1)
     goto cleanup;
-  if (retval == 0)
+
+  /* Add an entry for username if one was not already present. */
+  if (!found)
     {
-      fprintf(shadow_out, "%s:%s:%lu::::::\n", pwd->pw_name, passwd,
+      fprintf(shadow_out, "%s:%s:%lu::::::\n", pwd->pw_name, pwd->pw_passwd,
 	      (unsigned long) (time(NULL) / (60 * 60 * 24)));
     }
+
   fflush(shadow_out);
   retval = (fsync(fileno(shadow_out)) == -1);
   retval = ferror(shadow_out) || retval;
@@ -500,111 +505,6 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
     }
 
   return update_passwd(out);
-}
-
-/* This is an internal function.  Its contract is to update the
- * encrypted password entry for username if record->passwd_added is
- * true, cryptpw is not NULL, and /etc/nocrack is not present.  It may
- * only return AL_SUCCESS or AL_ENOMEM.
- */
-
-int al__update_cryptpw(const char *username, struct al_record *record,
-		       const char *cryptpw)
-{
-  FILE *in, *out, *lock;
-  int have_nocrack, status;
-
-  /* Check whether we really want to update the password field. */
-  have_nocrack = !access(PATH_NOCRACK, F_OK);
-  if (!record->passwd_added || cryptpw == NULL || have_nocrack)
-    return AL_SUCCESS;
-
-  /* Obtain a lock on the passwd file. */
-  lock = lock_passwd();
-  if (!lock)
-    return AL_SUCCESS;
-
-  /* Open the input and output files.  We want to update the shadow file
-   * if there is one and the passwd file if there isn't. */
-#ifdef HAVE_SHADOW
-  out = fopen(PATH_SHADOW_TMP, "w");
-  if (out)
-    {
-      fchmod(fileno(out), S_IWUSR|S_IRUSR|S_IRGRP);
-      in = fopen(PATH_SHADOW, "r");
-      if (!in)
-	fclose(out);
-    }
-#else
-  out = lock;
-  in = fopen(PATH_PASSWD, "r");
-#endif
-  if (!out || !in)
-    {
-      discard_passwd_lockfile(lock);
-      return AL_SUCCESS;
-    }
-
-  status = (copy_changing_cryptpw(in, out, username, cryptpw) <= 0);
-
-  fclose(in);
-#ifdef HAVE_SHADOW
-  status = (fsync(fileno(out)) == -1) || status;
-  status = ferror(out) || status;
-  if (fclose(out) || status)
-    unlink(PATH_SHADOW_TMP);
-  else
-    {
-      rename(PATH_SHADOW_TMP, PATH_SHADOW);
-#ifdef sgi
-      /* Kludge: nsd has a one-second granularity in checking the mod time
-       * of a file, so make sure we don't modify it twice within a second.
-       */
-      sleep(1);
-#endif
-    }
-  discard_passwd_lockfile(lock);
-#else
-  if (status)
-    discard_passwd_lockfile(lock);
-  else
-    update_passwd(lock);
-#endif
-  return AL_SUCCESS;
-}
-
-/* Copy lines from a passwd, master.passwd, or shadow file from in to out,
- * changing the encrypted passwd field for username to cryptpw.  Return 1
- * if we found and changed one or more lines matching username, 0 if we
- * found none, and -1 if we detected an error.
- */
-
-static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
-				 const char *cryptpw)
-{
-  char *line = NULL;
-  int linesize, len = strlen(username), found = 0, status;
-  const char *p;
-
-  /* Copy input to output, substituting cryptpw for the passwd field of
-   * a line matching username. */
-  while ((status = al__read_line(in, &line, &linesize)) == 0)
-    {
-      if (strncmp(username, line, len) == 0 && line[len] == ':')
-	{
-	  /* Find the field after the encrypted password. */
-	  p = strchr(line + len + 1, ':');
-	  if (!p)
-	    continue;
-	  fprintf(out, "%s:%s%s\n", username, cryptpw, p);
-	  found = 1;
-	}
-      else
-	fprintf(out, "%s\n", line);
-    }
-
-  free(line);
-  return (status == -1) ? -1 : found;
 }
 
 #ifdef HAVE_LCKPWDF

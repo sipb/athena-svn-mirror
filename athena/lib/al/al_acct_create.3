@@ -1,4 +1,4 @@
-.\" $Id: al_acct_create.3,v 1.6 1998-07-16 13:00:58 danw Exp $
+.\" $Id: al_acct_create.3,v 1.7 2003-10-03 18:36:31 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -48,14 +48,7 @@ are as follows:
 Gives the name of the user whose local account is to be created. 
 .TP 15
 .I cryptpw
-If an entry is added to the local passwd database, it will use the
-value of
-.I cryptpw
-as the encrypted passwd field if
-.I cryptpw
-is not NULL and if
-.I /etc/nocrack
-is not present.
+This argument no longer has any effect.
 .TP 15
 .I sessionpid
 Gives the pid of the login session (which should generally always be

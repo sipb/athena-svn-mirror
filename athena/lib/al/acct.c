@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.11 1998-06-10 22:27:34 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.12 2003-10-03 18:36:29 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -30,22 +30,13 @@ static const char rcsid[] = "$Id: acct.c,v 1.11 1998-06-10 22:27:34 ghudson Exp 
  *
  * 	* If a login record is not already present for this user:
  * 		- The user is added to the system passwd database if
- * 		  not already present there.  If /etc/nocrack is not
- * 		  present in the filesystem and the value of cryptpw
- * 		  is not NULL, it is substituted for the password
- * 		  field of the Hesiod passwd line.
+ * 		  not already present there.
  * 		- The user is added to zero or more groups in the
  * 		  system group database according to the user's hesiod
  * 		  group list.
  * 		- A login session record is created containing the
  * 		  requisite information for reversal of the above
  * 		  steps by al_acct_revert().
- *	  Otherwise
- *		- If the user was added to the system passwd database
- *		  by a prior login, the value of cryptpw is not NULL,
- *		  and /etc/nocrack is not present in the filesystem,
- *		  the value of cryptpw is substituted for the password
- *		  field of the added passwd line.
  *
  * 	* Unless a login record was already present and indicated that
  * 	  a temporary directory has been created for the user:
@@ -85,9 +76,8 @@ static const char rcsid[] = "$Id: acct.c,v 1.11 1998-06-10 22:27:34 ghudson Exp 
  */
 
 
-int al_acct_create(const char *username, const char *cryptpw,
-		   pid_t sessionpid, int havecred, int tmphomedir,
-		   int **warnings)
+int al_acct_create(const char *username, pid_t sessionpid, int havecred,
+		   int tmphomedir, int **warnings)
 {
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i, existed;
   struct al_record record;
@@ -115,7 +105,7 @@ int al_acct_create(const char *username, const char *cryptpw,
    * the record already existed, in case the user was removed from the
    * passwd file since the last login.
    */
-  retval = al__add_to_passwd(username, &record, cryptpw);
+  retval = al__add_to_passwd(username, &record);
   if (AL_ISWARNING(retval))
     warns[nwarns++] = retval;
   else if (retval != AL_SUCCESS)
@@ -141,9 +131,6 @@ int al_acct_create(const char *username, const char *cryptpw,
     }
   else				/* Other processes also interested in user. */
     {
-      /* Update the encrypted password entry if we added a passwd line. */
-      al__update_cryptpw(username, &record, cryptpw);
-
       /* Add pid to record if not already there. */
       for (i = 0; i < record.npids; i++)
 	{

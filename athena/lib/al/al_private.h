@@ -1,4 +1,4 @@
-/* $Id: al_private.h,v 1.6 1998-05-31 15:31:51 ghudson Exp $ */
+/* $Id: al_private.h,v 1.7 2003-10-03 18:36:33 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -32,7 +32,6 @@
 #define PATH_NOREMOTE		"/etc/noremote"
 #define PATH_NOCREATE		"/etc/nocreate"
 #define PATH_NOATTACH		"/etc/noattach"
-#define PATH_NOCRACK		"/etc/nocrack"
 
 #define PATH_GROUP		"/etc/group"
 #define PATH_GROUP_TMP		"/etc/gtmp"
@@ -77,12 +76,9 @@ int al__get_session_record(const char *username, struct al_record *record);
 int al__put_session_record(struct al_record *record);
 
 /* passwd.c */
-int al__add_to_passwd(const char *username, struct al_record *record,
-		      const char *cryptpw);
+int al__add_to_passwd(const char *username, struct al_record *record);
 int al__remove_from_passwd(const char *username, struct al_record *record);
 int al__change_passwd_homedir(const char *username, const char *homedir);
-int al__update_cryptpw(const char *username, struct al_record *record,
-		       const char *cryptpw);
 
 /* group.c */
 int al__add_to_group(const char *username, struct al_record *record);
