@@ -1,7 +1,7 @@
 # Prototype user .login file
-# $Author: probe $
+# $Author: epeisach $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.12 1989-08-09 18:44:18 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.13 1989-08-14 17:35:23 epeisach Exp $
 
 
 # This file sources a system-wide .login file, which:
@@ -16,15 +16,19 @@ if (-r $initdir/login) then
         source $initdir/login
 else
 	if (-r /usr/prototype_user/.login) then
-		echo "If this is a workstation in a public cluster, you should"
-		echo "be getting the 6.3 upgrade within a few days."
-                echo "If this is a private workstation, please contact the"
-		echo "Athena Hotline at x3-1410 (by email: hotline@ATHENA),"
-		echo "in order to arrange to have your workstation ungraded."
+		if ($?prompt) then		# Don't echo if noninteractive
+		  echo "If this is a workstation in a public cluster, you"
+		  echo "should be getting the 6.3 upgrade within a few days."
+		  echo "If this is a private workstation, please contact the"
+		  echo "Athena Hotline at x3-1410 (by email: hotline@ATHENA),"
+		  echo "in order to arrange to have your workstation upgraded."
+		endif
 		source /usr/prototype_user/.login
 	else
-		echo "Warning: System-wide initialization files not found."
-        	echo "Login initialization has not been performed."
+		if ($?prompt) then		# Don't echo if noninteractive
+		  echo "Warning: System-wide initialization files not found."
+        	  echo "Login initialization has not been performed."
+		endif
 	endif
 endif
 

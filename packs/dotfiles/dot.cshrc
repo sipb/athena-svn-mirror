@@ -1,7 +1,7 @@
 # Prototype user .cshrc file
-# $Author: probe $
+# $Author: epeisach $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.12 1989-08-09 18:44:11 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.13 1989-08-14 17:36:01 epeisach Exp $
 
 
 # This file sources a system-wide cshrc file, which:
@@ -17,15 +17,19 @@ if (-r $initdir/cshrc) then
         source $initdir/cshrc
 else
 	if (-r /usr/prototype_user/.cshrc) then
-                echo -n "Warning: "
-		echo "This workstation has not been upgraded to Release 6.3."
-		echo "Using old initialization files."
+		if ($?prompt) then		# Don't echo if noninteractive
+		  echo -n "Warning: "
+		  echo "This workstation has not been upgraded to Release 6.3."
+		  echo "Using old initialization files."
+		endif
 		source /usr/prototype_user/.cshrc
 	else
-		echo "Warning: System-wide initialization files not found."
-        	echo "C Shell initialization has not been performed."
-	        # set some basic defaults if failed initialization
-		stty dec
+		if ($?prompt) then		# Don't echo if noninteractive
+		  echo "Warning: System-wide initialization files not found."
+		  echo "C Shell initialization has not been performed."
+		  stty dec
+		endif
+		# set some basic defaults if failed initialization
 		umask 077
 		set path=( . ~/${hosttype}bin /srvd/patch /usr/athena \
 			/bin/athena /usr/bin/X /usr/new /usr/new/mh/bin \
