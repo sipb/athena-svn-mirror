@@ -38,8 +38,7 @@ In order to compile GtkHTML, you need gdk-pixbuf 0.8.0 (or later),
 Bonobo 0.32 (or later), gnome-print 0.25 (or later) and GAL 0.7 (or
 later).
 
-Optionally you may want to install GConf 0.4 (or later) to enable the
-configuration capplet.
+Optionally you may want to install GConf 1.0.7 (or later).
 
 If you want to try the test program `testgtkhtml', you also need
 glibwww 0.2 or later.  GLibWWW is available from:

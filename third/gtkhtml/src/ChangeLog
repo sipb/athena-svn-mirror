@@ -1,3 +1,38 @@
+2001-11-14  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (parse_halign): allow halign be "middle", which is
+	common mistake
+
+2001-11-14  Larry Ewing  <lewing@ximian.com>
+
+	* htmlcolorset.c (html_colorset_set_style): use the fg[SELECTED]
+	instead of text[SELECTED] since that is what the silly gtk+
+	widgets do.
+
+2001-11-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmlcluev.c (do_layout): compare curr y_off's (y - ascent) and
+	not old and new curr->y
+
+2001-11-08  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml-properties.c (gtk_html_class_properties_new): get
+	default encoding from default widget style font
+	(gtk_html_class_properties_load): ditto
+	(get_default_fonts): new helper function
+	(get_font_name): stolen from e-font.c
+
+	* htmlengine-edit-text.c (find_first): use g_unichar_isalnum
+	(html_engine_capitalize_word): test if next char is alnum
+	before doing forward_word
+	(upper_lower): don't g_assert here as it's not needed, just test
+	if we have text object to modify
+
+2001-11-06  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c (alloc_e_font_try): try to use gdk_font_load
+	for fixed font, if gdk_fontset_load doesn't load fixed font for us
+
 2001-11-05  Radek Doulik  <rodo@ximian.com>
  
 	* htmlengine-edit-cut-and-paste.c

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gtkhtml cvs\n"
-"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"POT-Creation-Date: 2001-11-14 16:55-0600\n"
 "PO-Revision-Date: 2000-09-26 23:07+0200\n"
 "Last-Translator: Dennis Smit <mek@antenna.nl>\n"
 "Language-Team: DUTCH <nl@li.org>\n"
@@ -29,139 +29,143 @@ msgid "*********************"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:2
-msgid "Add Keyboard Shortcuts"
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:3
-msgid "Automatically detect links"
+msgid "Add Keyboard Shortcuts"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:4
+msgid "Automatically detect links"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:5
 #, fuzzy
 msgid "Behavior"
 msgstr "Gedrag"
 
 #. color selection
-#: capplet/gtkhtml-capplet.glade.h:5 components/html-editor/text.c:218
+#: capplet/gtkhtml-capplet.glade.h:6 components/html-editor/text.c:218
 msgid "Color"
 msgstr "Kleur"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Command"
 msgstr "Commando"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:8
 #, fuzzy
 msgid "Composer Properties"
 msgstr "Instellingen"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Composer Properties planned"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:10
 #, fuzzy
 msgid "Enable spell checking"
 msgstr "live spellingscontrole"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:11
 #, fuzzy
 msgid "Fixed width"
 msgstr "Fixed width lettertype"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Fonts"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:13
 #, fuzzy
 msgid "For printing"
 msgstr "voor printen"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:14
 #, fuzzy
 msgid "Grab keys"
 msgstr "Pluk een toets"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Information"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:17
 #, fuzzy
 msgid "Language"
 msgstr "taal"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 msgid "Miscellaneous"
 msgstr "Divers"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:20
 msgid "On screen"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "Pick a color"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "Select HTML fixed width font"
 msgstr "Selecteer HTML vaste breedte lettertype"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font for printing"
 msgstr "Selecteer HTML vaste breedte lettertype voor printen"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML variable width font"
 msgstr "Selecteer HTML variable breedte lettertype"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font for printing"
 msgstr "Selecteer HTML variable breedte lettertype voor printen"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select command "
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Shortcut"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcuts _type:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:29
 #, fuzzy
 msgid "Show animated images"
 msgstr "Animaties"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:30
 #, fuzzy
 msgid "Spell Checking"
 msgstr "Spellingscontrole"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:31
 #, fuzzy
 msgid "Variable width"
 msgstr "Variable breedte lettertype"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:32
 #, fuzzy
 msgid "_Add"
 msgstr "Voeg toe"
 
-#: capplet/gtkhtml-capplet.glade.h:32
+#: capplet/gtkhtml-capplet.glade.h:33
 #, fuzzy
 msgid "_Delete"
 msgstr "Verwijder"
@@ -1395,7 +1399,7 @@ msgstr "Trek paragraphen meer in"
 msgid "Sample"
 msgstr ""
 
-#: src/htmlgdkpainter.c:225
+#: src/htmlgdkpainter.c:228
 msgid "Can't load fixed font."
 msgstr ""
 

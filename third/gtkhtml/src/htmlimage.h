@@ -122,7 +122,8 @@ void        html_image_init               (HTMLImage        *image,
 					   gboolean          percent_height,
 					   gint8             border,
 					   HTMLColor        *border_color,
-					   HTMLVAlignType    valign);
+					   HTMLVAlignType    valign,
+					   gboolean          reload);
 HTMLObject *html_image_new                (HTMLImageFactory *imf,
 					   const gchar      *filename,
 					   const gchar      *url,
@@ -133,7 +134,8 @@ HTMLObject *html_image_new                (HTMLImageFactory *imf,
 					   gboolean          percent_height,
 					   gint8             border,
 					   HTMLColor        *border_color,
-					   HTMLVAlignType    valign);
+					   HTMLVAlignType    valign,
+					   gboolean          reload);
 void        html_image_set_size           (HTMLImage        *image,
 					   gint              w,
 					   gint              h,

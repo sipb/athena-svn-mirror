@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.2 2001-11-08 23:23:35 ghudson Exp $
+# $Id: sv.po,v 1.1.1.3 2001-12-03 17:34:16 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"POT-Creation-Date: 2001-11-14 16:55-0600\n"
 "PO-Revision-Date: 2001-10-28 16:51+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -32,128 +32,132 @@ msgid "*********************"
 msgstr "*********************"
 
 #: capplet/gtkhtml-capplet.glade.h:2
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZzÅåÄäÖö"
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "Add Keyboard Shortcuts"
 msgstr "Lägg till tangentbordsgenvägar"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "Automatically detect links"
 msgstr "Upptäck länkar automatiskt"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Behavior"
 msgstr "Beteende"
 
 #. color selection
-#: capplet/gtkhtml-capplet.glade.h:5 components/html-editor/text.c:218
+#: capplet/gtkhtml-capplet.glade.h:6 components/html-editor/text.c:218
 msgid "Color"
 msgstr "Färg"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Command"
 msgstr "Kommando"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Composer Properties"
 msgstr "Redigeraregenskaper"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Composer Properties planned"
 msgstr "Planerade redigeraregenskaper"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:10
 msgid "Enable spell checking"
 msgstr "Använd stavningskontroll"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Fixed width"
 msgstr "Fast breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Fonts"
 msgstr "Typsnitt"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "For printing"
 msgstr "För utskrift"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Grab keys"
 msgstr "Fånga tangenter"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Information"
 msgstr "Information"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "Keyboard Shortcuts"
 msgstr "Tangentbordsgenvägar"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Language"
 msgstr "Språk"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
 msgstr "Ny genväg:"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:20
 msgid "On screen"
 msgstr "På skärm"
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "Pick a color"
 msgstr "Välj en färg"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "Select HTML fixed width font"
 msgstr "Välj HTML-typsnitt med fast breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font for printing"
 msgstr "Välj HTML-typsnitt för utskrift med fast breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML variable width font"
 msgstr "Välj HTML-typsnitt med variabelt breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font for printing"
 msgstr "Välj HTML-typsnitt för utskrift med variabelt breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select command "
 msgstr "Välj kommmando "
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Shortcut"
 msgstr "Genväg"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcuts _type:"
 msgstr "_Typ av genvägar:"
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:29
 msgid "Show animated images"
 msgstr "Visa animerade bilder"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Spell Checking"
 msgstr "Stavningskontroll"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Variabelt breddsteg"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:32
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: capplet/gtkhtml-capplet.glade.h:32
+#: capplet/gtkhtml-capplet.glade.h:33
 msgid "_Delete"
 msgstr "_Ta bort"
 
@@ -1293,7 +1297,7 @@ msgstr "Drar in styckena mer"
 msgid "Sample"
 msgstr "Prov"
 
-#: src/htmlgdkpainter.c:225
+#: src/htmlgdkpainter.c:228
 msgid "Can't load fixed font."
 msgstr "Kan inte läsa in typsnitt med fast breddsteg."
 
@@ -1395,9 +1399,6 @@ msgstr "Förhandsgranska"
 
 #~ msgid "Search"
 #~ msgstr "Sök"
-
-#~ msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-#~ msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZzÅåÄäÖö"
 
 #~ msgid "Centers paragraphs"
 #~ msgstr "Centrerar stycken"

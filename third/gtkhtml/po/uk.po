@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"POT-Creation-Date: 2001-11-14 16:55-0600\n"
 "PO-Revision-Date: 2000-08-14 14:50+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -29,136 +29,140 @@ msgid "*********************"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:2
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlАаБбВвГг╫╜ДдЕе╢╓ЖжЗзИи╤╕╥╖ЙйКкЛлМмНн"
+
+#: capplet/gtkhtml-capplet.glade.h:3
 #, fuzzy
 msgid "Add Keyboard Shortcuts"
 msgstr "Комб╕нац╕╖ клав╕ш"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "Automatically detect links"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Behavior"
 msgstr "Повед╕нка"
 
 #. color selection
-#: capplet/gtkhtml-capplet.glade.h:5 components/html-editor/text.c:218
+#: capplet/gtkhtml-capplet.glade.h:6 components/html-editor/text.c:218
 msgid "Color"
 msgstr "Кол╕р"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Command"
 msgstr "Команда"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:8
 #, fuzzy
 msgid "Composer Properties"
 msgstr "Властивост╕"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Composer Properties planned"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:10
 #, fuzzy
 msgid "Enable spell checking"
 msgstr "Перев╕рка орфограф╕╖"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Fixed width"
 msgstr "Шрифт ф╕ксовано╖ ширини"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Fonts"
 msgstr "Шрифти"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "For printing"
 msgstr "Для друку"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:14
 #, fuzzy
 msgid "Grab keys"
 msgstr "Захопити клав╕шу"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Information"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:16
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "Комб╕нац╕╖ клав╕ш"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Language"
 msgstr "Мова"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 msgid "Miscellaneous"
 msgstr "Р╕зне"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:20
 msgid "On screen"
 msgstr "На екран"
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "Pick a color"
 msgstr "Виб╕р кольору"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "Select HTML fixed width font"
 msgstr "Вибрати шрифт ф╕ксовано╖ ширини HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font for printing"
 msgstr "Вибрати шрифт ф╕ксовано╖ ширини HTML для друку"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML variable width font"
 msgstr "Вибрати шрифт зм╕нно╖ ширини HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font for printing"
 msgstr "Вибрати шрифт зм╕нно╖ ширини HTML для друку"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select command "
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:27
 #, fuzzy
 msgid "Shortcut"
 msgstr "Комб╕нац╕╖ клав╕ш"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcuts _type:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:29
 #, fuzzy
 msgid "Show animated images"
 msgstr "Ан╕мован╕ зображення"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Spell Checking"
 msgstr "Перев╕рка орфограф╕╖"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Шрифт зм╕нно╖ ширини"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:32
 #, fuzzy
 msgid "_Add"
 msgstr "Додати"
 
-#: capplet/gtkhtml-capplet.glade.h:32
+#: capplet/gtkhtml-capplet.glade.h:33
 #, fuzzy
 msgid "_Delete"
 msgstr "Стерти"
@@ -1376,7 +1380,7 @@ msgstr "Зб╕льшити в╕дступ абзацу"
 msgid "Sample"
 msgstr "Приклад"
 
-#: src/htmlgdkpainter.c:225
+#: src/htmlgdkpainter.c:228
 msgid "Can't load fixed font."
 msgstr ""
 
@@ -1475,9 +1479,6 @@ msgstr "Перегляд друку"
 
 #~ msgid "window1"
 #~ msgstr "в╕кно1"
-
-#~ msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-#~ msgstr "AaBbCcDdEeFfGgHhIiJjKkLlАаБбВвГг╫╜ДдЕе╢╓ЖжЗзИи╤╕╥╖ЙйКкЛлМмНн"
 
 #~ msgid "Centers paragraphs"
 #~ msgstr "Центрування абзац╕в"

@@ -2,18 +2,18 @@ dnl Initialization
 
 AC_INIT(src/gtkhtml.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gtkhtml, 0.16.0)
+
+PACKAGE=gtkhtml
+AM_INIT_AUTOMAKE($PACKAGE, 0.16.1)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
 GNOME_INIT(capplet)
 
-
 AC_PROG_CC
 AC_ISC_POSIX
 AC_HEADER_STDC
-AC_ARG_PROGRAM
 AM_PROG_XML_I18N_TOOLS
 AM_PROG_LIBTOOL
 
@@ -23,35 +23,61 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-ALL_LINGUAS="az cs da de el es fi fr gl hu it ja ko lt lv nl nn no pl pt pt_BR ru sk sl sv tr uk zh_TW"
+ALL_LINGUAS="az cs da de el es fi fr gl hu it ja ko lt lv nl nn no pl pt pt_BR ru sk sl sv tr uk zh_CN zh_TW"
 AM_GNOME_GETTEXT
+
+dnl ******************************
+dnl * This check function was stolen from red-carpet who stole it from
+dnl * evolution or something.
+dnl ******************************
+
+AC_DEFUN(HTML_REQUIRE_LIB, [
+  dispname="$1"
+  dispvers="$2"
+  pkgname="$3"
+
+  AC_MSG_CHECKING(for $dispname >= $dispvers)
+  cmpvers=`echo $dispvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
+  if gnome-config --libs $pkgname > /dev/null 2>&1; then
+    pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[[^0-9]]*//'`
+  else
+    pkgvers=not
+  fi
+
+  AC_MSG_RESULT($pkgvers found)
+
+  pkgvers=`echo $pkgvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
+
+  if test "$pkgvers" -lt $cmpvers; then
+    AC_MSG_ERROR([
+""
+"You need $dispname $dispvers or later to build $PACKAGE."])
+  fi
+])
 
 dnl ******************************
 dnl Gnome App Lib checking
 dnl ******************************
-AC_MSG_CHECKING(for Gnome App libraries (GAL) >= 0.15.99.9)
-if gnome-config --libs gal > /dev/null 2>&1; then 
-    vers=`gnome-config --modversion gal | sed -e "s/gal-//" -e 's/cvs$//' -e 's/pre$//' | \
-        awk 'BEGIN { FS = "."; } { print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
-    if test "$vers" -ge 79905; then
-        AC_MSG_RESULT(found)
-    else
-        AC_MSG_ERROR(You need at least GNOME Application libs 0.15.99.9 for this version of GtkHTML)
-    fi
-else
-    AC_MSG_ERROR(Did not find GnomeAppLibs (GAL) installed)
-fi
+
+HTML_REQUIRE_LIB(Gnome App libraries (GAL), 0.15.99.9, gal)
 
 dnl ******************************
 dnl capplet library check
 dnl ******************************
 
-AC_MSG_CHECKING(for capplet libraries)
-if gnome-config --libs capplet > /dev/null 2>&1; then
-    AC_MSG_RESULT(found)
-else
-    AC_MSG_ERROR([Did not find capplet library installed, you need to install control center])
-fi
+HTML_REQUIRE_LIB(Gnome configuration applet libraries, 1.0.0, capplet)
+
+dnl ******************************
+dnl GnomePrint checking
+dnl ******************************
+
+HTML_REQUIRE_LIB(Gnome print libraries, 0.29.0, print)
+
+dnl ******************************
+dnl gdk-pixbuf checks.
+dnl *****************************
+
+HTML_REQUIRE_LIB(GdkPixbuf, 0.8.0, gdk_pixbuf)
 
 dnl ******************************
 dnl --enable XIM switch
@@ -225,10 +251,15 @@ if $try_gconf; then
 	AC_MSG_CHECKING([for gconf])
 	if gconf-config --version > /dev/null 2>&1; then
 		gconf_ver=`gconf-config --version`
-		have_gconf=true
-		GCONF_CFLAGS="`gconf-config --cflags gconf-gtk` -DGTKHTML_HAVE_GCONF"
-		GCONF_LIBS="`gconf-config --libs gconf-gtk`"
-		AC_MSG_RESULT([found ($gconf_ver)])
+		vers=`echo ${gconf_ver} | awk 'BEGIN { FS = "."; } { print $1 * 1000000 + $2 * 1000 + $3;}'`
+		if test "$vers" -ge 1000007; then
+			have_gconf=true
+			GCONF_CFLAGS="`gconf-config --cflags gconf-gtk` -DGTKHTML_HAVE_GCONF"
+			GCONF_LIBS="`gconf-config --libs gconf-gtk`"
+			AC_MSG_RESULT([found ($gconf_ver)])
+		else
+		        AC_MSG_ERROR(You need at least GConf 1.0.7 for this version of GtkHTML)
+		fi
 	else
 		have_gconf=false
 		AC_MSG_RESULT([not found, gtkhtml will be built without gconf support])
@@ -236,55 +267,6 @@ if $try_gconf; then
 fi
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
-
-dnl ******************************
-dnl GnomePrint checking
-dnl ******************************
-AC_MSG_CHECKING(for GnomePrint libraries >= 0.29)
-if gnome-config --libs print > /dev/null 2>&1; then 
-    vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' -e 's/pre$//' | \
-        awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-    if test "$vers" -ge 29; then
-        AC_MSG_RESULT(found)
-    else
-        AC_MSG_ERROR(You need at least GNOME print 0.29 for this version of GtkHTML)
-    fi
-else
-    AC_MSG_ERROR(Did not find GnomePrint installed)
-fi
-
-dnl ******************************
-dnl gdk-pixbuf checks.
-dnl *****************************
-
-AC_MSG_CHECKING([for gdk-pixbuf >= 0.8.0])
-
-if gnome-config --libs gdk_pixbuf > /dev/null 2>&1; then
-	vers=`gnome-config --modversion gdk_pixbuf | sed 's/^gdk-pixbuf-//'`
-        major=`echo "$vers" | sed 's/\([[0-9]]*\)\.[[0-9]]*\.[[0-9]]*/\1/'`
-        minor=`echo "$vers" | sed 's/[[0-9]]*\.\([[0-9]]*\)\.[[0-9]]*/\1/'`
-
-	if [[ "x$major" = "x" ]] ; then
-		gdkpixbuf_ok=false
-        elif [[ "x$major" = "x0" ]] ; then
-		case "$minor" in
-			[[01234567]])
-				gdkpixbuf_ok=false ;;
-                        *)
-				gdkpixbuf_ok=true ;;
-		esac
-	else
-		gdkpixbuf_ok=true
-	fi
-	AC_MSG_RESULT([found ("$vers")])
-else
-	gdkpixbuf_ok=false
-	AC_MSG_RESULT([not found])
-fi
-
-if test x$gdkpixbuf_ok = xfalse ; then
-	AC_MSG_ERROR([gdk-pixbuf 0.8.0 or later is required to compile GtkHTML.])
-fi
 
 dnl **********************************
 dnl Setup extra GNOME library flags.
@@ -344,7 +326,7 @@ GTKHTML_CURRENT=19
 
 dnl Increment any time the source changes; set to 0 if you
 dnl increment CURRENT.
-GTKHTML_REVISION=0
+GTKHTML_REVISION=1
 
 dnl Increment if any interfaces have been added; set to 0
 dnl if any interfaces have been removed. removal has 

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gtkhtml\n"
-"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"POT-Creation-Date: 2001-11-14 16:55-0600\n"
 "PO-Revision-Date: 2001-09-29 23:57+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -28,128 +28,132 @@ msgid "*********************"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:2
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "Add Keyboard Shortcuts"
 msgstr "Добавить комбинацию клавиш"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "Automatically detect links"
 msgstr "Автоматически обнаруживать ссылки"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Behavior"
 msgstr "Поведение"
 
 #. color selection
-#: capplet/gtkhtml-capplet.glade.h:5 components/html-editor/text.c:218
+#: capplet/gtkhtml-capplet.glade.h:6 components/html-editor/text.c:218
 msgid "Color"
 msgstr "Цвет"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Command"
 msgstr "Команда"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Composer Properties"
 msgstr "Свойства редактора"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Composer Properties planned"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:10
 msgid "Enable spell checking"
 msgstr "Включить проверку правописания"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Fixed width"
 msgstr "Фиксированная ширина"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Fonts"
 msgstr "Шрифты"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "For printing"
 msgstr "Для печати"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Grab keys"
 msgstr "Захватить клавишу"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Information"
 msgstr "Информация"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "Keyboard Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Language"
 msgstr "Язык"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 msgid "Miscellaneous"
 msgstr "Разное"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
 msgstr "Новая комбинация клавиш"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:20
 msgid "On screen"
 msgstr "На экране"
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "Pick a color"
 msgstr "Выбор цвета"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "Select HTML fixed width font"
 msgstr "Выбрать шрифт фиксированной ширины для HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font for printing"
 msgstr "Выбрать шрифт фиксированной ширины для печати"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML variable width font"
 msgstr "Выбрать шрифт переменной ширины для HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font for printing"
 msgstr "Выбрать шрифт переменной ширины для печати"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select command "
 msgstr "Выбрать команду"
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Shortcut"
 msgstr "Комбинации клавиш"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcuts _type:"
 msgstr "Тип комбинации клавиш:"
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:29
 msgid "Show animated images"
 msgstr "Показать анимированные изображения"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Spell Checking"
 msgstr "Проверка правописания"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Переменная ширина"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:32
 msgid "_Add"
 msgstr "Добавить"
 
-#: capplet/gtkhtml-capplet.glade.h:32
+#: capplet/gtkhtml-capplet.glade.h:33
 msgid "_Delete"
 msgstr "Удалить"
 
@@ -1327,7 +1331,7 @@ msgstr "Увеличить отступ абзацев"
 msgid "Sample"
 msgstr "Образец"
 
-#: src/htmlgdkpainter.c:225
+#: src/htmlgdkpainter.c:228
 msgid "Can't load fixed font."
 msgstr "Не удалось загрузить фиксированный шрифт."
 
