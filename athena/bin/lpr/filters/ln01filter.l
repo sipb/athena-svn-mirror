@@ -1,5 +1,8 @@
 /* Mode: -*- C -*- */
 %{
+#ifdef _AUX_SOURCE
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 #include <signal.h>
 extern int sighandler();
