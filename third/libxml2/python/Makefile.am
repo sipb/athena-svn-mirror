@@ -9,7 +9,7 @@ INCLUDES = \
 
 DOCS_DIR = $(datadir)/doc/libxml2-python-$(LIBXML_VERSION)
 # libxml2class.txt is generated
-DOCS = TODO
+DOCS = ${srcdir}/TODO
 
 EXTRA_DIST = 			\
 	libxml.c		\
@@ -23,7 +23,7 @@ EXTRA_DIST = 			\
 	libxml2-python-api.xml	\
 	$(DOCS)
 
-libxml2mod_la_LDFLAGS = -module -avoid-version -L$(top_builddir)/.libs
+libxml2mod_la_LDFLAGS = @CYGWIN_EXTRA_LDFLAGS@ @WIN32_EXTRA_LDFLAGS@ -module -avoid-version -L$(top_builddir)/.libs
 
 if WITH_PYTHON
 mylibs = \
@@ -31,19 +31,18 @@ mylibs = \
 
 all-local:	libxml2.py
 
-pythondir = $(libdir)/python${PYTHON_VERSION}/site-packages
 python_LTLIBRARIES = libxml2mod.la
 
 libxml2mod_la_SOURCES = libxml.c types.c libxml2-py.c
-libxml2mod_la_LIBADD = $(mylibs)
+libxml2mod_la_LIBADD = $(mylibs) @CYGWIN_EXTRA_PYTHON_LIBADD@
 
 libxml2.py: $(srcdir)/libxml.py $(srcdir)/libxml2class.py
 	cat $(srcdir)/libxml.py $(srcdir)/libxml2class.py > libxml2.py
 
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
-	@INSTALL@ -m 0644 libxml2.py $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
-	@INSTALL@ -m 0644 drv_libxml2.py $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
+	$(mkinstalldirs) $(DESTDIR)$(pythondir)
+	@INSTALL@ -m 0644 libxml2.py $(DESTDIR)$(pythondir)
+	@INSTALL@ -m 0644 $(srcdir)/drv_libxml2.py $(DESTDIR)$(pythondir)
 	$(mkinstalldirs) $(DESTDIR)$(DOCS_DIR)
 	@(for doc in $(DOCS) ; \
 	   do @INSTALL@ -m 0644 $$doc $(DESTDIR)$(DOCS_DIR) ; done)
@@ -52,8 +51,11 @@ GENERATE = generator.py
 API_DESC = $(top_srcdir)/doc/libxml2-api.xml $(srcdir)/libxml2-python-api.xml
 GENERATED= $(srcdir)/libxml2class.py \
            $(srcdir)/libxml2-export.c \
+           $(srcdir)/libxml2class.txt \
 	   $(srcdir)/libxml2-py.c \
 	   $(srcdir)/libxml2-py.h
+
+CLEANFILES= $(GENERATED) gen_prog libxml2.py
 
 $(GENERATED): gen_prog
 
@@ -67,8 +69,5 @@ else
 all: 
 endif
 tests test: all
-	cd tests && $(MAKE) tests
-
-clean:
-	rm -f $(GENERATED) *.o _libxml.so *.pyc libxml2.py gen_prog
+	cd tests && $(MAKE) MAKEFLAGS+=--silent tests
 

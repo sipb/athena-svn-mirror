@@ -178,9 +178,9 @@ int main(int argc, char **argv) {
     }
     if (document == NULL) {
         if (filename == NULL)
-	    document = xmlParseDoc(buffer);
+	    document = xmlReadDoc(buffer,NULL,NULL,0);
 	else
-	    document = xmlParseFile(filename);
+	    document = xmlReadFile(filename,NULL,0);
     }
     for (i = 1; i < argc ; i++) {
 	if ((!strcmp(argv[i], "-i")) || (!strcmp(argv[i], "--input"))) {
@@ -220,7 +220,7 @@ int main(int argc, char **argv) {
 }
 #else
 #include <stdio.h>
-int main(int argc, char **argv) {
+int main(int argc ATTRIBUTE_UNUSED, char **argv ATTRIBUTE_UNUSED) {
     printf("%s : XPath/Debug support not compiled in\n", argv[0]);
     return(0);
 }

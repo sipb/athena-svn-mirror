@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * $Id: trionan.h,v 1.1.1.2 2002-12-26 06:43:06 ghudson Exp $
+ * $Id: trionan.h,v 1.1.1.3 2004-09-22 23:17:48 ghudson Exp $
  *
  * Copyright (C) 2001 Bjorn Reese <breese@users.sourceforge.net>
  *
@@ -66,11 +66,14 @@ TRIO_PUBLIC int trio_isinf TRIO_PROTO((double number));
 /*
  * If number is finite return non-zero, otherwise return zero.
  */
+#if 0
+	/* Temporary fix - these 2 routines not used in libxml */
 TRIO_PUBLIC int trio_isfinite TRIO_PROTO((double number));
 
-TRIO_PUBLIC int trio_signbit TRIO_PROTO((double number));
-
 TRIO_PUBLIC int trio_fpclassify TRIO_PROTO((double number));
+#endif
+
+TRIO_PUBLIC int trio_signbit TRIO_PROTO((double number));
 
 TRIO_PUBLIC int trio_fpclassify_and_signbit TRIO_PROTO((double number, int *is_negative));
 

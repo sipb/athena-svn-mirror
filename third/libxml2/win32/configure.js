@@ -10,8 +10,6 @@
 /* The source directory, relative to the one where this file resides. */
 var srcDirXml = "..";
 var srcDirUtils = "..";
-/* The directory where we put the binaries after compilation. */
-var binDir = "binaries";
 /* Base name of what we are building. */
 var baseName = "libxml2";
 /* Configure file which contains the version and the output file where
@@ -26,9 +24,12 @@ var optsFile = srcDirXml + "\\include\\libxml\\xmlversion.h";
 var verMajor;
 var verMinor;
 var verMicro;
+var verMicroSuffix;
+var verCvs;
+var useCvsVer = true;
 /* Libxml features. */
 var withTrio = false;
-var withThreads = "no";
+var withThreads = "native";
 var withFtp = true;
 var withHttp = true;
 var withHtml = true;
@@ -39,21 +40,35 @@ var withXpath = true;
 var withXptr = true;
 var withXinclude = true;
 var withIconv = true;
+var withIso8859x = false;
 var withZlib = false;
 var withDebug = true;
 var withMemDebug = false;
 var withSchemas = true;
 var withRegExps = true;
+var withTree = true;
+var withReader = true;
+var withWriter = true;
+var withWalker = true;
+var withPattern = true;
+var withPush = true;
+var withValid = true;
+var withSax1 = true;
+var withLegacy = true;
+var withOutput = true;
 var withPython = false;
 /* Win32 build options. */
+var dirSep = "\\";
 var compiler = "msvc";
+var cruntime = "/MD";
+var dynruntime = true;
 var buildDebug = 0;
 var buildStatic = 0;
 var buildPrefix = ".";
-var buildBinPrefix = "$(PREFIX)\\bin";
-var buildIncPrefix = "$(PREFIX)\\include";
-var buildLibPrefix = "$(PREFIX)\\lib";
-var buildSoPrefix = "$(PREFIX)\\lib";
+var buildBinPrefix = "";
+var buildIncPrefix = "";
+var buildLibPrefix = "";
+var buildSoPrefix = "";
 var buildInclude = ".";
 var buildLib = ".";
 /* Local stuff */
@@ -105,14 +120,27 @@ function usage()
 	txt += "  xptr:       Enable XPointer support (" + (withXptr? "yes" : "no")  + ")\n";
 	txt += "  xinclude:   Enable XInclude support (" + (withXinclude? "yes" : "no")  + ")\n";
 	txt += "  iconv:      Enable iconv support (" + (withIconv? "yes" : "no")  + ")\n";
+	txt += "  iso8859x:   Enable ISO8859X support (" + (withIso8859x? "yes" : "no")  + ")\n";
 	txt += "  zlib:       Enable zlib support (" + (withZlib? "yes" : "no")  + ")\n";
 	txt += "  xml_debug:  Enable XML debbugging module (" + (withDebug? "yes" : "no")  + ")\n";
 	txt += "  mem_debug:  Enable memory debugger (" + (withMemDebug? "yes" : "no")  + ")\n";
 	txt += "  regexps:    Enable regular expressions (" + (withRegExps? "yes" : "no") + ")\n";
+	txt += "  tree:       Enable tree api (" + (withTree? "yes" : "no") + ")\n";
+	txt += "  reader:     Enable xmlReader api (" + (withReader? "yes" : "no") + ")\n";
+	txt += "  writer:     Enable xmlWriter api (" + (withWriter? "yes" : "no") + ")\n";
+	txt += "  walker:     Enable xmlDocWalker api (" + (withWalker? "yes" : "no") + ")\n";
+	txt += "  pattern:    Enable xmlPattern api (" + (withPattern? "yes" : "no")  + ")\n";
+	txt += "  push:       Enable push api (" + (withPush? "yes" : "no") + ")\n";
+	txt += "  valid:      Enable DTD validation support (" + (withValid? "yes" : "no") + ")\n";
+	txt += "  sax1:       Enable SAX1 api (" + (withSax1? "yes" : "no") + ")\n";
+	txt += "  legacy:     Enable Deprecated api's (" + (withLegacy? "yes" : "no") + ")\n";
+	txt += "  output:     Enable serialization support (" + (withOutput? "yes" : "no") + ")\n";
 	txt += "  schemas:    Enable XML Schema support (" + (withSchemas? "yes" : "no")  + ")\n";
 	txt += "  python:     Build Python bindings (" + (withPython? "yes" : "no")  + ")\n";
 	txt += "\nWin32 build options, default value given in parentheses:\n\n";
-	txt += "  compiler:   Compiler to be used [msvc|mingw] (" + compiler + ")\n";
+	txt += "  compiler:   Compiler to be used [msvc|mingw|bcb] (" + compiler + ")\n";
+	txt += "  cruntime:   C-runtime compiler option (only msvc) (" + cruntime + ")\n";
+	txt += "  dynruntime: Use the dynamic RTL (only bcb) (" + dynruntime + ")\n";
 	txt += "  debug:      Build unoptimised debug executables (" + (buildDebug? "yes" : "no")  + ")\n";
 	txt += "  static:     Link xmllint statically to libxml2 (" + (buildStatic? "yes" : "no")  + ")\n";
 	txt += "  prefix:     Base directory for the installation (" + buildPrefix + ")\n";
@@ -136,13 +164,30 @@ function usage()
    file included by our makefile. */
 function discoverVersion()
 {
-	var fso, cf, vf, ln, s;
+	var fso, cf, vf, ln, s, iDot, iSlash;
 	fso = new ActiveXObject("Scripting.FileSystemObject");
+	verCvs = "";
+	if (useCvsVer && fso.FileExists("..\\CVS\\Entries")) {
+		cf = fso.OpenTextFile("..\\CVS\\Entries", 1);
+		while (cf.AtEndOfStream != true) {
+			ln = cf.ReadLine();
+			s = new String(ln);
+			if (s.search(/^\/ChangeLog\//) != -1) {
+				iDot = s.indexOf(".");
+				iSlash = s.indexOf("/", iDot);
+				verCvs = "CVS" + s.substring(iDot + 1, iSlash);
+				break;
+			}
+		}
+		cf.Close();
+	}
 	cf = fso.OpenTextFile(configFile, 1);
 	if (compiler == "msvc")
 		versionFile = ".\\config.msvc";
 	else if (compiler == "mingw")
 		versionFile = ".\\config.mingw";
+	else if (compiler == "bcb")
+		versionFile = ".\\config.bcb";
 	vf = fso.CreateTextFile(versionFile, true);
 	vf.WriteLine("# " + versionFile);
 	vf.WriteLine("# This file is generated automatically by " + WScript.ScriptName + ".");
@@ -150,21 +195,23 @@ function discoverVersion()
 	while (cf.AtEndOfStream != true) {
 		ln = cf.ReadLine();
 		s = new String(ln);
-		if (s.search(/^LIBXML_MAJOR_VERSION/) != -1) {
+		if (s.search(/^LIBXML_MAJOR_VERSION=/) != -1) {
 			vf.WriteLine(s);
 			verMajor = s.substring(s.indexOf("=") + 1, s.length)
-		} else if(s.search(/^LIBXML_MINOR_VERSION/) != -1) {
+		} else if(s.search(/^LIBXML_MINOR_VERSION=/) != -1) {
 			vf.WriteLine(s);
 			verMinor = s.substring(s.indexOf("=") + 1, s.length)
-		} else if(s.search(/^LIBXML_MICRO_VERSION/) != -1) {
+		} else if(s.search(/^LIBXML_MICRO_VERSION=/) != -1) {
 			vf.WriteLine(s);
 			verMicro = s.substring(s.indexOf("=") + 1, s.length)
+		} else if(s.search(/^LIBXML_MICRO_VERSION_SUFFIX=/) != -1) {
+			vf.WriteLine(s);
+			verMicroSuffix = s.substring(s.indexOf("=") + 1, s.length)
 		}
 	}
 	cf.Close();
 	vf.WriteLine("XML_SRCDIR=" + srcDirXml);
 	vf.WriteLine("UTILS_SRCDIR=" + srcDirUtils);
-	vf.WriteLine("BINDIR=" + binDir);
 	vf.WriteLine("WITH_TRIO=" + (withTrio? "1" : "0"));
 	vf.WriteLine("WITH_THREADS=" + withThreads);
 	vf.WriteLine("WITH_FTP=" + (withFtp? "1" : "0"));
@@ -177,11 +224,22 @@ function discoverVersion()
 	vf.WriteLine("WITH_XPTR=" + (withXptr? "1" : "0"));
 	vf.WriteLine("WITH_XINCLUDE=" + (withXinclude? "1" : "0"));
 	vf.WriteLine("WITH_ICONV=" + (withIconv? "1" : "0"));
+	vf.WriteLine("WITH_ISO8859X=" + (withIso8859x? "1" : "0"));
 	vf.WriteLine("WITH_ZLIB=" + (withZlib? "1" : "0"));
 	vf.WriteLine("WITH_DEBUG=" + (withDebug? "1" : "0"));
 	vf.WriteLine("WITH_MEM_DEBUG=" + (withMemDebug? "1" : "0"));
 	vf.WriteLine("WITH_SCHEMAS=" + (withSchemas? "1" : "0"));
 	vf.WriteLine("WITH_REGEXPS=" + (withRegExps? "1" : "0"));
+	vf.WriteLine("WITH_TREE=" + (withTree? "1" : "0"));
+	vf.WriteLine("WITH_READER=" + (withReader? "1" : "0"));
+	vf.WriteLine("WITH_WRITER=" + (withWriter? "1" : "0"));
+	vf.WriteLine("WITH_WALKER=" + (withWalker? "1" : "0"));
+	vf.WriteLine("WITH_PATTERN=" + (withPattern? "1" : "0"));
+	vf.WriteLine("WITH_PUSH=" + (withPush? "1" : "0"));
+	vf.WriteLine("WITH_VALID=" + (withValid? "1" : "0"));
+	vf.WriteLine("WITH_SAX1=" + (withSax1? "1" : "0"));
+	vf.WriteLine("WITH_LEGACY=" + (withLegacy? "1" : "0"));
+	vf.WriteLine("WITH_OUTPUT=" + (withOutput? "1" : "0"));
 	vf.WriteLine("WITH_PYTHON=" + (withPython? "1" : "0"));
 	vf.WriteLine("DEBUG=" + (buildDebug? "1" : "0"));
 	vf.WriteLine("STATIC=" + (buildStatic? "1" : "0"));
@@ -193,9 +251,14 @@ function discoverVersion()
 	if (compiler == "msvc") {
 		vf.WriteLine("INCLUDE=$(INCLUDE);" + buildInclude);
 		vf.WriteLine("LIB=$(LIB);" + buildLib);
+		vf.WriteLine("CRUNTIME=" + cruntime);
 	} else if (compiler == "mingw") {
 		vf.WriteLine("INCLUDE+=;" + buildInclude);
 		vf.WriteLine("LIB+=;" + buildLib);
+	} else if (compiler == "bcb") {
+		vf.WriteLine("INCLUDE=" + buildInclude);
+		vf.WriteLine("LIB=" + buildLib);
+                vf.WriteLine("DYNRUNTIME=" + (dynruntime? "1" : "0"));
 	}
 	vf.Close();
 }
@@ -213,10 +276,12 @@ function configureLibxml()
 		s = new String(ln);
 		if (s.search(/\@VERSION\@/) != -1) {
 			of.WriteLine(s.replace(/\@VERSION\@/, 
-				verMajor + "." + verMinor + "." + verMicro));
+				verMajor + "." + verMinor + "." + verMicro + verMicroSuffix));
 		} else if (s.search(/\@LIBXML_VERSION_NUMBER\@/) != -1) {
 			of.WriteLine(s.replace(/\@LIBXML_VERSION_NUMBER\@/, 
 				verMajor*10000 + verMinor*100 + verMicro*1));
+		} else if (s.search(/\@LIBXML_VERSION_EXTRA\@/) != -1) {
+			of.WriteLine(s.replace(/\@LIBXML_VERSION_EXTRA\@/, verCvs));
 		} else if (s.search(/\@WITH_TRIO\@/) != -1) {
 			of.WriteLine(s.replace(/\@WITH_TRIO\@/, withTrio? "1" : "0"));
 		} else if (s.search(/\@WITH_THREADS\@/) != -1) {
@@ -241,6 +306,8 @@ function configureLibxml()
 			of.WriteLine(s.replace(/\@WITH_XINCLUDE\@/, withXinclude? "1" : "0"));
 		} else if (s.search(/\@WITH_ICONV\@/) != -1) {
 			of.WriteLine(s.replace(/\@WITH_ICONV\@/, withIconv? "1" : "0"));
+		} else if (s.search(/\@WITH_ISO8859X\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_ISO8859X\@/, withIso8859x? "1" : "0"));
 		} else if (s.search(/\@WITH_ZLIB\@/) != -1) {
 			of.WriteLine(s.replace(/\@WITH_ZLIB\@/, withZlib? "1" : "0"));
 		} else if (s.search(/\@WITH_DEBUG\@/) != -1) {
@@ -251,6 +318,26 @@ function configureLibxml()
 			of.WriteLine(s.replace(/\@WITH_SCHEMAS\@/, withSchemas? "1" : "0"));
 		} else if (s.search(/\@WITH_REGEXPS\@/) != -1) {
 			of.WriteLine(s.replace(/\@WITH_REGEXPS\@/, withRegExps? "1" : "0"));
+		} else if (s.search(/\@WITH_TREE\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_TREE\@/, withTree? "1" : "0"));
+		} else if (s.search(/\@WITH_READER\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_READER\@/, withReader? "1" : "0"));
+		} else if (s.search(/\@WITH_WRITER\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_WRITER\@/, withWriter? "1" : "0"));
+		} else if (s.search(/\@WITH_WALKER\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_WALKER\@/, withWalker? "1" : "0"));
+		} else if (s.search(/\@WITH_PATTERN\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_PATTERN\@/, withPattern? "1" : "0"));
+		} else if (s.search(/\@WITH_PUSH\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_PUSH\@/, withPush? "1" : "0"));
+		} else if (s.search(/\@WITH_VALID\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_VALID\@/, withValid? "1" : "0"));
+		} else if (s.search(/\@WITH_SAX1\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_SAX1\@/, withSax1? "1" : "0"));
+		} else if (s.search(/\@WITH_LEGACY\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_LEGACY\@/, withLegacy? "1" : "0"));
+		} else if (s.search(/\@WITH_OUTPUT\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_OUTPUT\@/, withOutput? "1" : "0"));
 		} else
 			of.WriteLine(ln);
 	}
@@ -274,6 +361,8 @@ function configureLibxmlPy()
 				verMajor + "." + verMinor + "." + verMicro));
 		} else if (s.search(/\@prefix\@/) != -1) {
 			of.WriteLine(s.replace(/\@prefix\@/, buildPrefix));
+		} else if (s.search(/\@WITH_THREADS\@/) != -1) {
+			of.WriteLine(s.replace(/\@WITH_THREADS\@/, withThreads == "no"? "0" : "1"));
 		} else
 			of.WriteLine(ln);
 	}
@@ -295,36 +384,16 @@ function genReadme(bname, ver, file)
 	f.WriteLine("  This is " + bname + ", version " + ver + ", binary package for the native Win32/IA32");
 	f.WriteLine("platform.");
 	f.WriteBlankLines(1);
-	f.WriteLine("  The directory named 'include' contains the header files. Place its");
-	f.WriteLine("contents somewhere where it can be found by the compiler.");
-	f.WriteLine("  The directory which answers to the name 'lib' contains the static and");
-	f.WriteLine("dynamic libraries. Place them somewhere where they can be found by the");
-	f.WriteLine("linker. The files whose names end with '_a.lib' are aimed for static");
-	f.WriteLine("linking, the other files are lib/dll pairs.");
-	f.WriteLine("  The directory called 'util' contains various programs which count as a");
-	f.WriteLine("part of " + bname + ".");
+	f.WriteLine("  The files in this package do not require any special installation");
+	f.WriteLine("steps. Extract the contents of the archive whereever you wish and");
+	f.WriteLine("make sure that your tools which use " + bname + " can find it.");
 	f.WriteBlankLines(1);
-	f.WriteLine("  If you plan to develop your own programme, in C, which uses " + bname + ", then");
-	f.WriteLine("you should know what to do with the files in the binary package. If you don't,");
-	f.WriteLine("know this, then please, please do some research on how to use a");
-	f.WriteLine("third-party library in a C programme. The topic belongs to the very basics"); 
-	f.WriteLine("and you will not be able to do much without that knowledge.");
-	f.WriteBlankLines(1);
-	f.WriteLine("  If you wish to use " + bname + " solely through the supplied utilities, such as");
-	f.WriteLine("xmllint or xsltproc, then all you need to do is place the");
-	f.WriteLine("contents of the 'lib' and 'util' directories from the binary package in a"); 
-	f.WriteLine("directory on your disc which is mentioned in your PATH environment"); 
-	f.WriteLine("variable. You can use an existing directory which is allready in the"); 
-	f.WriteLine("path, such as 'C:\WINDOWS', or 'C:\WINNT'. You can also create a new"); 
-	f.WriteLine("directory for " + bname + " and place the files there, but be sure to modify"); 
-	f.WriteLine("the PATH environment variable and add that new directory to its list.");
-	f.WriteBlankLines(1);
-	f.WriteLine("  If you use other software which needs " + bname + ", such as Apache");
-	f.WriteLine("Web Server in certain configurations, then please consult the"); 
-	f.WriteLine("documentation of that software and see if it mentions something about");
-	f.WriteLine("how it uses " + bname + " and how it expects it to be installed. If you find");
-	f.WriteLine("nothing, then the default installation, as described in the previous"); 
-	f.WriteLine("paragraph, should be suficient.");
+	f.WriteLine("  For example, if you want to run the supplied utilities from the command");
+	f.WriteLine("line, you can, if you wish, add the 'bin' subdirectory to the PATH");
+	f.WriteLine("environment variable.");
+	f.WriteLine("  If you want to make programmes in C which use " + bname + ", you'll");
+	f.WriteLine("likely know how to use the contents of this package. If you don't, please");
+	f.WriteLine("refer to your compiler's documentation."); 
 	f.WriteBlankLines(1);
 	f.WriteLine("  If there is something you cannot keep for yourself, such as a problem,");
 	f.WriteLine("a cheer of joy, a comment or a suggestion, feel free to contact me using");
@@ -333,6 +402,7 @@ function genReadme(bname, ver, file)
 	f.WriteLine("                              Igor Zlatkovic (igor@zlatkovic.com)");
 	f.Close();
 }
+
 
 /*
  * main(),
@@ -371,6 +441,8 @@ for (i = 0; (i < WScript.Arguments.length) && (error == 0); i++) {
 			withXinclude = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "iconv")
 			withIconv = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "iso8859x")
+			withIso8859x = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "zlib")
 			withZlib = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "xml_debug")
@@ -381,10 +453,34 @@ for (i = 0; (i < WScript.Arguments.length) && (error == 0); i++) {
 			withSchemas = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "regexps")
 			withRegExps = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "tree")
+			withTree = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "reader")
+			withReader = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "writer")
+			withWriter = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "walker")
+			withWalker = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "pattern")
+			withPattern = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "push")
+			withPush = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "valid")
+			withValid = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "sax1")
+			withSax1 = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "legacy")
+			withLegacy = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "output")
+			withOutput = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "python")
 			withPython = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "compiler")
 			compiler = arg.substring(opt.length + 1, arg.length);
+		else if (opt == "cruntime")
+			cruntime = arg.substring(opt.length + 1, arg.length);
+		else if (opt == "dynruntime")
+			dynruntime = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "debug")
 			buildDebug = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "static")
@@ -405,6 +501,8 @@ for (i = 0; (i < WScript.Arguments.length) && (error == 0); i++) {
 			buildInclude = arg.substring(opt.length + 1, arg.length);
 		else if (opt == "lib")
 			buildLib = arg.substring(opt.length + 1, arg.length);
+		else if (opt == "release")
+			useCvsVer = false;
 		else
 			error = 1;
 	} else if (i == 0) {
@@ -417,15 +515,29 @@ for (i = 0; (i < WScript.Arguments.length) && (error == 0); i++) {
 			usage();
 			WScript.Quit(0);
 		}
-	} else
+
+	} else {
 		error = 1;
+	}
 }
+
 
 // If we fail here, it is because the user supplied an unrecognised argument.
 if (error != 0) {
 	usage();
 	WScript.Quit(error);
 }
+dirSep = "\\";
+if (compiler == "mingw")
+	dirSep = "/";
+if (buildBinPrefix == "")
+	buildBinPrefix = "$(PREFIX)" + dirSep + "bin";
+if (buildIncPrefix == "")
+	buildIncPrefix = "$(PREFIX)" + dirSep + "include";
+if (buildLibPrefix == "")
+	buildLibPrefix = "$(PREFIX)" + dirSep + "lib";
+if (buildSoPrefix == "")
+	buildSoPrefix = "$(PREFIX)" + dirSep + "lib";
 
 // Discover the version.
 discoverVersion();
@@ -433,7 +545,13 @@ if (error != 0) {
 	WScript.Echo("Version discovery failed, aborting.");
 	WScript.Quit(error);
 }
-WScript.Echo(baseName + " version: " + verMajor + "." + verMinor + "." + verMicro);
+
+var outVerString = baseName + " version: " + verMajor + "." + verMinor + "." + verMicro;
+if (verMicroSuffix && verMicroSuffix != "")
+	outVerString += "-" + verMicroSuffix;
+if (verCvs && verCvs != "")
+	outVerString += "-" + verCvs;
+WScript.Echo(outVerString);
 
 // Configure libxml.
 configureLibxml();
@@ -441,22 +559,36 @@ if (error != 0) {
 	WScript.Echo("Configuration failed, aborting.");
 	WScript.Quit(error);
 }
+
 if (withPython == true) {
 	configureLibxmlPy();
 	if (error != 0) {
 		WScript.Echo("Configuration failed, aborting.");
 		WScript.Quit(error);
 	}
-}
 
+}
 
 // Create the makefile.
 var fso = new ActiveXObject("Scripting.FileSystemObject");
 var makefile = ".\\Makefile.msvc";
 if (compiler == "mingw")
 	makefile = ".\\Makefile.mingw";
+else if (compiler == "bcb")
+	makefile = ".\\Makefile.bcb";
 fso.CopyFile(makefile, ".\\Makefile", true);
 WScript.Echo("Created Makefile.");
+// Create the config.h.
+var confighsrc = "..\\include\\win32config.h";
+var configh = "..\\config.h";
+var f = fso.FileExists(configh);
+if (f) {
+	var t = fso.GetFile(configh);
+	t.Attributes =0;
+}
+fso.CopyFile(confighsrc, configh, true);
+WScript.Echo("Created config.h.");
+
 
 // Display the final configuration. 
 var txtOut = "\nXML processor configuration\n";
@@ -473,16 +605,31 @@ txtOut += "     XPath support: " + boolToStr(withXpath) + "\n";
 txtOut += "  XPointer support: " + boolToStr(withXptr) + "\n";
 txtOut += "  XInclude support: " + boolToStr(withXinclude) + "\n";
 txtOut += "     iconv support: " + boolToStr(withIconv) + "\n";
+txtOut += "  iso8859x support: " + boolToStr(withIso8859x) + "\n";
 txtOut += "      zlib support: " + boolToStr(withZlib) + "\n";
 txtOut += "  Debugging module: " + boolToStr(withDebug) + "\n";
 txtOut += "  Memory debugging: " + boolToStr(withMemDebug) + "\n";
 txtOut += "    Regexp support: " + boolToStr(withRegExps) + "\n";
+txtOut += "      Tree support: " + boolToStr(withTree) + "\n";
+txtOut += "    Reader support: " + boolToStr(withReader) + "\n";
+txtOut += "    Writer support: " + boolToStr(withWriter) + "\n";
+txtOut += "    Walker support: " + boolToStr(withWalker) + "\n";
+txtOut += "   Pattern support: " + boolToStr(withPattern) + "\n";
+txtOut += "      Push support: " + boolToStr(withPush) + "\n";
+txtOut += "Validation support: " + boolToStr(withValid) + "\n";
+txtOut += "      SAX1 support: " + boolToStr(withSax1) + "\n";
+txtOut += "    Legacy support: " + boolToStr(withLegacy) + "\n";
+txtOut += "    Output support: " + boolToStr(withOutput) + "\n";
 txtOut += "XML Schema support: " + boolToStr(withSchemas) + "\n";
 txtOut += "   Python bindings: " + boolToStr(withPython) + "\n";
 txtOut += "\n";
 txtOut += "Win32 build configuration\n";
 txtOut += "-------------------------\n";
 txtOut += "          Compiler: " + compiler + "\n";
+if (compiler == "msvc")
+	txtOut += "  C-Runtime option: " + cruntime + "\n";
+else if (compiler == "bcb")
+	txtOut += "   Use dynamic RTL: " + dynruntime + "\n";
 txtOut += "     Debug symbols: " + boolToStr(buildDebug) + "\n";
 txtOut += "    Static xmllint: " + boolToStr(buildStatic) + "\n";
 txtOut += "    Install prefix: " + buildPrefix + "\n";
@@ -494,4 +641,5 @@ txtOut += "      Include path: " + buildInclude + "\n";
 txtOut += "          Lib path: " + buildLib + "\n";
 WScript.Echo(txtOut);
 
-// Done.
+//
+
