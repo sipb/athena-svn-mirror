@@ -22,7 +22,8 @@ int cvt_buf2vars(varlist *vl, buffer *buf)
       ptr = strchr(name, '=');
       if (ptr == NULL)
 	{
-	  var_setString(vl, name, cvt_query);
+	  if (var_setString(vl, name, cvt_query))
+	    return 1;
 	  ptr = name + strlen(name) + 1;
 	}
       else
@@ -35,12 +36,14 @@ int cvt_buf2vars(varlist *vl, buffer *buf)
 	      ptr1++;
 	      len = atoi(ptr1);
 	      *ptr1 = '\0'; /* we keep the [ in the name so we know... */
-	      var_setValue(vl, name, value, len);
+	      if (var_setValue(vl, name, value, len))
+		return 1;
 	      ptr += len;
 	    }
 	  else /* plain ol' string */
 	    {
-	      var_setString(vl, name, value);
+	      if (var_setString(vl, name, value))
+		return 1;
 	      ptr += strlen(ptr) + 1;
 	    }
 	}
@@ -81,6 +84,62 @@ int cvt_strings2buf(buffer **buf, char **strings)
     }
 
   *buf = b;
+  return 0;
+}
+
+int cvt_var2strings(varlist *vl, char *name, char ***strings)
+{
+  char **out;
+  char *ptr, *value, *data;
+  int len, numstr = 0;
+
+  if (vl == NULL || name == NULL || strings == NULL)
+    return 1;
+
+  if (var_getValue(vl, name, (void *)&value, &len))
+    return 1;
+
+  for (ptr = value; ptr < value + len; ptr++)
+    if (*ptr == '\0')
+      numstr++;
+
+  out = malloc((sizeof(char *) * numstr) + 1);
+  if (out == NULL)
+    return 1;
+
+  data = malloc(len);
+  if (data == NULL)
+    {
+      free(out);
+      return 1;
+    }
+
+  memcpy(data, value, len);
+
+  numstr = 0;
+  ptr = data;
+  while (ptr < data + len)
+    {
+      out[numstr++] = ptr;
+      while ((ptr < data + len) && *ptr != '\0')
+	ptr++;
+      ptr++;
+    }
+
+  out[numstr] = NULL;
+  *strings = out;
+  return 0;
+}
+
+int cvt_freeStrings(char **strings)
+{
+  if (strings == NULL)
+    return 1;
+
+  if (*strings)
+    free(*strings);
+  free(strings);
+
   return 0;
 }
 
