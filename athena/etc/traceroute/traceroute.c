@@ -1,6 +1,6 @@
 #ifndef lint
 static char *rcsid =
-	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.2 1994-03-30 10:52:42 vrt Exp $ (LBL)";
+	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.3 1994-04-07 12:43:45 miki Exp $ (LBL)";
 #endif
 
 /*
@@ -287,6 +287,7 @@ main(argc, argv)
 	u_long gw;
 	u_char optlist[MAX_IPOPTLEN], *oix;
 
+
 	oix = optlist;
 	bzero(optlist, sizeof(optlist));
 
@@ -397,7 +398,7 @@ main(argc, argv)
 #ifndef SYSV
 	setlinebuf (stdout);
 #else
-        setvbuf(stdout, NULL, _IOFBF, BUFSIZ);
+        setvbuf(stdout, NULL, _IOLBF, 0);
 #endif
 
 
