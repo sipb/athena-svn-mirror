@@ -1,0 +1,34 @@
+# $Id: Makefile.in,v 1.1 1996-10-13 07:03:22 ghudson Exp $
+
+SHELL=/bin/sh
+CC=@CC@
+INSTALL=@INSTALL@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bonindir=@bindir@
+mandir=@mandir@
+OBJS=ctl.o ctl_transact.o display.o get_addrs.o get_names.o \
+	init_disp.o invite.o io.o look_up.o msgs.o talk.o
+LIBS=-lcurses @LIBS@
+CFLAGS=-I.. ${CDEBUGFLAGS}
+
+all: talk
+
+talk: ${OBJS}
+	${CC} ${LDFLAGS} -o talk ${OBJS} ${LIBS}
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 555 talk ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/talk.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f ${OBJS} talk
+
+distclean: clean
