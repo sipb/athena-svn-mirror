@@ -222,19 +222,19 @@ $ECHO "done."
 
 $ECHO "Fixing noattach, nocreate, noremote, and nologin... \c"
 if [ "${NOCREATE}" = "true" ]; then
-	echo "" >> /etc/nocreate
+	touch /etc/nocreate
 else
 	rm -f /etc/nocreate
 fi
 
 if [ "${NOATTACH}" = "true" ]; then
-	echo "" >> /etc/noattach
+	touch /etc/noattach
 else
 	rm -f /etc/noattach
 fi
 
 if [ "${NOREMOTE}" = "true" ]; then
-	echo "" >> /etc/noremote
+	touch /etc/noremote
 else
         rm -f /etc/noremote
 fi
