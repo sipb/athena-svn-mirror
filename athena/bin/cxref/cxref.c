@@ -51,10 +51,18 @@ char **argv;
 {
 	int i;
 	int catchem();
+#ifdef POSIX
+struct sigaction act;
 
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) catchem;
+	(void) sigaction(SIGINT, &act, NULL);
+	(void) sigaction(SIGQUIT, &act, NULL);
+#else
 	signal (SIGQUIT, catchem);
 	signal (SIGINT, catchem);
-
+#endif
 	strcpy (name, filename(argv[0]));
 
 	ancestor = getpid();
@@ -611,9 +619,18 @@ char *fname;
 
 catchem()	/* simple signal catcher */
 {
+#ifdef POSIX
+struct sigaction act;
+
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) SIG_IGN;
+	(void) sigaction(SIGINT, &act, NULL);
+	(void) sigaction(SIGQUIT, &act, NULL);
+#else
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
-
+#endif
 	deltemps();
 
 	exit (0);
