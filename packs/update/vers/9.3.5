@@ -1,3 +1,12 @@
 #!/bin/sh
 
 echo "/var/server/usr"				>> $DEADFILES
+
+# Install packages for Sun XVR-600/XVR-1200 graphics.
+echo "SUNWjfbx.u"				>> $PACKAGES
+echo "SUNWjfbcf"				>> $PACKAGES
+echo "SUNWjfbmn"				>> $PACKAGES
+echo "SUNWjfbr"					>> $PACKAGES
+echo "SUNWjfbw"					>> $PACKAGES
+
+echo "OSCHANGES=true"				>> $CONFVARS
