@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.17 1997-07-18 18:53:14 danw Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.18 1997-12-03 22:00:36 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,10 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  1997/07/18 18:53:14  danw
+ * from mwhitson: POSIX signal semantics fixes. (sigsetjmp/siglongjmp
+ * and SA_RESTART).
+ *
  * Revision 1.16  1997/02/06 09:07:50  ghudson
  * From Dan Winship: strip ^D at beginning of file, recognize and reject
  * Framemaker and PDF files.
@@ -1835,6 +1839,9 @@ private VOID openprtread() {
  */
 private int resetprt() {
 #ifdef BRIDGE
+#ifdef _FSTDIO
+#define	_cnt	_r		/* Retch */
+#endif
     static struct timeval t = {0,0};    /* Zero time */
     int  rmask;				/* Hope fdsend bit fits in here... */
     int c;
