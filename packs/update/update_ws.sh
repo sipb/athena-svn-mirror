@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.55.4.5 2002-07-21 20:26:25 ghudson Exp $
+# $Id: update_ws.sh,v 1.55.4.6 2002-08-05 22:07:40 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -91,15 +91,6 @@ fi
 
 newvers=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
 version=`awk '$0 != "" {a=$5}; END{print a}' "$CONFDIR/version"`
-
-# A temporary backward compatibility hack, necessary as long as there are
-# 7.7 and 8.0 machines upgrading to the new release.
-case "$version" in
-[0-9].[0-9][A-Z])
-  version=`echo $version | awk '{ print substr($1, 1, 3) "." \
-    index("ABCDEFGHIJKLMNOPQRSTUVWXYZ", substr($1, 4, 1)) - 1; }'`
-  ;;
-esac
 
 if [ -f "$CONFDIR/rc.conf" ]; then
   . "$CONFDIR/rc.conf"
@@ -241,6 +232,18 @@ failupdate() {
   exit 1
 }
 
+# This check needs to be updated for each full release.  It verifies
+# that people aren't updating across two full releases, which
+# generally doesn't work.
+case "$version" in
+9.0.*|9.1.*)
+  ;;
+*)
+  echo "You must update by only one full release at a time."
+  failupdate
+  ;;
+esac
+
 case "$HOSTTYPE" in
 sun4)
 
@@ -283,7 +286,26 @@ sun4)
     fi
     ;;
   esac
-  
+
+  # The 9.1.14 release adds about 200MB of files to /usr/athena on
+  # sys_rvd.big machines.  Make sure we have enough space for that
+  # update if this is such a machine.  No need to add in numbers for
+  # the 9.0 to 9.1 update, since (as noted above) disk usage on
+  # sys_rvd.big machines went down between 9.0 and 9.1.13.
+  if [ ! -h /usr/athena ]; then
+    case $version in
+    8.*|9.0.*|9.1.[0-9]|9.1.1[0-3])
+      rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
+      if [ "$rootspace" -lt 204800 ]; then
+	echo "The / partition must have 204800K free for this update."
+	echo "Please clean local files."
+	logger -t "$HOST" -p user.notice / too full to take 9.1.14 update
+	failupdate
+      fi
+      ;;
+    esac
+  fi
+
   # Ultras with old enough OBP versions aren't able to boot the 64 bit
   # Solaris kernel without a firmware upgrade.  They will fail the 
   # update ungracefully, since the miniroot can only boot the 64 bit
