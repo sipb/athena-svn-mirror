@@ -1,0 +1,4 @@
+PKG=MIT-finish-update
+NAME=Complete the update of an Athena workstation
+DESC=Complete the update of an Athena workstation
+CATEGORY=system,MITcore

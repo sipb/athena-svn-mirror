@@ -1,4 +1,4 @@
-# $Id: packages,v 1.306 2005-03-17 22:26:54 ghudson Exp $
+# $Id: packages,v 1.307 2005-03-31 16:11:30 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -107,6 +107,7 @@ athena/etc/console		requires Xj
 athena/etc/cviewd		requires larv
 athena/etc/desync
 athena/etc/dm			requires al
+athena/etc/finish-update	on solaris
 athena/etc/gettime
 athena/etc/ktconvert
 athena/etc/larvnetd		requires larv,ares,hesiod

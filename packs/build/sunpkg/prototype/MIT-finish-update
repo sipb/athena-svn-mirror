@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change finish-update.xml to class manifest.
+sed -e 's|^f none \(var/svc/manifest/site/athena/finish-update.xml\) |f manifest \1 |'
