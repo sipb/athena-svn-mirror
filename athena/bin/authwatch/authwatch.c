@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.1 2002-01-23 22:15:29 mwhitson Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.2 2002-06-04 17:37:15 mwhitson Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -140,7 +140,7 @@ gint timeout_cb(gpointer unused)
     {
       state = nstate;
 
-      if (GTK_IS_WIDGET(dialog))
+      if (dialog != NULL)
 	gtk_widget_destroy(dialog);
 
       if (state < nwarnings)
@@ -155,6 +155,9 @@ gint timeout_cb(gpointer unused)
 	      fprintf(stderr, "authwatch: error creating dialog window\n");
 	      exit(1);
 	    }
+	  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
+			     GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			     &dialog);
 
 	  gtk_widget_show(dialog);
 	}
