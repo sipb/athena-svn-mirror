@@ -2,7 +2,7 @@
 # Network services, Internet style
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v 1.2 1994-06-16 15:58:18 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v 1.3 1995-07-24 18:06:50 cfields Exp $
 tcpmux		1/tcp
 echo		7/tcp
 echo		7/udp
@@ -280,6 +280,8 @@ sms_update	777/tcp				# Moira update protocol.
 sms_ureg	779/udp				# Moira user registration.
 
 page		1234/tcp			# NOC pager
+
+orasrv		1525/tcp			# Oracle sqlnet
 
 olc-locking	2051/tcp			# OLC locking daemon
 olc-query	2052/tcp			# OLC query daemon
