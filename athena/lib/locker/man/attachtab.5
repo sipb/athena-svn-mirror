@@ -1,4 +1,4 @@
-.\" $Id: attachtab.5,v 1.1 1999-02-26 19:05:07 danw Exp $
+.\" $Id: attachtab.5,v 1.2 1999-03-23 18:47:34 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -24,18 +24,18 @@ by liblocker to keep track of attached filesystems.
 .TP 8
 .B /var/athena/attachtab/.lock
 This is used as a lock file to synchronize access to the
-.B lockers
+.B locker
 and
-.B mountpoints
+.B mountpoint
 directories, which record attached lockers.
 .TP 8
 .B /var/athena/attachtab/.dirlock
 This is used to synchronize access to the
-.B directories
+.B directory
 subdirectory, which records directories that have been created by
 liblocker.
 .TP 8
-.B /var/athena/attachtab/mountpoints
+.B /var/athena/attachtab/mountpoint
 This directory contains a file for each locker that has been attached.
 The files each consist of 9 lines containing the following data:
 .PP
@@ -53,26 +53,26 @@ flags (from the locker_attachent \fIflags\fP field)
 .fi
 .RE
 .TP 8
-.B /var/athena/attachtab/lockers
+.B /var/athena/attachtab/locker
 This directory contains symlinks to the
-.B mountpoints
+.B mountpoint
 directory; for each named locker which is attached on its normal
 mountpoint, there will be a symlink from the locker name in the
-.B lockers
+.B locker
 directory to the locker mountpoint in the
-.B mountpoints
+.B mountpoint
 directory.
 .TP 8
-.B /var/athena/attachtab/directories
+.B /var/athena/attachtab/directory
 This directory contains an empty file for each directory which
 liblocker has created. This information is used to ensure that created
 directories are later removed when all of the filesystems mounted in
 them are detached.
 .PP
 Filenames in the
-.B mountpoints
+.B mountpoint
 and
-.B directories
+.B directory
 subdirectories are directory names with slashes replaced by "_=" and
 underscores replaced by "__".
 .SH FILES
