@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	echo "TRACKNEWOS=true"			>> "$CONFVARS"
+	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "/etc/inetd.conf"			>> "$CONFCHG"
+	echo "/etc/athena/inetd.conf"		>> "$CONFCHG"
+	;;
+esac
