@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpq.c,v 1.3.2.1 2001-03-07 01:41:57 ghudson Exp $";
+"$Id: lpq.c,v 1.3.2.2 2001-03-07 22:01:50 ghudson Exp $";
 
 
 /***************************************************************************
@@ -137,6 +137,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 
 	/*
 	 * set up the user state

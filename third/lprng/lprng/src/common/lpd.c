@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd.c,v 1.3.2.1 2001-03-07 01:41:30 ghudson Exp $";
+"$Id: lpd.c,v 1.3.2.2 2001-03-07 22:01:48 ghudson Exp $";
 
 
 #include "lp.h"
@@ -109,6 +109,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGTERM, cleanup_TERM);
 	(void) plp_signal (SIGUSR1, (plp_sigfunc_t)SIG_IGN);
 	(void) plp_signal (SIGUSR2, (plp_sigfunc_t)SIG_IGN);
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 
 	Get_parms(argc, argv);      /* scan input args */
 
