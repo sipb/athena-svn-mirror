@@ -9,8 +9,8 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.6 1991-07-01 09:47:29 probe Exp $";
-#endif lint
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.7 1992-01-06 15:51:44 probe Exp $";
+#endif
 
 #include "attach.h"
 #include <sys/file.h>
@@ -46,7 +46,7 @@ void lock_attachtab()
 		(void) strcat(lockfn, ".lock");
 	
 		if (attach_lock_fd < 0) {
-			attach_lock_fd = open(lockfn, O_CREAT, 0644);
+			attach_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 			if (attach_lock_fd < 0) {
 				fprintf(stderr,"Can't open %s: %s\n", lockfn,
 					sys_errlist[errno]);
@@ -54,7 +54,12 @@ void lock_attachtab()
 				exit(ERR_FATAL);
 			}
 		}
-		flock(attach_lock_fd, LOCK_EX);
+		if (flock(attach_lock_fd, LOCK_EX) == -1) {
+			fprintf(stderr, "%s: unable to lock attachtab: %s\n",
+				progname, errstr(errno));
+			fputs(abort_msg, stderr);
+			exit(ERR_FATAL);
+		}
 		free(lockfn);
 	}
 	attach_lock_count++;
@@ -131,14 +136,15 @@ void free_attachtab()
 }	
 
 /*
- * put_attachtab - write out attachtab file from linked list and
- * 	unlocks attachtab
+ * put_attachtab - write out attachtab file from linked list
  */
 put_attachtab()
 {
 	register FILE	*f;
 	register struct	_attachtab	*at;
 	register char	*tempfn;
+
+	start_critical_code ();
 	
 	if (!(tempfn = malloc(strlen(attachtab_fn)+6))) {
 		fprintf(stderr,
@@ -185,6 +191,7 @@ put_attachtab()
 		fprintf(stderr, abort_msg);
 		exit(ERR_FATAL);
 	}
+	end_critical_code ();
 }
 
 void lint_attachtab()
@@ -195,6 +202,7 @@ void lint_attachtab()
 	char				attach_buf[BUFSIZ];
 	
 	free_attachtab();
+	lock_attachtab();
 	if ((f = fopen(attachtab_fn, "r")) == NULL)
 		return;
 	
@@ -217,6 +225,7 @@ void lint_attachtab()
 	attachtab_last = at;
 	fclose(f);
 	put_attachtab();
+	unlock_attachtab();
 	free_attachtab();
 }
 
@@ -280,7 +289,7 @@ static int parse_attach(bfr, at, lintflag)
     if (!(cp = strtok(NULL, TOKSEP)))
 	    goto bad_line;
 
-    for (i=0; cp; i++) {
+    for (i=0; cp && i < MAXHOSTS; i++) {
 	    register char *dp;
 
 	    if (dp = index(cp, ','))
@@ -288,6 +297,8 @@ static int parse_attach(bfr, at, lintflag)
 	    at->hostaddr[i].s_addr = inet_addr(cp);
 	    cp = dp;
     }
+    while (i < MAXHOSTS)
+	    at->hostaddr[i++].s_addr = 0;
 
     if (!(cp = strtok(NULL, TOKSEP)))
 	    goto bad_line;
