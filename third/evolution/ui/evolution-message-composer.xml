@@ -2,18 +2,18 @@
 	<commands>
 
 	        <cmd name="FileOpen" _label="Open" hidden="1"
-		_tip="Open a file" pixtype="stock" pixname="Open" accel="*Control*o"/>
+		_tip="Open a file" pixtype="stock" pixname="gtk-open" accel="*Control*o"/>
 		
 	        <cmd name="FileSave" _label="Save"
-		_tip="Save the current file" pixtype="pixbuf"
+		_tip="Save the current file" pixtype="stock" pixname="gtk-save"
 		accel="*Ctrl*s"/>
 		
 	        <cmd name="FileSaveAs" _label="Save As"
 	        _tip="Save the current file with a different name"
-		pixtype="pixbuf"/>
+		pixtype="stock" pixname="gtk-save-as"/>
 		
 	        <cmd name="FileClose" _label="Close"
-		_tip="Close the current file" pixtype="stock" pixname="Close"
+		_tip="Close the current file" pixtype="stock" pixname="gtk-close"
 		accel="*Ctrl*w"/>
 		
 		<cmd name="FileSaveInFolder" _label="Save in folder..."
@@ -28,6 +28,7 @@
 		pixtype="pixbuf"/>
 		
 		<cmd name="DeleteAll" _label="_Delete all"
+		pixtype="stock" pixname="gtk-delete"
 		_tip="Delete all but signature"/>
 
 		<cmd name="FormatHtml" _label="HT_ML" _tip="Send the mail in HTML format"
@@ -36,6 +37,14 @@
 		<cmd name="ViewFrom" _label="_From Field"
 		_tip="Toggles whether the From chooser is displayed" type="toggle" state="0"/>
 		
+                <cmd name="ViewTo" _label="_To Field"
+		_tip="Toggles whether the To field is displayed"
+		type="toggle" state="0"/>
+
+                <cmd name="ViewPostTo" _label="_Post-To Field"
+		_tip="Toggles whether the Post-To field is displayed"
+		type="toggle" state="0"/>
+
                 <cmd name="ViewReplyTo" _label="_Reply-To Field"
 		_tip="Toggles whether the Reply-To field is displayed"
 		type="toggle" state="0"/>
@@ -112,6 +121,8 @@
 			<menuitem name="ViewAttach" verb="" _label="Show _attachments"/>
 			<separator f="" name="emailcomposer"/>
 	                <menuitem name="ViewFrom" verb=""/>
+			<menuitem name="ViewTo" verb=""/>
+			<menuitem name="ViewPostTo" verb=""/>
                         <menuitem name="ViewReplyTo" verb=""/>
 	                <menuitem name="ViewCC" verb=""/>
 	                <menuitem name="ViewBCC" verb=""/>
@@ -132,7 +143,7 @@
 		
 	</menu>
 	
-	<dockitem name="Toolbar" behavior="exclusive" hlook="both_horiz" vlook="icon">
+	<dockitem name="Toolbar" behavior="exclusive" hlook="system" vlook="icon">
 		<toolitem name="FileSend" verb="" pixtype="pixbuf" priority="1"/>
 		<toolitem name="FileAttach" verb="" pixtype="pixbuf" priority="1"/>	
 

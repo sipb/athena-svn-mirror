@@ -2,34 +2,39 @@
 #ifndef ITIP_UTILS_HEADER
 #define ITIP_UTILS_HEADER
 
-#include <ical.h>
+#include <libical/ical.h>
 #include <string.h>
 #include <glib.h>
-#include <cal-client/cal-client.h>
-#include <cal-util/cal-component.h>
+#include <libecal/e-cal.h>
+#include <libecal/e-cal-component.h>
 #include <e-util/e-account-list.h>
 
 typedef enum {
-	CAL_COMPONENT_METHOD_PUBLISH,
-	CAL_COMPONENT_METHOD_REQUEST,
-	CAL_COMPONENT_METHOD_REPLY,
-	CAL_COMPONENT_METHOD_ADD,
-	CAL_COMPONENT_METHOD_CANCEL,
-	CAL_COMPONENT_METHOD_REFRESH,
-	CAL_COMPONENT_METHOD_COUNTER,
-	CAL_COMPONENT_METHOD_DECLINECOUNTER
-} CalComponentItipMethod;
+	E_CAL_COMPONENT_METHOD_PUBLISH,
+	E_CAL_COMPONENT_METHOD_REQUEST,
+	E_CAL_COMPONENT_METHOD_REPLY,
+	E_CAL_COMPONENT_METHOD_ADD,
+	E_CAL_COMPONENT_METHOD_CANCEL,
+	E_CAL_COMPONENT_METHOD_REFRESH,
+	E_CAL_COMPONENT_METHOD_COUNTER,
+	E_CAL_COMPONENT_METHOD_DECLINECOUNTER
+} ECalComponentItipMethod;
 
 EAccountList *itip_addresses_get (void);
 EAccount *itip_addresses_get_default (void);
 
-gboolean itip_organizer_is_user (CalComponent *comp, CalClient *client);
-gboolean itip_sentby_is_user (CalComponent *comp);
+gboolean itip_organizer_is_user (ECalComponent *comp, ECal *client);
+gboolean itip_sentby_is_user (ECalComponent *comp);
 
 const gchar *itip_strip_mailto (const gchar *address);
 
-gboolean itip_send_comp (CalComponentItipMethod method, CalComponent *comp,
-			 CalClient *client, icalcomponent *zones);
+gboolean itip_send_comp (ECalComponentItipMethod method, ECalComponent *comp,
+			 ECal *client, icalcomponent *zones);
 
+gboolean itip_publish_comp (ECal *client, gchar* uri, gchar* username, 
+			    gchar* password, ECalComponent **pub_comp);
+
+gboolean itip_publish_begin (ECalComponent *pub_comp, ECal *client, 
+			     gboolean cloned, ECalComponent **clone);
 
 #endif

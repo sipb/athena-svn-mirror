@@ -3,7 +3,7 @@
  * Author:
  *  Michael Zucchi <notzed@ximian.com>
  *
- * Copyright 2000-2002 Ximian, Inc. (www.ximian.com)
+ * Copyright 2000-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -26,17 +26,19 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "camel-object.h"
-
-#include <e-util/e-memory.h>
-
-#ifdef ENABLE_THREADS
 #include <pthread.h>
 #include <semaphore.h>
+#include <errno.h>
+
+#include "camel-object.h"
+#include "camel-file-utils.h"
+
+#include <e-util/e-memory.h>
 #include <e-util/e-msgport.h>
-#endif
 
 #define d(x)
+#define b(x) 			/* object bag */
+#define h(x) 			/* hooks */
 
 /* I just mashed the keyboard for these... */
 #define CAMEL_OBJECT_MAGIC           	 0x77A344ED
@@ -76,23 +78,40 @@ typedef struct _CamelHookPair
 	union {
 		CamelObjectEventHookFunc event;
 		CamelObjectEventPrepFunc prep;
+		char *filename;
 	} func;
 	void *data;
 } CamelHookPair;
 
+struct _CamelObjectBagKey {
+	struct _CamelObjectBagKey *next;
+
+	void *key;		/* the key reserved */
+	int waiters;		/* count of threads waiting for key */
+	pthread_t owner;	/* the thread that has reserved the bag for a new entry */
+	sem_t reserve_sem;	/* used to track ownership */
+};
+
 struct _CamelObjectBag {
 	GHashTable *object_table; /* object by key */
 	GHashTable *key_table;	/* key by object */
+	GEqualFunc equal_key;
 	CamelCopyFunc copy_key;
 	GFreeFunc free_key;
-#ifdef ENABLE_THREADS
-	pthread_t owner;	/* the thread that has reserved the bag for a new entry */
-	sem_t reserve_sem;	/* used to track ownership */
-#endif
+
+	struct _CamelObjectBagKey *reserved;
 };
 
 /* used to tag a bag hookpair */
 static const char *bag_name = "object:bag";
+
+/* meta-data stuff */
+static void co_metadata_free(CamelObject *obj, CamelObjectMeta *meta);
+static CamelObjectMeta *co_metadata_get(CamelObject *obj);
+static CamelHookPair *co_metadata_pair(CamelObject *obj, int create);
+
+static const char *meta_name = "object:meta";
+#define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 
 /* ********************************************************************** */
 
@@ -100,11 +119,8 @@ static CamelHookList *camel_object_get_hooks(CamelObject *o);
 static void camel_object_free_hooks(CamelObject *o);
 static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks);
 
-#ifdef ENABLE_THREADS
 #define camel_object_unget_hooks(o) (e_mutex_unlock((CAMEL_OBJECT(o)->hooks->lock)))
-#else
-#define camel_object_unget_hooks(o)
-#endif
+
 
 /* ********************************************************************** */
 
@@ -121,21 +137,13 @@ static EMemChunk *type_chunks;
 
 CamelType camel_object_type;
 
-#ifdef ENABLE_THREADS
 #define P_LOCK(l) (pthread_mutex_lock(&l))
 #define P_UNLOCK(l) (pthread_mutex_unlock(&l))
 #define E_LOCK(l) (e_mutex_lock(l))
 #define E_UNLOCK(l) (e_mutex_unlock(l))
 #define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
 #define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
-#else
-#define P_LOCK(l)
-#define P_UNLOCK(l)
-#define E_LOCK(l)
-#define E_UNLOCK(l)
-#define CLASS_LOCK(k)
-#define CLASS_UNLOCK(k)
-#endif
+
 
 static struct _CamelHookPair *
 pair_alloc(void)
@@ -205,7 +213,7 @@ camel_type_init(void)
 
 /* Should this return the object to the caller? */
 static void
-cobject_init (CamelObject *o, CamelObjectClass *klass)
+cobject_init(CamelObject *o, CamelObjectClass *klass)
 {
 	o->klass = klass;
 	o->magic = CAMEL_OBJECT_MAGIC;
@@ -241,6 +249,17 @@ cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_OBJECT_ARG_DESCRIPTION:
 			*arg->ca_str = (char *)o->klass->name;
 			break;
+		case CAMEL_OBJECT_ARG_METADATA:
+			*arg->ca_ptr = co_metadata_get(o);
+			break;
+		case CAMEL_OBJECT_ARG_STATE_FILE: {
+			CamelHookPair *pair = co_metadata_pair(o, FALSE);
+
+			if (pair) {
+				*arg->ca_str = g_strdup(pair->func.filename);
+				camel_object_unget_hooks(o);
+			}
+			break; }
 		}
 	}
 
@@ -251,6 +270,27 @@ cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 static int
 cobject_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
 {
+	int i;
+	guint32 tag;
+
+	for (i=0;i<args->argc;i++) {
+		CamelArg *arg = &args->argv[i];
+
+		tag = arg->tag;
+
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_OBJECT_ARG_STATE_FILE: {
+			CamelHookPair *pair;
+
+			/* We store the filename on the meta-data hook-pair */
+			pair = co_metadata_pair(o, TRUE);
+			g_free(pair->func.filename);
+			pair->func.filename = g_strdup(arg->ca_str);
+			camel_object_unget_hooks(o);
+			break; }
+		}
+	}
+
 	/* could have flags or stuff here? */
 	return 0;
 }
@@ -258,8 +298,291 @@ cobject_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
 static void
 cobject_free(CamelObject *o, guint32 tag, void *value)
 {
-	/* do nothing */
+	switch(tag & CAMEL_ARG_TAG) {
+	case CAMEL_OBJECT_ARG_METADATA:
+		co_metadata_free(o, value);
+		break;
+	case CAMEL_OBJECT_ARG_STATE_FILE:
+		g_free(value);
+		break;
+	case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
+		g_slist_free((GSList *)value);
+		break;
+	}
 }
+
+static char *
+cobject_meta_get(CamelObject *obj, const char * name)
+{
+	CamelHookPair *pair;
+	CamelObjectMeta *meta;
+	char *res = NULL;
+
+	g_return_val_if_fail(CAMEL_IS_OBJECT (obj), 0);
+	g_return_val_if_fail(name != NULL, 0);
+
+	pair = co_metadata_pair(obj, FALSE);
+	if (pair) {
+		meta = pair->data;
+		while (meta) {
+			if (!strcmp(meta->name, name)) {
+				res = g_strdup(meta->value);
+				break;
+			}
+			meta = meta->next;
+		}
+		camel_object_unget_hooks(obj);
+	}
+	
+	return res;
+}
+
+static gboolean
+cobject_meta_set(CamelObject *obj, const char * name, const char *value)
+{
+	CamelHookPair *pair;
+	int changed = FALSE;
+	CamelObjectMeta *meta, *metap;
+
+	g_return_val_if_fail(CAMEL_IS_OBJECT (obj), FALSE);
+	g_return_val_if_fail(name != NULL, FALSE);
+
+	if (obj->hooks == NULL && value == NULL)
+		return FALSE;
+
+	pair = co_metadata_pair(obj, TRUE);
+	meta = pair->data;
+	metap = (CamelObjectMeta *)&pair->data;
+	while (meta) {
+		if (!strcmp(meta->name, name))
+			break;
+		metap = meta;
+		meta = meta->next;
+	}
+
+	/* TODO: The camelobjectmeta structure is identical to
+	   CamelTag, they could be merged or share common code */
+	if (meta == NULL) {
+		if (value == NULL)
+			goto done;
+		meta = g_malloc(sizeof(*meta) + strlen(name));
+		meta->next = pair->data;
+		pair->data = meta;
+		strcpy(meta->name, name);
+		meta->value = g_strdup(value);
+		changed = TRUE;
+	} else if (value == NULL) {
+		metap->next = meta->next;
+		g_free(meta->value);
+		g_free(meta);
+		changed = TRUE;
+	} else if (strcmp(meta->value, value) != 0) {
+		g_free(meta->value);
+		meta->value = g_strdup(value);
+		changed = TRUE;
+	}
+
+done:
+	camel_object_unget_hooks(obj);
+
+	return changed;
+}
+
+/* State file for CamelObject data.  Any later versions should only append data.
+
+   version:uint32
+
+   Version 0 of the file:
+
+   version:uint32 = 0
+   count:uint32  				-- count of meta-data items
+   ( name:string value:string ) *count		-- meta-data items
+
+   Version 1 of the file adds:
+   count:uint32					-- count of persistent properties
+   ( tag:uing32 value:tagtype ) *count		-- persistent properties
+
+*/
+
+static int
+cobject_state_read(CamelObject *obj, FILE *fp)
+{
+	guint32 i, count, version;
+
+	/* NB: for later versions, just check the version is 1 .. known version */
+	if (camel_file_util_decode_uint32(fp, &version) == -1
+	    || version > 1
+	    || camel_file_util_decode_uint32(fp, &count) == -1)
+		return -1;
+
+	for (i=0;i<count;i++) {
+		char *name = NULL, *value = NULL;
+			
+		if (camel_file_util_decode_string(fp, &name) == 0
+		    && camel_file_util_decode_string(fp, &value) == 0) {
+			camel_object_meta_set(obj, name, value);
+			g_free(name);
+			g_free(value);
+		} else {
+			g_free(name);
+			g_free(value);
+
+			return -1;
+		}
+	}
+
+	if (version > 0) {
+		CamelArgV *argv;
+
+		if (camel_file_util_decode_uint32(fp, &count) == -1
+			|| count == 0 || count > 1024) {
+			/* maybe it was just version 0 afterall */
+			return 0;
+		}
+		
+		/* we batch up the properties and set them in one go */
+		if (!(argv = g_try_malloc (sizeof (*argv) + (count - CAMEL_ARGV_MAX) * sizeof (argv->argv[0]))))
+			return -1;
+		
+		argv->argc = 0;
+		for (i=0;i<count;i++) {
+			if (camel_file_util_decode_uint32(fp, &argv->argv[argv->argc].tag) == -1)
+				goto cleanup;
+
+			/* so far,only do strings and ints, doubles could be added,
+			   object's would require a serialisation interface */
+
+			switch(argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
+			case CAMEL_ARG_INT:
+			case CAMEL_ARG_BOO:
+				if (camel_file_util_decode_uint32(fp, &argv->argv[argv->argc].ca_int) == -1)
+					goto cleanup;
+				break;
+			case CAMEL_ARG_STR:
+				if (camel_file_util_decode_string(fp, &argv->argv[argv->argc].ca_str) == -1)
+					goto cleanup;
+				break;
+			default:
+				goto cleanup;
+			}
+
+			argv->argc++;
+		}
+
+		camel_object_setv(obj, NULL, argv);
+	cleanup:
+		for (i=0;i<argv->argc;i++) {
+			if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
+				g_free(argv->argv[i].ca_str);
+		}
+		g_free(argv);
+	}
+
+	return 0;
+}
+
+/* TODO: should pass exception around */
+static int
+cobject_state_write(CamelObject *obj, FILE *fp)
+{
+	gint32 count, i;
+	CamelObjectMeta *meta = NULL, *scan;
+	int res = -1;
+	GSList *props = NULL, *l;
+	CamelArgGetV *arggetv = NULL;
+	CamelArgV *argv = NULL;
+
+	camel_object_get(obj, NULL, CAMEL_OBJECT_METADATA, &meta, NULL);
+
+	count = 0;
+	scan = meta;
+	while (scan) {
+		count++;
+		scan = scan->next;
+	}
+
+	/* current version is 1 */
+	if (camel_file_util_encode_uint32(fp, 1) == -1
+	    || camel_file_util_encode_uint32(fp, count) == -1)
+		goto abort;
+
+	scan = meta;
+	while (scan) {
+		if (camel_file_util_encode_string(fp, scan->name) == -1
+		    || camel_file_util_encode_string(fp, scan->value) == -1)
+			goto abort;
+		scan = scan->next;
+	}
+
+	camel_object_get(obj, NULL, CAMEL_OBJECT_PERSISTENT_PROPERTIES, &props, NULL);
+
+	/* we build an arggetv to query the object atomically,
+	   we also need an argv to store the results - bit messy */
+
+	count = g_slist_length(props);
+
+	arggetv = g_malloc0(sizeof(*arggetv) + (count - CAMEL_ARGV_MAX) * sizeof(arggetv->argv[0]));
+	argv = g_malloc0(sizeof(*argv) + (count - CAMEL_ARGV_MAX) * sizeof(argv->argv[0]));
+	l = props;
+	i = 0;
+	while (l) {
+		CamelProperty *prop = l->data;
+
+		argv->argv[i].tag = prop->tag;
+		arggetv->argv[i].tag = prop->tag;
+		arggetv->argv[i].ca_ptr = &argv->argv[i].ca_ptr;
+
+		i++;
+		l = l->next;
+	}
+	arggetv->argc = i;
+	argv->argc = i;
+
+	camel_object_getv(obj, NULL, arggetv);
+
+	if (camel_file_util_encode_uint32(fp, count) == -1)
+		goto abort;
+
+	for (i=0;i<argv->argc;i++) {
+		CamelArg *arg = &argv->argv[i];
+
+		if (camel_file_util_encode_uint32(fp, arg->tag) == -1)
+			goto abort;
+
+		switch (arg->tag & CAMEL_ARG_TYPE) {
+		case CAMEL_ARG_INT:
+		case CAMEL_ARG_BOO:
+			if (camel_file_util_encode_uint32(fp, arg->ca_int) == -1)
+				goto abort;
+			break;
+		case CAMEL_ARG_STR:
+			if (camel_file_util_encode_string(fp, arg->ca_str) == -1)
+				goto abort;
+			break;
+		}
+	}
+
+	res = 0;
+abort:
+	for (i=0;i<argv->argc;i++) {
+		CamelArg *arg = &argv->argv[i];
+
+		if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
+			camel_object_free(obj, arg->tag, arg->ca_str);
+	}
+
+	g_free(argv);
+	g_free(arggetv);
+
+	if (props)
+		camel_object_free(obj, CAMEL_OBJECT_PERSISTENT_PROPERTIES, props);
+
+	if (meta)
+		camel_object_free(obj, CAMEL_OBJECT_METADATA, meta);
+
+	return res;
+}
+
 
 static void
 cobject_class_init(CamelObjectClass *klass)
@@ -270,7 +593,13 @@ cobject_class_init(CamelObjectClass *klass)
 	klass->setv = cobject_setv;
 	klass->free = cobject_free;
 
+	klass->meta_get = cobject_meta_get;
+	klass->meta_set = cobject_meta_set;
+	klass->state_read = cobject_state_read;
+	klass->state_write = cobject_state_write;
+
 	camel_object_class_add_event(klass, "finalize", NULL);
+	camel_object_class_add_event(klass, "meta_changed", NULL);
 }
 
 static void
@@ -282,7 +611,7 @@ cobject_class_finalise(CamelObjectClass * klass)
 }
 
 CamelType
-camel_object_get_type (void)
+camel_object_get_type(void)
 {
 	if (camel_object_type == CAMEL_INVALID_TYPE) {
 		camel_type_init();
@@ -307,13 +636,13 @@ camel_type_class_init(CamelObjectClass *klass, CamelObjectClass *type)
 }
 
 CamelType
-camel_type_register (CamelType parent, const char * name,
-		     /*unsigned int ver, unsigned int rev,*/
-		     size_t object_size, size_t klass_size,
-		     CamelObjectClassInitFunc class_init,
-		     CamelObjectClassFinalizeFunc class_finalise,
-		     CamelObjectInitFunc object_init,
-		     CamelObjectFinalizeFunc object_finalise)
+camel_type_register(CamelType parent, const char * name,
+		    /*unsigned int ver, unsigned int rev,*/
+		    size_t object_size, size_t klass_size,
+		    CamelObjectClassInitFunc class_init,
+		    CamelObjectClassFinalizeFunc class_finalise,
+		    CamelObjectInitFunc object_init,
+		    CamelObjectFinalizeFunc object_finalise)
 {
 	CamelObjectClass *klass;
 	/*int offset;
@@ -365,12 +694,10 @@ camel_type_register (CamelType parent, const char * name,
 
 	klass = g_malloc0(klass_size);
 	klass->klass_size = klass_size;
-	klass->object_size = object_size;	
-#ifdef ENABLE_THREADS
+	klass->object_size = object_size;
 	klass->lock = g_mutex_new();
-#endif
 	klass->instance_chunks = e_memchunk_new(8, object_size);
-
+	
 	klass->parent = parent;
 	if (parent) {
 		klass->next = parent->child;
@@ -517,7 +844,7 @@ camel_object_unref(void *vo)
 }
 
 const char *
-camel_type_to_name (CamelType type)
+camel_type_to_name(CamelType type)
 {
 	if (type == NULL)
 		return "(NULL class)";
@@ -586,7 +913,7 @@ check_magic(void *o, CamelType ctype, int isob)
 }
 
 gboolean
-camel_object_is (CamelObject *o, CamelType ctype)
+camel_object_is(CamelObject *o, CamelType ctype)
 {
 	CamelObjectClass *k;
 
@@ -603,7 +930,7 @@ camel_object_is (CamelObject *o, CamelType ctype)
 }
 
 gboolean
-camel_object_class_is (CamelObjectClass *k, CamelType ctype)
+camel_object_class_is(CamelObjectClass *k, CamelType ctype)
 {
 	g_return_val_if_fail(check_magic(k, ctype, FALSE), FALSE);
 
@@ -680,7 +1007,8 @@ camel_object_class_add_event(CamelObjectClass *klass, const char *name, CamelObj
 }
 
 /* free hook data */
-static void camel_object_free_hooks(CamelObject *o)
+static void
+camel_object_free_hooks(CamelObject *o)
 {
 	CamelHookPair *pair, *next;
 
@@ -691,6 +1019,12 @@ static void camel_object_free_hooks(CamelObject *o)
 		pair = o->hooks->list;
 		while (pair) {
 			next = pair->next;
+
+			if (pair->name == meta_name) {
+				co_metadata_free(o, pair->data);
+				g_free(pair->func.filename);
+			}
+
 			pair_free(pair);
 			pair = next;
 		}
@@ -701,38 +1035,30 @@ static void camel_object_free_hooks(CamelObject *o)
 }
 
 /* return (allocate if required) the object's hook list, locking at the same time */
-static CamelHookList *camel_object_get_hooks(CamelObject *o)
+static CamelHookList *
+camel_object_get_hooks(CamelObject *o)
 {
-#ifdef ENABLE_THREADS
 	static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-#endif
 	CamelHookList *hooks;
 
 	/* if we have it, we dont have to do any other locking,
 	   otherwise use a global lock to setup the object's hook data */
-#ifdef ENABLE_THREADS
 	if (o->hooks == NULL) {
 		pthread_mutex_lock(&lock);
-#endif
 		if (o->hooks == NULL) {
 			hooks = hooks_alloc();
-#ifdef ENABLE_THREADS
 			hooks->lock = e_mutex_new(E_MUTEX_REC);
-#endif
 			hooks->flags = 0;
 			hooks->depth = 0;
 			hooks->list_length = 0;
 			hooks->list = NULL;
 			o->hooks = hooks;
 		}
-#ifdef ENABLE_THREADS
 		pthread_mutex_unlock(&lock);
 	}
-#endif
-
-#ifdef ENABLE_THREADS
+	
 	e_mutex_lock(o->hooks->lock);
-#endif
+	
 	return o->hooks;	
 }
 
@@ -776,6 +1102,8 @@ setup:
 	hooks->list_length++;
 	camel_object_unget_hooks(obj);
 
+	h(printf("%p hook event '%s' %p %p = %d\n", vo, name, func, data, id));
+
 	return id;
 }
 
@@ -794,6 +1122,8 @@ camel_object_remove_event(void *vo, unsigned int id)
 			  id, obj->klass->name);
 		return;
 	}
+
+	h(printf("%p remove event %d\n", vo, id));
 
 	/* scan hooks for this event, remove it, or flag it if we're busy */
 	hooks = camel_object_get_hooks(obj);
@@ -838,6 +1168,8 @@ camel_object_unhook_event(void *vo, const char * name, CamelObjectEventHookFunc 
 			  name, obj->klass->name);
 		return;
 	}
+
+	h(printf("%p unhook event '%s' %p %p\n", vo, name, func, data));
 
 	/* scan hooks for this event, remove it, or flag it if we're busy */
 	hooks = camel_object_get_hooks(obj);
@@ -1005,6 +1337,219 @@ int camel_object_getv(void *vo, CamelException *ex, CamelArgGetV *args)
 	return ((CamelObject *)vo)->klass->getv(vo, ex, args);
 }
 
+/* NB: If this doesn't return NULL, then you must unget_hooks when done */
+static CamelHookPair *
+co_metadata_pair(CamelObject *obj, int create)
+{
+	CamelHookPair *pair;
+	CamelHookList *hooks;
+
+	if (obj->hooks == NULL && !create)
+		return NULL;
+
+	hooks = camel_object_get_hooks(obj);
+	pair = hooks->list;
+	while (pair) {
+		if (pair->name == meta_name)
+			return pair;
+
+		pair = pair->next;
+	}
+
+	if (create) {
+		pair = pair_alloc();
+		pair->name = meta_name;
+		pair->data = NULL;
+		pair->flags = 0;
+		pair->func.filename = NULL;
+		pair->next = hooks->list;
+		hooks->list = pair;
+		hooks->list_length++;
+	} else {
+		camel_object_unget_hooks(obj);
+	}
+
+	return pair;
+}
+
+static CamelObjectMeta *
+co_metadata_get(CamelObject *obj)
+{
+	CamelHookPair *pair;
+	CamelObjectMeta *meta = NULL, *metaout = NULL, *metalast;
+
+	pair = co_metadata_pair(obj, FALSE);
+	if (pair) {
+		meta = pair->data;
+
+		while (meta) {
+			CamelObjectMeta *m;
+
+			m = g_malloc(sizeof(*metalast) + strlen(meta->name));
+			m->next = NULL;
+			strcpy(m->name, meta->name);
+			m->value = g_strdup(meta->value);
+			if (metaout == NULL)
+				metalast = metaout = m;
+			else {
+				metalast->next = m;
+				metalast = m;
+			}
+			meta = meta->next;
+		}
+
+		camel_object_unget_hooks(obj);
+	}
+
+	return metaout;
+}
+
+static void
+co_metadata_free(CamelObject *obj, CamelObjectMeta *meta)
+{
+	while (meta) {
+		CamelObjectMeta *metan = meta->next;
+
+		g_free(meta->value);
+		g_free(meta);
+		meta = metan;
+	}
+}
+
+/**
+ * camel_object_meta_get:
+ * @vo: 
+ * @name: 
+ * 
+ * Get a meta-data on an object.
+ * 
+ * Return value: NULL if the meta-data is not set.
+ **/
+char *
+camel_object_meta_get(void *vo, const char * name)
+{
+	CamelObject *obj = vo;
+
+	g_return_val_if_fail(CAMEL_IS_OBJECT (obj), 0);
+	g_return_val_if_fail(name != NULL, 0);
+
+	return obj->klass->meta_get(obj, name);
+}
+
+/**
+ * camel_object_meta_set:
+ * @vo: 
+ * @name: Name of meta-data.  Should be prefixed with class of setter.
+ * @value: Value to set.  If NULL, then the meta-data is removed.
+ * 
+ * Set a meta-data item on an object.  If the object supports persistent
+ * data, then the meta-data will be persistent across sessions.
+ *
+ * If the meta-data changes, is added, or removed, then a
+ * "meta_changed" event will be triggered with the name of the changed
+ * data.
+ *
+ * Return Value: TRUE if the setting caused a change to the object's
+ * metadata.
+ **/
+gboolean
+camel_object_meta_set(void *vo, const char * name, const char *value)
+{
+	CamelObject *obj = vo;
+
+	g_return_val_if_fail(CAMEL_IS_OBJECT (obj), FALSE);
+	g_return_val_if_fail(name != NULL, FALSE);
+
+	if (obj->klass->meta_set(obj, name, value)) {
+		camel_object_trigger_event(obj, "meta_changed", (void *)name);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/**
+ * camel_object_state_read:
+ * @vo: 
+ * 
+ * Read persistent object state from object_set(CAMEL_OBJECT_STATE_FILE).
+ * 
+ * Return value: -1 on error.
+ **/
+int camel_object_state_read(void *vo)
+{
+	CamelObject *obj = vo;
+	int res = -1;
+	char *file;
+	FILE *fp;
+	char magic[4];
+
+	camel_object_get(vo, NULL, CAMEL_OBJECT_STATE_FILE, &file, NULL);
+	if (file == NULL)
+		return 0;
+
+	fp = fopen(file, "r");
+	if (fp != NULL) {
+		if (fread(magic, 4, 1, fp) == 1
+		    && memcmp(magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) == 0)
+			res = obj->klass->state_read(obj, fp);
+		else
+			res = -1;
+		fclose(fp);
+	}
+
+	camel_object_free(vo, CAMEL_OBJECT_STATE_FILE, file);
+
+	return res;
+}
+
+/**
+ * camel_object_state_write:
+ * @vo: 
+ * 
+ * Write persistent state to the file as set by object_set(CAMEL_OBJECT_STATE_FILE).
+ * 
+ * Return value: -1 on error.
+ **/
+int camel_object_state_write(void *vo)
+{
+	CamelObject *obj = vo;
+	int res = -1;
+	char *file, *savename, *tmp;
+	FILE *fp;
+
+	camel_object_get(vo, NULL, CAMEL_OBJECT_STATE_FILE, &file, NULL);
+	if (file == NULL)
+		return 0;
+
+	savename = camel_file_util_savename(file);
+	tmp = strrchr(savename, '/');
+	if (tmp) {
+		*tmp = 0;
+		camel_mkdir(savename, 0777);
+		*tmp = '/';
+	}
+	fp = fopen(savename, "w");
+	if (fp != NULL) {
+		if (fwrite(CAMEL_OBJECT_STATE_FILE_MAGIC, 4, 1, fp) == 1
+		    && obj->klass->state_write(obj, fp) == 0) {
+			if (fclose(fp) == 0) {
+				res = 0;
+				rename(savename, file);
+			}
+		} else {
+			fclose(fp);
+		}
+	} else {
+		g_warning("Could not save object state file to '%s': %s", savename, g_strerror(errno));
+	}
+
+	g_free(savename);
+	camel_object_free(vo, CAMEL_OBJECT_STATE_FILE, file);
+
+	return res;
+}
+
 /* free an arg object, you can only free objects 1 at a time */
 void camel_object_free(void *vo, guint32 tag, void *value)
 {
@@ -1084,20 +1629,32 @@ camel_object_class_dump_tree(CamelType root)
 	object_class_dump_tree_rec(root, 0);
 }
 
-CamelObjectBag *camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree)
+/**
+ * camel_object_bag_new:
+ * @hash: 
+ * @equal: 
+ * @keycopy: 
+ * @keyfree: 
+ * 
+ * Allocate a new object bag.  Object bag's are key'd hash tables of
+ * camel-objects which can be updated atomically using transaction
+ * semantics.
+ * 
+ * Return value: 
+ **/
+CamelObjectBag *
+camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree)
 {
 	CamelObjectBag *bag;
 
 	bag = g_malloc(sizeof(*bag));
 	bag->object_table = g_hash_table_new(hash, equal);
+	bag->equal_key = equal;
 	bag->copy_key = keycopy;
 	bag->free_key = keyfree;
 	bag->key_table = g_hash_table_new(NULL, NULL);
-	bag->owner = 0;
-#ifdef ENABLE_THREADS
-	/* init the semaphore to 1 owner, this is who has reserved the bag for adding */
-	sem_init(&bag->reserve_sem, 0, 1);
-#endif
+	bag->reserved = NULL;
+
 	return bag;
 }
 
@@ -1107,13 +1664,13 @@ save_object(void *key, CamelObject *o, GPtrArray *objects)
 	g_ptr_array_add(objects, o);
 }
 
-void camel_object_bag_destroy(CamelObjectBag *bag)
+void
+camel_object_bag_destroy(CamelObjectBag *bag)
 {
 	GPtrArray *objects = g_ptr_array_new();
 	int i;
 
-	sem_getvalue(&bag->reserve_sem, &i);
-	g_assert(i == 1);
+	g_assert(bag->reserved == NULL);
 
 	g_hash_table_foreach(bag->object_table, (GHFunc)save_object, objects);
 	for (i=0;i<objects->len;i++)
@@ -1122,13 +1679,51 @@ void camel_object_bag_destroy(CamelObjectBag *bag)
 	g_ptr_array_free(objects, TRUE);
 	g_hash_table_destroy(bag->object_table);
 	g_hash_table_destroy(bag->key_table);
-#ifdef ENABLE_THREADS
-	sem_destroy(&bag->reserve_sem);
-#endif
 	g_free(bag);
 }
 
-void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
+/* must be called with type_lock held */
+static void
+co_bag_unreserve(CamelObjectBag *bag, const void *key)
+{
+	struct _CamelObjectBagKey *res, *resp;
+
+	resp = (struct _CamelObjectBagKey *)&bag->reserved;
+	res = resp->next;
+	while (res) {
+		if (bag->equal_key(res->key, key))
+			break;
+		resp = res;
+		res = res->next;
+	}
+
+	g_assert(res != NULL);
+	g_assert(res->owner == pthread_self());
+
+	if (res->waiters > 0) {
+		b(printf("unreserve bag, waking waiters\n"));
+		res->owner = 0;
+		sem_post(&res->reserve_sem);
+	} else {
+		b(printf("unreserve bag, no waiters, freeing reservation\n"));
+		resp->next = res->next;
+		bag->free_key(res->key);
+		sem_destroy(&res->reserve_sem);
+		g_free(res);
+	}
+}
+
+/**
+ * camel_object_bag_add:
+ * @bag: 
+ * @key: 
+ * @vo: 
+ * 
+ * Add an object @vo to the object bag @bag.  The @key MUST have
+ * previously been reserved using camel_object_bag_reserve().
+ **/
+void
+camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
 {
 	CamelObject *o = vo;
 	CamelHookList *hooks;
@@ -1152,6 +1747,7 @@ void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
 	pair->name = bag_name;
 	pair->data = bag;
 	pair->flags = 0;
+	pair->func.event = NULL;
 
 	pair->next = hooks->list;
 	hooks->list = pair;
@@ -1161,18 +1757,86 @@ void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
 	g_hash_table_insert(bag->object_table, k, vo);
 	g_hash_table_insert(bag->key_table, vo, k);
 
-#ifdef ENABLE_THREADS
-	if (bag->owner == pthread_self()) {
-		bag->owner = 0;
-		sem_post(&bag->reserve_sem);
-	}
-#endif
-
+	co_bag_unreserve(bag, key);
+	
 	E_UNLOCK(type_lock);
 	camel_object_unget_hooks(o);
 }
 
-void *camel_object_bag_get(CamelObjectBag *bag, const void *key)
+/**
+ * camel_object_bag_get:
+ * @bag: 
+ * @key: 
+ * 
+ * Lookup an object by @key.  If the key is currently reserved, then
+ * wait until the key has been committed before continuing.
+ * 
+ * Return value: NULL if the object corresponding to @key is not
+ * in the bag.  Otherwise a ref'd object pointer which the caller owns
+ * the ref to.
+ **/
+void *
+camel_object_bag_get(CamelObjectBag *bag, const void *key)
+{
+	CamelObject *o;
+
+	E_LOCK(type_lock);
+
+	o = g_hash_table_lookup(bag->object_table, key);
+	if (o) {
+		/* we use the same lock as the refcount */
+		o->ref_count++;
+	} else {
+		struct _CamelObjectBagKey *res = bag->reserved;
+
+		/* check if this name is reserved currently, if so wait till its finished */
+		while (res) {
+			if (bag->equal_key(res->key, key))
+				break;
+			res = res->next;
+		}
+
+		if (res) {
+			res->waiters++;
+			g_assert(res->owner != pthread_self());
+			E_UNLOCK(type_lock);
+			sem_wait(&res->reserve_sem);
+			E_LOCK(type_lock);
+			res->waiters--;
+
+			/* re-check if it slipped in */
+			o = g_hash_table_lookup(bag->object_table, key);
+			if (o)
+				o->ref_count++;
+
+			/* we don't actually reserve it */
+			res->owner = pthread_self();
+			co_bag_unreserve(bag, key);
+		}
+	}
+	
+	E_UNLOCK(type_lock);
+	
+	return o;
+}
+
+/**
+ * camel_object_bag_peek:
+ * @bag: 
+ * @key: 
+ * 
+ * Lookup the object @key in @bag, ignoring any reservations.  If it
+ * isn't committed, then it isn't considered.  This should only be
+ * used where reliable transactional-based state is not required.
+ * 
+ * Unlike other 'peek' operations, the object is still reffed if
+ * found.
+ *
+ * Return value: A referenced object, or NULL if @key is not
+ * present in the bag.
+ **/
+void *
+camel_object_bag_peek(CamelObjectBag *bag, const void *key)
 {
 	CamelObject *o;
 
@@ -1183,30 +1847,31 @@ void *camel_object_bag_get(CamelObjectBag *bag, const void *key)
 		/* we use the same lock as the refcount */
 		o->ref_count++;
 	}
-#ifdef ENABLE_THREADS
-	else if (bag->owner != pthread_self()) {
-		E_UNLOCK(type_lock);
-		sem_wait(&bag->reserve_sem);
-		E_LOCK(type_lock);
-		/* re-check if it slipped in */
-		o = g_hash_table_lookup(bag->object_table, key);
-		if (o)
-			o->ref_count++;
-		/* we dont want to reserve the bag */
-		sem_post(&bag->reserve_sem);
-	}
-#endif
-	
 	E_UNLOCK(type_lock);
 
 	return o;
 }
 
-/* like get, but also reserve a spot for key if it isn't there */
-/* After calling reserve, you MUST call bag_abort or bag_add */
-/* Also note that currently you can only reserve a single key
-   at any one time in a given thread */
-void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
+/**
+ * camel_object_bag_reserve:
+ * @bag: 
+ * @key: 
+ * 
+ * Reserve a key in the object bag.  If the key is already reserved in
+ * another thread, then wait until the reservation has been committed.
+ *
+ * After reserving a key, you either get a reffed pointer to the
+ * object corresponding to the key, similar to object_bag_get, or you
+ * get NULL, signifying that you then MIST call either object_bag_add
+ * or object_bag_abort.
+ *
+ * You may reserve multiple keys from the same thread, but they should
+ * always be reserved in the same order, to avoid deadlocks.
+ * 
+ * Return value: 
+ **/
+void *
+camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 {
 	CamelObject *o;
 
@@ -1215,39 +1880,97 @@ void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 	o = g_hash_table_lookup(bag->object_table, key);
 	if (o) {
 		o->ref_count++;
-	}
-#ifdef ENABLE_THREADS
-	else {
-		g_assert(bag->owner != pthread_self());
-		E_UNLOCK(type_lock);
-		sem_wait(&bag->reserve_sem);
-		E_LOCK(type_lock);
-		/* incase its slipped in while we were waiting */
-		o = g_hash_table_lookup(bag->object_table, key);
-		if (o) {
-			o->ref_count++;
-			/* in which case we dont need to reserve the bag either */
-			sem_post(&bag->reserve_sem);
+	} else {
+		struct _CamelObjectBagKey *res = bag->reserved;
+
+		while (res) {
+			if (bag->equal_key(res->key, key))
+				break;
+			res = res->next;
+		}
+
+		if (res) {
+			b(printf("bag reserve, already reserved, waiting\n"));
+			g_assert(res->owner != pthread_self());
+			res->waiters++;
+			E_UNLOCK(type_lock);
+			sem_wait(&res->reserve_sem);
+			E_LOCK(type_lock);
+			res->waiters--;
+			/* incase its slipped in while we were waiting */
+			o = g_hash_table_lookup(bag->object_table, key);
+			if (o) {
+				o->ref_count++;
+				/* in which case we dont need to reserve the bag either */
+				res->owner = pthread_self();
+				co_bag_unreserve(bag, key);
+			} else {
+				res->owner = pthread_self();
+			}
 		} else {
-			bag->owner = pthread_self();
+			b(printf("bag reserve, no key, reserving\n"));
+			res = g_malloc(sizeof(*res));
+			res->waiters = 0;
+			res->key = bag->copy_key(key);
+			sem_init(&res->reserve_sem, 0, 0);
+			res->owner = pthread_self();
+			res->next = bag->reserved;
+			bag->reserved = res;
 		}
 	}
-#endif
 	
 	E_UNLOCK(type_lock);
 
 	return o;
 }
 
-/* abort a reserved key */
-void camel_object_bag_abort(CamelObjectBag *bag, const void *key)
+/**
+ * camel_object_bag_abort:
+ * @bag: 
+ * @key: 
+ * 
+ * Abort a key reservation.
+ **/
+void
+camel_object_bag_abort(CamelObjectBag *bag, const void *key)
 {
-#ifdef ENABLE_THREADS
-	g_assert(bag->owner == pthread_self());
+	E_LOCK(type_lock);
 
-	bag->owner = 0;
-	sem_post(&bag->reserve_sem);
-#endif
+	co_bag_unreserve(bag, key);
+
+	E_UNLOCK(type_lock);
+}
+
+/**
+ * camel_object_bag_rekey:
+ * @bag: 
+ * @o: 
+ * @newkey: 
+ * 
+ * Re-key an object, atomically.  The key for object @o is set to
+ * @newkey, in an atomic manner.
+ *
+ * It is an api (fatal) error if @o is not currently in the bag.
+ **/
+void
+camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey)
+{
+	void *oldkey;
+
+	E_LOCK(type_lock);
+
+	if (g_hash_table_lookup_extended(bag->key_table, o, NULL, &oldkey)) {
+		g_hash_table_remove(bag->object_table, oldkey);
+		g_hash_table_remove(bag->key_table, o);
+		bag->free_key(oldkey);
+		oldkey = bag->copy_key(newkey);
+		g_hash_table_insert(bag->object_table, oldkey, o);
+		g_hash_table_insert(bag->key_table, o, oldkey);
+	} else {
+		abort();
+	}
+
+	E_UNLOCK(type_lock);
 }
 
 static void
@@ -1260,7 +1983,8 @@ save_bag(void *key, CamelObject *o, GPtrArray *list)
 
 /* get a list of all objects in the bag, ref'd
    ignores any reserved keys */
-GPtrArray *camel_object_bag_list(CamelObjectBag *bag)
+GPtrArray *
+camel_object_bag_list(CamelObjectBag *bag)
 {
 	GPtrArray *list;
 
@@ -1274,7 +1998,8 @@ GPtrArray *camel_object_bag_list(CamelObjectBag *bag)
 }
 
 /* if bag is NULL, remove all bags from object */
-static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks)
+static void
+camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks)
 {
 	CamelHookPair *pair, *parent;
 	void *oldkey;
@@ -1303,7 +2028,8 @@ static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject 
 	}
 }
 
-void camel_object_bag_remove(CamelObjectBag *inbag, void *vo)
+void
+camel_object_bag_remove(CamelObjectBag *inbag, void *vo)
 {
 	CamelObject *o = vo;
 	CamelHookList *hooks;

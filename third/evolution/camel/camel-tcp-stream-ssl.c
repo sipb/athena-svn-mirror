@@ -60,10 +60,13 @@
 #include "camel-stream-fs.h"
 #include "camel-session.h"
 #include "camel-certdb.h"
+#include "camel-operation.h"
 
 /* from md5-utils.h */
 void md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
 
+#define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
+#define CONNECT_TIMEOUT (PR_TicksPerSecond () * 4 * 60)
 
 static CamelTcpStreamClass *parent_class = NULL;
 
@@ -86,7 +89,7 @@ static CamelTcpAddress *stream_get_remote_address (CamelTcpStream *stream);
 struct _CamelTcpStreamSSLPrivate {
 	PRFileDesc *sockfd;
 	
-	CamelService *service;
+	struct _CamelSession *session;
 	char *expected_host;
 	gboolean ssl_mode;
 	guint32 flags;
@@ -130,7 +133,10 @@ camel_tcp_stream_ssl_finalize (CamelObject *object)
 	
 	if (stream->priv->sockfd != NULL)
 		PR_Close (stream->priv->sockfd);
-	
+
+	if (stream->priv->session)
+		camel_object_unref(stream->priv->session);
+
 	g_free (stream->priv->expected_host);
 	
 	g_free (stream->priv);
@@ -159,24 +165,27 @@ camel_tcp_stream_ssl_get_type (void)
 
 /**
  * camel_tcp_stream_ssl_new:
- * @service: camel service
+ * @session: active session
  * @expected_host: host that the stream is expected to connect with.
  * @flags: ENABLE_SSL2, ENABLE_SSL3 and/or ENABLE_TLS
  *
  * Since the SSL certificate authenticator may need to prompt the
- * user, a CamelService is needed. @expected_host is needed as a
+ * user, a CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
  * Return value: a ssl stream (in ssl mode)
  **/
 CamelStream *
-camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
-	
+
+	g_assert(CAMEL_IS_SESSION(session));
+
 	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
 	
-	stream->priv->service = service;
+	stream->priv->session = session;
+	camel_object_ref(session);
 	stream->priv->expected_host = g_strdup (expected_host);
 	stream->priv->ssl_mode = TRUE;
 	stream->priv->flags = flags;
@@ -187,24 +196,27 @@ camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host, guin
 
 /**
  * camel_tcp_stream_ssl_new_raw:
- * @service: camel service
+ * @session: active session
  * @expected_host: host that the stream is expected to connect with.
  * @flags: ENABLE_SSL2, ENABLE_SSL3 and/or ENABLE_TLS
  *
  * Since the SSL certificate authenticator may need to prompt the
- * user, a CamelService is needed. @expected_host is needed as a
+ * user, a CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
  * Return value: a ssl-capable stream (in non ssl mode)
  **/
 CamelStream *
-camel_tcp_stream_ssl_new_raw (CamelService *service, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new_raw (CamelSession *session, const char *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
+
+	g_assert(CAMEL_IS_SESSION(session));
 	
 	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
 	
-	stream->priv->service = service;
+	stream->priv->session = session;
+	camel_object_ref(session);
 	stream->priv->expected_host = g_strdup (expected_host);
 	stream->priv->ssl_mode = FALSE;
 	stream->priv->flags = flags;
@@ -332,37 +344,38 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 		nonblock = sockopts.value.non_blocking;
 		sockopts.value.non_blocking = TRUE;
 		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
-		
+
 		pollfds[0].fd = tcp_stream_ssl->priv->sockfd;
 		pollfds[0].in_flags = PR_POLL_READ;
 		pollfds[1].fd = cancel_fd;
 		pollfds[1].in_flags = PR_POLL_READ;
 		
 		do {
+			PRInt32 res;
+
 			pollfds[0].out_flags = 0;
 			pollfds[1].out_flags = 0;
-			
 			nread = -1;
-			if (PR_Poll (pollfds, 2, -1) != -1) {
-				if (pollfds[1].out_flags == PR_POLL_READ) {
-					sockopts.option = PR_SockOpt_Nonblocking;
-					sockopts.value.non_blocking = nonblock;
-					PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
-					errno = EINTR;
-					return -1;
-				}
-				
+
+			res = PR_Poll(pollfds, 2, IO_TIMEOUT);
+			if (res == -1)
+				set_errno(PR_GetError());
+			else if (res == 0)
+				errno = ETIMEDOUT;
+			else if (pollfds[1].out_flags == PR_POLL_READ) {
+				errno = EINTR;
+				goto failed;
+			} else {
 				do {
 					nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
 					if (nread == -1)
 						set_errno (PR_GetError ());
 				} while (nread == -1 && errno == EINTR);
-			} else {
-				errno = EAGAIN;
 			}
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 		
 		/* restore O_NONBLOCK options */
+	failed:
 		error = errno;
 		sockopts.option = PR_SockOpt_Nonblocking;
 		sockopts.value.non_blocking = nonblock;
@@ -417,19 +430,22 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 		pollfds[1].in_flags = PR_POLL_READ;
 		
 		do {
+			PRInt32 res;
+
 			pollfds[0].out_flags = 0;
 			pollfds[1].out_flags = 0;
-			
 			w = -1;
-			if (PR_Poll (pollfds, 2, -1) != -1) {
-				if (pollfds[1].out_flags == PR_POLL_READ) {
-					sockopts.option = PR_SockOpt_Nonblocking;
-					sockopts.value.non_blocking = nonblock;
-					PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
-					errno = EINTR;
-					return -1;
-				}
-				
+
+			res = PR_Poll (pollfds, 2, IO_TIMEOUT);
+			if (res == -1) {
+				set_errno(PR_GetError());
+				if (errno == EINTR)
+					w = 0;
+			} else if (res == 0)
+				errno = ETIMEDOUT;
+			else if (pollfds[1].out_flags == PR_POLL_READ) {
+				errno = EINTR;
+			} else {
 				do {
 					w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
 					if (w == -1)
@@ -437,22 +453,10 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 				} while (w == -1 && errno == EINTR);
 				
 				if (w == -1) {
-					if (errno == EAGAIN || errno == EWOULDBLOCK) {
+					if (errno == EAGAIN || errno == EWOULDBLOCK)
 						w = 0;
-					} else {
-						error = errno;
-						sockopts.option = PR_SockOpt_Nonblocking;
-						sockopts.value.non_blocking = nonblock;
-						PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
-						errno = error;
-						return -1;
-					}
 				} else
 					written += w;
-			} else {
-				set_errno (PR_GetError ());
-				if (errno == EINTR)
-					w = 0;
 			}
 		} while (w != -1 && written < n);
 		
@@ -473,7 +477,8 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 static int
 stream_flush (CamelStream *stream)
 {
-	return PR_Sync (((CamelTcpStreamSSL *)stream)->priv->sockfd);
+	/*return PR_Sync (((CamelTcpStreamSSL *)stream)->priv->sockfd);*/
+	return 0;
 }
 
 static int
@@ -797,14 +802,12 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 	char *prompt, *cert_str, *fingerprint;
 	CamelTcpStreamSSL *ssl;
 	CERTCertificate *cert;
-	CamelService *service;
 	SECStatus status = SECFailure;
 
 	g_return_val_if_fail (data != NULL, SECFailure);
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (data), SECFailure);
 
-	ssl = CAMEL_TCP_STREAM_SSL (data);
-	service = ssl->priv->service;
+	ssl = data;
 	
 	cert = SSL_PeerCertificate (sockfd);
 	if (cert == NULL)
@@ -831,11 +834,11 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 
 		/* construct our user prompt */
 		prompt = g_strdup_printf (_("SSL Certificate check for %s:\n\n%s\n\nDo you wish to accept?"),
-					  service->url->host, cert_str);
+					  ssl->priv->expected_host, cert_str);
 		g_free (cert_str);
 	
 		/* query the user to find out if we want to accept this certificate */
-		accept = camel_session_alert_user (service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE);
+		accept = camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE);
 		g_free(prompt);
 		if (accept) {
 			camel_certdb_nss_cert_set(certdb, ccert, cert);
@@ -876,7 +879,7 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 			printf("unknown issuer, adding ... \n");
 			prompt = g_strdup_printf(_("Certificate problem: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
 
-			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+			if (camel_session_alert_user(ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
 
 				nick = get_nickname(cert);
 				if (NULL == nick) {
@@ -928,7 +931,7 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 
 			prompt = g_strdup_printf(_("Bad certificate domain: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
 
-			if (camel_session_alert_user (service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+			if (camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
 				host = SSL_RevealURL(sockfd);
 				status = CERT_AddOKDomainName(cert, host);
 				printf("add ok domain name : %s\n", status == SECFailure?"fail":"ok");
@@ -946,7 +949,7 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 
 			prompt = g_strdup_printf(_("Certificate expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
 
-			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+			if (camel_session_alert_user(ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
 				cert->timeOK = PR_TRUE;
 				status = CERT_VerifyCertNow(cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
 				error = PR_GetError();
@@ -963,7 +966,7 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 
 			prompt = g_strdup_printf(_("Certificate revocation list expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
 
-			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+			if (camel_session_alert_user(ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
 				host = SSL_RevealURL(sockfd);
 				status = CERT_AddOKDomainName(cert, host);
 			}
@@ -1020,13 +1023,10 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 	return ssl_fd;
 }
 
-#define CONNECT_TIMEOUT PR_TicksPerSecond () * 120
-
 static int
 stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
-	PRIntervalTime timeout = CONNECT_TIMEOUT;
 	PRNetAddr netaddr;
 	PRFileDesc *fd;
 	
@@ -1071,7 +1071,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 		fd = ssl_fd;
 	}
 	
-	if (PR_Connect (fd, &netaddr, timeout) == PR_FAILURE) {
+	if (PR_Connect (fd, &netaddr, CONNECT_TIMEOUT) == PR_FAILURE) {
 		int errnosave;
 		
 		set_errno (PR_GetError ());
@@ -1084,9 +1084,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 				poll.in_flags = PR_POLL_WRITE | PR_POLL_EXCEPT;
 				poll.out_flags = 0;
 				
-				timeout = CONNECT_TIMEOUT;
-				
-				if (PR_Poll (&poll, 1, timeout) == PR_FAILURE) {
+				if (PR_Poll (&poll, 1, CONNECT_TIMEOUT) == PR_FAILURE) {
 					set_errno (PR_GetError ());
 					goto exception;
 				}
@@ -1113,7 +1111,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 	}
 	
 	ssl->priv->sockfd = fd;
-	
+
 	return 0;
 }
 

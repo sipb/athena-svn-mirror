@@ -26,9 +26,11 @@
 #include <glade/glade.h>
 #include <gal/e-table/e-table-model.h>
 
-#include "addressbook/backend/ebook/e-book.h"
-#include "addressbook/backend/ebook/e-card.h"
-#include "addressbook/backend/ebook/e-card-simple.h"
+#include "addressbook/gui/contact-editor/eab-editor.h"
+
+#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
+#include "addressbook/util/e-destination.h"
 
 G_BEGIN_DECLS
 
@@ -38,17 +40,19 @@ G_BEGIN_DECLS
 #define E_IS_CONTACT_LIST_EDITOR(obj)	   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CONTACT_LIST_EDITOR))
 #define E_IS_CONTACT_LIST_EDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_CONTACT_LIST_EDITOR))
 
+#define SELECT_NAMES_OAFIID "OAFIID:GNOME_Evolution_Addressbook_SelectNames:" BASE_VERSION
 
 typedef struct _EContactListEditor       EContactListEditor;
 typedef struct _EContactListEditorClass  EContactListEditorClass;
 
 struct _EContactListEditor
 {
-	GtkObject object;
+	EABEditor parent;
 
 	/* item specific fields */
 	EBook *book;
-	ECard *card;
+
+	EContact *contact;
 
 	/* UI handler */
 	BonoboUIComponent *uic;
@@ -62,42 +66,55 @@ struct _EContactListEditor
 	GtkWidget *list_name_entry;
 	GtkWidget *add_button;
 	GtkWidget *remove_button;
+	GtkWidget *select_button;
+	GtkWidget *list_image_button;
 	GtkWidget *visible_addrs_checkbutton;
+	GtkWidget *list_image;
+	GtkWidget *source_menu;
+	GtkWidget *ok_button;
+	GtkWidget *cancel_button;
 
-	/* Whether we are editing a new card or an existing one */
+	/* FIXME: Unfortunately, we can't use the proper name here, as it'd
+	 * create a circular dependency. The long-term solution would be to
+	 * move the select-names component out of the component/ dir so it can
+	 * be built before sources using this.
+	 * 
+	 * GNOME_Evolution_Addressbook_SelectNames corba_select_names; */
+	gpointer corba_select_names;
+
+	/* Whether we are editing a new contact or an existing one */
 	guint is_new_list : 1;
 
-	/* Whether the card has been changed since bringing up the contact editor */
+	/* Whether the image chooser widget has been changed. */
+	guint image_set : 1;
+
+	/* Whether the contact has been changed since bringing up the contact editor */
 	guint changed : 1;
 
 	/* Whether the contact editor will accept modifications */
 	guint editable : 1;
 
+	/* Whether the target book accepts storing of contact lists */
+	guint allows_contact_lists : 1;
+
 	/* Whether an async wombat call is in progress */
 	guint in_async_call : 1;
+
+	/* ID for async load_source call */
+	guint  load_source_id;
+	EBook *load_book;
 };
 
 struct _EContactListEditorClass
 {
-	GtkObjectClass parent_class;
-
-	/* Notification signals */
-
-	void (* list_added)    (EContactListEditor *cle, EBookStatus status, ECard *card);
-	void (* list_modified) (EContactListEditor *cle, EBookStatus status, ECard *card);
-	void (* list_deleted)  (EContactListEditor *cle, EBookStatus status, ECard *card);
-	void (* editor_closed) (EContactListEditor *cle);
+	EABEditorClass parent_class;
 };
 
 EContactListEditor *e_contact_list_editor_new                (EBook *book,
-							      ECard *list_card,
+							      EContact *list_contact,
 							      gboolean is_new_list,
 							      gboolean editable);
 GType               e_contact_list_editor_get_type           (void);
-void                e_contact_list_editor_show               (EContactListEditor *editor);
-void                e_contact_list_editor_raise              (EContactListEditor *editor);
-
-gboolean            e_contact_list_editor_confirm_delete     (GtkWindow      *parent);
 
 gboolean            e_contact_list_editor_request_close_all  (void);
 

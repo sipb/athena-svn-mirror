@@ -30,22 +30,13 @@
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-ui-component.h>
 
-/* This tells all the calendars to reload the config settings. */
-void update_all_config_settings (void);
-
-GnomeCalendar *new_calendar (void);
-
 void calendar_control_activate (BonoboControl *control, GnomeCalendar *gcal);
 void calendar_control_deactivate (BonoboControl *control, GnomeCalendar *gcal);
 
+void calendar_control_sensitize_calendar_commands (BonoboControl *control, GnomeCalendar *gcal, gboolean enable);
+
 void calendar_goto_today (GnomeCalendar *gcal);
 
-void calendar_set_folder_bar_label (GnomeCalendar *gcal, BonoboControl *control);
-
-/* Used by calendar and tasks control to set the folder title bar label. */
-void control_util_set_folder_bar_label (BonoboControl *control, char *label);
-
-/* Used by calendar views and tasks to show the settings dialog */
-void control_util_show_settings (GnomeCalendar *gcal);
+const gchar * calendar_get_text_for_folder_bar_label (GnomeCalendar *gcal);
 
 #endif /* CALENDAR_COMMANDS_H */

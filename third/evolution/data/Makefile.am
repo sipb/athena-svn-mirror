@@ -3,11 +3,15 @@ desktop_in_in_file = evolution.desktop.in.in
 desktop_file = $(desktop_in_in_file:.desktop.in.in=.desktop)
 %.desktop.in: %.desktop.in.in
 	sed -e "s|\@BASE_VERSION\@|$(BASE_VERSION)|" $< > $@
+
 @INTLTOOL_DESKTOP_RULE@
 
 keysdir = $(datadir)/mime-info
-keys_in_file = evolution.keys.in
-keys_file = $(keys_in_file:.keys.in=.keys) 
+keys_in_file = evolution.keys.in.in
+keys_file = $(keys_in_file:.keys.in.in=.keys) 
+%.keys.in: %.keys.in.in
+	sed -e "s|\@BASE_VERSION\@|$(BASE_VERSION)|" $< > $@
+
 @INTLTOOL_KEYS_RULE@
 
 mimedir = $(datadir)/mime-info
@@ -36,11 +40,11 @@ SUBDIRS = cde_app_root
 install-data-local: install-kde-applnk $(desktop_file) $(keys_file) $(mime_file)
 	$(mkinstalldirs) $(DESTDIR)$(desktopdir);							\
 	$(INSTALL_DATA) $(desktop_file)									\
-			$(DESTDIR)$(desktopdir)/$(desktop_file:.desktop.in=-$(BASE_VERSION).desktop) ;	\
+			$(DESTDIR)$(desktopdir)/$(desktop_file:.desktop=-$(BASE_VERSION).desktop) ;	\
 	$(mkinstalldirs) $(DESTDIR)$(keysdir);								\
 	$(INSTALL_DATA) $(keys_file) $(DESTDIR)$(keysdir)/$(keys_file:.keys=-$(BASE_VERSION).keys) ;	\
 	$(mkinstalldirs) $(DESTDIR)$(mimedir);								\
-	$(INSTALL_DATA) $(mime_file) $(DESTDIR)$(mimedir)/$(mime_file:.mime=-$(BASE_VERSION).mime) ;
+	$(INSTALL_DATA) $(srcdir)/$(mime_file) $(DESTDIR)$(mimedir)/$(mime_file:.mime=-$(BASE_VERSION).mime) ;
 
 # CDE Stuff
 

@@ -32,7 +32,7 @@
 #include <bonobo/bonobo-stream-client.h>
 #include <bonobo/bonobo-context.h>
 #include <bonobo/bonobo-exception.h>
-#include <ical.h>
+#include <libical/ical.h>
 
 #include "e-itip-control.h"
 #include "itip-bonobo-control.h"
@@ -163,20 +163,20 @@ pstream_save (BonoboPersistStream *ps, const Bonobo_Stream stream,
 	g_free (text);
 } /* pstream_save */
 
-static CORBA_long
-pstream_get_max_size (BonoboPersistStream *ps, void *data,
-		      CORBA_Environment *ev)
-{
-	EItipControl *itip = data;
-	gint len;
+/* static CORBA_long */
+/* pstream_get_max_size (BonoboPersistStream *ps, void *data, */
+/* 		      CORBA_Environment *ev) */
+/* { */
+/* 	EItipControl *itip = data; */
+/* 	gint len; */
 	
-	len = e_itip_control_get_data_size (itip);
+/* 	len = e_itip_control_get_data_size (itip); */
 	
-  	if (len > 0)
-		return len;
+/*   	if (len > 0) */
+/* 		return len; */
 
-	return 0L;
-}
+/* 	return 0L; */
+/* } */
 
 static Bonobo_Persist_ContentTypeList *
 pstream_get_content_types (BonoboPersistStream *ps, void *closure,
@@ -250,7 +250,7 @@ itip_bonobo_control_new (void)
 
 	stream = bonobo_persist_stream_new (pstream_load, pstream_save,
 					    pstream_get_content_types,
-					    "OAFIID:GNOME_Evolution_Calendar_iTip_Control",
+					    "OAFIID:GNOME_Evolution_Calendar_iTip_Control:" BASE_VERSION,
 					    itip);
 
 	if (stream == NULL) {

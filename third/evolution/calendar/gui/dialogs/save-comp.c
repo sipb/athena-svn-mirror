@@ -23,19 +23,15 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
-#include <libgnome/gnome-i18n.h>
-#include <gal/widgets/e-unicode.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkstock.h>
+#include "widgets/misc/e-error.h"
 #include "save-comp.h"
-
-
+#include "comp-editor.h"
 
 /**
  * save_component_dialog:
  * @parent: Window to use as the transient dialog's parent.
- * 
+ * @comp: Pointer to the EcalComponent 
+ *
  * Pops up a dialog box asking the user whether he wants to save changes for
  * a calendar component.
  * 
@@ -43,29 +39,16 @@
  **/
 
 GtkResponseType
-save_component_dialog (GtkWindow *parent)
+save_component_dialog (GtkWindow *parent, ECalComponent *comp)
 {
-	GtkWidget *dialog;
-	gint r;
+	ECalComponentVType vtype = e_cal_component_get_vtype(comp);
 
-	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
-					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					 GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
-					 _("This event has been changed, but has not been saved.\n\n"
-					   "Do you wish to save your changes?"));
-       
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				_("_Discard Changes"),GTK_RESPONSE_NO,
-				GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,
-				GTK_STOCK_SAVE, GTK_RESPONSE_YES,
-				NULL);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Save Event"));
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
-
-	r = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-
-	return r;
-
+	switch(vtype) {
+		case E_CAL_COMPONENT_EVENT:
+			return e_error_run (parent, "calendar:prompt-save-appointment", NULL);
+		case E_CAL_COMPONENT_TODO:
+			return e_error_run (parent, "calendar:prompt-save-task", NULL);
+		default:
+			return GTK_RESPONSE_NO;
+	}
 }

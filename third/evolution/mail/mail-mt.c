@@ -14,21 +14,23 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/widgets/e-gui-utils.h>
 
-#include "folder-browser-factory.h"
 #include "e-util/e-msgport.h"
+#include "widgets/misc/e-error.h"
+
+#include "e-activity-handler.h"
+#include <e-util/e-icon-factory.h>
+
+#include "camel/camel-url.h"
 #include "camel/camel-operation.h"
 
-#include "evolution-activity-client.h"
-
 #include "mail-config.h"
-#include "camel/camel-url.h"
+#include "mail-component.h"
 #include "mail-session.h"
 #include "mail-mt.h"
-
-#include "component-factory.h"
 
 /*#define MALLOC_CHECK*/
 #define LOG_OPS
@@ -45,19 +47,15 @@ static void mail_operation_status(struct _CamelOperation *op, const char *what, 
 #define MAIL_MT_LOCK(x) pthread_mutex_lock(&x)
 #define MAIL_MT_UNLOCK(x) pthread_mutex_unlock(&x)
 #endif
-extern EvolutionShellClient *global_shell_client;
 
 /* background operation status stuff */
 struct _mail_msg_priv {
 	int activity_state;	/* sigh sigh sigh, we need to keep track of the state external to the
-				 pointer itself for locking/race conditions */
-	EvolutionActivityClient *activity;
+				   pointer itself for locking/race conditions */
+	int activity_id;
 };
 
-/* This is used for the mail status bar, cheap and easy */
-#include "art/mail-new.xpm"
-
-static GdkPixbuf *progress_icon[2] = { NULL, NULL };
+static GdkPixbuf *progress_icon = NULL;
 
 /* mail_msg stuff */
 #ifdef LOG_OPS
@@ -131,12 +129,15 @@ void *mail_msg_new(mail_msg_op_t *ops, EMsgPort *reply_port, size_t size)
 	return msg;
 }
 
-/* either destroy the progress (in event_data), or the whole dialogue (in data) */
-static void destroy_objects(CamelObject *o, void *event_data, void *data)
+
+static void end_event_callback (CamelObject *o, void *event_data, void *data)
 {
-	if (event_data)
-		g_object_unref(event_data);
+	EActivityHandler *activity_handler = mail_component_peek_activity_handler (mail_component_peek ());
+	guint activity_id = GPOINTER_TO_INT (event_data);
+
+	e_activity_handler_operation_finished (activity_handler, activity_id);
 }
+
 
 #ifdef MALLOC_CHECK
 #include <mcheck.h>
@@ -165,7 +166,7 @@ checkmem(void *p)
 void mail_msg_free(void *msg)
 {
 	struct _mail_msg *m = msg;
-	void *activity = NULL;
+	int activity_id;
 
 #ifdef MALLOC_CHECK
 	checkmem(m);
@@ -196,21 +197,24 @@ void mail_msg_free(void *msg)
 		MAIL_MT_UNLOCK(mail_msg_lock);
 		return;
 	} else {
-		activity = m->priv->activity;
+		activity_id = m->priv->activity_id;
 	}
 
 	MAIL_MT_UNLOCK(mail_msg_lock);
 
-	if (m->cancel)
+	if (m->cancel) {
+		camel_operation_mute(m->cancel);
 		camel_operation_unref(m->cancel);
+	}
 
 	camel_exception_clear(&m->ex);
 	/*g_free(m->priv->what);*/
 	g_free(m->priv);
 	g_free(m);
 
-	if (activity)
-		mail_async_event_emit(mail_async_event, MAIL_ASYNC_GUI, (MailAsyncFunc)destroy_objects, NULL, activity, NULL);
+	if (activity_id != 0)
+		mail_async_event_emit(mail_async_event, MAIL_ASYNC_GUI, (MailAsyncFunc) end_event_callback,
+				      NULL, GINT_TO_POINTER (activity_id), NULL);
 }
 
 /* hash table of ops->dialogue of active errors */
@@ -229,8 +233,7 @@ static void error_response(GtkObject *o, int button, void *data)
 void mail_msg_check_error(void *msg)
 {
 	struct _mail_msg *m = msg;
-	char *what = NULL;
-	char *text;
+	char *what;
 	GtkDialog *gd;
 	
 #ifdef MALLOC_CHECK
@@ -244,36 +247,32 @@ void mail_msg_check_error(void *msg)
 		return;
 	
 	if (!camel_exception_is_set(&m->ex)
-	    || m->ex.id == CAMEL_EXCEPTION_USER_CANCEL)
+	    || m->ex.id == CAMEL_EXCEPTION_USER_CANCEL
+	    || m->ex.id == CAMEL_EXCEPTION_FOLDER_INVALID_UID)
 		return;
 
 	if (active_errors == NULL)
 		active_errors = g_hash_table_new(NULL, NULL);
 
-	if (m->ops->describe_msg)
-		what = m->ops->describe_msg(m, FALSE);
-
-	if (what) {
-		text = g_strdup_printf(_("Error while '%s':\n%s"), what, camel_exception_get_description(&m->ex));
-		g_free (what);
-	} else
-		text = g_strdup_printf(_("Error while performing operation:\n%s"), camel_exception_get_description(&m->ex));
-
 	/* check to see if we have dialogue already running for this operation */
 	/* we key on the operation pointer, which is at least accurate enough
 	   for the operation type, although it could be on a different object. */
 	if (g_hash_table_lookup(active_errors, m->ops)) {
-		g_warning("Error occured while existing dialogue active:\n%s", text);
-		g_free(text);
+		g_warning("Error occured while existing dialogue active:\n%s", camel_exception_get_description(&m->ex));
 		return;
 	}
 
-	gd = (GtkDialog *)gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", text);
+	if (m->ops->describe_msg
+	    && (what = m->ops->describe_msg(m, FALSE))) {
+		gd = (GtkDialog *)e_error_new(NULL, "mail:async-error", what, camel_exception_get_description(&m->ex), NULL);
+		g_free(what);
+	} else
+		gd = (GtkDialog *)e_error_new(NULL, "mail:async-error-nodescribe", camel_exception_get_description(&m->ex), NULL);
+
 	g_hash_table_insert(active_errors, m->ops, gd);
 	g_signal_connect(gd, "response", G_CALLBACK(error_response), m->ops);
 	g_signal_connect(gd, "destroy", G_CALLBACK(error_destroy), m->ops);
 	gtk_widget_show((GtkWidget *)gd);
-	g_free (text);
 }
 
 void mail_msg_cancel(unsigned int msgid)
@@ -351,6 +350,60 @@ void mail_msg_wait_all(void)
 		}
 		MAIL_MT_UNLOCK(mail_msg_lock);
 	}
+}
+
+/* **************************************** */
+struct _cancel_hook_data {
+	struct _cancel_hook_data *next;
+	struct _cancel_hook_data *prev;
+
+	GDestroyNotify func;
+	void *data;
+};
+
+static EDList cancel_hook_list = E_DLIST_INITIALISER(cancel_hook_list);
+
+void *mail_cancel_hook_add(GDestroyNotify func, void *data)
+{
+	struct _cancel_hook_data *d;
+
+	d = g_malloc0(sizeof(*d));
+	d->func = func;
+	d->data = data;
+
+	MAIL_MT_LOCK(mail_msg_lock);
+	e_dlist_addtail(&cancel_hook_list, (EDListNode *)d);
+	MAIL_MT_UNLOCK(mail_msg_lock);
+
+	return (void *)d;
+}
+
+void mail_cancel_hook_remove(void *handle)
+{
+	struct _cancel_hook_data *d = handle;
+
+	MAIL_MT_LOCK(mail_msg_lock);
+	e_dlist_remove((EDListNode *)d);
+	MAIL_MT_UNLOCK(mail_msg_lock);
+	g_free(d);
+}
+
+void mail_cancel_all(void)
+{
+	struct _cancel_hook_data *d, *n;
+
+	camel_operation_cancel(NULL);
+
+	/* I can ssee a deadlock coming on ... */
+	MAIL_MT_LOCK(mail_msg_lock);
+	d = (struct _cancel_hook_data *)cancel_hook_list.head;
+	n = d->next;
+	while (n) {
+		d->func(d->data);
+		d = n;
+		n = n->next;
+	}
+	MAIL_MT_UNLOCK(mail_msg_lock);
 }
 
 EMsgPort		*mail_gui_port;
@@ -529,21 +582,28 @@ void mail_msg_cleanup(void)
 	e_msgport_destroy(mail_gui_reply_port);
 }
 
+static guint
+em_channel_setup(EMsgPort **port, GIOChannel **channel, GIOFunc func)
+{
+	GSource *source;
+	guint id;
+
+	*port = e_msgport_new();
+	*channel = g_io_channel_unix_new(e_msgport_fd(*port));
+	source = g_io_create_watch(*channel, G_IO_IN);
+	g_source_set_callback(source, (GSourceFunc)func, *port, NULL);
+	g_source_set_can_recurse(source, FALSE);
+	id = g_source_attach(source, NULL);
+	g_source_unref(source);
+
+	return id;
+}
+
 void mail_msg_init(void)
 {
-	mail_gui_reply_port = e_msgport_new();
-	mail_gui_reply_channel = g_io_channel_unix_new(e_msgport_fd(mail_gui_reply_port));
-	g_io_add_watch(mail_gui_reply_channel, G_IO_IN, mail_msgport_replied, mail_gui_reply_port);
-
-	mail_gui_port = e_msgport_new();
-	mail_gui_channel = g_io_channel_unix_new(e_msgport_fd(mail_gui_port));
-	mail_gui_watch = g_io_add_watch(mail_gui_channel, G_IO_IN, mail_msgport_received, mail_gui_port);
-
-	/* experimental temporary */
-	mail_gui_port2 = e_msgport_new();
-	mail_gui_channel2 = g_io_channel_unix_new(e_msgport_fd(mail_gui_port2));
-	mail_gui_watch2 = g_io_add_watch(mail_gui_channel2, G_IO_IN, mail_msgport_received2, mail_gui_port2);
-
+	em_channel_setup(&mail_gui_reply_port, &mail_gui_reply_channel, mail_msgport_replied);
+	mail_gui_watch = em_channel_setup(&mail_gui_port, &mail_gui_channel, mail_msgport_received);
+	mail_gui_watch2 = em_channel_setup(&mail_gui_port2, &mail_gui_channel2, mail_msgport_received2);
 
 	mail_thread_queued = e_thread_new(E_THREAD_QUEUE);
 	e_thread_set_msg_destroy(mail_thread_queued, mail_msg_destroy, 0);
@@ -732,6 +792,14 @@ do_call(struct _mail_msg *mm)
 		p4 = va_arg(ap, void *);
 		m->ret = m->func(p1, p2, p3, p4);
 		break;
+	case MAIL_CALL_p_ppppp:
+		p1 = va_arg(ap, void *);
+		p2 = va_arg(ap, void *);
+		p3 = va_arg(ap, void *);
+		p4 = va_arg(ap, void *);
+		p5 = va_arg(ap, void *);
+		m->ret = m->func(p1, p2, p3, p4, p5);
+		break;
 	case MAIL_CALL_p_ppippp:
 		p1 = va_arg(ap, void *);
 		p2 = va_arg(ap, void *);
@@ -791,8 +859,7 @@ static int busy_state;
 
 static void do_set_busy(struct _mail_msg *mm)
 {
-	if (global_shell_client)
-		set_stop(busy_state > 0);
+	set_stop(busy_state > 0);
 }
 
 struct _mail_msg_op set_busy_op = {
@@ -808,7 +875,7 @@ void mail_enable_stop(void)
 
 	MAIL_MT_LOCK(status_lock);
 	busy_state++;
-	if (busy_state == 1 && global_shell_client) {
+	if (busy_state == 1) {
 		m = mail_msg_new(&set_busy_op, NULL, sizeof(*m));
 		e_msgport_put(mail_gui_port, (EMsg *)m);
 	}
@@ -821,7 +888,7 @@ void mail_disable_stop(void)
 
 	MAIL_MT_LOCK(status_lock);
 	busy_state--;
-	if (busy_state == 0 && global_shell_client) {
+	if (busy_state == 0) {
 		m = mail_msg_new(&set_busy_op, NULL, sizeof(*m));
 		e_msgport_put(mail_gui_port, (EMsg *)m);
 	}
@@ -841,12 +908,12 @@ struct _op_status_msg {
 
 static void do_op_status(struct _mail_msg *mm)
 {
+	EActivityHandler *activity_handler = mail_component_peek_activity_handler (mail_component_peek ());
 	struct _op_status_msg *m = (struct _op_status_msg *)mm;
 	struct _mail_msg *msg;
 	struct _mail_msg_priv *data;
 	char *out, *p, *o, c;
 	int pc;
-	EvolutionActivityClient *activity;
 	
 	g_assert (mail_gui_thread == pthread_self ());
 	
@@ -854,8 +921,7 @@ static void do_op_status(struct _mail_msg *mm)
 	
 	msg = g_hash_table_lookup (mail_msg_active_table, m->data);
 
-	/* shortcut processing, i.e. if we have no global_shell_client and no activity, we can't create one */
-	if (msg == NULL || (msg->priv->activity == NULL && global_shell_client == NULL)) {
+	if (msg == NULL) {
 		MAIL_MT_UNLOCK (mail_msg_lock);
 		return;
 	}
@@ -874,18 +940,8 @@ static void do_op_status(struct _mail_msg *mm)
 	
 	pc = m->pc;
 	
-	/* so whats all this crap about:
-	 * When we call activity_client, we have a chance of coming
-	 * back to code that will call mail_msg_new or one of many
-	 * calls which may deadlock us.  So we need to call corba
-	 * outside of the lock.  The activity_state thing is so we can
-	 * properly lock data->activity without having to hold a lock
-	 * ... of course we have to be careful in the free function to
-	 * keep track of it too.
-	 */
-	if (data->activity == NULL && global_shell_client) {
+	if (data->activity_id == 0) {
 		char *what;
-		int display;
 		
 		/* its being created/removed?  well leave it be */
 		if (data->activity_state == 1 || data->activity_state == 3) {
@@ -894,23 +950,18 @@ static void do_op_status(struct _mail_msg *mm)
 		} else {
 			data->activity_state = 1;
 			
-			if (progress_icon[0] == NULL)
-				progress_icon[0] = gdk_pixbuf_new_from_xpm_data ((const char **)mail_new_xpm);
+			if (progress_icon == NULL)
+				progress_icon = e_icon_factory_get_icon ("stock_mail-unread", E_ICON_SIZE_MENU);
 			
 			MAIL_MT_UNLOCK (mail_msg_lock);
 			if (msg->ops->describe_msg)
 				what = msg->ops->describe_msg (msg, FALSE);
-			else
-				what = _("Working");
-			
-			if (global_shell_client) {
-				activity = evolution_activity_client_new (global_shell_client,
-									  COMPONENT_ID,
-									  progress_icon, what, TRUE,
-									  &display);
-			} else {
-				activity = NULL;
+			else {
+				what = g_strdup_printf("Working %p", msg);
+				/*what = _("Working");*/
 			}
+
+			data->activity_id = e_activity_handler_operation_started (activity_handler, "evolution-mail", progress_icon, what, TRUE);
 			
 			if (msg->ops->describe_msg)
 				g_free (what);
@@ -918,8 +969,6 @@ static void do_op_status(struct _mail_msg *mm)
 			MAIL_MT_LOCK (mail_msg_lock);
 			if (data->activity_state == 3) {
 				MAIL_MT_UNLOCK (mail_msg_lock);
-				if (activity)
-					g_object_unref(activity);
 				if (msg->cancel)
 					camel_operation_unref (msg->cancel);
 				camel_exception_clear (&msg->ex);
@@ -927,18 +976,13 @@ static void do_op_status(struct _mail_msg *mm)
 				g_free (msg);
 			} else {
 				data->activity_state = 2;
-				data->activity = activity;
 				MAIL_MT_UNLOCK (mail_msg_lock);
 			}
 			return;
 		}
-	} else if (data->activity) {
-		activity = data->activity;
-		g_object_ref((activity));
+	} else if (data->activity_id != 0) {
 		MAIL_MT_UNLOCK (mail_msg_lock);
-			
-		evolution_activity_client_update (activity, out, (double)(pc/100.0));
-		g_object_unref(activity);
+		e_activity_handler_operation_progressing (activity_handler, data->activity_id, out, (double)(pc/100.0));
 	} else {
 		MAIL_MT_UNLOCK (mail_msg_lock);
 	}
@@ -966,9 +1010,6 @@ mail_operation_status (struct _CamelOperation *op, const char *what, int pc, voi
 	
 	d(printf("got operation statys: %s %d%%\n", what, pc));
 
-	if (global_shell_client == NULL)
-		return;
-	
 	m = mail_msg_new(&op_status_op, NULL, sizeof(*m));
 	m->op = op;
 	m->what = g_strdup(what);
@@ -988,27 +1029,13 @@ mail_operation_status (struct _CamelOperation *op, const char *what, int pc, voi
 /* ******************** */
 
 static void
-set_stop(int sensitive)
+set_stop (int sensitive)
 {
-	EList *controls;
-	EIterator *it;
 	static int last = FALSE;
-
+	
 	if (last == sensitive)
 		return;
-
-	controls = folder_browser_factory_get_control_list ();
-	for (it = e_list_get_iterator (controls); e_iterator_is_valid (it); e_iterator_next (it)) {
-		BonoboControl *control;
-		BonoboUIComponent *uic;
-
-		control = BONOBO_CONTROL (e_iterator_get (it));
-		uic = bonobo_control_get_ui_component (control);
-		if (uic == CORBA_OBJECT_NIL || bonobo_ui_component_get_container(uic) == CORBA_OBJECT_NIL)
-			continue;
-
-		bonobo_ui_component_set_prop(uic, "/commands/MailStop", "sensitive", sensitive?"1":"0", NULL);
-	}
-	g_object_unref(it);
+	
+	/*bonobo_ui_component_set_prop (uic, "/commands/MailStop", "sensitive", sensitive ? "1" : "0", NULL);*/
 	last = sensitive;
 }

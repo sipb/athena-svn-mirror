@@ -36,8 +36,6 @@
 
 #include <gal/widgets/e-cursors.h>
 
-#include <evolution-shell-client.h>
-
 #include "dialogs/cal-prefs-dialog.h"
 #include "calendar-commands.h"
 #include "calendar-config.h"
@@ -47,16 +45,16 @@
 #include "control-factory.h"
 #include "itip-bonobo-control.h"
 #include "tasks-control.h"
+#include "tasks-component.h"
 
 
-#define FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_Factory"
+#define FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_Factory:" BASE_VERSION
 
-#define CALENDAR_COMPONENT_ID  "OAFIID:GNOME_Evolution_Calendar_ShellComponent"
-#define CALENDAR_CONTROL_ID    "OAFIID:GNOME_Evolution_Calendar_Control"
-#define TASKS_CONTROL_ID       "OAFIID:GNOME_Evolution_Tasks_Control"
-#define ITIP_CONTROL_ID        "OAFIID:GNOME_Evolution_Calendar_iTip_Control"
-#define CONFIG_CONTROL_ID      "OAFIID:GNOME_Evolution_Calendar_ConfigControl"
-#define COMP_EDITOR_FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_CompEditorFactory"
+#define CALENDAR_COMPONENT_ID  "OAFIID:GNOME_Evolution_Calendar_Component:" BASE_VERSION
+#define TASKS_COMPONENT_ID     "OAFIID:GNOME_Evolution_Tasks_Component:" BASE_VERSION
+#define ITIP_CONTROL_ID        "OAFIID:GNOME_Evolution_Calendar_iTip_Control:" BASE_VERSION
+#define CONFIG_CONTROL_ID      "OAFIID:GNOME_Evolution_Calendar_ConfigControl:" BASE_VERSION
+#define COMP_EDITOR_FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_CompEditorFactory:" BASE_VERSION
 
 ECompEditorRegistry *comp_editor_registry = NULL;
 
@@ -88,7 +86,7 @@ static gboolean
 launch_alarm_daemon_cb (gpointer data)
 {
 	CORBA_Environment ev;
-	GNOME_Evolution_Calendar_AlarmNotify an;
+	CORBA_Object an;
 	guint *idle_id = (guint *) data;
 
 	/* remove the idle function */
@@ -97,10 +95,10 @@ launch_alarm_daemon_cb (gpointer data)
 
 	/* activate the alarm daemon */
 	CORBA_exception_init (&ev);
-	an = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify", 0, NULL, &ev);
+	an = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify:" BASE_VERSION, 0, NULL, &ev);
 
 	if (BONOBO_EX (&ev)) {
-		g_message ("launch_alarm_daemon_cb(): Could not activate the alarm notification service");
+		g_message ("launch_alarm_daemon_cb(): %s", bonobo_exception_get_text (&ev));
 		CORBA_exception_free (&ev);
 		return FALSE;
 	}
@@ -140,6 +138,9 @@ initialize (void)
 #endif
 
 	launch_alarm_daemon ();
+	
+	/* Initialize Calendar Publishing */
+	calendar_component_init_publishing ();
 }
 
 
@@ -155,23 +156,19 @@ factory (BonoboGenericFactory *factory,
 		initialized = TRUE;
 	}
 
-	if (strcmp (component_id, CALENDAR_COMPONENT_ID) == 0)
-		return calendar_component_get_object ();
-	if (strcmp (component_id, CALENDAR_CONTROL_ID) == 0)
-		return BONOBO_OBJECT (control_factory_new_control ());
-	if (strcmp (component_id, TASKS_CONTROL_ID) == 0)
-		return BONOBO_OBJECT (tasks_control_new ());
-	if (strcmp (component_id, ITIP_CONTROL_ID) == 0)
+	if (strcmp (component_id, CALENDAR_COMPONENT_ID) == 0) {
+		BonoboObject *object = BONOBO_OBJECT (calendar_component_peek ());
+		bonobo_object_ref (object);
+		return object;
+	} else if (strcmp (component_id, TASKS_COMPONENT_ID) == 0) {
+		BonoboObject *object = BONOBO_OBJECT (tasks_component_peek ());
+		bonobo_object_ref (object);
+		return object;
+	} else if (strcmp (component_id, ITIP_CONTROL_ID) == 0)
 		return BONOBO_OBJECT (itip_bonobo_control_new ());
-	if (strcmp (component_id, CONFIG_CONTROL_ID) == 0) {
-		extern EvolutionShellClient *global_shell_client; /* FIXME ugly */
-
-		if (global_shell_client == NULL)
-			return NULL;
-		else
-			return BONOBO_OBJECT (cal_prefs_dialog_new ());
-	}
-	if (strcmp (component_id, COMP_EDITOR_FACTORY_ID) == 0)
+	else if (strcmp (component_id, CONFIG_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (cal_prefs_dialog_new ());
+	else if (strcmp (component_id, COMP_EDITOR_FACTORY_ID) == 0)
 		return BONOBO_OBJECT (comp_editor_factory_fn ());
 
 	g_warning (FACTORY_ID ": Don't know what to do with %s", component_id);

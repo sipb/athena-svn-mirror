@@ -80,7 +80,7 @@ contact_list_value_to_string (ETableModel *etc, int col, const void *value)
 }
 
 static void
-contact_list_model_destroy (GtkObject *o)
+contact_list_model_dispose (GObject *o)
 {
 	EContactListModel *model = E_CONTACT_LIST_MODEL (o);
 	int i;
@@ -96,17 +96,17 @@ contact_list_model_destroy (GtkObject *o)
 	model->data_count = 0;
 	model->data_alloc = 0;
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (o);
+	(* G_OBJECT_CLASS (parent_class)->dispose) (o);
 }
 
 static void
-e_contact_list_model_class_init (GtkObjectClass *object_class)
+e_contact_list_model_class_init (GObjectClass *object_class)
 {
 	ETableModelClass *model_class = (ETableModelClass *) object_class;
 
 	parent_class = g_type_class_ref (PARENT_TYPE);
 
-	object_class->destroy = contact_list_model_destroy;
+	object_class->dispose = contact_list_model_dispose;
 
 	model_class->column_count = contact_list_col_count;
 	model_class->row_count = contact_list_row_count;
@@ -121,7 +121,7 @@ e_contact_list_model_class_init (GtkObjectClass *object_class)
 }
 
 static void
-e_contact_list_model_init (GtkObject *object)
+e_contact_list_model_init (GObject *object)
 {
 	EContactListModel *model = E_CONTACT_LIST_MODEL(object);
 
@@ -206,16 +206,17 @@ e_contact_list_model_add_email (EContactListModel *model,
 }
 
 void
-e_contact_list_model_add_card (EContactListModel *model,
-			       ECardSimple *simple)
+e_contact_list_model_add_contact (EContactListModel *model,
+				  EContact *contact,
+				  int email_num)
 {
 	EDestination *new_dest;
 
 	g_return_if_fail (E_IS_CONTACT_LIST_MODEL (model));
-	g_return_if_fail (E_IS_CARD_SIMPLE (simple));
+	g_return_if_fail (E_IS_CONTACT (contact));
 
 	new_dest = e_destination_new ();
-	e_destination_set_card (new_dest, simple->card, 0); /* Hard-wired for default e-mail */
+	e_destination_set_contact (new_dest, contact, email_num);
 
 	e_contact_list_model_add_destination (model, new_dest);
 }

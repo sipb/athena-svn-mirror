@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -225,6 +248,7 @@ camel_provider_LTLIBRARIES = libcamelnntp.la
 camel_provider_DATA = libcamelnntp.urls
 
 INCLUDES = -I../..				\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/e-util			\
@@ -232,8 +256,7 @@ INCLUDES = -I../..				\
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-nntp-provider\"	\
-	-DG_DISABLE_DEPRECATED
+	-DG_LOG_DOMAIN=\"camel-nntp-provider\"
 
 
 libcamelnntp_la_SOURCES = \
@@ -241,14 +264,17 @@ libcamelnntp_la_SOURCES = \
 	camel-nntp-store.c			\
 	camel-nntp-folder.c			\
 	camel-nntp-stream.c			\
-	camel-nntp-summary.c
+	camel-nntp-summary.c			\
+	camel-nntp-store-summary.c
 
 
 libcamelnntpinclude_HEADERS = \
 	camel-nntp-store.h			\
 	camel-nntp-folder.h			\
+	camel-nntp-resp-codes.h			\
 	camel-nntp-stream.h			\
-	camel-nntp-summary.h
+	camel-nntp-summary.h			\
+	camel-nntp-store-summary.h
 
 
 noinst_HEADERS = \
@@ -266,7 +292,8 @@ LTLIBRARIES = $(camel_provider_LTLIBRARIES)
 
 libcamelnntp_la_LIBADD =
 am_libcamelnntp_la_OBJECTS = camel-nntp-provider.lo camel-nntp-store.lo \
-	camel-nntp-folder.lo camel-nntp-stream.lo camel-nntp-summary.lo
+	camel-nntp-folder.lo camel-nntp-stream.lo camel-nntp-summary.lo \
+	camel-nntp-store-summary.lo
 libcamelnntp_la_OBJECTS = $(am_libcamelnntp_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -278,6 +305,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/camel-nntp-folder.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/camel-nntp-provider.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/camel-nntp-store-summary.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/camel-nntp-store.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/camel-nntp-stream.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/camel-nntp-summary.Plo
@@ -346,6 +374,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-folder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-provider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-store-summary.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-store.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/camel-nntp-summary.Plo@am__quote@

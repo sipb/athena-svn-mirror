@@ -31,6 +31,7 @@
 #include "e-util/e-categories-config.h"
 #include "e-day-view-layout.h"
 #include "e-day-view-main-item.h"
+#include "ea-calendar.h"
 
 static void e_day_view_main_item_class_init (EDayViewMainItemClass *class);
 static void e_day_view_main_item_init (EDayViewMainItem *dvtitem);
@@ -106,6 +107,9 @@ e_day_view_main_item_class_init (EDayViewMainItemClass *class)
 	item_class->draw        = e_day_view_main_item_draw;
 	item_class->point       = e_day_view_main_item_point;
 	item_class->event       = e_day_view_main_item_event;
+
+	/* init the accessibility support for e_day_view */
+ 	e_day_view_main_item_a11y_init ();
 }
 
 
@@ -186,7 +190,8 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 	work_day_end_y = e_day_view_convert_time_to_position (day_view, day_view->work_day_end_hour, day_view->work_day_end_minute) - y;
 
 	for (day = 0; day < day_view->days_shown; day++) {
-		day_start_tt = icaltime_from_timet_with_zone (day_view->day_starts[day], FALSE, day_view->zone);
+		day_start_tt = icaltime_from_timet_with_zone (day_view->day_starts[day], FALSE,
+							      e_calendar_view_get_timezone (E_CALENDAR_VIEW (day_view)));
 		weekday = icaltime_day_of_week (day_start_tt) - 1;
 		
 		work_day = day_view->working_days & (1 << weekday);
@@ -313,7 +318,7 @@ e_day_view_main_item_draw_events_in_vbars (EDayViewMainItem *dvmitem,
 	EDayViewEvent *event;
 	GdkGC *gc;
 	gint grid_x, event_num, bar_y, bar_h;
-	CalComponentTransparency transparency;
+	ECalComponentTransparency transparency;
 
 	day_view = dvmitem->day_view;
 
@@ -325,12 +330,17 @@ e_day_view_main_item_draw_events_in_vbars (EDayViewMainItem *dvmitem,
 	/* Draw the busy times corresponding to the events in the day. */
 	for (event_num = 0; event_num < day_view->events[day]->len;
 	     event_num++) {
+		ECalComponent *comp;
+
 		event = &g_array_index (day_view->events[day], EDayViewEvent,
 					event_num);
 
+		comp = e_cal_component_new ();
+		e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (event->comp_data->icalcomp));
+
 		/* If the event is TRANSPARENT, skip it. */
-		cal_component_get_transparency (event->comp, &transparency);
-		if (transparency == CAL_COMPONENT_TRANSP_TRANSPARENT)
+		e_cal_component_get_transparency (comp, &transparency);
+		if (transparency == E_CAL_COMPONENT_TRANSP_TRANSPARENT)
 			continue;
 
 		/* We can skip the events in the first column since they will
@@ -349,6 +359,8 @@ e_day_view_main_item_draw_events_in_vbars (EDayViewMainItem *dvmitem,
 		gdk_draw_rectangle (drawable, gc, TRUE,
 				    grid_x, bar_y,
 				    E_DAY_VIEW_BAR_WIDTH - 2, bar_h);
+
+		g_object_unref (comp);
 	}
 }
 
@@ -363,7 +375,7 @@ e_day_view_main_item_draw_long_events_in_vbars (EDayViewMainItem *dvmitem,
 	EDayViewEvent *event;
 	gint event_num, start_day, end_day, day, bar_y1, bar_y2, grid_x;
 	GdkGC *gc;
-	CalComponentTransparency transparency;
+	ECalComponentTransparency transparency;
 
 	day_view = dvmitem->day_view;
 
@@ -372,12 +384,17 @@ e_day_view_main_item_draw_long_events_in_vbars (EDayViewMainItem *dvmitem,
 
 	for (event_num = 0; event_num < day_view->long_events->len;
 	     event_num++) {
+		ECalComponent *comp;
+
 		event = &g_array_index (day_view->long_events, EDayViewEvent,
 					event_num);
 
+		comp = e_cal_component_new ();
+		e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (event->comp_data->icalcomp));
+
 		/* If the event is TRANSPARENT, skip it. */
-		cal_component_get_transparency (event->comp, &transparency);
-		if (transparency == CAL_COMPONENT_TRANSP_TRANSPARENT)
+		e_cal_component_get_transparency (comp, &transparency);
+		if (transparency == E_CAL_COMPONENT_TRANSP_TRANSPARENT)
 			continue;
 
 		if (!e_day_view_find_long_event_days (event,
@@ -415,6 +432,7 @@ e_day_view_main_item_draw_long_events_in_vbars (EDayViewMainItem *dvmitem,
 		}
 
 
+		g_object_unref (comp);
 	}
 }
 
@@ -450,12 +468,13 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	gint item_x, item_y, item_w, item_h, bar_y1, bar_y2;
 	GtkStyle *style;
 	GdkGC *gc;
-	CalComponent *comp;
+	GdkColor bg_color;
+	ECalComponent *comp;
 	gint num_icons, icon_x, icon_y, icon_x_inc, icon_y_inc;
 	gint max_icon_w, max_icon_h;
 	gboolean draw_reminder_icon, draw_recurrence_icon, draw_timezone_icon, draw_meeting_icon;
 	GSList *categories_list, *elem;
-	CalComponentTransparency transparency;
+	ECalComponentTransparency transparency;
 
 	day_view = dvmitem->day_view;
 
@@ -468,7 +487,6 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	style = GTK_WIDGET (day_view)->style;
 
 	gc = day_view->main_gc;
-	gdk_gc_set_foreground (gc, &day_view->colors[E_DAY_VIEW_COLOR_EVENT_VBAR]);
 
 	/* Get the position of the event. If it is not shown skip it.*/
 	if (!e_day_view_get_event_position (day_view, day, event_num,
@@ -482,21 +500,33 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	event = &g_array_index (day_view->events[day], EDayViewEvent,
 				event_num);
 
-	/* Fill in the white background. Note that for events in the first
+	/* Fill in the event background. Note that for events in the first
 	   column of the day, we might not want to paint over the vertical bar,
 	   since that is used for multiple events. But then you can't see
 	   where the event in the first column finishes. */
+
+	if (gdk_color_parse (e_cal_model_get_color_for_component (e_calendar_view_get_model (E_CALENDAR_VIEW (day_view)), event->comp_data),
+			     &bg_color)) {
+		GdkColormap *colormap;
+
+		colormap = gtk_widget_get_colormap (GTK_WIDGET (day_view));
+		if (gdk_colormap_alloc_color (colormap, &bg_color, TRUE, TRUE))
+			gdk_gc_set_foreground (gc, &bg_color);
+	}
+
 #if 1
 	if (event->start_row_or_col == 0)
-		gdk_draw_rectangle (drawable, style->white_gc, TRUE,
+		gdk_draw_rectangle (drawable, gc, TRUE,
 				    item_x + E_DAY_VIEW_BAR_WIDTH, item_y + 1,
 				    MAX (item_w - E_DAY_VIEW_BAR_WIDTH - 1, 0),
 				    item_h - 2);
 	else
 #endif
-		gdk_draw_rectangle (drawable, style->white_gc, TRUE,
+		gdk_draw_rectangle (drawable, gc, TRUE,
 				    item_x + 1, item_y + 1,
 				    MAX (item_w - 2, 0), item_h - 2);
+
+	gdk_gc_set_foreground (gc, &day_view->colors[E_DAY_VIEW_COLOR_EVENT_VBAR]);
 
 	/* Draw the right edge of the vertical bar. */
 	gdk_draw_line (drawable, style->black_gc,
@@ -511,18 +541,21 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	bar_y2 = event->end_minute * day_view->row_height / day_view->mins_per_row - y;
 
 	/* When an item is being resized, we fill the bar up to the new row. */
-	if (day_view->resize_drag_pos != E_DAY_VIEW_POS_NONE
+	if (day_view->resize_drag_pos != E_CALENDAR_VIEW_POS_NONE
 	    && day_view->resize_event_day == day
 	    && day_view->resize_event_num == event_num) {
-		if (day_view->resize_drag_pos == E_DAY_VIEW_POS_TOP_EDGE)
+		if (day_view->resize_drag_pos == E_CALENDAR_VIEW_POS_TOP_EDGE)
 			bar_y1 = item_y + 1;
-		else if (day_view->resize_drag_pos == E_DAY_VIEW_POS_BOTTOM_EDGE)
+		else if (day_view->resize_drag_pos == E_CALENDAR_VIEW_POS_BOTTOM_EDGE)
 			bar_y2 = item_y + item_h - 1;
 	}
 
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (event->comp_data->icalcomp));
+
 	/* Only fill it in if the event isn't TRANSPARENT. */
-	cal_component_get_transparency (event->comp, &transparency);
-	if (transparency != CAL_COMPONENT_TRANSP_TRANSPARENT) {
+	e_cal_component_get_transparency (comp, &transparency);
+	if (transparency != E_CAL_COMPONENT_TRANSP_TRANSPARENT) {
 		gdk_draw_rectangle (drawable, gc, TRUE,
 				    item_x + 1, bar_y1,
 				    E_DAY_VIEW_BAR_WIDTH - 2, bar_y2 - bar_y1);
@@ -559,14 +592,13 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	icon_x = item_x + E_DAY_VIEW_BAR_WIDTH + E_DAY_VIEW_ICON_X_PAD;
 	icon_y = item_y + E_DAY_VIEW_EVENT_BORDER_HEIGHT
 		+ E_DAY_VIEW_ICON_Y_PAD;
-	comp = event->comp;
 
-	if (cal_component_has_alarms (comp)) {
+	if (e_cal_component_has_alarms (comp)) {
 		draw_reminder_icon = TRUE;
 		num_icons++;
 	}
 
-	if (cal_component_has_recurrences (comp)) {
+	if (e_cal_component_has_recurrences (comp)) {
 		draw_recurrence_icon = TRUE;
 		num_icons++;
 	}
@@ -578,12 +610,12 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 		num_icons++;
 	}
 
-	if (cal_component_has_organizer (comp)) {
+	if (e_cal_component_has_organizer (comp)) {
 		draw_meeting_icon = TRUE;
 		num_icons++;
 	}
 
-	cal_component_get_categories_list (comp, &categories_list);
+	e_cal_component_get_categories_list (comp, &categories_list);
 	for (elem = categories_list; elem; elem = elem->next) {
 		char *category;
 		GdkPixmap *pixmap = NULL;
@@ -612,15 +644,16 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			max_icon_h = item_y + item_h - icon_y
 				- E_DAY_VIEW_EVENT_BORDER_HEIGHT;
 
-			gdk_gc_set_clip_origin (gc, icon_x, icon_y);
-			gdk_gc_set_clip_mask (gc, day_view->reminder_mask);
-			gdk_draw_pixmap (drawable, gc,
+			gdk_gc_set_clip_mask (gc, NULL);
+			gdk_draw_pixbuf (drawable, gc,
 					 day_view->reminder_icon,
 					 0, 0, icon_x, icon_y,
 					 MIN (E_DAY_VIEW_ICON_WIDTH,
 					      max_icon_w),
 					 MIN (E_DAY_VIEW_ICON_HEIGHT,
-					      max_icon_h));
+					      max_icon_h),
+					 GDK_RGB_DITHER_NORMAL,
+					 0, 0);
 			icon_x += icon_x_inc;
 			icon_y += icon_y_inc;
 		}
@@ -631,16 +664,16 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			max_icon_h = item_y + item_h - icon_y
 				- E_DAY_VIEW_EVENT_BORDER_HEIGHT;
 
-			gdk_gc_set_clip_origin (gc, icon_x, icon_y);
-			gdk_gc_set_clip_mask (gc, day_view->recurrence_mask);
-			gdk_draw_pixmap (drawable, gc,
+			gdk_gc_set_clip_mask (gc, NULL);
+			gdk_draw_pixbuf (drawable, gc,
 					 day_view->recurrence_icon,
 					 0, 0, icon_x, icon_y,
 					 MIN (E_DAY_VIEW_ICON_WIDTH,
 					      max_icon_w),
 					 MIN (E_DAY_VIEW_ICON_HEIGHT,
-					      max_icon_h));
-
+					      max_icon_h),
+					 GDK_RGB_DITHER_NORMAL,
+					 0, 0);
 			icon_x += icon_x_inc;
 			icon_y += icon_y_inc;
 		}
@@ -651,15 +684,16 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			max_icon_h = item_y + item_h - icon_y
 				- E_DAY_VIEW_EVENT_BORDER_HEIGHT;
 
-			gdk_gc_set_clip_origin (gc, icon_x, icon_y);
-			gdk_gc_set_clip_mask (gc, day_view->timezone_mask);
-			gdk_draw_pixmap (drawable, gc,
+			gdk_gc_set_clip_mask (gc, NULL);
+			gdk_draw_pixbuf (drawable, gc,
 					 day_view->timezone_icon,
 					 0, 0, icon_x, icon_y,
 					 MIN (E_DAY_VIEW_ICON_WIDTH,
 					      max_icon_w),
 					 MIN (E_DAY_VIEW_ICON_HEIGHT,
-					      max_icon_h));
+					      max_icon_h),
+					 GDK_RGB_DITHER_NORMAL,
+					 0, 0);
 			icon_x += icon_x_inc;
 			icon_y += icon_y_inc;
 		}
@@ -671,15 +705,16 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			max_icon_h = item_y + item_h - icon_y
 				- E_DAY_VIEW_EVENT_BORDER_HEIGHT;
 
-			gdk_gc_set_clip_origin (gc, icon_x, icon_y);
-			gdk_gc_set_clip_mask (gc, day_view->meeting_mask);
-			gdk_draw_pixmap (drawable, gc,
+			gdk_gc_set_clip_mask (gc, NULL);
+			gdk_draw_pixbuf (drawable, gc,
 					 day_view->meeting_icon,
 					 0, 0, icon_x, icon_y,
 					 MIN (E_DAY_VIEW_ICON_WIDTH,
 					      max_icon_w),
 					 MIN (E_DAY_VIEW_ICON_HEIGHT,
-					      max_icon_h));
+					      max_icon_h),
+					 GDK_RGB_DITHER_NORMAL,
+					 0, 0);
 			icon_x += icon_x_inc;
 			icon_y += icon_y_inc;
 		}
@@ -722,7 +757,8 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	}
 
 	/* free memory */
-	cal_component_free_categories_list (categories_list);
+	e_cal_component_free_categories_list (categories_list);
+	g_object_unref (comp);
 }
 
 

@@ -22,7 +22,7 @@
 #include <config.h>
 
 #include "e-minicard-label.h"
-#include "e-addressbook-marshal.h"
+#include "eab-marshal.h"
 
 #include <gtk/gtksignal.h>
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
@@ -172,7 +172,7 @@ e_minicard_label_class_init (EMinicardLabelClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EMinicardLabelClass, style_set),
 			      NULL, NULL,
-			      e_addressbook_marshal_VOID__OBJECT,
+			      eab_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      GTK_TYPE_STYLE);
 
@@ -229,7 +229,7 @@ e_minicard_label_set_property  (GObject *object, guint prop_id, const GValue *va
 		break;
 	case PROP_EDITABLE:
 		e_minicard_label->editable = g_value_get_boolean (value);
-		g_object_set (e_minicard_label->field, "editable", e_minicard_label->editable, NULL);
+		g_object_set (e_minicard_label->field, "editable", FALSE /* e_minicard_label->editable */, NULL);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -322,7 +322,7 @@ e_minicard_label_realize (GnomeCanvasItem *item)
 				 "clip", TRUE,
 				 "use_ellipsis", TRUE,
 				 "fill_color", "black",
-				 "editable", e_minicard_label->editable,
+				 "editable", FALSE, /* e_minicard_label->editable, */
 				 "draw_background", FALSE,
 				 "im_context", E_CANVAS (item->canvas)->im_context,
 				 NULL );

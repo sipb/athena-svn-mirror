@@ -22,10 +22,10 @@
 #include <config.h>
 
 #include <e-contact-editor-address.h>
+#include <e-util/e-icon-factory.h>
 
 #include <glib.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-window-icon.h>
 #include <libgnome/gnome-util.h>
 #include <gal/widgets/e-gui-utils.h>
 #include <gtk/gtkcombo.h>
@@ -92,10 +92,11 @@ e_contact_editor_address_class_init (EContactEditorAddressClass *klass)
 	object_class->dispose = e_contact_editor_address_dispose;
 
 	g_object_class_install_property (object_class, PROP_ADDRESS, 
-					 g_param_spec_pointer ("address",
-							       _("Address"),
-							       /*_( */"XXX blurb" /*)*/,
-							       G_PARAM_READWRITE));
+					 g_param_spec_boxed ("address",
+							     _("Address"),
+							     /*_( */"XXX blurb" /*)*/,
+							     e_contact_address_get_type (),
+							     G_PARAM_READWRITE));
 
 	g_object_class_install_property (object_class, PROP_EDITABLE, 
 					 g_param_spec_boolean ("editable",
@@ -182,7 +183,7 @@ static char * countries [] = {
 	N_("Colombia"),
 	N_("Comoros"),
 	N_("Congo"),
-	N_("Congo"),
+	N_("Congo, The Democratic Republic Of The"),
 	N_("Cook Islands"),
 	N_("Costa Rica"),
 	N_("Cote d'Ivoire"),
@@ -194,7 +195,6 @@ static char * countries [] = {
 	N_("Djibouti"),
 	N_("Dominica"),
 	N_("Dominican Republic"),
-	N_("East Timor"),
 	N_("Ecuador"),
 	N_("Egypt"),
 	N_("El Salvador"),
@@ -222,6 +222,7 @@ static char * countries [] = {
 	N_("Guadeloupe"),
 	N_("Guam"),
 	N_("Guatemala"),
+	N_("Guernsey"),
 	N_("Guinea"),
 	N_("Guinea-bissau"),
 	N_("Guyana"),
@@ -234,15 +235,20 @@ static char * countries [] = {
 	N_("Iceland"),
 	N_("India"),
 	N_("Indonesia"),
+	N_("Iran"),
+	N_("Iraq"),
 	N_("Ireland"),
+	N_("Isle of Man"),
 	N_("Israel"),
 	N_("Italy"),
 	N_("Jamaica"),
 	N_("Japan"),
+	N_("Jersey"),
 	N_("Jordan"),
 	N_("Kazakhstan"),
 	N_("Kenya"),
 	N_("Kiribati"),
+	N_("Korea, Democratic People's Republic Of"),
 	N_("Korea, Republic Of"),
 	N_("Kuwait"),
 	N_("Kyrgyzstan"),
@@ -251,10 +257,11 @@ static char * countries [] = {
 	N_("Lebanon"),
 	N_("Lesotho"),
 	N_("Liberia"),
+	N_("Libya"),
 	N_("Liechtenstein"),
 	N_("Lithuania"),
 	N_("Luxembourg"),
-	N_("Macau"),
+	N_("Macao"),
 	N_("Macedonia"),
 	N_("Madagascar"),
 	N_("Malawi"),
@@ -316,6 +323,7 @@ static char * countries [] = {
 	N_("Sao Tome And Principe"),
 	N_("Saudi Arabia"),
 	N_("Senegal"),
+	N_("Serbia And Montenegro"),
 	N_("Seychelles"),
 	N_("Sierra Leone"),
 	N_("Singapore"),
@@ -335,10 +343,12 @@ static char * countries [] = {
 	N_("Swaziland"),
 	N_("Sweden"),
 	N_("Switzerland"),
+	N_("Syria"),
 	N_("Taiwan"),
 	N_("Tajikistan"),
 	N_("Tanzania, United Republic Of"),
 	N_("Thailand"),
+	N_("Timor-Leste"),
 	N_("Togo"),
 	N_("Tokelau"),
 	N_("Tonga"),
@@ -363,7 +373,6 @@ static char * countries [] = {
 	N_("Wallis And Futuna Islands"),
 	N_("Western Sahara"),
 	N_("Yemen"),
-	N_("Yugoslavia"),
 	N_("Zambia"),
 	N_("Zimbabwe"),
 	NULL
@@ -411,7 +420,7 @@ e_contact_editor_address_init (EContactEditorAddress *e_contact_editor_address)
 {
 	GladeXML *gui;
 	GtkWidget *widget;
-	char *icon_path;
+	GList *icon_list;
 
 	gtk_dialog_add_buttons (GTK_DIALOG (e_contact_editor_address),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -438,9 +447,12 @@ e_contact_editor_address_init (EContactEditorAddress *e_contact_editor_address)
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (e_contact_editor_address)->vbox), widget, TRUE, TRUE, 0);
 	g_object_unref(widget);
 
-	icon_path = g_concat_dir_and_file (EVOLUTION_IMAGESDIR, "evolution-contacts-mini.png");
-	gnome_window_icon_set_from_file (GTK_WINDOW (e_contact_editor_address), icon_path);
-	g_free (icon_path);
+	icon_list = e_icon_factory_get_icon_list ("stock_contact");
+	if (icon_list) {
+		gtk_window_set_icon_list (GTK_WINDOW (e_contact_editor_address), icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
 }
 
 void
@@ -454,7 +466,7 @@ e_contact_editor_address_dispose (GObject *object)
 	}
 
 	if (e_contact_editor_address->address) {
-		e_card_delivery_address_unref(e_contact_editor_address->address);
+		e_contact_address_free (e_contact_editor_address->address);
 		e_contact_editor_address->address = NULL;
 	}
 
@@ -463,12 +475,14 @@ e_contact_editor_address_dispose (GObject *object)
 }
 
 GtkWidget*
-e_contact_editor_address_new (const ECardDeliveryAddress *address)
+e_contact_editor_address_new (const EContactAddress *address)
 {
 	GtkWidget *widget = g_object_new (E_TYPE_CONTACT_EDITOR_ADDRESS, NULL);
+
 	g_object_set (widget,
 		      "address", address,
 		      NULL);
+
 	return widget;
 }
 
@@ -482,9 +496,11 @@ e_contact_editor_address_set_property (GObject *object, guint prop_id,
 	
 	switch (prop_id){
 	case PROP_ADDRESS:
-		e_card_delivery_address_unref(e_contact_editor_address->address);
-		e_contact_editor_address->address = e_card_delivery_address_copy(g_value_get_pointer (value));
-		fill_in_info(e_contact_editor_address);
+		if (e_contact_editor_address->address)
+			g_boxed_free (e_contact_address_get_type (), e_contact_editor_address->address);
+
+		e_contact_editor_address->address = g_value_dup_boxed (value);
+		fill_in_info (e_contact_editor_address);
 		break;
 	case PROP_EDITABLE: {
 		int i;
@@ -539,8 +555,8 @@ e_contact_editor_address_get_property (GObject *object, guint prop_id,
 
 	switch (prop_id) {
 	case PROP_ADDRESS:
-		extract_info(e_contact_editor_address);
-		g_value_set_pointer (value, e_card_delivery_address_ref(e_contact_editor_address->address));
+		extract_info (e_contact_editor_address);
+		g_value_set_static_boxed (value, e_contact_editor_address->address);
 		break;
 	case PROP_EDITABLE:
 		g_value_set_boolean (value, e_contact_editor_address->editable ? TRUE : FALSE);
@@ -566,15 +582,16 @@ fill_in_field(EContactEditorAddress *editor, char *field, char *string)
 static void
 fill_in_info(EContactEditorAddress *editor)
 {
-	ECardDeliveryAddress *address = editor->address;
+	EContactAddress *address = editor->address;
+
 	if (address) {
-		fill_in_field(editor, "entry-street" , address->street );
-		fill_in_field(editor, "entry-po"     , address->po     );
-		fill_in_field(editor, "entry-ext"    , address->ext    );
-		fill_in_field(editor, "entry-city"   , address->city   );
-		fill_in_field(editor, "entry-region" , address->region );
-		fill_in_field(editor, "entry-code"   , address->code   );
-		fill_in_field(editor, "entry-country", address->country);
+		fill_in_field (editor, "entry-street" , address->street  );
+		fill_in_field (editor, "entry-po"     , address->po      );
+		fill_in_field (editor, "entry-ext"    , address->ext     );
+		fill_in_field (editor, "entry-city"   , address->locality);
+		fill_in_field (editor, "entry-region" , address->region  );
+		fill_in_field (editor, "entry-code"   , address->code    );
+		fill_in_field (editor, "entry-country", address->country );
 	}
 }
 
@@ -591,16 +608,20 @@ extract_field(EContactEditorAddress *editor, char *field)
 static void
 extract_info(EContactEditorAddress *editor)
 {
-	ECardDeliveryAddress *address = editor->address;
-	if (!address) {
-		address = e_card_delivery_address_new();
-		editor->address = address;
+	EContactAddress *address = editor->address;
+
+	if (address) {
+		g_boxed_free (e_contact_address_get_type (), address);
 	}
-	address->street  = extract_field(editor, "entry-street" );
-	address->po      = extract_field(editor, "entry-po"     );
-	address->ext     = extract_field(editor, "entry-ext"    );
-	address->city    = extract_field(editor, "entry-city"   );
-	address->region  = extract_field(editor, "entry-region" );
-	address->code    = extract_field(editor, "entry-code"   );
-	address->country = extract_field(editor, "entry-country");
+
+	address = g_new0 (EContactAddress, 1);
+	editor->address = address;
+
+	address->street   = extract_field(editor, "entry-street" );
+	address->po       = extract_field(editor, "entry-po"     );
+	address->ext      = extract_field(editor, "entry-ext"    );
+	address->locality = extract_field(editor, "entry-city"   );
+	address->region   = extract_field(editor, "entry-region" );
+	address->code     = extract_field(editor, "entry-code"   );
+	address->country  = extract_field(editor, "entry-country");
 }

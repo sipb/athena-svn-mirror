@@ -19,7 +19,7 @@
 
 #include <addressbook/gui/contact-editor/e-contact-editor.h>
 #include "e-select-names-text-model.h"
-#include "e-addressbook-util.h"
+#include "eab-gui-util.h"
 
 static FILE *out = NULL; /* stream for debugging spew */
 
@@ -137,7 +137,7 @@ dump_model (ESelectNamesTextModel *text_model)
 	for (i=0; i<e_select_names_model_count (model); ++i)
 		fprintf (out, "[%d] \"%s\" %s\n", i,
 			 e_select_names_model_get_string (model, i),
-			 e_select_names_model_get_card (model, i) ? "<card>" : "");
+			 e_select_names_model_get_contact (model, i) ? "<contact>" : "");
 	fprintf (out, "\n");
 }
 
@@ -499,11 +499,9 @@ e_select_names_text_model_insert_length (ETextModel *model, gint pos, const gcha
 			if (new_str->len) {
 
 				EDestination *dest;
-				dest = index >= 0 ? e_destination_copy (e_select_names_model_get_destination (source, index)) : e_destination_new ();
+				dest = e_destination_new ();
 				e_destination_set_raw (dest, new_str->str);
 				e_select_names_model_replace (source, index, dest);
-				
-				/* e_select_names_model_replace (source, index, dest); */
 
 				if (this_length > 0) {
 					repos.model = model;
@@ -718,7 +716,7 @@ e_select_names_text_model_delete (ETextModel *model, gint pos, gint length)
 				np = g_utf8_next_char (np);
 			}
 
-			dest = index >= 0 ? e_destination_copy (e_select_names_model_get_destination (source, index)) : e_destination_new ();
+			dest = e_destination_new ();
 			e_destination_set_raw (dest, new_str);
 			e_select_names_model_replace (source, index, dest);
 			
@@ -767,7 +765,7 @@ e_select_names_text_model_obj_count (ETextModel *model)
 		const EDestination *dest;
 		--i;
 		dest = e_select_names_model_get_destination (source, i);
-		if (e_destination_get_card (dest) == NULL)
+		if (e_destination_get_contact (dest) == NULL)
 			--count;
 	}
 
@@ -784,7 +782,7 @@ nth_obj_index (ESelectNamesModel *source, gint n)
 	
 	do {
 		const EDestination *dest = e_select_names_model_get_destination (source, i);
-		if (e_destination_get_card (dest))
+		if (e_destination_get_contact (dest))
 			--n;
 		++i;
 	} while (n >= 0 && i < N);
@@ -821,26 +819,37 @@ static void
 e_select_names_text_model_activate_obj (ETextModel *model, gint n)
 {
 	ESelectNamesModel *source = E_SELECT_NAMES_TEXT_MODEL (model)->source;
-	ECard *card;
+	EContact *contact;
+	EBook *book;
 	gint i;
 
 	i = nth_obj_index (source, n);
 	g_return_if_fail (i >= 0);
 
-	card = e_select_names_model_get_card (source, i);
-	g_return_if_fail (card != NULL);
-	
+	contact = e_select_names_model_get_contact (source, i);
+	g_return_if_fail (contact != NULL);
+
+	/* XXX unfortunately we don't have an e_contact_get_book call
+	   anymore, so we can't query for the addressbook that the
+	   contact came from.  however, since we're bringing up a
+	   read-only contact editor, it really doesn't matter what we
+	   show in the source option menu, does it? */
+	book = e_book_new_system_addressbook (NULL);
+	g_return_if_fail (book != NULL);
+
 	/* present read-only contact editor when someone double clicks from here */
-	if (e_card_evolution_list (card)) {
+	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 		EContactListEditor *ce;
-		ce = e_addressbook_show_contact_list_editor (e_card_get_book(card), card, FALSE, FALSE);
-		e_contact_list_editor_raise (ce);
+		ce = eab_show_contact_list_editor (book, contact, FALSE, FALSE);
+		eab_editor_raise (EAB_EDITOR (ce));
 	}
 	else {
 		EContactEditor *ce;
-		ce = e_addressbook_show_contact_editor (e_card_get_book(card), card, FALSE, FALSE);
-		e_contact_editor_raise (ce);
+		ce = eab_show_contact_editor (book, contact, FALSE, FALSE);
+		eab_editor_raise (EAB_EDITOR (ce));
 	}
+
+	g_object_unref (book);
 }
 
 

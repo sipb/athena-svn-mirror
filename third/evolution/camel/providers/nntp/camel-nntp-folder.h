@@ -33,6 +33,7 @@ extern "C" {
 #endif /* __cplusplus }*/
 
 #include "camel/camel-folder.h"
+#include "camel/camel-disco-folder.h"
 
 /*  #include "camel-store.h" */
 
@@ -42,7 +43,7 @@ extern "C" {
 #define CAMEL_IS_NNTP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_NNTP_FOLDER_TYPE))
 
 typedef struct _CamelNNTPFolder {
-	CamelFolder parent;
+	CamelDiscoFolder parent;
 
 	struct _CamelNNTPFolderPrivate *priv;
 
@@ -52,7 +53,7 @@ typedef struct _CamelNNTPFolder {
 } CamelNNTPFolder;
 
 typedef struct _CamelNNTPFolderClass {
-	CamelFolderClass parent;
+	CamelDiscoFolderClass parent;
 
 	/* Virtual methods */	
 	
@@ -64,6 +65,8 @@ typedef struct _CamelNNTPFolderClass {
 CamelType camel_nntp_folder_get_type (void);
 
 CamelFolder *camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelException *ex);
+
+void camel_nntp_folder_selected(CamelNNTPFolder *folder, char *line, CamelException *ex);
 
 #ifdef __cplusplus
 }

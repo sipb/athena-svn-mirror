@@ -22,6 +22,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtksignal.h>
@@ -31,15 +32,15 @@
 #if 0 
 #  include <libgnomeui/gnome-winhints.h>
 #endif
-#include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
 #include <e-util/e-time-utils.h>
-#include <gal/widgets/e-unicode.h>
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
-#include "cal-util/timeutil.h"
+#include <libecal/e-cal-time-util.h>
 #include "alarm-notify-dialog.h"
 #include "config-data.h"
+#include "util.h"
+#include <e-util/e-icon-factory.h>
 
 
 GtkWidget *make_html_display (gchar *widget_name, char *s1, char *s2, int scroll, int shadow);
@@ -215,35 +216,21 @@ write_times (GtkHTMLStream *stream, char *start, char *end)
 
 }
 
-/* Converts a time_t to a string, relative to the specified timezone */
-static char *
-timet_to_str_with_zone (time_t t, icaltimezone *zone)
-{
-	struct icaltimetype itt;
-	struct tm tm;
-	char buf[256];
-
-	if (t == -1)
-		return g_strdup (_("invalid time"));
-
-	itt = icaltime_from_timet_with_zone (t, FALSE, zone);
-	tm = icaltimetype_to_tm (&itt);
-
-	e_time_format_date_and_time (&tm, config_data_get_24_hour_format (),
-				     FALSE, FALSE, buf, sizeof (buf));
-	return g_strdup (buf);
-}
-
 /* Creates a heading for the alarm notification dialog */
 static void
 write_html_heading (GtkHTMLStream *stream, const char *message,
-		    CalComponentVType vtype, time_t occur_start, time_t occur_end)
+		    ECalComponentVType vtype, time_t occur_start, time_t occur_end)
 {
 	char *buf;
 	char *start, *end;
 	char *bg_path = "file://" EVOLUTION_IMAGESDIR "/bcg.png";
-	char *image_path = "file://" EVOLUTION_IMAGESDIR "/alarm.png";
+	gchar *image_path;
+	gchar *icon_path;
 	icaltimezone *current_zone;
+
+	icon_path = e_icon_factory_get_icon_filename ("stock_alarm", E_ICON_SIZE_DIALOG);
+	image_path = g_strdup_printf ("file://%s", icon_path);
+	g_free (icon_path);
 
 	/* Stringize the times */
 
@@ -276,11 +263,11 @@ write_html_heading (GtkHTMLStream *stream, const char *message,
 	/* Write the times */
 
 	switch (vtype) {
-	case CAL_COMPONENT_EVENT:
+	case E_CAL_COMPONENT_EVENT:
 		write_times (stream, start, end);
 		break;
 
-	case CAL_COMPONENT_TODO:
+	case E_CAL_COMPONENT_TODO:
 		write_times (stream, start, end);
 		break;
 
@@ -292,6 +279,7 @@ write_html_heading (GtkHTMLStream *stream, const char *message,
 
 	g_free (start);
 	g_free (end);
+	g_free (image_path);
 }
 
 /**
@@ -311,19 +299,19 @@ write_html_heading (GtkHTMLStream *stream, const char *message,
  **/
 gpointer
 alarm_notify_dialog (time_t trigger, time_t occur_start, time_t occur_end,
-		     CalComponentVType vtype, const char *message,
+		     ECalComponentVType vtype, const char *message,
 		     AlarmNotifyFunc func, gpointer func_data)
 {
 	AlarmNotify *an;
 	GtkHTMLStream *stream;
 	icaltimezone *current_zone;
 	char *buf, *title;
-	GdkPixbuf *pixbuf;
+	GList *icon_list;
 
 	g_return_val_if_fail (trigger != -1, NULL);
 
 	/* Only VEVENTs or VTODOs can have alarms */
-	g_return_val_if_fail (vtype == CAL_COMPONENT_EVENT || vtype == CAL_COMPONENT_TODO, NULL);
+	g_return_val_if_fail (vtype == E_CAL_COMPONENT_EVENT || vtype == E_CAL_COMPONENT_TODO, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
 	g_return_val_if_fail (func != NULL, NULL);
 
@@ -353,6 +341,10 @@ alarm_notify_dialog (time_t trigger, time_t occur_start, time_t occur_end,
 		g_free (an);
 		return NULL;
 	}
+
+	gtk_widget_realize (an->dialog);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (an->dialog)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (an->dialog)->action_area), 12);
 
 	g_signal_connect (G_OBJECT (an->dialog), "destroy",
 			  G_CALLBACK (dialog_destroy_cb),
@@ -397,11 +389,12 @@ alarm_notify_dialog (time_t trigger, time_t occur_start, time_t occur_end,
 	if (!GTK_WIDGET_REALIZED (an->dialog))
 		gtk_widget_realize (an->dialog);
 
-	gtk_window_stick (GTK_WINDOW (an->dialog));
-
-	pixbuf = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/alarm.png", NULL);
-	gtk_window_set_icon (GTK_WINDOW (an->dialog), pixbuf);
-	g_object_unref (pixbuf);
+	icon_list = e_icon_factory_get_icon_list ("stock_alarm");
+	if (icon_list) {
+		gtk_window_set_icon_list (GTK_WINDOW (an->dialog), icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
 
 	gtk_widget_show (an->dialog);
 	return an;

@@ -41,42 +41,38 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
-#include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-object.h>
-#include <bonobo/bonobo-generic-factory.h>
-#include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-context.h>
-#include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-moniker-util.h>
+#include <camel/camel-operation.h>
 
-#include <bonobo-activation/bonobo-activation.h>
+#include <bonobo/bonobo-control.h>
 
 #include <importer/evolution-intelligent-importer.h>
 #include <importer/GNOME_Evolution_Importer.h>
 #include <importer/evolution-importer-client.h>
 
-#include <filter/filter-context.h>
-#include <filter/filter-filter.h>
+#include "mail/em-filter-context.h"
+#include "mail/em-filter-rule.h"
 #include <filter/filter-rule.h>
 #include <filter/filter-option.h>
-#include <filter/filter-folder.h>
+#include "mail/em-filter-folder-element.h"
 #include <filter/filter-int.h>
-#include <shell/evolution-shell-client.h>
 
-#include "Mailer.h"
-#include "mail/mail-importer.h"
+#include "e-util/e-account-list.h"
+#include "e-util/e-signature-list.h"
 
+#include "mail/mail-mt.h"
+#include "mail/mail-config.h"
+#include "mail/em-utils.h"
+#include "mail/mail-component.h"
+
+#include "mail-importer.h"
+
+/* FIXME: dont make this stuff global */
 static char *nsmail_dir = NULL;
 static GHashTable *user_prefs = NULL;
 
-/* This is rather ugly -- libfilter needs this symbol: */
-EvolutionShellClient *global_shell_client = NULL;
-
 static char          *filter_name = N_("Priority Filter \"%s\"");
 
-#define FACTORY_IID "OAFIID:GNOME_Evolution_Mail_Netscape_Intelligent_Importer_Factory"
-#define MBOX_IMPORTER_IID "OAFIID:GNOME_Evolution_Mail_Mbox_Importer"
-#define MAIL_CONFIG_IID "OAFIID:GNOME_Evolution_MailConfig"
+#define MAIL_CONFIG_IID "OAFIID:GNOME_Evolution_MailConfig:" BASE_VERSION
 
 #define KEY "netscape-mail-imported"
 
@@ -92,28 +88,23 @@ static char          *filter_name = N_("Priority Filter \"%s\"");
 typedef struct {
 	EvolutionIntelligentImporter *ii;
 
-	GList *dir_list;
+	GMutex *status_lock;
+	char *status_what;
+	int status_pc;
+	int status_timeout_id;
+	CamelOperation *cancel;	/* cancel/status port */
 
-	int progress_count;
-	int more;
-	EvolutionImporterResult result;
-
-	GNOME_Evolution_Importer importer;
-	EvolutionImporterListener *listener;
-
-	/* Checkboxes */
 	GtkWidget *mail;
-	gboolean do_mail;
-/*
-  GtkWidget *addrs;
-  gboolean do_addrs;
-*/
 	GtkWidget *filters;
-	gboolean do_filters;
 	GtkWidget *settings;
-	gboolean do_settings;
 
-	/*Bonobo_ConfigDatabase db;*/
+	gboolean do_mail;
+	gboolean done_mail;
+
+	gboolean do_filters;
+	gboolean done_filters;
+	gboolean do_settings;
+	gboolean done_settings;
 
 	/* GUI */
 	GtkWidget *dialog;
@@ -155,7 +146,7 @@ typedef enum {
 static char *ns_filter_condition_types[] =
 {
 	"from", "subject", "to", "CC", "to or CC", "body", "date",
-	"priority", "age in days"
+	"status", "priority", "age in days"
 };
 
 
@@ -180,6 +171,7 @@ typedef struct
 	NsFilterConditionPropertyType  prop;
 	NsFilterActionValueType        prop_val_id;  /* for dealing with priority levels */	
 	char                          *prop_val_str;
+	char			      *type_str;
 } NsFilterCondition;
 
 typedef struct {
@@ -196,14 +188,9 @@ typedef struct {
 	GList                    *conditions; /* List of NSFilterConditions */
 } NsFilter;
 
-
 /* Prototypes ------------------------------------------------------------- */
-void mail_importer_module_init (void);
-
 static void  netscape_filter_cleanup (NsFilter *nsf);
-static char *fix_netscape_folder_names (const char *original_name);
-static void  import_next (NsImporter *importer);
-
+static const char *fix_netscape_folder_names (const char *original_name);
 
 /* Email filter stuff ----------------------------------------------------- */
 
@@ -214,15 +201,22 @@ netscape_filter_flatfile_get_entry (FILE *f, char *key, char *val)
 	char *ptr = NULL;
 	char *ptr2 = NULL;
 
+	/* This is fugly awful code */
 	if (fgets (line, MAXLEN, f)) {
 		
 		ptr = strchr(line, '=');
+		if (ptr == NULL)
+			goto fail;
 		*ptr = '\0';
 
 		memcpy (key, line, strlen(line)+1);
 
+		if (ptr[1] == 0)
+			goto fail;
 		ptr += 2; /* Skip '=' and '"' */
 		ptr2 = strrchr (ptr, '"');
+		if (ptr2 == NULL)
+			goto fail;
 		*ptr2 = '\0';
 		
 		memcpy (val, ptr, strlen(ptr)+1);
@@ -231,7 +225,7 @@ netscape_filter_flatfile_get_entry (FILE *f, char *key, char *val)
 		return TRUE;
 		       
 	}
-
+fail:
 	*key = '\0'; *val = '\0';
 	return FALSE;
 }
@@ -298,7 +292,11 @@ netscape_filter_parse_conditions (NsFilter *nsf, FILE *f, char *condition)
 
 		cond = g_new0 (NsFilterCondition, 1);
 
-		if (!strcmp (type, ns_filter_condition_types[FROM])) {
+		if (type[0] == '\\' && type[1] == '\"' && (ptr=strstr(type+2, "\\\""))) {
+			*ptr = 0;
+			cond->type_str = g_strdup(type+2);
+			cond->type = X_MSG_HEADER;
+		} else if (!strcmp (type, ns_filter_condition_types[FROM])) {
 			cond->type = FROM;
 		} else if (!strcmp (type, ns_filter_condition_types[SUBJECT])) {
 			cond->type = SUBJECT;
@@ -318,8 +316,6 @@ netscape_filter_parse_conditions (NsFilter *nsf, FILE *f, char *condition)
 			cond->type = STATUS;
 		} else if (!strcmp (type, ns_filter_condition_types[AGE_IN_DAYS])) {
 			cond->type = AGE_IN_DAYS;
-		} else if (!strcmp (type, ns_filter_condition_types[X_MSG_HEADER])) {
-			cond->type = X_MSG_HEADER;
 		} else {
 			d(g_warning ("Unknown condition type '%s' encountered -- skipping.", type));
 			g_free (cond);
@@ -379,7 +375,6 @@ netscape_filter_parse_conditions (NsFilter *nsf, FILE *f, char *condition)
 		nsf->conditions = g_list_append (nsf->conditions, cond);		
 	}
 }
-	
 
 static NsFilter *
 netscape_filter_read_next (FILE *mailrule_handle)
@@ -527,7 +522,6 @@ netscape_filter_read_next (FILE *mailrule_handle)
 	return NULL;
 }
 
-
 static void
 netscape_filter_cleanup (NsFilter *nsf)
 {
@@ -542,13 +536,13 @@ netscape_filter_cleanup (NsFilter *nsf)
 		NsFilterCondition *cond = (NsFilterCondition *)l->data;
 
 		g_free (cond->prop_val_str);
+		g_free(cond->type_str);
 		g_free (cond);
 	}
 
 	g_list_free (nsf->conditions);
 	g_free (nsf);
 }
-
 
 static gboolean
 netscape_filter_set_opt_for_cond (NsFilterCondition *cond, FilterOption* op)
@@ -579,7 +573,6 @@ netscape_filter_set_opt_for_cond (NsFilterCondition *cond, FilterOption* op)
 	return TRUE;
 }
 
-
 /* Translates a string of the form   
    folder1.sbd/folder2.sbd/.../folderN.sbd/folder
 
@@ -593,7 +586,7 @@ netscape_filter_strip_sbd (char *ns_folder)
 	char *folder_copy;
 	char s[MAXLEN];
 	char *ptr, *ptr2;
-	char *fixed_folder;
+	const char *fixed_folder;
 	
 	folder_copy = g_strdup (ns_folder);
 	ptr = folder_copy;
@@ -612,7 +605,6 @@ netscape_filter_strip_sbd (char *ns_folder)
 	fixed_folder = fix_netscape_folder_names (ptr);
 	strcat (s, fixed_folder);
 	g_free (folder_copy);
-	g_free (fixed_folder);
 
 	d(g_warning ("Stripped '%s' to '%s'", ns_folder, s));
 	
@@ -624,31 +616,38 @@ static char *
 netscape_filter_map_folder_to_uri (char *folder)
 {
 	char *folder_copy;
-	char s[MAXLEN];
 	char *ptr, *ptr2;
-	
+	GString *s;
+
 	folder_copy = g_strdup (folder);
 	ptr = folder_copy;
 
-	g_snprintf (s, MAXLEN, "file://%s/evolution/local/", g_get_home_dir ());
+	/* FIXME: this should use account-relative uri's */
+
+	s = g_string_new("mbox:");
+	g_string_append(s, g_get_home_dir());
+	g_string_append(s, "/mail/local#");
 
 	while (ptr) {
 		if ( (ptr2 = strchr (ptr, '/')) == NULL)
 			break;
 
 		*ptr2 = '\0';
-		strcat (s, ptr);
-		strcat (s, "/subfolders/");
+		g_string_append(s, ptr);
+		g_string_append_c(s, '/');
 
 		ptr = ptr2 + 1;
 	}
 
-	strcat (s, ptr);
+	g_string_append(s, ptr);
 	g_free (folder_copy);
 
 	d(g_warning ("Mapped '%s' to '%s'", folder, s));
 	
-	return g_strdup (s);
+	ptr = s->str;
+	g_string_free(s, FALSE);
+
+	return ptr;
 }
 
 
@@ -712,16 +711,16 @@ netscape_filter_body_is_not_supported (void)
 
 
 static FilterRule*
-netscape_create_priority_converter (FilterContext *fc, NsFilterActionValueType priority)
+netscape_create_priority_converter (EMFilterContext *fc, NsFilterActionValueType priority)
 {
-	FilterFilter *ff;
+	EMFilterRule *ff;
 	FilterPart   *fp;
 	FilterRule   *fr;
 	FilterElement *el;
 	char           s[MAXLEN];
 	int v;
 
-	ff = filter_filter_new ();
+	ff = em_filter_rule_new ();
 	fr = FILTER_RULE(ff);
 	
 	g_snprintf (s, MAXLEN, filter_name, ns_filter_action_value_types[priority]);
@@ -738,7 +737,7 @@ netscape_create_priority_converter (FilterContext *fc, NsFilterActionValueType p
 	filter_input_set_value ((FilterInput*)el,
 				ns_filter_action_value_types[priority]);
 	
-	fp = filter_context_create_action (fc, "score");
+	fp = em_filter_context_create_action (fc, "score");
 	el = filter_part_find_element (fp, "score");
 
 	switch (priority) {
@@ -763,14 +762,14 @@ netscape_create_priority_converter (FilterContext *fc, NsFilterActionValueType p
 	}
 
 	filter_int_set_value((FilterInt *)el, v);
-	filter_filter_add_action (ff, fp);
+	em_filter_rule_add_action (ff, fp);
 
 	return FILTER_RULE(ff);
 }
 
 
 static void
-netscape_add_priority_workaround_filters (FilterContext *fc)
+netscape_add_priority_workaround_filters (EMFilterContext *fc)
 {
 	FilterRule *fr;
 
@@ -823,11 +822,11 @@ netscape_filter_score_set (NsFilterCondition *cond, FilterInt *el)
 }
 
 
-static FilterFilter *
-netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *priority_needed)
+static EMFilterRule *
+netscape_filter_to_evol_filter (EMFilterContext *fc, NsFilter *nsf, gboolean *priority_needed)
 {
 	RuleContext  *rc = RULE_CONTEXT(fc);
-	FilterFilter *ff = NULL;
+	EMFilterRule *ff = NULL;
 	FilterPart   *fp;
 	FilterRule   *fr;
 	FilterElement *el;
@@ -835,7 +834,7 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 	gboolean      part_added = FALSE, action_added = FALSE;
 
 
-	ff = filter_filter_new ();
+	ff = em_filter_rule_new ();
 	fr = FILTER_RULE(ff);
 
 	filter_rule_set_name (fr, nsf->name);
@@ -1073,8 +1072,27 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 			filter_rule_add_part (fr, fp);
 			el = filter_part_find_element (fp, "header-field");
 			filter_input_set_value ((FilterInput *)el, cond->prop_val_str);
+			el = filter_part_find_element (fp, "word");
+			filter_input_set_value ((FilterInput *)el, cond->type_str);
 			el = filter_part_find_element (fp, "header-type");
-			filter_option_set_current ((FilterOption*)el, "exists");			
+			switch (cond->prop) {
+			case CONTAINS:
+				filter_option_set_current ((FilterOption*)el, "contains");
+				break;
+			case CONTAINS_NOT:
+				filter_option_set_current ((FilterOption*)el, "not contains");
+				break;
+			case IS:
+				filter_option_set_current ((FilterOption*)el, "is");
+				break;
+			case IS_NOT:
+				filter_option_set_current ((FilterOption*)el, "is not");
+				break;
+			default:
+				filter_rule_remove_part (fr, fp);
+				g_object_unref((fp));
+				continue;
+			}
 			part_added = TRUE;
 			break;
 		default:
@@ -1095,13 +1113,13 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 			char *evol_folder;
 			char *evol_folder_uri;
 
-			fp = filter_context_create_action (fc, "move-to-folder");
-			filter_filter_add_action (ff, fp);
+			fp = em_filter_context_create_action (fc, "move-to-folder");
+			em_filter_rule_add_action (ff, fp);
 			el = filter_part_find_element (fp, "folder");
 
 			evol_folder = netscape_filter_strip_sbd (nsf->action_val_str);
 			evol_folder_uri = netscape_filter_map_folder_to_uri (evol_folder);
-			filter_folder_set_value ((FilterFolder *)el, evol_folder_uri);
+			em_filter_folder_element_set_value ((EMFilterFolderElement *)el, evol_folder_uri);
 			g_free (evol_folder);
 			g_free (evol_folder_uri);
 
@@ -1109,7 +1127,7 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 		}
 		break;
 	case CHANGE_PRIORITY:
-		fp = filter_context_create_action (fc, "score");
+		fp = em_filter_context_create_action (fc, "score");
 		el = filter_part_find_element (fp, "score");
 
 		switch (nsf->action_val_id) {
@@ -1138,19 +1156,19 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 		}
 		if (action_added) {
 			*priority_needed = TRUE;
-			filter_filter_add_action (ff, fp);
+			em_filter_rule_add_action (ff, fp);
 		}
 		break;
 	case DELETE:
-		fp = filter_context_create_action (fc, "delete");
-		filter_filter_add_action (ff, fp);
+		fp = em_filter_context_create_action (fc, "delete");
+		em_filter_rule_add_action (ff, fp);
 		action_added = TRUE;
 		break;
 	case MARK_READ:
-		fp = filter_context_create_action (fc, "set-status");
+		fp = em_filter_context_create_action (fc, "set-status");
 		el = filter_part_find_element (fp, "flag");
 		filter_option_set_current ((FilterOption *)el, "Seen");
-		filter_filter_add_action (ff, fp);
+		em_filter_rule_add_action (ff, fp);
 		action_added = TRUE;
 		break;
 	case IGNORE_THREAD:
@@ -1173,12 +1191,12 @@ netscape_filter_to_evol_filter (FilterContext *fc, NsFilter *nsf, gboolean *prio
 static void
 netscape_import_filters (NsImporter *importer)
 {
-	FilterContext *fc;
+	EMFilterContext *fc;
 	char *user, *system;
 	FILE *mailrule_handle;
 	char *ns_mailrule;
 	NsFilter      *nsf;
-	FilterFilter  *ff;
+	EMFilterRule  *ff;
 	gboolean       priority_needed = FALSE;
 
 	ns_mailrule = gnome_util_prepend_user_home (".netscape/mailrule");
@@ -1191,9 +1209,8 @@ netscape_import_filters (NsImporter *importer)
 		return;
 	}
 
-	fc = filter_context_new ();
-	user = g_concat_dir_and_file (g_get_home_dir (),
-				      "evolution/filters.xml");
+	fc = em_filter_context_new ();
+	user = g_build_filename(g_get_home_dir (), "evolution/filters.xml");
 	system = EVOLUTION_PRIVDATADIR "/filtertypes.xml";
 
 	if (rule_context_load ((RuleContext *)fc, system, user) < 0) {
@@ -1223,11 +1240,7 @@ netscape_import_filters (NsImporter *importer)
 
 }
 
-
-
-
 /* Email folder & accounts stuff ----------------------------------------------- */
-
 
 static GtkWidget *
 create_importer_gui (NsImporter *importer)
@@ -1253,9 +1266,9 @@ netscape_store_settings (NsImporter *importer)
 {
 	GConfClient *gconf = gconf_client_get_default();
 
-	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/mail", importer->do_mail, NULL);
-	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/settings", importer->do_settings, NULL);
-	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/filters", importer->do_filters, NULL);
+	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/mail", importer->done_mail, NULL);
+	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/settings", importer->done_settings, NULL);
+	gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/filters", importer->done_filters, NULL);
 }
 
 static void
@@ -1263,9 +1276,9 @@ netscape_restore_settings (NsImporter *importer)
 {
 	GConfClient *gconf = gconf_client_get_default();
 
-	importer->do_mail = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/mail", NULL);
-	importer->do_settings = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/settings", NULL);
-	importer->do_filters = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/filters", NULL);
+	importer->done_mail = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/mail", NULL);
+	importer->done_settings = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/settings", NULL);
+	importer->done_filters = gconf_client_get_bool(gconf, "/apps/evolution/importer/netscape/filters", NULL);
 }
 
 static const char *
@@ -1442,16 +1455,14 @@ get_user_fullname (void)
 	uname = getenv ("USER");
 	pwd = getpwnam (uname);
 
-	if (strcmp (pwd->pw_gecos, "") == 0) {
+	if (strcmp (pwd->pw_gecos, "") == 0)
 		return g_strdup (uname);
-	}
 
 	special = strchr (pwd->pw_gecos, ',');
-	if (special == NULL) {
+	if (special == NULL)
 		gecos = g_strdup (pwd->pw_gecos);
-	} else {
+	else
 		gecos = g_strndup (pwd->pw_gecos, special - pwd->pw_gecos);
-	}
 
 	special = strchr (gecos, '&');
 	if (special == NULL) {
@@ -1472,17 +1483,14 @@ get_user_fullname (void)
 	}
 }
 
+/* Needs to run in gui thread */
 static void
 netscape_import_accounts (NsImporter *importer)
 {
 	char *username;
 	const char *nstr;
 	const char *imap;
-	GNOME_Evolution_MailConfig_Account account;
-	GNOME_Evolution_MailConfig_Service source, transport;
-	GNOME_Evolution_MailConfig_Identity id;
-	CORBA_Object objref;
-	CORBA_Environment ev;
+	EAccount *account;
 
 	if (user_prefs == NULL) {
 		netscape_init_prefs ();
@@ -1490,97 +1498,74 @@ netscape_import_accounts (NsImporter *importer)
 			return;
 	}
 
-	CORBA_exception_init (&ev);
-	objref = bonobo_activation_activate_from_id (MAIL_CONFIG_IID, 0, NULL, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Error starting mail config");
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	if (objref == CORBA_OBJECT_NIL) {
-		g_warning ("Error activating mail config");
-		return;
-	}
-
 	/* Create identify structure */
 	nstr = netscape_get_string ("mail.identity.username");
-	if (nstr != NULL) {
+	if (nstr != NULL)
 		username = g_strdup (nstr);
-	} else {
+	else
 		username = get_user_fullname ();
-	}
 
-	id.name = CORBA_string_dup (username);
-	nstr = netscape_get_string ("mail.identity.useremail");
-	id.address = CORBA_string_dup (nstr ? nstr : "");
-	nstr = netscape_get_string ("mail.identity.organization");
-	id.organization = CORBA_string_dup (nstr ? nstr : "");
+	account = e_account_new();
+
+	account->id->name = g_strdup(username);
+	account->id->address = g_strdup(netscape_get_string("mail.identity.useremail"));
+	account->id->organization = g_strdup(netscape_get_string("mail.identity.organization"));
+
 	nstr = netscape_get_string ("mail.signature_file");
-	/* FIXME rodo id.signature = CORBA_string_dup (nstr ? nstr : "");
-	id.html_signature = CORBA_string_dup ("");
-	id.has_html_signature = FALSE; */
+	if (nstr != NULL) {
+		ESignature *sig;
+		char *cmd;
+		
+		sig = mail_config_signature_new (NULL, FALSE, FALSE);
+		mail_config_add_signature (sig);
+		account->id->sig_uid = g_strdup (sig->uid);
+		
+		/* HACK: yeah this is a hack, who cares? */
+		cmd = g_strdup_printf("cp \'%s\' \'%s\'", nstr, sig->filename);
+		system(cmd);
+		g_free(cmd);
+	}
 
 	/* Create transport */
 	nstr = netscape_get_string ("network.hosts.smtp_server");
 	if (nstr != NULL) {
-		char *url;
 		const char *nstr2;
 
 		nstr2 = netscape_get_string ("mail.smtp_name");
-		if (nstr2) {
-			url = g_strconcat ("smtp://", nstr2, "@", nstr, NULL);
-		} else {
-			url = g_strconcat ("smtp://", nstr, NULL);
-		}
-		transport.url = CORBA_string_dup (url);
-		transport.keep_on_server = FALSE;
-		transport.auto_check = FALSE;
-		transport.auto_check_time = 10;
-		transport.save_passwd = FALSE;
-		transport.enabled = TRUE;
-		g_free (url);
+		if (nstr2)
+			account->transport->url = g_strconcat ("smtp://", nstr2, "@", nstr, NULL);
+		else
+			account->transport->url = g_strconcat ("smtp://", nstr, NULL);
 	} else {
-		transport.url = CORBA_string_dup ("");
-		transport.keep_on_server = FALSE;
-		transport.auto_check = FALSE;
-		transport.auto_check_time = 0;
-		transport.save_passwd = FALSE;
-		transport.enabled = FALSE;
+		account->transport->url = g_strdup("");
 	}
 
-	/* Create account */
-	account.name = CORBA_string_dup (username);
-	account.id = id;
-	account.transport = transport;
+	account->transport->keep_on_server = FALSE;
+	account->transport->auto_check = FALSE;
+	account->transport->auto_check_time = 10;
+	account->transport->save_passwd = FALSE;
 
-	account.drafts_folder_uri = CORBA_string_dup ("");
-	account.sent_folder_uri = CORBA_string_dup ("");
+	/*transport.enabled = FALSE;*/
+
+	/* Create account */
+	account->drafts_folder_uri = em_uri_from_camel(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_DRAFTS));
+	account->sent_folder_uri = em_uri_from_camel(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_SENT));
 
 	/* Create POP3 source */
 	nstr = netscape_get_string ("network.hosts.pop_server");
 	if (nstr != NULL && *nstr != 0) {
-		char *url;
-		gboolean bool;
 		const char *nstr2;
 
 		nstr2 = netscape_get_string ("mail.pop_name");
-		if (nstr2) {
-			url = g_strconcat ("pop://", nstr2, "@", nstr, NULL);
-		} else {
-			url = g_strconcat ("pop://", nstr, NULL);
-		}
-		source.url = CORBA_string_dup (url);
-		bool = netscape_get_boolean ("mail.leave_on_server");
-		g_warning ("mail.leave_on_server: %s", bool ? "true" : "false");
-		source.keep_on_server = netscape_get_boolean ("mail.leave_on_server");
-		source.auto_check = TRUE;
-		source.auto_check_time = 10;
-		bool = netscape_get_boolean ("mail.remember_password");
-		g_warning ("mail.remember_password: %s", bool ? "true" : "false");
-		source.save_passwd = netscape_get_boolean ("mail.remember_password");
-		source.enabled = TRUE;
-		g_free (url);
+		if (nstr2)
+			account->source->url = g_strconcat ("pop://", nstr2, "@", nstr, NULL);
+		else
+			account->source->url = g_strconcat ("pop://", nstr, NULL);
+		account->source->keep_on_server = netscape_get_boolean ("mail.leave_on_server");
+		account->source->auto_check = TRUE;
+		account->source->auto_check_time = 10;
+		account->source->save_passwd = netscape_get_boolean ("mail.remember_password");
+		account->enabled = TRUE;
 	} else {
 		/* Are there IMAP accounts? */
 		imap = netscape_get_string ("network.hosts.imap_servers");
@@ -1588,11 +1573,14 @@ netscape_import_accounts (NsImporter *importer)
 			char **servers;
 			int i;
 
-			servers = g_strsplit (imap, ",", 1024);
+			servers = g_strsplit (imap, ",", 0);
 			for (i = 0; servers[i] != NULL; i++) {
-				GNOME_Evolution_MailConfig_Service imapsource;
-				char *serverstr, *name, *url;
+				char *serverstr, *name;
 				const char *username;
+				EAccount *imap;
+
+				imap = e_account_new();
+				e_account_import(imap, account);
 
 				/* Create a server for each of these */
 				serverstr = g_strdup_printf ("mail.imap.server.%s.", servers[i]);
@@ -1601,71 +1589,46 @@ netscape_import_accounts (NsImporter *importer)
 				g_free (name);
 
 				if (username)
-					url = g_strconcat ("imap://", username,
-							   "@", servers[i], NULL);
+					imap->source->url = g_strconcat ("imap://", username, "@", servers[i], NULL);
 				else
-					url = g_strconcat ("imap://", servers[i], NULL);
+					imap->source->url = g_strconcat ("imap://", servers[i], NULL);
 
-				imapsource.url = CORBA_string_dup (url);
-				
-				imapsource.keep_on_server = netscape_get_boolean ("mail.leave_on_server");
+				imap->source->keep_on_server = netscape_get_boolean ("mail.leave_on_server");
 				
 				name = g_strconcat (serverstr, "check_new_mail", NULL);
-				imapsource.auto_check = netscape_get_boolean (name);
+				imap->source->auto_check = netscape_get_boolean (name);
 				g_free (name);
 
 				name = g_strconcat (serverstr, "check_time", NULL);
-				imapsource.auto_check_time = netscape_get_integer (name);
+				imap->source->auto_check_time = netscape_get_integer (name);
 				g_free (name);
 
 				name = g_strconcat (serverstr, "remember_password", NULL);
-				imapsource.save_passwd = netscape_get_boolean (name);
+				imap->source->save_passwd = netscape_get_boolean (name);
 				g_free (name);
-				imapsource.enabled = TRUE;
 
-				account.source = imapsource;
+				imap->enabled = TRUE;
 
-				GNOME_Evolution_MailConfig_addAccount (objref, &account, &ev);
-				if (ev._major != CORBA_NO_EXCEPTION) {
-					g_warning ("Error setting account: %s", CORBA_exception_id (&ev));
-					CORBA_exception_free (&ev);
-					return;
-				}
-				
-				g_free (url);
+				mail_config_add_account(imap);
 				g_free (serverstr);
 			}
 
-			CORBA_exception_free (&ev);			
+			g_object_unref(account);
 			g_strfreev (servers);
 			return;
 		} else {
-			char *url, *path;
-
 			/* Using Movemail */
-			path = getenv ("MAIL");
-			url = g_strconcat ("mbox://", path, NULL);
-			source.url = CORBA_string_dup (url);
-			g_free (url);
-
-			source.keep_on_server = netscape_get_boolean ("mail.leave_on_server");
-			source.auto_check = TRUE;
-			source.auto_check_time = 10;
-			source.save_passwd = netscape_get_boolean ("mail.remember_password");
-			source.enabled = FALSE;
+			account->source->url = g_strconcat ("mbox://", getenv("MAIL"), NULL);
+			account->source->keep_on_server = netscape_get_boolean ("mail.leave_on_server");
+			account->source->auto_check = TRUE;
+			account->source->auto_check_time = 10;
+			account->source->save_passwd = netscape_get_boolean ("mail.remember_password");
+			account->enabled = TRUE;
 		}
 	}
-	account.source = source;
 
-	GNOME_Evolution_MailConfig_addAccount (objref, &account, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Error setting account: %s", CORBA_exception_id (&ev));
-		CORBA_exception_free (&ev);
-		return;
-	}
-	
-	g_free (username);
-	CORBA_exception_free (&ev);
+	mail_config_add_account(account);
+	g_free(username);
 }
 
 static gboolean
@@ -1709,324 +1672,177 @@ is_dir_empty (const char *path)
 }
 
 static gboolean
-netscape_can_import (EvolutionIntelligentImporter *ii,
-		     void *closure)
+netscape_can_import(EvolutionIntelligentImporter *ii, void *data)
 {
-	if (user_prefs == NULL) {
+	int can;
+	NsImporter *importer = data;
+
+	if (user_prefs == NULL)
 		netscape_init_prefs ();
-	}
 
-	if (user_prefs == NULL) {
-		d(g_warning ("No netscape dir"));
-		return FALSE;
-	}
+	can = user_prefs
+		&& (nsmail_dir = g_hash_table_lookup (user_prefs, "mail.directory")) != NULL
+		&& !is_dir_empty(nsmail_dir);
 
-	nsmail_dir = g_hash_table_lookup (user_prefs, "mail.directory");
-	if (nsmail_dir == NULL) {
-		return FALSE;
-	} else {
-		return !is_dir_empty (nsmail_dir);
-	}
+	importer->do_mail = can && !importer->done_mail;
+	importer->do_settings = can && !importer->done_settings;
+	importer->do_filters = importer->do_mail && !importer->done_filters;
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (importer->mail), importer->do_mail);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (importer->settings), importer->do_settings);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (importer->mail), importer->do_filters);
+
+	return can;
 }
 
-static void
-importer_cb (EvolutionImporterListener *listener,
-	     EvolutionImporterResult result,
-	     gboolean more_items,
-	     void *data)
-{
-	NsImporter *importer = (NsImporter *) data;
+struct _netscape_import_msg {
+	struct _mail_msg msg;
 
-	importer->result = result;
-	importer->more = more_items;
-}
-
-static gboolean
-netscape_import_file (NsImporter *importer,
-		      const char *path,
-		      const char *folderpath)
-{
-	CORBA_boolean result;
-	CORBA_Environment ev;
-	CORBA_Object objref;
-	char *str, *uri;
-
-	/* Do import of mail folder */
-	d(g_warning ("Importing %s as %s", path, folderpath));
-
-	CORBA_exception_init (&ev);
-	
-	str = g_strdup_printf (_("Importing %s as %s"), path, folderpath);
-	gtk_label_set_text (GTK_LABEL (importer->label), str);
-	g_free (str);
-	while (g_main_context_iteration(NULL, FALSE))
-		;
-
-	uri = mail_importer_make_local_folder(folderpath);
-	if (!uri)
-		return FALSE;
-
-	result = GNOME_Evolution_Importer_loadFile (importer->importer, path, uri, "", &ev);
-	g_free(uri);
-	if (ev._major != CORBA_NO_EXCEPTION || result == FALSE) {
-		g_warning ("Exception here: %s", CORBA_exception_id (&ev));
-		CORBA_exception_free (&ev);
-		return FALSE;
-	}
-
-	/* process all items in a direct loop */
-	importer->listener = evolution_importer_listener_new (importer_cb, importer);
-	objref = bonobo_object_corba_objref (BONOBO_OBJECT (importer->listener));
-	do {
-		importer->progress_count++;
-		if ((importer->progress_count & 0xf) == 0)
-			gtk_progress_bar_pulse(GTK_PROGRESS_BAR(importer->progressbar));
-
-		importer->result = -1;
-		GNOME_Evolution_Importer_processItem (importer->importer, objref, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("Exception: %s", CORBA_exception_id (&ev));
-			break;
-		}
-
-		while (importer->result == -1 || g_main_context_pending(NULL))
-			g_main_context_iteration(NULL, TRUE);
-	} while (importer->more);
-	bonobo_object_unref((BonoboObject *)importer->listener);
-	CORBA_exception_free (&ev);
-
-	return FALSE;
-}
-
-typedef struct {
 	NsImporter *importer;
-	char *parent;
-	char *path;
-	char *foldername;
-} NetscapeCreateDirectoryData;
+};
 
-static void
-import_next (NsImporter *importer)
+static char *
+netscape_import_describe (struct _mail_msg *mm, int complete)
 {
-	NetscapeCreateDirectoryData *data;
-
-trynext:
-	if (importer->dir_list) {
-		char *folder;
-		GList *l;
-		int ok;
-
-		l = importer->dir_list;
-		data = l->data;
-
-		folder = g_build_filename(data->parent, data->foldername, NULL);
-
-		importer->dir_list = l->next;
-		g_list_free_1(l);
-
-		ok = netscape_import_file (importer, data->path, folder);
-		g_free (folder);
-		g_free (data->parent);
-		g_free (data->path);
-		g_free (data->foldername);
-		g_free (data);
-		if (!ok)
-			goto trynext;
-	} else {
-		bonobo_object_unref((BonoboObject *)importer->ii);
-	}
+	return g_strdup (_("Importing Netscape data"));
 }
 
-/* We don't allow any mail to be imported into a reservered Evolution folder name */
-static char *reserved_names[] = {
-	N_("Trash"),
-	N_("Calendar"),
-	N_("Contacts"),
-	N_("Tasks"),
-	NULL
+/* Translations ? */
+static MailImporterSpecial netscape_special_folders[] = {
+	{ "Trash", "Netscape-Trash" },
+	{ "Calendar", "Netscape-Calendar" },
+	{ "Contacts", "Netscape-Contacts" },
+	{ "Tasks", "Netscape-Tasks" },
+	{ "Unsent Messages", "Outbox" },
+	{ 0 },
 };
-	
-static char *
-fix_netscape_folder_names (const char *original_name)
+
+static const char *fix_netscape_folder_names (const char *original_name)
 {
 	int i;
 
-	for (i = 0; reserved_names[i] != NULL; i++) {
-		if (strcmp (original_name, _(reserved_names[i])) == 0) {
-			return g_strdup_printf ("Netscape-%s",
-						_(reserved_names[i]));
-		}
-	}
-	
-	if (strcmp (original_name, "Unsent Messages") == 0) {
-		return g_strdup ("Outbox");
-	} 
+	for (i=0;netscape_special_folders[i].orig;i++)
+		if (strcmp(netscape_special_folders[i].orig, original_name) == 0)
+			return netscape_special_folders[i].new;
 
-	return g_strdup (original_name);
+	return original_name;
 }
 
-/* This function basically flattens the tree structure.
-   It makes a list of all the directories that are to be imported. */
 static void
-scan_dir (NsImporter *importer,
-	  const char *orig_parent,
-	  const char *dirname)
+netscape_import_import(struct _mail_msg *mm)
 {
-	DIR *nsmail;
-	struct stat buf;
-	struct dirent *current;
-	char *str;
+	struct _netscape_import_msg *m = (struct _netscape_import_msg *) mm;
 
-	nsmail = opendir (dirname);
-	if (nsmail == NULL) {
-		d(g_warning ("Could not open %s\nopendir returned: %s", 
-			     dirname, g_strerror (errno)));
-		return;
-	}
-
-	str = g_strdup_printf (_("Scanning %s"), dirname);
-	gtk_label_set_text (GTK_LABEL (importer->label), str);
-	g_free (str);
-
-	while (gtk_events_pending ()) {
-		gtk_main_iteration ();
-	}
-
-	current = readdir (nsmail);
-	while (current) {
-		char *fullname, *foldername;
-
-		/* Ignore things which start with . 
-		   which should be ., .., and the summaries. */
-		if (current->d_name[0] =='.') {
-			current = readdir (nsmail);
-			continue;
-		}
-
-		if (*orig_parent == '/') {
-			foldername = fix_netscape_folder_names (current->d_name);
-		} else {
-			foldername = g_strdup (current->d_name);
-		}
-
-		fullname = g_concat_dir_and_file (dirname, current->d_name);
-		if (stat (fullname, &buf) == -1) {
-			d(g_warning ("Could not stat %s\nstat returned:%s",
-				     fullname, g_strerror (errno)));
-			current = readdir (nsmail);
-			g_free (fullname);
-			continue;
-		}
-
-		if (S_ISREG (buf.st_mode)) {
-			char *sbd, *parent;
-			NetscapeCreateDirectoryData *data;
-
-			d(g_print ("File: %s\n", fullname));
-
-			data = g_new0 (NetscapeCreateDirectoryData, 1);
-			data->importer = importer;
-			data->parent = g_strdup (orig_parent);
-			data->path = g_strdup (fullname);
-			data->foldername = g_strdup (foldername);
-
-			importer->dir_list = g_list_append (importer->dir_list,
-							    data);
-
-	
-			parent = g_concat_dir_and_file (orig_parent, 
-							data->foldername);
-			
-			/* Check if a .sbd folder exists */
-			sbd = g_strconcat (fullname, ".sbd", NULL);
-			if (g_file_exists (sbd)) {
-				scan_dir (importer, parent, sbd);
-			}
-			
-			g_free (parent);
-			g_free (sbd);
-		} 
-		
-		g_free (fullname);
-		g_free (foldername);
-		current = readdir (nsmail);
-	}
+	if (m->importer->do_mail)
+		mail_importer_import_folders_sync(nsmail_dir, netscape_special_folders, MAIL_IMPORTER_MOZFMT, m->importer->cancel);
 }
 
+static void
+netscape_import_imported(struct _mail_msg *mm)
+{
+}
 
 static void
-netscape_create_structure (EvolutionIntelligentImporter *ii,
-			   void *closure)
+netscape_import_free(struct _mail_msg *mm)
+{
+}
+
+static struct _mail_msg_op netscape_import_op = {
+	netscape_import_describe,
+	netscape_import_import,
+	netscape_import_imported,
+	netscape_import_free,
+};
+
+static int
+mail_importer_netscape_import(NsImporter *importer)
+{
+	struct _netscape_import_msg *m;
+	int id;
+
+	m = mail_msg_new(&netscape_import_op, NULL, sizeof (*m));
+	m->importer = importer;
+
+	id = m->msg.seq;
+
+	/* Need to do these in gui thread, and should be quick anyway */
+	if (m->importer->do_mail && m->importer->do_filters)
+		netscape_import_filters(m->importer);
+	if (m->importer->do_settings)
+		netscape_import_accounts(m->importer);
+	
+	e_thread_put(mail_thread_queued, (EMsg *) m);
+
+	return id;
+}
+
+static void
+netscape_status(CamelOperation *op, const char *what, int pc, void *data)
+{
+	NsImporter *importer = data;
+
+	if (pc == CAMEL_OPERATION_START)
+		pc = 0;
+	else if (pc == CAMEL_OPERATION_END)
+		pc = 100;
+
+	g_mutex_lock(importer->status_lock);
+	g_free(importer->status_what);
+	importer->status_what = g_strdup(what);
+	importer->status_pc = pc;
+	g_mutex_unlock(importer->status_lock);
+}
+
+static gboolean
+netscape_status_timeout(void *data)
+{
+	NsImporter *importer = data;
+	int pc;
+	char *what;
+
+	if (!importer->status_what)
+		return TRUE;
+
+	g_mutex_lock(importer->status_lock);
+	what = importer->status_what;
+	importer->status_what = NULL;
+	pc = importer->status_pc;
+	g_mutex_unlock(importer->status_lock);
+
+	gtk_progress_bar_set_fraction((GtkProgressBar *)importer->progressbar, (gfloat)(pc/100.0));
+	gtk_progress_bar_set_text((GtkProgressBar *)importer->progressbar, what);
+	
+	return TRUE;
+}
+
+static void
+netscape_create_structure (EvolutionIntelligentImporter *ii, void *closure)
 {
 	NsImporter *importer = closure;
-	GConfClient *gconf = gconf_client_get_default();
 
-	g_return_if_fail (nsmail_dir != NULL);
-
-	/* Reference our object so when the shell release_unrefs us
-	   we will still exist and not go byebye */
-	bonobo_object_ref (BONOBO_OBJECT (ii));
-
-	netscape_store_settings (importer);
-
-	/* Create a dialog if we're going to be active */
-	/* Importing mail filters is not a criterion because it makes
-	   little sense to import the filters but not the mail folders. */
-	if (importer->do_settings == TRUE ||
-	    importer->do_mail == TRUE) {
+	if (importer->do_settings || importer->do_mail) {
 		importer->dialog = create_importer_gui (importer);
 		gtk_widget_show_all (importer->dialog);
-		while (gtk_events_pending ()) {
-			gtk_main_iteration ();
-		}
+		importer->status_timeout_id = g_timeout_add(100, netscape_status_timeout, importer);
+		importer->cancel = camel_operation_new(netscape_status, importer);
+
+		mail_msg_wait(mail_importer_netscape_import(importer));
+
+		camel_operation_unref(importer->cancel);
+		g_source_remove(importer->status_timeout_id);
+		importer->status_timeout_id = 0;
+
+		if (importer->do_settings)
+			importer->done_settings = TRUE;
+		if (importer->do_mail)
+			importer->done_mail = TRUE;
+		if (importer->do_filters)
+			importer->done_filters = TRUE;
 	}
 
-	if (importer->do_settings == TRUE) {
-		gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/settings-imported", TRUE, NULL);
-		netscape_import_accounts (importer);
-	}
+	netscape_store_settings(importer);
 
-	if (importer->do_mail == TRUE) {
-
-		/* Import the mail filters if needed ... */
-		if (importer->do_filters == TRUE) {
-			gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/filters-imported", TRUE, NULL);
-			gtk_label_set_text (GTK_LABEL (importer->label), 
-					    _("Scanning mail filters"));
-
-			netscape_import_filters (importer);
-		}
-
-		gconf_client_set_bool(gconf, "/apps/evolution/importer/netscape/mail-imported", TRUE, NULL);
-
-		/* Scan the nsmail folder and find out what folders 
-		   need to be imported */
-
-		gtk_label_set_text (GTK_LABEL (importer->label), 
-				    _("Scanning directory"));
-		while (gtk_events_pending ()) {
-			gtk_main_iteration ();
-		}
-
-		scan_dir (importer, "/", nsmail_dir);
-		
-		/* Import them */
-		gtk_label_set_text (GTK_LABEL (importer->label),
-				    _("Starting import"));
-		while (gtk_events_pending ()) {
-			gtk_main_iteration ();
-		}
-		import_next (importer);		
-       	}
-
-	if (importer->do_mail == FALSE) {
-		/* Destroy it here if we weren't importing mail
-		   otherwise the mail importer destroys itself
-		   once the mail in imported */
-		bonobo_object_unref (BONOBO_OBJECT (ii));
-	}
-
-	bonobo_object_unref (BONOBO_OBJECT (ii));
+	bonobo_object_unref(BONOBO_OBJECT(ii));
 }
 
 static void
@@ -2034,9 +1850,10 @@ netscape_destroy_cb (NsImporter *importer, GObject *object)
 {
 	netscape_store_settings (importer);
 
-	if (importer->importer != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (importer->importer, NULL);
-	}
+	if (importer->status_timeout_id)
+		g_source_remove(importer->status_timeout_id);
+	g_free(importer->status_what);
+	g_mutex_free(importer->status_lock);
 
 	if (importer->dialog)
 		gtk_widget_destroy(importer->dialog);
@@ -2107,56 +1924,27 @@ create_checkboxes_control (NsImporter *importer)
 	return control;
 }
 	
-static BonoboObject *
-factory_fn (BonoboGenericFactory *_factory,
-	    const char *iid,
-	    void *closure)
+BonoboObject *
+netscape_intelligent_importer_new(void)
 {
 	EvolutionIntelligentImporter *importer;
 	BonoboControl *control;
 	NsImporter *netscape;
-	CORBA_Environment ev;
 	char *message = N_("Evolution has found Netscape mail files.\n"
 			   "Would you like them to be imported into Evolution?");
 	
 	netscape = g_new0 (NsImporter, 1);
-
-	CORBA_exception_init (&ev);
-
+	netscape->status_lock = g_mutex_new();
 	netscape_restore_settings (netscape);
-
-	netscape->importer = bonobo_activation_activate_from_id (MBOX_IMPORTER_IID, 0, NULL, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Could not start MBox importer\n%s", CORBA_exception_id (&ev));
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-	CORBA_exception_free (&ev);
-
 	importer = evolution_intelligent_importer_new (netscape_can_import,
 						       netscape_create_structure,
 						       "Netscape", 
 						       _(message), netscape);
-	g_object_weak_ref(G_OBJECT (importer), (GWeakNotify)netscape_destroy_cb, netscape);
+	g_object_weak_ref(G_OBJECT(importer), (GWeakNotify)netscape_destroy_cb, netscape);
 	netscape->ii = importer;
 
-	control = create_checkboxes_control (netscape);
-	bonobo_object_add_interface (BONOBO_OBJECT (importer),
-				     BONOBO_OBJECT (control));
-	return BONOBO_OBJECT (importer);
-}
+	control = create_checkboxes_control(netscape);
+	bonobo_object_add_interface(BONOBO_OBJECT(importer), BONOBO_OBJECT(control));
 
-void
-mail_importer_module_init (void)
-{
-	BonoboGenericFactory *factory;
-	static int init = FALSE;
-
-	if (init)
-		return;
-
-	factory = bonobo_generic_factory_new (FACTORY_IID, factory_fn, NULL);
-	if (factory == NULL)
-		g_warning("Could not initialise Netscape intelligent mail importer");
-	init = 1;
+	return BONOBO_OBJECT(importer);
 }

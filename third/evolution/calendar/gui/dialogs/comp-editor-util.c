@@ -24,17 +24,17 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <ical.h>
+#include <libical/ical.h>
 #include <glib.h>
 #include <gtk/gtklabel.h>
 #include <libgnome/gnome-i18n.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-widget.h>
-#include <ebook/e-destination.h>
 #include <e-util/e-time-utils.h>
-#include <cal-util/timeutil.h>
+#include <libecal/e-cal-time-util.h>
 #include "../calendar-config.h"
+#include "../e-date-edit-config.h"
 #include "comp-editor-util.h"
 
 
@@ -49,37 +49,37 @@
  * results.
  **/
 void
-comp_editor_dates (CompEditorPageDates *dates, CalComponent *comp)
+comp_editor_dates (CompEditorPageDates *dates, ECalComponent *comp)
 {
-	CalComponentDateTime dt;
+	ECalComponentDateTime dt;
 
 	dates->start = NULL;
 	dates->end = NULL;
 	dates->due = NULL;
 	dates->complete = NULL;
 	
-	/* Note that the CalComponentDateTime's returned contain allocated
+	/* Note that the ECalComponentDateTime's returned contain allocated
 	   icaltimetype and tzid values, so we just take over ownership of
 	   those. */
-	cal_component_get_dtstart (comp, &dt);
+	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value) {
-		dates->start = g_new (CalComponentDateTime, 1);
+		dates->start = g_new (ECalComponentDateTime, 1);
 		*dates->start = dt;
 	}
 
-	cal_component_get_dtend (comp, &dt);
+	e_cal_component_get_dtend (comp, &dt);
 	if (dt.value) {
-		dates->end = g_new (CalComponentDateTime, 1);
+		dates->end = g_new (ECalComponentDateTime, 1);
 		*dates->end = dt;
 	}
 
-	cal_component_get_due (comp, &dt);
+	e_cal_component_get_due (comp, &dt);
 	if (dt.value) {
-		dates->due = g_new (CalComponentDateTime, 1);
+		dates->due = g_new (ECalComponentDateTime, 1);
 		*dates->due = dt;
 	}
 
-	cal_component_get_completed (comp, &dates->complete);
+	e_cal_component_get_completed (comp, &dates->complete);
 }
 
 
@@ -89,25 +89,25 @@ comp_editor_dates (CompEditorPageDates *dates, CalComponent *comp)
 void
 comp_editor_free_dates (CompEditorPageDates *dates)
 {
-	/* Note that cal_component_free_datetime() only frees the fields in
+	/* Note that e_cal_component_free_datetime() only frees the fields in
 	   the struct. It doesn't free the struct itself, so we do that. */
 	if (dates->start) {
-		cal_component_free_datetime (dates->start);
+		e_cal_component_free_datetime (dates->start);
 		g_free (dates->start);
 	}
 
 	if (dates->end) {
-		cal_component_free_datetime (dates->end);
+		e_cal_component_free_datetime (dates->end);
 		g_free (dates->end);
 	}
 
 	if (dates->due) {
-		cal_component_free_datetime (dates->due);
+		e_cal_component_free_datetime (dates->due);
 		g_free (dates->due);
 	}
 
 	if (dates->complete)
-		cal_component_free_icaltimetype (dates->complete);
+		e_cal_component_free_icaltimetype (dates->complete);
 }
 
 
@@ -203,6 +203,14 @@ comp_editor_date_label (CompEditorPageDates *dates, GtkWidget *label)
 	gtk_label_set_text (GTK_LABEL (label), buffer);
 }
 
+static void
+date_edit_destroy_cb (EDateEdit *date_edit, gpointer data)
+{
+	EDateEditConfig *config = data;
+	
+	g_object_unref (config);
+}
+
 /**
  * comp_editor_new_date_edit:
  * @show_date: Whether to show a date picker in the widget.
@@ -220,7 +228,8 @@ comp_editor_new_date_edit (gboolean show_date, gboolean show_time,
 			   gboolean make_time_insensitive)
 {
 	EDateEdit *dedit;
-
+	EDateEditConfig *config;
+	
 	dedit = E_DATE_EDIT (e_date_edit_new ());
 
 	e_date_edit_set_show_date (dedit, show_date);
@@ -230,8 +239,10 @@ comp_editor_new_date_edit (gboolean show_date, gboolean show_time,
 #else
 	e_date_edit_set_make_time_insensitive (dedit, FALSE);
 #endif
-	calendar_config_configure_e_date_edit (dedit);
-
+	
+	config = e_date_edit_config_new (dedit);
+	g_signal_connect (G_OBJECT (dedit), "destroy", G_CALLBACK (date_edit_destroy_cb), config);
+	
 	return GTK_WIDGET (dedit);
 }
 
@@ -243,14 +254,12 @@ comp_editor_new_date_edit (gboolean show_date, gboolean show_time,
 struct tm
 comp_editor_get_current_time (GtkObject *object, gpointer data)
 {
-	char *location;
 	icaltimezone *zone;
 	struct icaltimetype tt;
 	struct tm tmp_tm = { 0 };
 
 	/* Get the current timezone. */
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
+	zone = calendar_config_get_icaltimezone ();
 
 	tt = icaltime_from_timet_with_zone (time (NULL), FALSE, zone);
 

@@ -2,7 +2,7 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * Copyright (C) 1999, 2000 Ximian Inc.
+ * Copyright (C) 1999, 2003 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -34,7 +34,6 @@
 
 #include "camel-mh-folder.h"
 #include "camel-mh-store.h"
-#include "string-utils.h"
 #include "camel-stream-fs.h"
 #include "camel-mh-summary.h"
 #include "camel-data-wrapper.h"
@@ -198,7 +197,9 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID, _("Cannot get message: %s\n  %s"), uid, _("No such message"));
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
+				     _("No such message"));
 		return NULL;
 	}
 
@@ -207,18 +208,18 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 
 	name = g_strdup_printf("%s/%s", lf->folder_path, uid);
 	if ((message_stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0)) == NULL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				      _("Cannot get message: %s\n  %s"),
-				      name, g_strerror (errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
+				      g_strerror (errno));
 		g_free(name);
 		return NULL;
 	}
 
 	message = camel_mime_message_new();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				      _("Cannot get message: %s\n  %s"),
-				      name, _("Invalid message contents"));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
+				      _("Message construction failed."));
 		g_free(name);
 		camel_object_unref((CamelObject *)message_stream);
 		camel_object_unref((CamelObject *)message);

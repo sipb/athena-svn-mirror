@@ -7,7 +7,7 @@
  *  Jeffrey Stedfast <fejj@ximian.com>
  *  Bertrand Guiheneuf <bertrand@helixcode.com>
  *
- * Copyright 1999 - 2001 Ximian, Inc.
+ * Copyright 1999 - 2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -28,31 +28,25 @@
 #include <config.h>
 #endif
 
-#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-transport.h"
 #include "camel-exception.h"
-#include "string-utils.h"
+#include "camel-file-utils.h"
+#include "camel-string-utils.h"
 #include "camel-url.h"
-#include "camel-vee-store.h"
 
 #include "camel-private.h"
 
 #define d(x)
 
-#define CS_CLASS(so) CAMEL_SESSION_CLASS (CAMEL_OBJECT_GET_CLASS (so))
-
-static void register_provider (CamelSession *session, CamelProvider *provider);
-static GList *list_providers (CamelSession *session, gboolean load);
-static CamelProvider *get_provider (CamelSession *session,
-				    const char *url_string,
-				    CamelException *ex);
+#define CS_CLASS(so) ((CamelSessionClass *)((CamelObject *)so)->klass)
 
 static CamelService *get_service (CamelSession *session,
 				  const char *url_string,
@@ -62,78 +56,39 @@ static char *get_storage_path (CamelSession *session,
 			       CamelService *service,
 			       CamelException *ex);
 
-#ifdef ENABLE_THREADS
 static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size);
 static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg);
 static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags);
 static void session_thread_wait(CamelSession *session, int id);
-#endif
-
-/* The vfolder provider is always available */
-static CamelProvider vee_provider = {
-	"vfolder",
-	N_("Virtual folder email provider"),
-	
-	N_("For reading mail as a query of another set of folders"),
-	
-	"vfolder",
-	
-	CAMEL_PROVIDER_IS_STORAGE,
-	
-	CAMEL_URL_NEED_PATH, /* url_flags */
-	
-	/* ... */
-};
+static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const char *text, int pc);
 
 static void
 camel_session_init (CamelSession *session)
 {
 	session->online = TRUE;
-	session->modules = camel_provider_init ();
-	session->providers = g_hash_table_new (g_strcase_hash, g_strcase_equal);
 	session->priv = g_malloc0(sizeof(*session->priv));
-#ifdef ENABLE_THREADS
+	
 	session->priv->lock = g_mutex_new();
 	session->priv->thread_lock = g_mutex_new();
 	session->priv->thread_id = 1;
 	session->priv->thread_active = g_hash_table_new(NULL, NULL);
 	session->priv->thread_queue = NULL;
-#endif
-}
-
-static gboolean
-camel_session_destroy_provider (gpointer key, gpointer value, gpointer user_data)
-{
-	CamelProvider *prov = (CamelProvider *)value;
-	int i;
-
-	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
-		if (prov->service_cache[i])
-			camel_object_bag_destroy (prov->service_cache[i]);
-	}
-	return TRUE;
 }
 
 static void
 camel_session_finalise (CamelObject *o)
 {
 	CamelSession *session = (CamelSession *)o;
-
-#ifdef ENABLE_THREADS
+	
 	g_hash_table_destroy(session->priv->thread_active);
 	if (session->priv->thread_queue)
 		e_thread_destroy(session->priv->thread_queue);
-#endif
 
 	g_free(session->storage_path);
-	g_hash_table_foreach_remove (session->providers,
-				     camel_session_destroy_provider, NULL);
-	g_hash_table_destroy (session->providers);
-
-#ifdef ENABLE_THREADS
+	
 	g_mutex_free(session->priv->lock);
 	g_mutex_free(session->priv->thread_lock);
-#endif
+	
 	g_free(session->priv);
 }
 
@@ -141,22 +96,14 @@ static void
 camel_session_class_init (CamelSessionClass *camel_session_class)
 {
 	/* virtual method definition */
-	camel_session_class->register_provider = register_provider;
-	camel_session_class->list_providers = list_providers;
-	camel_session_class->get_provider = get_provider;
 	camel_session_class->get_service = get_service;
 	camel_session_class->get_storage_path = get_storage_path;
-
-#ifdef ENABLE_THREADS
+	
 	camel_session_class->thread_msg_new = session_thread_msg_new;
 	camel_session_class->thread_msg_free = session_thread_msg_free;
 	camel_session_class->thread_queue = session_thread_queue;
 	camel_session_class->thread_wait = session_thread_wait;
-#endif
-	
-	vee_provider.object_types[CAMEL_PROVIDER_STORE] = camel_vee_store_get_type ();
-	vee_provider.url_hash = camel_url_hash;
-	vee_provider.url_equal = camel_url_equal;
+	camel_session_class->thread_status = session_thread_status;
 }
 
 CamelType
@@ -190,198 +137,6 @@ void
 camel_session_construct (CamelSession *session, const char *storage_path)
 {
 	session->storage_path = g_strdup (storage_path);
-	camel_session_register_provider(session, &vee_provider);
-}
-
-
-static void 
-register_provider (CamelSession *session, CamelProvider *provider)
-{
-	int i;
-	CamelProviderConfEntry *conf;
-	GList *l;
-
-	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
-		if (provider->object_types[i])
-			provider->service_cache[i] = camel_object_bag_new (provider->url_hash, provider->url_equal,
-									   (CamelCopyFunc)camel_url_copy, (GFreeFunc)camel_url_free);
-	}
-
-	/* Translate all strings here */
-
-#define P_(string) dgettext (provider->translation_domain, string)
-
-	provider->name = P_(provider->name);
-	provider->description = P_(provider->description);
-	conf = provider->extra_conf;
-	if (conf) {
-		for (i=0;conf[i].type != CAMEL_PROVIDER_CONF_END;i++) {
-			if (conf[i].text)
-				conf[i].text = P_(conf[i].text);
-		}
-	}
-	l = provider->authtypes;
-	while (l) {
-		CamelServiceAuthType *auth = l->data;
-
-		auth->name = P_(auth->name);
-		auth->description = P_(auth->description);
-		l = l->next;
-	}
-
-	g_hash_table_insert (session->providers, provider->protocol, provider);
-}
-
-/**
- * camel_session_register_provider:
- * @session: a session object
- * @protocol: the protocol the provider provides for
- * @provider: provider object
- *
- * Registers a protocol to provider mapping for the session.
- *
- * Assumes the session lock has already been obtained,
- * which is the case for automatically loaded provider modules.
- **/
-void
-camel_session_register_provider (CamelSession *session,
-				 CamelProvider *provider)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (provider != NULL);
-
-	CS_CLASS (session)->register_provider (session, provider);
-}
-
-
-static void
-ensure_loaded (gpointer key, gpointer value, gpointer user_data)
-{
-	CamelSession *session = user_data;
-	char *name = key;
-	char *path = value;
-
-	if (!g_hash_table_lookup (session->providers, name)) {
-		CamelException ex;
-
-		camel_exception_init (&ex);
-		camel_provider_load (session, path, &ex);
-		camel_exception_clear (&ex);
-	}
-}
-
-static gint
-provider_compare (gconstpointer a, gconstpointer b)
-{
-	const CamelProvider *cpa = (const CamelProvider *)a;
-	const CamelProvider *cpb = (const CamelProvider *)b;
-
-	return strcmp (cpa->name, cpb->name);
-}
-
-static void
-add_to_list (gpointer key, gpointer value, gpointer user_data)
-{
-	GList **list = user_data;
-	CamelProvider *prov = value;
-
-	*list = g_list_insert_sorted (*list, prov, provider_compare);
-}
-
-static GList *
-list_providers (CamelSession *session, gboolean load)
-{
-	GList *list = NULL;
-
-	if (load)
-		g_hash_table_foreach (session->modules, ensure_loaded, session);
-
-	g_hash_table_foreach (session->providers, add_to_list, &list);
-	return list;
-}
-
-/**
- * camel_session_list_providers:
- * @session: the session
- * @load: whether or not to load in providers that are not already loaded
- *
- * This returns a list of available providers in this session. If @load
- * is %TRUE, it will first load in all available providers that haven't
- * yet been loaded.
- *
- * Return value: a GList of providers, which the caller must free.
- **/
-GList *
-camel_session_list_providers (CamelSession *session, gboolean load)
-{
-	GList *list;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-
-	CAMEL_SESSION_LOCK (session, lock);
-	list = CS_CLASS (session)->list_providers (session, load);
-	CAMEL_SESSION_UNLOCK (session, lock);
-
-	return list;
-}
-
-
-static CamelProvider *
-get_provider (CamelSession *session, const char *url_string, CamelException *ex)
-{
-	CamelProvider *provider;
-	char *protocol;
-
-	protocol = g_strndup (url_string, strcspn (url_string, ":"));
-
-	provider = g_hash_table_lookup (session->providers, protocol);
-	if (!provider) {
-		/* See if there's one we can load. */
-		char *path;
-
-		path = g_hash_table_lookup (session->modules, protocol);
-		if (path) {
-			camel_provider_load (session, path, ex);
-			if (camel_exception_is_set (ex)) {
-				g_free (protocol);
-				return NULL;
-			}
-		}
-		provider = g_hash_table_lookup (session->providers, protocol);
-	}
-
-	if (!provider) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("No provider available for protocol `%s'"),
-				      protocol);
-	}
-	g_free (protocol);
-
-	return provider;
-}
-
-/**
- * camel_session_get_provider:
- * @session: the session
- * @url_string: the URL for the service whose provider you want
- * @ex: a CamelException
- *
- * This returns the CamelProvider that would be used to handle
- * @url_string, loading it in from disk if necessary.
- *
- * Return value: the provider, or %NULL, in which case @ex will be set.
- **/
-CamelProvider *
-camel_session_get_provider (CamelSession *session, const char *url_string,
-			    CamelException *ex)
-{
-	CamelProvider *provider;
-
-	CAMEL_SESSION_LOCK (session, lock);
-	provider = CS_CLASS (session)->get_provider (session, url_string, ex);
-	CAMEL_SESSION_UNLOCK (session, lock);
-
-	return provider;
 }
 
 static CamelService *
@@ -399,7 +154,7 @@ get_service (CamelSession *session, const char *url_string,
 
 	/* We need to look up the provider so we can then lookup
 	   the service in the provider's cache */
-	provider = CS_CLASS (session)->get_provider (session, url->protocol, ex);
+	provider = camel_provider_get(url->protocol, ex);
 	if (provider && !provider->object_types[type]) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
 				      _("No provider available for protocol `%s'"),
@@ -411,7 +166,7 @@ get_service (CamelSession *session, const char *url_string,
 		camel_url_free (url);
 		return NULL;
 	}
-	
+
 	/* If the provider doesn't use paths but the URL contains one,
 	 * ignore it.
 	 */
@@ -420,22 +175,21 @@ get_service (CamelSession *session, const char *url_string,
 	
 	/* Now look up the service in the provider's cache */
 	service = camel_object_bag_reserve(provider->service_cache[type], url);
-	if (service != NULL) {
-		camel_url_free (url);
-		return service;
+	if (service == NULL) {
+		service = (CamelService *)camel_object_new (provider->object_types[type]);
+		camel_exception_init (&internal_ex);
+		camel_service_construct (service, session, provider, url, &internal_ex);
+		if (camel_exception_is_set (&internal_ex)) {
+			camel_exception_xfer (ex, &internal_ex);
+			camel_object_unref (service);
+			service = NULL;
+			camel_object_bag_abort(provider->service_cache[type], url);
+		} else {
+			camel_object_bag_add(provider->service_cache[type], url, service);
+		}
 	}
 
-	service = (CamelService *)camel_object_new (provider->object_types[type]);
-	camel_exception_init (&internal_ex);
-	camel_service_construct (service, session, provider, url, &internal_ex);
-	if (camel_exception_is_set (&internal_ex)) {
-		camel_exception_xfer (ex, &internal_ex);
-		camel_object_unref (service);
-		service = NULL;
-		camel_object_bag_abort(provider->service_cache[type], url);
-	} else {
-		camel_object_bag_add(provider->service_cache[type], url, service);
-	}
+	camel_url_free (url);
 
 	return service;
 }
@@ -502,7 +256,7 @@ camel_session_get_service_connected (CamelSession *session,
 
 	if (svc->status != CAMEL_SERVICE_CONNECTED) {
 		if (camel_service_connect (svc, ex) == FALSE) {
-			camel_object_unref (CAMEL_OBJECT (svc));
+			camel_object_unref (svc);
 			return NULL;
 		}
 	}
@@ -523,7 +277,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 	if (access (path, F_OK) == 0)
 		return path;
 
-	if (camel_mkdir_hier (path, S_IRWXU) == -1) {
+	if (camel_mkdir (path, S_IRWXU) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not create directory %s:\n%s"),
 				      path, g_strerror (errno));
@@ -563,12 +317,13 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
 /**
  * camel_session_get_password:
  * @session: session object
- * @prompt: prompt to provide to user
- * @reprompt: TRUE if the prompt should force a reprompt
- * @secret: whether or not the data is secret (eg, a password, as opposed
- * to a smartcard response)
  * @service: the service this query is being made by
+ * @domain: domain of password request.  May be null to use the default.
+ * @prompt: prompt to provide to user
  * @item: an identifier, unique within this service, for the information
+ * @flags: CAMEL_SESSION_PASSWORD_REPROMPT, the prompt should force a reprompt
+ * CAMEL_SESSION_PASSWORD_SECRET, whether the password is secret
+ * CAMEL_SESSION_PASSWORD_STATIC, the password is remembered externally
  * @ex: a CamelException
  *
  * This function is used by a CamelService to ask the application and
@@ -578,25 +333,31 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  * caller is concerned with.
  *
  * @prompt is a question to ask the user (if the application doesn't
- * already have the answer cached). If @secret is set, the user's
- * input will not be echoed back. The authenticator should set @ex
- * to %CAMEL_EXCEPTION_USER_CANCEL if the user did not provide the
- * information. The caller must g_free() the information returned when
- * it is done with it.
+ * already have the answer cached). If CAMEL_SESSION_PASSWORD_SECRET
+ * is set, the user's input will not be echoed back.
+ *
+ * If CAMEL_SESSION_PASSWORD_STATIC is set, it means the password returned
+ * will be stored statically by the caller automatically, for the current
+ * session.
+ * 
+ * The authenticator
+ * should set @ex to %CAMEL_EXCEPTION_USER_CANCEL if the user did not
+ * provide the information. The caller must g_free() the information
+ * returned when it is done with it.
  *
  * Return value: the authentication information or %NULL.
  **/
 char *
-camel_session_get_password (CamelSession *session, const char *prompt,
-			    gboolean reprompt, gboolean secret,
-			    CamelService *service, const char *item,
+camel_session_get_password (CamelSession *session, CamelService *service,
+			    const char *domain, const char *prompt, const char *item,
+			    guint32 flags,
 			    CamelException *ex)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (prompt != NULL, NULL);
 	g_return_val_if_fail (item != NULL, NULL);
 	
-	return CS_CLASS (session)->get_password (session, prompt, reprompt, secret, service, item, ex);
+	return CS_CLASS (session)->get_password (session, service, domain, prompt, item, flags, ex);
 }
 
 
@@ -618,12 +379,12 @@ camel_session_get_password (CamelSession *session, const char *prompt,
  **/
 void
 camel_session_forget_password (CamelSession *session, CamelService *service,
-			       const char *item, CamelException *ex)
+			       const char *domain, const char *item, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (item != NULL);
 
-	CS_CLASS (session)->forget_password (session, service, item, ex);
+	CS_CLASS (session)->forget_password (session, service, domain, item, ex);
 }
 
 
@@ -695,7 +456,13 @@ camel_session_get_filter_driver (CamelSession *session,
 	return CS_CLASS (session)->get_filter_driver (session, type, ex);
 }
 
-#ifdef ENABLE_THREADS
+static void
+cs_thread_status(CamelOperation *op, const char *what, int pc, void *data)
+{
+	CamelSessionThreadMsg *m = data;
+
+	CS_CLASS(m->session)->thread_status(m->session, m, what, pc);
+}
 
 static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size)
 {
@@ -705,7 +472,10 @@ static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps
 
 	m = g_malloc0(size);
 	m->ops = ops;
-
+	m->session = session;
+	camel_object_ref(session);
+	m->op = camel_operation_new(cs_thread_status, m);
+	camel_exception_init(&m->ex);
 	CAMEL_SESSION_LOCK(session, thread_lock);
 	m->id = session->priv->thread_id++;
 	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
@@ -728,20 +498,29 @@ static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg
 	
 	if (msg->ops->free)
 		msg->ops->free(session, msg);
+	if (msg->op)
+		camel_operation_unref(msg->op);
+	camel_exception_clear(&msg->ex);
+	camel_object_unref(msg->session);
 	g_free(msg);
 }
 
 static void session_thread_destroy(EThread *thread, CamelSessionThreadMsg *msg, CamelSession *session)
 {
 	d(printf("destroy message %p session %p\n", msg, session));
-	session_thread_msg_free(session, msg);
+	camel_session_thread_msg_free(session, msg);
 }
 
 static void session_thread_received(EThread *thread, CamelSessionThreadMsg *msg, CamelSession *session)
 {
 	d(printf("receive message %p session %p\n", msg, session));
-	if (msg->ops->receive)
+	if (msg->ops->receive) {
+		CamelOperation *oldop;
+
+		oldop = camel_operation_register(msg->op);
 		msg->ops->receive(session, msg);
+		camel_operation_register(oldop);
+	}
 }
 
 static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
@@ -775,6 +554,10 @@ static void session_thread_wait(CamelSession *session, int id)
 			usleep(20000);
 		}
 	} while (wait);
+}
+
+static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const char *text, int pc)
+{
 }
 
 /**
@@ -852,4 +635,31 @@ void camel_session_thread_wait(CamelSession *session, int id)
 	CS_CLASS (session)->thread_wait(session, id);
 }
 
-#endif
+/**
+ * camel_session_check_junk:
+ * @session: 
+ * 
+ * Do we have to check incoming messages to be junk?
+ **/
+gboolean
+camel_session_check_junk (CamelSession *session)
+{
+	g_assert(CAMEL_IS_SESSION(session));
+
+	return session->check_junk;
+}
+
+/**
+ * camel_session_set_check_junk:
+ * @session: 
+ * @check_junk: 
+ * 
+ * Set check_junk flag, if set, incoming mail will be checked for being junk.
+ **/
+void
+camel_session_set_check_junk (CamelSession *session, gboolean check_junk)
+{
+	g_assert(CAMEL_IS_SESSION(session));
+
+	session->check_junk = check_junk;
+}

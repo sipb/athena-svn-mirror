@@ -30,13 +30,13 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-#include <camel/camel-store.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-data-cache.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-folder.h>
+#include <camel/camel-disco-store.h>
 
 #include "camel-nntp-stream.h"
+#include "camel-nntp-store-summary.h"
+
+struct _CamelNNTPFolder;
+struct _CamelException;
 
 #define CAMEL_NNTP_STORE_TYPE     (camel_nntp_store_get_type ())
 #define CAMEL_NNTP_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_NNTP_STORE_TYPE, CamelNNTPStore))
@@ -55,33 +55,54 @@ extern "C" {
 typedef struct _CamelNNTPStore CamelNNTPStore;
 typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
 
+enum _xover_t {
+	XOVER_STRING = 0,
+	XOVER_MSGID,
+	XOVER_SIZE,
+};
+
+struct _xover_header {
+	struct _xover_header *next;
+
+	const char *name;
+	unsigned int skip:8;
+	enum _xover_t type:8;
+};
+
 struct _CamelNNTPStore {
-	CamelStore parent_object;	
+	CamelDiscoStore parent_object;	
 	
 	struct _CamelNNTPStorePrivate *priv;
 	
 	guint32 extensions;
 	
-	gboolean posting_allowed;
+	unsigned int posting_allowed:1;
+	unsigned int do_short_folder_notation:1;
+	unsigned int folder_hierarchy_relative:1;
+
+	struct _CamelNNTPStoreSummary *summary;
 	
-	CamelNNTPStream *stream;
-	CamelStreamMem *mem;
+	struct _CamelNNTPStream *stream;
+	struct _CamelStreamMem *mem;
 	
-	CamelDataCache *cache;
+	struct _CamelDataCache *cache;
 	
-	char *current_folder;
+	char *current_folder, *storage_path, *base_url;
+
+	struct _xover_header *xover;
 };
 
 struct _CamelNNTPStoreClass {
-	CamelStoreClass parent_class;
+	CamelDiscoStoreClass parent_class;
 
 };
 
 /* Standard Camel function */
 CamelType camel_nntp_store_get_type (void);
 
-int camel_nntp_command(CamelNNTPStore *store, char **line, const char *fmt, ...);
-int camel_nntp_store_set_folder(CamelNNTPStore *store, CamelFolder *folder, CamelFolderChangeInfo *changes, CamelException *ex);
+int camel_nntp_raw_commandv (CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, va_list ap);
+int camel_nntp_raw_command(CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, ...);
+int camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, struct _CamelNNTPFolder *folder, char **line, const char *fmt, ...);
 
 #ifdef __cplusplus
 }

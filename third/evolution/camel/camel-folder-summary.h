@@ -33,6 +33,7 @@ extern "C" {
 #include <camel/camel-object.h>
 #include <camel/camel-index.h>
 
+#define CAMEL_FOLDER_SUMMARY_TYPE         camel_folder_summary_get_type ()
 #define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
 #define CAMEL_FOLDER_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_summary_get_type (), CamelFolderSummaryClass)
 #define CAMEL_IS_FOLDER_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_summary_get_type ())
@@ -48,7 +49,7 @@ struct _CamelMessageContentInfo {
 	struct _CamelMessageContentInfo *childs;
 	struct _CamelMessageContentInfo *parent;
 	
-	struct _header_content_type *type;
+	CamelContentType *type;
 	char *id;
 	char *description;
 	char *encoding;		/* this should be an enum?? */
@@ -62,13 +63,26 @@ enum _CamelMessageFlags {
 	CAMEL_MESSAGE_DRAFT = 1<<2,
 	CAMEL_MESSAGE_FLAGGED = 1<<3,
 	CAMEL_MESSAGE_SEEN = 1<<4,
+
+	/* these aren't really system flag bits, but are convenience flags */
 	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
 	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
+	CAMEL_MESSAGE_JUNK = 1<<7,
+	CAMEL_MESSAGE_SECURE = 1<<8,
 
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
+
+	/* flags after 1<<16 are used by camel providers,
+           if adding non permanent flags, add them to the end  */
+
+	CAMEL_MESSAGE_JUNK_LEARN = 1<<30, /* used when setting CAMEL_MESSAGE_JUNK flag
+					     to say that we request junk plugin
+					     to learn that message as junk/non junk */
 	CAMEL_MESSAGE_USER = 1<<31 /* supports user flags */
 };
+/* Changes to system flags will NOT trigger a folder changed event */
+#define CAMEL_MESSAGE_SYSTEM_MASK (0xffff << 16)
 
 typedef struct _CamelFlag {
 	struct _CamelFlag *next;
@@ -159,11 +173,14 @@ struct _CamelFolderSummary {
 	struct _CamelFolderSummaryPrivate *priv;
 
 	/* header info */
-	guint32 version;	/* version of file required, should be set by implementors */
+	guint32 version;	/* version of file loaded/loading */
 	guint32 flags;		/* flags */
 	guint32 nextuid;	/* next uid? */
-	guint32 saved_count;	/* how many were saved/loaded */
 	time_t time;		/* timestamp for this summary (for implementors to use) */
+	guint32 saved_count;	/* how many were saved/loaded */
+	guint32 unread_count;	/* handy totals */
+	guint32 deleted_count;
+	guint32 junk_count;
 
 	/* sizes of memory objects */
 	guint32 message_info_size;
@@ -191,7 +208,7 @@ struct _CamelFolderSummaryClass {
 	int (*summary_header_save)(CamelFolderSummary *, FILE *);
 
 	/* create/save/load an individual message info */
-	CamelMessageInfo * (*message_info_new)(CamelFolderSummary *, struct _header_raw *);
+	CamelMessageInfo * (*message_info_new)(CamelFolderSummary *, struct _camel_header_raw *);
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *);
 	CamelMessageInfo * (*message_info_load)(CamelFolderSummary *, FILE *);
@@ -199,7 +216,7 @@ struct _CamelFolderSummaryClass {
 	void		   (*message_info_free)(CamelFolderSummary *, CamelMessageInfo *);
 
 	/* save/load individual content info's */
-	CamelMessageContentInfo * (*content_info_new)(CamelFolderSummary *, struct _header_raw *);
+	CamelMessageContentInfo * (*content_info_new)(CamelFolderSummary *, struct _camel_header_raw *);
 	CamelMessageContentInfo * (*content_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageContentInfo * (*content_info_new_from_message)(CamelFolderSummary *, CamelMimePart *);
 	CamelMessageContentInfo * (*content_info_load)(CamelFolderSummary *, FILE *);
@@ -235,13 +252,13 @@ void camel_folder_summary_touch(CamelFolderSummary *s);
 void camel_folder_summary_add(CamelFolderSummary *, CamelMessageInfo *info);
 
 /* build/add raw summary items */
-CamelMessageInfo *camel_folder_summary_add_from_header(CamelFolderSummary *, struct _header_raw *);
+CamelMessageInfo *camel_folder_summary_add_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 CamelMessageInfo *camel_folder_summary_add_from_parser(CamelFolderSummary *, CamelMimeParser *);
 CamelMessageInfo *camel_folder_summary_add_from_message(CamelFolderSummary *, CamelMimeMessage *);
 
 /* Just build raw summary items */
 CamelMessageInfo *camel_folder_summary_info_new(CamelFolderSummary *s);
-CamelMessageInfo *camel_folder_summary_info_new_from_header(CamelFolderSummary *, struct _header_raw *);
+CamelMessageInfo *camel_folder_summary_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 CamelMessageInfo *camel_folder_summary_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
 CamelMessageInfo *camel_folder_summary_info_new_from_message(CamelFolderSummary *, CamelMimeMessage *);
 
@@ -256,6 +273,7 @@ void camel_folder_summary_remove(CamelFolderSummary *s, CamelMessageInfo *info);
 void camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid);
 void camel_folder_summary_remove_index(CamelFolderSummary *s, int);
 void camel_folder_summary_remove_range(CamelFolderSummary *s, int start, int end);
+
 /* remove all items */
 void camel_folder_summary_clear(CamelFolderSummary *s);
 
@@ -267,8 +285,8 @@ GPtrArray *camel_folder_summary_array(CamelFolderSummary *s);
 void camel_folder_summary_array_free(CamelFolderSummary *s, GPtrArray *array);
 
 /* summary formatting utils */
-char *camel_folder_summary_format_address(struct _header_raw *h, const char *name);
-char *camel_folder_summary_format_string(struct _header_raw *h, const char *name);
+char *camel_folder_summary_format_address(struct _camel_header_raw *h, const char *name);
+char *camel_folder_summary_format_string(struct _camel_header_raw *h, const char *name);
 
 /* basically like strings, but certain keywords can be compressed and de-cased */
 int camel_folder_summary_encode_token(FILE *, const char *);
@@ -296,7 +314,7 @@ void		camel_tag_list_free(CamelTag **list);
    other external interfaces that use message info's */
 CamelMessageInfo *camel_message_info_new(void);
 void camel_message_info_ref(CamelMessageInfo *info);
-CamelMessageInfo *camel_message_info_new_from_header(struct _header_raw *header);
+CamelMessageInfo *camel_message_info_new_from_header(struct _camel_header_raw *header);
 void camel_message_info_dup_to(const CamelMessageInfo *from, CamelMessageInfo *to);
 void camel_message_info_free(CamelMessageInfo *mi);
 

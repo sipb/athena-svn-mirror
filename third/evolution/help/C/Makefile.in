@@ -127,25 +127,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -155,15 +166,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -191,11 +205,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -224,6 +240,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -233,8 +251,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -248,31 +264,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -281,6 +304,21 @@ serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
 figs = \
+	figures/contacts_mainwindow_a.png	\
+	figures/evo_account_info_a.png		\
+	figures/evo_cal_callout_a.gif		\
+	figures/evo_contacteditor_a.png		\
+	figures/evo_email_a.png			\
+	figures/evo_identity_a.png		\
+	figures/evo_mail_callout_a.gif		\
+	figures/evo_mail_callout_a.png		\
+	figures/evo_newmess_a.png		\
+	figures/evo_receive_setup2_a.png	\
+	figures/evo_receive_setup_a.png		\
+	figures/evo_rule_a.png			\
+	figures/evo_send_setup_a.png		\
+	figures/evo_timezone_a.png		\
+	figures/mail_mainwindow_a.png		\
 	figures/calendar.png			\
 	figures/config-cal.png			\
 	figures/config-mail.png			\
@@ -291,7 +329,6 @@ figs = \
 	figures/exchange-receive.png		\
 	figures/exchange-delegation.png		\
 	figures/filter-new-fig.png		\
-	figures/folder-bar.png			\
 	figures/full-1.png			\
 	figures/full-2.png			\
 	figures/full-3.png			\
@@ -304,38 +341,20 @@ figs = \
 	figures/mail-threaded.png		\
 	figures/mainwindow-pic.png		\
 	figures/newmsg.png			\
-	figures/print-dest.png			\
-	figures/print-preview.png		\
 	figures/replymsg.png			\
 	figures/schedule.png			\
 	figures/summary.png			\
 	figures/vfolder-createrule-fig.png
 
 figdir = figures
-docname = evolution-1.4
-lang = C
-omffile = evolution-1.4-C.omf
-entities = \
-	apx-authors.xml		\
-	apx-bugs.xml		\
-	apx-fdl.xml		\
-	apx-gloss.xml		\
-	apx-gpl.xml		\
-	config-prefs.xml	\
-	config-sync.xml		\
-	legal.xml		\
-	menuref.xml		\
-	preface.xml		\
-	usage-calendar.xml	\
-	usage-contact.xml	\
-	usage-exec-summary.xml	\
-	usage-exchange.xml	\
-	usage-mail-org.xml	\
-	usage-mail.xml		\
-	usage-mainwindow.xml	\
-	usage-print.xml		\
-	usage-sync.xml
 
+doc_in_files = evolution.xml
+
+docname = evolution-$(BASE_VERSION)
+lang = C
+
+omf_in_files = evolution-$(lang).omf
+omffile = evolution-$(BASE_VERSION)-C.omf
 
 # ************* Begin of section some packagers may need to modify  **************
 # This variable (docdir) specifies where the documents should be installed.
@@ -344,10 +363,16 @@ entities = \
 docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 
 # **************  You should not have to edit below this line  *******************
-xml_files = $(entities) $(docname).xml
+xml_files = $(docname).xml
 
 EXTRA_DIST = $(xml_files) $(omffile)
-CLEANFILES = omf_timestamp
+
+CLEANFILES = omf_timestamp \
+	$(docname).xml		\
+	omf_timestamp		\
+	$(omffile).out		\
+	$(omffile)
+
 
 omf_dest_dir = $(datadir)/omf/@PACKAGE@
 scrollkeeper_localstate_dir = $(localstatedir)/scrollkeeper
@@ -487,6 +512,12 @@ uninstall-am: uninstall-info-am uninstall-local
 	uninstall-local
 
 
+all: $(docname).xml $(omffile)
+%-$(BASE_VERSION).xml: $(doc_in_files)
+	cp -f $< $@
+%-$(BASE_VERSION)-$(lang).omf: $(omf_in_files)
+	cp -f $< $@
+
 omf: omf_timestamp
 
 omf_timestamp: $(omffile)
@@ -514,10 +545,10 @@ uninstall-local-omf:
 
 all: omf
 
-$(docname).xml: $(entities)
-	-ourdir=`pwd`;  \
-	cd $(srcdir);   \
-	cp $(entities) $$ourdir
+#$(docname).xml: $(entities)
+#	-ourdir=`pwd`;  \
+#	cd $(srcdir);   \
+#	cp $(entities) $$ourdir
 
 app-dist-hook:
 	if test "$(figdir)"; then \

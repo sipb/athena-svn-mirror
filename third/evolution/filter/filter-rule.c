@@ -20,7 +20,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -30,8 +29,9 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 
+#include "widgets/misc/e-error.h"
 #include "filter-rule.h"
-#include "filter-context.h"
+#include "rule-context.h"
 #include "filter-marshal.h"
 
 #define d(x)
@@ -205,7 +205,6 @@ filter_rule_validate (FilterRule *fr)
 static int
 validate (FilterRule *fr)
 {
-	GtkWidget *dialog;
 	int valid = TRUE;
 	GList *parts;
 	
@@ -214,12 +213,7 @@ validate (FilterRule *fr)
                    GtkWidget member pointing to the value gotten with
                    ::get_widget() so that we can get the parent window
                    here. */
-		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
-						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-						 "%s", _("You must name this filter."));
-		
-		gtk_dialog_run ((GtkDialog *) dialog);
-		gtk_widget_destroy (dialog);
+		e_error_run(NULL, "filter:no-name", NULL);
 		
 		return FALSE;
 	}
@@ -264,6 +258,7 @@ static int
 rule_eq (FilterRule *fr, FilterRule *cm)
 {
 	return fr->grouping == cm->grouping
+		&& fr->threading == fr->threading
 		&& ((fr->name && cm->name && strcmp (fr->name, cm->name) == 0)
 		     || (fr->name == NULL && cm->name == NULL))
 		&& ((fr->source && cm->source && strcmp (fr->source, cm->source) == 0)
@@ -294,7 +289,21 @@ xml_encode (FilterRule *fr)
 		xmlSetProp (node, "grouping", "any");
 		break;
 	}
-	
+
+	switch (fr->threading) {
+	case FILTER_THREAD_NONE:
+		break;
+	case FILTER_THREAD_ALL:
+		xmlSetProp(node, "threading", "all");
+		break;
+	case FILTER_THREAD_REPLIES:
+		xmlSetProp(node, "threading", "replies");
+		break;
+	case FILTER_THREAD_REPLIES_PARENTS:
+		xmlSetProp(node, "threading", "replies_parents");
+		break;
+	}
+
 	if (fr->source) {
 		xmlSetProp (node, "source", fr->source);
 	} else {
@@ -383,6 +392,18 @@ xml_decode (FilterRule *fr, xmlNodePtr node, RuleContext *f)
 	else
 		fr->grouping = FILTER_GROUP_ALL;
 	xmlFree (grouping);
+
+	fr->threading = FILTER_THREAD_NONE;
+	if (f->flags & RULE_CONTEXT_THREADING
+	    && (grouping = xmlGetProp (node, "threading"))) {
+		if (!strcmp(grouping, "all"))
+			fr->threading = FILTER_THREAD_ALL;
+		else if (!strcmp(grouping, "replies"))
+			fr->threading = FILTER_THREAD_REPLIES;
+		else if (!strcmp(grouping, "replies_parents"))
+			fr->threading = FILTER_THREAD_REPLIES_PARENTS;
+		xmlFree (grouping);
+	}
 	
 	g_free (fr->source);
 	source = xmlGetProp (node, "source");
@@ -427,7 +448,8 @@ rule_copy (FilterRule *dest, FilterRule *src)
 	dest->source = g_strdup (src->source);
 	
 	dest->grouping = src->grouping;
-	
+	dest->threading = src->threading;
+
 	if (dest->parts) {
 		g_list_foreach (dest->parts, (GFunc) g_object_unref, NULL);
 		g_list_free (dest->parts);
@@ -436,9 +458,9 @@ rule_copy (FilterRule *dest, FilterRule *src)
 	
 	node = src->parts;
 	while (node) {
-		FilterPart *part = node->data;
-		
-		g_object_ref (part);
+		FilterPart *part;
+
+		part = filter_part_clone (node->data);
 		dest->parts = g_list_append (dest->parts, part);
 		node = node->next;
 	}
@@ -519,6 +541,20 @@ filter_rule_emit_changed(FilterRule *fr)
 static void
 build_code (FilterRule *fr, GString *out)
 {
+	switch (fr->threading) {
+	case FILTER_THREAD_NONE:
+		break;
+	case FILTER_THREAD_ALL:
+		g_string_append(out, " (match-threads \"all\" ");
+		break;
+	case FILTER_THREAD_REPLIES:
+		g_string_append(out, " (match-threads \"replies\" ");
+		break;
+	case FILTER_THREAD_REPLIES_PARENTS:
+		g_string_append(out, " (match-threads \"replies_parents\" ");
+		break;
+	}
+
 	switch (fr->grouping) {
 	case FILTER_GROUP_ALL:
 		g_string_append (out, " (and\n  ");
@@ -532,18 +568,21 @@ build_code (FilterRule *fr, GString *out)
 	
 	filter_part_build_code_list (fr->parts, out);
 	g_string_append (out, ")\n");
+
+	if (fr->threading != FILTER_THREAD_NONE)
+		g_string_append (out, ")\n");
 }
 
 static void
-match_all (GtkWidget *widget, FilterRule *fr)
+fr_grouping_changed(GtkWidget *w, FilterRule *fr)
 {
-	fr->grouping = FILTER_GROUP_ALL;
+	fr->grouping = gtk_option_menu_get_history((GtkOptionMenu *)w);
 }
 
 static void
-match_any (GtkWidget *widget, FilterRule *fr)
+fr_threading_changed(GtkWidget *w, FilterRule *fr)
 {
-	fr->grouping = FILTER_GROUP_ANY;
+	fr->threading = gtk_option_menu_get_history((GtkOptionMenu *)w);
 }
 
 struct _part_data {
@@ -735,20 +774,20 @@ static GtkWidget *
 get_widget (FilterRule *fr, struct _RuleContext *f)
 {
 	GtkWidget *hbox, *vbox, *parts, *inframe;
-	GtkWidget *add, *frame, *label, *name, *w;
+	GtkWidget *add, *label, *name, *w;
 	GtkWidget *omenu, *menu, *item;
 	GtkWidget *scrolledwindow;
 	GtkObject *hadj, *vadj;
 	GList *l;
 	FilterPart *part;
 	struct _rule_data *data;
-	int rows, i = 0;
+	int rows, i;
 	
 	/* this stuff should probably be a table, but the
 	   rule parts need to be a vbox */
-	vbox = gtk_vbox_new (FALSE, 3);
-	
-	label = gtk_label_new (_("Rule name: "));
+	vbox = gtk_vbox_new (FALSE, 6);
+
+	label = gtk_label_new (_("Rule name:"));
 	name = gtk_entry_new ();
 	
 	if (!fr->name) {
@@ -763,16 +802,34 @@ get_widget (FilterRule *fr, struct _RuleContext *f)
 	/* evil kludgy hack because gtk sucks */
 	g_signal_connect (name, "realize", G_CALLBACK (grab_focus), name);
 	
-	hbox = gtk_hbox_new (FALSE, 3);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), name, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	g_signal_connect (name, "changed", G_CALLBACK (name_changed), fr);
-	
-	frame = gtk_frame_new (_("If"));
-	inframe = gtk_vbox_new (FALSE, 3);
-	gtk_container_add (GTK_CONTAINER (frame), inframe);
-	gtk_container_set_border_width (GTK_CONTAINER (inframe), 6);
+	gtk_widget_show (label);
+	gtk_widget_show (hbox);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+
+	label = gtk_label_new (_("<b>If</b>"));
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
+	gtk_widget_show (hbox);
+
+	label = gtk_label_new ("");
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	inframe = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), inframe, TRUE, TRUE, 0);
 	
 	/* this is the parts table, it should probably be inside a scrolling list */
 	rows = g_list_length (fr->parts);
@@ -788,35 +845,61 @@ get_widget (FilterRule *fr, struct _RuleContext *f)
 	g_object_set_data_full ((GObject *) vbox, "data", data, g_free);
 	
 	hbox = gtk_hbox_new (FALSE, 3);
-	label = gtk_label_new (_("Execute actions"));
-	
-	menu = gtk_menu_new ();
-	
-	item = gtk_menu_item_new_with_label (_("if all criteria are met"));
-	g_signal_connect (item, "activate", G_CALLBACK (match_all), fr);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	gtk_widget_show (item);
-	
-	item = gtk_menu_item_new_with_label (_("if any criteria are met"));
-	g_signal_connect (item, "activate", G_CALLBACK (match_any), fr);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	gtk_widget_show (item);
-	
-	omenu = gtk_option_menu_new ();
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
-	gtk_option_menu_set_history (GTK_OPTION_MENU (omenu), fr->grouping == FILTER_GROUP_ALL ? 0 : 1);
-	gtk_widget_show (omenu);
-	
+
 	add = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	g_signal_connect (add, "clicked", G_CALLBACK (more_parts), data);
 	gtk_box_pack_start (GTK_BOX (hbox), add, FALSE, FALSE, 0);
+
+	if (f->flags & RULE_CONTEXT_GROUPING) {
+		const char *thread_types[] = { N_("if all criteria are met"), N_("if any criteria are met") };
+
+		label = gtk_label_new (_("Execute actions"));
+		menu = gtk_menu_new ();
 	
-	gtk_box_pack_end (GTK_BOX (hbox), omenu, FALSE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		for (i=0;i<2;i++) {
+			item = gtk_menu_item_new_with_label(_(thread_types[i]));
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			gtk_widget_show (item);
+		}
+	
+		omenu = gtk_option_menu_new ();
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
+		gtk_option_menu_set_history (GTK_OPTION_MENU (omenu), fr->grouping);
+		gtk_widget_show (omenu);
+	
+		gtk_box_pack_end (GTK_BOX (hbox), omenu, FALSE, FALSE, 0);
+		gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+		g_signal_connect(omenu, "changed", G_CALLBACK(fr_grouping_changed), fr);
+	}
+
+	if (f->flags & RULE_CONTEXT_THREADING) {
+		const char *thread_types[] = { N_("None"), N_("All related"), N_("Replies"), N_("Replies and parents") };
+
+		label = gtk_label_new (_("Include threads"));
+		menu = gtk_menu_new ();
+	
+		for (i=0;i<4;i++) {
+			item = gtk_menu_item_new_with_label(_(thread_types[i]));
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			gtk_widget_show (item);
+		}
+	
+		omenu = gtk_option_menu_new ();
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
+		gtk_option_menu_set_history (GTK_OPTION_MENU (omenu), fr->threading);
+		gtk_widget_show (omenu);
+	
+		gtk_box_pack_end (GTK_BOX (hbox), omenu, FALSE, FALSE, 0);
+		gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+		g_signal_connect(omenu, "changed", G_CALLBACK(fr_threading_changed), fr);
+	}
 	
 	gtk_box_pack_start (GTK_BOX (inframe), hbox, FALSE, FALSE, 3);
 	
 	l = fr->parts;
+	i = 0;
 	while (l) {
 		part = l->data;
 		d(printf ("adding rule %s\n", part->title));
@@ -835,10 +918,6 @@ get_widget (FilterRule *fr, struct _RuleContext *f)
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolledwindow), parts);
 	
 	gtk_box_pack_start (GTK_BOX (inframe), scrolledwindow, TRUE, TRUE, 3);
-	
-	/*gtk_box_pack_start (GTK_BOX (inframe), parts, FALSE, FALSE, 3); */
-	
-	gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
 	
 	gtk_widget_show_all (vbox);
 	

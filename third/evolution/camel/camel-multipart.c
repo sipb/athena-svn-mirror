@@ -57,7 +57,7 @@ static guint                 get_number        (CamelMultipart *multipart);
 static void                  set_boundary      (CamelMultipart *multipart,
 						const char *boundary);
 static const gchar *         get_boundary      (CamelMultipart *multipart);
-static int                   write_to_stream   (CamelDataWrapper *data_wrapper,
+static ssize_t               write_to_stream   (CamelDataWrapper *data_wrapper,
 						CamelStream *stream);
 static void                  unref_part        (gpointer data, gpointer user_data);
 
@@ -95,6 +95,7 @@ camel_multipart_class_init (CamelMultipartClass *camel_multipart_class)
 
 	/* virtual method overload */
 	camel_data_wrapper_class->write_to_stream = write_to_stream;
+	camel_data_wrapper_class->decode_to_stream = write_to_stream;
 	camel_data_wrapper_class->is_offline = is_offline;
 }
 
@@ -146,7 +147,7 @@ camel_multipart_get_type (void)
 static void
 unref_part (gpointer data, gpointer user_data)
 {
-	CamelObject *part = CAMEL_OBJECT (data);
+	CamelObject *part = data;
 
 	camel_object_unref (part);
 }
@@ -175,7 +176,7 @@ static void
 add_part (CamelMultipart *multipart, CamelMimePart *part)
 {
 	multipart->parts = g_list_append (multipart->parts, part);
-	camel_object_ref (CAMEL_OBJECT (part));
+	camel_object_ref (part);
 }
 
 /**
@@ -199,7 +200,7 @@ static void
 add_part_at (CamelMultipart *multipart, CamelMimePart *part, guint index)
 {
 	multipart->parts = g_list_insert (multipart->parts, part, index);
-	camel_object_ref (CAMEL_OBJECT (part));
+	camel_object_ref (part);
 }
 
 /**
@@ -229,7 +230,7 @@ remove_part (CamelMultipart *multipart, CamelMimePart *part)
 	if (!multipart->parts)
 		return;
 	multipart->parts = g_list_remove (multipart->parts, part);
-	camel_object_unref (CAMEL_OBJECT (part));
+	camel_object_unref (part);
 }
 
 /**
@@ -271,7 +272,7 @@ remove_part_at (CamelMultipart *multipart, guint index)
 
 	multipart->parts = g_list_remove_link (parts_list, part_to_remove);
 	if (part_to_remove->data)
-		camel_object_unref (CAMEL_OBJECT (part_to_remove->data));
+		camel_object_unref (part_to_remove->data);
 	g_list_free_1 (part_to_remove);
 
 	return removed_part;
@@ -367,13 +368,13 @@ set_boundary (CamelMultipart *multipart, const char *boundary)
 		strcpy (bbuf, "=-");
 		p = bbuf + 2;
 		state = save = 0;
-		p += base64_encode_step (digest, 16, FALSE, p, &state, &save);
+		p += camel_base64_encode_step (digest, 16, FALSE, p, &state, &save);
 		*p = '\0';
 
 		boundary = bbuf;
 	}
 
-	header_content_type_set_param (cdw->mime_type, "boundary", boundary);
+	camel_content_type_set_param (cdw->mime_type, "boundary", boundary);
 }
 
 /**
@@ -401,7 +402,7 @@ get_boundary (CamelMultipart *multipart)
 	CamelDataWrapper *cdw = CAMEL_DATA_WRAPPER (multipart);
 
 	g_return_val_if_fail (cdw->mime_type != NULL, NULL);
-	return header_content_type_param (cdw->mime_type, "boundary");
+	return camel_content_type_param (cdw->mime_type, "boundary");
 }
 
 /**
@@ -435,13 +436,13 @@ is_offline (CamelDataWrapper *data_wrapper)
 }
 
 /* this is MIME specific, doesn't belong here really */
-static int
+static ssize_t
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
 	const gchar *boundary;
-	int total = 0;
-	int count;
+	ssize_t total = 0;
+	ssize_t count;
 	GList *node;
 
 	/* get the bundary text */
@@ -545,21 +546,21 @@ static int
 construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
 	int err;
-	struct _header_content_type *content_type;
+	CamelContentType *content_type;
 	CamelMimePart *bodypart;
 	char *buf;
 	size_t len;
-
-	g_assert(camel_mime_parser_state(mp) == HSCAN_MULTIPART);
-		
+	
+	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
+	
 	/* FIXME: we should use a came-mime-mutlipart, not jsut a camel-multipart, but who cares */
 	d(printf("Creating multi-part\n"));
 		
 	content_type = camel_mime_parser_content_type(mp);
 	camel_multipart_set_boundary(multipart,
-				     header_content_type_param(content_type, "boundary"));
+				     camel_content_type_param(content_type, "boundary"));
 	
-	while (camel_mime_parser_step(mp, &buf, &len) != HSCAN_MULTIPART_END) {
+	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep(mp);
 		bodypart = camel_mime_part_new();
 		camel_mime_part_construct_from_parser(bodypart, mp);

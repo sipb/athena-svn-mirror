@@ -20,22 +20,28 @@
  * Author: Ettore Perazzoli
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "e-util/e-dialog-utils.h"
 #include "e-util/e-gtk-utils.h"
-#include "e-util/e-proxy.h"
+#include "e-util/e-bconf-map.h"
+#include "e-util/e-passwords.h"
 
-#include "e-icon-factory.h"
+#include <e-util/e-icon-factory.h>
 #include "e-shell-constants.h"
-#include "e-shell-config.h"
-#include "e-setup.h"
 
 #include "e-shell.h"
+
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include <gconf/gconf-client.h>
 
 #include <gtk/gtkalignment.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
@@ -49,8 +55,8 @@
 
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-sound.h>
 #include <libgnomeui/gnome-ui-init.h>
-#include <libgnomeui/gnome-window-icon.h>
 
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-moniker-util.h>
@@ -61,13 +67,10 @@
 #include <glade/glade.h>
 
 #include "e-config-upgrade.h"
-#include "Evolution-Wombat.h"
-
-#ifdef GTKHTML_HAVE_GCONF
-#include <gconf/gconf.h>
-#endif
+#include "Evolution-DataServer.h"
 
 #include <gal/widgets/e-cursors.h>
+#include "widgets/misc/e-error.h"
 
 #include <fcntl.h>
 #include <signal.h>
@@ -78,87 +81,30 @@
 
 #include <pthread.h>
 
-
+
+/* #define DEVELOPMENT */
+
+
 static EShell *shell = NULL;
-static char *evolution_directory = NULL;
 
 /* Command-line options.  */
-static gboolean no_splash = FALSE;
 static gboolean start_online = FALSE;
 static gboolean start_offline = FALSE;
 static gboolean setup_only = FALSE;
 static gboolean killev = FALSE;
+#ifdef DEVELOPMENT
+static gboolean force_migrate = FALSE;
+#endif
 
-extern char *evolution_debug_log;
+static gint idle_cb (void *data);
 
-
-static GtkWidget *
-quit_box_new (void)
-{
-	GtkWidget *window;
-	GtkWidget *label;
-	GtkWidget *frame;
-
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-
-	/* (Just to prevent smart-ass window managers like Sawfish from setting
-	   the make the dialog as big as the standard Evolution window).  */
-	gtk_window_set_wmclass (GTK_WINDOW (window), "evolution-quit", "Evolution:quit");
-
-	e_make_widget_backing_stored (window);
-
-	gtk_window_set_title (GTK_WINDOW (window), _("Evolution"));
-
-	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_container_add (GTK_CONTAINER (window), frame);
-
-	label = gtk_label_new (_("Evolution is now exiting ..."));
-	gtk_misc_set_padding (GTK_MISC (label), 30, 25);
-
-	gtk_container_add (GTK_CONTAINER (frame), label);
-
-	gtk_widget_show_now (frame);
-	gtk_widget_show_now (label);
-	gtk_widget_show_now (window);
-
-	/* For some reason, the window fails to update without this
-	   sometimes.  */
-	gtk_widget_queue_draw (window);
-	gtk_widget_queue_draw (label);
-	gtk_widget_queue_draw (frame);
-
-	gdk_flush ();
-
-	while (gtk_events_pending ())
-		gtk_main_iteration ();
-
-	gdk_flush ();
-
-	return window;
-}
+static char *default_component_id = NULL;
+static char *evolution_debug_log = NULL;
 
 static void
-no_views_left_cb (EShell *shell, gpointer data)
+no_windows_left_cb (EShell *shell, gpointer data)
 {
-	GtkWidget *quit_box;
-
-	quit_box = quit_box_new ();
-	g_object_add_weak_pointer (G_OBJECT (quit_box), (void **) &quit_box);
-
-	/* FIXME: This is wrong.  We should exit only when the shell is
-	   destroyed.  But refcounting is broken at present, so this is a
-	   reasonable workaround for now.  */
-
-	e_shell_unregister_all (shell);
-
 	bonobo_object_unref (BONOBO_OBJECT (shell));
-
-	if (quit_box != NULL)
-		gtk_widget_destroy (quit_box);
-
 	bonobo_main_quit ();
 }
 
@@ -169,48 +115,49 @@ shell_weak_notify (void *data,
 	bonobo_main_quit ();
 }
 
-
+
 #ifdef KILL_PROCESS_CMD
 
 static void
-kill_wombat (void)
+kill_dataserver (void)
 {
-	g_print ("(Killing old version of Wombat...)\n");
+	g_message ("Killing old version of evolution-data-server...");
 
-	system (KILL_PROCESS_CMD " -9 lt-evolution-wombat 2> /dev/null");
-	system (KILL_PROCESS_CMD " -9 evolution-wombat 2> /dev/null");
+	system (KILL_PROCESS_CMD " -9 lt-evolution-data-server 2> /dev/null");
+	system (KILL_PROCESS_CMD " -9 evolution-data-server-1.0 2> /dev/null");
 
 	system (KILL_PROCESS_CMD " -9 lt-evolution-alarm-notify 2> /dev/null");
 	system (KILL_PROCESS_CMD " -9 evolution-alarm-notify 2> /dev/null");
 }
 
 static void
-kill_old_wombat (void)
+kill_old_dataserver (void)
 {
-	GNOME_Evolution_WombatInterfaceCheck iface;
+	GNOME_Evolution_DataServer_InterfaceCheck iface;
 	CORBA_Environment ev;
 	CORBA_char *version;
 
 	CORBA_exception_init (&ev);
 
-	iface = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Wombat_InterfaceCheck", 0, NULL, &ev);
+	/* FIXME Should we really kill it off?  We also shouldn't hard code the version */
+	iface = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_DataServer_InterfaceCheck", 0, NULL, &ev);
 	if (BONOBO_EX (&ev) || iface == CORBA_OBJECT_NIL) {
-		kill_wombat ();
+		kill_dataserver ();
 		CORBA_exception_free (&ev);
 		return;
 	}
 
-	version = GNOME_Evolution_WombatInterfaceCheck__get_interfaceVersion (iface, &ev);
+	version = GNOME_Evolution_DataServer_InterfaceCheck__get_interfaceVersion (iface, &ev);
 	if (BONOBO_EX (&ev)) {
-		kill_wombat ();
+		kill_dataserver ();
 		CORBA_Object_release (iface, &ev);
 		CORBA_exception_free (&ev);
 		return;
 	}
 
-	if (strcmp (version, VERSION) != 0) {
+	if (strcmp (version, DATASERVER_VERSION) != 0) {
 		CORBA_free (version);
-		kill_wombat ();
+		kill_dataserver ();
 		CORBA_Object_release (iface, &ev);
 		CORBA_exception_free (&ev);
 		return;
@@ -222,8 +169,8 @@ kill_old_wombat (void)
 }
 #endif
 
-
-#ifdef DEVELOPMENT_WARNING
+
+#ifdef DEVELOPMENT
 
 /* Warning dialog to scare people off a little bit.  */
 
@@ -244,37 +191,42 @@ warning_dialog_response_callback (GtkDialog *dialog,
 	g_object_unref (client);
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	idle_cb(NULL);
 }
 
 static void
-show_development_warning (GtkWindow *parent)
+show_development_warning(void)
 {
+	GtkWidget *vbox;
 	GtkWidget *label;
 	GtkWidget *warning_dialog;
 	GtkWidget *dont_bother_me_again_checkbox;
 	GtkWidget *alignment;
-	GConfClient *client;
 	char *text;
 
-	client = gconf_client_get_default ();
+	warning_dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (warning_dialog), "Evolution " VERSION);
+	gtk_window_set_modal (GTK_WINDOW (warning_dialog), TRUE);
+	gtk_dialog_add_button (GTK_DIALOG (warning_dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
 
-	if (gconf_client_get_bool (client, "/apps/evolution/shell/skip_warning_dialog", NULL)) {
-		g_object_unref (client);
-		return;
-	}
+	gtk_dialog_set_has_separator (GTK_DIALOG (warning_dialog), FALSE);
 
-	g_object_unref (client);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (warning_dialog)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (warning_dialog)->action_area), 12);
 
-	warning_dialog = gtk_dialog_new_with_buttons("Ximian Evolution " VERSION, parent,
-						     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (warning_dialog)->vbox), vbox,
+			    TRUE, TRUE, 0);
+
 	text = g_strdup_printf(
 		/* xgettext:no-c-format */
 		/* Preview/Alpha/Beta version warning message */
 		_("Hi.  Thanks for taking the time to download this preview release\n"
-		  "of the Ximian Evolution groupware suite.\n"
+		  "of the Evolution groupware suite.\n"
 		  "\n"
-		  "This version of Ximian Evolution is not yet complete. It is getting close,\n"
+		  "This version of Evolution is not yet complete. It is getting close,\n"
 		  "but some features are either unfinished or do not work properly.\n"
 		  "\n"
 		  "If you want a stable version of Evolution, we urge you to uninstall\n"
@@ -286,31 +238,28 @@ show_development_warning (GtkWindow *parent)
                   "\n"
 		  "We hope that you enjoy the results of our hard work, and we\n"
 		  "eagerly await your contributions!\n"),
-		"1.2.x (1.2.2)");
+		"1.4");
 	label = gtk_label_new (text);
 	g_free(text);
 
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (warning_dialog)->vbox), 
-			    label, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Thanks\n"
-				 "The Ximian Evolution Team\n"));
+				 "The Evolution Team\n"));
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, .5);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (warning_dialog)->vbox), 
-			    label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 
 	dont_bother_me_again_checkbox = gtk_check_button_new_with_label (_("Don't tell me again"));
 
-	/* GTK sucks.  (Just so you know.)  */
 	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
 
 	gtk_container_add (GTK_CONTAINER (alignment), dont_bother_me_again_checkbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (warning_dialog)->vbox),
-			    alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), alignment, TRUE, TRUE, 0);
 
 	gtk_widget_show_all (warning_dialog);
 
@@ -319,31 +268,52 @@ show_development_warning (GtkWindow *parent)
 			  dont_bother_me_again_checkbox);
 }
 
-/* The following signal handlers are used to display the development warning as
-   soon as the first view is created.  */
-
 static void
-view_map_callback (GtkWidget *widget,
-		   void *data)
+destroy_config (void)
 {
-	g_signal_handlers_disconnect_by_func (widget, G_CALLBACK (view_map_callback), data);
+	GConfClient *gconf;
+	
+	gconf = gconf_client_get_default ();
 
-	show_development_warning (GTK_WINDOW (widget));
+	/* Unset the source stuff */
+	gconf_client_unset (gconf, "/apps/evolution/calendar/sources", NULL);
+	gconf_client_unset (gconf, "/apps/evolution/tasks/sources", NULL);
+	gconf_client_unset (gconf, "/apps/evolution/addressbook/sources", NULL);
+	gconf_client_unset (gconf, "/apps/evolution/addressbook/sources", NULL);
+
+	/* Reset the version */
+	gconf_client_set_string (gconf, "/apps/evolution/version", "1.4.0", NULL);
+
+	/* Clear the dir */
+	system ("rm -Rf ~/.evolution");
+	
+	g_object_unref (gconf);
 }
 
-static void
-new_view_created_callback (EShell *shell,
-			   EShellView *view,
-			   void *data)
-{
-	g_signal_handlers_disconnect_by_func (shell, G_CALLBACK (new_view_created_callback), data);
+#endif /* DEVELOPMENT */
 
-	g_signal_connect (view, "map", G_CALLBACK (view_map_callback), NULL);
+static void
+open_uris (GNOME_Evolution_Shell corba_shell, GSList *uri_list)
+{
+	GSList *p;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	for (p = uri_list; p != NULL; p = p->next) {
+		const char *uri;
+
+		uri = (const char *) p->data;
+		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_warning ("Invalid URI: %s", uri);
+			CORBA_exception_free (&ev);
+		}
+	}
+
+	CORBA_exception_free (&ev);
 }
 
-#endif /* DEVELOPMENT_WARNING */
-
-
 /* This is for doing stuff that requires the GTK+ loop to be running already.  */
 
 static gint
@@ -354,13 +324,10 @@ idle_cb (void *data)
 	CORBA_Environment ev;
 	EShellConstructResult result;
 	EShellStartupLineMode startup_line_mode;
-	GSList *p;
 	gboolean have_evolution_uri;
-	gboolean display_default;
-	gboolean displayed_any;
 
 #ifdef KILL_PROCESS_CMD
-	kill_old_wombat ();
+	kill_old_dataserver ();
 #endif
 
 	CORBA_exception_init (&ev);
@@ -374,22 +341,12 @@ idle_cb (void *data)
 	else
 		startup_line_mode = E_SHELL_STARTUP_LINE_MODE_OFFLINE;
 
-	shell = e_shell_new (evolution_directory, ! no_splash, startup_line_mode, &result);
-	g_free (evolution_directory);
+	shell = e_shell_new (startup_line_mode, &result);
 
 	switch (result) {
 	case E_SHELL_CONSTRUCT_RESULT_OK:
-		e_shell_config_factory_register (shell);
-
-		g_signal_connect (shell, "no_views_left", G_CALLBACK (no_views_left_cb), NULL);
+		g_signal_connect (shell, "no_windows_left", G_CALLBACK (no_windows_left_cb), NULL);
 		g_object_weak_ref (G_OBJECT (shell), shell_weak_notify, NULL);
-
-#ifdef DEVELOPMENT_WARNING
-		if (!getenv ("EVOLVE_ME_HARDER"))
-			g_signal_connect (shell, "new_view_created",
-					  G_CALLBACK (new_view_created_callback), NULL);
-#endif
-
 		corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell));
 		corba_shell = CORBA_Object_duplicate (corba_shell, &ev);
 		break;
@@ -397,8 +354,7 @@ idle_cb (void *data)
 	case E_SHELL_CONSTRUCT_RESULT_CANNOTREGISTER:
 		corba_shell = bonobo_activation_activate_from_id (E_SHELL_OAFIID, 0, NULL, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION || corba_shell == CORBA_OBJECT_NIL) {
-			e_notice (NULL, GTK_MESSAGE_ERROR,
-				  _("Cannot access the Ximian Evolution shell."));
+			e_error_run(NULL, "shell:noshell", NULL);
 			CORBA_exception_free (&ev);
 			bonobo_main_quit ();
 			return FALSE;
@@ -406,9 +362,8 @@ idle_cb (void *data)
 		break;
 
 	default:
-		e_notice (NULL, GTK_MESSAGE_ERROR,
-			  _("Cannot initialize the Ximian Evolution shell: %s"),
-			  e_shell_construct_result_to_string (result));
+		e_error_run(NULL, "shell:noshell-reason",
+			    e_shell_construct_result_to_string(result), NULL);
 		CORBA_exception_free (&ev);
 		bonobo_main_quit ();
 		return FALSE;
@@ -416,61 +371,26 @@ idle_cb (void *data)
 	}
 
 	have_evolution_uri = FALSE;
-	displayed_any = FALSE;
 
-	for (p = uri_list; p != NULL; p = p->next) {
-		const char *uri;
-
-		uri = (const char *) p->data;
-		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0 ||
-		    strncmp (uri, E_SHELL_DEFAULTURI_PREFIX, E_SHELL_DEFAULTURI_PREFIX_LEN) == 0)
-			have_evolution_uri = TRUE;
-	}
-
-	if (shell == NULL) {
-		/* We're talking to a remote shell. If the user didn't ask us to open any particular
- 		   URI, then open another view of the default URI.  */
-		if (uri_list == NULL)
-			display_default = TRUE;
-		else
-			display_default = FALSE;
+	if (shell != NULL) {
+		e_shell_create_window (shell, default_component_id, NULL);
+		open_uris (corba_shell, uri_list);
 	} else {
-		/* We're starting a new shell. If the user didn't specify any evolution: URIs to
-		   view, AND we can't load the user's previous settings, then show the default
-		   URI.  */
-		if (! have_evolution_uri) {
-			e_shell_create_view (shell, NULL, NULL);
-			display_default = TRUE;
-			displayed_any = TRUE;
-		} else {
-			display_default = FALSE;
-		}
-	}
+		CORBA_Environment ev;
 
-	for (p = uri_list; p != NULL; p = p->next) {
-		const char *uri;
+		CORBA_exception_init (&ev);
+		if (uri_list != NULL)
+			open_uris (corba_shell, uri_list);
+		else
+			if (default_component_id == NULL)
+				GNOME_Evolution_Shell_createNewWindow (corba_shell, "", &ev);
+			else
+				GNOME_Evolution_Shell_createNewWindow (corba_shell, default_component_id, &ev);
 
-		uri = (const char *) p->data;
-		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
-		if (ev._major == CORBA_NO_EXCEPTION)
-			displayed_any = TRUE;
-		else {
-			g_warning ("CORBA exception %s when requesting URI -- %s",
-				   BONOBO_EX_REPOID (&ev), uri);
-			CORBA_exception_free (&ev);
-		}
+		CORBA_exception_free (&ev);
 	}
 
 	g_slist_free (uri_list);
-
-	if (display_default && ! displayed_any) {
-		const char *uri;
-
-		uri = E_SHELL_VIEW_DEFAULT_URI;
-		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION)
-			g_warning ("CORBA exception %s when requesting URI -- %s", BONOBO_EX_REPOID (&ev), uri);
-	}
 
 	CORBA_Object_release (corba_shell, &ev);
 
@@ -538,8 +458,8 @@ int
 main (int argc, char **argv)
 {
 	struct poptOption options[] = {
-		{ "no-splash", '\0', POPT_ARG_NONE, &no_splash, 0,
-		  N_("Disable splash screen"), NULL },
+		{ "component", 'c', POPT_ARG_STRING, &default_component_id, 0,
+		  N_("Start Evolution activating the specified component"), NULL },
 		{ "offline", '\0', POPT_ARG_NONE, &start_offline, 0, 
 		  N_("Start in offline mode"), NULL },
 		{ "online", '\0', POPT_ARG_NONE, &start_online, 0, 
@@ -548,18 +468,27 @@ main (int argc, char **argv)
 		{ "force-shutdown", '\0', POPT_ARG_NONE, &killev, 0, 
 		  N_("Forcibly shut down all evolution components"), NULL },
 #endif
+#ifdef DEVELOPMENT
+		{ "force-migrate", '\0', POPT_ARG_NONE, &force_migrate, 0, 
+		  N_("Forcibly re-migrate from Evolution 1.4"), NULL },
+#endif
 		{ "debug", '\0', POPT_ARG_STRING, &evolution_debug_log, 0, 
 		  N_("Send the debugging output of all components to a file."), NULL },
 		{ "setup-only", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN,
 		  &setup_only, 0, NULL, NULL },
-		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
+#ifdef DEVELOPMENT
+	GConfClient *client;
+	gboolean skip_warning_dialog;
+#endif
 	GSList *uri_list;
 	GValue popt_context_value = { 0, };
 	GnomeProgram *program;
 	poptContext popt_context;
 	const char **args;
+	char *evolution_directory;
+	GList *icon_list;
 
 	/* Make ElectricFence work.  */
 	free (malloc (10));
@@ -568,7 +497,7 @@ main (int argc, char **argv)
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	program = gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE, argc, argv, 
+	program = gnome_program_init (PACKAGE "-" BASE_VERSION, VERSION, LIBGNOMEUI_MODULE, argc, argv, 
 				      GNOME_PROGRAM_STANDARD_PROPERTIES,
 				      GNOME_PARAM_POPT_TABLE, options,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Evolution"),
@@ -586,6 +515,12 @@ main (int argc, char **argv)
 		exit (0);
 	}
 
+#ifdef DEVELOPMENT
+	if (force_migrate) {
+		destroy_config ();
+	}
+#endif
+	
 	setup_segv_redirect ();
 	
 	if (evolution_debug_log) {
@@ -603,17 +538,21 @@ main (int argc, char **argv)
 	glade_init ();
 	e_cursors_init ();
 	e_icon_factory_init ();
-	e_proxy_init ();
+	e_passwords_init();
 
-	gnome_window_icon_set_default_from_file (EVOLUTION_IMAGES "/evolution-inbox.png");
+	icon_list = e_icon_factory_get_icon_list ("stock_mail");
+	if (icon_list) {
+		gtk_window_set_default_icon_list (icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
 
-	/* FIXME */
+	/* FIXME We shouldn't be using the old directory at all I think */
 	evolution_directory = g_build_filename (g_get_home_dir (), "evolution", NULL);
-
-	if (! e_setup (evolution_directory))
-		exit (1);
 	if (setup_only)
 		exit (0);
+
+	g_free (evolution_directory);
 
 	uri_list = NULL;
 
@@ -630,11 +569,25 @@ main (int argc, char **argv)
 	uri_list = g_slist_reverse (uri_list);
 	g_value_unset (&popt_context_value);
 
-	e_config_upgrade(evolution_directory);
+	gnome_sound_init ("localhost");
 
-	gtk_idle_add (idle_cb, uri_list);
+#ifdef DEVELOPMENT
+	client = gconf_client_get_default ();
+	skip_warning_dialog = gconf_client_get_bool (client, "/apps/evolution/shell/skip_warning_dialog", NULL);
+	g_object_unref (client);
 
+	if (!skip_warning_dialog && !getenv ("EVOLVE_ME_HARDER"))
+		show_development_warning();
+	else
+#endif
+		g_idle_add (idle_cb, uri_list);	
+	
 	bonobo_main ();
-
+	
+	e_icon_factory_shutdown ();
+	g_object_unref (program);
+	gnome_sound_shutdown ();
+	e_cursors_shutdown ();
+	
 	return 0;
 }

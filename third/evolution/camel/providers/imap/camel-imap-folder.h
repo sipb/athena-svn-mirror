@@ -47,11 +47,13 @@ struct _CamelImapFolder {
 
 	struct _CamelImapFolderPrivate *priv;
 
-	gboolean need_rescan, need_refresh;
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;
-};
 
+	unsigned int need_rescan:1;
+	unsigned int need_refresh:1;
+	unsigned int read_only:1;
+};
 
 typedef struct {
 	CamelDiscoFolderClass parent_class;

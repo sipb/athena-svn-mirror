@@ -1,4 +1,8 @@
-bin_PROGRAMS =			\
+privlibexec_SCRIPTS =					\
+	csv2vcard					\
+	evolution-addressbook-clean
+
+privlibexec_PROGRAMS =			\
 	evolution-addressbook-export	
 
 INCLUDES =						\
@@ -11,10 +15,8 @@ INCLUDES =						\
 	-DDATADIR=\""$(datadir)"\"			\
 	-DLIBDIR=\""$(libdir)"\"			\
 	-I$(top_srcdir)/addressbook			\
-	-I$(top_srcdir)/addressbook/backend		\
-	-I$(top_builddir)/addressbook/backend		\
-	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED	\
-	$(GNOME_FULL_CFLAGS)
+	-I$(top_builddir)/addressbook			\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 evolution_addressbook_export_SOURCES =				\
 	evolution-addressbook-export.c				\
@@ -23,11 +25,15 @@ evolution_addressbook_export_SOURCES =				\
 	evolution-addressbook-export.h
 
 evolution_addressbook_export_LDADD =				\
-	$(GNOME_FULL_LIBS)					\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
-	$(top_builddir)/widgets/menus/libmenus.la		\
-	$(top_builddir)/camel/libcamel.la			\
-	$(top_builddir)/libversit/libversit.la			\
-	$(top_builddir)/e-util/ename/libename.la		\
-	$(top_builddir)/e-util/libeutil.la
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
+EXTRA_DIST = $(privlibexec_SCRIPTS) \
+	evolution-addressbook-clean.in
+
+CLEANFILES= evolution-addressbook-clean
+
+evolution-addressbook-clean: evolution-addressbook-clean.in Makefile
+## Use sed and then mv to avoid problems if the user interrupts.
+	sed -e 's?\@EVOLUTION_TOOLSDIR\@?$(privlibexecdir)?g' \
+           < $(srcdir)/evolution-addressbook-clean.in > evolution-addressbook-clean.tmp \
+          && mv evolution-addressbook-clean.tmp evolution-addressbook-clean

@@ -2,7 +2,7 @@
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2001-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -39,18 +39,11 @@
 struct _CamelDigestFolderPrivate {
 	CamelMimeMessage *message;
 	CamelFolderSearch *search;
-#ifdef ENABLE_THREADS
 	GMutex *search_lock;
-#endif
 };
 
-#ifdef ENABLE_THREADS
 #define CAMEL_DIGEST_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelDigestFolder *)f)->priv->l))
 #define CAMEL_DIGEST_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelDigestFolder *)f)->priv->l))
-#else
-#define CAMEL_DIGEST_FOLDER_LOCK(f, l)
-#define CAMEL_DIGEST_FOLDER_UNLOCK(f, l)
-#endif
 
 static CamelFolderClass *parent_class = NULL;
 
@@ -113,30 +106,26 @@ camel_digest_folder_init (gpointer object, gpointer klass)
 	digest_folder->priv = g_new (struct _CamelDigestFolderPrivate, 1);
 	digest_folder->priv->message = NULL;
 	digest_folder->priv->search = NULL;
-#ifdef ENABLE_THREADS
 	digest_folder->priv->search_lock = g_mutex_new ();
-#endif
 }
 
-static void           
+static void
 digest_finalize (CamelObject *object)
 {
 	CamelDigestFolder *digest_folder = CAMEL_DIGEST_FOLDER (object);
 	CamelFolder *folder = CAMEL_FOLDER (object);
 	
 	if (folder->summary) {
-		camel_object_unref (CAMEL_OBJECT (folder->summary));
+		camel_object_unref (folder->summary);
 		folder->summary = NULL;
 	}
 	
-	camel_object_unref (CAMEL_OBJECT (digest_folder->priv->message));
+	camel_object_unref (digest_folder->priv->message);
 	
 	if (digest_folder->priv->search)
-		camel_object_unref (CAMEL_OBJECT (digest_folder->priv->search));
+		camel_object_unref (digest_folder->priv->search);
 	
-#ifdef ENABLE_THREADS
 	g_mutex_free (digest_folder->priv->search_lock);
-#endif
 	
 	g_free (digest_folder->priv);
 }
@@ -232,7 +221,7 @@ camel_digest_folder_new (CamelStore *parent_store, CamelMimeMessage *message)
 		return NULL;
 	
 	/* Make sure we have a multipart/digest subpart or at least some message/rfc822 attachments... */
-	if (!header_content_type_is (CAMEL_MIME_PART (message)->content_type, "multipart", "digest")) {
+	if (!camel_content_type_is (CAMEL_DATA_WRAPPER (message)->mime_type, "multipart", "digest")) {
 		if (!multipart_contains_message_parts (CAMEL_MULTIPART (wrapper)))
 			return NULL;
 	}
@@ -242,7 +231,7 @@ camel_digest_folder_new (CamelStore *parent_store, CamelMimeMessage *message)
 	
 	camel_folder_construct (folder, parent_store, "folder_name", "short_name");
 	
-	camel_object_ref (CAMEL_OBJECT (message));
+	camel_object_ref (message);
 	digest_folder->priv->message = message;
 	
 	construct_summary (folder, CAMEL_MULTIPART (wrapper));
@@ -321,35 +310,26 @@ digest_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		return NULL;
 	
 	message = CAMEL_MIME_MESSAGE (wrapper);
-	camel_object_ref (CAMEL_OBJECT (message));
+	camel_object_ref (message);
 	
 	return message;
 }
-
 
 static GPtrArray *
 digest_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
 {
 	CamelDigestFolder *df = (CamelDigestFolder *) folder;
-	CamelFolderSearch *search;
-	GPtrArray *summary, *matches;
-	
-	summary = camel_folder_get_summary (folder);
+	GPtrArray *matches;
 	
 	CAMEL_DIGEST_FOLDER_LOCK (folder, search_lock);
 	
 	if (!df->priv->search)
 		df->priv->search = camel_folder_search_new ();
 	
-	search = df->priv->search;
-	camel_folder_search_set_folder (search, folder);
-	camel_folder_search_set_summary (search, summary);
-	
-	matches = camel_folder_search_execute_expression (search, expression, ex);
+	camel_folder_search_set_folder (df->priv->search, folder);
+	matches = camel_folder_search_search(df->priv->search, expression, NULL, ex);
 	
 	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
-	
-	camel_folder_free_summary (folder, summary);
 	
 	return matches;
 }
@@ -358,38 +338,20 @@ static GPtrArray *
 digest_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
 {
 	CamelDigestFolder *df = (CamelDigestFolder *) folder;
-	CamelFolderSearch *search;
-	GPtrArray *summary, *matches;
-	int i;
-	
-	summary = g_ptr_array_new ();
-	for (i = 0; i < uids->len; i++) {
-		CamelMessageInfo *info;
-		
-		info = camel_folder_get_message_info (folder, uids->pdata[i]);
-		if (info)
-			g_ptr_array_add (summary, info);
-	}
-	
-	if (summary->len == 0)
-		return summary;
-	
+	GPtrArray *matches;
+
+	if (uids->len == 0)
+		return g_ptr_array_new();
+
 	CAMEL_DIGEST_FOLDER_LOCK (folder, search_lock);
 	
 	if (!df->priv->search)
 		df->priv->search = camel_folder_search_new ();
 	
-	search = df->priv->search;
-	camel_folder_search_set_folder (search, folder);
-	camel_folder_search_set_summary (search, summary);
-	
-	matches = camel_folder_search_execute_expression (search, expression, ex);
+	camel_folder_search_set_folder (df->priv->search, folder);
+	matches = camel_folder_search_search(df->priv->search, expression, NULL, ex);
 	
 	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
-	
-	for (i = 0; i < summary->len; i++)
-		camel_folder_free_message_info (folder, summary->pdata[i]);
-	g_ptr_array_free (summary, TRUE);
 	
 	return matches;
 }

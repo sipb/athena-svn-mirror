@@ -163,13 +163,13 @@ filter_option_set_current (FilterOption *option, const char *name)
 }
 
 /* used by implementers to add additional options */
-void
+struct _filter_option *
 filter_option_add(FilterOption *fo, const char *value, const char *title, const char *code)
 {
 	struct _filter_option *op;
 	
 	g_assert(IS_FILTER_OPTION(fo));
-	g_return_if_fail(find_option(fo, value) == NULL);
+	g_return_val_if_fail(find_option(fo, value) == NULL, NULL);
 	
 	op = g_malloc(sizeof(*op));
 	op->title = g_strdup(title);
@@ -179,6 +179,8 @@ filter_option_add(FilterOption *fo, const char *value, const char *title, const 
 	fo->options = g_list_append(fo->options, op);
 	if (fo->current == NULL)
 		fo->current = op;
+
+	return op;
 }
 
 static int
@@ -349,7 +351,7 @@ clone (FilterElement *fe)
 {
 	FilterOption *fo = (FilterOption *)fe, *new;
 	GList *l;
-	struct _filter_option *op;
+	struct _filter_option *op, *newop;
 	
 	d(printf ("cloning option\n"));
 	
@@ -357,7 +359,9 @@ clone (FilterElement *fe)
 	l = fo->options;
 	while (l) {
 		op = l->data;
-		filter_option_add (new, op->value, op->title, op->code);
+		newop = filter_option_add (new, op->value, op->title, op->code);
+		if (fo->current == op)
+			new->current = newop;
 		l = l->next;
 	}
 	

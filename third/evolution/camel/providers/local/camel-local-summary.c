@@ -34,14 +34,18 @@
 #include "camel-local-summary.h"
 #include "camel/camel-mime-message.h"
 #include "camel/camel-stream-null.h"
+#include "camel/camel-file-utils.h"
 
 #define w(x)
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-#define CAMEL_LOCAL_SUMMARY_VERSION (0x200)
+#define CAMEL_LOCAL_SUMMARY_VERSION (1)
 
-static CamelMessageInfo * message_info_new (CamelFolderSummary *, struct _header_raw *);
+static int summary_header_load (CamelFolderSummary *, FILE *);
+static int summary_header_save (CamelFolderSummary *, FILE *);
+
+static CamelMessageInfo * message_info_new (CamelFolderSummary *, struct _camel_header_raw *);
 
 static int local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelMessageInfo *mi);
 static char *local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo *mi);
@@ -80,6 +84,9 @@ camel_local_summary_class_init(CamelLocalSummaryClass *klass)
 	CamelFolderSummaryClass *sklass = (CamelFolderSummaryClass *) klass;
 	
 	camel_local_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
+
+	sklass->summary_header_load = summary_header_load;
+	sklass->summary_header_save = summary_header_save;
 
 	sklass->message_info_new  = message_info_new;
 
@@ -192,8 +199,8 @@ do_stat_ci(CamelLocalSummary *cls, struct _stat_info *info, CamelMessageContentI
 	if (ci->encoding)
 		info->citotal += strlen(ci->encoding) + 4;
 	if (ci->type) {
-		struct _header_content_type *ct = ci->type;
-		struct _header_param *param;
+		CamelContentType *ct = ci->type;
+		struct _camel_header_param *param;
 
 		info->citotal += sizeof(*ct) + 4;
 		if (ct->type)
@@ -308,7 +315,7 @@ camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const Cam
  * Return value: -1 on error, otherwise the number of bytes written.
  **/
 int
-camel_local_summary_write_headers(int fd, struct _header_raw *header, const char *xevline, const char *status, const char *xstatus)
+camel_local_summary_write_headers(int fd, struct _camel_header_raw *header, const char *xevline, const char *status, const char *xstatus)
 {
 	int outlen = 0, len;
 	int newfd;
@@ -463,7 +470,7 @@ static char *
 local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo *mi)
 {
 	GString *out = g_string_new("");
-	struct _header_param *params = NULL;
+	struct _camel_header_param *params = NULL;
 	GString *val = g_string_new("");
 	CamelFlag *flag = mi->user_flags;
 	CamelTag *tag = mi->user_tags;
@@ -492,7 +499,7 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo 
 					g_string_append_c (val, ',');
 				flag = flag->next;
 			}
-			header_set_param (&params, "flags", val->str);
+			camel_header_set_param (&params, "flags", val->str);
 			g_string_truncate (val, 0);
 		}
 		if (tag) {
@@ -504,11 +511,11 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo 
 					g_string_append_c (val, ',');
 				tag = tag->next;
 			}
-			header_set_param (&params, "tags", val->str);
+			camel_header_set_param (&params, "tags", val->str);
 		}
 		g_string_free (val, TRUE);
-		header_param_list_format_append (out, params);
-		header_param_list_free (params);
+		camel_header_param_list_format_append (out, params);
+		camel_header_param_list_free (params);
 	}
 	ret = out->str;
 	g_string_free (out, FALSE);
@@ -519,13 +526,13 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo 
 static int
 local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelMessageInfo *mi)
 {
-	struct _header_param *params, *scan;
+	struct _camel_header_param *params, *scan;
 	guint32 uid, flags;
 	char *header;
 	int i;
 
 	/* check for uid/flags */
-	header = header_token_decode(xev);
+	header = camel_header_token_decode(xev);
 	if (header && strlen(header) == strlen("00000000-0000")
 	    && sscanf(header, "%08x-%04x", &uid, &flags) == 2) {
 		char uidstr[20];
@@ -546,7 +553,7 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelM
 	/* check for additional data */	
 	header = strchr(xev, ';');
 	if (header) {
-		params = header_param_list_decode(header+1);
+		params = camel_header_param_list_decode(header+1);
 		scan = params;
 		while (scan) {
 			if (!strcasecmp(scan->name, "flags")) {
@@ -572,13 +579,42 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelM
 			}
 			scan = scan->next;
 		}
-		header_param_list_free(params);
+		camel_header_param_list_free(params);
 	}
 	return 0;
 }
 
+static int
+summary_header_load(CamelFolderSummary *s, FILE *in)
+{
+	CamelLocalSummary *cls = (CamelLocalSummary *)s;
+
+	/* We dont actually add our own headers, but version that we don't anyway */
+
+	if (((CamelFolderSummaryClass *)camel_local_summary_parent)->summary_header_load(s, in) == -1)
+		return -1;
+
+	/* Legacy version, version is in summary only */
+	if ((s->version & 0xfff) == 0x20c)
+		return 0;
+
+	/* otherwise load the version number */
+	return camel_file_util_decode_fixed_int32(in, &cls->version);
+}
+
+static int
+summary_header_save(CamelFolderSummary *s, FILE *out)
+{
+	/*CamelLocalSummary *cls = (CamelLocalSummary *)s;*/
+
+	if (((CamelFolderSummaryClass *)camel_local_summary_parent)->summary_header_save(s, out) == -1)
+		return -1;
+
+	return camel_file_util_encode_fixed_int32(out, CAMEL_LOCAL_SUMMARY_VERSION);
+}
+
 static CamelMessageInfo *
-message_info_new(CamelFolderSummary *s, struct _header_raw *h)
+message_info_new(CamelFolderSummary *s, struct _camel_header_raw *h)
 {
 	CamelMessageInfo *mi;
 	CamelLocalSummary *cls = (CamelLocalSummary *)s;
@@ -588,7 +624,7 @@ message_info_new(CamelFolderSummary *s, struct _header_raw *h)
 		const char *xev;
 		int doindex = FALSE;
 
-		xev = header_raw_find(&h, "X-Evolution", NULL);
+		xev = camel_header_raw_find(&h, "X-Evolution", NULL);
 		if (xev==NULL || camel_local_summary_decode_x_evolution(cls, xev, mi) == -1) {
 			/* to indicate it has no xev header */
 			mi->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;

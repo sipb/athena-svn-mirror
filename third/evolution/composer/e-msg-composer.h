@@ -35,8 +35,6 @@ typedef struct _EMsgComposerClass  EMsgComposerClass;
 #include "e-msg-composer-hdrs.h"
 #include "Editor.h"
 
-#include <mail/mail-config.h>
-
 #ifdef __cplusplus
 extern "C" {
 #pragma }
@@ -54,7 +52,11 @@ extern "C" {
 struct _EMsgComposer {
 	BonoboWindow parent;
 	
+	/* Main UIComponent */
 	BonoboUIComponent *uic;
+
+	/* UIComponent for the non-control GtkEntries */
+	BonoboUIComponent *entry_uic;
 	
 	GtkWidget *hdrs;
 	GPtrArray *extra_hdr_names, *extra_hdr_values;
@@ -65,6 +67,10 @@ struct _EMsgComposer {
 	
 	GtkWidget *attachment_bar;
 	GtkWidget *attachment_scrolled_window;
+	GtkWidget *attachment_expander;
+	GtkWidget *attachment_expander_label;
+	GtkWidget *attachment_expander_icon;
+	GtkWidget *attachment_expander_num;
 	
 	GtkWidget *address_dialog;
 	
@@ -90,18 +96,23 @@ struct _EMsgComposer {
 	guint32 smime_encrypt          : 1;
 	guint32 view_from              : 1;
 	guint32 view_replyto           : 1;
+	guint32 view_to                : 1;
+	guint32 view_postto            : 1;
 	guint32 view_bcc               : 1;
 	guint32 view_cc                : 1;
 	guint32 view_subject           : 1;
 	guint32 has_changed            : 1;
+	guint32 autosaved              : 1;
 	
 	guint32 mode_post              : 1;
 	
 	guint32 in_signature_insert    : 1;
-	guint32 auto_signature         : 1;
 	
-	MailConfigSignature *signature;
-	GtkWidget *sig_omenu;
+	struct _ESignature *signature;
+	struct _GtkOptionMenu *sig_menu;
+	guint sig_added_id;
+	guint sig_removed_id;
+	guint sig_changed_id;
 	
 	CamelMimeMessage *redirect;
 	
@@ -119,7 +130,12 @@ struct _EMsgComposerClass {
 GtkType                  e_msg_composer_get_type                         (void);
 
 EMsgComposer            *e_msg_composer_new                              (void);
-EMsgComposer            *e_msg_composer_new_post                         (void);
+
+#define E_MSG_COMPOSER_MAIL 1
+#define E_MSG_COMPOSER_POST 2
+#define E_MSG_COMPOSER_MAIL_POST E_MSG_COMPOSER_MAIL|E_MSG_COMPOSER_POST
+
+EMsgComposer            *e_msg_composer_new_with_type                    (int type);
 
 EMsgComposer            *e_msg_composer_new_with_message                 (CamelMimeMessage  *msg);
 EMsgComposer            *e_msg_composer_new_from_url                     (const char        *url);
@@ -135,7 +151,8 @@ void                     e_msg_composer_set_headers                      (EMsgCo
 									  EDestination     **bcc,
 									  const char        *subject);
 void                     e_msg_composer_set_body_text                    (EMsgComposer      *composer,
-									  const char        *text);
+									  const char        *text,
+									  ssize_t            len);
 void                     e_msg_composer_set_body                         (EMsgComposer      *composer,
 									  const char        *body,
 									  const char        *mime_type);
@@ -159,8 +176,14 @@ void                     e_msg_composer_set_send_html                    (EMsgCo
 gboolean                 e_msg_composer_get_view_from                    (EMsgComposer      *composer);
 void                     e_msg_composer_set_view_from                    (EMsgComposer      *composer,
 									  gboolean           view_from);
+gboolean                 e_msg_composer_get_view_to                      (EMsgComposer      *composer);
+void                     e_msg_composer_set_view_to                      (EMsgComposer      *composer,
+									  gboolean           view_replyto);
 gboolean                 e_msg_composer_get_view_replyto                 (EMsgComposer      *composer);
 void                     e_msg_composer_set_view_replyto                 (EMsgComposer      *composer,
+									  gboolean           view_replyto);
+gboolean                 e_msg_composer_get_view_postto                  (EMsgComposer      *composer);
+void                     e_msg_composer_set_view_postto                  (EMsgComposer      *composer,
 									  gboolean           view_replyto);
 gboolean                 e_msg_composer_get_view_cc                      (EMsgComposer      *composer);
 void                     e_msg_composer_set_view_cc                      (EMsgComposer      *composer,
@@ -181,6 +204,9 @@ char                    *e_msg_composer_guess_mime_type                  (const 
 void                     e_msg_composer_set_changed                      (EMsgComposer      *composer);
 void                     e_msg_composer_unset_changed                    (EMsgComposer      *composer);
 gboolean                 e_msg_composer_is_dirty                         (EMsgComposer      *composer);
+void                     e_msg_composer_set_autosaved                    (EMsgComposer      *composer);
+void                     e_msg_composer_unset_autosaved                  (EMsgComposer      *composer);
+gboolean                 e_msg_composer_is_autosaved                     (EMsgComposer      *composer);
 void                     e_msg_composer_set_enable_autosave              (EMsgComposer      *composer,
 									  gboolean           enabled);
 

@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -240,16 +263,19 @@ LDADD = \
 
 check_PROGRAMS = \
 	url		\
+	url-scan	\
 	utf7		\
-	split
+	split		\
+	test2
 
 
-TESTS = url utf7 split
+TESTS = url utf7 split url-scan test2
 subdir = camel/tests/misc
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = url$(EXEEXT) utf7$(EXEEXT) split$(EXEEXT)
+check_PROGRAMS = url$(EXEEXT) url-scan$(EXEEXT) utf7$(EXEEXT) \
+	split$(EXEEXT) test2$(EXEEXT)
 split_SOURCES = split.c
 split_OBJECTS = split.$(OBJEXT)
 split_LDADD = $(LDADD)
@@ -257,6 +283,13 @@ split_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
 	$(top_builddir)/e-util/libeutil.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a
 split_LDFLAGS =
+test2_SOURCES = test2.c
+test2_OBJECTS = test2.$(OBJEXT)
+test2_LDADD = $(LDADD)
+test2_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
+	$(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/camel/tests/lib/libcameltest.a
+test2_LDFLAGS =
 url_SOURCES = url.c
 url_OBJECTS = url.$(OBJEXT)
 url_LDADD = $(LDADD)
@@ -264,6 +297,13 @@ url_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
 	$(top_builddir)/e-util/libeutil.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a
 url_LDFLAGS =
+url_scan_SOURCES = url-scan.c
+url_scan_OBJECTS = url-scan.$(OBJEXT)
+url_scan_LDADD = $(LDADD)
+url_scan_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
+	$(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/camel/tests/lib/libcameltest.a
+url_scan_LDFLAGS =
 utf7_SOURCES = utf7.c
 utf7_OBJECTS = utf7.$(OBJEXT)
 utf7_LDADD = $(LDADD)
@@ -279,7 +319,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/split.Po ./$(DEPDIR)/url.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/split.Po ./$(DEPDIR)/test2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/url-scan.Po ./$(DEPDIR)/url.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/utf7.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -289,9 +330,9 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = split.c url.c utf7.c
+DIST_SOURCES = split.c test2.c url.c url-scan.c utf7.c
 DIST_COMMON = README Makefile.am Makefile.in
-SOURCES = split.c url.c utf7.c
+SOURCES = split.c test2.c url.c url-scan.c utf7.c
 
 all: all-am
 
@@ -312,9 +353,15 @@ clean-checkPROGRAMS:
 split$(EXEEXT): $(split_OBJECTS) $(split_DEPENDENCIES) 
 	@rm -f split$(EXEEXT)
 	$(LINK) $(split_LDFLAGS) $(split_OBJECTS) $(split_LDADD) $(LIBS)
+test2$(EXEEXT): $(test2_OBJECTS) $(test2_DEPENDENCIES) 
+	@rm -f test2$(EXEEXT)
+	$(LINK) $(test2_LDFLAGS) $(test2_OBJECTS) $(test2_LDADD) $(LIBS)
 url$(EXEEXT): $(url_OBJECTS) $(url_DEPENDENCIES) 
 	@rm -f url$(EXEEXT)
 	$(LINK) $(url_LDFLAGS) $(url_OBJECTS) $(url_LDADD) $(LIBS)
+url-scan$(EXEEXT): $(url_scan_OBJECTS) $(url_scan_DEPENDENCIES) 
+	@rm -f url-scan$(EXEEXT)
+	$(LINK) $(url_scan_LDFLAGS) $(url_scan_OBJECTS) $(url_scan_LDADD) $(LIBS)
 utf7$(EXEEXT): $(utf7_OBJECTS) $(utf7_DEPENDENCIES) 
 	@rm -f utf7$(EXEEXT)
 	$(LINK) $(utf7_LDFLAGS) $(utf7_OBJECTS) $(utf7_LDADD) $(LIBS)
@@ -326,6 +373,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/split.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/url-scan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/url.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utf7.Po@am__quote@
 

@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Copyright (C) 2002 Ximian Inc.
  *
@@ -32,7 +33,6 @@
 
 #include "camel-file-utils.h"
 
-#include "string-utils.h"
 #include "e-util/md5-utils.h"
 #include "e-util/e-memory.h"
 

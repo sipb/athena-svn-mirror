@@ -35,10 +35,20 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/util/e-xml-utils.h>
+#include "widgets/misc/e-error.h"
 
 #include "rule-context.h"
 #include "filter-rule.h"
 #include "filter-marshal.h"
+
+#include "filter-input.h"
+#include "filter-option.h"
+#include "filter-code.h"
+#include "filter-colour.h"
+#include "filter-datespec.h"
+#include "filter-int.h"
+#include "filter-file.h"
+#include "filter-label.h"
 
 #define d(x) 
 
@@ -47,6 +57,7 @@ static int save(RuleContext *rc, const char *user);
 static int revert(RuleContext *rc, const char *user);
 static GList *rename_uri(RuleContext *rc, const char *olduri, const char *newuri, GCompareFunc cmp);
 static GList *delete_uri(RuleContext *rc, const char *uri, GCompareFunc cmp);
+static FilterElement *new_element(RuleContext *rc, const char *name);
 
 static void rule_context_class_init(RuleContextClass *klass);
 static void rule_context_init(RuleContext *rc);
@@ -109,7 +120,8 @@ rule_context_class_init(RuleContextClass *klass)
 	klass->revert = revert;
 	klass->rename_uri = rename_uri;
 	klass->delete_uri = delete_uri;
-	
+	klass->new_element = new_element;
+
 	/* signals */
 	signals[RULE_ADDED] =
 		g_signal_new("rule_added",
@@ -149,6 +161,8 @@ rule_context_init(RuleContext *rc)
 	
 	rc->part_set_map = g_hash_table_new(g_str_hash, g_str_equal);
 	rc->rule_set_map = g_hash_table_new(g_str_hash, g_str_equal);
+
+	rc->flags = RULE_CONTEXT_GROUPING;
 }
 
 static void
@@ -184,12 +198,7 @@ rule_context_finalise(GObject *obj)
 	g_list_free(rc->parts);
 	g_list_foreach(rc->rules, (GFunc)g_object_unref, NULL);
 	g_list_free(rc->rules);
-	
-	if (rc->system)
-		xmlFreeDoc(rc->system);
-	if (rc->user)
-		xmlFreeDoc(rc->user);
-	
+
 	g_free(rc->priv);
 	
 	G_OBJECT_CLASS(parent_class)->finalize(obj);
@@ -209,7 +218,7 @@ rule_context_new(void)
 }
 
 void
-rule_context_add_part_set(RuleContext *rc, const char *setname, int part_type, RCPartFunc append, RCNextPartFunc next)
+rule_context_add_part_set(RuleContext *rc, const char *setname, GType part_type, RCPartFunc append, RCNextPartFunc next)
 {
 	struct _part_set_map *map;
 	
@@ -226,7 +235,7 @@ rule_context_add_part_set(RuleContext *rc, const char *setname, int part_type, R
 }
 
 void
-rule_context_add_rule_set(RuleContext *rc, const char *setname, int rule_type, RCRuleFunc append, RCNextRuleFunc next)
+rule_context_add_rule_set(RuleContext *rc, const char *setname, GType rule_type, RCRuleFunc append, RCNextRuleFunc next)
 {
 	struct _rule_set_map *map;
 	
@@ -288,6 +297,7 @@ static int
 load(RuleContext *rc, const char *system, const char *user)
 {
 	xmlNodePtr set, rule, root;
+	xmlDocPtr systemdoc, userdoc;
 	struct _part_set_map *part_map;
 	struct _rule_set_map *rule_map;
 	struct stat st;
@@ -296,24 +306,23 @@ load(RuleContext *rc, const char *system, const char *user)
 	
 	d(printf("loading rules %s %s\n", system, user));
 	
-	rc->system = xmlParseFile(system);
-	if (rc->system == NULL) {
+	systemdoc = xmlParseFile(system);
+	if (systemdoc == NULL) {
 		rule_context_set_error(rc, g_strdup_printf("Unable to load system rules '%s': %s",
 							     system, g_strerror(errno)));
 		return -1;
 	}
 
-	root = xmlDocGetRootElement(rc->system);
+	root = xmlDocGetRootElement(systemdoc);
 	if (root == NULL || strcmp(root->name, "filterdescription")) {
 		rule_context_set_error(rc, g_strdup_printf("Unable to load system rules '%s': Invalid format", system));
-		xmlFreeDoc(rc->system);
-		rc->system = NULL;
+		xmlFreeDoc(systemdoc);
 		return -1;
 	}
 	/* doesn't matter if this doens't exist */
-	rc->user = NULL;
+	userdoc = NULL;
 	if (stat (user, &st) != -1 && S_ISREG (st.st_mode))
-		rc->user = xmlParseFile(user);
+		userdoc = xmlParseFile(user);
 	
 	/* now parse structure */
 	/* get rule parts */
@@ -328,8 +337,26 @@ load(RuleContext *rc, const char *system, const char *user)
 				if (!strcmp(rule->name, "part")) {
 					FilterPart *part = FILTER_PART(g_object_new(part_map->type, NULL, NULL));
 					
-					if (filter_part_xml_create(part, rule) == 0) {
+					if (filter_part_xml_create(part, rule, rc) == 0) {
 						part_map->append(rc, part);
+					} else {
+						g_object_unref(part);
+						g_warning("Cannot load filter part");
+					}
+				}
+				rule = rule->next;
+			}
+		} else if ((rule_map = g_hash_table_lookup(rc->rule_set_map, set->name))) {
+			d(printf("loading system rules ...\n"));
+			rule = set->children;
+			while (rule) {
+				d(printf("checking node: %s\n", rule->name));
+				if (!strcmp(rule->name, "rule")) {
+					FilterRule *part = FILTER_RULE(g_object_new(rule_map->type, NULL, NULL));
+					
+					if (filter_rule_xml_decode(part, rule, rc) == 0) {
+						part->system = TRUE;
+						rule_map->append(rc, part);
 					} else {
 						g_object_unref(part);
 						g_warning("Cannot load filter part");
@@ -342,8 +369,8 @@ load(RuleContext *rc, const char *system, const char *user)
 	}
 	
 	/* now load actual rules */
-	if (rc->user) {
-		root = xmlDocGetRootElement(rc->user);
+	if (userdoc) {
+		root = xmlDocGetRootElement(userdoc);
 		set = root?root->children:NULL;
 		while (set) {
 			d(printf("set name = %s\n", set->name));
@@ -369,6 +396,9 @@ load(RuleContext *rc, const char *system, const char *user)
 			set = set->next;
 		}
 	}
+
+	xmlFreeDoc(userdoc);
+	xmlFreeDoc(systemdoc);
 	
 	return 0;
 }
@@ -412,9 +442,11 @@ save(RuleContext *rc, const char *user)
 		xmlAddChild(root, rules);
 		rule = NULL;
 		while ((rule = map->next(rc, rule, NULL))) {
-			d(printf("processing rule %s\n", rule->name));
-			work = filter_rule_xml_encode(rule);
-			xmlAddChild(rules, work);
+			if (!rule->system) {
+				d(printf("processing rule %s\n", rule->name));
+				work = filter_rule_xml_encode(rule);
+				xmlAddChild(rules, work);
+			}
 		}
 		l = g_list_next(l);
 	}
@@ -441,7 +473,7 @@ rule_context_revert(RuleContext *rc, const char *user)
 {
 	g_assert(rc);
 	
-	d(printf("rule_context: restoring %s %s\n", user));
+	d(printf("rule_context: restoring %s\n", user));
 	
 	return RULE_CONTEXT_GET_CLASS(rc)->revert(rc, user);
 }
@@ -494,7 +526,7 @@ revert(RuleContext *rc, const char *user)
 	
 	rule_context_set_error(rc, NULL);
 	
-	d(printf("restoring rules %s %s\n", user));
+	d(printf("restoring rules %s\n", user));
 	
 	userdoc = xmlParseFile(user);
 	if (userdoc == NULL)
@@ -518,7 +550,7 @@ revert(RuleContext *rc, const char *user)
 	}
 	
 	/* make what we have, match what we load */
-	set = xmlDocGetRootElement(rc->user);
+	set = xmlDocGetRootElement(userdoc);
 	set = set?set->children:NULL;
 	while (set) {
 		d(printf("set name = %s\n", set->name));
@@ -649,7 +681,7 @@ rule_context_add_rule(RuleContext *rc, FilterRule *new)
 static void
 new_rule_response(GtkWidget *dialog, int button, RuleContext *context)
 {
-	if (button == GTK_RESPONSE_ACCEPT) {
+	if (button == GTK_RESPONSE_OK) {
 		FilterRule *rule = g_object_get_data((GObject *) dialog, "rule");
 		char *user = g_object_get_data((GObject *) dialog, "path");
 		
@@ -659,13 +691,7 @@ new_rule_response(GtkWidget *dialog, int button, RuleContext *context)
 		}
 
 		if (rule_context_find_rule (context, rule->name, rule->source)) {
-			dialog = gtk_message_dialog_new ((GtkWindow *) dialog, GTK_DIALOG_DESTROY_WITH_PARENT,
-							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-							 _("Rule name '%s' is not unique, choose another."),
-							 rule->name);
-
-			gtk_dialog_run ((GtkDialog *) dialog);
-			gtk_widget_destroy (dialog);
+			e_error_run((GtkWindow *)dialog, "filter:bad-name-notunique", rule->name, NULL);
 
 			return;
 		}
@@ -696,9 +722,10 @@ rule_context_add_rule_gui(RuleContext *rc, FilterRule *rule, const char *title, 
 	
 	dialog =(GtkDialog *) gtk_dialog_new();
 	gtk_dialog_add_buttons(dialog,
-				GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-				GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-				NULL);
+			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			       GTK_STOCK_OK, GTK_RESPONSE_OK,
+			       NULL);
+	gtk_dialog_set_has_separator (dialog, FALSE);
 	
 	gtk_window_set_title((GtkWindow *) dialog, title);
 	gtk_window_set_default_size((GtkWindow *) dialog, 600, 400);
@@ -867,3 +894,54 @@ rule_context_free_uri_list(RuleContext *rc, GList *uris)
 		l = n;
 	}
 }
+
+static FilterElement *
+new_element(RuleContext *rc, const char *type)
+{
+	if (!strcmp (type, "string")) {
+		return (FilterElement *) filter_input_new ();
+	} else if (!strcmp (type, "address")) {
+		/* FIXME: temporary ... need real address type */
+		return (FilterElement *) filter_input_new_type_name (type);
+	} else if (!strcmp (type, "code")) {
+		return (FilterElement *) filter_code_new ();
+	} else if (!strcmp (type, "colour")) {
+		return (FilterElement *) filter_colour_new ();
+	} else if (!strcmp (type, "optionlist")) {
+		return (FilterElement *) filter_option_new ();
+	} else if (!strcmp (type, "datespec")) {
+		return (FilterElement *) filter_datespec_new ();
+	} else if (!strcmp (type, "command")) {
+		return (FilterElement *) filter_file_new_type_name (type);
+	} else if (!strcmp (type, "file")) {
+		return (FilterElement *) filter_file_new_type_name (type);
+	} else if (!strcmp (type, "integer")) {
+		return (FilterElement *) filter_int_new ();
+	} else if (!strcmp (type, "regex")) {
+		return (FilterElement *) filter_input_new_type_name (type);
+	} else if (!strcmp (type, "label")) {
+		return (FilterElement *) filter_label_new ();
+	} else {
+		g_warning("Unknown filter type '%s'", type);
+		return NULL;
+	}
+}
+
+/**
+ * rule_context_new_element:
+ * @rc: 
+ * @name: 
+ * 
+ * create a new filter element based on name.
+ * 
+ * Return value: 
+ **/
+FilterElement *
+rule_context_new_element(RuleContext *rc, const char *name)
+{
+	if (name == NULL)
+		return NULL;
+
+	return RULE_CONTEXT_GET_CLASS(rc)->new_element(rc, name);
+}
+

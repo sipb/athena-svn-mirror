@@ -10,11 +10,6 @@
         _tip="Preview the printed item"
         stockid="gtk-print-preview"/>
 
-        <cmd name="FileSave" _label="_Save"
-	_tip="Save the item and close the dialog box"
-	accel="*Control*s"
-        stockid="gtk-save"/>
-
         <cmd name="FileSaveAndClose" _label="Save and _Close"
 	_tip="Save the item and close the dialog box"
         accel="*Control*Return"
@@ -38,8 +33,6 @@
 <menu>
 
 <submenu name="File" _label="_File">
-
-        <menuitem name="FileSave" verb=""/>
 
         <menuitem name="FileSaveAndClose" verb=""/>
 
@@ -70,7 +63,7 @@
 </menu>
 
 <dockitem name="Toolbar" relief="none" behavior="exclusive"
- _tip="Main toolbar" hlook="both_horiz" vlook="icon">
+ _tip="Main toolbar" hlook="system" vlook="icon">
 
         <toolitem name="FileSaveAndClose" verb="" _label="Save and Close" priority="1"/>
 

@@ -36,8 +36,38 @@ extern "C" {
 #define	E_CALENDAR_ITEM_YPAD_ABOVE_MONTH_NAME	1
 #define	E_CALENDAR_ITEM_YPAD_BELOW_MONTH_NAME	1
 
+/* The number of rows & columns of days in each month. */
+#define E_CALENDAR_ROWS_PER_MONTH	6
+#define E_CALENDAR_COLS_PER_MONTH	7
+
 /* Used to mark days as bold in e_calendar_item_mark_day(). */
 #define E_CALENDAR_ITEM_MARK_BOLD	1
+
+/*
+ * These are the padding sizes between various pieces of the calendar.
+ */
+
+/* The minimum padding around the numbers in each cell/day. */
+#define	E_CALENDAR_ITEM_MIN_CELL_XPAD	4
+#define	E_CALENDAR_ITEM_MIN_CELL_YPAD	0
+
+/* Vertical padding. */
+#define	E_CALENDAR_ITEM_YPAD_ABOVE_DAY_LETTERS		1
+#define	E_CALENDAR_ITEM_YPAD_BELOW_DAY_LETTERS		0
+#define	E_CALENDAR_ITEM_YPAD_ABOVE_CELLS		1
+#define	E_CALENDAR_ITEM_YPAD_BELOW_CELLS		2
+
+/* Horizontal padding in the heading bars. */
+#define	E_CALENDAR_ITEM_XPAD_BEFORE_MONTH_NAME_WITH_BUTTON	16
+#define	E_CALENDAR_ITEM_XPAD_BEFORE_MONTH_NAME			3
+#define	E_CALENDAR_ITEM_XPAD_AFTER_MONTH_NAME			3
+#define	E_CALENDAR_ITEM_XPAD_AFTER_MONTH_NAME_WITH_BUTTON	16
+
+/* Horizontal padding in the month displays. */
+#define	E_CALENDAR_ITEM_XPAD_BEFORE_WEEK_NUMBERS	4
+#define	E_CALENDAR_ITEM_XPAD_AFTER_WEEK_NUMBERS		2
+#define	E_CALENDAR_ITEM_XPAD_BEFORE_CELLS		1
+#define	E_CALENDAR_ITEM_XPAD_AFTER_CELLS		4
 
 
 /* These index our colors array. */
@@ -45,6 +75,7 @@ typedef enum
 {
 	E_CALENDAR_ITEM_COLOR_TODAY_BOX,
 	E_CALENDAR_ITEM_COLOR_SELECTION_FG,
+	E_CALENDAR_ITEM_COLOR_SELECTION_BG_FOCUSED,
 	E_CALENDAR_ITEM_COLOR_SELECTION_BG,
 	E_CALENDAR_ITEM_COLOR_PREV_OR_NEXT_MONTH_FG,
 	
@@ -137,9 +168,9 @@ struct _ECalendarItem
 	   be changed when the user explicitly selects a day. */
 	gboolean move_selection_when_moving;
 
-	/* Whether the selection is rounded down to the nearest week when we
-	   move back/forward one month. Used for the week view. */
-	gboolean round_selection_when_moving;
+	/* Whether the selection day is preserved when we  move back/forward 
+	   one month. Used for the work week and week view. */
+	gboolean preserve_day_when_moving;
 
 	/* Whether to display the pop-up, TRUE by default */
 	gboolean display_popup;
@@ -174,6 +205,7 @@ struct _ECalendarItem
 	   top-left calendar month view. Note that -1 is used for the last days
 	   from the previous month. The days are real month days. */
 	gboolean selecting;
+	GDate *selecting_axis;
 	gboolean selection_dragging_end;
 	gboolean selection_from_full_week;
 	gboolean selection_set;
@@ -229,6 +261,7 @@ struct _ECalendarItemClass
 
 	void (* date_range_changed)	(ECalendarItem *calitem);
 	void (* selection_changed)	(ECalendarItem *calitem);
+	void (* selection_preview_changed)	(ECalendarItem *calitem);
 };
 
 
@@ -330,6 +363,14 @@ void	 e_calendar_item_set_get_time_callback	(ECalendarItem	*calitem,
 						 ECalendarItemGetTimeCallback cb,
 						 gpointer	 data,
 						 GtkDestroyNotify destroy);
+void e_calendar_item_normalize_date	(ECalendarItem	*calitem,
+					 gint		*year,
+					 gint		*month);
+gint e_calendar_item_get_week_number	(ECalendarItem *calitem,
+					 gint		day,
+					 gint		month,
+					 gint		year);
+
 
 #ifdef __cplusplus
 }

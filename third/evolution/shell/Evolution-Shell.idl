@@ -12,54 +12,22 @@
 
 module GNOME {
 module Evolution {
-	interface ShellComponent;
-
-	interface FolderSelectionListener;
-
 	interface Shell : Bonobo::Unknown {
-		exception NotReady {};
-		exception NotFound {};
-		exception UnsupportedSchema {};
-		exception InvalidURI {};
-		exception InternalError {};
 		exception Busy {};
-
-		typedef sequence<string> FolderTypeNameList;
-
-		/**
-		 * getComponentByType:
-		 * @type: name of a valid folder type
-		 *
-		 * Get the shell component associated with a specific folder type.
-		 *
-		 * Return value: the Evolution::ShellComponent interface for the component that
-		 * handles @type.
-		 */
-		ShellComponent getComponentByType (in string type)
-			raises (NotReady, NotFound);
+		exception ComponentNotFound {};
+		exception InternalError {};
+		exception InvalidURI {};
+		exception NotFound {};
+		exception NotReady {};
+		exception UnsupportedSchema {};
 
 		/**
-		 * getIconByType:
-		 * @type: name of a valid folder type
-		 * @mini: whether or not to get a mini (16x16) icon
+		 * createNewWindow:
+		 * @component_id: id or alias of the component to display in the new window.
 		 *
-		 * Get an icon associated with a specific folder type.
-		 *
-		 * Return value: an Evolution::Icon interface for the
-		 * component that handles @type.
 		 */
-		Icon getIconByType (in string  type,
-				    in boolean mini)
-			raises (NotReady, NotFound);
-
-		/**
-		 * createNewView:
-		 * @uri: URI for the view to open
-		 *
-		 * Return value: the new view.
-		 */
-		ShellView createNewView (in string uri)
-			raises (NotReady, NotFound, UnsupportedSchema, InvalidURI, InternalError);
+		void createNewWindow (in string component_id)
+			raises (NotReady, ComponentNotFound, UnsupportedSchema, InternalError);
 
 		/**
 		 * handleURI:
@@ -74,62 +42,12 @@ module Evolution {
 			raises (NotReady, NotFound, UnsupportedSchema, InvalidURI, InternalError);
 
 		/**
-		 * selectUserFolder:
-		 * @parent_xid: XID for the parent window (or zero if no parent window).
-		 * @listener: a listener interface to report the answer of the user.
-		 * @title: title for the folder selector dialog
-		 * @default_folder: physical or `evolution:' URI for the folder that must be
-		 * selected by default, when the dialog is popped up
-		 * @possible_types: list of the names of the types of folders that are allowed
-		 *
-		 * Pop up a folder selection dialog from which the user can select a folder.
-		 * Initially, the @default_folder is selected.  The user can also create a new
-		 * folder by using the "New..." button.  The dialog only lets the user choose
-		 * a folder whose type is listed in @possible_types.
-		 */
-		void selectUserFolder (in long long parent_xid,
-				       in FolderSelectionListener listener,
-				       in string title,
-				       in string default_folder,
-				       in FolderTypeNameList possible_types)
-			raises (NotReady, Busy);
-
-		/**
-		 * getLocalStorage:
-		 *
-		 * Get the interface to the local storage.
-		 *
-		 * FIXME: Probably we just want to be able to request this to
-		 * the StorageRegistry.  This is an ugly kludge.
-		 *
-		 * Return value: the `Evolution::LocalStorage' interface for
-		 * the local storage.  */
-		Storage getLocalStorage ()
-			raises (NotReady);
-
-		/**
-		 * createStorageSetView:
-		 *
-		 * Create a control for the storage set view.  This control
-		 * will also implement the `Evolution::StorageSetView' interface.
-		 *
-		 * Return value: the newly created control.
-		 */
-		Bonobo::Control createStorageSetView ()
-			raises (NotReady);
-
-		/**
 		 * setLineStatus:
 		 *
 		 * Set the shell into on-line or off-line mode.
 		 */
 		void setLineStatus (in boolean online)
 			raises (NotReady);
-	};
-
-	interface FolderSelectionListener {
-		void notifySelected (in Folder folder);
-		void notifyCanceled ();
 	};
 };
 };

@@ -519,6 +519,15 @@ append_xml_menu_item (GString *xml,
 }
 
 static void
+remove_bonobo_menus (ESearchBar *esb)
+{
+	if (bonobo_ui_component_get_container (esb->ui_component) == CORBA_OBJECT_NIL)
+		return;
+	
+	bonobo_ui_component_rm (esb->ui_component, "/menu/SearchPlaceholder", NULL);
+}
+
+static void
 setup_bonobo_menus (ESearchBar *esb)
 {
 	GString *xml;
@@ -535,7 +544,7 @@ setup_bonobo_menus (ESearchBar *esb)
 	g_string_append (xml, "<placeholder name=\"SearchBar\">");
 	
 	append_xml_menu_item (xml, "FindNow", _("_Find Now"), "ESearchBar:FindNow", NULL);
-	append_xml_menu_item (xml, "Clear", _("_Clear"), "ESearchBar:Clear", "*Control**Shift*b");
+	append_xml_menu_item (xml, "Clear", _("_Clear"), "ESearchBar:Clear", "*Control**Shift*q");
 	
 	for (p = esb->menu_items; p != NULL; p = p->next) {
 		const ESearchBarItem *item;
@@ -556,18 +565,10 @@ setup_bonobo_menus (ESearchBar *esb)
 	g_string_append (xml, "</placeholder>");
 	g_string_append (xml, "</submenu>");
 	
+	remove_bonobo_menus (esb);
 	bonobo_ui_component_set (esb->ui_component, "/menu/SearchPlaceholder", xml->str, NULL);
 
 	g_string_free (xml, TRUE);
-}
-
-static void
-remove_bonobo_menus (ESearchBar *esb)
-{
-	if (bonobo_ui_component_get_container (esb->ui_component) == CORBA_OBJECT_NIL)
-		return;
-
-	bonobo_ui_component_rm (esb->ui_component, "/menu/SearchPlaceholder/Search", NULL);
 }
 
 static void
@@ -685,7 +686,7 @@ add_button (ESearchBar *esb,
 	GtkWidget *holder;
 	GtkWidget *button;
 
-	label = gtk_label_new (text);
+	label = gtk_label_new_with_mnemonic (text);
 	gtk_misc_set_padding (GTK_MISC (label), 2, 0);
 	gtk_widget_show (label);
 	
@@ -925,9 +926,9 @@ e_search_bar_construct (ESearchBar *search_bar,
 
 	gtk_box_set_spacing (GTK_BOX (search_bar), 1);
 
-	search_bar->clear_button    = add_button (search_bar, _("Clear"),
+	search_bar->clear_button    = add_button (search_bar, _("_Clear"),
 						  G_CALLBACK (clear_button_clicked_cb));
-	search_bar->activate_button = add_button (search_bar, _("Find Now"),
+	search_bar->activate_button = add_button (search_bar, _("Find _Now"),
 						  G_CALLBACK (activate_button_clicked_cb));
 
 	e_search_bar_set_menu (search_bar, menu_items);

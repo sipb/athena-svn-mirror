@@ -26,7 +26,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <gal/widgets/e-unicode.h>
+#include <e-util/e-icon-factory.h>
 #include "changed-comp.h"
 
 
@@ -44,26 +44,27 @@
  * Return value: TRUE if the user clicked Yes, FALSE otherwise.
  **/
 gboolean
-changed_component_dialog (GtkWindow *parent, CalComponent *comp, gboolean deleted, gboolean changed)
+changed_component_dialog (GtkWindow *parent, ECalComponent *comp, gboolean deleted, gboolean changed)
 {
 	GtkWidget *dialog;
-	CalComponentVType vtype;
+	ECalComponentVType vtype;
 	char *str;
 	gint response;
-
-	vtype = cal_component_get_vtype (comp);
+	GList *icon_list;
+	
+	vtype = e_cal_component_get_vtype (comp);
 
 	if (deleted) {
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
+		case E_CAL_COMPONENT_EVENT:
 			str = _("This event has been deleted.");
 			break;
 
-		case CAL_COMPONENT_TODO:
+		case E_CAL_COMPONENT_TODO:
 			str = _("This task has been deleted.");
 			break;
 
-		case CAL_COMPONENT_JOURNAL:
+		case E_CAL_COMPONENT_JOURNAL:
 			str = _("This journal entry has been deleted.");
 			break;
 
@@ -79,15 +80,15 @@ changed_component_dialog (GtkWindow *parent, CalComponent *comp, gboolean delete
 
 	} else {
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
+		case E_CAL_COMPONENT_EVENT:
 			str = _("This event has been changed.");
 			break;
 
-		case CAL_COMPONENT_TODO:
+		case E_CAL_COMPONENT_TODO:
 			str = _("This task has been changed.");
 			break;
 
-		case CAL_COMPONENT_JOURNAL:
+		case E_CAL_COMPONENT_JOURNAL:
 			str = _("This journal entry has been changed.");
 			break;
 
@@ -105,7 +106,14 @@ changed_component_dialog (GtkWindow *parent, CalComponent *comp, gboolean delete
 	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_QUESTION,
 					 GTK_BUTTONS_YES_NO, str);
-
+	
+	icon_list = e_icon_factory_get_icon_list ("stock_calendar");
+	if (icon_list) {
+		gtk_window_set_icon_list (GTK_WINDOW (dialog), icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
+	
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 

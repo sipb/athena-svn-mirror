@@ -8,6 +8,7 @@
  * Authors: Miguel de Icaza <miguel@ximian.com>
  *          Federico Mena-Quintero <federico@ximian.com>
  *          Seth Alves <alves@hungry.com>
+ *          Rodrigo Moya <rodrigo@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -34,9 +35,11 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkfilesel.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-messagebox.h>
@@ -46,7 +49,7 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-exception.h>
 #include <gal/util/e-util.h>
-#include <cal-util/timeutil.h>
+#include <libecal/e-cal-time-util.h>
 #include "shell/Evolution.h"
 #include "calendar-commands.h"
 #include "calendar-config.h"
@@ -57,10 +60,10 @@
 #include "print.h"
 #include "dialogs/cal-prefs-dialog.h"
 #include "itip-utils.h"
+#include "e-pub-utils.h"
+#include "e-cal-list-view.h"
 #include "evolution-shell-component-utils.h"
-
-/* A list of all of the calendars started */
-static GList *all_calendars = NULL;
+#include "e-util/e-icon-factory.h"
 
 /* Focusing information for the calendar view.  We have to keep track of this
  * ourselves because with Bonobo controls, we may get unpaired focus_out events.
@@ -70,6 +73,17 @@ typedef struct {
 	guint taskpad_focused : 1;
 } FocusData;
 
+static void
+file_open_event_cb (BonoboUIComponent *uic, gpointer data, const char *path)
+{
+	GnomeCalendar *gcal;
+
+	gcal = GNOME_CALENDAR (data);
+
+	e_calendar_view_open_event (gnome_calendar_get_current_view_widget (gcal));
+}
+
+
 /* Prints the calendar at its current view and time range */
 static void
 print (GnomeCalendar *gcal, gboolean preview)
@@ -77,7 +91,9 @@ print (GnomeCalendar *gcal, gboolean preview)
 	time_t start;
 	GnomeCalendarViewType view_type;
 	PrintView print_view;
-
+	ECalListView *list_view;
+	ETable *etable;
+	
 	gnome_calendar_get_current_time_range (gcal, &start, NULL);
 	view_type = gnome_calendar_get_view (gcal);
 
@@ -94,6 +110,12 @@ print (GnomeCalendar *gcal, gboolean preview)
 	case GNOME_CAL_MONTH_VIEW:
 		print_view = PRINT_VIEW_MONTH;
 		break;
+
+	case GNOME_CAL_LIST_VIEW:
+		list_view = E_CAL_LIST_VIEW (gnome_calendar_get_current_view_widget (gcal));
+		etable = e_table_scrolled_get_table (list_view->table_scrolled);
+		print_table (etable, _("Calendar"), preview);
+		return;
 
 	default:
 		g_assert_not_reached ();
@@ -121,18 +143,6 @@ file_print_preview_cb (BonoboUIComponent *uic, gpointer data, const char *path)
 	gcal = GNOME_CALENDAR (data);
 	print (gcal, TRUE);
 }
-
-/* This iterates over each calendar telling them to update their config
-   settings. */
-void
-update_all_config_settings (void)
-{
-	GList *l;
-
-	for (l = all_calendars; l; l = l->next)
-		gnome_calendar_update_config_settings (GNOME_CALENDAR (l->data), FALSE);
-}
-
 
 /* Sets a clock cursor for the specified calendar window */
 static void
@@ -213,7 +223,7 @@ show_day_view_clicked (BonoboUIComponent *uic, gpointer data, const char *path)
 
 	gcal = GNOME_CALENDAR (data);
 
-	gnome_calendar_set_view (gcal, GNOME_CAL_DAY_VIEW, FALSE, TRUE);
+	gnome_calendar_set_view (gcal, GNOME_CAL_DAY_VIEW);
 }
 
 static void
@@ -223,7 +233,7 @@ show_work_week_view_clicked (BonoboUIComponent *uic, gpointer data, const char *
 
 	gcal = GNOME_CALENDAR (data);
 
-	gnome_calendar_set_view (gcal, GNOME_CAL_WORK_WEEK_VIEW, FALSE, TRUE);
+	gnome_calendar_set_view (gcal, GNOME_CAL_WORK_WEEK_VIEW);
 }
 
 static void
@@ -233,7 +243,7 @@ show_week_view_clicked (BonoboUIComponent *uic, gpointer data, const char *path)
 
 	gcal = GNOME_CALENDAR (data);
 
-	gnome_calendar_set_view (gcal, GNOME_CAL_WEEK_VIEW, FALSE, TRUE);
+	gnome_calendar_set_view (gcal, GNOME_CAL_WEEK_VIEW);
 }
 
 static void
@@ -243,9 +253,19 @@ show_month_view_clicked (BonoboUIComponent *uic, gpointer data, const char *path
 
 	gcal = GNOME_CALENDAR (data);
 
-	gnome_calendar_set_view (gcal, GNOME_CAL_MONTH_VIEW, FALSE, TRUE);
+	gnome_calendar_set_view (gcal, GNOME_CAL_MONTH_VIEW);
 }
 
+
+static void
+show_list_view_clicked (BonoboUIComponent *uic, gpointer data, const char *path)
+{
+	GnomeCalendar *gcal;
+
+	gcal = GNOME_CALENDAR (data);
+
+	gnome_calendar_set_view (gcal, GNOME_CAL_LIST_VIEW);
+}
 
 
 static void
@@ -310,74 +330,67 @@ delete_occurrence_cmd (BonoboUIComponent *uic, gpointer data, const gchar *path)
 static void
 publish_freebusy_cmd (BonoboUIComponent *uic, gpointer data, const gchar *path)
 {
+	e_pub_publish (TRUE);
+}
+
+static void
+purge_cmd (BonoboUIComponent *uic, gpointer data, const gchar *path)
+{
 	GnomeCalendar *gcal;
-	CalClient *client;
-	GList *comp_list;
-	icaltimezone *utc;
-	time_t start = time (NULL), end;
+	GtkWidget *dialog, *parent, *box, *label, *spin;
+	int response;
 
 	gcal = GNOME_CALENDAR (data);
 
-	utc = icaltimezone_get_utc_timezone ();
-	start = time_day_begin_with_zone (start, utc);
-	end = time_add_week_with_zone (start, 6, utc);
+	/* create the dialog */
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (gcal));
+	dialog = gtk_message_dialog_new (
+		(GtkWindow *)parent,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_WARNING,
+		GTK_BUTTONS_OK_CANCEL,
+		_("This operation will permanently erase all events older than the selected amount of time. If you continue, you will not be able to recover these events."));
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 
-	client = gnome_calendar_get_cal_client (gcal);
-	comp_list = cal_client_get_free_busy (client, NULL, start, end);
-	if (comp_list) {
-		GList *l;
+	box = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), box, TRUE, FALSE, 6);
 
-		for (l = comp_list; l; l = l->next) {
-			CalComponent *comp = CAL_COMPONENT (l->data);
-			itip_send_comp (CAL_COMPONENT_METHOD_PUBLISH, comp, client, NULL);
+	label = gtk_label_new (_("Purge events older than"));
+	gtk_box_pack_start (GTK_BOX (box), label, TRUE, FALSE, 6);
+	spin = gtk_spin_button_new_with_range (0.0, 1000.0, 1.0);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), 60.0);
+	gtk_box_pack_start (GTK_BOX (box), spin, FALSE, FALSE, 6);
+	label = gtk_label_new (_("days"));
+	gtk_box_pack_start (GTK_BOX (box), label, TRUE, FALSE, 6);
 
-			g_object_unref (comp);
-		}
+	gtk_widget_show_all (box);
 
- 		g_list_free (comp_list);
-	}
-}
+	/* run the dialog */
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (response == GTK_RESPONSE_OK) {
+		gint days;
+		time_t tt;
 
-/* Does a queryInterface on the control's parent control frame for the ShellView interface */
-static GNOME_Evolution_ShellView
-get_shell_view_interface (BonoboControl *control)
-{
-	Bonobo_ControlFrame control_frame;
-	GNOME_Evolution_ShellView shell_view;
-	CORBA_Environment ev;
+		days = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spin));
+		tt = time (NULL);
+		tt -= (days * (24 * 3600));
 
-	control_frame = bonobo_control_get_control_frame (control, NULL);
-
-	g_assert (control_frame != CORBA_OBJECT_NIL);
-
-	CORBA_exception_init (&ev);
-	shell_view = Bonobo_Unknown_queryInterface (control_frame,
-						    "IDL:GNOME/Evolution/ShellView:1.0",
-						    &ev);
-	if (BONOBO_EX (&ev)) {
-		g_message ("get_shell_view_interface(): "
-			   "Could not queryInterface() on the control frame");
-		shell_view = CORBA_OBJECT_NIL;
-		goto out;
+		gnome_calendar_purge (gcal, tt);
 	}
 
-	CORBA_exception_free (&ev);
-
- out:
-
-	return shell_view;
+	gtk_widget_destroy (dialog);
 }
 
-/* Displays the currently displayed time range in the folder bar label on the
-   shell view, according to which view we are showing. */
-void
-calendar_set_folder_bar_label (GnomeCalendar *gcal, BonoboControl *control)
+
+const gchar *
+calendar_get_text_for_folder_bar_label (GnomeCalendar *gcal)
 {
 	icaltimezone *zone;
 	struct icaltimetype start_tt, end_tt;
 	time_t start_time, end_time;
 	struct tm start_tm, end_tm;
-	char buffer[512], end_buffer[256];
+	static char buffer[512];
+	char end_buffer[256];
 	GnomeCalendarViewType view;
 
 	gnome_calendar_get_visible_time_range (gcal, &start_time, &end_time);
@@ -434,13 +447,18 @@ calendar_set_folder_bar_label (GnomeCalendar *gcal, BonoboControl *control)
 		}
 		break;
 	case GNOME_CAL_MONTH_VIEW:
+	case GNOME_CAL_LIST_VIEW:
 		if (start_tm.tm_year == end_tm.tm_year) {
 			if (start_tm.tm_mon == end_tm.tm_mon) {
-				e_utf8_strftime (buffer, sizeof (buffer),
-					  "%d", &start_tm);
+				if (start_tm.tm_mday == end_tm.tm_mday) {
+					buffer [0] = '\0';
+				} else {
+					e_utf8_strftime (buffer, sizeof (buffer),
+							 "%d", &start_tm);
+					strcat (buffer, " - ");
+				}
 				e_utf8_strftime (end_buffer, sizeof (end_buffer),
 					  _("%d %B %Y"), &end_tm);
-				strcat (buffer, " - ");
 				strcat (buffer, end_buffer);
 			} else {
 				e_utf8_strftime (buffer, sizeof (buffer),
@@ -461,116 +479,88 @@ calendar_set_folder_bar_label (GnomeCalendar *gcal, BonoboControl *control)
 		break;
 	default:
 		g_assert_not_reached ();
+		return NULL;
 	}
-
-	control_util_set_folder_bar_label (control, buffer);
+	return buffer;
 }
 
-void
-control_util_set_folder_bar_label (BonoboControl *control, char *label)
-{
-	GNOME_Evolution_ShellView shell_view;
-	CORBA_Environment ev;
-
-	shell_view = get_shell_view_interface (control);
-	if (shell_view == CORBA_OBJECT_NIL)
-		return;
-
-	CORBA_exception_init (&ev);
-	GNOME_Evolution_ShellView_setFolderBarLabel (shell_view, label, &ev);
-
-	if (BONOBO_EX (&ev))
-		g_message ("control_util_set_folder_bar_label(): Could not set the folder bar label");
-
-	CORBA_exception_free (&ev);
-
-	bonobo_object_release_unref (shell_view, NULL);
-}
-
-void
-control_util_show_settings (GnomeCalendar *gcal)
-{
-	BonoboControl *control;
-	GNOME_Evolution_ShellView shell_view;
-	CORBA_Environment ev;
-
-	control = g_object_get_data (G_OBJECT (gcal), "control");
-	if (control == NULL)
-		return;
-
-	shell_view = get_shell_view_interface (control);
-	if (shell_view == CORBA_OBJECT_NIL)
-		return;
-
-	CORBA_exception_init (&ev);
-	
-	GNOME_Evolution_ShellView_showSettings (shell_view, &ev);
-	
-	if (BONOBO_EX (&ev))
-		g_message ("control_util_show_settings(): Could not show settings");
-
-	CORBA_exception_free (&ev);
-
-	bonobo_object_release_unref (shell_view, NULL);
-}
 
 /* Sensitizes the UI Component menu/toolbar calendar commands based on the
  * number of selected events. (This will always be 0 or 1 currently.)  If enable
  * is FALSE, all will be disabled.  Otherwise, the currently-selected number of
  * events will be used.
  */
-static void
-sensitize_calendar_commands (GnomeCalendar *gcal, BonoboControl *control, gboolean enable)
+void
+calendar_control_sensitize_calendar_commands (BonoboControl *control, GnomeCalendar *gcal, gboolean enable)
 {
 	BonoboUIComponent *uic;
+	ECalendarViewEvent *event;
+	GList *list;
 	int n_selected;
-	gboolean read_only, has_recurrences;
+	GtkWidget *view;
+	ECal *e_cal;
+	gboolean selected_read_only = FALSE, default_read_only = FALSE, has_recurrences;
 	
 	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
 
-	n_selected = enable ? gnome_calendar_get_num_events_selected (gcal) : 0;
-	read_only = cal_client_is_read_only (gnome_calendar_get_cal_client (gcal));
+	if (bonobo_ui_component_get_container (uic) == CORBA_OBJECT_NIL)
+		return;
+	
+	view = gnome_calendar_get_current_view_widget (gcal);
+	list = e_calendar_view_get_selected_events (E_CALENDAR_VIEW (view));
 
+	n_selected = enable ? g_list_length (list) : 0;
+
+	event = (ECalendarViewEvent *) list ? list->data : NULL;
+	if (event && event->comp_data)
+		e_cal_is_read_only (event->comp_data->client, &selected_read_only, NULL);
+	else
+		selected_read_only = TRUE;
+
+	/* retrieve read-onlyness of the default client */
+	e_cal = e_cal_model_get_default_client (gnome_calendar_get_calendar_model (gcal));
+	if (e_cal)
+		e_cal_is_read_only (e_cal, &default_read_only, NULL);
+	else
+		default_read_only = TRUE;
+
+	bonobo_ui_component_set_prop (uic, "/commands/EventOpen", "sensitive",
+				      n_selected != 1 ? "0" : "1",
+				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Cut", "sensitive",
-				      n_selected == 0 || read_only ? "0" : "1",
+				      n_selected == 0 || selected_read_only ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Copy", "sensitive",
 				      n_selected == 0 ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Paste", "sensitive",
-				      enable && !read_only ? "1" : "0",
-				      NULL);
-	bonobo_ui_component_set_prop (uic, "/commands/Delete", "sensitive",
-				      n_selected == 0 || read_only ? "0" : "1",
+				      default_read_only ? "0" : "1",
 				      NULL);
 
 	/* occurrence-related menu items */
 	has_recurrences = FALSE;
-	if (n_selected > 0 && !read_only) {
-		CalComponent *comp;
-		GtkWidget *view;
-
-		view = gnome_calendar_get_current_view_widget (gcal);
-		if (E_IS_DAY_VIEW (view))
-			comp = e_day_view_get_selected_event (E_DAY_VIEW (view));
-		else if (E_IS_WEEK_VIEW (view))
-			comp = e_week_view_get_selected_event (E_WEEK_VIEW (view));
-		else
-			comp = NULL;
-
-		if (comp) {
-			if (cal_component_has_recurrences (comp))
+	if (n_selected > 0 && !selected_read_only) {
+		if (list) {
+			event = (ECalendarViewEvent *) list->data;
+			if (e_cal_util_component_has_recurrences (event->comp_data->icalcomp))
 				has_recurrences = TRUE;
 		}
 	}
 
+	bonobo_ui_component_set_prop (uic, "/commands/Delete", "sensitive",
+				      n_selected == 0 || selected_read_only || has_recurrences ? "0" : "1",
+				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/DeleteOccurrence", "sensitive",
 				      has_recurrences ? "1" : "0",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/DeleteAllOccurrences", "sensitive",
 				      has_recurrences ? "1" : "0",
 				      NULL);
+
+	/* free memory */
+	if (list)
+		g_list_free (list);
 }
 
 /* Sensitizes the UI Component menu/toolbar tasks commands based on the number
@@ -582,13 +572,23 @@ sensitize_taskpad_commands (GnomeCalendar *gcal, BonoboControl *control, gboolea
 {
 	BonoboUIComponent *uic;
 	int n_selected;
-	gboolean read_only;
+	ECalendarTable *task_pad;
+	ECalModel *model;
+	ECal *e_cal;
+	gboolean read_only = TRUE;
 	
 	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
 
 	n_selected = enable ? gnome_calendar_get_num_tasks_selected (gcal) : 0;
-	read_only = cal_client_is_read_only (gnome_calendar_get_task_pad_cal_client (gcal));
+	task_pad = gnome_calendar_get_task_pad (gcal);
+	model = e_calendar_table_get_model (task_pad);
+	e_cal = e_cal_model_get_default_client (model);
+	
+	if (e_cal)
+		e_cal_is_read_only (e_cal, &read_only, NULL);
+	else
+		read_only = TRUE;
 
 	bonobo_ui_component_set_prop (uic, "/commands/Cut", "sensitive",
 				      n_selected == 0 || read_only ? "0" : "1",
@@ -604,18 +604,6 @@ sensitize_taskpad_commands (GnomeCalendar *gcal, BonoboControl *control, gboolea
 				      NULL);
 }
 
-/* Callback used when the dates shown by the GnomeCalendar are changed.
-   We want to update the dates in the folder bar. */
-static void
-gcal_calendar_dates_change_cb (GnomeCalendar *gcal, gpointer data)
-{
-	BonoboControl *control;
-
-	control = BONOBO_CONTROL (data);
-
-	calendar_set_folder_bar_label (gcal, control);
-}
-
 /* Callback used when the selection in the calendar views changes */
 static void
 gcal_calendar_selection_changed_cb (GnomeCalendar *gcal, gpointer data)
@@ -624,7 +612,7 @@ gcal_calendar_selection_changed_cb (GnomeCalendar *gcal, gpointer data)
 
 	control = BONOBO_CONTROL (data);
 
-	sensitize_calendar_commands (gcal, control, TRUE);
+	calendar_control_sensitize_calendar_commands (control, gcal, TRUE);
 }
 
 /* Callback used when the selection in the taskpad changes */
@@ -653,13 +641,13 @@ gcal_calendar_focus_change_cb (GnomeCalendar *gcal, gboolean in, gpointer data)
 	if (in) {
 		g_signal_connect (gcal, "calendar_selection_changed",
 				  G_CALLBACK (gcal_calendar_selection_changed_cb), control);
-		sensitize_calendar_commands (gcal, control, TRUE);
+		calendar_control_sensitize_calendar_commands (control, gcal, TRUE);
 		focus->calendar_focused = TRUE;
 	} else if (focus->calendar_focused) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (gcal),
 					       G_CALLBACK (gcal_calendar_selection_changed_cb),
 					       control);
-		sensitize_calendar_commands (gcal, control, FALSE);
+		calendar_control_sensitize_calendar_commands (control, gcal, FALSE);
 		focus->calendar_focused = FALSE;
 	}
 }
@@ -698,6 +686,7 @@ gcal_taskpad_focus_change_cb (GnomeCalendar *gcal, gboolean in, gpointer data)
 
 
 static BonoboUIVerb verbs [] = {
+	BONOBO_UI_VERB ("EventOpen", file_open_event_cb),
 	BONOBO_UI_VERB ("CalendarPrint", file_print_cb),
 	BONOBO_UI_VERB ("CalendarPrintPreview", file_print_preview_cb),
 
@@ -717,18 +706,21 @@ static BonoboUIVerb verbs [] = {
 	BONOBO_UI_VERB ("ShowWorkWeekView", show_work_week_view_clicked),
 	BONOBO_UI_VERB ("ShowWeekView", show_week_view_clicked),
 	BONOBO_UI_VERB ("ShowMonthView", show_month_view_clicked),
+	BONOBO_UI_VERB ("ShowListView", show_list_view_clicked),
 
 	BONOBO_UI_VERB ("PublishFreeBusy", publish_freebusy_cmd),
+	BONOBO_UI_VERB ("CalendarPurge", purge_cmd),
 
 	BONOBO_UI_VERB_END
 };
 
 static EPixmap pixmaps [] =
 {
-	E_PIXMAP ("/Toolbar/DayView",					      "buttons/dayview.xpm"),
-	E_PIXMAP ("/Toolbar/WorkWeekView",				      "buttons/workweekview.xpm"),
-	E_PIXMAP ("/Toolbar/WeekView",					      "buttons/weekview.xpm"),
-	E_PIXMAP ("/Toolbar/MonthView",					      "buttons/monthview.xpm"),
+	E_PIXMAP ("/Toolbar/DayView",	      "stock_calendar-view-day",       E_ICON_SIZE_LARGE_TOOLBAR),
+	E_PIXMAP ("/Toolbar/WorkWeekView",    "stock_calendar-view-work-week", E_ICON_SIZE_LARGE_TOOLBAR),
+	E_PIXMAP ("/Toolbar/WeekView",	      "stock_calendar-view-week",      E_ICON_SIZE_LARGE_TOOLBAR),
+	E_PIXMAP ("/Toolbar/MonthView",	      "stock_calendar-view-month",     E_ICON_SIZE_LARGE_TOOLBAR),
+	E_PIXMAP ("/Toolbar/ListView",	      "stock_calendar-view-list",      E_ICON_SIZE_LARGE_TOOLBAR),
 
 	E_PIXMAP_END
 };
@@ -763,16 +755,13 @@ calendar_control_activate (BonoboControl *control,
 
 	gnome_calendar_setup_view_menus (gcal, uic);
 
-	g_signal_connect (gcal, "dates_shown_changed",
-			  G_CALLBACK (gcal_calendar_dates_change_cb),
-			  control);
 	g_signal_connect (gcal, "calendar_focus_change",
 			  G_CALLBACK (gcal_calendar_focus_change_cb), control);
 	g_signal_connect (gcal, "taskpad_focus_change",
 			  G_CALLBACK (gcal_taskpad_focus_change_cb), control);
 
-	sensitize_calendar_commands (gcal, control, FALSE);
-	sensitize_taskpad_commands (gcal, control, FALSE);
+	calendar_control_sensitize_calendar_commands (control, gcal, TRUE);
+	sensitize_taskpad_commands (gcal, control, TRUE);
 
 	bonobo_ui_component_thaw (uic, NULL);
 
@@ -782,8 +771,6 @@ calendar_control_activate (BonoboControl *control,
 #if 0
 	calendar_config_check_timezone_set ();
 #endif
-
-	calendar_set_folder_bar_label (gcal, control);
 
 	focus = g_new (FocusData, 1);
 	focus->calendar_focused = FALSE;
@@ -801,7 +788,7 @@ calendar_control_deactivate (BonoboControl *control, GnomeCalendar *gcal)
 	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
 
-	gnome_calendar_set_ui_component (gcal, uic);
+	gnome_calendar_set_ui_component (gcal, NULL);
 
 	focus = g_object_get_data (G_OBJECT (control), "focus_data");
 	g_assert (focus != NULL);
@@ -815,31 +802,4 @@ calendar_control_deactivate (BonoboControl *control, GnomeCalendar *gcal)
 
 	bonobo_ui_component_rm (uic, "/", NULL);
  	bonobo_ui_component_unset_container (uic, NULL);
-}
-
-/* Removes a calendar from our list of all calendars when it is destroyed. */
-static void
-on_calendar_destroyed (GnomeCalendar *gcal)
-{
-	all_calendars = g_list_remove (all_calendars, gcal);
-}
-
-GnomeCalendar *
-new_calendar (void)
-{
-	GtkWidget *gcal;
-
-	gcal = gnome_calendar_new ();
-	if (!gcal) {
-		gnome_warning_dialog (_("Could not create the calendar view.  Please check your "
-					"ORBit and OAF setup."));
-		return NULL;
-	}
-
-	g_signal_connect (gcal, "destroy",
-			  G_CALLBACK (on_calendar_destroyed), NULL);
-
-	all_calendars = g_list_prepend (all_calendars, gcal);
-
-	return GNOME_CALENDAR (gcal);
 }

@@ -31,11 +31,10 @@
 #include <gal/e-text/e-text.h>
 #include <gal/e-table/e-table-model.h>
 #include <gal/e-table/e-table.h>
-#include "e-meeting-model.h"
+#include "e-meeting-store.h"
+#include "e-meeting-list-view.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /*
  * EMeetingTimeSelector displays a list of attendees for a meeting and a
@@ -121,8 +120,8 @@ struct _EMeetingTimeSelector
 	GtkWidget *attendees_vbox_spacer;
 	
 	/* The etable and model */
-	EMeetingModel *model;
-	GtkWidget *etable;
+	EMeetingStore *model;
+	EMeetingListView *list_view;
 	
 	/* The canvas displaying the dates, times, and the summary
 	   'All Attendees' free/busy display. */
@@ -133,12 +132,17 @@ struct _EMeetingTimeSelector
 	   vertically. */
 	GtkWidget *display_main;
 
+	/* The 'Add attendees from addressbook' button */
+	GtkWidget *add_attendees_button;
+
 	/* This is the 'Options' button & menu. */
 	GtkWidget *options_button;
 	GtkWidget *options_menu;
 
 	/* This is the 'Autopick' button, menu & radio menu items. */
+	GtkWidget *autopick_down_button;
 	GtkWidget *autopick_button;
+	GtkWidget *autopick_up_button;
 	GtkWidget *autopick_menu;
 	GtkWidget *autopick_all_item;
 	GtkWidget *autopick_all_people_one_resource_item;
@@ -265,8 +269,8 @@ struct _EMeetingTimeSelectorClass
  */
 
 GtkType e_meeting_time_selector_get_type (void);
-GtkWidget* e_meeting_time_selector_new (EMeetingModel *emm);
-void e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *emm);
+GtkWidget* e_meeting_time_selector_new (EMeetingStore *ems);
+void e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingStore *ems);
 
 /* This returns the currently selected meeting time.
    Note that months are 1-12 and days are 1-31. The start time is guaranteed to
@@ -317,6 +321,8 @@ void e_meeting_time_selector_set_autopick_option (EMeetingTimeSelector *mts,
 void e_meeting_time_selector_attendee_set_send_meeting_to (EMeetingTimeSelector *mts,
 							   gint row,
 							   gboolean send_meeting_to);
+
+void e_meeting_time_selector_set_read_only (EMeetingTimeSelector *mts, gboolean read_only);
 
 /* Clears all busy times for the given attendee. */
 void e_meeting_time_selector_attendee_clear_busy_periods (EMeetingTimeSelector *mts,
@@ -375,9 +381,6 @@ gchar* e_meeting_time_selector_dump_time (EMeetingTime*mtstime);
 gchar* e_meeting_time_selector_dump_date (GDate *date);
 #endif /* E_MEETING_TIME_SELECTOR_DEBUG */
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _E_MEETING_TIME_SELECTOR_H_ */

@@ -40,6 +40,16 @@ extern "C" {
 #define CAMEL_LOCAL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_FOLDER_TYPE, CamelLocalFolderClass))
 #define CAMEL_IS_LOCAL_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_FOLDER_TYPE))
 
+enum {
+	CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY = CAMEL_FOLDER_ARG_LAST,
+
+	CAMEL_LOCAL_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
+};
+
+enum {
+	CAMEL_LOCAL_FOLDER_INDEX_BODY = CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY | CAMEL_ARG_BOO,
+};
+
 typedef struct {
 	CamelFolder parent_object;
 	struct _CamelLocalFolderPrivate *priv;
@@ -63,7 +73,11 @@ typedef struct {
 	CamelFolderClass parent_class;
 
 	/* Virtual methods */	
-
+	
+	/* path construction, only used at init */
+	char * (* get_full_path)(const char *toplevel_dir, const char *full_name);
+	char * (* get_meta_path)(const char *toplevel_dir, const char *full_name, const char *ext);
+	
 	/* summary factory, only used at init */
 	CamelLocalSummary *(*create_summary)(const char *path, const char *folder, CamelIndex *index);
 

@@ -26,7 +26,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <gal/widgets/e-unicode.h>
+#include <e-util/e-icon-factory.h>
 #include "delete-error.h"
 
 
@@ -38,21 +38,25 @@
  * 
  **/
 void
-delete_error_dialog (CalClientResult result, CalComponentVType vtype)
+delete_error_dialog (GError *error, ECalComponentVType vtype)
 {
+	GList *icon_list = NULL;
 	GtkWidget *dialog;
 	const char *str;
-
-	switch (result) {
-	case CAL_CLIENT_RESULT_CORBA_ERROR:
+	
+	if (!error)
+		return;
+	
+	switch (error->code) {
+	case E_CALENDAR_STATUS_CORBA_EXCEPTION:
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
+		case E_CAL_COMPONENT_EVENT:
 			str = _("The event could not be deleted due to a corba error");
 			break;
-		case CAL_COMPONENT_TODO:
+		case E_CAL_COMPONENT_TODO:
 			str = _("The task could not be deleted due to a corba error");
 			break;
-		case CAL_COMPONENT_JOURNAL:
+		case E_CAL_COMPONENT_JOURNAL:
 			str = _("The journal entry could not be deleted due to a corba error");
 			break;
 		default:
@@ -60,15 +64,15 @@ delete_error_dialog (CalClientResult result, CalComponentVType vtype)
 			break;
 		}
 		break;
-	case CAL_CLIENT_RESULT_PERMISSION_DENIED:
+	case E_CALENDAR_STATUS_PERMISSION_DENIED:
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
+		case E_CAL_COMPONENT_EVENT:
 			str = _("The event could not be deleted because permission was denied");
 			break;
-		case CAL_COMPONENT_TODO:
+		case E_CAL_COMPONENT_TODO:
 			str = _("The task could not be deleted because permission was denied");
 			break;
-		case CAL_COMPONENT_JOURNAL:
+		case E_CAL_COMPONENT_JOURNAL:
 			str = _("The journal entry could not be deleted because permission was denied");
 			break;
 		default:
@@ -76,24 +80,24 @@ delete_error_dialog (CalClientResult result, CalComponentVType vtype)
 			break;
 		}
 		break;
-	case CAL_CLIENT_RESULT_INVALID_OBJECT:
+	case E_CALENDAR_STATUS_OTHER_ERROR:
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
-			str = _("The event could not be deleted because it was invalid");
+		case E_CAL_COMPONENT_EVENT:
+			str = _("The event could not be deleted due to an error");
 			break;
-		case CAL_COMPONENT_TODO:
-			str = _("The task could not be deleted because it was invalid");
+		case E_CAL_COMPONENT_TODO:
+			str = _("The task could not be deleted due to an error");
 			break;
-		case CAL_COMPONENT_JOURNAL:
-			str = _("The journal entry could not be deleted because it was invalid");
+		case E_CAL_COMPONENT_JOURNAL:
+			str = _("The journal entry could not be deleted due to an error");
 			break;
 		default:
-			str = _("The item could not be deleted because it was invalid");
+			str = _("The item could not be deleted due to an error");
 			break;
 		}
 		break;
-	case CAL_CLIENT_RESULT_SUCCESS:
-	case CAL_CLIENT_RESULT_NOT_FOUND:
+	case E_CALENDAR_STATUS_OK:
+	case E_CALENDAR_STATUS_OBJECT_NOT_FOUND:
 	default:		
 		/* If not found, we don't care - its gone anyhow */
 		return;
@@ -102,6 +106,17 @@ delete_error_dialog (CalClientResult result, CalComponentVType vtype)
 	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_ERROR,
 					 GTK_BUTTONS_OK, str);
+	if (vtype == E_CAL_COMPONENT_EVENT)
+		icon_list = e_icon_factory_get_icon_list ("stock_calendar");
+	else if (vtype == E_CAL_COMPONENT_TODO)
+		icon_list = e_icon_factory_get_icon_list ("stock_todo");
+	
+	if (icon_list) {
+		gtk_window_set_icon_list (GTK_WINDOW (dialog), icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
+	
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }

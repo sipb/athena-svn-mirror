@@ -34,8 +34,6 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 
-#include "e-util/e-lang-utils.h"
-
 typedef struct {
 	char *location;
 	GPtrArray *names;
@@ -188,6 +186,8 @@ add_matching_iid (const char *iid)
 int
 main (int argc, char **argv)
 {
+	const GList *l;
+
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -196,21 +196,24 @@ main (int argc, char **argv)
 			    GNOME_PROGRAM_STANDARD_PROPERTIES,
 			    NULL);
 
-	languages = e_get_language_list ();
+	l = gnome_i18n_get_language_list("LC_MESSAGES");
+	for (languages=NULL;l;l=l->next)
+		languages = g_slist_append(languages, l->data);
+
 	components = g_hash_table_new (g_str_hash, g_str_equal);
 
-	add_matching_repo_id ("IDL:GNOME/Evolution/Shell:1.0");
+	add_matching_repo_id ("IDL:GNOME/Evolution/Shell:" BASE_VERSION);
 	g_hash_table_foreach_remove (components, kill_component, NULL);
 
-	add_matching_repo_id ("IDL:GNOME/Evolution/ShellComponent:1.0");
-	add_matching_repo_id ("IDL:GNOME/Evolution/Calendar/CalFactory:1.0");
-	add_matching_repo_id ("IDL:GNOME/Evolution/BookFactory:1.0");
-	add_matching_repo_id ("IDL:GNOME/Evolution/Importer:1.0");
-	add_matching_repo_id ("IDL:GNOME/Evolution/IntelligentImporter:1.0");
-	add_matching_repo_id ("IDL:GNOME/Spell/Checker:0.1");
+	add_matching_repo_id ("IDL:GNOME/Evolution/Component:" BASE_VERSION);
+	add_matching_repo_id ("IDL:GNOME/Evolution/DataServer/CalFactory:" DATASERVER_API_VERSION);
+	add_matching_repo_id ("IDL:GNOME/Evolution/DataServer/BookFactory:" DATASERVER_API_VERSION);
+	add_matching_repo_id ("IDL:GNOME/Evolution/Importer:" BASE_VERSION);
+	add_matching_repo_id ("IDL:GNOME/Evolution/IntelligentImporter:" BASE_VERSION);
+	add_matching_repo_id ("IDL:GNOME/Spell/Dictionary:0.3");
 
-	add_matching_iid ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify_Factory");
-	add_matching_iid ("OAFIID:GNOME_GtkHTML_Editor_Factory:3.0");
+	add_matching_iid ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify_Factory:" BASE_VERSION);
+	add_matching_iid ("OAFIID:GNOME_GtkHTML_Editor_Factory:3.1");
 
 	g_hash_table_foreach_remove (components, kill_component, NULL);
 

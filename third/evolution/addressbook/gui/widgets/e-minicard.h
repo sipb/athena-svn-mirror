@@ -21,10 +21,9 @@
 #define __E_MINICARD_H__
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include "addressbook/gui/contact-editor/e-contact-editor.h"
+#include "addressbook/gui/contact-editor/eab-editor.h"
 #include <libgnomecanvas/gnome-canvas.h>
-#include "addressbook/backend/ebook/e-card.h"
-#include "addressbook/backend/ebook/e-card-simple.h"
+#include <libebook/e-contact.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,8 +62,7 @@ struct _EMinicard
 	GnomeCanvasGroup parent;
 	
 	/* item specific fields */
-	ECard *card;
-	ECardSimple *simple;
+	EContact *contact;
 	
 	GnomeCanvasItem *rect;
 	GnomeCanvasItem *header_rect;
@@ -74,7 +72,7 @@ struct _EMinicard
 	GdkPixbuf *list_icon_pixbuf;
 	double list_icon_size;
 
-	GObject *editor;
+	EABEditor *editor;
 
 	GList *fields; /* Of type EMinicardField */
 	guint needs_remodeling : 1;
@@ -108,6 +106,14 @@ struct _EMinicardClass
 	void (* style_set) (EMinicard *minicard, GtkStyle *previous_style);
 };
 
+typedef struct _EMinicardField EMinicardField;
+                                                                               
+struct _EMinicardField {
+	EContactField field;
+	GnomeCanvasItem *label;
+};
+
+#define E_MINICARD_FIELD(field) ((EMinicardField *)(field))
 
 GType       e_minicard_get_type     (void);
 const char *e_minicard_get_card_id  (EMinicard *minicard);

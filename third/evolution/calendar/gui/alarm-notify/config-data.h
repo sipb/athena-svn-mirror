@@ -22,12 +22,17 @@
 #define CONFIG_DATA_H
 
 #include <glib.h>
-#include <ical.h>
-#include <e-util/e-config-listener.h>
+#include <libical/ical.h>
+#include <gconf/gconf-client.h>
 
-EConfigListener *config_data_get_listener (void);
+GConfClient  *config_data_get_conf_client (void);
 
 icaltimezone *config_data_get_timezone (void);
-gboolean config_data_get_24_hour_format (void);
+gboolean      config_data_get_24_hour_format (void);
+gboolean      config_data_get_notify_with_tray (void);
+void          config_data_set_last_notification_time (time_t t);
+time_t        config_data_get_last_notification_time (void);
+void          config_data_save_blessed_program (const char *program);
+gboolean      config_data_is_blessed_program (const char *program);
 
 #endif

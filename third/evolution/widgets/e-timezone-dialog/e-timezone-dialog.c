@@ -58,8 +58,8 @@ struct _ETimezoneDialogPrivate {
 	GtkWidget *app;
 	GtkWidget *table;
 	GtkWidget *map_window;
-	GtkWidget *timezone_preview;
 	GtkWidget *timezone_combo;
+	GtkWidget *preview_label;
 };
 
 
@@ -127,7 +127,6 @@ e_timezone_dialog_dispose (GObject *object)
 {
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
-	GtkWidget *dialog;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (E_IS_TIMEZONE_DIALOG (object));
@@ -136,9 +135,9 @@ e_timezone_dialog_dispose (GObject *object)
 	priv = etd->priv;
 
 	/* Destroy the actual dialog. */
-	if (dialog != NULL) {
-		dialog = e_timezone_dialog_get_toplevel (etd);
-		gtk_widget_destroy (dialog);
+	if (priv->app != NULL) {
+		gtk_widget_destroy (priv->app);
+		priv->app = NULL;
 	}
 
 	if (priv->timeout_id) {
@@ -247,6 +246,9 @@ e_timezone_dialog_construct (ETimezoneDialog *etd)
 		goto error;
 	}
 
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (priv->app)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (priv->app)->action_area), 12);
+
 	priv->map = e_map_new ();
 	map = GTK_WIDGET (priv->map);
 	gtk_widget_set_events (map, gtk_widget_get_events (map)
@@ -294,14 +296,14 @@ get_widgets (ETimezoneDialog *etd)
 	priv->app		= GW ("timezone-dialog");
 	priv->map_window	= GW ("map-window");
 	priv->timezone_combo	= GW ("timezone-combo");
-	priv->timezone_preview	= GW ("timezone-preview");
-	priv->table             = GW ("table1");
+	priv->table             = GW ("timezone-table");
+	priv->preview_label     = GW ("preview-label");
 
 	return (priv->app
 		&& priv->map_window
 		&& priv->timezone_combo
-		&& priv->timezone_preview
-		&& priv->table);
+		&& priv->table
+		&& priv->preview_label);
 }
 
 
@@ -321,7 +323,6 @@ e_timezone_dialog_new (void)
 	etd = E_TIMEZONE_DIALOG (g_object_new (E_TYPE_TIMEZONE_DIALOG, NULL));
 	return e_timezone_dialog_construct (E_TIMEZONE_DIALOG (etd));
 }
-
 
 static const char *
 zone_display_name (icaltimezone *zone)
@@ -367,8 +368,6 @@ on_map_motion (GtkWidget *widget, GdkEventMotion *event, gpointer data)
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
 	double longitude, latitude;
-	char *old_zone_name;
-	const char *new_zone_name;
 	icaltimezone *new_zone;
 
 	etd = E_TIMEZONE_DIALOG (data);
@@ -388,15 +387,10 @@ on_map_motion (GtkWidget *widget, GdkEventMotion *event, gpointer data)
 	        e_map_point_set_color_rgba (priv->map, priv->point_hover,
 					    E_TIMEZONE_DIALOG_MAP_POINT_HOVER_RGBA);
 
-	gtk_label_get (GTK_LABEL (priv->timezone_preview), &old_zone_name);
 	new_zone = get_zone_from_point (etd, priv->point_hover);
-	if (new_zone) {
-		new_zone_name = zone_display_name (new_zone);
-		if (strcmp (old_zone_name, new_zone_name)) {
-			gtk_label_set_text (GTK_LABEL (priv->timezone_preview),
-					    new_zone_name);
-		}
-	}
+
+	gtk_label_set_text (GTK_LABEL (priv->preview_label),
+			    zone_display_name (new_zone));
 
 	return TRUE;
 }
@@ -407,14 +401,13 @@ on_map_leave (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 {
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
-	char *old_zone;
 
 	etd = E_TIMEZONE_DIALOG (data);
 	priv = etd->priv;
 
-	/* We only want to reset the hover point and the preview text if this
-	   is a normal leave event. For some reason we are getting leave events
-	   when the button is pressed in the map, which causes problems. */
+	/* We only want to reset the hover point if this is a normal leave
+	   event. For some reason we are getting leave events when the
+	   button is pressed in the map, which causes problems. */
 	if (event->mode != GDK_CROSSING_NORMAL)
 		return FALSE;
 
@@ -422,12 +415,11 @@ on_map_leave (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 	        e_map_point_set_color_rgba (priv->map, priv->point_hover,
 					    E_TIMEZONE_DIALOG_MAP_POINT_NORMAL_RGBA);
 
-	priv->point_hover = NULL;
+	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry),
+			    zone_display_name (priv->zone));
+	gtk_label_set_text (GTK_LABEL (priv->preview_label), "");
 
-	/* Clear the timezone preview label, if it isn't already empty. */
-	gtk_label_get (GTK_LABEL (priv->timezone_preview), &old_zone);
-	if (strcmp (old_zone, ""))
-		gtk_label_set_text (GTK_LABEL (priv->timezone_preview), "");
+	priv->point_hover = NULL;
 
 	return FALSE;
 }
@@ -579,6 +571,8 @@ e_timezone_dialog_set_timezone (ETimezoneDialog *etd,
 
 	priv->zone = zone;
 
+	gtk_label_set_text (GTK_LABEL (priv->preview_label),
+			    zone ? zone_display_name (zone) : "");
 	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry),
 			    zone ? zone_display_name (zone) : "");
 

@@ -26,7 +26,7 @@
 #include <config.h>
 #include <string.h>
 #include <glade/glade.h>
-#include <gal/widgets/e-unicode.h>
+#include <gal/util/e-util.h>
 #include <libgnome/gnome-i18n.h>
 
 #include "task-page.h"
@@ -40,7 +40,7 @@ struct _TaskEditorPrivate {
 	TaskDetailsPage *task_details_page;
 	MeetingPage *meet_page;
 
-	EMeetingModel *model;
+	EMeetingStore *model;
 	
 	gboolean assignment_shown;
 	gboolean updating;	
@@ -50,9 +50,9 @@ struct _TaskEditorPrivate {
 
 static void task_editor_class_init (TaskEditorClass *class);
 static void task_editor_init (TaskEditor *te);
-static void task_editor_set_cal_client (CompEditor *editor, CalClient *client);
-static void task_editor_edit_comp (CompEditor *editor, CalComponent *comp);
-static gboolean task_editor_send_comp (CompEditor *editor, CalComponentItipMethod method);
+static void task_editor_set_e_cal (CompEditor *editor, ECal *client);
+static void task_editor_edit_comp (CompEditor *editor, ECalComponent *comp);
+static gboolean task_editor_send_comp (CompEditor *editor, ECalComponentItipMethod method);
 static void task_editor_finalize (GObject *object);
 
 static void assign_task_cmd (GtkWidget *widget, gpointer data);
@@ -60,17 +60,8 @@ static void refresh_task_cmd (GtkWidget *widget, gpointer data);
 static void cancel_task_cmd (GtkWidget *widget, gpointer data);
 static void forward_cmd (GtkWidget *widget, gpointer data);
 
-static void model_row_changed_cb (ETableModel *etm, int row, gpointer data);
-static void row_count_changed_cb (ETableModel *etm, int row, int count, gpointer data);
-
-static BonoboUIVerb verbs [] = {
-	BONOBO_UI_UNSAFE_VERB ("ActionAssignTask", assign_task_cmd),
-	BONOBO_UI_UNSAFE_VERB ("ActionRefreshTask", refresh_task_cmd),
-	BONOBO_UI_UNSAFE_VERB ("ActionCancelTask", cancel_task_cmd),
-	BONOBO_UI_UNSAFE_VERB ("ActionForward", forward_cmd),
-
-	BONOBO_UI_VERB_END
-};
+static void model_row_change_insert_cb (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data);
+static void model_row_delete_cb (GtkTreeModel *model, GtkTreePath *path, gpointer data);
 
 static CompEditorClass *parent_class;
 
@@ -100,51 +91,11 @@ task_editor_class_init (TaskEditorClass *klass)
 
 	parent_class = g_type_class_ref(TYPE_COMP_EDITOR);
 
-	editor_class->set_cal_client = task_editor_set_cal_client;
+	editor_class->set_e_cal = task_editor_set_e_cal;
 	editor_class->edit_comp = task_editor_edit_comp;
 	editor_class->send_comp = task_editor_send_comp;
 
 	object_class->finalize = task_editor_finalize;
-}
-
-static void
-set_menu_sens (TaskEditor *te) 
-{
-	TaskEditorPrivate *priv;
-	gboolean sens, existing, user, read_only;
-	
-	priv = te->priv;
-
- 	existing = comp_editor_get_existing_org (COMP_EDITOR (te));
- 	user = comp_editor_get_user_org (COMP_EDITOR (te));
-	read_only = cal_client_is_read_only (comp_editor_get_cal_client (COMP_EDITOR (te)));
- 
-  	sens = cal_client_get_static_capability (comp_editor_get_cal_client (COMP_EDITOR (te)),
-						 CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT)
-						 || priv->assignment_shown || read_only;
-  	comp_editor_set_ui_prop (COMP_EDITOR (te), 
-  				 "/commands/ActionAssignTask", 
-  				 "sensitive", sens ? "0" : "1");
-  
- 	sens = priv->assignment_shown && existing && !user && !read_only;
-  	comp_editor_set_ui_prop (COMP_EDITOR (te), 
-  				 "/commands/ActionRefreshTask", 
-  				 "sensitive", sens ? "1" : "0");
- 
- 	sens = priv->assignment_shown && existing && user && !read_only;
-  	comp_editor_set_ui_prop (COMP_EDITOR (te), 
-  				 "/commands/ActionCancelTask", 
-  				 "sensitive", sens ? "1" : "0");
-
-	comp_editor_set_ui_prop (COMP_EDITOR (te),
-				 "/commands/FileSave",
-				 "sensitive", read_only ? "0" : "1");
-	comp_editor_set_ui_prop (COMP_EDITOR (te),
-				 "/commands/FileSaveAndClose",
-				 "sensitive", read_only ? "0" : "1");
-	comp_editor_set_ui_prop (COMP_EDITOR (te),
-				 "/commands/FileDelete",
-				 "sensitive", read_only ? "0" : "1");
 }
 
 static void
@@ -154,12 +105,18 @@ init_widgets (TaskEditor *te)
 
 	priv = te->priv;
 
-	g_signal_connect((priv->model), "model_row_changed",
-			    G_CALLBACK (model_row_changed_cb), te);
-	g_signal_connect((priv->model), "model_rows_inserted",
-			    G_CALLBACK (row_count_changed_cb), te);
-	g_signal_connect((priv->model), "model_rows_deleted",
-			    G_CALLBACK (row_count_changed_cb), te);
+	g_signal_connect((priv->model), "row_changed",
+			    G_CALLBACK (model_row_change_insert_cb), te);
+	g_signal_connect((priv->model), "row_inserted",
+			    G_CALLBACK (model_row_change_insert_cb), te);
+	g_signal_connect((priv->model), "row_deleted",
+			    G_CALLBACK (model_row_delete_cb), te);
+}
+
+static void
+client_changed_cb (CompEditorPage *page, ECal *client, gpointer user_data)
+{
+//	set_menu_sens (TASK_EDITOR (user_data));
 }
 
 /* Object initialization function for the task editor */
@@ -171,14 +128,14 @@ task_editor_init (TaskEditor *te)
 	priv = g_new0 (TaskEditorPrivate, 1);
 	te->priv = priv;
 
-	priv->model = E_MEETING_MODEL (e_meeting_model_new ());
+	priv->model = E_MEETING_STORE (e_meeting_store_new ());
 	priv->assignment_shown = TRUE;
 	priv->updating = FALSE;	
 
 }
 
 TaskEditor *
-task_editor_construct (TaskEditor *te, CalClient *client)
+task_editor_construct (TaskEditor *te, ECal *client)
 {
 	TaskEditorPrivate *priv;
 	
@@ -189,14 +146,16 @@ task_editor_construct (TaskEditor *te, CalClient *client)
 	gtk_object_sink (GTK_OBJECT (priv->task_page));
 	comp_editor_append_page (COMP_EDITOR (te), 
 				 COMP_EDITOR_PAGE (priv->task_page),
-				 _("Basic"));
+				 _("Task"));
+	g_signal_connect (G_OBJECT (priv->task_page), "client_changed",
+			  G_CALLBACK (client_changed_cb), te);
 
 	priv->task_details_page = task_details_page_new ();
 	g_object_ref (priv->task_details_page);
 	gtk_object_sink (GTK_OBJECT (priv->task_details_page));
 	comp_editor_append_page (COMP_EDITOR (te),
 				 COMP_EDITOR_PAGE (priv->task_details_page),
-				 _("Details"));
+				 _("Status"));
 
 	priv->meet_page = meeting_page_new (priv->model, client);
 	g_object_ref (priv->meet_page);
@@ -205,18 +164,15 @@ task_editor_construct (TaskEditor *te, CalClient *client)
 				 COMP_EDITOR_PAGE (priv->meet_page),
 				 _("Assignment"));
 
-	comp_editor_set_cal_client (COMP_EDITOR (te), client);
-
-	comp_editor_merge_ui (COMP_EDITOR (te), "evolution-task-editor.xml", verbs, NULL);
+	comp_editor_set_e_cal (COMP_EDITOR (te), client);
 
 	init_widgets (te);
-	set_menu_sens (te);
 
 	return te;
 }
 
 static void
-task_editor_set_cal_client (CompEditor *editor, CalClient *client)
+task_editor_set_e_cal (CompEditor *editor, ECal *client)
 {
 	TaskEditor *te;
 	TaskEditorPrivate *priv;
@@ -224,19 +180,19 @@ task_editor_set_cal_client (CompEditor *editor, CalClient *client)
 	te = TASK_EDITOR (editor);
 	priv = te->priv;
 
-	e_meeting_model_set_cal_client (priv->model, client);
+	e_meeting_store_set_e_cal (priv->model, client);
 
-	if (parent_class->set_cal_client)
-		parent_class->set_cal_client (editor, client);
+	if (parent_class->set_e_cal)
+		parent_class->set_e_cal (editor, client);
 }
 
 static void
-task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
+task_editor_edit_comp (CompEditor *editor, ECalComponent *comp)
 {
 	TaskEditor *te;
 	TaskEditorPrivate *priv;
-	CalComponentOrganizer organizer;
-	CalClient *client;
+	ECalComponentOrganizer organizer;
+	ECal *client;
 	GSList *attendees = NULL;
 	
 	te = TASK_EDITOR (editor);
@@ -247,14 +203,14 @@ task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 	if (parent_class->edit_comp)
 		parent_class->edit_comp (editor, comp);
 
-	client = comp_editor_get_cal_client (COMP_EDITOR (editor));
+	client = comp_editor_get_e_cal (COMP_EDITOR (editor));
 
 	/* Get meeting related stuff */
-	cal_component_get_organizer (comp, &organizer);
-	cal_component_get_attendee_list (comp, &attendees);
+	e_cal_component_get_organizer (comp, &organizer);
+	e_cal_component_get_attendee_list (comp, &attendees);
 	
 	/* Clear things up */
-	e_meeting_model_remove_all_attendees (priv->model);
+	e_meeting_store_remove_all_attendees (priv->model);
 
 	if (attendees == NULL) {
 		comp_editor_remove_page (editor, COMP_EDITOR_PAGE (priv->meet_page));
@@ -269,14 +225,14 @@ task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 						 _("Assignment"));
 
 		for (l = attendees; l != NULL; l = l->next) {
-			CalComponentAttendee *ca = l->data;
+			ECalComponentAttendee *ca = l->data;
 			EMeetingAttendee *ia;
 
-			ia = E_MEETING_ATTENDEE (e_meeting_attendee_new_from_cal_component_attendee (ca));
+			ia = E_MEETING_ATTENDEE (e_meeting_attendee_new_from_e_cal_component_attendee (ca));
 			/* If we aren't the organizer or the attendee is just delegating, don't allow editing */
 			if (!comp_editor_get_user_org (editor) || e_meeting_attendee_is_set_delto (ia))
  				e_meeting_attendee_set_edit_level (ia,  E_MEETING_ATTENDEE_EDIT_NONE);
-  			e_meeting_model_add_attendee (priv->model, ia);			
+  			e_meeting_store_add_attendee (priv->model, ia);			
 
 			g_object_unref(ia);
 		}
@@ -293,51 +249,50 @@ task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 
 				account = (EAccount*)e_iterator_get(it);
 
-				ia = e_meeting_model_find_attendee (priv->model, account->id->address, &row);
+				ia = e_meeting_store_find_attendee (priv->model, account->id->address, &row);
 				if (ia != NULL)
 					e_meeting_attendee_set_edit_level (ia, E_MEETING_ATTENDEE_EDIT_STATUS);
 			}
 			g_object_unref(it);
-		} else if (cal_client_get_organizer_must_attend (client)) {
+		} else if (e_cal_get_organizer_must_attend (client)) {
 			EMeetingAttendee *ia;
 
-			ia = e_meeting_model_find_attendee (priv->model, organizer.value, &row);
+			ia = e_meeting_store_find_attendee (priv->model, organizer.value, &row);
 			if (ia != NULL)
 				e_meeting_attendee_set_edit_level (ia, E_MEETING_ATTENDEE_EDIT_NONE);
 		}
 
 		priv->assignment_shown = TRUE;		
 	}
-	cal_component_free_attendee_list (attendees);
+	e_cal_component_free_attendee_list (attendees);
 
-	set_menu_sens (te);
 	comp_editor_set_needs_send (COMP_EDITOR (te), priv->assignment_shown && itip_organizer_is_user (comp, client));
 
 	priv->updating = FALSE;
 }
 
 static gboolean
-task_editor_send_comp (CompEditor *editor, CalComponentItipMethod method)
+task_editor_send_comp (CompEditor *editor, ECalComponentItipMethod method)
 {
 	TaskEditor *te = TASK_EDITOR (editor);
 	TaskEditorPrivate *priv;
-	CalComponent *comp = NULL;
+	ECalComponent *comp = NULL;
 
 	priv = te->priv;
 
 	/* Don't cancel more than once or when just publishing */
-	if (method == CAL_COMPONENT_METHOD_PUBLISH ||
-	    method == CAL_COMPONENT_METHOD_CANCEL)
+	if (method == E_CAL_COMPONENT_METHOD_PUBLISH ||
+	    method == E_CAL_COMPONENT_METHOD_CANCEL)
 		goto parent;
 	
 	comp = meeting_page_get_cancel_comp (priv->meet_page);
 	if (comp != NULL) {
-		CalClient *client;
+		ECal *client;
 		gboolean result;
 		
-		client = e_meeting_model_get_cal_client (priv->model);
-		result = itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, comp, client, NULL);
-		g_object_unref((comp));
+		client = e_meeting_store_get_e_cal (priv->model);
+		result = itip_send_comp (E_CAL_COMPONENT_METHOD_CANCEL, comp, client, NULL);
+		g_object_unref (comp);
 
 		if (!result)
 			return FALSE;
@@ -377,7 +332,7 @@ task_editor_finalize (GObject *object)
 
 /**
  * task_editor_new:
- * @client: a CalClient
+ * @client: a ECal
  *
  * Creates a new event editor dialog.
  *
@@ -385,7 +340,7 @@ task_editor_finalize (GObject *object)
  * editor could not be created.
  **/
 TaskEditor *
-task_editor_new (CalClient *client)
+task_editor_new (ECal *client)
 {
 	TaskEditor *te;
 
@@ -406,7 +361,6 @@ show_assignment (TaskEditor *te)
 					 _("Assignment"));
 		priv->assignment_shown = TRUE;
 
-		set_menu_sens (te);
 		comp_editor_set_needs_send (COMP_EDITOR (te), priv->assignment_shown);
 		comp_editor_set_changed (COMP_EDITOR (te), TRUE);
 	}
@@ -437,19 +391,19 @@ refresh_task_cmd (GtkWidget *widget, gpointer data)
 {
 	TaskEditor *te = TASK_EDITOR (data);
 
-	comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_REFRESH);
+	comp_editor_send_comp (COMP_EDITOR (te), E_CAL_COMPONENT_METHOD_REFRESH);
 }
 
 static void
 cancel_task_cmd (GtkWidget *widget, gpointer data)
 {
 	TaskEditor *te = TASK_EDITOR (data);
-	CalComponent *comp;
+	ECalComponent *comp;
 	
 	comp = comp_editor_get_current_comp (COMP_EDITOR (te));
 	if (cancel_component_dialog ((GtkWindow *) te,
-				     comp_editor_get_cal_client (COMP_EDITOR (te)), comp, FALSE)) {
-		comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_CANCEL);
+				     comp_editor_get_e_cal (COMP_EDITOR (te)), comp, FALSE)) {
+		comp_editor_send_comp (COMP_EDITOR (te), E_CAL_COMPONENT_METHOD_CANCEL);
 		comp_editor_delete_comp (COMP_EDITOR (te));
 	}
 }
@@ -460,33 +414,26 @@ forward_cmd (GtkWidget *widget, gpointer data)
 	TaskEditor *te = TASK_EDITOR (data);
 	
 	if (comp_editor_save_comp (COMP_EDITOR (te), TRUE))
-		comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_PUBLISH);
+		comp_editor_send_comp (COMP_EDITOR (te), E_CAL_COMPONENT_METHOD_PUBLISH);
 }
 
 static void
-model_row_changed_cb (ETableModel *etm, int row, gpointer data)
+model_changed (TaskEditor *te)
 {
-	TaskEditor *te = TASK_EDITOR (data);
-	TaskEditorPrivate *priv;
-	
-	priv = te->priv;
-
-	if (!priv->updating) {
+	if (!te->priv->updating) {
 		comp_editor_set_changed (COMP_EDITOR (te), TRUE);
 		comp_editor_set_needs_send (COMP_EDITOR (te), TRUE);
 	}	
 }
 
 static void
-row_count_changed_cb (ETableModel *etm, int row, int count, gpointer data)
+model_row_change_insert_cb (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
-	TaskEditor *te = TASK_EDITOR (data);
-	TaskEditorPrivate *priv;
-	
-	priv = te->priv;
+	model_changed (TASK_EDITOR (data));
+}
 
-	if (!priv->updating) {
-		comp_editor_set_changed (COMP_EDITOR (te), TRUE);
-		comp_editor_set_needs_send (COMP_EDITOR (te), TRUE);
-	}	
+static void
+model_row_delete_cb (GtkTreeModel *model, GtkTreePath *path, gpointer data)
+{
+	model_changed (TASK_EDITOR (data));
 }

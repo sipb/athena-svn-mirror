@@ -45,11 +45,19 @@ enum _filter_grouping_t {
 	FILTER_GROUP_ANY	/* any rule must match */
 };
 
+/* threading, if the context supports it */
+enum _filter_threading_t {
+	FILTER_THREAD_NONE,	/* don't add any thread matching */
+	FILTER_THREAD_ALL,	/* add all possible threads */
+	FILTER_THREAD_REPLIES,	/* add only replies */
+	FILTER_THREAD_REPLIES_PARENTS,	/* replies plus parents */
+};
 
 #define FILTER_SOURCE_INCOMING "incoming" /* performed on incoming email */
 #define FILTER_SOURCE_DEMAND   "demand"   /* performed on the selected folder
 	 				   * when the user asks for it */
 #define	FILTER_SOURCE_OUTGOING  "outgoing"/* performed on outgoing mail */
+#define	FILTER_SOURCE_JUNKTEST  "junktest"/* perform only junktest on incoming mail */
 
 struct _FilterRule {
 	GObject parent_object;
@@ -59,6 +67,9 @@ struct _FilterRule {
 	char *source;
 	
 	enum _filter_grouping_t grouping;
+	enum _filter_threading_t threading;
+
+	unsigned int system:1;	/* this is a system rule, cannot be edited/deleted */
 	GList *parts;
 };
 

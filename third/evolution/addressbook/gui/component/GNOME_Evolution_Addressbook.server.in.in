@@ -1,6 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_Factory"
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@"
             type="shlib"
             location="@COMPONENTDIR@/libevolution-addressbook.so">
 
@@ -13,9 +13,9 @@
 
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_MiniCard_Control"
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_VCard_Control:@VERSION@"
             type="factory"
-            location="OAFIID:GNOME_Evolution_Addressbook_Factory">
+            location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Control:1.0"/>
@@ -32,44 +32,33 @@
 
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_Control"
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_Component:@VERSION@"
             type="factory"
-            location="OAFIID:GNOME_Evolution_Addressbook_Factory">
+            location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:BonoboControl/addressbook-control:1.0"/>
-		<item value="IDL:GNOME/Control:1.0"/>
-	</oaf_attribute>
-
-	<oaf_attribute name="name" type="string"
-                       _value="Evolution Addressbook folder viewer"/>
-
-</oaf_server>
-
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_ShellComponent"
-            type="factory"
-            location="OAFIID:GNOME_Evolution_Addressbook_Factory">
-
-	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/ShellComponent:1.0"/>
+		<item value="IDL:GNOME/Evolution/Component:@VERSION@"/>
 	</oaf_attribute>
 
 	<oaf_attribute name="name" type="string"
 	               _value="Evolution Addressbook component"/>
 
-	<oaf_attribute name="evolution:shell_component_icon" type="string"
-		       value="evolution-contacts.png"/>
-	<oaf_attribute name="evolution:shell_component_launch_order" type="number"
-		       value="2"/>
+	<oaf_attribute name="evolution:component_alias" type="string" value="contacts"/>
+
+        <oaf_attribute name="evolution:menu_label" type="string" _value="C_ontacts"/>
+        <oaf_attribute name="evolution:menu_accelerator" type="string" value="*Control*F2"/>
+        <oaf_attribute name="evolution:button_label" type="string" _value="Contacts"/>
+        <oaf_attribute name="evolution:button_sort_order" type="string" value="-9"/>
+        <oaf_attribute name="evolution:button_icon" type="string" value="stock_addressbook"/>
 
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_AddressWidget"
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_AddressWidget:@VERSION@"
 	    type="factory"
-	    location="OAFIID:GNOME_Evolution_Addressbook_Factory">
+	    location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:BonoboControl/address-widget:1.0"/>
+		<item value="IDL:BonoboControl/address-widget:@VERSION@"/>
 		<item value="IDL:GNOME/Control:1.0"/>
 	</oaf_attribute>
 
@@ -78,12 +67,12 @@
 
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_AddressPopup"
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_AddressPopup:@VERSION@"
 	    type="factory"
-	    location="OAFIID:GNOME_Evolution_Addressbook_Factory">
+	    location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:BonoboControl/address-widget:1.0"/>
+		<item value="IDL:BonoboControl/address-widget:@VERSION@"/>
 		<item value="IDL:GNOME/Control:1.0"/>
 	</oaf_attribute>
 
@@ -92,32 +81,55 @@
 
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_LDAPStorage_ConfigControl"
+<oaf_server iid="OAFIID:GNOME_Evolution_SMime_CertificateManager_ConfigControl:@VERSION@"
             type="factory"
-	    location="OAFIID:GNOME_Evolution_Addressbook_Factory">
+            location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
+                                                                                          
+        <oaf_attribute name="repo_ids" type="stringv">
+                <item value="IDL:GNOME/Evolution/ConfigControl:@VERSION@"/>
+        </oaf_attribute>
+                                                                                          
+        <oaf_attribute name="evolution2:config_item:title" type="string"
+                       _value="Certificates"/>
+                                                                                          
+        <oaf_attribute name="evolution2:config_item:description" type="string"
+                       _value="Manage your S/MIME certificates here"/>
+                                                                                          
+        <oaf_attribute name="evolution2:config_item:icon_name" type="string"
+                       value="stock_lock-ok"/>
+                                                                                          
+        <oaf_attribute name="evolution2:config_item:priority" type="string" value="-6"/>
+                                                                                          
+        <oaf_attribute name="name" type="string"
+                       _value="Evolution S/Mime Certificate Management Control"/>
+                                                                                          
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_Autocompletion_ConfigControl:@VERSION@"
+	    type="factory"
+	    location="OAFIID:GNOME_Evolution_Addressbook_Factory:@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/ConfigControl:1.0"/>
+		<item value="IDL:GNOME/Evolution/ConfigControl:@VERSION@"/>
 	</oaf_attribute>
 
-	<oaf_attribute name="evolution:config_item:title" type="string"
-		       _value="Directory Servers"/>
+	<oaf_attribute name="evolution2:config_item:title" type="string"
+		_value="Autocompletion"/>
 
-	<oaf_attribute name="evolution:config_item:description" type="string"
-		       _value="Configure access to LDAP directory servers here"/>
+	<oaf_attribute name="evolution2:config_item:description" type="string"
+		_value="Configure autocomplete here"/>
 
-	<oaf_attribute name="evolution:config_item:icon_name" type="string"
-		       value="ldap-settings.png"/>
+	<oaf_attribute name="evolution2:config_item:icon_name" type="string"
+		value="stock_contact"/>
 
-	<oaf_attribute name="evolution:config_item:type" type="stringv">
-		<item value="contacts/ldap"/>
+	<oaf_attribute name="evolution2:config_item:type" type="stringv">
+		<item value="contacts"/>
 	</oaf_attribute>
 
-	<oaf_attribute name="evolution:config_item:priority" type="string" value="-6"/>
-    
+	<oaf_attribute name="evolution2:config_item:priority" type="string" value="-9"/>
+
 	<oaf_attribute name="name" type="string"
-		       _value="Evolution Addressbook LDAP Configuration Control"/>
-
+		_value="Evolution folder settings configuration control"/>
 </oaf_server>
 
 </oaf_info>

@@ -4,8 +4,10 @@
 /* 
  *
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
+ *          Michael Zucchi <NotZed@ximian.com>
+ *          Jeffrey Stedfast <fejj@ximian.com>
  *
- * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
+ * Copyright 1999, 2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -22,15 +24,13 @@
  * USA
  */
 
-
 #ifndef CAMEL_STORE_H
 #define CAMEL_STORE_H 1
-
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 /* for mode_t */
 #include <sys/types.h>
@@ -43,15 +43,17 @@ enum {
 };
 
 typedef struct _CamelFolderInfo {
-	struct _CamelFolderInfo *parent,
-		*sibling,
-		*child;
-	char *url;
+	struct _CamelFolderInfo *next;
+	struct _CamelFolderInfo *parent;
+	struct _CamelFolderInfo *child;
+
+	char *uri;
 	char *name;
 	char *full_name;
-	char *path;
-	int unread_message_count;
+
 	guint32 flags;
+	guint32 unread;
+	guint32 total;
 } CamelFolderInfo;
 
 /* Note: these are abstractions (duh), its upto the provider to make them make sense */
@@ -62,8 +64,16 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_FOLDER_NOINFERIORS (1<<1)
 /* a folder which has children (not yet fully implemented) */
 #define CAMEL_FOLDER_CHILDREN (1<<2)
+/* a folder which does not have any children (not yet fully implemented) */
+#define CAMEL_FOLDER_NOCHILDREN (1<<3)
 /* a folder which is subscribed */
-#define CAMEL_FOLDER_SUBSCRIBED (1<<3)
+#define CAMEL_FOLDER_SUBSCRIBED (1<<4)
+/* a virtual folder, cannot copy/move messages here */
+#define CAMEL_FOLDER_VIRTUAL (1<<5)
+/* a system folder, cannot be renamed/deleted */
+#define CAMEL_FOLDER_SYSTEM (1<<6)
+/* a virtual folder that can't be copied to, and can only be moved to if in an existing folder */
+#define CAMEL_FOLDER_VTRASH (1<<7)
 
 /* Structure of rename event's event_data */
 typedef struct _CamelRenameInfo {
@@ -81,33 +91,30 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_SUBSCRIPTIONS	(1 << 0)
 #define CAMEL_STORE_VTRASH		(1 << 1)
 #define CAMEL_STORE_FILTER_INBOX	(1 << 2)
+#define CAMEL_STORE_VJUNK		(1 << 3)
 
 struct _CamelStore
 {
 	CamelService parent_object;
 	struct _CamelStorePrivate *priv;
 	
-	CamelFolder *vtrash;
-	
 	CamelObjectBag *folders;
 
 	int flags;
-
-	/* FIXME: This is a temporary measure until IMAP namespaces are properly implemented,
-	   after that, all external folder api's will assume a dir separator of '/' */
-	/* This is always a copy of IMAP_STORE()->dir_sep, or '/' */
-	char dir_sep;
 };
-
 
 /* open mode for folder */
 #define CAMEL_STORE_FOLDER_CREATE (1<<0)
-#define CAMEL_STORE_FOLDER_BODY_INDEX (1<<1)
-#define CAMEL_STORE_FOLDER_PRIVATE (1<<2) /* a private folder, that shouldn't show up in unmatched/folder info's, etc */
+#define CAMEL_STORE_FOLDER_EXCL (1<<1)
+#define CAMEL_STORE_FOLDER_BODY_INDEX (1<<2)
+#define CAMEL_STORE_FOLDER_PRIVATE (1<<3) /* a private folder, that shouldn't show up in unmatched/folder info's, etc */
+
+#define CAMEL_STORE_FOLDER_CREATE_EXCL (CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
 
 #define CAMEL_STORE_FOLDER_INFO_FAST       (1 << 0)
 #define CAMEL_STORE_FOLDER_INFO_RECURSIVE  (1 << 1)
 #define CAMEL_STORE_FOLDER_INFO_SUBSCRIBED (1 << 2)
+#define CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL (1 << 3)  /* don't include vTrash/vJunk folders */
 
 typedef struct {
 	CamelServiceClass parent_class;
@@ -119,12 +126,10 @@ typedef struct {
 						     const char *folder_name,
 						     guint32 flags,
 						     CamelException *ex);
-	CamelFolder *   (*get_inbox)                (CamelStore *store,
-						     CamelException *ex);
-	
-	void            (*init_trash)               (CamelStore *store);
-	CamelFolder *   (*get_trash)                (CamelStore *store,
-						     CamelException *ex);
+
+	CamelFolder *   (*get_inbox)                (CamelStore *store, CamelException *ex);	
+	CamelFolder *   (*get_trash)                (CamelStore *store, CamelException *ex);
+	CamelFolder *   (*get_junk)                 (CamelStore *store, CamelException *ex);
 	
 	CamelFolderInfo *(*create_folder)           (CamelStore *store,
 						     const char *parent_name,
@@ -138,8 +143,7 @@ typedef struct {
 						     const char *new_name,
 						     CamelException *ex);
 	
-	void            (*sync)                     (CamelStore *store,
-						     CamelException *ex);
+	void            (*sync)                     (CamelStore *store, int expunge, CamelException *ex);
 	
 	CamelFolderInfo *(*get_folder_info)         (CamelStore *store,
 						     const char *top,
@@ -173,6 +177,8 @@ CamelFolder *    camel_store_get_inbox          (CamelStore *store,
 						 CamelException *ex);
 CamelFolder *    camel_store_get_trash          (CamelStore *store,
 						 CamelException *ex);
+CamelFolder *    camel_store_get_junk           (CamelStore *store,
+						 CamelException *ex);
 
 CamelFolderInfo *camel_store_create_folder      (CamelStore *store,
 						 const char *parent_name,
@@ -186,8 +192,7 @@ void             camel_store_rename_folder      (CamelStore *store,
 						 const char *new_name,
 						 CamelException *ex);
 
-void             camel_store_sync               (CamelStore *store,
-						 CamelException *ex);
+void             camel_store_sync               (CamelStore *store, int expunge, CamelException *ex);
 
 CamelFolderInfo *camel_store_get_folder_info    (CamelStore *store,
 						 const char *top,
@@ -202,8 +207,6 @@ void             camel_store_free_folder_info_nop  (CamelStore *store,
 						    CamelFolderInfo *fi);
 
 void             camel_folder_info_free            (CamelFolderInfo *fi);
-void             camel_folder_info_build_path      (CamelFolderInfo *fi,
-						    char separator);
 CamelFolderInfo *camel_folder_info_build           (GPtrArray *folders,
 						    const char *namespace,
 						    char separator,
@@ -224,10 +227,9 @@ void             camel_store_unsubscribe_folder       (CamelStore *store,
 void             camel_store_noop                     (CamelStore *store,
 						       CamelException *ex);
 
-gboolean	 camel_store_uri_cmp		      (CamelStore *store, const char *uria, const char *urib);
-
-/* utility needed by some stores */
-int camel_mkdir_hier (const char *path, mode_t mode);
+int              camel_store_folder_uri_equal         (CamelStore *store,
+						       const char *uri0,
+						       const char *uri1);
 
 #ifdef __cplusplus
 }

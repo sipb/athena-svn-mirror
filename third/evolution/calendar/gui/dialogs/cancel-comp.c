@@ -26,7 +26,8 @@
 #include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <gal/widgets/e-unicode.h>
+#include <e-util/e-icon-factory.h>
+#include "widgets/misc/e-error.h"
 #include "cancel-comp.h"
 
 
@@ -40,60 +41,44 @@
  * Return value: TRUE if the user clicked Yes, FALSE otherwise.
  **/
 gboolean
-cancel_component_dialog (GtkWindow *parent, CalClient *client, CalComponent *comp, gboolean deleting)
+cancel_component_dialog (GtkWindow *parent, ECal *client, ECalComponent *comp, gboolean deleting)
 {
-	GtkWidget *dialog;
-	CalComponentVType vtype;
-	char *str;
-	gint response;
-
-	if (deleting && cal_client_get_save_schedules (client))
+	ECalComponentVType vtype;
+	const char *id;
+	
+	if (deleting && e_cal_get_save_schedules (client))
 		return TRUE;
-
-	vtype = cal_component_get_vtype (comp);
-
+	
+	vtype = e_cal_component_get_vtype (comp);
+	
 	switch (vtype) {
-	case CAL_COMPONENT_EVENT:
+	case E_CAL_COMPONENT_EVENT:
 		if (deleting)
-			str = g_strdup_printf (_("The event being deleted is a meeting, "
-						 "would you like to send a cancellation notice?"));
+			id = "calendar:prompt-cancel-meeting";
 		else
-			str = g_strdup_printf (_("Are you sure you want to cancel "
-						 "and delete this meeting?"));
+			id = "calendar:prompt-delete-meeting";
 		break;
 
-	case CAL_COMPONENT_TODO:
+	case E_CAL_COMPONENT_TODO:
 		if (deleting)
-			str = g_strdup_printf (_("The task being deleted is assigned, "
-						 "would you like to send a cancellation notice?"));
+			id = "calendar:prompt-cancel-task";
 		else
-			str = g_strdup_printf (_("Are you sure you want to cancel "
-						 "and delete this task?"));
+			id = "calendar:prompt-delete-task";
 		break;
 
-	case CAL_COMPONENT_JOURNAL:
+	case E_CAL_COMPONENT_JOURNAL:
 		if (deleting)
-			str = g_strdup_printf (_("The journal entry being deleted is published, "
-						 "would you like to send a cancellation notice?"));
+			id = "calendar:prompt-cancel-journal";
 		else
-			str = g_strdup_printf (_("Are you sure you want to cancel "
-						 "and delete this journal entry?"));
+			id = "calendar:prompt-delete-journal";
 		break;
 
 	default:
-		g_message ("cancel_component_dialog(): "
-			   "Cannot handle object of type %d", vtype);
+		g_message (G_STRLOC ": Cannot handle object of type %d", vtype);
 		return FALSE;
 	}
 	
-	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_QUESTION,
-					 GTK_BUTTONS_YES_NO, str);
-
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-
-	if (response == GTK_RESPONSE_YES)
+	if (e_error_run (parent, id, NULL) == GTK_RESPONSE_YES)
 		return TRUE;
 	else
 		return FALSE;

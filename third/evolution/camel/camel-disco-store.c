@@ -29,8 +29,11 @@
 
 #include "camel-disco-store.h"
 #include "camel-disco-diary.h"
+#include "camel-disco-folder.h"
 #include "camel-exception.h"
 #include "camel-session.h"
+
+#define d(x) 
 
 #define CDS_CLASS(o) (CAMEL_DISCO_STORE_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
 
@@ -138,6 +141,7 @@ disco_connect (CamelService *service, CamelException *ex)
 {
 	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
 	CamelDiscoStoreStatus status;
+	struct _CamelDiscoDiary *diary;
 
 	status = camel_disco_store_status (store);
 	if (status != CAMEL_DISCO_STORE_OFFLINE) {
@@ -154,12 +158,17 @@ disco_connect (CamelService *service, CamelException *ex)
 	case CAMEL_DISCO_STORE_RESYNCING:
 		if (!CDS_CLASS (service)->connect_online (service, ex))
 			return FALSE;
+		d(printf(" diary is %s\n", camel_disco_diary_empty(store->diary)?"empty":"not empty"));
 		if (camel_disco_diary_empty (store->diary))
 			return TRUE;
 
-		/* Need to resync */
+		/* Need to resync.  Note we do the ref thing since during the replay
+		   disconnect could be called, which will remove store->diary and unref it */
 		store->status = CAMEL_DISCO_STORE_RESYNCING;
-		camel_disco_diary_replay (store->diary, ex);
+		diary = store->diary;
+		camel_object_ref(diary);
+		camel_disco_diary_replay(diary, ex);
+		camel_object_unref(diary);
 		store->status = CAMEL_DISCO_STORE_ONLINE;
 		if (camel_exception_is_set (ex))
 			return FALSE;
@@ -292,15 +301,41 @@ camel_disco_store_status (CamelDiscoStore *store)
 
 
 static void
-set_status (CamelDiscoStore *disco_store, CamelDiscoStoreStatus status,
-	    CamelException *ex)
+set_status(CamelDiscoStore *disco_store, CamelDiscoStoreStatus status, CamelException *ex)
 {
+	CamelException x;
+
 	if (disco_store->status == status)
 		return;
 
-	camel_store_sync (CAMEL_STORE (disco_store), ex);
-	if (camel_exception_is_set (ex))
-		return;
+	camel_exception_init(&x);
+	/* Sync the folder fully if we've been told to sync online for this store or this folder
+	   and we're going offline */
+	if (disco_store->status == CAMEL_DISCO_STORE_ONLINE
+	    && status == CAMEL_DISCO_STORE_OFFLINE) {
+		if (((CamelStore *)disco_store)->folders) {
+			GPtrArray *folders;
+			CamelFolder *folder;
+			int i, sync;
+			
+			sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
+
+			folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
+			for (i=0;i<folders->len;i++) {
+				folder = folders->pdata[i];
+				if (CAMEL_CHECK_TYPE(folder, CAMEL_DISCO_FOLDER_TYPE)
+				    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
+					camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
+					camel_exception_clear(&x);
+				}
+				camel_object_unref(folder);
+			}
+			g_ptr_array_free(folders, TRUE);
+		}
+	}
+
+	camel_store_sync(CAMEL_STORE (disco_store), FALSE, &x);
+	camel_exception_clear(&x);
 	if (!camel_service_disconnect (CAMEL_SERVICE (disco_store), TRUE, ex))
 		return;
 
@@ -322,6 +357,8 @@ camel_disco_store_set_status (CamelDiscoStore *store,
 			      CamelDiscoStoreStatus status,
 			      CamelException *ex)
 {
+	d(printf("disco store set status: %s\n", status == CAMEL_DISCO_STORE_ONLINE?"online":"offline"));
+
 	CDS_CLASS (store)->set_status (store, status, ex);
 }
 

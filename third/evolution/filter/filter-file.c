@@ -35,6 +35,7 @@
 
 #include "filter-file.h"
 #include "e-util/e-sexp.h"
+#include "widgets/misc/e-error.h"
 
 #define d(x)
 
@@ -153,7 +154,6 @@ static gboolean
 validate (FilterElement *fe)
 {
 	FilterFile *file = (FilterFile *) fe;
-	GtkWidget *dialog;
 	struct stat st;
 	
 	if (!file->path) {
@@ -161,13 +161,8 @@ validate (FilterElement *fe)
                    GtkWidget member pointing to the value gotten with
                    ::get_widget() so that we can get the parent window
                    here. */
-		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
-						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-						 "%s", _("You must specify a file name."));
-		
-		gtk_dialog_run ((GtkDialog *) dialog);
-		gtk_widget_destroy (dialog);
-		
+		e_error_run(NULL, "filter:no-file", NULL);
+
 		return FALSE;
 	}
 	
@@ -179,13 +174,7 @@ validate (FilterElement *fe)
 			   GtkWidget member pointing to the value gotten with
 			   ::get_widget() so that we can get the parent window
 			   here. */
-			dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
-							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-							 _("File '%s' does not exist or is not a regular file."),
-							 file->path);
-			
-			gtk_dialog_run ((GtkDialog *) dialog);
-			gtk_widget_destroy (dialog);
+			e_error_run(NULL, "filter:bad-file", file->path, NULL);
 			
 			return FALSE;
 		}
@@ -297,6 +286,7 @@ get_widget (FilterElement *fe)
 	GtkWidget *fileentry, *entry;
 	
 	fileentry = gnome_file_entry_new (NULL, _("Choose a file"));
+	g_object_set (G_OBJECT (fileentry), "use_filechooser", TRUE, NULL);
 	gnome_file_entry_set_default_path (GNOME_FILE_ENTRY (fileentry), file->path);
 	gnome_file_entry_set_modal (GNOME_FILE_ENTRY (fileentry), TRUE);
 	

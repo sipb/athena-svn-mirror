@@ -22,10 +22,7 @@
 #define COMP_EDITOR_H
 
 #include <gtk/gtk.h>
-#include <bonobo/bonobo-window.h>
-#include <bonobo/bonobo-ui-engine.h>
-#include <bonobo/bonobo-ui-component.h>
-#include "cal-client.h"
+#include <libecal/e-cal.h>
 #include "../itip-utils.h"
 #include "comp-editor-page.h"
 #include "evolution-shell-component-utils.h"
@@ -43,19 +40,19 @@ G_BEGIN_DECLS
 typedef struct _CompEditorPrivate CompEditorPrivate;
 
 typedef struct {
-	BonoboWindow object;
+	GtkDialog object;
 
 	/* Private data */
 	CompEditorPrivate *priv;
 } CompEditor;
 
 typedef struct {
-	BonoboWindowClass parent_class;
+	GtkDialogClass parent_class;
 
 	/* Virtual functions */
-	void (* set_cal_client) (CompEditor *page, CalClient *client);
-	void (* edit_comp) (CompEditor *page, CalComponent *comp);
-	gboolean (* send_comp) (CompEditor *page, CalComponentItipMethod method);
+	void (* set_e_cal) (CompEditor *page, ECal *client);
+	void (* edit_comp) (CompEditor *page, ECalComponent *comp);
+	gboolean (* send_comp) (CompEditor *page, ECalComponentItipMethod method);
 } CompEditorClass;
 
 GtkType       comp_editor_get_type         (void);
@@ -78,29 +75,22 @@ void          comp_editor_remove_page      (CompEditor             *editor,
 					    CompEditorPage         *page);
 void          comp_editor_show_page        (CompEditor             *editor,
 					    CompEditorPage         *page);
-void          comp_editor_set_cal_client   (CompEditor             *editor,
-					    CalClient              *client);
-CalClient    *comp_editor_get_cal_client   (CompEditor             *editor);
+void          comp_editor_set_e_cal        (CompEditor             *editor,
+					    ECal              *client);
+ECal         *comp_editor_get_e_cal        (CompEditor             *editor);
 void          comp_editor_edit_comp        (CompEditor             *ee,
-					    CalComponent           *comp);
-CalComponent *comp_editor_get_comp         (CompEditor             *editor);
-CalComponent *comp_editor_get_current_comp (CompEditor             *editor);
+					    ECalComponent           *comp);
+ECalComponent *comp_editor_get_comp        (CompEditor             *editor);
+ECalComponent *comp_editor_get_current_comp (CompEditor             *editor);
 gboolean      comp_editor_save_comp        (CompEditor             *editor,
 					    gboolean                send);
 void          comp_editor_delete_comp      (CompEditor             *editor);
 gboolean      comp_editor_send_comp        (CompEditor             *editor,
-					    CalComponentItipMethod  method);
+					    ECalComponentItipMethod  method);
 gboolean      comp_editor_close            (CompEditor             *editor);
-void          comp_editor_merge_ui         (CompEditor             *editor,
-					    const char             *filename,
-					    BonoboUIVerb           *verbs,
-					    EPixmap                *pixmaps);
-void          comp_editor_set_ui_prop      (CompEditor             *editor,
-					    const char             *path,
-					    const char             *attr,
-					    const char             *val);
 void          comp_editor_focus            (CompEditor             *editor);
 
+void          comp_editor_notify_client_changed (CompEditor *editor, ECal *client);
 
 
 

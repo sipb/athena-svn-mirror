@@ -37,7 +37,7 @@ static CamelProvider smtp_provider = {
 	N_("SMTP"),
 
 	N_("For delivering mail by connecting to a remote mailhub "
-	   "using SMTP.\n"),
+	   "using SMTP."),
 
 	"mail",
 
@@ -49,16 +49,15 @@ static CamelProvider smtp_provider = {
 };
 
 void
-camel_provider_module_init (CamelSession *session)
+camel_provider_module_init(void)
 {
-	smtp_provider.object_types[CAMEL_PROVIDER_TRANSPORT] =
-		camel_smtp_transport_get_type ();
+	smtp_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_smtp_transport_get_type ();
 	smtp_provider.authtypes = g_list_append (camel_sasl_authtype_list (TRUE), camel_sasl_authtype ("LOGIN"));
 	smtp_provider.authtypes = g_list_append (smtp_provider.authtypes, camel_sasl_authtype ("POPB4SMTP"));
 	smtp_provider.url_hash = camel_url_hash;
 	smtp_provider.url_equal = camel_url_equal;
 	
-	camel_session_register_provider (session, &smtp_provider);
+	camel_provider_register(&smtp_provider);
 }
 
 

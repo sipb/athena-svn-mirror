@@ -4,7 +4,7 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
+ * Copyright 1999-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -93,7 +93,7 @@ camel_stream_buffer_finalize (CamelObject *object)
 		g_free(sbf->buf);
 	}
 	if (sbf->stream)
-		camel_object_unref(CAMEL_OBJECT(sbf->stream));
+		camel_object_unref (sbf->stream);
 
 	g_free(sbf->linebuf);
 }
@@ -131,6 +131,9 @@ set_vbuf(CamelStreamBuffer *sbf, char *buf, CamelStreamBufferMode mode, int size
 		sbf->buf = g_malloc(size);
 		sbf->flags &= ~BUF_USER;
 	}
+	
+	sbf->ptr = sbf->buf;
+	sbf->end = sbf->buf;
 	sbf->size = size;
 	sbf->mode = mode;
 }
@@ -140,9 +143,9 @@ init_vbuf(CamelStreamBuffer *sbf, CamelStream *s, CamelStreamBufferMode mode, ch
 {
 	set_vbuf(sbf, buf, mode, size);
 	if (sbf->stream)
-		camel_object_unref(CAMEL_OBJECT(sbf->stream));
+		camel_object_unref (sbf->stream);
 	sbf->stream = s;
-	camel_object_ref(CAMEL_OBJECT(sbf->stream));
+	camel_object_ref (sbf->stream);
 }
 
 static void
@@ -333,12 +336,12 @@ stream_flush (CamelStream *stream)
 	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
 
 	if ((sbf->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE) {
-		int len = sbf->ptr-sbf->buf;
-		int written = camel_stream_write(sbf->stream, sbf->buf, len);
-		if (written > 0)
-			sbf->ptr += written;
-		if (written != len)
+		size_t len = sbf->ptr - sbf->buf;
+		
+		if (camel_stream_write (sbf->stream, sbf->buf, len) == -1)
 			return -1;
+		
+		sbf->ptr = sbf->buf;
 	} else {
 		/* nothing to do for read mode 'flush' */
 	}

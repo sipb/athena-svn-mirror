@@ -3,9 +3,10 @@
 /* 
  * Authors:
  *   Michael Zucchi <notzed@ximian.com>
+ *   Jeffrey Stedfast <fejj@ximian.com>
  *   Dan Winship <danw@ximian.com>
  *
- * Copyright (C) 2000, 2001 Ximian, Inc.
+ * Copyright (C) 2000, 2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -29,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include <glib.h>
 #include <stdio.h>
@@ -44,11 +45,18 @@ int camel_file_util_encode_time_t (FILE *out, time_t);
 int camel_file_util_decode_time_t (FILE *in, time_t *);
 int camel_file_util_encode_off_t (FILE *out, off_t);
 int camel_file_util_decode_off_t (FILE *in, off_t *);
+int camel_file_util_encode_size_t (FILE *out, size_t);
+int camel_file_util_decode_size_t (FILE *in, size_t *);
 int camel_file_util_encode_string (FILE *out, const char *);
 int camel_file_util_decode_string (FILE *in, char **);
 
-int camel_file_util_mkdir(const char *path, mode_t mode);
-char *camel_file_util_safe_filename(const char *name);
+int camel_mkdir (const char *path, mode_t mode);
+char *camel_file_util_safe_filename (const char *name);
+
+ssize_t camel_read (int fd, char *buf, size_t n);
+ssize_t camel_write (int fd, const char *buf, size_t n);
+
+char *camel_file_util_savename(const char *filename);
 
 #ifdef __cplusplus
 }

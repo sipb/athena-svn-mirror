@@ -1,26 +1,26 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
-/* 
+/*
+ *  Authors: Jeffrey Stedfast <fejj@ximian.com>
+ *           Bertrand Guiheneuf <bertrand@helixcode.com>
  *
- * Author : 
- *  Bertrand Guiheneuf <bertrand@helixcode.com>
+ *  Copyright 1999-2003 Ximian, Inc. (www.ximian.com)
  *
- * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU General Public 
- * License as published by the Free Software Foundation.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA
  */
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -38,13 +38,19 @@
 #include "camel.h"
 #include "camel-certdb.h"
 #include "camel-mime-utils.h"
+#include "camel-provider.h"
+#include "camel-debug.h"
 
-gboolean camel_verbose_debug = FALSE;
+static int initialised = FALSE;
 
 static void
 camel_shutdown (void)
 {
+	void camel_operation_shutdown (void);
 	CamelCertDB *certdb;
+	
+	if (!initialised)
+		return;
 	
 #ifdef HAVE_NSS
 	NSS_Shutdown ();
@@ -57,30 +63,32 @@ camel_shutdown (void)
 		camel_certdb_save (certdb);
 		camel_object_unref (certdb);
 	}
+	
+	camel_operation_shutdown ();
+	camel_mime_utils_shutdown ();
+	
+	initialised = FALSE;
 }
 
-gint
+int
 camel_init (const char *configdir, gboolean nss_init)
 {
 	CamelCertDB *certdb;
 	char *path;
+	void camel_operation_init(void);
 	
-#ifdef ENABLE_THREADS
-#ifdef G_THREADS_ENABLED	
-	/*g_thread_init (NULL);*/
-#else /* G_THREADS_ENABLED */
-	g_warning ("Threads are not supported by your version of glib");
-#endif /* G_THREADS_ENABLED */
-#endif /* ENABLE_THREADS */
-	
-	if (getenv ("CAMEL_VERBOSE_DEBUG"))
-		camel_verbose_debug = TRUE;
-	
+	if (initialised)
+		return 0;
+
+	camel_debug_init();
+
 	/* initialise global camel_object_type */
 	camel_object_get_type();
-	
-	camel_mime_utils_init ();
-	
+
+	camel_mime_utils_init();
+	camel_operation_init();
+	camel_provider_init();
+
 #ifdef HAVE_NSS
 	if (nss_init) {
 		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
@@ -116,6 +124,8 @@ camel_init (const char *configdir, gboolean nss_init)
 	camel_object_unref (certdb);
 	
 	g_atexit (camel_shutdown);
+	
+	initialised = TRUE;
 	
 	return 0;
 }

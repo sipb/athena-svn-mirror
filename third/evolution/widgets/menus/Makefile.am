@@ -1,4 +1,4 @@
-privlib_LTLIBRARIES = libmenus.la
+noinst_LTLIBRARIES = libmenus.la
 
 INCLUDES =					\
 	-I$(top_srcdir)				\

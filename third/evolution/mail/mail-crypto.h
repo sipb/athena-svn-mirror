@@ -23,38 +23,15 @@
 #ifndef MAIL_CRYPTO_H
 #define MAIL_CRYPTO_H
 
-#include <camel/camel.h>
-#include <camel/camel-pgp-mime.h>
-#include <camel/camel-smime-context.h>
-#include <camel/camel-smime-utils.h>
-#include "mail-config.h"
-
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif /* __cplusplus  */
 
+struct _EAccount;
 
 /* PGP/MIME convenience wrappers */
-CamelCipherContext *mail_crypto_get_pgp_cipher_context (EAccount *account);
-
-
-/* S/MIME v3 convenience wrappers */
-CamelMimeMessage *mail_crypto_smime_sign      (CamelMimeMessage *message, const char *userid,
-					       gboolean signing_time, gboolean detached,
-					       CamelException *ex);
-
-CamelMimeMessage *mail_crypto_smime_certsonly (CamelMimeMessage *message, const char *userid,
-					       GPtrArray *recipients, CamelException *ex);
-
-CamelMimeMessage *mail_crypto_smime_encrypt   (CamelMimeMessage *message, const char *userid,
-					       GPtrArray *recipients, CamelException *ex);
-
-CamelMimeMessage *mail_crypto_smime_envelope  (CamelMimeMessage *message, const char *userid,
-					       GPtrArray *recipients, CamelException *ex);
-
-CamelMimeMessage *mail_crypto_smime_decode    (CamelMimeMessage *message,
-					       CamelCMSValidityInfo **info, CamelException *ex);
+struct _CamelCipherContext *mail_crypto_get_pgp_cipher_context(struct _EAccount *account);
 
 #ifdef __cplusplus
 }

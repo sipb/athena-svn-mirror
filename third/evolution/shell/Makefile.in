@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -218,21 +241,17 @@ privlibexecdir = @privlibexecdir@
 serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
-SUBDIRS = glade importer
+SUBDIRS = importer
 
 INCLUDES = \
-	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED		\
-	-DBONOBO_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED	\
 	-I$(top_srcdir)/widgets					\
 	-I$(top_srcdir)/widgets/misc				\
-	-I$(top_srcdir)/libical/src/libical			\
-	-I$(top_builddir)/libical/src/libical			\
 	-I$(top_srcdir)						\
 	-DEVOLUTION_IMAGES=\""$(imagesdir)"\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
-	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		\
+	-DEVOLUTION_HELPDIR=\""$(evolutionhelpdir)"\"		\
 	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"		\
 	-DEVOLUTION_TOOLSDIR=\""$(privlibexecdir)"\"		\
 	-DPREFIX=\""$(prefix)"\"				\
@@ -240,25 +259,20 @@ INCLUDES = \
 	-DDATADIR=\""$(datadir)"\"				\
 	-DLIBDIR=\""$(datadir)"\"				\
 	-DG_LOG_DOMAIN=\"evolution-shell\"			\
-	$(SHELL_CFLAGS)
+	$(TZDIALOG_CFLAGS)					\
+	$(SHELL_CFLAGS)						\
+	$(EVOLUTION_TEST_CFLAGS)
 
 
-noinst_PROGRAMS = evolution evolution-test-component
+noinst_PROGRAMS = evolution
 
 
 # Shell CORBA stuff
 IDLS = \
-	Evolution-Activity.idl			\
 	Evolution-ConfigControl.idl		\
+	Evolution-Component.idl			\
 	Evolution-Offline.idl			\
-	Evolution-Session.idl			\
 	Evolution-Shell.idl			\
-	Evolution-ShellComponent.idl		\
-	Evolution-ShellComponentDnd.idl		\
-	Evolution-ShellView.idl			\
-	Evolution-Shortcuts.idl			\
-	Evolution-Storage.idl			\
-	Evolution-StorageSetView.idl		\
 	Evolution-Wizard.idl			\
 	Evolution-common.idl			\
 	Evolution.idl
@@ -276,41 +290,18 @@ IDL_GENERATED_C = \
 
 IDL_GENERATED = $(IDL_GENERATED_H) $(IDL_GENERATED_C)
 
-
-# SelectNames CORBA stuff
-SELECT_NAMES_IDL = \
-	$(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
-
-
-SELECT_NAMES_IDL_GENERATED_H = \
-	Evolution-Addressbook-SelectNames.h
+# Data Server CORBA stuff
+DATASERVER_IDL_GENERATED_H = \
+	Evolution-DataServer.h
 
 
-SELECT_NAMES_IDL_GENERATED_C = \
-	Evolution-Addressbook-SelectNames-common.c \
-	Evolution-Addressbook-SelectNames-skels.c  \
-	Evolution-Addressbook-SelectNames-stubs.c
+DATASERVER_IDL_GENERATED_C = \
+	Evolution-DataServer-common.c		\
+	Evolution-DataServer-skels.c		\
+	Evolution-DataServer-stubs.c
 
 
-SELECT_NAMES_IDL_GENERATED = $(SELECT_NAMES_IDL_GENERATED_C) $(SELECT_NAMES_IDL_GENERATED_H)
-
-
-# Wombat CORBA stuff
-WOMBAT_IDL = \
-	$(top_srcdir)/wombat/Evolution-Wombat.idl
-
-
-WOMBAT_IDL_GENERATED_H = \
-	Evolution-Wombat.h
-
-
-WOMBAT_IDL_GENERATED_C = \
-	Evolution-Wombat-common.c		\
-	Evolution-Wombat-skels.c		\
-	Evolution-Wombat-stubs.c
-
-
-WOMBAT_IDL_GENERATED = $(WOMBAT_IDL_GENERATED_C) $(WOMBAT_IDL_GENERATED_H)
+DATASERVER_IDL_GENERATED = $(DATASERVER_IDL_GENERATED_C) $(DATASERVER_IDL_GENERATED_H)
 
 
 # IDL install
@@ -326,156 +317,62 @@ eshellincludedir = $(privincludedir)/shell
 
 eshellinclude_HEADERS = \
 	Evolution.h				\
-	e-folder.h				\
-	e-folder-list.h				\
-	e-folder-tree.h				\
 	e-shell-corba-icon-utils.h		\
-	evolution-activity-client.h		\
+	e-shell-utils.h				\
+	e-user-creatable-items-handler.h	\
 	evolution-config-control.h		\
-	evolution-folder-selector-button.h	\
-	evolution-session.h			\
-	evolution-shell-client.h		\
-	evolution-shell-component-client.h	\
-	evolution-shell-component.h		\
-	evolution-shell-component-dnd.h		\
 	evolution-shell-component-utils.h	\
-	evolution-shell-view.h			\
-	evolution-storage-listener.h		\
-	evolution-storage-set-view-listener.h	\
-	evolution-storage.h			\
 	evolution-wizard.h
 
 
 libeshell_la_SOURCES = \
 	$(IDL_GENERATED)			\
-	e-folder.c				\
-	e-folder-list.c				\
-	e-folder-tree.c				\
+	$(MARSHAL_GENERATED)			\
 	e-shell-corba-icon-utils.c		\
-	evolution-activity-client.c		\
+	e-shell-utils.c				\
+	e-user-creatable-items-handler.c	\
 	evolution-config-control.c		\
-	evolution-folder-selector-button.c	\
-	evolution-session.c			\
-	evolution-shell-client.c		\
-	evolution-shell-component-client.c	\
-	evolution-shell-component.c		\
-	evolution-shell-component-dnd.c		\
 	evolution-shell-component-utils.c	\
-	evolution-shell-view.c			\
-	evolution-storage-listener.c		\
-	evolution-storage-set-view-listener.c	\
-	evolution-storage.c			\
 	evolution-wizard.c			\
-	e-shell-marshal.c			\
 	$(eshellinclude_HEADERS)
 
 
 libeshell_la_LIBADD = \
-	$(top_builddir)/e-util/libeutil.la
+	$(top_builddir)/e-util/libeutil.la	\
+	$(top_builddir)/widgets/misc/libemiscwidgets.la
 
 
 
 # Evolution executable
 evolution_SOURCES = \
-	$(SELECT_NAMES_IDL_GENERATED)		\
-	$(WOMBAT_IDL_GENERATED)			\
-	e-activity-handler.c			\
-	e-activity-handler.h			\
-	e-component-info.c			\
-	e-component-info.h			\
+	$(DATASERVER_IDL_GENERATED)		\
 	e-component-registry.c			\
 	e-component-registry.h			\
 	e-config-upgrade.c			\
 	e-config-upgrade.h			\
 	e-corba-config-page.c			\
 	e-corba-config-page.h			\
-	e-corba-shortcuts.c			\
-	e-corba-shortcuts.h			\
-	e-corba-storage-registry.c		\
-	e-corba-storage-registry.h		\
-	e-corba-storage.c			\
-	e-corba-storage.h			\
-	e-folder-dnd-bridge.c			\
-	e-folder-dnd-bridge.h			\
-	e-folder-type-registry.c		\
-	e-folder-type-registry.h		\
 	e-history.c				\
 	e-history.h				\
-	e-icon-factory.c			\
-	e-icon-factory.h			\
-	e-local-folder.c			\
-	e-local-folder.h			\
-	e-local-storage.c			\
-	e-local-storage.h			\
-	e-setup.c				\
-	e-setup.h				\
-	e-shell-about-box.c			\
-	e-shell-about-box.h			\
-	e-shell-config.c			\
-	e-shell-config.h			\
-	e-shell-config-autocompletion.c		\
-	e-shell-config-autocompletion.h		\
-	e-shell-config-offline.c		\
-	e-shell-config-offline.h		\
-	e-shell-config-default-folders.c	\
-	e-shell-config-default-folders.h	\
-	e-shell-config-folder-settings.c	\
-	e-shell-config-folder-settings.h	\
 	e-shell-constants.h			\
-	e-shell-folder-commands.c		\
-	e-shell-folder-commands.h		\
-	e-shell-folder-creation-dialog.c	\
-	e-shell-folder-creation-dialog.h	\
-	e-shell-folder-selection-dialog.c	\
-	e-shell-folder-selection-dialog.h	\
 	e-shell-folder-title-bar.c		\
 	e-shell-folder-title-bar.h		\
 	e-shell-importer.c			\
 	e-shell-importer.h			\
 	e-shell-offline-handler.c		\
 	e-shell-offline-handler.h		\
-	e-shell-offline-sync.c			\
-	e-shell-offline-sync.h			\
 	e-shell-settings-dialog.c		\
 	e-shell-settings-dialog.h		\
-	e-shell-shared-folder-picker-dialog.c 	\
-	e-shell-shared-folder-picker-dialog.h 	\
 	e-shell-startup-wizard.c		\
 	e-shell-startup-wizard.h		\
-	e-shell-user-creatable-items-handler.c	\
-	e-shell-user-creatable-items-handler.h	\
-	e-shell-utils.c				\
-	e-shell-utils.h				\
-	e-shell-view-menu.c			\
-	e-shell-view-menu.h			\
-	e-shell-view.c				\
-	e-shell-view.h				\
+	e-shell-window-commands.c		\
+	e-shell-window-commands.h		\
+	e-shell-window.c			\
+	e-shell-window.h			\
 	e-shell.c				\
 	e-shell.h				\
-	e-shortcuts-view-model.c		\
-	e-shortcuts-view-model.h		\
-	e-shortcuts-view.c			\
-	e-shortcuts-view.h			\
-	e-shortcuts.c				\
-	e-shortcuts.h				\
-	e-splash.c				\
-	e-splash.h				\
-	e-storage-set-view.c			\
-	e-storage-set-view.h			\
-	e-storage-set.c				\
-	e-storage-set.h				\
-	e-storage.c				\
-	e-storage.h				\
-	e-task-bar.c				\
-	e-task-bar.h				\
-	e-task-widget.c				\
-	e-task-widget.h				\
-	e-uri-schema-registry.c			\
-	e-uri-schema-registry.h			\
-	evolution-storage-set-view.c		\
-	evolution-storage-set-view.h		\
-	evolution-storage-set-view-factory.c	\
-	evolution-storage-set-view-factory.h	\
+	e-sidebar.c				\
+	e-sidebar.h				\
 	main.c
 
 
@@ -485,38 +382,50 @@ evolution_LDADD = \
 	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.la	\
 	$(top_builddir)/widgets/misc/libemiscwidgets.la			\
 	$(top_builddir)/e-util/libeutil.la				\
-	$(top_builddir)/libical/src/libical/libical-evolution.la	\
+	$(TZDIALOG_LIBS)						\
 	$(SHELL_LIBS)
 
 
 
 # Test component
-evolution_test_component_SOURCES = \
-	evolution-test-component.c
+@ENABLE_TEST_COMPONENT_TRUE@component_LTLIBRARIES = libevolution-test.la
+
+libevolution_test_la_SOURCES = \
+	$(IDL_GENERATED)		\
+	evolution-test-component.c	\
+	evolution-test-component.h
 
 
-evolution_test_component_LDADD = \
+libevolution_test_la_LIBADD = \
 	libeshell.la			\
-	$(SHELL_LIBS)
+	$(EVOLUTION_TEST_LIBS)
 
+
+libevolution_test_la_LDFLAGS = -avoid-version -module
+
+@ENABLE_TEST_COMPONENT_TRUE@testserver_in_files = GNOME_Evolution_Test.server.in.in
+@ENABLE_TEST_COMPONENT_TRUE@testserver_DATA = $(testserver_in_files:.server.in.in=_$(BASE_VERSION).server)
+@ENABLE_TEST_COMPONENT_TRUE@testserverdir = $(serverdir)
 
 
 # Misc stuff
 server_in_files = GNOME_Evolution_Shell.server.in.in
-server_DATA = $(server_in_files:.server.in.in=.server)
+server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
 
-etspec_DATA = e-storage-set-view.etspec
+error_DATA = shell-errors.xml
+error_i18n = $(error_DATA:.xml=.xml.h)
+errordir = $(privdatadir)/errors
 
-icons = \
-	check-empty.xpm		\
-	check-filled.xpm	\
-	check-missing.xpm
+glade_DATA = \
+	e-active-connection-dialog.glade		\
+	evolution-startup-wizard.glade
 
 
 
 # GConf schemas
 schemadir = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_evolution_shell.schemas
+schema_in_files = apps_evolution_shell.schemas.in.in
+schema_DATA = $(schema_in_files:.schemas.in.in=-$(BASE_VERSION).schemas)
 
 MARSHAL_GENERATED = e-shell-marshal.c e-shell-marshal.h
 
@@ -525,12 +434,12 @@ MARSHAL_GENERATED = e-shell-marshal.c e-shell-marshal.h
 EXTRA_DIST = \
 	$(IDLS)					\
 	$(server_in_files)			\
-	$(server_DATA)				\
-	$(etspec_DATA)				\
-	$(schema_DATA)				\
-	$(icons)				\
+	GNOME_Evolution_Test.server.in.in	\
+	$(error_DATA)				\
+	$(error_i18n)				\
+	$(glade_DATA)				\
+	$(schema_in_files)			\
 	ChangeLog.pre-1-4			\
-	GNOME_Evolution_TestComponent.server	\
 	e-shell-marshal.list			\
 	evolution-nognome.in
 
@@ -539,7 +448,7 @@ EXTRA_DIST = \
 # Purify support
 @ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 
-BUILT_SOURCES = $(IDL_GENERATED) $(SELECT_NAMES_IDL_GENERATED) $(MARSHAL_GENERATED) $(server_DATA) $(WOMBAT_IDL_GENERATED)
+BUILT_SOURCES = $(IDL_GENERATED) $(MARSHAL_GENERATED) $(server_DATA) $(testserver_DATA) $(DATASERVER_IDL_GENERATED) $(error_i18n)
 CLEANFILES = $(BUILT_SOURCES)
 
 noinst_SCRIPTS = evolution-nognome
@@ -547,81 +456,47 @@ subdir = shell
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = evolution-nognome
-LTLIBRARIES = $(privlib_LTLIBRARIES)
+LTLIBRARIES = $(component_LTLIBRARIES) $(privlib_LTLIBRARIES)
 
 libeshell_la_LDFLAGS =
-libeshell_la_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la
+libeshell_la_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/widgets/misc/libemiscwidgets.la
 am__objects_1 =
 am__objects_2 = Evolution-common.lo Evolution-skels.lo \
 	Evolution-stubs.lo
 am__objects_3 = $(am__objects_1) $(am__objects_2)
-am_libeshell_la_OBJECTS = $(am__objects_3) e-folder.lo e-folder-list.lo \
-	e-folder-tree.lo e-shell-corba-icon-utils.lo \
-	evolution-activity-client.lo evolution-config-control.lo \
-	evolution-folder-selector-button.lo evolution-session.lo \
-	evolution-shell-client.lo evolution-shell-component-client.lo \
-	evolution-shell-component.lo evolution-shell-component-dnd.lo \
-	evolution-shell-component-utils.lo evolution-shell-view.lo \
-	evolution-storage-listener.lo \
-	evolution-storage-set-view-listener.lo evolution-storage.lo \
-	evolution-wizard.lo e-shell-marshal.lo $(am__objects_1)
+am__objects_4 = e-shell-marshal.lo
+am_libeshell_la_OBJECTS = $(am__objects_3) $(am__objects_4) \
+	e-shell-corba-icon-utils.lo e-shell-utils.lo \
+	e-user-creatable-items-handler.lo evolution-config-control.lo \
+	evolution-shell-component-utils.lo evolution-wizard.lo \
+	$(am__objects_1)
 libeshell_la_OBJECTS = $(am_libeshell_la_OBJECTS)
-noinst_PROGRAMS = evolution$(EXEEXT) evolution-test-component$(EXEEXT)
+libevolution_test_la_DEPENDENCIES = libeshell.la
+am_libevolution_test_la_OBJECTS = $(am__objects_3) \
+	evolution-test-component.lo
+libevolution_test_la_OBJECTS = $(am_libevolution_test_la_OBJECTS)
+noinst_PROGRAMS = evolution$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-am__objects_4 = Evolution-Addressbook-SelectNames-common.$(OBJEXT) \
-	Evolution-Addressbook-SelectNames-skels.$(OBJEXT) \
-	Evolution-Addressbook-SelectNames-stubs.$(OBJEXT)
-am__objects_5 = $(am__objects_4) $(am__objects_1)
-am__objects_6 = Evolution-Wombat-common.$(OBJEXT) \
-	Evolution-Wombat-skels.$(OBJEXT) \
-	Evolution-Wombat-stubs.$(OBJEXT)
-am__objects_7 = $(am__objects_6) $(am__objects_1)
-am_evolution_OBJECTS = $(am__objects_5) $(am__objects_7) \
-	e-activity-handler.$(OBJEXT) e-component-info.$(OBJEXT) \
-	e-component-registry.$(OBJEXT) e-config-upgrade.$(OBJEXT) \
-	e-corba-config-page.$(OBJEXT) e-corba-shortcuts.$(OBJEXT) \
-	e-corba-storage-registry.$(OBJEXT) e-corba-storage.$(OBJEXT) \
-	e-folder-dnd-bridge.$(OBJEXT) e-folder-type-registry.$(OBJEXT) \
-	e-history.$(OBJEXT) e-icon-factory.$(OBJEXT) \
-	e-local-folder.$(OBJEXT) e-local-storage.$(OBJEXT) \
-	e-setup.$(OBJEXT) e-shell-about-box.$(OBJEXT) \
-	e-shell-config.$(OBJEXT) \
-	e-shell-config-autocompletion.$(OBJEXT) \
-	e-shell-config-offline.$(OBJEXT) \
-	e-shell-config-default-folders.$(OBJEXT) \
-	e-shell-config-folder-settings.$(OBJEXT) \
-	e-shell-folder-commands.$(OBJEXT) \
-	e-shell-folder-creation-dialog.$(OBJEXT) \
-	e-shell-folder-selection-dialog.$(OBJEXT) \
-	e-shell-folder-title-bar.$(OBJEXT) e-shell-importer.$(OBJEXT) \
-	e-shell-offline-handler.$(OBJEXT) \
-	e-shell-offline-sync.$(OBJEXT) \
+am__objects_5 = Evolution-DataServer-common.$(OBJEXT) \
+	Evolution-DataServer-skels.$(OBJEXT) \
+	Evolution-DataServer-stubs.$(OBJEXT)
+am__objects_6 = $(am__objects_5) $(am__objects_1)
+am_evolution_OBJECTS = $(am__objects_6) e-component-registry.$(OBJEXT) \
+	e-config-upgrade.$(OBJEXT) e-corba-config-page.$(OBJEXT) \
+	e-history.$(OBJEXT) e-shell-folder-title-bar.$(OBJEXT) \
+	e-shell-importer.$(OBJEXT) e-shell-offline-handler.$(OBJEXT) \
 	e-shell-settings-dialog.$(OBJEXT) \
-	e-shell-shared-folder-picker-dialog.$(OBJEXT) \
 	e-shell-startup-wizard.$(OBJEXT) \
-	e-shell-user-creatable-items-handler.$(OBJEXT) \
-	e-shell-utils.$(OBJEXT) e-shell-view-menu.$(OBJEXT) \
-	e-shell-view.$(OBJEXT) e-shell.$(OBJEXT) \
-	e-shortcuts-view-model.$(OBJEXT) e-shortcuts-view.$(OBJEXT) \
-	e-shortcuts.$(OBJEXT) e-splash.$(OBJEXT) \
-	e-storage-set-view.$(OBJEXT) e-storage-set.$(OBJEXT) \
-	e-storage.$(OBJEXT) e-task-bar.$(OBJEXT) \
-	e-task-widget.$(OBJEXT) e-uri-schema-registry.$(OBJEXT) \
-	evolution-storage-set-view.$(OBJEXT) \
-	evolution-storage-set-view-factory.$(OBJEXT) main.$(OBJEXT)
+	e-shell-window-commands.$(OBJEXT) e-shell-window.$(OBJEXT) \
+	e-shell.$(OBJEXT) e-sidebar.$(OBJEXT) main.$(OBJEXT)
 evolution_OBJECTS = $(am_evolution_OBJECTS)
 evolution_DEPENDENCIES = libeshell.la importer/libevolution-importer.la \
 	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.la \
 	$(top_builddir)/widgets/misc/libemiscwidgets.la \
-	$(top_builddir)/e-util/libeutil.la \
-	$(top_builddir)/libical/src/libical/libical-evolution.la
+	$(top_builddir)/e-util/libeutil.la
 evolution_LDFLAGS =
-am_evolution_test_component_OBJECTS = evolution-test-component.$(OBJEXT)
-evolution_test_component_OBJECTS = \
-	$(am_evolution_test_component_OBJECTS)
-evolution_test_component_DEPENDENCIES = libeshell.la
-evolution_test_component_LDFLAGS =
 SCRIPTS = $(noinst_SCRIPTS)
 
 
@@ -632,79 +507,31 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Addressbook-SelectNames-common.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Addressbook-SelectNames-skels.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Addressbook-SelectNames-stubs.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Wombat-common.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Wombat-skels.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Evolution-Wombat-stubs.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Evolution-DataServer-common.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Evolution-DataServer-skels.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Evolution-DataServer-stubs.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Evolution-common.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Evolution-skels.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Evolution-stubs.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-activity-handler.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-component-info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-component-registry.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-config-upgrade.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-corba-config-page.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-corba-shortcuts.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-corba-storage-registry.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-corba-storage.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-folder-dnd-bridge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-folder-list.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-folder-tree.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-folder-type-registry.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-folder.Plo ./$(DEPDIR)/e-history.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-icon-factory.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-local-folder.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-local-storage.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-setup.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-about-box.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-config-autocompletion.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-config-default-folders.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-config-folder-settings.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-config-offline.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-config.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/e-history.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-corba-icon-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-folder-commands.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-folder-creation-dialog.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-folder-selection-dialog.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-folder-title-bar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-importer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-marshal.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-offline-handler.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-offline-sync.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-settings-dialog.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-shared-folder-picker-dialog.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/e-shell-startup-wizard.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-user-creatable-items-handler.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-utils.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-view-menu.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shell-view.Po ./$(DEPDIR)/e-shell.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shortcuts-view-model.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shortcuts-view.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-shortcuts.Po ./$(DEPDIR)/e-splash.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-storage-set-view.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-storage-set.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-storage.Po ./$(DEPDIR)/e-task-bar.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-task-widget.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/e-uri-schema-registry.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-activity-client.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-shell-utils.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-shell-window-commands.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/e-shell-window.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/e-shell.Po ./$(DEPDIR)/e-sidebar.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/e-user-creatable-items-handler.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/evolution-config-control.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-folder-selector-button.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-session.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-client.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-component-client.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-component-dnd.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-component-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-component.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-shell-view.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-storage-listener.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-storage-set-view-factory.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-storage-set-view-listener.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-storage-set-view.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-storage.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/evolution-test-component.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/evolution-test-component.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/evolution-wizard.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/main.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -715,9 +542,10 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libeshell_la_SOURCES) $(evolution_SOURCES) \
-	$(evolution_test_component_SOURCES)
-DATA = $(etspec_DATA) $(idl_DATA) $(schema_DATA) $(server_DATA)
+DIST_SOURCES = $(libeshell_la_SOURCES) $(libevolution_test_la_SOURCES) \
+	$(evolution_SOURCES)
+DATA = $(error_DATA) $(glade_DATA) $(idl_DATA) $(schema_DATA) \
+	$(server_DATA) $(testserver_DATA)
 
 HEADERS = $(eshellinclude_HEADERS)
 
@@ -726,10 +554,10 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = README $(eshellinclude_HEADERS) ChangeLog Makefile.am \
-	Makefile.in TODO evolution-nognome.in
+DIST_COMMON = $(eshellinclude_HEADERS) ChangeLog Makefile.am \
+	Makefile.in evolution-nognome.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libeshell_la_SOURCES) $(evolution_SOURCES) $(evolution_test_component_SOURCES)
+SOURCES = $(libeshell_la_SOURCES) $(libevolution_test_la_SOURCES) $(evolution_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -743,6 +571,34 @@ Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.s
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 evolution-nognome: $(top_builddir)/config.status evolution-nognome.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+componentLTLIBRARIES_INSTALL = $(INSTALL)
+install-componentLTLIBRARIES: $(component_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(componentdir)
+	@list='$(component_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " $(LIBTOOL) --mode=install $(componentLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(componentdir)/$$f"; \
+	    $(LIBTOOL) --mode=install $(componentLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(componentdir)/$$f; \
+	  else :; fi; \
+	done
+
+uninstall-componentLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(component_LTLIBRARIES)'; for p in $$list; do \
+	    p="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(componentdir)/$$p"; \
+	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(componentdir)/$$p; \
+	done
+
+clean-componentLTLIBRARIES:
+	-test -z "$(component_LTLIBRARIES)" || rm -f $(component_LTLIBRARIES)
+	@list='$(component_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test -z "$dir" && dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
 privlibLTLIBRARIES_INSTALL = $(INSTALL)
 install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -773,6 +629,8 @@ clean-privlibLTLIBRARIES:
 	done
 libeshell.la: $(libeshell_la_OBJECTS) $(libeshell_la_DEPENDENCIES) 
 	$(LINK) -rpath $(privlibdir) $(libeshell_la_LDFLAGS) $(libeshell_la_OBJECTS) $(libeshell_la_LIBADD) $(LIBS)
+libevolution-test.la: $(libevolution_test_la_OBJECTS) $(libevolution_test_la_DEPENDENCIES) 
+	$(LINK) -rpath $(componentdir) $(libevolution_test_la_LDFLAGS) $(libevolution_test_la_OBJECTS) $(libevolution_test_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
@@ -783,9 +641,6 @@ clean-noinstPROGRAMS:
 evolution$(EXEEXT): $(evolution_OBJECTS) $(evolution_DEPENDENCIES) 
 	@rm -f evolution$(EXEEXT)
 	$(LINK) $(evolution_LDFLAGS) $(evolution_OBJECTS) $(evolution_LDADD) $(LIBS)
-evolution-test-component$(EXEEXT): $(evolution_test_component_OBJECTS) $(evolution_test_component_DEPENDENCIES) 
-	@rm -f evolution-test-component$(EXEEXT)
-	$(LINK) $(evolution_test_component_LDFLAGS) $(evolution_test_component_OBJECTS) $(evolution_test_component_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -793,82 +648,32 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Addressbook-SelectNames-common.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Addressbook-SelectNames-skels.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Addressbook-SelectNames-stubs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Wombat-common.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Wombat-skels.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Wombat-stubs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-DataServer-common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-DataServer-skels.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-DataServer-stubs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-skels.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-stubs.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-activity-handler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-component-info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-component-registry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-config-upgrade.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-corba-config-page.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-corba-shortcuts.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-corba-storage-registry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-corba-storage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder-dnd-bridge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder-list.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder-tree.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder-type-registry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-history.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-icon-factory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-local-folder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-local-storage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-setup.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-about-box.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-config-autocompletion.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-config-default-folders.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-config-folder-settings.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-config-offline.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-corba-icon-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-folder-commands.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-folder-creation-dialog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-folder-selection-dialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-folder-title-bar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-importer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-offline-handler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-offline-sync.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-settings-dialog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-shared-folder-picker-dialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-startup-wizard.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-user-creatable-items-handler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-view-menu.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-view.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-window-commands.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell-window.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shell.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shortcuts-view-model.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shortcuts-view.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-shortcuts.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-splash.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-storage-set-view.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-storage-set.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-storage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-task-bar.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-task-widget.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-uri-schema-registry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-activity-client.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-sidebar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-user-creatable-items-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-config-control.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-folder-selector-button.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-session.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-client.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-component-client.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-component-dnd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-component-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-component.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-shell-view.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-storage-listener.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-storage-set-view-factory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-storage-set-view-listener.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-storage-set-view.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-storage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-test-component.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-test-component.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-wizard.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
@@ -903,23 +708,41 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-etspecDATA_INSTALL = $(INSTALL_DATA)
-install-etspecDATA: $(etspec_DATA)
+errorDATA_INSTALL = $(INSTALL_DATA)
+install-errorDATA: $(error_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(etspecdir)
-	@list='$(etspec_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(errordir)
+	@list='$(error_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(etspecDATA_INSTALL) $$d$$p $(DESTDIR)$(etspecdir)/$$f"; \
-	  $(etspecDATA_INSTALL) $$d$$p $(DESTDIR)$(etspecdir)/$$f; \
+	  echo " $(errorDATA_INSTALL) $$d$$p $(DESTDIR)$(errordir)/$$f"; \
+	  $(errorDATA_INSTALL) $$d$$p $(DESTDIR)$(errordir)/$$f; \
 	done
 
-uninstall-etspecDATA:
+uninstall-errorDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(etspec_DATA)'; for p in $$list; do \
+	@list='$(error_DATA)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(etspecdir)/$$f"; \
-	  rm -f $(DESTDIR)$(etspecdir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(errordir)/$$f"; \
+	  rm -f $(DESTDIR)$(errordir)/$$f; \
+	done
+gladeDATA_INSTALL = $(INSTALL_DATA)
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(gladeDATA_INSTALL) $$d$$p $(DESTDIR)$(gladedir)/$$f"; \
+	  $(gladeDATA_INSTALL) $$d$$p $(DESTDIR)$(gladedir)/$$f; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(gladedir)/$$f"; \
+	  rm -f $(DESTDIR)$(gladedir)/$$f; \
 	done
 idlDATA_INSTALL = $(INSTALL_DATA)
 install-idlDATA: $(idl_DATA)
@@ -974,6 +797,24 @@ uninstall-serverDATA:
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " rm -f $(DESTDIR)$(serverdir)/$$f"; \
 	  rm -f $(DESTDIR)$(serverdir)/$$f; \
+	done
+testserverDATA_INSTALL = $(INSTALL_DATA)
+install-testserverDATA: $(testserver_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(testserverdir)
+	@list='$(testserver_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(testserverDATA_INSTALL) $$d$$p $(DESTDIR)$(testserverdir)/$$f"; \
+	  $(testserverDATA_INSTALL) $$d$$p $(DESTDIR)$(testserverdir)/$$f; \
+	done
+
+uninstall-testserverDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(testserver_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(testserverdir)/$$f"; \
+	  rm -f $(DESTDIR)$(testserverdir)/$$f; \
 	done
 eshellincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 install-eshellincludeHEADERS: $(eshellinclude_HEADERS)
@@ -1137,7 +978,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 		$(HEADERS) all-local
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs) $(DESTDIR)$(privlibdir) $(DESTDIR)$(etspecdir) $(DESTDIR)$(idldir) $(DESTDIR)$(schemadir) $(DESTDIR)$(serverdir) $(DESTDIR)$(eshellincludedir)
+	$(mkinstalldirs) $(DESTDIR)$(componentdir) $(DESTDIR)$(privlibdir) $(DESTDIR)$(errordir) $(DESTDIR)$(gladedir) $(DESTDIR)$(idldir) $(DESTDIR)$(schemadir) $(DESTDIR)$(serverdir) $(DESTDIR)$(testserverdir) $(DESTDIR)$(eshellincludedir)
 
 install: install-recursive
 install-exec: install-exec-recursive
@@ -1167,8 +1008,8 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	clean-privlibLTLIBRARIES mostlyclean-am
+clean-am: clean-componentLTLIBRARIES clean-generic clean-libtool \
+	clean-noinstPROGRAMS clean-privlibLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 
@@ -1183,9 +1024,10 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local install-eshellincludeHEADERS \
-	install-etspecDATA install-idlDATA install-privlibLTLIBRARIES \
-	install-schemaDATA install-serverDATA
+install-data-am: install-componentLTLIBRARIES install-data-local \
+	install-errorDATA install-eshellincludeHEADERS \
+	install-gladeDATA install-idlDATA install-privlibLTLIBRARIES \
+	install-schemaDATA install-serverDATA install-testserverDATA
 
 install-exec-am: install-exec-local
 
@@ -1204,35 +1046,39 @@ mostlyclean: mostlyclean-recursive
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-eshellincludeHEADERS uninstall-etspecDATA \
+uninstall-am: uninstall-componentLTLIBRARIES uninstall-errorDATA \
+	uninstall-eshellincludeHEADERS uninstall-gladeDATA \
 	uninstall-idlDATA uninstall-info-am \
 	uninstall-privlibLTLIBRARIES uninstall-schemaDATA \
-	uninstall-serverDATA
+	uninstall-serverDATA uninstall-testserverDATA
 
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am all-local check check-am \
-	clean clean-generic clean-libtool clean-noinstPROGRAMS \
-	clean-privlibLTLIBRARIES clean-recursive distclean \
-	distclean-compile distclean-depend distclean-generic \
+	clean clean-componentLTLIBRARIES clean-generic clean-libtool \
+	clean-noinstPROGRAMS clean-privlibLTLIBRARIES clean-recursive \
+	distclean distclean-compile distclean-depend distclean-generic \
 	distclean-libtool distclean-recursive distclean-tags distdir \
 	dvi dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-local \
-	install-data-recursive install-eshellincludeHEADERS \
-	install-etspecDATA install-exec install-exec-am \
-	install-exec-local install-exec-recursive install-idlDATA \
-	install-info install-info-am install-info-recursive install-man \
-	install-privlibLTLIBRARIES install-recursive install-schemaDATA \
-	install-serverDATA install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
+	install-am install-componentLTLIBRARIES install-data \
+	install-data-am install-data-local install-data-recursive \
+	install-errorDATA install-eshellincludeHEADERS install-exec \
+	install-exec-am install-exec-local install-exec-recursive \
+	install-gladeDATA install-idlDATA install-info install-info-am \
+	install-info-recursive install-man install-privlibLTLIBRARIES \
+	install-recursive install-schemaDATA install-serverDATA \
+	install-strip install-testserverDATA installcheck \
+	installcheck-am installdirs installdirs-am \
+	installdirs-recursive maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
 	tags tags-recursive uninstall uninstall-am \
-	uninstall-eshellincludeHEADERS uninstall-etspecDATA \
+	uninstall-componentLTLIBRARIES uninstall-errorDATA \
+	uninstall-eshellincludeHEADERS uninstall-gladeDATA \
 	uninstall-idlDATA uninstall-info-am uninstall-info-recursive \
 	uninstall-privlibLTLIBRARIES uninstall-recursive \
-	uninstall-schemaDATA uninstall-serverDATA
+	uninstall-schemaDATA uninstall-serverDATA \
+	uninstall-testserverDATA
 
 
 $(IDL_GENERATED_H): $(IDLS)
@@ -1240,26 +1086,18 @@ $(IDL_GENERATED_H): $(IDLS)
 
 $(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
-$(SELECT_NAMES_IDL_GENERATED_H): $(SELECT_NAMES_IDL)
-	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(SELECT_NAMES_IDL)
+$(DATASERVER_IDL_GENERATED_H): $(DATASERVER_IDL)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(DATASERVER_IDL)
 
-$(SELECT_NAMES_IDL_GENERATED_C): $(SELECT_NAMES_IDL_GENERATED_H)
-
-$(WOMBAT_IDL_GENERATED_H): $(WOMBAT_IDL)
-	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(WOMBAT_IDL)
-
-$(WOMBAT_IDL_GENERATED_C): $(WOMBAT_IDL_GENERATED_H)
-
-install-test-component: evolution-test-component
-	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-test-component $(DESTDIR)$(bindir)/evolution-test-component
-	$(mkinstalldirs) $(DESTDIR)$(serverdir)
-	$(INSTALL_DATA) $(srcdir)/GNOME_Evolution_TestComponent.server $(DESTDIR)$(serverdir)/GNOME_Evolution_TestComponent.server
-%.server.in: %.server.in.in
-	sed -e "s|\@BINDIR\@|$(bindir)|"				\
-	    -e "s|\@VERSION\@|$(BASE_VERSION)|"				\
-	    $< > $@
-
+$(DATASERVER_IDL_GENERATED_C): $(DATASERVER_IDL_GENERATED_H)
+@EVO_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@
+%.xml.h: %.xml
+	$(top_builddir)/e-util/e-error-tool $^
+%-$(BASE_VERSION).schemas.in: %.schemas.in.in
+	cp $< $@
+
+@INTLTOOL_SCHEMAS_RULE@
 
 install-data-local:
 	if test -z "$(DESTDIR)" ; then												\
@@ -1279,18 +1117,7 @@ install-evolution:
 @HAVE_DTAPPINTEGRATE_TRUE@	$(INSTALL_PROGRAM) evolution-nognome $(DESTDIR)$(bindir)/evolution-$(BASE_VERSION) 
 
 @HAVE_DTAPPINTEGRATE_FALSE@install-exec-local: install-evolution
-
-# GLib marshalling cruft
-
-e-shell-marshal.h: e-shell-marshal.list
-	( @GLIB_GENMARSHAL@ --prefix=e_shell_marshal e-shell-marshal.list --header > e-shell-marshal.h.tmp \
-	&& mv e-shell-marshal.h.tmp e-shell-marshal.h ) \
-	|| ( rm -f e-shell-marshal.h.tmp && exit 1 )
-
-e-shell-marshal.c: e-shell-marshal.h
-	( @GLIB_GENMARSHAL@ --prefix=e_shell_marshal e-shell-marshal.list --body > e-shell-marshal.c.tmp \
-	&& mv e-shell-marshal.c.tmp e-shell-marshal.c ) \
-	|| ( rm -f e-shell-marshal.c.tmp && exit 1 )
+@EVO_MARSHAL_RULE@
 
 @ENABLE_PURIFY_TRUE@all-local: evolution.pure
 

@@ -41,19 +41,25 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtktooltips.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkmessagedialog.h>
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
 #include <gal/e-text/e-entry.h>
 
+#include "widgets/misc/e-error.h"
+
 #include <camel/camel.h>
-#include "evolution-folder-selector-button.h"
 #include "e-msg-composer-hdrs.h"
 #include "mail/mail-config.h"
-#include "addressbook/backend/ebook/e-book-util.h"
-
-extern EvolutionShellClient *global_shell_client;
+/*#include "mail/em-folder-selection-button.h"*/
+#include "mail/em-folder-selector.h"
+#include "mail/mail-component.h"
+#include "mail/em-folder-tree.h"
 
 
 
@@ -84,6 +90,8 @@ struct _EMsgComposerHdrsPrivate {
 	
 	EAccountList *accounts;
 	GSList *from_options;
+	
+	gboolean post_custom;
 	
 	/* Standard headers.  */
 	EMsgComposerHdrPair from, reply_to, to, cc, bcc, post_to, subject;
@@ -182,6 +190,11 @@ from_changed (GtkWidget *item, gpointer data)
 {
 	EMsgComposerHdrs *hdrs = E_MSG_COMPOSER_HDRS (data);
 	const char *reply_to;
+	GList *post_items = NULL;
+	
+	/* this will retrieve items relative to the previous account */
+	if (!hdrs->priv->post_custom)
+		post_items = e_msg_composer_hdrs_get_post_to(hdrs);
 	
 	hdrs->account = g_object_get_data ((GObject *) item, "account");
 	
@@ -189,6 +202,13 @@ from_changed (GtkWidget *item, gpointer data)
 	   because we don't want to change the visibility of the header */
 	reply_to = hdrs->account->id->reply_to;
 	gtk_entry_set_text (GTK_ENTRY (hdrs->priv->reply_to.entry), reply_to ? reply_to : "");
+	
+	/* folders should be made relative to the new from */
+	if (!hdrs->priv->post_custom) {
+		e_msg_composer_hdrs_set_post_to_list (hdrs, post_items);
+		g_list_foreach (post_items, (GFunc)g_free, NULL);
+		g_list_free(post_items);
+	}
 	
 	g_signal_emit (hdrs, signals [FROM_CHANGED], 0);
 }
@@ -248,7 +268,7 @@ static void
 account_removed_cb (EAccountList *accounts, EAccount *account, EMsgComposerHdrs *hdrs)
 {
 	struct _EMsgComposerHdrsPrivate *priv = hdrs->priv;
-	GtkWidget *item, *omenu, *toplevel, *dialog;
+	GtkWidget *item, *omenu, *toplevel;
 	EAccount *acnt;
 	GSList *node;
 	
@@ -284,10 +304,8 @@ account_removed_cb (EAccountList *accounts, EAccount *account, EMsgComposerHdrs 
 			toplevel = gtk_widget_get_toplevel ((GtkWidget *) hdrs);
 			gtk_widget_set_sensitive (toplevel, FALSE);
 			
-			dialog = gtk_message_dialog_new ((GtkWindow *) toplevel, GTK_DIALOG_MODAL |
-							 GTK_DIALOG_DESTROY_WITH_PARENT,
-							 GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s",
-							 _("You need to configure an account before you can compose mail."));
+			/* FIXME: this should offer a 'configure account' button, can we do that? */
+			e_error_run((GtkWindow *)toplevel, "mail-composer:all-accounts-deleted", NULL);
 		}
 	}
 }
@@ -463,6 +481,52 @@ create_addressbook_entry (EMsgComposerHdrs *hdrs, const char *name)
 	return control_widget;
 }
 
+static void
+post_browser_response (EMFolderSelector *emfs, int response, EMsgComposerHdrs *hdrs)
+{
+	if (response == GTK_RESPONSE_OK) {
+		GList *uris = em_folder_selector_get_selected_uris (emfs);
+		e_msg_composer_hdrs_set_post_to_list (hdrs, uris);
+		hdrs->priv->post_custom = FALSE;
+		g_list_foreach (uris, (GFunc) g_free, NULL);
+		g_list_free (uris);
+	}
+	
+	gtk_widget_destroy ((GtkWidget *) emfs);
+}
+
+static void
+post_browser_clicked_cb (GtkButton *button, EMsgComposerHdrs *hdrs)
+{
+	EMFolderTreeModel *model;
+	EMFolderTree *emft;
+	GtkWidget *dialog;
+	GList *post_items;
+	
+	model = mail_component_peek_tree_model (mail_component_peek ());
+	emft = (EMFolderTree *) em_folder_tree_new_with_model (model);
+	em_folder_tree_set_multiselect (emft, TRUE);
+	em_folder_tree_set_excluded(emft, EMFT_EXCLUDE_NOSELECT|EMFT_EXCLUDE_VIRTUAL|EMFT_EXCLUDE_VTRASH);
+
+	dialog = em_folder_selector_new (emft, EM_FOLDER_SELECTOR_CAN_CREATE,
+	                                 _("Posting destination"),
+	                                 _("Choose folders to post the message to."), NULL);
+	
+	post_items = e_msg_composer_hdrs_get_post_to (hdrs);	
+	em_folder_selector_set_selected_list ((EMFolderSelector *) dialog, post_items);
+	g_list_foreach (post_items, (GFunc) g_free, NULL);
+	g_list_free (post_items);
+	
+	g_signal_connect (dialog, "response", G_CALLBACK (post_browser_response), hdrs);
+	gtk_widget_show (dialog);
+}
+
+static void
+post_entry_changed_cb (GtkButton *button, EMsgComposerHdrs *hdrs)
+{
+	hdrs->priv->post_custom = TRUE;
+}
+
 static EMsgComposerHdrPair 
 header_new_recipient (EMsgComposerHdrs *hdrs, const char *name, const char *tip)
 {
@@ -502,7 +566,6 @@ static void
 create_headers (EMsgComposerHdrs *hdrs)
 {
 	EMsgComposerHdrsPrivate *priv = hdrs->priv;
-	static const char *posting_types[] = { "mail/*", NULL };
 	
 	/*
 	 * Reply-To:
@@ -544,14 +607,21 @@ create_headers (EMsgComposerHdrs *hdrs)
 		 _("Enter the addresses that will receive a carbon copy of "
 		   "the message without appearing in the recipient list of "
 		   "the message."));
-	
+
 	/*
 	 * Post-To
 	 */
-	priv->post_to.label = gtk_label_new (_("Post To:"));
-	priv->post_to.entry = evolution_folder_selector_button_new (
-		global_shell_client, _("Posting destination"), NULL,
-		posting_types);
+	priv->post_to.label = gtk_button_new_with_label (_("Post To:"));
+	GTK_OBJECT_UNSET_FLAGS (priv->post_to.label, GTK_CAN_FOCUS);
+	g_signal_connect (priv->post_to.label, "clicked",
+			  G_CALLBACK (post_browser_clicked_cb), hdrs);
+	gtk_tooltips_set_tip (hdrs->priv->tooltips, priv->post_to.label,
+			      _("Click here to select folders to post to"),
+			      NULL);
+	
+	priv->post_to.entry = gtk_entry_new ();
+	g_signal_connect(priv->post_to.entry, "changed",
+			 G_CALLBACK (post_entry_changed_cb), hdrs);
 }
 
 static void
@@ -585,7 +655,7 @@ attach_headers (EMsgComposerHdrs *hdrs)
 static void
 set_pair_visibility (EMsgComposerHdrs *h, EMsgComposerHdrPair *pair, int visible)
 {
-	if (visible & h->visible_mask) {
+	if (visible /*& h->visible_mask*/) {
 		gtk_widget_show (pair->label);
 		gtk_widget_show (pair->entry);
 	} else {
@@ -617,21 +687,14 @@ headers_set_visibility (EMsgComposerHdrs *h, int visible_flags)
 static void
 headers_set_sensitivity (EMsgComposerHdrs *h)
 {
+	/* these ones are always on */
 	bonobo_ui_component_set_prop (
-		h->priv->uic, "/commands/ViewFrom", "sensitive",
-		h->visible_mask & E_MSG_COMPOSER_VISIBLE_FROM ? "1" : "0", NULL);
+		h->priv->uic, "/commands/ViewTo", "sensitive",
+		h->visible_mask & E_MSG_COMPOSER_VISIBLE_TO ? "0" : "1", NULL);
 	
 	bonobo_ui_component_set_prop (
-		h->priv->uic, "/commands/ViewReplyTo", "sensitive",
-		h->visible_mask & E_MSG_COMPOSER_VISIBLE_REPLYTO ? "1" : "0", NULL);
-	
-	bonobo_ui_component_set_prop (
-		h->priv->uic, "/commands/ViewCC", "sensitive",
-		h->visible_mask & E_MSG_COMPOSER_VISIBLE_CC ? "1" : "0", NULL);
-	
-	bonobo_ui_component_set_prop (
-		h->priv->uic, "/commands/ViewBCC", "sensitive",
-		h->visible_mask & E_MSG_COMPOSER_VISIBLE_BCC ? "1" : "0", NULL);
+		h->priv->uic, "/commands/ViewPostTo", "sensitive",
+		h->visible_mask & E_MSG_COMPOSER_VISIBLE_POSTTO ? "0" : "1", NULL);
 }
 
 void
@@ -781,6 +844,8 @@ init (EMsgComposerHdrs *hdrs)
 	
 	priv->accounts = mail_config_get_accounts ();
 	g_object_ref (priv->accounts);
+
+	priv->post_custom = FALSE;
 	
 	hdrs->priv = priv;
 }
@@ -964,11 +1029,13 @@ e_msg_composer_hdrs_to_message_internal (EMsgComposerHdrs *hdrs,
 		e_destination_freev (bcc_destv);
 	}
 	
+#if 0
 	if (hdrs->visible_mask & E_MSG_COMPOSER_VISIBLE_POSTTO) {
 		header = e_msg_composer_hdrs_get_post_to (hdrs);
 		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-PostTo", header);
 		g_free (header);
 	}
+#endif
 }
 
 
@@ -1097,14 +1164,144 @@ e_msg_composer_hdrs_set_bcc (EMsgComposerHdrs *hdrs,
 	g_free (str);
 }
 
+
 void
 e_msg_composer_hdrs_set_post_to (EMsgComposerHdrs *hdrs,
 				 const char *post_to)
 {
+	GList *list;
+	
 	g_return_if_fail (E_IS_MSG_COMPOSER_HDRS (hdrs));
 	g_return_if_fail (post_to != NULL);
 	
-	evolution_folder_selector_button_set_uri (EVOLUTION_FOLDER_SELECTOR_BUTTON (hdrs->priv->post_to.entry), post_to);
+	list = g_list_append (NULL, g_strdup (post_to));
+	
+	e_msg_composer_hdrs_set_post_to_list (hdrs, list);
+	
+	g_free (list->data);
+	g_list_free (list);
+}
+
+static GList *
+newsgroups_list_split (const char *list)
+{
+	GList *lst = NULL;
+	char *tmp;	
+	char **items, **cur_ptr;
+	
+	cur_ptr = items = g_strsplit (list, ",", 0);
+	
+	while ((tmp = *cur_ptr) != NULL) {
+		g_strstrip (tmp);
+		
+		if (tmp[0])
+			lst = g_list_append (lst, g_strdup (tmp));
+		
+		cur_ptr++;
+	}
+	
+	g_strfreev (items);
+	
+	return lst;
+}
+
+static char *
+get_account_store_url (EMsgComposerHdrs *hdrs)
+{
+	CamelURL *url;
+	char *ret = NULL;
+	
+	if (hdrs->account->source && hdrs->account->source->url) {
+		url = camel_url_new (hdrs->account->source->url, NULL);
+		ret = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
+		camel_url_free (url);
+	}
+	
+	return ret;
+}                                            
+
+static char *
+folder_name_to_string (EMsgComposerHdrs *hdrs, const char *uri)
+{
+	char *storeurl = get_account_store_url (hdrs);
+	int len;
+	
+	if (storeurl) {
+		len = strlen (storeurl);
+		
+		if (g_ascii_strncasecmp (uri, storeurl, len) == 0) {
+			g_free (storeurl);
+			return g_strdup (uri + len);
+		}
+		
+		g_free (storeurl);
+	}
+	
+	return g_strdup (uri);
+}
+
+void
+e_msg_composer_hdrs_set_post_to_list (EMsgComposerHdrs *hdrs, GList *urls)
+{
+	GString *caption;
+	char *tmp;
+	gboolean post_custom;
+	
+	if (hdrs->priv->post_to.entry == NULL)
+		return;
+
+	caption = g_string_new("");
+	while (urls) {
+		tmp = folder_name_to_string(hdrs, (char *)urls->data);
+		if (tmp) {
+			if (caption->len)
+				g_string_append(caption, ", ");
+			g_string_append(caption, tmp);
+		}
+		
+		urls = g_list_next (urls);
+	}
+	
+	post_custom = hdrs->priv->post_custom;
+	gtk_entry_set_text(GTK_ENTRY(hdrs->priv->post_to.entry), caption->str);
+	hdrs->priv->post_custom = post_custom;
+
+	g_string_free(caption, TRUE);
+}
+
+void
+e_msg_composer_hdrs_set_post_to_base (EMsgComposerHdrs *hdrs, const char *base, const char *post_to)
+{
+	GList *lst, *curlist;
+	char *tmp, *tmp2;
+	gboolean post_custom;
+	GString *caption;
+	
+	/* split to newsgroup names */
+	lst = newsgroups_list_split(post_to);
+	curlist = lst;
+	
+	caption = g_string_new("");
+	while (curlist) {
+		/* FIXME: this doens't handle all folder names properly */
+		tmp2 = g_strdup_printf ("%s/%s", base, (char *)curlist->data);
+		tmp = folder_name_to_string (hdrs, tmp2);
+		g_free (tmp2);
+		if (tmp) {
+			if (caption->len)
+				g_string_append(caption, ", ");
+			g_string_append(caption, tmp);
+		}
+		curlist = g_list_next(curlist);
+	}
+	
+	post_custom = hdrs->priv->post_custom;
+	gtk_entry_set_text(GTK_ENTRY(hdrs->priv->post_to.entry), caption->str);
+	hdrs->priv->post_custom = post_custom;
+
+	g_string_free(caption, TRUE);
+        g_list_foreach(lst, (GFunc)g_free, NULL);
+	g_list_free(lst);
 }
 
 void
@@ -1258,16 +1455,44 @@ e_msg_composer_hdrs_get_recipients (EMsgComposerHdrs *hdrs)
 	return recip_destv;
 }
 
-char *
+
+GList *
 e_msg_composer_hdrs_get_post_to (EMsgComposerHdrs *hdrs)
 {
-	GNOME_Evolution_Folder *folder;
-
+	GList *uris, *cur;
+	char *storeurl = NULL, *tmp;
+	
 	g_return_val_if_fail (E_IS_MSG_COMPOSER_HDRS (hdrs), NULL);
 	
-	folder = evolution_folder_selector_button_get_folder (EVOLUTION_FOLDER_SELECTOR_BUTTON (hdrs->priv->post_to.entry));
-	return folder ? g_strdup (folder->physicalUri) : NULL;
+	if (hdrs->priv->post_to.entry == NULL)
+		return NULL;
+	
+	tmp = g_strdup (gtk_entry_get_text (GTK_ENTRY (hdrs->priv->post_to.entry)));
+	uris = newsgroups_list_split (tmp);
+	g_free (tmp);
+	
+	cur = uris;
+	while (cur) {
+		/* FIXME: this is a bit of a hack, should use camelurl's etc */
+		if (strstr ((char *) cur->data, ":/") == NULL) {
+			/* relative folder name: convert to absolute */
+			if (!storeurl)
+				storeurl = get_account_store_url (hdrs);
+			if (!storeurl)
+				break;
+			tmp = g_strconcat (storeurl, cur->data, NULL);
+			g_free (cur->data);
+			cur->data = tmp;
+		}
+		
+		cur = cur->next;
+	}
+	
+	g_free (storeurl);
+	
+	return uris;
 }
+
 
 const char *
 e_msg_composer_hdrs_get_subject (EMsgComposerHdrs *hdrs)

@@ -33,10 +33,10 @@
 #include <string.h>
 
 #include "camel-url.h"
-#include "string-utils.h"
 #include "camel-exception.h"
 #include "camel-mime-utils.h"
 #include "camel-object.h"
+#include "camel-string-utils.h"
 
 static void copy_param (GQuark key_id, gpointer data, gpointer user_data);
 static void output_param (GQuark key_id, gpointer data, gpointer user_data);
@@ -65,11 +65,13 @@ camel_url_new_with_base (CamelURL *base, const char *url_string)
 	 * FUNCTION, RUN tests/misc/url AFTERWARDS.
 	 */
 
-	/* Find fragment. */
+	/* Find fragment.  RFC 1808 2.4.1 */
 	end = hash = strchr (url_string, '#');
-	if (hash && hash[1]) {
-		url->fragment = g_strdup (hash + 1);
-		camel_url_decode (url->fragment);
+	if (hash) {
+		if (hash[1]) {
+			url->fragment = g_strdup (hash + 1);
+			camel_url_decode (url->fragment);
+		}
 	} else
 		end = url_string + strlen (url_string);
 
@@ -379,6 +381,12 @@ void
 camel_url_free (CamelURL *url)
 {
 	if (url) {
+		if (url->passwd)
+			memset(url->passwd, 0, strlen(url->passwd));
+		if (url->user)
+			memset(url->user, 0, strlen(url->user));
+		if (url->host)
+			memset(url->host, 0, strlen(url->host));
 		g_free (url->protocol);
 		g_free (url->user);
 		g_free (url->authmech);
@@ -503,7 +511,7 @@ camel_url_decode (char *part)
 
 	s = d = (unsigned char *)part;
 	do {
-		if (*s == '%' && s[1] && s[2]) {
+		if (*s == '%' && isxdigit(s[1]) && isxdigit(s[2])) {
 			*d++ = (XDIGIT (s[1]) << 4) + XDIGIT (s[2]);
 			s += 2;
 		} else

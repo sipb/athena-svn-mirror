@@ -13,9 +13,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
-# FIXME we use the EClippedLabel widget from EShortcutBar.  Probably
-# it should be moved somewhere else.
 SHELL = @SHELL@
 
 srcdir = @srcdir@
@@ -68,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -96,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -132,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -165,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -174,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -189,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -221,14 +241,13 @@ privlibexecdir = @privlibexecdir@
 serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
-
 INCLUDES = \
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/widgets/shortcut-bar				\
+	-I$(top_srcdir)/a11y/widgets/					\
 	-DMAP_DIR=\""$(imagesdir)"\"					\
+	-DEVOLUTION_PRIVDATADIR=\""$(privdatadir)"\"			\
 	-DG_LOG_DOMAIN=__FILE__						\
-	-DG_DISABLE_DEPRECATED						\
-	$(GNOME_FULL_CFLAGS)
+	$(SOURCE_SEL_CFLAGS)
 
 
 privlib_LTLIBRARIES = \
@@ -237,49 +256,83 @@ privlib_LTLIBRARIES = \
 
 widgetsincludedir = $(privincludedir)/widgets
 
+@ENABLE_PILOT_CONDUITS_TRUE@pilot_sources = e-pilot-settings.c
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_sources = 
+@ENABLE_PILOT_CONDUITS_TRUE@pilot_headers = e-pilot-settings.h
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_headers = 
+
 widgetsinclude_HEADERS = \
+	$(pilot_headers)			\
+	e-activity-handler.h			\
 	e-calendar.h				\
 	e-calendar-item.h			\
 	e-cell-date-edit.h			\
 	e-cell-percent.h			\
+	e-cell-renderer-combo.h			\
 	e-charset-picker.h			\
 	e-clipped-label.h			\
+	e-combo-cell-editable.h			\
 	e-config-page.h				\
 	e-combo-button.h			\
 	e-dateedit.h				\
 	e-dropdown-button.h			\
+	e-error.h				\
+	e-expander.h				\
+	e-image-chooser.h			\
+	e-info-label.h				\
 	e-map.h					\
-	e-messagebox.h				\
 	e-multi-config-dialog.h			\
 	e-search-bar.h				\
+	e-source-option-menu.h			\
+	e-source-selector.h			\
+	e-task-bar.h				\
+	e-task-widget.h				\
 	e-title-bar.h				\
 	e-url-entry.h
 
 
 libemiscwidgets_la_SOURCES = \
+	$(MARSHAL_GENERATED)			\
 	$(widgetsinclude_HEADERS)		\
+	$(pilot_sources)			\
+	e-activity-handler.c			\
 	e-calendar.c				\
 	e-calendar-item.c			\
 	e-cell-date-edit.c			\
 	e-cell-percent.c			\
+	e-cell-renderer-combo.c			\
 	e-charset-picker.c			\
 	e-clipped-label.c			\
+	e-combo-cell-editable.c			\
 	e-config-page.c				\
 	e-combo-button.c			\
 	e-dateedit.c				\
 	e-dropdown-button.c			\
+	e-error.c				\
+	e-expander.c				\
+	e-image-chooser.c			\
+	e-info-label.c				\
 	e-map.c					\
-	e-messagebox.c				\
 	e-multi-config-dialog.c			\
 	e-search-bar.c				\
+	e-source-option-menu.c			\
+	e-source-selector.c			\
+	e-task-bar.c				\
+	e-task-widget.c				\
 	e-title-bar.c				\
-	e-url-entry.c				\
-	e-util-marshal.c
+	e-url-entry.c
 
 
 MARSHAL_GENERATED = e-util-marshal.c e-util-marshal.h
 
-libemiscwidgets_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+error_DATA = e-system-errors.xml
+error_i18n = $(error_DATA:.xml=.xml.h)
+errordir = $(privdatadir)/errors
+
+libemiscwidgets_la_LIBADD = $(top_builddir)/e-util/libeutil.la		\
+	$(top_builddir)/a11y/widgets/libevolution-widgets-a11y.la	\
+	$(SOURCE_SEL_LIBS)
+
 
 noinst_LTLIBRARIES = libefilterbar.la
 
@@ -292,7 +345,10 @@ noinst_PROGRAMS = \
 	test-calendar			\
 	test-dateedit			\
 	test-dropdown-button		\
+	test-error			\
 	test-multi-config-dialog 	\
+	test-source-option-menu		\
+	test-source-selector		\
 	test-title-bar
 
 
@@ -304,7 +360,7 @@ test_calendar_SOURCES = \
 
 test_calendar_LDADD = \
 	./libemiscwidgets.la					\
-	../../e-util/libeutil.la				\
+	$(top_builddir)/e-util/libeutil.la			\
 	$(GNOME_FULL_LIBS)
 
 
@@ -316,7 +372,7 @@ test_dateedit_SOURCES = \
 
 test_dateedit_LDADD = \
 	./libemiscwidgets.la		\
-	../../e-util/libeutil.la	\
+	$(top_builddir)/e-util/libeutil.la	\
 	$(GNOME_FULL_LIBS)
 
 
@@ -328,6 +384,7 @@ test_dropdown_button_SOURCES = \
 
 test_dropdown_button_LDADD = \
 	./libemiscwidgets.la	\
+	$(top_builddir)/e-util/libeutil.la  \
 	$(GNOME_FULL_LIBS)
 
 
@@ -339,6 +396,7 @@ test_multi_config_dialog_SOURCES = \
 
 test_multi_config_dialog_LDADD = \
 	./libemiscwidgets.la		\
+	$(top_builddir)/e-util/libeutil.la	\
 	$(GNOME_FULL_LIBS)
 
 
@@ -350,13 +408,52 @@ test_title_bar_SOURCES = \
 
 test_title_bar_LDADD = \
 	./libemiscwidgets.la	\
+	$(top_builddir)/e-util/libeutil.la	\
 	$(GNOME_FULL_LIBS)
 
 
-BUILT_SOURCES = $(MARSHAL_GENERATED)
+
+# test-source-selector
+test_source_selector_SOURCES = \
+	test-source-selector.c
+
+
+test_source_selector_LDADD = \
+	$(top_builddir)/e-util/libeutil.la	\
+	./libemiscwidgets.la			\
+	$(SOURCE_SEL_LIBS)
+
+
+
+# test-source-option-menu
+test_source_option_menu_SOURCES = \
+	test-source-option-menu.c
+
+
+test_source_option_menu_LDADD = \
+	$(top_builddir)/e-util/libeutil.la	\
+	./libemiscwidgets.la			\
+	$(SOURCE_SEL_LIBS)
+
+
+test_error_SOURCES = \
+	test-error.c
+
+
+test_error_LDADD = \
+	$(top_builddir)/e-util/libeutil.la	\
+	./libemiscwidgets.la			\
+	$(GNOME_FULL_LIBS)
+
+
+BUILT_SOURCES = $(MARSHAL_GENERATED) $(error_i18n)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+	$(error_DATA)		\
+	$(error_i18n)		\
+	e-pilot-settings.h	\
+	e-pilot-settings.c	\
 	e-util-marshal.list	\
 	ChangeLog.pre-1-4
 
@@ -371,42 +468,72 @@ libefilterbar_la_LIBADD =
 am_libefilterbar_la_OBJECTS = e-filter-bar.lo
 libefilterbar_la_OBJECTS = $(am_libefilterbar_la_OBJECTS)
 libemiscwidgets_la_LDFLAGS =
-libemiscwidgets_la_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la
-am__objects_1 =
-am_libemiscwidgets_la_OBJECTS = $(am__objects_1) e-calendar.lo \
+libemiscwidgets_la_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/a11y/widgets/libevolution-widgets-a11y.la
+am__objects_1 = e-util-marshal.lo
+@ENABLE_PILOT_CONDUITS_TRUE@am__objects_2 =
+@ENABLE_PILOT_CONDUITS_FALSE@am__objects_2 =
+am__objects_3 = $(am__objects_2)
+@ENABLE_PILOT_CONDUITS_TRUE@am__objects_4 = e-pilot-settings.lo
+@ENABLE_PILOT_CONDUITS_FALSE@am__objects_4 =
+am_libemiscwidgets_la_OBJECTS = $(am__objects_1) $(am__objects_3) \
+	$(am__objects_4) e-activity-handler.lo e-calendar.lo \
 	e-calendar-item.lo e-cell-date-edit.lo e-cell-percent.lo \
-	e-charset-picker.lo e-clipped-label.lo e-config-page.lo \
-	e-combo-button.lo e-dateedit.lo e-dropdown-button.lo e-map.lo \
-	e-messagebox.lo e-multi-config-dialog.lo e-search-bar.lo \
-	e-title-bar.lo e-url-entry.lo e-util-marshal.lo
+	e-cell-renderer-combo.lo e-charset-picker.lo e-clipped-label.lo \
+	e-combo-cell-editable.lo e-config-page.lo e-combo-button.lo \
+	e-dateedit.lo e-dropdown-button.lo e-error.lo e-expander.lo \
+	e-image-chooser.lo e-info-label.lo e-map.lo \
+	e-multi-config-dialog.lo e-search-bar.lo \
+	e-source-option-menu.lo e-source-selector.lo e-task-bar.lo \
+	e-task-widget.lo e-title-bar.lo e-url-entry.lo
 libemiscwidgets_la_OBJECTS = $(am_libemiscwidgets_la_OBJECTS)
 noinst_PROGRAMS = test-calendar$(EXEEXT) test-dateedit$(EXEEXT) \
-	test-dropdown-button$(EXEEXT) test-multi-config-dialog$(EXEEXT) \
+	test-dropdown-button$(EXEEXT) test-error$(EXEEXT) \
+	test-multi-config-dialog$(EXEEXT) \
+	test-source-option-menu$(EXEEXT) test-source-selector$(EXEEXT) \
 	test-title-bar$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_test_calendar_OBJECTS = test-calendar.$(OBJEXT)
 test_calendar_OBJECTS = $(am_test_calendar_OBJECTS)
 test_calendar_DEPENDENCIES = ./libemiscwidgets.la \
-	../../e-util/libeutil.la
+	$(top_builddir)/e-util/libeutil.la
 test_calendar_LDFLAGS =
 am_test_dateedit_OBJECTS = test-dateedit.$(OBJEXT)
 test_dateedit_OBJECTS = $(am_test_dateedit_OBJECTS)
 test_dateedit_DEPENDENCIES = ./libemiscwidgets.la \
-	../../e-util/libeutil.la
+	$(top_builddir)/e-util/libeutil.la
 test_dateedit_LDFLAGS =
 am_test_dropdown_button_OBJECTS = test-dropdown-button.$(OBJEXT)
 test_dropdown_button_OBJECTS = $(am_test_dropdown_button_OBJECTS)
-test_dropdown_button_DEPENDENCIES = ./libemiscwidgets.la
+test_dropdown_button_DEPENDENCIES = ./libemiscwidgets.la \
+	$(top_builddir)/e-util/libeutil.la
 test_dropdown_button_LDFLAGS =
+am_test_error_OBJECTS = test-error.$(OBJEXT)
+test_error_OBJECTS = $(am_test_error_OBJECTS)
+test_error_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la \
+	./libemiscwidgets.la
+test_error_LDFLAGS =
 am_test_multi_config_dialog_OBJECTS = test-multi-config-dialog.$(OBJEXT)
 test_multi_config_dialog_OBJECTS = \
 	$(am_test_multi_config_dialog_OBJECTS)
-test_multi_config_dialog_DEPENDENCIES = ./libemiscwidgets.la
+test_multi_config_dialog_DEPENDENCIES = ./libemiscwidgets.la \
+	$(top_builddir)/e-util/libeutil.la
 test_multi_config_dialog_LDFLAGS =
+am_test_source_option_menu_OBJECTS = test-source-option-menu.$(OBJEXT)
+test_source_option_menu_OBJECTS = $(am_test_source_option_menu_OBJECTS)
+test_source_option_menu_DEPENDENCIES = \
+	$(top_builddir)/e-util/libeutil.la ./libemiscwidgets.la
+test_source_option_menu_LDFLAGS =
+am_test_source_selector_OBJECTS = test-source-selector.$(OBJEXT)
+test_source_selector_OBJECTS = $(am_test_source_selector_OBJECTS)
+test_source_selector_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la \
+	./libemiscwidgets.la
+test_source_selector_LDFLAGS =
 am_test_title_bar_OBJECTS = test-title-bar.$(OBJEXT)
 test_title_bar_OBJECTS = $(am_test_title_bar_OBJECTS)
-test_title_bar_DEPENDENCIES = ./libemiscwidgets.la
+test_title_bar_DEPENDENCIES = ./libemiscwidgets.la \
+	$(top_builddir)/e-util/libeutil.la
 test_title_bar_LDFLAGS =
 
 DEFS = @DEFS@
@@ -416,27 +543,40 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/e-calendar-item.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/e-activity-handler.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-calendar-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-calendar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-cell-date-edit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-cell-percent.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cell-renderer-combo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-charset-picker.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-clipped-label.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-combo-button.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-combo-cell-editable.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-config-page.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-dateedit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-dropdown-button.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-filter-bar.Plo ./$(DEPDIR)/e-map.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-messagebox.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-error.Plo ./$(DEPDIR)/e-expander.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-filter-bar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-image-chooser.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-info-label.Plo ./$(DEPDIR)/e-map.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-multi-config-dialog.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-pilot-settings.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-search-bar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-source-option-menu.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-source-selector.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-task-bar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-task-widget.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-title-bar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-url-entry.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-util-marshal.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/test-calendar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/test-dateedit.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/test-dropdown-button.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test-error.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/test-multi-config-dialog.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test-source-option-menu.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test-source-selector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/test-title-bar.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -448,13 +588,17 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 CFLAGS = @CFLAGS@
 DIST_SOURCES = $(libefilterbar_la_SOURCES) $(libemiscwidgets_la_SOURCES) \
 	$(test_calendar_SOURCES) $(test_dateedit_SOURCES) \
-	$(test_dropdown_button_SOURCES) \
-	$(test_multi_config_dialog_SOURCES) $(test_title_bar_SOURCES)
+	$(test_dropdown_button_SOURCES) $(test_error_SOURCES) \
+	$(test_multi_config_dialog_SOURCES) \
+	$(test_source_option_menu_SOURCES) \
+	$(test_source_selector_SOURCES) $(test_title_bar_SOURCES)
+DATA = $(error_DATA)
+
 HEADERS = $(widgetsinclude_HEADERS)
 
 DIST_COMMON = $(widgetsinclude_HEADERS) ChangeLog Makefile.am \
 	Makefile.in
-SOURCES = $(libefilterbar_la_SOURCES) $(libemiscwidgets_la_SOURCES) $(test_calendar_SOURCES) $(test_dateedit_SOURCES) $(test_dropdown_button_SOURCES) $(test_multi_config_dialog_SOURCES) $(test_title_bar_SOURCES)
+SOURCES = $(libefilterbar_la_SOURCES) $(libemiscwidgets_la_SOURCES) $(test_calendar_SOURCES) $(test_dateedit_SOURCES) $(test_dropdown_button_SOURCES) $(test_error_SOURCES) $(test_multi_config_dialog_SOURCES) $(test_source_option_menu_SOURCES) $(test_source_selector_SOURCES) $(test_title_bar_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -523,9 +667,18 @@ test-dateedit$(EXEEXT): $(test_dateedit_OBJECTS) $(test_dateedit_DEPENDENCIES)
 test-dropdown-button$(EXEEXT): $(test_dropdown_button_OBJECTS) $(test_dropdown_button_DEPENDENCIES) 
 	@rm -f test-dropdown-button$(EXEEXT)
 	$(LINK) $(test_dropdown_button_LDFLAGS) $(test_dropdown_button_OBJECTS) $(test_dropdown_button_LDADD) $(LIBS)
+test-error$(EXEEXT): $(test_error_OBJECTS) $(test_error_DEPENDENCIES) 
+	@rm -f test-error$(EXEEXT)
+	$(LINK) $(test_error_LDFLAGS) $(test_error_OBJECTS) $(test_error_LDADD) $(LIBS)
 test-multi-config-dialog$(EXEEXT): $(test_multi_config_dialog_OBJECTS) $(test_multi_config_dialog_DEPENDENCIES) 
 	@rm -f test-multi-config-dialog$(EXEEXT)
 	$(LINK) $(test_multi_config_dialog_LDFLAGS) $(test_multi_config_dialog_OBJECTS) $(test_multi_config_dialog_LDADD) $(LIBS)
+test-source-option-menu$(EXEEXT): $(test_source_option_menu_OBJECTS) $(test_source_option_menu_DEPENDENCIES) 
+	@rm -f test-source-option-menu$(EXEEXT)
+	$(LINK) $(test_source_option_menu_LDFLAGS) $(test_source_option_menu_OBJECTS) $(test_source_option_menu_LDADD) $(LIBS)
+test-source-selector$(EXEEXT): $(test_source_selector_OBJECTS) $(test_source_selector_DEPENDENCIES) 
+	@rm -f test-source-selector$(EXEEXT)
+	$(LINK) $(test_source_selector_LDFLAGS) $(test_source_selector_OBJECTS) $(test_source_selector_LDADD) $(LIBS)
 test-title-bar$(EXEEXT): $(test_title_bar_OBJECTS) $(test_title_bar_DEPENDENCIES) 
 	@rm -f test-title-bar$(EXEEXT)
 	$(LINK) $(test_title_bar_LDFLAGS) $(test_title_bar_OBJECTS) $(test_title_bar_LDADD) $(LIBS)
@@ -536,28 +689,42 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-activity-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cell-date-edit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cell-percent.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cell-renderer-combo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-charset-picker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-clipped-label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-combo-button.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-combo-cell-editable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-config-page.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-dateedit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-dropdown-button.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-expander.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-filter-bar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-image-chooser.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-info-label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-map.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-messagebox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-multi-config-dialog.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-pilot-settings.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-search-bar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-source-option-menu.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-source-selector.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-task-bar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-task-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-title-bar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-url-entry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-util-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-calendar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-dateedit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-dropdown-button.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-error.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-multi-config-dialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-source-option-menu.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-source-selector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-title-bar.Po@am__quote@
 
 distclean-depend:
@@ -591,6 +758,24 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+errorDATA_INSTALL = $(INSTALL_DATA)
+install-errorDATA: $(error_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(errordir)
+	@list='$(error_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(errorDATA_INSTALL) $$d$$p $(DESTDIR)$(errordir)/$$f"; \
+	  $(errorDATA_INSTALL) $$d$$p $(DESTDIR)$(errordir)/$$f; \
+	done
+
+uninstall-errorDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(error_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(errordir)/$$f"; \
+	  rm -f $(DESTDIR)$(errordir)/$$f; \
+	done
 widgetsincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 install-widgetsincludeHEADERS: $(widgetsinclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -671,12 +856,15 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(privlibdir) $(DESTDIR)$(widgetsincludedir)
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir) $(DESTDIR)$(errordir) $(DESTDIR)$(widgetsincludedir)
 
 install: install-am
 install-exec: install-exec-am
@@ -722,7 +910,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-privlibLTLIBRARIES \
+install-data-am: install-errorDATA install-privlibLTLIBRARIES \
 	install-widgetsincludeHEADERS
 
 install-exec-am:
@@ -742,36 +930,30 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-info-am uninstall-privlibLTLIBRARIES \
-	uninstall-widgetsincludeHEADERS
+uninstall-am: uninstall-errorDATA uninstall-info-am \
+	uninstall-privlibLTLIBRARIES uninstall-widgetsincludeHEADERS
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
 	clean-libtool clean-noinstLTLIBRARIES clean-noinstPROGRAMS \
 	clean-privlibLTLIBRARIES distclean distclean-compile \
 	distclean-depend distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am info info-am install \
-	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-privlibLTLIBRARIES install-strip \
+	install-am install-data install-data-am install-errorDATA \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-privlibLTLIBRARIES install-strip \
 	install-widgetsincludeHEADERS installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool tags uninstall uninstall-am \
-	uninstall-info-am uninstall-privlibLTLIBRARIES \
-	uninstall-widgetsincludeHEADERS
+	uninstall-errorDATA uninstall-info-am \
+	uninstall-privlibLTLIBRARIES uninstall-widgetsincludeHEADERS
 
+@EVO_MARSHAL_RULE@
+%.xml.h: %.xml
+	$(top_builddir)/e-util/e-error-tool $^
 
-# GLib marshalling cruft
-
-e-util-marshal.h: e-util-marshal.list
-	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --header > e-util-marshal.tmp \
-	&& mv e-util-marshal.tmp e-util-marshal.h ) \
-	|| ( rm -f e-util-marshal.tmp && exit 1 )
-
-e-util-marshal.c: e-util-marshal.h
-	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --body > e-util-marshal.tmp \
-	&& mv e-util-marshal.tmp e-util-marshal.c ) \
-	|| ( rm -f e-util-marshal.tmp && exit 1 )
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

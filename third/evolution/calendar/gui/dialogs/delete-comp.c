@@ -26,7 +26,8 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
-#include <gal/widgets/e-unicode.h>
+#include <e-util/e-icon-factory.h>
+#include "widgets/misc/e-error.h"
 #include "../calendar-config.h"
 #include "delete-comp.h"
 
@@ -55,21 +56,21 @@
  * unconditionally return TRUE.
  **/
 gboolean
-delete_component_dialog (CalComponent *comp,
+delete_component_dialog (ECalComponent *comp,
 			 gboolean consider_as_untitled,
-			 int n_comps, CalComponentVType vtype,
+			 int n_comps, ECalComponentVType vtype,
 			 GtkWidget *widget)
 {
-	char *str;
-	GtkWidget *dialog;
-	int ret;
-
+	const char *stock_icon, *id;
+	char *arg0 = NULL;
+	int response;
+	
 	if (comp) {
-		g_return_val_if_fail (IS_CAL_COMPONENT (comp), FALSE);
+		g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 		g_return_val_if_fail (n_comps == 1, FALSE);
 	} else {
 		g_return_val_if_fail (n_comps > 1, FALSE);
-		g_return_val_if_fail (vtype != CAL_COMPONENT_NO_TYPE, FALSE);
+		g_return_val_if_fail (vtype != E_CAL_COMPONENT_NO_TYPE, FALSE);
 	}
 
 	g_return_val_if_fail (widget != NULL, FALSE);
@@ -79,68 +80,67 @@ delete_component_dialog (CalComponent *comp,
 		return TRUE;
 
 	if (comp) {
-		CalComponentText summary;
-		char *tmp;
-
-		vtype = cal_component_get_vtype (comp);
-
+		ECalComponentText summary;
+		
+		vtype = e_cal_component_get_vtype (comp);
+		
 		if (!consider_as_untitled) {
-			cal_component_get_summary (comp, &summary);
-			tmp = g_strdup (summary.value);
-		} else
-			tmp = NULL;
-
+			e_cal_component_get_summary (comp, &summary);
+			arg0 = g_strdup (summary.value);
+		}
+		
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
-			if (tmp)
-				str = g_strdup_printf (_("Are you sure you want to delete "
-							 "the appointment `%s'?"), tmp);
+		case E_CAL_COMPONENT_EVENT:
+			stock_icon = "stock_calendar";
+			if (arg0)
+				id = "calendar:prompt-delete-titled-appointment";
 			else
-				str = g_strdup (_("Are you sure you want to delete this "
-						  "untitled appointment?"));
+				id = "calendar:prompt-delete-appointment";
 			break;
 
-		case CAL_COMPONENT_TODO:
-			if (tmp)
-				str = g_strdup_printf (_("Are you sure you want to delete "
-							 "the task `%s'?"), tmp);
+		case E_CAL_COMPONENT_TODO:
+			stock_icon = "stock_todo";
+			if (arg0)
+				id = "calendar:prompt-delete-named-task";
 			else
-				str = g_strdup (_("Are you sure you want to delete this "
-						  "untitled task?"));
+				id = "calendar:prompt-delete-task";
 			break;
 
-		case CAL_COMPONENT_JOURNAL:
-			if (tmp)
-				str = g_strdup_printf (_("Are you sure you want to delete "
-							 "the journal entry `%s'?"), tmp);
+		case E_CAL_COMPONENT_JOURNAL:
+			stock_icon = "stock_calendar";
+			if (arg0)
+				id = "calendar:prompt-delete-named-journal";
 			else
-				str = g_strdup (_("Are you sure want to delete this "
-						  "untitled journal entry?"));
+				id = "calendar:prompt-delete-journal";
 			break;
 
 		default:
 			g_message ("delete_component_dialog(): Cannot handle object of type %d",
 				   vtype);
-			g_free (tmp);
+			g_free (arg0);
 			return FALSE;
 		}
-
-		g_free (tmp);
 	} else {
 		switch (vtype) {
-		case CAL_COMPONENT_EVENT:
-			str = g_strdup_printf (_("Are you sure you want to delete "
-						 "%d appointments?"), n_comps);
+		case E_CAL_COMPONENT_EVENT:
+			if (n_comps == 1)
+				id = "calendar:prompt-delete-appointment";
+			else
+				id = "calendar:prompt-delete-appointments";
 			break;
 
-		case CAL_COMPONENT_TODO:
-			str = g_strdup_printf (_("Are you sure you want to delete "
-						 "%d tasks?"), n_comps);
+		case E_CAL_COMPONENT_TODO:
+			if (n_comps == 1)
+				id = "calendar:prompt-delete-task";
+			else
+				id = "calendar:prompt-delete-tasks";
 			break;
 
-		case CAL_COMPONENT_JOURNAL:
-			str = g_strdup_printf (_("Are you sure you want to delete "
-						 "%d journal entries?"), n_comps);
+		case E_CAL_COMPONENT_JOURNAL:
+			if (n_comps == 1)
+				id = "calendar:prompt-delete-journal";
+			else
+				id = "calendar:prompt-delete-journals";
 			break;
 
 		default:
@@ -148,13 +148,13 @@ delete_component_dialog (CalComponent *comp,
 				   vtype);
 			return FALSE;
 		}
+		
+		if (n_comps > 1)
+			arg0 = g_strdup_printf ("%d", n_comps);
 	}
-
-	dialog = gtk_message_dialog_new (gtk_widget_get_toplevel (widget),
-					 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", str);
-	g_free (str);
-	ret = gtk_dialog_run ((GtkDialog *)dialog) == GTK_RESPONSE_YES;
-	gtk_widget_destroy (dialog);
-
-	return ret;
+	
+	response = e_error_run ((GtkWindow *) gtk_widget_get_toplevel (widget), id, arg0, NULL);
+	g_free (arg0);
+	
+	return response == GTK_RESPONSE_YES;
 }

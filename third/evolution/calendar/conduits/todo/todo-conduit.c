@@ -21,18 +21,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #define G_LOG_DOMAIN "etodoconduit"
 
-#include <cal-client/cal-client-types.h>
-#include <cal-client/cal-client.h>
-#include <cal-util/timeutil.h>
+#include <libecal/e-cal-types.h>
+#include <libecal/e-cal.h>
+#include <libecal/e-cal-time-util.h>
 #include <pi-source.h>
 #include <pi-socket.h>
 #include <pi-dlp.h>
 #include <pi-todo.h>
-#include <libical/src/libical/icaltypes.h>
+#include <libical/icaltypes.h>
 #include <gpilotd/gnome-pilot-conduit.h>
 #include <gpilotd/gnome-pilot-conduit-sync-abs.h>
 #include <libgpilotdCM/gnome-pilot-conduit-management.h>
@@ -45,7 +48,7 @@
 GnomePilotConduit * conduit_get_gpilot_conduit (guint32);
 void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 
-#define CONDUIT_VERSION "0.1.4"
+#define CONDUIT_VERSION "0.1.6"
 
 #define DEBUG_TODOCONDUIT 1
 /* #undef DEBUG_TODOCONDUIT */
@@ -73,7 +76,7 @@ struct _EToDoLocalRecord {
 	GnomePilotDesktopRecord local;
 
 	/* The corresponding Comp object */
-	CalComponent *comp;
+	ECalComponent *comp;
 
         /* pilot-link todo structure */
 	struct ToDo *todo;
@@ -93,6 +96,8 @@ struct _EToDoConduitCfg {
 	guint32 pilot_id;
 	GnomePilotConduitSyncType  sync_type;
 
+	ESourceList *source_list;
+	ESource *source;
 	gboolean secret;
 	gint priority;
 
@@ -106,6 +111,8 @@ todoconduit_load_configuration (guint32 pilot_id)
 	GnomePilotConduitManagement *management;
 	GnomePilotConduitConfig *config;
 	gchar prefix[256];
+
+
 	g_snprintf (prefix, 255, "/gnome-pilot.d/e-todo-conduit/Pilot_%u/",
 		    pilot_id);
 	
@@ -127,7 +134,21 @@ todoconduit_load_configuration (guint32 pilot_id)
 	
 	/* Custom settings */
 	gnome_config_push_prefix (prefix);
-
+	
+	if (!e_cal_get_sources (&c->source_list, E_CAL_SOURCE_TYPE_TODO, NULL))
+		c->source_list = NULL;
+	if (c->source_list) {
+		c->source = e_pilot_get_sync_source (c->source_list);
+		if (!c->source)
+			c->source = e_source_list_peek_source_any (c->source_list);
+		if (c->source) {
+			g_object_ref (c->source);
+		} else {
+			g_object_unref (c->source_list);
+			c->source_list = NULL;
+		}
+	}
+	
 	c->secret = gnome_config_get_bool ("secret=FALSE");
 	c->priority = gnome_config_get_int ("priority=3");
 	c->last_uri = gnome_config_get_string ("last_uri");
@@ -146,6 +167,7 @@ todoconduit_save_configuration (EToDoConduitCfg *c)
 		    c->pilot_id);
 
 	gnome_config_push_prefix (prefix);
+	e_pilot_set_sync_source (c->source_list, c->source);
 	gnome_config_set_bool ("secret", c->secret);
 	gnome_config_set_int ("priority", c->priority);
 	gnome_config_set_string ("last_uri", c->last_uri);
@@ -166,6 +188,10 @@ todoconduit_dupe_configuration (EToDoConduitCfg *c)
 	retval->sync_type = c->sync_type;
 	retval->pilot_id = c->pilot_id;
 
+	if (c->source_list)
+		retval->source_list = g_object_ref (c->source_list);
+	if (c->source)
+		retval->source = g_object_ref (c->source);
 	retval->secret = c->secret;
 	retval->priority = c->priority;
 	retval->last_uri = g_strdup (c->last_uri);
@@ -178,6 +204,8 @@ todoconduit_destroy_configuration (EToDoConduitCfg *c)
 {
 	g_return_if_fail (c != NULL);
 
+	g_object_unref (c->source_list);
+	g_object_unref (c->source);
 	g_free (c->last_uri);
 	g_free (c);
 }
@@ -251,11 +279,11 @@ struct _EToDoConduitContext {
 	
 	struct ToDoAppInfo ai;
 
-	CalClient *client;
+	ECal *client;
 
 	icaltimezone *timezone;
-	CalComponent *default_comp;
-	GList *uids;
+	ECalComponent *default_comp;
+	GList *comps;
 	GList *changed;
 	GHashTable *changed_hash;
 	GList *locals;
@@ -267,7 +295,7 @@ static EToDoConduitContext *
 e_todo_context_new (guint32 pilot_id) 
 {
 	EToDoConduitContext *ctxt = g_new0 (EToDoConduitContext, 1);
-
+	
 	ctxt->cfg = todoconduit_load_configuration (pilot_id);
 	ctxt->new_cfg = todoconduit_dupe_configuration (ctxt->cfg);
 	ctxt->gui = NULL;
@@ -275,7 +303,7 @@ e_todo_context_new (guint32 pilot_id)
 	ctxt->client = NULL;
 	ctxt->timezone = NULL;
 	ctxt->default_comp = NULL;
-	ctxt->uids = NULL;
+	ctxt->comps = NULL;
 	ctxt->changed_hash = NULL;
 	ctxt->changed = NULL;
 	ctxt->locals = NULL;
@@ -311,8 +339,11 @@ e_todo_context_destroy (EToDoConduitContext *ctxt)
 
 	if (ctxt->default_comp != NULL)
 		g_object_unref (ctxt->default_comp);
-	if (ctxt->uids != NULL)
-		cal_obj_uid_list_free (ctxt->uids);
+	if (ctxt->comps != NULL) {
+		for (l = ctxt->comps; l; l = l->next)
+			g_object_unref (l->data);
+		g_list_free (ctxt->comps);
+	}
 
 	if (ctxt->changed_hash != NULL) {
 		g_hash_table_foreach_remove (ctxt->changed_hash, e_todo_context_foreach_change, NULL);
@@ -326,7 +357,7 @@ e_todo_context_destroy (EToDoConduitContext *ctxt)
 	}
 	
 	if (ctxt->changed != NULL)
-		cal_client_change_list_free (ctxt->changed);
+		e_cal_free_change_list (ctxt->changed);
 	
 	if (ctxt->map != NULL)
 		e_pilot_map_destroy (ctxt->map);
@@ -389,59 +420,31 @@ static char *print_remote (GnomePilotRecord *remote)
 	return buff;
 }
 
-
-/* Calendar Server routines */
-static void
-start_calendar_server_cb (CalClient *cal_client,
-			  CalClientOpenStatus status,
-			  gpointer data)
-{
-	gboolean *success = data;
-
-	if (status == CAL_CLIENT_OPEN_SUCCESS) {
-		*success = TRUE;
-	} else {
-		*success = FALSE;
-		WARN ("Failed to open calendar!\n");
-	}
-	
-	gtk_main_quit (); /* end the sub event loop */
-}
-
 static int
 start_calendar_server (EToDoConduitContext *ctxt)
 {
-	gboolean success = FALSE;
-	
 	g_return_val_if_fail (ctxt != NULL, -2);
 
-	ctxt->client = cal_client_new ();
-
-	g_signal_connect (ctxt->client, "cal_opened",
-			  G_CALLBACK (start_calendar_server_cb), &success);
-
-	if (!cal_client_open_default_tasks (ctxt->client,  FALSE))
+	if (ctxt->cfg->source) {
+		ctxt->client = e_cal_new (ctxt->cfg->source, E_CAL_SOURCE_TYPE_TODO);
+		if (!e_cal_open (ctxt->client, TRUE, NULL)) 
+			return -1;
+	} else if (!e_cal_open_default (&ctxt->client, E_CAL_SOURCE_TYPE_TODO, NULL, NULL, NULL)) {
 		return -1;
+	}
 
-	/* run a sub event loop to turn cal-client's async load
-	   notification into a synchronous call */
-	gtk_main ();
-	
-	if (success)
-		return 0;
-
-	return -1;
+	return 0;
 }
 
 /* Utility routines */
 static icaltimezone *
-get_timezone (CalClient *client, const char *tzid) 
+get_timezone (ECal *client, const char *tzid) 
 {
 	icaltimezone *timezone = NULL;
 
 	timezone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 	if (timezone == NULL)
-		 cal_client_get_timezone (client, tzid, &timezone);
+		 e_cal_get_timezone (client, tzid, &timezone, NULL);
 	
 	return timezone;
 }
@@ -475,8 +478,8 @@ map_name (EToDoConduitContext *ctxt)
 {
 	char *filename;
 	
-	filename = g_strdup_printf ("%s/evolution/local/Tasks/pilot-map-todo-%d.xml", g_get_home_dir (), ctxt->cfg->pilot_id);
-
+	filename = g_strdup_printf ("%s/.evolution/tasks/local/system/pilot-map-todo-%d.xml", g_get_home_dir (), ctxt->cfg->pilot_id);
+	
 	return filename;
 }
 
@@ -493,7 +496,7 @@ is_empty_time (struct tm time)
 static GList *
 next_changed_item (EToDoConduitContext *ctxt, GList *changes) 
 {
-	CalClientChange *ccc;
+	ECalChange *ccc;
 	GList *l;
 	
 	for (l = changes; l != NULL; l = l->next) {
@@ -501,7 +504,7 @@ next_changed_item (EToDoConduitContext *ctxt, GList *changes)
 
 		ccc = l->data;
 		
-		cal_component_get_uid (ccc->comp, &uid);
+		e_cal_component_get_uid (ccc->comp, &uid);
 		if (g_hash_table_lookup (ctxt->changed_hash, uid))
 			return l;
 	}
@@ -512,7 +515,7 @@ next_changed_item (EToDoConduitContext *ctxt, GList *changes)
 static void
 compute_status (EToDoConduitContext *ctxt, EToDoLocalRecord *local, const char *uid)
 {
-	CalClientChange *ccc;
+	ECalChange *ccc;
 
 	local->local.archived = FALSE;
 	local->local.secret = FALSE;
@@ -525,13 +528,13 @@ compute_status (EToDoConduitContext *ctxt, EToDoLocalRecord *local, const char *
 	}
 	
 	switch (ccc->type) {
-	case CAL_CLIENT_CHANGE_ADDED:
+	case E_CAL_CHANGE_ADDED:
 		local->local.attr = GnomePilotRecordNew;
 		break;	
-	case CAL_CLIENT_CHANGE_MODIFIED:
+	case E_CAL_CHANGE_MODIFIED:
 		local->local.attr = GnomePilotRecordModified;
 		break;
-	case CAL_CLIENT_CHANGE_DELETED:
+	case E_CAL_CHANGE_DELETED:
 		local->local.attr = GnomePilotRecordDeleted;
 		break;
 	}
@@ -563,19 +566,19 @@ local_record_to_pilot_record (EToDoLocalRecord *local,
 }
 
 /*
- * converts a CalComponent object to a EToDoLocalRecord
+ * converts a ECalComponent object to a EToDoLocalRecord
  */
 static void
-local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoConduitContext *ctxt) 
+local_record_from_comp (EToDoLocalRecord *local, ECalComponent *comp, EToDoConduitContext *ctxt) 
 {
 	const char *uid;
 	int *priority;
 	icalproperty_status status;
-	CalComponentText summary;
+	ECalComponentText summary;
 	GSList *d_list = NULL;
-	CalComponentText *description;
-	CalComponentDateTime due;
-	CalComponentClassification classif;
+	ECalComponentText *description;
+	ECalComponentDateTime due;
+	ECalComponentClassification classif;
 	icaltimezone *default_tz = get_default_timezone ();
 	
 	LOG (g_message ( "local_record_from_comp\n" ));
@@ -586,7 +589,7 @@ local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoCondui
 	local->comp = comp;
 	g_object_ref (comp);
 
-	cal_component_get_uid (local->comp, &uid);
+	e_cal_component_get_uid (local->comp, &uid);
 	local->local.ID = e_pilot_map_lookup_pid (ctxt->map, uid, TRUE);
 
 	compute_status (ctxt, local, uid);
@@ -608,13 +611,13 @@ local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoCondui
 
 	/* STOP: don't replace these with g_strdup, since free_ToDo
 	   uses free to deallocate */
-	cal_component_get_summary (comp, &summary);
+	e_cal_component_get_summary (comp, &summary);
 	if (summary.value) 
 		local->todo->description = e_pilot_utf8_to_pchar (summary.value);
 
-	cal_component_get_description_list (comp, &d_list);
+	e_cal_component_get_description_list (comp, &d_list);
 	if (d_list) {
-		description = (CalComponentText *) d_list->data;
+		description = (ECalComponentText *) d_list->data;
 		if (description && description->value)
 			local->todo->note = e_pilot_utf8_to_pchar (description->value);
 		else
@@ -623,7 +626,7 @@ local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoCondui
 		local->todo->note = NULL;
 	}
 
-	cal_component_get_due (comp, &due);	
+	e_cal_component_get_due (comp, &due);	
 	if (due.value) {
 		icaltimezone_convert_time (due.value,
 					   get_timezone (ctxt->client, due.tzid),
@@ -633,15 +636,15 @@ local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoCondui
 	} else {
 		local->todo->indefinite = 1;
 	}
-	cal_component_free_datetime (&due);	
+	e_cal_component_free_datetime (&due);	
 
-	cal_component_get_status (comp, &status);	
+	e_cal_component_get_status (comp, &status);	
 	if (status == ICAL_STATUS_COMPLETED)
 		local->todo->complete = 1;
 	else
 		local->todo->complete = 0;
 	
-	cal_component_get_priority (comp, &priority);
+	e_cal_component_get_priority (comp, &priority);
 	if (priority && *priority != 0) {
 		if (*priority <= 3)
 			local->todo->priority = 1;
@@ -654,14 +657,14 @@ local_record_from_comp (EToDoLocalRecord *local, CalComponent *comp, EToDoCondui
 		else
 			local->todo->priority = 5;
 		
-		cal_component_free_priority (priority);
+		e_cal_component_free_priority (priority);
 	} else {
 		local->todo->priority = ctxt->cfg->priority;
 	}	
 	
-	cal_component_get_classification (comp, &classif);
+	e_cal_component_get_classification (comp, &classif);
 
-	if (classif == CAL_COMPONENT_CLASS_PRIVATE)
+	if (classif == E_CAL_COMPONENT_CLASS_PRIVATE)
 		local->local.secret = 1;
 	else
 		local->local.secret = 0;
@@ -674,40 +677,46 @@ local_record_from_uid (EToDoLocalRecord *local,
 		       const char *uid,
 		       EToDoConduitContext *ctxt)
 {
-	CalComponent *comp;
-	CalClientGetStatus status;
+	ECalComponent *comp;
+	icalcomponent *icalcomp;
+	GError *error = NULL;
 
 	g_assert(local!=NULL);
 
-	status = cal_client_get_object (ctxt->client, uid, &comp);
+	if (e_cal_get_object (ctxt->client, uid, NULL, &icalcomp, &error)) {
+		comp = e_cal_component_new ();
+		if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+			g_object_unref (comp);
+			icalcomponent_free (icalcomp);
+			return;
+		}
 
-	if (status == CAL_CLIENT_GET_SUCCESS) {
 		local_record_from_comp (local, comp, ctxt);
 		g_object_unref (comp);
-	} else if (status == CAL_CLIENT_GET_NOT_FOUND) {
-		comp = cal_component_new ();
-		cal_component_set_new_vtype (comp, CAL_COMPONENT_TODO);
-		cal_component_set_uid (comp, uid);
+	} else if (error->code == E_CALENDAR_STATUS_OBJECT_NOT_FOUND) {
+		comp = e_cal_component_new ();
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		e_cal_component_set_uid (comp, uid);
 		local_record_from_comp (local, comp, ctxt);
 		g_object_unref (comp);
 	} else {
 		INFO ("Object did not exist");
 	}
 
-
+	g_clear_error (&error);
 }
 
 
-static CalComponent *
+static ECalComponent *
 comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 			 GnomePilotRecord *remote,
-			 CalComponent *in_comp,
+			 ECalComponent *in_comp,
 			 icaltimezone *timezone)
 {
-	CalComponent *comp;
+	ECalComponent *comp;
 	struct ToDo todo;
-	CalComponentText summary = {NULL, NULL};
-	CalComponentDateTime dt = {NULL, icaltimezone_get_tzid (timezone)};
+	ECalComponentText summary = {NULL, NULL};
+	ECalComponentDateTime dt = {NULL, icaltimezone_get_tzid (timezone)};
 	struct icaltimetype due, now;
 	icaltimezone *utc_zone;
 	int priority;
@@ -723,64 +732,64 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 					     utc_zone);
 
 	if (in_comp == NULL) {
-		comp = cal_component_new ();
-		cal_component_set_new_vtype (comp, CAL_COMPONENT_TODO);
-		cal_component_set_created (comp, &now);
+		comp = e_cal_component_new ();
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		e_cal_component_set_created (comp, &now);
 	} else {
-		comp = cal_component_clone (in_comp);
+		comp = e_cal_component_clone (in_comp);
 	}
 
-	cal_component_set_last_modified (comp, &now);
+	e_cal_component_set_last_modified (comp, &now);
 
 	summary.value = txt = e_pilot_utf8_from_pchar (todo.description);
-	cal_component_set_summary (comp, &summary);
+	e_cal_component_set_summary (comp, &summary);
 	free (txt);
 	
 	/* The iCal description field */
 	if (!todo.note) {
-		cal_component_set_comment_list (comp, NULL);
+		e_cal_component_set_comment_list (comp, NULL);
 	} else {
 		GSList l;
-		CalComponentText text;
+		ECalComponentText text;
 
 		text.value = txt = e_pilot_utf8_from_pchar (todo.note);
 		text.altrep = NULL;
 		l.data = &text;
 		l.next = NULL;
 
-		cal_component_set_description_list (comp, &l);
+		e_cal_component_set_description_list (comp, &l);
 		free (txt);
 	} 
 
 	if (todo.complete) {
 		int percent = 100;
 
-		cal_component_set_completed (comp, &now);
-		cal_component_set_percent (comp, &percent);
-		cal_component_set_status (comp, ICAL_STATUS_COMPLETED);
+		e_cal_component_set_completed (comp, &now);
+		e_cal_component_set_percent (comp, &percent);
+		e_cal_component_set_status (comp, ICAL_STATUS_COMPLETED);
 	} else {
 		int *percent = NULL;
 		icalproperty_status status;
 		
-		cal_component_set_completed (comp, NULL);
+		e_cal_component_set_completed (comp, NULL);
 		
-		cal_component_get_percent (comp, &percent);
+		e_cal_component_get_percent (comp, &percent);
 		if (percent == NULL || *percent == 100) {
 			int p = 0;
-			cal_component_set_percent (comp, &p);
+			e_cal_component_set_percent (comp, &p);
 		}
 		if (percent != NULL)
-			cal_component_free_percent (percent);
+			e_cal_component_free_percent (percent);
 
-		cal_component_get_status (comp, &status);
+		e_cal_component_get_status (comp, &status);
 		if (status == ICAL_STATUS_COMPLETED)
-			cal_component_set_status (comp, ICAL_STATUS_NEEDSACTION);
+			e_cal_component_set_status (comp, ICAL_STATUS_NEEDSACTION);
 	}
 
 	if (!is_empty_time (todo.due)) {
 		due = tm_to_icaltimetype (&todo.due, TRUE);
 		dt.value = &due;
-		cal_component_set_due (comp, &dt);
+		e_cal_component_set_due (comp, &dt);
 	}
 
 	switch (todo.priority) {
@@ -800,34 +809,19 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 		priority = 9;
 	}
 	
-	cal_component_set_priority (comp, &priority);
-	cal_component_set_transparency (comp, CAL_COMPONENT_TRANSP_NONE);
+	e_cal_component_set_priority (comp, &priority);
+	e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_NONE);
 
 	if (remote->secret)
-		cal_component_set_classification (comp, CAL_COMPONENT_CLASS_PRIVATE);
+		e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
 	else
-		cal_component_set_classification (comp, CAL_COMPONENT_CLASS_PUBLIC);
+		e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
 
-	cal_component_commit_sequence (comp);
+	e_cal_component_commit_sequence (comp);
 	
 	free_ToDo(&todo);
 
 	return comp;
-}
-
-static void
-update_comp (GnomePilotConduitSyncAbs *conduit, CalComponent *comp,
-	     EToDoConduitContext *ctxt) 
-{
-	CalClientResult success;
-
-	g_return_if_fail (conduit != NULL);
-	g_return_if_fail (comp != NULL);
-
-	success = cal_client_update_object (ctxt->client, comp);
-
-	if (success != CAL_CLIENT_RESULT_SUCCESS)
-		WARN (_("Error while communicating with calendar server"));
 }
 
 static void
@@ -843,7 +837,7 @@ check_for_slow_setting (GnomePilotConduit *c, EToDoConduitContext *ctxt)
 		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
 
 	/* Or if the URI's don't match */
-	uri = cal_client_get_uri (ctxt->client);
+	uri = e_cal_get_uri (ctxt->client);
 	LOG (g_message ( "  Current URI %s (%s)\n", uri, ctxt->cfg->last_uri ? ctxt->cfg->last_uri : "<NONE>" ));
 	if (ctxt->cfg->last_uri != NULL && strcmp (ctxt->cfg->last_uri, uri)) {
 		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
@@ -869,6 +863,7 @@ pre_sync (GnomePilotConduit *conduit,
 	int len;
 	unsigned char *buf;
 	char *filename, *change_id;
+	icalcomponent *icalcomp;
 	gint num_records, add_records = 0, mod_records = 0, del_records = 0;
 
 	abs_conduit = GNOME_PILOT_CONDUIT_SYNC_ABS (conduit);
@@ -881,8 +876,8 @@ pre_sync (GnomePilotConduit *conduit,
 	ctxt->client = NULL;
 	
 	if (start_calendar_server (ctxt) != 0) {
-		WARN(_("Could not start wombat server"));
-		gnome_pilot_conduit_error (conduit, _("Could not start wombat"));
+		WARN(_("Could not start evolution-data-server"));
+		gnome_pilot_conduit_error (conduit, _("Could not start evolution-data-server"));
 		return -1;
 	}
 
@@ -893,54 +888,64 @@ pre_sync (GnomePilotConduit *conduit,
 	LOG (g_message ( "  Using timezone: %s", icaltimezone_get_tzid (ctxt->timezone) ));
 
 	/* Set the default timezone on the backend. */
-	if (ctxt->timezone)
-		cal_client_set_default_timezone (ctxt->client, ctxt->timezone);
-
-	/* Get the default component */
-	if (cal_client_get_default_object (ctxt->client, CALOBJ_TYPE_TODO, &ctxt->default_comp) != CAL_CLIENT_GET_SUCCESS)
+	if (ctxt->timezone && !e_cal_set_default_timezone (ctxt->client, ctxt->timezone, NULL))
 		return -1;
-
+	
+	/* Get the default component */
+	if (!e_cal_get_default_object (ctxt->client, &icalcomp, NULL))
+		return -1;
+	
+	ctxt->default_comp = e_cal_component_new ();
+	if (!e_cal_component_set_icalcomponent (ctxt->default_comp, icalcomp)) {
+		g_object_unref (ctxt->default_comp);
+		icalcomponent_free (icalcomp);
+		return -1;
+	}
+	
 	/* Load the uid <--> pilot id map */
 	filename = map_name (ctxt);
 	e_pilot_map_read (filename, &ctxt->map);
 	g_free (filename);
 
 	/* Get the local database */
-	ctxt->uids = cal_client_get_uids (ctxt->client, CALOBJ_TYPE_TODO);
-
+	if (!e_cal_get_object_list_as_comp (ctxt->client, "#t", &ctxt->comps, NULL))
+		return -1;
+	
 	/* Count and hash the changes */
 	change_id = g_strdup_printf ("pilot-sync-evolution-todo-%d", ctxt->cfg->pilot_id);
-	ctxt->changed = cal_client_get_changes (ctxt->client, CALOBJ_TYPE_TODO, change_id);
+	if (!e_cal_get_changes (ctxt->client, change_id, &ctxt->changed, NULL))
+		return -1;
+	
 	ctxt->changed_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	g_free (change_id);
 	
 	for (l = ctxt->changed; l != NULL; l = l->next) {
-		CalClientChange *ccc = l->data;
+		ECalChange *ccc = l->data;
 		const char *uid;
 		
-		cal_component_get_uid (ccc->comp, &uid);
+		e_cal_component_get_uid (ccc->comp, &uid);
 		if (!e_pilot_map_uid_is_archived (ctxt->map, uid)) {
 			
 			g_hash_table_insert (ctxt->changed_hash, g_strdup (uid), ccc);
 			
 			switch (ccc->type) {
-			case CAL_CLIENT_CHANGE_ADDED:
+			case E_CAL_CHANGE_ADDED:
 				add_records++;
 				break;
-			case CAL_CLIENT_CHANGE_MODIFIED:
+			case E_CAL_CHANGE_MODIFIED:
 				mod_records++;
 				break;
-			case CAL_CLIENT_CHANGE_DELETED:
+			case E_CAL_CHANGE_DELETED:
 				del_records++;
 				break;
 			}
-		} else if (ccc->type == CAL_CLIENT_CHANGE_DELETED) {
+		} else if (ccc->type == E_CAL_CHANGE_DELETED) {
 			e_pilot_map_remove_by_uid (ctxt->map, uid);
 		}
 	}
 
 	/* Set the count information */
-	num_records = cal_client_get_n_objects (ctxt->client, CALOBJ_TYPE_TODO);
+	num_records = g_list_length (ctxt->comps);
 	gnome_pilot_conduit_sync_abs_set_num_local_records(abs_conduit, num_records);
 	gnome_pilot_conduit_sync_abs_set_num_new_local_records (abs_conduit, add_records);
 	gnome_pilot_conduit_sync_abs_set_num_updated_local_records (abs_conduit, mod_records);
@@ -979,7 +984,7 @@ post_sync (GnomePilotConduit *conduit,
 	LOG (g_message ( "post_sync: ToDo Conduit v.%s", CONDUIT_VERSION ));
 
 	g_free (ctxt->cfg->last_uri);
-	ctxt->cfg->last_uri = g_strdup (cal_client_get_uri (ctxt->client));
+	ctxt->cfg->last_uri = g_strdup (e_cal_get_uri (ctxt->client));
 	todoconduit_save_configuration (ctxt->cfg);
 	
 	filename = map_name (ctxt);
@@ -990,8 +995,8 @@ post_sync (GnomePilotConduit *conduit,
 	 * a race condition if anyone changes a record elsewhere during sycnc
          */
 	change_id = g_strdup_printf ("pilot-sync-evolution-todo-%d", ctxt->cfg->pilot_id);
-	changed = cal_client_get_changes (ctxt->client, CALOBJ_TYPE_TODO, change_id);
-	cal_client_change_list_free (changed);
+	if (e_cal_get_changes (ctxt->client, change_id, &changed, NULL))
+		e_cal_free_change_list (changed);
 	g_free (change_id);
 	
 	LOG (g_message ( "---------------------------------------------------------\n" ));
@@ -1009,7 +1014,7 @@ set_pilot_id (GnomePilotConduitSyncAbs *conduit,
 
 	LOG (g_message ( "set_pilot_id: setting to %d\n", ID ));
 	
-	cal_component_get_uid (local->comp, &uid);
+	e_cal_component_get_uid (local->comp, &uid);
 	e_pilot_map_insert (ctxt->map, ID, uid, FALSE);
 
         return 0;
@@ -1024,7 +1029,7 @@ set_status_cleared (GnomePilotConduitSyncAbs *conduit,
 	
 	LOG (g_message ( "set_status_cleared: clearing status\n" ));
 	
-	cal_component_get_uid (local->comp, &uid);
+	e_cal_component_get_uid (local->comp, &uid);
 	g_hash_table_remove (ctxt->changed_hash, uid);
 	
         return 0;
@@ -1035,7 +1040,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 	  EToDoLocalRecord **local,
 	  EToDoConduitContext *ctxt)
 {
-	static GList *uids, *iterator;
+	static GList *comps, *iterator;
 	static int count;
 
 	g_return_val_if_fail (local != NULL, -1);
@@ -1043,17 +1048,17 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 	if (*local == NULL) {
 		LOG (g_message ( "beginning for_each" ));
 
-		uids = ctxt->uids;
+		comps = ctxt->comps;
 		count = 0;
 		
-		if (uids != NULL) {
-			LOG (g_message ( "iterating over %d records", g_list_length (uids) ));
+		if (comps != NULL) {
+			LOG (g_message ( "iterating over %d records", g_list_length (comps)));
 
 			*local = g_new0 (EToDoLocalRecord, 1);
-			local_record_from_uid (*local, uids->data, ctxt);
+			local_record_from_comp (*local, comps->data, ctxt);
 			g_list_prepend (ctxt->locals, *local);
 			
-			iterator = uids;
+			iterator = comps;
 		} else {
 			LOG (g_message ( "no events" ));
 			(*local) = NULL;
@@ -1065,7 +1070,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 			iterator = g_list_next (iterator);
 
 			*local = g_new0 (EToDoLocalRecord, 1);
-			local_record_from_uid (*local, iterator->data, ctxt);
+			local_record_from_comp (*local, iterator->data, ctxt);
 			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG (g_message ( "for_each ending" ));
@@ -1101,7 +1106,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 		
 		iterator = next_changed_item (ctxt, iterator);
 		if (iterator != NULL) {
-			CalClientChange *ccc = iterator->data;
+			ECalChange *ccc = iterator->data;
 		
 			*local = g_new0 (EToDoLocalRecord, 1);
 			local_record_from_comp (*local, ccc->comp, ctxt);
@@ -1115,7 +1120,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 		count++;
 		iterator = g_list_next (iterator);
 		if (iterator && (iterator = next_changed_item (ctxt, iterator))) {
-			CalClientChange *ccc = iterator->data;
+			ECalChange *ccc = iterator->data;
 			
 			*local = g_new0 (EToDoLocalRecord, 1);
 			local_record_from_comp (*local, ccc->comp, ctxt);			
@@ -1166,7 +1171,7 @@ add_record (GnomePilotConduitSyncAbs *conduit,
 	    GnomePilotRecord *remote,
 	    EToDoConduitContext *ctxt)
 {
-	CalComponent *comp;
+	ECalComponent *comp;
 	char *uid;
 	int retval = 0;
 	
@@ -1177,10 +1182,12 @@ add_record (GnomePilotConduitSyncAbs *conduit,
 	comp = comp_from_remote_record (conduit, remote, ctxt->default_comp, ctxt->timezone);
 
 	/* Give it a new UID otherwise it will be the uid of the default comp */
-	uid = cal_component_gen_uid ();
-	cal_component_set_uid (comp, uid);
+	uid = e_cal_component_gen_uid ();
+	e_cal_component_set_uid (comp, uid);
 
-	update_comp (conduit, comp, ctxt);
+	if (!e_cal_create_object (ctxt->client, e_cal_component_get_icalcomponent (comp), NULL, NULL))
+		return -1;
+
 	e_pilot_map_insert (ctxt->map, remote->ID, uid, FALSE);
 
 	g_object_unref (comp);
@@ -1194,7 +1201,7 @@ replace_record (GnomePilotConduitSyncAbs *conduit,
 		GnomePilotRecord *remote,
 		EToDoConduitContext *ctxt)
 {
-	CalComponent *new_comp;
+	ECalComponent *new_comp;
 	int retval = 0;
 	
 	g_return_val_if_fail (remote != NULL, -1);
@@ -1205,7 +1212,10 @@ replace_record (GnomePilotConduitSyncAbs *conduit,
 	new_comp = comp_from_remote_record (conduit, remote, local->comp, ctxt->timezone);
 	g_object_unref (local->comp);
 	local->comp = new_comp;
-	update_comp (conduit, local->comp, ctxt);
+
+	if (!e_cal_modify_object (ctxt->client, e_cal_component_get_icalcomponent (new_comp), 
+				       CALOBJ_MOD_ALL, NULL))
+		return -1;
 
 	return retval;
 }
@@ -1220,12 +1230,13 @@ delete_record (GnomePilotConduitSyncAbs *conduit,
 	g_return_val_if_fail (local != NULL, -1);
 	g_return_val_if_fail (local->comp != NULL, -1);
 
-	cal_component_get_uid (local->comp, &uid);
+	e_cal_component_get_uid (local->comp, &uid);
 
 	LOG (g_message ( "delete_record: deleting %s\n", uid ));
 
 	e_pilot_map_remove_by_uid (ctxt->map, uid);
-	cal_client_remove_object (ctxt->client, uid);
+	/* FIXME Error handling */
+	e_cal_remove_object (ctxt->client, uid, NULL);
 	
         return 0;
 }
@@ -1243,7 +1254,7 @@ archive_record (GnomePilotConduitSyncAbs *conduit,
 
 	LOG (g_message ( "archive_record: %s\n", archive ? "yes" : "no" ));
 
-	cal_component_get_uid (local->comp, &uid);
+	e_cal_component_get_uid (local->comp, &uid);
 	e_pilot_map_insert (ctxt->map, local->local.ID, uid, archive);
 	
         return retval;
@@ -1308,6 +1319,9 @@ prepare (GnomePilotConduitSyncAbs *conduit,
 static void
 fill_widgets (EToDoConduitContext *ctxt)
 {
+	if (ctxt->cfg->source)
+		e_pilot_settings_set_source (E_PILOT_SETTINGS (ctxt->ps), 
+					     ctxt->cfg->source);
 	e_pilot_settings_set_secret (E_PILOT_SETTINGS (ctxt->ps),
 				     ctxt->cfg->secret);
 
@@ -1320,8 +1334,11 @@ create_settings_window (GnomePilotConduit *conduit,
 			EToDoConduitContext *ctxt)
 {
 	LOG (g_message ( "create_settings_window" ));
+	
+	if (!ctxt->cfg->source_list)	
+		return -1;
 
-	ctxt->ps = e_pilot_settings_new ();
+	ctxt->ps = e_pilot_settings_new (ctxt->cfg->source_list);
 	ctxt->gui = e_todo_gui_new (E_PILOT_SETTINGS (ctxt->ps));
 
 	gtk_container_add (GTK_CONTAINER (parent), ctxt->ps);
@@ -1331,6 +1348,7 @@ create_settings_window (GnomePilotConduit *conduit,
 	
 	return 0;
 }
+
 static void
 display_settings (GnomePilotConduit *conduit, EToDoConduitContext *ctxt)
 {
@@ -1344,6 +1362,10 @@ save_settings    (GnomePilotConduit *conduit, EToDoConduitContext *ctxt)
 {
 	LOG (g_message ( "save_settings" ));
 
+	if (ctxt->new_cfg->source)
+		g_object_unref (ctxt->new_cfg->source);
+	ctxt->new_cfg->source = e_pilot_settings_get_source (E_PILOT_SETTINGS (ctxt->ps));
+	g_object_ref (ctxt->new_cfg->source);
 	ctxt->new_cfg->secret = e_pilot_settings_get_secret (E_PILOT_SETTINGS (ctxt->ps));
 	e_todo_gui_fill_config (ctxt->gui, ctxt->new_cfg);
 	
@@ -1370,7 +1392,7 @@ conduit_get_gpilot_conduit (guint32 pilot_id)
 
 	retval = gnome_pilot_conduit_sync_abs_new ("ToDoDB", 0x746F646F);
 	g_assert (retval != NULL);
-
+	
 	ctxt = e_todo_context_new (pilot_id);
 	gtk_object_set_data (GTK_OBJECT (retval), "todoconduit_context", ctxt);
 

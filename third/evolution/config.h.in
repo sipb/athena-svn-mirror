@@ -6,29 +6,32 @@
 /* Solaris-style ctime_r */
 #undef CTIME_R_THREE_ARGS
 
+/* evolution-data-server API version */
+#undef DATASERVER_API_VERSION
+
+/* evolution-data-server version */
+#undef DATASERVER_VERSION
+
+/* Really don't try this at home */
+#undef ENABLE_IMAP4
+
+/* Really don't try this at home */
+#undef ENABLE_IMAPP
+
 /* Enable IPv6 support */
 #undef ENABLE_IPv6
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
-/* Don't try this at home */
+/* Build NNTP backend */
 #undef ENABLE_NNTP
 
-/* Probably don't want this */
-#undef ENABLE_PEDANTIC_PGPMIME
+/* Define if SMIME should be enabled */
+#undef ENABLE_SMIME
 
 /* Required */
 #undef ENABLE_THREADS
-
-/* la */
-#undef EVOLUTION_DB_VERSION_MAJOR
-
-/* la */
-#undef EVOLUTION_DB_VERSION_MINOR
-
-/* la */
-#undef EVOLUTION_DB_VERSION_PATCH
 
 /* Solaris-style gethostbyaddr_r */
 #undef GETHOSTBYADDR_R_SEVEN_ARGS
@@ -38,6 +41,9 @@
 
 /* Package name for gettext */
 #undef GETTEXT_PACKAGE
+
+/* Define if the system defines the AI_ADDRCONFIG flag for getaddrinfo */
+#undef HAVE_AI_ADDRCONFIG
 
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
@@ -52,17 +58,17 @@
    Content-Length format */
 #undef HAVE_BROKEN_SPOOL
 
-/* Define to 1 if you have the <db3/db.h> header file. */
-#undef HAVE_DB3_DB_H
-
-/* Define to 1 if you have the <db.h> header file. */
-#undef HAVE_DB_H
+/* Have comm_err.h */
+#undef HAVE_COM_ERR_H
 
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Have et/comm_err.h */
+#undef HAVE_ET_COM_ERR_H
 
 /* Define to 1 if you have the `gethostbyaddr_r' function. */
 #undef HAVE_GETHOSTBYADDR_R
@@ -98,6 +104,9 @@
    */
 #undef HAVE_LIBGNOMEUI_GNOME_ICON_LOOKUP_H
 
+/* Define to 1 if you have the <libgnomeui/gnome-thumbnail.h> header file. */
+#undef HAVE_LIBGNOMEUI_GNOME_THUMBNAIL_H
+
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
 
@@ -122,15 +131,6 @@
 /* Define to 1 if you have the <nss.h> header file. */
 #undef HAVE_NSS_H
 
-/* Define if you have OpenSSL */
-#undef HAVE_OPENSSL
-
-/* Define to 1 if you have the <openssl/ssl.h> header file. */
-#undef HAVE_OPENSSL_SSL_H
-
-/* Define to 1 if you have the <openssl/x509.h> header file. */
-#undef HAVE_OPENSSL_X509_H
-
 /* Define to 1 if you have the <prio.h> header file. */
 #undef HAVE_PRIO_H
 
@@ -143,6 +143,12 @@
 /* Define to 1 if you have the <ssl.h> header file. */
 #undef HAVE_SSL_H
 
+/* Define to 1 if you have the `statfs' function. */
+#undef HAVE_STATFS
+
+/* Define to 1 if you have the `statvfs' function. */
+#undef HAVE_STATVFS
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -154,6 +160,15 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/mount.h> header file. */
+#undef HAVE_SYS_MOUNT_H
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/statvfs.h> header file. */
+#undef HAVE_SYS_STATVFS_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -169,6 +184,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* IDL interface version (Major.Minor) */
+#undef INTERFACE_VERSION
 
 /* Command to kill processes by name */
 #undef KILL_PROCESS_CMD
@@ -206,6 +224,9 @@
 /* Directory local mail is delivered to */
 #undef SYSTEM_MAIL_DIR
 
+/* The number of times we've upgraded since the BASE_VERSION release */
+#undef UPGRADE_REVISION
+
 /* Define to use dot locking for mbox files */
 #undef USE_DOT
 
@@ -214,6 +235,9 @@
 
 /* Define to use flock locking for mbox files */
 #undef USE_FLOCK
+
+/* Use new GtkFileChooser */
+#undef USE_GTKFILECHOOSER
 
 /* Version number of package */
 #undef VERSION
@@ -225,9 +249,11 @@
    `char[]'. */
 #undef YYTEXT_POINTER
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 #undef inline
+#endif
 
 /* Define to appropriate type if socklen_t is not defined */
 #undef socklen_t

@@ -4,7 +4,7 @@
  *    Jeffrey Stedfast <fejj@ximian.com>
  *    Dan Winship <danw@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2001-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -30,9 +30,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <camel/camel-url.h>
-#include <e-util/e-dialog-utils.h>
 
+#include <e-util/e-dialog-utils.h>
+#include <e-util/e-account.h>
+
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkstock.h>
+
+#include "widgets/misc/e-error.h"
+
+#include "em-account-prefs.h"
+#include "mail-config.h"
 #include "mail-account-editor.h"
+#include "mail-account-gui.h"
 #include "mail-session.h"
 
 static void mail_account_editor_class_init (MailAccountEditorClass *class);
@@ -99,7 +109,7 @@ apply_changes (MailAccountEditor *editor)
 	if (page != -1) {
 		gtk_notebook_set_current_page (editor->notebook, page);
 		gtk_widget_grab_focus (incomplete);
-		e_notice (editor, GTK_MESSAGE_ERROR, _("You have not filled in all of the required information."));
+		e_error_run((GtkWindow *)editor, "mail:account-incomplete", NULL);
 		return FALSE;
 	}
 	
@@ -108,9 +118,6 @@ apply_changes (MailAccountEditor *editor)
 	
 	/* save any changes we may have */
 	mail_config_write ();
-	
-	/* FIXME: #1549: if the account was a remote store, delete it from the folder-tree and re-add it */
-	/* FIXME: preferably, we'd only do this if there were changes... oh well */
 	
 	return TRUE;
 }
@@ -121,9 +128,6 @@ editor_response_cb (GtkWidget *widget, int button, gpointer user_data)
 	MailAccountEditor *editor = user_data;
 	
 	switch (button) {
-	case GTK_RESPONSE_APPLY:
-		apply_changes (editor);
-		return;
 	case GTK_RESPONSE_OK:
 		apply_changes (editor);
 	default:
@@ -132,10 +136,15 @@ editor_response_cb (GtkWidget *widget, int button, gpointer user_data)
 }
 
 static void
-construct (MailAccountEditor *editor, EAccount *account, MailAccountsTab *dialog)
+construct (MailAccountEditor *editor, EAccount *account, EMAccountPrefs *dialog)
 {
 	EAccountService *source = account->source;
 	
+	gtk_widget_realize (GTK_WIDGET (editor));
+	gtk_dialog_set_has_separator (GTK_DIALOG (editor), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (editor)->action_area), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (editor)->vbox), 0);
+
 	editor->gui = mail_account_gui_new (account, dialog);
 	
 	/* get our toplevel widget and reparent it */
@@ -147,7 +156,6 @@ construct (MailAccountEditor *editor, EAccount *account, MailAccountsTab *dialog
 	gtk_window_set_resizable (GTK_WINDOW (editor), TRUE);
 	gtk_window_set_modal (GTK_WINDOW (editor), FALSE);
 	gtk_dialog_add_buttons (GTK_DIALOG (editor),
-				GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
 				GTK_STOCK_CLOSE, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK,
 				NULL);
@@ -162,7 +170,7 @@ construct (MailAccountEditor *editor, EAccount *account, MailAccountsTab *dialog
 }
 
 MailAccountEditor *
-mail_account_editor_new (EAccount *account, GtkWindow *parent, MailAccountsTab *dialog)
+mail_account_editor_new (EAccount *account, GtkWindow *parent, EMAccountPrefs *dialog)
 {
 	MailAccountEditor *new;
 	

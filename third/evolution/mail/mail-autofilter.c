@@ -39,19 +39,19 @@
 
 #include "mail-vfolder.h"
 #include "mail-autofilter.h"
+#include "mail-component.h"
+#include "em-utils.h"
+#include "widgets/misc/e-error.h"
 
-#include "camel/camel.h"
+#include "em-vfolder-context.h"
+#include "em-vfolder-rule.h"
+#include "em-vfolder-editor.h"
 
-#include "filter/vfolder-context.h"
-#include "filter/vfolder-rule.h"
-#include "filter/vfolder-editor.h"
-
-#include "filter/filter-context.h"
-#include "filter/filter-filter.h"
-#include "filter/filter-editor.h"
+#include "em-filter-context.h"
+#include "em-filter-rule.h"
+#include "em-filter-editor.h"
 #include "filter/filter-option.h"
 
-extern char *evolution_dir;
 
 static void
 rule_match_recipients (RuleContext *context, FilterRule *rule, CamelInternetAddress *iaddr)
@@ -265,7 +265,7 @@ rule_from_message (FilterRule *rule, RuleContext *context, CamelMimeMessage *msg
 	if (flags & AUTO_MLIST) {
 		char *name, *mlist;
 		
-		mlist = header_raw_check_mailing_list(&((CamelMimePart *)msg)->headers);
+		mlist = camel_header_raw_check_mailing_list (&((CamelMimePart *)msg)->headers);
 		if (mlist) {
 			rule_match_mlist(context, rule, mlist);
 			name = g_strdup_printf (_("%s mailing list"), mlist);
@@ -277,28 +277,30 @@ rule_from_message (FilterRule *rule, RuleContext *context, CamelMimeMessage *msg
 }
 
 FilterRule *
-vfolder_rule_from_message (VfolderContext *context, CamelMimeMessage *msg, int flags, const char *source)
+em_vfolder_rule_from_message (EMVFolderContext *context, CamelMimeMessage *msg, int flags, const char *source)
 {
-	VfolderRule *rule;
-	
-	rule = vfolder_rule_new ();
-	vfolder_rule_add_source (rule, source);
+	EMVFolderRule *rule;
+	char *euri = em_uri_from_camel(source);
+
+	rule = em_vfolder_rule_new ();
+	em_vfolder_rule_add_source (rule, euri);
 	rule_from_message ((FilterRule *)rule, (RuleContext *)context, msg, flags);
-	
+	g_free(euri);
+
 	return (FilterRule *)rule;
 }
 
 FilterRule *
-filter_rule_from_message (FilterContext *context, CamelMimeMessage *msg, int flags)
+filter_rule_from_message (EMFilterContext *context, CamelMimeMessage *msg, int flags)
 {
-	FilterFilter *rule;
+	EMFilterRule *rule;
 	FilterPart *part;
 	
-	rule = filter_filter_new ();
+	rule = em_filter_rule_new ();
 	rule_from_message ((FilterRule *)rule, (RuleContext *)context, msg, flags);
 	
-	part = filter_context_next_action (context, NULL);
-	filter_filter_add_action (rule, filter_part_clone (part));
+	part = em_filter_context_next_action (context, NULL);
+	em_filter_rule_add_action (rule, filter_part_clone (part));
 	
 	return (FilterRule *)rule;
 }
@@ -306,14 +308,15 @@ filter_rule_from_message (FilterContext *context, CamelMimeMessage *msg, int fla
 void
 filter_gui_add_from_message (CamelMimeMessage *msg, const char *source, int flags)
 {
-	FilterContext *fc;
+	EMFilterContext *fc;
 	char *user, *system;
 	FilterRule *rule;
 	
 	g_return_if_fail (msg != NULL);
 	
-	fc = filter_context_new ();
-	user = g_strdup_printf ("%s/filters.xml", evolution_dir);
+	fc = em_filter_context_new ();
+	user = g_strdup_printf ("%s/mail/filters.xml",
+				mail_component_peek_base_directory (mail_component_peek ()));
 	system = EVOLUTION_PRIVDATADIR "/filtertypes.xml";
 	rule_context_load ((RuleContext *)fc, system, user);
 	rule = filter_rule_from_message (fc, msg, flags);
@@ -328,17 +331,20 @@ filter_gui_add_from_message (CamelMimeMessage *msg, const char *source, int flag
 void
 mail_filter_rename_uri(CamelStore *store, const char *olduri, const char *newuri)
 {
-	GCompareFunc uri_cmp = CAMEL_STORE_CLASS(CAMEL_OBJECT_GET_CLASS(store))->compare_folder_name;
-	FilterContext *fc;
+	EMFilterContext *fc;
 	char *user, *system;
 	GList *changed;
-	
-	fc = filter_context_new ();
-	user = g_strdup_printf ("%s/filters.xml", evolution_dir);
+	char *eolduri, *enewuri;
+
+	eolduri = em_uri_from_camel(olduri);
+	enewuri = em_uri_from_camel(newuri);
+
+	fc = em_filter_context_new ();
+	user = g_strdup_printf ("%s/mail/filters.xml", mail_component_peek_base_directory (mail_component_peek ()));
 	system = EVOLUTION_PRIVDATADIR "/filtertypes.xml";
 	rule_context_load ((RuleContext *)fc, system, user);
 	
-	changed = rule_context_rename_uri((RuleContext *)fc, olduri, newuri, uri_cmp);
+	changed = rule_context_rename_uri((RuleContext *)fc, eolduri, enewuri, g_str_equal);
 	if (changed) {
 		printf("Folder rename '%s' -> '%s' changed filters, resaving\n", olduri, newuri);
 		if (rule_context_save((RuleContext *)fc, user) == -1)
@@ -347,51 +353,52 @@ mail_filter_rename_uri(CamelStore *store, const char *olduri, const char *newuri
 	}
 	
 	g_free(user);
-	g_object_unref (fc);
+	g_object_unref(fc);
+
+	g_free(enewuri);
+	g_free(eolduri);
 }
 
 void
 mail_filter_delete_uri(CamelStore *store, const char *uri)
 {
-	GCompareFunc uri_cmp = CAMEL_STORE_CLASS(CAMEL_OBJECT_GET_CLASS(store))->compare_folder_name;
-	FilterContext *fc;
+	EMFilterContext *fc;
 	char *user, *system;
 	GList *deleted;
-	
-	fc = filter_context_new ();
-	user = g_strdup_printf ("%s/filters.xml", evolution_dir);
+	char *euri;
+
+	euri = em_uri_from_camel(uri);
+
+	fc = em_filter_context_new ();
+	user = g_strdup_printf ("%s/mail/filters.xml", mail_component_peek_base_directory (mail_component_peek ()));
 	system = EVOLUTION_PRIVDATADIR "/filtertypes.xml";
 	rule_context_load ((RuleContext *)fc, system, user);
 	
-	deleted = rule_context_delete_uri ((RuleContext *) fc, uri, uri_cmp);
+	deleted = rule_context_delete_uri ((RuleContext *) fc, euri, g_str_equal);
 	if (deleted) {
 		GtkWidget *dialog;
 		GString *s;
 		GList *l;
 		
-		s = g_string_new (_("The following filter rule(s):\n"));
+		s = g_string_new("");
 		l = deleted;
 		while (l) {
 			g_string_append_printf (s, "    %s\n", (char *)l->data);
 			l = l->next;
 		}
-		g_string_append_printf (s, _("Used the removed folder:\n    '%s'\n"
-					     "And have been updated."), uri);
-		
-		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO,
-						 GTK_BUTTONS_CLOSE, "%s", s->str);
+
+		dialog = e_error_new(NULL, "mail:filter-updated", s->str, euri, NULL);
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+		g_string_free(s, TRUE);
+		gtk_widget_show(dialog);
 		
-		g_string_free (s, TRUE);
-		
-		gtk_widget_show (dialog);
-		
-		printf("Folder deleterename '%s' changed filters, resaving\n", uri);
+		printf("Folder deleterename '%s' changed filters, resaving\n", euri);
 		if (rule_context_save ((RuleContext *) fc, user) == -1)
 			g_warning ("Could not write out changed filter rules\n");
 		rule_context_free_uri_list ((RuleContext *) fc, deleted);
 	}
 	
-	g_free (user);
-	g_object_unref (fc);
+	g_free(user);
+	g_object_unref(fc);
+	g_free(euri);
 }
