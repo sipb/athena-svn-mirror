@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.5 1999-05-27 16:05:32 danw Exp $
+# $Id: cshrc,v 1.6 1999-06-17 21:54:42 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -31,9 +31,11 @@ if (! $?HOST) then
 endif
 set host=$HOST
 set autolist=""
-bindkey "^W" backward-delete-word
-bindkey "^Z" complete-word
-bindkey " " magic-space
+if ($?tcsh) then
+	bindkey "^W" backward-delete-word
+	bindkey "^Z" complete-word
+	bindkey " " magic-space
+endif
 
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
