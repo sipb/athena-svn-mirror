@@ -44,6 +44,7 @@ SUN*)
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                       >> ${CONFVARS}
 	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
+	echo "/etc/shells"			>> ${CONFCHG}
 
 	# Add gettime entry to root crontab.
 	cronentry="45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
