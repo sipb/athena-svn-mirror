@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.7 1998-05-31 15:33:05 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.8 1998-05-31 22:18:53 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -36,7 +36,7 @@ static const char rcsid[] = "$Id: group.c,v 1.7 1998-05-31 15:33:05 ghudson Exp 
 /* Maximum number of groups the user can be in, not counting the primary
  * group.  Use this value only to bound nentries, not for memory
  * allocation; some day on some system it may be quite large. */
-#idef sgi
+#ifdef sgi
 /* The SGI AFS client has a fencepost error right now (up to the eighth
  * AFS 3.4a.patches release) and doesn't tolerate 13 groups. */
 #define MAX_GROUPS 12
