@@ -40,4 +40,5 @@ find athena/bin/voldump -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/lib/gdss/lib -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/etc/synctree -type d -print | xargs fs sa -acl $auth -clear -dir
 find athena/etc/ftpd -type d -print | xargs fs sa -acl $fascist -clear -dir
+find athena/etc/snmp -type d -print | xargs fs sa -acl $auth -clear -dir
 find third/transcript -type d -print | xargs fs sa -acl $fascist -clear -dir
