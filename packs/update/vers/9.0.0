@@ -1,0 +1,1114 @@
+#!/bin/sh
+
+echo "/etc/athena/attach.conf"				>> "$CONFCHG"
+
+case "$HOSTTYPE" in
+sun4)
+	echo "MINIROOT=true"				>> "$CONFVARS"
+	echo "NEWOS=true"				>> "$CONFVARS"
+	echo "NEWDEVS=true"				>> "$CONFVARS"
+	echo "OSCHANGES=true"				>> "$CONFVARS"
+
+	cat "$LIBDIR/solaris27-8"			>> "$DEADFILES"
+
+	# This file will be inaccurate after we remove the pkgs and patches 
+	echo "/var/sadm/install/contents"		>> "$DEADFILES"
+
+	# Create list of old packages and old patches to be removed
+	# from the DB.
+	cat "$LIBDIR/solaris27-pkgs"			>> "$OLDPKGS"
+	cat "$LIBDIR/solaris27-ptchs"			>> "$OLDPTCHS"
+
+	# Create the lists of packages and patches to install.
+	cat "$LIBDIR/solaris8-local-$SUNPLATFORM"	>> "$LOCALPACKAGES"
+	cat "$LIBDIR/solaris8-nolocal-$SUNPLATFORM"	>> "$LINKPACKAGES"
+	cat "$LIBDIR/solaris8-patches.9.0.0"		>> "$PATCHES"
+	# netmasks file has changed format 
+	ipaddr=`cat /etc/netmasks | grep 18 |awk '{print $1}'`
+        set -- `/etc/athena/netparams "$ipaddr"`
+        netmask=$1
+	net=$2
+        echo "$net $netmask" >/etc/netmasks
+	;;
+
+sgi)
+	echo "/etc/athena/axdm"				>> "$DEADFILES"
+	echo "/etc/athena/login/elmer"			>> "$DEADFILES"
+	echo "/etc/athena/login/xdm"			>> "$DEADFILES"
+	echo "/etc/athena/named-bootconf"		>> "$DEADFILES"
+	echo "/etc/athena/nanny"			>> "$DEADFILES"
+	echo "/etc/athena/syslogd"			>> "$DEADFILES"
+	echo "/etc/init.d/axdm"				>> "$DEADFILES"
+
+	rm -f /etc/init.d/axdm /etc/rc2.d/S98xdm /etc/rc0.d/K02xdm
+	ln -s ../init.d/xdm /etc/rc2.d/S98xdm
+	ln -s ../init.d/xdm /etc/rc0.d/K02xdm
+
+	osrel=`uname -r`
+	# Boot up the miniroot to upgrade the OS.
+	echo "NEWOS=true"				>> "$CONFVARS"
+	echo "MINIROOT=true"				>> "$CONFVARS"
+	echo "OSCHANGES=true"				>> "$CONFVARS"
+
+	# Hack to prevent inst from doing multiple make's
+	# of the filetype database.
+	echo "DELAYFTMAKE=true"				>> "$CONFVARS"
+
+	# Some config files have changed.
+	echo "/etc/inetd.conf"				>> "$CONFCHG"
+	echo "/etc/services"				>> "$CONFCHG"
+	echo "/etc/syslog.conf"				>> "$CONFCHG"
+	echo "/var/spool/cron/crontabs/root"		>> "$CONFCHG"
+
+	# If we're running a pre-6.5 OS, we will replace all existing
+	# packages, so remove any old selections files.
+	if [ "6.5" != "$osrel" ]; then
+	    for dist in `cat /install/selections/dist_order 2>/dev/null` ; do
+		rm -f "$LOCALPACKAGES.$dist" "$LINKPACKAGES.$dist"
+	    done
+	fi
+
+	# Make a handy variable for local foundation package selections.
+	foundlocal="$LOCALPACKAGES.foundation"
+
+	# Allow us to remove any installed package.
+	echo "set removepolicy anything"		>> "$foundlocal"
+
+	if [ "6.5" = "$osrel" ]; then
+	    # Override intermediate conflicts.
+	    echo "set rulesoverride true"		>> "$foundlocal"
+
+	    # These conflict with the new cosmo software.
+	    echo "remove I cosmoplayer.sw.chinese_china" \
+							>> "$foundlocal"
+	    echo "remove I cosmoplayer.sw.chinese_taiwan" \
+							>> "$foundlocal"
+	    echo "remove I cosmoplayer.sw.japanese"	>> "$foundlocal"
+	    echo "remove I cosmoworlds.sw.chinese_china" \
+							>> "$foundlocal"
+	    echo "remove I cosmoworlds.sw.chinese_taiwan" \
+							>> "$foundlocal"
+	    echo "remove I cosmoworlds.sw.japanese"	>> "$foundlocal"
+
+	    # These packages go away in the update.
+	    echo "remove I SpeedShop.sw.WorkShop"	>> "$foundlocal"
+	    echo "remove I cosmoplayer.man.relnotes"	>> "$foundlocal"
+	    echo "remove I netscape.plugin.PNG"		>> "$foundlocal"
+	    echo "remove I netscape.plugin.XPM"		>> "$foundlocal"
+	    echo "remove I netscape.plugin32.PNG"	>> "$foundlocal"
+	    echo "remove I netscape.plugin32.XPM"	>> "$foundlocal"
+	    echo "remove I patchSG0003692.eoe_sw.base"	>> "$foundlocal"
+	    echo "remove I patchSG0003800.nfs_sw.nfs"	>> "$foundlocal"
+
+	    # SGIMeeting is now a licensed product.
+	    echo "remove I sgimeeting"			>> "$foundlocal"
+
+	    # The following should get updated, but have packages that get
+	    # deselected somehow in the dev symlink pass, thus causing
+	    # conflict.  Nuking them here, and installing them later as
+	    # new packages, avoids the problem.
+	    echo "remove I SpeedShop"			>> "$foundlocal"
+	    echo "remove I apo_doc"			>> "$foundlocal"
+	    echo "remove I c++_dev"			>> "$foundlocal"
+	    echo "remove I c++_fe"			>> "$foundlocal"
+	    echo "remove I compiler_dev"		>> "$foundlocal"
+	    echo "remove I ftn_dev"			>> "$foundlocal"
+
+	else
+	    # The current OS is pre-6.5.  Remove all currently installed
+	    # packages.
+	    echo "remove I"				>> "$foundlocal"
+
+	fi
+
+	# Install all desired "foundation" local packages.
+	echo "i c++_eoe.sw.lib"				>> "$foundlocal"
+	echo "i compiler_eoe.sw.cpp"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.lboot"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.lib"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.unix"			>> "$foundlocal"
+	echo "i dmedia_eoe.sw.base"			>> "$foundlocal"
+	echo "i eoe.sw.base"				>> "$foundlocal"
+	echo "i eoe.sw.efs"				>> "$foundlocal"
+	echo "i eoe.sw.gfx"				>> "$foundlocal"
+	echo "i x_eoe.sw.Server"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.eoe"				>> "$foundlocal"
+	echo "i dmedia_eoe.sw.audio"			>> "$foundlocal"
+	echo "i dmedia_eoe.sw.lib"			>> "$foundlocal"
+	echo "i eoe.sw.named"				>> "$foundlocal"
+	echo "i nfs.sw.nfs"				>> "$foundlocal"
+	echo "i eoe.sw.terminfo"			>> "$foundlocal"
+	echo "i eoe.sw.termbase"			>> "$foundlocal"
+	echo "i x_eoe.sw.Server"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xapps"				>> "$foundlocal"
+	echo "i x_eoe.sw.Xfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xgifts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xoptfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xopttype1"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xunicodefonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.eoe"				>> "$foundlocal"
+	echo "i x_eoe.sw.pex"				>> "$foundlocal"
+	echo "i x_eoe.sw.plugin"			>> "$foundlocal"
+	echo "i x_eoe.sw.xfwp"				>> "$foundlocal"
+	echo "i desktop_base.sw.FileTypingRules"	>> "$foundlocal"
+	echo "i desktop_base.sw.dso"			>> "$foundlocal"
+	echo "i desktop_base.sw.ftrdso6_2"		>> "$foundlocal"
+	echo "i desktop_base.sw.utilities"		>> "$foundlocal"
+	echo "i ViewKit_eoe.sw.base"			>> "$foundlocal"
+	echo "i 4Dwm.sw.4Dwm"				>> "$foundlocal"
+	echo "i motif_eoe.sw.eoe"			>> "$foundlocal"
+	echo "i websupport_eoe.sw.lib"			>> "$foundlocal"
+	echo "i ifl_eoe.sw.c++"				>> "$foundlocal"
+	echo "i il_eoe.sw.c++"				>> "$foundlocal"
+	echo "i insight_base.sw.eoe"			>> "$foundlocal"
+	echo "i insight_base.sw.base"			>> "$foundlocal"
+	echo "i isdn_eoe.sw.isdn"			>> "$foundlocal"
+	echo "i eoe.sw.ppp"				>> "$foundlocal"
+	echo "i eoe.sw.uucp"				>> "$foundlocal"
+	# This is required on O2, but not installable on Indy.
+	echo "i A ip32prom.sw.prom"			>> "$foundlocal"
+
+	if [ "6.5" = "$osrel" ]; then
+	    # Deselect packages that are the same version or a downgrade
+	    # from what is installed.
+	    echo "k same"				>> "$foundlocal"
+	    echo "k D"					>> "$foundlocal"
+	fi
+
+	# Install all desired "applications" local packages.
+	applocal="$LOCALPACKAGES.applications"
+	echo "i x_eoe.sw.xdps"				>> "$applocal"
+	echo "i dps_eoe.sw.dpsfonts"			>> "$applocal"
+	echo "i desktop_eoe.sw.Confidence"		>> "$applocal"
+	echo "i desktop_eoe.sw.Desks"			>> "$applocal"
+	echo "i desktop_eoe.sw.control_panels"		>> "$applocal"
+	echo "i desktop_eoe.sw.envm"			>> "$applocal"
+	echo "i desktop_eoe.sw.share"			>> "$applocal"
+	echo "i desktop_eoe.sw.toolchest"		>> "$applocal"
+	echo "i desktop_base.sw.dso6_2"			>> "$applocal"
+	echo "i media_warehouse.sw.viewers"		>> "$applocal"
+	echo "i webviewer.sw.eoe"			>> "$applocal"
+	# Deselect packages that are the same version or a downgrade
+	# from what is installed.
+	echo "k same"					>> "$applocal"
+	echo "k D"					>> "$applocal"
+
+	# Install local patches.
+	patchlocal="$LOCALPACKAGES.patches"
+	echo "i patchSG0003913.eoe_sw.base"		>> "$patchlocal"
+	# Deselect packages that are the same version or a downgrade
+	# from what is installed.
+	echo "k same"					>> "$patchlocal"
+	echo "k D"					>> "$patchlocal"
+
+	if [ "6.5" = "$osrel" ]; then
+	    dists="foundation applications dev pcp patches"
+	else
+	    dists="foundation applications dev pcp dwb performer mineset \
+		   cosmo snmp freeware softwindows95 patches"
+	fi
+
+	# Upgrade/install all other packages from other new distributions
+	# in symlink mode, keeping all local packages unchanged.
+	for dist in $dists ; do
+	    linkpkgs="$LINKPACKAGES.$dist"
+	    echo "i A"					>> "$linkpkgs"
+
+	    # Deselect local packages.
+	    echo "k c++_eoe.sw.lib"			>> "$linkpkgs"
+	    echo "k compiler_eoe.sw.cpp"		>> "$linkpkgs"
+	    echo "k compiler_eoe.sw.lboot"		>> "$linkpkgs"
+	    echo "k compiler_eoe.sw.lib"		>> "$linkpkgs"
+	    echo "k compiler_eoe.sw.unix"		>> "$linkpkgs"
+	    echo "k dmedia_eoe.sw.base"			>> "$linkpkgs"
+	    echo "k eoe.sw.base"			>> "$linkpkgs"
+	    echo "k eoe.sw.efs"				>> "$linkpkgs"
+	    echo "k eoe.sw.gfx"				>> "$linkpkgs"
+	    echo "k x_eoe.sw.Server"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xfonts"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "k dmedia_eoe.sw.audio"		>> "$linkpkgs"
+	    echo "k dmedia_eoe.sw.lib"			>> "$linkpkgs"
+	    echo "k eoe.sw.named"			>> "$linkpkgs"
+	    echo "k nfs.sw.nfs"				>> "$linkpkgs"
+	    echo "k eoe.sw.terminfo"			>> "$linkpkgs"
+	    echo "k eoe.sw.termbase"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Server"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xapps"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xfonts"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xgifts"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xoptfonts"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xopttype1"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.Xunicodefonts"		>> "$linkpkgs"
+	    echo "k x_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.pex"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.plugin"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.xfwp"			>> "$linkpkgs"
+	    echo "k desktop_base.sw.FileTypingRules"	>> "$linkpkgs"
+	    echo "k desktop_base.sw.dso"		>> "$linkpkgs"
+	    echo "k desktop_base.sw.ftrdso6_2"		>> "$linkpkgs"
+	    echo "k desktop_base.sw.utilities"		>> "$linkpkgs"
+	    echo "k ViewKit_eoe.sw.base"		>> "$linkpkgs"
+	    echo "k 4Dwm.sw.4Dwm"			>> "$linkpkgs"
+	    echo "k motif_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "k websupport_eoe.sw.lib"		>> "$linkpkgs"
+	    echo "k ifl_eoe.sw.c++"			>> "$linkpkgs"
+	    echo "k il_eoe.sw.c++"			>> "$linkpkgs"
+	    echo "k insight_base.sw.eoe"		>> "$linkpkgs"
+	    echo "k insight_base.sw.base"		>> "$linkpkgs"
+	    echo "k isdn_eoe.sw.isdn"			>> "$linkpkgs"
+	    echo "k eoe.sw.ppp"				>> "$linkpkgs"
+	    echo "k eoe.sw.uucp"			>> "$linkpkgs"
+	    echo "k A ip32prom.sw.prom"			>> "$linkpkgs"
+	    echo "k x_eoe.sw.xdps"			>> "$linkpkgs"
+	    echo "k dps_eoe.sw.dpsfonts"		>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.Confidence"		>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.Desks"		>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.control_panels"	>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.envm"		>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.share"		>> "$linkpkgs"
+	    echo "k desktop_eoe.sw.toolchest"		>> "$linkpkgs"
+	    echo "k desktop_base.sw.dso6_2"		>> "$linkpkgs"
+	    echo "k media_warehouse.sw.viewers"		>> "$linkpkgs"
+	    echo "k webviewer.sw.eoe"			>> "$linkpkgs"
+	    echo "k patchSG0003913.eoe_sw.base"		>> "$linkpkgs"
+
+	    # Deselect packages that are the same version or a downgrade
+	    # from what is installed, and overlays of packages we
+	    # have not installed.
+	    echo "k same"				>> "$linkpkgs"
+	    echo "k D"					>> "$linkpkgs"
+	    echo "k incompleteoverlays"			>> "$linkpkgs"
+
+	    # Deselect packages which cause conflict when selected
+	    # in the wrong pass.
+	    echo "k conflicting desktop_base.sw.dso6_2"	>> "$linkpkgs"
+	    echo "k conflicting inventor_dev"		>> "$linkpkgs"
+	    echo "k conflicting inventor_eoe"		>> "$linkpkgs"
+	    echo "k conflicting inventor_games"		>> "$linkpkgs"
+	    echo "k conflicting x_eoe.sw.xdps"		>> "$linkpkgs"
+
+	    # Deselect packages causing conflicts, or that we just
+	    # don't want.
+	    echo "k *.books.*"				>> "$linkpkgs"
+	    echo "k InPerson.sw.japanese"		>> "$linkpkgs"
+	    echo "k MineSet_addendum_books.addendum.MineSet_UG_A" \
+							>> "$linkpkgs"
+	    echo "k MineSet_addendum_tutorial.addendum.MineSet_T_A" \
+							>> "$linkpkgs"
+	    echo "k MineSet_chinese_s_examples.sw.schinese" \
+							>> "$linkpkgs"
+	    echo "k MineSet_chinese_t_examples.sw.tchinese" \
+							>> "$linkpkgs"
+	    echo "k MineSet_japanese_examples.sw.japanese" \
+							>> "$linkpkgs"
+	    echo "k MineSet_korean_examples.sw.korean"	>> "$linkpkgs"
+	    echo "k MineSet_tutorial.tutorial.MineSet_T">> "$linkpkgs"
+	    echo "k Register"				>> "$linkpkgs"
+	    echo "k SoftWindows95.sw.help"		>> "$linkpkgs"
+	    echo "k acrobat"				>> "$linkpkgs"
+	    echo "k annotator.sw.japanese"		>> "$linkpkgs"
+	    echo "k cosmoworlds.sw.chinese_china"	>> "$linkpkgs"
+	    echo "k cosmoworlds.sw.chinese_taiwan"	>> "$linkpkgs"
+	    echo "k cosmoworlds.sw.japanese"		>> "$linkpkgs"
+	    echo "k eoe.src.gnutools"			>> "$linkpkgs"
+	    echo "k fw*"				>> "$linkpkgs"
+	    echo "k fw_exmh"				>> "$linkpkgs"
+	    echo "k fw_turn.man.pict"			>> "$linkpkgs"
+	    echo "k fw_turn.sw.pict"			>> "$linkpkgs"
+	    echo "k gnat_*"				>> "$linkpkgs"
+	    echo "k gnu"				>> "$linkpkgs"
+	    echo "k infosearch.index"			>> "$linkpkgs"
+	    echo "k inventor_eoe.sw.help"		>> "$linkpkgs"
+	    echo "k java_plugin.sw.swing101"		>> "$linkpkgs"
+	    echo "k java_plugin.sw.swing102"		>> "$linkpkgs"
+	    echo "k netscape.sw.configs"		>> "$linkpkgs"
+	done
+
+	echo "/etc/init.d/network.O"			>> "$CONFIGVERS"
+	echo "/etc/config/miser.options.N"		>> "$CONFIGVERS"
+	echo "/etc/inetd.conf.O"			>> "$CONFIGVERS"
+	echo "/etc/init.d/network.O"			>> "$CONFIGVERS"
+	echo "/etc/sendmail.cf.N"			>> "$CONFIGVERS"
+	echo "/etc/services.N"				>> "$CONFIGVERS"
+	echo "/etc/syslog.conf.N"			>> "$CONFIGVERS"
+	echo "/var/netscape/communicator/mime.types.O"	>> "$CONFIGVERS"
+	echo "/var/netscape/fasttrack/admin-serv/config/ns-admin.conf.N" \
+							>> "$CONFIGVERS"
+	echo "/var/netscape/fasttrack/install/ssusers.conf.N" \
+							>> "$CONFIGVERS"
+	echo "/var/netscape/fasttrack/userdb/certmap.conf.N" \
+							>> "$CONFIGVERS"
+	echo "/var/netscape/fasttrack/userdb/dbswitch.conf.N" \
+							>> "$CONFIGVERS"
+	echo "/var/netscape/fasttrack/userdb/ldap/config/lcache.conf.N" \
+							>> "$CONFIGVERS"
+	echo "/var/spool/cron/crontabs/root.N"		>> "$CONFIGVERS"
+
+	# We want to create new documentation trees.
+	echo "UPDATEDOC=true"				>> "$CONFVARS"
+
+	# Clean up dangling links to doc trees.
+	echo "/usr/share/help/SGImeeting.helpmap"	>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/figures/02.prepare-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/figures/04.debug-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/figures/04.debug-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/figures/03.build-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/InProPub_UG/figures/C.architect-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/ebt/examples.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/critical.segment.execution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/mp-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/execution.w.gates.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/parallel.code.segments.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/loop.scheduling.types.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/indpndt.segment.execution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/one.processor.segment.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Pragmas/figures/synchronization.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/ebt/examples.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/figures/ACompLink-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CC_PG/figures/1Environ-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Ftn_LRM_V3/figures/a10812.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/ebt/examples.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/chap6-6.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/cache.behavior.solutions.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/chap6-7.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/chap6-4.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/chap6-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/chap6-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/fortran.c.arrau.subsc.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/linking.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/complng.multlang.programs.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/compilation.process.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_PG/figures/memory.hierarchy.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/figures/chap4-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/figures/chap4-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/figures/chap8-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/figures/chap4-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproF77_RM/figures/fig2-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/cache.behavior.solutions.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/critical.segment.execution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/execution.w.gates.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/parallel.code.segments.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/program.execution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/indpndt.segment.execution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/chap13-4.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/one.processor.segment.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/chap13-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/chap13-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/chap11-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/synchronization.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/CLanguageRef/figures/memory.hierarchy.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/caution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11889.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11829.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11839.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11809.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11819.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11849.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11828.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11838.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11808.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11818.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11848.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11858.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11823.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11833.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11813.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11843.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11853.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11822.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11832.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11812.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11842.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11852.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11891.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11821.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11831.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11811.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11841.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11851.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11661.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11890.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11820.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11830.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11810.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11860.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11840.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11850.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11827.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11837.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11807.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11817.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11847.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11857.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11826.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11836.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11806.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11816.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11876.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11846.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11856.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11825.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11835.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11815.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11845.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11855.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11824.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11834.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11814.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11844.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/ProDev_Perf/figures/a11854.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/3.1.link.dso.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/1.1.cmplr.sys.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/4.1.lno.trans.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/6.1.apps.diffABIs.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/2.1.cmplr.ctlflw.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/6.2.lib.loc.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MproCplrDbx_TG/figures/4.1.ipa.diagram.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/caution.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11789.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11759.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11738.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11758.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11733.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11792.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11722.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11712.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11711.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11737.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11735.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11675.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11724.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11734.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Debugger_UG/figures/a11714.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/fig7-2.stack_exmpl.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/fig4-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/fig7-1.stack_org.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/fig6-2.fp_reg.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/Floating.Point.Formats.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MProAsLg_PG/figures/fig7-1A.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/tochtml.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/toc.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/tables.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/figures.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/examples.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/MPro_AP_PG.tag" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/MPro_AP_PG.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/ebt/MPro_AP_PG.edr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/fulltext.hlp" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/tables.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/fulltext.v" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/figures.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/fullhtml.v" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/fulltext.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/tochtml.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/toc.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/figures/power.cmpiler.lite.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/index/vocab.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/index/index.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/index/index.log" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/MPro_AP_PG/booklist.txt" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WrkShp_OV/figures/a11649.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WrkShp_OV/figures/a11652.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WrkShp_OV/figures/a11654.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/WkSpMPF_UG.tag" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/WkSpMPF_UG.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/WkSpMPF_UG.edr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/tochtml.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/toc.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/tables.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/figures.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/ebt/examples.tdr" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/fulltext.rev" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/fulltext.hlp" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/tables.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/fulltext.v" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/figures.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/fullhtml.v" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/examples.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/README" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/fulltext.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/frontmatter" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/media.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/bobindex" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/tochtml.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/toc.tv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/styles/toc.pv" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-6.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-6.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-7.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-7.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-4.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch3-4.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-4.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-5.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch3-5.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-5.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch3-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch3-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-3.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-28.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-18.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-28.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-18.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch3-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-29.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-19.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-29.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-19.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-26.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-16.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-26.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-16.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-27.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-17.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-27.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-17.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-24.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-14.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-24.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-14.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-25.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-15.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-25.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-15.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-22.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-12.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-22.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-12.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/appA-2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-23.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-13.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-23.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-13.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/appA-1.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-8.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-8.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-20.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-30.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-10.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-20.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-30.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-10.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-9.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-9.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-21.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-31.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch4-11.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-21.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/figures/ch2-11.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/index/vocab.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/index/index.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/index/index.log" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/WkSpMPF_UG/booklist.txt" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/libidx/elems/vocab.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Developer/libidx/elems/index.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Admin/libidx/elems/vocab.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Admin/libidx/elems/index.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/index.html" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/clip.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_pen.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_line.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/maybego.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_last.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_next.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_text.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_rect.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/advanced.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/dir.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/appshare.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/unshare.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/share.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_sel.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/product.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/product.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_selw.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/bluedot.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/sendfile.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/ils.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/getstart.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/getstart.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/curcall.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_prev.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/contents.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/chat.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/chat.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/ft.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_sela.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/hlpindx2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/content2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/getstar2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/hangup.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/history.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_circ.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_rptr.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_circf.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/overview.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/overview.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_zoom.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_rectf.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_first.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_add.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/booklist.txt" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/license.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_hlite.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/product2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/call.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/addrbook.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/collab.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/dclink.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/overvie2.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/nmlink.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/wb_lock.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/hlpindex.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/hlpindex.htm" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/SGImeeting_UG/nogo.gif" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/libidx/elems/vocab.dat" \
+							>> "$DEADFILES"
+	echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/libidx/elems/index.dat" \
+							>> "$DEADFILES"
+
+	;;
+esac
