@@ -1,15 +1,15 @@
-# $Id: Makefile,v 1.5 1998-12-03 19:36:36 ghudson Exp $
+# $Id: Makefile,v 1.6 1998-12-25 19:38:00 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
 ATHMANDIR=/usr/athena/man
 
 all:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
@@ -26,13 +26,13 @@ install:
 	install -c -m 0444 save_cluster_info.8 ${DESTDIR}${ATHMANDIR}/man8
 	install -c -m 0555 shutdown_notify.sh \
 		${DESTDIR}${ATHRETCDIR}/shutdown_notify
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1998-06-08 14:19:40 ghudson Exp $
+# $Id: Makefile,v 1.7 1998-12-25 19:37:53 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -14,15 +14,15 @@ ATHXAPPDIR=/usr/athena/lib/X11/app-defaults
 ATHXBITDIR=/usr/athena/include/X11/bitmaps
 
 all:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${ATHETCDIR}
@@ -58,9 +58,9 @@ install:
 	ln -s bin/zmailnotify ${DESTDIR}/usr/athena/zmailnotify
 
 clean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@

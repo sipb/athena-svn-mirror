@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.30 1998-12-25 19:17:28 ghudson Exp $
+# $Id: Makefile,v 1.31 1998-12-25 19:37:57 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -50,14 +50,14 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 	${MOIRA}/man/cat8/update_server.8  ${ATHMANDIR}/cat8/update_server.8
 
 all: ${ATTACHRUN}
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 ${ATTACHRUN}: specs template.sh
 	set `grep '^$@[ 	]' specs`; sed -e "s|@LOCKER@|$$2|g" \
 		-e "s|@PROGRAM@|$@|g" template.sh > $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 install:
 	-mkdir -p ${DESTDIR}/usr
@@ -116,12 +116,12 @@ install:
 	. ../build/version; \
 		vers=$$major.$$minor; \
 		ln -s ${ANDREW}/athena-$$vers/$$HOSTTYPE ${DESTDIR}/usr/andrew
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 clean:
 	rm -f ${ATTACHRUN} verify-message
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 distclean:
 	rm -f ${ATTACHRUN} verify-message
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@

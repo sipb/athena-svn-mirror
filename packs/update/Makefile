@@ -1,17 +1,17 @@
-# $Id: Makefile,v 1.6 1998-03-27 18:12:59 ghudson Exp $
+# $Id: Makefile,v 1.7 1998-12-25 19:38:01 ghudson Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
 CFLAGS=-g
 
 all: upvers
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 upvers: upvers.o
 	${CC} ${LDFLAGS} -o upvers upvers.o ${LIBS}
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 # We're going to cheat and rely on the state of the source tree to find version
 # scripts in vers; the alternative is editing this Makefile for every patch
@@ -26,7 +26,7 @@ install:
 	install -c -m 0555 upvers ${DESTDIR}${UPDATE}
 	rm -f ${DESTDIR}/auto_update
 	ln -s update_ws ${DESTDIR}/auto_update
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris251-26 ${DESTDIR}${UPDATE}
@@ -36,8 +36,8 @@ install:
 
 clean:
 	rm -f upvers.o upvers
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 distclean:
 	rm -f upvers.o upvers
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@

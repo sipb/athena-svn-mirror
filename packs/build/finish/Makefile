@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1997-11-02 17:08:02 ghudson Exp $
+# $Id: Makefile,v 1.5 1998-12-25 19:37:50 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -7,7 +7,7 @@ UPDATE=${ATHLIBDIR}/update
 CFLAGS=-g
 
 all: fix_owners rvdinfo
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 fix_owners: fix_owners.o
 	${CC} -o $@ fix_owners.o
@@ -18,7 +18,7 @@ rvdinfo: ../version
 		echo "Athena RVD ($$HOSTTYPE) Version $$version `date`" > $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 # We generate FILES at install time, which is a violation of the normal
 # build system rules.  It needs to wait until after everything is put
@@ -33,7 +33,7 @@ install:
 			exit 1; \
 		fi; \
 	fi
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	rm -f ${DESTDIR}/patch
 	. ../version; \
@@ -51,8 +51,8 @@ install:
 
 clean:
 	rm -f fix_owners.o fix_owners rvdinfo FILES
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 
 distclean:
 	rm -f fix_owners.o fix_owners rvdinfo FILES
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@

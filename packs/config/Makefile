@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.18 1998-11-02 15:07:11 ghudson Exp $
+# $Id: Makefile,v 1.19 1998-12-25 19:37:54 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -8,11 +8,11 @@ ATHMANDIR=/usr/athena/man
 CONFIG=/afs/athena.mit.edu/system/config
 
 all:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
@@ -54,13 +54,13 @@ install:
 		vers=$$major.$$minor; \
 		ln -s ${CONFIG}/dash/Dash.menus-$$vers \
 			${DESTDIR}${ATHLIBDIR}/Dash.menus;
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1998-03-17 04:06:04 cfields Exp $
+# $Id: Makefile,v 1.6 1998-12-25 19:37:55 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -7,11 +7,11 @@ SYSTEM=/usr/athena/lib/init
 ATHMANDIR=/usr/athena/man
 
 all:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
@@ -37,13 +37,13 @@ install:
 	install -c -m 0644 temp.mh_profile ${DESTDIR}${PROTOTMP}/.mh_profile
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
-	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
