@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.12 1999-10-22 14:35:26 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.13 2001-06-19 19:36:22 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  1999/10/22 14:35:26  ghudson
+ * Use free, not krb5_xfree.
+ *
  * Revision 1.11  1999/03/08 18:20:00  danw
  * merge changes
  *
@@ -211,6 +214,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   krb5_ccache ccache = NULL;
   struct passwd *pwd;
   extern char *ticket;
+  char *oticket = ticket;
   static krb5_principal rcache_server = 0;
   static krb5_rcache rcache;
   struct sockaddr_in local, foreign;
@@ -328,6 +332,11 @@ errout2:
   krb5_cc_destroy(ssh_context, ccache);
 errout:
   krb5_free_tgt_creds(ssh_context, creds);
+  if (ticket != oticket)
+    {
+      free(ticket);
+      ticket = oticket;
+    }
   log_msg("Kerberos V5 tgt rejected for user %.100s :%.100s", server_user,
 	  error_message(retval));
   packet_send_debug("Kerberos V5 tgt rejected for %.100s : %.100s", server_user,
