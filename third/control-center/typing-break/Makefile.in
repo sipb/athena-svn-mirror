@@ -413,16 +413,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-drw-break-window.o: drw-break-window.c ../config.h drwright.h \
-	drw-utils.h drw-break-window.h
-drw-monitor.o: drw-monitor.c ../config.h drw-monitor.h
-drw-selection.o: drw-selection.c ../config.h drw-selection.h
-drw-utils.o: drw-utils.c ../config.h drw-utils.h
-drwright.o: drwright.c ../config.h drwright.h drw-break-window.h \
-	drw-monitor.h drw-utils.h eggtrayicon.h egg-spawn.h
-egg-spawn.o: egg-spawn.c ../config.h egg-spawn.h
-eggtrayicon.o: eggtrayicon.c eggtrayicon.h
-main.o: main.c ../config.h drw-selection.h drwright.h
 
 info-am:
 info: info-am

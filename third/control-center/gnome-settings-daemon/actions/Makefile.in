@@ -220,7 +220,7 @@ libacme_la_SOURCES = \
 
 
 libacme_la_LIBADD = \
-	$(ALSA_LIBS) $(GST_LIBS)
+	$(GST_LIBS) $(ALSA_LIBS)
 
 
 Datadir = $(datadir)/control-center-2.0/interfaces/
@@ -500,17 +500,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-acme-fb-level.lo acme-fb-level.o : acme-fb-level.c ../../config.h \
-	acme-fb-level.h
-acme-volume-alsa.lo acme-volume-alsa.o : acme-volume-alsa.c \
-	../../config.h acme-volume-alsa.h acme-volume.h
-acme-volume-dummy.lo acme-volume-dummy.o : acme-volume-dummy.c \
-	../../config.h acme-volume-dummy.h acme-volume.h
-acme-volume-oss.lo acme-volume-oss.o : acme-volume-oss.c ../../config.h \
-	acme-volume-oss.h acme-volume.h
-acme-volume.lo acme-volume.o : acme-volume.c ../../config.h \
-	acme-volume.h acme-volume-oss.h acme-volume-alsa.h \
-	acme-volume-dummy.h
 
 info-am:
 info: info-am

@@ -1,3 +1,121 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2005-01-31  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2005-01-29  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2004-12-13  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* zu.po: Added Zulu translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-11-29  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Updated Northern Sotho translation.
+
+2004-11-28  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Added Northern Sotho translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-11-28  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation
+
+2004-11-24  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-11-22  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-11-08  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Vladimir Petkov <vpetkov@i-space.org>
+
+2004-10-31  Hendrik Richter <hendrik@gnome-de.org>
+
+	* de.po: Updated German translation.
+	Fix by Moritz Mekelburger <moritz@unix-ag.org>
+
+2004-10-26  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-24  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-14  Leonid Kanter <leon@asplinux.ru>
+
+	* ru.po: Updated Russian translation
+
+2004-10-13  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-10-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+2004-10-13  David Lodge <dave@cirt.net>
+                                                                                
+        * en_GB.po: Updated British English translation.
+                                                                                
+2004-10-13  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-07  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Fixed a couple of spelling mistakes in the Danish translation.
+
+2004-10-06  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-09-29  Leonid Kanter <leon@asplinux.ru>
+
+	* ru.po: fixed some problems in Russian translation
+
+2004-09-25  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-09-25  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-21  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Alessio Dessi <alkex@inwind.it>.
+
+2004-09-17  Nikos Charonitakis  <charosn@her.forthnet.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-09-15  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
 2004-09-12  Paisa Seeluangsawat  <paisa@users.sf.net>
 
 	* th.po: Updated Thai translation.

@@ -39,7 +39,7 @@ GnomeWPItem * gnome_wp_item_new (const gchar * filename,
 
   item = g_new0 (GnomeWPItem, 1);
   
-  item->filename = g_strdup (filename);
+  item->filename = gnome_vfs_unescape_string_for_display (filename);
 
   item->fileinfo = gnome_wp_info_new (item->filename, thumbnails);
 
@@ -89,8 +89,11 @@ void gnome_wp_item_free (GnomeWPItem * item) {
   g_free (item->pri_color);
   g_free (item->sec_color);
 
-  gdk_color_free (item->pcolor);
-  gdk_color_free (item->scolor);
+  if (item->pcolor != NULL)
+    gdk_color_free (item->pcolor);
+
+  if (item->scolor != NULL)
+    gdk_color_free (item->scolor);
 
   gnome_wp_info_free (item->fileinfo);
   gnome_wp_info_free (item->uriinfo);
@@ -283,10 +286,10 @@ void gnome_wp_item_update_description (GnomeWPItem * item) {
 			    item->width,
 			    item->height);
 
-    item->description = g_strdup_printf ("<b>%s</b>\n"
-					 "%s",
-					 item->name,
-					 info);
+    item->description = g_markup_printf_escaped ("<b>%s</b>\n"
+						 "%s",
+						 item->name,
+						 info);
 
     g_free (info);
   }

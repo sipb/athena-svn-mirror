@@ -1,3 +1,48 @@
+2004-11-26  Sebastien Bacher  <seb128@debian.org>
+
+       * gnome-default-applications-properties.glade: Mask the "Text Editor"
+       tab since it's not used by the new mime system.
+
+2004-10-21  Sebastien Bacher  <seb128@debian.org>
+
+	* gnome-default-applications-properties.c: (read_browser),
+	(read_mailer):
+	don't crash if the browser list or the mailer list is empty
+	(Closes: #151672).
+
+2004-10-17  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gnome-default-applications-properties-structs.c: Corrected confused
+	Firefox entry. Corrected w3m binary name.
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-14  Sebastien Bacher  <seb128@debian.org>
+
+	* gnome-default-applications-properties.c: (setup_peditors),
+	(read_browser), (value_changed_cb): Use the Web Browser for https too.
+	(Closes: #123487).
+	
+2004-10-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-default-applications-properties-structs.c: Revert string
+	changes and add entries for Firefox on Debian and Fedora with
+	new binary names. Original patch from jdassen at debian org.
+	Closes part of bug #155246. The original patch should go into HEAD
+	after branching.
+	* gnome-default-applications-properties.c: (browser_setup_custom),
+	(mailer_setup_custom), (terminal_setup_custom): Use the binary
+	that's found in the path. Patch by seb128 at debian org. Closes
+	bug #148991.
+
+2004-10-12  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gnome-default-applications-properties-structs.c: Added Mozilla
+	Firefox, Debian's "sensible-browser" and Debian's
+	"x-terminal-emulator"; corrected typo in "w3m" binary name.
+
 2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gnome-default-applications-properties.c: (create_dialog):

@@ -411,30 +411,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-activate-settings-daemon.lo activate-settings-daemon.o : \
-	activate-settings-daemon.c ../../config.h \
-	activate-settings-daemon.h
-capplet-stock-icons.lo capplet-stock-icons.o : capplet-stock-icons.c \
-	capplet-stock-icons.h
-capplet-util.lo capplet-util.o : capplet-util.c ../../config.h \
-	capplet-util.h
-file-transfer-dialog.lo file-transfer-dialog.o : file-transfer-dialog.c \
-	../../config.h file-transfer-dialog.h
-gconf-property-editor-marshal.lo gconf-property-editor-marshal.o : \
-	gconf-property-editor-marshal.c gconf-property-editor-marshal.h
-gconf-property-editor.lo gconf-property-editor.o : \
-	gconf-property-editor.c ../../config.h gconf-property-editor.h \
-	gconf-property-editor-marshal.h
-gnome-theme-apply.lo gnome-theme-apply.o : gnome-theme-apply.c \
-	../../libwindow-settings/gnome-wm-manager.h \
-	../../libwindow-settings/gnome-window-manager.h \
-	gnome-theme-apply.h gnome-theme-info.h
-gnome-theme-info.lo gnome-theme-info.o : gnome-theme-info.c \
-	gnome-theme-info.h
-gnome-theme-test.o: gnome-theme-test.c gnome-theme-info.h
-theme-thumbnail.lo theme-thumbnail.o : theme-thumbnail.c ../../config.h \
-	theme-thumbnail.h gnome-theme-info.h capplet-util.h
-wm-common.lo wm-common.o : wm-common.c wm-common.h
 
 info-am:
 info: info-am

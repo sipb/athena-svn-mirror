@@ -356,8 +356,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-applier.lo applier.o : applier.c ../config.h applier.h preferences.h
-preferences.lo preferences.o : preferences.c ../config.h preferences.h
 
 info-am:
 info: info-am

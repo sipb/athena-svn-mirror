@@ -139,6 +139,11 @@
         <long>Beállítja ezt a billentyűt a telepített témák előnézetének létrehozására használt parancshoz.</long>
       </locale>
 
+      <locale name="id">
+        <short>Perintah pembuat gambar-gambar kecil untuk membuat contoh tampilan tema terpasang.</short>
+        <long>Tulis perintah pembuat gambar-gambar kecil untuk membuat contoh tampilan tema terpasang pada key ini.</long>
+      </locale>
+
       <locale name="is">
         <short>Smámyndaskipun fyrir uppsett þemu</short>
         <long>Stilltu þennan lykil á skipunina sem notuð er til að smámynda uppsett þemu.</long>
@@ -204,9 +209,14 @@
         <long>Sett denne nøkkelen til kommandoen som skal brukes for å lage miniatyrer for installerte tema.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa dihlogo tše tsentšhitšwego</short>
+        <long>Beakanya senotlelo se go taelo e dirišeditšwego go hlama dikhutsofatšo bakeng sa dihlogo tše tsentšhitšwego.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਇੰਸਟਾਲ ਸਰੂਪਾਂ ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਇੰਸਟਾਲ ਸਰੂਪਾਂ ਦੇ ਥੰਬਨੇਲ ਬਣਾਉਣ ਲਈ ਵਰਤਣੀ ਕਮਾਂਡ ਨੂੰ ਇਹ ਜੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <long>ਇੰਸਟਾਲ ਸਰੂਪਾਂ ਦੇ ਥੰਬਨੇਲ ਬਣਾਉਣ ਲਈ ਵਰਤਣੀ ਕਮਾਂਡ ਨੂੰ ਇਹ ਜੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -297,6 +307,11 @@
       <locale name="zh_TW">
         <short>為已安裝的佈景主題製作縮圖所用的指令</short>
         <long>本設定鍵的內容是為已安裝的佈景主題製作縮圖所用的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Umyalo wokugcizelela wendikima ezifakiwe</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo kwindikima ezifakiwe.</long>
       </locale>
     </schema>
     <schema>
@@ -436,6 +451,11 @@
         <long>Ha be van állítva, a telepített témák előnézete megjelenik.</long>
       </locale>
 
+      <locale name="id">
+        <short>Menentukan apakah ingin  membuat contoh tampilan tema terpasang.</short>
+        <long>Jika diset, semua tema terpasang akan disiapkan ukuran kecilnya.</long>
+      </locale>
+
       <locale name="is">
         <short>Á að smámynda uppsett þemu</short>
         <long>Ef satt verða uppsett þemu smámynduð</long>
@@ -501,9 +521,14 @@
         <long>Installerte tema vil ha miniatyrvisninger hvis denne settes til «true».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba khutsofatšo e tsentšhitše dihlogo</short>
+        <long>Ge eba e beakantšwe gore e be therešo, gona dihlogo tše tsentšhitšwego e tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕੀ ਇੰਸਟਾਲ ਸਰੂਪ ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਸੱਚ ਹੈ ਤਾਂ, ਇੰਸਟਾਲ ਸਰੂਪ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <long>ਜੇਕਰ ਸੱਚ ਹੈ ਤਾਂ, ਇੰਸਟਾਲ ਸਰੂਪ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -594,6 +619,11 @@
       <locale name="zh_TW">
         <short>是否為已安裝的佈景主題製作縮圖</short>
         <long>如選用本選項，則會為已安裝的佈景主題製作縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Ngabe uzogcizelela izihloko ngesithupha ezifakiwe</short>
+        <long>Uma ihlelelwe iqiniso, manje indikima ezifakiwe zizogcizelelwa.</long>
       </locale>
     </schema>
 
@@ -735,6 +765,11 @@
         <long>Beállítja ezt a billentyűt a témák előnézetének létrehozására használt parancshoz.</long>
       </locale>
 
+      <locale name="id">
+        <short>Perintah pembuat gambar-gambar kecil untuk membuat contoh tampilan tema.</short>
+        <long>Tulis perintah pembuat gambar-gambar kecil untuk membuat contoh tampilan tema pada key ini.</long>
+      </locale>
+
       <locale name="is">
         <short>Smámyndaskipun fyrir þemu</short>
         <long>Stilltu þennan lykil á skipunina sem notuð er til að smámynda öll þemu.</long>
@@ -800,9 +835,14 @@
         <long>Sett denne nøkkelen til kommandoen som brukes for å lage miniatyrer for tema.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa dihlogo</short>
+        <long>Beakanya senotlelo go taelo e dirišeditšwego go hlama dikhutsofatšo bakeng sa dihlogo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਰੂਪਾਂ ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਸਰੂਪਾਂ ਦੇ ਥੰਬਨੇਲ ਬਣਾਉਣ ਲਈ ਵਰਤਣੀ ਕਮਾਂਡ ਨੂੰ ਇਹ ਜੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <long>ਸਰੂਪਾਂ ਦੇ ਥੰਬਨੇਲ ਬਣਾਉਣ ਲਈ ਵਰਤਣੀ ਕਮਾਂਡ ਨੂੰ ਇਹ ਜੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -893,6 +933,11 @@
       <locale name="zh_TW">
         <short>為佈景主題製作縮圖所用的指令</short>
         <long>本設定鍵的內容是為佈景主題製作縮圖所用的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Umyalo wokugcizelela wendikima</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo kwindikima.</long>
       </locale>
     </schema>
     <schema>
@@ -1032,6 +1077,11 @@
         <long>Ha be van állítva, a témák előnézete megjelenik.</long>
       </locale>
 
+      <locale name="id">
+        <short>Menentukan apakah ingin  membuat contoh tampilan tema.</short>
+        <long>Jika diset, semua tema terpasang akan disiapkan ukuran kecilnya.</long>
+      </locale>
+
       <locale name="is">
         <short>Á að smámynda þemu</short>
         <long>Ef satt verða þemu smámynduð</long>
@@ -1097,9 +1147,14 @@
         <long>Tema vil ha miniatyrer hvis denne settes til «true».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba go swanetše go khutsofatšwe dihlogo</short>
+        <long>Ge eba e beakantšwe gore e be therešo, gona dihlogo di tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕੀ ਸਰੂਪ ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਸੱਚ ਹੈ ਤਾਂ, ਸਰੂਪ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <long>ਜੇਕਰ ਸੱਚ ਹੈ ਤਾਂ, ਸਰੂਪ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -1190,6 +1245,11 @@
       <locale name="zh_TW">
         <short>是否為佈景主題製作縮圖</short>
         <long>如選用本選項，則會為佈景主題製作縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Ngabe uzogcizelela izihloko ngesithupha</short>
+        <long>Uma ihlelelwe iqiniso, manje indikima zizogcizelelwa.</long>
       </locale>
     </schema>
 

@@ -1,3 +1,47 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+	* Release 2.8.2.
+
+2005-01-04  Shakti Sen <shprasad@novell.com>
+
+	* configure.in: Defined PREFIX to <prefix> 
+	bug #153203
+	
+2005-01-03  Dan Winship  <danw@novell.com>
+
+	* configure.in: Remove redundant check for ngettext, since
+	AM_GLIB_GNU_GETTEXT already checks for it (in both libc and
+	libintl).
+	
+2004-12-13  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-11-28  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-11-01  Jeff Waugh  <jdub@perkypants.org>
+
+	* po/POTFILES.in, vfs-methods/fontilus/Makefile.am,
+	  vfs-methods/fontilus/gnome-font-viewer.desktop.in,
+	  vfs-methods/fontilus/.cvsignore: Add a .desktop file for the
+	  font viewer, need it for the MIME loving. D'oh!
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* gnome-settings-daemon/actions/Makefile.am: switch ALSA_LIBS and 
+	  GST_LIBS order in libacme_la_LIBADD, fixes some libtool link
+	  issues on Debian.
+
 Tue Sep 14 17:50:56 2004  Jonathan Blandford  <jrb@redhat.com>
 
 	* configure.in:

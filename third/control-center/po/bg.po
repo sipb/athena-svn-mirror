@@ -4,21 +4,21 @@
 # small updates, Yanko Kaneti <yaneti@declera.com>, 2002.
 # small updates, Vladimir Petkov <vpetkov@i-space.org>, 2004. 
 # Rostislav Raykov <zbrox@i-space.org>, 2004.
-# Vladimir "Kaladan " Petkov <vpetkov@i-space.org>, 2004.
-# Rostislav Raykov <zbrox@i-space.org>, 2004.
+# Vladimir Petkov <vpetkov@i-space.org>, 2004.
 # 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-control-center 2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-14 13:27-0400\n"
-"PO-Revision-Date: 2004-08-04 20:13+0300\n"
-"Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
+"POT-Creation-Date: 2005-02-21 13:27+0100\n"
+"PO-Revision-Date: 2004-11-28 14:22+0200\n"
+"Last-Translator: Vladimir Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian GNOME translation team <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: capplets/accessibility/at-properties/at-enable-dialog.glade.h:1
 msgid "<b>Applications</b>"
@@ -42,7 +42,7 @@ msgstr "Настройки на технологиите за асистиран
 
 #: capplets/accessibility/at-properties/at-enable-dialog.glade.h:5
 msgid "Close and _Log Out"
-msgstr "Затваряне и _Излизане"
+msgstr "Затваряне и _излизане"
 
 #: capplets/accessibility/at-properties/at-enable-dialog.glade.h:6
 msgid "Start these assistive technologies every time you log in:"
@@ -118,7 +118,7 @@ msgstr "Внасяне на настройки от файл"
 
 #: capplets/accessibility/keyboard/accessibility-keyboard.c:437
 msgid "_Import"
-msgstr "Внасяне"
+msgstr "_Внасяне"
 
 #: capplets/accessibility/keyboard/accessibility-keyboard.desktop.in.h:1
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:20
@@ -158,23 +158,23 @@ msgstr "*"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
 msgid "<b>Enable Bo_unce Keys</b>"
-msgstr "<b>Включване на подскачащите клавиши</b>"
+msgstr "<b>Включване на \"Подскачащите клавиши\"</b>"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
 msgid "<b>Enable Slo_w Keys</b>"
-msgstr "<b>Включване на Бавните клавиши</b>"
+msgstr "<b>Включване на \"Бавните клавиши\"</b>"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
 msgid "<b>Enable _Mouse Keys</b>"
-msgstr "<b>Включване на Клавишите за _Мишката</b>"
+msgstr "<b>Включване на \"Клавишите за _мишката\"</b>"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
 msgid "<b>Enable _Repeat Keys</b>"
-msgstr "<b>Включване на повторните клавиши</b>"
+msgstr "<b>Включване на \"Повторните клавиши\"</b>"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
 msgid "<b>Enable _Sticky Keys</b>"
-msgstr "<b>Включване на _Лепкавите клавиши</b>"
+msgstr "<b>Включване на \"_Лепкавите клавиши\"</b>"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
 msgid "<b>Features</b>"
@@ -252,11 +252,11 @@ msgstr "_Максимална скорост на курсора:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid "Mouse Keys"
-msgstr "Клавиши на Мишката"
+msgstr "Клавиши на мишката"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
 msgid "Mouse _Preferences..."
-msgstr "_Настройка на Мишката..."
+msgstr "_Настройка на мишката..."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
 msgid ""
@@ -343,23 +343,23 @@ msgstr "секунди"
 
 #: capplets/background/background.desktop.in.h:1
 msgid "Change your Desktop Background settings"
-msgstr "Промяна на настройките на фона на работното място"
+msgstr "Промяна на настройките на фона на работния плот"
 
 #: capplets/background/background.desktop.in.h:2
 msgid "Desktop Background"
-msgstr "Фон на Работното място"
+msgstr "Фон на работния плот"
 
 #: capplets/background/gnome-background-properties.glade.h:1
 msgid "<b>Desktop _Wallpaper</b>"
-msgstr "<b>Тапет на Работното място</b>"
+msgstr "<b>Тапет на работния плот</b>"
 
 #: capplets/background/gnome-background-properties.glade.h:2
 msgid "<b>_Desktop Colors</b>"
-msgstr "<b>Цветове на Работното място</b>"
+msgstr "<b>Цветове на работния плот</b>"
 
 #: capplets/background/gnome-background-properties.glade.h:3
 msgid "Desktop Background Preferences"
-msgstr "Настройки на фона на Работното място"
+msgstr "Настройки на фона на работното място"
 
 #: capplets/background/gnome-background-properties.glade.h:4
 msgid "Pick a color"
@@ -367,7 +367,7 @@ msgstr "Избор на цвят"
 
 #: capplets/background/gnome-background-properties.glade.h:5
 msgid "_Add Wallpaper"
-msgstr "_Добавяне на Тапет"
+msgstr "_Добавяне на тапет"
 
 #: capplets/background/gnome-background-properties.glade.h:6
 msgid "_Style:"
@@ -418,11 +418,11 @@ msgstr "Вертикална преливка"
 #. Create the file chooser dialog stuff here
 #: capplets/background/gnome-wp-capplet.c:1232
 msgid "Add Wallpaper"
-msgstr "Добавяне на Тапет"
+msgstr "Добавяне на тапет"
 
 #: capplets/background/gnome-wp-info.c:49
 msgid "No Wallpaper"
-msgstr "Без Тапет"
+msgstr "Без тапет"
 
 #: capplets/common/activate-settings-daemon.c:18
 msgid ""
@@ -434,7 +434,7 @@ msgid ""
 msgstr ""
 "\"gnome-settings-daemon\" не може да бъде стартиран.\n"
 "Без него някой настроки няма да имат ефект. Това може да създаде проблем с "
-"Bonobo, или програми които не са на GNOME (например KDE)."
+"Bonobo, или програми, които не са на GNOME (например KDE)."
 
 #: capplets/common/capplet-stock-icons.c:94
 #, c-format
@@ -446,7 +446,7 @@ msgid "Just apply settings and quit"
 msgstr "Прилагане на настройките и излизане"
 
 #: capplets/common/capplet-util.c:243
-#: capplets/default-applications/gnome-default-applications-properties.c:735
+#: capplets/default-applications/gnome-default-applications-properties.c:765
 #: capplets/keyboard/gnome-keyboard-properties.c:224
 #: capplets/mouse/gnome-mouse-properties.c:812
 #: capplets/sound/sound-properties-capplet.c:244
@@ -554,7 +554,7 @@ msgstr ""
 
 #: capplets/common/gconf-property-editor.c:189
 msgid "Conversion to widget callback"
-msgstr ""
+msgstr "Преобразуване към обратно повикване на графичен обект"
 
 #: capplets/common/gconf-property-editor.c:190
 msgid ""
@@ -565,7 +565,7 @@ msgstr ""
 
 #: capplets/common/gconf-property-editor.c:195
 msgid "Conversion from widget callback"
-msgstr ""
+msgstr "Преобразуване от обратно повикване на графичен обект"
 
 #: capplets/common/gconf-property-editor.c:196
 msgid ""
@@ -592,11 +592,13 @@ msgstr "Потребителски данни изисквани от задад
 
 #: capplets/common/gconf-property-editor.c:224
 msgid "Property editor data freeing callback"
-msgstr ""
+msgstr "Обратно повикване, което освобождава данни на редактора на свойства"
 
 #: capplets/common/gconf-property-editor.c:225
 msgid "Callback to be issued when property editor object data is to be freed"
 msgstr ""
+"Обратно повикване, което да се извика при освобождаване на данни от "
+"редактора на свойства"
 
 #: capplets/common/gconf-property-editor.c:1543
 #, c-format
@@ -635,7 +637,7 @@ msgstr "_Избиране"
 #: capplets/default-applications/default-applications.desktop.in.h:1
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:18
 msgid "Preferred Applications"
-msgstr "Предпочитани Програми"
+msgstr "Предпочитани програми"
 
 #: capplets/default-applications/default-applications.desktop.in.h:2
 msgid "Select your default applications"
@@ -654,82 +656,84 @@ msgid "Encompass"
 msgstr "Encompass"
 
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:12
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:13
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:14
 msgid "Firebird/FireFox"
 msgstr "Firebird/FireFox"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:13
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:14
-msgid "Mozilla/Netscape 6"
-msgstr "Mozilla/Netscape·6"
-
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:15
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:16
+msgid "Mozilla/Netscape 6"
+msgstr "Mozilla/Netscape 6"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:17
 msgid "Netscape Communicator"
 msgstr "Netscape Communicator"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:16
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:18
 msgid "Konqueror"
 msgstr "Konqueror"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:17
-msgid "W3M Text Browser"
-msgstr "W3M Текстов Интернет Браузър"
-
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:18
-msgid "Lynx Text Browser"
-msgstr "Lynx Текстов Интернет Браузър"
-
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:19
+msgid "W3M Text Browser"
+msgstr "W3M текстов интернет браузър"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:20
+msgid "Lynx Text Browser"
+msgstr "Lynx текстов интернет браузър"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:21
 msgid "Links Text Browser"
-msgstr "Links Текстов Интернет Браузър"
+msgstr "Links текстов интернет браузър"
 
 #. The code in gnome-default-applications-properties.c makes sure
 #. * there is only one (the first entry in this list) Evolution entry
 #. * in the list shown to the user
 #.
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:34
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:35
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:36
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:37
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:38
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:39
 msgid "Evolution Mail Reader"
 msgstr "Evolution - Пощенска програма"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:38
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:40
 msgid "Balsa"
 msgstr "Balsa"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:39
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:41
 msgid "KMail"
 msgstr "KMail"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:40
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:42
 msgid "Mozilla Mail"
 msgstr "Mozilla Mail"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:41
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:43
 msgid "Mutt"
 msgstr "Mutt"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:52
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:54
 msgid "Gnome Terminal"
-msgstr "Gnome Терминал"
+msgstr "Терминал на Gnome"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:53
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:55
 msgid "Standard XTerminal"
 msgstr "Стандартен XTerminal"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:54
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:56
 msgid "NXterm"
 msgstr "NXterm"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:55
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:57
 msgid "RXVT"
 msgstr "RXVT"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:56
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:58
 msgid "ETerm"
 msgstr "ETerm"
 
-#: capplets/default-applications/gnome-default-applications-properties.c:108
+#: capplets/default-applications/gnome-default-applications-properties.c:123
 msgid "Please specify a name and a command for this editor."
 msgstr "Моля, задайте име и команда за този редактор."
 
@@ -739,19 +743,19 @@ msgstr "Добавяне..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:3
 msgid "C_ustom Editor"
-msgstr "По_требителски Редактор"
+msgstr "По_требителски редактор"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:4
 msgid "C_ustom Mail Reader:"
-msgstr "Лична пощенска програма:"
+msgstr "Потребителска пощенска програма:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:5
 msgid "C_ustom Terminal:"
-msgstr "Пот_ребителски Терминал:"
+msgstr "Пот_ребителски терминал:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:6
 msgid "C_ustom Web Browser:"
-msgstr "Потребите_лски Интернет Браузер:"
+msgstr "Потребите_лски интернет браузер:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:7
 msgid "Co_mmand:"
@@ -759,27 +763,27 @@ msgstr "_Команда:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:8
 msgid "Custom Editor Properties"
-msgstr "Потребителски Редактор за Свойства"
+msgstr "Потребителски редактор за настройки"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:9
 msgid "Default Mail Reader"
-msgstr "Подразбираща се Пощенска програма"
+msgstr "Стандартна пощенска програма"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:10
 msgid "Default Terminal"
-msgstr "Подразбиращ се Терминал"
+msgstr "Стандартен терминал"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:11
 msgid "Default Text Editor"
-msgstr "Подразбиращ се Текстови Редактор"
+msgstr "Стандартен текстови редактор"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:12
 msgid "Default Web Browser"
-msgstr "Подразбиращ се Интернет браузер"
+msgstr "Стандартен интернет браузър"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:13
 msgid "Default Window Manager"
-msgstr "Подразбиращ се Мениджър на прозорци"
+msgstr "Стандартен мениджър на прозорци"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:14
 msgid "Delete"
@@ -787,7 +791,7 @@ msgstr "Изтриване"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:15
 msgid "E_xec Flag:"
-msgstr "_Флаг за Изпълнение:"
+msgstr "_Флаг за изпълнение:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:16
 msgid "Edit..."
@@ -795,7 +799,7 @@ msgstr "Редактиране..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:17
 msgid "Mail Reader"
-msgstr "Пощенска Програма"
+msgstr "Пощенска програма"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:19
 msgid ""
@@ -805,7 +809,7 @@ msgstr "Изберете желания мениджър на прозорци. 
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:20
 msgid "Start in T_erminal"
-msgstr "Старти_ране в Терминал"
+msgstr "Старти_ране в терминал"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:21
 msgid "Terminal"
@@ -813,7 +817,7 @@ msgstr "Терминал"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:22
 msgid "Text Editor"
-msgstr "Текстови Редактор"
+msgstr "Текстови редактор"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:23
 msgid "This application can open _URIs"
@@ -829,7 +833,7 @@ msgstr "Тази програма изисква да бъде изпълнен�
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:26
 msgid "Understands _Netscape Remote Control"
-msgstr "Разбира Отдалечен Контрол на _Netscape"
+msgstr "Разбира отдалечен контрол на _Netscape"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:27
 msgid "Use this _editor to open text files in the file manager"
@@ -839,11 +843,11 @@ msgstr ""
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:28
 msgid "Web Browser"
-msgstr "Интернет Браузър"
+msgstr "Интернет браузър"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:29
 msgid "Window Manager"
-msgstr "Мениджър на Прозорци"
+msgstr "Мениджър на прозорци"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:30
 #: capplets/file-types/file-types-properties.glade.h:23
@@ -856,19 +860,19 @@ msgstr "_Свойства..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:32
 msgid "_Select a Mail Reader:"
-msgstr "_Избор на Пощенска програма:"
+msgstr "_Избор на пощенска програма:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:33
 msgid "_Select a Terminal:"
-msgstr "Из_бор на Терминал:"
+msgstr "Из_бор на терминал:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:34
 msgid "_Select a Web Browser:"
-msgstr "Избор на _Инетрнет Браузър:"
+msgstr "Избор на _интернет браузър:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:35
 msgid "_Select an Editor:"
-msgstr "И_збор на Редактор:"
+msgstr "И_збор на редактор:"
 
 #: capplets/desktop-links/Accessibility.directory.in.h:1
 msgid "Accessibility"
@@ -909,7 +913,7 @@ msgstr "Опресняване:"
 
 #: capplets/display/main.c:476
 msgid "Default Settings"
-msgstr "Подразбиращи се настройки"
+msgstr "Настройки по подразбиране"
 
 #: capplets/display/main.c:478
 #, c-format
@@ -930,7 +934,7 @@ msgid "Options"
 msgstr "Опции"
 
 #: capplets/display/main.c:580
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Testing the new settings. If you don't respond in %d second the previous "
 "settings will be restored."
@@ -938,13 +942,11 @@ msgid_plural ""
 "Testing the new settings. If you don't respond in %d seconds the previous "
 "settings will be restored."
 msgstr[0] ""
-"Тестват се новите настройки. Ако не реагирате до %d секунда, "
-"старитенастройки ще бъдат възстановени.Тестват се новите настройки. Ако не "
-"реагирате до %d секунди, старитенастройки ще бъдат възстановени."
+"Тестват се новите настройки. Ако не реагирате до %d секунда, старите "
+"настройки ще бъдат възстановени."
 msgstr[1] ""
-"Тестват се новите настройки. Ако не реагирате до %d секунда, "
-"старитенастройки ще бъдат възстановени.Тестват се новите настройки. Ако не "
-"реагирате до %d секунди, старитенастройки ще бъдат възстановени."
+"Тестват се новите настройки. Ако не реагирате до %d секунди, старите "
+"настройки ще бъдат възстановени."
 
 #: capplets/display/main.c:626
 msgid "Keep Resolution"
@@ -994,7 +996,7 @@ msgstr "Разширения"
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 #: capplets/file-types/file-types-properties.glade.h:11
 msgid "File Types and Programs"
-msgstr "Типове Файлове и Програми"
+msgstr "Типове файлове и програми"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
@@ -1004,15 +1006,15 @@ msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:2
 msgid "Actions"
-msgstr "Действие"
+msgstr "Действия"
 
 #: capplets/file-types/file-types-properties.glade.h:3
 msgid "Add _File Type..."
-msgstr "Доба_вяне на Тип Файл..."
+msgstr "Доба_вяне на тип файл..."
 
 #: capplets/file-types/file-types-properties.glade.h:4
 msgid "Add _Service..."
-msgstr "Добав_яне на Услуга..."
+msgstr "Добав_яне на услуга..."
 
 #: capplets/file-types/file-types-properties.glade.h:5
 msgid "Browse icons"
@@ -1061,7 +1063,7 @@ msgstr "Стартиране на програма"
 
 #: capplets/file-types/file-types-properties.glade.h:17
 msgid "Run in _Terminal"
-msgstr "Стартиране в _Терминал"
+msgstr "Стартиране в _терминал"
 
 #: capplets/file-types/file-types-properties.glade.h:18
 msgid "Use parent category _defaults"
@@ -1122,7 +1124,7 @@ msgstr "Модел"
 
 #: capplets/file-types/mime-category-edit-dialog.c:173
 msgid "GtkTreeModel that contains the category data"
-msgstr "Gtk Дървовиден Модел, съдържащ категорията данни"
+msgstr "GtkTreeModel, съдържащ категорията данни"
 
 #: capplets/file-types/mime-category-edit-dialog.c:178
 msgid "MIME category info"
@@ -1166,7 +1168,7 @@ msgstr "Истина, ако този диалог е за добавяне на
 
 #: capplets/file-types/mime-edit-dialog.c:320
 msgid "Add File Type"
-msgstr "Добавяне на Тип Файлове"
+msgstr "Добавяне на тип файлове"
 
 #: capplets/file-types/mime-edit-dialog.c:432
 #: capplets/file-types/mime-type-info.c:766
@@ -1223,7 +1225,7 @@ msgstr "Само модел за категории"
 
 #: capplets/file-types/mime-types-model.c:422
 msgid "Internet Services"
-msgstr "Интернет Услуги"
+msgstr "Интернет услуги"
 
 #: capplets/file-types/service-edit-dialog.c:135
 msgid "Edit service information"
@@ -1247,7 +1249,7 @@ msgstr "ИСТИНА ако това е диалогов прозорец за �
 
 #: capplets/file-types/service-edit-dialog.c:225
 msgid "Add Service"
-msgstr "Добавяне на Услуга"
+msgstr "Добавяне на услуга"
 
 #: capplets/file-types/service-edit-dialog.c:497
 msgid "Please enter a protocol name."
@@ -1275,7 +1277,7 @@ msgstr "WWW"
 
 #: capplets/file-types/service-info.c:46
 msgid "File transfer protocol"
-msgstr "Протокол за Пренос на Файлове"
+msgstr "Протокол за пренос на файлове"
 
 #: capplets/file-types/service-info.c:47
 msgid "Detailed documentation"
@@ -1299,7 +1301,7 @@ msgstr "Шрифт"
 
 #: capplets/font/font-properties.desktop.in.h:2
 msgid "Select fonts for the desktop"
-msgstr "Избор на шрифт за работното място"
+msgstr "Избор на шрифт за работния плот"
 
 #: capplets/font/font-properties.glade.h:2
 msgid "<b>Font Rendering</b>"
@@ -1331,7 +1333,7 @@ msgstr "Под_робности..."
 
 #: capplets/font/font-properties.glade.h:9
 msgid "Font Preferences"
-msgstr "Настройки на Шрифт"
+msgstr "Настройки на шрифтовете"
 
 #: capplets/font/font-properties.glade.h:10
 msgid "Font Rendering Details"
@@ -1359,7 +1361,7 @@ msgstr "Задаване на шрифта за програмите"
 
 #: capplets/font/font-properties.glade.h:16
 msgid "Set the font for the icons on the desktop"
-msgstr "Задаване на шрифта за стартерите на работното място"
+msgstr "Задаване на шрифта за стартерите на работния плот"
 
 #: capplets/font/font-properties.glade.h:17
 msgid "Set the monospace font for terminals and similar applications"
@@ -1367,7 +1369,7 @@ msgstr "Задаване на monospace шрифт за терминали и п
 
 #: capplets/font/font-properties.glade.h:18
 msgid "Sub_pixel (LCDs)"
-msgstr "Подпиксел (за LCD)"
+msgstr "Подпикселно (за LCD)"
 
 #: capplets/font/font-properties.glade.h:19
 msgid "Sub_pixel smoothing (LCDs)"
@@ -1387,7 +1389,7 @@ msgstr "_BGR"
 
 #: capplets/font/font-properties.glade.h:23
 msgid "_Desktop font:"
-msgstr "_Шрифт за работното място:"
+msgstr "_Шрифт за работния плот:"
 
 #: capplets/font/font-properties.glade.h:24
 msgid "_Full"
@@ -1420,7 +1422,7 @@ msgstr "Шрифт на _терминала:"
 
 #: capplets/font/font-properties.glade.h:31
 msgid "_Use Font"
-msgstr "_Използване на Шрифт"
+msgstr "_Използване на шрифт"
 
 #: capplets/font/font-properties.glade.h:32
 msgid "_VRGB"
@@ -1439,7 +1441,7 @@ msgid "Font may be too large"
 msgstr "Шрифта може да е прекалено голям"
 
 #: capplets/font/main.c:507
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The font selected is %d point large, and may make it difficult to "
 "effectively use the computer.  It is recommended that you select a size "
@@ -1450,17 +1452,13 @@ msgid_plural ""
 "smaller than %d."
 msgstr[0] ""
 "Избраният шрифт е голям %d точка, което може да затрудни ефективната работа "
-"на този компютър. Препоръчително е да·изберете размер по-малък от %d."
-"Избраният шрифт е голям %d точки, което може да затрудни ефективната работа "
-"на този компютър.  Препоръчително е да изберете размер по-малък от %d."
+"на този компютър. Препоръчително е да изберете размер по-малък от %d."
 msgstr[1] ""
-"Избраният шрифт е голям %d точка, което може да затрудни ефективната работа "
-"на този компютър. Препоръчително е да·изберете размер по-малък от %d."
 "Избраният шрифт е голям %d точки, което може да затрудни ефективната работа "
-"на този компютър.  Препоръчително е да изберете размер по-малък от %d."
+"на този компютър. Препоръчително е да изберете размер по-малък от %d."
 
 #: capplets/font/main.c:514
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The font selected is %d point large, and may make it difficult to "
 "effectively use the computer.  It is recommended that you select a smaller "
@@ -1471,14 +1469,10 @@ msgid_plural ""
 "sized font."
 msgstr[0] ""
 "Избраният шрифт е голям %d точка, което може да затрудни ефективната работа "
-"на този компютър.  Препоръчително е да изберете по-малък шрифт. Избраният "
-"шрифт е голям %d точки, което може да затрудни ефективната работа на този "
-"компютър.  Препоръчително е да изберете по-малък шрифт."
+"на този компютър. Препоръчително е да изберете по-малък шрифт."
 msgstr[1] ""
-"Избраният шрифт е голям %d точка, което може да затрудни ефективната работа "
-"на този компютър.  Препоръчително е да изберете по-малък шрифт. Избраният "
-"шрифт е голям %d точки, което може да затрудни ефективната работа на този "
-"компютър.  Препоръчително е да изберете по-малък шрифт."
+"Избраният шрифт е голям %d точки, което може да затрудни ефективната работа "
+"на този компютър.  Препоръчително е да изберете по-малък шрифт."
 
 #: capplets/keybindings/eggcellrendererkeys.c:21
 msgid "New accelerator..."
@@ -1515,11 +1509,11 @@ msgstr "Изключен"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:538
 msgid "<Unknown Action>"
-msgstr "<Неизвестно Действие>"
+msgstr "<Неизвестно действие>"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:557
 msgid "Desktop"
-msgstr "Работно място"
+msgstr "Работен плот"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:558
 #: capplets/sound/gnome-settings-sound.desktop.in.h:2
@@ -1528,7 +1522,7 @@ msgstr "Звук"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:562
 msgid "Window Management"
-msgstr "Мениджър на Прозорци"
+msgstr "Мениджър на прозорци"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:659
 #, c-format
@@ -1548,7 +1542,7 @@ msgstr ""
 #: capplets/keybindings/gnome-keybinding-properties.c:741
 #, c-format
 msgid "Error unsetting accelerator in configuration database: %s\n"
-msgstr ""
+msgstr "Грешка при изтриване на ускорител в конфигурационната база данни: %s\n"
 
 #: capplets/keybindings/gnome-keybinding-properties.c:830
 msgid "Action"
@@ -1591,7 +1585,7 @@ msgstr "Преглед на клавиатурна подредба"
 #: capplets/keyboard/gnome-keyboard-properties.c:106
 #, c-format
 msgid "There was an error launching the keyboard capplet : %s"
-msgstr "Има грешка при стартирането на контролния панел за клавиатурата : %s"
+msgstr "Има грешка при стартирането на контролния панел за клавиатурата: %s"
 
 #: capplets/keyboard/gnome-keyboard-properties.c:201
 msgid "_Accessibility"
@@ -1615,7 +1609,7 @@ msgstr "..."
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:4
 msgid "<b>Cursor Blinking</b>"
-msgstr "<b>Мигащ курсор</b>"
+msgstr "<b>Мигащ показалец</b>"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:5
 msgid "<b>Repeat Keys</b>"
@@ -1679,7 +1673,7 @@ msgstr "Натискането на бутона се повтаря, ако т�
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:21
 msgid "Keyboard Preferences"
-msgstr "Клавиатурни Настройки"
+msgstr "Клавиатурни настройки"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:22
 msgid "Keyboard _model:"
@@ -1759,11 +1753,11 @@ msgstr "Конфигуриране на клавиатурните настро�
 
 #: capplets/mouse/gnome-mouse-properties.c:496
 msgid "Unknown Cursor"
-msgstr "Неизвестен Показалец"
+msgstr "Неизвестен показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:613
 msgid "Default Cursor - Current"
-msgstr "Показалец по подразбиране - Текущ"
+msgstr "Показалец по подразбиране - текущ"
 
 #: capplets/mouse/gnome-mouse-properties.c:613
 #: capplets/mouse/gnome-mouse-properties.c:616
@@ -1772,11 +1766,11 @@ msgstr "Подразбиращият се показалец предлаган 
 
 #: capplets/mouse/gnome-mouse-properties.c:616
 msgid "Default Cursor"
-msgstr "Стандартен Показалец"
+msgstr "Стандартен показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:634
 msgid "White Cursor - Current"
-msgstr "Бял показалец - Текущ"
+msgstr "Бял показалец - текущ"
 
 #: capplets/mouse/gnome-mouse-properties.c:634
 #: capplets/mouse/gnome-mouse-properties.c:637
@@ -1785,11 +1779,11 @@ msgstr "Подразбиращият се показалец с обърнати
 
 #: capplets/mouse/gnome-mouse-properties.c:637
 msgid "White Cursor"
-msgstr "Бял Показалец"
+msgstr "Бял показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:656
 msgid "Large Cursor - Current"
-msgstr "Голям показалец - Текущ"
+msgstr "Голям показалец - текущ"
 
 #: capplets/mouse/gnome-mouse-properties.c:656
 #: capplets/mouse/gnome-mouse-properties.c:659
@@ -1798,11 +1792,11 @@ msgstr "Голяма версия на нормалния показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:659
 msgid "Large Cursor"
-msgstr "Голям Показалец"
+msgstr "Голям показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:678
 msgid "Large White Cursor - Current"
-msgstr "Голям Бял Показалец - Текущ"
+msgstr "Голям бял показалец - текущ"
 
 #: capplets/mouse/gnome-mouse-properties.c:678
 #: capplets/mouse/gnome-mouse-properties.c:681
@@ -1815,11 +1809,11 @@ msgstr "Голям бял показалец"
 
 #: capplets/mouse/gnome-mouse-properties.c:753
 msgid "Cursor Size"
-msgstr "Размер на Показалеца"
+msgstr "Размер на показалеца"
 
 #: capplets/mouse/gnome-mouse-properties.c:762
 msgid "Cursor Theme"
-msgstr "Тема с Покзалец"
+msgstr "Тема на показалец"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:2
 msgid "<b>Double-Click Timeout </b>"
@@ -1827,15 +1821,15 @@ msgstr "<b>Пауза между две натискания </b>"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:3
 msgid "<b>Drag and Drop</b>"
-msgstr "<b>Извличане и Пускане</b>"
+msgstr "<b>Извличане и пускане</b>"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:4
 msgid "<b>Locate Pointer</b>"
-msgstr "<b>Намиране на Показалеца</b>"
+msgstr "<b>Намиране на показалеца</b>"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:5
 msgid "<b>Mouse Orientation</b>"
-msgstr "<b>Ориентация на Мишкате</b>"
+msgstr "<b>Ориентация на мишката</b>"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:6
 msgid "<b>Speed</b>"
@@ -1891,7 +1885,7 @@ msgstr "Движение"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:18
 msgid "Mouse Preferences"
-msgstr "Настройки на Мишката"
+msgstr "Настройки на мишката"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:19
 msgid "_Acceleration:"
@@ -1903,7 +1897,7 @@ msgstr "_Голям"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:21
 msgid "_Left-handed mouse"
-msgstr "_Мишка \"Лява ръка\""
+msgstr "_Мишка за левичари"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:23
 msgid "_Sensitivity:"
@@ -1927,7 +1921,7 @@ msgstr "Мишка"
 
 #: capplets/mouse/gnome-settings-mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
-msgstr "Настройки на Вашата мишка"
+msgstr "Настройки на вашата мишка"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:1
 msgid "Network Proxy"
@@ -1947,7 +1941,7 @@ msgstr "<b>Автоматична настройка на сървъра пос�
 
 #: capplets/network/gnome-network-preferences.glade.h:4
 msgid "<b>_Direct internet connection</b>"
-msgstr "<b>Директна връзка към Интернет</b>"
+msgstr "<b>Директна връзка към интернет</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:5
 msgid "<b>_Manual proxy configuration</b>"
@@ -2077,13 +2071,13 @@ msgstr ""
 
 #: capplets/theme-switcher/gnome-theme-installer.c:127
 msgid "No theme file location specified to install"
-msgstr "Не е избрано местонахождението на темата за инсталиране"
+msgstr "Не е избран файл с тема, който да се инсталира"
 
 #: capplets/theme-switcher/gnome-theme-installer.c:146
 msgid "The theme file location specified to install is invalid"
 msgstr "Темата посочена за инсталиране е невалидна"
 
-#: capplets/theme-switcher/gnome-theme-installer.c:173
+#: capplets/theme-switcher/gnome-theme-installer.c:194
 #, c-format
 msgid ""
 "%s is the path where the theme files will be installed. This can not be "
@@ -2120,7 +2114,7 @@ msgstr "Темата вече съществува. Желаете ли да я 
 
 #: capplets/theme-switcher/gtk-theme-selector.desktop.in.h:1
 msgid "Select themes for various parts of the desktop"
-msgstr "Избиране на тема за различни части от работното място"
+msgstr "Избиране на тема за различни компоненти на работния плот"
 
 #: capplets/theme-switcher/gtk-theme-selector.desktop.in.h:2
 #: vfs-methods/themus/Themus_Properties_View.server.in.in.h:1
@@ -2149,11 +2143,11 @@ msgstr "<span size=\"larger\" weight=\"bold\">Запазване на тема</
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
 msgid "Apply _Background"
-msgstr "Прилагане на _Фон"
+msgstr "Прилагане на _фон"
 
 #: capplets/theme-switcher/theme-properties.glade.h:4
 msgid "Apply _Font"
-msgstr "Прилагане на _Шрифтове"
+msgstr "Прилагане на _шрифт"
 
 #: capplets/theme-switcher/theme-properties.glade.h:5
 msgid "Controls"
@@ -2169,11 +2163,11 @@ msgstr "Нови теми могат да бъдат инсталирани и �
 
 #: capplets/theme-switcher/theme-properties.glade.h:8
 msgid "Save Theme"
-msgstr "Запазване на Тема"
+msgstr "Запазване на тема"
 
 #: capplets/theme-switcher/theme-properties.glade.h:9
 msgid "Select theme for the desktop"
-msgstr "Избор на тема за работното място"
+msgstr "Избор на тема за работния плот"
 
 #: capplets/theme-switcher/theme-properties.glade.h:10
 msgid "Short _description:"
@@ -2181,7 +2175,7 @@ msgstr "Кратко _описание:"
 
 #: capplets/theme-switcher/theme-properties.glade.h:11
 msgid "Theme Details"
-msgstr "Информация за темата"
+msgstr "Елементи на темата"
 
 #: capplets/theme-switcher/theme-properties.glade.h:12
 msgid "Theme Preferences"
@@ -2189,7 +2183,7 @@ msgstr "Настройки на темата"
 
 #: capplets/theme-switcher/theme-properties.glade.h:13
 msgid "Theme _Details"
-msgstr "Информация за темата"
+msgstr "_Елементи на темата"
 
 #: capplets/theme-switcher/theme-properties.glade.h:14
 msgid "This theme does not suggest any particular font or background."
@@ -2209,15 +2203,15 @@ msgstr "Тази тема предлага свой шрифт:"
 
 #: capplets/theme-switcher/theme-properties.glade.h:18
 msgid "Window Border"
-msgstr "Рамки на Прозорците"
+msgstr "Рамки на прозорците"
 
 #: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go To Theme Folder"
-msgstr "_Отиване в папката с Темите"
+msgstr "_Отиване в папката с темите"
 
 #: capplets/theme-switcher/theme-properties.glade.h:20
 msgid "_Install Theme..."
-msgstr "_Инсталиране на Тема..."
+msgstr "_Инсталиране на тема..."
 
 #: capplets/theme-switcher/theme-properties.glade.h:21
 msgid "_Revert"
@@ -2238,15 +2232,15 @@ msgstr "дърво за подборка на теми"
 #: capplets/ui-properties/gnome-ui-properties.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
 msgstr ""
-"Настройка на външния вид на лентите с инструмени и менютата на програмите"
+"Настройка на външния вид на лентите с инструменти и менютата на програмите"
 
 #: capplets/ui-properties/gnome-ui-properties.desktop.in.h:2
 msgid "Menus & Toolbars"
-msgstr "Менюта и ленти с интрументи"
+msgstr "Менюта и ленти с инструменти"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:2
 msgid "<b>Behavior and Appearance</b>"
-msgstr "<b>Външен вид и Поведение</b>"
+msgstr "<b>Външен вид и поведение</b>"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:3
 msgid "<b>Preview</b>"
@@ -2262,19 +2256,19 @@ msgstr "Само икони"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:6
 msgid "Menu and Toolbar Preferences"
-msgstr "Настройки на Лентите с Инструменти и Менютата"
+msgstr "Настройки на лентите с инструменти и менютата"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:7
 msgid "New File"
-msgstr "Нов Файл"
+msgstr "Нов файл"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:8
 msgid "Open File"
-msgstr "Отваряне на Файл"
+msgstr "Отваряне на файл"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:9
 msgid "Save File"
-msgstr "Запазване на Файл"
+msgstr "Запазване на файл"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:10
 msgid "Show _icons in menus"
@@ -2286,7 +2280,7 @@ msgstr "Текст под иконите"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:12
 msgid "Text beside icons"
-msgstr "Текст до икони"
+msgstr "Текст до иконите"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:13
 msgid "Text only"
@@ -2294,7 +2288,7 @@ msgstr "Само текст"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:14
 msgid "Toolbar _button labels: "
-msgstr "Етикети на бутоните в лентата с инструментите: "
+msgstr "Етикети на _бутоните в лентата с инструментите: "
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:15
 msgid "_Copy"
@@ -2375,11 +2369,11 @@ msgstr "<b>Клавиш за движение</b>"
 
 #: capplets/windows/gnome-window-properties.glade.h:2
 msgid "<b>Titlebar Action</b>"
-msgstr "<b>Действие на Заглавната лента</b>"
+msgstr "<b>Действие на заглавната лента</b>"
 
 #: capplets/windows/gnome-window-properties.glade.h:3
 msgid "<b>Window Selection</b>"
-msgstr "<b>Избор на Прозорец</b>"
+msgstr "<b>Избор на прозорец</b>"
 
 #: capplets/windows/gnome-window-properties.glade.h:4
 msgid "To _move a window, press-and-hold this key then grab the window:"
@@ -2389,7 +2383,7 @@ msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:5
 msgid "Window Preferences"
-msgstr "Предпочитания за Прозорец"
+msgstr "Предпочитания за прозорец"
 
 #: capplets/windows/gnome-window-properties.glade.h:6
 msgid "_Double-click titlebar to perform this action:"
@@ -2409,50 +2403,44 @@ msgstr "Избиране на прозорците, когато мишката 
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
-msgstr "Настройки на Прозорците"
+msgstr "Настройки на прозорците"
 
 #: capplets/windows/window-properties.desktop.in.h:2
 msgid "Windows"
 msgstr "Прозорци"
 
 #: control-center/GNOME_ControlCenter.server.in.h:1
-#, fuzzy
 msgid "Control Center"
-msgstr "Меню на Контролен Център"
+msgstr "Контролен център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:2
-#, fuzzy
 msgid "Control Center Viewer"
-msgstr "Меню на Контролен Център"
+msgstr "Компонент за преглед на контролния център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:3
-#, fuzzy
 msgid "Control Center view"
-msgstr "Меню на Контролен Център"
+msgstr "Изглед на контролен център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:4
-#, fuzzy
 msgid "Control Center view component"
-msgstr "Меню на Контролен Център"
+msgstr "Компонент за изглед на контролен център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:5
 msgid "Control Center view component's factory"
-msgstr ""
+msgstr "Фабрика за компонента за изглед на контролен център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:6
-#, fuzzy
 msgid "Control Center view factory"
-msgstr "Меню на Контролен Център"
+msgstr "Фабрика за изглед на контролен център"
 
 #: control-center/GNOME_ControlCenter.server.in.h:7
-#, fuzzy
 msgid "View as Control Center"
-msgstr "Контролен център на GNOME"
+msgstr "Изглед като контролен център на GNOME"
 
 #: control-center/capplet-dir-view-list.c:319
 #, c-format
 msgid "GNOME Control Center: %s"
-msgstr "Контролен Център на GNOME: %s"
+msgstr "Контролен център на GNOME: %s"
 
 #: control-center/capplet-dir-view.c:158
 msgid "Layout"
@@ -2474,7 +2462,8 @@ msgstr "Директория контроли, която този изглед 
 msgid "translator_credits"
 msgstr ""
 "Борислав Александров <B.Aleksandrov@cnsys.bg>\n"
-"Владимир Петков <vpetkov@i-space.org>"
+"Владимир \"Kaladan\" Петков <vpetkov@i-space.org>\n"
+"Александър Шопов <ash@contact.bg>"
 
 #: control-center/capplet-dir-view.c:357 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
@@ -2482,7 +2471,7 @@ msgstr "Контролен център на GNOME"
 
 #: control-center/capplet-dir-view.c:360
 msgid "Desktop properties manager."
-msgstr "Мениждър за настройките на Работно място"
+msgstr "Мениждър за настройките на работен плот."
 
 #: control-center/capplet-dir-view.c:498
 #, c-format
@@ -2528,7 +2517,7 @@ msgstr "Инструмент за настройки на GNOME"
 
 #: control-center/main.c:43
 msgid "Use shell even if nautilus is running."
-msgstr "Използване на shell дори при стартиран nautilus."
+msgstr "Използване на обвивката дори при стартиран nautilus."
 
 #: gnome-settings-daemon/actions/acme.glade.h:1
 msgid "Volume"
@@ -2540,7 +2529,7 @@ msgstr "Bonobo не може да бъде инициализиран"
 
 #: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:411
 msgid "Slow Keys Alert"
-msgstr "Сигнал за Бавни клавиши"
+msgstr "Сигнал за бавни клавиши"
 
 #: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:412
 msgid ""
@@ -2552,11 +2541,11 @@ msgstr ""
 
 #: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:413
 msgid "Do you want to activate Slow Keys?"
-msgstr "Искате ли да активирате Бавните бутони?"
+msgstr "Искате ли да включите \"Бавни бутони\"?"
 
 #: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:414
 msgid "Do you want to deactivate Slow Keys?"
-msgstr "Искате ли да деактивирате Бавните бутони?"
+msgstr "Искате ли да изключите \"Бавни бутони\"?"
 
 #: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:425
 msgid "Sticky Keys Alert"
@@ -2673,7 +2662,7 @@ msgstr ""
 "Опитайте се да използвате по-проста конфигурация или си инсталирайте нова "
 "версия на XFree."
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:170
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:172
 msgid ""
 "The X system keyboard settings differ from your current GNOME keyboard "
 "settings.  Which set would you like to use?"
@@ -2681,16 +2670,16 @@ msgstr ""
 "Настройките на клавиатурата от Х системата се различават от тези в GNOME. "
 "Кои настройки желаете да използвате?"
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:173
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:175
 msgid "Use X settings"
 msgstr "Използване на настройките на X"
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:175
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:177
 msgid "Use GNOME settings"
 msgstr "Използване на настройките на GNOME"
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:227
-#, fuzzy, c-format
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:231
+#, c-format
 msgid ""
 "You have a keyboard remapping file (%s) in your home directory whose "
 "contents will now be ignored. You can use the keyboard preferences to "
@@ -2782,19 +2771,19 @@ msgstr ""
 
 #: libbackground/applier.c:264
 msgid "Preview Width"
-msgstr "Преглед на Ширина"
+msgstr "Преглед на ширина"
 
 #: libbackground/applier.c:265
 msgid "Width if applier is a preview: Defaults to 64."
-msgstr "Ширина ако е използвана като преглед: По подразбиране 64"
+msgstr "Ширина ако е използвана като преглед: по подразбиране 64"
 
 #: libbackground/applier.c:272
 msgid "Preview Height"
-msgstr "Преглед на Височина"
+msgstr "Преглед на височина"
 
 #: libbackground/applier.c:273
 msgid "Height if applier is a preview: Defaults to 48."
-msgstr "Височина ако е използвана като преглед: По подразбиране 48"
+msgstr "Височина, ако е използвана като преглед: по подразбиране 48"
 
 #: libbackground/applier.c:280
 msgid "Screen"
@@ -2865,10 +2854,12 @@ msgstr "Свиване"
 msgid ""
 "If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
+"Ако е зададено като \"истина\", програмата за обработка на text/plain и text/"
+"* ще е една и съща"
 
 #: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
 msgid "Sync text/plain and text/* handlers"
-msgstr ""
+msgstr "Еднаква обработка на text/plain и text/*"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:1
 msgid "Brightness down"
@@ -2956,11 +2947,11 @@ msgstr "Бърз бутон за пауза"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:22
 msgid "Play (or play/pause)"
-msgstr "Изпълнение (или Изпълнение/Пауза)"
+msgstr "Изпълнение (или Изпълнение/пауза)"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:23
 msgid "Play (or play/pause) key's shortcut."
-msgstr "Изпълнение (или Изпълнение/Пауза) бърз бутон"
+msgstr "Изпълнение (или Изпълнение/пауза) бърз бутон"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:24
 msgid "Previous track key's shortcut."
@@ -3016,9 +3007,7 @@ msgstr "Бърз бутон за заглушаване на звука"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:37
 msgid "Volume step"
-msgstr ""
-"Стъпка при увеличение/\n"
-"намаляване на звука"
+msgstr "Стъпка при изменение на звука"
 
 #: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:38
 msgid "Volume step as percentage of volume."
@@ -3046,7 +3035,7 @@ msgstr "Показване на грешки по време на стартир
 
 #: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
 msgid "Start XScreenSaver"
-msgstr "Стартиране на Екранния предпазител"
+msgstr "Стартиране на екранния предпазител"
 
 #: schemas/desktop_gnome_font_rendering.schemas.in.h:1
 msgid "Antialiasing"
@@ -3099,6 +3088,9 @@ msgid ""
 "\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
 "possible; may cause distortion of letter forms."
 msgstr ""
+"Вид подсказки при изписването на шрифтове. Възможните стойности са: \"без\" "
+"- без подсказки, \"леки\", \"средни\" и \"пълни\" - най-силни подсказки. "
+"Това може да доведе до промяна на очертанията."
 
 #: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:1
 msgid ""
@@ -3124,11 +3116,11 @@ msgstr "XKB опции"
 msgid "XKB settings in gconf will be overridden from the system ASAP"
 msgstr "XKB настройките в gconf ще бъдат презаписани от системата веднага!"
 
-#: typing-break/drw-break-window.c:214
+#: typing-break/drw-break-window.c:209
 msgid "_Postpone break"
 msgstr "_Отлагане на почивката"
 
-#: typing-break/drw-break-window.c:262
+#: typing-break/drw-break-window.c:256
 msgid "Take a break!"
 msgstr "Вземи си почивка!"
 
@@ -3146,11 +3138,11 @@ msgid "/_Take a Break"
 msgstr "/_Взимане на почивка"
 
 #: typing-break/drwright.c:491
-#, fuzzy, c-format
+#, c-format
 msgid "%d minute until the next break"
 msgid_plural "%d minutes until the next break"
 msgstr[0] "%d минута до следващата почивка"
-msgstr[1] "%d минута до следващата почивка"
+msgstr[1] "%d минути до следващата почивка"
 
 #: typing-break/drwright.c:495
 msgid "Less than one minute until the next break"
@@ -3167,7 +3159,7 @@ msgstr ""
 
 #: typing-break/drwright.c:631
 msgid "About GNOME Typing Monitor"
-msgstr "Относно Наблюдение при писане за GNOME"
+msgstr "Относно наблюдение при писане за GNOME"
 
 #: typing-break/drwright.c:655
 msgid "A computer break reminder."
@@ -3196,14 +3188,14 @@ msgid ""
 "right-clicking on your panel and choose 'Add to panel -> Utilities -> "
 "Notification area'."
 msgstr ""
-"Монитора на писането използва областта за уведомяване, за да показва "
+"Мониторът на писането използва областта за уведомяване, за да показва "
 "информация. Изглежда не сте сложили тази област на вашия панел. Може да я "
 "добавите като натиснете с дясното копче на панела и изберете \"Добавя към "
 "панела -> Полезни -> Област за уведомяване\"."
 
 #: vfs-methods/fontilus/font-view.c:102
 msgid "The quick brown fox jumps over the lazy dog. 0123456789"
-msgstr "Бързата кафява лисица прескача мързеливото куче. 0123456789"
+msgstr "АбВгДеЖзИйКлМнОпРсТуФхЦчШщЪьЮя. 0123456789"
 
 #: vfs-methods/fontilus/font-view.c:253
 msgid "Name:"
@@ -3236,7 +3228,7 @@ msgstr "Описание:"
 #: vfs-methods/fontilus/font-view.c:394
 #, c-format
 msgid "usage: %s fontfile\n"
-msgstr "употреба: %s шрифтовфайл\n"
+msgstr "употреба: %s шрифтов_файл\n"
 
 #: vfs-methods/fontilus/fontilus-context-menu.c:131
 msgid "Font context menu items"
@@ -3338,11 +3330,11 @@ msgstr "Настройка като шрифт за програма"
 
 #: vfs-methods/themus/Themus_Properties_View.server.in.in.h:2
 msgid "Theme Properties content view component"
-msgstr ""
+msgstr "Компонент за преглед на настройките на темите"
 
 #: vfs-methods/themus/Themus_Properties_View.server.in.in.h:3
 msgid "Themus Theme Properties view"
-msgstr "Themus - Преглед на Настройките на Темите"
+msgstr "Themus - преглед на настройките на темите"
 
 #: vfs-methods/themus/apply-font.glade.h:1
 msgid " "
@@ -3354,7 +3346,7 @@ msgstr "<span weight=\"bold\" size=\"larger\">Прилагане на нов ш�
 
 #: vfs-methods/themus/apply-font.glade.h:3
 msgid "Do _not apply font"
-msgstr "Не _прилагане шрифт"
+msgstr "Без _прилагане шрифт"
 
 #: vfs-methods/themus/apply-font.glade.h:4
 msgid ""
@@ -3429,1070 +3421,3 @@ msgstr "Дали да прави малки изображения за инст
 #: vfs-methods/themus/themus.schemas.in.h:8
 msgid "Whether to thumbnail themes"
 msgstr "Дали да прави малки изображения за темите"
-
-#~ msgid "Layout Preview"
-#~ msgstr "Преглед на подредба"
-
-#~ msgid "GNOME Default"
-#~ msgstr "По-подразбиране"
-
-#~ msgid ""
-#~ "Unable to find any keyboard themes.  This means your GTK+ installation "
-#~ "has been incompletely installed."
-#~ msgstr ""
-#~ "Не мога да намеря клавишни теми. Това означава че вашата инсталация на GTK"
-#~ "+ не е пълна."
-
-#~ msgid "Click for a list of keyboard navigation schemes."
-#~ msgstr "Кликнете за списък на схемите за клавишна навигация."
-
-#~ msgid "_Desktop shortcuts:"
-#~ msgstr "_Препратки на Работно място:"
-
-#~ msgid "_Text editing shortcuts:"
-#~ msgstr "Бързи бутони за текстово редактиране:"
-
-#~ msgid "Sawfish window manager"
-#~ msgstr "Мениджър на Прозорци Sawfish "
-
-#~ msgid "Appearance"
-#~ msgstr "Появяване"
-
-#~ msgid "Shortcuts"
-#~ msgstr "Препратки"
-
-#, fuzzy
-#~ msgid "Configure how to give focus to windows"
-#~ msgstr "Конфигуриране фокусиране на прозорец"
-
-#~ msgid "Focus behavior"
-#~ msgstr "Поведение на фокус"
-
-#~ msgid "Matched Windows"
-#~ msgstr "Съвпадащи Прозорци"
-
-#, fuzzy
-#~ msgid "Configure how to minimize, maximize, and restore windows"
-#~ msgstr "Конфигуриране максимизация и минимизация на прозорец"
-
-#~ msgid "Minimizing and Maximizing"
-#~ msgstr "Минимизация и Максимизация"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Допълнителни"
-
-#, fuzzy
-#~ msgid "Select miscellaneous window options"
-#~ msgstr "Конфигуриране на допълнителни особености на прозорец"
-
-#, fuzzy
-#~ msgid "Configure how windows move and resize"
-#~ msgstr "Конфигуриране на преместване/промяна на размер за прозорец"
-
-#~ msgid "Moving and Resizing"
-#~ msgstr "Преместване и Промяна на размер"
-
-#~ msgid "Placement"
-#~ msgstr "Местоположение"
-
-#, fuzzy
-#~ msgid "Associate sounds with window manager events"
-#~ msgstr "Разрешава звук за събитие за мениджър на прозорци"
-
-#, fuzzy
-#~ msgid "Configure your workspaces and viewports"
-#~ msgstr "Конфигуриране на Работно място"
-
-#~ msgid "Workspaces"
-#~ msgstr "Работно място"
-
-#~ msgid "Legacy Applications"
-#~ msgstr "Стари Приложения"
-
-#~ msgid "Legacy applications settings (grdb)"
-#~ msgstr "Настройки на стари приложения (grdb)"
-
-#~ msgid "Eenie Meenie Mynie Moe Catcha Tiger By Its Toe"
-#~ msgstr "Скокнала жаба на трънка и започнала да мрънка."
-
-#~ msgid "Selected themes from above will be tested by previewing here."
-#~ msgstr "Избраните теми от горните ще бъдат тествани в прегледа тук."
-
-#~ msgid "Sample Button"
-#~ msgstr "Прост Бутон"
-
-#~ msgid "Sample Check Button"
-#~ msgstr "Прост Бутон за Проверка"
-
-#~ msgid "Sample Text Entry Field"
-#~ msgstr "Просто Текстово Поле за Въвеждане"
-
-#~ msgid "Submenu"
-#~ msgstr "Подменю"
-
-#~ msgid "Item 1"
-#~ msgstr "Обект 1"
-
-#~ msgid "Another item"
-#~ msgstr "Друг обект"
-
-#~ msgid "Radio Button 1"
-#~ msgstr "Радио Бутон 1"
-
-#~ msgid "Radio Button 2"
-#~ msgstr "Радио Бутон 2"
-
-#~ msgid "One"
-#~ msgstr "Едно"
-
-#~ msgid "Two"
-#~ msgstr "Две"
-
-#, fuzzy
-#~ msgid "Co_lor:"
-#~ msgstr "_Цвят:"
-
-#, fuzzy
-#~ msgid "_Left color:"
-#~ msgstr "_Ляв Цвят:"
-
-#, fuzzy
-#~ msgid "_Right color:"
-#~ msgstr "_Десен Цвят:"
-
-#, fuzzy
-#~ msgid "Top co_lor:"
-#~ msgstr "_Горен Цвят:"
-
-#, fuzzy
-#~ msgid "_Bottom color:"
-#~ msgstr "Д_олен Цвят:"
-
-#, fuzzy
-#~ msgid "_Tile"
-#~ msgstr "_Файл"
-
-#, fuzzy
-#~ msgid "C_enter"
-#~ msgstr "Це_нтриран"
-
-#, fuzzy
-#~ msgid "Sc_ale"
-#~ msgstr "_Мащабируем"
-
-#, fuzzy
-#~ msgid "_Stretch"
-#~ msgstr "Раз_тегнат"
-
-#~ msgid "_No Picture"
-#~ msgstr "_Без Картинка"
-
-#~ msgid "Background Preferences"
-#~ msgstr "Предпочитания на Фон"
-
-#, fuzzy
-#~ msgid "Bac_kground style:"
-#~ msgstr "Фон"
-
-#~ msgid "E-Mail"
-#~ msgstr "E-Mail"
-
-#~ msgid "Horizontal gradient"
-#~ msgstr "Хоризонтален градиент"
-
-#, fuzzy
-#~ msgid "Picture _options:"
-#~ msgstr "Опции на Картинка:"
-
-#~ msgid "Primary Color"
-#~ msgstr "Основен Цвят"
-
-#~ msgid "Secondary Color"
-#~ msgstr "Допълнителен Цвят"
-
-#~ msgid "Select _picture:"
-#~ msgstr "И_збор на картинка:"
-
-#~ msgid "Solid color"
-#~ msgstr "Цвят на запълване"
-
-#~ msgid "To set the background picture, drop an image or click to browse."
-#~ msgstr ""
-#~ "За да изберете фонова картинка, пуснете картинката или кликнете за "
-#~ "преглед."
-
-#~ msgid "Vertical gradient"
-#~ msgstr "Вертикален градиент"
-
-#, fuzzy
-#~ msgid ""
-#~ "You can drag image files into the window to set the background picture."
-#~ msgstr ""
-#~ "Вие може да пускате графични файлове\n"
-#~ "в прозореца за да зададете графичната \n"
-#~ "картинка."
-
-#, fuzzy
-#~ msgid "There was an error displaying help:"
-#~ msgstr "Има грешка показваща помощ за: %s"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "Не мога да намеря hbox, използвам нормален избор на файл"
-
-#, fuzzy
-#~ msgid "Desktop Wallpaper"
-#~ msgstr "_Тапет"
-
-#, fuzzy
-#~ msgid "Desktop Wallpaper Preferences"
-#~ msgstr "Настройка на Мрежа"
-
-#, fuzzy
-#~ msgid "Advanced Layout Options"
-#~ msgstr "Допълнителни Настройки"
-
-#, fuzzy
-#~ msgid "Core Layout Configuration"
-#~ msgstr "Настройка на Мрежа"
-
-#, fuzzy
-#~ msgid "_Layouts:"
-#~ msgstr "Подредба"
-
-#, fuzzy
-#~ msgid "Show"
-#~ msgstr "Бавно"
-
-#, fuzzy
-#~ msgid "Language"
-#~ msgstr "Документация"
-
-#, fuzzy
-#~ msgid "<b>Dates</b>"
-#~ msgstr "<b>Тест</b>"
-
-#, fuzzy
-#~ msgid "<b>Languages in use:</b>"
-#~ msgstr "Местоположение на Показалеца"
-
-#, fuzzy
-#~ msgid "<b>Numbers</b>"
-#~ msgstr "<b>Тест</b>"
-
-#, fuzzy
-#~ msgid "<b>Times</b>"
-#~ msgstr "<b>Тест</b>"
-
-#, fuzzy
-#~ msgid "Customize _times..."
-#~ msgstr "Тема с покзалец"
-
-#, fuzzy
-#~ msgid "Language and Culture Preferences"
-#~ msgstr "Настройка за Лента с Инструменти и Менюта"
-
-#, fuzzy
-#~ msgid "_Region:"
-#~ msgstr "_Описание"
-
-#, fuzzy
-#~ msgid "Set your language and culture preferences"
-#~ msgstr "Настройка на Мишка"
-
-#~ msgid "Background"
-#~ msgstr "Фон"
-
-#, fuzzy
-#~ msgid "_Ignore system configuration"
-#~ msgstr "Настройка на Мрежа"
-
-#~ msgid "radiobutton1"
-#~ msgstr "радиобутон1"
-
-#~ msgid "radiobutton2"
-#~ msgstr "радиобутон2"
-
-#~ msgid "radiobutton3"
-#~ msgstr "радиобутон3"
-
-#~ msgid "radiobutton4"
-#~ msgstr "радиобутон4"
-
-#~ msgid "radiobutton5"
-#~ msgstr "радиобутон5"
-
-#~ msgid "Behavior"
-#~ msgstr "Поведение"
-
-#~ msgid "Sets the default behavior of GNOME applications"
-#~ msgstr "Задава подразбиращо се поведение за приложенията на ГНОМЕ"
-
-#~ msgid "Select CDE AccessX file"
-#~ msgstr "Избор на CDE AccessX файл"
-
-#~ msgid "A preview of the background picture."
-#~ msgstr "Преглед на фоновата картинка"
-
-#~ msgid "The background picture's file name."
-#~ msgstr "Име на файл за картинката на фона."
-
-#~ msgid "Acce_pts URLs"
-#~ msgstr "Пр_иема URL"
-
-#~ msgid "C_ustom Help Browser:"
-#~ msgstr "Потребител_ски Браузер за Помощ"
-
-#~ msgid "Default Help Browser"
-#~ msgstr "Подразбиращ Помощен Браузер"
-
-#~ msgid "_Select a Help Browser:"
-#~ msgstr "_Избор на Браузер за Помощ"
-
-#~ msgid ""
-#~ "<b>Default Cursor - Current</b>\n"
-#~ "The default cursor that ships with X"
-#~ msgstr ""
-#~ "<b>Подразбиращ се Показалец - Текущ</b>\n"
-#~ "Подразбиращият се показалец предлаган с X"
-
-#~ msgid ""
-#~ "<b>White Cursor - Current</b>\n"
-#~ "The default cursor inverted"
-#~ msgstr ""
-#~ "<b>Бял Показалец - Текущ</b>\n"
-#~ "Подразбиращият се показалец е инвертран"
-
-#~ msgid ""
-#~ "<b>Large Cursor - Current</b>\n"
-#~ "Large version of normal cursor"
-#~ msgstr ""
-#~ "<b>Голям Показалец - Текущ</b>\n"
-#~ "Голяма версия на нормален покзалец"
-
-#, fuzzy
-#~ msgid "<b>Cursor Theme</b>"
-#~ msgstr "Тема с покзалец"
-
-#~ msgid "A preview of what a menubar looks like with these settings."
-#~ msgstr ""
-#~ "Предварителен преглед на това как менютата ще изглеждат с тези настройки."
-
-#~ msgid "A preview of what a toolbar looks like with these settings."
-#~ msgstr ""
-#~ "Предварителен преглед на това как лентата с инструменти ще изглежда с "
-#~ "тези настройки."
-
-#~ msgid "Menus"
-#~ msgstr "Менюта"
-
-#, fuzzy
-#~ msgid "Sample menubar:"
-#~ msgstr "Просто Меню"
-
-#~ msgid "Select the toolbar style."
-#~ msgstr "Избор на стил за лентата инструменти."
-
-#~ msgid "Toolbar"
-#~ msgstr "Лента с Инструменти"
-
-#~ msgid "Toolbars can be _detached and moved around"
-#~ msgstr "Лентата с _инструменти може да бъде отделена и премествана"
-
-#~ msgid "File to play"
-#~ msgstr "Файл за просвирване"
-
-#, fuzzy
-#~ msgid "Apply theme..."
-#~ msgstr "_Инсталира нова тема..."
-
-#, fuzzy
-#~ msgid "Themus component"
-#~ msgstr "Преглежда компонент"
-
-#, fuzzy
-#~ msgid "C_ustom:"
-#~ msgstr "Потребителска"
-
-#, fuzzy
-#~ msgid "Repeat Keys"
-#~ msgstr "Степен на Повторение"
-
-#, fuzzy
-#~ msgid "loud"
-#~ msgstr "Звук"
-
-#~ msgid "Install new theme"
-#~ msgstr "Инсталиране на нова тема"
-
-#~ msgid "_Location of new theme:"
-#~ msgstr "_Местоположение на нова тема:"
-
-#~ msgid ""
-#~ "<b>Note:</b> You will need to logout and log back in for this setting to "
-#~ "take effect."
-#~ msgstr ""
-#~ "<b>Забележка:</b> Вие трябва да излезете и да влезете в системата отново "
-#~ "за да имат ефект настройките."
-
-#~ msgid ""
-#~ "Animates a quick marker around the cursor when the Control key has been "
-#~ "pressed and released."
-#~ msgstr ""
-#~ "Анимиране на маркер около курсора, когато клавишът Control бъде натиснат "
-#~ "и отпуснат."
-
-#~ msgid "Double-click Delay"
-#~ msgstr "Задръжка за Двойно кликване"
-
-#~ msgid ""
-#~ "Left-handed mouse mode switches the left and right buttons on the mouse."
-#~ msgstr ""
-#~ "Режим на работа с мишката 'С лява ръка' превключва левият и десен бутон."
-
-#~ msgid ""
-#~ "Maximum time allowed between clicks when double-clicking.   Use the box "
-#~ "on the right to test."
-#~ msgstr ""
-#~ "Максималното време позволено между кликванията при двойно кликване.  В "
-#~ "дясно може да тествате."
-
-#~ msgid ""
-#~ "Set the distance you need to move your cursor before dragging an item."
-#~ msgstr ""
-#~ "Задава дистанцията необходима за преместване на показалеца преди да "
-#~ "захване обекта за влачене."
-
-#~ msgid "Set the speed of your pointing device."
-#~ msgstr "Задава скоростта на покалеца."
-
-#~ msgid "_Delay (sec):"
-#~ msgstr "_Задръжка (сек):"
-
-#~ msgid "_Show position of cursor when the Control key is pressed"
-#~ msgstr "_ПОказва позицията на показалеца когато е натиснат клавиша Control "
-
-#, fuzzy
-#~ msgid "_Repeat Keys"
-#~ msgstr "Степен на Повторение"
-
-#, fuzzy
-#~ msgid "Use _background"
-#~ msgstr "Фон"
-
-#, fuzzy
-#~ msgid "Current modified"
-#~ msgstr "Текущ URI индекс"
-
-#, fuzzy
-#~ msgid "Super"
-#~ msgstr "Скорост"
-
-#, fuzzy
-#~ msgid "Beep when enabling/disabling _keyboard accessibility features"
-#~ msgstr ""
-#~ "_Издава звук когато избора за достъпност на клавиши е превключен на "
-#~ "разрешен/забранен"
-
-#~ msgid "Beep when:"
-#~ msgstr "Звук когато:"
-
-#, fuzzy
-#~ msgid "Repeat Key Pre_ferences..."
-#~ msgstr "Настройки за повтарение на клавиш"
-
-#, fuzzy
-#~ msgid "Start mo_ving this long after keypress:"
-#~ msgstr "С_тартира продължително преместване след натискане на клавиш;"
-
-#~ msgid "Toggle and Repeat Keys"
-#~ msgstr "Клавиши за Превключване и Повторение"
-
-#, fuzzy
-#~ msgid "_Import CDE AccessX file..."
-#~ msgstr "_Импорт на CDE AccessX файл"
-
-#~ msgid ""
-#~ "_Turn off Sticky Keys when\n"
-#~ "two keys pressed simultaneously"
-#~ msgstr ""
-#~ "_Изключва Прилепен Клавиш когато\n"
-#~ "Два клавиша са натиснати едновременно"
-
-#~ msgid "msecs"
-#~ msgstr "мсек"
-
-#, fuzzy
-#~ msgid "Pro_xy requires username and password"
-#~ msgstr "П_рокси изисква име и парола"
-
-#~ msgid "Titlebar Font"
-#~ msgstr "Шрифт на Заглавната лента"
-
-#~ msgid "Window Border Appearance"
-#~ msgstr "Поява Рамките на Прозорец"
-
-#~ msgid "Window Manager:"
-#~ msgstr "Мениджър на Прозорци:"
-
-#~ msgid ""
-#~ "Starting %s\n"
-#~ "(%d seconds left before operation times out)"
-#~ msgstr ""
-#~ "Стартира %s\n"
-#~ "(%d секунди остават преди операцията да приключи поради изтичане на "
-#~ "времето)"
-
-#~ msgid ""
-#~ "wm-properties-capplet: Unable to initialize window manager.\n"
-#~ "\tAnother window manager is already running and could not be killed\n"
-#~ msgstr ""
-#~ "wm-properties-capplet: Немога да инициализирам мениджъра на прозорци.\n"
-#~ "\tДруг мениджър вече се изпълнява и не можа да бъде убит\n"
-
-#~ msgid ""
-#~ "wm-properties-capplet: Unable to initialize window manager.\n"
-#~ "\t'%s' didn't start\n"
-#~ msgstr ""
-#~ "wm-properties-capplet: Не мога да инициализирам мениджъра на прозорци.\n"
-#~ "\t'%s' не е стартиран\n"
-
-#~ msgid "Previous window manager did not die\n"
-#~ msgstr "Предишният мениджър на прозорци не е умрял\n"
-
-#~ msgid ""
-#~ "Could not start '%s'.\n"
-#~ "Falling back to previous window manager '%s'\n"
-#~ msgstr ""
-#~ "Не мога да стартирам '%s'.\n"
-#~ "Връщам се на предишният мениджър на прозорци '%s'\n"
-
-#~ msgid ""
-#~ "Could not start fallback window manager.\n"
-#~ "Please run a window manager manually. You can\n"
-#~ "do this by selecting \"Run Program\" in the\n"
-#~ "foot menu\n"
-#~ msgstr ""
-#~ "Не мога да стартирам мениджъра на прозорци.\n"
-#~ "Моля стартирайте мениджъра ръчно. Вие може да направите това\n"
-#~ "като изберете \"Изпълнение на Програма\" в основното\n"
-#~ "меню\n"
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#, fuzzy
-#~ msgid "Add:"
-#~ msgstr "Добавя"
-
-#~ msgid "_Category"
-#~ msgstr "_Категория"
-
-#~ msgid "_Name"
-#~ msgstr "_Име"
-
-#~ msgid "_General"
-#~ msgstr "_Основни"
-
-#, fuzzy
-#~ msgid "Edit Menu"
-#~ msgstr "Редактиране"
-
-#~ msgid "_Menu"
-#~ msgstr "_Меню"
-
-#~ msgid "Picture bor_der:"
-#~ msgstr "_Рамка на картинка:"
-
-#~ msgid "Choose the applications used by default"
-#~ msgstr "Избор на приложенията използвани по подразбиране"
-
-#~ msgid "Configure window appearance"
-#~ msgstr "Конфигуриране появата на прозорец"
-
-#~ msgid "Configure window properties"
-#~ msgstr "Конфигуриране аксесоари на прозорец"
-
-#~ msgid "Configure window manager configuration properties"
-#~ msgstr "Конфигуриране конфигурационните свойства на мениджъра на прозорци"
-
-#~ msgid "Configure window placement"
-#~ msgstr "Конфигуриране местоположение на прозорец"
-
-#~ msgid "Documents"
-#~ msgstr "Документи"
-
-#~ msgid "Word Processor"
-#~ msgstr "Текстообработка"
-
-#~ msgid "Published Materials"
-#~ msgstr "Публикувани Материали"
-
-#~ msgid "Spreadsheet"
-#~ msgstr "Електронна таблица"
-
-#~ msgid "Diagram"
-#~ msgstr "Диаграма"
-
-#~ msgid "TeX"
-#~ msgstr "TeX"
-
-#~ msgid "Vector Graphics"
-#~ msgstr "Векторна Графика"
-
-#~ msgid "World Wide Web"
-#~ msgstr "WWW"
-
-#~ msgid "Plain Text"
-#~ msgstr "Обикновен Текст"
-
-#~ msgid "Extended Markup Language (XML)"
-#~ msgstr "Extended Markup Language (XML)"
-
-#~ msgid "Information"
-#~ msgstr "Информация"
-
-#~ msgid "Financial"
-#~ msgstr "Финанси"
-
-#~ msgid "Calendar"
-#~ msgstr "Календар"
-
-#~ msgid "Contacts"
-#~ msgstr "Контакти"
-
-#~ msgid "Packages"
-#~ msgstr "Пакети"
-
-#~ msgid "Software Development"
-#~ msgstr "Софтуерна разработка"
-
-#~ msgid "Source Code"
-#~ msgstr "Изходен Код"
-
-#~ msgid "File types and Internet Services"
-#~ msgstr "Тип на Файлове и Интернет Обслужвания"
-
-#~ msgid "Needs _terminal"
-#~ msgstr "Нуждае се от тер_минал"
-
-#~ msgid "_Protocol name"
-#~ msgstr "Име на _Протокол"
-
-#~ msgid "Add file type"
-#~ msgstr "Добавя тип файл"
-
-#~ msgid "Change the default fonts used by the desktop and applications"
-#~ msgstr "Промяна на подразбиращи се шрифтове от работното място и приложения"
-
-#~ msgid "Keyboard _Navigation scheme for use in applications:"
-#~ msgstr "Клавишна Навигационна схема за използване в приложенията:"
-
-#~ msgid ""
-#~ "To assign a shortcut to an action, click in the shortcut column and press "
-#~ "the key combination you want to associate with it."
-#~ msgstr ""
-#~ "За да назначите действие на препратка, кликнете на колоната за препратки "
-#~ "и натиснете клавишната комбинация която искате да назначите."
-
-#~ msgid "Associate keyboard shortcuts with panel actions"
-#~ msgstr "Свързва клавишни препратки с действия на панел"
-
-#~ msgid "<i>fast</i>"
-#~ msgstr "<i>бързо</i>"
-
-#~ msgid "<i>loud</i>"
-#~ msgstr "<i>силно</i>"
-
-#~ msgid "<i>quiet</i>"
-#~ msgstr "<i>тихо</i>"
-
-#~ msgid "<i>slow</i>"
-#~ msgstr "<i>бавно</i>"
-
-#~ msgid "Key_press makes sound"
-#~ msgstr "На_тиснат клавиш издава звук"
-
-#~ msgid "Keyboard bell _enabled"
-#~ msgstr "Разрешава звук на клавиатурата"
-
-#~ msgid "Keyboard bell _off"
-#~ msgstr "_Изключва звук на клавиатурата"
-
-#~ msgid "Keyclick Volume"
-#~ msgstr "Сила на звук при натискане на клавиш"
-
-#~ msgid "Long"
-#~ msgstr "Дълъг"
-
-#~ msgid "Repeat s_peed:"
-#~ msgstr "Ско_рост на повторение:"
-
-#~ msgid "Set the speed the cursor blinks in text fields."
-#~ msgstr "Задава скоростта на мигане за показалеца в текстовите полета."
-
-#~ msgid "Set the volume of the clicking sound made when pressing a key"
-#~ msgstr "Задава силата на звука при натискане на клавиш"
-
-#~ msgid "Short"
-#~ msgstr "Къс"
-
-#~ msgid ""
-#~ "The keyboard bell is the <i>beep</i> sound heard when the system wants to "
-#~ "get your attention."
-#~ msgstr ""
-#~ "Клавиатурният звук е <i>биип</i> който се чува когато системата иска да "
-#~ "обърне вашето внимание."
-
-#~ msgid "Very Fast"
-#~ msgstr "Много Бързо"
-
-#~ msgid "Very Short"
-#~ msgstr "Много Късо"
-
-#~ msgid ""
-#~ "You can configure the keyboards accessibility features by bringing up the "
-#~ "'Accessibility Settings' property dialog, or pressing the button on the "
-#~ "right."
-#~ msgstr ""
-#~ "Вие може да конфигурирате особеностите на клавишната достъпност чрез "
-#~ "'Настройки за Достъпност' или с натискане на десен бутон."
-
-#~ msgid "_Blink speed:"
-#~ msgstr "_Скорост на Мигане:"
-
-#~ msgid "_Custom keyboard bell:"
-#~ msgstr "_Потребителски клавиатурен звук:"
-
-#~ msgid "Keyboard Properties"
-#~ msgstr "Настройки за Клавиатура"
-
-#~ msgid "Configure GNOME's use of sound"
-#~ msgstr "Конфигуриране на ГНОМЕ за използване на звук"
-
-#~ msgid "Change the appearance of buttons, scrollbars, etc"
-#~ msgstr "Промяна появата на бутоните, лента за придвижване и др."
-
-#~ msgid "Installed Themes"
-#~ msgstr "Инсталирани Теми"
-
-#~ msgid "List of available GTK+ themes"
-#~ msgstr "Списък на налични GTK+ теми"
-
-#~ msgid "Change how toolbars and menus are displayed"
-#~ msgstr "Промяна на как лентата с инструменти и менютата ще бъдат показвани"
-
-#~ msgid "Toolbars & Menus"
-#~ msgstr "Лента с инструменти и Менюта"
-
-#~ msgid "Item 2"
-#~ msgstr "Обект 2"
-
-#~ msgid "Item 3"
-#~ msgstr "Обект 3"
-
-#~ msgid "Menu Item 1"
-#~ msgstr "Меню Обект 1"
-
-#~ msgid "Menu Item 2"
-#~ msgstr "Меню Обект 2"
-
-#~ msgid "Menu Item 3"
-#~ msgstr "Меню Обект 3"
-
-#~ msgid "Menu Item 4"
-#~ msgstr "Меню Обект 4"
-
-#~ msgid "Menu Item 5"
-#~ msgstr "Меню Обект 5"
-
-#~ msgid "Menu items can have _icons"
-#~ msgstr "Меню с обекти мо_же да има икони"
-
-#~ msgid "_Toolbars have: "
-#~ msgstr "_Лентата с Инструменти има:"
-
-#~ msgid "_Keyboard"
-#~ msgstr "_Клавиатура"
-
-#~ msgid "_Misc"
-#~ msgstr "_Други"
-
-#~ msgid "_Picture"
-#~ msgstr "К_артинка"
-
-#~ msgid "Bor_der the picture with a:"
-#~ msgstr "Шир_ина на рамката за картинка:"
-
-#~ msgid ""
-#~ "Invalid MIME type. Please enter a valid MIME type, or leave the field "
-#~ "blank to have one generated for you."
-#~ msgstr ""
-#~ "Грешен MIME тип. Моля въведете валиден MIME тип, или оставете полето "
-#~ "празно за да се генерира стойност."
-
-#~ msgid "There already exists a MIME type of that name."
-#~ msgstr "Вече има съществуващ тип MIME с това име."
-
-#~ msgid "CD Properties"
-#~ msgstr "CD настройки"
-
-#~ msgid "Configure handling of CD devices"
-#~ msgstr "Конфигуриране подръжка на CD устройства"
-
-#~ msgid "Global panel properties"
-#~ msgstr "Глобални настройки за панел"
-
-#~ msgid "Panel"
-#~ msgstr "Панел"
-
-#~ msgid "Configure which non-session aware programs are started up"
-#~ msgstr "Конфигуриране кой програми да се стартират"
-
-#~ msgid "Select an icon..."
-#~ msgstr "Избор на икона..."
-
-#~ msgid "Mime Type: "
-#~ msgstr "Mime Тип: "
-
-#~ msgid "Remove"
-#~ msgstr "Премахва"
-
-#~ msgid "First Regular Expression: "
-#~ msgstr "Първи Регулярен Израз:"
-
-#~ msgid "Second Regular Expression: "
-#~ msgstr "Втори Регулярен Израз:"
-
-#~ msgid "Mime Type Actions"
-#~ msgstr "Действия на Mime Тип"
-
-#~ msgid "Example: emacs %f"
-#~ msgstr "Пример: emacs %f"
-
-#~ msgid "Select a file..."
-#~ msgstr "Избор на файл..."
-
-#~ msgid "View"
-#~ msgstr "Преглед"
-
-#~ msgid "Set actions for %s"
-#~ msgstr "Задава действие за %s"
-
-#~ msgid "Mime Type"
-#~ msgstr "Mime Тип"
-
-#~ msgid "You must enter a mime-type"
-#~ msgstr "Вие трябва да въведете mime-тип"
-
-#~ msgid ""
-#~ "You must add either a regular-expression or\n"
-#~ "a file-name extension"
-#~ msgstr ""
-#~ "Вие трябва да добавите регулярен израз\n"
-#~ "или файлово разширение"
-
-#~ msgid ""
-#~ "Please put your mime-type in the format:\n"
-#~ "CATEGORY/TYPE\n"
-#~ "\n"
-#~ "For Example:\n"
-#~ "image/png"
-#~ msgstr ""
-#~ "Моля поставете вашият mime-тип във формат:\n"
-#~ "CATEGORY/TYPE\n"
-#~ "\n"
-#~ "Например:\n"
-#~ "image/png"
-
-#~ msgid "This mime-type already exists"
-#~ msgstr "Този mime-тип вече съществува"
-
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Вие не сте в състояние да създадете директорията\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Не може да се запази състоянието."
-
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Вие не сте в състояние за достъп в директорията\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Не може да се запази състоянието."
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Не мога да създам файла\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "Не съм в състояние да запазя състоянието"
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.keys.\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Не мога да създам файла\n"
-#~ "~/.gnome/mime-info/user.keys.\n"
-#~ "\n"
-#~ "Не съм в състояние да запазя състоянието"
-
-#~ msgid "Configure how files are associated and started"
-#~ msgstr "Конфигурира колко файла са асоциирани и стартирани"
-
-#~ msgid "Mime Types"
-#~ msgstr "Mime Типове"
-
-#~ msgid ""
-#~ "Add a new Mime Type\n"
-#~ "For example:  image/tiff; text/x-scheme"
-#~ msgstr ""
-#~ "Добавя нов Mime Тип\n"
-#~ "Например:  image/tiff; text/x-scheme"
-
-#~ msgid ""
-#~ "Type in the extensions for this mime-type.\n"
-#~ "For example:  .html, .htm"
-#~ msgstr ""
-#~ "Задайте разширението за този mime-тип.\n"
-#~ "Например: .html, .htm"
-
-#~ msgid "Regular Expressions"
-#~ msgstr "Регулярни Изрази:"
-
-#~ msgid ""
-#~ "You can set up two regular expressions here to identify the Mime Type\n"
-#~ "by.  These fields are optional."
-#~ msgstr ""
-#~ "Вие може да зададете до 2 регулярни израза тук за да идентифицирате Mime "
-#~ "Типа\n"
-#~ "Тези полета са опционални."
-
-#~ msgid "Command"
-#~ msgstr "Команда"
-
-#~ msgid "URL Handlers"
-#~ msgstr "Браузери за URL "
-
-#~ msgid "handler:"
-#~ msgstr "браузер:"
-
-#~ msgid "Netscape (new window)"
-#~ msgstr "Netscape (нов прозорец)"
-
-#~ msgid "Help browser"
-#~ msgstr "Браузер за Помощ"
-
-#~ msgid "Help browser (new window)"
-#~ msgstr "Браузер за Помощ (нов прозорец)"
-
-#~ msgid "Set"
-#~ msgstr "Задава"
-
-#~ msgid "Configure which programs are used to display URLs"
-#~ msgstr "Конфигурира кои прграми се използват за преглед на URL"
-
-#~ msgid "Initialize session settings"
-#~ msgstr "Инициализира настройките на сесията"
-
-#~ msgid " (Not found)"
-#~ msgstr " (Не е намерено)"
-
-#~ msgid "Enlightenment"
-#~ msgstr "Enlightenment"
-
-#~ msgid "Ice WM"
-#~ msgstr "Ice WM"
-
-#~ msgid "Scwm"
-#~ msgstr "Scwm"
-
-#~ msgid "Window Maker"
-#~ msgstr "Window Maker"
-
-#~ msgid "twm"
-#~ msgstr "twm"
-
-#~ msgid "%s (Current)"
-#~ msgstr "%s (Текущ)"
-
-#~ msgid "Run Configuration Tool for %s"
-#~ msgstr "Изпълнява Конфигурационен Инструмент за %s"
-
-#~ msgid ""
-#~ "Your current window manager has been changed. In order for\n"
-#~ "this change to be saved, you will need to save your current\n"
-#~ "session. You can do so immediately by selecting the \"Save session\n"
-#~ "now\" below, or you can save your session later.  This can be\n"
-#~ "done either selecting \"Save Current Session\" under \"Settings\"\n"
-#~ "in the main menu, or by turning on \"Save Current Setup\" when\n"
-#~ "you log out.\n"
-#~ msgstr ""
-#~ "Текущият мениджър на прозорци е променен. За да бъдат запазени\n"
-#~ "промените, вие трябва да запазите текущата сесия\n"
-#~ "Вие може да направите това незабавно като изберете\n"
-#~ "\"Запазва Сесия сега\" по-долу или да я запазите по-късно.\n"
-#~ "Това може да бъде извършено или чрез \"Запазва Текущата сесия\"\n"
-#~ "при \"Настройки\" в главното меню или при излизането от системата\n"
-#~ "като се укаже \"Запази Текущите Настройки\"\n"
-
-#~ msgid "Save Session Later"
-#~ msgstr "Запазва Сесията По-късно"
-
-#~ msgid "Save Session Now"
-#~ msgstr "Запазва Сесията Сега"
-
-#~ msgid ""
-#~ "Your current window manager has been changed. In order for\n"
-#~ "this change to be saved, you will need to save your current\n"
-#~ "session. This can be done by either selecting \"Save Current Session\"\n"
-#~ "under \"Settings\" in the main menu, or by turning on\n"
-#~ "\"Save Current Setup\" when you log out.\n"
-#~ msgstr ""
-#~ "Текущият мениджър на прозорци е променен. За да бъдат запазени\n"
-#~ "промените, вие трябва да запазите текущата сесия\n"
-#~ "Вие може да направите това  като изберете\n"
-#~ "\"Запазва Текущата сесия\" при \"Настройки\" в главното меню\n"
-#~ "или при излизането от системата\n"
-#~ "като се укаже \"Запази Текущите Настройки\"\n"
-
-#~ msgid "Add New Window Manager"
-#~ msgstr "Добава Нов Мениджър на Прозорци"
-
-#~ msgid "Cancel"
-#~ msgstr "Прекъсва"
-
-#~ msgid "Command:"
-#~ msgstr "Команда:"
-
-#~ msgid "Window manager is session managed"
-#~ msgstr "Мениджъра на прозорци управлява сесия"
-
-#~ msgid "Name cannot be empty"
-#~ msgstr "Името не може да е празно"
-
-#~ msgid "Command cannot be empty"
-#~ msgstr "Командата не може да е празна"
-
-#~ msgid "Edit Window Manager"
-#~ msgstr "Редактиране на Мениджъра на Прозорци"
-
-#~ msgid "You cannot delete the current Window Manager"
-#~ msgstr "Вие не може да изтриете текущия Мениджър на Прозорци"
-
-#~ msgid "Window Manager Selector"
-#~ msgstr "Избор за Мениджър на Прозорци"

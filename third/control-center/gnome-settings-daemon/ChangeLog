@@ -1,3 +1,59 @@
+2005-02-17  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-settings-multimedia-keys.c: (do_www_action):
+	Don't set any url when starting browser.
+
+2004-12-16  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-alsa.c: (acme_volume_alsa_set_mute): mute
+	properly when the system has hardware mute, patch from Pierre Ossman
+	<drzeus-bugzilla@drzeus.cx> (Closes: #144489)
+
+2004-12-09  Christophe Fergeau  <teuf@gnome.org>
+
+	* actions/acme-volume-gstreamer.c: don't always fail when opening the
+	mixer, fix some console warnings due to invalid casts of GstMixerTrack
+
+2004-11-30  Sebastien Bacher  <seb128@debian.org>
+
+	* actions/acme-volume-gstreamer.c:
+	(acme_volume_gstreamer_finalize), (acme_volume_gstreamer_set_mute),
+	(acme_volume_gstreamer_get_mute),
+	(acme_volume_gstreamer_get_volume),
+	(acme_volume_gstreamer_set_volume),
+	(acme_volume_gstreamer_close_real), (acme_volume_gstreamer_open),
+	(acme_volume_gstreamer_close), (acme_volume_gstreamer_init):
+	free the alsa device, after 4 seconds, with gstreamer too. 
+	Patch from Arnaud Patard <Arnaud Patard> (Closes: #141793).
+
+2004-11-30  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-settings-multimedia-keys.c: (do_exit_action): hack
+	to get the logout action working (Closes: #141472)
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-09-29  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-settings-multimedia-keys.c: (dialog_show): rework the
+	dialog_show so that the dialog is moved before it's shown, and
+	use gdk_display_sync() instead of a event looping to avoid
+	"reentrancy" problems when showing/hiding the dialog in fast
+	successions (Closes: #144490)
+
+2004-09-29  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-gstreamer.c: (acme_volume_gstreamer_init):
+	better way to look for the volume track (patch by Michal Bukovjan
+	<bukovjan@mbox.dkm.cz>) (Closes: #153866)
+
+2004-09-27  Sergey V. Udaltsov  <svu@gnome.org>
+
+	* gnome-settings-keyboard-xkb.c: fix one GSwitchItXkbConfig memory
+	leak, spotted by kmaraas.
+
 2004-08-30  Carlos Garnacho Parro  <carlosg@gnome.org>
 
 	* gnome-settings-multimedia-keys.c: applied patch from Pierre Ossman

@@ -1,3 +1,22 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2005-02-09  Sebastien Bacher  <seb128@debian.org>
+
+	* theme-thumbnailer.c: (main): change back to the previous code,
+        that fixes the themes:/// thumbnails (Closes: #165778).
+	
+2005-01-04  Shakti Sen <shprasad@novell.com>
+
+	* theme-thumbnailer.c (main): Added the full path of the theme
+	so that it will create the thumbnail.
+	Fixes bug #153203
+	
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
 2004-07-22  Christian Neumair  <chris@gnome-de.org>
 
 	* themus-properties-view.c: Use gi18n-lib for internationalization,

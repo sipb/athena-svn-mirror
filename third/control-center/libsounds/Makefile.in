@@ -357,11 +357,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-sound-event.o: sound-event.c sound-event.h
-sound-properties.o: sound-properties.c sound-properties.h sound-event.h \
-	../config.h
-sound-view.o: sound-view.c ../config.h sound-view.h sound-properties.h \
-	sound-event.h
 
 info-am:
 info: info-am

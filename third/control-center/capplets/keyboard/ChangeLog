@@ -1,3 +1,17 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2004-10-21  Sebastien Bacher  <seb128@debian.org>
+
+	* gnome-keyboard-properties.glade:
+	patch by Ross Burton <ross@burtonini.com> to fix the widget expansion
+	(Closes: #151588).
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
 2004-09-01  Sergey V. Udaltsov <svu@gnome.org>
 
 	* The default switchcut (Alt*2) is introduced

@@ -1,3 +1,16 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2005-02-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* font-method.c: (ensure_font_list), (fill_file_info):
+	Merge fix for bug #165312 and also a NULL vs. 0 fix.
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
 2004-05-16  Jody Goldberg <jody@gnome.org>
 
 	http://bugzilla.gnome.org/show_bug.cgi?id=140342

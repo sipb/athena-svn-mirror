@@ -73,7 +73,7 @@
 
       <locale name="el">
         <short>Οι ρυθμίσεις XKB στο gconf θα αντικατασταθούν από το σύστημα όσον το δυνατόν πιό γρήγορα.</short>
-        <long>Πολύ σύντομα, οι ρυθμίσεις XKB στο gconf θα αντικατασταθούν (από την ρύθμιση συστήματος)</long>
+        <long>Πολύ σύντομα, οι ρυθμίσεις XKB στο gconf θα αντικατασταθούν (από τη ρύθμιση συστήματος)</long>
       </locale>
 
       <locale name="en_CA">
@@ -181,6 +181,11 @@
         <long>Snart vil XKB-innstillinger i gconf bli overstyrt (fra systemkonfigurasjonen)</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dipeakanyo tša XKB go gconf di tla beelwa ka thoko tshepedišong ya ASAP</short>
+        <long>Kgauswinyane, dipeakanyo tša XKB go gconf di tla beelwa ka thoko (go fetolweng sebopego ga tshepedišo)</long>
+      </locale>
+
       <locale name="pa">
         <short>ਜੀ-ਕਾਨਫ ਵਿੱਚ XKB ਨਿਰਧਾਰਨ ਨੂੰ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ ਸਿਸਟਮ ASAP ਨਾਲ</short>
         <long>ਬੜੀ ਛੇਤੀ, ਜੀ-ਕਾਨਫ ਵਿੱਚ XKB ਨਿਰਧਾਰਨ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ (ਸਿਸਟਮ ਦੀ ਸੰਰਚਨਾ ਵਿੱਚੋ)</long>
@@ -270,6 +275,11 @@ sistema)</long>
       <locale name="zh_TW">
         <short>在 gconf 中的 XKB 設定，將會立即被系統取締</short>
         <long>XKB 設定將會立即被取締（由系統設定所取締）</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Uhlelo lwe-XKB phakathi kwe-gconf lizonyatheliswa emshinini masinya ASAP</short>
+        <long>Masinyane, uhlelo lwe-XKB phakathi kwe gconf lizawunyathelwa (kuvela kumumo womshini)</long>
       </locale>
     </schema>
 
@@ -459,6 +469,11 @@ sistema)</long>
         <long>XKB tastaturmodell</long>
       </locale>
 
+      <locale name="nso">
+        <short>Mohlala wa boroto ya dinotlelo ya XKB</short>
+        <long>Mohlala wa boroto ya dinotlelo ya XKB</long>
+      </locale>
+
       <locale name="pa">
         <short>XKB ਕੀ-ਬੋਰਡ ਮਾਡਲ</short>
         <long>XKB ਕੀ-ਬੋਰਡ ਮਾਡਲ</long>
@@ -547,6 +562,11 @@ sistema)</long>
       <locale name="zh_TW">
         <short>XKB 鍵盤模式</short>
         <long>XKB 鍵盤模式</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Isifanekiso sendawo yokushaya uma ubhala XKB</short>
+        <long>Isifanekiso sendawo yokushaya uma ubhala XKB</long>
       </locale>
     </schema>
 
@@ -737,6 +757,11 @@ sistema)</long>
         <long>XKB-tastaturutforming</long>
       </locale>
 
+      <locale name="nso">
+        <short>Go bea ga boroto ya dinotlelo ya XKB</short>
+        <long>Go bea ga boroto ya dinotlelo ya XKB</long>
+      </locale>
+
       <locale name="pa">
         <short>XKB ਕੀ-ਬੋਰਡ ਖਾਕਾ</short>
         <long>XKB ਕੀ-ਬੋਰਡ ਖਾਕਾ</long>
@@ -825,6 +850,11 @@ sistema)</long>
       <locale name="zh_TW">
         <short>XKB 鍵盤配置</short>
         <long>XKB 鍵盤配置</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Umphandle wendawo yokushaya uma ubhala XKB</short>
+        <long>Umphandle wendawo yokushaya uma ubhala XKB</long>
       </locale>
     </schema>
 
@@ -1020,6 +1050,11 @@ sistema)</long>
         <long>XKB-alternativer</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dikgetho tša XKB</short>
+        <long>Dikgetho tša XKB</long>
+      </locale>
+
       <locale name="pa">
         <short>XKB ਚੋਣ</short>
         <long>XKB ਚੋਣ</long>
@@ -1108,6 +1143,11 @@ sistema)</long>
       <locale name="zh_TW">
         <short>XKB 選項</short>
         <long>XKB 選項</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Ukhetho XKB</short>
+        <long>Ukhetho XKB</long>
       </locale>
     </schema>
 

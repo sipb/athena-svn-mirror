@@ -39,9 +39,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Define to 1 if you have the `ngettext' function. */
-#undef HAVE_NGETTEXT
-
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
 
@@ -107,6 +104,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* install prefix */
+#undef PREFIX
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

@@ -660,19 +660,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-theme-method.lo theme-method.o : theme-method.c \
-	../../capplets/common/gnome-theme-info.h
-theme-thumbnailer.o: theme-thumbnailer.c \
-	../../capplets/common/gnome-theme-info.h \
-	../../capplets/common/theme-thumbnail.h
-themus-properties-main.lo themus-properties-main.o : \
-	themus-properties-main.c themus-properties-view.h
-themus-properties-view.lo themus-properties-view.o : \
-	themus-properties-view.c themus-properties-view.h \
-	../../capplets/common/gnome-theme-info.h
-themus-theme-applier.o: themus-theme-applier.c \
-	../../capplets/common/gnome-theme-info.h \
-	../../capplets/common/gnome-theme-apply.h
 
 info-am:
 info: info-am

@@ -1,3 +1,35 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-14  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-item.c (gnome_wp_item_update_description):
+	Use g_markup_printf_escaped () to fill in the description
+
+	Fixes #155184
+
+2004-09-29  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-item.c (gnome_wp_item_new): Unescape the filename so that
+	we can laod the thumbnail and set the gconf key properly
+
+	Fixes #154003
+
+2004-09-22  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-item.c (gnome_wp_item_free):
+	Check that the colors aren't NULL before calling gdk_color_free
+
+	* gnome-wp-xml.c (gnome_wp_xml_load_xml):
+	Check that the item isn't already listed, before we try to add
+	the wallpaper to the list
+	(gnome_wp_xml_load_list): Load XML files from the correct directory 
+
 2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gnome-wp-capplet.c: (gnome_wp_icon_theme_changed),

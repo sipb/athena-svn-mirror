@@ -450,9 +450,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-main.o: main.c ../../config.h ../../capplets/common/capplet-util.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/gconf-property-editor.h
 
 info-am:
 info: info-am

@@ -1,3 +1,16 @@
+2005-02-21  Kjartan Maraas <kmaraas@gnome.org>
+
+        * Release 2.8.2.
+
+2005-01-03  Dan Winship  <danw@novell.com>
+
+	* gswitchit_util.c (GSwitchItLogAppender): Cast time_t to long to
+	match the printf format.
+	
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
 2004-06-29  Jody Goldberg <jody@gnome.org>
 
 	* gswitchit_config.c (GSwitchItXkbConfigInit) : s/g_error/g_warning/

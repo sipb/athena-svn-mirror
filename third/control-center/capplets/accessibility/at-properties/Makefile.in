@@ -448,12 +448,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-at-startup-session.o: at-startup-session.c ../../../config.h \
-	at-startup-session.h
-main.o: main.c ../../../config.h ../../../capplets/common/capplet-util.h \
-	../../../capplets/common/gconf-property-editor.h \
-	../../../capplets/common/activate-settings-daemon.h \
-	at-startup-session.h
 
 info-am:
 info: info-am

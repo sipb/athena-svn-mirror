@@ -240,6 +240,10 @@ schemas_DATA = fontilus.schemas
 serverdir = $(libdir)/bonobo/servers
 server_DATA = fontilus.server
 
+desktopdir = $(datadir)/applications
+desktop_in_files = gnome-font-viewer.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
 EXTRA_DIST = \
   font-method.conf \
   font-method.directory.in \
@@ -248,7 +252,8 @@ EXTRA_DIST = \
   fontilus.applications \
   fontilus.server.in.in \
   fontilus.schemas	\
-  fontilus.schemas.in
+  fontilus.schemas.in \
+  gnome-font-viewer.desktop.in
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -285,8 +290,8 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(appreg_DATA) $(mimeinfo_DATA) $(schemas_DATA) $(server_DATA) \
-$(vfsdirectory_DATA) $(vfsmoduleconf_DATA)
+DATA =  $(appreg_DATA) $(desktop_DATA) $(mimeinfo_DATA) $(schemas_DATA) \
+$(server_DATA) $(vfsdirectory_DATA) $(vfsmoduleconf_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -462,6 +467,25 @@ uninstall-appregDATA:
 	  rm -f $(DESTDIR)$(appregdir)/$$p; \
 	done
 
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
 install-mimeinfoDATA: $(mimeinfo_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(mimeinfodir)
@@ -601,11 +625,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-font-method.lo font-method.o : font-method.c ../../config.h
-font-view.o: font-view.c ../../config.h
-fontilus-context-menu.o: fontilus-context-menu.c ../../config.h
-ftstream-vfs.o: ftstream-vfs.c ../../config.h
-thumbnailer.o: thumbnailer.c ../../config.h
 
 info-am:
 info: info-am
@@ -619,9 +638,10 @@ install-exec-am: install-binPROGRAMS install-libexecPROGRAMS
 install-exec: install-exec-am
 
 install-data-am: install-vfsmoduleLTLIBRARIES install-appregDATA \
-		install-mimeinfoDATA install-schemasDATA \
-		install-serverDATA install-vfsdirectoryDATA \
-		install-vfsmoduleconfDATA install-data-local
+		install-desktopDATA install-mimeinfoDATA \
+		install-schemasDATA install-serverDATA \
+		install-vfsdirectoryDATA install-vfsmoduleconfDATA \
+		install-data-local
 install-data: install-data-am
 
 install-am: all-am
@@ -629,9 +649,9 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-vfsmoduleLTLIBRARIES uninstall-binPROGRAMS \
 		uninstall-libexecPROGRAMS uninstall-appregDATA \
-		uninstall-mimeinfoDATA uninstall-schemasDATA \
-		uninstall-serverDATA uninstall-vfsdirectoryDATA \
-		uninstall-vfsmoduleconfDATA
+		uninstall-desktopDATA uninstall-mimeinfoDATA \
+		uninstall-schemasDATA uninstall-serverDATA \
+		uninstall-vfsdirectoryDATA uninstall-vfsmoduleconfDATA
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
 all-redirect: all-am
@@ -640,8 +660,9 @@ install-strip:
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(vfsmoduledir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(libexecdir) $(DESTDIR)$(appregdir) \
-		$(DESTDIR)$(mimeinfodir) $(DESTDIR)$(schemasdir) \
-		$(DESTDIR)$(serverdir) $(DESTDIR)$(vfsdirectorydir) \
+		$(DESTDIR)$(desktopdir) $(DESTDIR)$(mimeinfodir) \
+		$(DESTDIR)$(schemasdir) $(DESTDIR)$(serverdir) \
+		$(DESTDIR)$(vfsdirectorydir) \
 		$(DESTDIR)$(vfsmoduleconfdir)
 
 
@@ -696,20 +717,21 @@ uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-libexecPROGRAMS \
 distclean-libexecPROGRAMS clean-libexecPROGRAMS \
 maintainer-clean-libexecPROGRAMS uninstall-libexecPROGRAMS \
 install-libexecPROGRAMS uninstall-appregDATA install-appregDATA \
-uninstall-mimeinfoDATA install-mimeinfoDATA uninstall-schemasDATA \
-install-schemasDATA uninstall-serverDATA install-serverDATA \
-uninstall-vfsdirectoryDATA install-vfsdirectoryDATA \
-uninstall-vfsmoduleconfDATA install-vfsmoduleconfDATA tags \
-mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-local \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+uninstall-desktopDATA install-desktopDATA uninstall-mimeinfoDATA \
+install-mimeinfoDATA uninstall-schemasDATA install-schemasDATA \
+uninstall-serverDATA install-serverDATA uninstall-vfsdirectoryDATA \
+install-vfsdirectoryDATA uninstall-vfsmoduleconfDATA \
+install-vfsmoduleconfDATA tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-local install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 fontilus.server.in: fontilus.server.in.in
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_DESKTOP_RULE@
 
 @GCONF_SCHEMAS_INSTALL_TRUE@install-data-local:
 @GCONF_SCHEMAS_INSTALL_TRUE@	if test -z "$(DESTDIR)"; then \

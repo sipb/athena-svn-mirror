@@ -440,12 +440,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-sound-properties-capplet.o: sound-properties-capplet.c ../../config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../libsounds/sound-view.h ../../libsounds/sound-properties.h \
-	../../libsounds/sound-event.h \
-	../../capplets/common/activate-settings-daemon.h
 
 info-am:
 info: info-am

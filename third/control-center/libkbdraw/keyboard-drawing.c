@@ -1,4 +1,4 @@
-/* $Id: keyboard-drawing.c,v 1.1.1.1 2004-10-04 03:56:46 ghudson Exp $ */
+/* $Id: keyboard-drawing.c,v 1.1.1.2 2005-03-10 17:48:23 ghudson Exp $ */
 /*
  * keyboard-drawing.c: implementation of a gtk+ widget that is a drawing of
  * the keyboard of the default display
@@ -75,6 +75,9 @@ draw_polygon (KeyboardDrawing *drawing,
   GdkPoint *points;
   gboolean filled;
   gint i;
+  
+  if (drawing->pixmap == NULL) 
+    return;
 
   if (fill_color) 
     {
@@ -113,6 +116,9 @@ draw_rectangle (KeyboardDrawing *drawing,
                 gint             xkb_width, 
                 gint             xkb_height)
 {
+  if (drawing->pixmap == NULL)
+    return;
+
   if (angle == 0) 
     {
       GtkStateType state = GTK_WIDGET_STATE (GTK_WIDGET (drawing));
@@ -600,6 +606,9 @@ draw_layout (KeyboardDrawing *drawing,
   PangoLayoutLine *line;
   gint x_off, y_off;
   gint i;
+
+  if (drawing->pixmap == NULL)
+    return;
 
   if (angle != drawing->angle) 
     {
@@ -1289,6 +1298,8 @@ xkb_state_notify_event_filter (GdkXEvent       *gdkxev,
         case XkbControlsNotify:
         case XkbNamesNotify:
         case XkbNewKeyboardNotify:
+          if (drawing->track_group) 
+              keyboard_drawing_set_groups (drawing, 0, -1);
           if (drawing->track_config)
             keyboard_drawing_set_keyboard (drawing, NULL);
           break;
@@ -1484,15 +1495,16 @@ keyboard_drawing_set_keyboard (KeyboardDrawing      *kbdrawing,
 {
   free_keys_and_doodads_and_colors (kbdrawing);
   XkbFreeKeyboard (kbdrawing->xkb, 0, TRUE);    /* free_all = TRUE */
+  kbdrawing->xkb = NULL;  
 
   if (names)
     kbdrawing->xkb = XkbGetKeyboardByName (kbdrawing->display, XkbUseCoreKbd, names, 0, 
                                            XkbGBN_GeometryMask | XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask | XkbGBN_ClientSymbolsMask | XkbGBN_IndicatorMapMask, 
                                            FALSE);
   else
-    XkbGetKeyboard (kbdrawing->display,
-                    XkbGBN_GeometryMask | XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask | XkbGBN_ClientSymbolsMask | XkbGBN_IndicatorMapMask, 
-                    XkbUseCoreKbd);
+    kbdrawing->xkb = XkbGetKeyboard (kbdrawing->display,
+                                     XkbGBN_GeometryMask | XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask | XkbGBN_ClientSymbolsMask | XkbGBN_IndicatorMapMask, 
+	                              XkbUseCoreKbd);
 
   if (kbdrawing->xkb == NULL)
     return FALSE;
