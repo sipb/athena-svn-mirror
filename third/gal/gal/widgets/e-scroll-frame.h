@@ -75,9 +75,14 @@ void e_scroll_frame_set_vadjustment (EScrollFrame *sf, GtkAdjustment *adj);
 GtkAdjustment *e_scroll_frame_get_hadjustment (EScrollFrame *sf);
 GtkAdjustment *e_scroll_frame_get_vadjustment (EScrollFrame *sf);
 
-void e_scroll_frame_set_policy (EScrollFrame *sf,
-				GtkPolicyType hsb_policy,
-				GtkPolicyType vsb_policy);
+void e_scroll_frame_set_policy (EScrollFrame  *sf,
+				GtkPolicyType  hsb_policy,
+				GtkPolicyType  vsb_policy);
+void e_scroll_frame_get_policy (EScrollFrame  *sf,
+				GtkPolicyType *hsb_policy,
+				GtkPolicyType *vsb_policy);
+gboolean e_scroll_frame_get_vscrollbar_visible (EScrollFrame *sf);
+gboolean e_scroll_frame_get_hscrollbar_visible (EScrollFrame *sf);
 
 void e_scroll_frame_set_placement (EScrollFrame *sf, GtkCornerType frame_placement);
 void e_scroll_frame_set_shadow_type (EScrollFrame *sf, GtkShadowType shadow_type);

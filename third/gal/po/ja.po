@@ -2,13 +2,14 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2000.
 # Takuo KITAME <kitame@debian.org>, 2000,2001
+# Akira TAGOH <tagoh@gnome.gr.jp>, 2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gal CVS\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
-"PO-Revision-Date: 2001-10-01 23:06+0900\n"
-"Last-Translator: Takuo KITAME <kitame@debian.org>\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"PO-Revision-Date: 2001-12-14 17:14+0900\n"
+"Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -46,22 +47,6 @@ msgstr "%m/%d %p %l:%M"
 msgid "%b %d %Y"
 msgstr "%Y/%m/%d"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(昇順)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(降順)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "ストアされていない"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "グループなし"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -88,7 +73,7 @@ msgid "Descending"
 msgstr "降順"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "説明"
 
@@ -147,14 +132,35 @@ msgstr "Then By"
 msgid "_Add ->"
 msgstr "追加(_A)->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "グループ化(_G)..."
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "ソート(_S)..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(昇順)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(降順)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "ストアされていない"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "グループなし"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "グループ化(_G)..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -188,68 +194,93 @@ msgstr "可能な項目"
 msgid "Show in this order"
 msgstr "順番に表示"
 
-#: gal/e-table/e-table-header-item.c:1302
-#, fuzzy
-msgid "Customize Current View"
-msgstr "現在ビューのカスタマイズ..."
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d 項目)"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-header-item.c:1440
+msgid "Customize Current View"
+msgstr "現在のビューのカスタマイズ"
+
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "昇順でソート"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "降順でソート"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "ソートを戻す"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "この項目でグループ化"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "ボックスをグループ化"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "このカラムを削除"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "カラムを追加..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "位置よせ"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "最大サイズ"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "カラムのフォーマット..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
-msgstr "現在ビューのカスタマイズ..."
+msgstr "現在のビューのカスタマイズ..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "\"%s\"のビューを定義"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "\"%s\"のビューを定義"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "\"%s\"のビューを定義"
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "ファクトリデフォルトに戻す(_S)..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "ビュー\"%s\""
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -271,6 +302,16 @@ msgstr "新規(_N)..."
 msgid "Table"
 msgstr "テーブル"
 
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "現在のビューのカスタマイズ"
+
+#: gal/menus/gal-view-instance.c:581
+#, fuzzy
+msgid "Save Custom View"
+msgstr "重要な客"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "新規ビュー名称:"
@@ -283,6 +324,10 @@ msgstr "ビュータイプ:"
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -470,7 +515,7 @@ msgstr "濃い紫"
 msgid "sky blue"
 msgstr "淡青"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "グローバルカテゴリ一覧に追加"
 
@@ -478,13 +523,18 @@ msgstr "グローバルカテゴリ一覧に追加"
 msgid "Add all to global category list"
 msgstr "すべてをグローバルカテゴリ一覧に追加"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "グローバルカテゴリ一覧から削除"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "すべてをグローバルカテゴリ一覧から削除"
+
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "カテゴリ"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -502,95 +552,95 @@ msgstr "利用可能なカテゴリ(_A):"
 msgid "categories"
 msgstr "カテゴリ"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "誕生日"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "仕事"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "コンクール"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "お気に入り"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "ギフト"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "ゴール/目標"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "休日"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "休日カード"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "新しい連絡先"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "考え"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "国際的"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "重要な客"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "いろいろ"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "個人"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "電話"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "状態"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "戦略"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "補給"
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "時間と費用"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "待ち"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* カテゴリを追加するにはここをクリック *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "カテゴリ"
 
@@ -599,96 +649,35 @@ msgid "Add a category"
 msgstr "カテゴリを追加"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "追加..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "グローバルカテゴリ一覧を編集"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "カテゴリを変更"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "変更..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "削除"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "追加するカテゴリ(_C):"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "変更するカテゴリ(_C):"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d 項目)"
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "利用可能なカテゴリ(_A):"
 
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d 項目)"
+#~ msgid "Views for \"%s\""
+#~ msgstr "\"%s\"のビュー"
 
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d 項目)"
+#~ msgid "Add..."
+#~ msgstr "追加..."
 
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d 項目)"
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "表示の設定: FIXME"
-
-#~ msgid "Table HERE"
-#~ msgstr "テーブル"
-
-#~ msgid "_Fields..."
-#~ msgstr "項目(_F)..."
-
-#~ msgid "label20"
-#~ msgstr "ラベル20"
-
-#~ msgid "window1"
-#~ msgstr "ウィンドウ1"
-
-#~ msgid "label1"
-#~ msgstr "ラベル1"
-
-#~ msgid "label2"
-#~ msgstr "ラベル2"
-
-#~ msgid "label5"
-#~ msgstr "ラベル5"
-
-#~ msgid "Group By"
-#~ msgstr "グループ化"
-
-#~ msgid "Sort By"
-#~ msgstr "ソートキー"
-
-#~ msgid "View Summary"
-#~ msgstr "サマリを表示"
-
-#~ msgid "Sort..."
-#~ msgstr "ソート..."
-
-#~ msgid "Group By..."
-#~ msgstr "グループ化..."
-
-#~ msgid ""
-#~ "Icon, Attachment, Flag Status,\n"
-#~ "Full Name, Company, "
-#~ msgstr ""
-#~ "アイコン、添付、フラグ、\n"
-#~ "氏名、会社名、"
-
-#~ msgid "None"
-#~ msgstr "なし"
-
-#~ msgid "File As (ascending)"
-#~ msgstr "ファイル名(昇順)"
-
-#~ msgid "File By"
-#~ msgstr "ファイル"
+#~ msgid "Modify..."
+#~ msgstr "変更..."

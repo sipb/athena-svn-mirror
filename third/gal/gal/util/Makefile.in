@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -135,7 +136,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -145,20 +154,45 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	$(EXTRA_GNOME_CFLAGS)				$(GNOME_INCLUDEDIR)				$(ICONV_CFLAGS)					-I$(top_srcdir)                         	-I$(top_builddir)                               -DG_LOG_DOMAIN=\"widgets\"
+INCLUDES = \
+	$(EXTRA_GNOME_CFLAGS)			\
+	$(GNOME_INCLUDEDIR)			\
+	$(ICONV_CFLAGS)				\
+	-I$(top_srcdir)                         \
+	-I$(top_builddir)                       \
+        -DG_LOG_DOMAIN=\"widgets\"
 
 
 noinst_LTLIBRARIES = libutil.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
-libutil_la_SOURCES =  	e-bit-array.c		e-cache.c		e-iconv.c		e-sorter-array.c		e-sorter.c		e-text-event-processor-emacs-like.c		e-text-event-processor.c			e-unicode-i18n.c		e-util.c		e-xml-utils.c
+libutil_la_SOURCES = \
+	e-bit-array.c	\
+	e-cache.c	\
+	e-iconv.c	\
+	e-sorter-array.c	\
+	e-sorter.c	\
+	e-text-event-processor-emacs-like.c	\
+	e-text-event-processor.c		\
+	e-unicode-i18n.c	\
+	e-util.c	\
+	e-xml-utils.c
 
 
 libgalincludedir = $(includedir)/gal/util
 
-libgalinclude_HEADERS =  	e-bit-array.h		e-cache.h		e-iconv.h		e-i18n.h		e-sorter-array.h		e-sorter.h		e-text-event-processor-emacs-like.h		e-text-event-processor-types.h			e-text-event-processor.h			e-unicode-i18n.h		e-util.h		e-xml-utils.h
+libgalinclude_HEADERS = \
+	e-bit-array.h	\
+	e-cache.h	\
+	e-iconv.h	\
+	e-i18n.h	\
+	e-sorter-array.h	\
+	e-sorter.h	\
+	e-text-event-processor-emacs-like.h	\
+	e-text-event-processor-types.h		\
+	e-text-event-processor.h		\
+	e-unicode-i18n.h	\
+	e-util.h	\
+	e-xml-utils.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -184,7 +218,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libutil_la_SOURCES)
 OBJECTS = $(libutil_la_OBJECTS)

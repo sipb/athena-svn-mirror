@@ -55,7 +55,7 @@ static GtkObjectClass *parent_class;
 /* The arguments we take */
 enum {
 	ARG_0,
-	ARG_ECML,
+	ARG_ECML
 };
 
 static void
@@ -151,7 +151,27 @@ dialog_destroyed (GtkObject *dialog, ECategoriesMasterListDialog *ecmld)
 static void
 dialog_clicked (GtkObject *dialog, int button, ECategoriesMasterListDialog *ecmld)
 {
-	gnome_dialog_close (GNOME_DIALOG (dialog));
+	GtkWidget *scrolled;
+	switch (button) {
+	case 0:    /* Remove */
+		scrolled = glade_xml_get_widget (ecmld->priv->gui, "custom-etable");
+		if (scrolled && E_IS_TABLE_SCROLLED (scrolled)) {
+			ETable *table;
+			int row;
+
+			table = e_table_scrolled_get_table (E_TABLE_SCROLLED(scrolled));
+
+			row = e_table_get_cursor_row(table);
+			if (row != -1) {
+				e_categories_master_list_delete (ecmld->priv->ecml, row);
+				e_categories_master_list_commit (ecmld->priv->ecml);
+			}
+		}
+		break;
+	case 1:    /* Close */
+		gnome_dialog_close (GNOME_DIALOG (dialog));
+		break;
+	}
 }
 
 #if 0
@@ -174,10 +194,10 @@ static char *list [] = {
 #endif
 
 #define SPEC "<ETableSpecification cursor-mode=\"line\" draw-grid=\"false\" draw-focus=\"true\" selection-mode=\"browse\" no-headers=\"true\""		\
-	     " click-to-add=\"true\" _click-to-add-message=\"* Click here to add a category *\">"							\
+             " gettext-domain=\"" E_I18N_DOMAIN "\" click-to-add=\"true\" _click-to-add-message=\"* Click here to add a category *\">"			\
 		"<ETableColumn model_col= \"0\" _title=\"Category\" expansion=\"1.0\" resizable=\"true\" minimum_width=\"24\" cell=\"string\" compare=\"string\"/>" \
 			"<ETableState> <column source=\"0\"/>"												\
-				"<grouping> <leaf column=\"0\" ascending=\"true\"/> </grouping>"								\
+				"<grouping> <leaf column=\"0\" ascending=\"true\"/> </grouping>"							\
 			"</ETableState>"														\
 	     "</ETableSpecification>"
 
@@ -297,4 +317,4 @@ e_categories_master_list_dialog_raise (ECategoriesMasterListDialog *ecmld)
 		gdk_window_raise (dialog->window);
 }
 
-E_MAKE_TYPE(e_categories_master_list_dialog, "ECategoriesMasterListDialog", ECategoriesMasterListDialog, ecmld_class_init, ecmld_init, PARENT_TYPE);
+E_MAKE_TYPE(e_categories_master_list_dialog, "ECategoriesMasterListDialog", ECategoriesMasterListDialog, ecmld_class_init, ecmld_init, PARENT_TYPE)

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -135,7 +136,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -146,29 +155,170 @@ gnomelocaledir = @gnomelocaledir@
 l = @l@
 
 gladedir = $(datadir)/etable/$(VERSION)/glade
-glade_DATA =  	e-table-config.glade				e-table-config-no-group.glade			e-table-group.glade				e-table-field-chooser.glade
+glade_DATA = \
+	e-table-config.glade			\
+	e-table-config-no-group.glade		\
+	e-table-group.glade			\
+	e-table-field-chooser.glade
 
 
-INCLUDES =  	-I$(top_srcdir)                         	-I$(top_srcdir)/gal                     	$(EXTRA_GNOME_CFLAGS)				$(GNOME_BONOBO_CFLAGS)				$(GNOME_INCLUDEDIR)				$(ICONV_CFLAGS)					-DETABLE_GLADEDIR=\"$(gladedir)\"	        -DG_LOG_DOMAIN=\"e-table\"
+INCLUDES = \
+	-I$(top_srcdir)                         \
+	-I$(top_srcdir)/gal                     \
+	$(EXTRA_GNOME_CFLAGS)			\
+	$(GNOME_BONOBO_CFLAGS)			\
+	$(GNOME_INCLUDEDIR)			\
+	$(ICONV_CFLAGS)				\
+	-DETABLE_GLADEDIR=\"$(gladedir)\"	\
+        -DG_LOG_DOMAIN=\"e-table\"
 
 
 noinst_LTLIBRARIES = libetable.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
-libetable_la_SOURCES =  	e-cell.c					e-cell-checkbox.c				e-cell-combo.c					e-cell-date.c					e-cell-float.c					e-cell-number.c					e-cell-pixbuf.c					e-cell-popup.c					e-cell-size.c					e-cell-spin-button.c				e-cell-text.c					e-cell-toggle.c					e-cell-tree.c					e-table-click-to-add.c				e-table-col.c					e-table-column-specification.c			e-table-config.c				e-table-extras.c				e-table-field-chooser-dialog.c			e-table-field-chooser-item.c			e-table-field-chooser.c				e-table-group.c					e-table-group-container.c			e-table-group-leaf.c				e-table-header.c				e-table-header-item.c				e-table-header-utils.c				e-table-item.c					e-table-memory-callbacks.c			e-table-memory.c				e-table-model.c					e-table-one.c					e-table-scrolled.c				e-table-selection-model.c			e-table-simple.c				e-table-sort-info.c				e-table-sorted.c				e-table-sorted-variable.c			e-table-sorter.c				e-table-sorting-utils.c				e-table-specification.c				e-table-state.c					e-table-subset.c				e-table-subset-variable.c			e-table-utils.c					e-table-without.c				e-table.c					e-tree-memory-callbacks.c			e-tree-memory.c					e-tree-model.c					e-tree-scrolled.c				e-tree-selection-model.c			e-tree-sorted.c					e-tree-table-adapter.c				e-tree.c
+libetable_la_SOURCES = \
+	e-cell.c				\
+	e-cell-checkbox.c			\
+	e-cell-combo.c				\
+	e-cell-date.c				\
+	e-cell-float.c				\
+	e-cell-number.c				\
+	e-cell-pixbuf.c				\
+	e-cell-popup.c				\
+	e-cell-progress.c			\
+	e-cell-size.c				\
+	e-cell-spin-button.c			\
+	e-cell-text.c				\
+	e-cell-toggle.c				\
+	e-cell-tree.c				\
+	e-cell-vbox.c				\
+	e-table-click-to-add.c			\
+	e-table-col.c				\
+	e-table-column-specification.c		\
+	e-table-config.c			\
+	e-table-extras.c			\
+	e-table-field-chooser-dialog.c		\
+	e-table-field-chooser-item.c		\
+	e-table-field-chooser.c			\
+	e-table-group.c				\
+	e-table-group-container.c		\
+	e-table-group-leaf.c			\
+	e-table-header.c			\
+	e-table-header-item.c			\
+	e-table-header-utils.c			\
+	e-table-item.c				\
+	e-table-memory-callbacks.c		\
+	e-table-memory-store.c			\
+	e-table-memory.c			\
+	e-table-model.c				\
+	e-table-one.c				\
+	e-table-scrolled.c			\
+	e-table-search.c			\
+	e-table-selection-model.c		\
+	e-table-simple.c			\
+	e-table-sort-info.c			\
+	e-table-sorted.c			\
+	e-table-sorted-variable.c		\
+	e-table-sorter.c			\
+	e-table-sorting-utils.c			\
+	e-table-specification.c			\
+	e-table-state.c				\
+	e-table-subset.c			\
+	e-table-subset-variable.c		\
+	e-table-utils.c				\
+	e-table-without.c			\
+	e-table.c				\
+	e-tree-memory-callbacks.c		\
+	e-tree-memory.c				\
+	e-tree-model.c				\
+	e-tree-scrolled.c			\
+	e-tree-selection-model.c		\
+	e-tree-sorted.c				\
+	e-tree-table-adapter.c			\
+	e-tree.c
 
 
 libetableincludedir = $(includedir)/gal/e-table
 
-libetableinclude_HEADERS =  	e-cell.h					e-cell-checkbox.h				e-cell-combo.h					e-cell-date.h					e-cell-float.h					e-cell-number.h					e-cell-pixbuf.h					e-cell-popup.h					e-cell-size.h					e-cell-spin-button.h				e-cell-text.h					e-cell-toggle.h					e-cell-tree.h					e-table-click-to-add.h				e-table-col-dnd.h				e-table-col.h					e-table-column-specification.h			e-table-config.h				e-table-defines.h				e-table-extras.h				e-table-field-chooser-dialog.h			e-table-field-chooser-item.h			e-table-field-chooser.h				e-table-group.h					e-table-group-container.h			e-table-group-leaf.h				e-table-header.h				e-table-header-item.h				e-table-header-utils.h				e-table-item.h					e-table-memory-callbacks.h			e-table-memory.h				e-table-model.h					e-table-one.h					e-table-scrolled.h				e-table-selection-model.h			e-table-simple.h				e-table-sort-info.h				e-table-sorted.h				e-table-sorted-variable.h			e-table-sorter.h				e-table-sorting-utils.h				e-table-specification.h				e-table-state.h					e-table-subset.h				e-table-subset-variable.h			e-table-tooltip.h				e-table-utils.h					e-table-without.h				e-table.h					e-tree-memory-callbacks.h			e-tree-memory.h					e-tree-model.h					e-tree-scrolled.h				e-tree-selection-model.h			e-tree-sorted.h					e-tree-table-adapter.h				e-tree.h
+libetableinclude_HEADERS = \
+	e-cell.h				\
+	e-cell-checkbox.h			\
+	e-cell-combo.h				\
+	e-cell-date.h				\
+	e-cell-float.h				\
+	e-cell-number.h				\
+	e-cell-pixbuf.h				\
+	e-cell-popup.h				\
+	e-cell-progress.h			\
+	e-cell-size.h				\
+	e-cell-spin-button.h			\
+	e-cell-text.h				\
+	e-cell-toggle.h				\
+	e-cell-tree.h				\
+	e-cell-vbox.h				\
+	e-table-click-to-add.h			\
+	e-table-col-dnd.h			\
+	e-table-col.h				\
+	e-table-column-specification.h		\
+	e-table-config.h			\
+	e-table-defines.h			\
+	e-table-extras.h			\
+	e-table-field-chooser-dialog.h		\
+	e-table-field-chooser-item.h		\
+	e-table-field-chooser.h			\
+	e-table-group.h				\
+	e-table-group-container.h		\
+	e-table-group-leaf.h			\
+	e-table-header.h			\
+	e-table-header-item.h			\
+	e-table-header-utils.h			\
+	e-table-item.h				\
+	e-table-memory-callbacks.h		\
+	e-table-memory-store.h			\
+	e-table-memory.h			\
+	e-table-model.h				\
+	e-table-one.h				\
+	e-table-scrolled.h			\
+	e-table-search.h			\
+	e-table-selection-model.h		\
+	e-table-simple.h			\
+	e-table-sort-info.h			\
+	e-table-sorted.h			\
+	e-table-sorted-variable.h		\
+	e-table-sorter.h			\
+	e-table-sorting-utils.h			\
+	e-table-specification.h			\
+	e-table-state.h				\
+	e-table-subset.h			\
+	e-table-subset-variable.h		\
+	e-table-tooltip.h			\
+	e-table-utils.h				\
+	e-table-without.h			\
+	e-table.h				\
+	e-tree-memory-callbacks.h		\
+	e-tree-memory.h				\
+	e-tree-model.h				\
+	e-tree-scrolled.h			\
+	e-tree-selection-model.h		\
+	e-tree-sorted.h				\
+	e-tree-table-adapter.h			\
+	e-tree.h
 
 
-icons =  	add-col.xpm			arrow-down.xpm			arrow-up.xpm			add-col.xpm			check-empty.xpm			check-filled.xpm		remove-col.xpm			tree-expanded.xpm		tree-unexpanded.xpm
+icons = \
+	add-col.xpm		\
+	arrow-down.xpm		\
+	arrow-up.xpm		\
+	add-col.xpm		\
+	check-empty.xpm		\
+	check-filled.xpm	\
+	remove-col.xpm		\
+	tree-expanded.xpm	\
+	tree-unexpanded.xpm
 
 
-EXTRA_DIST =  	 $(icons)			 $(glade_DATA)
+EXTRA_DIST = \
+	 $(icons)		\
+	 $(glade_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -182,14 +332,15 @@ libetable_la_LDFLAGS =
 libetable_la_LIBADD = 
 libetable_la_OBJECTS =  e-cell.lo e-cell-checkbox.lo e-cell-combo.lo \
 e-cell-date.lo e-cell-float.lo e-cell-number.lo e-cell-pixbuf.lo \
-e-cell-popup.lo e-cell-size.lo e-cell-spin-button.lo e-cell-text.lo \
-e-cell-toggle.lo e-cell-tree.lo e-table-click-to-add.lo e-table-col.lo \
-e-table-column-specification.lo e-table-config.lo e-table-extras.lo \
-e-table-field-chooser-dialog.lo e-table-field-chooser-item.lo \
-e-table-field-chooser.lo e-table-group.lo e-table-group-container.lo \
-e-table-group-leaf.lo e-table-header.lo e-table-header-item.lo \
-e-table-header-utils.lo e-table-item.lo e-table-memory-callbacks.lo \
-e-table-memory.lo e-table-model.lo e-table-one.lo e-table-scrolled.lo \
+e-cell-popup.lo e-cell-progress.lo e-cell-size.lo e-cell-spin-button.lo \
+e-cell-text.lo e-cell-toggle.lo e-cell-tree.lo e-cell-vbox.lo \
+e-table-click-to-add.lo e-table-col.lo e-table-column-specification.lo \
+e-table-config.lo e-table-extras.lo e-table-field-chooser-dialog.lo \
+e-table-field-chooser-item.lo e-table-field-chooser.lo e-table-group.lo \
+e-table-group-container.lo e-table-group-leaf.lo e-table-header.lo \
+e-table-header-item.lo e-table-header-utils.lo e-table-item.lo \
+e-table-memory-callbacks.lo e-table-memory-store.lo e-table-memory.lo \
+e-table-model.lo e-table-one.lo e-table-scrolled.lo e-table-search.lo \
 e-table-selection-model.lo e-table-simple.lo e-table-sort-info.lo \
 e-table-sorted.lo e-table-sorted-variable.lo e-table-sorter.lo \
 e-table-sorting-utils.lo e-table-specification.lo e-table-state.lo \
@@ -211,7 +362,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libetable_la_SOURCES)
 OBJECTS = $(libetable_la_OBJECTS)

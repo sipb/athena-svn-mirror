@@ -40,7 +40,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static gint pixmap_combo_signals [LAST_SIGNAL] = { 0, };
+static guint pixmap_combo_signals [LAST_SIGNAL] = { 0, };
 static GtkObjectClass *pixmap_combo_parent_class;
 
 /***************************************************************************/

@@ -45,6 +45,7 @@ typedef enum {
 
 EFont * e_font_from_gdk_name (const gchar *name);
 EFont * e_font_from_gdk_font (GdkFont *font);
+EFont * e_font_from_gdk_font_gtkhtml (GdkFont *gdk_font);
 
 GdkFont *e_font_to_gdk_font (EFont *font, EFontStyle style);
 

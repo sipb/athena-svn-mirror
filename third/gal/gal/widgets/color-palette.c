@@ -52,7 +52,7 @@ struct _ColorNamePair {
 	char *name;	/* english name - eg. "white" */
 };
 
-static gint color_palette_signals [LAST_SIGNAL] = { 0, };
+static guint color_palette_signals [LAST_SIGNAL] = { 0, };
 
 static GtkObjectClass *color_palette_parent_class;
 

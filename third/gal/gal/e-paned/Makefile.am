@@ -5,9 +5,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libepaned.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libepaned_la_SOURCES = 		\
 	e-hpaned.c		\
 	e-paned.c		\

@@ -44,6 +44,7 @@
 #include <gal/util/e-text-event-processor.h>
 #include <gal/e-text/e-text-model.h>
 #include <gal/widgets/e-canvas.h>
+#include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 
@@ -255,10 +256,11 @@ struct _EText {
 struct _ETextClass {
 	GnomeCanvasItemClass parent_class;
 
-	void (* changed)   (EText *text);
-	void (* activate)  (EText *text);
-	void (* keypress)  (EText *text, guint keyval, guint state);
-	void (* popup)     (EText *text, GdkEventButton *ev, gint pos);
+	void (* changed)    (EText *text);
+	void (* activate)   (EText *text);
+	void (* keypress)   (EText *text, guint keyval, guint state);
+	void (* popup)      (EText *text, GdkEventButton *ev, gint pos);
+	void (* style_set)  (EText *text, GtkStyle *previous_style);
 };
 
 

@@ -224,7 +224,7 @@ void           e_icon_bar_set_enable_drags	(EIconBar	 *icon_bar,
 
 
 /*
- * INTERNAL FUNCTIONS - for use by EIconBarBgItem.
+ * INTERNAL FUNCTIONS - for use by EIconBarBgItem and EShortcutBar.
  */
 
 /* This returns the index of the item at the given position on the EIconBar,

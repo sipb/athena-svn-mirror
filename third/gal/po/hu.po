@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal VERSION\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
-"PO-Revision-Date: 2001-08-01 11:33+0200\n"
-"Last-Translator: Andras TIMAR <timar@gnome.hu>\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"PO-Revision-Date: 2001-12-27 23:12+0100\n"
+"Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
@@ -45,22 +45,6 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%Y %b %d"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Növekvõ)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Csökkenõ)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Rendezetlen"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Nincs csoportosítás"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -87,7 +71,7 @@ msgid "Descending"
 msgstr "Csökkenõ"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Leírás"
 
@@ -146,14 +130,36 @@ msgstr "Azután"
 msgid "_Add ->"
 msgstr "_Hozzáadás ->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Csoportosítás"
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "_Mezõk..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "_Rendezés..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Növekvõ)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Csökkenõ)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Rendezetlen"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Nincs csoportosítás"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Csoportosítás"
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -187,68 +193,93 @@ msgstr "Rendelkezésre álló mezõk"
 msgid "Show in this order"
 msgstr "Megjelenítési sorrend"
 
-#: gal/e-table/e-table-header-item.c:1302
-#, fuzzy
-msgid "Customize Current View"
-msgstr "Aktuális nézet testreszabása..."
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d elem)"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elem)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d elem)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elem)"
+
+#: gal/e-table/e-table-header-item.c:1440
+msgid "Customize Current View"
+msgstr "Aktuális nézet testreszabása"
+
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "Növekvõ sorrend"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "Csökkenõ sorrend"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "Rendezetlen"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Csoportosítás mezõ szerint"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Csoportosítás (xxx)box szerint"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Oszlop eltávolítása"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Oszlop hozzáadása..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Igazítás"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Legjobb illeszkedés"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Oszlop formátuma..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Aktuális nézet testreszabása..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "\"%s\" nézeteinek definiálása"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "\"%s\" nézeteinek definiálása"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "\"%s\" nézeteinek definiálása"
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "_Alapértelmezett beállítások visszaállítása..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "\"%s\" nézetei"
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -270,6 +301,16 @@ msgstr "Ú_j..."
 msgid "Table"
 msgstr "Táblázat"
 
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "Aktuális nézet testreszabása"
+
+#: gal/menus/gal-view-instance.c:581
+#, fuzzy
+msgid "Save Custom View"
+msgstr "Kiemelt ügyfél"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Az új nézet neve:"
@@ -282,6 +323,10 @@ msgstr "Nézet típusa:"
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -469,7 +514,7 @@ msgstr "sötétbordó"
 msgid "sky blue"
 msgstr "égszínkék"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Hozzáadás a globális kategórialistához"
 
@@ -477,13 +522,18 @@ msgstr "Hozzáadás a globális kategórialistához"
 msgid "Add all to global category list"
 msgstr "Mindet hozzáadja a globális kategórialistához"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Eltávolítás a globális kategórialistából"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Mindet eltávolítja a globális kategórialistából"
+
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "kategóriák"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -501,95 +551,95 @@ msgstr "_Rendelkezésre álló kategóriák:"
 msgid "categories"
 msgstr "kategóriák"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "Születésnap"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Üzlet"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Versenytárs"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "Kedvencek"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Ajándékok"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Célok"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "Szabadság"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "Üdvözlõlap"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "Fontos kapcsolatok"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "Ötletek"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "Nemzetközi"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "Kiemelt ügyfél"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "Személyes"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "Telefonhívások"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Állapot"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "Stratégiák"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "Beszállítók"
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "Idõ és kiadás"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "Várakozás"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* Kategória hozzáadásához kattints ide *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "Kategória"
 
@@ -598,47 +648,38 @@ msgid "Add a category"
 msgstr "Kategória hozzáadása"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Hozzáadás..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "Globális kategórialista szerkesztése"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "Kategória módosítása"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Módosítás..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "_Hozzáadandó kategória:"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "_Módosítandó kategória:"
 
-#~ msgid "_Fields..."
-#~ msgstr "_Mezõk..."
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "_Rendelkezésre álló kategóriák:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d elem)"
+#~ msgid "Views for \"%s\""
+#~ msgstr "\"%s\" nézetei"
 
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d elem)"
+#~ msgid "Add..."
+#~ msgstr "Hozzáadás..."
 
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d elem)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d elem)"
+#~ msgid "Modify..."
+#~ msgstr "Módosítás..."
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Nézet beállításai: FIXME"

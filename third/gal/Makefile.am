@@ -1,4 +1,4 @@
-SUBDIRS = gal po intl tests docs art
+SUBDIRS = gal po intl tests docs art macros
 
 confexecdir = $(libdir)
 confexec_DATA = galConf.sh 
@@ -14,12 +14,12 @@ galConf.sh: $(top_srcdir)/galConf.sh.in Makefile
 EXTRA_DIST = 			\
 	gal.spec.in		\
 	galConf.sh.in		\
-	iconv-detect.c		\
 	MAINTAINERS		\
 	AUTHORS			\
+	iconv-detect.c		\
 	xml-i18n-extract.in	\
 	xml-i18n-merge.in	\
-	xml-i18n-update.in
+	xml-i18n-update.in	
 
 dist-hook: gal.spec
 	cp gal.spec $(distdir)

@@ -593,9 +593,7 @@ e_vscrolled_bar_adjustment_changed (GtkAdjustment *adjustment,
 
 	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (data != NULL);
-#if 0
-	g_print ("Adjustment changed to: %g\n", adjustment->value);
-#endif
+
 	vscrolled_bar = E_VSCROLLED_BAR (data);
 
 	if (!GTK_WIDGET_MAPPED (vscrolled_bar))

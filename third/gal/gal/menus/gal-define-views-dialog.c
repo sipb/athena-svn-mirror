@@ -22,12 +22,15 @@
  */
 
 #include <config.h>
+
+#include "gal-define-views-dialog.h"
+
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-stock.h>
-#include "gal-define-views-dialog.h"
 #include "gal-define-views-model.h"
 #include "gal-view-new-dialog.h"
 #include <gal/e-table/e-table-scrolled.h>
+#include <gal/util/e-i18n.h>
 
 static void gal_define_views_dialog_init		(GalDefineViewsDialog		 *card);
 static void gal_define_views_dialog_class_init	(GalDefineViewsDialogClass	 *klass);
@@ -41,7 +44,7 @@ static GnomeDialogClass *parent_class = NULL;
 /* The arguments we take */
 enum {
 	ARG_0,
-	ARG_COLLECTION,
+	ARG_COLLECTION
 };
 
 typedef struct {
@@ -92,7 +95,7 @@ gal_define_views_dialog_class_init (GalDefineViewsDialogClass *klass)
 }
 
 /* ETable creation */
-#define SPEC "<ETableSpecification cursor-mode=\"line\" draw-grid=\"true\" selection-mode=\"single\">" \
+#define SPEC "<ETableSpecification cursor-mode=\"line\" draw-grid=\"true\" selection-mode=\"single\" gettext-domain=\"" E_I18N_DOMAIN "\">" \
 	     "<ETableColumn model_col= \"0\" _title=\"Name\" expansion=\"1.0\" minimum_width=\"18\" resizable=\"true\" cell=\"string\" compare=\"string\"/>" \
              "<ETableState> <column source=\"0\"/> <grouping> </grouping> </ETableState>" \
 	     "</ETableSpecification>"
@@ -129,6 +132,7 @@ gdvd_button_new_dialog_callback(GtkWidget *widget, int button, GalDefineViewsDia
 			view = gal_view_factory_new_view(factory,
 							 name);
 			gal_define_views_model_append(GAL_DEFINE_VIEWS_MODEL(dialog->model), view);
+			gal_view_edit(view);
 			gtk_object_unref(GTK_OBJECT(view));
 		}
 		break;
@@ -221,7 +225,7 @@ gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 
 	dialog->collection = NULL;
 
-	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-define-views.glade", NULL, PACKAGE);
+	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-define-views.glade", NULL, E_I18N_DOMAIN);
 	dialog->gui = gui;
 
 	widget = glade_xml_get_widget(gui, "table-top");
@@ -251,7 +255,7 @@ gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 			       "collection", dialog->collection,
 			       NULL);
 	}
-	
+
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
 }
 
@@ -275,6 +279,21 @@ gal_define_views_dialog_set_collection(GalDefineViewsDialog *dialog,
 		gtk_object_set(GTK_OBJECT(dialog->model),
 			       "collection", collection,
 			       NULL);
+	}
+	if (dialog->gui) {
+		GtkWidget *widget = glade_xml_get_widget(dialog->gui, "label-views");
+		if (widget && GTK_IS_LABEL (widget)) {
+			if (collection->title) {
+				char *text = g_strdup_printf (_("Define Views for %s"),
+							      collection->title);
+				gtk_label_set_text (GTK_LABEL (widget),
+						    text);
+				g_free (text);
+			} else {
+				gtk_label_set_text (GTK_LABEL (widget),
+						    _("Define Views"));
+			}
+		}
 	}
 }
 

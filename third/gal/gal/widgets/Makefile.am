@@ -1,8 +1,5 @@
 noinst_LTLIBRARIES = libwidgets.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libwidgets_la_SOURCES = 			\
 	color-group.c				\
 	color-palette.c				\
@@ -14,14 +11,17 @@ libwidgets_la_SOURCES = 			\
 	e-categories-master-list-combo.c	\
 	e-categories-master-list-dialog-model.c	\
 	e-categories-master-list-dialog.c	\
+	e-categories-master-list-option-menu.c	\
 	e-categories-master-list.c		\
 	e-categories.c				\
 	e-colors.c				\
 	e-cursors.c				\
+	e-file-selection.c			\
 	e-font.c				\
 	e-gui-utils.c				\
 	e-hscrollbar.c				\
 	e-hsv-utils.c				\
+	e-option-menu.c				\
 	e-popup-menu.c				\
 	e-printable.c				\
 	e-reflow-model.c			\
@@ -45,7 +45,7 @@ glade_DATA = 					\
 	gal-categories.glade			\
 	e-categories-master-list-dialog.glade
 
-imagesdir = $(datadir)/pixmaps/gal/categories
+imagesdir = $(datadir)/gal/$(VERSION)/pixmaps/categories
 
 libwidgetsincludedir = $(includedir)/gal/widgets
 
@@ -60,14 +60,17 @@ libwidgetsinclude_HEADERS = 			\
 	e-categories-master-list-combo.h	\
 	e-categories-master-list-dialog-model.h	\
 	e-categories-master-list-dialog.h	\
+	e-categories-master-list-option-menu.h	\
 	e-categories-master-list.h		\
 	e-categories.h				\
 	e-colors.h				\
 	e-cursors.h				\
+	e-file-selection.h			\
 	e-font.h				\
 	e-gui-utils.h				\
 	e-hscrollbar.h				\
 	e-hsv-utils.h				\
+	e-option-menu.h				\
 	e-popup-menu.h				\
 	e-printable.h				\
 	e-reflow-model.h			\
@@ -106,20 +109,20 @@ test_e_font_SOURCES = \
 
 test_e_font_LDADD = \
 	$(EXTRA_GNOME_LIBS) \
-	$(ICONV_LIBS)	\
 	$(top_builddir)/gal/widgets/libwidgets.la \
 	$(top_builddir)/gal/unicode/libunicode.la \
-	$(top_builddir)/gal/util/libutil.la
+	$(top_builddir)/gal/util/libutil.la \
+	$(ICONV_LIBS)
 
 test_font_loading_SOURCES = \
 	test-font-loading.c
 
 test_font_loading_LDADD = \
 	$(EXTRA_GNOME_LIBS) \
-	$(ICONV_LIBS)	\
 	$(top_builddir)/gal/widgets/libwidgets.la \
 	$(top_builddir)/gal/unicode/libunicode.la \
-	$(top_builddir)/gal/util/libutil.la
+	$(top_builddir)/gal/util/libutil.la \
+	$(ICONV_LIBS)
 
 dist-hook:
 	-mkdir $(distdir)/pixmaps

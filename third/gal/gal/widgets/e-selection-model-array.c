@@ -35,7 +35,7 @@ static ESelectionModelClass *parent_class;
 enum {
 	ARG_0,
 	ARG_CURSOR_ROW,
-	ARG_CURSOR_COL,
+	ARG_CURSOR_COL
 };
 
 void
@@ -474,7 +474,6 @@ esma_set_selection_end (ESelectionModel *selection, int row)
 		    selected_range_end == view_row + 1) {
 			e_selection_model_selection_row_changed(selection, selected_range_end);
 			e_selection_model_selection_row_changed(selection, view_row);
-			return;
 		}
 	}
 	e_selection_model_selection_changed(selection);
@@ -547,4 +546,4 @@ e_selection_model_array_class_init (ESelectionModelArrayClass *klass)
 }
 
 E_MAKE_TYPE(e_selection_model_array, "ESelectionModelArray", ESelectionModelArray,
-	    e_selection_model_array_class_init, e_selection_model_array_init, PARENT_TYPE);
+	    e_selection_model_array_class_init, e_selection_model_array_init, PARENT_TYPE)

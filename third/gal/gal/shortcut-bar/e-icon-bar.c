@@ -30,6 +30,7 @@
 
 #include "e-icon-bar.h"
 
+#include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
@@ -270,7 +271,11 @@ e_icon_bar_init (EIconBar *icon_bar)
 					     E_ICON_BAR_COLOR_LAST, FALSE,
 					     TRUE, success);
 	if (nfailed)
-		g_warning ("Failed to allocate all colors");
+		g_warning ("EIconBar failed to allocate all colors");
+
+	gtk_drag_dest_set (GTK_WIDGET (icon_bar),
+			   0, NULL, 0,
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 }
 
 
@@ -323,9 +328,7 @@ e_icon_bar_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	EIconBar *icon_bar;
 	gint canvas_width, canvas_height, height;
-#if 0
-	g_print ("In e_icon_bar_size_allocate\n");
-#endif
+
 	icon_bar = E_ICON_BAR (widget);
 
 	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
@@ -980,7 +983,6 @@ static void
 e_icon_bar_reflow (ECanvas *canvas)
 {
 #if 0
-	g_print ("In e_icon_bar_on_canvas_reflow\n");
 	gtk_widget_queue_resize (GTK_WIDGET (canvas));
 #endif
 }
@@ -1093,9 +1095,6 @@ e_icon_bar_item_pressed (EIconBar *icon_bar,
 
 	if (button == 1 && item_num != -1) {
 		icon_bar->mouse_over_item_num = item_num;
-#if 0
-		g_print ("Set mouse_over_item_num: %i\n", icon_bar->mouse_over_item_num);
-#endif
 		icon_bar->pressed_item_num = item_num;
 		icon_bar->pressed_x = event->button.x;
 		icon_bar->pressed_y = event->button.y;
@@ -1151,10 +1150,6 @@ e_icon_bar_item_motion (EIconBar *icon_bar,
 {
 	gboolean need_redraw = TRUE;
 
-#if 0
-	g_print ("In e_icon_bar_item_motion\n");
-#endif
-
 	if (event && event->motion.state & GDK_BUTTON1_MASK
 	    && icon_bar->pressed_item_num != -1) {
 		if (icon_bar->enable_drags
@@ -1193,9 +1188,6 @@ e_icon_bar_item_motion (EIconBar *icon_bar,
 	}
 
 	icon_bar->mouse_over_item_num = item_num;
-#if 0
-	g_print ("Set mouse_over_item_num: %i\n", icon_bar->mouse_over_item_num);
-#endif
 
 	if (need_redraw)
 		gtk_widget_queue_draw (GTK_WIDGET (icon_bar));
@@ -1553,7 +1545,9 @@ e_icon_bar_drag_motion (GtkWidget      *widget,
 			guint           time)
 {
 	EIconBar *icon_bar;
-	gint item_num, before_item, scroll_x, scroll_y;
+	GdkDragAction action;
+	gint item_num, before_item;
+	gint scroll_x, scroll_y;
 
 	g_return_val_if_fail (E_IS_ICON_BAR (widget), FALSE);
 
@@ -1571,6 +1565,8 @@ e_icon_bar_drag_motion (GtkWidget      *widget,
 	e_icon_bar_item_motion (icon_bar, item_num, NULL);
 	e_icon_bar_set_dragging_before_item (icon_bar, before_item);
 
+	action = 0;
+
 	/* Check if the mouse is at the top or bottom of the bar, and if it is
 	   scroll up/down. */
 	if (y < E_ICON_BAR_DRAG_AUTO_SCROLL_OFFSET)
@@ -1582,7 +1578,7 @@ e_icon_bar_drag_motion (GtkWidget      *widget,
 			gtk_timeout_remove (icon_bar->auto_scroll_timeout_id);
 			icon_bar->auto_scroll_timeout_id = 0;
 		}
-		return FALSE;
+		return TRUE;
 	}
 
 	if (icon_bar->auto_scroll_timeout_id == 0) {
@@ -1590,7 +1586,7 @@ e_icon_bar_drag_motion (GtkWidget      *widget,
 		icon_bar->auto_scroll_delay = E_ICON_BAR_SCROLL_DELAY;
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 
@@ -1614,9 +1610,6 @@ e_icon_bar_drag_leave (GtkWidget      *widget,
 
 	if (icon_bar->mouse_over_item_num != -1) {
 		icon_bar->mouse_over_item_num = -1;
-#if 0
-		g_print ("Set mouse_over_item_num: %i\n", icon_bar->mouse_over_item_num);
-#endif
 		gtk_widget_queue_draw (GTK_WIDGET (icon_bar));
 	}
 }

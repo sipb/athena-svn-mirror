@@ -1,7 +1,690 @@
+2002-12-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-table-extras.c (ete_init): Add a "collate" sort callback that
+	uses the new g_collate_compare().
+
+2002-11-30  Hans Petter Jansson  <hpj@ximian.com>
+
+	* e-table.c (e_table_get_state_object): Don't leak old sort info.
+
+2002-11-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-table-memory-store.c (etms_destroy): New destroy handler.
+	(e_table_memory_store_class_init): Install it.
+	(e_table_memory_store_clear): Free the values for all the rows.
+	(e_table_memory_store_remove): Free the values for the row being
+	removed.
+
+2002-10-24  Chris Toshok  <toshok@ximian.com>
+
+	* e-table-memory-store.h: add prototypes for the _change*
+	functions.
+
+	* e-table-memory-store.c (e_table_memory_store_change_array): new
+	function, mostly c&p from _insert_array.
+	(e_table_memory_store_change): new function, mostly c&p from
+	_insert.
+	(e_table_memory_store_change_adopt_array): new function, mostly
+	c&p from _insert_adopt_array.
+	(e_table_memory_store_change_adopt): new function, mostly c&p from
+	_insert_adopt.
+
+2002-10-24  Mike Kestner  <mkestner@ximian.com>
+
+	* e-tree.c (e_tree_set_state_object): call e_tree_state_change
+
+2002-10-18  JP Rosevear  <jpr@ximian.com>
+
+	* e-table-item.c (eti_cursor_activated): don't emit a signal if we
+	couldn't find the view row
+
+2002-10-02  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-search.c (e_table_search_destroy): call drop_timeout
+
+2002-09-27  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-item.c (eti_get_cell_foreground_color): use the fg color
+	array in style, not text color. Change requested by Chris Lahey.
+
+2002-09-24  Mike Kestner  <mkestner@ximian.com>
+
+	* e-tree.c (e_tree_set_search_column): New api to set the search
+	column on a tree without having to set a sort column.
+
+2002-09-18  Dan Winship  <danw@ximian.com>
+
+	* e-table.c (et_real_construct): Set the selection model's
+	selection_mode after setting the table model, or things will break
+	in the GTK_SELECTION_SINGLE case if the table doesn't start out
+	empty.
+
+2002-09-18  Mike Kestner  <mkestner@ximian.com>
+
+	* e-tree-model.c (e_tree_model_is_expandable): guard against NULL
+	nodes.
+
+2002-09-17  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/e-table/e-table-item.c (eti_event): exit editing on dblclick.
+	ungrab based on grabbed_count. unset grabbed_col and grabbed_row
+	on ungrab.
+
+2002-09-10  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/e-table/e-table-item.c (eti_event): allow keypress handling
+	for cursor_col==-1 as long as cursor_row isn't -1 also so that e-tree
+	searching works without click focusing an item.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-tree-table-adapter.c
+	(e_tree_table_adapter_save_expanded_state): And finally here.
+
+	* e-table-state.c (e_table_state_save_to_file): Same here.
+
+	* e-table-specification.c (e_table_specification_save_to_file): No
+	need to save to a temp file first here either since
+	e_xml_save_file now does that for us.
+
+	* e-table.c (e_table_save_specification): No need to handle
+	writing to a temp file first anymore, since I've updated
+	e_xml_save_file() to handle that for us.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-cell-progress.c: #include <string.h> for memset
+
+	* e-table.c (e_table_save_specification): Updated to use
+	e_xml_save_file() instead of xmlSaveFile(). Also fixed to save to
+	a tmp file first.
+
+	* e-table-specification.c (e_table_specification_save_to_file):
+	Same as above.
+
+	* e-table-state.c (e_table_state_save_to_file): Same here.
+
+	* e-tree-table-adapter.c
+	(e_tree_table_adapter_save_expanded_state): And here too.
+
+2002-07-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-tree.c (item_key_press): In the case of '-' and '=', check
+	that no non-Shift modifier is pressed.
+
+2002-07-19  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-table-adapter.c (find_next_node, find_first_child_node):
+	Made these able to find the potential row for a new node which
+	will be the last row.
+	(find_row_num): Made this handle find_next_node and
+	find_first_child_node returning n_map.
+
+2002-06-18  JP Rosevear  <jpr@ximian.com>
+
+	Patch by clahey.
+	
+	* e-table.c (et_get_arg): get the use_click_to_add value
+	(et_set_arg): set the use_click_to_add_value, and either display
+	the item or destroy it
+	(e_table_class_init): add the use_click_to_add arg
+
+2002-06-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table.c, e-table.h: Removed the drag_get_data_row and
+	drag_get_data_col fields since they're not used any longer.
+	(e_table_construct): If specification loading fails, return a NULL
+	ETable instead of just ignoring it.
+	(e_table_drag_highlight): Only destroy table->drop_highlight if it
+	exists.
+
+	* e-cell-popup.c (ecp_draw, ecp_event): Don't draw or interact
+	with the popup button if a cell isn't editable (based on a patch
+	by JPR.)
+
+	* e-table-col.c, e-table-col.h: Added the compare_col field to
+	this structure.  Added a GtkArg to set it.
+
+	* e-table-column-specification.c, e-table-column-specification.h:
+	Added the compare_col field here.  Made it load properly from xml.
+
+	* e-table-sorting-utils.c: Sort based on the compare_col in the
+	ETableCol instead of the col_idx.
+
+	* e-table-utils.c (et_col_spec_to_col): Set the compare_col field
+	in the ETableCol properly.
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-field-chooser-item.c: Added debugging printfs.
+
+	* e-table-header-item.c: Added debugging printfs.
+	(ethi_drag_motion): Don't subtract widget->allocation.* here.  It
+	seems that this value is affected by whether the table is using a
+	click to add field.  Not sure why.
+
+	* e-table-item.c (eti_realize): Check for NULL selection here.
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-model.c (d): Added debugging printfs.
+
+	* e-tree-sorted.c (ets_proxy_node_changed,
+	ets_proxy_node_data_changed, ets_proxy_node_col_changed,
+	ets_proxy_node_inserted): Added a bunch of e_tree_model_no_change
+	signals where appropriate.
+
+	* e-tree-table-adapter.c (etta_proxy_node_changed): Added an
+	e_table_model_no_change signal where appropriate.
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c (eti_realize): Made it so that on realize we grab
+	focus if we have the cursor, since otherwise, we'll change our
+	selection on focus in.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header.c, e-table-header.h
+	(e_table_header_prioritized_column_selected): Added this function.
+
+	* e-table-utils.c, e-table-utils.h
+	(e_table_util_calculate_current_search_col): Added this function.
+
+	* e-table.c, e-table.h, e-tree.c: Added a "always_search"
+	argument.  If this is off, then searches only occur if there's
+	sort.  If it's on, sort takes precendence in doing searches,
+	followed by the highest priority column shown.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c: Use g_getenv instead of getenv.
+
+	* e-table-item.c (eti_event): Reenable tooltips if the
+	GAL_DO_TOOLTIPS environment variable is set.
+
+2002-06-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c (ect_style_set): Get the font from the style again
+	when the style changes.
+	(init): Checks for the environment variable GAL_ELLIPSIS and uses
+	that instead of ... if it is set.
+
+	* e-table-click-to-add.c (finish_editing): e_table_item_leave_edit
+	before committing.
+	(etcta_event): Added a missing break; here.
+
+	* e-table-item.c (eti_style_set): On style set, free the height
+	cache, request a reflow and a redraw, and call
+	eti_idle_maybe_show_cursor.
+	(e_table_item_compute_location): Don't call eti_get_height here,
+	just use the cached value.
+
+	* e-tree.c, e-tree.h (e_tree_get_table_adapter): Added this simple
+	accessor function.
+
+2002-05-24  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-table-adapter.c
+	(e_tree_table_adapter_node_would_be_expanded,
+	e_tree_table_adapter_node_is_expanded): Added would_be_expanded
+	refactoring code out of is_expanded.
+	(find_first_child_node_maybe_deleted): Use the new function.
+
+2002-05-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-sorted.c (ets_proxy_node_request_collapse): Check for
+	path being NULL.
+
+	* e-tree-table-adapter.c
+	(e_tree_table_adapter_load_expanded_state): Rebuild the tree after
+	loading the state.
+
+2002-05-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-table-adapter.c: Changed a lot of direct uses in this
+	file of node->is_expanded to call the function
+	e_tree_table_adapter_node_is_expanded instead.
+	(e_tree_table_adapter_node_is_expanded): Improved this function to
+	know if the root node is visible and always return it as being
+	expanded if it's not.  It also doesn't bother creating nodes if
+	they don't exist yet, and instead figures out whether they would
+	be expanded if they were to be created and returns that value
+	instead.
+
+2002-05-10  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-search.c: Include string.h here.
+
+2002-05-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c, e-table-item.h: Switched from
+	gnome_canvas_item_grab to e_canvas_item_grab.
+
+2002-05-09  Dan Winship  <danw@ximian.com>
+
+	* e-tree-table-adapter.c
+	(e_tree_table_adapter_save_expanded_state): Bump file version to 2.
+	(This will make older versions of gal ignore the file, fixing the
+	problem where going from evo HEAD to evo 1.0.x makes the folder
+	tree disappear.) Store the default expanded state in the file now
+	to prevent this from happening again in the future.
+	(e_tree_table_adapter_load_expanded_state): Deal with version 2.
+	If the model's default expansion state doesn't match the saved
+	state, ignore the save file.
+
+2002-05-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c
+	(etsm_selected_count_recurse): Moved the check for
+	any_children_selected_down so that a selected node with no
+	selected children will still get counted.
+	(etsm_select_all): When setting all_children_selected and
+	any_children_selected to TRUE, don't bother creating arrays for
+	them since that's unnecessary.
+
+2002-05-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-click-to-add.c (finish_editing): Add horizontal dividers
+	here too.
+
+	* e-table-config.c (create_global_store): Translate column headers
+	here.
+
+	* e-table-header-item.c (ethi_header_context_menu): Use
+	e_popup_menu_create_with_domain here.
+
+	* e-table-header-utils.c (e_table_header_draw_button): Translate
+	from utf8 here before drawing.
+
+	* e-table-memory-store.c, e-table-memory-store.h
+	(e_table_memory_store_insert_adopt_array): Changed the name of
+	this function from e_table_memory_store_insert_adopt.
+	(e_table_memory_store_insert_adopt): Added this function which
+	takes a ... list.
+
+	* e-table-utils.c (et_col_spec_to_col): Translate column titles to
+	utf8 here.
+
+2002-05-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-click-to-add.c: Added horizontal dividers to this item
+	when in table mode.
+
+	* e-table.c, e-tree.c: Made the background be an
+	e-canvas-background instead of a 
+
+	* e-tree.c, e-tree.h: Added a white_space_event for feature parity
+	with ETable.
+
+2002-05-01  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-config.c, e-table-config.h, e-table-specification.c,
+	e-table-specification.h, e-table-utils.c, e-table-utils.h,
+	e-table.c, e-table.h: Made these pay attention to the
+	gettext-domain in the etspec.
+
+	* e-table-config.c: Set the gettext-domain in the etspec here.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c (eti_cursor_change): Redraw a row that is no
+	longer the cursor even if this item isn't getting the new cursor.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree.c, e-tree.h (e_tree_path_foreach): Added this function
+	which recurses over all nodes, regardless of selection.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-field-chooser-item.c (etfci_maybe_start_drag): Take an
+	int instead of a double.  From a patch by jody@ximian.com.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-state.c (etst_destroy): Only unref etst->sort_info once.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-model.c (e_table_model_value_at), e-tree-model.c
+	(e_tree_model_value_at): Documented the life cycle requirements of
+	the return value of these functions.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c (e_table_memory_store_adopt_value_at,
+	etms_set_value_at): Added calls to e_table_model_pre_change here
+	so that the ETableItem doesn't unfreeze more times than it
+	freezes.
+
+2002-04-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c (etsm_selected_count_recurse,
+	etsm_foreach_recurse): Made these handle the case where
+	all_children_selected_array has a bit set, but the children of
+	that node aren't filled in.
+
+2002-04-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-checkbox.c, e-cell-combo.c, e-cell-date.c,
+	e-cell-float.c, e-cell-number.c, e-cell-pixbuf.c, e-cell-popup.c,
+	e-cell-size.c, e-cell-spin-button.c, e-cell-text.c,
+	e-cell-toggle.c, e-cell-tree.c, e-cell.c, e-cell.h,
+	e-table-click-to-add.c, e-table-col.c,
+	e-table-column-specification.c, e-table-config-field.c,
+	e-table-config.c, e-table-extras.c,
+	e-table-field-chooser-dialog.c, e-table-field-chooser-item.c,
+	e-table-field-chooser.c, e-table-group-container.c,
+	e-table-group-leaf.c, e-table-group.c, e-table-header-item.c,
+	e-table-header.c, e-table-item.c, e-table-memory-callbacks.c,
+	e-table-model.c, e-table-scrolled.c, e-table-selection-model.c,
+	e-table-sort-info.c, e-table-sorted-variable.c, e-table-sorted.c,
+	e-table-sorter.c, e-table-specification.c, e-table-state.c,
+	e-table-subset-variable.c, e-table-subset.c, e-table-without.c,
+	e-table.c, e-table.h, e-tree-scrolled.c, e-tree-selection-model.c,
+	e-tree-sorted-variable.c, e-tree-sorted.c, e-tree-table-adapter.c,
+	e-tree.c: Ansification patch from danw.
+
+2002-04-24  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-config.c (create_global_store): Changed this to match
+	the new e_table_memory_store_insert function prototype.
+
+2002-04-24  JP Rosevear  <jpr@ximian.com>
+
+	* e-cell-pixbuf.c (pixbuf_print): implement printing
+	(pixbuf_print_height): implement print height
+	(e_cell_pixbuf_class_init): set printing virtual methods
+
+	* e-cell-toggle.c (etog_print): remove clipping, default clipping
+	is done by the table, scale based on toggle height
+
+	* e-table-item.c (e_table_item_calculate_print_widths): make the
+	scale 1:1
+
+2002-04-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c, e-table-memory-store.h: Renamed the
+	insert functions in this class to make a bit more sense.
+
+2002-04-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-table-state.c (etst_destroy): Unref the sort_info.
+
+	* e-cell-toggle.c (etog_kill_view): After unreffing all the
+	pixmaps, free the toggle_view->pixmap_cache.
+
+	* e-table-search.c (e_table_search_destroy): Free the
+	priv->search_string and priv itself. More memory leak fixage.
+
+	* e-tree.c (e_tree_drag_source_unset): Unref site->taget_list so
+	we don't leak memory.
+
+2002-04-19  JP Rosevear  <jpr@ximian.com>
+
+	* e-cell-toggle.c (etog_print): print the cell in the allotted
+	area
+	(etog_print_height): return the print height
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header-item.c: Updated this to match the new EPopupMenu.
+
+2002-04-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header-item.c (ethi_header_context_menu): Fixed a memory
+	leak here by using the "selection-done" signal.
+
+	* e-table.c, e-table.h (white_item_event): Added the
+	"white_space_event" signal.
+
+2002-03-26  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am: remove comment about adding .lo's to the parent
+	directory's Makefile.am.
+
+2002-03-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c (e_table_memory_store_insert,
+	e_table_memory_store_insert_adopt, e_table_memory_store_remove):
+	Call the parent function after doing all the internal work so that
+	when the changed signal goes out, our work is already done.
+
+2002-03-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header-item.c: Adjust this to handle the new EPopupMenu
+	API.
+
+2002-03-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-toggle.c: Clear the pixmap cache in e_cell_style_set.
+
+	* e-cell.c, e-cell.h (e_cell_style_set): Added this virtual
+	method.
+
+	* e-table-item.c, e-table-item.h: Call e_cell_style_set in out
+	style_set signal.
+
+2002-03-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-toggle.c: Add a GdkPixmap * cache of rendered toggle
+	images.  This should considerably speed up over the wire
+	performance of ECellToggle.
+
+2002-03-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header.c, e-table-header.h (e_table_header_min_width):
+	New function that returns the total minimum width of all the
+	columns.
+
+	* e-table.c, e-table.h (set_header_width): Call
+	e_table_header_min_width here instead of total_width.
+	(et_size_request): Override the size_request method instead of
+	doing set_usize.
+
+2002-03-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c: Implemented capitalization keybindings.
+
+	* e-tree.c (item_key_press): Added parentheses to the default case
+	here.
+
+2002-03-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-search.c, e-table-search.h (e_table_search_backspace):
+	Made this return a boolean that returns whether the ETableSearch
+	used the backspace at all.
+
+	* e-table.c (group_key_press), e-tree.c (item_key_press): Used the
+	new return value from e_table_search_backspace.
+
+2002-03-14  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-tree.c (item_key_press): Don't search if any modifier but
+	SHIFT or LOCK is pressed.
+
+	* e-table.c (group_key_press): Don't search if any modifier but
+	SHIFT or LOCK is pressed.
+
+2002-03-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-pixbuf.c, e-cell-pixbuf.h (pixbuf_draw): Added
+	selected_column, focused_column, and unselected_column.
+
+2002-03-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-search.c, e-table-search.h (e_table_search_backspace):
+	Added this function.
+
+	* e-table.c, e-tree.c: Call the new function on backspace.
+
+2002-03-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-extras.c (e_string_search): Check for a NULL haystack
+	here.
+
+	* e-table-search.c, e-table-search.h: Added a parameter to the
+	search signal here to pass in flags.  Specifically, added the
+	E_TABLE_SEARCH_FLAGS_CHECK_CURSOR_FIRST flag.  Improved the search
+	behavior here.
+
+	* e-table.c, e-tree.c: Handle the new signature for the search
+	signal here.
+
+2002-03-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree.c: Added ETableSearch support.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c, e-table-memory-store.h: Added support
+	for E_TABLE_MEMORY_STORE_OBJECT which represents a column storing
+	a GtkObject.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-vbox.c (ecv_draw): Give the correct height to the
+	subcells instead of overlapping them.
+
+	* e-table-header.c, e-table-header.h (e_table_header_move,
+	eth_calc_widths): Emit the dimension_changed signal with the width
+	of the header.
+
+	* e-table-memory-store.c (duplicate_value, etms_free_value):
+	Handle NULL pixbufs here.
+
+	* e-table.c, e-table.h: Connect to the dimension_changed signal
+	and call set_header_width.  Did a bit of refactoring here.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* Makefile.am (libetable_la_SOURCES): Added e-table-search.c.
+	(libetableinclude_HEADERS): Added e-table-search.h.
+
+	* e-cell.h: Added ETableSearchFun here.
+
+	* e-table-column-specification.c, e-table-column-specification.h:
+	Added search here.
+
+	* e-table-col.h: Added search here.
+
+	* e-table-extras.c, e-table-extras.h (e_table_extras_add_search):
+	Added ETableSearchFuncs here.
+
+	* e-table-memory-store.c (e_table_memory_store_insert,
+	e_table_memory_store_insert_adopt): Handle row == -1 here.
+
+	* e-table-search.c, e-table-search.h: New class to reusably handle
+	the semantics of searching for a string.
+
+	* e-table-simple.c, e-table-simple.h: Added a bunch of simple
+	functions here for if your table is all strings.  Should be
+	reusable.
+
+	* e-table-utils.c (et_col_spec_to_col): Added support for searches
+	here.
+
+	* e-table.c, e-table.h: Added an ETableSearch here.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-sorted.c (ets_proxy_node_request_collapse): Proxy
+	request_collapse signals.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* Makefile.am (libetable_la_SOURCES): Added e-cell-vbox.c.
+	(libetableinclude_HEADERS): Added e-cell-vbox.h.
+
+	* e-cell-vbox.c, e-cell-vbox.h: New ECell to take multiple other
+	ECells and use them all in a vertical series.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c (e_table_memory_store_insert_list): Added
+	this function to take a ... list of column data.  The expected
+	number of parameters in the ... is the number of columns in the
+	table.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-memory-store.c, e-table-memory-store.h
+	(E_TABLE_MEMORY_STORE_PIXBUF): Added a pixbuf column type.
+
+	* e-table-specification.c, e-table-specification.h: Added
+	horizontal-resize attribute.
+
+	* e-table.c, e-table.h: Handle horizontal_resize.
+
+2002-03-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-memory.c (etmm_node_request_collapse): Handle a collapse
+	request by marking all descendents of that node as needing their
+	children recomputed.
+
+	* e-tree-model.c, e-tree-model.h
+	(e_tree_model_node_request_collapse): Added this signal to request
+	that the view of your tree collapse this node.
+
+	* e-tree-selection-model.c (etsm_selected_count): Pass the root of
+	the sorted model here instead of the root of the base model.
+
+	* e-tree-table-adapter.c (etta_proxy_node_request_collapse):
+	Handle a collapse request by collapsing the node in the tree.
+
+2002-03-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-memory.c, e-tree-memory.h (check_children): Added a
+	fill_in_children signal.
+
+2002-03-05  Dan Winship  <danw@ximian.com>
+
+	* e-table-item.c: Re-disable tooltips since they're (still)
+	fantastically obnoxious with focus-follows-mouse. (OKed by Ettore).
+
+2002-03-04  Damon Chaplin  <damon@ximian.com>
+
+	* e-cell.c (e_cell_print): only call the cell's print method if it has
+	one. Avoids crashing for unimplemented print methods.
+
+2002-02-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* Makefile.am (libetable_la_SOURCES): Added
+	e-table-memory-store.c.
+	(libetableinclude_HEADERS): Added e-table-memory-store.h.
+
+	* e-table-config-no-group.glade, e-table-config.glade: Updated
+	these.
+
+	* e-table-config.c, e-table-config.h: Updated this to have a
+	working field list editor.
+
+	* e-table-memory-store.c, e-table-memory-store.h: New ETableModel
+	that is a complete store of all the data in your table.  No
+	callbacks at all.
+
+	* e-table-subset-variable.c, e-table-subset-variable.h
+	(e_table_subset_variable_clear): Added this simple function
+
+	* e-table-subset.c (etss_get_save_id): Made this return the row
+	number g_strdup_printfed if the source model doesn't support save
+	ids.
+
 2002-02-20  Christopher James Lahey  <clahey@ximian.com>
 
-	* e-table-sorter.c: Connect to the model_rows_inserted,
-	model_rows_deleted, and group_info_changed here.
+	* e-table-sorter.c, e-table-sorter.h: Connect to the
+	model_rows_inserted, model_rows_deleted, and group_info_changed
+	here.
+
+2002-02-19  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c (e_tree_selection_model_init):
+	Initialize frozen_count to 0.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c (eti_event): Make the defalut for tooltips be on.
 
 2002-02-12  Christopher James Lahey  <clahey@ximian.com>
 
@@ -11,6 +694,111 @@
 
 	* e-table.c (et_unrealize), e-tree.c (et_unrealize): Call
 	scroll_off and in e-tree.c hover_off.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c: Added empty case for E_TEP_CAPS.  Needs to be
+	filled in for M-l, M-c, and M-u to work in ETable.
+
+	* e-table-header.c, e-table-header.h (expansion_change): New
+	signal that gets emitted whenever the expansions change.  Used in
+	state_changed for ETable and ETree.
+
+	* e-table.c, e-table.h, e-tree.c, e-tree.h (state_change): New
+	signal that gets emitted whenever the ETableState that would be
+	generated here changes.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-model.c (e_tree_model_node_find): Made this function much
+	more readable.  Got rid of all the gotos.  Fixed a case where
+	going backwards during a root search checked the root node first.
+	(e_tree_model_node_real_traverse): Made backwards traversals be
+	postorder, as they should be, instead of preorder.
+
+	* e-tree.c (find_next_callback): Use an extra callback function
+	here to go from sorted path to model path.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree.c, e-tree.h (e_tree_find_next): Make this function take a
+	bitfield of parameters instead of two bools.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c, e-tree-selection-model.h
+	(e_tree_selection_model_get_cursor): Added this simple accessor
+	function.
+
+	* e-tree.c, e-tree.h (e_tree_find_next): Searches from the cursor
+	given the search parameters and moves the cursor if it ever
+	matches.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-model.c, e-tree-model.h (e_tree_model_node_find): New
+	function to do a search through a tree in one direction or the
+	other.
+
+2002-01-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-text.c: Implement max_width_by_row.
+
+	* e-cell-tree.c: Use max_width_by_row in max_width function.
+
+	* e-cell.c, e-cell.h (e_cell_max_width_by_row): Added this new
+	method to ECell.
+
+2002-01-16  Krisztian Pifko  <monsta@users.sourceforge.net>
+
+	* e-cell-progress.c, e-cell-progress.h: new file, implements the
+	ECellProgress object.
+
+	* Makefile.am (libetable_la_SOURCES, libetableinclude_HEADERS):
+	added e-cell-progress.c and e-cell-progress.h.
+
+2002-01-16  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-checkbox.h, e-cell-date.h, e-cell-float.h,
+	e-cell-number.h, e-cell-size.h, e-cell-text.h, e-cell-toggle.h,
+	e-cell-tree.h, e-cell.h, e-table-click-to-add.h,
+	e-table-col-dnd.h, e-table-config-field.h, e-table-extras.h,
+	e-table-field-chooser-item.h, e-table-group-container.h,
+	e-table-group-leaf.h, e-table-group.h, e-table-header-item.h,
+	e-table-item.h, e-table-scrolled.h, e-table-sorter.h,
+	e-table-tooltip.h, e-table-tree.h, e-table-utils.h, e-table.h,
+	e-tree-scrolled.h, e-tree-sorted-variable.h, e-tree.h: Added
+	#include <libgnome/gnome-defs.h>.
+
+2002-01-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell.c, e-cell.h (e_cell_save_state, e_cell_load_state,
+	e_cell_free_state): New functions for saving selection state and
+	such.
+
+	* e-cell-text.c (ect_save_state): Implemented the new state
+	functions.
+
+	* e-table-item.c, e-table-item.h: Use the new cell state functions
+	when focusing in or out.  Fixes Ximian bug #14968.
+
+2002-01-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-header-item.c, e-table-header-item.h (scroll_timeout):
+	Made the header item here handle horizontal scrolling when adding
+	a column.  Fixes Ximian bug #7078.
+
+2002-01-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table.c, e-table.h (scroll_timeout), e-tree.c
+	(scroll_timeout): Made these handle horizontal scrolling during
+	drags.
+
+2002-01-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree.c (collapse_drag): Collapse nodes that were opened during
+	a drag, unless the drop site is a child node.  Fixes Ximian bug
+	#4965.
 
 2001-12-17  Christopher James Lahey  <clahey@ximian.com>
 

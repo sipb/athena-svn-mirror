@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
 "PO-Revision-Date: 2001-07-18 09:14+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -53,28 +53,6 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-# gal/e-table/e-table-config.c:239
-# gal/e-table/e-table-config.c:278
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(遞增)"
-
-# gal/e-table/e-table-config.c:239
-# gal/e-table/e-table-config.c:278
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(遞減)"
-
-# gal/e-table/e-table-config.c:246
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "沒有排序"
-
-# gal/e-table/e-table-config.c:284
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "沒有分組"
-
 # gal/e-table/e-table-config.glade.h:1
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
@@ -108,7 +86,7 @@ msgstr "遞減"
 # gal/e-table/e-table-config.glade.h:6
 # gal/menus/gal-define-views.glade.h:3
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "描述"
 
@@ -178,16 +156,45 @@ msgstr "其次"
 msgid "_Add ->"
 msgstr "新增 (_A)->"
 
-# gal/e-table/e-table-config.glade.h:19
+# gal/e-table/e-table-config.glade.h:18
+#: gal/e-table/e-table-config-no-group.glade.h:18
 #: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "分組 (_G)..."
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "欄位 (_F)..."
 
 # gal/e-table/e-table-config.glade.h:20
-#: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "排序 (_S)..."
+
+# gal/e-table/e-table-config.c:239
+# gal/e-table/e-table-config.c:278
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(遞增)"
+
+# gal/e-table/e-table-config.c:239
+# gal/e-table/e-table-config.c:278
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(遞減)"
+
+# gal/e-table/e-table-config.c:246
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "沒有排序"
+
+# gal/e-table/e-table-config.c:284
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "沒有分組"
+
+# gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "分組 (_G)..."
 
 # gal/e-table/e-table-field-chooser.glade.h:1
 #: gal/e-table/e-table-field-chooser.glade.h:1
@@ -226,66 +233,99 @@ msgstr "可用的欄位"
 msgid "Show in this order"
 msgstr "用這個次序顯示"
 
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d 項目)"
+
 # gal/e-table/e-table-header-item.c:1283
-#: gal/e-table/e-table-header-item.c:1302
+#: gal/e-table/e-table-header-item.c:1440
 #, fuzzy
 msgid "Customize Current View"
 msgstr "自訂目前檢視..."
 
 # gal/e-table/e-table-header-item.c:1269
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "遞增排序"
 
 # gal/e-table/e-table-header-item.c:1270
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "遞減排序"
 
 # gal/e-table/e-table-header-item.c:1271
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "不排序"
 
 # gal/e-table/e-table-header-item.c:1273
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "使用此欄位分組"
 
 # gal/e-table/e-table-header-item.c:1274
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "使用方塊分組"
 
 # gal/e-table/e-table-header-item.c:1276
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "移除這列"
 
 # gal/e-table/e-table-header-item.c:1277
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "新增列..."
 
 # gal/e-table/e-table-header-item.c:1279
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "對齊"
 
 # gal/e-table/e-table-header-item.c:1280
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "最合適"
 
 # gal/e-table/e-table-header-item.c:1281
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "格式列..."
 
 # gal/e-table/e-table-header-item.c:1283
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "自訂目前檢視..."
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "定義 \"%s\" 的檢視方式"
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "定義 \"%s\" 的檢視方式"
 
 # gal/menus/gal-define-views.glade.h:2
 #: gal/menus/gal-define-views.glade.h:2
@@ -294,15 +334,9 @@ msgid "Define Views for \"%s\""
 msgstr "定義 \"%s\" 的檢視方式"
 
 # gal/menus/gal-define-views.glade.h:4
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "重設 (_S)..."
-
-# gal/menus/gal-define-views.glade.h:6
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "\"%s\" 的檢視方式"
 
 # gal/menus/gal-define-views.glade.h:7
 #: gal/menus/gal-define-views.glade.h:7
@@ -329,6 +363,18 @@ msgstr "新增 (_N)..."
 msgid "Table"
 msgstr "表格"
 
+# gal/e-table/e-table-header-item.c:1283
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "自訂目前檢視..."
+
+# gal/widgets/e-categories-master-list-array.c:53
+#: gal/menus/gal-view-instance.c:581
+#, fuzzy
+msgid "Save Custom View"
+msgstr "主要客戶"
+
 # gal/menus/gal-view-new-dialog.glade.h:1
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
@@ -344,6 +390,10 @@ msgstr "檢視種類:"
 #, c-format
 msgid "Group %i"
 msgstr "分組 %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 # gal/widgets/color-palette.c:373
 #. This is the default custom color
@@ -591,7 +641,7 @@ msgid "sky blue"
 msgstr "天藍色"
 
 # gal/widgets/e-categories.c:384
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "新增至共用的分類目錄"
 
@@ -601,14 +651,20 @@ msgid "Add all to global category list"
 msgstr "新增全部至共用的分類目錄"
 
 # gal/widgets/e-categories.c:388
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "由共用的分類目錄移除"
 
 # gal/widgets/e-categories.c:390
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "全部由共用的分類目錄移除"
+
+# gal/widgets/gal-categories.glade.h:4
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "類別"
 
 # gal/widgets/gal-categories.glade.h:1
 #: gal/widgets/gal-categories.glade.h:1
@@ -630,117 +686,117 @@ msgstr "可用的類別 (_A):"
 msgid "categories"
 msgstr "類別"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "生日"
 
 # gal/widgets/e-categories-master-list-array.c:43
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "商務"
 
 # gal/widgets/e-categories-master-list-array.c:44
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "競爭者"
 
 # gal/widgets/e-categories-master-list-array.c:45
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "喜好"
 
 # gal/widgets/e-categories-master-list-array.c:46
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "禮物"
 
 # gal/widgets/e-categories-master-list-array.c:47
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "目的"
 
 # gal/widgets/e-categories-master-list-array.c:48
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "假期節日"
 
 # gal/widgets/e-categories-master-list-array.c:49
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "節日卡"
 
 # gal/widgets/e-categories-master-list-array.c:50
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "重要連絡人"
 
 # gal/widgets/e-categories-master-list-array.c:51
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "慨念"
 
 # gal/widgets/e-categories-master-list-array.c:52
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "國際"
 
 # gal/widgets/e-categories-master-list-array.c:53
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "主要客戶"
 
 # gal/widgets/e-categories-master-list-array.c:54
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "其它"
 
 # gal/widgets/e-categories-master-list-array.c:55
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "私人"
 
 # gal/widgets/e-categories-master-list-array.c:56
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "通話"
 
 # gal/widgets/e-categories-master-list-array.c:57
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "狀況"
 
 # gal/widgets/e-categories-master-list-array.c:58
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "策略"
 
 # gal/widgets/e-categories-master-list-array.c:59
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "供應商"
 
 # gal/widgets/e-categories-master-list-array.c:60
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "時間及開支"
 
 # gal/widgets/e-categories-master-list-array.c:61
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "重要人物 VIP"
 
 # gal/widgets/e-categories-master-list-array.c:62
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "等待"
 
 # gal/widgets/e-categories-master-list-dialog.c:152
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* 按這裡新增類別 *"
 
 # gal/widgets/e-categories-master-list-dialog.c:153
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "類別"
 
@@ -749,57 +805,49 @@ msgstr "類別"
 msgid "Add a category"
 msgstr "新增類別"
 
-# gal/widgets/e-categories-master-list-dialog.glade.h:2
-#: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "新增..."
-
 # gal/widgets/e-categories-master-list-dialog.glade.h:3
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
 msgid "Edit Global Category List"
 msgstr "編輯共用的分類目錄"
 
 # gal/widgets/e-categories-master-list-dialog.glade.h:4
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "修改類別"
 
-# gal/widgets/e-categories-master-list-dialog.glade.h:5
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "修改..."
-
 # gal/widgets/e-categories-master-list-dialog.glade.h:6
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "移除"
 
 # gal/widgets/e-categories-master-list-dialog.glade.h:7
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "新增的類別 (_C)："
 
 # gal/widgets/e-categories-master-list-dialog.glade.h:8
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "修改的類別 (_C)："
 
-# gal/e-table/e-table-config.glade.h:18
-#~ msgid "_Fields..."
-#~ msgstr "欄位 (_F)..."
-
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d 項目)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d 項目)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d 項目)"
+# gal/widgets/gal-categories.glade.h:3
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "可用的類別 (_A):"
 
 # gal/e-table/e-table-header-item.c:1254
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "檢視設定："
+
+# gal/menus/gal-define-views.glade.h:6
+#~ msgid "Views for \"%s\""
+#~ msgstr "\"%s\" 的檢視方式"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:2
+#~ msgid "Add..."
+#~ msgstr "新增..."
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:5
+#~ msgid "Modify..."
+#~ msgstr "修改..."

@@ -24,8 +24,8 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gtk/gtksignal.h>
-#include <parser.h>
-#include <xmlmemory.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include "gal/util/e-xml-utils.h"
 #include "gal/util/e-util.h"
 #include "e-table-column-specification.h"
@@ -41,6 +41,7 @@ free_strings (ETableColumnSpecification *etcs)
 	g_free(etcs->pixbuf);
 	g_free(etcs->cell);
 	g_free(etcs->compare);
+	g_free(etcs->search);
 }
 
 static void
@@ -65,6 +66,7 @@ static void
 etcs_init (ETableColumnSpecification *specification)
 {
 	specification->model_col     = 0;
+	specification->compare_col   = 0;
 	specification->title         = g_strdup("");
 	specification->pixbuf        = NULL;
 	
@@ -75,10 +77,11 @@ etcs_init (ETableColumnSpecification *specification)
 	
 	specification->cell          = NULL;
 	specification->compare       = NULL;
+	specification->search        = NULL;
 	specification->priority      = 0;
 }
 
-E_MAKE_TYPE(e_table_column_specification, "ETableColumnSpecification", ETableColumnSpecification, etcs_class_init, etcs_init, PARENT_TYPE);
+E_MAKE_TYPE(e_table_column_specification, "ETableColumnSpecification", ETableColumnSpecification, etcs_class_init, etcs_init, PARENT_TYPE)
 
 ETableColumnSpecification *
 e_table_column_specification_new (void)
@@ -95,6 +98,7 @@ e_table_column_specification_load_from_node (ETableColumnSpecification *etcs,
 	free_strings(etcs);
 
 	etcs->model_col     = e_xml_get_integer_prop_by_name (node, "model_col");
+	etcs->compare_col   = e_xml_get_integer_prop_by_name_with_default (node, "compare_col", etcs->model_col);
 	etcs->title         = e_xml_get_string_prop_by_name (node, "_title");
 	etcs->pixbuf        = e_xml_get_string_prop_by_name (node, "pixbuf");
 
@@ -105,6 +109,7 @@ e_table_column_specification_load_from_node (ETableColumnSpecification *etcs,
 
 	etcs->cell          = e_xml_get_string_prop_by_name (node, "cell");
 	etcs->compare       = e_xml_get_string_prop_by_name (node, "compare");
+	etcs->search        = e_xml_get_string_prop_by_name (node, "search");
 	etcs->priority      = e_xml_get_integer_prop_by_name_with_default (node, "priority", 0);
 
 	if (etcs->title == NULL)
@@ -122,6 +127,8 @@ e_table_column_specification_save_to_node (ETableColumnSpecification *specificat
 		node = xmlNewNode(NULL, "ETableColumn");
 
 	e_xml_set_integer_prop_by_name(node, "model_col", specification->model_col);
+	if (specification->compare_col != specification->model_col)
+		e_xml_set_integer_prop_by_name(node, "compare_col", specification->compare_col);
 	e_xml_set_string_prop_by_name(node, "_title", specification->title);
 	e_xml_set_string_prop_by_name(node, "pixbuf", specification->pixbuf);
 
@@ -132,6 +139,7 @@ e_table_column_specification_save_to_node (ETableColumnSpecification *specificat
 
 	e_xml_set_string_prop_by_name(node, "cell", specification->cell);
 	e_xml_set_string_prop_by_name(node, "compare", specification->compare);
+	e_xml_set_string_prop_by_name(node, "search", specification->search);
 	if (specification->priority != 0)
 		e_xml_set_integer_prop_by_name (node, "priority", specification->priority);
 

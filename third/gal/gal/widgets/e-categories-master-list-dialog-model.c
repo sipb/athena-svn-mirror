@@ -46,7 +46,7 @@ struct ECategoriesMasterListDialogModelPriv {
 
 enum {
 	ARG_0,
-	ARG_ECML,
+	ARG_ECML
 };
 
 #define COLS (3)

@@ -42,7 +42,7 @@ static GtkObjectClass *parent_class;
 /* The arguments we take */
 enum {
 	ARG_0,
-	ARG_ECML,
+	ARG_ECML
 };
 
 static void
@@ -210,4 +210,4 @@ e_categories_master_list_combo_new (ECategoriesMasterList *ecml)
 	return GTK_WIDGET (ecmlc);
 }
 
-E_MAKE_TYPE(e_categories_master_list_combo, "ECategoriesMasterListCombo", ECategoriesMasterListCombo, ecmlc_class_init, ecmlc_init, PARENT_TYPE);
+E_MAKE_TYPE(e_categories_master_list_combo, "ECategoriesMasterListCombo", ECategoriesMasterListCombo, ecmlc_class_init, ecmlc_init, PARENT_TYPE)

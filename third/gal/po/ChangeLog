@@ -1,11 +1,268 @@
-2002-04-18  gettextize  <bug-gnu-utils@gnu.org>
+2002-12-05  gettextize  <bug-gnu-utils@gnu.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
 
-2001-12-11  Kjartan Maraas  <kmaraas@gnome.org>
+2002-12-03  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2002-11-14  German Poo Caamaño <gpoo@ubiobio.cl>
+
+	* es.po: Updated Spanish translation.
+
+2002-11-14  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: New file, from gettext-0.11.5.
+	* boldquot.sed: New file, from gettext-0.11.5.
+	* en@boldquot.header: New file, from gettext-0.11.5.
+	* en@quot.header: New file, from gettext-0.11.5.
+	* insert-header.sin: New file, from gettext-0.11.5.
+	* quot.sed: New file, from gettext-0.11.5.
+	* remove-potcdate.sin: New file, from gettext-0.11.5.
+	* Rules-quot: New file, from gettext-0.11.5.
+
+2002-10-27  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-10-27  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-10-07  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-10-07  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-10-07  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-09-10  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-09-10  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-09-06  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-09-04  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+<<<<<<< ChangeLog
+<<<<<<< ChangeLog
+2002-08-12  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+<<<<<<< ChangeLog
+2002-08-07  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+=======
+=======
+=======
+2002-09-01  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation done by
+	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>.
+
+>>>>>>> 1.239
+2002-08-27  Pauli Virtanen <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2002-08-24  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+>>>>>>> 1.238
+2002-08-12  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+>>>>>>> 1.236
+2002-07-22  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian (bokmål) translation.
 	
+2002-07-19  Christopher James Lahey  <clahey@ximian.com>
+
+	* POTFILES.in, POTFILES.skip: Updated these again.
+
+2002-07-19  Christopher James Lahey  <clahey@ximian.com>
+
+	* POTFILES.in, POTFILES.skip: Updated these.
+
+2002-06-20  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-05-21  Yuriy Syrota  <yuri@renome.rovno.ua>
+
+	* ca.po: Updated Catalan translation by Jordi Mallach <jordil@sindominio.net>.
+
+2002-05-31  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-05-29  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2002-05-24  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+2002-05-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-05-11  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2002-05-11  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-04-25  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+2002-04-10  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2002-03-26  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* cat-id-tbl.c: Remove file.
+	* stamp-cat-id: Remove file.
+
+2002-03-06  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2002-03-06  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2002-03-03  Christopher R. Gabriel  <cgabriel@cgabriel.org>
+
+	* it.po: Updated italian translation.
+
+2002-02-28  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation
+
+2002-02-26  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-02-26  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-02-17  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Jian.
+
+2002-02-11  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-02-06  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Jian.
+
+2002-01-28  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Added Simplified Chinese translation by
+	 Wang Li <charlesw1234@163.com>.
+
+2002-01-23  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* ms.po: Added Malay Translation.
+
+2002-01-06  Christian Meyer  <chrisims@gnome.org>
+
+	* de.po: Updated German translation.
+
+2002-01-06  Christian Meyer  <chrisims@gnome.org>
+
+	* de.po: Updated German translation.
+
+2002-01-05  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Added Basque file
+
+2001-12-30  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-12-28  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Added initial Greek translation.
+
+2001-12-27  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2001-12-27  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-12-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Small correction in the charset field of the po file.
+
+2001-12-25  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Ömer.
+
+2001-12-14  Christopher R. Gabriel  <cgabriel@cgabriel.org>
+
+	* it.po: Updated italian translation
+
+2001-12-14  Akira TAGOH  <tagoh@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-12-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-12-12  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po:  Updated Norwegian (nynorsk) translation.
+	* no.po:  Updated Norwegian (bokmål) translation.
+
+2001-12-12  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-11  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
 2001-11-24  Christian Meyer  <chrisime@gnome.org>
 
 	* de.po: Applied path from Manuel Borchers.
@@ -52,10 +309,6 @@
 2001-10-01  Takuo KITAME  <kitame@debian.org>
 
 	* ja.po: Updated Japanese translation.
-
-2001-10-01  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
 
 2001-09-28  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
 

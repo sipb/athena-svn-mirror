@@ -1,3 +1,74 @@
+2002-08-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shortcut-bar.c (e_shortcut_bar_on_drag_motion): If the
+	"shortcut_drag_motion" signal handler returns FALSE, handle the
+	condition properly through gdk_drag_status() and return TRUE
+	[instead of FALSE], otherwise we don't get any more drag_motion
+	events after the first one.  [#23982]
+
+2002-07-03  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shortcut-bar.c (e_shortcut_bar_on_drag_motion): Removed some
+	debugging messages.
+	(e_shortcut_bar_on_drag_drop): Look for the E-SHORTCUT type in the
+	list targets, and request it if present.
+	(e_shortcut_bar_on_drag_data_received): Handle the E-SHORTCUT type
+	only if the drop is between two folders.  Also use before_item
+	instead of position in that case, for the "shortcut_dropped"
+	signal, so that the drop actually works.  [#26265]
+
+2002-04-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-icon-bar.c (e_icon_bar_drag_motion): Removed an unused
+	variable.
+
+2002-04-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shortcut-bar.c (e_shortcut_bar_class_init): Add the signals
+	here.
+	(e_shortcut_bar_on_drag_data_received): Emit
+	"shortcut_drag_data_received" here.  If the signal handler returns
+	%FALSE, do a gtk_drag_finish() reporting failure.
+	(e_shortcut_bar_marshal_BOOL__POINTER_POINTER_INT_INT_INT): New
+	marshaller.
+	(e_shortcut_bar_marshal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT):
+	Another mashaller.  I love you GTK.
+	(e_shortcut_bar_on_drag_motion): New callback for the
+	::drag_motion signal.
+	(e_shortcut_bar_on_drag_drop): Always invoke gtk_drag_get_data()
+	no matter what the type is -- we'll handle the type in
+	::data_received.
+	(e_shortcut_bar_on_drag_data_received): Get the position correctly
+	by using e_icon_bar_find_item_at_position().
+
+	* e-shortcut-bar.h: New signals "shortcut_drag_motion" and
+	"shortcut_drag_data_received".
+
+2002-04-16  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shortcut-bar.c (e_shortcut_bar_on_drag_drop): New.
+	(e_shortcut_bar_add_group): Connect.
+
+	* e-icon-bar.c (e_icon_bar_init): Set the icon bar up as a drag
+	target.
+	(e_icon_bar_drag_motion): Only return TRUE if one of the possible
+	targets is E-SHORTCUT, and the user is moving the pointer between
+	two items.
+
+	* e-group-bar.c (e_group_bar_add_group): Set the group button as a
+	dnd destination here.
+	(e_group_bar_on_button_drag_motion): Always return FALSE here as
+	we never really allow any dropping of things onto the group
+	header/button anyways.
+
+	* e-shortcut-bar.c (e_shortcut_bar_add_group): Don't set the icon
+	bar or its button as a destination.
+
+2002-03-26  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am: remove comment about adding .lo's to the parent
+	directory's Makefile.am.
+
 2001-10-24  Christopher James Lahey  <clahey@ximian.com>
 
 	* e-group-bar.c, e-group-bar.h, e-icon-bar-bg-item.c,

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -135,7 +136,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -146,28 +155,57 @@ gnomelocaledir = @gnomelocaledir@
 l = @l@
 
 gladedir = $(datadir)/gal/$(VERSION)/glade
-glade_DATA =  	gal-define-views.glade				gal-view-new-dialog.glade
+glade_DATA = \
+	gal-define-views.glade			\
+	gal-view-new-dialog.glade		\
+	gal-view-instance-save-as-dialog.glade
 
 
-INCLUDES =  	-I$(top_srcdir)                         	-I$(top_srcdir)/gal                     	$(EXTRA_GNOME_CFLAGS)				$(GNOME_INCLUDEDIR)				$(ICONV_CFLAGS)					-DGAL_GLADEDIR=\"$(gladedir)\"		        -DG_LOG_DOMAIN=\"gal\"
+INCLUDES = \
+	-I$(top_srcdir)                         \
+	-I$(top_srcdir)/gal                     \
+	$(EXTRA_GNOME_CFLAGS)			\
+	$(GNOME_INCLUDEDIR)			\
+	$(ICONV_CFLAGS)				\
+	-DGAL_GLADEDIR=\"$(gladedir)\"		\
+        -DG_LOG_DOMAIN=\"gal\"
 
 
 noinst_LTLIBRARIES = libgalmenus.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
-libgalmenus_la_SOURCES =  	gal-define-views-dialog.c			gal-define-views-model.c			gal-view-collection.c				gal-view-etable.c				gal-view-factory-etable.c			gal-view-factory.c				gal-view-new-dialog.c				gal-view.c
+libgalmenus_la_SOURCES = \
+	gal-define-views-dialog.c		\
+	gal-define-views-model.c		\
+	gal-view-collection.c			\
+	gal-view-etable.c			\
+	gal-view-factory-etable.c		\
+	gal-view-factory.c			\
+	gal-view-instance-save-as-dialog.c	\
+	gal-view-instance.c			\
+	gal-view-new-dialog.c			\
+	gal-view.c
 
 
 libgalmenusincludedir = $(includedir)/gal/menus
 
-libgalmenusinclude_HEADERS =  	gal-define-views-dialog.h			gal-define-views-model.h			gal-view-collection.h				gal-view-etable.h				gal-view-factory-etable.h			gal-view-factory.h				gal-view-new-dialog.h				gal-view.h
+libgalmenusinclude_HEADERS = \
+	gal-define-views-dialog.h		\
+	gal-define-views-model.h		\
+	gal-view-collection.h			\
+	gal-view-etable.h			\
+	gal-view-factory-etable.h		\
+	gal-view-factory.h			\
+	gal-view-instance-save-as-dialog.h	\
+	gal-view-instance.h			\
+	gal-view-new-dialog.h			\
+	gal-view.h
 
 
 icons = 
 
-EXTRA_DIST =  	 $(icons)			 $(glade_DATA)
+EXTRA_DIST = \
+	 $(icons)		\
+	 $(glade_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -181,8 +219,9 @@ libgalmenus_la_LDFLAGS =
 libgalmenus_la_LIBADD = 
 libgalmenus_la_OBJECTS =  gal-define-views-dialog.lo \
 gal-define-views-model.lo gal-view-collection.lo gal-view-etable.lo \
-gal-view-factory-etable.lo gal-view-factory.lo gal-view-new-dialog.lo \
-gal-view.lo
+gal-view-factory-etable.lo gal-view-factory.lo \
+gal-view-instance-save-as-dialog.lo gal-view-instance.lo \
+gal-view-new-dialog.lo gal-view.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -196,7 +235,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgalmenus_la_SOURCES)
 OBJECTS = $(libgalmenus_la_OBJECTS)

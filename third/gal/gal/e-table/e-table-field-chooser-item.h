@@ -25,8 +25,9 @@
 #define _E_TABLE_FIELD_CHOOSER_ITEM_H_
 
 #include <libgnomeui/gnome-canvas.h>
-#include <tree.h>
+#include <gnome-xml/tree.h>
 #include <gal/e-table/e-table-header.h>
+#include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
-"PO-Revision-Date: 2001-12-12 20:06+0100\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"PO-Revision-Date: 2002-07-22 13:57+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,26 +45,10 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Stigende)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Synkende)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Ikke sortert"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Ingen gruppering"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
-msgstr "<- Fje_rn"
+msgstr "<- Fjern"
 
 #: gal/e-table/e-table-config-no-group.glade.h:2
 #: gal/e-table/e-table-config.glade.h:2
@@ -87,7 +71,7 @@ msgid "Descending"
 msgstr "Synkende"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -144,16 +128,37 @@ msgstr "Så etter"
 #: gal/e-table/e-table-config-no-group.glade.h:17
 #: gal/e-table/e-table-config.glade.h:17
 msgid "_Add ->"
-msgstr "L_egg til ->"
-
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Grupper etter..."
+msgstr "_Legg til ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr "_Felter som vises..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "_Sorter..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Stigende)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Synkende)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Ikke sortert"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Ingen gruppering"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Grupper etter..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -187,67 +192,92 @@ msgstr "Tilgjengelige felter"
 msgid "Show in this order"
 msgstr "Vis i denne rekkefølgen"
 
-#: gal/e-table/e-table-header-item.c:1302
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d oppføring)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d oppføringer)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d oppføring)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d oppføringer)"
+
+#: gal/e-table/e-table-header-item.c:1440
 msgid "Customize Current View"
 msgstr "Tilpass aktiv visning"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "Sorter stigende"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "Sorter synkende"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "Ikke sorter"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Grupper etter dette feltet"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Grupper etter boks"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Fjern denne kolonnen"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Legg til en kolonne..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Justering"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Beste tilpasning"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Formater kolonner..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Tilpass aktiv visning..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "Definer visninger for %s"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+msgid "Define Views"
+msgstr "Definer visninger"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "Definer visninger for \"%s\""
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "Null_still til fabrikkstandard..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "Visninger for \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -269,6 +299,14 @@ msgstr "_Ny..."
 msgid "Table"
 msgstr "Tabell"
 
+#: gal/menus/gal-view-instance.c:580
+msgid "Custom View"
+msgstr "Tilpasset visning"
+
+#: gal/menus/gal-view-instance.c:581
+msgid "Save Custom View"
+msgstr "Lagre tilpasset visning"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Navn på ny visning:"
@@ -281,6 +319,10 @@ msgstr "Type visning:"
 #, c-format
 msgid "Group %i"
 msgstr "Grupper %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr "Tegn utenfor gyldig område for UTF-8"
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -468,7 +510,7 @@ msgstr "mørk purpur"
 msgid "sky blue"
 msgstr "himmelblå"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Legg til i global kategoriliste"
 
@@ -476,13 +518,17 @@ msgstr "Legg til i global kategoriliste"
 msgid "Add all to global category list"
 msgstr "Legg til alle i global kategoriliste"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Fjern fra global kategoriliste"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Fjern alle fra global kategoriliste"
+
+#: gal/widgets/e-categories.c:542
+msgid "Edit Categories"
+msgstr "Rediger kategorier"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -500,95 +546,95 @@ msgstr "_Tilgjengelige kategorier:"
 msgid "categories"
 msgstr "kategorier"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Arbeid"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Konkurranse"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "Favoritter"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Gaver"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Målsetninger"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "Ferie"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "Feriekort"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "Hete kontakter"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "Idéer"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "Internasjonalt"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "Nøkkelkunde"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "Forskjellig"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "Personlig"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "Telefoner"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Status"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "Strategier"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "Tilbyder"
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "Tid og utgifter"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "Venter"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* Klikk her for å legge til en kategori *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "Kategori"
 
@@ -597,101 +643,25 @@ msgid "Add a category"
 msgstr "Legg til en kategori"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Legg til..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "Rediger global kategoriliste"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "Endre en kategori"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Endre..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "Fjern"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "_Kategori som skal legges til:"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "_Kategori som skal endres:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d oppføring)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d oppføringer)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d oppføring)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d oppføringer)"
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Konfigurerer visning: FIXME"
-
-#~ msgid "_Fields..."
-#~ msgstr "_Felter..."
-
-#~ msgid "Unknown"
-#~ msgstr "Ukjent"
-
-#~ msgid "Baltic"
-#~ msgstr "Baltisk"
-
-#~ msgid "Central European"
-#~ msgstr "Sentral-europeisk"
-
-#~ msgid "Chinese"
-#~ msgstr "Kinesisk"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Kyrillisk"
-
-#~ msgid "Greek"
-#~ msgstr "Gresk"
-
-#~ msgid "Japanese"
-#~ msgstr "Japansk"
-
-#~ msgid "Korean"
-#~ msgstr "Koreansk"
-
-#~ msgid "Turkish"
-#~ msgstr "Tyrkisk"
-
-#~ msgid "Unicode"
-#~ msgstr "Unicode"
-
-#~ msgid "Western European"
-#~ msgstr "Vest-europeisk"
-
-#~ msgid "Traditional"
-#~ msgstr "Tradisjonell"
-
-#~ msgid "Simplified"
-#~ msgstr "Forenklet"
-
-#~ msgid "Ukrainian"
-#~ msgstr "Ukrainsk"
-
-#~ msgid "New"
-#~ msgstr "Ny"
-
-#~ msgid "Unknown character set: %s"
-#~ msgstr "Ukjent tegnsett: %s"
-
-#~ msgid "Enter the character set to use"
-#~ msgstr "Skriv inn tegnsett som skal brukes"
-
-#~ msgid "Other..."
-#~ msgstr "Andre..."
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+msgid "All Categories"
+msgstr "Alle kategorier"

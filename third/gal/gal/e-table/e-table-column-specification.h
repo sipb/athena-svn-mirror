@@ -26,7 +26,7 @@
 
 #include <glib.h>
 #include <gtk/gtkobject.h>
-#include <tree.h>
+#include <gnome-xml/tree.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,6 +42,7 @@ extern "C" {
 typedef struct {
 	GtkObject base;
 	int model_col;
+	int compare_col;
 	char *title;
 	char *pixbuf;
 
@@ -52,6 +53,7 @@ typedef struct {
 
 	char *cell;
 	char *compare;
+	char *search;
 	int priority;
 } ETableColumnSpecification;
 

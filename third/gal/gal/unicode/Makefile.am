@@ -1,8 +1,5 @@
 noinst_LTLIBRARIES = libunicode.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libunicode_la_SOURCES = 		\
 	gunibreak.c			\
 	gunicollate.c			\
@@ -23,5 +20,5 @@ noinst_HEADERS =			\
 
 INCLUDES = 				\
 	-I$(top_srcdir)			\
-	$(EXTRA_GNOME_CFLAGS)		\
+	$(GNOME_INCLUDEDIR)		\
 	$(ICONV_CFLAGS)

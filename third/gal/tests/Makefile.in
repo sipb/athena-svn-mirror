@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -134,7 +135,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -144,16 +153,26 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(top_srcdir)                         	-I$(top_srcdir)/gal                     	$(EXTRA_GNOME_CFLAGS)				$(GNOME_BONOBO_CFLAGS)				$(GNOME_VFS_CFLAGS)				$(GNOME_INCLUDEDIR)				-DETABLE_GLADEDIR=\"$(gladedir)\"	        -DG_LOG_DOMAIN=\"e-table\"
+INCLUDES = \
+	-I$(top_srcdir)                         \
+	-I$(top_srcdir)/gal                     \
+	$(EXTRA_GNOME_CFLAGS)			\
+	$(GNOME_BONOBO_CFLAGS)			\
+	$(GNOME_VFS_CFLAGS)			\
+	$(GNOME_INCLUDEDIR)			\
+	-DETABLE_GLADEDIR=\"$(gladedir)\"	\
+        -DG_LOG_DOMAIN=\"e-table\"
 
 
 LDFLAGS = `gnome-config --libs gdk_pixbuf`
-LDADD = $(top_builddir)/gal/libgal.la 	$(EXTRA_GNOME_LIBS) $(ICONV_LIBS)
+LDADD = $(top_builddir)/gal/libgal.la \
+	$(EXTRA_GNOME_LIBS) $(ICONV_LIBS)
 
 
-@GAL_HAVE_VFS_TRUE@vfs_programs = # test-tree-2
+@GAL_HAVE_VFS_TRUE@vfs_programs = @GAL_HAVE_VFS_TRUE@# test-tree-2
 
-noinst_PROGRAMS =  	test-table-1 test-tree-1 $(vfs_programs) test-tree-3 test-shortcut-bar test-define-views test-unicode
+noinst_PROGRAMS = \
+	test-table-1 test-tree-1 $(vfs_programs) test-tree-3 test-shortcut-bar test-define-views test-unicode
 
 
 test_table_1_LDADD = $(LDADD)
@@ -172,10 +191,12 @@ test_shortcut_bar_LDADD = $(LDADD)
 test_tree_3_LDFLAGS = $(LDFLAGS)
 test_tree_3_LDADD = $(LDADD) 
 
-test_shortcut_bar_SOURCES =  	test-shortcut-bar.c
+test_shortcut_bar_SOURCES = \
+	test-shortcut-bar.c
 
 
-test_define_views_SOURCES =  	test-define-views.c
+test_define_views_SOURCES = \
+	test-define-views.c
 
 
 test_define_views_LDFLAGS = $(LDFLAGS)
@@ -224,7 +245,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = test-table-1.c test-tree-1.c test-tree-3.c $(test_shortcut_bar_SOURCES) $(test_define_views_SOURCES) test-unicode.c
 OBJECTS = test-table-1.$(OBJEXT) test-tree-1.$(OBJEXT) test-tree-3.$(OBJEXT) $(test_shortcut_bar_OBJECTS) $(test_define_views_OBJECTS) test-unicode.$(OBJEXT)

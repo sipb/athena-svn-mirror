@@ -25,7 +25,7 @@
 #define _GAL_VIEW_H_
 
 #include <gtk/gtkobject.h>
-#include <tree.h>
+#include <gnome-xml/tree.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -130,6 +130,17 @@ static void e_shortcut_bar_on_drag_data_get	(GtkWidget      *widget,
 						 guint           info,
 						 guint           time,
 						 EShortcutBar	*shortcut_bar);
+static gboolean e_shortcut_bar_on_drag_motion 	(GtkWidget      *widget,
+					      	 GdkDragContext *context,
+					      	 gint            x,
+					      	 gint            y,
+					      	 guint           time,
+					      	 EShortcutBar    *shortcut_bar);
+static gboolean e_shortcut_bar_on_drag_drop     (GtkWidget	 *widget,
+						 GdkDragContext *context,
+						 gint            x,
+						 gint            y,
+						 guint           time);
 static void e_shortcut_bar_on_drag_data_received(GtkWidget      *widget,
 						 GdkDragContext *context,
 						 gint            x,
@@ -153,6 +164,8 @@ enum
   ITEM_SELECTED,
   SHORTCUT_DROPPED,
   SHORTCUT_DRAGGED,
+  SHORTCUT_DRAG_MOTION,
+  SHORTCUT_DRAG_DATA_RECEIVED,
   LAST_SIGNAL
 };
 
@@ -169,11 +182,67 @@ e_shortcut_bar_marshal_NONE__INT_INT_STRING_STRING (GtkObject *object,
 	void (*rfunc) (GtkObject *, gint, gint, gchar *, gchar *, gpointer) = func;
 
 	(*rfunc) (object,
-		  GTK_VALUE_INT (args[0]),
-		  GTK_VALUE_INT (args[1]),
+		  GTK_VALUE_INT    (args[0]),
+		  GTK_VALUE_INT    (args[1]),
 		  GTK_VALUE_STRING (args[2]),
 		  GTK_VALUE_STRING (args[3]),
 		  func_data);
+}
+
+typedef gboolean (* EShortcutBarSignal_BOOL__POINTER_POINTER_INT_INT_INT) (GtkObject *object,
+									   gpointer arg1,
+									   gpointer arg2,
+									   gint arg3,
+									   gint arg4,
+									   gint arg5,
+									   gpointer user_data);
+static void
+e_shortcut_bar_marshal_BOOL__POINTER_POINTER_INT_INT_INT (GtkObject *object,
+							  GtkSignalFunc func,
+							  gpointer func_data,
+							  GtkArg *args)
+{
+	gboolean *return_val;
+	EShortcutBarSignal_BOOL__POINTER_POINTER_INT_INT_INT rfunc;
+
+	rfunc = (EShortcutBarSignal_BOOL__POINTER_POINTER_INT_INT_INT) func;
+	return_val = GTK_RETLOC_BOOL (args[5]);
+	*return_val = (*rfunc) (object,
+				GTK_VALUE_POINTER (args[0]),
+				GTK_VALUE_POINTER (args[1]),
+				GTK_VALUE_INT     (args[2]),
+				GTK_VALUE_INT     (args[3]),
+				GTK_VALUE_INT     (args[4]),
+				func_data);
+}
+
+typedef gboolean (* EShortcutBarSignal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT) (GtkObject *object,
+										   gpointer arg1,
+										   gpointer arg2,
+										   gpointer arg3,
+										   gint arg4,
+										   gint arg5,
+										   gint arg6,
+										   gpointer user_data);
+static void
+e_shortcut_bar_marshal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT (GtkObject *object,
+								  GtkSignalFunc func,
+								  gpointer func_data,
+								  GtkArg *args)
+{
+	gboolean *return_val;
+	EShortcutBarSignal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT rfunc;
+
+	rfunc = (EShortcutBarSignal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT) func;
+	return_val = GTK_RETLOC_BOOL (args[6]);
+	*return_val = (*rfunc) (object,
+				GTK_VALUE_POINTER (args[0]),
+				GTK_VALUE_POINTER (args[1]),
+				GTK_VALUE_POINTER (args[2]),
+				GTK_VALUE_INT     (args[3]),
+				GTK_VALUE_INT     (args[4]),
+				GTK_VALUE_INT     (args[5]),
+				func_data);
 }
 
 E_MAKE_TYPE(e_shortcut_bar, "EShortcutBar", EShortcutBar,
@@ -224,8 +293,35 @@ e_shortcut_bar_class_init (EShortcutBarClass *class)
 				GTK_TYPE_INT,
 				GTK_TYPE_INT);
 
+	e_shortcut_bar_signals[SHORTCUT_DRAG_MOTION] =
+		gtk_signal_new ("shortcut_drag_motion",
+				GTK_RUN_LAST,
+				E_OBJECT_CLASS_TYPE (object_class),
+				GTK_SIGNAL_OFFSET (EShortcutBarClass, shortcut_drag_motion),
+				e_shortcut_bar_marshal_BOOL__POINTER_POINTER_INT_INT_INT,
+				GTK_TYPE_BOOL, 5,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT);
+
+	e_shortcut_bar_signals[SHORTCUT_DRAG_DATA_RECEIVED] =
+		gtk_signal_new ("shortcut_drag_data_received",
+				GTK_RUN_LAST,
+				E_OBJECT_CLASS_TYPE (object_class),
+				GTK_SIGNAL_OFFSET (EShortcutBarClass, shortcut_drag_data_received),
+				e_shortcut_bar_marshal_BOOL__POINTER_POINTER_POINTER_INT_INT_INT,
+				GTK_TYPE_BOOL, 6,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT);
+
 	E_OBJECT_CLASS_ADD_SIGNALS (object_class, e_shortcut_bar_signals,
-				      LAST_SIGNAL);
+				    LAST_SIGNAL);
 
 	/* Method override */
 	object_class->destroy		= e_shortcut_bar_destroy;
@@ -485,6 +581,12 @@ e_shortcut_bar_add_group	(EShortcutBar	*shortcut_bar,
 	gtk_signal_connect (GTK_OBJECT (group->icon_bar), "drag_data_get",
 			    GTK_SIGNAL_FUNC (e_shortcut_bar_on_drag_data_get),
 			    shortcut_bar);
+	gtk_signal_connect (GTK_OBJECT (group->icon_bar), "drag_motion",
+			    GTK_SIGNAL_FUNC (e_shortcut_bar_on_drag_motion),
+			    shortcut_bar);
+	gtk_signal_connect (GTK_OBJECT (group->icon_bar), "drag_drop",
+			    GTK_SIGNAL_FUNC (e_shortcut_bar_on_drag_drop),
+			    shortcut_bar);
 	gtk_signal_connect (GTK_OBJECT (group->icon_bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (e_shortcut_bar_on_drag_data_received),
 			    shortcut_bar);
@@ -520,15 +622,6 @@ e_shortcut_bar_add_group	(EShortcutBar	*shortcut_bar,
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
 			    GTK_SIGNAL_FUNC (e_shortcut_bar_stop_editing),
 			    shortcut_bar);
-
-	gtk_drag_dest_set (GTK_WIDGET (group->icon_bar),
-			   GTK_DEST_DEFAULT_ALL,
-			   target_table, n_targets,
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
-	gtk_drag_dest_set (GTK_WIDGET (button),
-			   GTK_DEST_DEFAULT_ALL,
-			   target_table, n_targets,
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	e_group_bar_add_group (E_GROUP_BAR (shortcut_bar),
 			       group->vscrolled_bar, button, group_num);
@@ -749,6 +842,100 @@ e_shortcut_bar_on_drag_data_get (GtkWidget          *widget,
 }
 
 
+static gboolean
+e_shortcut_bar_on_drag_motion (GtkWidget          *widget,
+			       GdkDragContext     *context,
+			       gint                x,
+			       gint                y,
+			       guint               time,
+			       EShortcutBar       *shortcut_bar)
+{
+	EIconBar *icon_bar;
+	gboolean signal_retval;
+	gint group_num, position, before_item;
+	gint scroll_x, scroll_y;
+	GdkDragAction action;
+
+	icon_bar = E_ICON_BAR (widget);
+
+	/* FIXME The canvas scrolling offset should probably be taken into
+	   account by e_icon_bar_find_item_at_position(). */
+	gnome_canvas_get_scroll_offsets (GNOME_CANVAS (icon_bar), &scroll_x, &scroll_y);
+	position = e_icon_bar_find_item_at_position (icon_bar, x + scroll_x, y + scroll_y,
+						     &before_item);
+	group_num = e_group_bar_get_group_num (E_GROUP_BAR (shortcut_bar),
+					       GTK_WIDGET (icon_bar)->parent);
+
+
+	/* We only care about the current group.  */
+	if (group_num != E_GROUP_BAR (shortcut_bar)->current_group_num) {
+		gdk_drag_status (context, 0, time);
+		return TRUE;
+	}
+ 
+	action = 0;
+
+	/* If we are between icons, we can just choose the action by ourselves
+	   if it's an E-SHORTCUT.  */
+	if (before_item != -1) {
+		/* A drag between two icons is allowed only if we are getting
+		   the E-SHORTCUTS target.  */
+
+		GList *p;
+
+		for (p = context->targets; p != NULL; p = p->next) {
+			char *target;
+
+			target = gdk_atom_name ((GdkAtom) p->data);
+			if (strcmp (target, "E-SHORTCUT") == 0) {
+				gdk_drag_status (context, GDK_ACTION_MOVE, time);
+				g_free (target);
+				return TRUE;
+			}
+
+			g_free (target);
+		}
+	}
+
+	signal_retval = FALSE;
+	gtk_signal_emit (GTK_OBJECT (shortcut_bar),
+			 e_shortcut_bar_signals[SHORTCUT_DRAG_MOTION],
+			 widget, context, time,
+			 group_num, position, &signal_retval);
+
+	if (signal_retval) {
+		return TRUE;
+	} else {
+		gdk_drag_status (context, 0, time);
+		return TRUE;
+	}
+}
+
+static gboolean
+e_shortcut_bar_on_drag_drop (GtkWidget *widget,
+			     GdkDragContext *context,
+			     gint x,
+			     gint y,
+			     guint time)
+{
+	char *target;
+	GList *p;
+
+	/* We want the E-SHORTCUT type.  */
+
+	for (p = context->targets; p != NULL; p = p->next) {
+		target = gdk_atom_name (GPOINTER_TO_INT (p->data));
+		if (strcmp (target, "E-SHORTCUT") == 0) {
+			g_free (target);
+			gtk_drag_get_data (widget, context, GPOINTER_TO_INT (p->data), time);
+			return TRUE;
+		}
+	}
+
+	gtk_drag_get_data (widget, context, GPOINTER_TO_INT (context->targets->data), time);
+	return TRUE;
+}
+
 static void  
 e_shortcut_bar_on_drag_data_received  (GtkWidget          *widget,
 				       GdkDragContext     *context,
@@ -762,27 +949,50 @@ e_shortcut_bar_on_drag_data_received  (GtkWidget          *widget,
 	gchar *item_name, *item_url;
 	EIconBar *icon_bar;
 	gint position, group_num;
+	gboolean signal_retval;
+	gint scroll_x, scroll_y;
+	gboolean before_item;
+	char *target_type;
 
 	icon_bar = E_ICON_BAR (widget);
-	position = icon_bar->dragging_before_item_num;
 
-	if ((data->length >= 0) && (data->format == 8)
-	    && (position != -1) && (info == TARGET_SHORTCUT)) {
+	/* FIXME The canvas scrolling offset should probably be taken into
+	   account by e_icon_bar_find_item_at_position().  */
+	gnome_canvas_get_scroll_offsets (GNOME_CANVAS (icon_bar), &scroll_x, &scroll_y);
+	position = e_icon_bar_find_item_at_position (icon_bar, x + scroll_x, y + scroll_y, &before_item);
+	group_num = e_group_bar_get_group_num (E_GROUP_BAR (shortcut_bar),
+					       GTK_WIDGET (icon_bar)->parent);
+
+	target_type = gdk_atom_name (data->target);
+
+	/* If it's a shortcut drop, we can handle it ourselves.  */
+	if (position == -1
+	    && strcmp (target_type, "E-SHORTCUT") == 0
+	    && data->length >= 0 && data->format == 8) {
 		item_name = data->data;
 		item_url = item_name + strlen (item_name) + 1;
 
-		group_num = e_group_bar_get_group_num (E_GROUP_BAR (shortcut_bar),
-						       GTK_WIDGET (icon_bar)->parent);
-
 		gtk_signal_emit (GTK_OBJECT (shortcut_bar),
 				 e_shortcut_bar_signals[SHORTCUT_DROPPED],
-				 group_num, position, item_url, item_name);
+				 group_num, before_item, item_url, item_name);
 
 		gtk_drag_finish (context, TRUE, TRUE, time);
+		g_free (target_type);
 		return;
 	}
-  
-	gtk_drag_finish (context, FALSE, FALSE, time);
+
+	g_free (target_type);
+
+	/* The drop is of some custom kind, so we try emitting the signal.  */
+	signal_retval = FALSE;
+	gtk_signal_emit (GTK_OBJECT (shortcut_bar),
+			 e_shortcut_bar_signals[SHORTCUT_DRAG_DATA_RECEIVED],
+			 widget, context, data, time, group_num, position, &signal_retval);
+
+	/* If the signal handler doesn't handle it, we just do a
+	   gtk_drag_finish() reporting failure.  */
+	if (! signal_retval)
+		gtk_drag_finish (context, FALSE, FALSE, time);
 }
 
 

@@ -6,9 +6,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libshortcut-bar.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libshortcut_bar_la_SOURCES = 	\
 	e-group-bar.c		\
 	e-icon-bar-bg-item.c	\
