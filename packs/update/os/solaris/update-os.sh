@@ -63,6 +63,9 @@ if [ "$OSCHANGES" = true ]; then
   echo "Performing local OS changes"
   sh /srvd/install/oschanges
 
+  # Take care of the etc/driver_aliases
+cp /cdrom/mach/sun4u/etc/driver_aliases /root/etc/
+
   # Restore any config file that pkgadd has replaced.
   echo "Re-copying config files after OS update"
   if [ -s "$CONFCHG" ]; then
