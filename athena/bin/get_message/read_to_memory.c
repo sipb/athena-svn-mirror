@@ -13,19 +13,19 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: read_to_memory.c,v 1.1 1999-12-08 22:06:46 danw Exp $";
+static const char rcsid[] = "$Id: read_to_memory.c,v 1.2 2004-12-26 17:33:39 zacheiss Exp $";
 
 #include "globalmessage.h"
 
 Code_t read_to_memory(char **ret_block, int *ret_size, int filedesc)
 {
-  char buf[BFSZ], *message_data = NULL;
+  char buf[GMS_MAX_MESSAGE_LEN], *message_data = NULL;
   int message_size = 0;
   int stat;
   
   do {
     /* read the block */
-    stat = read(filedesc, buf, BFSZ);
+    stat = read(filedesc, buf, GMS_MAX_MESSAGE_LEN);
     if(stat == -1) {
       /* handle read failed error */
       free(message_data);
