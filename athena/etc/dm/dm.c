@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.5 1999-10-20 01:59:14 kcr Exp $
+/* $Id: dm.c,v 1.6 1999-10-20 02:00:50 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,7 +41,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.5 1999-10-20 01:59:14 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.6 1999-10-20 02:00:50 kcr Exp $";
 #endif
 
 /* Process states */
@@ -742,14 +742,8 @@ static void shutdown(int signo)
 
 static void cleanup(char *tty)
 {
-  int file, found;
+  int file;
   struct utmp utmp;
-#ifdef HAVE_PUTUTLINE
-  struct utmp *putmp;
-#endif
-#ifdef HAVE_PUTUTXLINE
-  struct utmpx utmpx;
-#endif
   char login[sizeof(utmp.ut_name) + 1];
 
   if (login_running == RUNNING)
@@ -759,20 +753,7 @@ static void cleanup(char *tty)
   if (x_running == RUNNING)
     kill(xpid, SIGTERM);
 
-  found = 0;
-
   /* Find out what the login name was, so we can feed it to libal. */
-#ifdef HAVE_PUTUTLINE
-  strcpy(utmp.ut_line, tty);
-  setutent();
-  putmp = getutline(&utmp);
-  if (putmp != NULL)
-    {
-      strncpy(login, putmp->ut_name, sizeof(utmp.ut_name));
-      login[8] = '\0';
-    }
-  endutent();
-#else /* HAVE_PUTUTLINE */
   if ((file = open(utmpf, O_RDWR, 0)) >= 0)
     {
       while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
@@ -785,7 +766,6 @@ static void cleanup(char *tty)
 	}
       close(file);
     }
-#endif /* HAVE_PUTUTLINE */
 
   /* Update the utmp & wtmp. */
 
@@ -1064,57 +1044,10 @@ void logout(const char *line)
       pututxline(&utmpx);
       endutxent();
 #endif /* HAVE_PUTUTXLINE */
-#ifdef HAVE_UPDWTMP
+
       updwtmp(wtmpf, &utmp);
-#else /* HAVE_UPDWTMP */
-      if ((file = open(wtmpf, O_WRONLY | O_APPEND)) >= 0)
-	{
-	  write(file, (char *) &utmp, sizeof(utmp));
-	  close(file);
-	}
-#endif /* HAVE_UPDWTMP */
     }
   endutent();
-}
-#else
-void logout(const char *line)
-{
-  struct utmp utmp;
-  int file;
-  int found;
-
-  if ((file = open(utmpf, O_RDWR, 0)) >= 0)
-    {
-      while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
-	{
-	  if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line)))
-	    {
-	      strncpy(login, utmp.ut_name, 8);
-	      login[8] = '\0';
-	      if (utmp.ut_name[0] != '\0')
-		{
-		  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-		  lseek(file, (long) -sizeof(utmp), SEEK_CUR);
-		  write(file, (char *) &utmp, sizeof(utmp));
-		  found = 1;
-		}
-	      break;
-	    }
-	}
-      close(file);
-    }
-  if (found)
-    {
-      if ((file = open(wtmpf, O_WRONLY | O_APPEND, 0644)) >= 0)
-	{
-	  strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
-	  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-	  strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
-	  time(&utmp.ut_time);
-	  write(file, (char *) &utmp, sizeof(utmp));
-	  close(file);
-	}
-    }
 }
 #endif
 #endif
