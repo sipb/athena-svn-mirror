@@ -21,7 +21,7 @@ fi
 # Athena addition
 athena_afsadjust () {
 	. /etc/athena/rc.conf
-	if [ "true" = $AFSADJUST -o "true" = $PUBLIC ] ; then
+	if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
 		df -k /usr/vice/cache | awk '
 		  (NR == 2) {
 		    printf "/afs:/usr/vice/cache:";
