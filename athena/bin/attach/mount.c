@@ -13,9 +13,7 @@
  * (This may not be true anymore --- [tytso:19890720.2145EDT])
  */
 
-#ifndef lint
-static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.2 1990-04-19 12:09:45 jfc Exp $";
-#endif lint
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.3 1990-07-09 00:54:35 jfc Exp $";
 
 #include "attach.h"
 #include <sys/param.h>
@@ -26,6 +24,9 @@ static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include <sys/dstat.h>
 #endif
 #include <rpcsvc/mount.h>
+#ifdef _AUX_SOURCE
+#define	mount(type,dir,flags,data)	fsmount(type,dir,flags,data)
+#endif
 
 extern int sys_nerr;
 extern char *sys_errlist[];
