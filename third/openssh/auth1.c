@@ -373,11 +373,6 @@ do_authloop(Authctxt *authctxt)
 			client_user = NULL;
 		}
 
-		if (authctxt->pw->pw_uid == 0)
-		  {
-		    syslog(LOG_NOTICE, "ROOT LOGIN as '%s' from %s", authctxt->pw->pw_name, 
-			get_canonical_hostname(options.reverse_mapping_check));
-		  }
 		if (authenticated)
 			return;
 
