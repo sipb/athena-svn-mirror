@@ -698,7 +698,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #endif
 #ifndef MakeCmd
-#define MakeCmd $(MAKE)
+#define MakeCmd make
 #endif
 #ifndef MvCmd
 #define MvCmd mv
@@ -837,7 +837,6 @@ XCOMM the platform-specific parameters - edit site.def to change
       LINTLIBFLAG = LintLibFlag
          LINTOPTS = LintOpts
                LN = LnCmd
-             MAKE = MakeCmd
                MV = MvCmd
                CP = CpCmd
 #if DoRanlibCmd
