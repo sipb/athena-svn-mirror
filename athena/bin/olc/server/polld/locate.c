@@ -10,7 +10,11 @@
 #include <netdb.h>
 #include <signal.h>
 #include <setjmp.h>
+#ifdef _IBMR2
 #include <sys/access.h>
+#else
+#include <sys/file.h>
+#endif
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -227,7 +231,11 @@ check_zephyr()
   /* creating ZEPHYR_DOWN_FILE; this is useful when the zephyr servers get */
   /* overwhelmed */
 
+#ifdef _IBMR2
   if (access(ZEPHYR_DOWN_FILE,E_ACC) == 0) {
+#else
+  if (access(ZEPHYR_DOWN_FILE,F_OK) == 0) {
+#endif
     use_zephyr = 0;
   } else {
     use_zephyr = 1;
