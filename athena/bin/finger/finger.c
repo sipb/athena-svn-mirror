@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.31 1997-02-28 20:01:17 ghudson Exp $
+ * $Id: finger.c,v 1.32 1997-06-03 22:44:08 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.31 1997-02-28 20:01:17 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.32 1997-06-03 22:44:08 danw Exp $";
 #endif /*lint*/
 
 /*
@@ -499,7 +499,7 @@ donames(argv)
 #ifndef SYSV
 				new->loginat = user.ut_time;
 #else
-				p->loginat = user.ut_tv.tv_sec;
+				new->loginat = user.ut_tv.tv_sec;
 #endif
 				new->pwd = p->pwd;
 				new->loggedin = 1;
