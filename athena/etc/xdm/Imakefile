@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.7 1995-11-27 23:51:54 cfields Exp $
+ * $Id: Imakefile,v 1.8 1996-05-23 06:16:14 cfields Exp $
  */
 
 WCL=wcl
@@ -8,12 +8,13 @@ DM=dm
 
 #ifdef sgi
 WCL=
-XDM=
+XDM=xdm-s/**/gi
 DM=misc
 #endif
 
 #ifdef SOLARIS
 XDM=
+WCL=
 #endif
 
 #define ISUBDIRS ${WCL} ${DM} ${XDM} xlogin console conf 
