@@ -27,6 +27,7 @@
 #include <bonobo/bonobo-property-bag-client.h>
 
 enum {
+	PLUG_CREATED,
 	DISCONNECTED,
 	SET_FRAME,
 	ACTIVATE,
@@ -227,10 +228,11 @@ impl_Bonobo_Control_activate (PortableServer_Servant servant,
 	 * if our active state is not what we are changing it to, then
 	 * don't emit the signal
 	 */
-	if (control->priv->active != activated)
+	if (control->priv->active == old_activated)
 		return;
 
-	g_signal_emit (control, control_signals [ACTIVATE], 0, (gboolean) activated);
+	g_signal_emit (control, control_signals [ACTIVATE], 0, control->priv->active);
+	bonobo_control_activate_notify (control, control->priv->active, ev);
 }
 
 static void
@@ -285,10 +287,11 @@ create_plug (BonoboControl *control)
 		gtk_container_add (GTK_CONTAINER (plug),
 				   control->priv->widget);
 
+	g_signal_emit (control, control_signals [PLUG_CREATED], 0);
+
 	g_object_unref (G_OBJECT (plug));
 }
 
-#ifdef HAVE_GTK_MULTIHEAD
 static int
 parse_cookie (const CORBA_char *cookie)
 {
@@ -315,11 +318,11 @@ parse_cookie (const CORBA_char *cookie)
 		case '=':
 			if (!ident || value)
 				goto parse_failed;
-			value = g_string_new ("");
+			value = g_string_new (NULL);
 			break;
 		default:
 			if (!ident)
-				ident = g_string_new ("");
+				ident = g_string_new (NULL);
 			
 			if (value)
 				g_string_append_c (value, *p);
@@ -341,7 +344,6 @@ parse_failed:
 
 	return retval;
 }
-#endif /* HAVE_GTK_MULTIHEAD */
 
 static CORBA_char *
 impl_Bonobo_Control_getWindowId (PortableServer_Servant servant,
@@ -351,17 +353,14 @@ impl_Bonobo_Control_getWindowId (PortableServer_Servant servant,
 	guint32        x11_id;
 	BonoboControl *control = BONOBO_CONTROL (
 		bonobo_object_from_servant (servant));
-#ifdef HAVE_GTK_MULTIHEAD
 	GdkScreen *gdkscreen;
 	int        screen_num;
-#endif
 
 	if (!control->priv->plug)
 		create_plug (control);
 
 	g_assert (control->priv->plug != NULL);
 
-#ifdef HAVE_GTK_MULTIHEAD
 	screen_num = parse_cookie (cookie);
 	if (screen_num != -1)
 		gdkscreen = gdk_display_get_screen (
@@ -370,7 +369,6 @@ impl_Bonobo_Control_getWindowId (PortableServer_Servant servant,
 		gdkscreen = gdk_screen_get_default ();
 
 	gtk_window_set_screen (GTK_WINDOW (control->priv->plug), gdkscreen);
-#endif
 
 	gtk_widget_show (control->priv->plug);
 
@@ -890,7 +888,7 @@ bonobo_control_get_ambient_properties (BonoboControl     *control,
 {
 	Bonobo_ControlFrame frame;
 	Bonobo_PropertyBag pbag;
-	CORBA_Environment *ev = 0, tmp_ev;
+	CORBA_Environment *ev = NULL, tmp_ev;
 
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
 
@@ -1000,6 +998,15 @@ bonobo_control_class_init (BonoboControlClass *klass)
 
 	bonobo_control_parent_class = g_type_class_peek_parent (klass);
 
+	control_signals [PLUG_CREATED] =
+                g_signal_new ("plug_created",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BonoboControlClass, plug_created),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
 	control_signals [DISCONNECTED] =
                 g_signal_new ("disconnected",
 			      G_TYPE_FROM_CLASS (object_class),
@@ -1058,7 +1065,7 @@ bonobo_control_init (BonoboControl *control)
 BONOBO_TYPE_FUNC_FULL (BonoboControl, 
 		       Bonobo_Control,
 		       BONOBO_OBJECT_TYPE,
-		       bonobo_control);
+		       bonobo_control)
 
 /*
  * Varrarg Property get/set simplification wrappers.
@@ -1246,9 +1253,10 @@ bonobo_control_set_transient_for (BonoboControl     *control,
 				  CORBA_Environment *opt_ev)
 {
 	CORBA_char         *id;
+	GdkDisplay         *display;
 	GdkWindow          *win;
 	guint32             x11_id;
-	CORBA_Environment  *ev = 0, tmp_ev;
+	CORBA_Environment  *ev = NULL, tmp_ev;
 	Bonobo_ControlFrame frame;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
@@ -1282,7 +1290,8 @@ bonobo_control_set_transient_for (BonoboControl     *control,
 	CORBA_free (id);
 
 	/* FIXME: Special case the local case ? */
-	win = gdk_window_foreign_new (x11_id);
+	display = gtk_widget_get_display (GTK_WIDGET (window));
+	win = gdk_window_foreign_new_for_display (display, x11_id);
 	g_return_if_fail (win != NULL);
 
 	window_set_transient_for_gdk (window, win);
@@ -1347,6 +1356,18 @@ bonobo_control_set_plug (BonoboControl *control,
 		bonobo_plug_set_control (plug, control);
 }
 
+/**
+ * bonobo_control_get_plug:
+ * @control: the control.a
+ * 
+ * This methods returns the current plug associated with
+ * the control. If the remote container re-parents the
+ * control - the plug will die, and a new plug has to be
+ * created. Thus this should really only be called from
+ * a 'plug_created' signal handler.
+ * 
+ * Return value: the _current_ plug.
+ **/
 BonoboPlug *
 bonobo_control_get_plug (BonoboControl *control)
 {
@@ -1424,15 +1445,15 @@ bonobo_control_get_popup_ui_component (BonoboControl *control)
 }
 
 gboolean
-bonobo_control_do_popup_full (BonoboControl       *control,
+bonobo_control_do_popup_path (BonoboControl       *control,
 			      GtkWidget           *parent_menu_shell,
 			      GtkWidget           *parent_menu_item,
 			      GtkMenuPositionFunc  func,
 			      gpointer             data,
 			      guint                button,
+			      const char          *popup_path,
 			      guint32              activate_time)
 {
-	char      *path;
 	GtkWidget *menu;
 
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), FALSE);
@@ -1440,21 +1461,15 @@ bonobo_control_do_popup_full (BonoboControl       *control,
 	if (!control->priv->popup_ui_container)
 		return FALSE;
 
-	path = g_strdup_printf ("/popups/button%d", button);
-
 	menu = gtk_menu_new ();
 
 	bonobo_ui_sync_menu_add_popup (
 		BONOBO_UI_SYNC_MENU (control->priv->popup_ui_sync),
-		GTK_MENU (menu), path);
+		GTK_MENU (menu), popup_path);
 
-	g_free (path);
-
-#ifdef HAVE_GTK_MULTIHEAD
 	gtk_menu_set_screen (
 		GTK_MENU (menu),
 		gtk_window_get_screen (GTK_WINDOW (control->priv->plug)));
-#endif /* HAVE_GTK_MULTIHEAD */
 
 	gtk_widget_show (menu);
 
@@ -1464,6 +1479,29 @@ bonobo_control_do_popup_full (BonoboControl       *control,
 			button, activate_time);
 
 	return TRUE;
+}
+
+gboolean
+bonobo_control_do_popup_full (BonoboControl       *control,
+			      GtkWidget           *parent_menu_shell,
+			      GtkWidget           *parent_menu_item,
+			      GtkMenuPositionFunc  func,
+			      gpointer             data,
+			      guint                button,
+			      guint32              activate_time)
+{
+	char    *path;
+	gboolean retval;
+
+	path = g_strdup_printf ("/popups/button%d", button);
+
+	retval = bonobo_control_do_popup_path
+		(control, parent_menu_shell, parent_menu_item,
+		 func, data, button, path, activate_time);
+
+	g_free (path);
+
+	return retval;
 }
 
 gboolean

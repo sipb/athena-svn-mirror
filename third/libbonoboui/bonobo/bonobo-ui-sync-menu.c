@@ -506,8 +506,7 @@ impl_bonobo_ui_sync_menu_build (BonoboUISync     *sync,
 
 	if (bonobo_ui_node_has_name (node, "separator")) {
 
-		menu_widget = gtk_menu_item_new ();
-		gtk_widget_set_sensitive (menu_widget, FALSE);
+		menu_widget = gtk_separator_menu_item_new ();
 
 	} else if (bonobo_ui_node_has_name (node, "control")) {
 
@@ -672,8 +671,7 @@ impl_bonobo_ui_sync_menu_build_placeholder (BonoboUISync     *sync,
 	if (!parent) /* A popup without a GtkMenu inserted as yet. */
 		return NULL;
 
-	widget = gtk_menu_item_new ();
-	gtk_widget_set_sensitive (widget, FALSE);
+	widget = gtk_separator_menu_item_new ();
 
 	gtk_menu_shell_insert (GTK_MENU_SHELL (parent),
 			       GTK_WIDGET (widget), (*pos)++);
@@ -722,6 +720,7 @@ impl_dispose (GObject *object)
 	BonoboUISyncMenu *sync = (BonoboUISyncMenu *) object;
 
 	if (sync->menu) {
+		gtk_widget_destroy (GTK_WIDGET (sync->menu));
 		g_object_unref (sync->menu);
 		sync->menu = NULL;
 	}

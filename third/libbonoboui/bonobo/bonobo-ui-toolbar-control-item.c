@@ -29,7 +29,8 @@ struct _BonoboUIToolbarControlItemPrivate {
 	GtkWidget *box;		/* Container for control and button. Which of
 				   its children is visible depends on
 				   orientation */
-        GtkWidget *eventbox;	/* The eventbox which makes tooltips work */
+	
+	GdkWindow *event_window; /* Event window for tool tips */
 
 	BonoboUIToolbarControlDisplay hdisplay;
 	BonoboUIToolbarControlDisplay vdisplay;
@@ -187,14 +188,115 @@ impl_set_tooltip (BonoboUIToolbarItem     *item,
                   GtkTooltips             *tooltips,
                   const char              *tooltip)
 {
-	BonoboUIToolbarControlItem *control_item;
-	GtkWidget *eventbox;
+	if (tooltip) 
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item), 
+				      tooltip, NULL);
+}
 
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (item);
-	eventbox = control_item->priv->eventbox;
+/* GtkWidget methods. */
+static void
+impl_realize (GtkWidget *widget)
+{
+	BonoboUIToolbarControlItem *item;
+	GdkWindowAttr attributes;
+	int attributes_mask;
+	int border_width;
 	
-	if (tooltip && eventbox)
-		gtk_tooltips_set_tip (tooltips, eventbox, tooltip, NULL);
+	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+	
+	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+	
+	border_width = GTK_CONTAINER (widget)->border_width;
+	 
+	attributes.window_type = GDK_WINDOW_CHILD;
+	attributes.x = widget->allocation.x + border_width;
+	attributes.y = widget->allocation.y + border_width;
+	attributes.width = widget->allocation.width - border_width * 2;
+	attributes.height = widget->allocation.height - border_width * 2;
+	attributes.wclass = GDK_INPUT_ONLY;
+	attributes.event_mask = gtk_widget_get_events (widget);
+	attributes.event_mask |= (GDK_EXPOSURE_MASK |
+				  GDK_BUTTON_MOTION_MASK |
+				  GDK_BUTTON_PRESS_MASK |
+				  GDK_BUTTON_RELEASE_MASK |
+				  GDK_ENTER_NOTIFY_MASK |
+				  GDK_LEAVE_NOTIFY_MASK);
+
+	attributes_mask = GDK_WA_X | GDK_WA_Y;
+
+	widget->window = gtk_widget_get_parent_window (widget);
+	g_object_ref (widget->window);
+	
+	item->priv->event_window = gdk_window_new
+		(gtk_widget_get_parent_window (widget),
+		 &attributes, attributes_mask);
+
+	gdk_window_set_user_data (item->priv->event_window, widget);
+	
+	widget->style = gtk_style_attach (widget->style, widget->window);
+}
+
+static void
+impl_unrealize (GtkWidget *widget)
+{
+	BonoboUIToolbarControlItem *item;
+	
+	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+	
+	if (item->priv->event_window) {
+		gdk_window_set_user_data (item->priv->event_window, NULL);
+		gdk_window_destroy (item->priv->event_window);
+		item->priv->event_window = NULL;
+	}
+	
+	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+}
+
+static void
+impl_size_allocate (GtkWidget *widget,
+		    GtkAllocation *allocation)
+{
+	BonoboUIToolbarControlItem *item;
+	int border_width;
+
+	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+	border_width = GTK_CONTAINER (widget)->border_width;
+
+	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+
+	if (GTK_WIDGET_REALIZED (widget))
+		gdk_window_move_resize
+			(item->priv->event_window,
+			 widget->allocation.x + border_width,
+			 widget->allocation.y + border_width,
+			 widget->allocation.width - border_width * 2,
+			 widget->allocation.height - border_width * 2);
+}
+
+static void
+impl_map (GtkWidget *widget)
+{
+	BonoboUIToolbarControlItem *item;
+
+	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+	
+	if (item->priv->event_window) 
+		gdk_window_show (item->priv->event_window);
+
+	GTK_WIDGET_CLASS (parent_class)->map (widget);
+}
+
+static void
+impl_unmap (GtkWidget *widget)
+{
+	BonoboUIToolbarControlItem *item;
+
+	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+	
+	if (item->priv->event_window) 
+		gdk_window_hide (item->priv->event_window);
+
+	GTK_WIDGET_CLASS (parent_class)->unmap (widget);
 }
 
 /* GObject methods.  */
@@ -234,10 +336,12 @@ bonobo_ui_toolbar_control_item_class_init (BonoboUIToolbarControlItemClass *klas
 {
         BonoboUIToolbarButtonItemClass *button_item_class;
         BonoboUIToolbarItemClass *item_class;
+	GtkWidgetClass *widget_class;
 	GObjectClass *object_class;
 	
 	button_item_class = BONOBO_UI_TOOLBAR_BUTTON_ITEM_CLASS (klass);
 	item_class = BONOBO_UI_TOOLBAR_ITEM_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
 	object_class = G_OBJECT_CLASS (klass);
 
         button_item_class->set_icon  = impl_set_icon;
@@ -246,6 +350,12 @@ bonobo_ui_toolbar_control_item_class_init (BonoboUIToolbarControlItemClass *klas
         item_class->set_orientation  = impl_set_orientation;
 	item_class->set_style        = impl_set_style;
 	item_class->set_want_label   = impl_set_want_label;
+
+	widget_class->realize = impl_realize;
+	widget_class->unrealize = impl_unrealize;
+	widget_class->size_allocate = impl_size_allocate;
+	widget_class->map = impl_map;
+	widget_class->unmap = impl_unmap;
 
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
@@ -281,7 +391,6 @@ bonobo_ui_toolbar_control_item_construct (
 	priv->widget   = widget;
 	priv->control  = BONOBO_IS_WIDGET (widget) ? BONOBO_WIDGET (widget) : NULL;
 	priv->button   = bonobo_ui_toolbar_button_item_new (NULL, NULL);
-        priv->eventbox = gtk_event_box_new ();
         priv->box      = gtk_vbox_new (FALSE, 0);
 	
 	g_signal_connect (priv->button, "activate",
@@ -290,12 +399,10 @@ bonobo_ui_toolbar_control_item_construct (
 	gtk_container_add (GTK_CONTAINER (priv->box), widget);
         gtk_container_add (GTK_CONTAINER (priv->box), priv->button);
 
-        gtk_container_add (GTK_CONTAINER (priv->eventbox), priv->box);
-
 	gtk_widget_show (priv->widget);
 	gtk_widget_show (priv->box);
-	gtk_widget_show   (priv->eventbox);
-        gtk_container_add (GTK_CONTAINER (control_item), priv->eventbox);
+
+        gtk_container_add (GTK_CONTAINER (control_item), priv->box);
 
         return GTK_WIDGET (control_item);
 }

@@ -56,10 +56,15 @@ typedef struct {
 	gpointer dummy[4];
 } BonoboPlugClass;
 
-GtkType        bonobo_plug_get_type    (void) G_GNUC_CONST;
-void           bonobo_plug_construct   (BonoboPlug    *plug,
-					guint32        socket_id);
-GtkWidget*     bonobo_plug_new         (guint32        socket_id);
+GtkType        bonobo_plug_get_type        (void) G_GNUC_CONST;
+void           bonobo_plug_construct       (BonoboPlug    *plug,
+					    guint32        socket_id);
+void           bonobo_plug_construct_full  (BonoboPlug    *plug,
+					    GdkDisplay    *display,
+					    guint32        socket_id);
+GtkWidget     *bonobo_plug_new             (guint32        socket_id);
+GtkWidget     *bonobo_plug_new_for_display (GdkDisplay    *display,
+					    guint32        socket_id);
 
 G_END_DECLS
 

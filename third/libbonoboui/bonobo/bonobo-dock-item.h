@@ -36,11 +36,11 @@
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_DOCK_ITEM            (bonobo_dock_item_get_type())
-#define BONOBO_DOCK_ITEM(obj)            (GTK_CHECK_CAST ((obj), BONOBO_TYPE_DOCK_ITEM, BonoboDockItem))
-#define BONOBO_DOCK_ITEM_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_ITEM, BonoboDockItemClass))
-#define BONOBO_IS_DOCK_ITEM(obj)         (GTK_CHECK_TYPE ((obj), BONOBO_TYPE_DOCK_ITEM))
-#define BONOBO_IS_DOCK_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_ITEM))
-#define BONOBO_DOCK_ITEM_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), BONOBO_TYPE_DOCK_ITEM, BonoboDockItemClass))
+#define BONOBO_DOCK_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), BONOBO_TYPE_DOCK_ITEM, BonoboDockItem))
+#define BONOBO_DOCK_ITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_ITEM, BonoboDockItemClass))
+#define BONOBO_IS_DOCK_ITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BONOBO_TYPE_DOCK_ITEM))
+#define BONOBO_IS_DOCK_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_ITEM))
+#define BONOBO_DOCK_ITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), BONOBO_TYPE_DOCK_ITEM, BonoboDockItemClass))
 
 typedef enum
 {
@@ -79,8 +79,8 @@ struct _BonoboDockItem
   /* Position of the floating window.  */
   gint16                  float_x, float_y;
 
-  BonoboDockItemBehavior behavior : 5;
-  GtkOrientation        orientation : 1;
+  guint                 behavior : 5;
+  guint                 orientation : 1;
 
   guint                 float_window_mapped : 1;
   guint                 is_floating : 1;

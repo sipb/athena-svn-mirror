@@ -41,7 +41,6 @@ void                bonobo_control_frame_set_socket (BonoboControlFrame *frame,
 void                bonobo_socket_set_control_frame (BonoboSocket       *socket,
 						     BonoboControlFrame *frame);
 
-BonoboPlug         *bonobo_control_get_plug         (BonoboControl      *control);
 BonoboControl      *bonobo_plug_get_control         (BonoboPlug         *plug);
 void                bonobo_control_set_plug         (BonoboControl      *control,
 						     BonoboPlug         *plug);

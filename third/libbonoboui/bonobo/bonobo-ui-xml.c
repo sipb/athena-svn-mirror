@@ -612,7 +612,7 @@ bonobo_ui_xml_make_path (BonoboUINode *node)
 
 	g_return_val_if_fail (node != NULL, NULL);
 
-	path = g_string_new ("");
+	path = g_string_new (NULL);
 	while (node && node->parent) {
 		const char *tmp;
 

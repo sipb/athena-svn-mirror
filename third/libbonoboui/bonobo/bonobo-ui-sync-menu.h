@@ -48,6 +48,9 @@ BonoboUISync *bonobo_ui_sync_menu_new          (BonoboUIEngine *engine,
 						GtkWidget      *menu_dock_item,
 						GtkAccelGroup  *group);
 
+GtkWidget     *impl_bonobo_ui_sync_menu_wrap_widget (BonoboUISync *sync,
+                                      		GtkWidget    *custom_widget);
+
 void          bonobo_ui_sync_menu_remove_popup (BonoboUISyncMenu *sync,
 						const char       *path);
 

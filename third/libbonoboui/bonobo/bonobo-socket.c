@@ -9,6 +9,7 @@
  * Copyright 2001, Ximian, Inc.
  *                 Martin Baulig.
  */
+#include "config.h"
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkwindow.h>
@@ -25,13 +26,35 @@
  * bits layered over gtk we have */
 #undef DEBUG_RAW_GTK
 
+/* Private part of the BonoboSocket structure */
+typedef struct {
+	/* Signal handler ID for the toplevel's GtkWindow::set_focus() */
+	gulong set_focus_id;
+
+	/* Whether a descendant of us has the focus.  If this is the case, it
+	 * means that we are out-of-process.
+	 */
+	guint descendant_has_focus : 1;
+} BonoboSocketPrivate;
+
 GNOME_CLASS_BOILERPLATE (BonoboSocket, bonobo_socket,
 			 GObject, GTK_TYPE_SOCKET);
 
 static void
 bonobo_socket_finalize (GObject *object)
 {
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+
 	dprintf ("bonobo_socket_finalize %p\n", object);
+
+	socket = BONOBO_SOCKET (object);
+	priv = socket->priv;
+
+	priv->descendant_has_focus = FALSE;
+
+	g_free (priv);
+	socket->priv = NULL;
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -46,12 +69,21 @@ static void
 bonobo_socket_dispose (GObject *object)
 {
 	BonoboSocket *socket = (BonoboSocket *) object;
+	BonoboSocketPrivate *priv;
 
 	dprintf ("bonobo_socket_dispose %p\n", object);
+
+	priv = socket->priv;
 
 	if (socket->frame) {
 		bonobo_socket_set_control_frame (socket, NULL);
 		g_assert (socket->frame == NULL);
+	}
+
+	if (priv->set_focus_id) {
+		g_assert (socket->socket.toplevel != NULL);
+		g_signal_handler_disconnect (socket->socket.toplevel, priv->set_focus_id);
+		priv->set_focus_id = 0;
 	}
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
@@ -134,6 +166,76 @@ bonobo_socket_state_changed (GtkWidget   *widget,
 		socket->frame, GTK_WIDGET_STATE (widget));
 }
 
+/* Callback for GtkWindow::set_focus().  We watch the focused widget in this way. */
+static void
+toplevel_set_focus_cb (GtkWindow *window, GtkWidget *focus, gpointer data)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+	GtkWidget *socket_widget;
+	gboolean descendant_had_focus;
+	gboolean should_autoactivate;
+
+	socket = BONOBO_SOCKET (data);
+	priv = socket->priv;
+
+	g_assert (socket->socket.toplevel == GTK_WIDGET (window));
+
+	socket_widget = GTK_WIDGET (socket);
+
+	descendant_had_focus = priv->descendant_has_focus;
+
+	should_autoactivate = (socket->socket.plug_widget	/* Only in the in-process case */
+			       && socket->frame			/* We need an auto-activatable frame */
+			       && bonobo_control_frame_get_autoactivate (socket->frame));
+
+	/* If a descendant of ours is focused then possibly activate its
+	 * control, unless there are intermediate sockets between us --- they
+	 * should take care of that themselves.
+	 */
+
+	if (focus && gtk_widget_get_ancestor (focus, GTK_TYPE_SOCKET) == socket_widget) {
+		priv->descendant_has_focus = TRUE;
+
+		if (!descendant_had_focus && should_autoactivate)
+			bonobo_control_frame_control_activate (socket->frame);
+	} else {
+		priv->descendant_has_focus = FALSE;
+
+		if (descendant_had_focus && should_autoactivate)
+			bonobo_control_frame_control_deactivate (socket->frame);
+	}
+}
+
+/* GtkWidget::hierarchy_changed() handler.  We have to monitor our toplevel so
+ * that we can connect to its GtkWindow::set_focus() signal, so that we can keep
+ * track of the currently focused widget.
+ */
+static void
+bonobo_socket_hierarchy_changed (GtkWidget *widget, GtkWidget *previous_toplevel)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+
+	socket = BONOBO_SOCKET (widget);
+	priv = socket->priv;
+
+	if (priv->set_focus_id) {
+		g_assert (socket->socket.toplevel != NULL);
+		g_signal_handler_disconnect (socket->socket.toplevel, priv->set_focus_id);
+		priv->set_focus_id = 0;
+	}
+
+	(* GTK_WIDGET_CLASS (parent_class)->hierarchy_changed) (widget, previous_toplevel);
+
+	if (socket->socket.toplevel && GTK_IS_WINDOW (socket->socket.toplevel))
+		priv->set_focus_id = g_signal_connect_after (socket->socket.toplevel, "set_focus",
+							     G_CALLBACK (toplevel_set_focus_cb), socket);
+}
+
+/* NOTE: This will only get called in the out-of-process case.  GTK+ only sends
+ * focus-in/out events to leaf widgets, not their ancestors.
+ */
 static gint
 bonobo_socket_focus_in (GtkWidget     *widget,
 			GdkEventFocus *focus)
@@ -149,6 +251,9 @@ bonobo_socket_focus_in (GtkWidget     *widget,
 	return GTK_WIDGET_CLASS (parent_class)->focus_in_event (widget, focus);
 }
 
+/* NOTE: This will only get called in the out-of-process case.  GTK+ only sends
+ * focus-in/out events to leaf widgets, not their ancestors.
+ */
 static gint
 bonobo_socket_focus_out (GtkWidget     *widget,
 			 GdkEventFocus *focus)
@@ -271,23 +376,28 @@ bonobo_socket_class_init (BonoboSocketClass *klass)
 	gobject_class->finalize = bonobo_socket_finalize;
 	gobject_class->dispose  = bonobo_socket_dispose;
 
-	widget_class->realize         = bonobo_socket_realize;
-	widget_class->unrealize       = bonobo_socket_unrealize;
-	widget_class->state_changed   = bonobo_socket_state_changed;
-	widget_class->focus_in_event  = bonobo_socket_focus_in;
-	widget_class->focus_out_event = bonobo_socket_focus_out;
-	widget_class->size_request    = bonobo_socket_size_request;
-	widget_class->size_allocate   = bonobo_socket_size_allocate;
-	widget_class->expose_event    = bonobo_socket_expose_event;
-	widget_class->show            = bonobo_socket_show;
-	widget_class->show_all        = bonobo_socket_show_all;
+	widget_class->realize           = bonobo_socket_realize;
+	widget_class->unrealize         = bonobo_socket_unrealize;
+	widget_class->state_changed     = bonobo_socket_state_changed;
+	widget_class->hierarchy_changed = bonobo_socket_hierarchy_changed;
+	widget_class->focus_in_event    = bonobo_socket_focus_in;
+	widget_class->focus_out_event   = bonobo_socket_focus_out;
+	widget_class->size_request    	= bonobo_socket_size_request;
+	widget_class->size_allocate   	= bonobo_socket_size_allocate;
+	widget_class->expose_event    	= bonobo_socket_expose_event;
+	widget_class->show            	= bonobo_socket_show;
+	widget_class->show_all        	= bonobo_socket_show_all;
 
-	socket_class->plug_removed    = bonobo_socket_plug_removed;
+	socket_class->plug_removed = bonobo_socket_plug_removed;
 }
 
 static void
 bonobo_socket_instance_init (BonoboSocket *socket)
 {
+	BonoboSocketPrivate *priv;
+
+	priv = g_new0 (BonoboSocketPrivate, 1);
+	socket->priv = priv;
 }
 
 /**

@@ -336,7 +336,7 @@ bonobo_ui_container_class_init (BonoboUIContainerClass *klass)
 BONOBO_TYPE_FUNC_FULL (BonoboUIContainer, 
 		       Bonobo_UIContainer,
 		       PARENT_TYPE,
-		       bonobo_ui_container);
+		       bonobo_ui_container)
 
 /**
  * bonobo_ui_container_new:

@@ -25,9 +25,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <libgnome/gnome-macros.h>
-#include <bonobo/bonobo-dock.h>
-#include <bonobo/bonobo-dock-band.h>
-#include <bonobo/bonobo-dock-item.h>
+#include "bonobo-dock.h"
+#include "bonobo-dock-band.h"
+#include "bonobo-dock-item.h"
 
 GNOME_CLASS_BOILERPLATE (BonoboDockBand, bonobo_dock_band,
 			 GtkContainer, GTK_TYPE_CONTAINER);
@@ -128,17 +128,15 @@ static gboolean check_guint_arg               (GObject *object,
 					       guint *value_return);
 
 static void
-bonobo_dock_band_class_init (BonoboDockBandClass *class)
+bonobo_dock_band_class_init (BonoboDockBandClass *klass)
 {
-  GtkObjectClass *object_class;
   GObjectClass *gobject_class;
   GtkWidgetClass *widget_class;
   GtkContainerClass *container_class;
 
-  object_class = (GtkObjectClass *) class;
-  gobject_class = (GObjectClass *) class;
-  widget_class = (GtkWidgetClass *) class;
-  container_class = (GtkContainerClass *) class;
+  gobject_class = (GObjectClass *) klass;
+  widget_class = (GtkWidgetClass *) klass;
+  container_class = (GtkContainerClass *) klass;
 
   gobject_class->finalize = bonobo_dock_band_finalize;
 
@@ -226,7 +224,7 @@ bonobo_dock_band_size_request (GtkWidget *widget,
 						     &preferred_width);
 
 	      if (has_preferred_width)
-		c->max_space_requisition = MAX (preferred_width, req.width);
+		c->max_space_requisition = MAX ((int)preferred_width, req.width);
 	      else
 		c->max_space_requisition = req.width;
 	    }
@@ -240,7 +238,7 @@ bonobo_dock_band_size_request (GtkWidget *widget,
 						      &preferred_height);
 
 	      if (has_preferred_height)
-		c->max_space_requisition = MAX (preferred_height, req.height);
+		c->max_space_requisition = MAX ((int)preferred_height, req.height);
 	      else
 		c->max_space_requisition = req.height;
 	    }
@@ -1012,8 +1010,7 @@ dock_nonempty (BonoboDockBand *band,
   GtkOrientation orig_item_orientation;
   GtkRequisition item_requisition;
   GList *lp, *next;
-  guint amount;
-  guint requirement;
+  gint amount, requirement;
 
   DEBUG (("entering function"));
 
@@ -1038,7 +1035,7 @@ dock_nonempty (BonoboDockBand *band,
   else
     requirement = item_requisition.height;
 
-  if (c->drag_prev_space + c->drag_foll_space < requirement)
+  if ((c->drag_prev_space + c->drag_foll_space) < requirement)
     {
       DEBUG (("not enough space %d %d",
               c->drag_prev_space + c->drag_foll_space,
@@ -1340,8 +1337,8 @@ dock_empty_right (BonoboDockBand *band,
     return FALSE;
 
   bonobo_dock_item_handle_size_request (item, &item_requisition);
-  if (c->drag_prev_space + c->drag_foll_space
-      < (guint) (band->orientation == GTK_ORIENTATION_HORIZONTAL
+  if ((c->drag_prev_space + c->drag_foll_space)
+      < (band->orientation == GTK_ORIENTATION_HORIZONTAL
                  ? item_requisition.width
                  : item_requisition.height))
     {
@@ -1413,6 +1410,8 @@ check_guint_arg (GObject *object,
 		 guint *value_return)
 {
   GParamSpec *pspec;
+
+  g_return_val_if_fail (object != NULL, FALSE);
 
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (object), name);
   if (pspec != NULL) {
@@ -1918,9 +1917,9 @@ get_dock (GtkWidget *widget)
 }
 
 gint
-bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
-				 BonoboDockItem *item,
-				 GdkEventKey    *event)
+_bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
+				  BonoboDockItem *item,
+				  GdkEventKey    *event)
 {
   gboolean handled = FALSE;
 
@@ -1932,6 +1931,7 @@ bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
       GList *l;
       int cur_idx = 0;
       int dest_idx;
+      int num_children = g_list_length (band->children);
 
       for (l = band->children; l; l = l->next)
         {
@@ -1960,8 +1960,10 @@ bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
 	      dest_idx++;
 	}
 
-      dest_idx = MAX (0, dest_idx);
-      dest_idx = MIN (g_list_length (band->children) - 1, dest_idx);
+      if (dest_idx >= num_children)
+	  dest_idx = num_children - 1;
+      if (dest_idx < 0)
+	  dest_idx = 0;
       if (dest_idx != cur_idx)
         {
           handled = TRUE;
@@ -1974,7 +1976,7 @@ bonobo_dock_band_handle_key_nav (BonoboDockBand *band,
       BonoboDock *dock = get_dock (GTK_WIDGET (band));
 
       if (dock)
-        handled = bonobo_dock_handle_key_nav (dock, band, item, event);
+        handled = _bonobo_dock_handle_key_nav (dock, band, item, event);
     }
 
   return handled;

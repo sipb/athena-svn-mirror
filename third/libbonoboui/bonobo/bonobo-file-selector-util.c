@@ -20,12 +20,12 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-widget.h>
 
+#include <gtk/gtkfilechooserdialog.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtktreeview.h>
 #include <gtk/gtktreeselection.h>
-#include <gtk/gtkfilesel.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkeditable.h>
+#include <gtk/gtkstock.h>
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <bonobo/bonobo-i18n.h>
@@ -164,75 +164,52 @@ create_bonobo_selector (gboolean    enable_vfs,
 	return GTK_WINDOW (dialog);
 }
 
-static char *
-concat_dir_and_file (const char *dir, const char *file)
-{
-	g_return_val_if_fail (dir != NULL, NULL);
-	g_return_val_if_fail (file != NULL, NULL);
-
-        /* If the directory name doesn't have a / on the end, we need
-	   to add one so we get a proper path to the file */
-	if (dir[0] != '\0' && dir [strlen(dir) - 1] != G_DIR_SEPARATOR)
-		return g_strconcat (dir, G_DIR_SEPARATOR_S, file, NULL);
-	else
-		return g_strconcat (dir, file, NULL);
-}
-
 static void
-ok_clicked_cb (GtkWidget *widget, gpointer data)
+response_cb (GtkFileChooser *chooser, gint response, gpointer data)
 {
-	GtkFileSelection *fsel;
-	const gchar *file_name;
+	gchar *file_name;
 
-	fsel = data;
-
-	file_name = gtk_file_selection_get_filename (fsel);
-
-	if (!strlen (file_name))
-		return;
-	
-	/* Change into directory if that's what user selected */
-	if (g_file_test (file_name, G_FILE_TEST_IS_DIR)) {
-		gint name_len;
-		gchar *dir_name;
-
-		name_len = strlen (file_name);
-		if (name_len < 1 || file_name [name_len - 1] != '/') {
-			/* The file selector needs a '/' at the end of a directory name */
-			dir_name = g_strconcat (file_name, "/", NULL);
-		} else {
-			dir_name = g_strdup (file_name);
-		}
-		gtk_file_selection_set_filename (fsel, dir_name);
-		g_free (dir_name);
-
-	} else if (GET_MODE (fsel) == FILESEL_OPEN_MULTI) {
-		gchar **strv = gtk_file_selection_get_selections (fsel);
-		
-		g_object_set_qdata (G_OBJECT (fsel),
-				    user_data_id, strv);
+	if (response != GTK_RESPONSE_OK) {
+		gtk_widget_hide (GTK_WIDGET (chooser));
 		gtk_main_quit ();
 
-	} else {
-		gtk_widget_hide (GTK_WIDGET (fsel));
+		g_object_set_qdata (G_OBJECT (chooser),
+				    user_data_id,
+				    NULL);
+		return;
+	}
 
-		g_object_set_qdata (G_OBJECT (fsel),
+	file_name = gtk_file_chooser_get_filename (chooser);
+
+	if (file_name == NULL || !strlen (file_name)) {
+		g_free (file_name);
+		return;
+	}
+	
+	if (GET_MODE (chooser) == FILESEL_OPEN_MULTI) {
+		gchar **strv;
+		GSList *files = gtk_file_chooser_get_filenames (chooser);
+		GSList *iter;
+		int i;
+
+		strv = g_new (gchar *, (g_slist_length (files) + 1));
+
+		for (iter = files, i = 0; iter != NULL; iter = iter->next, i++)
+			strv[i] = iter->data;
+		strv[i] = NULL;
+		g_slist_free (files);
+
+		g_object_set_qdata (G_OBJECT (chooser),
+				    user_data_id, strv);
+	} else
+		g_object_set_qdata (G_OBJECT (chooser),
 				    user_data_id,
 				    g_strdup (file_name));
-		gtk_main_quit ();
-	}
-}
 
-static void
-cancel_clicked_cb (GtkWidget *widget, gpointer data)
-{
-	gtk_widget_hide (GTK_WIDGET (data));
+	gtk_widget_hide (GTK_WIDGET (chooser));
 	gtk_main_quit ();
 
-	/* FIXME: possible leak ? */
-	g_object_set_qdata (G_OBJECT (data),
-			    user_data_id,
-			    NULL);
+	g_free (file_name);
 }
 
 static GtkWindow *
@@ -240,46 +217,37 @@ create_gtk_selector (FileselMode mode,
 		     const char *default_path,
 		     const char *default_filename)
 {
-	GtkWidget *filesel;
+	GtkWidget *chooser;
 	
-	gchar* path;
+	chooser = gtk_file_chooser_dialog_new (NULL,
+					       NULL,
+					       mode == FILESEL_SAVE ? GTK_FILE_CHOOSER_ACTION_SAVE
+					       			     : GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL,
+					       GTK_RESPONSE_CANCEL,
+					       mode == FILESEL_SAVE ? GTK_STOCK_SAVE
+								    : GTK_STOCK_OPEN,
+					       GTK_RESPONSE_OK,
+					       NULL);
+	gtk_window_set_default_size (GTK_WINDOW (chooser), 600, 400);
+	gtk_dialog_set_default_response (GTK_DIALOG (chooser), GTK_RESPONSE_OK);
 
-	filesel = gtk_file_selection_new (NULL);
-
-	g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
-			  "clicked", G_CALLBACK (ok_clicked_cb),
-			  filesel);
-
-	g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
-			  "clicked", G_CALLBACK (cancel_clicked_cb),
-			  filesel);
+	g_signal_connect (G_OBJECT (chooser),
+			  "response", G_CALLBACK (response_cb),
+			  NULL);
 
 	if (default_path)
-		path = g_strconcat (default_path, 
-				    default_path[strlen (default_path) - 1] == '/' ? NULL : 
-				    "/", NULL);
-	else
-		path = g_strdup ("./");
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
+						     default_path);
 
-	if (default_filename) {
-		gchar* file_name = concat_dir_and_file (path, default_filename);
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel), file_name);
-		g_free (file_name);
-
-		/* Select file name */
-		gtk_editable_select_region (GTK_EDITABLE (
-					    GTK_FILE_SELECTION (filesel)->selection_entry), 
-					    0, -1);
-	}
-	else
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel), path);
-
-	g_free (path);
+	if (default_filename)
+		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (chooser),
+						   default_filename);
 
 	if (mode == FILESEL_OPEN_MULTI) 
-		gtk_file_selection_set_select_multiple (GTK_FILE_SELECTION (filesel), TRUE);
+		gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (chooser), TRUE);
 
-	return GTK_WINDOW (filesel);
+	return GTK_WINDOW (chooser);
 }
 
 static gpointer

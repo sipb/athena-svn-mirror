@@ -37,6 +37,8 @@ typedef struct {
 	BonoboUISyncClass parent_class;
 } BonoboUISyncToolbarClass;
 
+GtkWidget *impl_bonobo_ui_sync_toolbar_wrap_widget (BonoboUISync *sync,
+                                         GtkWidget    *custom_widget);
 BonoboUISync *bonobo_ui_sync_toolbar_new      (BonoboUIEngine *engine,
 					       BonoboDock     *dock);
 BonoboUIToolbarStyle bonobo_ui_sync_toolbar_get_look (BonoboUIEngine *engine,

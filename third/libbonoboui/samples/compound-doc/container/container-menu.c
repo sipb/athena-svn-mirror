@@ -2,7 +2,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-selector.h>
 #include <bonobo/bonobo-window.h>
-#include <gtk/gtkfilesel.h>
+#include <gtk/gtkfilechooser.h>
 
 #include "container-menu.h"
 #include "container.h"
@@ -31,27 +31,37 @@ verb_AddComponent_cb (BonoboUIComponent *uic, gpointer user_data, const char *cn
 }
 
 static void
-load_ok_cb (GtkWidget *caller, SampleApp *app)
+load_response_cb (GtkWidget *caller, gint response, SampleApp *app)
 {
 	GtkWidget *fs = app->fileselection;
-	const gchar *filename = gtk_file_selection_get_filename
-		(GTK_FILE_SELECTION (fs));
+	gchar *filename;
 
-	if (filename)
-		sample_doc_load (app->doc, filename);
+ 	if (response == GTK_RESPONSE_OK) {
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fs));
+
+		if (filename)
+			sample_doc_load (app->doc, filename);
+
+		g_free (filename);
+	}
 
 	gtk_widget_destroy (fs);
 }
 
 static void
-save_ok_cb (GtkWidget *caller, SampleApp *app)
+save_response_cb (GtkWidget *caller, gint response, SampleApp *app)
 {
 	GtkWidget *fs = app->fileselection;
-	const gchar *filename = gtk_file_selection_get_filename
-	    (GTK_FILE_SELECTION (fs));
+	gchar *filename;
 
-	if (filename)
-		sample_doc_save (app->doc, filename);
+ 	if (response == GTK_RESPONSE_OK) {
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fs));
+
+		if (filename)
+			sample_doc_save (app->doc, filename);
+
+		g_free (filename);
+	}
 
 	gtk_widget_destroy (fs);
 }
@@ -61,7 +71,7 @@ verb_FileSaveAs_cb (BonoboUIComponent *uic, gpointer user_data, const char *cnam
 {
 	SampleApp *app = user_data;
 
-	container_request_file (app, TRUE, (GtkSignalFunc) save_ok_cb, app);
+	container_request_file (app, TRUE, G_CALLBACK (save_response_cb), app);
 }
 
 static void
@@ -69,7 +79,7 @@ verb_FileLoad_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 {
 	SampleApp *app = user_data;
 
-	container_request_file (app, FALSE, (GtkSignalFunc) load_ok_cb, app);
+	container_request_file (app, FALSE, G_CALLBACK (load_response_cb), app);
 }
 
 static void

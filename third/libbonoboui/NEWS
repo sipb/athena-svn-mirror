@@ -1,3 +1,76 @@
+libbonoboui 2.5.3
+
+	* bugs fixed
+		+ toolbar/dock destruction crasher (Michael)
+		+ unused arg cleanup (Fernando Herrera)
+	* featurelets
+		+ BonoboWindow cleanup (Arvind Samptur)
+
+libbonoboui 2.5.2
+
+	* bugs fixed
+		+ require the right gtk+ (Jason Leach)
+		+ AIX portability (The Written Word)
+		+ svg icon image size (Sergey V. Udaltsov)
+		+ status bar grip problem (Michael)
+		+ control 'activate' signal (Federico, JP)
+		+ memove not strcpy for overlap (JP)
+		+ dock size allocation problem (Michael)
+	* featurelets
+		+ status bar packing improvement (Alexander Larsson)
+
+libbonoboui 2.5.1
+
+libbonoboui 2.3.6
+
+	* bugs fixed
+		+ F1 help menu shortcut (Yuedong Du)
+		+ vicious K/B focus fixage (Federico)
+		+ dock grip fix (Padraig O'Briain)
+		+ doc. fix (Michael)
+
+libbonoboui 2.3.3
+
+	* bugs fixed
+		+ multi-head issues (Morten Welinder, Michael)
+		+ nasty focus hacks binned (Michael)
+		+ UI preferences fixes (Anders Carlsson)
+		+ toolbar layout fix (Gustavo Giraldez)
+		+ UI re-enterancy fix (Radek Doulik)
+		+ Tooltip fixes (Dave Camp)
+		+ build fixage (Hidetoshi Tajima, Masahiro Sakai,
+		  Malcolm Tredinnick, Padraig O'Briain, Alex Duggan)
+	* featurelets
+		+ new sample container (Sergey Oudaltsov)
+		+ nicer toolbar rendering (Rodney Dawes)
+		+ cygwin port (Masahiro Sakai)
+		+ toolbar widget direction (Jody Goldberg)
+		+ working canvas components (Bob Gibbs)
+		+ more documentation (Gustavo Carneiro)
+	* translations
+		+ kn, id, mn, yi (Christian Rose)
+		+ ro (Marius Andreiana)
+		+ fa (Roozbeh Pournader)
+		+ ml (Guntupalli Karunakar)
+		+ sr (Danilo ≈†egan)
+		+ cy (Telsa Gwynne et. al)
+
+libbonoboui 2.2.0
+
+	* Bugs fixed
+		+ toolbar size allocation (Michael)
+		+ toolbar popup positioning (Kang Jeong-Hee)
+		+ help display fixes (Michael, Marcus FreeBSD)
+		+ build fixes (Michael, Kjartan Maraas)
+		+ file sel brokenness (NotZed)
+		+ 64bit cleaning (HHetter)
+		+ custom icon sizing (Mark McLouglin)
+
+	* Featurelets
+		+ new component_set_widget API (Michael)
+		+ improved lifecycle helpers (Michael)
+		+ built in BONOBO_DEBUG menu (Gustavo Carneiro)
+
 libbonoboui 2.0.1
 
 	* Featurelets
@@ -59,7 +132,7 @@ libbonoboui 1.118.0
 		+ socket resize on show (Michael)
 		+ socket sizing badness / inefficiency (Michael)
 		+ DockItem glade fixes (Kristian Rietveld)
-		+ pixbuf leak fix (Gustavo Gir·ldez)
+		+ pixbuf leak fix (Gustavo Gir√°ldez)
 		+ control frame CORBA sizing update (Federico)
 
 libbonoboui 1.117.1
@@ -67,7 +140,7 @@ libbonoboui 1.117.1
 	* Bugs fixed
 		+ toolbar config dialog transient (Michael)
 		+ file-sel cancel fix (Paolo Maggi)
-		+ toolbar look fix (Gustavo Gir·ldez)
+		+ toolbar look fix (Gustavo Gir√°ldez)
 
 libbonoboui 1.117.0
 

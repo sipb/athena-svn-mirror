@@ -1568,4 +1568,4 @@ bonobo_ui_component_init (BonoboUIComponent *component)
 BONOBO_TYPE_FUNC_FULL (BonoboUIComponent, 
 			   Bonobo_UIComponent,
 			   PARENT_TYPE,
-			   bonobo_ui_component);
+			   bonobo_ui_component)

@@ -1,0 +1,192 @@
+<refentry id="libbonoboui-bonobo-socket">
+<refmeta>
+<refentrytitle>BonoboSocket</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBOUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboSocket</refname><refpurpose>Container for widgets from other processes.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboSocket"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboSocket-struct">BonoboSocket</link>;
+struct      <link linkend="BonoboSocketClass">BonoboSocketClass</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-socket-new">bonobo_socket_new</link>               (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkSocket">GtkSocket</link>
+                           +----BonoboSocket
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+BonoboSocket implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+   This is an internal support routine of the X code in Bonobo.
+</para>
+
+<para>
+Together with <link linkend="BonoboPlug"><type>BonoboPlug</type></link>, <link linkend="BonoboSocket"><type>BonoboSocket</type></link> provides the ability
+to embed widgets from one process into another process
+in a fashion that is transparent to the user. One
+process creates a <link linkend="BonoboSocket"><type>BonoboSocket</type></link> widget and, passes the
+XID of that widget's window to the other process, 
+which then creates a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> window with that XID.
+Any widgets contained in the <link linkend="BonoboPlug"><type>BonoboPlug</type></link> then will appear
+inside the first applications window.
+</para>
+
+<para>
+The XID of the socket's window is obtained by using
+the <link linkend="GTK-WINDOW-XWINDOW-CAPS"><function>GTK_WINDOW_XWINDOW()</function></link> macro from the header
+file &lt;gdk/gdkx.h&gt;. Before using this macro,
+the socket must have been realized, and for hence,
+have been added to its parent.
+
+<example>
+<title> Obtaining the XID of a socket </title>
+<programlisting>
+<link linkend="include"><type>include</type></link> &lt;gdk/gdkx.h&gt;
+
+GtkWidget *socket = <link linkend="bonobo-socket-new"><function>bonobo_socket_new()</function></link>;
+gtk_widget_show (socket);
+gtk_container_add (GTK_CONTAINER (parent), socket);
+
+/* The following call is only necessary if one of
+ * the ancestors of the socket is not yet visible.
+ */
+gtk_widget_realize (socket);
+g_print ("The XID of the sockets window is %<link linkend="x"><type>x</type></link>\n",
+         GDK_WINDOW_XWINDOW (socket->window));
+</programlisting>
+</example>
+</para>
+
+<para>
+Note that if you pass the XID of the socket to another
+process that will create a plug in the socket, you 
+must make sure that the socket widget is not destroyed
+until that plug is created. Violating this rule will
+cause unpredictable consequences, the most likely
+consequence being that the plug will appear as a 
+separate toplevel window. You can check if the plug
+has been created by examining the
+<structfield>plug_window</structfield> field of the
+<link linkend="BonoboSocket"><type>BonoboSocket</type></link> structure. If this field is non-NULL, 
+then the plug has been succesfully created inside
+of the socket.
+</para>
+
+<para>
+When GTK+ is notified that the embedded window has been
+destroyed, then it will destroy the socket as well. You
+should always, therefore, be prepared for your sockets
+to be destroyed at any time when the main event loop
+is running.
+</para>
+
+<para>
+A socket can also be used to swallow arbitrary 
+pre-existing top-level windows using <link linkend="gtk-socket-steal"><function>gtk_socket_steal()</function></link>,
+though the integration when this is done will not be as close
+as between a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> and a <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboSocket-struct"/>struct BonoboSocket</title>
+<indexterm><primary>BonoboSocket</primary></indexterm><programlisting>struct BonoboSocket;</programlisting>
+<para>
+    The <link linkend="GtkEditable"><type>GtkEditable</type></link> structure contains the following field.
+    (This field should be considered read-only. It should
+    never be set by an application.)
+
+    <informaltable pgwide="1" frame="none" role="struct">
+	<tgroup cols="2">
+	    <colspec colwidth="2*"/> <colspec colwidth="8*"/>
+	    <tbody>
+		<row>
+		    <entry><link linkend="GdkWindow"><type>GdkWindow</type></link> *plug_window;</entry>
+		    <entry>the window embedded inside this <link linkend="GtkSocket"><type>GtkSocket</type></link>.</entry>
+		</row>
+		
+	    </tbody>
+	</tgroup>
+    </informaltable>
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboSocketClass"/>struct BonoboSocketClass</title>
+<indexterm><primary>BonoboSocketClass</primary></indexterm><programlisting>struct BonoboSocketClass {
+
+	GtkSocketClass parent_class;
+
+	gpointer dummy[4];
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-socket-new"/>bonobo_socket_new ()</title>
+<indexterm><primary>bonobo_socket_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_socket_new               (void);</programlisting>
+<para>
+Create a new empty <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><link linkend="BonoboPlug"><type>BonoboPlug</type></link></term>
+<listitem><para>the widget that plugs into a <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+
+</refentry>

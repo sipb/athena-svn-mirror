@@ -15,6 +15,8 @@
 
 #include "bonobo-ui-toolbar-item.h"
 
+#ifndef BONOBO_UI_DISABLE_DEPRECATED
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_UI_TOOLBAR_BUTTON_ITEM		(bonobo_ui_toolbar_button_item_get_type ())
@@ -63,5 +65,7 @@ void       bonobo_ui_toolbar_button_item_set_label          (BonoboUIToolbarButt
 GtkButton *bonobo_ui_toolbar_button_item_get_button_widget  (BonoboUIToolbarButtonItem *button_item);
 
 G_END_DECLS
+
+#endif
 
 #endif /* _BONOBO_UI_TOOLBAR_BUTTON_ITEM_H_ */

@@ -1,0 +1,399 @@
+# Libbonoboui Estonian Translation.
+# Copyright (C) 1999-2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libbonobui package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Libbonoboui Gnome 2.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"PO-Revision-Date: 2004-03-06 10:32+0300\n"
+"Last-Translator: Priit Laes <amd@tt.ee>\n"
+"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/bonobo-canvas-item.c:667
+msgid "corba factory"
+msgstr ""
+
+#: bonobo/bonobo-canvas-item.c:668
+msgid "The factory pointer"
+msgstr ""
+
+#: bonobo/bonobo-canvas-item.c:677
+msgid "corba UI container"
+msgstr ""
+
+#: bonobo/bonobo-canvas-item.c:678
+msgid "The User interface container"
+msgstr ""
+
+#: bonobo/bonobo-dock-item-grip.c:249
+msgid "Dock the toolbar"
+msgstr ""
+
+#: bonobo/bonobo-dock-item-grip.c:250
+msgid "Un dock the toolbar"
+msgstr ""
+
+#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-ui-toolbar.c:1175
+msgid "Shadow type"
+msgstr "Varju tüüp"
+
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
+msgid "Orientation"
+msgstr "Suund"
+
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
+msgid "Preferred width"
+msgstr "Eelistatud laius"
+
+#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
+msgid "Preferred height"
+msgstr "Eelistatud kõrgus"
+
+#: bonobo/bonobo-file-selector-util.c:351
+msgid "Select a file to open"
+msgstr "Vali fail, mida avada"
+
+#: bonobo/bonobo-file-selector-util.c:379
+msgid "Select files to open"
+msgstr "Vali failid, mida avada"
+
+#: bonobo/bonobo-file-selector-util.c:408
+msgid "Select a filename to save"
+msgstr "Vali salvestatava faili nimi"
+
+#: bonobo/bonobo-plug.c:412
+msgid "Event Forwarding"
+msgstr "Sündmuste edastamine"
+
+#: bonobo/bonobo-plug.c:413
+msgid "Whether X events should be forwarded"
+msgstr ""
+
+#: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+msgid "Name"
+msgstr "Nimi"
+
+#: bonobo/bonobo-selector-widget.c:322
+msgid "Description"
+msgstr "Kirjeldus"
+
+#: bonobo/bonobo-selector.c:345
+msgid "Interfaces required"
+msgstr ""
+
+#: bonobo/bonobo-selector.c:346
+msgid ""
+"A NULL-terminated array of interfaces which a server must support in order "
+"to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
+"no interfaces are listed"
+msgstr ""
+
+#: bonobo/bonobo-selector.c:348
+msgid "Interface required entry"
+msgstr ""
+
+#: bonobo/bonobo-selector.c:349
+msgid "One of the interfaces that's required"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:268
+msgid "Visible"
+msgstr "Nähtav"
+
+#: bonobo/bonobo-ui-config-widget.c:275
+msgid "_Show"
+msgstr "_Näita"
+
+#: bonobo/bonobo-ui-config-widget.c:282
+msgid "_Hide"
+msgstr "_Peida"
+
+#: bonobo/bonobo-ui-config-widget.c:288
+msgid "_View tooltips"
+msgstr ""
+
+#: bonobo/bonobo-ui-config-widget.c:293
+msgid "Toolbars"
+msgstr "Tööriistaribad"
+
+#: bonobo/bonobo-ui-config-widget.c:303
+msgid "toolbars"
+msgstr "tööriistaribad"
+
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+msgid "Look"
+msgstr "Vaade"
+
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+msgid "_Icon"
+msgstr "_Ikoon"
+
+#: bonobo/bonobo-ui-config-widget.c:329
+msgid "_Text and Icon"
+msgstr "_Tekst ja ikoon"
+
+#: bonobo/bonobo-ui-config-widget.c:335
+msgid "Text only"
+msgstr "Ainult tekst"
+
+#: bonobo/bonobo-ui-config-widget.c:341
+msgid "_Priority text only"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:90
+msgid "Debug"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:90
+msgid "_Dump XML"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:91
+msgid "Dump the entire UI's XML description to the console"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine-config.c:522
+msgid "Configure UI"
+msgstr "Seadista kasutajaliidest"
+
+#: bonobo/bonobo-ui-init-gtk.c:113
+msgid "Gdk debugging flags to set"
+msgstr ""
+
+#: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
+#: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
+msgid "FLAGS"
+msgstr "LIPUD"
+
+#: bonobo/bonobo-ui-init-gtk.c:116
+msgid "Gdk debugging flags to unset"
+msgstr ""
+
+#: bonobo/bonobo-ui-init-gtk.c:120
+msgid "X display to use"
+msgstr "Kasutatav X'i kuva"
+
+#: bonobo/bonobo-ui-init-gtk.c:120
+msgid "DISPLAY"
+msgstr "KUVA"
+
+#: bonobo/bonobo-ui-init-gtk.c:124
+msgid "X screen to use"
+msgstr "Kasutatav X'i ekraan"
+
+#: bonobo/bonobo-ui-init-gtk.c:124
+msgid "SCREEN"
+msgstr "EKRAAN"
+
+#: bonobo/bonobo-ui-init-gtk.c:128
+msgid "Make X calls synchronous"
+msgstr ""
+
+#: bonobo/bonobo-ui-init-gtk.c:134
+#, fuzzy
+msgid "Don't use X shared memory extension"
+msgstr "Ära kasuta X jagatud mälu laiendust "
+
+#: bonobo/bonobo-ui-init-gtk.c:138
+msgid "Program name as used by the window manager"
+msgstr "Programmi nimi aknahalduri jaoks"
+
+#: bonobo/bonobo-ui-init-gtk.c:138
+msgid "NAME"
+msgstr "NIMI"
+
+#: bonobo/bonobo-ui-init-gtk.c:141
+msgid "Program class as used by the window manager"
+msgstr "Programmi liik aknahalduri jaoks"
+
+#: bonobo/bonobo-ui-init-gtk.c:141
+msgid "CLASS"
+msgstr "LIIK"
+
+#: bonobo/bonobo-ui-init-gtk.c:144
+msgid "Gtk+ debugging flags to set"
+msgstr ""
+
+#: bonobo/bonobo-ui-init-gtk.c:147
+msgid "Gtk+ debugging flags to unset"
+msgstr ""
+
+#: bonobo/bonobo-ui-init-gtk.c:150
+msgid "Make all warnings fatal"
+msgstr "Muuda kõik hoiatused saatuslikuks"
+
+#: bonobo/bonobo-ui-init-gtk.c:153
+msgid "Load an additional Gtk module"
+msgstr "Laadi Gtk lisamoodul"
+
+#: bonobo/bonobo-ui-init-gtk.c:153
+msgid "MODULE"
+msgstr "MOODUL"
+
+#: bonobo/bonobo-ui-init-gtk.c:162
+msgid "GTK+"
+msgstr "GTK+"
+
+#: bonobo/bonobo-ui-main.c:202
+msgid "Bonobo GUI support"
+msgstr ""
+
+#: bonobo/bonobo-ui-sync-toolbar.c:553
+msgid "B_oth"
+msgstr "_Mõlemad"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:553
+msgid "T_ext"
+msgstr "T_ekst"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:554
+msgid "Hide t_ips"
+msgstr "Sp_ikrite peitmine"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:554
+msgid "Show t_ips"
+msgstr "Sp_ikrite näitamine"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:555
+msgid "_Hide toolbar"
+msgstr "_Peida tööriistariba"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:555
+msgid "Customi_ze"
+msgstr "K_ohanda"
+
+#: bonobo/bonobo-ui-sync-toolbar.c:556
+msgid "Customize the toolbar"
+msgstr "Kohanda tööriistariba"
+
+#: bonobo/bonobo-ui-toolbar.c:1129
+msgid "is floating"
+msgstr "on hõljuv"
+
+#: bonobo/bonobo-ui-toolbar.c:1130
+msgid "whether the toolbar is floating"
+msgstr "kas tööriistariba on hõljuv"
+
+#: bonobo/bonobo-ui-toolbar.c:1176
+msgid "Style of bevel around the toolbar"
+msgstr ""
+
+#: bonobo/bonobo-ui-util.c:629
+msgid "_Contents"
+msgstr "_Sisukord"
+
+#: bonobo/bonobo-ui-util.c:630
+msgid "View help for this application"
+msgstr "Kuva programmi abi"
+
+#: bonobo/bonobo-window.c:347
+msgid "Name of the window - used for configuration serialization."
+msgstr ""
+
+#: bonobo/bonobo-zoomable.c:326
+msgid "Zoom level"
+msgstr "Suurendusaste"
+
+#: bonobo/bonobo-zoomable.c:327
+msgid "The degree of enlargment"
+msgstr ""
+
+#: bonobo/bonobo-zoomable.c:335
+msgid "Minimum Zoom level"
+msgstr "Minimaalne suurendusaste"
+
+#: bonobo/bonobo-zoomable.c:336
+msgid "The minimum degree of enlargment"
+msgstr ""
+
+#: bonobo/bonobo-zoomable.c:344
+msgid "Maximum Zoom level"
+msgstr "Maksimaalne suurendusaste"
+
+#: bonobo/bonobo-zoomable.c:345
+msgid "The maximum degree of enlargment"
+msgstr ""
+
+#: bonobo/bonobo-zoomable.c:353
+msgid "Has a minimum Zoom level"
+msgstr "On juba minimaalsel suurendusastmel"
+
+#: bonobo/bonobo-zoomable.c:354
+msgid "Whether we have a valid minimum zoom level"
+msgstr "Kas meil on minimaalne suurendusaste"
+
+#: bonobo/bonobo-zoomable.c:361
+msgid "Has a maximum Zoom level"
+msgstr "On juba maksimaalsel suurendusastmel"
+
+#: bonobo/bonobo-zoomable.c:362
+msgid "Whether we have a valid maximum zoom level"
+msgstr "Kas meil on paikapidav maksimaalne suurendustase"
+
+#: bonobo/bonobo-zoomable.c:369
+msgid "Is continuous"
+msgstr "On pidev"
+
+#: bonobo/bonobo-zoomable.c:370
+msgid "Whether we zoom continuously (as opposed to jumps)"
+msgstr "Kas me suurendame pidevalt (vastupidiselt hüpetele)"
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:1
+msgid "About this application"
+msgstr "Programmi kohta"
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:2
+msgid "Select"
+msgstr "Valik"
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:3
+msgid "_About..."
+msgstr "_Programmist..."
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:4
+msgid "_Edit"
+msgstr "_Redaktor"
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+msgid "_File"
+msgstr "_Fail"
+
+#: samples/bonoboui/Bonobo_Sample_Hello.xml.h:6
+msgid "_Select"
+msgstr "_Vali"
+
+#: samples/bonoboui/hello.c:63
+msgid "This does nothing; it is only a demonstration."
+msgstr "See ei tee midagi; see on vaid näitlik selgitus."
+
+#: samples/bonoboui/hello.c:145
+msgid "BonoboUI-Hello."
+msgstr "BonoboUI-Tere."
+
+#: samples/bonoboui/hello.c:217
+msgid "Gnome Hello"
+msgstr "Gnome'i Tere"
+
+#  Create Label and put it in the Button:
+#. Create Label and put it in the Button:
+#: samples/bonoboui/hello.c:272
+msgid "Hello, World!"
+msgstr "Tere, maailm!"
+
+#: samples/bonoboui/hello.c:312
+msgid "Cannot init libbonoboui code"
+msgstr ""
+
+#: samples/controls/bonobo-sample-controls.c:131
+msgid "Could not initialize Bonobo UI"
+msgstr ""

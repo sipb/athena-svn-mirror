@@ -27,12 +27,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_SELECTOR(obj)		GTK_CHECK_TYPE (obj, bonobo_selector_get_type ())
 
 typedef struct _BonoboSelectorPrivate BonoboSelectorPrivate;
+typedef struct _BonoboSelector        BonoboSelector;
 
-typedef struct {
+struct _BonoboSelector {
 	GtkDialog dialog;
 
 	BonoboSelectorPrivate *priv;
-} BonoboSelector;
+};
 
 typedef struct {
 	GtkDialogClass parent_class;

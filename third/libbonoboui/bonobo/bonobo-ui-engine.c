@@ -73,6 +73,8 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0 };
 
+static gint bonobo_ui_engine_inhibit_events = 0;
+
 static void
 add_debug_menu (BonoboUIEngine *engine)
 {
@@ -1512,6 +1514,9 @@ real_exec_verb (BonoboUIEngine *engine,
 	g_return_if_fail (component_name != NULL);
 	g_return_if_fail (BONOBO_IS_UI_ENGINE (engine));
 
+	if (bonobo_ui_engine_inhibit_events > 0)
+		return;
+
 	g_object_ref (engine);
 
 	component = sub_component_objref (engine, component_name);
@@ -1552,6 +1557,8 @@ impl_emit_verb_on (BonoboUIEngine *engine,
 		   BonoboUINode   *node)
 {
 	const char      *verb;
+	const char      *sensitive;
+	BonoboUINode    *cmd_node;
 	BonoboUIXmlData *data;
 	
 	g_return_if_fail (node != NULL);
@@ -1561,6 +1568,11 @@ impl_emit_verb_on (BonoboUIEngine *engine,
 
 	verb = node_get_id (node);
 	if (!verb)
+		return;
+
+	if ((cmd_node = bonobo_ui_engine_get_cmd_node (engine, node)) &&
+	    (sensitive = bonobo_ui_node_get_attr_by_id (cmd_node, sensitive_id)) &&
+	    !atoi (sensitive))
 		return;
 
 	/* Builtins */
@@ -1669,6 +1681,8 @@ execute_state_updates (GSList *updates)
 {
 	GSList *l;
 
+	bonobo_ui_engine_inhibit_events ++;
+
 	for (l = updates; l; l = l->next) {
 		StateUpdate *su = l->data;
 
@@ -1679,6 +1693,8 @@ execute_state_updates (GSList *updates)
 		state_update_destroy (l->data);
 
 	g_slist_free (updates);
+
+	bonobo_ui_engine_inhibit_events --;
 }
 
 /*
@@ -1752,6 +1768,8 @@ real_emit_ui_event (BonoboUIEngine *engine,
 
 	if (!component_name) /* Auto-created entry, no-one can listen to it */
 		return;
+	if (bonobo_ui_engine_inhibit_events > 0)
+		return;
 
 	g_object_ref (engine);
 
@@ -1788,12 +1806,19 @@ impl_emit_event_on (BonoboUIEngine *engine,
 		    const char     *state)
 {
 	const char      *id;
+	const char      *sensitive;
+	BonoboUINode    *cmd_node;
 	BonoboUIXmlData *data;
 	char            *component_id, *real_id, *real_state;
 
 	g_return_if_fail (node != NULL);
 
 	if (!(id = node_get_id (node)))
+		return;
+
+	if ((cmd_node = bonobo_ui_engine_get_cmd_node (engine, node)) &&
+	    (sensitive = bonobo_ui_node_get_attr_by_id (cmd_node, sensitive_id)) &&
+	    !atoi (sensitive))
 		return;
 
 	data = bonobo_ui_xml_get_data (NULL, node);
@@ -2347,7 +2372,7 @@ check_excess_widgets (BonoboUISync *sync, GList *wptr)
 
 			node = bonobo_ui_engine_widget_get_node (b->data);
 			g_message ("Widget type '%s' with node: '%s'",
-				   G_OBJECT_CLASS_NAME (b->data),
+				   G_OBJECT_CLASS_NAME (b->data) ? G_OBJECT_CLASS_NAME (b->data) : "NULL",
 				   node ? bonobo_ui_xml_make_path (node) : "NULL");
 		}
 	}

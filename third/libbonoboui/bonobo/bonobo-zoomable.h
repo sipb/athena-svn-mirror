@@ -49,7 +49,6 @@ typedef struct {
 } BonoboZoomableClass;
 
 GType		 bonobo_zoomable_get_type                       (void) G_GNUC_CONST;
-Bonobo_Zoomable	 bonobo_zoomable_corba_object_create		(BonoboObject   *object);
 
 BonoboZoomable	*bonobo_zoomable_new				(void);
 

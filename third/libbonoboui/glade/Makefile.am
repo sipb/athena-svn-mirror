@@ -14,7 +14,7 @@ libbonobo_la_LIBADD = \
 	$(BONOBOUI_GLADE_LIBS)
 
 libbonobo_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version
+	-export-dynamic -module -avoid-version -no-undefined
 
 libbonobo_la_SOURCES = \
 	glade-bonobo.c

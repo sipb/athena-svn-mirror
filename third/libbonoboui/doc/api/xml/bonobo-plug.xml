@@ -1,0 +1,169 @@
+<refentry id="libbonoboui-bonobo-plug">
+<refmeta>
+<refentrytitle>BonoboPlug</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBOUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPlug</refname><refpurpose>Toplevel for embedding into other processes.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboPlug"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboPlug-struct">BonoboPlug</link>;
+struct      <link linkend="BonoboPlugPrivate">BonoboPlugPrivate</link>;
+struct      <link linkend="BonoboPlugClass">BonoboPlugClass</link>;
+<link linkend="void">void</link>        <link linkend="bonobo-plug-construct">bonobo_plug_construct</link>           (<link linkend="BonoboPlug">BonoboPlug</link> *plug,
+                                             <link linkend="guint32">guint32</link> socket_id);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-plug-new">bonobo_plug_new</link>                 (<link linkend="guint32">guint32</link> socket_id);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkWindow">GtkWindow</link>
+                                 +----<link linkend="GtkPlug">GtkPlug</link>
+                                       +----BonoboPlug
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+BonoboPlug implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="BonoboPlug--event-forwarding">event-forwarding</link>&quot;     <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+   This is an internal support routine of the X code in Bonobo.
+</para>
+
+<para>
+Together with <link linkend="BonoboSocket"><type>BonoboSocket</type></link>, <link linkend="BonoboPlug"><type>BonoboPlug</type></link> provides the ability
+to embed widgets from one process into another process
+in a fashion that is transparent to the user. One
+process creates a <link linkend="BonoboSocket"><type>BonoboSocket</type></link> widget and, passes the
+XID of that widgets window to the other process, 
+which then creates a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> window with that XID.
+Any widgets contained in the <link linkend="BonoboPlug"><type>BonoboPlug</type></link> then will appear
+inside the first applications window.
+</para>
+
+<para>
+  This code is a modified copy of <link linkend="GtkPlug"><type>GtkPlug</type></link>, it is included in
+bonobo since this forked version could be effectively bug fixed,
+and integrated with the <link linkend="BonoboControl"><type>BonoboControl</type></link> / <link linkend="BonoboControlframe"><type>BonoboControlframe</type></link> CORBA
+pipe, to ensure synchronization between the X and CORBA transports.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboPlug-struct"/>struct BonoboPlug</title>
+<indexterm><primary>BonoboPlug</primary></indexterm><programlisting>struct BonoboPlug;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPlugPrivate"/>struct BonoboPlugPrivate</title>
+<indexterm><primary>BonoboPlugPrivate</primary></indexterm><programlisting>struct BonoboPlugPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPlugClass"/>struct BonoboPlugClass</title>
+<indexterm><primary>BonoboPlugClass</primary></indexterm><programlisting>struct BonoboPlugClass {
+
+	GtkPlugClass parent_class;
+
+	gpointer dummy[4];
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-plug-construct"/>bonobo_plug_construct ()</title>
+<indexterm><primary>bonobo_plug_construct</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_plug_construct           (<link linkend="BonoboPlug">BonoboPlug</link> *plug,
+                                             <link linkend="guint32">guint32</link> socket_id);</programlisting>
+<para>
+Finish the creation of a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> widget. This function
+will generally only be used by classes deriving
+from <link linkend="BonoboPlug"><type>BonoboPlug</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>plug</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="BonoboPlug"><type>BonoboPlug</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>socket_id</parameter>&nbsp;:</term>
+<listitem><simpara> the XID of the socket's window.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-plug-new"/>bonobo_plug_new ()</title>
+<indexterm><primary>bonobo_plug_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_plug_new                 (<link linkend="guint32">guint32</link> socket_id);</programlisting>
+<para>
+Create a new plug widget inside the <link linkend="GtkSocket"><type>GtkSocket</type></link> identified
+by <parameter>socket_id</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>socket_id</parameter>&nbsp;:</term>
+<listitem><simpara> the XID of the socket's window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="BonoboPlug"><type>BonoboPlug</type></link> widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="BonoboPlug--event-forwarding"/>The &quot;<literal>event-forwarding</literal>&quot; property</title>
+<programlisting>  &quot;event-forwarding&quot;     <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether X events should be forwarded.</para><para>Default value: TRUE</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+   <link linkend="BonoboSocket"><type>BonoboSocket</type></link>, <link linkend="BonoboControlFrame"><type>BonoboControlFrame</type></link>.
+</para>
+</refsect1>
+
+</refentry>

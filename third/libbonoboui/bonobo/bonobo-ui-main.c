@@ -95,23 +95,32 @@ do_low_level_init (void)
 {
 	CORBA_Context context;
 	CORBA_Environment ev;
+	GdkDisplay *display;
+	Display *xdisplay;
 
 	if (bonobo_ui_inited)
 		return;
 
 	bonobo_ui_inited = TRUE;
 
+	gtk_set_locale ();
+	bindtextdomain (GETTEXT_PACKAGE, BONOBO_LOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
 	bonobo_setup_x_error_handler ();
 
-	/* FIXME: nasty contractual bonobo-activation issues here */
-		
-	context = bonobo_activation_context_get ();
+	display = gdk_display_get_default ();
+	xdisplay = gdk_x11_display_get_xdisplay (display);
 		
 	CORBA_exception_init (&ev);
+
+	/* FIXME: nasty contractual bonobo-activation issues here */
+	context = bonobo_activation_context_get ();
 	CORBA_Context_set_one_value (
 		context, "display",
-		DisplayString (gdk_display),
+		DisplayString (xdisplay),
 		&ev);
+
 	CORBA_exception_free (&ev);
 }
 
@@ -143,6 +152,11 @@ bonobo_ui_init_full (const gchar *app_name, const gchar *app_version,
 
 	if (full_init) {
 		/* Initialize all our dependencies. */
+
+		gtk_set_locale ();
+		bindtextdomain (GETTEXT_PACKAGE, BONOBO_LOCALEDIR);
+		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
 		gnome_program_init (
 			app_name, app_version,
 			libgnome_module_info_get (),

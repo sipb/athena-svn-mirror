@@ -215,6 +215,10 @@ main (int argc, char **argv)
 		"		pixtype=\"stock\" pixname=\"Close\" accel=\"*Control*q\"/>\n"
 		"	</submenu>\n"
 		"</menu>";
+	char keysa [] =
+		"<keybindings>\n"
+		"   <accel name=\"*Control*3\" id=\"MyFoo\"/>\n"
+		"</keybindings>\n";
 	char simpleb [] =
 		"<submenu name=\"File\" _label=\"_File\">\n"
 		"	<menuitem name=\"open\" _label=\"_OpenB\" pixtype=\"stock\" pixname=\"Open\" _tip=\"Open you fool\"/>\n"
@@ -383,6 +387,9 @@ main (int argc, char **argv)
 	g_assert (!BONOBO_EX (ev));
 
 	bonobo_ui_component_set_translate (componenta, "/popups/MyStuff", simpleb, ev);
+	g_assert (!BONOBO_EX (ev));
+
+	bonobo_ui_component_set_translate (componenta, "/", keysa, ev);
 	g_assert (!BONOBO_EX (ev));
 
 	bonobo_ui_component_set_translate (componentb, "/",   toola, ev);

@@ -179,7 +179,6 @@ bonobo_ui_toolbar_item_class_init (BonoboUIToolbarItemClass *object_class)
 	gobject_class->finalize = impl_finalize;
 
 	widget_class = GTK_WIDGET_CLASS (object_class);
-	widget_class->focus = bonobo_widget_clobber_focus;
 	widget_class->size_request  = impl_size_request;
 	widget_class->size_allocate = impl_size_allocate;
 

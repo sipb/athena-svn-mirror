@@ -1,0 +1,316 @@
+<refentry id="libbonoboui-bonobo-window">
+<refmeta>
+<refentrytitle>bonobo-window</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBOUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-window</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboWindow"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboWindowPrivate">BonoboWindowPrivate</link>;
+struct      <link linkend="BonoboWindow-struct">BonoboWindow</link>;
+struct      <link linkend="BonoboWindowClass">BonoboWindowClass</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-window-construct">bonobo_window_construct</link>         (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="BonoboUIContainer">BonoboUIContainer</link> *ui_container,
+                                             const <link linkend="char">char</link> *win_name,
+                                             const <link linkend="char">char</link> *title);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-window-new">bonobo_window_new</link>               (const <link linkend="char">char</link> *win_name,
+                                             const <link linkend="char">char</link> *title);
+<link linkend="void">void</link>        <link linkend="bonobo-window-set-contents">bonobo_window_set_contents</link>      (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="GtkWidget">GtkWidget</link> *contents);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-window-get-contents">bonobo_window_get_contents</link>      (<link linkend="BonoboWindow">BonoboWindow</link> *win);
+<link linkend="BonoboUIEngine">BonoboUIEngine</link>* <link linkend="bonobo-window-get-ui-engine">bonobo_window_get_ui_engine</link> (<link linkend="BonoboWindow">BonoboWindow</link> *win);
+<link linkend="BonoboUIContainer">BonoboUIContainer</link>* <link linkend="bonobo-window-get-ui-container">bonobo_window_get_ui_container</link>
+                                            (<link linkend="BonoboWindow">BonoboWindow</link> *win);
+<link linkend="void">void</link>        <link linkend="bonobo-window-set-name">bonobo_window_set_name</link>          (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             const <link linkend="char">char</link> *win_name);
+<link linkend="char">char</link>*       <link linkend="bonobo-window-get-name">bonobo_window_get_name</link>          (<link linkend="BonoboWindow">BonoboWindow</link> *win);
+<link linkend="GtkAccelGroup">GtkAccelGroup</link>* <link linkend="bonobo-window-get-accel-group">bonobo_window_get_accel_group</link>
+                                            (<link linkend="BonoboWindow">BonoboWindow</link> *win);
+<link linkend="void">void</link>        <link linkend="bonobo-window-add-popup">bonobo_window_add_popup</link>         (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="GtkMenu">GtkMenu</link> *popup,
+                                             const <link linkend="char">char</link> *path);
+<link linkend="void">void</link>        <link linkend="bonobo-window-remove-popup">bonobo_window_remove_popup</link>      (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             const <link linkend="char">char</link> *path);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkWindow">GtkWindow</link>
+                                 +----BonoboWindow
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+BonoboWindow implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="BonoboWindow--win-name">win-name</link>&quot;             <link linkend="gchararray">gchararray</link>            : Read / Write / Construct
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboWindowPrivate"/>struct BonoboWindowPrivate</title>
+<indexterm><primary>BonoboWindowPrivate</primary></indexterm><programlisting>struct BonoboWindowPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboWindow-struct"/>struct BonoboWindow</title>
+<indexterm><primary>BonoboWindow</primary></indexterm><programlisting>struct BonoboWindow;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboWindowClass"/>struct BonoboWindowClass</title>
+<indexterm><primary>BonoboWindowClass</primary></indexterm><programlisting>struct BonoboWindowClass {
+
+	GtkWindowClass    parent_class;
+
+	gpointer dummy[4];
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-construct"/>bonobo_window_construct ()</title>
+<indexterm><primary>bonobo_window_construct</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_window_construct         (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="BonoboUIContainer">BonoboUIContainer</link> *ui_container,
+                                             const <link linkend="char">char</link> *win_name,
+                                             const <link linkend="char">char</link> *title);</programlisting>
+<para>
+Don't use this ever - use construct time properties instead.
+TODO: Remove this when we are allowed API changes.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the window to construct
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ui_container</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>win_name</parameter>&nbsp;:</term>
+<listitem><simpara> the window name
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> the window's title for the title bar
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a constructed window
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-new"/>bonobo_window_new ()</title>
+<indexterm><primary>bonobo_window_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_window_new               (const <link linkend="char">char</link> *win_name,
+                                             const <link linkend="char">char</link> *title);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win_name</parameter>&nbsp;:</term>
+<listitem><simpara> the window name
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> the window's title for the title bar
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new BonoboWindow
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-set-contents"/>bonobo_window_set_contents ()</title>
+<indexterm><primary>bonobo_window_set_contents</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_window_set_contents      (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="GtkWidget">GtkWidget</link> *contents);</programlisting>
+<para>
+Insert a widget into the main window contents.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contents</parameter>&nbsp;:</term>
+<listitem><simpara> the new widget for it to contain.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-get-contents"/>bonobo_window_get_contents ()</title>
+<indexterm><primary>bonobo_window_get_contents</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  bonobo_window_get_contents      (<link linkend="BonoboWindow">BonoboWindow</link> *win);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the contained widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-get-ui-engine"/>bonobo_window_get_ui_engine ()</title>
+<indexterm><primary>bonobo_window_get_ui_engine</primary></indexterm><programlisting><link linkend="BonoboUIEngine">BonoboUIEngine</link>* bonobo_window_get_ui_engine (<link linkend="BonoboWindow">BonoboWindow</link> *win);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboUIEngine"><type>BonoboUIEngine</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-get-ui-container"/>bonobo_window_get_ui_container ()</title>
+<indexterm><primary>bonobo_window_get_ui_container</primary></indexterm><programlisting><link linkend="BonoboUIContainer">BonoboUIContainer</link>* bonobo_window_get_ui_container
+                                            (<link linkend="BonoboWindow">BonoboWindow</link> *win);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboUIContainer"><type>BonoboUIContainer</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-set-name"/>bonobo_window_set_name ()</title>
+<indexterm><primary>bonobo_window_set_name</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_window_set_name          (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             const <link linkend="char">char</link> *win_name);</programlisting>
+<para>
+Set the name of the window - used for configuration
+serialization.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>win_name</parameter>&nbsp;:</term>
+<listitem><simpara> the window name
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-get-name"/>bonobo_window_get_name ()</title>
+<indexterm><primary>bonobo_window_get_name</primary></indexterm><programlisting><link linkend="char">char</link>*       bonobo_window_get_name          (<link linkend="BonoboWindow">BonoboWindow</link> *win);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the name of the window
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-get-accel-group"/>bonobo_window_get_accel_group ()</title>
+<indexterm><primary>bonobo_window_get_accel_group</primary></indexterm><programlisting><link linkend="GtkAccelGroup">GtkAccelGroup</link>* bonobo_window_get_accel_group
+                                            (<link linkend="BonoboWindow">BonoboWindow</link> *win);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the bonobo window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the associated accelerator group for this window
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-add-popup"/>bonobo_window_add_popup ()</title>
+<indexterm><primary>bonobo_window_add_popup</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_window_add_popup         (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             <link linkend="GtkMenu">GtkMenu</link> *popup,
+                                             const <link linkend="char">char</link> *path);</programlisting>
+<para>
+Add a popup <parameter>menu</parameter> at <parameter>path</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the window
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>popup</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> the path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-window-remove-popup"/>bonobo_window_remove_popup ()</title>
+<indexterm><primary>bonobo_window_remove_popup</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_window_remove_popup      (<link linkend="BonoboWindow">BonoboWindow</link> *win,
+                                             const <link linkend="char">char</link> *path);</programlisting>
+<para>
+Remove the popup at <parameter>path</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara> the window
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> the path
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="BonoboWindow--win-name"/>The &quot;<literal>win-name</literal>&quot; property</title>
+<programlisting>  &quot;win-name&quot;             <link linkend="gchararray">gchararray</link>            : Read / Write / Construct</programlisting>
+<para>Name of the window - used for configuration serialization.</para><para>Default value: NULL</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

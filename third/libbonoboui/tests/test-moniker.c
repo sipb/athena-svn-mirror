@@ -54,7 +54,7 @@ struct poptOption moniker_test_options [] = {
 	{ "storage",   'r', POPT_ARG_NONE, &global_mto.pr, 'r', "request Bonobo/Storage", NULL },
 	{ "control",   'c', POPT_ARG_NONE, &global_mto.pc, 'c', "request Bonobo/Control", NULL },
 	POPT_AUTOHELP
-	{ NULL, 0, 0, NULL, 0, 0 }
+	{ NULL, 0, 0, NULL, 0, NULL }
 };
 
 static void

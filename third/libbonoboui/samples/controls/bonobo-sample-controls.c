@@ -9,7 +9,6 @@
 
 #include <config.h>
 #include <string.h>
-#include <gdk/gdkx.h>
 #include <libbonoboui.h>
 #include <libgnomecanvas/gnome-canvas-widget.h>
 #undef USE_SCROLLED
@@ -126,19 +125,14 @@ int
 main (int argc, char *argv [])
 {
 	int retval;
-	char *iid;
 
 	if (!bonobo_ui_init ("bonobo-sample-controls-2",
 			     VERSION, &argc, argv))
 		g_error (_("Could not initialize Bonobo UI"));
 
-	iid = bonobo_activation_make_registration_id (
-		"OAFIID:Bonobo_Sample_ControlFactory",
-		DisplayString (gdk_display));
-
-	retval = bonobo_generic_factory_main (iid, control_factory, NULL);
-
-	g_free (iid);
+	retval = bonobo_generic_factory_main
+		("OAFIID:Bonobo_Sample_ControlFactory",
+		 control_factory, NULL);
 
 	return retval;
 }                                                                             

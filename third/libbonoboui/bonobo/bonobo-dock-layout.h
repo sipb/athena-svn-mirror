@@ -33,11 +33,11 @@
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_DOCK_LAYOUT            (bonobo_dock_layout_get_type ())
-#define BONOBO_DOCK_LAYOUT(obj)            (GTK_CHECK_CAST ((obj), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayout))
-#define BONOBO_DOCK_LAYOUT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayoutClass))
-#define BONOBO_IS_DOCK_LAYOUT(obj)         (GTK_CHECK_TYPE ((obj), BONOBO_TYPE_DOCK_LAYOUT))
-#define BONOBO_IS_DOCK_LAYOUT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_LAYOUT))
-#define BONOBO_DOCK_LAYOUT_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayoutClass))
+#define BONOBO_DOCK_LAYOUT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayout))
+#define BONOBO_DOCK_LAYOUT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayoutClass))
+#define BONOBO_IS_DOCK_LAYOUT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BONOBO_TYPE_DOCK_LAYOUT))
+#define BONOBO_IS_DOCK_LAYOUT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), BONOBO_TYPE_DOCK_LAYOUT))
+#define BONOBO_DOCK_LAYOUT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), BONOBO_TYPE_DOCK_LAYOUT, BonoboDockLayoutClass))
 
 typedef struct _BonoboDockLayoutItem    BonoboDockLayoutItem;
 typedef struct _BonoboDockLayoutClass   BonoboDockLayoutClass;

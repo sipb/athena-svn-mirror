@@ -7,7 +7,7 @@
  *
  * Copyright 2002 Sun Microsystems, Inc.
  */
-
+#include "config.h"
 #include <glib/garray.h>
 #include <atk/atkregistry.h>
 #include <atk/atkobjectfactory.h>

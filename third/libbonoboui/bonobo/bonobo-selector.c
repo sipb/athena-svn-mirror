@@ -259,7 +259,7 @@ bonobo_selector_internal_construct (BonoboSelector       *sel)
 static void
 bonobo_selector_instance_init (BonoboSelector *sel)
 {
-	BonoboSelectorWidget *selectorwidget = 0;
+	BonoboSelectorWidget *selectorwidget = NULL;
 	
 	sel->priv = g_new0 (BonoboSelectorPrivate, 1);
 	
@@ -278,10 +278,10 @@ bonobo_selector_set_property (GObject *object, guint prop_id, const GValue *valu
 	case PROP_INTERFACES:
 	{
 		const gchar *query [2] = { DEFAULT_INTERFACE, NULL }; /* the default interfaces_required. */
-		BonoboSelectorWidget *selectorwidget = 0;
+		BonoboSelectorWidget *selectorwidget = NULL;
 		
 		/* Get the supplied array or interfaces, replacing it with a default if none have been provided: */
-		const gchar **interfaces_required = 0;
+		const gchar **interfaces_required = NULL;
 		if (!interfaces_required)
 			interfaces_required = query;
 		
@@ -343,7 +343,7 @@ bonobo_selector_class_init (BonoboSelectorClass *klass)
 				 PROP_INTERFACES,
 				 g_param_spec_value_array ("interfaces_required",
 							   _("Interfaces required"),
-							   _("A NULL_terminated array of interfaces which a server must support in order to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if no interfaces are listed"),
+							   _("A NULL-terminated array of interfaces which a server must support in order to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if no interfaces are listed"),
 							   g_param_spec_string ("interface-required-entry",
 										_("Interface required entry"),
 										_("One of the interfaces that's required"),
@@ -356,7 +356,7 @@ bonobo_selector_class_init (BonoboSelectorClass *klass)
  * bonobo_selector_new:
  * @title: A string which should go in the title of the
  * BonoboSelector window.
- * @interfaces_required: A NULL_terminated array of interfaces which a
+ * @interfaces_required: A NULL-terminated array of interfaces which a
  * server must support in order to be listed in the selector.  Defaults
  * to "IDL:Bonobo/Embeddable:1.0" if no interfaces are listed.
  *

@@ -119,11 +119,10 @@ static struct poptOption bonobo_ui_gtk_options [] = {
 	{ "display", '\0', POPT_ARG_STRING, NULL, 0,
 	  N_("X display to use"), N_("DISPLAY")},
 
-#ifdef HAVE_GTK_MULTIHEAD
 	/* X11 & multi-head only */
 	{ "screen", '\0', POPT_ARG_INT, NULL, 0,
 	  N_("X screen to use"), N_("SCREEN")},
-#endif
+
 	/* X11 only */
 	{ "sync", '\0', POPT_ARG_NONE, NULL, 0,
 	  N_("Make X calls synchronous"), NULL},
@@ -140,23 +139,6 @@ static struct poptOption bonobo_ui_gtk_options [] = {
 
 	{ "class", '\0', POPT_ARG_STRING, NULL, 0,
 	  N_("Program class as used by the window manager"), N_("CLASS")},
-
-	/* X11 only */
-	{ "gxid-host", '\0', POPT_ARG_STRING, NULL, 0,
-	  NULL, N_("HOST")},
-
-	/* X11 only */
-	{ "gxid-port", '\0', POPT_ARG_STRING, NULL, 0,
-	  NULL, N_("PORT")},
-
-	/* FIXME: this doesn't seem to exist */
-#if 0
-	{ "xim-preedit", '\0', POPT_ARG_STRING, NULL, 0,
-	  NULL, N_("STYLE")},
-
-	{ "xim-status", '\0', POPT_ARG_STRING, NULL, 0,
-	  NULL, N_("STYLE")},
-#endif
 
 	{ "gtk-debug", '\0', POPT_ARG_STRING, NULL, 0,
 	  N_("Gtk+ debugging flags to set"), N_("FLAGS")},

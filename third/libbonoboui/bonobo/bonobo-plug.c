@@ -10,6 +10,7 @@
  *                 Martin Baulig.
  */
 
+#include "config.h"
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-macros.h>
@@ -42,7 +43,50 @@ GNOME_CLASS_BOILERPLATE (BonoboPlug, bonobo_plug,
 void
 bonobo_plug_construct (BonoboPlug *plug, guint32 socket_id)
 {
-	gtk_plug_construct (GTK_PLUG (plug), socket_id);
+	bonobo_plug_construct_full (plug, gdk_display_get_default (), socket_id);
+}
+
+/**
+ * bonobo_plug_construct_full:
+ * @plug: The #BonoboPlug.
+ * @socket_id: the XID of the socket's window.
+ *
+ * Finish the creation of a #BonoboPlug widget. This function
+ * will generally only be used by classes deriving
+ * from #BonoboPlug.
+ */
+void
+bonobo_plug_construct_full (BonoboPlug *plug,
+			    GdkDisplay *display,
+			    guint32     socket_id)
+{
+	gtk_plug_construct_for_display
+		(GTK_PLUG (plug), display, socket_id);
+}
+
+/**
+ * bonobo_plug_new_for_display:
+ * @display: the associated display
+ * @socket_id: the XID of the socket's window.
+ *
+ * Create a new plug widget inside the #GtkSocket identified
+ * by @socket_id.
+ *
+ * Returns: the new #BonoboPlug widget.
+ */
+GtkWidget*
+bonobo_plug_new_for_display (GdkDisplay *display,
+			     guint32     socket_id)
+{
+	BonoboPlug *plug;
+
+	plug = BONOBO_PLUG (g_object_new (bonobo_plug_get_type (), NULL));
+
+	bonobo_plug_construct_full (plug, display, socket_id);
+
+	dprintf ("bonobo_plug_new => %p\n", plug);
+
+	return GTK_WIDGET (plug);
 }
 
 /**
@@ -57,15 +101,8 @@ bonobo_plug_construct (BonoboPlug *plug, guint32 socket_id)
 GtkWidget*
 bonobo_plug_new (guint32 socket_id)
 {
-	BonoboPlug *plug;
-
-	plug = BONOBO_PLUG (g_object_new (bonobo_plug_get_type (), NULL));
-
-	bonobo_plug_construct (plug, socket_id);
-
-	dprintf ("bonobo_plug_new => %p\n", plug);
-
-	return GTK_WIDGET (plug);
+	return bonobo_plug_new_for_display
+		(gdk_display_get_default (), socket_id);
 }
 
 BonoboControl *
@@ -301,13 +338,16 @@ bonobo_plug_button_event (GtkWidget      *widget,
 		 * selected.
 		 * We don't want to hog the pointer on our parent.
 		 */
-		gdk_pointer_ungrab (GDK_CURRENT_TIME);
+		gdk_display_pointer_ungrab
+			(gtk_widget_get_display (widget),
+			 GDK_CURRENT_TIME);
 	} else
 		xevent.xbutton.type = ButtonRelease;
     
 	xevent.xbutton.display     = GDK_WINDOW_XDISPLAY (widget->window);
 	xevent.xbutton.window      = GDK_WINDOW_XWINDOW (GTK_PLUG (widget)->socket_window);
-	xevent.xbutton.root        = GDK_ROOT_WINDOW (); /* FIXME */
+	xevent.xbutton.root        = GDK_WINDOW_XWINDOW (gdk_screen_get_root_window
+							 (gdk_drawable_get_screen (widget->window)));
 	/*
 	 * FIXME: the following might cause
 	 *        big problems for non-GTK apps
@@ -322,7 +362,7 @@ bonobo_plug_button_event (GtkWidget      *widget,
 
 	gdk_error_trap_push ();
 
-	XSendEvent (GDK_DISPLAY (),
+	XSendEvent (GDK_WINDOW_XDISPLAY (widget->window),
 		    GDK_WINDOW_XWINDOW (GTK_PLUG (widget)->socket_window),
 		    False, NoEventMask, &xevent);
 

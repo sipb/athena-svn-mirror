@@ -316,7 +316,7 @@ static void
 test_gtk_weakrefs (void)
 {
 	gpointer   ref;
-	GtkObject *object = g_object_new (GTK_TYPE_OBJECT, NULL);
+	GtkObject *object = g_object_new (GTK_TYPE_BUTTON, NULL);
 
 	ref = object;
 	gtk_object_ref (object);
