@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v $
- *	$Id: p_status.c,v 1.8 1990-11-14 12:26:40 lwvanels Exp $
+ *	$Id: p_status.c,v 1.9 1991-01-21 01:15:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.8 1990-11-14 12:26:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.9 1991-01-21 01:15:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -79,7 +79,7 @@ do_olc_status(arguments)
 
 
 
-
+ERRCODE
 do_olc_who(arguments)
      char  **arguments;
 {
@@ -110,6 +110,39 @@ do_olc_who(arguments)
     }
 
   status = t_who(&Request);
+  return(status);
+}
+
+ERRCODE
+do_olc_version(arguments)
+     char  **arguments;
+{
+  REQUEST Request;
+  int status;
+
+  if(fill_request(&Request) != SUCCESS)
+    return(ERROR);
+
+  for (arguments++; *arguments != (char *)NULL; arguments++) 
+    {
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
+      if(arguments == (char **) NULL)   /* error */
+	{
+	  if(OLC)
+	    printf("Usage is: \tversion\n");
+	  else
+	    {
+	      printf("Usage is: \tversion\n");
+	    }
+	  return(ERROR);
+	}
+      if(*arguments == (char *) NULL)   /* end of list */
+	break;
+    }
+
+  status = t_version(&Request);
   return(status);
 }
 
