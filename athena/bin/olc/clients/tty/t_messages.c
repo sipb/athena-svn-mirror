@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.3 1989-08-04 11:12:28 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.4 1989-08-22 13:54:24 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -40,7 +40,7 @@ t_replay(Request,file, display)
     {
     case SUCCESS:
       if (display)
-	status = display_file(file);
+	status = display_file(file, TRUE);
       break;
 
     case NOT_CONNECTED:
@@ -93,11 +93,15 @@ t_show_message(Request, file, display, connected, noflush)
     {
     case SUCCESS:
       if (display)
-	display_file(file);
+	display_file(file, TRUE);
       break;
 
     case NOT_CONNECTED:
-      fprintf(stderr, "You are not connected.\n");
+      if(isme(Request))
+	fprintf(stderr, "You are not connected.\n");
+      else
+	fprintf(stderr, "%s (%d) is not connected to anyone.\n",
+		Request->target.username, Request->target.instance);
       break;
 
     case PERMISSION_DENIED:
