@@ -1,4 +1,4 @@
-BINDIR=/usr/athena/lib/update
+BINDIR=$(ATHETCDIR)
 
 SRCS= synctree.c rules.c glob_match.c bool_exp.c vtable.c err.c \
 	util.c gm.c regexp.c
