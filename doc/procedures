@@ -172,12 +172,18 @@ timestamps up near the current time while preserving their relative
 order.  Use the "-d" flag to cvs import to use the resulting
 timestamps as the time of import.
 
+Also before doing an import, remove any .cvsignore files which might
+be present in the tree.  We are builders, not developers, of
+third-party software, and want to track the entire distribution
+including any auto-generated files.
+
 Here is an example of how one might import a hypothetical new version
 of emacs (assuming the CVSROOT environment variable is set to point at
 the Athena repository):
 
 	gtar xzf emacs-22.3.tar.gz
 	cd emacs-22.3
+	find . -name .cvsignore -print | xargs rm
 	perl $CVSROOT/CVSROOT/timestamps.pl
 	cvs import -d -m "Import of emacs version 22.3" third/emacs \
 		fsf emacs-22_3
