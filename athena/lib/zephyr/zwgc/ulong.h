@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/ulong.h,v $
- *      $Author: probe $
- *	$Id: ulong.h,v 1.4 1993-11-21 06:23:50 probe Exp $
+ *      $Author: ghudson $
+ *	$Id: ulong.h,v 1.5 1994-11-01 16:08:49 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 
 #include <sys/types.h>
 
-#if defined(ultrix) || defined(vax)
+#if defined(ultrix) || defined(vax) || defined(SUNOS)
 typedef unsigned long ulong;
 #endif
 
