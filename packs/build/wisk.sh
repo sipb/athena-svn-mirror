@@ -1,4 +1,4 @@
-#!/bin/athena/tcsh
+#!/bin/athena/tcsh 
 
 # tcsh -x is the useful option.
 
@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.49 $
+# $Revision: 1.50 $
 
 umask 2
 
@@ -152,7 +152,10 @@ switch ( $machine )
     breaksw
 
   case decmips
-    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc athena/etc/checkfpu $end)
+    set packages=(decmips/kits/install_srvd setup athena/lib/syslog \
+	decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins \
+	$machine athena/etc/nfsc athena/etc/checkfpu athena/bin/AL \
+	athena/bin/telnet $end)  
 
     breaksw
 
@@ -165,26 +168,35 @@ endsw
 endif
 
 if ($installman == 1) then
-  foreach package ( $packages )
-    echo "Installing man in $package" >>& $outfile
+	foreach package ( $packages )
+		switch($package)
+			case athena/lib/kerberos1
+			case athena/lib/moira.dev
+				breaksw
+			case athena/lib/kerberos2
+			        set package="athena/lib/kerberos"
+			default:
+				echo "Installing man in $package" >>& $outfile
 
-    if (-e $BUILD/$package/.build) then
-	source $BUILD/$package/.build
-    else
-        switch($package)
-          case third/supported/xfonts
-          case athena/lib/kerberos1
-          case athena/lib/moira.dev
-            breaksw
-          case athena/lib/kerberos2
-            set package="athena/lib/kerberos"
-          default:
-            (cd $BUILD/$package ; make install.man >>& $outfile)
-        endsw
-    endif
-  end
-  exit 0
+				if (-e $BUILD/$package/.build) then
+				   source $BUILD/$package/.build
+				   if ($status != 0) exit $status
+				else
+				   if (-e $BUILD/$package/.rule) then
+					set rule = `cat $BUILD/$package/.rule`
+			  	   else
+					set rule = simple
+				   endif
+				endif
+
+				if ($rule != "skip") then
+				   (cd $BUILD/$package ; make install.man >>& $outfile)
+			    	endif
+		   endsw
+	end
+	exit 0
 endif
+
 
 foreach package ( $packages )
 
