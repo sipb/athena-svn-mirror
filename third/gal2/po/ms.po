@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Gal \n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
-"PO-Revision-Date: 2002-01-12 08:13+0800\n"
-"Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
+"Project-Id-Version: Gal\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
+"PO-Revision-Date: 2003-07-23 07:21+0800\n"
+"Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,11 +15,11 @@ msgstr ""
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr ""
+msgstr "Saiz Kendalian"
 
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr ""
+msgstr "Kuantum"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -50,46 +50,41 @@ msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
 #: gal/e-table/e-cell-pixbuf.c:392
-#, fuzzy
 msgid "Selected Column"
-msgstr "Model Pilihan"
+msgstr "Kolum Pilihan"
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr ""
+msgstr "Kolum Difokus"
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr ""
+msgstr "Kolum Dinyahpilih"
 
 #: gal/e-table/e-cell-text.c:1516
 msgid "Strikeout Column"
-msgstr ""
+msgstr "Corettembus Kolum"
 
 #: gal/e-table/e-cell-text.c:1523
-#, fuzzy
 msgid "Underline Column"
-msgstr "Model Pilihan"
+msgstr "Garisbawah Kolum"
 
 #: gal/e-table/e-cell-text.c:1530
-#, fuzzy
 msgid "Bold Column"
-msgstr "Tambah Satu Kolum..."
+msgstr "Bold Kolum"
 
 #: gal/e-table/e-cell-text.c:1537
-#, fuzzy
 msgid "Color Column"
-msgstr "Format Kolum..."
+msgstr "Warna Kolum"
 
 #: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
 #: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
-#, fuzzy
 msgid "Editable"
-msgstr "Jadual"
+msgstr "Boleh edit"
 
 #: gal/e-table/e-cell-text.c:1551
 msgid "BG Color Column"
-msgstr ""
+msgstr "Warna BG Kolum"
 
 #: gal/e-table/e-table-click-to-add.c:456
 #: gal/e-table/e-table-field-chooser-dialog.c:88
@@ -102,15 +97,15 @@ msgid "Header"
 msgstr "Pengepala"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
-msgstr ""
+msgstr "Model"
 
 #: gal/e-table/e-table-click-to-add.c:470
 msgid "Message"
-msgstr ""
+msgstr "Mesej"
 
 #: gal/e-table/e-table-click-to-add.c:477
 #: gal/e-table/e-table-field-chooser-item.c:667
@@ -226,12 +221,11 @@ msgstr "_Isih..."
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr ""
+msgstr "dialog1"
 
 #: gal/e-table/e-table-config.c:154
-#, fuzzy
 msgid "State"
-msgstr "Status"
+msgstr "Keadaan"
 
 #: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
 msgid "(Ascending)"
@@ -334,12 +328,12 @@ msgid "Selection model"
 msgstr "Model Pilihan"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr ""
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Tinggi baris seragam"
 
@@ -421,25 +415,23 @@ msgstr "Jadual"
 msgid "Tree"
 msgstr "Pepohon"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
-msgstr ""
+msgstr "Sentiasa Cari"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
-msgstr ""
+msgstr "Guna klik untuk tambah"
 
 #: gal/e-table/e-tree-selection-model.c:767
 #: gal/widgets/e-selection-model-array.c:543
-#, fuzzy
 msgid "Cursor Row"
-msgstr "Mod kursor"
+msgstr "Baris Kursor"
 
 #: gal/e-table/e-tree-selection-model.c:774
 #: gal/widgets/e-selection-model-array.c:550
-#, fuzzy
 msgid "Cursor Column"
-msgstr "Mod kursor"
+msgstr "Kursor Kolum"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
@@ -475,21 +467,20 @@ msgid "Save Custom View"
 msgstr "Simpan Paparan Tersendiri"
 
 #: gal/menus/gal-view-instance.c:580
-#, fuzzy
 msgid "Define Views..."
-msgstr "Tafrik Paparan"
+msgstr "Tafrif Paparan..."
 
 #: gal/menus/gal-view-instance-save-as-dialog.c:179
 msgid "Instance"
-msgstr ""
+msgstr "Instans"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
 msgid "Create New View Named"
-msgstr ""
+msgstr "Cipta Paparan Baru Bernama"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
 msgid "Replace Existing View"
-msgstr ""
+msgstr "Ganti Paparan sedia ada"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
 msgid ""
@@ -499,7 +490,7 @@ msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
 msgid "This will create a new View."
-msgstr ""
+msgstr "Ini akan mencipta Paparan baru."
 
 #: gal/menus/gal-view-new-dialog.glade.h:1
 #: gal/widgets/gal-categories.glade.h:1
@@ -517,12 +508,11 @@ msgstr "Jenis paparan:"
 
 #: gal/menus/gal-view-new-dialog.c:70
 msgid "Name"
-msgstr ""
+msgstr "Nama"
 
 #: gal/menus/gal-view-new-dialog.c:77
-#, fuzzy
 msgid "Factory"
-msgstr "Kategori"
+msgstr "Kilang"
 
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
@@ -862,12 +852,10 @@ msgid "Category"
 msgstr "Kategori"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
-msgstr "Tambah satu kategori"
+msgstr "Tambah Kategori"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
 msgstr "Edit Kategori"
 
@@ -876,103 +864,93 @@ msgid "Edit Global Category List"
 msgstr "Edit Senarai Kategori Global"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "Edit Kategori"
+msgstr "_Edit Kategori"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-#, fuzzy
 msgid "_New category:"
-msgstr "Tambah satu kategori"
+msgstr "Kategori ba_ru:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
 msgid "All Categories"
 msgstr "Semua Kategori"
 
 #: gal/widgets/e-selection-model.c:210
-#, fuzzy
 msgid "Sorter"
-msgstr "Isih"
+msgstr "Pengisih"
 
 #: gal/widgets/e-selection-model.c:217
-#, fuzzy
 msgid "Selection Mode"
 msgstr "Model Pilihan"
 
 #: gal/widgets/e-selection-model.c:225
-#, fuzzy
 msgid "Cursor Mode"
-msgstr "Mod kursor"
+msgstr "Mod Kursor"
 
 #: gal/e-text/e-text.c:2561
-#, fuzzy
 msgid "Select All"
-msgstr "Model Pilihan"
+msgstr "Pilih Semua"
 
 #: gal/e-text/e-text.c:2573
 msgid "Input Methods"
-msgstr ""
+msgstr "Kaedah Input"
 
 #: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
 msgid "Event Processor"
-msgstr ""
+msgstr "Pemproses Acara"
 
 #: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
 msgid "Text"
-msgstr ""
+msgstr "Teks"
 
 #: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
-#, fuzzy
 msgid "Bold"
-msgstr "emas"
+msgstr "Bold"
 
 #: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
 msgid "Strikeout"
-msgstr ""
+msgstr "Corettembus"
 
 #: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
 msgid "Anchor"
-msgstr ""
+msgstr "Sauh"
 
 #: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
 msgid "Justification"
-msgstr ""
+msgstr "Justifikasi"
 
 #: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
-#, fuzzy
 msgid "Clip Width"
-msgstr "Lebar"
+msgstr "Lebar Klip"
 
 #: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
-#, fuzzy
 msgid "Clip Height"
-msgstr "Tinggi"
+msgstr "Tinggi Klip"
 
 #: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
 msgid "Clip"
-msgstr ""
+msgstr "Klip"
 
 #: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
 msgid "Fill clip rectangle"
-msgstr ""
+msgstr "Isi segiempat klip"
 
 #: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
 msgid "X Offset"
-msgstr ""
+msgstr "Offset X"
 
 #: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
 msgid "Y Offset"
-msgstr ""
+msgstr "Offset Y"
 
 #: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
-#, fuzzy
 msgid "Fill color"
-msgstr "Pemilih Medan"
+msgstr "Warna isian"
 
 #: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
 #: gal/e-text/e-text.c:3419
 msgid "GDK fill color"
-msgstr ""
+msgstr "Warna isian GDK"
 
 #: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
 #, fuzzy
@@ -981,113 +959,56 @@ msgstr "ungu suram"
 
 #: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
 msgid "Text width"
-msgstr ""
+msgstr "Lebar teks"
 
 #: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
 msgid "Text height"
-msgstr ""
+msgstr "Tinggi teks"
 
 #: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
 msgid "Use ellipsis"
-msgstr ""
+msgstr "Guna ellipsis"
 
 #: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
 msgid "Ellipsis"
-msgstr ""
+msgstr "Ellipsis"
 
 #: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Line wrap"
-msgstr ""
+msgstr "Pembalutan baris"
 
 #: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Break characters"
-msgstr ""
+msgstr "Aksara hentian"
 
 #: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Max lines"
-msgstr ""
+msgstr "Maksimum baris"
 
 #: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
-#, fuzzy
 msgid "Draw borders"
-msgstr "Fokus Lukisan"
+msgstr "Lukis sempadan"
 
 #: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Allow newlines"
-msgstr ""
+msgstr "Izinkan barisbaru"
 
 #: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Draw background"
-msgstr ""
+msgstr "Lukis latarbelakang"
 
 #: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Draw button"
-msgstr ""
+msgstr "Lukis butang"
 
 #: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
-#, fuzzy
 msgid "Cursor position"
-msgstr "Mod kursor"
+msgstr " Posisi kursor"
 
 #: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "IM Context"
-msgstr ""
+msgstr "Konteks IM"
 
 #: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Handle Popup"
-msgstr ""
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Lewat Semalam %l:%M %p"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Ubahsuai Categori"
-
-#~ msgid "Remove"
-#~ msgstr "Buang"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "_Kategori untuk diTambah:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "_Kategori untuk diUbahsuai:"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "ungu suram"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "Ulang_tetap ke Default Kilang..."
-
-#~ msgid "_Copy..."
-#~ msgstr "_Salin..."
-
-#~ msgid "_Delete..."
-#~ msgstr "Pa_dam..."
-
-#~ msgid "_New..."
-#~ msgstr "Ba_ru..."
-
-#~ msgid "Character out of range for UTF-8"
-#~ msgstr "Aksara diluar jular UTF-8"
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Buang"
-
-#~ msgid "Add >>"
-#~ msgstr "Tambah >>"
-
-#~ msgid "Available fields"
-#~ msgstr "Medan yang ada"
-
-#~ msgid "Show in this order"
-#~ msgstr "Papar dalam susunan ini"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "Paparan untuk \"%s\""
-
-#~ msgid "Add..."
-#~ msgstr "Tambah..."
-
-#~ msgid "Modify..."
-#~ msgstr "Ubahsuai..."
+msgstr "Kendalian Popup"

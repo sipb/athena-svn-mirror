@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
-"PO-Revision-Date: 2003-02-12 21:34+0100\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
+"PO-Revision-Date: 2003-07-26 13:52+0200\n"
 "Last-Translator: Predrag Krtolica <predrag_k@optusnet.com.au>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,9 +21,8 @@ msgid "Handle Size"
 msgstr "Veličina ručke"
 
 #: gal/e-paned/e-paned.c:148
-#, fuzzy
 msgid "Quantum"
-msgstr "Željena količina"
+msgstr "kvant"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -58,7 +57,6 @@ msgid "Selected Column"
 msgstr "Izabrana kolona"
 
 #: gal/e-table/e-cell-pixbuf.c:399
-#, fuzzy
 msgid "Focused Column"
 msgstr "Fokusirana kolona"
 
@@ -67,14 +65,12 @@ msgid "Unselected Column"
 msgstr "Neizabrana kolona"
 
 #: gal/e-table/e-cell-text.c:1516
-#, fuzzy
 msgid "Strikeout Column"
 msgstr "Precrtana kolona"
 
 #: gal/e-table/e-cell-text.c:1523
-#, fuzzy
 msgid "Underline Column"
-msgstr "Neizabrana kolona"
+msgstr "Podvučena kolona"
 
 #: gal/e-table/e-cell-text.c:1530
 msgid "Bold Column"
@@ -104,7 +100,7 @@ msgid "Header"
 msgstr "Zaglavlje"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
@@ -335,12 +331,12 @@ msgid "Selection model"
 msgstr "Model za biranje"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr "Maksimalna dužina"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Ujednačena visina redova"
 
@@ -378,9 +374,8 @@ msgid "Group By This Field"
 msgstr "Grupiši po ovome polju"
 
 #: gal/e-table/e-table-header-item.c:1476
-#, fuzzy
 msgid "Group By Box"
-msgstr "Grupiši po kutiji"
+msgstr "Grupiši po okviru"
 
 #: gal/e-table/e-table-header-item.c:1478
 msgid "Remove This Column"
@@ -423,11 +418,11 @@ msgstr "Tabela"
 msgid "Tree"
 msgstr "Stablo"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
 msgstr "Uvek traži"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
 msgstr "Koristite klik da dodate"
 
@@ -475,9 +470,8 @@ msgid "Save Custom View"
 msgstr "Sačuvajte podešeni izgled"
 
 #: gal/menus/gal-view-instance.c:580
-#, fuzzy
 msgid "Define Views..."
-msgstr "Ordredi izgled"
+msgstr "Odredi preglede..."
 
 #: gal/menus/gal-view-instance-save-as-dialog.c:179
 msgid "Instance"
@@ -641,9 +635,8 @@ msgid "gray"
 msgstr "siva"
 
 #: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
-#, fuzzy
 msgid "magenta"
-msgstr "grimizna"
+msgstr "magenta"
 
 #: gal/widgets/color-palette.c:607
 msgid "bright orange"
@@ -658,9 +651,8 @@ msgid "green"
 msgstr "zelena"
 
 #: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
-#, fuzzy
 msgid "cyan"
-msgstr "plavičasta"
+msgstr "cijan"
 
 #: gal/widgets/color-palette.c:611
 msgid "bright blue"
@@ -691,9 +683,8 @@ msgid "light green"
 msgstr "svetlo zelena"
 
 #: gal/widgets/color-palette.c:620
-#, fuzzy
 msgid "light cyan"
-msgstr "cvetlo plavičasta"
+msgstr "svetla cijan"
 
 #: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
 msgid "light blue"
@@ -852,7 +843,6 @@ msgstr "ECML"
 #: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
 #: gal/widgets/e-categories-master-list-option-menu.c:169
-#, fuzzy
 msgid "ECategoriesMasterListCombo"
 msgstr "ECategoriesMasterListCombo"
 
@@ -865,28 +855,24 @@ msgid "Category"
 msgstr "Kategorija"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
-msgstr "Dodaj Kategoriju"
+msgstr "Dodaj kategoriju"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
-msgstr "Izmeni kategorije"
+msgstr "Izmeni kategoriju"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
 msgstr "Izmeni spisak globalnih kategorija"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "Izmeni kategorije"
+msgstr "_Izmeni kategoriju:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-#, fuzzy
 msgid "_New category:"
-msgstr "Dodaj Kategoriju"
+msgstr "_Nova kategorija:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
 msgid "All Categories"
@@ -905,139 +891,129 @@ msgid "Cursor Mode"
 msgstr "Način rada kursora"
 
 #: gal/e-text/e-text.c:2561
-#, fuzzy
 msgid "Select All"
-msgstr "Izabrana kolona"
+msgstr "Izaberi sve"
 
 #: gal/e-text/e-text.c:2573
 msgid "Input Methods"
-msgstr ""
+msgstr "Metode unosa"
 
 #: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
 msgid "Event Processor"
-msgstr ""
+msgstr "Obrađivač događaja"
 
 #: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
-#, fuzzy
 msgid "Bold"
-msgstr "zlatna"
+msgstr "Masno"
 
 #: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
-#, fuzzy
 msgid "Strikeout"
-msgstr "Precrtana kolona"
+msgstr "Precrtano"
 
 #: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
 msgid "Anchor"
-msgstr ""
+msgstr "Veza"
 
 #: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
 msgid "Justification"
-msgstr ""
+msgstr "Poravnavanje"
 
 #: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
-#, fuzzy
 msgid "Clip Width"
-msgstr "Širina"
+msgstr "Iseci širinu"
 
 #: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
-#, fuzzy
 msgid "Clip Height"
-msgstr "Visina"
+msgstr "Iseci visinu"
 
 #: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
 msgid "Clip"
-msgstr ""
+msgstr "Iseci"
 
 #: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
 msgid "Fill clip rectangle"
-msgstr ""
+msgstr "Ispuni pravougaonik isečka"
 
 #: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
 msgid "X Offset"
-msgstr ""
+msgstr "X pomeraj"
 
 #: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
 msgid "Y Offset"
-msgstr ""
+msgstr "Y pomeraj"
 
 #: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
-#, fuzzy
 msgid "Fill color"
-msgstr "Izaberite polje"
+msgstr "Boja ispunjavanja"
 
 #: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
 #: gal/e-text/e-text.c:3419
 msgid "GDK fill color"
-msgstr ""
+msgstr "GDK boja ispunjavanja"
 
 #: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
-#, fuzzy
 msgid "Fill stipple"
-msgstr "bledo purpurna"
+msgstr "Istačkaj"
 
 #: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
 msgid "Text width"
-msgstr ""
+msgstr "Širina teksta"
 
 #: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
 msgid "Text height"
-msgstr ""
+msgstr "Visina teksta"
 
 #: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
 msgid "Use ellipsis"
-msgstr ""
+msgstr "Koristi tri tačke"
 
 #: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
 msgid "Ellipsis"
-msgstr ""
+msgstr "Tri tačke"
 
 #: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Line wrap"
-msgstr ""
+msgstr "Prelom reda"
 
 #: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Break characters"
-msgstr ""
+msgstr "Znaci preloma"
 
 #: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Max lines"
-msgstr ""
+msgstr "Najviše redova"
 
 #: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
-#, fuzzy
 msgid "Draw borders"
-msgstr "Središte crtanja"
+msgstr "Iscrtaj ivice"
 
 #: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Allow newlines"
-msgstr ""
+msgstr "Dozvoli novi red"
 
 #: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Draw background"
-msgstr ""
+msgstr "Iscrtaj pozadinu"
 
 #: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Draw button"
-msgstr ""
+msgstr "Iscrtaj dugme"
 
 #: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
-#, fuzzy
 msgid "Cursor position"
-msgstr "Kursorova kolona"
+msgstr "Pozicija kurzora"
 
 #: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "IM Context"
-msgstr ""
+msgstr "Kontekst načina unosa"
 
 #: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
-#, fuzzy
 msgid "Handle Popup"
-msgstr "Veličina ručke"
+msgstr "Barataj iskačućim prozorom"
 
 #~ msgid "Late Yesterday %l:%M %p"
 #~ msgstr "Sinoć %k:%M "

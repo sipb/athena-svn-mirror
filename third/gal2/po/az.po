@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.12.99.1\n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
 "PO-Revision-Date: 2003-03-24 00:11+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
@@ -98,7 +98,7 @@ msgid "Header"
 msgstr "Başlıq"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
@@ -329,12 +329,12 @@ msgid "Selection model"
 msgstr "Seçim modeli"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr "Uzunluq Başlanğıcı"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Oxşar sətr hündürlüyü"
 
@@ -416,11 +416,11 @@ msgstr "Cədvəl"
 msgid "Tree"
 msgstr "Ağac"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
 msgstr "Həmişə Axtar"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
 msgstr "Əlavə etmək üçün kliqləmədən istifadə et"
 

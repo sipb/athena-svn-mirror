@@ -5,13 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GAL (cvs)\n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
 "PO-Revision-Date: 2003-05-30 15:07+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
@@ -80,7 +81,7 @@ msgstr "Gekleurde kolom"
 #: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
 #: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
 msgid "Editable"
-msgstr "Aan te passen"
+msgstr "Bewerkbaar"
 
 #: gal/e-table/e-cell-text.c:1551
 msgid "BG Color Column"
@@ -97,7 +98,7 @@ msgid "Header"
 msgstr "Kop"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
@@ -221,7 +222,7 @@ msgstr "_Sorteren..."
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr "dialog1"
+msgstr "dialoog1"
 
 #: gal/e-table/e-table-config.c:154
 msgid "State"
@@ -328,12 +329,12 @@ msgid "Selection model"
 msgstr "Selectiestand"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr "Lengte drempel"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Uniforme rijhoogte"
 
@@ -415,11 +416,11 @@ msgstr "Tabel"
 msgid "Tree"
 msgstr "Boom"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
 msgstr "Altijd zoeken"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
 msgstr "Klik om toe te voegen"
 
@@ -798,7 +799,7 @@ msgstr "Belangrijke klant"
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
-msgstr "Diversen"
+msgstr "Allerlei"
 
 #: gal/widgets/e-categories-master-list-array.c:80
 msgid "Personal"

@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal.HEAD.es\n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
 "PO-Revision-Date: 2003-06-12 13:19+0000\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -104,7 +104,7 @@ msgid "Header"
 msgstr "Encabezado"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
@@ -335,12 +335,12 @@ msgid "Selection model"
 msgstr "Modelo de selección"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr "Umbral de longitud"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Altura uniforme de la fila"
 
@@ -422,11 +422,11 @@ msgstr "Tabla"
 msgid "Tree"
 msgstr "Árbol"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
 msgstr "Buscar siempre"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
 msgstr "Pulsar para añadir"
 

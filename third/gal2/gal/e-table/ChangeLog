@@ -1,3 +1,18 @@
+2003-07-28  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-config (setup_fields): map model_column to available
+	model row by ignoring disabled columns.
+
+2003-06-30  Dan Winship  <danw@ximian.com>
+
+	* e-tree.c (e_tree_init): Initialize some missing fields. Fixes
+	"no handler with id" warnings at evo shutdown
+	(ETreePriv): remove unused table_rows_{inserted,deleted}_id
+	(et_disconnect_from_etta): remove refs to them
+
+	* e-table.c (e_table_drag_source_unset): free site->target_list if
+	it's set.
+
 2003-06-22  Hans Petter Jansson  <hpj@ximian.com>
 
 	* e-cell-text.c (get_font_for_size): Implement.

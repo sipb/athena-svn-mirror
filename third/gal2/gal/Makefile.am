@@ -1,5 +1,5 @@
 nonui_subdirs = util
-ui_subdirs    = widgets e-paned e-table e-text menus shortcut-bar . a11y
+ui_subdirs    = widgets e-table e-text menus shortcut-bar . a11y
 
 SUBDIRS = $(nonui_subdirs) $(ui_subdirs) 
 
@@ -12,7 +12,6 @@ libgal_2_0_la_SOURCES = bogus_automake_hack.c
 
 libgal_2_0_la_LIBADD = util/libutil.la \
 		   widgets/libwidgets.la \
-		   e-paned/libepaned.la \
 		   e-table/libetable.la \
 		   e-text/libetext.la \
 		   menus/libgalmenus.la \
