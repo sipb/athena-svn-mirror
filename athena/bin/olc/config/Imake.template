@@ -596,7 +596,7 @@
 
         MACROFILE = MacroFile
            RM_CMD = $(RM) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a \
-			.emacs_* tags TAGS make.log MakeOut
+			gmon.out .emacs_* tags TAGS make.log MakeOut
 
     IMAKE_DEFINES = /* leave blank, for command line use only */
             IMAKE = imake
