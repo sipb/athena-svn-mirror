@@ -1,21 +1,22 @@
-/*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v $
- * $Author: ghudson $ 
+/* Copyright 1990, 1991, 1998 by the Massachusetts Institute of Technology.
  *
- * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
- *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>. 
- *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.17 1998-12-12 22:33:03 ghudson Exp $";
-#endif
+static const char rcsid[] = "$Id: console.c,v 1.18 1998-12-17 16:30:36 ghudson Exp $";
 
-#include "mit-copyright.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <ctype.h>
@@ -534,15 +535,8 @@ int input(fd, pfd)
   return 0;
 }
 
-#if defined(AIX_ARCH)
-void sighandler(sig)		/* broken header files under aix... */
+void sighandler(sig)
      int sig;
-#else
-void sighandler(sig, code, scp)
-     int sig, code;
-     struct sigcontext *scp;
-     /*ARGSUSED*/
-#endif
 {
   switch(sig)
     {
@@ -669,6 +663,7 @@ main(argc, argv)
   int zero = 0;
   int auxinput = -1;
   int size=0;
+  char *envvar;
   struct stat buf;
   struct sigaction act;
   sigemptyset(&act.sa_mask);
@@ -679,26 +674,23 @@ main(argc, argv)
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
-  act.sa_handler= (void (*)()) sighandler;
+  act.sa_handler= sighandler;
   (void) sigaction(SIGHUP, &act, NULL);
   (void) sigaction(SIGFPE, &act, NULL);
   (void) sigaction(SIGUSR1, &act, NULL);
   (void) sigaction(SIGUSR2, &act, NULL);
 
-#if defined(HAS_PUTENV)
-/*
- *  setenv() doesn't exist on some systems...  it's putenv instead.
- */
-  if ((char *) getenv(XENV) == NULL)
+  if (getenv(XENV) == NULL)
     {
-      char foo[1024];
-
-      sprintf(foo, "%s=%s", XENV, CONSOLEDEFAULTS);
-      putenv(foo);
+      envvar = malloc(strlen(XENV) + strlen(CONSOLEDEFAULTS) + 2);
+      if (!envvar)
+	{
+	  fprintf(stderr, "malloc failed!  Aborting.\n");
+	  exit(1);
+	}
+      sprintf(envvar, "%s=%s", XENV, CONSOLEDEFAULTS);
+      putenv(envvar);
     }
-#else
-  setenv(XENV, CONSOLEDEFAULTS, 0);
-#endif
 
   root = XjCreateRoot(&argc, argv, "Console", NULL,
 		      opTable, XjNumber(opTable));
