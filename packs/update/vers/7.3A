@@ -25,6 +25,41 @@ RT*|VAX*|VS*)
 			mv -f /site/usr/lib/crontab.local /etc/
 		fi
 	fi
+
+	echo "Removing old symlinks"
+	old_links=     "/bin/athena/expunge \
+			/bin/athena/get_message \
+			/bin/athena/hostinfo \
+			/bin/athena/lsdel \
+			/bin/athena/purge \
+			/bin/athena/undelete \
+			/bin/rcp \
+			/bin/pts \
+			/bin/tokens \
+			/etc/athena/messaged \
+			/etc/athena/newsyslog \
+			/etc/athena/rkinitd \
+			/etc/athena/track \
+			/etc/athena/backup \
+			/etc/athena/backuperr \
+			/etc/athena/cppart 
+			/etc/athena/cut_msgs \
+			/etc/athena/dumptape \
+			/etc/athena/login-shutdown \
+			/etc/athena/rti_users \
+			/etc/athena/stop_mailer \
+			/etc/athena/zephyr.desc \
+			/etc/xterm \
+			/etc/writed \
+			/etc/tftpd \
+			/etc/timedc \
+			/usr/2020 \
+			/usr/beta \
+			${mold}"
+	for i in $old_links; do
+		rm -f $i
+	done
+
 	;;
 DS3100)
 	echo "Creating new devices"	
@@ -116,5 +151,3 @@ if [ ! -f /etc/athena/galatea.conf -a -f /etc/galatea.conf ]; then
 	mv -f /etc/galetea.conf /etc/athena/
 	ln -s athena/galatea.conf /etc/galatea.conf
 fi
-
-# Need to remove old symlinks - /etc/timedc
