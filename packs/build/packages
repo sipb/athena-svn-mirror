@@ -1,4 +1,4 @@
-# $Id: packages,v 1.162 2002-03-10 02:23:18 amb Exp $
+# $Id: packages,v 1.163 2002-03-15 19:31:33 amb Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -174,9 +174,10 @@ third/ksrvutil			requires krb5
 third/lam
 third/libglade			requires gtk,gnome-libs,libxml
 third/libiconv			except linux
+third/libghttp			except linux
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
-third/librsvg
+third/librsvg			requires freetype,libpng
 third/libungif			except linux
 third/libxml
 third/libxml2
@@ -188,7 +189,7 @@ third/mdoc
 third/mingetty			on linux
 third/motif			on linux
 third/motif/clients/mwm		on solaris
-third/nautilus			requires bonobo,ORBit,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper
+third/nautilus			requires bonobo,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper,libghttp
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
