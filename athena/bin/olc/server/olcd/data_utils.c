@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.24 1990-12-12 15:13:40 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.25 1991-01-03 16:26:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.24 1990-12-12 15:13:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.25 1991-01-03 16:26:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,6 +36,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>    
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <pwd.h>
 
 #ifdef __STDC__
 # define        P(s) s
@@ -48,8 +49,6 @@ static int assign_instance P((USER *user ));
 static int was_connected P((KNUCKLE *a , KNUCKLE *b ));
 
 #undef P
-
-extern PROC         Proc_List[];
 
 /* Contents:
  *
@@ -525,6 +524,7 @@ delete_knuckle(knuckle,cont)
   /* free new messages */
   free_new_messages(knuckle);
   knuckle->new_messages = -1;
+  knuckle->nm_file[0] = '\0';
       
 #ifdef LOG
   /* log it */
@@ -555,11 +555,38 @@ init_user(knuckle,person)
      KNUCKLE *knuckle;
      PERSON *person;
 {
-  (void) strncpy(knuckle->user->realname,person->realname, NAME_SIZE);
-  (void) strncpy(knuckle->user->username,person->username, LOGIN_SIZE);
-  (void) strncpy(knuckle->user->machine,person->machine, NAME_SIZE);
-  (void) strncpy(knuckle->user->realm,person->realm, REALM_SZ);
-  knuckle->user->uid = person->uid;
+  struct passwd *pw;
+  char *p;
+  USER *user;
+
+  user = knuckle->user;
+  /* Get real name/uid from hesiod */
+#ifdef HESIOD
+  pw = hes_getpwnam(person->username);
+#else
+  pw = getpwname(person->username);
+#endif /* Hesiod */
+  if (pw != NULL) {
+    user->uid = pw->pw_uid;
+    (void) strncpy(user->realname,pw->pw_gecos,NAME_SIZE);
+    p = index(user->realname,',');
+    if (p != NULL) *p = '\0';
+  }
+  else {
+    user->uid = -1;
+    strcpy(user->realname,"The Unknown User");
+  }
+
+  (void) strncpy(user->username,person->username,LOGIN_SIZE);
+  (void) strncpy(user->machine,person->machine, NAME_SIZE);
+#ifdef KERBEROS
+#ifdef ATHENA
+  if (person->realm[0] == '\0')
+    (void) strncpy(user->realm,DFLT_SERVER_REALM, REALM_SZ);
+  else
+    (void) strncpy(user->realm,person->realm, REALM_SZ);
+#endif
+#endif
   knuckle->status = 0;
   init_dbinfo(knuckle->user);
   (void) strcpy(knuckle->title,knuckle->user->title1);
@@ -826,7 +853,8 @@ find_knuckle(person,knuckle)
   int status;
 
   status = get_knuckle(person->username, person->instance,knuckle,0);
-  if(status == USER_NOT_FOUND || status == EMPTY_LIST)
+  if(status == USER_NOT_FOUND || status == EMPTY_LIST
+     || status == INSTANCE_NOT_FOUND)
     {
       sprintf(mesg,"find_knuckle: creating %s",person->username);
       log_status(mesg);
@@ -839,17 +867,12 @@ find_knuckle(person,knuckle)
       else
 	return(ERROR);
     }
-  else
-    if(status == SUCCESS)
-      {
-        strcpy((*knuckle)->user->machine,person->machine);
-	strcpy((*knuckle)->user->realname, person->realname);
-        (*knuckle)->user->status = ACTIVE;
-      }
-
+  else {
+    (*knuckle)->user->status = ACTIVE;
+  }
   return(status);
 }
-  
+
 int
 get_instance(user,instance)
      char *user;
@@ -1309,15 +1332,17 @@ new_message(target, sender, message)
 {
   FILE *msg_file;
   char timebuf[TIME_SIZE];      /* Current time. */
+  char foo[BUF_SIZE];
 
-  if (target->new_messages == -1)
+  if ((target->new_messages == -1) || (target->nm_file[0] == '\0'))
     sprintf(target->nm_file,"%s/%s_%d.nm", LOG_DIR, target->user->username,
 	    target->instance);
 
   msg_file = fopen(target->nm_file,"a");
 
   if (msg_file == NULL) {
-    log_error("new_message: open: %m");
+    sprintf(foo,"new_message: open: %%m %s",target->nm_file);
+    log_error(foo);
     return;
   }
 
@@ -1364,6 +1389,10 @@ void
 free_new_messages(knuckle)
      KNUCKLE *knuckle;
 {
+  if (knuckle->new_messages == -1) {
+    sprintf(knuckle->nm_file,"%s/%s_%d.nm", LOG_DIR, knuckle->user->username,
+	    knuckle->instance);
+  }
   if (knuckle->new_messages == 1)
     unlink(knuckle->nm_file);
   knuckle->new_messages = 0;
