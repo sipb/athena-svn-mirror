@@ -18,12 +18,10 @@ group [group] ...
 .IX display  "disk usage and limits quota"  ""  "disk usage and limits \(em \fLquota\fP"
 .IX  "limits of disk space quota"  ""  "limits of disk space \(em \fLquota\fP"
 .I Quota
-displays users' and groups' disk usage and limits on local and NFS mounted file
-systems.  If a user or group is specified (by name or by id), \fIquota\fP will
-return what information it can obtain on disk usage and limits for the given
-user or group.  The super-user may check quotas for any user and group on 
-local filesystems.  Normal users may only check their own user quotas and the
-quotas of any group they're a member of.
+displays users' and groups' disk usage and limits on local and NFS
+mounted file systems.  If a user or group is specified (by name or by
+id), \fIquota\fP will return information on disk usage and limits for
+the given user or group (See \fBPERMISSIONS\fP below).
 .LP
 .I Quota
 without options displays only warnings 
@@ -40,11 +38,11 @@ format:
 .if n .in -.75in
 .if n .ta 1.3i 2.0i 2.8i 3.5i 4.5i 5.2i 5.9i 6.6i
 .if t .ta .9i 1.4i 2.1i 2.7i 3.4i 4.2i 4.6i 5.2i
-Disk quotas for krishna (uid 69):
+Disk quotas for joeuser (uid 12345):
 Filesystem	Type	ID	usage	quota	limit	files	quota	limit
-/mit/krishna	user	krishna	2394	2000	2400<<	313	1000	1200
+/mit/joeuser	user	joeuser	 2394	 2000	 2400<<   313	 1000	 1200
 
-User krishna over disk quota on /mit/krishna, remove 395K within 7.0 days
+User joeuser over disk quota on /mit/joeuser, remove 395K within 7.0 days
 .ta .5in
 .if n .in +.755i
 .fi
@@ -62,10 +60,12 @@ are measured in kilobytes (1024 characters).
 
 When the "soft" limit is exceeded, the
 .B limit
-column will be marked with \fB<<\fP,
-as shown above.  If the higher "hard" limit is reached, you will no longer be
-able to write anything into the directory.  Also, if you wait until the seven
-days time limit runs out, the "soft" limit will become the "hard" limit.
+column will be marked with \fB<<\fP, as shown above.  If the higher
+"hard" limit is reached, you will no longer be able to write anything
+into the directory.  Also, if you wait until the seven days time limit
+runs out, then writing will not be allowed until usage has been reduced
+below the soft limit, at which time the seven day timer is turned off
+and reset.
 
 In addition, there is a quota and limit on the number of inodes (files and
 directories) that may exist.  Each file or directory counts as a single inode
@@ -89,7 +89,9 @@ check one's home directory quota would be:
 	quota -v -f\  ~
 .fi
 
-Up to 16 `\fB\-f\fP dirname' pairs may be specified.
+Up to 16 `\fB\-f\fP dirname' pairs may be specified.  If the given
+filesystem name doesn't match any mounted filesystems, a suitable
+error message to that effect is printed.
 
 .IP \fB\-u\fP
 This option will only report user quota information (ie. no group quotas), 
@@ -99,14 +101,26 @@ in the following format:
 .if n .in -.75in
 .if n .ta 1.3i 2.0i 2.7i 3.5i 4.5i 5.2i 5.9i 6.6i
 .if t .ta .9i 1.4i 2.1i 2.7i 3.4i 4.2i 4.6i 5.2i
-Disk quotas for user krishna (uid 69):
+Disk quotas for user joeuser (uid 12345):
 Filesystem	usage	quota	limit	timeleft	files	quota	limit	timeleft
-/mit/krishna	2394	2000	2400	7.0 days	313	1000	1200
+/mit/joeuser	2394	2000	2400	7.0 days	313	1000	1200
 .if n .in +.755i
 .fi
 .IP \fB\-g\fP
 Similar to the \fB-u\fP option, but reports only group quota information.  At
 least one group must be specified on the command line.
+.SH PERMISSIONS
+Normal users can only check their own user quotas and the quotas of any
+group they're a member of. \fIquota -v\fP will return all such quotas on
+all mounted filesystems. 
+
+The super-user may check any user or group quota on local (non-NFS)
+filesystems.  The super-user can also get quota information for users
+on NFS filesystems when (1) the NFS fileserver is running the newer
+Athena RPC daemon and (2) the user in question has an NFS mapping on
+the server.  To get quota information on NFS filesystems for a
+specific group, the super-user must have a mapping on the NFS server
+to any user who is in the specified group.
 .SH FILES
 .nf
 .ta 2i
