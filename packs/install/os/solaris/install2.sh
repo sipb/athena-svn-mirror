@@ -43,45 +43,28 @@ mkdir /root/var/rtmp
 chmod 1777 /root/var/tmp
 chmod 1777 /root/var/rtmp
 
-# If we have one partition of sufficient size, install all packages
-# local and use the unmodified patches.  If we have many partitions or
-# the one partition is smallish, install the packages from the non-local
-# package list as symlinks and use the adjusted patches.
-rootsize=`df -k /root | awk '{sz=$2;} END {print sz;}'`
-if [ one = "$partitioning" -a 3145728 -le "$rootsize" ]; then
-    echo "Installing packages and srvd local."
-    cdnl=/cdrom
-    patches=/patches
-    subscr=sys_rvd.local
-else
-    cdnl=/cdrom/cdrom.link
-    patches=/patches/patches.link
-    subscr=sys_rvd
-fi
-
-case `uname -m` in
-sun4u)
-    suffix=u
-    ;;
-sun4m)
-    suffix=m
-    ;;
-*)
-    echo "unsupported architecture - contact Athena administration"
-    exit 1
-    ;;
-esac
 
 date >/tmp/start
 echo "installing the os packages"
-for i in `cat /cdrom/install-local-$suffix`; do
-  echo $i
-  cat /util/yes-file | pkgadd -R /root -d /cdrom $i
-done 2>/dev/null
-for i in `cat /cdrom/install-nolocal-$suffix`; do
-  echo $i
-  cat /util/yes-file | pkgadd -R /root -d $cdnl $i
-done 2>/dev/null
+case `uname -m` in
+sun4u)
+    for i in `cat /cdrom/install-local-u`
+      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i ; done 2>/dev/null
+    for i in `cat /cdrom/install-nolocal-u`      
+      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom/cdrom.link $i; done   2>/dev/null;
+	;;
+sun4m)
+    for i in `cat /cdrom/install-local-m`
+      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i; done 2>/dev/null
+    for i in `cat /cdrom/install-nolocal-m`      
+      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom/cdrom.link $i; done 2>/dev/null  
+ 	;;
+*)
+    echo "unsupported architecture - contact Athena administration"
+      exit 1
+	;;
+esac
+
 
 echo "correction to pkg installation"
 cp /cdrom/I* /root/var/sadm/system/admin/
@@ -92,8 +75,8 @@ rm /root/etc/.sysidconfig.apps
 cp /cdrom/.sysIDtool.state /root/etc/default/
 
 echo "Installing Requested and Security patches for OS "
-cat /util/yes-file | /util/patchadd -d -R /root -u -M \
-    $patches `cat /patches/current-patches` 
+    cat /util/yes-file | /util/patchadd -d -R /root -u -M \
+	/patches/patches.link `cat /patches/current-patches` 
 
 
 echo "add/remove osfiles as needed\n"
@@ -102,8 +85,7 @@ date >/tmp/end
 echo "the os part is installed"
 
 echo "tracking the srvd"
-/srvd/usr/athena/etc/track -d -F /srvd -T /root -W /srvd/usr/athena/lib \
-	-s stats/$subscr slists/$subscr
+/srvd/usr/athena/etc/track -d -F /srvd -T /root -W /srvd/usr/athena/lib
 echo "copying kernel modules from /srvd/kernel"
 cp -p /srvd/kernel/fs/* /root/kernel/fs/
 
