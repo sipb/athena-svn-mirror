@@ -1,4 +1,4 @@
-# $Id: packages,v 1.228 2003-04-03 04:11:13 ghudson Exp $
+# $Id: packages,v 1.229 2003-04-09 21:22:18 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -137,7 +137,7 @@ third/audiofile			except linux
 third/bash
 third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
-third/bonobo-activation		requires gettext,glib2,ORBit2,linc,libxml2
+third/bonobo-activation		except linux requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
 third/bug-buddy			except linux requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2
 third/bzip2			except linux
@@ -237,7 +237,7 @@ third/mingetty			on linux
 third/motif/clients/mwm		on solaris
 third/mozilla			requires gtk,ORBit
 third/nautilus			except linux requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
-third/nautilus-media		requires gstreamer,libgnome,libgnomeui,eel,nautilus
+third/nautilus-media		except linux requires gstreamer,libgnome,libgnomeui,eel,nautilus
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
