@@ -276,6 +276,10 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
+/* make autoconf happy */
+#undef OSNAME
+#undef OSVERSION
+
 /* Define to the name of the distribution.  */
 #undef PACKAGE
 

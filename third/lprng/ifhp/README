@@ -40,7 +40,26 @@
 
    You have been warned.
 
-3. Super Express Install For The Pathologically Impatient
+3. Utilities
+
+   If you want to do text to postscript or whatever conversions,
+   you will need a converter and program to determine input file type.
+
+	A2PS - Ascii Text to PostScript Converter
+	   http://www-inf.enst.fr/~demaille/a2ps
+	   ftp://ftp.enst.fr/pub/unix/a2ps/
+
+	file - utility to determine file type
+	   ftp://ftp.astron.com/pub/file/
+	   ftp.deshaw.com/pub/file/
+	   Also available from the RedHat.com SRPMS in (of course) rpm format
+
+    Install these and update the ifhp.conf file with the correct paths to their
+    locations.
+
+    You have been warned.
+
+4. Super Express Install For The Pathologically Impatient
 
    Right.  I know that you want to get going,  so here is the
    magic summary.
@@ -52,9 +71,11 @@
    #    /usr/local/lib/filters/ifhp, links ofhp to ifhp,
    #    /usr/local/lib/filters/textps
    #    /usr/local/lib/filters/banner.ps
+   #    /usr/local/lib/filters/pclbanner
    make install
    #
    make init
+     (this installs src/ifhp.conf in /etc/ifhp.conf)
 
     If you have an HP printer that support PJL, PCL, and PS, on a
     network connection, then simply change your printcap entries
@@ -63,12 +84,12 @@
    lp:...
       :if=ifhp
 
-4.  Run time options are provided by the /etc/ifhp.conf file.  This
+5.  Run time options are provided by the /etc/ifhp.conf file.  This
     file is extremely complex,  as it has the ability to configure
     just about any option that you can think of.  See the IFHP-HOWTO
     file in the docs directory for details.
 
-5.  By default, the if filter will check the job files for printability
+6.  By default, the if filter will check the job files for printability
     and/or postscript format.  If it is PostScript,  it will set the
     printer to PostScript mode using the PJL commands,  otherwise it
     will set the printer to PCL.  If you do not want this to happen,
@@ -90,6 +111,9 @@
 
     In addition, you can 'suggest' a language using lpr -Zlanguage=xxx;
     this will prove helpful for those difficult files.
+ 
+    See the comments above about 'file' and 'a2ps' - you may need to use this
+    if users keep sending garbage files to the printer.
 
 6. ifhp takes the full range of LPD filter options, and uses or
     or ignores them as applicable. The following command line options
@@ -117,4 +141,16 @@
     Note:  there is even a simple tutorial session there, explaining how
     to set up some options for testing.
 
-$Id: README,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+8.  pclbanner
+    This is a banner program that produces a PCL banner.  You should set this
+    up using:
+
+    lp:bp=/usr/local/lib/filters/pclbanner
+      :of=/usr/local/lib/filters/ifhp
+      :if=/usr/local/lib/filters/ifhp
+      # let PCL banner get the 'short banner' info and
+      # generate a long banner
+      #   (no form feeds though)
+      :sb:sf
+
+$Id: README,v 1.1.1.2 1999-05-04 18:50:25 mwhitson Exp $

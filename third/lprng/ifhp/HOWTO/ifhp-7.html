@@ -57,17 +57,16 @@ The file has the following structure.
 <LI>  Blank lines and lines starting with # are ignored.</LI>
 <LI>  Keys or flags start in column 1.
 The syntax is similar to the LPRng and BSD
-<CODE>printcap</CODE>
 file.
-<BR>
-Syntax</TD><TD>Equivalent To</TD><TD>Class</TD></TR><TR><TD>
-flag</TD><TD>flag=1</TD><TD>FLAG</TD></TR><TR><TD>
-flag&commat;</TD><TD>flag=0</TD><TD>FLAG</TD></TR><TR><TD>
-flag=val</TD><TD>flag=val (string value)</TD><TD>STRING</TD></TR><TR><TD>
-flag#val</TD><TD>flag=val (string value)</TD><TD>STRING</TD></TR><TR><TD>
-flag=] v v ... [ </TD><TD></TD><TD>LIST</TD></TR><TR><TD>
-(no flag name present)</TD><TD>flag=0</TD><TD>FLAG</TD></TR><TR><TD>
-
+<BLOCKQUOTE><CODE>
+<PRE>
+Syntax             Equivalent To    Class
+flag               flag=1           (FLAG)
+flag&commat;       flag=0           (FLAG)
+flag=val           flag=val (string value) STRING
+flag=] v v  ... [          LIST
+</PRE>
+</CODE></BLOCKQUOTE>
 </LI>
 <LI>Flags are used for options which take a TRUE/FALSE, 0/1, or ON/OFF
 value, and

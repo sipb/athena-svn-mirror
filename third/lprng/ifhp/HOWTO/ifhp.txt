@@ -1,6 +1,6 @@
   IFHP-HOWTO
   Patrick Powell papowell@astart.com
-  27 Mar 1999 (For ifhp-3.2.1)
+  22 Apr 1999 (For ifhp-3.2.7)
 
   The ifhp software is an enhanced, extended, highly configurable, and
   portable implementation of a print filter for use with the ifhp Print
@@ -77,13 +77,13 @@
   2. Installation and Express Configuration
 
      2.1 Configure and Compilation
-     2.2 Install ifhp.conf Configuration File
-     2.3 Printcap Configuration
-     2.4 PS, PCL, PJL Printer with Network Connection
-     2.5 PS, PCL, PJL Printer with Parallel Port Connection
-     2.6 PS, PCL, PJL Printer with Serial Port
-     2.7 PostScript Only Printer
-     2.8 PostScript Only Printer With Text Conversion
+     2.2 Printcap Configuration
+     2.3 PS, PCL, PJL Printer with Network Connection
+     2.4 PS, PCL, PJL Printer with Parallel Port Connection
+     2.5 PS, PCL, PJL Printer with Serial Port
+     2.6 PostScript Only Printer
+     2.7 PostScript Only Printer With Text Conversion
+     2.8 Tektronixs Phaser Series Printer with Network Connections
 
   3. Configuration Tutorial
 
@@ -102,7 +102,7 @@
   4. Filter Operation Details
 
      4.1 Options, Initialization and Setup
-        4.1.1 Debug and Trace On Stderr
+        4.1.1 Debug and Trace
         4.1.2 Configuration File Paths
      4.2 Model Selection
      4.3 Statusfile, Statusfile_max, Statusfile_min
@@ -126,10 +126,12 @@
         4.7.4 Default Passthrough of Unknown File Types
      4.8 Language Specific Initialization
      4.9 File Transfer and Error Status Monitoring
+     4.10 End of Job
+     4.11 Tektronix Phaser and AppSocket Support
 
   5. Banners and OF Mode Operations
-
   6. Predefined Options
+
   7. Configuration Files
 
      7.1 Configuration Selection
@@ -192,6 +194,7 @@
   1992.  These manuals are available through the Hewlett Packard
   Developers Program.  See http://www.hp.com/go/devexchange for
   information on how to join.
+
 
   Previous releases of ifhp had a large selection of README files which
   are now incorporated into the ifhp-HOWTO document.
@@ -345,6 +348,10 @@
         http://www-inf.enst.fr/~demaille/a2ps/ This package does a very
         good job of text to PostScript conversion.
 
+     eennssccrriipptt -- GGNNUU EEnnssccrriipptt
+        http://www.gnu.org/ This package is a simpler version of a2ps,
+        and is faster and smaller.
+
      UUnniixx FFiillee UUttiilliittyy -- DDeetteerrmmiinneess tthhee ttyyppee ooff ffiillee
         ftp://ftp.astron.com/pub/file/ or
         ftp://ftp.deshaw.com/pub/file/.
@@ -367,22 +374,14 @@
        configure
        make all
        # installs ifhp and textps in /usr/local/lib/filters
+       # installs ifhp.conf in /etc
+       #  (if already present, in /etc/ifhp.conf.sample)
        make install
 
 
 
 
-  22..22..  IInnssttaallll iiffhhpp..ccoonnff CCoonnffiigguurraattiioonn FFiillee
-
-  If this is a first time installation, you can run
-
-       make init
-
-
-  which will copy the src/ifhp.conf file to /etc/ifhp.conf If this file
-  already exists, it will not be overwritten.
-
-  22..33..  PPrriinnttccaapp CCoonnffiigguurraattiioonn
+  22..22..  PPrriinnttccaapp CCoonnffiigguurraattiioonn
 
   The basic LPRng printcap configuration is:
 
@@ -394,7 +393,7 @@
          :sd=_s_p_o_o_l_d_i_r
          :...
 
-    # version 1 - using -T options
+         # version 1 - using -T options
     #path to ifhp filter
     :if=/.../ifhp -Tooppttiioonnss
     :of=/.../ifhp -Tooppttiioonnss
@@ -448,36 +447,23 @@
   a detailed explanation of these names.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  apple         hp4000         hp4             hp4l             hp4lc
-  hp4m          hp4ml          hp4mp           hp4mplus         hp4mv
-  hp4p          hp4pj          hp4plus         hp4si            hp4simx
-  hp4v          hp5            hp5l            hp5m             hp5mp
-  hp5p          hp5si          hp5simopier     hp5simx          hp6l
-  hp6mp         hp6p           hpcolorlj5      hpcolorlj5m      hpcolorlj
-  hpdj1200c     hpdj1600c      hpdj2000cp      hpdj200          hpdj220
-  hpdj230       hpdj2500cp     hpdj250c        hpdj330          hpdj350c
-  hpdj350c      hpdj430        hpdj450c        hpdj455ca        hpdj600
-  hpdj650c      hpdj700        hpdj750c        hpdj750cplus     hpdj755cm
-  hpiiisi       hpljpro        hppjxl300       postscript       ps
-
-
+       apple     hp4000      hp4          hp4l         hp4lc
+       hp4m      hp4ml       hp4mp        hp4mplus     hp4mv
+       hp4p      hp4pj       hp4plus      hp4si        hp4simx
+       hp4v      hp5         hp5l         hp5m         hp5mp
+       hp5p      hp5si       hp5simopier  hp5simx      hp6l
+       hp6mp     hp6p        hpcolorlj5   hpcolorlj5m  hpcolorlj
+       hpdj1200c hpdj1600c   hpdj2000cp   hpdj200      hpdj220
+       hpdj230   hpdj2500cp  hpdj250c     hpdj330      hpdj350c
+       hpdj350c  hpdj430     hpdj450c     hpdj455ca    hpdj600
+       hpdj650c  hpdj700     hpdj750c     hpdj750cplus hpdj755cm
+       hpiiisi   hpljpro     hppjxl300    postscript   ps
+       tek       qms1725
 
   In addition to HP printers, there is also generic support for
   PostScript only printers.
 
-  22..44..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh NNeettwwoorrkk CCoonnnneeccttiioonn
+  22..33..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh NNeettwwoorrkk CCoonnnneeccttiioonn
 
   This is the most common configuration, and the printcap entry would
   have the following format:
@@ -513,7 +499,7 @@
          :of=/.../ifhp
 
 
-  22..55..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh PPaarraalllleell PPoorrtt CCoonnnneeccttiioonn
+  22..44..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh PPaarraalllleell PPoorrtt CCoonnnneeccttiioonn
 
   Since the parallel port is unidirectional, you cannot get status back,
   and need to use the status@ option to prevent the ifhp filter from
@@ -526,16 +512,16 @@
        lp:server
          :sd=_s_p_o_o_l_d_i_r
          :...
-    # parallel port
-    :lp=_/_d_e_v_/_l_p_t
-    :ifhp=status@
-    #path to ifhp filter
-    :if=/.../ifhp
-    :of=/.../ifhp
+         # parallel port
+         :lp=_/_d_e_v_/_l_p_t
+         :ifhp=status@
+         #path to ifhp filter
+         :if=/.../ifhp
+         :of=/.../ifhp
 
 
 
-  22..66..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh SSeerriiaall PPoorrtt
+  22..55..  PPSS,, PPCCLL,, PPJJLL PPrriinntteerr wwiitthh SSeerriiaall PPoorrtt
 
   The LPRng print spooler will open and set the serial line
   characteristics, and pass the open connection to the ifhp filter.  The
@@ -558,7 +544,7 @@
          :of=/.../ifhp
 
 
-  22..77..  PPoossttSSccrriipptt OOnnllyy PPrriinntteerr
+  22..66..  PPoossttSSccrriipptt OOnnllyy PPrriinntteerr
 
   Use the configuration appropriate to the printer connection, and then
   use the pjl@, pcl@, and text@ option to inhibit everything but
@@ -592,17 +578,17 @@
        # server information
        lp:server
          :sd=_s_p_o_o_l_d_i_r
-    :...
-    :ifhp=model=ps   #path to ifhp filter
-    :if=/.../ifhp
-    :of=/.../ifhp
+         :...
+         :ifhp=model=ps   #path to ifhp filter
+         :if=/.../ifhp
+         :of=/.../ifhp
 
 
   If your printer does not like to have a PostScript EOJ (Control-D)
   flag at the start of a job, use the no_ps_eoj (``No PS EOJ at Start'')
   flags.  flag to remove them.
 
-  22..88..  PPoossttSSccrriipptt OOnnllyy PPrriinntteerr WWiitthh TTeexxtt CCoonnvveerrssiioonn
+  22..77..  PPoossttSSccrriipptt OOnnllyy PPrriinntteerr WWiitthh TTeexxtt CCoonnvveerrssiioonn
 
   You can use the PostScript Only configuration above, and add text to
   postscript conversion to it.  This is done by defining the pathname to
@@ -635,6 +621,53 @@
          :...
          :ifhp=pcl@,pjl@,text@,text_converter=...,\
               text_converter_output=ps
+         #path to ifhp filter
+         :if=/.../ifhp
+         :of=/.../ifhp
+
+
+
+  22..88..  TTeekkttrroonniixxss PPhhaasseerr SSeerriieess PPrriinntteerr wwiitthh NNeettwwoorrkk CCoonnnneeccttiioonnss
+
+  The Tektronics Phaser Series printers use the _A_p_p_s_o_c_k_e_t protocol when
+  sending a job to the printer.  This protocol is (briefly):
+
+  1. The printer listens for UDP packets on port 9101 and for TCP/IP
+     connections on port 9100.
+
+  2. When a UDP packet is recieved on port 9101, then a reply packet
+     containing the status is returned to the originator's address.
+     This packet contains an status indication, in a _u_n_d_e_f_i_n_e_d format.
+
+  3. To send a job to the printer,  a TCP/IP connection is opened to
+     port 9100, and a PostScript job is sent.  Only a single job can be
+     sent at a time - a EOJ (CTRL-D) will terminate input and flush all
+     following jobs.
+
+  4. Return status will be sent in the reverse direction until the job
+     has completed, at which point the connection will be closed.
+
+  The ifhp program supports the appsocket protocol.  In order to do so,
+  the following ifhp configuration entry can be used.
+
+
+       [ tek ]
+       appsocket
+       pjl@
+       pcl@
+
+
+
+  The appsocket option will use the appsocket protcol, and cause ifhp to
+  open and close connections to the printer.  The printcap entry should
+  specify lp=/dev/null and provide the device IP address using the
+  -Tdev=host%port option.
+
+       # Phaser Setup lp:server
+         :_l_p_=_/_d_e_v_/_n_u_l_l
+         :sd=_s_p_o_o_l_d_i_r
+         :...
+         :ifhp=model=tek,dev=10.0.0.1%9100
          #path to ifhp filter
          :if=/.../ifhp
          :of=/.../ifhp
@@ -689,6 +722,7 @@
   trace output to be put to STDERR.  Normally, trace output is written
   only to the statusfile specified by the command line -s option or the
   configuration file statusfile=path entry.
+
 
   The text entry causes the filter to accept text files and simply pass
   them through without processing, and the ps@ pjl@ pcl@ entries disable
@@ -753,7 +787,6 @@
        pjl@
        pcl@
        text
-
 
 
 
@@ -855,7 +888,6 @@
   back from the printer unless both the printer and the Network Printer
   Box use bi-directional communication.
 
-
   In the following discussions, we will assume that you have assigned an
   IP address to the printer, and that it is nwpr, and that status and
   error information is returned over the network connection.
@@ -864,7 +896,7 @@
      using ping.  It is amazing how many problems are caused by
      erroneous network addresses.
 
-       astart: {298} % ping nwpr
+       astart: % ping nwpr
        PING nwpr.astart.com (10.0.0.10): 56 data bytes
        64 bytes from 10.0.0.10: icmp_seq=0 ttl=60 time=4.286 ms
 
@@ -872,7 +904,7 @@
   2. Now use telnet to check that you can connect to port 9100.
 
 
-       astart: {299} % telnet nwpr 9100
+       astart: % telnet nwpr 9100
        Trying 206.71.174.206...
        Connected to nwpr.astart.com.
        Escape character is '^]'.
@@ -890,8 +922,6 @@
 
 
   as the first characters that are sent.  You should see:
-
-
        >># telnet nwpr
        Connected to nwpr.astart.com.
        Escape character is '^]'.
@@ -922,6 +952,8 @@
 
        nc printer 9100 <hi.txt
 
+
+
   The printer should start up and print a single page of output.  You
   may need to use CTRL-C to terminate the nc program.
 
@@ -947,7 +979,7 @@
   9. Now do the indicated command; you should get similar output
 
 
-       astart: {542} % ifhp <hi.txt
+       astart: % ifhp <hi.txt
 
 
 
@@ -976,41 +1008,29 @@
   Now use the following command and you should see similar output.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  ifhp '-Tconfig=t2hp.conf;/etc/ifhp.conf;t2hp.conf' < hi1.txt
-  ifhp 16:44:16.541 [3199] Process_job: setting up printer
-  ifhp 16:44:16.545 [3199] Do_sync: starting sync using 'pjl'
-  ifhp 16:44:17.935 [3199] Check_device_status: device = 'Toner Low'
-  ifhp 16:44:18.116 [3199] Do_sync: sync done
-  ifhp 16:44:18.117 [3199] Do_pagecount: getting pagecount using 'pjl'
-  ifhp 16:44:20.011 [3199] Do_pagecount: final pagecount 63304
-  ifhp 16:44:20.013 [3199] Do_accounting: accounting at start, pagecount 63304, pages 0
-  ifhp 16:44:20.013 [3199] Process_job: sending job file
-  ifhp 16:44:20.014 [3199] Send_job: starting transfer
-  ifhp 16:44:20.115 [3199] Use_file_util: file identified as 'ascii text ', assigned type 'text'
-  ifhp 16:44:20.119 [3199] Send_job: finished writing file, cleaning up
-  ifhp 16:44:20.119 [3199] Process_job: sent job file
-  ifhp 16:44:20.119 [3199] Process_job: doing cleanup
-  ifhp 16:44:20.120 [3199] Do_sync: starting sync using 'pjl'
-  ifhp 16:44:22.175 [3199] Do_sync: sync done
-  ifhp 16:44:22.176 [3199] Do_waitend: getting end using 'pjl'
-  ifhp 16:44:22.529 [3199] Check_device_status: device = 'Warming Up'
-  ifhp 16:45:04.669 [3199] Check_device_status: device = 'Toner Low'
-  ifhp 16:45:21.361 [3199] Do_pagecount: getting pagecount using 'pjl'
-  ifhp 16:45:23.241 [3199] Do_pagecount: final pagecount 63305
-  ifhp 16:45:23.243 [3199] Do_accounting: accounting at end, pagecount 63305, pages 1
-  ifhp 16:45:23.243 [3199] Process_job: done
+       ifhp '-Tconfig=t2hp.conf;/etc/ifhp.conf;t2hp.conf' < hi1.txt
+       ifhp 16:44:16.541 [3199] Process_job: setting up printer
+       ifhp 16:44:16.545 [3199] Do_sync: starting sync using 'pjl'
+       ifhp 16:44:17.935 [3199] Check_device_status: device = 'Toner Low'
+       ifhp 16:44:18.116 [3199] Do_sync: sync done
+       ifhp 16:44:18.117 [3199] Do_pagecount: getting pagecount using 'pjl'
+       ifhp 16:44:20.011 [3199] Do_pagecount: final pagecount 63304
+       ifhp 16:44:20.013 [3199] Do_accounting: accounting at start, pagecount 63304, pages 0
+       ifhp 16:44:20.013 [3199] Process_job: sending job file
+       ifhp 16:44:20.014 [3199] Send_job: starting transfer
+       ifhp 16:44:20.115 [3199] Use_file_util: file identified as 'ascii text ', assigned type 'text'
+       ifhp 16:44:20.119 [3199] Send_job: finished writing file, cleaning up
+       ifhp 16:44:20.119 [3199] Process_job: sent job file
+       ifhp 16:44:20.119 [3199] Process_job: doing cleanup
+       ifhp 16:44:20.120 [3199] Do_sync: starting sync using 'pjl'
+       ifhp 16:44:22.175 [3199] Do_sync: sync done
+       ifhp 16:44:22.176 [3199] Do_waitend: getting end using 'pjl'
+       ifhp 16:44:22.529 [3199] Check_device_status: device = 'Warming Up'
+       ifhp 16:45:04.669 [3199] Check_device_status: device = 'Toner Low'
+       ifhp 16:45:21.361 [3199] Do_pagecount: getting pagecount using 'pjl'
+       ifhp 16:45:23.241 [3199] Do_pagecount: final pagecount 63305
+       ifhp 16:45:23.243 [3199] Do_accounting: accounting at end, pagecount 63305, pages 1
+       ifhp 16:45:23.243 [3199] Process_job: done
 
 
 
@@ -1033,12 +1053,12 @@
      following lines:
 
        # modify the next line to contain
-       #  the name, IP address, or pathname of the printer dev=_/_d_e_v_/_s_e_r_i_a_l_-
-       _p_o_r_t
-       #debug=3
-       stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak
-       crtscts trace_to_stderr
-       text
+       #  the name, IP address, or pathname of the printer
+  dev=_/_d_e_v_/_s_e_r_i_a_l_p_o_r_t
+  #debug=3
+  stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak
+  crtscts trace_to_stderr
+  text
 
 
 
@@ -1046,24 +1066,16 @@
   similar to:
 
 
-
-
-
-
-
-
-
-
-  astart: {542} % ifhp <h11.txt
-  ifhp 15:57:23.734 [3096] Process_job: setting up printer
-  ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
-  ifhp 15:57:23.736 [3096] Process_job: sending job file
-  ifhp 15:57:23.736 [3096] Send_job: starting transfer
-  ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
-  ifhp 15:57:23.737 [3096] Process_job: sent job file
-  ifhp 15:57:23.738 [3096] Process_job: doing cleanup
-  ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
-  ifhp 15:57:23.738 [3096] Process_job: done
+       astart: % ifhp <h11.txt
+       ifhp 15:57:23.734 [3096] Process_job: setting up printer
+       ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
+       ifhp 15:57:23.736 [3096] Process_job: sending job file
+       ifhp 15:57:23.736 [3096] Send_job: starting transfer
+       ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
+       ifhp 15:57:23.737 [3096] Process_job: sent job file
+       ifhp 15:57:23.738 [3096] Process_job: doing cleanup
+       ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
+       ifhp 15:57:23.738 [3096] Process_job: done
 
 
 
@@ -1108,8 +1120,8 @@
        trace
        ps@
        pjl@
-       pcl@
-       text
+  pcl@
+  text
 
 
   2. Now run the ifhp program:
@@ -1120,16 +1132,16 @@
   3. You should see output similar to:
 
 
-  astart: {542} % ifhp -Tconfig=.../testscripts/t1.conf <h11.txt
-  ifhp 15:57:23.734 [3096] Process_job: setting up printer
-  ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
-  ifhp 15:57:23.736 [3096] Process_job: sending job file
-  ifhp 15:57:23.736 [3096] Send_job: starting transfer
-  ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
-  ifhp 15:57:23.737 [3096] Process_job: sent job file
-  ifhp 15:57:23.738 [3096] Process_job: doing cleanup
-  ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
-  ifhp 15:57:23.738 [3096] Process_job: done
+       astart: % ifhp -Tconfig=.../testscripts/t1.conf <h11.txt
+       ifhp 15:57:23.734 [3096] Process_job: setting up printer
+       ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
+       ifhp 15:57:23.736 [3096] Process_job: sending job file
+       ifhp 15:57:23.736 [3096] Send_job: starting transfer
+       ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
+       ifhp 15:57:23.737 [3096] Process_job: sent job file
+       ifhp 15:57:23.738 [3096] Process_job: doing cleanup
+       ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
+       ifhp 15:57:23.738 [3096] Process_job: done
 
 
 
@@ -1171,13 +1183,16 @@
   cartridge on a parallel port.
 
 
-       status@
-       pjl@
-       pcl
-       ps
-       text@
-       text_converter=/usr/local/bin/a2ps -o-
-       text_converter_output=ps
+
+
+
+  status@
+  pjl@
+  pcl
+  ps
+  text@
+  text_converter=/usr/local/bin/a2ps -o-
+  text_converter_output=ps
 
 
 
@@ -1235,19 +1250,21 @@
   done.  Here is a sample configuration file section, and an example.
 
 
-       # we add the upper and lower keywords
-       #  lpr -Zupper  or lpr -Zlower will be specified by the user
-       pjl_user_opts=[ upper lower ]
-       pjl_upper=@PJL SET INTRAY=TRAY1
-       pjl_lower=@PJL SET INTRAY=TRAY2
 
-       #  lpr -Zpagesetup
-       pcl_user_opts=[ pagesetup ]
-       pcl_pagesetup=[ lines=12 cols=4 ]
-       lines=20
-       pcl_lines=\033*(\%{lines}L
-       cols=2
-       pcl_cols=\033*(\%{cols}C
+
+  # we add the upper and lower keywords
+  #  lpr -Zupper  or lpr -Zlower will be specified by the user
+  pjl_user_opts=[ upper lower ]
+  pjl_upper=@PJL SET INTRAY=TRAY1
+  pjl_lower=@PJL SET INTRAY=TRAY2
+
+  #  lpr -Zpagesetup
+  pcl_user_opts=[ pagesetup ]
+  pcl_pagesetup=[ lines=12 cols=4 ]
+  lines=20
+  pcl_lines=\033*(\%{lines}L
+  cols=2
+  pcl_cols=\033*(\%{cols}C
 
 
 
@@ -1367,23 +1384,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // extract configuration information
   foreach path in configuration pathlist {
       open path;
@@ -1406,6 +1406,17 @@
           }
   }
 
+  // open a direct connection if specified
+  if( device specified using -Tdev=device ){
+          // if device is host%port, we open TCP/IP connection
+          fd = open(device);
+          dup fd to 1; close fd;
+  }
+  if( appsocket procotol specified and TCP/IP device ){
+          udp_socket = open( udp socket to device%port+1 )
+  }
+
+
   ###---
 
 
@@ -1414,38 +1425,74 @@
   /// See: ``Synchronization and Pagecount''
 
 
-       ###+++ Synchronization and Pagecount
-       if( status returned by printer ){
-           // sync has the form sync@ (none), sync=ps, sync=pjl, ...
-           if( sync=language has value ) do{
-                       if( sync TRUE ){
-                               set sync= pjl or ps depending on availability
-                       }
-               if( sync = pjl and PJL ECHO available ){
-                   send PJL ECHO command to printer
-                       } else if( sync = ps ){
-                   send PS program to printer
-                       } else {
-                               terminate with error;
-                       }
-           } while( no response );
 
-           // pagecount has the form pagecount@ (none),
-           //   pagecount=ps, pagecount=pjl, ...
-           if( pagecount=language has value ) do {
-                       if( pagecount TRUE ){
-                               set pagecount= pjl or ps depending on availability
-                       }
-               if( pagecount = pjl and PJL INFO available ){
-                  send PJL INFO PAGECOUNT command to printer
-                       } else if( pagecount = ps ){
-                  send PS program to printer
-                       } else {
-                               terminate with error;
-                       }
-           } while( no pagecount response );
-       }
-       ###---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ###+++ Synchronization and Pagecount
+  if( status returned by printer and sync requested ){
+      // APPSOCKET protocol
+      // sync has the form sync@ (none), sync=ps, sync=pjl, ...
+          if( appsocket ){
+                  command = "\n\r"
+          } else {
+                  // decode status=language and determine sync
+          if( sync = pjl and PJL ECHO available ){
+              send PJL ECHO command to printer
+                  } else if( sync = ps ){
+              send PS program to printer
+                  } else {
+                          terminate with error;
+                  }
+          do{
+                  send command and wait for timeout;
+      } while( no response );
+
+          if( appsocket ){
+                  close and reopen TCP/IP connection;
+          }
+
+      // pagecount has the form pagecount@ (none),
+      //   pagecount=ps, pagecount=pjl, ...
+      if( pagecount=language has value ) do {
+                  if( pagecount TRUE ){
+                          set pagecount= pjl or ps depending on availability
+                  }
+          if( pagecount = pjl and PJL INFO available ){
+             send PJL INFO PAGECOUNT command to printer
+                  } else if( pagecount = ps ){
+             send PS program to printer
+                  } else {
+                          terminate with error;
+                  }
+      } while( no pagecount response );
+
+          if( appsocket ){
+                  close and reopen TCP/IP connection;
+          }
+  }
+  ###---
 
 
 
@@ -1453,57 +1500,76 @@
   /// See: ``PJL Initialization''
 
 
-       ### PJL Initialization
-       if( PJL enabled ){
-           language = "pjl_"
-           foreach option in pjl_init=[...] {
-              expand the option using the language value
-              #+++ PJL OPTION ACTIONS +++
-              if( option in pjl_vars_set=[ ... ]
-                and option not in pjl_vars_except
-                expand "@PJL SET OPTION=\%{option}"
-                output = expanded string value
-              } else {
-                if( option value is a string ){
-                  output = expanded string value;
-                }
-              }
-              // output has the form @PJL COMMAND ....
-              if( COMMAND is in pjl_only=[ ... ]
-                  and not in pjl_except=[ ... ] ){
-                  send output to printer
-              }
-              #--- end PJL OPTION ACTIONS
-           }
-           if( !OF_mode ){
-                foreach option in -Toption=value {
-                   if( option in pjl_user_opts ){
-                       #+++ USER PJL OPTIONS
-                       // join 'pjl_' and the option name
-                       expand 'pjl_' . option
-                       // perform PJL actions as above
-                           #+++ PJL OPTION ACTIONS +++
-                           ....
-                           #-- PJL OPTION ACTIONS +++
-                       #--- USER PJL OPTIONS
-                   }
-                }
-                foreach option in -Zoption=value {
-                   if( option in pjl_user_opts ){
-                       // perform USER PJL actions as above
-                       #+++ USER PJL OPTIONS
-                       #--- USER PJL OPTIONS
-                   }
-                }
-           }
-       }
 
-       ###--- PJL INITIALIZATION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ### PJL Initialization
+  if( PJL enabled ){
+      language = "pjl_"
+      foreach option in pjl_init=[...] {
+         expand the option using the language value
+         #+++ PJL OPTION ACTIONS +++
+         if( option in pjl_vars_set=[ ... ]
+           and option not in pjl_vars_except
+           expand "@PJL SET OPTION=\%{option}"
+           output = expanded string value
+         } else {
+           if( option value is a string ){
+             output = expanded string value;
+           }
+         }
+         // output has the form @PJL COMMAND ....
+         if( COMMAND is in pjl_only=[ ... ]
+             and not in pjl_except=[ ... ] ){
+             send output to printer
+         }
+         #--- end PJL OPTION ACTIONS
+      }
+      if( !OF_mode ){
+           foreach option in -Toption=value {
+              if( option in pjl_user_opts ){
+                  #+++ USER PJL OPTIONS
+                  // join 'pjl_' and the option name
+                  expand 'pjl_' . option
+                  // perform PJL actions as above
+                      #+++ PJL OPTION ACTIONS +++
+                      ....
+                      #-- PJL OPTION ACTIONS +++
+                  #--- USER PJL OPTIONS
+              }
+           }
+           foreach option in -Zoption=value {
+              if( option in pjl_user_opts ){
+                  // perform USER PJL actions as above
+                  #+++ USER PJL OPTIONS
+                  #--- USER PJL OPTIONS
+              }
+           }
+      }
+  }
+
+  ###--- PJL INITIALIZATION
 
 
 
 
   /// See: ``Text File Conversion''
+
+
+
 
 
 
@@ -1628,7 +1694,7 @@
        // job terminaton
 
        ###+++ Synchronization and Pagecount as above
-       if( status ){
+       if( waitend ){
                if( sync requested previously ){
                        if( sync with PJL ){
                                wait for end of job using UINFO;
@@ -1637,15 +1703,15 @@
                                printing to stop
                        }
                }
+               if( appsocket ){
+                       close and reopen connection;
+               }
                get pagecount using previously descibed algorithm
        }
 
        ###---
 
        exit
-
-
-
 
 
   44..11..  OOppttiioonnss,, IInniittiiaalliizzaattiioonn aanndd SSeettuupp
@@ -1720,7 +1786,7 @@
 
   44..11..11..
 
-  DDeebbuugg aanndd TTrraaccee OOnn SSttddeerrrr
+  DDeebbuugg aanndd TTrraaccee
 
   The value of the debug option sets the debugging level.  It can be
   increased, but not decreased.  The trace flag causes debugging
@@ -2393,6 +2459,62 @@
 
 
 
+  44..1100..  EEnndd ooff JJoobb
+
+  The waitend option controls the job termination sequence.  By default,
+  this will do the same work as the sync operation, and the option takes
+  the same set of values.
+
+  If waitend is suppressed using waitend@, then as soon as a job has
+  been transferred, the next step, pagecount, will be attempted.  If the
+  print job has not finished at this point, then erroneous page counts
+  will be reported.
+
+  When using the appsocket protocol, then suppressing waitend will cause
+  no error messages from the printer to be reported.
+
+
+  44..1111..  TTeekkttrroonniixx PPhhaasseerr aanndd AAppppSSoocckkeett SSuuppppoorrtt
+
+  The Tektronix Phaser PostScript printers uses the AppSocket protcol
+  for sending a job to the printer over a network connection.  The
+  appsocket flag enables this operation.  The protocol is (briefly):
+
+  1. The printer listens for UDP packets on port 9101 and for TCP/IP
+     connections on port 9100.
+
+  2. When a UDP packet is recieved on port 9101, then a reply packet
+     containing the status is returned to the originator's address.
+     This packet contains an status indication, in a _u_n_d_e_f_i_n_e_d format.
+
+  3. To send a job to the printer,  a TCP/IP connection is opened to
+     port 9100, and a PostScript job is sent.  Only a single job can be
+     sent at a time - a EOJ (CTRL-D) will terminate input and flush all
+     following jobs.
+
+  4. Return status will be sent in the reverse direction until the job
+     has completed, at which point the connection will be closed.
+
+  To use this protocol, the printer TCP/IP address and port must be
+  specified using the -Tdev=host%port option; usually port is 9100.
+  Also, the printer device in the printcap entry should be lp=/dev/null.
+
+  When using the Appsocket protocol, the ifhp filter will open a UDP
+  port and use it to send query packets to the printer UDP port 9101.
+  In addition, it will try to open a connection to port 9100.  When a
+  connection has been established, and pagecount has been determined,
+  the connection will be close and reopened.
+
+
+  After job transfer, the connecion will be half-closed.  That is, the
+  shutdown() facility will be used to cause the TCP/IP connection to be
+  set to closed for transmission but open for reception.  The printer
+  will send status information until the job is completed, and then
+  close the connection.
+
+  If page count information is needed, the ifhp filter will then reopen
+  the connection and get the page count information.
+
   55..
 
 
@@ -2439,7 +2561,6 @@
      banner=/path
         Opens and copies the file directly to the printer.
 
-
       banner=|/path
         Forks and EXECs the executable specified by /path, with the same
         arguments as those passed to the filter.  The executable output
@@ -2448,63 +2569,86 @@
   66..  PPrreeddeeffiinneedd OOppttiioonnss
 
   The following is a list of predefined options.
-
-  ``banner=LANGUAGE''               Enable OF banner printing using LANGUAGE
-  ``banner_file=PATHNAME''          PATHNAME of PostScript banner file
-  ``config=PATHNAMES''              Configuration file pathnames
-  ``crlf FLAG''                     Do LF to CRLF translation
-  ``debug FLAG''                    Debugging level
-  ``default_language=LANGUAGE''     Default job file language (ps, pcl, raw, text, etc)
-  ``endpage=NNN''                   PJL JOB command END = NNN value
-  ``file_util_path=PATHNAME''       Pathname of the UNIX file utility
-  ``forcestatus FLAG''              Force status reading from the printer if set
-  ``language=LANGUAGE''             Specify job file language to be used (ps, pcl, raw, text, etc)
-  ``logall FLAG''                   Log all status reports from printer if set
-  ``nullpad=COUNT''                 Send COUNT nulls to force full buffer condition
-  ``model=NAME''                    Specify model name for configuration selection
-  ``model_from_optin=X''            Specify model name using a command line option value
-  ``no_ps_eoj FLAG''                No PostScript EOJ (CTRL-D) at start of job
-  ``no_pcl_eoj FLAG''               No PCL EOJ (CTRL-D) at start of job
-  ``page_length=LINES''             Number of lines on a text page for banner printing
-  ``page_width=COLUMNS''            Number of columns on a text page for banner printing
-  ``pagecount=LANGUAGE''            Enable pagecounting using the specified lanague (pjl, ps)
-  ``pagecount_interval=SECONDS''    Send pagecount command at SECONDS interval
-  ``pagecount_ps_code=STRING''      PostScript code to get pagecount information
-  ``pagecount_timeout=SECONDS''     Timeout getting pagecount after SECONDS
-  ``pcl FLAG''                      Printer supports PCL if set
-  ``pcl_user_opts=LIST''            User PCL options supported
-  ``pjl FLAG''                      Printer supports PJL if set
-  ``pjl_console FLAG''              Printer supports messages on console
-  ``pjl_error_codes=LIST''          PJL error messages for error codes
-  ``pjl_except=LIST''               Do not allow these PJL commands
-  ``pjl_init=LIST''                 PJL initializations to be done
-  ``pjl_job FLAG''                  PJL JOB and EOJ supported
-  ``pjl_only=LIST''                 Allow only these PJL commands
-  ``pjl_user_opts=LIST''            Allow only these user PJL commands or variables to be set
-  ``pjl_vars_except=LIST''          Do not allow these PJL variables to be set
-  ``pjl_vars_set=LIST''             Allow these PJL variables to be set
-  ``ps FLAG''                       Printer supports PostScript (ps)
-  ``ps_user_opts=LIST''             Support these PostScript user options
-  ``remove_ctrl=LIST''              Support these characters from PostScript jobs
-
-
-
-  ``startpage=NNN''                     PJL JOB command START = NNN value
-  ``status FLAG''                       Printer supplies status information
-  ``statusfile=PATHNAME''               Status file pathname
-  ``statusfile_max=NNN''                Status file has maximum size of NNN Kbytes
-  ``statusfile_min=NNN''                Status file has truncated size of NNN Kbytes
-  ``summaryfile=PATHNAME''              Summary file pathname
-  ``sync FLAG''                         Synchronize printer if set
-  ``sync_interval=SECONDS''             Send synchronization request at SECONDS interval
-  ``sync_timeout=SECONDS''              Timeout synchronization request after SECONDS
-  ``tbcp FLAG''                         Use Transparent Binary Communications Protocol for PostScript files
-  ``text FLAG''                         Printer supports text mode
-  ``text_converter=PATHNAME''           Pathname of text conversion program
-  ``text_converter_output=LANGUAGE''    Job language of text converter output
-  ``text_tempfile=PATHNAME''            Temporary file pathname template
-  ``trace FLAG''                        Put error and trace messages on STDERR if set
-
+  ``appsocket FLAG''                 Use Tektronix AppSocket Protocol
+  ``banner=LANGUAGE''                Enable OF banner printing using
+  LANGUAGE
+  ``banner_file=PATHNAME''           PATHNAME of PostScript banner file
+  ``config=PATHNAMES''               Configuration file pathnames
+  ``crlf FLAG''                      Do LF to CRLF translation
+  ``debug FLAG''                     Debugging level
+  ``default_language=LANGUAGE''      Default job file language (ps, pcl,
+  raw, text, etc)
+  ``endpage=NNN''                    PJL JOB command END = NNN value
+  ``file_util_path=PATHNAME''        Pathname of the UNIX file utility
+  ``forcestatus FLAG''               Force status reading from the
+  printer if set
+  ``language=LANGUAGE''              Specify job file language to be
+  used (ps, pcl, raw, text, etc)
+  ``logall FLAG''                    Log all status reports from printer
+  if set
+  ``nullpad=COUNT''                  Send COUNT nulls to force full
+  buffer condition
+  ``model=NAME''                     Specify model name for
+  configuration selection
+  ``model_from_optin=X''             Specify model name using a command
+  line option value
+  ``no_ps_eoj FLAG''                 No PostScript EOJ (CTRL-D) at start
+  of job
+  ``no_pcl_eoj FLAG''                No PCL EOJ (CTRL-D) at start of job
+  ``page_length=LINES''              Number of lines on a text page for
+  banner printing
+  ``page_width=COLUMNS''             Number of columns on a text page
+  for banner printing
+  ``pagecount=LANGUAGE''             Enable pagecounting using the
+  specified lanague (pjl, ps)
+  ``pagecount_interval=SECONDS''     Send pagecount command at SECONDS
+  interval
+  ``pagecount_ps_code=STRING''       PostScript code to get pagecount
+  information
+  ``pagecount_timeout=SECONDS''      Timeout getting pagecount after
+  SECONDS
+  ``pcl FLAG''                       Printer supports PCL if set
+  ``pcl_user_opts=LIST''             User PCL options supported
+  ``pjl FLAG''                       Printer supports PJL if set
+  ``pjl_console FLAG''               Printer supports messages on
+  console
+  ``pjl_error_codes=LIST''           PJL error messages for error codes
+  ``pjl_except=LIST''                Do not allow these PJL commands
+  ``pjl_init=LIST''                  PJL initializations to be done
+  ``pjl_job FLAG''                   PJL JOB and EOJ supported
+  ``pjl_only=LIST''                  Allow only these PJL commands
+  ``pjl_user_opts=LIST''             Allow only these user PJL commands
+  or variables to be set
+  ``pjl_vars_except=LIST''           Do not allow these PJL variables to
+  be set
+  ``pjl_vars_set=LIST''              Allow these PJL variables to be set
+  ``ps FLAG''                        Printer supports PostScript (ps)
+  ``ps_user_opts=LIST''              Support these PostScript user
+  options
+  ``remove_ctrl=LIST''               Support these characters from
+  PostScript jobs
+  ``startpage=NNN''                  PJL JOB command START = NNN value
+  ``status FLAG''                    Printer supplies status information
+  ``statusfile=PATHNAME''            Status file pathname
+  ``statusfile_max=NNN''             Status file has maximum size of NNN
+  Kbytes
+  ``statusfile_min=NNN''             Status file has truncated size of
+  NNN Kbytes
+  ``summaryfile=PATHNAME''           Summary file pathname
+  ``sync FLAG''                      Synchronize printer if set
+  ``sync_interval=SECONDS''          Send synchronization request at
+  SECONDS interval
+  ``sync_timeout=SECONDS''           Timeout synchronization request
+  after SECONDS
+  ``tbcp FLAG''                      Use Transparent Binary
+  Communications Protocol for PostScript files
+  ``text FLAG''                      Printer supports text mode
+  ``text_converter=PATHNAME''        Pathname of text conversion program
+  ``text_converter_output=LANGUAGE'' Job language of text converter
+  output
+  ``text_tempfile=PATHNAME''         Temporary file pathname template
+  ``trace FLAG''                     Put error and trace messages on
+  STDERR if set
 
   77..  CCoonnffiigguurraattiioonn FFiilleess
 
@@ -2550,15 +2694,14 @@
   1. Blank lines and lines starting with # are ignored.
 
   2. Keys or flags start in column 1.  The syntax is similar to the
-     LPRng and BSD printcap file.
+     LPRng and BSD file.
 
-          Syntax                   Equivalent To             Class
-          flag                     flag=1                    FLAG
-          flag@                    flag=0                    FLAG
-          flag=val                 flag=val (string value)   STRING
-          flag#val                 flag=val (string value)   STRING
-          flag=] v v ... [                                   LIST
-          (no flag name present)   flag=0                    FLAG
+
+       Syntax             Equivalent To    Class
+       flag               flag=1           (FLAG)
+       flag@       flag=0           (FLAG)
+       flag=val           flag=val (string value) STRING
+       flag=] v v  ... [          LIST
 
 
   3. Flags are used for options which take a TRUE/FALSE, 0/1, or ON/OFF
@@ -2627,8 +2770,6 @@
   you can specify that a section of the file is to be used ONLY by a
   various models of printers.  This is is controlled by the value of the
   'model' flag and selection lines of the form:
-
-
          [ glob glob ... ]
 
 
@@ -2636,7 +2777,6 @@
 
   The first occurrence of a 'model=xx' line in either the -T options or
   the configuration file will set the model flag value to 'xx'.
-
 
   The 'model' value is matched against the modelglob values using GLOB
   matching.  For example:
@@ -2691,12 +2831,17 @@
   option then normally the string value will be used.
 
 
-       t1=[ p1 p2 p3=end ]
-       p1=this is
-       p2=[ p3 p4 ]
-       p3=a
-       p4=test
-       p3=living\020\%{p3}
+
+
+
+
+
+  t1=[ p1 p2 p3=end ]
+  p1=this is
+  p2=[ p3 p4 ]
+  p3=a
+  p4=test
+  p3=living\020\%{p3}
 
 
 
@@ -2704,6 +2849,7 @@
   For example, when expanding t1 each of p1 and p1 is in turn expanded.
   This will produce the strings "this is", "a", "test" and "living end"
   in turn.
+
   Some LIST variables are used in printer language specific contexts and
   their values are processed appropriately.  For example, pjl_init=[...]
   specifies a set of operations to be carried out for printers that
@@ -2768,7 +2914,6 @@
            {option} to start searching from the -Z command line options
            and [option] to start searching from the -T command line
            options.
-
 
         4. If no match was found, then the configuration information is
            searched.
@@ -2836,6 +2981,7 @@
   option.  When the pcl_cpi=\033\%3.2f{cpi}D string is expanded, the
   result is \033\%5.00D.  If the user has specified -Tcpi=9 on the
   command line then the result is \033\%9.00D.
+
   77..55..  LLaanngguuaaggee CCoonntteexxtt
 
   The Tifhp filter sends initialization and configuration commands to
@@ -2888,7 +3034,6 @@
 
   1. Before sending any PostScript initialization strings, the
      PostScript End of Job indicator (\004 or Control-D) is sent.
-
   2. Strings are then expanded and the escape sequences are substituted.
 
   3. Individual strings have a newline (\n) appended to them before
@@ -2902,6 +3047,7 @@
 
   The font_download built-in option supports downloading as described
   below.
+
   88..11..  PPCCLL FFoonntt DDoowwnnllooaaddiinngg
 
   The following shows the a typical ifhp.conf file which has PCL font
@@ -2954,9 +3100,6 @@
 
        lpr -Tfont=font1,font2
 
-
-
-
   When the pcl_font_download option is expanded, it will generate the
   pathnames /usr/local/lib/fonts/font1 and /usr/local/lib/fonts/font2,
   open these files, and send their contents directly to the printer.
@@ -2967,20 +3110,19 @@
   font downloading.
 
 
+       #
+       # Fonts and Font Downloading
+       #
+       ps_init=[ ... font ... ]
 
-  #
-  # Fonts and Font Downloading
-  #
-  ps_init=[ ... font ... ]
+       # combination command
+       pcl_font=[ font_download ]
 
-  # combination command
-  pcl_font=[ font_download ]
+       # font directory
+       ps_fontdir=/usr/local/lib/fonts
 
-  # font directory
-  ps_fontdir=/usr/local/lib/fonts
-
-  #default font file
-  font=font.ps.10
+       #default font file
+       font=font.ps.10
 
 
 
@@ -3034,6 +3176,7 @@
 
   The following steps need to be done to configure LPRng to print
   banners using ifhp.
+
   1. In order to print a banner, the LPRng print spooler will require a
      user name for the banner page to be present in the print job.
      However, since users can request _n_o _b_a_n_n_e_r via various options on
@@ -3086,6 +3229,9 @@
          :if=ifhp -Tbanner=llaanngguuaaggee
 
 
+
+
+
   99..22..  SSttaanndd AAlloonnee BBaannnneerr PPrrooggrraamm
 
   Occasionally it is useful to be able to generate a banner in
@@ -3100,7 +3246,7 @@
 
   In addition, you can specify the type of banner you want using:
 
-  ifhp -Tbanner_only=llaanngguuaaggee
+       ifhp -Tbanner_only=llaanngguuaaggee
 
 
   Lastly, in order to be _v_i_n_t_a_g_e _s_o_f_t_w_a_r_e _c_o_m_p_a_t_i_b_l_e, if the ifhp
@@ -3165,7 +3311,6 @@
   amused when we sent them back under warranty,  claiming that this our
   'normal lab usage.'
 
-
   Lastly,  you should not mind a small amount of pilferage, or a few
   pages here and there being charged to the wrong account.
 
@@ -3218,9 +3363,6 @@
 
 
        start -q110 -Fo -kcfA101taco -uuser -hhost -R...
-
-
-
 
   is the last job finished or did it abort?
 
@@ -3298,6 +3440,7 @@
   the first things to be attacked by students... Ummm...  users.  It
   should NOT be kept on and NFS exported or mounted file system.  It
   should be carefully pruned and copied, perhaps on an hourly basis.
+
   Now some adminstrators have fallen in love with network based
   printers; do not believe ANYTHING that comes over a network connection
   without some form of authentication;  PGP has some very nice Public
@@ -3350,6 +3493,9 @@
   understand the interactions of print jobs and reporting of page
   counts.
 
+
+
+
   1111..  MMoonniittoorriinngg PPrriinntteerr OOppeerraattiioonn
 
   Normally the ifhp filter will write error and trace messages to the
@@ -3364,6 +3510,7 @@
 
   The monitor program include in the LPRng and ifhp distributions is a
   template for writing a program to use this information.
+
   1122..  HHPP JJeettDDiirreecctt CCaarrdd SSuuppppoorrtt
 
   The  HPJetDirect  card or external JetDirect box can  be configured
@@ -3412,6 +3559,9 @@
 
 
 
+
+
+
   1122..22..  BBOOOOTTPP IInnffoorrmmaattiioonn
 
   If  you have a bootp server, you can put this information in  the
@@ -3422,51 +3572,43 @@
   entry.
 
 
-
-
-
-
-
-
-
-
-  # Example /etc/bootptab: database for bootp server (/etc/bootpd).
-  # Blank lines and lines beginning with '#' are ignored.
-  #
-  # Legend:
-  #
-  #       first field -- hostname
-  #                       (may be full domain name)
-  #
-  #       hd -- home directory
-  #       bf -- bootfile
-  #       cs -- cookie servers
-  #       ds -- domain name servers
-  #       gw -- gateways
-  #       ha -- hardware address
-  #       ht -- hardware type
-  #       im -- impress servers
-  #       ip -- host IP address
-  #       lg -- log servers
-  #       lp -- LPR servers
-  #       ns -- IEN-116 name servers
-  #       rl -- resource location protocol servers
-  #       sm -- subnet mask
-  #       tc -- template host (points to similar host entry)
-  #       to -- time offset (seconds)
-  #       ts -- time servers
-  #
-  # Be careful about including backslashes where they're needed.  Weird (bad)
-  # things can happen when a backslash is omitted where one is intended.
-  #
-  peripheral1:
-  :hn:ht=ether:vm=rfc1048:
-  :ha=08000903212F:
-  :ip=190.40.101.22:
-  :sm=255.255.255.0:
-  :gw=190.40.101.1:
-  :lg=190.40.101.3:
-  :T144="hpnp/peripheral1.cfg":
+       # Example /etc/bootptab: database for bootp server (/etc/bootpd).
+       # Blank lines and lines beginning with '#' are ignored.
+       #
+       # Legend:
+       #
+       #       first field -- hostname
+       #                       (may be full domain name)
+       #
+       #       hd -- home directory
+       #       bf -- bootfile
+       #       cs -- cookie servers
+       #       ds -- domain name servers
+       #       gw -- gateways
+       #       ha -- hardware address
+       #       ht -- hardware type
+       #       im -- impress servers
+       #       ip -- host IP address
+       #       lg -- log servers
+       #       lp -- LPR servers
+       #       ns -- IEN-116 name servers
+       #       rl -- resource location protocol servers
+       #       sm -- subnet mask
+       #       tc -- template host (points to similar host entry)
+       #       to -- time offset (seconds)
+       #       ts -- time servers
+       #
+       # Be careful about including backslashes where they're needed.  Weird (bad)
+       # things can happen when a backslash is omitted where one is intended.
+       #
+       peripheral1:
+       :hn:ht=ether:vm=rfc1048:
+       :ha=08000903212F:
+       :ip=190.40.101.22:
+       :sm=255.255.255.0:
+       :gw=190.40.101.1:
+       :lg=190.40.101.3:
+       :T144="hpnp/peripheral1.cfg":
 
 
 
@@ -3474,16 +3616,6 @@
   If  you  are  using the T144 option, you will need to create the
   configuration file.  The sample configuration file from the HP Direct
   distribution is included below.
-
-
-
-
-
-
-
-
-
-
 
 
 

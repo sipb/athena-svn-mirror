@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****
-$Id: linelist.h,v 1.1.1.2 1999-04-01 20:09:13 mwhitson Exp $
+$Id: linelist.h,v 1.1.1.3 1999-05-04 18:50:43 mwhitson Exp $
  **** HEADER *****/
 
 /*
