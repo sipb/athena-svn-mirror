@@ -1,3 +1,4 @@
+%token ARROW WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
 %{
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
@@ -8,9 +9,11 @@ char wordbuf[256];
 char *wordp;
 int wordcnt = 0;
 Entry* e = &entries[ 0];
+
+#include "lex.yy.c"
 %}
-%token ARROW WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
 %%
+
 sublist	: opt_space header entrylist
 	{
 	    entnum = 0;	/* signifies to printmsg() that parse is complete. */
@@ -206,4 +209,3 @@ char *s;
 		s, wordbuf);
 	do_panic();
 }
-#include "lex.yy.c"

@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.6 1991-07-22 01:27:20 probe Exp $
+ * $Id: track.h,v 4.7 1992-11-09 15:05:00 probe Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <stdio.h>
+#include <strings.h>
 
 /* Default working directory - under to- or from- root */
 #define DEF_WORKDIR	"/usr/athena/lib"
@@ -178,9 +179,7 @@ extern FILE *yyin,*yyout;
 extern int access();
 
 extern char errmsg[];
-char *gets(),*calloc(),*malloc(),*realloc(),*re_comp();
-char *index(),*rindex(),*strcat(),*strncat(),*strcpy(),*strncpy();
-int strcmp(),strncmp(),strlen();
+char *gets(),*re_comp();
 long time();
 
 int stat(), lstat();
