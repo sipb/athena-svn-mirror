@@ -1,4 +1,4 @@
-# $Id: packages,v 1.47 1998-11-03 17:57:52 ghudson Exp $
+# $Id: packages,v 1.48 1998-11-06 18:53:56 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -66,7 +66,6 @@ athena/etc/cleanup
 athena/etc/inetd
 athena/etc/listsuidcells
 athena/etc/gettime
-athena/etc/snmp			solaris
 athena/etc/xdm
 athena/etc/desync
 athena/etc/busyd
