@@ -59,7 +59,7 @@ runcmd() {
 }
 
 SYSCNF=/etc/sysconfig/openafs
-KERNEL_VERSION=`uname -r`
+KERNEL_VERSION=`uname -r | sed -e 's/smp$//'`
 
 # Gather up options and post startup script name, if present
 if [ -f $SYSCNF ] ; then
@@ -129,12 +129,23 @@ choose_client() {
 	     ;;
 	esac
 
+	# Kernels compiled for different machine types may have
+	# different symbol versions.  Yay Linux.
+	MACHINE=`rpm -q --queryformat='%{ARCH}\n' $KPKG-$VERSION | tail -n 1`
+	case $MACHINE in
+        i?86) 
+              ;;
+        *)
+              MACHINE=`uname -m`
+              ;;
+        esac
+
 	case $KERNEL_VERSION in
 	  [1-2].[0-5].*)
-		LIBAFS=libafs-$KERNEL_VERSION$MP.o
+		LIBAFS=libafs-$KERNEL_VERSION.$MACHINE$MP.o
 		;;
 	  *)
-		LIBAFS=libafs-$KERNEL_VERSION$MP.ko
+		LIBAFS=libafs-$KERNEL_VERSION.$MACHINE$MP.ko
 		;;
 	esac
 }
