@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.26 1996-09-20 02:15:49 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.27 1997-04-30 17:56:54 ghudson Exp $";
 #endif
 #endif
 
@@ -44,7 +44,7 @@ int select_timeout;
 char *f_gets P((FILE *input_file , char *a, int n ));
 void usage P((void ));
 void punt P((int fd , char *filename ));
-void format_listing P((int input_fd, int output_fd));
+static void format_listing P((int input_fd, int output_fd));
 #undef P
 
 extern char DaemonHost[];
@@ -59,8 +59,8 @@ main(argc,argv)
   int instance, tinstance;
   int c;
   char **olc_servers;
-  char *inst = "OLC";
-  char *buf;
+  char *inst = "olc";
+  char *buf, *config, *cf_server;
   int bufsiz;
   char filename[128];
   struct hostent *hp;
@@ -89,9 +89,16 @@ main(argc,argv)
   if (!strcmp(argv[0],"oshow"))
     i_show = 1;
 
-  while ((c = getopt(argc, argv, "f:s:rnl")) != EOF)
+  config = getenv("OLXX_CONFIG");
+  if (! config)
+    config = OLC_CONFIG_PATH;
+
+  while ((c = getopt(argc, argv, "C:f:s:rnlp")) != EOF)
     switch(c) {
-    case 'f':
+    case 'C':	/* -C path: set path for the configuration file */
+      config = optarg;
+      break;
+    case 'f':	/* -f file: save output in FILE */
       strcpy(filename,optarg);
       if ((output_fd = open(filename, O_RDWR|O_CREAT|O_TRUNC,
 			    S_IREAD|S_IWRITE)) < 0) { 
@@ -99,38 +106,42 @@ main(argc,argv)
 	exit(1);
       }
       break;
-    case 'i':
+    case 'i':	/* -i inst: use service INST (eg. "-i olta") */
       inst = optarg;
+      /* Downcase the instance, so we can use it as the cfg file name. */
+      for (buf=inst ; *buf ; buf++)
+	*buf = tolower(*buf);
       break;
-    case 's':
-      if ((hp = gethostbyname(optarg)) == NULL) {
+    case 's':	/* -s host: use server HOST */
+      hp = gethostbyname(optarg);
+      if (hp == NULL) {
 	fprintf(stderr,"%s: Unknown host %s\n",argv[0],optarg);
 	punt(output_fd,filename);
       }
       break;
-    case 'l':
+    case 'l':	/* -l: "oreplay -l" == "olist" */
       i_list = 1;
       break;
-    case 'r':
+    case 'p':	/* -p: "oreplay -p" == "oshow" */
+      i_show = 1;
+      break;
+    case 'r':	/* -r: (olist) display raw, unformatted output */
       gimme_raw = 1;
       break;
-    case 'n':
+    case 'n':	/* -n: (oshow) mark messages read */
       nuke = 1;
       break;
-    case '?':
+    case '?':	/* unknown option... */
     default:
       usage();
-      exit(1);
     }
   
   if (gimme_raw && !i_list) {
     usage();
-    exit(1);
   }
 
   if ((nuke && i_list) || (i_show && i_list)) {
     usage();
-    exit(1);
   }
 
   instance = 0;
@@ -149,7 +160,6 @@ main(argc,argv)
     if ((((argc - optind) > 2) && !nuke) ||
 	(argc == optind)) {
       usage();
-      exit(1);
     }
     
     strcpy(username,argv[optind++]);
@@ -163,34 +173,52 @@ main(argc,argv)
     }
   }
 
+  if (incarnate(inst, config) == FATAL) {
+    /* Fatal problem.  Messages indicating causes were already displayed... */
+    exit(1);
+  }
+
 /* Find out where the server is */
 
-  if (hp == NULL) {
 #ifdef HESIOD
-    if ((olc_servers = hes_resolve(inst,"SLOC")) == NULL) {
-      fprintf(stderr,"%s: Unable to get hesiod information for OLC/SLOC\n",
-	      argv[0]);
+  if (hp == NULL) {
+    olc_servers = hes_resolve(inst, OLC_SERV_NAME);
+    if (olc_servers == NULL) {
+      fprintf(stderr,"%s: Unable to get hesiod information for %s.%s\n",
+	      inst, argv[0], OLC_SERV_NAME);
       punt(output_fd,filename);
     }
     
-    if ((hp = gethostbyname(olc_servers[0])) == NULL) {
+    hp = gethostbyname(olc_servers[0]);
+    if (hp == NULL) {
       fprintf(stderr,"%s: Unknown host %s\n",argv[0],olc_servers[0]);
       punt(output_fd,filename);
     }
-    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
-#else /* HESIOD */
+  }
+#endif /* HESIOD */
+  if (hp == NULL) {
+    cf_server = client_hardcoded_server();
+    if (cf_server) {
+      hp = gethostbyname(cf_server);
+      if (hp == NULL) {
+	fprintf(stderr,"%s: Unknown host %s\n",argv[0],cf_server);
+	punt(output_fd,filename);
+      }
+    }
+  }
+  if (hp == NULL) {
     fprintf(stderr,"%s: no server specified\n",argv[0]);
     punt(output_fd,filename);
-#endif /* HESIOD */
   }
-  else
-    strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
+
+  strncpy(DaemonHost,hp->h_name,MAXHOSTNAMELEN);
 
   if (open_connection_to_nl_daemon(&sock) != SUCCESS)
     punt(output_fd,filename);
 
   bufsiz = 4096;
-  if ((buf = (char *) malloc(bufsiz)) == NULL) {
+  buf = malloc(bufsiz);
+  if (buf == NULL) {
     fprintf(stderr,"%s: unable to allocate %d bytes\n",argv[0],bufsiz);
     punt(output_fd,filename);
   }
@@ -244,7 +272,8 @@ main(argc,argv)
 			  /* then process to look "nice */
     strcpy(templ,"/tmp/oreplayXXXXXX");
     mktemp(templ);
-    if ((output_fd = open(templ,O_RDWR|O_EXCL|O_CREAT,0600)) < 0) {
+    output_fd = open(templ,O_RDWR|O_EXCL|O_CREAT,0600);
+    if (output_fd < 0) {
       perror("olist: opening temp file");
       punt(temp_fd,filename);
     }
@@ -417,11 +446,24 @@ void
 usage()
 {
   if (i_list)
-    fprintf(stderr,"Usage: olist [-f filename] [-s server] [-r]\n");
+    fprintf(stderr,"Usage: olist      [olist_options]\n"
+		   "  or   oreplay -l [olist_options]\n"
+		   "olist_options:\n"
+		   "   -r            raw output (instead of formatted)\n");
   else if (i_show)
-    fprintf(stderr,"Usage: oshow [-f filename] [-s server] [-n] username instance\n");
+    fprintf(stderr,"Usage: oshow      [oshow_options] username instance\n"
+		   "  or   oreplay -p [oshow_options] username instance\n"
+		   "oshow_options:\n"
+		   "   -n            mark the retrieved messages as read\n");
   else
-    fprintf(stderr,"Usage: oreplay [-f filename] [-s server] username instance\n");
+    fprintf(stderr,"Usage: oreplay [oreplay_options] username instance\n"
+		   "oreplay_options:\n");
+  /* shared options */
+  fprintf(stderr,"   -f filename   save output in FILENAME\n"
+		 "   -i service    use SERVICE (olc/olta/owl)\n"
+		 "   -s host       use server HOST\n"
+		 "   -C path       use PATH to search for configuration\n");
+  exit(1);
 }
 
 void
