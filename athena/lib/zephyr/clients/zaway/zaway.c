@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,25 +20,22 @@
 #include <signal.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Id: zaway.c,v 1.8 1991-06-20 08:15:29 jfc Exp $";
+static char rcsid_zaway_c[] = "$Id: zaway.c,v 1.9 1993-09-24 16:30:45 probe Exp $";
 #endif
 
 #define MESSAGE_CLASS "MESSAGE"
 #define DEFAULT_MSG "I'm sorry, but I am currently away from the terminal and am\nnot able to receive your message.\n"
 
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
 #include <stdlib.h>
+#define SIGNAL_RETURN_TYPE void
 #else
 extern char *getenv(), *malloc(), *realloc();
-#endif
 extern uid_t getuid();
-
-#if defined(ultrix) || defined(_POSIX_SOURCE)
-void cleanup();
-#else
-int cleanup();
+#define SIGNAL_RETURN_TYPE int
 #endif
 
+SIGNAL_RETURN_TYPE cleanup();
 u_short port;
 
 main(argc,argv)
@@ -192,12 +189,7 @@ char *find_message(notice,fp)
 	return (ptr);
 }
 
-#if defined(ultrix) || defined(_POSIX_SOURCE)
-void
-#else
-int
-#endif
-cleanup()
+SIGNAL_RETURN_TYPE cleanup()
 {
     ZCancelSubscriptions(port);
     exit(1);
