@@ -1,0 +1,281 @@
+# Greek Translation for bonobo-activation.
+# Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
+# Simos Xenitellis <simos@hellug.gr>, 2000, 2001, 2002.
+#
+# simos: 53 messages, 19Aug2002, started logging.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bonobo-activation 1.0.3\n"
+"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"PO-Revision-Date: 2002-08-19 11:59+0100\n"
+"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo-activation/bonobo-activation-async-callback.c:119
+msgid "No server corresponding to your query"
+msgstr "Δεν υπάρχει εξυπηρετητής που να αντιστοιχεί στην επερώτησή σας"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:101
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Συνέβει άγνωστο σφάλμα, η θυγατρική διεργασία δεν έδωσε μήνυμα σφάλματος"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:171
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Αποτυχία ανάγνωσης από θυγατρική διεργασία: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:328
+msgid "Couldn't fork a new process"
+msgstr "Αδύνατη η δικράνωση νέας διεργασίας"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:351
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Η θυγατρική διεργασία έλαβε το σινιάλο %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:356
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Άγνωστο μη μοιραίο σφάλμα (η κατάσταση είναι %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:424
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr ""
+"το bonobo-activation απέτυχε να θέσει την ομάδα διεργασίας του %s: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:436
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Αποτυχία εκτέλεσης %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-init.c:246
+msgid "File descriptor to print IOR on"
+msgstr "Περιγραφέας αρχείου για την εκτύπωση του IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:246
+#: server/activation-server-main.c:77
+msgid "FD"
+msgstr "Περιγραφέας Αρχείου"
+
+#: bonobo-activation/bonobo-activation-init.c:248
+msgid "IID to activate"
+msgstr "IID για ενεργοποίηση"
+
+#: bonobo-activation/bonobo-activation-init.c:250
+msgid "Prevent registering of server with OAF"
+msgstr "Αποτροπή καταχώρησης του εξυπηρετητή με το OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:337
+msgid "Bonobo activation options"
+msgstr "Επιλογές ενεργοποίησης Μπονόμπο"
+
+#: bonobo-activation/bonobo-activation-shlib.c:101
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "το g_module_open από `%s' απέτυχε με `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:119
+#: bonobo-activation/bonobo-activation-shlib.c:155
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Δε βρέθηκε το σύμβολο Bonobo_Plugin_info στο `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:203
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Το εργοστάσιο `%s' επέστρεψε NIL για `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:220
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Η διαμοιραζόμενη βιβλιοθήκη `%s' δεν περιέχει `%s'"
+
+#: server/activation-context-corba.c:628
+msgid "Couldn't find which child the server was listed in"
+msgstr ""
+"Αδυνατή η εύρεση για πια θυγατρική διεργασία ο εξυπηρετητής ήταν "
+"καταχωρημένος"
+
+#: server/activation-context-corba.c:809
+msgid "Query failed: "
+msgstr "Αποτυχία διερώτησης: "
+
+#: server/activation-context-corba.c:836
+msgid "Activation failed: "
+msgstr "Αποτυχία ενεργοποίησης: "
+
+#: server/activation-context-corba.c:1093
+msgid "Could not parse AID"
+msgstr "Αδύνατη η ανάλυση του AID"
+
+#: server/activation-context-corba.c:1103
+msgid "Could not parse context: "
+msgstr "Αδύνατη η ανάλυση του περιεχομένου: "
+
+#: server/activation-context-corba.c:1125
+msgid "Could not activate server: "
+msgstr "Αδύνατη η ενεργοποίηση του εξυπηρετητή: "
+
+#: server/activation-server-main.c:67
+msgid "Directory to read .server files from"
+msgstr "Ο κατάλογος από τον οποίο να αναγνωστούν τα αρχεία .server"
+
+#: server/activation-server-main.c:67
+msgid "DIRECTORY"
+msgstr "ΚΑΤΑΛΟΓΟΣ"
+
+#: server/activation-server-main.c:70
+msgid "Domain of ObjectDirectory"
+msgstr "Επίθεμα του ObjectDirectory"
+
+#: server/activation-server-main.c:70
+msgid "DOMAIN"
+msgstr "ΕΠΙΘΕΜΑ"
+
+#: server/activation-server-main.c:73
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Εργασία ως ActivationContext (το εξ' ορισμού είναι μόνο ως ObjectDirectory)"
+
+#: server/activation-server-main.c:77
+msgid "File descriptor to write IOR to"
+msgstr "Περιγραφέας αρχείου στο οποίο να εγγραφεί το IOR"
+
+#: server/activation-server-main.c:85
+msgid "Query expression to evaluate"
+msgstr "Έκφραση επερώτησης για αποτίμηση"
+
+#: server/activation-server-main.c:85
+msgid "EXPRESSION"
+msgstr "ΕΚΦΡΑΣΗ"
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Υπηρεσία CORBA CosNaming"
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Υπηρεσία ονοματοδότησης"
+
+#: server/object-directory-activate.c:174
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+"Δεν υποστηρίζεται ακόμα η ενεργοποίηση αντικειμένων shlib σε απομακρυσμένη "
+"διεργασία"
+
+#: server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"το αρχείο ρυθμίσεων της Ενεργοποίησης Μπονόμπο δεν αναγνώστηκε επιτυχώς. "
+"Παρακαλώ ελέγξτε ότι είναι έγκυρο στο: %s"
+
+#: server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "Ένα iid με τιμή NULL δεν είναι έγκυρο"
+
+#: server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "To iid %s έχει τύπο NULL"
+
+#: server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "Το iid %s έχει τοποθεσία NULL"
+
+#: server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "μη έγκυρος χαρακτήρας '%c' στο iid '%s'"
+
+#: server/object-directory-load.c:345
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Η ιδιότητα '%s' δεν έχει τιμή"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: server/object-directory-corba.c:795
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Συνθήκη αποκλεισμού στην ενεργοποίηση του εξυπηρετητή '%s'"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Ανεπιτυχής προσπάθεια αποθήκευσης του αρχείου ρυθμίσεων.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr ""
+"Παρακαλώ επιβεβαιώστε ότι έχετε τα δικαιώματα για να γράψετε \n"
+"στο '%s'.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Επιτυχία στην εγγραφή του αρχείου ρυθμίσεων.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"το αρχείο ρυθμίσεων είναι:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "Το %s υπάρχει ήδη στο αρχείο ρυθμίσεων\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "δεν υπάρχει ένα ορθά δομημένο αρχείο ρυθμίσεων\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Το αρχείο ρυθμίσεων του Bonobo-activation περιέχει:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Κατάλογος για αφαίρεση από το αρχείο ρυθμίσεων"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "μονοπάτι καταλόγου"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Κατάλογος για πρόσθεση στο αρχείο ρυθμίσεων"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Εμφάνιση καταλόγων στο αρχείο ρυθμίσεων"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Εμφάνιση διαδρομής στο αρχείο ρυθμίσεων"
+
+#~ msgid "Object directory to use when registering servers"
+#~ msgstr "Κατάλογος αντικειμένων για χρήση κατά την καταχώρηση εξυπηρετητών"
+
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "Η εκτέλεση απέτυχε: %d (%s)\n"
+
+#~ msgid "Trying dir %s\n"
+#~ msgstr "Προσπάθεια του καταλόγου %s\n"
