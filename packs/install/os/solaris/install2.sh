@@ -7,7 +7,7 @@ umask 022
 # to the uname -m names, in order to save space on the root.  Be on the
 # alert for changes.
 platform=`uname -m`
-
+cputype=`/sbin/machtype -c`
 
 UPDATE_ROOT=/root; export UPDATE_ROOT
 echo "Mounting hard disk's root partition..."
@@ -148,7 +148,7 @@ echo "Editing rc.conf and version"
 sed -e 	"s#^HOST=[^;]*#HOST=$hostname#
 	s#^ADDR=[^;]*#ADDR=$netaddr#
 	s#^NETDEV=[^;]*#NETDEV=$if#
-	s#^MACHINE=[^;]*#MACHINE=$CPUTYPE#
+	s#^MACHINE=[^;]*#MACHINE=$cputype#
 	s#^SYSTEM=[^;]*#SYSTEM=Solaris#" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
