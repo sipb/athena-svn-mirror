@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.17 1991-03-28 23:30:55 lwvanels Exp $
+ * $Id: Imakefile,v 1.18 1991-03-29 02:18:15 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -31,7 +31,7 @@ DEFINES=-DLOG -DSYSLOG -DCDATE="\"`date`\""
 
 DEPLIBS=$(LOCAL_LIBRARIES)
 
-#if HaveZephyr
+#if HaveZephyr || HaveKerberos
 SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib) $(misc)
 #else
 SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(misc)
