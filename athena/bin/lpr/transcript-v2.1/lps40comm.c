@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v $
- *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.3 1987-08-09 17:27:13 jtkohl Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.4 1989-05-24 21:17:14 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.3 1987-08-09 17:27:13 jtkohl Exp $";
+static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.4 1989-05-24 21:17:14 epeisach Exp $";
 #endif lint
 
 /* lps40comm.c
@@ -585,12 +585,12 @@ register int c;
 	    st = normal;
 	    break;
 	case twop:
-	    if (c == '\[') {
+	    if (c == '[') {
 		st = inmessage;
 		*cp++ = c;
 		break;
 	    }
-	    if (c == '\%') {
+	    if (c == '%') {
 		putc('%',jobout);
 		VOIDC fflush(jobout);
 		/* don't do anything to cp */
@@ -603,13 +603,13 @@ register int c;
 	    break;
 	case inmessage:
 	    *cp++ = c;
-	    if (c == '\]') st = close1;
+	    if (c == ']') st = close1;
 	    break;
 	case close1:
 	    *cp++ = c;
 	    switch (c) {
 		case '%': st = close2; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    break;
@@ -617,7 +617,7 @@ register int c;
 	    *cp++ = c;
 	    switch (c) {
 		case '%': st = close3; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    break;
@@ -625,7 +625,7 @@ register int c;
 	    *cp++ = c;
 	    switch (c) {
 		case '\r': st = close4; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    break;
@@ -633,7 +633,7 @@ register int c;
 	    *cp++ = c;
 	    switch(c) {
 		case '\n': st = normal; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    if (st == normal) {
