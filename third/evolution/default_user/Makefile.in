@@ -456,6 +456,11 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 install-data-hook:
 	-mkdir $(DESTDIR)$(defaultdir)/private
+	-mkdir $(DESTDIR)$(defaultdir)/views
+	-mkdir $(DESTDIR)$(defaultdir)/views/addressbook
+	-mkdir $(DESTDIR)$(defaultdir)/views/calendar
+	-mkdir $(DESTDIR)$(defaultdir)/views/mail
+	-mkdir $(DESTDIR)$(defaultdir)/views/tasks
 @ENABLE_NNTP_TRUE@	-mkdir $(DESTDIR)$(defaultdir)/news
 @ENABLE_NNTP_TRUE@	-mkdir $(DESTDIR)$(defaultdir)/config
 

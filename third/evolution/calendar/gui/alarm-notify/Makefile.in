@@ -220,10 +220,11 @@ l = @l@
 localedir = @localedir@
 privlibdir = @privlibdir@
 
-CORBA_GENERATED =  	evolution-calendar.h				evolution-calendar-common.c			evolution-calendar-skels.c			evolution-calendar-stubs.c
+CORBA_GENERATED =          Evolution-Composer.h              		        Evolution-Composer-common.c       		        Evolution-Composer-skels.c        		        Evolution-Composer-stubs.c				evolution-calendar.h				evolution-calendar-common.c			evolution-calendar-skels.c			evolution-calendar-stubs.c
 
 
-idls = $(top_srcdir)/calendar/idl/evolution-calendar.idl
+idls =  	$(top_srcdir)/composer/Evolution-Composer.idl			$(top_srcdir)/calendar/idl/evolution-calendar.idl
+
 
 idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
 
@@ -279,11 +280,12 @@ AR = ar
 bin_PROGRAMS =  evolution-alarm-notify$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
-evolution_alarm_notify_OBJECTS =  evolution-calendar-common.$(OBJEXT) \
-evolution-calendar-skels.$(OBJEXT) evolution-calendar-stubs.$(OBJEXT) \
-alarm-notify.$(OBJEXT) alarm-notify-dialog.$(OBJEXT) \
-alarm-queue.$(OBJEXT) config-data.$(OBJEXT) notify-main.$(OBJEXT) \
-save.$(OBJEXT)
+evolution_alarm_notify_OBJECTS =  Evolution-Composer-common.$(OBJEXT) \
+Evolution-Composer-skels.$(OBJEXT) Evolution-Composer-stubs.$(OBJEXT) \
+evolution-calendar-common.$(OBJEXT) evolution-calendar-skels.$(OBJEXT) \
+evolution-calendar-stubs.$(OBJEXT) alarm-notify.$(OBJEXT) \
+alarm-notify-dialog.$(OBJEXT) alarm-queue.$(OBJEXT) \
+config-data.$(OBJEXT) notify-main.$(OBJEXT) save.$(OBJEXT)
 evolution_alarm_notify_DEPENDENCIES =  libalarm.a \
 $(top_builddir)/calendar/cal-client/libcal-client.la \
 $(top_builddir)/calendar/cal-util/libcal-util.la \
@@ -524,6 +526,12 @@ evolution-calendar-skels.o: evolution-calendar-skels.c \
 	evolution-calendar.h
 evolution-calendar-stubs.o: evolution-calendar-stubs.c \
 	evolution-calendar.h
+Evolution-Composer-common.o: Evolution-Composer-common.c \
+	Evolution-Composer.h
+Evolution-Composer-skels.o: Evolution-Composer-skels.c \
+	Evolution-Composer.h
+Evolution-Composer-stubs.o: Evolution-Composer-stubs.c \
+	Evolution-Composer.h
 notify-main.o: notify-main.c ../../../config.h alarm.h alarm-queue.h \
 	../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
@@ -622,6 +630,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 $(CORBA_GENERATED): $(idls)
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../../../composer/Evolution-Composer.idl
 	$(ORBIT_IDL) $(idl_flags) $(top_srcdir)/calendar/idl/evolution-calendar.idl
 
 @XML_I18N_MERGE_OAF_RULE@

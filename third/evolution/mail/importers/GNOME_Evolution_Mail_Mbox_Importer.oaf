@@ -15,7 +15,7 @@
 	<oaf_attribute name="description-bg" type="string"
 		       value="&#212;&#224;&#225;&#240;&#232;&#234;&#224; &#231;&#224; &#232;&#236;&#239;&#238;&#240;&#242; &#237;&#224; mbox &#226; Evolution"/>
 	<oaf_attribute name="description-cs" type="string"
-		       value="Tov&#225;rna pro import soubor&#249; mbox do Evolution"/>
+		       value="Gener&#195;&#161;tor pro import soubor&#197;&#175; mbox do Evolution"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for at importere mbox til Evolution"/>
 	<oaf_attribute name="description-de" type="string"
@@ -23,7 +23,7 @@
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; mbox &#243;&#244;&#239; Evolution"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#195;&#173;a para importar archivos de mbox a Evolution."/>
+		       value="F&#225;brica para importar archivos de mbox a Evolution."/>
 	<oaf_attribute name="description-eu" type="string"
 		       value="mbox Evolution-era inportatzeko fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -48,12 +48,14 @@
 		       value="Factory for &#229; importere mbox til Evolution"/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Generator importu plik&#243;w mbox do Evolution."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="F&#225;brica para importar mbox para o Evolution"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="F&#225;brica para importar mbox no Evolution"/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Procesator pentru importul mbox &#238;n Evolution"/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#205;&#208;&#207;&#210;&#212;&#193; &#198;&#193;&#202;&#204;&#207;&#215; mbox &#215; Evolution"/>
+		       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#184;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130;&#208;&#176; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#208;&#190;&#208;&#178; mbox &#208;&#178; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Vytv&#195;&#161;racie rozhranie pre import s&#195;&#186;borov mbox do Evolution"/>
 	<oaf_attribute name="description-sl" type="string"
@@ -122,12 +124,14 @@
 		       value="Importerer mbox-filer til Evolution"/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Importuje pliki mbox do Evolution."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="Importa ficheiros mbox para o Evolution"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="Importa arquivos mbox no Evolution"/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Import fi&#186;ierele mbox &#238;n Evolution"/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#233;&#205;&#208;&#207;&#210;&#212;&#201;&#210;&#213;&#197;&#212; &#198;&#193;&#202;&#204;&#217; mbox &#215; Evolution"/>
+		       value="&#208;&#152;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130;&#208;&#184;&#209;&#128;&#209;&#131;&#208;&#181;&#209;&#130; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#209;&#139; mbox &#208;&#178; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Importuje s&#195;&#186;bory mbox do Evolution"/>
 	<oaf_attribute name="description-sl" type="string"
@@ -143,7 +147,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
 		       value="&#229;&#176;&#134;&#233;&#130;&#174;&#228;&#187;&#182;&#231;&#174;&#177;&#230;&#150;&#135;&#228;&#187;&#182;&#229;&#175;&#188;&#229;&#133;&#165;&#229;&#136;&#176; Evolution"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-		       value="&#182;&#215;&#164;J mbox &#192;&#201;&#174;&#215;&#168;&#236; Evolution&#161;C"/>
+		       value="&#182;&#215;&#164;J mbox &#192;&#201;&#174;&#215;&#168;&#236; Evolution"/>
 </oaf_server>
 
 </oaf_info>

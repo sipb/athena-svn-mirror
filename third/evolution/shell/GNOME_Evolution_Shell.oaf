@@ -14,6 +14,8 @@
 		   value="Evolution qab&#196;&#177;&#196;&#159;&#196;&#177;."/>
     <oaf_attribute name="description-bg" type="string"
 		   value="Shell &#237;&#224; Evolution"/>
+    <oaf_attribute name="description-cs" type="string"
+		   value="Shell Evolution."/>
     <oaf_attribute name="description-da" type="string"
 		   value="Evolution skallen."/>
     <oaf_attribute name="description-de" type="string"
@@ -50,16 +52,18 @@
 		   value="Evolution skallet."/>
     <oaf_attribute name="description-pl" type="string"
 		   value="Pow&#179;oka Evolution."/>
+    <oaf_attribute name="description-pt" type="string"
+		   value="A consola Evolution."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="A shell do Evolution."/>
     <oaf_attribute name="description-ro" type="string"
 		   value="Shell Evolution."/>
     <oaf_attribute name="description-ru" type="string"
-		   value="&#239;&#194;&#207;&#204;&#207;&#222;&#203;&#193; Evolution."/>
+		   value="&#208;&#158;&#208;&#177;&#208;&#190;&#208;&#187;&#208;&#190;&#209;&#135;&#208;&#186;&#208;&#176; Evolution."/>
     <oaf_attribute name="description-sk" type="string"
 		   value="Shell Evolution."/>
     <oaf_attribute name="description-sl" type="string"
-		   value="Evolucijina lupina."/>
+		   value="Ukazna lupina programa Evolucija."/>
     <oaf_attribute name="description-sv" type="string"
 		   value="Evolutionskalet."/>
     <oaf_attribute name="description-tr" type="string"
@@ -94,11 +98,11 @@
     <oaf_attribute name="evolution:config_item:title" type="string"
 		   value="Folder Settings"/>
     <oaf_attribute name="evolution:config_item:title-cs" type="string"
-		   value="Nastaven&#237; slo&#190;ky"/>
+		   value="Nastaven&#195;&#173; slo&#197;&#190;ky"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
 		   value="Ordner-Einstellungen"/>
     <oaf_attribute name="evolution:config_item:title-es" type="string"
-		   value="Configuraci&#195;&#179;n de Carpetas"/>
+		   value="Carpetas"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Param&#232;tres de Dossier"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
@@ -113,12 +117,16 @@
 		   value="Mappeinnstillinger"/>
     <oaf_attribute name="evolution:config_item:title-pl" type="string"
 		   value="Ustawienia folder&#243;w"/>
+    <oaf_attribute name="evolution:config_item:title-pt" type="string"
+		   value="Defini&#231;&#245;es Pastas"/>
     <oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
 		   value="Configura&#231;&#245;es de pastas"/>
     <oaf_attribute name="evolution:config_item:title-ru" type="string"
-		   value="&#238;&#193;&#211;&#212;&#210;&#207;&#202;&#203;&#201; &#208;&#193;&#208;&#203;&#201;"/>
+		   value="&#208;&#159;&#208;&#176;&#209;&#128;&#208;&#176;&#208;&#188;&#208;&#181;&#209;&#130;&#209;&#128;&#209;&#139; &#208;&#191;&#208;&#176;&#208;&#191;&#208;&#190;&#208;&#186;"/>
     <oaf_attribute name="evolution:config_item:title-sk" type="string"
 		   value="Nastavenie prie&#196;&#141;inkov"/>
+    <oaf_attribute name="evolution:config_item:title-sl" type="string"
+		   value="Nastavitve map"/>
     <oaf_attribute name="evolution:config_item:title-sv" type="string"
 		   value="Mappinst&#228;llningar"/>
     <oaf_attribute name="evolution:config_item:title-tr" type="string"
@@ -127,27 +135,41 @@
 		   value="&#208;&#159;&#208;&#176;&#209;&#128;&#208;&#176;&#208;&#188;&#208;&#181;&#209;&#130;&#209;&#128;&#208;&#184; &#209;&#130;&#208;&#181;&#208;&#186;&#208;&#184;"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
 		   value="Th&#198;&#176; l&#225;&#186;&#173;p th&#198;&#176; m&#225;&#187;&#165;c"/>
+    <oaf_attribute name="evolution:config_item:title-zh_TW" type="string"
+		   value="&#184;&#234;&#174;&#198;&#167;&#168;&#179;]&#169;w"/>
 
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure special folders and offline folder behavior here"/>
+    <oaf_attribute name="evolution:config_item:description-cs" type="string"
+		   value="Zde lze nastavit speci&#195;&#161;ln&#195;&#173; slo&#197;&#190;ky a chov&#195;&#161;n&#195;&#173; odpojen&#195;&#169; slo&#197;&#190;ky"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
 		   value="Hier k&#246;nnen Sie spezielle Ordner und Offline-Ordner konfigurieren"/>
     <oaf_attribute name="evolution:config_item:description-es" type="string"
-		   value="Configura aqu&#195;&#173; el comportamiento de las carpetas en conexi&#195;&#179;n y desconexi&#195;&#179;n"/>
+		   value="Configura aqu&#237; el comportamiento de las carpetas en conexi&#243;n y desconexi&#243;n"/>
     <oaf_attribute name="evolution:config_item:description-it" type="string"
 		   value="Configura qui il comportamento delle cartelle speciali e non in linea"/>
     <oaf_attribute name="evolution:config_item:description-lv" type="string"
 		   value="Konfigur&#196;&#147;t speci&#196;&#129;lo mapju un nesaistes mapes uzved&#196;&#171;bu &#197;&#161;eit"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer spesielle mapper og oppf&#248;rsel n&#229;r du arbeider frakoblet her"/>
+    <oaf_attribute name="evolution:config_item:description-pl" type="string"
+		   value="Konfiguracja specjalnych folder&#243;w i zachowania si&#234; folderu w trybie bez pod&#179;&#177;czenia"/>
+    <oaf_attribute name="evolution:config_item:description-pt" type="string"
+		   value="Configure aqui pastas especiais e comportamento de pastas quando desligado"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure pastas especiais e comportamento desconectado de pastas aqui"/>
+    <oaf_attribute name="evolution:config_item:description-ru" type="string"
+		   value="&#208;&#151;&#208;&#180;&#208;&#181;&#209;&#129;&#209;&#140; &#208;&#188;&#208;&#190;&#208;&#182;&#208;&#189;&#208;&#190; &#208;&#189;&#208;&#176;&#209;&#129;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#184;&#209;&#130;&#209;&#140; &#208;&#191;&#208;&#190;&#208;&#178;&#208;&#181;&#208;&#180;&#208;&#181;&#208;&#189;&#208;&#184;&#208;&#181; &#209;&#129;&#208;&#191;&#208;&#181;&#209;&#134;&#208;&#184;&#208;&#176;&#208;&#187;&#209;&#140;&#208;&#189;&#209;&#139;&#209;&#133; &#208;&#191;&#208;&#176;&#208;&#191;&#208;&#190;&#208;&#186; &#208;&#184; &#208;&#191;&#208;&#176;&#208;&#191;&#208;&#190;&#208;&#186; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#176;&#208;&#178;&#209;&#130;&#208;&#190;&#208;&#189;&#208;&#190;&#208;&#188;&#208;&#189;&#208;&#190;&#208;&#185; &#209;&#128;&#208;&#176;&#208;&#177;&#208;&#190;&#209;&#130;&#209;&#139;"/>
     <oaf_attribute name="evolution:config_item:description-sk" type="string"
 		   value="Nastavenie &#197;&#161;peci&#195;&#161;lnych prie&#196;&#141;inkov a ich off-line chovanie"/>
+    <oaf_attribute name="evolution:config_item:description-sl" type="string"
+		   value="Tukaj nastavite vedenje posebnih map in mape brez povezave."/>
     <oaf_attribute name="evolution:config_item:description-sv" type="string"
 		   value="Konfigurera beteende f&#246;r specialmappar och fr&#229;nkopplade mappar h&#228;r"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh th&#198;&#176; m&#225;&#187;&#165;c &#196;&#145;&#225;&#186;&#183;c bi&#225;&#187;&#135;t v&#195;&#160; h&#195;&#160;nh vi th&#198;&#176; m&#225;&#187;&#165;c ngo&#225;&#186;&#161;i tuy&#225;&#186;&#191;n &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
+    <oaf_attribute name="evolution:config_item:description-zh_TW" type="string"
+		   value="&#166;b&#166;&#185;&#179;]&#169;w&#175;S&#174;&#237;&#184;&#234;&#174;&#198;&#167;&#168;&#187;P&#194;&#247;&#189;u&#184;&#234;&#174;&#198;&#167;&#168;&#170;&#186;&#166;&#230;&#172;&#176;"/>
 
     <oaf_attribute name="evolution:config_item:icon_name" type="string"
 		   value="folder-settings.png"/>
@@ -160,24 +182,36 @@
 
     <oaf_attribute name="description" type="string"
 		   value="Configuration control for Evolution folder settings."/>
+    <oaf_attribute name="description-cs" type="string"
+		   value="Ovl&#195;&#161;dac&#195;&#173; rozhran&#195;&#173; nastaven&#195;&#173; pro editor zpr&#195;&#161;v Evolution."/>
     <oaf_attribute name="description-de" type="string"
 		   value="Konfigurations-Bedienelement f&#252;r die Ordnereinstellungen von Evolution."/>
     <oaf_attribute name="description-es" type="string"
-		   value="Control de Configuraci&#195;&#179;n para las opciones de Carpeta de Evolution."/>
+		   value="Control de configuraci&#243;n para las opciones de carpeta de Evolution."/>
     <oaf_attribute name="description-it" type="string"
 		   value="Controllo configurazione per le impostazioni cartelle di Evolution."/>
     <oaf_attribute name="description-lv" type="string"
 		   value="Konfigur&#196;&#129;cijas kontrole Evolution mapju uzst&#196;&#129;d&#196;&#171;jumiem."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for mappeinnstillinger i Evolution."/>
+    <oaf_attribute name="description-pl" type="string"
+		   value="Formant konfiguracji ustawie&#241; folder&#243;w Evolution."/>
+    <oaf_attribute name="description-pt" type="string"
+		   value="Controlo de configura&#231;&#227;o para defini&#231;&#245;es de pastas Evolution."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para as configura&#231;&#245;es de pasta do Evolution."/>
+    <oaf_attribute name="description-ru" type="string"
+		   value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#189;&#208;&#176;&#209;&#129;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#181;&#208;&#186; &#208;&#191;&#208;&#176;&#209;&#128;&#208;&#176;&#208;&#188;&#208;&#181;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#178; &#208;&#191;&#208;&#176;&#208;&#191;&#208;&#190;&#208;&#186; Evolution."/>
     <oaf_attribute name="description-sk" type="string"
 		   value="Ovl&#195;&#161;dac&#195;&#173; prvok nastavenia prie&#196;&#141;inkov Evolution."/>
+    <oaf_attribute name="description-sl" type="string"
+		   value="Kontrolnik za nastavitev map v Evoluciji."/>
     <oaf_attribute name="description-sv" type="string"
 		   value="Konfigurationsverktyg f&#246;r Evolutions mappinst&#228;llningar."/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho thi&#225;&#186;&#191;t l&#225;&#186;&#173;p th&#198;&#176; m&#225;&#187;&#165;c Evolution."/>
+    <oaf_attribute name="description-zh_TW" type="string"
+		   value="Evolution &#184;&#234;&#174;&#198;&#167;&#168;&#179;]&#169;w&#170;&#186;&#178;&#213;&#186;A&#177;&#177;&#168;&#238;&#161;C"/>
   </oaf_server>
 
 </oaf_info>

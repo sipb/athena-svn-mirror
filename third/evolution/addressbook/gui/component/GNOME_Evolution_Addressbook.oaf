@@ -13,7 +13,7 @@
 	<oaf_attribute name="description-az" type="string"
                        value="Evolutionun &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Ki&#195;&#167;ik Kart emalatxanas&#196;&#177;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Tov&#225;rna pro ovl&#225;dac&#237; prvek minikaret adres&#225;&#248;e."/>
+                       value="Tov&#195;&#161;rna pro ovl&#195;&#161;dac&#195;&#173; prvek minikaret adres&#195;&#161;&#197;&#153;e."/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til styring af minikort for adressebogen"/>
 	<oaf_attribute name="description-de" type="string"
@@ -21,7 +21,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#243;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#231;&#242; &#204;&#223;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Factor&#195;&#173;a para el control de Minitarjetas de Direcciones"/>
+                       value="F&#225;brica para el control de Minitarjetas de Direcciones"/>
 	<oaf_attribute name="description-et" type="string"
                        value="Factory for the Addressbook Minicard control"/>
 	<oaf_attribute name="description-eu" type="string"
@@ -33,7 +33,7 @@
 	<oaf_attribute name="description-hu" type="string"
                        value="Factory a c&#237;mjegyz&#233;k minik&#225;rtya kontrollj&#225;hoz"/>
 	<oaf_attribute name="description-it" type="string"
-                       value="Fabbrica per il controllo delle Minicard per la rubrica"/>
+                       value="Fabbrica per il controllo delle minicard per la rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#165;&#223;&#165;&#203;&#165;&#171;&#161;&#188;&#165;&#201;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lv" type="string"
@@ -46,16 +46,18 @@
                        value="Factory for minikort kontroll for adressebok"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator komponent&#243;w miniatorowych kart ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="F&#225;brica para o controlo de Minicart&#245;es do Livro de Endere&#231;os"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para o controle Mini-cart&#227;o do Cat&#225;logo de Endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Procesator pentru controlul agendei minicard"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#213;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#197;&#199;&#207; &#220;&#204;&#197;&#205;&#197;&#206;&#212;&#193; &#205;&#201;&#206;&#201;&#203;&#193;&#212;&#207;&#210;&#222;&#203;&#201; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;."/>
+                       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#209;&#131;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#181;&#208;&#179;&#208;&#190; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130;&#208;&#176; &#208;&#188;&#208;&#184;&#208;&#189;&#208;&#184;&#208;&#186;&#208;&#176;&#209;&#128;&#209;&#130;&#208;&#190;&#209;&#135;&#208;&#186;&#208;&#184; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;."/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Vytv&#195;&#161;racie rozhranie pre ovl&#195;&#161;dac&#195;&#173; prvok minikariet adres&#195;&#161;ra."/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Tovarna za orodje mini vizitk adresarja"/>
+                       value="Tovarna za kontrolo nad minivizitkami adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Fabrik f&#246;r kontrollen f&#246;r adressboksvisitkort"/>
 	<oaf_attribute name="description-tr" type="string"
@@ -66,8 +68,6 @@
                        value="Factory &#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n Minicard S&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137;"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#176;&#143;&#229;&#141;&#161;&#231;&#137;&#135;&#230;&#142;&#167;&#229;&#136;&#182;&#232;&#189;&#166;&#233;&#151;&#180;"/>
-	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#176;g&#167;A&#166;W&#164;&#249;&#177;&#177;&#168;&#238;&#182;&#181;&#164;u&#188;t"/>
 
 </oaf_server>
 
@@ -90,7 +90,7 @@
 	<oaf_attribute name="name-az" type="string"
 		       value="Evolution &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri ki&#195;&#167;ik kart n&#195;&#188;maiyi&#197;&#159;i"/>
 	<oaf_attribute name="name-cs" type="string"
-		       value="Prohl&#237;&#190;e&#232; minikaret adres&#225;&#248;e Evolution"/>
+		       value="Prohl&#195;&#173;&#197;&#190;e&#196;&#141; minikaret adres&#195;&#161;&#197;&#153;e Evolution"/>
 	<oaf_attribute name="name-da" type="string"
 		       value="Minikort visning i Evolution adressebog"/>
 	<oaf_attribute name="name-de" type="string"
@@ -98,7 +98,7 @@
 	<oaf_attribute name="name-el" type="string"
 		       value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#233;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution"/>
 	<oaf_attribute name="name-es" type="string"
-		       value="Visor de Minitarjetas de la Agenda de Evolution"/>
+		       value="Visor de minitarjetas de contactos de Evolution"/>
 	<oaf_attribute name="name-et" type="string"
 		       value="Evolution Addressbook minicard viewer"/>
 	<oaf_attribute name="name-eu" type="string"
@@ -127,16 +127,18 @@
 		       value="Evolution adressebok minikort visning"/>
 	<oaf_attribute name="name-pl" type="string"
 		       value="Przegl&#177;darka miniaturowych kart ksi&#177;&#191;ki adresowej Evolution"/>
+	<oaf_attribute name="name-pt" type="string"
+		       value="Visualizador de minicart&#245;es da Agenda Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
 		       value="Visualizador de mini-cart&#227;o do cat&#225;logo de endere&#231;os do Evolution"/>
 	<oaf_attribute name="name-ro" type="string"
 		       value="Vizualizor agend&#227; minicard Evolution"/>
 	<oaf_attribute name="name-ru" type="string"
-		       value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; &#208;&#210;&#207;&#211;&#205;&#207;&#212;&#210;&#193; &#205;&#201;&#206;&#201;&#203;&#193;&#210;&#212;&#207;&#222;&#197;&#203; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;"/>
+		       value="&#208;&#154;&#208;&#190;&#208;&#188;&#208;&#191;&#208;&#190;&#208;&#189;&#208;&#181;&#208;&#189;&#209;&#130; Evolution &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#191;&#209;&#128;&#208;&#190;&#209;&#129;&#208;&#188;&#208;&#190;&#209;&#130;&#209;&#128;&#208;&#176; &#208;&#188;&#208;&#184;&#208;&#189;&#208;&#184;&#208;&#186;&#208;&#176;&#209;&#128;&#209;&#130;&#208;&#190;&#209;&#135;&#208;&#181;&#208;&#186; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
 	<oaf_attribute name="name-sk" type="string"
 		       value="Prehliada&#196;&#141; minikariet adres&#195;&#161;ra Evolution"/>
 	<oaf_attribute name="name-sl" type="string"
-		       value="Evolucijin pregledovalnik mini vizitk adresarja"/>
+		       value="Pregledovalnik minivizitk adresarja za Evolucijo"/>
 	<oaf_attribute name="name-sv" type="string"
 		       value="Visare f&#246;r Evolution-adressboksvisitkort"/>
 	<oaf_attribute name="name-tr" type="string"
@@ -154,7 +156,7 @@
 	<oaf_attribute name="description-az" type="string"
 	               value="Evolution &#195;&#188;nvan d&#201;&#153;ft&#201;&#153;ri ki&#195;&#167;ik kartlar&#196;&#177;n&#196;&#177; g&#195;&#182;st&#201;&#153;r&#201;&#153;n idar&#201;&#153;."/>
 	<oaf_attribute name="description-cs" type="string"
-	               value="Ovl&#225;dac&#237; prvek pro zobrazen&#237; minikaret adres&#225;&#248;e Evolution."/>
+	               value="Ovl&#195;&#161;dac&#195;&#173; prvek pro zobrazen&#195;&#173; minikaret adres&#195;&#161;&#197;&#153;e Evolution."/>
 	<oaf_attribute name="description-da" type="string"
 	               value="Kontrol som viser et minikort i Evolutions adressebog."/>
 	<oaf_attribute name="description-de" type="string"
@@ -187,16 +189,18 @@
 	               value="Kontroll som viser et minikort for Evolutions adressebok."/>
 	<oaf_attribute name="description-pl" type="string"
 	               value="Komponent Bonobo wy&#182;wietlaj&#177;cy miniaturow&#177; kart&#234; ksi&#177;&#191;ki adresowej Evolution."/>
+	<oaf_attribute name="description-pt" type="string"
+	               value="Controlo que mostra um mini-cart&#227;o da agenda Evolution."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 	               value="Controle que exibe um mini-cart&#227;o do cat&#225;logo de endere&#231;os do Evolution."/>
 	<oaf_attribute name="description-ro" type="string"
 	               value="Control care afi&#186;eaz&#227; o agend&#227; minicard pentru Evolution"/>
 	<oaf_attribute name="description-ru" type="string"
-	               value="&#245;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#201;&#202; &#220;&#204;&#197;&#205;&#197;&#206;&#212;, &#203;&#207;&#212;&#207;&#210;&#217;&#202; &#207;&#212;&#207;&#194;&#210;&#193;&#214;&#193;&#197;&#212; &#205;&#201;&#206;&#201;&#203;&#193;&#210;&#212;&#207;&#222;&#203;&#213; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201; Evolution."/>
+	               value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130;, &#208;&#190;&#209;&#130;&#208;&#190;&#208;&#177;&#209;&#128;&#208;&#176;&#208;&#182;&#208;&#176;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#208;&#188;&#208;&#184;&#208;&#189;&#208;&#184;&#208;&#186;&#208;&#176;&#209;&#128;&#209;&#130;&#208;&#190;&#209;&#135;&#208;&#186;&#209;&#131; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184; Evolution."/>
 	<oaf_attribute name="description-sk" type="string"
 	               value="Ovl&#195;&#161;dac&#195;&#173; prvok pre zobrazenie minikariet adres&#195;&#161;ra Evolution."/>
 	<oaf_attribute name="description-sl" type="string"
-	               value="Kontrola, ki prika&#197;&#190;e mini vizitko iz Evolucijinega adresarja."/>
+	               value="Kontrola, ki prika&#197;&#190;e minivizitko iz adresarja Evolucije."/>
 	<oaf_attribute name="description-sv" type="string"
 	               value="Kontroll som visar ett Evolution-adressboksvisitkort."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -208,7 +212,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
 	               value="&#230;&#152;&#190;&#231;&#164;&#186; Evolution &#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#176;&#143;&#229;&#141;&#161;&#231;&#137;&#135;&#231;&#154;&#132;&#230;&#142;&#167;&#229;&#136;&#182;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-	               value="&#197;&#227;&#165;&#220; Evolution &#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#176;g&#167;A&#166;W&#164;&#249;&#164;&#167;&#177;&#177;&#168;&#238;&#182;&#181;."/>
+	               value="&#197;&#227;&#165;&#220; Evolution &#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#176;g&#167;A&#166;W&#164;&#249;&#164;&#167;&#177;&#177;&#168;&#238;&#182;&#181;&#161;C"/>
 
 </oaf_server>
 
@@ -225,7 +229,7 @@
 	<oaf_attribute name="description-az" type="string"
                        value="N&#195;&#188;mun&#201;&#153;vi &#195;&#188;nvan d&#201;&#153;ft&#201;&#153;ri idar&#201;&#153;si emalatxanas&#196;&#177;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Tov&#225;rna pro uk&#225;zkov&#253; ovl&#225;dac&#237; prvek adres&#225;&#248;"/>
+                       value="Tov&#195;&#161;rna pro uk&#195;&#161;zkov&#195;&#189; ovl&#195;&#161;dac&#195;&#173; prvek adres&#195;&#161;&#197;&#153;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til styring af eksempel-adressebogen"/>
 	<oaf_attribute name="description-de" type="string"
@@ -233,7 +237,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#228;&#229;&#223;&#227;&#236;&#225; &#243;&#244;&#239;&#233;&#247;&#229;&#223;&#239;&#245; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Factor&#195;&#173;a para el control de ejemplo de la Agenda"/>
+                       value="F&#225;brica para el control de ejemplo de la libreta de direcciones"/>
 	<oaf_attribute name="description-et" type="string"
                        value="Factory for the sample Addressbook control"/>
 	<oaf_attribute name="description-eu" type="string"
@@ -245,7 +249,7 @@
 	<oaf_attribute name="description-hu" type="string"
                        value="Factory a minta c&#237;mjegyz&#233;k kontrollhoz"/>
 	<oaf_attribute name="description-it" type="string"
-                       value="Fabbrica per il controllo degli esempi della Rubrica"/>
+                       value="Fabbrica per il controllo degli esempi della rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lv" type="string"
@@ -258,12 +262,14 @@
                        value="Factory for eksempelkontroll for adressebok"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator przyk&#179;adowych komponent&#243;w ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="F&#225;brica para o controlo de amostra do Livro de Endere&#231;os"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para o controle do Cat&#225;logo de Endere&#231;os exemplo"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Procesator pentru controlul mostr&#227; agend&#227;"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#208;&#210;&#201;&#205;&#197;&#210;&#193; &#213;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#197;&#199;&#207; &#220;&#204;&#197;&#205;&#197;&#206;&#212;&#193; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;"/>
+                       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#191;&#209;&#128;&#208;&#184;&#208;&#188;&#208;&#181;&#209;&#128;&#208;&#176; &#209;&#131;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#181;&#208;&#179;&#208;&#190; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130;&#208;&#176; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Vytv&#195;&#161;racie rozhranie pre uk&#195;&#161;&#197;&#190;kov&#195;&#189; ovl&#195;&#161;dac&#195;&#173; prvok Adres&#195;&#161;r"/>
 	<oaf_attribute name="description-sl" type="string"
@@ -278,8 +284,6 @@
                        value="Factory &#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n s&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137; m&#225;&#186;&#171;u"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#231;&#164;&#186;&#228;&#190;&#139;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#230;&#142;&#167;&#229;&#136;&#182;&#232;&#189;&#166;&#233;&#151;&#180;"/>
-	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#194;&#178;&#169;&#246;&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#177;&#177;&#168;&#238;&#182;&#181;&#164;u&#188;t"/>
 
 </oaf_server>
 
@@ -299,7 +303,7 @@
 	<oaf_attribute name="description-bg" type="string"
                        value="&#207;&#240;&#238;&#241;&#242; &#234;&#238;&#237;&#242;&#240;&#238;&#235; &#237;&#224; Bonobo &#234;&#238;&#233;&#242;&#238; &#239;&#238;&#234;&#224;&#231;&#226;&#224; &#224;&#228;&#240;&#229;&#241;&#237;&#224; &#234;&#237;&#232;&#227;&#224;."/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Uk&#225;zkov&#253; ovl&#225;dac&#237; prvek Bonobo, kter&#253; zobrazuje adres&#225;&#248;."/>
+                       value="Uk&#195;&#161;zkov&#195;&#189; ovl&#195;&#161;dac&#195;&#173; prvek Bonobo, kter&#195;&#189; zobrazuje adres&#195;&#161;&#197;&#153;."/>
 	<oaf_attribute name="description-da" type="string"
                        value="Eksempel p&#229; Bonobo-kontrol som viser en adressebog."/>
 	<oaf_attribute name="description-de" type="string"
@@ -307,7 +311,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#196;&#229;&#223;&#227;&#236;&#225; &#229;&#235;&#221;&#227;&#247;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#229;&#237;&#252;&#242; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Un control Bonobo de ejemplo que muestra una agenda."/>
+                       value="Un control Bonobo de ejemplo que muestra una libreta de direcciones."/>
 	<oaf_attribute name="description-et" type="string"
                        value="A sample Bonobo control which displays an addressbook."/>
 	<oaf_attribute name="description-eu" type="string"
@@ -332,16 +336,18 @@
                        value="Eksempel p&#229; Bonobo-kontroll som viser en adressebok."/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Przyk&#179;adowy komponent Bonobo wy&#182;wietlaj&#177;cy ksi&#177;&#191;k&#234; adresow&#177;."/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="Um controlo Bonobo de exemplo que mostra uma agenda."/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="Um controle Bonobo exemplo que exibe um cat&#225;logo de endere&#231;os."/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Control Bonobo de prob&#227; care afi&#186;eaz&#227; o agend&#227;."/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#240;&#210;&#201;&#205;&#197;&#210; &#213;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#197;&#199;&#207; &#220;&#204;&#197;&#205;&#197;&#206;&#212;&#193; Bonobo &#196;&#204;&#209; &#207;&#212;&#207;&#194;&#210;&#193;&#214;&#197;&#206;&#201;&#209; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;"/>
+                       value="&#208;&#159;&#209;&#128;&#208;&#184;&#208;&#188;&#208;&#181;&#209;&#128; &#209;&#131;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#181;&#208;&#179;&#208;&#190; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130;&#208;&#176; Bonobo &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#190;&#209;&#130;&#208;&#190;&#208;&#177;&#209;&#128;&#208;&#176;&#208;&#182;&#208;&#181;&#208;&#189;&#208;&#184;&#209;&#143; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Uk&#195;&#161;&#197;&#190;kov&#195;&#189; ovl&#195;&#161;dac&#195;&#173; prvok Bonobo, ktor&#195;&#189; zobrazuje adres&#195;&#161;r."/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Vzor&#196;&#141;na kontrola Bonobo, ki prika&#197;&#190;e adresar."/>
+                       value="Vzor&#196;&#141;ni Bonobo kontrolnik, ki prika&#197;&#190;e adresar."/>
 	<oaf_attribute name="description-sv" type="string"
                        value="En Bonobo-testkontroll som visar en adressbok."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -353,7 +359,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#230;&#152;&#190;&#231;&#164;&#186;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#231;&#154;&#132; Bonobo &#230;&#142;&#167;&#229;&#136;&#182;&#231;&#164;&#186;&#228;&#190;&#139;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#197;&#227;&#165;&#220;&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#170;&#186; Bonobo &#177;&#177;&#168;&#238;&#168;&#210;&#164;l."/>
+                       value="&#197;&#227;&#165;&#220;&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#170;&#186; Bonobo &#177;&#177;&#168;&#238;&#168;&#210;&#164;l&#161;C"/>
 
 </oaf_server>
 
@@ -372,7 +378,7 @@
 	<oaf_attribute name="description-bg" type="string"
 	               value="&#202;&#238;&#236;&#239;&#238;&#237;&#229;&#237;&#242; &#237;&#224; Evolution &#231;&#224; &#239;&#238;&#228;&#240;&#250;&#230;&#234;&#224; &#237;&#224; &#234;&#238;&#237;&#242;&#224;&#234;&#242;&#232;"/>
 	<oaf_attribute name="description-cs" type="string"
-	               value="Komponent Evolution pro pr&#225;ci s kontakty."/>
+	               value="Komponent Evolution pro pr&#195;&#161;ci s kontakty."/>
 	<oaf_attribute name="description-da" type="string"
 	               value="Evolution komponent til h&#229;ndtering af kontakter."/>
 	<oaf_attribute name="description-de" type="string"
@@ -409,16 +415,18 @@
 	               value="Evolution komponent for h&#229;ndtering av kontakter."/>
 	<oaf_attribute name="description-pl" type="string"
 	               value="Komponent Evolution obs&#179;uguj&#177;cy kontakty."/>
+	<oaf_attribute name="description-pt" type="string"
+	               value="Componente Evolution para gerir contactos."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 	               value="Componente do Evolution para manipular contatos."/>
 	<oaf_attribute name="description-ro" type="string"
 	               value="Component&#227; Evolution pentru manipulare contacte"/>
 	<oaf_attribute name="description-ru" type="string"
-	               value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; &#207;&#194;&#210;&#193;&#194;&#207;&#212;&#203;&#201; &#203;&#207;&#206;&#212;&#193;&#203;&#212;&#207;&#215;."/>
+	               value="&#208;&#154;&#208;&#190;&#208;&#188;&#208;&#191;&#208;&#190;&#208;&#189;&#208;&#181;&#208;&#189;&#209;&#130; Evolution &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#190;&#208;&#177;&#209;&#128;&#208;&#176;&#208;&#177;&#208;&#190;&#209;&#130;&#208;&#186;&#208;&#184; &#208;&#186;&#208;&#190;&#208;&#189;&#209;&#130;&#208;&#176;&#208;&#186;&#209;&#130;&#208;&#190;&#208;&#178;."/>
 	<oaf_attribute name="description-sk" type="string"
 	               value="Komponent Evolution pre pr&#195;&#161;cu s kontaktami."/>
 	<oaf_attribute name="description-sl" type="string"
-	               value="Evolucijina komponenta za urejanje stikov."/>
+	               value="Komponenta za urejanje stikov v Evoluciji."/>
 	<oaf_attribute name="description-sv" type="string"
 	               value="Evolutionkomponent f&#246;r att hantera kontakter."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -452,7 +460,7 @@
 	<oaf_attribute name="description-az" type="string"
 		       value="&#195;&#156;nvan D&#201;&#153;ft&#201;&#153;riid&#201;&#153; &#195;&#188;nvan g&#195;&#182;st&#201;&#153;rici"/>
 	<oaf_attribute name="description-cs" type="string"
-		       value="Tov&#225;rna pro zobrazova&#232; adres v adres&#225;&#248;i"/>
+		       value="Tov&#195;&#161;rna pro zobrazova&#196;&#141; adres v adres&#195;&#161;&#197;&#153;i"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik til adressebogens adressevisning"/>
 	<oaf_attribute name="description-de" type="string"
@@ -460,7 +468,7 @@
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#195;&#173;a para el visualizador de direcciones de la Agenda"/>
+		       value="F&#225;brica para el visualizador de direcciones de la libreta de direcciones"/>
 	<oaf_attribute name="description-et" type="string"
 		       value="Factory for the Addressbook&#39;s address displayer"/>
 	<oaf_attribute name="description-eu" type="string"
@@ -472,7 +480,7 @@
 	<oaf_attribute name="description-hu" type="string"
 		       value="Factory a c&#237;mjegyz&#233;k c&#237;mmegjelen&#237;t&#245;j&#233;hez"/>
 	<oaf_attribute name="description-it" type="string"
-		       value="Fabbrica per il visualizzatore di indirizzi della Rubrica"/>
+		       value="Fabbrica per il visualizzatore di indirizzi della rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#164;&#206;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#201;&#189;&#188;&#168;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lt" type="string"
@@ -487,16 +495,18 @@
 		       value="Factory for adressebokens adressevisning"/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Generator komponent&#243;w wy&#182;wietlaj&#177;cych adres z ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="F&#225;brica para o apresentador de endere&#231;os do Livro de Endere&#231;os"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="F&#225;brica para o exibidor de endere&#231;os do Cat&#225;logo de Endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Procesator pentru afi&#186;orul agendei de adrese"/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#207;&#212;&#207;&#194;&#210;&#193;&#214;&#193;&#212;&#197;&#204;&#209; &#193;&#196;&#210;&#197;&#211;&#193; &#201;&#218; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;"/>
+		       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#190;&#209;&#130;&#208;&#190;&#208;&#177;&#209;&#128;&#208;&#176;&#208;&#182;&#208;&#176;&#209;&#130;&#208;&#181;&#208;&#187;&#209;&#143; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#176; &#208;&#184;&#208;&#183; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Vytv&#195;&#161;racie rozhranie pre zobrazova&#196;&#141; adries Adres&#195;&#161;ra"/>
 	<oaf_attribute name="description-sl" type="string"
-		       value="Tovarna za prikazovalnik adresarjeve adrese"/>
+		       value="Tovarna za prikazovalnik naslovov v adresarju"/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="Fabrik f&#246;r adressbokens adressvisare"/>
 	<oaf_attribute name="description-tr" type="string"
@@ -507,8 +517,6 @@
 		       value="Factory B&#225;&#187;&#153; hi&#225;&#187;&#131;n th&#225;&#187;&#139; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137; c&#225;&#187;&#167;a S&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137;"/>
 	<oaf_attribute name="description-zh_CN" type="string"
 		       value="&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#156;&#176;&#229;&#157;&#128;&#230;&#152;&#190;&#231;&#164;&#186;&#229;&#153;&#168;&#232;&#189;&#166;&#233;&#151;&#180;"/>
-	<oaf_attribute name="description-zh_TW" type="string"
-		       value="&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;a&#167;}&#197;&#227;&#165;&#220;&#190;&#185;&#164;u&#188;t"/>
 
 </oaf_server>
 
@@ -528,7 +536,7 @@
 	<oaf_attribute name="description-bg" type="string"
 		       value="&#202;&#238;&#237;&#242;&#240;&#238;&#235; &#237;&#224; Bonobo &#231;&#224; &#239;&#238;&#234;&#224;&#231;&#226;&#224;&#237;&#229; &#237;&#224; &#224;&#228;&#240;&#229;&#241;."/>
 	<oaf_attribute name="description-cs" type="string"
-		       value="Ovl&#225;dac&#237; prvek Bonobo pro zobrazen&#237; adresy"/>
+		       value="Ovl&#195;&#161;dac&#195;&#173; prvek Bonobo pro zobrazen&#195;&#173; adresy"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="En Bonobo-kontrol for visning af en adresse."/>
 	<oaf_attribute name="description-de" type="string"
@@ -536,7 +544,7 @@
 	<oaf_attribute name="description-el" type="string"
 		       value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#233;&#225;&#242; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231;&#242;."/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Un control Bonobo para mostrar una direcci&#195;&#179;n."/>
+		       value="Un control Bonobo para mostrar una direcci&#243;n."/>
 	<oaf_attribute name="description-et" type="string"
 		       value="Bonobo v&#228;li aadressi jaoks."/>
 	<oaf_attribute name="description-eu" type="string"
@@ -548,7 +556,7 @@
 	<oaf_attribute name="description-hu" type="string"
 		       value="Bonobo vez&#233;rl&#245; a c&#237;m megjelen&#237;t&#233;s&#233;hez."/>
 	<oaf_attribute name="description-it" type="string"
-		       value="Un controllo di Bonobo che visualizza un indirizzo."/>
+		       value="Un controllo di Bonobo per visualizzare un indirizzo."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#164;&#242;&#201;&#189;&#188;&#168;&#164;&#185;&#164;&#235;&#164;&#191;&#164;&#225;&#164;&#206; Bonobo &#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
 	<oaf_attribute name="description-lv" type="string"
@@ -561,16 +569,18 @@
 		       value="En Bonobo-kontroll for visning av en adresse."/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Komponent Bonobo wy&#182;wietlaj&#177;cy adres."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="Um controlo Bonobo para mostrar um endere&#231;o."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="Um controle Bonobo para exibir um endere&#231;o."/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Control Bonobo pentru afi&#186;area unei adrese."/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#245;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#201;&#202; &#220;&#204;&#197;&#205;&#197;&#206;&#212; Bonobo &#196;&#204;&#209; &#207;&#212;&#207;&#194;&#210;&#193;&#214;&#197;&#206;&#201;&#209; &#193;&#196;&#210;&#197;&#211;&#193;."/>
+		       value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130; Bonobo &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#190;&#209;&#130;&#208;&#190;&#208;&#177;&#209;&#128;&#208;&#176;&#208;&#182;&#208;&#181;&#208;&#189;&#208;&#184;&#209;&#143; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#176;."/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Ovl&#195;&#161;dac&#195;&#173; prvok Bonobo, ktor&#195;&#189; zobrazuje adresy."/>
 	<oaf_attribute name="description-sl" type="string"
-		       value="Kontrola Bonobo za prikaz naslova."/>
+		       value="Bonobo kontrolnik za prikaz naslova."/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="En Bonobo-kontroll f&#246;r att visa en adress."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -582,7 +592,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
 		       value="&#231;&#148;&#168;&#228;&#186;&#142;&#230;&#152;&#190;&#231;&#164;&#186;&#228;&#184;&#128;&#230;&#157;&#161;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#154;&#132; Bonobo &#230;&#142;&#167;&#229;&#136;&#182;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-		       value="&#165;&#206;&#169;&#243;&#197;&#227;&#165;&#220;&#166;a&#167;}&#170;&#186; Bonobo &#177;&#177;&#168;&#238;."/>
+		       value="&#165;&#206;&#169;&#243;&#197;&#227;&#165;&#220;&#166;a&#167;}&#170;&#186; Bonobo &#177;&#177;&#168;&#238;&#161;C"/>
 
 </oaf_server>
 
@@ -598,6 +608,8 @@
 		       value="Factory for the Addressbook's address popup"/>
 	<oaf_attribute name="description-az" type="string"
 		       value="&#195;&#156;nvan D&#201;&#153;ft&#201;&#153;rind&#201;&#153; &#195;&#188;nvan g&#195;&#182;st&#201;&#153;rici emalatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-cs" type="string"
+		       value="Gener&#195;&#161;tor pro zobrazova&#196;&#141; adres v adres&#195;&#161;&#197;&#153;i"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for adressebogens adresse-pop-op"/>
 	<oaf_attribute name="description-de" type="string"
@@ -605,7 +617,7 @@
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#225;&#237;&#225;&#228;&#245;&#252;&#236;&#229;&#237;&#231; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231; &#225;&#240;&#252; &#244;&#239; &#194;&#233;&#226;&#235;&#223;&#239; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#195;&#173;a para la ventana de direcciones de la Agenda"/>
+		       value="F&#225;brica para la ventana de direcciones de la libreta de direcciones"/>
 	<oaf_attribute name="description-et" type="string"
 		       value="Factory for the Addressbook&#39;s address popup"/>
 	<oaf_attribute name="description-eu" type="string"
@@ -617,7 +629,7 @@
 	<oaf_attribute name="description-hu" type="string"
 		       value="Factory a C&#237;mjegyz&#233;k el&#245;ugr&#243; c&#237;meihez"/>
 	<oaf_attribute name="description-it" type="string"
-		       value="Fabbrica per il popup di indirizzi della Rubrica"/>
+		       value="Fabbrica per il popup di indirizzi della rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#164;&#206;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#164;&#242;&#165;&#221;&#165;&#195;&#165;&#215;&#165;&#162;&#165;&#195;&#165;&#215;&#164;&#185;&#164;&#235;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lv" type="string"
@@ -630,16 +642,18 @@
 		       value="Factory for adressebokens adressevisning"/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Generator komponent&#243;w wy&#182;wietlaj&#177;cych wyskakuj&#177;ce okno z adresem z ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="F&#225;brica para o popup de endere&#231;os do Livro de Endere&#231;os"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="F&#225;brica para o popup de endere&#231;os do Cat&#225;logo de Endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Procesator pentru apari&#254;ia adreselor din agend&#227;"/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#215;&#211;&#208;&#204;&#217;&#215;&#193;&#192;&#221;&#197;&#199;&#207; &#207;&#203;&#206;&#193; &#193;&#196;&#210;&#197;&#211;&#193; &#201;&#218; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#201;"/>
+		       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#178;&#209;&#129;&#208;&#191;&#208;&#187;&#209;&#139;&#208;&#178;&#208;&#176;&#209;&#142;&#209;&#137;&#208;&#181;&#208;&#179;&#208;&#190; &#208;&#190;&#208;&#186;&#208;&#189;&#208;&#176; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#176; &#208;&#184;&#208;&#183; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Vytv&#195;&#161;racie rozhranie pre rozhranie adresu z Adres&#195;&#161;ra."/>
 	<oaf_attribute name="description-sl" type="string"
-		       value="Tovarna za Adresarjev vznik naslova"/>
+		       value="Tovarna za hitri prikaz naslovov v adresarju"/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="Fabrik f&#246;r adressbokens adress-popup"/>
 	<oaf_attribute name="description-tr" type="string"
@@ -650,8 +664,6 @@
 		       value="Factory popup &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137; c&#225;&#187;&#167;a S&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137;"/>
 	<oaf_attribute name="description-zh_CN" type="string"
 		       value="&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#156;&#176;&#229;&#157;&#128;&#229;&#175;&#185;&#232;&#175;&#157;&#230;&#161;&#134;&#232;&#189;&#166;&#233;&#151;&#180;"/>
-	<oaf_attribute name="description-zh_TW" type="string"
-		       value="&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;a&#167;}&#188;u&#165;X&#191;&#239;&#179;&#230;&#164;u&#188;t"/>
 
 </oaf_server>
 
@@ -671,7 +683,7 @@
 	<oaf_attribute name="description-bg" type="string"
 		       value="&#202;&#238;&#237;&#242;&#240;&#238;&#235; &#237;&#224; Bonobo &#231;&#224; &#224;&#228;&#240;&#229;&#241;&#237;&#238; &#239;&#238;&#255;&#226;&#255;&#226;&#224;&#237;&#229;."/>
 	<oaf_attribute name="description-cs" type="string"
-		       value="Ovl&#225;dac&#237; prvek Bonobo pro adresy."/>
+		       value="Ovl&#195;&#161;dac&#195;&#173; prvek Bonobo pro adresy."/>
 	<oaf_attribute name="description-da" type="string"
 		       value="En Bonobo-kontrol for visning af en adresse."/>
 	<oaf_attribute name="description-de" type="string"
@@ -679,7 +691,7 @@
 	<oaf_attribute name="description-el" type="string"
 		       value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#225;&#237;&#220;&#228;&#245;&#243;&#231; &#236;&#233;&#225;&#242; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231;&#242;."/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Un control Bonobo para una ventada de direcci&#195;&#179;n."/>
+		       value="Un control Bonobo para una ventada de direcci&#243;n."/>
 	<oaf_attribute name="description-et" type="string"
 		       value="A Bonobo control for an address popup."/>
 	<oaf_attribute name="description-eu" type="string"
@@ -704,16 +716,18 @@
 		       value="En Bonobo-kontroll for visning av en adresse."/>
 	<oaf_attribute name="description-pl" type="string"
 		       value="Komponent Bonobo wyskakuj&#177;cego okna z adresem."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="Um controlo Bonobo para um popup de endere&#231;o."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="Um controle Bonobo para um popup de endere&#231;os."/>
 	<oaf_attribute name="description-ro" type="string"
 		       value="Control Bonobo pentru aparitia unei adrese."/>
 	<oaf_attribute name="description-ru" type="string"
-		       value="&#245;&#208;&#210;&#193;&#215;&#204;&#209;&#192;&#221;&#201;&#202; &#220;&#204;&#197;&#205;&#197;&#206;&#212; Bonobo &#196;&#204;&#209; &#207;&#203;&#206;&#193; &#193;&#196;&#210;&#197;&#211;&#193;."/>
+		       value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130; Bonobo &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#190;&#208;&#186;&#208;&#189;&#208;&#176; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#176;."/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Ovl&#195;&#161;dac&#195;&#173; prvok Bonobo pre adresy."/>
 	<oaf_attribute name="description-sl" type="string"
-		       value="Kontrola Bonobo za vznik naslova."/>
+		       value="Bonobo kontrolnik za hiter prikaz naslova."/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="En Bonobo-kontroll f&#246;r en adress-popup."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -725,7 +739,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
 		       value="&#231;&#148;&#168;&#228;&#186;&#142;&#229;&#156;&#176;&#229;&#157;&#128;&#229;&#175;&#185;&#232;&#175;&#157;&#230;&#161;&#134;&#231;&#154;&#132; Bonobo &#230;&#142;&#167;&#229;&#136;&#182;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-		       value="&#165;&#206;&#169;&#243;&#166;a&#167;}&#188;u&#165;X&#191;&#239;&#179;&#230;&#170;&#186; Bonobo &#177;&#177;&#168;&#238;."/>
+		       value="&#165;&#206;&#169;&#243;&#166;a&#167;}&#188;u&#165;X&#191;&#239;&#179;&#230;&#170;&#186; Bonobo &#177;&#177;&#168;&#238;&#161;C"/>
 
 </oaf_server>
 
@@ -740,21 +754,29 @@
 	<oaf_attribute name="description" type="string"
 		       value="Factory for the configuration controls for the Evolution Addressbook."/>
 	<oaf_attribute name="description-cs" type="string"
-		       value="Tov&#225;rna pro ovl&#225;dac&#237; prvky adres&#225;&#248;e Evolution."/>
+		       value="Gener&#195;&#161;tor pro ovl&#195;&#161;dac&#195;&#173; prvky adres&#195;&#161;&#197;&#153;e Evolution."/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Fabrik f&#252;r die Bedienelemente des Evolution-Adressbuchs"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#195;&#173;a para los controles de configuraci&#195;&#179;n de la Agenda de Evolution"/>
+		       value="F&#225;brica para los controles de configuraci&#243;n de la libreta de direcciones de Evolution"/>
 	<oaf_attribute name="description-it" type="string"
-		       value="Fabbrica per i controlli di configurazione per la Rubrica di Evolution."/>
+		       value="Fabbrica per i controlli di configurazione per la rubrica di Evolution."/>
 	<oaf_attribute name="description-lv" type="string"
 		       value="Konfigur&#196;&#129;cijas kontro&#196;&#188;u ra&#197;&#190;otne Evolution adre&#197;&#161;u gr&#196;&#129;matai."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Factory for konfigurasjonskontroll for Evolution adressebok."/>
+	<oaf_attribute name="description-pl" type="string"
+		       value="Generator formant&#243;w konfiguracji ksi&#177;&#191;ki adresowej Evolution."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="F&#225;brica para os controlos de configura&#231;&#227;o do Livro Endere&#231;os Evolution."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="F&#225;brica para os controles de configura&#231;&#227;o para o Cat&#225;logo de Endere&#231;os do Evolution."/>
+	<oaf_attribute name="description-ru" type="string"
+		       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130;&#208;&#176; &#209;&#131;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#184;&#209;&#143; &#208;&#189;&#208;&#176;&#209;&#129;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#185;&#208;&#186;&#208;&#176;&#208;&#188;&#208;&#184; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Vytv&#195;&#161;racie rozhranie pre prvok nastavenia adres&#195;&#161;ra Evolution"/>
+	<oaf_attribute name="description-sl" type="string"
+		       value="Tovarna za nastavitvene kontrolnike za adresar Evolucije."/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="Fabrik f&#246;r konfigurationsverktygen f&#246;r Evolution-adressboken."/>
 	<oaf_attribute name="description-vi" type="string"
@@ -772,39 +794,53 @@
 
 	<oaf_attribute name="evolution:config_item:title" type="string"
 		       value="Directory Servers"/>
+	<oaf_attribute name="evolution:config_item:title-cs" type="string"
+		       value="Adres&#195;&#161;&#197;&#153;ov&#195;&#169; servery"/>
 	<oaf_attribute name="evolution:config_item:title-de" type="string"
 		       value="Verzeichnis-Server"/>
 	<oaf_attribute name="evolution:config_item:title-es" type="string"
-		       value="Servidores de Directorio"/>
+		       value="Servidores de directorio"/>
 	<oaf_attribute name="evolution:config_item:title-fr" type="string"
 		       value="Serveurs d&#39;Annuaires"/>
 	<oaf_attribute name="evolution:config_item:title-hu" type="string"
 		       value="C&#237;mt&#225;r-kiszolg&#225;l&#243;k"/>
 	<oaf_attribute name="evolution:config_item:title-it" type="string"
-		       value="Server di Directory"/>
+		       value="Server di directory"/>
 	<oaf_attribute name="evolution:config_item:title-lv" type="string"
 		       value="Direktoriju serveri"/>
 	<oaf_attribute name="evolution:config_item:title-nn" type="string"
 		       value="Katalogtenarar"/>
 	<oaf_attribute name="evolution:config_item:title-no" type="string"
 		       value="Katalogtjenere"/>
+	<oaf_attribute name="evolution:config_item:title-pl" type="string"
+		       value="Serwery katalogowe"/>
+	<oaf_attribute name="evolution:config_item:title-pt" type="string"
+		       value="Servidores Direct&#243;rio"/>
 	<oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
 		       value="Servidores de diret&#243;rio"/>
+	<oaf_attribute name="evolution:config_item:title-ru" type="string"
+		       value="&#208;&#161;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#181;&#209;&#128;&#209;&#139; &#208;&#186;&#208;&#176;&#209;&#130;&#208;&#176;&#208;&#187;&#208;&#190;&#208;&#179;&#208;&#190;&#208;&#178;"/>
 	<oaf_attribute name="evolution:config_item:title-sk" type="string"
 		       value="Adres&#195;&#161;rov&#195;&#169; servery"/>
+	<oaf_attribute name="evolution:config_item:title-sl" type="string"
+		       value="Imeni&#197;&#161;ki stre&#197;&#190;niki"/>
 	<oaf_attribute name="evolution:config_item:title-sv" type="string"
 		       value="Katalogservrar"/>
 	<oaf_attribute name="evolution:config_item:title-tr" type="string"
 		       value="Dizin Servisleri"/>
 	<oaf_attribute name="evolution:config_item:title-vi" type="string"
 		       value="Server th&#198;&#176; m&#225;&#187;&#165;c"/>
+	<oaf_attribute name="evolution:config_item:title-zh_TW" type="string"
+		       value="&#165;&#216;&#191;&#253;&#166;&#248;&#170;A&#190;&#185;"/>
 
 	<oaf_attribute name="evolution:config_item:description" type="string"
 		       value="Configure access to LDAP directory servers here"/>
+	<oaf_attribute name="evolution:config_item:description-cs" type="string"
+		       value="Zde lze nastavit p&#197;&#153;&#195;&#173;stup k adres&#195;&#161;&#197;&#153;&#197;&#175;m LDAP server&#197;&#175;"/>
 	<oaf_attribute name="evolution:config_item:description-de" type="string"
 		       value="Hier k&#246;nnen Sie den Zugriff auf LDAP-Verzeichnis-Server konfigurieren"/>
 	<oaf_attribute name="evolution:config_item:description-es" type="string"
-		       value="Configure el acceso a los servidores de directorio LDAP aqu&#195;&#173;"/>
+		       value="Configure el acceso a los servidores de directorio LDAP aqu&#237;"/>
 	<oaf_attribute name="evolution:config_item:description-fr" type="string"
 		       value="Configurez ici l&#39;acc&#232;s aux serveurs d&#39;annuaires LDAP"/>
 	<oaf_attribute name="evolution:config_item:description-it" type="string"
@@ -813,16 +849,26 @@
 		       value="&#197;&#160;eit konfigur&#196;&#147;jiet pieeju LDAP direktoriju serveriem"/>
 	<oaf_attribute name="evolution:config_item:description-no" type="string"
 		       value="Konfigurer tilgang til LDAP-katalogtjenere her"/>
+	<oaf_attribute name="evolution:config_item:description-pl" type="string"
+		       value="Konfiguracja dost&#234;pu do serwer&#243;w katalogowych LDAP"/>
+	<oaf_attribute name="evolution:config_item:description-pt" type="string"
+		       value="Configurar aqui acesso a servidores de direct&#243;rio LDAP"/>
 	<oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		       value="Configure o acesso a servidores de diret&#243;rio LDAP aqui"/>
+	<oaf_attribute name="evolution:config_item:description-ru" type="string"
+		       value="&#208;&#157;&#208;&#176;&#209;&#129;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#185;&#209;&#130;&#208;&#181; &#208;&#183;&#208;&#180;&#208;&#181;&#209;&#129;&#209;&#140; &#208;&#180;&#208;&#190;&#209;&#129;&#209;&#130;&#209;&#131;&#208;&#191; &#208;&#186; &#209;&#129;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#181;&#209;&#128;&#209;&#131; &#208;&#186;&#208;&#176;&#209;&#130;&#208;&#176;&#208;&#187;&#208;&#190;&#208;&#179;&#208;&#190;&#208;&#178; LDAP"/>
 	<oaf_attribute name="evolution:config_item:description-sk" type="string"
 		       value="Nastavenie pr&#195;&#173;stupu k adres&#195;&#161;rov&#195;&#189;m serverom LDAP"/>
+	<oaf_attribute name="evolution:config_item:description-sl" type="string"
+		       value="Tukaj konfigurirate dostop do LDAP imeni&#197;&#161;kih stre&#197;&#190;nikov"/>
 	<oaf_attribute name="evolution:config_item:description-sv" type="string"
 		       value="Konfigurera &#229;tkomst till LDAP-katalogservrar h&#228;r"/>
 	<oaf_attribute name="evolution:config_item:description-tr" type="string"
 		       value="LDAP dizin servislerine eri&#197;&#159;imi buradan yap&#196;&#177;land&#196;&#177;r&#196;&#177;n"/>
 	<oaf_attribute name="evolution:config_item:description-vi" type="string"
 		       value="C&#225;&#186;&#165;u h&#195;&#172;nh truy c&#225;&#186;&#173;p t&#225;&#187;&#155;i LDAP server &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
+	<oaf_attribute name="evolution:config_item:description-zh_TW" type="string"
+		       value="&#166;b&#179;o&#184;&#204;&#179;]&#169;w&#185;&#239; LDAP &#165;&#216;&#191;&#253;&#170;&#186;&#166;s&#168;&#250;"/>
 
 	<oaf_attribute name="evolution:config_item:icon_name" type="string"
 		       value="ldap-settings.png"/>
@@ -835,24 +881,36 @@
     
 	<oaf_attribute name="description" type="string"
 		       value="Configuration control for the Evolution Addressbook Storages."/>
+	<oaf_attribute name="description-cs" type="string"
+		       value="Kontrola nastaven&#195;&#173; pro Ulo&#197;&#190;en&#195;&#173; adres&#195;&#161;&#197;&#153;&#197;&#175; Evolution."/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Konfigurations-Bedienelement zum Speichern des Evolution-Adressbuchs."/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Control de conficuraci&#195;&#179;n para los Almacenamientos de la Agenda de Evolution"/>
+		       value="Control de configuraci&#243;n para los Almacenamientos de la libreta de Evolution."/>
 	<oaf_attribute name="description-it" type="string"
-		       value="Controllo configurazione per gli Storages della Rubrica di Evolution"/>
+		       value="Controllo configurazione per gli storages della rubrica di Evolution."/>
 	<oaf_attribute name="description-lv" type="string"
 		       value="Evolution adre&#197;&#161;u gr&#196;&#129;matu glab&#196;&#129;tuvju konfigur&#196;&#129;cijas kontrole."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Konfigurasjonskontroll for Evolution adressebok-lager."/>
+	<oaf_attribute name="description-pl" type="string"
+		       value="Formant konfiguracji miejsc przechowywania ksi&#177;&#191;ki adresowej Evolution."/>
+	<oaf_attribute name="description-pt" type="string"
+		       value="Controlo de configura&#231;&#227;o dos Armazenamentos Livros de Endere&#231;os Evolution."/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="Controle de configura&#231;&#227;o para os Reposit&#243;rios de Cat&#225;logo de endere&#231;os do Evolution."/>
+	<oaf_attribute name="description-ru" type="string"
+		       value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#209;&#143;&#209;&#142;&#209;&#137;&#208;&#184;&#208;&#185; &#209;&#141;&#208;&#187;&#208;&#181;&#208;&#188;&#208;&#181;&#208;&#189;&#209;&#130; &#208;&#189;&#208;&#176;&#209;&#129;&#209;&#130;&#209;&#128;&#208;&#190;&#208;&#181;&#208;&#186; &#208;&#180;&#208;&#187;&#209;&#143; &#209;&#133;&#209;&#128;&#208;&#176;&#208;&#189;&#208;&#184;&#208;&#187;&#208;&#184;&#209;&#137;&#208;&#176; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184; Evolution "/>
 	<oaf_attribute name="description-sk" type="string"
 		       value="Ovl&#195;&#161;dac&#195;&#173; prvok nastavenia pre adres&#195;&#161;re Evolution."/>
+	<oaf_attribute name="description-sl" type="string"
+		       value="Kontrolnik za nastavitev shrambe adresarja v Evoluciji."/>
 	<oaf_attribute name="description-sv" type="string"
 		       value="Konfigurationsstyrning f&#246;r Evolution-adressbokslagren."/>
 	<oaf_attribute name="description-vi" type="string"
 		       value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho Kho l&#198;&#176;u s&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137; Evolution."/>
+	<oaf_attribute name="description-zh_TW" type="string"
+		       value="Evolution &#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#192;x&#166;s&#176;&#207;&#170;&#186;&#178;&#213;&#186;A&#177;&#177;&#168;&#238;&#161;C"/>
 
 </oaf_server>
 

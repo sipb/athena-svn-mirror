@@ -466,6 +466,7 @@ composer_get_message (EMsgComposer *composer, gboolean post, gboolean save_html_
 	const MailConfigAccount *account;
 	CamelMimeMessage *message = NULL;
 	EDestination **recipients, **recipients_bcc;
+	CamelInternetAddress *cia;
 	char *subject;
 	int i;
 	int hidden = 0, shown = 0;
@@ -478,18 +479,24 @@ composer_get_message (EMsgComposer *composer, gboolean post, gboolean save_html_
 	/* get the message recipients */
 	recipients = e_msg_composer_get_recipients (composer);
 	
+	cia = camel_internet_address_new ();
+	
 	/* see which ones are visible/present, etc */
 	if (recipients) {
 		for (i = 0; recipients[i] != NULL; i++) {
-			const char *addr = e_destination_get_email (recipients[i]);
+			const char *addr = e_destination_get_address (recipients[i]);
 			
 			if (addr && addr[0]) {
-				num++;
-				if (e_destination_is_evolution_list (recipients[i])
-				    && !e_destination_list_show_addresses (recipients[i])) {
-					hidden++;
-				} else {
-					shown++;
+				camel_address_decode ((CamelAddress *) cia, addr);
+				if (camel_address_length ((CamelAddress *) cia) > 0) {
+					camel_address_remove ((CamelAddress *) cia, -1);
+					num++;
+					if (e_destination_is_evolution_list (recipients[i])
+					    && !e_destination_list_show_addresses (recipients[i])) {
+						hidden++;
+					} else {
+						shown++;
+					}
 				}
 			}
 		}
@@ -498,13 +505,20 @@ composer_get_message (EMsgComposer *composer, gboolean post, gboolean save_html_
 	recipients_bcc = e_msg_composer_get_bcc (composer);
 	if (recipients_bcc) {
 		for (i = 0; recipients_bcc[i] != NULL; i++) {
-			const char *addr = e_destination_get_email (recipients_bcc[i]);
+			const char *addr = e_destination_get_address (recipients_bcc[i]);
 			
-			if (addr && addr[0])
-				num_bcc++;
+			if (addr && addr[0]) {
+				camel_address_decode ((CamelAddress *) cia, addr);
+				if (camel_address_length ((CamelAddress *) cia) > 0) {
+					camel_address_remove ((CamelAddress *) cia, -1);
+					num_bcc++;
+				}
+			}
 		}
 		e_destination_freev (recipients_bcc);
 	}
+	
+	camel_object_unref (cia);
 	
 	/* I'm sensing a lack of love, er, I mean recipients. */
 	if (num == 0 && !post) {
@@ -868,18 +882,22 @@ compose_msg (GtkWidget *widget, gpointer user_data)
 
 /* Send according to a mailto (RFC 2368) URL. */
 void
-send_to_url (const char *url)
+send_to_url (const char *url, const char *parent_uri)
 {
 	struct _composer_callback_data *ccd;
 	GtkWidget *composer;
+	MailConfigAccount *account = NULL;
 	
 	/* FIXME: no way to get folder browser? Not without
 	 * big pain in the ass, as far as I can tell */
 	if (!check_send_configuration (NULL))
 		return;
 	
-	/* Tell create_msg_composer to use the default email profile */
-	composer = create_msg_composer (NULL, FALSE, url);
+	if (parent_uri)
+		account = mail_config_get_account_by_source_url (parent_uri);
+	
+	composer = create_msg_composer (account, FALSE, url);
+	
 	if (!composer)
 		return;
 	
@@ -1562,8 +1580,17 @@ post_to_url (const char *url)
 {
 	struct _composer_callback_data *ccd;
 	GtkWidget *composer;
+	MailConfigAccount *account = NULL;
 	
-	composer = create_msg_composer (NULL, TRUE, NULL);
+	/* FIXME: no way to get folder browser? Not without
+	 * big pain in the ass, as far as I can tell */
+	if (!check_send_configuration (NULL))
+		return;
+	
+	if (url)
+		account = mail_config_get_account_by_source_url (url);
+	
+	composer = create_msg_composer (account, TRUE, NULL);
 	if (!composer)
 		return;
 	
@@ -2112,8 +2139,8 @@ mark_all_as_seen (BonoboUIComponent *uih, void *user_data, const char *path)
 	camel_folder_freeze (fb->folder);
 	for (i = 0; i < uids->len; i++)
 		camel_folder_set_message_flags (fb->folder, uids->pdata[i], CAMEL_MESSAGE_SEEN, ~0);
+	camel_folder_free_uids (fb->folder, uids);
 	camel_folder_thaw (fb->folder);
-	g_ptr_array_free (uids, TRUE);
 }
 
 void

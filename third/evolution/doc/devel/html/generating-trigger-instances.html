@@ -4,8 +4,7 @@
 >Generating trigger instances</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.77"><LINK
 REL="HOME"
 TITLE="Evolution Developer's Guide"
 HREF="index.html"><LINK
@@ -125,8 +124,8 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="GENERATING-TRIGGER-INSTANCES"
->Generating trigger instances</A
-></H1
+></A
+>Generating trigger instances</H1
 ><P
 >	Generating absolute triggers is trivial; you just use the date
 	and time they specify.  However, relative triggers are
@@ -166,9 +165,12 @@ NAME="GENERATING-TRIGGER-INSTANCES"
 	fit the relative triggers that have the largest time periods.
 	If a trigger's offset is negative, like the -10 minutes in the
 	example above, then we must expand the
-	<I
+	<SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >end</I
+></SPAN
 > of the time range: in the case above,
 	the range's ending time of 6:00 must be grown by 10 minutes to
 	6:10 so that the last recurrence instance will be that of
@@ -176,9 +178,12 @@ CLASS="EMPHASIS"
 	trigger, which is what we wanted.  For triggers with positive
 	offsets, like if an alarm were to trigger 20 minutes after an
 	event's occurrence, we must expand the
-	<I
+	<SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >start</I
+></SPAN
 > of the time range in an analogous
 	way, by subtracting the time offset from it.
       </P

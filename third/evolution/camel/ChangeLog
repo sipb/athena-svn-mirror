@@ -1,3 +1,91 @@
+2003-03-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl-gssapi.c (gssapi_challenge): If we are using the
+	heimdal krb5 implementation, don't free outbuf ever. Seems to
+	segfault if we do.
+
+2003-03-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl-gssapi.c (gssapi_challenge): Get rid of debug
+	printf's that are no longer needed. In the case of errors, don't
+	release the outbuf gss_buffer_t since it shouldn't be set. Also
+	g_free (str) when we are done with it.
+
+2003-03-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl-gssapi.c (camel_sasl_gssapi_finalize): Pass in the
+	address of the second args to the delete/release functions. Also
+	#define gss_nt_service_name when using heimdal.
+
+2003-03-25  Rodney Dawes  <dobey@ximian.com>
+
+	* camel-sasl-gssapi.c: #include <gssapi.h> for heimdal, fixed CFLAGS
+	
+2003-03-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl-gssapi.c: We don't want to #include <et/com_err.h",
+	we want to #include <com_err.h> instead.
+	#include <heimdal/gssapi.h> in the heimdal case.
+
+2003-03-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl.c: Plug in GSSAPI support.
+
+	* camel-sasl-gssapi.[c,h]: New source files implementing GSSAPI.
+
+2003-03-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-part.c (process_header): Use
+	header_contentid_decode() as this new function should be safer
+	than the hack that we had before.
+
+	* camel-mime-utils.c (header_contentid_decode): New function to
+	try and parse a content-id string in such a way as to work around
+	some of the known bugs in other MIME implementations. Try to be as
+	"safe" as we can - ie. don't allow for more than 1 @ (since the
+	mailer uses "@@@%d" as a fake content-id value for parts without
+	content-ids) and don't allow for invalid content-type chars.
+
+2003-03-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/sendmail/camel-sendmail-transport.c
+	(sendmail_send_to): Add a CRLF filter to the output stream to
+	convert any CRLF sequences into plain old line-feeds to work
+	around a bug in some local transport programs. Fixes bug #39138.
+
+2003-02-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-stream-filter.c: Add a 'flushed' state variable to the
+	private struct.
+	(do_read): Set p->flushed to TRUE after we call
+	camel_mime_filter_complete() on all the filters.
+	(do_reset): Set p->flushed to FALSE.
+	(do_eos): Make sure the filters have been flushed before returning
+	that the stream is at EOS.
+
+	* camel-mime-filter-canon.c (complete): Don't add a eol -
+	otherwise we will fail to verify some mutt signatures that do not
+	have a blank line before the boundary line (and note that the last
+	\n before the boundary really belongs to the boundary anyway) so
+	#if 0 this code out for now.
+
+2003-02-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/sendmail/camel-sendmail-transport.c
+	(sendmail_send_to): Remove all Bcc headers before sending to
+	sendmail and restore them after it has been sent.
+
+2003-02-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-ssl.c (stream_connect): Fixed a type-o in the
+	ENABLE_IPv6 ifdef section.
+
+2003-02-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-folder-search.c: Added a (get-size ) function to fix bug
+	#38073.
+	(search_get_size): Implemented.
+
 2003-01-06  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* camel-mime-filter-canon.c (complete): Set the backbuflen to 0 so
