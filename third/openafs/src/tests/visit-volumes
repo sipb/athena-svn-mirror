@@ -1,6 +1,0 @@
-#!/bin/sh
-# $Id: visit-volumes,v 1.1.1.2 2005-03-10 20:32:57 zacheiss Exp $
-ls ${AFSROOT}/nada.kth.se/* >&4 2>&4 || exit 1
-ls -l ${AFSROOT}/nada.kth.se/* >&4 2>&4 || exit 1
-ls ${AFSROOT}/nada.kth.se/*/* >&4 2>&4 || exit 1
-ls -l ${AFSROOT}/nada.kth.se/*/* >&4 2>&4 || exit 1
