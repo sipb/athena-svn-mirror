@@ -282,7 +282,7 @@ egg_recent_model_read_raw (EggRecentModel *model, FILE *file)
 
 	rewind (file);
 
-	string = g_string_new ("");
+	string = g_string_new (NULL);
 	while (fgets (buf, EGG_RECENT_MODEL_BUFFER_SIZE, file)) {
 		string = g_string_append (string, buf);
 	}
@@ -585,6 +585,7 @@ egg_recent_model_filter (EggRecentModel *model,
 
 
 
+#if 0
 static void
 egg_recent_model_monitor_list_cb (GnomeVFSMonitorHandle *handle,
 			       const gchar *monitor_uri,
@@ -636,7 +637,7 @@ egg_recent_model_monitor_list (EggRecentModel *model, GList *list)
 			g_free (uri);
 	}
 }
-
+#endif
 
 
 static gboolean
@@ -717,8 +718,10 @@ egg_recent_model_read (EggRecentModel *model, FILE *file)
 
 	content = egg_recent_model_read_raw (model, file);
 
-	if (strlen (content) <= 0)
+	if (strlen (content) <= 0) {
+		g_free (content);
 		return NULL;
+	}
 
 	parse_info_init (&info);
 	
@@ -854,13 +857,16 @@ static FILE *
 egg_recent_model_open_file (EggRecentModel *model)
 {
 	FILE *file;
+	mode_t prev_umask;
 	
 	file = fopen (model->priv->path, "r+");
 	if (file == NULL) {
 		/* be paranoid */
-		umask (077);
+		prev_umask = umask (077);
 
 		file = fopen (model->priv->path, "w+");
+
+		umask (prev_umask);
 
 		g_return_val_if_fail (file != NULL, NULL);
 	}
@@ -872,11 +878,34 @@ static gboolean
 egg_recent_model_lock_file (FILE *file)
 {
 	int fd;
+	gint	try = 5;
 
 	rewind (file);
 	fd = fileno (file);
 
-	return lockf (fd, F_LOCK, 0) == 0 ? TRUE : FALSE;
+	/* Attempt to lock the file 5 times,
+	 * waiting a random interval (< 1 second) 
+	 * in between attempts.
+	 * We should really be doing asynchronous
+	 * locking, but requires substantially larger
+	 * changes.
+	 */
+	
+	while (try > 0)
+	{
+		int rand_interval;
+
+		if (lockf (fd, F_TLOCK, 0) == 0)
+			return TRUE;
+
+		rand_interval = 1 + (int) (10.0 * rand()/(RAND_MAX + 1.0));
+			 
+           	g_usleep (100000 * rand_interval);
+
+		--try;
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -887,7 +916,7 @@ egg_recent_model_unlock_file (FILE *file)
 	rewind (file);
 	fd = fileno (file);
 
-	return lockf (fd, F_ULOCK, 0) < 0 ? FALSE : TRUE;
+	return (lockf (fd, F_ULOCK, 0) == 0) ? TRUE : FALSE;
 }
 
 static void
@@ -1211,19 +1240,25 @@ egg_recent_model_add_full (EggRecentModel * model, EggRecentItem *item)
 	GList *list = NULL;
 	gboolean ret = FALSE;
 	gboolean updated = FALSE;
+	char *uri;
 	time_t t;
-	gchar *uri;
 	
 	g_return_val_if_fail (model != NULL, FALSE);
 	g_return_val_if_fail (EGG_IS_RECENT_MODEL (model), FALSE);
+
+	uri = egg_recent_item_get_uri (item);
+	if (strncmp (uri, "recent-files://", strlen ("recent-files://")) == 0) {
+		g_free (uri);
+		return FALSE;
+	} else {
+		g_free (uri);
+	}
 
 	file = egg_recent_model_open_file (model);
 	g_return_val_if_fail (file != NULL, FALSE);
 
 	time (&t);
 	egg_recent_item_set_timestamp (item, t);
-
-	uri = egg_recent_item_get_uri (item);
 
 	if (egg_recent_model_lock_file (file)) {
 
@@ -1383,14 +1418,15 @@ egg_recent_model_get_list (EggRecentModel *model)
 	GList *list=NULL;
 
 	file = egg_recent_model_open_file (model);
-	g_return_val_if_fail (file != NULL, FALSE);
+	g_return_val_if_fail (file != NULL, NULL);
 	
 	if (egg_recent_model_lock_file (file)) {
 		list = egg_recent_model_read (model, file);
 		
 	} else {
 		g_warning ("Failed to lock:  %s", strerror (errno));
-		return FALSE;
+		fclose (file);
+		return NULL;
 	}
 
 	if (!egg_recent_model_unlock_file (file))
@@ -1628,7 +1664,7 @@ egg_recent_model_changed (EggRecentModel *model)
 
 	if (model->priv->limit > 0) {
 		list = egg_recent_model_get_list (model);
-		egg_recent_model_monitor_list (model, list);
+		/* egg_recent_model_monitor_list (model, list); */
 	
 		g_signal_emit (G_OBJECT (model), model_signals[CHANGED], 0,
 			       list);

@@ -4,6 +4,7 @@ INCLUDES =							\
 	-DPANEL_APPLET_GLADEDIR=\""$(gladedir)"\"		\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
 	$(LIBPANEL_APPLET_CFLAGS)				\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
 	$(WARN_CFLAGS)
 
 lib_LTLIBRARIES = libpanel-applet-2.la
@@ -22,14 +23,17 @@ libpanel_applet_2_la_SOURCES =		\
 	panel-applet-enums.h		\
 	$(CORBA_SRCLIST)
 
-libpanel_applet_2_la_LDFLAGS = -version-info $(LIB_PANEL_APPLET_LT_VERSION)
+libpanel_applet_2_la_LDFLAGS = \
+	-version-info $(LIB_PANEL_APPLET_LT_VERSION) \
+	-no-undefined
 libpanel_applet_2_la_LIBADD  = $(LIBPANEL_APPLET_LIBS)
 
 libpanel_appletincludedir = $(includedir)/panel-2.0
 
 libpanel_appletinclude_HEADERS =	\
-	panel-applet-gconf.h		\
 	panel-applet.h			\
+	panel-applet-gconf.h		\
+	panel-applet-enums.h		\
 	GNOME_Panel.h
 
 CORBA_SRCLIST =			\
@@ -45,7 +49,8 @@ noinst_PROGRAMS = test-bonobo-applet
 
 bin_PROGRAMS = panel-test-applets
 
-panel_test_applets_LDADD =		\
+panel_test_applets_LDFLAGS = -export-dynamic
+panel_test_applets_LDADD   =		\
 	$(LIBPANEL_APPLET_LIBS)		\
 	libpanel-applet-2.la
 
@@ -66,6 +71,7 @@ EXTRA_DIST =					\
 	GNOME_Panel_TestApplet.server.in	\
 	panel-applet-marshal.list		\
 	libpanelapplet-2.0.pc.in		\
+	libpanelapplet-2.0-uninstalled.pc.in	\
 	panel-test-applets.glade
 
 panel-applet-marshal.h: panel-applet-marshal.list $(GLIB_GENMARSHAL)
@@ -109,7 +115,7 @@ glade_DATA = panel-test-applets.glade
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libpanelapplet-2.0.pc
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(noinst_DATA)
 
 serverdir       = $(libdir)/bonobo/servers
 server_in_files = GNOME_Panel_TestApplet.server.in

@@ -1,9 +1,111 @@
+==================== 2.7.92.1 ====================
+
+==================== 2.7.92 ====================
+
+==================== 2.7.91.1 ====================
+
+==================== 2.7.91 ====================
+
+==================== 2.7.90 ====================
+
+==================== 2.7.4.1 ====================
+
+==================== 2.7.4 ====================
+
+==================== 2.7.3 ====================
+
+2004-06-11  Dennis Smit  <ds@nerds-incorporated.org>
+	* clock/GNOME_ClockApplet.xml,
+	* fish/GNOME_FishApplet.xml,
+	* notification_area/GNOME_NotificationAreaApplet.xml,
+	* wncklet/GNOME_ShowDesktopApplet.xml,
+	* wncklet/GNOME_WindowListApplet.xml,
+	* wncklet/GNOME_WindowMenuApplet.xml,
+	* wncklet/GNOME_WorkspaceSwitcherApplet.xml,
+	* wncklet/window-menu.c: Remove from ellipsizing per HIG.
+	Fixes gnome-panel part of bug #133782.
+
+	Patch by: Dennis Cranston  <dennis_cranston at yahoo com>.
+
+==================== 2.7.1 ====================
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0 ====================
+
+==================== 2.5.93 ====================
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+==================== 2.5.4 ====================
+
+==================== 2.5.3.1 ====================
+
+==================== 2.5.3 ====================
+
+==================== 2.5.2 ====================
+
+==================== 2.5.1 ====================
+
+==================== 2.4.0 ====================
+
+==================== 2.3.91 ====================
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+==================== 2.3.6.2 ====================
+
+==================== 2.3.6.1 ====================
+
+==================== 2.3.6 ====================
+
+==================== 2.3.4.1 ====================
+
+==================== 2.3.4 ====================
+
+==================== 2.3.3.3 ====================
+
+==================== 2.3.3.2 ====================
+
+==================== 2.3.3.1 ====================
+
+==================== 2.3.3 ====================
+
+2003-04-10  Alex Duggan  <aldug@astrolinux.com>
+
+	* wncklet/window-menu.c: fix version in about dialog to use
+	VERSION
+
+2003-02-06  Frank Worsley  <fworsley@shaw.ca>
+
+	* wncklet/GNOME_Wncklet_Factory.server.in.in:
+	change name of desktop button to "Show Desktop", remove the
+	word 'Button' from the description and change the category to "Actions"
+
+2003-01-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: build clock and mailcheck instead
+	of gen_util. Also remove any gen_util .server files
+	which were previously installed.
+
 2003-01-26  Alex Duggan  <aldug@astrolinux.com>
 
-	* applets/gen_util/pager.c:
-	* applets/gen_util/tasklist.c:
+	* wncklet/window-list.c:
+	* wncklet/workspace-switcher.c:
 	Use VERSION in about dialog for tasklist and pager applet instead
 	of hard coded "1.0".  Fixes #104441 and #104442
+	
+2003-01-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: build wncklet.
 
 2002-12-02  Christian Neumair  <chris@gnome-de.org>
 

@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      gdocteam@sun.com (Sun Microsystems)
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </creator>
     <maintainer>
-      gdocteam@sun.com (Sun Microsystems)
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </maintainer>
-<!--
     <title>
-      Window List Applet Manual V2.3
+      Window List Applet Manual V2.8
     </title>
--->
-    <title>
-      Window List
-    </title>    
     <date>
-      2003-01-23
+      2004-08-25
     </date>
-    <version identifier="2.3" date="2003-01-23" description="Updated for GNOME 2.2, program version 1.0."/>
+    <version identifier="2.8" date="2004-08-25" description="Updated for GNOME 2.8, program version 2.7.92"/>
     <subject category="GNOME|Applets|Utility"/>
     <description>
       User manual for Window List. 

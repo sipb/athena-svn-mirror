@@ -5,11 +5,6 @@
 
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-directory.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomeui/gnome-ditem-edit.h>
 
 #include "menu-ditem.h"
@@ -28,12 +23,16 @@ ditem_properties_clicked (GtkWidget *w, int response, gpointer data)
 	if (response == GTK_RESPONSE_HELP) {
 		panel_show_help (
 			gtk_window_get_screen (GTK_WINDOW (w)),
-			"wgospanel.xml", "gospanel-16");
+			"user-guide.xml", "gospanel-16");
 	} else if (response == REVERT_BUTTON) {
 		if (ditem != NULL)
 			gnome_ditem_edit_set_ditem (dee, ditem);
 		else
 			gnome_ditem_edit_clear (dee);
+
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (w),
+						   REVERT_BUTTON,
+						   FALSE);
 	} else {
 		gtk_widget_destroy (w);
 	}
@@ -72,9 +71,11 @@ ditem_properties_apply_timeout (gpointer data)
  * Will save after 5 seconds of no changes.  If something is changed, the save
  * is postponed to another 5 seconds.  This seems to be a saner behaviour,
  * then just saving every N seconds.
+ * And update the sensitivity of the Revert button.
  */
 static void
-ditem_properties_changed (GtkWidget *dedit, gpointer data)
+ditem_properties_changed (GtkWidget *dedit,
+			  GtkWidget *dialog)
 {
 	gpointer timeout_data = g_object_get_data (G_OBJECT (dedit),
 						   "apply_timeout");
@@ -92,6 +93,10 @@ ditem_properties_changed (GtkWidget *dedit, gpointer data)
 
 	g_object_set_data (G_OBJECT (dedit), "apply_timeout",
 			   GUINT_TO_POINTER (timeout));
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+					   REVERT_BUTTON,
+					   TRUE);
 }
 
 
@@ -117,11 +122,11 @@ ditem_properties_close (GtkWidget *dialog,
 	saving_error = g_object_get_data (G_OBJECT (dedit), "SavingError");
 
 	if (saving_error)
-		panel_error_dialog (
-			gtk_window_get_screen (GTK_WINDOW (dialog)),
-			"cannot_save_entry",
-			_("<b>Cannot save changes to launcher</b>\n\n"
-			  "Details: %s"), saving_error);
+		panel_error_dialog (gtk_window_get_screen (GTK_WINDOW (dialog)),
+				    "cannot_save_entry",
+				    _("Cannot save changes to launcher"),
+				    "%s",
+				    saving_error);
 }
 
 static gboolean
@@ -129,7 +134,7 @@ is_item_writable (const char *loc, const char *dir)
 {
 	if (loc != NULL) {
 		/* if old style kde link file, don't allow editing */
-		if (is_ext (loc, ".kdelnk"))
+		if (g_str_has_suffix (loc, ".kdelnk"))
 			return FALSE;
 		if (panel_is_uri_writable (loc))
 			return TRUE;
@@ -149,8 +154,7 @@ is_item_writable (const char *loc, const char *dir)
 }
 
 static void
-set_ditem_sensitive (GtkDialog *dialog,
-		     GnomeDItemEdit *dedit,
+set_ditem_sensitive (GnomeDItemEdit *dedit,
 		     const char *loc,
 		     const char *dir)
 {
@@ -159,8 +163,6 @@ set_ditem_sensitive (GtkDialog *dialog,
 	sensitive = is_item_writable (loc, dir);
 
 	gnome_ditem_edit_set_editable (dedit, sensitive);
-
-	gtk_dialog_set_response_sensitive (dialog, REVERT_BUTTON, sensitive);
 }
 
 GtkWidget *
@@ -189,8 +191,16 @@ panel_edit_dentry (const char *loc,
 
 	gtk_dialog_set_default_response (
 			GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+					   REVERT_BUTTON,
+					   FALSE);
 
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	
 	dedit = gnome_ditem_edit_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (dedit), 5);
 
 	gtk_widget_show (dedit);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
@@ -207,12 +217,10 @@ panel_edit_dentry (const char *loc,
 	if (ditem != NULL)
 		gnome_ditem_edit_set_ditem (GNOME_DITEM_EDIT (dedit), ditem);
 
-	set_ditem_sensitive (GTK_DIALOG (dialog),
-			     GNOME_DITEM_EDIT (dedit),
-			     loc, dir);
+	set_ditem_sensitive (GNOME_DITEM_EDIT (dedit), loc, dir);
 
 	g_signal_connect (dedit, "changed",
-			  G_CALLBACK (ditem_properties_changed), NULL);
+			  G_CALLBACK (ditem_properties_changed), dialog);
 
 	g_signal_connect (dialog, "destroy",
 			  G_CALLBACK (ditem_properties_close), dedit);
@@ -264,11 +272,22 @@ panel_edit_direntry (const char *dir,
 				GTK_RESPONSE_CLOSE,
 				NULL);
 
+	gtk_dialog_set_default_response (
+			GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+					   REVERT_BUTTON,
+					   FALSE);
+
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	
 	gtk_window_set_wmclass (GTK_WINDOW (dialog),
 				"desktop_entry_properties", "Panel");
 	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	
 	dedit = gnome_ditem_edit_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (dedit), 5);
 	gtk_widget_show (dedit);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    dedit, TRUE, TRUE, 0);
@@ -307,12 +326,10 @@ panel_edit_direntry (const char *dir,
 	gnome_ditem_edit_set_directory_only (GNOME_DITEM_EDIT (dedit),
 					     TRUE /* directory_only */);
 
-	set_ditem_sensitive (GTK_DIALOG (dialog),
-			     GNOME_DITEM_EDIT (dedit),
-			     dirfile, NULL);
+	set_ditem_sensitive (GNOME_DITEM_EDIT (dedit), dirfile, NULL);
 
 	g_signal_connect (dedit, "changed",
-			  G_CALLBACK (ditem_properties_changed), NULL);
+			  G_CALLBACK (ditem_properties_changed), dialog);
 
 	g_signal_connect (dialog, "destroy",
 			  G_CALLBACK (ditem_properties_close), dedit);
@@ -401,7 +418,7 @@ get_unique_name (const char *dir, const char *name)
 
 		/* randomize further same name desktops */
 		if (i > 5)
-			i = rand ();
+			i = g_random_int ();
 
 		full = g_build_path ("/", dir, nameext, NULL);
 		if ( ! panel_uri_exists (full)) {
@@ -441,10 +458,11 @@ really_add_new_menu_item (GtkWidget *d, int response, gpointer data)
 
 	/* check for valid name */
 	if (string_empty (gnome_desktop_item_get_localestring (ditem, GNOME_DESKTOP_ITEM_NAME))) {
-		dialog = panel_error_dialog (
-				gtk_window_get_screen (GTK_WINDOW (d)),
-				"cannot_create_launcher",
-				_("You have to specify a name for the launcher."));
+		dialog = panel_error_dialog (gtk_window_get_screen (GTK_WINDOW (d)),
+					     "cannot_create_launcher",
+					     _("Cannot create launcher"),
+					     _("You have to specify a name."));
+
 		g_signal_connect_swapped (G_OBJECT (dialog),
 					  "destroy",
 					  G_CALLBACK (panel_pop_window_busy),
@@ -457,10 +475,10 @@ really_add_new_menu_item (GtkWidget *d, int response, gpointer data)
 	     string_empty (gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC))) ||
 	    (gnome_desktop_item_get_entry_type (ditem) == GNOME_DESKTOP_ITEM_TYPE_LINK &&
 	     string_empty (gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_URL)))) {
-		dialog = panel_error_dialog (
-				gtk_window_get_screen (GTK_WINDOW (d)),
-				"cannot_create_launcher",
-				_("You have to specify a valid URL or command."));
+		dialog = panel_error_dialog (gtk_window_get_screen (GTK_WINDOW (d)),
+					     "cannot_create_launcher",
+					     _("Cannot create launcher"),
+					     _("You have to specify a valid URL or command."));
 		g_signal_connect_swapped (G_OBJECT (dialog),
 					  "destroy",
 					  G_CALLBACK (panel_pop_window_busy),
@@ -488,12 +506,12 @@ really_add_new_menu_item (GtkWidget *d, int response, gpointer data)
 				 TRUE /* force */,
 				 &error);
 	if (error) {
-		panel_error_dialog (
-			gtk_window_get_screen (GTK_WINDOW (d)),
-			"cannot_save_menu_item" /* class */,
-			_("<b>Cannot save menu item to disk</b>\n\n"
-			  "Details: %s"),
-			error->message);
+		panel_error_dialog (gtk_window_get_screen (GTK_WINDOW (d)),
+				    "cannot_save_menu_item" /* class */,
+				    _("Cannot save menu item to disk"),
+				    "%s",
+				    error->message);
+
 		g_clear_error (&error);
 	}
 
@@ -513,11 +531,11 @@ panel_new_launcher (const char *item_loc,
 	GtkWidget *dee;
 
 	if (!is_item_writable (item_loc, NULL)) {
-		dialog = panel_error_dialog (
-				screen,
-				"cannot_create_launcher",
-				_("You can not create a new launcher at this location "
-				  "since the location is not writable."));
+		dialog = panel_error_dialog (screen,
+					     "cannot_create_launcher",
+					     _("Cannot create launcher"),
+					     _("You can not create a new launcher at this "
+					       "location since the location is not writable."));
 
 		return dialog;
 	}
@@ -529,13 +547,16 @@ panel_new_launcher (const char *item_loc,
 				GTK_STOCK_OK, GTK_RESPONSE_OK,
 				NULL);
 
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog),
 			       "create_menu_item", "Panel");
 	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	
 	dee = gnome_ditem_edit_new ();
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), dee,
-			    TRUE, TRUE, GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (dee), 5);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), dee, TRUE, TRUE, 0);
 
 	gnome_ditem_edit_set_entry_type (GNOME_DITEM_EDIT (dee), 
 					 "Application");

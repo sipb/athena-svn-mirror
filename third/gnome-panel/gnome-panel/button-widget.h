@@ -2,7 +2,7 @@
 #define BUTTON_WIDGET_H
 
 #include <gtk/gtk.h>
-#include "panel-types.h"
+#include "panel-enums.h"
 
 G_BEGIN_DECLS
 	
@@ -16,51 +16,56 @@ typedef struct _ButtonWidget		ButtonWidget;
 typedef struct _ButtonWidgetClass	ButtonWidgetClass;
 
 struct _ButtonWidget {
-	GtkButton    parent;
+	GtkButton         parent;
 	
-	GdkPixbuf   *pixbuf;
-	GdkPixbuf   *scaled;
-	GdkPixbuf   *scaled_hc;
+	GdkPixbuf        *pixbuf;
+	GdkPixbuf        *scaled;
+	GdkPixbuf        *scaled_hc;
 
-	/* Invariant: assert (!filename || !stock_id) */
-	char        *filename;
-	char        *stock_id;
+	/* if filename doesn't lead to a findable icon,
+	   try stock_id */
+	char             *filename;
+	char             *stock_id;
 
-	int          size;
+	PanelOrientation  orientation;
 
-	PanelOrient  orient;
+	int               size;
 
-	guint        pressed_timeout;
-
-	guint        ignore_leave  : 1;
-	guint        arrow         : 1;
-	guint        dnd_highlight : 1;
+	guint             activatable   : 1;
+	guint             ignore_leave  : 1;
+	guint             arrow         : 1;
+	guint             dnd_highlight : 1;
 };
 
-struct _ButtonWidgetClass
-{
+struct _ButtonWidgetClass {
 	GtkButtonClass parent_class;
 };
 
-GType      button_widget_get_type          (void) G_GNUC_CONST;
-
-GtkWidget *button_widget_new               (const char   *pixmap,
-					    int           size,
-					    gboolean      arrow,
-					    PanelOrient   orient);
-GtkWidget *button_widget_new_from_stock    (const char   *stock_id,
-					    int           size,
-					    gboolean      arrow,
-					    PanelOrient   orient);
-void       button_widget_set_pixmap        (ButtonWidget *button,
-					    const char   *pixmap);
-void       button_widget_set_stock_id      (ButtonWidget *button,
-					    const char   *stock_id);
-void       button_widget_set_params        (ButtonWidget *button,
-					    gboolean      arrow,
-					    PanelOrient   orient);
-void       button_widget_set_dnd_highlight (ButtonWidget *button,
-					    gboolean      highlight);
+GType            button_widget_get_type          (void) G_GNUC_CONST;
+GtkWidget *      button_widget_new               (const char       *pixmap,
+						  gboolean          arrow,
+						  PanelOrientation  orientation);
+GtkWidget *      button_widget_new_from_stock    (const char       *stock_id,
+						  gboolean          arrow,
+						  PanelOrientation  orientation);
+void             button_widget_set_activatable   (ButtonWidget     *button,
+						  gboolean          activatable);
+gboolean         button_widget_get_activatable   (ButtonWidget     *button);
+void             button_widget_set_icon_name     (ButtonWidget     *button,
+						  const char       *icon_name);
+const char *     button_widget_get_icon_name     (ButtonWidget     *button);
+void             button_widget_set_stock_id      (ButtonWidget     *button,
+						  const char       *stock_id);
+const char *     button_widget_get_stock_id      (ButtonWidget     *button);
+void             button_widget_set_orientation   (ButtonWidget     *button,
+						  PanelOrientation  orientation);
+PanelOrientation button_widget_get_orientation   (ButtonWidget     *button);
+void             button_widget_set_has_arrow     (ButtonWidget     *button,
+						  gboolean          has_arrow);
+gboolean         button_widget_get_has_arrow     (ButtonWidget     *button);
+void             button_widget_set_dnd_highlight (ButtonWidget     *button,
+						  gboolean          dnd_highlight);
+gboolean         button_widget_get_dnd_highlight (ButtonWidget     *button);
 
 G_END_DECLS
 

@@ -2,6 +2,7 @@
  * panel-background-monitor.c:
  *
  * Copyright (C) 2001, 2002 Ian McKellar <yakk@yakk.net>
+ *                     2002 Sun Microsystems, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,6 +29,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 #include "panel-background-monitor.h"
 #include "panel-gdk-pixbuf-extensions.h"
@@ -236,9 +238,11 @@ panel_background_monitor_setup_pixmap (PanelBackgroundMonitor *monitor)
 	Pixmap	*prop_data = NULL;
 	GdkAtom	 prop_type;
 
-	gdk_property_get (
-		monitor->gdkwindow, monitor->gdkatom, 0, 0, 10, 
-		FALSE, &prop_type, NULL, NULL, (guchar **) &prop_data);
+	if (!gdk_property_get (
+		monitor->gdkwindow, monitor->gdkatom,
+		gdk_x11_xatom_to_atom (XA_PIXMAP), 0, 10, 
+		FALSE, &prop_type, NULL, NULL, (gpointer) &prop_data))
+		return;
 
 	if ((prop_type == GDK_TARGET_PIXMAP) && prop_data && prop_data [0]) {
 		g_assert (monitor->gdkpixmap == NULL);
@@ -257,7 +261,6 @@ panel_background_monitor_tile_background (PanelBackgroundMonitor *monitor,
 					  int                     height)
 {
 	GdkPixbuf *retval;
-	ArtIRect   rect;
 	int        tilewidth, tileheight;
 
 	retval = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
@@ -265,15 +268,35 @@ panel_background_monitor_tile_background (PanelBackgroundMonitor *monitor,
 	tilewidth  = gdk_pixbuf_get_width (monitor->gdkpixbuf);
 	tileheight = gdk_pixbuf_get_height (monitor->gdkpixbuf);
 
-	rect.x0 = 0;
-	rect.y0 = 0;
-	rect.x1 = width;
-	rect.y1 = height;
+	if (tilewidth == 1 && tileheight == 1) {
+		guchar  *pixels;
+		int      n_channels;
+		guint32  pixel = 0;
 
-	panel_gdk_pixbuf_draw_to_pixbuf_tiled (
-		monitor->gdkpixbuf, retval,
-		rect, tilewidth, tileheight,
-		0, 0, 255, GDK_INTERP_NEAREST);
+		n_channels = gdk_pixbuf_get_n_channels (monitor->gdkpixbuf);
+		pixels     = gdk_pixbuf_get_pixels (monitor->gdkpixbuf);
+
+		if (pixels) {
+			if (n_channels == 4)
+				pixel = ((guint32 *) pixels) [0];
+			else if (n_channels == 3)
+				pixel = pixels [0] << 24 | pixels [1] << 16 | pixels [2] << 8;
+		}
+
+		gdk_pixbuf_fill (retval, pixel);
+	} else {
+		ArtIRect rect;
+
+		rect.x0 = 0;
+		rect.y0 = 0;
+		rect.x1 = width;
+		rect.y1 = height;
+
+		panel_gdk_pixbuf_draw_to_pixbuf_tiled (
+			monitor->gdkpixbuf, retval,
+			rect, tilewidth, tileheight,
+			0, 0, 255, GDK_INTERP_NEAREST);
+	}
 
 	return retval;
 }
@@ -313,7 +336,6 @@ panel_background_monitor_setup_pixbuf (PanelBackgroundMonitor *monitor)
 
 		tiled = panel_background_monitor_tile_background (
 						monitor, rwidth, rheight);
-
 		g_object_unref (monitor->gdkpixbuf);
 		monitor->gdkpixbuf = tiled;
 

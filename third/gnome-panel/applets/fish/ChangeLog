@@ -1,3 +1,225 @@
+==================== 2.7.92.1 ====================
+
+==================== 2.7.92 ====================
+
+==================== 2.7.91.1 ====================
+
+==================== 2.7.91 ====================
+
+==================== 2.7.90 ====================
+
+2004-08-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* GNOME_FishApplet_Factory.server.in.in: remove the
+	panel:category attribute.
+
+==================== 2.7.4.1 ====================
+
+==================== 2.7.4 ====================
+
+==================== 2.7.3 ====================
+
+==================== 2.7.1 ====================
+
+2004-04-13  Paolo Borelli  <pborelli@katamail.com>
+
+	* fish.c (display_fortune_dialog): remove separator.
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0 ====================
+
+==================== 2.5.93 ====================
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+==================== 2.5.4 ====================
+
+2004-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #131671 from Maneesh Pusalkar <mpusalkar@novell.com>.
+
+	* fish.c: (command_value_changed): set a blank command
+	rather than leaving as is if the user deletes the command.
+
+==================== 2.5.3.1 ====================
+
+==================== 2.5.3 ====================
+
+2003-12-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: kill gnome-help.h and gnome-url.h includes.
+
+2003-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (show_help): use the new libgnomeui and
+	gdk functions instead of the egg-screen stuff.
+
+	* Makefile.am: don't do the libegg thang.
+	
+	* egg-screen-exec.[ch],
+	  egg-screen-help.[ch],
+	  egg-screen-url.[ch],
+	  update-from-egg.sh: die.
+
+==================== 2.5.2 ====================
+
+2003-12-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: distcheck fixes
+
+2003-12-09  Vincent Untz  <vincent@vuntz.net>
+
+	* fish.c: (update_fortune_dialog) set the accessibility name and
+	description for the fortune dialog here...
+	(display_fortune_dialog): ... and not there (now the name and
+	description are updated when the fish name changes)
+	(setup_fish_widget), (name_changed_notify): set/update the
+	accessibility name and description for the applet
+	Fix bug #128230.
+
+2003-12-08  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* Makefile.am:
+	Add CLEANFILES so that make clean deletes $(server_DATA) and
+	$(server_DATA).in. Fixes bug #128795.
+
+2003-12-03  Vincent Untz  <vincent@vuntz.net>
+
+	Don't use deprecated functions.
+
+	* fish.c: (display_about_dialog): s/gdk_pixbuf_unref/g_object_unref
+	(init_fools_day): s/g_strcasecmp/g_ascii_strcasecmp
+	(fish_applet_expose_event): s/gdk_draw_pixmap/gdk_draw_drawable
+
+==================== 2.5.1 ====================
+
+2003-11-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use $(DISABLE_DEPRECATED_CFLAGS).
+
+2003-11-06  Vincent Untz  <vincent@vuntz.net>
+
+	* fish.schemas.in: rotate pref default is false because it looks better
+	on vertical panel when the applet is not rotated (look at the bubbles).
+
+	* fish.c: (set_ally_name_desc), (update_fortune_dialog): remove GNOME
+	from some visible strings: it's a Fish and not a GNOME Fish any more.
+	(set_tooltip): use the name of the fish in the tooltip.
+	(name_changed_notify): update tooltip with the new name.
+	(fish_applet_fill): the rotate pref was always set to false. Now we
+	just default it to false and respect what the user wants.
+
+Mon Sep 15 15:31:42 2003  George Lebl <jirka@5z.com>
+
+	* fish.c: if /desktop/gnome/lockdown/inhibit_command_line is true,
+	  then make the command field in the preferences insensitive.
+
+Mon Sep 15 15:10:23 2003  George Lebl <jirka@5z.com>
+
+	* fish.c: when started with the locked_down flag hide the
+	  preferences item
+
+==================== 2.4.0 ====================
+
+==================== 2.3.91 ====================
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+2003-08-20  Shakti Sen  <shakti.sen@wipro.com>
+
+	* fish.glade: fix #120310 by setting the spin button
+	to numeric only
+
+==================== 2.3.6.2 ====================
+
+==================== 2.3.6.1 ====================
+
+==================== 2.3.6 ====================
+
+2003-07-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (display_preferences_dialog): we don't need two
+	help manuals when we click on help thank you very much.
+	Pointed out by Glynn.
+
+==================== 2.3.4.1 ====================
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* fish.glade:  HIGify widget padding between dialog vbox and action area.
+
+==================== 2.3.4 ====================
+
+2003-07-09  Christian Neumair  <chris@gnome-de.org>
+
+	* fish.schemas.in: Changed some strings, #117050.
+
+==================== 2.3.3.3 ====================
+
+==================== 2.3.3.2 ====================
+
+Mon Jun 30 16:02:42 2003  George Lebl <jirka@5z.com>
+
+	* fish.(c|glade): key-writability stuff for the config dialog.  And display
+	  the useful command warning only once.
+
+==================== 2.3.3.1 ====================
+
+==================== 2.3.3 ====================
+
+2003-05-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: install the glade files in share/gnome-panel/glade.
+
+2003-05-27  Ray Strode  <halfline@hawaii.rr.com>
+
+	* fish.c: 
+	(delete_event): Add return statement.
+	(display_preferences_dialog): Bypass close_dialog and just 
+	use gtk_widget_hide as the clicked handler directly (Mark's 
+	idea).  
+	(close_dialog): Remove this unused function.
+
+2003-04-28  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* fish.glade:  Fix widget padding per HIG.
+ 
+2003-04-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* fish.c: (handle_button_press), (setup_fish_widget):
+	catch button presses on the frame so that you can
+	click on Wanda at the screen edge. Highly important
+	you know ...
+
+2003-04-10  Dennis Cranston <dennis_cranston at yahoo.com>
+
+	* fish.c: (display_about_dialog) Remove misplaced 
+	space.
+	
+	* fish.glade:  Make close button the default widget.
+
+2003-04-08  Dennis Cranston <dennis_cranston at yahoo.com>
+
+	* fish.c, fish.glade:  HIGify the preferences dialog. 
+	Plus, fixes the mnemonics so they actually work.
+	
+	* help/C/fish/fish-applet-2.xml:  Update documentation 
+	accordingly.
+	  
+2003-02-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add support for the GCONF_SCHEMAS_INSTALL
+	conditional and the GCONF_SCHEMA_FILE_DIR variable.
+
 2003-01-03  Muktha  <muktha.narayan@wipro.com>
 
 	Fixes #102409.

@@ -4,13 +4,12 @@
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
 
-void xstuff_init			(void);
 void xstuff_delete_property		(GdkWindow *window,
 					 const char *name);
 gboolean xstuff_is_compliant_wm		(void);
 gboolean xstuff_net_wm_supports         (const char *hint);
 
-void xstuff_set_no_group_and_no_input	(GdkWindow *win);
+void xstuff_set_no_group	        (GdkWindow *win);
 
 void xstuff_unsetup_desktop_area	(void);
 void xstuff_set_pos_size		(GdkWindow *window,
@@ -26,5 +25,11 @@ void xstuff_set_wmspec_strut		(GdkWindow *window,
 
 void xstuff_zoom_animate                (GtkWidget    *widget,
 					 GdkRectangle *opt_src_rect);
+
+int  xstuff_get_current_workspace       (GdkScreen *screen);
+
+void xstuff_grab_key_on_all_screens     (int      keycode,
+					 guint    modifiers,
+					 gboolean grab);
 
 #endif /* __XSTUFF_H__ */

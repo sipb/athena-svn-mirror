@@ -9,9 +9,6 @@
 #include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomeui/gnome-icon-lookup.h>
 #endif
-#ifdef HAVE_RSVG
-#include <librsvg/rsvg.h>
-#endif
 #include <math.h>
 #include "egg-recent-util.h"
 
@@ -32,70 +29,31 @@ egg_recent_util_escape_underlines (const gchar* text)
 
 	str = g_string_new ("");
 
-  	p = text;
-  	end = text + length;
+	p = text;
+	end = text + length;
 
-  	while (p != end)
-    	{
-      		const gchar *next;
-      		next = g_utf8_next_char (p);
+	while (p != end)
+	{
+		const gchar *next;
+		next = g_utf8_next_char (p);
 
 		switch (*p)
-        	{
-       			case '_':
-          			g_string_append (str, "__");
-          			break;
-        		default:
-          			g_string_append_len (str, p, next - p);
-          			break;
-        	}
+		{
+			case '_':
+				g_string_append (str, "__");
+				break;
+			default:
+				g_string_append_len (str, p, next - p);
+			break;
+		}
 
-      		p = next;
-    	}
+		p = next;
+	}
 
 	return g_string_free (str, FALSE);
 }
 
-static gboolean
-path_represents_svg_image (const char *path)
-{
-        /* Synchronous mime sniffing is a really bad idea here
-         * since it's only useful for people adding custom icons,
-         * and if they're doing that, they can behave themselves
-         * and use a .svg extension.
-         */
-        return path != NULL && strstr (path, ".svg") != NULL;
-}
-
-/* This loads an SVG image, scaling it to the appropriate size. */
-#ifdef HAVE_RSVG
-static GdkPixbuf *
-load_pixbuf_svg (const char *path,
-		 guint size_in_pixels,
-		 guint base_size)
-{
-	double zoom;
-	GdkPixbuf *pixbuf;
-
-	if (base_size != 0) {
-		zoom = (double)size_in_pixels / base_size;
-
-		pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (path, zoom, zoom, size_in_pixels, size_in_pixels, NULL);
-	} else {
-		pixbuf = rsvg_pixbuf_from_file_at_max_size (path,
-							    size_in_pixels,
-							    size_in_pixels,
-							    NULL);
-	}
-
-	if (pixbuf == NULL) {
-		return NULL;
-	}
-	
-	return pixbuf;
-}
-#endif
-
+#ifndef USE_STABLE_LIBGNOMEUI
 static GdkPixbuf *
 scale_icon (GdkPixbuf *pixbuf,
 	    double *scale)
@@ -120,46 +78,34 @@ load_icon_file (char          *filename,
 	guint width, height, size;
 	double scale;
 
-	if (path_represents_svg_image (filename)) {
-#ifdef HAVE_RSVG
-		pixbuf = load_pixbuf_svg (filename,
-					  nominal_size,
-					  base_size);
-#else
-		/* svg file, and no svg support... */
-		return NULL;
-#endif
-	} else {
-		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 
-		if (pixbuf == NULL) {
-			return NULL;
+	if (pixbuf == NULL) {
+		return NULL;
+	}
+	
+	if (base_size == 0) {
+		width = gdk_pixbuf_get_width (pixbuf); 
+		height = gdk_pixbuf_get_height (pixbuf);
+		size = MAX (width, height);
+		if (size > nominal_size) {
+			base_size = size;
+		} else {
+			/* Don't scale up small icons */
+			base_size = nominal_size;
 		}
-		
-		if (base_size == 0) {
-			width = gdk_pixbuf_get_width (pixbuf); 
-			height = gdk_pixbuf_get_height (pixbuf);
-			size = MAX (width, height);
-			if (size > nominal_size) {
-				base_size = size;
-			} else {
-				/* Don't scale up small icons */
-				base_size = nominal_size;
-			}
-		}
-		
-		if (base_size != nominal_size) {
-			scale = (double)nominal_size/base_size;
-			scaled_pixbuf = scale_icon (pixbuf, &scale);
-			g_object_unref (pixbuf);
-			pixbuf = scaled_pixbuf;
-		}
+	}
+	
+	if (base_size != nominal_size) {
+		scale = (double)nominal_size/base_size;
+		scaled_pixbuf = scale_icon (pixbuf, &scale);
+		g_object_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
 	}
 
 	return pixbuf;
 }
 
-#ifndef USE_STABLE_LIBGNOMEUI
 GdkPixbuf *
 egg_recent_util_get_icon (GnomeIconTheme *theme, const gchar *uri,
 			  const gchar *mime_type, int size)
@@ -181,6 +127,10 @@ egg_recent_util_get_icon (GnomeIconTheme *theme, const gchar *uri,
 						 &icon_data,
 						 &base_size);
 	g_free (icon);
+
+	if (filename == NULL) {
+		return NULL;
+	}
 
 	pixbuf = load_icon_file (filename, base_size, size);
 	g_free (filename);

@@ -26,10 +26,10 @@
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
 
-#include <libgnome/gnome-help.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkhbox.h>
-#include <libgnomeui/gnome-about.h>
+#include <gtk/gtkicontheme.h>
+#include <libgnomeui/libgnomeui.h>
 
 #include <bonobo/bonobo-shlib-factory.h>
 
@@ -53,6 +53,7 @@ typedef struct
   PanelApplet *applet;
 
   GtkWidget *box;
+  GtkWidget *about_dialog;
   GtkWidget *frame;
 
   GtkOrientation orientation;
@@ -67,7 +68,10 @@ help_cb (PanelApplet *applet,
   GError *err;
 
   err = NULL;  
-  gnome_help_display ("notification-area-applet", NULL, &err);
+  gnome_help_display_desktop_on_screen (NULL, "user-guide",
+                                        "user-guide.xml", "gospanel-567",
+					gtk_widget_get_screen (GTK_WIDGET (applet)),
+					&err);
 
   if (err != NULL)
     {
@@ -76,7 +80,7 @@ help_cb (PanelApplet *applet,
       dialog = gtk_message_dialog_new (NULL,
                                        GTK_DIALOG_DESTROY_WITH_PARENT,
                                        GTK_MESSAGE_ERROR,
-                                       GTK_BUTTONS_CLOSE,
+                                       GTK_BUTTONS_OK,
                                        _("There was an error displaying help: %s"),
                                        err->message);
       
@@ -85,6 +89,8 @@ help_cb (PanelApplet *applet,
                         NULL);
       
       gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+      gtk_window_set_screen (GTK_WINDOW (dialog),
+                             gtk_widget_get_screen (GTK_WIDGET (applet)));
       
       gtk_widget_show (dialog);
 
@@ -94,12 +100,13 @@ help_cb (PanelApplet *applet,
 
 
 static void
-about_cb (PanelApplet *applet,
-          void        *data)
+about_cb (BonoboUIComponent *uic,
+          SystemTray        *tray,
+          const gchar       *verbname)
 {
-  static GtkWidget *about = NULL;
-  GdkPixbuf *pixbuf = NULL;
-  gchar *file;
+  GdkPixbuf    *pixbuf;
+  GtkIconTheme *icon_theme;
+  GdkScreen    *screen;
 
   const char *authors[] = {
     "Havoc Pennington <hp@redhat.com>",
@@ -107,33 +114,47 @@ about_cb (PanelApplet *applet,
     NULL
   };
   const char *documenters [] = {
+    "Sun GNOME Documentation Team <gdocteam@sun.com>",
     NULL
   };
   const char *translator_credits = _("translator_credits");
 
-  if (about)
+  screen = gtk_widget_get_screen (GTK_WIDGET (tray->applet));
+
+  if (tray->about_dialog)
     {
-      gtk_window_present (GTK_WINDOW (about));
+      gtk_window_set_screen (GTK_WINDOW (tray->about_dialog), screen);
+      gtk_window_present (GTK_WINDOW (tray->about_dialog));
       return;
     }
 
-  file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "notification-area-applet.png",
-                                    TRUE, NULL);
-  pixbuf = gdk_pixbuf_new_from_file (file, NULL);
-  g_free (file);
+  icon_theme = gtk_icon_theme_get_for_screen (screen);
+  pixbuf = gtk_icon_theme_load_icon (icon_theme,
+				     "panel-notification-area",
+                                     48,
+				     0,
+				     NULL);
 
-  about = gnome_about_new (_("Panel Notification Area"), VERSION,
-                           "Copyright \xc2\xa9 2002 Red Hat, Inc.",
-                           NULL,
-                           (const char **)authors,
-                           (const char **)documenters,
-                           strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
-                           pixbuf);
+  tray->about_dialog = gnome_about_new (_("Panel Notification Area"), VERSION,
+					"Copyright \xc2\xa9 2002 Red Hat, Inc.",
+					NULL,
+					(const char **) authors,
+					(const char **) documenters,
+					strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
+					pixbuf);
   
-  g_object_add_weak_pointer (G_OBJECT (about),
-                             (void**) &about);
+  if (pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (tray->about_dialog), pixbuf);
+      g_object_unref (pixbuf);
+    }
 
-  gtk_widget_show (about);
+  gtk_window_set_screen (GTK_WINDOW (tray->about_dialog), screen);
+
+  g_object_add_weak_pointer (G_OBJECT (tray->about_dialog),
+                             (gpointer) &tray->about_dialog);
+
+  gtk_widget_show (tray->about_dialog);
 }
 
 static const BonoboUIVerb menu_verbs [] = {
@@ -275,6 +296,14 @@ applet_change_pixel_size (PanelApplet  *applet,
 }
 
 static void
+applet_destroy (PanelApplet *applet,
+		SystemTray  *tray)
+{
+  if (tray->about_dialog)
+    gtk_widget_destroy (tray->about_dialog);
+}
+
+static void
 free_tray (SystemTray *tray)
 {
   all_trays = g_slist_remove (all_trays, tray);
@@ -296,6 +325,7 @@ applet_factory (PanelApplet *applet,
                 gpointer     data)
 {
   SystemTray *tray;
+  AtkObject  *atko;
   
   if (!(strcmp (iid, "OAFIID:GNOME_NotificationAreaApplet") == 0 ||
         strcmp (iid, "OAFIID:GNOME_SystemTrayApplet") == 0))
@@ -303,9 +333,13 @@ applet_factory (PanelApplet *applet,
 
   if (tray_manager == NULL)
     {
+      GdkScreen *screen;
+
+      screen = gtk_widget_get_screen (GTK_WIDGET (applet));
+
       tray_manager = egg_tray_manager_new ();
 
-      if (!egg_tray_manager_manage (tray_manager))
+      if (!egg_tray_manager_manage_screen (tray_manager, screen))
         g_printerr ("System tray didn't get the system tray manager selection\n");
 
       g_signal_connect (tray_manager, "tray_icon_added",
@@ -325,6 +359,9 @@ applet_factory (PanelApplet *applet,
                           "system-tray",
                           tray,
                           (GDestroyNotify) free_tray);
+
+  atko = gtk_widget_get_accessible (GTK_WIDGET (tray->applet));
+  atk_object_set_name (atko, _("Panel Notification Area"));
 
   tray->frame = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
   tray->box = gtk_obox_new ();
@@ -350,8 +387,8 @@ applet_factory (PanelApplet *applet,
   all_trays = g_slist_append (all_trays, tray);
   
   panel_applet_set_flags (PANEL_APPLET (tray->applet),
-                          PANEL_APPLET_HAS_HANDLE);
-
+                          PANEL_APPLET_HAS_HANDLE|PANEL_APPLET_EXPAND_MINOR);
+  
   g_signal_connect (G_OBJECT (tray->applet),
                     "change_size",
                     G_CALLBACK (applet_change_pixel_size),
@@ -365,6 +402,11 @@ applet_factory (PanelApplet *applet,
   g_signal_connect (G_OBJECT (tray->applet),
                     "change_background",
                     G_CALLBACK (applet_change_background),
+                    tray);
+
+  g_signal_connect (tray->applet,
+                    "destroy",
+                    G_CALLBACK (applet_destroy),
                     tray);
 
   update_size_and_orientation (tray);

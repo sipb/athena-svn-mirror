@@ -1,3 +1,1580 @@
+=============
+Version 2.8.0
+=============
+
+  Translators
+
+	* Abdulaziz Al-Arfaj (ar)
+	* Kemal Šanjta (bs)
+	* Miloslav Trmac (cs)
+	* Dafydd Harries (cy)
+	* Hendrik Richter (de)
+	* Kostas Papadimas (el)
+	* Gareth Owen (en_GB)
+	* Francisco Javier F. Serrador (es)
+	* Gabor Kelemen (hu)
+	* Luca Ferretti (it)
+	* Hasbullah Bin Pit (ms)
+	* Åsmund Skjæveland (nn)
+	* Welther José O. Esteves (pt_BR)
+	* Mişu Moldovan (ro)
+	* Christian Rose (sv)
+	* Chanchai Junlouchai (th)
+	* Baris Cicek (tr)
+	* Abel Cheung (zh_TW)
+
+================
+Version 2.7.92.1
+================
+
+  Clock Applet
+
+	* Update the component id we use to launch evolution (Mark)
+
+  Translators
+
+	* Takeshi AIHANA (ja)
+
+==============
+Version 2.7.92
+==============
+
+  Panel
+
+	* Fix various coding errors (Kjartan)
+	* Fix autohide in certain circumstances on multi-screen (Mark)
+	* Fix a leak (Kjartan)
+	* Remove unused code (Vincent)
+
+  Misc
+
+	* Updated help documentation (Breda McColgan)
+	* Remove gnome-panel-preferences man page (Vincent)
+	* Make spanish help docs valid UTF-8 (Alexandre Oliva)
+	* Fix a #if/#ifdef thinko (Kjartan)
+	* Fix deprecated API usage (Kjartan)
+
+  Translators
+
+	* Runa Bhattacharjee (bn)
+	* Mehemed Šaćirović (bs)
+	* Jordi Mallach (ca)
+	* Martin Willemoes Hansen (da)
+	* Francisco Javier F. Serrador (es)
+	* Iñaki Larrañaga Murgoitio (eu)
+	* Laszlo Dvornik (hu)
+	* Reinout van Schouwen (nl)
+	* Elian Myftiu (sq)
+	* Maxim Dziumanenko (uk)
+
+================
+Version 2.7.91.1
+================
+
+  Panel
+
+	* Fix focus-on-map issue the "Run Application" dialog (Elijah Newren)
+	* Fix crash with unknown URIs in ~/.recently-used (Mark)
+
+  Clock Applet
+
+	* Fix issue with shadow and scrollbar sizing (William Jon McCann)
+	* Warning fixes (Mark)
+
+  Misc
+
+	* Warning fix in libpanel-applet (Vincent Untz)
+	* Update the required version of libwnck (J.H.M. Dassen)
+	* Ditto for evolution-data-server (Mark)
+
+  Translators
+
+	* Mətin Əmirov (az)
+	* Pauli Virtanen (fi)
+	* Baptiste Mille-Mathias (crevette) (fr)
+	* Elian Myftiu (sq)
+	* Christian Rose (sv)
+
+==============
+Version 2.7.91
+==============
+
+  Panel
+
+	* Fix crasher when declining to reload crashed applet (Mark)
+	* Fix nested drawer hiding craziness (Mark)
+	* Re-work "actions" code to consolidate action details (Mark, Vinay M R)
+	* Fix various coding errors (Kjartan Maraas)
+
+  Misc
+
+	* Remove the global panel preferences dialog (Christian Neumair)
+	* Add comments for translators to clock.schemas (Mark)
+
+  Translators
+
+	* Miloslav Trmac (cs)
+	* Martin Willemoes Hansen (da)
+	* Adam Weinberger (en_CA)
+	* Francisco Javier F. Serrador (es)
+	* Pauli Virtanen (fi)
+	* Jesús Bravo Álvarez (gl)
+	* Ankit Patel (gu)
+	* Takeshi AIHANA (ja)
+	* Changwoo Ryu (ko)
+	* Kjartan Maraas (nb)
+	* Kjartan Maraas (no)
+	* Gnome PL Team (pl)
+	* Duarte Loreto (pt)
+	* Elian Myftiu (sq)
+	* Funda Wang (zh_CN)
+
+==============
+Version 2.7.90
+==============
+
+  Panel
+
+	* Make the menu key popup the panel context menu (Sagar Rastogi)
+	* Fix mnemonic conflict between _Add to Panel and _About Panels (Vincent Untz)
+	* Remove remaining bits of the add launcher menu (Christian Neumair)
+	* Revise the "Clear Recent Documents" confirmation dialog text (William Jon McCann)
+	* Sync with recent-files from libegg (Kjartan Maraas)
+	* Fix invalid usage of de-allocated memory (Kjartan Maraas)
+	* Fix various strange behaviour with button presses on panel objects (Arvind Samptur)
+	* Fix fontilus entries appearing escaped in Recent Documents menu (Federico)
+
+  Applets
+
+	* Fix nasty libpanel-applet issue causing unneccessary padding around Window List (Soeren Sandmann)
+	* Make DEMANDS_ATTENTION windows appear bold in the Window Selector (Vincent Noel)
+	* Make the Show Desktop button correctly resize (Vincent Untz)
+	* Display floating date-times in the calendar relative to localtime (William Jon McCann)
+	* Make the appointment/task list in the clock use SHADOW_IN (Jonathan Blandford)
+	* Remove usage of obselete panel:category attribute and update docs (Mark)
+
+  Screenshooter
+
+	* Make it use the window title rather than the window class for the filename (Bryan Clark)
+
+  Build Stuff
+
+	* Fix various compiler warnings (Mark)
+	* Indicate that strings to be translated are encoded in UTF-8 (Christian Neumair)
+	* Require a xgettext which supports --from-code (Mark)
+	* add DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc (Mark)
+
+  Translators
+
+	* Rostislav Raykov (bg)
+	* Miloslav Trmac (cs)
+	* Martin Willemoes Hansen (da)
+	* Adam Weinberger (en_CA)
+	* Gareth Owen (en_GB)
+	* Francisco Javier F. Serrador (es)
+	* Ravishankar Shrivastava (hi)
+	* Laszlo Dvornik (hu)
+	* Takeshi AIHANA (ja)
+	* Changwoo Ryu (ko)
+	* Žygimantas Beručka (lt)
+	* Hasbullah Bin Pit (ms)
+	* Kjartan Maraas (no)
+	* Duarte Loreto (pt)
+	* Dmitry G. Mastrukov (ru)
+	* Elian Myftiu (sq)
+	* Данило Шеган (sr)
+	* Baris Cicek (tr)
+
+===============
+Version 2.7.4.1
+===============
+
+  Panel
+
+	* Add "Clear Recent Documents" to Recent Documents menu (William Jon McCann, Mark)
+
+=============
+Version 2.7.4
+=============
+
+  Clock Applet
+
+	* Add the source color to the appointments/tasks lists (William Jon McCann)
+	* Ensure the calendar popup is focused (William Jon McCann)
+	* Refilter calendar tasks when the popup is updated (William Jon McCann)
+
+  Translators
+
+	* Vladimir "Kaladan" Petkov (bg)
+	* Dafydd Harries (cy)
+	* Francisco Javier F. Serrador (es)
+	* Takeshi AIHANA (ja)
+	* Raphael Higino (pt_BR)
+	* Elian Myftiu (sq)
+
+=============
+Version 2.7.3
+=============
+
+  Panel
+
+	* New "Add to Panel" dialog (Vincent Untz)
+	* HIG border spacing fix for addto dialog (Dennis Cranston)
+	* Fix "Invalid read of size 1" valgrind warning (Mark)
+	* Don't prevent drawers from being deleted (Leena Gunda)
+	* Removed some unused code from menu stuff (Christian Neumair)
+
+  Clock Applet
+
+	* Make "Adjust Date & Time" update PRIMARY (not just CLIPBOARD) (Greg Hudson)
+	* Consistency fix for GConf keys' docs (Christian Neumair)
+
+  Misc
+
+	* Removed ellipses from applet's popup menus (Dennis Cranston)
+	* Typo fix in libpanel-applet docs (Sven Herzberg)
+
+  Translators
+
+	* Vladimir "Kaladan" Petkov (bg)
+	* Miloslav Trmac (cs)
+	* Christian Neumair (de)
+	* Adam Weinberger (en_CA)
+	* Gareth Owen (en_GB)
+	* Laszlo Dvornik (hu)
+	* Žygimantas Beručka (lt)
+	* Gnome PL Team (pl)
+	* Elian Myftiu (sq)
+	* zhakanini (ta)
+	* Funda Wang (zh_CN)
+
+=============
+Version 2.7.1
+=============
+
+  Panel
+
+	* Remove "Add to run dialog" from the menu's context menu (Chistian Neumair)
+	* Allow applets to be removed when locked (Mark, Christian Neumair)
+	* Fix a rare crasher while menu editing (Chris Lahey)
+	* Fix some problems with filename quoting (Mark)
+	* Improve tab completion in the run dialog (Frank Worsley)
+	* Fix issue with the tooltip on drawers no being updated (Vinay M R, Mark)
+	* Don't allow drawers to move offscreen (Shakti Sen, Mark)
+	* Fix issue with launcher save location not being valid with gnome-vfs (Vincent Berger, Mark)
+	* Try and guess an icon for launches with no explicit icon (Satvik Upadhyaya, Mark)
+	* Paint the arrow on menu buttons using the GTK+ theme (Mark)
+
+  Screenshot Utility
+
+	* Don't make the entire desktop hang when using --delay with a11y (Padraig O'Briain)
+	* Fix crasher when window icon not found (Mark)	
+	* Translate the "save to webpage" string in the screenshot utility (Mariano Suárez-Alvarez)
+
+  Clock Applet
+
+	* Fix issue with the clock no resizing properly when making the panel bigger (Mark)
+	* Fix problems with tasks edits affecting the wrong task (Carlos Garnacho Parro)
+	* Open the tasks URL when double clicking on it (William Jon McCann)
+	* Fix the handling of all day events and timezones (William Jon McCann)
+	* Properly reload stuff when evolution-data-server dies (William Jon McCann)
+	* Use GTK_SHADOW_OUT around the calendar (Jorn Baayen)
+	* Destroy the calendar if the clock is removed from the panel (Shakti Sen)
+
+  Misc
+
+	* Set a tooltip on the Window Selector applet (Kaushal Kumar)
+	* Remove the separator from Wanda's fortune dialog (Paolo Borelli)
+	* Fix the version number in the autogen.sh message (Fernando Herrera)
+
+  Translations
+
+	* Miloslav Trmac (cs)
+	* Adam Weinberger (en_CA)
+	* Gareth Owen (en_GB)
+	* Francisco Javier F. Serrador (es)
+	* Gil Osher (he)
+	* Takeshi AIHANA (ja)
+	* Changwoo Ryu (ko)
+	* John C Barstow (mi)
+	* Kjartan Maraas (no)
+	* Stanislav Visnovsky (sk)
+	* Funda Wang (zh_CN)
+
+=============
+Version 2.6.1
+=============
+
+  Panel
+
+	* Make the default background color white with solid-color background (Mark)
+	* Load applets in the correct order on non-expand panels (Mark)
+	* Kill error dialogs associated with a launcher when deleting it (Vijaykumar Patwari)
+	* Install default_setup in /apps/panel/profiles/default too (Mark)
+	* Don't try and load glade files from the current directory (Mark)
+
+  Clock Applet
+
+	* Fix problems with the localization of the clock format (Mark)
+
+  Misc
+
+	* Parallel build fix (Frederic Crozat)
+
+  Translators
+
+	* Zuza Software Foundation (af)
+	* Adam Weinberger (en_CA)
+	* Francisco Javier F. Serrador (es)
+	* Iñaki Larrañaga Murgoitio (eu)
+	* Pauli Virtanen (fi)
+	* Guntupalli Karunakar (gu)
+	* Robert Sedak (hr)
+	* Gabor Kelemen (hu)
+	* Mohammad DAMT (id)
+	* Jitendra Shah (mr)
+	* Chanchai Junlouchai (th)
+
+=============
+Version 2.6.0
+=============
+
+  Translators
+
+	* Isam Bayazidi (ar)
+	* Dafydd Tomos (cy)
+	* Gareth Owen (en_GB)
+	* Alastair McKinstry (ga)
+	* Ravishankar Shrivastava (hi)
+	* Jitendra Shah (mr)
+	* Amanpreet Singh Alam (pa)
+	* Mişu Moldovan (ro)
+	* Dmitry G. Mastrukov (ru)
+
+==============
+Version 2.5.93
+==============
+
+  Screenshot Taker
+
+	* Use the new file chooser in save mode instead of open mode (Mark, Fernando Herrera)
+
+  Clock Applet
+
+	* Fix crash with unset/invalid clock format preference (Mark, Fernando Herrera)
+
+  Translators
+
+	* Isam Bayazidi (ar)
+	* Vladimir \"Kaladan\" Petkov (bg)
+	* Runa Bhattacharjee (bn)
+	* Jordi Mallach (ca)
+	* Christophe Merlet (RedFox) (fr)
+	* Luca Ferretti (it)
+	* Raphael Higino (pt_BR)
+	* Dinesh Nadarajah (ta)
+	* Maxim Dziumanenko (uk)
+	* Funda Wang (zh_CN)
+	* Abel Cheung (zh_TW)
+
+==============
+Version 2.5.92
+==============
+
+  Panel
+
+	* Fix accessibility issue with the "Force Quit" dialog (Padraig)
+	* Correctly launch nautilus for directories from the run dialog (Alex)
+
+  Clock Applet
+
+	* Use GtkComboBox in the preferences dialog (Mark)
+
+  Translations
+
+	* Mətin Əmirov (az)
+	* Ales Nyakhaychyk (be)
+	* Ole Laursen (da)
+	* Christian Neumair (de)
+	* Nikos Charonitakis (el)
+	* Priit Laes (et)
+	* Alastair McKinstry (ga)
+	* Laszlo Dvornik (hu)
+	* Kjartan Maraas (no)
+	* Chanchai Junlouchai (th)
+
+==============
+Version 2.5.91
+==============
+
+  Panel
+
+	* Don't resize while autohiding (Bart Martens)
+	* Remove the username from the Log Out menu item again (Vincent)
+	* Xinerama fixes for panel position and collision avoidance (Rob Adams)
+	* Make moving launchers with button2 work again (Mark)
+	* Don't allow the panel to be moved when its hidden (Mark)
+
+  Clock Applet
+
+	* Fix task and appoinment list scrolling (William Jon McCann)
+	* Use Fedora's system-config-time if available (Miloslav Trmac)
+	* Fix issue with clock not resizing when date chanes in some locales (Mark)
+
+  Notification Area
+
+	* Set the window icon on the about dialog (Fernando Herrera)
+
+  Translations
+
+	* Adam Weinberger (en_CA)
+	* Pauli Virtanen (fi)
+	* Christophe Merlet (RedFox) (fr)
+	* Alastair McKinstry (ga)
+	* Ravishankar Shrivastava (hi)
+	* Luca Ferretti (it)
+	* Takeshi AIHANA (ja)
+	* Changwoo Ryu (ko)
+	* Žygimantas Beručka (lt)
+	* Åsmund Skjæveland (nn)
+	* Dmitry G. Mastrukov (ru)
+	* Elian Myftiu (sq)
+	* Bojan Suzic (sr@ije)
+	* Данило Шеган (sr)
+	* Dinesh Nadarajah (ta)
+	* Chanchai Junlouchai (th)
+	* Funda Wang (zh_CN)
+
+==============
+Version 2.5.90
+==============
+
+  Panel
+
+	* Fix a typo - "or to to shutdown" (Alexander Winston)
+	* Fix issue with autohides not being unqueued on leave notify (Bart Martens, Mark)
+	* Allow the hide button's size to be themed (Mark, Leena Gunda)
+	* Make apps be launched on the correct screen after menus are re-loaded (Gustavo Giráldez)
+	* Fixup instance of using an uninitialised variable (Mark)
+
+  Applets
+
+	* Fix issue with calendar jumping multiple months on click (William Jon McCann)
+
+  Misc
+
+	* Updated help documentation (Breda McColgen)
+	* Allow building against an uninstalled build of gnome-panel (Laszlo Peter)
+
+  Translations
+
+	* Mətin Əmirov (az)
+	* Miloslav Trmac (cs)
+	* Kostas Papadimas (el)
+	* Adam Weinberger (en_CA)
+	* Francisco Javier F. Serrador (es)
+	* Hasbullah Bin Pit (ms)
+	* Kjartan Maraas (no)
+	* Gnome PL Team (pl)
+	* Duarte Loreto (pt)
+	* Elian Myftiu (sq)
+	* Данило Шеган (sr)
+	* Christian Rose (sv)
+	* Chanchai Junlouchai (th)
+
+=============
+Version 2.5.5
+=============
+
+  Panel
+
+	* Make applets move a pixel at a time so we can move them to the corner (Vincent)
+	* Fix broken keynav with numlock enabled (Srinivasa Ragavan)
+	* Fix problem with disappearing launchers (Leena Gunda, Mark)
+	* Correctly test for modifiers throughout the panel (Mark, Federico Mena)
+
+  Notification Area
+
+	* Correctly manage the lifecycle of the about dialog (Archana Shah)
+	* Use the correct icon in the about dialog (Vincent)
+
+  Misc
+
+	* Update help links to point to new user-guie location (Shaun McCance)
+	* Add configure flag to disable use of evolution-data-server (Malcolm Tredinnick)
+	* Update help documentation (Breda McColgan)
+	* Make the screenshooter use GtkFileChooser (Fernando Herrera)
+	* Add documentor credits in applet about dialogs (Chee Bin HOH)
+	* Warnings fixes (Mark)
+	* Un-mark property descriptions for translation (Mark)
+
+  Translators
+
+	* Changwoo Ryu (ko)
+	* Christian Rose (sv)
+	* Elian Myftiu (sq)
+	* Francisco Javier F. Serrador (es)
+	* Gnome PL Team (pl)
+	* Isam Bayazidi (ar)
+	* Kjartan Maraas (no)
+	* Robert Sedak (hr)
+	* Maxim Dziumanenko (uk)
+	* Miloslav Trmac (cs)
+	* Mətin Əmirov (az)
+	* Nikos Charonitakis (el)
+	* Pauli Virtanen (fi)
+	* Sanlig Badral (mn)
+	* Takeshi AIHANA (ja)
+	* Данило Шеган (sr)
+
+=============
+Version 2.5.4
+=============
+
+  Panel
+
+	* Add more lockdown support (Matt Keenan, Mark)
+	* Fix major X leak with translucent panels (Kristian Rietveld)
+	* Use a new "applications" icon for the applications menu (Glynn, Jakub Steiner)
+	* Set accessible names for drawers and hide buttons (Padraig)
+	* Fix issue with "Log Out blah" menu item and username's with underscore (Jordy Potman)
+	* Remove bogus panel_signal_connect_object_while_alive() (Mark)
+	* Fix issue where "Delete this Panel" wasn't visible (Jason Leach)
+	* Only allow resizing the run dialog if the proram list is visible (Leena Gunda)
+	* Fix some runtime warnings (Mark)
+	* Fix some portability issues (The Written Word)
+
+  libpanel-applet
+
+	* Install enums header and fix signal definitions (Bryan Forbes, Mark)
+	* Build panel-test-applets with -export-dynamic (Vincent Berger)
+
+  Clock Applet
+
+	* Fix bug where selected calendars were out of sync (Jon McCann)
+	* Use UTC time for events if preference set (Jon)
+	* Correctly detect all day events (Jon)
+	* Re-position the calendar popup as the clock is moved around (Jon)
+	* Don't show "Adjust Date & Time" if no config tool available (Fernando Herrera)
+	* Fix issue with ellipsizing the task description (Mark)
+
+  Misc
+
+	* Sync with newer version of the recent files implementation (Mark)
+	* Use a themed window icon in the screenshooter (Fernando Herrera)
+	* Fix issue with unsetting the preferred command for Wanda (Maneesh Pusalkar)
+	* Set the accessible name on the notification area (Padraig)
+	* Fix underquoted definition of AM_PATH_ESD (Alexander Winston)
+	* Fix invalid UTF8 in spanish help docs (John Fleck)
+	* Bump required GTK+ to 2.3.2 (Jason Leach)
+
+  Translators
+
+	* Alastair McKinstry (ga)
+	* Changwoo Ryu (ko)
+	* Christian Neumair (de)
+	* Christian Rose (sv)
+	* Elian Myftiu (sq)
+	* Francisco Javier F. Serrador (es)
+	* Gnome PL Team (pl)
+	* Kjartan Maraas (no)
+	* Kostas Papadimas (el)
+	* Miloslav Trmac (cs)
+	* Mətin Əmirov (az)
+	* Ole Laursen (da)
+	* Reinout van Schouwen (nl)
+	* Takeshi AIHANA (ja)
+	* Данило Шеган (sr)
+
+===============
+Version 2.5.3.1
+===============
+
+  libpanel-applet
+
+	* Fix crasher with ORBit 2.9.4 (Mark)
+
+  Translators
+
+	* Changwoo Ryu (ko)
+	* Elian Myftiu (sq)
+	* Gnome PL Team (pl)
+
+=============
+Version 2.5.3
+=============
+
+  Panel
+
+	* Add a shadow around the run dialog applications list (Ross Burton)
+	* Set the accessible name on the run dialog entry (Padraig)
+	* Don't allow the creation of empty launchers 
+	* Change the default panel size from 22px to 24px (Vincent)
+	* Put the username in the "Log Out" menu item (Vincent)
+	* Fix occassional problem where moving an applet caused the panel to move (Mark)
+	* Use a useless icon for the actions menu until a better one is found (Glynn)
+	* Mark a string for translation (Glynn)
+	* Use latest versions off egg-recent (Vincent)
+	* Fix minor typo in the default panel setup (Mark)
+	* Use GtkFileChooser instead of GtkFileSelection (Jan Arne Petersen)
+	* Don't add directories during command completion in the run dialog (Vincent)
+	* Fix UTF-8 conversion issue in the run dialog (Thomas Benson)
+
+  Clock Applet (a.k.a. "Add Your Bloat Here" :-)
+
+	* Add support for showing Evolution tasks/appointments
+	      (Mark, William Jon McCann, Martin Grimme, Christian Kellner)
+	* Allow a custom time format to specified in GConf (Vincent)
+	* Make the applet out of process (Mark)
+	* If showing UTC time, select the right day in the calendr (Vincent)
+	* Make it easier for translators to swap elements of the time format (Vincent)
+	* Schemas terminology fix (Vincent)
+
+  Other Applets
+
+	* Display Notification Area help on the correct screen (Vincent)
+	* Don't allow changing the number/names of workspaces if locked down (Leena Gunda)
+
+  Misc
+
+	* Make use of new libgnomeui/gdk functions instead of egg-screen-* (Mark)
+	* Add bugzilla pointers to all applet .server files (Kaushal Kumar)
+	* Build fixes (Vincent, Mark, Thomas Vander Stichele)
+	* Update Spanish documentation (Francisco Javier F. Serrador)
+
+  Translators
+
+	* Åsmund Skjæveland (nn)
+	* Baptiste Mille-Mathias (fr)
+	* Changwoo Ryu (ko)
+	* Christian Neumair (de)
+	* Christian Rose (sv)
+	* David O'Callaghan (ga)
+	* Dmitry G. Mastrukov (ru)
+	* Duarte Loreto (pt)
+	* Francisco Javier F. Serrador (es)
+	* Gnome PL Team (pl)
+	* Gustavo Noronha Silva (pt_BR)
+	* Hasbullah Bin Pit (ms)
+	* Kjartan Maraas (no)
+	* Luca Ferretti (it)
+	* Miloslav Trmac (cs)
+	* Reinout van Schouwen (nl)
+	* Robert Sedak (hr)
+	* Sanlig Badral (mn)
+	* Takeshi AIHANA (ja)
+	* Žygimantas Beručka (lt)
+	* Данило Шеган (sr)
+
+=============
+Version 2.5.2
+=============
+
+  Panel
+
+	* Kill some unused functions (Vincent)
+	* Be more paranoid about removing dirs from the GConfClient cache (Mark)
+	* Fix some strings to by more translator friendly (Vincent)
+	* Make blocking auto-hiding recursive (Vincent)
+	* Rename "Open Recent" to "Recent Documents" (Vincent)
+	* Use gdk_screen_get_monitor_at_point() instead of a hack (Chuan-kai Lin)
+	* Sort the applets in the "Add to panel" menu according to the locale (Mark)
+	* Fix various bugs with autohide with no animations (Vincent)
+	* Make schema descriptions of the "screen" and "monitor" keys more expicit (Vincent)
+	* Use the monitor size and not the screen size to position the panel (linchua)
+	* Fix bug in menu positioning when the panel is hidden (Arvind)
+	* Add labelled-by relation for the slider in the properties dialog (Padraig)
+	* Fix the preferences dialog to use the locked_down key (Vincent)
+	* Remove invalid assertion about auto_hide_size > 0 (Mark)
+	* Don't set invalid tooltips on menu buttons (Vincent)
+	* Set the accessible name on drawers (Padraig)
+	* Make sure to set the PPosition WM_NORMAL_HINT to keep other WMs happy (Olivier Chapuis)
+	* Make the expander in the run dialog activatable via a mnemonic (Mark)
+	* Use GObject's instance private data (Mark)
+	* Use GConf's standard function for unsetting a hierarchy (Mark)
+	* Make the Menu Bar help point at the correct location (Vincent)
+	* Make menu buttons use the correct tooltip (Vincent)
+	* Make "Force Quit" confirmation dialog cancel on escape (Vijaykumar Patwari)
+
+  Screenshooter
+
+	* Don't crash when using the shape extension on an offscreen window (Vincent)
+	* Fix slight performace issue (Vincent)
+	* Expand filenames with a tilde when saving (Vincent)
+	* Kill crufty printing support (Mark)
+
+  Applets
+
+	* Simplify the various clock time format GConf keys into one enum (Vincent)
+	* Make the clock not display leading zeros in dates (Vincent)
+	* Make Wanda not use deprecated functions (Vincent)
+	* Rename the Window Menu to "Window Selector" (Vincent)
+	* Make the Window Selector's help point at the user guide (Vincent)
+	* Destroy the Window Selector's about dialog when the applet is removed (Archana Shah)
+	* Ditto for the Show Desktop button (Archana Shah)
+	* Make the Show Desktop button use SVG icons (tvismor)
+
+  libpanel-applet
+
+	* Fix weird issue caused by not removing the dir from the GConfClient cache (Vijaykumar Patwari)
+
+  Misc
+
+	* Many distcheck fixes required for using automake 1.7 (Mark)
+	* XML-ize the libpanel-applet docs (Vincent)
+	* Man pages updates (Vincent)
+	* Update build message to say "2.5" (Fernando Herrera)
+	* Make sure Wanda's generated .server files get deleted on make clean (Padraig)
+
+  Translators
+
+	* Andras Timar (hu)
+	* Åsmund Skjæveland (nn)
+	* Gnome PL Team (pl)
+	* Jordi Mallach (ca)
+	* Kostas Papadimas (el)
+	* Miloslav Trmac (cs)
+	* Ole Laursen (da)
+	* Данило Шеган (sr)
+
+=============
+Version 2.5.1
+=============
+
+  Panel
+
+	* Implement per-panel and global lockdown keys (George)
+	* Add a "disabled_applets" key and don't show those applets (George)
+	* Fix gnome-panel --help not to show the flags twice (Vincent)
+	* Used the folder icon from the icon theme for folders (Vincent)
+	* Use the term "Drag and drop" instead of "DnD" (Vincent)
+	* Don't allow vertically centered horizontal panels and vice versa (Vincent)
+	* Link to help for action buttons (Vincent)
+	* Use the "delete" stock icon for "Delete this panel" (Vincent)
+	* Fix crashing when gdk_property_get_fails (Vincent)
+	* Snap to 0/100% opacity with a 2% tolerance (Vincent)
+	* Set revert to insenitive in the launcher editing dialog (Vincent)
+	* Remove the bold labels in the panel properties dialog (Muktha Narayan, Vincent)
+	* Don't unhide hidden drawers when unhiding the parent panel (Mark)
+	* Use GtkExpander in the run dialog (Mark)
+	* Don't allow the panel to autohide when dragging things around (Arvind)
+	* Don't unhide the panel if we quickly move the pointer in and out (Arvind)
+	* Get translucent applet backgrounds almost working (Vincent, John Ellis)
+	* Remove useless, crufty code (Vincent, Mark)
+	* Don't allow the panel to unhide when the properties dialog is open (Arvind)
+
+  Applets
+
+	* Hide the preferences menu items when locked down (George)
+	* Update help buttons to point to the correct docs (Vincent)
+	* Allow the PanelApplet's children to become focusable after focusing itself (Padraig)
+	* Fix a memory leak in libpanel-applet (Kjartan)
+
+  Window List
+
+ 	* Remove "visible" from the descipription of the applet (Vincent)
+	* Update to use the new icon from jimmac (Vincent)
+	* Disable certain preferences when only showing the current workspace (Vincent)
+
+  Workspace Switcher
+
+	* Add a shadow around the workspace list in the preferences (Vincent)
+	* Unselect any selected workspace name when the list is unfocused (Vincent)
+
+  Window Menu
+
+	* Ellipsize the window menu item if its too long (Vincent, Soeren Sandmann)
+	* Update to use the new icon from jimmac (Vincent)
+	* Don't refer to the "Window List" in the about dialog (Vincent)
+	* Use the icon theme to lookup the window icon (Vincent)
+
+  Show Desktop Button
+
+	* Lookup the icon according to the icon theme (Vincent)
+
+  Wanda
+
+	* Respect the "inhibit_command_line" lockdown preference (Vincent)
+	* Make the "rotate" prefernce false by default - bubbles should go up (Vincent)
+	* De-brand Wanda - she's a fish, not a "GNOME fish" (Vincent)
+
+  Clock
+
+	* Show week numbers in the calendar (Vincent)
+	* Better schema description for "internet_time" (Vincent)
+
+  Misc
+
+	* Help documentation updates (Breda McColgan)
+	* Add a --enable-deprecations build time flag (Mark)
+
+  Translators
+
+	* Andras Timar (hu)
+	* Christian Rose (sv)
+	* Dafydd Harries (cy)
+	* David O'Callaghan (ga)
+	* Elian Myftiu (sq)
+	* Evandro Fernandes Giovanini (pt_BR)
+	* Francisco Javier F. Serrador (es)
+	* Hasbullah Bin Pit (ms)
+	* Jordi Mallach (ca)
+	* KAMAGASAKO Masatoshi (ja)
+	* Kostas Papadimas (el)
+	* Miloslav Trmac (cs)
+	* Mişu Moldovan (ro)
+	* Mətin Əmirov (az)
+	* Reinout van Schouwen (nl)
+	* Vaidotas Zemlys (lt)
+	* Данило Шеган (sr)
+
+=============
+Version 2.4.1
+=============
+
+  Panel
+
+	* Avoid ever scaling up icons when there is a bigger one available (Owen Taylor)
+	* Do not auto hide a panel with open drawers (Arvind)
+	* Delete launcher editing dialog when the panel is deleted (Arvind)
+	* Do not focus the panel itself when there is an applet to focus (Padraig)
+	* Fix warnings with newer gcc (Kjartan)
+	* Fix i18n issue with startup notification from the menus (Christian Neumair)
+	* Show the localized comment from launchers in the run dialog (Vincent Untz)
+	* Query before deleting a non-empty drawer (Arvind)
+	* Fix loading of icons specified by relative paths (Bala, Mark)
+	* Fix off-by-one error when computing struts (Rob Adams)
+	* Fix serious issue with launchers not working on drawers (George)
+	* Don't create new launchers whose TryExec fails (Arvind)
+
+  Misc
+
+	* Initialize gettext in gnome-desktop-item-edit (Hidetoshi Tajima)
+
+  Applets
+
+	* Don't try running an invalid date/time config tool (Vincent Untz)
+	* Fix compiler warnings with the notification area (Kjartan)
+	* Set accessible name/description on the Show Desktop Button and
+	  the Window Meenu (Padraig)
+	* Make the "No Windows Open" menu item go away in the Window Menu
+	  when a window is opened (Vincent Untz)
+
+  Translators
+	Andras Timar (hu)
+	Changwoo Ryu (ko)
+	Dafydd Harries (cy)
+	Evandro Fernandes Giovanini (pt_BR)
+	Funda Wang (zh_CN)
+	Gnome PL Team (pl)
+	Görkem Çetin (tr)
+	Luca Ferretti (it)
+	Miloslav Trmac (cs)
+	Mişu Moldovan (ro)
+	Pablo Saratxaga (wa)
+	Tino Meinen (nl)
+	Vaidotas Zemlys (lt)
+	Yuriy Syrota (uk)
+	Данило Шеган (sr)
+
+=============
+Version 2.4.0
+=============
+
+  Translators
+
+	Christophe Merlet (RedFox) (fr)
+	Kjartan Maraas (no)
+	Mişu Moldovan (ro)
+	Nikos Charonitakis (el)
+	pclouds (vi)
+	Ravishankar Shrivastava (hi)
+	Stanislav Visnovsky (sk)
+
+==============
+Version 2.3.91
+==============
+
+  Panel
+
+	* Install old 2.0/2.2 schemas to maintain compatibility with existing
+	  user configuations (George, Mark)
+	* Fix problem where window-list pushes applets off the panel (George)
+	* Don't open drawers on login (Mark)
+
+  Misc
+
+	* Updates to the clock applet documentation (Irene Ryan)
+
+  Translators
+
+	Arangel Angov (mk)
+	Christophe Merlet (RedFox) (fr)
+	Laurent Dhima (sq)
+	Stanislav Visnovsky (sk)
+
+==============
+Version 2.3.90
+==============
+
+  Panel
+
+	* Fix crash with error dialogs (George)
+ 	* Fix dialogs not getting destroyed when the panel is deleted (Arvind, George)
+
+  Applets
+
+	* Fix clock applet not resizing (George)
+
+  Translators
+
+	Dafydd Harries (cy)
+	Francisco Javier F. Serrador (es)
+	Jordi Mallach (ca)
+	Luca Ferretti (it)
+	Nikos Charonitakis (el)
+	Reinout van Schouwen (nl)
+	Runa Bhattacharjee (bn)
+
+=============
+Version 2.3.7
+=============
+
+  Panel
+
+	* Make the "Edit Launcher" not be on all workspaces (Leena Gunda)
+	* Activate menu bar when popping up the menu (Padraig)
+	* Fix issues with auto completion in run dialog (Arvind)
+	* Fix motion on one screen unhiding panel on other screen (George)
+	* Fix issues with autohide panel not unhiding sometimes (George)
+	* Fix more issues with the new collision avoidance code (Geoge)
+	* Ignore explicit language encodings in .desktop files if
+	  the encoding is UTF-8 (George)
+	* Convert filenames to UTF-8 before displaying them (George)
+	* Make some strings to be translated which weren't marked
+							(Christian Neumair)
+	* Place newly created panels in sensible locations (George)
+	* Fix issue with keynav and the menu bar (Brian Cameron)
+	* Fix issue with autohiding non-expanded panels (George)
+	* Fix crash with transparent panels (Arvind)
+	* Only auto-complete in the run dialog if the caret is at
+	  the end (George)
+	* Fix menu and drawer migration code (George)
+	* Catch instances of strings being NULL to fix warnings (George)
+	* Fix issues with closing the properties dialog (George)
+	* Fix issues with creating a new launcher in a non-C locale
+							(George)
+
+  Applets
+
+	* Make the clock not move around as the time changes (George)
+	* Make spin buttons only accept numeric entries (Shakti Sen)
+
+  Misc
+
+	* Much updated help documentation (Irene Ryan)
+
+  Translators
+
+	Abel Cheung (zh_TW)
+	Changwoo Ryu (ko)
+	Christophe Merlet (RedFox) (fr)
+	Dafydd Harries (cy)
+	Duarte Loreto (pt)
+	Evandro Fernandes Giovanini (pt_BR)
+	Görkem Çetin (tr)
+	Kjartan Maraas (no)
+	Mətin Əmirov (az)
+	Paul Duffy (ga)
+	Pauli Virtanen (fi)
+	Ravishankar Shrivastava (hi)
+	Takeshi AIHANA (ja)
+	Tõivo Leedjärv (et)
+
+===============
+Version 2.3.6.2
+===============
+
+  Panel
+
+	* Fix syntax error breaking build with gcc 2.95 (Jens Granseuer)
+
+  Translators
+
+	Christian Neumair (de)
+	Dafydd Harries (cy)
+	Hasbullah Bin Pit (ms)
+	Takeshi AIHANA (ja)
+
+===============
+Version 2.3.6.1
+===============
+
+  Panel
+
+	* Various fixes "collision avoidance" with things like autohide (George, Mark)
+	* Make collision multiscreen aware (Mark)
+	* Fix autohiding of panels when using applet menus (George)
+
+  Translators
+
+	G Karunakar (hi)
+	Mətin Əmirov (az)
+	Данило Шеган (sr)
+
+=============
+Version 2.3.6
+=============
+
+  Panel
+
+	* Fix setting the panel background with an image (Arvind)
+	* Fix weird syntactical type (Frederic)
+	* Don't allow removing locked applets (Glynn)
+	* Implement "collision avoidance" for panels (Mark)
+	* Fix slow background compositing on non-expanded panels (George)
+	* Fix issue with custom icons not working if in the icon theme (George)
+	* Fix issue with right clicking on dead space in menus (George)
+	* Fix multiscreen issue with recent files menu (Leena Gunda)
+	* Add back the tooltip for menu buttons (Mark)
+	* Re-enable the little arrow on menu buttons (Mark)
+	* Make creating new panels on multiscreen work correctly (Mark)
+	* Fix handling of not found icons for panel buttons (George)
+	* Re-implement "add entire menu as drawer" (Mark, George)
+	* Fix issue with floating panels changing position on startup (George)
+	* Fix crashes when popping up an error dialog (George)
+	* Fix typo in panel schemas docs (Alex Duggan)
+
+  Applets
+
+	* Make the clock's calender window a DOCK window (George)
+	* Fix fish applet issue where click help brings up two
+	  help docs. Wanda playing with our minds again (Glynn, Mark)
+	* Fix issue with workspace switcher's schemas docs (George)
+
+  Misc
+
+	* Build fix (Thomas Vander Stichele)
+
+  Translators
+
+	Ales Nyakhaychyk (be)
+	Christian Neumair (de)
+	Christian Rose (sv)
+	Christophe Merlet (RedFox) (fr)
+	Dafydd Harries (cy)
+	Duarte Loreto (pt)
+	Funda Wang (zh_CN)
+	Gil 'Dolfin' Osher (he)
+	Gnome PL Team (pl)
+	Hasbullah Bin Pit (ms)
+	Kostas Papadimas (el)
+	Luca Ferretti (it)
+	Miloslav Trmac (cs)
+	Mətin Əmirov (az)
+	Ole Laursen (da)
+	Pablo G. del Campo (es)
+	Reinout van Schouwen (nl)
+
+===============
+Version 2.3.4.1
+===============
+
+  Panel
+
+	* Yet more excellant HIG work (Dennis Cranston)
+	* Fix typo between panel menu GConf keys (Mohamed El Ayouty)
+	* Fix crashing when cancelling the run dialog (Arvind)
+	* Make mnemonics in the Actions and Add to Panel menus invisible (Glynn, Mark)
+	* Fix positioning of the menu bar context menu (Glynn, Mark)
+	* Remove the KDE menu - should be done with vfolders now (George)
+	* Remove autohiding into the corner (Mark)
+	* Implement a properties dialog for drawers (Mark)
+	* Fix launchers and action buttons on vertical panels (Mark)
+	* Fix rectangular button widget on vertical panels (Mark)
+	* Fix issue with drawers being destroyed when creating a new panel (Mark)
+	* Fix drag and drop of launchers to drawers (Mark)
+	* Fix issue where drawer panel obscures drawer button when hidden (Mark)
+	* Fix warnings about "panel-stock-arrow-*" not found (Mark)
+	* Remove unnecessary dependancy on ORBit2 HEAD (Mark)
+
+  Misc
+
+	* Install icons into $(datadir)/pixmaps instead of $(datadir)/icons (Glynn)
+
+  Translators
+
+	Changwoo Ryu (ko)
+	Christian Neumair (de)
+	Christian Rose (sv)
+	Dafydd Harries (cy)
+	Duarte Loreto (pt)
+	Gil 'Dolfin' Osher (he)
+	Gnome PL Team (pl)
+	Kjartan Maraas (no)
+	Mehmet TARIMCI (tr)
+	Miloslav Trmac (cs)
+	Pablo G. del Campo (es)
+	Reinout van Schouwen (nl)
+
+=============
+Version 2.3.4
+=============
+
+  o Panel
+
+	* New "Run" icon (Jakub Steiner)
+	* HIG fixes (Dennis Cranston)
+	* Allow the main menu icon to be themed (Mark)
+	* Fix middle mouse button dragging of applets (George)
+	* Make the panel more robust to applets failing to load (George)
+	* Fix issues with deleting drawer panels (George)
+	* Make stock icon based buttons respect theme changes (Rajkumar Sivasamy)
+	* Improve startup time by preloading GConf dirs (Mark)
+	* Add hidden accelerators to the Main Menu and Applications menu (Mark, George)
+	* Fix moving of drawers from one panel to another (George)
+	* Support partial width struts to considerably improve desktop
+	  usability with Xinerama (Rob Adams, Mark)
+	* Change the default icon size in menus to 24x24 (Mark)
+	* Re-work error dialog generation to make localisation easier (Christian Neumair)
+	* Normalise the size reported to applets to those defined int the IDL (Mark)
+	* Display a warning if the panel properties are locked down (George)
+
+  o Clock Applet
+
+	* Make the calender window skip the window list (George)
+	* Make the button notice when the calender is closed (George)
+
+  o Misc
+
+	* Much fixage of schemas documentation (Christian Neumair)
+
+  o Translations
+
+	Abel Cheung (zh_TW)
+	Christian Neumair (de)
+	Christian Rose (sv)
+	Christophe Merlet (RedFox) (fr)
+	Dafydd Harries (cy)
+	Dmitry G. Mastrukov (ru)
+	Gil 'Dolfin' Osher (he)
+	Hasbullah Bin Pit (ms)
+	Jordi Mallach (ca)
+	Miloslav Trmac (cs)
+	Pablo G. del Campo (es)
+	Paul Duffy (ga)
+	Reinout van Schouwen (nl)
+	Runa Bhattacharjee (bn)
+	Данило Шеган (sr)
+
+===============
+Version 2.3.3.3
+===============
+
+  o Panel
+
+	* Fix location of arrow on rectangular menu buttons (Mark)
+	* Fix issue with buttons refusing to get smalled with the panel (Mark)
+	* Fix unnecessary padding around some applets (Mark)
+	* Fix re-entrancy issues with applet loading (George)
+	* Only delete an applet from configuration if writable (George)
+	* Delete the drawer panel when deleting the drawer button (Mark)
+	* Implement a fallback panel for when the default configuration
+	  cannot be found (Mark)
+	* Clean up the about dialog immensely (Mark)
+	* Register the panel correctly with bonobo-activation on multihead (Kaushal Kumar)
+	* Remove some unnecessary gnome-vfs includes (Christophe Fergeau)
+
+  o Applets
+
+	* Make Window List and Workspace Swicther respect readonly keys (George)
+	* Make clock applet use time admin from system tools (Carlos Garnacho Parro)
+
+  o Misc
+
+	* Fix issue with taking screenshots of obscured windows (Fernando Herrera)
+	* Fix inconsistency in schemas (Daniel Baeyens)
+
+===============
+Version 2.3.3.2
+===============
+
+  o Panel
+
+	* Much work to respect the writability of GConf keys (George)
+	* Fix race condition where the window list becomes tiny (Mark)
+	* Allow SVG icons (Mark)
+	* Allow rectangular icons for launchers etc. (Mark)
+	* Make the default panel width 32 pixels (Mark)
+	* Huge speedup when rendering transparent backgrounds (Mark)
+	* Fix problem with menus being positioned twice (Padraig)
+	* Draw launcher's focus lines the correct colour when prelit (Raj)
+	* HIG work on various dialogs (Dennis)
+	* Make "Screenshot..." "Take a Screenshot..." in the actions menu (Mark)
+	* Remove panel help from launcher's context menus (Mark)
+
+  o Applets
+
+	* Make the clock and fish respect mandatory settings (George)
+	* HIGify the clock menu (Mariano Suárez-Alvarez)
+	* Make the Notification Area Fitt's Law compliant (Kevin)
+	* Allow only numeric values for number of workspaces (Pasu)
+
+  o Misc
+
+	* Add icon for Notification Area (Mark Finlay)
+	* HIG work on screenshot utility (Dennis)
+
+  o Translators
+
+	* Christian Rose (sv), Dafydd Harries (cy), Dmitry G. Mastrukov (ru),
+	  Erwin Sanjaya (id), Gustavo Noronha Silva (pt_BR), Hasbullah Bin Pit (ms),
+	  Jordi Mallach (ca), Miloslav Trmac (cs), Pablo G. del Campo (es),
+	  Pauli Virtanen (fi), Reinout van Schouwen (nl) and Runa Bhattacharjee (bn).
+
+===============
+Version 2.3.3.1
+===============
+
+  o Panel
+
+	* Make the minimum panel size relative to the font size (Mark)
+	* Hide autohide panels into the nearest corner to where the mouse left (Mark)
+	* Fix i18n issue with default panel names (Ray Strode)
+	* Fix error messages so as to not translate pango markup (Thomas Benson)
+	* Detach drawer panels from their parent if the parent is destroyed (Mark)
+
+  o Misc
+
+	* Install panel-default-setup.entries (Mark)
+	* Dist xmldocs.make and omf.make again (Mark)
+
+  o Translators
+
+	* Abel Cheung (zh_TW), Alessio Frusciante (it), Christian Rose (sv),
+	  Christophe Merlet (RedFox) (fr), Pablo G. del Campo (es) and
+	  Reinout van Schouwen (nl).
+
+=============
+Version 2.3.3
+=============
+
+  o Panel
+
+	* Fix bug with moving applets between panels (Ray Strode)
+	* Fix problems with schemas not always getting associated (Ray)
+	* Fix crash with legacy logout/lock buttons (Ray)
+	* Update icons (Mark Finlay)
+
+  o Misc
+
+	* Update to new docs system (John Fleck)
+    	* Build fixes (Michael Meeks, Yanko Kaneti)
+	* Install all glade files in the same location (Mark)
+
+  o Translators
+
+	* Abel Cheung (zh_TW.po), Andrew W. Nosenko (ru.po), Christian Rose (sv.po),
+	  Dafydd Harries (cy.po), Dinesh Nadarajah (ta.po), Hasbullah Bin Pit (ms.po),
+	  Jordi Mallach (ca.po), Kostas Papadimas (el.po), Miloslav Trmac (cs.po),
+	  Reinout van Schouwen (nl.po), Takayuki KUSANO (ja.po),
+	  Vincent van Adrighem (li.po) and Wang Li (zh_CN.po).
+
+===============
+Version 2.3.2.1
+===============
+
+  o Panel
+
+	* Implement the ability to lock individual applets to the panel (Mark)
+	* Popup either the Applications Menu or Main Menu with Alt-F1 (Mark)
+	* When adding a new object, don't move other objects out of the way (Mark)
+	* Fix weirdness with creating new panels just after deleting ones (Ray Strode)
+	* Fix panel properties dialog crashes with duff GConf settings (Ray)
+	* Don't include copy of gnome-vfs function in new run dialog (Mark)
+	* Fix crash after moving applets between panels (Arvind)
+	* HIGify new run dialog (Dennis Cranston)
+	* Fix silly 64bit problem with setting the panel struts (Mark)
+	* Save screenshots in ~/Desktop not ~/.gnome-desktop (Mark)
+	* Fix problem with re-parenting Main Menu buttons (Mark)
+	* Fix incorrect initial position when adding launchers (Mark)
+	* Remove heaps of unused code (Mark)
+
+  o Applets
+
+	* Close the about dialog when the applet is removed (Leena Gunda)
+
+  o Misc
+
+	* Fix some warnings (Ray)
+	* Fix numerous typos (Christian Rose, Ray)
+
+  o Translations
+
+	* Abel Cheung (fa, bn), Christian Rose (sv), Duarte Loreto (pt)
+	  and Miloslav Trmac (cs).
+
+=============
+Version 2.3.2
+=============
+
+  o Panel
+
+	* Re-write of the run dialog (Frank Worsley)
+	* Add "Force Quit" action button (Mark)
+	* Add support for re-sizing during panel animations (Mark)
+	* Fix many bugs with the new drawer implementation (Mark)
+	* Re-implement launcher hoarding (Mark)
+	* Don't save absolute paths in GConf (Mark)
+	* Load panel defaults using gconftool --load (Mark)
+	* Fix some of the more major issues with migrating to 2.3 (Mark)
+	* Fix problems with menu hierarchy as reported to a11y (Padraig)
+	* Convert filename to UTF8 before displaying (Toshi)
+	* Fix jitteriness in the run dialog (nix AT go-nix.ca)
+	* Make alert windows use OK, not CLOSE (Greg Merchan)
+	* Typo fixes (Miloslav Trmac, Duarte Loreto)
+
+  o Applets
+
+	* Much HIG compliance work (Dennis Cranston)
+	* Destroy about dialogs when applets are removed (Bala)
+
+  o libpanel-applet
+
+	* Completely document all libpanel-applet functions (Mark)
+	* Implement panel_applet_gconf_(set|get)_list (Mark)
+	* Remove C99ism from an enum declaration (Mark)
+	* Fix bug with recursing when associating schemas (Yatin Chawathe)
+
+  o Misc
+
+	* Fix sgmldocs.make (Art Haas)
+	* Cygwin fixes (Masahiro Sakai)
+	* Move relevant icons from gnome-desktop (Mark)
+	* Remove the .so suffixes from applet .server files (Mark)
+	* Fix distcheck (Mark)
+
+  o Translations
+
+	* Christophe Merlet (fr), Danilo Šegan (sr, sr@Latn), Hasbullah Bin Pit (ms)
+	  KAMAGASAKO Masatoshi (ja), Miloslav Trmac (cs), Runa Bhattacharjee (bn) and
+	  Yelitza Louze (es).
+
+=============
+Version 2.3.1
+=============
+
+ o Panel
+	* UI review changes for Run dialog (Dennis Cranston)
+	* Make the new menu bar respect Fitt's law (Mark)
+	* Fix panel unhiding on login (Mark)
+	* Fix key nav of drawers (Padriag)
+	* Fix applet menu key nav (Mark)
+	* Fix long standing bug where size changes affected applet
+	  positions. (Mark)
+	* Fix focus issue of run dialog after appending files. (Padriag)
+	* Make panel properties dialog look better (Luca Ferrett)
+	* Disable background configuration controls appropriately (Mark)
+	* Fix launcher dialog being partially hidden (Mark)
+	* Fix run dialog entry focus issues (Arvind)
+
+ o Panel Applet Library
+
+	* Don't let applets connect to SM (Havoc/Mark)
+
+ o Applets
+
+	* Make preferences dialogs of workspace-switcher, window-list,
+	  fish, clock  follow HIG (Dennis Cranston)
+	* Get the version right for tasklist,workspace switcher and 
+	  show-deskop button. (Alex Duggan)
+
+ o Miscellanous
+
+	* Updated documentation (Mike Lei)
+	* Build fixes (Christian Neumair)
+
+Translations:
+
+	* cs(Miloslav Trmac), eo(Joel Brich), ko(Changwoo Ryu), sl(Abel Cheung),
+	  fr(Christophe Merlet), ga(Paul Duffy), ja(Takeshi AIHANA), yi(Raphael Finkel),
+
+
+=============
+Version 2.3.0
+=============
+
+Major Changes Since 2.2.0:
+
+ o Panel
+	* All the old panel types have been replaced with a single
+	  panel type which can be configured to behave like the old
+	  types: (Mark)
+	    + You can move and resize the panel using the keyboard
+	    + The panel can be any arbitrary size
+	    + Autohides to the corner of the screen
+	    + Grab handle on floating panels
+	    + No bevel at the screen edge
+
+	* The global keybindings for the panel are not handled by the
+	  panel anymore. It is expected that window managers will
+	  handle these keybindings and invoke the actions using the
+	  protocol described in doc/gnome-panel-action-protocol.txt.
+	  Metacity handles this currently (Mark)
+
+	* A new property dialog for panels (Mark)
+
+	* Substantially re-worked GConf setup. Notifications should
+	  work for most things, all keys should be documented and
+	  have schemas associated with them, no longer use silly
+	  identifiers for panels ... (Mark)
+
+  Note: much of this still requires work. Known issues:
+
+	http://makeashorterlink.com/?S253520B3
+
+ o Applets
+
+	* Mailcheck applet has moved to gnome-applets (Mark)
+	* New "Window Menu" and "Menu Bar" applets have been added (Mark)
+	* All window management related applets are now in their own
+	  out of process applet (Mark)
+	* The clock applet has a calender (Havoc)
+	* The Workspace Switcher is now flush against the screen edge (Mark)
+
+Bugfixes, tweaks etc.:
+
+ o Panel
+
+	* Remove the dependancy on libwnck (Mark)
+	* Half fix the "window list won't expand" issue (Mark)
+	* Make the "Add to Panel" menu much more sane (Frank Worsley)
+	* Fix issue with new properties dialog being always on top (Arvind)
+	* Fix the opacity slide in the new properties dialog (Arvind)
+	* New tooltip for Run Program menuitem (Alex Duggan)
+	* Fix issue with setting an incomplete restart command (Matthias Clasen)
+	* Fix menu bar popup menu popping up for all menuitems (Arvind)
+
+ o Applets
+
+	* Error dialog to explain why the show desktop button doesn't
+	  work with non EWMH compliant WMs (Havoc)
+	* Sync the max number of workspaces with metacity (Mark)
+	* Move the "Show Desktop Button" into the "Actions" category
+							(Frank Worsley)
+	* Fix the version number in the Window List and Workspace Switcher
+							(Alex Duggan)
+
+ o Miscellanous
+
+	* Updated documentation (Irene, Breda, Takeshi)
+	* Build fixes (Dan Mills)
+
+Translations:
+
+	* az(Metin Amiroff), be(Dmitry G. Mastrukov), bg(Alexander Shopov),
+	  da(Ole Laursen), eo(JoÃ«l Brich), es(Pablo Gonzalo del Campo),
+	  et(TÃµivo LeedjÃ¤rv), fa(Roozbeh Pournader), fr(Christophe Merlet),
+	  ko(Kang Jeong-Hee), lt(Vaidotas Zemlys), ml(FSF-India), mn(Sukhochir),
+	  nl(Vincent van Adrighem), no(Kjartan Maraas), ro(Marius Andreiana),
+	  ru(Dmitry G. Mastrukov), sk(Stanislav Visnovsky), sq(Elian Myftiu),
+	  sv(Christian Rose), tr(Fatih Demir), zh_CN(Xiong Jiang) and
+	  zh_TW(Abel Cheung).
+
+=============
+Version 2.2.2
+=============
+
+Panel
+	* Fix crash when deleting the menu panel (Arvind)
+	* Fix a possible crash in background code (Mark)
+	* Make Ctrl-F10 popup the context menu even with out-of-proc
+	  applets (Padraig)
+	* Fix keynav behaviour of drawers (Padraig)
+	* Focus the run dialog entry after appending a file (Padraig)
+	* Center the "Create Launcher" dialog on the screen (Raj)
+	* Focus the run dialog entry when no applications are selected (Arvind)
+	* Convert screenshot filename to UTF-8 before displaing it (Toshi)
+
+libpanel-applet
+	* Fix bug with loading applet schemas (Yatin Chawathe)
+	* Stop applets from connecting to the session manager (Havoc, Mark)
+
+Applets
+	* Remove extraneous calls to gnome_program_init (Mark)
+	* Fix usage of static variables in the mailcheck applet (Jens Zechlin)
+
+Docs
+	* Removed info on defaults as they vary amongst distros (Irene)
+	* Add docs translations (Mike Lei)
+
+Misc
+
+	* Remove the .so suffixes from shlibs in .server files (Mark)
+	* Replace leading spaces with tabs in sgmldocs.make (Art Haas)
+
+Translations
+	* Belarusian team (be), Christian Neumair (de), Christophe Merlet (fr),
+	  Danilo Å egan (sr), FSF-India (ml), Guntupalli Karunakar (hi),
+	  Joel Brich (eo), Jordi Mallach (ca), Mathieu van Woerkom (li),
+	  Ole Laursen (da), Pauli Virtanen (fi), Raphael Finkel (yi),
+	  Reinout van Schouwen (nl) and Runa Bhattacharjee (bn).
+
+=============
+Version 2.2.1
+=============
+
+Panel
+
+	* Make global keybindings work on multi-screen setups (Erwann, Mark)
+	* Destroy "Create Launcher" dialogs when the panel is destrored (Arvind)
+	* Allow the GNOME foot icon on the Main Menu to be themed (Raj)
+	* Support themeing of the action button icons (Raj)
+	* Query deletion of a drawer when it is deleted by removing the button (Arvind)
+	* Delete child drawer panels when deleting panels (Arvind)
+	* Fix various leaks (Kjartan)
+	* Fix typo with the launchers "zoom animation" (Paul Gammans)
+	* Do not query the deletion of a panel if there are no objects on it (Heeten, Arvind)
+	* Make the "Delete Panel?" dialog modal (Arvind)
+	* Avoid rare panel hang when moving applets (Sunil Mohan Adapa)
+	* Actually load the panel background color preference (Greg Hudson)
+	* Fix crash related to drawers (Arvind)
+	* Fix various issues with egg-recent-files (James)
+	* Don't save screenshot to UTF8 filenames in G_BROKEN_FILENAMES locales (Toshi)
+	* Fix crash when the panel background image can't be loaded (Mark, Heeten)
+	* Unescape the tooltip on launchers (Bala)
+	* Destroy the "Overwrite file?" warning dialog in gnome-panel-screenshot (Bala)
+	* Add support for icon theming icons with absolute paths (Mark, Havoc, Raj)
+	* Don't crash when clicking on a drawer panel with no parent panel (Mark)
+	* Don't load the GNOME 1.4 applet's .desktop files on startup (Mark)
+
+Applets
+
+	* Destroy Window List and Workspace Switcher properties dialog when
+	  the applets are destroyed (Arvind)
+	* Launch the mail received handler on the correct screen (Satyajit Kanungo)
+	* Ignore any leading and trailing whitespace in a workspace name (Arvind)
+	* Change the max number of workspaces to 36 in sync with metacity (Mark)
+	* Fix issue with the mailcheck animation on mutliscreen setups (Satyajit Kanungo)
+	* Fix notification area crasher (Havoc)
+
+Miscellanous
+
+	* Fix "po/Makefile.in.in not found" build breakage (Clifton Lockhart)
+	* Add a --with-html-dir configure option (Julio Merino)
+	* Window List docs updates (Irene Ryan)
+	* Japanese translations of docs (Takeshi AIHANA)
+	* Support --disable-schemas-install and --with-gconf-schema-file-dir (Mark, Julio Merino)
+	* Fix libpanel-applet crash on 64 bit platforms (Matt Wilson)
+
+Translations
+
+	* Alessio Frusciante, Christian Neumair, Christian Rose, Christophe Merlet,
+	  Dmitry G. Mastrukov, Gediminas Paulauskas, Gil "Dolfin" Osher, JoÃ«l Brich,
+	  Kenneth Christiansen, Kjartan Maraas, Luca Ferretti, Metin Amiroff,
+	  Miloslav Trmac, Ole Laursen, Roozbeh Pournader, Vaidotas Zemlys,
+	  Vincent van Adrighem and Zbigniew Chyla.  
+
 ===============
 Version 2.2.0.1
 ===============
@@ -36,7 +1613,7 @@ Translations
 
 	* Abel Cheung, Andras Timar, Artis Trops, Christian Neumair,
 	  Christian Rose, Daniel Yacob, Dmitry G. Mastrukov, German Poo-Caaman~o,
-	  Gil "Dolfin" Osher, Juan Manuel Garc?­a Molina, Kjartan Maraas,
+	  Gil "Dolfin" Osher, Juan Manuel Garc?Â­a Molina, Kjartan Maraas,
 	  Kostas Papadimas, Miloslav Trmac, Ole Laursen, Pablo Gonzalo del Campo,
 	  Pauli Virtanen and Reinout van Schouwen.
 
@@ -207,7 +1784,7 @@ Miscellanous
 Translations
 
 	* Dmitry G. Mastrukov, Hasbullah Bin Pit, Kjartan Maraas,
-	  Kostas Papadimas, Tõivo Leedjärv, Vincent van Adrighem and
+	  Kostas Papadimas, TÃµivo LeedjÃ¤rv, Vincent van Adrighem and
 	  Yanko Kaneti.
 
 =============
@@ -320,7 +1897,7 @@ Misc
 
 Translations
 
-	* Germ�n Poo-Caama�o, Hasbullah Bin Pit, Matthias Warkus,
+	* Germán Poo-Caamaño, Hasbullah Bin Pit, Matthias Warkus,
 	  Ole Laursen and Pauli Virtanen.
 
 =============
@@ -372,7 +1949,7 @@ Translations
 	* Andras Timar, Changwoo Ryu, Christian Neumair, Christian Rose, 
 	  Dmitry G. Mastrukov, Duarte Loreto, Gustavo Noronha Silva,
 	  Hasbullah Bin Pit, Kjartan Maraas, Marius Andreiana, Ole Laursen,
-	  Peteris Krisjanis, Stanislav Visnovsky, T�ivo Leedj�rv, Vincent
+	  Peteris Krisjanis, Stanislav Visnovsky, Tõivo Leedjärv, Vincent
 	  van Adrighem, Yanko Kaneti and Zbigniew Chyla.
 
 =============
@@ -418,7 +1995,7 @@ Panel
 
 Translations
 
-	* T�ivo Leedj�rv.
+	* Tõivo Leedjärv.
 
 =============
 Version 2.0.3
@@ -500,7 +2077,7 @@ Fish Applet
 
 	* Use root window instead of offscreen popup when creating pixmaps (Mark)
 	* Sanity check some preferences (Mark)
-	* Convert fortune output from user locale to UTF-8 (Miguel Rodr�guez P�rez)
+	* Convert fortune output from user locale to UTF-8 (Miguel Rodríguez Pérez)
 	* Warn the user if we can't locate or execute fortune (Mark)
 
 Workspace Switcher Applet
@@ -548,7 +2125,7 @@ Translations
 	* Andrew V. Samoilov, Changwoo Ryu, Christian Rose, Christophe Fergeau,
           Daniel Yacob, Dmitry G. Mastrukov, Hasbullah Bin Pit, Jordi Mallach,
           Kjartan Maraas, Ole Laursen, Pablo Saratxaga, Peteris Krisjanis, Stanislav
-          Visnovsky, T�ivo Leedj�rv, Vincent van Adrighem, Wang Jian and Zbigniew Chyla.
+          Visnovsky, Tõivo Leedjärv, Vincent van Adrighem, Wang Jian and Zbigniew Chyla.
 
 =============
 Version 2.0.1
@@ -582,10 +2159,10 @@ Miscellanous
 
 Translations
 
-	* Carlos Perell� Mar�n, Christian Rose, Christophe Merlet,
-	  Germ�n Poo-Caama�o, Hasbullah Bin Pit, Jesus Bravo Alvarez,
-	  Jordi Mallach, Ole Laursen, Stanislav Visnovsky, T�ivo
-	  Leedj�rv and Zbigniew Chyla. 
+	* Carlos Perelló Marín, Christian Rose, Christophe Merlet,
+	  Germán Poo-Caamaño, Hasbullah Bin Pit, Jesus Bravo Alvarez,
+	  Jordi Mallach, Ole Laursen, Stanislav Visnovsky, Tõivo
+	  Leedjärv and Zbigniew Chyla. 
 
 ==============
 Version 1.5.24
@@ -607,10 +2184,10 @@ Miscellanous
 
 Translations
 
-	* Abel Cheung, Carlos Perell� Mar�n, Christian Rose,
-	  Dmitry G. Mastrukov, George Lebl, Germ�n Poo-Caama�o,
+	* Abel Cheung, Carlos Perelló Marín, Christian Rose,
+	  Dmitry G. Mastrukov, George Lebl, Germán Poo-Caamaño,
 	  Jordi Mallach, Kjartan Maraas, Ole Laursen, Pablo Saratxaga,
-	  Pauli Virtanen, Stanislav Visnovsky, T�ivo Leedj�rv and
+	  Pauli Virtanen, Stanislav Visnovsky, Tõivo Leedjärv and
 	  Zbigniew Chyla.
 
 ==============
@@ -809,7 +2386,7 @@ Version 1.5.17
 Panel
 
 	* .desktop file for gnome-panel-screenshot (Arvind S N, Seth)
-	* Use localised name in ditem (Diego Gonz�lez)
+	* Use localised name in ditem (Diego González)
 	* Add 'Search for File ...' to 'Actions' menu (Mark)
 	* Double click running in gnome-run (Mark)
 	* Fix crash when editing direntries (Mark)
@@ -902,7 +2479,7 @@ Applets
 Translations
 
 	* Changwoo Ryu, Hasbullah Bin Pit, Johan Dahlin,
-	  Kjartan Maraas, Stanislav Visnovsky, T�ivo Leedj�rv
+	  Kjartan Maraas, Stanislav Visnovsky, Tõivo Leedjärv
 	  and Zbigniew Chyla.
 
 ==============
@@ -1040,7 +2617,7 @@ Panel
 	* Applet frame moniker fix (George)
 	* Save applet position on move (George)
 	* Conert Pos object from GtkObject to GObject (George)
-	* Use correct timeout methods all over (Diego Gonz�lez)
+	* Use correct timeout methods all over (Diego González)
 	* Fix some laucher properties problems (Mark)
 	* Fix memory leaks (George)
 	* Fix swapped params signal bug (George)
@@ -1066,7 +2643,7 @@ Translations
 
 	* Christian Meyer, Zbigniew Chyla, Hasbullah Bin Pit,
 	Stanislav Visnovsky, Fatih Demir, Ole Laursen, Pauli Virtanen,
-	Takayuki KUSANO, Christian Rose, T�ivo Leedj�rv,
+	Takayuki KUSANO, Christian Rose, Tõivo Leedjärv,
 	Kjartan Maraas and Christopher R. Gabriel.
 	
 ==============
@@ -1145,7 +2722,7 @@ Applets
 
 Translations
 
-	* Takayuki KUSANO, T�ivo Leedj�rv, Kjartan Maraas and Christophe Merlet.
+	* Takayuki KUSANO, Tõivo Leedjärv, Kjartan Maraas and Christophe Merlet.
 
 =============
 Version 1.5.9

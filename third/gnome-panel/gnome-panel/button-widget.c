@@ -11,139 +11,32 @@
 
 #include "button-widget.h"
 #include "panel-widget.h"
-#include "basep-widget.h"
-#include "panel-main.h"
 #include "panel-types.h"
 #include "panel-util.h"
 #include "panel-config-global.h"
 #include "panel-marshal.h"
 #include "panel-typebuiltins.h"
+#include "panel-globals.h"
+
 
 
 static GdkPixbuf *button_load_pixbuf (const char  *file,
-				      int          preffered_size,
 				      char       **error);
+static GdkPixbuf * get_missing (int preffered_size);
 
 enum {
 	PROP_0,
-	PROP_SIZE,
+	PROP_ACTIVATABLE,
 	PROP_HAS_ARROW,
-	PROP_ORIENT,
+	PROP_DND_HIGHLIGHT,
+	PROP_ORIENTATION,
 	PROP_ICON_NAME,
-	PROP_STOCK_ID,
+	PROP_STOCK_ID
 };
 
 #define BUTTON_WIDGET_DISPLACEMENT 2
 
-extern GlobalConfig global_config;
-
 static GObjectClass *parent_class;
-
-static void
-translate_to(GtkWidget *from, GtkWidget *to, int *x, int *y)
-{
-	while (from != to) {
-		if (!GTK_WIDGET_NO_WINDOW (from)) {
-			*x += MAX (from->allocation.x, 0);
-			*y += MAX (from->allocation.y, 0);
-		}
-		from = from->parent;
-	}
-}
-
-static GtkWidget *
-get_frame(BasePWidget *basep)
-{
-	if (GTK_WIDGET_VISIBLE (basep->frame)) {
-		return basep->frame;
-	} else {
-		return basep->innerebox;
-	}
-}
-
-static void
-calculate_overlay_geometry (PanelWidget *panel,
-			    GtkWidget   *parent,
-			    GtkWidget   *applet,
-			    int         *x,
-			    int         *y,
-			    int         *w,
-			    int         *h)
-{
-	*x = applet->allocation.x;
-	*y = applet->allocation.y;
-	*w = applet->allocation.width;
-	*h = applet->allocation.height;
-
-	translate_to (GTK_WIDGET(panel), parent, x, y);
-
-	if(panel->orient == GTK_ORIENTATION_HORIZONTAL) {
-		if (applet->allocation.x > panel->size) {
-			*x = parent->requisition.width + 1;
-			*y = parent->requisition.height + 1;
-			return;
-		}
-
-		*y = 0;
-		/* we use the requisition, since allocation might have not
-		   yet happened if we are inside the allocation, anyway
-		   they are the same for basep */
-		if(*h < parent->requisition.height)
-			*h = parent->requisition.height;
-
-		if ((*w + applet->allocation.x) > panel->size) {
-			*w = panel->size - applet->allocation.x;
-		}
-
-		if ( ! BASEP_IS_WIDGET(parent)) {
-			/*don't do the edge flushing on foobar*/
-			return;
-		}
-
-		/* if on the edge (only if padding is 0)
-		   then make the thing flush with the innerebox or frame
-		   of the basep */
-		if(applet->allocation.x == 0) {
-			GtkWidget *frame = get_frame(BASEP_WIDGET(parent));
-			*w += (*x - frame->allocation.x);
-			*x = frame->allocation.x;
-		} else if(applet->allocation.x + *w == panel->size) {
-			GtkWidget *frame = get_frame(BASEP_WIDGET(parent));
-			*w = frame->allocation.width + frame->allocation.x - *x;
-		}
-	} else {
-		if (applet->allocation.y > panel->size) {
-			*x = parent->requisition.width + 1;
-			*y = parent->requisition.height + 1;
-			return;
-		}
-
-		*x = 0;
-		if(*w < parent->requisition.width)
-			*w = parent->requisition.width;
-
-		if ((*h + applet->allocation.y) > panel->size) {
-			*h = panel->size - applet->allocation.y;
-		}
-
-		if ( ! BASEP_IS_WIDGET(parent)) {
-			/*don't do the edge flushing on foobar*/
-			return;
-		}
-
-		/* if on the edge (only if padding is 0)
-		   then make the thing flush with the innerbox of frame
-		   of the basep */
-		if(applet->allocation.y == 0) {
-			GtkWidget *frame = get_frame(BASEP_WIDGET(parent));
-			*h += (*y - frame->allocation.y);
-			*y = frame->allocation.y;
-		} else if(applet->allocation.y + *h == panel->size) {
-			GtkWidget *frame = get_frame(BASEP_WIDGET(parent));
-			*h = frame->allocation.height + frame->allocation.y - *y;
-		}
-	}
-}
 
 /* colorshift a pixbuf */
 static void
@@ -209,27 +102,19 @@ button_widget_realize(GtkWidget *widget)
 	GdkWindowAttr attributes;
 	gint attributes_mask;
 	GtkButton *button;
-	PanelWidget *panel;
-	GtkWidget *parent;
-	int x,y,w,h;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (BUTTON_IS_WIDGET (widget));
-
-	panel = PANEL_WIDGET(widget->parent);
-	parent = panel->panel_parent;
-
-	calculate_overlay_geometry(panel, parent, widget, &x, &y, &w, &h);
 
 	button = GTK_BUTTON (widget);
 
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.x = x;
-	attributes.y = y;
-	attributes.width = w;
-	attributes.height = h;
+	attributes.x = widget->allocation.x;
+	attributes.y = widget->allocation.y;
+	attributes.width = widget->allocation.width;
+	attributes.height = widget->allocation.height;
 	attributes.wclass = GDK_INPUT_ONLY;
 	attributes.event_mask = (GDK_BUTTON_PRESS_MASK |
 				 GDK_BUTTON_RELEASE_MASK |
@@ -240,10 +125,10 @@ button_widget_realize(GtkWidget *widget)
 				 GDK_LEAVE_NOTIFY_MASK);
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 
-	widget->window = gtk_widget_get_parent_window(widget);
+	widget->window = gtk_widget_get_parent_window (widget);
 	g_object_ref (G_OBJECT (widget->window));
       
-	button->event_window = gdk_window_new (parent->window,
+	button->event_window = gdk_window_new (gtk_widget_get_parent_window (widget),
 					       &attributes,
 					       attributes_mask);
 	gdk_window_set_user_data (button->event_window, widget);
@@ -252,24 +137,26 @@ button_widget_realize(GtkWidget *widget)
 }
 
 static void
-button_widget_parent_set (GtkWidget *widget,
-			  GtkWidget *previous_parent)
+button_widget_unrealize (GtkWidget *widget)
 {
+	GtkButton *button;
+	PanelWidget *panel;
 	GtkWidget *parent;
-	int        x, y, w, h;
 
+	g_return_if_fail (widget != NULL);
 	g_return_if_fail (BUTTON_IS_WIDGET (widget));
 
-	if (!GTK_WIDGET_REALIZED (widget)|| !widget->parent)
-		return;
+	panel  = PANEL_WIDGET (widget->parent);
+	parent = GTK_WIDGET (panel->toplevel);
+	button = GTK_BUTTON (widget);
 
-	parent = PANEL_WIDGET (widget->parent)->panel_parent;
+	if (button->event_window != NULL) {
+		gdk_window_set_user_data (button->event_window, NULL);
+		gdk_window_destroy (button->event_window);
+		button->event_window = NULL;
+	}
 
-	calculate_overlay_geometry (
-		PANEL_WIDGET (widget->parent), parent, widget, &x, &y, &w, &h);
-
-	gdk_window_reparent (
-		GTK_BUTTON (widget)->event_window, parent->window, x, y);
+	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
 static void
@@ -289,43 +176,47 @@ button_widget_unset_pixbufs (ButtonWidget *button)
 }
 
 static void
-button_widget_load_pixbuf_and_scale (ButtonWidget *button,
-				     int           dest_width,
-				     int           dest_height)
+button_widget_load_pixbuf_and_scale (ButtonWidget *button)
 {
 	double scale;
-	double scale_x;
-	double scale_y;
 	int    width;
 	int    height;
 
-	if (!button->pixbuf) {
-		g_assert (!button->filename || !button->stock_id);
+	if (button->size <= 1)
+		return;
 
+	if (button->pixbuf == NULL) {
 		if (!button->filename && !button->stock_id)
 			return;
 
-		if (button->stock_id)
-			button->pixbuf = gtk_widget_render_icon (
-						GTK_WIDGET (button),
-						button->stock_id,
-						(GtkIconSize) -1,
-						NULL);
-		else {
+		if (button->filename != NULL) {
 			char *error = NULL;
 
-			button->pixbuf = button_load_pixbuf (
-						button->filename, button->size, &error);
+			button->pixbuf = button_load_pixbuf (button->filename, &error);
 			if (error) {
 				panel_error_dialog (gdk_screen_get_default (),
 						    "cannot_load_pixbuf",
-						    _("Failed to load image %s\n\n"
-						    "Details: %s"),
+						    _("Failed to load image %s"),
+						    "%s",
 						    button->filename,
 						    error);
 				g_free (error);
 			}
 		}
+
+		if (button->pixbuf == NULL &&
+		    button->stock_id != NULL)
+			button->pixbuf = gtk_widget_render_icon (
+						GTK_WIDGET (button),
+						button->stock_id,
+						(GtkIconSize) -1,
+						NULL);
+
+/* FIXME: this should be based on the panel size */
+#define PREFERRED_SIZE 48
+		if (button->pixbuf == NULL)
+			button->pixbuf = get_missing (PREFERRED_SIZE);
+#undef PREFERRED_SIZE
 
 		if (!button->pixbuf)
 			return;
@@ -334,10 +225,10 @@ button_widget_load_pixbuf_and_scale (ButtonWidget *button,
 	width  = gdk_pixbuf_get_width  (button->pixbuf);
 	height = gdk_pixbuf_get_height (button->pixbuf);
 
-	scale_x = (double) dest_width  / width;
-	scale_y = (double) dest_height / height;
-
-	scale = MIN (scale_x, scale_y);
+	if (button->orientation & PANEL_HORIZONTAL_MASK)
+		scale = (double) button->size / height;
+	else
+		scale = (double) button->size / width;
 
 	width  *= scale;
 	height *= scale;
@@ -357,31 +248,35 @@ button_widget_load_pixbuf_and_scale (ButtonWidget *button,
 		g_object_unref (button->scaled_hc);
 	
 	button->scaled_hc = make_hc_pixbuf (button->scaled);
+
+	gtk_widget_queue_resize (GTK_WIDGET (button));
 }
 
 static void
 button_widget_reload_pixbuf (ButtonWidget *button)
 {
 	button_widget_unset_pixbufs (button);
-	if (GTK_WIDGET (button)->allocation.width  <= 1 ||
-	    GTK_WIDGET (button)->allocation.height <= 1)
-		return;
+	button_widget_load_pixbuf_and_scale (button);
+}
 
-	button_widget_load_pixbuf_and_scale (
-		button,
-		GTK_WIDGET (button)->allocation.width,
-		GTK_WIDGET (button)->allocation.height);
-	gtk_widget_queue_draw (GTK_WIDGET (button));
+static void
+button_widget_icon_theme_changed (ButtonWidget *button)
+{
+	if (button->filename != NULL)
+		button_widget_reload_pixbuf (button);
+}
+
+static void
+button_widget_gtk_theme_changed (ButtonWidget *button)
+{
+	if (button->stock_id != NULL)
+		button_widget_reload_pixbuf (button);
 }
 
 static void
 button_widget_finalize (GObject *object)
 {
 	ButtonWidget *button = (ButtonWidget *) object;
-
-	if (button->pressed_timeout)
-		g_source_remove (button->pressed_timeout);
-	button->pressed_timeout = 0;
 
 	button_widget_unset_pixbufs (button);
 
@@ -407,14 +302,17 @@ button_widget_get_property (GObject    *object,
 	button = BUTTON_WIDGET (object);
 
 	switch (prop_id) {
-	case PROP_SIZE:
-		g_value_set_int (value, button->size);
+	case PROP_ACTIVATABLE:
+		g_value_set_boolean (value, button->activatable);
 		break;
 	case PROP_HAS_ARROW:
 		g_value_set_boolean (value, button->arrow);
 		break;
-	case PROP_ORIENT:
-		g_value_set_enum (value, button->orient);
+	case PROP_DND_HIGHLIGHT:
+		g_value_set_boolean (value, button->dnd_highlight);
+		break;
+	case PROP_ORIENTATION:
+		g_value_set_enum (value, button->orientation);
 		break;
 	case PROP_ICON_NAME:
 		g_value_set_string (value, button->filename);
@@ -441,54 +339,24 @@ button_widget_set_property (GObject      *object,
 	button = BUTTON_WIDGET (object);
 
 	switch (prop_id) {
-		const char *icon_name;
-		const char *stock_id;
-
-	case PROP_SIZE:
-		button->size = g_value_get_int (value);
-		gtk_widget_queue_resize (GTK_WIDGET (button));
+	case PROP_ACTIVATABLE:
+		button_widget_set_activatable (button, g_value_get_boolean (value));
 		break;
 	case PROP_HAS_ARROW:
-		button->arrow = g_value_get_boolean (value) ? 1 : 0;
-		gtk_widget_queue_draw (GTK_WIDGET (button));
+		button_widget_set_has_arrow (button, g_value_get_boolean (value));
 		break;
-	case PROP_ORIENT:
-		button->orient = g_value_get_enum (value);
-		gtk_widget_queue_draw (GTK_WIDGET (button));
+	case PROP_DND_HIGHLIGHT:
+		button_widget_set_dnd_highlight (button, g_value_get_boolean (value));
+		break;
+	case PROP_ORIENTATION:
+		button_widget_set_orientation (button, g_value_get_enum (value));
 		break;
 	case PROP_ICON_NAME:
-		icon_name = g_value_get_string (value);
-
-		g_assert (!button->filename || !button->stock_id);
-
-		if (button->stock_id) {
-			g_free (button->stock_id);
-			button->stock_id = NULL;
-		}
-
-		if (button->filename)
-			g_free (button->filename);
-		button->filename = g_strdup (icon_name);
-
-		button_widget_reload_pixbuf (button);
+		button_widget_set_icon_name (button, g_value_get_string (value));
 		break;
 	case PROP_STOCK_ID:
-		stock_id = g_value_get_string (value);
-
-		g_assert (!button->filename || !button->stock_id);
-
-		if (button->filename) {
-			g_free (button->filename);
-			button->filename = NULL;
-		}
-
-		if (button->stock_id)
-			g_free (button->stock_id);
-		button->stock_id = g_strdup (stock_id);
-
-		button_widget_reload_pixbuf (button);
+		button_widget_set_stock_id (button, g_value_get_string (value));
 		break;
-
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -503,8 +371,8 @@ get_missing (int preffered_size)
 	GdkPixbuf *retval = NULL;
 
 	if (default_pixmap == NULL)
-		default_pixmap = panel_pixmap_discovery ("gnome-unknown.png",
-							 FALSE /* fallback */);
+		default_pixmap = gnome_desktop_item_find_icon (panel_icon_theme, "gnome-unknown.png",
+							       preffered_size, 0);
 	if (default_pixmap != NULL)
 		retval = gdk_pixbuf_new_from_file (default_pixmap,
 						   NULL);
@@ -515,90 +383,107 @@ get_missing (int preffered_size)
 }
 
 static GdkPixbuf *
-button_load_pixbuf (const char  *file,
-		    int          preffered_size,
-		    char       **error)
+load_pixbuf (const char  *file,
+	     int          preffered_size,
+	     char       **str_error)
 {
+	GError    *error = NULL;
 	GdkPixbuf *retval = NULL;
-	GError *gerror = NULL;
-	char *full;
+	char      *full;
 
-	if (preffered_size <= 0)
-		preffered_size = 48;
-	
-	if (string_empty (file))
-		return get_missing (preffered_size);
+	if (g_path_is_absolute (file))
+		full = g_strdup (file);
+	else
+		full = gnome_desktop_item_find_icon (panel_icon_theme, file, preffered_size, 0);
 
-	full = gnome_desktop_item_find_icon (panel_icon_theme, file,
-					     preffered_size, 0);
-	if (full != NULL) {
-		retval = gdk_pixbuf_new_from_file (full, &gerror);
-		if (retval == NULL) {
-			*error = g_strdup (gerror ? gerror->message : _("none"));
-			g_clear_error (&gerror);
+	if (full) {
+		retval = gdk_pixbuf_new_from_file (full, &error);
+		if (!retval) {
+			if (str_error)
+				*str_error = g_strdup (error ? error->message : _("none"));
+			g_error_free (error);
 		}
 		g_free (full);
-	} else {
-		*error = g_strdup (_("file not found"));
-	}
-
-	if (retval == NULL)
-		retval = get_missing (preffered_size);
+	} else if (str_error)
+		*str_error = g_strdup (_("file not found"));
 
 	return retval;
+
+
 }
 
-#define SCALE(x) (((x)*size)/48.0)
-
-static void
-draw_arrow(GdkPoint *points, PanelOrient orient, int size)
+static GdkPixbuf *
+button_load_pixbuf (const char  *file,
+		    char       **error)
 {
-	switch(orient) {
-	case PANEL_ORIENT_UP:
-		points[0].x = SCALE(48-12);
-		points[0].y = SCALE(10);
-		points[1].x = SCALE(48-4);
-		points[1].y = SCALE(10);
-		points[2].x = SCALE(48-8);
-		points[2].y = SCALE(3);
-		break;
-	case PANEL_ORIENT_DOWN:
-		points[0].x = SCALE(4);
-		points[0].y = SCALE(48 - 10);
-		points[1].x = SCALE(12);
-		points[1].y = SCALE(48 - 10);
-		points[2].x = SCALE(8);
-		points[2].y = SCALE(48 - 3);
-		break;
-	case PANEL_ORIENT_LEFT:
-		points[0].x = SCALE(10);
-		points[0].y = SCALE(4);
-		points[1].x = SCALE(10);
-		points[1].y = SCALE(12);
-		points[2].x = SCALE(3);
-		points[2].y = SCALE(8);
-		break;
-	case PANEL_ORIENT_RIGHT:
-		points[0].x = SCALE(48 - 10);
-		points[0].y = SCALE(48 - 12);
-		points[1].x = SCALE(48 - 10);
-		points[1].y = SCALE(48 - 4);
-		points[2].x = SCALE(48 - 3);
-		points[2].y = SCALE(48 - 8);
-		break;
+/* FIXME: this should be based on the panel size */
+#define PREFERRED_SIZE 48
+
+	GdkPixbuf *retval = NULL;
+
+	if (string_empty (file))
+		return NULL;
+
+	retval = load_pixbuf (file, PREFERRED_SIZE, NULL);
+	if (!retval) {
+		char *tmp;
+
+		if (error && *error) {
+			g_free (*error);
+			*error = NULL;
+		}
+
+		tmp = g_path_get_basename (file);
+		retval = load_pixbuf (tmp, PREFERRED_SIZE, error);
+		g_free (tmp);
 	}
+
+	return retval;
+
+#undef PREFERRED_SIZE
 }
 
-void
-button_widget_set_dnd_highlight(ButtonWidget *button, gboolean highlight)
+static GtkArrowType
+calc_arrow (PanelOrientation  orientation,
+	    int               button_width,
+	    int               button_height,
+	    int              *x,
+	    int              *y,
+	    int              *width,
+	    int              *height)
 {
-	g_return_if_fail (button != NULL);
-	g_return_if_fail (BUTTON_IS_WIDGET (button));
+	GtkArrowType retval = GTK_ARROW_UP;
+	double scale;
 
-	if(button->dnd_highlight != highlight) {
-		button->dnd_highlight = highlight;
-		gtk_widget_queue_draw (GTK_WIDGET (button));
+	scale = (orientation & PANEL_HORIZONTAL_MASK ? button_height : button_width) / 48.0;
+
+	*width  = 12 * scale;
+	*height = 12 * scale;
+
+	switch (orientation) {
+	case PANEL_ORIENTATION_TOP:
+		*x     = scale * 3;
+		*y     = scale * (48 - 13);
+		retval = GTK_ARROW_DOWN;
+		break;
+	case PANEL_ORIENTATION_BOTTOM:
+		*x     = scale * (48 - 13);
+		*y     = scale * 1;
+		retval = GTK_ARROW_UP;
+		break;
+	case PANEL_ORIENTATION_LEFT:
+		*x     = scale * (48 - 13);
+		*y     = scale * 3;
+		retval = GTK_ARROW_RIGHT;
+		break;
+	case PANEL_ORIENTATION_RIGHT:
+		*x     = scale * 1;
+		*y     = scale * 3;
+		retval = GTK_ARROW_LEFT;
+		break;
 	}
+
+	return retval;
 }
 
 static gboolean
@@ -608,7 +493,7 @@ button_widget_expose (GtkWidget         *widget,
 	ButtonWidget *button_widget;
 	GtkButton *button;
 	GdkRectangle area, image_bound;
-	int off, size;
+	int off;
 	int x, y, w, h;
 	GdkPixbuf *pb = NULL;
   
@@ -618,21 +503,30 @@ button_widget_expose (GtkWidget         *widget,
 	button_widget = BUTTON_WIDGET (widget);
 	button = GTK_BUTTON (widget);
 	
-	if (!GTK_WIDGET_VISIBLE (widget) || !GTK_WIDGET_MAPPED (widget)) {
+	if (!GTK_WIDGET_VISIBLE (widget) || !GTK_WIDGET_MAPPED (widget))
 		return FALSE;
-	}
 
-	size = widget->allocation.height;
+	if (!button_widget->scaled_hc && !button_widget->scaled)
+		return FALSE;
+
 	/* offset for pressed buttons */
-	off = (button->in_button && button->button_down) ?
-		SCALE(BUTTON_WIDGET_DISPLACEMENT) : 0;
-	
-	if (global_config.highlight_when_over && 
+	off = (button_widget->activatable && button->in_button && button->button_down) ?
+		BUTTON_WIDGET_DISPLACEMENT * widget->allocation.height / 48.0 : 0;
+
+	if (!button_widget->activatable) {
+		pb = gdk_pixbuf_copy (button_widget->scaled);
+		gdk_pixbuf_saturate_and_pixelate (button_widget->scaled,
+						  pb,
+						  0.8,
+						  TRUE);
+	} else if (panel_global_config_get_highlight_when_over () && 
 	    (button->in_button || GTK_WIDGET_HAS_FOCUS (widget)))
-		pb = button_widget->scaled_hc;
+		pb = g_object_ref (button_widget->scaled_hc);
 	else
-		pb = button_widget->scaled;
-	
+		pb = g_object_ref (button_widget->scaled);
+
+	g_assert (pb != NULL);
+
 	w = gdk_pixbuf_get_width (pb);
 	h = gdk_pixbuf_get_height (pb);
 	x = widget->allocation.x + off + (widget->allocation.width - w)/2;
@@ -646,28 +540,43 @@ button_widget_expose (GtkWidget         *widget,
 	area = event->area;
 	
 	if (gdk_rectangle_intersect (&area, &widget->allocation, &area) &&
-	    gdk_rectangle_intersect (&image_bound, &area, &image_bound))  {
-		gdk_pixbuf_render_to_drawable_alpha (pb,
-						     widget->window,
-						     image_bound.x - x, image_bound.y - y,
-						     image_bound.x, image_bound.y,
-						     image_bound.width, image_bound.height,
-						     GDK_PIXBUF_ALPHA_FULL,
-						     128,
-						     GDK_RGB_DITHER_NORMAL,
-						     0, 0);
-	}
+	    gdk_rectangle_intersect (&image_bound, &area, &image_bound))
+		gdk_draw_pixbuf (widget->window, NULL, pb,
+				 image_bound.x - x, image_bound.y - y,
+				 image_bound.x, image_bound.y,
+				 image_bound.width, image_bound.height,
+				 GDK_RGB_DITHER_NORMAL,
+				 0, 0);
+
+	g_object_unref (pb);
 	
-	if(button_widget->arrow) {
-		int i;
-		GdkPoint points[3];
-		draw_arrow (points, button_widget->orient, widget->allocation.height);
-		for (i = 0; i < 3; i++) {
-			points[i].x += off + widget->allocation.x;
-			points[i].y += off + widget->allocation.y;
-		}
-		gdk_draw_polygon (widget->window, widget->style->white_gc, TRUE, points, 3);
-		gdk_draw_polygon (widget->window, widget->style->black_gc, FALSE, points, 3);
+	if (button_widget->arrow) {
+		GtkArrowType arrow_type;
+		int          x, y, width, height;
+
+		x = y = width = height = -1;
+
+		arrow_type = calc_arrow (button_widget->orientation,
+					 widget->allocation.width,
+					 widget->allocation.height,
+					 &x,
+					 &y,
+					 &width,
+					 &height);
+
+		gtk_paint_arrow (widget->style,
+				 widget->window,
+				 GTK_STATE_NORMAL,
+				 GTK_SHADOW_NONE,
+				 NULL,
+				 widget,
+				 NULL,
+				 arrow_type,
+				 TRUE,
+				 widget->allocation.x + x,
+				 widget->allocation.y + y,
+				 width,
+				 height);
 	}
 
 	if (button_widget->dnd_highlight) {
@@ -690,7 +599,7 @@ button_widget_expose (GtkWidget         *widget,
 		width = widget->allocation.width -  2 * focus_pad;
 		height = widget->allocation.height - 2 * focus_pad;
 		gtk_paint_focus (widget->style, widget->window,
-				 GTK_WIDGET_STATE (widget),
+				 GTK_STATE_NORMAL,
 				 &event->area, widget, "button",
 				 x, y, width, height);
 	}
@@ -702,78 +611,83 @@ static void
 button_widget_size_request (GtkWidget      *widget,
 			    GtkRequisition *requisition)
 {
-	PanelWidget *panel = PANEL_WIDGET (widget->parent);
+	ButtonWidget *button_widget = BUTTON_WIDGET (widget);
 
-	requisition->width = requisition->height = panel->sz;
+	if (button_widget->scaled) {
+		requisition->width  = gdk_pixbuf_get_width  (button_widget->scaled);
+		requisition->height = gdk_pixbuf_get_height (button_widget->scaled);
+	}
 }
 
 static void
 button_widget_size_allocate (GtkWidget     *widget,
 			     GtkAllocation *allocation)
 {
-	ButtonWidget *button_widget;
-	GtkButton    *button;
+	ButtonWidget *button_widget = BUTTON_WIDGET (widget);
+	GtkButton    *button = GTK_BUTTON (widget);
+	int           size;
 
-	g_return_if_fail (BUTTON_IS_WIDGET (widget));
+	if (button_widget->orientation & PANEL_HORIZONTAL_MASK)
+		size = allocation->height;
+	else
+		size = allocation->width;
 
-	button_widget = BUTTON_WIDGET (widget);
-	button        = GTK_BUTTON (widget);
+	if (button_widget->size != size) {
+		button_widget->size = size;
+
+		button_widget_load_pixbuf_and_scale (button_widget);
+	}
 
 	widget->allocation = *allocation;
 
-	button_widget_load_pixbuf_and_scale (
-		button_widget, allocation->width, allocation->height);
-
 	if (GTK_WIDGET_REALIZED (widget)) {
 		PanelWidget *panel;
-		int          x, y, w, h;
 
 		panel = PANEL_WIDGET (widget->parent);
 
-		calculate_overlay_geometry (panel, panel->panel_parent,
-					    widget, &x, &y, &w, &h);
-
-		gdk_window_move_resize (button->event_window, x, y, w, h);
+		gdk_window_move_resize (button->event_window, 
+					allocation->x,
+					allocation->y,
+					allocation->width,
+					allocation->height);
 	}
 }
 
-static gboolean
-pressed_timeout_func(gpointer data)
+static void
+button_widget_activate (GtkButton *button)
 {
-	ButtonWidget *button;
+	ButtonWidget *button_widget = BUTTON_WIDGET (button);
 
-	g_return_val_if_fail (BUTTON_IS_WIDGET (data), FALSE);
+	if (!button_widget->activatable)
+		return;
 
-	button = BUTTON_WIDGET (data);
-
-	button->pressed_timeout = 0;
-
-	return FALSE;
+	if (GTK_BUTTON_CLASS (parent_class)->activate)
+		GTK_BUTTON_CLASS (parent_class)->activate (button);
 }
 
 static gboolean
 button_widget_button_press (GtkWidget *widget, GdkEventButton *event)
 {
- 	ButtonWidget *button;
-
 	g_return_val_if_fail (BUTTON_IS_WIDGET (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	button = BUTTON_WIDGET (widget);
+	if (event->button == 1 && BUTTON_WIDGET (widget)->activatable)
+		return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
 
-	if (button->pressed_timeout)
-		return TRUE;
-
-	return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
+	return FALSE;
 }
 
 static gboolean
 button_widget_enter_notify (GtkWidget *widget, GdkEventCrossing *event)
 {
+	gboolean in_button;
+
 	g_return_val_if_fail (BUTTON_IS_WIDGET (widget), FALSE);
 
+	in_button = GTK_BUTTON (widget)->in_button;
 	GTK_WIDGET_CLASS (parent_class)->enter_notify_event (widget, event);
-	if (GTK_BUTTON (widget)->in_button)
+	if (in_button != GTK_BUTTON (widget)->in_button &&
+	    panel_global_config_get_highlight_when_over ())
 		gtk_widget_queue_draw (widget);
 
 	return FALSE;
@@ -789,34 +703,10 @@ button_widget_leave_notify (GtkWidget *widget, GdkEventCrossing *event)
 	in_button = GTK_BUTTON (widget)->in_button;
 	GTK_WIDGET_CLASS (parent_class)->leave_notify_event (widget, event);
 	if (in_button != GTK_BUTTON (widget)->in_button &&
-	    global_config.highlight_when_over)
+	    panel_global_config_get_highlight_when_over ())
 		gtk_widget_queue_draw (widget);
 
 	return FALSE;
-}
-
-static void
-button_widget_button_pressed (GtkButton *button)
-{
-	ButtonWidget *button_widget;
-
-	g_return_if_fail (BUTTON_IS_WIDGET (button));
-
-	GTK_BUTTON_CLASS (parent_class)->pressed (button);
-
-	button_widget = BUTTON_WIDGET (button);
-	button_widget->pressed_timeout =
-		g_timeout_add (400, pressed_timeout_func, button_widget);
-        gtk_widget_queue_draw (GTK_WIDGET (button));
-}
-
-static void
-button_widget_button_released (GtkButton *button)
-{
-	g_return_if_fail (BUTTON_IS_WIDGET (button));
-
-	GTK_BUTTON_CLASS (parent_class)->released (button);
-        gtk_widget_queue_draw (GTK_WIDGET (button));
 }
 
 static void
@@ -826,14 +716,21 @@ button_widget_instance_init (ButtonWidget *button)
 	button->scaled    = NULL;
 	button->scaled_hc = NULL;
 	
-	button->arrow  = 0;
-	button->size   = -1;
-	button->orient = PANEL_ORIENT_UP;
+	button->arrow       = 0;
+	button->orientation = PANEL_ORIENTATION_TOP;
 	
 	button->ignore_leave  = FALSE;
 	button->dnd_highlight = FALSE;
 
-	button->pressed_timeout = 0;
+	button->size = 0;
+
+	g_signal_connect_object (panel_icon_theme, "changed",
+				 G_CALLBACK (button_widget_icon_theme_changed),
+				 button,
+				 G_CONNECT_SWAPPED);
+
+	g_signal_connect (button, "style-set", 
+			  G_CALLBACK (button_widget_gtk_theme_changed), button);
 }
 
 static void
@@ -850,7 +747,7 @@ button_widget_class_init (ButtonWidgetClass *klass)
 	gobject_class->set_property = button_widget_set_property;
 	  
 	widget_class->realize            = button_widget_realize;
-	widget_class->parent_set         = button_widget_parent_set;
+	widget_class->unrealize          = button_widget_unrealize;
 	widget_class->size_allocate      = button_widget_size_allocate;
 	widget_class->size_request       = button_widget_size_request;
 	widget_class->button_press_event = button_widget_button_press;
@@ -858,43 +755,51 @@ button_widget_class_init (ButtonWidgetClass *klass)
 	widget_class->leave_notify_event = button_widget_leave_notify;
 	widget_class->expose_event       = button_widget_expose;
 
-	button_class->pressed  = button_widget_button_pressed;
-	button_class->released = button_widget_button_released;
+	button_class->activate = button_widget_activate;
 
 	g_object_class_install_property (
 			gobject_class,
-			PROP_SIZE,
-			g_param_spec_int ("size",
-					  _("Size"),
-					  _("The desired ButtonWidget size"),
-					  G_MININT, G_MAXINT, -1,
-					  G_PARAM_READWRITE));
+			PROP_ACTIVATABLE,
+			g_param_spec_boolean ("activatable",
+					      "Activatable",
+					      "Whether the button is activatable",
+					      TRUE,
+					      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
 	g_object_class_install_property (
 			gobject_class,
 			PROP_HAS_ARROW,
 			g_param_spec_boolean ("has-arrow",
-					      _("Has Arrow"),
-					      _("Whether or not to draw an arrow indicator"),
+					      "Has Arrow",
+					      "Whether or not to draw an arrow indicator",
 					      FALSE,
 					      G_PARAM_READWRITE));
 
 	g_object_class_install_property (
 			gobject_class,
-			PROP_ORIENT,
-			g_param_spec_enum ("orient",
-					   _("Orientation"),
-					   _("The ButtonWidget orientation"),
-					   PANEL_TYPE_ORIENT,
-					   PANEL_ORIENT_UP,
+			PROP_DND_HIGHLIGHT,
+			g_param_spec_boolean ("dnd-highlight",
+					      "Drag and drop Highlight",
+					      "Whether or not to highlight the icon during drag and drop",
+					      FALSE,
+					      G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+			gobject_class,
+			PROP_ORIENTATION,
+			g_param_spec_enum ("orientation",
+					   "Orientation",
+					   "The ButtonWidget orientation",
+					   PANEL_TYPE_ORIENTATION,
+					   PANEL_ORIENTATION_TOP,
 					   G_PARAM_READWRITE));
 
 	g_object_class_install_property (
 			gobject_class,
 			PROP_ICON_NAME,
 			g_param_spec_string ("icon-name",
-					     _("Icon Name"),
-					     _("The desired icon for the ButtonWidget"),
+					     "Icon Name",
+					     "The desired icon for the ButtonWidget",
 					     NULL,
 					     G_PARAM_READWRITE));
 
@@ -902,8 +807,8 @@ button_widget_class_init (ButtonWidgetClass *klass)
 			gobject_class,
 			PROP_STOCK_ID,
 			g_param_spec_string ("stock-id",
-					     _("Stock Icon ID"),
-					     _("The desired stock icon for the ButtonWidget"),
+					     "Stock Icon ID",
+					     "The desired stock icon for the ButtonWidget",
 					     NULL,
 					     G_PARAM_READWRITE));
 }
@@ -934,18 +839,16 @@ button_widget_get_type (void)
 }
 
 GtkWidget *
-button_widget_new (const char  *filename,
-		   int          size,
-		   gboolean     arrow,
-		   PanelOrient  orient)
+button_widget_new (const char       *filename,
+		   gboolean          arrow,
+		   PanelOrientation  orientation)
 {
 	GtkWidget *retval;
 
 	retval = g_object_new (
 			BUTTON_TYPE_WIDGET,
-			"size", size,
 			"has-arrow", arrow,
-			"orient", orient,
+			"orientation", orientation,
 			"icon-name", filename,
 			NULL);
 	
@@ -953,18 +856,16 @@ button_widget_new (const char  *filename,
 }
 
 GtkWidget *
-button_widget_new_from_stock (const char  *stock_id,
-			      int          size,
-			      gboolean     arrow,
-			      PanelOrient  orient)
+button_widget_new_from_stock (const char       *stock_id,
+			      gboolean          arrow,
+			      PanelOrientation  orientation)
 {
 	GtkWidget *retval;
 
 	retval = g_object_new (
 			BUTTON_TYPE_WIDGET,
-			"size", size,
 			"has-arrow", arrow,
-			"orient", orient,
+			"orientation", orientation,
 			"stock-id", stock_id,
 			NULL);
 	
@@ -972,12 +873,55 @@ button_widget_new_from_stock (const char  *stock_id,
 }
 
 void
-button_widget_set_pixmap (ButtonWidget *button,
-			  const char   *pixmap)
+button_widget_set_activatable (ButtonWidget *button,
+			       gboolean      activatable)
 {
 	g_return_if_fail (BUTTON_IS_WIDGET (button));
 
-	g_object_set (G_OBJECT (button), "icon-name", pixmap, NULL);
+	activatable = activatable != FALSE;
+
+	if (button->activatable != activatable) {
+		button->activatable = activatable;
+
+		if (GTK_WIDGET_DRAWABLE (button))
+			gtk_widget_queue_draw (GTK_WIDGET (button));
+
+		g_object_notify (G_OBJECT (button), "activatable");
+	}
+}
+
+gboolean
+button_widget_get_activatable (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), FALSE);
+
+	return button->activatable;
+}
+
+void
+button_widget_set_icon_name (ButtonWidget *button,
+			     const char   *icon_name)
+{
+	g_return_if_fail (BUTTON_IS_WIDGET (button));
+
+	if (button->filename && icon_name && !strcmp (button->filename, icon_name))
+		return;
+
+	if (button->filename)
+		g_free (button->filename);
+	button->filename = g_strdup (icon_name);
+
+	button_widget_reload_pixbuf (button);
+
+	g_object_notify (G_OBJECT (button), "icon-name");
+}
+
+const char *
+button_widget_get_icon_name (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), NULL);
+
+	return button->filename;
 }
 
 void
@@ -985,17 +929,102 @@ button_widget_set_stock_id (ButtonWidget *button,
 			    const char   *stock_id)
 {
 	g_return_if_fail (BUTTON_IS_WIDGET (button));
+	
+	if (button->stock_id && stock_id && !strcmp (button->stock_id, stock_id))
+		return;
 
-	g_object_set (G_OBJECT (button), "stock-id", stock_id, NULL);
+	if (button->stock_id)
+		g_free (button->stock_id);
+	button->stock_id = g_strdup (stock_id);
+
+	button_widget_reload_pixbuf (button);
+
+	g_object_notify (G_OBJECT (button), "stock-id");
+}
+
+const char *
+button_widget_get_stock_id (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), NULL);
+	
+	return button->stock_id;
 }
 
 void
-button_widget_set_params(ButtonWidget *button,
-			 gboolean arrow,
-			 PanelOrient orient)
+button_widget_set_orientation (ButtonWidget     *button,
+			       PanelOrientation  orientation)
 {
 	g_return_if_fail (BUTTON_IS_WIDGET (button));
 
-	g_object_set (G_OBJECT (button), "has-arrow", arrow, NULL);
-	g_object_set (G_OBJECT (button), "orient", orient, NULL);
+	if (button->orientation == orientation)
+		return;
+
+	button->orientation = orientation;
+
+	/* Force a re-scale */
+	button->size = -1;
+
+	gtk_widget_queue_resize (GTK_WIDGET (button));
+
+	g_object_notify (G_OBJECT (button), "orientation");
+}
+
+PanelOrientation
+button_widget_get_orientation (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), 0);
+
+	return button->orientation;
+}
+
+void
+button_widget_set_has_arrow (ButtonWidget *button,
+			     gboolean      has_arrow)
+{
+	g_return_if_fail (BUTTON_IS_WIDGET (button));
+
+	has_arrow = has_arrow != FALSE;
+
+	if (button->arrow == has_arrow)
+		return;
+
+	button->arrow = has_arrow;
+
+	gtk_widget_queue_draw (GTK_WIDGET (button));
+
+	g_object_notify (G_OBJECT (button), "has-arrow");
+}
+
+gboolean
+button_widget_get_has_arrow (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), FALSE);
+
+	return button->arrow;
+}
+
+void
+button_widget_set_dnd_highlight (ButtonWidget *button,
+				 gboolean      dnd_highlight)
+{
+	g_return_if_fail (BUTTON_IS_WIDGET (button));
+
+	dnd_highlight = dnd_highlight != FALSE;
+
+	if (button->dnd_highlight == dnd_highlight)
+		return;
+
+	button->dnd_highlight = dnd_highlight;
+
+	gtk_widget_queue_draw (GTK_WIDGET (button));
+
+	g_object_notify (G_OBJECT (button), "dnd-highlight");
+}
+
+gboolean
+button_widget_get_dnd_highlight (ButtonWidget *button)
+{
+	g_return_val_if_fail (BUTTON_IS_WIDGET (button), FALSE);
+
+	return button->dnd_highlight;
 }

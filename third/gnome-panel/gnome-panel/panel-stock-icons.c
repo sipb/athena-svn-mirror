@@ -1,22 +1,22 @@
 /*
- * panel-stock-icons.c
+ * panel-stock-icons.c panel stock icons registration
  *
  * Copyright (C) 2002 Sun Microsystems, Inc.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  *
  * Authors:
  *	Mark McLoughlin <mark@skynet.ie>
@@ -31,10 +31,10 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-desktop-item.h>
 
-#include "panel-main.h"
+#include "panel-globals.h"
 
 static GtkIconSize panel_menu_icon_size = 0;
-static GtkIconSize panel_foobar_icon_size = 0;
+static GtkIconSize panel_menu_bar_icon_size = 0;
 static GtkIconSize panel_button_icon_size = 0;
 
 GtkIconSize
@@ -44,9 +44,9 @@ panel_menu_icon_get_size (void)
 }
 
 GtkIconSize
-panel_foobar_icon_get_size (void)
+panel_menu_bar_icon_get_size (void)
 {
-	return panel_foobar_icon_size;
+	return panel_menu_bar_icon_size;
 }
 
 GtkIconSize
@@ -65,8 +65,11 @@ static PanelStockIcon stock_icons [] = {
 	{ PANEL_STOCK_SEARCHTOOL,          "gnome-searchtool" },
 	{ PANEL_STOCK_SCREENSHOT,          "gnome-screenshot" },
 	{ PANEL_STOCK_LOCKSCREEN,          "gnome-lockscreen" },
-	{ PANEL_STOCK_LOGOUT,              "gnome-term-night" },
+	{ PANEL_STOCK_LOGOUT,              "gnome-logout" },
+	{ PANEL_STOCK_FORCE_QUIT,          "panel-force-quit" },
 	{ PANEL_STOCK_GNOME_LOGO,          "gnome-logo-icon-transparent"},
+	{ PANEL_STOCK_APPLICATIONS,	   "gnome-applications"},
+	{ PANEL_STOCK_MAIN_MENU,           "gnome-main-menu"},
 	{ PANEL_STOCK_DEBIAN,              "gnome-debian"},
 	{ PANEL_STOCK_SUSE,                "gnome-suse"},
 	{ PANEL_STOCK_CDE,                 "cdeappmenu"},
@@ -81,14 +84,10 @@ static PanelStockIcon stock_icons [] = {
 	{ PANEL_STOCK_SLIDING_PANEL,       "gnome-panel-type-sliding" },
 	{ PANEL_STOCK_MENU_PANEL,          "gnome-panel-type-menu" },
 	{ PANEL_STOCK_LAUNCHER,            "launcher-program" },
+	{ PANEL_STOCK_ACTION,		   "gnome-other" },
 	{ PANEL_STOCK_DRAWER,              "panel-drawer" },
 	{ PANEL_STOCK_APPLETS,             "gnome-applets" },
 	{ PANEL_STOCK_DESKTOP,             "gnome-ccdesktop" },
-	{ PANEL_STOCK_KDE,                 "go" },
-	{ PANEL_STOCK_ARROW_RIGHT,         "panel-arrow-right" },
-	{ PANEL_STOCK_ARROW_LEFT,          "panel-arrow-left" },
-	{ PANEL_STOCK_ARROW_UP,            "panel-arrow-up" },
-	{ PANEL_STOCK_ARROW_DOWN,          "panel-arrow-down" },
 };
 
 static void
@@ -96,10 +95,7 @@ panel_init_stock_icons (GtkIconFactory *factory)
 {
 	GtkIconSource *source;
 	int            i;
-	int            icon_height = PANEL_DEFAULT_MENU_ICON_SIZE;
 
-	if (!gtk_icon_size_lookup (panel_menu_icon_get_size (), NULL, &icon_height))
-		return;
 
 	source = gtk_icon_source_new ();
 
@@ -107,8 +103,15 @@ panel_init_stock_icons (GtkIconFactory *factory)
 		GtkIconSet *set;
 		char       *filename;
 
+		if (!stock_icons [i].icon)
+			continue;
+
+		/* Look up the icon at an arbitrary large size; if we are
+		 * adding at only one size, we want the largest image
+		 * available
+		 */
 		filename = gnome_desktop_item_find_icon (
-				panel_icon_theme, stock_icons [i].icon, icon_height, 0);
+				panel_icon_theme, stock_icons [i].icon, 1000, 0);
 		if (!filename) {
 			g_warning (_("Unable to load panel stock icon '%s'\n"), stock_icons [i].icon);
 
@@ -139,7 +142,9 @@ typedef struct {
 } PanelStockItem;
 
 static PanelStockItem stock_items [] = {
-	{ PANEL_STOCK_EXECUTE, GTK_STOCK_EXECUTE, N_("_Run") },
+	{ PANEL_STOCK_EXECUTE,    GTK_STOCK_EXECUTE,       N_("_Run") },
+	{ PANEL_STOCK_FORCE_QUIT, PANEL_STOCK_FORCE_QUIT,  N_("_Force quit") },
+	{ PANEL_STOCK_CLEAR,      GTK_STOCK_CLEAR,         N_("C_lear") }
 };
 
 static void
@@ -176,7 +181,7 @@ panel_init_stock_icons_and_items (void)
 						       PANEL_DEFAULT_MENU_ICON_SIZE,
 						       PANEL_DEFAULT_MENU_ICON_SIZE);
 
-	panel_foobar_icon_size = gtk_icon_size_register ("panel-foobar", 20, 20);
+	panel_menu_bar_icon_size = gtk_icon_size_register ("panel-foobar", 20, 20);
 
 	panel_button_icon_size = gtk_icon_size_register ("panel-button",
 							 PANEL_DEFAULT_BUTTON_ICON_SIZE,
@@ -185,8 +190,8 @@ panel_init_stock_icons_and_items (void)
 	factory = gtk_icon_factory_new ();
 	gtk_icon_factory_add_default (factory);
 
-	panel_init_stock_items (factory);
 	panel_init_stock_icons (factory);
+	panel_init_stock_items (factory);
 
 	g_object_unref (factory);
 }

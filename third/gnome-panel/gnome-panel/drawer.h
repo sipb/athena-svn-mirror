@@ -2,43 +2,46 @@
 #define DRAWER_H
 
 #include "panel.h"
-#include "panel-config.h"
 
 G_BEGIN_DECLS
 
+#define PANEL_DRAWER_N_LISTENERS 3
+
 typedef struct {
-	char         *pixmap;
-	char         *tooltip;
+	char          *tooltip;
 
-	GtkWidget    *button;
-	GtkWidget    *drawer;
-	GtkWidget    *properties;
+	PanelToplevel *toplevel;
+	GtkWidget     *button;
 
-	gboolean      moving_focus;
-	gboolean      opened_for_drag;
-	guint         close_timeout_id;
+	gboolean       opened_for_drag;
+	guint          close_timeout_id;
 
-	AppletInfo   *info;
+	AppletInfo    *info;
+
+	guint          listeners [PANEL_DRAWER_N_LISTENERS];
 } Drawer;
 
-Drawer *load_drawer_applet (gchar       *mypanel,
-			    const char  *pixmap,
-			    const char  *tooltip,
-			    PanelWidget *panel,
-			    int          pos,
-			    gboolean     exactpos,
-			    const char  *gconf_key);
+void  panel_drawer_create          (PanelToplevel *toplevel,
+				    int            position,
+				    const char    *custom_icon,
+				    gboolean       use_custom_icon,
+				    const char    *tooltip);
 
-void    drawer_save_to_gconf   (Drawer     *drawer,
-				const char *gconf_key);
+char *panel_drawer_create_with_id  (const char    *toplevel_id,
+				    int            position,
+				    const char    *custom_icon,
+				    gboolean       use_custom_icon,
+				    const char    *tooltip);
 
-void    drawer_load_from_gconf (PanelWidget *panel_widget,
-				gint         position,
-				const char  *gconf_key);
+void  panel_drawer_set_dnd_enabled (Drawer        *drawer,
+				    gboolean       dnd_enabled);
 
-void set_drawer_applet_orient(Drawer *drawer, PanelOrient orient);
+void  drawer_load_from_gconf       (PanelWidget   *panel_widget,
+				    gboolean       locked,
+				    gint           position,
+				    const char    *id);
 
-void add_drawer_properties_page(PerPanelConfig *ppc, GtkNotebook *prop_nbook, Drawer *drawer);
+void  drawer_query_deletion        (Drawer *drawer);
 
 G_END_DECLS
 

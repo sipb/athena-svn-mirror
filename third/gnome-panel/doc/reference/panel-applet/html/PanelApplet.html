@@ -1,0 +1,455 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>PanelApplet</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Panel Applet Library Reference Manual"><link rel="up" href="panel-applet.html" title="The Panel Applet Library"><link rel="previous" href="panel-applet.html" title="The Panel Applet Library"><link rel="next" href="panel-applet-Panel-Applet-GConf-Utilities.html" title="Panel Applet GConf Utilities"><link rel="chapter" href="applet-writing.html" title="Writing Applets"><link rel="chapter" href="applet-porting.html" title="Porting Applets from the GNOME 1.x interfaces"><link rel="chapter" href="panel-applet.html" title="The Panel Applet Library"><link rel="refentry" href="PanelApplet.html" title="PanelApplet"><link rel="refentry" href="panel-applet-Panel-Applet-GConf-Utilities.html" title="Panel Applet GConf Utilities"><link rel="section" href="PanelApplet.html#id2650911" title="Object Hierarchy"><link rel="section" href="PanelApplet.html#id2650973" title="Implemented Interfaces"><link rel="section" href="PanelApplet.html#id2650992" title="Signal Prototypes"><link rel="section" href="PanelApplet.html#id2651181" title="Description"><link rel="section" href="PanelApplet.html#id2651231" title="Details"><link rel="section" href="PanelApplet.html#id2654420" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="panel-applet.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="panel-applet.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Panel Applet Library Reference Manual</th><td><a accesskey="n" href="panel-applet-Panel-Applet-GConf-Utilities.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="PanelApplet"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">PanelApplet</span></h2><p>PanelApplet &#8212; The PanelApplet object.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;panel-applet.h&gt;
+
+
+struct      <a href="PanelApplet.html#PanelApplet-struct">PanelApplet</a>;
+typedef     <a href="PanelApplet.html#PanelAppletOrient">PanelAppletOrient</a>;
+#define     <a href="PanelApplet.html#PANEL-APPLET-ORIENT-UP-CAPS">PANEL_APPLET_ORIENT_UP</a>
+#define     <a href="PanelApplet.html#PANEL-APPLET-ORIENT-DOWN-CAPS">PANEL_APPLET_ORIENT_DOWN</a>
+#define     <a href="PanelApplet.html#PANEL-APPLET-ORIENT-LEFT-CAPS">PANEL_APPLET_ORIENT_LEFT</a>
+#define     <a href="PanelApplet.html#PANEL-APPLET-ORIENT-RIGHT-CAPS">PANEL_APPLET_ORIENT_RIGHT</a>
+enum        <a href="PanelApplet.html#PanelAppletBackgroundType">PanelAppletBackgroundType</a>;
+enum        <a href="PanelApplet.html#PanelAppletFlags">PanelAppletFlags</a>;
+gboolean    (<a href="PanelApplet.html#PanelAppletFactoryCallback">*PanelAppletFactoryCallback</a>)   (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *iid,
+                                             gpointer user_data);
+GtkWidget*  <a href="PanelApplet.html#panel-applet-new">panel_applet_new</a>                (void);
+<a href="PanelApplet.html#PanelAppletOrient">PanelAppletOrient</a> <a href="PanelApplet.html#panel-applet-get-orient">panel_applet_get_orient</a>   (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+guint       <a href="PanelApplet.html#panel-applet-get-size">panel_applet_get_size</a>           (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+<a href="PanelApplet.html#PanelAppletBackgroundType">PanelAppletBackgroundType</a> <a href="PanelApplet.html#panel-applet-get-background">panel_applet_get_background</a>
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             GdkColor *color,
+                                             GdkPixmap **pixmap);
+gchar*      <a href="PanelApplet.html#panel-applet-get-preferences-key">panel_applet_get_preferences_key</a>
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+void        <a href="PanelApplet.html#panel-applet-add-preferences">panel_applet_add_preferences</a>    (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *schema_dir,
+                                             GError **opt_error);
+<a href="PanelApplet.html#PanelAppletFlags">PanelAppletFlags</a> <a href="PanelApplet.html#panel-applet-get-flags">panel_applet_get_flags</a>     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+void        <a href="PanelApplet.html#panel-applet-set-flags">panel_applet_set_flags</a>          (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             <a href="PanelApplet.html#PanelAppletFlags">PanelAppletFlags</a> flags);
+void        <a href="PanelApplet.html#panel-applet-set-size-hints">panel_applet_set_size_hints</a>     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const int *size_hints,
+                                             int n_elements,
+                                             int base_size);
+BonoboControl* <a href="PanelApplet.html#panel-applet-get-control">panel_applet_get_control</a>     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+BonoboUIComponent* <a href="PanelApplet.html#panel-applet-get-popup-component">panel_applet_get_popup_component</a>
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);
+void        <a href="PanelApplet.html#panel-applet-setup-menu">panel_applet_setup_menu</a>         (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *xml,
+                                             const BonoboUIVerb *verb_list,
+                                             gpointer user_data);
+void        <a href="PanelApplet.html#panel-applet-setup-menu-from-file">panel_applet_setup_menu_from_file</a>
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *opt_datadir,
+                                             const gchar *file,
+                                             const gchar *opt_app_name,
+                                             const BonoboUIVerb *verb_list,
+                                             gpointer user_data);
+int         <a href="PanelApplet.html#panel-applet-factory-main">panel_applet_factory_main</a>       (const gchar *iid,
+                                             GType applet_type,
+                                             <a href="PanelApplet.html#PanelAppletFactoryCallback">PanelAppletFactoryCallback</a> callback,
+                                             gpointer data);
+int         <a href="PanelApplet.html#panel-applet-factory-main-closure">panel_applet_factory_main_closure</a>
+                                            (const gchar *iid,
+                                             GType applet_type,
+                                             GClosure *closure);
+#define     <a href="PanelApplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS">PANEL_APPLET_BONOBO_FACTORY</a>     (iid, type, name, version, callback, data)
+Bonobo_Unknown <a href="PanelApplet.html#panel-applet-shlib-factory">panel_applet_shlib_factory</a>   (const char *iid,
+                                             GType applet_type,
+                                             PortableServer_POA poa,
+                                             gpointer impl_ptr,
+                                             <a href="PanelApplet.html#PanelAppletFactoryCallback">PanelAppletFactoryCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);
+Bonobo_Unknown <a href="PanelApplet.html#panel-applet-shlib-factory-closure">panel_applet_shlib_factory_closure</a>
+                                            (const char *iid,
+                                             GType applet_type,
+                                             PortableServer_POA poa,
+                                             gpointer impl_ptr,
+                                             GClosure *closure,
+                                             CORBA_Environment *ev);
+#define     <a href="PanelApplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS">PANEL_APPLET_BONOBO_SHLIB_FACTORY</a>(iid, type, descr, callback, data)
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2650911"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBin
+                           +----GtkEventBox
+                                 +----PanelApplet
+</pre></div><div class="refsect1" lang="en"><a name="id2650973"></a><h2>Implemented Interfaces</h2><p>
+PanelApplet implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2650992"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="PanelApplet.html#PanelApplet-change-background">change-background</a>"
+            void        user_function      (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            <a href="PanelApplet.html#PanelAppletBackgroundType">PanelAppletBackgroundType</a> arg1,
+                                            GdkColor *arg2,
+                                            GdkPixmap *arg3,
+                                            gpointer user_data);
+"<a href="PanelApplet.html#PanelApplet-change-orient">change-orient</a>"
+            void        user_function      (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            guint arg1,
+                                            gpointer user_data);
+"<a href="PanelApplet.html#PanelApplet-change-size">change-size</a>"
+            void        user_function      (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            gint arg1,
+                                            gpointer user_data);
+"<a href="PanelApplet.html#PanelApplet-move-focus-out-of-applet">move-focus-out-of-applet</a>"
+            void        user_function      (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            GtkDirectionType arg1,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2651181"></a><h2>Description</h2><p>
+The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a> object is an object which encapsulates an applet. It
+is a <span class="type">GtkContainer</span> which may contain a single widget. This widget, in
+turn, should contain all widgets exposed by the applet.
+</p><p>
+A <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a> is associated with a <span class="type">BonoboControl</span>. The control makes
+the cross process UI emmbedding required by applets possible.
+</p></div><div class="refsect1" lang="en"><a name="id2651231"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2651236"></a><h3><a name="PanelApplet-struct"></a>struct PanelApplet</h3><a class="indexterm" name="id2651247"></a><pre class="programlisting">struct PanelApplet;</pre><p>
+The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a> struct contains private data only.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651270"></a><h3><a name="PanelAppletOrient"></a>PanelAppletOrient</h3><a class="indexterm" name="id2651280"></a><pre class="programlisting">typedef GNOME_Vertigo_PanelOrient PanelAppletOrient;
+</pre><p>
+The <a href="PanelApplet.html#PanelAppletOrient"><span class="type">PanelAppletOrient</span></a> type specifies the orientation of the applet. The
+values may seem backward (e.g. <tt class="literal">PANEL_APPLET_ORIENT_LEFT</tt> means the panel
+is on the right hand side), but this is because the value is representative
+of the applet's <span class="emphasis"><em>orientation</em></span>, not the panel's position.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651318"></a><h3><a name="PANEL-APPLET-ORIENT-UP-CAPS"></a>PANEL_APPLET_ORIENT_UP</h3><a class="indexterm" name="id2651329"></a><pre class="programlisting">#define PANEL_APPLET_ORIENT_UP    GNOME_Vertigo_PANEL_ORIENT_UP
+</pre><p>
+The applet is orientated up (i.e. the panel is at the bottom of the screen).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651347"></a><h3><a name="PANEL-APPLET-ORIENT-DOWN-CAPS"></a>PANEL_APPLET_ORIENT_DOWN</h3><a class="indexterm" name="id2651359"></a><pre class="programlisting">#define PANEL_APPLET_ORIENT_DOWN  GNOME_Vertigo_PANEL_ORIENT_DOWN
+</pre><p>
+The applet is orientated down (i.e. the panel is at the top of the screen).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651376"></a><h3><a name="PANEL-APPLET-ORIENT-LEFT-CAPS"></a>PANEL_APPLET_ORIENT_LEFT</h3><a class="indexterm" name="id2651388"></a><pre class="programlisting">#define PANEL_APPLET_ORIENT_LEFT  GNOME_Vertigo_PANEL_ORIENT_LEFT
+</pre><p>
+The applet is orientated left (i.e. the panel is at the right hand side of the screen).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651405"></a><h3><a name="PANEL-APPLET-ORIENT-RIGHT-CAPS"></a>PANEL_APPLET_ORIENT_RIGHT</h3><a class="indexterm" name="id2651417"></a><pre class="programlisting">#define PANEL_APPLET_ORIENT_RIGHT GNOME_Vertigo_PANEL_ORIENT_RIGHT
+</pre><p>
+The applet is orientated right (i.e. the panel is at the left hand side of the screen).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2651434"></a><h3><a name="PanelAppletBackgroundType"></a>enum PanelAppletBackgroundType</h3><a class="indexterm" name="id2651446"></a><pre class="programlisting">typedef enum {
+	PANEL_NO_BACKGROUND,
+	PANEL_COLOR_BACKGROUND,
+	PANEL_PIXMAP_BACKGROUND
+} PanelAppletBackgroundType;
+</pre><p>
+The <a href="PanelApplet.html#PanelAppletBackgroundType"><span class="type">PanelAppletBackgroundType</span></a> enumerated type specifies the type of
+background of a panel.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">PANEL_NO_BACKGROUND</tt></span></td><td>The panel has no background, the default is used.
+</td></tr><tr><td><span class="term"><tt class="literal">PANEL_COLOR_BACKGROUND</tt></span></td><td>The panel has a color, i.e rgb value,
+background.
+</td></tr><tr><td><span class="term"><tt class="literal">PANEL_PIXMAP_BACKGROUND</tt></span></td><td> The panel has either an image background
+or is translucent.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651523"></a><h3><a name="PanelAppletFlags"></a>enum PanelAppletFlags</h3><a class="indexterm" name="id2651534"></a><pre class="programlisting">typedef enum {
+	PANEL_APPLET_FLAGS_NONE   = 0,
+	PANEL_APPLET_EXPAND_MAJOR = 1 &lt;&lt; 0,
+	PANEL_APPLET_EXPAND_MINOR = 1 &lt;&lt; 1,
+	PANEL_APPLET_HAS_HANDLE   = 1 &lt;&lt; 2
+} PanelAppletFlags;
+</pre><p>
+The <a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a> associated with the applet are boolean flags which
+the panel may read in order to figure out how to handle the applet.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">PANEL_APPLET_FLAGS_NONE</tt></span></td><td>No flags are to be associated with the applet.
+</td></tr><tr><td><span class="term"><tt class="literal">PANEL_APPLET_EXPAND_MAJOR</tt></span></td><td>The applet should expand horizontally on an
+horizontal panel and vertically on a vertical panel - e.g. the behaviour
+of the Window List applet.
+</td></tr><tr><td><span class="term"><tt class="literal">PANEL_APPLET_EXPAND_MINOR</tt></span></td><td>The applet should expand vertically on an
+horizontal panel and horizontally on a vertical panel. Most applets should
+set this flag in order to utilise the full panel width and allow the applet
+to be Fitt's Law compliant.
+</td></tr><tr><td><span class="term"><tt class="literal">PANEL_APPLET_HAS_HANDLE</tt></span></td><td>The panel should draw a grab handle around the
+applet - e.g. the Window List and Notification Area applets both set this
+flag.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651637"></a><h3><a name="PanelAppletFactoryCallback"></a>PanelAppletFactoryCallback ()</h3><a class="indexterm" name="id2651649"></a><pre class="programlisting">gboolean    (*PanelAppletFactoryCallback)   (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *iid,
+                                             gpointer user_data);</pre><p>
+This callback is invoked when the applet is loaded onto the panel. Typically
+the callback will check that <i class="parameter"><tt>iid</tt></i> matches and fill the <i class="parameter"><tt>applet</tt></i> with the
+widgets which make up the applet.
+</p><p>
+Prior to the callback being invoked the <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a> (or an instance of the
+sub-class specified by the <span class="type">GType</span> passed to the factory macros) is instantiated
+and initialized.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The Bonobo IID of the applet requested.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>The data passed to the factory macros.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> on failure.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651806"></a><h3><a name="panel-applet-new"></a>panel_applet_new ()</h3><a class="indexterm" name="id2651816"></a><pre class="programlisting">GtkWidget*  panel_applet_new                (void);</pre><p>
+Creates a new <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>. This function is typically not
+useful as the applet is created before the <a href="PanelApplet.html#PanelAppletFactoryCallback"><span class="type">PanelAppletFactoryCallback</span></a>
+is invoked.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651877"></a><h3><a name="panel-applet-get-orient"></a>panel_applet_get_orient ()</h3><a class="indexterm" name="id2651888"></a><pre class="programlisting"><a href="PanelApplet.html#PanelAppletOrient">PanelAppletOrient</a> panel_applet_get_orient   (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Get the current orientation of the applet.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The orientation of the applet.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651954"></a><h3><a name="panel-applet-get-size"></a>panel_applet_get_size ()</h3><a class="indexterm" name="id2651966"></a><pre class="programlisting">guint       panel_applet_get_size           (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Get the current size hint for the panel. The size hint is
+not useful for most applets.
+</p><p>
+Note: The return value is <span class="emphasis"><em>not an integer value
+specifying the pixel size of the panel.</em></span> Do not
+use this value to calculate the size of the applet. Use it
+only as a hint by which to decide the applet's layout.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The panel's size hint.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652042"></a><h3><a name="panel-applet-get-background"></a>panel_applet_get_background ()</h3><a class="indexterm" name="id2652054"></a><pre class="programlisting"><a href="PanelApplet.html#PanelAppletBackgroundType">PanelAppletBackgroundType</a> panel_applet_get_background
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             GdkColor *color,
+                                             GdkPixmap **pixmap);</pre><p>
+Returns the current background type. If the background
+type is <tt class="literal">PANEL_NO_BACKGROUND</tt> both <i class="parameter"><tt>color</tt></i> and <i class="parameter"><tt>pixmap</tt></i> will
+be unaffected. If the background type is <tt class="literal">PANEL_COLOR_BACKGROUND</tt>
+then <i class="parameter"><tt>color</tt></i> will contain the current panel background colour.
+If the background type is <tt class="literal">PANEL_PIXMAP_BACKGROUND</tt>, <i class="parameter"><tt>pixmap</tt></i> will
+contain a pointer to a <span class="type">GdkPixmap</span> which is a copy of the applet's
+portion of the panel's background pixmap.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>A <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>color</tt></i> :</span></td><td>A <span class="type">GdkColor</span> to be filled in.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pixmap</tt></i> :</span></td><td>Returned <span class="type">GdkPixmap</span>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The background type.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652235"></a><h3><a name="panel-applet-get-preferences-key"></a>panel_applet_get_preferences_key ()</h3><a class="indexterm" name="id2652247"></a><pre class="programlisting">gchar*      panel_applet_get_preferences_key
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Returns the GConf path to the directory containing the applet's
+per-instance preference keys. Using this you may construct the
+full path for the applet's preference keys. See 
+<a href="panel-applet-Panel-Applet-GConf-Utilities.html" title="Panel Applet GConf Utilities"><span class="refentrytitle">Panel Applet GConf Utilities</span>(3)</a> for
+more information.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A GConf path.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652323"></a><h3><a name="panel-applet-add-preferences"></a>panel_applet_add_preferences ()</h3><a class="indexterm" name="id2652335"></a><pre class="programlisting">void        panel_applet_add_preferences    (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *schema_dir,
+                                             GError **opt_error);</pre><p>
+Associates each schema in <i class="parameter"><tt>schema_dir</tt></i> with a key in the applet's
+preferences directory (i.e. the directory returned by
+<a href="PanelApplet.html#panel-applet-get-preferences-key"><tt class="function">panel_applet_get_preferences_key()</tt></a>). Each applet preference
+should have an associated schema to ensure that the key has
+a defined type, sane default and documentation.
+</p><p>
+If you pass <tt class="literal">NULL</tt> for <i class="parameter"><tt>opt_error</tt></i>, this function will print
+a warning message from any <span class="type">GError</span> which GConf may return.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>schema_dir</tt></i> :</span></td><td>The GConf path where the applet's schemas are installed
+e.g. /schemas/apps/my_applet
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_error</tt></i> :</span></td><td>Optional <span class="type">GError</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652488"></a><h3><a name="panel-applet-get-flags"></a>panel_applet_get_flags ()</h3><a class="indexterm" name="id2652499"></a><pre class="programlisting"><a href="PanelApplet.html#PanelAppletFlags">PanelAppletFlags</a> panel_applet_get_flags     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Retrieve the <a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a> associated with the applet.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The <a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652581"></a><h3><a name="panel-applet-set-flags"></a>panel_applet_set_flags ()</h3><a class="indexterm" name="id2652592"></a><pre class="programlisting">void        panel_applet_set_flags          (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             <a href="PanelApplet.html#PanelAppletFlags">PanelAppletFlags</a> flags);</pre><p>
+Set the <a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a> associated with the applet. See
+<a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a> for more details on the possible uses of
+these flags.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td>The <a href="PanelApplet.html#PanelAppletFlags"><span class="type">PanelAppletFlags</span></a> to associate.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652694"></a><h3><a name="panel-applet-set-size-hints"></a>panel_applet_set_size_hints ()</h3><a class="indexterm" name="id2652706"></a><pre class="programlisting">void        panel_applet_set_size_hints     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const int *size_hints,
+                                             int n_elements,
+                                             int base_size);</pre><p>
+Set a list of desired size ranges for an applet with the
+<span class="type">PANEL_APPLET_EXPAND_MAJOR</span> flags set. <i class="parameter"><tt>size_hints</tt></i> is an
+array of (max, min) pairs where min(i) &gt; max(i + 1).
+</p><p>
+The panel will endeavour to allocate the applet a size
+in one of the (<i class="parameter"><tt>base</tt></i> + max, <i class="parameter"><tt>base</tt></i> + min) ranges.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size_hints</tt></i> :</span></td><td>Array of size_hints.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>n_elements</tt></i> :</span></td><td>Number of elements in the array. <span class="emphasis"><em>
+Not</em></span> the number of pairs.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>base_size</tt></i> :</span></td><td>The base size of the applet.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652863"></a><h3><a name="panel-applet-get-control"></a>panel_applet_get_control ()</h3><a class="indexterm" name="id2652874"></a><pre class="programlisting">BonoboControl* panel_applet_get_control     (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Retrieves the <span class="type">BonoboControl</span> associated with <i class="parameter"><tt>applet</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A <span class="type">BonoboControl</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2652961"></a><h3><a name="panel-applet-get-popup-component"></a>panel_applet_get_popup_component ()</h3><a class="indexterm" name="id2652973"></a><pre class="programlisting">BonoboUIComponent* panel_applet_get_popup_component
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet);</pre><p>
+Retrieves the <span class="type">BonoboUIComponent</span> used for popup menus associated
+with <i class="parameter"><tt>applet</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>The <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A <span class="type">BonoboUIComponent</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653061"></a><h3><a name="panel-applet-setup-menu"></a>panel_applet_setup_menu ()</h3><a class="indexterm" name="id2653072"></a><pre class="programlisting">void        panel_applet_setup_menu         (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *xml,
+                                             const BonoboUIVerb *verb_list,
+                                             gpointer user_data);</pre><p>
+Sets up a popup menu for <i class="parameter"><tt>applet</tt></i> described by the xml
+string, <i class="parameter"><tt>xml</tt></i>. See <a href="applet-writing.html" title="Writing Applets"><i>Writing Applets</i></a> section
+for a description of the format of the xml.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>A <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>xml</tt></i> :</span></td><td>The xml character string describing the popup menu.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>verb_list</tt></i> :</span></td><td>The list of <span class="type">BonoboUIVerbs</span> for the menu.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>The user data pointer for the menu.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653222"></a><h3><a name="panel-applet-setup-menu-from-file"></a>panel_applet_setup_menu_from_file ()</h3><a class="indexterm" name="id2653234"></a><pre class="programlisting">void        panel_applet_setup_menu_from_file
+                                            (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *applet,
+                                             const gchar *opt_datadir,
+                                             const gchar *file,
+                                             const gchar *opt_app_name,
+                                             const BonoboUIVerb *verb_list,
+                                             gpointer user_data);</pre><p>
+Sets up a popup menu for <i class="parameter"><tt>applet</tt></i> described by the xml
+file, <i class="parameter"><tt>file</tt></i>. See <a href="applet-writing.html" title="Writing Applets"><i>Writing Applets</i></a> for a description of
+the format of the xml.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>applet</tt></i> :</span></td><td>A <a href="PanelApplet.html" title="PanelApplet"><span class="type">PanelApplet</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_datadir</tt></i> :</span></td><td>The data directory - i.e. ${prefix}/share (optional).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file</tt></i> :</span></td><td>The file's name.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_app_name</tt></i> :</span></td><td>The application's name (optional).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>verb_list</tt></i> :</span></td><td>The list of <span class="type">BonoboUIVerbs</span> for the menu.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>The user data pointer for the menu.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653427"></a><h3><a name="panel-applet-factory-main"></a>panel_applet_factory_main ()</h3><a class="indexterm" name="id2653439"></a><pre class="programlisting">int         panel_applet_factory_main       (const gchar *iid,
+                                             GType applet_type,
+                                             <a href="PanelApplet.html#PanelAppletFactoryCallback">PanelAppletFactoryCallback</a> callback,
+                                             gpointer data);</pre><p>
+A generic 'main' routine for applets. This should not normally be
+used directly because it is invoked by <a href="PanelApplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"><span class="type">PANEL_APPLET_BONOBO_FACTORY</span></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>applet_type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td>The factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>The factory user data pointer.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>0 on success, 1 on failure.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653579"></a><h3><a name="panel-applet-factory-main-closure"></a>panel_applet_factory_main_closure ()</h3><a class="indexterm" name="id2653592"></a><pre class="programlisting">int         panel_applet_factory_main_closure
+                                            (const gchar *iid,
+                                             GType applet_type,
+                                             GClosure *closure);</pre><p>
+A generic 'main' routine for applets. This should not normally be
+used directly because it is invoked by <a href="PanelApplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"><span class="type">PANEL_APPLET_BONOBO_FACTORY</span></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>applet_type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>The factory callback closure.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>0 on success, 1 on failure.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653711"></a><h3><a name="PANEL-APPLET-BONOBO-FACTORY-CAPS"></a>PANEL_APPLET_BONOBO_FACTORY()</h3><a class="indexterm" name="id2653722"></a><pre class="programlisting">#define     PANEL_APPLET_BONOBO_FACTORY(iid, type, name, version, callback, data)</pre><p>
+Defines a 'main' routine for the applet factory.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>The applet ID string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>version</tt></i> :</span></td><td>The applet version string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td>The factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>The factory user data pointer.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2653836"></a><h3><a name="panel-applet-shlib-factory"></a>panel_applet_shlib_factory ()</h3><a class="indexterm" name="id2653848"></a><pre class="programlisting">Bonobo_Unknown panel_applet_shlib_factory   (const char *iid,
+                                             GType applet_type,
+                                             PortableServer_POA poa,
+                                             gpointer impl_ptr,
+                                             <a href="PanelApplet.html#PanelAppletFactoryCallback">PanelAppletFactoryCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);</pre><p>
+A generic shared library factory routine for applets. This should not
+normally be used directly as it is invoked by <a href="PanelApplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"><span class="type">PANEL_APPLET_BONOBO_SHLIB_FACTORY</span></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>applet_type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>poa</tt></i> :</span></td><td>The <span class="type">PortableServer_POA</span> passed to the shlib factory
+callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>impl_ptr</tt></i> :</span></td><td>The <span class="type">gpointer</span> passed to the shlib factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td>The applet factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>The factory user data pointer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The $CORBA_Environment passed to the shlib factory callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A <span class="type">Bonobo_Unknown</span> to return from the shlib factory
+callback.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654082"></a><h3><a name="panel-applet-shlib-factory-closure"></a>panel_applet_shlib_factory_closure ()</h3><a class="indexterm" name="id2654095"></a><pre class="programlisting">Bonobo_Unknown panel_applet_shlib_factory_closure
+                                            (const char *iid,
+                                             GType applet_type,
+                                             PortableServer_POA poa,
+                                             gpointer impl_ptr,
+                                             GClosure *closure,
+                                             CORBA_Environment *ev);</pre><p>
+A generic shared library factory routine for applets. This should not
+normally be used directly as it is invoked by <a href="PanelApplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"><span class="type">PANEL_APPLET_BONOBO_SHLIB_FACTORY</span></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>applet_type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>poa</tt></i> :</span></td><td>The <span class="type">PortableServer_POA</span> passed to the shlib factory
+callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>impl_ptr</tt></i> :</span></td><td>The <span class="type">gpointer</span> passed to the shlib factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>The applet factory closure.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The $CORBA_Environment passed to the shlib factory callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A <span class="type">Bonobo_Unknown</span> to return from the shlib factory
+callback.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654307"></a><h3><a name="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"></a>PANEL_APPLET_BONOBO_SHLIB_FACTORY()</h3><a class="indexterm" name="id2654320"></a><pre class="programlisting">#define     PANEL_APPLET_BONOBO_SHLIB_FACTORY(iid, type, descr, callback, data)</pre><p>
+Defines a Bonobo Activation shared library plugin and associated
+factory callback.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td>The bonobo-activation iid of the factory.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>The <span class="type">GType</span> to instantiate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>descr</tt></i> :</span></td><td>A description of the applet.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td>The factory callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>The factory user data pointer.
+
+
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2654420"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2654426"></a><h3><a name="PanelApplet-change-background"></a>The "change-background" signal</h3><pre class="programlisting">void        user_function                  (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            <a href="PanelApplet.html#PanelAppletBackgroundType">PanelAppletBackgroundType</a> arg1,
+                                            GdkColor *arg2,
+                                            GdkPixmap *arg3,
+                                            gpointer user_data);</pre><p>
+Emitted when the background of the panel changes. Use <i class="parameter"><tt>type</tt></i> to
+determine which, if any, of <i class="parameter"><tt>color</tt></i> and <i class="parameter"><tt>pimxap</tt></i> is valid.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>panelapplet</tt></i> :</span></td><td>The object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg3</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654583"></a><h3><a name="PanelApplet-change-orient"></a>The "change-orient" signal</h3><pre class="programlisting">void        user_function                  (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            guint arg1,
+                                            gpointer user_data);</pre><p>
+Emitted when the orientation of the panel changes.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>panelapplet</tt></i> :</span></td><td>The object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>orient</tt></i> :</span></td><td>The new <a href="PanelApplet.html#PanelAppletOrient"><span class="type">PanelAppletOrient</span></a> of the applet.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654687"></a><h3><a name="PanelApplet-change-size"></a>The "change-size" signal</h3><pre class="programlisting">void        user_function                  (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            gint arg1,
+                                            gpointer user_data);</pre><p>
+Emitted when the size of the panel changes.
+</p><p>
+Note: this is different for size negotiation which is handled by
+<tt class="function">size_request()</tt> and <tt class="function">size_allocate()</tt> as usual. This signal should
+be used to determine what font size or widget layout to use 
+depending on the size of the panel. See <a href="PanelApplet.html#panel-applet-get-size"><tt class="function">panel_applet_get_size()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>panelapplet</tt></i> :</span></td><td>The object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td>The size hint of the panel.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2654822"></a><h3><a name="PanelApplet-move-focus-out-of-applet"></a>The "move-focus-out-of-applet" signal</h3><pre class="programlisting">void        user_function                  (<a href="PanelApplet.html" title="PanelApplet">PanelApplet</a> *panelapplet,
+                                            GtkDirectionType arg1,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>panelapplet</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="panel-applet.html"><b>&lt;&lt; The Panel Applet Library</b></a></td><td align="right"><a accesskey="n" href="panel-applet-Panel-Applet-GConf-Utilities.html"><b>Panel Applet GConf Utilities &gt;&gt;</b></a></td></tr></table></body></html>

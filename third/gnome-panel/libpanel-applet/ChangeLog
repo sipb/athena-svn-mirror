@@ -1,3 +1,237 @@
+==================== 2.7.92.1 ====================
+
+==================== 2.7.92 ====================
+
+==================== 2.7.91.1 ====================
+
+2004-08-17  Vincent Untz  <vincent@vuntz.net>
+
+	* panel-applet.c: (panel_applet_setup_menu_from_file) cast the pid_t
+	to unsigned long in g_strdup_printf
+
+==================== 2.7.91 ====================
+
+==================== 2.7.90 ====================
+
+2004-08-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* GNOME_Panel_TestApplet.server.in: remove panel:category.
+
+Sat Aug  7 02:18:35 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* panel-applet.c (container_has_focusable_child): Remove
+	hierarchy-changed connection. Recalculate every time
+	instead. #121239.
+
+==================== 2.7.4.1 ====================
+
+==================== 2.7.4 ====================
+
+==================== 2.7.3 ====================
+
+==================== 2.7.1 ====================
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0 ====================
+
+==================== 2.5.93 ====================
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+==================== 2.5.4 ====================
+
+2004-02-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on patch from Bryan Forbes in bug #125802.
+
+	* Makefile.am: install the enums header.
+	
+	* panel-applet-marshal.list: add VOID:INT and
+	change VOID:ENUM,POINTER,OBJECT to VOID:ENUM,BOXED,OBJECT.
+	
+	* panel-applet.c: (panel_applet_class_init): update signal
+	definitions.
+
+2004-01-27  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Vincent Berger in bug #132172.
+
+	* Makefile.am: build panel-test-applets
+	with -export-dynamic.
+
+2004-01-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from The Written Word in bug #131609.
+
+	* panel-applet.c: remove C99ism - traling comma in an
+	enum declaration.
+
+==================== 2.5.3.1 ====================
+
+2004-01-15  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix bug #131515 - reliable crashing with latest ORBit2.
+
+	* panel-applet.c: (panel_applet_set_size_hints): don't pass
+	NULL for the environment to a CORBA call.
+
+==================== 2.5.3 ====================
+
+==================== 2.5.2 ====================
+
+2003-12-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: distcheck fixes.
+
+2003-12-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Make sure to stop monitoring the applet's GConf directory so
+	that if we remove an applet the directory goes away completely
+	before. Based a patch from Vijaykumar Patwari in #127285.
+
+	* panel-applet.c:
+	(panel_applet_add_preferences): don't start monitoring the
+	dir here.
+	(panel_applet_set_preferences_key): do it here and also remove
+	the dir when we're unsetting.
+	(panel_applet_finalize): unset the prefs key so the dir isn't
+	monitored anymore.
+	(panel_applet_item_handler_get_object): use set_prefs_key().
+	(panel_applet_instance_init): initialize the GConfClient here.
+
+2003-11-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_finalize),
+	(panel_applet_class_init), (panel_applet_instance_init):
+	Use GObject instance private data.
+
+==================== 2.5.1 ====================
+
+2003-11-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use $(DISABLE_DEPRECATED_CFLAGS).
+
+2003-11-03  Vincent Untz  <vincent@vuntz.net>
+
+	Based on a patch from John Ellis <johne@bellatlantic.net>.
+
+	* panel-applet.c: (panel_applet_get_pixmap): lookup for a pixmap instead
+	of a window for the background.
+	This is one part of the fix for bug #107146.
+
+2003-10-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* panel-applet.c: (panel_applet_finalize): Merge
+	fix for bug #121058 from stable.
+
+2003-10-04  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c: (panel_applet_focus): Unset GTK_CAN_FOCUS flag on
+	applet after grabbing focus. This fixes bug #120151.
+
+Mon Sep 15 15:08:48 2003  George Lebl <jirka@5z.com>
+
+	* panel-applet.[ch]: support the locked_down flag in the interface,
+	  though no signal was created for it.  This is all not online
+	  changable anyway.
+
+==================== 2.4.0 ====================
+
+==================== 2.3.91 ====================
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+==================== 2.3.6.2 ====================
+
+==================== 2.3.6.1 ====================
+
+==================== 2.3.6 ====================
+
+==================== 2.3.4.1 ====================
+
+==================== 2.3.4 ====================
+
+2003-07-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_add_preferences): recusively
+	preload the applets preferences dir.
+
+Wed Jul 02 11:45:57 2003  George Lebl <jirka@5z.com>
+
+	* panel-applet.c: panel_applet_set_flags needs to itself set the
+	  flags in case the property bag is not yet created.  This fixes
+	  wanda the fish because she set the EXPAND_MINOR flag before
+	  a property bag was created (in her instance_init).
+
+==================== 2.3.3.3 ====================
+
+==================== 2.3.3.2 ====================
+
+2003-06-23  Mark McLoughlin  <mark@skynet.ie>
+
+	Other half of fix for #114692.
+
+	* panel-applet.c:
+	(panel_applet_set_flags),
+	(panel_applet_set_size_hints): actually set the
+	properties rather than some internal state so
+	that listeners get updated.
+	(panel_applet_set_prop): impl setting of size hints
+	and flags.
+
+==================== 2.3.3.1 ====================
+
+==================== 2.3.3 ====================
+
+2003-05-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-gconf.[ch]:
+	(panel_applet_gconf_set_list),
+	(panel_applet_gconf_get_list): implemenet.
+	Also, use a static GConfClient instead of calling
+	gconf_client_get_default() the whole time.
+
+	* panel-applet.c: Remove inline API docs.
+	
+	* panel-applet.h: Remove C99ism from enum decl.
+
+2003-05-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir):
+	fix bug where we were using the absolute path of the
+	subdirectory when building a path. Patch from
+	Yatin Chawathe <yatin@chawathe.com>.
+
+2003-04-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.h: don't let applets connect to
+	the SM. Patch from Havoc in #106650.
+
+2003-03-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_control_bound): patch from Matt
+	Wilson via Havoc via bug #105024 to fix crash on 64 bit platforms.
+
+2003-01-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_add_preferences): allow
+	prefs_key to be NULL.
+
+	* panel-test-applets.c:
+	(load_applet_into_window), (load_applet_from_command_line),
+	(on_ok_button_clicked), (main): impl allowing the choosing
+	of applet, size, orientation and prefs_key from the command
+	line. Fixes #96416.
+
 2002-12-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* panel-applet.c: (panel_applet_finalize):
