@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.6 1990-02-14 14:56:16 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.7 1990-02-16 21:51:47 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -144,8 +144,9 @@ char *format_time(time_info)
   int hour;
 
   hour = time_info->tm_hour;
-  if(hour > 12)
-    hour -= 12;
+
+  if(hour > 12)  hour -= 12;
+  if(hour == 0)  hour = 12;	/* If it's the midnight hour... */
 
   (void) sprintf(time_buf, "%3.3s %s%d-%3.3s-%s%d %s%d:%s%d%s",
 		 wday[time_info->tm_wday],
