@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.13 1991-01-03 15:50:40 lwvanels Exp $
+ *	$Id: list.c,v 1.14 1991-01-09 01:31:42 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.13 1991-01-03 15:50:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.14 1991-01-09 01:31:42 lwvanels Exp $";
 #endif
 #endif
 
@@ -206,7 +206,8 @@ dump_list()
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
       {
-	if ((*k_ptr)->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED)) {
+	if ((*k_ptr)->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED |
+				DONE | CANCEL)) {
 	  get_dlist_info(&pending_q[n_pending],*k_ptr);
 	  n_pending++;
 	  if (n_pending == mx_pending) {
