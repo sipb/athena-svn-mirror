@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.1 2004-04-03 21:55:32 rbasch Exp $
+# $Id: install-srvd.sh,v 1.2 2004-04-06 23:36:53 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -179,7 +179,7 @@ if [ -n "$oldver" -a "$no_links" = false ]; then
     "$newver" "$oldver" || exit 1
 fi
 
-# Create the .order-version file.
+# Create the .order-version and .rvdinfo files.
 if [ -z "$maybe" ]; then
   tmporder=/tmp/order$$
   rm -rf $tmporder
@@ -193,6 +193,8 @@ if [ -z "$maybe" ]; then
   done
   cp $tmporder "$pkgdest/.order-version"
   rm -f $tmporder
+  echo "Athena RVD (sun4) Version $newver `date`" > "$srvd/.rvdinfo"
+  chmod 444 "$srvd/.rvdinfo"
 fi
 
 rm -f "$admin"
