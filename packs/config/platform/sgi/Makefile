@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 1998-04-30 13:29:32 rbasch Exp $
+# $Id: Makefile,v 1.13 1998-11-02 15:07:45 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -29,6 +29,7 @@ install:
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
+	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 fonts.alias ${DESTDIR}${FONTS}

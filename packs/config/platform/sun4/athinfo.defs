@@ -1,0 +1,24 @@
+# This file defines the queries understood by the athinfo daemon.
+# Blank lines and lines beginning with a '#' are ignored.  Each line
+# consists of a query name and a shell command to answer the query.
+# The shell command will not receive input and, for security reasons,
+# should not depend on a network filesystem.
+
+# Query		Command
+
+machtype	/bin/athena/machtype
+sysname		/bin/athena/machtype -S
+cputype		/bin/athena/machtype -v -c
+display		/bin/athena/machtype -v -d
+disks		/bin/athena/machtype -v -r
+memory		/bin/athena/machtype -v -M
+rc.conf		cat /etc/athena/rc.conf
+version		cat /etc/athena/version
+rvdinfo		cat /srvd/.rvdinfo
+services	test -r /var/server/.services && cat /var/server/.services
+date		date
+uptime		uptime
+partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
+routes		netstat -rn
+listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
+login		test ! -f /etc/nologin; echo $?
