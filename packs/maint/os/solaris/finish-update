@@ -23,7 +23,7 @@ start)
 			echo "Cannot finish partially completed update."
 			echo "Please contact Athena Hotline at x3-1410.  Thank"
 			echo "you. -Athena Operations"
-			/bin/athena/tcsh
+			/bin/sh
 		fi
 
 		# We get run before bind and inetsvc (since we don't want 
