@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.10 1990-06-06 19:06:32 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.11 1990-06-07 22:31:31 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -26,6 +26,9 @@
 #else
 #include <strings.h>
 #endif /* SYSV */
+#ifdef _AUX_SOURCE
+extern char *strcmp();
+#endif
 #include <errno.h>
 #include <com_err.h>
 #include "col.h"
