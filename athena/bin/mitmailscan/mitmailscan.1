@@ -1,5 +1,5 @@
 .\" 
-.\" $Id: mitmailscan.1,v 1.1 2004-01-21 18:29:14 rbasch Exp $
+.\" $Id: mitmailscan.1,v 1.2 2004-09-10 16:35:44 rbasch Exp $
 .\"
 .TH MITMAILSCAN 1 
 .SH NAME
@@ -27,6 +27,9 @@ mitmailscan \- scan messages in an IMAP folder
 .I name
 ] [
 .B \--id-only
+] [
+.B \--key
+.I string
 ] [
 .B \--larger
 .I number
@@ -65,6 +68,8 @@ mitmailscan \- scan messages in an IMAP folder
 .B \--undeleted
 ] [
 .B \--unseen
+] [
+.IB message-ID ...
 ]
 .SH DESCRIPTION
 The 
@@ -79,12 +84,13 @@ fields are truncated to ensure that the output fits on one terminal
 line).  The message ID will be followed by \fIU\fR or \fID\fR to denote
 a message which is unseen or deleted, respectively.
 
-When no command line options are specified,
+When no command line options or arguments are specified,
 .I mitmailscan
-lists all messages in the mailbox; options can be used to limit the
-display based on various search criteria.  Note that when multiple
-search-related options are specified, the result is the intersection
-(i.e. logical \fIAND\fR) of the matching messages.
+lists all messages in the mailbox.  The display can be limited by
+options specifying various search criteria, and by message ID
+arguments.  Note that when multiple search-related options are
+specified, the result is the intersection (i.e. logical \fIAND\fR) of
+the matching messages.
 
 For options which require a value argument, the value can be specified
 either as the next argument in the command line, or directly after the
@@ -100,7 +106,8 @@ display only those messages which have been marked as answered.
 display only those messages which were sent earlier than the given date.
 .TP
 .B \--by-uid
-display the message's unique identifier instead of the sequence number.
+accept and display the message's unique identifier instead of the
+sequence number.
 .TP
 .B \--debug
 turn on debugging.
@@ -121,6 +128,9 @@ query the given host, instead of the default post office server.
 output message IDs only, separated by a space, instead of the standard
 display.  This option is useful when you want to specify the message IDs
 as part of another command.
+.TP
+.B \--key \fIstring\fR
+same as \fB--search-key\fR \fIstring\fR.
 .TP
 .B \--larger \fInumber\fR
 display only those messages whose size in bytes is greater than the given
@@ -175,6 +185,17 @@ display only those messages which are not marked as deleted.
 .TP
 .B \--unseen
 display only those messages which are not marked as having been seen.
+.SH ARGUMENTS
+.I mitmailscan
+optionally accepts one or more message ID arguments.  The ID is
+either the message's sequence number, or, if the
+.I \--by-uid
+option is given, its unique identifier.
+
+The message ID argument can be \fB*\fR, to indicate the last message
+in the mailbox.  An argument of the form
+.IB ID1 : ID2
+can be used to specify a range of IDs.
 .SH "SEE ALSO"
-mitmailshow(1), mitmaildel(1),
+mitmailshow(1), mitmailappend(1), mitmaildel(1),
 imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)

@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailscan.pl,v 1.3 2004-07-29 19:11:53 rbasch Exp $
+# $Id: mitmailscan.pl,v 1.4 2004-09-10 16:35:44 rbasch Exp $
 
 # Scan messages in an IMAP folder.
 
@@ -10,7 +10,7 @@ use Cyrus::IMAP;
 use Getopt::Long;
 
 sub usage(;$);
-sub send_command($);
+sub send_command(@);
 sub search_callback(@);
 sub fetch_callback(@);
 sub number_callback(@);
@@ -27,7 +27,7 @@ my $prog = $0;
 sub usage(;$) {
     print STDERR "$prog: $_[0]\n" if ($_[0] && $_[0] ne "help");
     print STDERR <<EOF;
-Usage: $prog [<options>]
+Usage: $prog [<options>] [<message-id> ...]
   Options:
     --answered             show messages which have been marked as answered
     --before=<dd-Mon-yyyy> show messages sent before given date
@@ -38,6 +38,7 @@ Usage: $prog [<options>]
     --help                 print this usage information
     --host=<name>          query host <name> instead of default POBOX server
     --id-only              output message IDs only
+    --key=<string>         same as --search-key=<string>
     --larger=<n>           show messages whose size is greater than <n> bytes
     --mailbox=<name>       examine mailbox <name> instead of INBOX
     --new                  show new messages (same as "--recent --unseen")
@@ -102,7 +103,7 @@ GetOptions("answered",
 	   "old",
 	   "on=s" => \&parse_date_opt,
 	   "recent",
-	   "search-key=s",
+	   "search-key|key=s",
 	   "seen",
 	   "since=s" => \&parse_date_opt,
 	   "smaller=i",
@@ -113,7 +114,14 @@ GetOptions("answered",
 	   "undeleted",
 	   "unseen") || usage;
 
-usage "Too many arguments" if @ARGV > 0;
+my $msgset = '';
+foreach (@ARGV) {
+    errorout "Invalid message specification $_"
+	unless (m/^(?:\d+|\*)(?::(?:\d+|\*))?$/o);
+    $msgset .= ',' if $msgset;
+    $msgset .= "$_";
+}
+
 usage "Cannot specify both --new and --old" if ($opt_new && $opt_old);
 usage "Cannot specify both --recent and --old" if ($opt_recent && $opt_old);
 usage "Cannot specify both --seen and --unseen" if ($opt_seen && $opt_unseen);
@@ -132,6 +140,10 @@ unless ($opt_host) {
 }
 
 # Build the search key based on the specified command line options.
+if ($msgset) {
+    $opt_search_key .= " UID" if $opt_by_uid;
+    $opt_search_key .= " $msgset";
+}
 $opt_search_key .= " FROM $opt_from" if $opt_from;
 $opt_search_key .= " SUBJECT $opt_subject" if $opt_subject;
 $opt_search_key .= " TO $opt_to" if $opt_to;
@@ -166,14 +178,14 @@ my $cb_numbered = Cyrus::IMAP::CALLBACK_NUMBERED;
 $client->addcallback({-trigger => 'EXISTS', -flags => $cb_numbered,
 		      -callback => \&number_callback,
 		      -rock => \$totalmsgcount});
-send_command "EXAMINE \"$opt_mailbox\"";
+send_command("EXAMINE %s", $opt_mailbox);
 
 if ($totalmsgcount) {
     # Search the mailbox to obtain the desired message numbers.
     $client->addcallback({-trigger => 'SEARCH',
 			  -callback => \&search_callback,
 			  -rock => \@msgids});
-    send_command "UID SEARCH $opt_search_key";
+    send_command("UID SEARCH %a", $opt_search_key);
 
     # If there are messages of interest, fetch them.
     if (@msgids > 0) {
@@ -183,7 +195,7 @@ if ($totalmsgcount) {
 			      -callback => \&fetch_callback,
 			      -rock => \@pomsgs});
 	foreach (make_msgspecs(@msgids)) {
-	    send_command "UID FETCH $_ ($fetch)";
+	    send_command("UID FETCH %a (%a)", $_, $fetch);
 	}
     }
 }
@@ -261,9 +273,13 @@ if ($opt_id_only) {
 # Subroutine to send a command to the IMAP server, and wait for the
 # response; any defined callbacks for the response are invoked.
 # If the server response indicates failure, we error out.
-sub send_command($) {
-    print "Sending: $_[0]\n" if $opt_debug;
-    my ($status, $text) = $client->send('', '', $_[0]);
+sub send_command(@) {
+    my ($fmt, @args) = @_;
+    if ($opt_debug) {
+	local $" = ', ';
+	print "Send($fmt, @args) ...\n";
+    }
+    my ($status, $text) = $client->send('', '', $fmt, @args);
     print "Response: status $status, text $text\n" if $opt_debug;
     errorout "Premature end-of-file on IMAP connection to $opt_host"
 	if $status eq 'EOF';
