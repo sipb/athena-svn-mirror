@@ -176,14 +176,9 @@ gkb_prop_list_delete_clicked (GkbPropertyBoxInfo * pbi)
   pbi->selected_keymap = NULL;
 
   gkb_prop_list_reload (pbi);
-
   gkb_apply(pbi);
-
-  applet_save_session(pbi->gkb);  
-
-  return;
+  gkb_save_session (pbi->gkb);  
 }
-
 
 /**
  * gkb_util_g_list_swap:
@@ -237,12 +232,8 @@ gkb_prop_list_up_down_clicked (GkbPropertyBoxInfo * pbi, gboolean up)
   */
 
   gkb_prop_list_reload (pbi);
-
   gkb_apply(pbi);
-
-  applet_save_session(pbi->gkb);
-
-  return;
+  gkb_save_session(pbi->gkb);
 }
 
 /**
@@ -338,7 +329,7 @@ gkb_prop_list_button_clicked_cb (GtkWidget * button, GkbPropertyBoxInfo * pbi)
   if (button == pbi->edit_button) {
     gkb_prop_map_edit (pbi); 
     gkb_prop_list_reload (pbi);
-    }
+  }
   else if (button == pbi->delete_button)
     gkb_prop_list_delete_clicked (pbi);
   else if (button == pbi->up_button)
@@ -347,7 +338,6 @@ gkb_prop_list_button_clicked_cb (GtkWidget * button, GkbPropertyBoxInfo * pbi)
     gkb_prop_list_up_down_clicked (pbi, FALSE);
 
   gkb_prop_list_update_sensitivity(pbi);
-
 }
 
 /**
@@ -390,9 +380,8 @@ gkb_prop_create_buttons_vbox (GkbPropertyBoxInfo * pbi)
   GtkWidget *vbox;
 
   vbox = gtk_vbutton_box_new ();
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (vbox), 4);
-  gtk_button_box_set_child_size (GTK_BUTTON_BOX (vbox), 75, 25);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
+  gtk_button_box_set_spacing (GTK_BUTTON_BOX (vbox), 6);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
   gtk_button_box_set_layout (GTK_BUTTON_BOX (vbox), GTK_BUTTONBOX_START);
       
   pbi->buttons_vbox = vbox;
@@ -440,7 +429,7 @@ gkb_prop_list_load_keymaps (GkbPropertyBoxInfo * pbi)
  * Return Value: 
  **/
 GtkWidget *
-gkb_prop_create_scrolled_window (GkbPropertyBoxInfo * pbi)
+gkb_prop_create_scrolled_window (GkbPropertyBoxInfo * pbi, GtkWidget *label)
 {
   GtkWidget *scrolled_window;
   GtkTreeModel *model;
@@ -456,6 +445,7 @@ gkb_prop_create_scrolled_window (GkbPropertyBoxInfo * pbi)
   store = gtk_list_store_new (3, GDK_TYPE_PIXBUF, G_TYPE_STRING,G_TYPE_POINTER);	
   model = GTK_TREE_MODEL(store);	
   treeview = gtk_tree_view_new_with_model (model);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label), treeview);
   GTK_WIDGET_SET_FLAGS (treeview, GTK_CAN_DEFAULT);
     
   pbi->list = GTK_TREE_VIEW (treeview);

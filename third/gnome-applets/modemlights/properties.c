@@ -12,14 +12,7 @@
 #include <panel-applet-gconf.h>
 #include <gconf/gconf-client.h>
 
-#define DEFAULT_PATH "/modemlights/"
-
-static GtkWidget *propwindow = NULL;
-static GtkWidget *connect_entry = NULL;
-static GtkWidget *disconnect_entry = NULL;
-static GtkWidget *lockfile_entry = NULL;
-static GtkWidget *device_entry = NULL;
-static GtkWidget *verify_checkbox = NULL;
+#define NEVER_SENSITIVE "never_sensitive"
 
 static void show_extra_info_cb(GtkWidget *widget, gpointer data);
 static void verify_lock_file_cb(GtkWidget *widget, gpointer data);
@@ -56,52 +49,92 @@ static gchar *color_defaults[] = {
 	NULL
 };
 
-void property_load(PanelApplet *applet)
+/* set sensitive and setup NEVER_SENSITIVE appropriately */
+static void
+hard_set_sensitive (GtkWidget *w, gboolean sensitivity)
 {
+	gtk_widget_set_sensitive (w, sensitivity);
+	g_object_set_data (G_OBJECT (w), NEVER_SENSITIVE,
+			   GINT_TO_POINTER ( ! sensitivity));
+}
+
+
+/* set sensitive, but always insensitive if NEVER_SENSITIVE is set */
+static void
+soft_set_sensitive (GtkWidget *w, gboolean sensitivity)
+{
+	if (g_object_get_data (G_OBJECT (w), NEVER_SENSITIVE))
+		gtk_widget_set_sensitive (w, FALSE);
+	else
+		gtk_widget_set_sensitive (w, sensitivity);
+}
+
+
+static gboolean
+key_writable (PanelApplet *applet, const char *key)
+{
+	gboolean writable;
+	char *fullkey;
+	static GConfClient *client = NULL;
+	if (client == NULL)
+		client = gconf_client_get_default ();
+
+	fullkey = panel_applet_gconf_get_full_key (applet, key);
+
+	writable = gconf_client_key_is_writable (client, fullkey, NULL);
+
+	g_free (fullkey);
+
+	return writable;
+}
+
+void property_load(MLData *mldata)
+{
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	GError *error = NULL;
 	gchar *buf;
 	gint i;
 
-	g_free(command_connect);
-	g_free(command_disconnect);
-	g_free(device_name);
+	g_free(mldata->command_connect);
+	g_free(mldata->command_disconnect);
+	g_free(mldata->device_name);
 
-	UPDATE_DELAY = panel_applet_gconf_get_int (applet, "delay", &error);
+	mldata->UPDATE_DELAY = panel_applet_gconf_get_int (applet, "delay", &error);
 	if (error) {
 		g_print ("%s \n", error->message);
 		g_error_free (error);
 		error = NULL;
 	}
-	UPDATE_DELAY = MAX (UPDATE_DELAY, 1);
+	mldata->UPDATE_DELAY = MAX (mldata->UPDATE_DELAY, 1);
 	
 	buf = panel_applet_gconf_get_string(applet, "lockfile", NULL);
 	if (buf && strlen(buf) > 0)
 		{
-		g_free(lock_file);
-		lock_file = g_strdup(buf);
+		g_free(mldata->lock_file);
+		mldata->lock_file = g_strdup(buf);
 		}
 	g_free(buf);
 
-	command_connect    = panel_applet_gconf_get_string(applet, "connect", NULL);
-	if (!command_connect)
-		command_connect = g_strdup ("pppon");
-	command_disconnect = panel_applet_gconf_get_string(applet, "disconnect", NULL);
-	if (!command_disconnect)
-		command_disconnect = g_strdup ("pppoff");
-	ask_for_confirmation = panel_applet_gconf_get_int(applet, "confirmation", NULL);
-	device_name          = panel_applet_gconf_get_string(applet, "device", NULL);
-	if (!device_name)
-		device_name = g_strdup ("ppp0");
-	use_ISDN	   = panel_applet_gconf_get_int(applet, "isdn", NULL);
-       	verify_lock_file   = panel_applet_gconf_get_int(applet, "verify_lock", NULL);
-	show_extra_info    = panel_applet_gconf_get_int(applet, "extra_info", NULL);
-	status_wait_blink  = panel_applet_gconf_get_int(applet, "wait_blink", NULL);
+	mldata->command_connect    = panel_applet_gconf_get_string(applet, "connect", NULL);
+	if (!mldata->command_connect)
+		mldata->command_connect = g_strdup ("pppon");
+	mldata->command_disconnect = panel_applet_gconf_get_string(applet, "disconnect", NULL);
+	if (!mldata->command_disconnect)
+		mldata->command_disconnect = g_strdup ("pppoff");
+	mldata->ask_for_confirmation = panel_applet_gconf_get_int(applet, "confirmation", NULL);
+	mldata->device_name = panel_applet_gconf_get_string(applet, "device", NULL);
+	if (!mldata->device_name)
+		mldata->device_name = g_strdup ("ppp0");
+	mldata->use_ISDN = panel_applet_gconf_get_int(applet, "isdn", NULL);
+       	mldata->verify_lock_file  = panel_applet_gconf_get_int(applet, "verify_lock", NULL);
+	mldata->show_extra_info  = panel_applet_gconf_get_int(applet, "extra_info", NULL);
+	mldata->status_wait_blink  = panel_applet_gconf_get_int(applet, "wait_blink", NULL);
 	
 	for (i = 0; i < COLOR_COUNT; i++)
 		{
-		g_free(display_color_text[i]);
+		g_free(mldata->display_color_text[i]);
 		
-		display_color_text[i] = panel_applet_gconf_get_string(applet, 
+		mldata->display_color_text[i] = panel_applet_gconf_get_string(applet, 
 							              color_rc_names[i], 
 							              NULL);
 		
@@ -112,99 +145,109 @@ void property_load(PanelApplet *applet)
 
 static void connect_changed_cb(GtkEntry *entry, GdkEventFocus *event, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	if (command_connect) g_free(command_connect);
-	command_connect = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	panel_applet_gconf_set_string (applet, "connect", command_connect, NULL);
+	if (mldata->command_connect) g_free(mldata->command_connect);
+	mldata->command_connect = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	panel_applet_gconf_set_string (applet, "connect", mldata->command_connect, NULL);
 }
 
 static void disconnect_changed_cb(GtkEntry *entry, GdkEventFocus *event, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	if (command_disconnect) g_free(command_disconnect);
-	command_disconnect = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	panel_applet_gconf_set_string (applet, "disconnect", command_disconnect, NULL);
+	if (mldata->command_disconnect) g_free(mldata->command_disconnect);
+	mldata->command_disconnect = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	panel_applet_gconf_set_string (applet, "disconnect", mldata->command_disconnect, NULL);
 }
 
 static void lockfile_changed_cb(GtkEntry *entry, GdkEventFocus *event, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	if (lock_file) g_free(lock_file);
-	lock_file = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	panel_applet_gconf_set_string (applet, "lockfile", lock_file, NULL);
+	if (mldata->lock_file) g_free(mldata->lock_file);
+	mldata->lock_file = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	panel_applet_gconf_set_string (applet, "lockfile", mldata->lock_file, NULL);
 }
 
 static void device_changed_cb(GtkEntry *entry, GdkEventFocus *event, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	if (device_name) g_free(device_name);
-	device_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	panel_applet_gconf_set_string (applet, "device", device_name, NULL);
+	if (mldata->device_name) g_free(mldata->device_name);
+	mldata->device_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	panel_applet_gconf_set_string (applet, "device", mldata->device_name, NULL);
 }
 
 static void show_extra_info_cb(GtkWidget *widget, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
 	gint tmp = GTK_TOGGLE_BUTTON (widget)->active;
-	if (tmp != show_extra_info)
+	if (tmp != mldata->show_extra_info)
 		{
-		show_extra_info = tmp;
+		mldata->show_extra_info = tmp;
 		/* change display */
-		reset_orientation();
-		panel_applet_gconf_set_int (applet, "extra_info", show_extra_info, NULL);
+		reset_orientation(mldata);
+		panel_applet_gconf_set_int (applet, "extra_info", mldata->show_extra_info, NULL);
 		}
 }
 
 static void verify_lock_file_cb(GtkWidget *widget, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	verify_lock_file = GTK_TOGGLE_BUTTON (widget)->active;
-	panel_applet_gconf_set_int (applet, "verify_lock", verify_lock_file, NULL);
+	mldata->verify_lock_file = GTK_TOGGLE_BUTTON (widget)->active;
+	panel_applet_gconf_set_int (applet, "verify_lock", mldata->verify_lock_file, NULL);
 
 }
 
 static void update_delay_cb(GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	gchar *key;
 	
-        UPDATE_DELAY = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-        start_callback_update();
-        panel_applet_gconf_set_int (applet, "delay", UPDATE_DELAY, NULL);
+        mldata->UPDATE_DELAY = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+        start_callback_update(mldata);
+        panel_applet_gconf_set_int (applet, "delay", mldata->UPDATE_DELAY, NULL);
 }
 
 static void confirm_checkbox_cb(GtkWidget *widget, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	ask_for_confirmation = GTK_TOGGLE_BUTTON (widget)->active;
-	panel_applet_gconf_set_int (applet, "confirmation", ask_for_confirmation, NULL);
+	mldata->ask_for_confirmation = GTK_TOGGLE_BUTTON (widget)->active;
+	panel_applet_gconf_set_int (applet, "confirmation", mldata->ask_for_confirmation, NULL);
 }
 
 static void wait_blink_cb(GtkWidget *widget, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	status_wait_blink = GTK_TOGGLE_BUTTON (widget)->active;
-	panel_applet_gconf_set_int (applet, "wait_blink", status_wait_blink, NULL);
+	mldata->status_wait_blink = GTK_TOGGLE_BUTTON (widget)->active;
+	panel_applet_gconf_set_int (applet, "wait_blink", mldata->status_wait_blink, NULL);
 }
 
 static void isdn_checkbox_cb(GtkWidget *widget, gpointer data)
 {
-	PanelApplet *applet = data;
+	MLData *mldata = data;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	
-	use_ISDN = GTK_TOGGLE_BUTTON (widget)->active;
+	mldata->use_ISDN = GTK_TOGGLE_BUTTON (widget)->active;
 
-	gtk_widget_set_sensitive(lockfile_entry, !use_ISDN);
-	gtk_widget_set_sensitive(device_entry, !use_ISDN);
-	gtk_widget_set_sensitive(verify_checkbox, !use_ISDN);
-	panel_applet_gconf_set_int (applet, "isdn", use_ISDN, NULL);
+	soft_set_sensitive(mldata->lockfile_entry, !mldata->use_ISDN);
+	soft_set_sensitive(mldata->device_entry, !mldata->use_ISDN);
+	soft_set_sensitive(mldata->verify_checkbox, !mldata->use_ISDN);
+	panel_applet_gconf_set_int (applet, "isdn", mldata->use_ISDN, NULL);
 }
 
 static void set_default_cb(GtkWidget *widget, gpointer data)
@@ -212,351 +255,471 @@ static void set_default_cb(GtkWidget *widget, gpointer data)
 	
 }
 
-static void box_color_cb(GnomeColorPicker *cp, guint nopr, guint nopg, guint nopb, guint nopa, gpointer data)
+static void box_color_cb(GtkColorButton *cp, gpointer data)
 {
+	MLData *mldata;
 	PanelApplet *applet;
 	ColorType color	= (ColorType)GPOINTER_TO_INT(data);
-	guint8 r, g, b, a;
+	GdkColor new_color;
 
-	gnome_color_picker_get_i8 (GNOME_COLOR_PICKER(cp), &r, &g, &b, &a);
-
-	g_free(display_color_text[color]);
-	display_color_text[color] = g_strdup_printf("#%06X", (r << 16) + (g << 8) + b);
+	gtk_color_button_get_color(cp, &new_color);
+	mldata = g_object_get_data (G_OBJECT (cp), "mldata");
 	
-	reset_colors ();
+	g_free(mldata->display_color_text[color]);
+	mldata->display_color_text[color] = g_strdup_printf("#%02X%02X%02X",
+							    new_color.red / 256,
+							    new_color.green / 256,
+							    new_color.blue / 256);
 	
-	applet = g_object_get_data (G_OBJECT (cp), "applet");
+	reset_colors (mldata);
+	
+	applet = PANEL_APPLET (mldata->applet);
 	panel_applet_gconf_set_string (applet, color_rc_names[color], 
-				       display_color_text[color], NULL);
+				       mldata->display_color_text[color], NULL);
 }
 
-static GtkWidget *box_add_color(PanelApplet *applet, GtkWidget *box, 
+static GtkWidget *box_add_color(MLData *mldata, GtkWidget *box, 
 				const gchar *text, ColorType color)
 {
-	GtkWidget *vbox;
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
+	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *color_sel;
 	GdkColor c;
 
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 0);
-	gtk_box_pack_start(GTK_BOX(box), vbox, TRUE, TRUE, 0);
-	gtk_widget_show(vbox);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX(box), hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
 
-	if (display_color_text[color] != NULL)
+	if (mldata->display_color_text[color] != NULL)
 		{
-		gdk_color_parse(display_color_text[color], &c);
+		gdk_color_parse(mldata->display_color_text[color], &c);
 		}
 	else
 		{
 		c.red = c.green = c.blue = 0;
 		}
 
-	color_sel = gnome_color_picker_new();
-	gnome_color_picker_set_use_alpha(GNOME_COLOR_PICKER(color_sel), FALSE);
-	gnome_color_picker_set_i16(GNOME_COLOR_PICKER(color_sel), c.red, c.green, c.blue, 0);
+	label = gtk_label_new_with_mnemonic (text);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	color_sel = gtk_color_button_new();
+	gtk_color_button_set_color(GTK_COLOR_BUTTON(color_sel), &c);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), color_sel);
 	g_signal_connect(G_OBJECT(color_sel), "color_set", 
 			 G_CALLBACK (box_color_cb), GINT_TO_POINTER((gint)color));
-	g_object_set_data(G_OBJECT(color_sel), "applet", applet);
-	gtk_box_pack_start(GTK_BOX(vbox), color_sel, FALSE, FALSE, 0);
+	g_object_set_data (G_OBJECT (color_sel), "mldata", mldata);
+	gtk_box_pack_start(GTK_BOX(hbox), color_sel, FALSE, FALSE, 0);
 	gtk_widget_show(color_sel);
 
-	label = gtk_label_new_with_mnemonic(text);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), color_sel);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, GNOME_PAD_SMALL);
-	gtk_widget_show(label);
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), color_rc_names[color]))
+		hard_set_sensitive (hbox, FALSE);
 
-	return vbox;
+	return label;
+}
+
+static GtkWidget *create_hig_category (GtkWidget *main_box, gchar *title)
+{
+	GtkWidget *vbox, *vbox2, *hbox;
+	GtkWidget *label;
+	gchar *tmp;
+		
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (main_box), vbox, FALSE, FALSE, 0);
+	
+	tmp = g_strdup_printf ("<b>%s</b>", title);
+	label = gtk_label_new (NULL);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_markup (GTK_LABEL (label), tmp);
+	g_free (tmp);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, FALSE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	
+	label = gtk_label_new ("    ");
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, TRUE, TRUE, 0);
+
+	return vbox2;	
 }
 
 static GtkWidget *color_frame_new(GtkWidget *vbox, const gchar *text)
 	{
-	GtkWidget *frame;
+	GtkWidget *category;
 	GtkWidget *hbox;
 
-	frame = gtk_frame_new(text);
-	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
-	gtk_widget_show(frame);
+	category = create_hig_category (vbox, (gchar *)text);
+	gtk_widget_show (category);
 
-	hbox = gtk_hbox_new(TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox), GNOME_PAD_SMALL);
-	gtk_container_add(GTK_CONTAINER(frame), hbox);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (category), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 
 	return hbox;
 	}
 
 static void
-phelp_cb (GtkWidget *w, gint tab, gpointer data)
+phelp_cb (GtkDialog *dialog)
 {
-#ifdef FIXME /* use (egg|gnome)_screen_help_display */
-	GnomeHelpMenuEntry help_entry = { "modemlights_applet",
-					  "index.html#MODEMLIGHTS-PREFS" };
-	gnome_help_display(NULL, &help_entry);
-#endif
+	GError *error = NULL;
+
+	gnome_help_display_on_screen (
+		"modemlights", "modemlights-prefs",
+		gtk_window_get_screen (GTK_WINDOW (dialog)),
+		&error);
+
+	if (error) {
+		g_warning ("help error: %s\n", error->message);
+		g_error_free (error);
+		error = NULL;
+	}
 }
 
 static void
 property_response_cb (GtkDialog *dialog, gint id, gpointer data)
 {
+	MLData *mldata = data;
+	if (id == GTK_RESPONSE_HELP) {
+		phelp_cb (dialog);
+		return;
+	}
+	
 	gtk_widget_destroy (GTK_WIDGET (dialog));
-	propwindow = NULL;
+	mldata->propwindow = NULL;
 }
 
 void property_show (BonoboUIComponent *uic,
-		    PanelApplet       *applet,
+		    MLData       *mldata,
 		    const gchar       *verbname)
 {
+	PanelApplet *applet = PANEL_APPLET (mldata->applet);
 	GtkWidget *frame;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *hbox2, *hbox3;
 	GtkWidget *notebook;
-	GtkWidget *vbox;
-	GtkWidget *vbox1;
+	GtkWidget *vbox, *vbox2;
 	GtkWidget *label;
 	GtkWidget *delay_w;
 	GtkObject *delay_adj;
 	GtkWidget *checkbox;
-	GtkWidget *button;
+	GtkSizeGroup *size_group;
+	GConfClient *client;
+	gboolean inhibit_command_line;
 
-	if (propwindow) {
-		gtk_window_set_screen (GTK_WINDOW (propwindow),
+	if (mldata->propwindow) {
+		gtk_window_set_screen (GTK_WINDOW (mldata->propwindow),
 				       gtk_widget_get_screen (GTK_WIDGET (applet)));
-		gtk_window_present (GTK_WINDOW (propwindow));
+		gtk_window_present (GTK_WINDOW (mldata->propwindow));
 		return;
 	}
 
-        propwindow = gtk_dialog_new_with_buttons (_("Modem Lights Preferences"), NULL,
+	client = gconf_client_get_default ();
+	inhibit_command_line = gconf_client_get_bool (client, "/desktop/gnome/lockdown/inhibit_command_line", NULL);
+
+        mldata->propwindow = gtk_dialog_new_with_buttons (_("Modem Lights Preferences"), NULL,
 						  GTK_DIALOG_DESTROY_WITH_PARENT,
+						  GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 						  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 						  NULL);
-	gtk_window_set_screen (GTK_WINDOW (propwindow),
+	gtk_window_set_screen (GTK_WINDOW (mldata->propwindow),
 			       gtk_widget_get_screen (GTK_WIDGET (applet)));
+	gtk_dialog_set_default_response (GTK_DIALOG (mldata->propwindow), GTK_RESPONSE_CLOSE);
+  	gtk_dialog_set_has_separator (GTK_DIALOG (mldata->propwindow), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (mldata->propwindow), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (mldata->propwindow)->vbox), 2);
+	gtk_window_set_resizable (GTK_WINDOW (mldata->propwindow), FALSE);
 
 	notebook = gtk_notebook_new ();
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (propwindow)->vbox), notebook,
+	gtk_container_set_border_width (GTK_CONTAINER (notebook), 5);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (mldata->propwindow)->vbox), notebook,
 			    TRUE, TRUE, 0);
 	
-	vbox = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), GNOME_PAD_SMALL);
+	vbox = gtk_vbox_new (FALSE, 18);
+	gtk_container_set_border_width (GTK_CONTAINER(vbox), 12);
 
-	frame = gtk_frame_new(_("Connecting"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
-	gtk_widget_show(frame);
+	frame = create_hig_category (vbox, _("Display"));
 
-	vbox1 = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox1), GNOME_PAD_SMALL);
-	gtk_container_add(GTK_CONTAINER(frame), vbox1);
-	gtk_widget_show(vbox1);
+	/* update adjustment */
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (frame), hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+
+        label = gtk_label_new_with_mnemonic (_("U_pdate every:"));
+        gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	hbox2 = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox2, FALSE, FALSE, 0);
+	gtk_widget_show (hbox2);
+
+	delay_adj = gtk_adjustment_new( mldata->UPDATE_DELAY, 1.0, 20.0, 1, 1, 1 );
+        delay_w  = gtk_spin_button_new( GTK_ADJUSTMENT(delay_adj), 1, 0 );
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), delay_w);
+	gtk_box_pack_start (GTK_BOX (hbox2), delay_w, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (delay_w), "focus-out-event",
+			  G_CALLBACK (update_delay_cb), mldata);
+	gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (delay_w),GTK_UPDATE_ALWAYS );
+	gtk_widget_show (delay_w);
+
+	label = gtk_label_new_with_mnemonic (_("seconds"));
+        gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "delay"))
+		hard_set_sensitive (hbox, FALSE);
+
+	/* extra info checkbox */
+	checkbox = gtk_check_button_new_with_mnemonic (_("Sho_w connect time and throughput"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), mldata->show_extra_info);
+	g_signal_connect (G_OBJECT (checkbox), "toggled",
+			 G_CALLBACK (show_extra_info_cb), mldata);
+	gtk_box_pack_start (GTK_BOX (frame), checkbox, FALSE, FALSE, 0);
+	gtk_widget_show (checkbox);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "extra_info"))
+		hard_set_sensitive (checkbox, FALSE);
+
+	checkbox = gtk_check_button_new_with_mnemonic (_("B_link connection status when connecting"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), mldata->status_wait_blink);
+	g_signal_connect (G_OBJECT (checkbox), "toggled",
+			 G_CALLBACK (wait_blink_cb), mldata);
+	gtk_box_pack_start (GTK_BOX (frame), checkbox, FALSE, FALSE, 0);
+	gtk_widget_show (checkbox);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "wait_blink"))
+		hard_set_sensitive (checkbox, FALSE);
+
+	frame = create_hig_category (vbox, _("Connections"));
+
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* connect entry */
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-        gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (frame), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 
-        label = gtk_label_new_with_mnemonic(_("Co_nnect command:"));
+	label = gtk_label_new_with_mnemonic (_("Co_nnection command:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_size_group_add_widget (size_group, label);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	connect_entry = gtk_entry_new_with_max_length(255);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), connect_entry);
-	gtk_entry_set_text(GTK_ENTRY(connect_entry), command_connect);
-	g_signal_connect (G_OBJECT (connect_entry), "focus_out_event",
-			  G_CALLBACK (connect_changed_cb), applet);			  
-        gtk_box_pack_start(GTK_BOX(hbox), connect_entry , TRUE, TRUE, 0);
-	gtk_widget_show(connect_entry);
+	mldata->connect_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (mldata->connect_entry), 255);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), mldata->connect_entry);
+	gtk_entry_set_text(GTK_ENTRY(mldata->connect_entry), mldata->command_connect);
+	g_signal_connect (G_OBJECT (mldata->connect_entry), "focus_out_event",
+			  G_CALLBACK (connect_changed_cb), mldata);			  
+        gtk_box_pack_start(GTK_BOX(hbox), mldata->connect_entry , TRUE, TRUE, 0);
+	gtk_widget_show(mldata->connect_entry);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "connect") ||
+	    inhibit_command_line) {
+		hard_set_sensitive (label, FALSE);
+		hard_set_sensitive (mldata->connect_entry, FALSE);
+	}
 
 	/* disconnect entry */
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-        gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new(FALSE, 12);
+        gtk_box_pack_start(GTK_BOX(frame), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 
-        label = gtk_label_new_with_mnemonic(_("_Disconnect command:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+        label = gtk_label_new_with_mnemonic(_("_Disconnection command:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_size_group_add_widget (size_group, label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	disconnect_entry = gtk_entry_new_with_max_length(255);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), disconnect_entry);
-	gtk_entry_set_text(GTK_ENTRY(disconnect_entry), command_disconnect);
-	g_signal_connect (G_OBJECT (disconnect_entry), "focus_out_event",
-			  G_CALLBACK (disconnect_changed_cb), applet);
-        gtk_box_pack_start(GTK_BOX(hbox), disconnect_entry, TRUE, TRUE, 0);
-	gtk_widget_show(disconnect_entry);
+	mldata->disconnect_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (mldata->disconnect_entry), 255);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), mldata->disconnect_entry);
+	gtk_entry_set_text(GTK_ENTRY(mldata->disconnect_entry), mldata->command_disconnect);
+	g_signal_connect (G_OBJECT (mldata->disconnect_entry), "focus_out_event",
+			  G_CALLBACK (disconnect_changed_cb), mldata);
+        gtk_box_pack_start(GTK_BOX(hbox), mldata->disconnect_entry, TRUE, TRUE, 0);
+	gtk_widget_show(mldata->disconnect_entry);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "disconnect") ||
+	    inhibit_command_line) {
+		hard_set_sensitive (label, FALSE);
+		hard_set_sensitive (mldata->disconnect_entry, FALSE);
+	}
 
 	/* confirmation checkbox */
 	checkbox = gtk_check_button_new_with_mnemonic(_("Con_firm connection"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), ask_for_confirmation);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), mldata->ask_for_confirmation);
 	g_signal_connect (G_OBJECT (checkbox), "toggled",
-			  G_CALLBACK (confirm_checkbox_cb), applet);
-        gtk_box_pack_start(GTK_BOX(vbox1), checkbox, FALSE, FALSE, 0);
+			  G_CALLBACK (confirm_checkbox_cb), mldata);
+	gtk_box_pack_start (GTK_BOX (frame), checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox);
 
-	frame = gtk_frame_new(_("Display"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
-	gtk_widget_show(frame);
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "confirmation"))
+		hard_set_sensitive (checkbox, FALSE);
 
-	vbox1 = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox1), GNOME_PAD_SMALL);
-	gtk_container_add(GTK_CONTAINER(frame), vbox1);
-	gtk_widget_show(vbox1);
-
-	/* update adjustment */
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-        gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
-	gtk_widget_show(hbox);
-
-        label = gtk_label_new_with_mnemonic(_("U_pdates per second"));
-        gtk_box_pack_start( GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
-
-	delay_adj = gtk_adjustment_new( UPDATE_DELAY, 1.0, 20.0, 1, 1, 1 );
-        delay_w  = gtk_spin_button_new( GTK_ADJUSTMENT(delay_adj), 1, 0 );
-        gtk_label_set_mnemonic_widget (GTK_LABEL (label), delay_w);
-        gtk_box_pack_start(GTK_BOX(hbox), delay_w, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (delay_w), "focus-out-event",
-			  G_CALLBACK (update_delay_cb), applet);
-        gtk_spin_button_set_update_policy( GTK_SPIN_BUTTON(delay_w),GTK_UPDATE_ALWAYS );
-	gtk_widget_show(delay_w);
-
-	/* extra info checkbox */
-	checkbox = gtk_check_button_new_with_mnemonic(_("Sho_w connect time and throughput"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), show_extra_info);
-	g_signal_connect(G_OBJECT(checkbox), "toggled",
-			 G_CALLBACK(show_extra_info_cb), applet);
-        gtk_box_pack_start(GTK_BOX(vbox1), checkbox, FALSE, FALSE, 0);
-	gtk_widget_show(checkbox);
-
-        label = gtk_label_new(_("General"));
-        gtk_widget_show(vbox);
-        /*gnome_property_box_append_page( GNOME_PROPERTY_BOX(propwindow), vbox, label);*/
+	label = gtk_label_new (_("General"));
+	gtk_widget_show (vbox);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), vbox, label);
 
 	/* color settings */
 
-	vbox = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), GNOME_PAD_SMALL);
+	vbox = gtk_vbox_new (FALSE, 18);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 
-	hbox = color_frame_new(vbox, _("Receive data"));
+	hbox = color_frame_new (vbox, _("Receive Data"));
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	box_add_color(applet, hbox, _("_Foreground"), COLOR_RX);
-	box_add_color(applet, hbox, _("_Background"), COLOR_RX_BG);
+	hbox2 = gtk_hbox_new (FALSE, 24);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox2, FALSE, FALSE, 0);
 
-	hbox = color_frame_new(vbox, _("Send data"));
+	hbox3 = box_add_color (mldata, hbox2, _("_Foreground:"), COLOR_RX);
+	gtk_size_group_add_widget (size_group, hbox3);
+	hbox3 = box_add_color (mldata, hbox2, _("_Background:"), COLOR_RX_BG);
+	gtk_size_group_add_widget (size_group, hbox3);
+	
+	hbox = color_frame_new(vbox, _("Send Data"));
+	
+	hbox2 = gtk_hbox_new (FALSE, 24);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox2, FALSE, FALSE, 0);
+	
+	hbox3 = box_add_color (mldata, hbox2, _("Foregroun_d:"), COLOR_TX);
+	gtk_size_group_add_widget (size_group, hbox3);
+	hbox3 = box_add_color (mldata, hbox2, _("Backg_round:"), COLOR_TX_BG);
+	gtk_size_group_add_widget (size_group, hbox3);
+	
+	hbox = color_frame_new (vbox, _("Connection Status"));
+	
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
+	
+	hbox2 = gtk_hbox_new (FALSE, 24);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
+	
+	hbox3 = box_add_color (mldata, hbox2, _("Co_nnected:"), COLOR_STATUS_OK);
+	gtk_size_group_add_widget (size_group, hbox3);
+	hbox3 = box_add_color (mldata, hbox2, _("Disconnec_ted:"), COLOR_STATUS_BG);
+	gtk_size_group_add_widget (size_group, hbox3);
+		
+	hbox3 = box_add_color (mldata, vbox2, _("C_onnecting:"), COLOR_STATUS_WAIT);
+	gtk_size_group_add_widget (size_group, hbox3);
+	
+	hbox = color_frame_new (vbox, _("Text"));
+	
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
+	
+	hbox2 = gtk_hbox_new (FALSE, 24);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
+	
+	hbox3 = box_add_color (mldata, hbox2, _("For_eground:"), COLOR_TEXT_FG);
+	gtk_size_group_add_widget (size_group, hbox3);
+	hbox3 = box_add_color (mldata, hbox2, _("Bac_kground:"), COLOR_TEXT_BG);
+	gtk_size_group_add_widget (size_group, hbox3);
+	hbox3 = box_add_color (mldata, vbox2, _("O_utline:"), COLOR_TEXT_MID);
+        gtk_size_group_add_widget (size_group, hbox3);
 
-	box_add_color(applet, hbox, _("Foregroun_d"), COLOR_TX);
-	box_add_color(applet, hbox, _("Backg_round"), COLOR_TX_BG);
-
-	hbox = color_frame_new(vbox, _("Connection status"));
-
-	box_add_color(applet, hbox, _("Co_nnected"), COLOR_STATUS_OK);
-	box_add_color(applet, hbox, _("No_t connected"), COLOR_STATUS_BG);
-	vbox1 = box_add_color(applet, hbox, _("A_waiting connection"), COLOR_STATUS_WAIT);
-
-
-	checkbox = gtk_check_button_new_with_mnemonic(_("B_link"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), status_wait_blink);
-	g_signal_connect(G_OBJECT(checkbox), "toggled",
-			 G_CALLBACK(wait_blink_cb), applet);
-        gtk_box_pack_start(GTK_BOX(vbox1), checkbox, FALSE, FALSE, 0);
-	gtk_widget_show(checkbox);
-
-	hbox = color_frame_new(vbox, _("Text"));
-
-	box_add_color(applet, hbox, _("For_eground"), COLOR_TEXT_FG);
-	box_add_color(applet, hbox, _("Bac_kground"), COLOR_TEXT_BG);
-	box_add_color(applet, hbox, _("O_utline"), COLOR_TEXT_MID);
-
-	label = gtk_label_new(_("Colors"));
-	gtk_widget_show(vbox);
-	gtk_notebook_append_page( GTK_NOTEBOOK(notebook), vbox, label);
+	label = gtk_label_new (_("Colors"));
+	gtk_widget_show (vbox);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), vbox, label);
 
 	/* advanced settings */
 
-	vbox = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), GNOME_PAD_SMALL);
+	vbox = gtk_vbox_new (FALSE, 18);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 
-	frame = gtk_frame_new(_("Modem options"));
-	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
-	gtk_widget_show(frame);
+	frame = create_hig_category (vbox, _("Modem Options"));
 
-	vbox1 = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox1), GNOME_PAD_SMALL);
-	gtk_container_add(GTK_CONTAINER(frame), vbox1);
-	gtk_widget_show(vbox1);
-
-	/* lock file entry */
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-        gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
-	gtk_widget_show(hbox);
-
-        label = gtk_label_new_with_mnemonic(_("_Modem lock file:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
-
-	lockfile_entry = gtk_entry_new_with_max_length(255);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), lockfile_entry);
-	gtk_entry_set_text(GTK_ENTRY(lockfile_entry), lock_file);
-	g_signal_connect (G_OBJECT (lockfile_entry), "focus_out_event",
-			  G_CALLBACK (lockfile_changed_cb), applet);
-        gtk_box_pack_start(GTK_BOX(hbox), lockfile_entry, TRUE, TRUE, 0);
-	gtk_widget_show(lockfile_entry);
-
-	verify_checkbox = gtk_check_button_new_with_mnemonic(_("_Verify owner of lock file"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (verify_checkbox), verify_lock_file);
-	g_signal_connect(G_OBJECT(verify_checkbox), "toggled",
-			 G_CALLBACK(verify_lock_file_cb), applet);
-        gtk_box_pack_start(GTK_BOX(vbox1), verify_checkbox, FALSE, FALSE, 0);
-	gtk_widget_show(verify_checkbox);
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* device entry */
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-        gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 12);
+        gtk_box_pack_start (GTK_BOX (frame), hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+
+        label = gtk_label_new_with_mnemonic (_("_Device:"));
+	gtk_size_group_add_widget (size_group, label);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+        gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	mldata->device_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY(mldata->device_entry), 16);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), mldata->device_entry);
+	gtk_entry_set_text (GTK_ENTRY (mldata->device_entry), mldata->device_name);
+	g_signal_connect (G_OBJECT (mldata->device_entry), "focus_out_event",
+			  G_CALLBACK (device_changed_cb), mldata);
+        gtk_box_pack_start (GTK_BOX (hbox), mldata->device_entry, TRUE, TRUE, 0);
+	gtk_widget_show (mldata->device_entry);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "device") ||
+	    inhibit_command_line) {
+		hard_set_sensitive (label, FALSE);
+		hard_set_sensitive (mldata->device_entry, FALSE);
+	}
+	
+	/* lock file entry */
+	hbox = gtk_hbox_new(FALSE, 12);
+        gtk_box_pack_start(GTK_BOX(frame), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 
-        label = gtk_label_new_with_mnemonic(_("_Device:"));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
+        label = gtk_label_new_with_mnemonic (_("_Lock file:"));
+	gtk_size_group_add_widget (size_group, label);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+        gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
 
-	device_entry = gtk_entry_new_with_max_length(16);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), device_entry);
-	gtk_entry_set_text(GTK_ENTRY(device_entry), device_name);
-	g_signal_connect (G_OBJECT (device_entry), "focus_out_event",
-			  G_CALLBACK (device_changed_cb), applet);
-        gtk_box_pack_start(GTK_BOX(hbox), device_entry, TRUE, TRUE, 0);
-	gtk_widget_show(device_entry);
+	mldata->lockfile_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (mldata->lockfile_entry), 255);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), mldata->lockfile_entry);
+	gtk_entry_set_text(GTK_ENTRY(mldata->lockfile_entry), mldata->lock_file);
+	g_signal_connect (G_OBJECT (mldata->lockfile_entry), "focus_out_event",
+			  G_CALLBACK (lockfile_changed_cb), mldata);
+        gtk_box_pack_start(GTK_BOX(hbox), mldata->lockfile_entry, TRUE, TRUE, 0);
+	gtk_widget_show(mldata->lockfile_entry);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "lockfile") ||
+	    inhibit_command_line) {
+		hard_set_sensitive (label, FALSE);
+		hard_set_sensitive (mldata->lockfile_entry, FALSE);
+	}
+
+	mldata->verify_checkbox = gtk_check_button_new_with_mnemonic(_("_Verify owner of lock file"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mldata->verify_checkbox), mldata->verify_lock_file);
+	g_signal_connect(G_OBJECT(mldata->verify_checkbox), "toggled",
+			 G_CALLBACK(verify_lock_file_cb), mldata);
+	gtk_box_pack_start (GTK_BOX (frame), mldata->verify_checkbox, FALSE, FALSE, 0);
+	gtk_widget_show(mldata->verify_checkbox);
+
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "verify_lock"))
+		hard_set_sensitive (mldata->verify_checkbox, FALSE);
 
 	/* ISDN checkbox */
 	checkbox = gtk_check_button_new_with_mnemonic(_("U_se ISDN"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), use_ISDN);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), mldata->use_ISDN);
 	g_signal_connect(G_OBJECT(checkbox), "toggled",
-			   G_CALLBACK(isdn_checkbox_cb), applet);
-        gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 0);
+			   G_CALLBACK(isdn_checkbox_cb), mldata);
+	gtk_box_pack_start (GTK_BOX (frame), checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox);
 
-	if (use_ISDN)
-		{
-		gtk_widget_set_sensitive(lockfile_entry, FALSE);
-		gtk_widget_set_sensitive(device_entry, FALSE);
-		gtk_widget_set_sensitive(verify_checkbox, FALSE);
-		}
-#ifdef SHOULD_THIS_BE_HERE
-	/* defaults save button */
-	
-	hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	gtk_widget_show(hbox);
+	if ( ! key_writable (PANEL_APPLET (mldata->applet), "isdn"))
+		hard_set_sensitive (checkbox, FALSE);
 
-	button = gtk_button_new_with_label(_("Set options as default"));
-	/*gtk_signal_connect(GTK_OBJECT(button), "clicked",
-			   GTK_SIGNAL_FUNC(set_default_cb), NULL);*/
-	gtk_box_pack_end(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
-#endif
+	if (mldata->use_ISDN)
+		{
+		soft_set_sensitive(mldata->lockfile_entry, FALSE);
+		soft_set_sensitive(mldata->device_entry, FALSE);
+		soft_set_sensitive(mldata->verify_checkbox, FALSE);
+		}
+
         label = gtk_label_new(_("Advanced"));
         gtk_widget_show(vbox);
         gtk_notebook_append_page( GTK_NOTEBOOK(notebook), vbox, label);
 
-	g_signal_connect (G_OBJECT (propwindow), "response",
-			  G_CALLBACK (property_response_cb), NULL);
+	g_signal_connect (G_OBJECT (mldata->propwindow), "response",
+			  G_CALLBACK (property_response_cb), mldata);
 
-        gtk_widget_show_all(propwindow);
+        gtk_widget_show_all(mldata->propwindow);
 } 

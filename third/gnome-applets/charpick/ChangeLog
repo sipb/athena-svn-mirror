@@ -1,3 +1,289 @@
+2004-09-06  Shaun McCance  <shaunm@gnome.org>
+
+	* help/C/char-palette-C.omf:
+	* help/C/char-palette.xml:
+	- Updates for 2.8 from Angela Boyle
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec
+	* charpick.c: Fix include.
+	* properties.c: (phelp_cb): Use gnome_help_*.
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* charpick.c: (build_table), (about), (help_cb),
+	(charpicker_applet_fill): s/gtk_signal_connect/g_signal_connect
+	* charpick.h: ANSI parameter lists.
+
+2004-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* charpick.c: (applet_destroy): Merge fix for bug #148498
+	from stable.
+
+2004-07-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/ja/char-palette-ja.omf,
+	  help/ja/char-palette.xml,
+	  help/ja/figures/charpalette_applet.png,
+	  help/ja/figures/charpalette_chargroup.png,
+	  help/ja/legal.xml, Update with docs from the Sun
+	  team. How I managed to commit mailcheck ones here I'll
+	  never know ;)
+	* help/ja/figures/charpick_applet.png,
+	  help/ja/figures/charpick_characters.png,
+	  help/ja/figures/charpick_chargroup.png,
+	  help/ja/figures/mailcheck_applet.png: Remove older
+	  figures.
+
+2004-07-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/ja/Makefile.am,
+	  help/ja/mailcheck-ja.omf,
+	  help/ja/mailcheck.xml: remove mailcheck docs and
+	install the char-palette ones again.
+
+2004-07-08  Vincent Noel  <v.r.noel@larc.nasa.gov>
+
+	* charpick.c (applet_size_allocate): use the "size-allocate"
+	signal to get the panel size.
+	(build_table): Fix how the row number is computed to get the
+	characters spread out on multiple rows.
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* charpick.c (build_table): Set the atk description
+	for each of the toggle buttons Fixes #128292
+ 
+	Patch by:  Arvind Samptur  <arvind.samptur@wipro.com>
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* charpick.h:
+	* charpick.c: (charpicker_applet_fill)
+	The stock icon got registered.
+
+	* properties.c: (register_stock_for_edit)
+	The above function is added to register the stock icon.
+	"Properties" button is renamed to "Edit" button.
+	The mnemonic "Pal_ettes" is changed to "_Palettes".
+
+	Patch by: Shakti Sen <shakti.sen@wipro.com>
+
+	Fixes the bug #128088
+
+2004-06-09  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* properties.c: HIG fixes for the treeview.
+
+	Patch by: Ross Burton  <r.burton@180sw.com>
+
+	Fixes bug: #144027.
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/ja/*: Add ja docs since the original author
+	didn't get back to me.
+
+2004-03-16  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/Makefile.am: Add l10n'd docs to the build.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/*: Update docs for de, es, fr, it, ko, sv, 
+	zh_CN, zh_HK and zh_TW.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Kill off the old sgml based docs.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* charpick.c (about):
+	Set the screen right when the user requests the about
+	dialog and it's already there but not on the right
+	screen.
+
+2004-02-11 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help/C/char-palette.xml: Updated for GNOME 2.6.
+	* help/C/char-palette-C.omf: Updated for GNOME 2.6.
+	* help/C/l10n.txt: Updated for GNOME 2.6.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-02-06  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* charpick.c (chooser_button_clicked):
+	set the menu to the right screen.
+
+	This fixes bug: #133587
+
+2004-02-01  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* charpick.h: Added an add_edit_dialog and add_edit_entry
+	entry to _charpick_data.
+	
+	* properties.c: Renamed run_edit_dialog to add_edit_dialog_create
+	and changed the function to make use of the privates.
+	(add_palette): Changed to use the event driven dialogs.
+	
+	(add_palette_cb): Added function.
+
+	(edit_palette): Changed to use the event driven dialogs.
+
+	(edit_palette_cb): Added function.
+
+	* charpick.c (charpicker_applet_fill): initialize
+	the add_edit_dialog member to NULL.
+
+	Fixes: #133087 and #131889.
+
+2004-01-31  Michael Terry  <mterry@fastmail.fm>
+
+	* charpick.c: Remove "Add a palette..." popup menu item.  Fixes bug 
+	#129757 and #131887
+
+2004-01-31  Archana Shah <archana.shah@wipro.com>
+
+	* charpick.h: Added a field for about dialog in structure
+	charpick_data.
+	* charpick.c: (charpick_applet_fill): Initialized about_dialog 
+	with NULL.
+	(about): Changed to use about_dialog member field instead of
+	static variable.
+	(applet_destroy): Destroy about_dialog when the applet is removed.
+	Fixes bug #132291
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2003-12-22  Muktha  <muktha.narayan@wipro.com>
+
+	* charpick.c: Fix critical warnings with accessibility on.
+	Fixes bug #129059.
+
+2003-11-09  Kevin Vandersloot
+
+	* charpick.c, properties.c: Fix crash when removing all the palettes. Also fix
+	possible crash on startup. Fixes bug #124349. Most of the patch from
+	Shakti Sen.
+
+2003-10-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* properties.c: (run_edit_dialog): Fix a typo.
+	Found by Ole Laursen. Closes bug #119624.
+
+2003-10-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* charpick.c: Remove unnecessary include. Merge
+	from stable.
+
+Mon Sep 15 15:20:21 2003  George Lebl <jirka@5z.com>
+
+	* charpick.c: when started in lockdown mode, hide the preferences
+	  item
+
+2003-09-03  Kevin Vandersloot
+
+	* charpick.c: fix build on Solaris. Patch from Hidetoshi Tajima. Fixes
+	bug #121309
+
+2003-08-24	 Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/char-palette.xml, char-palette-C.omf: updates to Help for
+	  GNOME 2.4 release
+	* help/C/l10n.txt: updated info for L10N teams
+	* help/C/figures/charpalette_applet.png: new screenshot
+
+2003-07-23  Kevin Vandersloot
+
+	* schemas.in: Clean up strings here
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify widget padding between the vbox and 
+	action area of the dialogs.  Thanks to <chris@gnome-de.org>
+	Christian - Manny Calavera - Neumair.
+	
+Thu Jul 03 17:08:30 2003  George Lebl <jirka@5z.com>
+
+	* charpick.[ch], properties.c: key-writability fixes.  If chartable
+	  is not writable don't allow editting it/adding to it.  If the
+	  current_list is not writable still allow switching between pallets,
+	  just don't save the value for next loadup (that seems to make more
+	  sense then not allowing switching at all).  Also fix crash when
+	  you change the current pallete and then log out.  The code is
+	  a nightmare of pointer shuffling and memory leaks.
+
+	* charpick.schemas.in: fix owner of chartable, fix typo
+
+2003-06-16  Kevin Vandersloot
+
+	* properties.c: add some accesibility stuff. Also set the sensitivity of the edit/remove buttons
+	according to the selection
+
+2003-06-05  Kevin Vandersloot
+
+	* charpick.c: make the relief none on the add palettes button so it doesn't stick
+	out. Add an "add paellte" menu item and popup the dialog if pressed to the menu.
+	
+	* charpick.h, properties: make the edit_palette function non static.
+
+2003-06-01  Kevin Vandersloot
+
+	* charpick.c: pack the buttons tighter on larger panels. Fixes bug #95438. Also
+	make the applet expand for Fitt's law.
+
+2003-05-30 Ray Strode  <halfline@hawaii.rr.com> 
+
+	* charpick.c: (charpicker_applet_fill):  Check panel 
+	orientation before calling build_table (Bug #113785).
+	
+2003-05-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify the action area of the various preference
+	dialogs.
+	
+2003-04-25  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  More HIGifcation of the preferences, properties, 
+	and add dialogs.
+
+2003-04-06  Kevin Vandersloot <kfv101@psu.edu>
+
+	* help/C/Makefile.am: get the figures correct
+
+2003-04-03  Kevin Vandersloot <kfv101@psu.edu>
+
+	* charpick.c: Connect to the clicked signal to fix the stuck button problem. Fix
+	the problem with two tooltips showing up on the palettes button. Comment out
+	the unused static gchar* variables.
+
+2003-03-25  Kevin Vandersloot <kfv101@psu.edu>
+
+	* charpick.c, properties.c: Unicodeify the applet. Fixes bugs #93682,
+	#104324, #32769
+	
+	* properties.c, charpick.c: remove frame to save space. Bind to focus event for
+	prefs dialog to prevent unnecessary updates
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* charpick.c: (help_cb):
+	* properties.c: (phelp_cb):  update for screen-exec changes.
+
+2003-03-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* help/ja/*.xml, help/ja/*.omf, help/ja/figures/*.png, help/ja/Makefile.am:
+	added new documents for GNOME 2.2 tranlated by
+	KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+
 2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
 	* charpick.c (applet_destroy): destroy
 	the preferences dialog as well.

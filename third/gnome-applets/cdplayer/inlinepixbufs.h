@@ -1,6 +1,13 @@
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_stop_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_stop_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_stop_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -430,7 +437,14 @@ static const guint8 cdplayer_stop_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_play_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_play_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_play_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -895,7 +909,14 @@ static const guint8 cdplayer_play_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_pause_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_pause_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_pause_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -1351,7 +1372,14 @@ static const guint8 cdplayer_pause_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_prev_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_prev_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_prev_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -1806,7 +1834,14 @@ static const guint8 cdplayer_prev_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_next_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_next_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_next_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -2261,7 +2296,14 @@ static const guint8 cdplayer_next_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (cdplayer_eject_data)
+#endif
+#ifdef __GNUC__
+static const guint8 cdplayer_eject_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 cdplayer_eject_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"

@@ -1,3 +1,242 @@
+2004-09-12  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/modemlights-C.omf:
+	* docs/C/modemlights.xml:
+	- Updates for 2.8
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Removed references to screen-exec.
+	* modemlights.c: Fix include for gnome_help_*
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* modemlights.c: (is_Modem_on), (get_ISDN_connect_time),
+	(get_modem_connect_time), (show_help_cb): Don't use egg to
+	display help. Also a lot of NULL vs. 0 stuff.
+	* properties.c: (phelp_cb): Same here.
+
+2004-08-06  Vincent Noel  <vnoel@cox.net>
+
+	* modemlights.c (update_tooltip): Switch connected time display
+	to the format days:hours when connection time >= 100 hours. Fixes
+	bug 50965.
+
+2004-07-30  Xan Lopez  <xan@gnome.org>
+
+	* modemlights.c: (destroy_cb):
+
+	Fix build.
+
+2004-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* modemlights.c: (destroy_cb), (modemlights_applet_fill):
+	Merge fix for bug #148712 from stable.
+
+2004-07-10  Kevin Vandersloot <kfv101 psu edu>
+
+	* modemlights.c: small fix for vertical panels. Patch by Vicent Noel.
+
+2004-06-11  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* properties.c (property_show):
+	s/O_utline/O_utline:/ as spotted by:
+	Paisa Seeluangsawat  <paisa@users.sf.ne>
+
+	Fixes bug: 136943.
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* modemlights.c (ISDN_MAX_CHANNELS): Copy needed defines from
+	linux/isdn.h instead of including it, unbreaking build with linux
+	2.6 kernel headers.
+
+	Patch by: Jon K Hellan  <hellan@acm.org>
+
+	Fixes bug 129630.
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* modemlights.c (update_display): Added
+	tooltip. Removed static variable usage. Fixes bug #141484.
+
+	Patch by: Vinay M R  <vinay.mandyakoppal@wipro.com>
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* modemlights.c (destroy_cb): Free the MLData structure so
+	it doesn't leak.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* modemlights.c (about_cb): Set the screen right when the user
+	requests the about dialog and it's already there but not on the
+	right screen.
+
+2004-02-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* modemlights.h: Added connect_dialog and run_dialog entries
+	to the mldata structure.
+
+	* modemlights.c (dial_cb): Converted to be multihead aware
+	and cleanups.
+
+	(execute_command): Converted to be multihead aware and
+	cleanups.
+
+	(run_response_cb): Added to response on the message_dialog
+	within execute_command and changed it to be event driven
+	so we have more control over it, and it doesn't annoy
+	between instances.
+	
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-02-05  Muktha  <muktha.narayan@wipro.com>
+
+	* modemlights.c: Add accessible name. Fixes bug #128260.
+
+2004-01-31  Archana Shah  <archana.shah@wipro.com>
+
+	* modemlights.h: Added a member in structure MLData for
+	about dialog.
+	* modemlights.c: (modemlights_applet_fill): Initialized about_dialog
+	with NULL.
+	(about_cb): Changed to use member field about_dialog instead of
+	static variable about.
+	(destroy_cb): Destroys about_dialog when the applet is removed.
+	Fixes bug #132289
+
+2004-01-29  Chee Bin HOH  <cbhoh@gnome.org>
+
+	* modemlights.c:
+	* properties.c: fix bug #132832 for displaying online help.
+          
+2004-01-27  Chee Bin HOH  <cbhoh@gnome.org>
+
+	* docs/C/modemlights-C.omf:
+	* docs/C/modemlights.xml: Update docs for 2.6.
+	
+	* docs/C/figures/modemlights_applet_advanced.png:
+	* docs/C/figures/modemlights_applet_general.png: New screenshots
+	  for 2.6.
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2003-12-15  Olli Helenius  <liff@iki.fi>
+
+	* modemlights.h
+	Remove usage of deprecated APIs: GtkPixmap -> GtkImage,
+	g_file_exists -> g_file_test and GTK_SIGNAL_FUNC ->
+	G_CALLBACK. Also update some GDK functions to non-deprecated
+	versions.
+
+	* properties.c: Change GnomeColorPicker to GtkColorButton and
+	convert gtk_entry_new_with_max_length to _new and _set_max_length.
+	Also update some GDK functions.
+
+2003-10-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* properties.c: (property_show): Merge fix for
+	bug #124642 from stable.
+
+Tue Sep 16 13:59:16 2003  George Lebl <jirka@5z.com>
+
+	* properties.c: when command line is being inhibitted don't allow
+	  setting commands or the device options.  That seems to all be
+	  the kind of thing such a user should not be allowed to do.
+
+Mon Sep 15 15:23:24 2003  George Lebl <jirka@5z.com>
+
+	* modemlights.c: when started in lockdown mode, hide the preferences
+	  item
+
+2003-08-08 John Fleck <jfleck@inkstain.net>
+
+	* docs/C/modemlights-C.omf
+	* docs/C/modemlights.xml
+	* docs/C/figures/modemlights_applet_advanced.png
+	* docs/C/figures/modemlights_applet_advanced.png
+	* docs/C/figures/modemlights_applet_colors.png
+	* docs/C/figures/modemlights_applet_connected.png
+	* docs/C/figures/modemlights_applet_general.png
+	* docs/C/figures/modemlights_applet_if_connect.png
+	updated docs etc. from Chee Bin HOH (rock!)
+	
+2003-07-29 John Fleck <jfleck@inkstain.net>
+
+	* docs/C/figures/modemlights_applet_general.png
+	* docs/C/figures/modemlights_applet_prefs_connecting.png
+	* docs/C/figures/modemlights_applet_prefs_display.png
+	updated screenshots from Chee Bin HOH
+
+2003-07-26  Christian Neumair  <chris@gnome-de.org>
+
+	* modemlights.schemas.in: Fix two typos introduced by Kevin's patch
+	(#116066).
+
+2003-07-24  Kevin Vandersloot
+
+	* schemas.in: Clean up strings as part of bug #116066
+
+2003-07-23 John Fleck <jfleck@inkstain.net>
+
+	* docs/C/modemlights-C.omf
+	adding omf file, which I forgot, breaking things
+
+2003-07-23 John Fleck <jfleck@inkstain.net>
+
+	* Makefile.am
+	* docs/Makefile.am
+	* docs/C/Makefile.am, modemlights.xml
+	* docs/C/figures/*.png
+	add new version of modemlights docs from Chee Bin HOH
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify widget padding between the vbox and 
+	action area of the dialogs.  Thanks to <chris@gnome-de.org> 
+	Christian - Manny Calavera - Neumair.
+	
+Tue Jul 08 18:14:21 2003  George Lebl <jirka@5z.com>
+
+	* properties.c: may properties respect key writability
+
+2003-06-10  Shailesh Mittal <shailesh.mittal@wipro.com>
+
+	* modemlights.c: (modemlights_applet_fill): Modified to create
+	AF_INET6 socket, if AF_INET6 is defined on the system. If AF_INET6
+	socket can not be created, then we are falling back to AF_INET socket.
+
+2003-06-06  Paolo Borelli <pborelli@katamail.com>
+
+	* modemlights.c: gnome_question_dialog -> gtk_message_dialog conversion;
+	change Yes/No labels of buttons to Cancel/[dis]Connect; convert 
+	gnome_shell to g_spawn and add error reporting.
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify the action area of the preferences dialog.
+	
+2003-05-11  Kevin Vandersloot <kfv101@psu.edu>
+
+	* modemlights.c, properties.c, modemlights.h: remove all global and static
+	variables so multiple instances can work properly. Also bring back tooltip.
+	Fixes bug #100007
+
+2003-04-27  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify the preferences dialog. Also, hook up 
+	the help button.
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* modemlights.c: (show_help_cb): update for screen-exec changes.
+
 2002-12-14  Fernando Herrera <fherrera@onirica.com>
 
 	* GNOME_ModemLightsApplet.server.in.in: added bugzilla attributtes

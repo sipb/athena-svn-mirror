@@ -43,12 +43,11 @@ typedef struct {
 
 typedef struct {
     int     show_default_theme;
-    int     show_handle;
-    int     show_frame;
     int     auto_complete_history;
 
     int     normal_size_x;
     int     normal_size_y;
+    int     panel_size_x;
 
     int     cmd_line_color_fg_r;
     int     cmd_line_color_fg_g;
@@ -60,12 +59,11 @@ typedef struct {
     GSList *macros;
 
     guint   idle_macros_loader_id;
+
 } MCPreferences;
 
 typedef struct {
     GtkWidget    *dialog;
-    GtkWidget    *show_handle_toggle;
-    GtkWidget    *show_frame_toggle;
     GtkWidget    *auto_complete_history_toggle;
     GtkWidget    *size_spinner;
     GtkWidget    *use_default_theme_toggle;
@@ -105,6 +103,9 @@ void       mc_show_preferences (BonoboUIComponent *uic,
 				MCData            *mc,
 				const char        *verbname);
 void       mc_macros_free      (GSList            *macros);
+
+gboolean   mc_key_writable     (MCData            *mc,
+				const char        *key);
 
 G_END_DECLS
 

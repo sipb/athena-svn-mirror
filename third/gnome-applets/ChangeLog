@@ -1,3 +1,716 @@
+2004-09-13  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS:
+	* README: release 2.8.0
+	* mixer/Makefile.am: Fix build issue found when building tarball.
+
+2004-09-13  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Added gswitchit docs from Angela Boyle
+
+2004-09-05  Akagic Amila  <bono@linux.org.ba>
+
+	* configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-30  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS: release 2.7.3
+
+2004-08-16  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS: release 2.7.2
+
+2004-08-16  Davyd Madeley  <davyd@madeley.id.au>
+
+	* screen-exec/*: Remove from CVS.
+
+2004-08-16  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* configure.in: Added id to ALL_LINGUAS.
+	* po/id.po: Added Indonesian translation done by Ahmad Riza H Nst <rizahnst@eriagempita.co.id>.
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Removed reference to screen-exec
+	* Makefile.am: Here too.
+	* screen-exec/*: Remove cruft.
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-14  Arafat Medini  <lumina@silverpen.de>
+
+	configure.in: Updated faulty Arabic translation and added
+	"ar" Arabic locale to ALL_LINGUAS.
+
+2004-08-10  Davyd Madeley  <davyd@madeley.id.au>
+
+	* po/POTFILES.in: Add:
+	   - gkb-new/GNOME_KeyboardApplet_Factory.server.in.in
+	   - gkb-new/descs.sun/presets.xml.in
+	   - gkb-new/descs/SK__x.keyprop.desktop.in
+	for translation.
+
+2004-08-10  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in: Require gnome-panel 2.7.x
+	* accessx-status/GNOME_AccessxStatusApplet.server.in.in:
+	* cdplayer/GNOME_CDPlayerApplet.server.in.in:
+	* charpick/GNOME_CharpickerApplet.server.in.in:
+	* drivemount/GNOME_DriveMountApplet.server.in.in:
+	* geyes/GNOME_GeyesApplet.server.in.in:
+	* gkb-new/GNOME_KeyboardApplet_Factory.server.in.in:
+	* gswitchit/GNOME_KeyboardApplet.server.in.in:
+	* gtik/GNOME_GtikApplet.server.in.in:
+	* multiload/GNOME_MultiLoadApplet_Factory.server.in.in:
+	* stickynotes/GNOME_StickyNotesApplet.server.in.in:
+	* wireless/GNOME_Panel_WirelessApplet.server.in.in:
+	* mixer/GNOME_MixerApplet.server.in.in:
+	* battstat/GNOME_BattstatApplet.server.in.in:
+	* gweather/GNOME_GWeatherApplet_Factory.server.in.in:
+	* mailcheck/GNOME_MailcheckApplet_Factory.server.in.in:
+	* mini-commander/src/GNOME_MiniCommanderApplet.server.in.in:
+	* modemlights/GNOME_ModemLightsApplet.server.in.in: remove
+	panel:category attribute to conform with requirements for gnome-panel
+	2.7.
+
+2004-08-02  Davyd Madeley  <davyd@ucc.asn.au>
+
+	* configure.in:
+	* NEWS: release 2.7.1
+	* MAINTAINERS: added self to MAINTAINERS file
+
+2004-07-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add a --disable-battstat argument. bug #148163.
+
+2004-07-18  Kevin Vandersloot <kfv101 psu edu>
+
+	* configure.in: release 2.7.0
+
+Tue Jul  6 17:48:58 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: remove Arabic temporarily from ALL_LINGUAS as it
+	has invalid UTF-8 in the current po file.
+
+2004-06-11  Dennis Smit  <ds@nerds-incorporated.org>
+
+	Removed ellipses in context menus.
+	
+	Based on the patch by:
+	Alexander Winston  <alexander.winston@comcast.net>
+	
+	Fixes bug: #133782.
+
+2004-06-09  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* wireless-applet.c: Portability fixes for the IBM C compiler.
+
+2004-06-08  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* configure.in: Fixes for PPC and libapm.
+
+	Patch from: Bryan Forbes  <bryan@reigndropsfall.net>
+
+	Fixes bug: #137631.
+
+2004-05-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* release 2.6.1
+
+2004-04-27  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version and fix build
+
+2004-04-22  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* */docs/eu/*: Added Basque help files
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-23  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-21  Kevin Vandersloot <kfv101 psu edu>
+
+	* configure.in: release 2.6.0
+
+2004-03-17  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* NEWS: Updates for 2.5.90.
+
+	Still needs updates for 2.5.7 and 2.5.8 but
+	that'll come later!
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* applet-docs.am.template, applet-docs.make,
+	* omf-install/Makefile.am, sgmldocs.make: Remove more legacy
+	doc stuff. We should be clear of it now.
+
+2004-03-16  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Add l10n'd docs to the build. Still missing 
+	some ja updates, but have pinged emerald@gnome.gr.org before
+	I stamp all over his docs with a sun mark.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Remove top level crap that we don't need anymore.
+
+2004-03-14  Kevin Vandersloot <kfv101 psu edu>
+
+	* configure.in: release 2.5.8
+
+2004-03-10  Kevin Vandersloot <kfv101 psu edu>
+
+	* configure.in: release 2.5.7
+
+2004-03-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: check for GStreamer 0.8 and 0.7
+
+2004-03-05  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
+2004-02-22  Kevin Vandersloot
+
+	* configure.in: reelase 2.5.6
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-18  Kevin Vandersloot
+
+	* configure.in: More  BSD support from Julio M. Merino Vidal.
+
+2004-02-17  Kevin Vandersloot
+
+	* configure.in: fix compilation on Net BSD. Fixes bug #134654. Patch from
+	Julio M. Merino Vidal.
+
+2004-02-10  Jason Leach  <leach@wam.umd.edu>
+
+	* configure.in: Removed the --disable-install-schemas arg (whose
+	conditional is not being used anywhere), because there is already
+	a --disable-schemas-install from gconf.m4's AM_GCONF_SOURCE_2
+	macro.
+
+2004-02-06  Dennis Cranston <dennis_cranston at yahoo com>
+
+	Fix for bug 133605.
+	* gswitchit/gswitchit-applet.c:
+	(GSwitchItAppletInit): Set PANEL_APPLET_EXPAND_MINOR.
+	
+2004-02-06  Padraig O'Briain (padraig.obriain@sun.com)
+
+	* gswitchit/gswitchit-applet.c (GSwitchItAppletFilterXEvt):
+	Return GDK_FILTER_CONTINUE for ReparentNotify event so that
+	gtk_plug_filter_func gets the events. Fixes bug #132851.
+
+2004-02-05  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* configure.in: Install the docs for multiload.
+
+2004-02-03  Alexander Winston  <alexander.winston@comcast.net>
+
+	* acinclude.m4: Quoted definition of macro AM_PATH_ESD. Fixes
+	#133213.
+
+2004-02-01  Kevin Vandersloot
+
+	* configure.in: release 2.5.5
+	
+2004-02-01  Chee Bin HOH <cbhoh@gnome.org>
+ 
+ 	* accessx-status/applet.c:
+ 	* battstat/battstat_applet.c:
+ 	* cdplayer/cdplayer.c:
+ 	* charpick/charpick.c:
+ 	* drivemount/drivemount.c:
+ 	* geyes/geyes.c:
+ 	* gtik/gtik.c:
+ 	* gweather/gweather-about.c:
+ 	* mailcheck/mailcheck.c:
+ 	* mini-commander/src/about.c:
+ 	* modemlights/modemlights.c:
+ 	* stickynotes/stickynotes_applet_callbacks.c:
+ 	* wireless/wireless-applet.c: Update documenters credit in 
+ 	About dialog.
+
+2004-02-01  Dennis Smit  <ds@nerds-incorporated.org>
+	* NEWS: Updates for 2.5.5.
+
+2004-01-29  Chee Bin HOH <cbhoh@gnome.org>
+	
+        * modemlights.c:
+        * properties.c: fix bug #132832 for displaying online help.
+                                                                                                                             
+2004-01-27  Bill Haneman <billh@gnome.org>
+
+	Fix for bug 132225.
+	* gswitchit/gswitchit-applet.c:
+	(GSwitchItAppletKeyPressed): New, cycle through
+	available groups on 'Enter', 'Return', or 'spacebar'.
+	(GSwitchItAppletPrepareDrawing): Connect to the
+	key-pressed signal on the applet as well as the
+	button-pressed signal on the event box.
+
+	Also changed C++ style "//" comments to /* */.
+
+2004-01-27  Chee Bin HOH  <cbhoh@gnome.org>
+	
+	* modemlights/ChangeLog:
+	* modemlights/docs/C: update docs for modemlights 2.6
+
+2004-01-27  Vijaykumar Patwari <vijaykumar.patwari@wipro.com>
+
+	Fix bug #125909: Property windows remain after applet removal
+
+	* stickynotes/stickynotes.c (stickynote_new): Attached a response
+	signal to the property window.
+	(response_cb): the signal callback.
+	(stickynote_change_properties): Get rid of gtk_dialog_run() which
+	was the cause of the problem.
+	
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* gswitchit/Makefile.am (GCONF_CONFIG_SOURCE): builddir != srcdir fix.
+
+2004-01-15  Kevin Vandersloot
+
+	* configure.in: release 2.5.4
+
+2004-01-03  Jon Trowbridge <trow@ximian.com>
+
+	* configure.in: Check for gstreamer for the mixer applet.
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION) : set this to 1.6 to cope
+	  with the gswitchit reqs.
+
+2003-12-7  Kevin Vandersloot
+
+	* configure.in: release 2.5.3
+
+2003-12-15  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "hr" to ALL_LINGUAS.
+
+2003-12-12  Laurent Dhima  <laurentialblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+  
+2003-12-7  Kevin Vandersloot
+
+	* configure.in: release 2.5.2
+
+2003-11-14  Kevin Vandersloot
+
+	* configure.in: release 2.5.1
+
+2003-10-22  Kevin Vandersloot
+
+	* configure.in: require new gnome-panel for lock down stuff. Release
+	2.5.0
+
+2003-10-22  Breda McColgan <Breda.McColgan@sun.com>
+
+	* cdplayer/docs/C/topic.dat: deleted this old file
+	* cdplayer/docs/C/cdplayer.sgml: deleted this old file
+	* cdplayer/docs/C/cdplayer_applet-C.omf: deleted this old file
+	* cdplayer/docs/C/cdplayer_applet.sgml: deleted this old file
+	* charpick/help/C/l10n.txt: date correction
+	* geyes/docs/C/topic.dat: deleted this old file
+	* mixer/docs/C/topic.dat: deleted this old file
+
+2003-10-21  Kevin Vandersloot
+
+	* configure.in: bump version and require new libgtop. Fix build
+	in wireless doc directory
+
+2003-10-13  Breda McColgan  <breda.mccolgan@sun.com>
+
+	* cdplayer/docs/C/cdplayer.xml: minor updates 
+	* cdplayer/docs/C/cdplayer-C.omf: updated date and version number
+	* cdplayer/docs/C/l10n.txt: updated Summary of Changes section
+	* geyes/docs/C/geyes.xml: minor updates 
+	* geyes/docs/C/geyes-C.omf: updated date and version number
+	* geyes/docs/C/l10n.txt: updated Summary of Changes section
+	* gkb-new/help/C/gkb.xml: minor updates 
+	* gkb-new/help/C/gkb-C.omf: updated date and version number
+	* gkb-new/help/C/l10n.txt: updated Summary of Changes section
+	* mini-commander/help/C/command-line.xml: minor updates 
+	* mini-commander/help/C/command-line-C.omf: updated date and version number
+	* mini-commander/help/C/l10n.txt: updated Summary of Changes section
+	* mixer/docs/C/mixer.xml: minor updates 
+	* mixer/docs/C/mixer-C.omf: updated date and version number
+	* mixer/docs/C/l10n.txt: updated Summary of Changes section
+
+2003-09-08  Kevin Vandersloot
+
+	* configure.in: release 2.4.0!
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-09-04  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am (EXTRA_DIST) : include omf.make
+
+2003-09-01  Kevin Vandersloot
+
+	* configure.in: release 2.3.90
+
+2003-08-26  Kevin Vandersloot
+
+	* configure.in: release 2.3.7
+
+2003-08-22  Breda McColgan  <breda.mccolgan@sun.com>
+
+	* wireless/docs/C/wireless.xml: updated references to figures
+	* wireless/docs/C/wireless-C.omf: updated date and version number
+	* wireless/docs/C/l10n.txt: updated references to figures
+	* wireless/docs/C/figures/wireless_applet.png: deleted this file
+	 * wireless/docs/C/figures/wireless_applet_conn.png: added this file
+	* wireless/docs/C/figures/wireless_applet_no_conn.png: added this file
+
+2003-08-20  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS.
+	
+2003-08-07  Breda McColgan  <breda.mccolgan@sun.com>
+
+        * stickynotes/docs/C/stickynotes_applet.xml: updated for GNOME 2.4
+        * stickynotes/docs/C/stickynotes_applet-C.omf: updated for GNOME 2.4
+	* stickynotes/docs/C/l10n.txt: created this new file for GNOME 2.4
+        * stickynotes/docs/C/figures/stickynotes_applet.png: updated for GNOME 2.4
+	* stickynotes/docs/C/figures/preferences_dialog.png: deleted this file
+	* stickynotes/docs/C/figures/note_menu.png: deleted this file
+	* stickynotes/docs/C/figures/applet_menu.png: deleted this file
+	* wireless/docs: created this new directory for GNOME 2.4
+	* wireless/docs/C: created this new directory for GNOME 2.4
+	* wireless/docs/C/figures: created this new directory for GNOME 2.4
+	* wireless/docs/C/wireless.xml: created this new file for GNOME 2.4
+	* wireless/docs/C/wireless-C.omf: created this new file for GNOME 2.4
+	* wireless/docs/C/legal.xml: added this new file for GNOME 2.4
+	* wireless/docs/C/l10n.txt: created this new file for GNOME 2.4
+	* wireless/docs/C/figures/wireless_applet.png: created this new file for GNOME 2.4
+
+2003-07-23 John Fleck <jfleck@inkstain.net>
+
+	* configure.in
+	add modemlights docs directory back into the build
+
+2003-07-16  Kevin Vandersloot
+
+	* configure.in, NEWS: release 2.3.6
+
+2003-07-12 Daniel Baeyens <daniel.baeyens@hispalinux.es>
+	
+	* modemlights/modemlights.schemas.in,
+	gkb-new/gkb.schemas.in,
+	mini-commander/src/mini-commander.schemas.in:
+	Fixed some string issues 
+
+2003-07-09 John Fleck <jfleck@inkstain.net>
+        update to new docs build system. This now
+	requires the latest gnome-common.
+	
+	removed:
+	* xmldocs.make
+	changed:
+	* Makefile.am
+	* autogen.sh
+	* configure.in
+	* accessx-status/docs/C/Makefile.am
+	* battstat/docs/C/Makefile.am
+	* battstat/docs/ja/Makefile.am
+	* cdplayer/docs/C/Makefile.am
+	* cdplayer/docs/de/Makefile.am
+	* cdplayer/docs/es/Makefile.am
+	* cdplayer/docs/fr/Makefile.am
+	* cdplayer/docs/it/Makefile.am
+	* cdplayer/docs/ja/Makefile.am
+	* cdplayer/docs/ko/Makefile.am
+	* cdplayer/docs/sv/Makefile.am
+	* cdplayer/docs/zh_CN/Makefile.am
+	* cdplayer/docs/zh_TW/Makefile.am
+	* charpick/docs/C/Makefile.am
+	* charpick/docs/es/Makefile.am
+	* charpick/docs/it/Makefile.am
+	* charpick/docs/ja/Makefile.am
+	* charpick/help/C/Makefile.am
+	* charpick/help/de/Makefile.am
+	* charpick/help/es/Makefile.am
+	* charpick/help/fr/Makefile.am
+	* charpick/help/it/Makefile.am
+	* charpick/help/ja/Makefile.am
+	* charpick/help/ko/Makefile.am
+	* charpick/help/sv/Makefile.am
+	* charpick/help/zh_CN/Makefile.am
+	* charpick/help/zh_TW/Makefile.am
+	* drivemount/docs/C/Makefile.am
+	* drivemount/docs/es/Makefile.am
+	* drivemount/docs/it/Makefile.am
+	* drivemount/docs/ja/Makefile.am
+	* drivemount/help/C/Makefile.am
+	* geyes/docs/C/Makefile.am
+	* geyes/docs/de/Makefile.am
+	* geyes/docs/es/Makefile.am
+	* geyes/docs/fr/Makefile.am
+	* geyes/docs/it/Makefile.am
+	* geyes/docs/ja/Makefile.am
+	* geyes/docs/ko/Makefile.am
+	* geyes/docs/sv/Makefile.am
+	* geyes/docs/zh_CN/Makefile.am
+	* geyes/docs/zh_TW/Makefile.am
+	* gkb-new/docs/C/Makefile.am
+	* gkb-new/docs/hu/Makefile.am
+	* gkb-new/help/C/Makefile.am
+	* gkb-new/help/de/Makefile.am
+	* gkb-new/help/es/Makefile.am
+	* gkb-new/help/fr/Makefile.am
+	* gkb-new/help/it/Makefile.am
+	* gkb-new/help/ja/Makefile.am
+	* gkb-new/help/ko/Makefile.am
+	* gkb-new/help/sv/Makefile.am
+	* gkb-new/help/zh_CN/Makefile.am
+	* gkb-new/help/zh_TW/Makefile.am
+	* gtik/help/C/Makefile.am
+	* gtik/help/de/Makefile.am
+	* gtik/help/es/Makefile.am
+	* gtik/help/fr/Makefile.am
+	* gtik/help/it/Makefile.am
+	* gtik/help/ja/Makefile.am
+	* gtik/help/ko/Makefile.am
+	* gtik/help/sv/Makefile.am
+	* gtik/help/zh_CN/Makefile.am
+	* gtik/help/zh_TW/Makefile.am
+	* gweather/docs/C/Makefile.am
+	* gweather/docs/de/Makefile.am
+	* gweather/docs/es/Makefile.am
+	* gweather/docs/fr/Makefile.am
+	* gweather/docs/it/Makefile.am
+	* gweather/docs/ja/Makefile.am
+	* gweather/docs/ko/Makefile.am
+	* gweather/docs/sv/Makefile.am
+	* gweather/docs/zh_CN/Makefile.am
+	* gweather/docs/zh_TW/Makefile.am
+	* mailcheck/help/C/Makefile.am
+	* mailcheck/help/de/Makefile.am
+	* mailcheck/help/es/Makefile.am
+	* mailcheck/help/fr/Makefile.am
+	* mailcheck/help/it/Makefile.am
+	* mailcheck/help/ja/Makefile.am
+	* mailcheck/help/ko/Makefile.am
+	* mailcheck/help/sv/Makefile.am
+	* mailcheck/help/zh_CN/Makefile.am
+	* mailcheck/help/zh_TW/Makefile.am
+	* mini-commander/docs/C/Makefile.am
+	* mini-commander/help/C/Makefile.am
+	* mini-commander/help/de/Makefile.am
+	* mini-commander/help/es/Makefile.am
+	* mini-commander/help/fr/Makefile.am
+	* mini-commander/help/it/Makefile.am
+	* mini-commander/help/ja/Makefile.am
+	* mini-commander/help/ko/Makefile.am
+	* mini-commander/help/sv/Makefile.am
+	* mini-commander/help/zh_CN/Makefile.am
+	* mini-commander/help/zh_TW/Makefile.am
+	* mixer/docs/Makefile.am
+	* mixer/docs/C/Makefile.am
+	* mixer/docs/de/Makefile.am
+	* mixer/docs/es/Makefile.am
+	* mixer/docs/fr/Makefile.am
+	* mixer/docs/it/Makefile.am
+	* mixer/docs/ja/Makefile.am
+	* mixer/docs/ko/Makefile.am
+	* mixer/docs/sv/Makefile.am
+	* mixer/docs/zh_CN/Makefile.am
+	* mixer/docs/zh_TW/Makefile.am
+
+2003-07-09 John Fleck <jfleck@inkstain.net>
+
+	* battstat/docs/C
+	remove old *.gif, *.sgml and related help files
+
+2003-06-29  Kevin Vandersloot
+
+	* configure.in, NEWS: release 2.3.5
+
+2003-06-25  Kevin Vandersloot
+
+	* all modules: translate the schemas files. Fixes bug #89363
+
+2003-06-12  Jody Goldberg <jody@gnome.org>
+
+	* po/POTFILES.in : Include the new files in gkb
+
+2003-06-07  Kevin Vandersloot
+
+	* configure.in, NEWS: release 2.3.4
+
+2003-06-03  Bill Haneman <bill.haneman@sun.com>
+
+	Fix for #114190.
+	* accessx-status/applet.c:
+	Removed bogus non-ASCII localization string.
+	(We need an en_ locale to do this right).
+
+2003-06-01  Kevin Vandersloot
+
+	* configure.in, NEWS: release 2.3.3
+
+2003-05-29  Bill Haneman <bill.haneman@sun.com>
+
+	* accessx-status/applet.c:
+	(accessx_status_applet_add_stock_icons):
+	(accessx_status_applet_bouncekeys_image):
+	Fixed declarations that occurred mid-block (compiler warning).
+
+2003-05-28  Shailesh Mittal <shailesh.mittal@wipro.com>
+
+ 	* configure.in: Added an option to enable IPv6 support.
+ 	Checks for function getaddrinfo are placed.
+
+2003-05-28  Bill Haneman <bill.haneman@sun.com>
+
+	* accessx-status:
+	New applet, displays status of keyboard accessibility features.
+	Shows keyboard state (i.e. latched/locked modifiers, etc.) when
+	such features are in use, and allows direct launching of keyboard
+	accessibility prefs dialog from applet.
+	Fixes bug #98488.
+
+2003-05-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* cdplayer/cdplayer.c, drivemount/drivemount.c, 
+	mini-commander/src/mc-install-default-macros.c, mixer/mixer.c,
+	multiload/main.c: Remove white space before colons. Fixes bug #99675
+
+2003-05-12  KEvin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: only build battstat on supported platforms. Patch by
+	Christian Marillat. Fixes part of bug #111466.
+
+2003-05-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-05  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * configure.in: Added cy to ALL_LINGUAS
+        * po/cy.po: Added
+
+2003-05-04  Greg Merchan  <merchan@phys.lsu.edu>
+	* battstat/properties.c, cdplayer/cdplayer.c,
+	  drivemount/drivemount.c, drivemount/properties.c,
+	  mailcheck/mailcheck.c, mini-commander/src/preferences.c,
+	  mixer/mixer.c, multiload/main.c, wireless/wireless-applet.c
+	Change GTK_BUTTONS_CLOSE to GTK_BUTTONS_OK for HIG compliance.
+	Fixes bug 112185
+
+2003-05-04  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, NEWS: release 2.3.2
+
+2003-04-23  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "mk" to ALL_LINGUAS.
+
+2003-04-06  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.3.1
+
+2003-03-27  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 2.3.0.
+
+2003-03-27  Mike Lei <mike.lei@sun.com>
+
+	* configure.in: Added L10N Makefile support for cdplayer
+	char-palette,command-line,geyes,gkb,gtik2_applet2,gweather
+	mixer_applet2 mailcheck
+
+	* Added L10N many doc files and Makefile.am for above applets
+
+2003-03-26  Kevin Vandersloot <kfv101@psu.edu>
+
+	* NEWS: update for 2.3.0 release
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-09  Loban A Rahman  <loban@earthling.net>
+
+	* README*: Updated some outdated READMEs.
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add mailcheck dir.
+
+	* configure.in: generate mailcheck Makefiles.
+
+	* screen-exec/*: sync with libegg.
+
+2003-03-02  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, MAINTAINERS, HACKING, README: update
+
+2003-03-02  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, Makefile.am: remove panel-menu applet completely. Bump version 
+	to 2.3.0
+	
+	* autogen.sh: remove reference to sound-monitor
+	
+	* remove panel-menu, whereami, sound-monitor, screenshooter
+	directories since they are used any more
+
+2003-03-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* cdplayer/docs/ja/*.xml, cdplayer/docs/ja/figures/*.png,
+	  cdplayer/docs/Makefile.am: Added new documents for GNOME 2.2
+	  translated by KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* configure.in: added "cdplayer/docs/ja/Makefile" into AC_OUTPUT.
+	* charpick/help/ja/*.xml, charpick/help/ja/figures/*.png,
+	charpick/help/ja/Makefile.am: Added new documents for GNOME 2.2
+	  translated by KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* configure.in: added "charpick/help/ja/Makefile" into AC_OUTPUT. 
+	* battstat/docs/ja/*.xml, battstat/docs/ja/figures/*.png
+	  battstat/docs/Makefile.am: Added new documents for GNOME 2.2
+	  translated by KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* configure.in: added "battstat/docs/ja/Makefile" into AC_OUTPUT.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+	* ChangeLog: Fixed wrong 2002 dates to 2003.
+
+2003-02-17  Kevin Vandersloot <kfv101@psu.edu>
+	
+	* configure.in: add stickynotes docs stuff to get it compiling
+
+2003-01-26  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: remove stickynotes/doc since it doesn't compile
+	and I don't have time
+
+2003-01-26  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, Makefile.am: add stickynotes applet
+
 2003-01-26  Kevin Vandersloot <kfv101@psu.edu>
 
 	* configure.in: release 2.2.0

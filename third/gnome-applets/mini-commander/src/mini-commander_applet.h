@@ -37,9 +37,9 @@ typedef struct _MCData MCData;
 #include "preferences.h"
 
 /* Constants */
-#define MC_NUM_LISTENERS                14
+#define MC_NUM_LISTENERS                12
 #define MC_HISTORY_LIST_LENGTH          50
-#define MC_MAX_COMMAND_LENGTH           500
+#define MC_MAX_COMMAND_LENGTH           505
 #define MC_MAX_NUM_MACRO_PARAMETERS     100
 
 struct _MCData {
@@ -47,8 +47,9 @@ struct _MCData {
 
     GtkTooltips   *tooltips;
 
-    GtkWidget     *applet_vbox;
-    GtkWidget     *applet_inner_vbox;
+    GtkWidget     *about_dialog;
+
+    GtkWidget     *applet_box;
 
     GtkWidget     *entry;
     GtkWidget     *file_select;
@@ -60,6 +61,8 @@ struct _MCData {
     MCPrefsDialog  prefs_dialog;
 
     guint          listeners [MC_NUM_LISTENERS];
+    gboolean       error;
+    PanelAppletOrient orient;
 };
 
 void mc_applet_draw (MCData *mc);

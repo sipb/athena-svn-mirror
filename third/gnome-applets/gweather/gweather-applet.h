@@ -1,7 +1,7 @@
 #ifndef __GWEATHER_APPLET_H_
 #define __GWEATHER_APPLET_H_
 
-/* $Id: gweather-applet.h,v 1.1.1.1 2003-01-04 21:17:51 ghudson Exp $ */
+/* $Id: gweather-applet.h,v 1.1.1.2 2004-10-04 03:03:47 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>

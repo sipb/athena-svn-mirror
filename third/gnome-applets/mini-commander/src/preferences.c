@@ -29,6 +29,7 @@
 #include <gtk/gtk.h>
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
+#include <libgnome/libgnome.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <glade/glade-xml.h>
 #include <gconf/gconf-client.h>
@@ -43,9 +44,50 @@ enum {
 	COLUMN_COMMAND
 };
 
+#define NEVER_SENSITIVE		"never_sensitive"
+
 static GSList *mc_load_macros (MCData *mc);
 
-/* GConf notfication handlers
+/* set sensitive and setup NEVER_SENSITIVE appropriately */
+static void
+hard_set_sensitive (GtkWidget *w, gboolean sensitivity)
+{
+	gtk_widget_set_sensitive (w, sensitivity);
+	g_object_set_data (G_OBJECT (w), NEVER_SENSITIVE,
+			   GINT_TO_POINTER ( ! sensitivity));
+}
+
+
+/* set sensitive, but always insensitive if NEVER_SENSITIVE is set */
+static void
+soft_set_sensitive (GtkWidget *w, gboolean sensitivity)
+{
+	if (g_object_get_data (G_OBJECT (w), NEVER_SENSITIVE))
+		gtk_widget_set_sensitive (w, FALSE);
+	else
+		gtk_widget_set_sensitive (w, sensitivity);
+}
+
+gboolean
+mc_key_writable (MCData *mc, const char *key)
+{
+	gboolean writable;
+	char *fullkey;
+	static GConfClient *client = NULL;
+	if (client == NULL)
+		client = gconf_client_get_default ();
+
+	fullkey = panel_applet_gconf_get_full_key (mc->applet, key);
+
+	writable = gconf_client_key_is_writable (client, fullkey, NULL);
+
+	g_free (fullkey);
+
+	return writable;
+}
+
+
+/* GConf notification handlers
  */
 static void
 show_default_theme_changed (GConfClient  *client,
@@ -57,34 +99,6 @@ show_default_theme_changed (GConfClient  *client,
 	return;
 
     mc->preferences.show_default_theme = gconf_value_get_bool (entry->value);
-
-    mc_applet_draw (mc); /* FIXME: we shouldn't have to redraw the whole applet */
-}
-
-static void
-show_handle_changed (GConfClient  *client,
-		     guint         cnxn_id,
-		     GConfEntry   *entry,
-		     MCData       *mc)
-{
-    if (!entry->value || entry->value->type != GCONF_VALUE_BOOL)
-	return;
-
-    mc->preferences.show_handle = gconf_value_get_bool (entry->value);
-
-    mc_applet_draw (mc); /* FIXME: we shouldn't have to redraw the whole applet */
-}
-
-static void
-show_frame_changed (GConfClient  *client,
-		    guint         cnxn_id,
-		    GConfEntry   *entry,
-		    MCData       *mc)
-{
-    if (!entry->value || entry->value->type != GCONF_VALUE_BOOL)
-	return;
-
-    mc->preferences.show_frame = gconf_value_get_bool (entry->value);
 
     mc_applet_draw (mc); /* FIXME: we shouldn't have to redraw the whole applet */
 }
@@ -321,6 +335,48 @@ duplicate_pattern (MCData     *mc,
 }
 
 static void
+show_help_section (GtkWindow *dialog, gchar *section)
+{
+	GError *error = NULL;
+	static GnomeProgram *applet_program = NULL;
+	
+	if (!applet_program) {
+		int argc = 1;
+		char *argv[2] = { "command-line" };
+		applet_program = gnome_program_init ("command-line", VERSION,
+						      LIBGNOME_MODULE, argc, argv,
+     						      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
+	}
+
+	gnome_help_display_desktop_on_screen (
+			applet_program, "command-line", "command-line", section,
+			gtk_widget_get_screen (GTK_WIDGET (dialog)),
+			&error);
+
+	if (error) {
+		GtkWidget *error_dialog;
+
+		error_dialog = gtk_message_dialog_new (
+				NULL,
+				GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_OK,
+				_("There was an error displaying help: %s"),
+				error->message);
+
+		g_signal_connect (error_dialog, "response",
+				  G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (error_dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (error_dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (dialog)));
+		gtk_widget_show (error_dialog);
+		g_error_free (error);
+	}
+}
+
+static void
 add_response (GtkWidget *window,
 	      int        id,
 	      MCData    *mc)
@@ -356,7 +412,7 @@ add_response (GtkWidget *window,
 	    dialog = gtk_message_dialog_new (GTK_WINDOW (window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_CLOSE,
+					     GTK_BUTTONS_OK,
 					     error_message);
 
 	    g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
@@ -382,6 +438,7 @@ add_response (GtkWidget *window,
     }
 	break;
     case GTK_RESPONSE_HELP:
+    	show_help_section (GTK_WINDOW (window), "command-line-prefs-2");
 	break;
     case GTK_RESPONSE_CLOSE:
     default:
@@ -535,32 +592,6 @@ background_color_set (GtkWidget *color_picker,
 }
 
 static void
-show_handle_toggled (GtkToggleButton *toggle,
-                     MCData          *mc)
-{
-    gboolean show_handle;
-    
-    show_handle = gtk_toggle_button_get_active (toggle);
-    if (show_handle == mc->preferences.show_handle) 
-        return;
-        
-    panel_applet_gconf_set_bool (mc->applet, "show_handle", show_handle, NULL);
-}
-
-static void
-show_frame_toggled (GtkToggleButton *toggle,
-		    MCData          *mc)
-{
-    gboolean show_frame;
-    
-    show_frame = gtk_toggle_button_get_active (toggle);
-    if (show_frame == mc->preferences.show_frame) 
-        return;
-        
-    panel_applet_gconf_set_bool (mc->applet, "show_frame", show_frame, NULL);
-}
-
-static void
 auto_complete_history_toggled (GtkToggleButton *toggle,
 			       MCData          *mc)
 {
@@ -597,8 +628,8 @@ use_default_theme_toggled (GtkToggleButton *toggle,
     if (use_default_theme == mc->preferences.show_default_theme) 
         return;
         
-    gtk_widget_set_sensitive (mc->prefs_dialog.fg_color_picker, !use_default_theme);
-    gtk_widget_set_sensitive (mc->prefs_dialog.bg_color_picker, !use_default_theme);
+    soft_set_sensitive (mc->prefs_dialog.fg_color_picker, !use_default_theme);
+    soft_set_sensitive (mc->prefs_dialog.bg_color_picker, !use_default_theme);
 
     panel_applet_gconf_set_bool (mc->applet, "show_default_theme", use_default_theme, NULL);
 }
@@ -610,6 +641,7 @@ preferences_response (GtkWidget *dialog,
 {
     switch (id) {
     case GTK_RESPONSE_HELP:
+    	show_help_section (GTK_WINDOW (dialog), "command-line-prefs-0");
 	break;
     case GTK_RESPONSE_CLOSE:
     default: {
@@ -650,8 +682,6 @@ mc_preferences_setup_dialog (GladeXML *xml,
     gtk_dialog_set_default_response (GTK_DIALOG (dialog->dialog), GTK_RESPONSE_CLOSE);
     gtk_window_set_default_size (GTK_WINDOW (dialog->dialog), 400, -1);
 
-    dialog->show_handle_toggle           = glade_xml_get_widget (xml, "show_handle_toggle");
-    dialog->show_frame_toggle            = glade_xml_get_widget (xml, "show_frame_toggle");
     dialog->auto_complete_history_toggle = glade_xml_get_widget (xml, "auto_complete_history_toggle");
     dialog->size_spinner                 = glade_xml_get_widget (xml, "size_spinner");
     dialog->use_default_theme_toggle     = glade_xml_get_widget (xml, "default_theme_toggle");
@@ -661,34 +691,31 @@ mc_preferences_setup_dialog (GladeXML *xml,
     dialog->delete_button                = glade_xml_get_widget (xml, "delete_button");
     dialog->add_button                   = glade_xml_get_widget (xml, "add_button");
 
-    /* Show handle */
-    g_signal_connect (dialog->show_handle_toggle, "toggled",
-		      G_CALLBACK (show_handle_toggled), mc);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->show_handle_toggle),
-				  mc->preferences.show_handle);
-
-    /* Show frame */
-    g_signal_connect (dialog->show_frame_toggle, "toggled",
-		      G_CALLBACK (show_frame_toggled), mc);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->show_frame_toggle),
-				  mc->preferences.show_frame);
-
     /* History based autocompletion */
     g_signal_connect (dialog->auto_complete_history_toggle, "toggled",
 		      G_CALLBACK (auto_complete_history_toggled), mc);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->auto_complete_history_toggle),
 				  mc->preferences.auto_complete_history);
+    if ( ! mc_key_writable (mc, "autocomplete_history"))
+	    hard_set_sensitive (dialog->auto_complete_history_toggle, FALSE);
 
     /* Width */
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (dialog->size_spinner), mc->preferences.normal_size_x);
     g_signal_connect (dialog->size_spinner, "value_changed",
 		      G_CALLBACK (size_value_changed), mc); 
+    if ( ! mc_key_writable (mc, "normal_size_x")) {
+	    hard_set_sensitive (dialog->size_spinner, FALSE);
+	    hard_set_sensitive (glade_xml_get_widget (xml, "size_label"), FALSE);
+	    hard_set_sensitive (glade_xml_get_widget (xml, "size_post_label"), FALSE);
+    }
 
     /* Use default theme */
     g_signal_connect (dialog->use_default_theme_toggle, "toggled",
 		      G_CALLBACK (use_default_theme_toggled), mc);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->use_default_theme_toggle),
 				  mc->preferences.show_default_theme);
+    if ( ! mc_key_writable (mc, "show_default_theme"))
+	    hard_set_sensitive (dialog->use_default_theme_toggle, FALSE);
 
     /* Foreground color */
     g_signal_connect (dialog->fg_color_picker, "color_set",
@@ -698,7 +725,14 @@ mc_preferences_setup_dialog (GladeXML *xml,
 				mc->preferences.cmd_line_color_fg_g,
 				mc->preferences.cmd_line_color_fg_b,
 				0);
-    gtk_widget_set_sensitive (dialog->fg_color_picker, mc->preferences.show_default_theme);
+    soft_set_sensitive (dialog->fg_color_picker, !mc->preferences.show_default_theme);
+
+    if ( ! mc_key_writable (mc, "cmd_line_color_fg_r") ||
+	 ! mc_key_writable (mc, "cmd_line_color_fg_g") ||
+	 ! mc_key_writable (mc, "cmd_line_color_fg_b")) {
+	    hard_set_sensitive (dialog->fg_color_picker, FALSE);
+	    hard_set_sensitive (glade_xml_get_widget (xml, "fg_color_label"), FALSE);
+    }
 
     /* Background color */
     g_signal_connect (dialog->bg_color_picker, "color_set",
@@ -708,12 +742,26 @@ mc_preferences_setup_dialog (GladeXML *xml,
 				mc->preferences.cmd_line_color_bg_g,
 				mc->preferences.cmd_line_color_bg_b,
 				0);
-    gtk_widget_set_sensitive (dialog->bg_color_picker, mc->preferences.show_default_theme);
+    soft_set_sensitive (dialog->bg_color_picker, !mc->preferences.show_default_theme);
+
+    if ( ! mc_key_writable (mc, "cmd_line_color_bg_r") ||
+	 ! mc_key_writable (mc, "cmd_line_color_bg_g") ||
+	 ! mc_key_writable (mc, "cmd_line_color_bg_b")) {
+	    hard_set_sensitive (dialog->bg_color_picker, FALSE);
+	    hard_set_sensitive (glade_xml_get_widget (xml, "bg_color_label"), FALSE);
+    }
 
 
     /* Macros Delete and Add buttons */
     g_signal_connect (dialog->delete_button, "clicked", G_CALLBACK (macro_delete), mc);
     g_signal_connect (dialog->add_button, "clicked", G_CALLBACK (macro_add), mc);
+
+    if ( ! mc_key_writable (mc, "macro_patterns") ||
+	 ! mc_key_writable (mc, "macro_commands")) {
+	    hard_set_sensitive (dialog->add_button, FALSE);
+	    hard_set_sensitive (dialog->delete_button, FALSE);
+	    hard_set_sensitive (dialog->macros_tree, FALSE);
+    }
 
     /* Macros tree view */
     dialog->macros_store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING, NULL);
@@ -726,7 +774,7 @@ mc_preferences_setup_dialog (GladeXML *xml,
 
     gtk_tree_view_insert_column_with_attributes (
 			GTK_TREE_VIEW (dialog->macros_tree), -1,
-			"Pattern", renderer,
+			_("Pattern"), renderer,
 			"text", COLUMN_PATTERN,
 			NULL);
 
@@ -736,7 +784,7 @@ mc_preferences_setup_dialog (GladeXML *xml,
 
     gtk_tree_view_insert_column_with_attributes (
 			GTK_TREE_VIEW (dialog->macros_tree), -1,
-			"Command", renderer,
+			_("Command"), renderer,
 			"text", COLUMN_COMMAND,
 			NULL);
 
@@ -871,23 +919,7 @@ mc_setup_listeners (MCData *mc)
                                 NULL, NULL);
     g_free (key);
 
-    key = panel_applet_gconf_get_full_key (PANEL_APPLET (mc->applet), "show_handle");
-    mc->listeners [i++] = gconf_client_notify_add (
-				client, key,
-				(GConfClientNotifyFunc) show_handle_changed,
-                                mc,
-                                NULL, NULL);
-    g_free (key);
-
-    key = panel_applet_gconf_get_full_key (PANEL_APPLET (mc->applet), "show_frame");
-    mc->listeners [i++] = gconf_client_notify_add (
-				client, key,
-				(GConfClientNotifyFunc) show_frame_changed,
-                                mc,
-                                NULL, NULL);
-    g_free (key);
-
-    key = panel_applet_gconf_get_full_key (PANEL_APPLET (mc->applet), "auto_complete_history");
+    key = panel_applet_gconf_get_full_key (PANEL_APPLET (mc->applet), "autocomplete_history");
     mc->listeners [i++] = gconf_client_notify_add (
 				client, key,
 				(GConfClientNotifyFunc) auto_complete_history_changed,
@@ -997,22 +1029,6 @@ mc_load_preferences (MCData *mc)
 	g_error_free (error);
 	error = NULL;
 	mc->preferences.show_default_theme = MC_DEFAULT_SHOW_DEFAULT_THEME;
-    }
-
-    mc->preferences.show_handle =
-		panel_applet_gconf_get_bool (mc->applet, "show_handle", &error);
-    if (error) {
-	g_error_free (error);
-	error = NULL;
-	mc->preferences.show_handle = MC_DEFAULT_SHOW_HANDLE;
-    }
-
-    mc->preferences.show_frame =
-		panel_applet_gconf_get_bool (mc->applet, "show_frame", &error);
-    if (error) {
-	g_error_free (error);
-	error = NULL;
-	mc->preferences.show_frame = MC_DEFAULT_SHOW_FRAME;
     }
 
     mc->preferences.auto_complete_history =

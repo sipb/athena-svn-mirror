@@ -1,3 +1,318 @@
+2004-09-13  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/multiload-C.omf:
+	* docs/C/multiload.xml:
+	- Updates for 2.8 from Angela Boyle
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec.
+	* main.c: (help_cb), (multiload_change_background_cb):
+	Use correct API for help.
+
+2004-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* load-graph.c: (load_graph_unalloc), (load_graph_destroy),
+	(load_graph_new):
+	* properties.c: (add_color_selector): Merge fix for
+	bug #148710 from stable.
+
+2004-06-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* load-graph.c (load_graph_update):
+
+	Check if g->data == NULL.
+
+	Patch by: Karthik BG  <kkbg@softhome.net>
+
+	Fixes bug: #137893.
+
+2004-06-11  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* main.c (multiload_applet_tooltip_update):
+
+	With mem usage also show the percentage cache.
+
+	Based on patch by: Karthik BG  <kkbg@softhome.net>
+
+	Fixes bug: 118988.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Online localized help from Sun's translation team
+	in de, es, fr, it, ja, ko, sv, zh_CN, zh_HK and zh_TW.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Remove the old sgml docs and weird assed
+	directory structure. We're much simpler these days.
+
+2004-02-29  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* main.c (multiload_change_background_cb):
+	Removed bogus return.
+
+2004-02-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* main.c (multiload_change_background_cb):
+	Added function to handle panel background
+	changes.
+
+	(multiload_applet_new): Add signal handler
+	to change_background.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* properties.c (multiload_properties_cb):
+	Stupid bug fix.
+
+	Disconnected the destroy signal it gets handled
+	within properties_close_cb where we're also able to NULLify
+	the prop_dialog entry.
+
+	and a few small cleanups here and there.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* global.h:
+	Add a prop_dialog entry to the MultiloadApplet
+	struct.
+
+	* main.c (multiload_applet_new): Set prop_dialog
+	to NULL.
+
+	(multiload_destroy_cb): Destroy prop_dialog
+	if it's present.
+
+	* properties.c (multiload_properties_cb):
+	Use the dialog from the instance struct
+	so it doesn't get shared between instances.
+
+	Check if the dialog is there, if so present
+	and set the right screen.
+
+	* properties.h: Removed some unused extern
+	vars that weren't actually there anymore.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* main.c (about_cb): Set the screen right if the user
+	requests the about dialog and it's already there but
+	not on the right screen.
+
+2004-02-22  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* main.c (start_procman):
+	Moved from egg_screen_execute_command_line_async to
+	gdk_spawn_command_line_on_screen.
+
+	Fixes bug #135158.
+
+2004-02-19  Kevin Vandersloot
+	
+	* linux-proc.c: BSD support. Patch from some unknown BSD hacker. Fixes bug
+	#97003
+
+2004-02-09 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/multiload.xml: Implemented peer review comments
+	* docs/C/multiload-C.omf: Updated date
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-02-06  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* main.c (about_cb): Added documenter credits.
+
+2004-02-05  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* Makefile.am: added docs to the SUBDIRS list so they get installed.
+	
+	Applied Patch by Alexander Winston <alexander.winston@comcast.net> 
+	to add an help button for the applet context menu.
+
+	Fixes bug #87496
+
+2004-01-31  Archana Shah  <archana.shah@wipro.com>
+
+	* global.h: Added a field in structure MultiloadApplet for
+	about dialog.
+	* main.c: (multiload_applet_new): Initialized about_dialog with NULL.
+	(about_cb): Changed to use about_dialog member field instead of
+	static variable.
+	(multiload_destroy_cb): about)_dialog is removed when applet is removed.
+	Fixes bug# 132293
+
+2004-01-30 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/multiload.xml: Updated for GNOME 2.6, technical review draft
+	* docs/C/multiload-C.omf: Added for GNOME 2.6
+	* docs/C/l10n.txt: Added for GNOME 2.6
+	* docs/C/figures/system-monitor-applet_window.png: Added for GNOME 2.6
+
+
+2004-01-30  Archana Shah  <archana.shah@wipro.com>
+
+	* main.c: (multiload_destroy_cb): Freeing colors structure here
+	instead of freeing it in function load_graph_destroy.
+	Fixes bug #132843
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2003-12-15  Olli Helenius  <liff@iki.fi>
+
+	* load-graph.c, main.c: Also get rid of deprecated GDK functions.
+
+2003-12-14  Kevin Vandersloot
+	
+	* load-graph.c, properties.c: Use non deprecated gtk funtions. Fixes
+	bug #127531. Patch from Olli Helenius
+
+2003-11-19  Kevin Vandersloot
+
+	* linux-proc.c: fix up memory reporting. Might fix bug #126461.
+
+2003-11-06  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* Makefile.am: Remove the GTK_DISABLE_DEPRECATED and
+	GNOME_DISABLE_DEPRECATED definitions to unbreak the build (this
+	applet uses GnomeColorPicker). Fixes bug #126245.
+
+2003-11-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* load-graph.c: (load_graph_destroy): Merge fix for
+	a leak from stable. Closes bug #125594.
+
+Mon Sep 15 15:38:05 2003  George Lebl <jirka@5z.com>
+
+	* main.c: when started in lockdown mode, hide the preferences item,
+	  also hide the "run procman" item as it seems that would be harmful
+	  in a locked down session no matter how you look at it, also
+	  hide the procman launching if command line is inhibited since
+	  then procman would really be likely harmful.
+
+2003-08-09 John Fleck <jfleck@inkstain.net>
+
+	* docs/C/Makefile.am
+	* docs/C/multiload.xml
+	adding updated docs from Chee Bin HOH
+
+2003-08-08  Christian Neumair  <chris@gnome-de.org>
+
+	* multiload.schemas.in: Commit patch from #116066.
+
+2003-07-24  Kevin Vandersloot
+
+	* schemas.in: Clean up strings as part of bug #116066
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify widget padding between the vbox and 
+	action area of the dialog.  Thanks to <chris@gnome-de.org> 
+	Christian - Manny Calavera - Neumair.
+
+2003-07-21  Kevin Vandersloot
+
+	* load-graph.c: Fix sizing due to recent panel changes and make saner.
+
+Wed Jul 09 12:24:32 2003  George Lebl <jirka@5z.com>
+
+	* linux-proc.c: Fixed up the network code to read the correct fields,
+	  not crash on unknown network types, stop memcpy/memset weirdness,
+	  still utterly utterly horrible code though
+
+	* properties.c: respect key writability
+
+2003-06-19  Kevin Vandersloot
+
+	* main.c: Clamp the percentage between 0 and 100. Fixes bug #107407
+
+2003-06-05  Ray Strode  <halfline@hawaii.rr.com>
+
+	* properties.c (color_picker_set_cb): Add missing check for
+	load average property (bug #114477).
+	
+2003-06-02  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* load-graph.c:  Reduce padding on right & bottom inside edges of the frame.
+	
+2003-06-02  Kevin Vandersloot
+
+	* load-graph.c: Use shadow-in on frame for better look. From Tuomas Kuosmanen.
+	Fixes bug #79676
+
+2003-06-02  Kevin Vandersloot
+
+	* main.c: expand the applet for Fitt's law and fix issue when switching between different
+	panels. Fixes bug #94139.
+	
+	* load-graph.c: fix some spacing issues.
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify the action area of the preferences dialog.
+	Correct the spacing of unit labels after spin controls.
+	
+	* GNOME_MultiloadApplet.xml:  Change "Run Detailed System Monitor" 
+	menu item to "Open System Monitor".
+	
+2003-05-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* main.c: run gnome-system-monitor when the applet is double clicked or
+	when enter/space is pressed. Patch by jl1192 at messiah dot edu. Fixes
+	bug #80351
+
+2003-04-26  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify widget padding.
+
+2003-04-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* properties.c:  HIGify the preferences dialog.  Also, fix
+	a bug that caused the 'Load' checkbox to remain insensitive.
+
+2003-04-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* netload.c, propeties.c, linux-proc.c: add the ability to control the network background color.
+	Fixes bug #102088
+
+2003-04-08  Kevin Vandersloot <kfv101@psu.edu>
+
+	* linux-proc.c, properties.c, memload.c: Add seperate entry for cached memory. 
+	Fixes bug #91971
+
+2003-04-08  Kevin Vandersloot <kfv101@psu.edu>
+
+	* loadavg.c, properties.c, main.c: get load average graph working. From Patch by
+	rwahl at gmx de. Fixes bug #107935
+	
+	* load-graph.c: fix small sizing issue. Again from rwahl at gmx de.
+
+2003-04-07  Kevin Vandersloot <kfv101@psu.edu>
+
+	* main.c: Extensibility of nmber of graphs. Patch by James Strandboge. Fixes 
+	bug #90964
+
+2003-03-14  Kevin Vandersloot <kfv101@psu.edu>
+
+	* linux-proc.c: Get other network showing correctly. Fixes bug #91730.
+	Patch by jlaska@us.ibm.com.
+
+2003-03-12  Dennis Smit  <synap@area101.penguin.nl>
+
+	* main.c, properties.c: Changed "Swap File" into "Swap Space"
+	as a fix for bug #87934
+
+2003-03-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* load-graph.c: fix small sizing issues. Patch from <berberic@fmi.uni-passau.de>.
+	Fixes bug #94745
+
 2002-12-16  Kevin Vandersloot <kfv101@psu.edu>
 
 	* Makefile.am: don't dist the .server.in file since

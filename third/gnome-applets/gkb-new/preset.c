@@ -29,11 +29,12 @@
  * USA
  */
 
-#include <dirent.h>
 #include "gkb.h"
 
+static char *prefixdir = NULL;
+
 GList *
-find_presets ()
+find_presets (void)
 {
   DIR *dir;
   struct dirent *actfile;
@@ -147,11 +148,15 @@ gkb_preset_load (GList * list)
 	  val->command = g_strdup (tcommand);
 
 	  val->flag = gnome_config_get_string ("Flag");
-	  val->label = gnome_config_get_string ("Label");
+	  val->label = gnome_config_get_translated_string ("Label");
+	  if (val->label == NULL) val->label = g_strdup(_("Undefined"));
 
 	  val->lang = gnome_config_get_translated_string ("Language");
-	  val->country = gnome_config_get_translated_string ("Country");
+	  if (val->lang == NULL) val->lang = g_strdup(_("Undefined"));
 
+	  val->country = gnome_config_get_translated_string ("Country");
+	  if (val->country == NULL) val->country = g_strdup(_("Undefined"));
+	
 	  retlist = g_list_append (retlist, val);
 
 	  gnome_config_pop_prefix ();

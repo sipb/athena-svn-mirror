@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1.1.1 2003-01-04 21:19:07 ghudson Exp $ */
+/* $Id: main.c,v 1.1.1.2 2004-10-04 03:03:47 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>

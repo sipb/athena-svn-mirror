@@ -29,6 +29,7 @@ GKB_MAPS = \
 		xmodmap.lt \
 		xmodmap.lv \
 		xmodmap.mk \
+		xmodmap.mn \
 		xmodmap.no \
 		xmodmap.pl \
 		xmodmap.pt \
@@ -60,4 +61,5 @@ GKB_MAPS = \
 		xmodmap.jp-type4 \
 		xmodmap.pt-type4 \
 		xmodmap.se-type4 \
-		xmodmap.us-type4
+		xmodmap.us-type4 \
+		xmodmap.us-type6

@@ -1,7 +1,7 @@
 #ifndef __GWEATHER_PREF_H_
 #define __GWEATHER_PREF_H_
 
-/* $Id: gweather-pref.h,v 1.1.1.1 2003-01-04 21:18:00 ghudson Exp $ */
+/* $Id: gweather-pref.h,v 1.1.1.2 2004-10-04 03:07:15 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -25,6 +25,13 @@ extern void gweather_pref_save (const gchar *path, GWeatherApplet *gw_applet);
 
 void add_atk_relation (GtkWidget *widget1, GtkWidget *widget2, AtkRelationType type);
 void set_access_namedesc (GtkWidget *widget, const gchar *name, const gchar *desc);
+
+enum
+{
+    GWEATHER_PREF_COL_LOC = 0,
+    GWEATHER_PREF_COL_POINTER,
+    GWEATHER_PREF_NUM_COLUMNS
+}; 
 
 
 

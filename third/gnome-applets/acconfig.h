@@ -20,7 +20,7 @@
 #undef PREFIX
 
 #undef HAVE_FVWM
-
+#undef HAVE_XKB
 #undef HAVE_LIBGTOP
 
 /* Define if LibGTop has support for multiple processors. */
@@ -48,5 +48,11 @@
 
 /* Define if this NetBSD platform supports APM. */
 #undef NETBSD_APM
+
+/* Define if system is IPv6 enabled. */
+#undef ENABLE_IPV6
+
+/* Define if getaddrinfo() exists on the system.*/
+#undef HAVE_GETADDRINFO
 
 #undef DEV_PATH

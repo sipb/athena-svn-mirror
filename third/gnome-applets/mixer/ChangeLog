@@ -1,3 +1,258 @@
+2004-09-13  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/mixer_applet2-C.omf:
+	* docs/C/mixer_applet2.xml:
+	- Updates for 2.8 from Angela Boyle
+
+2004-09-06  Davyd Madeley  <davyd@madeley.id.au>
+
+	* Makefile.am:
+	* mixer.c: Fix install location so that mixer icon appears in Add to
+	Panel dialog. Patch by Mark McLoughlin <markmc@redhat.com>. Closes
+	#151834.
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec.
+	* mixer.c: (mixer_help_cb), (show_help_cb),
+	(mixer_init_stock_icons): Use gnome_help_*. Also
+	#elif defined instead of just #elif for the harware
+	support stuff at the beginning of the file.
+
+2004-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* mixer.c: (destroy_mixer_cb): Merge fix for
+	bug #148708 from stable.
+
+2004-06-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* mixer.c (applet_size_allocate): Added function.
+
+	(mixer_update_image): Don't get size from the panel
+	but using the allocation.
+
+	(mixer_applet_create): Connect signal to the
+	applet_size_allocate.
+
+	Patch by: Vincent Noel  <vnoel@cox.net>
+
+	Fixes bug #144531.
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* mixer.c (mixer_applet_create): Set the correct range value
+	for gtk_adjustment_new.
+	(mixer_value_changed_cb): Changed -adj->value to adj->value.
+	(mixer_update_slider): Removed vol = -vol (there is no need).
+	(mixer_popup_show): Set vscale to inverted.
+	
+	Patch by:  Vijaykumar Patwari <vijaykumar.patwari@wipro.com>
+
+	bug #125393.
+
+2004-06-07  Jorn Baayen  <jbaayen@gnome.org>
+
+	* mixer.c: (get_channel):
+
+	Restore saved mixer channel on startup. Fixes #139374.
+
+2004-04-25  Kevin Vandersloot <kfv101 psu edu>
+
+	* mixer.c: Fix volume reduction for alsa. Fixes bug #137307. Patch
+	from Jan Schmidt.
+
+2004-04-25  Kevin Vandersloot <kfv101 psu edu>
+
+	* *.server.in: use correct icon to theme properly. Patch from Calum Benson.
+	Fixes bug #137707
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/ja/*: Add ja docs since I haven't heard from the original
+	author.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Add localized online documentation from Sun's
+	translation team for de, es, fr, it, ko, sv, zh_CN, zh_HK
+	and zh_TW.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*.sgml: Remove the sgml stuff since we don't need it 
+	anymore.
+
+2004-02-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* mixer.c (applet_change_background_cb):
+	pixmap argument is a GdkPixmap not a gchar *pixmap.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* mixer.c (mixer_about_cb): Set the about dialog
+	on the right screen if the user requests the dialog and
+	it's already there but not on the right screen.
+
+2004-02-22  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	* mixer.c (mixer_start_gmix_cb):
+	Move from egg_screen_execute_command_line_async to
+	gdk_spawn_on_screen.
+
+	Fixes bug #135158.
+
+2004-02-17 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/mixer_applet2.xml: Updated for GNOME 2.6.
+	* docs/C/mixer_applet2-C.omf: Updated for GNOME 2.6.
+	* docs/C/l10n.txt: Updated for GNOME 2.6.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+	(#132071, Padraig O'Briain)
+
+2004-02-02  Richard Hult  <richard@imendio.com>
+
+	* mixer.c: Update my email, and use the correct shadow type for
+	the device list. Fixes bug #133136.
+
+2004-01-28  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* mixer.c: (mixer_about_cb): Set the screen for the
+	about dialog.
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-01-16  Archana Shah <archana.shah@wipro.com>
+
+	* mixer.c: Added a field for about dialog in structure MixerData.
+	(mixer_applet_create): Initialized about_dialog to NULL.
+	(mixer_about_cb): Changed to use about_dialog structure member
+	instead of static variable.
+	(destroy_mixer_cb): destroy about dialog when applet is removed.
+	Fixes bug #131694
+
+2004-01-15  Kevin Vandersloot
+
+	* mixer.c: merge patch from gnome-mixer for gsteamer part
+
+2004-01-03  Jon Trowbridge <trow@ximian.com>
+
+	* mixer.c: Add support for GStreamer's mixer API.  Also did some
+	minor clean-up of unused variables, etc.
+
+2003-10-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* mixer.c: Merge fix for bug #125488 from stable.
+
+2003-09-21  Christian Neumair  <chris@gnome-de.org>
+
+	* mixer.c: Mark missing string for translation (#122406).
+
+2003-09-20  Christian Neumair  <chris@gnome-de.org>
+
+	* mixer.c: Add missing gettext call (#122793).
+
+Mon Sep 15 15:22:51 2003  George Lebl <jirka@5z.com>
+
+	* mixer.c: when started in lockdown mode, hide the preferences item
+
+2003-08-24  Irene Ryan <irene.ryan@sun.com>
+
+	* docs/C/mixer_applet2.xml, mixer_applet2-C.omf: minor updates to 
+     Help files for the GNOME 2.4 release
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* mixer.c:  HIGify widget padding between the vbox and action 
+	area of the dialog.  Thanks to <chris@gnome-de.org> 
+	Christian - Manny Calavera - Neumair.
+	
+Thu Jul 03 15:46:15 2003  George Lebl <jirka@5z.com>
+
+	* mixer.c: when we obtain a gconf client, just cache the pointer,
+	  that will make the key_writable call marginally faster.
+
+Wed Jul 02 16:54:54 2003  George Lebl <jirka@5z.com>
+
+	* mixer.c: respect key-writability
+
+2003-06-19  Kevin Vandersloot
+
+	* mixer.c: save and restore mixer state on startup. Fixes bug #61253
+	
+	* mixer.schemas: change dash to underline and add new prefs
+
+2003-06-16  Kevin Vandersloot
+
+	* mixer.c: add keybindings for mute and open volume control
+
+2003-06-02  Kevin Vandersloot
+
+	* mixer.c: expand applet for Fitt's law
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* mixer.c:  Set window icon for preferences dialog.
+	
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* mixer.c:  HIGify the action area of the preferences dialog.
+
+2003-05-14  Kevin Vandersloot <kfv101@psu.edu>
+
+	* mixer.c: put little +/- labels to indicate which direction is positive/negative. Fixes
+	bug #99825
+	
+	* *.xml: Change "Run" to "Open". Fixes bug #89865
+
+2003-05-03  Kevin Vandersloot <kfv101@psu.edu>
+
+	* mixer.c: popup the volume slider on key press instead of release.
+
+2003-05-01  Kevin Vandersloot <kfv101@psu.edu>
+
+	* mixer.c: don't popup en error dialog unless user tries to do something. Patch
+	from Balamurali Viswanathan. FIxes bug #110522
+
+2003-04-26  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* mixer.c:  Minor HIGification of perference dialog: add mnemonic 
+	label to listview, remove separator.  Also, hook up the help button.
+
+2003-03-27 Glynn Foster <glynn.foster@sun.com>
+
+	* Makefile.am: Dist the schemas file.
+
+2003-03-13 David Bordoley <bordoley@msu.edu>
+
+       * GNOME_MixerApplet.xml: Minor context
+       menu ui tweek
+
+2003-03-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* mixer.c, mixer.schemas: Add the ability to customize the channel affected by
+	the applet. Only for OSS drivers now. Fixes bugs #60292 and #101833
+
+2003-03-12  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* mixer.c : Sync mute functionality with other applications in Solaris 
+	Fixes bug #105724
+
+2003-03-10  Breda McColgan  <Breda.McColgan@sun.com>
+
+        * docs/C/mixer_applet2.xml: Had inadvertently overwritten John Fleck's update of 2002-11-26. Have now re-corrected "Run Audio Mixer" to "Run Volume Control".
+
+        * docs/C/mixer_applet2-C.omf : Updated to reflect new manual version
+        number and date
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* mixer.c: (mixer_help_cb): update for screen-exec changes.
+
 2003-01-22  Breda McColgan  <Breda.McColgan@sun.com>
 
         * docs/C/mixer_applet2.xml: Updated for GNOME 2.2
