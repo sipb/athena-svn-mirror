@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.17 1996-09-19 22:37:01 ghudson Exp $
+ * $Id: from.c,v 1.18 1996-12-11 15:53:08 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.17 1996-09-19 22:37:01 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.18 1996-12-11 15:53:08 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -326,7 +326,7 @@ header_scan(line, last_header)
 	keyword=malloc((unsigned) i+1);
 	if (keyword == NULL)
 	  {
-	    fprintf (stderr, "%s: out of memory", progname);
+	    fprintf (stderr, "%s: out of memory\n", progname);
 	    exit (1);
 	  }
 	(void) strncpy(keyword,line,i);
@@ -559,7 +559,7 @@ print_report(headers, num_headers, winlength)
   buf = malloc(winlength+1);  /* add 1 for the NULL terminator */
   if (buf == NULL)
     {
-      fprintf (stderr, "from: out of memory");
+      fprintf (stderr, "from: out of memory\n");
       exit (1);
     }    
   buf[0] = '\0';
@@ -575,7 +575,7 @@ print_report(headers, num_headers, winlength)
   buf1 = malloc(winlength-len+1);  /* add 1 for the NULL terminator */
   if (buf1 == NULL)
     {
-      fprintf (stderr, "from: out of memory");
+      fprintf (stderr, "from: out of memory\n");
       exit (1);
     }    
   buf1[0] = '\0';
@@ -584,7 +584,10 @@ print_report(headers, num_headers, winlength)
     subject_field = NULL;
 
   if (subject_field)
-    strncpy(buf1, subject_field, winlength - len - 1);
+    {
+      strncpy(buf1, subject_field, winlength - len - 1);
+      buf1[winlength - len - 1] = 0;
+    }
   
   printf("%-30s %s\n", buf, buf1);
 
