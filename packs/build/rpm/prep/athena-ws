@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cp $1/packs/config/masks $2
+cp $1/packs/config/os/linux/man.config $2
 cp $1/packs/config/os/linux/passwd.fallback $2
 cp $1/packs/config/os/linux/syslog.conf $2
 cp $1/packs/config/os/linux/athena.cron $2
