@@ -194,9 +194,21 @@ shellescape (buf)
 char *buf;
 {
 #ifdef USG
+#ifdef SOLARIS
+  struct sigaction act;
+
+        sigemptyset(&act.sa_mask);
+        act.sa_flags = 0;
+
+	(void) ioctl (0, TCSETAW, &osbuf);
+        act.sa_handler= (void (*)()) SIG_IGN;
+        (void) sigaction(SIGINT, &act, NULL);
+        (void) sigaction(SIGQUIT, &act, NULL);
+#else
 	(void) ioctl (0, TCSETAW, &osbuf);
 	(void) signal (SIGINT, SIG_IGN);
 	(void) signal (SIGQUIT, SIG_IGN);
+#endif
 #else
 	(void) ioctl (0, TIOCSETP, &osbuf);
 	(void) signal (SIGINT, 1);
@@ -213,9 +225,13 @@ char *buf;
 	(void) signal(SIGTTOU, onstop);
 	(void) signal(SIGTSTP, onstop);
 #endif
+#ifdef SOLARIS
+       act.sa_handler= (void (*)()) SIG_DFL;
+       (void) sigaction(SIGQUIT, &act, NULL);
+#else
 	(void) signal (SIGINT, done);
 	(void) signal (SIGQUIT, SIG_DFL);
-
+#endif
 #ifdef USG
 	(void) ioctl (0, TCSETAW, &sbuf);
 #else
