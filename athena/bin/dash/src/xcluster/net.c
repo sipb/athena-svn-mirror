@@ -42,6 +42,13 @@ int net(progname, num, names)
 	  return(-1);
 	}
   
+      if (hp->h_length != sizeof(sin.sin_addr))
+	{
+	  fprintf(stderr, "%s: Unexpected h_length value for '%s'.\n",
+		  progname, host);
+	  return(-1);
+	}
+
       sp = getservbyname("cview", "tcp");
       if (sp == 0) 
 	{
@@ -73,7 +80,9 @@ int net(progname, num, names)
 
   for (j=0; j<num; j++)
     {
-      sprintf(buf, "%s ", *names);
+      strncpy(buf, *names, sizeof(buf) - 2);
+      buf[sizeof(buf) - 2] = '\0';
+      strcat(buf, " ");
       if (write(s, buf, strlen(buf)) == -1)
 	{
 	  perror("write");
