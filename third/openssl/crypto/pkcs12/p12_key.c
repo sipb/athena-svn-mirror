@@ -84,14 +84,14 @@ int PKCS12_key_gen_asc(const char *pass, int passlen, unsigned char *salt,
 	if(!pass) {
 		unipass = NULL;
 		uniplen = 0;
-	} else if (!asc2uni(pass, &unipass, &uniplen)) {
+	} else if (!asc2uni(pass, passlen, &unipass, &uniplen)) {
 		PKCS12err(PKCS12_F_PKCS12_KEY_GEN_ASC,ERR_R_MALLOC_FAILURE);
 		return 0;
 	}
 	ret = PKCS12_key_gen_uni(unipass, uniplen, salt, saltlen,
 						 id, iter, n, out, md_type);
 	if(unipass) {
-		memset(unipass, 0, uniplen);	/* Clear password from memory */
+		OPENSSL_cleanse(unipass, uniplen);	/* Clear password from memory */
 		OPENSSL_free(unipass);
 	}
 	return ret;
@@ -102,7 +102,7 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
 	     const EVP_MD *md_type)
 {
 	unsigned char *B, *D, *I, *p, *Ai;
-	int Slen, Plen, Ilen;
+	int Slen, Plen, Ilen, Ijlen;
 	int i, j, u, v;
 	BIGNUM *Ij, *Bpl1;	/* These hold Ij and B + 1 */
 	EVP_MD_CTX ctx;
@@ -118,6 +118,7 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
 	}
 #endif
 
+	EVP_MD_CTX_init(&ctx);
 #ifdef  DEBUG_KEYGEN
 	fprintf(stderr, "KEYGEN DEBUG\n");
 	fprintf(stderr, "ID %d, ITER %d\n", id, iter);
@@ -147,14 +148,14 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
 	for (i = 0; i < Slen; i++) *p++ = salt[i % saltlen];
 	for (i = 0; i < Plen; i++) *p++ = pass[i % passlen];
 	for (;;) {
-		EVP_DigestInit (&ctx, md_type);
-		EVP_DigestUpdate (&ctx, D, v);
-		EVP_DigestUpdate (&ctx, I, Ilen);
-		EVP_DigestFinal (&ctx, Ai, NULL);
+		EVP_DigestInit_ex(&ctx, md_type, NULL);
+		EVP_DigestUpdate(&ctx, D, v);
+		EVP_DigestUpdate(&ctx, I, Ilen);
+		EVP_DigestFinal_ex(&ctx, Ai, NULL);
 		for (j = 1; j < iter; j++) {
-			EVP_DigestInit (&ctx, md_type);
-			EVP_DigestUpdate (&ctx, Ai, u);
-			EVP_DigestFinal (&ctx, Ai, NULL);
+			EVP_DigestInit_ex(&ctx, md_type, NULL);
+			EVP_DigestUpdate(&ctx, Ai, u);
+			EVP_DigestFinal_ex(&ctx, Ai, NULL);
 		}
 		memcpy (out, Ai, min (n, u));
 		if (u >= n) {
@@ -164,6 +165,7 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
 			OPENSSL_free (I);
 			BN_free (Ij);
 			BN_free (Bpl1);
+			EVP_MD_CTX_cleanup(&ctx);
 #ifdef DEBUG_KEYGEN
 			fprintf(stderr, "Output KEY (length %d)\n", tmpn);
 			h__dump(tmpout, tmpn);
@@ -180,10 +182,17 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
 			BN_bin2bn (I + j, v, Ij);
 			BN_add (Ij, Ij, Bpl1);
 			BN_bn2bin (Ij, B);
+			Ijlen = BN_num_bytes (Ij);
 			/* If more than 2^(v*8) - 1 cut off MSB */
-			if (BN_num_bytes (Ij) > v) {
+			if (Ijlen > v) {
 				BN_bn2bin (Ij, B);
 				memcpy (I + j, B + 1, v);
+#ifndef PKCS12_BROKEN_KEYGEN
+			/* If less than v bytes pad with zeroes */
+			} else if (Ijlen < v) {
+				memset(I + j, 0, v - Ijlen);
+				BN_bn2bin(Ij, I + j + v - Ijlen); 
+#endif
 			} else BN_bn2bin (Ij, I + j);
 		}
 	}

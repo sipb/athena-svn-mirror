@@ -56,6 +56,13 @@
  * [including the GNU Public Licence.]
  */
 
+/* disable assert() unless BIO_DEBUG has been defined */
+#ifndef BIO_DEBUG
+# ifndef NDEBUG
+#  define NDEBUG
+# endif
+#endif
+
 /* 
  * Stolen from tjh's ssl/ssl_trc.c stuff.
  */
@@ -69,6 +76,7 @@
 #ifndef NO_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#include <openssl/bn.h>         /* To get BN_LLONG properly defined */
 #include <openssl/bio.h>
 
 #ifdef BN_LLONG
@@ -101,14 +109,18 @@
  * o ...                                       (for OpenSSL)
  */
 
-#if HAVE_LONG_DOUBLE
+#ifdef HAVE_LONG_DOUBLE
 #define LDOUBLE long double
 #else
 #define LDOUBLE double
 #endif
 
 #if HAVE_LONG_LONG
-#define LLONG long long
+# if defined(OPENSSL_SYS_WIN32) && !defined(__GNUC__)
+# define LLONG _int64
+# else
+# define LLONG long long
+# endif
 #else
 #define LLONG long
 #endif
@@ -151,7 +163,7 @@ static void _dopr(char **sbuffer, char **buffer,
 
 /* some handy macros */
 #define char_to_int(p) (p - '0')
-#define MAX(p,q) ((p >= q) ? p : q)
+#define OSSL_MAX(p,q) ((p >= q) ? p : q)
 
 static void
 _dopr(
@@ -471,7 +483,7 @@ fmtint(
 {
     int signvalue = 0;
     unsigned LLONG uvalue;
-    char convert[20];
+    char convert[DECIMAL_SIZE(value)+1];
     int place = 0;
     int spadlen = 0;
     int zpadlen = 0;
@@ -496,19 +508,19 @@ fmtint(
             (caps ? "0123456789ABCDEF" : "0123456789abcdef")
             [uvalue % (unsigned) base];
         uvalue = (uvalue / (unsigned) base);
-    } while (uvalue && (place < 20));
-    if (place == 20)
+    } while (uvalue && (place < sizeof convert));
+    if (place == sizeof convert)
         place--;
     convert[place] = 0;
 
     zpadlen = max - place;
-    spadlen = min - MAX(max, place) - (signvalue ? 1 : 0);
+    spadlen = min - OSSL_MAX(max, place) - (signvalue ? 1 : 0);
     if (zpadlen < 0)
         zpadlen = 0;
     if (spadlen < 0)
         spadlen = 0;
     if (flags & DP_F_ZERO) {
-        zpadlen = MAX(zpadlen, spadlen);
+        zpadlen = OSSL_MAX(zpadlen, spadlen);
         spadlen = 0;
     }
     if (flags & DP_F_MINUS)
@@ -564,7 +576,7 @@ pow10(int exp)
 }
 
 static long
-round(LDOUBLE value)
+roundv(LDOUBLE value)
 {
     long intpart;
     intpart = (long) value;
@@ -616,7 +628,7 @@ fmtfp(
 
     /* we "cheat" by converting the fractional part to integer by
        multiplying by a factor of 10 */
-    fracpart = round((pow10(max)) * (ufvalue - intpart));
+    fracpart = roundv((pow10(max)) * (ufvalue - intpart));
 
     if (fracpart >= pow10(max)) {
         intpart++;
@@ -629,8 +641,8 @@ fmtfp(
             (caps ? "0123456789ABCDEF"
               : "0123456789abcdef")[intpart % 10];
         intpart = (intpart / 10);
-    } while (intpart && (iplace < 20));
-    if (iplace == 20)
+    } while (intpart && (iplace < sizeof iplace));
+    if (iplace == sizeof iplace)
         iplace--;
     iconvert[iplace] = 0;
 
@@ -640,8 +652,8 @@ fmtfp(
             (caps ? "0123456789ABCDEF"
               : "0123456789abcdef")[fracpart % 10];
         fracpart = (fracpart / 10);
-    } while (fracpart && (fplace < 20));
-    if (fplace == 20)
+    } while (fplace < max);
+    if (fplace == sizeof fplace)
         fplace--;
     fconvert[fplace] = 0;
 
@@ -711,12 +723,13 @@ doapr_outch(
     if (buffer) {
 	while (*currlen >= *maxlen) {
 	    if (*buffer == NULL) {
-		assert(*sbuffer != NULL);
 		if (*maxlen == 0)
 		    *maxlen = 1024;
 		*buffer = OPENSSL_malloc(*maxlen);
-		if (*currlen > 0)
+		if (*currlen > 0) {
+		    assert(*sbuffer != NULL);
 		    memcpy(*buffer, *sbuffer, *currlen);
+		}
 		*sbuffer = NULL;
 	    } else {
 		*maxlen += 1024;
@@ -756,7 +769,9 @@ int BIO_vprintf (BIO *bio, const char *format, va_list args)
 	{
 	int ret;
 	size_t retlen;
-	MS_STATIC char hugebuf[1024*10];
+	char hugebuf[1024*2];	/* Was previously 10k, which is unreasonable
+				   in small-stack environments, like threads
+				   or DOS programs. */
 	char *hugebufp = hugebuf;
 	size_t hugebufsize = sizeof(hugebuf);
 	char *dynbuf = NULL;

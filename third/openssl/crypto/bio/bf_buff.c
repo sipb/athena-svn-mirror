@@ -60,7 +60,6 @@
 #include <errno.h>
 #include "cryptlib.h"
 #include <openssl/bio.h>
-#include <openssl/evp.h>
 
 static int buffer_write(BIO *h, const char *buf,int num);
 static int buffer_read(BIO *h, char *buf, int size);
@@ -70,7 +69,7 @@ static long buffer_ctrl(BIO *h, int cmd, long arg1, void *arg2);
 static int buffer_new(BIO *h);
 static int buffer_free(BIO *data);
 static long buffer_callback_ctrl(BIO *h, int cmd, bio_info_cb *fp);
-#define DEFAULT_BUFFER_SIZE	1024
+#define DEFAULT_BUFFER_SIZE	4096
 
 static BIO_METHOD methods_buffer=
 	{
@@ -483,7 +482,7 @@ static int buffer_gets(BIO *b, char *buf, int size)
 			size-=i;
 			ctx->ibuf_len-=i;
 			ctx->ibuf_off+=i;
-			if ((flag) || (i == size))
+			if (flag || size == 0)
 				{
 				*buf='\0';
 				return(num);

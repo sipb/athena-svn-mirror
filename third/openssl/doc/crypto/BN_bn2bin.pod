@@ -49,7 +49,7 @@ with a leading '-' for negative numbers, to the B<BIO> or B<FILE>
 B<fp>.
 
 BN_bn2mpi() and BN_mpi2bn() convert B<BIGNUM>s from and to a format
-that consists of the number's length in bytes represented as a 3-byte
+that consists of the number's length in bytes represented as a 4-byte
 big-endian number, and the number itself in big-endian format, where
 the most significant bit signals a negative number (the representation
 of numbers with the MSB set is prefixed with null byte).
@@ -80,7 +80,7 @@ The error codes can be obtained by L<ERR_get_error(3)|ERR_get_error(3)>.
 
 =head1 SEE ALSO
 
-L<bn(3)|bn(3)>, L<err(3)|err(3)>, L<BN_zero(3)|BN_zero(3)>,
+L<bn(3)|bn(3)>, L<ERR_get_error(3)|ERR_get_error(3)>, L<BN_zero(3)|BN_zero(3)>,
 L<ASN1_INTEGER_to_BN(3)|ASN1_INTEGER_to_BN(3)>,
 L<BN_num_bytes(3)|BN_num_bytes(3)>
 

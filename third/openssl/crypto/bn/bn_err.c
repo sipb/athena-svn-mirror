@@ -63,7 +63,7 @@
 #include <openssl/bn.h>
 
 /* BEGIN ERROR CODES */
-#ifndef NO_ERR
+#ifndef OPENSSL_NO_ERR
 static ERR_STRING_DATA BN_str_functs[]=
 	{
 {ERR_PACK(0,BN_F_BN_BLINDING_CONVERT,0),	"BN_BLINDING_convert"},
@@ -76,14 +76,18 @@ static ERR_STRING_DATA BN_str_functs[]=
 {ERR_PACK(0,BN_F_BN_CTX_NEW,0),	"BN_CTX_new"},
 {ERR_PACK(0,BN_F_BN_DIV,0),	"BN_div"},
 {ERR_PACK(0,BN_F_BN_EXPAND2,0),	"bn_expand2"},
+{ERR_PACK(0,BN_F_BN_EXPAND_INTERNAL,0),	"BN_EXPAND_INTERNAL"},
 {ERR_PACK(0,BN_F_BN_MOD_EXP2_MONT,0),	"BN_mod_exp2_mont"},
 {ERR_PACK(0,BN_F_BN_MOD_EXP_MONT,0),	"BN_mod_exp_mont"},
 {ERR_PACK(0,BN_F_BN_MOD_EXP_MONT_WORD,0),	"BN_mod_exp_mont_word"},
 {ERR_PACK(0,BN_F_BN_MOD_INVERSE,0),	"BN_mod_inverse"},
+{ERR_PACK(0,BN_F_BN_MOD_LSHIFT_QUICK,0),	"BN_mod_lshift_quick"},
 {ERR_PACK(0,BN_F_BN_MOD_MUL_RECIPROCAL,0),	"BN_mod_mul_reciprocal"},
+{ERR_PACK(0,BN_F_BN_MOD_SQRT,0),	"BN_mod_sqrt"},
 {ERR_PACK(0,BN_F_BN_MPI2BN,0),	"BN_mpi2bn"},
 {ERR_PACK(0,BN_F_BN_NEW,0),	"BN_new"},
 {ERR_PACK(0,BN_F_BN_RAND,0),	"BN_rand"},
+{ERR_PACK(0,BN_F_BN_RAND_RANGE,0),	"BN_rand_range"},
 {ERR_PACK(0,BN_F_BN_USUB,0),	"BN_usub"},
 {0,NULL}
 	};
@@ -92,13 +96,19 @@ static ERR_STRING_DATA BN_str_reasons[]=
 	{
 {BN_R_ARG2_LT_ARG3                       ,"arg2 lt arg3"},
 {BN_R_BAD_RECIPROCAL                     ,"bad reciprocal"},
+{BN_R_BIGNUM_TOO_LONG                    ,"bignum too long"},
 {BN_R_CALLED_WITH_EVEN_MODULUS           ,"called with even modulus"},
 {BN_R_DIV_BY_ZERO                        ,"div by zero"},
 {BN_R_ENCODING_ERROR                     ,"encoding error"},
 {BN_R_EXPAND_ON_STATIC_BIGNUM_DATA       ,"expand on static bignum data"},
+{BN_R_INPUT_NOT_REDUCED                  ,"input not reduced"},
 {BN_R_INVALID_LENGTH                     ,"invalid length"},
+{BN_R_INVALID_RANGE                      ,"invalid range"},
+{BN_R_NOT_A_SQUARE                       ,"not a square"},
 {BN_R_NOT_INITIALIZED                    ,"not initialized"},
 {BN_R_NO_INVERSE                         ,"no inverse"},
+{BN_R_P_IS_NOT_PRIME                     ,"p is not prime"},
+{BN_R_TOO_MANY_ITERATIONS                ,"too many iterations"},
 {BN_R_TOO_MANY_TEMPORARY_VARIABLES       ,"too many temporary variables"},
 {0,NULL}
 	};
@@ -112,7 +122,7 @@ void ERR_load_BN_strings(void)
 	if (init)
 		{
 		init=0;
-#ifndef NO_ERR
+#ifndef OPENSSL_NO_ERR
 		ERR_load_strings(ERR_LIB_BN,BN_str_functs);
 		ERR_load_strings(ERR_LIB_BN,BN_str_reasons);
 #endif
