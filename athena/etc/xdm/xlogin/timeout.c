@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.2 1990-11-16 15:47:52 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.3 1991-03-07 15:09:24 mar Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -17,14 +17,13 @@
 
 int app_pid;
 volatile int app_running;
-
-
+int app_exit_status;
 main(argc, argv)
 int argc;
 char **argv;
 {
-    int maxidle;
-    char *name;
+    int maxidle, ttl;
+    char *name, msg[512];
     struct stat stbuf;
     struct timeval now, start;
     void child(), wakeup();
@@ -46,31 +45,39 @@ char **argv;
     switch (app_pid = fork()) {
     case 0:
 	execv(argv[0], argv);
-	fprintf(stderr, "%s: failed to exec application %s\n", name, argv[0]);
+	sprintf(msg, "%s: failed to exec application %s\n", name, argv[0]);
+	perror(msg);
 	exit(1);
     case -1:
-	fprintf(stderr, "%s: failed to fork to create application\n", name);
+	sprintf(msg, "%s: failed to fork to create application\n", name);
+	perror(msg);
 	exit(1);
     default:
 	break;
     }
 
     gettimeofday(&start, NULL);
+    ttl = maxidle;
+
     /* wait for application to die or idle-time to be reached */
     while (app_running) {
-	alarm(10);		/* sleep 10 seconds */
+	alarm(ttl);
 	sigpause(0);
+	if (!app_running)
+	  break;
 	fstat(1, &stbuf);
 	gettimeofday(&now, NULL);
+	ttl = start.tv_sec + maxidle - now.tv_sec;
 	/* only check idle time if we've been running at least that long */
-	if (start.tv_sec + maxidle <= now.tv_sec &&
-	    stbuf.st_atime + maxidle <= now.tv_sec) {
+	if (ttl <= 0)
+	  ttl = stbuf.st_atime + maxidle - now.tv_sec;
+	if (ttl <= 0) {
 	    fprintf(stderr, "\nMAX IDLE TIME REACHED.\n");
 	    kill(app_pid, SIGINT);
 	    exit(0);
 	}
     }
-    exit(0);
+    exit(app_exit_status);
 }
 
 void child()
@@ -79,10 +86,13 @@ void child()
     int pid;
 
     pid = wait3(&status, WNOHANG, 0);
-    if (pid != app_pid)
+    if (pid != app_pid || WIFSTOPPED(status))
       return;
+    app_running = FALSE;
     if (WIFEXITED(status))
-      app_running = FALSE;
+      app_exit_status = status.w_retcode;
+    else
+      app_exit_status = -status.w_termsig;
 }
 
 void wakeup()
