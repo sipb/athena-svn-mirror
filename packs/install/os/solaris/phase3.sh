@@ -1,5 +1,4 @@
-# $Id: phase3.sh,v 1.1 1998-12-25 19:33:40 ghudson Exp $
-# $Source: /afs/dev.mit.edu/source/repository/packs/install/os/solaris/phase3.sh,v $
+# $Id: phase3.sh,v 1.2 1999-02-04 17:49:13 ghudson Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run

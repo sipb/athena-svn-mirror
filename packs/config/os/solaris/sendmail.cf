@@ -2,9 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/os/solaris/sendmail.cf,v 1.1 1998-12-25 19:32:59 ghudson Exp $
-#	$Source: /afs/dev.mit.edu/source/repository/packs/config/os/solaris/sendmail.cf,v $
-#	$Author: ghudson $
+#	$Id: sendmail.cf,v 1.2 1999-02-04 17:48:52 ghudson Exp $
 #
 # This sendmail configuration file is for Project Athena
 # Client machines. Go ahead... run it elsewhere and find

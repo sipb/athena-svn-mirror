@@ -1,7 +1,5 @@
 # Prototype file for setting up course-specific environment
-# $Author: cfields $
-# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.5 1995-05-27 20:52:31 cfields Exp $
+# $Id: env_setup,v 1.6 1999-02-04 17:49:00 ghudson Exp $
 
 # Just in case this alias is not already set,
 alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\

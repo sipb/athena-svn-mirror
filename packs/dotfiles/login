@@ -1,7 +1,5 @@
 # Prototype global .login file
-# $Author: ghudson $
-# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.7 1998-06-23 19:32:52 ghudson Exp $
+# $Id: login,v 1.8 1999-02-04 17:49:03 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 

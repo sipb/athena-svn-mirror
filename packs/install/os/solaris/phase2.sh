@@ -4,8 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/os/solaris/phase2.sh,v 1.3 1999-01-12 15:48:48 miki Exp $
-### $Locker:  $
+### $Id: phase2.sh,v 1.4 1999-02-04 17:49:11 ghudson Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin

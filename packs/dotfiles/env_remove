@@ -1,7 +1,5 @@
 # Prototype file sourced by "remove" alias
-# $Author: mar $
-# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_remove,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_remove,v 1.4 1992-04-27 13:48:32 mar Exp $
+# $Id: env_remove,v 1.5 1999-02-04 17:48:58 ghudson Exp $
 
 if ($?setup_dir  && $?setup_filsys) then
 	if (-r $setup_dir/.detachrc) source $setup_dir/.detachrc

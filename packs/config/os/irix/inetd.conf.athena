@@ -2,8 +2,7 @@
 # Internet server configuration database
 # MIT Project Athena
 #
-#	$Source: /afs/dev.mit.edu/source/repository/packs/config/os/irix/inetd.conf.athena,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/os/irix/inetd.conf.athena,v 1.1 1998-12-25 19:32:49 ghudson Exp $
+#	$Id: inetd.conf.athena,v 1.2 1999-02-04 17:48:40 ghudson Exp $
 #
 
 # Services moved from SGI's inetd.conf to be switched.
