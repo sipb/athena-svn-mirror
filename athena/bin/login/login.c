@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.16 1987-11-21 15:55:40 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.17 1987-12-08 06:43:29 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.16 1987-11-21 15:55:40 treese Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.17 1987-12-08 06:43:29 rfrench Exp $";
 #endif	lint
 
 /*
@@ -1031,7 +1031,7 @@ dofork()
     chdir("/");	/* Let's not keep the fs busy... */
     
 #ifdef ZEPHYR
-    if (!(wgcpid = fork())) {
+    if (pwd->pw_uid && !(wgcpid = fork())) {
 	    setuid(pwd->pw_uid);
 	    execl("/usr/etc/zwgc","zwgc",0);
 	    exit (1);
@@ -1048,7 +1048,7 @@ dofork()
     (void) dest_tkt();		/* If this fails, we lose quietly */
 
 #ifdef ZEPHYR
-    if (wgcpid > 0)
+    if (pwd->pw_uid && wgcpid > 0)
 	    kill(wgcpid, SIGTERM);
 #endif ZEPHYR
     
