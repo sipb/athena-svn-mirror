@@ -149,16 +149,17 @@ recentering."
 (put 'ispell-output 'error-conditions '(ispell-output))
 
 (defun ispell-check (word)
-"Check spelling of string WORD, return either t for an exact match, a string
+  "Check spelling of string WORD, return either t for an exact match, a string
 containing the root word for a match via suffix removal, a list of possible 
 correct spellings, or nil for a complete miss."
-  (ispell-init-process)
-  (send-string ispell-process (concat word "\n"))
-  (condition-case output
-      (progn
-	(sleep-for 20)
-	(error "Timeout waiting for ispell process output"))
-    (ispell-output (ispell-parse-output (car (cdr output))))))
+  (let ((debug-on-error t)) ; defeat 19.29+ process filter exception handling
+    (ispell-init-process)
+    (send-string ispell-process (concat word "\n"))
+    (condition-case output
+	(progn
+	  (sleep-for 20)
+	  (error "Timeout waiting for ispell process output"))
+      (ispell-output (ispell-parse-output (car (cdr output)))))))
 
 (defun ispell-parse-output (output)
 "Parse the OUTPUT string of 'ispell' and return a value as specified by the 
