@@ -157,8 +157,8 @@ if [ "${PUBLIC}" = "true" ]; then
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 	    if [ "${NEWVERS}" = "${THISVERS}" ]; then
 		echo "Running track..."				>/dev/console
-#		/usr/athena/etc/track -F /os -T / -W /srvd/usr/athena/lib \
-#			-s stats/os_rvd slists/os_rvd
+		/usr/athena/etc/track -F /os -T / -W /srvd/usr/athena/lib \
+			-s stats/os_rvd slists/os_rvd
 		/usr/athena/etc/track
 		cp -p /etc/inet/hosts.save /etc/inet/hosts
 		rm -f /etc/inet/hosts.save
