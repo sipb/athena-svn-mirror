@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.7 1987-06-29 03:01:26 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.8 1987-06-29 17:27:04 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -97,7 +97,8 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 	}
 	
 	if (__Zephyr_server) {
-		if (ZReadAscii(notice->z_ascii_authent,end-ptr,authent.dat,
+		if (ZReadAscii(notice->z_ascii_authent,
+			       strlen(notice->z_ascii_authent)+1,authent.dat,
 			       notice->z_authent_len) == ZERR_BADFIELD) {
 			*auth = 0;
 			return (ZERR_NONE);
