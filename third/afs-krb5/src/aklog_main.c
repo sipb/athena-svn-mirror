@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog_main.c,v 1.3 2003-02-24 18:04:08 zacheiss Exp $
+ * $Id: aklog_main.c,v 1.3.2.1 2003-08-20 16:53:00 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -7,7 +7,7 @@
 
 #if !defined(lint) && !defined(SABER)
 static char *rcsid =
-	"$Id: aklog_main.c,v 1.3 2003-02-24 18:04:08 zacheiss Exp $";
+	"$Id: aklog_main.c,v 1.3.2.1 2003-08-20 16:53:00 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -578,7 +578,12 @@ static int auth_to_cell(context, cell, realm)
 	status = params.get_cred(context, name, instance, realm_of_cell,
 			 &c, &v5cred);
 
-	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN) {
+	/* 
+	 * Some versions of the Heimdal KDC return KRB5KRB_ERR_GENERIC instead
+	 * of a more correct error code when you attempt to get credentials for
+	 * for a nonexistant principal.  We compensate for that behavior.
+	 */
+	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN || status == KRB5KRB_ERR_GENERIC) {
 		if (instance[0] != '\0') {
 			status = params.get_cred(context, name, "",
 						realm_of_cell, &c, &v5cred);
