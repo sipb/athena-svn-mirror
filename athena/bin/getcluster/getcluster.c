@@ -31,10 +31,11 @@ static void *emalloc(size_t size);
 
 /* Make a hesiod cluster query for the machine you are on and produce a
  * set of environment variable assignments for the C shell or the Bourne
- * shell, depending on the '-b' flag
- * If a localfile or a fallbackfile is specified, read cluster information
- * from it as well. Variables in localfile override varibles obtained from
- * Hesiod, and variables obtained from Hesiod override in fallbackfile.
+ * shell, depending on the '-b' flag.
+ * If a localfile or a fallbackfile is present, and the -h (hostname)
+ * option is not given, read cluster information from it as well.
+ * Variables in localfile override variables obtained from Hesiod, and
+ * variables obtained from Hesiod override those in fallbackfile.
  * "Override" means that the presence of any instances of variable "foo"
  * in one source will prevent any instances from a source being overridden.
  * Example 1:
@@ -112,6 +113,9 @@ int main(int argc, char **argv)
 
   if (hostname == NULL)
     {
+      /* We only look at the cluster, fallback, and local files when not
+       * given a hostname.
+       */
       f = fopen(clusterfile, "r");
       if (f)
 	{
@@ -124,20 +128,20 @@ int main(int argc, char **argv)
       else if (gethostname(hostbuf, sizeof(hostbuf)) != 0)
 	die("Can't get hostname: %s", strerror(errno));
       hostname = hostbuf;
-    }
 
-  f = fopen(fallbackfile, "r");
-  if (f)
-    {
-      fp = readcluster(f);
-      fclose(f);
-    }
+      f = fopen(fallbackfile, "r");
+      if (f)
+	{
+	  fp = readcluster(f);
+	  fclose(f);
+	}
 
-  f = fopen(localfile, "r");
-  if (f)
-    {
-      lp = readcluster(f);
-      fclose(f);
+      f = fopen(localfile, "r");
+      if (f)
+	{
+	  lp = readcluster(f);
+	  fclose(f);
+	}
     }
 
   if (debug)
