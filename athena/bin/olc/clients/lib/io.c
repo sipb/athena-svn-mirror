@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.20 1992-02-24 17:51:00 lwvanels Exp $
+ *	$Id: io.c,v 1.21 1992-03-10 23:21:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.20 1992-02-24 17:51:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.21 1992-03-10 23:21:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -38,6 +38,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>              /* File handling defs. */
 #include <sys/stat.h>
 #include <sys/time.h>              /* System time definitions. */
+#include <sys/param.h>
 #include <netinet/in.h>
 #include <errno.h>                 /* System error numbers. */
 #include <netdb.h>
