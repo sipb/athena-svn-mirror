@@ -1,0 +1,39 @@
+/*
+ *  Imakefile for Athena Dashboard
+ *  Copyright (c) 1991, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/Imakefile,v $
+ *   $Author: vanharen $ 
+ *
+ * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+#include "Xj.tmpl"
+
+#include "mit-copyright.h"
+
+#define IHaveSubdirs
+#define PassCDebugFlags
+
+SUBDIRS = lib console dash
+
+MakeSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))
+
+world: World
+
+World::
+	@echo ""
+	@echo "Building Xj, Console, and Dash."
+	@echo ""
+	$(MAKE) Makefile
+	$(MAKE) Makefiles
+	$(MAKE) clean
+	$(MAKE) includes
+	$(MAKE) depend
+	$(MAKE) $(WORLDOPTS)
+	@echo "Full build of Xj, Console and Dash complete."
