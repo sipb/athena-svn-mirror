@@ -6,7 +6,7 @@
  *
 */ 
 
-#if defined(_IBMR2)
+#if defined(_IBMR2) || defined(sun)
 
 DEFINES =
 
@@ -52,10 +52,12 @@ all:: $(HDRS) libfxrpc.a
 	-mkdir ../usr/include/rpc && \
 		/etc/chown bin ../usr/include/rpc && \
 		chmod 755 ../usr/include/rpc
-#ifndef _IBMR2
+#ifndef(_IBMR2)
+#ifndef sun
 	@echo "Installing RPC header files"
 	-set -x;for i in $(HDRS) ; do \
 		($(INSTALL) -m 644 $$i ../usr/include/rpc) done
+#endif
 #endif
 	@echo "Installing RPC library"
 	$(INSTALL) -m 644 libfxrpc.a ../usr/lib
@@ -72,12 +74,14 @@ lint: $(SRCS) $(HDRS)
 	$(LINT.c) $(SRCS)
 
 #if !defined (_IBMR2)
+#ifndef sun
 create_dir(${ATHINCDIR}/fx/rpc)
 
 install::
 	@echo "Installing RPC header files in destination."
 	-set -x;for i in $(HDRS) ; do \
 		($(INSTALL) -m 644 $$i ${DESTDIR}${ATHINCDIR}/fx/rpc) done
+#endif
 #endif
 create_dir(${ATHLIBDIR})
 

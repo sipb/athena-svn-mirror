@@ -1,9 +1,9 @@
 /* 
  * Imakefile for the FX (file exchange) intermediate level
  *
- * $Author: epeisach $
+ * $Author: miki $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.3 1992-04-27 12:56:53 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.4 1992-08-19 17:33:25 miki Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -43,7 +43,7 @@ FXCLOBJ = _fx_lengthen.o	fx_create.o		fx_move.o \
 	${ETSDIR}/krb_err.o	${ETSDIR}/rpc_err.o \
 	${PROTDIR}/fx_prot_clnt.o ${PROTDIR}/fx_prot_xdr.o
 
-#if defined(_IBMR2)
+#if defined(_IBMR2) || defined(sun)
 INCLUDES = -I../include
 #else
 INCLUDES = -I../rpc3.9/usr/include -I../include

@@ -10,7 +10,7 @@
  *
  */
 
-#if defined(_IBMR2)
+#if defined(_IBMR2) || defined(sun)
 #define ISUBDIRS rpc
 #else
 #define ISUBDIRS rpcgen rpc
