@@ -71,7 +71,11 @@ choose_client() {
 	# For now, just use uname -r to get the module version. 
 	VERSION=`uname -r`
 
-	LIBAFS=libafs-$VERSION$MP.o
+	# Kernels compiled for different machine types may have
+	# different symbol versions.  Yay Linux.
+	MACHINE=`uname -m`
+
+	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
 
 #
@@ -174,6 +178,11 @@ case "$1" in
 			/usr/afsws/etc/inetd.afs /usr/afsws/etc/inetd.conf
 		fi
 		$AFS_POST_INIT
+		if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+			/bin/athena/fs setcrypt on
+		else
+			/bin/athena/fs setcrypt off
+		fi
 	fi
 
 	touch /var/lock/subsys/afs
