@@ -62,6 +62,15 @@ SUN*)
 			/etc/hosts.old > /etc/hosts
 	fi
 
+	# This is taken care of in the 8.0 installation, but for a
+	# while Sparc 4s will be installing 7.7 and taking the update,
+	# so deal with it here.
+	if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
+		echo "Setting monitor resolution..."
+		eeprom output-device=screen:r1152x900x94
+		eeprom fcode-debug?=true
+	fi
+
 	;;
 
 INDY)
