@@ -1,8 +1,8 @@
 /* 
  * Imakefile for the Athena Login library
  *
- * $Author: brlewis $
- * $Id: Imakefile,v 1.3 1994-05-28 16:10:21 brlewis Exp $
+ * $Author: cfields $
+ * $Id: Imakefile,v 1.4 1994-08-21 18:51:50 cfields Exp $
  *
  * Copyright 1994 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -33,8 +33,11 @@ build_library(AL,${OBJ})
 build_program(testpw,testpw.o,,-L. -lAL ${LIB})
 build_program(testgr,testgr.o,,-L. -lAL ${LIB})
 
-ptypes.h: ${SRC}
-	mkptypes ${SRC} > ptypes.h
+/**/# mkptypes is in the watchmaker locker
+ptypes.h: $(SRC)
+	$(RM) ptypes.h~
+	-mv ptypes.h ptypes.h~
+	mkptypes ${SRC} | sed "s/int NOARGS/void/g" > ptypes.h
 
 #if defined(ultrix) || defined(sun)
 saber_src:
