@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.56 2003-08-18 13:44:05 rbasch Exp $
+# $Id: Makefile,v 1.57 2004-01-11 14:53:49 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,10 +6,10 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs lastlog listmaint \
-	mailmaint mitch moira mrcheck namespace stanley stella usermaint \
-	xinfo show-application show-audio show-binhex show-excel show-image \
-	show-msword show-pdf show-postscript show-text show-video \
+ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs lastlog \
+	listmaint mailmaint mitch moira mrcheck namespace stanley stella \
+	usermaint show-application show-audio show-binhex show-excel \
+	show-image show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
 	psrev psroff
 MOIRA=/afs/athena.mit.edu/system/moira
@@ -112,6 +112,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
+	install -c -m 555 acroread ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chfn ${DESTDIR}${ATHBINDIR}
@@ -139,8 +140,6 @@ install:
 	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
 	install -c -m 555 verify-message.sh \
 		${DESTDIR}${ATHBINDIR}/verify-message
-	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
-	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 xlock.sh ${DESTDIR}${ATHBINDIR}/xlock
 	install -c -m 555 show-application ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-audio ${DESTDIR}${ATHLIBEXECDIR}

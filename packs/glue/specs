@@ -1,3 +1,4 @@
+acroread	acro
 addusr		moira
 blanche		moira
 chfn		moira
@@ -15,7 +16,6 @@ namespace	moira
 stanley   	moira
 stella		moira
 usermaint	moira
-xinfo		xmit
 
 # MIME helpers for nmh
 show-application	mimeutils
