@@ -1,0 +1,18 @@
+This directory contains the sources for the OLC On-Line Consulting
+system.  It is set up to use imake to
+Makefiles for the entire tree and to make dependencies and build all of
+the executables, you should be able to simpley say "make world" and it
+will do the right thing.
+
+OLC currently relies on several Athena services, including Hesiod,
+Kerberos, and Zephyr.  If your system does not have these services, you
+should be able to get around them by undef'ing the appropriate #define.
+This has not been tested recently, though, so it may not build entirely
+cleanly.
+
+Please send comments, suggestions, bug-fixes, questions, etc.  to
+"info-olc@athena.mit.edu".  For copyright, copying, and distribution
+information, see the file "mit-copyright.h" in the include subdirectory.
+
+				Lucien Van Elsen
+				MIT Project Athena

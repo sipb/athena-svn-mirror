@@ -1,0 +1,3536 @@
+Mon Aug 31 08:11:41 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/parser/p_motd.c: fixed missing continue that caused
+	  coredump on decmips/sun changing hours.
+
+	* clients/tty/t_getline.c: allow K&R C
+
+	* clients/lib/init.c: fix memory leak
+
+Tue Aug 18 15:26:13 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd_data_utils.c: (match_maker) reverse test so "on"
+	  priorities work as advertized.
+
+	* clients/lib/sort.c: add URGENT to list of statuses (stati?) so
+	  that a debugging message isn't printed when they're in the queue.
+
+Mon Aug 17 12:59:25 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olcd.h: replaced is_specialty macro with a function.
+
+	* server/olcd/data_utils.c: added is_specialty function to replace
+	  faulty macro.
+
+Wed Aug 12 09:35:46 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/polld/polld.c: add posix signal handling.
+
+	* server/olcm/olcm.c: add -n "send default" flag.
+
+	* common/c_io.c: fix spelling error
+	  get rid of grat. error messages
+	  if any data read/wrote, reset loop counter to zero.
+
+
+Mon Aug  3 10:18:59 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/parser/p_motd.c: add missing continue to fix coredump on
+	  DS/Sun.
+
+Thu Jul 16 11:35:08 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/log.c: deal with trailing whitespace after display
+	  name in trans_m_i
+
+Fri Jun 26 08:58:36 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/motd.c: don't assume /tmp on same partition as
+	  /usr/athena/lib/olc/motd
+
+Tue Jun 23 10:35:33 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* config/site.def: added DoNotify config option
+
+	* server/olcd/notify.c: Added ifdefs for SILENT
+
+Mon Jun 15 13:36:15 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/rpd/rpd.c: make clean_up declaration consistent with
+	  definition.
+
+Sat Jun 13 14:36:00 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/lumberjack/lumberjack.c: wrong name in openlog
+
+	* clients/tty/t_ask.c: make error message when access denied for
+	  proxy questions more informative.
+
+
+Thu Jun 11 13:16:01 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* browser/motif/callbacks.c: make "delete" delete character behind
+	  cursor, not in front.
+
+	* clients/motif/main.c
+	* clients/motif/x_motd.c
+	* clients/motif/visual.c
+	* clients/motif/x_ask.c
+	* clients/motif/x_instance.c:
+	  "delete key" does appropriate thing
+	  "renew" actually retries
+
+Tue May 26 14:20:09 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olcm.h: Added defines for STOCK_HEADER and SRVTAB_LOC
+
+	* server/olcm/olcm.c: override default location for srvtab (so it
+	  can be accessed by "daemon", which sendmail delivers mail as on
+	  some systems)
+	  Add a "stock header" so that the "From" and "Subject" fields can
+	  be overridden without recompiling.
+
+Thu May 21 15:06:53 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/tty/t_ask.c: removed somewhat sarcastic message..
+
+Wed May  6 11:42:49 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* browser/motif/MriRegAll.c:
+	* browser/motif/Xbrowser:
+	* browser/motif/callbacks.c:
+	* browser/motif/main.c: Motif 1.1 integration (vanharen)
+
+Sat May  2 15:48:38 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/nl.c: return kerberos errors correctly.
+
+Fri May  1 12:20:21 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/tty/t_resolve.c: satisfactorily has two "i"'s, not one.
+
+Mon Apr 27 13:24:15 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/motif/x_utils.c: change 'kinit' to 'renew'
+
+Thu Apr 23 17:29:51 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/motif/Xolc.cpp: motif1.1 conversion
+	* clients/motif/main.c:
+	* clients/motif/procs.c:
+	* clients/motif/visual.c:
+	* clients/motif/Xolc.h:
+	* clients/motif/Imakefile:
+
+Fri Apr 10 16:26:41 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* common/c_io.c: Include code to make sure select returned valid fd
+	  prevent endless loops
+
+Sat Apr  4 13:43:48 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/requests_olc.c: Fix case where user sends message to
+	  logged out consultant, causing crash.
+
+Tue Mar 31 10:40:39 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/db.c: Use gecos for "real anem", and trim off the
+	  stuff following the comma.
+
+Mon Mar 30 10:38:40 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/tty/t_getline.c: fix bug with decmips terminal handling
+	  after stop/continue
+
+	* common/c_io.c: make sure fd is closed after error in sread/swrite
+
+Mon Mar 16 10:22:00 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/tty/t_getline.c: don't flush characters typed ahead
+
+	* clients/motif/Imakefile:
+	* clients/motif/x_topic.c:
+	* clients/motif/xolc.h:
+	* clients/motif/procs.c:
+	* clients/motif/main.c: Added support for motif1.1; untested
+
+	* clients/motif/main.c: Added support for PUTENV
+
+	* clients/motif/procs.c: make sure motd button is on
+	  cast malloc correctly.
+
+	* clients/motif/visual.c: Be sure motd form height is set
+
+	* clients/motif/xolc.xbm: Gave bitmap a nose job.
+
+	* clients/motif/Xolc.cpp: fixed typos; set height of replay frame
+
+	* clients/lib/init.c: use fallback OLC_SERVER if hesiod &
+	  environment variable fail to locate server.
+
+	* include/olcd.h: parenthesize some expressions that need it in
+	  picky cpp's.
+
+	* server/olcd/backup.c: Refresh user's "real name" when restoring
+	  from backup.
+
+	* server/olcd/db.c: Refresh user's real name when doing a dbload
+
+Tue Mar 10 14:56:42 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* common/c_io.c: Added debugging info
+	  return error on short read instead of looping
+	  ignore EINTR on select; sigchld can generate them.
+
+	* server/olcd/olcd.c: Shorten select timeout to 30 seconds.
+
+	* clients/lib/io.c: included sys/param.h for MAXHOSTNAMELEN
+
+Fri Mar  6 09:03:52 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/send.c: had printf arguments reversed in mail subject
+
+	* clients/parser/p_instance.c: included <ctype.h> because isdigit
+	  is called-
+
+Tue Mar  3 16:07:36 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* lib/olcr_help/ask.nroff: added documentation on how to ask a
+	  question on behalf of a user.
+
+Mon Feb 24 12:47:35 1992  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/io.c: added open_connection_to_named_daemon, which
+	  allows multiple OLC daemons to be talked to easily.
+
+	* include/olc/procs.h: added prototype for
+	  open_connection_to_named_daemon (for support of multiple daemons)
+
+Fri Feb 14 13:30:52 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* include/olc/olc.h: include a DEFAULT_CONSULTANT_TITLE define.
+
+	* clients/tty/t_ask.c:
+	* clients/tty/t_send.c:
+	* clients/tty/t_resolve.c:
+	* clients/tty/t_status.c:
+	* clients/tty/t_utils.c:
+	* clients/olc/olc.c:
+	* clients/olc/olc_stock.c: Don't hardcode in "consultant", use
+	  DEFAULT_CONSULTANT_TITLE
+
+	* clients/lib/list.c: check return values to prevent dereferencing
+	  null pointers
+
+	* server/olcd/requests_olc.c: make list username work the same as
+	  "list -user username"
+
+	* clients/olc/olc_stock.c: don't loop forever on bad args to stock
+
+	* clients/parser/p_instance.c: check arguments to -i to make sure
+	  they're numeric.
+
+	* clients/parser/p_local.c: Add more information to error messages
+	  in "quit"
+
+	* clients/parser/p_list.c: removed unused & nonfunctional sorting
+	  code
+	  "list username" should be equivalent to "list -user username";
+	  it was in all cases except where username == requester's
+	  username, in which case it used to list the whole queue..
+
+Sat Feb  8 17:00:23 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/lib/list.c: return error code immediately if list
+	  request is not sucessful.
+
+Thu Feb  6 11:22:36 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_utils.c: Don't hardcode in OLC, use
+	OLC_SERVICE_NAME; don't have people contact Athena ops unless
+	they're from Athena...
+
+	* clients/lib/send.c:
+	* clients/tty/t_ask.c:
+	* clients/tty/t_connect.c:
+	* clients/tty/t_consult.c:
+	* clients/tty/t_resolve.c:
+	* clients/tty/t_topic.c:
+	* clients/tty/t_status.c:
+	* clients/tty/t_utils.c:
+	* clients/olc/olc_stock.c:
+	* clients/parser/p_local.c:
+	* clients/parser/p_ask.c: Don't hardcode in OLC, use
+	"OLC_SERVICE_NAME".
+
+Tue Feb  4 14:53:10 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_misc.c: (removed)
+	* clients/tty/Imakefile: removed t_misc.c, which only contained a
+	stat function that  was not called
+
+	* clients/lib/misc.c: (removed)
+	* clients/lib/Imakefile: removed misc.c, which only contained a
+	  stat function that was not called.
+
+	* clients/parser/p_misc.c: removed unused do_olc_dump
+
+	* include/olc/olc_tty.h:
+	* include/olc/olc_parser.h:
+	* include/olc/procs.h: removed prototypes of removed stat functions
+
+	* include/olc/requests.h: renamed req. numbers of unused stat requests
+
+	* include/olcd.h: removed prototypes of removed stat functions
+
+	* include/server_defines.h: Removed unused REQ_STATS_LOG and
+	  QUES_STATS_LOG
+
+	* server/olcd/olcd.c: Don't call dump_request_stats &
+	  dump_question stats on exit anymore; replaced
+
+	* server/olcd/statistics.c: removed dump_request_stats and
+	  dump_question_stats; replaced by newer routines
+
+	* server/olcd/requests_admin.c: removed unused
+	  olc_dump_{req,ques}_stats; replaced by newer stat-gathering routines
+
+	* browser/curses/commands.c:
+	* browser/curses/cref.c:
+	* browser/curses/cref_utils.c:
+	* browser/curses/display.c:
+	* browser/curses/update.c:
+	* browser/curses/cref.h: 
+	* browser/curses/globals.c: Don't use hardcoded FILENAME_SIZE, use
+	  MAXPATHLEN
+
+	* browser/motif/callbacks.c: actually read filename to save answer in
+	  ifdef attach on ATHENA
+
+	* browser/motif/cref.h: Don't hardcode in max filename size, use
+	  MAXPATHLEN instead
+	  ifdef location of BASE_DIR on ATHENA
+
+	* server/olcd/db.c: use default realm to canonicalize principal if
+	  not using kerberos
+
+	* clients/olc/olc_stock.c: ifdef attach on ATHENA
+
+	* server/polld/polld.c: initialize zephyr error table so com_err
+	  works.
+
+	* common/perror.c: Saber C (on vaxen) doesn't grok stdlib
+
+	* common/c_io.c: Saber C (on vaxen) doesn't grok stdlib
+	  return any errors from read/write in sread/swrite
+
+	* include/olc/olc.h: Saber C (on vaxen) doesn't grok stdlib
+
+	* include/olcd.h: Saber C (on vaxen) doesn't grok stdlib
+
+	* include/server_structs.h: Removed unused "next" field in USER struct
+
+	* server/olcd/s_io.c: print error message via syslog if swrite
+	  retval < 0
+
+	* server/olcd/requests_olc.c: Sending one too many packets in a list-
+
+Thu Jan 30 10:02:08 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/parser/p_describe.c: return sucess if status == OK so
+	  that there is a 0 exit status.
+
+	* server/olcd/olcd.c: remved unused stuff for memory opts.; should
+	  have been removed earlier and placed in separate branch along
+	  with the rest.
+
+	* server/olcd/backup.c: Don't try to interpret errno if error is
+	  not a system call; ("type_error: brain damage: not a typewriter"
+	  is somewhat strange...)
+
+Tue Jan 28 12:56:17 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_utils.c: Don't crash if a negative errno is returned.
+
+	* clients/lib/list.c: read_list returns fatal if it fails, not error
+
+	* common/c_io.c: (sread/swrite) Deal with fragmented reads/writes
+	  correctly
+
+	* clients/tty/t_utils.c: Don't exit when a blank line is entered;
+	  just treat as a no-op
+
+	* clients/Imakefile: added osend directory
+
+Mon Jan 13 12:39:27 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* lib/olcr_help/motd.nroff: added documentation of -clear option
+
+	* clients/tty/t_motd.c: add ability to clear to t_change_file
+
+	* clients/parser/p_motd.c: add extra argument to t_change_file for
+	  clearing file; add -clear to motd command
+
+	* include/olc/olc_tty.h: add clearflag var to t_change_file
+
+	* server/olcd/log.c: Don't put changed descriptions in
+	  user-visible log.
+
+	* include/mit-copyright.h: new version of legalese from the lawyers
+
+Fri Jan 10 14:52:54 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_getline.c: (new) line editing & history routines
+
+	* clients/parser/p_motd.c
+	* clients/parser/p_messages.c
+	* clients/parser/p_resolve.c
+	* clients/parser/p_topic.c
+	* clients/parser/p_describe.c
+	* clients/parser/p_acl.c
+	* clients/parser/p_cmdloop.c
+	* clients/parser/p_list.c
+	* clients/parser/p_misc.c
+	* clients/tty/t_instance.c
+	* clients/tty/t_send.c
+	* clients/tty/t_resolve.c
+	* clients/tty/t_topic.c
+	* clients/tty/t_status.c
+	* clients/tty/t_utils.c
+	* clients/tty/t_describe.c
+	* clients/tty/t_db.c: Arguments to get_prompted_input changed to
+	  support history & lineedit 
+
+	* clients/tty/Imakefile: added t_getline.c for line editing
+
+	* clients/olc/olc.c: added olc_tty.h include file
+
+	* include/olc/olc_tty.h: added prototypes for t_getline.c
+	  get_prompted_input takes extra arguments to support history and
+	  lineedit
+
+	* server/olcd/olcd.c: look for srvtab in default location
+
+	* config/Imake.template: Add support for using shared libraries
+
+Tue Jan  7 11:48:07 1992  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* config/ibm.cf: RS/6000 uses shared libraries
+
+	* config/Imake.template:
+	  config/site.def:
+	   Added UseSharedLibs; when set, look for X
+	   libraries first in /usr/athena/lib/shared.
+
+	* browser/motif/callbacks.c: NULL != '\0'
+
+	* server/olcd/olcd.c: use default srvtab location
+	  get tickets of default lifetime
+
+	* server/lumberjack/lumberjack.c: undef STAT after including
+	  sys/dir.h if under AIX and compiling with Zephyr; defintions of
+	  STAT disagree.
+
+	* clients/motif/visual.c: renamed the 'toplevel' widget to be xolc
+
+	* clients/motif/main.c: renamed the 'toplevel' widget to be xolc
+
+	* clients/lib/init.c: use OLC_SERVICE as the instance to look for
+	  instead of OLC_SERV_NAME
+
+	* include/olcm.h: included location of stock reply file
+
+	* include/server_defines.h: don't override srvtab location
+
+	* server/olcm/olcm.c: support for chaining messages
+	  stock reply from file, not hardcoded
+
+	* config/ibm.cf: rs/6000 now has motif
+	  Define _IBMR2 on rs/6000; default cpp doesn't.
+	  Define MACHINE to be rsaix; not set in environ on Rs/6000
+
+	* clients/motif/Imakefile: pass Xolc through cpp
+	  removed excess WCL stuff 
+
+	* clients/motif/procs.c: added posix signals
+	  void signal return support
+
+	* include/olc/os.h: undef STAT after including sys/dir.h if under
+	  AIX and compiling with Zephyr; defintions of STAT disagree.
+
+Wed Nov  6 15:38:26 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/newvers.sh: (new) script to generate version.h on demand
+
+	* clients/oreplay/format: (new) format of output of olist -r
+
+	* server/olcd/hash.c: (new) functions for user, knuckle, and
+	  question hash tables 
+
+	* clients/tty/Imakefile: add correct dependencies for version
+	  numbering, don't delete library unless necessary.
+
+	* clients/lib/init.c: need to include param.h for hostnamelen
+
+	* clients/parser/p_admin.c: make sure how_long isn't unset
+
+	* include/olcm.h: don't give an explicit location for SRVTAB; use
+	  default. 
+
+	* server/olcd/list.c: get rid of unused variables.
+
+	* server/olcd/notify.c: get rid of extra arg to unlink
+
+	* server/olcd/olcd.c: need to include param.h for hostnamelen
+
+	* server/olcd/syslog.c: put errno defs in the right place
+	  expand %m in zephyr error log messages.
+
+	* server/olcd/statistics.c: use sys/time.h, not time.h
+	  strip \n off of ask time.
+
+	* server/olcm/olcm.c: check for valid realm; if not, use "nobody"
+	  don't give an explicit location for srvtab
+	  output error messages as you go, don't save up.
+	  additional message get appended to existing question, not made
+	  into new questions.
+
+	* server/polld/locate.c: access takes different args on the RS/6000
+
+	* logger/bbd.c: deal with void signal return & picky compilers.
+
+Tue Nov  5 13:41:28 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_status.c: moved version command to t_version
+
+	* clients/tty/Imakefile: Added t_admin.c and t_version.c
+
+	* clients/tty/t_admin.c: (new) procedures for admin commands
+
+	* clients/tty/t_version.c: (new) split of version command, for
+	  faster compilation
+
+	* clients/lib/Imakefile: Added admin.c
+
+	* clients/lib/admin.c: (new) procedures for admin commands
+
+	* clients/parser/Imakefile: added p_admin.c
+
+	* clients/parser/p_admin.c: (new) parser for admin commands (like
+	  zephyr) 
+
+	* clients/olc/olc.c: added "zephyr" to list of commands
+
+	* include/olc/olc_tty.h: added t_toggle_zephyr prototype
+	  split t_version into a separate file for faster compilation
+
+	* include/olc/olc_parser.h: added do_olc_zephyr prototype
+
+	* include/olc/procs.h: added OTweakZephyr prototype
+
+	* include/olc/requests.h: added OLC_TOGGLE_ZEPHYR request
+
+	* include/server_defines.h: (new) #defines used by the server
+
+	* include/server_structs.h: (new) data structures used by the server
+
+	* include/olcd.h: split out defines and structure definitions into
+	  server_defines.h and server_structs.h
+
+	* include/polld.h: added check_zephyr prototype, and inclusion of
+	  server data definitions (for location of zephyr toggle file)
+
+	* lib/olcr_help/Imakefile: added acl and zephyr help pages
+
+	* lib/olcr_help/acl.nroff: (new) help page for acl command
+
+	* lib/olcr_help/zephyr.nroff: (new) help page for zephyr command
+
+	* server/olcd/data.c: add new function olc_toggle_zephyr
+	  add knuckle, user, and question free/used lists
+
+	* server/olcd/data_utils.c: initialize question statistics when
+	  creating a new question
+	  write out question stats as part of info
+
+	* server/olcd/db.c: don't allow \n's in "one line descriptions"
+	  force zephyr to be used by default on startup.
+
+	* server/olcd/list.c: fixed bug with reallocing lists for
+	  dump_list- forgot to multiply by struct size (argh!)
+	  Don't allow \n's in "one line descriptions"
+
+	* server/olcd/notify.c: added support for punting zephyr on user
+	  demand, and for specified amounts of time.
+
+	* server/olcd/olcd.c: fix prototypes of profiling functions
+	  extend server timeout to 60 seconds (for RS/6000 ask)
+	  Added posix signal handling (for the RS/6000's; their signal
+	  function is screwy)
+
+	* server/olcd/requests_admin.c: fixed bug with acl -delete; wrong
+	  boolean operation.
+	  added olc_toggle_zephyr to turn off zephyr use.
+
+	* server/olcd/requests_olc.c: add calls to routines to write out
+	  stats on question ask or resolve.
+	  Add collection of stats on message/mail send, time to first
+	  response.
+
+	* server/olcd/statistics.c: Add routines to write statistics out
+	  when a question is asked or resolved.
+
+	* server/olcm/olcm.c: Use new OAsk_file and OAsk_buffer functions
+
+	* server/polld/polld.c: call check_zephyr to check if zephyr
+	  locations should be used.
+
+	* server/polld/locate.c: Dont' use zephyr if toggled off by
+	  existance of file.
+
+Thu Oct 31 10:18:25 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/tty/t_ask.c: Use new OAsk_buffer and OAsk_file functions
+
+	* clients/lib/ask.c: split OAsk into OAsk_buffer and OAsk_file,
+	  depending on where the question comes from
+	  start up machtype fork early, to reduce wait to ask question.
+
+	* clients/motif/x_ask.c:use new OAsk_buffer and OAsk_file functions
+
+	* common/c_io.c: new function, read_file_into_text for reading a
+	  file into a buffer (which then can be free'd)
+
+	* include/olc/procs.h: OAsk split up into OAsk_buffer and
+	  OAsk_file; new prototypes 
+
+	* include/common.h: OAsk split up into OAsk_buffer and OAsk_file;
+	  new prototypes 
+
+	* server/olcd/Imakefile: split off version file so that not as much
+	  has to be recompiled every time.
+
+	* server/olcd/log.c: better parsing of RS/6000 machine info
+
+	* server/olcd/requests_admin.c: split off version into separate file
+
+	* server/olcd/requests_olc.c: only those on consult acl can change
+	  descriptions; optimize permission denied case.
+	  ensure no \n's get in description
+	  replaying your own question shouldn't be special cased; it
+	  should listen to instances you give it, if they exist.
+
+	* server/olcd/version.c: (new) version command split out, for
+	  faster compiling.
+
+	* config/Imake.rules: Removed unnecessary OutputRebuildReason and
+	  fortrans source rules.
+
+Wed Oct 30 16:08:59 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* Imakefile: put tags in source tree, not build tree
+
+	* clients/lib/io.c: use hesiod lookup for services
+
+	* clients/lib/init.c: use instance to look up hesiod sloc
+	  dont' assume gethostname will work
+
+	* clients/olc/olc.c: add -inst argument to clients.
+
+	* clients/oreplay/oreplay.c: add -i (instance) argument
+
+Mon Oct 21 11:08:15 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* server/olcd/motd.c: log correct location of lumberjack if it
+	  can't be exec'd.
+
+	* include/olcd.h: lumberjack in /usr/local/bin, not /usr/local
+
+Fri Sep 27 10:50:36 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/lib/utils.c: full prototype signal return functions if STDC
+
+Wed Sep 25 11:40:24 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* logger/bbd.c: Add pid file, ticks are in minutes, not seconds.
+
+	* logger/bbd.c: added -tick to put ticks in the log at specfied
+	  intervals.
+	  When sent a HUP, it will close and re-open the log (for
+	  newsyslog or equivalent)
+
+Mon Sep 23 11:42:36 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* server/lumberjack/lumberjack.c: fixed wait macros for BSD- had
+	  broken when integrating posix
+
+	* clients/motif/WcmName.c: ifdef'd debugging variable
+	  redeclared var to properly be Cardinal, not int
+
+	* clients/motif/WcmCallb.c: removed unused var
+
+	* clients/motif/WcmConvert.c: removed unused var
+
+	* clients/motif/WcmActions.c: ifdef'd debugging variable
+	  redeclared var to properly be Cardinal, not int
+
+	* clients/motif/procs.c: (olc_replay) removed unused var buf
+
+	* browser/curses/commands.c: removed junk after #endif
+
+	* browser/curses/display.c: removed junk after #endif
+
+	* server/olcd/Imakefile: added explaination about missing
+	  version.h on make depend
+
+Sun Sep 22 10:29:57 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* config/Imake.rules: NormalProgramTarget uses ::'s, to allow
+	  other things to be done as well
+	  NormalLibraryTarget uses ::'s, to allow other things to be done
+	  as well.
+
+	* config/Imake.template: Add handling of void signal returns
+
+	* config/bsd.cf: bsd (gcc) has ansi include files, so use them
+
+	* config/ibm.cf: RS/6000 has void signal return, and no vfork.
+	  Compile without BSD emulation crud.
+
+	* include/olcd.h: make punt a static routine, which doesn't need a
+	  prototype 
+
+	* include/rpd.h: inlcude stdlib.h when appropriate
+	  make clean_up in rpd.c static, so it doesn't need prototypes
+
+	* server/lumberjack/lumberjack.c: deal with posix-style directory
+	  entries, file locking, and wait
+
+	* server/olcd/Imakefile: use new version numbering scheme, instead
+	  of date fork 
+
+	* server/olcd/newvers.sh: (new) script to generate version id
+	  header file.
+
+	* server/olcd/acl_files.c: fputs returns an int, not a char *
+
+	* server/olcd/motd.c: include time.h
+	  localtime tkes a time_t *
+
+	* server/olcd/notify.c: deal with void signal returns
+
+	* server/olcd/olcd.c: RS/6000 select macros
+	  deal with void signal returns
+	  POSIX-style dirents
+
+	* server/olcd/requests_admin.c: include new version.h file
+
+	* server/olcd/requests_olc.c: users behalf should be user's behalf
+
+	* server/olcm/Imakefile: now uses clientlib and commonlib, and hesiod
+
+	* server/olcm/olcm.c: use clientlib call to ask question, instead
+	  of forking process.
+
+	* server/polld/locate.c: added void signal return support
+
+	* server/polld/polld.c: added void signal return support
+
+	* server/rpd/handle_request.c: back out new error codes; com_err
+	  will come later.
+
+	* server/rpd/io.c: RS/6000 select include file added
+
+	* server/rpd/rpd.c: add dealing with void signal returns
+
+Wed Sep 11 10:40:36 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* include/olc/olc.h: include stlib.h if ANSI C and not broken RT
+	  compiler.
+
+	* include/olc/olc_parser.h: various functions should return
+	  ERRCODE, not int's, so that prototyping can work correctly.
+
+Tue Sep 10 10:58:14 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* browser/curses/cref.c: fixed up ifdef LINT
+
+	* browser/curses/cref_utils.c: fixed up ifdef LINT
+
+	* browser/curses/display.c: same as cref version
+
+	* browser/curses/globals.c:fixed up ifdef LINT
+
+	* browser/curses/signal.c: void sigret handling
+
+	* browser/curses/update.c:fixed up ifdef LINT
+
+	* clients/lib/io.c: missing cast for getenv (gcc complains)
+
+	* clients/lib/init.c: missing cast for getenv (gcc complains)
+
+	* clients/lib/nl.c: was returning bogon error codes
+	  (make com_err later)
+
+	* clients/lib/utils.c: deal with void signal returns
+
+	* clients/motif/Cursor.c: rename toplevel to xolc
+
+	* clients/motif/Imakefile: Added wcl routines, removed visual.c
+	  link with motif-specific toolkit
+
+	* clients/motif/Xolc: changed to wcl (sig. changes)
+
+	* clients/motif/main.c: include bitmap, wcl files
+
+	* clients/motif/x_resolve.c: MuHelp buggy; substiture other.
+
+	* clients/olc/olc.c: fix prototypes; int's should be ERRCODE
+
+	* clients/olc/olc_stock.c: NULL != '\0'
+
+	* clients/parser/p_cmdloop.c: include stdlib if ANSI
+	  include time.h for RS/6000
+	  declare command_loop to return a void
+
+	* clients/parser/p_describe.c: do_olc_describe should return
+	  ERRCODE (can't assume it's always an int) 
+
+	* clients/parser/p_instance.c: do_olc_instance should return
+	  ERRCODE (can't assume it's always an int)
+
+	* clients/parser/p_local.c: do_quit should return ERRCODE (can't
+	  always assume it's an int)
+
+	* clients/parser/p_misc.c: do_olc_load_user, do_olc_dump, and
+	  do_olc_dbinfo should return ERRCODE
+
+	* clients/parser/p_motd.c: do_olc_motd and do_olc_hours should
+	  return ERRCODE
+
+	* clients/parser/p_queue.c: do_olc_queue shoudl return ERRCODE
+
+	* clients/tty/Imakefile: Better way of doing version dating
+	  (version.h, not env. var) 
+
+	* clients/tty/t_list.c: include time.h on RS/6000
+
+	* clients/tty/t_status.c: better version printing; use version.h
+
+	* clients/tty/t_utils.c: include unistd.h on RS/6000's
+	  cast results of ttyname appropriately
+	  worked around optimizer bug on the RS/6000's (*array != array[0])
+	  cast results of getenv appropriately
+
+	* common/c_io.c: added stdlib support
+	  include select.h for RS/6000's
+
+	* common/perror.c: added header, copyright, and stdlib support
+	  include time.h for RS/6000
+
+	* logger/log.c: include select.h and time.h for RS/6000
+	  removed unused var.
+
+Thu Sep  5 11:39:19 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* lib/olcr_help/motd.nroff: added info on timeouts
+
+Fri Aug 30 10:48:19 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* config/ibm.cf: converted rs/6000 to ansi compiler, c89
+
+	* config/Imake.rules: Removed unused X-specific targets
+	  Added error table target
+
+Thu Aug 29 11:24:55 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* common/c_status.c: functions now return ERRCODE; added missing
+	  returns.
+
+	* include/common.h: functions in common now return ERRCODE
+
+Mon Aug 12 13:13:58 1991  Lucien Van Elsen  (lwvanels at godtree)
+
+	* server/polld/locate.c: ZlocateUser now takes an auth var.
+
+	* man/{oshow.1,olist.1,oreplay.1}: new
+
+	* man/olc.1: now in /usr/athena/bin.
+
+	* man/Imakefile: added olist, oreplay, oshow man pages
+
+	* clients/motif/data.h: fixed location of help files
+
+	* clients/motif/x_motd.c: fixed fd & memory leak
+
+	* clients/motif/procs.c: fixed fd & memory leak; included name of
+	  missing help file in error message
+
+	* clients/motif/callbacks.c: added -q to attach command
+
+----------------------------------------------------------------------------
+7.3 Release
+----------------------------------------------------------------------------
+
+
+Sun Jun 30 10:38:06 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* lib/motif_help/Imakefile: installs help files in
+	  /usr/athena/lib/olc/motif_help
+
+	* clients/lib/ask.c: don't use -v for machtype on rios
+
+	* browser/motif/cref.h: don't need to explicitly define logger host.
+
+	* browser/motif/main.c: new form of log_startup; doesn't need
+	  explicit location
+
+	* browser/curses/cref.h: don't need to explicitly define logger host.
+
+	* browser/curses/cref.c: new form of log_startup; doesn't need explicit
+	  location.
+
+	* logger/log.c: use hesiod to determine logger host and port
+	  number based on type passed in to log_startup (previously hardcoded)
+
+	* clients/motif/procs.c: log various events
+
+	* clients/motif/Imakefile: Include logging library when appropriate
+
+	* clients/motif/main.c: log startups
+
+	* include/lumberjack.h: moved /usr/lib/olc to /usr/athena/lib/olc
+
+	* include/rpd.h: moved /usr/lib/olc to /usr/athena/lib/olc
+
+	* include/olcd.h: moved /usr/lib/olc to /usr/athena/lib/olc
+
+	* Imakefile: don't create/use /usr/lib/olc; move to
+	  /usr/athena/lib/olc
+
+	* include/system.h: removed potentially conflicting defines
+
+Sat Jun 29 15:56:07 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/motif/Imakefile: define SA_LOC appropriate to install
+	  location of stock answer browser
+
+	* clients/motif/data.h: got rid of unused define
+	  help location now on packs
+	  browser location now comes from define in makefile
+
+	* browser/motif/Imakefile: updated install rule to install in
+	  usr/athena/bin insta of locker
+	  install app-defaults file.
+
+	* clients/motif/Imakefile: updated install rule to install in
+	/usr/athena/bin instead of in locker
+	install app-defaults file
+
+	* include/olcd.h: updated version number to 3.1
+
+	* include/olc/olc.h: updated version number to 3.1
+
+	* config/site.def: Change TestInstall to InstallNewLoc
+	  Always strip programs, regardless of where installed.
+
+	* config/ibm.cf: Fix spelling of SaberC
+	  No motif complete motif libraries on RS6000 (yet)
+
+	* config/ultrix.cf: Use cc instead of cc2.1 (2.1 is cc now under 4.2)
+
+	* config/Project.tmpl: added standard -I/usr/athena/include
+
+	* clients/motif/procs.c: added errno includes as well.
+
+Thu Jun 27 13:27:11 1991  Lucien W. Van Elsen  (lwvanels at godtree)
+
+	* clients/motif/procs.c: use define for NEEDS_ERRNO_DEFS
+
+Fri May 17 12:40:22 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/send.c: (OSend) make sure to close fd, even when
+	  just verifying.
+
+---
+Patch 1b to the distribution
+---
+
+Wed May 15 12:35:12 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* config/site.def: Added HaveSysLibMu flag, and arranged libraries.
+
+	* Imakefile: Added libMu directory
+
+	* server/writed/write.c: (new) network write client.
+
+	* server/writed/Imakefile: Added write client
+
+-----
+Patch 1a to the distribution
+-----
+
+Thu May  9 07:22:58 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olc/os.h: only do prototypes in the has_ansi_includes ifndef
+
+Wed May  8 10:56:57 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/writed/Imakefile: fixed install (& other) rules.
+
+	* clients/lib/io.c: fixed offset; should be 228, not 227.
+
+	* include/olc/requests.h: fixed offset; should be 228, not 227.
+
+	* server/olcd/s_io.c: fixed offset; should be 228, not 227.
+
+Tue May  7 11:08:14 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/rpd/Imakefile: alt loc is "new" directory structure
+
+	* server/polld/Imakefile: alt loc is "new" directory structure
+
+	* server/olcm/Imakefile: alt loc is "new" directory structure
+
+	* server/olcd/Imakefile: alt loc is "new" directory structure
+
+	* server/lumberjack/Imakefile: alt loc is "new" directory structure
+
+	* man/Imakefile: alt loc is "new" directory structure
+
+	* clients/oreplay/Imakefile: alt loc is "new" directory structure
+
+	* clients/olc/Imakefile: alt loc is "new" directory structure
+
+	* include/rpd.h: define location for srvtab
+
+	* server/rpd/handle_request.c: give explicit location for srvtab
+
+Mon May  6 22:27:54 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/parser/p_local.c: always give name of element of struct,
+	even if it is the first one.
+
+	* server/olcm/olcm.c: should use strncpy, not strcpy
+
+	* server/olcd/s_io.c: only define MAX & MIN if not already defined.
+
+	* server/lumberjack/lumberjack.c: fixed ifdef for PS/2 to not
+	  include rios.
+
+	* config/ibm.cf: added rios-specific stuff
+
+	* config/Imake.template: added rios ifdefs
+
+	* common/string_utils.c: arg to if must be parenthesized
+
+	* server/polld/Imakefile: fixed so it only includes com_err when
+	  necessary (typo previously)
+
+Tue Apr 23 15:11:29 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* logger/bbd.c: fixed bug; was passing in wrong buf len
+
+	* logger/log.c: use hesiod to look up default port
+	  (log_startup) take port number to use
+
+	* logger/bbd.c: include "START" and "VIEW" tags
+	  use /etc/services to look up default port
+	  allow port to be specified on command line
+
+----------------------------------------------------------------------------
+FIRST OLC DISTRIBUTION
+----------------------------------------------------------------------------
+
+Mon Apr 15 14:33:03 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/io.c: only define min if not already defined
+
+	* common/c_io.c: only define min if not already defined
+
+	* clients/oreplay/oreplay.c: cleaned up nice output code
+
+Sun Apr 14 17:16:27 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/olcd.c: don't use index as a variable
+
+	* server/olcd/log.c: cast memory alloc calls
+
+	* browser/curses/commands.c: don't use index as a variable
+	  include types before file
+
+	* browser/curses/update.c: don't use index as a variable
+
+	* browser/curses/globals.h: don't use index as a variable
+
+	* browser/curses/globals.c: don't use index as a variable
+
+	* browser/curses/display.c: don't use index as a variable
+
+	* browser/curses/cref_utils.c: added tyeps before file
+	  added TERMIO compat
+
+	* browser/curses/cref.c: include types before file
+	  don't use index as a variable; macro on some platforms
+
+	* logger/log.c: include select macros
+
+	* server/olcd/requests_olc.c:  cast mem alloc
+
+	* server/olcd/acl_files.c: include types.h before file (for mac)
+	  cast memory allocation
+
+	* server/olcd/list.c: cast mem alloc calls
+
+	* server/olcd/data_utils.c: cast hesiod call (mac header file
+	  broken; doesn't have updated list of fucs)
+
+	* clients/lib/data.c: Daemonhost should be MAXHOSTNAMELEN sized
+
+	* clients/oreplay/oreplay.c: daemonhost should be external, and an
+	  array
+
+Thu Apr 11 09:22:21 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/db.c: added nec. header files
+
+	* server/polld/polld.c: add support for setvbuf instead of setlinebuf
+
+	* server/rpd/io.c: added select macros
+
+	* server/rpd/acl_files.c: added MIN def for platforms not def'ing it.
+
+	* clients/oreplay/oreplay.c: re-ordered include files for mac
+
+Wed Apr 10 00:13:36 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/log.c: added fork/vfork flag
+
+	* server/olcd/motd.c: added fork/vfork flag
+
+	* server/lumberjack/lumberjack.c: added fork/vfork flag
+
+	* clients/browser/cref_utils.c: added fork/vfork flag
+
+	* clients/olc/olc_stock.c: added fork/vfork flag
+
+	* clients/motif/procs.c: added fork/vfork flag
+
+	* clients/lib/utils.c: added fork/vfork flag
+
+	* config/site.def: add switch for use of fork/vfork
+
+	* config/macII.cf: doesn't have vfork; add correct define
+
+	* logger/bbd.c: types needed before file
+
+	* server/polld/Imakefile: don't always define -DLOG -DSYSLOG
+	  remove unused -I.
+
+	* server/olcm/Imakefile: don't always define -DLOG -DSYSLOG
+
+	* server/olcd/Imakefile: remove unused -I.
+
+	* server/olcd/syslog.c: use sys_errlist & define as appropriate
+
+	* server/olcd/requests_olc.c: fixed var def for some ifdef
+
+	* server/rpd/handle_request.c: include kerberos data structure
+	  sizes on non-kerberos compiles to allow same protocol to be used.
+
+	* include/olc/requests.h: include kerberos data structure sizes on
+	  non-kerberos compiels to allow the same protocol to be used.
+
+	* server/olcd/olcd.c: included strings.h
+
+	* server/olcd/data_utils.c: included strings.h
+
+	* server/rpd/Imakefile: removed hacked kerberos opt kopt.c
+
+	* server/lumberjack/lumberjack.c: include strings.h
+
+	* config/site.def: add -L/usr/athena/lib to athena libs
+
+	* clients/lib/utils.c: include strings.h
+
+	* logger/bbd.c: added errno defs
+
+	* browser/curses/globals.c: check return value of getpwuid
+
+	* browser/curses/signal.c: fixed error handling for ioctl
+
+	* browser/curses/commands.c: fixed possible unset var
+
+	* browser/curses/update.c: removed unused var
+
+	* server/olcm/olcm.c: typo- server should be topic
+
+	* clients/lib/nl.c: fixed allocation len
+
+	* server/olcm/olcm.c: improved "From:" parsing
+
+Tue Apr  9 01:27:01 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/olcd.c: changed fmt to sprintf's
+
+	* server/olcd/notify.c: changed fmt to sprintf's
+
+	* server/olcd/log.c: got rid of fmt/vfmt (nonportable- calls to
+	  _doprint.  Ugh!)
+
+	* server/olcd/data_utils.c: changed fmt to sprintf's
+
+	* server/olcd/requests_olc.c: changed fmt to sprintf's
+
+	* include/olcd.h: removed prototypes for vfmt and fmt (ugly code)
+
+	* lib/Imakefile: only make motif_help if has motif
+
+	* config/macII.cf: mac's don't have motif
+
+	* server/olcd/s_io.c: fixed reading krb ticket length
+
+Mon Apr  8 14:31:21 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/polld/polld.c: fixed thigns for lint
+
+	* server/rpd/rpd.c: added return value to clean_up to fix lint
+
+	* clients/olc/olc.c: removed & ifdef'd unused vars
+
+	* logger/log.c: removed unused var.
+
+	* logger/bbd.c: added error checking
+
+	* man/Imakefile: added PAGES var; added cref.1
+
+	* lib/motif_help/Imakefile: fixed depend rule
+
+	* Imakefile: added logger library
+
+	* browser/motif/main.c: ifdef'd LOG_USAGE
+
+	* browser/motif/callbacks.c: ifdef'd LOG_USAGE
+
+	* browser/motif/Imakefile: use logger library & global define
+
+	* browser/motif/cref.h: added define for LOGGER_HOST
+
+	* browser/curses/Imakefile: fixed logging to include logger library
+
+	* browser/curses/cref.c: ifdef'd LOG_USAGE
+
+	* browser/curses/cref.h: added define for LOGGER_HOST
+
+	* browser/curses/display.c: ifdef'd LOG_USAGE
+
+	* server/olcm/olcm.c: fixed openlog across platforms
+
+	* server/rpd/Imakefile: don't use strcasecmp
+
+	* server/rpd/handle_request.c: always read krb ticket; may just be
+	  zero length if not kerberos
+	  can also replay log if it's theirs
+
+	* server/rpd/rpd.c: fixed openlog across platforms
+
+	* server/rpd/io.c: added ifdef NEEDS_ERRNO_DEFS
+
+	* server/rpd/fdcache.c: make sure that reference is active when
+	  you find it; fixed syslogging; close 0 fd as well.
+
+	* server/polld/polld.c: fixed openlog across platforms to be similar
+
+	* server/olcd/data_utils.c: remove unused code
+	  use log_error not perror
+
+	* server/olcd/Imakefile: move LOG and SYSLOG defs to global site.def
+
+	* server/olcd/olcd.c: removed unused code; use log_error not perror
+
+	* server/olcd/s_io.c: always read krb ticket; may just be 0 length
+	  if not using kerberos
+
+	* server/olcd/log.c: remove unused code
+	  don't use perror, use log_error
+	  make sure there's no newlines in title
+	  use #define for lumberjack location
+
+	* server/olcd/requests_olc.c: removed unused code
+
+	* server/olcd/db.c: removed ifdef TEST
+	  don't use perror, log_error
+
+	* server/olcd/notify.c: don't use perror, log_error
+
+	* server/olcd/backup.c: don't use perror, log_error
+
+	* server/olcd/motd.c: use olc_perror, when appropriate
+
+	* server/olcd/acl_files.c: added ifndef HAS_ANSI_INCLUDES
+
+	* include/common.h: fixed perror to be olc_perror
+
+	* include/olcd.h: added lumberjack location
+	  LAVIN = OLTA
+
+	* include/system.h: added copyright
+	  added ifndef HAS_ANSI_INCLUDES
+
+	* include/olc/requests.h: ticket not ifdef'd kerberos (just a
+	  zero-length one sent)
+
+	* include/olc/os.h: added ifndef HAS_ANSI_INCLUDEs
+
+	* include/olc/sort.h: removed unused typedef
+
+	* include/olc/lang.h: removed c++ crud
+
+	* include/olc/olc.h: fixed AUX ifdefs
+	  removed c++ crud
+	  moved in stuff from olc_data.c
+	  changed local stuff to be #ifdef ATHENA
+
+	* common/perror.c: fixed AUX ifdefs
+	  olc_perror not perror
+
+	* common/c_io.c: added ifdef NEEDS_ERRNO_DEFS
+	  fixed AUX ifdefs
+	  added ifdef NEEDS_SELECT_MACROS
+	  use olc_perror
+	  removed ifdef TEST
+
+	* clients/oreplay/Imakefile: don't use strcasecmp
+
+	* clients/olc/Imakefile: don't used olc_data anymore (moved to .h
+	  files)
+
+	* clients/olc/olc.c: LAVIN now OLTA
+	  ifdef PUTENV
+	  removed ifdef TERMINAL
+
+	* clients/olc/olc_stock.c: use olc_perror not perror
+
+	* clients/parser/p_cmdloop.c: fixed AUX ifdef
+	  removed ifdef CSH
+
+	* clients/lib/sort.c: changed to new style prototypes, removed
+	  dead code
+
+	* clients/lib/ask.c: fix AUX ifdef
+
+	* clients/lib/nl.c: send zero length krb. ticket if not kerberos
+
+	* clients/lib/io.c: use swrite, not write
+	  use olc_perror, not perror
+	  send zero length krb. ticket if not kerberos
+
+	* clients/lib/utils.c: use olc_perror, not perror
+
+	* clients/tty/t_list.c: AUX ifdefs, removed unused code
+
+	* clients/tty/t_utils.c: added termio ifdefs, AUX ifdefs, got rid
+	  of "a" cuteness.
+
+	* clients/tty/t_ask.c: removed ifdef beth
+
+	* clients/tty/t_send.c: ifdef needs errno
+
+	* config/ultrix.cf: Added options toggles
+
+	* config/sun.cf: added options toggles
+
+	* config/site.def: Added toggles for more options, to reduce
+	  platform specific flags.
+
+	* config/macII.cf: Added correct imake defines
+
+	* config/ibm.cf: fixed up defines for PS/2
+
+	* config/Project.tmpl: Added Logger library
+
+	* config/Imake.template: use real debugging switch in site.def
+	  fixed includes so they aren't redundant
+
+	* config/Imake.rules: added dependSrcs
+
+Fri Apr  5 15:49:56 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* Imakefile: added the logger directory
+
+	* logger/bbd.c: (new) usage logger server library
+
+	* logger/log.c: (new) usage logger client library
+
+	* logger/Imakefile: (new) Imakefile for usage logger
+
+Tue Apr  2 13:30:50 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/Imakefile: included olcm directory
+
+	* server/olcm/olcm.c: (new) Mail-in server
+
+	* server/olcm/Imakefile: (new)  Imakefile for mail-in server
+
+	* include/olcm.h: (new) include file for mail-in server
+
+	* olc/olc.c: exit with error status if error occured with command
+	  line form.
+
+	* parser/p_cmdloop.c: return actual errorcode form do_command
+	  instead of always success
+
+Thu Mar 28 08:40:28 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/rpd/io.c: define errno
+
+	* clients/olc/olc.c: included strings.h; use putenv instead of setenv
+
+	* clients/tty/t_send.c: fixed sys_errlist for the suns (really
+	  should be a general define)
+
+	* clients/lib/init.c: Added #include strings.h
+
+(ported to suns)
+
+	* server/olcd/requests_admin.c: ifdef'd for zephyr
+
+	* server/olcd/data.c: removed unused include of lumberjack.h
+
+	* server/olcd/motd.c: ifdef'd for discuss
+
+	* server/olcd/log.c: ifdef'd for discuss
+
+	* server/Imakefile: only make lumberjack if discuss present
+
+(ifdef'd discuss)
+
+	* server/rpd/acl_files.c: define lengths even if not kerberos; use
+	  default realm 
+
+	* server/rpd/io.c: expand_hostname never used-
+
+	* server/rpd/handle_request.c: fixed ifdef krb to include enough
+
+	* server/polld/comm.c: only use instance & realm when KRB
+	  use "olc" as the username to pass to olcd
+
+	* server/olcd/db.c: Fix code so it works when realm not specified.
+
+	* server/olcd/olcd.c: Only get kerberos tickets if krb
+
+	* server/olcd/requests_admin.c: copy in default realm if not krb.
+
+	* server/olcd/s_io.c: ifdef instance and realm on krb
+
+	* include/system.h: include types.h even if not krb
+
+	* include/olcd.h: include default server realm even if not krb
+	  (acls stuff needs it)
+
+	* include/olc/structs.h: ifdef'd realm and instance on krb
+
+	* clients/oreplay/oreplay.c: ifdef krb error messages
+
+	* clients/motif/procs.c: ifdef krb error messages
+
+	* clients/lib/nl.c: ifdef krb protos on krb
+
+	* clients/lib/init.c: ifdef expnand_hostname on krb
+
+	* clients/lib/utils.c: ifdef expand_hostname on krb; ifdef zephyr
+	includes on zephyr
+
+	* cilents/lib/io.c: ifdef sending realm and instance 
+
+	* clients/tty/t_utils.c: conditionalize krb error messages
+
+	* server/rpd/rpd.h: moved to include directory
+	  replaced requests.h with nl_requests.h
+
+	* server/rpd/Imakefile: move include files to include directory
+
+(compile without kerberos)
+
+Wed Mar 27 13:54:48 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/backup.d: make sure knuckle title is set correctly
+	  on restore
+
+	* server/olcd/notify.c: need to include netinet/in.h and ifdef
+	  prototypes on zephyr
+
+	* server/olcd/data_utils.c: need to include sys/errno.h
+
+	* server/polld/hosthash.c: need to include inet stuff since zephyr
+	  not included
+
+	* server/polld/locate.c: added include netinet/in.h (zephyr
+	  included, so masked the need)
+
+(compile without zephyr)
+
+Tue Mar 26 10:52:20 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olcd.h: added DFLT_SERVER_REALM if not athena & kerberos
+
+(compiled without Athena compat)
+
+	* clinets/lib/init.c: (OInitialize) cleaned up hesiod host checking
+
+	* clients/tty/t_utils.c: removed unused code to check if user has
+	athena pobox (not useful because mail forwarding removes hesiod
+	pobox entry)
+
+	* server/olcd/olcd.c: fix error messages, optimize hes calls
+
+	* server/polld/polld.c: optimized call around hesiod
+
+	* server/olcd/data_utils.c: getpwnam, not getpwname
+
+(compiled without hesiod)
+
+Sun Mar 24 14:20:50 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/motif/procs.c: send -signal pid to browser
+
+	* browser/motif/main.c: take -signal pid to only signal one process
+
+	* lib/Imakefile: added motif_help
+
+	* server/rpd/Imakefile: fixed install rule
+
+	* server/polld/Imakefile: fixed install rule
+
+	* server/olcd/Imakefile: fixed install rule
+
+	* server/lumberjack/Imakefile: fixed isntall rule
+
+	* browser/motif/Imakefile: added install rule
+
+	* clients/motif/Imakefile: added install rule
+
+	* clients/oreplay/Imakefile: fixes TestInstall
+
+	* clients/olc/Imakefile: fixed TestInstall
+
+	* config/site.def: Fixed testinstall to define unique flag
+	  Added motif/x libraries
+
+	* Imakefile: added xolc tags
+
+	* browser/motif/callbacks.c: added logging
+
+	* browser/motif/main.c: added logging
+
+	* browser/motif/Imakefile: added logging
+
+	* clients/motif/Xolc/help/olc.replay: Show new message button changed
+
+	* clients/motif/Xolc/help/olc.ask: changed help to reflect that
+	focus works
+
+	* clients/motif/Xolc: don't include title in resources
+	change title of update button
+	insertion point not vis. in log
+	change send label since cursor now appears
+
+	* clients/motif/x_utils.c: Redo error messages
+	add copyright
+
+	* clients/motif/x_send.c: removed unused t_comment/t_mail
+
+	* clients/motif/x_isntance.c: removed unused func; added copyright
+
+	* clients/motif/x_ask.c: include copyright
+
+	* clients/motif/x_topic.c: use \0, not NULL, for char
+
+	* clients/motif/xolc.h: add copyright
+	move define to data.h
+	new/changed prototypes
+
+	* clients/motif/main.c: take command line args
+	don't repeat, fail
+	get motd at correct time
+
+	* clients/motif/x_resolve.c: remove commented/old code
+
+	* clients/motif/buttons.h: added copyright
+
+	* clients/motif/visual.c: use gadgets when possible
+	remove unused help callbacks
+	set keyboard focus correctly
+
+	* clients/motif/x_motd.c: don't print to stderr, elim redun. copy
+
+	* clients/motif/data.h: more defines entered
+
+	* clients/motif/procs.c: First stable version; many changes/bugfixes
+
+Sat Mar 23 13:32:57 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* browser/motif/main.c: send signal to invoker when view ready
+	set argv correctly to find xresources
+
+	* browser/motif/callbacks.c: save only sensitive when there's an
+	answer
+
+	* browser/motif/Xbrowser: save only sensitive when there's an answer
+
+Thu Mar 21 15:29:30 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* browser/motif/Imakefile: (new)
+
+	* browser/motif/Xbrowser: (new)
+
+	* browser/motif/main.c: (new)
+
+	* browser/motif/cref.h: (new)
+
+	* browser/motif/callbacks.c: (new)
+
+	* browser/motif/MriRegAll.c: (new)
+
+	* browser/curses/Imakefile: logging off by default
+
+	* browser/Imakefile: (new) split into curses and motif browsers
+
+	* clients/lib/nl.c: (nl_get_log) make sure to null-terminate log
+
+Mon Mar 11 13:39:34 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/rpd/Imakefile: move client over to client side
+
+	* include/nl_requests.h: (new) requestss made of the non-locking daemon
+
+	* include/olc/procs.h: added prototypes for non-locking daemon calls
+
+	* clients/Imakefile: added the oreplay subdir
+
+	* clients/oreplay/Imakefile: (new) Imakefile for the oreplay client
+
+	* clients/oreplay/oreplay.c: (moved from server side)
+	  changed to use libraries
+
+	* clients/lib/Imakefile: added nl.c
+
+	* clients/lib/nl.c: routines for getting info from non-locking daemon.
+
+	* clients/lib/io.c: open_connection_to_nl_daemon (new)
+	  for contacting fast daemon
+
+Thu Mar  7 13:20:59 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/olcd.c: set kerberos ticket file before calling
+	  zinit, so it gets cached correctly.
+
+	* server/olcd/list.c: Use correct size for status
+
+	* server/olcd/log.c: unlink .info file when done with log
+
+	* server/olcd/backup.c: removed unused struct members
+
+	* server/olcd/requests_olc.c: knuckle titles point back to user
+	  title, instead of being separate copies
+	  removed olc_get_connected_info (not used)
+	  added appropriate calls to write_question_info
+
+	* server/olcd/data_utils.c: knuckle titles point back to user
+	  title, instead of being separate copies
+	  removed unused struct members
+	  added info database file & support (write_question_info)
+
+	* server/olcd/s_io.c: construct buffers to send over socket,
+	  instead of structs.
+	  removed send_person (unused)
+
+	* include/olcd.h: removed unused struct parts
+	  added new prototypes
+
+	* include/olc/structs.h: removed old list struct
+
+	* clients/olc/olc_stock.c: use vfork; set root so you can't go up
+	  to wierd stock answers.
+
+Wed Mar  6 15:25:37 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/Imakefile: changed io.c to s_io.c to avoid name conflicts
+
+	* clients/motif/Cursor.c: (new) cursor control routines
+
+	* clients/motif/Imakefile: (new)
+
+	* clients/motif/xolc.h: added prototypes
+
+	* clients/motif/x_utils.c: fixed calls with wrong # args
+
+	* clients/motif/x_topic.c: added headers
+
+	* clients/motif/x_send.c: use standard defines for lengths
+
+	* clients/motif/x_resolve.c: fixed calls with wrong # params
+
+	* clients/motif/x_motd.c: use new libclient calls
+
+	* clients/motif/x_ask.c: split up too-long lines
+	  use standard defines for lengths
+
+	* clients/motif/visual.h: added header
+
+	* clients/motif/visual.c: use app-defaults instead of hardcoded
+
+	* clients/motif/procs.c: use standard defines for lengths
+	  use new cursor calls
+
+	* clients/motif/main.c: use standard defines for lengths
+	  use app-defaults instead of hardcoding
+	  use new libclient calls
+
+	* clients/motif/data.h: added header
+
+	* clients/motif/buttons.h: added header
+
+Tue Mar  5 14:41:51 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olc/olc_tty.h: removed unused func. prototypes
+
+	* include/olc/olc_parser.h: removed unused func. prototypes
+
+	* include/olc/procs.h: removed unused func. prototypes
+
+	* clients/olc/Imakefile: removed unused zephyr library
+
+	* clients/lib/utils.c: (zephyr_get_opcode,zephyr_subscribe)
+	removed, unused
+
+	* clients/lib/messages.c: (OWaitForMessage) removed, unused
+
+	* clients/parser/Imakefile: removed p_live.c (unused)
+
+	* clients/tty/Imakefile: removed t_live.c (unused)
+
+	* clients/Imakefile: Added motif client
+
+Mon Mar  4 10:04:02 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/olc/Imakefile: Removed unused curses library
+
+Fri Mar  1 12:18:00 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* browser/log.c: (new) logging routines
+
+	* browser/display.c: added logging option
+
+	* browser/cref.c: added logging option
+
+	* browser/Imakefile: Added logging option
+
+Tue Feb 26 10:24:58 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/io.c: don't _ever_ use read; may block
+
+	* server/rpd/Imakefile: add strcasecmp
+
+	* server/rpd/io.c: declare errno for ps2
+
+	* server/rpd/strcasecmp.c: (new)
+
+Mon Feb 25 16:30:06 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olc/procs.h: get rid of read_person; other funcs return
+	errcode now
+
+	* include/olc/requests.h: don't rely on structs being aligned the same
+	way on all platforms to pass over the network
+
+	* clients/lib/status.c: remove unused function (OGetConnectecPerson)
+
+	* clients/lib/io.c: don't rely on structs being aligned the same
+	way on all platforms to pass over the network
+
+Sun Feb 24 11:20:23 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* config/macII.cf: (new)
+
+	* include/olc/structs.h: Add padding; mac aligns structs
+	differently that are passed over sockes 
+
+	* include/olc/olc.h: include strings.h
+
+	* include/common.h: include time.h; don't redefine perror
+
+	* clients/tty/t_utils.c: more in a different place
+	use termio instead of BSD terminal
+	simplify expressions
+
+	* clients/tty/t_status.c: get rid of index vars
+
+	* clients/tty/t_send.c: define sys_errlist
+
+	* clients/tty/t_list.c: include time.h
+
+	* clients/parser/p_local.c: get rid of index vars
+
+	* clients/parser/p_cmdloop.c: include time.h; get rid of index vars
+
+	* clients/lib/utils.c: still has old zephyr include files
+
+	* clients/lib/init.c: get rid of OLZ
+
+	* clients/lib/ask.c: machtype broken; hardcode in
+
+	* common/status.c: index is a macro; don't use as var. name
+
+	* common/perror.c: include time.h; don't redefine perror (loader
+	can't handle it)
+
+	* common/c_io.c: added FD macros for mac
+
+	* common/Imakefile: io.c changed to c_io.c to avoid name conflicts
+
+(ported to mac aux; changes on 2/24 reflect that)
+
+Sun Feb 10 14:38:50 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* Imakefile: changed tags target to mytags to prevent walking down
+
+	* server/olcd/olcd.c: (main) close dirp to prevent fd lossage.
+
+	* server/polld/locate.c: (find_finger, do_timeout) close fd if
+	finger times out while open
+
+	* server/polld/get_list.c: (get_user_list) more descriptive error
+	messages
+
+Fri Feb  1 15:45:33 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olcd.h: fixed VERSION_INFO not to use $Id: ChangeLog,v 1.1 1994-09-18 05:08:04 cfields Exp $, since it
+	now has the compile time
+
+	* server/polld/get_list.c: (get_list) fixed for new queue format
+
+	* server/olcd/Imakefile: added CTIME for compile date
+
+	* server/olcd/requests_admin.c: (do_version) added compile date
+
+	* server/rpd/oreplay.c: split up queues
+
+	* server/olcd/requests_olc.c: (olc_on) does backup
+
+	* server/olcd/list.c: (dump_list) separated queues
+
+Sun Jan 27 16:59:25 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/polld.h: added protos for hosthash.c
+
+	* server/polld/get_list.c: list now includes user login status
+
+	* server/polld/locate.c: use hashing gethostbyname
+
+	* server/polld/hosthash.c: (new) hashing gethostbyname
+
+	* server/polld/Imakefile: Added hosthash
+
+	* server/polld/polld.c: Add initialization of gethostbyname cache
+
+Wed Jan 23 12:13:27 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/tty/t_status.c: (t_version) include compile date
+
+	* clients/tty/Imakefile: Changed to include compile date
+
+	* clients/tty/t_send.c: (t_mail) added backwards compatability
+	with -file
+
+	* clients/lib/sort.c: (OSortListByRule) Fixed question_status rule
+
+Tue Jan 22 13:27:56 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* clients/lib/sort.c: (OSortListByRule) Added rev_nseen rule
+
+	* clients/tty/t_list.c: Changed default sort order to include
+	"question_status" (to deal with unseen/logout questions)
+
+Mon Jan 21 01:10:57 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* include/olc/olc_tty.h: Changed prototype for t_mail to add
+	header flag
+
+	* clients/parser/p_send.c: (do_olc_mail): takes -noheader options
+
+	* clients/tty/t_send.c: (t_mail): takes -noheader option
+
+	* server/rpd/oreplay.c: "off" output in wrong nesting level.
+
+	* server/olcd/requests_olc.c: (olc_replay) don't replay log if no
+	question
+
+	* server/rpd/handle_request.c: fixed replay with kill of nm.
+
+	* server/rpd/oreplay.c: Now retries connection when it fails
+	Looks for just username, not username instance for on ident
+	prints "off" not "none" when ident not found
+
+	* server/rpd/rpd.c: added -nofork
+
+	* server/olcd/requests_admin.c: (olc_version) new
+	(olc_set_user_status) now backs up DB
+
+	* server/olcd/requests_olc.c: (olc_on) status now in nol zephyrgrams
+	(olc_done) send response even for third party dones
+
+	* server/olcd/data_utils.c: (disconnect_knuckles) checks for null
+	knuckles
+
+	* server/olcd/data.c: added olc_version to command table
+
+	* include/olcd.h: Added VERSION_INFO, prototype for olc_version
+
+	* include/olc/requests.h: added OLC_VERSION
+
+	* include/olc/procs.h: Added OVersion
+
+	* include/olc/olc_tty.h: Added prototype for do_olc_version
+
+	* include/olc/olc_parser.h: Added prototype for do_olc_version
+
+	* clients/olc/olc.c: Added version command
+
+	* clients/parser/p_resolve.c: (do_olc_done) added -nocheck
+
+	* clients/parser/p_status.c: (do_olc_version) new
+
+	* clients/lib/status.c: (OVersion) new
+
+	* clients/tty/t_resolve.c: (t_done) Added -nocheck, and got rid of
+	a tom-ism.
+
+	* clients/tty/t_send.c: (t_mail) fixed incorrect printf
+
+	* clients/tty/t_status.c: (t_version) (new)
+
+Sun Jan 20 23:07:41 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* lib/olcr_help/done.nroff: added documentation for the -nocheck
+	option.
+
+	* (various Imakefiles) Added test install option to allow "make
+	install" to install binaries in olcdev locker
+
+Tue Jan 15 17:40:28 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/requests_olc.c: 
+	(olc_forward) always sends zephyrgrams, and includes destination queue.
+	(olc_send)    messages send when not connected handled correctly
+
+	* server/olcd/motd.c:
+	(check_motd_timeout): creates files group-writable
+	(set_motd_timeout):   creates files with the right group/protection
+	(log_motd): (new) logs motd to discuss meeting
+
+	* server/olcd/olcd.c:
+	(main) better error handling for select
+
+	* server/olcd/requests_admin.c:
+	(olc_change_motd) Calls log_motd
+	(olc_set_user_stats) fixed unset variable
+
+	* server/olcd/data_utils.c:(new_message): messages in the new
+	message file have same format as in replay buffers.
+
+	* server/olcd/list.c: (put_queue) Another status kludge- "active"
+	if unseen & connected.
+
+	* server/rpd/requests.h: Added REPLAY_KILL_REQ
+
+	* server/rpd/handle_request.c:
+	added replay with killing of new messages
+	added list with connected status
+	got rid of shutdown
+
+	* server/rpd/oreplay.c: added list with connected status
+
+	* server/rpd/rpd.c: removed shutdown
+
+	* server/lumberjack/lumberjack.c: uses fork/exec instead of system
+
+	* server/polld/polld.c: -host works as well as -server
+
+	* include/olcd.h: added log_motd prototype
+
+	* include/lumberjack.h: added DSPAV0 define
+
+	* include/olc/olc_tty.h: new t_mail prototype
+
+	* clients/parser/p_utils.c: (handle_request): now handles '>'
+	error correctly.
+
+	* clients/parser/p_send.c: (do_olc_mail): now takes -noedit flag &
+	deals appropriately 
+
+	* clients/tty/t_send.c: (t_mail): now takes "noedit" flag to
+	supress calling of editor 
+	(t_mail): fixed to append file to end of log if -file & -noedit
+
+	* clients/tty/t_utils.c: (enter_message) fixed potential coredump
+	on decmips
+	(mail_message)  fixed potential coredump on decmips
+
+Mon Jan 14 15:28:03 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* lib/olcr_help/mail.nroff: Added documentation for the -noedit
+	option.
+
+Wed Jan  9 01:31:41 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/list.c: done & cancel now in active queue
+
+Tue Jan  8 15:56:03 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/rpd/rpd.h: don't include kerberos; included in system.h
+
+	* server/rpd/oreplay.c: correct error message for oshow when no
+	new messages
+
+	* server/rpd/Imakefile: Fixed depend rules for makedepend bug
+
+	* server/olcd/log.c: (trans_m_i) no display doesn't include extra \n
+
+	* server/olcd/requests_olc.c: (olc_cancel) cancelled questions go
+	to regular logs
+
+	* server/olcd/request_admin.c: (olc_set_user_status) fixed to use
+	target, not requester
+
+	* server/olcd/data_utils.c: (create_user) Fixed bug that would
+	cause problems with new messages file for first insteace of a new
+	user to be mal-formatted.
+
+	* server/polld/Imakefile: (new) Imakefile for the polld directory
+
+	* server/polld/polld.c: (new) main body of the poling daemon
+
+	* server/polld/locate.c: (new) routines to locate users
+
+	* server/polld/get_list.c: (new) routines to get the list of users
+
+	* server/polld/comm.c: (new) routines to communicate with the main
+	daemon.
+
+	* include/polld.h: (new) Include files for the polling daemon
+
+Mon Jan  7 01:19:02 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server/olcd/requests_olc.c: (olc_ask) now comments in log who
+	  proxy asked it 
+	(olc_comment) fixed comment
+
+	* server/olcd/Imakefile: removed lumberjack stuff
+
+	* Imakefile: added separate tags for rpd
+
+	* server/olcd/requests_admin: (olc_set_user_status) fleshed out
+
+Sun Jan  6 02:51:24 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* Imakefile: single "server" directory for all servers
+
+Thu Jan  3 13:04:30 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* server+/reqeusts_olc: (olc_replay) Fixed bug selecting instances
+
+	* server+/log.c: now a censored log file as well for no private
+	  comments 
+	Machine info translating spiffed up
+
+	* server+/olcd.c: extern constants now local/defined
+
+	* server+/data_utils.c: (init_user) gets realname/uid information
+	from the password file, instead of the request.
+	(find_knuckle) doesn't coredump if instance not found
+	(find_knuckle) doesn't take realname/uid info from the request
+	(new_message) make sure nm_file is initialized
+	(free_new_messages) make sure nm_file is initialized
+
+	* server+/motd.c: (set_olc_motd) Fixed time parsing bug
+
+	* server+/requests_olc.c:
+	(olc_ask) use find_knuckle, not match_knuckle, to ensure that one
+		gets created if necessary.
+	(olc_comment) logs private comments differently, and passes option
+	(olc_replay) only allow people on the monitor acl to replay real
+		log; others get "censored" version.
+	(olc_verify_topic) no longer verifies `target' (why should it?)
+	(olc_get_hours) (new)
+
+	* server+/data.c: constants are now #defines in olcd.h
+	added OLC_SET_USER_STATUS,OLC_GET_HOURS, and OLC_CHANGE_HOURS requests
+
+	* server+/notify.c: (write_message_to_user) Daemon name changed to
+	  not have a space in it; otherwise, write fails.  How did this ever
+	  work before? 
+
+	* server+/list.c: (dump_list) active & serviced should be listed
+	  with pending 
+
+	* server+/requests_admin.c: (olc_load_user) fixed to load user
+	  before trying to reference them 
+	(olc_change_hours) (new)
+	(olc_get_dbinfo) fixed to load user before trying to reference them
+	(olc_set_user_status) (new) stub.
+
+	* clients/olc/olc.c: Removed extra function prototypes
+	Added hours to list of commands for OLC/OLCR
+	t_get_file change
+	Added hours to initial commands printed on startup
+
+	* clients/parser/p_ask.c: (do_olc_ask) prints hours as one of the
+	commands to try
+
+	* clients/parser/p_motd.c: (do_olc_motd) changed to reflect new
+	  get/change file commands 
+	(do_olc_hours) (new) -very like motd
+
+	* clients/parser/p_send.c: (do_olc_comment) (do_olc_comment) added
+	-private option 
+
+	* clients/lib/motd.c:  OGetMOTD is now OGetFile
+	OChangeMOTD is now OChangeFile
+
+	* clients/tty/t_connect.c: (t_forward) Doesn't try to change your
+	  instance if you were forwarding on behalf of someone else
+
+	* clients/tty/t_ask.c: (t_ask) Doesn't try to change your instance
+	  if you were asking on behalf of someone.
+
+	* clients/tty/t_motd.c: t_get_motd is now t_get_file
+	t_change_motd is now t_change_file
+	OGetFile/OChangeFile calls
+
+	* clients/tty/t_utils.c: (handle_response): OK is now sucess as well.
+
+	* include/server+/olcd.h: Changed many `constants' from being
+	  defined in data.c to be #defines 
+	Changed prototypes to reflect that log_comment now takes a private flag
+	Added olc_change_hours
+	Added olc_set_user_status
+	Added olc_get_hours
+
+	* include/olc/procs.h: Changed prototypes to reflect that OGetMOTD
+	and OChangeMOTD are now OGetFile and OChangeFile
+
+	* include/olc/olc_tty.h: Changed prototypes to reflect that
+	t_get_motd/t_change_motd are now t_get_file and t_change_file
+
+	* include/olc/olc_parser.h: Add prototype for do_olc_hours
+
+	* include/olc/requests.h: Added get_hours and change_hours
+	Made private comments an option, not a separate request
+
+	* clients/olc/Imakefile: DBM not linked into the client
+
+Wed Jan  2 11:28:52 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* lib/olcr_help/hours.nroff: (new)
+
+	* lib/olc_help/hours.nroff: (new)
+
+	* clients/Imakefile: Don't make maude (no longer used; rolled into
+	olcr)
+
+Tue Jan  1 11:40:18 1991  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* lib/olcr_help/comment.nroff: Documented -private
+
+	* include/olc/requests.h: Added OLC_PRIVATE_COMMENT
+
+	* replayer/rpd.c: Added profiling code
+
+	* server+/Imakefile: No longer links in DBM.
+
+	* server+/requests_olc.c: (olc_done): doesn't tell you user is
+	  logged out when you're doning question 
+	(olc_done): frees new message of consultant when connected
+	  question is done'd 
+	(olc_cancel): frees new message of consultant when connected
+	  question is canceled
+	(olc_send): always sends message, even if it is to yourself.
+	(olc_replay): replay will replay first active instance
+
+	* server+/motd.c: (write_motd_times) new
+	(check_motd_timeout) re-writes motd timeout file after invoking
+	   motd and when it can't be found
+
+	* server+/log.c: (init_log) no longer puts extra tab after mach info
+	(trans_m_i) Handles multi-headed/no-headed displays correctly
+
+	* server+/list.c: (dump_list) "pending" now "active"
+	(get_dlist_info) now lists unconnected on-duty consultants w/o error
+	(put_queue) no longer puts double statuses on some users
+	(put_queue) Months in go from 0-11 in Unix..
+
+	* server+/data.c: No longer has dump req/quest stats
+
+	* replayer/oreplay.c: Fixed formatting of list, added show usage
+
+Mon Dec 31 10:56:50 1990  Lucien W. Van Elsen  (lwvanels at fionavar)
+
+	* Imakefile: /var vs. /site fixed
+
+	* replayer/Imakefile: Added oshow support
+
+	* replayer/system.h: (new) system function prototypes
+
+	* replayer/rpd.h: includes requests.h and system.h; new prototypes
+
+	* replayer/reqests.h: (new) common defs for clients/server
+
+	* replayer/oclient.h: (new) client includes
+
+	* replayer/oreplay.c: Added support for oshow
+
+	* replayer/handle_request.c: Added passing of request, and ability
+	to handle show requests
+
+	* replayer/get_nm.c: (new) Handles show requests
+
+	* replayer/fdcache.c: moved LOG_DIRECTORY definition to rpd.h
+
+	* clients/tty/t_utils.c: (handle_response): 253-4435 now ifdef'd
+	ATHENA (sigh...)
+
+	* clients/olc/olc.c: (input_text_into_file) Now truncates file OLC
+
+	* client/tty/t_utils.c: (input_text_into_file) Now truncates file
+	before inputting into it.
+
+Mon Dec 17 08:28:46 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* common/io.c: (sread/swrite) fixed to use fd_set instead of int
+	(not compatable otherwise!)
+
+	* clients/tty/t_describe.c: (t_describe) print correct error
+	status if ODescribe fails.
+
+	* clients/tty/t_connect.c: (t_forward) now check error status of
+	t_describe
+
+	* clients/maude/maude.h: added prototypes
+
+	* server+/syslog.c: Fixed openlog- missing arg
+
+	* server+/requests_olc.c: on defaults to "duty"
+	instances printed when signing on
+	people in pickup stay there until forwarded out or they send a message
+
+	* server+/olcd.h: Added MOTD_HOLD_FILE for motd timeins
+
+	* server+/olcd.c: Added select so that we always have tickets
+
+	* server+/motd.c: Added "timein's" to motd
+
+	* server+/log.c: fixed %%m
+
+	* server+/data.c: Added MOTD_HOLD_FILE for motd timeins
+
+	* include/olc/os.h: added addtional prototypes
+
+Fri Dec 14 11:59:47 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/parser/p_utils.c: (handle_argument): Make sure to return
+	error status if an error occurred. (obugs 0734).
+
+Thu Dec 13 16:44:23 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/lib/data.c: moved status struct to common
+
+	* clients/lib/status.c: Moved OGetStatusString and OGetStatusCode
+	to libcommon.
+
+Wed Dec 12 13:01:39 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/lumberjack.c: ifdef'd syslog for ultrix
+
+	* include/structs.h: removed STATUS type
+
+	* include/olc/macros.h: Requests no longer take auth
+
+	* include/common.h: Added STATUS type and prototypes for status.c
+
+	* server+/utils.c: queue status stuff gotten rid of (not used)
+
+	* server+/syslog.c: Ifdef'd openlog, since it's different under
+	ultrix..
+
+	* server+/requests_olc.c: no longer takes auth.
+
+	* server+/requests_admin.c: no longer takes auth.
+
+	* server+/olcd.c: requests no longer take auth
+	need to dump list cache when doing a backup
+
+	* server+/notify.c: removed unused flags in zsend_message
+
+	* server+/motd.c: Nulls timeout file after it expires, and prints
+	timeout when it starts up.
+
+	* server+/log.c: dispose_of_log: no longer cares whether it's
+	resolved or not.
+	trans_m_i: (new) does translation of machine names into "english".
+
+	* server+/list.c: removed unused vars from list_queue
+	dump_list: (new)  Puts list on disk for caching.
+
+	* server+/data.c: Added MACH_TRANS_FILE (for the translation list),
+	LIST_FILE_NAME, and LIST_TMP_NAME (for the disk-based list)
+
+	* server+/acl_files.c: added real prototype for calloc
+
+	* server+/olcd.h: DONE_DIR now a #define
+	Added D_LIST for disk-based listing
+	Added TRANS for machine info translation
+	Made Acl_List a global
+	removed unused variables fromlist_queue
+	Added prototype from dump_list
+	Changed many prototypes (removed auth from requests, since it is
+	dealt with before it gets to the request handler.
+
+	* replayer/oreplay.c: use mktemp instead of mkstemp becase ultrix
+	doesn't have it.
+
+	* server+/lumberjack.c: 0 is an acceptable fd from open
+	Now looks in PREFIXFILE for location of discuss meeting
+
+	* server+/lumberjack.h: Location of discuss meetings now stored in
+	PREFIXFILE, instead of being hard-coded in.
+
+	* common/status.c: (new) data structures/procedures for printing
+	of status names
+
+	* common/Imakefile: Added status.c (for list status)
+
+	* replayer/Imakefile: creates olist symlink by default now as well
+
+	* replayer/oreplay.c: now does olist as well, by giving the
+	username "qlist", instance -1
+	Also has option to produce "raw" list (-r)
+
+Tue Dec 11 09:13:32 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* replayer/handle_request.c: logs actual errors, instead of
+	missing bytes.
+
+	* replayer/fdcache.c: increased cache size to 32 from 16
+
+Sun Dec  9 16:41:32 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/utils.c: needs to call has_new_messages to check for new
+	messages now
+
+	* server+/syslog.c: Only initialize syslog once.
+
+	* server+/requests_olc.c: need to call has_new_messages to check
+	for new messages now
+	logged out people who are referred don't get bumped to pending
+	when they log back in
+	DB no longer needs to be backed up after "send".
+	olc_motd calls check_motd_timeout
+
+	* server+/requests_admin.c: (olc_change_motd): calls motd_set_timeout 
+
+	* server+/olcd.h: added decl for MOTD_TIMEOUT_FILE
+	changed knuckle struct; new messages not stored in a char *, but
+	instead added a filename field, and a flag if their existance is
+	known.
+
+	* server+/olcd.c: getting new tickets gets logged to status, not
+	error
+
+	* server+/notify.c: Unable to contact write server is only status,
+	not error
+
+	* server+/motd.c: (new file) routines for motd timeouts
+
+	* server+/data_utils.c: (new_message, has_new_messages,
+	free_new_messages): new messages now stored in a file, instead of
+	part of the knuckle
+
+	* server+/data.c: Added line for MOTD_TIMEOUT_FILE
+
+	* server+/backup.c: New messages no longer stored in backup file
+	(they're in separate files; username_instance.nm
+
+	* server+/lumberjack.c: Now logs errors to syslog instead of stderr
+
+	* server+/lumberjack.h: Added include files nec. for syslog
+
+Wed Dec  5 21:10:02 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/io.c: length of kerberos ticket read is only length that
+	is sent.
+
+	* server+/db.c: removed NDBM code
+
+	* server+/data_utils.c: Added more error messages in
+	insert_knuckle to catch bad mallocs
+	Improved topic memory allocation in insert_topic
+	Added get_topic_code; used to eliminate problems with adding a new
+	topic.
+
+	* server+/backup.c: Real function prototypes
+
+	* server+/acl_files.c: Added real function prototypes
+	put struct declarations at the top
+
+	* server+: Added ANSI prototypes to olcd.h and added prototypes to
+	each file for static functions; added ifdef #saber as well around
+	rcsid
+
+Mon Nov 19 09:40:48 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/lib/send.c: (OMailHeader) Put real name of user in
+	quotes to comply with rfc standard (from bug-olc)
+
+Sat Nov 17 19:11:38 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* Imakefile: Added tags rule to make complete tags files for
+	client and server
+
+-----------------------------------
+7.2 Release code cut
+-----------------------------------
+
+
+Fri Nov 16 06:13:09 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* config/Imake.template: Strip installed programs
+
+	* clients/tty/t_messages.c: Fixed NULL pointer dereference that
+	caused coredump on replay -status unseen
+
+	* Imakefile: Added top-level install rule to create /usr/lib/olc
+	symlink
+
+	* config/ibm.cf: Added PS/2 changes from JFC
+
+	* clients/tty/t_utils.c: Changed to print instance when instance
+	isn't found
+
+	* include/olc.h: Changed version string to 3.0c
+
+	* clients/lib/init.c: Fixed to only call index once, instead of
+	twice.
+
+	* clients/lib/data.c: Fixed so that l -st active will work.
+
+	* clients/tty/t_list.c: Fixed so that it gives the right error
+	message when no questions match requested status.
+
+Thu Nov 15 08:43:28 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/tty/t_send.c: fixed stupid strlen
+
+	* clients/lib/list.c: fixed potential null strlen's (caused
+	coredump on decmips)
+
+	* clients/tty/t_utils.c: fixed typecast (for decmips)
+
+	* include/olc/procs.h: included real prototypes
+
+	* include/olc/os.h: included real prototypes, removed c++ stuff
+
+	* include/olc/olc_tty.h: include real prototypes
+
+	* include/olc/olc_parser.h: included real prototypes
+
+	* include/olc/olc.h: removed unused ifdefs & declarations
+
+	* include/olc/common.h: included real prototypes
+
+	* config/site.def: removed unused acl library
+
+	* config/bsd.cf: vaxes have gcc
+
+	* config/Imake.rules: Addes saberLibraryTarget
+
+	* common/string_utils.c: moved declarations of dates to perror.c
+	removed get_next_line, moved parse_command_line
+
+	* common/io.c: Removed unused static variables hp,service,env
+	  ansified ifdefs
+
+	* common/perror.c: (new) contains slightly modified perror
+	function
+
+Wed Nov 14 11:20:35 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/tty/t_utils.c: Removed unused argument from
+	display_file; changed kerberos message to be split into two parts
+	Better error message when /etc/services not found
+	Errors are no long fascinating.
+
+	* clients/tty/t_live.c: fixed wrong arg type to handle_response
+
+	* clients/tty/t_acl.c: removed extra breaks after returns, removed
+	extra arguments from display_file
+
+	* clients/tty/Imakefile: (new) now does profiling as well.
+
+	* clients/parser/Imakefile: (new) Now does profiling as well.
+
+	* clients/parser/p_send.c: got rid of * with no effect
+
+	* clients/parser/p_resolve.c: removed * that had no effect,added
+	missing argument to t_done, saber ifdefs
+
+	* clients/parser/p_queue.c: removed unused variable
+
+	* clients/parser/p_misc.c: added saber ifdef, got rid of
+	do_olc_happy, do_olc_home, and do_olc_cheese. Sigh..
+
+	* clients/parser/p_cmdloop.c: added saber ifdef, ansified ifdefs
+	removed extra defintion of IsAlpha, moved parse_command_line here
+	where it belongs., and got rid of extra variables
+
+	* clients/parser/p_acl.c, p_connect.c, p_consult.c, p_describe.c
+	p_instance.c, p_list.c, p_live.c, p_local.c, p_messages.c, p_motd.c
+	p_status.c, p_topic.c, p_utils.c: Added Saber ifdef
+
+	* clients/olc/olc_stock.c: Added saber ifdef around rcsid; made
+	ifdefs ansi
+
+	* clients/olc/olc_data.c: Added saber ifdef around rcsid; made
+	ifdefs ansi 
+
+	* clients/olc/olc.c: Added saber ifdef around rcsid; made ifdefs
+	ansi
+
+Tue Nov 13 14:02:48 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/lib/utils.c: Added saber ifdef around rcsid; minor type
+	fixes, make ifdefs ansi
+
+	* clients/lib/topic.c:Removed unused vars, code, added ifdef
+	around rcsid
+
+	* clients/lib/sort.c: make sort_keys non-const, ifdef around
+	rcsid; minor type fixes
+
+	* clients/lib/io.c: Added saber ifdef around rcsid; minor type
+	fixes, make ifdef's ansi
+
+	* clients/lib/init.c: Added saber ifdef around rcsid; ansified
+	ifdefs
+
+	* clients/lib/list.c: Added saber ifdef around rcsid; ansified
+	ifdefs
+
+	* clients/lib/acl.c, ask.c, connect.c, consult.c, data.c, db.c
+	describe.c, generic.c, info.c, init.c, instance.c, messages.c
+	misc.c, motd.c, queue.c, resolve.c, send.c, status.c: Added saber
+	ifdef around rcsid
+
+	* clients/lib/Imakefile: Added profiling option; removed extra
+	tags target.
+
+	* clients/Imakefile: (new)
+
+	* Imakefile: Fixed destdir; now makes lib subdir as well
+
+Thu Oct 18 06:09:06 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/parser/p_cmdloop.c: removed unused variables pid and func
+
+	* clients/parser/p_local.c: removed unused variable l
+
+	* clients/parser/p_lib.c: added missing argument to
+	handle_argument.
+
+Thu Oct 11 20:48:34 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/parser/p_ask.c: Added line about "quit" to standard
+	commands printed.
+
+Thu Sep 13 22:38:52 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* config/site.def: Changed to use local zephyr libs, because of
+	broken zephyr libs under 7.1
+
+	* clients/lib/Imakefile: Removed extra tags target
+
+Mon Sep 10 01:12:16 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* clients/olc/olc.c: Changed "consultant" to "TA" and "OLC" to
+	"OLTA" for ifdef LAVIN
+
+Thu Aug 30 14:21:52 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/notify.c: Now blocks SIGCHLD signals arond ZIfnotice
+	calls.
+
+	* server+/notify.c: Changed to call log_zephyr_error instead of
+	log_error when appropriate; it could die nastily if it tries to
+	send out a zephyr message, but can't beacause of an error, so it
+	tries to send out a zephyr message....
+
+	* server+/syslog.c: Added log_zephyr_error to log error without
+	sending a broadcase zephyrgram.
+
+	* lib/olcr_help/Imakefile: minor change to Imakefile for decmips
+
+	* lib/olc_help/Imakefile: minor change to Imakefile for decmips
+
+Mon Aug 27 02:38:23 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/lumberjack.c: fixed quoting of titles to pass through shell.
+
+Sun Aug 26 15:48:17 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* include/olc/common.h: Changed declaration of format_time
+
+	* common/Imakefile: changed to have profiling option.
+
+	* include/olc/olc.h: changed default server location to matisse
+	from picasso.
+
+	* include/olc/macros.h: changed def. of strcmp to compare first
+	char before calling strcmp.
+
+	* common/string_utils.c: fixed bug in format_time; was returning a
+	pointer to an automatic variable.
+
+	* server+/statistics.c: changed calling format of format_time
+	to fix bug in format_time.
+
+	* server+/requests_olc.c: fixed bug that would cause occasional
+	blank questions with 7.1 clients;question read in from fd was not
+	copied before machine type info was read in over it.  
+
+	* server+/olcd.h: Added declarations for log_long_description and
+	disconnect_knuckles.
+
+	* server+/olcd.c: Does not collect statistics until turned on (to
+	collect steady-state stats); changed to log an error before
+	calling abort.
+
+	* server+/notify.c: Changed to use log_error instead of writing
+	directly to stderr; increased size of time_buf in perror; was too
+	small previously;Now seeks to the end of stderr before writing;
+	this deals with multiple writers to stderr (as in the case of
+	another daemon being run and logging an error message that it
+	can't bind the socket.
+
+	* server+/log.c: fixed set but unused warning in vfmt; changed to
+	use vfork in dispose_of_log; changed to use _exit after fork.
+
+	* server+/data_utils.c: removed declaration of disconnect_knuckles
+	(should be global declaration); fixed off-by-one error in
+	verify_instance
+
+	* server+/acl_files.c: added include for perror
+
+	* server+/Imakefile: Added profiling and saber targets; removed
+	extra tags target.
+
+Sat Aug 25 22:17:52 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/notify.c: Removed old C++ compatability fix in zephyr
+	libs (fixed in current lib).  Added declaration of errno for mips
+	(necessary for mips) from jtkohl down under.
+
+	* clients/parser/p_instance.c: fixed potential null pointer dereference.
+
+	* config/Project.tmpl: changed to use olc profiling libraries if set
+
+	* config/Imake.template: changed to use etags
+
+	* config/Imake.rules: Edited to use etags
+
+	* config/site.def: made hesiod library profiling (when set)
+
+	* server+/olcd.h: updated to ansi ifdefs
+
+	* server+/olcd.c: Added SIGUSR2 signal handler to start profiling;
+	SIGUSR1 to stop and dump stats.
+
+	* server+/log.c: Included com err headers
+
+	* server+/acl_files.c: Got most up to date patchs from libacl
+	sources.  Also fixed caching bug for non-existant acl files;
+	previously, would fill the cache with bogus entries.
+
+Mon Aug 20 04:37:59 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/Imakefile: Added Saber targets
+
+	* server+/data_utils.c: removed bad declaration; added ifdef's for
+	  TEST
+
+	* server+/requests_olc.c: removed unused variables
+
+	* server+/requests_admin.c: removed unusued variables
+
+	* server+/olcd.c: Added code to dump profiling info on SIGUSR1;
+	  moved some code in get_kerberos_ticket to make it faster
+
+	* server+/notify.c: removed unused variables
+
+	* server+/io.c: removed unused variables
+
+	* server+/backup.c: removed extra \0's from strings
+
+Thu Aug  2 15:31:22 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/olcd.c: addded signal handler to clean up child
+	processes.
+
+	* server+/lumberjack.c: Cleaned up characters in titles that are
+	potentially dangerous in the shell commands.  Added printing of
+	exit status for the system call.
+
+Tue Jul 31 10:25:38 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/lumberjack.c:  changed it to read in ctrl files
+	correctly, prints it's name on the error messages, uses 's instead
+	of " to fix problems with "'s in the titles, and an ifdef OLX to
+	determine where the logs go to.
+
+Tue Jul 24 13:00:58 1990  Lucien W. Van Elsen  (lwvanels at FIONAVAR)
+
+	* server+/olcd.h: changed ifdef's to be ansi
+
+	* include/olc/requests.h: changed ifdef's to be ansi
+
+	* include/olc/macros.h: changed ifdef's to be ansi
+
+	* lib/olc_help/Imakefile: change to make .help files
+	correctly, and install them.
+
+	* lib/olcr_help/Imakefile: changed to make .help files
+	correctly, and install them.
+
+Mon Jul 16 09:28:39 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/lib/ask.c:  client sends over machine info (gotten from
+	"machtype") when asking a question.
+
+	* clients/lib/send.c:  user's real name is included in mail header
+	when sending mail to a user.
+
+	* clients/parser/p_connect.c:  fixed a bug so that client will not
+	infinite-loop on certain combinations of options to "forward".
+
+	* clients/tty/t_send.c: change so that user's realname is included
+	in mail header.
+
+	* include/olc/olc.h:  changed version-string to 3.0b
+
+	* include/olc/requests.h: added new version number, for
+	machine-info stuff...
+
+	* server+/Imakefile:  added lumberjack to build.
+
+	* server+/olcd.h:  updated declarations for init_log and
+	init_question.
+
+	* server+/lumberjack.h:  (NEW FILE)  contains declaration for
+	location of DONE_DIR (where done'd logs go before lumberjack deals
+	with them)
+
+	* server+/lumberjack.c:  (NEW FILE) program that deals with old
+	logs.  sends them off to the appropriate discuss meetings.
+
+	* server+/data.c:  included lumberjack.h and removed NF_PREFIX
+	from declarations.
+
+	* server+/data_utils.c:  changed init_question to take "machinfo"
+	and pass it along to init_log.  Also modified init_question to
+	automatically set an initial description for users from question
+	text, mh-style.
+
+	* server+/io.c:  changed so that only version 3,4,&5 are accepted
+	version numebers.
+
+	* server+/log.c:  init_log changed to accept machinfo and display
+	it at the head of the log if not NULL.
+	 - dispose_of_log changed to dump log into DONE_DIR, then fork and
+	exec lumberjack to deal with it, and not wait for it to return,
+	saving time.
+
+	* server+/notify.c:  removed "class" as a define, added DaemonInst
+	as a variable, so that the class to broadcast on zephyr can be set
+	from the command-line.   Also, ZInitialize was removed from
+	notify.c and called here only once, saving time.
+
+	* server+/olcd.c:  set-up DaemonInst from command-line switch, or
+	default to OLC.  ZInitialize here once, instead of in each zwrite
+	in notify.c.
+
+	* server+/requests_olc.c:  "ask" gets machine-info from the client
+	if the request version is later than version 5, and passes it
+	along to init_question.  Also, fixed bug where writing to users
+	that were already known not to be there, resulting in 2 notes in
+	log.  Also, fixed so that when in "pickup" queue sends message, is
+	automatically bumped to "active" queue.
+
+Sat May 26 12:15:37 1990  Chris VanHaren  (vanharen at fries)
+
+	* added copyright info to all .c and .h files in entire tree.
+	phew.
+
+=================  RELEASE 7.0 CUTOFF =========================================
+
+Thu Apr 26 09:53:21 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/lib/init.c: changed printf's slighty.  tells everyone to
+	log out and in again if not in the password file, not just OLC
+	users.
+
+	* clients/lib/misc.c: changed comments at top of file slightly.
+
+	* clients/lib/sort.c: added ifdef __STDC__ around ansi
+	declarations and added old-style declarations so we can compile
+	with pcc...
+
+	* clients/olc/olc.c: re-alphabetized command table.  changed OLC
+	so that you are not forced into asking a question right away, but
+	instead are given the choice of "answers" or "ask".
+
+	* clients/olc/olc_stock.c: fixed so that "stock -help" won't dump
+	core.  handle_argument was being passed 2 arguments when it was
+	expecting 3.  browser no longer looks at
+	/usr/athena/lib/olc/stock/*, instead looks at /mit/olc-stock,
+	where the NFS filesystem mounts itself.  also fixed argument
+	parser, and does not tack the trailing "/" on the directory name
+	if no topic is specified.
+
+	* clients/parser/p_ask.c: if (OLC), print out list of useful
+	commands after asking a question.
+
+	* clients/parser/p_cmdloop.c: changed the time formatting
+	slightly, again, so that military hour includes the leading zero.
+	Changed so that it would compile with pcc brain-deadness.  Had to
+	make some variable static globals so that I could initialize them,
+	can't initialize an automatic character array, etc.  Also changed
+	the prompt-formatting routines slightly, so that time strings
+	without leading zeroes would be "space-padded"...  added lots of
+	code added to allow people to customize their prompts.  sort of
+	dangerous now, as it could hose the server if overused.
+
+	* clients/parser/p_connect.c: fixed parser so that it won't core
+	dump.
+
+	* clients/parser/p_instance.c: fixed parser so that it won't core
+	dump on "i -help"
+
+	* clients/parser/p_local.c: fixed do_quit so that Request is a
+	local structure, and pass the address of Request to fill_request,
+	etc., which is expecting a pointer to an already allocated Request
+	struct.  "quit" changed so that if(OLC), print message on how to
+	continue question if still connected.  if(!OLC), print warning
+	that consultant may still be 'busy'.
+
+	* clients/parser/p_motd.c: hacks to make the parser work.
+	fixed code so that it would compile under pcc.  can't initialize
+	an automatic character array...  ugh.  fixed parser so that it
+	won't core dump if no editor name given after "motd -e".
+
+	* clients/parser/p_send.c: hacks to make the parser work.
+	fixed code so that it would compile under pcc.  can't initialize
+	an automatic character array...  ugh.  fixed parser so that it
+	won't core dump if no editor name given after "send -e", "comment
+	-e", "mail -e".
+
+	* clients/parser/p_utils.c: hacks to make the parser work.
+	fixed handle_args so that ">" signifies a new argument, and it
+	will break out of the loop.
+
+	* clients/tty/t_describe.c: Changed prompting for a description to
+	reflect that users only get to enter 63 characters (because the
+	array size is 64, and we need room for the null).  changed so that
+	"describe" will prompt with the previous description given.
+	hitting return accepts it, and does not open a connection to the
+	server to try to change it.
+
+	* clients/tty/t_list.c: changed display of descriptions so that
+	only 63 characters are shown (have to save one space in the array
+	for the null at the end).  Fixed it (again) so that it would work
+	with pcc.  pcc doesn't like automatic array initialization, so I
+	had to move it outside the function and make it a static global...
+
+	* clients/tty/t_messages.c: checked the return value from "get_yn"
+	so that it is no longer ignored.
+
+	* clients/tty/t_motd.c: changed permission denied message from "no
+	dice" to "You are not allowed to do that."
+
+	* clients/tty/t_resolve.c: verifies that you are connected to
+	someone before asking "are you sure" when canceling a question,
+	analagous to "done's" verification.  prints out an appropriate
+	message for OLC and OLCR clients if confirmed.
+
+	* clients/tty/t_send.c: The new server sends back "NO_MESSAGES" if
+	there are no new messages.  The new client wasn't dealing with it
+	(was expecting SUCCESS) and "handle_response" was spitting out
+	"unknown response 130".  Fixed.
+
+	* clients/tty/t_status.c: standardized many status messages.
+	username, user's realname, instance, etc. always printed the same,
+	when using "stat", "who", etc.  Also fixed "f -s status" so that
+	it accepts all of the statuses that it advertises it accepts.
+
+	* clients/tty/t_utils.c: changed "enter_message" so that it works
+	with the changed parsers in the parser lib.  They now pass in ""
+	instead of NULL when no editor has been specified by the user.
+
+	* common/string_utils.c: changed "get_next_word" so that it takes
+	a function as an argument.  the function is used to determine
+	where to break words.  2 default functions are provided as well
+	(NotWhiteSpace and IsAlpha).  the function passed in should return
+	an int, TRUE while still in a word, and FALSE when hitting a
+	delimiter.
+
+	* config/Imake.rules: changed install rules to install in $DESTDIR
+	instead	of $BINDIR.  added new rule InstallLink to install a
+	binary and make a link to it.
+
+	* config/Imake.template: fixed up so that build works cleanly from
+	wherever the tree is placed -- value of $TOP and $CONFIGDIR is
+	figured out correctly.  added "gmon.out" to list of files to be
+	deleted when cleaning a directory.
+
+	* server+/db.c: changed all "get_next_word" calls so that they
+	pass in a function to the changed "get_next_word" (see
+	common/string_utils.c above for info)
+
+	* server+/notify.c: implemented punting of zephyr messages if they
+	take too long.  Currently, this is 6 times the time-out of a
+	"write" timeout.  This may be too long, I'm not sure.  It was just
+	kind of abitrary.
+
+	* server+/olcd.h: Added non-ansi C declarations for all of the
+	functions, so that we can compile with pcc, too.
+
+	* server+/requests_olc.c: fixed up some strncpy's that were
+	copying too many characters, and some out-of-bounds array indexes.
+	Added a VERIFY routine to "olc_cancel" so that it can be confirmed
+	that there is a question to cancel before asking the user if he is
+	sure that he wants to cancel it.  Also added some debugging info
+	to the "error in sending list" broadcast message so that we can
+	figure out where they're coming from and why.
+	[Raeburn on 4/17]: Instead of "no consultant" or "cancelled
+	question" message, log the last description given, if any.
+
+	* server+/utils.c: in "get_list_info", if target knuckle does not
+	have a question, null out the topic string field that is passed
+	back to the client.  otherwise it may be filled with garbage...
+
+Fri Mar  2 18:08:32 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/statistics.c: Added back a newline to the fprintf
+	statement that prints the number of requests of each type.
+
+Thu Mar  1 17:56:26 1990  Ken Raeburn  (raeburn at prometheus)
+
+	* config/ibm.cf: Don't use gcc; use hc 2.1y by default.
+
+	* server+/requests_olc.c (several routines): Copy out pointer to
+	connected person before setting it to NULL.  Also, don't
+	automatically sign off the consultant; reactivate the old code to
+	do it only when requested.
+	(olc_send): Forward user when consultant has logged out.
+
+	* server+/data_utils.c (delete_knuckle): Rearranged a loop and
+	some array references.
+
+	* server+/backup.c (many routines): Deleted unused variables.
+	(ensure_consistent_state): Put "#if 0" around unused code; also
+	removed some that was in "#ifdef TEST".
+	(load_data): Rewrote a simple conditional.
+
+	* server+/notify.c (use_zephyr): New variable; when zero,
+	indicates that Zephyr notifications should not be used.
+	(zsend_message): Log informative error message if ZInitialize
+	fails.  Append a newline if one isn't at the end of the message.
+	Also simplified a couple of tests.
+	(various routines): Don't call fmt to append a newline.
+
+	* config/ultrix.cf (DefaultCDebugFlags): Don't use -g with gcc on
+	DECstation.
+	(ArCmd): On DECstation, use "ar r"; the default doesn't seem to
+	work.
+
+	* config/site.def (DefaultCDebugFlags): Define only if not already
+	defined.
+
+	* clients/tty/t_util.c (get_yn): New routine; prompts for `y' or
+	`n' input.
+	* clients/tty/t_messages.c (t_check_messages,
+	t_check_connected_messages): Use it.
+
+	* common/string_utils.c (uncase): Modify buffer in place.
+	(cap): Use static buffer, not automatic.
+	(isnumber): Only test string!=0 once.
+
+Wed Feb 28 11:43:48 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/tty/t_send.c: The new server sends back "NO_MESSAGES" if
+	there are no new messages.  The new client wasn't dealing with it
+	(was expecting SUCCESS) and "handle_response" was spitting out
+	"unknown response 130".  Fixed.
+
+Wed Feb 28 11:37:15 1990 Ken Raeburn (raeburn at prometheus)
+
+	* clients/tty/t_connect.c: Don't print "you are signed off"
+	message when forwarding, if it wasn't done.
+
+Tue Feb 27 14:33:59 1990  Ken Raeburn  (raeburn at multics)
+
+	* server+/io.c: Logic to accept only versions 3 and 4 was faulty,
+	causing it to reject all requests.
+
+	* server+/statistics.c: Removed unused varaibles; checked return
+	value from fopen; rearranged proc table scanning.
+
+	* server+/olcd.c: Format messages before calling log_error, since
+	that call can trash hostname-lookup static buffers.
+
+	* server+/requests_admin.c: Permit anyone to use `load user' on
+	themselves, regardless of acl.
+
+Tue Feb 27 10:35:25 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/io.c: Changed back to VERSION_4 as the current version
+	-- version number was bumped up unnecessarily before...
+
+	* server+/requests_olc.c: Changed back to VERSION_4 as the current
+	version -- version number was bumped up unnecessarily before...
+
+	* include/olc/requests.h: Changed back to VERSION_4 as the current
+	version -- version number was bumped up unnecessarily before...
+
+Mon Feb 26 16:14:25 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/notify.c: Removed some unused #define's, added a #define
+	for OLTA, for sending broadcast messages to class OLTA instead of
+	OLC.  This should probably really be moved to a config file on
+	each server or something.  Grrr.
+
+Fri Feb 23 16:51:30 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/notify.c: (write_message_to_user) Made messages
+	consistent, always saying "from OLC-Service".
+
+	* server+/log.c:  (dispose_of_log) Made sure that titles aren't
+	too long, and are null-terminated.
+
+	* server+/requests_olc.c: (olc_done) Made sure that titles aren't
+	too long, and are null-terminated.
+
+	* server+/data_utils.c: (get_knuckle) Logging of get_knuckle on
+	incomplete instances is ifdef'd on TEST now.  The amount of these
+	log messages was simply too annoying for standard build.
+
+	* clients/tty/t_messages.c: Modified, in conjunction with
+	p_messages.c, to allow auto-replaying -- that is, replaying all
+	questions of a certain topic or status.
+
+	* clients/parser/p_messages.c: Modified, along with t_messages.c,
+	to allow auto-replaying of all questions in a certain topic or
+	status.  Also handles parsing of more args, to be similar to the
+	other commands.
+
+Tue Feb 20 00:19:17 1990  Ken Raeburn  (raeburn at multics)
+
+	* server+/olcd.h (free_new_messages): Added declaration.
+
+	* server+/olcd.c (main): Added log_debug call with client network
+	address.
+
+	* server+/list.c: Removed some random printf calls.
+
+	* server+/data_utils.c: Reorganized a couple of small loops.
+	(match_maker): Rewrite from scratch.
+
+	* server+/log.c: Fixed up stdarg code to use varargs when not
+	using gcc.  (Bletch.)
+
+	* clients/tty/t_list.c: Removed "inline" from a procedure.
+
+Sun Feb 18 06:51:06 1990  Ken Raeburn  (raeburn at multics)
+
+	@ server+/io.c (send_list, version 3): Don't make the descriptions
+	shorter than they should be.  Also, ensure that data is
+	null-terminated.
+
+Fri Feb 16 05:50:56 1990  Chris VanHaren  (vanharen at fries)
+
+	* common/string_utils.c: in "format_time", if the time was between
+	midnight and 1am, the hour was printed as zero.  Added an extra
+	"if" to take care of this.
+
+	* server+/io.c: modified read_request so that it will only accept
+	requests of version 3, 4, and 5.
+v
+	* server+/requests_olc.c: re-arranged the logic a bit to fix an
+	error where if a consultant cancelled a question, the cancelling
+	instance would get "jammed", unusable.
+
+	* include/olc/requests.h:  added a new request type, for future
+	use.  Currently unused.
+
+	* clients/lib/misc.c: (ODump) expanded function to handle dumping
+	request_stats and question_stats.
+
+	* clients/tty/t_misc.c: (t_dump) passes an int through from p_dump
+	to ODump, to allow for dumping request stats and question stats.
+
+	* clients/parser/p_misc.c: (p_dump) passes an int to t_dump to
+	indicate the type of dump to do, to allow for dumping request
+	stats and question stats.
+
+Thu Feb 15 18:12:58 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/tty/t_ask.c: Modified, in conjunction with the server
+	and lib/ask.c, to set the user's instance to the new instance
+	created (if a new one is created) when asking a new question.
+
+	* clients/lib/ask.c: Modified, in conjunction with the tty/t_ask.c
+	and the server, to set the user's instance to the new instance
+	created (if a new one is created) when asking a new question.
+
+	* server+/io.c:  fixed some breakages with version number handling.
+
+	* server+/requests_olc.c: Modified, in conjunction with
+	tty/t_ask.c and lib/ask.c, to set the user's instance to the new
+	instance created (if a new one is created) when asking a new
+	question.
+
+	* include/olc/requests.h: added version_5 to the protocol, to
+	support changes made to the client to set the user's instance to
+	the new instance created when asking a question.  Set
+	current_version to version_5.
+
+	* clients/tty/t_{connect,consult,instance,live,messages,queue,
+	resolve,send,status,topic,utils}.c, clients/olc/olc_stock.c:
+	Instances are printed inside of square brackets instead of parens.
+	Cosmetic change.
+
+Wed Feb 14 13:02:55 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/lib/status.c:  changed OGetStatusCode so that it could
+	match on partial words -- fixes problem with not being able to
+	abbreviate things like "l -s uns" for unseen questions.
+
+	* clients/parser/p_cmdloop.c: command_index modified so that it
+	does not try to return the name of the command in a character
+	buffer anymore.  It was too much of a pain and not really useful.
+
+	* clients/parser/p_local.c:  modified do_olc_help so that it
+	works!  Also modified call to command_index to take 2 args to
+	conform to above change.
+
+	* clients/parser/p_list.c:  took "-sort" out of the command-line
+	options and usage message.  Removed a useless "if" statement,
+	re-tabbed a section of code.  Also, "-1" is now used to denote an
+	invalid status specified instead of "0", since "0" is a valid
+	status ("off").
+
+	* common/string_utils.c:  added a new function, format_time
+	(actually, split off from time_now with a couple added lines of
+	code) that takes a pointer to a tm struct and returns a string
+	with the formatted time in it.  This function is useful elsewhere.
+
+	* clients/tty/t_ask.c: no longer prompts you if you want to create
+	a new instance in order to ask a question, just goes ahead and
+	does it (with a warning message that that is what's happening).
+
+	* clients/tty/t_consult.c: no longer asks if you want to create
+	another instance to sign on, just goes ahead and does it, with a
+	warning message.
+
+	* clients/tty/t_connect.c: no longer asks if you want to create
+	another instance to grab a question, just goes ahead and does it,
+	with a warning message.
+
+	* clients/tty/t_status.c:  changed the output from "status"
+	slightly, to include instances in square brackets and to make it
+	look a little bit nicer.
+
+	* clients/tty/t_messages.c:  (t_replay) a return value of
+	NAME_NOT_UNIQUE now results in a call to t_list_queue on the
+	partial username, so that the possible completions are printed.
+
+	* server+/requests_olc.c:  (olc_who) set status back to pending
+	when user logs back in.  (olc_done, olc_cancel, olc_forward) for
+	now, deactivate and sign the consultant off.  (olc_send) if user
+	sends a message and bumps the consultant off, change the status of
+	the user to PENDING.
+
+Tue Feb 13 15:20:16 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/data_utils.c:  added more info to the broadcast message
+	if connecting knuckles fails.  Removed debugging information that
+	was being spit out by "was_connected".
+
+	* server+/statistics.c: Added start-time and stop-time to the info
+	dumped out to the request-stats file.
+
+Fri Feb  9 18:05:38 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/olcd.c: (punt) don't dump request stats and question
+	stats if you have to finish processing the request.  It'll be done
+	when the server finishes the request and dies...
+
+	* server+/log.c:  (dispose_of_log) now prints name of discuss file
+	that the log is being dumped to, instead of "crash".
+
+Thu Feb  8 11:35:31 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/syslog.c: (log_error) broadcast message had been
+	ifdef'ed out on SYSLOG.  Moved it to outside the ifdef so that
+	errors will be broadcast again.
+
+	* server+/data_utils.c:  changed #define'd constants used to
+	declare array sizes to new naming convention.
+
+	 - changed lots of messages to print instances inside square
+	brackets instead of parens.  New messages are now formatted
+	nearly like the log is.
+	 - Added new function: disconnect_knuckles to break connection
+	between 2 knuckles.  Used it once, inside connect_knuckles -- if
+	unable to contact consultant while connecting, then doesn't
+	connect them.
+
+	 - had to add declarations for disconnect_knuckles so that it
+	would not get implicitly declared to return an int, when it is
+	"void".
+
+	 - a new function, free_new_messages, was added, since that will
+	need to be done in several places.
+	 - init_question does not attempt to free new messages anymore,
+	since new messages are freed at time of disconnection instead
+	(see requests_olc for most examples of this).
+	 - connect_knuckles re-written so that knuckles may be passed in
+	either order -- user, cons OR cons, user.
+	 - (connect_knuckles) if unable to contact consultant when
+	connecting knuckles, consultant's new messages are freed and
+	consultant's instance is deactivated.
+	 - disconnect_knuckles re-written so that knuckles may be passed in
+	either order -- user, cons OR cons, user.
+
+
+	* server+/requests_olc.c: changed #define'd constants used to
+	declare array sizes to new naming convention.  Also added a few
+	newlines, and changed sprintf to strcpy where appropriate.
+
+	 - "nol" broadcasts now include "on" or "off" as the opcode where
+	appropriate.  Previously, the opcode was unfilled (garbage).
+	 - cleaned up a lot of messages...  instances in sq. brackets
+	instead of parens, etc.  Made some more "friendly".  Unable to
+	contact	consultant now results in breaking connection to
+	consultant (disconnect_knuckles).
+	 - lonley_hearts misspelling corrected to lonely_hearts.
+	 - user no longer notified when consultant dones or cancels a
+	question if the user done'd or cancell'ed first.
+	 - user is notified of topic changes via zephyr.
+
+	 - minor change -- changed a sprintf to a strcpy.
+
+	 - When user logs back in, he is only notified that there are new
+	messages, not who they are from, since the consultant currently
+	connected may not be the one who sent it, and the user may not
+	even be connected...  There are also several new messages sent
+	when someone logs in, depending on whether the person logging in
+	is a user or not.
+	 - Failed attempts at contacting consultants result in breaking
+	the connection.  Not true for failed user contact.
+	 - New messages are cleared as appropriate for users and
+	consultants when the two are disconnected.  Consultant's new
+	messages are always cleared when breaking the connection, user's
+	new messages aren't...
+	 - Consultants and users knuckles are deactivated as appropriate
+	when the two are disconnected.
+	 - Replay marks messages as being read in the logs and frees new
+	messages.
+
+Wed Feb  7 00:21:36 1990  Chris VanHaren  (vanharen at fries)
+
+	* clients/tty/t_utils.c:  (display_file) added a newline to error
+	message printed when couldn't find file.
+
+	* common/io.c: errors now include more information -- filename,
+	number of bytes read/write.  Changed a few messages to include the
+	full function name where they had been abbreviated before.
+	Three functions were checking for a return value of negative one
+	from sread, but not dealing with getting returned zero (EOF
+	encountered while reading).  This resulted in a bug whereby a user
+	could control-c out of the client, sending an EOF, but the server
+	did not recognize this and went into an infinite loop trying to
+	read the required number of characters.
+
+	* server+/requests_admin.c: (olc_dump_req_stats) changed name of
+	function called from dump_server_stats to dump_request_stats.
+
+Tue Feb  6 02:54:09 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/notify.c:  changed the return status of
+	"write_message_to_user" to be more useful.
+
+	* server+/olcd.h:  added extern declarations/prototypes for new
+	functions in statistics.c and in requests_admin.c.
+
+	* server+/olcd.c:  changed function name from dump_server_stats to
+	dump_request_stats to match statistics.c, and added
+	dump_question_stats to functions called immediately before dying
+	on a kill signal.
+
+	* server+/data.c:  added the 2 new dump request functions (see
+	requests_admin.c entry here) to the procedure table.
+
+	* server+/requests_admin.c:  added 2 new dump requests.
+	olc_dump_req_stats gives back the number and types of requests
+	made to the daemon since it has been up.  olc_dump_ques_stats will
+	give back info about the types of questions asked, etc. (not yet
+	implemented).   Also fixed acl permissions on changing MOTD to
+	MOTD_ACL, and on doing a debug dump to ADMIN_ACL.
+
+	* server+/statistics.c:  added new function, dump_question_stats,
+	that basically just prints out that it doesn't do anything, for
+	now.  Also changed name from dump_server_stats to
+	dump_request_stats so as to be less confusing, I hope.
+
+	* include/olc/requests.h:  added 2 new request types (1 is unused
+	right now) and a define that tells the total number of requests.
+	Also fixed a duplicated request number.  This was non-fatal,
+	though, as one of the 2 duplicated was never used...
+
+Tue Feb  6 02:24:20 1990  Ken Raeburn  (raeburn at podge.MIT.EDU)
+
+	* include/olc/olc_parser.h (Pfunction): Combined two definitions
+	of type by using OPrototype macro.  Changed return type to int for
+	compatibility with existing function definitions, even though the
+	functions don't return any useful values.
+
+	@ clients/tty/t_list.c: Changed default sort to a multi-keyed sort
+	requested by Consulting.  Also changed output format.
+
+	* clients/parser/p_list.c (do_olc_list): Changed -sort to only
+	grab one argument.
+
+	* clients/olc/olc.c: Changed argument parsing; now -server and
+	-port arguments are accepted.
+
+	@ clients/lib/sort.c: Replaced sorting mechanism.  Now
+	multiple-key sorts can be done, and the myriad tiny routines for
+	selecting individual sort keys have been replaced by one routine
+	which understands many sort keys.
+	* include/olc/sort.h: Structure and enum definitions for sort
+	routine.  May become an external interface later; not sure.
+
+Sun Feb  4 19:49:01 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/backup.c:  Changed #define'd sizes of variables/arrays
+	to new names.  Also added a newline to an error message that is
+	sent to people that get accidentally disconnected.
+
+	* server+/data.c:  changed ifdef on log location to OLZ instead
+	of TEST definition.  Also added two new variables defining names
+	of logfiles for statistics generated by the daemon.
+
+	* server+/io.c: added more info to "error in version" reporting.
+	This should help track down workstations that are using old
+	software.  More tracking info should probably be reported for
+	other errors as well.
+
+	* server+/log.c: minor clean-up...  got rid of unneeded
+	sprintf's, changed one to strcpy.
+	 - standardized log messages...  added periods, changed
+	instances to be inside square brackets instead of parens.  Added
+	new function: log_long_description so that long descriptions are
+	noted differently than short ones in the log.
+	 - Changed constant names in variable sizes to new names.  Also
+	added external declaration of errno.
+
+	* server+/notify.c: minor clean-up...  got rid of unneeded
+	sprintf's.
+	 - Changed one message to conform to instance number being in
+	square brackets instead of parens.
+	 - changed lots of messages so that they will be logged without
+	newlines, but will have newlines when sent as messages (write or
+	zwrite).
+	 - Changed constant names in variable sizes to new names.  Also
+	added newlines at the end of many messages.
+
+	* server+/statistics.c: (new file!)  functions for dumping
+	statistics about the server and what it has done to date...
+	currently only dumps stats about number and types of requests
+	processed, should be expanded into other stats for OLC Admin.
+
+	* server+/olcd.c: made request_count a global var.
+	 - added request_counts[] and start_time as global variables.
+	 - request_counts[x] is incremented when receiving a request of
+	type "x".
+	 - start_time is initialized just before beginning processing
+	requests.
+	 - broadcasts a message when the daemon starts up.
+	 - calls "dump_server_stats" (see above) just before dying.
+
+	* server+/olcd.h: Changed constant names in variable sizes to
+	new names.
+	 - added two new variables for log files.  Made Proc_List,
+	request_count, request_counts, and start_time global.
+
+Fri Jan 19 03:03:56 1990  Ken Raeburn  (raeburn at multics)
+
+	@ clients/lib/io.c (open_connection_to_daemon): If OLCD_PORT is
+	set, use it as port number.
+	@ clients/olc/olc.c (main): Accept control arguments -server and
+	-port, and set environment variables (for lack of a better
+	interface and time to produce one).
+
+	* server+/olcd.c (main): Made control arguments more readable.
+	Also, added `-port' which specifies port number to use; this name
+	is appended to the name used in logging startup and shutdown.
+	Removed syslog initialization, since it is done elsewhere.
+
+	* server+/syslog.c: Added LOG_PID to distinguish between multiple
+	daemons on the same host.
+
+Tue Jan 16 03:04:15 1990  Ken Raeburn  (raeburn at podge.MIT.EDU)
+
+	* server+/log.c (log_log): Check for existence of file before
+	opening.  Also, make this function static.
+	(vfmt): New function, variadic version of fmt.
+	(fmt): Use it.
+
+	* include/olc/os.h (errno): Add declaration for ANSI-C with old
+	header files.
+
+	* server+/notify.c (OLC_CLASS): Define to be "OLZ" if OLZ is
+	defined and TEST is not.
+
+	* server+/Imakefile (UseCPlusPlus): Not default.
+	(DEFINES): Use -DSYSLOG; punt -DTEST, -DOLZ.
+	@ Logging now uses syslog.
+
+	* server+/syslog.c: New file.  Functions from log.c not relating
+	to user/question logs moved here, and largely rewritten.  Added
+	log_debug function.
+	* server+/Imakefile (SRCS,OBJS): Add this file.
+	* server+/olcd.h (SYSLOG_LEVEL): Made this an existing facility
+	instead of a bogus one.
+
+	@ clients/lib/init.c (OInitialize):  Check for environment
+	variable OLCD_HOST; it overrides hesiod.
+
+	** Chris added -DOLZ to site.def sometime before this.
+
+Wed Jan 10 16:53:28 1990  Chris VanHaren  (vanharen at m11-115-4)
+
+	* server+/{list,utils,requests_admin,requests_olc}.c: added
+	ifdef's on STDC around declarations, and added back old-style
+	declarations, so we can	compile with pcc.
+
+Wed Jan 10 14:17:16 1990  Ken Raeburn  (raeburn at multics)
+
+	* server+/{backup.c,olcd.c,log.c,notify.c,olcd.h}: Added old-style
+	declarations/definitions for pcc; added `const' where appropriate.
+	* server+/Imakefile (NoGCC): New option, forces CC=/bin/cc.
+
+Wed Jan 10 10:27:56 1990  Chris VanHaren  (vanharen at fries)
+
+	* server+/{io,db,data_utils}.c: added ifdef's on STDC around
+	declarations, and added back old-style declarations, so we can
+	compile with pcc.
+	* server+/olcd.h:  added ifdef's on STDC around prototypes,
+	and added back old-style prototypes, so we can compile with pcc.
+
+Tue Jan  9 16:01:04 1990  Chris VanHaren  (vanharen at fries)
+
+	* include/olc/procs.h:  added declarations for realloc (both STDC
+	and old-style C).
+	* server+/backup.c:  added ifdef's on STDC around declarations,
+	and added back old-style declarations, so we can compile with pcc.
+
+Fri Jan  5 20:11:17 1990  Ken Raeburn  (raeburn at multics)
+
+	* server+: New directory, created from server/*/RCS files.
+	* server+/Imakefile: Use -I. for olcd.h, not -I../include.
+	* server+/olcd.h: Added lots of prototypes.
+	* include/olc/lang.h: New file.  Defines is_cplusplus for C++,
+	OPrototype for ANSI/old C compatibility.
+	* include/olc/os.h: New file.  Declares lots of operating-system
+	routines.
+	* include/olc/*, server+/*: Ran "protoize", to convert all
+	function headers and declarations to new-style.  (Wrapped
+	prototypes in include/olc in OPrototype.)
+
+Fri Dec 22 16:02:49 1989  Chris VanHaren  (vanharen at fries)
+
+	* lib/init.c  -- added ifdef on OLZ for building clients that look
+	for that service instead of OLC.
+	* server/olcd/data.c -- changed test host to FRIES instead of
+	picasso for "notefiles" storage.
+	* server/olcd/data_utils.c -- changed "was_connected" function to
+	compare uids, updated "connect_knuckles" function to use it and
+	update the list of uids.  Also changed "match_maker" to use it.
+	It is broken, however, because all uid's are being set to 0, for
+	some reason...  haven't yet tracked down that bug.  The mechanism
+	should probably be changed to use kerberos principals instead,
+	anyway...
+	* server/olcd/log.c -- added instances to many printed messages.
+	Added "log_description" function for inserting description changes
+	into logs.
+	* server/olcd/olcd.c -- added ifdef on OLZ for building clients
+	that look for that service instead of OLC.
+	@ server/olcd/requests_olc.c -- changed logging of descriptions to
+	use "log_description" function instead of "log_comment".
+
+Mon Dec 18 07:52:51 1989  Ken Raeburn  (raeburn at multics)
+
+	* include/lang.h: New file.  Some simple preprocessor macros that
+	might help with language (dialect) compatibility.
+
+Thu Dec 14 22:50:31 1989  Ken Raeburn  (raeburn at prometheus)
+
+	* server/olcd changes:
+	* Imakefile: Define "TEST" for now.
+	* acl_files.c: Reordered functions to deal with
+	implicit-extern-then-static problem.  Also changed to use new name
+	of get_krbrlm.
+	* olcd.c: Changed to use new Kerberos names.
+	* requests_olc.c: Put "#ifdef LOG" around appropriate code.
+
+	* All Imakefiles should be working now, except for clients/jay.
+	The .rconf file now maps "Makefile" to "Makefile.src", so we don't
+	have to delete them.
+
+Mon Dec 11 16:35:23 1989  Chris VanHaren  (vanharen at fries)
+
+	@ Changed listing.  Added user's machine-name, removed
+	consultant's machine name.  This should be changed later to take a
+	configuration string so that each person can customize, but for
+	now, this at least fixes one "bug".
+
+Fri Dec  8 17:56:14 1989  Ken Raeburn  (raeburn at prometheus)
+
+	* Added lots of Imakefile files, and config/* for project
+	configuration.  Configuration changes:
+	* Use gcc by default.
+	* common, client/lib, client/parser, client/tty: Build archive
+	libraries so that the object files need not be referenced
+	individually.
+
+Thu Dec  7 18:45:14 1989  Ken Raeburn  (raeburn at prometheus)
+
+	* Created makefiles for `clients' and `server', checked in copies
+	of all makefiles.  Modified most to use standard top-down
+	per-directory builds, rather than `cd ../../foo;make ...' as
+	before.
+
+	* Created .rconf file for ease in building build trees.
+
+	* Created Makefile (from version snarfed from paris); this will
+	have to be tweaked later to get it to work well....

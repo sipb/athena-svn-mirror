@@ -1,0 +1,44 @@
+This is a list of the OLC-related things I've been working on recently, plus
+some ideas for the future.  The general format is a overview of each of the
+ideas (the ones finished have a "*" next to them), followed by a list of
+some of the issues that need to be decided.  I'm sure there are more idea of
+things which need to be developed, as well as more issues to be decided;
+this is just my first pass at it.
+
+Server:
+    - Parameterize clients so that they can be easily adapted for OLTA, OLRL,
+     and so on (in the past, they had to be re-compiled for each different
+     application).  Currently, they read their configuration (what to call the
+     "consultants", "users", what to put up as a banner) out of an include
+     file at compile time.   This should be done by asking the daemon for
+     a set of strings to use instead
+
+    - The number/names of queues and the rules for how questions get
+    automatically moved between them should be parameterized in a file, instead
+    of being hardcoded into the binary.
+
+    - A better load_data() needs to be written for olcd that reads the
+    information from the queue list file and the individual info files instead
+    of the backup.dat file; this way, the expensive calls to backup_data can
+    be avoided.  At the same time, a more comprehensive check of the data
+    integrity and the check of the logs that are actually present can be done.
+
+    - Additional (non-user visible) optimizations can be made in the main
+    daemon:
+    	- hash table instead of linked-list for "knuckles" (user records)
+	- tuning of memory allocation
+
+
+Clients:
+     - Simplify adding people to acl's - most of them are redundant, and
+     should be the same things as existing lists.  Perhaps getting the lists
+     from moria instead of maintaining them locally?  Or just having a batch
+     procedure for entering masses of volunteers/consultants to the "right"
+     acls?   (This comes up most in OLTA, when batches of TA's need to be
+     added at the beginning of the semester). (low priority)
+
+     - Some sort of broadcast message to all users in a certain
+     category- for example, the ability to tell all users with unseen
+     questions "xxxx is down right now; to find out if your home directory
+     is on xxx.... otherwise, a consultant will be with you soon".  The
+     issues of how to select/narrow down the category needs to be worked out.
