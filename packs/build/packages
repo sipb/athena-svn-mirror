@@ -1,4 +1,4 @@
-# $Id: packages,v 1.150 2002-02-04 20:17:26 ghudson Exp $
+# $Id: packages,v 1.151 2002-02-12 04:59:44 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -126,7 +126,7 @@ athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
-third/afsbin			package afs
+third/afsbin			on irix
 third/audiofile			except linux
 third/bash
 third/bind
@@ -183,6 +183,7 @@ third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
+third/openafs			except irix
 third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			
 third/ORBit			requires glib,gettext
