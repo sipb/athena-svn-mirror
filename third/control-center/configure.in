@@ -1,7 +1,7 @@
 AC_INIT(control-center)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(control-center, 2.0.3.2)
+AM_INIT_AUTOMAKE(control-center, 2.2.0)
 
 AM_MAINTAINER_MODE
 
@@ -24,44 +24,71 @@ fi
 changequote([,])dnl
 
 # Internationalization support
-ALL_LINGUAS="ar az be bg ca cs da de el en_GB es et fi fr ga gl hr hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et fi fr ga gl he hr hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
 
 GETTEXT_PACKAGE=control-center-2.0
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext package])
 
 AM_GLIB_GNU_GETTEXT
 
 AC_CHECK_FUNCS(usleep)
-AC_CHECK_FUNCS(putenv,[AC_DEFINE(HAVE_PUTENV)])
-AC_CHECK_FUNCS(setenv,[AC_DEFINE(HAVE_SETENV)])
+AC_CHECK_FUNCS(putenv,[AC_DEFINE(HAVE_PUTENV,,[putenv])])
+AC_CHECK_FUNCS(setenv,[AC_DEFINE(HAVE_SETENV,,[setenv])])
 
 AC_PATH_XTRA
 x_libs="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
 
 dnl keyboard-properties-capplet
-AC_CHECK_HEADERS(X11/extensions/xf86misc.h, XF86MISC_LIBS="-lXxf86misc", , "$x_libs")
+savecppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+AC_CHECK_HEADERS(X11/extensions/xf86misc.h, XF86MISC_LIBS="-lXxf86misc")
 AC_SUBST(XF86MISC_LIBS)
 AC_CHECK_HEADERS(X11/extensions/XKB.h)
+CPPFLAGS=$savecppflags
 
 dnl ==============================================
 dnl Check that we meet the  dependencies
 dnl ==============================================
 
-COMMON_MODULES="gtk+-2.0 gconf-2.0 libgnomeui-2.0 libglade-2.0 >= 1.99.12 libbonobo-2.0 libbonoboui-2.0 libglade-2.0 gconf-2.0 gnome-desktop-2.0"
+COMMON_MODULES="gtk+-2.0 >= 2.2.0 gconf-2.0 libgnomeui-2.0 libglade-2.0 >= 1.99.12 libbonobo-2.0 libbonoboui-2.0 libglade-2.0 gconf-2.0 gnome-desktop-2.0"
 PKG_CHECK_MODULES(CAPPLET, $COMMON_MODULES)
 PKG_CHECK_MODULES(GNOMECC, $COMMON_MODULES libxml-2.0 gnome-desktop-2.0 gnome-vfs-2.0)
-PKG_CHECK_MODULES(GNOME_SETTINGS_DAEMON, gtk+-2.0 gconf-2.0 libgnomeui-2.0 esound)
+PKG_CHECK_MODULES(GNOME_SETTINGS_DAEMON, gtk+-2.0 gconf-2.0 libgnomeui-2.0 esound gnome-desktop-2.0)
 PKG_CHECK_MODULES(OLD_CAPPLET, libgnomeui-2.0 libglade-2.0)
 PKG_CHECK_MODULES(GNOME, libgnomeui-2.0)
 PKG_CHECK_MODULES(VFS_CAPPLET, $COMMON_MODULES gnome-vfs-module-2.0 gnome-vfs-2.0)
 PKG_CHECK_MODULES(SOUND_CAPPLET, esound)
+PKG_CHECK_MODULES(METACITY, libmetacity-private)
+
+dnl
+dnl Check for Xft version 2; we build in extra functionality to the font capplet
+dnl when we have it.
+dnl
+xft_modules=
+if $PKG_CONFIG --exists xft ; then
+  xft_modules="xft"
+  AC_DEFINE(HAVE_XFT2,,[Build Xft functionality to the font capplet])
+fi
+
+PKG_CHECK_MODULES(FONT_CAPPLET, $COMMON_MODULES $xft_modules)
 
 CAPPLET_LIBS="$CAPPLET_LIBS $x_libs"
 GNOMECC_LIBS="$GNOMECC_LIBS $x_libs"
 GNOME_SETTINGS_DAEMON_LIBS="$GNOME_SETTINGS_DAEMON_LIBS $x_libs"
 
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
+
+dnl
+dnl Check for gtk+ with multihead support
+dnl
+AC_MSG_CHECKING([for gtk+ multihead support])
+if $PKG_CONFIG --atleast-version 2.1.0 gtk+-2.0; then
+   AC_DEFINE(HAVE_GTK_MULTIHEAD,,[gtk+ with multihead support found])
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+fi
 
 dnl ==============================================
 dnl End: Check that we meet the  dependencies
@@ -90,6 +117,13 @@ else
 fi
 AC_SUBST(ESD_SERVER)
 
+AC_PATH_PROG(GDK_PIXBUF_CSOURCE, gdk-pixbuf-csource, no)
+
+if test x"$GDK_PIXBUF_CSOURCE" = xno; then
+  AC_MSG_ERROR([gdk-pixbuf-csource executable not found in your path - should be installed with GTK])
+fi 
+  
+AC_SUBST(GDK_PIXBUF_CSOURCE)
 
 dnl ==============================================
 dnl Special GConf section 
@@ -131,8 +165,14 @@ AC_SUBST(VFS_CAPPLET_LIBS)
 AC_SUBST(SOUND_CAPPLET_CFLAGS)
 AC_SUBST(SOUND_CAPPLET_LIBS)
 
+AC_SUBST(FONT_CAPPLET_CFLAGS)
+AC_SUBST(FONT_CAPPLET_LIBS)
+
 AC_SUBST(GNOMECC_CFLAGS)
 AC_SUBST(GNOMECC_LIBS)
+
+AC_SUBST(METACITY_CFLAGS)
+AC_SUBST(METACITY_LIBS)
 
 dnl ==============================================
 dnl End: Define the main variables
@@ -168,8 +208,8 @@ else
   real_prefix=${prefix}
 fi
 
-AC_DEFINE_UNQUOTED(GNOMECC_DATA_DIR, "${real_prefix}/share/${GETTEXT_PACKAGE}")
-GNOMECC_ICONS_DIR='$(datadir)/pixmaps'
+AC_DEFINE_UNQUOTED(GNOMECC_DATA_DIR, "${real_prefix}/share/${GETTEXT_PACKAGE}",[Path to gnomecc data files])
+GNOMECC_ICONS_DIR='$(datadir)/'${GETTEXT_PACKAGE}'/icons'
 AC_SUBST(GNOMECC_ICONS_DIR)
 GNOMECC_DESKTOP_DIR='$(datadir)/'${GETTEXT_PACKAGE}'/capplets'
 AC_SUBST(GNOMECC_DESKTOP_DIR)
@@ -226,5 +266,4 @@ schemas/Makefile
 libsounds/Makefile
 control-center.spec
 ])
-dnl due to a bug in intltool we need to expand something from the root last
-dnl make sure that control-center.spec is listed last
+dnl due to a bug in intltool we need to expand something from the root last control-center.spec
