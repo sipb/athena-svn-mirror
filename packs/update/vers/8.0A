@@ -30,6 +30,8 @@ SUN*)
 	rm -rf /usr/share/lib/zoneinfo/US/Yukon /var/cron/log
 	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
 	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
+	rm -f  /etc/group.std /etc/passwd.std /etc/shadow.std
+	rm -f  /auto_update /patch
 
 	# Create new directories and files, make /var/sadm local (otherwise
 	# "showrev" fails).
