@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.25 1996-09-20 02:19:08 ghudson Exp $
+ *	$Id: c_io.c,v 1.26 1997-04-30 18:09:02 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.25 1996-09-20 02:19:08 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.26 1997-04-30 18:09:02 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>		/* File handling defs. */
 #include <sys/stat.h>
 #include <sys/time.h>		/* System time definitions. */
-#if defined(_IBMR2) && defined(_AIX) || defined (SOLARIS)
+#if defined(_IBMR2) && defined(_AIX)
 #include <sys/select.h>
 #endif
 #include <netinet/in.h>
@@ -53,14 +53,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <setjmp.h>
 
 #include <olc/olc.h>
-
-#ifdef NEEDS_ERRNO_DEFS
-extern int      errno;
-extern char     *sys_errlist[];
-extern int      sys_nerr;
-#endif
-
-struct hostent *gethostbyname(); /* Get host entry of a host. */
 
 #ifndef MIN
 #define	MIN(a,b)	((a)>(b)?(b):(a))
@@ -233,7 +225,8 @@ read_text_into_file(fd, filename)
       return(ERROR);
     }
   
-  if ((filedes = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644)) < 0) 
+  filedes = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+  if (filedes < 0) 
     {
       (void) sprintf(error, "read_text_into_file: Unable to open file %s",
 		     filename);
@@ -245,8 +238,8 @@ read_text_into_file(fd, filename)
     {
       while (nbytes) 
 	{
-	  int n;
-	  if ((n=sread(fd, inbuf, MIN(BUFSIZ, nbytes))) < 1)
+	  int n = sread(fd, inbuf, MIN(BUFSIZ, nbytes));
+	  if (n < 1)
 	    {
 	      (void) sprintf(error,
 			     "read_text_into_file: Error reading text, n=%d",
@@ -294,12 +287,14 @@ read_file_into_text(filename,bufp)
   }
   nbytes = statbuf.st_size;
 
-  if ((buf = (char *)malloc((unsigned) (nbytes +1))) == (char *) NULL) {
+  buf = malloc(nbytes + 1);
+  if (buf == NULL) {
     olc_perror("read_file_into_text: Can't allocate memory.");
     return(ERROR);
   }
 
-  if ((fd = open(filename,O_RDONLY,0)) < 0) {
+  fd = open(filename,O_RDONLY,0);
+  if (fd < 0) {
     free(buf);
     sprintf(error,"read_file_into_text: error opening %s", filename);
     olc_perror(error);
@@ -365,7 +360,8 @@ write_file_to_fd(fd, filename)
       return(ERROR);
     }
   
-  if ((filedes = open(filename, O_RDONLY, 0)) < 0) 
+  filedes = open(filename, O_RDONLY, 0);
+  if (filedes < 0) 
     {
       (void) sprintf(error, "write_file_to_fd: Unable to open file %s",
 		     filename);
@@ -384,7 +380,8 @@ write_file_to_fd(fd, filename)
     {
       int n_read, n_wrote;
 	
-      if ((n_read = sread(filedes, inbuf, MIN(BUFSIZ, nbytes))) < 1)
+      n_read = sread(filedes, inbuf, MIN(BUFSIZ, nbytes));
+      if (n_read < 1)
 	{
 	  (void) sprintf(error,
 		 "write_file_to_fd: Error reading text from file %s, n=%d",
@@ -394,7 +391,8 @@ write_file_to_fd(fd, filename)
 	  return(ERROR);
 	}
 
-      if ((n_wrote=swrite(fd, inbuf, n_read)) != n_read) 
+      n_wrote = swrite(fd, inbuf, n_read);
+      if (n_wrote != n_read) 
 	{
 	  (void) sprintf(error,
 		 "write_file_to_fd: Error writing text, n_read=%d, n_wrote=%d",
@@ -475,7 +473,8 @@ read_text_from_fd(fd)
       return((char *) NULL);
     }
 
-  if ((rtff_buf = (char *)malloc((unsigned) (nchars + 1))) == (char *) NULL) 
+  rtff_buf = malloc(nchars + 1);
+  if (rtff_buf == NULL)
     {
       olc_perror("read_text: Can't allocate memory.");
       return((char *) NULL);
@@ -553,7 +552,8 @@ read_chars_from_fd(fd, buf, nchars)
 
   while (nchars) 
     {
-      if ((n = sread(fd, buf, MIN(BUFSIZ, nchars))) < 1) 
+      n = sread(fd, buf, MIN(BUFSIZ, nchars));
+      if (n < 1) 
 	{
 	  (void) sprintf(error,
 			 "read_chars_from_fd: Error reading text, n=%d", n);
@@ -614,7 +614,8 @@ int sread(fd, buf, nbytes)
     
     FD_ZERO(&read_fds);
     FD_SET(fd,&read_fds);
-    if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
+    s_val = select(fd+1, &read_fds, NULL, NULL, &tval);
+    if (s_val < 1) 
       {
 	if (errno == EINTR) {
 	  loops++;
@@ -692,7 +693,8 @@ int swrite(fd, buf, nbytes)
     
     FD_ZERO(&write_fds);
     FD_SET(fd,&write_fds);
-    if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
+    s_val = select(fd+1, NULL, &write_fds, NULL, &tval);
+    if (s_val != 1) 
       {
 	if (errno == EINTR) {
 	  loops++;
