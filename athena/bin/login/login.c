@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $
+ * $Id: login.c,v 1.72.1.1 1995-01-08 22:52:12 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.72.1.1 1995-01-08 22:52:12 cfields Exp $";
 #endif
 
 /*
@@ -163,6 +163,7 @@ char	noremote[] =	"/etc/noremote";
 char	nocrack[] =	"/etc/nocrack";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
+char	get_usrmsg[] =	"mom";
 char	rmrf[] =	"/bin/rm -rf";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
@@ -1137,6 +1138,7 @@ leavethis:
 	struct stat st;
 
 	showmotd();
+	showusrmsg();
 	strcat(maildir, pwd->pw_name);
 	if (stat(maildir, &st) == 0 && st.st_size != 0)
 	    printf("You have %smail.\n",
@@ -1285,6 +1287,45 @@ showmotd()
 			fclose(mf);
 		}
 		if (execlp(get_motd, get_motd, "-login", 0) < 0) {
+			/* hide error code if any... */
+			exit(0);
+		}
+	}
+#ifdef POSIX
+      sa.sa_handler = SIG_IGN;
+      (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
+	signal(SIGINT, SIG_IGN);
+#endif
+}
+
+showusrmsg()
+{
+	FILE *mf;
+	register c;
+	int forkval;
+
+#ifdef POSIX
+      struct sigaction sa;
+      (void) sigemptyset(&sa.sa_mask);
+      sa.sa_flags = 0;
+      sa.sa_handler = (void (*)()) catch;
+      (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
+	signal(SIGINT, catch);
+#endif
+	if (forkval = fork()) { /* parent */
+		if (forkval < 0) {
+			perror("forking for mom service");
+			sleep(3);
+		}
+		else {
+		  while (wait(0) != forkval)
+		    ;
+	        }
+	}
+	else {
+		if (execlp(get_usrmsg, get_usrmsg, 0) < 0) {
 			/* hide error code if any... */
 			exit(0);
 		}
