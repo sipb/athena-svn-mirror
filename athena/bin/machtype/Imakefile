@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.17 1998-03-27 03:52:27 rbasch Exp $
+ * $Id: Imakefile,v 1.18 1998-04-18 16:58:43 danw Exp $
  */
 
 #ifdef SOLARIS
@@ -18,8 +18,8 @@ machtype_$(NAME).o:	${ATHVERS} machtype_$(NAME).c
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$major\" -DATHMINV=\"$$minor\" \
-	-DATHSYS=\"${ATHENA_SYS}\" -DOSNAME=\"${OSNAME}\" \
-	-DOSVERS=\"${OSVERS}\" $*.c
+	-DATHSYS=\"${ATHENA_SYS}\" -DATHSYSCOMPAT=\"${ATHENA_SYS_COMPAT}\" \
+	-DOSNAME=\"${OSNAME}\" -DOSVERS=\"${OSVERS}\" $*.c
 
 build_program(machtype, machtype_${NAME}.o,,${LIBS})
 install_program(machtype,-m 4755 -o root,${ATHRBINDIR})

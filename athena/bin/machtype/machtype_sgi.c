@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.7 1998-03-30 22:39:08 rbasch Exp $
+ *	$Id: machtype_sgi.c,v 1.8 1998-04-18 16:58:44 danw Exp $
  *	$Locker:  $
  */
 
@@ -65,6 +65,7 @@ char	**argv;
     int dobosN = 0;
     int dobosV = 0;
     int dosysnam = 0;
+    int dosyscompatnam = 0;
     char *kernel = KERNEL,  *memory = MEMORY;
     FILE *f;
     int memfd=0;
@@ -111,6 +112,9 @@ char	**argv;
 	    break;
 	case 'S':
 	    dosysnam = 1;
+	    break;
+	case 'C':
+	    dosyscompatnam = 1;
 	    break;
 	case 'v':
 	    verbose++;
@@ -228,6 +232,8 @@ char	**argv;
     }
     if (dosysnam)
         printf("%s\n", ATHSYS);
+    if (dosyscompatname)
+        printf("%s\n", ATHSYSCOMPAT);
     if (cpuflg)
 	do_cpu(kernel, memfd);
     if (dpyflg)

@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.21 1998-03-27 03:52:28 rbasch Exp $
+ *    $Id: machtype_sun4.c,v 1.22 1998-04-18 16:58:45 danw Exp $
  *    $Locker:  $
  */
 
@@ -55,6 +55,7 @@ kvm_t *kv;
     int dobosN = 0;
     int dobosV = 0;
     int dosysnam = 0;
+    int dosyscompatnam = 0;
     char *kernel = "/dev/ksyms",  *memory = "/dev/mem";
     FILE *f;
 
@@ -100,6 +101,9 @@ kvm_t *kv;
           break;
       case 'S':
           dosysnam = 1;
+	  break;
+      case 'C':
+	  dosyscompatnam = 1;
 	  break;
       case 'v':
           verbose++;
@@ -189,6 +193,11 @@ kvm_t *kv;
     /* Print out Athena System name */
     if (dosysnam) {
       printf("%s\n", ATHSYS);
+    }
+
+    /* Print out compatible Athena System names */
+    if (dosyscompatnam) {
+      printf("%s\n", ATHSYSCOMPAT);
     }
 
     if (cpuflg || dpyflg || raflg || memflg)

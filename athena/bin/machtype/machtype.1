@@ -1,13 +1,13 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: ghudson $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.16 1997-12-17 07:34:41 ghudson Exp $
+.\"     $Author: danw $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.17 1998-04-18 16:58:43 danw Exp $
 .TH MACHTYPE 1 "May 14 1996"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-k kernel] [-m memory] 
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-C] [-k kernel] [-m memory] 
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "sun4" when run on a
@@ -67,6 +67,13 @@ assuming the machine were running AFS. This value is used in the Athena
 environment as part of a scheme for laying out filesystems containing
 binaries for multiple architectures. See \fIlockers\fR(7) for more
 information.
+.TP
+.B -C
+Print out a colon-separated list of "Athena System" names that are
+compatible with the current architecture. This value is normally
+stored in the environment variable ATHENA_SYS_COMPAT, and is used by
+\fIathdir\fR(1) and \fIadd\fR(1) as a set of fallback values when a
+locker doesn't have binaries for the actual Athena System name.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an
