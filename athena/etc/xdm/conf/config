@@ -5,9 +5,10 @@
 #X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xplx -su -bs -v :0 -fp /etc/athena/login/fonts/ -fn 9x15 -co /etc/athena/login/rgb -I -display /dev/plx0 -microcode /usr/plx/microcode
 #X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xmfbpmax -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xcfbpmax -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#X	/etc/Xws -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#X	/etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0
-#ULTlogin	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/screen75/
+#ULT75login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
+#ULT100login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
