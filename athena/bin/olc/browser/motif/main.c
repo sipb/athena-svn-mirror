@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.3 1991-03-24 14:48:03 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.4 1991-03-24 23:03:54 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
@@ -45,7 +45,8 @@ void main(argc, argv)
   Display *dpy;
   XtAppContext app;
   Widget toplevel;
-
+  int spid;
+	
   program = "xbrowser";
   *argv = program;
   
@@ -72,6 +73,11 @@ void main(argc, argv)
   XtSetArg(arg, XtNallowShellResize, TRUE);
   XtSetValues(toplevel, &arg, 1);
 
+  spid = 0;
+  if (argc == 3) {
+    if (strcmp(argv[1],"-signal") == 0)
+      spid = atoi(argv[2]);
+  }
   MuInitialize(toplevel);
   MriRegisterMotif(app);
   RegisterApplicationCallbacks(app);
@@ -89,7 +95,9 @@ void main(argc, argv)
  */
 
   /* Let our invoker know we're ready... */
-  kill(0,SIGUSR1);
+  if (signal != 0) {
+    kill(spid,SIGUSR1);
+  }
 #ifdef LOG
   log_startup("xstock");
 #endif
