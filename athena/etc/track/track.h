@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.0 1988-05-24 17:39:04 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.1 1988-06-06 21:03:19 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.0 1988-05-24 17:39:04 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.1 1988-06-06 21:03:19 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -132,6 +132,7 @@ extern Entry entries[];
 extern int errno;
 extern int cksumflag;
 extern int forceflag;
+extern int ignore_prots;
 extern int incl_devs;
 extern int nopullflag;
 extern int parseflag;
