@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2001-11-09 23:46+0800\n"
 "Last-Translator: Zipeco <Zipeco@btamail.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -633,7 +633,7 @@ msgstr "上标"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "表格"
 
@@ -1013,7 +1013,7 @@ msgid "Color:"
 msgstr "颜色:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "栏"
 
@@ -1137,7 +1137,7 @@ msgid "Right"
 msgstr "右"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "行"
 
@@ -1404,43 +1404,43 @@ msgstr "标尺..."
 msgid "Image..."
 msgstr "图象..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "表格..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "单元格..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "表格..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "表格插入"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "行的上面"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "行的下面"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "栏的左边"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "栏的右边"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "表格删除"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "单元格内容"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "页..."
 
@@ -1487,11 +1487,6 @@ msgstr "查找规则的表达式"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "没有找到拼写不当的单词"
-
-#: components/html-editor/spell.c:493
-#, fuzzy
-msgid "Spell Checking _Languages"
-msgstr "拼写检查"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1598,6 +1593,10 @@ msgstr "打印预览(_V)"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "打印预览"
+
+#, fuzzy
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "拼写检查"
 
 #, fuzzy
 #~ msgid "Test"

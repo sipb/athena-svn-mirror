@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml \n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2002-02-20 18:12+0200\n"
 "Last-Translator: Nilgün Belma Bugüner <nilgun@fide.org>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -633,7 +633,7 @@ msgstr "Üstü çizili"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Tablo"
 
@@ -1010,7 +1010,7 @@ msgid "Color:"
 msgstr "Renk:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Sütun"
 
@@ -1128,7 +1128,7 @@ msgid "Right"
 msgstr "Sağ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Satır"
 
@@ -1402,43 +1402,43 @@ msgstr "Cetvel..."
 msgid "Image..."
 msgstr "Resim..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Tablo..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Göze..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Tablo..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Araya Tablo ekle"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Üst satır"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Alt satır"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Önceki sütun"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Sonraki satır"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Tabloyu sil"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Göze içeriği"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Sayfa..."
 
@@ -1485,10 +1485,6 @@ msgstr "Bir Düzenli İfade Bul"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Hatalı yazılmış sözcük yok"
-
-#: components/html-editor/spell.c:493
-msgid "Spell Checking _Languages"
-msgstr "Sözel Denetim _Dilleri"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1594,6 +1590,9 @@ msgstr "Yazdırma ö_nizleme"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Yazdırma önizleme"
+
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Sözel Denetim _Dilleri"
 
 #~ msgid "Test"
 #~ msgstr "Test"

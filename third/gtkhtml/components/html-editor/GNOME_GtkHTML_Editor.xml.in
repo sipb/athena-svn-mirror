@@ -138,8 +138,6 @@
 
 			<placeholder name="EditMisc">
 				     <menuitem name="EditSpellCheck" verb=""/>
-				     <placeholder name="EditSpellLanguages">
-				     </placeholder>
 			</placeholder>
 		</submenu>
 

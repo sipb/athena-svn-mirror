@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 1.1.x\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2002-05-25 02:09+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -620,7 +620,7 @@ msgstr "Superscript"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Jadual"
 
@@ -992,7 +992,7 @@ msgid "Color:"
 msgstr "Warna:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Kolum"
 
@@ -1114,7 +1114,7 @@ msgid "Right"
 msgstr "Kanan"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Baris"
 
@@ -1384,43 +1384,43 @@ msgstr "Rule..."
 msgid "Image..."
 msgstr "Imej..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Jadual..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Sel..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Jadual..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Selitan Jadual"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Baris di atas"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Baris di bawah"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Kolum sebelum"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Kolum selepas"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Padaman Jadual"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Kandungan sel"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Halaman..."
 
@@ -1467,10 +1467,6 @@ msgstr "Cari regular expression (regex)"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Tiada perkataan tersalah eja dijumpai"
-
-#: components/html-editor/spell.c:493
-msgid "Spell Checking _Languages"
-msgstr "Semak Ejaan _Bahasa"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1577,6 +1573,9 @@ msgstr "Pre_biu Cetakan"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Prebiu Cetakan"
+
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Semak Ejaan _Bahasa"
 
 #~ msgid "Test"
 #~ msgstr "Ujian"

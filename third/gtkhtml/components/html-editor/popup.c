@@ -495,10 +495,6 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items)
 			ADD_ITEM (_("Paragraph..."), prop_dialog, PARAGRAPH);
 			ADD_PROP (PARAGRAPH);
 			break;
-		case HTML_TYPE_TABLE:
-			ADD_SEP;
-			ADD_PROP (TABLE);
-			ADD_ITEM (_("Table..."), prop_dialog, TABLE);
 		default:
 		}
 		if (obj->parent && obj->parent->parent && HTML_IS_TABLE_CELL (obj->parent->parent)) {

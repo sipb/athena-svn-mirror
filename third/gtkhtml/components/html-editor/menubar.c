@@ -837,5 +837,4 @@ menubar_setup (BonoboUIComponent  *uic,
 	bonobo_ui_util_set_ui (uic, GNOMEDATADIR,
 			       "GNOME_GtkHTML_Editor.xml",
 			       "GNOME_GtkHTML_Editor");
-	spell_create_language_menu (cd);
 }

@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.7 2002-12-19 15:29:52 ghudson Exp $
+# $Id: sv.po,v 1.1.1.8 2003-03-15 15:35:19 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2002-01-27 04:24+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -635,7 +635,7 @@ msgstr "Upphöjd"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Tabell"
 
@@ -1012,7 +1012,7 @@ msgid "Color:"
 msgstr "Färg:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Kolumn"
 
@@ -1130,7 +1130,7 @@ msgid "Right"
 msgstr "Höger"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Rad"
 
@@ -1404,43 +1404,43 @@ msgstr "Linje..."
 msgid "Image..."
 msgstr "Bild..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Tabell..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Cell..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Tabell..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Tabellinfogning"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Raden ovanför"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Raden nedanför"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Kolumnen före"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Kolumnen efter"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Tabellborttagning"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Cellinnehåll"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Sida..."
 
@@ -1487,10 +1487,6 @@ msgstr "Sök reguljärt uttryck"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Inget felstavat ord hittades"
-
-#: components/html-editor/spell.c:493
-msgid "Spell Checking _Languages"
-msgstr "_Språk för stavningskontroll"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1596,6 +1592,9 @@ msgstr "Förhands_granska"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Förhandsgranska"
+
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "_Språk för stavningskontroll"
 
 #~ msgid "Test"
 #~ msgstr "Test"
