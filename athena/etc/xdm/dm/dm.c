@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.70 1998-10-30 19:55:49 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.71 1998-11-28 22:22:48 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.70 1998-10-30 19:55:49 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.71 1998-11-28 22:22:48 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -833,12 +833,21 @@ static void cleanup(char *tty)
 		) {
 		strncpy(login, utmp.ut_name, 8);
 		login[8] = '\0';
+#ifdef USER_PROCESS
+		if (utmp.ut_type == USER_PROCESS) {
+		    utmp.ut_type = DEAD_PROCESS;
+		    lseek(file, (long) -sizeof(utmp), L_INCR);
+		    write(file, (char *) &utmp, sizeof(utmp));
+		    found = 1;
+		}
+#else
 		if (utmp.ut_name[0] != '\0') {
 		    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
 		    lseek(file, (long) -sizeof(utmp), L_INCR);
 		    write(file, (char *) &utmp, sizeof(utmp));
 		    found = 1;
 		}
+#endif
 		break;
 	    }
 	}
@@ -847,8 +856,10 @@ static void cleanup(char *tty)
     if (found) {
 	if ((file = open(wtmpf, O_WRONLY|O_APPEND, 0644)) >= 0) {
 	    strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
+#ifndef USER_PROCESS
 	    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-            strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
+	    strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
+#endif
 	    time(&utmp.ut_time);
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
