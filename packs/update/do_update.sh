@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: do_update.sh,v 1.3 1996-05-15 20:33:47 cfields Exp $
+# $Id: do_update.sh,v 1.4 1996-05-16 21:38:04 cfields Exp $
 #
 
 ROOT=${ROOT-}; export ROOT
@@ -117,13 +117,6 @@ public_files="	/.cshrc \
 		/etc/shells \
 		${mpublic}"
 
-if [ "${AFSCLIENT}" = "true" ]; then
-public_files="	${public_files} \
-		/usr/vice/etc/cacheinfo \
-		/usr/vice/etc/SuidCells \
-		/usr/vice/etc/ThisCell"
-fi
-
 if [ ! -d ${ROOT}/.deleted ]; then
 	echo $N "Making tempdir...$C"
 	mkdir ${ROOT}/.deleted
@@ -216,19 +209,6 @@ POWER*)	echo "Updating root's crontab (old crontab is in /tmp/crontab.old)"
 		cat $LIBDIR/crontab.root.add; \
 		echo "# Athena additions - END") \
 	    | crontab
-	;;
-# On SGI, crontab is treated as a normal config file, because it
-# can't easily be edited. I'm just using this case statement because
-# it's here. All platforms should probably do their services by
-# editing them, and the SPARC code above is doing a disservice.
-IP22)
-	echo "Updating /etc/services (old services is in /tmp/services.old)"
-	cp /etc/services /tmp/services.old
-	(sed -e '/Athena additions - BEGIN/,/Athena additions - END/d' \
-		/tmp/services.old; \
-		echo "# Athena additions - BEGIN"; \
-		cat $LIBDIR/services.add; \
-		echo "# Athena additions - END") > /etc/services
 	;;
 esac
 
@@ -445,7 +425,7 @@ EOF
 	echo "done"
 fi
 
-echo "Tracking Changes..."
+echo $N "Tracking Changes... $C"
 if [ "${FULLCOPY}" = "true" ]; then
 	if [ -f ${ROOT}/etc/Xibm ]; then
 		echo $N "Removing /etc/Xibm temporarily...$C"
@@ -476,12 +456,25 @@ if [ "${FULLCOPY}" = "true" ]; then
 		/bin/sysck -p inventory
 		;;
 	SUN*)
+		echo "new Athena binaries..."
 		track -c -v -F /srvd -T ${ROOT}/ -d -W /srvd/usr/athena/lib
 		;;
+	INDY)
+		if [ "${TRACKNEWOS}" = "true" ] ; then
+		  echo "new system binaries..."
+		  /install/install/track -v -F /install -T ${ROOT}/ -d -W /install/install/lib
+		  rm -f /etc/athena/.rc.conf.sync
+		fi
+
+		echo "new Athena binaries..."
+		track -v -F /srvd -T ${ROOT}/ -d -W /srvd/usr/athena/lib
+		;;
 	*)
+		echo "new Athena binaries..."
 		track -v -F /srvd -T ${ROOT}/ -d -W /srvd/usr/athena/lib
 		;;
 	esac
+	echo "Done tracking."
 fi
 case ${MACH} in
 	DS*) 
@@ -491,12 +484,25 @@ case ${MACH} in
 	SUN*)
 		;;
 	INDY)
+		(cd ${ROOT}/dev; ./MAKEDEV)
 		;;
 	*)
 		(cd ${ROOT}/dev; ./MAKEDEV -v ws)
 		;;
 esac
 echo "done."
+
+case ${MACH} in
+INDY)
+	echo "Updating /etc/services (old services is in /tmp/services.old)"
+	cp /etc/services /tmp/services.old
+	(sed -e '/Athena additions - BEGIN/,/Athena additions - END/d' \
+		/tmp/services.old; \
+		echo "# Athena additions - BEGIN"; \
+		cat $LIBDIR/services.add; \
+		echo "# Athena additions - END") > /etc/services
+	;;
+esac
 
 XSERVER=
 XSERVERPATH=/usr/bin/X11
@@ -640,9 +646,8 @@ fi
 
 if [ "${NEWOS}" = "true" ] ; then
 	/bin/echo "Updating the operating system..."
-	/os/update_os
+	/install/install/update
 fi
 
 /bin/sync
 exit 0
-
