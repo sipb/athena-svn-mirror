@@ -165,6 +165,7 @@ if [ "${PUBLIC}" = "true" ]; then
 		if [ -f /srvd/etc/athena/rc.conf ]; then
        			sed -n  -e "s/^HOST=[^;]*/HOST=${HOST}/" \
 			  -e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
+			  -e "s/^NETDEV=[^;]*/NETDEV=${NETDEV}/" \
 			  -e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
 			  -e p /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
        	        	. /etc/athena/rc.conf
