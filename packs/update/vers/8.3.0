@@ -259,11 +259,12 @@ sgi)
 		cp /etc/passwd.local /etc/passwd
 	fi
 	/sbin/pwconv
-	if [ "$PUBLIC" != true ]; then
-	    if [ -f /etc/passwd.local -a ! -f /etc/shadow.local ]; then
-		cp -p /etc/shadow /etc/shadow.local
-		chmod 600 /etc/shadow.local
-	    fi
+	if [ "$PUBLIC" != true -a -f /etc/passwd.local ]; then
+		cp /etc/passwd /etc/passwd.local
+		if [ ! -f /etc/shadow.local ]; then
+			cp -p /etc/shadow /etc/shadow.local
+			chmod 600 /etc/shadow.local
+		fi
 	fi
 	rm -f /etc/opasswd /etc/oshadow
 	;;
