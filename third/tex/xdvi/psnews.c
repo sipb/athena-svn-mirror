@@ -40,6 +40,7 @@
 #include "xdvi.h"
 #include <memory.h>
 #include <signal.h>
+#include <sys/file.h>	/* this defines FASYNC */
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <NeWS/psio.h>
@@ -81,11 +82,7 @@ extern	int	errno;
 #endif
 #endif
 
-#if	NeedFunctionPrototypes
-char	*strtok(char *, _Xconst char *);
-#else
-char	*strtok();
-#endif
+char	*strtok ARGS((char *, _Xconst char *));
 
 #define	Fprintf	(void) fprintf
 
@@ -150,10 +147,10 @@ static	void	toggleNeWS ARGS((void));
 static	void	destroyNeWS ARGS((void));
 static	void	interruptNeWS ARGS((void));
 static	void	endpageNeWS ARGS((void));
-static	void	drawbeginNeWS ARGS((int, int, char *));
-static	void	drawrawNeWS ARGS((char *));
+static	void	drawbeginNeWS ARGS((int, int, _Xconst char *));
+static	void	drawrawNeWS ARGS((_Xconst char *));
 static	void	drawfileNeWS ARGS((_Xconst char *, FILE *));
-static	void	drawendNeWS ARGS((char *));
+static	void	drawendNeWS ARGS((_Xconst char *));
 static	void	beginheaderNeWS ARGS((void));
 static	void	endheaderNeWS ARGS((void));
 static	void	newdocNeWS ARGS((void));
@@ -200,7 +197,7 @@ static	fd_set		readfds;
 static	fd_set		writefds;
 #define	XDVI_ISSET(a, b, c)	FD_ISSET(a, b)
 #else	/* STREAMSCONN */
-struct pollfd		fds[3] = {{0, POLLOUT, 0},
+static	struct pollfd	fds[3] = {{0, POLLOUT, 0},
 				  {0, POLLIN, 0},
 				  {0, POLLIN, 0}};
 #define	XDVI_ISSET(a, b, c)	(fds[c].revents)
@@ -362,9 +359,7 @@ send(cp, len)
 		if (len == 0 || sigpipe_error) break;
 	    }
 	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		allow_can = False;
-		read_events(False);
-		allow_can = True;
+		ps_read_events(False, False);
 		if (PostScript == (PSFILE *) NULL) break;	/* if timeout occurred */
 	    }
 	}
@@ -430,10 +425,9 @@ waitack()
 	    if (XDVI_ISSET(PostScriptInput->file, &readfds, 1))
 		read_from_NeWS();
 	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		allow_can = False;
-		read_events(False);
-		allow_can = True;
-		if (PostScript == (PSFILE *) NULL) break;	/* if timeout occurred */
+		ps_read_events(False, False);
+		if (PostScript == (PSFILE *) NULL)	/* if timeout occurred*/
+		    break;
 	    }
 	}
 #if	HAS_SIGIO
@@ -633,7 +627,7 @@ endpageNeWS()
 static	void
 drawbeginNeWS(xul, yul, cp)
 	int		xul, yul;
-	char		*cp;
+	_Xconst	char	*cp;
 {
 	char	buf[100];
 	static	_Xconst	char	str[]	= " TeXDict begin\n";
@@ -696,10 +690,11 @@ end stop\n%%%%xdvimark\n",
 
 static	void
 drawrawNeWS(origcp)
-	char	*origcp;
+	_Xconst	char	*origcp;
 {
-	char		*pt, *ptm1, *cp1, *ocp1;
+	_Xconst	char	*pt, *ptm1, *ocp1;
 	static	char	*cp;
+	char		*cp1;
 	static	unsigned int cplen = 0;
 	unsigned int	len;
 	double		angle;
@@ -792,12 +787,11 @@ drawrawNeWS(origcp)
 
 static	void
 drawfileNeWS(cp, psfile)
-	_Xconst char	*cp;
+	_Xconst	char	*cp;
 	FILE		*psfile;
 {
 	char		buffer[1025];
 	int		blen;
-	int		bytes;
 	struct sigaction orig;
 
 	if (!NeWS_active) {
@@ -852,7 +846,7 @@ drawfileNeWS(cp, psfile)
 
 static	void
 drawendNeWS(cp)
-	char	*cp;
+	_Xconst	char	*cp;
 {
 	if (!NeWS_active)
 	    return;
@@ -947,8 +941,10 @@ newdocNeWS()
 
 	if (debug & DBG_PS) Puts("Running newdocNeWS()");
 
-	send(str, sizeof(str) - 1);
-	++NeWS_pending;
-	NeWS_mag = NeWS_shrink = -1;
-	NeWS_in_doc = False;
+	if (NeWS_in_doc) {
+	    send(str, sizeof(str) - 1);
+	    ++NeWS_pending;
+	    NeWS_mag = NeWS_shrink = -1;
+	    NeWS_in_doc = False;
+	}
 }

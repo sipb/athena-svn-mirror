@@ -1,0 +1,16 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(gsftopk.c)
+
+sinclude(../kpathsea/common.ac)
+
+dnl Checks for header files.
+AC_HEADER_SYS_WAIT
+
+dnl Checks for library functions.
+AC_FUNC_STRCHR
+AC_FUNC_STRRCHR
+AC_FUNC_MEMCMP
+AC_FUNC_VFORK
+AC_FUNC_VPRINTF
+
+AC_OUTPUT(Makefile)

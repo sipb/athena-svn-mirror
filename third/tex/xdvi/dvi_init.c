@@ -104,6 +104,10 @@ reset_fonts()
 		    if (g->pixmap2) {
 			XDestroyImage(g->image2);
 			g->pixmap2 = NULL;
+			if (g->pixmap2_t != NULL) {
+			    free(g->pixmap2_t);
+			    g->pixmap2_t = NULL;
+			}
 		    }
 #endif
 		}
@@ -527,7 +531,11 @@ read_postamble()
 			    if (g->bitmap.bits != NULL) free(g->bitmap.bits);
 			    if (g->bitmap2.bits != NULL) free(g->bitmap2.bits);
 #ifdef	GREY
-			    if (g->pixmap2 != NULL) XDestroyImage(g->image2);
+			    if (g->pixmap2 != NULL) {
+				XDestroyImage(g->image2);
+				if (g->pixmap2_t != NULL)
+				    free(g->pixmap2_t);
+			    }
 #endif
 			}
 			free((char *) fontp->glyph);
@@ -651,7 +659,10 @@ check_dvi_file()
 		    Fclose(dvi_file);
 		    if (list_fonts) Putchar('\n');
 		}
-		free((char *) page_offset);
+		if (page_offset != (long *) NULL) {
+		    free((char *) page_offset);
+		    page_offset = (long *) NULL;
+		}
 		bzero((char *) tn_table, (int) sizeof(tn_table));
 		free_vf_chain(tn_head);
 		tn_head = NULL;

@@ -3,18 +3,19 @@
 #
 
 ### Please set the following paths.
+TEXMF=/usr/local/lib/texmf
 
 # The following three should be as in dvips.
-HEADERDIR=/usr/local/tex/lib/dvips
+HEADERDIR=$(TEXMF)/dvips
 HEADERPATH=.:$(HEADERDIR)
-CONFIGPATH=.:/usr/local/tex/lib/dvips
+CONFIGPATH=.:$(TEXMF)/dvips
 
 # The following should be as in TeX.
-TEXFONTS_DEFAULT=.:/usr/local/tex/lib/texmf/fonts//tfm//
+TEXFONTS_DEFAULT=.:$(TEXMF)/fonts/tfm//
 
 # Where to put things.
-BINDIR=/usr/local/tex/bin
-MANDIR=/usr/man/man1
+BINDIR=$(TEXMF)/bin
+MANDIR=$(TEXMF)/man/man1
 
 # (Optional) The fully-qualified path of Ghostscript.
 # GSPATH=-DGS=\"/usr/local/gnu/bin/gs\"
@@ -33,13 +34,17 @@ MANDIR=/usr/man/man1
 # LINT=gcc -c -Wall -Wshadow -Wpointer-arith -Dlint
 # also maybe -Wcast-qual -Wwrite-strings
 RM=rm -f
-INSTALL=install -c
-INSTPGMFLAGS=
-INSTDATFLAGS=-m 644
-INSTMANFLAGS=-m 644
+INSTPGMMODE=755
+INSTDATMODE=644
+INSTMANMODE=644
 
 CFLAGS=-O -DCONFIGPATH=\"$(CONFIGPATH)\" -DHEADERPATH=\"$(HEADERPATH)\" \
   -DTEXFONTS_DEFAULT=\"$(TEXFONTS_DEFAULT)\" $(GSPATH) $(DEFS)
+
+default: gsftopk gsftopk.1
+
+hpux:
+	$(MAKE) CC='c89 -D_POSIX_SOURCE'
 
 gsftopk: gsftopk.c config.h
 	$(CC) -o gsftopk $(CFLAGS) gsftopk.c
@@ -47,13 +52,23 @@ gsftopk: gsftopk.c config.h
 config.h: Configure
 	./Configure $(CC) $(CFLAGS)
 
-install: gsftopk
-	$(INSTALL) $(INSTALLFLAGS) $(INSTPGMFLAGS) gsftopk $(BINDIR)
-	$(INSTALL) $(INSTALLFLAGS) $(INSTDATFLAGS) render.ps $(HEADERDIR)
-	$(INSTALL) $(INSTALLFLAGS) $(INSTMANFLAGS) gsftopk.1 $(MANDIR)
+gsftopk.1: gsftopk1.sed sedscript
+	sed -f sedscript <gsftopk1.sed >$@
+
+sedscript: mksedscript Makefile
+	chmod u+x mksedscript
+	./mksedscript $(DEFS) >$@
+
+install: gsftopk gsftopk.1
+	cp gsftopk $(BINDIR)
+	chmod $(INSTPGMMODE) $(BINDIR)/gsftopk
+	cp render.ps $(HEADERDIR)
+	chmod $(INSTDATMODE) $(HEADERDIR)/render.ps
+	cp gsftopk.1 $(MANDIR)
+	chmod $(INSTMANMODE) $(MANDIR)/gsftopk.1
 
 uninstall:
-	$(RM) $(BINDIR)/gsftopk $(HEADERDIR)/render.ps $(MANDIR)/gsftopk.1
+	-$(RM) $(BINDIR)/gsftopk $(HEADERDIR)/render.ps $(MANDIR)/gsftopk.1
 
 lint:
 	$(LINT) $(CFLAGS) gsftopk.c
@@ -62,15 +77,15 @@ TAGS:	$(srcs)
 	etags $(srcs)
 
 clean:
-	$(RM) *.o gsftopk core *~
+	-$(RM) *.o gsftopk gsftopk.1 sedscript core *~
 
 mostlyclean: clean
 
 distclean: clean
-	$(RM) config.h 
+	-$(RM) config.h 
 
 veryclean: distclean
-	$(RM) TAGS
+	-$(RM) TAGS
 
 realclean: distclean
-	$(RM) TAGS
+	-$(RM) TAGS

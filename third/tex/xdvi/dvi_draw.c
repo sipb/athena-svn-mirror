@@ -160,19 +160,29 @@ put_bitmap(bitmap, x, y)
 
 #ifdef	GREY
 static	void
-put_image(img, x, y)
-	register XImage *img;
+put_image(g, x, y)
+	register struct glyph *g;
 	register int x, y;
 {
+	register XImage *img = g->image2;
+
 	if (x < max_x && x + img->width >= min_x &&
 	    y < max_y && y + img->height >= min_y) {
 
-	    if (--event_counter == 0) read_events (False);
+	    if (--event_counter == 0) read_events(False);
 
 	    XPutImage(DISP, currwin.win, foreGC, img,
 		    0, 0,
 		    x - currwin.base_x, y - currwin.base_y,
 		    (unsigned int) img->width, (unsigned int) img->height);
+	    if (pixeltbl_t != NULL) {
+		img->data = g->pixmap2_t;
+		XPutImage(DISP, currwin.win, foreGC2, img,
+			0, 0,
+			x - currwin.base_x, y - currwin.base_y,
+			(unsigned int) img->width, (unsigned int) img->height);
+		img->data = g->pixmap2;
+	    }
 	}
 }
 #endif	/* GREY */
@@ -548,6 +558,8 @@ shrink_glyph_grey(g)
 	size = g->image2->bytes_per_line * g->bitmap2.h;
 	g->pixmap2 = g->image2->data = xmalloc(size != 0 ? size : 1,
 			"character pixmap");
+	if (pixeltbl_t != NULL)
+	    g->pixmap2_t = xmalloc(size != 0 ? size : 1, "character pixmap");
 
 	old_ptr = (BMUNIT *) g->bitmap.bits;
 	rows_left = g->bitmap.h;
@@ -563,6 +575,11 @@ shrink_glyph_grey(g)
 		thesample = sample(old_ptr, g->bitmap.bytes_wide,
 			(int) g->bitmap.w - cols_left, cols, rows);
 		XPutPixel(g->image2, x, y, pixeltbl[thesample]);
+		if (pixeltbl_t != NULL) {
+		    g->image2->data = g->pixmap2_t;
+		    XPutPixel(g->image2, x, y, pixeltbl_t[thesample]);
+		    g->image2->data = g->pixmap2;
+		}
 
 		cols_left -= cols;
 		cols = shrink_factor;
@@ -575,8 +592,14 @@ shrink_glyph_grey(g)
 	}
 
 	while (y < (int) g->bitmap2.h) {
-	    for (x = 0; x < (int) g->bitmap2.w; x++)
+	    for (x = 0; x < (int) g->bitmap2.w; x++) {
 		XPutPixel(g->image2, x, y, *pixeltbl);
+		if (pixeltbl_t != NULL) {
+		    g->image2->data = g->pixmap2_t;
+		    XPutPixel(g->image2, x, y, *pixeltbl_t);
+		    g->image2->data = g->pixmap2;
+		}
+	    }
 	    y++;
 	}
 
@@ -652,7 +675,7 @@ read_special(nbytes)
 	    nbytes -= i;
 	    if (nbytes == 0) break;
 	    (void) xxone();
-	    --(currinf.pos);
+	    --currinf.pos;
 	}
 	*p = '\0';
 	return spcl;
@@ -670,11 +693,18 @@ read_special(nbytes)
 
 /*
  *	Table used for scanning.  If >= 0, then skip that many bytes.
- *	-1 means end of page, -2 means special, -3 means FNTDEF,
- *	-4 means unrecognizable, and -5 means doesn't belong here.
+ *	M1 means end of page, M2 means special, M3 means FNTDEF,
+ *	M4 means unrecognizable, and M5 means doesn't belong here.
  */
 
-static	_Xsigned char	scantable[256] = {
+#define	M1	255
+#define	M2	254
+#define	M3	253
+#define	M4	252
+#define	M5	251
+#define	MM	251
+
+static	ubyte	scantable[256] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	/* chars 0 - 127 */
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -683,10 +713,10 @@ static	_Xsigned char	scantable[256] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	1,-4,			/* SET1,- (128,129) */
+	1,M4,			/* SET1,- (128,129) */
 			/* -,-,SETRULE,PUT1,-,-,-,PUTRULE,NOP,BOP (130-139) */
-	-4,-4,8,1,-4,-4,-4,8,0,44,
-	-1,0,0,1,2,3,4,0,1,2,	/* EOP,PUSH,POP,RIGHT1-4,W0-2 (140-149) */
+	M4,M4,8,1,M4,M4,M4,8,0,44,
+	M1,0,0,1,2,3,4,0,1,2,	/* EOP,PUSH,POP,RIGHT1-4,W0M2 (140-149) */
 	3,4,0,1,2,3,4,1,2,3,	/* W3-4,X0-4,DOWN1-3 (150-159) */
 	4,0,1,2,3,4,0,1,2,3,	/* DOWN4,Y0-4,Z0-3 (160-169) */
 	4,			/* Z4 (170) */
@@ -694,10 +724,10 @@ static	_Xsigned char	scantable[256] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	1,2,3,4,-2,		/* FNT1-4,XXX1 (235-239) */
+	1,2,3,4,M2,		/* FNT1-4,XXX1 (235-239) */
 			/* XXX2-4,FNTDEF1-4,PRE,POST,POSTPOST (240-249) */
-	-2,-2,-2,-3,-3,-3,-3,-5,-5,-5,
-	0,0,-4,-4,-4,-4};	/* SREFL,EREFL,-,-,-,- (250-255) */
+	M2,M2,M2,M3,M3,M3,M3,M5,M5,M5,
+	0,0,M4,M4,M4,M4};	/* SREFL,EREFL,-,-,-,- (250-255) */
 
 /*
  *	Prescanning routine for dvi file.  This looks for specials like
@@ -707,11 +737,11 @@ static	_Xsigned char	scantable[256] = {
 static	void
 prescan()
 {
-	ubyte		ch;
-	_Xsigned char	n;
-	long		a;
-	int		nextreportpage;
-	char		scanmsg[40];
+	ubyte	ch;
+	ubyte	n;
+	long	a;
+	int	nextreportpage;
+	char	scanmsg[40];
 
 	if (!resource._postscript) {
 	    scanned_page = total_pages;
@@ -737,25 +767,25 @@ prescan()
 	    for (;;) {
 		ch = xone();
 		n = scantable[ch];
-		if (n >= 0)
-		    while (--n >= 0)
+		if (n < MM)
+		    while (n-- != 0)
 			(void) xone();
-		else if (n == -1) break;	/* end of page */
+		else if (n == M1) break;	/* end of page */
 		else switch (n) {
-		    case -2:	/* special */
+		    case M2:	/* special */
 			a = xnum(ch - XXX1 + 1);
 			if (a > 0)
 			    scan_special(read_special(a));
 			break;
-		    case -3:	/* FNTDEF */
+		    case M3:	/* FNTDEF */
 			xskip((long) (12 + ch - FNTDEF1 + 1));
 			ch = xone();
 			xskip((long) ch + (long) xone());
 			break;
-		    case -4:	/* unrecognizable */
+		    case M4:	/* unrecognizable */
 			tell_oops("unknown op-code %d", ch);
 			break;
-		    case -5:	/* doesn't belong */
+		    case M5:	/* doesn't belong */
 			tell_oops("shouldn't happen: %s encountered",
 				dvi_table2[ch - (FNTNUM0 + 64)]);
 			break;
@@ -827,7 +857,7 @@ set_char(cmd, ch)
 		    if (g->pixmap2 == NULL) {
 			shrink_glyph_grey(g);
 		    }
-		    put_image(g->image2, PXL_H - g->x2, PXL_V - g->y2);
+		    put_image(g, PXL_H - g->x2, PXL_V - g->y2);
 		} else {
 		    if (g->bitmap2.bits == NULL) {
 			shrink_glyph(g);
@@ -1273,7 +1303,8 @@ draw_part(minframe, current_dimconv)
 		    case FNTDEF3:
 		    case FNTDEF4:
 			xskip((long) (12 + ch - FNTDEF1 + 1));
-			xskip((long) xone() + (long) xone());
+			a = (long) xone();
+			xskip(a + (long) xone());
 			break;
 
 #ifndef	TEXXET

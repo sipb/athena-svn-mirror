@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994 Paul Vojta.  All rights reserved.
+ * Copyright (c) 1997 Paul Vojta.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -25,17 +25,33 @@
 
 #ifndef	lint
 static	char	copyright[] =
-"@(#) Copyright (c) 1994 Paul Vojta.  All rights reserved.\n";
+"@(#) Copyright (c) 1997 Paul Vojta.\n";
 #endif
 
+/*
+ * Modified by Yves Arrouye to support the kpathsea library v2.6, based on
+ * previous work from Thomas Essen.
+ */
+
+#ifndef	KPATHSEA
 #include "config.h"
+#else
+#include "c-auto.h"
+#endif
 #include <errno.h>
 #include <ctype.h>
 #include <memory.h>
 #include <sys/types.h>
+#if 0
 #include <sys/wait.h>
+#endif
 #include <sys/stat.h>
 #include <setjmp.h>
+
+#ifdef	KPATHSEA
+#include <kpathsea/c-std.h>
+#include <kpathsea/tex-file.h>
+#endif
 
 #ifdef	POSIX_DIRENT
 #include <dirent.h>
@@ -43,6 +59,12 @@ typedef	struct dirent	struct_dirent;
 #else	/* !POSIX */
 #include <sys/dir.h>
 typedef	struct direct	struct_dirent;
+#endif
+
+#ifndef	S_ISDIR
+#if	defined(S_IFMT) && defined(S_IFDIR)
+#define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+#endif
 #endif
 
 #ifndef	GS
@@ -77,11 +99,12 @@ typedef	char	Boolean;
 #endif
 
 #define	PK_PRE	(char) 247
-#define	PK_ID	89
+#define	PK_ID	(char) 89
+#define	PK_SPC	(char) 240
 #define	PK_POST	(char) 245
 #define	PK_NOP	(char) 246
 
-char	ident[]	= "gsftopk version 1.9";
+char	ident[]	= "gsftopk version 1.12";
 
 typedef	unsigned char	byte;
 
@@ -206,6 +229,22 @@ static	FILE	*searchfile;
 static	char	*searchname;
 static	int	searchnamelen;
 
+#ifdef	KPATHSEA
+
+static char* kstrcpy(char* a, const char* b) {
+    if (b == (const char*) 0) {
+	*a = 0;
+    } else {
+	char* z = a;
+
+	while (*z++ = *b++);
+    }
+
+    return a;
+}
+
+#else	/* ! KPATHSEA */
+
 static	char *
 find_dbl_slash(char *sp_bgn, char *sp_end)
 {
@@ -246,10 +285,9 @@ main_search_proc(char *matpos, char *sp_pos, char *sp_slash, char *sp_end,
 	    *mp = '\0';
 	    if (stat(searchpath, &statbuf) == 0 && S_ISDIR(statbuf.st_mode)) {
 		*mp++ = '/';
-		sp_slash += 2;
-		main_search_proc(mp, sp_slash, find_dbl_slash(sp_slash, sp_end),
-		    sp_end, statbuf.st_nlink <= 2, space, spacenext);
-		return;
+		main_search_proc(mp, sp_slash + 2,
+		    find_dbl_slash(sp_slash + 2, sp_end), sp_end,
+		    statbuf.st_nlink <= 2, space, spacenext);
 	    }
 	}
 	if (skip_subdirs) return;
@@ -352,6 +390,8 @@ search(char *path, char *path_var, char *name)
 	    env_path = p + 1;
 	}
 }
+
+#endif	/* ! KPATHSEA */
 
 /*
  *	Add to dlstring
@@ -864,10 +904,10 @@ putglyph(int cc)
 	static	float	char_width;
 	static	byte	*area1	= NULL;
 	static unsigned int size1 = 0;
+	static	int	i;
 	long	dm;
 	long	tfm_wid;
 	byte	*p;
-	int	i;
 
 	if (!quiet) {
 	    int wid;
@@ -969,6 +1009,20 @@ putglyph(int cc)
 	}
 }
 
+static	void
+putspecl(const char *str1, const char *str2)
+{
+	int	len1	= strlen(str1);
+	int	len2	= 0;
+
+	if (str2 != NULL) len2 = strlen(str2);
+	if (len1 + len2 > 255) return;
+	putc(PK_SPC, pk_file);
+	putc(len1 + len2, pk_file);
+	fwrite(str1, 1, len1, pk_file);
+	if (len2 != 0) fwrite(str2, 1, len2, pk_file);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -1004,12 +1058,24 @@ main(int argc, char **argv)
 	    fputs("Usage: gsftopk [-q] <font> <dpi>\n", stderr);
 	    exit(1);
 	}
+
+#ifdef	KPATHSEA
+	kpse_set_progname(argv[0]);
+	kpse_init_prog(uppercasify(argv[0]), 300, "cx", false, "cmr10");
+	xputenv_int("KPATHSEA_DPI", 300);
+#endif
+
 	fontname = argv[1];
 	fontlen = strlen(fontname);
 
 	if (!quiet) puts(ident);
 
+#ifdef	KPATHSEA
+	config_file = fopen(kpse_find_file("psfonts.map",
+	    kpse_dvips_config_format, false), "r");
+#else
 	config_file = search(CONFIGPATH, "TEXCONFIG", "psfonts.map");
+#endif
 	if (config_file == NULL) oops("Cannot find file psfonts.map.");
 
 	configline = (char *) xmalloc(cflinelen = 80, "Config file line");
@@ -1050,7 +1116,12 @@ main(int argc, char **argv)
 		while (*p != '\0' && !isspace(*p)) ++p;
 		endc = *p;
 		*p = '\0';
+#ifdef	KPATHSEA
+		f = fopen(kstrcpy(searchpath, kpse_find_file(q,
+		    kpse_dvips_header_format, true)), "r");
+#else
 		f = search(HEADERPATH, "DVIPSHEADERS", q);
+#endif
 		if (f == NULL) oops("Cannot find font file %s", q);
 		/* search() also sets searchpath */
 		addtodls(searchpath);
@@ -1089,7 +1160,12 @@ main(int argc, char **argv)
 	 *	Start up GhostScript.
 	 */
 
+#ifdef	KPATHSEA
+	tfm_file = fopen(kstrcpy(searchpath, kpse_find_file("render.ps",
+	    kpse_dvips_header_format, true)), "r");
+#else
 	tfm_file = search(HEADERPATH, "DVIPSHEADERS", "render.ps");
+#endif
 	if (tfm_file == NULL)
 	    oops("Cannot find PS driver file \"render.ps\".");
 	fclose(tfm_file);
@@ -1110,7 +1186,7 @@ main(int argc, char **argv)
 	    close(std_out[0]);
 	    dup2(std_out[1], 1);
 	    close(std_out[1]);
-	    execlp(GS, "gs", "-DNODISPLAY", "-q", "--",
+	    execlp(GS, "gs", "-dNODISPLAY", "-dNOGC", "-q", "--",
 		/* render.ps */ searchpath,
 		PSname != NULL ? PSname : fontname,
 		dlstring != NULL ? dlstring : "", specinfo, dpistr, NULL);
@@ -1127,11 +1203,14 @@ main(int argc, char **argv)
 	 *	it can overlap with the startup of GhostScript.
 	 */
 
-	fontlen = strlen(fontname);
 	xfilename = xmalloc(fontlen + 10, "name of tfm/pk file");
 	strcpy(xfilename, fontname);
+#ifdef	KPATHSEA
+        tfm_file = fopen(kpse_find_file(xfilename, kpse_tfm_format, true), "r");
+#else
 	strcpy(xfilename + fontlen, ".tfm");
 	tfm_file = search(TEXFONTS_DEFAULT, "TEXFONTS", xfilename);
+#endif
 	if (tfm_file == NULL) oops("Cannot find tfm file.");
 	for (i = 0; i < 12; ++i) {
 	    int j;
@@ -1210,6 +1289,24 @@ main(int argc, char **argv)
 	    if (status & 0377)
 		oops("Call to gs stopped by signal %d", status & 0177);
 	    else oops("Call to gs returned nonzero status %d", status >> 8);
+
+/*
+ *	Write out identifying specials:
+ *		jobname=(font)
+ *		mag=1
+ *		mode=(gsftopk)Unknown
+ *		pixels_per_inch=(dpi)
+ */
+
+	putspecl("jobname=", fontname);
+	putspecl("mag=1", NULL);
+	putspecl("mode=(gsftopk)Unknown", NULL);
+	sprintf(dpistr, "%d", (int) dpi);
+	putspecl("pixels_per_inch=", dpistr);
+
+/*
+ *	Postamble
+ */
 
 	putc(PK_POST, pk_file);
 	while (ftell(pk_file) % 4 != 0) putc(PK_NOP, pk_file);
