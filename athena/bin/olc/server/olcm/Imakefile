@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/Imakefile,v $
- * $Id: Imakefile,v 1.3 1991-04-18 22:19:40 lwvanels Exp $
+ * $Id: Imakefile,v 1.4 1991-05-07 22:25:03 lwvanels Exp $
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -30,7 +30,7 @@ NormalProgramTarget(olcm,$(OBJS),,,$(SYS_LIBRARIES))
 SaberProgramTarget(olcm,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
 
 #ifdef InstallAltLoc
-InstallProgram(olcm,/mit/olcdev/@sys)
+InstallProgram(olcm,$(DESTDIR)/usr/athena/etc)
 #else
 InstallProgram(olcm,$(DESTDIR)/usr/etc)
 #endif

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.21 1991-04-18 22:18:58 lwvanels Exp $
+ * $Id: Imakefile,v 1.22 1991-05-07 22:24:25 lwvanels Exp $
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -47,7 +47,7 @@ DependTarget()
 LintTarget()
 
 #ifdef InstallAltLoc
-InstallProgram(olcd,/mit/olcdev/@sys)
+InstallProgram(olcd,$(DESTDIR)/usr/athena/etc)
 #else
 InstallProgram(olcd,$(DESTDIR)/usr/etc)
 #endif
