@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.5 1990-11-29 12:11:04 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.6 1990-12-02 23:06:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -105,7 +105,7 @@ get_log(username,instance,result)
 
     /* Stat the file to get size and last mod time */
     if (fstat(fd,&file_stat) < 0) {
-      perror("fdcache: fstat");
+      syslog(LOG_ERR,"fstat: %m on %d");
       close(fd);
       cache[new].use = 1;
       cache[new].fd = -1;
@@ -120,7 +120,7 @@ get_log(username,instance,result)
 
     /* Malloc buffer big enough for the file */
     if ((cache[new].question = malloc(file_stat.st_size)) == NULL) {
-      fprintf(stderr,"fdcache: malloc: error alloc'ing %d bytes\n",
+      syslog(LOG_ERR,"get_log: malloc: error alloc'ing %d bytes\n",
 	      file_stat.st_size);
       close(fd);
       cache[new].use = 1;
@@ -132,7 +132,7 @@ get_log(username,instance,result)
     /* Read file into buffer */
     if (read(cache[new].fd,cache[new].question,cache[new].length) !=
 	cache[new].length) {
-      perror("fdcache: read");
+      syslog(LOG_ERR,"fdcache: read: %m on %d",cache[new].fd);
       close(fd);
       cache[new].use = 1;
       cache[new].fd = -1;
@@ -164,7 +164,7 @@ get_log(username,instance,result)
       if (errno == ENOENT) /* Question gone; not an error */
 	*result = 0;
       else {               /* Some other error */
-	perror("fdcache: fstat");
+	syslog(LOG_ERR,"fdcache: stat %m on %s",ptr->filename);
 	*result = errno;
       }
 	return(NULL);
@@ -189,7 +189,7 @@ get_log(username,instance,result)
 
       /* Alloc new amount of memory */
       if ((ptr->question = malloc(file_stat.st_size)) == NULL) {
-	fprintf(stderr,"fdcache: malloc: error alloc'ing %d bytes\n",
+	syslog(LOG_ERR,"get_log: malloc: error alloc'ing %d bytes\n",
 		file_stat.st_size);
 	delete_entry(ptr);
 	*result = -1;
@@ -198,7 +198,7 @@ get_log(username,instance,result)
       
       /* rewind file */
       if (lseek(ptr->fd,0,L_SET) == -1) {
-	perror("fdcache: lseek");
+	syslog(LOG_ERR,"get_log: lseek: %m");
 	delete_entry(ptr);
 	*result = -1;
 	return(NULL);
@@ -206,7 +206,7 @@ get_log(username,instance,result)
 
       /* Read file into buffer */
       if (read(ptr->fd,ptr->question,ptr->length) != ptr->length) {
-	perror("fdcache: read");
+	syslog(LOG_ERR,"get_log: read: %m");
 	delete_entry(ptr);
 	*result = -1;
 	return(NULL);
