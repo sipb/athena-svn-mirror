@@ -1,9 +1,9 @@
 # Makefile for "track" automatic update program
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
-#	$Author: probe $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.11 1989-01-21 14:33:50 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.12 1990-02-09 09:31:47 epeisach Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
@@ -48,67 +48,4 @@ lint:
 	lint -uahv $(TRACK_SRCS)
 
 depend: $(TRACK_SRCS)
-	${CC} -M -I../include ${TRACK_SRCS} | \
-	sed -e ':loop' \
-	    -e 's/\.\.\/[^ /]*\/\.\./../' \
-	    -e 't loop' | \
-	awk ' { if ($$1 != prev) { print rec; rec = $$0; prev = $$1; } \
-		else { if (length(rec $$2) > 78) { print rec; rec = $$0; } \
-		       else rec = rec " " $$2 } } \
-	      END { print rec } ' > makedep
-	echo '/^# DO NOT DELETE THIS LINE/+1,$$d' >eddep
-	echo '$$r makedep' >>eddep
-	echo 'w' >>eddep
-	cp Makefile Makefile.bak
-	ex - Makefile < eddep
-	rm eddep makedep
-	echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile
-	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile
-	echo '# see make depend above' >> Makefile
-
-# DO NOT DELETE THIS LINE -- make depend uses it
-
-track.o: track.c ./mit-copyright.h ./track.h ./mit-copyright.h
-track.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-track.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-track.o: /usr/include/machine/machparam.h /usr/include/signal.h
-track.o: /usr/include/sys/types.h /usr/include/sys/file.h /usr/include/ctype.h
-track.o: /usr/include/signal.h /usr/include/stdio.h
-y.tab.o: y.tab.c ./track.h ./mit-copyright.h /usr/include/sys/types.h
-y.tab.o: /usr/include/sys/stat.h /usr/include/sys/dir.h
-y.tab.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
-y.tab.o: /usr/include/signal.h /usr/include/sys/types.h /usr/include/sys/file.h
-y.tab.o: /usr/include/ctype.h /usr/include/signal.h /usr/include/stdio.h
-y.tab.o: ./lex.yy.c /usr/include/stdio.h
-stamp.o: stamp.c ./mit-copyright.h ./track.h ./mit-copyright.h
-stamp.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-stamp.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-stamp.o: /usr/include/machine/machparam.h /usr/include/signal.h
-stamp.o: /usr/include/sys/types.h /usr/include/sys/file.h /usr/include/ctype.h
-stamp.o: /usr/include/signal.h /usr/include/stdio.h
-except.o: except.c ./mit-copyright.h ./track.h ./mit-copyright.h
-except.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-except.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-except.o: /usr/include/machine/machparam.h /usr/include/signal.h
-except.o: /usr/include/sys/types.h /usr/include/sys/file.h /usr/include/ctype.h
-except.o: /usr/include/signal.h /usr/include/stdio.h
-files.o: files.c ./mit-copyright.h ./track.h ./mit-copyright.h
-files.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-files.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-files.o: /usr/include/machine/machparam.h /usr/include/signal.h
-files.o: /usr/include/sys/types.h /usr/include/sys/file.h /usr/include/ctype.h
-files.o: /usr/include/signal.h /usr/include/stdio.h
-misc.o: misc.c ./mit-copyright.h ./track.h ./mit-copyright.h
-misc.o: /usr/include/sys/types.h /usr/include/sys/stat.h /usr/include/sys/dir.h
-misc.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
-misc.o: /usr/include/signal.h /usr/include/sys/types.h /usr/include/sys/file.h
-misc.o: /usr/include/ctype.h /usr/include/signal.h /usr/include/stdio.h
-update.o: update.c ./mit-copyright.h ./track.h ./mit-copyright.h
-update.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-update.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-update.o: /usr/include/machine/machparam.h /usr/include/signal.h
-update.o: /usr/include/sys/types.h /usr/include/sys/file.h /usr/include/ctype.h
-update.o: /usr/include/signal.h /usr/include/stdio.h
-# DEPENDENCIES MUST END AT END OF FILE
-# IF YOU PUT STUFF HERE IT WILL GO AWAY
-# see make depend above
+	touch Make.depend; makedepend -fMake.depend $(CFLAGS) ${TRACK_SRCS}
