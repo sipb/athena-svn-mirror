@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.14 1989-02-01 03:42:21 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.15 1989-03-27 12:08:08 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -24,6 +24,7 @@
 #include "pattern.h"
 #include "util.h"
 #include "undelete.h"
+#include "mit-copyright.h"
 
 #define ERROR_MASK 1
 #define NO_DELETE_MASK 2

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.3 1989-03-08 09:59:21 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.4 1989-03-27 12:07:13 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -25,6 +25,7 @@
 #include "directories.h"
 #include "pattern.h"
 #include "lsdel.h"
+#include "mit-copyright.h"
 
 char *malloc(), *realloc();
 extern int current_time;

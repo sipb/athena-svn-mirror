@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.6 1989-03-08 09:59:47 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.7 1989-03-27 12:08:34 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -23,6 +23,7 @@
 #include <pwd.h>
 #include "directories.h"
 #include "util.h"
+#include "mit-copyright.h"
 
 char *getenv();
 

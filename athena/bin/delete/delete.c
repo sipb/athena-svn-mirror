@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.16 1989-03-08 09:57:54 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.17 1989-03-27 12:05:58 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -23,7 +23,7 @@
 #include <sys/file.h>
 #include "util.h"
 #include "delete.h"
-
+#include "mit-copyright.h"
 
 
 

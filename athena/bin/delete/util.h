@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.3 1989-01-27 03:13:36 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.4 1989-03-27 12:08:41 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -10,6 +10,7 @@
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  */
+#include "mit-copyright.h"
 
 char *append();
 char *convert_to_user_name();

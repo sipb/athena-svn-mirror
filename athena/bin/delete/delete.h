@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.h,v 1.2 1989-01-27 03:13:13 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.h,v 1.3 1989-03-27 12:06:11 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -13,3 +13,5 @@
 
 #define ERROR_MASK 1
 #define NO_DELETE_MASK 2
+
+#include "mit-copyright.h"

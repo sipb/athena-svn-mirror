@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.1 1989-01-27 10:17:11 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.2 1989-03-27 12:05:12 jik Exp $";
 #endif
 
 /*
@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <strings.h>
 #include "col.h"
+#include "mit-copyright.h"
 
 
 static int calc_string_width();

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.7 1989-03-08 10:00:35 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.8 1989-03-27 12:07:48 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -24,6 +24,7 @@
 #include "pattern.h"
 #include "util.h"
 #include "undelete.h"
+#include "mit-copyright.h"
 
 static char *add_char();
 

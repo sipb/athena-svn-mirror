@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.11 1989-03-08 09:58:32 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.12 1989-03-27 12:06:16 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -21,6 +21,7 @@
 #include <strings.h>
 #include "directories.h"
 #include "util.h"
+#include "mit-copyright.h"
 
 extern char *malloc(), *realloc();
 extern char *whoami;

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.6 1989-03-09 16:01:36 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.7 1989-03-27 12:06:47 jik Exp $";
 #endif
 
 /*
@@ -33,6 +33,7 @@
 #include "util.h"
 #include "pattern.h"
 #include "expunge.h"
+#include "mit-copyright.h"
 
 extern char *malloc(), *realloc();
 extern int current_time;

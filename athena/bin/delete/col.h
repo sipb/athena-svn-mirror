@@ -1,4 +1,17 @@
 /*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.h,v $
+ * $Author: jik $
+ *
+ * This header file is part of a package including delete, undelete,
+ * lsdel, expunge and purge.  The software suite is meant as a
+ * replacement for rm which allows for file recovery.
+ * 
+ * Copyright (c) 1989 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+#include "mit-copyright.h"
+
+/*
  * DEF_COL_WIDTH: the column with to try to use if none is specified.
  * DEF_WAIT: 1 if the program is supposed to wait for stdin to get to
  *           end-of-file and then print out everything in order in
