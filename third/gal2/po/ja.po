@@ -1,0 +1,1093 @@
+# gal ja.po
+# Copyright (C) 2000,2001,2003 Free Software Foundation, Inc.
+# Yukihiro Nakai <nakai@gnome.gr.jp>, 2000.
+# Takuo KITAME <kitame@debian.org>, 2000,2001
+# Akira TAGOH <tagoh@gnome.gr.jp>, 2001.
+# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gal CVS\n"
+"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"PO-Revision-Date: 2003-04-15 08:55+0900\n"
+"Last-Translator: KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>\n"
+"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr "ハンドルのサイズ"
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr "カンタム"
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%p %l:%M"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "今日の%p %l:%M"
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "昨日の%p %l:%M"
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a曜の%p %l:%M"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%m/%d %p %l:%M"
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%Y/%m/%d"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr "選択されたカラム"
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr "フォーカスされたカラム"
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr "選択されていないカラム"
+
+#: gal/e-table/e-cell-text.c:1516
+msgid "Strikeout Column"
+msgstr "字消しされたカラム"
+
+#: gal/e-table/e-cell-text.c:1523
+#, fuzzy
+msgid "Underline Column"
+msgstr "選択されていないカラム"
+
+#: gal/e-table/e-cell-text.c:1530
+msgid "Bold Column"
+msgstr "ボールド体のカラム"
+
+#: gal/e-table/e-cell-text.c:1537
+msgid "Color Column"
+msgstr "色のついているカラム"
+
+#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
+#: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
+msgid "Editable"
+msgstr "編集可能"
+
+#: gal/e-table/e-cell-text.c:1551
+msgid "BG Color Column"
+msgstr "背景色が設定されているカラム"
+
+#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr "ヘッダ"
+
+#: gal/e-table/e-table-click-to-add.c:463
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
+#: gal/e-text/e-text.c:3312
+msgid "Model"
+msgstr "モデル"
+
+#: gal/e-table/e-table-click-to-add.c:470
+msgid "Message"
+msgstr "メッセージ"
+
+#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3489
+#: gal/e-text/e-text.c:3490
+msgid "Width"
+msgstr "幅"
+
+#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3497
+#: gal/e-text/e-text.c:3498
+msgid "Height"
+msgstr "高さ"
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- 削除(_R)"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "可能な項目(_V):"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "昇順"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "すべて消去"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "降順"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "説明"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "グループ"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "アイテムのグループ化"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "下に移動(_D)"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "上に移動(_U)"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "項目を順番に表示(_O):"
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show Fields"
+msgstr "項目の表示"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Show field in View"
+msgstr "ビューで項目を表示"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort"
+msgstr "ソート"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Sort Items By"
+msgstr "アイテムのソート"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:16
+msgid "Then By"
+msgstr "Then By"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Add ->"
+msgstr "追加(_A)->"
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr "表示しているフィールド(_F)..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "ソート(_S)..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr "ダイアログ 1"
+
+#: gal/e-table/e-table-config.c:154
+msgid "State"
+msgstr "状態"
+
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Ascending)"
+msgstr "(昇順)"
+
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Descending)"
+msgstr "(降順)"
+
+#: gal/e-table/e-table-config.c:318
+msgid "Not sorted"
+msgstr "ストアされていない"
+
+#: gal/e-table/e-table-config.c:359
+msgid "No grouping"
+msgstr "グループなし"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "グループ化(_G)..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "項目選択"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"テーブルにカラムを追加するには、追加したい\n"
+"位置までドラッグしてください。"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1738
+msgid "DnD code"
+msgstr "DnD コード"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1752
+msgid "Full Header"
+msgstr "すべてのヘッダ"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "カラムを追加..."
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d 項目)"
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr "行の色を替える"
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914
+msgid "Horizontal Draw Grid"
+msgstr "水平描画グリッド"
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921
+msgid "Vertical Draw Grid"
+msgstr "垂直描画グリッド"
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928
+msgid "Draw focus"
+msgstr "描画フォーカス"
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr "カーソルモード"
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr "選択モデル"
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+msgid "Length Threshold"
+msgstr "流さのしきい値"
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+msgid "Uniform row height"
+msgstr "行の高さを揃える"
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr "変更不可"
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr "最小の幅"
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr "最小の幅"
+
+#: gal/e-table/e-table-header-item.c:1451
+msgid "Customize Current View"
+msgstr "現在のビューのカスタマイズ"
+
+#: gal/e-table/e-table-header-item.c:1471
+msgid "Sort Ascending"
+msgstr "昇順でソート"
+
+#: gal/e-table/e-table-header-item.c:1472
+msgid "Sort Descending"
+msgstr "降順でソート"
+
+#: gal/e-table/e-table-header-item.c:1473
+msgid "Unsort"
+msgstr "ソートを戻す"
+
+#: gal/e-table/e-table-header-item.c:1475
+msgid "Group By This Field"
+msgstr "この項目でグループ化"
+
+#: gal/e-table/e-table-header-item.c:1476
+msgid "Group By Box"
+msgstr "ボックスをグループ化"
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Remove This Column"
+msgstr "このカラムを削除"
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Add a Column..."
+msgstr "カラムを追加..."
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Alignment"
+msgstr "配置"
+
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Best Fit"
+msgstr "最大サイズ"
+
+#: gal/e-table/e-table-header-item.c:1483
+msgid "Format Columns..."
+msgstr "カラムのフォーマット..."
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Customize Current View..."
+msgstr "現在のビューのカスタマイズ..."
+
+#: gal/e-table/e-table-header-item.c:1745
+msgid "Fontset"
+msgstr "フォントセット"
+
+#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+msgid "Sort Info"
+msgstr "ソート情報"
+
+#: gal/e-table/e-table-header-item.c:1773
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "テーブル"
+
+#: gal/e-table/e-table-header-item.c:1780
+msgid "Tree"
+msgstr "ツリー"
+
+#: gal/e-table/e-table.c:3242
+msgid "Always Search"
+msgstr "常に検索する"
+
+#: gal/e-table/e-table.c:3249
+msgid "Use click to add"
+msgstr "クリックして追加する"
+
+#: gal/e-table/e-tree-selection-model.c:767
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr "カーソル行"
+
+#: gal/e-table/e-tree-selection-model.c:774
+#: gal/widgets/e-selection-model-array.c:550
+msgid "Cursor Column"
+msgstr "カーソル列"
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+msgid "Collection"
+msgstr "コレクション"
+
+#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "%s のビューを定義"
+
+#: gal/menus/gal-define-views-dialog.c:292
+#: gal/menus/gal-define-views-dialog.c:294
+msgid "Define Views"
+msgstr "のビューを定義"
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "\"%s\" のビューを定義"
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "編集(_E)..."
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Custom View"
+msgstr "カスタムビュー"
+
+#: gal/menus/gal-view-instance.c:576
+msgid "Save Custom View"
+msgstr "カスタムビューを保存"
+
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Define Views..."
+msgstr "のビューを定義"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:179
+msgid "Instance"
+msgstr "インスタンス"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "Create New View Named"
+msgstr "新規ビューに名前を付けて作成"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+msgid "Replace Existing View"
+msgstr "既存のビューを置換"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid ""
+"The current view will replace the given view.  Any folders\n"
+"set to this view wil be replaced with the current view."
+msgstr ""
+"現在のビューを指定したビューで置換します。このビューに\n"
+"設定されているフォルダは現在のビューに移動されます。"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "This will create a new View."
+msgstr "新規ビューを作成します。"
+
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "新規ビュー名称:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "ビュータイプ:"
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "名前"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "ファクトリ"
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr "グループ %i"
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:393
+msgid "custom"
+msgstr "カスタム"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:435
+msgid "Custom Color:"
+msgstr "カスタムカラー:"
+
+#: gal/widgets/color-palette.c:443
+msgid "Choose Custom Color"
+msgstr "カスタムカラーの選択"
+
+#: gal/widgets/color-palette.c:576
+msgid "black"
+msgstr "黒"
+
+#: gal/widgets/color-palette.c:577
+msgid "light brown"
+msgstr "明るい茶色"
+
+#: gal/widgets/color-palette.c:578
+msgid "brown gold"
+msgstr "金茶色"
+
+#: gal/widgets/color-palette.c:579
+msgid "dark green #2"
+msgstr "深緑 #2"
+
+#: gal/widgets/color-palette.c:580
+msgid "navy"
+msgstr "濃青"
+
+#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+msgid "dark blue"
+msgstr "深青"
+
+#: gal/widgets/color-palette.c:582
+msgid "purple #2"
+msgstr "紫 #2"
+
+#: gal/widgets/color-palette.c:583
+msgid "very dark gray"
+msgstr "濃い灰色"
+
+#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+msgid "dark red"
+msgstr "濃赤"
+
+#: gal/widgets/color-palette.c:587
+msgid "red-orange"
+msgstr "赤橙"
+
+#: gal/widgets/color-palette.c:588
+msgid "gold"
+msgstr "金色"
+
+#: gal/widgets/color-palette.c:589
+msgid "dark green"
+msgstr "濃緑"
+
+#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+msgid "dull blue"
+msgstr "鈍青"
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "blue"
+msgstr "青"
+
+#: gal/widgets/color-palette.c:592
+msgid "dull purple"
+msgstr "鈍紫"
+
+#: gal/widgets/color-palette.c:593
+msgid "dark grey"
+msgstr "濃灰色"
+
+#: gal/widgets/color-palette.c:596
+msgid "red"
+msgstr "赤"
+
+#: gal/widgets/color-palette.c:597
+msgid "orange"
+msgstr "オレンジ"
+
+#: gal/widgets/color-palette.c:598
+msgid "lime"
+msgstr "ライム"
+
+#: gal/widgets/color-palette.c:599
+msgid "dull green"
+msgstr "鈍緑"
+
+#: gal/widgets/color-palette.c:600
+msgid "dull blue #2"
+msgstr "鈍青 #2"
+
+#: gal/widgets/color-palette.c:601
+msgid "sky blue #2"
+msgstr "淡青 #2"
+
+#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+msgid "purple"
+msgstr "紫"
+
+#: gal/widgets/color-palette.c:603
+msgid "gray"
+msgstr "灰色"
+
+#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+msgid "magenta"
+msgstr "マゼンタ"
+
+#: gal/widgets/color-palette.c:607
+msgid "bright orange"
+msgstr "明るいオレンジ"
+
+#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+msgid "yellow"
+msgstr "黄色"
+
+#: gal/widgets/color-palette.c:609
+msgid "green"
+msgstr "緑"
+
+#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+msgid "cyan"
+msgstr "シアン"
+
+#: gal/widgets/color-palette.c:611
+msgid "bright blue"
+msgstr "明るい青"
+
+#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+msgid "red purple"
+msgstr "赤紫"
+
+#: gal/widgets/color-palette.c:613
+msgid "light grey"
+msgstr "明るい灰色"
+
+#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+msgid "pink"
+msgstr "ピンク"
+
+#: gal/widgets/color-palette.c:617
+msgid "light orange"
+msgstr "明るいオレンジ"
+
+#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+msgid "light yellow"
+msgstr "明るい黄色"
+
+#: gal/widgets/color-palette.c:619
+msgid "light green"
+msgstr "明るい緑"
+
+#: gal/widgets/color-palette.c:620
+msgid "light cyan"
+msgstr "明るいシアン"
+
+#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+msgid "light blue"
+msgstr "明るい青"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+msgid "light purple"
+msgstr "明るい紫"
+
+#: gal/widgets/color-palette.c:623
+msgid "white"
+msgstr "白"
+
+#: gal/widgets/color-palette.c:628
+msgid "purplish blue"
+msgstr "紫青"
+
+#: gal/widgets/color-palette.c:632
+msgid "dark purple"
+msgstr "濃い紫"
+
+#: gal/widgets/color-palette.c:634
+msgid "sky blue"
+msgstr "淡青"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "カテゴリ"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "グローバルカテゴリ一覧に追加"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "すべてをグローバルカテゴリ一覧に追加"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "グローバルカテゴリ一覧から削除"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "すべてをグローバルカテゴリ一覧から削除"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "カテゴリを編集"
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "マスターカテゴリ一覧を編集..."
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "アイテムはこれらのカテゴリに含まれれる(_C):"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "利用可能なカテゴリ(_A):"
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "カテゴリ"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr "誕生日"
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr "仕事"
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr "コンクール"
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr "お気に入り"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr "ギフト"
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr "ゴール/目標"
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr "休日"
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr "休日カード"
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr "新しい連絡先"
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr "考え"
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr "国際的"
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr "重要な客"
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr "いろいろ"
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr "個人"
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr "電話"
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr "状態"
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr "戦略"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr "補給"
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr "時間と費用"
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr "VIP"
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr "待ち"
+
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr "ECML"
+
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr "ECategoriesMasterListCombo"
+
+#: gal/widgets/e-categories-master-list-dialog.c:198
+msgid "* Click here to add a category *"
+msgstr "* カテゴリを追加するにはここをクリック *"
+
+#: gal/widgets/e-categories-master-list-dialog.c:199
+msgid "Category"
+msgstr "カテゴリ"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+#, fuzzy
+msgid "Add Category"
+msgstr "カテゴリを追加"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+#, fuzzy
+msgid "Edit Category"
+msgstr "カテゴリを編集"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr "グローバルカテゴリ一覧を編集"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+#, fuzzy
+msgid "_Edit category:"
+msgstr "カテゴリを編集"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#, fuzzy
+msgid "_New category:"
+msgstr "カテゴリを追加"
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+msgid "All Categories"
+msgstr "すべてのカテゴリ"
+
+#: gal/widgets/e-selection-model.c:210
+msgid "Sorter"
+msgstr "ソートの種類"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr "選択モード"
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr "カーソルモード"
+
+#: gal/e-text/e-text.c:2561
+#, fuzzy
+msgid "Select All"
+msgstr "選択されたカラム"
+
+#: gal/e-text/e-text.c:2573
+msgid "Input Methods"
+msgstr ""
+
+#: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
+msgid "Event Processor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
+msgid "Text"
+msgstr ""
+
+#: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
+#, fuzzy
+msgid "Bold"
+msgstr "金色"
+
+#: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
+#, fuzzy
+msgid "Strikeout"
+msgstr "字消しされたカラム"
+
+#: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
+msgid "Anchor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
+msgid "Justification"
+msgstr ""
+
+#: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
+#, fuzzy
+msgid "Clip Width"
+msgstr "幅"
+
+#: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
+#, fuzzy
+msgid "Clip Height"
+msgstr "高さ"
+
+#: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
+msgid "Y Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
+#, fuzzy
+msgid "Fill color"
+msgstr "項目選択"
+
+#: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
+#: gal/e-text/e-text.c:3419
+msgid "GDK fill color"
+msgstr ""
+
+#: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
+#, fuzzy
+msgid "Fill stipple"
+msgstr "鈍紫"
+
+#: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
+msgid "Text width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
+msgid "Text height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
+msgid "Use ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
+msgid "Ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
+msgid "Break characters"
+msgstr ""
+
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
+msgid "Max lines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
+#, fuzzy
+msgid "Draw borders"
+msgstr "描画フォーカス"
+
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
+msgid "Allow newlines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
+msgid "Draw background"
+msgstr ""
+
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
+msgid "Draw button"
+msgstr ""
+
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
+#, fuzzy
+msgid "Cursor position"
+msgstr "カーソル列"
+
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
+#, fuzzy
+msgid "Handle Popup"
+msgstr "ハンドルのサイズ"
+
+#~ msgid "Late Yesterday %l:%M %p"
+#~ msgstr "昨日の%p %l:%M"
+
+#~ msgid "Modify a Category"
+#~ msgstr "カテゴリを変更"
+
+#~ msgid "Remove"
+#~ msgstr "削除"
+
+#~ msgid "_Category to Add:"
+#~ msgstr "追加するカテゴリ(_C):"
+
+#~ msgid "_Category to Modify:"
+#~ msgstr "変更するカテゴリ(_C):"
+
+#, fuzzy
+#~ msgid "FIll stipple"
+#~ msgstr "鈍紫"
+
+#~ msgid "ETTA"
+#~ msgstr "ETTA"
+
+#~ msgid "ETS"
+#~ msgstr "ETS"
+
+#~ msgid "Re_set to Factory Defaults..."
+#~ msgstr "ファクトリデフォルトに戻す(_S)..."
+
+#~ msgid "_Copy..."
+#~ msgstr "コピー(_C)..."
+
+#~ msgid "_Delete..."
+#~ msgstr "削除(_D)..."
+
+#~ msgid "_New..."
+#~ msgstr "新規(_N)..."
+
+#~ msgid "Character out of range for UTF-8"
+#~ msgstr "UTF-8 の範囲外の文字"
+
+#~ msgid "<< Remove"
+#~ msgstr "<<削除"
+
+#~ msgid "Add >>"
+#~ msgstr "追加>>"
+
+#~ msgid "Available fields"
+#~ msgstr "可能な項目"
+
+#~ msgid "Show in this order"
+#~ msgstr "順番に表示"
+
+#~ msgid "Views for \"%s\""
+#~ msgstr "\"%s\"のビュー"
+
+#~ msgid "Add..."
+#~ msgstr "追加..."
+
+#~ msgid "Modify..."
+#~ msgstr "変更..."

@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+ETextEventProcessor
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TEXT_EVENT_PROCESSOR_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT ETextEventProcessor ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_text_event_processor_handle_event ##### -->
+<para>
+
+</para>
+
+@tep: 
+@event: 
+@Returns: 
+
+
+<!-- ##### SIGNAL ETextEventProcessor::command ##### -->
+<para>
+
+</para>
+
+@etexteventprocessor: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG ETextEventProcessor:allow_newlines ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,181 @@
+<refentry id="GtkComboText" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>GtkComboText</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkComboText</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="GtkComboText-struct">GtkComboText</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-combo-text-new">gtk_combo_text_new</link>              (<link linkend="gboolean">gboolean</link> const is_scrolled);
+<link linkend="gint">gint</link>        <link linkend="gtk-combo-text-set-case-sensitive">gtk_combo_text_set_case_sensitive</link>
+                                            (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             <link linkend="gboolean">gboolean</link> val);
+void        <link linkend="gtk-combo-text-select-item">gtk_combo_text_select_item</link>      (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             int elem);
+void        <link linkend="gtk-combo-text-set-text">gtk_combo_text_set_text</link>         (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             const <link linkend="gchar">gchar</link> *text);
+void        <link linkend="gtk-combo-text-add-item">gtk_combo_text_add_item</link>         (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             const <link linkend="gchar">gchar</link> *item,
+                                             const <link linkend="gchar">gchar</link> *value);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkBox">GtkBox</link>
+                     +----<link linkend="GtkHBox">GtkHBox</link>
+                           +----<link linkend="MyGtkComboBox">MyGtkComboBox</link>
+                                 +----GtkComboText
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkComboText-struct">struct GtkComboText</title>
+<programlisting>struct GtkComboText;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-combo-text-new">gtk_combo_text_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_combo_text_new              (<link linkend="gboolean">gboolean</link> const is_scrolled);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>is_scrolled</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-combo-text-set-case-sensitive">gtk_combo_text_set_case_sensitive ()</title>
+<programlisting><link linkend="gint">gint</link>        gtk_combo_text_set_case_sensitive
+                                            (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             <link linkend="gboolean">gboolean</link> val);</programlisting>
+<para>
+Specifies whether the text entered into the GtkEntry field and the text
+in the list items is case sensitive. Because the values are stored in a
+hash, it is not legal to change case sensitivity when the list contains
+elements.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>combo_text</parameter>&nbsp;:</entry>
+<entry>  ComboText widget
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>         make case sensitive if TRUE
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The function returns -1 if request could not be honored. On
+success, it returns 0.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-combo-text-select-item">gtk_combo_text_select_item ()</title>
+<programlisting>void        gtk_combo_text_select_item      (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             int elem);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>combo_text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>elem</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-combo-text-set-text">gtk_combo_text_set_text ()</title>
+<programlisting>void        gtk_combo_text_set_text         (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>combo_text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-combo-text-add-item">gtk_combo_text_add_item ()</title>
+<programlisting>void        gtk_combo_text_add_item         (<link linkend="GtkComboText">GtkComboText</link> *combo_text,
+                                             const <link linkend="gchar">gchar</link> *item,
+                                             const <link linkend="gchar">gchar</link> *value);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>combo_text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

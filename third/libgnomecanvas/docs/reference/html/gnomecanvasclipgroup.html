@@ -1,0 +1,43 @@
+<HTML><HEAD><TITLE>GnomeCanvasClipgroup</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK REL="HOME" TITLE="GNOME Canvas Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="GNOME Canvas Library (libgnomecanvas)" HREF="c35.html"><LINK REL="PREVIOUS" TITLE="GnomeCanvasBpath" HREF="gnomecanvasbpath.html"><LINK REL="NEXT" TITLE="GnomeCanvasEllipse" HREF="gnomecanvasellipse.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.1 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="gnomecanvasbpath.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="c35.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME Canvas Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="gnomecanvasellipse.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="GNOMECANVASCLIPGROUP"></A>GnomeCanvasClipgroup</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN1067"></A><H2>Name</H2>GnomeCanvasClipgroup&nbsp;--&nbsp;Canvas group that implements clipping</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN1070"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <A HREF="gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP-STRUCT">GnomeCanvasClipgroup</A>;&#13;</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1074"></A><H2>Object Hierarchy</H2><PRE CLASS="SYNOPSIS">&#13;  GObject
+   +----GtkObject
+         +----<A HREF="gnomecanvasitem.html">GnomeCanvasItem</A>
+               +----<A HREF="gnomecanvasgroup.html">GnomeCanvasGroup</A>
+                     +----GnomeCanvasClipgroup</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1081"></A><H2>Properties</H2><PRE CLASS="SYNOPSIS">&#13;  &quot;<A HREF="gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP--PATH">path</A>&quot;                 gpointer             : Read / Write
+  &quot;<A HREF="gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP--WIND">wind</A>&quot;                 guint                : Read / Write</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1088"></A><H2>Description</H2><P>A canvas group object that clips the view of its children to a shape defined by
+a <A HREF="libgnomecanvas-gnome-canvas-path-def.html#GNOMECANVASPATHDEF">GnomeCanvasPathDef</A>.</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1092"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN1094"></A><H3><A NAME="GNOMECANVASCLIPGROUP-STRUCT"></A>struct GnomeCanvasClipgroup</H3><PRE CLASS="PROGRAMLISTING">struct GnomeCanvasClipgroup;</PRE><P>This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.</P></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1099"></A><H2>Properties</H2><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN1102"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASCLIPGROUP--PATH"></A>&quot;<TT CLASS="LITERAL">path</TT>&quot; (gpointer : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Pointer to a <A HREF="libgnomecanvas-gnome-canvas-path-def.html#GNOMECANVASPATHDEF">GnomeCanvasPathDef</A> structure which can be created with
+<A HREF="libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW">gnome_canvas_path_def_new</A>().</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN1111"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASCLIPGROUP--WIND"></A>&quot;<TT CLASS="LITERAL">wind</TT>&quot; (guint : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Winding rule (ArtWindRule) enumeration (ART_WIND_RULE_NONZERO,
+ART_WIND_RULE_INTERSECT, ART_WIND_RULE_ODDEVEN, and ART_WIND_RULE_POSITIVE),
+see libart for details. Defines the clipping intersection rule (FIXME?).</P></TD></TR></TBODY></TABLE></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="gnomecanvasbpath.html"><B>&lt;&lt;&lt;&nbsp;GnomeCanvasBpath</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="gnomecanvasellipse.html"><B>GnomeCanvasEllipse&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>

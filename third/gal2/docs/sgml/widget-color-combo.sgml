@@ -1,0 +1,198 @@
+<refentry id="ColorCombo" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ColorCombo</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ColorCombo</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="COLOR-COMBO-TYPE-CAPS">COLOR_COMBO_TYPE</link>
+#define     <link linkend="COLOR-COMBO-CAPS">COLOR_COMBO</link>                     (obj)
+#define     <link linkend="COLOR-COMBO-CLASS-CAPS">COLOR_COMBO_CLASS</link>               (k)
+#define     <link linkend="IS-COLOR-COMBO-CAPS">IS_COLOR_COMBO</link>                  (obj)
+<link linkend="GtkType">GtkType</link>     <link linkend="color-combo-get-type">color_combo_get_type</link>            (void);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="color-combo-new">color_combo_new</link>                 (char **icon,
+                                             const char *no_color_label,
+                                             <link linkend="GdkColor">GdkColor</link> *default_color,
+                                             <link linkend="gchar">gchar</link> *group_name);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkBox">GtkBox</link>
+                     +----<link linkend="GtkHBox">GtkHBox</link>
+                           +----<link linkend="MyGtkComboBox">MyGtkComboBox</link>
+                                 +----ColorCombo
+</synopsis>
+
+</refsect1>
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="ColorCombo-changed">changed</link>&quot;   void        user_function      (<link linkend="ColorCombo">ColorCombo</link> *colorcombo,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="COLOR-COMBO-TYPE-CAPS">COLOR_COMBO_TYPE</title>
+<programlisting>#define COLOR_COMBO_TYPE     (color_combo_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COLOR-COMBO-CAPS">COLOR_COMBO()</title>
+<programlisting>#define COLOR_COMBO(obj)     (GTK_CHECK_CAST((obj), COLOR_COMBO_TYPE, ColorCombo))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="COLOR-COMBO-CLASS-CAPS">COLOR_COMBO_CLASS()</title>
+<programlisting>#define COLOR_COMBO_CLASS(k) (GTK_CHECK_CLASS_CAST(k), COLOR_COMBO_TYPE)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="IS-COLOR-COMBO-CAPS">IS_COLOR_COMBO()</title>
+<programlisting>#define IS_COLOR_COMBO(obj)  (GTK_CHECK_TYPE((obj), COLOR_COMBO_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="color-combo-get-type">color_combo_get_type ()</title>
+<programlisting><link linkend="GtkType">GtkType</link>     color_combo_get_type            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="color-combo-new">color_combo_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  color_combo_new                 (char **icon,
+                                             const char *no_color_label,
+                                             <link linkend="GdkColor">GdkColor</link> *default_color,
+                                             <link linkend="gchar">gchar</link> *group_name);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>no_color_label</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>default_color</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>group_name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="ColorCombo-changed">The &quot;changed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="ColorCombo">ColorCombo</link> *colorcombo,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>colorcombo</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+
+</refentry>

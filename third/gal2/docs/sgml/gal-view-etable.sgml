@@ -1,0 +1,115 @@
+<refentry id="GalViewEtable" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>GalViewEtable</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GalViewEtable</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="GAL-VIEW-ETABLE-TYPE-CAPS">GAL_VIEW_ETABLE_TYPE</link>
+typedef     <link linkend="GalViewEtable">GalViewEtable</link>;
+<link linkend="GalView">GalView</link>*    <link linkend="gal-view-etable-new">gal_view_etable_new</link>             (<link linkend="ETableSpecification">ETableSpecification</link> *spec);
+<link linkend="GalView">GalView</link>*    <link linkend="gal-view-etable-construct">gal_view_etable_construct</link>       (<link linkend="GalViewEtable">GalViewEtable</link> *view,
+                                             <link linkend="ETableSpecification">ETableSpecification</link> *spec);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GalView">GalView</link>
+         +----GalViewEtable
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GAL-VIEW-ETABLE-TYPE-CAPS">GAL_VIEW_ETABLE_TYPE</title>
+<programlisting>#define GAL_VIEW_ETABLE_TYPE        (gal_view_etable_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GalViewEtable">GalViewEtable</title>
+<programlisting>typedef struct {
+	GalView base;
+
+	ETableSpecification *spec;
+	ETableState         *state;
+	char                *title;
+} GalViewEtable;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gal-view-etable-new">gal_view_etable_new ()</title>
+<programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_new             (<link linkend="ETableSpecification">ETableSpecification</link> *spec);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gal-view-etable-construct">gal_view_etable_construct ()</title>
+<programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_construct       (<link linkend="GalViewEtable">GalViewEtable</link> *view,
+                                             <link linkend="ETableSpecification">ETableSpecification</link> *spec);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

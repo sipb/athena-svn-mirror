@@ -1,0 +1,350 @@
+<refentry id="EScrollFrame" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>EScrollFrame</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EScrollFrame</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="EScrollFrame-struct">EScrollFrame</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-scroll-frame-new">e_scroll_frame_new</link>              (<link linkend="GtkAdjustment">GtkAdjustment</link> *hadj,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *vadj);
+void        <link linkend="e-scroll-frame-set-hadjustment">e_scroll_frame_set_hadjustment</link>  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *adj);
+void        <link linkend="e-scroll-frame-set-vadjustment">e_scroll_frame_set_vadjustment</link>  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *adj);
+<link linkend="GtkAdjustment">GtkAdjustment</link>* <link linkend="e-scroll-frame-get-hadjustment">e_scroll_frame_get_hadjustment</link>
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf);
+<link linkend="GtkAdjustment">GtkAdjustment</link>* <link linkend="e-scroll-frame-get-vadjustment">e_scroll_frame_get_vadjustment</link>
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf);
+void        <link linkend="e-scroll-frame-set-policy">e_scroll_frame_set_policy</link>       (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkPolicyType">GtkPolicyType</link> hsb_policy,
+                                             <link linkend="GtkPolicyType">GtkPolicyType</link> vsb_policy);
+void        <link linkend="e-scroll-frame-set-placement">e_scroll_frame_set_placement</link>    (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkCornerType">GtkCornerType</link> frame_placement);
+void        <link linkend="e-scroll-frame-set-shadow-type">e_scroll_frame_set_shadow_type</link>  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);
+void        <link linkend="e-scroll-frame-set-scrollbar-spacing">e_scroll_frame_set_scrollbar_spacing</link>
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="guint">guint</link> spacing);
+void        <link linkend="e-scroll-frame-add-with-viewport">e_scroll_frame_add_with_viewport</link>
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkWidget">GtkWidget</link> *child);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkBin">GtkBin</link>
+                     +----EScrollFrame
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="EScrollFrame--hadjustment">hadjustment</link>&quot;          <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write / Construct
+  &quot;<link linkend="EScrollFrame--vadjustment">vadjustment</link>&quot;          <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write / Construct
+  &quot;<link linkend="EScrollFrame--hscrollbar-policy">hscrollbar_policy</link>&quot;    <link linkend="GtkPolicyType">GtkPolicyType</link>        : Read / Write
+  &quot;<link linkend="EScrollFrame--vscrollbar-policy">vscrollbar_policy</link>&quot;    <link linkend="GtkPolicyType">GtkPolicyType</link>        : Read / Write
+  &quot;<link linkend="EScrollFrame--frame-placement">frame_placement</link>&quot;      <link linkend="GtkCornerType">GtkCornerType</link>        : Read / Write
+  &quot;<link linkend="EScrollFrame--shadow-type">shadow_type</link>&quot;          <link linkend="GtkShadowType">GtkShadowType</link>        : Read / Write
+  &quot;<link linkend="EScrollFrame--scrollbar-spacing">scrollbar_spacing</link>&quot;    <link linkend="guint">guint</link>                : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EScrollFrame-struct">struct EScrollFrame</title>
+<programlisting>struct EScrollFrame;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-new">e_scroll_frame_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_scroll_frame_new              (<link linkend="GtkAdjustment">GtkAdjustment</link> *hadj,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *vadj);</programlisting>
+<para>
+Creates a new scroll frame widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>hadj</parameter>&nbsp;:</entry>
+<entry> If non-NULL, the adjustment to use for horizontal scrolling.
+</entry></row>
+<row><entry align="right"><parameter>vadj</parameter>&nbsp;:</entry>
+<entry> If non-NULL, the adjustment to use for vertical scrolling.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The newly-created scroll frame widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-hadjustment">e_scroll_frame_set_hadjustment ()</title>
+<programlisting>void        e_scroll_frame_set_hadjustment  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *adj);</programlisting>
+<para>
+Sets the adjustment to be used for horizontal scrolling in a scroll frame
+widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>adj</parameter>&nbsp;:</entry>
+<entry> An adjustment.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-vadjustment">e_scroll_frame_set_vadjustment ()</title>
+<programlisting>void        e_scroll_frame_set_vadjustment  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkAdjustment">GtkAdjustment</link> *adj);</programlisting>
+<para>
+Sets the adjustment to be used for vertical scrolling in a scroll frame
+widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>adj</parameter>&nbsp;:</entry>
+<entry> An adjustment.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-get-hadjustment">e_scroll_frame_get_hadjustment ()</title>
+<programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>* e_scroll_frame_get_hadjustment
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf);</programlisting>
+<para>
+Queries the horizontal adjustment of a scroll frame widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The horizontal adjustment of the scroll frame, or NULL if none.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-get-vadjustment">e_scroll_frame_get_vadjustment ()</title>
+<programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>* e_scroll_frame_get_vadjustment
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf);</programlisting>
+<para>
+Queries the vertical adjustment of a scroll frame widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The vertical adjustment of the scroll frame, or NULL if none.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-policy">e_scroll_frame_set_policy ()</title>
+<programlisting>void        e_scroll_frame_set_policy       (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkPolicyType">GtkPolicyType</link> hsb_policy,
+                                             <link linkend="GtkPolicyType">GtkPolicyType</link> vsb_policy);</programlisting>
+<para>
+Sets the scrollbar policies of a scroll frame widget.  These determine when
+the scrollbars are to be shown or hidden.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>hsb_policy</parameter>&nbsp;:</entry>
+<entry> Policy for the horizontal scrollbar.
+</entry></row>
+<row><entry align="right"><parameter>vsb_policy</parameter>&nbsp;:</entry>
+<entry> Policy for the vertical scrollbar.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-placement">e_scroll_frame_set_placement ()</title>
+<programlisting>void        e_scroll_frame_set_placement    (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkCornerType">GtkCornerType</link> frame_placement);</programlisting>
+<para>
+Sets the placement of a scroll frame widget's frame with respect to its
+scrollbars.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>frame_placement</parameter>&nbsp;:</entry>
+<entry> Placement for the frame.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-shadow-type">e_scroll_frame_set_shadow_type ()</title>
+<programlisting>void        e_scroll_frame_set_shadow_type  (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);</programlisting>
+<para>
+Sets the shadow type of a scroll frame widget.  You can use this when you
+insert a child that does not paint a frame on its own.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>shadow_type</parameter>&nbsp;:</entry>
+<entry> A shadow type.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-set-scrollbar-spacing">e_scroll_frame_set_scrollbar_spacing ()</title>
+<programlisting>void        e_scroll_frame_set_scrollbar_spacing
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="guint">guint</link> spacing);</programlisting>
+<para>
+Sets the spacing between the frame and the scrollbars of a scroll frame
+widget.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>spacing</parameter>&nbsp;:</entry>
+<entry> Desired spacing in pixels.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-scroll-frame-add-with-viewport">e_scroll_frame_add_with_viewport ()</title>
+<programlisting>void        e_scroll_frame_add_with_viewport
+                                            (<link linkend="EScrollFrame">EScrollFrame</link> *sf,
+                                             <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
+<para>
+Creates a <link linkend="GtkViewport">GtkViewport</link> and puts the specified child inside it, thus allowing
+the viewport to be scrolled by the scroll frame widget.  This is meant to be
+used only when a child does not support the scrolling interface.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sf</parameter>&nbsp;:</entry>
+<entry> A scroll frame widget.
+</entry></row>
+<row><entry align="right"><parameter>child</parameter>&nbsp;:</entry>
+<entry> A widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="EScrollFrame--hadjustment">&quot;<literal>hadjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write / Construct)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--vadjustment">&quot;<literal>vadjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write / Construct)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--hscrollbar-policy">&quot;<literal>hscrollbar_policy</literal>&quot; (<link linkend="GtkPolicyType">GtkPolicyType</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--vscrollbar-policy">&quot;<literal>vscrollbar_policy</literal>&quot; (<link linkend="GtkPolicyType">GtkPolicyType</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--frame-placement">&quot;<literal>frame_placement</literal>&quot; (<link linkend="GtkCornerType">GtkCornerType</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--shadow-type">&quot;<literal>shadow_type</literal>&quot; (<link linkend="GtkShadowType">GtkShadowType</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EScrollFrame--scrollbar-spacing">&quot;<literal>scrollbar_spacing</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

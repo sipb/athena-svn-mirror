@@ -1,0 +1,446 @@
+dnl *******************************************
+dnl *** Initialize automake and set version ***
+dnl *******************************************
+
+AC_INIT(libsoup/soup.h)
+
+AM_INIT_AUTOMAKE(libsoup, 1.99.23)
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+AC_PROG_MAKE_SET
+
+# Increment on interface addition. Reset on removal.
+SOUP_AGE=0
+
+# Increment on interface add, remove, or change.
+SOUP_CURRENT=0
+
+# Increment on source change. Reset when CURRENT changes.
+SOUP_REVISION=0
+
+AC_SUBST(SOUP_CURRENT)
+AC_SUBST(SOUP_REVISION)
+AC_SUBST(SOUP_AGE)
+
+dnl ***************************
+dnl *** Set debugging flags ***
+dnl ***************************
+
+debug_default=minimum
+
+# Declare --enable-* args and collect ac_help strings
+AC_ARG_ENABLE(debug, 
+	      [  --enable-debug=[no/minimum/yes] turn on debugging [default=$debug_default]],,
+	      enable_debug=$debug_default)
+
+# Set the debug flags
+if test "x$enable_debug" = "xyes"; then
+	test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
+	SOUP_DEBUG_FLAGS="-DG_ENABLE_DEBUG"
+else
+	if test "x$enable_debug" = "xno"; then
+		SOUP_DEBUG_FLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
+	fi
+fi
+
+AC_SUBST(SOUP_DEBUG_FLAGS)
+
+
+dnl ***************************
+dnl *** Checks for programs ***
+dnl ***************************
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_PROG_INSTALL
+
+# Set STDC_HEADERS
+AC_HEADER_STDC
+
+# Initialize libtool
+AM_PROG_LIBTOOL
+
+# This isn't a program, but it doesn't fit anywhere else...
+AC_FUNC_ALLOCA
+
+dnl ***********************
+dnl *** Checks for glib ***
+dnl ***********************
+
+PKG_CHECK_MODULES(GLIB, glib-2.0)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
+dnl *********************************
+dnl *** Networking library checks ***
+dnl *********************************
+
+AC_CHECK_HEADERS(sys/sockio.h sys/poll.h sys/param.h)
+AC_CHECK_HEADERS(sys/ioctl.h sys/filio.h)
+
+AC_CHECK_FUNC(socket, , AC_CHECK_LIB(socket, socket))
+AC_CHECK_FUNC(gethostbyname, , AC_CHECK_LIB(nsl, gethostbyname))
+
+AC_CHECK_FUNCS(inet_pton inet_aton)
+
+### Check if we have gethostbyname_r (if so, assume gethostbyaddr_r).
+AC_CHECK_FUNC(gethostbyname_r,
+  [
+  dnl  First check for the glibc variant of gethostbyname_r
+
+  AC_MSG_CHECKING(for glibc gethostbyname_r)
+  AC_TRY_LINK([	#include <netdb.h>],[
+	  struct hostent result_buf;
+	  char buf[1024];
+	  struct hostent* result;
+	  int h_errnop;
+
+	  gethostbyname_r("localhost", &result_buf, buf, sizeof(buf),
+	                  &result, &h_errnop);
+	], [
+
+	  dnl Have glibc gethostbyname_r
+
+	  AC_MSG_RESULT(yes)
+	  AC_DEFINE(HAVE_GETHOSTBYNAME_R_GLIBC, 1,
+		    [Define if you have a glibc-style gethostbyname_r()])
+	  HAVE_GETHOSTBYNAME_R=yes
+
+        ], [
+
+  dnl  If we don't have glibc gethostbyname_r, check
+  dnl  for Solaris/Irix gethostbyname_r
+
+  AC_MSG_RESULT(no)
+  AC_MSG_CHECKING(for Solaris/Irix gethostbyname_r)
+  AC_TRY_LINK([ #include <netdb.h>],[
+	  struct hostent result;
+	  char buf[1024];
+	  int h_errnop;
+
+	  gethostbyname_r("localhost", &result, buf, sizeof(buf), &h_errnop);
+
+	], [
+
+	  dnl Have Solaris/Irix gethostbyname_r
+
+  	  AC_MSG_RESULT(yes)
+	  AC_DEFINE(HAVE_GETHOSTBYNAME_R_SOLARIS, 1,
+		    [Define if you have a Solaris-style gethostbyname_r()])
+	  HAVE_GETHOSTBYNAME_R=yes
+
+	], [
+  dnl  If don't have Solaris/Irix gethostbyname_r, check
+  dnl  for HP-UX gethostbyname_r
+
+  AC_MSG_RESULT(no)
+  AC_MSG_CHECKING(for HP-UX gethostbyname_r)
+  AC_TRY_LINK([ #include <netdb.h>],[
+	  struct hostent result;
+	  char buf[1024];
+          gethostbyname_r("localhost", &result, buf);
+        ], [
+        
+          dnl Have HP-UX gethostbyname_r
+
+          AC_MSG_RESULT(yes)
+	  AC_DEFINE(HAVE_GETHOSTBYNAME_R_HPUX, 1,
+		    [Define if you have an HP-UX-style gethostbyname_r()])
+	  HAVE_GETHOSTBYNAME_R=yes
+
+	]
+     )]
+  )]
+)])
+
+# If we don't have gethostbyname_r, we'll use Glib mutexes, but give a warning
+if test -z "$HAVE_GETHOSTBYNAME_R"; then
+	AC_DEFINE(HAVE_GETHOSTBYNAME_R_GLIB_MUTEX, 1,
+		  [Define if you have no gethostbyname_r()])
+	AC_MSG_WARN([You have neither Glib threads nor the function
+		    gethostbyname_r.  This means that calls to
+		    gethostbyname (called by the Soup address
+		    functions) will not be thread safe so could
+		    malfunction in programs that use threads.])
+fi
+
+AC_CACHE_CHECK(IPv6 support, soup_cv_ipv6, [
+	AC_EGREP_HEADER(sockaddr_in6, netinet/in.h, soup_cv_ipv6=yes, soup_cv_ipv6=no)
+])
+case $soup_cv_ipv6 in
+yes)
+	AC_DEFINE(HAVE_IPV6, 1, [Define if you have support for IPv6 sockets])
+	;;
+esac
+
+dnl ************************************************************
+dnl *** SSL Library checks (GnuTLS, Mozilla NSS, or OpenSSL) ***
+dnl ************************************************************
+
+AC_ARG_ENABLE(ssl, 
+	      [  --enable-ssl             Turn on Secure Sockets Layer support [default=yes]],,
+	      enable_ssl=yes)
+
+dnl NSS AC_ARG_WITH(nspr-includes,
+dnl NSS 	    [  --with-nspr-includes     Specify location of Netscape Portable Runtime headers],
+dnl NSS 	    [nspr_inc_prefix=-I$withval])
+dnl NSS 
+dnl NSS AC_ARG_WITH(nspr-libs,
+dnl NSS 	    [  --with-nspr-libs         Specify location of Netscape Portable Runtime libs],
+dnl NSS 	    [nspr_prefix=$withval],
+dnl NSS 	    [nspr_prefix=$libdir])
+dnl NSS 
+dnl NSS AC_ARG_WITH(nss-includes,
+dnl NSS 	    [  --with-nss-includes      Specify location of NSS header files],
+dnl NSS 	    [nss_inc_prefix=-I$withval])
+dnl NSS 
+dnl NSS AC_ARG_WITH(nss-libs,
+dnl NSS 	    [  --with-nss-libs          Specify location of NSS libs],
+dnl NSS 	    [nss_prefix=$withval],
+dnl NSS 	    [nss_prefix=$libdir])
+
+
+AC_ARG_WITH(openssl-includes,
+	    [  --with-openssl-includes  Specify location of OpenSSL header files],
+	    [openssl_inc_prefix=-I$withval])
+
+AC_ARG_WITH(openssl-libs,
+	    [  --with-openssl-libs      Specify location of OpenSSL libs],
+	    [openssl_prefix=$withval], 
+	    [openssl_prefix=$libdir])
+
+AC_ARG_WITH(gnutls-includes,
+	    [  --with-gnutls-includes   Specify location of GnuTLS header files],
+	    [gnutls_inc_prefix=-I$withval])
+
+AC_ARG_WITH(gnutls-libs,
+	    [  --with-gnutls-libs       Specify location of GnuTLS libs],
+	    [gnutls_prefix=$withval],
+	    [gnutls_prefix=$libdir])
+
+###
+### Allow for a custom SSL proxy name
+###
+SSL_PROXY_NAME=libsoup-ssl-proxy
+AC_ARG_WITH(ssl-proxy-name,
+	    [  --with-ssl-proxy-name    Custom name for ssl proxy executable [default=libsoup-ssl-proxy]],
+	    [SSL_PROXY_NAME=$withval],
+	    [SSL_PROXY_NAME=libsoup-ssl-proxy])
+
+AC_DEFINE_UNQUOTED(SSL_PROXY_NAME, "${SSL_PROXY_NAME}",
+		   [The name to use for the SSL proxy binary. Defaults to libsoup-ssl-proxy])
+AC_SUBST(SSL_PROXY_NAME)
+
+###
+### Try to link statically with the SSL library
+###
+AC_ARG_ENABLE(ssl-link-static, 
+	      [  --enable-static-ssl      Link with SSL library statically [default=no]],
+	      [enable_static_ssl=yes])
+
+enable_gnutls="no"
+enable_openssl="no"
+dnl NSS enable_nss="no"
+
+if test "x$enable_ssl" = xyes; then
+	found_ssl=
+
+	###
+	### Check for GnuTLS
+	###
+	save_CPPFLAGS=$CPPFLAGS
+	CPPFLAGS="$CPPFLAGS $gnutls_inc_prefix"
+	AC_CHECK_HEADERS(gnutls/gnutls.h,
+			 [enable_gnutls="yes"],
+			 [enable_gnutls="no"; break])
+
+	if test "x$enable_gnutls" = xyes; then
+		if test "x$enable_static_ssl" = "xyes"; then
+			GNUTLS_LIBS="$gnutls_prefix/libgnutls.a $gnutls_prefix/libgcrypt.a"
+		else
+			GNUTLS_LIBS="-L$gnutls_prefix -lgnutls -lgcrypt"
+		fi
+		GNUTLS_CFLAGS=$CPPFLAGS
+		AC_DEFINE(HAVE_GNUTLS, 1,
+			  [Defined if you are using GnuTLS for SSL support])
+		found_ssl=yes
+	else
+		GNUTLS_LIBS=
+		GNUTLS_CFLAGS=
+	fi
+
+	AC_SUBST(GNUTLS_CFLAGS)
+	AC_SUBST(GNUTLS_LIBS)
+	CPPFLAGS=$save_CPPFLAGS
+
+	AM_CONDITIONAL(BUILD_PROXY, false)
+
+	###
+	### Check for OpenSSL
+	###
+	if test "x$found_ssl" != "xyes"; then
+		save_CPPFLAGS=$CPPFLAGS
+		CPPFLAGS="$CPPFLAGS $openssl_inc_prefix"
+		AC_CHECK_LIB(dl, dlopen, DL_LDFLAGS="-ldl", DL_LDFLAGS="")
+		AC_CHECK_HEADERS(openssl/ssl.h openssl/err.h,
+				 [enable_openssl="yes"],
+				 [enable_openssl="no"; break])
+
+		if test "x$enable_openssl" = xyes; then
+			if test "x$enable_static_ssl" = "xyes"; then
+				OPENSSL_LIBS="$openssl_prefix/libssl.a $openssl_prefix/libcrypto.a"
+			else
+				OPENSSL_LIBS="-L$openssl_prefix -lssl -lcrypto $DL_LDFLAGS"
+			fi
+			OPENSSL_CFLAGS=$CPPFLAGS
+			AC_DEFINE(HAVE_OPENSSL, 1,
+				  [Defined if you are using OpenSSL for SSL support])
+			found_ssl=yes
+			AM_CONDITIONAL(BUILD_PROXY, true)
+		else
+			OPENSSL_LIBS=
+			OPENSSL_CFLAGS=
+		fi
+
+		AC_SUBST(OPENSSL_CFLAGS)
+		AC_SUBST(OPENSSL_LIBS)
+		CPPFLAGS=$save_CPPFLAGS
+	fi
+
+dnl NSS 	###
+dnl NSS 	### Check for Mozilla NSS
+dnl NSS 	###
+dnl NSS 	if test "x$found_ssl" != "xyes"; then
+dnl NSS 		save_CPPFLAGS=$CPPFLAGS
+dnl NSS 		CPPFLAGS="$CPPFLAGS $nspr_inc_prefix $nss_inc_prefix"
+dnl NSS 		AC_CHECK_HEADERS(nss.h ssl.h pk11func.h,
+dnl NSS 				 [enable_nss="yes"],
+dnl NSS 				 [enable_nss="no"; break])
+dnl NSS 
+dnl NSS 		if test "x$enable_nss" = xyes; then
+dnl NSS 			if test "x$enable_static_ssl" = "xyes"; then
+dnl NSS 				NSS_LIBS="-lpthread $nspr_prefix/libnspr4.a $nspr_prefix/libplc4.a $nspr_prefix/libplds4.a $nss_prefix/libnssb.a"
+dnl NSS 			else
+dnl NSS 				NSS_LIBS="-lpthread -L$nspr_prefix -lnspr4 -lplc4 -lplds4 $nss_prefix -lnss3 -lssl3"
+dnl NSS 			fi
+dnl NSS 			NSS_CFLAGS=$CPPFLAGS
+dnl NSS 			AC_DEFINE(HAVE_NSS, 1,
+dnl NSS 				  [Defined if you are using Mozilla NSS for SSL support])
+dnl NSS 			found_ssl=yes
+dnl NSS 		else
+dnl NSS 			NSS_LIBS=
+dnl NSS 			NSS_CFLAGS=
+dnl NSS 		fi
+dnl NSS 
+dnl NSS 		AC_SUBST(NSS_CFLAGS)
+dnl NSS 		AC_SUBST(NSS_LIBS)
+dnl NSS 		CPPFLAGS=$save_CPPFLAGS
+dnl NSS 	fi
+fi
+
+
+dnl *********************************************
+dnl *** Checks for gtk-doc (lifted from glib) ***
+dnl *********************************************
+
+AC_ARG_WITH(html-dir, [  --with-html-dir=PATH     Path to installed docs ])
+
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/gtk-doc/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+AC_SUBST(HTML_DIR)
+
+AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
+AM_CONDITIONAL(HAVE_GTK_DOC, $GTKDOC)
+AC_SUBST(HAVE_GTK_DOC)
+
+AC_CHECK_PROG(DB2HTML, db2html, true, false)
+AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
+
+dnl Let people disable the gtk-doc stuff.
+AC_ARG_ENABLE(gtk-doc, 
+	      [  --enable-gtk-doc         Use gtk-doc to build documentation [default=auto]], 
+	      enable_gtk_doc="$enableval", 
+	      enable_gtk_doc=auto)
+
+if test x$enable_gtk_doc = xauto ; then
+  if test x$GTKDOC = xtrue ; then
+    enable_gtk_doc=yes
+  else
+    enable_gtk_doc=no 
+  fi
+fi
+
+dnl NOTE: We need to use a separate automake conditional for this
+dnl       to make this work with the tarballs.
+AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+
+
+dnl *************************************
+dnl *** Warnings to show if using GCC ***
+dnl *************************************
+
+AC_ARG_ENABLE(more-warnings,
+	      [  --disable-more-warnings  Inhibit compiler warnings],
+	      set_more_warnings=no)
+
+if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
+	CFLAGS="$CFLAGS \
+		-Wall -Wstrict-prototypes -Wmissing-declarations \
+		-Wmissing-prototypes -Wnested-externs -Wpointer-arith"
+fi
+
+# Use reentrant functions
+CFLAGS="$CFLAGS -D_REENTRANT"
+
+dnl *****************************
+dnl *** link proxy statically ***
+dnl *****************************
+AC_ARG_ENABLE(static-proxy, 
+  [  --enable-static-proxy  Build ${SSL_PROXY_NAME} statically ])
+
+if test x"$enable_static_proxy" = xyes; then
+	LINK_STATIC="-Wl,-Bstatic"
+	LINK_DYNAMIC="-Wl,-Bdynamic"
+	FORCE_SHLIBS="dl resolv rt nsl"
+	for lib in $FORCE_SHLIBS; do
+	  OPENSSL_LIBS=`echo $OPENSSL_LIBS | sed "s/-l$lib/-Wl,-Bdynamic -l$lib -Wl,-Bstatic/"`
+	  GMODULE_LIBS=`echo $GMODULE_LIBS | sed "s/-l$lib/-Wl,-Bdynamic -l$lib -Wl,-Bstatic/"`
+	done
+else
+	LINK_STATIC=
+	LINK_DYNAMIC=
+fi
+
+AC_SUBST(LINK_STATIC)
+AC_SUBST(LINK_DYNAMIC)
+
+dnl *************************
+dnl *** Output Everything ***
+dnl *************************
+
+AC_OUTPUT([
+	soup-2.0.pc
+	Makefile
+	libsoup/Makefile
+	tests/Makefile
+	])
+
+echo "
+
+Configuration:
+
+  Source code location:		${srcdir}
+  Compiler:			${CC}
+  Build flags:			${CFLAGS} ${SOUP_DEBUG_FLAGS}
+
+  GnuTLS support:		${enable_gnutls}
+  OpenSSL support:		${enable_openssl}
+    Static SSL Proxy:		${enable_static_proxy:-no}
+    SSL Proxy Name:		${SSL_PROXY_NAME}
+
+
+"

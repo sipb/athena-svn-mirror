@@ -1,0 +1,480 @@
+<refentry id="ETableSortInfo" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETableSortInfo</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETableSortInfo</refname><refpurpose>Sorting and grouping information handling.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TABLE-SORT-INFO-TYPE-CAPS">E_TABLE_SORT_INFO_TYPE</link>
+typedef     <link linkend="ETableSortInfo">ETableSortInfo</link>;
+struct      <link linkend="ETableSortColumn">ETableSortColumn</link>;
+void        <link linkend="e-table-sort-info-freeze">e_table_sort_info_freeze</link>        (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);
+void        <link linkend="e-table-sort-info-thaw">e_table_sort_info_thaw</link>          (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);
+<link linkend="guint">guint</link>       <link linkend="e-table-sort-info-grouping-get-count">e_table_sort_info_grouping_get_count</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);
+void        <link linkend="e-table-sort-info-grouping-truncate">e_table_sort_info_grouping_truncate</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int length);
+<link linkend="ETableSortColumn">ETableSortColumn</link> <link linkend="e-table-sort-info-grouping-get-nth">e_table_sort_info_grouping_get_nth</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n);
+void        <link linkend="e-table-sort-info-grouping-set-nth">e_table_sort_info_grouping_set_nth</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n,
+                                             <link linkend="ETableSortColumn">ETableSortColumn</link> column);
+<link linkend="guint">guint</link>       <link linkend="e-table-sort-info-sorting-get-count">e_table_sort_info_sorting_get_count</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);
+void        <link linkend="e-table-sort-info-sorting-truncate">e_table_sort_info_sorting_truncate</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int length);
+<link linkend="ETableSortColumn">ETableSortColumn</link> <link linkend="e-table-sort-info-sorting-get-nth">e_table_sort_info_sorting_get_nth</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n);
+void        <link linkend="e-table-sort-info-sorting-set-nth">e_table_sort_info_sorting_set_nth</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n,
+                                             <link linkend="ETableSortColumn">ETableSortColumn</link> column);
+<link linkend="ETableSortInfo">ETableSortInfo</link>* <link linkend="e-table-sort-info-new">e_table_sort_info_new</link>       (void);
+void        <link linkend="e-table-sort-info-load-from-node">e_table_sort_info_load_from_node</link>
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             <link linkend="xmlNode">xmlNode</link> *node);
+<link linkend="xmlNode">xmlNode</link>*    <link linkend="e-table-sort-info-save-to-node">e_table_sort_info_save_to_node</link>  (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             <link linkend="xmlNode">xmlNode</link> *parent);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----ETableSortInfo
+</synopsis>
+
+</refsect1>
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="ETableSortInfo-sort-info-changed">sort-info-changed</link>&quot;
+            void        user_function      (<link linkend="ETableSortInfo">ETableSortInfo</link> *etablesortinfo,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="ETableSortInfo-group-info-changed">group-info-changed</link>&quot;
+            void        user_function      (<link linkend="ETableSortInfo">ETableSortInfo</link> *etablesortinfo,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+  The <literal>ETableSortInfo</literal> is typically one of the elements of an
+  <literal>ETableState</literal> object.
+</para>
+
+<para>
+  The <literal>ETableSortInfo</literal> object is used to maintain the multi-level
+  sorting and multi-level grouping information that is used by the
+  ETable widget.  By appending sorting criterias (using the
+  <link linkend="e-table-sort-info-grouping-set-nth">e_table_sort_info_grouping_set_nth</link>() and
+  e_table_sort_info_sorting_set_nth you can append new criteria about
+  how sorting and grouping should take place in the ETable.
+</para>
+
+<para>
+  This object emits the `sort_info_changed' and `group_info_changed'
+  signals when grouping and sorting are added, modified or removed.
+</para>
+
+<para>
+  You can at any point reduce the criteria by using the "truncate"
+  functions;  You can modify any criteria by using the "set"
+  functions, and you can get the individual state information by
+  using the "get" functions.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TABLE-SORT-INFO-TYPE-CAPS">E_TABLE_SORT_INFO_TYPE</title>
+<programlisting>#define E_TABLE_SORT_INFO_TYPE        (e_table_sort_info_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableSortInfo">ETableSortInfo</title>
+<programlisting>typedef struct {
+	GtkObject   base;
+	
+	gint group_count;
+	ETableSortColumn *groupings;
+	gint sort_count;
+	ETableSortColumn *sortings;
+	
+	guint frozen : 1;
+	guint sort_info_changed : 1;
+	guint group_info_changed : 1;
+} ETableSortInfo;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableSortColumn">struct ETableSortColumn</title>
+<programlisting>struct ETableSortColumn {
+	guint column : 31;
+	guint ascending : 1;
+};
+</programlisting>
+<para>
+  The bit field ascending is interpreted as a boolean value that will
+  trigger ascending ordering.   The column is an integer that reflects
+  the column.
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-freeze">e_table_sort_info_freeze ()</title>
+<programlisting>void        e_table_sort_info_freeze        (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);</programlisting>
+<para>
+This functions allows the programmer to cluster various changes to the
+ETableSortInfo (grouping and sorting) without having the object emit
+"group_info_changed" or "sort_info_changed" signals on each change.
+</para>
+<para>
+To thaw, invoke the <link linkend="e-table-sort-info-thaw">e_table_sort_info_thaw</link>() function, which will
+trigger any signals that might have been queued.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-thaw">e_table_sort_info_thaw ()</title>
+<programlisting>void        e_table_sort_info_thaw          (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);</programlisting>
+<para>
+This functions allows the programmer to cluster various changes to the
+ETableSortInfo (grouping and sorting) without having the object emit
+"group_info_changed" or "sort_info_changed" signals on each change.
+</para>
+<para>
+This function will flush any pending signals that might be emited by
+this object.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-grouping-get-count">e_table_sort_info_grouping_get_count ()</title>
+<programlisting><link linkend="guint">guint</link>       e_table_sort_info_grouping_get_count
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of grouping criteria in the object.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-grouping-truncate">e_table_sort_info_grouping_truncate ()</title>
+<programlisting>void        e_table_sort_info_grouping_truncate
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int length);</programlisting>
+<para>
+This routine can be used to reduce or grow the number of grouping
+criteria in the object.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-grouping-get-nth">e_table_sort_info_grouping_get_nth ()</title>
+<programlisting><link linkend="ETableSortColumn">ETableSortColumn</link> e_table_sort_info_grouping_get_nth
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
+<entry> Item information to fetch.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the description of the <parameter>n</parameter>-th grouping criteria in the <parameter>info</parameter> object.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-grouping-set-nth">e_table_sort_info_grouping_set_nth ()</title>
+<programlisting>void        e_table_sort_info_grouping_set_nth
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n,
+                                             <link linkend="ETableSortColumn">ETableSortColumn</link> column);</programlisting>
+<para>
+Sets the grouping criteria for index <parameter>n</parameter> to be given by <parameter>column</parameter> (a column number and
+whether it is ascending or descending).</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
+<entry> Item information to fetch.
+</entry></row>
+<row><entry align="right"><parameter>column</parameter>&nbsp;:</entry>
+<entry> new values for the grouping
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-sorting-get-count">e_table_sort_info_sorting_get_count ()</title>
+<programlisting><link linkend="guint">guint</link>       e_table_sort_info_sorting_get_count
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-sorting-truncate">e_table_sort_info_sorting_truncate ()</title>
+<programlisting>void        e_table_sort_info_sorting_truncate
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int length);</programlisting>
+<para>
+This routine can be used to reduce or grow the number of sort
+criteria in the object.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-sorting-get-nth">e_table_sort_info_sorting_get_nth ()</title>
+<programlisting><link linkend="ETableSortColumn">ETableSortColumn</link> e_table_sort_info_sorting_get_nth
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n);</programlisting>
+<para>
+Sets the sorting criteria for index <parameter>n</parameter> to be given by <parameter>column</parameter> (a
+column number and whether it is ascending or descending).</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
+<entry> Item information to fetch.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-sorting-set-nth">e_table_sort_info_sorting_set_nth ()</title>
+<programlisting>void        e_table_sort_info_sorting_set_nth
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             int n,
+                                             <link linkend="ETableSortColumn">ETableSortColumn</link> column);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>column</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-new">e_table_sort_info_new ()</title>
+<programlisting><link linkend="ETableSortInfo">ETableSortInfo</link>* e_table_sort_info_new       (void);</programlisting>
+<para>
+This creates a new e_table_sort_info object that contains no
+grouping and no sorting defined as of yet.  This object is used
+to keep track of multi-level sorting and multi-level grouping of
+the ETable.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new <literal>ETableSortInfo</literal> object
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-load-from-node">e_table_sort_info_load_from_node ()</title>
+<programlisting>void        e_table_sort_info_load_from_node
+                                            (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             <link linkend="xmlNode">xmlNode</link> *node);</programlisting>
+<para>
+This loads the state for the <literal>ETableSortInfo</literal> object <parameter>info</parameter> from the
+xml node <parameter>node</parameter>.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry> pointer to the xmlNode that describes the sorting and grouping information
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-table-sort-info-save-to-node">e_table_sort_info_save_to_node ()</title>
+<programlisting><link linkend="xmlNode">xmlNode</link>*    e_table_sort_info_save_to_node  (<link linkend="ETableSortInfo">ETableSortInfo</link> *info,
+                                             <link linkend="xmlNode">xmlNode</link> *parent);</programlisting>
+<para>
+This function is used</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>info</parameter>&nbsp;:</entry>
+<entry> The ETableSortInfo object
+</entry></row>
+<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
+<entry> xmlNode that will be hosting the saved state of the <parameter>info</parameter> object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the node that has been appended to <parameter>parent</parameter> as a child containing
+the sorting and grouping information for this ETableSortInfo object.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="ETableSortInfo-sort-info-changed">The &quot;sort-info-changed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="ETableSortInfo">ETableSortInfo</link> *etablesortinfo,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+  This signal is emitted when the sort information has been changed
+  trough the API.
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etablesortinfo</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableSortInfo-group-info-changed">The &quot;group-info-changed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="ETableSortInfo">ETableSortInfo</link> *etablesortinfo,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+  This signal is emitted when the grouping information has been
+  changed trough the API>
+</para></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+  <literal>ETable</literal>, <literal>ETableState</literal>.
+</para>
+</refsect1>
+
+</refentry>

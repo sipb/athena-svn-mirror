@@ -1,0 +1,93 @@
+<!-- ##### SECTION Title ##### -->
+ETableScrolled
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_SCROLLED_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableScrolled ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_scrolled_construct ##### -->
+<para>
+
+</para>
+
+@ets: 
+@etm: 
+@ete: 
+@spec: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_scrolled_new ##### -->
+<para>
+
+</para>
+
+@etm: 
+@ete: 
+@spec: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_scrolled_construct_from_spec_file ##### -->
+<para>
+
+</para>
+
+@ets: 
+@etm: 
+@ete: 
+@spec_fn: 
+@state_fn: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_scrolled_new_from_spec_file ##### -->
+<para>
+
+</para>
+
+@etm: 
+@ete: 
+@spec_fn: 
+@state_fn: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_scrolled_get_table ##### -->
+<para>
+
+</para>
+
+@ets: 
+@Returns: 
+
+
+<!-- ##### ARG ETableScrolled:table ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,227 @@
+<refentry id="EReflowSorted" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>EReflowSorted</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EReflowSorted</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="EReflowSorted-struct">EReflowSorted</link>;
+#define     <link linkend="E-REFLOW-SORTED-TYPE-CAPS">E_REFLOW_SORTED_TYPE</link>
+char*       (<link linkend="EReflowStringFunc">*EReflowStringFunc</link>)            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>*);
+void        <link linkend="e-reflow-sorted-remove-item">e_reflow_sorted_remove_item</link>     (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             const char *id);
+void        <link linkend="e-reflow-sorted-replace-item">e_reflow_sorted_replace_item</link>    (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+void        <link linkend="e-reflow-sorted-reorder-item">e_reflow_sorted_reorder_item</link>    (<link linkend="EReflowSorted">EReflowSorted</link> *e_reflow_sorted,
+                                             const <link linkend="gchar">gchar</link> *id);
+<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>* <link linkend="e-reflow-sorted-get-item">e_reflow_sorted_get_item</link>   (<link linkend="EReflowSorted">EReflowSorted</link> *e_reflow_sorted,
+                                             const <link linkend="gchar">gchar</link> *id);
+void        <link linkend="e-reflow-sorted-jump">e_reflow_sorted_jump</link>            (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             <link linkend="GCompareFunc">GCompareFunc</link> compare_func,
+                                             void *value);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link>
+               +----<link linkend="EReflow">EReflow</link>
+                     +----EReflowSorted
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="EReflowSorted--compare-func">compare_func</link>&quot;         <link linkend="gpointer">gpointer</link>             : Read / Write
+  &quot;<link linkend="EReflowSorted--string-func">string_func</link>&quot;          <link linkend="gpointer">gpointer</link>             : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EReflowSorted-struct">struct EReflowSorted</title>
+<programlisting>struct EReflowSorted;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="E-REFLOW-SORTED-TYPE-CAPS">E_REFLOW_SORTED_TYPE</title>
+<programlisting>#define E_REFLOW_SORTED_TYPE			(e_reflow_sorted_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EReflowStringFunc">EReflowStringFunc ()</title>
+<programlisting>char*       (*EReflowStringFunc)            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>*);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-sorted-remove-item">e_reflow_sorted_remove_item ()</title>
+<programlisting>void        e_reflow_sorted_remove_item     (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             const char *id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sorted</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-sorted-replace-item">e_reflow_sorted_replace_item ()</title>
+<programlisting>void        e_reflow_sorted_replace_item    (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sorted</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-sorted-reorder-item">e_reflow_sorted_reorder_item ()</title>
+<programlisting>void        e_reflow_sorted_reorder_item    (<link linkend="EReflowSorted">EReflowSorted</link> *e_reflow_sorted,
+                                             const <link linkend="gchar">gchar</link> *id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>e_reflow_sorted</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-sorted-get-item">e_reflow_sorted_get_item ()</title>
+<programlisting><link linkend="GnomeCanvasItem">GnomeCanvasItem</link>* e_reflow_sorted_get_item   (<link linkend="EReflowSorted">EReflowSorted</link> *e_reflow_sorted,
+                                             const <link linkend="gchar">gchar</link> *id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>e_reflow_sorted</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-sorted-jump">e_reflow_sorted_jump ()</title>
+<programlisting>void        e_reflow_sorted_jump            (<link linkend="EReflowSorted">EReflowSorted</link> *sorted,
+                                             <link linkend="GCompareFunc">GCompareFunc</link> compare_func,
+                                             void *value);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sorted</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>compare_func</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="EReflowSorted--compare-func">&quot;<literal>compare_func</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EReflowSorted--string-func">&quot;<literal>string_func</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

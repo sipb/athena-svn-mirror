@@ -1,0 +1,58 @@
+<!-- ##### SECTION Title ##### -->
+GalViewNewDialog
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GAL_VIEW_NEW_DIALOG_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT GalViewNewDialog ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gal_view_new_dialog_new ##### -->
+<para>
+
+</para>
+
+@collection: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gal_view_new_dialog_construct ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@collection: 
+@Returns: 
+
+
+<!-- ##### ARG GalViewNewDialog:name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GalViewNewDialog:factory ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,135 @@
+<refentry id="gal-e-cursors" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-cursors</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-cursors</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="ECursorType">ECursorType</link>;
+void        <link linkend="e-cursors-init">e_cursors_init</link>                  (void);
+void        <link linkend="e-cursors-shutdown">e_cursors_shutdown</link>              (void);
+#define     <link linkend="e-cursor-set">e_cursor_set</link>                    (win, c)
+#define     <link linkend="e-cursor-set-widget">e_cursor_set_widget</link>             (w, c)
+<link linkend="GdkCursor">GdkCursor</link>*  <link linkend="e-cursor-get">e_cursor_get</link>                    (<link linkend="ECursorType">ECursorType</link> type);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ECursorType">enum ECursorType</title>
+<programlisting>typedef enum {
+	E_CURSOR_FAT_CROSS,
+	E_CURSOR_THIN_CROSS,
+	E_CURSOR_ARROW,
+	E_CURSOR_MOVE,
+	E_CURSOR_ZOOM_IN,
+	E_CURSOR_ZOOM_OUT,
+	E_CURSOR_SIZE_X,
+	E_CURSOR_SIZE_Y,
+	E_CURSOR_SIZE_TL,
+	E_CURSOR_SIZE_TR,
+	E_CURSOR_PRESS,
+	E_CURSOR_HAND_OPEN,
+	E_CURSOR_HAND_CLOSED,
+	E_CURSOR_NUM_CURSORS
+} ECursorType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-cursors-init">e_cursors_init ()</title>
+<programlisting>void        e_cursors_init                  (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-cursors-shutdown">e_cursors_shutdown ()</title>
+<programlisting>void        e_cursors_shutdown              (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-cursor-set">e_cursor_set()</title>
+<programlisting>#define     e_cursor_set(win, c)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>win</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>c</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-cursor-set-widget">e_cursor_set_widget()</title>
+<programlisting>#define     e_cursor_set_widget(w, c)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>c</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-cursor-get">e_cursor_get ()</title>
+<programlisting><link linkend="GdkCursor">GdkCursor</link>*  e_cursor_get                    (<link linkend="ECursorType">ECursorType</link> type);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

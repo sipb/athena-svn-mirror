@@ -1,0 +1,512 @@
+<!-- ##### SECTION Title ##### -->
+ETable
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETable ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ETableDragSourceSite ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM ETableCursorLoc ##### -->
+<para>
+
+</para>
+
+@E_TABLE_CURSOR_LOC_NONE: 
+@E_TABLE_CURSOR_LOC_ETCTA: 
+@E_TABLE_CURSOR_LOC_TABLE: 
+
+<!-- ##### FUNCTION e_table_construct ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@etm: 
+@ete: 
+@spec: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_new ##### -->
+<para>
+
+</para>
+
+@etm: 
+@ete: 
+@spec: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_construct_from_spec_file ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@etm: 
+@ete: 
+@spec_fn: 
+@state_fn: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_new_from_spec_file ##### -->
+<para>
+
+</para>
+
+@etm: 
+@ete: 
+@spec_fn: 
+@state_fn: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_get_state ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_save_state ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@filename: 
+
+
+<!-- ##### FUNCTION e_table_get_state_object ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_set_state ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@state: 
+
+
+<!-- ##### FUNCTION e_table_set_state_object ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@state: 
+
+
+<!-- ##### FUNCTION e_table_load_state ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@filename: 
+
+
+<!-- ##### FUNCTION e_table_set_cursor_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@row: 
+
+
+<!-- ##### FUNCTION e_table_get_cursor_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_selected_row_foreach ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@callback: 
+@closure: 
+
+
+<!-- ##### FUNCTION e_table_selected_count ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_get_printable ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_get_next_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@model_row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_get_prev_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@model_row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_model_to_view_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@model_row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_view_to_model_row ##### -->
+<para>
+
+</para>
+
+@e_table: 
+@view_row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_drag_get_data ##### -->
+<para>
+
+</para>
+
+@table: 
+@row: 
+@col: 
+@context: 
+@target: 
+@time: 
+
+
+<!-- ##### FUNCTION e_table_drag_highlight ##### -->
+<para>
+
+</para>
+
+@table: 
+@row: 
+@col: 
+
+
+<!-- ##### FUNCTION e_table_drag_unhighlight ##### -->
+<para>
+
+</para>
+
+@table: 
+
+
+<!-- ##### FUNCTION e_table_drag_dest_set ##### -->
+<para>
+
+</para>
+
+@table: 
+@flags: 
+@targets: 
+@n_targets: 
+@actions: 
+
+
+<!-- ##### FUNCTION e_table_drag_dest_set_proxy ##### -->
+<para>
+
+</para>
+
+@table: 
+@proxy_window: 
+@protocol: 
+@use_coordinates: 
+
+
+<!-- ##### FUNCTION e_table_drag_dest_unset ##### -->
+<para>
+
+</para>
+
+@widget: 
+
+
+<!-- ##### FUNCTION e_table_drag_source_set ##### -->
+<para>
+
+</para>
+
+@table: 
+@start_button_mask: 
+@targets: 
+@n_targets: 
+@actions: 
+
+
+<!-- ##### FUNCTION e_table_drag_source_unset ##### -->
+<para>
+
+</para>
+
+@table: 
+
+
+<!-- ##### FUNCTION e_table_drag_begin ##### -->
+<para>
+
+</para>
+
+@table: 
+@row: 
+@col: 
+@targets: 
+@actions: 
+@button: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_select_all ##### -->
+<para>
+
+</para>
+
+@table: 
+
+
+<!-- ##### FUNCTION e_table_invert_selection ##### -->
+<para>
+
+</para>
+
+@table: 
+
+
+<!-- ##### SIGNAL ETable::cursor-change ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ETable::selection-change ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+
+<!-- ##### SIGNAL ETable::double-click ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL ETable::right-click ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL ETable::click ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL ETable::key-press ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL ETable::table-drag-begin ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL ETable::table-drag-end ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL ETable::table-drag-data-get ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+@arg5: 
+@arg6: 
+
+<!-- ##### SIGNAL ETable::table-drag-data-delete ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL ETable::table-drag-leave ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+
+<!-- ##### SIGNAL ETable::table-drag-motion ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+@arg5: 
+@arg6: 
+@Returns: 
+
+<!-- ##### SIGNAL ETable::table-drag-drop ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+@arg5: 
+@arg6: 
+@Returns: 
+
+<!-- ##### SIGNAL ETable::table-drag-data-received ##### -->
+<para>
+
+</para>
+
+@etable: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+@arg5: 
+@arg6: 
+@arg7: 
+@arg8: 
+
+<!-- ##### ARG ETable:drawfocus ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETable:length_threshold ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,216 @@
+<refentry id="ETableHeaderItem" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETableHeaderItem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETableHeaderItem</refname><refpurpose>Canvas Item to display the ETable header.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TABLE-HEADER-ITEM-TYPE-CAPS">E_TABLE_HEADER_ITEM_TYPE</link>
+typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----ETableHeaderItem
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="ETableHeaderItem--ETableHeader">ETableHeader</link>&quot;         <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableHeaderItem--full-header">full_header</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Read / Write
+  &quot;<link linkend="ETableHeaderItem--dnd-code">dnd_code</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
+  &quot;<link linkend="ETableHeaderItem--fontset">fontset</link>&quot;              <link linkend="gchar">gchar</link>*               : Write
+  &quot;<link linkend="ETableHeaderItem--sort-info">sort_info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableHeaderItem--table">table</link>&quot;                <link linkend="GtkObject">GtkObject</link>            : Write
+</synopsis>
+</refsect1>
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="ETableHeaderItem-button-pressed">button-pressed</link>&quot;
+            void        user_function      (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+  The <literal>ETableHeaderItem</literal> object is a <literal>GnomeCanvasItem</literal> item that renders
+  an <literal>ETableHeader</literal> model into a canvas.  This canvas item takes a
+  number of argument to configure the display.  
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TABLE-HEADER-ITEM-TYPE-CAPS">E_TABLE_HEADER_ITEM_TYPE</title>
+<programlisting>#define E_TABLE_HEADER_ITEM_TYPE        (e_table_header_item_get_type ())
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="ETableHeaderItem">ETableHeaderItem</title>
+<programlisting>typedef struct {
+	GnomeCanvasItem  parent;
+	ETableHeader    *eth;
+
+	GdkGC           *gc;
+	GdkCursor       *change_cursor;
+
+	short            height, width;
+	GdkFont         *font;
+
+	/*
+	 * Used during resizing;  Could be shorts
+	 */
+	int              resize_col;
+	int              resize_start_pos;
+	int              resize_min_width;
+	
+	GtkObject       *resize_guide;
+
+	int              group_indent_width;
+
+	/*
+	 * Ids
+	 */
+	int structure_change_id, dimension_change_id;
+
+	/*
+	 * For dragging columns
+	 */
+	guint            maybe_drag:1;
+	guint            dnd_ready:1;
+	int              click_x, click_y;
+	int              drag_col, drop_col, drag_mark;
+        guint            drag_motion_id, drag_end_id, drag_leave_id, drag_drop_id, drag_data_received_id, drag_data_get_id;
+	guint            sort_info_changed_id, group_info_changed_id;
+	GnomeCanvasItem *remove_item;
+	GdkBitmap       *stipple;
+
+	gchar           *dnd_code;
+
+	/*
+	 * For column sorting info
+	 */
+	ETableSortInfo  *sort_info;
+	
+	/* For adding fields. */
+	ETableHeader    *full_header;
+	ETable          *table;
+	GtkWidget       *config;
+} ETableHeaderItem;
+</programlisting>
+</refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="ETableHeaderItem--ETableHeader">&quot;<literal>ETableHeader</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<listitem>
+<para>
+   Specifies the <literal>ETableHeader</literal> model that this item is going to render
+   on the screen.  The ETableHeader contains the information of which
+   columns from the model are going to be displayed and in which
+   order.  It also contains details about the actual text displayed to
+   render the column names.
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--full-header">&quot;<literal>full_header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+<listitem>
+<para>
+   This is used to pass a collection of all the possible headers the
+   ETable will display.  This information is used during the
+   interactive configuration of the data to be displayed by the ETable
+   widget and to allow the user to drag and drop column names from the
+   field chooser into the table header.  This is of type <literal>ETableHeader</literal>
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--dnd-code">&quot;<literal>dnd_code</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<listitem>
+<para>
+   String representing the dnd code for this ETable.
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--fontset">&quot;<literal>fontset</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
+<listitem>
+<para>
+   This specified the X font set to use to render the column title.
+   This is a string.
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--sort-info">&quot;<literal>sort_info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<listitem>
+<para>
+    An <literal>ETableSortInfo</literal> object that is used to store the information
+    about sorting and grouping in the ETable.
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--table">&quot;<literal>table</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<listitem>
+<para>
+    This is a pointer to our parent <literal>ETable</literal> object.  This is used
+    during by the interactive configuration process. 
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="ETableHeaderItem-button-pressed">The &quot;button-pressed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+  Emmited when a button has been pressed in the header.  This will
+  pass the GdkEvent as the argument to the signal handler.
+</para>
+
+<para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etableheaderitem</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>The GdkEvent.
+</para>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+   <literal>ETable</literal>, <literal>ETableHeader</literal>, <literal>ETableCol</literal>.
+</para>
+</refsect1>
+
+</refentry>
