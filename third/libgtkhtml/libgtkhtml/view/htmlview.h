@@ -41,6 +41,11 @@ G_BEGIN_DECLS
 #define HTML_VIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), HTML_TYPE_VIEW, HtmlViewClass))
 #define HTML_IS_VIEW(obj)      (GTK_CHECK_TYPE ((obj), HTML_TYPE_VIEW))
 
+typedef enum {
+	HTML_VIEW_SCROLL_TO_TOP,
+	HTML_VIEW_SCROLL_TO_BOTTOM,
+} HtmlViewScrollToType;
+
 struct _HtmlView {
 	GtkLayout parent;
 
@@ -113,7 +118,10 @@ void       html_view_zoom_in           (HtmlView *view);
 void       html_view_zoom_out          (HtmlView *view);
 void       html_view_zoom_reset        (HtmlView *view);
 
-HtmlBox *       html_view_find_layout_box (HtmlView *view, DomNode *node, gboolean find_parent);
+HtmlBox *  html_view_find_layout_box   (HtmlView *view, DomNode *node, gboolean find_parent);
+
+void       html_view_scroll_to_node    (HtmlView *view, DomNode *node, HtmlViewScrollToType type);
+
 
 G_END_DECLS
 

@@ -1,3 +1,25 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+   Copyright (C) 2000 CodeFactory AB
+   Copyright (C) 2000 Jonas Borgstr\366m <jonas@codefactory.se>
+   Copyright (C) 2000 Anders Carlsson <andersca@codefactory.se>
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+*/
+
 #include <string.h>
 
 #include "htmlstyle.h"
@@ -58,7 +80,7 @@ html_style_surround_dup (HtmlStyleSurround *surround)
 void
 html_style_set_position_top (HtmlStyle *style, const HtmlLength *length)
 {
-	if (!(style->surround && html_length_equals (&style->surround->position.top, length))) {
+	if (!html_length_equals (&style->surround->position.top, length)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->position.top, length);
@@ -68,7 +90,7 @@ html_style_set_position_top (HtmlStyle *style, const HtmlLength *length)
 void
 html_style_set_position_right (HtmlStyle *style, const HtmlLength *length)
 {
-	if (!(style->surround && html_length_equals (&style->surround->position.right, length))) {
+	if (!html_length_equals (&style->surround->position.right, length)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->position.right, length);
@@ -78,7 +100,7 @@ html_style_set_position_right (HtmlStyle *style, const HtmlLength *length)
 void
 html_style_set_position_bottom (HtmlStyle *style, const HtmlLength *length)
 {
-	if (!(style->surround && html_length_equals (&style->surround->position.bottom, length))) {
+	if (!html_length_equals (&style->surround->position.bottom, length)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->position.bottom, length);
@@ -88,7 +110,7 @@ html_style_set_position_bottom (HtmlStyle *style, const HtmlLength *length)
 void
 html_style_set_position_left (HtmlStyle *style, const HtmlLength *length)
 {
-	if (!(style->surround && html_length_equals (&style->surround->position.left, length))) {
+	if (!html_length_equals (&style->surround->position.left, length)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->position.left, length);
@@ -98,7 +120,7 @@ html_style_set_position_left (HtmlStyle *style, const HtmlLength *length)
 void
 html_style_set_margin_top (HtmlStyle *style, const HtmlLength *margin)
 {
-	if (!(style->surround && html_length_equals (&style->surround->margin.top, margin))) {
+	if (!html_length_equals (&style->surround->margin.top, margin)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->margin.top, margin);
@@ -108,7 +130,7 @@ html_style_set_margin_top (HtmlStyle *style, const HtmlLength *margin)
 void
 html_style_set_margin_bottom (HtmlStyle *style, const HtmlLength *margin)
 {
-	if (!(style->surround && html_length_equals (&style->surround->margin.bottom, margin))) {
+	if (!html_length_equals (&style->surround->margin.bottom, margin)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->margin.bottom, margin);
@@ -118,7 +140,7 @@ html_style_set_margin_bottom (HtmlStyle *style, const HtmlLength *margin)
 void
 html_style_set_margin_left (HtmlStyle *style, const HtmlLength *margin)
 {
-	if (!(style->surround && html_length_equals (&style->surround->margin.left, margin))) {
+	if (!html_length_equals (&style->surround->margin.left, margin)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->margin.left, margin);
@@ -128,7 +150,7 @@ html_style_set_margin_left (HtmlStyle *style, const HtmlLength *margin)
 void
 html_style_set_margin_right (HtmlStyle *style, const HtmlLength *margin)
 {
-	if (!(style->surround && html_length_equals (&style->surround->margin.right, margin))) {
+	if (!html_length_equals (&style->surround->margin.right, margin)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->margin.right, margin);
@@ -138,7 +160,7 @@ html_style_set_margin_right (HtmlStyle *style, const HtmlLength *margin)
 void
 html_style_set_padding_left (HtmlStyle *style, const HtmlLength *padding)
 {
-	if (!(style->surround && html_length_equals (&style->surround->padding.left, padding))) {
+	if (!html_length_equals (&style->surround->padding.left, padding)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->padding.left, padding);
@@ -148,7 +170,7 @@ html_style_set_padding_left (HtmlStyle *style, const HtmlLength *padding)
 void
 html_style_set_padding_right (HtmlStyle *style, const HtmlLength *padding)
 {
-	if (!(style->surround && html_length_equals (&style->surround->padding.right, padding))) {
+	if (!html_length_equals (&style->surround->padding.right, padding)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->padding.right, padding);
@@ -158,7 +180,7 @@ html_style_set_padding_right (HtmlStyle *style, const HtmlLength *padding)
 void
 html_style_set_padding_top (HtmlStyle *style, const HtmlLength *padding)
 {
-	if (!(style->surround && html_length_equals (&style->surround->padding.top, padding))) {
+	if (!html_length_equals (&style->surround->padding.top, padding)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->padding.top, padding);
@@ -168,7 +190,7 @@ html_style_set_padding_top (HtmlStyle *style, const HtmlLength *padding)
 void
 html_style_set_padding_bottom (HtmlStyle *style, const HtmlLength *padding)
 {
-	if (!(style->surround && html_length_equals (&style->surround->padding.bottom, padding))) {
+	if (!html_length_equals (&style->surround->padding.bottom, padding)) {
 		if (style->surround->refcount > 1)
 			html_style_set_style_surround (style, html_style_surround_dup (style->surround));
 		html_length_set (&style->surround->padding.bottom, padding);

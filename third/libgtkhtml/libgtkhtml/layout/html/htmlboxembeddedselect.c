@@ -146,15 +146,20 @@ static void
 html_box_embedded_select_finalize (GObject *object)
 {
 	HtmlBox *box = HTML_BOX (object);
-	DomHTMLSelectElement *select_node = DOM_HTML_SELECT_ELEMENT (box->dom_node);
-	GtkTreeModel *model = dom_html_select_element_get_tree_model (select_node);
+	DomHTMLSelectElement *select_node;
 
-	if (dom_HTMLSelectElement__get_multiple (select_node) == FALSE &&
-	    dom_HTMLSelectElement__get_size (select_node) == 1) {
+	if (box->dom_node) {
+		GtkTreeModel *model;
+		select_node = DOM_HTML_SELECT_ELEMENT (box->dom_node);
+		model = dom_html_select_element_get_tree_model (select_node);
 
-		g_signal_handlers_disconnect_matched (G_OBJECT (model),
-						      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
-						      0, 0, NULL, row_changed_callback, box);
+		if (dom_HTMLSelectElement__get_multiple (select_node) == FALSE &&
+	            dom_HTMLSelectElement__get_size (select_node) == 1) {
+
+			g_signal_handlers_disconnect_matched (G_OBJECT (model),
+							      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+							      0, 0, NULL, row_changed_callback, box);
+		}
 	}
 	G_OBJECT_CLASS(parent_class)->finalize (object);
 }

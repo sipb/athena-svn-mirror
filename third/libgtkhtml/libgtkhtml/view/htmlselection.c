@@ -38,6 +38,12 @@ html_selection_get_text (HtmlView *view)
 	while (list) {
 		HtmlBoxText *text = HTML_BOX_TEXT (list->data);
 
+		list = list->next;
+		/*
+		 * Some boxes may not have any text
+		 */
+		if (text->canon_text == NULL)
+			continue;
 		switch (text->selection) {
 		case HTML_BOX_TEXT_SELECTION_NONE:
 			g_assert_not_reached ();
@@ -57,7 +63,6 @@ html_selection_get_text (HtmlView *view)
 					 g_utf8_offset_to_pointer (text->canon_text, MAX (text->sel_end_index, text->sel_start_index)) - g_utf8_offset_to_pointer (text->canon_text, MIN (text->sel_start_index, text->sel_end_index)));
 			break;
 		}
-		list = list->next;
 	}
 	ptr = str->str;
 	g_string_free (str, FALSE);
@@ -430,7 +435,7 @@ set_traversal (HtmlView *view, HtmlBox *root, HtmlBox *start, int *offset, int *
 				
 			if (*offset > 0) {
 				if (*offset < text_len) {
-					if (text_len >  *offset + *len) {
+					if (text_len >= *offset + *len) {
 						html_box_text_set_selection (text, 
 									     HTML_BOX_TEXT_SELECTION_BOTH, 
 									     *offset, *offset + *len);

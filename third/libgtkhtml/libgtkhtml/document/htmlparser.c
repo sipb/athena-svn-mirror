@@ -178,8 +178,14 @@ html_parser_finalize (GObject *object)
 {
 	HtmlParser *parser = HTML_PARSER (object);
 
-	if (parser->xmlctxt)
+	if (parser->xmlctxt) {
+		xmlDocPtr doc;
+
+		doc = parser->xmlctxt->myDoc;
 		xmlFreeParserCtxt (parser->xmlctxt);
+		if (doc)
+			xmlFreeDoc (doc);
+	}
 
 	parent_class->finalize (object);
 }
@@ -280,9 +286,6 @@ html_parser_new (HtmlDocument *document, HtmlParserType parser_type)
 
 	parser = g_object_new (HTML_PARSER_TYPE, NULL);
 
-	/* This line tells gnome-xml not to try to fix what it thinks is broken html, it doesn't allways do a good job / jb */
-	htmlHandleOmittedElem(0);
-	
 	parser->document = document;
 
 	parser->stream = html_stream_new (html_parser_stream_write,

@@ -85,10 +85,6 @@ HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_TABLE_ACCESSIBLE, html_box_table_accessib
 HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_TEXT_ACCESSIBLE, html_box_text_accessible)
 #endif
 
-typedef enum {
-	HTML_VIEW_SCROLL_TO_TOP,
-	HTML_VIEW_SCROLL_TO_BOTTOM,
-} HtmlViewScrollToType;
 
 static gboolean
 set_adjustment_clamped (GtkAdjustment *adj, gdouble val)
@@ -111,7 +107,7 @@ set_adjustment_clamped (GtkAdjustment *adj, gdouble val)
     return FALSE;
 }
 
-static void
+void
 html_view_scroll_to_node (HtmlView *view, DomNode *node, HtmlViewScrollToType type)
 {
 	HtmlBox *box;
@@ -320,7 +316,10 @@ html_view_paint (HtmlView *view, GdkRectangle *area)
 {
 	/* Tell the root layout box to repaint itself */
 	if (view->painter && view->root) {
-		html_box_paint (view->root, view->painter, area, 0, 0);
+		/* Check that the document has not been deleted */
+		if (view->root->dom_node) {
+			html_box_paint (view->root, view->painter, area, 0, 0);
+		}
 	}
 }
 
@@ -361,9 +360,14 @@ html_view_insert_node (HtmlView *view, DomNode *node)
 	if (new_box) {
 
 		new_box->dom_node = node;
+		g_object_add_weak_pointer (G_OBJECT (node), (gpointer *) &(new_box->dom_node));
 
 		html_box_handle_html_properties (new_box, node->xmlnode);
 		
+		if (parent_box == NULL) {
+			if (!HTML_IS_BOX_ROOT (new_box))
+				parent_box = view->root;
+		}
 		if (parent_box == NULL) {
 			html_view_layout_tree_free (view, view->root);
 			if (view->document && view->document->focus_element)
@@ -645,6 +649,8 @@ static void
 html_view_realize (GtkWidget *widget)
 {
 	HtmlView *view;
+	gfloat fsize;
+	gint isize;
 
 	view = HTML_VIEW (widget);
 
@@ -652,10 +658,18 @@ html_view_realize (GtkWidget *widget)
 	 * GtkLayout uses the bg color for background but we want
 	 * to use base color.
 	 */	
- 	widget->style = gtk_style_copy (widget->style);
-	
- 	widget->style->bg[GTK_STATE_NORMAL] =
- 		widget->style->base[GTK_STATE_NORMAL];
+	widget->style = gtk_style_copy (widget->style);
+	widget->style->bg[GTK_STATE_NORMAL] = 
+		widget->style->base[GTK_STATE_NORMAL];
+	/*
+	 * Store the font size so we can adjust size of HtmlFontSpecification
+	 * if the size changes.
+	 */
+	fsize = pango_font_description_get_size (widget->style->font_desc) / 
+			(gfloat) PANGO_SCALE;
+	isize = (gint) fsize;
+	g_object_set_data (G_OBJECT (widget), "html-view-font-size",
+			   GINT_TO_POINTER (isize));
 	
 	if (GTK_WIDGET_CLASS (parent_class)->realize)
 		(* GTK_WIDGET_CLASS (parent_class)->realize) (widget);
@@ -1267,6 +1281,91 @@ html_view_get_type (void)
 	return type;
 }
 
+static void 
+html_view_update_box_style_size (HtmlBox *root, gfloat adjust, GPtrArray *done)
+{
+	HtmlBox *box;
+
+	for (box = root; box; box = box->next) {
+		HtmlStyle *style;
+
+		style = HTML_BOX_GET_STYLE (box);
+		if (style) {
+			HtmlFontSpecification *font_spec;
+
+			font_spec = style->inherited->font_spec;
+			if (font_spec) {
+				gint i;
+				gboolean found = FALSE;
+
+				for (i = 0; i < done->len; i++) {
+					if (g_ptr_array_index (done, i) == font_spec) {
+						found = TRUE;
+						break;
+					}
+				}
+				if (!found) {
+					g_ptr_array_add (done, font_spec);
+					font_spec->size = font_spec->size * adjust;
+				}
+			}
+		}
+		if (box->children) {
+			html_view_update_box_style_size (box->children, adjust, done);
+		}
+	}
+}
+
+static void
+html_view_style_set (GtkWidget *widget, GtkStyle *previous_style)
+{
+	if (previous_style) {
+		gfloat fsize;
+		gint new_isize;
+		gint old_isize;
+
+ 		widget->style->bg[GTK_STATE_NORMAL] =
+ 			widget->style->base[GTK_STATE_NORMAL];
+		fsize = pango_font_description_get_size (widget->style->font_desc) / (gfloat) PANGO_SCALE;
+		new_isize = (gint) fsize;
+		old_isize = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "html-view-font-size"));
+		if (old_isize && old_isize != new_isize) {
+			/*
+			 * The font size for the HtmlView has changed so we
+			 * update the size in each HtmlFontSpecification.
+			 * We traverse the document but we only want to
+			 * update the HtmlFontSpecification once. We maintain
+			 * an array of HtmlFontSpecification which have already
+			 * been updated. As a HtmlFontSpecification may be used
+			 * more than than one HtmlView we use a static array
+			 * which is cleared when we determine that a different
+			 * size change has occurred.
+			 */
+			HtmlView *view;
+
+			view = HTML_VIEW (widget);
+			g_object_set_data (G_OBJECT (widget), "html-view-font-size",
+					   GINT_TO_POINTER (new_isize));
+			if (view->root) {
+				static gint old_size = 0;
+				static gint new_size = 0;
+				static GPtrArray *done;
+
+				if (old_size != old_isize ||
+				    new_size != new_isize) {
+					if (old_size || new_size) {
+						g_ptr_array_free (done, TRUE);
+					}
+					done = g_ptr_array_new ();
+					old_size = old_isize;
+					new_size = new_isize;
+				}
+				html_view_update_box_style_size (view->root, (gfloat) new_isize / (gfloat) old_isize, done);
+			}
+		}
+	}
+}
+
 GtkWidget *
 html_view_new (void)
 {
@@ -1275,6 +1374,11 @@ html_view_new (void)
 	/* This creates the adjustments needed */
  	gtk_layout_set_hadjustment (GTK_LAYOUT (view), NULL);
  	gtk_layout_set_vadjustment (GTK_LAYOUT (view), NULL);
+
+	g_signal_connect (G_OBJECT (view),
+			  "style-set",
+			  G_CALLBACK (html_view_style_set),
+			  NULL);
 
 	return GTK_WIDGET (view);
 }

@@ -330,7 +330,7 @@ html_box_accessible_get_parent (AtkObject *obj)
 			g_return_val_if_fail (!box->parent, NULL); 
 			g_return_val_if_fail (widget, NULL); 
 			parent = gtk_widget_get_accessible (widget);
-			obj->accessible_parent = parent;
+			atk_object_set_parent (obj, parent);
 		}
 	}
 	return parent;

@@ -94,6 +94,7 @@ free_stream_data (StreamData *sdata, gboolean remove)
 		connection_list = g_slist_remove (connection_list, sdata);
 		g_object_set_data (G_OBJECT (sdata->doc), "connection_list", connection_list);
 	}
+	g_object_ref (sdata->stream);
 	html_stream_close(sdata->stream);
 	
 	g_free (sdata);

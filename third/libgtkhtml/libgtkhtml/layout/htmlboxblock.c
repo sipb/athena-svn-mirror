@@ -181,7 +181,10 @@ html_box_block_create_inline_lines (HtmlBox *self, HtmlRelayout *relayout, HtmlB
 	
 	g_slist_free (old_iterator);
 	html_line_box_close (line, self, left_margin, max_width, *boxwidth);
-	*box = next_box;
+	/*
+	 * Bandaid for bug 98577.
+	 */
+	*box = *box == next_box ? NULL : next_box;
 
 	/* If the line is empty, then it has 0 height */
 	if (line->item_list == NULL)

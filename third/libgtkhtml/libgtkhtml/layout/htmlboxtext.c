@@ -476,7 +476,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 		    (white_space != master->white_space) ||
 		    relayout->magnification_modified)
 			master->must_relayout = TRUE;
-		
+
 		if (master->must_relayout)
 			html_box_text_recalc_items (text, font_spec, 
 						    white_space, relayout);
@@ -489,7 +489,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 		text->length = 0;
 		text->item_data = NULL;
 		text->item_offset = 0;
-		
+
 		for (i = master->n_items - 1; i >= 0; i--) {
 			HtmlBoxTextItemData *data = &master->items[i];
 			PangoItem *item = data->item;
@@ -533,7 +533,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 
 		while (ptr < end && *ptr != '\n' && *ptr != '\r') 
 			ptr += g_utf8_skip[(unsigned int)*ptr];
-		
+
 		if (ptr != text->canon_text) {
 			guchar *str;
 			gint len;
@@ -685,7 +685,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 			text->forced_newline = is_newline (*(text->canon_text + text->length - 1)) ? TRUE : FALSE;
 	} else
 		relayout->preserve_leading_space = TRUE;
-		
+
 	html_box_text_get_extents (self, &log_rect);
 	text->ascent = PANGO_PIXELS (PANGO_ASCENT (log_rect));
 	text->descent = PANGO_PIXELS (PANGO_DESCENT (log_rect));

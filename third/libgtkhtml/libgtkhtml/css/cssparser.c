@@ -1,3 +1,25 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+   Copyright (C) 2000 CodeFactory AB
+   Copyright (C) 2000 Jonas Borgstr\366m <jonas@codefactory.se>
+   Copyright (C) 2000 Anders Carlsson <andersca@codefactory.se>
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+*/
+
 #include <string.h>
 #include "cssparser.h"
 #include "cssvalue.h"
@@ -85,58 +107,6 @@ css_parser_parse_to_char (const gchar *buffer, guchar ch, gint start_pos, gint e
 
 	return pos;
 }
-
-/* FIXME: Needs to support escaping and UTF8 */
-static gint
-css_parser_parse_string (const gchar *str, gint start_pos, gint end_pos, gchar **ret_val)
-{
-	guchar c;
-	gchar *buffer;
-	gint buffer_size, buffer_size_max;
-	gchar quote_char, nonquote_char;
-	gint pos = start_pos;
-	
-	buffer_size = 0;
-	buffer_size_max = 8;
-	buffer = g_malloc (buffer_size_max);
-
-	quote_char = str[pos++];
-	nonquote_char = (quote_char == '"') ? '\'': '"';
-
-	while (pos < end_pos) {
-		c = str[pos++];
-
-		if (c == quote_char)
-			break;
-		else if (c == '\\') {
-			g_error ("support escaping!");
-		}
-		else if ((c >= '(' && c <= '~') ||
-			 c == ' ' || c == '!' || (c >= '#' && c <= '&') || c == '\t' ||
-			 c == nonquote_char) {
-			if (buffer_size == buffer_size_max)
-				buffer = g_realloc (buffer, (buffer_size_max <<= 1));
-			buffer[buffer_size++] = c;
-		}
-		else if (c > 0x80) {
-			g_error ("support unicode!\n");
-		}
-		else {
-			g_free (buffer);
-			return -1;
-		}
-	}
-
-	/* FIXME: Handle string */
-	if (ret_val)
-		*ret_val = g_strndup (buffer, buffer_size);
-
-	g_free (buffer);
-	
-	return pos;
-
-}
-
 
 static gint
 css_parser_parse_escape (const gchar *p, gint start_pos, gint end_pos, gunichar *p_unicode)
@@ -232,6 +202,71 @@ css_parser_unescape (const gchar *p, gint len)
 	return result;
 
 }
+
+/* FIXME: Needs to support UTF8 */
+static gint
+css_parser_parse_string (const gchar *str, gint start_pos, gint end_pos, gchar **ret_val)
+{
+	guchar c;
+	gchar *buffer;
+	gint buffer_size, buffer_size_max;
+	gchar quote_char, nonquote_char;
+	gint pos = start_pos;
+	gboolean has_escape = FALSE;
+	
+
+	buffer_size = 0;
+	buffer_size_max = 8;
+	buffer = g_malloc (buffer_size_max);
+
+	quote_char = str[pos++];
+	nonquote_char = (quote_char == '"') ? '\'': '"';
+
+	while (pos < end_pos) {
+		c = str[pos++];
+
+		if (c == quote_char)
+			break;
+		else if (c == '\\') {
+			gunichar unicode;
+	  
+			pos = css_parser_parse_escape (str, pos, end_pos, &unicode);
+			if (pos < 0)
+				return -1;
+		
+			has_escape = TRUE;
+		}
+		else if ((c >= '(' && c <= '~') ||
+			 c == ' ' || c == '!' || (c >= '#' && c <= '&') || c == '\t' ||
+			 c == nonquote_char) {
+			if (!has_escape) {
+				if (buffer_size == buffer_size_max)
+					buffer = g_realloc (buffer, (buffer_size_max <<= 1));
+				buffer[buffer_size++] = c;
+			}
+		}
+		else if (c > 0x80) {
+			g_error ("support unicode!\n");
+		}
+		else {
+			g_free (buffer);
+			return -1;
+		}
+	}
+
+	if (ret_val) {
+		if (has_escape)
+			*ret_val = css_parser_unescape (str + start_pos, pos - start_pos);
+		else 
+			*ret_val = g_strndup (buffer, buffer_size);
+	}
+
+	g_free (buffer);
+
+	return pos;
+
+}
+
 
 /* FIXME: Needs to support UTF8 */
 static gint
