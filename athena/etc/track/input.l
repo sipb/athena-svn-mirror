@@ -1,5 +1,7 @@
+%{
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
+%}
 %%
 
 GLOBAL		{
