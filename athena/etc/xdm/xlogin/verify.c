@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.62 1994-12-22 02:15:06 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.63 1994-12-22 05:22:14 cfields Exp $
  */
 
 #include <stdio.h>
@@ -1459,7 +1459,7 @@ char *add_to_group(user, grplist)
     enduserdb();
 
     if (toomany)
-	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
+/*	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
 
     return 0;
 }
@@ -1510,7 +1510,7 @@ char *glist;
     }
     ngroups /= 2;
     if (ngroups > MAX_GROUPS) {
-	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
+/*	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
 	ngroups = MAX_GROUPS;
     }
 
