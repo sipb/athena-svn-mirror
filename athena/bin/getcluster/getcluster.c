@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 
   if (hp == NULL && lp == NULL && fp == NULL)
     {
-      fprintf(stderr, "No cluster information avaliable for %s\n", argv[0]);
+      fprintf(stderr, "No cluster information available for %s\n", argv[0]);
       return 2;
     }
 
