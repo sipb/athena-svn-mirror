@@ -17,11 +17,11 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_ask.c,v 1.8 1999-03-06 16:47:46 ghudson Exp $
+ *      $Id: x_ask.c,v 1.9 1999-06-28 22:51:57 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_ask.c,v 1.8 1999-03-06 16:47:46 ghudson Exp $";
+static char rcsid[]= "$Id: x_ask.c,v 1.9 1999-06-28 22:51:57 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,7 +37,8 @@ x_ask(Request, topic, question)
      char *topic;
      char *question;
 {
-  int status, fd;
+  ERRCODE status;
+  int fd;
   char file[MAXPATHLEN];
   char buf[BUFSIZ];
 
@@ -116,11 +117,11 @@ x_ask(Request, topic, question)
       unlink(file);
       return(ERROR);
     }
-  (void) close(fd);
+  close(fd);
 
   status = OAsk_file(Request,topic,file);
 
-  (void) unlink(file);
+  unlink(file);
 
   switch(status)
     {

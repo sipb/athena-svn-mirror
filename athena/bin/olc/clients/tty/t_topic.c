@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_topic.c,v 1.15 1999-03-06 16:48:12 ghudson Exp $
+ *	$Id: t_topic.c,v 1.16 1999-06-28 22:52:19 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_topic.c,v 1.15 1999-03-06 16:48:12 ghudson Exp $";
+static char rcsid[] ="$Id: t_topic.c,v 1.16 1999-06-28 22:52:19 ghudson Exp $";
 #endif
 #endif
 
@@ -49,7 +49,7 @@ t_input_topic(Request,topic,flags)
   char file[NAME_SIZE];
   char *bufP;		        
   int loop = 0;
-  int status;
+  ERRCODE status;
   int fudge = 0;
 
   *buf = '\0';
@@ -71,7 +71,7 @@ t_input_topic(Request,topic,flags)
 	{
 	  bufP = buf;
           if(!fudge)
-       	     (void) get_prompted_input("Topic: ", buf, LINE_SIZE,0);
+       	     get_prompted_input("Topic: ", buf, LINE_SIZE,0);
           else
            {
              strcpy(buf,topic);
@@ -85,7 +85,7 @@ t_input_topic(Request,topic,flags)
 	    }
 	  while(*bufP == '\\')
 	    ++bufP;
-	  (void) strcpy(topic, bufP);
+	  strcpy(topic, bufP);
 	  uncase(topic);
 	}
       
@@ -125,7 +125,7 @@ t_list_topics(Request, file, display)
      char *file;
      int display;
 {
-  int status;
+  ERRCODE status;
 
   status = OListTopics(Request,file);
   switch(status)
@@ -152,7 +152,7 @@ t_verify_topic(Request, topic)
      REQUEST *Request;
      char *topic;
 {
-  int status;
+  ERRCODE status;
 
   status = OVerifyTopic(Request,topic);
   switch(status)
@@ -177,7 +177,7 @@ t_get_topic(Request, topic)
      REQUEST *Request;
      char *topic;
 {
-  int status;
+  ERRCODE status;
 
   status = OGetTopic(Request,topic);
   
@@ -213,7 +213,7 @@ t_change_topic(Request,topic)
      REQUEST *Request;
      char *topic;
 {
-  int status;
+  ERRCODE status;
 
   status = OChangeTopic(Request,topic);
   switch(status)

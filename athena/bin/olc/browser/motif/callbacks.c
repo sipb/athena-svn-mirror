@@ -10,11 +10,11 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: callbacks.c,v 1.17 1999-03-06 16:47:28 ghudson Exp $
+ *      $Id: callbacks.c,v 1.18 1999-06-28 22:51:45 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: callbacks.c,v 1.17 1999-03-06 16:47:28 ghudson Exp $";
+static char rcsid[]="$Id: callbacks.c,v 1.18 1999-06-28 22:51:45 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -40,8 +40,6 @@ extern int errno;
 extern char *program;			/* name of program */
 extern Widget toplevel;
 
-#define  ERROR		-1
-#define  SUCCESS	0
 #define  MotifString(s)		XmStringLtoRCreate(s, XmSTRING_DEFAULT_CHARSET)
 
 

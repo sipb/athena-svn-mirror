@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: rpd.c,v 1.20 1999-06-10 18:41:35 ghudson Exp $";
+static char *RCSid = "$Id: rpd.c,v 1.21 1999-06-28 22:52:52 ghudson Exp $";
 #endif
 #endif
 
@@ -20,20 +20,12 @@ static char *RCSid = "$Id: rpd.c,v 1.20 1999-06-10 18:41:35 ghudson Exp $";
 int sock;	/* the listening socket */
 int fd;		/* the accepting socket */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-
 #ifdef PROFILE
-static int dump_profile P((int sig ));
-static int start_profile P((int sig ));
+static int dump_profile (int sig );
+static int start_profile (int sig );
 #endif /* PROFILE */
 
-static RETSIGTYPE clean_up P((int sig));
-#undef P
+static void clean_up (int sig);
 
 main(argc, argv)
      int argc;
@@ -170,33 +162,38 @@ main(argc, argv)
   sin.sin_port = sent->s_port;
 
   onoff = 1;
-  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &onoff, sizeof(int)) < 0) {
+  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *)&onoff,
+		 sizeof(int)) < 0)
+    {
 #ifdef HAVE_SYSLOG
-    syslog(LOG_ERR,"setsockopt: %m");
+      syslog(LOG_ERR,"setsockopt: %m");
 #endif /* HAVE_SYSLOG */
-    exit(1);
-  }
+      exit(1);
+    }
 
-  if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
+  if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) == -1)
+    {
 #ifdef HAVE_SYSLOG
-    syslog(LOG_ERR,"bind: %m");
+      syslog(LOG_ERR,"bind: %m");
 #endif /* HAVE_SYSLOG */
-    exit(1);
-  }
+      exit(1);
+    }
 
-  if (listen(sock,SOMAXCONN) == -1) {
+  if (listen(sock,SOMAXCONN) == -1)
+    {
 #ifdef HAVE_SYSLOG
-    syslog(LOG_ERR,"bind: %m");
+      syslog(LOG_ERR,"bind: %m");
 #endif /* HAVE_SYSLOG */
-    exit(1);
-  }
+      exit(1);
+    }
 
   /* chdir so cores get dumped in the right directory */
-  if (chdir(CORE_DIR) == -1) {
+  if (chdir(CORE_DIR) == -1)
+    {
 #ifdef HAVE_SYSLOG
-    syslog(LOG_ERR, "chdir: %m");
+      syslog(LOG_ERR, "chdir: %m");
 #endif /* HAVE_SYSLOG */
-  }
+    }
 
 #ifdef HAVE_SYSLOG
   syslog(LOG_INFO,"Ready to accept connections..");
@@ -204,24 +201,28 @@ main(argc, argv)
 
   /* Main loop... */
 
-  while (1) {
-    len = sizeof(from);
-    fd = accept(sock,(struct sockaddr *) &from, &len);
-    if (fd == -1) {
-      if (errno == EINTR) {
+  while (1)
+    {
+      len = sizeof(from);
+      fd = accept(sock,(struct sockaddr *) &from, &len);
+      if (fd == -1)
+	{
+	  if (errno == EINTR)
+	    {
 #ifdef HAVE_SYSLOG
-	syslog(LOG_WARNING,"Interrupted by signal in accept; continuing");
+	      syslog(LOG_WARNING,
+		     "Interrupted by signal in accept; continuing");
 #endif /* HAVE_SYSLOG */
-	continue;
-      }
+	      continue;
+	    }
 #ifdef HAVE_SYSLOG
-      syslog(LOG_ERR,"accept: %m");
+	  syslog(LOG_ERR,"accept: %m");
 #endif /* HAVE_SYSLOG */
-      exit(1);
+	  exit(1);
+	}
+      handle_request(fd,from);
+      close(fd);
     }
-    handle_request(fd,from);
-    close(fd);
-  }
 }
 
 #ifdef PROFILE
@@ -249,7 +250,7 @@ start_profile(sig)
 }
 #endif /* PROFILE */
 
-static RETSIGTYPE
+static void
 clean_up(int signal)
 {
   close(fd);

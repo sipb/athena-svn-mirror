@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: s_io.c,v 1.30 1999-03-06 16:48:59 ghudson Exp $
+ *	$Id: s_io.c,v 1.31 1999-06-28 22:52:42 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: s_io.c,v 1.30 1999-03-06 16:48:59 ghudson Exp $";
+static char rcsid[] ="$Id: s_io.c,v 1.31 1999-06-28 22:52:42 ghudson Exp $";
 #endif
 #endif
 
@@ -159,7 +159,7 @@ send_list(fd, request, list)
      LIST *list;
 {
   IO_LIST net_req;
-  int response;
+  ERRCODE response;
   int len,size;
   long i;
 

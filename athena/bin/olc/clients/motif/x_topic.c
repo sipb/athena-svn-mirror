@@ -18,11 +18,11 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: x_topic.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $
+ *      $Id: x_topic.c,v 1.7 1999-06-28 22:51:58 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_topic.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $";
+static char rcsid[]= "$Id: x_topic.c,v 1.7 1999-06-28 22:51:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -39,7 +39,7 @@ x_list_topics(Request, file)
      REQUEST *Request;
      char *file;
 {
-  int status;
+  ERRCODE status;
   FILE *infile;
   char inbuf[BUF_SIZE];
   int i = 0;

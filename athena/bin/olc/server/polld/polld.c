@@ -8,12 +8,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.c,v 1.16 1999-06-10 18:41:34 ghudson Exp $
+ *	$Id: polld.c,v 1.17 1999-06-28 22:52:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: polld.c,v 1.16 1999-06-10 18:41:34 ghudson Exp $";
+static char rcsid[] ="$Id: polld.c,v 1.17 1999-06-28 22:52:48 ghudson Exp $";
 #endif
 #endif
 
@@ -46,21 +46,13 @@ char DaemonInst[20];
 
 /* Static procedure definitions */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static RETSIGTYPE clean_up P((int sig));
-
-#undef P
+static void clean_up (int sig);
 
 /* Static vars */
 
 static int listening_fd;
 
-static RETSIGTYPE
+static void
 clean_up(int sig)
 {
   close(listening_fd);

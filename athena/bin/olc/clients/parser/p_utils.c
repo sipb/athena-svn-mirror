@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_utils.c,v 1.16 1999-03-06 16:48:04 ghudson Exp $
+ *	$Id: p_utils.c,v 1.17 1999-06-28 22:52:10 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_utils.c,v 1.16 1999-03-06 16:48:04 ghudson Exp $";
+static char rcsid[] ="$Id: p_utils.c,v 1.17 1999-06-28 22:52:10 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ char **
 handle_argument(args, req, status)
      char **args;
      REQUEST *req;
-     int *status;
+     ERRCODE *status;
 {
   num_of_args = 0;
   *status = SUCCESS;
@@ -50,7 +50,7 @@ handle_argument(args, req, status)
   if(string_eq(args[0],"-help"))
     return((char **) NULL);
   
-  if (string_equiv(args[0], "-instance",max(strlen(args[0]),2))) 
+  if (is_flag(args[0], "-instance",2))
     if((*(++args) != (char *) NULL) && (*args[0] != '-'))
       {
 	if(isnumber(*args) != SUCCESS)
@@ -69,7 +69,7 @@ handle_argument(args, req, status)
         *status = ERROR;
 	return((char **) NULL);
       }
-  else  if (string_equiv(args[0], "-j",max(strlen(args[0]),2))) 
+  else if (is_flag(args[0], "-j",2))
     if((*(++args) != (char *) NULL) && (*args[0] != '-'))
       {
 	if(isnumber(*args) != SUCCESS)
@@ -94,33 +94,32 @@ handle_argument(args, req, status)
       *status = ERROR;
       return((char **) NULL);
     }
-  else if(string_equiv(args[0],"-help",max(strlen(args[0]),2)))
-         return((char **) NULL);
-  else          
-    if(*args)
+  else if(is_flag(args[0],"-help",2))
+      return((char **) NULL);
+  else if(*args)
+    {
+      if (!isalnum(*args[0])) {
+	fprintf(stderr,"The username \"%s\" is invalid.\n", *args);
+	*status = ERROR;
+	return((char **) NULL);
+      }
+      strncpy(req->target.username,*args,LOGIN_SIZE);
+      num_of_args++;
+      if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
+	 (*args[1] != '>'))
 	{
-	  if (!isalnum(*args[0])) {
-	    fprintf(stderr,"The username \"%s\" is invalid.\n", *args);
-	    *status = ERROR;
-	    return((char **) NULL);
-	  }
-	  (void) strncpy(req->target.username,*args,LOGIN_SIZE);
-	  num_of_args++;
-	  if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
-	     (*args[1] != '>'))
+	  ++args;
+	  if(isnumber(*args) != SUCCESS)
 	    {
-	      ++args;
-	      if(isnumber(*args) != SUCCESS)
-		{
-		  printf("Specified instance id \"%s\" is not a number.\n", 
-			 *args);
-		  *status = ERROR;
-		  return((char **) NULL);
-		}
-	      req->target.instance = atoi(*args); 	 
+	      printf("Specified instance id \"%s\" is not a number.\n", 
+		     *args);
+	      *status = ERROR;
+	      return((char **) NULL);
 	    }
-	  else
-	    req->target.instance = NO_INSTANCE; 	 
-	} 
+	  req->target.instance = atoi(*args); 	 
+	}
+      else
+	req->target.instance = NO_INSTANCE; 	 
+    } 
   return(args);
 }

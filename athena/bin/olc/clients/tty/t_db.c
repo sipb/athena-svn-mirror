@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_db.c,v 1.9 1999-03-06 16:48:08 ghudson Exp $
+ *	$Id: t_db.c,v 1.10 1999-06-28 22:52:16 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_db.c,v 1.9 1999-03-06 16:48:08 ghudson Exp $";
+static char rcsid[] ="$Id: t_db.c,v 1.10 1999-06-28 22:52:16 ghudson Exp $";
 #endif
 #endif
 
@@ -38,7 +38,7 @@ ERRCODE
 t_load_user(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
 
   status = OLoadUser(Request);
   if(status == SUCCESS)
@@ -55,7 +55,7 @@ t_dbinfo(Request,file)
      char *file;
 {
   DBINFO dbinfo;
-  int status;
+  ERRCODE status;
 
   status = OGetDBInfo(Request,&dbinfo);
   if(status == SUCCESS)
@@ -74,7 +74,7 @@ t_change_dbinfo(Request)
      REQUEST *Request;
 {
   DBINFO dbinfo;
-  int status;
+  ERRCODE status;
   char buf[BUF_SIZE];
   char mesg[BUF_SIZE];
 

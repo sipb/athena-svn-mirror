@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_motd.c,v 1.12 1999-03-06 16:48:10 ghudson Exp $
+ *	$Id: t_motd.c,v 1.13 1999-06-28 22:52:17 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_motd.c,v 1.12 1999-03-06 16:48:10 ghudson Exp $";
+static char rcsid[] ="$Id: t_motd.c,v 1.13 1999-06-28 22:52:17 ghudson Exp $";
 #endif
 #endif
 
@@ -39,7 +39,7 @@ t_get_file(Request,type,file,display_opts)
      int type, display_opts;
      char *file;
 {
-  int status;
+  ERRCODE status;
 
   status = OGetFile(Request,type,file);
   
@@ -70,7 +70,7 @@ t_change_file(Request,type,file, editor, incflag,clearflag)
      int incflag;
      int clearflag;
 {
-  int status;
+  ERRCODE status;
 
   set_option(Request->options, VERIFY);
   status = OChangeFile(Request,type,file);
@@ -107,7 +107,7 @@ t_change_file(Request,type,file, editor, incflag,clearflag)
     
   if (! clearflag) {
     status = enter_message(file,editor);
-    if(status)
+    if(status != SUCCESS)
       return(status);
   }
 

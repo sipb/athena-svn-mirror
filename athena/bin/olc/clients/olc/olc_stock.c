@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_stock.c,v 1.24 1999-03-06 16:47:52 ghudson Exp $
+ *	$Id: olc_stock.c,v 1.25 1999-06-28 22:52:02 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc_stock.c,v 1.24 1999-03-06 16:47:52 ghudson Exp $";
+static char rcsid[] ="$Id: olc_stock.c,v 1.25 1999-06-28 22:52:02 ghudson Exp $";
 #endif
 #endif
 
@@ -36,6 +36,10 @@ static char rcsid[] ="$Id: olc_stock.c,v 1.24 1999-03-06 16:47:52 ghudson Exp $"
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <signal.h>
+#include <unistd.h>
+#include <termio.h>
 
 /*
  * Function:  do_olcr_stock() allows a consultant to examine the
@@ -55,9 +59,20 @@ do_olc_stock(arguments)
   struct stat statbuf;		/* Ptr. to file status buffer. */
   char *topic;			/* Topic from daemon. */
   char dtopic[TOPIC_SIZE];	/* default topic */
-  int status;			/* Status returned by whatnow */
+  ERRCODE status;		/* Status returned by whatnow */
   int find_topic=0;
   char **cmd;
+  struct sigaction ign_act;     /*for ignoring signals*/
+  struct sigaction int_act;     /*remember the sigint action*/
+  struct termios term;          /*current state of the terminal*/
+  struct termios testterm;      /*for testing the state of the terminal*/
+  
+  sigemptyset(&ign_act.sa_mask);
+  ign_act.sa_flags = 0;
+  ign_act.sa_handler = SIG_IGN;
+  sigaction(SIGINT, &ign_act, &int_act);       /*ignore sigint*/
+  
+  tcgetattr(STDIN_FILENO, &term); /*save terminal state*/
 
   dtopic[0] = '\0';
 
@@ -78,7 +93,7 @@ do_olc_stock(arguments)
 
   for (++arguments; *arguments != (char *) NULL; ++arguments) 
     {
-      if (string_equiv(*arguments,"-t",2))
+      if (is_flag(*arguments,"-t",2))
 	{
           ++arguments;
 	  if(*arguments==(char *) NULL)
@@ -129,7 +144,7 @@ do_olc_stock(arguments)
   }
 
   make_temp_name(file);
-  
+
   switch(fork()) 
     {
     case -1:                /* error */
@@ -147,23 +162,35 @@ do_olc_stock(arguments)
       fprintf(stderr, "stock: could not exec stock answer browser\n");
       _exit(ERROR);
     default:                /* parent */
-      (void) wait(0);
+      wait(0);
     }
- 
+
+  tcsetattr(STDIN_FILENO, TCSAFLUSH, &term); /*restore terminal state.*/
+
   if(client_is_user_client())
-     return(SUCCESS);
- 
+    {
+      sigaction(SIGINT, &int_act, NULL);
+      return(SUCCESS);
+    }
   if (stat(file, &statbuf) < 0) 
     {
       printf("No stock answer to send.\n");
+      sigaction(SIGINT, &int_act, NULL);
       return(SUCCESS);
     }
 
   status = what_now(file, FALSE, NULL);
   if (status == NO_ACTION)
-    return(SUCCESS);
-  else if (status == ERROR)
-    return(ERROR);
+    {
+      sigaction(SIGINT, &int_act, NULL);
+      return(SUCCESS);
+    }
+  else
+    if (status == ERROR)
+      {
+	sigaction(SIGINT, &int_act, NULL);
+	return(ERROR);
+      }
 
   status = OReply(&Request,file);
   
@@ -207,6 +234,7 @@ do_olc_stock(arguments)
       status =  handle_response(status, &Request);
       break;
     }
-
+  
+  sigaction(SIGINT, &int_act, NULL);  
   return(status);
 }

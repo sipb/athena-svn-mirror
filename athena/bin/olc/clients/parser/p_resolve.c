@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_resolve.c,v 1.15 1999-03-06 16:48:03 ghudson Exp $
+ *	$Id: p_resolve.c,v 1.16 1999-06-28 22:52:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_resolve.c,v 1.15 1999-03-06 16:48:03 ghudson Exp $";
+static char rcsid[] ="$Id: p_resolve.c,v 1.16 1999-06-28 22:52:09 ghudson Exp $";
 #endif
 #endif
 
@@ -55,7 +55,7 @@ do_olc_done(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   char topic[TOPIC_SIZE];
   char title[LINE_SIZE];
   char *titleP = (char *) NULL;
@@ -69,7 +69,7 @@ do_olc_done(arguments)
 
   for (arguments++; *arguments != (char *) NULL; arguments++)
     {
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),3)))
+      if(is_flag(*arguments,"-topic",3))
 	{
 	  arguments++;
 	  if(*arguments == (char *) NULL)
@@ -92,30 +92,30 @@ do_olc_done(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-title",max(strlen(*arguments),3)))
+      if(is_flag(*arguments,"-title",3))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
-	    (void) get_prompted_input("Title: ", title,LINE_SIZE,0);
+	    get_prompted_input("Title: ", title,LINE_SIZE,0);
 	  else
 	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-off",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-off",2))
 	{
 	  set_option(Request.options,OFF_OPT);
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-nocheck",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-nocheck",2))
 	{
 	  check = 0;
 	  continue;
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -152,7 +152,7 @@ do_olc_cancel(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   char title[LINE_SIZE];
   char *titleP = (char *) NULL;
 
@@ -163,24 +163,24 @@ do_olc_cancel(arguments)
 
   for (arguments++; *arguments != (char *) NULL; arguments++)
     {
-      if(string_equiv(*arguments,"-title",max(strlen(*arguments),3)))
+      if(is_flag(*arguments,"-title",3))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
-	    (void) get_prompted_input("Title: ", title, LINE_SIZE,0);
+	    get_prompted_input("Title: ", title, LINE_SIZE,0);
 	  else
 	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-off",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-off",2))
 	{
 	  set_option(Request.options,OFF_OPT);
 	  continue;
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{

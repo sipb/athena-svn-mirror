@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: notify.c,v 1.42 1999-06-10 18:41:31 ghudson Exp $
+ *	$Id: notify.c,v 1.43 1999-06-28 22:52:41 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: notify.c,v 1.42 1999-06-10 18:41:31 ghudson Exp $";
+static char rcsid[] ="$Id: notify.c,v 1.43 1999-06-28 22:52:41 ghudson Exp $";
 #endif
 #endif
 
@@ -59,21 +59,15 @@ static int punt_zephyr = 0;
 static long zpunt_time;
 static int zpunt_duration;
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static RETSIGTYPE notice_timeout P((int a ));
+static void notice_timeout (int a );
 
 #ifdef HAVE_ZEPHYR
-static ERRCODE zwrite_message P((char *username , char *message ));
-static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message ));
-static ERRCODE zsend P((ZNotice_t *notice ));
+static ERRCODE zwrite_message (char *username , char *message );
+static ERRCODE zsend_message (char *c_class , char *instance ,
+			      char *opcode , char *username ,
+			      char *message );
+static ERRCODE zsend (ZNotice_t *notice );
 #endif /* HAVE_ZEPHYR */
-#undef P
-
 
 static jmp_buf env;
 
@@ -96,7 +90,7 @@ static jmp_buf env;
 
 static int write_port = 0;
 
-static ERRCODE
+ERRCODE
 write_message(touser, tomachine, fromuser, frommachine, message)
      char *touser, *tomachine, *fromuser, *frommachine, *message;
 {
@@ -111,7 +105,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	unsigned long ip_addr;
 	struct sigaction action;
 
-	if (touser == (char *)NULL) /* User sanity check. */
+	if (touser == NULL) /* User sanity check. */
 		return(ERROR);
 
 #ifdef HAVE_ZEPHYR
@@ -206,21 +200,21 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	  alarm(0);
 	  action.sa_handler = SIG_IGN;       /* struct already initialized */
 	  sigaction(SIGALRM, &action, NULL);
-	  (void) close(fds);
+	  close(fds);
 	  return(MACHINE_DOWN);
 	}
-	(void) write(fds, fromuser, strlen(fromuser));
-	(void) write(fds, "@", 1);
-	(void) write(fds, frommachine, strlen(frommachine));
-	(void) write(fds, " ", 1);
-	(void) write(fds, touser, strlen(touser));
-	(void) write(fds, "\r\n", 2);
+	write(fds, fromuser, strlen(fromuser));
+	write(fds, "@", 1);
+	write(fds, frommachine, strlen(frommachine));
+	write(fds, " ", 1);
+	write(fds, touser, strlen(touser));
+	write(fds, "\r\n", 2);
 	tf = fdopen(fds, "r");
 	flag++;
 	while (1) {
 		if (fgets(buf, sizeof(buf), tf) == (char *)NULL) {
-		  (void) fclose(tf);
-		  (void) close(fds);
+		  fclose(tf);
+		  close(fds);
 		  alarm(0);
 		  action.sa_handler = SIG_IGN; /* struct already initialized */
 		  sigaction(SIGALRM, &action, NULL);
@@ -228,12 +222,12 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		}
 		if (buf[0] == '\n')
 			break;
-		(void) write(1, buf, strlen(buf));
+		write(1, buf, strlen(buf));
 	}
-	(void) write(fds, message, strlen(message));
-	(void) write(fds, "\r\n", 2);
-	(void) fclose(tf);
-	(void) close(fds);
+	write(fds, message, strlen(message));
+	write(fds, "\r\n", 2);
+	fclose(tf);
+	close(fds);
 	alarm(0);
 	action.sa_handler = SIG_IGN;         /* struct already initialized */
 	sigaction(SIGALRM, &action, NULL);
@@ -241,7 +235,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 }
 
  
-static RETSIGTYPE
+static void
 notice_timeout(a)
      int a;
 {

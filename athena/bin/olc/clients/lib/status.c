@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: status.c,v 1.19 1999-03-06 16:47:40 ghudson Exp $
+ *	$Id: status.c,v 1.20 1999-06-28 22:51:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: status.c,v 1.19 1999-03-06 16:47:40 ghudson Exp $";
+static char rcsid[] ="$Id: status.c,v 1.20 1999-06-28 22:51:52 ghudson Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ OListPerson(Request,data)
      REQUEST *Request;
      LIST **data;
 {
-  int status;
+  ERRCODE status;
 
   Request->options = LIST_PERSONAL;
   status = OListQueue(Request,data,"","","",0);
@@ -54,7 +54,7 @@ OWho(Request,data)
      LIST *data;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   if (((time(0) - lc_time) < LIST_LIFETIME)
       && (list_cache.user.instance == Request->requester.instance))
@@ -64,11 +64,11 @@ OWho(Request,data)
     }
   Request->request_type = OLC_WHO;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -81,7 +81,7 @@ OWho(Request,data)
       list_cache = *data;
       lc_time = time(0);
     }
-  (void) close(fd);
+  close(fd);
   return(status);
 }
 
@@ -91,7 +91,7 @@ OGetUsername(Request,username)
      char *username;
 {
   LIST list;
-  int status;
+  ERRCODE status;
 
   status = OWho(Request, &list);
   if (status != SUCCESS)
@@ -107,7 +107,7 @@ OGetHostname(Request,hostname)
      char *hostname;
 {
   LIST list;
-  int status;
+  ERRCODE status;
 
   status = OWho(Request, &list);
   if (status != SUCCESS)
@@ -123,7 +123,7 @@ OGetConnectedUsername(Request,username)
      char *username;
 {
   LIST list;
-  int status;
+  ERRCODE status;
 
   status = OWho(Request, &list);
   if (status != SUCCESS)
@@ -139,7 +139,7 @@ OGetConnectedHostname(Request,hostname)
      char *hostname;
 {
   LIST list;
-  int status;
+  ERRCODE status;
 
   status = OWho(Request, &list);
   if (status != SUCCESS)
@@ -155,15 +155,15 @@ OVersion(Request,vstring)
      char **vstring;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   Request->request_type = OLC_VERSION;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -174,6 +174,6 @@ OVersion(Request,vstring)
     {
       *vstring = read_text_from_fd(fd);
     }
-  (void) close(fd);
+  close(fd);
   return(status);
 }

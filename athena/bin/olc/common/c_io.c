@@ -19,21 +19,19 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: c_io.c,v 1.28 1999-03-06 16:48:15 ghudson Exp $
+ *	$Id: c_io.c,v 1.29 1999-06-28 22:52:24 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: c_io.c,v 1.28 1999-03-06 16:48:15 ghudson Exp $";
+static char rcsid[] ="$Id: c_io.c,v 1.29 1999-06-28 22:52:24 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include "config.h"
 
-#ifdef STDC_HEADERS
 #include <stdlib.h>
-#endif
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/socket.h>		/* Network socket defs. */
 #include <sys/file.h>		/* File handling defs. */
@@ -49,10 +47,8 @@ static char rcsid[] ="$Id: c_io.c,v 1.28 1999-03-06 16:48:15 ghudson Exp $";
 
 #include <olc/olc.h>
 
-#if __STDC__
 static ERRCODE write_chars_to_fd (int, char *, int);
 static ERRCODE read_chars_from_fd (int, char *, int);
-#endif
 
 extern int select_timeout;
 
@@ -110,7 +106,7 @@ int read_dbinfo(fd,dbinfo)
 ERRCODE
 send_response(fd, response)
      int fd;
-     RESPONSE response;
+     ERRCODE response;
 {
   return(write_int_to_fd(fd, response));
 }
@@ -130,9 +126,9 @@ send_response(fd, response)
 ERRCODE
 read_response(fd, response)
      int fd;
-     RESPONSE *response;
+     ERRCODE *response;
 {
-  return(read_int_from_fd(fd, response));
+  return(read_int_from_fd(fd, (int *)response));
 }
 
 
@@ -270,41 +266,46 @@ read_file_into_text(filename,bufp)
   char error[ERROR_SIZE];
 
   buf = *bufp;
-  if (stat(filename,&statbuf) != 0) {
-    sprintf(error,"read_file_into_text: bad stat value on file %s",
-	    filename);
-    olc_perror(error);
-    return(ERROR);
-  }
+  if (stat(filename,&statbuf) != 0)
+    {
+      sprintf(error,"read_file_into_text: bad stat value on file %s",
+	      filename);
+      olc_perror(error);
+      return(ERROR);
+    }
   nbytes = statbuf.st_size;
 
   buf = malloc(nbytes + 1);
-  if (buf == NULL) {
-    olc_perror("read_file_into_text: Can't allocate memory.");
-    return(ERROR);
-  }
-
+  if (buf == NULL)
+    {
+      olc_perror("read_file_into_text: Can't allocate memory.");
+      return(ERROR);
+    }
+  
   fd = open(filename,O_RDONLY,0);
-  if (fd < 0) {
-    free(buf);
-    sprintf(error,"read_file_into_text: error opening %s", filename);
-    olc_perror(error);
-    return(ERROR);
-  }
+  if (fd < 0)
+    {
+      free(buf);
+      sprintf(error,"read_file_into_text: error opening %s", filename);
+      olc_perror(error);
+      return(ERROR);
+    }
 
-  if (read(fd,buf,nbytes) != nbytes) {
-    free(buf);
-    sprintf(error,"read_file_into_text: error reading %s", filename);
-    olc_perror(error);
-    close(fd);
-    return(ERROR);
-  }
+  if (read(fd,buf,nbytes) != nbytes)
+    {
+      free(buf);
+      sprintf(error,"read_file_into_text: error reading %s", filename);
+      olc_perror(error);
+      close(fd);
+      return(ERROR);
+    }
 
-  if (close(fd) < 0) {
-    sprintf(error,"read_file_into_text: error closing %s", filename);
-    olc_perror(error);
-  }
-
+  if (close(fd) < 0)
+    {
+      sprintf(error,"read_file_into_text: error closing %s", filename);
+      olc_perror(error);
+    }
+  
   buf[nbytes] = '\0';
   *bufp = buf;
   return(SUCCESS);

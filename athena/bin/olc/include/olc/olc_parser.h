@@ -16,7 +16,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_parser.h,v 1.14 1999-01-22 23:13:43 ghudson Exp $
+ *	$Id: olc_parser.h,v 1.15 1999-06-28 22:52:33 ghudson Exp $
  */
 
 
@@ -24,7 +24,7 @@
 #define __olc_olc_parser_h
 
 /* These really don't return anything useful.  */
-typedef ERRCODE (*Pfunction)OPrototype((char **));
+typedef ERRCODE (*Pfunction)(char **);
 
 #include <mit-copyright.h>
 #include <olc/olc_tty.h>
@@ -40,87 +40,81 @@ typedef struct tCOMMAND  {
         char            *description;           /* Brief description. */
 } COMMAND;
 
-#ifdef __STDC__
-# define	P(s) s
-#else
-# define P(s) ()
-#endif
-
 /* p_acl.c */
-ERRCODE do_olc_acl P((char **arguments ));
+ERRCODE do_olc_acl (char **arguments );
 
 /* p_ask.c */
-ERRCODE do_olc_ask P((char **arguments ));
+ERRCODE do_olc_ask (char **arguments );
 
 /* p_cmdloop.c */
-void command_loop P((COMMAND Command_Table [], char *prompt ));
-ERRCODE do_command P((COMMAND Command_Table [], char *arguments []));
-ERRCODE command_index P((COMMAND Command_Table [], char *command_name ));
-char *expand_variable P((REQUEST *Request , char *var ));
-int expand_arguments P((REQUEST *Request , char **arguments ));
-int set_prompt P((REQUEST *Request , char *prompt , char *inprompt ));
-ERRCODE parse_command_line P((char *command_line , char arguments [MAX_ARGS ][MAX_ARG_LENGTH ]));
+void command_loop (COMMAND Command_Table [], char *prompt );
+ERRCODE do_command (COMMAND Command_Table [], char *arguments []);
+ERRCODE command_index (COMMAND Command_Table [], char *command_name );
+char *expand_variable (REQUEST *Request , char *var );
+int expand_arguments (REQUEST *Request , char **arguments );
+int set_prompt (REQUEST *Request , char *prompt , char *inprompt );
+ERRCODE parse_command_line (char *command_line ,
+			    char arguments [MAX_ARGS ][MAX_ARG_LENGTH ]);
+void sigint_handler (int signal);
 
 /* p_connect.c */
-ERRCODE do_olc_grab P((char **arguments ));
-ERRCODE do_olc_forward P((char **arguments ));
+ERRCODE do_olc_grab (char **arguments );
+ERRCODE do_olc_forward (char **arguments );
 
 /* p_consult.c */
-ERRCODE do_olc_on P((char **arguments ));
-ERRCODE do_olc_off P((char **arguments ));
+ERRCODE do_olc_on (char **arguments );
+ERRCODE do_olc_off (char **arguments );
 
 /* p_describe.c */
-ERRCODE do_olc_describe P((char **arguments ));
+ERRCODE do_olc_describe (char **arguments );
 
 /* p_instance.c */
-ERRCODE do_olc_instance P((char **arguments ));
+ERRCODE do_olc_instance (char **arguments );
 
 /* p_list.c */
-ERRCODE do_olc_list P((char **arguments ));
+ERRCODE do_olc_list (char **arguments );
 
 /* p_local.c */
-ERRCODE do_quit P((char *arguments []));
-ERRCODE do_olc_help P((char *arguments []));
-ERRCODE do_olc_list_cmds P((char *arguments []));
+ERRCODE do_quit (char *arguments []);
+ERRCODE do_olc_help (char *arguments []);
+ERRCODE do_olc_list_cmds (char *arguments []);
 
 /* p_messages.c */
-ERRCODE do_olc_replay P((char **arguments ));
-ERRCODE do_olc_show P((char **arguments ));
+ERRCODE do_olc_replay (char **arguments );
+ERRCODE do_olc_show (char **arguments );
 
 /* p_misc.c */
-ERRCODE do_olc_load_user P((char **arguments ));
-ERRCODE do_olc_dbinfo P((char **arguments ));
+ERRCODE do_olc_load_user (char **arguments );
+ERRCODE do_olc_dbinfo (char **arguments );
 
 /* p_motd.c */
-ERRCODE do_olc_motd P((char **arguments ));
-ERRCODE do_olc_hours P((char **arguments ));
+ERRCODE do_olc_motd (char **arguments );
+ERRCODE do_olc_hours (char **arguments );
 
 /* p_queue.c */
-ERRCODE do_olc_queue P((char **arguments ));
+ERRCODE do_olc_queue (char **arguments );
 
 /* p_resolve.c */
-ERRCODE do_olc_done P((char **arguments ));
-ERRCODE do_olc_cancel P((char **arguments ));
+ERRCODE do_olc_done (char **arguments );
+ERRCODE do_olc_cancel (char **arguments );
 
 /* p_send.c */
-ERRCODE do_olc_send P((char **arguments ));
-ERRCODE do_olc_comment P((char **arguments ));
-ERRCODE do_olc_mail P((char **arguments ));
+ERRCODE do_olc_send (char **arguments );
+ERRCODE do_olc_comment (char **arguments );
+ERRCODE do_olc_mail (char **arguments );
 
 /* p_status.c */
-ERRCODE do_olc_status P((char **arguments ));
-ERRCODE do_olc_who P((char **arguments ));
-ERRCODE do_olc_version P((char **arguments ));
+ERRCODE do_olc_status (char **arguments );
+ERRCODE do_olc_who (char **arguments );
+ERRCODE do_olc_version (char **arguments );
 
 /* p_topic.c */
-ERRCODE do_olc_topic P((char **arguments ));
+ERRCODE do_olc_topic (char **arguments );
 
 /* p_utils.c */
-char **handle_argument P((char **args , REQUEST *req , int *status ));
+char **handle_argument (char **args , REQUEST *req , ERRCODE *status );
 
 /* p_zephyr.c */
-ERRCODE do_olc_zephyr P((char **arguments ));
-
-#undef P
+ERRCODE do_olc_zephyr (char **arguments );
 
 #endif /* __olc_olc_parser_h */

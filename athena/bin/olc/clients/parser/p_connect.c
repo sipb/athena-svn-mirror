@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_connect.c,v 1.13 1999-03-06 16:48:00 ghudson Exp $
+ *	$Id: p_connect.c,v 1.14 1999-06-28 22:52:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_connect.c,v 1.13 1999-03-06 16:48:00 ghudson Exp $";
+static char rcsid[] ="$Id: p_connect.c,v 1.14 1999-06-28 22:52:07 ghudson Exp $";
 #endif
 #endif
 
@@ -47,7 +47,7 @@ do_olc_grab(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   int flag = 0;
   int hold = 0;
 
@@ -57,16 +57,14 @@ do_olc_grab(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if(string_equiv(*arguments,"-create_new_instance",
-		      max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-create_new_instance", 2))
 	{
 	  flag = 1;
 	  arguments++;
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-do_not_change_instance",
-		      max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-do_not_change_instance",2))
 	{
 	  hold = 1;
 	  arguments++;
@@ -74,7 +72,7 @@ do_olc_grab(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       arguments += num_of_args;		/* HACKHACKHACK */
@@ -112,7 +110,7 @@ do_olc_forward(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -120,25 +118,25 @@ do_olc_forward(arguments)
   arguments++;
   while(*arguments != (char *)NULL)
     {
-      if (string_equiv(*arguments, "-off", max(strlen(*arguments), 2)))
+      if (is_flag(*arguments, "-off", 2))
 	{
 	  set_option(Request.options, OFF_OPT);
 	  arguments++;
 	  continue;
 	}
 
-      if(string_equiv(*arguments, "-unanswered", max(strlen(*arguments), 2)))
+      if(is_flag(*arguments, "-unanswered", 2))
 	{
 	  set_option(Request.options, FORWARD_UNANSWERED);
 	  arguments++;
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-status",2))
 	{
 	  arguments++;
 	  status = t_input_status(&Request, *arguments);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(status);
 	  if(*arguments != (char *) NULL)
 	    arguments++;
@@ -146,7 +144,7 @@ do_olc_forward(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       arguments += num_of_args;		/* HACKHACKHACK */

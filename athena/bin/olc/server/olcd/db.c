@@ -17,12 +17,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: db.c,v 1.23 1999-03-06 16:48:54 ghudson Exp $
+ *	$Id: db.c,v 1.24 1999-06-28 22:52:40 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: db.c,v 1.23 1999-03-06 16:48:54 ghudson Exp $";
+static char rcsid[] ="$Id: db.c,v 1.24 1999-06-28 22:52:40 ghudson Exp $";
 #endif
 #endif
 
@@ -38,16 +38,7 @@ static char rcsid[] ="$Id: db.c,v 1.23 1999-03-06 16:48:54 ghudson Exp $";
 
 extern ACL  Acl_List[];
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static int get_user_info P((USER *user ));
-
-#undef P
-
+static int get_user_info (USER *user );
 
 /*
  * Function:	get_specialties() searches the OLC database to find a
@@ -129,7 +120,7 @@ load_db()
       if(*db == '#')       /* comment */
 	continue;
       t = (TOPIC *) malloc(sizeof(TOPIC));
-      if(t == (TOPIC *) NULL)
+      if(t == NULL)
 	{
 	  log_error("load_db: topic malloc: %m");
 	  fclose(fp);
@@ -167,6 +158,8 @@ void
 load_user(user)
      USER *user;
 {
+  char tmpfile[MAXPATHLEN];
+
   get_specialties(user);
   get_acls(user);
   get_user_info(user);

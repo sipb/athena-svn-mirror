@@ -5,12 +5,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: list.c,v 1.26 1999-03-06 16:48:54 ghudson Exp $
+ *	$Id: list.c,v 1.27 1999-06-28 22:52:40 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: list.c,v 1.26 1999-03-06 16:48:54 ghudson Exp $";
+static char rcsid[] ="$Id: list.c,v 1.27 1999-06-28 22:52:40 ghudson Exp $";
 #endif
 #endif
 
@@ -19,16 +19,8 @@ static char rcsid[] ="$Id: list.c,v 1.26 1999-03-06 16:48:54 ghudson Exp $";
 
 #include <olcd.h>
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static void get_dlist_info P((D_LIST *item , KNUCKLE *k ));
-static void put_queue P((FILE *f , D_LIST *q , int n , char *name ));
-
-#undef P
+static void get_dlist_info (D_LIST *item , KNUCKLE *k );
+static void put_queue (FILE *f , D_LIST *q , int n , char *name );
 
 #define NBLOCKS 100
 

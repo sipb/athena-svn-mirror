@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: db.c,v 1.7 1999-03-06 16:47:35 ghudson Exp $
+ *	$Id: db.c,v 1.8 1999-06-28 22:51:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: db.c,v 1.7 1999-03-06 16:47:35 ghudson Exp $";
+static char rcsid[] ="$Id: db.c,v 1.8 1999-06-28 22:51:48 ghudson Exp $";
 #endif
 #endif
 
@@ -36,24 +36,24 @@ ERRCODE
 OLoadUser(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
   int fd;
 
   Request->request_type = OLC_LOAD_USER;
 
   status = open_connection_to_daemon(Request, &fd); 
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
     }
 
   read_response(fd, &status); 
-  (void) close(fd);
+  close(fd);
   return(status);
 }
 
@@ -62,17 +62,17 @@ OGetDBInfo(Request, dbinfo)
      REQUEST *Request;
      DBINFO *dbinfo;
 {
-  int status;
+  ERRCODE status;
   int fd;
 
   Request->request_type = OLC_GET_DBINFO;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -83,7 +83,7 @@ OGetDBInfo(Request, dbinfo)
   if(status == SUCCESS)
     read_dbinfo(fd,dbinfo);
 
-  (void) close(fd);
+  close(fd);
   return(status);
 }
 
@@ -92,17 +92,17 @@ OSetDBInfo(Request, dbinfo)
      REQUEST *Request;
      DBINFO *dbinfo;
 {
-  int status;
+  ERRCODE status;
   int fd;
 
   Request->request_type = OLC_SET_DBINFO;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -114,6 +114,6 @@ OSetDBInfo(Request, dbinfo)
     send_dbinfo(fd,dbinfo);
 
   read_response(fd, &status); 
-  (void) close(fd);
+  close(fd);
   return(status);
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_messages.c,v 1.15 1999-03-06 16:48:01 ghudson Exp $
+ *	$Id: p_messages.c,v 1.16 1999-06-28 22:52:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_messages.c,v 1.15 1999-03-06 16:48:01 ghudson Exp $";
+static char rcsid[] ="$Id: p_messages.c,v 1.16 1999-06-28 22:52:08 ghudson Exp $";
 #endif
 #endif
 
@@ -57,7 +57,7 @@ do_olc_replay(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   int  stati = 0;
   char queues[NAME_SIZE];
   char users[NAME_SIZE];
@@ -78,8 +78,7 @@ do_olc_replay(arguments)
 
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
-      if ((string_equiv(*arguments, "-file",max(2,strlen(*arguments)))) ||
-	  string_eq(*arguments,">"))
+      if ((is_flag(*arguments, "-file",2)) || string_eq(*arguments,">"))
 	{
 	  arguments++;
 	  unlink(file);
@@ -91,13 +90,13 @@ do_olc_replay(arguments)
 		return(ERROR);
 	    }
 	  else 
-	    (void) strcpy(file, *arguments);
+	    strcpy(file, *arguments);
 	
 	  savefile = TRUE;
 	  continue;
 	}
       
-      if(string_equiv(*arguments,"-queue",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-queue",2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -125,7 +124,7 @@ do_olc_replay(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-status",2))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -148,7 +147,7 @@ do_olc_replay(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-user",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-user",2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -161,7 +160,7 @@ do_olc_replay(arguments)
 	  continue;
 	}
       
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-topic",2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -190,7 +189,7 @@ do_olc_replay(arguments)
 	}
  
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 	
       if(arguments == (char **) NULL)   /* error */
@@ -212,7 +211,7 @@ do_olc_replay(arguments)
 
   status = t_replay(&Request, queues, topics, users, stati, file, !savefile);
   if((savefile == FALSE) || (status != SUCCESS))
-    (void) unlink(file);
+    unlink(file);
   return(status);
 }
 
@@ -235,7 +234,7 @@ do_olc_show(arguments)
   REQUEST Request;
   char file[NAME_SIZE];
   int savefile;		 
-  int status;
+  ERRCODE status;
   int connected = 0;
   int noflush = 0;
 
@@ -247,8 +246,7 @@ do_olc_show(arguments)
 
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
-      if ((string_equiv(*arguments, "-file",max(strlen(*arguments),2))) ||
-	  string_eq(*arguments,">"))
+      if ((is_flag(*arguments, "-file",2)) || string_eq(*arguments,">"))
 	{
 	  arguments++;
 	  unlink(file);
@@ -260,18 +258,18 @@ do_olc_show(arguments)
 		return(ERROR);
 	    }
 	  else 
-	    (void) strcpy(file, *arguments);
+	    strcpy(file, *arguments);
 	
 	  savefile = TRUE;
 	}
       else
-	if (string_equiv(*arguments, "-connected", max(strlen(*arguments),2)))
+	if (is_flag(*arguments, "-connected", 2))
 	  {
 	    connected = TRUE;
 	    continue;
 	  }
       else
-	if (string_equiv(*arguments, "-noflush", max(strlen(*arguments),2)))
+	if (is_flag(*arguments, "-noflush", 2))
 	  {
 	    noflush = TRUE;
 	    continue;
@@ -279,7 +277,7 @@ do_olc_show(arguments)
 	else 
 	  {
 	    arguments = handle_argument(arguments, &Request, &status);
-	    if(status)
+	    if (status != SUCCESS)
 	      return(ERROR);
 	  }
       if(arguments == (char **) NULL)   /* error */
@@ -306,7 +304,7 @@ do_olc_show(arguments)
   status = t_show_message(&Request,file, !savefile, connected, noflush);
 
   if((savefile == FALSE) || (status != SUCCESS))
-    (void) unlink(file);
+    unlink(file);
 
   return(status);
 }

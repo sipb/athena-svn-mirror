@@ -1,5 +1,5 @@
 /*
- * $Id: oclient.h,v 1.5 1999-03-06 16:48:25 ghudson Exp $
+ * $Id: oclient.h,v 1.6 1999-06-28 22:52:27 ghudson Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -20,23 +20,15 @@
 
 #include "requests.h"
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
 #ifdef HAVE_KRB4
 #define K_SERVICE "olc"
 #endif /* HAVE_KRB4 */
 
 /* oreplay.c */
-void usage P((void));
-void punt P((int fd, char *filename));
+void usage (void);
+void punt (int fd, char *filename);
 
 /* io.c */
-int sread P((int fd , void *buf , int nbytes ));
-int swrite P((int fd , void *buf , int nbytes ));
-void expand_hostname P((char *hostname , char *instance , char *realm ));
-
-#undef P
+int sread (int fd , void *buf , int nbytes );
+int swrite (int fd , void *buf , int nbytes );
+void expand_hostname (char *hostname , char *instance , char *realm );

@@ -17,19 +17,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-
 /* locate.c */
-static RETSIGTYPE do_timeout P((int sig));
-static int find_finger P((PTF *person));
-static int find_zephyr P((PTF *person));
-
-#undef P
+static void do_timeout (int sig);
+static int find_finger (PTF *person);
+static int find_zephyr (PTF *person);
 
 static jmp_buf env;		/* for longjmp in finger timeout */
 static int fd;			/* Socket for fingering */
@@ -38,7 +29,7 @@ static FILE *f;			/* Associated FILE * */
 static int use_zephyr;		/* If 1, use zephyr */
 #endif
 
-static RETSIGTYPE
+static void
 do_timeout(int sig)
 {
   if (f != NULL)

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: topic.c,v 1.10 1999-03-06 16:47:40 ghudson Exp $
+ *	$Id: topic.c,v 1.11 1999-06-28 22:51:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: topic.c,v 1.10 1999-03-06 16:47:40 ghudson Exp $";
+static char rcsid[] ="$Id: topic.c,v 1.11 1999-06-28 22:51:52 ghudson Exp $";
 #endif
 #endif
 
@@ -45,7 +45,7 @@ OGetTopic(Request,topic)
      REQUEST *Request;
      char *topic;
 {
-  int status;
+  ERRCODE status;
   LIST data;
 
   status = OWho(Request,&data);
@@ -68,19 +68,19 @@ OChangeTopic(Request, topic)
      char *topic;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 
   Request->request_type = OLC_SET_TOPIC;
   if(*topic == '\0')
     return(ERROR);
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -112,17 +112,17 @@ OListTopics(Request,file)
      char *file;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 
   Request->request_type = OLC_LIST_TOPICS;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status  != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -151,17 +151,17 @@ OVerifyTopic(Request,topic)
      char *topic;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 
   Request->request_type = OLC_VERIFY_TOPIC;
   
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
   
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -195,16 +195,16 @@ OHelpTopic(Request,topic, buf)      /*ARGSUSED*/
      char *topic, *buf;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 
   Request->request_type = OLC_HELP_TOPIC;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);

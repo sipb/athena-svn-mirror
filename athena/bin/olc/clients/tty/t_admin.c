@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_admin.c,v 1.3 1999-03-06 16:48:07 ghudson Exp $
+ *	$Id: t_admin.c,v 1.4 1999-06-28 22:52:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_admin.c,v 1.3 1999-03-06 16:48:07 ghudson Exp $";
+static char rcsid[] ="$Id: t_admin.c,v 1.4 1999-06-28 22:52:15 ghudson Exp $";
 #endif
 #endif
 
@@ -28,7 +28,7 @@ t_toggle_zephyr(Request,what,how_long)
      REQUEST *Request;
      int what, how_long;
 {
-  int status;
+  ERRCODE status;
 
   status = OTweakZephyr(Request,what,how_long);
   

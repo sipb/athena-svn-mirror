@@ -5,12 +5,12 @@
  * Copyright (C) 1987,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: acl_files.c,v 1.17 1999-03-06 16:48:51 ghudson Exp $
+ *	$Id: acl_files.c,v 1.18 1999-06-28 22:52:37 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: acl_files.c,v 1.17 1999-03-06 16:48:51 ghudson Exp $";
+static char rcsid[] ="$Id: acl_files.c,v 1.18 1999-06-28 22:52:37 ghudson Exp $";
 #endif
 #endif
 
@@ -79,24 +79,16 @@ struct hashtbl {
   char **tbl;			/* Pointer to start of table */
 };
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static FILE *acl_lock_file P((char *acl_file ));
-static int acl_abort P((char *acl_file , FILE *f ));
-static int acl_commit P((char *acl_file , FILE *f ));
-static void nuke_whitespace P((char *buf ));
-static struct hashtbl *make_hash P((int size ));
-static void destroy_hash P((struct hashtbl *h ));
-static unsigned int hashval P((char *s ));
-static void add_hash P((struct hashtbl *h , char *el ));
-static int check_hash P((struct hashtbl *h , char *el ));
-static int acl_load P((char *name ));
-
-#undef P
+static FILE *acl_lock_file (char *acl_file );
+static int acl_abort (char *acl_file , FILE *f );
+static int acl_commit (char *acl_file , FILE *f );
+static void nuke_whitespace (char *buf );
+static struct hashtbl *make_hash (int size );
+static void destroy_hash (struct hashtbl *h );
+static unsigned int hashval (char *s );
+static void add_hash (struct hashtbl *h , char *el );
+static int check_hash (struct hashtbl *h , char *el );
+static int acl_load (char *name );
 
 /* Canonicalize a principal name */
 /* If instance is missing, it becomes "" */

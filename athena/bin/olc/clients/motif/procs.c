@@ -10,11 +10,11 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: procs.c,v 1.31 1999-06-10 18:41:19 ghudson Exp $
+ *      $Id: procs.c,v 1.32 1999-06-28 22:51:57 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: procs.c,v 1.31 1999-06-10 18:41:19 ghudson Exp $";
+static char rcsid[]="$Id: procs.c,v 1.32 1999-06-28 22:51:57 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -47,23 +47,15 @@ extern const char *const sys_errlist[];
 #define strerror(x) (sys_errlist[x])
 #endif
 
-#if defined(__STDC__)
-# define P_(s) s
-#else
-# define P_(s) ()
-#endif
-
-static RETSIGTYPE reaper P_((int sig));
-static RETSIGTYPE view_ready P_((int sig));
-
-#undef P_
+static void reaper (int sig);
+static void view_ready (int sig);
 
 /*
  *  Procedures
  *
  */
 
-static RETSIGTYPE
+static void
 reaper(sig)
 {
   int foo;
@@ -81,7 +73,7 @@ reaper(sig)
   return;
 }
 
-static RETSIGTYPE
+static void
 view_ready(sig)
 {
   struct sigaction act;
@@ -327,7 +319,7 @@ olc_replay()
     return;
   }
   status = nl_get_log(fd,&log,&loglen,User.username,User.instance,&actlen);
-  if (status) {
+  if (status != SUCCESS) {
     switch (status) {
     case ERR_NO_SUCH_Q:
       XmTextSetString(w_replay_scrl,
@@ -475,7 +467,7 @@ save_cbk (w, tag, callback_data)
     loglen = 0;
     
     status = nl_get_log(fd,&log,&loglen,User.username,User.instance,&actlen);
-    if (status) {
+    if (status != SUCCESS) {
       switch (status) {
       case ERR_NO_SUCH_Q:
 	XmTextSetString(w_replay_scrl,
@@ -604,18 +596,18 @@ olc_help (w, tag, callback_data)
   XtSetArg(args[0], XmNsensitive, FALSE);
   XtSetValues(w_help_btn, args, 1);
 
-  (void) strcpy(help_filename, HELP_PATH);
+  strcpy(help_filename, HELP_PATH);
 
   if (replay_screen)
-    (void) strcat(help_filename, HELP_REPLAY);
+    strcat(help_filename, HELP_REPLAY);
   else if (ask_screen)
-    (void) strcat(help_filename, HELP_ASK);
+    strcat(help_filename, HELP_ASK);
   else
     {
       if (has_question)
-	(void) strcat(help_filename, HELP_INIT_CONTQ);
+	strcat(help_filename, HELP_INIT_CONTQ);
       else
-	(void) strcat(help_filename, HELP_INIT_NEWQ);
+	strcat(help_filename, HELP_INIT_NEWQ);
     }
 
   

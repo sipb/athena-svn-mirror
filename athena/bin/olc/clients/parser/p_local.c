@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_local.c,v 1.18 1999-03-06 16:48:01 ghudson Exp $
+ *	$Id: p_local.c,v 1.19 1999-06-28 22:52:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_local.c,v 1.18 1999-03-06 16:48:01 ghudson Exp $";
+static char rcsid[] ="$Id: p_local.c,v 1.19 1999-06-28 22:52:08 ghudson Exp $";
 #endif
 #endif
 
@@ -49,7 +49,7 @@ do_quit(arguments)
 {
   REQUEST Request;
   LIST *list;
-  int status;
+  ERRCODE status;
 
   *arguments = (char *) NULL;
   
@@ -79,7 +79,7 @@ do_quit(arguments)
 	      if ((l->nseen >= 0) && (l->connected.uid >= 0))
 		status = TRUE;
 	    }
-	  if (status)
+	  if (status == TRUE);
 #endif
 	    printf("Warning: you are still active in %s.  You may be signed on,\n", client_service_name());
             printf("connected to someone, or have a question of your own in the queue.\n");
@@ -126,14 +126,14 @@ do_olc_help(arguments)
 
   if (arguments[1] == (char *)NULL) 
     {
-      (void) strcpy(help_filename, client_help_directory());
-      (void) strcat(help_filename, "/");
-      (void) strcat(help_filename, client_help_primary_file());
+      strcpy(help_filename, client_help_directory());
+      strcat(help_filename, "/");
+      strcat(help_filename, client_help_primary_file());
     }
   else 
     {
-      (void) strcpy(help_filename, client_help_directory());
-      (void) strcat(help_filename, "/");
+      strcpy(help_filename, client_help_directory());
+      strcat(help_filename, "/");
 
       ind = command_index(Command_Table, arguments[1]);
       if (ind == ERROR)
@@ -146,10 +146,10 @@ do_olc_help(arguments)
 	if (ind == NOT_UNIQUE)
 	  return(NOT_UNIQUE);
 
-      (void) strcat(help_filename, Command_Table[ind].command_name);
+      strcat(help_filename, Command_Table[ind].command_name);
     }
 
-  (void) strcat(help_filename, client_help_ext());
+  strcat(help_filename, client_help_ext());
   return(display_file(help_filename));
 }
 

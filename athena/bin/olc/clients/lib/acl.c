@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: acl.c,v 1.8 1999-03-06 16:47:33 ghudson Exp $
+ *	$Id: acl.c,v 1.9 1999-06-28 22:51:46 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: acl.c,v 1.8 1999-03-06 16:47:33 ghudson Exp $";
+static char rcsid[] ="$Id: acl.c,v 1.9 1999-06-28 22:51:46 ghudson Exp $";
 #endif
 #endif
 
@@ -38,15 +38,15 @@ OSetAcl(Request,acl)
      char *acl;
 {
   int fd;
-  int status;
+  ERRCODE status;
  
   Request->request_type = OLC_CHANGE_ACL;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -73,16 +73,16 @@ OListAcl(Request,acl, file)
      char *file;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   Request->request_type = OLC_LIST_ACL;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -107,16 +107,16 @@ OGetAccesses(Request, file)
      char *file;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   Request->request_type = OLC_GET_ACCESSES;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -127,6 +127,6 @@ OGetAccesses(Request, file)
   if(status == SUCCESS)
     read_text_into_file(fd,file);
 
-  (void) close(fd);
+  close(fd);
   return(status);
 }

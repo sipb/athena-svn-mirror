@@ -20,11 +20,11 @@
 /* This file is part of the CREF finder.  It contains functions for executing
  * CREF commands.
  *
- *	$Id: commands.c,v 2.14 1999-03-06 16:47:22 ghudson Exp $
+ *	$Id: commands.c,v 2.15 1999-06-28 22:51:37 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Id: commands.c,v 2.14 1999-03-06 16:47:22 ghudson Exp $";
+static char *rcsid_commands_c = "$Id: commands.c,v 2.15 1999-06-28 22:51:37 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -74,7 +74,7 @@ print_help()
   clear();
   refresh();
   nl = set_nl(1);
-  call_program("more", filename);
+  display_file(filename);
   set_nl(nl);
   refresh();
   wait_for_key();
@@ -806,7 +806,7 @@ contents_file()
   clear();
   refresh();
   nl = set_nl(1);
-  call_program("more",contents_path);
+  display_file(contents_path);
   set_nl(nl);
   refresh();
   wait_for_key();

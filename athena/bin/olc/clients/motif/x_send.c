@@ -17,11 +17,11 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_send.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $
+ *      $Id: x_send.c,v 1.7 1999-06-28 22:51:58 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_send.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $";
+static char rcsid[]= "$Id: x_send.c,v 1.7 1999-06-28 22:51:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,7 +37,8 @@ x_reply(Request, message)
      REQUEST *Request;
      char *message;
 {
-  int status, fd;
+  ERRCODE status;
+  int fd;
   char error[BUF_SIZE];
   char file[MAXPATHLEN];
 
@@ -70,7 +71,7 @@ x_reply(Request, message)
 	return(ERROR);
       }
 
-  (void) close(fd);
+  close(fd);
 
   set_option(Request->options, VERIFY);
   status = OReply(Request,file);

@@ -17,12 +17,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_topic.c,v 1.16 1999-03-06 16:48:03 ghudson Exp $
+ *	$Id: p_topic.c,v 1.17 1999-06-28 22:52:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_topic.c,v 1.16 1999-03-06 16:48:03 ghudson Exp $";
+static char rcsid[] ="$Id: p_topic.c,v 1.17 1999-06-28 22:52:09 ghudson Exp $";
 #endif
 #endif
 
@@ -52,7 +52,7 @@ do_olc_topic(arguments)
   REQUEST Request;
   char topic[TOPIC_SIZE];	
   char file[NAME_SIZE];
-  int status;
+  ERRCODE status;
   int function  = 0;
   int save_file = 0;
 
@@ -62,15 +62,13 @@ do_olc_topic(arguments)
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if(string_equiv(*arguments,"-list",max(strlen(*arguments),2)) ||
-	 string_equiv(*arguments,"?",max(strlen(*arguments),1)))
+      if(is_flag(*arguments,"-list",2) || is_flag(*arguments,"?",1))
 	{
 	  function = 1;
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)) ||
-	 string_equiv(*arguments,"-change",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-topic",2) || is_flag(*arguments,"-change",2))
 	{
 	  if(*(arguments+1) != (char *) NULL) 
 	    {
@@ -85,8 +83,7 @@ do_olc_topic(arguments)
 	  continue;
 	}
       
-      if(!strcmp(*arguments, ">") || 
-	 string_equiv(*arguments,"-file",max(strlen(*arguments),2)))
+      if(!strcmp(*arguments, ">") || is_flag(*arguments,"-file",2))
 	{
           ++arguments;
 	  unlink(file);
@@ -98,14 +95,14 @@ do_olc_topic(arguments)
                 return(ERROR);
             }
           else
-            (void) strcpy(file, *arguments);
+            strcpy(file, *arguments);
 
 	  save_file = TRUE;
 	  continue;
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{

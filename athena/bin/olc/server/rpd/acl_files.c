@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Id: acl_files.c,v 1.8 1999-03-06 16:49:13 ghudson Exp $";
+  static char rcsid[] ="$Id: acl_files.c,v 1.9 1999-06-28 22:52:50 ghudson Exp $";
 #endif
 #endif
 
@@ -37,21 +37,13 @@ struct hashtbl {
   char **tbl;			/* Pointer to start of table */
 };
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static int acl_load P((char *name));
-static void add_hash P((struct hashtbl *h, char *el));
-static int check_hash P((struct hashtbl *h, char *el));
-static void destroy_hash P((struct hashtbl *h));
-static unsigned int hashval P((char *s));
-static struct hashtbl *make_hash P((int size));
-static void nuke_whitespace P((char *buf));
-
-#undef P
+static int acl_load (char *name);
+static void add_hash (struct hashtbl *h, char *el);
+static int check_hash (struct hashtbl *h, char *el);
+static void destroy_hash (struct hashtbl *h);
+static unsigned int hashval (char *s);
+static struct hashtbl *make_hash (int size);
+static void nuke_whitespace (char *buf);
 
 /* CHANGES from std. file:  fixed fd leak and null ptr. deref.
  *                          increased cache size

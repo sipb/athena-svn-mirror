@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_list.c,v 1.11 1999-03-06 16:48:01 ghudson Exp $
+ *	$Id: p_list.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_list.c,v 1.11 1999-03-06 16:48:01 ghudson Exp $";
+static char rcsid[] ="$Id: p_list.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $";
 #endif
 #endif
 
@@ -48,7 +48,7 @@ do_olc_list(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int  status;
+  ERRCODE status;
   int  stati = 0;
   char queues[NAME_SIZE];
   char users[NAME_SIZE];
@@ -78,8 +78,7 @@ do_olc_list(arguments)
   for (++arguments; *arguments != (char *) NULL; ++arguments) 
     {
 
-       if ((string_equiv(*arguments, "-file",max(2,strlen(*arguments)))) ||
-          string_eq(*arguments,">"))
+       if ((is_flag(*arguments, "-file", 2)) || string_eq(*arguments,">"))
         {
           arguments++;
           unlink(file);
@@ -91,13 +90,13 @@ do_olc_list(arguments)
                 return(ERROR);
             }
           else
-            (void) strcpy(file, *arguments);
+	    strcpy(file, *arguments);
 
           savefile = TRUE;
           continue;
         }
 
-      if(string_equiv(*arguments,"-queue",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-queue", 2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -125,7 +124,7 @@ do_olc_list(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-status",2))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -148,7 +147,7 @@ do_olc_list(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-user",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-user",2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -161,7 +160,7 @@ do_olc_list(arguments)
 	  continue;
 	}
       
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-topic", 2))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -194,14 +193,13 @@ do_olc_list(arguments)
        * multiple targets
        */
 	 
-      if(string_equiv(*arguments,"-comments",max(strlen(*arguments),2))||
-	 string_equiv(*arguments,"-long",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-comments",2) || is_flag(*arguments,"-long",2))
 	{
 	  comments = TRUE;
 	  continue;
 	}
 	 
-      if(string_equiv(*arguments,"-display",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-display",2))
 	{
 	  display = TRUE;
 	  continue;
@@ -213,7 +211,7 @@ do_olc_list(arguments)
        }
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 	    
       if(arguments == (char **) NULL)   /* error */
@@ -230,7 +228,7 @@ do_olc_list(arguments)
 
   status = t_list_queue(&Request,sortP,queues,topics,users,stati,comments,file,display);
   if((savefile == FALSE) || (status != SUCCESS))
-    (void) unlink(file);
+    unlink(file);
 
   return(status);
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_resolve.c,v 1.19 1999-03-06 16:48:11 ghudson Exp $
+ *	$Id: t_resolve.c,v 1.20 1999-06-28 22:52:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_resolve.c,v 1.19 1999-03-06 16:48:11 ghudson Exp $";
+static char rcsid[] ="$Id: t_resolve.c,v 1.20 1999-06-28 22:52:18 ghudson Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ t_done(Request,title,check)
      char *title;
      int check;
 {
-  int status;
+  ERRCODE status;
   char buf[LINE_SIZE];
   int instance; 
 
@@ -197,7 +197,7 @@ t_cancel(Request,title)
      REQUEST *Request;
      char *title;
 {
-  int status;
+  ERRCODE status;
   char buf[BUFSIZ];
   int instance;
 

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_acl.c,v 1.8 1999-03-06 16:47:58 ghudson Exp $
+ *	$Id: p_acl.c,v 1.9 1999-06-28 22:52:05 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_acl.c,v 1.8 1999-03-06 16:47:58 ghudson Exp $";
+static char rcsid[] ="$Id: p_acl.c,v 1.9 1999-06-28 22:52:05 ghudson Exp $";
 #endif
 #endif
 
@@ -44,7 +44,7 @@ do_olc_acl(arguments)
   int list_flag = 0;
   int acl_flag  = 0;
   int change_flag = 0;
-  int status;
+  ERRCODE status;
 
   *acl = '\0';
   make_temp_name(file);
@@ -54,7 +54,7 @@ do_olc_acl(arguments)
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if(string_equiv(*arguments,"-add",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-add",2))
 	  {
 	    ++arguments;
 	    acl_flag = TRUE;
@@ -65,7 +65,7 @@ do_olc_acl(arguments)
 	    continue;
 	  }
 
-       if(string_equiv(*arguments,"-delete",max(strlen(*arguments),2)))
+       if(is_flag(*arguments,"-delete",2))
 	  {
 	    ++arguments;
 	    acl_flag = 0;
@@ -76,7 +76,7 @@ do_olc_acl(arguments)
 	    continue;
 	  }
 
-      if(string_equiv(*arguments,"-list",max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-list",2))
 	{
 	  list_flag = TRUE;
 	  ++arguments;
@@ -86,8 +86,7 @@ do_olc_acl(arguments)
 	  continue;
 	}
 
-       if(!strcmp(*arguments, ">") ||
-         string_equiv(*arguments,"-file",max(strlen(*arguments),2)))
+       if(!strcmp(*arguments, ">") || is_flag(*arguments,"-file",2))
         {
           ++arguments;
           unlink(file);
@@ -99,14 +98,14 @@ do_olc_acl(arguments)
                 return(ERROR);
             }
           else
-            (void) strcpy(file, *arguments);
+            strcpy(file, *arguments);
 
           save_file = TRUE;
           continue;
         }
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       else
 	list_flag = TRUE;

@@ -18,25 +18,26 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.22 1999-06-10 18:41:23 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.23 1999-06-28 22:52:06 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.22 1999-06-10 18:41:23 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.23 1999-06-28 22:52:06 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include "config.h"
 
-#if defined(__STDC__)
 #include <stdlib.h>
-#endif
 
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
+
 #include <signal.h>
+#include <setjmp.h>
+
 #include <ctype.h>
 #include <time.h>
 
@@ -44,6 +45,7 @@ int subsystem = 0;		/* (initial value) */
 extern char **environ;
 extern char *wday[]; 
 extern char *month[];
+sigjmp_buf command_loop_jmp_buf; /* for SIGINT handler */
 
 /*
  * Function:	command_loop() is the driver loop for olc and olcr.
@@ -75,10 +77,19 @@ command_loop(Command_Table, prompt)
   char arglist[MAX_ARGS][MAX_ARG_LENGTH];	
   int i,ls=0;
   char buf[BUF_SIZE];
+  struct sigaction act;
   subsystem = 1;
+
+  act.sa_handler = sigint_handler;
+  sigemptyset(&act.sa_mask);
+  /*dont let Readline grab during the SIGINT handler*/
+  sigaddset(&act.sa_mask, SIGWINCH); 
+  act.sa_flags = 0;                  
+  sigaction(SIGINT, &act, NULL);
   
   while(1) 
     {
+      sigsetjmp(command_loop_jmp_buf, 1); /*save the signal state*/
       ls = 0;
       fill_request(&Request);
       comm_ptr = command_line;
@@ -100,7 +111,7 @@ command_loop(Command_Table, prompt)
 	  arguments[i] = arglist[i];
 	  i++;
 	}
-      arguments[i] = (char *) NULL;
+      arguments[i] = NULL;
       expand_arguments(&Request,arguments);
       if(ls)
 	{
@@ -115,7 +126,7 @@ command_loop(Command_Table, prompt)
 	  system(command_line);
 	}
       else
-	(void) do_command(Command_Table, arguments);
+	do_command(Command_Table, arguments);
     }
   return;
 }
@@ -141,7 +152,7 @@ do_command(Command_Table, arguments)
      char *arguments[];
 {
   int ind;		    /* Index in the command table. */
-  int status;
+  ERRCODE status;
 
   ind = command_index(Command_Table, arguments[0]);
   
@@ -191,11 +202,11 @@ command_index(Command_Table, command_name)
   
   ind = 0;
   match_count = 0;
-  if (command_name == (char *)NULL)
+  if (command_name == NULL)
     return(ERROR);
 	
   comm_length = strlen(command_name);
-  while (Command_Table[ind].command_name != (char *) NULL) 
+  while (Command_Table[ind].command_name != NULL) 
     {
       if (!strncmp(command_name, Command_Table[ind].command_name,
 		   comm_length))
@@ -387,7 +398,7 @@ expand_variable(Request,var)
 
   if (tinfo != NUMT)
     {
-      (void) time(&time_now);
+      time(&time_now);
       time_info = localtime(&time_now);
 
       switch(tinfo)
@@ -461,7 +472,7 @@ expand_arguments(Request,arguments)
   char **arg;
   int i;
 
-  for(arg = arguments; *arg != (char *) NULL; ++arg)
+  for(arg = arguments; *arg != NULL; ++arg)
     {
       for(i=0; (*arg)[i] != '\0'; i++)
 	{
@@ -501,7 +512,7 @@ set_prompt(Request, prompt, inprompt)
 		  ++inprompt;
 		}
 	      strcat(format, "s");
-	      inprompt = (char *) get_next_word(inprompt, variable, IsAlpha);
+	      inprompt = get_next_word(inprompt, variable, IsAlpha);
 	      buf2 = expand_variable(Request, variable);
 	      sprintf(buf, format, buf2);
 	      strcat(prompt, buf);
@@ -534,7 +545,6 @@ parse_command_line(command_line, arguments)
 {
   char *current;		/* Current place in the command line.*/
   int argcount;		        /* Running counter of arguments. */
-  char *get_next_word();	/* Get the next word in a line. */
   char buf[BUF_SIZE];
   char *bufP;
   int quote = 0;
@@ -543,7 +553,7 @@ parse_command_line(command_line, arguments)
   current = command_line;
   argcount = 0;
   while ((current = get_next_word(current, buf, NotWhiteSpace))
-	 != (char *) NULL)
+	 != NULL)
     {
       if(buf[0] == '\"')
 	{
@@ -558,7 +568,7 @@ parse_command_line(command_line, arguments)
 	  if(bufP[strlen(bufP)-1] == '\"')
 	    {
 	      bufP[strlen(bufP)-1] = '\0';
-	     (void) strcat(arguments[argcount],bufP);
+	      strcat(arguments[argcount],bufP);
 	      quote = FALSE;
 	      first = 1;
 	      ++argcount;
@@ -567,18 +577,18 @@ parse_command_line(command_line, arguments)
 	    {
 	      if(first)
 		{
-		  (void) strcpy(arguments[argcount],bufP);
+		  strcpy(arguments[argcount],bufP);
 		  first = 0;
 		}
 	      else
-		(void) strcat(arguments[argcount],bufP);
+		strcat(arguments[argcount],bufP);
 
-	      (void) strcat(arguments[argcount]," ");
+	      strcat(arguments[argcount]," ");
 	    }
 	}
       else
 	{
-	  (void) strcpy(arguments[argcount],bufP);
+	  strcpy(arguments[argcount],bufP);
 	  argcount++;
 	}
     }
@@ -587,3 +597,11 @@ parse_command_line(command_line, arguments)
   return(SUCCESS);
 }
 
+void
+sigint_handler (signal)
+     int signal;
+{
+  rl_cleanup_after_signal();
+  puts("^C");
+  siglongjmp(command_loop_jmp_buf, 1);
+}

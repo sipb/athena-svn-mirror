@@ -10,12 +10,12 @@
  * Copyright (C) 1990-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olcd.c,v 1.65 1999-06-10 18:41:32 ghudson Exp $
+ *	$Id: olcd.c,v 1.66 1999-06-28 22:52:41 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olcd.c,v 1.65 1999-06-10 18:41:32 ghudson Exp $";
+static char rcsid[] ="$Id: olcd.c,v 1.66 1999-06-28 22:52:41 ghudson Exp $";
 #endif
 #endif
 
@@ -73,7 +73,7 @@ extern PROC  Maint_Proc_List[];	/* OLC "Maintenance Mode" Proceedure Table */
 char DaemonHost[LINE_SIZE];	/* Hostname of daemon's machine. */
 char DaemonInst[LINE_SIZE];	/* Instance: "OLC", "OLTA", etc. */
 char DaemonZClass[LINE_SIZE+6];	/* Zephyr class to use, usually DaemonInst */
-struct sockaddr_in sin = { AF_INET }; /* Socket address. */
+struct sockaddr_in sain = { AF_INET }; /* Socket address. */
 int request_count = 0;
 int request_counts[OLC_NUM_REQUESTS];
 long start_time;
@@ -87,22 +87,15 @@ char SERVER_REALM[REALM_SZ] = DFLT_SERVER_REALM;  /* name of server's realm */
 #endif /* HAVE_KRB4 */
 
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
+static void process_request (int fd , struct sockaddr_in *from );
+static void flush_olc_userlogs (void );
 
-static void process_request P((int fd , struct sockaddr_in *from ));
-static void flush_olc_userlogs P((void ));
-
-static RETSIGTYPE reap_child P((int sig));
-static RETSIGTYPE punt P((int sig));
+static void reap_child (int sig);
+static void punt (int sig);
 #ifdef PROFILE
-static RETSIGTYPE dump_profile P((int sig));
-static RETSIGTYPE start_profile P((int sig));
+static void dump_profile (int sig);
+static void start_profile (int sig);
 #endif /* PROFILE */
-#undef P
 
 /* Static variables */
 
@@ -353,8 +346,8 @@ int main (int argc, char **argv)
 
     fd = open("/dev/tty", O_RDWR, 0);
     if (fd >= 0) {
-      ioctl(fd, TIOCNOTTY, (char *) NULL);
-      (void) close (fd);
+      ioctl(fd, TIOCNOTTY, NULL);
+      close (fd);
     }
   }
 
@@ -374,20 +367,20 @@ int main (int argc, char **argv)
      */
 
     Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
-    if (Knuckle_List == (KNUCKLE **) NULL)
+    if (Knuckle_List == NULL)
     {
 	log_error("olcd: can't allocate Knuckle List: %m");
 	exit(8);
     }
-    *Knuckle_List = (KNUCKLE *) NULL;
+    *Knuckle_List = NULL;
 
     Topic_List = (TOPIC **) malloc(sizeof(TOPIC *));
-    if (Topic_List == (TOPIC **) NULL)
+    if (Topic_List == NULL)
     {
 	log_error("olcd: can't allocate Topic List: %m");
 	exit(8);
     }
-    *Topic_List = (TOPIC *) NULL;
+    *Topic_List = NULL;
 
     /*
      * find out who we are and what we are doing here
@@ -401,7 +394,7 @@ int main (int argc, char **argv)
     }
 
     if (port_num == 0) {
-      service = (struct servent *) NULL;
+      service =  NULL;
 #ifdef HAVE_HESIOD
       service = hes_getservbyname(OLCD_SERVICE_NAME, OLC_PROTOCOL);
 #endif
@@ -416,7 +409,7 @@ int main (int argc, char **argv)
       }
       port_num = service->s_port;
     }
-    sin.sin_port = port_num;
+    sain.sin_port = port_num;
 
 
     /*
@@ -444,7 +437,7 @@ restart:
      * bind the socket to the port
      */
 
-    if (bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in)) < 0)
+    if (bind(fd, (struct sockaddr *) &sain, sizeof(struct sockaddr_in)) < 0)
     {
 	log_zephyr_error("bind: %m");
 	  /* no, this isn't really a zephyr error, but we don't want to
@@ -533,7 +526,6 @@ restart:
 	int s;		        /* Duplicated file descriptor */
 	int len = sizeof (from);  /* Length of address. */
 	KNUCKLE **k_ptr;
-	char tmpfile[MAXPATHLEN];
 
 	struct timeval tval;
 	int nfound;
@@ -678,7 +670,7 @@ process_request (fd, from)
 
     /* get the right hostname */
 
-    hp = gethostbyaddr(&from->sin_addr, sizeof(struct in_addr),
+    hp = gethostbyaddr((void *)&from->sin_addr, sizeof(struct in_addr),
 		       from->sin_family);
     if (!hp)
       {
@@ -798,7 +790,7 @@ flush_olc_userlogs()
  * Note: Just sets a flag, to avoid reentrancy issues.
  */
 
-static RETSIGTYPE
+static void
 punt(int sig)
 {
   got_signal = sig;
@@ -814,7 +806,7 @@ punt(int sig)
  *		loop while there are any children waiting to report status.
  */
 
-static RETSIGTYPE
+static void
 reap_child(int sig)
 {
   int status;
@@ -830,7 +822,7 @@ reap_child(int sig)
 }
 
 #ifdef PROFILE
-static RETSIGTYPE
+static void
 dump_profile(int sig)
 {
   char buf[BUFSIZ];
@@ -842,7 +834,7 @@ dump_profile(int sig)
   moncontrol(0);
 }
 
-static RETSIGTYPE
+static void
 start_profile(int sig)
 {
   char buf[BUFSIZ];

@@ -8,12 +8,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Id: features.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $
+ *      $Id: features.c,v 1.6 1999-06-28 22:52:24 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: features.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $";
+static char rcsid[] ="$Id: features.c,v 1.6 1999-06-28 22:52:24 ghudson Exp $";
 #endif
 #endif
 
@@ -22,11 +22,7 @@ static char rcsid[] ="$Id: features.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $";
 
 #include <fcntl.h>
 #include <sys/stat.h>
-
-
-#if defined(__STDC__)
 #include <stdlib.h>
-#endif
 
 #include <olc/olc.h>
 #include <common.h>

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: queue.c,v 1.13 1999-03-06 16:47:39 ghudson Exp $
+ *	$Id: queue.c,v 1.14 1999-06-28 22:51:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: queue.c,v 1.13 1999-03-06 16:47:39 ghudson Exp $";
+static char rcsid[] ="$Id: queue.c,v 1.14 1999-06-28 22:51:51 ghudson Exp $";
 #endif
 #endif
 
@@ -45,17 +45,17 @@ OListQueues(Request,file)
      char *file;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 /*
   Request->request_type = OLC_LIST_QUEUES;
 */
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -84,17 +84,17 @@ OChangeQueue(Request,queue)
      char *queue;
 {
   int fd;
-  RESPONSE response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 /*
   Request->request_type = OLC_CHANGE_QUEUE;
   */
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
   
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_messages.c,v 1.19 1999-05-14 12:10:48 kcr Exp $
+ *	$Id: t_messages.c,v 1.20 1999-06-28 22:52:17 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_messages.c,v 1.19 1999-05-14 12:10:48 kcr Exp $";
+static char rcsid[] ="$Id: t_messages.c,v 1.20 1999-06-28 22:52:17 ghudson Exp $";
 #endif
 #endif
 
@@ -50,7 +50,8 @@ t_replay(Request, queues, topics, users, stati, file, display)
      char *file;
      int display;
 {
-  int status, n;
+  ERRCODE status;
+  int n;
   char c;
   LIST *list;
   LIST *l;
@@ -85,7 +86,7 @@ t_replay(Request, queues, topics, users, stati, file, display)
 		  "The string \"%s\" is not unique.  Choose one of:\n",
 		  Request->target.username);
 	  strcpy(users, Request->target.username);
-	  (void) t_list_queue(Request, (char **) NULL, (char *) NULL,
+	  t_list_queue(Request, (char **) NULL, (char *) NULL,
 			      (char *) NULL, users, 0, 0, file, FALSE);
 	  break;
 
@@ -108,9 +109,9 @@ t_replay(Request, queues, topics, users, stati, file, display)
 
       for (l = list; l->ustatus != END_OF_LIST; l++)
 	{
-	  (void) strcpy(Request->target.username, l->user.username);
+	  strcpy(Request->target.username, l->user.username);
 	  Request->target.instance = l->user.instance;
-	  (void) t_replay(Request, "", "", "", 0, file, display);
+	  t_replay(Request, "", "", "", 0, file, display);
 	  if (--n)
 	    {
 	      c = get_key_input("========  Hit 'q' to quit, any other key to "
@@ -156,7 +157,7 @@ t_show_message(Request, file, display, connected, noflush)
      int connected;
      int noflush;
 {
-  int status;
+  ERRCODE status;
 
   if(noflush)
     set_option(Request->options, NOFLUSH_OPT);
@@ -201,7 +202,7 @@ ERRCODE
 t_check_messages(Request)
      REQUEST *Request;
 {
-    int status;
+    ERRCODE status;
     char file[NAME_SIZE];
     char prompt[BUF_SIZE];
 
@@ -227,7 +228,7 @@ ERRCODE
 t_check_connected_messages(Request)
      REQUEST *Request;
 {
-    int status;
+    ERRCODE status;
     char file[NAME_SIZE];
 
     make_temp_name(file);

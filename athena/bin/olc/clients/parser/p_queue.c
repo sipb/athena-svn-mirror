@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_queue.c,v 1.13 1999-03-06 16:48:02 ghudson Exp $
+ *	$Id: p_queue.c,v 1.14 1999-06-28 22:52:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_queue.c,v 1.13 1999-03-06 16:48:02 ghudson Exp $";
+static char rcsid[] ="$Id: p_queue.c,v 1.14 1999-06-28 22:52:09 ghudson Exp $";
 #endif
 #endif
 
@@ -39,15 +39,14 @@ do_olc_queue(arguments)
 {
   REQUEST Request;
   char queue[NAME_SIZE];
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
   if(*++arguments != NULL)
     {
-      if(string_equiv(*arguments,"-queue", max(strlen(*arguments),2)) ||
-	 string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-queue", 2) || is_flag(*arguments,"-change", 2))
 	{
           ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -58,7 +57,7 @@ do_olc_queue(arguments)
       else
 	{
 	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(ERROR);
 
 	  if(arguments == (char **) NULL)

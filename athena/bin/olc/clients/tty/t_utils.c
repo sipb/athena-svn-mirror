@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.49 1999-06-04 17:36:00 ghudson Exp $
+ *	$Id: t_utils.c,v 1.50 1999-06-28 22:52:19 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.49 1999-06-04 17:36:00 ghudson Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.50 1999-06-28 22:52:19 ghudson Exp $";
 #endif
 #endif
 
@@ -54,25 +54,57 @@ static char rcsid[] ="$Id: t_utils.c,v 1.49 1999-06-04 17:36:00 ghudson Exp $";
 #endif /* don't HAVE_LRAND48 */
 
 /*
+ * Function:    is_flag() Checks if string s is flag f,
+ *                      matching a minimum of n letters.
+ * Arguments:   string:  Null terminated string to test.
+ *              flag:    Full flag value.
+ *              mimimum: Minimum number of letters to test.
+ * Returns:     TRUE or FALSE
+ * Notes:
+ *   Check each character in string against flag. If flag ends,
+ *   or if the characters dont match, return FALSE. If string
+ *   ends before the minimum number of characters have matched,
+ *   return FALSE. Otherwise, return TRUE.
+ */   
+
+int
+is_flag(string, flag, minimum)
+     char *string;
+     char *flag;
+     int minimum;
+{
+  int i; /* Counter. */
+
+  for(i = 0; (string[i] != '\0'); i++)
+    if((string[i] != flag[i]) || (flag[i] == '\0'))
+      return FALSE;
+  if(i < minimum) /* String ended before minimum was reached. */
+    return FALSE;
+  else
+    return TRUE;
+}     
+
+/*
  * Function:	display_file() prints a file on a user's terminal.
  * Arguments:	filename:	Name of file to be printed.
  * Returns:	SUCCESS or ERROR.
  * Notes:
- *	First, open the file to make sure that it is accessible.  If it
- *	is not, log an error and return.  Otherwise, attempt to execute
- *	the desired pager ($PAGER or "more") to page the file on the
- *	terminal.  If this fails, simply print it line by line. In either
- *	case, end by closing the file and returning.
+ *	First, open the file to make sure that it is accessible. If it
+ *	is not, log an error and return. Otherwise, attempt to execute
+ *	the desired pager ($PAGER or DEFAULT_PAGER (defined in
+ *	olc_tty.h) to page the file on the terminal. If this fails,
+ *	simply print it line by line. In either case, end by closing
+ *	the file and returning.
  */
 
 ERRCODE
 display_file(filename)
      char *filename;
 {
-  FILE *file;                  /* File structure pointer. */
-  char line[LINE_SIZE];      /* Input line buffer. */
+  FILE *file;			/* File structure pointer. */
+  int c;
   char *pager;
-	
+
   file = fopen(filename, "r");
   if (file == NULL) 
     {
@@ -82,16 +114,17 @@ display_file(filename)
     }
 
   pager = getenv("PAGER");
-  if (!pager)
-      pager = "more";
-  if (call_program(pager, filename) == ERROR) 
+  if(pager == NULL)
+    pager = DEFAULT_PAGER;
+
+  if(call_program(pager, filename) == ERROR) 
     {
-      while(fgets(line, LINE_SIZE, file) != (char *)NULL)
-	printf("%s", line);
+      while((c = getc(stdin)) != EOF)
+	putc(c, stdout);
       printf("\n");
     }
-	
-  (void) fclose(file);
+
+  fclose(file);
   return(SUCCESS);
 }
 
@@ -122,7 +155,7 @@ enter_message(file,editor)
      char *file;
      char *editor;
 {
-  int status;
+  ERRCODE status;
 
   if((editor == NULL) || (string_eq(editor, "")))
     {
@@ -148,7 +181,7 @@ enter_message(file,editor)
       return(ERROR);
     }
   else
-    if(status)
+    if(status != SUCCESS)
       return(status);
 
   if (file_length(file) == 0)
@@ -200,7 +233,7 @@ input_text_into_file(filename)
 	  return(ERROR);
 	}
     }
-  (void) close(fd);
+  close(fd);
   return(SUCCESS);
 }
 
@@ -391,9 +424,12 @@ handle_response(response, req)
 		  client_service_name());
 	  if(client_is_user_client())
 	    {
-	      printf("If you wish to ask another question, use %s again.\n",
+	      printf("If you wish to ask a question, use \"ask\".\n",
 		     client_service_name());
-	      exit(1);
+	      /* this used to exit, which kinda sucked.
+	       * trying to just return and error
+	       */
+	      return(ERROR);
 	    }
 	}
       else
@@ -566,7 +602,9 @@ get_prompted_input(prompt, buf, buflen, add_to_hist)
 {
   char *line, *p;
   static int done_gl_init = 0;
-
+  
+  rl_catch_signals = 0; /*dont catch sig int*/
+  rl_catch_sigwinch = 0;
   rl_readline_name = client_name();
   line = readline(prompt);
 
@@ -642,7 +680,7 @@ what_now(file, edit_first, editor)
       olc_perror("whatnow: unable to create temp file");
       return(ERROR);
     }
-  (void) close(fd);
+  close(fd);
   
   if (edit_first == TRUE) 
     edit_message(file, editor);
@@ -656,7 +694,7 @@ what_now(file, edit_first, editor)
       while (inbuf[0] == '\0') 
 	{
 	  putchar('\n');
-	  (void) get_prompted_input("What now? (type '?' for options): ", 
+	  get_prompted_input("What now? (type '?' for options): ", 
 				    inbuf,LINE_SIZE,0);
 	  if (inbuf[0] == '?' || inbuf[0] == '\0' || inbuf[0] == 'h') {
 	    printf("Commands are:\n");
@@ -669,13 +707,13 @@ what_now(file, edit_first, editor)
 	  }
 	}
       
-      if (string_equiv(inbuf,"edit",max(strlen(inbuf),1)))
+      if (is_flag(inbuf,"edit",1))
 	edit_message(file, editor);
-      else if (string_equiv(inbuf,"quit",max(strlen(inbuf),1)))
+      else if (is_flag(inbuf,"quit",1))
 	return(NO_ACTION);
-      else if (string_equiv(inbuf,"send",max(strlen(inbuf),1)))
+      else if (is_flag(inbuf,"send",1))
 	return(SUCCESS);
-      else if (string_equiv(inbuf,"list",max(strlen(inbuf),1)))
+      else if (is_flag(inbuf,"list",1))
 	display_file(file);
     }
 }
@@ -759,7 +797,7 @@ mail_message(user, consultant, msgfile, args)
       olc_perror("mail");
       printf("Error reading mail message.\n");
       free(msgbuf);
-      (void) close(filedes);
+      close(filedes);
       return(ERROR);
     }
   fd = sendmail(args);
@@ -767,7 +805,7 @@ mail_message(user, consultant, msgfile, args)
     {
       printf("Error sending mail.\n");
       free(msgbuf);
-      (void) close(filedes);
+      close(filedes);
       return(ERROR);
     }
   if (write(fd, msgbuf, nbytes) != nbytes)
@@ -775,14 +813,14 @@ mail_message(user, consultant, msgfile, args)
       olc_perror("mail");
       printf("Error sending mail.\n");
       free(msgbuf);
-      (void) close(filedes);
-      (void) close(fd);
+      close(filedes);
+      close(fd);
       wait(0);	/* clean up sendmail process */
       return(ERROR);
     }
-  (void) close(fd);
+  close(fd);
   free(msgbuf);
-  (void) close(filedes);
+  close(filedes);
   wait(0);		/* clean up sendmail process */
   return(SUCCESS);
 }

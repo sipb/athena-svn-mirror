@@ -26,12 +26,12 @@
  * Copyright (C) 1989-1999 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.c,v 1.41 1999-06-10 18:41:20 ghudson Exp $
+ *	$Id: olc.c,v 1.42 1999-06-28 22:52:02 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc.c,v 1.41 1999-06-10 18:41:20 ghudson Exp $";
+static char rcsid[] ="$Id: olc.c,v 1.42 1999-06-28 22:52:02 ghudson Exp $";
 #endif
 #endif
 
@@ -109,7 +109,7 @@ COMMAND_TMPL Command_Table_Template[] = {
  {CONSULT, {"describe", do_olc_describe,  "Show/Change summary info"}},
  {USER,    {"done",     do_olc_done,      "Mark your question resolved"}},
  {CONSULT, {"done",     do_olc_done,      "Resolve a question"}},
- {0,       {"exit",     do_quit,          "Temporarily exit"}},
+ {0,       {"exit",     do_quit,          "Exit (Questions remain active)"}},
  {CONSULT, {"forward",  do_olc_forward,   "Forward a question"}},
  {CONSULT, {"grab",     do_olc_grab,      "Grab a user"}},
  {HOURS,   {"hours",    do_olc_hours,     "Print hours when staffed"}},
@@ -119,7 +119,7 @@ COMMAND_TMPL Command_Table_Template[] = {
  {0,       {"motd",     do_olc_motd,      "See the message of the day"}},
  {CONSULT, {"off",      do_olc_off,       "Sign off"}},
  {CONSULT, {"on",       do_olc_on,        "Sign on"}},
- {0,       {"quit",     do_quit,          "Temporarily exit"}},
+ {0,       {"quit",     do_quit,          "Exit (Questions remain active)"}},
  {0,       {"replay",   do_olc_replay,    "Replay the conversation so far"}},
  {0,       {"send",     do_olc_send,      "Send a message"}},
  {0,       {"show",     do_olc_show,      "Show any new messages"}},
@@ -250,7 +250,7 @@ main(argc, argv)
     {
       if (prompt == NULL)
 	prompt = client_default_prompt();
-      (void) do_olc_init();
+      do_olc_init();
       command_loop(Command_Table, prompt);
     }
   exit(0);
@@ -352,7 +352,7 @@ do_olc_init()
   int n,first=0;
   char file[NAME_SIZE];
   char topic[TOPIC_SIZE];
-  int status;
+  ERRCODE status;
 
   OInitialize();
 
@@ -360,13 +360,13 @@ do_olc_init()
   Request.request_type = OLC_STARTUP;
 
   status = open_connection_to_daemon(&Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     {
       handle_response(status, &Request);
       exit(ERROR);
     }
   status = send_request(fd, &Request);
-  if(status)
+  if(status != SUCCESS)
     {
       handle_response(status, &Request);
       exit(ERROR);
@@ -409,7 +409,7 @@ do_olc_init()
 	exit(ERROR);
     }
 
-  (void) close(fd);
+  close(fd);
 
   make_temp_name(file);
   Request.request_type = OLC_MOTD;

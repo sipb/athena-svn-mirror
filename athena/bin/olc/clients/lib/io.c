@@ -19,12 +19,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: io.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $
+ *	$Id: io.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: io.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $";
+static char rcsid[] ="$Id: io.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $";
 #endif
 #endif
 
@@ -228,11 +228,13 @@ read_list(fd, list)
  *			default OLC daemon and provides Kerberos
  *			authentication.
  *
- * Arguments:	None.
- * Returns:	A file descriptor bound to a socket connected to the daemon
- *		if successful.  If an error occurs, we exit.
+ * Arguments:	request: a pointer to a request structure to get Kerberos
+ *			tickets out of.
+ *              fd: a place for the file descriptor to go.
+ * Returns:	An error code
  * Notes:
- *		This is just a wrapper around open_connection_to_named_daemon
+ *		This is just a wrapper around
+ *		open_connection_to_named_daemon
  */
 
 ERRCODE
@@ -248,9 +250,11 @@ open_connection_to_daemon(request, fd)
  *			to the specified OLC daemon and provides Kerberos
  *			authentication.
  *
- * Arguments:	None.
- * Returns:	A file descriptor bound to a socket connected to the daemon
- *		if successful.  If an error occurs, we exit.
+ * Arguments:	request: a pointer to a request structure to get Kerberos
+ *                      tickets out of.
+ *              fd: place for the file descriptor to go.
+ *              hostname: the host where the daemon lives.
+ * Returns:	An error code.
  * Notes:
  *	First, look up the host address and service port number.  Then
  *	set up the network connection, exiting with an ERROR if no
@@ -264,15 +268,15 @@ open_connection_to_named_daemon(request, fd, hostname)
      int *fd;
      char *hostname;
 {
-  struct hostent *hp = (struct hostent *)NULL; 
-  struct servent *service = (struct servent *)NULL; 
-  static struct sockaddr_in sin, *sptr = (struct sockaddr_in *) NULL;
+  struct hostent *hp = NULL; 
+  struct servent *service = NULL; 
+  static struct sockaddr_in sin, *sptr = NULL;
   static char cached_hostname[MAXHOSTNAMELEN];
-  int status;
+  ERRCODE status;
 
 #ifdef HAVE_KRB4
   status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
-  if(status)
+  if(status != SUCCESS)
     return(status);
 #endif /* HAVE_KRB4 */
 

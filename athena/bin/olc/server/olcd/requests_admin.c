@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_admin.c,v 1.29 1999-03-06 16:48:57 ghudson Exp $
+ *	$Id: requests_admin.c,v 1.30 1999-06-28 22:52:42 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_admin.c,v 1.29 1999-03-06 16:48:57 ghudson Exp $";
+static char rcsid[] ="$Id: requests_admin.c,v 1.30 1999-06-28 22:52:42 ghudson Exp $";
 #endif
 #endif
 
@@ -150,6 +150,7 @@ olc_change_acl(fd,request)
   KNUCKLE *requester;
   USER *user = (USER *) NULL;
   ACL *a_ptr;
+  char tmpfile[MAXPATHLEN];
   char *acl;
   char *name;
   int status;

@@ -1,5 +1,5 @@
 /*
- * $Id: rpd.h,v 1.21 1999-03-06 16:48:29 ghudson Exp $
+ * $Id: rpd.h,v 1.22 1999-06-28 22:52:28 ghudson Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -63,13 +63,6 @@ struct 	entry {
 #define SYSLOG_FACILITY LOG_LOCAL6
 #define LOG_DIRECTORY   OLXX_QUEUE_DIR
 
-
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
 #define OLC_PROTOCOL   "tcp"
 
 #ifdef HAVE_KRB4
@@ -79,30 +72,28 @@ struct 	entry {
 #define MONITOR_ACL OLXX_ACL_DIR "/monitor.acl"
 
 /* Acl Library */
-int acl_check P((char *acl, char *principal));
-void acl_canonicalize_principal P((char *principal , char *canon ));
-int acl_exact_match P((char *acl , char *principal ));
+int acl_check (char *acl, char *principal);
+void acl_canonicalize_principal (char *principal , char *canon );
+int acl_exact_match (char *acl , char *principal );
 #endif /* HAVE_KRB4 */
 
 /* fdcache.c */
-void init_cache P((void ));
-char *get_queue P((int *result));
-char *get_log P((char *username , int instance , int *result , int censored));
-char *get_file_uncached P((char *filename, int *result));
-char *get_file_cached P((char *filename, int *result));
-unsigned get_bucket_index P((char *name));
-int allocate_entry P((void ));
-void delete_entry P((struct entry *ent ));
+void init_cache (void );
+char *get_queue (int *result);
+char *get_log (char *username , int instance , int *result , int censored);
+char *get_file_uncached (char *filename, int *result);
+char *get_file_cached (char *filename, int *result);
+unsigned get_bucket_index (char *name);
+int allocate_entry (void );
+void delete_entry (struct entry *ent );
 
 /* get_nm.c */
-char *get_nm P((char *username , int instance , int *result , int nuke ));
+char *get_nm (char *username , int instance , int *result , int nuke );
 
 /* handle_request.c */
-void handle_request P((int fd, struct sockaddr_in from));
-void punt_connection P((int fd, struct sockaddr_in from));
+void handle_request (int fd, struct sockaddr_in from);
+void punt_connection (int fd, struct sockaddr_in from);
 
 /* io.c */
-int sread P((int fd , void *buf , int nbytes ));
-int swrite P((int fd , void *buf , int nbytes ));
-
-#undef P
+int sread (int fd , void *buf , int nbytes );
+int swrite (int fd , void *buf , int nbytes );

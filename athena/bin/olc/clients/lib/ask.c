@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: ask.c,v 1.21 1999-03-06 16:47:34 ghudson Exp $
+ *	$Id: ask.c,v 1.22 1999-06-28 22:51:47 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: ask.c,v 1.21 1999-03-06 16:47:34 ghudson Exp $";
+static char rcsid[] ="$Id: ask.c,v 1.22 1999-06-28 22:51:47 ghudson Exp $";
 #endif
 #endif
 
@@ -39,7 +39,7 @@ OAsk_buffer(Request,topic,buf)
      char *buf;
 {
   int fd;
-  int status;
+  ERRCODE status;
   FILE *f = NULL;
   char s[BUF_SIZE], machinfo[BUF_SIZE];
  
@@ -55,7 +55,7 @@ OAsk_buffer(Request,topic,buf)
 
   Request->request_type = OLC_ASK;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     {
       if (f)
 	pclose(f);
@@ -63,7 +63,7 @@ OAsk_buffer(Request,topic,buf)
     }
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       if (f)

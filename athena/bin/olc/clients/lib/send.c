@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: send.c,v 1.17 1999-03-06 16:47:39 ghudson Exp $
+ *	$Id: send.c,v 1.18 1999-06-28 22:51:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: send.c,v 1.17 1999-03-06 16:47:39 ghudson Exp $";
+static char rcsid[] ="$Id: send.c,v 1.18 1999-06-28 22:51:51 ghudson Exp $";
 #endif
 #endif
 
@@ -69,17 +69,17 @@ OSend(Request,type,file)
      int type;
 {
   int fd;
-  int response;
-  int status;
+  ERRCODE response;
+  ERRCODE status;
 
   Request->request_type = type;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -97,7 +97,7 @@ OSend(Request,type,file)
     read_response(fd, &response);
   }
   
-  (void) close(fd);
+  close(fd);
   return(response);
 }
     

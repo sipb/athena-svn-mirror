@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_send.c,v 1.18 1999-03-06 16:48:03 ghudson Exp $
+ *	$Id: p_send.c,v 1.19 1999-06-28 22:52:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_send.c,v 1.18 1999-03-06 16:48:03 ghudson Exp $";
+static char rcsid[] ="$Id: p_send.c,v 1.19 1999-06-28 22:52:09 ghudson Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ do_olc_send(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   char file[NAME_SIZE];
   char editor[NAME_SIZE];
   int temp = FALSE;
@@ -54,31 +54,31 @@ do_olc_send(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-editor",2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL) {
-	    (void) strcpy(editor, *arguments);
+	    strcpy(editor, *arguments);
 	    arguments++;
 	  }
 	  else
-	    (void) strcpy(editor, NO_EDITOR);
+	    strcpy(editor, NO_EDITOR);
 	  continue;
 	}
 
-      if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
+      if(is_flag(*arguments, "-file",2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      (void) strcpy(file, *arguments);
+	      strcpy(file, *arguments);
 	      arguments++;
 	    }
 	  continue;
 	}
       
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       arguments += num_of_args;		/* HACKHACKHACK */
@@ -108,7 +108,7 @@ do_olc_send(arguments)
 
   status = t_reply(&Request,file,editor);
   if(temp)
-    (void) unlink(file);
+    unlink(file);
 
   return(status);
 }
@@ -122,7 +122,7 @@ do_olc_comment(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   char file[NAME_SIZE];
   char editor[NAME_SIZE];
   int temp = FALSE;
@@ -136,30 +136,30 @@ do_olc_comment(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-editor", 2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL) {
-	    (void) strcpy(editor, *arguments);
+	    strcpy(editor, *arguments);
 	    arguments++;
 	  }
 	  else
-	    (void) strcpy(editor, NO_EDITOR);
+	    strcpy(editor, NO_EDITOR);
 	  continue;
 	}
    
-      if(string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+      if(is_flag(*arguments, "-file", 2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      (void) strcpy(file, *arguments);
+	      strcpy(file, *arguments);
 	      arguments++;
 	    }
 	  continue;
 	}
    
-      if(string_equiv(*arguments, "-private", max(strlen(*arguments),2)))
+      if(is_flag(*arguments, "-private", 2))
 	{
 	  set_option(Request.options,PRIV_COMMENT_OPT);
 	  arguments++;
@@ -167,7 +167,7 @@ do_olc_comment(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       arguments += num_of_args;		/* HACKHACKHACK */
@@ -190,7 +190,7 @@ do_olc_comment(arguments)
 
   status = t_comment(&Request,file,editor);
   if(temp)
-    (void) unlink(file);
+    unlink(file);
 
   return(status);
 }
@@ -206,7 +206,7 @@ do_olc_mail(arguments)
   char editor[NAME_SIZE];
   char smargs[NAME_SIZE][NAME_SIZE];
   char *smargsP[NAME_SIZE];
-  int status;
+  ERRCODE status;
   int checkhub = 0;
   int noedit = 0;
   int header = TRUE;
@@ -223,51 +223,51 @@ do_olc_mail(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-editor", 2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL) {
-	    (void) strcpy(editor, *arguments);
+	    strcpy(editor, *arguments);
 	    arguments++;
 	  }
 	  else
-	    (void) strcpy(editor,NO_EDITOR);
+	    strcpy(editor,NO_EDITOR);
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-file", 2))
 	{
 	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      (void) strcpy(file, *arguments);
+	      strcpy(file, *arguments);
 	      arguments++;
 	    }
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-checkhub", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-checkhub", 2))
 	{
 	  checkhub = TRUE;
 	  arguments++;
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-noedit", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-noedit", 2))
 	{
 	  noedit = TRUE;
 	  arguments++;
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-noheader", max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-noheader", 2))
 	{
 	  header = FALSE;
 	  arguments++;
 	  continue;
 	}
 
-      if(string_equiv(*arguments, "-smopt", max(strlen(*arguments),2)))
+      if(is_flag(*arguments, "-smopt", 2))
 	{
 	  if(arguments[1] && (*arguments[1] == '\\'))
 	    {
@@ -316,7 +316,7 @@ do_olc_mail(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       arguments += num_of_args;		/* HACKHACKHACK */

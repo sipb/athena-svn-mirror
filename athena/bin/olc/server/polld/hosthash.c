@@ -5,12 +5,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: hosthash.c,v 1.6 1999-03-06 16:49:08 ghudson Exp $
+ *	$Id: hosthash.c,v 1.7 1999-06-28 22:52:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: hosthash.c,v 1.6 1999-03-06 16:49:08 ghudson Exp $";
+static char rcsid[] ="$Id: hosthash.c,v 1.7 1999-06-28 22:52:48 ghudson Exp $";
 #endif
 #endif
 
@@ -31,17 +31,9 @@ struct entry {
   struct entry *prev;   /* prev entry in the chain */
 };
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static int get_bucket_index P((char *machname ));
-static int allocate_entry P((void ));
-static void delete_entry P((struct entry *ent ));
-
-#undef P
+static int get_bucket_index (char *machname );
+static int allocate_entry (void );
+static void delete_entry (struct entry *ent );
 
 /* Note: cachesize must be a power of two. */
 

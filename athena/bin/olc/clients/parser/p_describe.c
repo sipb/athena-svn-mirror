@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_describe.c,v 1.11 1999-03-06 16:48:00 ghudson Exp $
+ *	$Id: p_describe.c,v 1.12 1999-06-28 22:52:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_describe.c,v 1.11 1999-03-06 16:48:00 ghudson Exp $";
+static char rcsid[] ="$Id: p_describe.c,v 1.12 1999-06-28 22:52:07 ghudson Exp $";
 #endif
 #endif
 
@@ -41,7 +41,7 @@ do_olc_describe(arguments)
   char file[NAME_SIZE];
   char note[NOTE_SIZE];
   char *noteP = (char *) NULL;
-  int status;
+  ERRCODE status;
   int save_file = 0;
   int cherries=0;
   int oranges=0;
@@ -55,8 +55,7 @@ do_olc_describe(arguments)
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
-						    max(strlen(*arguments),2)))
+      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
 	{
           ++arguments;
 	  if(*arguments == NULL)
@@ -67,12 +66,12 @@ do_olc_describe(arguments)
 		return(ERROR);
             }
 	  else
-	    (void) strcpy(file,*arguments);
+	    strcpy(file,*arguments);
 
 	  save_file = TRUE;
 	}
       else
-	if(string_equiv(*arguments,"-note",max(strlen(*arguments),2)))
+	if(is_flag(*arguments,"-note", 2))
 	  {
 	    if(*(arguments +1) != (char *) NULL)
 	      if(*(arguments + 1)[0] != '-')
@@ -84,12 +83,12 @@ do_olc_describe(arguments)
 	    cherries = TRUE;
 	  }
        else
-	if(string_equiv(*arguments,"-comment",max(strlen(*arguments),2)))
+	if(is_flag(*arguments,"-comment",2))
 	  oranges = TRUE;
       else
 	{
 	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(ERROR);
 	}
 
@@ -109,7 +108,7 @@ do_olc_describe(arguments)
     status = SUCCESS;
 
   if(!save_file)
-    (void) unlink(file);
+    unlink(file);
 
   return(status);
 }

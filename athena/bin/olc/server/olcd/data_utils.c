@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data_utils.c,v 1.46 1999-03-06 16:48:54 ghudson Exp $
+ *	$Id: data_utils.c,v 1.47 1999-06-28 22:52:39 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: data_utils.c,v 1.46 1999-03-06 16:48:54 ghudson Exp $";
+static char rcsid[] ="$Id: data_utils.c,v 1.47 1999-06-28 22:52:39 ghudson Exp $";
 #endif
 #endif
 
@@ -41,17 +41,9 @@ static char rcsid[] ="$Id: data_utils.c,v 1.46 1999-03-06 16:48:54 ghudson Exp $
 #include <sys/stat.h>
 #include <pwd.h>
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static int validate_instance P((KNUCKLE *knuckle ));
-static int assign_instance P((USER *user ));
-static int was_connected P((KNUCKLE *a , KNUCKLE *b ));
-
-#undef P
+static int validate_instance (KNUCKLE *knuckle );
+static int assign_instance (USER *user );
+static int was_connected (KNUCKLE *a , KNUCKLE *b );
 
 /* Contents:
  *

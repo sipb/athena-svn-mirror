@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_describe.c,v 1.12 1999-03-06 16:48:08 ghudson Exp $
+ *	$Id: t_describe.c,v 1.13 1999-06-28 22:52:16 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_describe.c,v 1.12 1999-03-06 16:48:08 ghudson Exp $";
+static char rcsid[] ="$Id: t_describe.c,v 1.13 1999-06-28 22:52:16 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ t_describe(Request,file,note,dochnote,dochcomment)
      int dochcomment;
 {
   LIST list;
-  int status;
+  ERRCODE status;
   char buf[BUF_SIZE];
   char mesg[BUF_SIZE];
   char notebuf[NOTE_SIZE];

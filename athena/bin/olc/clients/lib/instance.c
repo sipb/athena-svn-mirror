@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: instance.c,v 1.12 1999-03-06 16:47:37 ghudson Exp $
+ *	$Id: instance.c,v 1.13 1999-06-28 22:51:49 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: instance.c,v 1.12 1999-03-06 16:47:37 ghudson Exp $";
+static char rcsid[] ="$Id: instance.c,v 1.13 1999-06-28 22:51:49 ghudson Exp $";
 #endif
 #endif
 
@@ -39,18 +39,18 @@ OVerifyInstance(Request,instance)
      int *instance;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   if(instance == (int *) NULL)
     return(ERROR);
 
   Request->request_type = OLC_VERIFY_INSTANCE;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd,Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -76,17 +76,17 @@ OGetDefaultInstance(Request,instance)
      REQUEST *Request;
      int *instance;
 {
-  int status;
+  ERRCODE status;
   int fd;
 
   Request->request_type = OLC_DEFAULT_INSTANCE;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd,Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_send.c,v 1.27 1999-03-06 16:48:11 ghudson Exp $
+ *	$Id: t_send.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_send.c,v 1.27 1999-03-06 16:48:11 ghudson Exp $";
+static char rcsid[] ="$Id: t_send.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $";
 #endif
 #endif
 
@@ -48,7 +48,7 @@ t_reply(Request,file,editor)
      REQUEST *Request;
      char *file, *editor;
 {
-  int status;
+  ERRCODE status;
 
   set_option(Request->options, VERIFY);
   status = OReply(Request,file);
@@ -81,7 +81,7 @@ t_reply(Request,file,editor)
   unset_option(Request->options, VERIFY);
 
   status = enter_message(file,editor);
-  if(status)
+  if(status != SUCCESS)
     return(status);
   
   status = OReply(Request,file);
@@ -133,7 +133,7 @@ t_comment(Request,file,editor)
      REQUEST *Request;
      char *file, *editor;
 {
-  int status;
+  ERRCODE status;
 
   set_option(Request->options, VERIFY);
   status = OComment(Request,file);
@@ -166,7 +166,7 @@ t_comment(Request,file,editor)
   unset_option(Request->options, VERIFY);
   
   status = enter_message(file,editor);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = OComment(Request,file);
@@ -214,7 +214,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
      int noedit;
      int header;
 {
-  int status;
+  ERRCODE status;
   LIST list;
   struct stat statbuf;
   char buf[BUF_SIZE];
@@ -277,7 +277,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 
       if (status != 0) {
 	if ((errno == ENOENT) && header)
-	  (void) OMailHeader(Request, file, username, realname,
+	  OMailHeader(Request, file, username, realname,
 			     list.topic, DEFAULT_MAIL_DOMAIN, message);
 	else {
 	  fprintf(stderr,"Error with file \"%s\": %s", file,
@@ -295,7 +295,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	    return(status);
 	  }
 	else  
-	  if(status)
+	  if(status != SUCCESS)
 	    return(status);
       
 	status = what_now(file,FALSE,NULL);
@@ -307,11 +307,11 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	    return(ERROR);
 	  }
 	else
-	  if(status)
+	  if(status != SUCCESS)
 	    return(status);
       }
 
-      (void) stat(file, &statbuf);
+      stat(file, &statbuf);
       if (statbuf.st_size == 0) 
 	{
 	  printf("No message to send.\n");

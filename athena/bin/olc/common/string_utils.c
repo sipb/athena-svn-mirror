@@ -16,12 +16,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: string_utils.c,v 1.18 1999-03-06 16:48:17 ghudson Exp $
+ *	$Id: string_utils.c,v 1.19 1999-06-28 22:52:24 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: string_utils.c,v 1.18 1999-03-06 16:48:17 ghudson Exp $";
+static char rcsid[] ="$Id: string_utils.c,v 1.19 1999-06-28 22:52:24 ghudson Exp $";
 #endif
 #endif
 
@@ -133,11 +133,7 @@ int isnumber(string)
 char *
 get_next_word(line, buf, func)
      char *line, *buf;
-#ifdef __STDC__
      int (*func)(int c);
-#else
-     int (*func)();
-#endif
 {
   char c;			/* Current character. */
 

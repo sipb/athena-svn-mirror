@@ -9,11 +9,11 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: main.c,v 1.14 1999-03-06 16:47:28 ghudson Exp $
+ *      $Id: main.c,v 1.15 1999-06-28 22:51:45 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: main.c,v 1.14 1999-03-06 16:47:28 ghudson Exp $";
+static char rcsid[]="$Id: main.c,v 1.15 1999-06-28 22:51:45 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -40,12 +40,13 @@ Widget toplevel;
  *			.index file.
  *  Arguments:	argc:  Number of args in command line.  Used by XtInitialize.
  *		argv:  Array of words in command line.  Used by XtInitialize.
- *  Returns:    Nothing.
+ *  Returns:    Nothing useful.
  *  Notes:
  *	
  */
 
-void main(argc, argv)
+int
+main(argc, argv)
      int argc;
      char *argv[];
 {
@@ -119,4 +120,6 @@ void main(argc, argv)
   log_startup("x_stock");
 #endif
   XtMainLoop();
+
+  return 0;
 }

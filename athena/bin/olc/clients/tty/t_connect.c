@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_connect.c,v 1.20 1999-03-06 16:48:07 ghudson Exp $
+ *	$Id: t_connect.c,v 1.21 1999-06-28 22:52:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_connect.c,v 1.20 1999-03-06 16:48:07 ghudson Exp $";
+static char rcsid[] ="$Id: t_connect.c,v 1.21 1999-06-28 22:52:15 ghudson Exp $";
 #endif
 #endif
 
@@ -39,7 +39,7 @@ t_grab(Request,flag,hold)
      int flag;
      int hold;
 {
-  int status;
+  ERRCODE status;
   int instance;
   
   instance = Request->requester.instance;
@@ -119,7 +119,7 @@ t_forward(Request)
      REQUEST *Request;
 
 {
-  int status;
+  ERRCODE status;
   int instance;
 
   status = t_describe(Request,NULL,NULL,TRUE,FALSE);

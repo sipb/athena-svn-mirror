@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: utils.c,v 1.28 1999-06-10 18:41:18 ghudson Exp $
+ *	$Id: utils.c,v 1.29 1999-06-28 22:51:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: utils.c,v 1.28 1999-06-10 18:41:18 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.29 1999-06-28 22:51:52 ghudson Exp $";
 #endif
 #endif
 
@@ -36,6 +36,7 @@ static char rcsid[] ="$Id: utils.c,v 1.28 1999-06-10 18:41:18 ghudson Exp $";
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/file.h>
+#include <sys/wait.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -54,7 +55,7 @@ fill_request(req)
 {
 #ifdef HAVE_KRB4
   CREDENTIALS k_cred;
-  int status;
+  ERRCODE status;
 #endif /* HAVE_KRB4 */
 
   memset(req, 0, sizeof(REQUEST));
@@ -64,24 +65,24 @@ fill_request(req)
 
   req->requester.instance = User.instance;
   req->requester.uid      = User.uid;
-  (void) strncpy(req->requester.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->requester.realname, User.realname, NAME_SIZE);
-  (void) strncpy(req->requester.machine,  User.machine,
+  strncpy(req->requester.username, User.username, LOGIN_SIZE);
+  strncpy(req->requester.realname, User.realname, NAME_SIZE);
+  strncpy(req->requester.machine,  User.machine,
 		 sizeof(req->requester.machine));
 
   req->target.instance = User.instance;
   req->target.uid      = User.uid;
-  (void) strncpy(req->target.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->target.realname, User.realname, NAME_SIZE);
-  (void) strncpy(req->target.machine,  User.machine,
+  strncpy(req->target.username, User.username, LOGIN_SIZE);
+  strncpy(req->target.realname, User.realname, NAME_SIZE);
+  strncpy(req->target.machine,  User.machine,
 		 sizeof(req->requester.machine));
 
 #ifdef HAVE_KRB4
   status = krb_get_cred("krbtgt",REALM,REALM, &k_cred);
   if(status == KSUCCESS)
     {
-      (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
-      (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
+      strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
+      strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
     }
   else
     fprintf(stderr,"%s\n",krb_err_txt[status]);
@@ -168,7 +169,7 @@ can_receive_mail(name)   /*ARGSUSED*/
 {
 #ifdef CHECK_MAILHUB___BROKEN
   static int fd, code;
-  int status;
+  ERRCODE status;
 
   fd = open_connection_to_mailhost();
   if(fd == ERROR)
@@ -214,6 +215,7 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
+  int child_status;           /* Status of child */
   struct sigaction sa, osa;
 
   pid = fork();
@@ -227,7 +229,9 @@ call_program(program, argument)
       {
 	execlp(program, program, argument, 0);
 	olc_perror("call_program");
-	return(ERROR);
+	_exit(37); /* Flag value, hopefully it doesn't step on return
+		    * values of program.
+		    */
       }
     else 
       {
@@ -236,14 +240,13 @@ call_program(program, argument)
 	sa.sa_handler= SIG_IGN;
 	sigaction(SIGINT, &sa, &osa);
 
-	while (wait(0) != pid) 
-	  {
-			/* ho hum ... (yawn) */
-            /* tap tap */
-	  };
-
+	waitpid(pid, &child_status, 0);
+	
 	sigaction(SIGINT, &osa, NULL);
-	return(SUCCESS);
+	if((WIFEXITED(child_status)) && (WEXITSTATUS(child_status) == 37))
+	  return(ERROR); /* The execlp failed. */
+	else
+	  return(SUCCESS);
       }
 }
 
@@ -276,7 +279,7 @@ expand_hostname(hostname, instance, realm)
   
   if(p == NULL)
     {
-      (void) strcpy(instance, hostname);
+      strcpy(instance, hostname);
       krb_get_lrealm(realm,1);
     }
   else
@@ -284,7 +287,7 @@ expand_hostname(hostname, instance, realm)
       char *krb_conf_realm;
 
       i = p-hostname;
-      (void) strncpy(instance,hostname,i);
+      strncpy(instance,hostname,i);
       instance[i] = '\0';
 
       krb_conf_realm = krb_realmofhost(hostname);
@@ -307,7 +310,7 @@ expand_hostname(hostname, instance, realm)
   /* if the realm is one of LOCAL_REALMS[], map it to LOCAL_REALM */
   for(i=0; strlen(LOCAL_REALMS[i]) != 0; i++)
     if(strcmp(realm, LOCAL_REALMS[i]) == 0)
-      (void) strcpy(realm, LOCAL_REALM);
+      strcpy(realm, LOCAL_REALM);
   return;
 }
 #endif /* HAVE_KRB4 */
@@ -349,7 +352,7 @@ sendmail(smargs)
       }
   args[i] = (char *) 0;
 
-  (void) pipe(fildes);
+  pipe(fildes);
   switch (fork()) 
     {
     case -1:		/* error */
@@ -357,15 +360,15 @@ sendmail(smargs)
       printf("sendmail: error starting process.\n");
       return(-1);
     case 0:		/* child */
-      (void) close(fildes[1]);
-      (void) close(0);
-      (void) dup2(fildes[0], 0);
+      close(fildes[1]);
+      close(0);
+      dup2(fildes[0], 0);
       execv("/usr/sbin/sendmail", args);
       execv("/usr/lib/sendmail", args);
       olc_perror("sendmail: exec");
       exit(1);
     default:
-      (void) close(fildes[0]);
+      close(fildes[0]);
       return(fildes[1]);
     }
 }

@@ -17,12 +17,12 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_utils.c,v 1.8 1999-03-06 16:47:48 ghudson Exp $
+ *      $Id: x_utils.c,v 1.9 1999-06-28 22:51:58 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Id: x_utils.c,v 1.8 1999-03-06 16:47:48 ghudson Exp $";
+static char rcsid[]= "$Id: x_utils.c,v 1.9 1999-06-28 22:51:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -35,7 +35,7 @@ handle_response(response, req)
      int response;
      REQUEST *req;
 {
-  int status;
+  ERRCODE status;
   char message[BUF_SIZE];
 #ifdef HAVE_KRB4
   char kmessage[BUF_SIZE];

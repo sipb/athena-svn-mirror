@@ -8,13 +8,13 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: comm.c,v 1.5 1999-03-06 16:49:08 ghudson Exp $
+ *	$Id: comm.c,v 1.6 1999-06-28 22:52:48 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: comm.c,v 1.5 1999-03-06 16:49:08 ghudson Exp $";
+static char rcsid[] ="$Id: comm.c,v 1.6 1999-06-28 22:52:48 ghudson Exp $";
 #endif
 #endif
 
@@ -35,7 +35,8 @@ tell_main_daemon(user)
 {
   static REQUEST request;
   int k_errno;
-  int status, fd;
+  ERRCODE status;
+  int fd;
 
   if (request.version != CURRENT_VERSION) {
 #ifdef HAVE_KRB4
@@ -84,17 +85,19 @@ tell_main_daemon(user)
   request.options = user.status;
   
   status = open_connection_to_daemon(&request, &fd);
-  if (status != 0) {
-    syslog(LOG_ERR,"tell_daemon: open_connection: Error %d", status);
-    return;
-  }
+  if (status != SUCCESS)
+    {
+      syslog(LOG_ERR,"tell_daemon: open_connection: Error %d", status);
+      return;
+    }
 
   status = send_request(fd, &request);
-  if (status != 0) {
-    syslog(LOG_ERR,"tell_daemon: send_request: Error %d", status);
-    close(fd);
-    return;
-  }
+  if (status != SUCCESS)
+    {
+      syslog(LOG_ERR,"tell_daemon: send_request: Error %d", status);
+      close(fd);
+      return;
+    }
 
   read_response(fd, &status);
   if (status != SUCCESS)

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_status.c,v 1.12 1999-03-06 16:48:03 ghudson Exp $
+ *	$Id: p_status.c,v 1.13 1999-06-28 22:52:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_status.c,v 1.12 1999-03-06 16:48:03 ghudson Exp $";
+static char rcsid[] ="$Id: p_status.c,v 1.13 1999-06-28 22:52:09 ghudson Exp $";
 #endif
 #endif
 
@@ -48,7 +48,7 @@ do_olc_status(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -56,7 +56,7 @@ do_olc_status(arguments)
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -84,7 +84,7 @@ do_olc_who(arguments)
      char  **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -92,7 +92,7 @@ do_olc_who(arguments)
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -118,7 +118,7 @@ do_olc_version(arguments)
      char  **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -126,7 +126,7 @@ do_olc_version(arguments)
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{

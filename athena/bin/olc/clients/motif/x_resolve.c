@@ -17,12 +17,12 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_resolve.c,v 1.7 1999-03-06 16:47:47 ghudson Exp $
+ *      $Id: x_resolve.c,v 1.8 1999-06-28 22:51:58 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Id: x_resolve.c,v 1.7 1999-03-06 16:47:47 ghudson Exp $";
+static char rcsid[]= "$Id: x_resolve.c,v 1.8 1999-06-28 22:51:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -35,7 +35,7 @@ void
 x_done(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
   char title[TITLE_SIZE];
   char error[BUF_SIZE];
   int off = 0;
@@ -139,7 +139,7 @@ ERRCODE
 x_cancel(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
   char title[TITLE_SIZE];
   char error[BUF_SIZE];
   int instance;

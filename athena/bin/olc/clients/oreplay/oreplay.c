@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: oreplay.c,v 1.30 1999-03-06 16:47:54 ghudson Exp $";
+static char *RCSid = "$Id: oreplay.c,v 1.31 1999-06-28 22:52:03 ghudson Exp $";
 #endif
 #endif
 
@@ -36,17 +36,10 @@ int i_list;
 int i_show;
 int select_timeout;
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-char *f_gets P((FILE *input_file , char *a, int n ));
-void usage P((void ));
-void punt P((int fd , char *filename ));
-static void format_listing P((int input_fd, int output_fd));
-#undef P
+char *f_gets (FILE *input_file , char *a, int n );
+void usage (void );
+void punt (int fd , char *filename );
+static void format_listing (int input_fd, int output_fd);
 
 extern char DaemonHost[];
 

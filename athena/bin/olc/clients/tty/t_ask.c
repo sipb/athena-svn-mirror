@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_ask.c,v 1.24 1999-03-06 16:48:07 ghudson Exp $
+ *	$Id: t_ask.c,v 1.25 1999-06-28 22:52:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_ask.c,v 1.24 1999-03-06 16:48:07 ghudson Exp $";
+static char rcsid[] ="$Id: t_ask.c,v 1.25 1999-06-28 22:52:15 ghudson Exp $";
 #endif
 #endif
 
@@ -43,7 +43,7 @@ t_ask(Request,topic,q_file)
      char *topic;
      char *q_file;
 {
-  int status;
+  ERRCODE status;
   char file[NAME_SIZE];
   struct stat statbuf;
   int instance;
@@ -147,34 +147,34 @@ t_ask(Request,topic,q_file)
       {
 	fprintf(stderr,"An error occurred while reading your");
 	fprintf(stderr," message; unable to continue.\n");
-	(void) unlink(file);
+	unlink(file);
 	return(ERROR);
       }
     else
       if (status == NO_ACTION)
 	{
 	  printf("Your question has been cancelled.\n");
-	  (void) unlink(file);
+	  unlink(file);
 	  if(client_is_user_client())
 	    exit(1);
 	  return(SUCCESS);
 	}
     
-    (void) stat(file, &statbuf);
+    stat(file, &statbuf);
     if (statbuf.st_size == 0)
       {
 	printf("You have not entered a question.\n");
-	(void) unlink(file);
+	unlink(file);
 	if(client_is_user_client())
 	  exit(1);
 	return(SUCCESS);
       }
     status = OAsk_file(Request,topic,file);
-    (void) unlink(file);
+    unlink(file);
   }
   else {
     status = OAsk_file(Request,topic,q_file);
-    (void) unlink(file);
+    unlink(file);
   }
 
   switch(status)

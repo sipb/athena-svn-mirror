@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_instance.c,v 1.17 1999-03-06 16:48:09 ghudson Exp $
+ *	$Id: t_instance.c,v 1.18 1999-06-28 22:52:16 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_instance.c,v 1.17 1999-03-06 16:48:09 ghudson Exp $";
+static char rcsid[] ="$Id: t_instance.c,v 1.18 1999-06-28 22:52:16 ghudson Exp $";
 #endif
 #endif
 
@@ -39,7 +39,7 @@ t_instance(Request,instance)
      int instance;
 {
   char buf[BUF_SIZE];
-  int status;
+  ERRCODE status;
 
   if(instance == -2)
     {
@@ -106,7 +106,7 @@ t_set_default_instance(Request)
      REQUEST *Request;
 {
   int instance;  
-  int status;
+  ERRCODE status;
 
   status = OGetDefaultInstance(Request,&instance);
   switch(status)

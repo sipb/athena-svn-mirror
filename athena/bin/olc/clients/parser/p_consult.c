@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_consult.c,v 1.8 1999-03-06 16:48:00 ghudson Exp $
+ *	$Id: p_consult.c,v 1.9 1999-06-28 22:52:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_consult.c,v 1.8 1999-03-06 16:48:00 ghudson Exp $";
+static char rcsid[] ="$Id: p_consult.c,v 1.9 1999-06-28 22:52:07 ghudson Exp $";
 #endif
 #endif
 
@@ -53,25 +53,25 @@ do_olc_on(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
    for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if (string_equiv(*arguments, "-first",max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-first",2))
 	set_option(Request.options,ON_FIRST);
-      else if (string_equiv(*arguments, "-duty",max(strlen(*arguments),2))) 
+      else if (is_flag(*arguments, "-duty",2))
 	set_option(Request.options,ON_DUTY);
-      else if (string_equiv(*arguments, "-second",max(strlen(*arguments),2))) 
+      else if (is_flag(*arguments, "-second",2))
 	set_option(Request.options,ON_SECOND);
-      else if (string_equiv(*arguments, "-urgent",max(strlen(*arguments),2)))
+      else if (is_flag(*arguments, "-urgent",2))
 	set_option(Request.options,ON_URGENT);
       else 
 	{
 	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(ERROR);
 	  if(arguments == (char **) NULL)   /* error */
 	    {
@@ -105,19 +105,19 @@ do_olc_off(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
   for (arguments++; *arguments != (char *) NULL; arguments++)
     {
-      if (string_equiv(*arguments, "-force",max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-force",2))
         set_option(Request.options,OFF_FORCE);
       else
         {
           arguments=handle_argument(arguments, &Request,&status);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(ERROR);
           if(arguments == (char **) NULL)   /* error */
 	    {

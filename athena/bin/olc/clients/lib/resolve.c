@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: resolve.c,v 1.10 1999-03-06 16:47:39 ghudson Exp $
+ *	$Id: resolve.c,v 1.11 1999-06-28 22:51:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: resolve.c,v 1.10 1999-03-06 16:47:39 ghudson Exp $";
+static char rcsid[] ="$Id: resolve.c,v 1.11 1999-06-28 22:51:51 ghudson Exp $";
 #endif
 #endif
 
@@ -57,16 +57,16 @@ OResolve(Request,title,flag)
      int flag;
 {
   int fd;
-  int status;
+  ERRCODE status;
   
   Request->request_type = flag;
   
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -86,7 +86,7 @@ OResolve(Request,title,flag)
       read_response(fd, &status);
     }
   
-  (void) close(fd);
+  close(fd);
   return(status);
 }
   

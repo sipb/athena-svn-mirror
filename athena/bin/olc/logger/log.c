@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking library
  *
- * $Id: log.c,v 1.14 1999-06-10 18:41:27 ghudson Exp $
+ * $Id: log.c,v 1.15 1999-06-28 22:52:37 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Id: log.c,v 1.14 1999-06-10 18:41:27 ghudson Exp $";
+static char rcsid[] = "$Id: log.c,v 1.15 1999-06-28 22:52:37 ghudson Exp $";
 #endif
 #endif
 
@@ -96,7 +96,7 @@ log_startup(type)
   name.sin_family = AF_INET;
   name.sin_port = port;
   
-  if (connect(fd, &name, sizeof(name))< 0) {
+  if (connect(fd, (struct sockaddr *)&name, sizeof(name))< 0) {
     punt = 1;
     return;
   }

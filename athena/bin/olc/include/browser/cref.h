@@ -21,7 +21,7 @@
 /* This file is part of the CREF finder.  It contains global variable
  * definitions.
  *
- *	$Id: cref.h,v 1.2 1999-01-22 23:13:33 ghudson Exp $
+ *	$Id: cref.h,v 1.3 1999-06-28 22:52:31 ghudson Exp $
  */
 
 
@@ -45,9 +45,14 @@ typedef int ERRCODE;				/* An error code. */
 #define MAX_INDEX_LINES	(LINES - 9)	/* Number of index lines. */
 #define LOGIN_NAMESIZE  20              /* Maximum size of login name. */
 /* The following are only used by the Motif client. */
-#define  MAX_TITLES	25		/* Maximum number of titles. */
-#define  SUBDIR		1		/* Subdirectory in menu. */
-#define  PLAINFILE	0		/* Entry in menu. */
+#define MAX_TITLES	25		/* Maximum number of titles. */
+#define SUBDIR		1		/* Subdirectory in menu. */
+#define PLAINFILE	0		/* Entry in menu. */
+/* The following are used only by the Curses client */
+#define DEFAULT_PAGER    "more"         /* Pager to fall back on if $PAGER 
+					 * is undefined
+					 */
+
 
 /* Structure describing a CREF entry. */
 

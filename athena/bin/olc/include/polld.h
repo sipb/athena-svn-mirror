@@ -8,7 +8,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.h,v 1.6 1999-03-06 16:48:28 ghudson Exp $
+ *	$Id: polld.h,v 1.7 1999-06-28 22:52:28 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -46,29 +46,21 @@ typedef struct tPTF {
 
 /* POLLD functions */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-
 /* comm.c */
-void tell_main_daemon P((PTF user ));
+void tell_main_daemon (PTF user );
 
 /* get_list.c */
-int get_user_list P((PTF *users , int *max_people ));
+int get_user_list (PTF *users , int *max_people );
 
 /* hosthash.c */
-void init_cache P((void ));
-struct hostent *c_gethostbyname P((char *name ));
+void init_cache (void );
+struct hostent *c_gethostbyname (char *name );
 
 /* locate.c */
-int locate_person P((PTF *person ));
-void check_zephyr P((void));
+int locate_person (PTF *person );
+void check_zephyr (void);
 
 /* polld.c */
-int main P((int argc , char *argv []));
+int main (int argc , char *argv []);
 
-#undef P
 #endif /* __polld_h */

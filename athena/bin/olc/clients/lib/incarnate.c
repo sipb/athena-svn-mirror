@@ -8,11 +8,11 @@
  * Copyright (C) 1996 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: incarnate.c,v 1.4 1999-03-06 16:47:36 ghudson Exp $
+ *	$Id: incarnate.c,v 1.5 1999-06-28 22:51:49 ghudson Exp $
  */
 
 #if !defined(SABER) && !defined(lint)
-static char rcsid[] = "$Id: incarnate.c,v 1.4 1999-03-06 16:47:36 ghudson Exp $";
+static char rcsid[] = "$Id: incarnate.c,v 1.5 1999-06-28 22:51:49 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -131,7 +131,7 @@ static config_keyword olxx_config[] = {
 /*** exported accessor functions ***/
 
 /* Return the name of the current client (most likely in lowercase). */
-char *client_name(void)
+char *client_name()
 {
   if (unincarnated > 0)  karma("client_name() called before incarnation");
   return clt_name;
@@ -141,7 +141,7 @@ char *client_name(void)
  * Note: Hesiod doesn't care about the case of the service names, but "OLC
  *	server" looks better than "olc server" in output.
  */
-char *client_service_name(void)
+char *client_service_name()
 {
   if (unincarnated)  karma(NULL);
   return service_name;
@@ -150,84 +150,84 @@ char *client_service_name(void)
 /* Return the fallback for the server hostname.
  * (On sites without Hesiod, this is the only value used.)
  */
-char *client_hardcoded_server(void)
+char *client_hardcoded_server()
 {
   if (unincarnated)  karma(NULL);
   return default_server;
 }
 
 /* Return true iff this is a "consulting" (as opposed to "user") client. */
-char client_is_consulting_client(void)
+char client_is_consulting_client()
 {
   if (unincarnated)  karma(NULL);
   return is_consulting;
 }
 
 /* Return true iff this is client has posted hours. */
-char client_has_hours(void)
+char client_has_hours()
 {
   if (unincarnated)  karma(NULL);
   return has_hours;
 }
 
 /* Return the default prompt (for text clients). */
-char *client_default_prompt(void)
+char *client_default_prompt()
 {
   if (unincarnated)  karma(NULL);
   return prompt;
 }
 
 /* Return the default consultant title. */
-char *client_default_consultant_title(void)
+char *client_default_consultant_title()
 {
   if (unincarnated)  karma(NULL);
   return consult_title;
 }
 
 /* Return the directory with help files. */
-char *client_help_directory(void)
+char *client_help_directory()
 {
   if (unincarnated)  karma(NULL);
   return help_dir;
 }
 
 /* Return the "root" help file name. */
-char *client_help_primary_file(void)
+char *client_help_primary_file()
 {
   if (unincarnated)  karma(NULL);
   return help_file;
 }
 
 /* Return the help file extension. */
-char *client_help_ext(void)
+char *client_help_ext()
 {
   if (unincarnated)  karma(NULL);
   return help_ext;
 }
 
 /* Return the stock answers directory. */
-char *client_SA_directory(void)
+char *client_SA_directory()
 {
   if (unincarnated)  karma(NULL);
   return stock_dir;
 }
 
 /* Return the stock answers browser executable. */
-char *client_SA_browser_program(void)
+char *client_SA_browser_program()
 {
   if (unincarnated)  karma(NULL);
   return stock_browser;
 }
 
 /* Return the list of commands needed before stock answers are available. */
-char **client_SA_attach_commands(void)
+char **client_SA_attach_commands()
 {
   if (unincarnated)  karma(NULL);
   return stock_attach;
 }
 
 /* Return the "magic" file for the stock answers locker. */
-char *client_SA_magic_file(void)
+char *client_SA_magic_file()
 {
   if (unincarnated)  karma(NULL);
   return stock_magic;
@@ -240,7 +240,7 @@ char *client_SA_magic_file(void)
  * Note: the code assumes that service_name may change, which
  *	currently never happens.
  */
-char *client_nl_service_name(void)
+char *client_nl_service_name()
 {
   static char *nlserv = NULL;
   if (unincarnated)  karma(NULL);
@@ -264,7 +264,7 @@ char *client_nl_service_name(void)
  * Note: stock_dir, stock_browser and stock_magic are all used to
  *      determine if the stock answers exist.
  */
-char client_has_answers(void)
+char client_has_answers()
 {
   static int warn_once = 1;
 
@@ -292,7 +292,7 @@ char client_has_answers(void)
  * 	configuration file, so this will generally be false only if we had
  * 	to guess.
  */
-char client_has_help(void)
+char client_has_help()
 {
   static int warn_once = 1;
 
@@ -342,7 +342,7 @@ static void karma (char *bad)
  * Note: defined only if HESIOD (we can't really guess otherwise)
  */
 #ifdef HAVE_HESIOD
-static ERRCODE incarnate_guess(void)
+static ERRCODE incarnate_guess()
 {
   char *try, *pos;
   int last;

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: log.c,v 1.50 1999-05-26 01:53:57 jweiss Exp $
+ *	$Id: log.c,v 1.51 1999-06-28 22:52:40 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: log.c,v 1.50 1999-05-26 01:53:57 jweiss Exp $";
+static char rcsid[] ="$Id: log.c,v 1.51 1999-06-28 22:52:40 ghudson Exp $";
 #endif
 #endif
 
@@ -43,18 +43,10 @@ static char rcsid[] ="$Id: log.c,v 1.50 1999-05-26 01:53:57 jweiss Exp $";
 
 extern int errno;
 
-#ifdef __STDC__
-# define	P(s) s
-#else
-# define P(s) ()
-#endif
-
-static ERRCODE log_log P((KNUCKLE *knuckle , char *message , char *header , int is_private ));
-static ERRCODE terminate_log_crash P((KNUCKLE *knuckle ));
-static ERRCODE dispose_of_log P((KNUCKLE *knuckle ));
-static char *trans_m_i P((char *os ));
-
-#undef P
+static ERRCODE log_log (KNUCKLE *knuckle , char *message , char *header , int is_private );
+static ERRCODE terminate_log_crash (KNUCKLE *knuckle );
+static ERRCODE dispose_of_log (KNUCKLE *knuckle );
+static char *trans_m_i (char *os );
 
 /*
  * Function:	write_line_to_log() writes a single line of text into a

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: motd.c,v 1.11 1999-03-06 16:47:38 ghudson Exp $
+ *	$Id: motd.c,v 1.12 1999-06-28 22:51:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: motd.c,v 1.11 1999-03-06 16:47:38 ghudson Exp $";
+static char rcsid[] ="$Id: motd.c,v 1.12 1999-06-28 22:51:50 ghudson Exp $";
 #endif
 #endif
 
@@ -47,15 +47,15 @@ OGetFile(Request,type,file)
      char *file;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   set_option(Request->options, type);
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -85,16 +85,16 @@ OChangeFile(Request, type, file)
      char *file;
 {
   int fd;
-  int status;
+  ERRCODE status;
   
   set_option(Request->options, type);
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);

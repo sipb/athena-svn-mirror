@@ -9,12 +9,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: nl.c,v 1.11 1999-03-06 16:47:39 ghudson Exp $
+ *	$Id: nl.c,v 1.12 1999-06-28 22:51:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: nl.c,v 1.11 1999-03-06 16:47:39 ghudson Exp $";
+static char rcsid[] ="$Id: nl.c,v 1.12 1999-06-28 22:51:50 ghudson Exp $";
 #endif
 #endif
 
@@ -31,18 +31,9 @@ static char rcsid[] ="$Id: nl.c,v 1.11 1999-03-06 16:47:39 ghudson Exp $";
 #include <olc/olc.h>
 #include <nl_requests.h>
 
-#if defined(__STDC__)
-# define P_(s) s
-#else
-# define P_(s) ()
-#endif
-
 #ifdef HAVE_KRB4
-static ERRCODE get_k_auth P_((KTEXT_ST *my_auth));
+static ERRCODE get_k_auth (KTEXT_ST *my_auth);
 #endif /* HAVE_KRB4 */
-
-#undef P_
-
 
 ERRCODE
 nl_get_qlist(fd,buf,buflen,outlen)

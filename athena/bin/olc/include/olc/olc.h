@@ -18,7 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.h,v 1.29 1999-03-06 16:48:33 ghudson Exp $
+ *	$Id: olc.h,v 1.30 1999-06-28 22:52:33 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -27,10 +27,8 @@
 #define __olc_olc_h
 
 #include <stdio.h>
-#ifdef STDC_HEADERS
 #include <stdlib.h>
 #include <string.h>
-#endif
 
 #include <olc/lang.h>
 

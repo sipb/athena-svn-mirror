@@ -8,12 +8,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: motd.c,v 1.18 1999-06-10 18:41:30 ghudson Exp $
+ *	$Id: motd.c,v 1.19 1999-06-28 22:52:41 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: motd.c,v 1.18 1999-06-10 18:41:30 ghudson Exp $";
+static char rcsid[] ="$Id: motd.c,v 1.19 1999-06-28 22:52:41 ghudson Exp $";
 #endif
 #endif
 
@@ -35,17 +35,9 @@ static char rcsid[] ="$Id: motd.c,v 1.18 1999-06-10 18:41:30 ghudson Exp $";
 #include <lumberjack.h>
 #endif
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static void write_motd_times P((void));
-static int gethm P((char *cp , long *hp , long *mp ));
-static long parse_time P((char *buf ));
-
-#undef P
+static void write_motd_times (void);
+static int gethm (char *cp , long *hp , long *mp );
+static long parse_time (char *buf );
 
 static long expire_time = -1;   /* In seconds past Jan. 1, 1970 */
 static long in_time = -1;

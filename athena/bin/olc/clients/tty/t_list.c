@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_list.c,v 1.23 1999-06-10 18:41:25 ghudson Exp $
+ *	$Id: t_list.c,v 1.24 1999-06-28 22:52:17 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_list.c,v 1.23 1999-06-10 18:41:25 ghudson Exp $";
+static char rcsid[] ="$Id: t_list.c,v 1.24 1999-06-28 22:52:17 ghudson Exp $";
 #endif
 #endif
 
@@ -54,7 +54,7 @@ t_list_queue(Request,sort,queues,topics,users,stati,comments,file,display)
     char *file;
     int display;
 {
-    int status;
+    ERRCODE status;
     LIST *list;
 
     status = OListQueue(Request,&list,queues,topics,users,stati);

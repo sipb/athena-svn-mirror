@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: list.c,v 1.12 1999-03-06 16:47:37 ghudson Exp $
+ *	$Id: list.c,v 1.13 1999-06-28 22:51:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: list.c,v 1.12 1999-03-06 16:47:37 ghudson Exp $";
+static char rcsid[] ="$Id: list.c,v 1.13 1999-06-28 22:51:50 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ OListQueue(Request,list,queues,topics,users,stati)
      int stati;
 {
   int fd;
-  int status;
+  ERRCODE status;
   int n;
 
   if((queues != NULL) && (strlen(queues) > NAME_SIZE))
@@ -56,11 +56,11 @@ OListQueue(Request,list,queues,topics,users,stati)
 
   Request->request_type = OLC_LIST;
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -105,7 +105,7 @@ OListQueue(Request,list,queues,topics,users,stati)
         }
     }
 
-  (void) close(fd);
+  close(fd);
   return(status);
 }
 
@@ -118,8 +118,8 @@ OReadList(fd,list, size)
      int size;
 {
   LIST *l;
-  int i= 0;
-  int status = 0;
+  int i;
+  ERRCODE status = SUCCESS;
   int errflag = 0;
 
   l = *list;

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_instance.c,v 1.15 1999-03-06 16:48:00 ghudson Exp $
+ *	$Id: p_instance.c,v 1.16 1999-06-28 22:52:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_instance.c,v 1.15 1999-03-06 16:48:00 ghudson Exp $";
+static char rcsid[] ="$Id: p_instance.c,v 1.16 1999-06-28 22:52:07 ghudson Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ do_olc_instance(arguments)
 {
   REQUEST Request;
   int instance = -1;
-  int status;
+  ERRCODE status;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -50,8 +50,7 @@ do_olc_instance(arguments)
       arguments++;
       if (!*arguments) break;
 
-      if(string_equiv(*arguments,"-instance", max(strlen(*arguments),2)) ||
-	 string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-instance", 2) || is_flag(*arguments,"-change", 2))
 	{
           ++arguments;
 	  if(*arguments != (char *) NULL) {
@@ -68,7 +67,7 @@ do_olc_instance(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 
       if(arguments == (char **) NULL)

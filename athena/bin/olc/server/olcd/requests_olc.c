@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.59 1999-03-06 16:48:58 ghudson Exp $
+ *	$Id: requests_olc.c,v 1.60 1999-06-28 22:52:42 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.59 1999-03-06 16:48:58 ghudson Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.60 1999-06-28 22:52:42 ghudson Exp $";
 #endif
 #endif
 
@@ -1213,10 +1213,10 @@ olc_send(fd, request)
   KNUCKLE    *target;           /* target intermediate connection */
   char       *msg;		/* Message from consultant. */
   char       mesg[BUFSIZ];
-  int        status; 
+  ERRCODE    status; 
 
   status = find_knuckle(&(request->requester), &requester);
-  if(status)
+  if(status != SUCCESS)
     return(send_response(fd,status));
 
   if(!isme(request))
@@ -1224,7 +1224,7 @@ olc_send(fd, request)
       status = match_knuckle(request->target.username, 
 			     request->target.instance,
 			     &target);
-      if(status)
+      if(status != SUCCESS)
 	return(send_response(fd,status));
     }
   else
@@ -1314,25 +1314,28 @@ olc_send(fd, request)
 	     target->user->username,target->instance);
 #endif /* OLCD_LOG_ACTIONS */
 
-  if (owns_question(requester)) {
-    requester->question->stats.n_urepl++;
-    if (requester->status == PICKUP)
-      set_status(requester, PENDING);
-    if (! is_connected(target))
-      {
-	sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
-		target->user->username, target->instance);
-	olc_broadcast_message("lonely_hearts",mesg, requester->question->topic);
-      }
-  } else {
-    if (target->question->stats.time_to_fr == -1) {
-      time_t now;
-      
-      now = time(0);
-      target->question->stats.time_to_fr = now - target->timestamp;
+  if (owns_question(requester))
+    {
+      requester->question->stats.n_urepl++;
+      if (requester->status == PICKUP)
+	set_status(requester, PENDING);
+      if (! is_connected(target))
+	{
+	  sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
+		  target->user->username, target->instance);
+	  olc_broadcast_message("lonely_hearts",mesg, requester->question->topic);
+	}
     }
-    target->question->stats.n_crepl++;
-  }
+  else
+    {
+      if (target->question->stats.time_to_fr == -1) {
+	time_t now;
+	
+	now = time(0);
+	target->question->stats.time_to_fr = now - target->timestamp;
+      }
+      target->question->stats.n_crepl++;
+    }
 
 
   if ( (!owns_question(target) && is_connected(target) &&
@@ -1369,10 +1372,10 @@ olc_comment(fd, request)
   KNUCKLE   *requester;	        /* user making request */
   KNUCKLE   *target;	        /* target user */
   char      *msg;		/* Message from consultant. */
-  int        status;
+  ERRCODE   status;
 
   status = find_knuckle(&(request->requester), &requester);
-  if(status)
+  if(status != SUCCESS)
     return(send_response(fd,status));
 
   if(!isme(request))
@@ -1380,7 +1383,7 @@ olc_comment(fd, request)
       status = match_knuckle(request->target.username, 
 			     request->target.instance,
 			     &target);
-      if(status)
+      if(status != SUCCESS)
 	return(send_response(fd,status));
     }
   else
@@ -1523,7 +1526,7 @@ olc_describe(fd, request)
  * Function:	olc_replay() replays the entire conversation.
  * Arguments:	fd:		   File descriptor of socket.
  *		request:	   The request structure from olcr.
- * Returns:	USER_NOT_FOUND:    The user does not have a pending question.
+ * Returns:	NO_QUESTION:       The user does not have a pending question.
  *		NOT_SIGNED_ON:	   Consultant is not signed on to OLC.
  *		SUCCESS:	   Conversation successfully replayed.
  *              PERMISSION_DENIED: does not have access
@@ -2157,7 +2160,7 @@ olc_mail(fd, request)
  * Notes:
  */
 
-/*RESPONSE*/ ERRCODE
+ERRCODE
 olc_startup(fd, request)
      int fd;			/* File descriptor for socket. */
      REQUEST *request;	        /* Request structure from olc. */

@@ -9,12 +9,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: main.c,v 1.22 1999-03-06 16:47:44 ghudson Exp $
+ *      $Id: main.c,v 1.23 1999-06-28 22:51:57 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Id: main.c,v 1.22 1999-03-06 16:47:44 ghudson Exp $";
+static char rcsid[]="$Id: main.c,v 1.23 1999-06-28 22:51:57 ghudson Exp $";
 #endif
 #endif
 
@@ -196,11 +196,11 @@ main(argc, argv)
 olc_init()
 {
   int fd;			/* File descriptor for socket. */
-  RESPONSE response;		/* Response code from daemon. */
+  ERRCODE response;		/* Response code from daemon. */
   REQUEST Request;
   int n=0;
   char file[MAXPATHLEN];
-  int status;
+  ERRCODE status;
   Arg arg;
 
   init_screen = TRUE;
@@ -212,7 +212,7 @@ olc_init()
   Request.request_type = OLC_STARTUP;
   
   status = open_connection_to_daemon(&Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     {
       if (handle_response(status, &Request) == FAILURE)
 	goto try_again;
@@ -220,7 +220,7 @@ olc_init()
     }
 
   status = send_request(fd, &Request);
-  if (status)
+  if (status != SUCCESS)
     {
       if ((handle_response(status, &Request)) == FAILURE) {
 	close(fd);
@@ -274,6 +274,6 @@ olc_init()
       exit(ERROR);
     }
   unlink(file);
-  (void) close(fd);
+  close(fd);
   fflush(stdout);
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_motd.c,v 1.21 1999-03-06 16:48:02 ghudson Exp $
+ *	$Id: p_motd.c,v 1.22 1999-06-28 22:52:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_motd.c,v 1.21 1999-03-06 16:48:02 ghudson Exp $";
+static char rcsid[] ="$Id: p_motd.c,v 1.22 1999-06-28 22:52:08 ghudson Exp $";
 #endif
 #endif
 
@@ -41,7 +41,7 @@ do_olc_motd(arguments)
 {
   REQUEST Request;
   char file[NAME_SIZE];
-  int status;
+  ERRCODE status;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
@@ -59,8 +59,7 @@ do_olc_motd(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
-						    max(strlen(*arguments),2)))
+      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
 	{
           ++arguments;
 	  unlink(file);
@@ -72,7 +71,7 @@ do_olc_motd(arguments)
 		return(ERROR);
             }
 	  else {
-	    (void) strcpy(file,*arguments);
+	    strcpy(file,*arguments);
 	    arguments++;
 	  }
 	  
@@ -80,32 +79,33 @@ do_olc_motd(arguments)
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-editor",2))
         {
           ++arguments;
           if(*arguments != (char *) NULL) {
-            (void) strcpy(editor, *arguments);
+            strcpy(editor, *arguments);
 	    arguments++;
 	  }
           else
-            (void) strcpy(editor, NO_EDITOR);
+            strcpy(editor, NO_EDITOR);
 	  continue;
         }
 
-      if(string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-change", 2))
 	{
           ++arguments;
 	  change_flag = TRUE;
 	  continue;
 	}
 
-      if (string_equiv(*arguments,"-clear", max(strlen(*arguments),2))) {
-	++arguments;
-	clear_flag = TRUE;
-	continue;
-      }
+      if (is_flag(*arguments,"-clear", 2))
+	{
+	  ++arguments;
+	  clear_flag = TRUE;
+	  continue;
+	}
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 	
       arguments += num_of_args;		/* HACKHACKHACK */
@@ -128,7 +128,7 @@ do_olc_motd(arguments)
 			   (!save_file ? OLC_MOTD : 0), clear_flag); 
   }
   if(!save_file)
-    (void) unlink(file);
+    unlink(file);
   return(status);
 }
 
@@ -138,7 +138,7 @@ do_olc_hours(arguments)
 {
   REQUEST Request;
   char file[NAME_SIZE];
-  int status;
+  ERRCODE status;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
@@ -155,8 +155,7 @@ do_olc_hours(arguments)
   arguments++;
   while(*arguments != (char *) NULL)
     {
-      if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
-						    max(strlen(*arguments),2)))
+      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
 	{
           ++arguments;
 	  unlink(file);
@@ -168,7 +167,7 @@ do_olc_hours(arguments)
 		return(ERROR);
             }
 	  else {
-	    (void) strcpy(file,*arguments);
+	    strcpy(file,*arguments);
 	    arguments++;
 	  }
 	  
@@ -176,19 +175,19 @@ do_olc_hours(arguments)
 	  continue;
 	}
 
-      if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
+      if (is_flag(*arguments, "-editor", 2))
         {
           ++arguments;
           if(*arguments != (char *) NULL) {
-            (void) strcpy(editor, *arguments);
+            strcpy(editor, *arguments);
 	    arguments++;
 	  }
           else
-            (void) strcpy(editor, NO_EDITOR);
+            strcpy(editor, NO_EDITOR);
 	  continue;
         }
 
-      if(string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
+      if(is_flag(*arguments,"-change", 2))
 	{
           ++arguments;
 	  change_flag = TRUE;
@@ -196,7 +195,7 @@ do_olc_hours(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if(status != SUCCESS)
 	return(ERROR);
 	
       arguments += num_of_args;		/* HACKHACKHACK */
@@ -219,6 +218,6 @@ do_olc_hours(arguments)
 			   (!save_file ? OLC_GET_HOURS : 0),0);
   }
   if(!save_file)
-    (void) unlink(file);
+    unlink(file);
   return(status);
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_consult.c,v 1.14 1999-03-06 16:48:08 ghudson Exp $
+ *	$Id: t_consult.c,v 1.15 1999-06-28 22:52:16 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_consult.c,v 1.14 1999-03-06 16:48:08 ghudson Exp $";
+static char rcsid[] ="$Id: t_consult.c,v 1.15 1999-06-28 22:52:16 ghudson Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ t_sign_on(Request,flag,hold)
      int flag;
      int hold;
 {
-  int status;
+  ERRCODE status;
   int instance;
   
   if(flag)
@@ -136,7 +136,7 @@ ERRCODE
 t_olc_off(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
   int instance;
 
   instance = Request->requester.instance;

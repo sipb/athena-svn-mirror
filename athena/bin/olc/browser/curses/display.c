@@ -21,12 +21,12 @@
 /* This file is part of the CREF finder.  It contains the display routines.
  *
  *
- *	$Id: display.c,v 2.11 1999-01-22 23:11:45 ghudson Exp $
+ *	$Id: display.c,v 2.12 1999-06-28 22:51:39 ghudson Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_display_c = "$Id: display.c,v 2.11 1999-01-22 23:11:45 ghudson Exp $";
+static char *rcsid_display_c = "$Id: display.c,v 2.12 1999-06-28 22:51:39 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -196,7 +196,7 @@ make_display()
  * Arguments:	Index:	Index of entry to be displayed.
  * Returns:	Nothing.
  * Notes:
- *	If the entry is a file, it is shown using "more".  If it is a
+ *	If the entry is a file, it is shown using display_file().  If it is a
  *	directory, we simply change the current directory and redisplay.
  */
 
@@ -221,7 +221,7 @@ display_entry(ind)
       clear();
       refresh();
       nl = set_nl(1);
-      call_program("more", entry->filename);
+      display_file(entry->filename);
       set_nl(nl);
       refresh();
       wait_for_key();

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_status.c,v 1.27 1999-03-06 16:48:12 ghudson Exp $
+ *	$Id: t_status.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_status.c,v 1.27 1999-03-06 16:48:12 ghudson Exp $";
+static char rcsid[] ="$Id: t_status.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $";
 #endif
 #endif
 
@@ -38,7 +38,7 @@ t_personal_status(Request,chart)
      REQUEST *Request;
      int chart;
 {
-  int status;
+  ERRCODE status;
   LIST *list;
   
   status = OListPerson(Request,&list);
@@ -216,7 +216,7 @@ ERRCODE
 t_who(Request)
      REQUEST *Request;
 {
-  int status;
+  ERRCODE status;
   LIST list;
 
   status = OWho(Request, &list);
@@ -292,17 +292,17 @@ t_input_status(Request,string)
     {
       if(buf != '\0')
 	{
-	  if(string_equiv(buf, "pit", max(strlen(buf), 2)))
+	  if(is_flag(buf, "pit", 3))
 	    state = STATUS_PICKUP;
-	  else if(string_equiv(buf, "referred", max(strlen(buf), 1)))
+	  else if(is_flag(buf, "referred", 1))
 	    state = STATUS_REFERRED;
-	  else if(string_equiv(buf, "active", max(strlen(buf), 1)))
+	  else if(is_flag(buf, "active", 1))
 	    state = STATUS_ACTIVE;
-	  else if(string_equiv(buf, "pickup", max(strlen(buf), 2)))
+	  else if(is_flag(buf, "pickup", 3))
 	    state = STATUS_PICKUP;
-	  else if(string_equiv(buf, "pending", max(strlen(buf), 2)))
+	  else if(is_flag(buf, "pending", 2))
 	    state = STATUS_PENDING;
-	  else if(string_equiv(buf, "unseen", max(strlen(buf), 1)))
+	  else if(is_flag(buf, "unseen", 1))
 	    state = STATUS_UNSEEN;
 	}
       if(state)

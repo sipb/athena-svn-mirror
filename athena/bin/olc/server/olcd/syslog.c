@@ -6,12 +6,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: syslog.c,v 1.18 1999-03-06 16:49:00 ghudson Exp $
+ *	$Id: syslog.c,v 1.19 1999-06-28 22:52:43 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: syslog.c,v 1.18 1999-03-06 16:49:00 ghudson Exp $";
+static char rcsid[] ="$Id: syslog.c,v 1.19 1999-06-28 22:52:43 ghudson Exp $";
 #endif
 #endif
 
@@ -30,18 +30,10 @@ static char rcsid[] ="$Id: syslog.c,v 1.18 1999-03-06 16:49:00 ghudson Exp $";
 #endif     /* LOG_CONS */
 #endif /* HAVE_SYSLOG_H */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
 #define MSG_SIZE 2048  /* maximum size of the error messages */
 
-static FILE *open_log_file P((const char *filename));
-static void log_to_file P((FILE *file , const char *text ));
-
-#undef P
+static FILE *open_log_file (const char *filename);
+static void log_to_file (FILE *file , char *text );
 
 /*** initialization stuff ***/
 
@@ -106,7 +98,7 @@ void init_logs(void)
  *              text -- message to write
  * Note: using write_line_to_log() ensures the line ends in a '\n'.
  */
-static void log_to_file (FILE *file, const char *text)
+static void log_to_file (FILE *file, char *text)
 {
   char time_buf[32];
 

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_misc.c,v 1.11 1999-03-06 16:48:02 ghudson Exp $
+ *	$Id: p_misc.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_misc.c,v 1.11 1999-03-06 16:48:02 ghudson Exp $";
+static char rcsid[] ="$Id: p_misc.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $";
 #endif
 #endif
 
@@ -38,15 +38,15 @@ do_olc_load_user(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   
-  if(fill_request(&Request) != SUCCESS)
+  if (fill_request(&Request) != SUCCESS)
     return(ERROR);
   
   for (arguments++; *arguments != (char *) NULL; arguments++)
     {
       arguments = handle_argument(arguments, &Request, &status);
-      if(status)
+      if (status != SUCCESS)
 	return(ERROR);
             if(arguments == (char **) NULL)   /* error */
         {
@@ -54,7 +54,7 @@ do_olc_load_user(arguments)
           return(ERROR);
         }
 
-      if(*arguments == (char *) NULL)   /* end of list */
+      if (*arguments == (char *) NULL)   /* end of list */
         break;
     }
 
@@ -66,7 +66,7 @@ do_olc_dbinfo(arguments)
      char **arguments;
 {
   REQUEST Request;
-  int status;            
+  ERRCODE status;            
   char file[NAME_SIZE];
   int save_file = 0;
   int change = 0;
@@ -77,8 +77,7 @@ do_olc_dbinfo(arguments)
   make_temp_name(file);
   for (arguments++; *arguments != (char *) NULL; arguments++)
     {
-      if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
-                                                    max(strlen(*arguments),2)))
+      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
         {
           ++arguments;
           unlink(file);
@@ -90,17 +89,17 @@ do_olc_dbinfo(arguments)
                 return(ERROR);
             }
 	  else
-	    (void) strcpy(file,*arguments);
+	    strcpy(file,*arguments);
 
           save_file = TRUE;
         }
       else
-	if(string_equiv(*arguments,"-change",max(strlen(*arguments),2)))
+	if(is_flag(*arguments,"-change",2))
 	  change = TRUE;
 	else
 	  {
 	    arguments = handle_argument(arguments, &Request, &status);
-          if(status)
+          if(status != SUCCESS)
             return(ERROR);
 	  }
 
@@ -121,6 +120,6 @@ do_olc_dbinfo(arguments)
     status = t_change_dbinfo(&Request);
 
   if(!save_file)
-    (void) unlink(file);
+    unlink(file);
   return(status);
 }

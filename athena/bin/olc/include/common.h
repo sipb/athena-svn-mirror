@@ -5,7 +5,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: common.h,v 1.13 1999-03-06 16:48:24 ghudson Exp $
+ *	$Id: common.h,v 1.14 1999-06-28 22:52:27 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -29,61 +29,53 @@ typedef struct tSTATUS
   char label[TITLE_SIZE];
 } STATUS;
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-typedef void (*olc_perror_type) P((const char*));
+typedef void (*olc_perror_type) (const char*);
 
 /* io.c */
-int send_dbinfo P((int fd , DBINFO *dbinfo ));
-int read_dbinfo P((int fd , DBINFO *dbinfo ));
-ERRCODE send_response P((int fd , RESPONSE response ));
-ERRCODE read_response P((int fd , RESPONSE *response ));
-ERRCODE write_int_to_fd P((int fd , int response ));
-ERRCODE read_int_from_fd P((int fd , int *response ));
-ERRCODE read_text_into_file P((int fd , char *filename ));
-ERRCODE read_file_into_text P((char *filename, char **bufp ));
-ERRCODE write_file_to_fd P((int fd , char *filename ));
-ERRCODE write_text_to_fd P((int fd , char *buf ));
-char *read_text_from_fd P((int fd ));
-int sread P((int fd , char *buf , int nbytes ));
-int swrite P((int fd , char *buf , int nbytes ));
+int send_dbinfo (int fd , DBINFO *dbinfo );
+int read_dbinfo (int fd , DBINFO *dbinfo );
+ERRCODE send_response (int fd , ERRCODE response );
+ERRCODE read_response (int fd , ERRCODE *response );
+ERRCODE write_int_to_fd (int fd , int response );
+ERRCODE read_int_from_fd (int fd , int *response );
+ERRCODE read_text_into_file (int fd , char *filename );
+ERRCODE read_file_into_text (char *filename, char **bufp );
+ERRCODE write_file_to_fd (int fd , char *filename );
+ERRCODE write_text_to_fd (int fd , char *buf );
+char *read_text_from_fd (int fd );
+int sread (int fd , char *buf , int nbytes );
+int swrite (int fd , char *buf , int nbytes );
 
 /* perror.c */
-char *format_time P((char *time_buf , struct tm *time_info ));
-void time_now P((char *time_buf ));
+char *format_time (char *time_buf , struct tm *time_info );
+void time_now (char *time_buf );
 extern olc_perror_type olc_perror;
 olc_perror_type set_olc_perror(olc_perror_type perr);
 
 /* status.c */
-ERRCODE OGetStatusString P((int status , char *string ));
-ERRCODE OGetStatusCode P((char *string , int *status ));
+ERRCODE OGetStatusString (int status , char *string );
+ERRCODE OGetStatusCode (char *string , int *status );
 
 /* string_utils.c */
-void uncase P((char *string ));
-void upcase_string P((char *str));
-void downcase_string P((char *str));
-char *cap P((char *string ));
-int isnumber P((char *string ));
-char *get_next_word P((char *line , char *buf , int (*func )(int c)));
-int IsAlpha P((int c ));
-int NotWhiteSpace P((int c ));
-void make_temp_name P((char *name ));
+void uncase (char *string );
+void upcase_string (char *str);
+void downcase_string (char *str);
+char *cap (char *string );
+int isnumber (char *string );
+char *get_next_word (char *line , char *buf , int (*func )(int c));
+int IsAlpha (int c );
+int NotWhiteSpace (int c );
+void make_temp_name (char *name );
 
 /* my_vsnprintf.c */
-int my_vsnprintf P((char *str, size_t n, const char *fmt, va_list ap));
-int my_snprintf P((char *str, size_t n, const char *fmt, ...));
+int my_vsnprintf (char *str, size_t n, const char *fmt, va_list ap);
+int my_snprintf (char *str, size_t n, const char *fmt, ...);
 
 /* kaboom.c */
-void stash_olc_corefile P((void));
-void dump_current_core_image P((void));
+void stash_olc_corefile (void);
+void dump_current_core_image (void);
 
 /* env.c */
-void set_env_var P((const char *var, const char *value));
-
-#undef P
+void set_env_var (const char *var, const char *value);
 
 #endif /* __olc_common_h */

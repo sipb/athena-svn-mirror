@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: init.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $
+ *	$Id: init.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: init.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $";
+static char rcsid[] ="$Id: init.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $";
 #endif
 #endif
 
@@ -104,9 +104,9 @@ OInitialize()
     }
   else
     {
-      (void) strncpy(User.username, pwent->pw_name, sizeof(User.username));
+      strncpy(User.username, pwent->pw_name, sizeof(User.username));
       User.username[sizeof(User.username) - 1] = 0;
-      (void) strncpy(User.realname, pwent->pw_gecos, sizeof(User.realname));
+      strncpy(User.realname, pwent->pw_gecos, sizeof(User.realname));
       User.realname[sizeof(User.realname) - 1] = 0;
     }
       
@@ -126,7 +126,7 @@ OInitialize()
       fprintf(stderr,"Unable to get host by name for this host, `%s'\n",
 	      hostname);
     }
-    (void) strncpy(User.machine, (host ? host->h_name : hostname),
+    strncpy(User.machine, (host ? host->h_name : hostname),
 		  sizeof(User.machine));
     User.machine[sizeof(User.machine) - 1] = 0;
   }

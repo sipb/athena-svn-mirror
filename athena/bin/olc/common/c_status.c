@@ -1,10 +1,10 @@
 /*
- *	$Id: c_status.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $
+ *	$Id: c_status.c,v 1.6 1999-06-28 22:52:24 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: c_status.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $";
+static char rcsid[] ="$Id: c_status.c,v 1.6 1999-06-28 22:52:24 ghudson Exp $";
 #endif
 #endif
 
@@ -62,8 +62,7 @@ OGetStatusCode(string,status)
 
   for (ind = 0; Status_Table[ind].status != UNKNOWN_STATUS; ind++)
     {
-      if (string_equiv(string, Status_Table[ind].label,
-		       strlen(string)))
+      if (string_equiv(string, Status_Table[ind].label, strlen(string)))
 	if (*status == -2)
 	  *status = Status_Table[ind].status;
     }

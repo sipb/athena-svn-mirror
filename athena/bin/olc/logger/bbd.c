@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Id: bbd.c,v 1.18 1999-06-10 18:41:27 ghudson Exp $
+ * $Id: bbd.c,v 1.19 1999-06-28 22:52:36 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Id: bbd.c,v 1.18 1999-06-10 18:41:27 ghudson Exp $";
+static char rcsid_[] = "$Id: bbd.c,v 1.19 1999-06-28 22:52:36 ghudson Exp $";
 #endif
 #endif
 
@@ -33,9 +33,7 @@ static char rcsid_[] = "$Id: bbd.c,v 1.18 1999-06-10 18:41:27 ghudson Exp $";
 #include <limits.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#if defined(__STDC__)
 #include <stdlib.h>
-#endif
 
 #ifdef   HAVE_SYSLOG_H
 #include   <syslog.h>
@@ -100,14 +98,16 @@ handle_startup(s,msg,len,from,logfile)
   write(fd,buf,strlen(buf));
   close(fd);
 
-  if (sendto(s, buf, strlen(buf), 0, &from, sizeof(from)) <0) {
+  if (sendto(s, buf, strlen(buf), 0, (struct sockaddr *)&from,
+	     sizeof(from)) <0)
+    {
 #ifdef HAVE_SYSLOG
-    syslog(LOG_ERR,"Error sending datagram to %s/%d: %m",
-	   inet_ntoa(from.sin_addr), ntohs(from.sin_port));
+      syslog(LOG_ERR,"Error sending datagram to %s/%d: %m",
+	     inet_ntoa(from.sin_addr), ntohs(from.sin_port));
 #endif
-    close(fd);
-    exit(1);
-  }
+      close(fd);
+      exit(1);
+    }
     
   close(fd);
 
@@ -117,7 +117,7 @@ handle_startup(s,msg,len,from,logfile)
   write(log_fd,buf,strlen(buf));
 }
 
-RETSIGTYPE
+static void
 do_tick(int sig)
 {
   long now;
@@ -135,7 +135,7 @@ do_tick(int sig)
   return;
 }
 
-RETSIGTYPE
+static void
 handle_hup(int sig)
 {
   close(log_fd);
@@ -312,7 +312,7 @@ main(argc, argv)
   name.sin_port = port;
 
   onoff = 1;
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &onoff, sizeof(int))) {
+  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&onoff, sizeof(int))) {
 #ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"setsockopt: %m");
 #endif
@@ -340,7 +340,7 @@ main(argc, argv)
 
   while (1) {
     len = sizeof(struct sockaddr_in);
-    rlen = recvfrom(fd,buf,1024,0,&from,&len);
+    rlen = recvfrom(fd, buf, 1024, 0, (struct sockaddr *)&from, &len);
     if (rlen < 0) {
 #ifdef HAVE_SYSLOG
       if (errno != EINTR)

@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_version.c,v 1.3 1999-03-06 16:48:13 ghudson Exp $
+ *	$Id: t_version.c,v 1.4 1999-06-28 22:52:19 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_version.c,v 1.3 1999-03-06 16:48:13 ghudson Exp $";
+static char rcsid[] ="$Id: t_version.c,v 1.4 1999-06-28 22:52:19 ghudson Exp $";
 #endif
 #endif
 
@@ -29,7 +29,7 @@ t_version(Request)
      REQUEST *Request;
 {
   char *output;
-  int status;
+  ERRCODE status;
 
   status = OVersion(Request,&output);
   printf("Server version: %s\n",output);

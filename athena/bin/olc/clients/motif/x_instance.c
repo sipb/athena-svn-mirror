@@ -17,11 +17,11 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_instance.c,v 1.8 1999-03-06 16:47:46 ghudson Exp $
+ *      $Id: x_instance.c,v 1.9 1999-06-28 22:51:57 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_instance.c,v 1.8 1999-03-06 16:47:46 ghudson Exp $";
+static char rcsid[]= "$Id: x_instance.c,v 1.9 1999-06-28 22:51:57 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -34,7 +34,7 @@ t_set_default_instance(Request)
      REQUEST *Request;
 {
   int instance;  
-  int status;
+  ERRCODE status;
 
  try_again:
   status = OGetDefaultInstance(Request,&instance);

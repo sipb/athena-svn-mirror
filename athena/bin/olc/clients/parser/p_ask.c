@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_ask.c,v 1.15 1999-03-06 16:47:59 ghudson Exp $
+ *	$Id: p_ask.c,v 1.16 1999-06-28 22:52:06 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_ask.c,v 1.15 1999-03-06 16:47:59 ghudson Exp $";
+static char rcsid[] ="$Id: p_ask.c,v 1.16 1999-06-28 22:52:06 ghudson Exp $";
 #endif
 #endif
 
@@ -39,7 +39,7 @@ do_olc_ask(arguments)
      char **arguments;
 {
   REQUEST  Request;
-  int status = 0;
+  ERRCODE status = SUCCESS;
   char topic[TOPIC_SIZE];
   char file[MAXPATHLEN];
 
@@ -53,31 +53,32 @@ do_olc_ask(arguments)
     {
       for (arguments++; *arguments != (char *) NULL; arguments++)
         {
-          if(string_equiv(*arguments, "-topic", max(strlen(*arguments),2)))
+          if(is_flag(*arguments, "-topic", 2))
             {
 	      ++arguments;
               if(*arguments != (char *) NULL)
                 {
-                  (void) strcpy(topic,*arguments);
-		  status = 1;
+                  strcpy(topic,*arguments);
 		  continue;
                 }
 	      else
 		break;
             }
 
-	  if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
+	  if(is_flag(*arguments, "-file",2))
 	    {
 	      arguments++;
-	      if(*arguments != (char *) NULL) {
-		(void) strcpy(file, *arguments);
-		continue;
-	      } else
+	      if(*arguments != (char *) NULL)
+		{
+		  strcpy(file, *arguments);
+		  continue;
+		} 
+	      else
 		break;
 	    }
 
 	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
+	  if(status != SUCCESS)
 	    return(ERROR);
 	  if(arguments == (char **) NULL) 
 	    {

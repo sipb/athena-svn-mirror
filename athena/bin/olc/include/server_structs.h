@@ -18,7 +18,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: server_structs.h,v 1.4 1999-03-06 16:48:29 ghudson Exp $
+ *	$Id: server_structs.h,v 1.5 1999-06-28 22:52:29 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -28,7 +28,7 @@
 
 /* OLCD data definitions */
 
-typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *));
+typedef ERRCODE (*FUNCTION) (int, struct tREQUEST *);
 				/* A pointer to a function. */
 
 typedef struct tUSER 

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_queue.c,v 1.15 1999-03-06 16:48:10 ghudson Exp $
+ *	$Id: t_queue.c,v 1.16 1999-06-28 22:52:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_queue.c,v 1.15 1999-03-06 16:48:10 ghudson Exp $";
+static char rcsid[] ="$Id: t_queue.c,v 1.16 1999-06-28 22:52:18 ghudson Exp $";
 #endif
 #endif
 
@@ -38,7 +38,7 @@ t_queue(Request,queue)
      REQUEST *Request;
      char *queue;
 {
-  int status;
+  ERRCODE status;
 
   
   if(queue == (char *) NULL)

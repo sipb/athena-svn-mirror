@@ -6,16 +6,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: lang.h,v 1.4 1999-01-22 23:13:40 ghudson Exp $
+ *	$Id: lang.h,v 1.5 1999-06-28 22:52:32 ghudson Exp $
  */
 
 #include <mit-copyright.h>
-
-#ifndef __STDC__
-#define const
-#define volatile
-#define signed
-#define OPrototype(X)	()
-#else
-#define OPrototype(X)	X
-#endif

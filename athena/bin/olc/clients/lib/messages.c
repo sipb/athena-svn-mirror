@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: messages.c,v 1.14 1999-03-06 16:47:38 ghudson Exp $
+ *	$Id: messages.c,v 1.15 1999-06-28 22:51:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: messages.c,v 1.14 1999-03-06 16:47:38 ghudson Exp $";
+static char rcsid[] ="$Id: messages.c,v 1.15 1999-06-28 22:51:50 ghudson Exp $";
 #endif
 #endif
 
@@ -66,16 +66,16 @@ OGetMessage(Request,file,buf,code)
      int code;
 {
   int fd;
-  int status;
+  ERRCODE status;
 
   Request->request_type = code;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);
@@ -90,6 +90,6 @@ OGetMessage(Request,file,buf,code)
       else
 	*buf = read_text_from_fd(fd);
     }
-  (void) close(fd);
+  close(fd);
   return(status);
 }

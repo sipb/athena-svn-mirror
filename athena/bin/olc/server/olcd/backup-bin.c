@@ -10,12 +10,12 @@
  * Copyright (C) 1988-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: backup-bin.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $
+ *	$Id: backup-bin.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Id: backup-bin.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $";
+static char rcsid[] ="$Id: backup-bin.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $";
 #endif
 #endif
 
@@ -35,19 +35,11 @@ static char rcsid[] ="$Id: backup-bin.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $"
 
 /* prototypes for this file */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static int write_knuckle_info P((int fd , KNUCKLE *knuckle ));
-static int read_knuckle_info P((int fd , KNUCKLE *knuckle ));
-static int write_user_info P((int fd , USER *user ));
-static int read_user_info P((int fd , USER *user ));
-static void type_error P((int fd , char *string ));
-
-#undef P
+static int write_knuckle_info (int fd , KNUCKLE *knuckle );
+static int read_knuckle_info (int fd , KNUCKLE *knuckle );
+static int write_user_info (int fd , USER *user );
+static int read_user_info (int fd , USER *user );
+static void type_error (int fd , char *string );
 
 /* 
  * Strings used to separate data chunks in the backup file.

@@ -9,12 +9,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: backup.c,v 1.28 1999-03-06 16:48:52 ghudson Exp $
+ *	$Id: backup.c,v 1.29 1999-06-28 22:52:39 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Id: backup.c,v 1.28 1999-03-06 16:48:52 ghudson Exp $";
+static char rcsid[] ="$Id: backup.c,v 1.29 1999-06-28 22:52:39 ghudson Exp $";
 #endif
 #endif
 
@@ -37,7 +37,8 @@ static char rcsid[] ="$Id: backup.c,v 1.28 1999-03-06 16:48:52 ghudson Exp $";
  * Note: the binary format is byte-order and word-size dependent.
  */
 
-void backup_data(void)
+void
+backup_data(void)
 {
   dump_data(ASCII_BACKUP_TEMP);
   if (rename(ASCII_BACKUP_TEMP, ASCII_BACKUP_FILE) < 0)
@@ -57,7 +58,8 @@ void backup_data(void)
  *       you have a good excuse, at least.
  */
 
-void load_data(void)
+void
+load_data(void)
 {
   if (access(ASCII_BACKUP_FILE, R_OK) == 0)
       {

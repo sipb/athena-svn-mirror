@@ -23,13 +23,13 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Id: signal.c,v 1.13 1999-06-10 18:41:14 ghudson Exp $
+ *	$Id: signal.c,v 1.14 1999-06-28 22:51:39 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Id: signal.c,v 1.13 1999-06-10 18:41:14 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: signal.c,v 1.14 1999-06-28 22:51:39 ghudson Exp $";
 #endif
 #endif
 
@@ -44,17 +44,10 @@ static char *rcsid_cref_c = "$Id: signal.c,v 1.13 1999-06-10 18:41:14 ghudson Ex
 #include <browser/cref.h>
 #include <browser/cur_globals.h>
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
+static void handle_resize_event (int sig);
+static void handle_interrupt_event (int sig);
+void init_signals (void);
 
-static RETSIGTYPE handle_resize_event P((int sig));
-static RETSIGTYPE handle_interrupt_event P((int sig));
-void init_signals P((void));
-
-#undef P
 
 void
 init_signals()
@@ -62,6 +55,7 @@ init_signals()
   struct sigaction act;
 
   sigemptyset(&act.sa_mask);
+  sigaddset(&act.sa_mask, SIGWINCH);
   act.sa_flags = 0;
   act.sa_handler = handle_interrupt_event;
   sigaction(SIGINT, &act, NULL);
@@ -69,7 +63,7 @@ init_signals()
   sigaction(SIGWINCH, &act, NULL);
 }
 
-static RETSIGTYPE
+static void
 handle_resize_event(sig)
      int sig;
 {
@@ -128,7 +122,7 @@ handle_resize_event(sig)
 
 
 
-static RETSIGTYPE
+static void
 handle_interrupt_event(sig)
      int sig;
 {
@@ -136,8 +130,8 @@ handle_interrupt_event(sig)
 
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
-    act.sa_handler= SIG_IGN;
-    sigaction(SIGINT, &act, NULL);  
+    act.sa_handler = SIG_IGN;
+    sigaction(SIGINT, &act, NULL);
 
     quit();
 }

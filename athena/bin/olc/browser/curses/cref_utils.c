@@ -22,12 +22,12 @@
 /* This file is part of the CREF finder.  It contains miscellaneous useful
  * utilities.
  *
- *	$Id: cref_utils.c,v 2.13 1999-03-06 16:47:23 ghudson Exp $
+ *	$Id: cref_utils.c,v 2.14 1999-06-28 22:51:38 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.13 1999-03-06 16:47:23 ghudson Exp $";
+static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.14 1999-06-28 22:51:38 ghudson Exp $";
 #endif
 #endif
 
@@ -35,12 +35,14 @@ static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.13 1999-03-06 16:47:23 
 #include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
+#include <stdlib.h>
 #include <curses.h>			/* Curses package defs. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <fcntl.h>
 #include <ctype.h>			/* Character type macros. */
 #include <sys/param.h>			/* System parameters file. */
+#include <sys/wait.h>                   /* Exit status macros. */
 
 #ifdef HAVE_TERMIO
 #include <termio.h>
@@ -91,8 +93,6 @@ err_exit(message, string)
   exit(ERROR);
 }
 
-
-
 /* Function:	call_program() executes the named program by forking the
  *			main process.
  * Arguments:	program:	Name of the program to execute.
@@ -114,6 +114,7 @@ call_program(program, argument)
 {
   int pid;				/* Process id for forking. */
   char error[ERRSIZE];			/* Error message. */
+  int status;                           /* Return status of child. */
   
   pid = fork();
   if (pid == -1)
@@ -127,13 +128,61 @@ call_program(program, argument)
       execlp(program, program, argument, 0);
       sprintf(error,"Error execing %s: %s", program, strerror(errno));
       message(1, error);
-      return(ERROR);
+      _exit(37); /* Hopefully 37 is a safe flag value. */
     }
   else
     {
-      wait(0);
-      return(SUCCESS);
+      wait(&status);
+      if((WIFEXITED(status)) && (WEXITSTATUS(status) == 37))
+	return(ERROR); /* The execlp failed. */
+      else
+	return(SUCCESS);
     }
+}
+
+/*
+ * Function:	display_file() prints a file on a user's terminal.
+ * Arguments:	filename:	Name of file to be printed.
+ * Returns:	SUCCESS or ERROR.
+ * Notes:
+ *	First, open the file to make sure that it is accessible. If it
+ *	is not, log an error and return. Otherwise, attempt to execute
+ *	the desired pager ($PAGER or DEFAULT_PAGER (defined in cref.h)
+ *	to page the file on the terminal. If this fails, simply print
+ *	it line by line. In either case, end by closing the file and
+ *	returning.
+ */
+
+ERRCODE
+display_file(filename)
+     char *filename;
+{
+  FILE *file;                  /* File structure pointer. */
+  char *pager;
+  int c;
+	
+  file = fopen(filename, "r");
+  if(file == NULL) 
+    {
+      fprintf(stderr, "display_file: Unable to open file %s\n",
+	      filename);
+      return(ERROR);
+    }
+
+  pager = getenv("PAGER");
+  if(pager == NULL)
+    pager = DEFAULT_PAGER;
+
+  if(call_program(pager, filename) == ERROR) 
+    {
+      /* Fall back to displaying the file ourselves. */
+      while((c = getc(stdin)) != EOF)
+	putc(c, stdout);
+      printf("\n");
+    }
+	
+  fclose(file);
+  return(SUCCESS);
 }
 
 /* Function:	get_input() gets an input string from the terminal.  It

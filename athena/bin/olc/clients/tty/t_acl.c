@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_acl.c,v 1.8 1999-03-06 16:48:06 ghudson Exp $
+ *	$Id: t_acl.c,v 1.9 1999-06-28 22:52:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_acl.c,v 1.8 1999-03-06 16:48:06 ghudson Exp $";
+static char rcsid[] ="$Id: t_acl.c,v 1.9 1999-06-28 22:52:15 ghudson Exp $";
 #endif
 #endif
 
@@ -43,7 +43,7 @@ t_set_acl(Request,acl,flag)
      char *acl;
      int flag;                  /* flag == TRUE, add */
 {
-  int status;
+  ERRCODE status;
 
   if(flag)
     set_option(Request->options,ADD_OPT);
@@ -82,7 +82,7 @@ t_list_acl(Request, acl, file)
      char *acl;
      char *file;
 {
-  int status;
+  ERRCODE status;
 
   status = OListAcl(Request, acl, file);
   switch(status)
@@ -113,7 +113,7 @@ t_get_accesses(Request,file)
      REQUEST *Request;
      char *file;
 {
-  int status;
+  ERRCODE status;
 
   status = OGetAccesses(Request,file);
   switch(status)

@@ -17,12 +17,12 @@
  *
  *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
- *      $Id: x_motd.c,v 1.11 1999-03-06 16:47:46 ghudson Exp $
+ *      $Id: x_motd.c,v 1.12 1999-06-28 22:51:58 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Id: x_motd.c,v 1.11 1999-03-06 16:47:46 ghudson Exp $";
+static char rcsid[]= "$Id: x_motd.c,v 1.12 1999-06-28 22:51:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -43,7 +43,7 @@ x_get_motd(Request,type,file,dialog)
      char *file;
      int dialog;
 {
-  int status;
+  ERRCODE status;
   struct stat statbuf;
   Arg arg;
   char *motd;

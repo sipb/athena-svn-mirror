@@ -9,7 +9,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: xolc.h,v 1.15 1999-01-22 23:12:28 ghudson Exp $
+ *      $Id: xolc.h,v 1.16 1999-06-28 22:51:59 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -113,67 +113,59 @@ extern int has_question,
  * Function Prototypes
  */
 
-#if defined(__STDC__)
-# define P_(s) s
-#else
-# define P_(s) ()
-#endif
-
 /* main.c */
-int main P_((int argc, char *argv[]));
-int olc_init P_((void));
+int main (int argc, char *argv[]);
+int olc_init (void);
 
 /* procs.c */
-void olc_new_ques     P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_clear_newq   P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_send_newq    P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_topic_select P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_cont_ques    P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_status P_((void));
-void olc_replay P_((void));
-void olc_done         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_cancel       P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_savelog      P_((Widget w, XtPointer tag, XtPointer callback_data));
-void save_cbk         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_stock        P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_motd         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_update       P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_help         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_quit         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void dlg_ok           P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_send         P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_clear_msg    P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_send_msg     P_((Widget w, XtPointer tag, XtPointer callback_data));
-void olc_close_msg    P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_new_ques     (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_clear_newq   (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_send_newq    (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_topic_select (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_cont_ques    (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_status (void);
+void olc_replay (void);
+void olc_done         (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_cancel       (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_savelog      (Widget w, XtPointer tag, XtPointer callback_data);
+void save_cbk         (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_stock        (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_motd         (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_update       (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_help         (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_quit         (Widget w, XtPointer tag, XtPointer callback_data);
+void dlg_ok           (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_send         (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_clear_msg    (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_send_msg     (Widget w, XtPointer tag, XtPointer callback_data);
+void olc_close_msg    (Widget w, XtPointer tag, XtPointer callback_data);
 
 /* visual.c */
-void MakeInterface P_((void));
-void MakeNewqForm P_((void));
-void MakeContqForm P_((void));
-void MakeMotdForm P_((void));
-void MakeDialogs P_((void));
+void MakeInterface (void);
+void MakeNewqForm (void);
+void MakeContqForm (void);
+void MakeMotdForm (void);
+void MakeDialogs (void);
 
 /* x_ask.c */
-ERRCODE x_ask P_((REQUEST *Request, char *topic, char *question));
+ERRCODE x_ask (REQUEST *Request, char *topic, char *question);
 
 /* x_instance.c */
-ERRCODE t_set_default_instance P_((REQUEST *Request));
+ERRCODE t_set_default_instance (REQUEST *Request);
 
 /* x_motd.c */
-ERRCODE x_get_motd P_((REQUEST *Request, int type, char *file, int dialog));
+ERRCODE x_get_motd (REQUEST *Request, int type, char *file, int dialog);
 
 /* x_resolve.c */
-void x_done P_((REQUEST *Request));
-ERRCODE x_cancel P_((REQUEST *Request));
+void x_done (REQUEST *Request);
+ERRCODE x_cancel (REQUEST *Request);
 
 /* x_send.c */
-ERRCODE x_reply P_((REQUEST *Request, char *message));
+ERRCODE x_reply (REQUEST *Request, char *message);
 
 /* x_topic.c */
-ERRCODE x_list_topics P_((REQUEST *Request, char *file));
+ERRCODE x_list_topics (REQUEST *Request, char *file);
 
 /* x_utils.c */
-ERRCODE handle_response P_((int response, REQUEST *req));
-int popup_option P_((char *message));
-
-#undef P_
+ERRCODE handle_response (int response, REQUEST *req);
+int popup_option (char *message);

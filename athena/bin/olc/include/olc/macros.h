@@ -17,7 +17,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: macros.h,v 1.13 1999-03-06 16:48:32 ghudson Exp $
+ *	$Id: macros.h,v 1.14 1999-06-28 22:52:32 ghudson Exp $
  */
 
 #ifndef OLC__OLC_MACROS_H
@@ -56,14 +56,13 @@
  */
 
 typedef long     ERRCODE;        /* An error code. */
-typedef int     RESPONSE;       /* A response code. */
 
 /* Useful macros. */
 
 #define string_eq(a,b) (((a)[0]==(b)[0])?(!strcmp((a),(b))):FALSE)
 /* Compare two strings.- */
 #define string_equiv(a,b,c)   (!strncmp((a),(b),(c) < strlen((a)) \
-					? strlen((a)) : (c)))		 
+					? strlen((a)) : (c)))
 
 #ifndef MIN
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
@@ -72,14 +71,6 @@ typedef int     RESPONSE;       /* A response code. */
 #ifndef MAX
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif /* MAX */
-
-#ifndef min
-#define min(a,b) MIN(a,b)
-#endif  /* min */
-
-#ifndef max
-#define max(a,b) MAX(a,b)
-#endif /* max */
 
 #define is_option(r,option) r & option
 #define set_option(r,option) r |= option

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: describe.c,v 1.8 1999-03-06 16:47:35 ghudson Exp $
+ *	$Id: describe.c,v 1.9 1999-06-28 22:51:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: describe.c,v 1.8 1999-03-06 16:47:35 ghudson Exp $";
+static char rcsid[] ="$Id: describe.c,v 1.9 1999-06-28 22:51:48 ghudson Exp $";
 #endif
 #endif
 
@@ -42,18 +42,18 @@ ODescribe(Request,list,file,note)
      char *note;
 {
   int fd;
-  RESPONSE response;
-  int another_response;
-  int status;
+  ERRCODE response;
+  ERRCODE another_response;
+  ERRCODE status;
 
   Request->request_type = OLC_DESCRIBE;
 
   status = open_connection_to_daemon(Request, &fd);
-  if(status)
+  if(status != SUCCESS)
     return(status);
 
   status = send_request(fd, Request);
-  if(status)
+  if(status != SUCCESS)
     {
       close(fd);
       return(status);

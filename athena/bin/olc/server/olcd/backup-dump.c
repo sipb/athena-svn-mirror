@@ -10,12 +10,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: backup-dump.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $
+ *	$Id: backup-dump.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Id: backup-dump.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $";
+static char rcsid[] ="$Id: backup-dump.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $";
 #endif
 #endif
 
@@ -31,20 +31,12 @@ static char rcsid[] ="$Id: backup-dump.c,v 1.1 1999-03-06 16:48:52 ghudson Exp $
 #include <setjmp.h>             /* For string validation kludge */
 #include <pwd.h>
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static ERRCODE ascii_write_knuckle_info P((FILE *fd , KNUCKLE *knuckle ));
-static ERRCODE ascii_write_user_info P((FILE *fd , USER *user ));
-static ERRCODE ascii_read_knuckle_info P((FILE *fp , KNUCKLE *knuck,
-					  char **buf, size_t *size));
-static ERRCODE ascii_read_user_info P((FILE *fp, USER *user,
-				       char **buf, size_t *size));
-
-#undef P
+static ERRCODE ascii_write_knuckle_info (FILE *fd , KNUCKLE *knuckle );
+static ERRCODE ascii_write_user_info (FILE *fd , USER *user );
+static ERRCODE ascii_read_knuckle_info (FILE *fp , KNUCKLE *knuck,
+					  char **buf, size_t *size);
+static ERRCODE ascii_read_user_info (FILE *fp, USER *user,
+				       char **buf, size_t *size);
 
 /* NOTE: This file contains a LOT of hardcoded strings.  We could #define
  *   them all or something, but you probably don't want to change them
