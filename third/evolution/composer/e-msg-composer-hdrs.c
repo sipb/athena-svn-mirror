@@ -287,7 +287,7 @@ account_removed_cb (EAccountList *accounts, EAccount *account, EMsgComposerHdrs 
 			dialog = gtk_message_dialog_new ((GtkWindow *) toplevel, GTK_DIALOG_MODAL |
 							 GTK_DIALOG_DESTROY_WITH_PARENT,
 							 GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s",
-							 _("Hey you, dunce. You need an account to send mail doncha know."));
+							 _("You need to configure an account before you can compose mail."));
 		}
 	}
 }
@@ -472,7 +472,7 @@ header_new_recipient (EMsgComposerHdrs *hdrs, const char *name, const char *tip)
 	priv = hdrs->priv;
 	
 	ret.label = gtk_button_new_with_label (name);
-
+	GTK_OBJECT_UNSET_FLAGS (ret.label, GTK_CAN_FOCUS);
 	g_signal_connect_data (ret.label, "clicked",
 			       G_CALLBACK (address_button_clicked_cb),
 			       e_msg_composer_hdrs_and_string_create (hdrs, name),

@@ -18,9 +18,13 @@
 	<oaf_attribute name="name-da" type="string"
                        value="Evolution adressebog lokalfil-backend"/>
 	<oaf_attribute name="name-de" type="string"
-                       value="Evolution-Adressbuch-Backend für lokale Dateien"/>
+                       value="Evolution-Adressbuch-Hintergrundkomponente für lokale Dateien"/>
 	<oaf_attribute name="name-es" type="string"
-                       value="Soporte de libretas de direcciones en archivo local de Evolution"/>
+                       value="Motor para libretas de direcciones en archivo local de Evolution"/>
+	<oaf_attribute name="name-fi" type="string"
+                       value="Evolution osoitekirjan paikallisen tiedoston taustaohjelma"/>
+	<oaf_attribute name="name-fr" type="string"
+                       value="Moteur de traitement du fichier local du carnet d&apos;adresses d&apos;Evolution"/>
 	<oaf_attribute name="name-hu" type="string"
                        value="Evolution Címjegyzék helyi fájl háttér"/>
 	<oaf_attribute name="name-it" type="string"
@@ -29,8 +33,14 @@
                        value="Evolution アドレス帳ローカル・ファイル・バックエンド"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Систем за адресар во локални датотеки"/>
+	<oaf_attribute name="name-ms" type="string"
+                       value="Bahagian belakang fail setempat Buku Alamat Evolution"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution adresboek backend voor lokale bestanden"/>
+	<oaf_attribute name="name-no" type="string"
+                       value="Lokal filbakende for Evolution adressebok"/>
+	<oaf_attribute name="name-pl" type="string"
+                       value="Podprogram pliku lokalnej książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
                        value="Backend de ficheiro local de Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -69,9 +79,13 @@
 	<oaf_attribute name="name-da" type="string"
                        value="Evolution kalender lokalfil-backend"/>
 	<oaf_attribute name="name-de" type="string"
-                       value="Evolution-Kalender-Backend für lokale Dateien"/>
+                       value="Evolution-Kalender-Hintergrundkomponente für lokale Dateien"/>
 	<oaf_attribute name="name-es" type="string"
-                       value="Soporte de archivo local de calendario de Evolution"/>
+                       value="Motor de agenda en archivo local de Evolution"/>
+	<oaf_attribute name="name-fi" type="string"
+                       value="Evolution kalenterin paikallisen tiedoston taustaohjelma"/>
+	<oaf_attribute name="name-fr" type="string"
+                       value="Moteur de traitement du fichier local du calendrier d&apos;Evolution"/>
 	<oaf_attribute name="name-hu" type="string"
                        value="Evolution Naptár helyi fájl háttér"/>
 	<oaf_attribute name="name-it" type="string"
@@ -80,8 +94,14 @@
                        value="Evolution カレンダ・ローカル・ファイル・バックエンド"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Систем за календар во локални датотеки"/>
+	<oaf_attribute name="name-ms" type="string"
+                       value="Bahagian belakang fail setempat Kalendar Evolution"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution kalender backend voor lokale bestanden"/>
+	<oaf_attribute name="name-no" type="string"
+                       value="Lokal filbakende for Evolution kalender"/>
+	<oaf_attribute name="name-pl" type="string"
+                       value="Podprogram pliku lokalnego kalendarza Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
                        value="Backend de ficheiro local de Calendário Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

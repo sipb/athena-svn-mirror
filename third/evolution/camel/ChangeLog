@@ -1,3 +1,78 @@
+2003-09-08  Rodney Dawes  <dobey@ixmian.com>
+
+	* camel-service.c: #include sys/types.h and sys/time.h, fixes
+	portability as per the patch in bug #21480
+	
+2003-09-05  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c (imap_noop): call
+	camel_folder_sync bypassing the folder lock.  See
+	imap_store_refresh_folders too.
+
+2003-08-29  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #46674.
+
+	* providers/imap/camel-imap-wrapper.c (camel_imap_wrapper_init):
+	Default the part to non-rawtext.  Since we do charset foo in a
+	stream we can't determine if the charset foo wont work.
+
+2003-08-20  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47765.
+
+	* camel-folder-search.h: Removed match1 member.
+
+	* camel-folder-search.c (camel_folder_search_match_expression):
+	use current directly rather than match1.  This method isn't used
+	anywhere anyway.
+	(search_not): remove match1 stuff.
+	(search_match_all): properly handle the match-all against 1
+	message as a scalar result, not an array result.
+
+2003-08-19  Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+	
+	* camel-iconv.c: Fix for #46168 'some additional locale aliases
+	required for chinese support'. Also corrected typo in BIG5HKSCS
+
+2003-08-13  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder-summary.c (camel_folder_summary_remove_range): Fix
+	the range check, we were stopping removal of 1 or 2 removals, for
+	some odd and completely uncomprehensible reason.  Perhaps debug
+	left in?
+
+2003-08-11  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #45504.
+
+	* camel-service.c (camel_gethostbyname): duh, pthread_create
+	returns the error code directly, not via errno.
+	(camel_gethostbyaddr): Same, also properly handle the failure
+	case.
+
+2003-08-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47208.
+
+	* camel-filter-search.c (match_all): match-all with no arguments	
+	should always return TRUE.
+
+	* camel-folder-search.c (camel_folder_search_execute_expression):
+	print a warning when we get an invalid result type & fixed a leak
+	for that case.
+	
+2003-07-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (header_decode_word): Revert NotZed's fix for
+	bug #42170 - this causes even more problems than it solves. See
+	bug #46331 for info. Basically, each address header would be
+	converted to UTF-8 twice which means no raw 8bit address header
+	would render correctly.
+	(header_decode_mailbox): Perform a sanity check on the resultant
+	addr->str to make sure that it is valid UTF-8, if not convert it
+	to UTF-8. Fixes bug #42170.
+
 2003-07-17  Timo Sirainen <tss@iki.fi>
 
 	** See bug #42573

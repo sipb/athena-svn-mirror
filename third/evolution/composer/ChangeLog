@@ -1,3 +1,57 @@
+2003-09-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-msg-composer-hdrs.c (header_new_recipient): Make the entry
+	non-focusable again.  The right fix for A11Y is to add
+	accelerators.
+
+2003-08-22  Antonio Xu  <antonio.xu@sun.com>
+
+	* e-msg-composer-attachment.c (): Connect response signal to
+	attachment properties dialog, fix bug #47950.
+
+2003-08-21  Antonio Xu  <antonio.xu@sun.com>
+
+	* Makefile.am (INCLUDES): add EVOLUTION_IMAGESDIR define
+	* e-msg-composer.c (create_composer): use EVOLUTION_IMAGESDIR
+	and composer icon name to get the path of composer icon.
+	[#47781]
+
+2003-08-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Original patch from David Woodhouse, but modified a bit by me.
+
+	* e-msg-composer.c (handle_mailto): Fix insertion of arbitrary
+	headers from mailto: links. Ignore From: and Reply-To: headers.
+
+2003-08-13  Lorenzo Gil Sanchez  <lgs@sicem.biz>
+
+	* e-msg-composer-hdrs.c (account_removed_cb): fixed an insulting
+	error message.
+
+2003-07-31  Antonio Xu  <antonio.xu@sun.com>
+
+	* e-msg-composer.c (drag_data_received): add the drop type of
+	mozilla browser link to make composer support to handle mozilla
+	DnD data.  [#47131]
+
+2003-07-29  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (pixbuf_for_mime_type): Gone.
+	(update): Use e_icon_for_mime_type instead.
+
+	* bad-icon.xpm: Remove this. It was only used by e-icon-list,
+	which is no longer there.
+
+	* composer-marshal.list: Likewise
+
+	* Makefile.am: Remove bad-icon.xpm and composer-marshal refs.
+	(INCLUDES): remove EVOLUTION_IMAGESDIR define
+
+2003-07-28  Antonio Xu <antonio.xu@sun.com>
+
+	* e-msg-composer-attachment-bar.c (update): add
+	gdk_pixbuf_loader_close to close pix buffer loading.  [#45908]
+
 2003-07-17  Michel DÃ¤nzer  <michel@daenzer.net>
 
 	* e-msg-composer.c (autosave_manager_query_load_orphans): Set

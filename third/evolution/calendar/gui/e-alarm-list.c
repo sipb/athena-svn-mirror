@@ -20,6 +20,7 @@
  * Authors:  Hans Petter Jansson  <hpj@ximian.com>
  */
 
+#include <config.h>
 #include <string.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtksignal.h>
@@ -224,6 +225,9 @@ static void
 e_alarm_list_finalize (GObject *object)
 {
 	EAlarmList *alarm_list = E_ALARM_LIST (object);
+
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 /* Fulfill the GtkTreeModel requirements */

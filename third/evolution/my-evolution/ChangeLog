@@ -1,3 +1,33 @@
+2003-09-08  Calvin Liu <calvin.liu@sun.com>
+
+	** For bug #48175
+	* e-summary-tasks.c: set default value for colour if it's empty
+
+2003-08-19  Harry Lu  <harry.lu@sun.com>
+
+	** For bug #47461.
+	
+	* e-summary-calendar.c (generate_html): Change "%P" to "%p" so
+	that strftime() can work under solaris.
+
+2003-08-12  Jack Jia  <jack.jia@sun.com>
+
+	[Fixed bug #47563]
+
+	* e-summary-tasks.c (setup_task_folder) : set a default value for the 
+	tasks->due_today_colour and tasks->overdue_colour, if the key in gconf
+	is NULL. and change the key name from TasksDueTodayi to due_today, from 
+	TasksOverdue to overdue, in order to coincide with the key in 
+	e-summary-tasks.c(setup_task_folder).In this way, it can avoid crash 
+	on solaris. 
+
+2003-08-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	Patch from: Lorenzo Gil Sanchez <lgs@sicem.biz>
+
+	* Locations: Added Bermuda to the list of countries under the
+	'Central and South America' region.  [#21879]
+	
 2003-06-23  Dan Winship  <danw@ximian.com>
 
 	* e-summary-calendar.c (setup_gconf_client): Don't call

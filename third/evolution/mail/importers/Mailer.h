@@ -219,21 +219,18 @@ extern "C"
 		       const CORBA_char * foldername,
 		       const Bonobo_Listener listener,
 		       CORBA_Environment * ev);
-   }
-   POA_GNOME_Evolution_FolderInfo__epv;
+   } POA_GNOME_Evolution_FolderInfo__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_FolderInfo__epv *GNOME_Evolution_FolderInfo_epv;
-   }
-   POA_GNOME_Evolution_FolderInfo__vepv;
+   } POA_GNOME_Evolution_FolderInfo__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_FolderInfo__vepv *vepv;
-   }
-   POA_GNOME_Evolution_FolderInfo;
+   } POA_GNOME_Evolution_FolderInfo;
    extern void POA_GNOME_Evolution_FolderInfo__init(PortableServer_Servant
 						    servant,
 						    CORBA_Environment * ev);
@@ -251,21 +248,18 @@ extern "C"
 			  CORBA_Environment * ev);
       void (*removeAccount) (PortableServer_Servant _servant,
 			     const CORBA_char * name, CORBA_Environment * ev);
-   }
-   POA_GNOME_Evolution_MailConfig__epv;
+   } POA_GNOME_Evolution_MailConfig__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_MailConfig__epv *GNOME_Evolution_MailConfig_epv;
-   }
-   POA_GNOME_Evolution_MailConfig__vepv;
+   } POA_GNOME_Evolution_MailConfig__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_MailConfig__vepv *vepv;
-   }
-   POA_GNOME_Evolution_MailConfig;
+   } POA_GNOME_Evolution_MailConfig;
    extern void POA_GNOME_Evolution_MailConfig__init(PortableServer_Servant
 						    servant,
 						    CORBA_Environment * ev);
@@ -282,21 +276,18 @@ extern "C"
 			 const CORBA_char * rule, CORBA_Environment * ev);
       void (*removeFilter) (PortableServer_Servant _servant,
 			    const CORBA_char * rule, CORBA_Environment * ev);
-   }
-   POA_GNOME_Evolution_MailFilter__epv;
+   } POA_GNOME_Evolution_MailFilter__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_MailFilter__epv *GNOME_Evolution_MailFilter_epv;
-   }
-   POA_GNOME_Evolution_MailFilter__vepv;
+   } POA_GNOME_Evolution_MailFilter__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_MailFilter__vepv *vepv;
-   }
-   POA_GNOME_Evolution_MailFilter;
+   } POA_GNOME_Evolution_MailFilter;
    extern void POA_GNOME_Evolution_MailFilter__init(PortableServer_Servant
 						    servant,
 						    CORBA_Environment * ev);

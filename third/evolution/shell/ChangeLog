@@ -1,8 +1,41 @@
+2003-09-12  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* e-config-upgrade.c: (utf8_reencode), (upgrade_xml_1_2_rec),
+	(e_config_upgrade):
+	Fix migration of shortcuts.xml which was incorrectly encoded by
+	libxml1. (Mdk bug #4927)
+
+2003-09-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (impl_right_click): If the
+	right_click_row_path is not NULL (i.e. a menu is being popped up
+	already), don't pop up the menu again.  [#48388]
+
+2003-09-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	[#47875, thanks to Calvin Liu for figuring this out.]
+
+	* e-shortcuts.c (e_shortcuts_add_default_shortcuts): Use the
+	group_num arg, so it gets added to the proper group.
+	(e_shortcuts_add_default_group): Pass the actual group number to
+	e_shortcuts_add_default_shortcuts().
+
+2003-07-17  Dan Winship  <danw@ximian.com>
+
+	* e-shell-user-creatable-items-handler.c (free_menu_items): free
+	the folder_type
+
+	* e-splash.c (e_splash_new): Unref the pixbuf.
+
+	* evolution-shell-component.c (impl_finalize): Add some missing
+	frees.
+	(user_creatable_item_type_free): free the tooltip
+
 2003-07-24  Yuedong Du  <yuedong.du@sun.com>
-                                                                                             
-        * e-shell-offline-handler.c: (dialog_response_cb): fix crash when user escape the
-        dialog. see bug #46700.
-                                                                                             
+
+        * e-shell-offline-handler.c: (dialog_response_cb): fix crash when
+	user escape the dialog. see bug #46700.
+
 2003-07-22  Antonio Xu  <antonio.xu@sun.com>
 
 	* e-shell-startup-wizard.c (e_shell_startup_wizard_create): connect

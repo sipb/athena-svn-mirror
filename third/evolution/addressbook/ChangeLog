@@ -1,3 +1,72 @@
+2003-09-05  Dan Winship  <danw@ximian.com>
+
+	* gui/component/select-names/Makefile.am: Make libeselectnames.la
+	be noinst: it depends on a symbol in libevolution-addressbook
+	(addressbook_load_uri), so it's not usable as a standalone library
+	anyway.
+
+2003-09-04  Dan Winship  <danw@ximian.com>
+
+	* conduit/Makefile.am (libeaddress_conduit_la_LIBADD):
+	s/libeconduit-static/libeconduit/
+
+2003-08-26  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (ecard_from_remote_record): duplicate
+	the extra address lines
+
+2003-08-18  Gilbert Fang  <gilbert.fang@sun.com>
+
+        * addressbook/gui/widgets/e-addressbook-util.c
+        (e_addressbook_send_card_list): use memcpy to assign
+        CORBA_char_sequence instead of strcpy. (#46706)
+
+2003-08-12  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backend/ebook/e-book.c (e_book_dispose): unref the
+	EComponentListener before unloading the CORBA object.
+
+2003-08-12  Hans Petter Jansson  <hpj@ximian.com>
+
+	* backend/ebook/e-destination.c (e_destination_dispose): Chain.
+
+	* gui/component/e-address-widget.c (e_address_widget_destroy): Chain.
+	Prevent double frees. Prevent double GSource removal.
+
+	* gui/component/e-cardlist-model.c (e_cardlist_model_class_init):
+	Store parent class.
+	(e_cardlist_model_dispose): Chain. Prevent double frees and unrefs.
+
+	* gui/contact-editor/e-contact-editor-address.c
+	(e_contact_editor_address_dispose): Chain.
+
+	* gui/contact-editor/e-contact-editor-fullname.c
+	(e_contact_editor_fullname_dispose): Chain.
+
+	* gui/contact-list-editor/e-contact-list-editor.c
+	(e_contact_list_editor_dispose): Chain.
+
+	* gui/contact-list-editor/e-contact-list-model.c
+	(contact_list_model_destroy): Chain. Prevent double frees and unrefs.
+
+	* gui/widgets/e-addressbook-reflow-adapter.c (addressbook_dispose):
+	Chain.
+
+	* gui/widgets/e-addressbook-table-adapter.c (addressbook_dispose):
+	Chain.
+
+	* gui/widgets/e-addressbook-treeview-adapter.c (addressbook_destroy):
+	Chain. Prevent double free.
+
+	* gui/widgets/gal-view-minicard.c (gal_view_minicard_dispose):
+	Chain. Prevent double free and detach.
+
+	* gui/widgts/gal-view-treeview.c (gal_view_treeview_dispose):
+	Chain. Prevent double free and detach.
+
+	* printins/e-contact-print-style-editor.c
+	(e_contact_print_stule_editor_destroy): Chain. Prevent double unref.
+
 2003-07-23  Chris Toshok  <toshok@ximian.com>
 
 	* printing/e-contact-print.c (e_contact_print_response): deal with
