@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.47 2005-03-31 16:40:38 rbasch Exp $
+# $Id: do-update.sh,v 1.48 2005-04-02 18:45:43 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -336,10 +336,6 @@ if [ "$MINIROOT" = true ]; then
 		echo "Athena Workstation ($HOSTTYPE) Version" \
                       "ClearSwap $method $newvers `date`" \
 			>> "$CONFDIR/version"
-		# Make sure this machine knows what the heck to do
-		# with "ClearSwap" in version, since it may not be
-		# updated to a release that understands it yet.
-		cp /srvd/etc/init.d/finish-update /etc/init.d
 		;;
 	*)
 		echo "Please contact Athena Hotline at x3-1410."
