@@ -47,6 +47,22 @@ lockers added to the end of your path, however, to prevent the possibility
 of locker maintainers replacing important binaries with things you don't
 expect.
 .TP 9
+.B \-m
+This option causes \fIadd\fR, when adding a locker already in your
+path, to move the locker's position in your path from where it is to
+where it would have wound up if it hadn't been in your path to begin
+with. For example, if the locker FOO is at the end of your path,
+typing "add -m -f FOO" will cause it to be moved to the beginning of
+your path. Without the -m option specified, FOO would remain at the
+end of your path. This option is not set by default for backwards
+compatibility reasons. (See add_flags, below under VARIABLES, to see
+how to make it default for you.) It has no effect when used in your
+~/.environment file.
+.TP 9
+.B \-r
+This option causes \fIadd\fR to remove the specified lockers from your
+path. This option has no effect when used in your ~/.environment file.
+.TP 9
 .B \-w
 This option causes \fIadd\fR to warn you in the event a locker you have
 asked to be added does not support your platform. A binary directory
