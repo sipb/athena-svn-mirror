@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.15 1988-01-20 15:42:12 jtkohl Exp $";
+static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.16 1988-01-25 15:10:42 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -739,6 +739,7 @@ ZServerDesc_t *server;
 				       error_message(retval));
 				return(retval);
 			}
+#ifdef KERBEROS
 			bzero((caddr_t) client->zct_cblock,
 					      sizeof(C_Block));
 			if (*notice.z_class_inst) {
@@ -753,6 +754,7 @@ ZServerDesc_t *server;
 					       cp);
 				}
 			}
+#endif KERBEROS
 		} else if (!strcmp(notice.z_opcode, CLIENT_SUBSCRIBE)) { 
 			/* a subscription packet */
 			if (!client) {
