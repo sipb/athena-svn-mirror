@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v $
- *      $Author: lwvanels $
+ *      $Author: probe $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.12 1991-12-05 15:26:50 lwvanels Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.13 1993-09-24 16:13:49 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -70,7 +70,7 @@ int len;
 	  entry->timeout = time((time_t *)0) + NOTICE_TIMEOUT;
 	  entry->retries = 0;
 	  entry->z_packet = (char *)malloc(Z_MAXPKTLEN);
-	  bcopy(packet, entry->z_packet, Z_MAXPKTLEN);
+	  _BCOPY(packet, entry->z_packet, Z_MAXPKTLEN);
 	  if (ZParseNotice(entry->z_packet, len, &entry->z_notice)
 	      != ZERR_NONE) {
 	       syslog(LOG_ERR, "ZParseNotice failed, but succeeded before");
