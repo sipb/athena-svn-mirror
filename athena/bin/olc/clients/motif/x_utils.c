@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
- *	$Id: x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $
- *      $Author: lwvanels $
+ *	$Id: x_utils.c,v 1.6 1997-04-30 17:39:42 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.6 1997-04-30 17:39:42 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -78,7 +78,7 @@ handle_response(response, req)
 
     case NO_QUESTION:
       if(isme(req)) {
-	if(OLC) {
+	if(client_is_user_client()) {
 	  MuError("You do not have a question in OLC.\n\nIf you wish to ask another question, use 'olc' again.");
 
 /* 
@@ -111,7 +111,7 @@ handle_response(response, req)
     case NOT_CONNECTED:
       if(isme(req)) {
 	sprintf(message, "You are not connected to a %s.",
-                OLC?"consultant":"user");
+		client_is_user_client()?"consultant":"user");
 	MuError(message);
       }
       else {
@@ -160,21 +160,21 @@ handle_response(response, req)
     case MK_AP_TGTEXP:
     case RD_AP_EXP:
       strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        renew"); 
-      if(OLC)
+      if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
 
     case NO_TKT_FIL:
       strcpy(message, "You do not have a Kerberos ticket file. To get one, type:\n\n        renew"); 
-      if(OLC)
+      if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
 
     case TKT_FIL_ACC:
       strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        setenv   KRBTKFILE  /tmp/random\n        renew");
-      if(OLC)
+      if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
@@ -185,7 +185,7 @@ handle_response(response, req)
 #else
       strcpy(message, "Kerberos authentication failed; the clock on this workstation is incorrect.\nPlease contact the maintainer of this workstation to update it.");
 #endif
-      if(OLC)
+      if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);

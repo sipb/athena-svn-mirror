@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v $
- *      $Id: x_resolve.c,v 1.4 1991-09-10 14:50:27 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: x_resolve.c,v 1.5 1997-04-30 17:39:42 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.4 1991-09-10 14:50:27 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.5 1997-04-30 17:39:42 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -96,7 +96,7 @@ x_done(Request)
 
     case OK:
       MuWarningSync("The consultant has been notified that you are finished with your question.\n\nThank you for using OLC!");
-     if(OLC)
+     if(client_is_user_client())
        {
 	 exit(0);
        }
@@ -150,7 +150,7 @@ x_cancel(Request)
   instance = Request->requester.instance;
   Request->request_type = OLC_CANCEL;
 
-  if (OLC)
+  if (client_is_user_client())
     {
       if (! MuGetBoolean(CANCEL_MESSAGE, "Yes", "No", NULL, FALSE))
 	return(NO_ACTION);
@@ -167,7 +167,7 @@ x_cancel(Request)
   switch(status)
     {
     case SUCCESS:
-      if (OLC)
+      if (client_is_user_client())
 	{
 	  exit(0);
 	}
@@ -180,7 +180,7 @@ x_cancel(Request)
     case OK:
       MuWarningSync(
   	  "Your question has been cancelled.\nThank you for using OLC!");
-      if(OLC)
+      if(client_is_user_client())
          exit(0);
 
       break;
