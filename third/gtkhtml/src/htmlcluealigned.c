@@ -42,14 +42,13 @@ copy (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLObject *obj;
 	gboolean changed;
 	gint old_width, old_ascent;
 
-	changed = HTML_OBJECT_CLASS (&html_clue_class)->calc_size (o, painter);
+	changed = HTML_OBJECT_CLASS (&html_clue_class)->calc_size (o, painter, changed_objs);
 
 	old_width = o->width;
 	old_ascent = o->ascent;

@@ -240,6 +240,7 @@ void  gtk_html_undo  (GtkHTML *html);
 void  gtk_html_redo  (GtkHTML *html);
 
 void  gtk_html_insert_html (GtkHTML *html, const gchar *html_src);
+void  gtk_html_append_html (GtkHTML *html, const gchar *html_src);
 
 /* misc utils */
 
@@ -261,5 +262,10 @@ void      gtk_html_zoom_out                      (GtkHTML *html);
 void      gtk_html_zoom_reset                    (GtkHTML *html);
 
 void      gtk_html_update_styles                 (GtkHTML *html);
+void      gtk_html_set_allow_frameset            (GtkHTML *html, gboolean allow);
+gboolean  gtk_html_get_allow_frameset            (GtkHTML *html);
+
+void         gtk_html_set_base                      (GtkHTML *html, const char *url);
+const char*  gtk_html_get_base                      (GtkHTML *html);
 
 #endif /* _GTKHTML_H_ */

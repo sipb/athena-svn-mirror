@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml VERSION\n"
-"POT-Creation-Date: 2001-10-09 09:44-0500\n"
-"PO-Revision-Date: 2001-08-22 17:40+0200\n"
+"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"PO-Revision-Date: 2001-10-11 18:49+0200\n"
 "Last-Translator: András TÍmár <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -17,10 +17,10 @@ msgstr ""
 msgid "<None>"
 msgstr "<Semmi>"
 
-#: capplet/gnome-bindings-prop.c:216 capplet/main.c:245
+#: capplet/gnome-bindings-prop.c:216 capplet/main.c:252
 #: components/html-editor/cell.c:385 components/html-editor/rule.c:315
 #: components/html-editor/table.c:528 components/html-editor/table.c:619
-#: components/html-editor/template.c:243
+#: components/html-editor/template.c:244
 msgid "Could not load glade file."
 msgstr "Nem sikerült betölteni a glade fájlt."
 
@@ -238,7 +238,7 @@ msgid "Check spelling of the document"
 msgstr "A dokumentum helyesírás-ellenõrzése"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:385
+#: components/html-editor/popup.c:398
 msgid "Copy"
 msgstr "Másolás"
 
@@ -255,7 +255,7 @@ msgid "Cu_t"
 msgstr "_Kivágás"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:386
+#: components/html-editor/popup.c:399
 msgid "Cut"
 msgstr "Kivágás"
 
@@ -268,7 +268,7 @@ msgid "Cut the selection"
 msgstr "Kijelölés kivágása"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
-#: components/html-editor/search.c:69 components/html-editor/search.c:112
+#: components/html-editor/search.c:69 components/html-editor/search.c:110
 msgid "Find"
 msgstr "Keresés"
 
@@ -330,7 +330,7 @@ msgstr "Címsor _6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:161
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
 msgid "Image"
 msgstr "Kép"
 
@@ -348,7 +348,7 @@ msgstr "Kép beszúrása a dokumentumba..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:40
 msgid "Insert rule into document..."
-msgstr "Szabály beszúrása a dokumentumba"
+msgstr "Vonal beszúrása a dokumentumba"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
 msgid "Insert table into document..."
@@ -363,7 +363,7 @@ msgstr "Balra igazítja a bekezdést"
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:175
+#: components/html-editor/popup.c:178
 msgid "Link"
 msgstr "Hivatkozás"
 
@@ -431,9 +431,8 @@ msgid "Numbered List"
 msgstr "Számozott lista"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
-#, fuzzy
 msgid "Numbered _List"
-msgstr "Számozott lista"
+msgstr "Számozott _lista"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:60
 msgid "Orange"
@@ -444,7 +443,7 @@ msgid "Other..."
 msgstr "Más..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:392
+#: components/html-editor/popup.c:405
 msgid "Paste"
 msgstr "Beillesztés"
 
@@ -503,9 +502,9 @@ msgstr "Római számos lista"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:189
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
 msgid "Rule"
-msgstr "Szabály"
+msgstr "Vonal"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:76
 msgid "Select _All"
@@ -538,8 +537,8 @@ msgstr "Alsó index"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:196
-#: components/html-editor/popup.c:445 components/html-editor/popup.c:454
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
+#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
 msgid "Table"
 msgstr "Táblázat"
 
@@ -579,9 +578,8 @@ msgid "_Alignment"
 msgstr "_Igazítás"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:92
-#, fuzzy
 msgid "_Alphabetical List"
-msgstr "Betûkkel jelölt lista"
+msgstr "_Betûkkel jelölt lista"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:93
 msgid "_Bold"
@@ -677,12 +675,11 @@ msgstr "_Római számokkal számozott lista"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
 msgid "_Rule..."
-msgstr "_Szabály..."
+msgstr "_Vonal..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:117
-#, fuzzy
 msgid "_Spell check document..."
-msgstr "Helyesírás-ellenõrzõ"
+msgstr "_Dokumentum helyesírás-ellenõrzése..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:118
 msgid "_Strikeout"
@@ -722,7 +719,7 @@ msgstr "Színek"
 
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:154
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
 msgid "Text"
 msgstr "Szöveg"
 
@@ -737,25 +734,25 @@ msgid "Automatic"
 msgstr "Automatikus"
 
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:146
+#: components/html-editor/popup.c:149
 msgid "Properties"
 msgstr "Tulajdonságok"
 
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:168
+#: components/html-editor/popup.c:171
 msgid "Paragraph"
 msgstr "Bekezdés"
 
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:182
+#: components/html-editor/popup.c:185
 msgid "Page"
 msgstr "Oldal"
 
-#: components/html-editor/editor-control-factory.c:840
+#: components/html-editor/editor-control-factory.c:843
 msgid "Could not initialize GNORBA"
 msgstr "A GNORBA inicializása nem sikerült"
 
-#: components/html-editor/editor-control-factory.c:853
+#: components/html-editor/editor-control-factory.c:856
 msgid "Could not initialize Bonobo"
 msgstr "A Bonobo inicializálása nem sikerült"
 
@@ -788,7 +785,7 @@ msgid "Bottom"
 msgstr "Lent"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:203
+#: components/html-editor/popup.c:206
 msgid "Cell"
 msgstr "Cella"
 
@@ -802,7 +799,7 @@ msgid "Color:"
 msgstr "Szín:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:456
+#: components/html-editor/popup.c:469
 msgid "Column"
 msgstr "Oszlop"
 
@@ -885,7 +882,7 @@ msgid "Right"
 msgstr "Jobbra"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:455
+#: components/html-editor/popup.c:468
 msgid "Row"
 msgstr "Sor"
 
@@ -975,11 +972,11 @@ msgstr "Sorkitöltés"
 msgid "height"
 msgstr "magasság"
 
-#: components/html-editor/link.c:73
+#: components/html-editor/link.c:85
 msgid "Clear"
 msgstr "Törlés"
 
-#: components/html-editor/link.c:76
+#: components/html-editor/link.c:88
 msgid "URL"
 msgstr "URL"
 
@@ -1046,92 +1043,92 @@ msgstr "Betû elem"
 msgid "Align"
 msgstr "Igazítás"
 
-#: components/html-editor/popup.c:348
-#, fuzzy, c-format
+#: components/html-editor/popup.c:361
+#, c-format
 msgid "Check '%s' spelling..."
-msgstr "Helyesírás-ellenõrzés..."
+msgstr "'%s' helyesírás-ellenõrzése..."
 
-#: components/html-editor/popup.c:351
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr "'%s' hozzáadása a szótárhoz"
 
-#: components/html-editor/popup.c:354
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Ignore '%s'"
 msgstr "'%s' figyelmen kívül hagyása"
 
-#: components/html-editor/popup.c:357 components/html-editor/spell.c:402
+#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
 msgid "Spell checker"
 msgstr "Helyesírás-ellenõrzõ"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:374
 msgid "Suggest word"
 msgstr "Javasolt szó"
 
-#: components/html-editor/popup.c:380
+#: components/html-editor/popup.c:393
 msgid "Remove link"
 msgstr "Hivatkozás eltávolítása"
 
-#: components/html-editor/popup.c:396 components/html-editor/popup.c:422
+#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
 msgid "Text..."
 msgstr "Szöveg..."
 
-#: components/html-editor/popup.c:398 components/html-editor/popup.c:413
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
+#: components/html-editor/popup.c:437
 msgid "Paragraph..."
 msgstr "Bekezdés..."
 
-#: components/html-editor/popup.c:400 components/html-editor/popup.c:415
-#: components/html-editor/popup.c:426
+#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
+#: components/html-editor/popup.c:439
 msgid "Link..."
 msgstr "Hivatkozás..."
 
-#: components/html-editor/popup.c:406
+#: components/html-editor/popup.c:419
 msgid "Rule..."
-msgstr "Szabály..."
+msgstr "Vonal..."
 
-#: components/html-editor/popup.c:411
+#: components/html-editor/popup.c:424
 msgid "Image..."
 msgstr "Kép..."
 
-#: components/html-editor/popup.c:431 components/html-editor/popup.c:441
+#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
 msgid "Table..."
 msgstr "Táblázat..."
 
-#: components/html-editor/popup.c:438
+#: components/html-editor/popup.c:451
 msgid "Cell..."
 msgstr "Cella..."
 
-#: components/html-editor/popup.c:444
+#: components/html-editor/popup.c:457
 msgid "Table insert"
 msgstr "Táblázat beszúrása"
 
-#: components/html-editor/popup.c:447
+#: components/html-editor/popup.c:460
 msgid "Row above"
 msgstr "Egy sorral feljebb"
 
-#: components/html-editor/popup.c:448
+#: components/html-editor/popup.c:461
 msgid "Row below"
 msgstr "Egy sorral lejjebb"
 
-#: components/html-editor/popup.c:450
+#: components/html-editor/popup.c:463
 msgid "Column before"
 msgstr "Egy oszloppal elõtte"
 
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:464
 msgid "Column after"
 msgstr "Egy oszloppal utána"
 
-#: components/html-editor/popup.c:453
+#: components/html-editor/popup.c:466
 msgid "Table delete"
 msgstr "Táblázat törlése"
 
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:470
 msgid "Cell contents"
 msgstr "Cellatartalom"
 
-#: components/html-editor/popup.c:465
+#: components/html-editor/popup.c:478
 msgid "Page..."
 msgstr "Oldal..."
 
@@ -1175,13 +1172,13 @@ msgstr "Sárga, virágos"
 msgid "backward"
 msgstr "hátrafelé"
 
-#: components/html-editor/search.c:112
+#: components/html-editor/search.c:110
 msgid "Find Regular Expression"
 msgstr "Reguláris kifejezés keresése"
 
-#: components/html-editor/spell.c:397
+#: components/html-editor/spell.c:411
 msgid "No misspelled word found"
-msgstr ""
+msgstr "Nem volt rosszul írt szó"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1202,11 +1199,14 @@ msgid ""
 "cellpadding=3 cellspacing=0 width=\"100%\"><tr><td valign=top><img "
 "src=\"file://"
 msgstr ""
+"<table cellspacing=0 cellpadding=1 "
+"bgcolor=\"#ccccc0\"@width@@align@><tr><td><table bgcolor=\"#fffff0\" "
+"cellpadding=3 cellspacing=0 width=\"100%\"><tr><td valign=top><img "
+"src=\"file://"
 
 #: components/html-editor/template.c:91
-#, fuzzy
 msgid "Image frame"
-msgstr "Kép"
+msgstr "Képkeret"
 
 #: components/html-editor/template.c:93
 msgid ""
@@ -1214,6 +1214,9 @@ msgid ""
 "bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" "
 "width=\"100%\"><tr><td align=\"center\"><img src=\"file://"
 msgstr ""
+"<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" @width@@align@><tr><td><table "
+"bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" "
+"width=\"100%\"><tr><td align=\"center\"><img src=\"file://"
 
 #: components/html-editor/test-html-editor-control.c:276
 msgid "Open file..."
@@ -1298,6 +1301,21 @@ msgstr "Nyomtatási _kép"
 #: src/testgtkhtml.c:112
 msgid "Print preview"
 msgstr "Nyomtatási kép"
+
+#~ msgid ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
+#~ "here</td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Ide "
+#~ "írhatsz.</td></tr></table></td></tr></table>"
+
+#~ msgid ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">Image 1: "
+#~ "<b>description</b></font></td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">1. kép: <b>leírás</b></font></td></tr></table></td></tr></table>"
 
 #~ msgid "_Numbered List"
 #~ msgstr "_Számozott lista"

@@ -41,8 +41,7 @@ copy (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *self,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	GtkHTMLFontStyle font_style;
 	gint new_ascent, new_descent, new_width;

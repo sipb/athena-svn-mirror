@@ -389,6 +389,7 @@ insert_or_apply (GtkHTMLControlData *cd, gpointer get_data, gboolean insert)
 {	
 	GtkHTMLEditImageProperties *data = (GtkHTMLEditImageProperties *) get_data;
 	gchar *file;
+	gchar *url = NULL;
 	gint16 width;
 	gint16 height;
 	gboolean width_percent;
@@ -399,7 +400,18 @@ insert_or_apply (GtkHTMLControlData *cd, gpointer get_data, gboolean insert)
 	HTMLHAlignType halign = HTML_HALIGN_NONE;
 	HTMLVAlignType valign = HTML_VALIGN_BOTTOM;
 
-	file    = g_strconcat ("file://", gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (data->pentry)), NULL);
+	file    = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (data->pentry));
+	if (file) {
+		url = g_strconcat ("file:///", file, NULL);
+	} else {
+		GtkWidget *entry = gnome_pixmap_entry_gtk_entry (GNOME_PIXMAP_ENTRY (data->pentry));
+
+		url = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+	}
+
+	if (!url)
+		url = g_strdup ("");
+
 	width   = -1;
 	height  = -1;
 	width_percent  = FALSE;
@@ -442,7 +454,7 @@ insert_or_apply (GtkHTMLControlData *cd, gpointer get_data, gboolean insert)
 
 	if (insert)
 		html_engine_insert_image (data->cd->html->engine,
-					  file,
+					  url,
 					  NULL, NULL,
 					  width, height, width_percent, height_percent, border,
 					  html_colorset_get_color (data->cd->html->engine->settings->color_set,
@@ -457,12 +469,12 @@ insert_or_apply (GtkHTMLControlData *cd, gpointer get_data, gboolean insert)
 		if (data->set [GTK_HTML_EDIT_IMAGE_BWIDTH])
 			html_image_set_border (image, border);
 		html_image_set_size     (image, width, height, width_percent, height_percent);
-		html_image_edit_set_url (image, file);
+		html_image_edit_set_url (image, url);
 		html_image_set_spacing  (image, hspace, vspace);
 		html_image_set_valign   (image, valign);
 	}
 
-	g_free (file);
+	g_free (url);
 }
 
 void

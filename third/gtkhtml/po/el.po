@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.8.1\n"
-"POT-Creation-Date: 2001-10-09 09:44-0500\n"
+"POT-Creation-Date: 2001-11-05 17:52-0600\n"
 "PO-Revision-Date: 2001-01-30 15:55:46+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -17,10 +17,10 @@ msgstr ""
 msgid "<None>"
 msgstr "<Κενό>"
 
-#: capplet/gnome-bindings-prop.c:216 capplet/main.c:245
+#: capplet/gnome-bindings-prop.c:216 capplet/main.c:252
 #: components/html-editor/cell.c:385 components/html-editor/rule.c:315
 #: components/html-editor/table.c:528 components/html-editor/table.c:619
-#: components/html-editor/template.c:243
+#: components/html-editor/template.c:244
 msgid "Could not load glade file."
 msgstr "Αδυναμία φόρτωσης αρχείου glade."
 
@@ -259,7 +259,7 @@ msgstr ""
 
 #
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:385
+#: components/html-editor/popup.c:398
 msgid "Copy"
 msgstr "Αντιγραφή"
 
@@ -280,7 +280,7 @@ msgstr "Αποκοπή"
 
 #
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:386
+#: components/html-editor/popup.c:399
 msgid "Cut"
 msgstr "Αποκοπή"
 
@@ -294,7 +294,7 @@ msgid "Cut the selection"
 msgstr "Αποκοπή επιλεγμένου"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
-#: components/html-editor/search.c:69 components/html-editor/search.c:112
+#: components/html-editor/search.c:69 components/html-editor/search.c:110
 msgid "Find"
 msgstr "Εύρεση"
 
@@ -369,7 +369,7 @@ msgstr "Κεφαλίδα 6"
 #
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:161
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
 msgid "Image"
 msgstr "Εικόνα"
 
@@ -403,7 +403,7 @@ msgstr ""
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:175
+#: components/html-editor/popup.c:178
 msgid "Link"
 msgstr "Σύνδεσμος"
 
@@ -485,7 +485,7 @@ msgstr ""
 
 #
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:392
+#: components/html-editor/popup.c:405
 msgid "Paste"
 msgstr "Επικόλληση"
 
@@ -549,7 +549,7 @@ msgstr ""
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:189
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
 msgid "Rule"
 msgstr "Κανόνας"
 
@@ -584,8 +584,8 @@ msgstr ""
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:196
-#: components/html-editor/popup.c:445 components/html-editor/popup.c:454
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
+#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
 #, fuzzy
 msgid "Table"
 msgstr "Ενεργοποίηση"
@@ -789,7 +789,7 @@ msgstr "Χρώματα"
 #
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:154
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
 msgid "Text"
 msgstr "Κείμενο"
 
@@ -806,25 +806,25 @@ msgstr "Αυτόματο"
 
 #
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:146
+#: components/html-editor/popup.c:149
 msgid "Properties"
 msgstr "Ιδιότητες"
 
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:168
+#: components/html-editor/popup.c:171
 msgid "Paragraph"
 msgstr "Παράγραφος"
 
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:182
+#: components/html-editor/popup.c:185
 msgid "Page"
 msgstr "Σελίδα"
 
-#: components/html-editor/editor-control-factory.c:840
+#: components/html-editor/editor-control-factory.c:843
 msgid "Could not initialize GNORBA"
 msgstr "Αδύνατη η αρχικοποίηση του GNORBA"
 
-#: components/html-editor/editor-control-factory.c:853
+#: components/html-editor/editor-control-factory.c:856
 msgid "Could not initialize Bonobo"
 msgstr "Αδύνατη η αρχικοποίηση του Bonobo"
 
@@ -859,7 +859,7 @@ msgid "Bottom"
 msgstr "Κάτω"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:203
+#: components/html-editor/popup.c:206
 msgid "Cell"
 msgstr ""
 
@@ -876,7 +876,7 @@ msgstr "Χρώμα"
 
 #
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:456
+#: components/html-editor/popup.c:469
 #, fuzzy
 msgid "Column"
 msgstr "Εντολή"
@@ -972,7 +972,7 @@ msgid "Right"
 msgstr "Δεξιά"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:455
+#: components/html-editor/popup.c:468
 msgid "Row"
 msgstr ""
 
@@ -1074,11 +1074,11 @@ msgid "height"
 msgstr "ύψος"
 
 #
-#: components/html-editor/link.c:73
+#: components/html-editor/link.c:85
 msgid "Clear"
 msgstr "Καθαρισμός"
 
-#: components/html-editor/link.c:76
+#: components/html-editor/link.c:88
 msgid "URL"
 msgstr "URL"
 
@@ -1145,104 +1145,104 @@ msgstr ""
 msgid "Align"
 msgstr "Στοίχιση"
 
-#: components/html-editor/popup.c:348
+#: components/html-editor/popup.c:361
 #, c-format
 msgid "Check '%s' spelling..."
 msgstr ""
 
-#: components/html-editor/popup.c:351
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr ""
 
-#: components/html-editor/popup.c:354
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Ignore '%s'"
 msgstr ""
 
-#: components/html-editor/popup.c:357 components/html-editor/spell.c:402
+#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
 #, fuzzy
 msgid "Spell checker"
 msgstr "Έλεγχος ορθογραφίας"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:374
 msgid "Suggest word"
 msgstr ""
 
-#: components/html-editor/popup.c:380
+#: components/html-editor/popup.c:393
 msgid "Remove link"
 msgstr "Διαγραφή συνδέσμου"
 
 #
-#: components/html-editor/popup.c:396 components/html-editor/popup.c:422
+#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
 #, fuzzy
 msgid "Text..."
 msgstr "Κείμενο"
 
-#: components/html-editor/popup.c:398 components/html-editor/popup.c:413
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
+#: components/html-editor/popup.c:437
 #, fuzzy
 msgid "Paragraph..."
 msgstr "Παράγραφος"
 
-#: components/html-editor/popup.c:400 components/html-editor/popup.c:415
-#: components/html-editor/popup.c:426
+#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
+#: components/html-editor/popup.c:439
 #, fuzzy
 msgid "Link..."
 msgstr "_Σύνδεσμος..."
 
-#: components/html-editor/popup.c:406
+#: components/html-editor/popup.c:419
 #, fuzzy
 msgid "Rule..."
 msgstr "_Κανόνας..."
 
 #
-#: components/html-editor/popup.c:411
+#: components/html-editor/popup.c:424
 #, fuzzy
 msgid "Image..."
 msgstr "_Εικόνα..."
 
-#: components/html-editor/popup.c:431 components/html-editor/popup.c:441
+#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
 #, fuzzy
 msgid "Table..."
 msgstr "_Κανόνας..."
 
-#: components/html-editor/popup.c:438
+#: components/html-editor/popup.c:451
 msgid "Cell..."
 msgstr ""
 
-#: components/html-editor/popup.c:444
+#: components/html-editor/popup.c:457
 #, fuzzy
 msgid "Table insert"
 msgstr "Εισαγωγή"
 
-#: components/html-editor/popup.c:447
+#: components/html-editor/popup.c:460
 msgid "Row above"
 msgstr ""
 
-#: components/html-editor/popup.c:448
+#: components/html-editor/popup.c:461
 msgid "Row below"
 msgstr ""
 
-#: components/html-editor/popup.c:450
+#: components/html-editor/popup.c:463
 msgid "Column before"
 msgstr ""
 
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:464
 msgid "Column after"
 msgstr ""
 
-#: components/html-editor/popup.c:453
+#: components/html-editor/popup.c:466
 #, fuzzy
 msgid "Table delete"
 msgstr "Εισαγωγή"
 
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:470
 msgid "Cell contents"
 msgstr ""
 
 #
-#: components/html-editor/popup.c:465
+#: components/html-editor/popup.c:478
 #, fuzzy
 msgid "Page..."
 msgstr "_Εικόνα..."
@@ -1290,12 +1290,12 @@ msgstr ""
 msgid "backward"
 msgstr "Αναζήτηση προς τα πίσω"
 
-#: components/html-editor/search.c:112
+#: components/html-editor/search.c:110
 #, fuzzy
 msgid "Find Regular Expression"
 msgstr "Αναζήτηση με κανονική έκφραση"
 
-#: components/html-editor/spell.c:397
+#: components/html-editor/spell.c:411
 msgid "No misspelled word found"
 msgstr ""
 

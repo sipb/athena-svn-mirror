@@ -218,7 +218,6 @@ draw_obj (HTMLDrawQueue *queue,
 	  HTMLObject *obj)
 {
 	HTMLEngine *e;
-	HTMLObject *p;
 	gint x1, y1, x2, y2;
 	gint tx, ty;
 
@@ -227,38 +226,9 @@ draw_obj (HTMLDrawQueue *queue,
 
 	e = queue->engine;
 
-	/* First calculate the translation offset for drawing the object.  */
-
-	tx = 0;
-	ty = 0;
-
-	for (p = obj->parent; p != NULL && HTML_OBJECT_TYPE (p) != HTML_TYPE_IFRAME; p = p->parent) {
-		tx += p->x;
-		ty += p->y - p->ascent;
-	}
-
-	tx = tx + e->leftBorder - e->x_offset;
-	ty = ty + e->topBorder - e->y_offset;
-
-	/* Then prepare for drawing.  We will only update this object, so we
-           only allocate enough size for it.  */
-
-	x1 = obj->x + tx;
-	y1 = obj->y - obj->ascent + ty;
-	x2 = obj->x + obj->width + tx;
-	y2 = obj->y + obj->descent + ty;
-
-	if (x2 < 0 || y2 < 0 || x1 > e->width || y1 > e->height)
+	html_object_engine_translation (obj, e, &tx, &ty);
+	if (!html_object_engine_intersection (obj, e, tx, ty, &x1, &y1, &x2, &y2))
 		return;
-
-	if (x1 < 0)
-		x1 = 0;
-	if (y1 < 0)
-		y1 = 0;
-	if (x2 > e->width)
-		x2 = e->width;
-	if (y2 > e->height)
-		y2 = e->height;
 
 	html_painter_begin (e->painter, x1, y1, x2, y2);
 
@@ -338,6 +308,18 @@ clear (HTMLDrawQueue *queue,
 void
 html_draw_queue_clear (HTMLDrawQueue *queue)
 {
+	GList *p;
+
+	for (p = queue->elems; p != NULL; p = p->next) {
+		HTMLObject *obj = HTML_OBJECT (p->data);
+			
+		obj->redraw_pending = FALSE;
+		if (obj->free_pending) {
+			g_free (obj);
+			p->data = (gpointer)0xdeadbeef;
+		}
+	}
+
 	g_list_free (queue->clear_elems);
 	g_list_free (queue->elems);
 
@@ -365,19 +347,24 @@ html_draw_queue_flush (HTMLDrawQueue *queue)
 
 	/* Draw objects.  */
 
-	if (GTK_WIDGET (queue->engine->widget)->window)
+	if (GTK_WIDGET (queue->engine->widget)->window) {
 		for (p = queue->elems; p != NULL; p = p->next) {
-			HTMLObject *obj;
-
-			obj = p->data;
-
-			if (obj->free_pending) {
-				g_free (obj);
-			} else if (obj->redraw_pending) {
+			HTMLObject *obj = HTML_OBJECT (p->data);
+			
+			if (obj->redraw_pending && !obj->free_pending) {
 				draw_obj (queue, obj);
 				obj->redraw_pending = FALSE;
 			}
 		}
-
+	}
 	html_draw_queue_clear (queue);
 }
+
+
+
+
+
+
+
+
+

@@ -218,7 +218,7 @@ get_body (HTMLEngine *e)
 		: g_strdup ("");
 	g_free (url);
 
-	body = g_strconcat ("<BODY", text, link, bg, bg_image, ">", NULL);
+	body = g_strconcat ("<BODY", text, link, bg, bg_image, ">\n", NULL);
 
 	g_free (text);
 	g_free (link);

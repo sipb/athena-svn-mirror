@@ -20,6 +20,10 @@
 */
 
 #include <config.h>
+#include <gtk/gtk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dialog-util.h>
 #include "gtkhtml.h"
 #include "gtkhtml-properties.h"
 #include "htmlprinter.h"
@@ -34,7 +38,8 @@ static void
 print_header_footer (HTMLPainter *painter, HTMLEngine *engine, gint width, gint y, gint height,
 		     GtkHTMLPrintCallback cb, gpointer user_data)
 {
-	GnomePrintContext *context = HTML_PRINTER (painter)->print_context;
+	HTMLPrinter *printer = HTML_PRINTER (painter);
+	GnomePrintContext *context = printer->print_context;
 	gdouble gx, gy;
 
 	gnome_print_gsave (context);
@@ -42,9 +47,9 @@ print_header_footer (HTMLPainter *painter, HTMLEngine *engine, gint width, gint 
 #ifdef CLIP_DEBUG
 	html_painter_draw_rect (painter, 0, y, width, height);
 #endif
-	html_printer_coordinates_to_gnome_print (HTML_PRINTER (painter), 0, y, &gx, &gy);
+	html_printer_coordinates_to_gnome_print (printer, 0, y, &gx, &gy);
 	(*cb) (GTK_HTML (engine->widget), context, gx, gy,
-	       html_printer_scale_to_gnome_print (width), html_printer_scale_to_gnome_print (height), user_data);
+	       html_printer_scale_to_gnome_print (printer, width), html_printer_scale_to_gnome_print (printer, height), user_data);
 	gnome_print_grestore (context);
 }
 
@@ -121,7 +126,20 @@ print_all_pages (HTMLPainter *printer,
 	}  while (split_offset < document_height);
 }
 
-
+static gboolean
+do_we_have_default_font (HTMLPainter *painter)
+{
+	HTMLFont *font;
+	gboolean rv = FALSE;
+
+	font = html_painter_get_font (painter, NULL, GTK_HTML_FONT_STYLE_DEFAULT);
+	if (font) {
+		rv = TRUE;
+	}
+
+	return rv;
+}
+
 void
 html_engine_print (HTMLEngine *engine,
 		   GnomePrintContext *print_context)
@@ -144,25 +162,43 @@ html_engine_print_with_header_footer (HTMLEngine *engine,
 
 	g_return_if_fail (engine->clue != NULL);
 
-	old_painter = engine->painter;
-	printer     = html_printer_new (print_context);
+	printer = html_printer_new (print_context);
 	html_font_manager_set_default (&printer->font_manager,
 				       prop->font_var_print,      prop->font_fix_print,
-				       prop->font_var_size_print, prop->font_fix_size_print);
+				       prop->font_var_size_print, prop->font_var_print_points,
+				       prop->font_fix_size_print, prop->font_fix_print_points);
 
-	gtk_object_ref (GTK_OBJECT (old_painter));
-	html_engine_set_painter (engine, printer);
+	if (do_we_have_default_font (printer)) {
+		gint min_width, page_width;
 
-	print_all_pages (HTML_PAINTER (printer), 
-			 engine, 
-			 header_height,
-			 footer_height, 
-			 header_print, 
-			 footer_print, 
-			 user_data);
+		old_painter = engine->painter;
 
-	html_engine_set_painter (engine, old_painter);
-	gtk_object_unref (GTK_OBJECT (old_painter));
+		gtk_object_ref (GTK_OBJECT (old_painter));
+		html_engine_set_painter (engine, printer);
+
+		min_width = html_engine_calc_min_width (engine);
+		page_width = html_painter_get_page_width (engine->painter, engine);
+		/* printf ("min_width %d page %d\n", min_width, page_width); */
+		if (min_width > page_width) {
+			HTML_PRINTER (printer)->scale = ((gdouble) page_width) / min_width;
+			html_font_manager_clear_font_cache (&printer->font_manager);
+			html_object_change_set_down (engine->clue, HTML_CHANGE_ALL);
+			html_engine_calc_size (engine, NULL);
+			/* printf ("scale %lf\n", HTML_PRINTER (printer)->scale);
+			   gtk_html_debug_dump_tree (engine->clue, 0); */
+		}
+
+		print_all_pages (HTML_PAINTER (printer), engine,
+				 header_height, footer_height,
+				 header_print, footer_print,
+				 user_data);
+
+		html_engine_set_painter (engine, old_painter);
+		gtk_object_unref (GTK_OBJECT (old_painter));
+	} else {
+		gnome_ok_dialog (_("Cannot allocate default font for printing\n"));
+	}
+
 	gtk_object_unref (GTK_OBJECT (printer));	
 }
 

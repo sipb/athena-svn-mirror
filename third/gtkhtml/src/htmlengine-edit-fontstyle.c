@@ -32,6 +32,7 @@
 #include "htmltext.h"
 #include "htmlselection.h"
 #include "htmlsettings.h"
+#include "htmlundo.h"
 
 /* #define PARANOID_DEBUG */
 
@@ -236,13 +237,59 @@ object_set_font_style (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
 	if (html_object_is_text (o)) {
 		struct tmp_font *tf = (struct tmp_font *) data;
+		HTMLObject *prev;
 
 		HTML_TEXT (o)->font_style &= tf->and_mask;
 		HTML_TEXT (o)->font_style |= tf->or_mask;
 
-		if (o->prev)
-			html_object_merge (o->prev, o, e, NULL, NULL);
+		if (o->parent) {
+			prev = html_object_prev_not_slave (o);
+			if (prev) {
+				html_object_merge (prev, o, e, NULL, NULL, NULL);
+			}
+		}
 	}
+}
+
+struct _HTMLEmptyParaSetStyle {
+	HTMLUndoData data;
+
+	GtkHTMLFontStyle and_mask;
+	GtkHTMLFontStyle or_mask;
+};
+typedef struct _HTMLEmptyParaSetStyle HTMLEmptyParaSetStyle;
+
+static void set_empty_flow_style (HTMLEngine *e, GtkHTMLFontStyle and_mask, GtkHTMLFontStyle or_mask, HTMLUndoDirection dir);
+
+static void
+set_empty_flow_style_undo_action (HTMLEngine *e, HTMLUndoData *undo_data, HTMLUndoDirection dir, guint position_after)
+{
+	HTMLEmptyParaSetStyle *undo = (HTMLEmptyParaSetStyle *) undo_data;
+
+	set_empty_flow_style (e, undo->and_mask, undo->or_mask, html_undo_direction_reverse (dir));
+}
+
+static void
+set_empty_flow_style (HTMLEngine *e, GtkHTMLFontStyle and_mask, GtkHTMLFontStyle or_mask, HTMLUndoDirection dir)
+{
+	HTMLEmptyParaSetStyle *undo;
+	GtkHTMLFontStyle old_or_mask;
+
+	g_return_if_fail (html_object_is_text (e->cursor->object));
+
+	old_or_mask = HTML_TEXT (e->cursor->object)->font_style & ~and_mask;
+	HTML_TEXT (e->cursor->object)->font_style &= and_mask;
+	HTML_TEXT (e->cursor->object)->font_style |= or_mask;
+
+	undo = g_new (HTMLEmptyParaSetStyle, 1);
+	html_undo_data_init (HTML_UNDO_DATA (undo));
+	undo->and_mask = and_mask;
+	undo->or_mask = old_or_mask;
+	undo->data.destroy = NULL;
+	html_undo_add_action (e->undo,
+			      html_undo_action_new ("Set empty paragraph text style", set_empty_flow_style_undo_action,
+						    HTML_UNDO_DATA (undo), html_cursor_get_position (e->cursor),
+						    html_cursor_get_position (e->cursor)), dir);
 }
 
 gboolean
@@ -268,8 +315,12 @@ html_engine_set_font_style (HTMLEngine *e,
 		html_engine_cut_and_paste (e, "Set font style", "Unset font style", object_set_font_style, tf);
 		g_free (tf);
 		rv = TRUE;
-	} else
+	} else {
+		if (e->cursor->object->parent && html_clueflow_is_empty (HTML_CLUEFLOW (e->cursor->object->parent))) {
+			set_empty_flow_style (e, and_mask, or_mask, HTML_UNDO_UNDO);
+		}
 		rv = (old == e->insertion_font_style) ? FALSE : TRUE;
+	}
 	return rv;
 }
 
@@ -312,7 +363,7 @@ inc_dec_size_cb (HTMLObject *o, HTMLEngine *e, gpointer data)
 	if (html_object_is_text (o)) {
 		html_text_set_font_style (HTML_TEXT (o), e, inc_dec_size (HTML_TEXT (o)->font_style, GPOINTER_TO_INT (data)));
 		if (o->prev)
-			html_object_merge (o->prev, o, e, NULL, NULL);
+			html_object_merge (o->prev, o, e, NULL, NULL, NULL);
 	}
 }
 
@@ -332,11 +383,64 @@ static void
 set_color (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
 	if (html_object_is_text (o)) {
+		HTMLObject *prev;
+
 		html_text_set_color (HTML_TEXT (o), NULL, (HTMLColor *) data);
 
-		if (o->prev)
-			html_object_merge (o->prev, o, e, NULL, NULL);
+		if (o->parent) {
+			prev = html_object_prev_not_slave (o);
+			if (prev) {
+				html_object_merge (prev, o, e, NULL, NULL, NULL);
+			}
+		}
 	}
+}
+
+struct _HTMLEmptyParaSetColor {
+	HTMLUndoData data;
+
+	HTMLColor *color;
+};
+typedef struct _HTMLEmptyParaSetColor HTMLEmptyParaSetColor;
+
+static void set_empty_flow_color (HTMLEngine *e, HTMLColor *c, HTMLUndoDirection dir);
+
+static void
+set_empty_flow_color_undo_action (HTMLEngine *e, HTMLUndoData *undo_data, HTMLUndoDirection dir, guint position_after)
+{
+	HTMLEmptyParaSetColor *undo = (HTMLEmptyParaSetColor *) undo_data;
+
+	set_empty_flow_color (e, undo->color, html_undo_direction_reverse (dir));
+}
+
+static void
+set_empty_flow_color_destroy (HTMLUndoData *undo_data)
+{
+	HTMLEmptyParaSetColor *undo = (HTMLEmptyParaSetColor *) undo_data;
+
+	html_color_unref (undo->color);
+}
+
+static void
+set_empty_flow_color (HTMLEngine *e, HTMLColor *color, HTMLUndoDirection dir)
+{
+	HTMLColor *old_color;
+	HTMLEmptyParaSetColor *undo;
+
+	g_return_if_fail (html_object_is_text (e->cursor->object));
+
+	old_color = HTML_TEXT (e->cursor->object)->color;
+	html_color_ref (old_color);
+	html_text_set_color (HTML_TEXT (e->cursor->object), e, color);
+
+	undo = g_new (HTMLEmptyParaSetColor, 1);
+	html_undo_data_init (HTML_UNDO_DATA (undo));
+	undo->color = old_color;
+	undo->data.destroy = set_empty_flow_color_destroy;
+	html_undo_add_action (e->undo,
+			      html_undo_action_new ("Set empty paragraph color", set_empty_flow_color_undo_action,
+						    HTML_UNDO_DATA (undo), html_cursor_get_position (e->cursor),
+						    html_cursor_get_position (e->cursor)), dir);
 }
 
 gboolean
@@ -350,7 +454,9 @@ html_engine_set_color (HTMLEngine *e, HTMLColor *color)
 	if (html_engine_is_selection_active (e))
 		html_engine_cut_and_paste (e, "Set color", "Unset color", set_color, color);
 	else {
-
+		if (e->cursor->object->parent && html_clueflow_is_empty (HTML_CLUEFLOW (e->cursor->object->parent))) {
+			set_empty_flow_color (e, color, HTML_UNDO_UNDO);
+		}
 		if (gdk_color_equal (&e->insertion_color->color, &color->color))
 			rv = FALSE;
 	}

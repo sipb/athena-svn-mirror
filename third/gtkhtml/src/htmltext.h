@@ -28,6 +28,7 @@
 
 #define HTML_TEXT(x) ((HTMLText *)(x))
 #define HTML_TEXT_CLASS(x) ((HTMLTextClass *)(x))
+#define HTML_IS_TEXT(x) (HTML_CHECK_TYPE ((x), HTML_TYPE_TEXT))
 
 struct _SpellError {
 	guint off;

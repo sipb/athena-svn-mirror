@@ -98,12 +98,12 @@ compare (char *str1, char *str2)
 }
 	 
 static gboolean
-object_merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList *left, GList *right)
+object_merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList **left, GList **right, HTMLCursor *cursor)
 {
 	return compare (HTML_LINK_TEXT (self)->url, HTML_LINK_TEXT (with)->url)
 		|| compare (HTML_LINK_TEXT (self)->target, HTML_LINK_TEXT (with)->target)
 		? FALSE
-		: (* HTML_OBJECT_CLASS (parent_class)->merge) (self, with, e, left, right);
+		: (* HTML_OBJECT_CLASS (parent_class)->merge) (self, with, e, left, right, cursor);
 }
 
 static const gchar *

@@ -300,6 +300,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+bonobo-storage-http.lo bonobo-storage-http.o : bonobo-storage-http.c \
+	../../config.h bonobo-storage-http.h bonobo-stream-http.h
+bonobo-stream-http.lo bonobo-stream-http.o : bonobo-stream-http.c \
+	../../config.h bonobo-stream-http.h
 
 info-am:
 info: info-am

@@ -247,7 +247,6 @@ load_from_file (GtkHTML *html,
         const char *path;
 
         if (strncmp (url, "file:", 5) != 0) {
-		g_warning ("Unsupported image url: %s", url);
 		return FALSE;
 	} 
 	path = url + 5; 
@@ -417,7 +416,8 @@ editor_init_painters (GtkHTMLControlData *cd)
 		cd->plain_painter = HTML_GDK_PAINTER (html_plain_painter_new (TRUE));
 		html_font_manager_set_default (&HTML_PAINTER (cd->plain_painter)->font_manager,
 					       prop->font_var,      prop->font_fix,
-					       prop->font_var_size, prop->font_fix_size);
+					       prop->font_var_size, prop->font_var_points,
+					       prop->font_fix_size, prop->font_fix_points);
 		
 		html_colorset_add_slave (html->engine->settings->color_set, 
 					 HTML_PAINTER (cd->plain_painter)->color_set);
@@ -496,7 +496,7 @@ editor_set_prop (BonoboPropertyBag *bag,
 {
 	GtkHTMLControlData *cd = user_data;
 	
-	g_warning ("set_prop");
+	/* g_warning ("set_prop"); */
 	switch (arg_id) {
 	case PROP_EDIT_HTML:
 		editor_set_format (cd, BONOBO_ARG_GET_BOOLEAN (arg));
@@ -718,8 +718,11 @@ editor_api_event (GtkHTML *html, GtkHTMLEditorEventType event_type, GtkArg **arg
 		    && (listener = GNOME_GtkHTML_Editor_Engine__get_listener (engine, &ev)) != CORBA_OBJECT_NIL) {
 
 			switch (event_type) {
-			case GTK_HTML_EDITOR_EVENT_COMMAND:
-				gtk_retval = send_event_str (engine, listener, "command", args [0]);
+			case GTK_HTML_EDITOR_EVENT_COMMAND_BEFORE:
+				gtk_retval = send_event_str (engine, listener, "command_before", args [0]);
+				break;
+			case GTK_HTML_EDITOR_EVENT_COMMAND_AFTER:
+				gtk_retval = send_event_str (engine, listener, "command_after", args [0]);
 				break;
 			case GTK_HTML_EDITOR_EVENT_IMAGE_URL:
 				gtk_retval = send_event_str (engine, listener, "image_url", args [0]);
@@ -814,7 +817,7 @@ BONOBO_OAF_SHLIB_FACTORY ("OAFIID:GNOME_GtkHTML_Editor_Factory", "GNOME HTML Edi
 static CORBA_ORB
 init_corba (int *argc, char **argv)
 {
-	gnome_init_with_popt_table ("gnome-gtkhtml-editor", "0.0",
+	gnome_init_with_popt_table ("gnome-gtkhtml-editor", VERSION,
 				    *argc, argv, oaf_popt_options, 0, NULL);
 
 	return oaf_init (*argc, argv);

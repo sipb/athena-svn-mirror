@@ -37,6 +37,7 @@ struct _HTMLEmbedded {
 	gint width, height;
 
 	gint abs_x, abs_y;
+	guint changed_id;
 };
 
 struct _HTMLEmbeddedClass {
@@ -70,6 +71,7 @@ void          html_embedded_reset          (HTMLEmbedded      *element);
 gchar        *html_embedded_encode         (HTMLEmbedded      *element);
 gchar        *html_embedded_encode_string  (gchar             *str);
 HTMLEmbedded *html_embedded_new_widget     (GtkWidget         *parent,
-					    GtkHTMLEmbedded   *eb);
+					    GtkHTMLEmbedded   *eb,
+					    HTMLEngine        *engine);
 
 #endif /* HTMLEMBEDDED_H */

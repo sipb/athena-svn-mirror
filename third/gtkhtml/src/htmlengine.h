@@ -77,6 +77,7 @@ struct _HTMLEngine {
 	guint thaw_idle_id;
 	gint block_redraw;
 	gboolean need_redraw;
+	GSList *pending_expose;
 
 	gboolean parsing;
 	HTMLTokenizer *ht;
@@ -98,6 +99,7 @@ struct _HTMLEngine {
 	gint height;
 
 	HTMLHAlignType divAlign;
+	HTMLHAlignType pAlign;
 
 	/* Number of tokens parsed in the current time-slice */
 	gint parseCount;
@@ -111,7 +113,7 @@ struct _HTMLEngine {
 	gboolean inOption;
 	gboolean inTextArea;
 	gboolean eat_space;
-
+	gboolean allow_frameset;
 	gboolean newPage;
  
 	HTMLStack *font_style_stack; /* Font style stack, elements are GtkHTMLFontStyles.  */
@@ -251,6 +253,8 @@ struct _HTMLEngine {
 	HTMLCursorRectangle cursor_cell;
 	HTMLCursorRectangle cursor_table;
 	HTMLCursorRectangle cursor_image;
+
+	GList *cut_and_paste_stack;
 };
 
 /* must be forward referenced *sigh* */
@@ -300,7 +304,8 @@ void           html_engine_stop_parser      (HTMLEngine  *e);
 
 /* Rendering control.  */
 gint  html_engine_calc_min_width       (HTMLEngine *e);
-void  html_engine_calc_size            (HTMLEngine *p);
+gboolean  html_engine_calc_size        (HTMLEngine *e,
+					GList     **changed_objs);
 gint  html_engine_get_doc_height       (HTMLEngine *p);
 gint  html_engine_get_doc_width        (HTMLEngine *e);
 gint  html_engine_get_max_width        (HTMLEngine *e);
@@ -409,6 +414,17 @@ HTMLObject *html_engine_get_object_by_id    (HTMLEngine  *e,
 HTMLEngine *html_engine_get_top_html_engine (HTMLEngine *e);
 void        html_engine_thaw_idle_reset     (HTMLEngine *e);
 
-const gchar * html_engine_get_class_data (HTMLEngine *e, const gchar *class_name, const gchar *key);
-
+const gchar *html_engine_get_class_data  (HTMLEngine  *e,
+					  const gchar *class_name,
+					  const gchar *key);
+gboolean  html_engine_intersection  (HTMLEngine *e,
+				     gint       *x1,
+				     gint       *y1,
+				     gint       *x2,
+				     gint       *y2);
+void  html_engine_add_expose  (HTMLEngine *e,
+			       gint        x,
+			       gint        y,
+			       gint        width,
+			       gint        height);
 #endif /* _HTMLENGINE_H_ */

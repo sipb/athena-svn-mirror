@@ -47,12 +47,16 @@ struct _GtkHTMLClassProperties {
 	gboolean  animations;
 	gchar    *font_var;
 	guint     font_var_size;
+	gboolean  font_var_points;
 	gchar    *font_fix;
 	guint     font_fix_size;
+	gboolean  font_fix_points;
 	gchar    *font_var_print;
 	guint     font_var_size_print;
+	gboolean  font_var_print_points;
 	gchar    *font_fix_print;
 	guint     font_fix_size_print;
+	gboolean  font_fix_print_points;
 
 	/* editor */
 	gboolean  magic_links;
@@ -62,7 +66,6 @@ struct _GtkHTMLClassProperties {
 	GdkColor  spell_error_color;
 	gchar    *language;
 };
-
 
 GtkHTMLClassProperties * gtk_html_class_properties_new       (void);
 void                     gtk_html_class_properties_destroy   (GtkHTMLClassProperties *p);

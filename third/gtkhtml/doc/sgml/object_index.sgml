@@ -1,0 +1,20 @@
+<informaltable pgwide="1" frame="none">
+<tgroup cols="3">
+<colspec colwidth="1*">
+<colspec colwidth="1*">
+<colspec colwidth="1*">
+<tbody>
+<row>
+<entry><link linkend="GtkAdjustment">GtkAdjustment</link></entry>
+<entry><link linkend="GtkContainer">GtkContainer</link></entry>
+<entry><link linkend="GtkData">GtkData</link></entry>
+</row>
+<row>
+<entry><link linkend="GtkHTML">GtkHTML</link></entry>
+<entry><link linkend="GtkLayout">GtkLayout</link></entry>
+<entry><link linkend="GtkObject">GtkObject</link></entry>
+</row>
+<row>
+<entry><link linkend="GtkRange">GtkRange</link></entry>
+<entry><link linkend="GtkWidget">GtkWidget</link></entry>
+</tbody></tgroup></informaltable>

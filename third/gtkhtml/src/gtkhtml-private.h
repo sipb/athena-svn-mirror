@@ -46,6 +46,7 @@ struct _GtkHTMLPrivate {
 	guint       primary_len;
 
 	gchar *content_type;
+	char  *base_url;
 
 	GtkWidget *search_input_line;
 
@@ -63,7 +64,8 @@ void  gtk_html_private_calc_scrollbars  (GtkHTML                 *html,
 					 gboolean                *changed_x,
 					 gboolean                *changed_y);
 void  gtk_html_editor_event_command     (GtkHTML                 *html,
-					 GtkHTMLCommandType       com_type);
+					 GtkHTMLCommandType       com_type,
+					 gboolean                 before);
 void  gtk_html_editor_event             (GtkHTML                 *html,
 					 GtkHTMLEditorEventType   event,
 					 GtkArg                 **args);

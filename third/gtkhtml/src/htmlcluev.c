@@ -94,15 +94,32 @@ get_lmargin (HTMLObject *o, HTMLPainter *painter)
 		+ (o->parent ?  html_object_get_left_margin (o->parent, painter, o->y) : 0);
 }
 
+static void
+add_clear_area_behind (GList **changed_objs, HTMLObject *o, gint x, gint y, gint w, gint h)
+{
+	HTMLObjectClearRectangle *cr;
+
+	cr = g_new (HTMLObjectClearRectangle, 1);
+
+	cr->object = o;
+	cr->x = x;
+	cr->y = y;
+	cr->width = w;
+	cr->height = h;
+
+	*changed_objs = g_list_prepend (*changed_objs, cr);
+	/* NULL meens: clear rectangle follows */
+	*changed_objs = g_list_prepend (*changed_objs, NULL);
+}
+
 static gboolean
-do_layout (HTMLObject *o,
-	   HTMLPainter *painter,
-	   gboolean calc_size)
+do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **changed_objs)
 {
 	HTMLClueV *cluev;
 	HTMLClue *clue;
 	HTMLObject *obj;
 	HTMLObject *aclue;
+	GList *local_changed_objs;
 	gint lmargin;
 	gboolean changed;
 	gint old_width, old_ascent, old_descent;
@@ -110,6 +127,10 @@ do_layout (HTMLObject *o,
 	gint pixel_size;
 	gint padding;
 	gint padding2;
+	gboolean first_change;
+	gint first_y_off = 0;
+
+	/* printf ("HTMLClueV::do_layout\n"); */
 
 	cluev = HTML_CLUEV (o);
 	clue = HTML_CLUE (o);
@@ -123,6 +144,8 @@ do_layout (HTMLObject *o,
 	old_descent = o->descent;
 
 	changed = FALSE;
+	first_change = TRUE;
+	local_changed_objs = NULL;
 
 	lmargin = get_lmargin (o, painter);
 
@@ -150,18 +173,37 @@ do_layout (HTMLObject *o,
 	}
 
 	while (clue->curr != NULL) {
+		gint old_y;
 		/* Set an initial ypos so that the alignment stuff knows where
 		   the top of this object is */
+		old_y = clue->curr->y;
 		clue->curr->y = o->ascent;
 
 		if (calc_size)
-			changed |= html_object_calc_size (clue->curr, painter);
+			changed |= html_object_calc_size (clue->curr, painter, changed_objs);
 
 		if (o->width < clue->curr->width + padding2)
 			o->width = clue->curr->width + padding2;
 
 		o->ascent += clue->curr->ascent + clue->curr->descent;
 
+		if (clue->curr->x != lmargin || old_y != o->ascent - clue->curr->descent) {
+			if (changed_objs) {
+				/* printf ("y: %d ", o->ascent - clue->curr->descent); */
+				if (first_change) {
+					first_change = FALSE;
+				        /* if it's new one (y == 0) clear from new y_off, else from old one or new one,
+					   which one is higher*/
+					first_y_off = old_y
+						&& old_y < o->ascent - clue->curr->descent
+						? old_y - clue->curr->ascent
+						: o->ascent - clue->curr->descent - clue->curr->ascent;
+					/* printf ("\nfirst_y_off: %d x %d --> %d\n", old_y, o->ascent - clue->curr->descent,
+					   first_y_off + clue->curr->ascent); */
+				}
+				html_object_add_to_changed (&local_changed_objs, clue->curr);
+			}
+		}
 		clue->curr->x = lmargin;
 		clue->curr->y = o->ascent - clue->curr->descent;
 
@@ -209,6 +251,14 @@ do_layout (HTMLObject *o,
 	    && (o->ascent != old_ascent || o->descent != old_descent || o->width != old_width))
 		changed = TRUE;
 
+	if (changed_objs && local_changed_objs) {
+		if (!first_change && o->width > o->max_width) {
+			add_clear_area_behind (changed_objs, o, o->max_width, first_y_off,
+					       o->width - o->max_width, o->ascent + o->descent - first_y_off);
+		}
+		*changed_objs = g_list_concat (local_changed_objs, *changed_objs);
+	}
+
 	return changed;
 }
 
@@ -228,10 +278,9 @@ copy (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
-	return do_layout (o, painter, TRUE);
+	return do_layout (o, painter, TRUE, changed_objs);
 }
 
 static gint
@@ -342,12 +391,28 @@ check_point (HTMLObject *self,
 		parent = HTML_OBJECT (clue)->parent;
 		obj = html_object_check_point (HTML_OBJECT (clue),
 					       painter,
-					       x, y,
+					       x - HTML_OBJECT (clue)->parent->x,
+					       y - HTML_OBJECT (clue)->parent->y + HTML_OBJECT (clue)->parent->ascent,
 					       offset_return,
 					       for_cursor);
 		if (obj != NULL) {
-			if (offset_return != NULL)
-				*offset_return = 0;
+			return obj;
+		}
+	}
+
+	for (clue = HTML_CLUEALIGNED (HTML_CLUEV (self)->align_right_list);
+	     clue != NULL;
+	     clue = clue->next_aligned) {
+		HTMLObject *parent;
+
+		parent = HTML_OBJECT (clue)->parent;
+		obj = html_object_check_point (HTML_OBJECT (clue),
+					       painter,
+					       x - HTML_OBJECT (clue)->parent->x,
+					       y - HTML_OBJECT (clue)->parent->y + HTML_OBJECT (clue)->parent->ascent,
+					       offset_return,
+					       for_cursor);
+		if (obj != NULL) {
 			return obj;
 		}
 	}
@@ -398,7 +463,7 @@ relayout (HTMLObject *self,
 
 	if (child == NULL)
 		child = HTML_CLUE (self)->head;
-	html_object_calc_size (child, engine->painter);
+	html_object_calc_size (child, engine->painter, FALSE);
 
 	HTML_CLUE (self)->curr = NULL;
 
@@ -406,7 +471,7 @@ relayout (HTMLObject *self,
 	prev_ascent = self->ascent;
 	prev_descent = self->descent;
 
-	changed = do_layout (self, engine->painter, FALSE);
+	changed = do_layout (self, engine->painter, FALSE, FALSE);
 	if (changed)
 		html_engine_queue_draw (engine, self);
 

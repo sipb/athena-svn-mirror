@@ -284,7 +284,10 @@ html_painter_set_font_face (HTMLPainter *painter,
 gpointer
 html_painter_get_font (HTMLPainter *painter, HTMLFontFace *face, GtkHTMLFontStyle style)
 {
-	return html_font_manager_get_font (&painter->font_manager, face, style)->data;
+	HTMLFont *font;
+
+	font = html_font_manager_get_font (&painter->font_manager, face, style);
+	return font ? font->data : NULL;
 }
 
 guint
@@ -612,19 +615,19 @@ html_painter_get_pixel_size (HTMLPainter *painter)
 	return (* HP_CLASS (painter)->get_pixel_size) (painter);
 }
 
-void
+gint
 html_painter_draw_spell_error (HTMLPainter *painter,
 			       gint x, gint y,
 			       const gchar *text,
 			       gint len)
 {
-	(* HP_CLASS (painter)->draw_spell_error) (painter, x, y, text, len);
+	return (* HP_CLASS (painter)->draw_spell_error) (painter, x, y, text, len);
 }
 
 HTMLFont *
-html_painter_alloc_font (HTMLPainter *painter, gchar *face_name, gdouble size, GtkHTMLFontStyle style)
+html_painter_alloc_font (HTMLPainter *painter, gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle style)
 {
-	return (* HP_CLASS (painter)->alloc_font) (painter, face_name, size, style);
+	return (* HP_CLASS (painter)->alloc_font) (painter, face_name, size, points, style);
 }
 
 void

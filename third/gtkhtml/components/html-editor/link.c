@@ -22,6 +22,7 @@
 
 #include <config.h>
 #include <string.h>
+#include "htmlengine-edit.h"
 #include "htmlengine-edit-fontstyle.h"
 #include "htmlengine-edit-cut-and-paste.h"
 #include "htmlselection.h"
@@ -33,6 +34,8 @@ struct _GtkHTMLEditLinkProperties {
 	GtkHTMLControlData *cd;
 	GtkWidget *entry;
 	gboolean url_changed;
+	gint cursor_postion;
+	gint mark_postion;
 };
 typedef struct _GtkHTMLEditLinkProperties GtkHTMLEditLinkProperties;
 
@@ -55,6 +58,7 @@ link_properties (GtkHTMLControlData *cd, gpointer *set_data)
 	GtkWidget *vbox, *hbox, *button;
 	GtkHTMLEditLinkProperties *data = g_new (GtkHTMLEditLinkProperties, 1);
 	const gchar *url;
+	HTMLEngine *e = cd->html->engine;
 
 	*set_data = data;
 	data->cd = cd;
@@ -65,9 +69,17 @@ link_properties (GtkHTMLControlData *cd, gpointer *set_data)
 	hbox = gtk_hbox_new (FALSE, 3);
 
 	data->entry = gtk_entry_new ();
-	url = (html_engine_is_selection_active (cd->html->engine))
-		? html_engine_get_document_url (cd->html->engine)
-		: html_engine_get_url (cd->html->engine);
+	
+	if (html_engine_is_selection_active (e)) {
+		data->cursor_postion = html_cursor_get_position (e->cursor);
+		data->mark_postion = html_cursor_get_position (e->mark);
+		url = html_engine_get_document_url (e);
+	} else {
+		data->cursor_postion = -1;
+		data->mark_postion = -1;
+		url = html_engine_get_url (e);
+	}
+
 	if (url)
 		gtk_entry_set_text (GTK_ENTRY (data->entry), url);
 	button = gtk_button_new_with_label (_("Clear"));
@@ -94,11 +106,18 @@ link_apply_cb (GtkHTMLControlData *cd, gpointer get_data)
 	if (!data->url_changed)
 		return;
 
+	html_engine_selection_push (e);
+	if ((data->mark_postion != -1) && (data->cursor_postion != -1)) {
+		html_cursor_jump_to_position (e->cursor, e, data->mark_postion);
+		html_engine_set_mark (e);
+		html_cursor_jump_to_position (e->cursor, e, data->cursor_postion);
+	}
 	url = gtk_entry_get_text (GTK_ENTRY (data->entry));
 	if (*url)
 		html_engine_insert_link (e, url, target);
 	else
 		html_engine_insert_link (e, NULL, NULL);
+	html_engine_selection_pop (e);
 }
 
 void

@@ -1,3 +1,45 @@
+2001-11-05  Larry Ewing  <lewing@ximian.com>
+
+	* Make 0.16.0 release.
+
+	* configure.in: bump for 0.16.0 release.
+
+2001-10-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Add `oaf' to `EXTRA_GNOME_LIBS' and
+	`EXTRA_GNOME_CFLAGS'.
+
+2001-10-30  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: raise version to 0.15.99.2
+
+2001-10-30  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: require gal 0.15.99.9 for get char
+	validated. (okay actually slightly later than 0.15.99.9 but
+	if you don't tell I won't)
+
+2001-10-30  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: raise version to 0.15.99.1
+
+2001-10-29  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in (GCONF_LIBS): request at least gnome-print 0.29
+
+2001-10-14  Carlos Perelló Marín <carlos@gnome-db.org>
+
+        * configure.in (ALL_LINGUAS): Added pt.
+
+2001-10-12  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.spec: remove the Maintainer: line as it was breaking
+	things for people (sorry Chipzz).  Fixes Ximian #9168
+
+2001-10-09  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump versions for snapshots.
+
 2001-10-09  Larry Ewing  <lewing@ximian.com>
 
 	* Make 0.14.0 release.

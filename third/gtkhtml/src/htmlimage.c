@@ -52,6 +52,7 @@
 #include "htmlobject.h"
 #include "htmlmap.h"
 #include "htmlprinter.h"
+#include "htmlgdkpainter.h"
 
 /* HTMLImageFactory stuff.  */
 
@@ -103,7 +104,8 @@ get_actual_width (HTMLImage *image,
 			double scale;
 
 			scale =  ((double) get_actual_height (image, painter)) 
-				/ ((anim) ? gdk_pixbuf_animation_get_height (anim) : gdk_pixbuf_get_height (pixbuf));
+				/ (((anim) ? gdk_pixbuf_animation_get_height (anim) : gdk_pixbuf_get_height (pixbuf))
+				   * html_painter_get_pixel_size (painter));
 			
 			width *= scale;
 		}
@@ -248,8 +250,7 @@ image_update_url (HTMLImage *image, gint x, gint y)
 		if (image->url)
 			url = g_strdup_printf ("%s?%d,%d", image->url, x - o->x, y - (o->y - o->ascent));
 	} else {
-		if (image->url)
-			url = g_strdup (image->url);
+		return;
 	}
 	
 	g_free (image->final_url);
@@ -268,7 +269,7 @@ check_point (HTMLObject *self,
 	    && (y >= (self->y - self->ascent))
 	    && (y < (self->y + self->descent))) {
 		if (offset_return != NULL)
-			*offset_return = 0;
+			*offset_return = x - self->x < self->width / 2 ? 0 : 1;
 		
 		image_update_url (HTML_IMAGE (self), x, y);
 		return self;
@@ -311,8 +312,7 @@ calc_preferred_width (HTMLObject *o,
 }
 
 static gboolean
-calc_size (HTMLObject *o,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLImage *image;
 	guint pixel_size;
@@ -558,7 +558,7 @@ get_url (HTMLObject *o)
 	HTMLImage *image;
 
 	image = HTML_IMAGE (o);
-	return image->final_url;
+	return image->final_url ? image->final_url : image->url;
 }
 
 static const gchar *
@@ -614,7 +614,8 @@ select_range (HTMLObject *self,
 	      gboolean queue_draw)
 {
 	if ((*parent_class->select_range) (self, engine, offset, length, queue_draw)) {
-		html_engine_queue_draw (engine, self);
+		if (queue_draw)
+			html_engine_queue_draw (engine, self);
 		return TRUE;
 	} else
 		return FALSE;
@@ -908,9 +909,9 @@ update_or_redraw (HTMLImagePointer *ip)
 		/* printf ("REDRAW\n"); */
 		for (list = ip->interests; list; list = list->next)
 			if (list->data) // && html_object_is_visible (HTML_OBJECT (list->data)))
-				html_draw_queue_add (ip->factory->engine->draw_queue, HTML_OBJECT (list->data));
+				html_engine_queue_draw (ip->factory->engine, HTML_OBJECT (list->data));
 		if (ip->interests)
-			html_draw_queue_flush (ip->factory->engine->draw_queue);
+			html_engine_flush_draw_queue (ip->factory->engine);
 	} else {
 		/* printf ("UPDATE\n"); */
 		html_engine_schedule_update (ip->factory->engine);
@@ -976,11 +977,24 @@ render_cur_frame (HTMLImage *image, gint nx, gint ny, const GdkColor *highlight_
 	GdkPixbufAnimation *ganim = image->image_ptr->animation;
 	GList *cur = gdk_pixbuf_animation_get_frames (ganim);
 	gint w, h;
+	gboolean saved_alpha = TRUE;
 
 	painter = image->image_ptr->factory->engine->painter;
 
 	frame = (GdkPixbufFrame *) anim->cur_frame->data;
 	/* printf ("w: %d h: %d action: %d\n", w, h, frame->action); */
+
+	/* FIXME this is hack to turn off alpha blending while rending 
+	 * animations.  This breaks nothing since gdk-pixbuf doesn't support animations
+	 * for anything but gif and it makes a huge difference if there are lots of
+	 * frames.  We really should add a parameter to the html_painter_draw_pixmap
+	 * call and track wether each image has full alpha or bilevel alpha, but that
+	 * will wait for a bit.
+	 */  
+	if (HTML_IS_GDK_PAINTER (painter)) {
+		saved_alpha = HTML_GDK_PAINTER (painter)->alpha;
+		HTML_GDK_PAINTER (painter)->alpha = FALSE;
+	}
 
 	do {
 		frame = (GdkPixbufFrame *) cur->data;
@@ -1002,6 +1016,11 @@ render_cur_frame (HTMLImage *image, gint nx, gint ny, const GdkColor *highlight_
 		} 
 		cur = cur->next;
 	} while (1);
+
+	if (HTML_IS_GDK_PAINTER (painter)) {
+		HTML_GDK_PAINTER (painter)->alpha = saved_alpha;
+	}
+
 }
 
 static gint
@@ -1174,6 +1193,10 @@ html_image_animation_new (HTMLImage *image)
 	animation = g_new (HTMLImageAnimation, 1);
 	animation->cur_frame = gdk_pixbuf_animation_get_frames (image->image_ptr->animation);
 	animation->cur_n = 0;
+	animation->x = 0;
+	animation->y = 0;
+	animation->ex = 0;
+	animation->ey = 0;
 	animation->timeout = 0;
 	animation->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
 					    gdk_pixbuf_animation_get_width (image->image_ptr->animation),
@@ -1266,16 +1289,22 @@ free_image_ptr_data (HTMLImagePointer *ip)
 }
 
 static void
+html_image_pointer_remove_stall (HTMLImagePointer *ip)
+{
+	if (ip->stall_timeout) {
+		gtk_timeout_remove (ip->stall_timeout);
+		ip->stall_timeout = 0;
+	}
+}
+
+static void
 html_image_pointer_unref (HTMLImagePointer *ip)
 {
 	g_return_if_fail (ip != NULL);
 
 	ip->refcount--;
 	if (ip->refcount <= 0) {
-		if (ip->stall_timeout) {
-			gtk_timeout_remove (ip->stall_timeout);
-			ip->stall_timeout = 0;
-		}
+		html_image_pointer_remove_stall (ip);
 		g_free (ip->url);
 		free_image_ptr_data (ip);
 		g_free (ip);
@@ -1382,6 +1411,8 @@ stop_anim (gpointer key, gpointer value, gpointer user_data)
 	HTMLImagePointer *ip = value;
 	GSList *cur = ip->interests;
 	HTMLImage *image;
+
+	html_image_pointer_remove_stall (ip);
 
 	while (cur) {
 		if (cur->data) {

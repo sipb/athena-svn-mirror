@@ -2,8 +2,7 @@ dnl Initialization
 
 AC_INIT(src/gtkhtml.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gtkhtml, 0.15.0)
-
+AM_INIT_AUTOMAKE(gtkhtml, 0.16.0)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
@@ -24,20 +23,20 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-ALL_LINGUAS="az cs da de el es fi fr gl hu it ja ko lt lv nl nn no pl pt_BR ru sk sl sv tr uk zh_TW"
+ALL_LINGUAS="az cs da de el es fi fr gl hu it ja ko lt lv nl nn no pl pt pt_BR ru sk sl sv tr uk zh_TW"
 AM_GNOME_GETTEXT
 
 dnl ******************************
 dnl Gnome App Lib checking
 dnl ******************************
-AC_MSG_CHECKING(for Gnome App libraries (GAL) >= 0.7.99.5)
+AC_MSG_CHECKING(for Gnome App libraries (GAL) >= 0.15.99.9)
 if gnome-config --libs gal > /dev/null 2>&1; then 
     vers=`gnome-config --modversion gal | sed -e "s/gal-//" -e 's/cvs$//' -e 's/pre$//' | \
         awk 'BEGIN { FS = "."; } { print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
     if test "$vers" -ge 79905; then
         AC_MSG_RESULT(found)
     else
-        AC_MSG_ERROR(You need at least GNOME Application libs 0.7.99.5 for this version of GtkHTML)
+        AC_MSG_ERROR(You need at least GNOME Application libs 0.15.99.9 for this version of GtkHTML)
     fi
 else
     AC_MSG_ERROR(Did not find GnomeAppLibs (GAL) installed)
@@ -241,14 +240,14 @@ AC_SUBST(GCONF_LIBS)
 dnl ******************************
 dnl GnomePrint checking
 dnl ******************************
-AC_MSG_CHECKING(for GnomePrint libraries >= 0.25)
+AC_MSG_CHECKING(for GnomePrint libraries >= 0.29)
 if gnome-config --libs print > /dev/null 2>&1; then 
     vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' -e 's/pre$//' | \
         awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-    if test "$vers" -ge 25; then
+    if test "$vers" -ge 29; then
         AC_MSG_RESULT(found)
     else
-        AC_MSG_ERROR(You need at least GNOME print 0.25 for this version of GtkHTML)
+        AC_MSG_ERROR(You need at least GNOME print 0.29 for this version of GtkHTML)
     fi
 else
     AC_MSG_ERROR(Did not find GnomePrint installed)
@@ -291,8 +290,8 @@ dnl **********************************
 dnl Setup extra GNOME library flags.
 dnl **********************************
 
-EXTRA_GNOME_LIBS=`gnome-config --libs gnomeui gdk_pixbuf print gal $bonobo libglade`
-EXTRA_GNOME_CFLAGS=`gnome-config --cflags gnomeui gdk_pixbuf print gal $bonobo libglade`
+EXTRA_GNOME_LIBS=`gnome-config --libs gnomeui gdk_pixbuf print gal $bonobo libglade oaf`
+EXTRA_GNOME_CFLAGS=`gnome-config --cflags gnomeui gdk_pixbuf print gal $bonobo libglade oaf`
 
 AC_SUBST(EXTRA_GNOME_LIBS)
 AC_SUBST(EXTRA_GNOME_CFLAGS)
@@ -341,7 +340,7 @@ dnl **********************************
  
 dnl Increment the following if the interface has additions, changes,
 dnl removals.
-GTKHTML_CURRENT=18
+GTKHTML_CURRENT=19
 
 dnl Increment any time the source changes; set to 0 if you
 dnl increment CURRENT.

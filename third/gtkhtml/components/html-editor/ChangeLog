@@ -1,4 +1,80 @@
+2001-11-05  Radek Doulik  <rodo@ximian.com>
+
+	* popup.c (remove_link): use html_engine_select_word_editable
+	instead of html_engine_select_word
+	(remove_link): restore saved selection
+
+2001-10-30  Radek Doulik  <rodo@ximian.com>
+
+	* editor-control-factory.c (editor_api_event): update for
+	GTK_HTML_EDITOR_EVENT_COMMAND_... change
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* GNOME_GtkHTML_Editor.xml.in: Move select all in the CutCopyPaste
+	placeholder with a separator before it.  Put a separator between
+	the spell checker entry and the properties one.
+
+2001-10-29  Larry Ewing  <lewing@ximian.com>
+
+	* image.c (insert_or_apply): make urls that are not valid files
+	insert properly.  They will not view inline until the composer is
+	fixed but they will transfer in the html properly.
+
+2001-10-29  Radek Doulik  <rodo@ximian.com>
+
+	* spell.c (spell_add_to_session): added g_return_if_fail (word);
+	(spell_add_to_personal): ditto
+	(add_cb): ditto
+	(ignore_cb): ditto
+	(spell_add_to_session): ditto
+
+	* popup.c (spell_add): check if word is non-NULL and don't leak it
+	(spell_ignore): ditto
+
+2001-10-28  Larry Ewing  <lewing@ximian.com>
+
+	* editor-control-factory.c (init_corba): init gnome with the
+	gtkhtml version so that we have a clue as to what version we have
+	in bug reports.
+
+	* link.c (link_apply_cb): get the positions for the insertion from
+	the saved values.  Otherwise if people make a selection while the
+	dialog is up we will lose the url.  Since people probably want to
+	past the url from somewhere to the entry this is especially important.
+	(link_properties): store the positions of the selection at
+	the time the dialog was opened.  Add members to the structure to
+	hold them. Fixes Ximian #13175.
+
+2001-10-23  Larry Ewing  <lewing@ximian.com>
+
+	* search.c (search): initialize regular, even on the first time
+	they run the dialog.
+
+2001-10-22  Larry Ewing  <lewing@ximian.com>
+
+	* template.c (get_sample_html): don't leak the template html.
+
+2001-10-16  Larry Ewing  <lewing@ximian.com>
+
+	* persist-stream-impl.c (ps_impl_load): clean up exit code.
+
+	* editor-control-factory.c (load_from_file): remove annoying
+	warning.
+
+2001-10-16  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_update_paragraph_alignment): block changes
+	(paragraph_align_cb): check for blocked changes
+
+2001-10-15  Radek Doulik  <rodo@ximian.com>
+
+	* editor-control-factory.c (editor_init_painters): use points attribute
+
 2001-10-09  Larry Ewing  <lewing@ximian.com>
+
+	* html-stream-mem.c (html_stream_mem_write): remove debugging code
+	that slipped in.
 
 	* editor-control-factory.c (editor_control_init): make the
 	intialized test here rather than up a level.

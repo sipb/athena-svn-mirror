@@ -149,7 +149,9 @@ select_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 	if (o == i->from.object)
 		etop->selected_in = TRUE;
 	if (etop->selected_in)
-		html_object_select_range (o, e, html_interval_get_start (i, o), html_interval_get_length (i, o), TRUE);
+		html_object_select_range (o, e,
+					  html_interval_get_start (i, o), html_interval_get_length (i, o),
+					  !html_engine_frozen (e));
 
 	if (o == i->to.object)
 		etop->selected_in = FALSE;
@@ -167,7 +169,7 @@ html_interval_select (HTMLInterval *i, HTMLEngine *e)
 static void
 unselect_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
-	html_object_select_range (o, e, 0, 0, TRUE);
+	html_object_select_range (o, e, 0, 0, !html_engine_frozen (e));
 }
 
 void

@@ -1,4 +1,4 @@
-%define ver      0.15.0
+%define ver      0.16.0
 
 Summary: gtkhtml library
 Name: gtkhtml
@@ -17,7 +17,6 @@ Requires: bonobo >= 0.32
 Requires: GConf >= 0.9
 Requires: libghttp >= 1.0
 Requires: libglade
-Maintainer: Jan Van Buggenhout <Chipzz@ULYSSIS.Org>
 
 %description
 This is GtkHTML, a lightweight HTML rendering/printing/editing engine.

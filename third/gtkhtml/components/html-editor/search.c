@@ -71,6 +71,7 @@ gtk_html_search_dialog_new (GtkHTML *html)
 	dialog->backward       = gtk_check_button_new_with_label (_("backward"));
 	dialog->case_sensitive = gtk_check_button_new_with_label (_("case sensitive"));
 	dialog->html           = html;
+	dialog->regular        = FALSE;
 
 	hbox = gtk_hbox_new (FALSE, 0);
 
@@ -106,10 +107,10 @@ gtk_html_search_dialog_destroy (GtkHTMLSearchDialog *d)
 void
 search (GtkHTMLControlData *cd, gboolean regular)
 {
+	RUN_DIALOG (search, regular ? _("Find Regular Expression") :  _("Find"));
+
 	if (cd->search_dialog)
 		cd->search_dialog->regular = regular;
-
-	RUN_DIALOG (search, regular ? _("Find Regular Expression") :  _("Find"));
 
 	if (cd->search_dialog)
 		gtk_widget_grab_focus (cd->search_dialog->entry);

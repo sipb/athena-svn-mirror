@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.11.99\n"
-"POT-Creation-Date: 2001-10-09 09:44-0500\n"
-"PO-Revision-Date: 2001-09-22 21:19GMT +0200\n"
+"POT-Creation-Date: 2001-11-05 17:52-0600\n"
+"PO-Revision-Date: 2001-10-03 18:47GMT +0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
 "MIME-Version: 1.0\n"
@@ -18,10 +18,10 @@ msgstr ""
 msgid "<None>"
 msgstr "<Yox>"
 
-#: capplet/gnome-bindings-prop.c:216 capplet/main.c:245
+#: capplet/gnome-bindings-prop.c:216 capplet/main.c:252
 #: components/html-editor/cell.c:385 components/html-editor/rule.c:315
 #: components/html-editor/table.c:528 components/html-editor/table.c:619
-#: components/html-editor/template.c:243
+#: components/html-editor/template.c:244
 msgid "Could not load glade file."
 msgstr "Glade faylını yükləyə bilmədim"
 
@@ -239,7 +239,7 @@ msgid "Check spelling of the document"
 msgstr "Sənədə imla yoxlaması aparar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:385
+#: components/html-editor/popup.c:398
 msgid "Copy"
 msgstr "Köçürt"
 
@@ -256,7 +256,7 @@ msgid "Cu_t"
 msgstr "_Kəs"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:386
+#: components/html-editor/popup.c:399
 msgid "Cut"
 msgstr "Kəs"
 
@@ -269,7 +269,7 @@ msgid "Cut the selection"
 msgstr "Seçili sahəni kəs"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
-#: components/html-editor/search.c:69 components/html-editor/search.c:112
+#: components/html-editor/search.c:69 components/html-editor/search.c:110
 msgid "Find"
 msgstr "Axtar"
 
@@ -331,7 +331,7 @@ msgstr "Başlıq _6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:161
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
 msgid "Image"
 msgstr "Rəsm"
 
@@ -364,7 +364,7 @@ msgstr "Paraqrafları sola sütunlaşdır"
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:175
+#: components/html-editor/popup.c:178
 msgid "Link"
 msgstr "Körpü"
 
@@ -445,7 +445,7 @@ msgid "Other..."
 msgstr "Başqa..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:392
+#: components/html-editor/popup.c:405
 msgid "Paste"
 msgstr "Yapışdır"
 
@@ -467,9 +467,8 @@ msgid "Preformat"
 msgstr "Ön format"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:67
-#, fuzzy
 msgid "Purple"
-msgstr "Əvl"
+msgstr "Çəhrayı"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:68
 msgid "Red"
@@ -505,7 +504,7 @@ msgstr "Roma Rəqəmli Siyahı"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:189
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
 msgid "Rule"
 msgstr "Çubuq"
 
@@ -540,8 +539,8 @@ msgstr "Üst Qatar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:196
-#: components/html-editor/popup.c:445 components/html-editor/popup.c:454
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
+#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
 msgid "Table"
 msgstr "Cədvəl"
 
@@ -722,7 +721,7 @@ msgstr "Rənglər"
 
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:154
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
 msgid "Text"
 msgstr "Mətn"
 
@@ -737,25 +736,25 @@ msgid "Automatic"
 msgstr "Avtomatik"
 
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:146
+#: components/html-editor/popup.c:149
 msgid "Properties"
 msgstr "Xassələr"
 
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:168
+#: components/html-editor/popup.c:171
 msgid "Paragraph"
 msgstr "Paraqraf"
 
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:182
+#: components/html-editor/popup.c:185
 msgid "Page"
 msgstr "Səhifə"
 
-#: components/html-editor/editor-control-factory.c:840
+#: components/html-editor/editor-control-factory.c:843
 msgid "Could not initialize GNORBA"
 msgstr "GNORBA'yı başlada bilmədim"
 
-#: components/html-editor/editor-control-factory.c:853
+#: components/html-editor/editor-control-factory.c:856
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo'yu başlada bilmədim"
 
@@ -788,7 +787,7 @@ msgid "Bottom"
 msgstr "Alt"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:203
+#: components/html-editor/popup.c:206
 msgid "Cell"
 msgstr "Hücrə"
 
@@ -802,7 +801,7 @@ msgid "Color:"
 msgstr "Rəng:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:456
+#: components/html-editor/popup.c:469
 msgid "Column"
 msgstr "Sütun"
 
@@ -885,7 +884,7 @@ msgid "Right"
 msgstr "Saǧ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:455
+#: components/html-editor/popup.c:468
 msgid "Row"
 msgstr "Sətir"
 
@@ -975,11 +974,11 @@ msgstr "Kənarlama"
 msgid "height"
 msgstr "hündürlük"
 
-#: components/html-editor/link.c:73
+#: components/html-editor/link.c:85
 msgid "Clear"
 msgstr "Sil"
 
-#: components/html-editor/link.c:76
+#: components/html-editor/link.c:88
 msgid "URL"
 msgstr "URL"
 
@@ -1046,92 +1045,92 @@ msgstr "Əlifba vahidi"
 msgid "Align"
 msgstr "Tərəflə"
 
-#: components/html-editor/popup.c:348
+#: components/html-editor/popup.c:361
 #, c-format
 msgid "Check '%s' spelling..."
 msgstr "'%s' imlasını yoxla..."
 
-#: components/html-editor/popup.c:351
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr "Lüğətə '%s' əlavə et"
 
-#: components/html-editor/popup.c:354
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Ignore '%s'"
 msgstr "'%s'-i rədd et"
 
-#: components/html-editor/popup.c:357 components/html-editor/spell.c:402
+#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
 msgid "Spell checker"
 msgstr "İmla yoxlayıcı"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:374
 msgid "Suggest word"
 msgstr "Kəlmə tövsiyyə et"
 
-#: components/html-editor/popup.c:380
+#: components/html-editor/popup.c:393
 msgid "Remove link"
 msgstr "Körpünü sil"
 
-#: components/html-editor/popup.c:396 components/html-editor/popup.c:422
+#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
 msgid "Text..."
 msgstr "Mətn..."
 
-#: components/html-editor/popup.c:398 components/html-editor/popup.c:413
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
+#: components/html-editor/popup.c:437
 msgid "Paragraph..."
 msgstr "Paraqraf..."
 
-#: components/html-editor/popup.c:400 components/html-editor/popup.c:415
-#: components/html-editor/popup.c:426
+#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
+#: components/html-editor/popup.c:439
 msgid "Link..."
 msgstr "Körpü ..."
 
-#: components/html-editor/popup.c:406
+#: components/html-editor/popup.c:419
 msgid "Rule..."
 msgstr "Rol..."
 
-#: components/html-editor/popup.c:411
+#: components/html-editor/popup.c:424
 msgid "Image..."
 msgstr "Rəsm ..."
 
-#: components/html-editor/popup.c:431 components/html-editor/popup.c:441
+#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
 msgid "Table..."
 msgstr "Cədvəl ..."
 
-#: components/html-editor/popup.c:438
+#: components/html-editor/popup.c:451
 msgid "Cell..."
 msgstr "Hücrə..."
 
-#: components/html-editor/popup.c:444
+#: components/html-editor/popup.c:457
 msgid "Table insert"
 msgstr "Cədvəl daxil et"
 
-#: components/html-editor/popup.c:447
+#: components/html-editor/popup.c:460
 msgid "Row above"
 msgstr "Üstdəki sətir"
 
-#: components/html-editor/popup.c:448
+#: components/html-editor/popup.c:461
 msgid "Row below"
 msgstr "Altakı sətir"
 
-#: components/html-editor/popup.c:450
+#: components/html-editor/popup.c:463
 msgid "Column before"
 msgstr "Əvvəlki sütun"
 
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:464
 msgid "Column after"
 msgstr "Sonrakı sütun"
 
-#: components/html-editor/popup.c:453
+#: components/html-editor/popup.c:466
 msgid "Table delete"
 msgstr "Cədvəl sil"
 
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:470
 msgid "Cell contents"
 msgstr "Hücrə məzmunu"
 
-#: components/html-editor/popup.c:465
+#: components/html-editor/popup.c:478
 msgid "Page..."
 msgstr "Səhifə..."
 
@@ -1175,11 +1174,11 @@ msgstr "Sarı, güllər"
 msgid "backward"
 msgstr "arxaya tərəf"
 
-#: components/html-editor/search.c:112
+#: components/html-editor/search.c:110
 msgid "Find Regular Expression"
 msgstr "Qaydalı İfadə Axtar"
 
-#: components/html-editor/spell.c:397
+#: components/html-editor/spell.c:411
 msgid "No misspelled word found"
 msgstr "Xətalı hecalı kəlmə tapılmadı"
 
@@ -1305,78 +1304,22 @@ msgstr "Önizləməyi _çap et"
 msgid "Print preview"
 msgstr "Çap etmə önizləməsi"
 
+#~ msgid ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
+#~ "here</td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
+#~ "here</td></tr></table></td></tr></table>"
+
+#, fuzzy
+#~ msgid ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">Image 1: "
+#~ "<b>description</b></font></td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td>Image "
+#~ "1:&nbsp;<font size=\"3\"><b>description</b></font "
+#~ "size=\"3\"></td></tr></table></td></tr></table>"
+
 #~ msgid "_Numbered List"
 #~ msgstr "_Rəqəmli Siyahı"
-
-#~ msgid ""
-#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
-#~ "here</td></tr></table></td></tr></table>"
-#~ msgstr ""
-#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
-#~ "here</td></tr></table></td></tr></table>"
-
-#~ msgid ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td>Image "
-#~ "1:&nbsp;<font size=\"3\"><b>description</b></font "
-#~ "size=\"3\"></td></tr></table></td></tr></table>"
-#~ msgstr ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td>Image "
-#~ "1:&nbsp;<font size=\"3\"><b>description</b></font "
-#~ "size=\"3\"></td></tr></table></td></tr></table>"
-
-#~ msgid "_Header _3"
-#~ msgstr "_Başlıq 3"
-
-#~ msgid "_Header _4"
-#~ msgstr "_Başlıq 4"
-
-#~ msgid "_Header _5"
-#~ msgstr "_Başlıq 5"
-
-#~ msgid "_Header _6"
-#~ msgstr "_Başlıq 6"
-
-#~ msgid "Be careful! Tables code is still ALPHA quality."
-#~ msgstr "Diqqətli ol! Cədvəl kodu hələ ki ALPHA keyfiyyətindədir."
-
-#~ msgid "Miscelaneous"
-#~ msgstr "Qarışıq"
-
-#~ msgid "border"
-#~ msgstr "kənar"
-
-#~ msgid "color"
-#~ msgstr "rəng"
-
-#~ msgid "columns"
-#~ msgstr "sütun"
-
-#~ msgid "padding"
-#~ msgstr "kənarlama"
-
-#~ msgid "rows"
-#~ msgstr "sətir"
-
-#~ msgid "spacing"
-#~ msgstr "fasilə vermə"
-
-#~ msgid "style"
-#~ msgstr "tərz"
-
-#~ msgid "Item dot"
-#~ msgstr "Nöqtəli siyahı üzvü"
-
-#~ msgid "Item roman"
-#~ msgstr "Siyahı üzvü ( roman rəqəmli)"
-
-#~ msgid "Item digit"
-#~ msgstr "Siyahı üzvü ( rəqəm)"
-
-#~ msgid "List item (digit)"
-#~ msgstr "Siyahı üzvü ( rəqəm)"
-
-#~ msgid "List item (unnumbered)"
-#~ msgstr "Siyahı üzvü ( rəqəmsiz)"
-
-#~ msgid "List item (roman)"
-#~ msgstr "Siyahı üzvü ( roman rəqəmli)"

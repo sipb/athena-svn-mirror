@@ -49,7 +49,6 @@ struct _HTMLTokenBuffer {
 	gint used;
 	gchar * data;
 };
-
 struct _HTMLTokenizerPrivate {
 
 	/* token buffers list */
@@ -157,6 +156,8 @@ static void               html_tokenizer_blocking_push       (HTMLTokenizer  *t,
 							      HTMLTokenType   tt);
 static void               html_tokenizer_tokenize_one_char   (HTMLTokenizer  *t,
 							      const gchar  **src);
+
+static void               add_unichar(HTMLTokenizer *t, gunichar wc);
 
 static GtkObjectClass *parent_class = NULL;
 
@@ -300,6 +301,7 @@ html_token_buffer_destroy (HTMLTokenBuffer *tb)
 static gboolean
 html_token_buffer_append_token (HTMLTokenBuffer * buf, const gchar *token, gint len)
 {
+
 	/* check if we have enough free space */
 	if (len + 1 > buf->size - buf->used) {
 		return FALSE;
@@ -505,7 +507,6 @@ html_tokenizer_real_end (HTMLTokenizer *t)
 		return;
 
 	if (p->dest > p->buffer) {
-		*(p->dest) = 0;
 		html_tokenizer_append_token (t, p->buffer, p->dest - p->buffer);
 	}
 
@@ -580,33 +581,31 @@ html_tokenizer_add_pending (HTMLTokenizer *t)
 	struct _HTMLTokenizerPrivate *p = t->priv;
 	
 	if (p->tag || p->select) {
-		*(p->dest)++ = ' ';
+		add_unichar (t, ' ');
 	}
 	else if (p->textarea) {
 		if (p->pending == LFPending) 
-			*(p->dest)++ = '\n';
+			add_unichar (t, '\n');
 		else
-			*(p->dest)++ = ' ';
+			add_unichar (t, ' ');
 	}
 	else if (p->pre) {
 		switch (p->pending) {
 		case SpacePending:
-			*(p->dest)++ = ' ';
+			add_unichar (t, ' ');
 			break;
 		case LFPending:
 			if (p->dest > p->buffer) {
-				*(p->dest) = 0;
 				html_tokenizer_append_token (t, p->buffer, p->dest - p->buffer);
 			}
 			p->dest = p->buffer;
-			*(p->dest) = TAG_ESCAPE;
-			*((p->dest) + 1) = '\n';
-			*((p->dest) + 2) = 0;
+			add_unichar (t, TAG_ESCAPE);
+			add_unichar (t, '\n');
 			html_tokenizer_append_token (t, p->buffer, 2);
 			p->dest = p->buffer;
 			break;
 		case TabPending:
-			*(p->dest)++ = '\t';
+			add_unichar (t, '\t');
 			break;
 		default:
 			g_warning ("Unknown pending type: %d\n", (gint) p->pending);
@@ -614,7 +613,7 @@ html_tokenizer_add_pending (HTMLTokenizer *t)
 		}
 	}
 	else {
-		*(p->dest)++ = ' ';
+		add_unichar (t, ' ');
 	}
 	
 	p->pending = NonePending;
@@ -756,95 +755,18 @@ in_script_or_style (HTMLTokenizer *t, const gchar **src)
 	}
 }
 
-#if 1
-/*
- * These were cut and pasted from gal/gal/uncode/gutf8.c
- * since they are static there.  The extended function is quite useful
- * for what we need.
- */
-#define UTF8_LENGTH(Char)              \
-  ((Char) < 0x80 ? 1 :                 \
-   ((Char) < 0x800 ? 2 :               \
-    ((Char) < 0x10000 ? 3 :            \
-     ((Char) < 0x200000 ? 4 :          \
-      ((Char) < 0x4000000 ? 5 : 6)))))
-
-static gunichar
-g_utf8_get_char_extended (const gchar *p, int max_len)
+static void
+add_unichar (HTMLTokenizer *t, gunichar wc)
 {
-  gint i, len;
-  gunichar wc = (guchar) *p;
+	struct _HTMLTokenizerPrivate *p = t->priv;
 
-  if (wc < 0x80)
-    {
-      return wc;
-    }
-  else if (wc < 0xc0)
-    {
-      return (gunichar)-1;
-    }
-  else if (wc < 0xe0)
-    {
-      len = 2;
-      wc &= 0x1f;
-    }
-  else if (wc < 0xf0)
-    {
-      len = 3;
-      wc &= 0x0f;
-    }
-  else if (wc < 0xf8)
-    {
-      len = 4;
-      wc &= 0x07;
-    }
-  else if (wc < 0xfc)
-    {
-      len = 5;
-      wc &= 0x03;
-    }
-  else if (wc < 0xfe)
-    {
-      len = 6;
-      wc &= 0x01;
-    }
-  else
-    {
-      return (gunichar)-1;
-    }
-  
-  if (len == -1)
-    return (gunichar)-1;
-  if (max_len >= 0 && len > max_len)
-    {
-      for (i = 1; i < max_len; i++)
-	{
-	  if ((((guchar *)p)[i] & 0xc0) != 0x80)
-	    return (gunichar)-1;
+	p->utf8_length = 0;
+
+	if (wc != 0) {
+		p->dest += g_unichar_to_utf8 (wc, p->dest);
+		*(p->dest) = 0;
 	}
-      return (gunichar)-2;
-    }
-
-  for (i = 1; i < len; ++i)
-    {
-      gunichar ch = ((guchar *)p)[i];
-      
-      if ((ch & 0xc0) != 0x80)
-	{
-	  if (ch)
-	    return (gunichar)-1;
-	  else
-	    return (gunichar)-2;
-	}
-
-      wc <<= 6;
-      wc |= (ch & 0x3f);
-    }
-
-  if (UTF8_LENGTH(wc) != len)
-    return (gunichar)-1;
-  
-  return wc;
+	/* g_assert (g_utf8_validate (p->buffer, p->dest - p->buffer, NULL)); */
 }
 
 static void
@@ -857,44 +779,41 @@ add_byte (HTMLTokenizer *t, const gchar **src)
 		p->utf8_buffer[p->utf8_length] = **src;
 		p->utf8_length++;
 
-		wc = g_utf8_get_char_extended ((const gchar *)p->utf8_buffer, p->utf8_length);
+		wc = g_utf8_get_char_validated ((const gchar *)p->utf8_buffer, p->utf8_length);
 		if (wc == -1 || p->utf8_length >= (sizeof(p->utf8_buffer)/sizeof(p->utf8_buffer[0]))) {
-			*(p->dest)++ = '?';
-			
-			p->utf8_length = 0;
+			add_unichar (t, '?');
 			(*src)++;
 			return;
 		} else if (wc == -2) {
 			/* incomplete character check again */
 			(*src)++;
 			return;
-		} else {
-			p->utf8_length = 0;
 		}
 	} else {
 		wc = (guchar)**src;
 	}
-	p->dest += g_unichar_to_utf8 (wc, p->dest);
+
+	add_unichar (t, wc);
 	(*src)++;
 }
-#else
+
 static void
-add_byte (HTMLTokenizer *t, const gchar **src)
+flush_entity (HTMLTokenizer *t)
 {
-	if (p->utf8)
-		*(p->dest)++ = **src;
-	else 
-		p->dest += g_unichar_to_utf8 ((guchar) **src, p->dest);
-	
-	(*src)++;
+	struct _HTMLTokenizerPrivate *p = t->priv;
+	/* ignore the TAG_ESCAPE when flushing */
+	const char *str = p->searchBuffer + 1; 
+
+	 while (p->searchCount--) {
+		add_byte (t, &str);
+	}
 }
-#endif
 
 static void
 in_entity (HTMLTokenizer *t, const gchar **src)
 {
 	struct _HTMLTokenizerPrivate *p = t->priv;
-	gulong entityValue = 0;
+	gunichar entityValue = 0;
 
 	/* See http://www.mozilla.org/newlayout/testcases/layout/entities.html for a complete entity list,
 	   ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT
@@ -942,8 +861,7 @@ in_entity (HTMLTokenizer *t, const gchar **src)
 	if (p->searchCount > 9) {
 		/* Ignore this sequence since it's too long */
 		p->charEntity = FALSE;
-		memcpy (p->dest, p->searchBuffer + 1, p->searchCount);
-		p->dest += p->searchCount;
+		flush_entity (t);
 	}
 	else if (p->charEntity) {
 				/* Keep searching for end of character entity */
@@ -951,36 +869,21 @@ in_entity (HTMLTokenizer *t, const gchar **src)
 		(*src)++;
 	}
 	else {
-		if(entityValue) {
+		/*
+		 * my reading of http://www.w3.org/TR/html4/intro/sgmltut.html#h-3.2.2 makes
+		 * seem correct to always collapse entity references, even in element names
+		 * and attributes. 
+		 */
+		if (entityValue) {
 			/* Insert plain char */
-			p->dest += g_unichar_to_utf8 (entityValue, p->dest);
+			add_unichar (t, entityValue);
 			if (**src == ';')
 				(*src)++;
 		}
-				/* FIXME: Get entities */
-		else if (!entityValue) {
+		else {
 			/* Ignore the sequence, just add it as plaintext */
-			memcpy (p->dest, p->searchBuffer + 1, p->searchCount);
-			p->dest += p->searchCount;
+			flush_entity (t);
 		}
-#if 0
-		else if (!p->tag && !p->textarea && !p->select && !p->title) {
-			/* Add current token first */
-			if (p->dest > p->buffer) {
-				*(p->dest) = 0;
-				html_tokenizer_append_token (t, p->buffer,
-							     p->dest - p->buffer);
-				p->dest = p->buffer;
-			}
-
-			/* Add token with the amp sequence for further conversion */
-			html_tokenizer_append_token (t, p->searchBuffer, p->searchCount + 1);
-			p->dest = p->buffer;
-			if (**src == ';')
-				(*src)++;
-		}
-#endif
-		p->searchCount = 0;
 	}
 }
 
@@ -1009,8 +912,8 @@ in_tag (HTMLTokenizer *t, const gchar **src)
 				/* Invalid tag, just add it */
 		if (p->pending)
 			html_tokenizer_add_pending (t);
-		*(p->dest) = '<';     p->dest++;
-		*(p->dest) = **src;   p->dest++; (*src)++;
+		add_unichar (t, '<');
+		add_byte (t, src);
 		return;
 	}
 			
@@ -1018,14 +921,11 @@ in_tag (HTMLTokenizer *t, const gchar **src)
 		html_tokenizer_add_pending (t);
 
 	if (p->dest > p->buffer) {
-		*(p->dest) = 0;
 		html_tokenizer_append_token (t, p->buffer, p->dest - p->buffer);
 		p->dest = p->buffer;
 	}
-	*(p->dest) = TAG_ESCAPE;
-	p->dest++;
-	*(p->dest) = '<';
-	p->dest++;
+	add_unichar (t, TAG_ESCAPE);
+	add_unichar (t, '<');
 	p->tag = TRUE;
 	p->searchCount = 1; /* Look for <!-- to start comment */
 }
@@ -1064,10 +964,9 @@ end_tag (HTMLTokenizer *t, const gchar **src)
 
 	p->searchCount = 0; /* Stop looking for <!-- sequence */
 
-	*(p->dest) = '>';
-	*(p->dest+1) = 0;
-			
-			/* Make the tag lower case */
+	add_unichar (t, '>');
+	
+	/* Make the tag lower case */
 	ptr = p->buffer + 2;
 	if (p->pre || *ptr == '/') {
 	    	/* End tag */
@@ -1083,7 +982,7 @@ end_tag (HTMLTokenizer *t, const gchar **src)
 		*ptr = tolower (*ptr);
 		ptr++;
 	}
-	html_tokenizer_append_token (t, p->buffer, p->dest - p->buffer + 1);
+	html_tokenizer_append_token (t, p->buffer, p->dest - p->buffer);
 	p->dest = p->buffer;
 			
 	p->tag = FALSE;
@@ -1218,38 +1117,40 @@ in_space_or_tab (HTMLTokenizer *t, const gchar **src)
 static void
 in_quoted (HTMLTokenizer *t, const gchar **src)
 {
-	/* We treat ' and " the same in tags */
+	/* We treat ' and " the same in tags " */
 	t->priv->discard = NoneDiscard;
 	if (t->priv->tag) {
 		t->priv->searchCount = 0; /* Stop looking for <!-- sequence */
-		if ((t->priv->tquote == SINGLE_QUOTE && **src == '\"')
+		if ((t->priv->tquote == SINGLE_QUOTE && **src == '\"') /* match " */
 		    || (t->priv->tquote == DOUBLE_QUOTE && **src == '\'')) {
-			*(t->priv->dest)++ = **src;
+			add_unichar (t, **src);
+			(*src)++;
 		} else if (*(t->priv->dest-1) == '=' && !t->priv->tquote) {
 			t->priv->discard = SpaceDiscard;
 			t->priv->pending = NonePending;
 					
-			if (**src == '\"')
+			if (**src == '\"') /* match " */
 				t->priv->tquote = DOUBLE_QUOTE;
 			else
 				t->priv->tquote = SINGLE_QUOTE;
-			*(t->priv->dest)++ = **src;
+			add_unichar (t, **src);
+			(*src)++;
 		}
 		else if (t->priv->tquote) {
 			t->priv->tquote = NO_QUOTE;
-			*(t->priv->dest)++ = **src;
+			add_byte (t, src);
 			t->priv->pending = SpacePending;
 		}
 		else {
 			/* Ignore stray "\'" */
+			(*src)++;
 		}
-		(*src)++;
 	}
 	else {
 		if (t->priv->pending)
 			html_tokenizer_add_pending (t);
 
-		*(t->priv->dest)++ = **src; (*src)++;
+		add_byte (t, src);
 	}
 }
 
@@ -1259,7 +1160,7 @@ in_assignment (HTMLTokenizer *t, const gchar **src)
 	t->priv->discard = NoneDiscard;
 	if (t->priv->tag) {
 		t->priv->searchCount = 0; /* Stop looking for <!-- sequence */
-		*(t->priv->dest)++ = '=';
+		add_unichar (t, '=');
 		if (!t->priv->tquote) {
 			t->priv->pending = NonePending;
 			t->priv->discard = SpaceDiscard;
@@ -1269,7 +1170,7 @@ in_assignment (HTMLTokenizer *t, const gchar **src)
 		if (t->priv->pending)
 			html_tokenizer_add_pending (t);
 
-		*(t->priv->dest)++ = '=';
+		add_unichar (t, '=');
 	}
 	(*src)++;
 }
@@ -1337,7 +1238,7 @@ html_tokenizer_tokenize_one_char (HTMLTokenizer *t, const gchar **src)
 		in_crlf (t, src);
 	else if ((**src == ' ') || (**src == '\t'))
 		in_space_or_tab (t, src);
-	else if (**src == '\"' || **src == '\'')
+	else if (**src == '\"' || **src == '\'') /* match " ' */
 		in_quoted (t, src);
 	else if (**src == '=')
 		in_assignment (t, src);

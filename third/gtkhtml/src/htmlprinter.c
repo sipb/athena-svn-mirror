@@ -44,8 +44,8 @@ static HTMLPainterClass *parent_class = NULL;
 /* The following macros are used to convert between the HTMLEngine coordinate
    system (which uses integers) to the GnomePrint one (which uses doubles). */
 
-#define SCALE_ENGINE_TO_GNOME_PRINT(x) ((x) / 1024.0)
-#define SCALE_GNOME_PRINT_TO_ENGINE(x) ((gint) ((x) * 1024.0 + 0.5))
+#define SCALE_ENGINE_TO_GNOME_PRINT(x) ((printer->scale * (x)) / 1024.0)
+#define SCALE_GNOME_PRINT_TO_ENGINE(x) ((gint) (((x) * 1024.0 / printer->scale) + 0.5))
 
 /* Hm, this might need fixing.  */
 #define SPACING_FACTOR 1.2
@@ -113,7 +113,7 @@ get_bmargin (HTMLPrinter *printer)
 
 
 gdouble
-html_printer_scale_to_gnome_print (gint x)
+html_printer_scale_to_gnome_print (HTMLPrinter *printer, gint x)
 {
 	return SCALE_ENGINE_TO_GNOME_PRINT (x);
 }
@@ -185,6 +185,7 @@ begin (HTMLPainter *painter,
 	pc      = printer->print_context;
 	g_return_if_fail (pc);
 
+	gnome_print_beginpage (pc, "page");
 	gnome_print_gsave (pc);
 
 	html_printer_coordinates_to_gnome_print (printer, x1, y1, &printer_x1, &printer_y1);
@@ -266,7 +267,8 @@ get_black (const HTMLPainter *painter)
 static void
 prepare_rectangle (HTMLPainter *painter, gint _x, gint _y, gint w, gint h)
 {
-	GnomePrintContext *context = HTML_PRINTER (painter)->print_context;
+	HTMLPrinter *printer = HTML_PRINTER (painter);
+	GnomePrintContext *context = printer->print_context;
 	gdouble x;
 	gdouble y;
 	gdouble width;
@@ -289,7 +291,8 @@ prepare_rectangle (HTMLPainter *painter, gint _x, gint _y, gint w, gint h)
 static void
 do_rectangle (HTMLPainter *painter, gint x, gint y, gint w, gint h, gint lw)
 {
-	GnomePrintContext *context = HTML_PRINTER (painter)->print_context;
+	HTMLPrinter *printer = HTML_PRINTER (painter);
+	GnomePrintContext *context = printer->print_context;
 
 	gnome_print_setlinewidth (context, SCALE_ENGINE_TO_GNOME_PRINT (lw) * PIXEL_SIZE);
 	prepare_rectangle (painter, x, y, w, h);
@@ -347,7 +350,8 @@ draw_panel (HTMLPainter *painter,
 	    GtkHTMLEtchStyle inset,
 	    gint bordersize)
 {
-	GnomePrintContext *pc = HTML_PRINTER (painter)->print_context;
+	HTMLPrinter *printer = HTML_PRINTER (painter);
+	GnomePrintContext *pc = printer->print_context;
 	GdkColor *col1 = NULL, *col2 = NULL;
 	GdkColor dark, light;
 	gdouble x;
@@ -551,7 +555,7 @@ draw_text (HTMLPainter *painter,
 		gnome_print_setlinewidth (printer->print_context, 1.0);
 		gnome_print_setlinecap (printer->print_context, GDK_CAP_BUTT);
 
-		text_width = gnome_font_get_width_string_n (font, text, len);
+		text_width = gnome_font_get_width_utf8_sized (font, text, len);
 		if (painter->font_style & GTK_HTML_FONT_STYLE_UNDERLINE) {
 			descender = gnome_font_get_descender (font);
 			y = print_y + gnome_font_get_underline_position (font);
@@ -670,7 +674,7 @@ calc_text_width (HTMLPainter *painter,
 	font = html_painter_get_font (painter, face, style);
 	g_return_val_if_fail (font != NULL, 0);
 
-	width = gnome_font_get_width_string_n (font, text, len);
+	width = gnome_font_get_width_utf8_sized (font, text, len);
 
 	return SCALE_GNOME_PRINT_TO_ENGINE (width);
 }
@@ -678,12 +682,21 @@ calc_text_width (HTMLPainter *painter,
 static guint
 get_pixel_size (HTMLPainter *painter)
 {
+	HTMLPrinter *printer = HTML_PRINTER (painter);
+
 	return SCALE_GNOME_PRINT_TO_ENGINE (PIXEL_SIZE);
 }
 
-static HTMLFont *
-alloc_font (HTMLPainter *painter, gchar *face, gdouble size, GtkHTMLFontStyle style)
+static inline gdouble
+get_font_size (HTMLPrinter *printer, gboolean points, gdouble size)
 {
+	return printer->scale * (points ? size / 10 : size);
+}
+
+static HTMLFont *
+alloc_font (HTMLPainter *painter, gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style)
+{
+	HTMLPrinter *printer = HTML_PRINTER  (painter);
 	GnomeFontWeight weight;
 	GnomeFont *font;
 	gboolean italic;
@@ -708,10 +721,21 @@ alloc_font (HTMLPainter *painter, gchar *face, gdouble size, GtkHTMLFontStyle st
 	}
 
 	font = gnome_font_new_closest (family ? family : (style & GTK_HTML_FONT_STYLE_FIXED ? "Courier" : "Helvetica"),
-				       weight, italic, size);
+				       weight, italic, get_font_size (printer, points, size));
 	g_free (family);
 
-	return font ? html_font_new (font, gnome_font_get_width_string_n (font, " ", 1)) : NULL;
+	if (font == NULL) {
+		GList *family_list;
+
+		family_list = gnome_font_family_list ();
+		if (family_list && family_list->data) {
+			font = gnome_font_new_closest (family_list->data,
+						       weight, italic, get_font_size (printer, points, size));
+			gnome_font_family_list_free (family_list);
+		}
+	}
+
+	return font ? html_font_new (font, gnome_font_get_width_utf8_sized (font, " ", 1)) : NULL;
 }
 
 static void
@@ -745,6 +769,7 @@ init (GtkObject *object)
 
 	printer                = HTML_PRINTER (object);
 	printer->print_context = NULL;
+	printer->scale         = 1.0;
 }
 
 static void

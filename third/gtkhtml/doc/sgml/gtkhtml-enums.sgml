@@ -1,0 +1,50 @@
+<refentry id="gtkhtml-gtkhtml-enums">
+<refmeta>
+<refentrytitle>Enums</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKHTML Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Enums</refname><refpurpose>List of enums</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="GtkHTMLStreamStatus">GtkHTMLStreamStatus</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkHTMLStreamStatus">enum GtkHTMLStreamStatus</title>
+<programlisting>typedef enum {
+	GTK_HTML_STREAM_OK,
+	GTK_HTML_STREAM_ERROR
+} GtkHTMLStreamStatus;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -27,58 +27,60 @@
 #include "htmltypes.h"
 #include "htmlenums.h"
 
-void       html_engine_insert_table            (HTMLEngine     *e,
-						gint            cols,
-						gint            rows,
-						gint            width,
-						gint            percent,
-						gint            padding,
-						gint            spacing,
-						gint            border);
-void       html_engine_insert_table_1_1        (HTMLEngine     *e);
-void       html_engine_insert_table_column     (HTMLEngine     *e,
-						gboolean        after);
-void       html_engine_delete_table_column     (HTMLEngine     *e);
-void       html_engine_insert_table_row        (HTMLEngine     *e,
-						gboolean        after);
-void       html_engine_delete_table_row        (HTMLEngine     *e);
-void       html_engine_table_set_border_width  (HTMLEngine     *e,
-						HTMLTable      *t,
-						gint            border_width,
-						gboolean        relative);
-void       html_engine_table_set_bg_color      (HTMLEngine     *e,
-						HTMLTable      *t,
-						GdkColor       *c);
-void       html_engine_table_set_bg_pixmap     (HTMLEngine     *e,
-						HTMLTable      *t,
-						gchar          *url);
-void       html_engine_table_set_spacing       (HTMLEngine     *e,
-						HTMLTable      *t,
-						gint            spacing,
-						gboolean        relative);
-void       html_engine_table_set_padding       (HTMLEngine     *e,
-						HTMLTable      *t,
-						gint            padding,
-						gboolean        relative);
-void       html_engine_table_set_align         (HTMLEngine     *e,
-						HTMLTable      *t,
-						HTMLHAlignType  align);
-void       html_engine_table_set_width         (HTMLEngine     *e,
-						HTMLTable      *t,
-						gint            width,
-						gboolean        percent);
-void       html_engine_table_set_cols          (HTMLEngine     *e,
-						gint            cols);
-void       html_engine_table_set_rows          (HTMLEngine     *e,
-						gint            rows);
-HTMLTable *html_engine_get_table               (HTMLEngine     *e);
-gboolean   html_engine_table_goto_0_0          (HTMLEngine     *e);
-gboolean   html_engine_table_goto_col          (HTMLEngine     *e,
-						gint            col);
-gboolean   html_engine_table_goto_row          (HTMLEngine     *e,
-						gint            row);
-gboolean   html_engine_table_goto_pos          (HTMLEngine     *e,
-						gint            row,
-						gint            col);
-void       html_engine_delete_table            (HTMLEngine     *e);
+void           html_engine_insert_table            (HTMLEngine     *e,
+						    gint            cols,
+						    gint            rows,
+						    gint            width,
+						    gint            percent,
+						    gint            padding,
+						    gint            spacing,
+						    gint            border);
+void           html_engine_insert_table_1_1        (HTMLEngine     *e);
+void           html_engine_insert_table_column     (HTMLEngine     *e,
+						    gboolean        after);
+void           html_engine_delete_table_column     (HTMLEngine     *e);
+void           html_engine_insert_table_row        (HTMLEngine     *e,
+						    gboolean        after);
+void           html_engine_delete_table_row        (HTMLEngine     *e);
+void           html_engine_table_set_border_width  (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    gint            border_width,
+						    gboolean        relative);
+void           html_engine_table_set_bg_color      (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    GdkColor       *c);
+void           html_engine_table_set_bg_pixmap     (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    gchar          *url);
+void           html_engine_table_set_spacing       (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    gint            spacing,
+						    gboolean        relative);
+void           html_engine_table_set_padding       (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    gint            padding,
+						    gboolean        relative);
+void           html_engine_table_set_align         (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    HTMLHAlignType  align);
+void           html_engine_table_set_width         (HTMLEngine     *e,
+						    HTMLTable      *t,
+						    gint            width,
+						    gboolean        percent);
+void           html_engine_table_set_cols          (HTMLEngine     *e,
+						    gint            cols);
+void           html_engine_table_set_rows          (HTMLEngine     *e,
+						    gint            rows);
+HTMLTable     *html_engine_get_table               (HTMLEngine     *e);
+gboolean       html_engine_table_goto_0_0          (HTMLEngine     *e);
+gboolean       html_engine_table_goto_col          (HTMLEngine     *e,
+						    gint            col);
+gboolean       html_engine_table_goto_row          (HTMLEngine     *e,
+						    gint            row);
+gboolean       html_engine_table_goto_pos          (HTMLEngine     *e,
+						    gint            row,
+						    gint            col);
+void           html_engine_delete_table            (HTMLEngine     *e);
+HTMLTableCell *html_engine_new_cell                (HTMLEngine     *e,
+						    HTMLTable      *table);
 #endif

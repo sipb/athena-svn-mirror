@@ -87,8 +87,7 @@ calc_min_width (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *self,
-	   HTMLPainter *painter)
+calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLImageInput *image_input;
 	HTMLObject *image_object;
@@ -97,7 +96,7 @@ calc_size (HTMLObject *self,
 	image_input = HTML_IMAGEINPUT (self);
 	image_object = HTML_OBJECT (image_input->image);
 
-	retval = html_object_calc_size (image_object, painter);
+	retval = html_object_calc_size (image_object, painter, changed_objs);
 
 	self->width = image_object->width;
 	self->ascent = image_object->ascent;

@@ -21,10 +21,23 @@
 
 #include <gtk/gtkselection.h>
 #include "htmlcursor.h"
+#include "htmlentity.h"
 #include "htmlinterval.h"
 #include "htmlselection.h"
 #include "htmlengine-edit.h"
 #include "htmlengine-edit-selection-updater.h"
+
+guint32
+html_selection_current_time (void)
+{
+	GdkEvent *event;
+
+	event = gtk_get_current_event ();
+	if (event != NULL)
+		return gdk_event_get_time (event);
+
+	return GDK_CURRENT_TIME;
+}
 
 void
 html_engine_select_interval (HTMLEngine *e, HTMLInterval *i)
@@ -37,7 +50,8 @@ html_engine_select_interval (HTMLEngine *e, HTMLInterval *i)
 		e->selection = i;
 		html_interval_select (e->selection, e);
 	}
-	html_engine_activate_selection (e, GDK_CURRENT_TIME);
+
+	html_engine_activate_selection (e, html_selection_current_time ());
 }
 
 void
@@ -78,6 +92,11 @@ html_engine_clear_selection (HTMLEngine *e)
 		html_interval_destroy (e->selection);
 		html_engine_edit_selection_updater_reset (e->selection_updater);
 		e->selection = NULL;
+		/*
+		if (gdk_selection_owner_get (GDK_SELECTION_PRIMARY) == GTK_WIDGET (e->widget)->window)
+			gtk_selection_owner_set (NULL, GDK_SELECTION_PRIMARY, 
+						 html_selection_current_time ());    
+		*/
 	}
 }
 
@@ -127,14 +146,21 @@ line_interval (HTMLEngine *e, HTMLCursor *begin, HTMLCursor *end)
 	return html_cursor_beginning_of_line (begin, e) && html_cursor_end_of_line (end, e);
 }
 
+gboolean
+html_selection_word (gunichar uc)
+{
+	return uc && uc != ' ' && uc != '\t' && uc != ENTITY_NBSP         /* white space */
+		&& uc != '(' && uc != ')' && uc != '[' && uc != ']';
+}
+
 static gboolean
 word_interval (HTMLEngine *e, HTMLCursor *begin, HTMLCursor *end)
 {
 	/* move to the begin of word */
-	while (html_is_in_word (html_cursor_get_prev_char (begin)))
+	while (html_selection_word (html_cursor_get_prev_char (begin)))
 		html_cursor_backward (begin, e);
 	/* move to the end of word */
-	while (html_is_in_word (html_cursor_get_current_char (end)))
+	while (html_selection_word (html_cursor_get_current_char (end)))
 		html_cursor_forward (end, e);
 
 	return (begin->object && end->object);
