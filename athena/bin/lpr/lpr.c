@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: epeisach $
+ *	$Author: ilham $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.2 1990-04-16 12:08:32 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.3 1990-06-01 18:17:25 ilham Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.2 1990-04-16 12:08:32 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.3 1990-06-01 18:17:25 ilham Exp $";
 #endif lint
 
 /*
@@ -372,7 +372,7 @@ main(argc, argv)
 	card('P', person);
 #ifdef KERBEROS
 	if (account)
-		card('A', itoa(account));
+		card('Q', itoa(account));
 #endif KERBEROS
 	if (forms != NULL)
 	        card('F', forms);

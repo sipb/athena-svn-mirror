@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: epeisach $
+ *	$Author: ilham $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.6 1990-04-17 09:11:24 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.7 1990-06-01 18:20:50 ilham Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.6 1990-04-17 09:11:24 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.7 1990-06-01 18:20:50 ilham Exp $";
 #endif lint
 
 /*
@@ -468,7 +468,7 @@ printit(file)
 		case 'M':
 		case 'Z':
 		case 'E':	/* From multics days */
-	        case 'A':	       /* Account numbers not implemented yet */
+	        case 'Q':	       /* Account numbers not implemented yet */
 			continue;
 		}
 
