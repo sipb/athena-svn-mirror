@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-08-12 15:43:24 danw Exp $
+# $Id: Makefile,v 1.5 1999-11-06 21:14:16 rbasch Exp $
 
 SHELL=/bin/sh
 USRBIN=/usr/bin
@@ -14,6 +14,11 @@ install:
 	rm -f ${DESTDIR}/bin
 	ln -s usr/bin ${DESTDIR}/bin
 	install -c -m 755 postinst ${DESTDIR}${USRSBIN}
+	mkdir -p ${DESTDIR}/usr/local/lib/netscape/plugins
+	rm -f ${DESTDIR}/usr/local/lib/netscape/plugins/libcosmoplayer.so
+	ln -s \
+	  ../../../../../var/netscape/communicator/plugins/libcosmoplayer.so \
+	  ${DESTDIR}/usr/local/lib/netscape/plugins/libcosmoplayer.so
 
 clean:
 
