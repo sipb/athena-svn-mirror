@@ -1,0 +1,36 @@
+#
+# $Id: Imakefile,v 1.1 1990-07-24 13:14:07 lwvanels Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olc_help/Imakefile,v $
+#
+
+.SUFFIXES: .nroff .help
+
+SRCS=	?.nroff answers.nroff ask.nroff cancel.nroff \
+	done.nroff help.nroff motd.nroff olc.nroff quit.nroff \
+	replay.nroff send.nroff show.nroff status.nroff topic.nroff \
+	who.nroff
+
+OBJS=	?.help answers.help ask.help cancel.help \
+	done.help help.help motd.help olc.help quit.help \
+	replay.help send.help show.help status.help topic.help \
+	who.help
+
+install::
+	if [ ! -d $(DESTDIR)/usr/athena/lib/olc ]; \
+		then mkdir $(DESTDIR)/usr/athena/lib/olc; \
+		else exit 0; fi
+	if [ ! -d $(DESTDIR)/usr/athena/lib/olc/olc_help ]; \
+		then mkdir $(DESTDIR)/usr/athena/lib/olc/olc_help; \
+		else exit 0;fi
+
+InstallMultipleDestFlags(install, $(OBJS), $(DESTDIR)/usr/athena/lib/olc/olc_help,$(INSTMANFLAGS))
+
+AllTarget($(OBJS))
+
+clean::
+	rm -f *.help
+
+depend::
+
+.nroff.help:
+	nroff -man $*.nroff > $@
