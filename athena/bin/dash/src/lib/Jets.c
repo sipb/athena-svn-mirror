@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.5 1994-05-08 23:51:38 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.6 1996-09-19 22:21:40 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -28,7 +28,6 @@ static char *rcsid =
 #include <sys/filio.h>
 #endif
 #include "Jets.h"
-#include "fd.h"
 #include "hash.h"
 
 extern int StrToXFontStruct();
@@ -484,7 +483,7 @@ XjCallback *XjConvertStringToCallback(address)
 
   while (isspace(*ptr)) ptr++;
 
-  end = index(ptr, '(');
+  end = strchr(ptr, '(');
   if (end == NULL)
     {
       /* we don't advance the pointer in this case. */
@@ -518,7 +517,7 @@ XjCallback *XjConvertStringToCallback(address)
     {
       char delim = *ptr;
       ptr++;
-      end = index(ptr, delim);
+      end = strchr(ptr, delim);
       if (end == NULL)
 	{
 	  sprintf(errtext, "missing close quote in callback string: %s",
@@ -536,7 +535,7 @@ XjCallback *XjConvertStringToCallback(address)
 	}
     }
 
-  end = index(ptr, ')');
+  end = strchr(ptr, ')');
   if (end == NULL || barfed)
     {
       if (!barfed)
@@ -606,8 +605,8 @@ void XjFillInValue(display, window, where, resource, type, address)
    */
   if (!strcmp(type, resource->resource_type))
     {
-      bcopy((char *)&address,
-	    ((char *)where + resource->resource_offset),
+      memcpy(where + resource->resource_offset,
+	    &address,
 	    (resource->resource_size > 4) ? 4 : resource->resource_size);
       return;
     }
@@ -770,7 +769,7 @@ int appTableCount;
 
   if (programName == NULL)
     {
-      programName = rindex (argv[0], '/');
+      programName = strrchr (argv[0], '/');
       if (programName)
 	programName++;
       else
@@ -998,7 +997,7 @@ static int waitForSomething(jet)
 {
   struct timeval now;
   struct timeval diff;
-  static Fd_set read, empty;
+  static fd_set read, empty;
   static int inited = 0;
   int loop, nfds = 0;
   register int i;
@@ -1358,7 +1357,7 @@ static void GetVal(src, dst, size)
      caddr_t *dst;
      int size;
 {
-  bcopy( (char*)src, (char*)*dst, (int)size );
+  memcpy(dst, src, size);
 }
 
 
