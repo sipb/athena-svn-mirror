@@ -10,19 +10,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.8 1992-05-02 15:48:59 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: nl.c,v 1.9 1997-04-30 17:36:16 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.8 1992-05-02 15:48:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.9 1997-04-30 17:36:16 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #ifdef KERBEROS
@@ -81,27 +81,31 @@ KTEXT_ST my_auth;
 
 /* Send request number */
   i = htonl((u_long) VERSION);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 
 /* Send request number */
   i = htonl((u_long) LIST_REQ);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 
 /* Send username */
-  if ((retcode = swrite(fd,username,9)) == -1) {
+  retcode = swrite(fd,username,9);
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 
 /* Send instance */
   i = htonl((u_long) instance);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == 1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
@@ -114,24 +118,28 @@ KTEXT_ST my_auth;
     return(-1);
   }
   i = htonl((u_long) my_auth.length);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
-  if ((retcode = swrite(fd,(char *) my_auth.dat,my_auth.length)) == -1) {
+  retcode = swrite(fd,(char *) my_auth.dat,my_auth.length);
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 #else
   i = htonl((u_long) 0);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 #endif
   
   /* Get length of text to recieve, or error code */
-  if ((retcode = sread(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = sread(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
@@ -183,7 +191,8 @@ KTEXT_ST my_auth;
 #endif
 
   i = htonl((u_long) VERSION);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
@@ -193,20 +202,23 @@ KTEXT_ST my_auth;
     i = htonl((u_long) SHOW_KILL_REQ);
   else
     i = htonl((u_long) SHOW_NO_KILL_REQ);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 
 /* Send username */ 
-  if ((retcode = swrite(fd,username,9)) == -1) {
+  retcode = swrite(fd,username,9);
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 
 /* Send instance */
   i = htonl((u_long) instance);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == 1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
@@ -218,18 +230,21 @@ KTEXT_ST my_auth;
     return(retcode);
   }
   i = htonl((u_long) my_auth.length);
-  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
+  retcode = swrite(fd,(char *) &i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
-  if ((retcode = swrite(fd,(char *) my_auth.dat,my_auth.length)) == -1) {
+  retcode = swrite(fd,(char *) my_auth.dat,my_auth.length);
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
 #endif
   
   /* Get length of text to recieve, or error code */
-  if ((retcode = sread(fd,(char *)&i,sizeof(i))) == -1) {
+  retcode = sread(fd,(char *)&i,sizeof(i));
+  if (retcode == -1) {
     close(fd);
     return(errno);
   }
