@@ -1,0 +1,13 @@
+# pkgadd admin file used by the Athena update system.  We overwrite
+# existing packages, non-interactively.
+mail=
+instance=overwrite
+partial=nocheck
+runlevel=nocheck
+idepend=nocheck
+rdepend=nocheck
+space=nocheck
+setuid=nocheck
+conflict=nocheck
+action=nocheck
+basedir=default
