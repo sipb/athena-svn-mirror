@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: syncupdate.c,v 1.1 2000-01-01 05:38:55 ghudson Exp $";
+static const char rcsid[] = "$Id: syncupdate.c,v 1.2 2000-02-23 16:29:42 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -23,6 +23,10 @@ static const char rcsid[] = "$Id: syncupdate.c,v 1.1 2000-01-01 05:38:55 ghudson
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#ifndef S_IAMB
+#define S_IAMB 0x1FF	/* Access bits part of struct stat st_mode field */
+#endif
 
 static void copy(const char *source, const char *tempfile);
 static void open_and_sync(const char *filename);
