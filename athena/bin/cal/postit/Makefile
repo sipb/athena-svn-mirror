@@ -12,11 +12,11 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v $
 #	$Author: shanzer $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v 1.1 1987-10-29 12:37:30 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v 1.2 1987-10-29 12:38:11 shanzer Exp $
 #
 ###########################################################################
 
-INSTDIR= /usr/unsupported
+INSTDIR= /usr/athena
 
 POSTSRC=   postmaster.c
 POSTOBJ=   postmaster.o
