@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Id: main.c,v 1.42 1990-12-16 12:55:47 raeburn Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.43 1990-12-21 17:44:47 raeburn Exp $";
 #endif
 #endif
 
@@ -209,8 +209,10 @@ main(int argc, char **argv)
 	if (chdir("/usr/tmp") != 0)
 		syslog(LOG_ERR,"chdir failed (%m) (execution continuing)");
 
+#ifndef macII /* A/UX doesn't have setpriority */
 	if (setpriority(PRIO_PROCESS, getpid(), -10))
 		syslog(LOG_ERR,"setpriority failed (%m)");
+#endif
 #endif
 
 	FD_ZERO(&interesting);
