@@ -20,7 +20,7 @@
  * a given root directory, presumably an Athena /os hierarchy.
  */
 
-static const char rcsid[] = "$Id: os-checkfiles.c,v 1.2 2000-06-28 20:26:07 rbasch Exp $";
+static const char rcsid[] = "$Id: os-checkfiles.c,v 1.3 2000-08-21 23:10:23 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,6 +36,9 @@ static const char rcsid[] = "$Id: os-checkfiles.c,v 1.2 2000-06-28 20:26:07 rbas
 #include "array.h"
 
 #define MAXLINE ((PATH_MAX * 2) + 256)
+
+/* Bit mask for chmod() */
+#define MODEMASK (S_ISUID|S_ISGID|S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO)
 
 char *progname;
 
@@ -62,6 +65,8 @@ void nukedir(const char *path);
 
 void copyfile(const char *from, const char *to);
 
+void make_parent(const char *path);
+
 void set_stat(const char *path, mode_t mode, uid_t uid, gid_t gid);
 
 Array *make_list(const char *file);
@@ -69,6 +74,8 @@ Array *make_list(const char *file);
 int in_list(const Array *list, const char *what);
 
 int compare_string(const void *p1, const void *p2);
+
+char *estrdup(const char *s);
 
 
 void usage()
@@ -318,7 +325,7 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
 void do_symlink(const char *from, const struct stat *statp, const char *to)
 {
   char linkbuf[PATH_MAX+1];
-  int len;
+  int len, status;
   int result = 0;
 
   if (statp != NULL && S_ISLNK(statp->st_mode))
@@ -337,7 +344,14 @@ void do_symlink(const char *from, const struct stat *statp, const char *to)
       if (!noop)
 	{
 	  nuke(from, statp);
-	  if (symlink(to, from) != 0)
+	  status = symlink(to, from);
+	  if (status != 0 && (errno == ENOENT || errno == ENOTDIR))
+	    {
+	      /* The parent directory does not exist.  Create it and retry. */
+	      make_parent(from);
+	      status = symlink(to, from);
+	    }
+	  if (status != 0)
 	    {
 	      fprintf(stderr, "%s: Cannot create symlink %s: %s\n",
 		      progname, from, strerror(errno));
@@ -351,6 +365,7 @@ void do_symlink(const char *from, const struct stat *statp, const char *to)
 void do_hardlink(const char *path, const struct stat *statp, const char *to)
 {
   struct stat to_stat;
+  int status;
 
   if (lstat(to, &to_stat) != 0)
     {
@@ -376,7 +391,14 @@ void do_hardlink(const char *path, const struct stat *statp, const char *to)
 	{
 	  if (statp != NULL)
 	    nuke(path, statp);
-	  if (link(to, path) != 0)
+	  status = link(to, path);
+	  if (status != 0 && (errno == ENOENT || errno == ENOTDIR))
+	    {
+	      /* The parent directory does not exist.  Create it and retry. */
+	      make_parent(path);
+	      status = link(to, path);
+	    }
+	  if (status != 0)
 	    {
 	      fprintf(stderr, "%s: Cannot create hard link %s to %s: %s\n",
 		      progname, path, to, strerror(errno));
@@ -389,6 +411,8 @@ void do_hardlink(const char *path, const struct stat *statp, const char *to)
 void do_directory(const char *path, const struct stat *statp, mode_t mode,
 		  uid_t uid, gid_t gid)
 {
+  int status;
+
   if (statp == NULL || !S_ISDIR(statp->st_mode))
     {
       /* Path doesn't exist, or is not a directory. Recreate it. */
@@ -397,7 +421,14 @@ void do_directory(const char *path, const struct stat *statp, mode_t mode,
 	{
 	  if (statp != NULL)
 	    nuke(path, statp);
-	  if (mkdir(path, S_IRWXU) != 0)
+	  status = mkdir(path, S_IRWXU);
+	  if (status != 0 && (errno == ENOENT || errno == ENOTDIR))
+	    {
+	      /* The parent directory does not exist.  Create it and retry. */
+	      make_parent(path);
+	      status = mkdir(path, S_IRWXU);
+	    }
+	  if (status != 0)
 	    {
 	      fprintf(stderr, "%s: Cannot mkdir %s: %s\n",
 		      progname, path, strerror(errno));
@@ -495,6 +526,12 @@ void copyfile(const char *from, const char *to)
       return;
     }
   fd = open(to, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+  if (fd < 0 && (errno == ENOENT || errno == ENOTDIR))
+    {
+      /* The parent directory does not exist.  Create it and retry. */
+      make_parent(to);
+      fd = open(to, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+    }
   if (fd < 0)
     {
       fprintf(stderr, "%s: Cannot create %s: %s\n",
@@ -541,9 +578,65 @@ void copyfile(const char *from, const char *to)
   return;
 }
 
+/* Ensure that the parent directory of the given path exists, by
+ * creating all components of the path prefix, as necessary.
+ * If any path component exists but is not a directory, it is
+ * removed.
+ * Directories are created mode 755, owned by the current user.
+ */
+void make_parent(const char *path)
+{
+  char *p, *path_buf;
+  struct stat sb;
+  mode_t saved_umask;
+
+  /* Make a copy of the path string so we can modify it. */
+  path_buf = estrdup(path);
+
+  saved_umask = umask(0);
+
+  p = path_buf;
+  while (*p == '/')
+    p++;
+
+  /* Find the first component in the path prefix that does not exist. */
+  while ((p = strchr(p, '/')) != NULL)
+    {
+      *p = '\0';
+      if (stat(path_buf, &sb) != 0)
+	break;
+      if (!S_ISDIR(sb.st_mode))
+	{
+	  /* Component exists, but is not a directory.  Nuke it. */
+	  printf("Remove non-directory path prefix %s\n", path_buf);
+	  unlink(path_buf);
+	  break;
+	}
+      *p++ = '/';
+    }
+
+  /* The remaining path components do not exist -- create them. */
+  for ( ; p != NULL; p = strchr(p, '/'))
+    {
+      *p = '\0';
+      printf("Create path prefix %s\n", path_buf);
+      if (mkdir(path_buf, 0755) != 0)
+	{
+	  fprintf(stderr, "%s: Cannot mkdir %s: %s\n",
+		  progname, path_buf, strerror(errno));
+	  exit(1);
+	}
+      *p++ = '/';
+    }
+
+  free(path_buf);
+  umask(saved_umask);
+  return;
+}
+
 void set_stat(const char *path, mode_t mode, uid_t uid, gid_t gid)
 {
-  if (chmod(path, mode) != 0)
+  if (chmod(path, mode & MODEMASK) != 0)
     {
       fprintf(stderr, "%s: Cannot chmod %s: %s\n",
 	      progname, path, strerror(errno));
@@ -572,7 +665,7 @@ Array *make_list(const char *file)
   while (fgets(buffer, sizeof(buffer), f))
     {
       buffer[strlen(buffer) - 1] = '\0';
-      array_add(list, strdup(buffer));
+      array_add(list, estrdup(buffer));
     }
 
   fclose(f);
@@ -594,4 +687,17 @@ int in_list(const Array *list, const char *what)
 int compare_string(const void *p1, const void *p2)
 {
   return strcmp(*((char **)p1), *((char **)p2));
+}
+
+char *estrdup(const char *s)
+{
+  char *s2;
+
+  s2 = strdup(s);
+  if (s2 == NULL)
+    {
+      fprintf(stderr, "%s: Out of memory\n", progname);
+      exit(1);
+    }
+  return s2;
 }
