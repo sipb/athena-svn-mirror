@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.1 1987-09-01 16:22:04 steiner Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.2 1987-12-06 11:23:13 steiner Exp $
  */
 
 #ifndef lint
-static char *rcsid_phost_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.1 1987-09-01 16:22:04 steiner Exp $";
+static char *rcsid_phost_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.2 1987-12-06 11:23:13 steiner Exp $";
 #endif lint
 
 #include <stdio.h>
@@ -26,7 +26,7 @@ char *index();
  */
 
 char *
-PrincipalHostname( alias )
+get_phost( alias )
 char *alias;
 {
     struct hostent *h;
