@@ -2,7 +2,7 @@
 /*
  * config.c -- master nmh configuration file
  *
- * $Id: config.c,v 1.2 1999-06-01 19:11:58 danw Exp $
+ * $Id: config.c,v 1.3 1999-06-07 15:55:26 danw Exp $
  */
 
 #include <h/mh.h>
@@ -308,7 +308,7 @@ char *showmimeproc = nmhbindir (/mhshow);
  * that such message not be filtered in any way.
  */
 
-char *showproc = nmhlibdir (/mhl);
+char *showproc = DEFAULT_PAGER;
 
 /* 
  * This program is called by vmh as the back-end to the window management
