@@ -12,9 +12,6 @@ static	char sccsid[] = "@(#)rquotaxdr.c 1.1 86/02/05 Copyr 1985 Sun Micro";
 #ifdef _AIX
 #include <sys/select.h>
 #endif
-#if !defined(_AIX) && !defined(SOLARIS)
-#include <ufs/quota.h>
-#endif
 #include <rpc/rpc.h>
 #include <rpcsvc/rquota.h>
 
