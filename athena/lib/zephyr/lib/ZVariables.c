@@ -11,20 +11,18 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.6 1988-06-23 10:34:17 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.7 1988-07-05 15:58:48 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.6 1988-06-23 10:34:17 jtkohl Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.7 1988-07-05 15:58:48 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-#include <ctype.h>
 #include <pwd.h>
 
-#define _toupper(c) (islower(c)?toupper(c):c)
 extern char *getenv();
 extern uid_t getuid();
 
@@ -159,26 +157,34 @@ static char *get_varval(fn, var)
     return ((char *)0);
 }
 
+/* If the variable in the line bfr[] is the same as var, return index to
+   the variable value, else return 0. */
 static int varline(bfr, var)
     char *bfr;
     char *var;
 {
-    int i;
+    register char *cp;
 	
-    if (!bfr[0] || bfr[0] == '#')
+
+    if (!bfr[0] || bfr[0] == '#')	/* comment or null line */
 	return (0);
 	
-    for (i = 0; bfr[i] && !isspace(bfr[i]) &&
-	 bfr[i] != '='; i++)
-	if (_toupper(bfr[i]) != _toupper(var[i]))
-	    break;
-    if ((!bfr[i] || !isspace(bfr[i])) && bfr[i] != '=')
-	return (0);
-    while (bfr[i] && isspace(bfr[i]))
-	i++;
-    if (bfr[i++] != '=')
-	return (0);
-    while (bfr[i] && isspace(bfr[i]))
-	i++;
-    return (i);
+    cp = bfr;
+    while (*cp && !isspace(*cp) && (*cp != '='))
+	cp++;
+
+#define max(a,b) ((a > b) ? (a) : (b))
+
+    if (strncasecmp(bfr, var, max(strlen(var),cp - bfr)))
+	return(0);			/* var is not the var in
+					   bfr ==> no match */
+
+    cp = index(bfr, '=');
+    if (!cp)
+	return(0);
+    cp++;
+    while (*cp && isspace(*cp))		/* space up to variable value */
+	cp++;
+
+    return (cp - bfr);			/* return index */
 }
