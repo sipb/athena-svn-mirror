@@ -1,0 +1,341 @@
+# Swedish translation of gnome-print.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Richard Hult <rhult@hem2.passagen.se>, 1999.
+# Christian Rose <menthos@menthos.com>, 2000.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print 0.4\n"
+"POT-Creation-Date: 2000-09-26 12:09+0200\n"
+"PO-Revision-Date: 2000-09-26 12:12+0200\n"
+"Last-Translator: Christian Rose <menthos@menthos.com>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-font-install.c:574
+msgid "Print out debugging information"
+msgstr "Skriv ut felsökningsinformation"
+
+#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
+msgid "Does nothing yet."
+msgstr "Utför ingenting än."
+
+#: gnome-font-install.c:585
+msgid "Use this path to write the fontmap file."
+msgstr "Använd denna sökväg för att skriva typsnittskartan."
+
+#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
+#: gnome-font-install.c:592 gnome-font-install.c:594
+msgid "PATH"
+msgstr "SÖKVÄG"
+
+#: gnome-font-install.c:587
+msgid "Use this path to search for relative afm files."
+msgstr "Använd denna sökväg för att leta efter relativa afm-filer."
+
+#: gnome-font-install.c:589
+msgid "Use this path to search for relative pfb files."
+msgstr "Använd denna sökväg för att leta efter relativa pfb-filer."
+
+#: gnome-font-install.c:592
+msgid "Use this to set up a key/value pair for afm files."
+msgstr "Använd denna flagga för att konfigurera nyckel/värde för afm-filer."
+
+#: gnome-font-install.c:594
+msgid "Use this to set up a key/value pair for pfb files."
+msgstr "Använd denna flagga för att konfigurera nyckel/värde för pfb-filer."
+
+#. Family frame
+#: libgnomeprint/gnome-font-dialog.c:138
+msgid "Font family"
+msgstr "Typsnittsfamilj"
+
+#. Style frame
+#: libgnomeprint/gnome-font-dialog.c:171
+msgid "Style"
+msgstr "Stil"
+
+#: libgnomeprint/gnome-font-dialog.c:233
+msgid "Font size:"
+msgstr "Typsnittsstorlek:"
+
+#: libgnomeprint/gnome-font-dialog.c:754
+msgid "Font Selection"
+msgstr "Välj typsnitt"
+
+#. We have latin encoding
+#: libgnomeprint/gnome-font-face.c:459
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Flygande bäckasiner söka strax hwila på mjuka tuvor."
+
+#: libgnomeprint/gnome-font-face.c:697
+#, c-format
+msgid "Couldn't open font file %s\n"
+msgstr "Kunde inte öppna typsnittsfilen %s\n"
+
+#: libgnomeprint/gnome-font-face.c:1012
+#, c-format
+msgid "status loading %s = %d\n"
+msgstr "status, läsning av %s = %d\n"
+
+#: libgnomeprint/gnome-print-copies.c:232
+msgid "Copies"
+msgstr "Kopior"
+
+#: libgnomeprint/gnome-print-copies.c:243
+msgid "N_umber of copies:"
+msgstr "Anta_l kopior:"
+
+#: libgnomeprint/gnome-print-copies.c:264
+msgid "_Collate"
+msgstr "_Kollationera"
+
+#: libgnomeprint/gnome-print-dialog.c:164
+msgid "Print Range"
+msgstr "Sidintervall"
+
+#: libgnomeprint/gnome-print-dialog.c:185
+#: libgnomeprint/gnome-print-master-preview.c:680
+msgid "Print"
+msgstr "Skriv ut"
+
+#: libgnomeprint/gnome-print-dialog.c:186
+msgid "Preview"
+msgstr "Förhandsgranskning"
+
+#: libgnomeprint/gnome-print-dialog.c:333
+msgid "_All"
+msgstr "_Alla"
+
+#: libgnomeprint/gnome-print-dialog.c:363
+#: libgnomeprint/gnome-print-dialog.c:377
+msgid "_Selection"
+msgstr "_Markering"
+
+#: libgnomeprint/gnome-print-dialog.c:436
+msgid "from:"
+msgstr "från:"
+
+#: libgnomeprint/gnome-print-dialog.c:450
+msgid "to:"
+msgstr "till:"
+
+#: libgnomeprint/gnome-print-dialog.c:495
+msgid "f_rom:"
+msgstr "f_rån:"
+
+#: libgnomeprint/gnome-print-dialog.c:512
+msgid "_to:"
+msgstr "_till:"
+
+#: libgnomeprint/gnome-print-master-preview.c:625
+msgid "Page: "
+msgstr "Sida: "
+
+#: libgnomeprint/gnome-print-master-preview.c:652
+msgid "_First page"
+msgstr "_Första sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:652
+#: libgnomeprint/gnome-print-master-preview.c:683
+msgid "Shows the first page"
+msgstr "Visar den första sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:655
+msgid "_Previous page"
+msgstr "Före_gående sida"
+
+#: libgnomeprint/gnome-print-master-preview.c:655
+#: libgnomeprint/gnome-print-master-preview.c:686
+msgid "Shows the previous page"
+msgstr "Visar den föregående sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:658
+msgid "_Next page"
+msgstr "_Nästa sida"
+
+#: libgnomeprint/gnome-print-master-preview.c:658
+#: libgnomeprint/gnome-print-master-preview.c:689
+msgid "Shows the next page"
+msgstr "Visar nästa sida"
+
+#: libgnomeprint/gnome-print-master-preview.c:661
+msgid "_Last page"
+msgstr "_Sista sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:661
+#: libgnomeprint/gnome-print-master-preview.c:692
+msgid "Shows the last page"
+msgstr "Visar den sista sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:666
+msgid "Zoom _in"
+msgstr "Zooma _in"
+
+#: libgnomeprint/gnome-print-master-preview.c:666
+msgid "Zooms in"
+msgstr "Zoomar in"
+
+#: libgnomeprint/gnome-print-master-preview.c:667
+msgid "Zoom _out"
+msgstr "Zoom _ut"
+
+#: libgnomeprint/gnome-print-master-preview.c:667
+msgid "Zooms out"
+msgstr "Zoomar ut"
+
+#: libgnomeprint/gnome-print-master-preview.c:674
+msgid "_View"
+msgstr "_Visa"
+
+#: libgnomeprint/gnome-print-master-preview.c:680
+msgid "Prints the current file"
+msgstr "Skriver ut aktuell fil"
+
+#: libgnomeprint/gnome-print-master-preview.c:683
+msgid "First"
+msgstr "Första"
+
+#: libgnomeprint/gnome-print-master-preview.c:686
+msgid "Back"
+msgstr "Bakåt"
+
+#: libgnomeprint/gnome-print-master-preview.c:689
+msgid "Next"
+msgstr "Nästa"
+
+#: libgnomeprint/gnome-print-master-preview.c:692
+msgid "Last"
+msgstr "Sista"
+
+#: libgnomeprint/gnome-print-master-preview.c:695
+msgid "Zoom in"
+msgstr "Zooma in"
+
+#: libgnomeprint/gnome-print-master-preview.c:695
+msgid "Zooms the page in"
+msgstr "Zoomar in sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:696
+msgid "Zoom out"
+msgstr "Zooma ut"
+
+#: libgnomeprint/gnome-print-master-preview.c:696
+msgid "Zooms the page out"
+msgstr "Zoomar ut sidan"
+
+#: libgnomeprint/gnome-print-master-preview.c:697
+msgid "Fit"
+msgstr "Passa"
+
+#: libgnomeprint/gnome-print-master-preview.c:697
+msgid "Zooms to fit the whole page"
+msgstr "Anpassar zoomfaktorn så att hela sidan får plats"
+
+#: libgnomeprint/gnome-print-master-preview.c:698
+msgid "Fit Wide"
+msgstr "Passa bredd"
+
+#: libgnomeprint/gnome-print-master-preview.c:698
+msgid "Zooms to fit the width of the page"
+msgstr "Anpassar zoomfaktorn så att sidan får plats på bredden"
+
+#: libgnomeprint/gnome-print-master-preview.c:699
+msgid "Fit Tall"
+msgstr "Passa höjd"
+
+#: libgnomeprint/gnome-print-master-preview.c:699
+msgid "Zooms to fit the height of the page"
+msgstr "Anpassar zoomfaktorn så att sidan får plats på höjden"
+
+#: libgnomeprint/gnome-printer-dialog.c:180
+msgid "Select printer"
+msgstr "Välj skrivare"
+
+#.
+#. * Create the profile information display
+#.
+#: libgnomeprint/gnome-printer-dialog.c:189
+msgid "State:"
+msgstr "Status:"
+
+#: libgnomeprint/gnome-printer-dialog.c:190
+msgid "Type:"
+msgstr "Typ:"
+
+#: libgnomeprint/gnome-printer-dialog.c:191
+msgid "Location:"
+msgstr "Placering:"
+
+#: libgnomeprint/gnome-printer-dialog.c:192
+msgid "Comment:"
+msgstr "Kommentar:"
+
+#: libgnomeprint/gnome-printer-dialog.c:226
+msgid "_Name:"
+msgstr "_Namn:"
+
+#: libgnomeprint/gnome-printer-dialog.c:235
+msgid "_Printer"
+msgstr "_Skrivare"
+
+#: libgnomeprint/gnome-printer-dialog.c:248
+msgid "_File"
+msgstr "_Fil"
+
+#: libgnomeprint/gnome-printer-dialog.c:489
+msgid "Select Printer"
+msgstr "Välj skrivare"
+
+#: libgnomeprint/gnome-printer.c:117
+msgid "Printer is active"
+msgstr "Skrivaren är aktiv"
+
+#: libgnomeprint/gnome-printer.c:120
+msgid "Printer is ready to print"
+msgstr "Skrivaren är redo för utskrift"
+
+#: libgnomeprint/gnome-printer.c:123
+msgid "Printer is off-line"
+msgstr "Skrivaren är inte inkopplad (off-line)"
+
+#: libgnomeprint/gnome-printer.c:126
+msgid "Can not communicate with printer"
+msgstr "Kan inte kommunicera med skrivaren"
+
+#: libgnomeprint/gnome-printer.c:129
+msgid "Unknown status"
+msgstr "Okänd status"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr ""
+"extraherar det första typsnittet från output.pdf och placerar det i "
+"font.dump."
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "extraherar typsnittshuvudet från font.dump."
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "extraherar typsnittskroppen."
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "dekrypterar typsnittskroppen "
+
+#: tests/testprint.c:116 tests/testprint.c:124
+msgid "Gnome-print test page, rotated"
+msgstr "Gnome-print-testsida, roterad"
+
+#: tests/testprint.c:131
+msgid "Gnome-print test page, slanted"
+msgstr "Gnome-print-testsida, lutad"
+
+#: tests/testprint.c:139
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Gnome-print-testsida, lutad. Liten"
+
