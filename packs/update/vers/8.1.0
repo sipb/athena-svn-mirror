@@ -20,10 +20,12 @@ sun4)
 	sed -e 's,:/bin/csh$,:/bin/athena/tcsh,' /etc/passwd > /etc/passwd.new
 	ln /etc/passwd /etc/passwd.old
 	mv /etc/passwd.new /etc/passwd
-	sed -e 's,:/bin/csh$,:/bin/athena/tcsh,' /etc/passwd.local \
-		> /etc/passwd.local.new
-	ln /etc/passwd.local /etc/passwd.local.old
-	mv /etc/passwd.local.new /etc/passwd.local
+	if [ -f /etc/passwd.local ]; then
+		sed -e 's,:/bin/csh$,:/bin/athena/tcsh,' /etc/passwd.local \
+			> /etc/passwd.local.new
+		ln /etc/passwd.local /etc/passwd.local.old
+		mv /etc/passwd.local.new /etc/passwd.local
+	fi
 	;;
 
 sgi)
