@@ -1,0 +1,32 @@
+/*
+ *  Imakefile for nanny
+ *  Copyright (c) 1991, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/etc/xdm/misc/Imakefile,v $
+ *   $Author: cfields $ 
+ *
+ * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+/*
+ *#include "mit-copyright.h"
+ */
+
+NANNY		=	nanny
+
+OBJS		=	nanny.o pc_bsd.o cons_sysv.o
+
+CFILES		=	nanny.c pc_bsd.c cons_sysv.c
+
+LIBS		=
+
+AnsiCC()
+
+SimpleProgram(${NANNY},${OBJS},${LIBS},${ATHRETCDIR}/${NANNY})
+install_man(${NANNY}.man,${NANNY}.1)
+
+create_depend(${CFILES})
