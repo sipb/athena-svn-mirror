@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.36 1994-04-26 13:51:30 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.37 1994-04-28 13:23:28 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -55,7 +55,7 @@ static sigset_t sig_cur;
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.36 1994-04-26 13:51:30 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.37 1994-04-28 13:23:28 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -67,7 +67,7 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #endif
 
 /* Process states */
-#define NONEXISTANT	0
+#define NONEXISTENT	0
 #define RUNNING		1
 #define STARTUP		2
 #define CONSOLELOGIN	3
