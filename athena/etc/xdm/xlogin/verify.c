@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.55 1994-05-24 16:03:32 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.56 1994-06-17 11:49:34 vrt Exp $
  */
 
 #include <stdio.h>
@@ -67,7 +67,9 @@
 #define NGROUPS 16
 #endif
 
+#ifndef SOLARIS
 #define SETPAG
+#endif
 
 #ifdef SETPAG
 /* Allow for primary gid and PAG identifier */
