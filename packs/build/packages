@@ -1,4 +1,4 @@
-# $Id: packages,v 1.175 2002-07-22 19:21:26 zacheiss Exp $
+# $Id: packages,v 1.176 2002-07-22 19:23:41 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -223,6 +223,7 @@ third/top			except irix,linux
 third/traceroute		on solaris
 third/wcl			requires openmotif
 third/whois			on irix
+third/x11-ssh-askpass
 third/x3270
 third/xalf			requires gtk,control-center
 third/xmh
