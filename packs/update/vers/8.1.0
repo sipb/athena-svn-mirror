@@ -1,8 +1,19 @@
-#!/bin/sh -
+#!/bin/sh
 
 case "$HOSTTYPE" in
 sun4)
 	echo "/etc/athena/login/menu16" >> $DEADFILES
+
+	# Convert /bin/csh to /bin/athena/tcsh in /etc/passwd.
+	rm -f /etc/passwd.old /etc/passwd.local.old
+	sed -e "s,:/bin/csh$,:/bin/athena/tcsh," /etc/passwd > /etc/passwd.new
+	ln /etc/passwd /etc/passwd.old
+	mv /etc/passwd.new /etc/passwd
+	sed -e "s,:/bin/csh$,:/bin/athena/tcsh," /etc/passwd.local \
+		> /etc/passwd.local.new
+	ln /etc/passwd.local /etc/passwd.local.old
+	mv /etc/passwd.local.new /etc/passwd.local
+
 	;;
 
 sgi)
