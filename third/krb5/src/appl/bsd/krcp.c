@@ -1174,7 +1174,7 @@ error(fmt, va_alist)
     va_end(ap);
 
     if (iamremote)
-      (void) des_write(rem, buf, strlen(buf));
+      (void) rcmd_stream_write(rem, buf, strlen(buf));
     else
       (void) write(2, buf+1, strlen(buf+1));
 }
