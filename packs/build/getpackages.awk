@@ -21,7 +21,7 @@ function die(msg) {
 	expand[parts[nparts]] = $1;
     expand[$1] = $1;
 
-    package_names[$1] = "athena-"parts[nparts];
+    package_names[$1] = parts[nparts];
 
     while (n <= NF) {
 	if ($n == "early")
@@ -39,7 +39,7 @@ function die(msg) {
 	    }
 	    n++;
 	} else if ($n == "package")
-	    package_names[$1] = "athena-"$++n;
+	    package_names[$1] = $++n;
 	else
 	    die("Bad packages line: " $0);
 	n++;
