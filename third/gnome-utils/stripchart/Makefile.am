@@ -26,9 +26,7 @@ stripchart_applet_LDADD = \
  $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(GNOME_APPLETS_LIBS) \
  $(LIBGTOP_LIBS) $(LIBGTOP_EXTRA_LIBS) $(GNOME_XML_LIB) 
 
-EXTRA_DIST = \
- gnome-stripchart.png stripchart.conf stripchart.params \
- stripchart.desktop stripchart-applet.desktop $(top_srcdir)/app-docs.make
+man_MANS = stripchart.1 stripchart-applet.1
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-stripchart.png
@@ -37,10 +35,25 @@ confdir = $(datadir)/stripchart
 conf_DATA = stripchart.conf stripchart.params
 
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-#Utilities_DATA = stripchart.desktop
+#Utilities_in_files = stripchart.desktop.in
+#Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 
 Appletdir = $(datadir)/applets/Monitors
-Applet_DATA = stripchart-applet.desktop
+Applet_in_files = stripchart-applet.desktop.in
+Applet_DATA = $(Applet_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
+
+gnorbadir  = $(sysconfdir)/CORBA/servers
+gnorba_DATA = stripchart-applet.gnorba
+
+EXTRA_DIST = \
+	$(man_MANS) \
+	$(pixmap_DATA) \
+	$(conf_DATA) \
+	$(Applet_DATA) \
+	$(Applet_in_files) \
+	$(gnorba_DATA) \
+	$(top_srcdir)/sgmldocs.make
 
 sanitize:	clean
 	$(RM) core *~ doc/C/*.html doc/C/*~
