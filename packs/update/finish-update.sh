@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.22 2004-07-30 20:52:55 rbasch Exp $
+# $Id: finish-update.sh,v 1.22.2.1 2005-01-04 18:28:33 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -52,7 +52,7 @@ rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 if [ "$OSCHANGES" = true ]; then
   echo "Creating windex databases."
-  /usr/bin/catman -w -M $UPDATE_ROOT/usr/openwin/share/man:$UPDATE_ROOT/usr/dt/share/man:$UPDATE_ROOT/usr/share/man
+  /usr/bin/catman -w -M $UPDATE_ROOT/usr/openwin/share/man:$UPDATE_ROOT/usr/dt/share/man:$UPDATE_ROOT/usr/share/man:$UPDATE_ROOT/usr/sfw/share/man
 fi
 
 # Remove the version script state files.
