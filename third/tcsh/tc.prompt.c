@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.3 1998-10-04 01:39:30 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.4 1999-03-01 19:32:45 danw Exp $ */
 /*
  * tc.prompt.c: Prompt printing stuff
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.prompt.c,v 1.3 1998-10-04 01:39:30 danw Exp $")
+RCSID("$Id: tc.prompt.c,v 1.4 1999-03-01 19:32:45 danw Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -505,7 +505,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		break;
 	    case 'y':
 		if (p >= ep - 3) break;
-		Itoa(t->tm_year, buff);
+		Itoa(t->tm_year % 100, buff);
 		if (buff[1]) {
 		    *p++ = attributes | buff[0];
 		    *p++ = attributes | buff[1];
