@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.3 1987-12-03 17:30:35 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.4 1987-12-03 20:41:52 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.3  87/12/03  17:30:35  don
+ * fixed lint messages.
+ * 
  * Revision 2.2  87/12/02  18:46:29  don
  * hc warnings.
  * 
@@ -45,7 +48,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.3 1987-12-03 17:30:35 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.4 1987-12-03 20:41:52 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -53,10 +56,9 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include "track.h"
 
 char admin[WORDLEN] = DEF_ADM;		/* track administrator */
-char twdir[LINELEN] = DEF_TOWDIR;	/* working directory for dest root
-					 * where slists/statfiles etc. can be
-					 * found */
-char fwdir[LINELEN];			/* working directory for source root */
+char workdir[LINELEN];			/* working directory under src/dest
+					 * root where slists, statfiles, etc.
+					 * can be found */
 char binarydir[LINELEN] = DEF_BINDIR;	/* directory in working dir to
 					 * find executables */
 char fromroot[LINELEN] = DEF_FROMROOT;	/* Root directory for source */
@@ -160,7 +162,7 @@ char **argv;
 		 *    the destination root system.
 		 */
 		case 'd':
-			get_arg(twdir,argv,&i);
+			get_arg(workdir,argv,&i);
 			break;
 		/* -f
 		 *    Force updating regardless of locks.
@@ -196,13 +198,6 @@ char **argv;
 		 */
 		case 'q':
 			quietflag = 1;
-			break;
-		/* -r dirname
-		 *    Specify the working directory for the source root system.
-		 * If -r is not specified, it will default to the -d directory.
-		 */
-		case 'r':
-			get_arg(fwdir,argv,&i);
 			break;
 		/* -s {pathname}
 		 *   use specified file as statfile,
@@ -250,22 +245,28 @@ char **argv;
 	if (!interactive)
 		setuperr();
 	/*
-	 * Get the proper working directories.
-	 * By default, use the working directory in both of the root systems.
+	 * Get the proper working directory,
+	 * where the subscription-list & statfile are.
 	 */
-	if (!*fwdir)
-		strcpy(fwdir,twdir);
+	if ( ! *workdir)
+		sprintf( workdir, "%s%s",
+			writeflag? fromroot : toroot, DEF_WORKDIR);
 
-	sprintf(scratch,"%s%s",toroot,twdir);
-	strcpy(twdir,scratch);
+        if ( ! *subfilepath)
+		sprintf( subfilepath, "%s/%s/%s",
+			 workdir, DEF_SLISTDIR, subfilename);
 
-	sprintf(scratch,"%s%s",fromroot,fwdir);
-	strcpy(fwdir,scratch);
+        if ( ! *statfilepath)
+		sprintf( statfilepath, "%s/%s/%s",
+			 workdir, DEF_STATDIR, subfilename);
+
+	fprintf( stderr, "using %s as subscription-list\n", subfilepath);
+	fprintf( stderr, "using %s as statfile\n",         statfilepath);
 
 	/*
 	**	redirect yacc/lex i/o
 	*/
-	parseinit( opensubfile( writeflag? fwdir : twdir));
+	parseinit( opensubfile( subfilepath));
 	if (yyparse()) {
 		strcpy(errmsg,"parser error");
 		do_panic();
@@ -282,7 +283,7 @@ char **argv;
 
 	setlock();
 
-	openstat( writeflag);
+	openstat( statfilepath, writeflag);
 
 	if ( writeflag)		/* -w: Write the initial statfile */
 		writestat();
@@ -555,7 +556,7 @@ char *ptr;
 	long timebuf;
 
 	if ( NULL == logfile) {
-		sprintf( namebuf,"%s/%s",fwdir,DEF_LOG);
+		sprintf( namebuf,"%s/%s",workdir,DEF_LOG);
 		if( access( namebuf, 0))
 			return;
 		if (NULL == (logfile = fopen( namebuf,"a"))) {
@@ -667,36 +668,24 @@ setuperr()
 }
 
 FILE *
-opensubfile( workdir) char *workdir; {
+opensubfile( path) char *path; {
 	FILE *subfile;
-        if ( ! *subfilepath)
-		sprintf( subfilepath, "%s%s/%s",
-			 workdir, DEF_SUBDIR, subfilename);
-	fprintf( stderr, "using %s as subscription-list\n", subfilepath);
-        if ( ! ( subfile = fopen( subfilepath, "r"))) {
-                sprintf( errmsg, "Can't open subscriptionlist %s\n",
-			 subfilepath);
+        if ( ! ( subfile = fopen( path, "r"))) {
+                sprintf( errmsg, "Can't open subscriptionlist %s\n", path);
                 do_panic();
         }
 	return( subfile);
 }
 
-openstat( write) int write;
+openstat( path, write) char *path; int write;
 {
-	char *root = write? fwdir : twdir;
 	char *mode = write? "w"   : "r";
 	FILE *std =  write? stdout : stdin;
 
-        if ( ! *statfilepath)
-		sprintf( statfilepath, "%s%s/%s",
-			 root, DEF_STATDIR, subfilename);
-
-	fprintf( stderr, "using %s as statfile\n", statfilepath);
-
-	if ( ! strcmp( statfilepath, "-"))
+	if ( ! strcmp( path, "-"))
 		statfile = std;
-	else if ( ! ( statfile = fopen( statfilepath, mode))) {
-		sprintf( errmsg, "can't open statfile %s\n", statfilepath);
+	else if ( ! ( statfile = fopen( path, mode))) {
+		sprintf( errmsg, "can't open statfile %s\n", path);
 		do_panic();
 	}
 }
