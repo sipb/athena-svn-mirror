@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v $
  *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.1 1991-01-22 16:11:00 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.2 1991-01-22 16:21:29 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.1 1991-01-22 16:11:00 probe Exp $";
+static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.2 1991-01-22 16:21:29 probe Exp $";
 #endif lint
 
 #include <stdio.h>
@@ -37,6 +37,7 @@ struct filestack {
 char	*path_canon(infile)
 	char	*infile;
 {
+	extern char *getwd();
 	static struct filestack	stack[MAXLINKS];
 	int			stkcnt = 0;	/* Stack counter */
 	struct filestack	*stkptr = &stack[0]; /*Always = &stack[stkcnt]*/
