@@ -1,0 +1,26 @@
+[Desktop Entry]
+Name=Compass
+Name[de]=Kompass
+Name[es]=Compass
+Name[fi]=Kompassi
+Name[fr]=Compas
+Name[ja]=¥³¥ó¥Ñ¥¹
+Name[no]=Kompass
+Name[sk]=Kompas
+Name[sv]=Kompass
+Comment=Display a spinning compass 
+Comment[fi]=Piirtää pyörivän kompassin.
+Comment[fr]=Affiche un compas tournant
+Comment[ja]=²óÅ¾¤¹¤ë¥³¥ó¥Ñ¥¹¤òÉ½¼¨
+Comment[no]=Viser et snurrende kompass 
+Comment[sk]=Zobrazuje otáèajúci sa kompas
+Comment[sv]=Visa en snurrande kompass
+Exec=xscreensaver-command -activate
+TryExec=compass
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=compass

@@ -1,0 +1,42 @@
+[Desktop Entry]
+Name=Flow
+Name[ca]=Flux
+Name[da]=Flyd
+Name[de]=Fließen
+Name[es]=Flujo
+Name[fi]=Virtaus
+Name[fr]=Flux
+Name[no]=Flyt
+Name[ru]=ðÏÔÏË
+Name[sk]=Prúd
+Name[sv]=Flöde
+Comment=Draws a flow of colored points
+Comment[da]=Tegner en strøm af farvede punkter
+Comment[en_GB]=Draws a flow of coloured points
+Comment[es]=Dibuja con puntos de color un flujo 
+Comment[fi]=Piirtää virtaavia väripisteitä
+Comment[fr]=Dessine un flux avec des points de couleur
+Comment[no]=Tenger en strøm av fargede punkter
+Comment[sk]=Kreslí prúd farebných bodov
+Comment[sv]=Ritar ett flöde av färgade punkter
+Exec=xscreensaver-command -activate
+TryExec=flow
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=flow.png
+Author=
+ExtendedComment=Draws a flow of colored points
+ExtendedComment[da]=Tegner en strøm af farvede punkter
+ExtendedComment[en_GB]=Draws a flow of coloured points
+ExtendedComment[es]=Dibuja con puntos de color un flujo 
+ExtendedComment[fi]=Piirtää virtaavia väripisteitä
+ExtendedComment[fr]=Dessine un flux avec des points de couleur
+ExtendedComment[no]=Tenger en strøm av fargede punkter
+ExtendedComment[sk]=Kreslí prúd farebných bodov
+ExtendedComment[sv]=Ritar ett flöde av färgade punkter
+Demo=flow -delay 2
+

@@ -1,0 +1,116 @@
+[Desktop Entry]
+Name=Xteevee
+Name[de]=Xteevee
+Name[fi]=Xtelevisio
+Name[fr]=Xteevee
+Name[ja]=X ¥Æ¥ì¥Ó
+Name[no]=Xteevee
+Name[sk]=XTelevízor
+Name[sv]=Xtv
+Comment=Simulates various television problems such as static, loss of vertical hold, and test patterns.
+Exec=xscreensaver-command -activate
+TryExec=xteevee
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=xteevee.png
+Author=Greg Knauss
+Author[de]=Greg Knauss
+Author[fr]=Greg Knauss
+Author[ja]=Greg Knauss
+Author[no]=Greg Knauss
+Author[sk]=Greg Knauss
+Author[sv]=Greg Knauss
+Author[wa]=Greg Knauss
+ExtendedComment=Simulates various television problems such as static, loss of vertical hold, and test patterns.
+Demo=xteevee -bars
+
+[Arg0]
+Name=Cycle
+Name[es]=Ciclo
+Name[fi]=Kierros
+Name[fr]=Cycle
+Name[no]=Syklus
+Name[sk]=Dookola
+Name[sv]=Snurra
+Type=Check
+Flag=-cycle
+Flag2=
+LeftLabel=Cycle modes.
+LeftLabel[ja]=²óÅ¾¥â¡¼¥É
+LeftLabel[sk]=Dookola v¹etky módy
+LeftLabel[sv]=Växla lägen.
+Comment=Cycle through all the available modes.
+Comment[es]=Alterna entre todos los modos disponibles
+Comment[fi]=Käy kaikki tilat läpi.
+Comment[sk]=Mení dookola v¹etky mo¾né módy.
+Comment[sv]=Växla genom alla tillgängliga lägen.
+
+[Arg1]
+Name=Static
+Name[de]=Statisch
+Name[fi]=Lumisade
+Name[no]=Statisk
+Name[sk]=Zrnenie
+Name[sv]=Brus
+Type=Check
+Flag=-static
+Flag2=
+LeftLabel=Display static.
+LeftLabel[de]=Statisch anzeigen.
+LeftLabel[sk]=Zobrazova» zrnenie.
+LeftLabel[sv]=Visa brus.
+Comment=Static.
+Comment[de]=Statisch.
+Comment[fi]=Lumisade.
+Comment[no]=Statisk.
+Comment[sk]=Zrnenie.
+Comment[sv]=Brus.
+
+[Arg2]
+Name=Roll
+Name[de]=Rollen
+Name[fi]=Vieritä
+Name[no]=Rull
+Name[sk]=Behajúci obraz
+Name[sv]=Rulla
+Type=Check
+Flag=-roll
+Flag2=
+LeftLabel=Vertical roll.
+LeftLabel[fi]=Pystysuora vieriminen
+LeftLabel[ja]=¿âÄ¾¤Ë¥¹¥¯¥í¡¼¥ë
+LeftLabel[no]=Vertikal rulling.
+LeftLabel[sk]=Vertikálne behanie
+LeftLabel[sv]=Vertikal rullning.
+Comment=Vertical roll.
+Comment[fi]=Pystysuora vieriminen
+Comment[ja]=¿âÄ¾¤Ë¥¹¥¯¥í¡¼¥ë
+Comment[no]=Vertikal rulling.
+Comment[sk]=Vertikálne behanie
+Comment[sv]=Vertikal rullning.
+
+[Arg3]
+Name=Bars
+Name[fi]=Palkit
+Name[ja]=¥Ð¡¼
+Name[no]=Barrer
+Name[sk]=Pruhy
+Name[sv]=Rutor
+Type=Check
+Flag=-bars
+Flag2=
+LeftLabel=Display color bars.
+LeftLabel[fi]=Näytä väripalkit.
+LeftLabel[ja]=¥«¥é¡¼¥Ð¡¼¤òÉ½¼¨
+LeftLabel[sk]=Zobrazi» farebné pruhy
+LeftLabel[sv]=Visa färgade rutor.
+Comment=Display color bars.
+Comment[fi]=Näytä väripalkit.
+Comment[ja]=¥«¥é¡¼¥Ð¡¼¤òÉ½¼¨
+Comment[sk]=Zobrazi» farebné pruhy
+Comment[sv]=Visa färgade rutor.
+

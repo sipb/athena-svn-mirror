@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Morph3d
+Name[da]=Morf3d
+Name[de]=Morph3D
+Name[fi]=3D-muodonmuutos
+Name[fr]=Morph3d
+Name[ja]=¥â¡¼¥Õ 3D
+Name[sk]=Morf3D
+Name[sv]=Morph3D
+Comment=A 3d flower morphs into a sphear
+Comment[da]=En 3d blomst morfes til en sfære
+Comment[de]=Eine 3D-Blume verwandelt in eine Kugel
+Comment[fi]=3-ulotteinen kukka muotoutuu palloksi
+Comment[fr]=Une fleur 3D qui se déforme en sphére
+Comment[ja]=3 ¼¡¸µ¤Î²Ö¤¬µå¤ËÊÑ·Á
+Comment[sk]=3D kvet sa mení na guµu
+Comment[sv]=En 3D-blomma morfar till ett klot
+Exec=xscreensaver-command -activate
+TryExec=morph3d
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=morph3d
+
+

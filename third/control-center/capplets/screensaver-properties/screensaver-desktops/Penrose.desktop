@@ -1,0 +1,25 @@
+[Desktop Entry]
+Name=Penrose
+Name[ca]=Penrose
+Name[da]=Penrose
+Name[de]=Penrose
+Name[fi]=Penrose
+Name[fr]=Penrose
+Name[ja]=¥Ú¥ó¥í¡¼¥º
+Name[no]=Pennerose
+Name[ru]=ğÅÎÎÒÏÕÚ
+Name[sk]=Penrose
+Name[sv]=Penrose
+Comment=
+Exec=xscreensaver-command -activate
+TryExec=penrose
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=penrose.png
+Author=
+ExtendedComment=
+Demo=penrose -delay 2

@@ -1,0 +1,24 @@
+[Desktop Entry]
+Name=Shadebobs
+Name[de]=Shadebobs
+Name[sk]=Shadebobs
+Name[sv]=Skuggbobbor
+Comment=Draws smoothly-shaded oscillating oval patterns which resemble vapor trails.
+Exec=xscreensaver-command -activate
+TryExec=shadebobs
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=shadebobs.png
+Author=Shane Smit
+Author[de]=Shane Smit
+Author[es]=Shane Smit
+Author[no]=Shane Smit
+Author[sk]=Shane Smit
+Author[sv]=Shane Smit
+Author[wa]=Shane Smit
+ExtendedComment=
+Demo=shadebobs -delay 2

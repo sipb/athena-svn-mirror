@@ -340,6 +340,88 @@ AC_DEFUN([AM_ACLOCAL_INCLUDE],
 	for k in $1 ; do ACLOCAL="$ACLOCAL -I $k" ; done
 ])
 
+
+# serial 1 AC_PROG_XML_I18N_TOOLS
+AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
+[
+
+dnl This is a hack - we use the expansion of AC_SUBST instead of
+dnl AC_SUBST itself to avoid automake putting 
+dnl XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+dnl in all the Makefile.in's
+XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_OAF_RULE@%[$]XML_I18N_MERGE_OAF_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_KEYS_RULE@%[$]XML_I18N_MERGE_KEYS_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_DESKTOP_RULE@%[$]XML_I18N_MERGE_DESKTOP_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_DIRECTORY_RULE='\%.directory : \%.directory.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.directory'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_DIRECTORY_RULE@%[$]XML_I18N_MERGE_DIRECTORY_RULE%g
+AC_DIVERT_POP()dnl
+
+# Always use our own xml-i18n-tools.
+XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
+AC_SUBST(XML_I18N_EXTRACT)dnl
+
+XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
+AC_SUBST(XML_I18N_MERGE)dnl
+
+XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
+AC_SUBST(XML_I18N_UPDATE)dnl
+
+dnl same deal
+XML_I18N_MERGE_SOUNDLIST_RULE='\%.soundlist : \%.soundlist.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.soundlist'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_SOUNDLIST_RULE@%[$]XML_I18N_MERGE_SOUNDLIST_RULE%g
+AC_DIVERT_POP()dnl
+
+AC_PATH_PROG(XML_I18N_TOOLS_PERL, perl)
+if test -z "$XML_I18N_TOOLS_PERL"; then
+   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
+fi
+if test -z "`$XML_I18N_TOOLS_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
+fi
+
+dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
+dnl  AC_OUTPUT
+AC_OUTPUT_COMMANDS([
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-extract.in > xml-i18n-extract;
+chmod ugo+x xml-i18n-extract;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-merge.in > xml-i18n-merge;
+chmod ugo+x xml-i18n-merge;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-update.in > xml-i18n-update;
+chmod ugo+x xml-i18n-update;
+], XML_I18N_TOOLS_PERL=${XML_I18N_TOOLS_PERL})
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
+dnl old names
+AC_DEFUN(AM_PROG_XML_I18N_TOOLS, [indir([AC_PROG_XML_I18N_TOOLS])])dnl
+
 dnl
 dnl GNOME_INIT_HOOK (script-if-gnome-enabled, [failflag], [additional-inits])
 dnl
@@ -446,10 +528,6 @@ AC_DEFUN([GNOME_INIT_HOOK],[
 		AC_SUBST(GNOME_APPLETS_LIBS)
 		GNOME_APPLETS_LIBS=`$GNOME_CONFIG --libs-only-l applets`
 		AC_MSG_RESULT($GNOME_APPLETS_LIBS);;
-	      docklets)
-		AC_SUBST(GNOME_DOCKLETS_LIBS)
-		GNOME_DOCKLETS_LIBS=`$GNOME_CONFIG --libs-only-l docklets`
-		AC_MSG_RESULT($GNOME_DOCKLETS_LIBS);;
 	      capplet)
 		AC_SUBST(GNOME_CAPPLET_LIBS)
 		GNOME_CAPPLET_LIBS=`$GNOME_CONFIG --libs-only-l capplet`
@@ -539,116 +617,6 @@ AC_DEFUN([GNOME_ORBIT_CHECK], [
 	GNOME_ORBIT_HOOK([],failure)
 ])
 
-dnl GNOME_COMPILE_WARNINGS
-dnl Turn on many useful compiler warnings
-dnl For now, only works on GCC
-AC_DEFUN([GNOME_COMPILE_WARNINGS],[
-  AC_ARG_ENABLE(compile-warnings, 
-    [  --enable-compile-warnings=[no/minimum/yes]	Turn on compiler warnings.],,enable_compile_warnings=minimum)
-
-  AC_MSG_CHECKING(what warning flags to pass to the C compiler)
-  warnCFLAGS=
-  if test "x$GCC" != xyes; then
-    enable_compile_warnings=no
-  fi
-
-  if test "x$enable_compile_warnings" != "xno"; then
-    if test "x$GCC" = "xyes"; then
-      case " $CFLAGS " in
-      *[\ \	]-Wall[\ \	]*) ;;
-      *) warnCFLAGS="-Wall -Wunused" ;;
-      esac
-
-      ## -W is not all that useful.  And it cannot be controlled
-      ## with individual -Wno-xxx flags, unlike -Wall
-      if test "x$enable_compile_warnings" = "xyes"; then
-	warnCFLAGS="$warnCFLAGS -Wmissing-prototypes -Wmissing-declarations"
-      fi
-    fi
-  fi
-  AC_MSG_RESULT($warnCFLAGS)
-
-  AC_ARG_ENABLE(iso-c,
-    [  --enable-iso-c          Try to warn if code is not ISO C ],,
-    enable_iso_c=no)
-
-  AC_MSG_CHECKING(what language compliance flags to pass to the C compiler)
-  complCFLAGS=
-  if test "x$enable_iso_c" != "xno"; then
-    if test "x$GCC" = "xyes"; then
-      case " $CFLAGS " in
-      *[\ \	]-ansi[\ \	]*) ;;
-      *) complCFLAGS="$complCFLAGS -ansi" ;;
-      esac
-
-      case " $CFLAGS " in
-      *[\ \	]-pedantic[\ \	]*) ;;
-      *) complCFLAGS="$complCFLAGS -pedantic" ;;
-      esac
-    fi
-  fi
-  AC_MSG_RESULT($complCFLAGS)
-  if test "x$cflags_set" != "xyes"; then
-    CFLAGS="$CFLAGS $warnCFLAGS $complCFLAGS"
-    cflags_set=yes
-    AC_SUBST(cflags_set)
-  fi
-])
-
-dnl For C++, do basically the same thing.
-
-AC_DEFUN([GNOME_CXX_WARNINGS],[
-  AC_ARG_ENABLE(cxx-warnings, 
-    [  --enable-cxx-warnings=[no/minimum/yes]	Turn on compiler warnings.],,enable_cxx_warnings=minimum)
-
-  AC_MSG_CHECKING(what warning flags to pass to the C++ compiler)
-  warnCXXFLAGS=
-  if test "x$GCC" != xyes; then
-    enable_compile_warnings=no
-  fi
-  if test "x$enable_cxx_warnings" != "xno"; then
-    if test "x$GCC" = "xyes"; then
-      case " $CXXFLAGS " in
-      *[\ \	]-Wall[\ \	]*) ;;
-      *) warnCXXFLAGS="-Wall -Wno-unused" ;;
-      esac
-
-      ## -W is not all that useful.  And it cannot be controlled
-      ## with individual -Wno-xxx flags, unlike -Wall
-      if test "x$enable_cxx_warnings" = "xyes"; then
-	warnCXXFLAGS="$warnCXXFLAGS -Wmissing-prototypes -Wmissing-declarations -Wshadow -Woverloaded-virtual"
-      fi
-    fi
-  fi
-  AC_MSG_RESULT($warnCXXFLAGS)
-
-   AC_ARG_ENABLE(iso-cxx,
-     [  --enable-iso-cxx          Try to warn if code is not ISO C++ ],,
-     enable_iso_cxx=no)
-
-   AC_MSG_CHECKING(what language compliance flags to pass to the C++ compiler)
-   complCXXFLAGS=
-   if test "x$enable_iso_cxx" != "xno"; then
-     if test "x$GCC" = "xyes"; then
-      case " $CXXFLAGS " in
-      *[\ \	]-ansi[\ \	]*) ;;
-      *) complCXXFLAGS="$complCXXFLAGS -ansi" ;;
-      esac
-
-      case " $CXXFLAGS " in
-      *[\ \	]-pedantic[\ \	]*) ;;
-      *) complCXXFLAGS="$complCXXFLAGS -pedantic" ;;
-      esac
-     fi
-   fi
-  AC_MSG_RESULT($complCXXFLAGS)
-  if test "x$cxxflags_set" != "xyes"; then
-    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS $complCXXFLAGS"
-    cxxflags_set=yes
-    AC_SUBST(cxxflags_set)
-  fi
-])
-
 
 # serial 40 AC_PROG_LIBTOOL
 AC_DEFUN(AC_PROG_LIBTOOL,
@@ -701,12 +669,7 @@ NONE) lt_target="$host" ;;
 esac
 
 # Check for any special flags to pass to ltconfig.
-#
-# the following will cause an existing older ltconfig to fail, so
-# we ignore this at the expense of the cache file... Checking this 
-# will just take longer ... bummer!
-#libtool_flags="--cache-file=$cache_file"
-#
+libtool_flags="--cache-file=$cache_file"
 test "$enable_shared" = no && libtool_flags="$libtool_flags --disable-shared"
 test "$enable_static" = no && libtool_flags="$libtool_flags --disable-static"
 test "$enable_fast_install" = no && libtool_flags="$libtool_flags --disable-fast-install"
@@ -1005,31 +968,35 @@ esac
 ])
 
 # AC_LIBLTDL_CONVENIENCE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl convenience library, adds --enable-ltdl-convenience to
-# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
-# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
-# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
-# '${top_builddir}/' (note the single quotes!) if your package is not
-# flat, and, if you're not using automake, define top_builddir as
-# appropriate in the Makefiles.
+# the libltdl convenience library and INCLTDL to the include flags for
+# the libltdl header and adds --enable-ltdl-convenience to the
+# configure arguments.  Note that LIBLTDL and INCLTDL are not
+# AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If DIR is not
+# provided, it is assumed to be `libltdl'.  LIBLTDL will be prefixed
+# with '${top_builddir}/' and INCLTDL will be prefixed with
+# '${top_srcdir}/' (note the single quotes!).  If your package is not
+# flat and you're not using automake, define top_builddir and
+# top_srcdir appropriately in the Makefiles.
 AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   case "$enable_ltdl_convenience" in
   no) AC_MSG_ERROR([this package needs a convenience libltdl]) ;;
   "") enable_ltdl_convenience=yes
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
-  LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
-  INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
+  LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
+  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl installable library, and adds --enable-ltdl-install to
-# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
-# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
-# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
-# '${top_builddir}/' (note the single quotes!) if your package is not
-# flat, and, if you're not using automake, define top_builddir as
-# appropriate in the Makefiles.
+# the libltdl installable library and INCLTDL to the include flags for
+# the libltdl header and adds --enable-ltdl-install to the configure
+# arguments.  Note that LIBLTDL and INCLTDL are not AC_SUBSTed, nor is
+# AC_CONFIG_SUBDIRS called.  If DIR is not provided and an installed
+# libltdl is not found, it is assumed to be `libltdl'.  LIBLTDL will
+# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed
+# with '${top_srcdir}/' (note the single quotes!).  If your package is
+# not flat and you're not using automake, define top_builddir and
+# top_srcdir appropriately in the Makefiles.
 # In the future, this macro may have to be called after AC_PROG_LIBTOOL.
 AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   AC_CHECK_LIB(ltdl, main,
@@ -1042,8 +1009,8 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   ])
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
-    LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
-    INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
+    LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
+    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
@@ -1071,6 +1038,409 @@ AC_DEFUN(AM_PROG_LEX,
 AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
 AC_PROG_LEX
 AC_DECL_YYTEXT])
+
+dnl GNOME_COMPILE_WARNINGS
+dnl Turn on many useful compiler warnings
+dnl For now, only works on GCC
+AC_DEFUN([GNOME_COMPILE_WARNINGS],[
+  AC_ARG_ENABLE(compile-warnings, 
+    [  --enable-compile-warnings=[no/minimum/yes]	Turn on compiler warnings.],,enable_compile_warnings=minimum)
+
+  AC_MSG_CHECKING(what warning flags to pass to the C compiler)
+  warnCFLAGS=
+  if test "x$GCC" != xyes; then
+    enable_compile_warnings=no
+  fi
+
+  if test "x$enable_compile_warnings" != "xno"; then
+    if test "x$GCC" = "xyes"; then
+      case " $CFLAGS " in
+      *[\ \	]-Wall[\ \	]*) ;;
+      *) warnCFLAGS="-Wall -Wunused" ;;
+      esac
+
+      ## -W is not all that useful.  And it cannot be controlled
+      ## with individual -Wno-xxx flags, unlike -Wall
+      if test "x$enable_compile_warnings" = "xyes"; then
+	warnCFLAGS="$warnCFLAGS -Wmissing-prototypes -Wmissing-declarations"
+      fi
+    fi
+  fi
+  AC_MSG_RESULT($warnCFLAGS)
+
+  AC_ARG_ENABLE(iso-c,
+    [  --enable-iso-c          Try to warn if code is not ISO C ],,
+    enable_iso_c=no)
+
+  AC_MSG_CHECKING(what language compliance flags to pass to the C compiler)
+  complCFLAGS=
+  if test "x$enable_iso_c" != "xno"; then
+    if test "x$GCC" = "xyes"; then
+      case " $CFLAGS " in
+      *[\ \	]-ansi[\ \	]*) ;;
+      *) complCFLAGS="$complCFLAGS -ansi" ;;
+      esac
+
+      case " $CFLAGS " in
+      *[\ \	]-pedantic[\ \	]*) ;;
+      *) complCFLAGS="$complCFLAGS -pedantic" ;;
+      esac
+    fi
+  fi
+  AC_MSG_RESULT($complCFLAGS)
+  if test "x$cflags_set" != "xyes"; then
+    CFLAGS="$CFLAGS $warnCFLAGS $complCFLAGS"
+    cflags_set=yes
+    AC_SUBST(cflags_set)
+  fi
+])
+
+dnl For C++, do basically the same thing.
+
+AC_DEFUN([GNOME_CXX_WARNINGS],[
+  AC_ARG_ENABLE(cxx-warnings, 
+    [  --enable-cxx-warnings=[no/minimum/yes]	Turn on compiler warnings.],,enable_cxx_warnings=minimum)
+
+  AC_MSG_CHECKING(what warning flags to pass to the C++ compiler)
+  warnCXXFLAGS=
+  if test "x$GCC" != xyes; then
+    enable_compile_warnings=no
+  fi
+  if test "x$enable_cxx_warnings" != "xno"; then
+    if test "x$GCC" = "xyes"; then
+      case " $CXXFLAGS " in
+      *[\ \	]-Wall[\ \	]*) ;;
+      *) warnCXXFLAGS="-Wall -Wno-unused" ;;
+      esac
+
+      ## -W is not all that useful.  And it cannot be controlled
+      ## with individual -Wno-xxx flags, unlike -Wall
+      if test "x$enable_cxx_warnings" = "xyes"; then
+	warnCXXFLAGS="$warnCXXFLAGS -Wmissing-prototypes -Wmissing-declarations -Wshadow -Woverloaded-virtual"
+      fi
+    fi
+  fi
+  AC_MSG_RESULT($warnCXXFLAGS)
+
+   AC_ARG_ENABLE(iso-cxx,
+     [  --enable-iso-cxx          Try to warn if code is not ISO C++ ],,
+     enable_iso_cxx=no)
+
+   AC_MSG_CHECKING(what language compliance flags to pass to the C++ compiler)
+   complCXXFLAGS=
+   if test "x$enable_iso_cxx" != "xno"; then
+     if test "x$GCC" = "xyes"; then
+      case " $CXXFLAGS " in
+      *[\ \	]-ansi[\ \	]*) ;;
+      *) complCXXFLAGS="$complCXXFLAGS -ansi" ;;
+      esac
+
+      case " $CXXFLAGS " in
+      *[\ \	]-pedantic[\ \	]*) ;;
+      *) complCXXFLAGS="$complCXXFLAGS -pedantic" ;;
+      esac
+     fi
+   fi
+  AC_MSG_RESULT($complCXXFLAGS)
+  if test "x$cxxflags_set" != "xyes"; then
+    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS $complCXXFLAGS"
+    cxxflags_set=yes
+    AC_SUBST(cxxflags_set)
+  fi
+])
+
+dnl GNOME_X_CHECKS
+dnl
+dnl Basic X11 related checks for X11.  At the end, the following will be
+dnl defined/changed:
+dnl   GTK_{CFLAGS,LIBS}      From AM_PATH_GTK
+dnl   CPPFLAGS		     Will include $X_CFLAGS
+dnl   GNOME_HAVE_SM	     `true' or `false' depending on whether session
+dnl                          management is available.  It is available if
+dnl                          both -lSM and X11/SM/SMlib.h exist.  (Some
+dnl                          Solaris boxes have the library but not the header)
+dnl   XPM_LIBS               -lXpm if Xpm library is present, otherwise ""
+dnl
+dnl The following configure cache variables are defined (but not used):
+dnl   gnome_cv_passdown_{x_libs,X_LIBS,X_CFLAGS}
+dnl
+AC_DEFUN([GNOME_X_CHECKS],
+[
+	AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(GTK not installed, or gtk-config not in path))
+	dnl Hope that GTK_CFLAGS have only -I and -D.  Otherwise, we could
+	dnl   test -z "$x_includes" || CPPFLAGS="$CPPFLAGS -I$x_includes"
+	dnl
+	dnl Use CPPFLAGS instead of CFLAGS because AC_CHECK_HEADERS uses
+	dnl CPPFLAGS, not CFLAGS
+        CPPFLAGS="$CPPFLAGS $GTK_CFLAGS"
+
+        saved_ldflags="$LDFLAGS"
+        LDFLAGS="$LDFLAGS $GTK_LIBS"
+
+	gnome_cv_passdown_x_libs="$GTK_LIBS"
+	gnome_cv_passdown_X_LIBS="$GTK_LIBS"
+	gnome_cv_passdown_X_CFLAGS="$GTK_CFLAGS"
+	gnome_cv_passdown_GTK_LIBS="$GTK_LIBS"
+
+        LDFLAGS="$saved_ldflags $GTK_LIBS"
+
+dnl We are requiring GTK >= 1.1.1, which means this will be fine anyhow.
+	USE_DEVGTK=true
+
+dnl	AC_MSG_CHECKING([whether to use features from (unstable) GTK+ 1.1.x])
+dnl	AC_EGREP_CPP(answer_affirmatively,
+dnl	[#include <gtk/gtkfeatures.h>
+dnl	#ifdef GTK_HAVE_FEATURES_1_1_0
+dnl	   answer_affirmatively
+dnl	#endif
+dnl	], dev_gtk=yes, dev_gtk=no)
+dnl	if test "$dev_gtk" = "yes"; then
+dnl	   USE_DEVGTK=true
+dnl	fi
+dnl	AC_MSG_RESULT("$dev_gtk")
+
+	GNOME_HAVE_SM=true
+	case "$GTK_LIBS" in
+	 *-lSM*)
+	    dnl Already found it.
+	    ;;
+	 *)
+	    dnl Assume that if we have -lSM then we also have -lICE.
+	    AC_CHECK_LIB(SM, SmcSaveYourselfDone,
+	        [GTK_LIBS="-lSM -lICE $GTK_LIBS"],GNOME_HAVE_SM=false,
+		$x_libs -lICE)
+	    ;;
+	esac
+
+	if test "$GNOME_HAVE_SM" = true; then
+	   AC_CHECK_HEADERS(X11/SM/SMlib.h,,GNOME_HAVE_SM=false)
+	fi
+
+	if test "$GNOME_HAVE_SM" = true; then
+	   AC_DEFINE(HAVE_LIBSM)
+	fi
+
+	XPM_LIBS=""
+	AC_CHECK_LIB(Xpm, XpmFreeXpmImage, [XPM_LIBS="-lXpm"], , $x_libs)
+	AC_SUBST(XPM_LIBS)
+
+	AC_REQUIRE([GNOME_PTHREAD_CHECK])
+        LDFLAGS="$saved_ldflags"
+
+	AC_PROVIDE([GNOME_X_CHECKS])
+])
+
+# Configure paths for GTK+
+# Owen Taylor     97-11-3
+
+dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
+dnl
+AC_DEFUN(AM_PATH_GTK,
+[dnl 
+dnl Get the cflags and libraries from the gtk-config script
+dnl
+AC_ARG_WITH(gtk-prefix,[  --with-gtk-prefix=PFX   Prefix where GTK is installed (optional)],
+            gtk_config_prefix="$withval", gtk_config_prefix="")
+AC_ARG_WITH(gtk-exec-prefix,[  --with-gtk-exec-prefix=PFX Exec prefix where GTK is installed (optional)],
+            gtk_config_exec_prefix="$withval", gtk_config_exec_prefix="")
+AC_ARG_ENABLE(gtktest, [  --disable-gtktest       Do not try to compile and run a test GTK program],
+		    , enable_gtktest=yes)
+
+  for module in . $4
+  do
+      case "$module" in
+         gthread) 
+             gtk_config_args="$gtk_config_args gthread"
+         ;;
+      esac
+  done
+
+  if test x$gtk_config_exec_prefix != x ; then
+     gtk_config_args="$gtk_config_args --exec-prefix=$gtk_config_exec_prefix"
+     if test x${GTK_CONFIG+set} != xset ; then
+        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config
+     fi
+  fi
+  if test x$gtk_config_prefix != x ; then
+     gtk_config_args="$gtk_config_args --prefix=$gtk_config_prefix"
+     if test x${GTK_CONFIG+set} != xset ; then
+        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config
+     fi
+  fi
+
+  AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
+  min_gtk_version=ifelse([$1], ,0.99.7,$1)
+  AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
+  no_gtk=""
+  if test "$GTK_CONFIG" = "no" ; then
+    no_gtk=yes
+  else
+    GTK_CFLAGS=`$GTK_CONFIG $gtk_config_args --cflags`
+    GTK_LIBS=`$GTK_CONFIG $gtk_config_args --libs`
+    gtk_config_major_version=`$GTK_CONFIG $gtk_config_args --version | \
+           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+    gtk_config_minor_version=`$GTK_CONFIG $gtk_config_args --version | \
+           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+    gtk_config_micro_version=`$GTK_CONFIG $gtk_config_args --version | \
+           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+    if test "x$enable_gtktest" = "xyes" ; then
+      ac_save_CFLAGS="$CFLAGS"
+      ac_save_LIBS="$LIBS"
+      CFLAGS="$CFLAGS $GTK_CFLAGS"
+      LIBS="$GTK_LIBS $LIBS"
+dnl
+dnl Now check if the installed GTK is sufficiently new. (Also sanity
+dnl checks the results of gtk-config to some extent
+dnl
+      rm -f conf.gtktest
+      AC_TRY_RUN([
+#include <gtk/gtk.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int 
+main ()
+{
+  int major, minor, micro;
+  char *tmp_version;
+
+  system ("touch conf.gtktest");
+
+  /* HP/UX 9 (%@#!) writes to sscanf strings */
+  tmp_version = g_strdup("$min_gtk_version");
+  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
+     printf("%s, bad version string\n", "$min_gtk_version");
+     exit(1);
+   }
+
+  if ((gtk_major_version != $gtk_config_major_version) ||
+      (gtk_minor_version != $gtk_config_minor_version) ||
+      (gtk_micro_version != $gtk_config_micro_version))
+    {
+      printf("\n*** 'gtk-config --version' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
+             $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
+             gtk_major_version, gtk_minor_version, gtk_micro_version);
+      printf ("*** was found! If gtk-config was correct, then it is best\n");
+      printf ("*** to remove the old version of GTK+. You may also be able to fix the error\n");
+      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
+      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
+      printf("*** required on your system.\n");
+      printf("*** If gtk-config was wrong, set the environment variable GTK_CONFIG\n");
+      printf("*** to point to the correct copy of gtk-config, and remove the file config.cache\n");
+      printf("*** before re-running configure\n");
+    } 
+#if defined (GTK_MAJOR_VERSION) && defined (GTK_MINOR_VERSION) && defined (GTK_MICRO_VERSION)
+  else if ((gtk_major_version != GTK_MAJOR_VERSION) ||
+	   (gtk_minor_version != GTK_MINOR_VERSION) ||
+           (gtk_micro_version != GTK_MICRO_VERSION))
+    {
+      printf("*** GTK+ header files (version %d.%d.%d) do not match\n",
+	     GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+      printf("*** library (version %d.%d.%d)\n",
+	     gtk_major_version, gtk_minor_version, gtk_micro_version);
+    }
+#endif /* defined (GTK_MAJOR_VERSION) ... */
+  else
+    {
+      if ((gtk_major_version > major) ||
+        ((gtk_major_version == major) && (gtk_minor_version > minor)) ||
+        ((gtk_major_version == major) && (gtk_minor_version == minor) && (gtk_micro_version >= micro)))
+      {
+        return 0;
+       }
+     else
+      {
+        printf("\n*** An old version of GTK+ (%d.%d.%d) was found.\n",
+               gtk_major_version, gtk_minor_version, gtk_micro_version);
+        printf("*** You need a version of GTK+ newer than %d.%d.%d. The latest version of\n",
+	       major, minor, micro);
+        printf("*** GTK+ is always available from ftp://ftp.gtk.org.\n");
+        printf("***\n");
+        printf("*** If you have already installed a sufficiently new version, this error\n");
+        printf("*** probably means that the wrong copy of the gtk-config shell script is\n");
+        printf("*** being found. The easiest way to fix this is to remove the old version\n");
+        printf("*** of GTK+, but you can also set the GTK_CONFIG environment to point to the\n");
+        printf("*** correct copy of gtk-config. (In this case, you will have to\n");
+        printf("*** modify your LD_LIBRARY_PATH enviroment variable, or edit /etc/ld.so.conf\n");
+        printf("*** so that the correct libraries are found at run-time))\n");
+      }
+    }
+  return 1;
+}
+],, no_gtk=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+       CFLAGS="$ac_save_CFLAGS"
+       LIBS="$ac_save_LIBS"
+     fi
+  fi
+  if test "x$no_gtk" = x ; then
+     AC_MSG_RESULT(yes)
+     ifelse([$2], , :, [$2])     
+  else
+     AC_MSG_RESULT(no)
+     if test "$GTK_CONFIG" = "no" ; then
+       echo "*** The gtk-config script installed by GTK could not be found"
+       echo "*** If GTK was installed in PREFIX, make sure PREFIX/bin is in"
+       echo "*** your path, or set the GTK_CONFIG environment variable to the"
+       echo "*** full path to gtk-config."
+     else
+       if test -f conf.gtktest ; then
+        :
+       else
+          echo "*** Could not run GTK test program, checking why..."
+          CFLAGS="$CFLAGS $GTK_CFLAGS"
+          LIBS="$LIBS $GTK_LIBS"
+          AC_TRY_LINK([
+#include <gtk/gtk.h>
+#include <stdio.h>
+],      [ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ],
+        [ echo "*** The test program compiled, but did not run. This usually means"
+          echo "*** that the run-time linker is not finding GTK or finding the wrong"
+          echo "*** version of GTK. If it is not finding GTK, you'll need to set your"
+          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
+          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
+          echo "*** is required on your system"
+	  echo "***"
+          echo "*** If you have an old version installed, it is best to remove it, although"
+          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
+          echo "***"
+          echo "*** If you have a RedHat 5.0 system, you should remove the GTK package that"
+          echo "*** came with the system with the command"
+          echo "***"
+          echo "***    rpm --erase --nodeps gtk gtk-devel" ],
+        [ echo "*** The test program failed to compile or link. See the file config.log for the"
+          echo "*** exact error that occured. This usually means GTK was incorrectly installed"
+          echo "*** or that you have moved GTK since it was installed. In the latter case, you"
+          echo "*** may want to edit the gtk-config script: $GTK_CONFIG" ])
+          CFLAGS="$ac_save_CFLAGS"
+          LIBS="$ac_save_LIBS"
+       fi
+     fi
+     GTK_CFLAGS=""
+     GTK_LIBS=""
+     ifelse([$3], , :, [$3])
+  fi
+  AC_SUBST(GTK_CFLAGS)
+  AC_SUBST(GTK_LIBS)
+  rm -f conf.gtktest
+])
+
+dnl
+dnl And better, use gthreads instead...
+dnl
+
+AC_DEFUN([GNOME_PTHREAD_CHECK],[
+	PTHREAD_LIB=""
+	AC_CHECK_LIB(pthread, pthread_create, PTHREAD_LIB="-lpthread",
+		[AC_CHECK_LIB(pthreads, pthread_create, PTHREAD_LIB="-lpthreads",
+		    [AC_CHECK_LIB(c_r, pthread_create, PTHREAD_LIB="-lc_r",
+			[AC_CHECK_FUNC(pthread_create)]
+		    )]
+		)]
+	)
+	AC_SUBST(PTHREAD_LIB)
+	AC_PROVIDE([GNOME_PTHREAD_CHECK])
+])
 
 # Macro to add for using GNU gettext.
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
@@ -1323,7 +1693,7 @@ strdup __argz_count __argz_stringify __argz_next])
        fi
        for lang in $LINGUAS; do
          case "$ALL_LINGUAS" in
-          *\ $lang\ *|$lang\ *|*\ $lang) NEW_LINGUAS="$NEW_LINGUAS $lang" ;;
+          *$lang*) NEW_LINGUAS="$NEW_LINGUAS $lang" ;;
          esac
        done
        LINGUAS=$NEW_LINGUAS
@@ -1477,83 +1847,6 @@ AC_DEFUN(AM_LC_MESSAGES,
     fi
   fi])
 
-dnl
-dnl GNOME_XML_HOOK (script-if-xml-found, failflag)
-dnl
-dnl If failflag is "failure", script aborts due to lack of XML
-dnl 
-dnl Check for availability of the libxml library
-dnl the XML parser uses libz if available too
-dnl
-
-AC_DEFUN([GNOME_XML_HOOK],[
-	AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
-	if test "$GNOME_CONFIG" = no; then
-		if test x$2 = xfailure; then
-			AC_MSG_ERROR(Could not find gnome-config)
-		fi
-	fi
-	AC_CHECK_LIB(xml, xmlNewDoc, [
-		$1
-		GNOME_XML_LIB=`$GNOME_CONFIG --libs xml`
-	], [
-		if test x$2 = xfailure; then 
-			AC_MSG_ERROR(Could not link sample xml program)
-		fi
-	], `$GNOME_CONFIG --libs xml`)
-	AC_SUBST(GNOME_XML_LIB)
-])
-
-AC_DEFUN([GNOME_XML_CHECK], [
-	GNOME_XML_HOOK([],failure)
-])
-
-# a macro to get the libs/cflags for libglade
-# serial 1
-
-dnl AM_PATH_LIBGLADE([ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]])
-dnl Test to see if libglade is installed, and define LIBGLADE_CFLAGS, LIBS
-dnl
-AC_DEFUN(AM_PATH_LIBGLADE,
-[dnl
-dnl Get the cflags and libraries from the libglade-config script
-dnl
-AC_ARG_WITH(libglade-config,
-[  --with-libglade-config=LIBGLADE_CONFIG  Location of libglade-config],
-LIBGLADE_CONFIG="$withval")
-
-module_args=
-for module in . $3; do
-  case "$module" in
-    gnome)
-      module_args="$module_args gnome"
-      ;;
-    bonobo)
-      module_args="$module_args bonobo"
-      ;;
-  esac
-done
-
-AC_PATH_PROG(LIBGLADE_CONFIG, libglade-config, no)
-AC_MSG_CHECKING(for libglade)
-if test "$LIBGLADE_CONFIG" = "no"; then
-  AC_MSG_RESULT(no)
-  ifelse([$2], , :, [$2])
-else
-  if $LIBGLADE_CONFIG --check $module_args; then
-    LIBGLADE_CFLAGS=`$LIBGLADE_CONFIG --cflags $module_args`
-    LIBGLADE_LIBS=`$LIBGLADE_CONFIG --libs $module_args`
-    AC_MSG_RESULT(yes)
-    ifelse([$1], , :, [$1])
-  else
-    echo "*** libglade was not compiled with support for $module_args" 1>&2
-    AC_MSG_RESULT(no)
-    ifelse([$2], , :, [$2])
-  fi
-fi
-AC_SUBST(LIBGLADE_CFLAGS)
-AC_SUBST(LIBGLADE_LIBS)
-])
 # Configure paths for IMLIB
 # Frank Belew     98-8-31
 # stolen from Manish Singh

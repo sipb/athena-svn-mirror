@@ -1,0 +1,27 @@
+[Desktop Entry]
+Name=Phosphor
+Name[de]=Phosphor
+Name[fi]=Fosfori
+Name[fr]=Phosphore
+Name[no]=Fosfor
+Name[sk]=Fosfór
+Name[sv]=Fosfor
+Comment=Draws a simulation of an old terminal, with large pixels and long-sustain phosphor.
+Exec=xscreensaver-command -activate
+TryExec=phosphor
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=phosphor.png
+Author=Jamie Zawinski <jwz@jwz.org>
+Author[fr]=Jamie Zawinski <jwz@jwz.org>
+Author[ja]=Jamie Zawinski <jwz@jwz.org>
+Author[no]=Jamie Zawinski <jwz@jwz.org>
+Author[sk]=Jamie Zawinski <jwz@jwz.org>
+Author[sv]=Jamie Zawinski <jwz@jwz.org>
+Author[wa]=Jamie Zawinski <jwz@jwz.org>
+ExtendedComment=
+Demo=phosphor -delay 2

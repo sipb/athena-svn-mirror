@@ -1,10 +1,7 @@
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
+#include <config.h>
 #include "da.h"
 #include "capplet-widget.h"
+#include <libgnomeui/gnome-window-icon.h>
 #include <signal.h>
 
 static gboolean   ignore_change = FALSE;
@@ -22,6 +19,8 @@ static GtkWidget *last_theme = NULL;
 static GtkWidget *font_sel;
 static GtkWidget *font_cbox;
 static gboolean initial_preview;
+static GtkWidget *fatal_error_dialog;
+
 /* If this is TRUE, then we use the custom font */
 static gboolean initial_font_cbox;
 static gchar *initial_font;
@@ -35,6 +34,8 @@ static void
 click_ok(GtkWidget *widget, gpointer data);
 static void
 click_revert(GtkWidget *widget, gpointer data);
+static void
+click_cancel(GtkWidget *widget, gpointer data);
 static void
 click_entry(GtkWidget *widget, gpointer data);
 static void
@@ -117,6 +118,7 @@ install_theme_callback (GtkWidget *widget, gpointer data)
   gtk_widget_set_sensitive (widget, FALSE);
 
   install_theme_file_sel = gtk_file_selection_new (_("Select a theme to install"));
+  gnome_window_icon_set_from_default (GTK_WINDOW (install_theme_file_sel));
   gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (install_theme_file_sel));
   /* BEGIN UGLINESS.  This code is stolen from gnome_dialog_set_parent.
    * We want its functionality, but it takes a GnomeDialog as its argument.
@@ -192,12 +194,10 @@ make_main(void)
   gtk_container_set_border_width(GTK_CONTAINER(capplet_widget), 5);
 
   box = gtk_vbox_new(FALSE, GNOME_PAD);
-  hbox = gtk_hbox_new(TRUE, GNOME_PAD);
   frame = gtk_frame_new (_("Available Themes"));
   hbox2 = gtk_hbox_new(FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hbox2), GNOME_PAD_SMALL);
-  gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(box), hbox, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box), frame, TRUE, TRUE, GNOME_PAD_SMALL);
   gtk_container_add (GTK_CONTAINER (frame), hbox2);
 
   /* List of available themes
@@ -237,7 +237,7 @@ make_main(void)
   /* Font selector.
    */
   frame = gtk_frame_new (_("User Font"));
-  gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box), frame, TRUE, TRUE, 0);
   font_sel = gnome_font_picker_new ();
   gnome_font_picker_set_mode (GNOME_FONT_PICKER (font_sel),
 			      GNOME_FONT_PICKER_MODE_FONT_INFO);
@@ -319,7 +319,7 @@ make_main(void)
   gtk_signal_connect (GTK_OBJECT (capplet_widget), "revert",
 		      GTK_SIGNAL_FUNC (click_revert), NULL);
   gtk_signal_connect (GTK_OBJECT (capplet_widget), "cancel",
-		      GTK_SIGNAL_FUNC (click_revert), NULL);
+		      GTK_SIGNAL_FUNC (click_cancel), NULL);
   gtk_signal_connect (GTK_OBJECT (capplet_widget), "delete_event",
 		      GTK_SIGNAL_FUNC (delete_capplet), NULL);
   gtk_container_add (GTK_CONTAINER (capplet_widget), box);
@@ -351,12 +351,13 @@ click_preview(GtkWidget *widget, gpointer data)
 
   send_reread();
 }
+
 static void
 click_help(GtkWidget *widget, gpointer data)
 {
   gchar *tmp;
 
-  tmp = gnome_help_file_find_file ("users-guide", "gccdesktop.html#GCCTHEME");
+  tmp = gnome_help_file_find_file ("control-center", "desktop-intro.html#GCCTHEME");
   if (tmp) {
     gnome_help_goto(0, tmp);
     g_free(tmp);
@@ -369,14 +370,17 @@ click_help(GtkWidget *widget, gpointer data)
     
     gtk_widget_show(mbox);
   }
-
 }
 static void
 click_try(GtkWidget *widget, gpointer data)
 {
   gchar *rc;
   gchar *dir;
+  gboolean result;
 
+  if (fatal_error_dialog)
+    return;
+  
 /*  if (current_theme == current_global_theme)
     return;*/
   widget = current_theme;
@@ -392,23 +396,35 @@ click_try(GtkWidget *widget, gpointer data)
   /* printf("%s\n", cmd); */
   send_reread();
   if (GTK_TOGGLE_BUTTON (font_cbox)->active)
+    result = use_theme(rc,
+		       gnome_font_picker_get_font_name (GNOME_FONT_PICKER (font_sel)));
+  else
+    result = use_theme(rc, NULL);
+
+  if (result)
     {
-      use_theme(rc,
-		gnome_font_picker_get_font_name (GNOME_FONT_PICKER (font_sel)));
+      gdk_error_trap_push ();
+      signal_apply_theme(widget);
+      gdk_flush();
+      /* system(cmd); */
+      gdk_error_trap_pop ();
     }
   else
     {
-      use_theme(rc, NULL);
+      /* Re-sensitize try/revert buttons */
+      capplet_widget_state_changed(CAPPLET_WIDGET (capplet_widget), TRUE);
     }
-  gdk_error_warnings = 0;
-  signal_apply_theme(widget);
-  gdk_flush();
-  /* system(cmd); */
-  gdk_error_warnings = 1;
+    
 }
 static void
 click_ok(GtkWidget *widget, gpointer data)
 {
+  if (fatal_error_dialog)
+    {
+      gnome_dialog_close (GNOME_DIALOG (fatal_error_dialog));
+      return;
+    }
+  
   click_try (widget, data);
   gnome_config_set_bool ("/theme-switcher-capplet/settings/auto",GTK_TOGGLE_BUTTON (auto_preview)->active);
   gnome_config_set_string ("/theme-switcher-capplet/settings/theme", gtk_object_get_data (GTK_OBJECT (current_theme), "name"));
@@ -423,6 +439,9 @@ click_revert(GtkWidget *widget, gpointer data)
 {
   gchar *rc;
 
+  if (fatal_error_dialog)
+    return;
+  
   widget = initial_theme;
   if (!widget)
     /* we hope this doesn't happen, but it could if things
@@ -438,15 +457,22 @@ click_revert(GtkWidget *widget, gpointer data)
 		 gnome_font_picker_get_font_name (GNOME_FONT_PICKER (font_sel)))))
     {
       
-      /* This if statement is magic to determine if we want to reset the system theme.
+      /* The above statement is magic to determine if we want to reset the system theme.
        * It can almost certainly be cleaned up if needed.  Basicly, it sees if anything has
        * or if the theme has been set.. */
       send_reread();
-      use_theme(rc, initial_font);
-      gdk_error_warnings = 0;
-      signal_apply_theme(widget);
-      gdk_flush();
-      gdk_error_warnings = 1;
+      if (use_theme(rc, initial_font))
+	{
+	  gdk_error_trap_push();
+	  signal_apply_theme(widget);
+	  gdk_flush();
+	  gdk_error_trap_pop();
+	}
+      else
+	{
+	  /* Re-sensitize try/revert buttons */
+	  capplet_widget_state_changed(CAPPLET_WIDGET (capplet_widget), TRUE);
+	}
     }
   current_global_theme = widget;
   ignore_change = TRUE;
@@ -468,6 +494,20 @@ click_revert(GtkWidget *widget, gpointer data)
   ignore_change = FALSE;
   current_theme = initial_theme;
 }
+
+static void
+click_cancel(GtkWidget *widget, gpointer data)
+{
+  if (fatal_error_dialog)
+    {
+      gnome_dialog_close (GNOME_DIALOG (fatal_error_dialog));
+      return;
+    }
+  
+  click_revert (widget, data);
+}
+  
+
 static void
 click_entry(GtkWidget *widget, gpointer data)
 {
@@ -646,4 +686,33 @@ update_theme_entries(GtkWidget *disp_list)
     g_free (d_theme);
   if (current_theme == NULL)
     ;
+}
+
+void
+show_error (const char *string, gboolean fatal)
+{
+  GtkWidget *dialog;
+  GtkWidget *hack_widget;
+
+  dialog = gnome_message_box_new (string, GNOME_MESSAGE_BOX_ERROR,
+				  GNOME_STOCK_BUTTON_OK, NULL);
+  
+  /* Kids, don't try this at home */
+  /* this is pretty evil... <-:  */
+  hack_widget = GNOME_DIALOG (dialog)->vbox;
+  hack_widget = ((GtkBoxChild *) GTK_BOX (hack_widget)->children->data)->widget;
+  hack_widget = ((GtkBoxChild *) GTK_BOX (hack_widget)->children->next->data)->widget;
+  
+  gtk_label_set_line_wrap (GTK_LABEL (hack_widget), TRUE);
+
+  if (fatal)
+    {
+      fatal_error_dialog = dialog;
+      
+      gtk_widget_set_sensitive (capplet_widget, FALSE);
+      gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+      delete_capplet (NULL, NULL, NULL);
+    }
+  else
+    gtk_widget_show (dialog);
 }

@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Squiral
+Name[fi]=Spiraali
+Name[sk]=Squiral
+Name[sv]=Squiral
+Comment=Display squared spirales
+Comment[de]=Eckige Spiralen anzeigen
+Comment[fi]=Piirtää neliöspiraaleja
+Comment[sk]=Zobrazuje ¹tvorcové ¹pirály
+Comment[sv]=Ritar fyrkantiga spiraler
+Exec=xscreensaver-command -activate
+TryExec=squiral
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=squiral

@@ -1,19 +1,13 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
+/* -*- MODE: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 /* Author: Chris Lahey <clahey@umich.edu>
  * Based on capplets/bell-properties/bell-properties.c.
  */
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
+#include <config.h>
 #include "capplet-widget.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <gtk/gtk.h>
-
-#include <tree.h>
-#include <parser.h>
+#include <locale.h>
 
 #include "gnome.h"
 
@@ -51,8 +45,6 @@ EditorDescription possible_editors[] =
 static GtkWidget *capplet;
 static GtkWidget *combo;
 static GtkWidget *checkbox;
-
-static gboolean no_gui;
 
 static void
 set_combo( gchar *string )
@@ -114,26 +106,11 @@ edit_read(void)
         gint     i;
 
         original_info.executable_name = original_name;
+        set_combo( original_name );
         if(original_info.name)
                 g_free(original_info.name);
 
-        if (!no_gui) {
-                set_combo( original_name );
-
-                original_info.name = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(combo)->entry)));
-        } else {
-                for (i = 0; i < sizeof(possible_editors) / 
-                             sizeof(possible_editors[0]); i++ ) 
-                {
-                        if (!strcmp (possible_editors[i].executable_name, 
-                                     original_name))
-                        {
-                                original_info.name = g_strdup
-                                        (possible_editors[i].name);
-                                break;
-                        }
-                }
-        }
+        original_info.name = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(combo)->entry)));
 
         for ( i=0; i < sizeof(possible_editors) / sizeof(possible_editors[0]); i++ ) {
                 if (!strcmp(possible_editors[i].name,original_info.name)) {
@@ -193,7 +170,7 @@ edit_help(void)
 {
   gchar *tmp;
 
-  tmp = gnome_help_file_find_file ("users-guide", "gccedit.html");
+  tmp = gnome_help_file_find_file ("control-center", "doc-handlers.html#GCCEDIT");
   if (tmp) {
     gnome_help_goto(0, tmp);
     g_free(tmp);
@@ -222,52 +199,6 @@ edit_apply(void)
         gnome_config_set_bool("/editor/Editor/ACCEPTS_LINE_NO",
                               desc.accepts_lineno);
         gnome_config_sync();
-}
-
-static EditorDescription *
-edit_read_from_xml (xmlDocPtr doc) 
-{
-        xmlNodePtr root_node, node;
-        EditorDescription *desc;
-
-        root_node = xmlDocGetRootElement (doc);
-        if (strcmp (root_node->name, "editor-prefs"))
-                return NULL;
-
-        desc = g_new0 (EditorDescription, 1);
-
-        for (node = root_node->childs; node; node = node->next) {
-                if (!strcmp (node->name, "editor"))
-                        desc->executable_name = xmlNodeGetContent (node);
-                else if (!strcmp (node->name, "needs-term"))
-                        desc->needs_term = TRUE;
-                else if (!strcmp (node->name, "type"))
-                        desc->execution_type = xmlNodeGetContent (node);
-                else if (!strcmp (node->name, "accepts-line-no"))
-                        desc->accepts_lineno = TRUE;
-        }
-
-        return desc;
-}
-
-static xmlDocPtr 
-edit_write_to_xml (EditorDescription *editor) 
-{
-        xmlDocPtr doc;
-        xmlNodePtr root_node;
-
-        doc = xmlNewDoc ("1.0");
-        root_node = xmlNewDocNode (doc, NULL, "editor-prefs", NULL);
-        xmlDocSetRootElement (doc, root_node);
-
-        xmlNewChild (root_node, NULL, "editor", editor->executable_name);
-        if (editor->needs_term)
-                xmlNewChild (root_node, NULL, "needs-term", NULL);
-        xmlNewChild (root_node, NULL, "type", editor->execution_type);
-        if (editor->accepts_lineno)
-                xmlNewChild (root_node, NULL, "accepts-line-no", NULL);
-
-        return doc;
 }
 
 static void
@@ -347,51 +278,11 @@ edit_setup(void)
         ignore_changes = FALSE;
 }
 
-static void do_get_xml (void) 
-{
-        xmlDocPtr doc;
-
-        no_gui = TRUE;
-        edit_read ();
-        doc = edit_write_to_xml (&original_info);
-        xmlDocDump (stdout, doc);
-}
-
-static void do_set_xml (void) 
-{
-        xmlDocPtr doc;
-	char *buffer;
-	int len = 0;
-        EditorDescription *editor;
-
-	while (!feof (stdin)) {
-		if (!len) buffer = g_new (char, 16384);
-		else buffer = g_renew (char, buffer, len + 16384);
-		fread (buffer + len, 1, 16384, stdin);
-		len += 16384;
-	}
-
-	doc = xmlParseMemory (buffer, strlen (buffer));
-
-	editor = edit_read_from_xml (doc);
-
-        gnome_config_set_string("/editor/Editor/EDITOR",
-                                editor->executable_name );
-        gnome_config_set_bool("/editor/Editor/NEEDS_TERM",
-                              editor->needs_term);
-        gnome_config_set_string("/editor/Editor/EDITOR_TYPE",
-                                editor->execution_type );
-        gnome_config_set_bool("/editor/Editor/ACCEPTS_LINE_NO",
-                              editor->accepts_lineno);
-        gnome_config_sync();
-
-        g_free (editor);
-}
-
 
 int
 main (int argc, char **argv)
 {
+				setlocale(LC_ALL, "");
         bindtextdomain (PACKAGE, GNOMELOCALEDIR);
         textdomain (PACKAGE);
 
@@ -399,12 +290,6 @@ main (int argc, char **argv)
                                     argv, NULL, 0, NULL)) {
                 
         case -1:
-                return 0;
-        case 3:
-                do_get_xml ();
-                return 0;
-        case 4:
-                do_set_xml ();
                 return 0;
         default:
 		break;

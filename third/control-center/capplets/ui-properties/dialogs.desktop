@@ -1,0 +1,30 @@
+[Desktop Entry]
+Name=Dialogs
+Name[az]=Dialoqlar
+Name[ca]=Quadres de di‡leg
+Name[da]=Dialogbokse
+Name[de]=Dialoge
+Name[el]=ƒÈ‹ÎÔ„ÔÈ
+Name[es]=Di·logos
+Name[et]=Dialoogid
+Name[fi]=Valintaikkunat
+Name[fr]=Dialogues
+Name[gl]=Di·logos
+Name[hu]=P·rbeszÈdablakok
+Name[it]=Finestre di dialogo
+Name[ja]=•¿•§•¢•Ì•∞
+Name[ko]=¥Î»≠ªÛ¿⁄
+Name[lt]=Dialogai
+Name[no]=Dialoger
+Name[pl]=Okna dialogowe
+Name[pt]=Di·logos
+Name[ru]=‰…¡Ãœ«…
+Name[sk]=DialÛgy
+Name[sv]=Dialogrutor
+Name[tr]=Diyaloklar
+Name[uk]=‰¶¡Ãœ«…
+Name[wa]=Purneas di cweriaedje
+Exec=ui-properties --cap-id=0
+Icon=gnome-ccdialog.png
+Terminal=0
+Type=Application

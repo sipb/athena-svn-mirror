@@ -1,13 +1,20 @@
 [Desktop Entry]
 Name=Enlightenment
-Name[pt_BR]=Enlightenment
-Name[sl]=Enlightenment
-Name[cs]=Enlightenment
 Name[da]=Enlightenment
-Name[el]=Äéáöşôéóç
-Name[ko]=ÀÎ¶óÀÌÆ°¸ÕÆ®
+Name[de]=Enlightenment
+Name[el]=Enlightenment
+Name[es]=Enlightenment
+Name[fi]=Enlightenment
 Name[fr]=Enlightenment
+Name[gl]=Enlightenment
+Name[ja]=Enlightenment
+Name[ko]=ÀÎ¶óÀÌÆ°¸ÕÆ®
+Name[no]=Enlightenment
 Name[pl]=Enlightenment
+Name[sk]=Enlightenment
+Name[sv]=Enlightenment
+Name[wa]=Enlightenment
+NAme[tr]=Enlightenment
 Exec=enlightenment
 TryExec=enlightenment
 

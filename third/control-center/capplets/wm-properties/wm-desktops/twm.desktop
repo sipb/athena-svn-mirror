@@ -1,14 +1,19 @@
 [Desktop Entry]
 Name=twm
-Name[pt_BR]=twm
-Name[sl]=twm
-Name[cs]=twm
-Name[da]=twm
-Name[el]=twm
-Name[ko]=twm
+Name[da]=Twm
+Name[de]=twm
+Name[es]=twm
+Name[fi]=twm
 Name[fr]=twm
+Name[gl]=twm
+Name[ja]=twm
+Name[ko]=twm
+Name[no]=twm
 Name[pl]=twm
-Comment[cs]=Základní správce oken.
+Name[sk]=twm
+Name[sv]=twm
+Name[tr]=twm
+Name[wa]=twm
 Exec=twm
 TryExec=twm
 

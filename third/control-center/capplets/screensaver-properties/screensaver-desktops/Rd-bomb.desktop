@@ -1,0 +1,23 @@
+[Desktop Entry]
+Name=Rd-bomb
+Name[ca]=Bomba RD
+Name[da]=Rd-bombe
+Name[de]=Rd-Bombe
+Name[fi]=Rd-bomb
+Name[fr]=Rd-bombe
+Name[no]=Rd-bombe
+Name[sk]=Bomba RD
+Name[sv]=Rd-bomb
+Comment=
+Exec=xscreensaver-command -activate
+TryExec=rd-bomb
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=rd-bomb.png
+Author=
+ExtendedComment=
+Demo=rd-bomb -delay 2

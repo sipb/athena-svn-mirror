@@ -1,0 +1,32 @@
+[Desktop Entry]
+Name=Stairs
+Name[da]=Trapper
+Name[de]=Stufen
+Name[es]=Escaleras
+Name[fi]=Portaat
+Name[fr]=Escaliers
+Name[no]=Trapper
+Name[sk]=Schody
+Name[sv]=Trappor
+Name[wa]=Egrès
+Comment=The famous, M.C. Escher, impossible stairs
+Comment[da]=De berømte umulige trapper af M.C. Escher
+Comment[de]=Der berühmten, M.C. Escher, unglaublichen Stufen
+Comment[es]=Las famosas escaleras imposibles de M.C. Eschers
+Comment[fi]=Kuuluisat M.C. Escherin mahdottomat portaat
+Comment[fr]=Le fameux escalier impossible de M.C. Escher
+Comment[ja]=Í­Ì¾¤Ê M.C.¥¨¥Ã¥·¥ã¡¼¤Î ¤¢¤ê¤¨¤Ê¤¤³¬ÃÊ
+Comment[sk]=Slávne schodi¹te M.C. Eschera
+Comment[sv]=De berömda omöjliga trapporna, av M.C. Escher
+Comment[wa]=Les impossibes egrès, da M.C. Eschers
+Exec=xscreensaver-command -activate
+TryExec=stairs
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=stairs
+
+
