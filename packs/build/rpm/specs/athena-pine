@@ -10,3 +10,21 @@ Pine is a very popular, easy to use, full-featured email user agent
 which includes a simple text editor called pico. Pine supports MIME
 extensions and can also be used to read news.  Pine also supports
 IMAP, mail and MH style folders.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+#Extra stuff
+mkdir -p $RPM_BUILD_ROOT/usr/athena/etc
+cp mime.types $RPM_BUILD_ROOT/usr/athena/etc
+cp mailcap $RPM_BUILD_ROOT/usr/athena/etc
