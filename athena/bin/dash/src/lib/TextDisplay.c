@@ -9,44 +9,63 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.1 1991-09-03 11:09:51 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.2 1993-07-01 23:54:57 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
 #include <strings.h>
+#include <ctype.h>
 #include "Jets.h"
 #include "TextDisplay.h"
+#include "xselect.h"
+#include <X11/keysym.h>
+#include <X11/keysymdef.h>
+
+#define START True
+#define END False
 
 #define offset(field) XjOffset(TextDisplayJet,field)
 
 static XjResource resources[] = {
   { XjNx, XjCX, XjRInt, sizeof(int),
-     offset(core.x), XjRString, XjInheritValue },
+      offset(core.x), XjRString, XjInheritValue },
   { XjNy, XjCY, XjRInt, sizeof(int),
-     offset(core.y), XjRString, XjInheritValue },
+      offset(core.y), XjRString, XjInheritValue },
   { XjNwidth, XjCWidth, XjRInt, sizeof(int),
-     offset(core.width), XjRString, XjInheritValue },
+      offset(core.width), XjRString, XjInheritValue },
   { XjNheight, XjCHeight, XjRInt, sizeof(int),
-     offset(core.height), XjRString, XjInheritValue },
+      offset(core.height), XjRString, XjInheritValue },
   { XjNtext, XjCText, XjRString, sizeof(char *),
-     offset(textDisplay.text), XjRString,"this is\nsome sample\ntext\n\nhi!" },
+      offset(textDisplay.text), XjRString,""},
   { XjNforeground, XjCForeground, XjRColor, sizeof(int),
       offset(textDisplay.foreground), XjRString, XjDefaultForeground },
   { XjNbackground, XjCBackground, XjRColor, sizeof(int),
       offset(textDisplay.background), XjRString, XjDefaultBackground },
+  { XjNhighlightForeground, XjCForeground, XjRString, sizeof(int),
+      offset(textDisplay.hl_fg_name), XjRString, "" },
+  { XjNhighlightBackground, XjCBackground, XjRString, sizeof(int),
+      offset(textDisplay.hl_bg_name), XjRString, "" },
   { XjNreverseVideo, XjCReverseVideo, XjRBoolean, sizeof(Boolean),
       offset(textDisplay.reverseVideo), XjRBoolean, (caddr_t)False },
   { XjNfont, XjCFont, XjRFontStruct, sizeof(XFontStruct *),
-     offset(textDisplay.font), XjRString, XjDefaultFont },
+      offset(textDisplay.font), XjRString, XjDefaultFont },
   { XjNresizeProc, XjCResizeProc, XjRCallback, sizeof(XjCallback *),
-     offset(textDisplay.resizeProc), XjRString, NULL },
+      offset(textDisplay.resizeProc), XjRString, NULL },
+  { XjNscrollProc, XjCScrollProc, XjRCallback, sizeof(XjCallback *),
+      offset(textDisplay.scrollProc), XjRString, NULL },
   { XjNinternalBorder, XjCBorderWidth, XjRInt, sizeof(int),
-     offset(textDisplay.internalBorder), XjRString, "2" },
+      offset(textDisplay.internalBorder), XjRString, "2" },
   { XjNmultiClickTime, XjCMultiClickTime, XjRInt, sizeof(int),
-     offset(textDisplay.multiClickTime), XjRString, "250" },
+      offset(textDisplay.multiClickTime), XjRString, "250" },
+  { XjNcharClass, XjCCharClass, XjRString, sizeof(char *),
+      offset(textDisplay.charClass), XjRString, (caddr_t) NULL},
+  { XjNscrollDelay, XjCScrollDelay, XjRInt, sizeof(int),
+      offset(textDisplay.scrollDelay1), XjRString, "100" },
+  { XjNscrollDelay2, XjCScrollDelay, XjRInt, sizeof(int),
+      offset(textDisplay.scrollDelay2), XjRString, "50" },
 };
 
 #undef offset
@@ -57,23 +76,54 @@ static Boolean event_handler();
 
 TextDisplayClassRec textDisplayClassRec = {
   {
-    /* class name */	"TextDisplay",
-    /* jet size   */	sizeof(TextDisplayRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	expose,
-    /* querySize */     querySize,
-    /* move */		move,
-    /* resize */        resize,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"TextDisplay",
+    /* jet size   */		sizeof(TextDisplayRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		expose,
+    /* querySize */     	querySize,
+    /* move */			move,
+    /* resize */        	resize,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
 JetClass textDisplayJetClass = (JetClass)&textDisplayClassRec;
+
+     /* The "charClass" table below, and the functions */
+     /* "SetCharacterClassRange" and "set_character_class" following it */
+     /* are taken from the xterm sources, and as such are subject to the */
+     /* copyright included here...:    */
+
+/*
+ * Copyright 1988 Massachusetts Institute of Technology
+ * Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
+ *
+ *                         All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of Digital Equipment
+ * Corporation not be used in advertising or publicity pertaining to
+ * distribution of the software without specific, written prior permission.
+ *
+ *
+ * DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ */
 
 /*
 ** double click table for cut and paste in 8 bits
@@ -164,12 +214,130 @@ int SetCharacterClassRange (low, high, value)
 }
 
 
+/*
+ * set_character_class - takes a string of the form
+ * 
+ *                 low[-high]:val[,low[-high]:val[...]]
+ * 
+ * and sets the indicated ranges to the indicated values.
+ */
+
+int set_character_class (s)
+    register char *s;
+{
+    register int i;			/* iterator, index into s */
+    int len;				/* length of s */
+    int acc;				/* accumulator */
+    int low, high;			/* bounds of range [0..127] */
+    int base;				/* 8, 10, 16 (octal, decimal, hex) */
+    int numbers;			/* count of numbers per range */
+    int digits;				/* count of digits in a number */
+    static char *errfmt = "%s in range string \"%s\" (position %d)\n";
+    char errtext[100];
+
+    if (!s || !s[0]) return -1;
+
+    base = 10;				/* in case we ever add octal, hex */
+    low = high = -1;			/* out of range */
+
+    for (i = 0, len = strlen (s), acc = 0, numbers = digits = 0;
+	 i < len; i++) {
+	char c = s[i];
+
+	if (isspace(c)) {
+	    continue;
+	} else if (isdigit(c)) {
+	    acc = acc * base + (c - '0');
+	    digits++;
+	    continue;
+	} else if (c == '-') {
+	    low = acc;
+	    acc = 0;
+	    if (digits == 0) {
+		sprintf (errtext, errfmt, "missing number", s, i);
+		XjWarning(errtext);
+		return (-1);
+	    }
+	    digits = 0;
+	    numbers++;
+	    continue;
+	} else if (c == ':') {
+	    if (numbers == 0)
+	      low = acc;
+	    else if (numbers == 1)
+	      high = acc;
+	    else {
+		sprintf (errtext, errfmt, "too many numbers", s, i);
+		XjWarning(errtext);
+		return (-1);
+	    }
+	    digits = 0;
+	    numbers++;
+	    acc = 0;
+	    continue;
+	} else if (c == ',') {
+	    /*
+	     * now, process it
+	     */
+
+	    if (high < 0) {
+		high = low;
+		numbers++;
+	    }
+	    if (numbers != 2) {
+		sprintf (errtext, errfmt, "bad value number", s, i);
+		XjWarning(errtext);
+	    } else if (SetCharacterClassRange (low, high, acc) != 0) {
+		sprintf (errtext, errfmt, "bad range", s, i);
+		XjWarning(errtext);
+	    }
+
+	    low = high = -1;
+	    acc = 0;
+	    digits = 0;
+	    numbers = 0;
+	    continue;
+	} else {
+	    sprintf (errtext, errfmt, "bad character", s, i);
+	    XjWarning(errtext);
+	    return (-1);
+	}				/* end if else if ... else */
+
+    }
+
+    if (low < 0 && high < 0) return (0);
+
+    /*
+     * now, process it
+     */
+
+    if (high < 0) high = low;
+    if (numbers < 1 || numbers > 2) {
+        sprintf (errtext, errfmt, "bad value number", s, i);
+	XjWarning(errtext);
+    } else if (SetCharacterClassRange (low, high, acc) != 0) {
+        sprintf (errtext, errfmt, "bad range", s, i);
+	XjWarning(errtext);
+    }
+
+    return (0);
+}
+     /* The "charClass" table above, and the functions */
+     /* "SetCharacterClassRange" and "set_character_class" following it */
+     /* are taken from the xterm sources, and as such are subject to the */
+     /* copyright included above. */
+
+
+
+
 static void initialize(me)
      TextDisplayJet me;
 {
   me->textDisplay.realized = 0;
 
   me->textDisplay.charWidth = me->textDisplay.font->max_bounds.width;
+  me->textDisplay.charHeight = (me->textDisplay.font->ascent
+				+ me->textDisplay.font->descent);
 
   me->textDisplay.lineStartsSize = 1000;
   me->textDisplay.lineStarts = (char **)XjMalloc(1000 * sizeof(char *));
@@ -181,6 +349,15 @@ static void initialize(me)
   me->textDisplay.clickTimes = 0;
   me->textDisplay.buttonDown = False;
 
+  /*
+   * Initialize the first lines for safety...  trust me...
+   * (it's in case there's no text in the jet and someone tries to do a
+   *  multi-click to select some text...  it also keeps "appendLines"
+   *  from breaking...)
+   */
+  me->textDisplay.lineStarts[0] = "";
+
+  set_character_class(me->textDisplay.charClass);
   xselInitAtoms(me->core.display);
 }
 
@@ -191,7 +368,8 @@ static void initialize(me)
 static void realize(me)
      TextDisplayJet me;
 {
-  unsigned long valuemask;
+  unsigned long valuemask, valuemask2;
+  unsigned long pixel;
   XGCValues values;
 
   if (me->textDisplay.reverseVideo)
@@ -201,33 +379,68 @@ static void realize(me)
       me->textDisplay.background = swap;
     }
 
+  if (strcmp(me->textDisplay.hl_fg_name, "")
+      &&  !StrToXPixel(XjDisplay(me), me->textDisplay.hl_fg_name, &pixel))
+    me->textDisplay.hl_foreground = pixel;
+  else
+    me->textDisplay.hl_foreground = me->textDisplay.background;
+
+  if (strcmp(me->textDisplay.hl_bg_name, "")
+      &&  !StrToXPixel(XjDisplay(me), me->textDisplay.hl_bg_name, &pixel))
+    me->textDisplay.hl_background = pixel;
+  else
+    me->textDisplay.hl_background = me->textDisplay.foreground;
+
   values.function = GXcopy;
   values.font = me->textDisplay.font->fid;
   values.foreground = me->textDisplay.foreground;
   values.background = me->textDisplay.background;
   valuemask = GCForeground | GCBackground | GCFont | GCFunction;
+  me->textDisplay.gc = XjCreateGC(me->core.display,
+				  me->core.window,
+				  valuemask,
+				  &values);
 
-  me->textDisplay.gc = XCreateGC(me->core.display,
-			   me->core.window,
-			   valuemask,
-			   &values);
+  values.foreground = values.background;
+  valuemask2 = GCForeground | GCFunction;
+  me->textDisplay.gc_clear = XjCreateGC(me->core.display,
+					me->core.window,
+					valuemask2,
+					&values);
 
-  values.foreground = me->textDisplay.background;
-  values.background = me->textDisplay.foreground;
-  me->textDisplay.selectgc = XCreateGC(me->core.display,
+
+  values.foreground = ((me->textDisplay.foreground
+			== me->textDisplay.hl_foreground)
+		       ? me->textDisplay.background
+		       : me->textDisplay.hl_foreground);
+  values.background = ((me->textDisplay.background
+			== me->textDisplay.hl_background)
+		       ? me->textDisplay.foreground
+		       : me->textDisplay.hl_background);
+  valuemask = GCForeground | GCBackground | GCFont | GCFunction;
+  me->textDisplay.selectgc = XjCreateGC(me->core.display,
+					me->core.window,
+					valuemask,
+					&values);
+
+  values.foreground = values.background;
+  valuemask2 = GCForeground | GCFunction;
+  me->textDisplay.gc_fill = XjCreateGC(me->core.display,
 				       me->core.window,
-				       valuemask,
+				       valuemask2,
 				       &values);
+
   me->textDisplay.visLines = (me->core.height -
 			      2 * me->textDisplay.internalBorder) /
-		(me->textDisplay.font->ascent + me->textDisplay.font->descent);
+				me->textDisplay.charHeight;
 
   /*
    * Usurp events for this window
    */
-  XjRegisterWindow(me->core.window, me);
+  XjRegisterWindow(me->core.window, (Jet) me);
   XjSelectInput(me->core.display, me->core.window,
-		ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+		ButtonPressMask | ButtonReleaseMask
+		| ButtonMotionMask | KeyPressMask );
 
   me->textDisplay.realized = 1;
 }
@@ -235,7 +448,12 @@ static void realize(me)
 static void destroy(me)
      TextDisplayJet me;
 {
-  XFreeGC(me->core.display, me->textDisplay.gc);
+  XjFreeGC(me->core.display, me->textDisplay.gc);
+  XjFreeGC(me->core.display, me->textDisplay.selectgc);
+  XjFreeGC(me->core.display, me->textDisplay.gc_fill);
+  XjFreeGC(me->core.display, me->textDisplay.gc_clear);
+
+  XjUnregisterWindow(me->core.window, (Jet) me);
 }
 
 static void querySize(me, size)
@@ -243,8 +461,7 @@ static void querySize(me, size)
      XjSize *size;
 {
   size->width = 80 * me->textDisplay.charWidth;
-  size->height = 5 *
-    (me->textDisplay.font->ascent + me->textDisplay.font->descent);
+  size->height = 5 * me->textDisplay.charHeight;
 }
 
 static void move(me, x, y)
@@ -263,11 +480,12 @@ static void resize(me, size)
   me->core.height = size->height;
   me->textDisplay.visLines = (me->core.height -
 			      2 * me->textDisplay.internalBorder) /
-		(me->textDisplay.font->ascent + me->textDisplay.font->descent);
+				me->textDisplay.charHeight;
   me->textDisplay.columns = (me->core.width -
 			     2 * me->textDisplay.internalBorder) /
 			       me->textDisplay.charWidth;
-  appendLines(me, me->textDisplay.text, 0);
+  if (me->textDisplay.realized)
+    appendLines(me, me->textDisplay.text, 0);
 }
 
 static void drawLine(me, line, y)
@@ -338,7 +556,7 @@ static void drawText(me, start, num, y)
 	  drawLine(me, start, y);
 	  start++;
 	  num--;
-	  y += me->textDisplay.font->ascent + me->textDisplay.font->descent;
+	  y += me->textDisplay.charHeight;
 	}
 /*
       drawChars(me, me->textDisplay.gc, first, last);
@@ -373,7 +591,7 @@ static void drawSome(me, gc, y, startOfLine, start, last)
   int c = 0, length;
   char *ptr, *end;
 
-/*  fprintf(stdout, "\n%d ", gc == me->textDisplay.selectgc); */
+/*  fprintf(stdout, "%d\n", gc == me->textDisplay.selectgc); */
   /*
    * At the end of this while, c is the column number to start
    * drawing at, and ptr is start.
@@ -426,6 +644,24 @@ static void drawSome(me, gc, y, startOfLine, start, last)
 		  ptr);
 	  fflush(stdout); */
 	  c += length;
+
+	  /* this is gross... */
+	  if (ptr[length-1] == '\n')
+	    {
+	      int tmp = (c-1) * me->textDisplay.charWidth +
+		me->textDisplay.internalBorder;
+
+	      XFillRectangle(me->core.display, me->core.window,
+			     ((gc == me->textDisplay.selectgc)
+			      ? me->textDisplay.gc_fill
+			      : me->textDisplay.gc_clear),
+			     me->core.x + tmp,
+			     y,
+			     MAX(0, (me->textDisplay.columns + 1 - c)
+				 * me->textDisplay.charWidth),
+			     (me->textDisplay.font->ascent +
+			      me->textDisplay.font->descent));
+	    }
 	}
 
       if (end < last && *end == '\t') /* could be reduced, but... */
@@ -487,8 +723,7 @@ static void drawChars(me, gc, start, end)
     return;
 
   y = me->core.y + me->textDisplay.internalBorder +
-    (line - me->textDisplay.topLine) * (me->textDisplay.font->ascent +
-					me->textDisplay.font->descent);
+    (line - me->textDisplay.topLine) * me->textDisplay.charHeight;
 
   for (;line < me->textDisplay.topLine + me->textDisplay.visLines &&
        line < me->textDisplay.numLines; line++)
@@ -496,7 +731,7 @@ static void drawChars(me, gc, start, end)
       drawSome(me, gc, y, me->textDisplay.lineStarts[line],
 	       start,
 	       MIN(me->textDisplay.lineStarts[line + 1], end));
-      y += me->textDisplay.font->ascent + me->textDisplay.font->descent;
+      y += me->textDisplay.charHeight;
       start = me->textDisplay.lineStarts[line + 1];
       if (start > end)
 	break;
@@ -554,7 +789,7 @@ static void showSelect(me, selStart, selEnd)
   s[2] = me->textDisplay.startSelect;
   s[3] = me->textDisplay.endSelect;
 
-  /* six! */
+  /* sort the array into order. */
   for (i = 0; i < 3; i++)
     for (j = i + 1; j < 4; j++)
       if (s[i] > s[j])
@@ -572,36 +807,130 @@ static void showSelect(me, selStart, selEnd)
 }
 
 
+static int timerid = -1;
+
+void auto_scroll(me, id)
+     TextDisplayJet me;
+     int id;			/* ARGSUSED */
+{
+  Window junkwin;
+  int x, y, junk;
+  unsigned int junkmask;
+  XEvent event;
+
+  timerid = -1;
+
+  XQueryPointer(XjDisplay(me), XjWindow(me),
+		&junkwin, &junkwin, &junk, &junk, &x, &y, &junkmask);
+
+  event.type = MotionNotify;	/* Fake out the event_handler into */
+  event.xbutton.x = x;		/* thinking that the mouse has moved. */
+  event.xbutton.y = y;		/* It will then deal with selecting and */
+  event_handler(me, &event);	/* scrolling more, as needed. */
+}
+
+
 char *where(me, x, y, line)
      TextDisplayJet me;
      int x, y;
      int *line;
 {
   char *ptr, *end;
-  int col, tmp, c = 0;
-
+  int col, tmp, vert, c = 0;
+  int clickTimes = me->textDisplay.clickTimes % 5;
+#define LINE *line
+  
   if (me->textDisplay.numLines == 0)
     {
-      ptr = me->textDisplay.lineStarts[0];
-      return ptr;
+      LINE = 0;
+      return me->textDisplay.lineStarts[0];
     }
 
-  *line = ((y - me->core.y - me->textDisplay.internalBorder) /
-	   (me->textDisplay.font->ascent + me->textDisplay.font->descent)) +
-	     me->textDisplay.topLine;
+  vert = (y - me->core.y - me->textDisplay.internalBorder);
+  LINE = ((y - me->core.y - me->textDisplay.internalBorder) /
+	  me->textDisplay.charHeight) + me->textDisplay.topLine;
   col = ((x - me->core.x - me->textDisplay.internalBorder) /
 	 me->textDisplay.charWidth);
 
-  if (*line < me->textDisplay.topLine)
-    *line = me->textDisplay.topLine;
+  /*
+   * Deal with autoscrolling...  first check if we want to scroll up...
+   */
+  if (vert < -20  &&  me->textDisplay.topLine > 0
+      &&  timerid == -1
+      &&  (me->textDisplay.scrollDelay1 >= 0 ||
+	   me->textDisplay.scrollDelay2 >= 0))
+    {
+      SetLine(me, me->textDisplay.topLine - 1);
+      XjCallCallbacks(me, me->textDisplay.scrollProc, NULL);
 
-  tmp = MIN(me->textDisplay.topLine + me->textDisplay.visLines,
-	    me->textDisplay.numLines);
-  if (*line >= tmp)
-    *line = tmp - 1;
+      timerid = XjAddWakeup(auto_scroll, me,
+			    (vert < -40  &&
+			     me->textDisplay.scrollDelay2 >= 0)
+			    ? me->textDisplay.scrollDelay2
+			    : me->textDisplay.scrollDelay1);
+    }
 
-  ptr = me->textDisplay.lineStarts[*line];
-  end = me->textDisplay.lineStarts[*line + 1];
+  /* bounds checking */
+  if (LINE < me->textDisplay.topLine)
+    LINE = me->textDisplay.topLine;
+#ifdef notdef
+  if (LINE < 0)			/* is this really necessary??? */
+    LINE = 0;
+#endif
+  if (vert < -40)
+    return me->textDisplay.lineStarts[LINE];
+
+  /*
+   * ...now check if we're past the last line, and the last line is
+   *  *not* at the bottom of the jet...  if this is the case, then we
+   *  want to return the end of the text...
+   */
+  if (LINE > me->textDisplay.numLines
+      &&  me->textDisplay.visLines > me->textDisplay.numLines)
+    {
+      LINE = me->textDisplay.numLines;
+      return me->textDisplay.lineStarts[me->textDisplay.numLines];
+    }
+
+  /*
+   * ...then check if we want to scroll down...
+   */
+  tmp = me->textDisplay.topLine + me->textDisplay.visLines;
+  if (LINE >= tmp)
+    LINE = tmp - 1;
+
+  if (vert - me->core.height > 20  &&  tmp < me->textDisplay.numLines
+      &&  timerid == -1
+      &&  (me->textDisplay.scrollDelay1 >= 0 ||
+	   me->textDisplay.scrollDelay2 >= 0))
+    {
+      SetLine(me, me->textDisplay.topLine + 1);	/* scroll down... */
+      XjCallCallbacks(me, me->textDisplay.scrollProc, NULL);
+      LINE += 1;
+
+      timerid = XjAddWakeup(auto_scroll, me,
+			    (vert - me->core.height > 40  &&
+			     me->textDisplay.scrollDelay2 >= 0)
+			    ? me->textDisplay.scrollDelay2
+			    : me->textDisplay.scrollDelay1);
+    }
+
+  /* bounds checking */
+#ifdef notdef
+  if (LINE == me->textDisplay.numLines - 1)
+    {
+#endif
+      if (vert - me->core.height > 40)
+	return me->textDisplay.lineStarts[LINE + 1];
+#ifdef notdef
+    }
+#endif
+  if (LINE >= me->textDisplay.numLines)
+    LINE = me->textDisplay.numLines - 1;
+
+
+  ptr = me->textDisplay.lineStarts[LINE];
+  end = me->textDisplay.lineStarts[LINE + 1];
 
   while (c < col && ptr < end)
     {
@@ -624,18 +953,31 @@ char *where(me, x, y, line)
 	}
     }
 
+  if (clickTimes == 1)
+    return ptr;
+
+#ifdef notdef
+  if (me->textDisplay.columns <= col)	/* to deal with dragging off the */
+    return ptr;				/* right edge */	
+#endif
   if (ptr == end)
     ptr = end - 1;
+
   return ptr;
+
+#undef LINE
 }
 
-
-char *find_start(me, ptr, line)
+char *find_boundary(me, ptr, line, find_start)
      TextDisplayJet me;
      char **ptr;
      int line;
+     Boolean find_start;
 {
   int clickTimes = me->textDisplay.clickTimes % 5;
+
+  if (me->textDisplay.numLines == 0)
+    return *ptr;
 
   if (clickTimes == 1)		/* single-clicks - select by char */
     return *ptr;
@@ -643,110 +985,98 @@ char *find_start(me, ptr, line)
   if (clickTimes == 2)		/* double-clicks - select by "word" */
     {
       char *tmp;
-
-      for (tmp = *ptr - 1;
-	   tmp >= me->textDisplay.lineStarts[0] &&
-	   charClass[*tmp] == charClass[**ptr];
-	   tmp--);
-      tmp++;
+      
+      if (find_start)
+	{
+	  tmp = *ptr - 1;
+	  while(tmp >= me->textDisplay.lineStarts[0] &&
+		charClass[*tmp] == charClass[**ptr])
+	    tmp--;
+	  tmp++;
+	}
+      else
+	{
+	  tmp = *ptr;
+	  while(tmp <= me->textDisplay.lineStarts[me->textDisplay.numLines] &&
+		charClass[*tmp] == charClass[**ptr])
+	    tmp++;
+	}
       return tmp;
     }
 
   if (clickTimes == 3)		/* triple-clicks - select by "line" */
-    return me->textDisplay.lineStarts[line];
+    return me->textDisplay.lineStarts[(find_start)
+				      ? line
+				      : MIN(me->textDisplay.numLines,
+					    line + 1)];
 
   if (clickTimes == 4)		/* quad-clicks - select by "paragraph" */
     {
       char *tmp;
       int blankline, x;
 
-      /*
-       *  scan backward to the beginning of the "paragraph"
-       */
-      for (x = line;
-	   x > 1;
-	   x--)
+      if (find_start)
 	{
-	  blankline = True;
-	  for (tmp = me->textDisplay.lineStarts[x];
-	       blankline && tmp < (me->textDisplay.lineStarts[x+1] - 1);
-	       tmp++)
-	    if (*tmp != ' ' && *tmp != '\t')
-	      blankline = False;
+	  /*
+	   *  scan backward to the beginning of the "paragraph"
+	   */
+	  for (x = line;
+	       x >= 0;
+	       x--)
+	    {
+	      blankline = True;
+	      if (x < me->textDisplay.numLines)
+		for (tmp = me->textDisplay.lineStarts[x];
+		     blankline && tmp <= (me->textDisplay.lineStarts[x+1] - 1);
+		     tmp++)
+		  if (*tmp != ' '  && *tmp != '\t' &&
+		      *tmp != '\n' && *tmp != '\0')
+		    blankline = False;
 
-	  if (blankline)
-	    return me->textDisplay.lineStarts[(x == line) ? x : x+1];
+	      if (blankline)
+		return me->textDisplay.lineStarts[(x == line) ? x : x+1];
+	    }
+	  return me->textDisplay.lineStarts[0];
 	}
-      return me->textDisplay.lineStarts[0];
+
+      else
+	{
+	  /*
+	   *  scan forward to the end of the "paragraph"
+	   */
+	  for (x = line;
+	       x < me->textDisplay.numLines;
+	       x++)
+	    {
+	      blankline = True;
+	      for (tmp = me->textDisplay.lineStarts[x];
+		   blankline && tmp <= (me->textDisplay.lineStarts[x+1] - 1);
+		   tmp++)
+		if (*tmp != ' '  && *tmp != '\t' &&
+		    *tmp != '\n' && *tmp != '\0')
+		  blankline = False;
+
+	      if (blankline)
+		return me->textDisplay.lineStarts[(x == line) ? x+1 : x];
+	    }
+	  return me->textDisplay.lineStarts[x];
+	}
     }
 
 				/* quint-clicks - select all text */
-  return me->textDisplay.lineStarts[0];
-}
-
-
-char *find_end(me, ptr, line)
-     TextDisplayJet me;
-     char **ptr;
-     int line;
-{
-  int clickTimes = me->textDisplay.clickTimes % 5;
-
-  if (clickTimes == 1)		/* single-clicks - select by char */
-    return *ptr;
-
-  if (clickTimes == 2)		/* double-clicks - select by "word" */
-    {
-      char *tmp;
-
-      for (tmp = *ptr;
-	   tmp <= me->textDisplay.lineStarts[me->textDisplay.numLines] &&
-	   charClass[*tmp] == charClass[**ptr];
-	   tmp++);
-      return tmp;
-    }
-
-  if (clickTimes == 3)		/* triple-clicks - select by "line" */
-    return me->textDisplay.lineStarts[line + 1];
-
-  if (clickTimes == 4)		/* quad-clicks - select by "paragraph" */
-    {
-      char *tmp;
-      int blankline, x;
-
-      /*
-       *  scan forward to the end of the "paragraph"
-       */
-      for (x = line;
-	   x < me->textDisplay.numLines;
-	   x++)
-	{
-	  blankline = True;
-	  for (tmp = me->textDisplay.lineStarts[x];
-	       blankline && tmp < (me->textDisplay.lineStarts[x+1] - 1);
-	       tmp++)
-	    if (*tmp != ' ' && *tmp != '\t')
-	      blankline = False;
-
-	  if (blankline)
-	    return me->textDisplay.lineStarts[(x == line) ? x+1 : x];
-	}
-      return me->textDisplay.lineStarts[x];
-    }
-
-				/* quint-clicks - select all text */
-  return me->textDisplay.lineStarts[me->textDisplay.numLines];
+  return me->textDisplay.lineStarts[(find_start)
+				    ? 0 : me->textDisplay.numLines];
 }
 
 
 static void expose(me, event)
-     TextDisplayJet me;
-     XEvent *event;
+     Jet me;
+     XEvent *event;		/* ARGSUSED */
 {
-  drawText(me,
-	   me->textDisplay.topLine,
-	   me->textDisplay.visLines,
-	   me->core.y + me->textDisplay.internalBorder);
+  drawText((TextDisplayJet) me,
+	   ((TextDisplayJet) me)->textDisplay.topLine,
+	   ((TextDisplayJet) me)->textDisplay.visLines,
+	   me->core.y + ((TextDisplayJet) me)->textDisplay.internalBorder);
 }
 
 static void appendLines(me, text, num)
@@ -814,15 +1144,14 @@ void showNewLines(me, start)
      TextDisplayJet me;
      int start;
 {
-  if (me->textDisplay.realized)
-    if (start >= me->textDisplay.topLine &&
-	start <= (me->textDisplay.topLine + me->textDisplay.visLines - 1))
-      drawText(me,
-	       start,
-	       me->textDisplay.topLine + me->textDisplay.visLines - start,
-	       me->core.y + me->textDisplay.internalBorder +
-	       (start - me->textDisplay.topLine) *
-	       (me->textDisplay.font->ascent + me->textDisplay.font->descent));
+  if (start >= me->textDisplay.topLine &&
+      start <= (me->textDisplay.topLine + me->textDisplay.visLines - 1))
+    drawText(me,
+	     start,
+	     me->textDisplay.topLine + me->textDisplay.visLines - start,
+	     me->core.y + me->textDisplay.internalBorder +
+	     (start - me->textDisplay.topLine) *
+	     me->textDisplay.charHeight);
 }
 
 void AddText(me)
@@ -833,10 +1162,8 @@ void AddText(me)
   l = me->textDisplay.numLines;
   if (l > 0)  l--;
   appendLines(me, me->textDisplay.lineStarts[l], l);
-  /* (l == 0) ? 0 : l - 1],
-     (l == 0) ? 0 : l - 1); */
-
-  showNewLines(me, l /* (l == 0) ? 0 : l - 1 */ );
+  if (me->textDisplay.realized)
+    showNewLines(me, l);
 }
 
 void MoveText(me, text, offset)
@@ -844,14 +1171,14 @@ void MoveText(me, text, offset)
      char *text;
      int offset;
 {
-  me->textDisplay.startSelect =
-    MIN(text, me->textDisplay.startSelect - offset);
-  me->textDisplay.endSelect =
-    MIN(text, me->textDisplay.endSelect - offset);
-  me->textDisplay.realStart =
-    MIN(text, me->textDisplay.realStart - offset);
-  me->textDisplay.realEnd =
-    MIN(text, me->textDisplay.realEnd - offset);
+  me->textDisplay.startSelect = (char *)
+    MAX((int) text, (int) me->textDisplay.startSelect - offset);
+  me->textDisplay.endSelect = (char *)
+    MAX((int) text, (int) me->textDisplay.endSelect - offset);
+  me->textDisplay.realStart = (char *)
+    MAX((int) text, (int) me->textDisplay.realStart - offset);
+  me->textDisplay.realEnd = (char *)
+    MAX((int) text, (int) me->textDisplay.realEnd - offset);
 
   me->textDisplay.text = text;
   me->textDisplay.topLine = 0;
@@ -873,6 +1200,12 @@ void SetText(me, text)
   me->textDisplay.realEnd = text;
 
   MoveText(me, text, 0);
+}
+
+int TopLine(me)
+     TextDisplayJet me;
+{
+  return me->textDisplay.topLine;
 }
 
 int VisibleLines(me)
@@ -898,7 +1231,7 @@ void SetLine(me, value)
   if (value == me->textDisplay.topLine)
     return;
 
-  charHeight = me->textDisplay.font->ascent + me->textDisplay.font->descent;
+  charHeight = me->textDisplay.charHeight;
 
   diff = value - me->textDisplay.topLine;
   if (diff > 0 &&
@@ -1000,6 +1333,58 @@ static Boolean event_handler(me, event)
 
   switch(event->type)
     {
+    case KeyPress:
+      switch (XLookupKeysym(&(event->xkey), 0))
+	{
+	case XK_Left:
+	case XK_Up:
+	  if (me->textDisplay.topLine > 0)
+	    SetLine(me, me->textDisplay.topLine - 1);
+	  break;
+
+	case XK_Right:
+	case XK_Down:
+	  if (me->textDisplay.topLine + me->textDisplay.visLines
+	      < me->textDisplay.numLines)
+	    SetLine(me, me->textDisplay.topLine + 1);
+	  break;
+
+	case XK_R9:		/* "PgUp" on the Sun kbd. */
+	case XK_Prior:
+	  {
+	    int tmp = me->textDisplay.topLine - (me->textDisplay.visLines - 1);
+	    SetLine(me, MAX(0, tmp));
+	  }
+	  break;
+
+	case XK_R15:		/* "PgDn" on the Sun kbd. */
+	case XK_Next:
+	  if (me->textDisplay.numLines > me->textDisplay.visLines)
+	    {
+	      int tmp = me->textDisplay.topLine + me->textDisplay.visLines - 1;
+	      int tmp2 = me->textDisplay.numLines - me->textDisplay.visLines;
+	      SetLine(me, MIN(tmp, tmp2));
+	    }
+	  break;
+
+	case XK_R7:		/* "Home" on the Sun kbd. */
+	case XK_Home:
+	  SetLine(me, 0);
+	  break;
+
+	case XK_R13:		/* "End" on the Sun kbd. */
+	case XK_End:
+	  if (me->textDisplay.numLines > me->textDisplay.visLines)
+	    SetLine(me, me->textDisplay.numLines - me->textDisplay.visLines);
+	  break;
+
+	default:
+	  return False;
+	}
+
+      XjCallCallbacks(me, me->textDisplay.scrollProc, NULL);
+      break;
+
     case ButtonRelease:
       if (me->textDisplay.buttonDown == False)
 	break;
@@ -1046,6 +1431,11 @@ static Boolean event_handler(me, event)
 	    me->textDisplay.clickTimes = 1;
 	}
 
+      /* deal with button3 being first one pushed... */
+      if (event->xbutton.button == Button3
+	  &&  me->textDisplay.clickTimes == 0)
+	me->textDisplay.clickTimes = 1;
+
       me->textDisplay.buttonDown = True;
       me->textDisplay.whichButton = event->xbutton.button;
       w = where(me, event->xbutton.x, event->xbutton.y, &line);
@@ -1054,9 +1444,9 @@ static Boolean event_handler(me, event)
 	{
 	case Button1:
 	  me->textDisplay.startSelect = me->textDisplay.startPivot =
-	    find_start(me, &w, line);
+	    find_boundary(me, &w, line, START);
 	  me->textDisplay.endSelect = me->textDisplay.endPivot =
-	    find_end(me, &w, line);
+	    find_boundary(me, &w, line, END);
 	  break;
 
 	case Button3:
@@ -1066,13 +1456,13 @@ static Boolean event_handler(me, event)
 	      / 2)
 	    {
 	      me->textDisplay.startEnd = 0;
-	      me->textDisplay.startSelect = find_start(me, &w, line);
+	      me->textDisplay.startSelect = find_boundary(me, &w, line, START);
 	      me->textDisplay.endSelect = me->textDisplay.realEnd;
 	    }
 	  else
 	    {
 	      me->textDisplay.startEnd = 1;
-	      me->textDisplay.endSelect = find_end(me, &w, line);
+	      me->textDisplay.endSelect = find_boundary(me, &w, line, END);
 	      me->textDisplay.startSelect = me->textDisplay.realStart;
 	    }
 	  break;
@@ -1095,28 +1485,28 @@ static Boolean event_handler(me, event)
 	  me->textDisplay.endSelect = me->textDisplay.endPivot;
 
 	  if (w >= me->textDisplay.endPivot)
-	    me->textDisplay.endSelect = find_end(me, &w, line);
+	    me->textDisplay.endSelect = find_boundary(me, &w, line, END);
 	  else if (w < me->textDisplay.startPivot)
-	    me->textDisplay.startSelect = find_start(me, &w, line);
+	    me->textDisplay.startSelect = find_boundary(me, &w, line, START);
 	  break;
 
 	case Button3:
 	  if (w > me->textDisplay.realEnd)
 	    {
 	      me->textDisplay.startEnd = 1;
-	      me->textDisplay.endSelect = find_end(me, &w, line);
+	      me->textDisplay.endSelect = find_boundary(me, &w, line, END);
 	      me->textDisplay.startSelect = me->textDisplay.realStart;
 	    }
 	  else if (w < me->textDisplay.realStart)
 	    {
 	      me->textDisplay.startEnd = 0;
-	      me->textDisplay.startSelect = find_start(me, &w, line);
+	      me->textDisplay.startSelect = find_boundary(me, &w, line, START);
 	      me->textDisplay.endSelect = me->textDisplay.realEnd;
 	    }
 	  else if (me->textDisplay.startEnd == 0)
-	    me->textDisplay.startSelect = find_start(me, &w, line);
+	    me->textDisplay.startSelect = find_boundary(me, &w, line, START);
 	  else
-	    me->textDisplay.endSelect = find_end(me, &w, line);
+	    me->textDisplay.endSelect = find_boundary(me, &w, line, END);
 	  break;
 	}
       showSelect(me, oldStart, oldEnd);
