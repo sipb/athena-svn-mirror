@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.50 $
+# $Revision: 1.51 $
 
 umask 2
 
@@ -31,6 +31,8 @@ if ($machine == "sun4") then
 	setenv GCC_EXEC_PREFIX /mit/$comp/${machine}/lib/gcc-lib/
 else if ($machine == "decmips") then
 	set AFS="pmax_ul4"
+	setenv OSVER `uname -r | sed s/\\.//`
+	echo $OSVER
 else if ($machine == "rsaix" ) then
 #	setenv  GCC_EXEC_PREFIX /mit/cygnus-930630/rsaix/lib/gcc-lib/
 	set AFS = "rs_aix32"
@@ -346,18 +348,18 @@ endif # installonly
 	ln -s /afs/dev/system/pmax_ul4/srvd /srvd >>& $outfile
 	mkdir /srvd.tmp >>& $outfile
   if ($zap == 1) then			# Accident prevention
-	newfs /dev/rrz1d fuji2266 >>& $outfile
+	newfs /dev/rrz1e fuji2266 >>& $outfile
   endif
-	mount /dev/rz1d /srvd.tmp >>& $outfile
+	mount /dev/rz1e /srvd.tmp >>& $outfile
 
 	(echo In $package >>& $outfile)
 	( cd $BUILD/$package ; make base update setup1 DESTDIR=/srvd.tmp >>& $outfile )
 	umount /srvd.tmp >>& $outfile
-	fsck /dev/rz1d >>& $outfile
+	fsck /dev/rz1e >>& $outfile
 	rmdir /srvd.tmp >>& $outfile
 	rm /srvd >>& $outfile
 	mkdir /srvd
-	mount /dev/rz1d /srvd >>& $outfile
+	mount /dev/rz1e /srvd >>& $outfile
 	if ( $status == 1 ) then
 		echo "We bombed in $package" >> & $outfile
 		exit -1
