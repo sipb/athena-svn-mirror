@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.46 1991-09-22 12:05:50 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.47 1991-10-31 15:07:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.46 1991-09-22 12:05:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.47 1991-10-31 15:07:02 lwvanels Exp $";
 #endif
 #endif
 
@@ -1440,6 +1440,9 @@ olc_describe(fd, request)
   if(status)
     return(send_response(fd,status));
        
+  if(!(is_allowed(requester->user, CONSULT_ACL)))
+    return(send_response(fd,PERMISSION_DENIED));
+  
   if(!isme(request))
     { 
       status = match_knuckle(request->target.username, 
@@ -1451,9 +1454,6 @@ olc_describe(fd, request)
   else
     target = requester;
 
-  if(!(is_allowed(requester->user, MONITOR_ACL)))
-    return(send_response(fd,PERMISSION_DENIED));
-  
   if(is_option(request->options,(CHANGE_COMMENT_OPT | CHANGE_NOTE_OPT)))
     if(!(is_allowed(requester->user, GCOMMENT_ACL)) &&
        !((is_allowed(requester->user, CONSULT_ACL)) &&
@@ -1480,6 +1480,9 @@ olc_describe(fd, request)
       mesg = read_text_from_fd(fd);
       if(mesg != (char *) NULL)
 	{
+	  char *p;
+	  while((p = index(mesg,'\n')) != NULL)
+	    *p = ' ';
 	  strncpy(target->question->note,mesg,NOTE_SIZE-1);
           target->question->note[NOTE_SIZE-1] = '\0';
 	  log_description(target,requester, target->question->note);
@@ -1544,16 +1547,11 @@ olc_replay(fd, request)
   if(status)
     return(send_response(fd, status));
 
-  if(!isme(request))
-    {     
-      status = match_knuckle(request->target.username, 
-			     request->target.instance,
-			     &target);
-      if(status)
-	return(send_response(fd, status));
-    }
-  else
-    target = requester;
+  status = match_knuckle(request->target.username, 
+			 request->target.instance,
+			 &target);
+  if(status)
+    return(send_response(fd, status));
 
   can_monitor = is_allowed(requester->user,MONITOR_ACL);
 
