@@ -459,15 +459,34 @@
           <![CDATA[
             var newTitle = "";
             var docTitle;
+            var docElement = this.ownerDocument.documentElement;
             if (this.docShell.contentViewer)
               docTitle = this.contentTitle;
 
+            if (!docTitle)
+              docTitle = docElement.getAttribute("titledefault");
+
+            var modifier = docElement.getAttribute("titlemodifier");
+            var sep = docElement.getAttribute("titlemenuseparator");
             if (docTitle) {
-              newTitle += this.ownerDocument.documentElement.getAttribute("titlepreface");
+              newTitle += docElement.getAttribute("titlepreface");
               newTitle += docTitle;
-              newTitle += this.ownerDocument.documentElement.getAttribute("titlemenuseparator");
+              if (modifier)
+                newTitle += sep;
             }
-            newTitle += this.ownerDocument.documentElement.getAttribute("titlemodifier");
+            newTitle += modifier;
+
+            // if location bar is hidden and the URL type supports a host
+            // then add the scheme and host to the title to prevent spoofing
+            try {
+              if (docElement.getAttribute("chromehidden").indexOf("location") != -1) {
+                var host = this.mURIFixup.createExposableURI(
+                             this.mCurrentBrowser.currentURI).prePath;
+                if (host)
+                  newTitle = host + sep + newTitle;
+              }
+            } catch (e) {}
+
             window.title = newTitle;
           ]]>
         </body>
@@ -1112,9 +1131,13 @@
           <![CDATA[
             var url = transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType);
 
-            // valid urls don't contain spaces ' '; if we have a space it isn't a valid url so bail out
-            if (!url || !url.length || url.indexOf(" ", 0) != -1)
+            // valid urls don't contain spaces ' '; if we have a space it isn't a valid url.
+            // also disallow javascript: and data: urls--bail out
+            if (!url || !url.length || url.indexOf(" ", 0) != -1 ||
+                /^\s*(javascript|data):/.test(url))
               return;
+
+            DragDropSecurityCheck(aEvent, aDragSession, url);
 
             var bgLoad = this.mPrefs.getBoolPref("browser.tabs.loadInBackground");
 
@@ -1479,9 +1502,11 @@
           // We're about to open a modal dialog, make sure the opening
           // tab is brought to the front.
 
+          var targetTop = new XPCNativeWrapper(event.target, "top").top;
+
           const browsers = this.browsers;
           for (var i = 0; i < browsers.length; ++i) {
-            if (browsers[i].contentWindow == event.target) {
+            if (browsers[i].contentWindow == targetTop) {
               this.selectedTab = this.mTabContainer.childNodes[i];
 
               break;

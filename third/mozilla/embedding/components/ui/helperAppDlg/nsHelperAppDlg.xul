@@ -37,6 +37,8 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="&caption.label;"
         onload="dialog.initDialog()"
+        onblur="dialog.onBlur(event);"
+        onfocus="dialog.onFocus(event);"
         onunload="if (dialog) dialog.onCancel()"
         style="width: 40em;"
         ondialogaccept="return dialog.onOK()"
@@ -46,7 +48,7 @@
         <hbox>
             <vbox flex="1">
                 <description id="intro">&intro.label;</description>
-                <description id="location" crop="center" value=""/>
+                <description id="location" dir="ltr" crop="start" value=""/>
                 <separator orient="horizontal" class="thin"/>
                 <description id="prompt">&prompt.label;</description>
             </vbox>

@@ -238,7 +238,8 @@ nsHelperAppDialog.prototype = {
          var suggestedFileName = this.mLauncher.suggestedFileName;
 
          // Some URIs do not implement nsIURL, so we can't just QI.
-         var url   = this.mLauncher.source;
+         var url = this.mLauncher.source.clone();
+         url.userPass = "";
          var fname = "";
          this.mSourcePath = url.prePath;
          try {
@@ -254,7 +255,6 @@ nsHelperAppDialog.prototype = {
 
          if (suggestedFileName)
            fname = suggestedFileName;
-           
 
          this.mTitle = this.replaceInsert( win.getAttribute( "title" ), 1, fname);
          win.setAttribute( "title", this.mTitle );
@@ -291,6 +291,12 @@ nsHelperAppDialog.prototype = {
 
          // Set initial focus
          this.dialogElement( "mode" ).focus();
+
+         this.mDialog.document.documentElement.getButton("accept").disabled = true;
+         const nsITimer = Components.interfaces.nsITimer;
+         this._timer = Components.classes["@mozilla.org/timer;1"]
+                                 .createInstance(nsITimer);
+         this._timer.initWithCallback(this, 250, nsITimer.TYPE_ONE_SHOT);
     },
 
     // initIntro:
@@ -323,7 +329,7 @@ nsHelperAppDialog.prototype = {
 
         // if mSourcePath is a local file, then let's use the pretty path name instead of an ugly
         // url...
-        var pathString = this.mSourcePath;
+        var pathString = url.prePath;
         try 
         {
           var fileURL = url.QueryInterface(Components.interfaces.nsIFileURL);
@@ -348,6 +354,35 @@ nsHelperAppDialog.prototype = {
         // Set the location text, which is separate from the intro text so it can be cropped
         var location = this.dialogElement( "location" );
         location.value = pathString;
+        location.setAttribute( "tooltiptext", this.mSourcePath );
+    },
+
+    _timer: null,
+    notify: function (aTimer) {
+        if (!this._blurred)
+          this.mDialog.document.documentElement.getButton('accept').disabled = false;
+        _timer = null;
+    },
+
+    _blurred: false,
+    onBlur: function(aEvent) {
+        if (aEvent.target != this.mDialog.document)
+          return;
+
+        this._blurred = true;
+        this.mDialog.document.documentElement.getButton("accept").disabled = true;
+    },
+
+    onFocus: function(aEvent) {
+        if (aEvent.target != this.mDialog.document)
+          return;
+
+        this._blurred = false;
+        if (!_timer) {
+          // Don't enable the button if the initial timer is running
+          var script = "document.documentElement.getButton('accept').disabled = false";
+          this.mDialog.setTimeout(script, 250);
+        }
     },
 
     // Returns true iff opening the default application makes sense.

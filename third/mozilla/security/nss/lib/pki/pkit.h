@@ -35,7 +35,7 @@
 #define PKIT_H
 
 #ifdef DEBUG
-static const char PKIT_CVS_ID[] = "@(#) $RCSfile: pkit.h,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:30:42 $ $Name: not supported by cvs2svn $";
+static const char PKIT_CVS_ID[] = "@(#) $RCSfile: pkit.h,v $ $Revision: 1.1.1.9 $ $Date: 2005-03-30 20:10:32 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
