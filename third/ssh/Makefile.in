@@ -8,8 +8,12 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.9 1998-05-30 16:03:39 danw Exp $
+# $Id: Makefile.in,v 1.10 1998-06-17 17:29:36 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.9  1998/05/30 16:03:39  danw
+# ssh 1.2.23 by default installs files as "foo1" with a "foo" -> "foo1"
+# symlink. This reverts back to the old (not "foo1") behavior
+#
 # Revision 1.8  1998/05/13 20:18:45  danw
 # merge in changes from 1.2.23
 #
@@ -332,7 +336,7 @@ COMMON_OBJS = $(LIBOBJS) $(CONFOBJS) \
 	rsa.o randoms.o md5.o buffer.o emulate.o packet.o compress.o \
 	xmalloc.o ttymodes.o newchannels.o bufaux.o authfd.o authfile.o \
 	crc32.o rsaglue.o cipher.o des.o match.o arcfour.o mpaux.o \
-	userfile.o signals.o blowfish.o
+	userfile.o signals.o blowfish.o deattack.o
 SSHD_OBJS = sshd.o auth-rhosts.o auth-passwd.o auth-rsa.o auth-rh-rsa.o pty.o \
 	log-server.o login.o hostfile.o canohost.o servconf.o tildexpand.o \
 	serverloop.o $(COMMON_OBJS) $(KERBEROS_OBJS)

@@ -15,8 +15,11 @@ with the other side.  This same code is used both on client and server side.
 */
 
 /*
- * $Id: packet.c,v 1.1.1.2 1998-05-13 19:11:18 danw Exp $
+ * $Id: packet.c,v 1.2 1998-06-17 17:29:40 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.2  1998/05/13 19:11:18  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.9  1998/04/30 01:54:30  kivinen
  * 	Fixed SSH_MSG_IGNORE handling. Now it will skip the string
  * 	argument also.
@@ -83,6 +86,7 @@ with the other side.  This same code is used both on client and server side.
 #include "cipher.h"
 #include "getput.h"
 #include "compress.h"
+#include "deattack.h"
 
 /* This variable contains the file descriptors used for communicating with
    the other side.  connection_in is used for reading; connection_out
@@ -272,7 +276,35 @@ void packet_encrypt(CipherContext *cc, void *dest, void *src,
 void packet_decrypt(CipherContext *cc, void *dest, void *src, 
 		    unsigned int bytes)
 {
+	int i;
+
   assert((bytes % 8) == 0);
+
+/* $Id: packet.c,v 1.2 1998-06-17 17:29:40 ghudson Exp $
+ * Cryptographic attack detector for ssh - Modifications for packet.c 
+ * (C)1998 CORE-SDI, Buenos Aires Argentina
+ * Ariel Futoransky(futo@core-sdi.com)
+ */
+
+		
+	switch (cc->type)
+	{
+#ifndef WITHOUT_IDEA
+		case SSH_CIPHER_IDEA :
+			i = detect_attack(src, bytes, cc->u.idea.iv);
+			break;
+#endif
+		case	SSH_CIPHER_NONE :
+			i = DEATTACK_OK;
+			break;
+		default:
+			i = detect_attack(src, bytes, NULL);
+			break;
+	}	
+
+ if (i == DEATTACK_DETECTED)
+		packet_disconnect("crc32 compensation attack: network attack detected");
+
   cipher_decrypt(cc, dest, src, bytes);
 }
 
