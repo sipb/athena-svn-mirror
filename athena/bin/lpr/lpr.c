@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.15 1995-07-11 20:24:50 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.16 1996-08-28 00:03:37 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.15 1995-07-11 20:24:50 miki Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.16 1996-08-28 00:03:37 ghudson Exp $";
 #endif lint
 
 /*
@@ -236,7 +236,7 @@ main(argc, argv)
 			break;
 
 		case 'C':		/* classification spec */
-			hdr++;
+			hdr = 1;
 			if (arg[2])
 				class = &arg[2];
 			else if (argc > 1) {
@@ -246,7 +246,7 @@ main(argc, argv)
 			break;
 
 		case 'J':		/* job name */
-			hdr++;
+			hdr = 1;
 			if (arg[2])
 				jobname = &arg[2];
 			else if (argc > 1) {
@@ -308,7 +308,7 @@ main(argc, argv)
 #endif ZEPHYR
 
 		case 'h':		/* toggle want of header page */
-			hdr = !hdr;
+			hdr = 0;
 			break;
 
 #ifdef SERVER
