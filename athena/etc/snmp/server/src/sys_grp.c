@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.1 1997-02-27 06:47:50 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.2 1997-03-27 03:08:21 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1997/02/27 06:47:50  ghudson
+ * BSD -> ANSI memory functions
+ *
  * Revision 2.0  1992/04/22 01:58:58  tom
  * release 7.4
  * 	altered format of sysdescr string
@@ -34,7 +37,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.1 1997-02-27 06:47:50 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.2 1997-03-27 03:08:21 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -45,6 +48,9 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 #include "include.h"
+#ifdef SOLARIS
+#include <utmpx.h>
+#endif
 
 #ifdef MIT
 static char buf[BUFSIZ]; 
@@ -158,6 +164,20 @@ lu_vers(varnode, repl, instptr, reqflg)
 time_t
 get_sysuptime()
 {
+#ifdef SOLARIS
+	time_t now;
+	struct utmpx *utmpx;
+
+	setutxent();
+	while ((utmpx = getutxent()) != NULL) {
+		if (utmpx->ut_type == BOOT_TIME) {
+			(void) time(&now);
+			return((now - utmpx->ut_tv.tv_sec) * 100);
+		}
+	}
+	syslog(LOG_ERR, "BOOT_TIME utmpx entry not in utmpx file");
+	return(BUILD_ERR);
+#else
 	time_t now;
 	struct timeval bootime;
 
@@ -173,5 +193,6 @@ get_sysuptime()
 		return(BUILD_ERR);
 	}
 	return((now - bootime.tv_sec) * 100);
+#endif
 }
 

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.2 1993-06-18 14:32:52 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.3 1997-03-27 03:08:19 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1993/06/18 14:32:52  tom
+ * first cut at solaris port
+ *
  * Revision 2.1  92/04/22  02:39:32  tom
  * fixed bungle with disk group object identifiers
  * 
@@ -59,7 +62,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.2 1993-06-18 14:32:52 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.3 1997-03-27 03:08:19 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -2185,12 +2188,12 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 
 { &sysID,             lu_vers,  NULL, N_VERID, NULL_OBJINST|VAL_STR },
 { &sysObjectID,       lu_vers,  NULL, N_VEREV, NULL_OBJINST|VAL_OBJ },
-#ifndef SOLARIS
 #ifdef RSPOS
 { &sysUpTime,         lu_status,NULL, N_LINIT, NULL_OBJINST|VAL_TIME },
 #else /* RSPOS */
 { &sysUpTime,         lu_vers,  NULL, N_LINIT, NULL_OBJINST|VAL_TIME },
 #endif /* RSPOS */
+#ifndef SOLARIS
 /*
  *  Interfaces Group as specified in RFC 1066.	14/22 variables
  */
