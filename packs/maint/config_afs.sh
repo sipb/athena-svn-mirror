@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.4 1991-07-26 15:48:45 probe Exp $
+# $Id: config_afs.sh,v 1.5 1992-04-30 14:43:21 lwvanels Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -9,11 +9,12 @@ PATH=/bin:/bin/athena; export PATH
 
 VICEDIR=/usr/vice/etc
 CELLDB=${VICEDIR}/CellServDB
-SUIDFILE=${VICEDIR}/SuidCells
+SUIDDB=${VICEDIR}/SuidCells
 
 echo "Updating cell location information"
 rm -f ${VICEDIR}/Ctmp
 cp /afs/athena.mit.edu/service/CellServDB ${VICEDIR}/Ctmp && \
+	[ -s ${VICEDIR}/Ctmp ] && \
 	mv -f ${VICEDIR}/Ctmp ${CELLDB}.public && \
 	cat ${CELLDB}.public ${CELLDB}.local >${VICEDIR}/Ctmp 2>/dev/null
 mv -f ${VICEDIR}/Ctmp ${CELLDB}
@@ -24,30 +25,34 @@ mv -f ${VICEDIR}/Ctmp ${CELLDB}
 	  END {printf("\n")}' ${CELLDB} | \
 	/bin/sh
 
-echo "Disallowing setuid/setgid programs from the following cells:"
+echo "Updating setuid cell information"
+rm -f ${VICEDIR}/Ctmp
+cp /afs/athena.mit.edu/service/SuidCells ${VICEDIR}/Ctmp && \
+	[ -s ${VICEDIR}/Ctmp ] && \
+	mv -f ${VICEDIR}/Ctmp ${SUIDDB}.public && \
+	cat ${SUIDDB}.public ${SUIDDB}.local >${VICEDIR}/Ctmp 2>/dev/null
+mv -f ${VICEDIR}/Ctmp ${SUIDDB}
 
-tmp="`awk '/^>/ {print substr($1,2,length($1)-1)}' ${CELLDB}`"
+/bin/awk ' \
+	  /^>/ {printf("\nfs newcell %s", substr($1,2,length($1)-1))}; \
+	  /^[0-9]/ {printf(" %s",$1)}; \
+	  END {printf("\n")}' ${CELLDB} | \
+	/bin/sh
 
-if [ ! -f ${SUIDFILE} ]; then
-    suid_cells="`cat ${VICEDIR}/ThisCell`"
-else
-    suid_cells="`cat ${SUIDFILE}`"
-fi
+echo "Only allowing setuid/setgid programs from the following cells:"
 
-cells_sed="`echo \"$suid_cells\" | \
-    awk '{for (i=1;i<=NF;i++) {printf(\"-e /^%s$/d \",$i)}}'`"
-cells="`echo "$tmp"|sed -n $cells_sed -e p`"
-if [ "$cells" != "" ]; then
-    echo "$cells"
-    fs setcell $cells -nosuid
-fi
-
-if [ "$suid_cells" != "" ]; then
-    echo "
-Allowing setuid/setgid programs from only the following cells:
-$suid_cells"
-
-    fs setcell $suid_cells -suid
-fi
+(awk '/^>/ {print $1}' ${CELLDB}; cat ${SUIDDB}) | awk '\
+	/^>/ {i++; cells[i]=substr($1,2,length($1)-1);suid[i]=0;next}; \
+	/^-/ {for (j=1;j<i;j++) {if (substr($1,2,length($1)-1)==cells[j]) \
+		suid[j]=0;next;}}; \
+	{for (j=1;j<i;j++) {if ($1==cells[j]) {suid[j]=1;next}}}; \
+	END {	ns=0; nn=0; \
+		for (j=1;j<i;j++) { \
+		  if (suid[j]){ns++;scmd=scmd" "cells[j];\
+				print "echo",cells[j];}\
+		  else {nn++;ncmd=ncmd" "cells[j];}; } \
+		if (ns) {printf("fs setcell %s -suid\n", scmd)};\
+		if (nn) {printf("fs setcell %s -nosuid\n",ncmd)};\
+	}' | sh
 
 exit 0
