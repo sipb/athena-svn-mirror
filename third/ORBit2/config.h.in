@@ -104,6 +104,12 @@
 /* Define if you have the <wctype.h> header file. */
 #undef HAVE_WCTYPE_H
 
+/* command used for indentation */
+#undef INDENT_COMMAND
+
+/* defined if purify is enabled */
+#undef ORBIT_PURIFY
+
 /* Name of package */
 #undef PACKAGE
 

@@ -101,19 +101,18 @@ pkglibdir = @pkglibdir@
 
 bin_PROGRAMS = orbit-idl-2
 
-orbitlibdir = $(libdir)/orbit-idl
+orbit_backends_dir = $(libdir)/orbit-2.0/idl-backends
 
 INCLUDES = \
-	-I$(top_builddir)                     \
-	-I$(top_builddir)/include             \
-	 -I$(top_srcdir)                      \
-	-I$(top_srcdir)/include               \
-	-DORBITLIBDIR="\"$(orbitlibdir)\""    \
-	-DDEBUG                               \
-	-DVERSION=\"$(ORBIT_VERSION)\"        \
-	-DORBIT2_INTERNAL_API                 \
-	$(WARN_CFLAGS)                        \
-	$(DISABLE_DEPRECATED_CFLAGS)          \
+	-I$(top_builddir)					\
+	-I$(top_builddir)/include				\
+	-I$(top_srcdir)						\
+	-I$(top_srcdir)/include					\
+	-DORBIT_BACKENDS_DIR="\"$(orbit_backends_dir)\""	\
+	-DVERSION=\"$(ORBIT_VERSION)\"				\
+	-DORBIT2_INTERNAL_API					\
+	$(WARN_CFLAGS)						\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
 	$(ORBIT_IDL_CFLAGS)
 
 
@@ -122,34 +121,36 @@ orbit_idl_2_LDADD = \
 	$(ORBIT_IDL_LIBS)
 
 
-orbit_idl_2_SOURCES = orbit-idl-main.c \
-		   orbit-idl-driver.c \
-		   orbit-idl-backends.c \
-		   orbit-idl-passes.c \
-		   orbit-idl-genmarshal.c \
-		   orbit-idl-utils.c \
-		   orbit-idl2.h \
-		   orbit-idl3-types.h \
-        orbit-idl-c-backend.h \
-        orbit-idl-c-backend.c \
-        orbit-idl-c-stubs.c \
-        orbit-idl-c-skels.c \
-        orbit-idl-c-headers.c \
-        orbit-idl-c-common.c \
-	orbit-idl-c-imodule.c \
-        orbit-idl-c-skelimpl.c \
-        orbit-idl-c-utils.c \
-        orbit-idl-c-typecode.c \
-        orbit-idl-c-marshal.c \
-        orbit-idl-c-demarshal.c \
-        orbit-idl-c-deps.c \
-	orbit-idl-marshal.c \
-	orbit-idl-marshal.h	\
+orbit_idl_2_SOURCES = \
+	orbit-idl-main.c		\
+	orbit-idl-driver.c		\
+	orbit-idl-backend.c		\
+	orbit-idl-backend.h		\
+	orbit-idl-utils.c		\
+	orbit-idl2.h			\
+	orbit-idl3-types.h		\
+        orbit-idl-c-backend.h		\
+        orbit-idl-c-backend.c		\
+        orbit-idl-c-stubs.c		\
+        orbit-idl-c-skels.c		\
+        orbit-idl-c-headers.c		\
+        orbit-idl-c-common.c		\
+	orbit-idl-c-imodule.c		\
+        orbit-idl-c-skelimpl.c		\
+        orbit-idl-c-utils.c		\
+        orbit-idl-c-typecode.c		\
+        orbit-idl-c-deps.c		\
 	orbit-idl2.h
 
+
+orbitidlincludedir = $(includedir)/orbit-2.0/orbit-idl
+orbitidlinclude_HEADERS = orbit-idl-backend.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ORBit-idl-2.0.pc
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  ORBit-idl-2.0.pc
 bin_PROGRAMS =  orbit-idl-2$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -159,15 +160,13 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 orbit_idl_2_OBJECTS =  orbit-idl-main.$(OBJEXT) \
-orbit-idl-driver.$(OBJEXT) orbit-idl-backends.$(OBJEXT) \
-orbit-idl-passes.$(OBJEXT) orbit-idl-genmarshal.$(OBJEXT) \
+orbit-idl-driver.$(OBJEXT) orbit-idl-backend.$(OBJEXT) \
 orbit-idl-utils.$(OBJEXT) orbit-idl-c-backend.$(OBJEXT) \
 orbit-idl-c-stubs.$(OBJEXT) orbit-idl-c-skels.$(OBJEXT) \
 orbit-idl-c-headers.$(OBJEXT) orbit-idl-c-common.$(OBJEXT) \
 orbit-idl-c-imodule.$(OBJEXT) orbit-idl-c-skelimpl.$(OBJEXT) \
 orbit-idl-c-utils.$(OBJEXT) orbit-idl-c-typecode.$(OBJEXT) \
-orbit-idl-c-marshal.$(OBJEXT) orbit-idl-c-demarshal.$(OBJEXT) \
-orbit-idl-c-deps.$(OBJEXT) orbit-idl-marshal.$(OBJEXT)
+orbit-idl-c-deps.$(OBJEXT)
 orbit_idl_2_DEPENDENCIES = 
 orbit_idl_2_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -175,7 +174,11 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  Makefile.am Makefile.in
+DATA =  $(pkgconfig_DATA)
+
+HEADERS =  $(orbitidlinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in ORBit-idl-2.0.pc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -195,6 +198,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+ORBit-idl-2.0.pc: $(top_builddir)/config.status ORBit-idl-2.0.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-binPROGRAMS:
 
@@ -269,6 +274,40 @@ orbit-idl-2$(EXEEXT): $(orbit_idl_2_OBJECTS) $(orbit_idl_2_DEPENDENCIES)
 	@rm -f orbit-idl-2$(EXEEXT)
 	$(LINK) $(orbit_idl_2_LDFLAGS) $(orbit_idl_2_OBJECTS) $(orbit_idl_2_LDADD) $(LIBS)
 
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
+	done
+
+install-orbitidlincludeHEADERS: $(orbitidlinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(orbitidlincludedir)
+	@list='$(orbitidlinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(orbitidlincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(orbitidlincludedir)/$$p; \
+	done
+
+uninstall-orbitidlincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(orbitidlinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(orbitidlincludedir)/$$p; \
+	done
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -324,20 +363,22 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-pkgconfigDATA install-orbitidlincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-pkgconfigDATA \
+		uninstall-orbitidlincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(pkgconfigdir) \
+		$(DESTDIR)$(orbitidlincludedir)
 
 
 mostlyclean-generic:
@@ -379,13 +420,15 @@ maintainer-clean: maintainer-clean-am
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-libtool maintainer-clean-libtool uninstall-pkgconfigDATA \
+install-pkgconfigDATA uninstall-orbitidlincludeHEADERS \
+install-orbitidlincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

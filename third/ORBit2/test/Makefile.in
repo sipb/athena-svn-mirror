@@ -114,7 +114,7 @@ INCLUDES = \
 
 bin_PROGRAMS = ior-decode-2 typelib-dump
 noinst_PROGRAMS = test1 \
-	echo-client echo-server \
+	echo-client echo-client-t echo-server \
 	empty-client empty-server \
 	test-any-client test-any-server \
 	test-dynany test-mem test-performance test-giop
@@ -144,7 +144,8 @@ test_any_server_SOURCES = test-any-server.c $(TEST_ANY_IDLOUT)
 
 ECHO_IDLOUT = echo.h echo-common.c echo-stubs.c echo-skels.c
 echo_client_SOURCES = echo-client.c $(ECHO_IDLOUT)
-echo_server_SOURCES = echo-server.c echo-srv.c $(ECHO_IDLOUT) echo-share.h
+echo_client_t_SOURCES = echo-client-t.c $(ECHO_IDLOUT)
+echo_server_SOURCES = echo-server.c echo-srv.c $(ECHO_IDLOUT) echo-share.h$
 
 EMPTY_IDLOUT = empty.h empty-common.c empty-stubs.c empty-skels.c
 empty_client_SOURCES = empty-client.c $(EMPTY_IDLOUT)
@@ -184,9 +185,10 @@ CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 bin_PROGRAMS =  ior-decode-2$(EXEEXT) typelib-dump$(EXEEXT)
 noinst_PROGRAMS =  test1$(EXEEXT) echo-client$(EXEEXT) \
-echo-server$(EXEEXT) empty-client$(EXEEXT) empty-server$(EXEEXT) \
-test-any-client$(EXEEXT) test-any-server$(EXEEXT) test-dynany$(EXEEXT) \
-test-mem$(EXEEXT) test-performance$(EXEEXT) test-giop$(EXEEXT)
+echo-client-t$(EXEEXT) echo-server$(EXEEXT) empty-client$(EXEEXT) \
+empty-server$(EXEEXT) test-any-client$(EXEEXT) test-any-server$(EXEEXT) \
+test-dynany$(EXEEXT) test-mem$(EXEEXT) test-performance$(EXEEXT) \
+test-giop$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 
@@ -212,6 +214,11 @@ echo-stubs.$(OBJEXT) echo-skels.$(OBJEXT)
 echo_client_LDADD = $(LDADD)
 echo_client_DEPENDENCIES =  $(top_builddir)/src/orb/libORBit-2.la
 echo_client_LDFLAGS = 
+echo_client_t_OBJECTS =  echo-client-t.$(OBJEXT) echo-common.$(OBJEXT) \
+echo-stubs.$(OBJEXT) echo-skels.$(OBJEXT)
+echo_client_t_LDADD = $(LDADD)
+echo_client_t_DEPENDENCIES =  $(top_builddir)/src/orb/libORBit-2.la
+echo_client_t_LDFLAGS = 
 echo_server_OBJECTS =  echo-server.$(OBJEXT) echo-srv.$(OBJEXT) \
 echo-common.$(OBJEXT) echo-stubs.$(OBJEXT) echo-skels.$(OBJEXT)
 echo_server_LDADD = $(LDADD)
@@ -267,8 +274,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(ior_decode_2_SOURCES) $(typelib_dump_SOURCES) $(test1_SOURCES) $(echo_client_SOURCES) $(echo_server_SOURCES) $(empty_client_SOURCES) $(empty_server_SOURCES) $(test_any_client_SOURCES) $(test_any_server_SOURCES) $(test_dynany_SOURCES) $(test_mem_SOURCES) $(test_performance_SOURCES) $(test_giop_SOURCES)
-OBJECTS = $(ior_decode_2_OBJECTS) $(typelib_dump_OBJECTS) $(test1_OBJECTS) $(echo_client_OBJECTS) $(echo_server_OBJECTS) $(empty_client_OBJECTS) $(empty_server_OBJECTS) $(test_any_client_OBJECTS) $(test_any_server_OBJECTS) $(test_dynany_OBJECTS) $(test_mem_OBJECTS) $(test_performance_OBJECTS) $(test_giop_OBJECTS)
+SOURCES = $(ior_decode_2_SOURCES) $(typelib_dump_SOURCES) $(test1_SOURCES) $(echo_client_SOURCES) $(echo_client_t_SOURCES) $(echo_server_SOURCES) $(empty_client_SOURCES) $(empty_server_SOURCES) $(test_any_client_SOURCES) $(test_any_server_SOURCES) $(test_dynany_SOURCES) $(test_mem_SOURCES) $(test_performance_SOURCES) $(test_giop_SOURCES)
+OBJECTS = $(ior_decode_2_OBJECTS) $(typelib_dump_OBJECTS) $(test1_OBJECTS) $(echo_client_OBJECTS) $(echo_client_t_OBJECTS) $(echo_server_OBJECTS) $(empty_client_OBJECTS) $(empty_server_OBJECTS) $(test_any_client_OBJECTS) $(test_any_server_OBJECTS) $(test_dynany_OBJECTS) $(test_mem_OBJECTS) $(test_performance_OBJECTS) $(test_giop_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -374,6 +381,10 @@ test1$(EXEEXT): $(test1_OBJECTS) $(test1_DEPENDENCIES)
 echo-client$(EXEEXT): $(echo_client_OBJECTS) $(echo_client_DEPENDENCIES)
 	@rm -f echo-client$(EXEEXT)
 	$(LINK) $(echo_client_LDFLAGS) $(echo_client_OBJECTS) $(echo_client_LDADD) $(LIBS)
+
+echo-client-t$(EXEEXT): $(echo_client_t_OBJECTS) $(echo_client_t_DEPENDENCIES)
+	@rm -f echo-client-t$(EXEEXT)
+	$(LINK) $(echo_client_t_LDFLAGS) $(echo_client_t_OBJECTS) $(echo_client_t_LDADD) $(LIBS)
 
 echo-server$(EXEEXT): $(echo_server_OBJECTS) $(echo_server_DEPENDENCIES)
 	@rm -f echo-server$(EXEEXT)
@@ -639,7 +650,7 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 $(srcdir)/test-any-client.c $(srcdir)/test-any-server.c: test-any.h
-$(srcdir)/echo-client.c $(srcdir)/echo-server.c $(srcdir)/echo-srv.c: echo.h
+$(srcdir)/echo-client-t.c $(srcdir)/echo-client.c $(srcdir)/echo-server.c $(srcdir)/echo-srv.c: echo.h
 $(srcdir)/empty-client.c $(srcdir)/empty-server.c: empty.h
 $(srcdir)/test1.c: test1.h
 

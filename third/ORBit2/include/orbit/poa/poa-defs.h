@@ -1257,28 +1257,6 @@ extern "C"
    PortableServer_ObjectId
       *PortableServer_Current_get_object_id(PortableServer_Current _obj,
 					    CORBA_Environment * ev);
-
-/** more internals **/
-#if !defined(MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_0)
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_0 'p'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_1 'o'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_2 'a'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_3 '_'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_4 'd'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_5 'e'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_6 'f'
-#define MARSHAL_IMPL_CORBA_sequence_PortableServer_POA_7 's'
-#endif
-#if !defined(MARSHAL_IMPL_CORBA_sequence_CORBA_octet_0)
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_0 'p'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_1 'o'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_2 'a'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_3 '_'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_4 'd'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_5 'e'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_6 'f'
-#define MARSHAL_IMPL_CORBA_sequence_CORBA_octet_7 's'
-#endif
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

@@ -25,6 +25,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "orbit-imodule.h"
+
 /* Singleton accessor for the test factory */
 test_TestFactory getFactoryInstance(CORBA_Environment *ev);
 
@@ -422,6 +424,38 @@ create_TestFactory (PortableServer_POA        poa,
 
 test_TestFactory_Servant servant;
 
+static void
+init_iinterfaces (ORBit_IInterfaces *interfaces,
+		  CORBA_Environment *ev)
+{
+	int i = 0;
+
+#define CLOBBER_SYM(a) G_STMT_START { \
+	g_assert (CORBA_TypeCode_equal ( \
+		interfaces->_buffer[i].tc, (a).tc, ev)); \
+	(a) = interfaces->_buffer [i]; \
+	i++; \
+	} G_STMT_END
+
+	CLOBBER_SYM (test_TestFactory__iinterface);
+	CLOBBER_SYM (test_DeadReferenceObj__iinterface);
+	CLOBBER_SYM (test_TransientObj__iinterface);
+	CLOBBER_SYM (test_SequenceServer__iinterface);
+	CLOBBER_SYM (test_ArrayServer__iinterface);
+	CLOBBER_SYM (test_BasicServer__iinterface);
+	CLOBBER_SYM (test_StructServer__iinterface);
+	CLOBBER_SYM (test_BaseServer__iinterface);
+	CLOBBER_SYM (test_B1__iinterface);
+	CLOBBER_SYM (test_B2__iinterface);
+	CLOBBER_SYM (test_C1__iinterface);
+	CLOBBER_SYM (test_DerivedServer__iinterface);
+	CLOBBER_SYM (test_UnionServer__iinterface);
+	CLOBBER_SYM (test_AnyServer__iinterface);
+	CLOBBER_SYM (test_ContextServer__iinterface);
+	CLOBBER_SYM (test_PingPongServer__iinterface);
+#undef CLOBBER_SYM
+}
+
 #ifndef _IN_CLIENT_
   int
   main (int argc, char *argv [])
@@ -435,6 +469,9 @@ test_TestFactory_Servant servant;
 #ifndef _IN_CLIENT_
 	CORBA_Environment real_ev;
 	CORBA_Environment *ev = &real_ev;
+	ORBit_IInterfaces *interfaces = NULL;
+	gboolean           gen_imodule = FALSE;
+	int                i;
 
 /*	g_mem_set_vtable (glib_mem_profiler_table); */
 
@@ -448,6 +485,17 @@ test_TestFactory_Servant servant;
 
 	global_orb = CORBA_ORB_init (&argc, argv, "", ev);
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
+
+	for (i = 0; i < argc; i++)
+		if (!strcmp (argv [i], "--gen-imodule"))
+			gen_imodule = TRUE;
+
+	if (gen_imodule) {
+		interfaces = ORBit_iinterfaces_from_file (TEST_SRCDIR "/everything.idl", NULL, NULL);
+		g_assert (interfaces != NULL);
+
+		init_iinterfaces (interfaces, ev);
+        }
 #endif
 
 	global_poa = start_poa (global_orb, ev);
@@ -477,6 +525,9 @@ test_TestFactory_Servant servant;
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
 	g_warning ("released factory");
+
+	if (gen_imodule)
+		CORBA_free (interfaces);
 
 	CORBA_ORB_destroy (global_orb, ev);
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
