@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.18 1998-05-08 17:09:35 ghudson Exp $
+# $Id: Makefile,v 1.19 1998-07-30 17:12:32 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHX11LIB=/usr/athena/lib/X11
 KEYMAPS=${ATHX11LIB}/keymaps
 APPDEFS=${ATHX11LIB}/app-defaults
+OWAPPDEFS=/usr/openwin/lib/X11/app-defaults
 KEYTABLES=/usr/openwin/share/etc/keytables
 DEFAULT=/etc/default
 INET=/etc/inet
@@ -27,6 +28,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHX11LIB}
 	mkdir -p ${DESTDIR}${KEYMAPS}
 	mkdir -p ${DESTDIR}${APPDEFS}
+	mkdir -p ${DESTDIR}${OWAPPDEFS}
 	mkdir -p ${DESTDIR}${KEYTABLES}
 	mkdir -p ${DESTDIR}${DEFAULT}
 	mkdir -p ${DESTDIR}${INET}
@@ -42,7 +44,7 @@ install:
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 SunModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 SunType5Keypad ${DESTDIR}${KEYMAPS}
-	install -c -m 0644 XTerm.ad ${DESTDIR}${APPDEFS}/XTerm
+	install -c -m 0644 XTerm.ad ${DESTDIR}${OWAPPDEFS}/XTerm
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
