@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.28 2001-03-26 20:17:51 ghudson Exp $
+# $Id: Makefile,v 1.29 2001-04-30 20:08:01 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
+ATHETCDIR=/usr/athena/etc
 ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
 ATHSHAREDIR=/usr/athena/share
@@ -16,6 +17,7 @@ check:
 
 install:
 	mkdir -p ${DESTDIR}${ETCDIR}
+	mkdir -p ${DESTDIR}${ATHETCDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHLIBDIR}
 	mkdir -p ${DESTDIR}${ATHSHAREDIR}
@@ -29,8 +31,10 @@ install:
 	install -c -m 0644 krb5.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 lpd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 lpd.perms ${DESTDIR}${ETCDIR}
+	install -c -m 0644 mailcap ${DESTDIR}${ATHETCDIR}
 	install -c -m 0444 mandesc ${DESTDIR}${ATHMANDIR}
 	install -c -m 0444 masks ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 mime.types ${DESTDIR}${ATHETCDIR}
 	install -c -m 0644 named.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.localhost ${DESTDIR}${ETCDIR}
 	install -c -m 0644 named.localhost.rev ${DESTDIR}${ETCDIR}

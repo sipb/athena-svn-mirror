@@ -1,0 +1,74 @@
+# $Id: mailcap,v 1.1 2001-04-30 20:08:03 rbasch Exp $
+
+image/*; \
+	/usr/athena/bin/athrun mimeutils do-image -t '%t' %s; \
+	test=/usr/athena/bin/athrun mimeutils test-image -t '%t'
+
+video/*; \
+	/usr/athena/bin/athrun mimeutils do-video -t '%t' %s; \
+	test=/usr/athena/bin/athrun mimeutils test-video -t '%t'
+
+audio/*; \
+	/usr/athena/bin/athrun mimeutils do-audio -t '%t' %s; \
+	test=/usr/athena/bin/athrun mimeutils test-audio -t '%t'
+
+application/mac-binhex40; \
+	/usr/athena/bin/athrun mimeutils do-binhex %s; \
+	needsterminal
+
+application/msword; \
+	/usr/athena/bin/athrun mimeutils do-msword %s; \
+	needsterminal
+application/x-msword; \
+	/usr/athena/bin/athrun mimeutils do-msword %s; \
+	needsterminal
+
+application/excel; \
+	/usr/athena/bin/athrun mimeutils do-excel %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+application/x-excel; \
+	/usr/athena/bin/athrun mimeutils do-excel %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+application/msexcel; \
+	/usr/athena/bin/athrun mimeutils do-excel %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+application/x-msexcel; \
+	/usr/athena/bin/athrun mimeutils do-excel %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+application/vnd.ms-excel; \
+	/usr/athena/bin/athrun mimeutils do-excel %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+
+application/postscript; \
+	/usr/athena/bin/athrun mimeutils do-postscript %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+
+application/pdf; \
+	/usr/athena/bin/athrun mimeutils do-pdf %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+
+application/x-dvi; \
+	/usr/athena/bin/xdvi %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+
+application/x-ez; \
+	/usr/andrew/bin/ez %s; \
+	test=/usr/athena/bin/athrun mimeutils test-xdisplay
+
+application/x-framemaker; \
+	/usr/athena/bin/athrun mimeutils do-framemaker %s; \
+	test=/usr/athena/bin/athrun mimeutils test-framemaker
+
+# Note that we could supply the name to do-unknown via -n %{name},
+# but that does not work with pine's default configuration, which
+# disables parameter substitution for security reasons.
+application/octet-stream; \
+	/usr/athena/bin/athrun mimeutils do-unknown %s; \
+	needsterminal
+application/octet-string; \
+	/usr/athena/bin/athrun mimeutils do-unknown %s; \
+	needsterminal
+
+application/*; \
+	/usr/athena/bin/athrun mimeutils do-application -t '%t' %s; \
+	test=/usr/athena/bin/athrun mimeutils test-application -t '%t'

@@ -1,0 +1,40 @@
+# $Id: mime.types,v 1.1 2001-04-30 20:08:04 rbasch Exp $
+
+application/excel		xls
+application/mac-binhex40	hqx
+application/msword		doc
+application/pdf			pdf
+application/postscript		ai eps ps
+application/rtf			rtf
+application/x-dvi		dvi
+application/x-gzip		gz tgz
+application/x-tex		tex
+application/x-texinfo		texinfo texi
+audio/basic			au snd
+audio/midi			mid midi kar
+audio/mpeg			mpga mp2 mp3
+audio/x-aiff			aif aiff aifc
+audio/x-pn-realaudio		ram rm
+audio/x-realaudio		ra
+audio/x-wav			wav
+image/gif			gif
+image/ief			ief
+image/jpeg			jpeg jpg jpe
+image/png			png
+image/targa			tga
+image/x-pcx			pcx
+image/tiff			tiff tif
+image/x-portable-anymap		pnm
+image/x-portable-bitmap		pbm
+image/x-portable-graymap	pgm
+image/x-portable-pixmap		ppm
+image/x-rgb			rgb
+image/x-xbitmap			xbm
+image/x-xpixmap			xpm
+image/x-xwindowdump		xwd
+text/html			html htm
+text/plain			txt c cc h
+video/mpeg			mpeg mpg mpe
+video/quicktime			qt mov
+video/x-msvideo			avi
+video/x-sgi-movie		movie
