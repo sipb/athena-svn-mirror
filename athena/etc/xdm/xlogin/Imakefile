@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.32 1995-11-28 14:11:46 miki Exp $
+# $Id: Imakefile,v 1.33 1996-01-15 02:18:33 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -14,12 +14,14 @@ WCL=../wcl/libWc.a
 ARISRC=AriRegAll.c
 ARIOBJ=AriRegAll.o
 
-#ifdef sgi
+#if defined(sgi) || defined(SOLARIS)
 /* R5 changes actually, not SGI. */
 WCL=$(WCLDIR)/Wc/libWc.a
 ARISRC=
 ARIOBJ=$(WCLDIR)/Xp/libXp.a
+#endif
 
+#ifdef sgi
 MACHLIBS = ../misc/libnanny.a
 #endif
 
