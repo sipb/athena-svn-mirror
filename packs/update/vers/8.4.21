@@ -7,7 +7,6 @@ sun4)
   echo "106950-13"					>> $PATCHES
   echo "106980-15"					>> $PATCHES
   echo "107081-25"					>> $PATCHES
-  echo "107226-14"					>> $PATCHES
   echo "107636-05"					>> $PATCHES
   echo "108374-04"					>> $PATCHES
   echo "108376-18"					>> $PATCHES
