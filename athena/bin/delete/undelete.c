@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.10 1989-01-26 12:04:55 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.11 1989-01-26 12:31:00 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -165,7 +165,7 @@ char *file_exp;
      found_files = match_pattern(startdir, FtDirectory, file_re, &num_found);
      free(file_re);
      if (num_found) {
-	  process_files(found_files, &num_found);
+	  process_files(found_files, num_found);
 	  if (*file_exp == '/') 
 	       current = get_root_tree();
 	  else
@@ -187,18 +187,18 @@ char *file_exp;
 
 process_files(files, num)
 char **files;
-int *num;
+int num;
 {
      int i;
      listrec *new_files;
      listrec *filelist;
 
-     filelist = (listrec *) malloc(sizeof(listrec) * (*num));
+     filelist = (listrec *) malloc(sizeof(listrec) * num);
      if (! filelist) {
 	  perror(sprintf(error_buf, "%s: process_files\n", whoami));
 	  exit(1);
      }
-     for (i = 0; i < *num; i++) {
+     for (i = 0; i < num; i++) {
 	  filelist[i].real_name = malloc(strlen(files[i]) + 1);
 	  strcpy(filelist[i].real_name, files[i]);
 	  filelist[i].user_name = malloc(strlen(files[i]) + 1);
@@ -207,12 +207,12 @@ int *num;
      }
      free(files);
      
-     new_files = sort_files(filelist, *num);
+     new_files = sort_files(filelist, num);
      new_files = unique(new_files, num);
      if (initialize_tree()) {
 	  exit(1);
      }
-     for (i = 0; i < *num; i++) {
+     for (i = 0; i < num; i++) {
 	  if (!add_path_to_tree(new_files[i].real_name, FtUnknown)) {
 	       fprintf(stderr, "%s: error adding path to filename tree\n",
 		       whoami);
