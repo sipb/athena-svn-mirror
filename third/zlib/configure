@@ -129,7 +129,7 @@ if test $shared -eq 1; then
   if test "`($CC -c $SFLAGS $test.c) 2>&1`" = "" &&
      test "`($LDSHARED -o $test$shared_ext $test.o) 2>&1`" = ""; then
     CFLAGS="$SFLAGS"
-    LIBS="$SHAREDLIB.$VER"
+    LIBS="$SHAREDLIB.$VER $LIBS"
     echo Building shared library $SHAREDLIB.$VER with $CC.
   elif test -z "$old_cc" -a -z "$old_cflags"; then
     echo No shared library suppport.
