@@ -1,10 +1,12 @@
-AC_REVISION($Revision: 1.1 $)
+AC_REVISION($Revision: 1.2 $)
 
 AC_INIT(newsyslog.c)
 
 ### Checks for programs.
 AC_PROG_CC
 AC_PROG_LN_S
+
+AC_C_CONST
 
 ### Checks for libraries.
 AC_CHECK_LIB(nsl, gethostname)
