@@ -13,11 +13,12 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.4 1989-10-11 16:15:16 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.5 1989-12-01 16:27:06 vanharen Exp $";
 #endif
 
 #include "xolc.h"
 #include "data.h"
+#include "buttons.h"
 
 char current_topic[TOPIC_SIZE] = "unknown";
 
@@ -26,9 +27,35 @@ char current_topic[TOPIC_SIZE] = "unknown";
  *
  */
 
-void Help()
+void Help(w, tag, callback_data)
+     Widget w;
+     int *tag;
+     XmAnyCallbackStruct *callback_data;
 {
+  char message[BUF_SIZE];
+  char help_filename[NAME_LENGTH * 2];
+
+  (void) strcpy(help_filename, HELP_DIR);
+  (void) strcat(help_filename, "/");
+
+  switch( (int) tag)
+    {
+    case NEWQ_BTN: 
+      (void) strcat(help_filename, HELP_NEWQ_BTN);
+      MuHelpFile(help_filename);
+/*      MuHelp("You have asked for help on the new question button.\nUse it to ask a new question in OLC."); */
+      break;
+    case CONTQ_BTN:
+      MuHelp("You have asked for help on the continue question button.\nUse it to continue your question in OLC.");
+      break;
+    default:
+      sprintf(message, "button: %d\nwidget id: %d", tag, w);
+      MuHelp(message);
+      break;
+    }
+/*
   MuHelp("Congratulations!  You have gotten 'help' to work!  I have been unable to do so,\nand so, have not put any useful information into this message.  Have a nice day.");
+*/
 }
 
 void olc_new_ques (w, tag, callback_data)
@@ -683,12 +710,12 @@ void dlg_ok (w, tag, callback_data)
 {
   switch (*tag)
     {
-    case 16:
+    case MOTD_BTN:
 #ifdef TEST
       XtSetSensitive(w_motd_btn, TRUE);
 #endif TEST
       break;
-    case 17:
+    case HELP_BTN:
 #ifdef TEST
       XtSetSensitive(w_help_btn, TRUE);
 #endif TEST
@@ -764,4 +791,61 @@ void olc_close_msg (w, tag, callback_data)
   XtSetSensitive(w_send_btn, TRUE);
 }
   
+char * parse_text (string, columns)
+     char *string;
+     int columns;
+{
+  int m,n;
+  char *cur_ptr;
+  char *prev_ptr;
+  char *lastline_ptr;
+  char *spc_ptr;
+  char *newline_ptr;
 
+  char stringbuf[BUF_SIZE];
+
+  
+/*  for (m=0; m=strlen(string), m++)
+    {
+*/
+  cur_ptr = string;
+  prev_ptr = string;
+  lastline_ptr = string;
+
+/*
+  while( (cur_ptr = index(prev_ptr, ' ')) !=0)
+    {
+      if ((cur_ptr - lastline_ptr) < columns)
+	{
+	  prev_ptr = ++cur_ptr;
+	}
+      else
+	{
+	  lastline_ptr = prev_ptr;
+	  prev_ptr--;
+	  *prev_ptr = '\n';
+	  prev_ptr++;
+	}
+    }
+*/
+
+
+  
+/*  while (strlen(strncpy(stringbuf, cur_ptr, columns)) == columns)*/
+  while (strlen(cur_ptr) > columns)
+    {
+      strncpy(stringbuf, cur_ptr, columns);
+      stringbuf[columns] = '\0';
+      spc_ptr = rindex(stringbuf, ' ');
+      newline_ptr = rindex(stringbuf, '\n');
+      if (newline_ptr < spc_ptr)
+	cur_ptr = ++newline_ptr;
+      else
+	{
+	  *spc_ptr = '\n';
+	  cur_ptr = ++spc_ptr;
+	}
+    }
+
+  return(string);
+}
