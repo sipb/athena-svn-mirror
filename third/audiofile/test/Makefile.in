@@ -1,0 +1,532 @@
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AUDIOFILE_MAJOR_VERSION = @AUDIOFILE_MAJOR_VERSION@
+AUDIOFILE_MICRO_VERSION = @AUDIOFILE_MICRO_VERSION@
+AUDIOFILE_MINOR_VERSION = @AUDIOFILE_MINOR_VERSION@
+AUDIOFILE_VERSION = @AUDIOFILE_VERSION@
+AUDIOFILE_VERSION_INFO = @AUDIOFILE_VERSION_INFO@
+CC = @CC@
+DLLTOOL = @DLLTOOL@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
+NM = @NM@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+TEST_BIN = @TEST_BIN@
+USE_SYMBOL_UNDERSCORE = @USE_SYMBOL_UNDERSCORE@
+VERSION = @VERSION@
+
+INCLUDES = -I. -I$(srcdir) -I$(top_srcdir)/libaudiofile
+
+noinst_PROGRAMS =  	addcoffset 	bitdepth 	copy 	results 	transparency 	miscread 	miscwrite 	query 	query2 	testaupv 	writeaiff 	writenext 	writeulaw 	writewave 	@TEST_BIN@
+
+
+EXTRA_DIST = transparency.sh
+
+EXTRA_PROGRAMS = irixread irixtest irixtestloop linuxtest
+
+TESTS = writeaiff writenext writeulaw writewave transparency.sh
+
+addcoffset_SOURCES = adddcoffset.c
+
+copy_SOURCES = copy.c
+
+miscread_SOURCES = miscread.c
+
+miscwrite_SOURCES = miscwrite.c
+
+results_SOURCES = results.c
+
+transparency_SOURCES = transparency.c
+
+testaupv_SOURCES = testaupv.c
+
+bitdepth_SOURCES = bitdepth.c
+
+writeaiff_SOURCES = writeaiff.c
+
+irixread_SOURCES = irixread.c sgi.c
+irixread_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
+
+irixtest_SOURCES = irixtest.c sgi.c sgi.h
+irixtest_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
+
+irixtestloop_SOURCES = irixtestloop.c sgi.c
+irixtestloop_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
+
+linuxtest_SOURCES = linuxtest.c
+
+LDADD = $(top_builddir)/libaudiofile/libaudiofile.la
+@BUILD_STATIC_LIBS_TRUE@LDFLAGS = -static
+LIBS = 
+
+DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(noinst_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+irixread_OBJECTS =  irixread.o sgi.o
+irixread_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+irixread_LDFLAGS = 
+irixtest_OBJECTS =  irixtest.o sgi.o
+irixtest_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+irixtest_LDFLAGS = 
+irixtestloop_OBJECTS =  irixtestloop.o sgi.o
+irixtestloop_DEPENDENCIES =  \
+$(top_builddir)/libaudiofile/libaudiofile.la
+irixtestloop_LDFLAGS = 
+linuxtest_OBJECTS =  linuxtest.o
+linuxtest_LDADD = $(LDADD)
+linuxtest_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+linuxtest_LDFLAGS = 
+addcoffset_OBJECTS =  adddcoffset.o
+addcoffset_LDADD = $(LDADD)
+addcoffset_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+addcoffset_LDFLAGS = 
+bitdepth_OBJECTS =  bitdepth.o
+bitdepth_LDADD = $(LDADD)
+bitdepth_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+bitdepth_LDFLAGS = 
+copy_OBJECTS =  copy.o
+copy_LDADD = $(LDADD)
+copy_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+copy_LDFLAGS = 
+results_OBJECTS =  results.o
+results_LDADD = $(LDADD)
+results_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+results_LDFLAGS = 
+transparency_OBJECTS =  transparency.o
+transparency_LDADD = $(LDADD)
+transparency_DEPENDENCIES =  \
+$(top_builddir)/libaudiofile/libaudiofile.la
+transparency_LDFLAGS = 
+miscread_OBJECTS =  miscread.o
+miscread_LDADD = $(LDADD)
+miscread_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+miscread_LDFLAGS = 
+miscwrite_OBJECTS =  miscwrite.o
+miscwrite_LDADD = $(LDADD)
+miscwrite_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+miscwrite_LDFLAGS = 
+query_SOURCES = query.c
+query_OBJECTS =  query.o
+query_LDADD = $(LDADD)
+query_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+query_LDFLAGS = 
+query2_SOURCES = query2.c
+query2_OBJECTS =  query2.o
+query2_LDADD = $(LDADD)
+query2_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+query2_LDFLAGS = 
+testaupv_OBJECTS =  testaupv.o
+testaupv_LDADD = $(LDADD)
+testaupv_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+testaupv_LDFLAGS = 
+writeaiff_OBJECTS =  writeaiff.o
+writeaiff_LDADD = $(LDADD)
+writeaiff_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+writeaiff_LDFLAGS = 
+writenext_SOURCES = writenext.c
+writenext_OBJECTS =  writenext.o
+writenext_LDADD = $(LDADD)
+writenext_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+writenext_LDFLAGS = 
+writeulaw_SOURCES = writeulaw.c
+writeulaw_OBJECTS =  writeulaw.o
+writeulaw_LDADD = $(LDADD)
+writeulaw_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+writeulaw_LDFLAGS = 
+writewave_SOURCES = writewave.c
+writewave_OBJECTS =  writewave.o
+writewave_LDADD = $(LDADD)
+writewave_DEPENDENCIES =  $(top_builddir)/libaudiofile/libaudiofile.la
+writewave_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(irixread_SOURCES) $(irixtest_SOURCES) $(irixtestloop_SOURCES) $(linuxtest_SOURCES) $(addcoffset_SOURCES) $(bitdepth_SOURCES) $(copy_SOURCES) $(results_SOURCES) $(transparency_SOURCES) $(miscread_SOURCES) $(miscwrite_SOURCES) query.c query2.c $(testaupv_SOURCES) $(writeaiff_SOURCES) writenext.c writeulaw.c writewave.c
+OBJECTS = $(irixread_OBJECTS) $(irixtest_OBJECTS) $(irixtestloop_OBJECTS) $(linuxtest_OBJECTS) $(addcoffset_OBJECTS) $(bitdepth_OBJECTS) $(copy_OBJECTS) $(results_OBJECTS) $(transparency_OBJECTS) $(miscread_OBJECTS) $(miscwrite_OBJECTS) query.o query2.o $(testaupv_OBJECTS) $(writeaiff_OBJECTS) writenext.o writeulaw.o writewave.o
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps test/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+.c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+irixread: $(irixread_OBJECTS) $(irixread_DEPENDENCIES)
+	@rm -f irixread
+	$(LINK) $(irixread_LDFLAGS) $(irixread_OBJECTS) $(irixread_LDADD) $(LIBS)
+
+irixtest: $(irixtest_OBJECTS) $(irixtest_DEPENDENCIES)
+	@rm -f irixtest
+	$(LINK) $(irixtest_LDFLAGS) $(irixtest_OBJECTS) $(irixtest_LDADD) $(LIBS)
+
+irixtestloop: $(irixtestloop_OBJECTS) $(irixtestloop_DEPENDENCIES)
+	@rm -f irixtestloop
+	$(LINK) $(irixtestloop_LDFLAGS) $(irixtestloop_OBJECTS) $(irixtestloop_LDADD) $(LIBS)
+
+linuxtest: $(linuxtest_OBJECTS) $(linuxtest_DEPENDENCIES)
+	@rm -f linuxtest
+	$(LINK) $(linuxtest_LDFLAGS) $(linuxtest_OBJECTS) $(linuxtest_LDADD) $(LIBS)
+
+addcoffset: $(addcoffset_OBJECTS) $(addcoffset_DEPENDENCIES)
+	@rm -f addcoffset
+	$(LINK) $(addcoffset_LDFLAGS) $(addcoffset_OBJECTS) $(addcoffset_LDADD) $(LIBS)
+
+bitdepth: $(bitdepth_OBJECTS) $(bitdepth_DEPENDENCIES)
+	@rm -f bitdepth
+	$(LINK) $(bitdepth_LDFLAGS) $(bitdepth_OBJECTS) $(bitdepth_LDADD) $(LIBS)
+
+copy: $(copy_OBJECTS) $(copy_DEPENDENCIES)
+	@rm -f copy
+	$(LINK) $(copy_LDFLAGS) $(copy_OBJECTS) $(copy_LDADD) $(LIBS)
+
+results: $(results_OBJECTS) $(results_DEPENDENCIES)
+	@rm -f results
+	$(LINK) $(results_LDFLAGS) $(results_OBJECTS) $(results_LDADD) $(LIBS)
+
+transparency: $(transparency_OBJECTS) $(transparency_DEPENDENCIES)
+	@rm -f transparency
+	$(LINK) $(transparency_LDFLAGS) $(transparency_OBJECTS) $(transparency_LDADD) $(LIBS)
+
+miscread: $(miscread_OBJECTS) $(miscread_DEPENDENCIES)
+	@rm -f miscread
+	$(LINK) $(miscread_LDFLAGS) $(miscread_OBJECTS) $(miscread_LDADD) $(LIBS)
+
+miscwrite: $(miscwrite_OBJECTS) $(miscwrite_DEPENDENCIES)
+	@rm -f miscwrite
+	$(LINK) $(miscwrite_LDFLAGS) $(miscwrite_OBJECTS) $(miscwrite_LDADD) $(LIBS)
+
+query: $(query_OBJECTS) $(query_DEPENDENCIES)
+	@rm -f query
+	$(LINK) $(query_LDFLAGS) $(query_OBJECTS) $(query_LDADD) $(LIBS)
+
+query2: $(query2_OBJECTS) $(query2_DEPENDENCIES)
+	@rm -f query2
+	$(LINK) $(query2_LDFLAGS) $(query2_OBJECTS) $(query2_LDADD) $(LIBS)
+
+testaupv: $(testaupv_OBJECTS) $(testaupv_DEPENDENCIES)
+	@rm -f testaupv
+	$(LINK) $(testaupv_LDFLAGS) $(testaupv_OBJECTS) $(testaupv_LDADD) $(LIBS)
+
+writeaiff: $(writeaiff_OBJECTS) $(writeaiff_DEPENDENCIES)
+	@rm -f writeaiff
+	$(LINK) $(writeaiff_LDFLAGS) $(writeaiff_OBJECTS) $(writeaiff_LDADD) $(LIBS)
+
+writenext: $(writenext_OBJECTS) $(writenext_DEPENDENCIES)
+	@rm -f writenext
+	$(LINK) $(writenext_LDFLAGS) $(writenext_OBJECTS) $(writenext_LDADD) $(LIBS)
+
+writeulaw: $(writeulaw_OBJECTS) $(writeulaw_DEPENDENCIES)
+	@rm -f writeulaw
+	$(LINK) $(writeulaw_LDFLAGS) $(writeulaw_OBJECTS) $(writeulaw_LDADD) $(LIBS)
+
+writewave: $(writewave_OBJECTS) $(writewave_DEPENDENCIES)
+	@rm -f writewave
+	$(LINK) $(writewave_LDFLAGS) $(writewave_OBJECTS) $(writewave_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = test
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+adddcoffset.o: adddcoffset.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+bitdepth.o: bitdepth.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+copy.o: copy.c ../libaudiofile/audiofile.h ../libaudiofile/aupvlist.h
+linuxtest.o: linuxtest.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+miscread.o: miscread.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+miscwrite.o: miscwrite.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+query.o: query.c ../libaudiofile/audiofile.h ../libaudiofile/aupvlist.h
+query2.o: query2.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+results.o: results.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+testaupv.o: testaupv.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+transparency.o: transparency.c ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+writeaiff.o: writeaiff.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+writenext.o: writenext.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+writeulaw.o: writeulaw.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+writewave.o: writewave.c ../config.h ../libaudiofile/audiofile.h \
+	../libaudiofile/aupvlist.h
+
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am:
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+installdirs:
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-noinstPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-noinstPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir check-TESTS \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
