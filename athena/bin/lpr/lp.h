@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.2 1990-04-16 12:03:00 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.3 1990-06-26 13:34:36 epeisach Exp $
  */
 
 /*
@@ -27,7 +27,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <pwd.h>
-#include <sys/syslog.h>
+#include <syslog.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <sgtty.h>
