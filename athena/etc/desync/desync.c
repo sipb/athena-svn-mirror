@@ -30,6 +30,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <string.h>
+#include <netinet/in.h>
 #ifdef BIG
 #include <stdio.h>
 #include <errno.h>
@@ -151,23 +152,22 @@ int main(argc, argv)
      char **argv;
 {
   char *addr, *low;
-  int num;
+  int num, range;
+  long ip;
 
 #ifdef BIG
   name = argv[0];
 #endif
 
+  range = (argc == 2) ? atoi(argv[1]) : 3600;
   addr = getAddr(CONF);
   if (addr)
     {
-      low = strrchr(addr, '.');
-      if (low)
+      ip = inet_addr(addr);
+      if (ip != -1)
 	{
-	  num = atoi(low+1);
-	  num *= 13;
-	  if (argv[1])
-	    num += atoi(argv[1]);
-	  sleep(num);
+	  srand(ntohl(ip));
+	  sleep(rand() % range);
 	  exit(0);
 	}
     }
