@@ -32,6 +32,7 @@ typedef struct disp_state {
   int cUtWritten;		/* do we have an entry in utmp for console? */
   int comSec, comSecNew;	/* is our com port considered secure? */
   int consolePreference;	/* should the X console be running? */
+  int consoleStatus;		/* console state last we looked */
   int shuttingDown;
   varlist *vars;
   dpy_state *dpy;
@@ -579,6 +580,20 @@ int process(pc_message *input, disp_state *ds)
     }
 }
 
+char *signalStr(void *stat)
+{
+  static char buf[100];
+  int status = *(int *)stat;
+
+  if (WIFEXITED(status))
+    sprintf(buf, "exited with status %d\n", WEXITSTATUS(status));
+
+  if (WIFSIGNALED(status))
+    sprintf(buf, "received signal %d\n", WTERMSIG(status));
+
+  return buf;
+}
+
 typedef struct _cinfo {
   pid_t pid;
   int status;
@@ -911,6 +926,9 @@ int main(int argc, char **argv)
 	case PC_SIGNAL:
 	  if (numc) /* then there are numc children signals */
 	    {
+	      /* Needed to detect and log when the console dies. */
+	      ds.consoleStatus = cons_status(ds.cs);
+
 	      sigprocmask(SIG_BLOCK, &mask, &omask);
 	      while (numc)
 		{
@@ -922,9 +940,25 @@ int main(int argc, char **argv)
 		}
 	      sigprocmask(SIG_SETMASK, &omask, NULL);
 
-	      if (cons_status(ds.cs) == CONS_DOWN &&
-		  ds.consolePreference == CONS_UP)
-		startConsole(&ds);
+	      switch(cons_status(ds.cs))
+		{
+		case CONS_DOWN:
+		  if (ds.consolePreference == CONS_UP)
+		    startConsole(&ds);
+		  break;
+		case CONS_FROZEN:
+		  /* Note: we do not restart the console automatically
+		     in this case for fear it will continue to die, and
+		     we will loop forever. In this case, the user can
+		     either manually ask nanny to restart the console,
+		     or we can write some clever code that watches out
+		     for this. */
+		  if (ds.consoleStatus != CONS_FROZEN)
+		    syslog(LOG_ERR, "console died: %s",
+			   signalStr(cons_exitStatus(ds.cs)));
+		  break;
+		}
+
 	      if (dpy_status(ds.dpy) == DPY_NONE)
 		update_dpy(&ds);
 	    }
