@@ -1,4 +1,4 @@
-# $Id: athena,v 1.18 2000-02-07 22:31:40 ghudson Exp $
+# $Id: athena,v 1.19 2001-05-18 03:16:13 zacheiss Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -214,8 +214,8 @@ if [ "$KRBSRV" != false -a -f /.k ]; then
 fi
 
 if [ "$TIMECLIENT" = true ]; then
-	$ECHO "xntpd... \c"
-	xntpd &
+	$ECHO "ntpd... \c"
+	ntpd &
 fi
 
 # Tell inetd to reread its config file, now that all

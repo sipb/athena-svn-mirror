@@ -1,4 +1,4 @@
-# $Id: athena,v 1.20 2000-12-30 12:12:53 ghudson Exp $
+# $Id: athena,v 1.21 2001-05-18 03:15:58 zacheiss Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -216,8 +216,8 @@ fi
 echo "Starting Athena daemons: \c"
 
 if [ "$TIMECLIENT" = true ]; then
-	echo "xntpd... \c"
-	xntpd &
+	echo "ntpd... \c"
+	ntpd &
 fi
 
 # Start Athena's inetd.  Use full pathname to distinguish from native inetd.
