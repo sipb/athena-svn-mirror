@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xshow.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.3 1989-11-15 23:51:20 marc Exp $";
+static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.4 1989-11-17 09:58:26 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -328,16 +328,18 @@ void fixup_and_draw(dpy, style, auxblocks, blocks, num, lines, numlines,
     sscanf(geometry, "%c%[0123456789c]%c%[0123456789c]", &xfrom, xpos,
 	   &yfrom, ypos);
 
-    if (xpos[0]=='c')
+    if (xpos[0]=='c') {
       gram_xalign = 0;
-    else
+      gram_xpos = 0;
+    } else
       gram_xpos = atoi(xpos);
     if (xfrom=='-')
       gram_xalign *= -1;
 
-    if (ypos[0]=='c')
+    if (ypos[0]=='c') {
       gram_yalign = 0;
-    else
+      gram_ypos = 0;
+    } else
       gram_ypos = atoi(ypos);
     if (yfrom=='-')
       gram_yalign *= -1;
