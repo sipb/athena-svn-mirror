@@ -103,7 +103,7 @@ AC_SUBST(gnomelocaledir)
 
 AC_CHECK_LIB(m, floor)
 
-AC_CHECK_HEADERS(dlfcn.h dl.h locale.h)
+AC_CHECK_HEADERS(dlfcn.h dl.h locale.h libintl.h)
 
 DL_LIB=
 AC_CHECK_FUNCS(dlopen,,[
