@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: keymap.c,v 1.1.1.2 2003-03-15 16:37:29 ghudson Exp $"
+#ident "$Id: keymap.c,v 1.1.1.3 2003-05-04 19:07:43 ghudson Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -124,6 +124,8 @@ static struct _vte_keymap_entry _vte_keymap_GDK_Tab[] = {
 };
 
 static struct _vte_keymap_entry _vte_keymap_GDK_Return[] = {
+	{cursor_all, keypad_all, fkey_all,
+	 VTE_META_MASK, _VTE_CAP_ESC "\n", 2, NULL},
 	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\n", 1, NULL},
 	{cursor_all, keypad_all, fkey_all, 0, "\r", 1, NULL},
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},

@@ -78,8 +78,8 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 libexec_PROGRAMS = gnome-pty-helper
 
-CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
-LDFLAGS = @LDFLAGS@ @GLIB_LIBS@
+AM_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
+AM_LDFLAGS = @LDFLAGS@ @GLIB_LIBS@
 
 gnome_pty_helper_SOURCES = \
 	gnome-pty.h \
@@ -106,6 +106,7 @@ gnome_pty_helper_LDFLAGS =
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/../depcomp
 am__depfiles_maybe = depfiles
@@ -116,6 +117,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
 DIST_SOURCES = $(gnome_pty_helper_SOURCES)
 DIST_COMMON = README ../depcomp ../install-sh ../missing \
 	../mkinstalldirs AUTHORS COPYING ChangeLog INSTALL Makefile.am \
