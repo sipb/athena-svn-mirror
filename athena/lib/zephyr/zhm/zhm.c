@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: jfc $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.44 1990-02-09 17:10:11 jfc Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.45 1990-11-06 14:03:56 raeburn Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -27,7 +27,7 @@ static char rcsid_hm_c[] = "$Id: zhm.c,v 1.44 1990-02-09 17:10:11 jfc Exp $";
 
 #ifdef HESIOD
 #include <hesiod.h>
-#endif HESIOD
+#endif /* HESIOD */
 
 #ifndef PIDFILE
 #define	PIDFILE	"/etc/athena/zhm.pid"
@@ -187,7 +187,7 @@ char *argv[];
 	 srandom(time((long *) 0));
 	 (void) strcpy(prim_serv, serv_list[random() % j]);
      }
-#endif HESIOD	       
+#endif /* HESIOD */
      if (*prim_serv == NULL) {
 	 printf("No valid primary server found, exiting.\n");
 	 exit(ZERR_SERVNAK);
@@ -353,7 +353,7 @@ void init_hm()
 	     fprintf(fp, "%d\n", getpid());
 	     (void) fclose(fp);
      }
-#endif DEBUG
+#endif /* DEBUG */
 
      if (hmdebug) {
 	  syslog(LOG_INFO, "Debugging on.");
@@ -456,7 +456,7 @@ send_stats(notice, sin)
      list[7] = (char *)malloc(64);
      (void)sprintf(list[7], "%ld", time((time_t *)0) - starttime);
      size = (unsigned int)sbrk(0);
-#ifdef ibm032
+#if defined(ibm032) || defined(mips)
      size -= 0x10000000;
 #endif
 #ifdef i386
