@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.24 2001-08-16 14:39:01 ghudson Exp $
+# $Id: bashrc,v 1.25 2002-02-14 05:38:59 zacheiss Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -33,8 +33,7 @@ if [ "${ENV_SET:+set}" != set ]; then
 	sgi)
 		athena_path=/usr/athena/bin:/usr/athena/etc:
 		athena_path=$athena_path:/bin/athena:/usr/sbin:/usr/bsd:/sbin
-		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11
-		athena_path=$athena_path:/usr/andrew/bin:/usr/etc
+		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11:/usr/etc
 		MANPATH=/usr/athena/man:/usr/freeware/catman:/usr/share/catman
 		MANPATH=$MANPATH:/usr/share/man:/usr/catman:/usr/man
 		;;
@@ -42,15 +41,14 @@ if [ "${ENV_SET:+set}" != set ]; then
 		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
 		athena_path=$athena_path:/bin/athena:/usr/openwin/bin
 		athena_path=$athena_path:/usr/openwin/demo:/usr/bin
-		athena_path=$athena_path:/usr/ccs/bin:/usr/andrew/bin
-		athena_path=$athena_path:/usr/sbin:/sbin:/usr/ucb
+		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin:/usr/ucb
 		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 		;;
 	linux)
 		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
 		athena_path=$athena_path:/bin/athena:/usr/bin:/bin
-		athena_path=$athena_path:/usr/X11R6/bin:/usr/andrew/bin
-		athena_path=$athena_path:/usr/athena/etc:/usr/sbin:/sbin
+		athena_path=$athena_path:/usr/X11R6/bin:/usr/athena/etc
+		athena_path=$athena_path:/usr/sbin:/sbin
 		MANPATH=/usr/athena/man:/usr/share/man:/usr/X11R6/man
 		;;
 	*)

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.48 2002-02-05 17:53:08 zacheiss Exp $
+# $Id: Makefile,v 1.49 2002-02-14 05:39:16 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -12,7 +12,6 @@ ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs help \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex
-ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
 MKSERV=/afs/athena.mit.edu/system/mkserv
@@ -132,8 +131,6 @@ install:
 	rm -f ${DESTDIR}${ATHBINDIR}/tellme
 	ln -s `athdir -c -p ${TELLME} -t bin`/tellme \
 		${DESTDIR}${ATHBINDIR}/tellme
-	rm -f ${DESTDIR}/usr/andrew
-	ln -s ${ANDREW}/athena-$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION/$$ATHENA_HOSTTYPE ${DESTDIR}/usr/andrew
 	cd os/${OS} && ${MAKE} $@
 
 clean:

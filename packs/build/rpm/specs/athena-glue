@@ -4,8 +4,8 @@ Copyright: MIT
 Group: System Environment/Base
 
 %description
-The attach-and-run scripts for the moira clients, andrew, mkserv,
-tellme, and the help system.
+The attach-and-run scripts for the moira clients, mkserv, tellme, 
+and the help system.
 
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then

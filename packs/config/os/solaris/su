@@ -3,4 +3,4 @@ SULOG=/var/adm/sulog
 CONSOLE=/dev/console
 SYSLOG=YES
 SUPATH=/srvd/patch:/usr/athena/bin:/etc/athena:/usr/sbin:/sbin:/bin/athena:/usr/bin:/usr/ccs/bin:/usr/athena/etc:/usr/ucb:/usr/openwin/bin:/etc
-PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/usr/openwin/demo:/usr/bin:/usr/ccs/bin:/usr/andrew/bin:/usr/athena/etc:/usr/sbin:/sbin:/usr/ucb:.
+PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/usr/openwin/demo:/usr/bin:/usr/ccs/bin:/usr/athena/etc:/usr/sbin:/sbin:/usr/ucb:.

@@ -1,4 +1,4 @@
-#ident	"$Revision: 1.1 $"
+#ident	"$Revision: 1.2 $"
 #
 # su log file
 SULOG=/var/adm/sulog
@@ -8,7 +8,7 @@ CONSOLE=/dev/console
 #
 # default paths (set by Athena)
 SUPATH=/srvd/patch:/usr/athena/bin:/etc/athena:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/athena/etc:/usr/etc:/usr/bin/X11
-PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11:/usr/andrew/bin:/usr/athena/etc:/usr/etc:.
+PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11:/usr/athena/etc:/usr/etc:.
 #
 # Log to syslog all login failures (SYSLOG=FAIL) or all successes and
 # failures (SYSLOG=ALL).  No messages to syslog if not set.

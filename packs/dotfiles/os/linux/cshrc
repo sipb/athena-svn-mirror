@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.16 2001-08-16 14:39:01 ghudson Exp $
+# $Id: cshrc,v 1.17 2002-02-14 05:39:08 zacheiss Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -13,7 +13,7 @@ set initdir=/usr/athena/lib/init
 
 # Set standard Athena path variable (generic path for all users):
 set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena  \
-		/usr/bin /bin /usr/X11R6/bin /usr/andrew/bin \
+		/usr/bin /bin /usr/X11R6/bin \
 		/usr/sbin /sbin )
 
 # Set standard path of directories for man command to search:
