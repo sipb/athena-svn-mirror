@@ -7,13 +7,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.10 1990-12-31 21:18:22 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.11 1991-01-01 11:40:11 lwvanels Exp $";
 #endif
 #endif
 
 #include "oclient.h"
 
 int i_list;
+int i_show;
 
 #ifdef __STDC__
 # define        P(s) s
@@ -52,7 +53,6 @@ main(argc,argv)
   int temp_fd;
   int gimme_raw;
   int nuke;
-  int i_show;
 #ifdef KERBEROS
   KTEXT_ST my_auth;
   int auth_result;
@@ -227,7 +227,7 @@ main(argc,argv)
 	break;
       case ERR_OTHER_SHOW:
         fprintf(stderr,"You can't delete someone else's new messages..\n");
-        fprintf(stderr,"Use the -n option if you really want to be nosy.\n");
+        fprintf(stderr,"Don't use the -n option if you really want to be nosy.\n");
 	break;
       case ERR_NOT_HERE:
 	fprintf(stderr,"Uknown request\n");
@@ -292,8 +292,8 @@ main(argc,argv)
 	f_gets(input_file,username);
 	f_gets(input_file,machine);
 	len = strlen(username);
-	machine[20-len] = '*';
-	machine[21-len] = '\0';
+	machine[18-len] = '*';
+	machine[19-len] = '\0';
 	inst = atoi(f_gets(input_file,tmp));
 	f_gets(input_file,status);
 	f_gets(input_file,consultant);
@@ -306,11 +306,11 @@ main(argc,argv)
 	f_gets(input_file,descr);
 	sprintf(tmp,"%s@%s",username,machine);
 	if (cinst <0)
-	  sprintf(obuf,"%-20s[%d]  %-8s %-8s      %-4s %2d %-10s %s %s\n",
-		 tmp, inst, status, consultant, cstat, nseen, topic,
+	  sprintf(obuf,"%-20s[%d]  %-8s %-8s          %2d %-13s %s %s\n",
+		 tmp, inst, status, consultant, nseen, topic,
 		 date, time);
 	else
-	  sprintf(obuf,"%-20s[%d]  %-8s %-8s [%2d] %-4s %2d %-10s %s %s\n",
+	  sprintf(obuf,"%-20s[%d]  %-8s %-8s[%2d] %-4s %2d %-13s %s %s\n",
 		 tmp, inst, status, consultant, cinst, cstat, nseen,
 		 topic, date, time);
 	write(temp_fd,obuf,strlen(obuf));
@@ -340,6 +340,8 @@ usage()
 {
   if (i_list)
     fprintf(stderr,"Usage: olist [-f filename] [-s server] [-r]\n");
+  else if (i_show)
+    fprintf(stderr,"Usage: oshow [-f filename] [-s server] [-n] username instance\n");
   else
     fprintf(stderr,"Usage: oreplay [-f filename] [-s server] username instance\n");
 }
