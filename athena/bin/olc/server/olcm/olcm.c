@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.8 1991-11-05 13:45:42 lwvanels Exp $
+ *      $Id: olcm.c,v 1.9 1991-11-06 15:46:40 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.8 1991-11-05 13:45:42 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.9 1991-11-06 15:46:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -39,6 +39,12 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 /* Need to set timeout to link with client library */
 int select_timeout=300;
 
+
+#define N_VALID_REALMS 2
+char *valid_realms[] = {
+  "athena.mit.edu",
+  "mit.edu"
+  };
 
 #ifdef NEEDS_ERRNO_DEFS
 extern int	errno;
@@ -75,7 +81,7 @@ get_krb_tkt(ident)
 
   dest_tkt();
   ret = krb_get_svc_in_tkt(serv, inst, realm, "krbtgt", realm, 1,
-			   SRVTAB_FILE);
+			   NULL);
   if (ret != KSUCCESS) {
     syslog(LOG_ERR,"get_krb_tkt: %s",krb_err_txt[ret]);
     fprintf(stderr,"Could not get tickets for operation: %s\n",
@@ -97,18 +103,18 @@ main(argc,argv)
 #endif
   char username[9];
   char orig_address[BUFSIZ];
+  char realm[BUFSIZ];
   char buf[BUFSIZ];
-  char mailbuf[BUFSIZ];
   char *p,*end;
-  ERRCODE errcode;
   int status;
-  int fd;
+  int valid_realm;
   FILE *f, *mail;
-  int c;
+  int c,i;
   extern char *optarg;
   extern int optind;
   REQUEST Request;
   int instance;
+  int error,do_send;
 
 #if defined(ultrix)
 #ifdef LOG_CONS
@@ -156,12 +162,7 @@ main(argc,argv)
   strcpy(filename,"/tmp/olcm_XXXXXX");
   mktemp(filename);
 
-  if ((fd = open(filename,O_CREAT|O_WRONLY|O_EXCL,0600)) < 0) {
-    syslog(LOG_ERR,"olcm: opening file %s: %m",filename);
-    exit(1);
-  }
-
-  if ((f = fdopen(fd,"w+")) == NULL) {
+  if ((f = fopen(filename,"w+")) == NULL) {
     syslog(LOG_ERR,"olcm: fdopening file %s: %m",filename);
     exit(1);
   }
@@ -195,10 +196,21 @@ main(argc,argv)
       while(isascii(*end) && isalnum(*end))
 	end++;
 
+/* look for correct realm;
+   if not @athena.mit.edu or @mit.edu, give the username "nobody"
+   eventually, real mail address will go in nickname.
+ */
+
+      if (*end == '@') {
+	strncpy(realm,end+1,BUFSIZ);
+      }
+
       if (end != p) {
-	*end = '\0';
 	strcpy(orig_address,p);
+	*end = '\0';
 	end = index(orig_address,'>');
+	if (end != NULL) *end = '\0';
+	end = index(orig_address,'\n');
 	if (end != NULL) *end = '\0';
 	strncpy(username,p,8);
 	username[8] = '\0';
@@ -208,7 +220,15 @@ main(argc,argv)
 
   fclose(f);
 
-  if (username[0] == '\0') {
+  valid_realm = 0;
+  for(i=0;i<N_VALID_REALMS;i++) {
+    if (strncasecmp(realm,valid_realms[i],strlen(valid_realms[i])) == 0) {
+      valid_realm = 1;
+      break;
+    }
+  }
+
+  if ((username[0] == '\0') || (!valid_realm)) {
     /* didn't find one, make up one by default */
     strncpy(username,DFLT_USERNAME,8);
     username[8] = '\0';
@@ -237,131 +257,110 @@ main(argc,argv)
 
   (void) strcpy(Request.target.username, username);
 
-  instance = Request.requester.instance;
-  set_option(Request.options,VERIFY);
-  status = OAsk_buffer(&Request,topic,NULL);
-  unset_option(Request.options, VERIFY);
-
-  switch(status)
-    {
-    case SUCCESS:
-      break;
-
-    case INVALID_TOPIC:
-      syslog(LOG_ERR,"topic %s is invalid", topic);
-      fprintf(stderr,"unable to enter a question via mail\n");
-      exit(1);
-      break;
-
-    case ERROR:
-      syslog(LOG_ERR,"error contacting server %s", server);
-      fprintf(stderr,
-         "An error has occurred while contacting server.  Please try again.\n");
-      exit(1);
-      break;
-
-    case CONNECTED:
-      syslog(LOG_ERR,"user %s already connected", username);
-      fprintf(stderr, "You are already connected to olc.\n");
-      exit(1);
-      break;
-
-    case PERMISSION_DENIED:
-      fprintf(stderr,"You are not allowed to ask OLC questions.\n");
-      fprintf(stderr,"Does defeat the purpose of things, doesn't it?\n");
-      syslog(LOG_ERR,"user %s: permission denied", username);
-      exit(1);
-      break;
-
-    case MAX_ASK:
-    case ALREADY_HAVE_QUESTION:
-      syslog(LOG_ERR,"user %s already asking a question", username);
-      fprintf(stderr, "You are already asking a question. \n");
-      exit(1);
-      break;
-
-    case HAS_QUESTION:
-#if 0
-      syslog(LOG_ERR,"user %s already asking a question...splitting", username);
-      fprintf(stderr,
-	"Your current instance is busy, creating another one for you.\n");      
-      set_option(Request.options, SPLIT_OPT);
-      t_ask(Request,topic,filename);
-#else
-      exit(1);
-#endif
-      break;
-
-    case ALREADY_SIGNED_ON:
-      syslog(LOG_ERR,"user %s already a consultant on this instance", username);
-      fprintf(stderr,
-              "You cannot be a user and consult in the same instance.\n");
-      exit(1);
-      break;
-
-    default:
-#if 0
-      if((status = handle_response(status, &Request))!=SUCCESS)
-        {
-          if(OLC)
-            exit(1);
-          else
-            return(ERROR);
-        }
-#else
-      syslog(LOG_ERR,"OAsk (VERIFY) Error status %d\n", status);
-      fprintf(stderr,"Error status %d\n", status);
-      exit(1);
-#endif
-      break;
-    }
-
-    status = OAsk_file(&Request,topic,filename);
-    (void) unlink(filename);
-  switch(status)
-    {
-    case NOT_CONNECTED:
-      sprintf(mailbuf, "Your question has been received and will be forwarded to the first\navailable consultant.");
-      break;
-    case CONNECTED:
-      sprintf(mailbuf, "Your question has been received and a consultant is reviewing it now.");
-      break;
-    default:
-      syslog(LOG_ERR,"OAsk Error status %d\n", status);
-      fprintf(stderr,"Error status %d\n", status);
-      exit(1);
-      break;
-    }
-
-#if 0
-  sprintf(buf, "-topic %s %s -file %s", topic, username, filename);
-  printf("buf is %s\n", buf);
-  errcode = do_olc_ask(&buf);
-  if (errcode != SUCCESS) {
-    syslog(LOG_ERR,"\"%s\" exited with status %d",buf,status);
-    exit(1);
-  }
-#endif
-
-#ifdef KERBEROS
-  dest_tkt();
-#endif
-
-  sprintf(buf, "/usr/lib/sendmail -t");
-  mail = popen(buf, "w");
+  error = 0;
+  do_send = 0;
+  mail = popen("/usr/lib/sendmail -t", "w");
   if (mail) {
     fprintf(mail, "To: %s\n",orig_address);
     fprintf(mail, "From: \"OLC Server\" <olc-test@matisse.local>\n");
     fprintf(mail, "Subject: Your OLC question\n");
 
-    fprintf(mail, "%s\n", mailbuf);
-    fprintf(mail, "You will receive mail from a consultant when it has been answered.\nYou may also continue this question by using olc or xolc.\n");
+  } else {
+    syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
+    mail = stderr;
+  }
+
+  instance = Request.requester.instance;
+  set_option(Request.options,VERIFY);
+  status = OAsk_buffer(&Request,topic,NULL);
+  unset_option(Request.options, VERIFY);
+
+  switch(status) {
+  case SUCCESS:
+    break;
+    
+  case INVALID_TOPIC:
+    syslog(LOG_ERR,"topic %s is invalid", topic);
+    fprintf(mail,"An error in the setup has prevented your question from being asked;\n");
+    fprintf(mail,"The topic `%s' which the server tried to use is invalid.\n\n",
+	      topic);
+    error = 1;
+    break;
+    
+  case ERROR:
+    syslog(LOG_ERR,"error contacting server %s", server);
+    fprintf(mail,
+	    "An error has occurred while contacting the server.  Please try sending\n");
+    fprintf(mail,
+	    "your question again; if it continues to fail, please contact the consultants\n");
+    fprintf(mail, "by other means.\n\n");
+    error = 1;
+    break;
+    
+  case PERMISSION_DENIED:
+    fprintf(mail,"You are not allowed to ask questions on this server.\n");
+    fprintf(mail,"Does defeat the purpose of things, doesn't it?\n");
+    syslog(LOG_ERR,"user %s: permission denied", username);
+    error = 1;
+    break;
+    
+  case CONNECTED:
+  case MAX_ASK:
+  case ALREADY_HAVE_QUESTION:
+  case HAS_QUESTION:
+    syslog(LOG_INFO,"user %s sending reply", username);
+    fprintf(mail, "You are already asking a question; this message will be \n");
+    fprintf(mail, "appended to the text of your existing question.\n");
+    do_send = 1;
+    break;
+    
+  default:
+    syslog(LOG_ERR,"OAsk (VERIFY) Error status %d\n", status);
+    fprintf(mail,"Received unexpected error %d from the server.\n", status);
+    fprintf(mail,"Please try sending your question again; if it\n");
+    fprintf(mail,"continues to fail, please contact the consultants\n");
+    fprintf(mail,"by other means.\n\n");
+    error = 1;
+    break;
+  }
+  
+  if (!error) {
+    if (do_send) {
+      status = OReply(&Request,filename);
+    } else {
+      status = OAsk_file(&Request,topic,filename);
+    }
+
+    (void) unlink(filename);
+    switch(status) {
+    case SUCCESS:
+    case NOT_CONNECTED:
+      fprintf(mail, "Your question has been received and will be forwarded to the first\navailable consultant.\n");
+      break;
+    case CONNECTED:
+      fprintf(mail, "Your question has been received and a consultant is reviewing it now.\n");
+      break;
+    default:
+      syslog(LOG_ERR,"OAsk Error status %d\n", status);
+      fprintf(mail,"Received unexpected error %d from the server.\n", status);
+      fprintf(mail,"Please try sending your question again; if it\n");
+      fprintf(mail,"continues to fail, please contact the consultants\n");
+      fprintf(mail,"by other means.\n\n");
+      error = 1;
+      break;
+    }
+  }
+
+#ifdef KERBEROS
+  dest_tkt();
+#endif
+
+  if (mail) {
     fprintf(mail, "Do not reply directly to this message; it was automatically generated.\n");
     fprintf(mail, ".\n");
     pclose(mail);
-  } else {
-    syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
   }
+
 }
 
 
