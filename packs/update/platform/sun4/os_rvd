@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.16 1998-05-05 20:31:27 miki Exp $
+## $Id: os_rvd,v 1.17 1998-05-08 15:58:38 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -108,11 +108,25 @@ GLOBAL : *.CKP *.local *.pid :
 		*.old
 		:
 	/platform:::
-		sun4c
-		sun4d
+		PFU,S-4_Leia
+		SUNW,Ultra-1
+		SUNW,Ultra-1-Engine
+		SUNW,Ultra-2
+		SUNW,Ultra-250
+		SUNW,Ultra-30
+		SUNW,Ultra-4
+		SUNW,Ultra-5_10
+		SUNW,Ultra-60
+		SUNW,Ultra-Enterprise
+		SUNW,Ultra-Enterprise-10000
+		SUNW,UltraAX-MP
+		SUNW,UltraSPARC-IIi-Engine
+		SUNW,UltraSPARC-IIi-cEngine
 		sun4m
 		sun4mL
 		sun4u
+		sun4u1
+		tadpole4m
 		:
 	/usr::: 
 		-> 4lib
