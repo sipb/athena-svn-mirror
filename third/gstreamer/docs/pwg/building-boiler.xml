@@ -33,7 +33,7 @@
     </para>
     <screen>
 <prompt>shell $ </prompt><userinput>cvs -d:pserver:anoncvs@cvs.freedesktop.org/cvs/gstreamer co login</userinput>
-Logging in to :pserver:anoncvs@cvs.freedesktop.org:2401/cvs/gstreamer
+Logging in to :pserver:anoncvs@cvs.freedesktop.org:/cvs/gstreamer
 CVS password: <keycap>[ENTER]</keycap>
 
 <prompt>shell $ </prompt><userinput>cvs -z3 -d:pserver:anoncvs@cvs.freedesktop.org:/cvs/gstreamer co gst-template</userinput>
@@ -63,11 +63,12 @@ U gst-template/gst-app/src/Makefile.am
   <!-- ############ sect1 ############# -->
 
   <sect1 id="section-boiler-project-stamp" xreflabel="Using the Project Stamp">
-    <title>!!! FIXME !!! Using the Project Stamp</title>
-    <para>
-      This section needs some fixing from someone that is aware of how this works.
-      The only tool that looks like the ones cited there is <filename>gst-plugins/tools/filterstamp.sh</filename>
-    </para>
+    <title>Using the Project Stamp</title>
+    <!-- FIXME 
+      This section needs some fixing from someone that is aware of how this
+      works. The only tool that looks like the ones cited there is
+      <filename>gst-plugins/tools/filterstamp.sh</filename>
+    -->
     <para>
       The first thing to do when making a new element is to specify some basic
       details about it: what its name is, who wrote it, what version number it
@@ -155,13 +156,13 @@ U gst-template/gst-app/src/Makefile.am
   #define GST_TYPE_EXAMPLE \
     (gst_example_get_type())
   #define GST_EXAMPLE(obj) \
-    (GTK_CHECK_CAST((obj),GST_TYPE_EXAMPLE,GstExample))
+    (G_TYPE_CHECK_CAST((obj),GST_TYPE_EXAMPLE,GstExample))
   #define GST_EXAMPLE_CLASS(klass) \
-    (GTK_CHECK_CLASS_CAST((klass),GST_TYPE_EXAMPLE,GstExample))
+    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_EXAMPLE,GstExample))
   #define GST_IS_EXAMPLE(obj) \
-    (GTK_CHECK_TYPE((obj),GST_TYPE_EXAMPLE))
+    (G_TYPE_CHECK_TYPE((obj),GST_TYPE_EXAMPLE))
   #define GST_IS_EXAMPLE_CLASS(obj) \
-    (GTK_CHECK_CLASS_TYPE((klass),GST_TYPE_EXAMPLE))
+    (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_EXAMPLE))
 
   /* Standard function returning type information. */
   GType gst_example_get_type (void);
@@ -207,7 +208,10 @@ static GstElementDetails example_details = {
     </programlisting>
     <para>
       The element details are registered with the plugin during
-      <function>_base_init ()</function>.
+      the <function>_base_init ()</function> function, which is part of
+      the GObject system. The <function>_base_init ()</function> function
+      should be set for this GObject in the function where you register
+      the type with Glib.
     </para>
     <programlisting>
 static void
@@ -270,15 +274,18 @@ GST_STATIC_PAD_TEMPLATE (
       <function>gst_pad_new_from_template ()</function>. The template can be
       retrieved from the element class using
       <function>gst_element_class_get_pad_template ()</function>. See below
-      for more details on this.
+      for more details on this. In order to create a new pad from this
+      template using <function>gst_pad_new_from_template ()</function>, you
+      will need to declare the pad template as a global variable. More on
+      this subject in <xref linkend="chapter-building-pads"/>.
     </para>
     <programlisting>
+static GstStaticPadTemplate sink_factory = [..],
+    src_factory = [..];
+
 static void
 gst_my_filter_base_init (GstMyFilterClass *klass)
 {
-  static GstStaticPadTemplate sink_factory =
-[..]
-  , src_factory =
 [..]
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -317,7 +324,9 @@ GST_STATIC_PAD_TEMPLATE (
 );
     </programlisting>
     <para>
-      Values surrounded by {} are lists, values surrounded by [] are ranges.
+      Values surrounded by curly brackets (<quote>{</quote> and
+      <quote>}</quote>) are lists, values surrounded by square brackets
+      (<quote>[</quote> and <quote>]</quote>) are ranges.
       Multiple sets of types are supported too, and should be separated by
       a semicolon (<quote>;</quote>). Later, in the chapter on pads, we will
       see how to use types to know the exact format of a stream:

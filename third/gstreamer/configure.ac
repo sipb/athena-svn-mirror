@@ -3,7 +3,7 @@ AC_CANONICAL_TARGET
 
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AS_VERSION(gstreamer, GST_VERSION, 0, 8, 5, 0, GST_CVS="no", GST_CVS="yes")
+AS_VERSION(gstreamer, GST_VERSION, 0, 8, 9, 0, GST_CVS="no", GST_CVS="yes")
 
 dnl AM_MAINTAINER_MODE only provides the option to configure to enable it
 AM_MAINTAINER_MODE
@@ -51,6 +51,10 @@ AS_AC_EXPAND(LOCALEDIR, $datadir/locale)
 AC_DEFINE_UNQUOTED([LOCALEDIR], "$LOCALEDIR",
                    [gettext locale dir])
 
+dnl define LIBDIR so we can inform people where we live
+AS_AC_EXPAND(LIBDIR, $libdir)
+AC_DEFINE_UNQUOTED([LIBDIR], "$LIBDIR",
+                   [library dir])
 
 dnl decide on error flags
 dnl if we support -Wall, set it unconditionally
@@ -315,15 +319,6 @@ dnl ######################################################################
 
 dnl FIXME: simplify all this down using a few m4 macros
 
-AC_ARG_ENABLE(libmmx,
-AC_HELP_STRING([--enable-libmmx],[use libmmx, if available]),
-[case "${enableval}" in
-  yes) USE_LIBMMX=$HAVE_LIBMMX ;;
-  no)  USE_LIBMMX=no ;;
-  *) AC_MSG_ERROR(bad value ${enableval} for --enable-libmmx) ;;
-esac], 
-[USE_LIBMMX=$HAVE_LIBMMX]) dnl Default value
-
 AC_ARG_ENABLE(fast-stack-trash,
 AC_HELP_STRING([--enable-fast-stack-trash],[use fast memory allocator (i586 or above)]),
 [case "${enableval}" in
@@ -434,7 +429,14 @@ esac],
 [USE_DEBUG=yes]) dnl Default value
 
 dnl valgrind inclusion
-USE_VALGRIND="$USE_DEBUG"
+AC_ARG_ENABLE(valgrind,
+AC_HELP_STRING([--disable-valgrind],[disable run-time valgrind detection]),
+[case "${enableval}" in
+  yes) USE_VALGRIND="$USE_DEBUG" ;;
+  no)  USE_VALGRIND=no ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-valgrind) ;;
+esac],
+[USE_VALGRIND="$USE_DEBUG"]) dnl Default value
 VALGRIND_REQ="2.1"
 if test "x$USE_VALGRIND" = xyes; then
 
@@ -454,10 +456,6 @@ dnl ################################################
 
 dnl These should be "USE_*" instead of "HAVE_*", but some packages expect
 dnl HAVE_ and it is likely to be easier to stick with the old name
-if test "x$USE_LIBMMX" = xyes; then
-  AC_DEFINE(HAVE_LIBMMX, 1, [Define if libmmx is available])
-fi
-
 if test "x$USE_FAST_STACK_TRASH" = xyes; then
   AC_DEFINE(USE_FAST_STACK_TRASH, 1, [Define if we should use i586 optimized stack functions])
 fi
@@ -686,6 +684,7 @@ testsuite/elements/Makefile
 testsuite/ghostpads/Makefile
 testsuite/indexers/Makefile
 testsuite/negotiation/Makefile
+testsuite/pad/Makefile
 testsuite/parse/Makefile
 testsuite/plugin/Makefile
 testsuite/refcounting/Makefile

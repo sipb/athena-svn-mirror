@@ -1,0 +1,110 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstDParam</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library Reference Manual"><link rel="up" href="gstreamer-control.html" title="gstcontrol"><link rel="previous" href="GstDParamManager.html" title="GstDParamManager"><link rel="next" href="GstDParamSmooth.html" title="GstDParamSmooth"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstDParamManager.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-control.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library Reference Manual</th><td><a accesskey="n" href="GstDParamSmooth.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstDParam"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstDParam</span></h2><p>GstDParam &#8212; dynamic parameter instance</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libs/control/control.h&gt;
+
+
+struct      <a href="GstDParam.html#GstDParam-struct">GstDParam</a>;
+<a href="GstDParam.html" title="GstDParam">GstDParam</a>*  <a href="GstDParam.html#gst-dparam-new">gst_dparam_new</a>                  (GType type);
+void        <a href="GstDParam.html#gst-dparam-attach">gst_dparam_attach</a>               (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam,
+                                             <a href="GstDParamManager.html" title="GstDParamManager">GstDParamManager</a> *manager,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name);
+void        <a href="GstDParam.html#gst-dparam-detach">gst_dparam_detach</a>               (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam);
+void        <a href="GstDParam.html#gst-dparam-do-update-default">gst_dparam_do_update_default</a>    (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam,
+                                             gint64 timestamp,
+                                             GValue *value,
+                                             GstDParamUpdateInfo update_info);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2765778"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gstreamer/GstObject.html"
+>GstObject</a>
+         +----GstDParam
+               +----<a href="GstDParamSmooth.html" title="GstDParamSmooth">GstDParamSmooth</a>
+               +----<a href="GstDParamLinInterp.html" title="GstDParamLinInterp">GstDParamLinInterp</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2765822"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GstDParam.html#GstDParam--value-double">value-double</a>"         gdouble              : Read / Write
+  "<a href="GstDParam.html#GstDParam--value-float">value-float</a>"          gfloat               : Read / Write
+  "<a href="GstDParam.html#GstDParam--value-int">value-int</a>"            gint                 : Read / Write
+  "<a href="GstDParam.html#GstDParam--value-int64">value-int64</a>"          gint64               : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2765905"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GstDParam.html#GstDParam-value-changed">value-changed</a>"
+            void        user_function      (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *gstdparam,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2765949"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2765959"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2765965"></a><h3><a name="GstDParam-struct"></a>struct GstDParam</h3><a class="indexterm" name="id2765975"></a><pre class="programlisting">struct GstDParam;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2765990"></a><h3><a name="gst-dparam-new"></a>gst_dparam_new ()</h3><a class="indexterm" name="id2766001"></a><pre class="programlisting"><a href="GstDParam.html" title="GstDParam">GstDParam</a>*  gst_dparam_new                  (GType type);</pre><p>
+Create a new dynamic parameter controller.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type that this dparam will store
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new instance of GstDParam
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2766062"></a><h3><a name="gst-dparam-attach"></a>gst_dparam_attach ()</h3><a class="indexterm" name="id2766073"></a><pre class="programlisting">void        gst_dparam_attach               (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam,
+                                             <a href="GstDParamManager.html" title="GstDParamManager">GstDParamManager</a> *manager,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name);</pre><p>
+Adding the parameter controller to the manager using the
+supplied specs and unit.
+See also <a href="GstDParamManager.html#gst-dpman-attach-dparam"><tt class="function">gst_dpman_attach_dparam()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> GstDParam instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>manager</tt></i> :</span></td><td> the GstDParamManager that this dparam belongs to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>param_spec</tt></i> :</span></td><td> the specification for the parameter
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unit_name</tt></i> :</span></td><td> the name of the unit
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2766201"></a><h3><a name="gst-dparam-detach"></a>gst_dparam_detach ()</h3><a class="indexterm" name="id2766213"></a><pre class="programlisting">void        gst_dparam_detach               (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam);</pre><p>
+Removes a previousely added parameter controller.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> GstDParam instance
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2766263"></a><h3><a name="gst-dparam-do-update-default"></a>gst_dparam_do_update_default ()</h3><a class="indexterm" name="id2766275"></a><pre class="programlisting">void        gst_dparam_do_update_default    (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *dparam,
+                                             gint64 timestamp,
+                                             GValue *value,
+                                             GstDParamUpdateInfo update_info);</pre><p>
+Default implementation for changing a dynamic parameter.
+Subclasses might overwrite the behaviour of this.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> the parameter to update
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>timestamp</tt></i> :</span></td><td> when should the update take place
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_info</tt></i> :</span></td><td> unused here
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2766393"></a><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a name="GstDParam--value-double"></a>"<tt class="literal">value-double</tt>" (gdouble : Read / Write)</span></td><td><p>The value that should be changed if gdouble is the type.</p></td></tr><tr><td><span class="term"><a name="GstDParam--value-float"></a>"<tt class="literal">value-float</tt>" (gfloat : Read / Write)</span></td><td><p>The value that should be changed if gfloat is the type.</p></td></tr><tr><td><span class="term"><a name="GstDParam--value-int"></a>"<tt class="literal">value-int</tt>" (gint : Read / Write)</span></td><td><p>The value that should be changed if gint is the type.</p></td></tr><tr><td><span class="term"><a name="GstDParam--value-int64"></a>"<tt class="literal">value-int64</tt>" (gint64 : Read / Write)</span></td><td><p>The value that should be changed if gint64 is the type.</p></td></tr></tbody></table></div></div><div class="refsect1" lang="en"><a name="id2766526"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2766532"></a><h3><a name="GstDParam-value-changed"></a>The "value-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstDParam.html" title="GstDParam">GstDParam</a> *gstdparam,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstdparam</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstDParamManager.html"><b>&lt;&lt; GstDParamManager</b></a></td><td align="right"><a accesskey="n" href="GstDParamSmooth.html"><b>GstDParamSmooth &gt;&gt;</b></a></td></tr></table></body></html>

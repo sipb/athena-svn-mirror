@@ -10,10 +10,6 @@ else
 GST_LOADSAVE_SRC = xml-mp3
 endif
 
-EXAMPLES = dynamic $(GNOME) helloworld queue threads $(GST_LOADSAVE_SRC)
-noinst_PROGRAMS = $(EXAMPLES)
-
-LDADD = $(GST_OBJ_LIBS)
 INCLUDES = $(GST_OBJ_CFLAGS)
 
 #dynamic_LDADD = $(GST_OBJ_LIBS) $(LIBGNOMEUI_LIBS)
@@ -23,11 +19,83 @@ gnome_CFLAGS = $(GST_OBJ_CFLAGS) $(LIBGNOMEUI_CFLAGS)
 
 EXTRA_DIST = extract.pl
 
-# for some reason specifying %.c runs us into trouble when running make
-# clean, it starts looking for things like mostlyclean-am.c, please
-# help me fix that so we don't need to specify all sources here
-# also, it's a bit irritating that right now a change in any xml file
-# triggers a rebuild of all examples
-#%.c:
-dynamic.c gnome.c helloworld.c queue.c threads.c xml-mp3.c: $(top_srcdir)/docs/manual/*.xml
-	$(PERL_PATH) $(srcdir)/extract.pl $@ $(top_srcdir)/docs/manual/*.xml
+EXAMPLES = \
+	dynamic \
+	$(GNOME) \
+	elementcreate \
+	elementmake \
+	elementfactory \
+	elementget \
+	elementlink \
+	bin \
+	pad \
+	ghostpad \
+	helloworld \
+	init \
+	popt \
+	query \
+	threads \
+	typefind \
+	fakesrc \
+	playbin \
+	decodebin \
+	$(GST_LOADSAVE_SRC)
+
+elementmake.c elementcreate.c elementget.c elementlink.c elementfactory.c: $(top_srcdir)/docs/manual/basics-elements.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/basics-elements.xml
+
+bin.c : $(top_srcdir)/docs/manual/basics-bins.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/basics-bins.xml
+
+pad.c ghostpad.c: $(top_srcdir)/docs/manual/basics-pads.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/basics-pads.xml
+
+gnome.c: $(top_srcdir)/docs/manual/appendix-integration.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/appendix-integration.xml
+
+helloworld.c: $(top_srcdir)/docs/manual/basics-helloworld.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/basics-helloworld.xml
+
+init.c popt.c: $(top_srcdir)/docs/manual/basics-init.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/basics-init.xml
+
+query.c: $(top_srcdir)/docs/manual/advanced-position.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/advanced-position.xml
+
+threads.c: $(top_srcdir)/docs/manual/advanced-threads.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/advanced-threads.xml
+
+typefind.c dynamic.c: $(top_srcdir)/docs/manual/advanced-autoplugging.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/advanced-autoplugging.xml
+
+fakesrc.c: $(top_srcdir)/docs/manual/advanced-dataaccess.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/advanced-dataaccess.xml
+
+playbin.c decodebin.c: $(top_srcdir)/docs/manual/highlevel-components.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/highlevel-components.xml
+
+xml-mp3.c: $(top_srcdir)/docs/manual/highlevel-xml.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ \
+		$(top_srcdir)/docs/manual/highlevel-xml.xml 
+
+# we use some of the examples as testsuite apps, to verify that
+# they actually run
+include $(top_srcdir)/testsuite/Rules
+                                                                                
+tests_pass = elementmake elementget init popt
+tests_fail =
+tests_ignore =
+
+noinst_PROGRAMS = $(EXAMPLES)
+LDADD = $(GST_OBJ_LIBS)

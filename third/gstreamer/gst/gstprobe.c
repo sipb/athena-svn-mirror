@@ -20,9 +20,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #include "gst_private.h"
 #include "gstprobe.h"
+
+static GstProbe *
+_gst_probe_copy (const GstProbe * src)
+{
+  return gst_probe_new (src->single_shot, src->callback, src->user_data);
+}
+
+GType
+gst_probe_get_type (void)
+{
+  static GType gst_probe_type = 0;
+
+  if (!gst_probe_type) {
+    gst_probe_type = g_boxed_type_register_static ("GstProbe",
+        (GBoxedCopyFunc) _gst_probe_copy, (GBoxedFreeFunc) gst_probe_destroy);
+  }
+
+  return gst_probe_type;
+
+}
 
 /**
  * gst_probe_new:
@@ -48,6 +67,8 @@ gst_probe_new (gboolean single_shot,
   probe->callback = callback;
   probe->user_data = user_data;
 
+  GST_CAT_DEBUG (GST_CAT_PROBE, "created probe %p", probe);
+
   return probe;
 }
 
@@ -55,7 +76,7 @@ gst_probe_new (gboolean single_shot,
  * gst_probe_destroy:
  * @probe: The probe to destroy
  *
- * Free the memeory associated with the probe.
+ * Free the memory associated with the probe.
  */
 void
 gst_probe_destroy (GstProbe * probe)
@@ -84,6 +105,8 @@ gst_probe_perform (GstProbe * probe, GstData ** data)
   gboolean res = TRUE;
 
   g_return_val_if_fail (probe, res);
+
+  GST_CAT_DEBUG (GST_CAT_PROBE, "performing probe %p", probe);
 
   if (probe->callback)
     res = probe->callback (probe, data, probe->user_data);
@@ -175,6 +198,9 @@ gst_probe_dispatcher_add_probe (GstProbeDispatcher * disp, GstProbe * probe)
   g_return_if_fail (disp);
   g_return_if_fail (probe);
 
+  GST_CAT_DEBUG (GST_CAT_PROBE, "adding probe %p to dispatcher %p", probe,
+      disp);
+
   disp->probes = g_slist_prepend (disp->probes, probe);
 }
 
@@ -190,6 +216,9 @@ gst_probe_dispatcher_remove_probe (GstProbeDispatcher * disp, GstProbe * probe)
 {
   g_return_if_fail (disp);
   g_return_if_fail (probe);
+
+  GST_CAT_DEBUG (GST_CAT_PROBE, "removing probe %p from dispatcher %p",
+      probe, disp);
 
   disp->probes = g_slist_remove (disp->probes, probe);
 }
@@ -211,6 +240,9 @@ gst_probe_dispatcher_dispatch (GstProbeDispatcher * disp, GstData ** data)
 
   g_return_val_if_fail (disp, res);
 
+  GST_CAT_DEBUG (GST_CAT_PROBE, "dispatching data %p on dispatcher %p",
+      *data, disp);
+
   walk = disp->probes;
   while (walk) {
     GstProbe *probe = (GstProbe *) walk->data;
@@ -218,7 +250,9 @@ gst_probe_dispatcher_dispatch (GstProbeDispatcher * disp, GstData ** data)
     walk = g_slist_next (walk);
 
     res &= gst_probe_perform (probe, data);
-    if (probe->single_shot) {
+    /* it might have disappeared in the callback */
+    if (disp->active &&
+        g_slist_find (disp->probes, probe) && probe->single_shot) {
       disp->probes = g_slist_remove (disp->probes, probe);
 
       gst_probe_destroy (probe);

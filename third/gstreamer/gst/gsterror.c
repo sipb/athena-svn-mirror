@@ -46,7 +46,7 @@ gst_g_error_get_type (void)
 
 /* initialize the dynamic table of translated core errors */
 static gchar **
-_gst_core_errors_init ()
+_gst_core_errors_init (void)
 {
   gchar **t = NULL;
 
@@ -83,7 +83,7 @@ _gst_core_errors_init ()
 
 /* initialize the dynamic table of translated library errors */
 static gchar **
-_gst_library_errors_init ()
+_gst_library_errors_init (void)
 {
   gchar **t = NULL;
 
@@ -103,14 +103,14 @@ _gst_library_errors_init ()
 
 /* initialize the dynamic table of translated resource errors */
 static gchar **
-_gst_resource_errors_init ()
+_gst_resource_errors_init (void)
 {
   gchar **t = NULL;
 
   t = g_new0 (gchar *, GST_RESOURCE_ERROR_NUM_ERRORS);
 
   TABLE (t, RESOURCE, FAILED,
-      N_("GStreamer encountered a general supporting library error."));
+      N_("GStreamer encountered a general resource error."));
   TABLE (t, RESOURCE, TOO_LAZY,
       N_("GStreamer developers were too lazy to assign an error code "
           "to this error.  Please file a bug."));
@@ -133,14 +133,14 @@ _gst_resource_errors_init ()
 
 /* initialize the dynamic table of translated stream errors */
 static gchar **
-_gst_stream_errors_init ()
+_gst_stream_errors_init (void)
 {
   gchar **t = NULL;
 
   t = g_new0 (gchar *, GST_STREAM_ERROR_NUM_ERRORS);
 
   TABLE (t, STREAM, FAILED,
-      N_("GStreamer encountered a general supporting library error."));
+      N_("GStreamer encountered a general stream error."));
   TABLE (t, STREAM, TOO_LAZY,
       N_("GStreamer developers were too lazy to assign an error code "
           "to this error.  Please file a bug."));

@@ -39,7 +39,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 DOC_SOURCE_DIR=$(top_srcdir)/libs/gst
 
 # Extra options to supply to gtkdoc-scan.
-SCAN_OPTIONS=
+SCAN_OPTIONS=--deprecated-guards="GST_DISABLE_DEPRECATED"
 
 # FIXME :
 # there's something wrong with gstreamer-sections.txt not being in the dist
@@ -275,6 +275,10 @@ install-data-local:
 	    $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
 	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
 	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
+		if test -e $(srcdir)/html/style.css; then \
+			echo '-- Installing $(srcdir)/html/style.css' ; \
+			$(INSTALL_DATA) $(srcdir)/html/style.css $(DESTDIR)$(TARGET_DIR); \
+		fi; \
 	fi) 
 uninstall-local:
 	(installfiles=`echo ./html/*.html`; \
@@ -298,8 +302,12 @@ uninstall-local:
 	  rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
 	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/index.sgml' ; \
 	  rm -f $(DESTDIR)$(TARGET_DIR)/index.sgml; \
+		if test -e $(DESTDIR)$(TARGET_DIR)/style.css; then \
+			echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/style.css' ; \
+			rm -f $(DESTDIR)$(TARGET_DIR)/style.css; \
+		fi; \
 	fi) 
-	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR); fi
+	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR) 2>/dev/null; fi
 
 #
 # Require gtk-doc when making dist

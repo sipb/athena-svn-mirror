@@ -70,9 +70,12 @@
 
 G_BEGIN_DECLS
 
-/* make our own type for poptOption because gtkdoc (1.2) can not handle functions with
- * return types like 'struct abc'
+/* make our own type for poptOption because gtkdoc-1.2 can not handle functions
+ * with return types like 'struct abc'
  * Filed as http://bugzilla.gnome.org/show_bug.cgi?id=148507
+ *
+ * Btw. popt provides a typedef, but it is:
+ * typedef struct poptOption *poptOption
  */
 typedef struct poptOption GstPoptOption;
 
@@ -92,8 +95,10 @@ gboolean	gst_init_check_with_popt_table	(int *argc, char **argv[],
 
 const GstPoptOption *	gst_init_get_popt_table		(void);
 
+#ifndef GST_DISABLE_DEPRECATED
 void		gst_use_threads			(gboolean use_threads);
 gboolean	gst_has_threads			(void);
+#endif
 
 void		gst_main			(void);
 void		gst_main_quit			(void);

@@ -36,13 +36,6 @@ A Thread can act as a toplevel bin as it has its own scheduler.
 The thread priority
 </para>
 
-<!-- ##### MACRO GST_TYPE_THREAD ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### VARIABLE gst_thread_current ##### -->
 <para>
 
@@ -51,12 +44,12 @@ The thread priority
 
 <!-- ##### ENUM GstThreadState ##### -->
 <para>
-Thread flags:
+Flags about the current thread state
 </para>
 
 @GST_THREAD_STATE_SPINNING: The thread is runnning
-@GST_THREAD_STATE_REAPING: The thread is ending.
-@GST_THREAD_MUTEX_LOCKED: 
+@GST_THREAD_STATE_REAPING: The thread is ending
+@GST_THREAD_STATE_WAITING: The thread is waiting to be run again
 @GST_THREAD_FLAG_LAST: subclass use this to start their enumeration
 
 <!-- ##### FUNCTION gst_thread_new ##### -->

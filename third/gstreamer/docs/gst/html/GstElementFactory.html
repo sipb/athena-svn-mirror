@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstElementFactory</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstElementDetails.html" title="GstElementDetails"><link rel="next" href="gstreamer-GstEnumTypes.html" title="GstEnumTypes"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstElementFactory</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstElementDetails.html" title="GstElementDetails"><link rel="next" href="gstreamer-GstGError.html" title="GstError"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,11 +28,11 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstElementDetails.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstEnumTypes.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstElementFactory"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstElementFactory</span></h2><p>GstElementFactory &#8212; Create GstElements from a factory</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstElementDetails.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstGError.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstElementFactory"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstElementFactory</span></h2><p>GstElementFactory &#8212; Create GstElements from a factory</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
 
 
-
-#define     <a href="GstElementFactory.html#GST-TYPE-ELEMENT-FACTORY-CAPS">GST_TYPE_ELEMENT_FACTORY</a>
 struct      <a href="GstElementFactory.html#GstElementFactory-struct">GstElementFactory</a>;
 gboolean    <a href="GstElementFactory.html#gst-element-register">gst_element_register</a>            (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
                                              const gchar *name,
@@ -69,12 +69,12 @@ gboolean    <a href="GstElementFactory.html#gst-element-factory-can-sink-caps">g
                                              const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2834477"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2620191"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
          +----GstElementFactory
-</pre></div><div class="refsect1" lang="en"><a name="id2834505"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2620219"></a><h2>Description</h2><p>
 GstElementFactory is used to create instances of elements. A GstElementfactory
 can be added to a <a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a> as it is also a <a href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>.
 </p><p>
@@ -109,12 +109,9 @@ The following code example shows you how to create a GstFileSrc element.
 </p><p>
 An elementfactory can be assigned a rank with <tt class="function">gst_element_factory_set_rank()</tt> 
 so that the autopluggers can select a plugin more appropriatly
-</p></div><div class="refsect1" lang="en"><a name="id2834675"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2834681"></a><h3><a name="GST-TYPE-ELEMENT-FACTORY-CAPS"></a>GST_TYPE_ELEMENT_FACTORY</h3><a class="indexterm" name="id2834694"></a><pre class="programlisting">#define GST_TYPE_ELEMENT_FACTORY 		(gst_element_factory_get_type())
-</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2620389"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2620395"></a><h3><a name="GstElementFactory-struct"></a>struct GstElementFactory</h3><a class="indexterm" name="id2620406"></a><pre class="programlisting">struct GstElementFactory;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2834710"></a><h3><a name="GstElementFactory-struct"></a>struct GstElementFactory</h3><a class="indexterm" name="id2834721"></a><pre class="programlisting">struct GstElementFactory;</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2834736"></a><h3><a name="gst-element-register"></a>gst_element_register ()</h3><a class="indexterm" name="id2834748"></a><pre class="programlisting">gboolean    gst_element_register            (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2620421"></a><h3><a name="gst-element-register"></a>gst_element_register ()</h3><a class="indexterm" name="id2620433"></a><pre class="programlisting">gboolean    gst_element_register            (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
                                              const gchar *name,
                                              guint rank,
                                              GType type);</pre><p>
@@ -126,61 +123,61 @@ given type.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rank</tt></i> :</span></td><td> rank of element (higher rank means more importance when autoplugging)
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> GType of element to register
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE, if the registering succeeded, FALSE on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2834884"></a><h3><a name="gst-element-factory-find"></a>gst_element_factory_find ()</h3><a class="indexterm" name="id2834895"></a><pre class="programlisting"><a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>* gst_element_factory_find (const gchar *name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620569"></a><h3><a name="gst-element-factory-find"></a>gst_element_factory_find ()</h3><a class="indexterm" name="id2620581"></a><pre class="programlisting"><a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>* gst_element_factory_find (const gchar *name);</pre><p>
 Search for an element factory of the given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of factory to find
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a> if found, NULL otherwise
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2834965"></a><h3><a name="gst-element-factory-get-element-type"></a>gst_element_factory_get_element_type ()</h3><a class="indexterm" name="id2834977"></a><pre class="programlisting">GType       gst_element_factory_get_element_type
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620650"></a><h3><a name="gst-element-factory-get-element-type"></a>gst_element_factory_get_element_type ()</h3><a class="indexterm" name="id2620663"></a><pre class="programlisting">GType       gst_element_factory_get_element_type
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Get the <span class="type">GType</span> for elements managed by this factory</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> factory to get managed <span class="type">GType</span> from
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GType</span> for elements managed by this factory
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835064"></a><h3><a name="gst-element-factory-get-longname"></a>gst_element_factory_get_longname ()</h3><a class="indexterm" name="id2835076"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_longname
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620749"></a><h3><a name="gst-element-factory-get-longname"></a>gst_element_factory_get_longname ()</h3><a class="indexterm" name="id2620761"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_longname
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the longname for this factory</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the longname
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835147"></a><h3><a name="gst-element-factory-get-klass"></a>gst_element_factory_get_klass ()</h3><a class="indexterm" name="id2835159"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_klass
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620832"></a><h3><a name="gst-element-factory-get-klass"></a>gst_element_factory_get_klass ()</h3><a class="indexterm" name="id2620844"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_klass
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835217"></a><h3><a name="gst-element-factory-get-description"></a>gst_element_factory_get_description ()</h3><a class="indexterm" name="id2835230"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_description
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620903"></a><h3><a name="gst-element-factory-get-description"></a>gst_element_factory_get_description ()</h3><a class="indexterm" name="id2620916"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_description
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the description for this factory.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the description
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835301"></a><h3><a name="gst-element-factory-get-author"></a>gst_element_factory_get_author ()</h3><a class="indexterm" name="id2835313"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_author
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2620986"></a><h3><a name="gst-element-factory-get-author"></a>gst_element_factory_get_author ()</h3><a class="indexterm" name="id2620998"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_factory_get_author
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the author for this factory.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the author
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835384"></a><h3><a name="gst-element-factory-get-num-pad-templates"></a>gst_element_factory_get_num_pad_templates ()</h3><a class="indexterm" name="id2835397"></a><pre class="programlisting">guint       gst_element_factory_get_num_pad_templates
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621069"></a><h3><a name="gst-element-factory-get-num-pad-templates"></a>gst_element_factory_get_num_pad_templates ()</h3><a class="indexterm" name="id2621082"></a><pre class="programlisting">guint       gst_element_factory_get_num_pad_templates
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the number of pad_templates in this factory.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the number of pad_templates
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835466"></a><h3><a name="gst-element-factory-get-pad-templates"></a>gst_element_factory_get_pad_templates ()</h3><a class="indexterm" name="id2835479"></a><pre class="programlisting">G_CONST_RETURN GList* gst_element_factory_get_pad_templates
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621152"></a><h3><a name="gst-element-factory-get-pad-templates"></a>gst_element_factory_get_pad_templates ()</h3><a class="indexterm" name="id2621164"></a><pre class="programlisting">G_CONST_RETURN GList* gst_element_factory_get_pad_templates
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the <span class="type">GList</span> of padtemplates for this factory.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the padtemplates
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835558"></a><h3><a name="gst-element-factory-get-uri-type"></a>gst_element_factory_get_uri_type ()</h3><a class="indexterm" name="id2835569"></a><pre class="programlisting">guint       gst_element_factory_get_uri_type
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621243"></a><h3><a name="gst-element-factory-get-uri-type"></a>gst_element_factory_get_uri_type ()</h3><a class="indexterm" name="id2621255"></a><pre class="programlisting">guint       gst_element_factory_get_uri_type
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets the type of URIs the element supports or GST_URI_UNKNOWN if none.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> type of URIs this element supports
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835640"></a><h3><a name="gst-element-factory-get-uri-protocols"></a>gst_element_factory_get_uri_protocols ()</h3><a class="indexterm" name="id2835653"></a><pre class="programlisting">gchar**     gst_element_factory_get_uri_protocols
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621326"></a><h3><a name="gst-element-factory-get-uri-protocols"></a>gst_element_factory_get_uri_protocols ()</h3><a class="indexterm" name="id2621338"></a><pre class="programlisting">gchar**     gst_element_factory_get_uri_protocols
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre><p>
 Gets a NULL-terminated array of protocols this element supports or NULL, if
 no protocols are supported. You may not change the contents of the returned
@@ -188,7 +185,7 @@ array as it is still ownt by the element factory. Use <tt class="function">g_str
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> a <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the supported protocols or NULL
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835737"></a><h3><a name="gst-element-factory-create"></a>gst_element_factory_create ()</h3><a class="indexterm" name="id2835749"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_element_factory_create      (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621422"></a><h3><a name="gst-element-factory-create"></a>gst_element_factory_create ()</h3><a class="indexterm" name="id2621435"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_element_factory_create      (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                              const gchar *name);</pre><p>
 Create a new element of the type defined by the given elementfactory.
 It will be given the name supplied, since all elements require a name as
@@ -197,7 +194,7 @@ their first argument.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> factory to instantiate
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new element
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> new <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> or NULL if the element couldn't be created
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835842"></a><h3><a name="gst-element-factory-make"></a>gst_element_factory_make ()</h3><a class="indexterm" name="id2835853"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_element_factory_make        (const gchar *factoryname,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621528"></a><h3><a name="gst-element-factory-make"></a>gst_element_factory_make ()</h3><a class="indexterm" name="id2621539"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_element_factory_make        (const gchar *factoryname,
                                              const gchar *name);</pre><p>
 Create a new element of the type defined by the given element factory.
 If name is NULL, then the element will receive a guaranteed unique name,
@@ -207,7 +204,7 @@ If name is given, it will be given the name supplied.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factoryname</tt></i> :</span></td><td> a named factory to instantiate
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new element
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> new <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> or NULL if unable to create element
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2835948"></a><h3><a name="gst-element-factory-can-src-caps"></a>gst_element_factory_can_src_caps ()</h3><a class="indexterm" name="id2835960"></a><pre class="programlisting">gboolean    gst_element_factory_can_src_caps
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621634"></a><h3><a name="gst-element-factory-can-src-caps"></a>gst_element_factory_can_src_caps ()</h3><a class="indexterm" name="id2621646"></a><pre class="programlisting">gboolean    gst_element_factory_can_src_caps
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                              const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);</pre><p>
 Checks if the factory can source the given capability.</p><p>
@@ -215,7 +212,7 @@ Checks if the factory can source the given capability.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> factory to query
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>caps</tt></i> :</span></td><td> the caps to check
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it can src the capabilities
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2836044"></a><h3><a name="gst-element-factory-can-sink-caps"></a>gst_element_factory_can_sink_caps ()</h3><a class="indexterm" name="id2836057"></a><pre class="programlisting">gboolean    gst_element_factory_can_sink_caps
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2621730"></a><h3><a name="gst-element-factory-can-sink-caps"></a>gst_element_factory_can_sink_caps ()</h3><a class="indexterm" name="id2621742"></a><pre class="programlisting">gboolean    gst_element_factory_can_sink_caps
                                             (<a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                              const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);</pre><p>
 Checks if the factory can sink the given capability.</p><p>
@@ -223,6 +220,6 @@ Checks if the factory can sink the given capability.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> factory to query
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>caps</tt></i> :</span></td><td> the caps to check
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it can sink the capabilities
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2836141"></a><h2>See Also</h2><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2621827"></a><h2>See Also</h2><p>
 <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>, <a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a>, <a href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>, <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a>.
-</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstElementDetails.html"><b>&lt;&lt; GstElementDetails</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstEnumTypes.html"><b>GstEnumTypes &gt;&gt;</b></a></td></tr></table></body></html>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstElementDetails.html"><b>&lt;&lt; GstElementDetails</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstGError.html"><b>GstError &gt;&gt;</b></a></td></tr></table></body></html>

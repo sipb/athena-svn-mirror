@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstSchedulerFactory</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstScheduler.html" title="GstScheduler"><link rel="next" href="gstreamer-GstStructure.html" title="GstStructure"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstSchedulerFactory</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstScheduler.html" title="GstScheduler"><link rel="next" href="gstreamer-GstStructure.html" title="GstStructure"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,12 +28,12 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstScheduler.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstStructure.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstSchedulerFactory"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstSchedulerFactory</span></h2><p>GstSchedulerFactory &#8212; Create schedulers from a factory</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstScheduler.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstStructure.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstSchedulerFactory"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstSchedulerFactory</span></h2><p>GstSchedulerFactory &#8212; Create schedulers from a factory</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="GstSchedulerFactory.html#GstSchedulerFactory-struct">GstSchedulerFactory</a>;
-#define     <a href="GstSchedulerFactory.html#GST-TYPE-SCHEDULER-FACTORY-CAPS">GST_TYPE_SCHEDULER_FACTORY</a>
 gboolean    <a href="GstSchedulerFactory.html#gst-scheduler-register">gst_scheduler_register</a>          (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
                                              const gchar *name,
                                              const gchar *longdesc,
@@ -55,12 +55,12 @@ G_CONST_RETURN gchar* <a href="GstSchedulerFactory.html#gst-scheduler-factory-ge
                                             (void);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2962420"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2739669"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
          +----GstSchedulerFactory
-</pre></div><div class="refsect1" lang="en"><a name="id2962447"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2739696"></a><h2>Description</h2><p>
 A schedulerfactory is used to create instances of a scheduler. It
 can be added to a <a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a> as it extends <a href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>.
 </p><p>
@@ -75,12 +75,9 @@ instantiate a real scheduler. Optionally <a href="GstSchedulerFactory.html#gst-s
 a scheduler from the named factory.
 </p><p>
 Use <a href="GstSchedulerFactory.html#gst-scheduler-factory-destroy"><tt class="function">gst_scheduler_factory_destroy()</tt></a> to remove the factory from the global list.
-</p></div><div class="refsect1" lang="en"><a name="id2962575"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2962581"></a><h3><a name="GstSchedulerFactory-struct"></a>struct GstSchedulerFactory</h3><a class="indexterm" name="id2962592"></a><pre class="programlisting">struct GstSchedulerFactory;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2739824"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2739829"></a><h3><a name="GstSchedulerFactory-struct"></a>struct GstSchedulerFactory</h3><a class="indexterm" name="id2739840"></a><pre class="programlisting">struct GstSchedulerFactory;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2962607"></a><h3><a name="GST-TYPE-SCHEDULER-FACTORY-CAPS"></a>GST_TYPE_SCHEDULER_FACTORY</h3><a class="indexterm" name="id2962620"></a><pre class="programlisting">#define GST_TYPE_SCHEDULER_FACTORY 		(gst_scheduler_factory_get_type ())
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2962636"></a><h3><a name="gst-scheduler-register"></a>gst_scheduler_register ()</h3><a class="indexterm" name="id2962647"></a><pre class="programlisting">gboolean    gst_scheduler_register          (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2739855"></a><h3><a name="gst-scheduler-register"></a>gst_scheduler_register ()</h3><a class="indexterm" name="id2739867"></a><pre class="programlisting">gboolean    gst_scheduler_register          (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin,
                                              const gchar *name,
                                              const gchar *longdesc,
                                              GType type);</pre><p>
@@ -93,7 +90,7 @@ Registers a scheduler with GStreamer.</p><p>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE, if the registering succeeded, FALSE on error.
 
 </td></tr></tbody></table></div><p>Since  0.8.5
-</p></div><hr><div class="refsect2" lang="en"><a name="id2962791"></a><h3><a name="gst-scheduler-factory-new"></a>gst_scheduler_factory_new ()</h3><a class="indexterm" name="id2962804"></a><pre class="programlisting"><a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a>* gst_scheduler_factory_new
+</p></div><hr><div class="refsect2" lang="en"><a name="id2740012"></a><h3><a name="gst-scheduler-factory-new"></a>gst_scheduler_factory_new ()</h3><a class="indexterm" name="id2740024"></a><pre class="programlisting"><a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a>* gst_scheduler_factory_new
                                             (const gchar *name,
                                              const gchar *longdesc,
                                              GType type);</pre><p>
@@ -103,17 +100,17 @@ Create a new schedulerfactory with the given parameters</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>longdesc</tt></i> :</span></td><td> long description of schedulerfactory to create
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the gtk type of the GstScheduler element of this factory
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="GstSchedulerFactory.html" title="GstSchedulerFactory"><span class="type">GstSchedulerFactory</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2962918"></a><h3><a name="gst-scheduler-factory-destroy"></a>gst_scheduler_factory_destroy ()</h3><a class="indexterm" name="id2962930"></a><pre class="programlisting">void        gst_scheduler_factory_destroy   (<a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a> *factory);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740138"></a><h3><a name="gst-scheduler-factory-destroy"></a>gst_scheduler_factory_destroy ()</h3><a class="indexterm" name="id2740150"></a><pre class="programlisting">void        gst_scheduler_factory_destroy   (<a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a> *factory);</pre><p>
 Removes the scheduler from the global list.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> factory to destroy
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2962981"></a><h3><a name="gst-scheduler-factory-find"></a>gst_scheduler_factory_find ()</h3><a class="indexterm" name="id2962993"></a><pre class="programlisting"><a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a>* gst_scheduler_factory_find
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740202"></a><h3><a name="gst-scheduler-factory-find"></a>gst_scheduler_factory_find ()</h3><a class="indexterm" name="id2740214"></a><pre class="programlisting"><a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a>* gst_scheduler_factory_find
                                             (const gchar *name);</pre><p>
 Search for an schedulerfactory of the given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of schedulerfactory to find
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <a href="GstSchedulerFactory.html" title="GstSchedulerFactory"><span class="type">GstSchedulerFactory</span></a> if found, NULL otherwise
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2963063"></a><h3><a name="gst-scheduler-factory-create"></a>gst_scheduler_factory_create ()</h3><a class="indexterm" name="id2963075"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_scheduler_factory_create  (<a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a> *factory,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740284"></a><h3><a name="gst-scheduler-factory-create"></a>gst_scheduler_factory_create ()</h3><a class="indexterm" name="id2740296"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_scheduler_factory_create  (<a href="GstSchedulerFactory.html" title="GstSchedulerFactory">GstSchedulerFactory</a> *factory,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *parent);</pre><p>
 Create a new <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> instance from the 
 given schedulerfactory with the given parent. <i class="parameter"><tt>parent</tt></i> will
@@ -122,7 +119,7 @@ have its scheduler set to the returned <a href="GstScheduler.html" title="GstSch
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>factory</tt></i> :</span></td><td> the factory used to create the instance
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the parent element of this scheduler
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> instance with a reference count of <tt class="literal">1</tt>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2963198"></a><h3><a name="gst-scheduler-factory-make"></a>gst_scheduler_factory_make ()</h3><a class="indexterm" name="id2963210"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_scheduler_factory_make    (const gchar *name,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740418"></a><h3><a name="gst-scheduler-factory-make"></a>gst_scheduler_factory_make ()</h3><a class="indexterm" name="id2740430"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_scheduler_factory_make    (const gchar *name,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *parent);</pre><p>
 Create a new <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> instance from the 
 schedulerfactory with the given name and parent. <i class="parameter"><tt>parent</tt></i> will
@@ -133,12 +130,12 @@ be used.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the factory used to create the instance
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the parent element of this scheduler
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> instance with a reference count of <tt class="literal">1</tt>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2963344"></a><h3><a name="gst-scheduler-factory-set-default-name"></a>gst_scheduler_factory_set_default_name ()</h3><a class="indexterm" name="id2963357"></a><pre class="programlisting">void        gst_scheduler_factory_set_default_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740565"></a><h3><a name="gst-scheduler-factory-set-default-name"></a>gst_scheduler_factory_set_default_name ()</h3><a class="indexterm" name="id2740577"></a><pre class="programlisting">void        gst_scheduler_factory_set_default_name
                                             (const gchar *name);</pre><p>
 Set the default schedulerfactory name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the factory used as a default
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2963409"></a><h3><a name="gst-scheduler-factory-get-default-name"></a>gst_scheduler_factory_get_default_name ()</h3><a class="indexterm" name="id2963422"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_scheduler_factory_get_default_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2740629"></a><h3><a name="gst-scheduler-factory-get-default-name"></a>gst_scheduler_factory_get_default_name ()</h3><a class="indexterm" name="id2740642"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_scheduler_factory_get_default_name
                                             (void);</pre><p>
 Get the default schedulerfactory name.</p><p>
 

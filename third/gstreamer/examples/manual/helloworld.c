@@ -1,49 +1,79 @@
-/* example-begin helloworld.c */      
+
+/*** block  from ../../docs/manual/basics-helloworld.xml ***/
 #include <gst/gst.h>
 
-int 
-main (int argc, char *argv[]) 
+/*
+ * Global objects are usually a bad thing. For the purpose of this
+ * example, we will use them, however.
+ */
+
+GstElement *pipeline, *source, *parser, *decoder, *sink;
+
+static void
+new_pad (GstElement *element,
+	 GstPad     *pad,
+	 gpointer    data)
 {
-  GstElement *pipeline, *filesrc, *decoder, *audiosink;
+  /* We can now link this pad with the audio decoder and
+   * add both decoder and audio output to the pipeline. */
+  gst_pad_link (pad, gst_element_get_pad (decoder, "sink"));
+  gst_bin_add_many (GST_BIN (pipeline), decoder, sink, NULL);
 
-  gst_init(&argc, &argv);
+  /* This function synchronizes a bins state on all of its
+   * contained children. */
+  gst_bin_sync_children_state (GST_BIN (pipeline));
+}
 
+int
+main (int   argc,
+      char *argv[])
+{
+  /* initialize GStreamer */
+  gst_init (&argc, &argv);
+
+  /* check input arguments */
   if (argc != 2) {
-    g_print ("usage: %s <mp3 filename>\n", argv[0]);
-    exit (-1);
+    g_print ("Usage: %s <Ogg/Vorbis filename>\n", argv[0]);
+    return -1;
   }
 
-  /* create a new pipeline to hold the elements */
-  pipeline = gst_pipeline_new ("pipeline");
+  /* create elements */
+  pipeline = gst_pipeline_new ("audio-player");
+  source = gst_element_factory_make ("filesrc", "file-source");
+  parser = gst_element_factory_make ("oggdemux", "ogg-parser");
+  decoder = gst_element_factory_make ("vorbisdec", "vorbis-decoder");
+  sink = gst_element_factory_make ("alsasink", "alsa-output");
 
-  /* create a disk reader */
-  filesrc = gst_element_factory_make ("filesrc", "disk_source");
-  g_object_set (G_OBJECT (filesrc), "location", argv[1], NULL);
+  /* set filename property on the file source */
+  g_object_set (G_OBJECT (source), "location", argv[1], NULL);
 
-  /* now it's time to get the decoder */
-  decoder = gst_element_factory_make ("mad", "decoder");
-  
-  /* and an audio sink */
-  audiosink = gst_element_factory_make ("osssink", "play_audio");
+  /* link together - note that we cannot link the parser and
+   * decoder yet, becuse the parser uses dynamic pads. For that,
+   * we set a new-pad signal handler. */
+  gst_element_link (source, parser);
+  gst_element_link (decoder, sink);
+  g_signal_connect (parser, "new-pad", G_CALLBACK (new_pad), NULL);
 
-  /* add objects to the main pipeline */
-  gst_bin_add_many (GST_BIN (pipeline), filesrc, decoder, audiosink, NULL);
+  /* put all elements in a bin - or at least the ones we will use
+   * instantly. */
+  gst_bin_add_many (GST_BIN (pipeline), source, parser, NULL);
 
-  /* link src to sink */
-  gst_element_link_many (filesrc, decoder, audiosink, NULL);
-
-  /* start playing */
+  /* Now set to playing and iterate. We will set the decoder and
+   * audio output to ready so they initialize their memory already.
+   * This will decrease the amount of time spent on linking these
+   * elements when the Ogg parser emits the new-pad signal. */
+  gst_element_set_state (decoder, GST_STATE_READY);
+  gst_element_set_state (sink, GST_STATE_READY);
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
-  while (gst_bin_iterate (GST_BIN (pipeline)));
+  /* and now iterate - the rest will be automatic from here on.
+   * When the file is finished, gst_bin_iterate () will return
+   * FALSE, thereby terminating this loop. */
+  while (gst_bin_iterate (GST_BIN (pipeline))) ;
 
-  /* stop the pipeline */
+  /* clean up nicely */
   gst_element_set_state (pipeline, GST_STATE_NULL);
-
-  /* we don't need a reference to these objects anymore */
   gst_object_unref (GST_OBJECT (pipeline));
-  /* unreffing the pipeline unrefs the contained elements as well */
 
-  exit (0);
+  return 0;
 }
-/* example-end helloworld.c */      

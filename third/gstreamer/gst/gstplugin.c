@@ -32,6 +32,7 @@
 #include <unistd.h>
 #endif
 #include <signal.h>
+#include <errno.h>
 
 #include "gst_private.h"
 
@@ -49,10 +50,10 @@ static GList *_gst_plugin_static = NULL;
 
 /* static variables for segfault handling of plugin loading */
 static char *_gst_plugin_fault_handler_filename = NULL;
-extern gboolean *_gst_disable_segtrap;  /* see gst.c */
+extern gboolean _gst_disable_segtrap;   /* see gst.c */
 
 #ifndef HAVE_WIN32
-static gboolean *_gst_plugin_fault_handler_is_setup = FALSE;
+static gboolean _gst_plugin_fault_handler_is_setup = FALSE;
 #endif
 
 /* list of valid licenses.
@@ -186,22 +187,25 @@ gst_plugin_register_func (GstPlugin * plugin, GModule * module,
     if (GST_CAT_DEFAULT)
       GST_INFO ("plugin \"%s\" has incompatible version, not loading",
           plugin->filename);
-    return FALSE;
+    return NULL;
   }
 
   if (!desc->license || !desc->description || !desc->package || !desc->origin) {
     if (GST_CAT_DEFAULT)
       GST_INFO ("plugin \"%s\" has incorrect GstPluginDesc, not loading",
           plugin->filename);
-    return FALSE;
+    return NULL;
   }
 
   if (!gst_plugin_check_license (desc->license)) {
     if (GST_CAT_DEFAULT)
       GST_INFO ("plugin \"%s\" has invalid license \"%s\", not loading",
           plugin->filename, desc->license);
-    return FALSE;
+    return NULL;
   }
+
+  if (GST_CAT_DEFAULT)
+    GST_LOG ("plugin \"%s\" looks good", GST_STR_NULL (plugin->filename));
 
   gst_plugin_desc_copy (&plugin->desc, desc);
   plugin->module = module;
@@ -210,7 +214,7 @@ gst_plugin_register_func (GstPlugin * plugin, GModule * module,
     if (GST_CAT_DEFAULT)
       GST_INFO ("plugin \"%s\" failed to initialise", plugin->filename);
     plugin->module = NULL;
-    return FALSE;
+    return NULL;
   }
 
   if (GST_CAT_DEFAULT)
@@ -324,7 +328,8 @@ gst_plugin_check_file (const gchar * filename, GError ** error)
   if (stat (filename, &file_status)) {
     g_set_error (error,
         GST_PLUGIN_ERROR,
-        GST_PLUGIN_ERROR_MODULE, "Problem opening file %s\n", filename);
+        GST_PLUGIN_ERROR_MODULE, "Problem accessing file %s: %s\n", filename,
+        strerror (errno));
     return FALSE;
   }
 
@@ -348,6 +353,7 @@ gst_plugin_check_file (const gchar * filename, GError ** error)
     return FALSE;
   }
   /* it's a plugin */
+  GST_INFO ("looks like a gst plugin \"%s\"", filename);
   g_module_close (module);
   return TRUE;
 }
@@ -420,7 +426,7 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
       plugin, filename);
 
   if (g_module_symbol (module, "plugin_init", &ptr)) {
-    g_print
+    GST_WARNING
         ("plugin %p from file \"%s\" exports a symbol named plugin_init\n",
         plugin, plugin->filename);
     g_set_error (error, GST_PLUGIN_ERROR, GST_PLUGIN_ERROR_NAME_MISMATCH,
@@ -430,6 +436,9 @@ gst_plugin_load_file (const gchar * filename, GError ** error)
   /* this is where we load the actual .so, so let's trap SIGSEGV */
   _gst_plugin_fault_handler_setup ();
   _gst_plugin_fault_handler_filename = plugin->filename;
+
+  GST_LOG ("Plugin %p for file \"%s\" prepared, registering...",
+      plugin, filename);
 
   if (gst_plugin_register_func (plugin, module, desc)) {
     /* remove signal handler */
@@ -570,6 +579,22 @@ gst_plugin_get_filename (GstPlugin * plugin)
 }
 
 /**
+ * gst_plugin_get_version:
+ * @plugin: plugin to get the version of
+ *
+ * get the version of the plugin
+ *
+ * Returns: the version of the plugin
+ */
+G_CONST_RETURN gchar *
+gst_plugin_get_version (GstPlugin * plugin)
+{
+  g_return_val_if_fail (plugin != NULL, NULL);
+
+  return plugin->desc.version;
+}
+
+/**
  * gst_plugin_get_license:
  * @plugin: plugin to get the license of
  *
@@ -630,7 +655,7 @@ gst_plugin_get_origin (GstPlugin * plugin)
 GModule *
 gst_plugin_get_module (GstPlugin * plugin)
 {
-  g_return_val_if_fail (plugin != NULL, FALSE);
+  g_return_val_if_fail (plugin != NULL, NULL);
 
   return plugin->module;
 }
@@ -847,8 +872,8 @@ gst_plugin_load (const gchar * name)
 
   plugin = gst_registry_pool_find_plugin (name);
   if (plugin) {
-    gst_plugin_load_file (plugin->filename, &error);
-    if (error) {
+    plugin = gst_plugin_load_file (plugin->filename, &error);
+    if (!plugin) {
       GST_WARNING ("load_plugin error: %s\n", error->message);
       g_error_free (error);
       return FALSE;
@@ -865,9 +890,9 @@ gst_plugin_load (const gchar * name)
  * @name: name of library to load
  *
  * Load the named library.  Name should be given as
- * &quot;liblibrary.so&quot;.
+ * &quot;liblibrary.so&quot;. (exception to this rule is 'riff', which .so name is 'gstriff')
  *
- * Returns: whether the library was loaded or not
+ * Returns: whether the library was loaded or not (and returns TRUE if it was already loaded)
  */
 gboolean
 gst_library_load (const gchar * name)

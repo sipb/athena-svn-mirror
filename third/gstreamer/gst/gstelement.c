@@ -124,32 +124,83 @@ gst_element_class_init (GstElementClass * klass)
 
   parent_class = g_type_class_ref (GST_TYPE_OBJECT);
 
+  /**
+	 * GstElement::state-change:
+   * @gstelement: the object which received the signal
+   * @int:
+   * @int:
+	 *
+	 * the #GstElementState of the element has been changed
+	 */
   gst_element_signals[STATE_CHANGE] =
       g_signal_new ("state-change", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstElementClass, state_change), NULL,
       NULL, gst_marshal_VOID__INT_INT, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
+  /**
+	 * GstElement::new-pad:
+   * @gstelement: the object which received the signal
+   * @object:
+	 *
+	 * a new #GstPad has been added to the element
+	 */
   gst_element_signals[NEW_PAD] =
       g_signal_new ("new-pad", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstElementClass, new_pad), NULL, NULL,
       gst_marshal_VOID__OBJECT, G_TYPE_NONE, 1, G_TYPE_OBJECT);
+  /**
+	 * GstElement::pad-removed:
+   * @gstelement: the object which received the signal
+   * @object:
+	 *
+	 * a #GstPad has been removed from the element
+	 */
   gst_element_signals[PAD_REMOVED] =
       g_signal_new ("pad-removed", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstElementClass, pad_removed), NULL, NULL,
       gst_marshal_VOID__OBJECT, G_TYPE_NONE, 1, G_TYPE_OBJECT);
+  /**
+	 * GstElement::error:
+   * @gstelement: the object which received the signal
+   * @element:
+   * @error:
+   * @message:
+	 *
+	 * a #GstError has occured during data processing
+	 */
   gst_element_signals[ERROR] =
       g_signal_new ("error", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstElementClass, error), NULL, NULL,
       gst_marshal_VOID__OBJECT_BOXED_STRING, G_TYPE_NONE, 3, GST_TYPE_ELEMENT,
       GST_TYPE_G_ERROR, G_TYPE_STRING);
+  /**
+	 * GstElement::eos:
+   * @gstelement: the object which received the signal
+	 *
+	 * the end of the stream has been reached
+	 */
   gst_element_signals[EOS] =
       g_signal_new ("eos", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstElementClass, eos), NULL, NULL,
       gst_marshal_VOID__VOID, G_TYPE_NONE, 0);
+  /**
+	 * GstElement::found-tag:
+   * @gstelement: the object which received the signal
+   * @element:
+   * @tags:
+	 *
+	 * tags for the incomming stream have been received
+	 */
   gst_element_signals[FOUND_TAG] =
       g_signal_new ("found-tag", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstElementClass, found_tag), NULL, NULL,
       gst_marshal_VOID__OBJECT_BOXED, G_TYPE_NONE, 2, GST_TYPE_ELEMENT,
       GST_TYPE_TAG_LIST);
+  /**
+	 * GstElement::no-more-pads:
+   * @gstelement: the object which received the signal
+	 *
+	 * ?
+	 */
   gst_element_signals[NO_MORE_PADS] =
       g_signal_new ("no-more-pads", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstElementClass, no_more_pads), NULL,
@@ -296,6 +347,9 @@ element_get_property (GstElement * element, const GParamSpec * pspec,
 static void
 gst_element_threadsafe_properties_pre_run (GstElement * element)
 {
+  /* need to ref the object because we don't want to lose the object
+   * before the post run function is called */
+  gst_object_ref (GST_OBJECT (element));
   GST_DEBUG ("locking element %s", GST_OBJECT_NAME (element));
   g_mutex_lock (element->property_mutex);
   gst_element_set_pending_properties (element);
@@ -306,6 +360,7 @@ gst_element_threadsafe_properties_post_run (GstElement * element)
 {
   GST_DEBUG ("unlocking element %s", GST_OBJECT_NAME (element));
   g_mutex_unlock (element->property_mutex);
+  gst_object_unref (GST_OBJECT (element));
 }
 
 /**
@@ -343,8 +398,9 @@ gst_element_disable_threadsafe_properties (GstElement * element)
   g_return_if_fail (GST_IS_ELEMENT (element));
 
   GST_FLAG_UNSET (element, GST_ELEMENT_USE_THREADSAFE_PROPERTIES);
-  element->pre_run_func = NULL;
-  element->post_run_func = NULL;
+
+  //element->pre_run_func = NULL;
+  //element->post_run_func = NULL;
   /* let's keep around that async queue */
 }
 
@@ -697,6 +753,8 @@ gst_element_release_request_pad (GstElement * element, GstPad * pad)
 
   if (oclass->release_pad)
     (oclass->release_pad) (element, pad);
+  else
+    gst_element_remove_pad (element, pad);
 }
 
 /**
@@ -1054,7 +1112,7 @@ gst_element_get_index (GstElement * element)
 {
   GstElementClass *oclass;
 
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -1599,6 +1657,8 @@ gst_element_get_compatible_pad_template (GstElement * element,
     GST_CAT_LOG (GST_CAT_CAPS,
         "checking pad template %s", padtempl->name_template);
     if (padtempl->direction != compattempl->direction) {
+      gboolean is_empty;
+
       GST_CAT_DEBUG (GST_CAT_CAPS,
           "compatible direction: found %s pad template \"%s\"",
           padtempl->direction == GST_PAD_SRC ? "src" : "sink",
@@ -1607,10 +1667,12 @@ gst_element_get_compatible_pad_template (GstElement * element,
       intersection = gst_caps_intersect (GST_PAD_TEMPLATE_CAPS (compattempl),
           GST_PAD_TEMPLATE_CAPS (padtempl));
 
-      GST_CAT_DEBUG (GST_CAT_CAPS, "caps are %scompatible",
-          (intersection ? "" : "not "));
+      is_empty = gst_caps_is_empty (intersection);
 
-      if (!gst_caps_is_empty (intersection))
+      GST_CAT_DEBUG (GST_CAT_CAPS, "caps are %scompatible",
+          is_empty ? "not " : "");
+
+      if (!is_empty)
         newtempl = padtempl;
       gst_caps_free (intersection);
       if (newtempl)
@@ -2020,9 +2082,8 @@ gst_element_link_many (GstElement * element_1, GstElement * element_2, ...)
 {
   va_list args;
 
-  g_return_val_if_fail (element_1 != NULL && element_2 != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_ELEMENT (element_1) &&
-      GST_IS_ELEMENT (element_2), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element_1), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element_2), FALSE);
 
   va_start (args, element_2);
 
@@ -2251,7 +2312,7 @@ gst_element_get_event_masks (GstElement * element)
 {
   GstElementClass *oclass;
 
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -2264,7 +2325,7 @@ gst_element_get_event_masks (GstElement * element)
       return gst_pad_get_event_masks (GST_PAD_PEER (pad));
   }
 
-  return FALSE;
+  return NULL;
 }
 
 /**
@@ -2337,7 +2398,7 @@ gst_element_get_query_types (GstElement * element)
 {
   GstElementClass *oclass;
 
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -2350,7 +2411,7 @@ gst_element_get_query_types (GstElement * element)
       return gst_pad_get_query_types (GST_PAD_PEER (pad));
   }
 
-  return FALSE;
+  return NULL;
 }
 
 /**
@@ -2410,7 +2471,7 @@ gst_element_get_formats (GstElement * element)
 {
   GstElementClass *oclass;
 
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
 
   oclass = GST_ELEMENT_GET_CLASS (element);
 
@@ -2423,7 +2484,7 @@ gst_element_get_formats (GstElement * element)
       return gst_pad_get_formats (GST_PAD_PEER (pad));
   }
 
-  return FALSE;
+  return NULL;
 }
 
 /**
@@ -2543,7 +2604,7 @@ void gst_element_error_full
   /* create error message */
   GST_CAT_INFO (GST_CAT_ERROR_SYSTEM, "signaling error in %s: %s",
       GST_ELEMENT_NAME (element), sent_message);
-  error = g_error_new (domain, code, sent_message);
+  error = g_error_new_literal (domain, code, sent_message);
 
   /* if the element was already in error, stop now */
   if (GST_FLAG_IS_SET (element, GST_ELEMENT_IN_ERROR)) {
@@ -2722,14 +2783,20 @@ GstElementStateReturn
 gst_element_set_state (GstElement * element, GstElementState state)
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (element);
+  GstElementStateReturn ret;
 
   g_return_val_if_fail (GST_IS_ELEMENT (element), GST_STATE_FAILURE);
   GST_DEBUG_OBJECT (element, "setting state to %s",
       gst_element_state_get_name (state));
   klass = GST_ELEMENT_GET_CLASS (element);
-  /* a set_state function is mandatory */
   g_return_val_if_fail (klass->set_state, GST_STATE_FAILURE);
-  return klass->set_state (element, state);
+
+  /* a set_state function is mandatory */
+  gst_object_ref (GST_OBJECT (element));
+  ret = klass->set_state (element, state);
+  gst_object_unref (GST_OBJECT (element));
+
+  return ret;
 }
 
 static GstElementStateReturn
@@ -2825,63 +2892,23 @@ exit:
 static gboolean
 gst_element_negotiate_pads (GstElement * element)
 {
-  GList *pads = GST_ELEMENT_PADS (element);
+  GList *pads;
 
   GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, element, "negotiating pads");
 
-  while (pads) {
+  for (pads = GST_ELEMENT_PADS (element); pads; pads = g_list_next (pads)) {
     GstPad *pad = GST_PAD (pads->data);
-    GstRealPad *srcpad;
-
-    pads = g_list_next (pads);
 
     if (!GST_IS_REAL_PAD (pad))
       continue;
 
-    srcpad = GST_PAD_REALIZE (pad);
-
     /* if we have a link on this pad and it doesn't have caps
      * allready, try to negotiate */
-    if (GST_PAD_IS_LINKED (srcpad) && !GST_PAD_CAPS (srcpad)) {
-      GstRealPad *sinkpad;
-      GstElementState otherstate;
-      GstElement *parent;
-
-      sinkpad = GST_RPAD_PEER (GST_PAD_REALIZE (srcpad));
-
-      /* check the parent of the peer pad, if there is no parent do nothing */
-      parent = GST_PAD_PARENT (sinkpad);
-      if (!parent)
-        continue;
-
-      /* skips pads that were already negotiating */
-      if (GST_FLAG_IS_SET (sinkpad, GST_PAD_NEGOTIATING) ||
-          GST_FLAG_IS_SET (srcpad, GST_PAD_NEGOTIATING))
-        continue;
-
-      otherstate = GST_STATE (parent);
-
-      /* swap pads if needed */
-      if (!GST_PAD_IS_SRC (srcpad)) {
-        GstRealPad *temp;
-
-        temp = srcpad;
-        srcpad = sinkpad;
-        sinkpad = temp;
-      }
-
-      /* only try to negotiate if the peer element is in PAUSED or higher too */
-      if (otherstate >= GST_STATE_READY) {
-        GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, element,
-            "perform negotiate for %s:%s and %s:%s",
-            GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
-        if (gst_pad_renegotiate (pad) == GST_PAD_LINK_REFUSED)
-          return FALSE;
-      } else {
-        GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, element,
-            "not negotiating %s:%s and %s:%s, not in READY yet",
-            GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
-      }
+    if (!gst_pad_is_negotiated (pad)) {
+      GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, element,
+          "perform negotiate for %s:%s", GST_DEBUG_PAD_NAME (pad));
+      if (gst_pad_renegotiate (pad) == GST_PAD_LINK_REFUSED)
+        return FALSE;
     }
   }
 
@@ -3004,7 +3031,9 @@ gst_element_change_state (GstElement * element)
        * - a new state was added
        * - somehow the element was asked to jump across an intermediate state
        */
-      g_assert_not_reached ();
+      g_warning ("Unhandled state change from %s to %s",
+          gst_element_state_get_name (old_state),
+          gst_element_state_get_name (old_pending));
       break;
   }
 
@@ -3036,9 +3065,7 @@ gst_element_change_state (GstElement * element)
       0, old_state, GST_STATE (element));
 
   /* signal the state change in case somebody is waiting for us */
-  g_mutex_lock (element->state_mutex);
   g_cond_signal (element->state_cond);
-  g_mutex_unlock (element->state_mutex);
 
   gst_object_unref (GST_OBJECT (element));
   return GST_STATE_SUCCESS;
@@ -3220,6 +3247,8 @@ gst_element_restore_thyself (GstObject * object, xmlNodePtr self)
       /* FIXME: can this just be g_object_set ? */
       gst_util_set_object_arg (G_OBJECT (element), name, value);
       /* g_object_set (G_OBJECT (element), name, value, NULL); */
+      g_free (name);
+      g_free (value);
     }
     children = children->next;
   }

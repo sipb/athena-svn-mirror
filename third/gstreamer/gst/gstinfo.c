@@ -156,6 +156,8 @@ GstDebugCategory *GST_CAT_EVENT = NULL;
 GstDebugCategory *GST_CAT_PARAMS = NULL;
 GstDebugCategory *GST_CAT_CALL_TRACE = NULL;
 GstDebugCategory *GST_CAT_SEEK = NULL;
+GstDebugCategory *GST_CAT_SIGNAL = NULL;
+GstDebugCategory *GST_CAT_PROBE = NULL;
 
 /* FIXME: export this? */
 gboolean
@@ -238,7 +240,7 @@ _gst_debug_init (void)
       GST_DEBUG_BOLD | GST_DEBUG_FG_MAGENTA, NULL);
 /* FIXME: remove GST_CAT_DATAFLOW in 0.9 */
   GST_CAT_DATAFLOW = _gst_debug_category_new ("GST_DATAFLOW",
-      GST_DEBUG_BOLD | GST_DEBUG_FG_GREEN, NULL);
+      GST_DEBUG_BOLD | GST_DEBUG_FG_GREEN, "dataflow inside pads");
   GST_CAT_BUFFER = _gst_debug_category_new ("GST_BUFFER",
       GST_DEBUG_BOLD | GST_DEBUG_FG_GREEN, NULL);
   GST_CAT_CAPS = _gst_debug_category_new ("GST_CAPS",
@@ -271,13 +273,20 @@ _gst_debug_init (void)
       GST_DEBUG_BOLD | GST_DEBUG_FG_RED | GST_DEBUG_BG_WHITE, NULL);
 
   GST_CAT_EVENT = _gst_debug_category_new ("GST_EVENT",
-      GST_DEBUG_BOLD | GST_DEBUG_FG_WHITE | GST_DEBUG_BG_RED, NULL);
+      GST_DEBUG_BOLD | GST_DEBUG_FG_BLUE, NULL);
   GST_CAT_PARAMS = _gst_debug_category_new ("GST_PARAMS",
       GST_DEBUG_BOLD | GST_DEBUG_FG_BLACK | GST_DEBUG_BG_YELLOW, NULL);
   GST_CAT_CALL_TRACE = _gst_debug_category_new ("GST_CALL_TRACE",
       GST_DEBUG_BOLD, NULL);
+  /* FIXME: fold back to GST_CAT_EVENT in 0.9 */
   GST_CAT_SEEK = _gst_debug_category_new ("GST_SEEK",
-      0, "plugins reacting to seek events");
+      GST_DEBUG_BOLD | GST_DEBUG_FG_BLUE,
+      "plugins reacting to seek events");
+  GST_CAT_SIGNAL = _gst_debug_category_new ("GST_SIGNAL",
+      GST_DEBUG_BOLD | GST_DEBUG_FG_WHITE | GST_DEBUG_BG_RED, NULL);
+  GST_CAT_PROBE = _gst_debug_category_new ("GST_PROBE",
+        GST_DEBUG_BOLD | GST_DEBUG_FG_GREEN, "pad probes");
+
 
   /* print out the valgrind message if we're in valgrind */
   __gst_in_valgrind ();
@@ -800,8 +809,8 @@ for_each_threshold_by_entry (gpointer data, gpointer user_data)
  * gst_debug_set_threshold_for_name:
  * @name: name of the categories to set
  * @level: level to set them to
- * 
- * Sets all categories which match the gven glob style pattern to the given 
+ *
+ * Sets all categories which match the given glob style pattern to the given
  * level.
  */
 void
@@ -827,7 +836,7 @@ gst_debug_set_threshold_for_name (const gchar * name, GstDebugLevel level)
 /**
  * gst_debug_unset_threshold_for_name:
  * @name: name of the categories to set
- * 
+ *
  * Resets all categories with the given name back to the default level.
  */
 void

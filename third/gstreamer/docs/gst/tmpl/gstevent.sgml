@@ -27,13 +27,6 @@ gst_event_new_flush() creates a new flush event.
 #GstPad, #GstElement
 </para>
 
-<!-- ##### MACRO GST_TYPE_EVENT ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### STRUCT GstEvent ##### -->
 <para>
 
@@ -211,8 +204,8 @@ in a pipeline.
 
 <!-- ##### ENUM GstSeekAccuracy ##### -->
 <para>
-The seekaccuracy gives more information of how the seek was performed,
-if the seek was accurate or fuzzy.
+The accuracy about a seek operation gives more information of how the seek was
+performed, namly if the seek was accurate or fuzzy.
 </para>
 
 @GST_SEEK_CERTAIN: The seek was exact
@@ -447,6 +440,25 @@ Copy the event using the event specific copy function
 Create a new dummy event that should be ignored
 </para>
 
+
+
+<!-- ##### FUNCTION gst_event_new_filler_stamped ##### -->
+<para>
+
+</para>
+
+@time: 
+@duration: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_filler_get_duration ##### -->
+<para>
+
+</para>
+
+@event: 
+@Returns: 
 
 
 <!-- ##### MACRO gst_event_new_flush ##### -->

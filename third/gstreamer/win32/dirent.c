@@ -8,10 +8,13 @@
  * Updated by Jeremy Bettis <jeremy@hksys.com>
  * Significantly revised and rewinddir, seekdir and telldir added by Colin
  * Peters <colin@fu.is.saga-u.ac.jp>
+ *
+ * Resource leaks fixed by <steve.lhomme@free.fr>
+ *
  *	
- * $Revision: 1.1.1.1 $
+ * $Revision: 1.1.1.2 $
  * $Author: ghudson $
- * $Date: 2004-10-06 18:24:39 $
+ * $Date: 2005-03-10 20:55:14 $
  *
  */
 
@@ -204,6 +207,9 @@ _tclosedir (_TDIR * dirp)
   if (dirp->dd_handle != -1) {
     rc = _findclose (dirp->dd_handle);
   }
+
+  if (dirp->dd_dir.d_name)
+    free (dirp->dd_dir.d_name);
 
   /* Delete the dir structure. */
   free (dirp);

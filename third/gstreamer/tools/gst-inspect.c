@@ -643,12 +643,12 @@ print_pad_info (GstElement * element)
 
     n_print ("");
 
-    if (gst_pad_get_direction (pad) == GST_PAD_SRC)
+    if (gst_pad_get_direction (GST_PAD (realpad)) == GST_PAD_SRC)
       g_print ("  SRC: '%s'", gst_pad_get_name (pad));
-    else if (gst_pad_get_direction (pad) == GST_PAD_SINK)
+    else if (gst_pad_get_direction (GST_PAD (realpad)) == GST_PAD_SINK)
       g_print ("  SINK: '%s'", gst_pad_get_name (pad));
     else
-      g_print ("  UNKNOWN!!!: '%s'\n", gst_pad_get_name (pad));
+      g_print ("  UNKNOWN!!!: '%s'", gst_pad_get_name (pad));
 
     if (GST_IS_GHOST_PAD (pad))
       g_print (", ghost of real pad %s:%s\n", GST_DEBUG_PAD_NAME (realpad));
@@ -821,9 +821,15 @@ print_signal_info (GstElement * element)
           query->signal_name,
           g_type_name (query->return_type), g_type_name (type));
 
-      for (j = 0; j < query->n_params; j++)
-        g_print (",\n%s%s%s arg%d", _name, indent,
-            g_type_name (query->param_types[j]), j);
+      for (j = 0; j < query->n_params; j++) {
+        if (G_TYPE_IS_FUNDAMENTAL (query->param_types[j])) {
+          g_print (",\n%s%s%s arg%d", _name, indent,
+              g_type_name (query->param_types[j]), j);
+        } else {
+          g_print (",\n%s%s%s* arg%d", _name, indent,
+              g_type_name (query->param_types[j]), j);
+        }
+      }
 
       if (k == 0)
         g_print (",\n%s%sgpointer user_data);\n", _name, indent);
@@ -1000,6 +1006,7 @@ print_plugin_features (GstPlugin * plugin)
           g_print ("%s%s", i > 0 ? ", " : "", factory->extensions[i]);
           i++;
         }
+        g_print ("\n");
       } else
         g_print ("%s type: N/A\n", plugin->desc.name);
 
@@ -1091,6 +1098,7 @@ print_element_info (GstElementFactory * factory, gboolean print_names)
   print_factory_details_info (factory);
   if (GST_PLUGIN_FEATURE (factory)->manager) {
     GstPlugin *plugin = (GstPlugin *) GST_PLUGIN_FEATURE (factory)->manager;
+
     print_plugin_info (plugin);
   }
 

@@ -28,6 +28,11 @@
 
 #include <string.h>
 
+static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
+
 GST_DEBUG_CATEGORY_STATIC (gst_tee_debug);
 #define GST_CAT_DEFAULT gst_tee_debug
 
@@ -80,6 +85,8 @@ gst_tee_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
   gst_element_class_set_details (gstelement_class, &gst_tee_details);
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&tee_src_template));
@@ -129,7 +136,9 @@ gst_tee_class_init (GstTeeClass * klass)
 static void
 gst_tee_init (GstTee * tee)
 {
-  tee->sinkpad = gst_pad_new ("sink", GST_PAD_SINK);
+  tee->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&sinktemplate),
+      "sink");
   gst_element_add_pad (GST_ELEMENT (tee), tee->sinkpad);
   gst_pad_set_chain_function (tee->sinkpad, GST_DEBUG_FUNCPTR (gst_tee_chain));
   gst_pad_set_link_function (tee->sinkpad,
@@ -150,6 +159,56 @@ name_pad_compare (gconstpointer a, gconstpointer b)
   g_assert (GST_IS_PAD (pad));
 
   return strcmp (name, gst_pad_get_name (pad)); /* returns 0 if match */
+}
+
+static GstCaps *
+gst_tee_getcaps (GstPad * _pad)
+{
+  GstTee *tee = GST_TEE (gst_pad_get_parent (_pad));
+  GstCaps *caps = gst_caps_new_any (), *tmp, *res;
+  GstPad *pad;
+  const GList *pads;
+
+  for (pads = gst_element_get_pad_list (GST_ELEMENT (tee));
+      pads != NULL; pads = pads->next) {
+    pad = GST_PAD (pads->data);
+    if (pad == _pad)
+      continue;
+
+    tmp = gst_pad_get_allowed_caps (pad);
+    res = gst_caps_intersect (caps, tmp);
+    gst_caps_free (tmp);
+    gst_caps_free (caps);
+    caps = res;
+  }
+
+  return caps;
+}
+
+static GstPadLinkReturn
+gst_tee_link (GstPad * _pad, const GstCaps * caps)
+{
+  GstTee *tee = GST_TEE (gst_pad_get_parent (_pad));
+  GstPadLinkReturn res;
+  GstPad *pad;
+  const GList *pads;
+
+  GST_DEBUG_OBJECT (tee, "Forwarding link to all other pads");
+
+  for (pads = gst_element_get_pad_list (GST_ELEMENT (tee));
+      pads != NULL; pads = pads->next) {
+    pad = GST_PAD (pads->data);
+    if (pad == _pad)
+      continue;
+
+    res = gst_pad_try_set_caps (pad, caps);
+    GST_DEBUG_OBJECT (tee, "Pad %s:%s gave response %d",
+        GST_DEBUG_PAD_NAME (pad), res);
+    if (GST_PAD_LINK_FAILED (res))
+      return res;
+  }
+
+  return GST_PAD_LINK_OK;
 }
 
 static GstPad *
@@ -193,10 +252,8 @@ gst_tee_request_new_pad (GstElement * element, GstPadTemplate * templ,
 
   srcpad = gst_pad_new_from_template (templ, name);
   g_free (name);
-  gst_pad_set_link_function (srcpad,
-      GST_DEBUG_FUNCPTR (gst_pad_proxy_pad_link));
-  gst_pad_set_getcaps_function (srcpad,
-      GST_DEBUG_FUNCPTR (gst_pad_proxy_getcaps));
+  gst_pad_set_link_function (srcpad, GST_DEBUG_FUNCPTR (gst_tee_link));
+  gst_pad_set_getcaps_function (srcpad, GST_DEBUG_FUNCPTR (gst_tee_getcaps));
   gst_element_add_pad (GST_ELEMENT (tee), srcpad);
   GST_PAD_ELEMENT_PRIVATE (srcpad) = NULL;
 

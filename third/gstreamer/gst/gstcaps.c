@@ -361,11 +361,11 @@ gst_caps_remove_structure (GstCaps * caps, guint idx)
 
 /**
  * gst_caps_split_one:
- * @caps: 
+ * @caps: a #GstCaps
  *
  * This function is not implemented.
  *
- * Returns:
+ * Returns: NULL
  */
 GstCaps *
 gst_caps_split_one (GstCaps * caps)
@@ -553,9 +553,7 @@ gst_caps_is_chained (const GstCaps * caps)
 static gboolean
 gst_caps_is_fixed_foreach (GQuark field_id, GValue * value, gpointer unused)
 {
-  GType type = G_VALUE_TYPE (value);
-
-  return gst_type_is_fixed (type);
+  return gst_value_is_fixed (value);
 }
 
 /**
@@ -976,8 +974,10 @@ gst_caps_subtract (const GstCaps * minuend, const GstCaps * subtrahend)
         gst_caps_append_structure (dest, gst_structure_copy (min));
       }
     }
-    if (gst_caps_is_empty (dest))
+    if (gst_caps_is_empty (dest)) {
+      gst_caps_free (src);
       return dest;
+    }
   }
 
   gst_caps_free (src);
@@ -1090,7 +1090,7 @@ gst_caps_compare_structures (gconstpointer one, gconstpointer two)
   if (ret)
     return ret;
 
-  return gst_structure_n_fields (struct2) - gst_structure_n_fields (struct1);
+  return gst_structure_n_fields (struct1) - gst_structure_n_fields (struct2);
 }
 
 /**

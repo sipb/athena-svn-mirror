@@ -1,0 +1,52 @@
+<!-- ##### SECTION ./tmpl/gstenumtypes.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gstenumtypes.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gstenumtypes.sgml:Short_Description ##### -->
+all gstreamer core related enumerations
+
+
+<!-- ##### SECTION ./tmpl/gstenumtypes.sgml:Title ##### -->
+GstEnumTypes
+
+
+<!-- ##### MACRO GST_STATIC_CAPS_PREFERRED ##### -->
+<para>
+
+</para>
+
+@string: 
+@preferred: 
+
+<!-- ##### FUNCTION gst_caps_get_preferred ##### -->
+<para>
+
+</para>
+
+@caps: 
+@Returns: 
+
+<!-- ##### FUNCTION gst_caps_set_preferred ##### -->
+<para>
+
+</para>
+
+@caps: 
+@structure: 
+
+<!-- ##### FUNCTION gst_caps_use_preferred ##### -->
+<para>
+
+</para>
+
+@caps: 
+@Returns: 
+

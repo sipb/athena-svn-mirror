@@ -189,7 +189,7 @@ gst_init_get_popt_table (void)
     {"gst-plugin-load", NUL, POPT_ARG_STRING | POPT_ARGFLAG_STRIP, NULL,
           ARG_PLUGIN_LOAD,
           N_("Comma-separated list of plugins to preload in addition to the "
-              "list stored in envronment variable GST_PLUGIN_PATH"),
+              "list stored in environment variable GST_PLUGIN_PATH"),
         N_("PLUGINS")},
     {"gst-disable-segtrap", NUL, POPT_ARG_NONE | POPT_ARGFLAG_STRIP, NULL,
           ARG_SEGTRAP_DISABLE,
@@ -337,7 +337,6 @@ gst_init_check_with_popt_table (int *argc, char **argv[],
     GST_DEBUG ("already initialized gst");
     return TRUE;
   }
-
   if (!argc || !argv) {
     if (argc || argv)
       g_warning ("gst_init: Only one of argc or argv was NULL");
@@ -409,17 +408,24 @@ load_plugin_func (gpointer data, gpointer user_data)
 {
   GstPlugin *plugin;
   const gchar *filename;
+  GError *err = NULL;
 
   filename = (const gchar *) data;
 
-  plugin = gst_plugin_load_file (filename, NULL);
+  plugin = gst_plugin_load_file (filename, &err);
 
   if (plugin) {
     GST_INFO ("Loaded plugin: \"%s\"", filename);
 
     gst_registry_pool_add_plugin (plugin);
   } else {
-    GST_WARNING ("Failed to load plugin: \"%s\"", filename);
+    if (err) {
+      /* Report error to user, and free error */
+      GST_ERROR ("Failed to load plugin: %s\n", err->message);
+      g_error_free (err);
+    } else {
+      GST_WARNING ("Failed to load plugin: \"%s\"", filename);
+    }
   }
 
   g_free (data);
@@ -479,6 +485,11 @@ init_pre (void)
     }
   }
 #endif
+  /* This is the earliest we can make stuff show up in the logs.
+   * So give some useful info about GStreamer here */
+  GST_INFO ("Initializing GStreamer Core Library version %s", VERSION);
+  GST_INFO ("Using library from %s", LIBDIR);
+
 #ifndef GST_DISABLE_REGISTRY
   {
     gchar *user_reg;
@@ -526,7 +537,7 @@ gst_register_core_elements (GstPlugin * plugin)
           GST_TYPE_PIPELINE) ||
       !gst_element_register (plugin, "thread", GST_RANK_PRIMARY,
           GST_TYPE_THREAD) ||
-      !gst_element_register (plugin, "queue", GST_RANK_PRIMARY, GST_TYPE_QUEUE))
+      !gst_element_register (plugin, "queue", GST_RANK_NONE, GST_TYPE_QUEUE))
     g_assert_not_reached ();
 
   return TRUE;
@@ -571,11 +582,10 @@ init_post (void)
   llf = G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_ERROR | G_LOG_FLAG_FATAL;
   g_log_set_handler (g_log_domain_gstreamer, llf, debug_log_handler, NULL);
 
-  GST_INFO ("Initializing GStreamer Core Library version %s", VERSION);
-
   _gst_format_initialize ();
   _gst_query_type_initialize ();
   gst_object_get_type ();
+  gst_probe_get_type ();
   gst_pad_get_type ();
   gst_real_pad_get_type ();
   gst_ghost_pad_get_type ();
@@ -808,8 +818,9 @@ init_popt_callback (poptContext context, enum poptCallbackReason reason,
  * gst_use_threads:
  * @use_threads: a #gboolean indicating whether threads should be used
  *
- * This function is deprecated and should not be used in new code.
- * GStreamer requires threads to be enabled at all times.
+ * Does nothing anymore. GStreamer requires threads to be enabled at all times.
+ *
+ * Deprecated: This function is deprecated and should not be used in new code.
  */
 void
 gst_use_threads (gboolean use_threads)
@@ -819,11 +830,10 @@ gst_use_threads (gboolean use_threads)
 /**
  * gst_has_threads:
  *
- * This function is deprecated and should not be used in new code.
- *
  * Queries if GStreamer has threads enabled.
  *
  * Returns: %TRUE if threads are enabled.
+ * Deprecated: This function is deprecated and should not be used in new code.
  */
 gboolean
 gst_has_threads (void)
