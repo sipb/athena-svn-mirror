@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.12 1987-07-24 15:15:05 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.13 1987-08-01 11:44:55 rfrench Exp $";
 #endif SABER
 #endif lint
 
@@ -404,7 +404,7 @@ ZClient_t *client;
 	pnotice->z_opcode = ADMIN_KILL_CLT;
 	pnotice->z_sender = myname;	/* myname is the hostname */
 	pnotice->z_recipient = "";
-
+	pnotice->z_default_format = 0;
 
 	/* XXX */
 	auth = 0;
@@ -951,6 +951,7 @@ int auth;
 	pnotice->z_opcode = opcode;
 	pnotice->z_sender = myname;	/* myname is the hostname */
 	pnotice->z_recipient = "";
+	pnotice->z_default_format = 0;
 	pnotice->z_message = (caddr_t) NULL;
 	pnotice->z_message_len = 0;
 
@@ -1005,6 +1006,7 @@ int auth;
 	pnotice->z_opcode = opcode;
 	pnotice->z_sender = myname;	/* myname is the hostname */
 	pnotice->z_recipient = "";
+	pnotice->z_default_format = 0;
 	pnotice->z_message = (caddr_t) NULL;
 	pnotice->z_message_len = 0;
 
