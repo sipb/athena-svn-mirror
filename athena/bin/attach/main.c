@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.16 1990-11-14 13:26:24 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.17 1990-11-15 18:04:41 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -338,8 +338,8 @@ nfsidcmd(argc, argv)
 				       argv[i], 0, owner_uid) == SUCCESS) &&
 				verbose)
 				    printf("%s: %s %s\n", progname, argv[i], ops);
-		    } else if (atp->fs->type == TYPE_AFS) {
 #ifdef AFS
+		    } else if (atp->fs->type == TYPE_AFS) {
 			    if (op == MOUNTPROC_KUIDMAP &&
 				(afs_auth(atp->hesiodname, atp->hostdir) == SUCCESS)
 				&& verbose)
@@ -864,9 +864,12 @@ zinitcmd(argc, argv)
 			continue;
 		if(who != ALL_USERS && !wants_to_subscribe(p, real_uid, who))
 			continue;
+#ifdef AFS
 		if (p->fs->type == TYPE_AFS) 
 			afs_zinit(p->hesiodname, p->hostdir);
-		else if (p->fs->flags & FS_REMOTE) {
+		else
+#endif
+		if (p->fs->flags & FS_REMOTE) {
 			sprintf(instbfr, "%s:%s", p->host, p->hostdir);
 			zephyr_addsub(instbfr);
 			zephyr_addsub(p->host);
