@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.1 1997-12-19 03:05:54 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.2 1998-02-20 21:23:26 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -145,7 +145,10 @@ dnl ----- AFS -----
 
 AC_DEFUN(ATHENA_AFS_CHECK,
 [AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
-AC_CHECK_FUNC(sigvec, :, AC_CHECK_LIB(ucb, sigvec, LIBS="$LIBS -lc -lucb"))
+AC_CHECK_FUNC(sigvec, :,
+	      AC_CHECK_LIB(ucb, sigvec,
+			   LIBS="$LIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb",
+			   :, -L/usr/ucblib))
 AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 if test "$afs" != yes; then
@@ -182,7 +185,10 @@ fi])
 dnl ----- Kerberos 4 -----
 
 AC_DEFUN(ATHENA_KRB4_CHECK,
-[if test "$krb4" != yes; then
+[AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
+AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+AC_CHECK_LIB(gen, compile)
+if test "$krb4" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$krb4/include"
 	if test -d "$krb4/include/kerberosIV"; then
 		CPPFLAGS="$CPPFLAGS -I$krb4/include/kerberosIV"
@@ -223,7 +229,10 @@ fi])
 dnl ----- Kerberos 5 -----
 
 AC_DEFUN(ATHENA_KRB5_CHECK,
-[if test "$krb5" != yes; then
+[AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
+AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+AC_CHECK_LIB(gen, compile)
+if test "$krb5" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$krb5/include"
 	LDFLAGS="$LDFLAGS -L$krb5/lib"
 fi
