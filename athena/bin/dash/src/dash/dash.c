@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.1 1991-09-03 11:11:51 vanharen Exp $";
-#endif	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.2 1993-07-01 18:22:14 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -25,22 +25,21 @@ static char rcsid[] =
 #include <sys/resource.h>
 #include <sys/param.h>
 #include <fcntl.h>
-#include "Jets.h"
+#include <X11/Xj/Jets.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xmu/WinUtil.h>
-#include "Window.h"
-#include "Button.h"
-#include "Label.h"
-#include "Icon.h"
-#include "Menu.h"
-#include "DClock.h"
-#include "AClock.h"
-#include "Form.h"
-#include "Tree.h"
-/* #include "Drawing.h" */
-/* #include "StripChart.h" */
-#include "warn.h"
+#include <X11/Xj/Window.h>
+#include <X11/Xj/Button.h>
+#include <X11/Xj/Label.h>
+#include <X11/Xj/Menu.h>
+#include <X11/Xj/DClock.h>
+#include <X11/Xj/AClock.h>
+#include <X11/Xj/Form.h>
+#include <X11/Xj/Tree.h>
+/* #include <X11/Xj/StripChart.h> */
+/* #include <X11/Xj/List.h> */
+#include <X11/Xj/warn.h>
 #include "dash.h"
 
 
@@ -52,16 +51,6 @@ extern int sys_nerr;
 
 
 extern int DEBUG;
-
-#define MAX_X_REQUEST 16384L
-
-#ifndef DASHDEFAULTS
-#ifdef NOTRELEASE
-#define DASHDEFAULTS "/afs/athena/astaff/project/adt/src/Dash"
-#else
-#define DASHDEFAULTS "/usr/lib/X11/app-defaults/Dash"
-#endif
-#endif
 
 #define LOADST "/usr/athena/lib/gnuemacs/etc/loadst"
 
@@ -76,8 +65,10 @@ extern int DEBUG;
 #define DASH_CREATEORMAP (char)0x07
 #define DASH_RESTART (char)0x08
 
-Atom dashAtom;
+Atom dashAtom, nameAtom;
 #define DASH_ATOM "_ATHENA_DASH"
+
+
 
 Jet root;
 /*
@@ -85,9 +76,10 @@ Jet root;
  */
 JetClass *jetClasses[] =
 { &treeJetClass, &windowJetClass, &buttonJetClass, &labelJetClass,
-    &iconJetClass, &menuJetClass, &dClockJetClass,
-    &aClockJetClass, &formJetClass /* , &stripChartJetClass */,
-    /* &drawingJetClass */};
+    &menuJetClass, &dClockJetClass,
+    &aClockJetClass, &formJetClass,
+    /* &stripChartJetClass, */
+    /* &listJetClass, */};
 
 int numJetClasses = XjNumber(jetClasses);
 
@@ -693,7 +685,6 @@ void setupEnvironment()
     }
 }
 
-char line1[100], line2[100];
 
 int add(fromJet, what, data)
      Jet fromJet;
@@ -704,6 +695,7 @@ int add(fromJet, what, data)
   FILE *a;
   int l;
   int omask;
+  char line1[100], line2[100];
 
   line2[0] = '\0';
   sprintf(addpath, "attach -p %s", what);
@@ -713,7 +705,7 @@ int add(fromJet, what, data)
     {
       fgets(addpath, MAXPATHLEN, a);
       err = pclose(a);
-      (void) sigsetmask(omask);
+      (void) sigsetmask(omask);			/* unblock sigchlds again... */
 
       if (err != 0)
 	sprintf(line2, "Attach failed with error %d", err/256);
@@ -728,7 +720,7 @@ int add(fromJet, what, data)
     }
   (void) sigsetmask(omask);			/* unblock sigchlds again... */
   sprintf(line1, "Could not attach %s", what);
-  UserWarning(NULL, True);
+  XjUserWarning(root, NULL, True, line1, line2);
 
   return 1;
 }
@@ -776,7 +768,12 @@ static Child *firstChild = NULL;
 /*
  * Avoid zombies
  */
+#if defined(_IBMR2)
+void checkChildren(sig)
+     int sig;
+#else
 int checkChildren()
+#endif
 {
   Boolean found;
   Child *ch, **last;
@@ -809,29 +806,36 @@ int checkChildren()
 #endif /* POSIX */
 	      if (WEXITSTATUS(status))
 		{
+		  char line1[100];
+
 		  sprintf(line1, "%s exited with status %d",
 			  ch->title, WEXITSTATUS(status));
-		  line2[0] = '\0';
-		  UserWarning(NULL, True);
+		  XjUserWarning(root, NULL, True, line1, "");
 		}
 #ifdef POSIX
 	    if (WIFSIGNALED(status))
 #endif /* POSIX */
 	      if (WTERMSIG(status))
 		{
+		  char line1[100], line2[100];
+
 		  sprintf(line1, "%s exited with signal %d",
 			  ch->title, WTERMSIG(status));
 		  if (W_CORE(status))
 		    strcpy(line2, "(core dumped!)");
 		  else
 		    line2[0] = '\0';
-		  UserWarning(NULL, True);
+		  XjUserWarning(root, NULL, True, line1, line2);
 		}
 
 	    XjFree((char *) ch);
 	  }
     }
+#if defined(_IBMR2)
+  return;
+#else
   return 0;
+#endif
 }
 
 char *NAME; /* oh no! a global variable! */
@@ -847,13 +851,15 @@ input(fd, name)
 
   if (read(fd, buf2, MAXPATHLEN + 7))
     {
+      char line1[100], line2[100];
+
       sscanf(buf2, "%s %d", buf, &n);
       sprintf(line1, "Could not start %s:", name);
       if (n == 0 || n > sys_nerr)
 	sprintf(line2, "%s: Error %d", buf, n);
       else
 	sprintf(line2, "%s: %s", buf, sys_errlist[n]);
-      UserWarning(NULL, True);
+      XjUserWarning(root, NULL, True, line1, line2);
     }
   XjReadCallback((XjCallbackProc)NULL, fd, &fd);
   close(fd);
@@ -889,13 +895,15 @@ int exec(info, what, data)
 
   if ((pipes = pipe(fd)))
     {
+      char line1[100], line2[100];
+
       if (errno > sys_nerr)
 	sprintf(line1, "Could not set up pipe:  error %d", errno);
       else
 	sprintf(line1, "Could not set up pipe:  %s", sys_errlist[errno]);
       sprintf(line2, "There will be no warning if `%s' can't be started.",
 	      name);
-      UserWarning(NULL, True);
+      XjUserWarning(root, NULL, True, line1, line2);
     }
   pipes = !pipes;
 
@@ -903,12 +911,14 @@ int exec(info, what, data)
 
   if (pid == -1)
     {
+      char line1[100], line2[100];
+
       sprintf(line1, "Could not start %s:", name);
       if (errno > sys_nerr)
 	sprintf(line2, "Fork failed with error %d", errno);
       else
 	sprintf(line2, "Fork - %s", sys_errlist[errno]);
-      UserWarning(NULL, True);
+      XjUserWarning(root, NULL, True, line1, line2);
       if (pipes)
 	{
 	  close(fd[0]);
@@ -990,6 +1000,7 @@ int restart(info, what, data)
   char *ptr;
   int argc = 0;
   char *argv[100];
+  char line1[100], line2[100];
 
   setupEnvironment();
 
@@ -1025,7 +1036,7 @@ int restart(info, what, data)
     line2[0] = '\0';
   else
     sprintf(line2, "%s: %s", global_argv[0], sys_errlist[errno]);
-  UserWarning(NULL, True);
+  XjUserWarning(root, NULL, True, line1, line2);
   return 1;
 }
 
@@ -1060,8 +1071,8 @@ int yesorno(who, v, data)
      Verify *v;
      caddr_t data;
 {
-  XjDestroyJet(v->top);
-  XFlush(who->core.display);
+  XUnmapWindow(v->top->core.display, XjWindow(v->top));
+  XFlush(v->top->core.display);
 
   if (v->yes == who)
     {
@@ -1069,6 +1080,7 @@ int yesorno(who, v, data)
       XjCallCallbacks((caddr_t) who, v->menu->activateProc, NULL);
     }
 
+  XjDestroyJet(v->top);
   XjFree(v->string);
   XjFree((char *) v);
   return 0;
@@ -1110,7 +1122,7 @@ int verify(info, foo, data)
 				   + strlen(parms.startString)));
   sprintf(v->string, parms.startString, info->menu->title);
 
-  logo = XjVaCreateJet("dashLogo", iconJetClass, lqform,
+  logo = XjVaCreateJet("dashLogo", labelJetClass, lqform,
 		       NULL, NULL);
   lqlabel = XjVaCreateJet("lqLabel", labelJetClass, lqform,
 			  XjNlabel, v->string, NULL, NULL);
@@ -1187,6 +1199,7 @@ caddr_t data;
 {
   static int initialized = 0;
   static char *onName, *offName;
+  XjSize size;
 
   if (info->null != NULL) /* we weren't called by menu code */
     return 1;
@@ -1225,7 +1238,7 @@ caddr_t data;
   info->menubar->menu.showHelp = !info->menubar->menu.showHelp;
 
   computeAllMenuSizes(info->menubar, info->menubar->menu.rootMenu);
-  computeRootMenuSize(info->menubar);
+  computeRootMenuSize(info->menubar, &size);
   return 0;
 }
 
@@ -1234,7 +1247,7 @@ caddr_t fromJet;
 int what;
 caddr_t data;
 {
-  exit(what);
+  XjExit(what);
   return 0;				/* For linting... */
 }
 
@@ -1304,79 +1317,101 @@ caddr_t data;
 fatal(display)
      Display *display;
 {
-  exit(-1);
+  XjExit(-1);
 }
 
 static int (*def_handler)();
 
-int handler(display, error)
+static int handler(display, error)
      Display *display;
      XErrorEvent *error;
 {
-  if (error->error_code != BadWindow)
-    def_handler(display, error);
-  return 0;
+  if (error->error_code == BadWindow  ||  error->error_code == BadAtom)
+    return 0;
+
+  def_handler(display, error);
+  return 0;			/* it'll never get this far anyway... */
 }
+
+
 
 Window findDASH(display)
      Display *display;
 {
-  Window empty, *children, check;
-  unsigned int num_children;
-  XTextProperty wm_class;
-  char **stringList;
-  int numStrings, i;
-  char errtext[100];
+  char *atom_name;
+  Atom actual_type;
+  int actual_format;
+  unsigned long nitems;
+  unsigned long bytes_after;
+  Window *prop;
+  unsigned char *name;
+/*  unsigned char *prop; */
+  int status;
 
-  if (!XQueryTree(display,
-		  DefaultRootWindow(display),
-		  &empty, &empty,
-		  &children, &num_children))
-    {
-      sprintf(errtext, "XQueryTree failed");
-      XjWarning(errtext);
-      return NULL;
-    }
+#ifdef TIME_STARTUP
+  struct timeval start, end;
+
+  gettimeofday(&start, NULL);
+  printf("findDASH: - %d.%d + \n", start.tv_sec, start.tv_usec);
+#endif
+
+  atom_name = (char *) XjMalloc(strlen(programName) + strlen(DASH_ATOM)
+				+ 2);
+  sprintf(atom_name, "%s_%s", DASH_ATOM, programName);
+  nameAtom = XInternAtom(display, atom_name, False);
+  XjFree(atom_name);
+
+  status = XGetWindowProperty(display, RootWindow(display, 0),
+			      nameAtom, 0, 1,
+			      False, AnyPropertyType, &actual_type,
+			      &actual_format, &nitems, &bytes_after,
+			      (unsigned char **) &prop);
+  if (status==BadWindow)
+    XjFatalError("rootWindow does not exist!");
+  if (status!=Success)
+    return (Window) NULL;
+  if (! prop)
+    return (Window) NULL;
 
   def_handler = XSetErrorHandler(handler);
-
-  for (i = 0; i < num_children; i++)
-    {
-      check = XmuClientWindow(display, children[i]);
-      if (!XGetTextProperty(display, check, &wm_class, XA_WM_CLASS))
-	wm_class.nitems = 0;
-      /* isn't there anything to free from this call? not documented */
-
-      if (wm_class.nitems != 0)
-	{
-	  if (!XTextPropertyToStringList(&wm_class,
-					 &stringList,
-					 &numStrings))
-	    {
-	      sprintf(errtext, "XTextPropertyToStringList failed");
-	      XjWarning(errtext);
-	      XFree((char *)children);
-	      return NULL;
-	    }
-
-	  if (numStrings > 1 &&
-	      !strcmp(stringList[1], DASH) &&
-	      !strcmp(stringList[0], programName))
-	    {
-	      XFreeStringList(stringList);
-	      XFree((char *)children);
-	      return check;
-	    }
-
-	  XFreeStringList(stringList);
-	}
-    }
-
+  status = XGetWindowProperty(display, *prop,
+			      dashAtom, 0, 1,
+			      False, AnyPropertyType, &actual_type,
+			      &actual_format, &nitems, &bytes_after,
+			      &name);
   (void) XSetErrorHandler(def_handler);
 
-  XFree((char *)children);
-  return NULL;
+  if (status==BadWindow)
+    {
+      XjFatalError("rootWindow does not exist!");
+    }
+  if (status!=Success)
+    {
+      return (Window) NULL;
+    }
+
+#ifdef TIME_STARTUP
+	  gettimeofday(&end, NULL);
+	  printf("findDASH: %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+		 (end.tv_usec > start.tv_usec)
+		 ? end.tv_sec - start.tv_sec
+		 : end.tv_sec - start.tv_sec - 1,
+		 (end.tv_usec > start.tv_usec)
+		 ? end.tv_usec - start.tv_usec
+		 : end.tv_usec + 1000000 - start.tv_usec );
+#endif
+  
+  if (!strcmp(name, programName))
+    {
+      XjFree(name);
+      return *prop;
+    }
+
+  XjFree(name);
+  return (Window) NULL;
 }
+
+
 
 Status sendEvent(display, window, opcode, data)
      Display *display;
@@ -1438,7 +1473,7 @@ int message(info, zilch, data)
 	printTree(NULL, NULL, NULL);
 	break;
       case DASH_KILL:
-	exit(0);
+	XjExit(0);
 	break;
       case DASH_CREATE:
 	createSet(NULL, &info->event->xclient.data.b[1], NULL);
@@ -1555,6 +1590,27 @@ int pstat(where)
 */
 
 
+int std_out(fromJet, what, data)
+     Jet fromJet;
+     char *what;
+     caddr_t data;
+{
+  printf(what);
+  fflush(stdout);
+  return 0;				/* For linting... */
+}
+
+int std_err(fromJet, what, data)
+     Jet fromJet;
+     char *what;
+     caddr_t data;
+{
+  fprintf(stderr, what);
+  fflush(stderr);
+  return 0;				/* For linting... */
+}
+
+
 XjCallbackRec callbacks[] =
 {
   /* tree operations */
@@ -1586,13 +1642,17 @@ XjCallbackRec callbacks[] =
   { "printMenu", printMenu },
   { "lowerMenu", lowerMenu },
   { "cd", cd },
+#ifdef ATTACH
   { "attach", attach },
   { "add", add },
   { "setup", setup },
+#endif
   { "addMenus", addMenus },
   { "verify", verify },
   { "restart", restart },
   { "message", message },
+  { "stdout", std_out },
+  { "stderr", std_err },
 /*
   { "load", load },
   { "cpu", cpu },
@@ -1607,13 +1667,14 @@ char **argv;
   Display *display;
   char *home;
   char userFile[100];
-  Window handle = NULL;
+  Window handle = (Window) NULL;
   int cd[50];
   Set *tmp, *list;
   char *nameOptions[50];
   int i, numOptions = 0;
   int count, sign = 1;
   Status e;
+  Jet handlejet;
 
   home = (char *) getenv("HOME");
   if (home != NULL)
@@ -1622,8 +1683,6 @@ char **argv;
       home = userFile;
     }
 
-  /* setenv("XENVIRONMENT", DASHDEFAULTS, 0); */
-
   (void)XSetIOErrorHandler(fatal);
 
   root = XjCreateRoot(&argc, argv, DASH, home,
@@ -1631,12 +1690,11 @@ char **argv;
 
   XjLoadFromResources(NULL,
 		      NULL,
-		      programName,
 		      programClass,
+		      programName,
 		      appResources,
 		      XjNumber(appResources),
 		      (caddr_t) &parms);
-
   display = root->core.display;
 
   dashAtom = XInternAtom(display, DASH_ATOM, False);
@@ -1680,7 +1738,7 @@ char **argv;
   if (!parms.run) /* don't get a handle if we don't care */
     handle = findDASH(display);
 
-  if (!handle && (parms.send || parms.kill || parms.debug))
+  if (!handle && (parms.send || parms.kill))
     {
       /* try harder... */
       count = 3;
@@ -1697,33 +1755,17 @@ char **argv;
 
 	  sprintf(errtext, "couldn't find a running %s", programName);
 	  XjWarning(errtext);
-	  exit(1);
+	  XjExit(1);
 	}
     }
 
-#if 0
-  /*
-   * -kill/-restart
-   */
-  if (handle && (parms.kill || parms.restart))
-    {
-      if (sendEvent(display, handle, DASH_KILL, NULL))
-	{
-	  if (parms.kill)
-	    exit(0);
-	  handle = NULL;
-	}
-      else
-	XjFatalError("sendEvent failed");
-    }
-#else
   /*
    * -kill
    */
   if (handle && parms.kill)
     {
       if (sendEvent(display, handle, DASH_KILL, NULL))
-	exit(0);
+	XjExit(0);
       else
 	XjFatalError("sendEvent failed");
     }
@@ -1734,11 +1776,10 @@ char **argv;
   if (handle && parms.restart)
     {
       if (sendEvent(display, handle, DASH_RESTART, NULL))
-	exit(0);
+	XjExit(0);
       else
 	XjFatalError("sendEvent failed");
     }
-#endif
 
   /*
    * -debug
@@ -1746,7 +1787,7 @@ char **argv;
   if (handle && parms.debug)
     {
       if (sendEvent(display, handle, DASH_DEBUG, NULL))
-	exit(0);
+	XjExit(0);
       else
 	XjFatalError("sendEvent failed");
     }
@@ -1765,9 +1806,12 @@ char **argv;
 	  if (!e)
 	    XjFatalError("sendEvent failed");
 	}
-      exit(0);
+      XjExit(0);
     }
 
+  /*
+   * Now we deal with the rest of the command line args...
+   */
   if (!parms.nofork)
     {
       switch (fork())
@@ -1776,14 +1820,16 @@ char **argv;
 	  break;
 	case -1:		/* error */
 	  perror ("Can't fork");
-	  exit(-1);
+	  XjExit(-1);
 	default:		/* parent */
-	  exit(0);
+	  XjExit(0);
 	}
     }
 
   if (parms.startString == NULL)
     parms.startString = "Start %s?";
+
+  DEBUG = parms.debug;
 
   XjRegisterCallbacks(callbacks, XjNumber(callbacks));
 
@@ -1797,12 +1843,36 @@ char **argv;
     }
 
   XjRealizeJet(root);
+  /*
+   * Okay, so there is no handle...  we'll create one and install the
+   * property on the root.
+   */
+  handlejet = XjVaCreateJet("handleWindow", windowJetClass, root,
+			    XjNoverrideRedirect, True,
+			    XjNmapped, False,
+			    XjNx, -100,
+			    XjNy, -100,
+			    XjNwidth, 1,
+			    XjNheight, 1,
+			    XjNtitle, DASH_ATOM,
+			    NULL, NULL);
+  XjRealizeJet(handlejet);
+  handle = XjWindow(handlejet);
+  XChangeProperty(display, handle, dashAtom,
+		  XA_STRING, 8, PropModeReplace,
+		  (unsigned char *) programName, strlen(programName));
+  XChangeProperty(display, RootWindow(display, 0), nameAtom,
+		  XA_WINDOW, 32, PropModeReplace,
+		  (unsigned char *) &handle, 1);
+  XFlush(display);
+
+
 
   signal(SIGCHLD, checkChildren);
 
 #ifdef KERBEROS
   if (parms.checkTickets)
-    checkTkts();
+    checkTkts(0,0);
 #endif /* KERBEROS */
 
   XjEventLoop(root);
