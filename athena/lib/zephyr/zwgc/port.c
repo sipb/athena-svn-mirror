@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.3 1989-11-15 14:21:40 jtkohl Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.4 1989-11-15 15:31:13 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -569,7 +569,7 @@ static char *put_filter(p, text, length)
       return(NULL);
 
     input = convert_nulls_to_newlines(text, length);
-    output = p->data.filter.filter(input);
+    output = (*(p->data.filter.filter))(input);
     free(input);
     string_stack_push(p->data.filter.waiting_packets, output);
     return(NULL);
