@@ -23,6 +23,9 @@ cp resolv.conf			$RPM_BUILD_ROOT/etc/resolv.conf
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp athena-bind.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-bind.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/10bind
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/10bind
 %else
 mkdir -p $RPM_BUILD_ROOT/etc/init.d $RPM_BUILD_ROOT/etc/rc2.d
 cp athena-bind.rc $RPM_BUILD_ROOT/etc/init.d/athena-bind
