@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.2 1990-05-26 13:37:42 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.3 1995-07-12 03:42:22 cfields Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1990/05/26  13:37:42  tom
+ * athena release 7.0e
+ *
  * Revision 1.1  90/04/26  16:33:41  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.2 1990-05-26 13:37:42 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.3 1995-07-12 03:42:22 cfields Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -231,7 +234,9 @@ lu_intf(varnode, repl, instptr, reqflg)
 {
 	struct ifnet ifnet;
 	char *ch;
+#ifndef index
 	char *index();
+#endif
 	char scope[16];
 	struct intf_info *tmp1;
 	u_long intnum;
