@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.8 1991-01-21 01:19:10 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.9 1991-01-21 17:22:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -97,7 +97,7 @@ ERRCODE t_cancel P((REQUEST *Request , char *title ));
 ERRCODE t_reply P((REQUEST *Request , char *file , char *editor ));
 ERRCODE t_comment P((REQUEST *Request , char *file , char *editor ));
 ERRCODE t_mail P((REQUEST *Request , char *file , char *editor , char
-		  **smargs , int check , int noedit));
+		  **smargs , int check , int noedit, int header));
 
 /* t_status.c */
 ERRCODE t_personal_status P((REQUEST *Request , int chart ));
