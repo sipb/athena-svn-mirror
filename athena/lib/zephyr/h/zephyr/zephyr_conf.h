@@ -4,8 +4,8 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
- *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.3 1988-10-19 16:35:51 raeburn Exp $
+ *	$Author: jtkohl $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.4 1988-11-14 12:01:54 jtkohl Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -46,6 +46,7 @@ typedef int gid_t;
 #define	REALM_SZ	MAXHOSTNAMELEN
 #define	INST_SZ		0		/* no instances w/o Kerberos */
 #define	ANAME_SZ	9		/* size of a username + null */
+#define	KRB_REALM	"ATHENA.MIT.EDU" /* your local "realm" */
 #endif /* !KERBEROS */
 
 #endif /* __ZEPHYR_CONF_H__ */
