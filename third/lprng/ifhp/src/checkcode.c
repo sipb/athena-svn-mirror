@@ -3,11 +3,14 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: checkcode.c,v 1.1.1.2 1999-05-04 18:50:40 mwhitson Exp $";
+static char *const _id = "$Id: checkcode.c,v 1.2 1999-05-12 18:29:01 danw Exp $";
 
 #include "ifhp.h"
+#include <zephyr/zephyr.h>
 
 /**** ENDINCLUDE ****/
+
+static void send_zephyr(char *error);
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -279,6 +282,7 @@ char *Check_code( char *code_str )
 {
 	static char msg[SMALLBUFFER];
 	char *s;
+	int code = atoi(code_str);
 
 	/* see if it is a quiet code */
 	DEBUG4( "check_code: '%s'", code_str );
@@ -288,5 +292,39 @@ char *Check_code( char *code_str )
 		plp_snprintf( msg, sizeof(msg),
 		"Unknown status code %s", code_str );
 	}
+
+	if (PJLC_GROUP(code) >= 40)
+		send_zephyr(s);
+
 	return(s);
+}
+
+static void send_zephyr(char *error)
+{
+	ZNotice_t notice;
+	char msg[SMALLBUFFER];
+	int plen;
+
+	if (ZInitialize() != ZERR_NONE) 
+		return;
+	memset((char *)&notice, 0, sizeof(notice));
+
+	notice.z_kind = UNACKED;
+	notice.z_port = 0;
+	notice.z_class = "MESSAGE";
+	notice.z_class_inst = "PERSONAL";
+	notice.z_opcode = "";
+	notice.z_sender = "daemon";
+	notice.z_recipient = Loweropts['n' - 'a'];
+	notice.z_default_format = "";
+
+	plp_snprintf(msg, sizeof(msg), "%s", Upperopts['P' - 'A']);
+	plen = strlen(msg);
+	plp_snprintf(msg + plen + 1, sizeof(msg) - plen - 1,
+		     "Printer Error: %s may need attention:\n%s\n",
+		     Upperopts['P' - 'A'], error);
+	notice.z_message = msg;
+	notice.z_message_len = plen + strlen(msg + plen + 1) + 2;
+
+	ZSendNotice(&notice, ZNOAUTH);
 }
