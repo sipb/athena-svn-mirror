@@ -33,7 +33,14 @@
  * SUCH DAMAGE.
  */
 
+#ifdef __NetBSD__
 #include <sys/cdefs.h>
+#else
+#define __COPYRIGHT(x) char *copyright = x
+#define __RCSID(x) char *rcsid = x
+char *__progname;
+#endif
+
 #ifndef lint
 __COPYRIGHT("@(#) Copyright (c) 1983, 1991, 1993, 1994\n\
 	The Regents of the University of California.  All rights reserved.\n");
@@ -170,6 +177,9 @@ __RCSID("$NetBSD: inetd.c,v 1.38.2.2 1998/05/05 08:12:06 mycroft Exp $");
 #ifdef RPC
 #include <rpc/rpc.h>
 #include <rpc/pmap_clnt.h>
+#ifdef HAVE_RPC_RPCENT_H
+#include <rpc/rpcent.h>
+#endif
 #endif
 
 #include <errno.h>
@@ -208,12 +218,13 @@ int deny_severity = LIBWRAP_DENY_FACILITY|LIBWRAP_DENY_SEVERITY;
 #define	CNT_INTVL	60		/* servers in CNT_INTVL sec. */
 #define	RETRYTIME	(60*10)		/* retry after bind or server fail */
 
-#define	SIGBLOCK	(sigmask(SIGCHLD)|sigmask(SIGHUP)|sigmask(SIGALRM))
+sigset_t sig_block;
 
 int	debug;
 #ifdef LIBWRAP
 int	lflag;
 #endif
+int	access_on;
 int	nsock, maxsock;
 fd_set	allsock;
 int	options;
@@ -227,7 +238,7 @@ char	*curdom;
 
 /* Reserve some descriptors, 3 stdio + at least: 1 log, 1 conf. file */
 #define FD_MARGIN	(8)
-typeof(((struct rlimit *)0)->rlim_cur)	rlim_ofile_cur = OPEN_MAX;
+rlim_t rlim_ofile_cur = OPEN_MAX;
 
 #ifdef RLIMIT_NOFILE
 struct rlimit	rlim_ofile;
@@ -244,6 +255,7 @@ struct	servtab {
 	int	se_rpcversh;		/* rpc program highest version */
 #define isrpcservice(sep)	((sep)->se_rpcversl != 0)
 	short	se_wait;		/* single threaded server */
+	short	se_switched;		/* switched by access_on/off */
 	short	se_checked;		/* looked at during merge */
 	char	*se_user;		/* user name to run as */
 	char	*se_group;		/* group name to run as */
@@ -280,10 +292,15 @@ struct	servtab {
 #define ISMUXPLUS(sep)	((sep)->se_type == MUXPLUS_TYPE)
 
 
+#ifndef __P
+#define __P(x) x
+#endif
+
 void		chargen_dg __P((int, struct servtab *));
 void		chargen_stream __P((int, struct servtab *));
 void		close_sep __P((struct servtab *));
 void		config __P((int));
+void		access_switch __P((int));
 void		daytime_dg __P((int, struct servtab *));
 void		daytime_stream __P((int, struct servtab *));
 void		discard_dg __P((int, struct servtab *));
@@ -376,9 +393,13 @@ main(argc, argv, envp)
 	char *argv[], *envp[];
 {
 	struct servtab *sep, *nsep;
-	struct sigvec sv;
+	struct sigaction sa;
 	int ch, dofork;
 	pid_t pid;
+
+	__progname = argv[0];
+	if (strchr(__progname, '/'))
+		__progname = strrchr(__progname, '/') + 1;
 
 	Argv = argv;
 	if (envp == 0 || *envp == 0)
@@ -389,9 +410,9 @@ main(argc, argv, envp)
 
 	while ((ch = getopt(argc, argv,
 #ifdef LIBWRAP
-					"dl"
+					"dln"
 #else
-					"d"
+					"dn"
 #endif
 					   )) != -1)
 		switch(ch) {
@@ -404,6 +425,9 @@ main(argc, argv, envp)
 			lflag = 1;
 			break;
 #endif
+		case 'n':
+			access_on = 1;
+			break;
 		case '?':
 		default:
 			usage();
@@ -414,8 +438,31 @@ main(argc, argv, envp)
 	if (argc > 0)
 		CONFIG = argv[0];
 
-	if (debug == 0)
-		daemon(0, 0);
+	if (debug == 0) {
+		int fd;
+
+		switch (fork ()) {
+		case -1:
+			return (-1);
+		case 0:
+			break;
+		default:
+			_exit(0);
+		}
+
+		if (setsid() == -1) {
+			fprintf(stderr, "%s: couldn't setsid\n", __progname);
+			exit(1);
+		}
+		chdir("/");
+		if ((fd = open("/dev/null", O_RDWR, 0)) != -1) {
+			dup2(fd, STDIN_FILENO);
+			dup2(fd, STDOUT_FILENO);
+			dup2(fd, STDERR_FILENO);
+			if (fd > STDERR_FILENO)
+				close(fd);
+		}
+	}
 	openlog(__progname, LOG_PID | LOG_NOWAIT, LOG_DAEMON);
 	logpid();
 
@@ -429,22 +476,31 @@ main(argc, argv, envp)
 	}
 #endif
 
-	memset(&sv, 0, sizeof(sv));
-	sv.sv_mask = SIGBLOCK;
-	sv.sv_handler = retry;
-	sigvec(SIGALRM, &sv, (struct sigvec *)0);
+	memset(&sa, 0, sizeof(sa));
+	sigemptyset(&sig_block);
+	sigaddset(&sig_block, SIGCHLD);
+	sigaddset(&sig_block, SIGHUP);
+	sigaddset(&sig_block, SIGALRM);
+	sigaddset(&sig_block, SIGUSR1);
+	sigaddset(&sig_block, SIGUSR2);
+	memcpy(&sa.sa_mask, &sig_block, sizeof(sigset_t));
+	sa.sa_handler = retry;
+	sigaction(SIGALRM, &sa, NULL);
 	config(SIGHUP);
-	sv.sv_handler = config;
-	sigvec(SIGHUP, &sv, (struct sigvec *)0);
-	sv.sv_handler = reapchild;
-	sigvec(SIGCHLD, &sv, (struct sigvec *)0);
-	sv.sv_handler = goaway;
-	sigvec(SIGTERM, &sv, (struct sigvec *)0);
-	sv.sv_handler = goaway;
-	sigvec(SIGINT, &sv, (struct sigvec *)0);
-	sv.sv_mask = 0L;
-	sv.sv_handler = SIG_IGN;
-	sigvec(SIGPIPE, &sv, (struct sigvec *)0);
+	sa.sa_handler = config;
+	sigaction(SIGHUP, &sa, NULL);
+	sa.sa_handler = access_switch;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
+	sa.sa_handler = reapchild;
+	sigaction(SIGCHLD, &sa, NULL);
+	sa.sa_handler = goaway;
+	sigaction(SIGTERM, &sa, NULL);
+	sa.sa_handler = goaway;
+	sigaction(SIGINT, &sa, NULL);
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGPIPE, &sa, NULL);
 
 	{
 		/* space for daemons to overwrite environment for ps */
@@ -462,10 +518,11 @@ main(argc, argv, envp)
 	    fd_set readable;
 
 	    if (nsock == 0) {
-		(void) sigblock(SIGBLOCK);
+		sigset_t prev_mask;
+		sigprocmask(SIG_SETMASK, &sig_block, &prev_mask);
 		while (nsock == 0)
-		    sigpause(0L);
-		(void) sigsetmask(0L);
+		    sigsuspend(&prev_mask);
+		sigprocmask(SIG_SETMASK, &prev_mask, NULL);
 	    }
 	    readable = allsock;
 	    if ((n = select(maxsock + 1, &readable, (fd_set *)0,
@@ -497,7 +554,7 @@ main(argc, argv, envp)
 			}
 		} else
 			ctrl = sep->se_fd;
-		(void) sigblock(SIGBLOCK);
+		sigprocmask(SIG_SETMASK, &sig_block, NULL);
 		pid = 0;
 #ifdef LIBWRAP_INTERNAL
 		dofork = 1;
@@ -521,7 +578,8 @@ main(argc, argv, envp)
 			"%s/%s server failing (looping), service terminated\n",
 					    sep->se_service, sep->se_proto);
 					close_sep(sep);
-					sigsetmask(0L);
+					sigprocmask(SIG_UNBLOCK,
+						    &sig_block, NULL);
 					if (!timingout) {
 						timingout = 1;
 						alarm(RETRYTIME);
@@ -534,7 +592,7 @@ main(argc, argv, envp)
 				syslog(LOG_ERR, "fork: %m");
 				if (!sep->se_wait && sep->se_socktype == SOCK_STREAM)
 					close(ctrl);
-				sigsetmask(0L);
+				sigprocmask(SIG_UNBLOCK, &sig_block, NULL);
 				sleep(1);
 				continue;
 			}
@@ -544,14 +602,14 @@ main(argc, argv, envp)
 				nsock--;
 			}
 			if (pid == 0) {
-				sv.sv_mask = 0L;
-				sv.sv_handler = SIG_DFL;
-				sigvec(SIGPIPE, &sv, (struct sigvec *)0);
+				sigemptyset(&sa.sa_mask);
+				sa.sa_handler = SIG_DFL;
+				sigaction(SIGPIPE, &sa, NULL);
 				if (debug)
 					setsid();
 			}
 		}
-		sigsetmask(0L);
+		sigprocmask(SIG_UNBLOCK, &sig_block, NULL);
 		if (pid == 0) {
 			run_service(ctrl, sep);
 			if (dofork)
@@ -590,7 +648,7 @@ run_service(ctrl, sep)
 			sp = getservbyport(sep->se_ctrladdr_in.sin_port,
 			    sep->se_proto);
 			if (sp == NULL) {
-				(void)snprintf(buf, sizeof buf, "%d",
+				(void)sprintf(buf, "%d",
 				    ntohs(sep->se_ctrladdr_in.sin_port));
 				service = buf;
 			} else
@@ -716,7 +774,7 @@ config(signo)
 	int signo;
 {
 	struct servtab *sep, *cp, **sepp;
-	long omask;
+	sigset_t omask;
 	int n;
 
 	if (!setconfig()) {
@@ -735,9 +793,9 @@ config(signo)
 		if (sep != 0) {
 			int i;
 
-#define SWAP(type, a, b) {type c=(type)a; (type)a=(type)b; (type)b=(type)c;}
+#define SWAP(type, a, b) {type c=a; a=b; b=c;}
 
-			omask = sigblock(SIGBLOCK);
+			sigprocmask(SIG_BLOCK, &sig_block, &omask);
 			/*
 			 * sep->se_wait may be holding the pid of a daemon
 			 * that we're waiting for.  If so, don't overwrite
@@ -759,7 +817,7 @@ config(signo)
 				unregister_rpc(sep);
 			sep->se_rpcversl = cp->se_rpcversl;
 			sep->se_rpcversh = cp->se_rpcversh;
-			sigsetmask(omask);
+			sigprocmask(SIG_SETMASK, &omask, NULL);
 			freeconfig(cp);
 			if (debug)
 				print_service("REDO", sep);
@@ -796,8 +854,8 @@ config(signo)
 			if (!strcmp(sep->se_hostaddr,"*"))
 				sep->se_ctrladdr_in.sin_addr.s_addr =
 				    INADDR_ANY;
-			else if (!inet_aton(sep->se_hostaddr,
-			    &sep->se_ctrladdr_in.sin_addr)) {
+			else if ((sep->se_ctrladdr_in.sin_addr.s_addr =
+				  inet_addr(sep->se_hostaddr)) == -1) {
 				/* Do we really want to support hostname lookups here? */
 				struct hostent *hp;
 				hp = gethostbyname(sep->se_hostaddr);
@@ -870,7 +928,8 @@ config(signo)
 					if (sep->se_fd >= 0)
 						close_sep(sep);
 				}
-				if (sep->se_fd == -1 && !ISMUX(sep))
+				if (sep->se_fd == -1 && !ISMUX(sep) &&
+				    (!sep->se_switched || access_on))
 					setup(sep);
 			}
 		}
@@ -879,7 +938,7 @@ config(signo)
 	/*
 	 * Purge anything not looked at above.
 	 */
-	omask = sigblock(SIGBLOCK);
+	sigprocmask(SIG_BLOCK, &sig_block, &omask);
 	sepp = &servtab;
 	while ((sep = *sepp)) {
 		if (sep->se_checked) {
@@ -898,7 +957,34 @@ config(signo)
 		freeconfig(sep);
 		free((char *)sep);
 	}
-	(void) sigsetmask(omask);
+	sigprocmask(SIG_SETMASK, &omask, NULL);
+}
+
+void
+access_switch(signo)
+	int signo;
+{
+	struct servtab *sep, **sepp;
+	sigset_t omask;
+	int on;
+
+	on = signo == SIGUSR1;
+	if (on == access_on)
+		return;
+	access_on = on;
+
+	sigprocmask(SIG_BLOCK, &sig_block, &omask);
+	sepp = &servtab;
+	while (sep = *sepp) {
+		sepp = &sep->se_next;
+		if (!sep->se_switched)
+			continue;
+		if (access_on)
+			setup(sep);
+		else
+			close_sep(sep);
+	}
+	sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
 void
@@ -1082,7 +1168,7 @@ enter(cp)
 	struct servtab *cp;
 {
 	struct servtab *sep;
-	long omask;
+	sigset_t omask;
 
 	sep = (struct servtab *)malloc(sizeof (*sep));
 	if (sep == (struct servtab *)0) {
@@ -1092,16 +1178,16 @@ enter(cp)
 	*sep = *cp;
 	sep->se_fd = -1;
 	sep->se_rpcprog = -1;
-	omask = sigblock(SIGBLOCK);
+	sigprocmask(SIG_BLOCK, &sig_block, &omask);
 	sep->se_next = servtab;
 	servtab = sep;
-	sigsetmask(omask);
+	sigprocmask(SIG_SETMASK, &omask, NULL);
 	return (sep);
 }
 
 FILE	*fconfig = NULL;
 struct	servtab serv;
-char	line[LINE_MAX];
+char	line[BUFSIZ];
 char    *defhost;
 
 int
@@ -1299,6 +1385,8 @@ more:
 			goto more;
 		}
 	}
+	arg = sskip(&cp);
+	sep->se_switched = strcmp(arg, "switched") == 0;
 	sep->se_user = newstr(sskip(&cp));
 	if ((sep->se_group = strchr(sep->se_user, '.')))
 		*sep->se_group++ = '\0';
@@ -1470,10 +1558,10 @@ inetd_setproctitle(a, s)
 	cp = Argv[0];
 	size = sizeof(sin);
 	if (getpeername(s, (struct sockaddr *)&sin, &size) == 0)
-		(void)snprintf(buf, sizeof buf, "-%s [%s]", a,
+		(void)sprintf(buf, "-%.*s [%s]", sizeof(buf) - 20, a,
 		    inet_ntoa(sin.sin_addr));
 	else
-		(void)snprintf(buf, sizeof buf, "-%s", a);
+		(void)sprintf(buf, "-%.*s", sizeof(buf) - 2, a);
 	strncpy(cp, buf, LastArg - cp);
 	cp += strlen(cp);
 	while (cp < LastArg)
@@ -1504,6 +1592,9 @@ bump_nofile()
 		syslog(LOG_ERR, "getrlimit: %m");
 		return;
 	}
+#ifndef MIN
+#define MIN(x,y) ( (x) < (y) ? (x) : (y) )
+#endif
 	rl.rlim_cur = MIN(rl.rlim_max, rl.rlim_cur + FD_CHUNK);
 	if (rl.rlim_cur <= rlim_ofile_cur) {
 		syslog(LOG_ERR,
@@ -1733,7 +1824,7 @@ daytime_stream(s, sep)		/* Return human-readable time of day */
 
 	clock = time((time_t *) 0);
 
-	len = snprintf(buffer, sizeof buffer, "%.24s\r\n", ctime(&clock));
+	len = sprintf(buffer, "%.24s\r\n", ctime(&clock));
 	(void) write(s, buffer, len);
 }
 
@@ -1753,7 +1844,7 @@ daytime_dg(s, sep)		/* Return human-readable time of day */
 	size = sizeof(sa);
 	if (recvfrom(s, buffer, sizeof(buffer), 0, &sa, &size) < 0)
 		return;
-	len = snprintf(buffer, sizeof buffer, "%.24s\r\n", ctime(&clock));
+	len = sprintf(buffer, "%.24s\r\n", ctime(&clock));
 	(void) sendto(s, buffer, len, 0, &sa, sizeof(sa));
 }
 
@@ -1768,16 +1859,18 @@ print_service(action, sep)
 {
 	if (isrpcservice(sep))
 		fprintf(stderr,
-		    "%s: %s rpcprog=%d, rpcvers = %d/%d, proto=%s, wait.max=%d.%d, user.group=%s.%s builtin=%lx server=%s\n",
+		    "%s: %s rpcprog=%d, rpcvers = %d/%d, proto=%s, wait.max=%d.%d, switched=%d, user.group=%s.%s builtin=%lx server=%s\n",
 		    action, sep->se_service,
 		    sep->se_rpcprog, sep->se_rpcversh, sep->se_rpcversl, sep->se_proto,
-		    sep->se_wait, sep->se_max, sep->se_user, sep->se_group,
+		    sep->se_wait, sep->se_max, sep->se_switched, sep->se_user,
+		    sep->se_group ? sep->se_group : "",
 		    (long)sep->se_bi, sep->se_server);
 	else
 		fprintf(stderr,
-		    "%s: %s proto=%s, wait.max=%d.%d, user.group=%s.%s builtin=%lx server=%s\n",
+		    "%s: %s proto=%s, wait.max=%d.%d, switched=%d, user.group=%s.%s builtin=%lx server=%s\n",
 		    action, sep->se_service, sep->se_proto,
-		    sep->se_wait, sep->se_max, sep->se_user, sep->se_group,
+		    sep->se_wait, sep->se_max, sep->se_switched, sep->se_user,
+		    sep->se_group ? sep->se_group : "",
 		    (long)sep->se_bi, sep->se_server);
 }
 
@@ -1959,14 +2052,14 @@ static char sccsid[] = "@(#) rfc931.c 1.3 92/08/31 22:54:46";
 #define	TIMEOUT		4
 #define	TIMEOUT2	10
 
-static jmp_buf timebuf;
+static sigjmp_buf timebuf;
 
 /* timeout - handle timeouts */
 
 static void timeout(sig)
 int     sig;
 {
-	longjmp(timebuf, sig);
+	siglongjmp(timebuf, sig);
 }
 
 /* rfc931_name - return remote user name */
@@ -1987,6 +2080,7 @@ int	ctrl;
 	char		*cp;
 	char		*result = "USER_UNKNOWN";
 	int		len;
+	struct sigaction sa;
 
 	/* Find out local port number of our stdin. */
 
@@ -2009,8 +2103,10 @@ int	ctrl;
 		return (result);
 	}
 
-	signal(SIGALRM, timeout);
-	if (setjmp(timebuf)) {
+	memset(&sa, 0, sizeof(sa));
+	sa_handler = timeout;
+	sigaction(SIGALRM, &sa, NULL);
+	if (sigsetjmp(timebuf)) {
 		close(s);			/* not: fclose(fp) */
 		return (result);
 	}
@@ -2027,7 +2123,7 @@ int	ctrl;
 	}
 
 	/* Query the RFC 931 server. Would 13-byte writes ever be broken up? */
-	(void)snprintf(buf, sizeof buf, "%u,%u\r\n", ntohs(there->sin_port),
+	(void)sprintf(buf, "%u,%u\r\n", ntohs(there->sin_port),
 	    ntohs(here.sin_port));
 
 
