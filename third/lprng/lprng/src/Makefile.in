@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.11 1999-05-24 18:34:51 danw Exp $
+# $Id: Makefile.in,v 1.12 1999-06-01 21:00:06 danw Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -332,8 +332,6 @@ install: all ${INSTALL_LIB} ${INSTALL_BIN} ${INSTALL_MAINT}
 	${INSTALLCMD} -m $(NORM_PERMS) psbanner ${INSTALL_LIB}
 	${INSTALLCMD} -m $(NORM_PERMS) checkpc ${INSTALL_MAINT}
 	${INSTALLCMD} -m $(NORM_PERMS) lpraccnt ${INSTALL_MAINT}
-	rm -f ${INSTALL_BIN}/lp;     ln -s lpr  ${INSTALL_BIN}/lp;
-	rm -f ${INSTALL_BIN}/cancel; ln -s lprm ${INSTALL_BIN}/cancel;
 
 ${INSTALL_LIB}::
 	${SRC}/mkinstalldirs $@
