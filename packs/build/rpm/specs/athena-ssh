@@ -23,12 +23,9 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
 cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
-cp athena-sshd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-sshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-sshd
 
 %post
 if [ ! -f /etc/ssh_host_key ]; then
@@ -37,9 +34,12 @@ if [ ! -f /etc/ssh_host_key ]; then
 fi
 chkconfig --add athena-sshd
 
+[ grep -q SSHD /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+SSHD=false;		export SSHD		#  Secure shell daemon
+EOF
+
 %files
 /etc/rc.d
 /etc/athena
 /usr/athena
 %config /etc/sshd_config
-%config /etc/sysconfig/athena-sshd

@@ -22,21 +22,21 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp lpd.conf $RPM_BUILD_ROOT/etc/lpd.conf
 cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
 cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
-cp athena-lpd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-lpd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
-chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-lpd
 
 %post
 chkconfig --add athena-lpd
+
+[ grep -q LPD /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+LPD=false;		export LPD		#  Run line printer daemon?
+EOF
 
 %files
 /etc/rc.d
 /usr/athena
 %config /etc/lpd.conf
 %config /etc/lpd.perms
-%config /etc/sysconfig/athena-lpd
 

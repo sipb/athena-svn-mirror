@@ -31,3 +31,8 @@ if [ ! -f /etc/athena/version ]; then
 	echo Athena Workstation '(linux)' Version Layered `date` >> \
 		 /etc/athena/version
 fi
+
+%files
+%config /etc/athena/rc.conf
+/usr/athena/man/mandesc
+
