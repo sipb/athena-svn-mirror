@@ -19,6 +19,7 @@ rc.conf		cat /etc/athena/rc.conf
 version		cat /etc/athena/version
 rvdinfo		cat /srvd/.rvdinfo
 services	test -r /var/server/.services && cat /var/server/.services
+update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
 date		date
 uptime		uptime
 partitions	fdisk -l `mount | sed -n -e 's/^\([^ ]*\)[0-9] on \/ .*$/\1/p'`
