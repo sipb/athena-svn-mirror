@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.7 1990-11-16 14:41:50 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.8 1990-11-18 16:57:24 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.7 1990-11-16 14:41:50 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.8 1990-11-18 16:57:24 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -232,20 +232,21 @@ char **argv;
 	case 0:
 	    for (file = 0; file < getdtablesize(); file++)
 	      close(file);
+	    /* lose the controlling tty */
 	    file = open("/dev/tty", O_RDWR|O_NDELAY);
 	    if (file >= 0) {
 		(void) ioctl(file, TIOCNOTTY, (char *)NULL);
 		(void) close(file);
 	    }
-	    open("/dev/null", O_RDONLY, 0);
+	    /* setup new tty */
 	    strcpy(line, "/dev/");
 	    strcat(line, logintty);
-	    open(line, O_WRONLY, 0);
+	    open("/dev/null", O_RDONLY, 0);
+	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
-	    /* chase away anyone else using this tty */
-	    signal(SIGHUP, SIG_IGN);
-	    vhangup();
-
+	    /* make sure we own the tty */
+	    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
+	    ioctl(1, TIOCSPGRP, &pgrp);
 	    sigsetmask(0);
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
@@ -426,14 +427,14 @@ char **argv;
     if (console_tty == 0) {
 	/* Open master side of pty */
 	line[5] = 'p';
-	console_tty = open(line, O_RDWR, 0);
+	console_tty = open(line, O_RDONLY, 0);
 	if (console_tty < 0) {
 	    /* failed to open this tty, find another one */
 	    for (c = 'p'; c <= 's'; c++) {
 		line[8] = c;
 		for (i = 0; i < 16; i++) {
 		    line[9] = "0123456789abcdef"[i];
-		    console_tty = open(line, O_RDWR, 0);
+		    console_tty = open(line, O_RDONLY, 0);
 		    if (console_tty >= 0) break;
 		}
 		if (console_tty >= 0) break;
