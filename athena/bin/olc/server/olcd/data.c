@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.14 1990-12-09 16:47:07 lwvanels Exp $
+ *	$Id: data.c,v 1.15 1990-12-12 17:48:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.14 1990-12-09 16:47:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.15 1990-12-12 17:48:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,6 +49,10 @@ char *STDERR_LOG         = "/usr/adm/olc/errors";
 char *TOPIC_FILE         = "/usr/lib/olc/topics";
 char *MOTD_FILE          = "/usr/lib/olc/motd";
 char *MOTD_TIMEOUT_FILE  = "/usr/lib/olc/motd_timeout";
+char *MACH_TRANS_FILE    = "/usr/lib/olc/translations";
+
+char *LIST_FILE_NAME     = "/usr/spool/olc/qlist_-1.log";
+char *LIST_TMP_NAME      = "/usr/spool/olc/queue.tmp";
 
 #ifdef KERBEROS
 char *TICKET_FILE        = "/usr/spool/olc/tkt.olc";
@@ -98,7 +102,11 @@ PROC Proc_List[] =
   OLC_GET_DBINFO,      olc_get_dbinfo,       "olc db info",
 /*  OLC_SET_DBINFO,      olc_change_dbinfo,    "olc db info"*/
   OLC_GET_ACCESSES,    olc_get_accesses,     "olc get access",
+#ifdef __STDC__
+  UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
+#else
   UNKNOWN_REQUEST,     (ERRCODE(*)()) NULL,  (char *) NULL,
+#endif
 };
 
 KNUCKLE **Knuckle_List  = (KNUCKLE **) NULL;
