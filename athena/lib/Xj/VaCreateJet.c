@@ -1,5 +1,5 @@
 /*
- * $Id: VaCreateJet.c,v 1.2 1999-01-22 23:17:04 ghudson Exp $
+ * $Id: VaCreateJet.c,v 1.3 2004-02-25 21:21:37 rbasch Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,12 +10,12 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: VaCreateJet.c,v 1.2 1999-01-22 23:17:04 ghudson Exp $";
+"$Id: VaCreateJet.c,v 1.3 2004-02-25 21:21:37 rbasch Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include "Jets.h"
-#include <varargs.h>
+#include <stdarg.h>
 #include <stdio.h>
 
 #define MAXNAMELEN 500
@@ -47,16 +47,11 @@ void XjCopyValue(where, resource, value)
 	((resource)->resource_size > sizeof(void*)) ? sizeof(void*) : \
 	 (resource)->resource_size)
 
-Jet XjVaCreateJet(name, class, parent, va_alist)
-char *name;
-JetClass class;
-Jet parent;
-va_dcl
+Jet XjVaCreateJet(char *name, JetClass class, Jet parent, char *valName, ...)
 {
   va_list args;
   char *classPtr, *instPtr;
   int resCount;
-  char *valName;
   XjArgVal val;
 
   Jet jet, thisJet;
@@ -166,9 +161,9 @@ va_dcl
 			jet->core.classRec->core_class.num_resources,
 			(caddr_t) jet);
 
-  va_start(args);
+  va_start(args, valName);
 
-  while (NULL != (valName = va_arg(args, char *)))
+  while (NULL != valName)
     {
       val = va_arg(args, XjArgVal);
 /*      fprintf(stdout, "%d\n", val); */
@@ -187,6 +182,7 @@ va_dcl
 
       if (resCount == jet->core.classRec->core_class.num_resources)
 	fprintf(stdout, "no such resource name: %s\n", valName);
+      valName = va_arg(args, char *);
     }
 
   val = va_arg(args, XjArgVal); /* pop the last one */

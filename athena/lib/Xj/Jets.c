@@ -1,5 +1,5 @@
 /*
- * $Id: Jets.c,v 1.4 1999-08-13 00:20:58 danw Exp $
+ * $Id: Jets.c,v 1.5 2004-02-25 21:21:37 rbasch Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Jets.c,v 1.4 1999-08-13 00:20:58 danw Exp $";
+"$Id: Jets.c,v 1.5 2004-02-25 21:21:37 rbasch Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -18,7 +18,7 @@ static char *rcsid =
 #include <stdlib.h>
 #include <X11/Xos.h>
 #include <ctype.h>
-#include <varargs.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -1366,18 +1366,15 @@ static void GetVal(src, dst, size)
 }
 
 
-void XjVaGetValues(jet, va_alist)
-Jet jet;
-va_dcl
+void XjVaGetValues(Jet jet, char *valName, ...)
 {
   va_list args;
   int resCount;
-  char *valName;
   caddr_t val;
 
-  va_start(args);
+  va_start(args, valName);
 
-  while (NULL != (valName = va_arg(args, char *)))
+  while (NULL != valName)
     {
       val = va_arg(args, caddr_t);
 
@@ -1396,6 +1393,7 @@ va_dcl
 	      break;
 	    }
 	}
+      valName = va_arg(args, char *);
     }
   val = va_arg(args, caddr_t); /* pop the last one */
   va_end(args);

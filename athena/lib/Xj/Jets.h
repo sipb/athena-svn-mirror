@@ -1,7 +1,7 @@
 /*
  * Various stuff stolen from the X Toolkit...
  *
- * $Id: Jets.h,v 1.3 1999-02-22 18:16:31 danw Exp $
+ * $Id: Jets.h,v 1.4 2004-02-25 21:21:37 rbasch Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -153,8 +153,9 @@ extern Colormap xjcolormap;
 
 extern char *XjMalloc(), *XjRealloc();
 extern Jet XjCreateRoot();
-extern void XjVaGetValues();
-extern Jet XjVaCreateJet();
+extern void XjVaGetValues(Jet jet, char *valName, ...);
+extern Jet XjVaCreateJet(char *name, JetClass class, Jet parent,
+			 char *valName, ...);
 extern Jet XjFindJet();
 extern void XjReadCallback();
 extern void XjLoadFromResources();
