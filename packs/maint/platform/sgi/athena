@@ -106,7 +106,7 @@ $ECHO ""
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
 	$ECHO "Public workstation cleanup... \c"
-	rm -rf /.hushlogin /etc/X0.hosts
+	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	if [ -r /srvd/etc/passwd ]; then
 	    cp -p /srvd/etc/passwd /etc/passwd.local
@@ -279,8 +279,13 @@ fi
 
 $ECHO "done."
 
-rm -f /etc/nologin
-$ECHO "Logins now possible."
+if [ -r /etc/nologin.persist ]; then
+	cp /etc/nologin.persist /etc/nologin
+	$ECHO "Logins disabled"
+else
+	rm -f /etc/nologin
+	$ECHO "Logins now possible."
+fi
 
 $ECHO " done!"
 	;;

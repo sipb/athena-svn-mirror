@@ -126,7 +126,7 @@ chmod 666 /dev/audio /dev/audioctl
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
 	echo "Public workstation cleanup... \c"			>/dev/console
-	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
+	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	if [ -r /srvd/etc/passwd ]; then
 	  cp -p /srvd/etc/passwd /etc/passwd.local
@@ -310,8 +310,13 @@ fi
 
 echo "done."							>/dev/console
 
-rm -f /etc/nologin
-echo "Logins now possible."					>/dev/console
+if [ -r /etc/nologin.persist ]; then
+	cp /etc/nologin.persist /etc/nologin
+	echo "Logins disabled."					>/dev/console
+else
+	rm -f /etc/nologin
+	echo "Logins now possible."				>/dev/console
+fi
 
 echo " done!"							>/dev/console
 	;;
