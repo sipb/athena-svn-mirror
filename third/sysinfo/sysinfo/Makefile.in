@@ -1,5 +1,5 @@
 #
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 #
 # Makefile for building sysinfo main program
 #
@@ -99,7 +99,7 @@ mcdall: $(Target) sysinfowrapper.in
 install: $(Target) sysinfowrapper
 	@$(MKDIRHIER) $(DESTDIR)$(BIN)
 	@$(MKDIRHIER) $(DESTDIR)$(LIBEXECDIR)
-	@if [ -z "$(DESTDIR)$(LIBEXECDIR)" ]; then \
+	@if [ -z "$(LIBEXECDIR)" ]; then \
 		echo "The LIBEXECDIR variable is not set."; \
 		exit 1; \
 	fi; \
