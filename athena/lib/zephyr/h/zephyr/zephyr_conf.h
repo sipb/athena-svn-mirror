@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.5 1989-03-23 09:34:31 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.6 1989-03-23 09:47:32 jtkohl Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,6 +18,13 @@
 #include <zephyr/mit-copyright.h>
 
 /* Kerberos information */
+/* If you are not using Kerberos, comment out the following three lines.
+   These provide default definitions so that users compiling Zephyr
+   programs don't need to put -DKERBEROS on their compile lines. */
+#ifndef KERBEROS
+#define KERBEROS
+#endif
+
 #define SERVER_SERVICE		"zephyr"
 #define SERVER_INSTANCE		"zephyr"
 #define SERVER_SRVTAB		"/usr/athena/lib/zephyr/srvtab"
@@ -28,6 +35,15 @@
 /* Service names */
 #define	HM_SVCNAME	"zephyr-hm"
 #define	SERVER_SVCNAME	"zephyr-clt"
+
+#ifdef ultrix
+/* If you are using Ultrix versions prior to 3.0, uncomment the following
+   three lines  so that users don't need to specify -DULTRIX22 on their
+   compile lines. */
+/* #ifndef ULTRIX22 */
+/* #define ULTRIX22 */
+/* #endif */
+#endif /* ultrix */
 
 #if defined(ultrix) && defined(ULTRIX22)
 /* Ultrix 3.0 and beyond have these defined in standard places */
