@@ -289,6 +289,11 @@ how they should be carried out:
 	  third-party material need to be updated before a release
 	  cycle.
 
+	* Also before the beta phase, a file listing of the new packs
+	  should be compared against a file listing of the old packs
+	  and any files which have disappeared should be accounted
+	  for.
+
 	* When the release cycle reaches beta, a branch should be made
 	  created of the form "athena-8_1".  Only the release
 	  engineer should make commits to the release branch, and each
