@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.1 1991-03-01 11:57:17 epeisach Exp $
+ * $Id: Imakefile,v 1.2 1991-06-28 13:37:22 epeisach Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -20,23 +20,27 @@
 # DAEMON	someone special
 # SPGRP		the group id of the spooling programs
 #
-#ifdef ULTRIX40
-MACHD=-DULTRIX/**/40
-#endif
 #if (defined(_AIX) && defined(i386)) || defined(_IBMR2)
 MACHL=-lbsd
 #endif
 
 DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota $(MACHD)
 LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes $(MACHL)
-LIBDIR=/usr/lib
-BINDIR=/usr/ucb
-SPOOLDIR=/usr/spool/lpd
+
+
 CXREF=/usr/ucb/ctags -x
 ROOT=root
 DAEMON=daemon
 SPGRP=daemon
 OPERATOR=OPERATOR
+
+#ifdef _IBMR2
+LIBDIR=$(ATHLIBDIR)
+BINDIR=$(ATHBINDIR)
+#else
+LIBDIR=/usr/lib
+BINDIR=/usr/ucb
+#endif
 
 # OP_GID is the group ID for group operator
 OP_GID = 28
@@ -45,7 +49,11 @@ SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
 	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
 
+#ifdef UseInstalled
 #include "Ilpr.rules"
+#else
+#include "lpr/Ilpr.rules"
+#endif
 
 #define ISUBDIRS filters quota transcript-v2.1 man
 
@@ -95,9 +103,6 @@ make_o_o(lprm)
 make_o_o(lpc)
 
 
-
-/* Obsolete programs */
-#if 0
 build_program(o_lprm,o_lprm.o s_rmjob.o startdaemon.o s_common.o printcap.o,\
 	,$(LIBS))
 install_program(o_lprm,-o root -g $(OP_GID) -m 6754,/usr/etc)
@@ -105,6 +110,7 @@ build_program(o_lpc,o_lpc.o cmds.o cmdtab.o startdaemon.o \
 	s_common.o printcap.o,,$(LIBS))
 install_program(o_lpc,-o root -g $(OP_GID) -m 6754,/usr/etc)
 
+#if 0
 install_file(printcap,/etc/printcap)
 #endif
 
