@@ -97,7 +97,7 @@ clean::									@@\
 #define CcFlags LintFlags -I/usr/openwin/include
 #define LdPath -L/usr/openwin/lib -L$(ATHLIBDIR)
 #define LdLibs /usr/athena/lib/libresolv.a -lsocket -lnsl -lelf -ldl
-#define CcCmd gcc -traditional
+#define CcCmd gcc -traditional -B/usr/gcc/lib/ -DSOLARIS -I/usr/gcc/include
 #define LdCmd gcc
 #define AnsiCcCmd gcc
 #define AnsiLdCmd gcc
@@ -107,11 +107,11 @@ clean::									@@\
 
 #if defined(mips) && defined(sgi)
 #define NOLINT
-#define LintFlags  -DSYSV -DPOSIX -DPOSIX_FLOCK
+#define LintFlags -DSYSV -DPOSIX -DPOSIX_FLOCK
 #define ProfCcFlags -p1
 #define CDebugFlags -O2
 #define CcFlags LintFlags
-#define LdPath  -L/usr/X11/lib -L$(ATHLIBDIR)
+#define LdPath -L$(ATHLIBDIR)
 #define LdLibs  
 #define CcCmd cc
 #define LdCmd cc
@@ -119,8 +119,6 @@ clean::									@@\
 #define AnsiLdCmd cc
 #define RanLibCmd \:
 #define AfsDir /build/transarc
-#define AthXIncDir /usr/include
-#define AthXLibDir /usr/lib
 #endif
 
 
@@ -132,3 +130,4 @@ clean::									@@\
 #endif
 
 #define Krb5Dir /build/third/supported/kerberos5/src
+#define WclDir /build/third/supported/wcl
