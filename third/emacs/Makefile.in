@@ -298,7 +298,7 @@ install-arch-dep: mkdir
 	    exec_prefix=${exec_prefix} bindir=${bindir} \
 	    libexecdir=${libexecdir} archlibdir=${archlibdir} \
 	    INSTALL_STRIP=${INSTALL_STRIP})
-	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs ${bindir}/emacs-${version}
+	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs ${DESTDIR}${bindir}/emacs-${version}
 
 ### Install the files that are machine-independent.
 ### Most of them come straight from the distribution;
