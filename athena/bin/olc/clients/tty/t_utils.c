@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  *
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.12 1990-02-15 18:15:01 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.13 1990-03-01 18:11:10 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -430,6 +430,33 @@ get_prompted_input(prompt, buf)
       exit(0);
     }
   return(SUCCESS);
+}
+
+/*
+ * Function:	get_yn() uses get_prompted_input to get a response
+ *			which starts with 'y' or 'n', and returns the
+ *			(lower-case) first input character.
+ * Arguments:	prompt:		message to print
+ * Returns:	'y':	yes
+ * 		'n':	no
+ */
+
+int
+get_yn (prompt)
+    char *prompt;
+{
+    char buf[LINE_SIZE], *b;
+    while (1) {
+	get_prompted_input (prompt, buf);
+	b = buf;
+	while (*b == ' ' || *b == '\t')
+	    b++;
+	if (*b == 'y' || *b == 'Y')
+	    return 'y';
+	if (*b == 'n' || *b == 'N')
+	    return 'n';
+	printf ("Please enter \"yes\" or \"no\".\n");
+    }
 }
 
 /*
