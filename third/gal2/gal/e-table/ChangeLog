@@ -1,16 +1,230 @@
+2004-08-09  Not Zed  <NotZed@Ximian.com>
+
+	* e-cell-combo.c (e_cell_combo_get_popup_pos): include scrollbar
+	offset in vertical calculation.  don't ask me i just work here.
+	see #61932.
+
+2004-08-02  Radek Doulik  <rodo@ximian.com>
+
+	* e-table-config.c (e_table_config_construct): do not set
+	position, it's already done in .glade, call set_transient_for
+	always (passing NULL is valid as well)
+
+	* e-table-config.glade: * e-table-config-no-group.glade: center
+	window on parent, don't let it resize and most importan make it
+	dialog window so that set_transient_for works against define views
+	dialog
+
+	Fixes #61936
+
+2004-07-07  Radek Doulik  <rodo@ximian.com>
+
+	* e-table-sorted-variable.c (etsv_add): added
+	e_table_model_pre_change because we call
+	e_table_model_row_inserted later. It fixes freeze/unfreeze for
+	ETableItem assert warning which I run into when fixing #56271
+
+2004-06-22  Rodney Dawes  <dobey@novell.com>
+
+	* e-table-config.c (do_fields_config_dialog, e_table_config_new):
+	Fix some spacing and border width properties on the dialog's widgets
+	to make the dialog compliant with the HIG
+
+2004-06-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-model.[ch]: Added e_table_model_freeze and e_table_model_thaw
+
+	* e-table-config.c (setup_fields): Use e_table_model_freeze and
+	e_table_model_thaw
+
+	Fixes #54785
+
+2004-06-11  Radek Doulik  <rodo@ximian.com>
+
+	* e-table-config.c (e_table_config_construct): set dialog window
+	position, glade doesn't do that for us anymore as the window is
+	first hidden, extended and later shown
+
+	* e-table-config-no-group.glade: as below
+
+	* e-table-config.glade: set visibility to false, it will keep the
+	dialog hidden until we call gtk_widget_show and thus no resizing
+	is visible while we are extending the dialog content
+
+	Fixes #57825
+
+2004-06-10  Radek Doulik  <rodo@ximian.com>
+
+	* e-cell-text.c (layout_with_preedit): removed unused variable
+
+	* e-tree.c (e_tree_get_item): added cast
+	added #include <atk/atkregistry.h>
+
+	* e-table-one.c (one_finalize): removed unused variable
+
+	* e-table-item.c: added #include
+	"gal/a11y/e-table/gal-a11y-e-table-item.h" for
+	gal_a11y_e_table_item_factory_get_type prototype
+
+	* e-table-header-utils.c (e_table_header_draw_button): removed
+	unused variable
+
+	* e-table-config.c (get_source_model_col_index): removed unused
+	variable
+
+	* e-table-click-to-add.c (finish_editing): added cast
+	(etcta_event): ditto
+
+	* e-cell-toggle.c: added #include
+	"gal/a11y/e-table/gal-a11y-e-cell-registry.h" to have
+	gal_a11y_e_cell_registry_add_cell_type prototype
+
+	* e-cell-text.c (layout_with_preedit): removed unused variable
+	(build_layout): ditto
+	(ect_event): ditto
+	(e_cell_text_commit_cb): ditto
+
+	* e-cell-popup.c: added #include
+	"gal/a11y/e-table/gal-a11y-e-cell-registry.h" to have
+	gal_a11y_e_cell_registry_add_cell_type prototype
+
+2004-06-10  Not Zed  <NotZed@Ximian.com>
+
+	* e-tree-selection-model.c (e_tree_selection_model_select_paths):
+	add new api for setting the whole selection in one go.  See
+	#59546.
+
+2004-06-09  Radek Doulik  <rodo@ximian.com>
+
+	* e-table-field-chooser.c (ensure_nonzero_step_increments): new
+	helper function to set step_increments
+	(allocate_callback): call ensure_nonzero_step_increments
+	(resize): ditto
+	(ensure_nonzero_step_increments): set step increments always to 16
+
+	Fixes #48275
+
+2004-05-10  Bruce Tao  <bruce.tao@sun.com>
+
+       Fixes #51626
+
+	* e-table-click-to-add.c: (etcta_event):
+       Add an entry for focus_in event, do the same thing as button_press event.
+
+	* e-table-item.c: (eti_event):
+       Mask the Ctrl+Tab processing routine.
+
+	* e-table.c: (table_canvas_focus_event_cb), (canvas_vbox_event),
+	(click_to_add_event), (e_table_setup_table):
+       Enable you to navigate between click_to_add and the existing tasks by
+       pressing Ctrl+Tab. However, if there is no existing task, you can still jump
+       out of click_to_add by this way.
+	
+2004-05-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-tree.c (e_tree_find_next): Don't necessarily set row to 0 if
+	the root node has the cursor (otherwise message_list_select()
+	first unread will actually select the second unread if the first
+	unread is the first in the list). Fixes a bug that's been pissing
+	me off for years.
+
+2004-05-04  Not Zed  <NotZed@Ximian.com>
+
+	* e-table-item.c (eti_event): revert last patch.
+	(eti_attach_cell_views): add some code to reset drags and other
+	things as if the model changed, so we don't keep trying to run
+	things we shouldn't be on the view which might be changing.  This
+	may break other things but should fix 57222 and related.
+
+2004-05-04  Not Zed  <NotZed@Ximian.com>
+
+	* e-table-item.c (eti_event): if motion column is beyond our known
+	columns, just ignore it and don't generate a LEAVE_NOTIFY.  uh,
+	seems to work, and fixes #57222.
+
+2004-04-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-cell-text.c (e_cell_text_class_init): Changed the int param
+	specs to take a min value of -1 and also defautl to -1 (-1 means
+	off and they should all default to the same value that they
+	default to in the init() function). Needed to fix bug #57304.
+
+2004-03-10  Hao Sheng  <hao.sheng@sun.com>
+
+	Fixes #55198
+
+	* e-table-config.glade : Make the access key Alt+O work
+
+2004-02-26  Not Zed  <NotZed@Ximian.com>
+
+	* e-table-item.c (eti_table_model_pre_change): reset
+	motion_row/motion_col if the model changes.  See bug #54757.
+
+2004-02-12  Rodney Dawes  <dobey@ximian.com>
+
+	* e-cell-popup.c (ecp_draw):
+	* e-cell-spin-button.c (ecsb_draw):
+	* e-table-header-utils.c (e_table_header_draw_button): Change the
+	shadow type for the arrows here, so that themes that do handle the
+	use of shadow types with arrows, draw things correctly, instead of
+	following what the old default gtk+ did in 1.x
+
+2004-01-27  Radek Doulik  <rodo@ximian.com>
+
+	* e-cell-text.c (ect_print): print strikeout/underline
+
+	Fixes #32240
+
+2003-11-19  Bolian Yin  <bolian.yin@sun.com>
+
+	Fixes #51139
+
+	* e-table-item.c : change the place of emitting
+	"selection_model_removed" signal.
+
+2003-11-17  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-config.c : use new gal_combo_* namespace.
+
+2003-11-11  Bolian Yin  <bolian.yin@sun.com>
+
+	Fixes # 50480
+
+	* e-table-item: add two signals: "selection_model_removed" and
+	"selection_model_added"
+
+2003-10-13  Charles Zhang  <charles.zhang@sun.com>
+
+	* e-table-config.c (e_table_config_new): disable apply button
+	when initial dialog.
+	* e-table-header-item.c (apply_changes): disable apply button
+	after applying changes.
+
+2003-10-23  Hans Petter Jansson  <hpj@ximian.com>
+
+	* e-table-item.c (eti_get_cell_background_color): Allocate
+	colors using gdk_colormap_alloc_color().
+
+2003-09-28  Charles Zhang  <charles.zhang@sun.com>
+
+	* e-table-config.c (do_sort_and_group_config_dialog): process
+	GTK_RESPONSE_DELETE_EVENT signal correctly.
+	* e-table-config.c (do_fields_config_dialog): the same as above
+	[#48815]
+
 2003-09-11  Mike Kestner  <mkestner@ximian.com>
 
 	* e-table-config.c (get_source_model_col_index): new method to
 	get the source model column for a specified available_model idx.
 	(create_global_store): save the source model index in a new col.
-	(config_button_add): use the new index lookup function.
+	(config_button_add): use the new index lookup function [48153].
 
 2003-09-11  Mike Kestner  <mkestner@ximian.com>
 
-	* e-table-sort-info.c (e_table_sort_info_load_from_node): move
-	the scnt and gcnt initializations outside the for loop. [43156]
+	* e-table-sort-info.c (e_table_sort_info_load_from_node):
+	move scnt and gcnt initialization outside the for loop [43156].
 
-2003-08-26  Harry Lu  <harry.lu@sun.com>
+2003-08-25  Harry Lu  <harry.lu@sun.com>
 
 	** For bug #47874.
 
@@ -18,6 +232,33 @@
 	check whether file exists before call xmlParseFile().
 	* e-table-state.c (e_table_state_load_from_file): ditto.
 	* e-tree-table-adapter.c (open_file): ditto.
+
+2003-08-19  Mike Kestner  <mkestner@ximian.com>
+
+	* e-cell-tree.c (draw_expander): add an expander_style param
+	(ect_draw): pass expander_style to draw_expander
+	(animate_expander): new timeout handler for expander animation
+	(ect_event): on !retro clicks, draw a "semi" expander and start
+	an animation handler to finish the animation.
+	
+2003-08-15  Mike Kestner  <mkestner@ximian.com>
+
+	* e-cell-tree.c (draw_retro_expander): extracted from ect_draw
+	(draw_expander): new gtktreeview-like expander drawing
+	(ect_draw): draw lines and expanders based on retro_look style prop
+	(adjust_event_position): extracted method from ect_event
+	(event_in_expander): new checks for motion/clicks in expander
+	(ect_event): handle prelight for new expanders
+	* e-table-item.c (eti_init): init new motion col/row
+	(eti_event): synthesize leave_notify events for cells and propogate
+	existing motion events to the cells.
+	* e-tree.c (e_tree_class_init): add retro_look and expander_size
+	style props.
+
+2003-08-12  Larry Ewing  <lewing@ximian.com>
+
+	* e-cell-toggle.c (check_cache): actually chose the right color to
+	composite over when caching the pixmap.
 
 2003-08-08  Stanislav Brabec  <sbrabec@suse.cz>
 

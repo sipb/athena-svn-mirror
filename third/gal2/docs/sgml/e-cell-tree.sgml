@@ -1,4 +1,4 @@
-<refentry id="ECellTree" revision="12 Jan 2001">
+<refentry id="ECellTree">
 <refmeta>
 <refentrytitle>ECellTree</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -20,7 +21,7 @@ typedef     <link linkend="ECellTree">ECellTree</link>;
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *closed_pixbuf,
                                              <link linkend="gboolean">gboolean</link> draw_lines,
                                              <link linkend="ECell">ECell</link> *subcell);
-void        <link linkend="e-cell-tree-construct">e_cell_tree_construct</link>           (<link linkend="ECellTree">ECellTree</link> *ect,
+<link linkend="void">void</link>        <link linkend="e-cell-tree-construct">e_cell_tree_construct</link>           (<link linkend="ECellTree">ECellTree</link> *ect,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *open_pixbuf,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *closed_pixbuf,
                                              <link linkend="gboolean">gboolean</link> draw_lines,
@@ -43,6 +44,10 @@ void        <link linkend="e-cell-tree-construct">e_cell_tree_construct</link>  
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -54,14 +59,14 @@ void        <link linkend="e-cell-tree-construct">e_cell_tree_construct</link>  
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-CELL-TREE-TYPE-CAPS">E_CELL_TREE_TYPE</title>
-<programlisting>#define E_CELL_TREE_TYPE        (e_cell_tree_get_type ())
+<indexterm><primary>E_CELL_TREE_TYPE</primary></indexterm><programlisting>#define E_CELL_TREE_TYPE        (e_cell_tree_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECellTree">ECellTree</title>
-<programlisting>typedef struct {
+<indexterm><primary>ECellTree</primary></indexterm><programlisting>typedef struct {
 	ECell parent;
 
 	gboolean draw_lines;
@@ -77,7 +82,7 @@ void        <link linkend="e-cell-tree-construct">e_cell_tree_construct</link>  
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cell-tree-new">e_cell_tree_new ()</title>
-<programlisting><link linkend="ECell">ECell</link>*      e_cell_tree_new                 (<link linkend="GdkPixbuf">GdkPixbuf</link> *open_pixbuf,
+<indexterm><primary>e_cell_tree_new</primary></indexterm><programlisting><link linkend="ECell">ECell</link>*      e_cell_tree_new                 (<link linkend="GdkPixbuf">GdkPixbuf</link> *open_pixbuf,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *closed_pixbuf,
                                              <link linkend="gboolean">gboolean</link> draw_lines,
                                              <link linkend="ECell">ECell</link> *subcell);</programlisting>
@@ -90,59 +95,51 @@ columns to get at structural information (needed to draw the
 lines/icons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>open_pixbuf</parameter>&nbsp;:</entry>
-<entry> pixbuf to be used instead of the '-' icon.
-</entry></row>
-<row><entry align="right"><parameter>closed_pixbuf</parameter>&nbsp;:</entry>
-<entry> pixbuf to be used instead of the '+' icon.
-</entry></row>
-<row><entry align="right"><parameter>draw_lines</parameter>&nbsp;:</entry>
-<entry> whether or not to draw the lines between parents/children/siblings.
-</entry></row>
-<row><entry align="right"><parameter>subcell</parameter>&nbsp;:</entry>
-<entry> the ECell to render to the right of the tree effects.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an ECell object that can be used to render trees.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>open_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> pixbuf to be used instead of the '-' icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closed_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> pixbuf to be used instead of the '+' icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>draw_lines</parameter>&nbsp;:</term>
+<listitem><simpara> whether or not to draw the lines between parents/children/siblings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subcell</parameter>&nbsp;:</term>
+<listitem><simpara> the ECell to render to the right of the tree effects.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an ECell object that can be used to render trees.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cell-tree-construct">e_cell_tree_construct ()</title>
-<programlisting>void        e_cell_tree_construct           (<link linkend="ECellTree">ECellTree</link> *ect,
+<indexterm><primary>e_cell_tree_construct</primary></indexterm><programlisting><link linkend="void">void</link>        e_cell_tree_construct           (<link linkend="ECellTree">ECellTree</link> *ect,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *open_pixbuf,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *closed_pixbuf,
                                              <link linkend="gboolean">gboolean</link> draw_lines,
                                              <link linkend="ECell">ECell</link> *subcell);</programlisting>
 <para>
 Constructs an ECellTree.  used by subclasses that need to
-initialize a nested ECellTree.  See <link linkend="e-cell-tree-new">e_cell_tree_new</link>() for more info.</para>
+initialize a nested ECellTree.  See <link linkend="e-cell-tree-new"><function>e_cell_tree_new()</function></link> for more info.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ect</parameter>&nbsp;:</entry>
-<entry> the ECellTree we're constructing.
-</entry></row>
-<row><entry align="right"><parameter>open_pixbuf</parameter>&nbsp;:</entry>
-<entry> pixbuf to be used instead of the '-' icon.
-</entry></row>
-<row><entry align="right"><parameter>closed_pixbuf</parameter>&nbsp;:</entry>
-<entry> pixbuf to be used instead of the '+' icon.
-</entry></row>
-<row><entry align="right"><parameter>draw_lines</parameter>&nbsp;:</entry>
-<entry> whether or not to draw the lines between parents/children/siblings.
-</entry></row>
-<row><entry align="right"><parameter>subcell</parameter>&nbsp;:</entry>
-<entry> the ECell to render to the right of the tree effects.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ect</parameter>&nbsp;:</term>
+<listitem><simpara> the ECellTree we're constructing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>open_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> pixbuf to be used instead of the '-' icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closed_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> pixbuf to be used instead of the '+' icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>draw_lines</parameter>&nbsp;:</term>
+<listitem><simpara> whether or not to draw the lines between parents/children/siblings.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subcell</parameter>&nbsp;:</term>
+<listitem><simpara> the ECell to render to the right of the tree effects.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

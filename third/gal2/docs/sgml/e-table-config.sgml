@@ -1,4 +1,4 @@
-<refentry id="ETableConfig" revision="12 Jan 2001">
+<refentry id="ETableConfig">
 <refmeta>
 <refentrytitle>ETableConfig</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -43,6 +44,10 @@ typedef     <link linkend="ETableConfig">ETableConfig</link>;
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -54,7 +59,7 @@ typedef     <link linkend="ETableConfig">ETableConfig</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="ETableConfig">ETableConfig</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableConfig</primary></indexterm><programlisting>typedef struct {
 	GnomeDialog base;
 
 	ETableSpecification *spec;
@@ -75,59 +80,51 @@ typedef     <link linkend="ETableConfig">ETableConfig</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="E-TABLE-CONFIG-TYPE-CAPS">E_TABLE_CONFIG_TYPE</title>
-<programlisting>#define E_TABLE_CONFIG_TYPE        (e_table_config_get_type ())
+<indexterm><primary>E_TABLE_CONFIG_TYPE</primary></indexterm><programlisting>#define E_TABLE_CONFIG_TYPE        (e_table_config_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-config-new">e_table_config_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_config_new              (<link linkend="ETableSpecification">ETableSpecification</link> *spec,
+<indexterm><primary>e_table_config_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_config_new              (<link linkend="ETableSpecification">ETableSpecification</link> *spec,
                                              <link linkend="ETableState">ETableState</link> *state);</programlisting>
 <para>
+Creates a new ETable config object.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara> The specification for the columns to allow.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara> The current state of the configuration.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The config object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-config-construct">e_table_config_construct ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_config_construct        (<link linkend="ETableConfig">ETableConfig</link> *etco,
+<indexterm><primary>e_table_config_construct</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_config_construct        (<link linkend="ETableConfig">ETableConfig</link> *etco,
                                              <link linkend="ETableSpecification">ETableSpecification</link> *spec,
                                              <link linkend="ETableState">ETableState</link> *state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etco</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etco</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

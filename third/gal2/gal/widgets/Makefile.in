@@ -66,19 +66,22 @@ EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
+F77 = @F77@
 GAL_AGE = @GAL_AGE@
 GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CFLAGS = @GAL_CFLAGS@
@@ -87,6 +90,8 @@ GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_LIBDIR = @GAL_LIBDIR@
 GAL_LIBS = @GAL_LIBS@
 GAL_REVISION = @GAL_REVISION@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -101,6 +106,7 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -114,8 +120,8 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -128,14 +134,15 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 install_sh = @install_sh@
 noinst_LTLIBRARIES = libwidgets.la
@@ -168,9 +175,9 @@ libwidgets_la_SOURCES = \
 	e-selection-model-simple.c		\
 	e-selection-model.c			\
 	e-unicode.c				\
-	gtk-combo-box.c				\
-	gtk-combo-stack.c			\
-	gtk-combo-text.c			\
+	gal-combo-box.c				\
+	gal-combo-stack.c			\
+	gal-combo-text.c			\
 	widget-color-combo.c			\
 	widget-pixmap-combo.c
 
@@ -216,9 +223,9 @@ libwidgetsinclude_HEADERS = \
 	e-selection-model-simple.h		\
 	e-selection-model.h			\
 	e-unicode.h				\
-	gtk-combo-box.h				\
-	gtk-combo-stack.h			\
-	gtk-combo-text.h			\
+	gal-combo-box.h				\
+	gal-combo-stack.h			\
+	gal-combo-text.h			\
 	widget-color-combo.h			\
 	widget-pixmap-combo.h
 
@@ -238,7 +245,7 @@ test_color_SOURCES = \
 
 
 test_color_LDADD = \
-	$(top_builddir)/gal/widgets/libwidgets.la \
+	libwidgets.la \
 	$(top_builddir)/gal/util/libutil.la \
 	$(EXTRA_GNOME_LIBS)
 
@@ -265,7 +272,7 @@ am_libwidgets_la_OBJECTS = color-group.lo color-palette.lo \
 	e-option-menu.lo e-popup-menu.lo e-printable.lo \
 	e-reflow-model.lo e-reflow.lo e-selection-model-array.lo \
 	e-selection-model-simple.lo e-selection-model.lo e-unicode.lo \
-	gtk-combo-box.lo gtk-combo-stack.lo gtk-combo-text.lo \
+	gal-combo-box.lo gal-combo-stack.lo gal-combo-text.lo \
 	widget-color-combo.lo widget-pixmap-combo.lo
 libwidgets_la_OBJECTS = $(am_libwidgets_la_OBJECTS)
 noinst_PROGRAMS = test-color$(EXEEXT)
@@ -273,12 +280,14 @@ PROGRAMS = $(noinst_PROGRAMS)
 
 am_test_color_OBJECTS = test-color.$(OBJEXT)
 test_color_OBJECTS = $(am_test_color_OBJECTS)
-test_color_DEPENDENCIES = $(top_builddir)/gal/widgets/libwidgets.la \
+test_color_DEPENDENCIES = libwidgets.la \
 	$(top_builddir)/gal/util/libutil.la
 test_color_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -308,9 +317,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/e-selection-model-simple.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-selection-model.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-unicode.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/gtk-combo-box.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/gtk-combo-stack.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/gtk-combo-text.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-combo-box.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-combo-stack.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-combo-text.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/test-color.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/widget-color-combo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/widget-pixmap-combo.Plo
@@ -321,6 +330,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
 DIST_SOURCES = $(libwidgets_la_SOURCES) $(test_color_SOURCES)
 DATA = $(glade_DATA)
 
@@ -393,9 +403,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-selection-model-simple.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-selection-model.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-unicode.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk-combo-box.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk-combo-stack.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk-combo-text.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-combo-box.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-combo-stack.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-combo-text.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-color.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget-color-combo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget-pixmap-combo.Plo@am__quote@

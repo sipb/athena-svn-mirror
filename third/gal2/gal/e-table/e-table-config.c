@@ -270,7 +270,7 @@ update_sort_and_group_config_dialog (ETableConfig *config, gboolean is_sort)
 		}
 
 		/* Set the text */
-		gtk_combo_text_set_text (widgets [i].combo, text);
+		gal_combo_text_set_text (widgets [i].combo, text);
 
 		g_signal_handler_unblock (
 			widgets [i].radio_ascending,
@@ -365,6 +365,8 @@ setup_fields (ETableConfig *config)
 {
 	int i;
 
+	e_table_model_freeze (config->available_model);
+	e_table_model_freeze (config->shown_model);
 	e_table_without_show_all (config->available_model);
 	e_table_subset_variable_clear (config->shown_model);
 
@@ -379,6 +381,8 @@ setup_fields (ETableConfig *config)
 			e_table_without_hide (config->available_model, GINT_TO_POINTER(idx));
 		}
 	}
+	e_table_model_thaw (config->available_model);
+	e_table_model_thaw (config->shown_model);
 }
 
 static void
@@ -442,7 +446,7 @@ do_sort_and_group_config_dialog (ETableConfig *config, gboolean is_sort)
 					config->temp_state->sort_info, 0);
 			}
 			update_sort_and_group_config_dialog (config, is_sort);
-			continue;
+			break;
 
 		case GTK_RESPONSE_OK:
 			g_object_unref (config->state);
@@ -452,6 +456,7 @@ do_sort_and_group_config_dialog (ETableConfig *config, gboolean is_sort)
 			config_dialog_changed (config);
 			break;
 
+		case GTK_RESPONSE_DELETE_EVENT:
 		case GTK_RESPONSE_CANCEL:
 			g_object_unref (config->temp_state);
 			config->temp_state = 0;
@@ -473,6 +478,10 @@ do_fields_config_dialog (ETableConfig *config)
 {
 	int response, running = 1;
 
+	gtk_widget_ensure_style (config->dialog_show_fields);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (config->dialog_show_fields)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (config->dialog_show_fields)->action_area), 12);
+
 	config->temp_state = e_table_state_duplicate (config->state);
 
 	setup_fields (config);
@@ -491,7 +500,7 @@ do_fields_config_dialog (ETableConfig *config)
 			config_dialog_changed (config);
 			break;
 
-			/* CANCEL */
+		case GTK_RESPONSE_DELETE_EVENT:
 		case GTK_RESPONSE_CANCEL:
 			g_object_unref (config->temp_state);
 			config->temp_state = 0;
@@ -613,7 +622,7 @@ GtkWidget *e_table_proxy_gtk_combo_text_new (void);
 GtkWidget *
 e_table_proxy_gtk_combo_text_new (void)
 {
-	return gtk_combo_text_new (TRUE);
+	return gal_combo_text_new (TRUE);
 }
 
 #if 0
@@ -642,7 +651,7 @@ connect_button (ETableConfig *config, GladeXML *gui, const char *widget_name, GC
 static gint
 get_source_model_col_index (ETableConfig *config, gint idx)
 {
-	gint visible_index, result;
+	gint visible_index;
 	ETableModel *src_model = E_TABLE_SUBSET (config->available_model)->source;
 
         visible_index = e_table_subset_view_to_model_row (E_TABLE_SUBSET (config->available_model), idx);
@@ -706,10 +715,10 @@ configure_sort_dialog (ETableConfig *config, GladeXML *gui)
 		char buffer [80];
 
 		snprintf (buffer, sizeof (buffer), "sort-combo-%d", i + 1);
-		config->sort [i].combo = GTK_COMBO_TEXT (
+		config->sort [i].combo = GAL_COMBO_TEXT (
 			glade_xml_get_widget (gui, buffer));
 		gtk_widget_show (GTK_WIDGET (config->sort [i].combo));
-		gtk_combo_text_add_item (config->sort [i].combo, "", "");
+		gal_combo_text_add_item (config->sort [i].combo, "", "");
 
 		snprintf (buffer, sizeof (buffer), "frame-sort-%d", i + 1);
 		config->sort [i].frames = 
@@ -734,7 +743,7 @@ configure_sort_dialog (ETableConfig *config, GladeXML *gui)
 		char *label = l->data;
 
 		for (i = 0; i < 4; i++){
-			gtk_combo_text_add_item (config->sort [i].combo,
+			gal_combo_text_add_item (config->sort [i].combo,
 						 dgettext (config->domain, label), label);
 		}
 	}
@@ -810,11 +819,11 @@ configure_group_dialog (ETableConfig *config, GladeXML *gui)
 		char buffer [80];
 
 		snprintf (buffer, sizeof (buffer), "group-combo-%d", i + 1);
-		config->group [i].combo = GTK_COMBO_TEXT (
+		config->group [i].combo = GAL_COMBO_TEXT (
 			glade_xml_get_widget (gui, buffer));
 		gtk_widget_show (GTK_WIDGET (config->group [i].combo));
 
-		gtk_combo_text_add_item (config->group [i].combo, "", "");
+		gal_combo_text_add_item (config->group [i].combo, "", "");
 
 		snprintf (buffer, sizeof (buffer), "frame-group-%d", i + 1);
 		config->group [i].frames = 
@@ -846,7 +855,7 @@ configure_group_dialog (ETableConfig *config, GladeXML *gui)
 		char *label = l->data;
 
 		for (i = 0; i < 4; i++){
-			gtk_combo_text_add_item (
+			gal_combo_text_add_item (
 				config->group [i].combo,
 				dgettext (config->domain, label), label);
 		}
@@ -1147,9 +1156,8 @@ e_table_config_construct (ETableConfig        *config,
 
 	setup_gui (config);
 
-	if (parent_window)
-		gtk_window_set_transient_for (GTK_WINDOW (config->dialog_toplevel),
-					      parent_window);
+	gtk_window_set_transient_for (GTK_WINDOW (config->dialog_toplevel),
+				      parent_window);
 
 	config_sort_info_update   (config);
 	config_group_info_update  (config);
@@ -1181,7 +1189,14 @@ e_table_config_new (const char          *header,
 		return NULL;
 	}
 
+	gtk_widget_ensure_style (config->dialog_toplevel);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (config->dialog_toplevel)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (config->dialog_toplevel)->action_area), 12);
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (config->dialog_toplevel),
+					   GTK_RESPONSE_APPLY, FALSE);
 	gtk_widget_show (config->dialog_toplevel);
+
 	return E_TABLE_CONFIG (config);
 }
 

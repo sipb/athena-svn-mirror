@@ -1,0 +1,1051 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr ""
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1703
+msgid "Strikeout Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1710
+msgid "Underline Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1717
+msgid "Bold Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1724
+msgid "Color Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+msgid "Editable"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1738
+msgid "BG Color Column"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:462
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1816
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
+msgid "Model"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:476
+msgid "Message"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:483
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
+msgid "Width"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:490
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
+msgid "Height"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Show Fields"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show field in View"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Sort"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort Items By"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Then By"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
+msgid "_Add ->"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Fields Shown..."
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:152
+msgid "State"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Ascending)"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Descending)"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:316
+msgid "Not sorted"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:357
+msgid "No grouping"
+msgstr ""
+
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Group By..."
+msgstr ""
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
+msgid "Horizontal Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
+msgid "Vertical Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
+msgid "Draw focus"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
+msgid "Length Threshold"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
+msgid "Uniform row height"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1457
+msgid "Customize Current View"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1477
+msgid "Sort Ascending"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Sort Descending"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Unsort"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Group By This Field"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Group By Box"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1484
+msgid "Remove This Column"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Add a Column..."
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1487
+msgid "Alignment"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1488
+msgid "Best Fit"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1489
+msgid "Format Columns..."
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1491
+msgid "Customize Current View..."
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1802
+msgid "Fontset"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
+msgid "Sort Info"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1830
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1837
+msgid "Tree"
+msgstr ""
+
+#: gal/e-table/e-table.c:3313
+msgid "Always Search"
+msgstr ""
+
+#: gal/e-table/e-table.c:3320
+msgid "Use click to add"
+msgstr ""
+
+#: gal/e-table/e-tree-selection-model.c:781
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr ""
+
+#: gal/e-table/e-tree-selection-model.c:788
+#: gal/widgets/e-selection-model-array.c:550
+msgid "Cursor Column"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr ""
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr ""
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr ""
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr ""
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr ""
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr ""
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr ""
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr ""
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr ""
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr ""
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr ""
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr ""
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr ""
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr ""
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr ""
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr ""
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+msgid "Collection"
+msgstr ""
+
+#: gal/menus/gal-define-views-dialog.c:312
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr ""
+
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
+msgid "Define Views"
+msgstr ""
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr ""
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
+msgid "Instance"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+msgid "Save Current View"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "    "
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid "_Create new view"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+msgid "_Name:"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "_Replace existing view"
+msgstr ""
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr ""
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr ""
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.c:108
+msgid "Define New View"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr ""
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr ""
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:394
+msgid "custom"
+msgstr ""
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:436
+msgid "Custom Color:"
+msgstr ""
+
+#: gal/widgets/color-palette.c:444
+msgid "Choose Custom Color"
+msgstr ""
+
+#: gal/widgets/color-palette.c:577
+msgid "black"
+msgstr ""
+
+#: gal/widgets/color-palette.c:578
+msgid "light brown"
+msgstr ""
+
+#: gal/widgets/color-palette.c:579
+msgid "brown gold"
+msgstr ""
+
+#: gal/widgets/color-palette.c:580
+msgid "dark green #2"
+msgstr ""
+
+#: gal/widgets/color-palette.c:581
+msgid "navy"
+msgstr ""
+
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
+msgid "dark blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:583
+msgid "purple #2"
+msgstr ""
+
+#: gal/widgets/color-palette.c:584
+msgid "very dark gray"
+msgstr ""
+
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
+msgid "dark red"
+msgstr ""
+
+#: gal/widgets/color-palette.c:588
+msgid "red-orange"
+msgstr ""
+
+#: gal/widgets/color-palette.c:589
+msgid "gold"
+msgstr ""
+
+#: gal/widgets/color-palette.c:590
+msgid "dark green"
+msgstr ""
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "dull blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
+msgid "blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr ""
+
+#: gal/widgets/color-palette.c:594
+msgid "dark grey"
+msgstr ""
+
+#: gal/widgets/color-palette.c:597
+msgid "red"
+msgstr ""
+
+#: gal/widgets/color-palette.c:598
+msgid "orange"
+msgstr ""
+
+#: gal/widgets/color-palette.c:599
+msgid "lime"
+msgstr ""
+
+#: gal/widgets/color-palette.c:600
+msgid "dull green"
+msgstr ""
+
+#: gal/widgets/color-palette.c:601
+msgid "dull blue #2"
+msgstr ""
+
+#: gal/widgets/color-palette.c:602
+msgid "sky blue #2"
+msgstr ""
+
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
+msgid "purple"
+msgstr ""
+
+#: gal/widgets/color-palette.c:604
+msgid "gray"
+msgstr ""
+
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
+msgid "magenta"
+msgstr ""
+
+#: gal/widgets/color-palette.c:608
+msgid "bright orange"
+msgstr ""
+
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
+msgid "yellow"
+msgstr ""
+
+#: gal/widgets/color-palette.c:610
+msgid "green"
+msgstr ""
+
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
+msgid "cyan"
+msgstr ""
+
+#: gal/widgets/color-palette.c:612
+msgid "bright blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
+msgid "red purple"
+msgstr ""
+
+#: gal/widgets/color-palette.c:614
+msgid "light grey"
+msgstr ""
+
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
+msgid "pink"
+msgstr ""
+
+#: gal/widgets/color-palette.c:618
+msgid "light orange"
+msgstr ""
+
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
+msgid "light yellow"
+msgstr ""
+
+#: gal/widgets/color-palette.c:620
+msgid "light green"
+msgstr ""
+
+#: gal/widgets/color-palette.c:621
+msgid "light cyan"
+msgstr ""
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
+msgid "light blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
+msgid "light purple"
+msgstr ""
+
+#: gal/widgets/color-palette.c:624
+msgid "white"
+msgstr ""
+
+#: gal/widgets/color-palette.c:629
+msgid "purplish blue"
+msgstr ""
+
+#: gal/widgets/color-palette.c:633
+msgid "dark purple"
+msgstr ""
+
+#: gal/widgets/color-palette.c:635
+msgid "sky blue"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:213
+msgid "* Click here to add a category *"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:214
+msgid "Category"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+msgid "Add Category"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+msgid "Edit Category"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+msgid "_Edit category:"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+msgid "_New category:"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+msgid "All Categories"
+msgstr ""
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr ""
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr ""
+
+#: gal/widgets/e-selection-model.c:210
+msgid "Sorter"
+msgstr ""
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr ""
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr ""
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr ""
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr ""
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr ""
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr ""

@@ -1,4 +1,4 @@
-<refentry id="GalViewFactory" revision="12 Jan 2001">
+<refentry id="GalViewFactory">
 <refmeta>
 <refentrytitle>GalViewFactory</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,16 +10,17 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 #define     <link linkend="GAL-VIEW-FACTORY-TYPE-CAPS">GAL_VIEW_FACTORY_TYPE</link>
 typedef     <link linkend="GalViewFactory">GalViewFactory</link>;
-const char* <link linkend="gal-view-factory-get-title">gal_view_factory_get_title</link>      (<link linkend="GalViewFactory">GalViewFactory</link> *factory);
-const char* <link linkend="gal-view-factory-get-type-code">gal_view_factory_get_type_code</link>  (<link linkend="GalViewFactory">GalViewFactory</link> *factory);
+const <link linkend="char">char</link>* <link linkend="gal-view-factory-get-title">gal_view_factory_get_title</link>      (<link linkend="GalViewFactory">GalViewFactory</link> *factory);
+const <link linkend="char">char</link>* <link linkend="gal-view-factory-get-type-code">gal_view_factory_get_type_code</link>  (<link linkend="GalViewFactory">GalViewFactory</link> *factory);
 <link linkend="GalView">GalView</link>*    <link linkend="gal-view-factory-new-view">gal_view_factory_new_view</link>       (<link linkend="GalViewFactory">GalViewFactory</link> *factory,
-                                             const char *name);
+                                             const <link linkend="char">char</link> *name);
 
 </synopsis>
 </refsynopsisdiv>
@@ -30,9 +31,14 @@ const char* <link linkend="gal-view-factory-get-type-code">gal_view_factory_get_
 
   <link linkend="GtkObject">GtkObject</link>
    +----GalViewFactory
+         +----<link linkend="GalViewFactoryEtable">GalViewFactoryEtable</link>
 </synopsis>
 
 </refsect1>
+
+
+
+
 
 
 
@@ -48,14 +54,14 @@ const char* <link linkend="gal-view-factory-get-type-code">gal_view_factory_get_
 <title>Details</title>
 <refsect2>
 <title><anchor id="GAL-VIEW-FACTORY-TYPE-CAPS">GAL_VIEW_FACTORY_TYPE</title>
-<programlisting>#define GAL_VIEW_FACTORY_TYPE        (gal_view_factory_get_type ())
+<indexterm><primary>GAL_VIEW_FACTORY_TYPE</primary></indexterm><programlisting>#define GAL_VIEW_FACTORY_TYPE        (gal_view_factory_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GalViewFactory">GalViewFactory</title>
-<programlisting>typedef struct {
+<indexterm><primary>GalViewFactory</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 } GalViewFactory;
 </programlisting>
@@ -64,62 +70,50 @@ const char* <link linkend="gal-view-factory-get-type-code">gal_view_factory_get_
 </para></refsect2>
 <refsect2>
 <title><anchor id="gal-view-factory-get-title">gal_view_factory_get_title ()</title>
-<programlisting>const char* gal_view_factory_get_title      (<link linkend="GalViewFactory">GalViewFactory</link> *factory);</programlisting>
+<indexterm><primary>gal_view_factory_get_title</primary></indexterm><programlisting>const <link linkend="char">char</link>* gal_view_factory_get_title      (<link linkend="GalViewFactory">GalViewFactory</link> *factory);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
-<entry> The factory to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The title of the factory.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&nbsp;:</term>
+<listitem><simpara> The factory to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The title of the factory.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-factory-get-type-code">gal_view_factory_get_type_code ()</title>
-<programlisting>const char* gal_view_factory_get_type_code  (<link linkend="GalViewFactory">GalViewFactory</link> *factory);</programlisting>
-<para>
-
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
-<refsect2>
-<title><anchor id="gal-view-factory-new-view">gal_view_factory_new_view ()</title>
-<programlisting><link linkend="GalView">GalView</link>*    gal_view_factory_new_view       (<link linkend="GalViewFactory">GalViewFactory</link> *factory,
-                                             const char *name);</programlisting>
+<indexterm><primary>gal_view_factory_get_type_code</primary></indexterm><programlisting>const <link linkend="char">char</link>* gal_view_factory_get_type_code  (<link linkend="GalViewFactory">GalViewFactory</link> *factory);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
-<entry> The factory to use
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> the name for the view.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The new view
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&nbsp;:</term>
+<listitem><simpara> The factory to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The type code
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gal-view-factory-new-view">gal_view_factory_new_view ()</title>
+<indexterm><primary>gal_view_factory_new_view</primary></indexterm><programlisting><link linkend="GalView">GalView</link>*    gal_view_factory_new_view       (<link linkend="GalViewFactory">GalViewFactory</link> *factory,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&nbsp;:</term>
+<listitem><simpara> The factory to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> the name for the view.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new view
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

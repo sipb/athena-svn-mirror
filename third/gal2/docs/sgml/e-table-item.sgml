@@ -1,4 +1,4 @@
-<refentry id="ETableItem" revision="12 Jan 2001">
+<refentry id="ETableItem">
 <refmeta>
 <refentrytitle>ETableItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,40 +10,41 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 #define     <link linkend="E-TABLE-ITEM-TYPE-CAPS">E_TABLE_ITEM_TYPE</link>
 typedef     <link linkend="ETableItem">ETableItem</link>;
-void        <link linkend="e-table-item-set-cursor">e_table_item_set_cursor</link>         (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int col,
-                                             int row);
+<link linkend="void">void</link>        <link linkend="e-table-item-set-cursor">e_table_item_set_cursor</link>         (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row);
 <link linkend="gint">gint</link>        <link linkend="e-table-item-get-focused-column">e_table_item_get_focused_column</link> (<link linkend="ETableItem">ETableItem</link> *eti);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-table-item-is-row-selected">e_table_item_is_row_selected</link>    (<link linkend="ETableItem">ETableItem</link> *e_table_Item,
-                                             int row);
-void        <link linkend="e-table-item-selected-row-foreach">e_table_item_selected_row_foreach</link>
+                                             <link linkend="int">int</link> row);
+<link linkend="void">void</link>        <link linkend="e-table-item-selected-row-foreach">e_table_item_selected_row_foreach</link>
                                             (<link linkend="ETableItem">ETableItem</link> *eti,
                                              <link linkend="ETableForeachFunc">ETableForeachFunc</link> func,
                                              <link linkend="gpointer">gpointer</link> closure);
-void        <link linkend="e-table-item-leave-edit">e_table_item_leave_edit</link>         (<link linkend="ETableItem">ETableItem</link> *eti);
-void        <link linkend="e-table-item-enter-edit">e_table_item_enter_edit</link>         (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int col,
-                                             int row);
-void        <link linkend="e-table-item-redraw-range">e_table_item_redraw_range</link>       (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int start_col,
-                                             int start_row,
-                                             int end_col,
-                                             int end_row);
+<link linkend="void">void</link>        <link linkend="e-table-item-leave-edit">e_table_item_leave_edit</link>         (<link linkend="ETableItem">ETableItem</link> *eti);
+<link linkend="void">void</link>        <link linkend="e-table-item-enter-edit">e_table_item_enter_edit</link>         (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row);
+<link linkend="void">void</link>        <link linkend="e-table-item-redraw-range">e_table_item_redraw_range</link>       (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> start_col,
+                                             <link linkend="int">int</link> start_row,
+                                             <link linkend="int">int</link> end_col,
+                                             <link linkend="int">int</link> end_row);
 <link linkend="EPrintable">EPrintable</link>* <link linkend="e-table-item-get-printable">e_table_item_get_printable</link>      (<link linkend="ETableItem">ETableItem</link> *eti);
-void        <link linkend="e-table-item-print-height">e_table_item_print_height</link>       (<link linkend="ETableItem">ETableItem</link> *eti,
+<link linkend="void">void</link>        <link linkend="e-table-item-print-height">e_table_item_print_height</link>       (<link linkend="ETableItem">ETableItem</link> *eti,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width);
-void        <link linkend="e-table-item-compute-location">e_table_item_compute_location</link>   (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int *x,
-                                             int *y,
-                                             int *row,
-                                             int *col);
+<link linkend="void">void</link>        <link linkend="e-table-item-compute-location">e_table_item_compute_location</link>   (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> *x,
+                                             <link linkend="int">int</link> *y,
+                                             <link linkend="int">int</link> *row,
+                                             <link linkend="int">int</link> *col);
 
 </synopsis>
 </refsynopsisdiv>
@@ -59,21 +60,25 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableItem--ETableHeader">ETableHeader</link>&quot;         <link linkend="GtkObject">GtkObject</link>            : Write
   &quot;<link linkend="ETableItem--ETableModel">ETableModel</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Write
-  &quot;<link linkend="ETableItem--table-selection-model">table_selection_model</link>&quot; <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableItem--table-selection-model">table-selection-model</link>&quot; <link linkend="GtkObject">GtkObject</link>            : Write
   &quot;<link linkend="ETableItem--drawgrid">drawgrid</link>&quot;             <link linkend="gboolean">gboolean</link>             : Write
   &quot;<link linkend="ETableItem--drawfocus">drawfocus</link>&quot;            <link linkend="gboolean">gboolean</link>             : Write
-  &quot;<link linkend="ETableItem--cursor-mode">cursor_mode</link>&quot;          <link linkend="gint">gint</link>                 : Write
-  &quot;<link linkend="ETableItem--length-threshold">length_threshold</link>&quot;     <link linkend="gint">gint</link>                 : Write
-  &quot;<link linkend="ETableItem--minimum-width">minimum_width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="ETableItem--cursor-mode">cursor-mode</link>&quot;          <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableItem--length-threshold">length-threshold</link>&quot;     <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableItem--minimum-width">minimum-width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
   &quot;<link linkend="ETableItem--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
   &quot;<link linkend="ETableItem--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read
-  &quot;<link linkend="ETableItem--cursor-row">cursor_row</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ETableItem--cursor-row">cursor-row</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 
@@ -82,11 +87,11 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
 <synopsis>
 
 &quot;<link linkend="ETableItem-cursor-change">cursor-change</link>&quot;
-            void        user_function      (<link linkend="ETableItem">ETableItem</link> *etableitem,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="ETableItem-double-click">double-click</link>&quot;
-            void        user_function      (<link linkend="ETableItem">ETableItem</link> *etableitem,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> arg3,
@@ -122,14 +127,14 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-ITEM-TYPE-CAPS">E_TABLE_ITEM_TYPE</title>
-<programlisting>#define E_TABLE_ITEM_TYPE        (e_table_item_get_type ())
+<indexterm><primary>E_TABLE_ITEM_TYPE</primary></indexterm><programlisting>#define E_TABLE_ITEM_TYPE        (e_table_item_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableItem">ETableItem</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableItem</primary></indexterm><programlisting>typedef struct {
 	GnomeCanvasItem  parent;
 	ETableModel     *table_model;
 	ETableHeader    *header;
@@ -211,299 +216,255 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-set-cursor">e_table_item_set_cursor ()</title>
-<programlisting>void        e_table_item_set_cursor         (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int col,
-                                             int row);</programlisting>
+<indexterm><primary>e_table_item_set_cursor</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_set_cursor         (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row);</programlisting>
+<para>
+This routine sets the cursor of the <literal>ETableItem</literal> canvas item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> which will have the cursor set.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> Column to select.  -1 means the last column.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara> Row to select.  -1 means the last row.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-get-focused-column">e_table_item_get_focused_column ()</title>
-<programlisting><link linkend="gint">gint</link>        e_table_item_get_focused_column (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
+<indexterm><primary>e_table_item_get_focused_column</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_table_item_get_focused_column (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
+<para>
+This routine gets the cursor of the <literal>ETableItem</literal> canvas item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> which will have the cursor retrieved.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The current cursor column.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-is-row-selected">e_table_item_is_row_selected ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_table_item_is_row_selected    (<link linkend="ETableItem">ETableItem</link> *e_table_Item,
-                                             int row);</programlisting>
+<indexterm><primary>e_table_item_is_row_selected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_table_item_is_row_selected    (<link linkend="ETableItem">ETableItem</link> *e_table_Item,
+                                             <link linkend="int">int</link> row);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_table_Item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_table_Item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-selected-row-foreach">e_table_item_selected_row_foreach ()</title>
-<programlisting>void        e_table_item_selected_row_foreach
+<indexterm><primary>e_table_item_selected_row_foreach</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_selected_row_foreach
                                             (<link linkend="ETableItem">ETableItem</link> *eti,
                                              <link linkend="ETableForeachFunc">ETableForeachFunc</link> func,
                                              <link linkend="gpointer">gpointer</link> closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-leave-edit">e_table_item_leave_edit ()</title>
-<programlisting>void        e_table_item_leave_edit         (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
+<indexterm><primary>e_table_item_leave_edit</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_leave_edit         (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-enter-edit">e_table_item_enter_edit ()</title>
-<programlisting>void        e_table_item_enter_edit         (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int col,
-                                             int row);</programlisting>
+<indexterm><primary>e_table_item_enter_edit</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_enter_edit         (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row);</programlisting>
+<para>
+This routine starts the given <literal>ETableItem</literal> editing at the given view
+column and row.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> which will start being edited
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> The view col to edit.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara> The view row to edit.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-redraw-range">e_table_item_redraw_range ()</title>
-<programlisting>void        e_table_item_redraw_range       (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int start_col,
-                                             int start_row,
-                                             int end_col,
-                                             int end_row);</programlisting>
+<indexterm><primary>e_table_item_redraw_range</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_redraw_range       (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> start_col,
+                                             <link linkend="int">int</link> start_row,
+                                             <link linkend="int">int</link> end_col,
+                                             <link linkend="int">int</link> end_row);</programlisting>
+<para>
+This routine redraws the given <literal>ETableItem</literal> in the range given.  The
+range is inclusive at both ends.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>start_col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>start_row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>end_col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>end_row</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> which will be redrawn
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>start_col</parameter>&nbsp;:</term>
+<listitem><simpara> The first col to redraw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>start_row</parameter>&nbsp;:</term>
+<listitem><simpara> The first row to redraw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end_col</parameter>&nbsp;:</term>
+<listitem><simpara> The last col to redraw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end_row</parameter>&nbsp;:</term>
+<listitem><simpara> The last row to redraw.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-get-printable">e_table_item_get_printable ()</title>
-<programlisting><link linkend="EPrintable">EPrintable</link>* e_table_item_get_printable      (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
+<indexterm><primary>e_table_item_get_printable</primary></indexterm><programlisting><link linkend="EPrintable">EPrintable</link>* e_table_item_get_printable      (<link linkend="ETableItem">ETableItem</link> *eti);</programlisting>
+<para>
+This routine creates and returns an <literal>EPrintable</literal> that can be used to
+print the given <literal>ETableItem</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> which will be printed
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The <literal>EPrintable</literal>. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-print-height">e_table_item_print_height ()</title>
-<programlisting>void        e_table_item_print_height       (<link linkend="ETableItem">ETableItem</link> *eti,
+<indexterm><primary>e_table_item_print_height</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_print_height       (<link linkend="ETableItem">ETableItem</link> *eti,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-item-compute-location">e_table_item_compute_location ()</title>
-<programlisting>void        e_table_item_compute_location   (<link linkend="ETableItem">ETableItem</link> *eti,
-                                             int *x,
-                                             int *y,
-                                             int *row,
-                                             int *col);</programlisting>
+<indexterm><primary>e_table_item_compute_location</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_item_compute_location   (<link linkend="ETableItem">ETableItem</link> *eti,
+                                             <link linkend="int">int</link> *x,
+                                             <link linkend="int">int</link> *y,
+                                             <link linkend="int">int</link> *row,
+                                             <link linkend="int">int</link> *col);</programlisting>
+<para>
+This routine locates the pixel location (*x, *y) in the
+<literal>ETableItem</literal>.  If that location is in the <literal>ETableItem</literal>, *row and *col
+are set to the view row and column where it was found.  If that
+location is not in the <literal>ETableItem</literal>, the height of the <literal>ETableItem</literal>
+is removed from the value y points to.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eti</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eti</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>ETableItem</literal> to look in.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to the x location to find in the <literal>ETableItem</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to the y location to find in the <literal>ETableItem</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to the location to store the found row in.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to the location to store the found col in.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableItem--ETableHeader">&quot;<literal>ETableHeader</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableItem--ETableModel">&quot;<literal>ETableModel</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableItem--table-selection-model">&quot;<literal>table_selection_model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableItem--table-selection-model">&quot;<literal>table-selection-model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableItem--drawgrid">&quot;<literal>drawgrid</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableItem--drawfocus">&quot;<literal>drawfocus</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableItem--cursor-mode">&quot;<literal>cursor_mode</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableItem--cursor-mode">&quot;<literal>cursor-mode</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableItem--length-threshold">&quot;<literal>length_threshold</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableItem--length-threshold">&quot;<literal>length-threshold</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableItem--minimum-width">&quot;<literal>minimum_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableItem--minimum-width">&quot;<literal>minimum-width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableItem--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableItem--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableItem--cursor-row">&quot;<literal>cursor_row</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableItem--cursor-row">&quot;<literal>cursor-row</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -511,54 +472,46 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETableItem-cursor-change">The &quot;cursor-change&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableItem-double-click">The &quot;double-click&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableItem-double-click">The &quot;double-click&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> arg3,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableItem-right-click">The &quot;right-click&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableItem-right-click">The &quot;right-click&quot; signal</title>
 <programlisting><link linkend="gint">gint</link>        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
@@ -566,29 +519,25 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableItem-click">The &quot;click&quot; signal</title>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableItem-click">The &quot;click&quot; signal</title>
 <programlisting><link linkend="gint">gint</link>        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
@@ -596,29 +545,25 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableItem-key-press">The &quot;key-press&quot; signal</title>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableItem-key-press">The &quot;key-press&quot; signal</title>
 <programlisting><link linkend="gint">gint</link>        user_function                  (<link linkend="ETableItem">ETableItem</link> *etableitem,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
@@ -626,29 +571,25 @@ void        <link linkend="e-table-item-compute-location">e_table_item_compute_l
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -1,4 +1,4 @@
-<refentry id="ETableGroupContainer" revision="12 Jan 2001">
+<refentry id="ETableGroupContainer">
 <refmeta>
 <refentrytitle>ETableGroupContainer</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -21,15 +22,15 @@ typedef     <link linkend="ETableGroupContainer">ETableGroupContainer</link>;
                                              <link linkend="ETableHeader">ETableHeader</link> *header,
                                              <link linkend="ETableModel">ETableModel</link> *model,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info,
-                                             int n);
-void        <link linkend="e-table-group-container-construct">e_table_group_container_construct</link>
+                                             <link linkend="int">int</link> n);
+<link linkend="void">void</link>        <link linkend="e-table-group-container-construct">e_table_group_container_construct</link>
                                             (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
                                              <link linkend="ETableGroupContainer">ETableGroupContainer</link> *etgc,
                                              <link linkend="ETableHeader">ETableHeader</link> *full_header,
                                              <link linkend="ETableHeader">ETableHeader</link> *header,
                                              <link linkend="ETableModel">ETableModel</link> *model,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info,
-                                             int n);
+                                             <link linkend="int">int</link> n);
 
 </synopsis>
 </refsynopsisdiv>
@@ -47,19 +48,23 @@ void        <link linkend="e-table-group-container-construct">e_table_group_cont
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableGroupContainer--drawgrid">drawgrid</link>&quot;             <link linkend="gboolean">gboolean</link>             : Write
   &quot;<link linkend="ETableGroupContainer--drawfocus">drawfocus</link>&quot;            <link linkend="gboolean">gboolean</link>             : Write
-  &quot;<link linkend="ETableGroupContainer--cursor-mode">cursor_mode</link>&quot;          <link linkend="gint">gint</link>                 : Write
-  &quot;<link linkend="ETableGroupContainer--table-selection-model">table_selection_model</link>&quot; <link linkend="GtkObject">GtkObject</link>            : Write
-  &quot;<link linkend="ETableGroupContainer--length-threshold">length_threshold</link>&quot;     <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableGroupContainer--cursor-mode">cursor-mode</link>&quot;          <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableGroupContainer--table-selection-model">table-selection-model</link>&quot; <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableGroupContainer--length-threshold">length-threshold</link>&quot;     <link linkend="gint">gint</link>                 : Write
   &quot;<link linkend="ETableGroupContainer--frozen">frozen</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
   &quot;<link linkend="ETableGroupContainer--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read
   &quot;<link linkend="ETableGroupContainer--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="ETableGroupContainer--minimum-width">minimum_width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="ETableGroupContainer--minimum-width">minimum-width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
 </synopsis>
 </refsect1>
 
@@ -76,14 +81,14 @@ void        <link linkend="e-table-group-container-construct">e_table_group_cont
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-GROUP-CONTAINER-TYPE-CAPS">E_TABLE_GROUP_CONTAINER_TYPE</title>
-<programlisting>#define E_TABLE_GROUP_CONTAINER_TYPE        (e_table_group_container_get_type ())
+<indexterm><primary>E_TABLE_GROUP_CONTAINER_TYPE</primary></indexterm><programlisting>#define E_TABLE_GROUP_CONTAINER_TYPE        (e_table_group_container_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableGroupContainer">ETableGroupContainer</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableGroupContainer</primary></indexterm><programlisting>typedef struct {
 	ETableGroup group;
 
 	/*
@@ -127,133 +132,118 @@ void        <link linkend="e-table-group-container-construct">e_table_group_cont
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-group-container-new">e_table_group_container_new ()</title>
-<programlisting><link linkend="ETableGroup">ETableGroup</link>* e_table_group_container_new    (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
+<indexterm><primary>e_table_group_container_new</primary></indexterm><programlisting><link linkend="ETableGroup">ETableGroup</link>* e_table_group_container_new    (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
                                              <link linkend="ETableHeader">ETableHeader</link> *full_header,
                                              <link linkend="ETableHeader">ETableHeader</link> *header,
                                              <link linkend="ETableModel">ETableModel</link> *model,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info,
-                                             int n);</programlisting>
+                                             <link linkend="int">int</link> n);</programlisting>
+<para>
+<literal>ETableGroupContainer</literal> is an <literal>ETableGroup</literal> which groups by the nth
+grouping of the <literal>ETableSortInfo</literal>.  It creates <literal>ETableGroups</literal> as
+children.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>full_header</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>header</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>sort_info</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>GnomeCanvasGroup</literal> to create a child of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_header</parameter>&nbsp;:</term>
+<listitem><simpara> The full header of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>header</parameter>&nbsp;:</term>
+<listitem><simpara> The current header of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>model</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableModel</literal> of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sort_info</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableSortInfo</literal> of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara> Which grouping level this is (Starts at 0 and sends n + 1 to any child <literal>ETableGroups</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new <literal>ETableGroupContainer</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-group-container-construct">e_table_group_container_construct ()</title>
-<programlisting>void        e_table_group_container_construct
+<indexterm><primary>e_table_group_container_construct</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_group_container_construct
                                             (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
                                              <link linkend="ETableGroupContainer">ETableGroupContainer</link> *etgc,
                                              <link linkend="ETableHeader">ETableHeader</link> *full_header,
                                              <link linkend="ETableHeader">ETableHeader</link> *header,
                                              <link linkend="ETableModel">ETableModel</link> *model,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info,
-                                             int n);</programlisting>
+                                             <link linkend="int">int</link> n);</programlisting>
+<para>
+This routine constructs the new <literal>ETableGroupContainer</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>etgc</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>full_header</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>header</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>sort_info</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>GnomeCanvasGroup</literal> to create a child of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>etgc</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableGroupContainer</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_header</parameter>&nbsp;:</term>
+<listitem><simpara> The full header of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>header</parameter>&nbsp;:</term>
+<listitem><simpara> The current header of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>model</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableModel</literal> of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sort_info</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableSortInfo</literal> of the <literal>ETable</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara> Which grouping level this is (Starts at 0 and sends n + 1 to any child <literal>ETableGroups</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableGroupContainer--drawgrid">&quot;<literal>drawgrid</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableGroupContainer--drawfocus">&quot;<literal>drawfocus</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableGroupContainer--cursor-mode">&quot;<literal>cursor_mode</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupContainer--cursor-mode">&quot;<literal>cursor-mode</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableGroupContainer--table-selection-model">&quot;<literal>table_selection_model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupContainer--table-selection-model">&quot;<literal>table-selection-model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableGroupContainer--length-threshold">&quot;<literal>length_threshold</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupContainer--length-threshold">&quot;<literal>length-threshold</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableGroupContainer--frozen">&quot;<literal>frozen</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableGroupContainer--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableGroupContainer--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableGroupContainer--minimum-width">&quot;<literal>minimum_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupContainer--minimum-width">&quot;<literal>minimum-width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

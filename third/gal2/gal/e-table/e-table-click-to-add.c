@@ -28,6 +28,7 @@
 #include <libgnomecanvas/gnome-canvas-util.h>
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <atk/atkregistry.h>
 
 #include "e-table-header.h"
 #include "e-table-click-to-add.h"
@@ -39,6 +40,7 @@
 #include "gal/util/e-util.h"
 #include "gal/util/e-i18n.h"
 #include "gal/util/e-marshal.h"
+#include "gal/a11y/e-table/gal-a11y-e-table-click-to-add-factory.h"
 
 enum {
 	CURSOR_CHANGE,
@@ -311,7 +313,7 @@ finish_editing (ETableClickToAdd *etcta)
 		e_table_item_leave_edit (E_TABLE_ITEM (etcta->row));
 		e_table_one_commit(E_TABLE_ONE(etcta->one));
 		etcta_drop_one (etcta);
-		gtk_object_destroy(etcta->row);
+		gtk_object_destroy(GTK_OBJECT (etcta->row));
 		etcta->row = NULL;
 
 		one = e_table_one_new(etcta->model);
@@ -347,13 +349,17 @@ etcta_event (GnomeCanvasItem *item, GdkEvent *e)
 	ETableClickToAdd *etcta = E_TABLE_CLICK_TO_ADD (item);
 
 	switch (e->type){
+	case GDK_FOCUS_CHANGE:
+		if (!e->focus_change.in)
+			return TRUE;
+
 	case GDK_BUTTON_PRESS:
 		if (etcta->text) {
-			gtk_object_destroy(etcta->text);
+			gtk_object_destroy(GTK_OBJECT (etcta->text));
 			etcta->text = NULL;
 		}
 		if (etcta->rect) {
-			gtk_object_destroy(etcta->rect);
+			gtk_object_destroy(GTK_OBJECT (etcta->rect));
 			etcta->rect = NULL;
 		}
 		if (!etcta->row) {
@@ -494,6 +500,11 @@ etcta_class_init (ETableClickToAddClass *klass)
 			      NULL, NULL,
 			      e_marshal_VOID__INT_INT,
 			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+					E_TABLE_CLICK_TO_ADD_TYPE,
+					gal_a11y_e_table_click_to_add_factory_get_type ());
+
 }
 
 static void
@@ -535,7 +546,7 @@ e_table_click_to_add_commit (ETableClickToAdd *etcta)
 	if (etcta->row) {
 		e_table_one_commit(E_TABLE_ONE(etcta->one));
 		etcta_drop_one (etcta);
-		gtk_object_destroy(etcta->row);
+		gtk_object_destroy(GTK_OBJECT (etcta->row));
 		etcta->row = NULL;
 	}
 	if (!etcta->rect) {

@@ -1,4 +1,4 @@
-<refentry id="ETableTextModel" revision="12 Jan 2001">
+<refentry id="ETableTextModel">
 <refmeta>
 <refentrytitle>ETableTextModel</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,14 +10,15 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 struct      <link linkend="ETableTextModel-struct">ETableTextModel</link>;
 <link linkend="ETableTextModel">ETableTextModel</link>* <link linkend="e-table-text-model-new">e_table_text_model_new</link>     (<link linkend="ETableModel">ETableModel</link> *table_model,
-                                             int row,
-                                             int model_col);
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="int">int</link> model_col);
 
 </synopsis>
 </refsynopsisdiv>
@@ -36,6 +37,10 @@ struct      <link linkend="ETableTextModel-struct">ETableTextModel</link>;
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -47,36 +52,32 @@ struct      <link linkend="ETableTextModel-struct">ETableTextModel</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="ETableTextModel-struct">struct ETableTextModel</title>
-<programlisting>struct ETableTextModel;</programlisting>
+<indexterm><primary>ETableTextModel</primary></indexterm><programlisting>struct ETableTextModel;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-text-model-new">e_table_text_model_new ()</title>
-<programlisting><link linkend="ETableTextModel">ETableTextModel</link>* e_table_text_model_new     (<link linkend="ETableModel">ETableModel</link> *table_model,
-                                             int row,
-                                             int model_col);</programlisting>
+<indexterm><primary>e_table_text_model_new</primary></indexterm><programlisting><link linkend="ETableTextModel">ETableTextModel</link>* e_table_text_model_new     (<link linkend="ETableModel">ETableModel</link> *table_model,
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="int">int</link> model_col);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>table_model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>model_col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>table_model</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>model_col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

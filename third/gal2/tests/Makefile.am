@@ -9,7 +9,7 @@ INCLUDES =					\
 	-DETABLE_GLADEDIR=\"$(gladedir)\"	\
         -DG_LOG_DOMAIN=\"e-table\"
 
-LDADD =	$(top_builddir)/gal/libgal-2.0.la \
+LDADD =	$(top_builddir)/gal/libgal-2.2.la \
 	$(EXTRA_GNOME_LIBS) $(ICONV_LIBS)
 
 noinst_PROGRAMS = \

@@ -28,9 +28,9 @@ libwidgets_la_SOURCES = 			\
 	e-selection-model-simple.c		\
 	e-selection-model.c			\
 	e-unicode.c				\
-	gtk-combo-box.c				\
-	gtk-combo-stack.c			\
-	gtk-combo-text.c			\
+	gal-combo-box.c				\
+	gal-combo-stack.c			\
+	gal-combo-text.c			\
 	widget-color-combo.c			\
 	widget-pixmap-combo.c
 
@@ -73,9 +73,9 @@ libwidgetsinclude_HEADERS = 			\
 	e-selection-model-simple.h		\
 	e-selection-model.h			\
 	e-unicode.h				\
-	gtk-combo-box.h				\
-	gtk-combo-stack.h			\
-	gtk-combo-text.h			\
+	gal-combo-box.h				\
+	gal-combo-stack.h			\
+	gal-combo-text.h			\
 	widget-color-combo.h			\
 	widget-pixmap-combo.h
 
@@ -92,7 +92,7 @@ test_color_SOURCES = \
 	test-color.c
 
 test_color_LDADD = \
-	$(top_builddir)/gal/widgets/libwidgets.la \
+	libwidgets.la \
 	$(top_builddir)/gal/util/libutil.la \
 	$(EXTRA_GNOME_LIBS)
 

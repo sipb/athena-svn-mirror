@@ -1,4 +1,4 @@
-<refentry id="ECellToggle" revision="12 Jan 2001">
+<refentry id="ECellToggle">
 <refmeta>
 <refentrytitle>ECellToggle</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,18 +10,19 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 #define     <link linkend="E-CELL-TOGGLE-TYPE-CAPS">E_CELL_TOGGLE_TYPE</link>
 typedef     <link linkend="ECellToggle">ECellToggle</link>;
-<link linkend="ECell">ECell</link>*      <link linkend="e-cell-toggle-new">e_cell_toggle_new</link>               (int border,
-                                             int n_states,
+<link linkend="ECell">ECell</link>*      <link linkend="e-cell-toggle-new">e_cell_toggle_new</link>               (<link linkend="int">int</link> border,
+                                             <link linkend="int">int</link> n_states,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> **images);
-void        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</link>         (<link linkend="ECellToggle">ECellToggle</link> *etog,
-                                             int border,
-                                             int n_states,
+<link linkend="void">void</link>        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</link>         (<link linkend="ECellToggle">ECellToggle</link> *etog,
+                                             <link linkend="int">int</link> border,
+                                             <link linkend="int">int</link> n_states,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> **images);
 
 </synopsis>
@@ -34,9 +35,14 @@ void        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</lin
   <link linkend="GtkObject">GtkObject</link>
    +----<link linkend="ECell">ECell</link>
          +----ECellToggle
+               +----<link linkend="ECellCheckbox">ECellCheckbox</link>
 </synopsis>
 
 </refsect1>
+
+
+
+
 
 
 
@@ -52,14 +58,14 @@ void        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</lin
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-CELL-TOGGLE-TYPE-CAPS">E_CELL_TOGGLE_TYPE</title>
-<programlisting>#define E_CELL_TOGGLE_TYPE        (e_cell_toggle_get_type ())
+<indexterm><primary>E_CELL_TOGGLE_TYPE</primary></indexterm><programlisting>#define E_CELL_TOGGLE_TYPE        (e_cell_toggle_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECellToggle">ECellToggle</title>
-<programlisting>typedef struct {
+<indexterm><primary>ECellToggle</primary></indexterm><programlisting>typedef struct {
 	ECell parent;
 
 	int        border;
@@ -74,59 +80,51 @@ void        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cell-toggle-new">e_cell_toggle_new ()</title>
-<programlisting><link linkend="ECell">ECell</link>*      e_cell_toggle_new               (int border,
-                                             int n_states,
+<indexterm><primary>e_cell_toggle_new</primary></indexterm><programlisting><link linkend="ECell">ECell</link>*      e_cell_toggle_new               (<link linkend="int">int</link> border,
+                                             <link linkend="int">int</link> n_states,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> **images);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>border</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n_states</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>images</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>border</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_states</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>images</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cell-toggle-construct">e_cell_toggle_construct ()</title>
-<programlisting>void        e_cell_toggle_construct         (<link linkend="ECellToggle">ECellToggle</link> *etog,
-                                             int border,
-                                             int n_states,
+<indexterm><primary>e_cell_toggle_construct</primary></indexterm><programlisting><link linkend="void">void</link>        e_cell_toggle_construct         (<link linkend="ECellToggle">ECellToggle</link> *etog,
+                                             <link linkend="int">int</link> border,
+                                             <link linkend="int">int</link> n_states,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> **images);</programlisting>
 <para>
 Constructs the <parameter>etog</parameter> object with the <parameter>border</parameter>, <parameter>n_staes</parameter>, and <parameter>images</parameter>
 arguments.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etog</parameter>&nbsp;:</entry>
-<entry> a fresh ECellToggle object
-</entry></row>
-<row><entry align="right"><parameter>border</parameter>&nbsp;:</entry>
-<entry> number of pixels used as a border
-</entry></row>
-<row><entry align="right"><parameter>n_states</parameter>&nbsp;:</entry>
-<entry> number of states the toggle will have
-</entry></row>
-<row><entry align="right"><parameter>images</parameter>&nbsp;:</entry>
-<entry> a collection of <parameter>n_states</parameter> images, one for each state.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etog</parameter>&nbsp;:</term>
+<listitem><simpara> a fresh ECellToggle object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>border</parameter>&nbsp;:</term>
+<listitem><simpara> number of pixels used as a border
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_states</parameter>&nbsp;:</term>
+<listitem><simpara> number of states the toggle will have
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>images</parameter>&nbsp;:</term>
+<listitem><simpara> a collection of <parameter>n_states</parameter> images, one for each state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

@@ -135,7 +135,7 @@ e_vscrolled_bar_init (EVScrolledBar *vscrolled_bar)
 	gtk_widget_set_composite_name (vscrolled_bar->up_button,
 				       "up_button");
 	gtk_widget_set_parent (vscrolled_bar->up_ebox, GTK_WIDGET (vscrolled_bar));
-	arrow = gtk_arrow_new (GTK_ARROW_UP, GTK_SHADOW_OUT);
+	arrow = gtk_arrow_new (GTK_ARROW_UP, GTK_SHADOW_NONE);
 	gtk_widget_show (arrow);
 	gtk_container_add (GTK_CONTAINER (vscrolled_bar->up_button), arrow);
 	gtk_widget_show (vscrolled_bar->up_button);
@@ -154,7 +154,7 @@ e_vscrolled_bar_init (EVScrolledBar *vscrolled_bar)
 				       "down_button");
 	gtk_widget_set_parent (vscrolled_bar->down_ebox,
 			       GTK_WIDGET (vscrolled_bar));
-	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_NONE);
 	gtk_widget_show (arrow);
 	gtk_container_add (GTK_CONTAINER (vscrolled_bar->down_button), arrow);
 	gtk_widget_show (vscrolled_bar->down_button);

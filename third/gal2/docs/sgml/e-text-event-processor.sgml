@@ -1,4 +1,4 @@
-<refentry id="ETextEventProcessor" revision="12 Jan 2001">
+<refentry id="ETextEventProcessor">
 <refmeta>
 <refentrytitle>ETextEventProcessor</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -29,15 +30,20 @@ struct      <link linkend="ETextEventProcessor-struct">ETextEventProcessor</link
 
   <link linkend="GtkObject">GtkObject</link>
    +----ETextEventProcessor
+         +----<link linkend="ETextEventProcessorEmacsLike">ETextEventProcessorEmacsLike</link>
 </synopsis>
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="ETextEventProcessor--allow-newlines">allow_newlines</link>&quot;       <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="ETextEventProcessor--allow-newlines">allow-newlines</link>&quot;       <link linkend="gboolean">gboolean</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -45,7 +51,7 @@ struct      <link linkend="ETextEventProcessor-struct">ETextEventProcessor</link
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="ETextEventProcessor-command">command</link>&quot;   void        user_function      (<link linkend="ETextEventProcessor">ETextEventProcessor</link> *etexteventprocessor,
+&quot;<link linkend="ETextEventProcessor-command">command</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="ETextEventProcessor">ETextEventProcessor</link> *etexteventprocessor,
                                             <link linkend="gpointer">gpointer</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -63,50 +69,45 @@ struct      <link linkend="ETextEventProcessor-struct">ETextEventProcessor</link
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TEXT-EVENT-PROCESSOR-TYPE-CAPS">E_TEXT_EVENT_PROCESSOR_TYPE</title>
-<programlisting>#define E_TEXT_EVENT_PROCESSOR_TYPE			(e_text_event_processor_get_type ())
+<indexterm><primary>E_TEXT_EVENT_PROCESSOR_TYPE</primary></indexterm><programlisting>#define E_TEXT_EVENT_PROCESSOR_TYPE			(e_text_event_processor_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessor-struct">struct ETextEventProcessor</title>
-<programlisting>struct ETextEventProcessor;</programlisting>
+<indexterm><primary>ETextEventProcessor</primary></indexterm><programlisting>struct ETextEventProcessor;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-text-event-processor-handle-event">e_text_event_processor_handle_event ()</title>
-<programlisting><link linkend="gint">gint</link>        e_text_event_processor_handle_event
+<indexterm><primary>e_text_event_processor_handle_event</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_text_event_processor_handle_event
                                             (<link linkend="ETextEventProcessor">ETextEventProcessor</link> *tep,
                                              <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</link> *event);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>tep</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>tep</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="ETextEventProcessor--allow-newlines">&quot;<literal>allow_newlines</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="ETextEventProcessor--allow-newlines">&quot;<literal>allow-newlines</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -114,26 +115,22 @@ struct      <link linkend="ETextEventProcessor-struct">ETextEventProcessor</link
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETextEventProcessor-command">The &quot;command&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETextEventProcessor">ETextEventProcessor</link> *etexteventprocessor,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETextEventProcessor">ETextEventProcessor</link> *etexteventprocessor,
                                             <link linkend="gpointer">gpointer</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etexteventprocessor</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etexteventprocessor</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -1,4 +1,4 @@
-<refentry id="ECellText" revision="12 Jan 2001">
+<refentry id="ECellText">
 <refmeta>
 <refentrytitle>ECellText</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,18 +6,19 @@
 </refmeta>
 
 <refnamediv>
-<refname>ECellText</refname><refpurpose></refpurpose>
+<refname>ECellText</refname><refpurpose>Text Cell renderer.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 typedef     <link linkend="ECellText">ECellText</link>;
-char*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)              (const void*);
+<link linkend="char">char</link>*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)              (const <link linkend="void">void</link>*);
 #define     <link linkend="E-CELL-TEXT-TYPE-CAPS">E_CELL_TEXT_TYPE</link>
-<link linkend="ECell">ECell</link>*      <link linkend="e-cell-text-new">e_cell_text_new</link>                 (const char *fontname,
+<link linkend="ECell">ECell</link>*      <link linkend="e-cell-text-new">e_cell_text_new</link>                 (const <link linkend="char">char</link> *fontname,
                                              <link linkend="GtkJustification">GtkJustification</link> justify);
 
 </synopsis>
@@ -34,14 +35,18 @@ char*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)           
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="ECellText--strikeout-column">strikeout_column</link>&quot;     <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="ECellText--bold-column">bold_column</link>&quot;          <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="ECellText--color-column">color_column</link>&quot;         <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="ECellText--text-filter">text_filter</link>&quot;          <link linkend="gpointer">gpointer</link>             : Read / Write
+  &quot;<link linkend="ECellText--strikeout-column">strikeout-column</link>&quot;     <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ECellText--bold-column">bold-column</link>&quot;          <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ECellText--color-column">color-column</link>&quot;         <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ECellText--text-filter">text-filter</link>&quot;          <link linkend="gpointer">gpointer</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -50,7 +55,20 @@ char*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)           
 <refsect1>
 <title>Description</title>
 <para>
+   The ECellText implements an <literal>ETable</literal> cell renderer (of type
+   <literal>ECell</literal>).  This one in particular uses the extensible editing
+   features of <literal>EText</literal> (which is a general canvas item for doing text
+   editing). 
+</para>
 
+<para>
+   You can use <literal>ECellText</literal> renderer objects when you want to display
+   strings that are in your <literal>ETableModel</literal>.   
+</para>
+
+<para>
+   The ETable widget typically takes care of creating these rendering
+   objects for you when the type string has been specified.
 </para>
 </refsect1>
 
@@ -58,7 +76,7 @@ char*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)           
 <title>Details</title>
 <refsect2>
 <title><anchor id="ECellText">ECellText</title>
-<programlisting>typedef struct {
+<indexterm><primary>ECellText</primary></indexterm><programlisting>typedef struct {
 	ECell parent;
 
 	GtkJustification  justify;
@@ -92,32 +110,29 @@ char*       (<link linkend="ECellTextFilter">*ECellTextFilter</link>)           
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECellTextFilter">ECellTextFilter ()</title>
-<programlisting>char*       (*ECellTextFilter)              (const void*);</programlisting>
+<indexterm><primary>ECellTextFilter</primary></indexterm><programlisting><link linkend="char">char</link>*       (*ECellTextFilter)              (const <link linkend="void">void</link>*);</programlisting>
 <para>
-
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+   The type for a filtering function that will be invoked to provide
+   filtered data at runtime from the model. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="E-CELL-TEXT-TYPE-CAPS">E_CELL_TEXT_TYPE</title>
-<programlisting>#define E_CELL_TEXT_TYPE        (e_cell_text_get_type ())
+<indexterm><primary>E_CELL_TEXT_TYPE</primary></indexterm><programlisting>#define E_CELL_TEXT_TYPE        (e_cell_text_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cell-text-new">e_cell_text_new ()</title>
-<programlisting><link linkend="ECell">ECell</link>*      e_cell_text_new                 (const char *fontname,
+<indexterm><primary>e_cell_text_new</primary></indexterm><programlisting><link linkend="ECell">ECell</link>*      e_cell_text_new                 (const <link linkend="char">char</link> *fontname,
                                              <link linkend="GtkJustification">GtkJustification</link> justify);</programlisting>
 <para>
 Creates a new ECell renderer that can be used to render strings that
@@ -128,62 +143,61 @@ interpreted as being a char *.
 The ECellText object support a large set of properties that can be
 configured through the Gtk argument system and allows the user to have
 a finer control of the way the string is displayed.  The arguments supported
-allow the control of strikeout, bold, color and a text filter.
+allow the control of strikeout, underline, bold, and color.
 </para>
 <para>
-The arguments "strikeout_column", "bold_column" and "color_column" set
-and return an integer that points to a column in the model that controls
-these settings.  So controlling the way things are rendered is achieved
-by having special columns in the model that will be used to flag whether
-the text should be rendered with strikeout, or bolded.   In the case of
-the "color_column" argument, the column in the model is expected to have
-a string that can be parsed by <link linkend="gdk-color-parse">gdk_color_parse</link>().</para>
+The arguments "strikeout_column", "underline_column", "bold_column"
+and "color_column" set and return an integer that points to a
+column in the model that controls these settings.  So controlling
+the way things are rendered is achieved by having special columns
+in the model that will be used to flag whether the text should be
+rendered with strikeout, or bolded.  In the case of the
+"color_column" argument, the column in the model is expected to
+have a string that can be parsed by <link linkend="gdk-color-parse"><function>gdk_color_parse()</function></link>.</para>
 <para>
-
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>fontname</parameter>&nbsp;:</entry>
-<entry> font to be used to render on the screen
-</entry></row>
-<row><entry align="right"><parameter>justify</parameter>&nbsp;:</entry>
-<entry> Justification of the string in the cell.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an ECell object that can be used to render strings.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+   Creates a new <literal>ECellText</literal> renderer object.
+</para><variablelist role="params">
+<varlistentry><term><parameter>fontname</parameter>&nbsp;:</term>
+<listitem><simpara> this param is no longer used, but left here for api stability
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>justify</parameter>&nbsp;:</term>
+<listitem><simpara> Justification of the string in the cell.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an ECell object that can be used to render strings.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="ECellText--strikeout-column">&quot;<literal>strikeout_column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<varlistentry><term><anchor id="ECellText--strikeout-column">&quot;<literal>strikeout-column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ECellText--bold-column">&quot;<literal>bold_column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ECellText--bold-column">&quot;<literal>bold-column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ECellText--color-column">&quot;<literal>color_column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ECellText--color-column">&quot;<literal>color-column</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ECellText--text-filter">&quot;<literal>text_filter</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ECellText--text-filter">&quot;<literal>text-filter</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
 
 
 
+<refsect1>
+<title>See Also</title>
+<para>
+  <literal>ECell</literal>, <literal>ECellCheckbox</literal>, <literal>ECellToggle</literal>, <literal>ECellTree</literal>.
+</para>
+</refsect1>
 
 </refentry>

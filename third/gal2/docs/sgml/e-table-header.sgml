@@ -1,4 +1,4 @@
-<refentry id="ETableHeader" revision="12 Jan 2001">
+<refentry id="ETableHeader">
 <refmeta>
 <refentrytitle>ETableHeader</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,33 +18,33 @@
 #define     <link linkend="E-TABLE-HEADER-TYPE-CAPS">E_TABLE_HEADER_TYPE</link>
 struct      <link linkend="ETableHeader-struct">ETableHeader</link>;
 <link linkend="ETableHeader">ETableHeader</link>* <link linkend="e-table-header-new">e_table_header_new</link>            (void);
-void        <link linkend="e-table-header-add-column">e_table_header_add_column</link>       (<link linkend="ETableHeader">ETableHeader</link> *eth,
+<link linkend="void">void</link>        <link linkend="e-table-header-add-column">e_table_header_add_column</link>       (<link linkend="ETableHeader">ETableHeader</link> *eth,
                                              <link linkend="ETableCol">ETableCol</link> *tc,
-                                             int pos);
+                                             <link linkend="int">int</link> pos);
 <link linkend="ETableCol">ETableCol</link>*  <link linkend="e-table-header-get-column">e_table_header_get_column</link>       (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int column);
-int         <link linkend="e-table-header-count">e_table_header_count</link>            (<link linkend="ETableHeader">ETableHeader</link> *eth);
-int         <link linkend="e-table-header-index">e_table_header_index</link>            (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int col);
-int         <link linkend="e-table-header-get-index-at">e_table_header_get_index_at</link>     (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int x_offset);
+                                             <link linkend="int">int</link> column);
+<link linkend="int">int</link>         <link linkend="e-table-header-count">e_table_header_count</link>            (<link linkend="ETableHeader">ETableHeader</link> *eth);
+<link linkend="int">int</link>         <link linkend="e-table-header-index">e_table_header_index</link>            (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> col);
+<link linkend="int">int</link>         <link linkend="e-table-header-get-index-at">e_table_header_get_index_at</link>     (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> x_offset);
 <link linkend="ETableCol">ETableCol</link>** <link linkend="e-table-header-get-columns">e_table_header_get_columns</link>      (<link linkend="ETableHeader">ETableHeader</link> *eth);
-int         <link linkend="e-table-header-get-selected">e_table_header_get_selected</link>     (<link linkend="ETableHeader">ETableHeader</link> *eth);
-int         <link linkend="e-table-header-total-width">e_table_header_total_width</link>      (<link linkend="ETableHeader">ETableHeader</link> *eth);
-void        <link linkend="e-table-header-move">e_table_header_move</link>             (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int source_index,
-                                             int target_index);
-void        <link linkend="e-table-header-remove">e_table_header_remove</link>           (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int idx);
-void        <link linkend="e-table-header-set-size">e_table_header_set_size</link>         (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int idx,
-                                             int size);
-void        <link linkend="e-table-header-set-selection">e_table_header_set_selection</link>    (<link linkend="ETableHeader">ETableHeader</link> *eth,
+<link linkend="int">int</link>         <link linkend="e-table-header-get-selected">e_table_header_get_selected</link>     (<link linkend="ETableHeader">ETableHeader</link> *eth);
+<link linkend="int">int</link>         <link linkend="e-table-header-total-width">e_table_header_total_width</link>      (<link linkend="ETableHeader">ETableHeader</link> *eth);
+<link linkend="void">void</link>        <link linkend="e-table-header-move">e_table_header_move</link>             (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> source_index,
+                                             <link linkend="int">int</link> target_index);
+<link linkend="void">void</link>        <link linkend="e-table-header-remove">e_table_header_remove</link>           (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> idx);
+<link linkend="void">void</link>        <link linkend="e-table-header-set-size">e_table_header_set_size</link>         (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="int">int</link> size);
+<link linkend="void">void</link>        <link linkend="e-table-header-set-selection">e_table_header_set_selection</link>    (<link linkend="ETableHeader">ETableHeader</link> *eth,
                                              <link linkend="gboolean">gboolean</link> allow_selection);
-int         <link linkend="e-table-header-col-diff">e_table_header_col_diff</link>         (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int start_col,
-                                             int end_col);
-void        <link linkend="e-table-header-calc-widths">e_table_header_calc_widths</link>      (<link linkend="ETableHeader">ETableHeader</link> *eth);
+<link linkend="int">int</link>         <link linkend="e-table-header-col-diff">e_table_header_col_diff</link>         (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> start_col,
+                                             <link linkend="int">int</link> end_col);
+<link linkend="void">void</link>        <link linkend="e-table-header-calc-widths">e_table_header_calc_widths</link>      (<link linkend="ETableHeader">ETableHeader</link> *eth);
 <link linkend="GList">GList</link>*      <link linkend="e-table-header-get-selected-indexes">e_table_header_get_selected_indexes</link>
                                             (<link linkend="ETableHeader">ETableHeader</link> *eth);
 
@@ -60,12 +61,16 @@ void        <link linkend="e-table-header-calc-widths">e_table_header_calc_width
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableHeader--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="ETableHeader--sort-info">sort_info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Read / Write
+  &quot;<link linkend="ETableHeader--sort-info">sort-info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Read / Write
 </synopsis>
 </refsect1>
 
@@ -74,10 +79,10 @@ void        <link linkend="e-table-header-calc-widths">e_table_header_calc_width
 <synopsis>
 
 &quot;<link linkend="ETableHeader-structure-change">structure-change</link>&quot;
-            void        user_function      (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="ETableHeader-dimension-change">dimension-change</link>&quot;
-            void        user_function      (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="ETableHeader-request-width">request-width</link>&quot;
@@ -99,106 +104,91 @@ void        <link linkend="e-table-header-calc-widths">e_table_header_calc_width
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-HEADER-TYPE-CAPS">E_TABLE_HEADER_TYPE</title>
-<programlisting>#define E_TABLE_HEADER_TYPE        (e_table_header_get_type ())
+<indexterm><primary>E_TABLE_HEADER_TYPE</primary></indexterm><programlisting>#define E_TABLE_HEADER_TYPE        (e_table_header_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableHeader-struct">struct ETableHeader</title>
-<programlisting>struct ETableHeader;</programlisting>
+<indexterm><primary>ETableHeader</primary></indexterm><programlisting>struct ETableHeader;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-new">e_table_header_new ()</title>
-<programlisting><link linkend="ETableHeader">ETableHeader</link>* e_table_header_new            (void);</programlisting>
+<indexterm><primary>e_table_header_new</primary></indexterm><programlisting><link linkend="ETableHeader">ETableHeader</link>* e_table_header_new            (void);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new <parameter>ETableHeader</parameter> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <parameter>ETableHeader</parameter> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-add-column">e_table_header_add_column ()</title>
-<programlisting>void        e_table_header_add_column       (<link linkend="ETableHeader">ETableHeader</link> *eth,
+<indexterm><primary>e_table_header_add_column</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_add_column       (<link linkend="ETableHeader">ETableHeader</link> *eth,
                                              <link linkend="ETableCol">ETableCol</link> *tc,
-                                             int pos);</programlisting>
+                                             <link linkend="int">int</link> pos);</programlisting>
 <para>
 This function adds the <parameter>tc</parameter> ETableCol definition into the <parameter>eth</parameter> ETableHeader
 at position <parameter>pos</parameter>.  This is the way you add new ETableCols to the
-ETableHeader.
+ETableHeader.  The header will assume ownership of the <parameter>tc</parameter>; you should not
+unref it after you add it.
 </para>
 <para>
 This function will emit the "structure_change" signal on the <parameter>eth</parameter> object.
 The ETableCol is assumed</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> the table header to add the column to.
-</entry></row>
-<row><entry align="right"><parameter>tc</parameter>&nbsp;:</entry>
-<entry> the ETableCol definition
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> position where the ETableCol will go.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> the table header to add the column to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tc</parameter>&nbsp;:</term>
+<listitem><simpara> the ETableCol definition
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> position where the ETableCol will go.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-get-column">e_table_header_get_column ()</title>
-<programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_header_get_column       (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int column);</programlisting>
+<indexterm><primary>e_table_header_get_column</primary></indexterm><programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_header_get_column       (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> column);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> the ETableHeader to query
-</entry></row>
-<row><entry align="right"><parameter>column</parameter>&nbsp;:</entry>
-<entry> the column inside the <parameter>eth</parameter>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The ETableCol at <parameter>column</parameter> in the <parameter>eth</parameter> object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> the ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>column</parameter>&nbsp;:</term>
+<listitem><simpara> the column inside the <parameter>eth</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The ETableCol at <parameter>column</parameter> in the <parameter>eth</parameter> object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-count">e_table_header_count ()</title>
-<programlisting>int         e_table_header_count            (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
+<indexterm><primary>e_table_header_count</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_count            (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> the ETableHeader to query
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of columns in this ETableHeader.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> the ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of columns in this ETableHeader.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-index">e_table_header_index ()</title>
-<programlisting>int         e_table_header_index            (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int col);</programlisting>
+<indexterm><primary>e_table_header_index</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_index            (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> col);</programlisting>
 <para>
 ETableHeaders contain the visual list of columns that the user will
 view.  The visible columns will typically map to different columns
@@ -230,271 +220,221 @@ This will return the ETableHeader column that would contain
 the <parameter>x_offset</parameter> pixel.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> the ETableHeader to query
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry> the column to fetch.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the column that contains pixel <parameter>x_offset</parameter>, or -1
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> the ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> the column to fetch.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the column that contains pixel <parameter>x_offset</parameter>, or -1
 if no column inside this ETableHeader contains that pixel.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-get-index-at">e_table_header_get_index_at ()</title>
-<programlisting>int         e_table_header_get_index_at     (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int x_offset);</programlisting>
+<indexterm><primary>e_table_header_get_index_at</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_get_index_at     (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> x_offset);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>x_offset</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x_offset</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-get-columns">e_table_header_get_columns ()</title>
-<programlisting><link linkend="ETableCol">ETableCol</link>** e_table_header_get_columns      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
+<indexterm><primary>e_table_header_get_columns</primary></indexterm><programlisting><link linkend="ETableCol">ETableCol</link>** e_table_header_get_columns      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> The ETableHeader to query
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A NULL terminated array of the ETableCols
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> The ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A NULL terminated array of the ETableCols
 contained in the ETableHeader <parameter>eth</parameter>.  Note that every
 returned ETableCol in the array has been referenced, to release
 this information you need to g_free the buffer returned
-and you need to gtk_object_unref every element returned
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+and you need to g_object_unref every element returned
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-get-selected">e_table_header_get_selected ()</title>
-<programlisting>int         e_table_header_get_selected     (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
+<indexterm><primary>e_table_header_get_selected</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_get_selected     (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> The ETableHeader to query
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The number of selected columns in the <parameter>eth</parameter> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> The ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The number of selected columns in the <parameter>eth</parameter> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-total-width">e_table_header_total_width ()</title>
-<programlisting>int         e_table_header_total_width      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
+<indexterm><primary>e_table_header_total_width</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_total_width      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> The ETableHeader to query
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of pixels used by the <parameter>eth</parameter> object
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> The ETableHeader to query
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pixels used by the <parameter>eth</parameter> object
 when rendered on screen
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-move">e_table_header_move ()</title>
-<programlisting>void        e_table_header_move             (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int source_index,
-                                             int target_index);</programlisting>
+<indexterm><primary>e_table_header_move</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_move             (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> source_index,
+                                             <link linkend="int">int</link> target_index);</programlisting>
 <para>
 This function moves the column <parameter>source_index</parameter> to <parameter>target_index</parameter>
 inside the <parameter>eth</parameter> ETableHeader.  The signals "dimension_change"
 and "structure_change" will be emmited</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> The ETableHeader to operate on.
-</entry></row>
-<row><entry align="right"><parameter>source_index</parameter>&nbsp;:</entry>
-<entry> the source column to move.
-</entry></row>
-<row><entry align="right"><parameter>target_index</parameter>&nbsp;:</entry>
-<entry> the target location for the column
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> The ETableHeader to operate on.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>source_index</parameter>&nbsp;:</term>
+<listitem><simpara> the source column to move.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>target_index</parameter>&nbsp;:</term>
+<listitem><simpara> the target location for the column
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-remove">e_table_header_remove ()</title>
-<programlisting>void        e_table_header_remove           (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int idx);</programlisting>
+<indexterm><primary>e_table_header_remove</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_remove           (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> idx);</programlisting>
 <para>
 Removes the column at <parameter>idx</parameter> position in the ETableHeader <parameter>eth</parameter>.
 This emmits the "structure_change" signal on the <parameter>eth</parameter> object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> The ETableHeader to operate on.
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry> the index to the column to be removed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> The ETableHeader to operate on.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara> the index to the column to be removed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-set-size">e_table_header_set_size ()</title>
-<programlisting>void        e_table_header_set_size         (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int idx,
-                                             int size);</programlisting>
+<indexterm><primary>e_table_header_set_size</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_set_size         (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="int">int</link> size);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-set-selection">e_table_header_set_selection ()</title>
-<programlisting>void        e_table_header_set_selection    (<link linkend="ETableHeader">ETableHeader</link> *eth,
+<indexterm><primary>e_table_header_set_selection</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_set_selection    (<link linkend="ETableHeader">ETableHeader</link> *eth,
                                              <link linkend="gboolean">gboolean</link> allow_selection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>allow_selection</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>allow_selection</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-col-diff">e_table_header_col_diff ()</title>
-<programlisting>int         e_table_header_col_diff         (<link linkend="ETableHeader">ETableHeader</link> *eth,
-                                             int start_col,
-                                             int end_col);</programlisting>
+<indexterm><primary>e_table_header_col_diff</primary></indexterm><programlisting><link linkend="int">int</link>         e_table_header_col_diff         (<link linkend="ETableHeader">ETableHeader</link> *eth,
+                                             <link linkend="int">int</link> start_col,
+                                             <link linkend="int">int</link> end_col);</programlisting>
 <para>
 Computes the number of pixels between the columns <parameter>start_col</parameter> and
 <parameter>end_col</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry> the ETableHeader to query.
-</entry></row>
-<row><entry align="right"><parameter>start_col</parameter>&nbsp;:</entry>
-<entry> the starting column
-</entry></row>
-<row><entry align="right"><parameter>end_col</parameter>&nbsp;:</entry>
-<entry> the ending column.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of pixels between <parameter>start_col</parameter> and <parameter>end_col</parameter> on the
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara> the ETableHeader to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>start_col</parameter>&nbsp;:</term>
+<listitem><simpara> the starting column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end_col</parameter>&nbsp;:</term>
+<listitem><simpara> the ending column.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pixels between <parameter>start_col</parameter> and <parameter>end_col</parameter> on the
 <parameter>eth</parameter> ETableHeader object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-calc-widths">e_table_header_calc_widths ()</title>
-<programlisting>void        e_table_header_calc_widths      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
+<indexterm><primary>e_table_header_calc_widths</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_header_calc_widths      (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-header-get-selected-indexes">e_table_header_get_selected_indexes ()</title>
-<programlisting><link linkend="GList">GList</link>*      e_table_header_get_selected_indexes
+<indexterm><primary>e_table_header_get_selected_indexes</primary></indexterm><programlisting><link linkend="GList">GList</link>*      e_table_header_get_selected_indexes
                                             (<link linkend="ETableHeader">ETableHeader</link> *eth);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eth</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eth</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableHeader--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableHeader--sort-info">&quot;<literal>sort_info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeader--sort-info">&quot;<literal>sort-info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -502,64 +442,52 @@ Computes the number of pixels between the columns <parameter>start_col</paramete
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETableHeader-structure-change">The &quot;structure-change&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableheader</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableheader</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableHeader-dimension-change">The &quot;dimension-change&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableHeader-dimension-change">The &quot;dimension-change&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableheader</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableheader</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableHeader-request-width">The &quot;request-width&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableHeader-request-width">The &quot;request-width&quot; signal</title>
 <programlisting><link linkend="gint">gint</link>        user_function                  (<link linkend="ETableHeader">ETableHeader</link> *etableheader,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableheader</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableheader</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -1,4 +1,4 @@
-<refentry id="gal-e-cursors" revision="12 Jan 2001">
+<refentry id="gal-e-cursors">
 <refmeta>
 <refentrytitle>e-cursors</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,18 +10,23 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 enum        <link linkend="ECursorType">ECursorType</link>;
-void        <link linkend="e-cursors-init">e_cursors_init</link>                  (void);
-void        <link linkend="e-cursors-shutdown">e_cursors_shutdown</link>              (void);
+<link linkend="void">void</link>        <link linkend="e-cursors-init">e_cursors_init</link>                  (void);
+<link linkend="void">void</link>        <link linkend="e-cursors-shutdown">e_cursors_shutdown</link>              (void);
 #define     <link linkend="e-cursor-set">e_cursor_set</link>                    (win, c)
 #define     <link linkend="e-cursor-set-widget">e_cursor_set_widget</link>             (w, c)
 <link linkend="GdkCursor">GdkCursor</link>*  <link linkend="e-cursor-get">e_cursor_get</link>                    (<link linkend="ECursorType">ECursorType</link> type);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -38,7 +43,7 @@ void        <link linkend="e-cursors-shutdown">e_cursors_shutdown</link>        
 <title>Details</title>
 <refsect2>
 <title><anchor id="ECursorType">enum ECursorType</title>
-<programlisting>typedef enum {
+<indexterm><primary>ECursorType</primary></indexterm><programlisting>typedef enum {
 	E_CURSOR_FAT_CROSS,
 	E_CURSOR_THIN_CROSS,
 	E_CURSOR_ARROW,
@@ -60,72 +65,60 @@ void        <link linkend="e-cursors-shutdown">e_cursors_shutdown</link>        
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cursors-init">e_cursors_init ()</title>
-<programlisting>void        e_cursors_init                  (void);</programlisting>
+<indexterm><primary>e_cursors_init</primary></indexterm><programlisting><link linkend="void">void</link>        e_cursors_init                  (void);</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cursors-shutdown">e_cursors_shutdown ()</title>
-<programlisting>void        e_cursors_shutdown              (void);</programlisting>
+<indexterm><primary>e_cursors_shutdown</primary></indexterm><programlisting><link linkend="void">void</link>        e_cursors_shutdown              (void);</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-cursor-set">e_cursor_set()</title>
-<programlisting>#define     e_cursor_set(win, c)</programlisting>
+<indexterm><primary>e_cursor_set</primary></indexterm><programlisting>#define     e_cursor_set(win, c)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>win</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>c</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>win</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>c</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cursor-set-widget">e_cursor_set_widget()</title>
-<programlisting>#define     e_cursor_set_widget(w, c)</programlisting>
+<indexterm><primary>e_cursor_set_widget</primary></indexterm><programlisting>#define     e_cursor_set_widget(w, c)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>c</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>c</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cursor-get">e_cursor_get ()</title>
-<programlisting><link linkend="GdkCursor">GdkCursor</link>*  e_cursor_get                    (<link linkend="ECursorType">ECursorType</link> type);</programlisting>
+<indexterm><primary>e_cursor_get</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  e_cursor_get                    (<link linkend="ECursorType">ECursorType</link> type);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

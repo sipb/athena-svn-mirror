@@ -86,7 +86,7 @@ gal_view_new_dialog_init (GalViewNewDialog *dialog)
 	GladeXML *gui;
 	GtkWidget *widget;
 
-	gui = glade_xml_new (GAL_GLADEDIR "/gal-view-new-dialog.glade", NULL, PACKAGE);
+	gui = glade_xml_new (GAL_GLADEDIR "/gal-view-new-dialog.glade", NULL, E_I18N_DOMAIN);
 	dialog->gui = gui;
 
 	widget = glade_xml_get_widget(gui, "table-top");
@@ -105,6 +105,7 @@ gal_view_new_dialog_init (GalViewNewDialog *dialog)
 
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
 	gtk_window_set_modal (GTK_WINDOW(dialog), TRUE);
+	gtk_window_set_title (GTK_WINDOW(dialog), _("Define New View"));
 
 	dialog->collection = NULL;
 	dialog->selected_factory = NULL;

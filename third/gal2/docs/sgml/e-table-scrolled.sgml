@@ -1,4 +1,4 @@
-<refentry id="ETableScrolled" revision="12 Jan 2001">
+<refentry id="ETableScrolled">
 <refmeta>
 <refentrytitle>ETableScrolled</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -19,23 +20,23 @@ typedef     <link linkend="ETableScrolled">ETableScrolled</link>;
 <link linkend="ETableScrolled">ETableScrolled</link>* <link linkend="e-table-scrolled-construct">e_table_scrolled_construct</link>  (<link linkend="ETableScrolled">ETableScrolled</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec,
-                                             const char *state);
+                                             const <link linkend="char">char</link> *spec,
+                                             const <link linkend="char">char</link> *state);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-table-scrolled-new">e_table_scrolled_new</link>            (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec,
-                                             const char *state);
+                                             const <link linkend="char">char</link> *spec,
+                                             const <link linkend="char">char</link> *state);
 <link linkend="ETableScrolled">ETableScrolled</link>* <link linkend="e-table-scrolled-construct-from-spec-file">e_table_scrolled_construct_from_spec_file</link>
                                             (<link linkend="ETableScrolled">ETableScrolled</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec_fn,
-                                             const char *state_fn);
+                                             const <link linkend="char">char</link> *spec_fn,
+                                             const <link linkend="char">char</link> *state_fn);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-table-scrolled-new-from-spec-file">e_table_scrolled_new_from_spec_file</link>
                                             (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec_fn,
-                                             const char *state_fn);
+                                             const <link linkend="char">char</link> *spec_fn,
+                                             const <link linkend="char">char</link> *state_fn);
 <link linkend="ETable">ETable</link>*     <link linkend="e-table-scrolled-get-table">e_table_scrolled_get_table</link>      (<link linkend="ETableScrolled">ETableScrolled</link> *ets);
 
 </synopsis>
@@ -55,8 +56,12 @@ typedef     <link linkend="ETableScrolled">ETableScrolled</link>;
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableScrolled--table">table</link>&quot;                <link linkend="GtkObject">GtkObject</link>            : Read
@@ -76,14 +81,14 @@ typedef     <link linkend="ETableScrolled">ETableScrolled</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SCROLLED-TYPE-CAPS">E_TABLE_SCROLLED_TYPE</title>
-<programlisting>#define E_TABLE_SCROLLED_TYPE        (e_table_scrolled_get_type ())
+<indexterm><primary>E_TABLE_SCROLLED_TYPE</primary></indexterm><programlisting>#define E_TABLE_SCROLLED_TYPE        (e_table_scrolled_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableScrolled">ETableScrolled</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableScrolled</primary></indexterm><programlisting>typedef struct {
 	EScrollFrame parent;
 
 	ETable *table;
@@ -94,162 +99,141 @@ typedef     <link linkend="ETableScrolled">ETableScrolled</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-scrolled-construct">e_table_scrolled_construct ()</title>
-<programlisting><link linkend="ETableScrolled">ETableScrolled</link>* e_table_scrolled_construct  (<link linkend="ETableScrolled">ETableScrolled</link> *ets,
+<indexterm><primary>e_table_scrolled_construct</primary></indexterm><programlisting><link linkend="ETableScrolled">ETableScrolled</link>* e_table_scrolled_construct  (<link linkend="ETableScrolled">ETableScrolled</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec,
-                                             const char *state);</programlisting>
+                                             const <link linkend="char">char</link> *spec,
+                                             const <link linkend="char">char</link> *state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>ete</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ete</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-scrolled-new">e_table_scrolled_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_scrolled_new            (<link linkend="ETableModel">ETableModel</link> *etm,
+<indexterm><primary>e_table_scrolled_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_scrolled_new            (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec,
-                                             const char *state);</programlisting>
+                                             const <link linkend="char">char</link> *spec,
+                                             const <link linkend="char">char</link> *state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>ete</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ete</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-scrolled-construct-from-spec-file">e_table_scrolled_construct_from_spec_file ()</title>
-<programlisting><link linkend="ETableScrolled">ETableScrolled</link>* e_table_scrolled_construct_from_spec_file
+<indexterm><primary>e_table_scrolled_construct_from_spec_file</primary></indexterm><programlisting><link linkend="ETableScrolled">ETableScrolled</link>* e_table_scrolled_construct_from_spec_file
                                             (<link linkend="ETableScrolled">ETableScrolled</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec_fn,
-                                             const char *state_fn);</programlisting>
+                                             const <link linkend="char">char</link> *spec_fn,
+                                             const <link linkend="char">char</link> *state_fn);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>ete</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec_fn</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state_fn</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ete</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-scrolled-new-from-spec-file">e_table_scrolled_new_from_spec_file ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_scrolled_new_from_spec_file
+<indexterm><primary>e_table_scrolled_new_from_spec_file</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_scrolled_new_from_spec_file
                                             (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableExtras">ETableExtras</link> *ete,
-                                             const char *spec_fn,
-                                             const char *state_fn);</programlisting>
+                                             const <link linkend="char">char</link> *spec_fn,
+                                             const <link linkend="char">char</link> *state_fn);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>ete</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec_fn</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state_fn</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ete</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state_fn</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-scrolled-get-table">e_table_scrolled_get_table ()</title>
-<programlisting><link linkend="ETable">ETable</link>*     e_table_scrolled_get_table      (<link linkend="ETableScrolled">ETableScrolled</link> *ets);</programlisting>
+<indexterm><primary>e_table_scrolled_get_table</primary></indexterm><programlisting><link linkend="ETable">ETable</link>*     e_table_scrolled_get_table      (<link linkend="ETableScrolled">ETableScrolled</link> *ets);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableScrolled--table">&quot;<literal>table</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

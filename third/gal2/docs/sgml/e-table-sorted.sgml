@@ -1,4 +1,4 @@
-<refentry id="ETableSorted" revision="12 Jan 2001">
+<refentry id="ETableSorted">
 <refmeta>
 <refentrytitle>ETableSorted</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,10 +18,10 @@
 #define     <link linkend="E-TABLE-SORTED-TYPE-CAPS">E_TABLE_SORTED_TYPE</link>
 typedef     <link linkend="ETableSorted">ETableSorted</link>;
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-sorted-new">e_table_sorted_new</link>             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
+                                             <link linkend="int">int</link> col,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);
-void        <link linkend="e-table-sorted-resort">e_table_sorted_resort</link>           (<link linkend="ETableSorted">ETableSorted</link> *ets,
-                                             int col,
+<link linkend="void">void</link>        <link linkend="e-table-sorted-resort">e_table_sorted_resort</link>           (<link linkend="ETableSorted">ETableSorted</link> *ets,
+                                             <link linkend="int">int</link> col,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);
 
 </synopsis>
@@ -41,6 +42,10 @@ void        <link linkend="e-table-sorted-resort">e_table_sorted_resort</link>  
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -52,14 +57,14 @@ void        <link linkend="e-table-sorted-resort">e_table_sorted_resort</link>  
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SORTED-TYPE-CAPS">E_TABLE_SORTED_TYPE</title>
-<programlisting>#define E_TABLE_SORTED_TYPE        (e_table_sorted_get_type ())
+<indexterm><primary>E_TABLE_SORTED_TYPE</primary></indexterm><programlisting>#define E_TABLE_SORTED_TYPE        (e_table_sorted_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSorted">ETableSorted</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSorted</primary></indexterm><programlisting>typedef struct {
 	ETableSubset base;
 
 	short         sort_col;
@@ -71,54 +76,46 @@ void        <link linkend="e-table-sorted-resort">e_table_sorted_resort</link>  
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorted-new">e_table_sorted_new ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_sorted_new             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
+<indexterm><primary>e_table_sorted_new</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_sorted_new             (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorted-resort">e_table_sorted_resort ()</title>
-<programlisting>void        e_table_sorted_resort           (<link linkend="ETableSorted">ETableSorted</link> *ets,
-                                             int col,
+<indexterm><primary>e_table_sorted_resort</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_sorted_resort           (<link linkend="ETableSorted">ETableSorted</link> *ets,
+                                             <link linkend="int">int</link> col,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

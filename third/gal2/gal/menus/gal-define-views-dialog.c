@@ -154,7 +154,6 @@ gdvd_button_modify_callback(GtkWidget *widget, GalDefineViewsDialog *dialog)
 						       row);
 		gal_view_edit(view, GTK_WINDOW (dialog));
 	}
-
 }
 
 static void
@@ -207,6 +206,30 @@ gdvd_connect_signal(GalDefineViewsDialog *dialog, char *widget_name, char *signa
 }
 
 static void
+etable_selection_change_forall_cb (int row, GalDefineViewsDialog *dialog)
+{
+	if (row != -1) {
+		GalViewCollectionItem *item = gal_view_collection_get_view_item (dialog->collection, row);
+
+		if (item)
+			gtk_widget_set_sensitive (glade_xml_get_widget (dialog->gui, "button-delete"),
+						  !item->built_in);
+	}
+}
+
+static void
+etable_selection_change (ETable *etable, GalDefineViewsDialog *dialog)
+{
+	e_table_selected_row_foreach (etable, (EForeachFunc) etable_selection_change_forall_cb, dialog);
+}
+
+static void
+dialog_response (GalDefineViewsDialog *dialog, int response_id, gpointer data)
+{
+	gal_view_collection_save (dialog->collection);
+}	
+
+static void
 gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 {
 	GladeXML *gui;
@@ -215,7 +238,7 @@ gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 
 	dialog->collection = NULL;
 
-	gui = glade_xml_new (GAL_GLADEDIR "/gal-define-views.glade", NULL, PACKAGE);
+	gui = glade_xml_new (GAL_GLADEDIR "/gal-define-views.glade", NULL, E_I18N_DOMAIN);
 	dialog->gui = gui;
 
 	widget = glade_xml_get_widget(gui, "table-top");
@@ -230,8 +253,7 @@ gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 	gtk_widget_unref(widget);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				GTK_STOCK_OK, GTK_RESPONSE_OK,
+				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 				NULL);
 
 	gdvd_connect_signal(dialog, "button-new",    "clicked", G_CALLBACK(gdvd_button_new_callback));
@@ -248,10 +270,16 @@ gal_define_views_dialog_init (GalDefineViewsDialog *dialog)
 		g_object_set(dialog->model,
 			     "collection", dialog->collection,
 			     NULL);
+		g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (etable)),
+				  "selection_change",
+				  G_CALLBACK (etable_selection_change), dialog);
 		gtk_widget_show_all (etable);
 	}
 
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
+
+	g_signal_connect (dialog, "response", G_CALLBACK (dialog_response), NULL);
+
 }
 
 static void

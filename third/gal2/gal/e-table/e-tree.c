@@ -29,6 +29,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
+#include <atk/atkregistry.h>
 
 #include <gal/util/e-i18n.h>
 #include <gal/util/e-util.h>
@@ -53,6 +54,7 @@
 
 #include "e-tree.h"
 #include "gal/util/e-marshal.h"
+#include "gal/a11y/e-table/gal-a11y-e-tree-factory.h"
 
 #define COLUMN_HEADER_HEIGHT 16
 
@@ -2067,14 +2069,12 @@ e_tree_find_next (ETree *et, ETreeFindNextParams params, ETreePathFunc func, gpo
 	cursor = e_tree_get_cursor (et);
 	row = e_tree_table_adapter_row_of_node (et->priv->etta, cursor);
 	row_count = e_table_model_row_count (E_TABLE_MODEL (et->priv->etta));
-	if (row == -1)
-		row = 0;
-
+	
 	if (params & E_TREE_FIND_NEXT_FORWARD)
 		found = find_next_in_range (et, row + 1, row_count - 1, func, data);
 	else
-		found = find_prev_in_range (et, row - 1, 0, func, data);
-
+		found = find_prev_in_range (et, row == -1 ? -1 : row - 1, 0, func, data);
+	
 	if (found) {
 		e_tree_table_adapter_show_node (et->priv->etta, found);
 		e_tree_set_cursor (et, found);
@@ -2152,6 +2152,15 @@ e_tree_get_table_adapter (ETree *et)
 	g_return_val_if_fail (E_IS_TREE (et), NULL);
 
 	return et->priv->etta;
+}
+
+ETableItem *
+e_tree_get_item(ETree * et)
+{
+	g_return_val_if_fail (et != NULL, NULL);
+	g_return_val_if_fail (E_IS_TREE (et), NULL);
+
+	return E_TABLE_ITEM (et->priv->item);
 }
 
 
@@ -3292,6 +3301,27 @@ e_tree_class_init (ETreeClass *class)
 							       _( "Always search" ),
 							       FALSE,
 							       G_PARAM_READWRITE));
+
+	gtk_widget_class_install_style_property (widget_class,
+			   g_param_spec_boolean ("retro_look",
+						 _("Retro Look"),
+						 _("Draw lines and +/- expanders."),
+						 FALSE,
+						 G_PARAM_READABLE));
+
+	gtk_widget_class_install_style_property (widget_class,
+			   g_param_spec_int ("expander_size",
+					     _("Expander Size"),
+					     _("Size of the expander arrow"),
+					     0,
+					     G_MAXINT,
+					     10,
+					     G_PARAM_READABLE));
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+					E_TREE_TYPE,
+					gal_a11y_e_tree_factory_get_type ());
+
 }
 
 E_MAKE_TYPE(e_tree, "ETree", ETree, e_tree_class_init, e_tree_init, PARENT_TYPE)

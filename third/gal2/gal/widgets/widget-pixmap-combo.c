@@ -26,7 +26,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <libgnome/gnome-i18n.h>
-#include "gtk-combo-box.h"
+#include "gal-combo-box.h"
 #include "widget-pixmap-combo.h"
 #include "gal/util/e-util.h"
 
@@ -40,7 +40,7 @@ enum {
 
 static guint pixmap_combo_signals [LAST_SIGNAL] = { 0, };
 
-#define PARENT_TYPE GTK_COMBO_BOX_TYPE
+#define PARENT_TYPE GAL_COMBO_BOX_TYPE
 static GtkObjectClass *pixmap_combo_parent_class;
 
 /***************************************************************************/
@@ -98,7 +98,7 @@ pixmap_clicked (GtkWidget *button, PixmapCombo *pc)
 	int index = GPOINTER_TO_INT (gtk_object_get_user_data (GTK_OBJECT (button)));
 	pixmap_combo_select_pixmap (pc, index);
 	emit_change (button, pc);
-	gtk_combo_box_popup_hide (GTK_COMBO_BOX (pc));
+	gal_combo_box_popup_hide (GAL_COMBO_BOX (pc));
 }
 
 static GtkWidget *
@@ -180,7 +180,7 @@ pixmap_combo_construct (PixmapCombo *pc,
 
 	gtk_widget_show_all (pc->preview_button);
 
-	gtk_combo_box_construct (GTK_COMBO_BOX (pc),
+	gal_combo_box_construct (GAL_COMBO_BOX (pc),
 				 pc->preview_button,
 				 pc->combo_table);
 }

@@ -66,19 +66,22 @@ EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
+F77 = @F77@
 GAL_AGE = @GAL_AGE@
 GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CFLAGS = @GAL_CFLAGS@
@@ -87,6 +90,8 @@ GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_LIBDIR = @GAL_LIBDIR@
 GAL_LIBS = @GAL_LIBS@
 GAL_REVISION = @GAL_REVISION@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -101,6 +106,7 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -114,8 +120,8 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -128,23 +134,24 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 install_sh = @install_sh@
 SUBDIRS = po gal tests docs art
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = gal-2.0.pc
+pkgconfig_DATA = gal-2.2.pc
 
 EXTRA_DIST = \
-	gal-2.0.pc.in		\
+	gal-2.2.pc.in		\
 	gal.spec.in		\
 	MAINTAINERS		\
 	AUTHORS			\
@@ -154,12 +161,14 @@ EXTRA_DIST = \
 	intltool-update.in
 
 
-CLEANFILES = gal-2.0.pc 
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update iconv-detect.h
+
+CLEANFILES = gal-2.2.pc 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = gal.spec gal-2.0.pc stamp.h
+CONFIG_CLEAN_FILES = gal.spec gal-2.2.pc stamp.h
 DIST_SOURCES =
 DATA = $(pkgconfig_DATA)
 
@@ -169,9 +178,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = README AUTHORS COPYING COPYING.LIB ChangeLog INSTALL \
-	Makefile.am Makefile.in NEWS aclocal.m4 config.guess \
-	config.h.in config.sub configure configure.in depcomp \
-	gal-2.0.pc.in gal.spec.in install-sh ltmain.sh missing \
+	Makefile.am Makefile.in NEWS acinclude.m4 aclocal.m4 \
+	config.guess config.h.in config.sub configure configure.in \
+	depcomp gal-2.2.pc.in gal.spec.in install-sh ltmain.sh missing \
 	mkinstalldirs stamp.h.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: config.h
@@ -192,7 +201,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1
@@ -213,7 +222,7 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 gal.spec: $(top_builddir)/config.status gal.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-gal-2.0.pc: $(top_builddir)/config.status gal-2.0.pc.in
+gal-2.2.pc: $(top_builddir)/config.status gal-2.2.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 stamp.h: $(top_builddir)/config.status stamp.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -474,6 +483,7 @@ clean-generic:
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"

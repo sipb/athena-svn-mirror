@@ -1,4 +1,4 @@
-<refentry id="gal-e-cache" revision="12 Jan 2001">
+<refentry id="gal-e-cache">
 <refmeta>
 <refentrytitle>e-cache</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,13 +10,14 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 struct      <link linkend="ECache">ECache</link>;
 <link linkend="gpointer">gpointer</link>    (<link linkend="ECacheDupFunc">*ECacheDupFunc</link>)                (<link linkend="gconstpointer">gconstpointer</link> data);
-void        (<link linkend="ECacheFreeFunc">*ECacheFreeFunc</link>)               (<link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        (<link linkend="ECacheFreeFunc">*ECacheFreeFunc</link>)               (<link linkend="gpointer">gpointer</link> data);
 <link linkend="ECache">ECache</link>*     <link linkend="e-cache-new">e_cache_new</link>                     (<link linkend="GHashFunc">GHashFunc</link> key_hash_func,
                                              <link linkend="GCompareFunc">GCompareFunc</link> key_compare_func,
                                              <link linkend="ECacheDupFunc">ECacheDupFunc</link> key_dup_func,
@@ -24,8 +25,8 @@ void        (<link linkend="ECacheFreeFunc">*ECacheFreeFunc</link>)             
                                              <link linkend="ECacheFreeFunc">ECacheFreeFunc</link> object_free_func,
                                              <link linkend="size-t">size_t</link> softlimit,
                                              <link linkend="size-t">size_t</link> hardlimit);
-void        <link linkend="e-cache-ref">e_cache_ref</link>                     (<link linkend="ECache">ECache</link> *cache);
-void        <link linkend="e-cache-unref">e_cache_unref</link>                   (<link linkend="ECache">ECache</link> *cache);
+<link linkend="void">void</link>        <link linkend="e-cache-ref">e_cache_ref</link>                     (<link linkend="ECache">ECache</link> *cache);
+<link linkend="void">void</link>        <link linkend="e-cache-unref">e_cache_unref</link>                   (<link linkend="ECache">ECache</link> *cache);
 <link linkend="gpointer">gpointer</link>    <link linkend="e-cache-lookup">e_cache_lookup</link>                  (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gconstpointer">gconstpointer</link> key);
 <link linkend="gpointer">gpointer</link>    <link linkend="e-cache-lookup-notouch">e_cache_lookup_notouch</link>          (<link linkend="ECache">ECache</link> *cache,
@@ -34,13 +35,17 @@ void        <link linkend="e-cache-unref">e_cache_unref</link>                  
                                              <link linkend="gpointer">gpointer</link> key,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="size-t">size_t</link> size);
-void        <link linkend="e-cache-invalidate">e_cache_invalidate</link>              (<link linkend="ECache">ECache</link> *cache,
+<link linkend="void">void</link>        <link linkend="e-cache-invalidate">e_cache_invalidate</link>              (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gpointer">gpointer</link> key);
-void        <link linkend="e-cache-invalidate-all">e_cache_invalidate_all</link>          (<link linkend="ECache">ECache</link> *cache);
+<link linkend="void">void</link>        <link linkend="e-cache-invalidate-all">e_cache_invalidate_all</link>          (<link linkend="ECache">ECache</link> *cache);
 <link linkend="size-t">size_t</link>      <link linkend="e-cache-query-object-size">e_cache_query_object_size</link>       (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gconstpointer">gconstpointer</link> key);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -57,47 +62,39 @@ void        <link linkend="e-cache-invalidate-all">e_cache_invalidate_all</link>
 <title>Details</title>
 <refsect2>
 <title><anchor id="ECache">struct ECache</title>
-<programlisting>struct ECache;</programlisting>
+<indexterm><primary>ECache</primary></indexterm><programlisting>struct ECache;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECacheDupFunc">ECacheDupFunc ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    (*ECacheDupFunc)                (<link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
+<indexterm><primary>ECacheDupFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    (*ECacheDupFunc)                (<link linkend="gconstpointer">gconstpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ECacheFreeFunc">ECacheFreeFunc ()</title>
-<programlisting>void        (*ECacheFreeFunc)               (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<indexterm><primary>ECacheFreeFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*ECacheFreeFunc)               (<link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-new">e_cache_new ()</title>
-<programlisting><link linkend="ECache">ECache</link>*     e_cache_new                     (<link linkend="GHashFunc">GHashFunc</link> key_hash_func,
+<indexterm><primary>e_cache_new</primary></indexterm><programlisting><link linkend="ECache">ECache</link>*     e_cache_new                     (<link linkend="GHashFunc">GHashFunc</link> key_hash_func,
                                              <link linkend="GCompareFunc">GCompareFunc</link> key_compare_func,
                                              <link linkend="ECacheDupFunc">ECacheDupFunc</link> key_dup_func,
                                              <link linkend="ECacheFreeFunc">ECacheFreeFunc</link> key_free_func,
@@ -106,201 +103,165 @@ void        <link linkend="e-cache-invalidate-all">e_cache_invalidate_all</link>
                                              <link linkend="size-t">size_t</link> hardlimit);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>key_hash_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key_compare_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key_dup_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key_free_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>object_free_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>softlimit</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>hardlimit</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>key_hash_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key_compare_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key_dup_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key_free_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object_free_func</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>softlimit</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>hardlimit</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-ref">e_cache_ref ()</title>
-<programlisting>void        e_cache_ref                     (<link linkend="ECache">ECache</link> *cache);</programlisting>
+<indexterm><primary>e_cache_ref</primary></indexterm><programlisting><link linkend="void">void</link>        e_cache_ref                     (<link linkend="ECache">ECache</link> *cache);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-unref">e_cache_unref ()</title>
-<programlisting>void        e_cache_unref                   (<link linkend="ECache">ECache</link> *cache);</programlisting>
+<indexterm><primary>e_cache_unref</primary></indexterm><programlisting><link linkend="void">void</link>        e_cache_unref                   (<link linkend="ECache">ECache</link> *cache);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-lookup">e_cache_lookup ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    e_cache_lookup                  (<link linkend="ECache">ECache</link> *cache,
+<indexterm><primary>e_cache_lookup</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    e_cache_lookup                  (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-lookup-notouch">e_cache_lookup_notouch ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    e_cache_lookup_notouch          (<link linkend="ECache">ECache</link> *cache,
+<indexterm><primary>e_cache_lookup_notouch</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    e_cache_lookup_notouch          (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-insert">e_cache_insert ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_cache_insert                  (<link linkend="ECache">ECache</link> *cache,
+<indexterm><primary>e_cache_insert</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_cache_insert                  (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gpointer">gpointer</link> key,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="size-t">size_t</link> size);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-invalidate">e_cache_invalidate ()</title>
-<programlisting>void        e_cache_invalidate              (<link linkend="ECache">ECache</link> *cache,
+<indexterm><primary>e_cache_invalidate</primary></indexterm><programlisting><link linkend="void">void</link>        e_cache_invalidate              (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gpointer">gpointer</link> key);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-invalidate-all">e_cache_invalidate_all ()</title>
-<programlisting>void        e_cache_invalidate_all          (<link linkend="ECache">ECache</link> *cache);</programlisting>
+<indexterm><primary>e_cache_invalidate_all</primary></indexterm><programlisting><link linkend="void">void</link>        e_cache_invalidate_all          (<link linkend="ECache">ECache</link> *cache);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-cache-query-object-size">e_cache_query_object_size ()</title>
-<programlisting><link linkend="size-t">size_t</link>      e_cache_query_object_size       (<link linkend="ECache">ECache</link> *cache,
+<indexterm><primary>e_cache_query_object_size</primary></indexterm><programlisting><link linkend="size-t">size_t</link>      e_cache_query_object_size       (<link linkend="ECache">ECache</link> *cache,
                                              <link linkend="gconstpointer">gconstpointer</link> key);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cache</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cache</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

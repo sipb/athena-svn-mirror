@@ -1,4 +1,4 @@
-<refentry id="GalViewCollection" revision="12 Jan 2001">
+<refentry id="GalViewCollection">
 <refmeta>
 <refentrytitle>GalViewCollection</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,13 +18,13 @@
 #define     <link linkend="GAL-VIEW-COLLECTION-TYPE-CAPS">GAL_VIEW_COLLECTION_TYPE</link>
 typedef     <link linkend="GalViewCollection">GalViewCollection</link>;
 <link linkend="GalViewCollection">GalViewCollection</link>* <link linkend="gal-view-collection-new">gal_view_collection_new</link>  (void);
-void        <link linkend="gal-view-collection-set-storage-directories">gal_view_collection_set_storage_directories</link>
+<link linkend="void">void</link>        <link linkend="gal-view-collection-set-storage-directories">gal_view_collection_set_storage_directories</link>
                                             (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
-                                             char *system_dir,
-                                             char *local_dir);
-void        <link linkend="gal-view-collection-add-factory">gal_view_collection_add_factory</link> (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
+                                             <link linkend="char">char</link> *system_dir,
+                                             <link linkend="char">char</link> *local_dir);
+<link linkend="void">void</link>        <link linkend="gal-view-collection-add-factory">gal_view_collection_add_factory</link> (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
                                              <link linkend="GalViewFactory">GalViewFactory</link> *factory);
-void        <link linkend="gal-view-collection-display-view">gal_view_collection_display_view</link>
+<link linkend="void">void</link>        <link linkend="gal-view-collection-display-view">gal_view_collection_display_view</link>
                                             (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
                                              <link linkend="GalView">GalView</link> *view);
 
@@ -41,12 +42,16 @@ void        <link linkend="gal-view-collection-display-view">gal_view_collection
 </refsect1>
 
 
+
+
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
 
 &quot;<link linkend="GalViewCollection-display-view">display-view</link>&quot;
-            void        user_function      (<link linkend="GalViewCollection">GalViewCollection</link> *galviewcollection,
+            <link linkend="void">void</link>        user_function      (<link linkend="GalViewCollection">GalViewCollection</link> *galviewcollection,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -64,14 +69,14 @@ void        <link linkend="gal-view-collection-display-view">gal_view_collection
 <title>Details</title>
 <refsect2>
 <title><anchor id="GAL-VIEW-COLLECTION-TYPE-CAPS">GAL_VIEW_COLLECTION_TYPE</title>
-<programlisting>#define GAL_VIEW_COLLECTION_TYPE        (gal_view_collection_get_type ())
+<indexterm><primary>GAL_VIEW_COLLECTION_TYPE</primary></indexterm><programlisting>#define GAL_VIEW_COLLECTION_TYPE        (gal_view_collection_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GalViewCollection">GalViewCollection</title>
-<programlisting>typedef struct {
+<indexterm><primary>GalViewCollection</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 
 	GList *view_list;
@@ -83,111 +88,97 @@ void        <link linkend="gal-view-collection-display-view">gal_view_collection
 </para></refsect2>
 <refsect2>
 <title><anchor id="gal-view-collection-new">gal_view_collection_new ()</title>
-<programlisting><link linkend="GalViewCollection">GalViewCollection</link>* gal_view_collection_new  (void);</programlisting>
+<indexterm><primary>gal_view_collection_new</primary></indexterm><programlisting><link linkend="GalViewCollection">GalViewCollection</link>* gal_view_collection_new  (void);</programlisting>
+<para>
+A collection of views and view factories.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-collection-set-storage-directories">gal_view_collection_set_storage_directories ()</title>
-<programlisting>void        gal_view_collection_set_storage_directories
+<indexterm><primary>gal_view_collection_set_storage_directories</primary></indexterm><programlisting><link linkend="void">void</link>        gal_view_collection_set_storage_directories
                                             (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
-                                             char *system_dir,
-                                             char *local_dir);</programlisting>
+                                             <link linkend="char">char</link> *system_dir,
+                                             <link linkend="char">char</link> *local_dir);</programlisting>
+<para>
+Sets up the GalViewCollection.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>collection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>system_dir</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>local_dir</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>collection</parameter>&nbsp;:</term>
+<listitem><simpara> The view collection to initialize
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>system_dir</parameter>&nbsp;:</term>
+<listitem><simpara> The location of the system built in views
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>local_dir</parameter>&nbsp;:</term>
+<listitem><simpara> The location to store the users set up views
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-collection-add-factory">gal_view_collection_add_factory ()</title>
-<programlisting>void        gal_view_collection_add_factory (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
+<indexterm><primary>gal_view_collection_add_factory</primary></indexterm><programlisting><link linkend="void">void</link>        gal_view_collection_add_factory (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
                                              <link linkend="GalViewFactory">GalViewFactory</link> *factory);</programlisting>
 <para>
+Adds the given factory to this collection.  This list is used both
+when loading views from their xml description as well as when the
+user tries to create a new view.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>collection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>collection</parameter>&nbsp;:</term>
+<listitem><simpara> The view collection to add a factory to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>factory</parameter>&nbsp;:</term>
+<listitem><simpara> The factory to add.  The <parameter>collection</parameter> will add a reference
+to the factory object, so you should unref it after calling this
+function if you no longer need it.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-collection-display-view">gal_view_collection_display_view ()</title>
-<programlisting>void        gal_view_collection_display_view
+<indexterm><primary>gal_view_collection_display_view</primary></indexterm><programlisting><link linkend="void">void</link>        gal_view_collection_display_view
                                             (<link linkend="GalViewCollection">GalViewCollection</link> *collection,
                                              <link linkend="GalView">GalView</link> *view);</programlisting>
 <para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>collection</parameter>&nbsp;:</entry>
-<entry> The GalViewCollection to send the signal on.
-</entry></row>
-<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
-<entry> The view to display.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>collection</parameter>&nbsp;:</term>
+<listitem><simpara> The GalViewCollection to send the signal on.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>view</parameter>&nbsp;:</term>
+<listitem><simpara> The view to display.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GalViewCollection-display-view">The &quot;display-view&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GalViewCollection">GalViewCollection</link> *galviewcollection,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GalViewCollection">GalViewCollection</link> *galviewcollection,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>galviewcollection</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>galviewcollection</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

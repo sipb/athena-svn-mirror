@@ -1,4 +1,4 @@
-DOC_MODULE=gal
+DOC_MODULE = $(GETTEXT_PACKAGE)
 
 DOC_MAIN_SGML_FILE=gal-api.sgml
 
@@ -11,7 +11,7 @@ TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
 
 tmpl_sources =
 
-gal_docdir = $(HTML_DIR)
+gal_docdir = $(TARGET_DIR)
 
 gal_doc_DATA =			\
 	gal-api.sgml		\

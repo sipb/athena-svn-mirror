@@ -1,4 +1,4 @@
-<refentry id="gal-GtkComboBox" revision="12 Jan 2001">
+<refentry id="gal-GtkComboBox">
 <refmeta>
 <refentrytitle>GtkComboBox</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,29 +10,34 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 struct      <link linkend="GtkComboBox">GtkComboBox</link>;
-void        <link linkend="gtk-combo-box-construct">gtk_combo_box_construct</link>         (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-construct">gtk_combo_box_construct</link>         (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
                                              <link linkend="GtkWidget">GtkWidget</link> *display_widget,
                                              <link linkend="GtkWidget">GtkWidget</link> *optional_pop_down_widget);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-combo-box-new">gtk_combo_box_new</link>               (<link linkend="GtkWidget">GtkWidget</link> *display_widget,
                                              <link linkend="GtkWidget">GtkWidget</link> *optional_pop_down_widget);
-void        <link linkend="gtk-combo-box-popup-hide">gtk_combo_box_popup_hide</link>        (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box);
-void        <link linkend="gtk-combo-box-set-display">gtk_combo_box_set_display</link>       (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-popup-hide">gtk_combo_box_popup_hide</link>        (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box);
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-set-display">gtk_combo_box_set_display</link>       (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
                                              <link linkend="GtkWidget">GtkWidget</link> *display_widget);
-void        <link linkend="gtk-combo-box-set-arrow-relief">gtk_combo_box_set_arrow_relief</link>  (<link linkend="GtkComboBox">GtkComboBox</link> *cc,
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-set-arrow-relief">gtk_combo_box_set_arrow_relief</link>  (<link linkend="GtkComboBox">GtkComboBox</link> *cc,
                                              <link linkend="GtkReliefStyle">GtkReliefStyle</link> relief);
-void        <link linkend="gtk-combo-box-set-title">gtk_combo_box_set_title</link>         (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-set-title">gtk_combo_box_set_title</link>         (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
                                              const <link linkend="gchar">gchar</link> *title);
-void        <link linkend="gtk-combo-box-set-arrow-sensitive">gtk_combo_box_set_arrow_sensitive</link>
+<link linkend="void">void</link>        <link linkend="gtk-combo-box-set-arrow-sensitive">gtk_combo_box_set_arrow_sensitive</link>
                                             (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
                                              <link linkend="gboolean">gboolean</link> sensitive);
 
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -49,7 +54,8 @@ void        <link linkend="gtk-combo-box-set-arrow-sensitive">gtk_combo_box_set_
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkComboBox">struct GtkComboBox</title>
-<programlisting>struct GtkComboBox {
+<indexterm><primary>GtkComboBox</primary></indexterm><programlisting>struct GtkComboBox {
+
 	GtkHBox hbox;
 	GtkComboBoxPrivate *priv;
 };
@@ -59,158 +65,119 @@ void        <link linkend="gtk-combo-box-set-arrow-sensitive">gtk_combo_box_set_
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-construct">gtk_combo_box_construct ()</title>
-<programlisting>void        gtk_combo_box_construct         (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
+<indexterm><primary>gtk_combo_box_construct</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_construct         (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
                                              <link linkend="GtkWidget">GtkWidget</link> *display_widget,
                                              <link linkend="GtkWidget">GtkWidget</link> *optional_pop_down_widget);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo_box</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>display_widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>optional_pop_down_widget</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo_box</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>display_widget</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>optional_pop_down_widget</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-new">gtk_combo_box_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_combo_box_new               (<link linkend="GtkWidget">GtkWidget</link> *display_widget,
+<indexterm><primary>gtk_combo_box_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_combo_box_new               (<link linkend="GtkWidget">GtkWidget</link> *display_widget,
                                              <link linkend="GtkWidget">GtkWidget</link> *optional_pop_down_widget);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>display_widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>optional_pop_down_widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>display_widget</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>optional_pop_down_widget</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-popup-hide">gtk_combo_box_popup_hide ()</title>
-<programlisting>void        gtk_combo_box_popup_hide        (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box);</programlisting>
-<para>
-Hide popup, but not when it is torn off.
-This is the external interface - for subclasses and apps which expect a
-regular combo which doesn't do tearoffs.</para>
+<indexterm><primary>gtk_combo_box_popup_hide</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_popup_hide        (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo_box</parameter>&nbsp;:</entry>
-<entry>  Combo box
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo_box</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-set-display">gtk_combo_box_set_display ()</title>
-<programlisting>void        gtk_combo_box_set_display       (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
+<indexterm><primary>gtk_combo_box_set_display</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_set_display       (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
                                              <link linkend="GtkWidget">GtkWidget</link> *display_widget);</programlisting>
 <para>
-Sets the displayed widget for the <parameter>combo_box</parameter> to be <parameter>display_widget</parameter></para>
-<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo_box</parameter>&nbsp;:</entry>
-<entry> the Combo Box to modify
-</entry></row>
-<row><entry align="right"><parameter>display_widget</parameter>&nbsp;:</entry>
-<entry> The widget to be displayed
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo_box</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>display_widget</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-set-arrow-relief">gtk_combo_box_set_arrow_relief ()</title>
-<programlisting>void        gtk_combo_box_set_arrow_relief  (<link linkend="GtkComboBox">GtkComboBox</link> *cc,
+<indexterm><primary>gtk_combo_box_set_arrow_relief</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_set_arrow_relief  (<link linkend="GtkComboBox">GtkComboBox</link> *cc,
                                              <link linkend="GtkReliefStyle">GtkReliefStyle</link> relief);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cc</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>relief</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>relief</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-set-title">gtk_combo_box_set_title ()</title>
-<programlisting>void        gtk_combo_box_set_title         (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
+<indexterm><primary>gtk_combo_box_set_title</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_set_title         (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
                                              const <link linkend="gchar">gchar</link> *title);</programlisting>
 <para>
-Set a title to display over the tearoff window.
-</para>
-<para>
-FIXME:
-</para>
-<para>
-This should really change the title even when the popup is already torn off.
-I guess the tearoff window could attach a listener to title change or
-something. But I don't think we need the functionality, so I didn't bother
-to investigate.</para>
-<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo</parameter>&nbsp;:</entry>
-<entry> Combo box
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Title
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-combo-box-set-arrow-sensitive">gtk_combo_box_set_arrow_sensitive ()</title>
-<programlisting>void        gtk_combo_box_set_arrow_sensitive
+<indexterm><primary>gtk_combo_box_set_arrow_sensitive</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_set_arrow_sensitive
                                             (<link linkend="GtkComboBox">GtkComboBox</link> *combo,
                                              <link linkend="gboolean">gboolean</link> sensitive);</programlisting>
 <para>
-Toggle the sensitivity of the arrow button</para>
-<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo</parameter>&nbsp;:</entry>
-<entry>  Combo box
-</entry></row>
-<row><entry align="right"><parameter>sensitive</parameter>&nbsp;:</entry>
-<entry>  Sensitivity value
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sensitive</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

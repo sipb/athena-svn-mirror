@@ -1,0 +1,1051 @@
+# translation of gal to Albanian
+# This file is distributed under the same license as the gal package.
+# Laurent Dhima <laurenti@alblinux.net>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gal.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-06-29 18:55+0200\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr "Madhësia e Dorezës"
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr "Quantum"
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "Sot %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "Dje %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%b %d %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%b %d %Y"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr "Kollona e zgjedhur"
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr "Kollona në fokus"
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr "Kollona e pazgjedhur"
+
+#: gal/e-table/e-cell-text.c:1703
+msgid "Strikeout Column"
+msgstr "Strikeout Column"
+
+#: gal/e-table/e-cell-text.c:1710
+msgid "Underline Column"
+msgstr "Kollona e nënvizuar"
+
+#: gal/e-table/e-cell-text.c:1717
+msgid "Bold Column"
+msgstr "Kollona me të trasha"
+
+#: gal/e-table/e-cell-text.c:1724
+msgid "Color Column"
+msgstr "Ngjyra e kollonës"
+
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+msgid "Editable"
+msgstr "Pjesë e ndryshueshme"
+
+#: gal/e-table/e-cell-text.c:1738
+msgid "BG Color Column"
+msgstr "Ngjyra e sfondit të kollonës"
+
+#: gal/e-table/e-table-click-to-add.c:462
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1816
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr "Kreu i faqes"
+
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
+msgid "Model"
+msgstr "Modeli"
+
+#: gal/e-table/e-table-click-to-add.c:476
+msgid "Message"
+msgstr "Mesazh"
+
+#: gal/e-table/e-table-click-to-add.c:483
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
+msgid "Width"
+msgstr "Gjerësia"
+
+#: gal/e-table/e-table-click-to-add.c:490
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
+msgid "Height"
+msgstr "Lartësia"
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _Hiq"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "Fushat në di_spozicion:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "Në ngjitje"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "Pastro gjithçka"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "Në zbritje"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "Përshkrimi"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "Grupi"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "Grupo elementët sipas"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "Lëvize _Poshtë"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "Lëvize _Sipër"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "P_araqiti këto fusha duke i renditur:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Show Fields"
+msgstr "Shfaq fushat"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show field in View"
+msgstr "Shfaqe fushën"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Sort"
+msgstr "Renditja"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort Items By"
+msgstr "Rendit elementët sipas"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Then By"
+msgstr "E pastaj sipas"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
+msgid "_Add ->"
+msgstr "_Shto ->"
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Fields Shown..."
+msgstr "_Fushat e shfaqura..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "_Renditja..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr "dialogu1"
+
+#: gal/e-table/e-table-config.c:152
+msgid "State"
+msgstr "Gjendja"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Ascending)"
+msgstr "(Në rritje)"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Descending)"
+msgstr "(Në zbritje)"
+
+#: gal/e-table/e-table-config.c:316
+msgid "Not sorted"
+msgstr "Pa renditje"
+
+#: gal/e-table/e-table-config.c:357
+msgid "No grouping"
+msgstr "Të pa grupuara"
+
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Group By..."
+msgstr "_Grupo sipas..."
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "_Shfaqi këto fusha duke i renditur:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "Kod DnD"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Titulli i plotë"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Shto një kollonë..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "Zgjedhja e fushës"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"Për t'i shtuar një kollonë tabelës suaj, zvarrite tek\n"
+"pozicioni ku dëshironi të duket."
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d element)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elementë)"
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d element)"
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elementë)"
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr "Ndryshimi i ngjyrave të rreshtave"
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
+msgid "Horizontal Draw Grid"
+msgstr "Rrjetë e vizatuar horizontalisht"
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
+msgid "Vertical Draw Grid"
+msgstr "Rrjetë e vizatuar vertikalisht"
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
+msgid "Draw focus"
+msgstr "Fokusi i rrjetës"
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr "Modaliteti kursor"
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr "Modeli i zgjedhjes"
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
+msgid "Length Threshold"
+msgstr "Gjatësia kufirit"
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
+msgid "Uniform row height"
+msgstr "Lartësi uniforme e rreshtit"
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr "Bllokimi"
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr "Gjerësia minimum"
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr "Gjerësia më e Vogël"
+
+#: gal/e-table/e-table-header-item.c:1457
+msgid "Customize Current View"
+msgstr "Personalizo paraqitjen aktuale"
+
+#: gal/e-table/e-table-header-item.c:1477
+msgid "Sort Ascending"
+msgstr "Renditje në ngjitje"
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Sort Descending"
+msgstr "Renditje në zbritje"
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Unsort"
+msgstr "Pa renditje"
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Group By This Field"
+msgstr "Grupo sipas kësaj fushe"
+
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Group By Box"
+msgstr "Grupo sipas kutizës"
+
+#: gal/e-table/e-table-header-item.c:1484
+msgid "Remove This Column"
+msgstr "Fshije këtë kollonë"
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Add a Column..."
+msgstr "Shto një kollonë..."
+
+#: gal/e-table/e-table-header-item.c:1487
+msgid "Alignment"
+msgstr "Drejtimi"
+
+#: gal/e-table/e-table-header-item.c:1488
+msgid "Best Fit"
+msgstr "Përshtate"
+
+#: gal/e-table/e-table-header-item.c:1489
+msgid "Format Columns..."
+msgstr "Formato kollonat..."
+
+#: gal/e-table/e-table-header-item.c:1491
+msgid "Customize Current View..."
+msgstr "Personalizo paraqitjen aktuale..."
+
+#: gal/e-table/e-table-header-item.c:1802
+msgid "Fontset"
+msgstr "Gërmat"
+
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
+msgid "Sort Info"
+msgstr "Rendit informacionin"
+
+#: gal/e-table/e-table-header-item.c:1830
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "Tabela"
+
+#: gal/e-table/e-table-header-item.c:1837
+msgid "Tree"
+msgstr "Degëzimi"
+
+#: gal/e-table/e-table.c:3313
+msgid "Always Search"
+msgstr "Kërkim i vazhdueshem"
+
+#: gal/e-table/e-table.c:3320
+msgid "Use click to add"
+msgstr "Përdor klik-imin për të shtuar"
+
+#: gal/e-table/e-tree-selection-model.c:781
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr "Rreshti kursorit"
+
+#: gal/e-table/e-tree-selection-model.c:788
+#: gal/widgets/e-selection-model-array.c:550
+msgid "Cursor Column"
+msgstr "Kollona kursorit"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr "Adaptues ETree i tabelës"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "Kërkim i vazhdueshëm"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr "Kërkim mbrapsht"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "Vizato rreshtat dhe zgjeruesit +/-."
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "Madhësia e shpalosësit"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "Madhësia e shigjetës së shpalosësit"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Zgjidh gjithçka"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Metodat e input"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "Procesori i dukurive"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Teksti"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Me të trasha"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Strikeout"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "Spiranca"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "Orientimi"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "Gjerësia e pjesës"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "Lartësia e pjesës"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "Pjesë (clip)"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "Mbush (përshtat) katrorin e pjesës"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "Spostimi X"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "Spostimi Y"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "Ngjyrosja"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "Ngjyra mbushëse GDK"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "Fill stipple"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Gjërësia e tekstit"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Lartësia e tekstit"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "Përdor elipse"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "Elipse"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "Në krye automatikisht"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "Simbolet ndërprerës"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "Rreshtat maksimum"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "Vizato kornizat"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "Lejo rreshtat e rinj"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "Vizato sfondin"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "Vizato pulsantin"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "Pozicioni i kursorit"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "Konteksti IM"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "Trajto popup"
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+msgid "Collection"
+msgstr "Koleksioni"
+
+#: gal/menus/gal-define-views-dialog.c:312
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "Përcakto paraqitjet për %s"
+
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
+msgid "Define Views"
+msgstr "Përcakto paraqitjet"
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "Përcakto paraqitjet për \"%s\""
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "_Ndrysho..."
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
+msgid "Instance"
+msgstr "Shembull"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+msgid "Save Current View"
+msgstr "Ruaj paraqitjen aktuale"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid "_Create new view"
+msgstr "_Krijo një paraqitje të re"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+msgid "_Name:"
+msgstr "_Emri:"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "_Replace existing view"
+msgstr "_Zëvendëso paraqitjen ekzistuese"
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Paraqitja e personalizuar"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Ruaj paraqitjen e personalizuar"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "Përcakto paraqitjet..."
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "Emri"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "Fabrikë"
+
+#: gal/menus/gal-view-new-dialog.c:108
+msgid "Define New View"
+msgstr "Përcakto paraqitjen e re"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Emri i pamjes së re:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Lloji i paraqitjes:"
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr "Grupi %i"
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:394
+msgid "custom"
+msgstr "e personalizuar"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:436
+msgid "Custom Color:"
+msgstr "Ngjyra e personalizuar:"
+
+#: gal/widgets/color-palette.c:444
+msgid "Choose Custom Color"
+msgstr "Zgjidh ngjyrën e personalizuar"
+
+#: gal/widgets/color-palette.c:577
+msgid "black"
+msgstr "e zezë"
+
+#: gal/widgets/color-palette.c:578
+msgid "light brown"
+msgstr "kafe e hapur"
+
+#: gal/widgets/color-palette.c:579
+msgid "brown gold"
+msgstr "kafe e artë"
+
+#: gal/widgets/color-palette.c:580
+msgid "dark green #2"
+msgstr "e gjelbër e errët #2"
+
+#: gal/widgets/color-palette.c:581
+msgid "navy"
+msgstr "navy"
+
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
+msgid "dark blue"
+msgstr "blu e errët"
+
+#: gal/widgets/color-palette.c:583
+msgid "purple #2"
+msgstr "vjollcë #2"
+
+#: gal/widgets/color-palette.c:584
+msgid "very dark gray"
+msgstr "gri shumë e errët"
+
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
+msgid "dark red"
+msgstr "e kuqe e errët"
+
+#: gal/widgets/color-palette.c:588
+msgid "red-orange"
+msgstr "portokalli e kuqe"
+
+#: gal/widgets/color-palette.c:589
+msgid "gold"
+msgstr "ngjyrë ari"
+
+#: gal/widgets/color-palette.c:590
+msgid "dark green"
+msgstr "jeshile e errët"
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "dull blue"
+msgstr "blu e njëtrajtshme"
+
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
+msgid "blue"
+msgstr "blu"
+
+#: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr "vjollcë e njëtrajtshme"
+
+#: gal/widgets/color-palette.c:594
+msgid "dark grey"
+msgstr "gri e errët"
+
+#: gal/widgets/color-palette.c:597
+msgid "red"
+msgstr "e kuqe"
+
+#: gal/widgets/color-palette.c:598
+msgid "orange"
+msgstr "portokalli"
+
+#: gal/widgets/color-palette.c:599
+msgid "lime"
+msgstr "limon"
+
+#: gal/widgets/color-palette.c:600
+msgid "dull green"
+msgstr "jeshile e njëtrajtshme"
+
+#: gal/widgets/color-palette.c:601
+msgid "dull blue #2"
+msgstr "blu e njëtrajtshme #2"
+
+#: gal/widgets/color-palette.c:602
+msgid "sky blue #2"
+msgstr "blu qielli #2"
+
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
+msgid "purple"
+msgstr "vjollcë"
+
+#: gal/widgets/color-palette.c:604
+msgid "gray"
+msgstr "jeshile"
+
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
+msgid "magenta"
+msgstr "magenta"
+
+#: gal/widgets/color-palette.c:608
+msgid "bright orange"
+msgstr "portokalli e ndezur"
+
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
+msgid "yellow"
+msgstr "e verdhë"
+
+#: gal/widgets/color-palette.c:610
+msgid "green"
+msgstr "jeshile"
+
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
+msgid "cyan"
+msgstr "lejla"
+
+#: gal/widgets/color-palette.c:612
+msgid "bright blue"
+msgstr "blu e ndezur"
+
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
+msgid "red purple"
+msgstr "vjollcë e kuqe"
+
+#: gal/widgets/color-palette.c:614
+msgid "light grey"
+msgstr "gri e lehtë"
+
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
+msgid "pink"
+msgstr "rozë"
+
+#: gal/widgets/color-palette.c:618
+msgid "light orange"
+msgstr "portokalli e lehtë"
+
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
+msgid "light yellow"
+msgstr "e verdhë e lehtë"
+
+#: gal/widgets/color-palette.c:620
+msgid "light green"
+msgstr "jeshile e hapur"
+
+#: gal/widgets/color-palette.c:621
+msgid "light cyan"
+msgstr "light cyan"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
+msgid "light blue"
+msgstr "blu e hapur"
+
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
+msgid "light purple"
+msgstr "vjollcë e hapur"
+
+#: gal/widgets/color-palette.c:624
+msgid "white"
+msgstr "e bardhë"
+
+#: gal/widgets/color-palette.c:629
+msgid "purplish blue"
+msgstr "blu violet"
+
+#: gal/widgets/color-palette.c:633
+msgid "dark purple"
+msgstr "vjollcë e errët"
+
+#: gal/widgets/color-palette.c:635
+msgid "sky blue"
+msgstr "blu qielli"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr "Ditëlindja"
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr "Punë"
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr "Konkurencë"
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr "Të preferuar"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr "Dhurata"
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr "Qëllimi/Objektivet"
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr "Pushim"
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr "Kartolina"
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr "Kontekte të rendësishme"
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr "Ide"
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr "Internacionale"
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr "Klientë të rendësishëm"
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr "Të ndryshme"
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr "Personale"
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr "Telefonime"
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr "Gjendja"
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr "Strategjitë"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr "Furnizues"
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr "Koha & Shpenzimet"
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr "VIP"
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr "Në pritje"
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr "ECML"
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr "ECategoriesMasterListCombo"
+
+#: gal/widgets/e-categories-master-list-dialog.c:213
+msgid "* Click here to add a category *"
+msgstr "* kliko këtu për të shtuar një kategori *"
+
+#: gal/widgets/e-categories-master-list-dialog.c:214
+msgid "Category"
+msgstr "Kategoria"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+msgid "Add Category"
+msgstr "Shto një kategori"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+msgid "Edit Category"
+msgstr "Ndrysho kategorinë"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr "Ndrysho listën globale të kategorive"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+msgid "_Edit category:"
+msgstr "_Ndrysho kategorinë:"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+msgid "_New category:"
+msgstr "_Kategori e re:"
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+msgid "All Categories"
+msgstr "Të gjitha kategoritë"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Kategoritë"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Shtoje tek lista globale e kategorive"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Shtoi të gjitha tek lista globale e kategorive"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Hiqe nga lista globale e kategorive"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Hiqi të gjitha nga lista globale e kategorive"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Ndrysho kategoritë"
+
+#: gal/widgets/e-selection-model.c:210
+msgid "Sorter"
+msgstr "Rendit"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr "Mënyra e zgjedhjes"
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr "Modalitet kursor"
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Ndrysho listën qendrore të kategorive..."
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Element(e) që bëjnë pjesë në këto _kategori:"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "Kategoritë në _dispozicion:"
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "kategoritë"

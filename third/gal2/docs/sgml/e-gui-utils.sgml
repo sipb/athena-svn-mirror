@@ -1,4 +1,4 @@
-<refentry id="gal-e-gui-utils" revision="12 Jan 2001">
+<refentry id="gal-e-gui-utils">
 <refmeta>
 <refentrytitle>e-gui-utils</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,26 +10,31 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
-void        <link linkend="e-popup-menu">e_popup_menu</link>                    (<link linkend="GtkMenu">GtkMenu</link> *menu,
+<link linkend="void">void</link>        <link linkend="e-popup-menu">e_popup_menu</link>                    (<link linkend="GtkMenu">GtkMenu</link> *menu,
                                              <link linkend="GdkEventButton">GdkEventButton</link> *event);
-void        <link linkend="e-auto-kill-popup-menu-on-hide">e_auto_kill_popup_menu_on_hide</link>  (<link linkend="GtkMenu">GtkMenu</link> *menu);
-void        <link linkend="e-notice">e_notice</link>                        (<link linkend="GtkWindow">GtkWindow</link> *window,
-                                             const char *type,
-                                             const char *format,
+<link linkend="void">void</link>        <link linkend="e-auto-kill-popup-menu-on-hide">e_auto_kill_popup_menu_on_hide</link>  (<link linkend="GtkMenu">GtkMenu</link> *menu);
+<link linkend="void">void</link>        <link linkend="e-notice">e_notice</link>                        (<link linkend="GtkWindow">GtkWindow</link> *window,
+                                             const <link linkend="char">char</link> *type,
+                                             const <link linkend="char">char</link> *format,
                                              ...);
-void        <link linkend="e-container-foreach-leaf">e_container_foreach_leaf</link>        (<link linkend="GtkContainer">GtkContainer</link> *container,
+<link linkend="void">void</link>        <link linkend="e-container-foreach-leaf">e_container_foreach_leaf</link>        (<link linkend="GtkContainer">GtkContainer</link> *container,
                                              <link linkend="GtkCallback">GtkCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> closure);
-void        <link linkend="e-container-focus-nth-entry">e_container_focus_nth_entry</link>     (<link linkend="GtkContainer">GtkContainer</link> *container,
-                                             int n);
+<link linkend="void">void</link>        <link linkend="e-container-focus-nth-entry">e_container_focus_nth_entry</link>     (<link linkend="GtkContainer">GtkContainer</link> *container,
+                                             <link linkend="int">int</link> n);
 <link linkend="gint">gint</link>        <link linkend="e-container-change-tab-order">e_container_change_tab_order</link>    (<link linkend="GtkContainer">GtkContainer</link> *container,
                                              <link linkend="GList">GList</link> *widgets);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -46,134 +51,110 @@ void        <link linkend="e-container-focus-nth-entry">e_container_focus_nth_en
 <title>Details</title>
 <refsect2>
 <title><anchor id="e-popup-menu">e_popup_menu ()</title>
-<programlisting>void        e_popup_menu                    (<link linkend="GtkMenu">GtkMenu</link> *menu,
+<indexterm><primary>e_popup_menu</primary></indexterm><programlisting><link linkend="void">void</link>        e_popup_menu                    (<link linkend="GtkMenu">GtkMenu</link> *menu,
                                              <link linkend="GdkEventButton">GdkEventButton</link> *event);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>menu</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-auto-kill-popup-menu-on-hide">e_auto_kill_popup_menu_on_hide ()</title>
-<programlisting>void        e_auto_kill_popup_menu_on_hide  (<link linkend="GtkMenu">GtkMenu</link> *menu);</programlisting>
+<indexterm><primary>e_auto_kill_popup_menu_on_hide</primary></indexterm><programlisting><link linkend="void">void</link>        e_auto_kill_popup_menu_on_hide  (<link linkend="GtkMenu">GtkMenu</link> *menu);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>menu</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-notice">e_notice ()</title>
-<programlisting>void        e_notice                        (<link linkend="GtkWindow">GtkWindow</link> *window,
-                                             const char *type,
-                                             const char *format,
+<indexterm><primary>e_notice</primary></indexterm><programlisting><link linkend="void">void</link>        e_notice                        (<link linkend="GtkWindow">GtkWindow</link> *window,
+                                             const <link linkend="char">char</link> *type,
+                                             const <link linkend="char">char</link> *format,
                                              ...);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>format</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-container-foreach-leaf">e_container_foreach_leaf ()</title>
-<programlisting>void        e_container_foreach_leaf        (<link linkend="GtkContainer">GtkContainer</link> *container,
+<indexterm><primary>e_container_foreach_leaf</primary></indexterm><programlisting><link linkend="void">void</link>        e_container_foreach_leaf        (<link linkend="GtkContainer">GtkContainer</link> *container,
                                              <link linkend="GtkCallback">GtkCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>container</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>container</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-container-focus-nth-entry">e_container_focus_nth_entry ()</title>
-<programlisting>void        e_container_focus_nth_entry     (<link linkend="GtkContainer">GtkContainer</link> *container,
-                                             int n);</programlisting>
+<indexterm><primary>e_container_focus_nth_entry</primary></indexterm><programlisting><link linkend="void">void</link>        e_container_focus_nth_entry     (<link linkend="GtkContainer">GtkContainer</link> *container,
+                                             <link linkend="int">int</link> n);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>container</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>container</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-container-change-tab-order">e_container_change_tab_order ()</title>
-<programlisting><link linkend="gint">gint</link>        e_container_change_tab_order    (<link linkend="GtkContainer">GtkContainer</link> *container,
+<indexterm><primary>e_container_change_tab_order</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_container_change_tab_order    (<link linkend="GtkContainer">GtkContainer</link> *container,
                                              <link linkend="GList">GList</link> *widgets);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>container</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>widgets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>container</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widgets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

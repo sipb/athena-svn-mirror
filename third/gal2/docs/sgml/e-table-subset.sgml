@@ -1,4 +1,4 @@
-<refentry id="ETableSubset" revision="12 Jan 2001">
+<refentry id="ETableSubset">
 <refmeta>
 <refentrytitle>ETableSubset</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,10 +18,10 @@
 #define     <link linkend="E-TABLE-SUBSET-TYPE-CAPS">E_TABLE_SUBSET_TYPE</link>
 typedef     <link linkend="ETableSubset">ETableSubset</link>;
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-subset-new">e_table_subset_new</link>             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int n_vals);
+                                             <link linkend="int">int</link> n_vals);
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-subset-construct">e_table_subset_construct</link>       (<link linkend="ETableSubset">ETableSubset</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *source,
-                                             int nvals);
+                                             <link linkend="int">int</link> nvals);
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-subset-get-toplevel">e_table_subset_get_toplevel</link>    (<link linkend="ETableSubset">ETableSubset</link> *table_model);
 
 </synopsis>
@@ -33,9 +34,15 @@ typedef     <link linkend="ETableSubset">ETableSubset</link>;
   <link linkend="GtkObject">GtkObject</link>
    +----<link linkend="ETableModel">ETableModel</link>
          +----ETableSubset
+               +----<link linkend="ETableSubsetVariable">ETableSubsetVariable</link>
+               +----<link linkend="ETableSorted">ETableSorted</link>
 </synopsis>
 
 </refsect1>
+
+
+
+
 
 
 
@@ -51,14 +58,14 @@ typedef     <link linkend="ETableSubset">ETableSubset</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SUBSET-TYPE-CAPS">E_TABLE_SUBSET_TYPE</title>
-<programlisting>#define E_TABLE_SUBSET_TYPE        (e_table_subset_get_type ())
+<indexterm><primary>E_TABLE_SUBSET_TYPE</primary></indexterm><programlisting>#define E_TABLE_SUBSET_TYPE        (e_table_subset_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSubset">ETableSubset</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSubset</primary></indexterm><programlisting>typedef struct {
 	ETableModel base;
 
 	ETableModel  *source;
@@ -78,70 +85,58 @@ typedef     <link linkend="ETableSubset">ETableSubset</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-new">e_table_subset_new ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_new             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int n_vals);</programlisting>
+<indexterm><primary>e_table_subset_new</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_new             (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> n_vals);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n_vals</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_vals</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-construct">e_table_subset_construct ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_construct       (<link linkend="ETableSubset">ETableSubset</link> *ets,
+<indexterm><primary>e_table_subset_construct</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_construct       (<link linkend="ETableSubset">ETableSubset</link> *ets,
                                              <link linkend="ETableModel">ETableModel</link> *source,
-                                             int nvals);</programlisting>
+                                             <link linkend="int">int</link> nvals);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>source</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>nvals</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>source</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>nvals</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-get-toplevel">e_table_subset_get_toplevel ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_get_toplevel    (<link linkend="ETableSubset">ETableSubset</link> *table_model);</programlisting>
+<indexterm><primary>e_table_subset_get_toplevel</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_get_toplevel    (<link linkend="ETableSubset">ETableSubset</link> *table_model);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>table_model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>table_model</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

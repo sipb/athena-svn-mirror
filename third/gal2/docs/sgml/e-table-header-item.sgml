@@ -1,4 +1,4 @@
-<refentry id="ETableHeaderItem" revision="12 Jan 2001">
+<refentry id="ETableHeaderItem">
 <refmeta>
 <refentrytitle>ETableHeaderItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -31,15 +32,19 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableHeaderItem--ETableHeader">ETableHeader</link>&quot;         <link linkend="GtkObject">GtkObject</link>            : Write
-  &quot;<link linkend="ETableHeaderItem--full-header">full_header</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Read / Write
-  &quot;<link linkend="ETableHeaderItem--dnd-code">dnd_code</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
+  &quot;<link linkend="ETableHeaderItem--full-header">full-header</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Read / Write
+  &quot;<link linkend="ETableHeaderItem--dnd-code">dnd-code</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
   &quot;<link linkend="ETableHeaderItem--fontset">fontset</link>&quot;              <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="ETableHeaderItem--sort-info">sort_info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableHeaderItem--sort-info">sort-info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Write
   &quot;<link linkend="ETableHeaderItem--table">table</link>&quot;                <link linkend="GtkObject">GtkObject</link>            : Write
 </synopsis>
 </refsect1>
@@ -49,7 +54,7 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
 <synopsis>
 
 &quot;<link linkend="ETableHeaderItem-button-pressed">button-pressed</link>&quot;
-            void        user_function      (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
                                             <link linkend="gpointer">gpointer</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -69,12 +74,12 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-HEADER-ITEM-TYPE-CAPS">E_TABLE_HEADER_ITEM_TYPE</title>
-<programlisting>#define E_TABLE_HEADER_ITEM_TYPE        (e_table_header_item_get_type ())
+<indexterm><primary>E_TABLE_HEADER_ITEM_TYPE</primary></indexterm><programlisting>#define E_TABLE_HEADER_ITEM_TYPE        (e_table_header_item_get_type ())
 </programlisting>
 </refsect2>
 <refsect2>
 <title><anchor id="ETableHeaderItem">ETableHeaderItem</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableHeaderItem</primary></indexterm><programlisting>typedef struct {
 	GnomeCanvasItem  parent;
 	ETableHeader    *eth;
 
@@ -129,7 +134,7 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableHeaderItem--ETableHeader">&quot;<literal>ETableHeader</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
@@ -139,39 +144,34 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
    columns from the model are going to be displayed and in which
    order.  It also contains details about the actual text displayed to
    render the column names.
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableHeaderItem--full-header">&quot;<literal>full_header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--full-header">&quot;<literal>full-header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-   This is used to pass a collection of all the possible headers the
-   ETable will display.  This information is used during the
-   interactive configuration of the data to be displayed by the ETable
-   widget and to allow the user to drag and drop column names from the
-   field chooser into the table header.  This is of type <literal>ETableHeader</literal>
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableHeaderItem--dnd-code">&quot;<literal>dnd_code</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--dnd-code">&quot;<literal>dnd-code</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-   String representing the dnd code for this ETable.
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableHeaderItem--fontset">&quot;<literal>fontset</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
 <listitem>
 <para>
    This specified the X font set to use to render the column title.
    This is a string.
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableHeaderItem--sort-info">&quot;<literal>sort_info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableHeaderItem--sort-info">&quot;<literal>sort-info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
-<para>
-    An <literal>ETableSortInfo</literal> object that is used to store the information
-    about sorting and grouping in the ETable.
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableHeaderItem--table">&quot;<literal>table</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
 <listitem>
 <para>
     This is a pointer to our parent <literal>ETable</literal> object.  This is used
     during by the interactive configuration process. 
-</para></listitem></varlistentry>
+</para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -179,7 +179,7 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETableHeaderItem-button-pressed">The &quot;button-pressed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableHeaderItem">ETableHeaderItem</link> *etableheaderitem,
                                             <link linkend="gpointer">gpointer</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -187,22 +187,18 @@ typedef     <link linkend="ETableHeaderItem">ETableHeaderItem</link>;
   pass the GdkEvent as the argument to the signal handler.
 </para>
 
-<para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableheaderitem</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>The GdkEvent.
+<para><variablelist role="params">
+<varlistentry><term><parameter>etableheaderitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>The GdkEvent.
 </para>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

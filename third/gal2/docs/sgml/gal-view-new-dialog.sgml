@@ -1,4 +1,4 @@
-<refentry id="GalViewNewDialog" revision="12 Jan 2001">
+<refentry id="GalViewNewDialog">
 <refmeta>
 <refentrytitle>GalViewNewDialog</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -38,8 +39,12 @@ struct      <link linkend="GalViewNewDialog-struct">GalViewNewDialog</link>;
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="GalViewNewDialog--name">name</link>&quot;                 <link linkend="gchar">gchar</link>*               : Read / Write
@@ -60,72 +65,62 @@ struct      <link linkend="GalViewNewDialog-struct">GalViewNewDialog</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GAL-VIEW-NEW-DIALOG-TYPE-CAPS">GAL_VIEW_NEW_DIALOG_TYPE</title>
-<programlisting>#define GAL_VIEW_NEW_DIALOG_TYPE			(gal_view_new_dialog_get_type ())
+<indexterm><primary>GAL_VIEW_NEW_DIALOG_TYPE</primary></indexterm><programlisting>#define GAL_VIEW_NEW_DIALOG_TYPE			(gal_view_new_dialog_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GalViewNewDialog-struct">struct GalViewNewDialog</title>
-<programlisting>struct GalViewNewDialog;</programlisting>
+<indexterm><primary>GalViewNewDialog</primary></indexterm><programlisting>struct GalViewNewDialog;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gal-view-new-dialog-new">gal_view_new_dialog_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gal_view_new_dialog_new         (<link linkend="GalViewCollection">GalViewCollection</link> *collection);</programlisting>
+<indexterm><primary>gal_view_new_dialog_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gal_view_new_dialog_new         (<link linkend="GalViewCollection">GalViewCollection</link> *collection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>collection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>collection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-new-dialog-construct">gal_view_new_dialog_construct ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gal_view_new_dialog_construct   (<link linkend="GalViewNewDialog">GalViewNewDialog</link> *dialog,
+<indexterm><primary>gal_view_new_dialog_construct</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gal_view_new_dialog_construct   (<link linkend="GalViewNewDialog">GalViewNewDialog</link> *dialog,
                                              <link linkend="GalViewCollection">GalViewCollection</link> *collection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>collection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>collection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="GalViewNewDialog--name">&quot;<literal>name</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="GalViewNewDialog--factory">&quot;<literal>factory</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

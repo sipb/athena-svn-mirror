@@ -1,4 +1,4 @@
-<refentry id="gal-e-table-tooltip" revision="12 Jan 2001">
+<refentry id="gal-e-table-tooltip">
 <refmeta>
 <refentrytitle>e-table-tooltip</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,6 +18,10 @@
 typedef     <link linkend="ETableTooltip">ETableTooltip</link>;
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -33,7 +38,7 @@ typedef     <link linkend="ETableTooltip">ETableTooltip</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="ETableTooltip">ETableTooltip</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableTooltip</primary></indexterm><programlisting>typedef struct {
 	GtkWidget *window;
 	gint timer;
 	int col, row;

@@ -1,4 +1,4 @@
-<refentry id="gal-e-xml-utils" revision="12 Jan 2001">
+<refentry id="gal-e-xml-utils">
 <refmeta>
 <refentrytitle>e-xml-utils</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -18,32 +19,36 @@
                                              const <link linkend="xmlChar">xmlChar</link> *child_name);
 <link linkend="xmlNode">xmlNode</link>*    <link linkend="e-xml-get-child-by-name-by-lang">e_xml_get_child_by_name_by_lang</link> (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *child_name,
-                                             const char *lang);
-int         <link linkend="e-xml-get-integer-prop-by-name">e_xml_get_integer_prop_by_name</link>  (const <link linkend="xmlNode">xmlNode</link> *parent,
+                                             const <link linkend="char">char</link> *lang);
+<link linkend="int">int</link>         <link linkend="e-xml-get-integer-prop-by-name">e_xml_get_integer_prop_by_name</link>  (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);
-void        <link linkend="e-xml-set-integer-prop-by-name">e_xml_set_integer_prop_by_name</link>  (<link linkend="xmlNode">xmlNode</link> *parent,
+<link linkend="void">void</link>        <link linkend="e-xml-set-integer-prop-by-name">e_xml_set_integer_prop_by_name</link>  (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
-                                             int value);
+                                             <link linkend="int">int</link> value);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-xml-get-bool-prop-by-name">e_xml_get_bool_prop_by_name</link>     (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);
-void        <link linkend="e-xml-set-bool-prop-by-name">e_xml_set_bool_prop_by_name</link>     (<link linkend="xmlNode">xmlNode</link> *parent,
+<link linkend="void">void</link>        <link linkend="e-xml-set-bool-prop-by-name">e_xml_set_bool_prop_by_name</link>     (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
                                              <link linkend="gboolean">gboolean</link> value);
 <link linkend="double">double</link>      <link linkend="e-xml-get-double-prop-by-name">e_xml_get_double_prop_by_name</link>   (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);
-void        <link linkend="e-xml-set-double-prop-by-name">e_xml_set_double_prop_by_name</link>   (<link linkend="xmlNode">xmlNode</link> *parent,
+<link linkend="void">void</link>        <link linkend="e-xml-set-double-prop-by-name">e_xml_set_double_prop_by_name</link>   (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
                                              <link linkend="double">double</link> value);
-char*       <link linkend="e-xml-get-string-prop-by-name">e_xml_get_string_prop_by_name</link>   (const <link linkend="xmlNode">xmlNode</link> *parent,
+<link linkend="char">char</link>*       <link linkend="e-xml-get-string-prop-by-name">e_xml_get_string_prop_by_name</link>   (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);
-void        <link linkend="e-xml-set-string-prop-by-name">e_xml_set_string_prop_by_name</link>   (<link linkend="xmlNode">xmlNode</link> *parent,
+<link linkend="void">void</link>        <link linkend="e-xml-set-string-prop-by-name">e_xml_set_string_prop_by_name</link>   (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
-                                             char *value);
-char*       <link linkend="e-xml-get-translated-string-prop-by-name">e_xml_get_translated_string_prop_by_name</link>
+                                             <link linkend="char">char</link> *value);
+<link linkend="char">char</link>*       <link linkend="e-xml-get-translated-string-prop-by-name">e_xml_get_translated_string_prop_by_name</link>
                                             (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -60,259 +65,215 @@ char*       <link linkend="e-xml-get-translated-string-prop-by-name">e_xml_get_t
 <title>Details</title>
 <refsect2>
 <title><anchor id="e-xml-get-child-by-name">e_xml_get_child_by_name ()</title>
-<programlisting><link linkend="xmlNode">xmlNode</link>*    e_xml_get_child_by_name         (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_child_by_name</primary></indexterm><programlisting><link linkend="xmlNode">xmlNode</link>*    e_xml_get_child_by_name         (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *child_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-child-by-name-by-lang">e_xml_get_child_by_name_by_lang ()</title>
-<programlisting><link linkend="xmlNode">xmlNode</link>*    e_xml_get_child_by_name_by_lang (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_child_by_name_by_lang</primary></indexterm><programlisting><link linkend="xmlNode">xmlNode</link>*    e_xml_get_child_by_name_by_lang (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *child_name,
-                                             const char *lang);</programlisting>
+                                             const <link linkend="char">char</link> *lang);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>lang</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>lang</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-integer-prop-by-name">e_xml_get_integer_prop_by_name ()</title>
-<programlisting>int         e_xml_get_integer_prop_by_name  (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_integer_prop_by_name</primary></indexterm><programlisting><link linkend="int">int</link>         e_xml_get_integer_prop_by_name  (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-set-integer-prop-by-name">e_xml_set_integer_prop_by_name ()</title>
-<programlisting>void        e_xml_set_integer_prop_by_name  (<link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_set_integer_prop_by_name</primary></indexterm><programlisting><link linkend="void">void</link>        e_xml_set_integer_prop_by_name  (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
-                                             int value);</programlisting>
+                                             <link linkend="int">int</link> value);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-bool-prop-by-name">e_xml_get_bool_prop_by_name ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_xml_get_bool_prop_by_name     (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_bool_prop_by_name</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_xml_get_bool_prop_by_name     (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-set-bool-prop-by-name">e_xml_set_bool_prop_by_name ()</title>
-<programlisting>void        e_xml_set_bool_prop_by_name     (<link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_set_bool_prop_by_name</primary></indexterm><programlisting><link linkend="void">void</link>        e_xml_set_bool_prop_by_name     (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
                                              <link linkend="gboolean">gboolean</link> value);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-double-prop-by-name">e_xml_get_double_prop_by_name ()</title>
-<programlisting><link linkend="double">double</link>      e_xml_get_double_prop_by_name   (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_double_prop_by_name</primary></indexterm><programlisting><link linkend="double">double</link>      e_xml_get_double_prop_by_name   (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-set-double-prop-by-name">e_xml_set_double_prop_by_name ()</title>
-<programlisting>void        e_xml_set_double_prop_by_name   (<link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_set_double_prop_by_name</primary></indexterm><programlisting><link linkend="void">void</link>        e_xml_set_double_prop_by_name   (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
                                              <link linkend="double">double</link> value);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-string-prop-by-name">e_xml_get_string_prop_by_name ()</title>
-<programlisting>char*       e_xml_get_string_prop_by_name   (const <link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_get_string_prop_by_name</primary></indexterm><programlisting><link linkend="char">char</link>*       e_xml_get_string_prop_by_name   (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-set-string-prop-by-name">e_xml_set_string_prop_by_name ()</title>
-<programlisting>void        e_xml_set_string_prop_by_name   (<link linkend="xmlNode">xmlNode</link> *parent,
+<indexterm><primary>e_xml_set_string_prop_by_name</primary></indexterm><programlisting><link linkend="void">void</link>        e_xml_set_string_prop_by_name   (<link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name,
-                                             char *value);</programlisting>
+                                             <link linkend="char">char</link> *value);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-xml-get-translated-string-prop-by-name">e_xml_get_translated_string_prop_by_name ()</title>
-<programlisting>char*       e_xml_get_translated_string_prop_by_name
+<indexterm><primary>e_xml_get_translated_string_prop_by_name</primary></indexterm><programlisting><link linkend="char">char</link>*       e_xml_get_translated_string_prop_by_name
                                             (const <link linkend="xmlNode">xmlNode</link> *parent,
                                              const <link linkend="xmlChar">xmlChar</link> *prop_name);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>prop_name</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prop_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

@@ -152,27 +152,40 @@ static void
 dialog_destroyed (gpointer data, GObject *where_object_was)
 {
 	ECategoriesMasterListDialog *ecmld = data;
-	gtk_object_destroy (ecmld);
+	gtk_object_destroy (GTK_OBJECT (ecmld));
+}
+
+static void
+build_list_callback (int row, gpointer data) {
+	GList **listp = data;
+
+	*listp = g_list_prepend (*listp, GINT_TO_POINTER (row));
 }
 
 static void
 dialog_response (GtkObject *dialog, int id, ECategoriesMasterListDialog *ecmld)
 {
 	GtkWidget *scrolled;
+	
 	switch (id) {
 	case 0:    /* Remove */
 		scrolled = glade_xml_get_widget (ecmld->priv->gui, "custom-etable");
 		if (scrolled && E_IS_TABLE_SCROLLED (scrolled)) {
 			ETable *table;
-			int row;
-
+			GList *list = NULL;
+			GList *l;
+	
 			table = e_table_scrolled_get_table (E_TABLE_SCROLLED(scrolled));
 
-			row = e_table_get_cursor_row(table);
-			if (row != -1) {
+			e_table_selected_row_foreach (table, build_list_callback, &list);
+			for (l = list; l != NULL; l = g_list_next (l)) {
+				int row = GPOINTER_TO_INT (l->data);
+
 				e_categories_master_list_delete (ecmld->priv->ecml, row);
-				e_categories_master_list_commit (ecmld->priv->ecml);
 			}
+			g_list_free (list);
+			
+			e_categories_master_list_commit (ecmld->priv->ecml);
 		}
 		break;
 	case GTK_RESPONSE_CLOSE:
@@ -180,6 +193,8 @@ dialog_response (GtkObject *dialog, int id, ECategoriesMasterListDialog *ecmld)
 		break;
 	}
 }
+
+
 
 #if 0
 static void
@@ -234,7 +249,7 @@ static void
 setup_gui (ECategoriesMasterListDialog *ecmld)
 {
 	GladeXML *gui = glade_xml_new (
-		GAL_GLADEDIR "/e-categories-master-list-dialog.glade", NULL, PACKAGE);
+		GAL_GLADEDIR "/e-categories-master-list-dialog.glade", NULL, E_I18N_DOMAIN);
 	GtkWidget *dialog;
 
 	ecmld->priv->gui = gui;

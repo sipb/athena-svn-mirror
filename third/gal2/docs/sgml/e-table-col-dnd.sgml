@@ -1,4 +1,4 @@
-<refentry id="gal-e-table-col-dnd" revision="12 Jan 2001">
+<refentry id="gal-e-table-col-dnd">
 <refmeta>
 <refentrytitle>e-table-col-dnd</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,6 +18,10 @@
 #define     <link linkend="TARGET-ETABLE-COL-TYPE-CAPS">TARGET_ETABLE_COL_TYPE</link>
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -33,7 +38,7 @@
 <title>Details</title>
 <refsect2>
 <title><anchor id="TARGET-ETABLE-COL-TYPE-CAPS">TARGET_ETABLE_COL_TYPE</title>
-<programlisting>#define TARGET_ETABLE_COL_TYPE "application/x-etable-column-header"
+<indexterm><primary>TARGET_ETABLE_COL_TYPE</primary></indexterm><programlisting>#define TARGET_ETABLE_COL_TYPE "application/x-etable-column-header"
 </programlisting>
 <para>
 
