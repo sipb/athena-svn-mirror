@@ -1,5 +1,12 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/Imakefile,v 1.1 1991-01-22 15:24:16 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/Imakefile,v 1.2 1991-03-05 10:49:33 epeisach Exp $
 
+#define ISUBDIRS dm xlogin console conf 
+#define SUBDIRS wcl 
+
+xlogin:: wcl
+console:: wcl
+
+#if 0
 all:
 	cd dm; make all
 	cd wcl; make all
@@ -9,7 +16,7 @@ all:
 
 install:
 	cd dm; make install DESTDIR=${DESTDIR}
-#	cd wcl; make install DESTDIR=${DESTDIR}
+ #	cd wcl; make install DESTDIR=${DESTDIR}
 	cd xlogin; make install DESTDIR=${DESTDIR}
 	cd console; make install DESTDIR=${DESTDIR}
 	cd conf; make install DESTDIR=${DESTDIR}
@@ -23,3 +30,4 @@ clean:
 	cd cleanup; make clean
 
 depend:
+#endif
