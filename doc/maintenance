@@ -261,17 +261,39 @@ following guidelines should help the release go smoothly:
 	  updated as bug fixes occur.  Ideally, no new features should
 	  be committed to the source tree during the beta phase.
 
-	  At the end of the beta phase, a release branch should
-	  be created with a name of the form athena-8_1, and tagged
-	  with athena-8_1-early.  A checked-out tree should be made in
-	  /afs/dev.mit.edu/source for the release branch, with a name
-	  of the form src-8.1.  It should have a locker with a name of
-	  the form source-8.1.  A final full build of the system packs
-	  should be done from the release branch, with the build tree
-	  located in /afs/dev.mit.edu/project/release.  The new
-	  release build machines should be set up for incremental
-	  changes to the new release at this point (which means
-	  turning off the wash).
+	  For the transition from beta to early:
+
+		- Prepare a release branch with a name of the form
+		  athena-8_1.  Tag it with athena-8_1-early.
+
+		- Create a volume with a mountpoint of the form
+		  /afs/dev.mit.edu/source/src-8.1 and check out a tree
+		  on the branch there.  Set the permissions by doing
+		  an fs copyacl from an older source tree before the
+		  checkout, and run CVSROOT/afs-permissions.sh after
+		  the checkout.  Have a filsys entry of the form
+		  source-8.1 created for the new tree.
+
+		- Create a volume for the builds for each platform
+		  under /afs/dev.mit.edu/project/release at
+		  <version>/build/<platform>.  Copy the acl from a
+		  previous build tree.
+
+		- For each platform, turn off the wash and set up the
+		  washing machine as the new release build machine.
+		  You'll need to update the machine to the new
+		  operating system if necessary, which is more of an
+		  art then a science.  When you're done, make sure
+		  that:
+			builder has access
+			RVDCLIENT is false and all syspacks detached
+			/build is a symlink to the build tree
+			/os is a symlink to the rw of the os volume
+			/srvd is a symlink to the ro of the packs
+			/srvd.new is a symlink to the rw of the packs
+
+		  Now do a final full build of the release on the new
+		  build machine, as "builder".
 
 	* Early
 
@@ -317,7 +339,7 @@ release are:
 
 	* Check in the changes on the mainline (if they apply) and on
 	  the release branch and update the relevant sections of the
-	  source tree in /afs/dev.mit.edu/source.
+	  source tree in /mit/source-<version>.
 
 	* If the update needs to do anything other than track against
 	  the system packs, you must prepare a version script which
@@ -326,12 +348,16 @@ release are:
 	  update, and specifies which if any configuration files need
 	  to be updated.  See the update script
 	  (packs/update/do-update.sh) for details.  See
-	  packs/build/update/platform/*/configfiles for a list of
+	  packs/build/update/os/*/configfiles for a list of
 	  configuration files for a given platform.  The version
 	  script should be checked in on the mainline and on the
 	  release branch.
 
-	* Make sure to add symlinks in the build tree for any files
+	* Do the remainder of the steps as "builder" on the build
+	  machine.  Probably the best way is to get Kerberos tickets
+	  as "builder" and ssh to the build machine.
+
+	* Make sure to add symlinks under /build tree for any files
 	  you have added.  Note that you probably added a build script
 	  if the update needs to do anything other than track against
 	  the system packs.
