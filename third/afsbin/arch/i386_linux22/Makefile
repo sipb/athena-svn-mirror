@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-12-22 21:25:31 ghudson Exp $
+# $Id: Makefile,v 1.5 1999-12-24 16:01:16 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -35,9 +35,6 @@ install:
 	install -c -m 444 libafs-2.2.10.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.12.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.12-20.o $(DESTDIR)$(VICE)/modload
-	ln -s libafs-2.2.10.mp.o \
-		$(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.mp.o
-	ln -s libafs-2.2.10.o $(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.o
 	install -c -m 555 fs $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 tokens $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 unlog $(DESTDIR)$(ATHRBINDIR)
