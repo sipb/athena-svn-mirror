@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.1 1989-07-06 22:05:14 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.2 1989-07-12 17:18:47 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -77,6 +77,8 @@ t_ask(Request,topic)
       fprintf(stderr,"You are not allowed to ask OLC questions.\n");
       fprintf(stderr,"Does defeat the purpose of things, doesn't it?\n");
       status = ERROR;
+      if(OLC)
+	exit(1);
       break;
 
     case MAX_ASK:
