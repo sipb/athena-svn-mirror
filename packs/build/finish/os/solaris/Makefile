@@ -1,32 +1,37 @@
-# $Id: Makefile,v 1.4 1999-03-24 16:34:45 ghudson Exp $
+# $Id: Makefile,v 1.5 1999-03-29 22:13:09 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
+ATHRBINDIR=/bin/athena
+ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
 ATHMANDIR=/usr/athena/man
-STRIPFILES=/etc/athena/console /bin/athena/attach /bin/athena/attachandrun \
-	/bin/athena/detach /bin/athena/fsid /bin/athena/zinit \
-	/bin/athena/tcsh /etc/athena/xlogin /etc/athena/named \
-	/etc/athena/named-xfer /etc/athena/sshd /etc/athena/xntpd
 
 all:
 
 check:
 
-# The for loop here detects when a file in ${STRIPFILES} is not
-# stripped.  If so, it updates the .unstripped version and strips the
-# file.
+# The for loop here detects when a file tracked onto local disk is an
+# unstripped binary.  If so, it updates the .unstripped version and
+# strips the file.
 install:
-	for file in ${STRIPFILES}; do \
-		f=${DESTDIR}$$file; \
-		u=$$f.unstripped; \
-		case "`file $$f`" in *"not stripped") \
-			rm -f $$u; \
-			cp -p $$f $$u || exit 1; \
-			chmod u+w $$f; \
-			strip $$f || exit 1; \
-			chmod u-w $$f; \
-		;; esac \
+	for f in ${DESTDIR}${ATHRBINDIR}/* ${DESTDIR}${ATHRETCDIR}/*; do \
+		case $$f in \
+		*.unstripped) \
+			;; \
+		*) \
+			u=$$f.unstripped; \
+			case "`file $$f`" in \
+			*"not stripped") \
+				rm -f $$u; \
+				cp -p $$f $$u || exit 1; \
+				chmod u+w $$f; \
+				strip $$f || exit 1; \
+				chmod u-w $$f; \
+				;; \
+			esac \
+			;; \
+		esac \
 	done
 	mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	${DESTDIR}${ATHETCDIR}/track -w -F/os -W${DESTDIR}${ATHLIBDIR} \
