@@ -201,6 +201,8 @@ $ECHO "inetd... \c"
 if [ "${OLC}" = "true" ]; then
 	$ECHO "olcd... \c"
         /usr/athena/etc/olcd &
+	$ECHO "rpd... \c"
+	/usr/athena/etc/rpd &
 fi
 
 if [ "${ZSERVER}" = "true" ] ; then
