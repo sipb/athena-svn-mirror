@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/polld.h,v $
- *	$Id: polld.h,v 1.2 1991-01-16 13:05:33 lwvanels Exp $
+ *	$Id: polld.h,v 1.3 1991-01-27 17:04:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -59,6 +59,10 @@ void tell_main_daemon P((PTF user ));
 
 /* get_list.c */
 int get_user_list P((PTF *users , int *max_people ));
+
+/* hosthash.c */
+void init_cache P((void ));
+struct hostent *c_gethostbyname P((char *name ));
 
 /* locate.c */
 int locate_person P((PTF *person ));
