@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.6 1986-01-29 14:45:00 treese Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.7 1986-02-09 16:40:55 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -142,7 +142,7 @@ save_to_file()
   if (inbuf[0] == (char) NULL)
     return;
   save_index = atoi(inbuf);
-  if ( (save_entry = get_entry(save_index - 1)) == NULL)
+  if ( (save_entry = get_entry(save_index)) == NULL)
     {
       message(2, "Invalid entry number.");
       return;
