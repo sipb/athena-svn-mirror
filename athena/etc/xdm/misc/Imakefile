@@ -33,13 +33,13 @@ CFILES		=	pc_err.c nanny.c pc_bsd.c cons_sysv.c var.c cvt.c \
 			dpy_irix.c nannylib.c testtty.c testsetUser.c \
 			testloginUser.c
 
-LIBS		=	-L/source/athena/lib/AL -lAL -L. -lnanny -lcom_err \
+LIBS		=	-L/build/athena/lib/AL -lAL -L. -lnanny -lcom_err \
 			-lhesiod
 
-AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
-        $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+AFSLIBS = $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a \
+	$(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/liblwp.a 
 
-DEFINES		=	-I/source/athena/lib
+DEFINES		=	-I/build/athena/lib
 
 AnsiCC()
 
@@ -50,7 +50,7 @@ build_program(testloginUser, testloginUser.o,, ${LIBS})
 build_program(testlogoutUser, testlogoutUser.o,, ${LIBS})
 
 SimpleProgram(${NANNY},${NANNYOBJS},${LIBS},${ATHRETCDIR}/${NANNY})
-SimpleProgram(${ELMER},${ELMEROBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/${ELMER})
+SimpleProgram(${ELMER},${ELMEROBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/login/${ELMER})
 install_man(${NANNY}.man,${NANNY}.1)
 
 create_depend(${CFILES})
