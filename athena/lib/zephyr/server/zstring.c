@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_zstring_c[] =
-    "$Id: zstring.c,v 1.2 1991-12-04 13:26:17 lwvanels Exp $";
+    "$Id: zstring.c,v 1.3 1992-01-17 08:01:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -78,7 +78,6 @@ make_zstring(s, downcase)
     new_s = strsave(s);
   new_z = (ZSTRING *) malloc(sizeof(ZSTRING));
   new_z->string = new_s;
-  new_z->len = strlen(new_s);
   new_z->ref_count = 1;
   
   /* Add to beginning of hash table */

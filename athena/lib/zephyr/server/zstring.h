@@ -3,7 +3,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zstring.h,v $
- *	$Id: zstring.h,v 1.2 1991-12-04 13:26:18 lwvanels Exp $
+ *	$Id: zstring.h,v 1.3 1992-01-17 08:00:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -19,7 +19,6 @@
 typedef struct _zstring
 {
   char *string;			/* the string itself */
-  int len;			/* string length, for speed */
   int ref_count;		/* for gc */
   unsigned long hash_val;	/* hash value for this string */
   struct _zstring *next;	/* for linking in hash table */
