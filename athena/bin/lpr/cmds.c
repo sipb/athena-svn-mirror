@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.3 1990-07-04 12:12:26 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.4 1991-03-01 11:49:54 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.3 1990-07-04 12:12:26 epeisach Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.4 1991-03-01 11:49:54 epeisach Exp $";
 #endif lint
 
 /*
@@ -759,7 +759,11 @@ prstat()
 {
 	struct stat stbuf;
 	register int fd, i;
+#ifdef _IBMR2
+	register struct dirent *dp;
+#else
 	register struct direct *dp;
+#endif
 	DIR *dirp;
 
 	bp = pbuf;
@@ -1255,7 +1259,11 @@ flushpr()
 {
 	register int c;
 	register DIR *dirp;
+#ifdef _IBMR2
+	register struct dirent *dp;
+#else
 	register struct direct *dp;
+#endif
 	char *cp, *cp1;
 
 	bp = pbuf;
