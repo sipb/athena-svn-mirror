@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.10 1990-07-16 08:10:02 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_send.c,v 1.11 1990-07-16 09:40:55 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.10 1990-07-16 08:10:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.11 1990-07-16 09:40:55 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -208,6 +208,7 @@ t_mail(Request,file,editor,smargs, check)
   struct stat statbuf;
   char buf[BUF_SIZE];
   char *username;
+  char *realname;
   char *message;
 
   set_option(Request->options, VERIFY);
@@ -226,9 +227,15 @@ t_mail(Request,file,editor,smargs, check)
 	}
   
       if(isme(Request))
-        username = list.connected.username; 
+	{
+	  username = list.connected.username;
+	  realname = list.connected.realname;
+	}
       else
-        username = Request->target.username;
+	{
+	  username = Request->target.username;
+	  realname = Request->target.realname;
+	}
 
       if(check)
 	if(can_receive_mail(username) != SUCCESS)
@@ -252,8 +259,8 @@ t_mail(Request,file,editor,smargs, check)
 	  (!strncmp(message,"No new messages.", strlen("No new messages."))))
 	message = (char *) NULL;
 
-      (void) OMailHeader(Request,file,username, 
-			 list.topic,DEFAULT_MAILHUB,message);
+      (void) OMailHeader(Request, file, username, realname,
+			 list.topic, DEFAULT_MAILHUB, message);
 
       status = edit_message(file,editor);
       if(status == ERROR)
