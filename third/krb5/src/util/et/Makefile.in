@@ -28,7 +28,7 @@ LINTFILES= error_message.c et_name.c init_et.c com_err.c add_to_error_table.c
 LIBOBJS=$(OUTPRE)com_err.$(OBJEXT) \
 	$(OUTPRE)error_message.$(OBJEXT) \
 	$(OUTPRE)et_name.$(OBJEXT) \
-	$(OUTPRE)init_et.$(OBJEXT)
+	$(OUTPRE)init_et.$(OBJEXT) \
 	$(OUTPRE)add_to_error_table.$(OBJECT)
 # for et_lex.lex.c include in error_table.y
 LOCALINCLUDE=-I. -I$(srcdir)
