@@ -1,0 +1,827 @@
+# Copyright (C) 2002 Free Software Foundation.
+# This file is distributed under the same license as the bug-buddy package.
+# pclouds <pclouds@gmx.n�et>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bug-buddy VERSION\n"
+"POT-Creation-Date: 2002-06-19 15:19-0400\n"
+"PO-Revision-Date: 2002-06-08 02:52+0700\n"
+"Last-Translator: pclouds <pclouds@gmx.net>\n"
+"Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bug-buddy.c:55
+msgid "Submit bug report"
+msgstr "Gửi báo cáo lỗi"
+
+#: src/bug-buddy.c:56
+msgid "Only send report to yourself"
+msgstr "Chỉ gửi báo cáo cho chính bạn"
+
+#: src/bug-buddy.c:57
+msgid "Save report to file"
+msgstr "Lưu báo cáo vào tập tin"
+
+#: src/bug-buddy.c:62
+msgid "crashed application"
+msgstr "Ứng dụng hỏng"
+
+#: src/bug-buddy.c:63
+msgid "core file"
+msgstr "tập tin core"
+
+#: src/bug-buddy.c:64
+msgid "nothing"
+msgstr "không có gì"
+
+#: src/bug-buddy.c:69
+msgid "Create a new bug report"
+msgstr "Tạo báo cáo lỗi mới"
+
+#: src/bug-buddy.c:70
+msgid "Add more information to existing report"
+msgstr "Thêm thông tin vào báo cáo đã có"
+
+#: src/bug-buddy.c:79
+msgid "Name of contact"
+msgstr "Tên liên lạc"
+
+#: src/bug-buddy.c:79
+msgid "NAME"
+msgstr "TÊN"
+
+#: src/bug-buddy.c:80
+msgid "Email address of contact"
+msgstr "Địa chỉ liên lạc"
+
+#: src/bug-buddy.c:80
+msgid "EMAIL"
+msgstr "EMAIL"
+
+#: src/bug-buddy.c:81
+msgid "Package containing the program"
+msgstr "Gói tin chứa chương trình"
+
+#: src/bug-buddy.c:81
+msgid "PACKAGE"
+msgstr "GÓI TIN"
+
+#: src/bug-buddy.c:82
+msgid "Version of the package"
+msgstr "Phiên bản của gói tin"
+
+#: src/bug-buddy.c:82
+msgid "VERSION"
+msgstr "PHIÊN BẢN"
+
+#: src/bug-buddy.c:83
+msgid "File name of crashed program"
+msgstr "Tên tập tin của chương trình bị hỏng"
+
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+msgid "FILE"
+msgstr "TẬP TIN"
+
+#: src/bug-buddy.c:84
+msgid "PID of crashed program"
+msgstr "Mã PID của chương trình bị hỏng"
+
+#: src/bug-buddy.c:84
+msgid "PID"
+msgstr "PID"
+
+#: src/bug-buddy.c:85
+msgid "Core file from program"
+msgstr "Tập tin core của chương trình"
+
+#: src/bug-buddy.c:86
+msgid "Text file to include in the report"
+msgstr "Tập tin text bao gồm vao báo cáo"
+
+#: src/bug-buddy.c:96
+#, c-format
+msgid "Could not find widget named %s at %s"
+msgstr "Không thể tìm thấy widget tên %s tại %s"
+
+#: src/bug-buddy.c:208
+msgid ""
+"gdb has not finished getting the debugging information.\n"
+"Kill the gdb process (the stack trace will be incomplete)?"
+msgstr ""
+"gdb đã không hoàn tất việc lấy thông tin debug.\n"
+"Buộc kết thúc gdb chứ (việc dò tìm ngăn xếp sẽ không hoàn chỉnh)?"
+
+#: src/bug-buddy.c:219 src/gdb-buddy.c:125
+msgid "gdb has already exited"
+msgstr "gdb đã kết thúc rồi"
+
+#: src/bug-buddy.c:286
+msgid "Save Backtrace"
+msgstr "Lưu vết lùi"
+
+#: src/bug-buddy.c:305
+#, c-format
+msgid ""
+"There was an error trying to save %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please choose another file and try again."
+msgstr ""
+"Lỗi khi thử lưu %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Vui lòng chọn tập tin khác và thử lại."
+
+#: src/bug-buddy.c:402
+msgid "_Start Mailer"
+msgstr "_Khởi động bộ gửi thư"
+
+#: src/bug-buddy.c:406
+msgid "_Send Report"
+msgstr "_Gửi báo cáo"
+
+#: src/bug-buddy.c:443
+#, c-format
+msgid ""
+"There was an error showing the proxy settings:\n"
+"\n"
+"%s.\n"
+"\n"
+"Please make sure the GNOME Control Center is properly installed."
+msgstr ""
+"Lỗi khi hiện thiết lập proxy:\n"
+"\n"
+"%s.\n"
+"\n"
+"Vui lòng kiểm tra xem Trung tâm điều khiển GNOME có được cài đặt đúng chưa."
+
+#: src/bug-buddy.c:491
+msgid "Hide Debugging Options"
+msgstr "Ẩn tùy chọn debug"
+
+#: src/bug-buddy.c:492
+msgid "Show Debugging Options"
+msgstr "Hiện tùy chọn debug"
+
+#: src/bug-buddy.c:556
+#, fuzzy
+msgid ""
+"$GNOME_CRASHED_APPNAME is deprecated.\n"
+"Please use the --appname command lineargument instead."
+msgstr ""
+"$GNOME_CRASHED_APPNAME is deprecated.\n"
+"Please use the --appname command lineargument instead."
+
+#: src/bug-buddy.c:566
+#, fuzzy
+msgid ""
+"$GNOME_CRASHED_PID is deprecated.\n"
+"Please use the --pid command lineargument instead."
+msgstr ""
+"$GNOME_CRASHED_PID is deprecated.\n"
+"Please use the --pid command lineargument instead."
+
+#: src/bug-buddy.c:582
+msgid ""
+"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
+"It will step you through the process of submitting a bug report."
+msgstr ""
+"Chào mừng đến Bug Buddy, một công cụ giúp báo cáo lỗi cho GNOME.\n"
+"Nó sẽ giúp bạn từng bước để gửi một báo cáo lỗi."
+
+#: src/bug-buddy.c:585
+msgid ""
+"\n"
+"\n"
+"You are seeing this because another application has crashed."
+msgstr ""
+"\n"
+"\n"
+"Bạn nhìn thấy hộp thoại này vì một ứng dụng khác đã bị hỏng."
+
+#: src/bug-buddy.c:588
+msgid ""
+"\n"
+"\n"
+"Please wait a few moments while Bug Buddy obtains debugging information from "
+"the applications.  This allows Bug Buddy to provide a more useful bug report."
+msgstr ""
+"\n"
+"\n"
+"Vui lòng chờ một chút trong khi Bug Buddy lấy các thông tin debug từ ứng "
+"dụng. Việc này cho phép Bug Buddy cung cấp những thông tin hữu dụng cho bản "
+"báo cáo lỗi."
+
+#: src/bug-buddy.c:727
+#, c-format
+msgid "Could not find pixmap: %s (%d)\n"
+msgstr "Không thể tìm pixmap: %s (%d)\n"
+
+#: src/bug-buddy.c:794
+#, c-format
+msgid ""
+"Bug Buddy could not load its user interface file (%s).\n"
+"Please make sure Bug Buddy was installed correctly."
+msgstr ""
+"Bug Buddy không thể nạp tập tin giao diện của nó (%s).\n"
+"Vui lòng kiểm tra lại xem Bug Buddy có được cài đặt đúng chưa."
+
+#: src/bug-buddy.desktop.in.h:1
+msgid "Bug Report Tool"
+msgstr "Công cụ báo lỗi"
+
+#: src/bug-buddy.desktop.in.h:2
+msgid "Report a bug in GNOME"
+msgstr "Báo lỗi trong GNOME"
+
+#: src/bug-buddy.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: src/bug-buddy.glade.h:2
+msgid "<span size=\"xx-large\">Bug Buddy</span>"
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
+
+#: src/bug-buddy.glade.h:3
+msgid "Advanced"
+msgstr "Nân cao"
+
+#: src/bug-buddy.glade.h:4
+#, fuzzy
+msgid "Assbarn Phenomenon"
+msgstr "Assbarn Phenomenon"
+
+#: src/bug-buddy.glade.h:5
+msgid "Binary file:"
+msgstr "Tập tin nhị phân"
+
+#: src/bug-buddy.glade.h:6 src/united-states-of-bug-buddy.c:95
+msgid "Bug Buddy"
+msgstr "Bug Buddy"
+
+#: src/bug-buddy.glade.h:7
+msgid ""
+"Bug Buddy can send debugging information with your bug report.\n"
+"The correct options should have been selected for you automatically.\n"
+"For more information, please click the Help button below."
+msgstr ""
+"Bug Buddy có thể gửi thông tin debug cùng với bản báo cáo lỗi của bạn.\n"
+"Những tùy chọn đúng sẽ được chọn một cách tự động.\n"
+"Để biết thêm thông tin, vui lòng nhấn nút 'Trợ giúp' bên dưới"
+
+#: src/bug-buddy.glade.h:10
+msgid ""
+"Bug Buddy uses email to submit the bug reports.\n"
+"Please choose how you would like Bug Buddy to send email.\n"
+"If you choose to use the default GNOME mailer, this setting\n"
+"will be shared with some other GNOME applications."
+msgstr ""
+"Bug Buddy dùng email để gửi bản báo cáo lỗi.\n"
+"Vui lòng chọn trình gửi thư bạn muốn Bug Buddy dùng.\n"
+"Nếu bạn chọn dùng trình gửi mail mặc định của GNOME, thiết\n"
+"lập này sẽ được dùng với các ứng dụng GNOME khác."
+
+#: src/bug-buddy.glade.h:14
+msgid "Bug tracking system"
+msgstr "Hệ thống tìm lỗi"
+
+#: src/bug-buddy.glade.h:15
+msgid "Cc"
+msgstr "Cc"
+
+#: src/bug-buddy.glade.h:16
+msgid "Command"
+msgstr "Lệnh"
+
+#: src/bug-buddy.glade.h:17
+msgid "Core file"
+msgstr "Tập tin core"
+
+#: src/bug-buddy.glade.h:18
+msgid "Custom mailer"
+msgstr "Trình gửi mail riêng"
+
+#: src/bug-buddy.glade.h:19
+msgid "Debug"
+msgstr "Debug"
+
+#: src/bug-buddy.glade.h:20 src/bugzilla.c:642 src/bugzilla.c:683
+#: src/bugzilla.c:711
+msgid "Description"
+msgstr "Mô tả"
+
+#: src/bug-buddy.glade.h:21
+msgid "Download Progress"
+msgstr "Tiến trình tải về"
+
+#: src/bug-buddy.glade.h:22
+msgid "Email"
+msgstr "Email"
+
+#: src/bug-buddy.glade.h:23
+msgid "GNOME Mailer Settings"
+msgstr "Thiết lập trình gửi mail GNOME"
+
+#: src/bug-buddy.glade.h:24
+msgid "Include a text file"
+msgstr "Gộp kèm tập tin text"
+
+#: src/bug-buddy.glade.h:25
+msgid "Just save to a file so I can submit a bug report manually"
+msgstr "Chỉ lưu vào tập tin. Sẽ gửi báo cáo lỗi thủ công sau đó."
+
+#: src/bug-buddy.glade.h:26
+msgid "Name"
+msgstr "Tên"
+
+#: src/bug-buddy.glade.h:27
+msgid "Path of sendmail"
+msgstr "Đường dẫn của sendmail"
+
+#: src/bug-buddy.glade.h:28
+msgid "Please choose a component, version, and severity level."
+msgstr "Vui lòng chọn một thành phần, phiên bản, và cấp bảo mật"
+
+#: src/bug-buddy.glade.h:29
+msgid "Please make any final corrections to the bug report."
+msgstr "Vui lòng xem lại bản báo cáo lần cuối (và sửa chữa lại nếu cần)"
+
+#: src/bug-buddy.glade.h:30
+msgid "Please make your bug report in English, if possible."
+msgstr "Vui lòng dùng tiếng Anh trong bản báo cáo nếu có thể"
+
+#: src/bug-buddy.glade.h:31
+msgid "Please select the product for the bug you wish to report."
+msgstr "Vui lòng chọn sản phẩm chứa lỗi bạn muốn báo cáo."
+
+#: src/bug-buddy.glade.h:32
+msgid ""
+"Please take a minute to see if your bug is one of the most frequently "
+"reported bugs.\n"
+"If the bug is already reported, please do not report it again."
+msgstr ""
+"Vui lòng đợi vài phút để xem lỗi của bạn có phải là một trong những lỗi "
+"thường gặp hay không.\n"
+"Nếu lỗi này đã được báo cáo, vui lòng đừng báo cáo lần nữa."
+
+#: src/bug-buddy.glade.h:34
+msgid ""
+"Please wait while Bug Buddy updates its list\n"
+"of products for the bug tracking systems."
+msgstr ""
+"Vui lòng chờ trong khi Bug Buddy cập nhật danh sách sảnh phẩm cho hệ thống "
+"tìm lỗi"
+
+#: src/bug-buddy.glade.h:36
+msgid "Process ID:"
+msgstr "Mã ID của tiến trình"
+
+#: src/bug-buddy.glade.h:37
+msgid "Proxy Settings..."
+msgstr "Thiết lập proxy..."
+
+#: src/bug-buddy.glade.h:38
+msgid "Save in"
+msgstr "Lưu vào"
+
+#: src/bug-buddy.glade.h:39
+msgid "Save the report to..."
+msgstr "Lưu bản báo cáo vào..."
+
+#: src/bug-buddy.glade.h:40
+msgid "Saving:"
+msgstr "Đang lưu:"
+
+#: src/bug-buddy.glade.h:41
+msgid "Select a mailer"
+msgstr "Chọn trình gửi thư"
+
+#: src/bug-buddy.glade.h:42
+msgid "Sendmail Settings"
+msgstr "Thiết lập sendmail"
+
+#: src/bug-buddy.glade.h:43
+#, fuzzy
+msgid "Severity"
+msgstr "Severity"
+
+#: src/bug-buddy.glade.h:44
+msgid "Show _Debugging Details"
+msgstr "Hiện thông tin debug chi tiết"
+
+#: src/bug-buddy.glade.h:45
+msgid "Show most frequent bugs in:"
+msgstr "Hiện các lỗi thường gặp trong:"
+
+#: src/bug-buddy.glade.h:46
+msgid "Simple"
+msgstr "Đơn giản"
+
+#: src/bug-buddy.glade.h:47
+msgid "Start"
+msgstr "Khởi động"
+
+#: src/bug-buddy.glade.h:48
+msgid "Start in terminal"
+msgstr "Khởi động trong terminal"
+
+#: src/bug-buddy.glade.h:49
+msgid "Stop"
+msgstr "Dừng"
+
+#: src/bug-buddy.glade.h:50
+msgid "Submit another bug"
+msgstr "Gửi một lỗi khác"
+
+#: src/bug-buddy.glade.h:51
+msgid "Summary"
+msgstr "Tóm tắt"
+
+#: src/bug-buddy.glade.h:52
+msgid "The product is not listed above."
+msgstr "Sản phẩm chưa được liệt kê ở trên"
+
+#: src/bug-buddy.glade.h:53
+msgid "To"
+msgstr "Tới"
+
+#: src/bug-buddy.glade.h:54
+msgid "To:"
+msgstr "Tới:"
+
+#: src/bug-buddy.glade.h:55
+msgid "Understands Netscape remote control"
+msgstr "Hiểu điều khiển từ xa Netscape"
+
+#: src/bug-buddy.glade.h:56
+msgid "Updating products list:"
+msgstr "Cập nhật danh sách sản phẩm:"
+
+#: src/bug-buddy.glade.h:57
+msgid "Use sendmail directly"
+msgstr "Dùng trực tiếp sendmail"
+
+#: src/bug-buddy.glade.h:58
+msgid "Use the default GNOME mailer"
+msgstr "Dùng trình gửi thư mặc định của GNOME"
+
+#: src/bug-buddy.glade.h:59
+msgid "Version"
+msgstr "Phiên bản"
+
+#: src/bug-buddy.glade.h:60
+msgid "component"
+msgstr "thành phần"
+
+#: src/bug-buddy.glade.h:61
+msgid "desc"
+msgstr "mô tả"
+
+#: src/bug-buddy.glade.h:62
+msgid "email info"
+msgstr "thông tin email"
+
+#: src/bug-buddy.glade.h:63
+msgid "finished"
+msgstr "đã hoàn tất"
+
+#: src/bug-buddy.glade.h:64
+msgid "gdb"
+msgstr "gdb"
+
+#: src/bug-buddy.glade.h:65
+msgid "gnome"
+msgstr "gnome"
+
+#: src/bug-buddy.glade.h:66
+msgid "mail config"
+msgstr "cấu hình thư"
+
+#: src/bug-buddy.glade.h:67
+msgid "mostfreq"
+msgstr "mostfreq"
+
+#: src/bug-buddy.glade.h:68
+msgid "product"
+msgstr "sản phẩm"
+
+#: src/bug-buddy.glade.h:69
+msgid "sendmail"
+msgstr "sendmail"
+
+#: src/bugzilla.c:616
+msgid "ID"
+msgstr "ID"
+
+#: src/bugzilla.c:630 src/bugzilla.c:665
+msgid "Product"
+msgstr "Sản phẩm"
+
+#: src/bugzilla.c:636 src/bugzilla.c:705
+msgid "Component"
+msgstr "Thành phần"
+
+#: src/bugzilla.c:774
+#, c-format
+msgid ""
+"Bug Buddy could not open '%s'.\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"Bug Buddy không thể mở '%s'.\n"
+"Vui lòng kiểm tra lại xem Bug Buddy có được cài đặt đúng không.\n"
+"\n"
+"Bug Buddy sẽ thoát ngay bây giờ."
+
+#: src/bugzilla.c:793
+msgid "All"
+msgstr "Tất cả"
+
+#: src/bugzilla.c:822
+msgid ""
+"Bug Buddy could not find any information on where to submit bugs.\n"
+"\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"Bug Buddy không thể tìm thấy bất cứ thông tin nào mô tả lỗi.\n"
+"\n"
+"Vui lòng kiểm tra lại xem Bug Buddy có được cài đặt đúng chưa.\n"
+"\n"
+"Bug Buddy sẽ thoát ngay bây giờ."
+
+#: src/cell-renderer-uri.c:145
+msgid "URI"
+msgstr "URI"
+
+#: src/cell-renderer-uri.c:146
+msgid "URI to show when clicked."
+msgstr "URI cần xem khi được nhấn."
+
+#: src/cell-renderer-uri.c:153
+msgid "Visited"
+msgstr "Đã xem."
+
+#: src/cell-renderer-uri.c:154
+msgid "If the URI has been visited before."
+msgstr "Nếu URI đã được xem trước đó."
+
+#: src/config.c:75
+msgid "Evolution"
+msgstr "Evolution"
+
+#: src/gdb-buddy.c:82
+#, c-format
+msgid "Obtaining stack trace... (%d)"
+msgstr "Lấy thông tin dò tìm ngăn xếp... (%d)"
+
+#: src/gdb-buddy.c:165
+#, c-format
+msgid ""
+"Unable to process core file with gdb:\n"
+"'%s'"
+msgstr ""
+"Không thể xử lý tập tin core bằng gdb:\n"
+"'%s'"
+
+#: src/gdb-buddy.c:196
+#, c-format
+msgid ""
+"GDB was unable to determine which binary created\n"
+"'%s'"
+msgstr ""
+"GDB không thể xác định mã nhị phân nào đã được tạo\n"
+"'%s'"
+
+#: src/gdb-buddy.c:228
+msgid "Error on read... aborting"
+msgstr "Lỗi khi đọc... hủy bỏ"
+
+#: src/gdb-buddy.c:274
+msgid ""
+"GDB could not be found on your system.\n"
+"Debugging information will not be obtained."
+msgstr ""
+"Không thể tìm thấy GDB trên hệ thống.\n"
+"Vì thế nên không lấy được thông tin debug."
+
+#: src/gdb-buddy.c:308
+msgid ""
+"Could not find the gdb-cmd file.\n"
+"Please try reinstalling Bug Buddy."
+msgstr ""
+"Không tìm thấy tập tin gdb-cmd\n"
+"Vui lòng cài đặt lại Bug Buddy"
+
+#: src/gdb-buddy.c:328
+msgid "There was an error running gdb."
+msgstr "Xảy ra lỗi khi chạy gdb."
+
+#: src/united-states-of-bug-buddy.c:49
+msgid "Welcome to Bug Buddy"
+msgstr "Chào mừng tới Bug Buddy"
+
+#: src/united-states-of-bug-buddy.c:50
+msgid "Select a Product"
+msgstr "Chọn sản phẩm"
+
+#: src/united-states-of-bug-buddy.c:51
+msgid "Select a Component"
+msgstr "Chọn thành phần"
+
+#: src/united-states-of-bug-buddy.c:52
+msgid "Frequently Reported Bugs"
+msgstr "Lỗi thường được báo cáo"
+
+#: src/united-states-of-bug-buddy.c:53
+msgid "Bug Description"
+msgstr "Mô tả lỗi"
+
+#: src/united-states-of-bug-buddy.c:54
+msgid "Mail Configuration"
+msgstr "Cấu hình thư"
+
+#: src/united-states-of-bug-buddy.c:55
+msgid "Confirmation"
+msgstr "Xác nhận"
+
+#: src/united-states-of-bug-buddy.c:56
+msgid "Finished!"
+msgstr "Đã hoàn tất!"
+
+#: src/united-states-of-bug-buddy.c:98
+msgid "The graphical bug reporting tool for GNOME."
+msgstr "Công cụ báo lỗi của GNOME."
+
+#: src/united-states-of-bug-buddy.c:109
+msgid "The lame Bug Buddy web page"
+msgstr "Trang web khiêm tốn của Bug Buddy"
+
+#: src/united-states-of-bug-buddy.c:293
+msgid "Please enter your name."
+msgstr "Vui lòng nhập tên bạn."
+
+#: src/united-states-of-bug-buddy.c:309
+msgid "Please enter a valid email address."
+msgstr "Vui lòng nhập địa chỉ email hợp lệ."
+
+#: src/united-states-of-bug-buddy.c:325
+#, c-format
+msgid ""
+"'%s' doesn't seem to exist.\n"
+"\n"
+"Please check the path to sendmail again."
+msgstr ""
+"'%s' hình như chưa tồn tại.\n"
+"\n"
+"Vui lòng kiểm tra lại đường dẫn của sendmail."
+
+#: src/united-states-of-bug-buddy.c:357
+msgid "Please enter a valid email command."
+msgstr "Vui lòng nhập lệnh email hợp lệ."
+
+#: src/united-states-of-bug-buddy.c:421
+msgid "The specified file does not exist."
+msgstr "Tập tin không tồn tại."
+
+#: src/united-states-of-bug-buddy.c:431
+#, c-format
+msgid "File is of type: %s"
+msgstr "Tập tin có kiểu: %s"
+
+#: src/united-states-of-bug-buddy.c:438
+#, c-format
+msgid ""
+"'%s' is a %s file.\n"
+"\n"
+"Bug Buddy can only submit plaintext (text/*) files."
+msgstr ""
+"'%s' là tập tin %s .\n"
+"\n"
+"Bug Buddy chỉ có thể gửi tập tin text."
+
+#: src/united-states-of-bug-buddy.c:458
+msgid "You must include a comprehensible subject line in your bug report."
+msgstr "Bạn phải nhập một dòng chủ đề đầy đủ trong bản báo cáo của bạn."
+
+#: src/united-states-of-bug-buddy.c:474
+msgid "You must include a comprehensible description in your bug report."
+msgstr "Bạn phải nhập một mô tả đầy đủ trong bản báo cáo của bạn."
+
+#: src/united-states-of-bug-buddy.c:502
+msgid "Submit this bug report now?"
+msgstr "Gửi báo cáo ngay bây giờ?"
+
+#: src/united-states-of-bug-buddy.c:505
+msgid "_Submit"
+msgstr "_Gửi"
+
+#: src/united-states-of-bug-buddy.c:526
+#, c-format
+msgid ""
+"Unable to open file '%s':\n"
+"%s"
+msgstr ""
+"Không thể mở tập tin '%s':\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:540
+#, c-format
+msgid "about to run '%s'"
+msgstr "về việc chạy '%s'"
+
+#: src/united-states-of-bug-buddy.c:548
+#, c-format
+msgid ""
+"Unable to start mail program '%s':\n"
+"%s"
+msgstr ""
+"Không thể khởi động trình gửi mail '%s':\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:586
+#, c-format
+msgid "Your bug report was saved in '%s'"
+msgstr "Bản báo cáo lỗi của bạn đã được lưu vào '%s'"
+
+#: src/united-states-of-bug-buddy.c:589
+#, c-format
+msgid ""
+"Your bug report has been submitted to:\n"
+"\n"
+"        <%s>\n"
+"\n"
+"Thanks!"
+msgstr ""
+"Bản báo các của bạn đã được gửi tới:\n"
+"\n"
+"        <%s>\n"
+"\n"
+"Xin cám ơn bạn!"
+
+#: src/united-states-of-bug-buddy.c:644
+msgid ""
+"Since Bug Buddy doesn't know about the product you wish to submit a bug "
+"report in, you will have to manually address the bug report."
+msgstr ""
+"Vì Bug Buddy không biết gì về sản phẩm bản cần báo cáo lỗi, bản phải tự giải "
+"quyết vấn đề đó."
+
+#: src/united-states-of-bug-buddy.c:665
+msgid "You must specify a product for your bug report."
+msgstr "Bạn phải xác địn sản phẩm cần báo cáo."
+
+#: src/united-states-of-bug-buddy.c:688
+msgid "You must specify a component for your bug report."
+msgstr "Bạn phải xác định thành phần cần báo cáo."
+
+#: src/united-states-of-bug-buddy.c:702
+msgid "You must specify a version for your bug report."
+msgstr "Bạn phải xác định phiên bản cần báo cáo."
+
+#: src/united-states-of-bug-buddy.c:785
+msgid ""
+"Your email program has been launched.  Please look it over and send it.\n"
+"\n"
+"Thank you for submitting this bug report."
+msgstr ""
+"Đã khởi động trình gửi thư của bạn. Vui lòng xem lại và gửi nó đi.\n"
+"\n"
+"Xin cám ơn bạn đã gửi bản báo cáo này."
+
+#: src/united-states-of-bug-buddy.c:812
+msgid ""
+"Are you sure you want to cancel\n"
+"this bug report?"
+msgstr "Bạn có chắc muốn hủy bỏ bản báo cáo này?"
+
+#~ msgid "Go"
+#~ msgstr "Tiến hành"
+
+#~ msgid "HTTP Proxy Settings"
+#~ msgstr "Thiết lập HTTP Proxy"
+
+#~ msgid "Location"
+#~ msgstr "Địa điểm"
+
+#~ msgid "Password"
+#~ msgstr "Mật khẩu"
+
+#~ msgid "Port"
+#~ msgstr "Cổng"
+
+#~ msgid "Proxy requires a username and password"
+#~ msgstr "Proxy yêu cầu tên người dùng và mật mã"
+
+#~ msgid "Use HTTP Proxy"
+#~ msgstr "Dùng HTTP proxy"
+
+#~ msgid "Username"
+#~ msgstr "Tên người dùng"

@@ -1,0 +1,107 @@
+Name:		bug-buddy
+Summary:	Utility to ease the reporting of bugs within the GNOME Desktop Environment.
+Version:	@VERSION@
+Release:	1
+License:	GPL
+Group:		Applications/System
+Source:		ftp://ftp.gnome.org/pub/GNOME/unstable/sources/%{name}/%{name}-%{version}.tar.gz
+URL:		http://www.bug-buddy.org/
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+
+Requires:	libglade2 >= 1.99.2
+Requires:	gnome-vfs2 >= 1.9.1
+Requires:	libgnome >= 1.104.0
+Requires:	libgnomecanvas >= 1.104.0
+Requires:	libgnomeui >= 1.104.0
+Requires:	libxml2 >= 2.4.6
+BuildRequires:	libglade2-devel >= 1.99.2
+BuildRequires:	gnome-vfs2-devel >= 1.9.1
+BuildRequires:	libgnome-devel >= 1.104.0
+BuildRequires:	libgnomecanvas-devel >= 1.104.0
+BuildRequires:	libgnomeui-devel >= 1.104.0
+BuildRequires:	libxml2-devel >= 2.4.6
+
+%description
+The goal of bug-buddy is to make reporting bugs very simple
+and easy for users, while making the reports themselves more
+useful and informative for developers. 
+
+%prep
+%setup -q
+
+%build
+
+MYCFLAGS="$RPM_OPT_FLAGS"
+
+if [ ! -f configure ]; then
+	./autogen.sh
+	rm -f config.cache
+fi
+
+CFLAGS="$MYCFLAGS" ./configure $MYARCH_FLAGS --prefix=%{_prefix} \
+    --sysconfdir=%{_sysconfdir} --localstatedir=%{_localstatedir} \
+    --bindir=%{_bindir} --datadir=%{_datadir}
+
+if [ "$SMP" != "" ]; then
+  make -j$SMP "MAKE=make -j$SMP"
+else
+  make
+fi
+
+%install
+rm -fr $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%find_lang %{name}
+
+%clean
+rm -fr $RPM_BUILD_ROOT
+
+%files -f %{name}.lang
+%defattr(-, root, root)
+
+%doc ABOUT-NLS AUTHORS ChangeLog COPYING INSTALL NEWS README TODO
+%{_bindir}/*
+%{_datadir}/pixmaps/*
+%{_datadir}/gnome/*
+%{_datadir}/mime-info/*
+%{_datadir}/bug-buddy
+
+%changelog
+* Sat Dec  9 2001 Abel Cheung <maddog@linux.org.hk>
+- Use make install DESTDIR=...
+- Corrected URL and source location
+- Simplify %install
+- Modify buildroot to allow non-root building
+- Update Requies and BuildRequires
+
+* Sun Aug 05 2001 Jens Finke <jens@triq.net>
+- Merged GPP spec file with CVS bug-buddy.spec.in file
+- Updated source URL.
+- Removed explicit defined localstatedir variable.
+
+* Mon Jun 25 2001 Gregory Leblanc <gleblanc@rh7.build.cu-portland.edu>
+- added gdk-pixbuf to the build depandancies
+
+* Mon Jun 25 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- used %find_lang macro
+
+* Thu May 24 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- removed unnecessary %defines
+- made %setup quiet
+- corrected %files section
+- replaced Copywright with license
+- Added build requires for gnome-vfs
+- cleaned up formatting on BuildRequires
+
+* Tue Feb 20 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- macro fixes, remove hard-coded paths
+
+* Wed Feb 23 2000  Jacob Berkman  <jacob@helixcode.com>
+- don't say we own the pixmaps/ dir
+
+* Wed Nov 10 1999  Jacob Berkman  <jberkman@andrew.cmu.edu>
+- fixed up for insertion into the CVS
+
+* Fri Nov 05 1999  Ned Rhudy  <nrhudy@pabus.com>
+- the first incarnation of the spec file...watch it not work

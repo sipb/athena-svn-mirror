@@ -1,0 +1,45 @@
+<!DOCTYPE products SYSTEM "http://bugzilla.gnome.org/bugzilla.gnome.org/bugzilla-gnome-org.dtd">
+<products>
+  <product name="Evolution">
+    <component name="Contacts [was: Addressbook]">
+      <bug bugid="22742">
+        <desc>Contacts list search doesn't function</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=22742</url>
+      </bug>
+      <bug bugid="9699">
+        <desc>Crash: Adding LDAP server to address book</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=9699</url>
+      </bug>
+    </component>
+    <component name="Mailer">
+      <bug bugid="17540">
+        <desc>support for receiving in-line pgp</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=17540</url>
+      </bug>
+      <bug bugid="10945">
+        <desc>starting evolution for the first time crashes it</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=10945</url>
+      </bug>
+    </component>
+    <component name="Gnome-pilot &amp; pilot-link">
+      <bug bugid="10427">
+        <desc>gpilotd crash when syncing EToDo</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=10427</url>
+      </bug>
+    </component>
+    <component name="Summary [was My Evolution]">
+      <bug bugid="5053">
+        <desc>Better Summary source selector (including IMAP)</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=5053</url>
+      </bug>
+    </component>
+  </product>
+  <product name="GtkHtml">
+    <component name="Printing">
+      <bug bugid="19604">
+        <desc>Trying to print mail - evolution-mail process dies</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=19604</url>
+      </bug>
+    </component>
+  </product>
+</products>
