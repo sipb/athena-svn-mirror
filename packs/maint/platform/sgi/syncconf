@@ -6,6 +6,8 @@ CONFIG=/etc/config
 SETCONFIG="/sbin/chkconfig -f"
 RCCONF=/etc/athena/rc.conf
 RCSYNC=/etc/athena/.rc.conf.sync
+RCSYNCOUT=$RCSYNC
+debug=0
 
 configbool()
 {
@@ -138,7 +140,9 @@ handle()
 
   SENDMAIL|sendmail)
     if [ "${SENDMAIL}" = "false" ]; then
-      move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
+      if [ -f /etc/rc2.d/S50mail ]; then
+        move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
+      fi
     else
       move /etc/rc2.d/s50mail /etc/rc2.d/S50mail
     fi
@@ -208,11 +212,8 @@ while [ -n "$1" ]; do
   shift
 done
 
-debug=1
-
 if [ $debug = 1 ]; then
-  RCCONF=/tmp/rc.conf
-  RCSYNC=/tmp/rc.conf.sync
+  RCSYNCOUT=/tmp/rc.conf.sync
 fi
 
 ALL="timeclient timehub timesrv afsclient nfssrv nfsclient sendmail snmp savecore account quotas host addr"
@@ -246,7 +247,7 @@ fi
 
 $ECHO ""
 
-cat > $RCSYNC << EOF
+cat > $RCSYNCOUT << EOF
 if [ \$TIMECLIENT != $TIMECLIENT ]; then CHANGES="\$CHANGES TIMECLIENT"; fi
 if [ \$TIMEHUB != $TIMEHUB ]; then CHANGES="\$CHANGES TIMEHUB"; fi
 if [ \$TIMESRV != $TIMESRV ]; then CHANGES="\$CHANGES TIMESRV"; fi
