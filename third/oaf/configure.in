@@ -3,7 +3,7 @@ AC_INIT(idl/oaf.idl)
 
 OAF_MAJOR_VERSION=0
 OAF_MINOR_VERSION=6
-OAF_MICRO_VERSION=5
+OAF_MICRO_VERSION=7
 OAF_VERSION="$OAF_MAJOR_VERSION.$OAF_MINOR_VERSION.$OAF_MICRO_VERSION"
 AM_INIT_AUTOMAKE(oaf, $OAF_VERSION)
 AC_SUBST(OAF_MAJOR_VERSION)
@@ -36,7 +36,7 @@ AC_PROG_MAKE_SET
 AC_ISC_POSIX
 
 dnl internationalization support
-ALL_LINGUAS="da de es fi fr ga gl hu it ja ko no pt_BR ro ru sk sl sv tr uk pl"
+ALL_LINGUAS="az da de el es fi fr ga gl hu it ja ko nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
 AM_GNU_OAF_GETTEXT
 
 
@@ -115,8 +115,8 @@ dnl = end gtk-doc stuff
 dnl ======================
 
 
-AC_CHECK_LIB(popt, poptGetContext,,
-AC_MSG_ERROR([You must have popt installed. Get it from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/popt-1.6.tar.gz]))
+AC_CHECK_LIB(popt, poptDupArgv,,
+AC_MSG_ERROR([You must have popt 1.5 or newer to compile oaf.]))
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -127,7 +127,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
 dnl Checks for library functions
-AC_CHECK_FUNCS(select strcspn strdup strtol snprintf usleep nanosleep)
+AC_CHECK_FUNCS(select strcspn strdup strtol snprintf usleep nanosleep unsetenv)
 
 dnl declare --enable-* args
 
@@ -180,6 +180,29 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	unset option
 fi
 
+AC_PATH_PROG(PERL_PATH, perl)
+if test -n "$PERL_PATH"; then
+	OAF_SLAY=oaf-slay
+	AC_PATH_PROG(PS_PATH, ps)
+	AC_CACHE_CHECK([for POSIX ps], ac_cv_prog_ps_posix, [
+		if $PS_PATH -U $USER -opid,args >/dev/null 2>&1; then
+			ac_cv_prog_ps_posix=yes
+		else
+			ac_cv_prog_ps_posix=no
+		fi
+	])
+	if test "$ac_cv_prog_ps_posix" = yes; then
+		IF_BSD_PS=#
+	else
+		IF_POSIX_PS=#
+	fi
+fi
+AC_SUBST(PERL_PATH)
+AC_SUBST(OAF_SLAY)
+AC_SUBST(PS_PATH)
+AC_SUBST(IF_BSD_PS)
+AC_SUBST(IF_POSIX_PS)
+
 AC_OUTPUT([
 Makefile
 oaf.spec
@@ -190,6 +213,7 @@ liboaf/Makefile
 liboaf/liboaf-version.h
 oafd/Makefile
 test/Makefile
+test/oaf-slay
 utils/Makefile
 intl/Makefile
 po/Makefile.in

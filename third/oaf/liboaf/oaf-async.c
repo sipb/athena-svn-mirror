@@ -184,18 +184,9 @@ void oaf_activate_from_id_async (const OAF_ActivationID aid,
 
 	ai = oaf_actid_parse (aid);
 
-	if (ai) {		
+	if (ai != NULL) {		
                 /* This is so that using an AID in an unactivated OD will work nicely */
-		OAFRegistrationCategory regcat;
-
-		memset (&regcat, 0, sizeof (regcat));
-		regcat.name = "IDL:OAF/ObjectDirectory:1.0";
-		regcat.session_name = oaf_session_name_get ();
-		regcat.username = ai->user;
-		regcat.hostname = ai->host;
-		regcat.domain = ai->domain;
-
-		oaf_service_get (&regcat);
+                oaf_object_directory_get (ai->user, ai->host, ai->domain);
 
 		oaf_actinfo_free (ai);
 	}

@@ -27,7 +27,7 @@
 ## Release information
 my $PROGRAM      = "xml-i18n-extract";
 my $PACKAGE      = "xml-i18n-tools";
-my $VERSION      = "0.8.2";
+my $VERSION      = "0.9";
 
 ## Script options - Enable by setting value to 1
 my $ENABLE_INI   = "1"; ## desktop and alike files
@@ -54,6 +54,9 @@ my $OUTFILE;
 my $gettext_type = "";
 my $input;
 my %messages = ();
+
+## Use this instead of \w for XML files to handle more possible characters.
+my $w = "[-A-Za-z0-9._:]";
 
 ## Always print first
 $| = 1;
@@ -219,12 +222,12 @@ sub type_xml {
         
         if ($gettext_type eq "xml"){
 
-            while ($input =~ /[\t\n\s]_\w+=\"([^\"]+)\"/sg) {
+            while ($input =~ /[\t\n\s]_$w+=\"([^\"]+)\"/sg) {
                 $messages{$1} = [];
             }
 
-            while ($input =~ /<_\w+>([^_]+)<\/_\w+>/sg) {
-                $messages{$1} = [];
+            while ($input =~ /<_($w+)>([^<]+)<\/_\1>/sg) {
+                $messages{$2} = [];
             }
 
 	}
@@ -240,7 +243,7 @@ sub type_glade {
         if ($gettext_type eq "glade"){
 
             my $translate = "label|title|text|format|copyright|comments|
-                             preview_text|tooltip";
+                             preview_text|tooltip|message";
 
             while ($input =~ /<($translate)>([^<]+)<\/($translate)>/sg) {
 

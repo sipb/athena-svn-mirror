@@ -39,54 +39,59 @@ typedef struct {
 	const char *username;
         const char *hostname;
         const char *domain;
-} OAFRegistrationCategory;
+} OAFBaseService;
 
-typedef struct _OAFRegistrationLocation OAFRegistrationLocation;
-struct _OAFRegistrationLocation {
-	void (*lock) (const OAFRegistrationLocation * regloc,
-		      gpointer user_data);
-	void (*unlock) (const OAFRegistrationLocation * regloc,
-			gpointer user_data);
-	char *(*check) (const OAFRegistrationLocation * regloc,
-			const OAFRegistrationCategory * regcat,
-			int *ret_distance, gpointer user_data);
-
-	void (*register_new) (const OAFRegistrationLocation * regloc,
-			      const char *ior,
-			      const OAFRegistrationCategory * regcat,
-			      gpointer user_data);
-	void (*unregister) (const OAFRegistrationLocation * regloc,
-			    const char *ior,
-			    const OAFRegistrationCategory * regcat,
-			    gpointer user_data);
+typedef struct _OAFBaseServiceRegistry OAFBaseServiceRegistry;
+struct _OAFBaseServiceRegistry {
+	void   (*lock)         (const OAFBaseServiceRegistry *registry,
+                                gpointer                      user_data);
+	void   (*unlock)       (const OAFBaseServiceRegistry *registry,
+                                gpointer                      user_data);
+	char * (*check)        (const OAFBaseServiceRegistry *registry,
+                                const OAFBaseService         *base_service,
+                                int                          *ret_distance, 
+                                gpointer                      user_data);
+	void   (*register_new) (const OAFBaseServiceRegistry *registry,
+                                const char                   *ior,
+                                const OAFBaseService         *base_service, 
+                                gpointer                      user_data);
+	void   (*unregister)   (const OAFBaseServiceRegistry *registry,
+                                const char                   *ior,
+                                const OAFBaseService         *base_service,
+                                gpointer                      user_data);
 };
 
-typedef CORBA_Object (*OAFServiceActivator) (const OAFRegistrationCategory *
-					     regcat, const char **cmd,
-					     int ior_fd,
-					     CORBA_Environment * ev);
+typedef CORBA_Object (*OAFBaseServiceActivator) (const OAFBaseService *base_service,
+                                                 const char          **command,
+                                                 int                   ior_fd,
+                                                 CORBA_Environment    *ev);
 
 
 
 
 
-void oaf_registration_location_add (const OAFRegistrationLocation * regloc,
-				    int priority, gpointer user_data);
+void         oaf_registration_location_add  (const OAFBaseServiceRegistry *registry,
+                                             int                           priority, 
+                                             gpointer                      user_data);
 
-CORBA_Object oaf_registration_check (const OAFRegistrationCategory * regcat,
-				     CORBA_Environment * ev);
-void oaf_registration_set (const OAFRegistrationCategory * regcat,
-			   CORBA_Object obj, CORBA_Environment * ev);
-void oaf_registration_unset (const OAFRegistrationCategory * regcat,
-			     CORBA_Object obj, CORBA_Environment * ev);
-
+CORBA_Object oaf_registration_check         (const OAFBaseService         *base_service,
+                                             CORBA_Environment            *ev);
+void         oaf_registration_set           (const OAFBaseService         *base_service,
+                                             CORBA_Object                  obj, 
+                                             CORBA_Environment            *ev);
+void         oaf_registration_unset         (const OAFBaseService         *base_service,
+                                             CORBA_Object                  obj, 
+                                             CORBA_Environment            *ev);
 
 
 /* Do not release() the returned value */
-CORBA_Object oaf_service_get (const OAFRegistrationCategory * regcat);
+CORBA_Object oaf_service_get                (const OAFBaseService         *base_service);
 
-void oaf_registration_activator_add (OAFServiceActivator act_func,
-				     int priority);
-
+void         oaf_registration_activator_add (OAFBaseServiceActivator       activator,
+                                             int                           priority);
+/* For compatibility */
+typedef OAFBaseService          OAFRegistrationCategory;
+typedef OAFBaseServiceActivator OAFServiceActivator;
+typedef OAFBaseServiceRegistry  OAFRegistrationLocation;
 
 #endif /* OAF_REGISTRATION_H */

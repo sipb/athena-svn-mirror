@@ -16,10 +16,8 @@ Empty_doNothing(Empty _obj, CORBA_Environment * ev)
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && Empty__classid) {
-      
-	 ((POA_Empty__epv *) _obj->vepv[Empty__classid])->doNothing(_obj->
-								    servant,
-								    ev);
+      ((POA_Empty__epv *) _obj->vepv[Empty__classid])->doNothing(_obj->
+								 servant, ev);
       return;
    }
    _cnx = ORBit_object_get_connection(_obj);
@@ -39,7 +37,6 @@ Empty_doNothing(Empty _obj, CORBA_Environment * ev)
       10, "doNothing"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 14 };
-
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
 				      CORBA_TRUE,
@@ -64,7 +61,8 @@ Empty_doNothing(Empty _obj, CORBA_Environment * ev)
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {

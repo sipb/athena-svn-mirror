@@ -13,10 +13,8 @@
 ) && !defined(TC_DEF_TC_Empty)
 #define TC_DEF_TC_Empty 1
 const struct CORBA_TypeCode_struct TC_Empty_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "Empty", "IDL:Empty:1.0",
    0, 0,
    NULL,

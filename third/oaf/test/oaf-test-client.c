@@ -2,6 +2,7 @@
 #include <liboaf/liboaf.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "empty.h"
 
 #define TOTAL_TEST_SCORE 13
@@ -190,7 +191,7 @@ main (int argc, char *argv[])
 
         fprintf (stderr, "Server with IID but no type or location ");
         obj = oaf_activate_from_id ("OAFIID:BrokenNoType:20000808", 0, NULL, &ev);
-        if (ev._major != CORBA_NO_EXCEPTION) {
+        if (ev._major == CORBA_NO_EXCEPTION) {
                 fprintf (stderr, "failed (except) 1");
                 CORBA_exception_free (&ev);
         } else if (obj) {

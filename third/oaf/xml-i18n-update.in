@@ -22,7 +22,7 @@
 
 ## Release information
 my $PROGRAM  = "xml-i18n-update";
-my $VERSION  = "0.8.2";
+my $VERSION  = "0.9";
 my $_PACKAGE = "xml-i18n-tools";
 
 ## Loaded modules
@@ -46,8 +46,19 @@ my $VERBOSE	   = "0";
 my @languages;
 my %po_files_by_lang = ();
 
-my $xml_extension = "xml|ui|glade|desktop\.in|directory\.in|"
-		   ."soundlist\.in|keys\.in|oaf(\.in)+";
+my $xml_extension = 
+"xml(\.in)*|".		# .in is not required
+"ui|".
+"glade(\.in)*|".	# .in is not required
+"desktop(\.in)+|".
+"directory(\.in)+|".
+"soundlist(\.in)+|".
+"keys(\.in)+|".
+"oaf(\.in)+|".
+"server(\.in)+|".
+"etspec|".
+"sheet(\.in)+|".
+"pong(\.in)+";
 
 my $PACKAGE = &find_package_name;
 
@@ -143,13 +154,13 @@ sub determine_type($) {
    if ($type =~ /\[type: (gettext\/[^\]].*)]/) {
         $gettext_type=$1;
    }
-   elsif ($type =~ /(xml|ui|oaf(\.in)+)$/) {
+   elsif ($type =~ /(?:xml(\.in)*|ui|oaf(?:\.in)+|sheet(?:\.in)+|pong(?:\.in)+|etspec)$/) {
         $gettext_type="gettext\/xml";
    }
-   elsif ($type =~ /glade$/) {
+   elsif ($type =~ /glade(\.in)*$/) {
         $gettext_type="gettext\/glade";
    }
-   elsif ($type =~ /desktop(\.in)+$/) {
+   elsif ($type =~ /(?:desktop(?:\.in)+|directory(?:\.in)+|soundlist(?:\.in)+)$/) {
         $gettext_type="gettext\/ini";
    }
    elsif ($type =~ /keys(\.in)+$/) {
@@ -348,7 +359,7 @@ sub generate_pot
                        ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
 
     system("xgettext", "--default-domain\=$PACKAGE", "--directory\=\.\.",
-	   "--add-comments", "--keyword\=\_", "--keyword\=N\_",
+	   "--add-comments", "--keyword\=\_", "--keyword\=N\_", "--keyword\=U\_",
 	   "--files-from\=\.\/POTFILES\.in");
 
     system($gettext_test);
@@ -479,7 +490,6 @@ sub find_package_name
 		    last;
 		}
 	    }
-
 	    $conf_in || die "Cannot find top_srcdir in Makefile."
         }
 

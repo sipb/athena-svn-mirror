@@ -22,6 +22,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "oaf.h"
 #include "liboaf.h"
 #include "oaf-async.h"

@@ -126,7 +126,7 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
 	/* Munge the args */
 	args = oaf_alloca (36 * sizeof (char *));
 	for (i = 0, ctmp = ctmp2 = si->location_info; i < 32; i++) {
-		while (*ctmp2 && !isspace (*ctmp2))
+		while (*ctmp2 && !isspace ((guchar) *ctmp2))
 			ctmp2++;
 		if (!*ctmp2)
 			break;
@@ -136,13 +136,13 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
 		args[i][ctmp2 - ctmp] = '\0';
 
 		ctmp = ctmp2;
-		while (*ctmp2 && isspace (*ctmp2))
+		while (*ctmp2 && isspace ((guchar) *ctmp2))
 			ctmp2++;
 		if (!*ctmp2)
 			break;
 		ctmp = ctmp2;
 	}
-	if (!isspace (*ctmp) && i < 32)
+	if (!isspace ((guchar) *ctmp) && i < 32)
 		args[i++] = ctmp;
 
 	extra_arg =
@@ -173,9 +173,15 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
 	args[i] = NULL;
 
         display = oafd_CORBA_Context_get_value (actinfo->ctx, "display", NULL, ev);
-
-	retval = oaf_server_by_forking ((const char **) args, fd_arg, display,
-					iorstr, ev);
+        
+        /* We set the process group of activated servers to our process group;
+         * this allows people to destroy all OAF servers along with oafd
+         * if necessary
+         */
+	retval = oaf_internal_server_by_forking_extended ((const char **) args,
+                                                          TRUE,
+                                                          fd_arg, display,
+                                                          iorstr, ev);
         
         g_free (display);
 	CORBA_free (iorstr);

@@ -1,21 +1,12 @@
-# Note that this is NOT a relocatable package
-%define name		oaf
-%define ver		0.6.5
-%define RELEASE		1
-%define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix		/usr
-%define sysconfdir	/etc
-
-Name:		%name
+Name:		oaf
 Summary:	Object activation framework for GNOME
-Version: 	%ver
-Release: 	%rel
+Version: 	0.6.7
+Release: 	1
 License: 	LGPL and GPL
 Group:		System Environment/Libraries
-Source: 	%{name}-%{ver}.tar.gz
+Source: 	ftp://ftp.gnome.org/pub/GNOME/unstable/sources/%{name}/%{name}-%{version}.tar.gz
 URL: 		http://www.gnome.org/
-BuildRoot:	/var/tmp/%{name}-%{ver}-root
-Docdir: 	%{prefix}/doc
+BuildRoot:	%{_tmpdir}/%{name}-%{version}-root
 
 %description
 OAF is an object activation framework for GNOME. It uses ORBit.
@@ -23,19 +14,13 @@ OAF is an object activation framework for GNOME. It uses ORBit.
 %package devel
 Summary:	Libraries and include files for OAF
 Group:		Development/Libraries
-Requires:	%name = %{PACKAGE_VERSION}
-Obsoletes:	%{name}-devel
+Requires:	%{name} = %{version}
 
 %description devel
-
-%changelog
-* Tue Aug 29 2000 Maciej Stachowiak <mjs@eazel.com>
-- corrected Copyright field and renamed it to License
-* Sun May 21 2000 Ross Golder <rossigee@bigfoot.com>
-- created spec file (based on bonobo.spec.in)
+Development headers and libraries for OAF.
 
 %prep
-%setup
+%setup -q
 
 %build
 %ifarch alpha
@@ -48,63 +33,80 @@ LANG=""
 export LC_ALL LINGUAS LANG
 
 CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS \
-	--enable-more-warnings \
-	--prefix=%{prefix} \
-	--sysconfdir=%{sysconfdir}
+	--enable-more-warnings --prefix=%{_prefix} \
+	--sysconfdir=%{_sysconfdir} --bindir=%{_bindir} \
+	--libdir=%{_libdir} --datadir=%{_datadir} \
+	--includedir=%{_includedir}
 
 make -k
 
 %install
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-make -k prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
 
-for FILE in "$RPM_BUILD_ROOT/bin/*"; do
-	file "$FILE" | grep -q not\ stripped && strip $FILE
-done
+make -k prefix=$RPM_BUILD_ROOT/%{_prefix} \
+    sysconfdir=$RPM_BUILD_ROOT/%{_sysconfdir} \
+    bindir=$RPM_BUILD_ROOT/%{_bindir} \
+    libdir=$RPM_BUILD_ROOT/%{_libdir} \
+    datadir=$RPM_BUILD_ROOT/%{_datadir} \
+    includedir=$RPM_BUILD_ROOT/%{_includedir} install
+
+%find_lang %name
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
 
-%post
-if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-	echo "%{prefix}/lib" >> /etc/ld.so.conf
-fi
-  
-/sbin/ldconfig
+%post -p /sbin/ldconfig
   
 %postun -p /sbin/ldconfig
 
-%files
-%defattr(0555, bin, bin)
+%files -n %{name}.lang
+%defattr(0555, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
-%config %{sysconfdir}/oaf/*.sample
-%config %{sysconfdir}/oaf/*.xml
-%{prefix}/bin/oaf-client
-%{prefix}/bin/oaf-config
-%{prefix}/bin/oaf-run-query
-%{prefix}/bin/oaf-slay
-%{prefix}/bin/oaf-sysconf
-%{prefix}/bin/oafd
-%{prefix}/lib/*.0
-%{prefix}/lib/*.sh
-%{prefix}/lib/*.so
+%config %{_sysconfdir}/oaf
+%{_bindir}/*
+%{_libdir}/*.so.*
 
-%defattr (0444, bin, bin)
-%{prefix}/share/idl/*.idl
-%{prefix}/share/locale/da/LC_MESSAGES/*.mo
-%{prefix}/share/locale/de/LC_MESSAGES/*.mo
-%{prefix}/share/locale/no/LC_MESSAGES/*.mo
-%{prefix}/share/locale/ru/LC_MESSAGES/*.mo
-%{prefix}/share/locale/tr/LC_MESSAGES/*.mo
-%{prefix}/share/oaf/*.oafinfo
+%defattr (0444, root, root)
+%{_datadir}/idl/*.idl
+%{_datadir}/oaf/*.oafinfo
 
 %files devel
 
 %defattr(0555, bin, bin)
 %dir %{prefix}/include/liboaf
-%{prefix}/lib/*.la
+%{_libdir}/*.la
+%{_libdir}/*.so
+%{_libdir}/*.sh
 
 %defattr(0444, bin, bin)
-%{prefix}/include/liboaf/*.h
-%{prefix}/share/aclocal/*.m4
+%{_includedir}/liboaf
+%{_datadir}/aclocal/*.m4
+
+
+%changelog
+* Sun Aug 26 2001 Gregory Leblanc <gleblanc@linuxweasel.com>
+- remove some unnecessary %defines
+- used the %find_lang macro for i18n.  Makes many translators happy
+- replaced %{prefix}/lib with %{_libdir} in the files section
+- simplified files section
+- replaced %{prefix}/bin with %{_bindir} in the files section
+- added bindir, libdir, datadir, includedir to the configure and make install stages
+- made %post script not bother to check if the correct path is already in /etc/ld.so.conf
+- removed explicit stripping of binaries.  RPM does this automagically
+- made configure and make install stages use RPMs built-in location macros
+- made the setup step quiet
+- added a description for the devel package
+- made -devel not obsolete itself (not sure why it needed to in the first place)
+- removed explicit definition of DocDir
+- fixed BuildRoot
+- fixed Source URL
+- move ChangeLog to the end of the file (so that it's easier to read)
+- moved some files into the -devel rpm
+- changed default ownerships to be root, although we're still not quite decided on this one
+
+* Tue Aug 29 2000 Maciej Stachowiak <mjs@eazel.com>
+- corrected Copyright field and renamed it to License
+
+* Sun May 21 2000 Ross Golder <rossigee@bigfoot.com>
+- created spec file (based on bonobo.spec.in)

@@ -1,90 +1,132 @@
 # OAF Finnish translation.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000.
-#
-# GNOME Finnish Translation Team: http://gnome-fi.sourceforge.net/
+# Suomennos: http://gnome-fi.sourceforge.net/
+#  
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OAF\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
-"PO-Revision-Date: 2000-12-09 19:40+02:00\n"
+"Project-Id-Version: oaf 0.6.6\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"PO-Revision-Date: 2001-10-06 21:29+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "Palvelimia rekisteröidessä käytettävä oliohakemisto"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "Yksikään palvelin ei vastannut kyselyysi"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "Tiedostokahva, johon IOR tulostuu"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Luku lapsiprosessista epäonnistui: %s\n"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "Aktivoitava IID"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "Estä palvelimen rekisteröityminen OAF:lla"
-
-#: liboaf/oaf-mainloop.c:381
-#, fuzzy
-msgid "OAF options"
-msgstr "OAF-asetukset"
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "Uutta prosessia ei voitu luoda"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Lapsi vastaanotti signaalin %u (%s)"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Tuntematon ei-lopetusvirhe (tila on %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Käynnistys epäonnistui: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Lapsiprosessi ei antanut virheviestiä: tapahtui tuntematon virhe"
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr "OAF ei onnistunut asettamaan komennon %s prosessiryhmää: %s\n"
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Ohjelman %s käynnistys epäonnistui: %d (%s)\n"
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "Palvelimia rekisteröidessä käytettävä oliohakemisto"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "Tiedostokahva, johon IOR tulostuu"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "Aktivoitava IID"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "Estä palvelimen rekisteröityminen OAF:lla"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "OAF-asetukset"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open moduulille \"%s\" epäonnistui: %s"
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr "Ei voi löytää symbolia OAF_Plugin_info tiedostosta \"%s\""
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr "Tehdas \"%s\" palautti arvon NIL iid:lle \"%s\""
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr "Jaettu kirjasto \"%s\" ei sisältänyt iid:tä `%s'"
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "Ei voitu selvittää, missä lapsiprosessissa palvelin on luetteloitu"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr "Mikään ei vastannut vaatimuksia."
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "Kysely epäonnistui: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "Aktivointi epäonnistui: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "AID:ta ei voitu tulkita"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "Kontekstia ei voitu tulkita: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "Palvelinta ei voitu aktivoida: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
+#, fuzzy
+msgid "Directory to read .oaf files from"
 msgstr "Hakemisto, josta .oafinfo-tiedostot luetaan"
 
 #: oafd/main.c:62
@@ -119,6 +161,15 @@ msgstr "LAUSEKE"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "shlib-olioiden aktivointia etäprosessissa ei vielä käsitellä.  "
 
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
+"Ei löytänyt palvelimen \"%s\" aktivointimerkintää. Todennäköinen syy on "
+"puuttuva tai väärin asennettu .oaf-tiedosto."
+
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
@@ -149,8 +200,8 @@ msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
 msgstr ""
-"OAF-asetustiedoston lukeminen ei onnistunut. Tarkista, että se on kunnossa: "
-"%s"
+"OAF-asetustiedoston lukeminen ei onnistunut. Tarkista, että se on kunnossa: %"
+"s"
 
 #: oafd/OAF_naming-service.oaf.in.h:1
 msgid "CORBA CosNaming service."
@@ -211,7 +262,3 @@ msgstr "Näytä OAF-asetustiedostossa olevat hakemistot"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Näytä OAF-asetustiedoston polku"
-
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr "Yksikään palvelin ei vastannut kyselyysi"

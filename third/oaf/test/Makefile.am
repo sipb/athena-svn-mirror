@@ -1,12 +1,12 @@
 NULL=
 
 noinst_PROGRAMS=		\
-	oaf-empty-server 	\
 	oaf-test-client		\
 	oaf-test-async		\
 	$(NULL)
 
 bin_PROGRAMS=			\
+	oaf-empty-server 	\
 	oaf-run-query		\
 	$(NULL)
 
@@ -52,19 +52,17 @@ CLEANFILES=empty_built
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/liboaf -DOAFINFODIR=\"$(pkgdatadir)\" \
 	@ORBIT_CFLAGS@ @XML_CFLAGS@ @GLIB_CFLAGS@
-LDADD=../liboaf/liboaf.la @ORBIT_LIBS@ @GLIB_LIBS@
+LDADD=../liboaf/liboaf.la @ORBIT_LIBS@ @GLIB_LIBS@ @INTLLIBS@
 
 oaffiles=empty.oafinfo
 
 emptydatadir=$(datadir)/oaf
 emptydata_DATA=$(oaffiles)
 
-bin_SCRIPTS=oaf-slay
+bin_SCRIPTS=$(OAF_SLAY)
+EXTRA_SCRIPTS=oaf-slay.in
 
-oaf-slay: $(srcdir)/oaf-slay.tmpl
-	sed 's|@oafdir@|'$(pkgdatadir)'|g' < $< > $@
-
-EXTRA_DIST=empty.idl oaf-slay.tmpl $(oaffiles) broken.oafinfo
+EXTRA_DIST=empty.idl $(oaffiles) broken.oafinfo
 
 check:
 	OAF_INFO_PATH="$(top_srcdir)/test:$$OAF_INFO_PATH" PATH="$(top_builddir)/test:$$PATH" $(top_builddir)/test/oaf-test-client

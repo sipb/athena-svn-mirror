@@ -1,84 +1,134 @@
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
+# (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
+# Je¶li masz jakiekolwiek uwagi odnosz±ce siê do t³umaczenia lub chcesz
+# pomóc w jego rozwijaniu i pielêgnowaniu, napisz do nas na adres:
+# translators@gnome.pl
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
-"PO-Revision-Date: 2000-10-31 11:45+0100\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"PO-Revision-Date: 2001-10-14 16:44+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "Katalog obiektów wykorzystywany przy rejestrowaniu serwerów"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "¯aden serwer nie odpowiada zapytaniu"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "Deskryptor pliku, do którego wypisaæ IOR"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Nie mo¿na odczytaæ z procesu potomnego: %s\n"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "Aktywowany IID"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "Wstrzymuje rejestracjê serwera przez OAF-a"
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr ""
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "Nie mo¿na utworzyæ nowego procesu"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Potomek otrzyma³ sygna³ %u (%s)"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Nieznany b³±d procesu (kod stanu %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Funkcja exec nie powiod³a siê: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Proces potomny nie poda³ komunikatu b³êdu, wyst±pi³ nieznany b³±d"
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr "OAF: Nie mo¿na ustawiæ grupy procesu %s: %s\n"
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Nie mo¿na wykonaæ %s: %d (%s)\n"
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "Katalog obiektów wykorzystywany przy rejestrowaniu serwerów"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "Deskryptor pliku, do którego wypisaæ IOR"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "Aktywowany IID"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "Wstrzymuje rejestracjê serwera przez OAF-a"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "Opcje OAF-a"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "Funkcja g_module_open zwróci³a przy pliku \"%s\" b³±d \"%s\""
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr "Nie mo¿na odnale¼æ w \"%s\" symbolu OAF_Plugin_info"
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr "Generator \"%s\" zwróci³ NIL dla \"%s\""
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr "Biblioteka dzielona \"%s\" nie zawiera \"%s\""
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "Nie mo¿na odnale¼æ potomka, w którym nas³uchuje serwer"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr "Nic nie odpowiada wymaganiom."
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "Zapytanie nie powiod³o siê: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "Aktywacja nie powiod³a siê: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "Nie mo¿na przeanalizowaæ AID"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "Nie mo¿na przeanalizowaæ kontekstu: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "Nie mo¿na aktywowaæ serwera: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
-msgstr "Katalog, z którego odczytywane powinny byæ pliki .oafinfo"
+msgid "Directory to read .oaf files from"
+msgstr "Katalog, z którego odczytywane powinny byæ pliki .oaf"
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -115,6 +165,15 @@ msgstr ""
 "Aktywowanie obiektów w bibliotekach dzielonych dla zdalnych procesów nie "
 "jest jeszcze obs³ugiwane"
 
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
+"Nie mo¿na odnale¼æ rekordu aktywacji serwera \"%s\". Prawdopodobn± przyczyn± "
+"jest brak lub niew³a¶ciwe zainstalowanie pliku .oaf."
+
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
@@ -150,11 +209,11 @@ msgstr ""
 
 #: oafd/OAF_naming-service.oaf.in.h:1
 msgid "CORBA CosNaming service."
-msgstr ""
+msgstr "Us³uga CORBA CosNaming."
 
 #: oafd/OAF_naming-service.oaf.in.h:2
 msgid "Name service"
-msgstr ""
+msgstr "Us³uga nazw"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -207,10 +266,3 @@ msgstr "Wy¶wietla katalogi w pliku konfiguracyjnym OAF-a"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Wy¶wietla ¶cie¿kê pliku konfiguracyjnego OAF-a"
-
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr ""
-
-#~ msgid "Trying dir %s\n"
-#~ msgstr "Sprawdzanie katalogu %s\n"

@@ -61,11 +61,14 @@ host_alias = @host_alias@
 host_triplet = @host@
 APP_LIBS = @APP_LIBS@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
@@ -76,6 +79,8 @@ GTKDOC = @GTKDOC@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+IF_BSD_PS = @IF_BSD_PS@
+IF_POSIX_PS = @IF_POSIX_PS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -90,15 +95,20 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_MAJOR_VERSION = @OAF_MAJOR_VERSION@
 OAF_MICRO_VERSION = @OAF_MICRO_VERSION@
 OAF_MINOR_VERSION = @OAF_MINOR_VERSION@
+OAF_SLAY = @OAF_SLAY@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PERL_PATH = @PERL_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -136,12 +146,13 @@ EXTRA_DIST = ac-query-lex.l ac-query-parse.y $(oaf_in_files) $(oafinfo_DATA)
 
 YFLAGS = -d -v
 
-BUILT_SOURCES = ac-query-lex.c ac-query-parse.c ac-query-parse.h oaf-skels.c
+BUILT_SOURCES = ac-query-lex.c ac-query-parse.c ac-query-parse.h oaf-skels.c OAF_naming-service.oaf
 
 CLEANFILES = stamp-parser stamp-idl
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  oafd$(EXEEXT) oaf-client$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -149,13 +160,15 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-oafd_OBJECTS =  oafd-corba-extensions.o qsort_ex.o oaf-skels.o \
-ac-query-lex.o ac-query-parse.o ac-corba.o ac-query-expr.o od-corba.o \
-od-load.o od-utils.o od-activate.o main.o
+oafd_OBJECTS =  oafd-corba-extensions.$(OBJEXT) qsort_ex.$(OBJEXT) \
+oaf-skels.$(OBJEXT) ac-query-lex.$(OBJEXT) ac-query-parse.$(OBJEXT) \
+ac-corba.$(OBJEXT) ac-query-expr.$(OBJEXT) od-corba.$(OBJEXT) \
+od-load.$(OBJEXT) od-utils.$(OBJEXT) od-activate.$(OBJEXT) \
+main.$(OBJEXT)
 oafd_LDADD = $(LDADD)
 oafd_DEPENDENCIES =  ../liboaf/liboaf.la
 oafd_LDFLAGS = 
-oaf_client_OBJECTS =  client.o
+oaf_client_OBJECTS =  client.$(OBJEXT)
 oaf_client_LDADD = $(LDADD)
 oaf_client_DEPENDENCIES =  ../liboaf/liboaf.la
 oaf_client_LDFLAGS = 
@@ -178,7 +191,7 @@ OBJECTS = $(oafd_OBJECTS) $(oaf_client_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps oafd/Makefile
 
@@ -215,6 +228,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -223,6 +241,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -250,12 +269,12 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-oafd: $(oafd_OBJECTS) $(oafd_DEPENDENCIES)
-	@rm -f oafd
+oafd$(EXEEXT): $(oafd_OBJECTS) $(oafd_DEPENDENCIES)
+	@rm -f oafd$(EXEEXT)
 	$(LINK) $(oafd_LDFLAGS) $(oafd_OBJECTS) $(oafd_LDADD) $(LIBS)
 
-oaf-client: $(oaf_client_OBJECTS) $(oaf_client_DEPENDENCIES)
-	@rm -f oaf-client
+oaf-client$(EXEEXT): $(oaf_client_OBJECTS) $(oaf_client_DEPENDENCIES)
+	@rm -f oaf-client$(EXEEXT)
 	$(LINK) $(oaf_client_LDFLAGS) $(oaf_client_OBJECTS) $(oaf_client_LDADD) $(LIBS)
 
 install-oafinfoDATA: $(oafinfo_DATA)
@@ -321,6 +340,68 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+ac-corba.o: ac-corba.c ../config.h oafd.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-i18n.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
+	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
+	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
+	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
+	ac-query-expr.h oafd-corba-extensions.h
+ac-query-expr.o: ac-query-expr.c ac-query-expr.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	ac-query-parse.h qsort_ex.h
+ac-query-lex.o: ac-query-lex.c ac-query-expr.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	ac-query-parse.h
+ac-query-parse.o: ac-query-parse.c ac-query-expr.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h
+client.o: client.c ../config.h ../liboaf/liboaf-private.h \
+	../liboaf/liboaf.h ../liboaf/liboaf-version.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
+	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
+	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
+	../liboaf/oaf-registration.h oafd.h
+main.o: main.c ../config.h ../liboaf/oaf-i18n.h oafd.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	ac-query-expr.h od-utils.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
+	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
+	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
+	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h
+oaf-skels.o: oaf-skels.c ../liboaf/oaf.h ../liboaf/oaf-factory.h \
+	../liboaf/oaf-factory-suppress.h
+oafd-corba-extensions.o: oafd-corba-extensions.c oafd.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-i18n.h ../config.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
+	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
+	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
+	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
+	oafd-corba-extensions.h
+od-activate.o: od-activate.c ../config.h oafd.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/liboaf-private.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
+	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
+	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
+	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
+	../liboaf/oaf-i18n.h oafd-corba-extensions.h
+od-corba.o: od-corba.c ../config.h oafd.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-i18n.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
+	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
+	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
+	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
+	oafd-corba-extensions.h
+od-load.o: od-load.c oafd.h ../liboaf/oaf.h ../liboaf/oaf-factory.h \
+	../liboaf/oaf-factory-suppress.h ../liboaf/oaf-i18n.h \
+	../config.h
+od-utils.o: od-utils.c ../config.h od-utils.h ../liboaf/oaf-i18n.h
+qsort_ex.o: qsort_ex.c ../config.h qsort_ex.h
 
 info-am:
 info: info-am
@@ -416,8 +497,11 @@ ac-query-parse.c: stamp-parser
 ac-query-parse.h: stamp-parser
 	test -f y.tab.h && mv -f y.tab.h ac-query-parse.h || touch $@
 
-oaf-skels.c: $(top_srcdir)/idl/oaf.idl
+oaf-skels.c: $(top_srcdir)/idl/oaf.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) --noheaders $(top_srcdir)/idl/oaf.idl
+
+dist-hook:
+	cd $(distdir) ; rm -f $(CLEANFILES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -27,6 +27,7 @@
 
 #include "liboaf/liboaf-private.h"
 #include <stdio.h>
+#include <unistd.h>
 
 static gboolean check_registration = TRUE;
 static gboolean need_ior_printout  = TRUE;
@@ -65,11 +66,10 @@ oaf_timeout_reg_check (gpointer data)
  * Return value: status of the registration.
  */
 OAF_RegistrationResult
-oaf_active_server_register (const char *registration_id, CORBA_Object obj)
+oaf_active_server_register (const char *registration_id, 
+                            CORBA_Object obj)
 {
 	OAF_ObjectDirectory od;
-	OAFRegistrationCategory regcat = { "IDL:OAF/ObjectDirectory:1.0" };
-	OAFRegistrationCategory ac_regcat;
 	CORBA_Environment ev;
 	OAF_RegistrationResult retval;
 	const char *actid;
@@ -90,34 +90,18 @@ oaf_active_server_register (const char *registration_id, CORBA_Object obj)
         if (actid && strcmp (actid, iid) == 0 && oaf_private) {
                 retval = OAF_REG_SUCCESS;
         } else {
-                regcat.session_name = oaf_session_name_get ();
-                regcat.username = oaf_username_get ();
-                regcat.hostname = oaf_hostname_get ();
-                
-                od = oaf_service_get (&regcat);
+                od = oaf_object_directory_get (oaf_username_get (),
+                                               oaf_hostname_get (),
+                                               NULL);
                 
                 if (CORBA_Object_is_nil (od, &ev)) {
-                        CORBA_Object ac;
-                        
-                        /* If we can't get an object directory, get an 
-                         * activation context (in case oafd needs starting)
-                         * and then try again 
-                         */
-                        ac_regcat = regcat;
-                        ac_regcat.name = "IDL:OAF/ActivationContext:1.0";
-                        ac = oaf_service_get (&ac_regcat);
-                        if (CORBA_Object_is_nil (ac, &ev))
-                                return OAF_REG_ERROR;
-                        od = oaf_service_get (&regcat);
-                        if (CORBA_Object_is_nil (od, &ev))
-                                return OAF_REG_ERROR;
+                        return OAF_REG_ERROR;
                 }
                 
                 retval = OAF_ObjectDirectory_register_new (od, 
                                                            (char *) registration_id, 
                                                            obj, &ev);
         }
-
 
 	if (actid && strcmp (actid, iid) == 0 && need_ior_printout) {
 		char *iorstr;
@@ -142,10 +126,11 @@ oaf_active_server_register (const char *registration_id, CORBA_Object obj)
 			CORBA_free (iorstr);
 		}
 
-		if (fh != stdout)
+		if (fh != stdout) {
 			fclose (fh);
-		else if (iorfd > 2)
+		} else if (iorfd > 2) {
 			close (iorfd);
+                }
 	}
 #ifdef OAF_DEBUG
         else if (actid && need_ior_printout) {
@@ -155,6 +140,10 @@ oaf_active_server_register (const char *registration_id, CORBA_Object obj)
 #endif
 
 	CORBA_exception_free (&ev);
+
+#ifdef OAF_DEBUG
+        g_message ("Successfully registered `%s'", registration_id);
+#endif
 
 	return retval;
 }
@@ -171,23 +160,22 @@ void
 oaf_active_server_unregister (const char *iid, CORBA_Object obj)
 {
 	OAF_ObjectDirectory od;
-	OAFRegistrationCategory regcat = { "IDL:OAF/ObjectDirectory:1.0" };
 	CORBA_Environment ev;
 	const char *actid;
 
-	actid = oaf_activation_iid_get();
-	if(actid && !strcmp(actid, iid) && oaf_private)
+	actid = oaf_activation_iid_get ();
+	if(actid && strcmp (actid, iid) == 0 && oaf_private) {
 		return;
+        }
 
-	regcat.session_name = oaf_session_name_get ();
-	regcat.username = oaf_username_get ();
-	regcat.hostname = oaf_hostname_get ();
-
-	od = oaf_service_get (&regcat);
+	od = oaf_object_directory_get (oaf_username_get (), 
+                                       oaf_hostname_get (),
+                                       NULL);
 
 	CORBA_exception_init (&ev);
-	if (CORBA_Object_is_nil (od, &ev))
+	if (CORBA_Object_is_nil (od, &ev)) {
 		return;
+        }
 
 	OAF_ObjectDirectory_unregister (od, (char *) iid, obj,
 					OAF_ObjectDirectory_UNREGISTER_NORMAL, &ev);

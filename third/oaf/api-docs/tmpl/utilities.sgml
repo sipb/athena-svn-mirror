@@ -19,18 +19,25 @@ Random misc utilities to manipulate OAF_ServerInfo structures.
 
 </para>
 
+@name: 
+@v: 
 
 <!-- ##### STRUCT OAF_PropertyValue ##### -->
 <para>
 
 </para>
 
+@_d: 
 
 <!-- ##### ENUM OAF_PropertyType ##### -->
 <para>
 
 </para>
 
+@OAF_P_STRING: 
+@OAF_P_NUMBER: 
+@OAF_P_BOOLEAN: 
+@OAF_P_STRINGV: 
 
 <!-- ##### FUNCTION oaf_server_info_prop_find ##### -->
 <para>
@@ -47,6 +54,10 @@ Random misc utilities to manipulate OAF_ServerInfo structures.
 
 </para>
 
+@iid: 
+@user: 
+@host: 
+@domain: 
 
 <!-- ##### FUNCTION oaf_actinfo_stringify ##### -->
 <para>

@@ -61,11 +61,14 @@ host_alias = @host_alias@
 host_triplet = @host@
 APP_LIBS = @APP_LIBS@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
@@ -76,6 +79,8 @@ GTKDOC = @GTKDOC@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+IF_BSD_PS = @IF_BSD_PS@
+IF_POSIX_PS = @IF_POSIX_PS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -90,15 +95,20 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_MAJOR_VERSION = @OAF_MAJOR_VERSION@
 OAF_MICRO_VERSION = @OAF_MICRO_VERSION@
 OAF_MINOR_VERSION = @OAF_MINOR_VERSION@
+OAF_SLAY = @OAF_SLAY@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PERL_PATH = @PERL_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -127,6 +137,7 @@ oaf_sysconf_LDADD =  	$(XML_LIBS)				$(GLIB_LIBS)				$(INTLLIBS)				$(NULL)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  oaf-sysconf$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -134,7 +145,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-oaf_sysconf_OBJECTS =  oaf-sysconf.o
+oaf_sysconf_OBJECTS =  oaf-sysconf.$(OBJEXT)
 oaf_sysconf_DEPENDENCIES = 
 oaf_sysconf_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -154,7 +165,7 @@ OBJECTS = $(oaf_sysconf_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps utils/Makefile
 
@@ -191,6 +202,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -199,6 +215,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -226,8 +243,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-oaf-sysconf: $(oaf_sysconf_OBJECTS) $(oaf_sysconf_DEPENDENCIES)
-	@rm -f oaf-sysconf
+oaf-sysconf$(EXEEXT): $(oaf_sysconf_OBJECTS) $(oaf_sysconf_DEPENDENCIES)
+	@rm -f oaf-sysconf$(EXEEXT)
 	$(LINK) $(oaf_sysconf_LDFLAGS) $(oaf_sysconf_OBJECTS) $(oaf_sysconf_LDADD) $(LIBS)
 
 tags: TAGS
@@ -274,6 +291,8 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+oaf-sysconf.o: oaf-sysconf.c ../config.h ../liboaf/oaf-i18n.h \
+	../oafd/od-utils.h
 
 info-am:
 info: info-am

@@ -23,6 +23,8 @@
  *
  */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <time.h>
 
@@ -445,19 +447,21 @@ impl_OAF_ActivationContext_remove_directory (impl_POA_OAF_ActivationContext *
 		}
 	}
 
-	if (!cur)
+	if (cur == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_OAF_ActivationContext_NotListed,
 				     NULL);
+        }
 }
 
 static void
-ac_do_activation (impl_POA_OAF_ActivationContext * servant,
-		  OAF_ServerInfo * server,
-		  OAF_ActivationResult * out,
+ac_do_activation (impl_POA_OAF_ActivationContext *servant,
+		  OAF_ServerInfo *server,
+		  OAF_ActivationResult *out,
 		  OAF_ActivationFlags flags,
 		  const char *hostname,
-		  CORBA_Context ctx, CORBA_Environment * ev)
+		  CORBA_Context ctx, 
+                  CORBA_Environment *ev)
 {
 	ChildODInfo *child;
 	OAF_ServerInfo *activatable;
@@ -502,10 +506,11 @@ ac_do_activation (impl_POA_OAF_ActivationContext * servant,
 		return;
         }
 
-	/* A shared library must be on the same host as the activator in
-	 * order for loading to work properly (no, we're not going to
-	 * bother with loading a remote shlib into a process - it gets far too complicated
-	 * far too quickly :-) */
+	/* A shared library must be on the same host as the activator
+	 * in order for loading to work properly (no, we're not going
+	 * to bother with loading a remote shlib into a process - it
+	 * gets far too complicated far too quickly :-) 
+         */
 	
 	if (activatable && !strcmp (activatable->server_type, "shlib")
 	    && !(flags & OAF_FLAG_NO_LOCAL)
@@ -594,13 +599,27 @@ impl_OAF_ActivationContext_activate (impl_POA_OAF_ActivationContext * servant,
 	retval = OAF_ActivationResult__alloc ();
 	retval->res._d = OAF_RESULT_NONE;
 
-	for (i = 0; (retval->res._d == OAF_RESULT_NONE) && items[i]
+        if (items[0] == NULL) {
+		OAF_GeneralError *errval = OAF_GeneralError__alloc ();
+		errval->description =
+			CORBA_string_dup
+			(_("Nothing matched the requirements."));
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_OAF_GeneralError, errval);
+                goto out;
+        }
+
+	for (i = 0; (retval->res._d == OAF_RESULT_NONE) && items[i] != NULL
 	     && (i < servant->total_servers); i++) {
 		curitem = items[i];
 
 		ac_do_activation (servant, curitem, retval, flags, hostname,
 				  ctx, ev);
+                if (ev->_major != CORBA_NO_EXCEPTION) {
+                        goto out;
+                }
 	}
+        
 
 	if (retval->res._d == OAF_RESULT_NONE)
 		retval->aid = CORBA_string_dup ("");
@@ -1017,37 +1036,40 @@ ac_context_to_string_array (CORBA_Context context, char **sort_criteria, CORBA_E
 }
 
 
-
-
 static OAF_ActivationResult *
-impl_OAF_ActivationContext_activate_from_id (impl_POA_OAF_ActivationContext *
-					     servant, OAF_ActivationID aid,
+impl_OAF_ActivationContext_activate_from_id (impl_POA_OAF_ActivationContext *servant, 
+                                             OAF_ActivationID aid,
 					     OAF_ActivationFlags flags,
 					     CORBA_Context ctx,
-					     CORBA_Environment * ev)
+					     CORBA_Environment *ev)
 {
 	OAF_ActivationResult *retval;
         char *requirements;
         char *sort_criteria[4];
         GNOME_stringlist selection_order;
+        OAF_ActivationContext_ParseFailed *ex;
 
 	ac_update_lists (servant, ev);
         if (ev->_major != CORBA_NO_EXCEPTION) {
                 return CORBA_OBJECT_NIL;
         }
 
-
 	servant->refs++;
 
         requirements = ac_aid_to_query_string (aid);
         if (requirements == NULL) {
                 servant->refs--;
+                ex = OAF_ActivationContext_ParseFailed__alloc ();
+		ex->description = CORBA_string_dup ("Invalid AID or IID");
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_OAF_ActivationContext_ParseFailed,
+				     ex);
                 return CORBA_OBJECT_NIL;
         }
 
         ac_context_to_string_array (ctx, sort_criteria, ev);
         if (ev->_major != CORBA_NO_EXCEPTION) {
-                servant->refs--;
+                servant->refs--;            
                 return CORBA_OBJECT_NIL;
         }
 

@@ -39,6 +39,13 @@ servers are started.
 
 </para>
 
+@iid: 
+@server_type: 
+@location_info: 
+@username: 
+@hostname: 
+@domain: 
+@props: 
 
 <!-- ##### TYPEDEF OAF_ActivationFlags ##### -->
 <para>
@@ -82,7 +89,7 @@ servers are started.
 @Returns: 
 
 
-<!-- ##### STRUCT OAFActivationCallback ##### -->
+<!-- ##### TYPEDEF OAFActivationCallback ##### -->
 <para>
 This is the signature of the function which you must pass
 as a callback to the asynchrounous activation functions.

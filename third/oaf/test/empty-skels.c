@@ -61,8 +61,7 @@ POA_Empty__init(PortableServer_Servant servant, CORBA_Environment * env)
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_Empty, "IDL:Empty:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_Empty };
-
+(ORBit_local_objref_init) & init_local_objref_Empty };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->

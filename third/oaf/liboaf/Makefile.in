@@ -61,11 +61,14 @@ host_alias = @host_alias@
 host_triplet = @host@
 APP_LIBS = @APP_LIBS@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
@@ -76,6 +79,8 @@ GTKDOC = @GTKDOC@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+IF_BSD_PS = @IF_BSD_PS@
+IF_POSIX_PS = @IF_POSIX_PS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -90,15 +95,20 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_MAJOR_VERSION = @OAF_MAJOR_VERSION@
 OAF_MICRO_VERSION = @OAF_MICRO_VERSION@
 OAF_MINOR_VERSION = @OAF_MINOR_VERSION@
+OAF_SLAY = @OAF_SLAY@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PERL_PATH = @PERL_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -116,24 +126,24 @@ NULL =
 
 lib_LTLIBRARIES = liboaf.la
 
-INCLUDES =  	-I$(top_srcdir) 			-I$(top_builddir) 			-I$(top_srcdir)/liboaf 			-I$(top_builddir)/liboaf 		-DOAF_LOCALEDIR=\""$(datadir)/locale"\" 	@ORBIT_CFLAGS@ 				@GLIB_CFLAGS@ 				-DVERSION=\"$(VERSION)\"		$(NULL)
+INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				-I$(top_srcdir)/liboaf				-I$(top_builddir)/liboaf			-DOAF_LOCALEDIR=\""$(datadir)/locale"\"		@ORBIT_CFLAGS@					@GLIB_CFLAGS@					-DVERSION=\"$(VERSION)\"			$(NULL)
 
 
-LDFLAGS =  	@ORBIT_LIBS@ 		@GLIB_LIBS@		$(NULL)
+LDFLAGS =  	@ORBIT_LIBS@					@GLIB_LIBS@					$(NULL)
 
 
 liboafincludedir = $(includedir)/liboaf
 
-liboafinclude_HEADERS =  	oaf.h 				liboaf.h 			oaf-async.h			oaf-registration.h		oaf-actid.h			oaf-activate.h			oaf-mainloop.h			oaf-plugin.h			oaf-servreg.h			oaf-util.h			oaf-async.h			oaf-factory.h 			oaf-factory-suppress.h		liboaf-version.h		$(NULL)
+liboafinclude_HEADERS =  	oaf.h						liboaf.h					oaf-async.h					oaf-registration.h				oaf-actid.h					oaf-activate.h					oaf-mainloop.h					oaf-plugin.h					oaf-servreg.h					oaf-util.h					oaf-async.h					oaf-factory.h					oaf-factory-suppress.h				liboaf-version.h				$(NULL)
 
 
-liboaf_la_SOURCES =  	oaf-stubs.c 			oaf-skels.c 			oaf-common.c 			oaf-mainloop.c 			oaf-actid.c 			liboaf-private.h 		oaf-factory-stubs.c 		oaf-factory-skels.c 		oaf-factory-common.c 		oaf-plugin.c 			oaf-activate.c 			oaf-activate-private.h 		oaf-registration.c 		oaf-servreg.c 			oaf-util.c			oaf-i18n.h			oaf-async.c			oaf-async-corba.h		oaf-async-corba.c		$(NULL)
+liboaf_la_SOURCES =  	oaf-stubs.c					oaf-skels.c					oaf-common.c					oaf-mainloop.c					oaf-actid.c					liboaf-private.h				oaf-factory-stubs.c				oaf-factory-skels.c				oaf-factory-common.c				oaf-plugin.c					oaf-activate.c					oaf-activate-private.h				oaf-registration.c				oaf-servreg.c					oaf-util.c					oaf-i18n.h					oaf-async.c					oaf-async-corba.h				oaf-async-corba.c				oaf-fork-server.c				$(NULL)
 
 
-BUILT_SOURCES =  	oaf-stubs.c 			oaf-skels.c 			oaf-common.c 			oaf-factory-stubs.c 		oaf-factory-skels.c 		oaf-factory-common.c 		oaf.h 				oaf-factory.h			$(NULL)
+BUILT_SOURCES =  	oaf-stubs.c					oaf-skels.c					oaf-common.c					oaf-factory-stubs.c				oaf-factory-skels.c				oaf-factory-common.c				oaf.h						oaf-factory.h					$(NULL)
 
 
-CLEANFILES =  	stamp-idl 			stamp-factory-idl 		$(BUILT_SOURCES)		$(NULL)
+CLEANFILES =  	stamp-idl					stamp-factory-idl				$(BUILT_SOURCES)				$(NULL)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -149,7 +159,8 @@ liboaf_la_LIBADD =
 liboaf_la_OBJECTS =  oaf-stubs.lo oaf-skels.lo oaf-common.lo \
 oaf-mainloop.lo oaf-actid.lo oaf-factory-stubs.lo oaf-factory-skels.lo \
 oaf-factory-common.lo oaf-plugin.lo oaf-activate.lo oaf-registration.lo \
-oaf-servreg.lo oaf-util.lo oaf-async.lo oaf-async-corba.lo
+oaf-servreg.lo oaf-util.lo oaf-async.lo oaf-async-corba.lo \
+oaf-fork-server.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -169,7 +180,7 @@ OBJECTS = $(liboaf_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps liboaf/Makefile
 
@@ -208,6 +219,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -216,6 +232,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -305,6 +322,63 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+oaf-actid.lo oaf-actid.o : oaf-actid.c ../config.h liboaf-private.h \
+	liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
+oaf-activate.lo oaf-activate.o : oaf-activate.c liboaf-private.h \
+	../config.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
+	oaf-activate-private.h
+oaf-async-corba.lo oaf-async-corba.o : oaf-async-corba.c ../config.h \
+	oaf.h oaf-factory.h oaf-factory-suppress.h liboaf.h \
+	liboaf-version.h oaf.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
+	oaf-async.h oaf-async-corba.h oaf-i18n.h
+oaf-async.lo oaf-async.o : oaf-async.c ../config.h oaf-async.h \
+	liboaf-version.h oaf.h oaf-factory.h oaf-factory-suppress.h \
+	oaf-async-corba.h oaf.h oaf-activate.h oaf-activate-private.h \
+	liboaf-private.h liboaf.h oaf-servreg.h oaf-util.h oaf-actid.h \
+	oaf-plugin.h oaf-mainloop.h oaf-registration.h
+oaf-common.lo oaf-common.o : oaf-common.c oaf.h oaf-factory.h \
+	oaf-factory-suppress.h
+oaf-factory-common.lo oaf-factory-common.o : oaf-factory-common.c \
+	oaf-factory.h
+oaf-factory-skels.lo oaf-factory-skels.o : oaf-factory-skels.c \
+	oaf-factory.h
+oaf-factory-stubs.lo oaf-factory-stubs.o : oaf-factory-stubs.c \
+	oaf-factory.h
+oaf-fork-server.lo oaf-fork-server.o : oaf-fork-server.c ../config.h \
+	liboaf-private.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
+	oaf-i18n.h
+oaf-mainloop.lo oaf-mainloop.o : oaf-mainloop.c ../config.h oaf-i18n.h \
+	liboaf-private.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
+oaf-plugin.lo oaf-plugin.o : oaf-plugin.c ../config.h liboaf-private.h \
+	liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
+	oaf-plugin.h oaf-i18n.h
+oaf-registration.lo oaf-registration.o : oaf-registration.c \
+	liboaf-private.h ../config.h liboaf.h liboaf-version.h oaf.h \
+	oaf-factory.h oaf-factory-suppress.h oaf-activate.h \
+	oaf-servreg.h oaf-util.h oaf-actid.h oaf-plugin.h \
+	oaf-mainloop.h oaf-registration.h oaf-i18n.h
+oaf-servreg.lo oaf-servreg.o : oaf-servreg.c ../config.h \
+	liboaf-private.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
+	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
+oaf-skels.lo oaf-skels.o : oaf-skels.c oaf.h oaf-factory.h \
+	oaf-factory-suppress.h
+oaf-stubs.lo oaf-stubs.o : oaf-stubs.c oaf.h oaf-factory.h \
+	oaf-factory-suppress.h
+oaf-util.lo oaf-util.o : oaf-util.c oaf-util.h oaf.h oaf-factory.h \
+	oaf-factory-suppress.h
 
 info-am:
 info: info-am
@@ -386,9 +460,8 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-oaf-stubs.c oaf-skels.c oaf.h oaf-common.c: stamp-idl
-
-oaf-factory-stubs.c oaf-factory-skels.c oaf-factory.h oaf-factory-common.c: stamp-factory-idl
+oaf-stubs.c oaf-skels.c oaf.h oaf-common.c: stamp-idl stamp-factory-idl
+oaf-factory-stubs.c oaf-factory-skels.c oaf-factory.h oaf-factory-common.c: stamp-idl stamp-factory-idl
 
 # Work around automake brokenness.
 ../liboaf/oaf.h: stamp-idl
@@ -399,9 +472,12 @@ stamp-idl: $(top_srcdir)/idl/oaf.idl
 	$(ORBIT_IDL) -I$(top_srcdir)/idl --define=OAF_COMPILATION $(top_srcdir)/idl/oaf.idl
 	touch stamp-idl
 
-oaf-factory.h stamp-factory-idl: $(top_srcdir)/idl/oaf-factory.idl
+stamp-factory-idl: $(top_srcdir)/idl/oaf-factory.idl
 	$(ORBIT_IDL) -I$(top_srcdir)/idl --define=GNOME_FACTORY_COMPILATION $(top_srcdir)/idl/oaf-factory.idl
 	touch stamp-factory-idl
+
+dist-hook:
+	cd $(distdir) ; rm -f $(CLEANFILES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

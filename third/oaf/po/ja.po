@@ -6,84 +6,127 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: oaf 0.6.3\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
-"PO-Revision-Date: 2001-02-22 18:45+09:00\n"
+"Project-Id-Version: oaf 0.6.6cvs\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"PO-Revision-Date: 2001-09-19 23:16+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "サーバー登録時に使用するオブジェクトディレクトリ"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "クエリに該当するサーバがありません"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "IOR の出力先のファイルディスクリプタ"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "子プロセスからの読み出しに失敗: %s\n"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "IID の活性化"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "OAF でサーバーの登録を禁止"
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr "OAF オプション"
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "新規プロセスを fork できませんでした。"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "子プロセスがシグナル %u (%s) を受け取りました。"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "不明な未終了エラー (状態 = %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "実行エラー: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "子プロセスがエラーメッセージを返しません。不明なエラーが発生"
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr "OAF が %s のプロセスグループのセットに失敗: %s\n"
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "%s の実行に失敗しました: %d (%s)\n"
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "サーバー登録時に使用するオブジェクトディレクトリ"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "IOR の出力先のファイルディスクリプタ"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "IID の活性化"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "OAF でサーバーの登録を禁止"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "OAF オプション"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "'%s' の g_module_open が '%s' で失敗"
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr "'%s' に OAF_Plugin_info シンボルを発見できません"
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr "Factory '%s' が '%s' について NIL を返しました"
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr "Shlib '%s' が '%s' を含んでいませんでした"
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "サーバーがどの子プロセスで登録されたか分かりませんでした。"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr "要求に合致するものがありません。"
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "クエリーに失敗しました: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "活性化に失敗しました: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "AIDをパースできません"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "コンテクストをパースできません: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "サーバを活性化できません: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
+#, fuzzy
+msgid "Directory to read .oaf files from"
 msgstr ".oafinfoファイルを読み込むディレクトリ"
 
 #: oafd/main.c:62
@@ -118,6 +161,13 @@ msgstr "表現"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "リモートプロセスの shlib オブジェクトの活性化は未だ実装されていません。"
+
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
@@ -211,9 +261,8 @@ msgstr "OAF 設定ファイル中のディレクトリの表示"
 msgid "Display path to OAF configuration file"
 msgstr "OAF 設定ファイルのパスを表示"
 
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr "クエリに該当するサーバがありません"
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "実行エラー: %d (%s)\n"
 
 #~ msgid "Trying dir %s\n"
 #~ msgstr "ディレクトリ %s を試行中\n"
