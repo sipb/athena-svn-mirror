@@ -1,0 +1,381 @@
+2002-11-25  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, gnome-system-monitor.spec: release 2.0.3
+
+2002-11-22 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-system-monitor.xml
+	* help/C/figures/memoryMaps.png, moreInfo.png,
+	pocessListing.png, systemMonitor.png
+	checking in new help docs from Bill Day
+	(Thanks, Bill!)
+
+2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* configure.in: Added cs to ALL_LINGUAS.
+
+2002-09-03  Marius Andreiana <mandreiana@yahoo.com>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2002-08-26 Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.0.2
+
+2002-08-17  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added Greek (el) to ALL_LINGUAS.
+
+2002-07-21  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.0.1
+
+2002-06-24  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, gsm.spec: release 2.0.0
+
+2002-06-07  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Catalan (ca) to ALL_LINGUAS
+
+2002-05-27  Chris Lyttle  <chris@wilddev.net>
+
+	* omf.make: Added for new scrollkeeper
+	* xmldocs.make: Changed for new scrollkeeper
+	* Makefile.am: added omf.make to EXTRA_DIST remove omf-install dir
+	* configure.in: remove omf-install dir
+	* help/C/Makefile.am: change figs to figdir
+	* help/C/gnome-system-monitor-C.omf: Updated to new OMF format
+
+2002-05-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump libwnck requirement and version number
+	
+	* Release 1.1.7
+
+2002-05-19  Shooby Ban <shooby@gnome.hu>
+
+	* configure.in: Added "hu", Hungarian to ALL_LINGUAS.
+
+2002-05-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "mk" Macedonian to ALL_LINGUAS.
+	
+2002-05-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi), Azeri (az) and Dutch (nl)
+	to ALL_LINGUAS
+	* src/proctable.c,src.interface.c: Added no-c-format tags to make
+	xgettext happy
+
+2002-05-14  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in:
+	Require libwnck 0.11
+	
+2002-05-02 John Fleck <jfleck@inkstain.net>
+
+	* help/C/Makefile.am
+	* help/C/gnome-system-monitor-C.omf
+	enabling docs name change to gnome-system-monitor
+
+2002-05-02  Abel Cheung  <maddog@linux.org.hk>
+
+	* .cvsignore, help/.cvsignore, help/C/.cvsignore,
+	omf-install/.cvsignore, src/.cvsignore: Ignore more files.
+
+	* src/callbacks.c: Add translator credits.
+
+2002-04-30 John Fleck <jfleck@inkstain.net>
+
+	* help/C/procman-C.omf
+	update OMF file to match new dtd for SK > 0.3.8
+
+2002-04-03  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* configure.in (ALL_LINGUAS): Added pt_BR.
+
+2002-03-31 John Fleck <jfleck@inkstain.net>
+
+	* help/C/procman-C.omf
+	fixing omf file, per bug #77052
+	thanks to martin H. for catching this
+
+2002-03-23  Kevin Vandersloot <kfv101@psu.edu>
+
+	* Release 1.1.6
+
+2002-03-04  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2002-02-24  Kevin Vandersloot <kfv101@psu.edu>
+	
+	* configure.in, gnome-system-monitor.spec: release 1.1.5
+
+2002-02-11  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: add ja to ALL_LINGUAS
+
+2002-02-11  Christophe Merlet  <redfox@eikonex.org>
+
+	* configure.in: Added fr to ALL_LINGUAS.
+
+2002-02-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version, disst smldocs.make
+
+	* Makefile.am: add omf-instal so it gets disted
+
+	* release 1.1.4
+
+2002-02-06 John Fleck <jfleck@inkstain.net>
+
+	* adding xmldocs.make to help reenable docs build
+
+2002-02-07  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added "ko" to ALL_LINGUAS.
+
+2002-02-06  Kevin Vandersloot <kfv101@psu.edu>
+
+	* Makefile.am, configure.in: remove help stuff temporarily
+	to fix the build
+
+2002-02-05 John Fleck <jfleck@inkstain.net>
+
+	adding documentation by Bill Day:
+	added:
+	* help/Makefile.am
+	* help/C/Makefile.am
+	* help/C/legal.xml
+	* help/C/procman-C.omf
+	* help/C/procman.xml
+	* help/C/addColumn.png, sortButton.png, viewMenu.png,
+	changePriority.png, memoryMaps.png, sortMenu2.png, colorPanel.png,
+	moreInfo.png, sortMenu.png, columnContextMenu.png,
+	processListing.png, systemMonitor.png
+	* omf-install/Makefile.am
+	changed:
+	* Makefile.am
+	* configure.in
+
+
+2002-01-28  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in, gnome-system-monitor.spec: bump version to 1.1.3
+	and some small fixes for spec
+
+	* release 1.1.3
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* gnome-system-monitor.desktop.in:
+	* gnome-system-monitor.spec:
+	* procman.desktop.in:
+	* procman.spec:
+
+	Renaming applications to match their menu entries.
+
+	System Monitor -> gnome-system-monitor.
+	
+2002-01-26  Kevin Vandersloot <kfv101@psu.edu>
+
+	* procman.desktop.in: use newly changed procman.png
+
+2002-01-21  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: add bt_BR to translated files
+
+2002-01-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	* procman.spec: don't intall procman.png
+
+2002-01-19  Seth Nickell  <snickell@stanford.edu>
+
+	* procman.desktop.in:
+
+	Rename "System Monitor" and change the icon.
+
+2002-01-15  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.ini: Added Malay (ms)to ALL_LINGUAS.
+	* po/ms.po: Added Malay Malay Translation.
+
+2002-01-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* procman.spec: Fix the spec file
+
+2002-01-11  Kevin Vandersloot <kfv101@psu.edu>
+
+	* procman.spec: Update thanks to Havoc Pennington
+	<hp@redhat.com>
+
+2002-01-08  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 1.1.2. Bump requirements
+
+	* TODO: Pretty much complete :)
+
+2001-12-27  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added portuguese to ALL_LINGUAS
+
+2001-12-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: add gconf schema support
+
+2001-12-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added "sk" to ALL_LINGUAS.
+
+Sat Dec  8 13:09:28 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Fix so $ACLOCAL_FLAGS is honoured
+	when aclocal is run for --enable-maintainer-mode
+
+2001-12-08  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in, Makefile.am: use intltool instead of xml-i18n-tools;
+	define GETTEXT_PACKAGE
+	* acconfig.h: add template for GETTEXT_PACKAGE
+	* src/procan.c: get translated messages in UTF-8 codeset.
+	* src/Makefile.am: (INCLUDES): remove intl
+	(procman_LDADD): remove $(INTLLIBS)
+
+2001-12-03  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS
+
+2001-11-25  Kevn Vandersloot <kfv101@psu.edu>
+
+	* configure.in: fix the check for gtk. That should
+	be gtk+-2.0 not gtk-2.0
+
+	* src/Makefile.am: remove LIBGTOP_LIBS and LIBGTOP_CFLAGS
+
+2001-11-25  Kevn Vandersloot <kfv101@psu.edu>
+
+	* configure.in: check for libgtop-2.0.pc. This makes procman
+	fully GNOME 2.0 dependant :) You have to get libgtop from a
+	as yet unknown branch. DO NOT get it from HEAD! I will make
+	a libgtop branch soon and it will be stable ported to 
+	GNOME 2.0
+
+2001-11-26  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Add check for (upcoming) gtk 1.3.11. It won't
+	  even compile with gtk 1.3.10.
+
+2001-11-23  Kevin Vandersloot <kfv101@psu.edu>
+
+        * configure.in, Makefile.am: no longer need the intl/
+        and macros/ directory. Update for GNOME 2.0. Side effect
+        is that the libgtop macro is not picked up. For now 
+        you can copy the libgtop macro from /usr/share/macros/gnome-macros
+        to the gnome2-macros directory
+
+Sat Nov 24 15:00:31 2001  Kristian Rietveld  <kristian@planet.nl>
+
+	* src/callbacks.c (compare_disks): free old_name before we
+	return
+
+Fri Nov 23 14:44:26 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* src/interface.c src/memmaps.c src/proctable.c: Adapt
+	to GtkTreeView changes.
+
+	* src/proctable.c: Pack icon cell renderer in the same column 
+	as the name.
+
+2001-11-14  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: remove libwnck for now
+
+2001-10-27  Yuriy Syrota  <rasta@renome.rovno.ua>
+
+	* configure.in: Added "uk" to ALL_LINGUAS.
+
+2001-10-22  Abel Cheung  <maddog@linux.org.hk
+
+	* configure.in: Added "zh_TW" to ALL_LINGUAS.
+
+2001-10-01  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: check for gconf-2 
+
+2001-09-30  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl.
+
+2001-09-29  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: update for GNOME 2.0. No longer require
+	Gal
+
+2001-09-25  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* debian/*: Updated.
+
+2001-09-03  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: added 'da'
+
+2001-08-26  Kevin Vandersloot <kfv101@psu.edu>
+
+	* procman.spec: Add the translations to the RPMS. Doh!
+
+2001-08-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in Added 'ru'.
+
+2001-08-02  Christian Meyer  <chrisime@gnome.org>
+
+	* configure.in: Added 'de'.
+
+2001-07-31  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* debian/changelog: Updated to 0.8 version.
+
+2001-07-28  Christopher R. Gabriel  <cgabriel@cgabriel.org>
+
+	* configure.in (ALL_LINGUAS): Added 'it'.
+
+2001-07-19  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "tr" to the languages list.
+
+2001-07-15  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* debian/*: Added scripts to generate Debian
+	packages.
+	* NEWS: Added a comment to the Debian packages
+
+2001-07-08  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* ABOUT-NLS: Removed
+	* .cvsignore: shhh
+	* Updated to use xml-i18n-tools
+
+2001-07-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* procman.desktop: Added Norwegian translation.
+	* configure.in: Added no to ALL_LINGUAS.
+	
+2001-07-02  Christian Rose  <menthos@menthos.com>
+
+	* procman.desktop: Added Swedish entries.
+
+2001-07-02  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sv to ALL_LINGUAS.
+
