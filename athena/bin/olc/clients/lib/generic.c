@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/generic.c,v 1.1 1989-07-06 21:47:00 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/generic.c,v 1.2 1989-07-06 22:02:12 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
