@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/oclient.h,v 1.1 1990-12-31 21:22:36 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/oclient.h,v 1.2 1991-01-08 14:44:00 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -24,7 +24,6 @@
 #endif
 
 #ifdef KERBEROS
-#include <krb.h>
 #define K_SERVICE "olc"
 
 #endif /* KERBEROS */
